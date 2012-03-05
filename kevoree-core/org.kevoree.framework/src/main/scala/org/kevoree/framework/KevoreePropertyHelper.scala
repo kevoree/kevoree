@@ -42,7 +42,8 @@ object KevoreePropertyHelper {
   def getIntPropertyForGroup (model: ContainerRoot, groupName: String, key: String, isFragment: Boolean = false, nodeNameForFragment: String = ""): Option[java.lang.Integer] = {
     getPropertyForGroup(model, groupName, key, isFragment, nodeNameForFragment) match {
       case None => None
-      case Some(value) => try {
+      case Some(value) =>
+        try {
         Some(Integer.parseInt(value.toString))
       } catch {
         case _@e => None
@@ -243,36 +244,36 @@ object KevoreePropertyHelper {
   }
 
   def getIntNetworkProperties (model: ContainerRoot, targetNodeName: String, key: String): java.util.List[Int] = {
-      val properties = new ArrayList[Int]()
-      val filteredNodeNetwork = model.getNodeNetworks.filter(lNN => lNN.getTarget.getName == targetNodeName)
-      filteredNodeNetwork.foreach {
-        fnn =>
-          fnn.getLink.foreach {
-            fnl =>
-              fnl.getNetworkProperties.find(p => p.getName == key && p.getValue.isInstanceOf[Int]) match {
-                case None =>
-                case Some(prop) => properties.add(prop.getValue.asInstanceOf[Int])
-              }
-          }
-      }
-      properties
+    val properties = new ArrayList[Int]()
+    val filteredNodeNetwork = model.getNodeNetworks.filter(lNN => lNN.getTarget.getName == targetNodeName)
+    filteredNodeNetwork.foreach {
+      fnn =>
+        fnn.getLink.foreach {
+          fnl =>
+            fnl.getNetworkProperties.find(p => p.getName == key && p.getValue.isInstanceOf[Int]) match {
+              case None =>
+              case Some(prop) => properties.add(prop.getValue.asInstanceOf[Int])
+            }
+        }
     }
+    properties
+  }
 
   def getStringNetworkProperties (model: ContainerRoot, targetNodeName: String, key: String): java.util.List[String] = {
-      val properties = new ArrayList[String]()
-      val filteredNodeNetwork = model.getNodeNetworks.filter(lNN => lNN.getTarget.getName == targetNodeName)
-      filteredNodeNetwork.foreach {
-        fnn =>
-          fnn.getLink.foreach {
-            fnl =>
-              fnl.getNetworkProperties.find(p => p.getName == key) match {
-                case None =>
-                case Some(prop) => properties.add(prop.getValue.asInstanceOf[String])
-              }
-          }
-      }
-      properties
+    val properties = new ArrayList[String]()
+    val filteredNodeNetwork = model.getNodeNetworks.filter(lNN => lNN.getTarget.getName == targetNodeName)
+    filteredNodeNetwork.foreach {
+      fnn =>
+        fnn.getLink.foreach {
+          fnl =>
+            fnl.getNetworkProperties.find(p => p.getName == key) match {
+              case None =>
+              case Some(prop) => properties.add(prop.getValue.asInstanceOf[String])
+            }
+        }
     }
+    properties
+  }
 
   def getNetworkProperties (model: ContainerRoot, targetNodeName: String, key: String): java.util.List[Object] = {
     val properties = new ArrayList[Object]()
@@ -296,14 +297,9 @@ object KevoreePropertyHelper {
         getDefaultValue(instance.getTypeDefinition, key)
       }
       case Some(dictionary) => {
-        dictionary.getValues.find(dictionaryAttribute => dictionaryAttribute.getAttribute.getName == key &&
-          (if (isFragment && dictionaryAttribute.getTargetNode.isDefined) {
-            dictionaryAttribute.getTargetNode.get.getName == nodeNameForFragment
-          } else if (!isFragment) {
-            true // TODO test
-          } else {
-            false
-          })) match {
+        dictionary.getValues.find(dictionaryAttribute =>
+          dictionaryAttribute.getAttribute.getName == key &&
+            ((isFragment && dictionaryAttribute.getTargetNode.isDefined && dictionaryAttribute.getTargetNode.get.getName == nodeNameForFragment) || !isFragment)) match {
           case None => getDefaultValue(instance.getTypeDefinition, key)
           case Some(dictionaryAttribute) => Some(dictionaryAttribute.getValue)
         }
