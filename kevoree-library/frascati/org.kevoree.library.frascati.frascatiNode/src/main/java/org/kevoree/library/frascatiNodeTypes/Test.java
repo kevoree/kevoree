@@ -3,6 +3,7 @@ package org.kevoree.library.frascatiNodeTypes;
 
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.Enumeration;
 
 import org.objectweb.fractal.api.control.ContentController;
 import org.ow2.frascati.FraSCAti;
@@ -17,7 +18,23 @@ public class Test {
 
 	
 	public static void main( String[] args ) throws Exception {
-	
+
+
+        Enumeration<URL> urls = Test.class.getClassLoader().getResources("org/ow2/frascati/FraSCAti.composite");
+        while(urls.hasMoreElements()){
+            System.out.println("URL="+urls.nextElement());
+        }
+        Enumeration<URL> urls2 = Test.class.getClassLoader().getResources("org/ow2/frascati/assembly/factory/AssemblyFactory.composite");
+        while(urls2.hasMoreElements()){
+            System.out.println("URL="+urls2.nextElement());
+        }
+
+
+        System.out.println("get META-INF/services/javax.xml.parsers.SAXParserFactory");
+        System.out.println(Test.class.getClassLoader().getResource("META-INF/services/javax.xml.parsers.SAXParserFactory"));
+
+
+
 		System.err.println(((URLClassLoader)Thread.currentThread().getContextClassLoader()).getURLs());
 		
 		/*for (URL u : ((URLClassLoader)Thread.currentThread().getContextClassLoader()).getURLs()){
