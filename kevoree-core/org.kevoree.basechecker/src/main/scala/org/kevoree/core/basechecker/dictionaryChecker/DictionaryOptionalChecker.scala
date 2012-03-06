@@ -44,7 +44,21 @@ class DictionaryOptionalChecker extends CheckerService {
                     instance.getDictionary match {
                       case Some(instDic) => {
                         instDic.getValues.find(v => v.getAttribute.getName == dicAtt.getName) match {
-                          case None => throwError(instance, Some(dicAtt))
+                          case None => {
+                            if (dicAtt.getFragmentDependant) {
+                              var nodeNames = List[String]()
+                              if (instance.isInstanceOf[Group]) {
+                                nodeNames = getChild(instance.asInstanceOf[Group])
+                              } else if (instance.isInstanceOf[Channel]) {
+                                nodeNames = getBounds(instance.asInstanceOf[Channel])
+                              }
+                              if (!nodeNames.isEmpty) {
+                                throwError(instance, Some(dicAtt), Some(dicAtt.getName))
+                              }
+                            } else {
+                              throwError(instance, Some(dicAtt))
+                            }
+                          }
                           case Some(value) => {
                             if (dicAtt.getFragmentDependant) {
                               var nodeNames = List[String]()
@@ -54,12 +68,12 @@ class DictionaryOptionalChecker extends CheckerService {
                                 nodeNames = getBounds(instance.asInstanceOf[Channel])
                               }
 
-                              nodeNames.foreach{
+                              nodeNames.foreach {
                                 name =>
                                   instDic.getValues.find(v => v.getAttribute.getName == dicAtt.getName && v.getTargetNode.isDefined && name == v.getTargetNode.get.getName && v.getValue != "") match {
-                                  case None => throwError(instance, Some(dicAtt), Some(name))
-                                  case Some(v) =>
-                                }
+                                    case None => throwError(instance, Some(dicAtt), Some(name))
+                                    case Some(v) =>
+                                  }
                               }
                             }
                           }
@@ -78,12 +92,12 @@ class DictionaryOptionalChecker extends CheckerService {
         }
     }
 
-    def throwError (instance: Instance, odicAtt: Option[DictionaryAttribute], fragment : Option[String] = None) {
+    def throwError (instance: Instance, odicAtt: Option[DictionaryAttribute], fragment: Option[String] = None) {
       val checkViolation = new CheckerViolation
       odicAtt match {
         case Some(dicAtt) => {
           if (fragment.isEmpty) {
-          checkViolation.setMessage("Dictionary value not set for attribute name " + dicAtt.getName + " in " + instance.getName)
+            checkViolation.setMessage("Dictionary value not set for attribute name " + dicAtt.getName + " in " + instance.getName)
           } else {
             checkViolation.setMessage("Dictionary value not set for attribute name " + dicAtt.getName + " in " + instance.getName + " for fragment " + fragment.get)
           }
