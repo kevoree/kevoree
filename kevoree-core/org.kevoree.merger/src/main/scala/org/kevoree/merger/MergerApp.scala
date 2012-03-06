@@ -20,19 +20,28 @@ package org.kevoree.merger
 
 import org.kevoree.framework.KevoreeXmiHelper
 import org.kevoree.{KevoreeFactory, ContainerRoot}
+import org.slf4j.LoggerFactory
 
 object MergerApp {
 
+
+  val logger = LoggerFactory.getLogger(this.getClass)
   /**
    * @param args the command line arguments
    */
   def main(args: Array[String]): Unit = {
 
+    logger.debug("Hello Merger")
+
     val merger = new RootMerger
     val emtpyModel = KevoreeFactory.eINSTANCE.createContainerRoot
 
-    val model1 = KevoreeXmiHelper.load("/Users/duke/Downloads/kevMC0.kev")
-    val model2 = KevoreeXmiHelper.load("/Users/duke/Downloads/kevMC1.kev")
+    val model1 = KevoreeXmiHelper.load("/Users/duke/Desktop/beforeMerge.kev")
+
+
+    val model2 = KevoreeXmiHelper.load("/Users/duke/Documents/dev/dukeboard/kevoree/kevoree-library/javase/org.kevoree.library.javase.fakeDomo/target/classes/KEV-INF/lib.kev")
+    val model3 = KevoreeXmiHelper.load("/Users/duke/Documents/dev/dukeboard/kevoree/kevoree-library/javase/org.kevoree.library.javase.javaseNode/target/classes/KEV-INF/lib.kev")
+    val model4 = KevoreeXmiHelper.load("/Users/duke/Documents/dev/dukeboard/kevoree/kevoree-library/javase/org.kevoree.library.javase.nanohttp/target/classes/KEV-INF/lib.kev")
 
     /*
     val model1 = KevoreeXmiHelper.load("/Users/duke/Documents/dev/dukeboard/kevoree/kevoree-library/javase/org.kevoree.library.javase.restNode/target/classes/KEV-INF/lib.kev")
@@ -44,11 +53,11 @@ object MergerApp {
     println("%%%%%%%%%%%%%%%%%%%%%%%%%% 1")
 //    merger.merge(emtpyModel, model1)
     println("%%%%%%%%%%%%%%%%%%%%%%%%%% 2")
-    merger.merge(model1, model2)
+    //merger.merge(model1, model3)
     println("%%%%%%%%%%%%%%%%%%%%%%%%%% 3")
-    //merger.merge(emtpyModel, model3)
+    //merger.merge(model1, model2)
     println("%%%%%%%%%%%%%%%%%%%%%%%%%% 4")
-   // merger.merge(emtpyModel, model4)
+    merger.merge(model1, model4)
     println("!!!!!!!!!!!!!!!!!!!!!!!!!! end")
 
 

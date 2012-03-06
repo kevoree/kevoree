@@ -13,8 +13,8 @@
  */
 package org.kevoree.merger
 
-import org.kevoree.ContainerRoot
-import resolver.{UnresolvedNode, UnresolvedDictionaryAttribute, UnresolvedNodeType, UnresolvedTypeDefinition}
+import org.kevoree.{ComponentInstance, ContainerRoot}
+import resolver._
 
 /**
  * Created by IntelliJ IDEA.
@@ -67,6 +67,20 @@ trait CrossReferenceMerger {
     (actualModel.getAllInstances ++ modelToMerge.getAllInstances).foreach {
       instance =>
         instance.setTypeDefinition(UnresolvedTypeDefinition(instance.getTypeDefinition.getName))
+        //BREAK PORT TYPE REF
+        if (instance.isInstanceOf[ComponentInstance]) {
+          val componentInstance: ComponentInstance = instance.asInstanceOf[ComponentInstance]
+          componentInstance.getProvided.foreach {
+            pport =>
+              pport.setPortTypeRef(UnresolvedPortTypeRef(pport.getPortTypeRef.getName))
+          }
+          componentInstance.getRequired.foreach {
+            rport =>
+              rport.setPortTypeRef(UnresolvedPortTypeRef(rport.getPortTypeRef.getName))
+          }
+        }
+
+        //BREAK DICTIONARY
         instance.getDictionary.map {
           instanceDictionary =>
             instanceDictionary.getValues.foreach {

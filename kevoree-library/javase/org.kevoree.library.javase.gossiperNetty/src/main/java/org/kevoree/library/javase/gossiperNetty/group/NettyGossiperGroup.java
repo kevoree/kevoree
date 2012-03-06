@@ -48,7 +48,7 @@ public class NettyGossiperGroup extends AbstractGroupType implements GossiperCom
 		sendNotification = parseBooleanProperty("sendNotification");
 
 		Long timeoutLong = Long.parseLong((String) this.getDictionary().get("interval"));
-		boolean merge = "true".equals(this.getDictionary().get("merge").toString());
+		boolean merge = "true".equalsIgnoreCase(this.getDictionary().get("merge").toString());
 
 		NetworkProtocolSelector protocolSelector = new NetworkProtocolSelector();
 

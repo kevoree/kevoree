@@ -74,7 +74,7 @@ class DataManagerForGroup (nameInstance: String, selfNodeName: String, modelServ
     result
   }
 
-  def getUUIDVectorClocks (): java.util.Map[UUID, VectorClock] = {
+  def getUUIDVectorClocks: java.util.Map[UUID, VectorClock] = {
     logger.debug("getUUIDVectorClocks")
     val result = (this !? GetUUIDVectorClocks()).asInstanceOf[java.util.Map[UUID, VectorClock]]
     logger.debug("getUUIDVectorClocks end")
@@ -187,11 +187,16 @@ class DataManagerForGroup (nameInstance: String, selfNodeName: String, modelServ
         val localDate = new Date(vectorClock.getTimestamp);
         val remoteDate = new Date(tuple._1.getTimestamp);
         if (merge) { // TODO need to be tested
+          logger.debug("merge local and remote model due to concurrency")
           updateModelOrHaraKiri(mergerComponent.merge(modelService.getLastModel, tuple._2))
           lastNodeSynchronization = source
           // update local vectorclock according to both local and remote vectorclocks
+          logger.debug("BEFORE MERGE CONCURENCY")
+          vectorClock.printDebug()
           setVectorClock(localMerge(tuple._1))
+          logger.debug("AFTER MERGE CONCURENCY")
           increment()
+          logger.debug("AFTER INCREMENT CONCURENCY")
         } else {
           if (localDate.before(remoteDate)) {
             updateModelOrHaraKiri(tuple._2)
