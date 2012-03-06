@@ -172,11 +172,10 @@ public class KevoreeActivity extends android.support.v4.app.FragmentActivity imp
             nodeNameView.setWidth(width / 4);
 
 
-            Button btstart = new Button(this);
+            final Button btstart = new Button(this);
             btstart.setText("Start");
-            Button btstop = new Button(this);
+            final Button btstop = new Button(this);
             btstop.setText("Stop");
-
             adminLayout.addView(nodeNameView);
 
             adminLayout.addView(btstart);
@@ -254,9 +253,10 @@ public class KevoreeActivity extends android.support.v4.app.FragmentActivity imp
                         nodeNameView.setBackgroundColor(Color.GRAY);
                         nodeNameView.setSelected(false);
                         nodeNameView.setEnabled(false);
-
                         startService(intent_start);
                         alreadyStarted = true;
+                        btstart.setEnabled(false);
+
                     }
                 }
             });
@@ -270,6 +270,11 @@ public class KevoreeActivity extends android.support.v4.app.FragmentActivity imp
                         Intent intent_stop = new Intent(ctx, KevoreeService.class);
                         stopService(intent_stop);
                         alreadyStarted = false;
+                        btstart.setEnabled(true);
+                    }
+                    else
+                    {
+                            System.exit(0);
                     }
                 }
             });
