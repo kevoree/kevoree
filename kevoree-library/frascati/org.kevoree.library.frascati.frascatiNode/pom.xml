@@ -24,7 +24,9 @@
             org.kevoree.*:*,
             org.oasis-open.*:*,
             com.google.*:*,
-            aopalliance:*
+            aopalliance:*,
+            xerces.*:*
+
         </kevoree.include>
     </properties>
 
@@ -44,11 +46,7 @@
             <artifactId>frascati-runtime-factory</artifactId>
             <version>${frascati.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.ow2.frascati</groupId>
-            <artifactId>frascati-all-modules</artifactId>
-            <version>${frascati.version}</version>
-        </dependency>
+
     </dependencies>
 
     <repositories>

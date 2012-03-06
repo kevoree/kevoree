@@ -32,6 +32,7 @@ public class Test {
 
         System.out.println("get META-INF/services/javax.xml.parsers.SAXParserFactory");
         System.out.println(Test.class.getClassLoader().getResource("META-INF/services/javax.xml.parsers.SAXParserFactory"));
+        System.out.println(Test.class.getClassLoader().getResource("org/ow2/frascati/component/factory/juliac/JuliacGeneratorClassProviderType.constrainingType"));
 
 
 
