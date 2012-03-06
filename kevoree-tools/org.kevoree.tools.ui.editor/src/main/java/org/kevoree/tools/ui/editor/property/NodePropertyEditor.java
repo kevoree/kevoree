@@ -17,7 +17,6 @@
 package org.kevoree.tools.ui.editor.property;
 
 import com.explodingpixels.macwidgets.HudWidgetFactory;
-import com.explodingpixels.macwidgets.MacWidgetFactory;
 import com.explodingpixels.macwidgets.plaf.HudComboBoxUI;
 import com.explodingpixels.macwidgets.plaf.HudLabelUI;
 import org.kevoree.*;
@@ -67,7 +66,7 @@ public class NodePropertyEditor extends InstancePropertyEditor {
                     hostedCapable = true;
                 }
             }
-            if (hostedCapable &&  !(loopNode.getName().equals(node.getName()))) {
+            if (hostedCapable && !(loopNode.getName().equals(node.getName()))) {
                 hostNodeModel.addElement(loopNode.getName());
                 if (loopNode.getHostsForJ().contains(node)) {
                     hostNodeModel.setSelectedItem(loopNode.getName());
@@ -116,10 +115,10 @@ public class NodePropertyEditor extends InstancePropertyEditor {
         sendNodeType.setDestNodeName(node.getName());
 
         DefaultComboBoxModel groupModel = new DefaultComboBoxModel();
-        for(Group g :  _kernel.getModelHandler().getActualModel().getGroupsForJ()){
-           if(g.getSubNodesForJ().contains(node)){
-               groupModel.addElement(g.getName());
-           }
+        for (Group g : _kernel.getModelHandler().getActualModel().getGroupsForJ()) {
+            if (g.getSubNodesForJ().contains(node)) {
+                groupModel.addElement(g.getName());
+            }
         }
         final JComboBox groupTypeComboBox = new JComboBox(groupModel);
         final JProgressBar progressBar = new JProgressBar();
@@ -132,15 +131,17 @@ public class NodePropertyEditor extends InstancePropertyEditor {
         JCommandButton btPushNodeType = new JCommandButton("Push via") {
             @Override
             public void doBeforeExecution() {
-                progressBar.setEnabled(true);
-                progressBar.setIndeterminate(true);
-                resultLabel.setText("Sending...");
-                sendNodeType.setDestNodeName(elem.getName());
-                sendNodeType.setViaGroupName(groupTypeComboBox.getSelectedItem().toString());
+                if (groupTypeComboBox.getSelectedItem() != null) {
+                    progressBar.setEnabled(true);
+                    progressBar.setIndeterminate(true);
+                    resultLabel.setText("Sending...");
+                    sendNodeType.setDestNodeName(elem.getName());
+                    sendNodeType.setViaGroupName(groupTypeComboBox.getSelectedItem().toString());
+                } else {
+                    resultLabel.setText("No group found !");
+                }
             }
         };
-
-
 
 
         btPushNodeType.setCommand(sendNodeType);
@@ -153,7 +154,6 @@ public class NodePropertyEditor extends InstancePropertyEditor {
 
         layout.add(progressBar);
         layout.add(resultLabel);
-
 
 
         SpringUtilities.makeCompactGrid(layout, 2, 2, 6, 6, 6, 6);

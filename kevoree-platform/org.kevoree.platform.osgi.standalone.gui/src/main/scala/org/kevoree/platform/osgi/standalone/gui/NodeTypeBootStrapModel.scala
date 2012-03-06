@@ -45,7 +45,7 @@ object NodeTypeBootStrapModel {
       }
     }
     model.getGroups.find(g => g.getName == groupName) match {
-      case Some(g) => println("Already present group ")
+      case Some(g) => logger.debug("Already present group ")
       case None => {
         createGroup(node,model,groupName,groupTypeName,propsGroup)
       }
