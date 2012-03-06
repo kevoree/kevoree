@@ -53,6 +53,10 @@ public class KevoreeBootStrap {
     Logger logger = LoggerFactory.getLogger(KevoreeBootStrap.class);
     private Boolean started = false;
 
+    public KevoreeCoreBean getCore(){
+        return coreBean;
+    }
+
     public void start() throws Exception {
         if (started) {
             return;
