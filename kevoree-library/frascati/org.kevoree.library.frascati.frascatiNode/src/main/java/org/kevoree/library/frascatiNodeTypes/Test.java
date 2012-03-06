@@ -15,7 +15,7 @@ import org.ow2.frascati.util.FrascatiClassLoader;
 
 
 public class Test {
-
+  
 	
 	public static void main( String[] args ) throws Exception {
 
@@ -32,6 +32,7 @@ public class Test {
 
         System.out.println("get META-INF/services/javax.xml.parsers.SAXParserFactory");
         System.out.println(Test.class.getClassLoader().getResource("META-INF/services/javax.xml.parsers.SAXParserFactory"));
+        System.out.println(Test.class.getClassLoader().getResource("org/ow2/frascati/component/factory/juliac/JuliacGeneratorClassProviderType.constrainingType"));
 
 
 
@@ -40,7 +41,7 @@ public class Test {
 		/*for (URL u : ((URLClassLoader)Thread.currentThread().getContextClassLoader()).getURLs()){
 			System.err.println(u);
 		}*/
-		
+		 
 		org.ow2.frascati.tinfi.api.control.SCABasicIntentController o1;
 		FraSCAti frascati = FraSCAti.newFraSCAti();
 		System.err.println(((ClassLoaderManagerFcInItf)frascati.getClassLoaderManager()).getFcItfImpl().getClass());

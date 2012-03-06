@@ -1,8 +1,8 @@
-package org.kevoree.library.frascatiNodeTypes.primitives
-
-;
+package org.kevoree.library.frascatiNodeTypes.primitives;
+  
 
 import org.kevoreeAdaptation.AdaptationPrimitive
+
 import org.kevoree.library.frascatiNodeTypes.FrascatiNode
 import org.kevoree.DeployUnit
 import org.kevoree.kcl.KevoreeJarClassLoader
