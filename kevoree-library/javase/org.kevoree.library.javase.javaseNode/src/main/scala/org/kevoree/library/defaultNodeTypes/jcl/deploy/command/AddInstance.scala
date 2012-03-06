@@ -48,6 +48,9 @@ case class AddInstance(c: Instance, nodeName: String,modelservice : KevoreeModel
     val activatorPackage = KevoreeGeneratorHelper.getTypeDefinitionGeneratedPackage(c.getTypeDefinition, nodeTypeName)
     val factoryName = activatorPackage + "." + c.getTypeDefinition.getName + "Factory"
     try {
+      
+      //println(bs.getKevoreeClassLoaderHandler.getKevoreeClassLoader(deployUnit))
+      
       val kevoreeFactory = bs.getKevoreeClassLoaderHandler.getKevoreeClassLoader(deployUnit).loadClass(factoryName).newInstance().asInstanceOf[KevoreeInstanceFactory]
       val newInstance: KevoreeInstanceActivator = kevoreeFactory.registerInstance(c.getName, nodeName)
       KevoreeDeployManager.addMapping(KevoreeMapping(c.getName, c.getClass.getName, newInstance))
@@ -64,8 +67,6 @@ case class AddInstance(c: Instance, nodeName: String,modelservice : KevoreeModel
       if(newInstance.isInstanceOf[KevoreeChannelFragmentActivator]){
         newInstance.asInstanceOf[KevoreeChannelFragmentActivator].channelActor.asInstanceOf[AbstractChannelFragment].setBootStrapperService(bs)
       }
-
-
 
       true
     } catch {

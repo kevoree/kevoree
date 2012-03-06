@@ -37,6 +37,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/**
+ * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.gnu.org/licenses/lgpl-3.0.txt
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.kevoree.kcl
 
 /**
@@ -178,6 +191,40 @@ class KevoreeJarClassLoader extends JarClassLoader {
   }
 
   override def getResourceAsStream(name: String): InputStream = {
+    var resolved = internal_getResourceAsStream(name)
+    subClassLoaders.foreach {
+      sub =>
+        resolved = if (sub.isInstanceOf[KevoreeJarClassLoader]) {
+          sub.asInstanceOf[KevoreeJarClassLoader].internal_getResourceAsStream(name)
+        } else {
+          sub.getResourceAsStream(name)
+        }
+        if (resolved != null) {
+          return resolved
+        }
+    }
+    subWeakClassLoaders.foreach {
+      subOpt =>
+
+        if (subOpt.get.isDefined) {
+          val sub = subOpt.get.get
+          resolved = if (sub.isInstanceOf[KevoreeJarClassLoader]) {
+            sub.asInstanceOf[KevoreeJarClassLoader].internal_getResourceAsStream(name)
+          } else {
+            sub.getResourceAsStream(name)
+          }
+          if (resolved != null) {
+            return resolved
+          }
+        }
+    }
+
+
+    resolved
+  }
+
+
+  def internal_getResourceAsStream(name: String): InputStream = {
     logger.debug("Get RessourceAsStream : " + name)
     var res: Array[Byte] = null
     if (name.endsWith(".class")) {
@@ -191,11 +238,7 @@ class KevoreeJarClassLoader extends JarClassLoader {
     if (res != null) {
       new ByteArrayInputStream(res)
     } else {
-      logger.debug("Res not found " + name)
       null
-
-      //TODO RESOLVE IN LINKED CLASSLOADER
-
     }
   }
 
@@ -303,7 +346,7 @@ class KevoreeJarClassLoader extends JarClassLoader {
 
   override def findResources(p1: String): Enumeration[URL] = {
     //logger.debug("CallFind Resources for " + p1 + "-")
-    val selfRes : ArrayList[URL] = internal_findResources(p1)
+    val selfRes: ArrayList[URL] = internal_findResources(p1)
     //Then call on all
     import scala.collection.JavaConverters._
     subClassLoaders.foreach {
