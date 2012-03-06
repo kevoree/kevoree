@@ -44,7 +44,13 @@ class KevoreeLazyJarResources extends ClasspathResources {
   }
 
   var lastLoadedJars: List[URL] = List()
-  def getLastLoadedJar = if(lastLoadedJars.size>0){lastLoadedJars(0).toString} else {"streamKCL"}
+
+  def getLastLoadedJar = if (lastLoadedJars.size > 0) {
+    lastLoadedJars(0).toString
+  } else {
+    "streamKCL"
+  }
+
   def getLoadedURLs = lastLoadedJars
 
   //  def getContentURL(name: String) = jarContentURL.get(name)
@@ -100,6 +106,9 @@ class KevoreeLazyJarResources extends ClasspathResources {
   }
 
   def loadJar(jarStream: InputStream, baseurl: URL) {
+
+    logger.debug("Load From " + jarStream.toString)
+
     var bis: BufferedInputStream = null;
     var jis: JarInputStream = null;
     try {
@@ -139,7 +148,7 @@ class KevoreeLazyJarResources extends ClasspathResources {
                 var len = 0;
                 while (len != -1) {
 
-                //while (jis.available() > 0) {
+                  //while (jis.available() > 0) {
                   len = jis.read(b);
                   if (len > 0) {
                     out.write(b, 0, len);
@@ -158,12 +167,12 @@ class KevoreeLazyJarResources extends ClasspathResources {
                 }
                 if (jarEntry.getName.endsWith(".jar")) {
 
-                  if(baseurl != null){
+                  if (baseurl != null) {
                     val subRUL = new URL("jar:" + baseurl + "!/" + jarEntry.getName)
                     lastLoadedJars = lastLoadedJars ++ List(subRUL)
                   }
 
-                //  println("subParentURL="+baseurl +jarEntry.getName)
+                  //  println("subParentURL="+baseurl +jarEntry.getName)
                   logger.debug("KCL Found sub Jar => " + jarEntry.getName)
                   loadJar(new ByteArrayInputStream(out.toByteArray))
                 } else {
@@ -204,21 +213,27 @@ class KevoreeLazyJarResources extends ClasspathResources {
         jarEntryContents.get(name)
       } else {
         if (jarContentURL.get(name) != null) {
-          val b = new Array[Byte](2048)
-          val out = new ByteArrayOutputStream();
-          var len = 0;
-          val stream = jarContentURL.get(name).openStream()
-          while (stream.available() > 0) {
-            len = stream.read(b);
-            if (len > 0) {
-              out.write(b, 0, len);
+          var stream: InputStream = null
+          try {
+            val b = new Array[Byte](2048)
+            val out = new ByteArrayOutputStream();
+            var len = 0;
+            stream = jarContentURL.get(name).openStream()
+            while (stream.available() > 0) {
+              len = stream.read(b);
+              if (len > 0) {
+                out.write(b, 0, len);
+              }
+            }
+            out.flush()
+            out.close()
+            jarEntryContents.put(name, out.toByteArray)
+            out.toByteArray
+          } finally {
+            if (stream != null) {
+              stream.close()
             }
           }
-          stream.close()
-          out.flush()
-          out.close()
-          jarEntryContents.put(name, out.toByteArray)
-          out.toByteArray
         } else {
           null
         }
@@ -261,21 +276,27 @@ class KevoreeLazyJarResources extends ClasspathResources {
       detectedResources.get(resUrl)
     } else {
       if (!resUrl.toString.startsWith("file:kclstream:")) {
-        val b = new Array[Byte](2048)
-        val out = new ByteArrayOutputStream();
-        var len = 0;
-        val stream = resUrl.openStream()
-        while (stream.available() > 0) {
-          len = stream.read(b);
-          if (len > 0) {
-            out.write(b, 0, len);
+        var stream: InputStream = null
+        try {
+          val b = new Array[Byte](2048)
+          val out = new ByteArrayOutputStream();
+          var len = 0;
+          stream = resUrl.openStream()
+          while (stream.available() > 0) {
+            len = stream.read(b);
+            if (len > 0) {
+              out.write(b, 0, len);
+            }
+          }
+          out.flush()
+          out.close()
+          detectedResources.put(resUrl, out.toByteArray)
+          out.toByteArray
+        } finally {
+          if (stream != null) {
+            stream.close()
           }
         }
-        stream.close()
-        out.flush()
-        out.close()
-        detectedResources.put(resUrl, out.toByteArray)
-        out.toByteArray
       } else {
         null
       }

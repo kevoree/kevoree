@@ -14,8 +14,7 @@
     </parent>
 
     <properties>
-        <slf4j.version>1.6.1</slf4j.version>
-        <slf4j.version.range>[1.5,2)</slf4j.version.range>
+        <slf4j.version>1.6.4</slf4j.version>
         <kevoree.version>${project.version}</kevoree.version>
     </properties>
 
@@ -36,13 +35,19 @@
             <artifactId>slf4j-api</artifactId>
             <version>${slf4j.version}</version>
         </dependency>
-            <!--
+<!--
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-jdk14</artifactId>
-            <version>${slf4j.version}</version>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-core</artifactId>
+            <version>1.0.0</version>
         </dependency>
-            -->
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+-->
+
         <dependency>
             <groupId>org.scalatest</groupId>
             <artifactId>scalatest_2.10.0-M2</artifactId>
