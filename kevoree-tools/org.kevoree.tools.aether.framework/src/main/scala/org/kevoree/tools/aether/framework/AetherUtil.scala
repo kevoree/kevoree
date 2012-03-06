@@ -40,12 +40,12 @@ import org.sonatype.aether.{ConfigurationProperties, RepositorySystem}
  * Time: 15:06
  */
 
-object AetherUtil {
+object AetherUtil extends CacheManager {
 
   private val logger = LoggerFactory.getLogger(this.getClass)
 
 
-  val newRepositorySystem: RepositorySystem = {
+  def newRepositorySystem: RepositorySystem = {
     val locator = new DefaultServiceLocator()
     locator.setServices(classOf[Logger], new AetherLogger) // Doesn't work to JdkAsyncHttpProvider because this class uses its own logger and not the one provided by plexus and set with this line
     locator.setService(classOf[LocalRepositoryManagerFactory], classOf[EnhancedLocalRepositoryManagerFactory])
@@ -81,13 +81,11 @@ object AetherUtil {
     }
     artifactRequest.setRepositories(repositories)
     val artefactResult = newRepositorySystem.resolveArtifact(newRepositorySystemSession, artifactRequest)
-    artefactResult.getArtifact.getFile
+    installInCache(artefactResult.getArtifact)
   }
 
 
   def resolveDeployUnit(du: DeployUnit): File = {
-
-
     var artifact: Artifact = null
     if (du.getUrl != null && du.getUrl.contains("mvn:")) {
       artifact = new DefaultArtifact(du.getUrl.replaceAll("mvn:", "").replace("/", ":"))
@@ -120,7 +118,7 @@ object AetherUtil {
     try {
       artifactRequest.setRepositories(repositories)
       val artefactResult = newRepositorySystem.resolveArtifact(newRepositorySystemSession, artifactRequest)
-      artefactResult.getArtifact.getFile
+      installInCache(artefactResult.getArtifact)
     } catch {
       case _@e => {
         logger.debug("Error while resolving {}",du.getUnitName.trim(),e)
@@ -131,7 +129,7 @@ object AetherUtil {
 
   }
 
-  val newRepositorySystemSession = {
+  def newRepositorySystemSession = {
     val session = new MavenRepositorySystemSession()
     session.setUpdatePolicy(RepositoryPolicy.UPDATE_POLICY_ALWAYS)
     session.setConfigProperty("aether.connector.ahc.provider", "jdk")

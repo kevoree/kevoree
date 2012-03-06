@@ -22,7 +22,6 @@ import org.kevoree.framework.aspects.KevoreeAspects._
  * User: duke
  * Date: 07/10/11
  * Time: 10:33
- * To change this template use File | Settings | File Templates.
  */
 
 trait TypeDefinitionResolver {
