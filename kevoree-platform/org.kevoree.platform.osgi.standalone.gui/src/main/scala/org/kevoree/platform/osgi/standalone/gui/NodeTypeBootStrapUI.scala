@@ -27,7 +27,7 @@ import javax.swing._
  * Time: 20:11
  */
 
-class NodeTypeBootStrapUI(pkernel: ContainerRoot) extends JPanel {
+class NodeTypeBootStrapUI(private var pkernel: ContainerRoot) extends JPanel {
 
   var nodeTypeComboBox: JComboBox = _
   var groupTypeComboBox: JComboBox = _
@@ -48,8 +48,8 @@ class NodeTypeBootStrapUI(pkernel: ContainerRoot) extends JPanel {
     groupTypeComboBox.getSelectedItem
   }
 
-  private var model = pkernel
-  def getCurrentModel = model
+//  private var model = pkernel
+  def getCurrentModel = pkernel
 
   this.setOpaque(false)
   init(pkernel)
@@ -58,7 +58,7 @@ class NodeTypeBootStrapUI(pkernel: ContainerRoot) extends JPanel {
   def init(kernel: ContainerRoot) {
     this.setLayout(new BoxLayout(this,BoxLayout.PAGE_AXIS))
     this.removeAll()
-    model = kernel
+    pkernel = kernel
     val nodeTypeModel = new DefaultComboBoxModel
 
     kernel.getTypeDefinitions.
@@ -147,8 +147,6 @@ class NodeTypeBootStrapUI(pkernel: ContainerRoot) extends JPanel {
     add(groupLayout)
     add(groupInstancePanel)
 
-    val pointer = this
-
     nodeTypeComboBox.addActionListener(new ActionListener() {
       override def actionPerformed(actionEvent: ActionEvent) {
         nodeInstancePanel.setNodeTypeDefinition(getTypeDefinition(nodeTypeComboBox))
@@ -170,7 +168,7 @@ class NodeTypeBootStrapUI(pkernel: ContainerRoot) extends JPanel {
   }
 
   def getTypeDefinition(box : JComboBox) : TypeDefinition = {
-    model.getTypeDefinitions.find(td => td.getName == box.getSelectedItem).get
+    pkernel.getTypeDefinitions.find(td => td.getName == box.getSelectedItem).get
   }
 
 }
