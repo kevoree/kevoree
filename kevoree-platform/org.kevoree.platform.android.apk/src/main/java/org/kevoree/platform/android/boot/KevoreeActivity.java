@@ -172,11 +172,10 @@ public class KevoreeActivity extends android.support.v4.app.FragmentActivity imp
             nodeNameView.setWidth(width / 4);
 
 
-            Button btstart = new Button(this);
+            final Button btstart = new Button(this);
             btstart.setText("Start");
-            Button btstop = new Button(this);
+            final Button btstop = new Button(this);
             btstop.setText("Stop");
-
             adminLayout.addView(nodeNameView);
 
             adminLayout.addView(btstart);
@@ -245,7 +244,12 @@ public class KevoreeActivity extends android.support.v4.app.FragmentActivity imp
 
                 public void onClick(View v) {
                     Intent intent_start = new Intent(ctx, KevoreeService.class);
-                    Log.i("art2.service", "start bind service");
+                    Log.i("Kevoree.service", "start bind service");
+                    if(singleton != null)
+                    {
+                        Log.w("Kevoree.service", "WARNING Cleaning kevoree Service, the last runtime has maybe crash");
+                        closeKevoreeService(singleton.getApplicationContext());
+                    }
                     if (!alreadyStarted) {
                         nodeName = nodeNameView.getText().toString();
                         System.setProperty("node.name", nodeName);
@@ -254,9 +258,9 @@ public class KevoreeActivity extends android.support.v4.app.FragmentActivity imp
                         nodeNameView.setBackgroundColor(Color.GRAY);
                         nodeNameView.setSelected(false);
                         nodeNameView.setEnabled(false);
-
                         startService(intent_start);
                         alreadyStarted = true;
+                        btstart.setEnabled(false);
                     }
                 }
             });
@@ -267,16 +271,26 @@ public class KevoreeActivity extends android.support.v4.app.FragmentActivity imp
                 public void onClick(View v) {
                     Log.i("kevoree.platform", "try to stop the platform");
                     if (alreadyStarted) {
-                        Intent intent_stop = new Intent(ctx, KevoreeService.class);
-                        stopService(intent_stop);
-                        alreadyStarted = false;
+                        closeKevoreeService(ctx);
+                    }
+                    else
+                    {
+                        System.exit(0);
                     }
                 }
             });
             singleton = this;
+
+
+
         }
     }
 
+    public void closeKevoreeService(Context ctx){
+        Intent intent_stop = new Intent(ctx, KevoreeService.class);
+        stopService(intent_stop);
+        alreadyStarted = false;
+    }
     @Override
     public void onTabReselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
     }
