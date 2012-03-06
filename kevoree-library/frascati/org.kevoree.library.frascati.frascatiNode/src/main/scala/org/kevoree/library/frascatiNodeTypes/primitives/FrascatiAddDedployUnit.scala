@@ -27,7 +27,7 @@ case class FrascatiAddDedployUnit(du: DeployUnit, bs: org.kevoree.api.Bootstrape
           case Some(bm) =>
           case None => KevoreeDeployManager.addMapping(KevoreeMapping(CommandHelper.buildKEY(du), du.getClass.getName, du))
         }
-      }
+      } 
       true
     } catch {
       case _@e => logger.debug("error ", e); false

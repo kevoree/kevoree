@@ -1,6 +1,6 @@
-package org.kevoree.library.frascatiNodeTypes
+package org.kevoree.library.frascatiNodeTypes;
 
-import scala.actors.Actor
+import scala.actors.Actor  
 import org.ow2.frascati.FraSCAti
 import org.ow2.frascati.util.FrascatiClassLoader
 import org.kevoree.api.PrimitiveCommand
@@ -19,7 +19,7 @@ import org.kevoree.kcl.KevoreeJarClassLoader
 case class ExecuteContextCommand(cmd: PrimitiveCommand)
 
 case class UndoContextCommand(cmd: PrimitiveCommand)
-
+ 
 class FrascatiRuntime extends Actor {
 
   private val logger = LoggerFactory.getLogger(this.getClass)
@@ -41,8 +41,8 @@ class FrascatiRuntime extends Actor {
     while (true) {
       receive {
         case StartRuntime() => {
-                            /*
-          val f_cl = new FrascatiClassLoader(classOf[FrascatiNode].getClassLoader) {
+
+          val fcl = new FrascatiClassLoader(classOf[FrascatiNode].getClassLoader) {
 
             override def loadClass(p1: String): Class[_] = {
               val cl = classOf[FrascatiNode].getClassLoader.loadClass(p1)
@@ -58,13 +58,11 @@ class FrascatiRuntime extends Actor {
 
             override def getResources(p1: String): Enumeration[URL] = {
 
-              //sval res2 = classOf[FraSCAti].getClassLoader.getResources(p1)
-              // while(res2.hasNext)
-
-
               logger.info("GetResss==" + p1)
+
               val res = classOf[FrascatiNode].getClassLoader.getResources(p1)
-              println("getresResult=" + res + "- ")
+
+
               res
             }
 
@@ -82,9 +80,9 @@ class FrascatiRuntime extends Actor {
             override def addURL(p1: URL) {
               println("add URL " + p1)
             }
-          }   */
+          }
 
-          Thread.currentThread().setContextClassLoader(classOf[FrascatiNode].getClassLoader);
+          Thread.currentThread().setContextClassLoader(fcl);
          // FraSCAti.newFraSCAti()
 
 
@@ -92,9 +90,10 @@ class FrascatiRuntime extends Actor {
           val clazzres = classOf[FrascatiNode].getClassLoader.loadClass("org.ow2.frascati.component.factory.api.MembraneGeneration")
           println("Result="+clazzres)
 
-          internal_frascati = FraSCAti.newFraSCAti(classOf[FrascatiNode].getClassLoader);
+          internal_frascati = FraSCAti.newFraSCAti(fcl);
+          //internal_frascati = FraSCAti.newFraSCAti(classOf[FrascatiNode].getClassLoader);
           //internal_frascati.setClassLoader(f_cl)
-          //internal_frascati.getClassLoaderManager.setClassLoader(f_cl)
+          //internal_frascati.getClassLoaderManager.setClassLoader(fcl)
 
           reply(internal_frascati)
         }
