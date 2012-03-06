@@ -131,9 +131,11 @@ class KevoreeLazyJarResources extends ClasspathResources {
       while (jarEntry != null) {
         if (!jarEntry.isDirectory) {
           var filtered = false
+          /*
           if (baseurl != null && baseurl.toString.contains("frascati-component-factory-juliac")) {
             print("found in "+jarEntry.getName)
-          }
+          }*/
+
           if (parentKCL.get() != null) {
             parentKCL.get().getSpecialLoaders.find(r => jarEntry.getName.endsWith(r.getExtension)) match {
               case Some(e) => {
