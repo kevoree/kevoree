@@ -11,6 +11,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/**
+ * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.gnu.org/licenses/lgpl-3.0.txt
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.kevoree.tools.aether.framework
 
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService
@@ -31,12 +44,10 @@ import org.kevoree.kcl.KevoreeJarClassLoader
 
 class NodeTypeBootstrapHelper extends Bootstraper with KCLBootstrap {
 
+
   val classLoaderHandler = new JCLContextHandler
 
   def bootstrapNodeType(model: ContainerRoot, destNodeName: String, mservice: KevoreeModelHandlerService, kevsEngineFactory: KevScriptEngineFactory): Option[org.kevoree.api.NodeType] = {
-    //JCLContextHandler.clear()
-
-
     //LOCATE NODE
     val nodeOption = model.getNodes.find(node => node.getName == destNodeName)
     nodeOption match {
@@ -109,7 +120,6 @@ class NodeTypeBootstrapHelper extends Bootstraper with KCLBootstrap {
             }
           )
         )*/
-
         val kcl_opt = installDeployUnit(ct)
         kcl_opt match {
           case Some(k) => {
@@ -206,11 +216,11 @@ class NodeTypeBootstrapHelper extends Bootstraper with KCLBootstrap {
           fakeNode.setTypeDefinition(javaseTD)
       }
 
-      var ct : DeployUnit = null
+      var ct: DeployUnit = null
       try {
         ct = groupType.foundRelevantDeployUnit(fakeNode)
       } catch {
-        case _ @ e =>
+        case _@e =>
       }
 
       if (ct != null) {
@@ -242,9 +252,9 @@ class NodeTypeBootstrapHelper extends Bootstraper with KCLBootstrap {
     }
   }
 
-  def resolveArtifact(artId: String, groupId: String, version: String, repos: List[String]): File = AetherUtil.resolveMavenArtifact(artId,groupId,version,repos)
+  def resolveArtifact(artId: String, groupId: String, version: String, repos: List[String]): File = AetherUtil.resolveMavenArtifact(artId, groupId, version, repos)
 
-  def resolveKevoreeArtifact(artId: String, groupId: String, version: String): File = AetherUtil.resolveKevoreeArtifact(artId,groupId,version)
+  def resolveKevoreeArtifact(artId: String, groupId: String, version: String): File = AetherUtil.resolveKevoreeArtifact(artId, groupId, version)
 
   def resolveDeployUnit(du: DeployUnit): File = AetherUtil.resolveDeployUnit(du)
 
@@ -257,12 +267,17 @@ class NodeTypeBootstrapHelper extends Bootstraper with KCLBootstrap {
     classLoaderHandler.clear()
   }
 
-  def registerManuallyDeployUnit(artefactID: String,groupID:String,version:String,kcl:KevoreeJarClassLoader){
+  def registerManuallyDeployUnit(artefactID: String, groupID: String, version: String, kcl: KevoreeJarClassLoader) {
     val du = KevoreeFactory.createDeployUnit
     du.setUnitName(artefactID)
     du.setGroupName(groupID)
     du.setVersion(version)
-    classLoaderHandler.manuallyAddToCache(du,kcl)
+    classLoaderHandler.manuallyAddToCache(du, kcl)
   }
+
+
+
+
+
 
 }

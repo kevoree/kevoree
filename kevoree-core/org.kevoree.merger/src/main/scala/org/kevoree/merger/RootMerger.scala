@@ -24,7 +24,7 @@ import resolver.UnresolvedNodeType._
 import resolver.UnresolvedTypeDefinition._
 import sub._
 
-class RootMerger extends TypeDefinitionMerger with TypeLibraryMerger with NodeMerger with RepositoryMerger with TypeDefinitionResolver with DictionaryAttributeResolver with ChannelMerger with GroupMerger with CrossReferenceMerger with TopologyMerger with TopologyResolver with ChildNodeResolver {
+class RootMerger extends TypeDefinitionMerger with TypeLibraryMerger with NodeMerger with RepositoryMerger with TypeDefinitionResolver with DictionaryAttributeResolver with ChannelMerger with GroupMerger with CrossReferenceMerger with TopologyMerger with TopologyResolver with ChildNodeResolver with PortTypeRefResolver {
 
   override def merge(actualModel: ContainerRoot, modelToMerge: ContainerRoot): Unit = {
     if (modelToMerge != null) {
@@ -50,6 +50,7 @@ class RootMerger extends TypeDefinitionMerger with TypeLibraryMerger with NodeMe
       resolveLibraryType(actualModel)
       resolveInstanceTypeDefinition(actualModel)
       resolveDictionaryAttribute(actualModel)
+      resolvePortTypeRef(actualModel)
       resolveTopologyNodes(actualModel)
       resolveChildNodes(actualModel)
     }
