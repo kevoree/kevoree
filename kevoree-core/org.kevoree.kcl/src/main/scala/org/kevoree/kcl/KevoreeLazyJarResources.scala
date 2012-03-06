@@ -107,7 +107,7 @@ class KevoreeLazyJarResources extends ClasspathResources {
 
   def loadJar(jarStream: InputStream, baseurl: URL) {
 
-    logger.debug("Load From " + jarStream.toString)
+    //logger.debug("Load From " + jarStream.toString)
 
     var bis: BufferedInputStream = null;
     var jis: JarInputStream = null;
