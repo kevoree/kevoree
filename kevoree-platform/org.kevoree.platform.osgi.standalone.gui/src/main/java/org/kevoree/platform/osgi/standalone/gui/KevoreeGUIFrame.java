@@ -16,8 +16,10 @@ package org.kevoree.platform.osgi.standalone.gui;
 import com.explodingpixels.macwidgets.HudWindow;
 import com.explodingpixels.macwidgets.IAppWidgetFactory;
 import com.explodingpixels.macwidgets.plaf.HudButtonUI;
+import org.kevoree.ContainerNode;
 import org.kevoree.ContainerRoot;
 import org.kevoree.KevoreeFactory;
+import org.kevoree.api.service.core.handler.ModelListener;
 import org.kevoree.platform.osgi.standalone.KevoreeBootStrap;
 
 import javax.swing.*;
@@ -32,21 +34,20 @@ public class KevoreeGUIFrame extends JFrame {
 
 	public static KevoreeGUIFrame singleton = null;
 
+    private KevoreeGuiHeader header = null;
+
 	public KevoreeGUIFrame (final ContainerRoot model) {
 		singleton = this;
+        URL urlSmallIcon = getClass().getClassLoader().getResource("kev-logo-full.png");
+        final ImageIcon smallIcon = new ImageIcon(urlSmallIcon);
+        this.setIconImage(smallIcon.getImage());
+
 
 //System.out.println(getClass().getClassLoader().getResource("."));
 
+        header = new KevoreeGuiHeader();
 
-		URL urlIcon = getClass().getClassLoader().getResource("kevoree-logo-full.png");
-		URL urlSmallIcon = getClass().getClassLoader().getResource("kev-logo-full.png");
-		ImageIcon topIIcon = new ImageIcon(urlIcon);
-		final ImageIcon smallIcon = new ImageIcon(urlSmallIcon);
-		this.setIconImage(smallIcon.getImage());
-		JLabel topImage = new JLabel(topIIcon);
-		topImage.setOpaque(true);
-		topImage.setBackground(new Color(63, 128, 187));
-		this.add(topImage, BorderLayout.NORTH);
+		this.add(header, BorderLayout.NORTH);
 
 		/*
 				File mavenDir = new File(System.getProperty("user.home") + "/.m2/repository");
@@ -164,13 +165,26 @@ public class KevoreeGUIFrame extends JFrame {
 			KevoreeGUIFrame.showShell(shell);
 
 			btA.start();
+
+           btA.getCore().registerModelListener(new ModelListener() {
+               @Override
+               public boolean preUpdate(ContainerRoot currentModel, ContainerRoot proposedModel) {
+                   return true;
+               }
+
+               @Override
+               public void modelUpdated() {
+                   for(ContainerNode node : btA.getCore().getLastModel().getNodesForJ()){
+                       if(node.getName().equals(System.getProperty("node.name"))){
+                           header.updateInfo(node);
+                       }
+                   }
+               }
+           });
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	}
-
-	private void startNode (ContainerRoot model, String nodeName) {
-
 	}
 
 	public static void showShell (JComponent shell) {
