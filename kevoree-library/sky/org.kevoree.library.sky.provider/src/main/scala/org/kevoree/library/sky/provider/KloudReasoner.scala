@@ -45,7 +45,6 @@ object KloudReasoner {
   def createProxy (groupName: String, nodeName: String, proxyPath: String, kloudModel: ContainerRoot, kevScriptEngineFactory: KevScriptEngineFactory): Option[ContainerRoot] = {
 
     val scriptBuilder = new StringBuilder()
-
     //find Web Server
     kloudModel.getNodes.find(n => n.getName == nodeName) match {
       case None => logger.debug("Any proxy can be added because there is no webserver to use"); None
@@ -91,6 +90,37 @@ object KloudReasoner {
     }
   }
 
+  def removeProxy (groupName: String, nodeName: String, modelHandlerService: KevoreeModelHandlerService, kevScriptEngineFactory: KevScriptEngineFactory, nbTry: Int): Boolean = {
+    val scriptBuilder = new StringBuilder()
+    val uuidModel = modelHandlerService.getLastUUIDModel
+
+    val requestChannelNameOption = KloudHelper.findChannel(groupName + "_proxy", "request", nodeName, uuidModel.getModel)
+    val responseChannelNameOption = KloudHelper.findChannel(groupName + "_proxy", "content", nodeName, uuidModel.getModel)
+
+    // bind Web Server with this proxy
+    scriptBuilder append "unbind " + groupName + "_proxy" + ".request@" + nodeName + " => " + requestChannelNameOption.get + "\n"
+    scriptBuilder append "unbind " + groupName + "_proxy" + ".content@" + nodeName + " => " + responseChannelNameOption.get + "\n"
+
+
+    scriptBuilder append "removeComponent " + groupName + "_proxy @ " + nodeName + "\n"
+
+    val kengine = kevScriptEngineFactory.createKevScriptEngine(uuidModel.getModel)
+    try {
+      kengine.append(scriptBuilder.toString())
+      modelHandlerService.atomicCompareAndSwapModel(uuidModel, kengine.interpret())
+      true
+    } catch {
+      case _@e => {
+        if (nbTry == 0) {
+          logger.debug("Unable to remove the component {}_proxy: ", groupName, e)
+          false
+        } else {
+          removeProxy(groupName, nodeName, modelHandlerService, kevScriptEngineFactory, nbTry - 1)
+        }
+      }
+    }
+  }
+
   def createGroup (groupName: String, nodeName: String, kloudModel: ContainerRoot, kevScriptEngineFactory: KevScriptEngineFactory, sshKey: String = ""): Option[ContainerRoot] = {
     kloudModel.getGroups.find(g => g.getName == groupName && g.getTypeDefinition.getName == "KloudPaaSNanoGroup") match {
       case Some(g) => Some(kloudModel)
@@ -123,6 +153,28 @@ object KloudReasoner {
             logger.debug("KevScript Error : ", e)
             None
           }
+        }
+      }
+    }
+  }
+
+  def removeGroup (groupName: String, modelHandlerService: KevoreeModelHandlerService, kevScriptEngineFactory: KevScriptEngineFactory, nbTry: Int): Boolean = {
+    val scriptBuilder = new StringBuilder()
+    val uuidModel = modelHandlerService.getLastUUIDModel
+    scriptBuilder append "removeGroup " + groupName + "\n"
+
+    val kengine = kevScriptEngineFactory.createKevScriptEngine(uuidModel.getModel)
+    try {
+      kengine.append(scriptBuilder.toString())
+      modelHandlerService.atomicCompareAndSwapModel(uuidModel, kengine.interpret())
+      true
+    } catch {
+      case _@e => {
+        if (nbTry == 0) {
+          logger.debug("Unable to remove the group {}: ", groupName, e)
+          false
+        } else {
+          removeGroup(groupName, modelHandlerService, kevScriptEngineFactory, nbTry - 1)
         }
       }
     }
@@ -288,7 +340,7 @@ object KloudReasoner {
         // define IP using selecting node to know what it the network used in this machine
         val ipOption = KloudHelper.selectIP(potentialParents(index), kloudModel)
         if (ipOption.isDefined) {
-          scriptBuilder append "network " + node.getName + " {\"KEVOREE.remote.node.ip\" = \"" + ipOption.get + "\" }\n"
+          scriptBuilder append "network " + node.getName + " {\"" + Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP + "\" = \"" + ipOption.get + "\" }\n"
         } else {
           logger.debug("Unable to select an IP for {}", node.getName)
         }
@@ -354,9 +406,7 @@ object KloudReasoner {
                   scriptBuilder append "updateDictionary " + groupName + " {port=\"" + port + "\"}@" + node.getName + "\n"
                   if (addressOption.isDefined) {
                     scriptBuilder append "updateDictionary " + groupName + " {ip=\"" + addressOption.get + "\"}@" + node.getName + "\n"
-                    scriptBuilder append "network " + node.getName + " {\"KEVOREE.remote.node.ip\" = \"" + addressOption.get + "\" }\n"
-                    scriptBuilder append
-                      "network " + node.getName + " {\"" + Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP + "\" = \"" + addressOption.get + "\"}\n"
+                    scriptBuilder append "network " + node.getName + " {\"" + Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP + "\" = \"" + addressOption.get + "\"}\n"
                   }
                 }
               }
@@ -558,8 +608,8 @@ object KloudReasoner {
   }
 
   /**
-     * Send the user model into the user nodes using the default groups that are set on the cleanModel
-     */
+   * Send the user model into the user nodes using the default groups that are set on the cleanModel
+   */
   def sendUserConfiguration (groupName: String, userModel: ContainerRoot, modelHandlerService: KevoreeModelHandlerService, kevScriptEngineFactory: KevScriptEngineFactory, nodeName: String) {
     //    val newUserModelOption = updateUserConfiguration(groupName, userModel, modelHandlerService, kevScriptEngineFactory)
     val newUserModelOption = Some(userModel)
@@ -573,23 +623,23 @@ object KloudReasoner {
             case Some(node) => true
           }).foreach {
             subNode =>
-                val ips: java.util.List[String] = KevoreePropertyHelper.getStringNetworkProperties(kloudModel, subNode.getName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP)
-                val portOption: Option[Integer] = KevoreePropertyHelper.getIntPropertyForGroup(kloudModel, groupName, "port", true, subNode.getName)
-                var PORT: Int = 8000
-                if (portOption.isDefined) {
-                  PORT = portOption.get
-                }
+              val ips: java.util.List[String] = KevoreePropertyHelper.getStringNetworkProperties(kloudModel, subNode.getName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP)
+              val portOption: Option[Integer] = KevoreePropertyHelper.getIntPropertyForGroup(kloudModel, groupName, "port", true, subNode.getName)
+              var PORT: Int = 8000
+              if (portOption.isDefined) {
+                PORT = portOption.get
+              }
 
-                var param = "";
-                if (!nodeName.equals("")) {
-                  param = "?nodesrc=" + nodeName;
-                }
+              var param = "";
+              if (!nodeName.equals("")) {
+                param = "?nodesrc=" + nodeName;
+              }
 
-                ips.forall {
-                  ip =>
-                    logger.debug("try to send model on url=>{}", "http://" + ip + ":" + PORT + "/model/current" + param)
-                    !KloudHelper.sendUserModel("http://" + ip + ":" + PORT + "/model/current" + param, newUserModelOption.get, 1)
-                }
+              ips.forall {
+                ip =>
+                  logger.debug("try to send model on url=>{}", "http://" + ip + ":" + PORT + "/model/current" + param)
+                  !KloudHelper.sendUserModel("http://" + ip + ":" + PORT + "/model/current" + param, newUserModelOption.get, 1)
+              }
           }
         }
       }

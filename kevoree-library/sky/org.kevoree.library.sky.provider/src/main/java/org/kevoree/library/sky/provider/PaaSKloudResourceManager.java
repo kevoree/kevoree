@@ -15,7 +15,11 @@ import org.slf4j.LoggerFactory;
 import scala.Option;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -44,7 +48,7 @@ public class PaaSKloudResourceManager extends ParentAbstractPage {
 
 	public KevoreeHttpResponse process (KevoreeHttpRequest request, KevoreeHttpResponse response) {
 		if (request != null) {
-			if (!request.getUrl().endsWith("/css/bootstrap.min.css")) {
+			if (!request.getUrl().endsWith("/css/bootstrap.min.css") && !request.getUrl().endsWith("/release")) {
 				if (request.getResolvedParams().get("model") != null && request.getResolvedParams().get("login") != null
 						&& request.getResolvedParams().get("password") != null && request.getResolvedParams().get("ssh_key") != null) {
 					// check authentication information
@@ -60,13 +64,12 @@ public class PaaSKloudResourceManager extends ParentAbstractPage {
 											.generateUnvalidSubmissionPageHtml(request.getUrl(), request.getResolvedParams().get("login"), result, this.getDictionary().get("urlpattern").toString()));
 						}
 					} else {
-						response.setContent(HTMLHelper.generateFailToLoginPageHtml(request.getUrl(), this.getDictionary().get("urlpattern").toString()));
+						response.setContent(HTMLHelper.generateFailToLoginPageHtml(request.getResolvedParams().get("login"), this.getDictionary().get("urlpattern").toString()));
 					}
 				} else {
 					response.setContent(HTMLHelper.generateSimpleSubmissionFormHtml(request.getUrl(), this.getDictionary().get("urlpattern").toString()));
 				}
-			} else {
-
+			} else if (request.getUrl().endsWith("/css/bootstrap.min.css")) {
 				try {
 					InputStream ins = this.getClass().getClassLoader().getResourceAsStream("css/bootstrap.min.css");
 					response.setContent(new String(convertStream(ins), "UTF-8"));
@@ -74,6 +77,18 @@ public class PaaSKloudResourceManager extends ParentAbstractPage {
 					ins.close();
 				} catch (Exception e) {
 					logger.error("", e);
+				}
+			} else if (request.getUrl().endsWith("/release")) {
+				if (request.getResolvedParams().get("login") != null && request.getResolvedParams().get("password") != null) {
+					// check authentication information
+					if (InriaLdap.testLogin(request.getResolvedParams().get("login"), request.getResolvedParams().get("password"))) {
+						release(request.getResolvedParams().get("login"));
+						response.setContent(HTMLHelper.generateReleaseResponse(request.getResolvedParams().get("login"), this.getDictionary().get("urlpattern").toString()));
+					} else {
+						response.setContent(HTMLHelper.generateFailToLoginPageHtml(request.getResolvedParams().get("login"), this.getDictionary().get("urlpattern").toString()));
+					}
+				} else {
+					response.setContent(HTMLHelper.generateReleaseForm(request.getUrl(), this.getDictionary().get("urlpattern").toString()));
 				}
 			}
 		}
@@ -99,6 +114,34 @@ public class PaaSKloudResourceManager extends ParentAbstractPage {
 			// else we create this new one
 			return processNew(model, login, sshKey);
 		}
+	}
+
+	private void release (String login) {
+		// send an empty model on the group => all nodes will be removed
+		Option<String> masterNodeOption = KevoreePropertyHelper.getStringPropertyForGroup(this.getModelService().getLastModel(), login, "masterNode", false, "");
+		if (masterNodeOption.isDefined()) {
+			try {
+				URL url = new URL(masterNodeOption.get() + "/release");
+				URLConnection conn = url.openConnection();
+				conn.setConnectTimeout(2000);
+				InputStream stream = conn.getInputStream();
+				while (stream.read() != -1) {
+				}
+				stream.close();
+				logger.debug("Try to stop the group");
+				if (!KloudReasoner.removeGroup(login, getModelService(), getKevScriptEngineFactory(), 5)) {
+					logger.debug("Unable to remove {}", login);
+				} else if (!KloudReasoner.removeProxy(login, getNodeName(), getModelService(), getKevScriptEngineFactory(), 5)) {
+					logger.debug("Unable to remove {}_proxy", login);
+				}
+
+			} catch (MalformedURLException ignored) {
+			} catch (IOException ignored) {
+			}
+		} else {
+			logger.debug("Unable enough information about {} configuration to remove it", login);
+		}
+
 	}
 
 	private String processNew (ContainerRoot model, String login, String sshKey) {
