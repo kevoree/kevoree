@@ -180,7 +180,7 @@ class KevoreeJarClassLoader extends JarClassLoader {
 
   override def getResource(s: String): URL = {
     //logger.debug("GetResource=" + s)
-    internal_getResource(s)
+    findResource(s)
   }
 
   def internal_getResource(s: String): URL = {
