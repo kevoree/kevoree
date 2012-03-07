@@ -26,11 +26,14 @@ import scala.collection.JavaConversions._
 import javax.annotation.processing.ProcessingEnvironment
 import javax.lang.model.element.ExecutableElement
 import javax.tools.Diagnostic.Kind
+import org.kevoree.framework.annotation.processor.visitor.{ DataTypeVisitor}
 
 
 trait PortMappingProcessor {
 
   var starMethod: String = ""
+  var starParameters : List[org.kevoree.TypedElement] = List()
+
 
   def doAnnotationPostProcess(componentType: ComponentType) {
     if (starMethod != "") {
@@ -40,6 +43,7 @@ trait PortMappingProcessor {
             val ptREFmapping = KevoreeFactory.eINSTANCE.createPortTypeMapping
             ptREFmapping.setBeanMethodName(starMethod)
             ptREFmapping.setServiceMethodName("process")
+            ptREFmapping.setParamTypes(starParameters.map(tb => tb.getName).mkString(","))
             pref.addMappings(ptREFmapping)
           }
       }
@@ -75,11 +79,13 @@ trait PortMappingProcessor {
           case "*" => {
             if (starMethod == "") {
               starMethod = methoddef.getSimpleName.toString
+              starParameters = List()
 
               methoddef.getParameters.foreach{ parameters =>
-                println("->"+parameters.getClass.getName.toString)
+                val dtv = new DataTypeVisitor
+                parameters.asType().accept(dtv,parameters.asType)
+                starParameters = starParameters ++ List(dtv.getDataType())
               }
-
 
             } else {
               val message: String = "[PortMappingProcessor]:" + componentType.getBean + " declares a severals * mapping, but only one * is accepted. Process Exit.";
