@@ -72,6 +72,7 @@ public class TinyKCL {
         }
         dexWriter.flush();
         dexWriter.close();
+        st.close();
         File dexOptStoragePath = ctx.getDir("odex" + System.currentTimeMillis(), Context.MODE_WORLD_WRITEABLE);
         dexOptStoragePath.mkdirs();
         TinyKCLDexClassLoader c = new TinyKCLDexClassLoader(dexInternalStoragePath.getAbsolutePath(), dexOptStoragePath.getAbsolutePath(), null, parentCL,clusterKCL);

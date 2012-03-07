@@ -1,12 +1,8 @@
 package org.kevoree.library.android.agrapher;
 
 import android.graphics.Color;
-import android.view.View;
-import android.view.ViewGroup.LayoutParams;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
-
-import org.achartengine.GraphicalView;
+import org.archartengine.GraphicalView;
 import org.kevoree.android.framework.helper.UIServiceHandler;
 import org.kevoree.android.framework.service.KevoreeAndroidService;
 import org.kevoree.annotation.*;
