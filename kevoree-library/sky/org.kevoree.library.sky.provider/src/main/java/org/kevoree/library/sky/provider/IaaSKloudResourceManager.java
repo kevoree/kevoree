@@ -62,7 +62,7 @@ public class IaaSKloudResourceManager extends AbstractComponentType implements M
 				modelUpdated();
 			}
 		} else {
-			logger.error("Unable to configure child nodes");
+			logger.debug("Unable to configure child nodes");
 		}
 	}
 }

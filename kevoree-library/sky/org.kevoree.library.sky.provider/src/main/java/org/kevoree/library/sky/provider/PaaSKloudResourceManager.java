@@ -5,6 +5,7 @@ import org.kevoree.Group;
 import org.kevoree.annotation.ComponentType;
 import org.kevoree.annotation.Library;
 import org.kevoree.api.service.core.handler.UUIDModel;
+import org.kevoree.framework.KevoreePropertyHelper;
 import org.kevoree.framework.KevoreeXmiHelper;
 import org.kevoree.library.javase.webserver.KevoreeHttpRequest;
 import org.kevoree.library.javase.webserver.KevoreeHttpResponse;
@@ -106,10 +107,6 @@ public class PaaSKloudResourceManager extends ParentAbstractPage {
 		// we create a group with the login of the user
 		Option<ContainerRoot> newKloudModelOption = KloudReasoner.createGroup(login, this.getNodeName(), uuidModel.getModel(), getKevScriptEngineFactory(), sshKey);
 		if (newKloudModelOption.isDefined()) {
-			// create proxy to the group
-//			KloudReasoner.createProxy(login, this.getNodeName(), "/" + login, newKloudModelOption.get(), getKevScriptEngineFactory());
-
-//			if (newKloudModelOption.isDefined()) {
 
 			Option<Group> groupOption = KloudHelper.getGroup(login, newKloudModelOption.get());
 			if (groupOption.isDefined()) {
@@ -120,19 +117,31 @@ public class PaaSKloudResourceManager extends ParentAbstractPage {
 					return processNew(model, login, sshKey);
 				}
 				// push the user model to this group on the master fragment
-				Option<String> addressOption = KloudHelper.pushOnMaster(model, login, this.getNodeName(), newKloudModelOption.get());
-				if (addressOption.isDefined()) {
-					if (createProxy(login, 5)) {
-						return addressOption.get(); // TODO maybe find the proxy address
+				Option<ContainerRoot> newUserModelOption = KloudReasoner.updateUserConfiguration(login, model, this.getModelService(), this.getKevScriptEngineFactory());
+
+				if (newUserModelOption.isDefined()) {
+					Option<String> masterNodeOption = KevoreePropertyHelper.getStringPropertyForGroup(newKloudModelOption.get(), login, "masterNode", false, "");
+					if (masterNodeOption.isDefined()) {
+						Option<String> addressOption = KloudHelper.pushOnMaster(newUserModelOption.get(), login, masterNodeOption.get());
+						if (addressOption.isDefined()) {
+							if (createProxy(login, 5)) {
+								return addressOption.get(); // TODO maybe find the proxy address
+							} else {
+								logger.error("Unable to add the proxy for the user {}", login);
+								return "Unable to add the proxy for the user " + login;
+							}
+						} else {
+							logger.debug("Unable to commit the user model on nodes");
+							return "Unable to commit the user model on nodes";
+						}
 					} else {
-						logger.error("Unable to add the proxy for the user {}", login);
-						return "Unable to add the proxy for the user " + login;
+						logger.debug("Unable to find masterNode property on group configuration");
+						return "Unable to find masterNode property on group configuration"; // must never appear
 					}
 				} else {
-					logger.debug("Unable to commit the user model on nodes");
-					return "Unable to commit the user model on nodes";
+					logger.debug("Unable to update the user configuration by setting Kloud specific properties");
+					return "Unable to update the user configuration by setting Kloud specific properties";
 				}
-
 			} else {
 				logger.debug("Unable to find the user group for {}", login);
 				return "Unable to find the user group for {}" + login;
@@ -151,7 +160,8 @@ public class PaaSKloudResourceManager extends ParentAbstractPage {
 		try {
 			this.getModelService().atomicCompareAndSwapModel(uuidModel, kloudModelOption.get());
 			return true;
-		} catch (Exception e) {}
+		} catch (Exception e) {
+		}
 		return nbTry > 0 && createProxy(login, nbTry - 1);
 	}
 
