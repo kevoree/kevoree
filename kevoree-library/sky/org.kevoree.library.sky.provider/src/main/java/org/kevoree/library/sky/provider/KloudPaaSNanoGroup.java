@@ -18,6 +18,7 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.ExecutorService;
@@ -58,11 +59,26 @@ public class KloudPaaSNanoGroup extends AbstractGroupType {
 		poolUpdate = Executors.newSingleThreadExecutor();
 		port = Integer.parseInt(this.getDictionary().get("port").toString());
 		String address = this.getDictionary().get("ip").toString();
+		logger.info("starting HTTP server on {}:{}", address, port);
+
 		server = new NanoHTTPD(new InetSocketAddress(InetAddress.getByName(address), port)) {
 
 			public Response serve (String uri, String method, Properties header, Properties parms, Properties files, InputStream body) {
+				System.out.println(uri);
 				if (method.equals("POST")) {
-					final ContainerRoot model = KevoreeXmiHelper.loadStream(body);
+//					String srcNodeName = "";
+					Boolean externalSender = true;
+					Enumeration e = parms.propertyNames();
+					while (e.hasMoreElements()) {
+						String value = (String) e.nextElement();
+						if (value.endsWith("nodesrc")) {
+//							srcNodeName = parms.getProperty(value);
+							externalSender = false;
+							// we presume that if nodesrc is define so a node have set it and maybe the master node but as the master node doesn't appear on this local model, we cannot check the src
+						}
+					}
+
+					ContainerRoot model = KevoreeXmiHelper.loadStream(body);
 
 					// looking if this instance is on top of a IaaS node or a PaaS node (PJavaSeNode)
 					if (KloudHelper.isIaaSNode(getModelService().getLastModel(), getName(), getNodeName())) {
@@ -72,9 +88,11 @@ public class KloudPaaSNanoGroup extends AbstractGroupType {
 							if (userModel == null) {
 								userModel = KevoreeFactory.createContainerRoot();
 							}
-							Option<ContainerRoot> cleanedModelOption = KloudReasoner.processDeployment(model, userModel, getModelService(), getKevScriptEngineFactory(), getName());
-							if (cleanedModelOption.isDefined()) {
+							boolean deploymentOK = KloudReasoner.processDeployment(model, userModel, getModelService(), getKevScriptEngineFactory(), getName());
+							if (deploymentOK) {
 								userModel = model;
+								// update user node that are already started
+								KloudReasoner.sendUserConfiguration(getName(), model, getModelService(), getKevScriptEngineFactory(), getNodeName());
 								return new NanoHTTPD.Response(HTTP_OK, MIME_HTML, "<ack nodeName=\"" + getNodeName() + "\" />");
 							}
 							return new NanoHTTPD.Response(HTTP_OK, MIME_HTML, "<nack nodeName=\"" + getNodeName() + "\" />");
@@ -83,60 +101,61 @@ public class KloudPaaSNanoGroup extends AbstractGroupType {
 							if (cleanModelOption.isDefined()) {
 								logger.debug("An update will be done!");
 								// there is no new node so we simply push model on each PaaSNode
-								if (KloudReasoner.sendUserConfiguration(getName(), cleanModelOption.get(), model, getModelService(), getKevScriptEngineFactory())) {
-									userModel = model;
-									return new NanoHTTPD.Response(HTTP_OK, MIME_HTML, "<ack nodeName=\"" + getNodeName() + "\" />");
-								}
+								KloudReasoner.sendUserConfiguration(getName(), model, getModelService(), getKevScriptEngineFactory(), getNodeName());
+								userModel = model;
+								return new NanoHTTPD.Response(HTTP_OK, MIME_HTML, "<ack nodeName=\"" + getNodeName() + "\" />");
 							}
 							new NanoHTTPD.Response(HTTP_OK, MIME_HTML, "<nack nodeName=\"" + getNodeName() + "\" />");
 						}
 					} else if (KloudHelper.isPaaSNode(getModelService().getLastModel(), getName(), getNodeName())) {
 						// if this instance is on top of PaaS node then we deploy the model on the node
-						logger.debug("get new model from /model/current on {}", KloudPaaSNanoGroup.this.getName());
 						getModelService().updateModel(model);
-						// forward model to masterNode
-						pushInternals(model, selectMasterNode(getDictionary().get("masterNode").toString()));
+						if (externalSender) {
+							logger.debug("Forward model to master node");
+							// forward model to masterNode
+							KloudHelper.pushOnMaster(model, getName(), getDictionary().get("masterNode").toString() + "?nodesrc=" + getNodeName());
+						}
 						return new NanoHTTPD.Response(HTTP_OK, MIME_HTML, "<ack nodeName=\"" + getNodeName() + "\" />");
 					} else {
 						logger.debug("Unable to manage this kind of node as a Kloud node");
 						return new NanoHTTPD.Response(HTTP_OK, MIME_HTML, "<nack nodeName=\"" + getNodeName() + "\" />");
 					}
 				} else if (method.equals("GET")) {
-					String msg;
-					if (KloudHelper.isIaaSNode(getModelService().getLastModel(), getName(), getNodeName())) {
-						Option<ContainerRoot> userModelOption = KloudReasoner.updateUserConfiguration(getName(), userModel, getModelService(), getKevScriptEngineFactory());
-						if (userModelOption.isDefined()) {/*
-							userModelOption = KloudReasoner.setAccesPointConfiguration(getName(), userModel, getModelService(), getKevScriptEngineFactory());
-							if (userModelOption.isDefined()) {*/
-							msg = KevoreeXmiHelper.saveToString(userModelOption.get(), false);
+					if (uri.endsWith("/model/current")) {
+						String msg;
+						if (KloudHelper.isIaaSNode(getModelService().getLastModel(), getName(), getNodeName())) {
+							Option<ContainerRoot> userModelOption = KloudReasoner.updateUserConfiguration(getName(), userModel, getModelService(), getKevScriptEngineFactory());
+							if (userModelOption.isDefined()) {
+								msg = KevoreeXmiHelper.saveToString(userModelOption.get(), false);
+							} else {
+								logger.debug("Unable to find a valid user model to send it");
+								msg = "Unable to find a valid user model to send it";
+							}
+						} else if (KloudHelper.isPaaSNode(getModelService().getLastModel(), getName(), getNodeName())) {
+							// if this instance is on top of PaaS node then we deploy the model on the node
+							msg = KevoreeXmiHelper.saveToString(getModelService().getLastModel(), false);
 						} else {
-							logger.debug("Unable to find a valid user model to send it");
-							msg = "Unable to find a valid user model to send it";
+							logger.debug("Unable to manage this kind of node as a Kloud node");
+							msg = "Unable to manage this kind of node as a Kloud node";
 						}
-						/*} else {
-							logger.debug("Unable to find a valid user model to send it due to unable access point configuration");
-							msg = "Unable to find a valid user model to send it due to unable access point configuration";
-						}*/
-					} else if (KloudHelper.isPaaSNode(getModelService().getLastModel(), getName(), getNodeName())) {
-						// if this instance is on top of PaaS node then we deploy the model on the node
-						msg = KevoreeXmiHelper.saveToString(getModelService().getLastModel(), false);
-					} else {
-						logger.debug("Unable to manage this kind of node as a Kloud node");
-						msg = "Unable to manage this kind of node as a Kloud node";
+						return new NanoHTTPD.Response(HTTP_OK, MIME_HTML, msg);
+					} else if (uri.endsWith("/release")) {
+						if (KloudHelper.isIaaSNode(getModelService().getLastModel(), getName(), getNodeName())) {
+							KloudReasoner.processDeployment(KevoreeFactory.createContainerRoot(), userModel, getModelService(), getKevScriptEngineFactory(), getName());
+							return new NanoHTTPD.Response(HTTP_OK, MIME_HTML, "");
+						}
 					}
-					return new NanoHTTPD.Response(HTTP_OK, MIME_HTML, msg);
 				}
 				return new NanoHTTPD.Response(HTTP_BADREQUEST, MIME_XML, "ONLY GET OR POST METHOD SUPPORTED");
 			}
 		};
-
-		logger.info("Rest service start on port ->" + port);
 	}
 
 	@Stop
 	public void stopRestGroup () {
 		poolUpdate.shutdownNow();
 		server.stop();
+
 	}
 
 	@Update
@@ -155,9 +174,13 @@ public class KloudPaaSNanoGroup extends AbstractGroupType {
 		} else if (userModel == null) {
 			if (KloudHelper.isPaaSNode(this.getModelService().getLastModel(), this.getName(), this.getNodeName())) {
 				// pull the model to the master node
-				userModel = pull(selectMasterNode(this.getDictionary().get("masterNode").toString()));
-				logger.debug("Try to apply a new model on PaaSNode");
-				this.getModelService().atomicUpdateModel(userModel);
+				userModel = pullModel(this.getDictionary().get("masterNode").toString());
+				if (userModel != null) {
+					logger.debug("Try to apply a new model on PaaSNode coming from {}", this.getDictionary().get("masterNode").toString());
+					this.getModelService().atomicUpdateModel(userModel);
+				} else {
+					logger.warn("Unable to get user model on master node");
+				}
 			}
 		}
 	}
@@ -170,41 +193,26 @@ public class KloudPaaSNanoGroup extends AbstractGroupType {
 		if (portOption.isDefined()) {
 			PORT = portOption.get();
 		}
+		String param = "";
+		if (!getNodeName().equals("")) {
+			param = "?nodesrc=" + getNodeName();
+		}
 		boolean sent = false;
 		for (String ip : ips) {
-			logger.debug("try to send model on url=>" + "http://" + ip + ":" + PORT + "/model/current");
-			if (sendModel(model, "http://" + ip + ":" + PORT + "/model/current")) {
+			logger.debug("try to send model on url=>" + "http://" + ip + ":" + PORT + "/model/current" + param);
+			if (sendModel(model, "http://" + ip + ":" + PORT + "/model/current" + param)) {
 				sent = true;
 				break;
 			}
 		}
 		if (!sent) {
-			logger.debug("try to send model on url=>" + "http://127.0.0.1:" + PORT + "/model/current");
-			if (!sendModel(model, "http://127.0.0.1:" + PORT + "/model/current")) {
-				logger.debug("Unable to push a model on " + targetNodeName);
-			}
-		}
-	}
-
-	private void pushInternals (ContainerRoot model, String targetNodeName) {
-		List<String> ips = KevoreePropertyHelper.getStringNetworkProperties(this.getModelService().getLastModel(), targetNodeName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP());
-		Option<Integer> portOption = KevoreePropertyHelper.getIntPropertyForGroup(this.getModelService().getLastModel(), this.getName(), "port", true, targetNodeName);
-		int PORT = 8000;
-		if (portOption.isDefined()) {
-			PORT = portOption.get();
-		}
-		boolean sent = false;
-		for (String ip : ips) {
-			logger.debug("try to send model on url=>" + "http://" + ip + ":" + PORT + "/model/current");
-			if (sendModel(model, "http://" + ip + ":" + PORT + "/model/current")) {
-				sent = true;
-				break;
-			}
-		}
-		if (!sent) {
-			logger.debug("try to send model on url=>" + "http://127.0.0.1:" + PORT + "/model/current");
-			if (!sendModel(model, "http://127.0.0.1:" + PORT + "/model/current")) {
-				logger.debug("Unable to push a model on " + targetNodeName);
+			logger.debug("try to send model on url=>" + "http://127.0.0.1:" + PORT + "/model/current" + param);
+			if (!sendModel(model, "http://127.0.0.1:" + PORT + "/model/current" + param)) {
+				logger.debug("Unable to push a model on {}", targetNodeName);
+				logger.debug("try to send model using master node property");
+				if (!sendModel(model, this.getDictionary().get("masterNode").toString() + param)) {
+					logger.debug("Unable to send model using master node property");
+				}
 			}
 		}
 	}
@@ -244,14 +252,19 @@ public class KloudPaaSNanoGroup extends AbstractGroupType {
 		if (portOption.isDefined()) {
 			PORT = portOption.get();
 		}
+		String param = "";
+		if (getNodeName().equals("")) {
+			param = "?nodesrc=" + getNodeName();
+		}
+
 		for (String ip : ips) {
-			logger.debug("try to pull model on url=>" + "http://" + ip + ":" + PORT + "/model/current");
-			ContainerRoot model = pullModel("http://" + ip + ":" + PORT + "/model/current");
+			logger.debug("try to pull model on url=>" + "http://" + ip + ":" + PORT + "/model/current" + param);
+			ContainerRoot model = pullModel("http://" + ip + ":" + PORT + "/model/current" + param);
 			if (model != null) {
 				return model;
 			}
 		}
-		ContainerRoot model = pullModel("http://127.0.0.1:" + PORT + "/model/current");
+		ContainerRoot model = pullModel("http://127.0.0.1:" + PORT + "/model/current" + param);
 		if (model == null) {
 			logger.debug("Unable to pull a model on " + targetNodeName);
 			return null;
@@ -270,10 +283,6 @@ public class KloudPaaSNanoGroup extends AbstractGroupType {
 		} catch (IOException e) {
 			return null;
 		}
-	}
-
-	private String selectMasterNode (String masterNodeList) {
-		return masterNodeList.split(",")[0];
 	}
 
 }

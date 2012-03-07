@@ -28,7 +28,7 @@ import Art2UIAspects._
 case class ComponentAspect(self : ComponentInstance) {
 
   def removeModelAndUI(kernel : KevoreeUIKernel)={
-    var node : ContainerNode = self.eContainer.asInstanceOf[ContainerNode]
+    val node : ContainerNode = self.eContainer.asInstanceOf[ContainerNode]
     var root : ContainerRoot = self.eContainer.eContainer.asInstanceOf[ContainerRoot]
 
     //BINDING
