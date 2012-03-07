@@ -59,7 +59,7 @@ public abstract class AbstractKevoreeCamelComponentType extends AbstractComponen
     protected abstract void buildRoutes(RouteBuilder rb);
 
     @Port(name = "*")
-    public void globalInput(Object o){
+    public void globalInput(Object o,String pname){
         System.out.println("WTF "+o);
     }
 
