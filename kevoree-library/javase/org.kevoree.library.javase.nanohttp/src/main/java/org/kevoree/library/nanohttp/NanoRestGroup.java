@@ -43,6 +43,7 @@ public class NanoRestGroup extends AbstractGroupType {
 	private NanoHTTPD server = null;
 	private ModelSerializer modelSaver = new ModelSerializer();
 	private KevoreeModelHandlerService handler = null;
+	private boolean starting;
 
 	ExecutorService poolUpdate = Executors.newSingleThreadExecutor();
 
@@ -114,8 +115,9 @@ public class NanoRestGroup extends AbstractGroupType {
 			}
 		};
 
-		logger.info("Rest service start on port ->" + port);
-		NodeNetworkHelper.updateModelWithNetworkProperty(this);
+		//logger.info("Rest service start on port ->" + port);
+		starting = true;
+
 	}
 
 	@Stop
@@ -126,6 +128,10 @@ public class NanoRestGroup extends AbstractGroupType {
 
 	@Override
 	public void triggerModelUpdate () {
+		if (starting) {
+			NodeNetworkHelper.updateModelWithNetworkProperty(this);
+			starting = false;
+		}
 		Group group = getModelElement();
 		for (ContainerNode subNode : group.getSubNodesForJ()) {
 			if (!subNode.getName().equals(this.getNodeName())) {
