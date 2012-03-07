@@ -17,7 +17,7 @@ import org.kevoree.library.camel.framework.AbstractKevoreeCamelComponentType;
 public class CamelLogger extends AbstractKevoreeCamelComponentType {
 
     protected void buildRoutes(RouteBuilder rb) {
-
+        rb.from("kport:input").to("log:" + getName());
     }
 
 }

@@ -6,6 +6,8 @@ import org.apache.camel.impl.DefaultCamelContext;
 import org.kevoree.annotation.*;
 import org.kevoree.framework.AbstractComponentType;
 
+import java.util.HashMap;
+
 /**
  * Created by IntelliJ IDEA.
  * User: duke
@@ -27,11 +29,13 @@ public abstract class AbstractKevoreeCamelComponentType extends AbstractComponen
         return new DefaultCamelContext();
     }
 
+    private KevoreePortComponent cc = null;
+
     @Start
     public void start() throws Exception {
         context = buildCamelContext();
         context.setClassResolver(new ClassLoaderClassResolver(this.getClass().getClassLoader()));
-        KevoreePortComponent cc = new KevoreePortComponent(this);
+        cc = new KevoreePortComponent(this);
         context.addComponent("kport",cc);
         RouteBuilder rb = new RouteBuilder() {
             public void configure() {
@@ -47,6 +51,7 @@ public abstract class AbstractKevoreeCamelComponentType extends AbstractComponen
         if (context != null) {
             context.stop();
         }
+        cc = null;
         context = null;
     }
 
@@ -60,7 +65,9 @@ public abstract class AbstractKevoreeCamelComponentType extends AbstractComponen
 
     @Port(name = "*")
     public void globalInput(Object o,String pname){
-        System.out.println("WTF "+o);
+        if(cc.consumerInput.containsKey(pname)){
+            cc.consumerInput.get(pname).forwardMessage(o);
+        }
     }
 
 }

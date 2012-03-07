@@ -4,6 +4,7 @@ import org.apache.camel.Endpoint;
 import org.apache.camel.impl.DefaultComponent;
 import org.kevoree.framework.AbstractComponentType;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -15,6 +16,7 @@ import java.util.Map;
 public class KevoreePortComponent extends DefaultComponent {
 
     AbstractComponentType c = null;
+    public HashMap<String,KevoreePortConsumer> consumerInput = new HashMap<String,KevoreePortConsumer>();
 
     public KevoreePortComponent(AbstractComponentType ct){
         c = ct;
@@ -22,6 +24,6 @@ public class KevoreePortComponent extends DefaultComponent {
     
     @Override
     protected Endpoint createEndpoint(String uri, String remaining, Map<String, Object> parameters) throws Exception {
-        return new KevoreePortEndpoint(c,remaining);
+        return new KevoreePortEndpoint(c,remaining,this);
     }
 }
