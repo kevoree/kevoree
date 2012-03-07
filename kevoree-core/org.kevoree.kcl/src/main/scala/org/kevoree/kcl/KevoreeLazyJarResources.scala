@@ -132,7 +132,7 @@ class KevoreeLazyJarResources extends ClasspathResources {
         if (!jarEntry.isDirectory) {
           var filtered = false
           if (baseurl != null && baseurl.toString.contains("frascati-component-factory-juliac")) {
-            print("found in "+jarEntry.getName)
+            println("found in "+jarEntry.getName)
           }
           if (parentKCL.get() != null) {
             parentKCL.get().getSpecialLoaders.find(r => jarEntry.getName.endsWith(r.getExtension)) match {
@@ -177,7 +177,10 @@ class KevoreeLazyJarResources extends ClasspathResources {
                   jarContentURL.put(jarEntry.getName, new URL(key_url))
                 } else {
                   if (!detectedResourcesURL.containsKey(jarEntry.getName)) {
+                    println("pass par la "  +  jarEntry.getName + " " +  key_url+ " "  + detectedResourcesURL.size())
                     detectedResourcesURL.put(jarEntry.getName, new ArrayList[URL]())
+                    println("pass par la "  +  jarEntry.getName + " " +  key_url+ " " + detectedResourcesURL.size())
+
                   }
                   detectedResourcesURL.get(jarEntry.getName).add(new URL(key_url))
                 }
@@ -195,7 +198,9 @@ class KevoreeLazyJarResources extends ClasspathResources {
                   if (jarEntry.getName.endsWith(".class")) {
                     jarEntryContents.put(jarEntry.getName, out.toByteArray)
                   } else {
+
                     detectedResources.put(new URL(key_url), out.toByteArray)
+
                   }
                 }
               }
@@ -206,7 +211,7 @@ class KevoreeLazyJarResources extends ClasspathResources {
       }
     } catch {
       case e: IOException => new JclException(e)
-      case e: NullPointerException =>
+      case e: NullPointerException => e.printStackTrace()
     } finally {
       if (jis != null)
         try {

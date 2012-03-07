@@ -248,6 +248,7 @@ class KevoreeJarClassLoader extends JarClassLoader {
   }
 
   def internal_getResource(s: String): URL = {
+
     if (classpathResources.asInstanceOf[KevoreeLazyJarResources].containResource(s)) {
       if (classpathResources.asInstanceOf[KevoreeLazyJarResources].getResourceURL(s).toString.startsWith("file:kclstream:")) {
         val cleanName = if (s.contains("/")) {
@@ -266,6 +267,8 @@ class KevoreeJarClassLoader extends JarClassLoader {
         classpathResources.asInstanceOf[KevoreeLazyJarResources].getResourceURL(s)
       }
     } else {
+      logger.debug("getResource not found null=>" + s + " in " + classpathResources.asInstanceOf[KevoreeLazyJarResources].getClass)
+
       logger.debug("getResource not found null=>" + s + " in " + classpathResources.asInstanceOf[KevoreeLazyJarResources].getLastLoadedJar)
       null
     }
