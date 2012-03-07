@@ -60,7 +60,11 @@ class FrascatiRuntime extends Actor {
 
               logger.info("GetResss==" + p1)
 
+              //val res = classOf[FrascatiNode].getClassLoader.getResources(p1)
+
+              classOf[FrascatiNode].getClassLoader.findResources(p1)
               val res = classOf[FrascatiNode].getClassLoader.getResources(p1)
+
 
 
               res
