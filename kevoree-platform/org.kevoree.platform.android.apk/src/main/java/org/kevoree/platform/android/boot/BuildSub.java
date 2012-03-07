@@ -39,7 +39,6 @@ public class BuildSub implements Runnable{
         this.clusterKCL = clusterKCL;
     }
 
-
     @Override
     public void run() {
         BufferedOutputStream dexWriter = null;

@@ -15,6 +15,7 @@ package org.kevoree.platform.android.boot;
 
 import android.content.Context;
 import android.util.Log;
+
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -28,7 +29,8 @@ import java.util.concurrent.TimeUnit;
 public class TinyKCL {
 
     private TinyClusterKCLDexClassLoader clusterKCL = new TinyClusterKCLDexClassLoader();
-
+    private int waitTime =25;
+    private  ExecutorService pool;
 
     public TinyClusterKCLDexClassLoader getClusterKCL() {
         return clusterKCL;
@@ -36,9 +38,8 @@ public class TinyKCL {
 
     public void start(/*Activity act,*/Context ctx,ClassLoader parentCL)
     {
-        int waitTime =25;
         //INIT BOOT SEQUENCE
-        ExecutorService pool = Executors.newFixedThreadPool(10);
+        pool = Executors.newFixedThreadPool(10);
         pool.execute(new BuildSub(ctx,parentCL,"scala.library.android.actor",clusterKCL));
         pool.execute(new BuildSub(ctx,parentCL,"scala.library.android.base",clusterKCL));
         pool.execute(new BuildSub(ctx,parentCL,"scala.library.android.collection.base",clusterKCL));
@@ -49,6 +50,9 @@ public class TinyKCL {
         pool.execute(new BuildSub(ctx,parentCL,"scala.library.android.util",clusterKCL));
         pool.execute(new BuildSub(ctx,parentCL,"org.kevoree.platform.android.core",clusterKCL));
         pool.execute(new BuildSub(ctx,parentCL,"org.kevoree.tools.aether.framework.android",clusterKCL));
+    }
+
+    public  void waitExecutor(){
         try
         {
             Thread.sleep(waitTime);
