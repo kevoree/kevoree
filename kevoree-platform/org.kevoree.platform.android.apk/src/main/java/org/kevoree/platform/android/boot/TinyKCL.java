@@ -14,7 +14,10 @@
 package org.kevoree.platform.android.boot;
 
 import android.content.Context;
-import java.io.*;
+import android.util.Log;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created with IntelliJ IDEA.
@@ -26,58 +29,38 @@ public class TinyKCL {
 
     private TinyClusterKCLDexClassLoader clusterKCL = new TinyClusterKCLDexClassLoader();
 
+
     public TinyClusterKCLDexClassLoader getClusterKCL() {
         return clusterKCL;
     }
 
-    public void start(/*Activity act,*/Context ctx,ClassLoader parentCL){
-        try {
-            buildSub(ctx,parentCL,"scala.library.android.actor");
-            buildSub(ctx,parentCL,"scala.library.android.base");
-            buildSub(ctx,parentCL,"scala.library.android.collection.base");
-            buildSub(ctx,parentCL,"scala.library.android.collection.immutable");
-            buildSub(ctx,parentCL,"scala.library.android.collection.mutable");
-            buildSub(ctx,parentCL,"scala.library.android.collection.parallel");
-            buildSub(ctx,parentCL,"scala.library.android.runtime");
-            buildSub(ctx,parentCL,"scala.library.android.util");
-            buildSub(ctx,parentCL,"org.kevoree.platform.android.core");
-            buildSub(ctx,parentCL,"org.kevoree.tools.aether.framework.android");
-
-            //INIT BOOT SEQUENCE
-
-
-        } catch (IOException e) {
-            e.printStackTrace();
+    public void start(/*Activity act,*/Context ctx,ClassLoader parentCL)
+    {
+        int waitTime =25;
+        //INIT BOOT SEQUENCE
+        ExecutorService pool = Executors.newFixedThreadPool(10);
+        pool.execute(new BuildSub(ctx,parentCL,"scala.library.android.actor",clusterKCL));
+        pool.execute(new BuildSub(ctx,parentCL,"scala.library.android.base",clusterKCL));
+        pool.execute(new BuildSub(ctx,parentCL,"scala.library.android.collection.base",clusterKCL));
+        pool.execute(new BuildSub(ctx,parentCL,"scala.library.android.collection.immutable",clusterKCL));
+        pool.execute(new BuildSub(ctx,parentCL,"scala.library.android.collection.mutable",clusterKCL));
+        pool.execute(new BuildSub(ctx,parentCL,"scala.library.android.collection.parallel",clusterKCL));
+        pool.execute(new BuildSub(ctx,parentCL,"scala.library.android.runtime",clusterKCL));
+        pool.execute(new BuildSub(ctx,parentCL,"scala.library.android.util",clusterKCL));
+        pool.execute(new BuildSub(ctx,parentCL,"org.kevoree.platform.android.core",clusterKCL));
+        pool.execute(new BuildSub(ctx,parentCL,"org.kevoree.tools.aether.framework.android",clusterKCL));
+        try
+        {
+            Thread.sleep(waitTime);
+            pool.shutdown();
+            pool.awaitTermination(waitTime, TimeUnit.SECONDS);
+        } catch (InterruptedException ignored)
+        {
+            Log.e("TinyKCL ExecutorService", ignored.getMessage());
         }
     }
 
     public void stop(){
 
     }
-
-    public void buildSub(Context ctx,ClassLoader parentCL,String name) throws IOException {
-
-        InputStream st = this.getClass().getClassLoader().getResourceAsStream("boot/"+name+"/classes.dex");
-        String cleanName = System.currentTimeMillis() + name.replaceAll(File.separator, "_").replaceAll(":", "_")+".dex";
-
-        File dexInternalStoragePath = new File(ctx.getDir("dex", Context.MODE_WORLD_WRITEABLE), cleanName);
-        BufferedOutputStream dexWriter = new BufferedOutputStream(new FileOutputStream(dexInternalStoragePath));
-        byte[] b = new byte[1024*16];
-        int len = 0;
-        while (len != -1) {
-            len = st.read(b);
-            if (len > 0) {
-                dexWriter.write(b, 0, len);
-            }
-        }
-        dexWriter.flush();
-        dexWriter.close();
-        st.close();
-        File dexOptStoragePath = ctx.getDir("odex" + System.currentTimeMillis(), Context.MODE_WORLD_WRITEABLE);
-        dexOptStoragePath.mkdirs();
-        TinyKCLDexClassLoader c = new TinyKCLDexClassLoader(dexInternalStoragePath.getAbsolutePath(), dexOptStoragePath.getAbsolutePath(), null, parentCL,clusterKCL);
-        clusterKCL.addKCL(c);
-    }
-
-
 }
