@@ -1,3 +1,16 @@
+/**
+ * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * 	http://www.gnu.org/licenses/lgpl-3.0.txt
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 package org.kevoree.kcl
 
@@ -161,7 +174,7 @@ class KevoreeJarClassLoader extends JarClassLoader {
 
 
   def internal_getResourceAsStream(name: String): InputStream = {
-    logger.debug("Get RessourceAsStream : " + name)
+    //logger.debug("Get RessourceAsStream : " + name)
     var res: Array[Byte] = null
     if (name.endsWith(".class")) {
       res = this.classpathResources.getResource(name)
@@ -180,7 +193,7 @@ class KevoreeJarClassLoader extends JarClassLoader {
 
   override def getResource(s: String): URL = {
     //logger.debug("GetResource=" + s)
-    internal_getResource(s)
+    findResource(s)
   }
 
   def internal_getResource(s: String): URL = {
@@ -203,9 +216,9 @@ class KevoreeJarClassLoader extends JarClassLoader {
         classpathResources.asInstanceOf[KevoreeLazyJarResources].getResourceURL(s)
       }
     } else {
-      logger.debug("getResource not found null=>" + s + " in " + classpathResources.asInstanceOf[KevoreeLazyJarResources].getClass)
+      //logger.debug("getResource not found null=>" + s + " in " + classpathResources.asInstanceOf[KevoreeLazyJarResources].getClass)
 
-      logger.debug("getResource not found null=>" + s + " in " + classpathResources.asInstanceOf[KevoreeLazyJarResources].getLastLoadedJar)
+      //logger.debug("getResource not found null=>" + s + " in " + classpathResources.asInstanceOf[KevoreeLazyJarResources].getLastLoadedJar)
       null
     }
   }
