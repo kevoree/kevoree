@@ -4,12 +4,12 @@
     <parent>
         <artifactId>org.kevoree.library.android.root</artifactId>
         <groupId>org.kevoree.library.android</groupId>
-        <version>1.6.0-BETA3</version>
+        <version>1.6.0-BETA4</version>
         <relativePath>../org.kevoree.library.android.root/pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <packaging>bundle</packaging>
-    <version>1.6.0-BETA3</version>
+    <version>1.6.0-BETA4</version>
 
 
     <artifactId>org.kevoree.library.android.agrapher</artifactId>
@@ -20,7 +20,7 @@
         <kevoree.include>org.kevoree:*,org.kevoree.tools:*</kevoree.include>
     </properties>
 
-
+<!--
     <dependencies>
         <dependency>
             <groupId>org.achartengine</groupId>
@@ -30,6 +30,8 @@
             <systemPath>${achartengine.local.file}</systemPath>
         </dependency>
     </dependencies>
+-->
+
 
     <build>
         <plugins>

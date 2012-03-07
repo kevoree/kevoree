@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: org.kevoree:org.kevoree.framework:1.6.0-BETA4">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/kevoree/org.kevoree.framework/1.6.0-BETA4/org.kevoree.framework-1.6.0-BETA4.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/org/kevoree/org.kevoree.framework/1.6.0-BETA4/org.kevoree.framework-1.6.0-BETA4-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/kevoree/org.kevoree.framework/1.6.0-BETA4/org.kevoree.framework-1.6.0-BETA4-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
