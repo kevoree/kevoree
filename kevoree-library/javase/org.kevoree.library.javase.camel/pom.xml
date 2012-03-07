@@ -32,13 +32,7 @@
             <artifactId>camel-stream</artifactId>
             <version>${apache.camel.version}</version>
         </dependency>
-        <!--
-        <dependency>
-            <groupId>org.apache.camel</groupId>
-            <artifactId>camel-timer</artifactId>
-            <version>${apache.camel.version}</version>
-        </dependency>
--->
+
     </dependencies>
 
 </project>
