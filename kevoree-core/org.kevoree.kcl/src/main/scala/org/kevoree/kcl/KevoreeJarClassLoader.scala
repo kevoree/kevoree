@@ -133,9 +133,6 @@ class KevoreeJarClassLoader extends JarClassLoader {
   }
 
   override def loadClass(className: String): Class[_] = {
-
-    //println("KCL LOAD "+className+"-")
-
     loadClass(className, true)
   }
 
