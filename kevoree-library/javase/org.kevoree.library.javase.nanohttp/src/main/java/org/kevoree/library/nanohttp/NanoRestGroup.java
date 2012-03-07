@@ -135,7 +135,7 @@ public class NanoRestGroup extends AbstractGroupType {
 		Group group = getModelElement();
 		for (ContainerNode subNode : group.getSubNodesForJ()) {
 			if (!subNode.getName().equals(this.getNodeName())) {
-				push(getModelService().getLastModel(), subNode.getName());
+				internalPush(getModelService().getLastModel(), subNode.getName(), this.getNodeName());
 			}
 		}
 	}
@@ -159,6 +159,30 @@ public class NanoRestGroup extends AbstractGroupType {
 		if (!sent) {
 			logger.debug("try to send model on url=>" + "http://127.0.0.1:" + PORT + "/model/current");
 			if (!sendModel(model, "http://127.0.0.1:" + PORT + "/model/current")) {
+				logger.debug("Unable to push a model on " + targetNodeName);
+			}
+		}
+	}
+
+
+	public void internalPush (ContainerRoot model, String targetNodeName, String sender) {
+		List<String> ips = KevoreePropertyHelper.getStringNetworkProperties(model, targetNodeName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP());
+		Option<Integer> portOption = KevoreePropertyHelper.getIntPropertyForGroup(model, this.getName(), "port", true, targetNodeName);
+		int PORT = 8000;
+		if (portOption.isDefined()) {
+			PORT = portOption.get();
+		}
+		boolean sent = false;
+		for (String ip : ips) {
+			logger.debug("try to send model on url=>" + "http://" + ip + ":" + PORT + "/model/current?nodesrc=" + sender);
+			if (sendModel(model, "http://" + ip + ":" + PORT + "/model/current?nodesrc=" + sender)) {
+				sent = true;
+				break;
+			}
+		}
+		if (!sent) {
+			logger.debug("try to send model on url=>" + "http://127.0.0.1:" + PORT + "/model/current?nodesrc=" + sender);
+			if (!sendModel(model, "http://127.0.0.1:" + PORT + "/model/current?sender=" + sender)) {
 				logger.debug("Unable to push a model on " + targetNodeName);
 			}
 		}
