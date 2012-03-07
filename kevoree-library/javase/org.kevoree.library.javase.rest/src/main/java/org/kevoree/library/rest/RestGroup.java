@@ -36,6 +36,7 @@ public class RestGroup extends AbstractGroupType {
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 	private ServerBootstrap server = new ServerBootstrap(this);
 	protected ExecutorService poolUpdate;
+	private boolean starting;
 
 	@Start
 	public void startRestGroup () {
@@ -50,7 +51,7 @@ public class RestGroup extends AbstractGroupType {
 		server.startServer(Integer.parseInt(this.getDictionary().get("port").toString()), ip);
 
 		//logger.info("!!! try to block => "+getModelService().getLastModel()+"->"+getModelService().getLastModification());
-		NodeNetworkHelper.updateModelWithNetworkProperty(this);
+		starting = true;
 
 	}
 
@@ -62,6 +63,11 @@ public class RestGroup extends AbstractGroupType {
 
 	@Override
 	public void triggerModelUpdate () {
+		if (starting) {
+			NodeNetworkHelper.updateModelWithNetworkProperty(this);
+			starting = false;
+		}
+
 		Group group = getModelElement();
 		ContainerRoot model = this.getModelService().getLastModel();
 
