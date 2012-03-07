@@ -1,8 +1,6 @@
 package org.kevoree.library.camel.framework;
 
 import org.apache.camel.spi.ClassResolver;
-import org.kevoree.library.camel.TestCamel;
-
 import java.io.InputStream;
 import java.net.URL;
 
@@ -39,7 +37,7 @@ public class ClassLoaderClassResolver implements ClassResolver {
             return cl.loadClass(s);
         } catch (ClassNotFoundException e) {
             try {
-                return TestCamel.class.getClassLoader().loadClass(s);
+                return cl.loadClass(s);
             } catch (ClassNotFoundException ee) {
                 return null;
             }

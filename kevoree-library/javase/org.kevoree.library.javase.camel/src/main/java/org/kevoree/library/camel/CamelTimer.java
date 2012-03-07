@@ -1,9 +1,8 @@
 package org.kevoree.library.camel;
 
 import org.apache.camel.builder.RouteBuilder;
-import org.kevoree.annotation.ComponentType;
-import org.kevoree.annotation.DictionaryAttribute;
-import org.kevoree.annotation.DictionaryType;
+import org.apache.camel.model.language.ConstantExpression;
+import org.kevoree.annotation.*;
 import org.kevoree.library.camel.framework.AbstractKevoreeCamelComponentType;
 
 /**
@@ -14,12 +13,19 @@ import org.kevoree.library.camel.framework.AbstractKevoreeCamelComponentType;
  */
 @ComponentType
 @DictionaryType({
-		@DictionaryAttribute(name = "period", defaultValue = "5000", optional = true)
+        @DictionaryAttribute(name = "period", defaultValue = "5000", optional = true)
+})
+@Requires({
+        @RequiredPort(name = "tick", type = PortType.MESSAGE, needCheckDependency = true, optional = true)
 })
 public class CamelTimer extends AbstractKevoreeCamelComponentType {
 
-    protected void buildRoutes(RouteBuilder rb){
-        rb.from("timer://" + getName() + "?fixedRate=true&period="+getDictionary().get("period")).to("log:" + getName());
+    protected void buildRoutes(RouteBuilder rb) {
+
+        rb.from("timer://" + getName() + "?fixedRate=true&period=" + getDictionary().get("period"))
+          .setBody(new ConstantExpression("tick-" + System.currentTimeMillis()))
+          .to("kport:tick");
+
     }
 
 }

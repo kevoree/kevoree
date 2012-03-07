@@ -31,6 +31,8 @@ public abstract class AbstractKevoreeCamelComponentType extends AbstractComponen
     public void start() throws Exception {
         context = buildCamelContext();
         context.setClassResolver(new ClassLoaderClassResolver(this.getClass().getClassLoader()));
+        KevoreePortComponent cc = new KevoreePortComponent(this);
+        context.addComponent("kport",cc);
         RouteBuilder rb = new RouteBuilder() {
             public void configure() {
                 buildRoutes(this);
@@ -56,5 +58,9 @@ public abstract class AbstractKevoreeCamelComponentType extends AbstractComponen
 
     protected abstract void buildRoutes(RouteBuilder rb);
 
+    @Port(name = "*")
+    public void globalInput(Object o){
+        System.out.println("WTF "+o);
+    }
 
 }
