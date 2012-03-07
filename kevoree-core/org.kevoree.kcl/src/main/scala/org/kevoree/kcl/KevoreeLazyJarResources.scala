@@ -131,11 +131,6 @@ class KevoreeLazyJarResources extends ClasspathResources {
       while (jarEntry != null) {
         if (!jarEntry.isDirectory) {
           var filtered = false
-          /*
-          if (baseurl != null && baseurl.toString.contains("frascati-component-factory-juliac")) {
-            print("found in "+jarEntry.getName)
-          }*/
-
           if (parentKCL.get() != null) {
             parentKCL.get().getSpecialLoaders.find(r => jarEntry.getName.endsWith(r.getExtension)) match {
               case Some(e) => {
@@ -197,7 +192,9 @@ class KevoreeLazyJarResources extends ClasspathResources {
                   if (jarEntry.getName.endsWith(".class")) {
                     jarEntryContents.put(jarEntry.getName, out.toByteArray)
                   } else {
+
                     detectedResources.put(new URL(key_url), out.toByteArray)
+
                   }
                 }
               }
@@ -208,7 +205,7 @@ class KevoreeLazyJarResources extends ClasspathResources {
       }
     } catch {
       case e: IOException => new JclException(e)
-      case e: NullPointerException =>
+      case e: NullPointerException => e.printStackTrace()
     } finally {
       if (jis != null)
         try {

@@ -177,7 +177,7 @@ class JCLContextHandler extends DaemonActor with KevoreeClassLoaderHandler {
               val kcl2 = getKCLInternals(rLibIn)
               if (kcl2 != null) {
                 kcl.addWeakClassLoader(kcl2)
-                logger.debug("Link Weak for {}->{}", rLib.getUnitName, rLibIn.getUnitName)
+               // logger.debug("Link Weak for {}->{}", rLib.getUnitName, rLibIn.getUnitName)
               }
             })
           } else {
