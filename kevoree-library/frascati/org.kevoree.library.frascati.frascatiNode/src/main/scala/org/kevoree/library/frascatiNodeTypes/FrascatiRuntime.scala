@@ -45,33 +45,18 @@ class FrascatiRuntime extends Actor {
           val fcl = new FrascatiClassLoader(classOf[FrascatiNode].getClassLoader) {
 
             override def loadClass(p1: String): Class[_] = {
-              val cl = classOf[FrascatiNode].getClassLoader.loadClass(p1)
-              logger.info("fload " + p1 + " ======> res " + cl)
-              cl
+              classOf[FrascatiNode].getClassLoader.loadClass(p1)
             }
 
-
             override def getResourceAsStream(p1: String) = {
-              logger.info("GetResssStream==" + p1)
               classOf[FrascatiNode].getResourceAsStream(p1)
             }
 
             override def getResources(p1: String): Enumeration[URL] = {
-
-              logger.info("GetResss==" + p1)
-
-              //val res = classOf[FrascatiNode].getClassLoader.getResources(p1)
-
-              classOf[FrascatiNode].getClassLoader.findResources(p1)
-              val res = classOf[FrascatiNode].getClassLoader.getResources(p1)
-
-
-
-              res
+              classOf[FrascatiNode].getClassLoader.getResources(p1)
             }
 
             override def getResource(p1: String): URL = {
-              logger.info("GetRes=" + p1)
               classOf[FrascatiNode].getClassLoader.getResource(p1)
             }
 
@@ -87,18 +72,7 @@ class FrascatiRuntime extends Actor {
           }
 
           Thread.currentThread().setContextClassLoader(fcl);
-         // FraSCAti.newFraSCAti()
-
-
-          println("Lookfor=MembraneGeneration")
-          val clazzres = classOf[FrascatiNode].getClassLoader.loadClass("org.ow2.frascati.component.factory.api.MembraneGeneration")
-          println("Result="+clazzres)
-
           internal_frascati = FraSCAti.newFraSCAti(fcl);
-          //internal_frascati = FraSCAti.newFraSCAti(classOf[FrascatiNode].getClassLoader);
-          //internal_frascati.setClassLoader(f_cl)
-          //internal_frascati.getClassLoaderManager.setClassLoader(fcl)
-
           reply(internal_frascati)
         }
         case StopRuntime() => {
