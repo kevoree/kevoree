@@ -75,6 +75,12 @@ trait PortMappingProcessor {
           case "*" => {
             if (starMethod == "") {
               starMethod = methoddef.getSimpleName.toString
+
+              methoddef.getParameters.foreach{ parameters =>
+                println("->"+parameters.getClass.getName.toString)
+              }
+
+
             } else {
               val message: String = "[PortMappingProcessor]:" + componentType.getBean + " declares a severals * mapping, but only one * is accepted. Process Exit.";
               env.getMessager.printMessage(Kind.ERROR, message);
