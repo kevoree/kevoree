@@ -32,10 +32,12 @@ class KevoreeLeftModel extends JPanel {
     val componentItem = new SourceListItem("Components")
     val channelItem = new SourceListItem("Channels")
     val groupItem = new SourceListItem("Groups")
+    val childItem = new SourceListItem("ChildNodes")
     model.addCategory(category)
     model.addItemToCategory(componentItem, category)
     model.addItemToCategory(channelItem, category)
     model.addItemToCategory(groupItem, category)
+    model.addItemToCategory(childItem, category)
 
     kmodel.getComponents.foreach {
       c =>
@@ -51,6 +53,18 @@ class KevoreeLeftModel extends JPanel {
     kmodel.eContainer.asInstanceOf[ContainerRoot].getGroups.filter(g => g.getSubNodes.exists(c => c.getName == kmodel.getName)).foreach{g =>
       val itc = new SourceListItem(g.getName + ":" + g.getTypeDefinition.getName)
       model.addItemToItem(itc, groupItem)
+    }
+    
+    kmodel.eContainer.asInstanceOf[ContainerRoot].getNodes.find(n => n.getName == kmodel.getName) match {
+      case None =>
+      case Some(n) => {
+        n.getHosts.foreach{
+          child =>  {
+            val itc = new SourceListItem(child.getName + ":" + child.getTypeDefinition.getName)
+            model.addItemToItem(itc, childItem)
+          }
+        }
+      }
     }
 
 
