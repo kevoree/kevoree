@@ -13,8 +13,7 @@
  */
 package org.kevoree.platform.osgi.standalone.gui;
 
-import com.explodingpixels.macwidgets.HudWindow;
-import com.explodingpixels.macwidgets.IAppWidgetFactory;
+import com.explodingpixels.macwidgets.*;
 import com.explodingpixels.macwidgets.plaf.HudButtonUI;
 import org.kevoree.ContainerNode;
 import org.kevoree.ContainerRoot;
@@ -32,165 +31,180 @@ import java.net.URL;
 
 public class KevoreeGUIFrame extends JFrame {
 
-	public static KevoreeGUIFrame singleton = null;
+    public static KevoreeGUIFrame singleton = null;
 
-    private KevoreeGuiHeader header = null;
+    private static KevoreeLeftModel left = null;
 
-	public KevoreeGUIFrame (final ContainerRoot model) {
-		singleton = this;
+    public KevoreeGUIFrame(final ContainerRoot model) {
+        singleton = this;
+
+        MacUtils.makeWindowLeopardStyle(this.getRootPane());
+        UnifiedToolBar toolBar = new UnifiedToolBar();
+        add(toolBar.getComponent(), BorderLayout.NORTH);
+
         URL urlSmallIcon = getClass().getClassLoader().getResource("kev-logo-full.png");
         final ImageIcon smallIcon = new ImageIcon(urlSmallIcon);
         this.setIconImage(smallIcon.getImage());
 
+        URL urlIcon = getClass().getClassLoader().getResource("kevoree-logo-full.png");
+        ImageIcon topIIcon = new ImageIcon(urlIcon);
+        JLabel topImage = new JLabel(topIIcon);
+        topImage.setOpaque(false);
+        toolBar.addComponentToLeft(topImage);
 
-//System.out.println(getClass().getClassLoader().getResource("."));
-
-        header = new KevoreeGuiHeader();
-
-		this.add(header, BorderLayout.NORTH);
-
-		/*
-				File mavenDir = new File(System.getProperty("user.home") + "/.m2/repository");
-				if (mavenDir.exists() && mavenDir.isDirectory()) {
-					System.out.println("use mavenDir=file:///" + mavenDir.getAbsoluteFile().getAbsolutePath());
-					System.setProperty("org.kevoree.remote.provisioning", "file:///" + mavenDir.getAbsolutePath());
-				}*/
-
-		String guiConfig = System.getProperty("node.gui.config");
-		if (guiConfig == null || guiConfig.equalsIgnoreCase("true")) {
-			final HudWindow bootstrapPopup = new HudWindow("Kevoree runtime : node properties");
-			bootstrapPopup.getJDialog().setSize(400, 210);
-			bootstrapPopup.getJDialog().setLocationRelativeTo(null);
-			bootstrapPopup.getJDialog().setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        left = new KevoreeLeftModel();
+     //   this.add(left, BorderLayout.WEST);
 
 
-			JPanel layoutPopup = new JPanel();
-			layoutPopup.setOpaque(false);
-			layoutPopup.setLayout(new BorderLayout());
 
-			JLabel iconLabel = new JLabel(smallIcon);
-			iconLabel.setOpaque(false);
 
-			JButton btOk = new JButton("Ok");
-			btOk.setUI(new HudButtonUI());
 
-			layoutPopup.add(iconLabel, BorderLayout.WEST);
-			final NodeTypeBootStrapUI nodeUI = new NodeTypeBootStrapUI(model);
+        /*
+        File mavenDir = new File(System.getProperty("user.home") + "/.m2/repository");
+        if (mavenDir.exists() && mavenDir.isDirectory()) {
+            System.out.println("use mavenDir=file:///" + mavenDir.getAbsoluteFile().getAbsolutePath());
+            System.setProperty("org.kevoree.remote.provisioning", "file:///" + mavenDir.getAbsolutePath());
+        }*/
 
-			nodeUI.setOpaque(false);
-			JScrollPane scrollPane = new JScrollPane(nodeUI);
-			IAppWidgetFactory.makeIAppScrollPane(scrollPane);
-			scrollPane.getViewport().setOpaque(false);
-			scrollPane.setOpaque(false);
-			scrollPane.setBorder(null);
+        String guiConfig = System.getProperty("node.gui.config");
+        if (guiConfig == null || guiConfig.equalsIgnoreCase("true")) {
+            final HudWindow bootstrapPopup = new HudWindow("Kevoree runtime : node properties");
+            bootstrapPopup.getJDialog().setSize(400, 210);
+            bootstrapPopup.getJDialog().setLocationRelativeTo(null);
+            bootstrapPopup.getJDialog().setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-			layoutPopup.add(scrollPane, BorderLayout.CENTER);
-			layoutPopup.add(btOk, BorderLayout.SOUTH);
 
-			bootstrapPopup.setContentPane(layoutPopup);
-			bootstrapPopup.getJDialog().setVisible(true);
-			bootstrapPopup.getJDialog().getRootPane().setDefaultButton(btOk);
+            JPanel layoutPopup = new JPanel();
+            layoutPopup.setOpaque(false);
+            layoutPopup.setLayout(new BorderLayout());
 
-			btOk.addActionListener(new ActionListener() {
+            JLabel iconLabel = new JLabel(smallIcon);
+            iconLabel.setOpaque(false);
 
-				@Override
-				public void actionPerformed (ActionEvent actionEvent) {
-					bootstrapPopup.getJDialog().dispose();
-					String response = nodeUI.getKevName();
-					final String nodeName = response;
-					System.setProperty("node.name", response);
-					setTitle(nodeName + " : " + nodeUI.getKevTypeName() + " / Kevoree-" + KevoreeFactory.getVersion());
-					new Thread() {
-						@Override
-						public void run () {
-							NodeTypeBootStrapModel
-									.checkAndCreate(nodeUI.getCurrentModel(), nodeName, nodeUI.getKevTypeName().toString(), nodeUI.getKevGroupTypeName().toString(), nodeUI.getKevGroupName(),
-											nodeUI.nodeInstancePanel().currentProperties(), nodeUI.groupInstancePanel().currentProperties());
-							startNode(nodeUI.getCurrentModel());
-						}
-					}.start();
+            JButton btOk = new JButton("Ok");
+            btOk.setUI(new HudButtonUI());
 
-					setVisible(true);
-					setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+            layoutPopup.add(iconLabel, BorderLayout.WEST);
+            final NodeTypeBootStrapUI nodeUI = new NodeTypeBootStrapUI(model);
 
-				}
-			});
-		} else {
-			new Thread() {
-				@Override
-				public void run () {
-					startNode(model);
-				}
-			}.start();
-			setVisible(true);
-			setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-		}
+            nodeUI.setOpaque(false);
+            JScrollPane scrollPane = new JScrollPane(nodeUI);
+            IAppWidgetFactory.makeIAppScrollPane(scrollPane);
+            scrollPane.getViewport().setOpaque(false);
+            scrollPane.setOpaque(false);
+            scrollPane.setBorder(null);
 
-	}
+            layoutPopup.add(scrollPane, BorderLayout.CENTER);
+            layoutPopup.add(btOk, BorderLayout.SOUTH);
 
-	private void startNode (ContainerRoot model) {
-		final KevoreeBootStrap btA = new KevoreeBootStrap();
-		Runtime.getRuntime().addShutdownHook(new Thread("Shutdown Hook") {
+            bootstrapPopup.setContentPane(layoutPopup);
+            bootstrapPopup.getJDialog().setVisible(true);
+            bootstrapPopup.getJDialog().getRootPane().setDefaultButton(btOk);
 
-			public void run () {
-				try {
-					btA.stop();
-				} catch (Exception ex) {
-					System.out.println("Error stopping framework: " + ex.getMessage());
-				}
-			}
-		});
-		btA.setBootstrapModel(model);
-		addWindowListener(new WindowAdapter() {
-			@Override
-			public void windowClosing (WindowEvent windowEvent) {
-				new Thread() {
-					@Override
-					public void run () {
-						try {
-							btA.stop();
-							DefaultSystem.resetSystemFlux();
-							dispose();
-							Runtime.getRuntime().exit(0);
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-					}
-				}.start();
-			}
-		});
-		try {
-			FelixShell shell = null;
-			shell = new FelixShell();
-			KevoreeGUIFrame.showShell(shell);
+            btOk.addActionListener(new ActionListener() {
 
-			btA.start();
+                @Override
+                public void actionPerformed(ActionEvent actionEvent) {
+                    bootstrapPopup.getJDialog().dispose();
+                    String response = nodeUI.getKevName();
+                    final String nodeName = response;
+                    System.setProperty("node.name", response);
+                    setTitle(nodeName + " : " + nodeUI.getKevTypeName() + " / Kevoree-" + KevoreeFactory.getVersion());
+                    new Thread() {
+                        @Override
+                        public void run() {
+                            NodeTypeBootStrapModel
+                                    .checkAndCreate(nodeUI.getCurrentModel(), nodeName, nodeUI.getKevTypeName().toString(), nodeUI.getKevGroupTypeName().toString(), nodeUI.getKevGroupName(),
+                                            nodeUI.nodeInstancePanel().currentProperties(), nodeUI.groupInstancePanel().currentProperties());
+                            startNode(nodeUI.getCurrentModel());
+                        }
+                    }.start();
 
-           btA.getCore().registerModelListener(new ModelListener() {
-               @Override
-               public boolean preUpdate(ContainerRoot currentModel, ContainerRoot proposedModel) {
-                   return true;
-               }
+                    setSize(800, 600);
+                    setPreferredSize(getSize());
+                    setVisible(true);
+                    setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
-               @Override
-               public void modelUpdated() {
-                   for(ContainerNode node : btA.getCore().getLastModel().getNodesForJ()){
-                       if(node.getName().equals(System.getProperty("node.name"))){
-                           header.updateInfo(node);
-                       }
-                   }
-               }
-           });
+                }
+            });
+        } else {
+            new Thread() {
+                @Override
+                public void run() {
+                    startNode(model);
+                }
+            }.start();
+            setVisible(true);
+            setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+        }
 
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+    }
 
-	public static void showShell (JComponent shell) {
-		singleton.add(shell, BorderLayout.CENTER);
-		singleton.pack();
-	}
+    private void startNode(ContainerRoot model) {
+        final KevoreeBootStrap btA = new KevoreeBootStrap();
+        Runtime.getRuntime().addShutdownHook(new Thread("Shutdown Hook") {
+
+            public void run() {
+                try {
+                    btA.stop();
+                } catch (Exception ex) {
+                    System.out.println("Error stopping framework: " + ex.getMessage());
+                }
+            }
+        });
+        btA.setBootstrapModel(model);
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent windowEvent) {
+                new Thread() {
+                    @Override
+                    public void run() {
+                        try {
+                            btA.stop();
+                            DefaultSystem.resetSystemFlux();
+                            dispose();
+                            Runtime.getRuntime().exit(0);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }.start();
+            }
+        });
+        try {
+            FelixShell shell = null;
+            shell = new FelixShell();
+            KevoreeGUIFrame.showShell(shell);
+
+            btA.start();
+
+            btA.getCore().registerModelListener(new ModelListener() {
+                @Override
+                public boolean preUpdate(ContainerRoot currentModel, ContainerRoot proposedModel) {
+                    return true;
+                }
+
+                @Override
+                public void modelUpdated() {
+                    for (ContainerNode node : btA.getCore().getLastModel().getNodesForJ()) {
+                        if (node.getName().equals(System.getProperty("node.name"))) {
+                            left.reload(node);
+                        }
+                    }
+                }
+            });
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void showShell(JComponent shell) {
+        JSplitPane splitPane = MacWidgetFactory.createSplitPaneForSourceList(left.getSourceList(), shell);
+        splitPane.setDividerLocation(200);
+        singleton.add(splitPane, BorderLayout.CENTER);
+        singleton.pack();
+    }
 
 
 }
