@@ -7,7 +7,6 @@ import org.kevoree.framework.AbstractGroupType;
 import org.kevoree.framework.Constants;
 import org.kevoree.framework.KevoreePropertyHelper;
 import org.kevoree.framework.KevoreeXmiHelper;
-import org.kevoree.library.javase.nanohttp.NodeNetworkHelper;
 import org.kevoree.library.nanohttp.NanoHTTPD;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,7 +39,8 @@ import java.util.concurrent.Executors;
 		@DictionaryAttribute(name = "masterNode", optional = false),
 		@DictionaryAttribute(name = "port", optional = false, fragmentDependant = true),
 		@DictionaryAttribute(name = "ip", defaultValue = "0.0.0.0", optional = true, fragmentDependant = true),
-		@DictionaryAttribute(name = "SSH_Public_Key", optional = true)
+		@DictionaryAttribute(name = "SSH_Public_Key", optional = true),
+		@DictionaryAttribute(name = "displayIP", vals = {"true", "false"}, optional = false)
 })
 public class KloudPaaSNanoGroup extends AbstractGroupType {
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -149,6 +149,20 @@ public class KloudPaaSNanoGroup extends AbstractGroupType {
 				return new NanoHTTPD.Response(HTTP_BADREQUEST, MIME_XML, "ONLY GET OR POST METHOD SUPPORTED");
 			}
 		};
+
+		if (KloudHelper.isPaaSNode(getModelService().getLastModel(), getName(), getNodeName())) {
+			// configure ssh authorized keys for user nodes
+			Object sshKeyObject = this.getDictionary().get("SSH_Public_Key");
+			if (sshKeyObject != null) {
+				// build directory if necessary
+				File f = new File(System.getProperty("user.home") + File.separator + ".ssh");
+
+				if ((f.exists() && f.isDirectory()) || (!f.exists() && f.mkdirs())) {
+					// copy key
+					addStringToFile(sshKeyObject.toString(), System.getProperty("user.home") + File.separator + ".ssh" + File.separator + "authorized_keys");
+				}
+			}
+		}
 	}
 
 	@Stop
@@ -168,10 +182,11 @@ public class KloudPaaSNanoGroup extends AbstractGroupType {
 
 	@Override
 	public void triggerModelUpdate () {
-		if (first) {
+		/*if (first) {
 			first = false;
 			NodeNetworkHelper.updateModelWithNetworkProperty(this);
-		} else if (userModel == null) {
+		} else */
+		if (userModel == null) {
 			if (KloudHelper.isPaaSNode(this.getModelService().getLastModel(), this.getName(), this.getNodeName())) {
 				// pull the model to the master node
 				userModel = pullModel(this.getDictionary().get("masterNode").toString());
@@ -282,6 +297,69 @@ public class KloudPaaSNanoGroup extends AbstractGroupType {
 			return KevoreeXmiHelper.loadStream(inputStream);
 		} catch (IOException e) {
 			return null;
+		}
+	}
+
+	private void addStringToFile (String data, String outputFile) {
+		try {
+			logger.debug("trying to add \"{}\" into {}", data, outputFile);
+			StringBuilder stringBuilder = new StringBuilder();
+			stringBuilder.append(data).append("\n");
+			if (new File(outputFile).exists()) {
+				InputStream reader = new DataInputStream(new FileInputStream(new File(outputFile)));
+				ByteArrayOutputStream writer = new ByteArrayOutputStream();
+
+				byte[] bytes = new byte[2048];
+				int length = reader.read(bytes);
+				while (length != -1) {
+					writer.write(bytes, 0, length);
+					length = reader.read(bytes);
+
+				}
+				writer.flush();
+				writer.close();
+				reader.close();
+				stringBuilder.append(new String(writer.toByteArray(), "UTF-8"));
+			}
+
+			if (copyStringToFile(stringBuilder.toString(), outputFile)) {
+				logger.debug("add \"{}\" into {} is done", data, outputFile);
+			}
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private boolean copyStringToFile (String data, String outputFile) {
+		logger.debug("trying to copy \"{}\" to {}", data, outputFile);
+		try {
+			if (new File(outputFile).exists()) {
+				new File(outputFile).delete();
+			}
+			File f = new File(outputFile);
+			if (f.createNewFile()) {
+				OutputStream writer = new DataOutputStream(new FileOutputStream(f));
+
+				writer.write(data.getBytes());
+				writer.flush();
+				writer.close();
+				logger.debug("copy \"{}\" into {} is done", data, outputFile);
+				return true;
+			} else {
+				return false;
+			}
+		} /*catch {
+	      case _@e => logger.error("Unable to copy \"{}\" on {}", Array[AnyRef](data, outputFile), e);
+	    }*/ catch (FileNotFoundException e) {
+			logger.debug("Unable to copy \"{}\" on {}", data, outputFile);
+			return false;
+		} catch (IOException e) {
+			logger.debug("Unable to copy \"{}\" on {}", data, outputFile);
+			return false;
 		}
 	}
 

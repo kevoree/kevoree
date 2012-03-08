@@ -3,6 +3,8 @@ package org.kevoree.library.sky.provider;
 import org.kevoree.ContainerRoot;
 import org.kevoree.Group;
 import org.kevoree.annotation.ComponentType;
+import org.kevoree.annotation.DictionaryAttribute;
+import org.kevoree.annotation.DictionaryType;
 import org.kevoree.annotation.Library;
 import org.kevoree.api.service.core.handler.UUIDModel;
 import org.kevoree.framework.KevoreePropertyHelper;
@@ -31,6 +33,9 @@ import java.net.URLConnection;
  */
 @Library(name = "SKY")
 @ComponentType
+@DictionaryType({
+		@DictionaryAttribute(name = "displayIP", optional = false, defaultValue = "true", vals = {"true", "false"})
+})
 public class PaaSKloudResourceManager extends ParentAbstractPage {
 
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -148,7 +153,7 @@ public class PaaSKloudResourceManager extends ParentAbstractPage {
 		UUIDModel uuidModel = this.getModelService().getLastUUIDModel();
 
 		// we create a group with the login of the user
-		Option<ContainerRoot> newKloudModelOption = KloudReasoner.createGroup(login, this.getNodeName(), uuidModel.getModel(), getKevScriptEngineFactory(), sshKey);
+		Option<ContainerRoot> newKloudModelOption = KloudReasoner.createGroup(login, this.getNodeName(), uuidModel.getModel(), getKevScriptEngineFactory(), sshKey, this.getDictionary().get("displayIP").toString());
 		if (newKloudModelOption.isDefined()) {
 
 			Option<Group> groupOption = KloudHelper.getGroup(login, newKloudModelOption.get());
@@ -208,7 +213,7 @@ public class PaaSKloudResourceManager extends ParentAbstractPage {
 		return nbTry > 0 && createProxy(login, nbTry - 1);
 	}
 
-	private static byte[] convertStream (InputStream in) throws Exception {
+	private byte[] convertStream (InputStream in) throws Exception {
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		byte[] buffer = new byte[1024];
 		int l;
@@ -218,6 +223,8 @@ public class PaaSKloudResourceManager extends ParentAbstractPage {
 				out.write(buffer, 0, l);
 			}
 		} while (l > 0);
+		out.flush();
+		out.close();
 		return out.toByteArray();
 	}
 }
