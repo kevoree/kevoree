@@ -52,7 +52,7 @@ public class FakeConsole extends AbstractFakeStuffComponent {
     @Override
     public void start() throws Exception {
         frame = new MyFrame();
-        frame.setTitle(getName() + "@" + getNodeName());
+        frame.setTitle(getName() + "@@@" + getNodeName());
         frame.setVisible(true);
         frame.appendSystem("/***** CONSOLE INITIALIZED ********/ ");
         //  throw new Exception("WTF!");
