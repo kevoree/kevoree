@@ -31,12 +31,16 @@ case class FrascatiAddInstance(adaptationPrimitive: AdaptationPrimitive, frascat
       if (c_instance.getTypeDefinition.asInstanceOf[org.kevoree.ComponentType].getBean.endsWith(".composite")) {
         val kcl = bs.getKevoreeClassLoaderHandler.getKevoreeClassLoader(deployUnit)
         val compositeURL = kcl.getResource(c_instance.getTypeDefinition.getBean)
-        val cm = frascati.getCompositeManager
+        //val cm = frascati.getCompositeManager
         // Create a FraSCAti Assembly Factory processing context.
-        val processingContext = new ProcessingContextImpl(frascati.getClassLoaderManager.getClassLoader);
+
+        frascati.getComposite("helloworld-pojo",kcl)
+
+
+
         // Process the composite.
         //  frascati.getClassLoaderManager().loadLibraries(Array(new URL("file:/opt/frascati-runtime-1.4/examples/helloworld-pojo/target/helloworld-pojo-1.4.jar")))
-        var composite = cm.processComposite(new QName(compositeURL.toString), processingContext);
+      //  var composite = cm.processComposite(new QName(compositeURL.toString), kcl);
         //
         //        frascati.getComposite()
       } else {

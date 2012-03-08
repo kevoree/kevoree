@@ -1,17 +1,38 @@
 <kevoree:ContainerRoot xsi:type="kevoree:ContainerRoot" xmlns:xml="http://www.omg.org/XMI" xmi:version="2.0" xmlns:xsi="http://wwww.w3.org/2001/XMLSchema-instance" xmlns:kevoree="http://kevoree/1.0">
- <nodes typeDefinition="//@typeDefinitions.0" metaData="x=183,y=209" name="node0" xsi:type="kevoree:ContainerNode"></nodes>
+ <nodes typeDefinition="//@typeDefinitions.0" metaData="x=129,y=95" name="node0" xsi:type="kevoree:ContainerNode">
+  <components typeDefinition="//@typeDefinitions.6" name="helloworl852" xsi:type="kevoree:ComponentInstance">
+   <provided portTypeRef="//@typeDefinitions.6/@provided.0" xsi:type="kevoree:Port"></provided>
+  </components>
+ </nodes>
  <typeDefinitions managedPrimitiveTypes="//@adaptationPrimitiveTypes.0 //@adaptationPrimitiveTypes.1 //@adaptationPrimitiveTypes.2 //@adaptationPrimitiveTypes.3 //@adaptationPrimitiveTypes.4 //@adaptationPrimitiveTypes.5 //@adaptationPrimitiveTypes.6 //@adaptationPrimitiveTypes.7 //@adaptationPrimitiveTypes.8 //@adaptationPrimitiveTypes.9 //@adaptationPrimitiveTypes.10 //@adaptationPrimitiveTypes.11 //@adaptationPrimitiveTypes.12 //@adaptationPrimitiveTypes.13 //@adaptationPrimitiveTypes.14 //@adaptationPrimitiveTypes.15 //@adaptationPrimitiveTypes.16 //@adaptationPrimitiveTypes.17 //@adaptationPrimitiveTypes.18 //@adaptationPrimitiveTypes.19 //@adaptationPrimitiveTypes.20" superTypes="//@typeDefinitions.1" deployUnits="//@deployUnits.0" stopMethod="stopNode" startMethod="startNode" bean="org.kevoree.library.frascatiNodeTypes.FrascatiNode" factoryBean="org.kevoree.library.frascatiNodeTypes.FrascatiNodeFactory" name="FrascatiNode" xsi:type="kevoree:NodeType"></typeDefinitions>
  <typeDefinitions managedPrimitiveTypes="//@adaptationPrimitiveTypes.0 //@adaptationPrimitiveTypes.1 //@adaptationPrimitiveTypes.2 //@adaptationPrimitiveTypes.3 //@adaptationPrimitiveTypes.4 //@adaptationPrimitiveTypes.5 //@adaptationPrimitiveTypes.6 //@adaptationPrimitiveTypes.7 //@adaptationPrimitiveTypes.8 //@adaptationPrimitiveTypes.9 //@adaptationPrimitiveTypes.10 //@adaptationPrimitiveTypes.11 //@adaptationPrimitiveTypes.12 //@adaptationPrimitiveTypes.13 //@adaptationPrimitiveTypes.14 //@adaptationPrimitiveTypes.15 //@adaptationPrimitiveTypes.16 //@adaptationPrimitiveTypes.17 //@adaptationPrimitiveTypes.18 //@adaptationPrimitiveTypes.19 //@adaptationPrimitiveTypes.20" deployUnits="//@deployUnits.1" stopMethod="stopNode" startMethod="startNode" bean="org.kevoree.library.defaultNodeTypes.JavaSENode" factoryBean="org.kevoree.library.defaultNodeTypes.JavaSENodeFactory" name="JavaSENode" xsi:type="kevoree:NodeType"></typeDefinitions>
+ <typeDefinitions deployUnits="//@deployUnits.40" updateMethod="update" stopMethod="stop" startMethod="start" bean="org.ow2.frascati.examples.helloworld.pojo.Client" name="client" xsi:type="kevoree:ComponentType">
+  <required ref="//@typeDefinitions.4" noDependency="false" optional="true" name="printService" xsi:type="kevoree:PortTypeRef"></required>
+  <provided ref="//@typeDefinitions.3" noDependency="false" optional="true" name="r" xsi:type="kevoree:PortTypeRef"></provided>
+ </typeDefinitions>
+ <typeDefinitions interface="java.lang.Runnable" synchrone="false" name="java.lang.Runnable" xsi:type="kevoree:ServicePortType"></typeDefinitions>
+ <typeDefinitions interface="org.ow2.frascati.examples.helloworld.pojo.PrintService" synchrone="false" name="org.ow2.frascati.examples.helloworld.pojo.PrintService" xsi:type="kevoree:ServicePortType"></typeDefinitions>
+ <typeDefinitions deployUnits="//@deployUnits.40" updateMethod="update" stopMethod="stop" startMethod="start" bean="org.ow2.frascati.examples.helloworld.pojo.Server" name="server" xsi:type="kevoree:ComponentType">
+  <dictionaryType>
+   <attributes fragmentDependant="false" datatype="java.lang.String" state="false" optional="false" name="header" xsi:type="kevoree:DictionaryAttribute"></attributes>
+  </dictionaryType>
+  <provided ref="//@typeDefinitions.4" noDependency="false" optional="true" name="printService" xsi:type="kevoree:PortTypeRef"></provided>
+ </typeDefinitions>
+ <typeDefinitions deployUnits="//@deployUnits.40" bean="helloworld-pojo.composite" name="helloworld-pojo" xsi:type="kevoree:ComponentType">
+  <provided ref="//@typeDefinitions.3" noDependency="false" optional="true" name="r" xsi:type="kevoree:PortTypeRef"></provided>
+ </typeDefinitions>
  <repositories url="http://maven.kevoree.org/archiva/repository/release/" xsi:type="kevoree:Repository"></repositories>
  <repositories url="https://frascati-repo.inria.fr/nexus/content/groups/public" xsi:type="kevoree:Repository"></repositories>
  <repositories url="http://maven.kevoree.org/release" xsi:type="kevoree:Repository"></repositories>
  <repositories url="http://maven.kevoree.org/snapshots" xsi:type="kevoree:Repository"></repositories>
  <repositories url="http://repo1.maven.org/maven2" xsi:type="kevoree:Repository"></repositories>
+ <repositories url="http://maven.kevoree.org/archiva/repository/snapshots/" xsi:type="kevoree:Repository"></repositories>
+ <repositories url="http://scala-tools.org/repo-releases" xsi:type="kevoree:Repository"></repositories>
  <libraries subTypes="//@typeDefinitions.0 //@typeDefinitions.1" name="JavaSE" xsi:type="kevoree:TypeLibrary"></libraries>
  <libraries subTypes="//@typeDefinitions.0" name="Frascati" xsi:type="kevoree:TypeLibrary"></libraries>
- <deployUnits targetNodeType="//@typeDefinitions.1" requiredLibs="//@deployUnits.1 //@deployUnits.2 //@deployUnits.3 //@deployUnits.4 //@deployUnits.5 //@deployUnits.6 //@deployUnits.7 //@deployUnits.8 //@deployUnits.9 //@deployUnits.10 //@deployUnits.11 //@deployUnits.12 //@deployUnits.13 //@deployUnits.14 //@deployUnits.15 //@deployUnits.16 //@deployUnits.17 //@deployUnits.18 //@deployUnits.19 //@deployUnits.20 //@deployUnits.21 //@deployUnits.22 //@deployUnits.23 //@deployUnits.24 //@deployUnits.25 //@deployUnits.26 //@deployUnits.27 //@deployUnits.28 //@deployUnits.29 //@deployUnits.30 //@deployUnits.31 //@deployUnits.32 //@deployUnits.33 //@deployUnits.34 //@deployUnits.35 //@deployUnits.36 //@deployUnits.37 //@deployUnits.38" type="jar" hashcode="201203051051813" version="1.6.0-BETA3" unitName="org.kevoree.library.frascati.frascatiNode" groupName="org.kevoree.library.frascati" xsi:type="kevoree:DeployUnit"></deployUnits>
- <deployUnits targetNodeType="//@typeDefinitions.1" type="jar" hashcode="201203011736461" version="1.6.0-BETA3" unitName="org.kevoree.library.javase.javaseNode" groupName="org.kevoree.library.javase" xsi:type="kevoree:DeployUnit"></deployUnits>
- <deployUnits targetNodeType="//@typeDefinitions.1" type="jar" version="1.6.0-BETA3" unitName="org.kevoree.tools.javase.framework" groupName="org.kevoree.tools" xsi:type="kevoree:DeployUnit"></deployUnits>
+ <deployUnits targetNodeType="//@typeDefinitions.1" requiredLibs="//@deployUnits.1 //@deployUnits.2 //@deployUnits.3 //@deployUnits.4 //@deployUnits.5 //@deployUnits.6 //@deployUnits.7 //@deployUnits.8 //@deployUnits.9 //@deployUnits.10 //@deployUnits.11 //@deployUnits.12 //@deployUnits.13 //@deployUnits.14 //@deployUnits.15 //@deployUnits.16 //@deployUnits.17 //@deployUnits.18 //@deployUnits.19 //@deployUnits.20 //@deployUnits.21 //@deployUnits.22 //@deployUnits.23 //@deployUnits.24 //@deployUnits.25 //@deployUnits.26 //@deployUnits.27 //@deployUnits.28 //@deployUnits.29 //@deployUnits.30 //@deployUnits.31 //@deployUnits.32 //@deployUnits.33 //@deployUnits.34 //@deployUnits.35 //@deployUnits.36 //@deployUnits.37 //@deployUnits.38 //@deployUnits.39" type="jar" hashcode="201203081331654" version="1.6.0-BETA4" unitName="org.kevoree.library.frascati.frascatiNode" groupName="org.kevoree.library.frascati" xsi:type="kevoree:DeployUnit"></deployUnits>
+ <deployUnits targetNodeType="//@typeDefinitions.1" type="jar" hashcode="201203081034986" version="1.6.0-BETA4" unitName="org.kevoree.library.javase.javaseNode" groupName="org.kevoree.library.javase" xsi:type="kevoree:DeployUnit"></deployUnits>
+ <deployUnits targetNodeType="//@typeDefinitions.1" type="jar" version="1.6.0-BETA4" unitName="org.kevoree.tools.javase.framework" groupName="org.kevoree.tools" xsi:type="kevoree:DeployUnit"></deployUnits>
  <deployUnits targetNodeType="//@typeDefinitions.1" type="jar" version="1.5-SNAPSHOT" unitName="frascati-runtime-factory" groupName="org.ow2.frascati" xsi:type="kevoree:DeployUnit"></deployUnits>
  <deployUnits targetNodeType="//@typeDefinitions.1" type="jar" version="1.5-SNAPSHOT" unitName="frascati-assembly-factory" groupName="org.ow2.frascati" xsi:type="kevoree:DeployUnit"></deployUnits>
  <deployUnits targetNodeType="//@typeDefinitions.1" type="jar" version="1.5-SNAPSHOT" unitName="frascati-sca-parser" groupName="org.ow2.frascati" xsi:type="kevoree:DeployUnit"></deployUnits>
@@ -34,6 +55,7 @@
  <deployUnits targetNodeType="//@typeDefinitions.1" type="jar" version="2.5.2" unitName="julia-runtime" groupName="org.objectweb.fractal.julia" xsi:type="kevoree:DeployUnit"></deployUnits>
  <deployUnits targetNodeType="//@typeDefinitions.1" type="jar" version="1.8" unitName="monolog" groupName="org.objectweb.monolog" xsi:type="kevoree:DeployUnit"></deployUnits>
  <deployUnits targetNodeType="//@typeDefinitions.1" type="jar" version="3.3" unitName="fraclet-annotations" groupName="org.objectweb.fractal.fraclet.java" xsi:type="kevoree:DeployUnit"></deployUnits>
+ <deployUnits targetNodeType="//@typeDefinitions.1" type="jar" version="r07" unitName="guava" groupName="com.google.guava" xsi:type="kevoree:DeployUnit"></deployUnits>
  <deployUnits targetNodeType="//@typeDefinitions.1" type="jar" version="2.4" unitName="juliac-jdt" groupName="org.objectweb.fractal.juliac" xsi:type="kevoree:DeployUnit"></deployUnits>
  <deployUnits targetNodeType="//@typeDefinitions.1" type="jar" version="3.3.0.771" unitName="core" groupName="org.eclipse.jdt" xsi:type="kevoree:DeployUnit"></deployUnits>
  <deployUnits targetNodeType="//@typeDefinitions.1" type="jar" version="1.5-SNAPSHOT" unitName="frascati-component-factory-juliac-tinfi-oo" groupName="org.ow2.frascati" xsi:type="kevoree:DeployUnit"></deployUnits>
@@ -47,7 +69,8 @@
  <deployUnits targetNodeType="//@typeDefinitions.1" type="jar" version="2.4" unitName="juliac-oo" groupName="org.objectweb.fractal.juliac" xsi:type="kevoree:DeployUnit"></deployUnits>
  <deployUnits targetNodeType="//@typeDefinitions.1" type="jar" version="2.5.2" unitName="julia-mixins" groupName="org.objectweb.fractal.julia" xsi:type="kevoree:DeployUnit"></deployUnits>
  <deployUnits targetNodeType="//@typeDefinitions.1" type="jar" version="1.4.4" unitName="frascati-tinfi-mixins" groupName="org.ow2.frascati.tinfi" xsi:type="kevoree:DeployUnit"></deployUnits>
- <deployUnits targetNodeType="//@typeDefinitions.1" type="jar" version="1.6.0-BETA3" unitName="org.kevoree.tools.annotation.api" groupName="org.kevoree.tools" xsi:type="kevoree:DeployUnit"></deployUnits>
+ <deployUnits targetNodeType="//@typeDefinitions.1" type="jar" version="1.6.0-BETA4" unitName="org.kevoree.tools.annotation.api" groupName="org.kevoree.tools" xsi:type="kevoree:DeployUnit"></deployUnits>
+ <deployUnits targetNodeType="//@typeDefinitions.0" type="bundle" hashcode="1331210350833" version="1.5-SNAPSHOT" unitName="helloworld-pojo" groupName="org.ow2.frascati.examples" xsi:type="kevoree:DeployUnit"></deployUnits>
  <adaptationPrimitiveTypes name="UpdateType" xsi:type="kevoree:AdaptationPrimitiveType"></adaptationPrimitiveTypes>
  <adaptationPrimitiveTypes name="UpdateDeployUnit" xsi:type="kevoree:AdaptationPrimitiveType"></adaptationPrimitiveTypes>
  <adaptationPrimitiveTypes name="AddType" xsi:type="kevoree:AdaptationPrimitiveType"></adaptationPrimitiveTypes>

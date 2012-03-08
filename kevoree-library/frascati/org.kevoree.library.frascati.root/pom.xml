@@ -22,7 +22,7 @@
 
     <modules>
         <module>../org.kevoree.library.frascati.mavenplugin</module>
-        <module>../org.kevoree.library.frascati.helloworld.pojo</module>
+    <!--    <module>../org.kevoree.library.frascati.helloworld.pojo</module> -->
         <module>../org.kevoree.library.frascati.frascatiNode</module>
 
         <module>../org.kevoree.library.frascati.runner</module>

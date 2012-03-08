@@ -13,14 +13,13 @@
  */
 package org.kevoree.framework.aspects
 
-import org.kevoree.{Instance, ContainerRoot, ContainerNode}
+import org.kevoree.{Instance, ContainerRoot}
 
 /**
  * Created by IntelliJ IDEA.
  * User: duke
  * Date: 04/10/11
  * Time: 18:16
- * To change this template use File | Settings | File Templates.
  */
 
 case class ContainerRootAspect(root: ContainerRoot) {
@@ -44,5 +43,5 @@ case class ContainerRootAspect(root: ContainerRoot) {
     }
     instances
   }
-
+  
 }
