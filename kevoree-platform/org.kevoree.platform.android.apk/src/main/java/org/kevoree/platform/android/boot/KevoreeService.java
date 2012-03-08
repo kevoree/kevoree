@@ -20,13 +20,10 @@ package org.kevoree.platform.android.boot;
 import android.app.*;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Environment;
 import android.os.IBinder;
 import android.util.Log;
-import android.widget.TabHost;
 import org.kevoree.platform.android.ui.KevoreeAndroidUIScreen;
 
-import java.io.File;
 import java.lang.reflect.Method;
 
 /**
@@ -36,7 +33,7 @@ public class KevoreeService extends Service {
 
    //private KevoreeAndroidBootstrap kebBoot = null;
 
-    private TinyKCL tkcl = null;
+
     private Object bootObj = null;
 
     @Override
@@ -56,25 +53,13 @@ public class KevoreeService extends Service {
         new Thread() {
             @Override
             public void run() {
-                tkcl = new TinyKCL();
-                File sdDir = Environment.getExternalStorageDirectory();
-                File kevoree_cache = new File(sdDir.getAbsolutePath() + "/KEVOREE");
-                Log.i("kevoree.android", kevoree_cache.getAbsolutePath());
-                if (!kevoree_cache.exists()) {
-                    if (!kevoree_cache.mkdirs()) {
-                        Log.e("kevoree.M2", "unable to create cache");
-                        throw new IllegalStateException("Unable to create kevoree maven repo cache dir");
-                    } else {
-                        Log.i("kevoree.M2", "cache created");
-                    }
-                }
-                System.setProperty("user.home", kevoree_cache.getAbsolutePath());
-                tkcl.start(getBaseContext(),getClassLoader());
-                try {
-                    Class bootClazz = tkcl.getClusterKCL().loadClass("org.kevoree.platform.android.core.KevoreeAndroidBootStrap");
+                KevoreeActivity.tkcl.waitExecutor();
+                try
+                {
+                    Class bootClazz = KevoreeActivity.tkcl.getClusterKCL().loadClass("org.kevoree.platform.android.core.KevoreeAndroidBootStrap");
                     bootObj = bootClazz.newInstance();
                     Method startM = bootClazz.getMethod("start",Activity.class, android.content.Context.class, ClassLoader.class, KevoreeAndroidUIScreen.class, String.class);
-                    startM.invoke(bootObj,KevoreeActivity.singleton,getBaseContext(),tkcl.getClusterKCL(),KevoreeActivity.singleton,KevoreeActivity.nodeName);
+                    startM.invoke(bootObj,KevoreeActivity.singleton,getBaseContext(),KevoreeActivity.tkcl.getClusterKCL(),KevoreeActivity.singleton,KevoreeActivity.nodeName);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

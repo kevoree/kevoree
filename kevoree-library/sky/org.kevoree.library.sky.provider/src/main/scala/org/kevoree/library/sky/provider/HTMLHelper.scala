@@ -11,7 +11,7 @@ package org.kevoree.library.sky.provider
 
 object HTMLHelper {
 
-  def generateSimpleSubmissionFormHtml (targetURL: String, url : String): String = {
+  def generateSimpleSubmissionFormHtml (targetURL: String, url: String): String = {
 
     val cssPath = url + "/css/bootstrap.min.css"
 
@@ -58,7 +58,7 @@ object HTMLHelper {
       .toString()
   }
 
-  def generateValidSubmissionPageHtml (targetURL: String, login: String, address: String, url : String): String = {
+  def generateValidSubmissionPageHtml (targetURL: String, login: String, address: String, url: String): String = {
 
     val cssPath = url + "/css/bootstrap.min.css"
     <html>
@@ -82,7 +82,7 @@ object HTMLHelper {
     </html>.toString()
   }
 
-  def generateUnvalidSubmissionPageHtml (targetURL: String, login: String, exception: String, url : String): String = {
+  def generateUnvalidSubmissionPageHtml (targetURL: String, login: String, exception: String, url: String): String = {
 
     val cssPath = url + "/css/bootstrap.min.css"
     <html>
@@ -104,7 +104,7 @@ object HTMLHelper {
     </html>.toString()
   }
 
-  def generateFailToLoginPageHtml (login: String, url : String): String = {
+  def generateFailToLoginPageHtml (login: String, url: String): String = {
     val cssPath = url + "/css/bootstrap.min.css"
     <html>
       <head>
@@ -122,5 +122,56 @@ object HTMLHelper {
         </p>
       </body>
     </html>.toString()
+  }
+
+  def generateReleaseResponse (login: String, url: String): String = {
+    val cssPath = url + "/css/bootstrap.min.css"
+    <html>
+      <head>
+          <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+          <meta charset="utf-8"/>
+          <link href={cssPath} rel="stylesheet"/>
+      </head>
+      <body>
+        <p>
+          Now all configurations for user
+          {login}
+          are removed and unavailable on the Kloud.
+        </p>
+      </body>
+    </html>.toString()
+  }
+
+  def generateReleaseForm (targetURL: String, url: String): String = {
+
+    val cssPath = url + "/css/bootstrap.min.css"
+
+    <html>
+      <head>
+          <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+          <meta charset="utf-8"/>
+          <link href={cssPath} rel="stylesheet"/>
+      </head>
+      <body>
+        <form method="post" action={targetURL} enctype="multipart/form-data">
+          <table>
+            <tr>
+              <td>Login:</td>
+              <td>
+                  <input type="text" name="login" maxlength="20" size="20"/>
+              </td>
+              <td>Password:</td>
+              <td>
+                  <input type="password" name="password" maxlength="20" size="20"/>
+              </td>
+              <td colspan="2" align="center">
+                  <input type="submit" value="Submit"/>
+              </td>
+            </tr>
+          </table>
+        </form>
+      </body>
+    </html>
+      .toString()
   }
 }

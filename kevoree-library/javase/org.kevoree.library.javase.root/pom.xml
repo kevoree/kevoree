@@ -6,12 +6,12 @@
     <artifactId>org.kevoree.library.javase.root</artifactId>
     <packaging>pom</packaging>
     <name>Kevoree :: Library :: JavaSE :: Root</name>
-    <version>1.6.0-BETA3</version>
+    <version>1.6.0-BETA4</version>
 
     <parent>
         <artifactId>org.kevoree.library</artifactId>
         <groupId>org.kevoree.library</groupId>
-        <version>1.6.0-BETA3</version>
+        <version>1.6.0-BETA4</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
@@ -77,15 +77,10 @@
 
 
         <module>../org.kevoree.library.javase.esper</module>
-
-
         <module>../org.kevoree.library.javase.webSocket</module>
         <module>../org.kevoree.library.javase.nanohttp</module>
-
-
         <module>../org.kevoree.library.javase.airReceiver.server</module>
-
-
+        <module>../org.kevoree.library.javase.camel</module>
     </modules>
 
 

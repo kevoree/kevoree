@@ -137,7 +137,7 @@ class JailKevoreeNodeRunner (nodeName: String, bootStrapModel: String, inet: Str
             // specify limitation on jail such as CPU, RAM
             if (specifyConstraints()) {
               // configure ssh access
-              configureSSH(model, jailPath, newIp)
+              configureSSHServer(model, jailPath, newIp)
               // launch the jail
               resultActor.starting()
               logger.debug("running {} onestart {}", Array[AnyRef](ezjailAdmin, nodeName))

@@ -16,7 +16,7 @@ package org.kevoree.library.defaultNodeTypes.jcl.deploy.command
 
 import org.kevoree.DeployUnit
 import org.slf4j.LoggerFactory
-import org.kevoree.framework.{FileNIOHelper}
+import org.kevoree.framework.FileNIOHelper
 import java.io.{FileInputStream, File}
 import java.util.Random
 import org.kevoree.library.defaultNodeTypes.jcl.deploy.context.{KevoreeMapping, KevoreeDeployManager}
@@ -29,7 +29,7 @@ import org.kevoree.api.PrimitiveCommand
  * Time: 16:35
  */
 
-case class RemoveDeployUnit(du: DeployUnit,bootstrap : org.kevoree.api.Bootstraper) extends PrimitiveCommand {
+case class RemoveDeployUnit(du: DeployUnit, bootstrap: org.kevoree.api.Bootstraper) extends PrimitiveCommand {
 
   val logger = LoggerFactory.getLogger(this.getClass)
   var lastTempFile: File = _
@@ -49,10 +49,17 @@ case class RemoveDeployUnit(du: DeployUnit,bootstrap : org.kevoree.api.Bootstrap
   //LET THE UNINSTALL
   def execute(): Boolean = {
     try {
-      lastTempFile = File.createTempFile(random.nextInt() + "", ".jar")
-      val jarStream = new FileInputStream(bootstrap.getKevoreeClassLoaderHandler.getCacheFile(du));
-      FileNIOHelper.copyFile(jarStream, lastTempFile)
-      jarStream.close()
+
+      val cachedFile = bootstrap.getKevoreeClassLoaderHandler.getCacheFile(du)
+      if (cachedFile != null) {
+        lastTempFile = File.createTempFile(random.nextInt() + "", ".jar")
+        lastTempFile.deleteOnExit()
+        val jarStream = new FileInputStream(cachedFile);
+        FileNIOHelper.copyFile(jarStream, lastTempFile)
+        jarStream.close()
+      }
+
+
       bootstrap.getKevoreeClassLoaderHandler.removeDeployUnitClassLoader(du)
       KevoreeDeployManager.bundleMapping.filter(bm => bm.ref.isInstanceOf[DeployUnit]).foreach(bm => {
         if (CommandHelper.buildKEY(bm.ref.asInstanceOf[DeployUnit]) == CommandHelper.buildKEY(du)) {

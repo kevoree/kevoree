@@ -136,8 +136,11 @@ class JCLContextHandler extends DaemonActor with KevoreeClassLoaderHandler {
   }
 
 
-  private val failedLinks = new java.util.HashMap[DeployUnit,KevoreeJarClassLoader]()
-  def clearFailedLinks(){ failedLinks.clear() }
+  private val failedLinks = new java.util.HashMap[DeployUnit, KevoreeJarClassLoader]()
+
+  def clearFailedLinks() {
+    failedLinks.clear()
+  }
 
   private def installDeployUnitInternals(du: DeployUnit, file: File): KevoreeJarClassLoader = {
     val previousKCL = getKCLInternals(du)
@@ -149,22 +152,22 @@ class JCLContextHandler extends DaemonActor with KevoreeClassLoaderHandler {
       val newcl = new KevoreeJarClassLoader
 
       //if (du.getVersion.contains("SNAPSHOT")) {
-        newcl.setLazyLoad(false)
-     // }
+      newcl.setLazyLoad(false)
+      // }
 
       newcl.add(file.getAbsolutePath)
       kcl_cache.put(buildKEY(du), newcl)
       kcl_cache_file.put(buildKEY(du), file)
       logger.debug("Add KCL for {}->{}", du.getUnitName, buildKEY(du))
-      
-            //TRY TO RECOVER FAILED LINK
-      if(failedLinks.containsKey(du)){
+
+      //TRY TO RECOVER FAILED LINK
+      if (failedLinks.containsKey(du)) {
         failedLinks.get(du).addSubClassLoader(newcl)
         newcl.addWeakClassLoader(failedLinks.get(du))
         failedLinks.remove(du)
-        logger.debug("Failed Link {} remain size : {}",du.getUnitName,failedLinks.size())
+        logger.debug("Failed Link {} remain size : {}", du.getUnitName, failedLinks.size())
       }
-      
+
       du.getRequiredLibs.foreach {
         rLib =>
           val kcl = getKCLInternals(rLib)
@@ -177,16 +180,16 @@ class JCLContextHandler extends DaemonActor with KevoreeClassLoaderHandler {
               val kcl2 = getKCLInternals(rLibIn)
               if (kcl2 != null) {
                 kcl.addWeakClassLoader(kcl2)
-                logger.debug("Link Weak for {}->{}", rLib.getUnitName, rLibIn.getUnitName)
+                // logger.debug("Link Weak for {}->{}", rLib.getUnitName, rLibIn.getUnitName)
               }
             })
           } else {
             logger.debug("Fail link ! Warning ")
-            failedLinks.put(rLib,newcl)
+            failedLinks.put(rLib, newcl)
           }
       }
 
-    
+
       newcl
     }
     /*
@@ -201,28 +204,31 @@ class JCLContextHandler extends DaemonActor with KevoreeClassLoaderHandler {
   }
 
   private def removeDeployUnitInternals(du: DeployUnit) {
-    if(failedLinks.containsKey(du)){
+    if (failedLinks.containsKey(du)) {
       failedLinks.remove(du)
     }
-    
     val key = buildKEY(du)
-    val kcl_to_remove = kcl_cache.get(key)
     if (!lockedDu.contains(key)) {
-      if (kcl_cache.containsKey(key)) {
-        logger.debug("Remove KCL for {}->{}", du.getUnitName, buildKEY(du))
-        //logger.debug("Cache To cleanuip size"+kcl_cache.values().size()+"-"+kcl_cache.size()+"-"+kcl_cache.keySet().size())
-        kcl_cache.values().foreach {
-          vals => {
-            vals.cleanupLinks(kcl_to_remove)
-            //logger.debug("Cleanup {} from {}",vals.toString(),du.getUnitName)
+      val kcl_to_remove = kcl_cache.get(key)
+      if (!lockedDu.contains(key)) {
+        if (kcl_cache.containsKey(key)) {
+          logger.debug("Remove KCL for {}->{}", du.getUnitName, buildKEY(du))
+          //logger.debug("Cache To cleanuip size"+kcl_cache.values().size()+"-"+kcl_cache.size()+"-"+kcl_cache.keySet().size())
+          kcl_cache.values().foreach {
+            vals => {
+              vals.cleanupLinks(kcl_to_remove)
+              //logger.debug("Cleanup {} from {}",vals.toString(),du.getUnitName)
+            }
           }
+          kcl_cache.get(key).unload()
+          kcl_cache.remove(key)
         }
-        kcl_cache.get(key).unload()
-        kcl_cache.remove(key)
-      }
-      if (kcl_cache_file.containsKey(key)) {
-        kcl_cache_file.remove(key)
-        logger.debug("Remove File Cache "+key)
+        if (kcl_cache_file.containsKey(key)) {
+          logger.debug("Cleanup Cache File"+kcl_cache_file.get(key).getAbsolutePath)
+          kcl_cache_file.get(key).delete()
+          kcl_cache_file.remove(key)
+          logger.debug("Remove File Cache " + key)
+        }
       }
     }
   }
@@ -288,10 +294,6 @@ class JCLContextHandler extends DaemonActor with KevoreeClassLoaderHandler {
 
     buffer.toString
   }
-
-
-
-
 
 
 }

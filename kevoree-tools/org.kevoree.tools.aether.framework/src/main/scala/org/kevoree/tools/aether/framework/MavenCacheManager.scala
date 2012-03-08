@@ -50,7 +50,7 @@ import org.sonatype.aether.RepositoryEvent.EventType
  * Time: 18:42
  */
 
-trait CacheManager {
+trait MavenCacheManager {
 
   private val logger = LoggerFactory.getLogger(this.getClass)
 
