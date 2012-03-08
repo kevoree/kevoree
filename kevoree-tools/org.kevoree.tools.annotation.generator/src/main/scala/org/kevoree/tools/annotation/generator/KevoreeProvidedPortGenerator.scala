@@ -60,7 +60,27 @@ object KevoreeProvidedPortGenerator {
             /* CALL MAPPED METHOD */
             writer.append("case _ @ msg =>try{component.")
 
-            writer.append(mapping.getBeanMethodName + "(msg)}catch{case _ @ e => {e.printStackTrace();println(\"Uncatched exception while processing Kevoree message\")}}\n")
+            writer.append(mapping.getBeanMethodName + "(")
+            if(mapping.getParamTypes != null && mapping.getParamTypes != "" && mapping.getParamTypes.split(",").size >1 ){
+              
+              val elemsT = mapping.getParamTypes.split(",")
+              elemsT.foreach{ t =>
+                t match {
+                  case "java.lang.String" => writer.append("getName")
+                  case "java.lang.Object" => writer.append("msg")
+                  case _ => writer.append("null")
+                }
+                if(elemsT.last != t){
+                  writer.append(",")
+                }
+              }
+              
+            } else {
+              writer.append("msg")
+            }
+            
+            
+            writer.append(")}catch{case _ @ e => {e.printStackTrace();println(\"Uncatched exception while processing Kevoree message\")}}\n")
             writer.append("}\n")
           }
           case None => {

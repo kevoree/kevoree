@@ -25,30 +25,73 @@ import org.kevoree.tools.marShell.interpreter.KevsInterpreterContext
 import org.kevoree.tools.marShell.ast.{RemoveNodeStatment, AddNodeStatment}
 import org.slf4j.LoggerFactory
 
-case class KevsRemoveNodeInterpreter(addN: RemoveNodeStatment) extends KevsAbstractInterpreter {
+case class KevsRemoveNodeInterpreter (addN: RemoveNodeStatment) extends KevsAbstractInterpreter {
 
   var logger = LoggerFactory.getLogger(this.getClass)
 
-  def interpret(context: KevsInterpreterContext): Boolean = {
+  def interpret (context: KevsInterpreterContext): Boolean = {
 
     context.model.getNodes.find(n => n.getName == addN.nodeName) match {
       case Some(targetNode) => {
         //DELETE ALL GROUP DEPENDENCY
-         context.model.getGroups.foreach{g=>
-             if(g.getSubNodes.contains(targetNode)){
-               g.removeSubNodes(targetNode)
-             }
-         }
+        context.model.getGroups.foreach {
+          g =>
+            if (g.getSubNodes.contains(targetNode)) {
+              g.removeSubNodes(targetNode)
+            }
+        }
+
         //DELETE ALL COMPONENT
-        (targetNode.getComponents.toList++ List()).foreach(c => {
+        (targetNode.getComponents.toList ++ List()).foreach(c => {
           KevsRemoveComponentInstanceInterpreter(null).deleteComponent(targetNode, c)
         })
+
+        //REMOVE FROM NETWORK LINK
+        context.model.getNodeNetworks.foreach {
+          nn =>
+            if (nn.getTarget.getName == addN.nodeName) {
+              context.model.removeNodeNetworks(nn)
+            } else {
+              nn.getInitBy.map {
+                initNode =>
+                  if (initNode.getName == addN.nodeName) {
+                    context.model.removeNodeNetworks(nn)
+                  }
+              }
+            }
+
+        }
+
+        //CLEANUP HOST NODE
+        context.model.getNodes.foreach {
+          node =>
+            node.getHosts.find(n => n.getName == addN.nodeName) match {
+              case None =>
+              case Some(n) =>
+                node.removeHosts(n)
+            }
+        }
+
+        //CLEANUP DICTIONARY
+        import org.kevoree.framework.aspects.KevoreeAspects._
+        context.model.getAllInstances.foreach {
+          inst =>
+            inst.getDictionary.map {
+              dico =>
+                dico.getValues.filter(v => v.getTargetNode.isDefined && v.getTargetNode.get.getName == addN.nodeName).foreach {
+                  value =>
+                    dico.removeValues(value)
+                }
+            }
+        }
+
         //DELETE NODE
         context.model.removeNodes(targetNode)
         true
       }
       case None => {
-        logger.error("Node Already existe"); false
+        logger.error("Node Already existe");
+        false
       }
     }
   }

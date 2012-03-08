@@ -6,7 +6,7 @@
     <packaging>pom</packaging>
     <name>Kevoree :: Tools :: Root</name>
     <url>https://github.com/dukeboard/kevoree</url>
-    <version>1.6.0-BETA3</version>
+    <version>1.6.0-BETA4</version>
 
 
     <dependencies>
@@ -152,9 +152,7 @@
 
         <module>../org.kevoree.tools.annotation.api</module>
         <module>../org.kevoree.tools.arduino.framework</module>
-
-
-
+        <module>../org.kevoree.tools.camel.framework</module>
 
         <module>../org.kevoree.tools.annotation.generator</module>
         <module>../org.kevoree.tools.annotation.processor</module>
