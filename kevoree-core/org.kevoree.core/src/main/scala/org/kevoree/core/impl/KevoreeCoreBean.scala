@@ -22,7 +22,7 @@ import _root_.org.kevoree.KevoreeFactory
 import _root_.org.kevoree.ContainerRoot
 import _root_.org.kevoree.api.configuration.ConfigurationService
 import _root_.org.slf4j.LoggerFactory
-import _root_.scala.reflect.BeanProperty
+import _root_.scala.beans.BeanProperty
 import _root_.org.kevoree.api.configuration.ConfigConstants
 import _root_.org.kevoree.framework._
 import _root_.org.kevoree.core.impl.message._

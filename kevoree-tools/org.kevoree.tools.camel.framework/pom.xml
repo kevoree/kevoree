@@ -1,19 +1,17 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.kevoree.library.javase</groupId>
-    <artifactId>org.kevoree.library.javase.camel</artifactId>
+    <artifactId>org.kevoree.tools.camel.framework</artifactId>
+    <packaging>jar</packaging>
+    <name>Kevoree :: Tools :: Apache Camel Framework</name>
     <version>1.6.0-BETA4</version>
-    <name>Kevoree :: Library :: JavaSE :: ApacheCamel</name>
 
     <parent>
-        <artifactId>org.kevoree.library.javase.root</artifactId>
-        <groupId>org.kevoree.library.javase</groupId>
+        <artifactId>org.kevoree.tools.root</artifactId>
+        <groupId>org.kevoree.tools</groupId>
         <version>1.6.0-BETA4</version>
-        <relativePath>../org.kevoree.library.javase.root/pom.xml</relativePath>
+        <relativePath>../org.kevoree.tools.root/pom.xml</relativePath>
     </parent>
-
 
     <properties>
         <camel.version>2.9.1</camel.version>
@@ -21,22 +19,19 @@
     </properties>
 
     <dependencies>
-        <!--
-        <dependency>
-            <groupId>org.apache.camel</groupId>
-            <artifactId>camel-core</artifactId>
-            <version>${apache.camel.version}</version>
-        </dependency>
--->
-
         <dependency>
             <groupId>org.kevoree.tools</groupId>
-            <artifactId>org.kevoree.tools.camel.framework</artifactId>
+            <artifactId>org.kevoree.tools.javase.framework</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.kevoree.tools</groupId>
+            <artifactId>org.kevoree.tools.annotation.api</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.camel</groupId>
-            <artifactId>camel-stream</artifactId>
+            <artifactId>camel-core</artifactId>
             <version>${camel.version}</version>
         </dependency>
 
