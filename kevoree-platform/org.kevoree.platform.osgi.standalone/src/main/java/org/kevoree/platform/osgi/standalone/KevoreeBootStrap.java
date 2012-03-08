@@ -160,7 +160,7 @@ public class KevoreeBootStrap {
                             bootstrapModel = KevoreeXmiHelper.load(bootstrapModelPath);
                         }
                     } catch (Exception e) {
-                        logger.error("Bootstrap failed", e);
+                        logger.error("Bootstrap failed from {}", configBean.getProperty(ConfigConstants.KEVOREE_NODE_BOOTSTRAP()), e);
                     }
                 } else {
                     try {
