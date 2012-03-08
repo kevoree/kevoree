@@ -19,6 +19,7 @@
 package org.kevoree.framework.aspects
 
 import org.kevoree._
+import KevoreeAspects._
 
 case class ContainerNodeAspect (node: ContainerNode) {
 
@@ -135,5 +136,16 @@ case class ContainerNodeAspect (node: ContainerNode) {
     }
     types
   }
+
+  def isDeployUnitUsed(du : DeployUnit) : Boolean = {
+    node.getUsedTypeDefinition.exists( usedTypeDef => {
+      val usedDU = usedTypeDef.foundRelevantDeployUnit(node)
+      usedDU.isDeployUnitUsed(du)
+    })
+  }
+
+
+
+
 
 }
