@@ -40,7 +40,7 @@ import org.sonatype.aether.{ConfigurationProperties, RepositorySystem}
  * Time: 15:06
  */
 
-object AetherUtil extends CacheManager {
+object AetherUtil extends TempFileCacheManager {
 
   private val logger = LoggerFactory.getLogger(this.getClass)
 
