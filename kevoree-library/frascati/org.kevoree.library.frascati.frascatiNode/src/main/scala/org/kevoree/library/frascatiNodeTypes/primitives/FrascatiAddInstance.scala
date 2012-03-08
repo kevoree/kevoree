@@ -34,9 +34,13 @@ case class FrascatiAddInstance(adaptationPrimitive: AdaptationPrimitive, frascat
         //val cm = frascati.getCompositeManager
         // Create a FraSCAti Assembly Factory processing context.
 
-        frascati.getComposite("helloworld-pojo",kcl)
-
-
+        //frascati.getComposite("helloworld-pojo",kcl)
+        
+        
+        //CHECK KCL FOUND CLASS
+        System.out.println("ClassFound="+kcl.loadClass("org.ow2.frascati.tinfi.opt.oo.FCOOCtrlSourceCodeGenerator"));
+        
+        frascati.getComposite(compositeURL.getPath,kcl)
 
         // Process the composite.
         //  frascati.getClassLoaderManager().loadLibraries(Array(new URL("file:/opt/frascati-runtime-1.4/examples/helloworld-pojo/target/helloworld-pojo-1.4.jar")))
