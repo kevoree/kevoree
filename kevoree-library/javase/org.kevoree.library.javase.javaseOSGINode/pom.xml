@@ -6,12 +6,12 @@
     <artifactId>org.kevoree.library.javase.javaseOSGINode</artifactId>
     <packaging>jar</packaging>
     <name>Kevoree :: Library :: JavaSE :: JavaSE OSGI Node</name>
-    <version>1.6.0-BETA3</version>
+    <version>1.6.0-BETA4</version>
 
     <parent>
         <artifactId>org.kevoree.library.javase.root</artifactId>
         <groupId>org.kevoree.library.javase</groupId>
-        <version>1.6.0-BETA3</version>
+        <version>1.6.0-BETA4</version>
         <relativePath>../org.kevoree.library.javase.root/pom.xml</relativePath>
     </parent>
 

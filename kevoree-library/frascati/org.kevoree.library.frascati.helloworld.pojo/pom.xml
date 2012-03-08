@@ -11,7 +11,7 @@
     <parent>
         <artifactId>org.kevoree.library.frascati.root</artifactId>
         <groupId>org.kevoree.library.frascati</groupId>
-        <version>1.6.0-BETA3</version>
+        <version>1.6.0-BETA4</version>
         <relativePath>../org.kevoree.library.frascati.root/pom.xml</relativePath>
     </parent>
 
