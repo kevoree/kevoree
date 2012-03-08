@@ -22,6 +22,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
 import android.util.Log;
+import org.kevoree.platform.android.boot.controller.ControllerImpl;
 import org.kevoree.platform.android.ui.KevoreeAndroidUIScreen;
 
 import java.lang.reflect.Method;
@@ -31,77 +32,53 @@ import java.lang.reflect.Method;
  */
 public class KevoreeService extends Service {
 
-   //private KevoreeAndroidBootstrap kebBoot = null;
 
+    private String nodeName;
 
     private Object bootObj = null;
 
     @Override
-    public IBinder onBind(Intent intent) {
+    public IBinder onBind(Intent intent)
+    {
         return null;
     }
 
-    /**
-     * Launch the OSGi framework.
-     */
+
     @Override
-    public void onCreate() {
-        super.onCreate();
+    public void onStart(Intent intent, int startId) {
+        super.onStart(intent, startId);
+
+        nodeName =  intent.getExtras().getString("nodeName");
+
+
+        Log.i("KevoreeService onStartCommand",""+nodeName);
+
         System.setProperty("java.net.preferIPv6Addresses", "false");
         System.setProperty("java.net.preferIPv4Addresses", "true");
         System.setProperty("java.net.preferIPv4Stack", "true");
+
         new Thread() {
             @Override
             public void run() {
-                KevoreeActivity.tkcl.waitExecutor();
+
+                ControllerImpl.tkcl.waitTinyKCL();
                 try
                 {
-                    Class bootClazz = KevoreeActivity.tkcl.getClusterKCL().loadClass("org.kevoree.platform.android.core.KevoreeAndroidBootStrap");
+                    Class bootClazz =  ControllerImpl.tkcl.getClusterKCL().loadClass("org.kevoree.platform.android.core.KevoreeAndroidBootStrap");
                     bootObj = bootClazz.newInstance();
                     Method startM = bootClazz.getMethod("start",Activity.class, android.content.Context.class, ClassLoader.class, KevoreeAndroidUIScreen.class, String.class);
-                    startM.invoke(bootObj,KevoreeActivity.singleton,getBaseContext(),KevoreeActivity.tkcl.getClusterKCL(),KevoreeActivity.singleton,KevoreeActivity.nodeName);
+                    startM.invoke(bootObj,ControllerImpl.viewmanager.getCtx(),getBaseContext(), ControllerImpl.tkcl.getClusterKCL(),ControllerImpl.viewmanager,nodeName);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-
-                // kebBoot.start(getBaseContext(), getClassLoader());
-                //File m_cache = new File(sdDir.getAbsolutePath() + "/" + FELIX_CACHE_DIR);
-                //System.setProperty("osgi.cache",m_cache.getAbsolutePath());
-
-                //Log.i("kevoree.android", m_cache.getAbsolutePath());
-/*
-                if (!m_cache.exists()) {
-                    if (!m_cache.mkdirs()) {
-                        Log.e("kevoree.felix", "unable to create cache");
-                        throw new IllegalStateException("Unable to create kevoree osgi cache dir");
-                    } else {
-                        Log.i("kevoree.felix", "cache created");
-                    }
-                } else {
-                
-                    //m_cache.delete();
-                    //m_cache.mkdirs();
-                    Log.i("kevoree.felix", "cache already exist");
-                }
-                */
-
-
-                /*
-                try {
-                    // Activate WiFi multicast
-                    WifiManager wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
-                    multicastLock = wifiManager.createMulticastLock("ART2-Multicast-Lock");
-                    multicastLock.acquire();
-                } catch (Exception e) {
-                    Log.e("art2.osgi.service.logger", "Exception when creating the multicast lock", e);
-                }*/
-
 
             }
         }.start();
         //Set the service as foreground, so that the Android OS doesn't kill it
         setServiceAsForeground();
+
     }
+
 
     /* STOP & DESTROY SERVICE */
     @Override
