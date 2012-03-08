@@ -182,7 +182,7 @@ public class NanoRestGroup extends AbstractGroupType {
 		}
 		if (!sent) {
 			logger.debug("try to send model on url=>" + "http://127.0.0.1:" + PORT + "/model/current?nodesrc=" + sender);
-			if (!sendModel(model, "http://127.0.0.1:" + PORT + "/model/current?sender=" + sender)) {
+			if (!sendModel(model, "http://127.0.0.1:" + PORT + "/model/current?nodesrc=" + sender)) {
 				logger.debug("Unable to push a model on " + targetNodeName);
 			}
 		}
