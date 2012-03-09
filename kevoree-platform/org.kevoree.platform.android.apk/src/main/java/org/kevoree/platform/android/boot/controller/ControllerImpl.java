@@ -44,7 +44,6 @@ public class ControllerImpl implements IController  {
     public static TinyKCL tkcl = null;
     private FragmentActivity ctx=null;
 
-
     public ControllerImpl(KController _kController)
     {
         this.kController = _kController;
@@ -60,26 +59,28 @@ public class ControllerImpl implements IController  {
     public boolean handleMessage(Request req) {
         switch(req)
         {
-            case KEVOREE_START:
-                Log.i(TAG, "KEVOREE_START");
-
-                Intent intent_start = new Intent(viewmanager.getCtx(), KevoreeService.class);
-                intent_start.putExtra("nodeName", "node0");
-                viewmanager.getCtx().startService(intent_start);
-
-                break;
-
             case KEVOREE_STOP:
                 Log.i(TAG, "KEVOREE_STOP");
-
-
+                Intent intent_stop = new Intent(ctx, KevoreeService.class);
+                ctx.stopService(intent_stop);
+                System.exit(0);
                 break;
         }
         return false;
     }
 
     @Override
-    public boolean handleMessage(Request what, Object data) {
+    public boolean handleMessage(Request req, Object data) {
+        switch(req)
+        {
+            case KEVOREE_START:
+                Log.i(TAG, "KEVOREE_START");
+                Intent intent_start = new Intent(ctx, KevoreeService.class);
+                String nodeName = (String)data;
+                intent_start.putExtra("nodeName", nodeName);
+                ctx.startService(intent_start);
+                break;
+        }
         return false;
     }
 
@@ -113,18 +114,13 @@ public class ControllerImpl implements IController  {
         return false;
     }
 
-    @Override
-    public boolean restoreIU() {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
 
     public ManagerUI getViewManager(){
         return viewmanager;
     }
 
     public FragmentActivity getCtx() {
-        return ctx;
+        return viewmanager.getCtx();
     }
 
     public void setCtx(FragmentActivity ctx) {

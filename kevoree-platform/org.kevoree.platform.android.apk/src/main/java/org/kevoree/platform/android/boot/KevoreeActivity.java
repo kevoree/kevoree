@@ -32,19 +32,27 @@ public class KevoreeActivity extends FragmentActivity implements  OnChangeListen
 
     private static final String TAG = KevoreeActivity.class.getSimpleName();
 
-    private  KController controller=null;
+    private  static  KController controller=null;
     private  ManagerUI uiManager=null;
 
     @Override
     protected synchronized void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        uiManager = new ManagerUI(this);
-        uiManager.addListener(this);
-        controller = new KController(uiManager);
+        if(controller == null)
+        {
+            uiManager = new ManagerUI(this);
+            uiManager.addListener(this);
+            controller = new KController(uiManager);
+            BaseKevoreeUI uiBase =  new BaseKevoreeUI(this,controller);
 
-        controller.handleMessage(Request.ADD_TO_GROUP,"KAdmin",new BaseKevoreeUI(this,controller));
-
+            // add Kevoree UI BASE
+            controller.handleMessage(Request.ADD_TO_GROUP,"KAdmin",uiBase);
+        }
+        else
+        {
+            controller.getViewManager().restoreViews(this);
+        }
     }
 
 
@@ -55,7 +63,7 @@ public class KevoreeActivity extends FragmentActivity implements  OnChangeListen
             @Override
             public void run()
             {
-
+                 // a changement has been dectected
             }
         });
         ;

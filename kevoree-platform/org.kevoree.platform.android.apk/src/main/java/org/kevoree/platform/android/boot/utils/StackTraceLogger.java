@@ -11,18 +11,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kevoree.platform.android.boot.controller;
+package org.kevoree.platform.android.boot.utils;
+
+import android.util.Log;
 
 /**
  * Created by jed
  * User: jedartois@gmail.com
- * Date: 08/03/12
- * Time: 15:09
+ * Date: 09/03/12
+ * Time: 11:34
  */
-import android.view.View;
+public class StackTraceLogger {
 
-public interface IController {
-	boolean handleMessage(Request req);
-	boolean handleMessage(Request req, Object data);
-	boolean handleMessage(Request req,String key,  View data);
+    public static void getStackTraceString(Exception e, String tag) {
+            Log.e(tag, e.toString());
+            for (StackTraceElement ste : e.getStackTrace()) {
+               Log.e(tag, ste.toString());
+            }
+        }
+
 }

@@ -18,11 +18,13 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import org.kevoree.platform.android.boot.utils.KObservable;
 import org.kevoree.platform.android.ui.KevoreeAndroidUIScreen;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -34,6 +36,9 @@ import java.util.Map;
 public class ManagerUI extends KObservable<ManagerUI> implements KevoreeAndroidUIScreen,ActionBar.TabListener {
     private Map<ActionBar.Tab, LinearLayout> views = new HashMap<ActionBar.Tab, LinearLayout>();
 
+
+
+    private static final String TAG = ManagerUI.class.getSimpleName();
     private FragmentActivity ctx=null;
 
     public ManagerUI(FragmentActivity context){
@@ -41,11 +46,33 @@ public class ManagerUI extends KObservable<ManagerUI> implements KevoreeAndroidU
         ctx.getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
     }
 
+    public void restoreViews(FragmentActivity newctx)
+    {
+        ctx.getSupportActionBar().removeAllTabs();
+        newctx.getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+        Map<ActionBar.Tab, LinearLayout> backup = new HashMap<ActionBar.Tab, LinearLayout>();
+        backup.putAll(views);
+        views.clear();
+        Iterator it = backup.entrySet().iterator();
+        ctx = newctx;
+        while (it.hasNext())
+        {
+            Map.Entry pairs = (Map.Entry)it.next();
+            ActionBar.Tab tab =( ActionBar.Tab)pairs.getKey();
+            LinearLayout layout =  (LinearLayout)   pairs.getValue() ;
+            // remove parent
+            ((ViewGroup) layout.getParent()).removeView(layout);
+            addToGroup(tab.getText().toString(),layout);
+        }
+    }
+
+
     @Override
     public void addToGroup(String groupKey, View view)
     {
         ActionBar.Tab idTab = getTabById(groupKey);
         Log.i("KevoreeBoot", "Add" + groupKey + "-" + idTab + "-" + view);
+
         if (idTab == null) {
             idTab = ctx.getSupportActionBar().newTab();
             idTab.setText(groupKey);
@@ -59,6 +86,7 @@ public class ManagerUI extends KObservable<ManagerUI> implements KevoreeAndroidU
 
         /// Set the screen content to an the groupkey
         ctx.setContentView(views.get(getTabById(groupKey)));
+
         notifyObservers(this);
     }
 

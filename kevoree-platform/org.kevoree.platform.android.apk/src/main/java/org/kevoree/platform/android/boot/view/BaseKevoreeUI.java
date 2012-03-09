@@ -14,11 +14,15 @@
 package org.kevoree.platform.android.boot.view;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.text.method.ScrollingMovementMethod;
 import android.view.View;
 import android.widget.*;
 import org.kevoree.platform.android.boot.controller.KController;
 import org.kevoree.platform.android.boot.controller.Request;
+import org.kevoree.platform.android.boot.utils.PrintStreamTraceLogger;
+
+import java.io.PrintStream;
 
 /**
  * Created by jed
@@ -30,7 +34,6 @@ public class BaseKevoreeUI extends LinearLayout {
 
     private Context ctx=null;
     private  KController kController;
-
     // UI
     private  Button btstart=null;
     private  Button btstop=null;
@@ -41,6 +44,11 @@ public class BaseKevoreeUI extends LinearLayout {
     private  CheckBox checkbox_warn=null;
     private  Scroller scroller=null;
     private TextView messages;
+
+    // logging
+    public  PrintStream STDwriter = null;
+    public  PrintStream ERRwriter = null;
+
 
     public BaseKevoreeUI(Context context,KController kController)
     {
@@ -94,6 +102,11 @@ public class BaseKevoreeUI extends LinearLayout {
         addView(layout);
         addView(messages);
 
+        STDwriter = new PrintStream(new PrintStreamTraceLogger(kController.getViewManager().getCtx(),messages, Color.BLACK));
+        ERRwriter = new PrintStream(new PrintStreamTraceLogger(kController.getViewManager().getCtx(),messages, Color.RED));
+        System.setOut(STDwriter);
+        System.setErr(ERRwriter);
+
     }
 
 
@@ -102,8 +115,9 @@ public class BaseKevoreeUI extends LinearLayout {
         btstart.setOnClickListener(new Button.OnClickListener() {
 
             public void onClick(View v) {
-
-                kController.handleMessage(Request.KEVOREE_START);
+                kController.handleMessage(Request.KEVOREE_START,nodeNameView.getText().toString());
+                btstart.setEnabled(false);
+                nodeNameView.setEnabled(false);
             }
         });
 
@@ -112,6 +126,8 @@ public class BaseKevoreeUI extends LinearLayout {
 
             public void onClick(View v) {
                 kController.handleMessage(Request.KEVOREE_STOP);
+                btstart.setEnabled(true);
+                nodeNameView.setEnabled(true);
             }
         });
 
@@ -126,7 +142,6 @@ public class BaseKevoreeUI extends LinearLayout {
 
             }
         };
-
 
     }
 
