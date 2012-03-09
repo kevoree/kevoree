@@ -27,17 +27,17 @@ import Art2UIAspects._
 
 case class NodeAspect(self: ContainerNode) {
 
-  def removeModelAndUI(kernel: KevoreeUIKernel) = {
+  def removeModelAndUI(kernel: KevoreeUIKernel) {
 
     val root: ContainerRoot = self.eContainer.asInstanceOf[ContainerRoot]
-    val nodePanel = kernel.getUifactory().getMapping().get(self).asInstanceOf[NodePanel]
+    val nodePanel = kernel.getUifactory.getMapping.get(self).asInstanceOf[NodePanel]
 
     //REMOVE POTENTIAL GROUP LINK
     root.getGroups.foreach(g => {
       if (g.getSubNodes.contains(self)) {
         //REMOVE UI
         import scala.collection.JavaConversions._
-        val bindings = kernel.getModelPanel.getBindings().toList ++ List()
+        val bindings = kernel.getModelPanel.getBindings.toList ++ List()
         bindings.foreach {
           b =>
             if (b.getFrom.equals(nodePanel) || b.getTo.equals(nodePanel)) {
@@ -77,7 +77,7 @@ case class NodeAspect(self: ContainerNode) {
     }
 
     //REMOVE UI
-    val modelPanel = kernel.getUifactory().getMapping().get(self.eContainer).asInstanceOf[ModelPanel]
+    val modelPanel = kernel.getUifactory.getMapping.get(self.eContainer).asInstanceOf[ModelPanel]
     modelPanel.removeInstance(nodePanel)
 
     //REMOVE INSTANCE
@@ -90,7 +90,7 @@ case class NodeAspect(self: ContainerNode) {
           node.removeHosts(self)
         }
     }
-    
+
     //CLEANUP DICTIONARY
     import org.kevoree.framework.aspects.KevoreeAspects._
     kernel.getModelHandler.getActualModel.getAllInstances.foreach{ inst =>
@@ -102,7 +102,7 @@ case class NodeAspect(self: ContainerNode) {
     }
 
     //UNBIND
-    kernel.getUifactory().getMapping().unbind(nodePanel, self);
+    kernel.getUifactory.getMapping.unbind(nodePanel, self);
 
   }
 
