@@ -526,13 +526,13 @@ object KloudReasoner {
                       if (portOption.isDefined) {
                         scriptBuilder append "addToGroup " + groupName + " " + node.getName + "\n"
                         scriptBuilder append "updateDictionary " + groupName + " {port=\"" + portOption.get + "\"}@" + node.getName + "\n"
-                      } else {
+                      }/* else {
                         logger.debug("Unable to find port property for node {}", node.getName)
-                      }
+                      }*/
                       // set IP of user nodes if needed
                       val displayIPOption = KevoreePropertyHelper.getBooleanPropertyForGroup(kloudModel, groupName, "displayIP")
                       val addressOption = KevoreePropertyHelper.getStringNetworkProperty(kloudModel, node.getName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP)
-                      if (displayIPOption.isDefined && addressOption.isDefined) {
+                      if (displayIPOption.isDefined && displayIPOption.get && addressOption.isDefined) {
                         scriptBuilder append "network " + node.getName + " {\"" + Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP + "\" = \"" + addressOption.get + "\" }\n"
                       }
                     }
@@ -580,9 +580,9 @@ object KloudReasoner {
                   if (portOption.isDefined) {
                     scriptBuilder append "addToGroup " + groupName + " " + node.getName + "\n"
                     scriptBuilder append "updateDictionary " + groupName + " {port=\"" + portOption.get + "\"}@" + node.getName + "\n"
-                  } else {
+                  } /*else {
                     logger.debug("Unable to find port property for node {}", node.getName)
-                  }
+                  }*/
                   // set IP of user nodes if needed
                   val displayIPOption = KevoreePropertyHelper.getBooleanPropertyForGroup(kloudModel, groupName, "displayIP")
                   val addressOption = KevoreePropertyHelper.getStringNetworkProperty(kloudModel, node.getName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP)

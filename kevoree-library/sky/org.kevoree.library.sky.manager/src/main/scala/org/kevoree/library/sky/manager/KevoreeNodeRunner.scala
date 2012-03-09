@@ -165,6 +165,7 @@ abstract class KevoreeNodeRunner (var nodeName: String, bootStrapModel: String) 
   private def replaceStringIntoFile (dataToReplace: String, newData: String, file: String) {
     logger.debug("trying to replace \"{}\" by \"{}\" into {}", Array[AnyRef](dataToReplace, newData, file))
     if (new File(file).exists()) {
+      try {
       val stringBuilder = new StringBuilder
       val reader = new DataInputStream(new FileInputStream(new File(file)))
       val writer = new ByteArrayOutputStream()
@@ -180,14 +181,15 @@ abstract class KevoreeNodeRunner (var nodeName: String, bootStrapModel: String) 
       writer.close()
       reader.close()
       stringBuilder append new String(writer.toByteArray)
-      stringBuilder
-        .replace(stringBuilder.indexOf(dataToReplace), stringBuilder.indexOf(dataToReplace) + dataToReplace.length(),
-                  newData)
+      stringBuilder.replace(stringBuilder.indexOf(dataToReplace), stringBuilder.indexOf(dataToReplace) + dataToReplace.length(), newData)
 
       copyStringToFile(stringBuilder.toString(), file)
       logger.debug("replacing \"{}\" by \"{}\" into {} is done", Array[AnyRef](dataToReplace, newData, file))
+      } catch {
+        case _@e => logger.error("Unable to replace a string", e)
+      }
     } else {
-      logger.debug("The file {} doesn't exist, anything can be replace.", file)
+      logger.debug("The file {} doesn't exist, nothing can be replace.", file)
     }
   }
 }
