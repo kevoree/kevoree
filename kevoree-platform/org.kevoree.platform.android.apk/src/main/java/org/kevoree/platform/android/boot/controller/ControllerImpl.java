@@ -15,8 +15,6 @@ package org.kevoree.platform.android.boot.controller;
 
 import android.content.Intent;
 import android.os.Environment;
-import android.os.Handler;
-import android.os.HandlerThread;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
@@ -36,9 +34,6 @@ import java.io.File;
 public class ControllerImpl implements IController  {
 
     private static final String TAG = ControllerImpl.class.getSimpleName();
-
-    private HandlerThread workerThread=null;
-    private Handler workerHandler=null;
     private KController kController=null;
     public static ManagerUI viewmanager=null;
     public static TinyKCL tkcl = null;
@@ -49,9 +44,6 @@ public class ControllerImpl implements IController  {
         this.kController = _kController;
         viewmanager = _kController.getViewManager();
         this.ctx  = viewmanager.getCtx();
-        workerThread = new HandlerThread("Worker Thread");
-        workerThread.start();
-        workerHandler = new Handler(workerThread.getLooper());
         initKCL();
     }
 
@@ -91,7 +83,7 @@ public class ControllerImpl implements IController  {
         {
             case ADD_TO_GROUP:
                 Log.i(TAG, "MESSAGE_ADD_TO_GROUP");
-                workerHandler.post(new Runnable() {
+                ctx.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         viewmanager.addToGroup(key, view);
@@ -102,7 +94,7 @@ public class ControllerImpl implements IController  {
 
             case REMOVE_VIEW:
                 Log.i(TAG, "MESSAGE_REMOVE_VIEW");
-                workerHandler.post(new Runnable() {
+                ctx.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         viewmanager.removeView(view);
