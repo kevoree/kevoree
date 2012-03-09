@@ -138,6 +138,9 @@ class KevoreeJarClassLoader extends JarClassLoader {
 
   override def getResourceAsStream(name: String): InputStream = {
     var resolved = internal_getResourceAsStream(name)
+    if(resolved != null){
+      return resolved
+    }
     subClassLoaders.foreach {
       sub =>
         resolved = if (sub.isInstanceOf[KevoreeJarClassLoader]) {
@@ -151,7 +154,6 @@ class KevoreeJarClassLoader extends JarClassLoader {
     }
     subWeakClassLoaders.foreach {
       subOpt =>
-
         if (subOpt.get.isDefined) {
           val sub = subOpt.get.get
           resolved = if (sub.isInstanceOf[KevoreeJarClassLoader]) {
@@ -164,8 +166,6 @@ class KevoreeJarClassLoader extends JarClassLoader {
           }
         }
     }
-
-
     resolved
   }
 
@@ -184,6 +184,7 @@ class KevoreeJarClassLoader extends JarClassLoader {
     if (res != null) {
       new ByteArrayInputStream(res)
     } else {
+      logger.debug("Not found res "+name+" in "+this)
       null
     }
   }
