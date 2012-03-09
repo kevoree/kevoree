@@ -69,7 +69,7 @@ trait KevsInstParser extends KevsAbstractParser with KevsPropertiesParser {
 
   //COMPONENT
 
-  val addComponentCommandFormat = "addComponent <ComponentInstanceName> [@<nodeName>] : <ComponentTypeName> [{ key = \"value\" (, key = \"value\") }]"
+  val addComponentCommandFormat = "addComponent <ComponentInstanceName> @ <nodeName> : <ComponentTypeName> [{ key = \"value\" (, key = \"value\") }]"
   def parseAddComponent : Parser[List[Statment]] = "addComponent" ~ orFailure(componentID,addComponentCommandFormat) ~ orFailure(":",addComponentCommandFormat) ~ orFailure(ident,addComponentCommandFormat) ~ opt(parseProperties) ^^{ case _ ~ cid ~ _ ~ typeid ~ oprops  =>
       oprops match {
         case None => List(AddComponentInstanceStatment(cid,typeid,new java.util.Properties))
@@ -77,12 +77,12 @@ trait KevsInstParser extends KevsAbstractParser with KevsPropertiesParser {
       }
   }
 
-  val removeComponentCommandFormat = "removeComponent <ComponentInstanceName>"
+  val removeComponentCommandFormat = "removeComponent <ComponentInstanceName> @ <nodeName>"
   def parseRemoveComponent : Parser[List[Statment]] = "removeComponent" ~ orFailure(componentID,removeComponentCommandFormat)  ^^{ case _ ~ cid  =>
       List(RemoveComponentInstanceStatment(cid))
   }
 
-  val moveComponentCommandFormat = "moveComponent <ComponentInstanceName> @<nodeName> => <NodeName>"
+  val moveComponentCommandFormat = "moveComponent <ComponentInstanceName> @ <nodeName> => <nodeName>"
   def parseMoveComponent : Parser[List[Statment]] = "moveComponent" ~ orFailure(componentID,moveComponentCommandFormat) ~ orFailure("=>",moveComponentCommandFormat) ~ orFailure(ident,moveComponentCommandFormat)  ^^{ case _ ~ cid ~ _ ~ targetNodeId  =>
       List(MoveComponentInstanceStatment(cid,targetNodeId))
   }

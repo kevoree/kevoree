@@ -138,7 +138,7 @@ class MiniKloudForm (editor: KevoreeEditor) {
         scriptBuilder append "merge \"mvn:org.kevoree.library.model/org.kevoree.library.model.sky/" + KevoreeFactory.getVersion + "\"\n"
         scriptBuilder append "merge \"mvn:org.kevoree.library.javase/org.kevoree.library.javase.rest/" + KevoreeFactory.getVersion + "\"\n"
         scriptBuilder append "addNode " + minicloudName + ": MiniCloudNode {role=\"host\", port=\"6001\"}\n"
-        scriptBuilder append "addGroup editor_group : RestGroup\n"
+        scriptBuilder append "addGroup editor_group : NanoRestGroup\n"
         scriptBuilder append "addToGroup editor_group " + minicloudName + "\n"
         scriptBuilder append "updateDictionary editor_group {port=\"6002\"}@" + minicloudName + "\n"
         editor.getPanel.getKernel.getModelHandler.getActualModel.getNodes.foreach {

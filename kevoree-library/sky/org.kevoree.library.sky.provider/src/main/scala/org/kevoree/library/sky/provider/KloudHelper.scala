@@ -2,11 +2,9 @@ package org.kevoree.library.sky.provider
 
 import org.slf4j.{LoggerFactory, Logger}
 import java.io.{ByteArrayOutputStream, InputStreamReader, BufferedReader, OutputStreamWriter}
-import org.kevoree.framework.{KevoreeXmiHelper, Constants, KevoreePropertyHelper}
+import org.kevoree.framework.{KevoreeXmiHelper, KevoreePropertyHelper}
 import java.net._
 import org.kevoree._
-import api.service.core.handler.KevoreeModelHandlerService
-import api.service.core.script.KevScriptEngineFactory
 import cloner.ModelCloner
 import core.basechecker.RootChecker
 import scala.collection.JavaConversions._
@@ -79,71 +77,66 @@ object KloudHelper {
   }
 
 
-  def pushOnMaster (userModel: ContainerRoot, groupName: String, nodeName: String, kloudModel: ContainerRoot): Option[String] = {
+  def pushOnMaster (userModel: ContainerRoot, groupName: String, urlPath: String): Option[String] = {
     logger.debug("try to push the user model on the group")
-    val masterNodeNameLOption = KevoreePropertyHelper.getStringPropertyForGroup(kloudModel, groupName, "masterNode")
-    if (masterNodeNameLOption.isDefined) {
       try {
-        val ipOption = KevoreePropertyHelper.getStringNetworkProperty(kloudModel, nodeName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP)
-        val portOption = KevoreePropertyHelper.getIntPropertyForGroup(kloudModel, groupName, "port", true, nodeName)
-        if (ipOption.isDefined && portOption.isDefined) {
-          val url: URL = new URL("http://" + ipOption.get + ":" + portOption.get + "/model/current")
-          val conn: URLConnection = url.openConnection
-          conn.setConnectTimeout(3000)
-          conn.setDoOutput(true)
-          val wr: OutputStreamWriter = new OutputStreamWriter(conn.getOutputStream)
-          val outStream: ByteArrayOutputStream = new ByteArrayOutputStream
-          KevoreeXmiHelper.saveStream(outStream, userModel)
-          outStream.flush()
-          wr.write(outStream.toString("UTF-8"))
-          wr.flush()
-          // Get the response
-          val rd: BufferedReader = new BufferedReader(new InputStreamReader(conn.getInputStream))
-          var line: String = rd.readLine
-          while (line != null) {
-            line = rd.readLine
-          }
-          wr.close()
-          rd.close()
-          Some("http://" + ipOption.get + ":" + portOption.get + "/model/current")
-        } else {
-          logger.error("Unable to find enough information about master node")
-          None
+        val url: URL = new URL(urlPath)
+        val conn: URLConnection = url.openConnection
+        conn.setConnectTimeout(3000)
+        conn.setDoOutput(true)
+        val wr: OutputStreamWriter = new OutputStreamWriter(conn.getOutputStream)
+        val outStream: ByteArrayOutputStream = new ByteArrayOutputStream
+        KevoreeXmiHelper.saveStream(outStream, userModel)
+        outStream.flush()
+        wr.write(outStream.toString("UTF-8"))
+        wr.flush()
+        // Get the response
+        val rd: BufferedReader = new BufferedReader(new InputStreamReader(conn.getInputStream))
+        var line: String = rd.readLine
+        while (line != null) {
+          line = rd.readLine
         }
+        wr.close()
+        rd.close()
+        Some(urlPath)
       } catch {
         case _@e => logger.error("Unable to push the user model on the group", e); None
       }
-    } else {
-      logger.debug("Unable to find the masterNode attribute so we can not send the model")
-      None
-    }
   }
 
-  def selectPortNumber (address: String): Int = {
+  def selectPortNumber (address: String, ports: Array[Int]): Int = {
     var i = 8000
     if (address != "") {
       var found = false
       while (!found) {
-        try {
-          val socket = new Socket()
-          socket.connect(new InetSocketAddress(address, i), 1000)
-          socket.close()
+        if (!ports.contains(i)) {
+          try {
+            val socket = new Socket()
+            socket.connect(new InetSocketAddress(address, i), 1000)
+            socket.close()
+            i = i + 1
+          } catch {
+            case _@e =>
+              found = true
+          }
+        } else {
           i = i + 1
-        } catch {
-          case _@e =>
-            found = true
         }
       }
     } else {
       var found = false
       while (!found) {
-        try {
-          val socket = new ServerSocket(i)
-          socket.close()
-          found = true
-        } catch {
-          case _@e =>
-            i = i + 1
+        if (!ports.contains(i)) {
+          try {
+            val socket = new ServerSocket(i)
+            socket.close()
+            found = true
+          } catch {
+            case _@e =>
+              i = i + 1
+          }
+        } else {
+          i = i + 1
         }
       }
     }
@@ -160,7 +153,7 @@ object KloudHelper {
         if (subnetOption.isDefined && maskOption.isDefined) {
           Some(lookingForNewIp(List(), subnetOption.get, maskOption.get))
         } else {
-          None
+          Some("127.0.0.1")
         }
       }
     }
@@ -234,7 +227,7 @@ object KloudHelper {
     }
   }
 
-  def getDefaultNodeAttributes (kloudModel: ContainerRoot, typeDefName : String): List[DictionaryAttribute] = {
+  def getDefaultNodeAttributes (kloudModel: ContainerRoot, typeDefName: String): List[DictionaryAttribute] = {
     kloudModel.getTypeDefinitions.find(td => td.getName == typeDefName) match {
       case None => List[DictionaryAttribute]()
       case Some(td) =>
@@ -277,18 +270,22 @@ object KloudHelper {
     if (violations.isEmpty) {
       None
     } else {
-      val result = "Unable to deploy this software on the Kloud because there is some constraints violations:\n" +
-        violations.mkString("\n")
-      logger.debug(result)
-      Some(result)
+      val resultBuilder = new StringBuilder
+      resultBuilder append "Unable to deploy this software on the Kloud because there is some constraints violations:\n"
+      violations.foreach {
+        violation =>
+          resultBuilder append violation.getMessage
+          resultBuilder append "\n"
+      }
+      Some(resultBuilder.toString())
 
     }
   }
 
-  def sendUserModel (urlString: String, model: ContainerRoot): Boolean = {
+  def sendUserModel (urlString: String, model: ContainerRoot, nbTime: Int): Boolean = {
     var isSend = false
     var i = 0
-    while (!isSend && i < 20) {
+    while (!isSend && i < nbTime) {
       try {
         logger.debug("try to send user model at {}", urlString)
         val url = new URL(urlString)

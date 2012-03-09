@@ -70,7 +70,7 @@ public class KevoreeFrascatiMojo extends AbstractMojo {
     	
   	    ContainerRoot root = KevoreeFactory.createContainerRoot();
   	    for (File f : res){
-  	    	_root_.org.kevoree.library.frascati.mavenplugin.CompositeParser.parseCompositeFile(root,f,project.getVersion(),project.getGroupId(),project.getArtifactId(),f.getName());
+  	    	org.kevoree.library.frascati.mavenplugin.CompositeParser.parseCompositeFile(root,f,project.getVersion(),project.getGroupId(),project.getArtifactId(),f.getName());
     	}
   	    File resdir = new File(targetresources.getAbsolutePath() + File.separatorChar + "KEV-INF");
   	    resdir.mkdir();

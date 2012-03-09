@@ -160,6 +160,7 @@
   <eClassifiers xsi:type="ecore:EClass" name="PortTypeMapping">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="beanMethodName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="serviceMethodName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="paramTypes" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Channel" eSuperTypes="#//NamedElement #//Instance"/>
   <eClassifiers xsi:type="ecore:EClass" name="MBinding">

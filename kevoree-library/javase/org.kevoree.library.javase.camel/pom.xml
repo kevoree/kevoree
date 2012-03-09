@@ -4,41 +4,28 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.kevoree.library.javase</groupId>
     <artifactId>org.kevoree.library.javase.camel</artifactId>
-    <packaging>bundle</packaging>
-    <version>1.6.0-BETA3</version>
+    <version>1.6.0-BETA4</version>
     <name>Kevoree :: Library :: JavaSE :: ApacheCamel</name>
 
     <parent>
         <artifactId>org.kevoree.library.javase.root</artifactId>
         <groupId>org.kevoree.library.javase</groupId>
-        <version>1.6.0-BETA3</version>
+        <version>1.6.0-BETA4</version>
         <relativePath>../org.kevoree.library.javase.root/pom.xml</relativePath>
     </parent>
 
+
     <properties>
-        <apache.camel.version>2.9.1</apache.camel.version>
+        <camel.version>2.9.1</camel.version>
         <kevoree.include>*:*</kevoree.include>
     </properties>
 
     <dependencies>
         <dependency>
-            <groupId>org.apache.camel</groupId>
-            <artifactId>camel-core</artifactId>
-            <version>${apache.camel.version}</version>
+            <groupId>org.kevoree.tools</groupId>
+            <artifactId>org.kevoree.tools.camel.framework</artifactId>
+            <version>${kevoree.version}</version>
         </dependency>
-
-        <dependency>
-            <groupId>org.apache.camel</groupId>
-            <artifactId>camel-stream</artifactId>
-            <version>${apache.camel.version}</version>
-        </dependency>
-        <!--
-        <dependency>
-            <groupId>org.apache.camel</groupId>
-            <artifactId>camel-timer</artifactId>
-            <version>${apache.camel.version}</version>
-        </dependency>
--->
     </dependencies>
 
 </project>

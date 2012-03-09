@@ -98,7 +98,7 @@ case class UpdateDictionary (c: Instance, nodeName: String) extends PrimitiveCom
               tempHash.put(dic._1, dic._2.toString)
           }
           KevoreeDeployManager.bundleMapping.find(map => map.objClassName == c.getClass.getName && map.name == c.getName) match {
-            case None => false
+            case None =>
             case Some(mapfound) => {
 
               mapfound.asInstanceOf[KevoreeMapping].ref match {
@@ -115,7 +115,7 @@ case class UpdateDictionary (c: Instance, nodeName: String) extends PrimitiveCom
                   //true
                 }
 
-                case _ => false
+                case _ =>
               }
             }
           }

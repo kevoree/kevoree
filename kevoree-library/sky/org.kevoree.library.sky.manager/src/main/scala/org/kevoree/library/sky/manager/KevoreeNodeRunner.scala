@@ -47,38 +47,39 @@ abstract class KevoreeNodeRunner (var nodeName: String, bootStrapModel: String) 
 
   def getErrFile = errFile
 
-  def configureSSH (model: ContainerRoot, path : String, ip : String) {
+  /**
+   * configure the ssh server
+   * @param model
+   * @param path
+   * @param ip
+   */
+  def configureSSHServer (model: ContainerRoot, path : String, ip : String) {
     // copy SSH Public Key if available
     // for each SSHRestGroup, We copy the Public SSH key on jail
-    logger.debug("try to copy SSH Public keys ...")
+    /*logger.debug("try to copy SSH Public keys ...")
     model.getGroups.filter(group =>
+
       (group.getTypeDefinition.getName == "SSHRestGroup" || isASubType(group.getTypeDefinition, "SSHRestGroup")) &&
         (group.getSubNodes.find(node => node.getName == nodeName) match {
           case None => false
           case Some(node) => true
         })).foreach {
       group =>
-        val keyOption = KevoreePropertyHelper
-          .getPropertyForGroup(model, group.getName, "SSH_PUBLIC_KEY")
+        val keyOption = KevoreePropertyHelper.getPropertyForGroup(model, group.getName, "SSH_PUBLIC_KEY")
         if (keyOption.isDefined) {
           logger.debug("try to copy SSH Public keys from {} ...", group.getName)
           // check if .ssh is available and create it else
-          if (!new File(path + File.separator + "root" + File.separator + ".ssh" + File.separator +
-            "authorized_keys").exists()) {
+          if (!new File(path + File.separator + "root" + File.separator + ".ssh" + File.separator + "authorized_keys").exists()) {
             new File(path + File.separator + "root" + File.separator + ".ssh").mkdirs()
           }
-          addStringToFile(keyOption.get.toString,
-                           path + File.separator + "root" + File.separator + ".ssh" + File.separator +
-                             "authorized_keys")
+          addStringToFile(keyOption.get.toString, path + File.separator + "root" + File.separator + ".ssh" + File.separator + "authorized_keys")
           // configure sshd: BASIC CONFIGURATION USING TEMPLATE
-          copyFileFromStream(this.getClass.getClassLoader.getResourceAsStream("sshd_config"),
-                              path + File.separator + "etc" + File.separator + "ssh" + File.separator +
-                                "sshd_config")
-          replaceStringIntoFile("<ip_address>", ip,
-                                 path + File.separator + "etc" + File.separator + "ssh" + File.separator +
-                                   "sshd_config")
+//          copyFileFromStream(this.getClass.getClassLoader.getResourceAsStream("sshd_config"), path + File.separator + "etc" + File.separator + "ssh" + File.separator + "sshd_config")
+
         }
-    }
+    }*/
+    logger.debug("configure ssh server ip")
+    replaceStringIntoFile("<ip_address>", ip, path + File.separator + "etc" + File.separator + "ssh" + File.separator + "sshd_config")
   }
 
 
