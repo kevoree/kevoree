@@ -11,7 +11,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kevoree.platform.android.boot;
+package org.kevoree.platform.android.boot.kcl;
 
 import android.content.Context;
 import android.util.Log;
@@ -52,7 +52,7 @@ public class TinyKCL {
         pool.execute(new BuildSub(ctx,parentCL,"org.kevoree.tools.aether.framework.android",clusterKCL));
     }
 
-    public  void waitExecutor(){
+    public  void waitTinyKCL(){
         try
         {
             Thread.sleep(waitTime);
