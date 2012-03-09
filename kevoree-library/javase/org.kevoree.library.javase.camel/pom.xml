@@ -21,31 +21,11 @@
     </properties>
 
     <dependencies>
-        <!--
-        <dependency>
-            <groupId>org.apache.camel</groupId>
-            <artifactId>camel-core</artifactId>
-            <version>${apache.camel.version}</version>
-        </dependency>
--->
-
         <dependency>
             <groupId>org.kevoree.tools</groupId>
             <artifactId>org.kevoree.tools.camel.framework</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.apache.camel</groupId>
-            <artifactId>camel-stream</artifactId>
-            <version>${camel.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.camel</groupId>
-            <artifactId>camel-xmpp</artifactId>
-            <version>${apache.camel.version}</version>
-        </dependency>
-
     </dependencies>
 
 </project>
