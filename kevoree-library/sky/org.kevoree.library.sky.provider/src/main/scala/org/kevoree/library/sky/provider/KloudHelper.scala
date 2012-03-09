@@ -66,42 +66,36 @@ object KloudHelper {
     currentModel.getGroups.find(g => g.getName == groupName) match {
       case None => None
       case Some(group) => {
-        group.getSubNodes.find(n => n.getName == nodeName) match {
-          case None => None
-          case Some(node) => {
-            KevoreePropertyHelper.getStringPropertyForGroup(currentModel, groupName, "publicURL", true, nodeName)
-          }
-        }
+        KevoreePropertyHelper.getStringPropertyForGroup(currentModel, groupName, "masterNode")
       }
     }
   }
 
-
   def pushOnMaster (userModel: ContainerRoot, groupName: String, urlPath: String): Option[String] = {
     logger.debug("try to push the user model on the group")
-      try {
-        val url: URL = new URL(urlPath)
-        val conn: URLConnection = url.openConnection
-        conn.setConnectTimeout(3000)
-        conn.setDoOutput(true)
-        val wr: OutputStreamWriter = new OutputStreamWriter(conn.getOutputStream)
-        val outStream: ByteArrayOutputStream = new ByteArrayOutputStream
-        KevoreeXmiHelper.saveStream(outStream, userModel)
-        outStream.flush()
-        wr.write(outStream.toString("UTF-8"))
-        wr.flush()
-        // Get the response
-        val rd: BufferedReader = new BufferedReader(new InputStreamReader(conn.getInputStream))
-        var line: String = rd.readLine
-        while (line != null) {
-          line = rd.readLine
-        }
-        wr.close()
-        rd.close()
-        Some(urlPath)
-      } catch {
-        case _@e => logger.error("Unable to push the user model on the group", e); None
+    try {
+      val url: URL = new URL(urlPath)
+      val conn: URLConnection = url.openConnection
+      conn.setConnectTimeout(3000)
+      conn.setDoOutput(true)
+      val wr: OutputStreamWriter = new OutputStreamWriter(conn.getOutputStream)
+      val outStream: ByteArrayOutputStream = new ByteArrayOutputStream
+      KevoreeXmiHelper.saveStream(outStream, userModel)
+      outStream.flush()
+      wr.write(outStream.toString("UTF-8"))
+      wr.flush()
+      // Get the response
+      val rd: BufferedReader = new BufferedReader(new InputStreamReader(conn.getInputStream))
+      var line: String = rd.readLine
+      while (line != null) {
+        line = rd.readLine
       }
+      wr.close()
+      rd.close()
+      Some(urlPath)
+    } catch {
+      case _@e => logger.error("Unable to push the user model on the group", e); None
+    }
   }
 
   def selectPortNumber (address: String, ports: Array[Int]): Int = {
