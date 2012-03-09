@@ -34,11 +34,9 @@ import java.util.Map;
  * Time: 15:10
  */
 public class ManagerUI extends KObservable<ManagerUI> implements KevoreeAndroidUIScreen,ActionBar.TabListener {
-    private Map<ActionBar.Tab, LinearLayout> views = new HashMap<ActionBar.Tab, LinearLayout>();
-
-
 
     private static final String TAG = ManagerUI.class.getSimpleName();
+    private Map<ActionBar.Tab, LinearLayout> views = new HashMap<ActionBar.Tab, LinearLayout>();
     private FragmentActivity ctx=null;
 
     public ManagerUI(FragmentActivity context){
@@ -50,18 +48,24 @@ public class ManagerUI extends KObservable<ManagerUI> implements KevoreeAndroidU
     {
         ctx.getSupportActionBar().removeAllTabs();
         newctx.getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+        ctx = newctx;
         Map<ActionBar.Tab, LinearLayout> backup = new HashMap<ActionBar.Tab, LinearLayout>();
         backup.putAll(views);
         views.clear();
         Iterator it = backup.entrySet().iterator();
-        ctx = newctx;
+
         while (it.hasNext())
         {
             Map.Entry pairs = (Map.Entry)it.next();
             ActionBar.Tab tab =( ActionBar.Tab)pairs.getKey();
             LinearLayout layout =  (LinearLayout)   pairs.getValue() ;
-            // remove parent
-            ((ViewGroup) layout.getParent()).removeView(layout);
+            Log.i(TAG,"Restore "+tab.getText());
+
+            // if exist remove parent
+            if(layout.getParent() != null)
+            {
+                ((ViewGroup) layout.getParent()).removeView(layout);
+            }
             addToGroup(tab.getText().toString(),layout);
         }
     }
@@ -86,7 +90,6 @@ public class ManagerUI extends KObservable<ManagerUI> implements KevoreeAndroidU
 
         /// Set the screen content to an the groupkey
         ctx.setContentView(views.get(getTabById(groupKey)));
-
         notifyObservers(this);
     }
 
