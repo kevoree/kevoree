@@ -12,6 +12,7 @@ import org.kevoree.framework.KevoreeXmiHelper;
 import org.kevoree.library.javase.webserver.KevoreeHttpRequest;
 import org.kevoree.library.javase.webserver.KevoreeHttpResponse;
 import org.kevoree.library.javase.webserver.ParentAbstractPage;
+import org.kevoree.library.javase.webserver.URLHandlerScala;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import scala.Option;
@@ -53,28 +54,28 @@ public class PaaSKloudResourceManager extends ParentAbstractPage {
 
 	public KevoreeHttpResponse process (KevoreeHttpRequest request, KevoreeHttpResponse response) {
 		if (request != null) {
-			if (!request.getUrl().endsWith("/css/bootstrap.min.css") && !request.getUrl().endsWith("/release")) {
+			if (request.getUrl().equals("/kloud")) {
 				if (request.getResolvedParams().get("model") != null && request.getResolvedParams().get("login") != null
 						&& request.getResolvedParams().get("password") != null && request.getResolvedParams().get("ssh_key") != null) {
 					// check authentication information
 					if (InriaLdap.testLogin(request.getResolvedParams().get("login"), request.getResolvedParams().get("password"))) {
 
-						String result = process(request.getResolvedParams().get("model"), request.getResolvedParams().get("login"), request.getResolvedParams().get("ssh_key"));
-						if (result.startsWith("http")) {
+						response.setContent(process(request.getResolvedParams().get("model"), request.getResolvedParams().get("login"), request.getResolvedParams().get("ssh_key")));
+						/*if (result.startsWith("http")) {
 							response.setContent(
-									HTMLHelper.generateValidSubmissionPageHtml(request.getUrl(), request.getResolvedParams().get("login"), result, this.getDictionary().get("urlpattern").toString()));
+									HTMLHelper.generateValidSubmissionPageHtml(request.getResolvedParams().get("login"), result, this.getDictionary().get("urlpattern").toString()));
 						} else {
 							response.setContent(
 									HTMLHelper
-											.generateUnvalidSubmissionPageHtml(request.getUrl(), request.getResolvedParams().get("login"), result, this.getDictionary().get("urlpattern").toString()));
-						}
+											.generateUnvalidSubmissionPageHtml(request.getResolvedParams().get("login"), result, this.getDictionary().get("urlpattern").toString()));
+						}*/
 					} else {
 						response.setContent(HTMLHelper.generateFailToLoginPageHtml(request.getResolvedParams().get("login"), this.getDictionary().get("urlpattern").toString()));
 					}
 				} else {
 					response.setContent(HTMLHelper.generateSimpleSubmissionFormHtml(request.getUrl(), this.getDictionary().get("urlpattern").toString()));
 				}
-			} else if (request.getUrl().endsWith("/css/bootstrap.min.css")) {
+			} else if (request.getUrl().equals("/css/bootstrap.min.css")) {
 				try {
 					InputStream ins = this.getClass().getClassLoader().getResourceAsStream("css/bootstrap.min.css");
 					response.setContent(new String(convertStream(ins), "UTF-8"));
@@ -83,7 +84,8 @@ public class PaaSKloudResourceManager extends ParentAbstractPage {
 				} catch (Exception e) {
 					logger.error("", e);
 				}
-			} else if (request.getUrl().endsWith("/release")) {
+			} else if (request.getUrl().equals("/release")) {
+				logger.debug("Try to release {} configuration", request.getResolvedParams().get("login"));
 				if (request.getResolvedParams().get("login") != null && request.getResolvedParams().get("password") != null) {
 					// check authentication information
 					if (InriaLdap.testLogin(request.getResolvedParams().get("login"), request.getResolvedParams().get("password"))) {
@@ -95,13 +97,22 @@ public class PaaSKloudResourceManager extends ParentAbstractPage {
 				} else {
 					response.setContent(HTMLHelper.generateReleaseForm(request.getUrl(), this.getDictionary().get("urlpattern").toString()));
 				}
+			} else if (request.getUrl().startsWith("/kloud")) {
+				Option<String> lastParamOption = new URLHandlerScala().getLastParam(request.getUrl(), this.getDictionary().get("urlpattern").toString() + "**");
+				if (lastParamOption.isDefined()) {
+					String lastParam = lastParamOption.get().replaceFirst("/", "");
+					response.setContent(findAddress(lastParam));
+				} else {
+					response.setContent(HTMLHelper.generateUnknownError(request.getUrl(), this.getDictionary().get("urlpattern").toString()));
+				}
 			}
 		}
+		logger.debug("send response from PaaSKloudResourceManager");
 		return response;
 	}
 
-	private String process (String modelStream, String login, String sshKey) {// try to get the user model
-		ContainerRoot model = KevoreeXmiHelper.loadString(modelStream);
+	private String process (String modelStream, final String login, final String sshKey) {// try to get the user model
+		final ContainerRoot model = KevoreeXmiHelper.loadString(modelStream);
 		// looking for current configuration to check if user has already submitted something
 		if (KloudHelper.lookForAGroup(login, this.getModelService().getLastModel())) {
 
@@ -109,15 +120,32 @@ public class PaaSKloudResourceManager extends ParentAbstractPage {
 			Option<String> accessPointOption = KloudHelper.lookForAccessPoint(login, this.getNodeName(), this.getModelService().getLastModel());
 			if (accessPointOption.isDefined()) {
 				return "A previous configuration has already submitted.<br/>Please use this access point to reconfigure it: "
-						+ accessPointOption.get()
+						+ accessPointOption.get() + "(" + accessPointOption.get().replace("http://", "").replace("/model/current", "") + " on the editor)"
 						+ "<br />This access point allow you to access to a Kevoree group that allows you to send a model to it."
 						+ "<br />This model will be used to reconfigure your nodes and add or remove some of them if necessary.";
 			} else {
-				return "A previous configuration has already submitted but we are not able to find the corresponding access point.<br/>Please contact the administrator.";
+				return "A previous configuration has already submitted but we are not able to find the corresponding access point.<br/>Please contact the admins.";
 			}
 		} else {
 			// else we create this new one
-			return processNew(model, login, sshKey);
+			new Thread() {
+				@Override
+				public void run () {
+					processNew(model, login, sshKey);
+				}
+			}.start();
+			return HTMLHelper.generateRedirect(login, this.getDictionary().get("urlpattern").toString());
+		}
+	}
+
+	private String findAddress (String login) {
+		logger.info("Try to find URL for {}", login);
+		Option<String> accessPointOption = KloudHelper.lookForAccessPoint(login, this.getNodeName(), this.getModelService().getLastModel());
+		if (accessPointOption.isDefined()) {
+			return HTMLHelper.generateValidSubmissionPageHtml(login, accessPointOption.get() + "(" + accessPointOption.get().replace("http://", "").replace("/model/current", "") + " on the editor)",
+					this.getDictionary().get("urlpattern").toString());
+		} else {
+			return HTMLHelper.generateWaitingPooling(login, this.getDictionary().get("urlpattern").toString());
 		}
 	}
 
@@ -153,7 +181,8 @@ public class PaaSKloudResourceManager extends ParentAbstractPage {
 		UUIDModel uuidModel = this.getModelService().getLastUUIDModel();
 
 		// we create a group with the login of the user
-		Option<ContainerRoot> newKloudModelOption = KloudReasoner.createGroup(login, this.getNodeName(), uuidModel.getModel(), getKevScriptEngineFactory(), sshKey, this.getDictionary().get("displayIP").toString());
+		Option<ContainerRoot> newKloudModelOption = KloudReasoner.createGroup(login, this.getNodeName(), uuidModel.getModel(), getKevScriptEngineFactory(), sshKey,
+				this.getDictionary().get("displayIP").toString());
 		if (newKloudModelOption.isDefined()) {
 
 			Option<Group> groupOption = KloudHelper.getGroup(login, newKloudModelOption.get());
@@ -208,7 +237,7 @@ public class PaaSKloudResourceManager extends ParentAbstractPage {
 		try {
 			this.getModelService().atomicCompareAndSwapModel(uuidModel, kloudModelOption.get());
 			return true;
-		} catch (Exception e) {
+		} catch (Exception ignored) {
 		}
 		return nbTry > 0 && createProxy(login, nbTry - 1);
 	}

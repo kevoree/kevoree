@@ -16,16 +16,15 @@ package org.kevoree.tools.ui.editor.kloud
 import com.explodingpixels.macwidgets.HudWindow
 import org.kevoree.tools.ui.editor.KevoreeEditor
 import javax.swing._
-import event.{CaretEvent, CaretListener}
 import java.awt.{FlowLayout, Color, BorderLayout}
-import com.explodingpixels.macwidgets.plaf.{HudButtonUI, HudTextFieldUI, HudLabelUI}
 import java.awt.event.{ActionEvent, ActionListener, FocusEvent, FocusListener}
 import org.kevoree.tools.ui.editor.property.SpringUtilities
 import org.kevoree.{KevoreeFactory, ContainerRoot}
-import org.kevoree.framework.{KevoreePropertyHelper, Constants, KevoreePlatformHelper, KevoreeXmiHelper}
-import java.net.{URLConnection, URL}
-import java.io.{InputStreamReader, BufferedReader, OutputStreamWriter, ByteArrayOutputStream}
+import org.kevoree.framework.KevoreeXmiHelper
+import java.io.{InputStreamReader, BufferedReader, OutputStreamWriter}
 import org.slf4j.LoggerFactory
+import com.explodingpixels.macwidgets.plaf.{HudPasswordFieldUI, HudButtonUI, HudTextFieldUI, HudLabelUI}
+import java.net.{URLEncoder, HttpURLConnection, URL}
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -38,7 +37,7 @@ import org.slf4j.LoggerFactory
 
 class KloudForm (editor: KevoreeEditor) {
   var logger = LoggerFactory.getLogger(this.getClass)
-  private val defaultAddress = "10.0.0.2:8080/kloud"
+  private val defaultAddress = "http://10.0.0.2:8080/kloud"
 
   val newPopup = new HudWindow("Submit a model on Kloud")
   newPopup.getJDialog.setSize(400, 200)
@@ -80,7 +79,7 @@ class KloudForm (editor: KevoreeEditor) {
 
   // set the password
   val passwordTxtField = new JPasswordField()
-  passwordTxtField.setUI(new HudTextFieldUI())
+  passwordTxtField.setUI(new HudPasswordFieldUI())
   val passwordLbl = new JLabel("Password: ", SwingConstants.TRAILING);
   passwordLbl.setForeground(Color.WHITE)
   passwordLbl.setUI(new HudLabelUI());
@@ -110,18 +109,6 @@ class KloudForm (editor: KevoreeEditor) {
   sshLbl.setLabelFor(sshTxtField);
   configLayout.add(sshLbl)
   configLayout.add(sshTxtField)
-
-  sshTxtField.addFocusListener(new FocusListener() {
-    def focusGained (p1: FocusEvent) {
-      sshLbl.setForeground(Color.WHITE)
-    }
-
-    def focusLost (p1: FocusEvent) {
-      if (sshTxtField.getText == "") {
-        sshLbl.setForeground(Color.RED)
-      }
-    }
-  })
 
   // set the Kloud address
   val addressTxtField = new JTextField(defaultAddress)
@@ -154,23 +141,28 @@ class KloudForm (editor: KevoreeEditor) {
   btSubmit.addActionListener(new ActionListener {
     def actionPerformed (p1: ActionEvent) {
       // check data (login, password, ssh_key must be defined, kloud address must also be set but a default value exists)
-      if (loginTxtField.getText != "" && passwordTxtField.getPassword.length > 0 && sshTxtField.getText != "" && addressTxtField.getText != "") {
+      if (loginTxtField.getText != "" && passwordTxtField.getPassword.length > 0 && addressTxtField.getText != "") {
         val password = new String(passwordTxtField.getPassword)
         val model = editor.getPanel.getKernel.getModelHandler.getActualModel
         // send the current model of the editor on Kloud
-        sendModel(loginTxtField.getText, password, sshTxtField.getText, addressTxtField.getText, model)
-        ok_lbl.setText("OK")
-        ok_lbl.setForeground(Color.GREEN)
+        new Thread() {
+          override def run () {
+            if (sendModel(loginTxtField.getText, password, sshTxtField.getText, addressTxtField.getText, model)) {
+              ok_lbl.setText("OK")
+              ok_lbl.setForeground(Color.GREEN)
+            }
+          }
+        }.start()
       } else {
         ok_lbl.setText("KO")
         ok_lbl.setForeground(Color.RED)
-        if (loginTxtField.getText != "") {
+        if (loginTxtField.getText == "") {
           logger.warn("You need to use a login to access the Kloud")
-        } else if (passwordTxtField.getPassword.length > 0) {
+        }
+        if (passwordTxtField.getPassword.length == 0) {
           logger.warn("You may have a password to access the Kloud")
-        } else if (sshTxtField.getText != "") {
-          logger.warn("You need to put a SSH public key to access the Kloud")
-        } else if (addressTxtField.getText != "") {
+        }
+        if (addressTxtField.getText == "") {
           logger.warn("You need to specify the address of the Kloud (default = {})", defaultAddress)
         }
       }
@@ -182,22 +174,28 @@ class KloudForm (editor: KevoreeEditor) {
   btRelease.addActionListener(new ActionListener {
     def actionPerformed (p1: ActionEvent) {
       // check data (login, password, ssh_key must be defined, kloud address must also be set but a default value exist)
-      if (loginTxtField.getText != "" && passwordTxtField.getPassword.length > 0 && sshTxtField.getText != "" && addressTxtField.getText != "") {
+      if (loginTxtField.getText != "" && passwordTxtField.getPassword.length > 0 && addressTxtField.getText != "") {
         val password = new String(passwordTxtField.getPassword)
-        // send a empty model to release all previous nodes already build
-        sendModel(loginTxtField.getText, password, sshTxtField.getText, addressTxtField.getText, KevoreeFactory.createContainerRoot)
-        ok_lbl.setText("OK")
-        ok_lbl.setForeground(Color.GREEN)
+        new Thread() {
+          override def run () {
+            // send a empty model to release all previous nodes already build
+            if (release(loginTxtField.getText, password, addressTxtField.getText + "/release")) {
+              ok_lbl.setText("OK")
+              ok_lbl.setForeground(Color.GREEN)
+            } else {
+              ok_lbl.setText("KO")
+              ok_lbl.setForeground(Color.RED)
+            }
+          }
+        }.start()
       } else {
         ok_lbl.setText("KO")
         ok_lbl.setForeground(Color.RED)
-        if (loginTxtField.getText != "") {
+        if (loginTxtField.getText == "") {
           logger.warn("You need to use a login to access the Kloud")
-        } else if (passwordTxtField.getPassword.length > 0) {
+        } else if (passwordTxtField.getPassword.length == 0) {
           logger.warn("You may have a password to access the Kloud")
-        } else if (sshTxtField.getText != "") {
-          logger.warn("You need to put a SSH public key to access the Kloud")
-        } else if (addressTxtField.getText != "") {
+        } else if (addressTxtField.getText == "") {
           logger.warn("You need to specify the address of the Kloud (default = {})", defaultAddress)
         }
       }
@@ -230,44 +228,104 @@ class KloudForm (editor: KevoreeEditor) {
 
   private def sendModel (login: String, password: String, sshKey: String, address: String, model: ContainerRoot): Boolean = {
     val bodyBuilder = new StringBuilder
+
     bodyBuilder append "login="
-    bodyBuilder append login
-    bodyBuilder append "&"
-    bodyBuilder append "password="
-    bodyBuilder append password
-    bodyBuilder append "&"
-    bodyBuilder append "ssh_key="
-    bodyBuilder append sshKey
-    bodyBuilder append "&"
-    bodyBuilder append "model="
-    bodyBuilder append KevoreeXmiHelper.saveToString(model, false)
+    bodyBuilder append URLEncoder.encode(login, "UTF-8")
+    bodyBuilder append "&password="
+    bodyBuilder append URLEncoder.encode(password, "UTF-8")
+    bodyBuilder append "&ssh_key="
+    bodyBuilder append URLEncoder.encode(sshKey, "UTF-8")
+    bodyBuilder append "&model="
+    bodyBuilder append URLEncoder.encode(KevoreeXmiHelper.saveToString(model, false), "UTF-8")
 
     logger.debug("url=>" + address)
-    val url = new URL(address)
-    val connection = url.openConnection()
-    connection.getOutputStream
-    connection.setConnectTimeout(3000)
-    connection.setDoOutput(true)
-    val wr: OutputStreamWriter = new OutputStreamWriter(connection.getOutputStream)
-    wr.write(bodyBuilder.toString())
-    wr.flush()
-    val rd: BufferedReader = new BufferedReader(new InputStreamReader(connection.getInputStream))
-    var line: String = rd.readLine
-    val response = new StringBuilder
-    while (line != null) {
-      response append line + "\n"
-      line = rd.readLine
-    }
-    wr.close()
-    rd.close()
-
-    // look the answer to know if the model has been correctly sent
-    if (response.toString().contains("One of your nodes is accessible at this address:")) {
-      true
-    } else {
-      // TODO log the answer to give some details about the failure
+    try {
+      val url = new URL(address)
+      val connection = url.openConnection().asInstanceOf[HttpURLConnection]
+      connection.setRequestMethod("POST")
+      connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded")
+      connection.setRequestProperty("Content-Length", "" + Integer.toString(bodyBuilder.length))
+      connection.setConnectTimeout(3000)
+      connection.setDoOutput(true)
+      val wr: OutputStreamWriter = new OutputStreamWriter(connection.getOutputStream)
+      wr.write(bodyBuilder.toString())
+      wr.flush()
+      val rd = new InputStreamReader(connection.getInputStream)
+      val bytes = new Array[Char](2048)
+      var length = 0
+      //      var line: String = rd.readLine
+      length = rd.read(bytes)
+      val response = new StringBuilder
+      while (length != -1) {
+        response append bytes + "\n"
+        length = rd.read(bytes)
+      }
+      wr.close()
+      rd.close()
+      var nbTry = 20;
+      // look the answer to know if the model has been correctly sent
+      while (!response.toString().contains("One of your nodes is accessible at this address:") && nbTry > 0) {
+        nbTry = nbTry - 1
+        Thread.sleep(200)
+      }
+      if (response.toString().contains("One of your nodes is accessible at this address:")) {
+        // TODO merge with kloud user model
+        true
+      } else {
+        logger.debug(response.toString())
+        false
+      }
+    } catch {
+      case _@e => logger.error("Unable to deploy on Kloud", e)
       false
     }
+  }
+
+  private def release (login: String, password: String, address: String): Boolean = {
+    val bodyBuilder = new StringBuilder
+
+    bodyBuilder append "login="
+    bodyBuilder append URLEncoder.encode(login, "UTF-8")
+    bodyBuilder append "&password="
+    bodyBuilder append URLEncoder.encode(password, "UTF-8")
+
+    logger.debug("url=>" + address)
+    try {
+      val url = new URL(address)
+      val connection = url.openConnection().asInstanceOf[HttpURLConnection]
+      connection.setRequestMethod("POST")
+      connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded")
+      connection.setRequestProperty("Content-Length", "" + Integer.toString(bodyBuilder.length))
+      connection.setConnectTimeout(3000)
+      connection.setDoOutput(true)
+      val wr: OutputStreamWriter = new OutputStreamWriter(connection.getOutputStream)
+      wr.write(bodyBuilder.toString())
+      wr.flush()
+      val rd = new InputStreamReader(connection.getInputStream)
+      val bytes = new Array[Char](2048)
+      var length = 0
+      //      var line: String = rd.readLine
+      length = rd.read(bytes)
+      val response = new StringBuilder
+      while (length != -1) {
+        response append bytes + "\n"
+        length = rd.read(bytes)
+      }
+      wr.close()
+      rd.close()
+      // look the answer to know if the model has been correctly sent
+      if (response.toString().contains("Now all configurations for user")) {
+        true
+      } else {
+        logger.debug(response.toString())
+        false
+      }
+    } catch {
+      case _@e => logger.error("Unable to deploy on Kloud", e)
+      false
+    }
+
+
   }
 
 

@@ -35,9 +35,9 @@ object GetParamsParser {
 
   def getParams (headers: List[HttpHeader], body: Array[Byte]): java.util.HashMap[String, String] = {
     headers.find {
-      h => h.name == "Content-Type"
+      h => h.name.toLowerCase == "Content-Type".toLowerCase
     } match {
-      case Some(header) if (header.value.startsWith("multipart/form-data;")) => {
+      case Some(header) if (header.value.toLowerCase.startsWith("multipart/form-data;")) => {
         // manage multipart enctype form
         val params = new java.util.HashMap[String, String]()
         val boundary = header.value.split("multipart/form-data; boundary=")(1)
@@ -60,8 +60,8 @@ object GetParamsParser {
         }
         params
       }
-      case Some(header) if (header.value == "application/x-www-form-urlencoded") => {
-        getParams("?" + new String(body))._2
+      case Some(header) if (header.value.toLowerCase == "application/x-www-form-urlencoded".toLowerCase) => {
+        getParams("?" + new String(body, "UTF-8"))._2
       }
       case Some(header) => {
         logger.warn("The web server is currently not able to manage this kind of content-type: {}", header._2)

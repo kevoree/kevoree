@@ -19,7 +19,7 @@ object HTMLHelper {
       <head>
           <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
           <meta charset="utf-8"/>
-          <link href={cssPath} rel="stylesheet"/>
+          <link href={cssPath} rel="stylesheet" type="text/css"/>
       </head>
       <body>
         <form method="post" action={targetURL} enctype="multipart/form-data">
@@ -58,14 +58,14 @@ object HTMLHelper {
       .toString()
   }
 
-  def generateValidSubmissionPageHtml (targetURL: String, login: String, address: String, url: String): String = {
+  def generateValidSubmissionPageHtml (login: String, address: String, url: String): String = {
 
     val cssPath = url + "/css/bootstrap.min.css"
     <html>
       <head>
           <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
           <meta charset="utf-8"/>
-          <link href={cssPath} rel="stylesheet"/>
+          <link href={cssPath} rel="stylesheet" type="text/css"/>
       </head>
       <body>
         <p>
@@ -82,14 +82,14 @@ object HTMLHelper {
     </html>.toString()
   }
 
-  def generateUnvalidSubmissionPageHtml (targetURL: String, login: String, exception: String, url: String): String = {
+  def generateUnvalidSubmissionPageHtml (login: String, exception: String, url: String): String = {
 
     val cssPath = url + "/css/bootstrap.min.css"
     <html>
       <head>
           <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
           <meta charset="utf-8"/>
-          <link href={cssPath} rel="stylesheet"/>
+          <link href={cssPath} rel="stylesheet" type="text/css"/>
       </head>
       <body>
         <p>
@@ -110,7 +110,7 @@ object HTMLHelper {
       <head>
           <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
           <meta charset="utf-8"/>
-          <link href={cssPath} rel="stylesheet"/>
+          <link href={cssPath} rel="stylesheet" type="text/css"/>
       </head>
       <body>
         <p>
@@ -130,7 +130,7 @@ object HTMLHelper {
       <head>
           <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
           <meta charset="utf-8"/>
-          <link href={cssPath} rel="stylesheet"/>
+          <link href={cssPath} rel="stylesheet" type="text/css"/>
       </head>
       <body>
         <p>
@@ -150,7 +150,7 @@ object HTMLHelper {
       <head>
           <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
           <meta charset="utf-8"/>
-          <link href={cssPath} rel="stylesheet"/>
+          <link href={cssPath} rel="stylesheet" type="text/css"/>
       </head>
       <body>
         <form method="post" action={targetURL} enctype="multipart/form-data">
@@ -173,5 +173,63 @@ object HTMLHelper {
       </body>
     </html>
       .toString()
+  }
+
+  def generateWaitingPooling (login: String, url: String): String = {
+    val cssPath = url + "/css/bootstrap.min.css"
+    <html>
+      <head>
+          <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+          <meta charset="utf-8"/>
+          <link href={cssPath} rel="stylesheet" type="text/css"/>
+        <script type="text/JavaScript">
+          <!--
+            function timedRefresh(timeoutPeriod) {
+              setTimeout("location.reload(true);",timeoutPeriod);
+            }
+          //   -->
+        </script>
+      </head>
+      <body onload="JavaScript:timedRefresh(600);">
+        Wainting response...
+        If you think waiting is too long, please contact the admins.
+      </body>
+    </html>.toString()
+  }
+
+  def generateUnknownError (unknownURL: String, url: String): String = {
+    val cssPath = url + "/css/bootstrap.min.css"
+    <html>
+      <head>
+          <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+          <meta charset="utf-8"/>
+          <link href={cssPath} rel="stylesheet" type="text/css"/>
+        <script type="text/JavaScript">
+          <!--
+                        function timedRefresh(timeoutPeriod) {\n" +
+                        \tsetTimeout(\"location.reload(true);\",timeoutPeriod);\n" +
+                        }\n" +
+                        //   -->
+        </script>
+      </head>
+      <body>
+        Unable to complete the request on
+        {unknownURL}
+      </body>
+    </html>.toString()
+  }
+
+  def generateRedirect (login: String, url: String) : String = {
+    val cssPath = url + "/css/bootstrap.min.css"
+    val content = "0; url=" + url + "/" + login
+    <html>
+      <head>
+          <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+          <meta charset="utf-8"/>
+          <link href={cssPath} rel="stylesheet" type="text/css"/>
+
+          <meta http-equiv="refresh" content={content}/>
+      </head>
+    </html>.toString()
   }
 }
