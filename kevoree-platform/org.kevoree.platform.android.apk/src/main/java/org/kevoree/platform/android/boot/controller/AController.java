@@ -21,12 +21,11 @@ import android.view.View;
  * Date: 08/03/12
  * Time: 11:43
  */
-abstract class AController {
-
-    private static final String TAG = AController.class.getSimpleName();
+abstract class AController implements IController {
 
     abstract public boolean handleMessage(Request req, Object data);
-    abstract public boolean handleMessage(Request req,String key, View data);
+
+    abstract public boolean handleMessage(Request req, String key, View data);
 
     public boolean handleMessage(Request req) {
         return handleMessage(req, null);

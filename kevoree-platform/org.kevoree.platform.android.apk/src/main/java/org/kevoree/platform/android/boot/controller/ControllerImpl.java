@@ -34,15 +34,13 @@ import java.io.File;
 public class ControllerImpl implements IController  {
 
     private static final String TAG = ControllerImpl.class.getSimpleName();
-    private KController kController=null;
-    public static ManagerUI viewmanager=null;
+    private ManagerUI viewmanager=null;
     public static TinyKCL tkcl = null;
     private FragmentActivity ctx=null;
 
-    public ControllerImpl(KController _kController)
+    public ControllerImpl(FragmentActivity act)
     {
-        this.kController = _kController;
-        viewmanager = _kController.getViewManager();
+        viewmanager = new ManagerUI(act);
         this.ctx  = viewmanager.getCtx();
         initKCL();
     }
@@ -145,5 +143,13 @@ public class ControllerImpl implements IController  {
     }
 
 
+    @Override
+    public void addToGroup(String groupKey, View view) {
+        handleMessage(Request.ADD_TO_GROUP,groupKey,view);
+    }
 
+    @Override
+    public void removeView(View view) {
+        handleMessage(Request.REMOVE_VIEW,view);
+    }
 }

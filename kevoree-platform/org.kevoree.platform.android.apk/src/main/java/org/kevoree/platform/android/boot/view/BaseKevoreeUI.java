@@ -18,7 +18,7 @@ import android.graphics.Color;
 import android.text.method.ScrollingMovementMethod;
 import android.view.View;
 import android.widget.*;
-import org.kevoree.platform.android.boot.controller.KController;
+import org.kevoree.platform.android.boot.controller.IController;
 import org.kevoree.platform.android.boot.controller.Request;
 import org.kevoree.platform.android.boot.utils.PrintStreamTraceLogger;
 
@@ -33,7 +33,7 @@ import java.io.PrintStream;
 public class BaseKevoreeUI extends LinearLayout {
 
     private Context ctx=null;
-    private  KController kController;
+    private IController kController;
     // UI
     private  Button btstart=null;
     private  Button btstop=null;
@@ -50,7 +50,7 @@ public class BaseKevoreeUI extends LinearLayout {
     public  PrintStream ERRwriter = null;
 
 
-    public BaseKevoreeUI(Context context,KController kController)
+    public BaseKevoreeUI(Context context,IController kController)
     {
         super(context);
         ctx = context;

@@ -16,7 +16,8 @@ package org.kevoree.platform.android.boot;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
-import org.kevoree.platform.android.boot.controller.KController;
+import org.kevoree.platform.android.boot.controller.ControllerImpl;
+import org.kevoree.platform.android.boot.controller.IController;
 import org.kevoree.platform.android.boot.controller.Request;
 import org.kevoree.platform.android.boot.utils.OnChangeListener;
 import org.kevoree.platform.android.boot.view.BaseKevoreeUI;
@@ -32,20 +33,17 @@ public class KevoreeActivity extends FragmentActivity implements  OnChangeListen
 
     private static final String TAG = KevoreeActivity.class.getSimpleName();
 
-    private  static  KController controller=null;
-    private  ManagerUI uiManager=null;
+   public static IController controller=null;
 
     @Override
     protected synchronized void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+
         if(controller == null)
         {
-            uiManager = new ManagerUI(this);
-            uiManager.addListener(this);
-            controller = new KController(uiManager);
+            controller = new ControllerImpl(this);
             BaseKevoreeUI uiBase =  new BaseKevoreeUI(this,controller);
-
             // add Kevoree UI BASE
             controller.handleMessage(Request.ADD_TO_GROUP,"KAdmin",uiBase);
         }

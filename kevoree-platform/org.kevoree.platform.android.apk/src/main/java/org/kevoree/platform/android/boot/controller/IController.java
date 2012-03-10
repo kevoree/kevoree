@@ -20,9 +20,14 @@ package org.kevoree.platform.android.boot.controller;
  * Time: 15:09
  */
 import android.view.View;
+import org.kevoree.platform.android.boot.view.ManagerUI;
+import org.kevoree.platform.android.ui.KevoreeAndroidUIScreen;
 
-public interface IController {
+public interface IController extends KevoreeAndroidUIScreen {
 	boolean handleMessage(Request req);
 	boolean handleMessage(Request req, Object data);
 	boolean handleMessage(Request req,String key,  View data);
+
+
+    public ManagerUI getViewManager();
 }

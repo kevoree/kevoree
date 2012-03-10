@@ -67,7 +67,7 @@ public class KevoreeService extends Service {
                     Class bootClazz =  ControllerImpl.tkcl.getClusterKCL().loadClass("org.kevoree.platform.android.core.KevoreeAndroidBootStrap");
                     bootObj = bootClazz.newInstance();
                     Method startM = bootClazz.getMethod("start",Activity.class, android.content.Context.class, ClassLoader.class, KevoreeAndroidUIScreen.class, String.class);
-                    startM.invoke(bootObj,ControllerImpl.viewmanager.getCtx(),getBaseContext(), ControllerImpl.tkcl.getClusterKCL(),ControllerImpl.viewmanager,nodeName);
+                    startM.invoke(bootObj,KevoreeActivity.controller.getViewManager().getCtx(),getBaseContext(), ControllerImpl.tkcl.getClusterKCL(),KevoreeActivity.controller,nodeName);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
