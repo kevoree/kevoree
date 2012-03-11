@@ -51,6 +51,7 @@ public class IaaSKloudResourceManager extends AbstractComponentType implements M
 		Option<ContainerRoot> modelOption = KloudReasoner.configureChildNodes(uuidModel.getModel(), this.getKevScriptEngineFactory());
 		if (modelOption.isDefined()) {
 			try {
+				logger.debug("Try to configure child nodes");
 				this.getModelService().unregisterModelListener(this);
 				this.getModelService().atomicCompareAndSwapModel(uuidModel, modelOption.get());
 				this.getModelService().registerModelListener(this);
@@ -61,8 +62,6 @@ public class IaaSKloudResourceManager extends AbstractComponentType implements M
 				}
 				modelUpdated();
 			}
-		} else {
-			logger.debug("Unable to configure child nodes");
 		}
 	}
 }

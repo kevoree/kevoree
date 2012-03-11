@@ -11,28 +11,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kevoree.platform.android.core
-
-import org.kevoree.android.framework.service.KevoreeAndroidService
-import android.app.Activity
-import android.view.View
+package org.kevoree.platform.android.boot.utils;
 
 /**
- * Created with IntelliJ IDEA.
- * User: duke
- * Date: 29/02/12
- * Time: 17:52
+ * Created by jed
+ * User: jedartois@gmail.com
+ * Date: 08/03/12
+ * Time: 11:34
  */
 
-class KevoreeActivityAndroidService(act: Activity, kui: org.kevoree.platform.android.ui.KevoreeAndroidUIScreen) extends KevoreeAndroidService {
-
-  def getRootActivity = act
-
-  def addToGroup(groupKey: String, view: View) {
-    kui.addToGroup(groupKey, view)
-  }
-
-  def remove(p1: View) {
-    kui.removeView(p1)
-  }
+public interface IKObservable<T> {
+	void addListener(OnChangeListener<T> listener);
+	void removeListener(OnChangeListener<T> listener);
 }

@@ -11,28 +11,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kevoree.platform.android.core
-
-import org.kevoree.android.framework.service.KevoreeAndroidService
-import android.app.Activity
-import android.view.View
+package org.kevoree.platform.android.boot.controller;
 
 /**
- * Created with IntelliJ IDEA.
- * User: duke
- * Date: 29/02/12
- * Time: 17:52
+ * Created by jed
+ * User: jedartois@gmail.com
+ * Date: 08/03/12
+ * Time: 15:09
  */
+import android.view.View;
+import org.kevoree.platform.android.boot.view.ManagerUI;
+import org.kevoree.platform.android.ui.KevoreeAndroidUIScreen;
 
-class KevoreeActivityAndroidService(act: Activity, kui: org.kevoree.platform.android.ui.KevoreeAndroidUIScreen) extends KevoreeAndroidService {
+public interface IController extends KevoreeAndroidUIScreen {
+	boolean handleMessage(Request req);
+	boolean handleMessage(Request req, Object data);
+	boolean handleMessage(Request req,String key,  View data);
 
-  def getRootActivity = act
 
-  def addToGroup(groupKey: String, view: View) {
-    kui.addToGroup(groupKey, view)
-  }
-
-  def remove(p1: View) {
-    kui.removeView(p1)
-  }
+    public ManagerUI getViewManager();
 }
