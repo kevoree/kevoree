@@ -144,6 +144,7 @@ class MiniKloudForm (editor: KevoreeEditor) {
         editor.getPanel.getKernel.getModelHandler.getActualModel.getNodes.foreach {
           node =>
             scriptBuilder append "addChild " + node.getName + "@editor_node\n"
+            scriptBuilder append "addToGroup editor_group " + node.getName + "\n"
         }
         scriptBuilder append "}"
 
