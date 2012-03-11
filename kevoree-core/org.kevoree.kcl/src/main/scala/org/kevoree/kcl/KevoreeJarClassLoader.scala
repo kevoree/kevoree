@@ -11,6 +11,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/**
+ * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.gnu.org/licenses/lgpl-3.0.txt
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 package org.kevoree.kcl
 
@@ -36,6 +49,27 @@ class KevoreeJarClassLoader extends JarClassLoader {
     import scala.collection.JavaConversions._
     classpathResources.asInstanceOf[KevoreeLazyJarResources].getLoadedURLs
   }
+
+  def getAllLoadedURLs(res: java.util.List[URL],cls: java.util.List[ClassLoader]):Unit = {
+    import scala.collection.JavaConversions._
+    //var res: java.util.List[URL] = new java.util.ArrayList[URL]()
+    cls.add(this)
+    res.addAll(classpathResources.asInstanceOf[KevoreeLazyJarResources].getLoadedURLs)
+    subClassLoaders.foreach(l => {
+      if (l.isInstanceOf[KevoreeJarClassLoader] && !cls.contains(l) ) {
+        l.asInstanceOf[KevoreeJarClassLoader].getAllLoadedURLs(res,cls)
+      }
+    }
+    )
+
+    subWeakClassLoaders.foreach(l => {
+      if (l.get.get.isInstanceOf[KevoreeJarClassLoader] && !cls.contains(l.get.get)) {
+        l.get.get.asInstanceOf[KevoreeJarClassLoader].getAllLoadedURLs(res,cls)
+      }
+    })
+
+  }
+
 
   var specialloaders: List[KevoreeResourcesLoader] = List()
 
@@ -67,6 +101,8 @@ class KevoreeJarClassLoader extends JarClassLoader {
   }
 
   protected var subClassLoaders = List[ClassLoader]()
+
+  def getSubClassLoaders() = subClassLoaders
 
   def addSubClassLoader(cl: ClassLoader) {
     if (!locked) {
@@ -138,7 +174,7 @@ class KevoreeJarClassLoader extends JarClassLoader {
 
   override def getResourceAsStream(name: String): InputStream = {
     var resolved = internal_getResourceAsStream(name)
-    if(resolved != null){
+    if (resolved != null) {
       return resolved
     }
     subClassLoaders.foreach {
@@ -184,7 +220,7 @@ class KevoreeJarClassLoader extends JarClassLoader {
     if (res != null) {
       new ByteArrayInputStream(res)
     } else {
-      logger.debug("Not found res "+name+" in "+this)
+      logger.debug("Not found res " + name + " in " + this)
       null
     }
   }
