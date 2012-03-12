@@ -1,17 +1,19 @@
-package org.kevoree.library.frascatiNodeTypes.primitives;
-  
+package org.kevoree.library.frascatiNodeTypes.primitives
+
+;
+
 
 import org.kevoreeAdaptation.AdaptationPrimitive
 
 import org.kevoree.library.frascatiNodeTypes.FrascatiNode
-import org.kevoree.DeployUnit
 import org.kevoree.kcl.KevoreeJarClassLoader
 import org.kevoree.kompare.JavaSePrimitive
 import org.ow2.frascati.FraSCAti
 import actors.Actor
+import org.kevoree.{MBinding, ComponentInstance, DeployUnit}
 
 
-class AdaptatationPrimitiveFactory(frascati: FraSCAti,node: FrascatiNode,topKCL: KevoreeJarClassLoader,targetRuntime : Actor) {
+class AdaptatationPrimitiveFactory(frascati: FraSCAti, node: FrascatiNode, topKCL: KevoreeJarClassLoader, targetRuntime: Actor) {
 
   def getPrimitive(adaptationPrimitive: AdaptationPrimitive): org.kevoree.api.PrimitiveCommand = {
     adaptationPrimitive.getPrimitiveType.getName match {
@@ -20,9 +22,11 @@ class AdaptatationPrimitiveFactory(frascati: FraSCAti,node: FrascatiNode,topKCL:
       case JavaSePrimitive.RemoveDeployUnit => FrascatiRemoveDeployUnit(adaptationPrimitive.getRef.asInstanceOf[DeployUnit], node.getBootStrapperService, topKCL)
       case JavaSePrimitive.RemoveThirdParty => FrascatiRemoveDeployUnit(adaptationPrimitive.getRef.asInstanceOf[DeployUnit], node.getBootStrapperService, topKCL)
       case JavaSePrimitive.RemoveInstance if (isFrascatiManeged(adaptationPrimitive.getRef)) => FrascatiRemoveInstance(adaptationPrimitive, frascati);
-      case JavaSePrimitive.AddInstance if (isFrascatiManeged(adaptationPrimitive.getRef)) => RuntimeCommandWrapper(FrascatiAddInstance(adaptationPrimitive, frascati, node.getNodeName, node.getBootStrapperService),targetRuntime)
-      case JavaSePrimitive.StartInstance if (isFrascatiManeged(adaptationPrimitive.getRef)) => FrascatiStartInstance(adaptationPrimitive,frascati);
-      case JavaSePrimitive.StopInstance if (isFrascatiManeged(adaptationPrimitive.getRef)) => FrascatiStopInstance(adaptationPrimitive,frascati);
+      case JavaSePrimitive.AddInstance if (isFrascatiManeged(adaptationPrimitive.getRef)) => FrascatiAddInstance(adaptationPrimitive, frascati, node.getNodeName, node.getBootStrapperService)
+      case JavaSePrimitive.StartInstance if (isFrascatiManeged(adaptationPrimitive.getRef)) => FrascatiStartInstance(adaptationPrimitive, frascati);
+      case JavaSePrimitive.StopInstance if (isFrascatiManeged(adaptationPrimitive.getRef)) => FrascatiStopInstance(adaptationPrimitive, frascati);
+      case JavaSePrimitive.UpdateDictionaryInstance if (isFrascatiManeged(adaptationPrimitive.getRef)) => FrascatiUpdateDictionaryInstance(adaptationPrimitive, frascati)
+      case JavaSePrimitive.AddBinding if (isFrascatiManeged(adaptationPrimitive.getRef)) => FrascatiAddBindingCommand(adaptationPrimitive.getRef.asInstanceOf[MBinding],node.getNodeName)
       case _ => node.getSuperPrimitive(adaptationPrimitive)
     }
     /*
@@ -78,9 +82,12 @@ class AdaptatationPrimitiveFactory(frascati: FraSCAti,node: FrascatiNode,topKCL:
      */
   }
 
-  def isFrascatiManeged(obj : Any) : Boolean = {
+  def isFrascatiManeged(obj: Any): Boolean = {
     obj match {
-      case instance : org.kevoree.Instance => {
+      case binding: org.kevoree.MBinding => {
+        binding.getPort.eContainer.asInstanceOf[ComponentInstance].getTypeDefinition.getDeployUnits.forall(e => e.getTargetNodeType.get.getName.equals(classOf[FrascatiNode].getSimpleName))
+      }
+      case instance: org.kevoree.Instance => {
         instance.getTypeDefinition.getDeployUnits.forall(e => e.getTargetNodeType.get.getName.equals(classOf[FrascatiNode].getSimpleName))
       }
       case _ => false

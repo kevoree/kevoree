@@ -36,7 +36,6 @@ case class AddBindingCommand(c: MBinding, nodeName: String) extends PrimitiveCom
     val KevoreeChannelFound = KevoreeDeployManager.bundleMapping.find(map => map.objClassName == c.getHub.getClass.getName && map.name == c.getHub.getName) match {
       case None => logger.error("Channel Fragment Mapping not found"); None
       case Some(mapfound) => {
-
         mapfound match {
           case kb: KevoreeMapping => {
             Some(kb.ref.asInstanceOf[KevoreeChannelFragmentActivator].channelActor)

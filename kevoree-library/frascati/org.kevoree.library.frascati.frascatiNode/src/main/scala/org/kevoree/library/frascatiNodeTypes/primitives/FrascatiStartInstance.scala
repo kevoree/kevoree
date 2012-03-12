@@ -6,6 +6,7 @@ import org.objectweb.fractal.api.control.LifeCycleController
 import org.ow2.frascati.FraSCAti
 import org.objectweb.fractal.api.Component
 import org.slf4j.LoggerFactory
+import org.kevoree.library.defaultNodeTypes.jcl.deploy.context.KevoreeDeployManager
 
 /**
  * Created by IntelliJ IDEA.
@@ -20,20 +21,16 @@ case class FrascatiStartInstance(adapptationPrimitive: AdaptationPrimitive, fras
 
   override def execute(): Boolean = {
 
-
-
-    val c: Component = frascati.getCompositeManager.getComposite(adapptationPrimitive.getRef.asInstanceOf[org.kevoree.Instance].getName)
-    lf = c.getFcInterface("lifecycle-controller").asInstanceOf[LifeCycleController];
-    try {
-      lf.startFc()
-      true
-    } catch {
-      case _@e => {
-        logger.debug("Error stopping Instance ", e)
-        false
+    val c = adapptationPrimitive.getRef.asInstanceOf[org.kevoree.Instance]
+    KevoreeDeployManager.bundleMapping.find(map => map.objClassName == c.getClass.getName && map.name == c.getName) match {
+      case None => false
+      case Some(mapfound) => {
+        val c: Component = mapfound.ref.asInstanceOf[Component]
+        lf = c.getFcInterface("lifecycle-controller").asInstanceOf[LifeCycleController]
+        lf.startFc();
+        true
       }
     }
-
   }
 
   override def undo() {

@@ -10,11 +10,13 @@ import org.kevoree.annotation.Library;
 import org.kevoree.annotation.NodeType;
 import org.kevoree.annotation.Start;
 import org.kevoree.annotation.Stop;
+import org.kevoree.kcl.KevoreeJarClassLoader;
 import org.kevoree.library.defaultNodeTypes.JavaSENode;
 import org.kevoree.library.frascatiNodeTypes.primitives.AdaptatationPrimitiveFactory;
 import org.kevoreeAdaptation.AdaptationModel;
 import org.kevoreeAdaptation.AdaptationPrimitive;
 import org.ow2.frascati.FraSCAti;
+import org.ow2.frascati.util.FrascatiException;
 
 /** 
  * @author obarais 
@@ -25,24 +27,47 @@ public class FrascatiNode extends JavaSENode {
 
     private AdaptatationPrimitiveFactory cmdFactory = null;
 
-    private FrascatiRuntime f_runtime = null;
+    //private FrascatiRuntime f_runtime = null;
 
+    private Thread t = null;
+    
     @Start
     @Override
     public void startNode() {
         final FrascatiNode selfPointer = this;
         super.startNode();
-        f_runtime = new FrascatiRuntime();
-        f_runtime.start();
-        FraSCAti f_sub = f_runtime.startRuntime();
-        cmdFactory = new AdaptatationPrimitiveFactory(f_sub, selfPointer, (org.kevoree.kcl.KevoreeJarClassLoader) FrascatiNode.class.getClassLoader(),f_runtime);
+       // f_runtime = new FrascatiRuntime();
+        //f_runtime.start();
+       // FraSCAti f_sub = f_runtime.startRuntime();
+        
+        t = new Thread(){
+            @Override
+            public void run() {
+                FrascatiClassLoaderWrapper fcl = new FrascatiClassLoaderWrapper((KevoreeJarClassLoader)FrascatiNode.class.getClassLoader());
+                 Thread.currentThread().setContextClassLoader(fcl);
+                try {
+                    FraSCAti internal_frascati = FraSCAti.newFraSCAti(fcl);
+                    cmdFactory = new AdaptatationPrimitiveFactory(internal_frascati, selfPointer, (org.kevoree.kcl.KevoreeJarClassLoader) FrascatiNode.class.getClassLoader(),null);
+                } catch (FrascatiException e) {
+                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                }
+            }
+        };
+        t.start();
+        try {
+            t.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+
+
     }
 
 
     @Stop
     @Override
     public void stopNode() {
-        f_runtime.stopRuntime();
+        //f_runtime.stopRuntime();
         super.stopNode();
     }
 
