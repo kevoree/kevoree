@@ -16,7 +16,11 @@ class FrascatiClassLoaderWrapper(kcl : KevoreeJarClassLoader) extends org.ow2.fr
 
 
   override def loadClass(p1: String): Class[_] = {
+
+
+
     kcl.loadClass(p1)
+
   }
 
   override def getResourceAsStream(p1: String) = {
@@ -32,7 +36,7 @@ class FrascatiClassLoaderWrapper(kcl : KevoreeJarClassLoader) extends org.ow2.fr
   }
 
   override def getURLs(): Array[java.net.URL] = {
-    logger.info("GETURL CLASSLOADER")
+   println("GETURL CLASSLOADER")
 
 
     val urls = classOf[FrascatiNode].getClassLoader.asInstanceOf[KevoreeJarClassLoader].getLoadedURLs

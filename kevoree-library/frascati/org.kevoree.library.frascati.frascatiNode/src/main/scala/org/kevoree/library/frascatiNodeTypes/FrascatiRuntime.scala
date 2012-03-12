@@ -43,7 +43,7 @@ class FrascatiRuntime extends Actor {
         case StartRuntime() => {
 
           //val fcl = new FrascatiClassLoader(classOf[FrascatiNode].getClassLoader) {
-
+            val fcl = new FrascatiClassLoaderWrapper(classOf[FrascatiNode].getClassLoader.asInstanceOf[KevoreeJarClassLoader])
 
 
 

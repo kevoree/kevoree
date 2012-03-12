@@ -9,9 +9,9 @@ import org.ow2.frascati.assembly.factory.processor.ProcessingContextImpl
 import org.ow2.frascati.FraSCAti
 import org.slf4j.LoggerFactory
 import javax.xml.namespace.QName
-import org.kevoree.library.frascatiNodeTypes.FrascatiNode
+import org.kevoree.library.frascatiNodeTypes.{FrascatiClassLoaderWrapper, FrascatiNode}
 
- 
+
 /**
  * Created by IntelliJ IDEA.
  * User: duke
@@ -42,7 +42,7 @@ case class FrascatiAddInstance(adaptationPrimitive: AdaptationPrimitive, frascat
 
 
 
-        frascati.getComposite(compositeURL.getPath, kcl)
+        frascati.getComposite(compositeURL.getPath, new FrascatiClassLoaderWrapper(kcl))
 
         // Process the composite.
         //  frascati.getClassLoaderManager().loadLibraries(Array(new URL("file:/opt/frascati-runtime-1.4/examples/helloworld-pojo/target/helloworld-pojo-1.4.jar")))
