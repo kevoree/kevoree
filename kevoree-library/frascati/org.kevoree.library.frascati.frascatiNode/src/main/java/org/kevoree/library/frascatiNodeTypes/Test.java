@@ -73,12 +73,12 @@ public class Test {
 		 URL url[] = new URL[1];
 		 url[0] = new URL("file:/opt/frascati-runtime-1.4/examples/helloworld-pojo/target/helloworld-pojo-1.4.jar");
 		 frascati.getClassLoaderManager().loadLibraries(url);
-	/*	 
+
 		 
 		 
 		 
 		 
-		 org.objectweb.fractal.api.Component c = frascati.getComposite("/tmp/server1463694843683778624.composite");//1helloworld1-pojo.composite");
+		 org.objectweb.fractal.api.Component c = frascati.getComposite("helloworld-pojo.composite");
 //		 org.objectweb.fractal.api.Component c = frascati.getComposite("2hel
 
 		 
@@ -90,12 +90,16 @@ public class Test {
 		 }
 		 System.err.println(content.getFcSubComponents()[0].getFcInterface("printService"));
 		 
-		 //PrintService s = (PrintService)content.getFcSubComponents()[0].getFcInterface("printService");
+		 //Object s = c.getFcInterface("run");
+         //java.lang.reflect.Method m = s.getClass().getMethod("run");
+        //m.invoke(s);
+
+
 		 	
 		 //s.print("Toto");
 		 
 //		 launcher.
-		*/ 
+
 		 //org.ow2.frascati.remote.introspection.resources.ObjectFactory fact =  new org.ow2.frascati.remote.introspection.resources.ObjectFactory();
 		 
 		 
