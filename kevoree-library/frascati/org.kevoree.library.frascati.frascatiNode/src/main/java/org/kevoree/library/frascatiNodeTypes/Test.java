@@ -12,12 +12,17 @@ import org.ow2.frascati.assembly.factory.api.ClassLoaderManagerInterceptorSCAInt
 import org.ow2.frascati.assembly.factory.api.ClassLoaderManagerInterceptorSCALCb56bb98SCACCIntent;
 import org.ow2.frascati.component.factory.api.MembraneGenerationFcInItf;
 import org.ow2.frascati.util.FrascatiClassLoader;
+import scala.actors.Actor;
+import scala.runtime.BoxedUnit;
 
 
 public class Test {
   
 	
 	public static void main( String[] args ) throws Exception {
+
+
+
 
 
         Enumeration<URL> urls = Test.class.getClassLoader().getResources("org/ow2/frascati/FraSCAti.composite");
@@ -102,12 +107,11 @@ public class Test {
 
 		 //org.ow2.frascati.remote.introspection.resources.ObjectFactory fact =  new org.ow2.frascati.remote.introspection.resources.ObjectFactory();
 		 
-		 
-		 
-	    
+
+
+    }
 	      
-	      
-	
-	}
+
+
 	
 }

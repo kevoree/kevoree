@@ -36,18 +36,11 @@ class FrascatiClassLoaderWrapper(kcl : KevoreeJarClassLoader) extends org.ow2.fr
   }
 
   override def getURLs(): Array[java.net.URL] = {
-   println("GETURL CLASSLOADER")
-
-
     val urls = kcl.getLinkedLoadedURLs()
-    import scala.collection.JavaConversions._
-    println(urls.mkString("\n") )
     urls.toArray(new Array[java.net.URL](urls.size))
   }
 
   override def addURL(p1: URL) {
-    println("add URL " + p1)
-
     val kcl1 = new KevoreeJarClassLoader()
     kcl1.add(p1)
     kcl.addSubClassLoader(kcl1)

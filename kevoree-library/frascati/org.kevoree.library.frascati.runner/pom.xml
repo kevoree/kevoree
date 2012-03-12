@@ -23,4 +23,46 @@
         </dependency>
     </dependencies>
 
+    <build>
+    <plugins>
+        <plugin>
+            <groupId>org.scala-tools</groupId>
+            <artifactId>maven-scala-plugin</artifactId>
+            <executions>
+                <execution>
+                    <goals>
+                        <goal>compile</goal>
+                        <goal>testCompile</goal>
+                    </goals>
+                </execution>
+            </executions>
+            <configuration>
+                <scalaVersion>${scala.version}</scalaVersion>
+                <args>
+                    <arg>-target:jvm-1.5</arg>
+                </args>
+                <jvmArgs>
+                    <jvmArg>-Xmx1024m</jvmArg>
+                    <jvmArg>-Xms128m</jvmArg>
+                </jvmArgs>
+                <launchers>
+                    <launcher>
+                        <id>run</id>
+                        <mainClass>org.kevoree.runner.FrascatiRunner
+                        </mainClass>
+                        <args>
+                            <arg>arg1</arg>
+                        </args>
+                        <jvmArgs>
+                            <jvmArg>-Xmx128m</jvmArg>
+                        </jvmArgs>
+                    </launcher>
+
+                </launchers>
+            </configuration>
+        </plugin>
+    </plugins>
+    </build>
 </project>
+
+
