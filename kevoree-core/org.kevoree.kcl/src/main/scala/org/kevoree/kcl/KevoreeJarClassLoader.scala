@@ -50,24 +50,32 @@ class KevoreeJarClassLoader extends JarClassLoader {
     classpathResources.asInstanceOf[KevoreeLazyJarResources].getLoadedURLs
   }
 
-  def getAllLoadedURLs(res: java.util.List[URL],cls: java.util.List[ClassLoader]):Unit = {
+  def getLinkedLoadedURLs(): java.util.List[URL] = {
+    val resultURL = new ArrayList[URL]()
+    val alreadyPassed = new ArrayList[ClassLoader]()
+    internal_getAllLoadedURLs(resultURL,alreadyPassed)
+    resultURL
+  }
+
+
+  def internal_getAllLoadedURLs(res: java.util.List[URL], cls: java.util.List[ClassLoader]): Unit = {
     import scala.collection.JavaConversions._
     //var res: java.util.List[URL] = new java.util.ArrayList[URL]()
     cls.add(this)
     res.addAll(classpathResources.asInstanceOf[KevoreeLazyJarResources].getLoadedURLs)
     subClassLoaders.foreach(l => {
-      if (l.isInstanceOf[KevoreeJarClassLoader] && !cls.contains(l) ) {
-        l.asInstanceOf[KevoreeJarClassLoader].getAllLoadedURLs(res,cls)
+      if (l.isInstanceOf[KevoreeJarClassLoader] && !cls.contains(l)) {
+        l.asInstanceOf[KevoreeJarClassLoader].internal_getAllLoadedURLs(res, cls)
       }
     }
     )
-
+/*
     subWeakClassLoaders.foreach(l => {
       if (l.get.get.isInstanceOf[KevoreeJarClassLoader] && !cls.contains(l.get.get)) {
-        l.get.get.asInstanceOf[KevoreeJarClassLoader].getAllLoadedURLs(res,cls)
+        l.get.get.asInstanceOf[KevoreeJarClassLoader].getAllLoadedURLs(res, cls)
       }
     })
-
+*/
   }
 
 
@@ -334,7 +342,6 @@ class KevoreeJarClassLoader extends JarClassLoader {
     //logger.debug("CallFind Resources for " + p1 + "-")
     val selfRes: ArrayList[URL] = internal_findResources(p1)
     //Then call on all
-    import scala.collection.JavaConverters._
     subClassLoaders.foreach {
       sub =>
         val subEnum = if (sub.isInstanceOf[KevoreeJarClassLoader]) {
