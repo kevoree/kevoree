@@ -65,7 +65,6 @@ case class UpdateDictionary (c: Instance, nodeName: String) extends PrimitiveCom
     KevoreeDeployManager.bundleMapping.find(map => map.objClassName == c.getClass.getName && map.name == c.getName) match {
       case None => false
       case Some(mapfound) => {
-
         mapfound.asInstanceOf[KevoreeMapping].ref match {
           case c_act: KevoreeComponentActivator => {
             lastDictioanry = (c_act.componentActor !? UpdateDictionaryMessage(dictionary, c.getTypeDefinition.eContainer.asInstanceOf[ContainerRoot])).asInstanceOf[HashMap[String, AnyRef]]
