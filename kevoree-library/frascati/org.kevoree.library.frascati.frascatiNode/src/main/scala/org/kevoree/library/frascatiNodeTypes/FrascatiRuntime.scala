@@ -42,34 +42,10 @@ class FrascatiRuntime extends Actor {
       receive {
         case StartRuntime() => {
 
-          val fcl = new FrascatiClassLoader(classOf[FrascatiNode].getClassLoader) {
+          //val fcl = new FrascatiClassLoader(classOf[FrascatiNode].getClassLoader) {
 
-            override def loadClass(p1: String): Class[_] = {
-              classOf[FrascatiNode].getClassLoader.loadClass(p1)
-            }
 
-            override def getResourceAsStream(p1: String) = {
-              classOf[FrascatiNode].getResourceAsStream(p1)
-            }
 
-            override def getResources(p1: String): Enumeration[URL] = {
-              classOf[FrascatiNode].getClassLoader.getResources(p1)
-            }
-
-            override def getResource(p1: String): URL = {
-              classOf[FrascatiNode].getClassLoader.getResource(p1)
-            }
-
-            override def getURLs(): Array[java.net.URL] = {
-              logger.info("GETURL CLASSLOADER")
-              val urls = classOf[FrascatiNode].getClassLoader.asInstanceOf[KevoreeJarClassLoader].getLoadedURLs
-              urls.toArray(new Array[java.net.URL](urls.size))
-            }
-
-            override def addURL(p1: URL) {
-              println("add URL " + p1)
-            }
-          }
 
           Thread.currentThread().setContextClassLoader(fcl);
           internal_frascati = FraSCAti.newFraSCAti(fcl);
