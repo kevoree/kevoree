@@ -38,8 +38,6 @@ case class FrascatiAddInstance(adaptationPrimitive: AdaptationPrimitive, frascat
         
         
         //CHECK KCL FOUND CLASS
-        System.out.println("ClassFound="+kcl.loadClass("org.ow2.frascati.tinfi.opt.oo.FCOOCtrlSourceCodeGenerator"));
-        
         frascati.getComposite(compositeURL.getPath,kcl)
 
         // Process the composite.
@@ -48,7 +46,6 @@ case class FrascatiAddInstance(adaptationPrimitive: AdaptationPrimitive, frascat
         //
         //        frascati.getComposite()
       } else {
-
         /*
         val s = ScaGenerator.generateComponent(adaptationPrimitive.getRef.asInstanceOf[org.kevoree.Instance].getName, adaptationPrimitive.getRef.asInstanceOf[org.kevoree.Instance].getTypeDefinition.asInstanceOf[org.kevoree.ComponentType].getBean, adaptationPrimitive.getRef.asInstanceOf[org.kevoree.ComponentInstance])
         val f = java.io.File.createTempFile(adaptationPrimitive.getRef.asInstanceOf[org.kevoree.ComponentInstance].getName, "composite")
@@ -60,8 +57,6 @@ case class FrascatiAddInstance(adaptationPrimitive: AdaptationPrimitive, frascat
         output.close()
         frascati.getComposite(f.getAbsolutePath)
         */
-
-
       }
       true
     } else {
