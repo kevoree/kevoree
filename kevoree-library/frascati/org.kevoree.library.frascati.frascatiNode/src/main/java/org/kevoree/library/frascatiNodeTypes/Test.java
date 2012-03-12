@@ -71,7 +71,7 @@ public class Test {
 	
 		 //Launcher launcher = new Launcher("helloworld1-pojo.composite", frascati);
 		 URL url[] = new URL[1];
-		 url[0] = new URL("file:/opt/frascati-runtime-1.4/examples/helloworld-pojo/target/helloworld-pojo-1.4.jar");
+		 url[0] = new URL("file:/Users/duke/Documents/dev/sandbox/trunk/examples/helloworld-pojo/target/helloworld-pojo-1.5-SNAPSHOT.jar");
 		 frascati.getClassLoaderManager().loadLibraries(url);
 
 		 

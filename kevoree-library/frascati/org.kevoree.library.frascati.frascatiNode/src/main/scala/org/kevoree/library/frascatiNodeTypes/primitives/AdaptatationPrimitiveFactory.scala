@@ -22,11 +22,11 @@ class AdaptatationPrimitiveFactory(frascati: FraSCAti, node: FrascatiNode, topKC
       case JavaSePrimitive.RemoveDeployUnit => FrascatiRemoveDeployUnit(adaptationPrimitive.getRef.asInstanceOf[DeployUnit], node.getBootStrapperService, topKCL)
       case JavaSePrimitive.RemoveThirdParty => FrascatiRemoveDeployUnit(adaptationPrimitive.getRef.asInstanceOf[DeployUnit], node.getBootStrapperService, topKCL)
       case JavaSePrimitive.RemoveInstance if (isFrascatiManeged(adaptationPrimitive.getRef)) => FrascatiRemoveInstance(adaptationPrimitive, frascati);
-      case JavaSePrimitive.AddInstance if (isFrascatiManeged(adaptationPrimitive.getRef)) => FrascatiAddInstance(adaptationPrimitive, frascati, node.getNodeName, node.getBootStrapperService)
+      case JavaSePrimitive.AddInstance if (isFrascatiManeged(adaptationPrimitive.getRef)) => RuntimeCommandWrapper(FrascatiAddInstance(adaptationPrimitive, frascati, node.getNodeName, node.getBootStrapperService), targetRuntime)
       case JavaSePrimitive.StartInstance if (isFrascatiManeged(adaptationPrimitive.getRef)) => FrascatiStartInstance(adaptationPrimitive, frascati);
       case JavaSePrimitive.StopInstance if (isFrascatiManeged(adaptationPrimitive.getRef)) => FrascatiStopInstance(adaptationPrimitive, frascati);
-      case JavaSePrimitive.UpdateDictionaryInstance if (isFrascatiManeged(adaptationPrimitive.getRef)) => FrascatiUpdateDictionaryInstance(adaptationPrimitive, frascati)
-      case JavaSePrimitive.AddBinding if (isFrascatiManeged(adaptationPrimitive.getRef)) => FrascatiAddBindingCommand(adaptationPrimitive.getRef.asInstanceOf[MBinding],node.getNodeName)
+      case JavaSePrimitive.UpdateDictionaryInstance if (isFrascatiManeged(adaptationPrimitive.getRef)) => RuntimeCommandWrapper(FrascatiUpdateDictionaryInstance(adaptationPrimitive, frascati), targetRuntime);
+      case JavaSePrimitive.AddBinding if (isFrascatiManeged(adaptationPrimitive.getRef)) => RuntimeCommandWrapper(FrascatiAddBindingCommand(adaptationPrimitive.getRef.asInstanceOf[MBinding],node.getNodeName),targetRuntime)
       case _ => node.getSuperPrimitive(adaptationPrimitive)
     }
     /*

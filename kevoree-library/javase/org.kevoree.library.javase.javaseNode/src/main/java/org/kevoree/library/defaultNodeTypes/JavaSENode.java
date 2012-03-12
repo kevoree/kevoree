@@ -79,6 +79,9 @@ public class JavaSENode extends AbstractNodeType {
 		try {
 			while (isRunning) {
 				line = reader.readLine();
+                if(line == null){
+                    shutdown = true;
+                }
 				if (line.equalsIgnoreCase("shutdown")) {
 					isRunning = false;
 					shutdown = true;
