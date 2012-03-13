@@ -60,7 +60,7 @@ class MiniCloudKevoreeNodeRunner (nodeName: String,iaasNode : IaaSNode) extends 
       val java: String = getJava
       if (platformFile != null) {
 
-        val root = LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME).asInstanceOf[Logger]
+       /* val root = LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME).asInstanceOf[Logger]
         var debug = "ERROR"
         if (root.isWarnEnabled) {
           debug = "WARN"
@@ -71,14 +71,14 @@ class MiniCloudKevoreeNodeRunner (nodeName: String,iaasNode : IaaSNode) extends 
         if (root.isDebugEnabled) {
           debug = "DEBUG"
         }
-        logger.debug("child node log level will be set to {}", debug)
+        logger.debug("child node log level will be set to {}", debug)*/
 
         val tempFile = File.createTempFile("bootModel"+nodeName,".kev");
         KevoreeXmiHelper.save(tempFile.getAbsolutePath,jailBootStrapModel)
         
         nodePlatformProcess = Runtime.getRuntime
           .exec(Array[String](java, "-Dnode.bootstrap=" + tempFile.getAbsolutePath, "-Dnode.name=" + nodeName,
-                               "-Dnode.log.level=" + debug, "-jar", platformFile.getAbsolutePath))
+                               "-Dnode.log.level=INFO"/* + debug*/, "-jar", platformFile.getAbsolutePath))
 
         outputStreamReader = new Thread {
           outFile = new File(System.getProperty("java.io.tmpdir") + File.separator + "sysout" + nodeName + ".log")

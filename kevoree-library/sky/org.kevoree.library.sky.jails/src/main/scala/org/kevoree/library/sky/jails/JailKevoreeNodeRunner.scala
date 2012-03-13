@@ -158,7 +158,7 @@ class JailKevoreeNodeRunner(nodeName: String, inet: String, subnet: String, mask
                       case _ =>
                     }
                 }
-                val root = LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME).asInstanceOf[Logger]
+              /*  val root = LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME).asInstanceOf[Logger]
                 var debug = "ERROR"
                 if (root.isWarnEnabled) {
                   debug = "WARN"
@@ -167,10 +167,10 @@ class JailKevoreeNodeRunner(nodeName: String, inet: String, subnet: String, mask
                   debug = "INFO"
                 }
                 if (root.isDebugEnabled) {
-                  debug = "DEBUG"
-                }
+                  debug = "DEBUG" // TODO must  be use to set the log level of the kevoree core
+                }*/
                 var exec = Array[String](jexec, jailId, "/usr/local/bin/java", "-Dnode.name=" + nodeName, "-Dnode.bootstrap=" + File.separator + "root" + File.separator + "bootstrapmodel.kev",
-                  "-Dnode.log.level=" + debug)
+                  "-Dnode.log.level=INFO"/* + debug*/)
                 exec = exec ++ Array[String]("-jar", File.separator + "root" + File.separator + "kevoree-runtime.jar")
                 logger.debug("trying to launch {} {} {} {} {} {} {} {}", exec)
                 nodeProcess = Runtime.getRuntime.exec(exec)
