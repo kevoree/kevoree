@@ -20,10 +20,9 @@ package org.kevoree.framework.annotation.processor.visitor
 
 import sub._
 import javax.annotation.processing.ProcessingEnvironment
-import javax.lang.model.util.{SimpleElementVisitor6}
-import org.kevoree.{ChannelType, NodeType}
+import javax.lang.model.util.SimpleElementVisitor6
+import org.kevoree.NodeType
 import javax.lang.model.element.{ExecutableElement, ElementKind, TypeElement, Element}
-import org.kevoree.annotation.NodeFragment
 
 case class NodeTypeVisitor (nodeType: NodeType, env: ProcessingEnvironment, rootVisitor: KevoreeAnnotationProcessor)
   extends SimpleElementVisitor6[Any, Element]
@@ -82,7 +81,6 @@ case class NodeTypeVisitor (nodeType: NodeType, env: ProcessingEnvironment, root
         if (an != null) {
           dt.asElement().accept(this, dt.asElement())
 //          defineAsSuperType(nodeType, dt.asElement().getSimpleName.toString, classOf[NodeFragment])
-          // FIXME ?
         }
         an = dt.asElement().getAnnotation(classOf[org.kevoree.annotation.NodeType])
         if (an != null) {
