@@ -263,6 +263,10 @@ public class JarClassLoader extends AbstractClassLoader {
             if (logger.isLoggable( Level.FINEST ))
                 logger.finest( "Return new local loaded class " + className );
 
+            //TO REMOVE
+            //System.out.println("unload "+formatClassName( className ) );
+            //classpathResources.unload( formatClassName( className ) );
+
             return result;
         }
 
