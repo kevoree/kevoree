@@ -33,14 +33,27 @@ case class KevsAddChildInterpreter (addChild: AddChildStatment) extends KevsAbst
     context.model.getNodes.find(node => node.getName == addChild.childNodeName) match {
       case None => logger.error("Unknown child name:" + addChild.childNodeName + "\nThe node must already exist. Please check !"); false
       case Some(child) => {
-          context.model.getNodes.find(node => node.getName == addChild.fatherNodeName) match {
-            case None => {
-                logger.error("Unknown father name:" + addChild.childNodeName + "\nThe node must already exist. Please check !"); 
-                false
+        context.model.getNodes.find(node => node.getName == addChild.fatherNodeName) match {
+          case None => {
+            logger.error("Unknown father name:" + addChild.childNodeName + "\nThe node must already exist. Please check !");
+            false
+          }
+          case Some(father) => {
+            father.getHosts.find(c => c.getName == child.getName) match {
+              case None => {
+                context.model.getNodes.find(n => n.getHosts.find(c => c.getName == child.getName) match {
+                  case None => true
+                  case Some(f) => false
+                }) match {
+                  case None => father.addHosts(child) ; true
+                  case Some(f) => logger.error("The child {} has already a parent: {}", child.getName, f.getName); false
+                }
               }
-            case Some(father) => father.addHosts(child); true
+              case Some(c) => logger.warn("The node {} is already a child of {}", child.getName, father.getName); true
+            }
           }
         }
+      }
     }
   }
 }

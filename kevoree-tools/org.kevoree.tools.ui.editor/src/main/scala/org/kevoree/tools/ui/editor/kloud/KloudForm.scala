@@ -14,17 +14,18 @@
 package org.kevoree.tools.ui.editor.kloud
 
 import com.explodingpixels.macwidgets.HudWindow
-import org.kevoree.tools.ui.editor.KevoreeEditor
 import javax.swing._
 import java.awt.{FlowLayout, Color, BorderLayout}
 import java.awt.event.{ActionEvent, ActionListener, FocusEvent, FocusListener}
 import org.kevoree.tools.ui.editor.property.SpringUtilities
 import org.kevoree.{KevoreeFactory, ContainerRoot}
 import org.kevoree.framework.KevoreeXmiHelper
-import java.io.{InputStreamReader, BufferedReader, OutputStreamWriter}
 import org.slf4j.LoggerFactory
 import com.explodingpixels.macwidgets.plaf.{HudPasswordFieldUI, HudButtonUI, HudTextFieldUI, HudLabelUI}
-import java.net.{URLEncoder, HttpURLConnection, URL}
+import java.io.{ByteArrayOutputStream, InputStreamReader, BufferedReader, OutputStreamWriter}
+import org.kevoree.tools.ui.editor.{PositionedEMFHelper, KevoreeEditor}
+import org.kevoree.tools.ui.editor.command.LoadModelCommand
+import java.net.{URLDecoder, URLEncoder, HttpURLConnection, URL}
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -150,6 +151,9 @@ class KloudForm (editor: KevoreeEditor) {
             if (sendModel(loginTxtField.getText, password, sshTxtField.getText, addressTxtField.getText, model)) {
               ok_lbl.setText("OK")
               ok_lbl.setForeground(Color.GREEN)
+            } else {
+              ok_lbl.setText("KO")
+              ok_lbl.setForeground(Color.RED)
             }
           }
         }.start()
@@ -250,29 +254,112 @@ class KloudForm (editor: KevoreeEditor) {
       val wr: OutputStreamWriter = new OutputStreamWriter(connection.getOutputStream)
       wr.write(bodyBuilder.toString())
       wr.flush()
-      val rd = new InputStreamReader(connection.getInputStream)
-      val bytes = new Array[Char](2048)
+      val rd = connection.getInputStream
+      val bytes = new Array[Byte](2048)
       var length = 0
-      //      var line: String = rd.readLine
+      val byteArrayOutputStream = new ByteArrayOutputStream()
       length = rd.read(bytes)
-      val response = new StringBuilder
       while (length != -1) {
-        response append bytes + "\n"
+        byteArrayOutputStream.write(bytes, 0, length)
         length = rd.read(bytes)
       }
       wr.close()
       rd.close()
+
+      var response = new String(byteArrayOutputStream.toByteArray, "UTF-8")
+
       var nbTry = 20;
       // look the answer to know if the model has been correctly sent
-      while (!response.toString().contains("One of your nodes is accessible at this address:") && nbTry > 0) {
+      while (!response.contains("Please contact the admins.") && !response.contains("A previous configuration has already submitted.") &&
+        !response.contains("One of your nodes is accessible at this address:") && nbTry > 0) {
+        logger.debug(response)
         nbTry = nbTry - 1
-        Thread.sleep(200)
+        Thread.sleep(1000)
+        try {
+
+          val url = new URL(address + "/" + login)
+          val connection = url.openConnection()
+          val rd = connection.getInputStream
+          val bytes = new Array[Byte](2048)
+          var length = 0
+          val byteArrayOutputStream = new ByteArrayOutputStream()
+          length = rd.read(bytes)
+          while (length != -1) {
+            byteArrayOutputStream.write(bytes, 0, length)
+            length = rd.read(bytes)
+          }
+          wr.close()
+          rd.close()
+          response = new String(byteArrayOutputStream.toByteArray, "UTF-8")
+        } catch {
+          case _@e =>
+        }
       }
-      if (response.toString().contains("One of your nodes is accessible at this address:")) {
-        // TODO merge with kloud user model
+      if (response.contains("One of your nodes is accessible at this address:")) {
+        logger.debug(response)
+        // try to merge with kloud user model
+        var addressData = response.split("One of your nodes is accessible at this address:")(1).trim().split("</p>")(0)
+        addressData = addressData.substring(0, addressData.indexOf("(") /*, addressData.indexOf(" on the editor")*/)
+        logger.debug("try to merge model with the kloud one coming from {}", addressData)
+        // merge
+        val url = new URL(addressData)
+        val conn = url.openConnection();
+        conn.setConnectTimeout(2000);
+        val inputStream = conn.getInputStream
+
+        try {
+          /*val dataArrayStream = new ByteArrayOutputStream()
+          val bytes = new Array[Byte](2048)
+          var length = inputStream.read(bytes)
+          while (length != -1) {
+            dataArrayStream.write(bytes, 0, length)
+            length = inputStream.read(bytes)
+          }
+
+          logger.debug(new String(dataArrayStream.toByteArray, "UTF-8"))
+          val model = KevoreeXmiHelper.loadString(new String(dataArrayStream.toByteArray, "UTF-8"))*/
+          val model = KevoreeXmiHelper.loadStream(inputStream)
+
+          val lcommand = new LoadModelCommand()
+          editor.getPanel.getKernel.getModelHandler.merge(model)
+          PositionedEMFHelper.updateModelUIMetaData(editor.getPanel.getKernel)
+          lcommand.setKernel(editor.getPanel.getKernel)
+          lcommand.execute(editor.getPanel.getKernel.getModelHandler.getActualModel)
+          true
+        } catch {
+          case _@e => logger.debug("Unable to load a model from stream", e);false
+        }
+
+      } else if (response.contains("A previous configuration has already submitted.<br/>Please use this access point to reconfigure it: ")) {
+        logger.debug(response)
+        var addressData = URLDecoder.decode (response, "UTF-8").split("A previous configuration has already submitted.<br/>Please use this access point to reconfigure it:")(1).trim().split("</p>")(0)
+        addressData = addressData.substring(addressData.indexOf("(") + 1, addressData.indexOf(" on the editor"))
+        logger.debug("try to merge model with the kloud one coming from {}", addressData)
+        // merge
+        val url = new URL(addressData)
+        val conn = url.openConnection();
+        conn.setConnectTimeout(2000);
+        val inputStream = conn.getInputStream
+
+        val lcommand = new LoadModelCommand()
+        editor.getPanel.getKernel.getModelHandler.merge(KevoreeXmiHelper.loadStream(inputStream))
+        PositionedEMFHelper.updateModelUIMetaData(editor.getPanel.getKernel)
+        lcommand.setKernel(editor.getPanel.getKernel)
+        lcommand.execute(editor.getPanel.getKernel.getModelHandler.getActualModel)
         true
       } else {
-        logger.debug(response.toString())
+        /*logger.debug(response.toString())
+        val rd = new InputStreamReader(connection.getInputStream)
+        val bytes = new Array[Char](2048)
+        var length = 0
+        //      var line: String = rd.readLine
+        length = rd.read(bytes)
+        val response = new StringBuilder
+        while (length != -1) {
+          response append bytes + "\n"
+          length = rd.read(bytes)
+        }*/
+        logger.debug(response)
         false
       }
     } catch {
@@ -301,23 +388,27 @@ class KloudForm (editor: KevoreeEditor) {
       val wr: OutputStreamWriter = new OutputStreamWriter(connection.getOutputStream)
       wr.write(bodyBuilder.toString())
       wr.flush()
-      val rd = new InputStreamReader(connection.getInputStream)
-      val bytes = new Array[Char](2048)
+      val rd = connection.getInputStream
+      val byteArrayOutputStream = new ByteArrayOutputStream()
+      val bytes = new Array[Byte](2048)
       var length = 0
       //      var line: String = rd.readLine
       length = rd.read(bytes)
-      val response = new StringBuilder
       while (length != -1) {
-        response append bytes + "\n"
+        byteArrayOutputStream.write(bytes, 0, length)
+        //        response append bytes + "\n"
         length = rd.read(bytes)
       }
+
       wr.close()
       rd.close()
+
+      val response = new String(byteArrayOutputStream.toByteArray, "UTF-8")
       // look the answer to know if the model has been correctly sent
-      if (response.toString().contains("Now all configurations for user")) {
+      if (response.contains("Now all configurations for user")) {
         true
       } else {
-        logger.debug(response.toString())
+        logger.debug(response)
         false
       }
     } catch {
