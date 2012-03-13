@@ -276,7 +276,7 @@ object KloudReasoner {
             scriptBuilder append "{"
             val defaultAttributes = KloudHelper.getDefaultNodeAttributes(kloudModel, "PJavaSENode")
             node.getDictionary.get.getValues
-              .filter(value => defaultAttributes.find(a => a.getName == value.getAttribute.getName) match {
+              .filter(value => value.getValue != null &&  defaultAttributes.find(a => a.getName == value.getAttribute.getName) match {
               case Some(attribute) => true
               case None => false
             }).foreach {
