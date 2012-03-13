@@ -28,15 +28,15 @@ import java.io._
  * @author Erwan Daubert
  * @version 1.0
  */
-abstract class KevoreeNodeRunner (var nodeName: String, bootStrapModel: String) {
+abstract class KevoreeNodeRunner (var nodeName: String) {
 
   private val logger: Logger = LoggerFactory.getLogger(classOf[KevoreeNodeRunner])
 
-  def startNode (): Boolean
+  def startNode (iaasModel : ContainerRoot,jailBootStrapModel : ContainerRoot): Boolean
 
   def stopNode (): Boolean
 
-  def updateNode (modelPath: String): Boolean
+  //def updateNode (modelPath: String): Boolean
 
 
   var outFile: File = null
@@ -54,37 +54,11 @@ abstract class KevoreeNodeRunner (var nodeName: String, bootStrapModel: String) 
    * @param ip
    */
   def configureSSHServer (model: ContainerRoot, path: String, ip: String) {
-    // copy SSH Public Key if available
-    // for each SSHRestGroup, We copy the Public SSH key on jail
-
-    /*logger.debug("try to copy SSH Public keys ...")
-    model.getGroups.filter(group =>
-
-      (group.getTypeDefinition.getName == "SSHRestGroup" || isASubType(group.getTypeDefinition, "SSHRestGroup")) &&
-        (group.getSubNodes.find(node => node.getName == nodeName) match {
-          case None => false
-          case Some(node) => true
-        })).foreach {
-      group =>
-        val keyOption = KevoreePropertyHelper.getPropertyForGroup(model, group.getName, "SSH_PUBLIC_KEY")
-        if (keyOption.isDefined) {
-          logger.debug("try to copy SSH Public keys from {} ...", group.getName)
-          // check if .ssh is available and create it else
-          if (!new File(path + File.separator + "root" + File.separator + ".ssh" + File.separator + "authorized_keys").exists()) {
-            new File(path + File.separator + "root" + File.separator + ".ssh").mkdirs()
-          }
-          addStringToFile(keyOption.get.toString, path + File.separator + "root" + File.separator + ".ssh" + File.separator + "authorized_keys")
-          // configure sshd: BASIC CONFIGURATION USING TEMPLATE
-//          copyFileFromStream(this.getClass.getClassLoader.getResourceAsStream("sshd_config"), path + File.separator + "etc" + File.separator + "ssh" + File.separator + "sshd_config")
-
-        }
-    }*/
     if (ip != null && ip != "") {
       logger.debug("configure ssh server ip")
       replaceStringIntoFile("<ip_address>", ip, path + File.separator + "etc" + File.separator + "ssh" + File.separator + "sshd_config")
     }
   }
-
 
   private def isASubType (nodeType: TypeDefinition, typeName: String): Boolean = {
     nodeType.getSuperTypes.find(td => td.getName == typeName || isASubType(td, typeName)) match {

@@ -1,18 +1,8 @@
 package org.kevoree.library.sky.manager.nodeType;
 
-
-/*import com.twitter.finagle.Service;
-import com.twitter.finagle.builder.Server;
-import com.twitter.finagle.builder.ServerBuilder;
-import com.twitter.finagle.http.Http;
-import com.twitter.util.Duration;
-import org.jboss.netty.handler.codec.http.HttpRequest;
-import org.jboss.netty.handler.codec.http.HttpResponse;*/
-
 import org.kevoree.ContainerRoot;
 import org.kevoree.annotation.*;
 import org.kevoree.library.defaultNodeTypes.JavaSENode;
-import org.kevoree.library.sky.manager.Helper;
 import org.kevoree.library.sky.manager.KevoreeNodeManager;
 import org.kevoree.library.sky.manager.KevoreeNodeRunner;
 import org.kevoree.library.sky.manager.PlanningManager;
@@ -46,27 +36,26 @@ public abstract class IaaSNode extends JavaSENode {
 
 	private IaaSHTTPServer server = new IaaSHTTPServer(this);
 
-	public abstract KevoreeNodeRunner createKevoreeNodeRunner(String nodeName, String bootStrapModel, ContainerRoot model);/* {
+	public abstract KevoreeNodeRunner createKevoreeNodeRunner(String nodeName);/* {
 		logger.error("createKevoreeNodeRunner from IaaSNode must be override by subtypes and never be used as is");
 		return null;
 	}*/
 
+    private KevoreeNodeManager nodeManager = null;
+
+    public KevoreeNodeManager getNodeManager() {
+        return nodeManager;
+    }
 
     @Start
     @Override
     public void startNode() {
-
         super.startNode();
-
-        KevoreeNodeManager.setNode(this);
-        Helper.setCurrentNodeType(this);
-        //Helper.setModelHandlerService(this.getModelService());
-        //Helper.setNodeName(this.getNodeName());
-
+        nodeManager = new KevoreeNodeManager(this);
+        nodeManager.start();
         // start HTTP Server
         String port = (String) this.getDictionary().get("port");
         int portint = Integer.parseInt(port);
-
 		server.startServer(portint);
     }
 
@@ -75,19 +64,19 @@ public abstract class IaaSNode extends JavaSENode {
     public void stopNode() {
         logger.debug("stopping node type of " + this.getNodeName());
         super.stopNode();
-        KevoreeNodeManager.stop();
+        nodeManager.stop();
 //        server.close(Duration.apply(300, TimeUnit.MILLISECONDS));
 		server.stop();
     }
 
     public boolean isHost() {
         String role = this.getDictionary().get("role").toString();
-        return role.contains("host");
+        return (role != null && role.contains("host"));
     }
 
     public boolean isContainer() {
         String role = this.getDictionary().get("role").toString();
-        return role.contains("container");
+        return (role != null && role.contains("container"));
     }
 
     public AdaptationModel superKompare(ContainerRoot current, ContainerRoot target) {

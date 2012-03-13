@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory
 import org.kevoree.framework.AbstractNodeType
 import cc.spray.can._
 import util.matching.Regex
+import org.kevoree.library.sky.manager.nodeType.IaaSNode
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -15,7 +16,7 @@ import util.matching.Regex
  * @version 1.0
  */
 
-class HTTPServerRoot (id: String, node: AbstractNodeType) extends Actor {
+class HTTPServerRoot (id: String, node: IaaSNode) extends Actor {
   val log = LoggerFactory.getLogger(getClass)
   self.id = id
 
@@ -48,17 +49,17 @@ class HTTPServerRoot (id: String, node: AbstractNodeType) extends Actor {
   def response (msg: String, status: Int = 200) = HttpResponse(status, defaultHeaders, msg.getBytes("UTF-8"))
 
   private def sendAdminNodeList (): HttpResponse = {
-    val htmlContent = VirtualNodeHTMLHelper.exportNodeListAsHTML()
+    val htmlContent = VirtualNodeHTMLHelper.exportNodeListAsHTML(node.getNodeManager)
     new HttpResponse(status = 200).withBody(htmlContent)
   }
 
   private def sendNodeHome (nodeName: String): HttpResponse = {
-    val htmlContent = VirtualNodeHTMLHelper.getNodeHomeAsHTML(nodeName)
+    val htmlContent = VirtualNodeHTMLHelper.getNodeHomeAsHTML(nodeName,node.getNodeManager)
     new HttpResponse(status = 200).withBody(htmlContent)
   }
 
   private def sendNodeFlux (fluxName: String, nodeName: String): HttpResponse = {
-    val htmlContent = VirtualNodeHTMLHelper.getNodeStreamAsHTML(nodeName, fluxName)
+    val htmlContent = VirtualNodeHTMLHelper.getNodeStreamAsHTML(nodeName, fluxName,node.getNodeManager)
     new HttpResponse(status = 200).withBody(htmlContent)
   }
 

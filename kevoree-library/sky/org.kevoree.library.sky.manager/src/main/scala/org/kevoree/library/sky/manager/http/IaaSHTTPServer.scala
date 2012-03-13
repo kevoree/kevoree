@@ -5,6 +5,7 @@ import cc.spray.can.{ServerConfig, HttpServer}
 import org.kevoree.framework.AbstractNodeType
 import akka.actor._
 import akka.config.Supervision._
+import org.kevoree.library.sky.manager.nodeType.IaaSNode
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -15,7 +16,7 @@ import akka.config.Supervision._
  * @version 1.0
  */
 
-class IaaSHTTPServer (node: AbstractNodeType) {
+class IaaSHTTPServer (node: IaaSNode) {
 
   val logger = LoggerFactory.getLogger(this.getClass)
   var id = ""
