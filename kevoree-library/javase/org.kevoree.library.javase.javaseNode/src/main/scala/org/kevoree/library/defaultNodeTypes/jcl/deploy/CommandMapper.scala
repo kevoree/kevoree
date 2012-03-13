@@ -36,6 +36,9 @@ class CommandMapper {
 
   def buildPrimitiveCommand(p: org.kevoreeAdaptation.AdaptationPrimitive, nodeName: String): PrimitiveCommand = {
     p.getPrimitiveType.getName match {
+
+      case JavaSePrimitive.UpdateDictionaryInstance if(p.getRef.asInstanceOf[Instance].getName == nodeName) => SelfDictionaryUpdate(p.getRef.asInstanceOf[Instance],nodeType)
+        
       case JavaSePrimitive.AddDeployUnit => AddDeployUnit(p.getRef.asInstanceOf[DeployUnit],nodeType.getBootStrapperService)
       case JavaSePrimitive.UpdateDeployUnit => UpdateDeployUnit(p.getRef.asInstanceOf[DeployUnit],nodeType.getBootStrapperService)
       case JavaSePrimitive.RemoveDeployUnit => RemoveDeployUnit(p.getRef.asInstanceOf[DeployUnit],nodeType.getBootStrapperService)
