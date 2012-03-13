@@ -53,9 +53,10 @@ abstract class KevoreeNodeRunner (var nodeName: String, bootStrapModel: String) 
    * @param path
    * @param ip
    */
-  def configureSSHServer (model: ContainerRoot, path : String, ip : String) {
+  def configureSSHServer (model: ContainerRoot, path: String, ip: String) {
     // copy SSH Public Key if available
     // for each SSHRestGroup, We copy the Public SSH key on jail
+
     /*logger.debug("try to copy SSH Public keys ...")
     model.getGroups.filter(group =>
 
@@ -78,8 +79,10 @@ abstract class KevoreeNodeRunner (var nodeName: String, bootStrapModel: String) 
 
         }
     }*/
-    logger.debug("configure ssh server ip")
-    replaceStringIntoFile("<ip_address>", ip, path + File.separator + "etc" + File.separator + "ssh" + File.separator + "sshd_config")
+    if (ip != null && ip != "") {
+      logger.debug("configure ssh server ip")
+      replaceStringIntoFile("<ip_address>", ip, path + File.separator + "etc" + File.separator + "ssh" + File.separator + "sshd_config")
+    }
   }
 
 
@@ -90,7 +93,7 @@ abstract class KevoreeNodeRunner (var nodeName: String, bootStrapModel: String) 
     }
   }
 
-  private def copyFileFromStream (inputStream: InputStream, outputFile: String): Boolean = {
+  /*private def copyFileFromStream (inputStream: InputStream, outputFile: String): Boolean = {
     logger.debug("trying to copy a stream into {}", outputFile)
     if (inputStream != null) {
       try {
@@ -121,75 +124,81 @@ abstract class KevoreeNodeRunner (var nodeName: String, bootStrapModel: String) 
   }
 
   private def addStringToFile (data: String, outputFile: String) {
-    logger.debug("trying to add \"{}\" into {}", data, outputFile)
-    val stringBuilder = new StringBuilder
-    stringBuilder append data + "\n"
-    if (new File(outputFile).exists()) {
-      val reader = new DataInputStream(new FileInputStream(new File(outputFile)))
-      val writer = new ByteArrayOutputStream()
+    if (data != null && data != "") {
+      logger.debug("trying to add \"{}\" into {}", data, outputFile)
+      val stringBuilder = new StringBuilder
+      stringBuilder append data + "\n"
+      if (new File(outputFile).exists()) {
+        val reader = new DataInputStream(new FileInputStream(new File(outputFile)))
+        val writer = new ByteArrayOutputStream()
 
-      val bytes = new Array[Byte](2048)
-      var length = reader.read(bytes)
-      while (length != -1) {
-        writer.write(bytes, 0, length)
-        length = reader.read(bytes)
+        val bytes = new Array[Byte](2048)
+        var length = reader.read(bytes)
+        while (length != -1) {
+          writer.write(bytes, 0, length)
+          length = reader.read(bytes)
 
+        }
+        writer.flush()
+        writer.close()
+        reader.close()
+        stringBuilder append new String(writer.toByteArray)
       }
-      writer.flush()
-      writer.close()
-      reader.close()
-      stringBuilder append new String(writer.toByteArray)
-    }
 
-    copyStringToFile(stringBuilder.toString(), outputFile)
-    logger.debug("adding \"{}\" into {} is done", data, outputFile)
-  }
+      copyStringToFile(stringBuilder.toString(), outputFile)
+      logger.debug("adding \"{}\" into {} is done", data, outputFile)
+    }
+  }*/
 
   private def copyStringToFile (data: String, outputFile: String) {
-    logger.debug("trying to copy \"{}\" to {}", data, outputFile)
-    try {
-      if (new File(outputFile).exists()) {
-        new File(outputFile).delete()
-      }
-      val writer = new DataOutputStream(new FileOutputStream(new File(outputFile)))
+    if (data != null && data != "") {
+      logger.debug("trying to copy \"{}\" to {}", data, outputFile)
+      try {
+        if (new File(outputFile).exists()) {
+          new File(outputFile).delete()
+        }
+        val writer = new DataOutputStream(new FileOutputStream(new File(outputFile)))
 
-      writer.write(data.getBytes)
-      writer.flush()
-      writer.close()
-      logger.debug("copying \"{}\" into {} uis done", data, outputFile)
-    } catch {
-      case _@e => logger.error("Unable to copy \"{}\" on {}", Array[AnyRef](data, outputFile), e)
+        writer.write(data.getBytes)
+        writer.flush()
+        writer.close()
+        logger.debug("copying \"{}\" into {} uis done", data, outputFile)
+      } catch {
+        case _@e => logger.error("Unable to copy \"{}\" on {}", Array[AnyRef](data, outputFile), e)
+      }
     }
   }
 
   private def replaceStringIntoFile (dataToReplace: String, newData: String, file: String) {
-    logger.debug("trying to replace \"{}\" by \"{}\" into {}", Array[AnyRef](dataToReplace, newData, file))
-    if (new File(file).exists()) {
-      try {
-      val stringBuilder = new StringBuilder
-      val reader = new DataInputStream(new FileInputStream(new File(file)))
-      val writer = new ByteArrayOutputStream()
+    if (dataToReplace != null && dataToReplace != "" && newData != null && newData != "") {
+      logger.debug("trying to replace \"{}\" by \"{}\" into {}", Array[AnyRef](dataToReplace, newData, file))
+      if (new File(file).exists()) {
+        try {
+          val stringBuilder = new StringBuilder
+          val reader = new DataInputStream(new FileInputStream(new File(file)))
+          val writer = new ByteArrayOutputStream()
 
-      val bytes = new Array[Byte](2048)
-      var length = reader.read(bytes)
-      while (length != -1) {
-        writer.write(bytes, 0, length)
-        length = reader.read(bytes)
+          val bytes = new Array[Byte](2048)
+          var length = reader.read(bytes)
+          while (length != -1) {
+            writer.write(bytes, 0, length)
+            length = reader.read(bytes)
 
+          }
+          writer.flush()
+          writer.close()
+          reader.close()
+          stringBuilder append new String(writer.toByteArray)
+          stringBuilder.replace(stringBuilder.indexOf(dataToReplace), stringBuilder.indexOf(dataToReplace) + dataToReplace.length(), newData)
+
+          copyStringToFile(stringBuilder.toString(), file)
+          logger.debug("replacing \"{}\" by \"{}\" into {} is done", Array[AnyRef](dataToReplace, newData, file))
+        } catch {
+          case _@e => logger.error("Unable to replace a string", e)
+        }
+      } else {
+        logger.debug("The file {} doesn't exist, nothing can be replace.", file)
       }
-      writer.flush()
-      writer.close()
-      reader.close()
-      stringBuilder append new String(writer.toByteArray)
-      stringBuilder.replace(stringBuilder.indexOf(dataToReplace), stringBuilder.indexOf(dataToReplace) + dataToReplace.length(), newData)
-
-      copyStringToFile(stringBuilder.toString(), file)
-      logger.debug("replacing \"{}\" by \"{}\" into {} is done", Array[AnyRef](dataToReplace, newData, file))
-      } catch {
-        case _@e => logger.error("Unable to replace a string", e)
-      }
-    } else {
-      logger.debug("The file {} doesn't exist, nothing can be replace.", file)
     }
   }
 }

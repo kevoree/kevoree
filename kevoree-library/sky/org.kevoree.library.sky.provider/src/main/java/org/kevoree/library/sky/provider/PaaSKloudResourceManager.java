@@ -12,7 +12,6 @@ import org.kevoree.framework.KevoreeXmiHelper;
 import org.kevoree.library.javase.webserver.KevoreeHttpRequest;
 import org.kevoree.library.javase.webserver.KevoreeHttpResponse;
 import org.kevoree.library.javase.webserver.ParentAbstractPage;
-import org.kevoree.library.javase.webserver.URLHandlerScala;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import scala.Option;
@@ -41,41 +40,22 @@ public class PaaSKloudResourceManager extends ParentAbstractPage {
 
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	@Override
-	public void requestHandler (Object param) {
-		final Object params = param;
-		new Thread() {
-			@Override
-			public void run () {
-				PaaSKloudResourceManager.super.requestHandler(params);
-			}
-		}.start();
-	}
-
 	public KevoreeHttpResponse process (KevoreeHttpRequest request, KevoreeHttpResponse response) {
 		if (request != null) {
-			if (request.getUrl().equals("/kloud")) {
+			if (request.getUrl().equals(this.getDictionary().get("urlpattern").toString())) {
 				if (request.getResolvedParams().get("model") != null && request.getResolvedParams().get("login") != null
-						&& request.getResolvedParams().get("password") != null && request.getResolvedParams().get("ssh_key") != null) {
+						&& request.getResolvedParams().get("password") != null /*&& request.getResolvedParams().get("ssh_key") != null*/) {
 					// check authentication information
 					if (InriaLdap.testLogin(request.getResolvedParams().get("login"), request.getResolvedParams().get("password"))) {
 
 						response.setContent(process(request.getResolvedParams().get("model"), request.getResolvedParams().get("login"), request.getResolvedParams().get("ssh_key")));
-						/*if (result.startsWith("http")) {
-							response.setContent(
-									HTMLHelper.generateValidSubmissionPageHtml(request.getResolvedParams().get("login"), result, this.getDictionary().get("urlpattern").toString()));
-						} else {
-							response.setContent(
-									HTMLHelper
-											.generateUnvalidSubmissionPageHtml(request.getResolvedParams().get("login"), result, this.getDictionary().get("urlpattern").toString()));
-						}*/
 					} else {
 						response.setContent(HTMLHelper.generateFailToLoginPageHtml(request.getResolvedParams().get("login"), this.getDictionary().get("urlpattern").toString()));
 					}
 				} else {
 					response.setContent(HTMLHelper.generateSimpleSubmissionFormHtml(request.getUrl(), this.getDictionary().get("urlpattern").toString()));
 				}
-			} else if (request.getUrl().equals("/css/bootstrap.min.css")) {
+			} else if (request.getUrl().equals(this.getDictionary().get("urlpattern").toString() + "/css/bootstrap.min.css")) {
 				try {
 					InputStream ins = this.getClass().getClassLoader().getResourceAsStream("css/bootstrap.min.css");
 					response.setContent(new String(convertStream(ins), "UTF-8"));
@@ -84,7 +64,7 @@ public class PaaSKloudResourceManager extends ParentAbstractPage {
 				} catch (Exception e) {
 					logger.error("", e);
 				}
-			} else if (request.getUrl().equals("/release")) {
+			} else if (request.getUrl().equals(this.getDictionary().get("urlpattern").toString() + "/release")) {
 				logger.debug("Try to release {} configuration", request.getResolvedParams().get("login"));
 				if (request.getResolvedParams().get("login") != null && request.getResolvedParams().get("password") != null) {
 					// check authentication information
@@ -97,21 +77,33 @@ public class PaaSKloudResourceManager extends ParentAbstractPage {
 				} else {
 					response.setContent(HTMLHelper.generateReleaseForm(request.getUrl(), this.getDictionary().get("urlpattern").toString()));
 				}
-			} else if (request.getUrl().startsWith("/kloud")) {
-				Option<String> lastParamOption = new URLHandlerScala().getLastParam(request.getUrl(), this.getDictionary().get("urlpattern").toString() + "**");
-				if (lastParamOption.isDefined()) {
-					String lastParam = lastParamOption.get().replaceFirst("/", "");
+			} else if (request.getUrl().startsWith(this.getDictionary().get("urlpattern").toString())) {
+				/*Option<String> lastParamOption = new URLHandlerScala().getLastParam(request.getUrl(), this.getDictionary().get("urlpattern").toString() + "**");
+				if (lastParamOption.isDefined()) {*/
+				String lastParam = getLastParam(request.getUrl());
+				if (lastParam != null) {
+//					String lastParam = lastParamOption.get().replaceFirst("/", "");
+					lastParam = lastParam.replaceFirst("/", "");
+					logger.debug(lastParam);
 					response.setContent(findAddress(lastParam));
 				} else {
+					logger.debug("Unable to process {} as login value", lastParam);
 					response.setContent(HTMLHelper.generateUnknownError(request.getUrl(), this.getDictionary().get("urlpattern").toString()));
 				}
+			}else {
+				logger.debug("Unable to process {}", request.getUrl());
+				response.setContent(HTMLHelper.generateUnknownError(request.getUrl(), this.getDictionary().get("urlpattern").toString()));
 			}
+		} else {
+			logger.debug("Request seems to be null: {}", request);
 		}
-		logger.debug("send response from PaaSKloudResourceManager");
+		logger.debug("sending response");
 		return response;
 	}
 
-	private String process (String modelStream, final String login, final String sshKey) {// try to get the user model
+	private String process (String modelStream, final String login, final String sshKey) {
+		logger.debug("starting process");
+		// try to get the user model
 		final ContainerRoot model = KevoreeXmiHelper.loadString(modelStream);
 		// looking for current configuration to check if user has already submitted something
 		if (KloudHelper.lookForAGroup(login, this.getModelService().getLastModel())) {
@@ -119,12 +111,14 @@ public class PaaSKloudResourceManager extends ParentAbstractPage {
 			// if the user has already submitted something, we return the access point to this previous configuration
 			Option<String> accessPointOption = KloudHelper.lookForAccessPoint(login, this.getNodeName(), this.getModelService().getLastModel());
 			if (accessPointOption.isDefined()) {
-				return "A previous configuration has already submitted.<br/>Please use this access point to reconfigure it: "
+				return HTMLHelper.generateUnvalidSubmissionPageHtml(login, "A previous configuration has already submitted.<br/>Please use this access point to reconfigure it: "
 						+ accessPointOption.get() + "(" + accessPointOption.get().replace("http://", "").replace("/model/current", "") + " on the editor)"
 						+ "<br />This access point allow you to access to a Kevoree group that allows you to send a model to it."
-						+ "<br />This model will be used to reconfigure your nodes and add or remove some of them if necessary.";
+						+ "<br />This model will be used to reconfigure your nodes and add or remove some of them if necessary.", this.getDictionary().get("urlpattern").toString());
 			} else {
-				return "A previous configuration has already submitted but we are not able to find the corresponding access point.<br/>Please contact the admins.";
+				return HTMLHelper.generateUnvalidSubmissionPageHtml(login,
+						"A previous configuration has already submitted but we are not able to find the corresponding access point.<br/>Please contact the admins.",
+						this.getDictionary().get("urlpattern").toString());
 			}
 		} else {
 			// else we create this new one
@@ -150,6 +144,7 @@ public class PaaSKloudResourceManager extends ParentAbstractPage {
 	}
 
 	private void release (String login) {
+		logger.debug("starting to release");
 		// send an empty model on the group => all nodes will be removed
 		Option<String> masterNodeOption = KevoreePropertyHelper.getStringPropertyForGroup(this.getModelService().getLastModel(), login, "masterNode", false, "");
 		if (masterNodeOption.isDefined()) {
@@ -178,6 +173,7 @@ public class PaaSKloudResourceManager extends ParentAbstractPage {
 	}
 
 	private String processNew (ContainerRoot model, String login, String sshKey) {
+		logger.debug("starting processNew");
 		UUIDModel uuidModel = this.getModelService().getLastUUIDModel();
 
 		// we create a group with the login of the user

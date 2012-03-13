@@ -50,7 +50,6 @@ public class KloudPaaSNanoGroup extends AbstractGroupType {
 	private NanoHTTPD server = null;
 
 	private int port;
-	private boolean first = true;
 
 	private ExecutorService poolUpdate = Executors.newSingleThreadExecutor();
 
@@ -64,7 +63,6 @@ public class KloudPaaSNanoGroup extends AbstractGroupType {
 		server = new NanoHTTPD(new InetSocketAddress(InetAddress.getByName(address), port)) {
 
 			public Response serve (String uri, String method, Properties header, Properties parms, Properties files, InputStream body) {
-				System.out.println(uri);
 				if (method.equals("POST")) {
 //					String srcNodeName = "";
 					Boolean externalSender = true;
@@ -88,11 +86,12 @@ public class KloudPaaSNanoGroup extends AbstractGroupType {
 							if (userModel == null) {
 								userModel = KevoreeFactory.createContainerRoot();
 							}
-							boolean deploymentOK = KloudReasoner.processDeployment(model, userModel, getModelService(), getKevScriptEngineFactory(), getName());
+							ContainerRoot oldModel = userModel;
+							userModel = model;
+							boolean deploymentOK = KloudReasoner.processDeployment(userModel, oldModel, getModelService(), getKevScriptEngineFactory(), getName());
 							if (deploymentOK) {
-								userModel = model;
 								// update user node that are already started
-								KloudReasoner.sendUserConfiguration(getName(), model, getModelService(), getKevScriptEngineFactory(), getNodeName());
+								KloudReasoner.sendUserConfiguration(getName(), userModel, getModelService(), getKevScriptEngineFactory(), getNodeName());
 								return new NanoHTTPD.Response(HTTP_OK, MIME_HTML, "<ack nodeName=\"" + getNodeName() + "\" />");
 							}
 							return new NanoHTTPD.Response(HTTP_OK, MIME_HTML, "<nack nodeName=\"" + getNodeName() + "\" />");
@@ -182,10 +181,6 @@ public class KloudPaaSNanoGroup extends AbstractGroupType {
 
 	@Override
 	public void triggerModelUpdate () {
-		/*if (first) {
-			first = false;
-			NodeNetworkHelper.updateModelWithNetworkProperty(this);
-		} else */
 		if (userModel == null) {
 			if (KloudHelper.isPaaSNode(this.getModelService().getLastModel(), this.getName(), this.getNodeName())) {
 				// pull the model to the master node
@@ -304,7 +299,6 @@ public class KloudPaaSNanoGroup extends AbstractGroupType {
 		try {
 			logger.debug("trying to add \"{}\" into {}", data, outputFile);
 			StringBuilder stringBuilder = new StringBuilder();
-			stringBuilder.append(data).append("\n");
 			if (new File(outputFile).exists()) {
 				InputStream reader = new DataInputStream(new FileInputStream(new File(outputFile)));
 				ByteArrayOutputStream writer = new ByteArrayOutputStream();
@@ -321,8 +315,13 @@ public class KloudPaaSNanoGroup extends AbstractGroupType {
 				reader.close();
 				stringBuilder.append(new String(writer.toByteArray(), "UTF-8"));
 			}
+			boolean added = false;
+			if (!stringBuilder.toString().contains(data)) {
+				stringBuilder.append(data).append("\n");
+				added = true;
+			}
 
-			if (copyStringToFile(stringBuilder.toString(), outputFile)) {
+			if (added && copyStringToFile(stringBuilder.toString(), outputFile)) {
 				logger.debug("add \"{}\" into {} is done", data, outputFile);
 			}
 		} catch (FileNotFoundException e) {
@@ -362,5 +361,4 @@ public class KloudPaaSNanoGroup extends AbstractGroupType {
 			return false;
 		}
 	}
-
 }
