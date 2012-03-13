@@ -471,7 +471,7 @@ object KloudReasoner {
                   false
               }
             } else {
-              logger.debug("Unable to configure you access point to your nodes.")
+              logger.debug("Unable to configure the access point to your nodes.")
               false
             }
           } else {
@@ -494,141 +494,104 @@ object KloudReasoner {
 
   def updateUserConfiguration (groupName: String, userModel: ContainerRoot, modelHandlerService: KevoreeModelHandlerService,
     kevScriptEngineFactory: KevScriptEngineFactory): Option[ContainerRoot] = {
-    // FIXME add IP for each node
-    val isUpToDate = userModel.getGroups.find(g => g.getName == groupName) match {
-      case None => false
-      case Some(group) =>
-        if (group.getSubNodes.size == userModel.getNodes.size && group.getTypeDefinition.getName == "KloudPaaSNanoGroup") {
-          true
-        } else {
-          false
-        }
-    }
+    try {
+      val isUpToDate = userModel.getGroups.find(g => g.getName == groupName) match {
+        case None => false
+        case Some(group) =>
+          if (group.getSubNodes.size == userModel.getNodes.size && group.getTypeDefinition.getName == "KloudPaaSNanoGroup") {
+            true
+          } else {
+            false
+          }
+      }
 
-    if (!isUpToDate) {
-      // build kevscript to add user nodes into the kloud model
-      val scriptBuilder = new StringBuilder()
+      if (!isUpToDate) {
+        // build kevscript to add user nodes into the kloud model
+        val scriptBuilder = new StringBuilder()
 
 
-      val kloudModel = modelHandlerService.getLastModel
-      kloudModel.getGroups.find(g => g.getName == groupName) match {
-        // && g.getSubNodes.size == userModel.getNodes.size && g.getTypeDefinition.getName == "KloudPaaSNanoGroup"
-        case None => logger.error("Unable to find the group on the Kloud model"); None // must never appear
-        case Some(group) => {
-          userModel.getGroups.find(g => g.getName == groupName) match {
-            case Some(g) => {
-              userModel.getNodes.foreach {
-                node =>
-                  g.getSubNodes.find(n => n.getName == node.getName) match {
-                    case Some(n) =>
-                    case None => {
-                      val portOption = KevoreePropertyHelper.getIntPropertyForGroup(kloudModel, groupName, "port", true, node.getName)
-                      if (portOption.isDefined) {
-                        scriptBuilder append "addToGroup " + groupName + " " + node.getName + "\n"
-                        scriptBuilder append "updateDictionary " + groupName + " {port=\"" + portOption.get + "\"}@" + node.getName + "\n"
-                      }/* else {
-                        logger.debug("Unable to find port property for node {}", node.getName)
-                      }*/
-                      // set IP of user nodes if needed
-                      val displayIPOption = KevoreePropertyHelper.getBooleanPropertyForGroup(kloudModel, groupName, "displayIP")
-                      val addressOption = KevoreePropertyHelper.getStringNetworkProperty(kloudModel, node.getName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP)
-                      if (displayIPOption.isDefined && displayIPOption.get && addressOption.isDefined) {
-                        scriptBuilder append "network " + node.getName + " {\"" + Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP + "\" = \"" + addressOption.get + "\" }\n"
+        val kloudModel = modelHandlerService.getLastModel
+        kloudModel.getGroups.find(g => g.getName == groupName) match {
+          case None => logger.error("Unable to find the group on the Kloud model"); None // must never appear
+          case Some(group) => {
+            userModel.getGroups.find(g => g.getName == groupName) match {
+              case Some(g) => {
+                userModel.getNodes.foreach {
+                  node =>
+                    g.getSubNodes.find(n => n.getName == node.getName) match {
+                      case Some(n) =>
+                      case None => {
+                        val portOption = KevoreePropertyHelper.getIntPropertyForGroup(kloudModel, groupName, "port", true, node.getName)
+                        if (portOption.isDefined) {
+                          scriptBuilder append "addToGroup " + groupName + " " + node.getName + "\n"
+                          scriptBuilder append "updateDictionary " + groupName + " {port=\"" + portOption.get + "\"}@" + node.getName + "\n"
+                        }
+                        // set IP of user nodes if needed
+                        val displayIPOption = KevoreePropertyHelper.getBooleanPropertyForGroup(kloudModel, groupName, "displayIP")
+                        val addressOption = KevoreePropertyHelper.getStringNetworkProperty(kloudModel, node.getName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP)
+                        if (displayIPOption.isDefined && displayIPOption.get && addressOption.isDefined) {
+                          scriptBuilder append "network " + node.getName + " {\"" + Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP + "\" = \"" + addressOption.get + "\" }\n"
+                        }
                       }
                     }
+                }
+              }
+              case None => {
+                scriptBuilder append "merge \"mvn:org.kevoree.library.sky/org.kevoree.library.sky.provider/" + KevoreeFactory.getVersion + "\"\n"
+
+                scriptBuilder append "addGroup " + groupName + " : KloudPaaSNanoGroup"
+
+                // set dictionary attributes of node
+                if (group.getDictionary.isDefined) {
+                  scriptBuilder append "{"
+
+                  group.getDictionary.get.getValues.filter(v => v.getTargetNode.isEmpty).foreach {
+                    value =>
+                      if (scriptBuilder.last != '{') {
+                        scriptBuilder append ", "
+                      }
+                      scriptBuilder append
+                        value.getAttribute.getName + "=\"" + value.getValue + "\""
                   }
-              }
-            }
-            case None => {
-              scriptBuilder append "merge \"mvn:org.kevoree.library.sky/org.kevoree.library.sky.provider/" + KevoreeFactory.getVersion + "\"\n"
+                  scriptBuilder append "}\n"
+                } else {
+                  scriptBuilder append "\n"
+                }
 
-              // build url address to connect to the master node
-              /*val masterNodeOption = KevoreePropertyHelper.getStringPropertyForGroup(kloudModel, groupName, "masterNode")
-              var masterNode = "http://127.0.0.1:8000/model/current"
-              if (masterNodeOption.isDefined) {
-                masterNode = masterNodeOption.get
-              }
-
-              val displayIPOption = KevoreePropertyHelper.getStringPropertyForGroup(kloudModel, groupName, "masterNode")
-              var displayIP = "http://127.0.0.1:8000/model/current"
-              if (displayIPOption.isDefined) {
-                displayIP = displayIPOption.get
-              }*/
-
-              scriptBuilder append "addGroup " + groupName + " : KloudPaaSNanoGroup"
-
-              // set dictionary attributes of node
-              if (group.getDictionary.isDefined) {
-                scriptBuilder append "{"
-
-                group.getDictionary.get.getValues.filter(v => v.getTargetNode.isEmpty).foreach {
-                  value =>
-                    if (scriptBuilder.last != '{') {
-                      scriptBuilder append ", "
+                userModel.getNodes.foreach {
+                  node =>
+                    val portOption = KevoreePropertyHelper.getIntPropertyForGroup(kloudModel, groupName, "port", true, node.getName)
+                    if (portOption.isDefined) {
+                      scriptBuilder append "addToGroup " + groupName + " " + node.getName + "\n"
+                      scriptBuilder append "updateDictionary " + groupName + " {port=\"" + portOption.get + "\"}@" + node.getName + "\n"
                     }
-                    scriptBuilder append
-                      value.getAttribute.getName + "=\"" + value.getValue + "\""
+                    // set IP of user nodes if needed
+                    val displayIPOption = KevoreePropertyHelper.getBooleanPropertyForGroup(kloudModel, groupName, "displayIP")
+                    val addressOption = KevoreePropertyHelper.getStringNetworkProperty(kloudModel, node.getName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP)
+                    if (displayIPOption.isDefined && addressOption.isDefined) {
+                      scriptBuilder append "network " + node.getName + " {\"" + Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP + "\" = \"" + addressOption.get + "\" }\n"
+                    }
                 }
-                scriptBuilder append "}\n"
-              } else {
-                scriptBuilder append "\n"
-              }
-
-              userModel.getNodes.foreach {
-                node =>
-                  val portOption = KevoreePropertyHelper.getIntPropertyForGroup(kloudModel, groupName, "port", true, node.getName)
-                  if (portOption.isDefined) {
-                    scriptBuilder append "addToGroup " + groupName + " " + node.getName + "\n"
-                    scriptBuilder append "updateDictionary " + groupName + " {port=\"" + portOption.get + "\"}@" + node.getName + "\n"
-                  } /*else {
-                    logger.debug("Unable to find port property for node {}", node.getName)
-                  }*/
-                  // set IP of user nodes if needed
-                  val displayIPOption = KevoreePropertyHelper.getBooleanPropertyForGroup(kloudModel, groupName, "displayIP")
-                  val addressOption = KevoreePropertyHelper.getStringNetworkProperty(kloudModel, node.getName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP)
-                  if (displayIPOption.isDefined && addressOption.isDefined) {
-                    scriptBuilder append "network " + node.getName + " {\"" + Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP + "\" = \"" + addressOption.get + "\" }\n"
-                  }
               }
             }
-          }
 
-          /*userModel.getNodes.foreach {
-            node =>
-              group.getSubNodes.find(n => n.getName == node.getName) match {
-                case Some(n) =>
-                case None => {
-                  val portOption = KevoreePropertyHelper.getIntPropertyForGroup(kloudModel, groupName, "port", true, node.getName)
-                  if (portOption.isDefined) {
-                    scriptBuilder append "addToGroup " + groupName + " " + node.getName + "\n"
-                    scriptBuilder append "updateDictionary " + groupName + " {port=\"" + portOption.get + "\"}@" + node.getName + "\n"
-                  } else {
-                    logger.debug("Unable to find port property for node {}", node.getName)
-                  }
-                  // set IP of user nodes if needed
-                  val displayIPOption = KevoreePropertyHelper.getBooleanPropertyForGroup(kloudModel, groupName, "displayIP")
-                  val addressOption = KevoreePropertyHelper.getStringNetworkProperty(kloudModel, node.getName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP)
-                  if (displayIPOption.isDefined && addressOption.isDefined) {
-                    scriptBuilder append "network " + node.getName + " {\"" + Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP + "\" = \"" + addressOption.get + "\" }\n"
-                  }
-                }
+            val kengine = kevScriptEngineFactory.createKevScriptEngine(userModel)
+            try {
+              kengine.append(scriptBuilder.toString())
+              Some(kengine.interpret())
+            } catch {
+              case _@e => {
+                logger.debug("KevScript Error : ", e)
+                None
               }
-          }*/
-
-          val kengine = kevScriptEngineFactory.createKevScriptEngine(userModel)
-          try {
-            kengine.append(scriptBuilder.toString())
-            Some(kengine.interpret())
-          } catch {
-            case _@e => {
-              logger.debug("KevScript Error : ", e)
-              None
             }
           }
         }
+      } else {
+        Some(userModel)
       }
-    } else {
-      Some(userModel)
+    } catch {
+      case _@e => logger.error("Unable to update user configuration", e);None
     }
   }
 
@@ -636,7 +599,6 @@ object KloudReasoner {
    * Send the user model into the user nodes using the default groups that are set on the cleanModel
    */
   def sendUserConfiguration (groupName: String, userModel: ContainerRoot, modelHandlerService: KevoreeModelHandlerService, kevScriptEngineFactory: KevScriptEngineFactory, nodeName: String) {
-    //    val newUserModelOption = updateUserConfiguration(groupName, userModel, modelHandlerService, kevScriptEngineFactory)
     val newUserModelOption = Some(userModel)
     if (newUserModelOption.isDefined) {
       val kloudModel = modelHandlerService.getLastModel
