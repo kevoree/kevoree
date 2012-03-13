@@ -16,13 +16,13 @@ package org.kevoree.tools.ui.editor.kloud
 import org.kevoree.framework.KevoreeXmiHelper
 import java.io._
 import org.kevoree.tools.aether.framework.AetherUtil
-import org.kevoree.KevoreeFactory
 import org.kevoree.tools.marShell.parser.KevsParser
 import org.kevoree.tools.marShell.interpreter.KevsInterpreterContext
 import org.kevoree.tools.marShell.interpreter.KevsInterpreterAspects._
 import org.slf4j.LoggerFactory
 import org.kevoree.tools.ui.editor.command.LoadModelCommand
 import org.kevoree.tools.ui.editor.{PositionedEMFHelper, KevoreeEditor}
+import org.kevoree.{ContainerRoot, KevoreeFactory}
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -36,7 +36,6 @@ import org.kevoree.tools.ui.editor.{PositionedEMFHelper, KevoreeEditor}
 class MiniKloudForm (editor: KevoreeEditor) {
   var logger = LoggerFactory.getLogger(this.getClass)
   private var minicloud: Process = null
-  private var bootstrapModel: String = null
   private var platformJAR: File = null
   private var thread: Thread = null
   private var minicloudName: String = null
@@ -63,6 +62,9 @@ class MiniKloudForm (editor: KevoreeEditor) {
               if (platformJAR != null) {
                 buildBootstrapModel()
                 logger.debug("trying to start the minicloud")
+                
+                println(bootstrapModel)
+                
                 minicloud = Runtime.getRuntime
                   .exec(Array[String](java, "-Dnode.gui.config=false", "-Dnode.bootstrap=" + bootstrapModel, "-Dnode.name=" + minicloudName, "-Dnode.log.level=INFO", "-jar",
                                        platformJAR.getAbsolutePath))
@@ -114,7 +116,7 @@ class MiniKloudForm (editor: KevoreeEditor) {
     }
   }
 
-  private def buildBootstrapModel () {
+  private def buildBootstrapModel : ContainerRoot =  {
     editor.getPanel.getKernel.getModelHandler.getActualModel.getNodes
       .find(n => n.getTypeDefinition.getName == "MiniCloudNode" && n.getHosts.size == editor.getPanel.getKernel.getModelHandler.getActualModel.getNodes.size - 1 && !n.getHosts.contains(n)) match {
       case Some(minicloudNode) => {
@@ -135,7 +137,7 @@ class MiniKloudForm (editor: KevoreeEditor) {
         val scriptBuilder = new StringBuilder
         scriptBuilder append "tblock {\n"
         scriptBuilder append "merge \"mvn:org.kevoree.library.model/org.kevoree.library.model.sky/" + KevoreeFactory.getVersion + "\"\n"
-        scriptBuilder append "merge \"mvn:org.kevoree.library.javase/org.kevoree.library.javase.rest/" + KevoreeFactory.getVersion + "\"\n"
+      //  scriptBuilder append "merge \"mvn:org.kevoree.library.javase/org.kevoree.library.javase.rest/" + KevoreeFactory.getVersion + "\"\n"
         scriptBuilder append "addNode " + minicloudName + ": MiniCloudNode {role=\"host\", port=\"6001\"}\n"
         scriptBuilder append "addGroup editor_group : NanoRestGroup\n"
         scriptBuilder append "addToGroup editor_group " + minicloudName + "\n"

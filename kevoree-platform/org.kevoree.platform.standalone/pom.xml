@@ -80,6 +80,9 @@
             <resource>
                 <directory>${basedir}/target/boot</directory>
             </resource>
+            <resource>
+                <directory>${basedir}/src/main/resources</directory>
+            </resource>
         </resources>
 
         <plugins>
