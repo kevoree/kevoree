@@ -24,9 +24,11 @@ import org.kevoree.tools.marShell.interpreter.KevsInterpreterContext
 import org.kevoree.tools.marShell.interpreter.utils.Merger
 
 import org.kevoree._
+import org.slf4j.LoggerFactory
 
 case class KevsUpdateDictionaryInterpreter(statement: UpdateDictionaryStatement) extends KevsAbstractInterpreter {
 
+  var logger = LoggerFactory.getLogger(this.getClass)
   def interpret(context: KevsInterpreterContext): Boolean = {
     
     var targetInstance : List[Instance] = List()
@@ -60,7 +62,7 @@ case class KevsUpdateDictionaryInterpreter(statement: UpdateDictionaryStatement)
     }
     
     if(targetInstance.isEmpty ){
-      println("Warning : No dictionary merged")
+      logger.debug("Warning : No dictionary merged")
     }
     
     true// ALWAYS RETURN TRUE 
