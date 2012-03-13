@@ -653,4 +653,12 @@
  <adaptationPrimitiveTypes name="StopInstance" xsi:type="kevoree:AdaptationPrimitiveType"></adaptationPrimitiveTypes>
  <adaptationPrimitiveTypes name="StartThirdParty" xsi:type="kevoree:AdaptationPrimitiveType"></adaptationPrimitiveTypes>
  <adaptationPrimitiveTypes name="RemoveThirdParty" xsi:type="kevoree:AdaptationPrimitiveType"></adaptationPrimitiveTypes>
+
+  <groups subNodes="//@nodes.0" typeDefinition="//@typeDefinitions.8" metaData="x=576,y=333" name="sync" xsi:type="kevoree:Group">
+   <dictionary>
+    <values targetNode="//@nodes.0" attribute="//@typeDefinitions.8/@dictionaryType/@attributes.0" value="8000" xsi:type="kevoree:DictionaryValue"></values>
+    <values targetNode="//@nodes.0" attribute="//@typeDefinitions.8/@dictionaryType/@attributes.1" value="0.0.0.0" xsi:type="kevoree:DictionaryValue"></values>
+   </dictionary>
+  </groups>
+
 </kevoree:ContainerRoot>

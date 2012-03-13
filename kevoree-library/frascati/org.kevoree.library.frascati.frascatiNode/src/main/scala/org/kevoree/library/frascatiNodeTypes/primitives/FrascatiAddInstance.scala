@@ -33,8 +33,19 @@ case class FrascatiAddInstance(adaptationPrimitive: AdaptationPrimitive, frascat
       if (c_instance.getTypeDefinition.asInstanceOf[org.kevoree.ComponentType].getBean.endsWith(".composite")) {
         val kcl = bs.getKevoreeClassLoaderHandler.getKevoreeClassLoader(deployUnit)
         val compositeURL = kcl.getResource(c_instance.getTypeDefinition.getBean)
-        val component : Component = frascati.getComposite(compositeURL.getPath, new FrascatiClassLoaderWrapper(kcl))
-        KevoreeDeployManager.addMapping(KevoreeMapping(c_instance.getName, c_instance.getClass.getName, component))
+        
+      //  println(compositeURL+"-"+compositeURL.getPath+"-"+compositeURL.getFile)
+        
+        
+       // new Thread(){
+      //    override def run() {
+            val component : Component = frascati.getComposite(compositeURL.toString, new FrascatiClassLoaderWrapper(kcl))
+                    KevoreeDeployManager.addMapping(KevoreeMapping(c_instance.getName, c_instance.getClass.getName, component))
+       //   }
+       // }.start()
+
+        
+
       } else {
 
         /*
