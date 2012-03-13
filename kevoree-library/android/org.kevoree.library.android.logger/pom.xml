@@ -6,12 +6,12 @@
     <artifactId>org.kevoree.library.android.logger</artifactId>
     <packaging>jar</packaging>
     <name>Kevoree :: Library :: Android :: Logger</name>
-    <version>1.6.0-BETA4</version>
+    <version>1.6.0-BETA5</version>
 
     <parent>
         <artifactId>org.kevoree.library.android.root</artifactId>
         <groupId>org.kevoree.library.android</groupId>
-        <version>1.6.0-BETA4</version>
+        <version>1.6.0-BETA5</version>
         <relativePath>../org.kevoree.library.android.root/pom.xml</relativePath>
     </parent>
 
