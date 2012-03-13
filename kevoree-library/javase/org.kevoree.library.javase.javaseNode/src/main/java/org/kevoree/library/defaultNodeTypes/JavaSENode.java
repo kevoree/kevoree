@@ -47,6 +47,9 @@ public class JavaSENode extends AbstractNodeType {
         kompareBean = new KevoreeKompareBean();
         mapper = new CommandMapper();
         mapper.setNodeType(this);
+
+        updateNode();
+
 		new Thread() {
 			@Override
 			public void run () {
@@ -67,8 +70,8 @@ public class JavaSENode extends AbstractNodeType {
     }
 
     @Update
-    public void updateProp(){
-        System.out.println("WTF!!!");
+    @Override
+    public void updateNode(){
         Logger root = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
         if("DEBUG".equals(getDictionary().get("logLevel"))){root.setLevel(Level.DEBUG);}
         if("WARN".equals(getDictionary().get("logLevel"))){root.setLevel(Level.WARN);}
