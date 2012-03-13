@@ -13,7 +13,7 @@
     <name>Kevoree :: Library :: Sky :: Mini Cloud</name>
 
     <properties>
-        <kevoree.include>org.kevoree.library.sky:*,se.scalablesolutions.akka:akka-actor</kevoree.include>
+        <kevoree.include>*: *</kevoree.include>
     </properties>
 
     <dependencies>
