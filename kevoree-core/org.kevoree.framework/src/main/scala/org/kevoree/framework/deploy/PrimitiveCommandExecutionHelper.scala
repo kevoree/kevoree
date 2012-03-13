@@ -143,6 +143,7 @@ object PrimitiveCommandExecutionHelper {
                         case _ =>
                       }
                   }
+                  waitingThread = List()
                   responseActor ! false
                   exit()
                 }
@@ -153,6 +154,7 @@ object PrimitiveCommandExecutionHelper {
                   }
                   logger.debug("getResult {}", rec)
                   if (rec == ps.size) {
+                    waitingThread = List()
                     responseActor ! noError
                     exit()
                   }
