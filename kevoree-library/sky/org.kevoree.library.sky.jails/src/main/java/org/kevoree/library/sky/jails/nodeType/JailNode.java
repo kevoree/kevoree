@@ -28,12 +28,6 @@ import org.slf4j.LoggerFactory;
 public class JailNode extends IaaSNode {
 	private static final Logger logger = LoggerFactory.getLogger(JailNode.class);
 
-	@Override
-	public KevoreeNodeRunner createKevoreeNodeRunner (String nodeName, String bootStrapModel, ContainerRoot model) {
-		return new JailKevoreeNodeRunner(nodeName, bootStrapModel, this.getDictionary().get("inet").toString(),
-				this.getDictionary().get("subnet").toString(), this.getDictionary().get("mask").toString(), model, this.getDictionary().get("flavor").toString());
-	}
-
 	/*@Start
 	@Override
 	public void startNode () {
@@ -46,4 +40,10 @@ public class JailNode extends IaaSNode {
 		logger.debug("stopping node {}", this.getNodeName());
 		super.stopNode();
 	}*/
+
+    @Override
+    public KevoreeNodeRunner createKevoreeNodeRunner(String nodeName) {
+        return new JailKevoreeNodeRunner(nodeName, this.getDictionary().get("inet").toString(),
+      				this.getDictionary().get("subnet").toString(), this.getDictionary().get("mask").toString(), this.getDictionary().get("flavor").toString(),this);
+    }
 }

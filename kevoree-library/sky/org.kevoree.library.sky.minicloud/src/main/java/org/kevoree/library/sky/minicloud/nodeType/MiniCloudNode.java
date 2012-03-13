@@ -22,9 +22,8 @@ import org.slf4j.LoggerFactory;
 public class MiniCloudNode extends IaaSNode {
 	private static final Logger logger = LoggerFactory.getLogger(MiniCloudNode.class);
 
-	@Override
-	public KevoreeNodeRunner createKevoreeNodeRunner (String nodeName, String bootStrapModel, ContainerRoot model) {
-		return new MiniCloudKevoreeNodeRunner(nodeName, bootStrapModel);
-	}
-
+    @Override
+    public KevoreeNodeRunner createKevoreeNodeRunner(String nodeName) {
+        return new MiniCloudKevoreeNodeRunner(nodeName,this);
+    }
 }

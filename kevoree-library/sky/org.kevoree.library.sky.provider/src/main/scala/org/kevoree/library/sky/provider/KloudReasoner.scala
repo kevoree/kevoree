@@ -5,7 +5,7 @@ import org.slf4j.{LoggerFactory, Logger}
 import org.kevoree.{ContainerNode, KevoreeFactory, ContainerRoot}
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService
 import scala.collection.JavaConversions._
-import org.kevoree.framework.{KevoreeXmiHelper, Constants, KevoreePropertyHelper}
+import org.kevoree.framework.{Constants, KevoreePropertyHelper}
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -44,7 +44,7 @@ object KloudReasoner {
 
   def createProxy (groupName: String, nodeName: String, proxyPath: String, kloudModel: ContainerRoot, kevScriptEngineFactory: KevScriptEngineFactory): Option[ContainerRoot] = {
 
-    val scriptBuilder = new StringBuilder()
+   // val scriptBuilder = new StringBuilder()
     //find Web Server
     kloudModel.getNodes.find(n => n.getName == nodeName) match {
       case None => logger.debug("Any proxy can be added because there is no webserver to use"); None
@@ -57,19 +57,25 @@ object KloudReasoner {
             val requestChannelNameOption = KloudHelper.findChannel(component.getName, "handler", node.getName, kloudModel)
             val responseChannelNameOption = KloudHelper.findChannel(component.getName, "response", node.getName, kloudModel)
             if (requestChannelNameOption.isDefined && responseChannelNameOption.isDefined) {
-              scriptBuilder append "merge \"mvn:org.kevoree.library.javase/org.kevoree.library.javase.webserver.components/" + KevoreeFactory.getVersion + "\"\n"
-              scriptBuilder append
-                "addComponent " + groupName + "_proxy@" + nodeName + " : ProxyPage " + "{forward=\"" + "http://" + ipOption.get + ":" + portOption.get + "/model/current" + "\",urlpattern=\"" +
-                  proxyPath + "\"}\n"
-
-              // bind Web Server with this proxy
-              scriptBuilder append "bind " + groupName + "_proxy" + ".request@" + nodeName + " => " + requestChannelNameOption.get + "\n"
-              scriptBuilder append "bind " + groupName + "_proxy" + ".content@" + nodeName + " => " + responseChannelNameOption.get + "\n"
 
 
               val kengine = kevScriptEngineFactory.createKevScriptEngine(kloudModel)
+              kengine.addVariable("kevVersion",KevoreeFactory.getVersion)
+              kengine.append("merge \"mvn:org.kevoree.library.javase/org.kevoree.library.javase.webserver.components/{kevVersion}")
+              kengine.addVariable("{groupName}",groupName)
+              kengine.addVariable("{nodeName}",nodeName)
+              kengine.addVariable("{ip}",ipOption.get)
+              kengine.addVariable("{port}",portOption.get.toString)
+              kengine.addVariable("{proxyPath}",proxyPath)
+              kengine.append("addComponent {groupName}_proxy@{nodeName} : ProxyPage " + "{forward=\"" + "http://{ip}:{port}/model/current" + "\",urlpattern=\"{proxyPath}\"}")
+
+              // bind Web Server with this proxy
+              kengine.addVariable("{responseChannelNameOption}",responseChannelNameOption.get)
+              kengine.addVariable("{requestChannelNameOption}",requestChannelNameOption.get)
+              kengine.append("bind {groupName}_proxy.request@{nodeName} => {requestChannelNameOption}")
+              kengine.append("bind {groupName}_proxy.content@{nodeName} => {responseChannelNameOption}")
+
               try {
-                kengine.append(scriptBuilder.toString())
                 Some(kengine.interpret())
               } catch {
                 case _@e => {

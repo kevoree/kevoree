@@ -14,17 +14,17 @@ package org.kevoree.library.sky.jails
  * limitations under the License.
  */
 
+import log.{ProcessStreamManager, ResultManagementActor}
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.lang.Thread
-import actors.{TIMEOUT, Actor}
 import util.matching.Regex
-import org.kevoree.library.sky.manager.{Helper, KevoreeNodeRunner}
-import java.net.InetAddress
-import org.kevoree.ContainerRoot
+import org.kevoree.library.sky.manager.KevoreeNodeRunner
 import scala.Array._
 import java.io._
-import org.kevoree.framework.{Constants, KevoreePropertyHelper}
+import org.kevoree.library.sky.manager.nodeType.IaaSNode
+import org.kevoree.{KevoreeFactory, ContainerRoot}
+import org.kevoree.framework.{KevoreeXmiHelper, Constants, KevoreePropertyHelper}
 
 
 /**
@@ -35,19 +35,9 @@ import org.kevoree.framework.{Constants, KevoreePropertyHelper}
  * @author Erwan Daubert
  * @version 1.0
  */
-class JailKevoreeNodeRunner (nodeName: String, bootStrapModel: String, inet: String, subnet: String, mask: String, model: ContainerRoot, flavor: String)
-  extends KevoreeNodeRunner(nodeName, bootStrapModel) {
-  private val logger: Logger = LoggerFactory.getLogger(classOf[JailKevoreeNodeRunner])
+class JailKevoreeNodeRunner(nodeName: String, inet: String, subnet: String, mask: String, flavor: String,iaasNode : IaaSNode) extends KevoreeNodeRunner(nodeName) {
 
-  private val resultActor = new ResultManagementActor()
-
-  /*private val createJail = "ezjail-admin create -f kevjail <name> <IP>"
-  private val startJail = "ezjail-admin onestart <name>"
-  private val stopJail = "ezjail-admin onestop <name>"
-  private val deleteJail = "ezjail-admin delete -w <name>"
-  private val createIPAlias = "ifconfig <inet> alias <IP>"
-  private val deleteIPAlias = "ifconfig <inet> -alias <IP>"*/
-  //  private val listJails = Array[String]("/usr/local/bin/ezjail-admin", "list")
+  private val logger: Logger = LoggerFactory.getLogger(this.getClass)
 
   val ezjailListPattern =
     "(D.?)\\ \\ *([0-9][0-9]*|N/A)\\ \\ *((?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))\\ \\ *([a-zA-Z0-9\\.][a-zA-Z0-9_\\.]*)\\ \\ *((?:(?:/[a-zA-Z0-9_\\.][a-zA-Z0-9_\\.]*)*))"
@@ -62,18 +52,18 @@ class JailKevoreeNodeRunner (nodeName: String, bootStrapModel: String, inet: Str
 
   var nodeProcess: Process = null
 
-  def startNode (): Boolean = {
+  def startNode(iaasModel : ContainerRoot,jailBootStrapModel : ContainerRoot): Boolean = {
     logger.debug("Start " + nodeName)
     // looking for currently launched jail
     listJailsProcessBuilder = new ProcessBuilder
     listJailsProcessBuilder.command("/usr/local/bin/ezjail-admin", "list")
+    val resultActor = new ResultManagementActor()
     resultActor.starting()
     var p = listJailsProcessBuilder.start()
-    new Thread(new ProcessStreamManager(p.getInputStream, Array(ezjailListRegex), Array(), p)).start()
-    var result = resultActor.waitingFor(10000)
+    new Thread(new ProcessStreamManager(resultActor, p.getInputStream, Array(ezjailListRegex), Array(), p)).start()
+    var result = resultActor.waitingFor(2000)
     var notFound = true
     var ips: List[String] = List[String]()
-
     result._2.split("\n").foreach {
       line =>
         line match {
@@ -89,32 +79,37 @@ class JailKevoreeNodeRunner (nodeName: String, bootStrapModel: String, inet: Str
     if (result._1 && notFound) {
       var newIp = "127.0.0.1"
       // check if the node have a inet address
-      val ipOption = KevoreePropertyHelper.getStringNetworkProperty(model, nodeName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP)
+      val ipOption = KevoreePropertyHelper.getStringNetworkProperty(iaasModel, nodeName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP)
       if (ipOption.isDefined) {
         newIp = ipOption.get
       } else {
         // we create a new IP alias according to the existing ones
-        newIp = lookingForNewIp(ips)
+        newIp = PropertyHelper.lookingForNewIp(ips, subnet, mask)
       }
-      resultActor.starting()
+
+      val resultActor2 = new ResultManagementActor()
+      resultActor2.starting()
       logger.debug("running {} {} alias {}", Array[AnyRef](ifconfig, inet, newIp))
       p = Runtime.getRuntime.exec(Array[String](ifconfig, inet, "alias", newIp))
       new Thread(new
-          ProcessStreamManager(p.getInputStream, Array(), Array(new Regex("ifconfig: ioctl \\(SIOCDIFADDR\\): .*")), p))
+          ProcessStreamManager(resultActor2, p.getInputStream, Array(), Array(new Regex("ifconfig: ioctl \\(SIOCDIFADDR\\): .*")), p))
         .start()
-      result = resultActor.waitingFor(10000)
+      result = resultActor2.waitingFor(1000)
       if (result._1) {
         // create the new jail
+
+        val resultActor = new ResultManagementActor()
         resultActor.starting()
         logger.debug("running {} create -f {} {} {}", Array[AnyRef](ezjailAdmin, flavor, nodeName, newIp))
         p = Runtime.getRuntime.exec(Array[String](ezjailAdmin, "create", "-f", flavor, nodeName, newIp))
-        new Thread(new ProcessStreamManager(p.getErrorStream, Array(), Array(new Regex("^Error.*")), p)).start()
+        new Thread(new ProcessStreamManager(resultActor, p.getErrorStream, Array(), Array(new Regex("^Error.*")), p)).start()
         result = resultActor.waitingFor(120000)
         if (result._1) {
           // install the model on the jail
+          val resultActor = new ResultManagementActor()
           resultActor.starting()
           var p = listJailsProcessBuilder.start()
-          new Thread(new ProcessStreamManager(p.getInputStream, Array(ezjailListRegex), Array(), p)).start()
+          new Thread(new ProcessStreamManager(resultActor, p.getInputStream, Array(ezjailListRegex), Array(), p)).start()
           var result = resultActor.waitingFor(10000)
           var jailPath = ""
           result._2.split("\n").foreach {
@@ -128,26 +123,27 @@ class JailKevoreeNodeRunner (nodeName: String, bootStrapModel: String, inet: Str
                 case _ =>
               }
           }
-          logger.debug("trying to copy bootstrap model from {} to {}", bootStrapModel, jailPath + File.separator + "root" + File.separator + "bootstrapmodel.kev")
-          logger.debug("trying to copy runtime platform from {} to {}", Helper.getJarPath, jailPath + File.separator + "root" + File.separator + "kevoree-runtime.jar")
-          // get platform runtime and add it into the jail
-          if (copyFile(bootStrapModel, jailPath + File.separator + "root" + File.separator + "bootstrapmodel.kev") &&
-            copyFile(Helper.getJarPath, jailPath + File.separator + "root" + File.separator + "kevoree-runtime.jar")) {
+
+          val platformFile = iaasNode.getBootStrapperService.resolveKevoreeArtifact("org.kevoree.platform.standalone","org.kevoree.platform",KevoreeFactory.getVersion);
+          KevoreeXmiHelper.save(jailPath + File.separator + "root" + File.separator + "bootstrapmodel.kev",jailBootStrapModel)
+          if (PropertyHelper.copyFile(platformFile.getAbsolutePath, jailPath + File.separator + "root" + File.separator + "kevoree-runtime.jar")) {
 
             // specify limitation on jail such as CPU, RAM
-            if (specifyConstraints()) {
+            if (JailsConstraintsConfiguration.applyJailConstraints(iaasModel, nodeName)) {
               // configure ssh access
-              configureSSHServer(model, jailPath, newIp)
+              configureSSHServer(iaasModel, jailPath, newIp)
               // launch the jail
+              val resultActor = new ResultManagementActor()
               resultActor.starting()
               logger.debug("running {} onestart {}", Array[AnyRef](ezjailAdmin, nodeName))
               p = Runtime.getRuntime.exec(Array[String](ezjailAdmin, "onestart", nodeName))
-              new Thread(new ProcessStreamManager(p.getErrorStream, Array(), Array(), p)).start()
+              new Thread(new ProcessStreamManager(resultActor, p.getErrorStream, Array(), Array(), p)).start()
               result = resultActor.waitingFor(10000)
               if (result._1) {
+                val resultActor = new ResultManagementActor()
                 resultActor.starting()
                 p = listJailsProcessBuilder.start()
-                new Thread(new ProcessStreamManager(p.getInputStream, Array(ezjailListRegex), Array(), p)).start()
+                new Thread(new ProcessStreamManager(resultActor, p.getInputStream, Array(ezjailListRegex), Array(), p)).start()
                 result = resultActor.waitingFor(10000)
                 var jailId = "-1"
                 result._2.split("\n").foreach {
@@ -174,7 +170,7 @@ class JailKevoreeNodeRunner (nodeName: String, bootStrapModel: String, inet: Str
                   debug = "DEBUG"
                 }
                 var exec = Array[String](jexec, jailId, "/usr/local/bin/java", "-Dnode.name=" + nodeName, "-Dnode.bootstrap=" + File.separator + "root" + File.separator + "bootstrapmodel.kev",
-                                          "-Dnode.log.level=" + debug)
+                  "-Dnode.log.level=" + debug)
                 exec = exec ++ Array[String]("-jar", File.separator + "root" + File.separator + "kevoree-runtime.jar")
                 logger.debug("trying to launch {} {} {} {} {} {} {} {}", exec)
                 nodeProcess = Runtime.getRuntime.exec(exec)
@@ -223,12 +219,13 @@ class JailKevoreeNodeRunner (nodeName: String, bootStrapModel: String, inet: Str
 
   }
 
-  def stopNode (): Boolean = {
+  def stopNode(): Boolean = {
     logger.debug("stop " + nodeName)
     // looking for the jail that must be at least created
+    val resultActor = new ResultManagementActor()
     resultActor.starting()
     var p = listJailsProcessBuilder.start()
-    new Thread(new ProcessStreamManager(p.getInputStream, Array(ezjailListRegex), Array(), p)).start()
+    new Thread(new ProcessStreamManager(resultActor, p.getInputStream, Array(ezjailListRegex), Array(), p)).start()
     var result = resultActor.waitingFor(10000)
     var found = false
     var oldIP = ""
@@ -246,26 +243,29 @@ class JailKevoreeNodeRunner (nodeName: String, bootStrapModel: String, inet: Str
     }
     if (result._1 && found) {
       // stop the jail
+      val resultActor = new ResultManagementActor()
       resultActor.starting()
       logger.debug("running {} onestop {}", Array[AnyRef](ezjailAdmin, nodeName))
       p = Runtime.getRuntime.exec(Array[String](ezjailAdmin, "onestop", nodeName))
-      new Thread(new ProcessStreamManager(p.getInputStream, Array(), Array(), p)).start()
+      new Thread(new ProcessStreamManager(resultActor, p.getInputStream, Array(), Array(), p)).start()
       result = resultActor.waitingFor(10000)
       if (result._1) {
         // delete the jail
+        val resultActor = new ResultManagementActor()
         resultActor.starting()
         logger.debug("running {} delete -w {}", Array[AnyRef](ezjailAdmin, nodeName))
         p = Runtime.getRuntime.exec(Array[String](ezjailAdmin, "delete", "-w", nodeName))
-        new Thread(new ProcessStreamManager(p.getInputStream, Array(), Array(), p)).start()
+        new Thread(new ProcessStreamManager(resultActor, p.getInputStream, Array(), Array(), p)).start()
         result = resultActor.waitingFor(10000)
         if (result._1) {
           // release IP alias to allow next IP select to use this one
+          val resultActor = new ResultManagementActor()
           resultActor.starting()
           p = Runtime.getRuntime.exec(Array[String](ifconfig, inet, "-alias", oldIP))
           new Thread(new
-              ProcessStreamManager(p.getInputStream, Array(), Array(new Regex("ifconfig: ioctl \\(SIOCDIFADDR\\): .*")), p))
+              ProcessStreamManager(resultActor, p.getInputStream, Array(), Array(new Regex("ifconfig: ioctl \\(SIOCDIFADDR\\): .*")), p))
             .start()
-          result = resultActor.waitingFor(10000)
+          result = resultActor.waitingFor(1000)
           if (!result._1) {
             logger.debug("unable to release ip alias {} for the network interface {}", oldIP, inet)
           }
@@ -285,271 +285,9 @@ class JailKevoreeNodeRunner (nodeName: String, bootStrapModel: String, inet: Str
     }
   }
 
-  def updateNode (model: String): Boolean = {
-    logger.error("update command is not available for jailNode")
-    false
-  }
-
-  private def lookingForNewIp (ips: List[String]): String = {
-    var newIp = subnet
-    val ipBlock = subnet.split("\\.")
-    var i = Integer.parseInt(ipBlock(0))
-    var j = Integer.parseInt(ipBlock(1))
-    var k = Integer.parseInt(ipBlock(2))
-    var l = Integer.parseInt(ipBlock(3)) + 2
-
-    var found = false
-
-    while (i < 255 && checkMask(i, j, k, l, subnet, mask) && !found) {
-      while (j < 255 && checkMask(i, j, k, l, subnet, mask) && !found) {
-        while (k < 255 && checkMask(i, j, k, l, subnet, mask) && !found) {
-          while (l < 255 && checkMask(i, j, k, l, subnet, mask) && !found) {
-            val tmpIp = i + "." + j + "." + k + "." + l
-            if (!ips.contains(tmpIp)) {
-              val inet = InetAddress.getByName(tmpIp)
-              if (!inet.isReachable(5000)) {
-                newIp = tmpIp
-                found = true
-              }
-            }
-            l += 1
-          }
-          l = 1
-          k += 1
-        }
-        k = 1
-        j += 1
-      }
-      j = 1
-      i += 1
-    }
-    newIp
-  }
-
-  private def checkMask (i: Int, j: Int, k: Int, l: Int, subnet: String, mask: String): Boolean = {
-    val maskInt = ~((1 << (32 - Integer.parseInt(mask))) - 1)
-    val ipBytes = InetAddress.getByName(i + "." + j + "." + k + "." + l).getAddress
-    val subnetBytes = InetAddress.getByName(subnet).getAddress
-    val subnetInt = (subnetBytes(0) << 24) | (subnetBytes(1) << 16) | (subnetBytes(2) << 8) | (subnetBytes(3) << 0)
-    val ipInt = (ipBytes(0) << 24) | (ipBytes(1) << 16) | (ipBytes(2) << 8) | (ipBytes(3) << 0)
-    (subnetInt & maskInt) == (ipInt & maskInt)
-  }
-
-  private def specifyConstraints (): Boolean = {
-    logger.debug("try to specify constraints")
-    // TODO manage ARCH parameter
-    model.getNodes.find(node => node.getName == nodeName) match {
-      case None => logger.debug("Unable to find information about the node to start"); false
-      case Some(node) => {
-        var modeId = "log"
-        var property = KevoreePropertyHelper.getPropertyForNode(model, nodeName, "MODE").getOrElse("RELAX").toString
-        if (property == "STRICT") {
-          modeId = "sigkill"
-        } else if (property == "AVOID") {
-          modeId = "deny"
-        }
-
-        var execResult = true
-        var exec = Array[String]()
-        logger.debug("asking to node property {}...", "RAM")
-        property = KevoreePropertyHelper.getPropertyForNode(model, nodeName, "RAM").getOrElse("N/A").toString
-        logger.debug("{} = {}", "RAM", property)
-        if (property != "N/A") {
-          try {
-            val limit = java.lang.Long.parseLong(property.toString) * 1024 * 1024
-            exec = Array[String]("rctl", "-a", "jail:" + nodeName + ":vmem:" + modeId + ":" + limit)
-            resultActor.starting()
-            logger.debug("running {}", exec)
-            val p = Runtime.getRuntime.exec(exec)
-            new Thread(new ProcessStreamManager(p.getInputStream, Array(new Regex(".*")), Array(), p)).start()
-            val result = resultActor.waitingFor(10000)
-            if (result._1) {
-              execResult = true
-            } else {
-              logger.debug("unable to set RAM limitation:\n{}", result._2)
-              execResult = false
-            }
-          } catch {
-            case e: NumberFormatException => logger
-              .warn("Unable to take into account RAM limitation because the value {} is not well defined for {}",
-                     property, nodeName)
-          }
-        }
-        property = buildCPUFrequency(KevoreePropertyHelper.getPropertyForNode(model, nodeName, "CPU_FREQUENCY")
-          .getOrElse("N/A").toString)
-        if (execResult && property != "N/A") {
-          try {
-            val limit = Integer.parseInt(property.toString)
-            exec = Array[String]("rctl", "-a", "jail:" + nodeName + ":pctcpu:" + modeId + ":" + limit)
-            resultActor.starting()
-            logger.debug("running {}", exec)
-            val p = Runtime.getRuntime.exec(exec)
-            new Thread(new ProcessStreamManager(p.getInputStream, Array(new Regex(".*")), Array(), p)).start()
-            val result = resultActor.waitingFor(10000)
-            if (result._1) {
-              execResult = true
-            } else {
-              logger.debug("unable to set CPU_FREQUENCY limitation:\n{}", result._2)
-              execResult = false
-            }
-          } catch {
-            case e: NumberFormatException => logger
-              .warn("Unable to take into account CPU_FREQUENCY limitation because the value {} is not well defined for {}",
-                     property, nodeName)
-          }
-        }
-        /*property = getNodeProperty("CPU_CORE", nodeName)
-        if (execResult && property != "N/A") {
-          try {
-            val limit = Integer.parseInt(property.toString)
-            exec = Array[String]("rctl", "-a", "jail:" + nodeName + ":vmem:" + modeId + ":" + limit) // TODO use cpuset command
-            resultActor.starting()
-            logger.debug("running {}", exec)
-            val p = Runtime.getRuntime.exec(exec)
-            new Thread(new ProcessStreamManager(p.getErrorStream, Array(new Regex(".*")), Array(), p)).start()
-            val result = resultActor.waitingFor(10000)
-            if (result._1) {
-              execResult = true
-            } else {
-              logger.debug("unable to set CPU_CORE limitation:\n{}", result._2)
-              execResult = false
-            }
-          } catch {
-            case e: NumberFormatException => logger
-              .warn("Unable to take into account CPU_CORE limitation because the value {} is not well defined for {}",
-                     property, nodeName)
-          }
-        }*/
-        property = KevoreePropertyHelper.getPropertyForNode(model, nodeName, "WALLCLOCKTIME").getOrElse("N/A").toString
-        if (execResult && property != "N/A") {
-          try {
-            val limit = Integer.parseInt(property.toString)
-            exec = Array[String]("rctl", "-a", "jail:" + nodeName + ":wallclock:" + modeId + ":" + limit)
-            resultActor.starting()
-            logger.debug("running {}", exec)
-            val p = Runtime.getRuntime.exec(exec)
-            new Thread(new ProcessStreamManager(p.getInputStream, Array(new Regex(".*")), Array(), p)).start()
-            val result = resultActor.waitingFor(10000)
-            if (result._1) {
-              execResult = true
-            } else {
-              logger.debug("unable to set WALLCLOCKTIME limitation:\n{}", result._2)
-              execResult = false
-            }
-          } catch {
-            case e: NumberFormatException => logger
-              .warn("Unable to take into account WALLCLOCKTIME limitation because the value {} is not well defined for {}",
-                     property, nodeName)
-          }
-        }
-        property = KevoreePropertyHelper.getPropertyForNode(model, nodeName, "DATA_SIZE").getOrElse("N/A").toString
-        if (execResult && property != "N/A") {
-          try {
-            val limit = Integer.parseInt(property.toString)
-            exec = Array[String]("rctl", "-a", "jail:" + nodeName + ":data:" + modeId + ":" + limit)
-            resultActor.starting()
-            logger.debug("running {}", exec)
-            val p = Runtime.getRuntime.exec(exec)
-            new Thread(new ProcessStreamManager(p.getInputStream, Array(new Regex(".*")), Array(), p)).start()
-            val result = resultActor.waitingFor(10000)
-            if (result._1) {
-              execResult = true
-            } else {
-              logger.debug("unable to set DATA_SIZE limitation:\n{}", result._2)
-              execResult = false
-            }
-          } catch {
-            case e: NumberFormatException => logger
-              .warn("Unable to take into account DATA_SIZE limitation because the value {} is not well defined for {}",
-                     property, nodeName)
-          }
-        }
-        logger.debug("specify constraints is done: {}", execResult)
-        execResult
-      }
-    }
-  }
-
-  private def buildCPUFrequency (property: String): String = {
-    if (property != "N/A") {
-      if (property.toLowerCase.endsWith("ghz") && property.toLowerCase.endsWith("Mhz") &&
-        property.toLowerCase.endsWith("khz")) {
-        val exec = Array[String]("sysctl", "-a", "|", "egrep", "-i", "hw.model")
-        resultActor.starting()
-        logger.debug("running {}", exec)
-        val p = Runtime.getRuntime.exec(exec)
-        new Thread(new ProcessStreamManager(p.getInputStream, Array(new Regex("hw.model:.*@ (.*)")), Array(), p))
-          .start()
-        val result = resultActor.waitingFor(2000)
-        if (result._1) {
-          val frequency = result._2.trim()
-          var valueFrequency = java.lang.Double.parseDouble(frequency.substring(0, frequency.length() - 3))
-          val unit = frequency.substring(frequency.length() - 3)
-          if (unit.equalsIgnoreCase("ghz")) {
-            valueFrequency = valueFrequency * 1024 * 1024 * 1024
-          } else if (unit.equalsIgnoreCase("mhz")) {
-            valueFrequency = valueFrequency * 1024 * 1024
-          } else if (unit.equalsIgnoreCase("khz")) {
-            valueFrequency = valueFrequency * 1024
-          }
-          valueFrequency = valueFrequency.longValue()
-
-          var valueFrequency4Jail = java.lang.Double.parseDouble(property.substring(0, property.length() - 3))
-          val unit4Jail = frequency.substring(frequency.length() - 3)
-          if (unit4Jail.equalsIgnoreCase("ghz")) {
-            valueFrequency4Jail = valueFrequency4Jail * 1024 * 1024 * 1024
-          } else if (unit4Jail.equalsIgnoreCase("mhz")) {
-            valueFrequency4Jail = valueFrequency4Jail * 1024 * 1024
-          } else if (unit4Jail.equalsIgnoreCase("khz")) {
-            valueFrequency4Jail = valueFrequency4Jail * 1024
-          }
-          valueFrequency4Jail = valueFrequency4Jail.longValue()
-          ((valueFrequency4Jail * 100 / valueFrequency) + 0.5).intValue() + ""
-        } else {
-          "N/A"
-        }
-      } else {
-        logger.debug("Unable to take into account CPU_FREQUENCY parameter!")
-        "N/A"
-      }
-    } else {
-      "N/A"
-    }
-  }
-
-  private def copyFile (inputFile: String, outputFile: String): Boolean = {
-    logger.debug("trying to copy {} to {}", inputFile, outputFile)
-    if (new File(inputFile).exists()) {
-      try {
-        if (new File(outputFile).exists()) {
-          new File(outputFile).delete()
-        }
-        val reader = new DataInputStream(new FileInputStream(new File(inputFile)))
-        val writer = new DataOutputStream(new FileOutputStream(new File(outputFile)))
-
-        val bytes = new Array[Byte](2048)
-        var length = reader.read(bytes)
-        while (length != -1) {
-          writer.write(bytes, 0, length)
-          length = reader.read(bytes)
-
-        }
-        writer.flush()
-        writer.close()
-        reader.close()
-        true
-      } catch {
-        case _@e => logger.error("Unable to copy {} on {}", Array[AnyRef](inputFile, outputFile), e); false
-      }
-    } else {
-      logger.debug("Unable to find {}", inputFile)
-      false
-    }
-  }
-
-  class ProcessStreamFileLogger (inputStream: InputStream, file: File)
+  class ProcessStreamFileLogger(inputStream: InputStream, file: File)
     extends Runnable {
-    override def run () {
+    override def run() {
       try {
         val outputStream = new FileWriter(file)
         val readerIn = new BufferedReader(new InputStreamReader(inputStream))
@@ -566,121 +304,6 @@ class JailKevoreeNodeRunner (nodeName: String, bootStrapModel: String, inet: Str
     }
   }
 
-
-  class ProcessStreamManager (inputStream: InputStream, outputRegexes: Array[Regex], errorRegexes: Array[Regex],
-    p: Process)
-    extends Runnable {
-
-    override def run () {
-      val outputBuilder = new StringBuilder
-      var errorBuilder = false
-      try {
-        val reader = new BufferedReader(new InputStreamReader(inputStream))
-        var line = reader.readLine()
-        while (line != null) {
-
-          outputRegexes.find(regex => {
-            val m = regex.pattern.matcher(line)
-            m.find()
-          }) match {
-            case Some(regex) => outputBuilder.append(line + "\n")
-            case none =>
-          }
-          errorRegexes.find(regex => {
-            val m = regex.pattern.matcher(line)
-            m.find()
-          }) match {
-            case Some(regex) => errorBuilder = true; outputBuilder.append(line + "\n")
-            case none =>
-          }
-          line = reader.readLine()
-        }
-      } catch {
-        case _@e =>
-      }
-      val exitValue = p.waitFor()
-      if (errorBuilder || exitValue != 0) {
-        resultActor.error(outputBuilder.toString())
-      } else {
-        resultActor.output(outputBuilder.toString())
-      }
-    }
-  }
-
-  class ResultManagementActor () extends Actor {
-
-    case class STOP ()
-
-    case class WAITINGFOR (timeout: Int)
-
-    case class STARTING ()
-
-    case class OUTPUT (data: String)
-
-    case class ERROR (data: String)
-
-    start()
-
-    def stop () {
-      this ! STOP()
-    }
-
-    def starting () {
-      this ! STARTING()
-    }
-
-    def waitingFor (timeout: Int): (Boolean, String) = {
-      (this !? WAITINGFOR(timeout)).asInstanceOf[(Boolean, String)]
-    }
-
-    def output (data: String) {
-      this ! OUTPUT(data)
-    }
-
-    def error (data: String) {
-      this ! ERROR(data)
-    }
-
-    var firstSender = null
-
-    def act () {
-      loop {
-        react {
-          case STOP() => this.exit()
-          case ERROR(data) =>
-          case OUTPUT(data) =>
-          case STARTING() => {
-            var firstSender = this.sender
-            react {
-              case STOP() => this.exit()
-              case WAITINGFOR(timeout) => {
-                firstSender = this.sender
-                reactWithin(timeout) {
-                  case STOP() => this.exit()
-                  case OUTPUT(data) => firstSender !(true, data)
-                  case TIMEOUT => firstSender !
-                    (false, "Timeout exceeds.")
-                  case ERROR(data) => firstSender !(false, data)
-                }
-              }
-              case OUTPUT(data) => {
-                react {
-                  case STOP() => this.exit()
-                  case WAITINGFOR(timeout) => firstSender !(true, data)
-                }
-              }
-              case ERROR(data) => {
-                react {
-                  case STOP() => this.exit()
-                  case WAITINGFOR(timeout) => firstSender !(false, data)
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  }
 
 }
 

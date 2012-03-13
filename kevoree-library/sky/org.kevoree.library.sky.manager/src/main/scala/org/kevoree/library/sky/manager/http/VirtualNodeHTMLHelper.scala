@@ -13,7 +13,7 @@ import org.kevoree.library.sky.manager.{KevoreeNodeRunner, KevoreeNodeManager}
 
 object VirtualNodeHTMLHelper {
 
-  def getNodeStreamAsHTML (nodeName: String, streamName: String): String = {
+  def getNodeStreamAsHTML(nodeName: String, streamName: String, manager: KevoreeNodeManager): String = {
     (<html>
       <head>
           <link rel="stylesheet" href="http://twitter.github.com/bootstrap/1.3.0/bootstrap.min.css"/>
@@ -34,42 +34,42 @@ object VirtualNodeHTMLHelper {
             </a>
           </li>
         </ul>{var result: List[scala.xml.Elem] = List()
-      KevoreeNodeManager.runners.find(r => r.nodeName == nodeName) match {
+      manager.runners.find(r => r.nodeName == nodeName) match {
         case Some(runner) => {
           result = result ++ List(
-                                   <div class="alert-message block-message info">
-                                     {streamName match {
-                                     case "out" => {
-                                       var subresult: List[scala.xml.Elem] = List()
-                                       Source.fromFile(runner.asInstanceOf[KevoreeNodeRunner].getOutFile).getLines().toList.reverse.foreach {
-                                         line =>
-                                           subresult = subresult ++ List(<p>
-                                             {line}
-                                           </p>)
-                                       }
-                                       subresult
-                                     }
-                                     case "err" => {
-                                       var subresult: List[scala.xml.Elem] = List()
-                                       Source.fromFile(runner.asInstanceOf[KevoreeNodeRunner].getErrFile).getLines().toList.reverse.foreach {
-                                         line =>
-                                           subresult = subresult ++ List(<p>
-                                             {line}
-                                           </p>)
-                                       }
-                                       subresult
-                                     }
-                                     case _ => "unknow stream"
-                                   }}
-                                   </div>
-                                 )
+            <div class="alert-message block-message info">
+              {streamName match {
+              case "out" => {
+                var subresult: List[scala.xml.Elem] = List()
+                Source.fromFile(runner.asInstanceOf[KevoreeNodeRunner].getOutFile).getLines().toList.reverse.foreach {
+                  line =>
+                    subresult = subresult ++ List(<p>
+                      {line}
+                    </p>)
+                }
+                subresult
+              }
+              case "err" => {
+                var subresult: List[scala.xml.Elem] = List()
+                Source.fromFile(runner.asInstanceOf[KevoreeNodeRunner].getErrFile).getLines().toList.reverse.foreach {
+                  line =>
+                    subresult = subresult ++ List(<p>
+                      {line}
+                    </p>)
+                }
+                subresult
+              }
+              case _ => "unknow stream"
+            }}
+            </div>
+          )
         }
         case None => {
           result = result ++ List(
-                                   <div class="alert-message block-message error">
-                                     <p>Node instance not hosted on this platform</p>
-                                   </div>
-                                 )
+            <div class="alert-message block-message error">
+              <p>Node instance not hosted on this platform</p>
+            </div>
+          )
         }
       }
       result}
@@ -78,7 +78,7 @@ object VirtualNodeHTMLHelper {
   }
 
 
-  def getNodeHomeAsHTML (nodeName: String): String = {
+  def getNodeHomeAsHTML(nodeName: String, manager: KevoreeNodeManager): String = {
     (<html>
       <head>
           <link rel="stylesheet" href="http://twitter.github.com/bootstrap/1.3.0/bootstrap.min.css"/>
@@ -94,25 +94,25 @@ object VirtualNodeHTMLHelper {
             </a>
           </li>
         </ul>{var result: List[scala.xml.Elem] = List()
-      KevoreeNodeManager.runners.find(r => r.nodeName == nodeName) match {
+      manager.runners.find(r => r.nodeName == nodeName) match {
         case Some(runner) => {
           result = result ++ List(
-                                   <div class="alert-message block-message info">
-                                     <p>
-                                       <a href={"/nodes/" + nodeName + "/out"}>Output log</a>
-                                     </p>
-                                     <p>
-                                       <a href={"/nodes/" + nodeName + "/err"}>Error log</a>
-                                     </p>
-                                   </div>
-                                 )
+            <div class="alert-message block-message info">
+              <p>
+                <a href={"/nodes/" + nodeName + "/out"}>Output log</a>
+              </p>
+              <p>
+                <a href={"/nodes/" + nodeName + "/err"}>Error log</a>
+              </p>
+            </div>
+          )
         }
         case None => {
           result = result ++ List(
-                                   <div class="alert-message block-message error">
-                                     <p>Node instance not hosted on this platform</p>
-                                   </div>
-                                 )
+            <div class="alert-message block-message error">
+              <p>Node instance not hosted on this platform</p>
+            </div>
+          )
         }
       }
       result}
@@ -121,7 +121,7 @@ object VirtualNodeHTMLHelper {
   }
 
 
-  def exportNodeListAsHTML (): String = {
+  def exportNodeListAsHTML(manager: KevoreeNodeManager): String = {
     (<html>
       <head>
           <link rel="stylesheet" href="http://twitter.github.com/bootstrap/1.3.0/bootstrap.min.css"/>
@@ -142,21 +142,21 @@ object VirtualNodeHTMLHelper {
           </thead>
           <tbody>
             {var result: List[scala.xml.Elem] = List()
-          KevoreeNodeManager.runners.foreach {
+          manager.runners.foreach {
             elem =>
               result = result ++ List(
-                                       <tr>
-                                         <td>
-                                           {KevoreeNodeManager.runners.indexOf(elem)}
-                                         </td> <td>
-                                         <a href={"nodes/" + elem.nodeName}>
-                                           <span class="label notice">
-                                             {elem.nodeName}
-                                           </span>
-                                         </a>
-                                       </td>
-                                       </tr>
-                                     )
+                <tr>
+                  <td>
+                    {manager.runners.indexOf(elem)}
+                  </td> <td>
+                  <a href={"nodes/" + elem.nodeName}>
+                    <span class="label notice">
+                      {elem.nodeName}
+                    </span>
+                  </a>
+                </td>
+                </tr>
+              )
           }
           result}
           </tbody>

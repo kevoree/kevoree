@@ -83,8 +83,8 @@
     </build>
 
     <modules>
-        <module>../org.kevoree.platform.osgi.standalone</module>
-        <module>../org.kevoree.platform.osgi.standalone.gui</module>
+        <module>../org.kevoree.platform.standalone</module>
+        <module>../org.kevoree.platform.standalone.gui</module>
         <module>../org.kevoree.platform.service</module>
 
         <module>../org.kevoree.platform.android.ui</module>
