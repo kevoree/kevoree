@@ -35,7 +35,7 @@ object KevoreeServiceUpdate extends App{
     version = args(1)
   }
 
-  val jarFile: File = AetherUtil.resolveMavenArtifact("org.kevoree.platform.osgi.standalone", "org.kevoree.platform", version, List[String]("http://maven.kevoree.org/snapshots/", "http://maven.kevoree.org/release/"))
+  val jarFile: File = AetherUtil.resolveMavenArtifact("org.kevoree.platform.standalone", "org.kevoree.platform", version, List[String]("http://maven.kevoree.org/snapshots/", "http://maven.kevoree.org/release/"))
 
   if (jarFile.exists) {
     val p = Runtime.getRuntime.exec(Array[String]("cp", jarFile.getAbsolutePath, defaultLocation))

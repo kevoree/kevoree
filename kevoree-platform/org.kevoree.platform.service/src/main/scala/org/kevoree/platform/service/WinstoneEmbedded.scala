@@ -27,14 +27,14 @@ import org.kevoree.kcl.KevoreeJarClassLoader
 object WinstoneEmbedded extends App {
 
   val jcl2 = new KevoreeJarClassLoader
-  jcl2.add("/Users/duke/.m2/repository/org/kevoree/platform/org.kevoree.platform.osgi.standalone.gui/1.5.1-SNAPSHOT/org.kevoree.platform.osgi.standalone.gui-1.5.1-SNAPSHOT.jar")
+  jcl2.add("/Users/duke/.m2/repository/org/kevoree/platform/org.kevoree.platform.standalone.gui/1.5.1-SNAPSHOT/org.kevoree.platform.standalone.gui-1.5.1-SNAPSHOT.jar")
 
    var jcl = new KevoreeJarClassLoader
    jcl.addSubClassLoader(jcl2)
 
 
   val factory = JclObjectFactory.getInstance
-  val obj = factory.create(jcl, "org.kevoree.platform.osgi.standalone.gui.App");
+  val obj = factory.create(jcl, "org.kevoree.platform.standalone.gui.App");
   obj.getClass.getMethods.find(m => m.getName == "main") match {
     case Some(m) => {
       m.invoke(obj, Array[String]())
