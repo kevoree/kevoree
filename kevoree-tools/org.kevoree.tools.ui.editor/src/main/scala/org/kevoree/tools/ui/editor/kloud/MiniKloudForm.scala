@@ -59,13 +59,12 @@ class MiniKloudForm (editor: KevoreeEditor) {
 
             // build default model of the minicloud
             if (bootstrapModel == null) {
-              platformJAR = AetherUtil.resolveMavenArtifact("org.kevoree.platform.osgi.standalone.gui", "org.kevoree.platform", KevoreeFactory.getVersion,
-                                                             List("http://maven.kevoree.org/release", "http://maven.kevoree.org/snapshots"))
+              platformJAR = AetherUtil.resolveKevoreeArtifact("org.kevoree.platform.standalone.gui", "org.kevoree.platform", KevoreeFactory.getVersion)
               if (platformJAR != null) {
                 buildBootstrapModel()
                 logger.debug("trying to start the minicloud")
                 minicloud = Runtime.getRuntime
-                  .exec(Array[String](java, "-Dnode.gui.config=false", "-Dnode.bootstrap=" + bootstrapModel, "-Dnode.name=" + minicloudName, "-Dnode.log.level=DEBUG", "-jar",
+                  .exec(Array[String](java, "-Dnode.gui.config=false", "-Dnode.bootstrap=" + bootstrapModel, "-Dnode.name=" + minicloudName, "-Dnode.log.level=INFO", "-jar",
                                        platformJAR.getAbsolutePath))
 
 
