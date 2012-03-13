@@ -13,7 +13,7 @@
     <name>Kevoree :: Library :: Sky :: Manager</name>
 
     <properties>
-        <kevoree.include>org.kevoree.extra:org.kevoree.extra.spray,org.kevoree.library.javase:*,org.kevoree:*</kevoree.include>
+        <kevoree.include>org.kevoree.extra:org.kevoree.extra.spray,org.kevoree.library.javase:*,org.kevoree:*,se.scalablesolutions.akka:akka-actor</kevoree.include>
     </properties>
 
     <dependencies>

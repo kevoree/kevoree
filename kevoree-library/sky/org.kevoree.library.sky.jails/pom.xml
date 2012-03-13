@@ -13,7 +13,7 @@
     <name>Kevoree :: Library :: Sky :: BSD Jails</name>
 
     <properties>
-        <kevoree.include>org.kevoree.library.sky:*</kevoree.include>
+        <kevoree.include>org.kevoree.library.sky:*,se.scalablesolutions.akka:akka-actor</kevoree.include>
     </properties>
 
     <dependencies>
