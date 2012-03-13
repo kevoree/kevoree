@@ -13,7 +13,6 @@
  */
 package org.kevoree.tools.ui.editor.kloud
 
-import org.kevoree.framework.KevoreeXmiHelper
 import java.io._
 import org.kevoree.tools.aether.framework.AetherUtil
 import org.kevoree.tools.marShell.parser.KevsParser
@@ -23,6 +22,7 @@ import org.slf4j.LoggerFactory
 import org.kevoree.tools.ui.editor.command.LoadModelCommand
 import org.kevoree.tools.ui.editor.{PositionedEMFHelper, KevoreeEditor}
 import org.kevoree.{ContainerRoot, KevoreeFactory}
+import org.kevoree.framework.KevoreeXmiHelper
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -33,17 +33,17 @@ import org.kevoree.{ContainerRoot, KevoreeFactory}
  * @version 1.0
  */
 
-class MiniKloudForm (editor: KevoreeEditor) {
+class MiniKloudForm(editor: KevoreeEditor) {
   var logger = LoggerFactory.getLogger(this.getClass)
   private var minicloud: Process = null
   private var platformJAR: File = null
   private var thread: Thread = null
   private var minicloudName: String = null
 
-  def startMiniCloud (): Boolean = {
+  def startMiniCloud(): Boolean = {
     if (thread == null) {
       thread = new Thread() {
-        override def run () {
+        override def run() {
           logger.debug("sending a model on a local minicloud")
           var exitValue = -1
           try {
@@ -57,25 +57,25 @@ class MiniKloudForm (editor: KevoreeEditor) {
             val java = getJava
 
             // build default model of the minicloud
-            if (bootstrapModel == null) {
-              platformJAR = AetherUtil.resolveKevoreeArtifact("org.kevoree.platform.standalone.gui", "org.kevoree.platform", KevoreeFactory.getVersion)
-              if (platformJAR != null) {
-                buildBootstrapModel()
-                logger.debug("trying to start the minicloud")
-                
-                println(bootstrapModel)
-                
-                minicloud = Runtime.getRuntime
-                  .exec(Array[String](java, "-Dnode.gui.config=false", "-Dnode.bootstrap=" + bootstrapModel, "-Dnode.name=" + minicloudName, "-Dnode.log.level=INFO", "-jar",
-                                       platformJAR.getAbsolutePath))
+            platformJAR = AetherUtil.resolveKevoreeArtifact("org.kevoree.platform.standalone.gui", "org.kevoree.platform", KevoreeFactory.getVersion)
+            if (platformJAR != null) {
+              PositionedEMFHelper.updateModelUIMetaData(editor.getPanel.getKernel)
+              val skyModel = buildBootstrapModel
+              val file = File.createTempFile("editorBootstrapModel", "kev")
+              file.deleteOnExit()
+              KevoreeXmiHelper.save(file.getAbsolutePath, skyModel);
+              logger.debug("trying to start the minicloud")
+              minicloud = Runtime.getRuntime
+                .exec(Array[String](java, "-Dnode.gui.config=false", "-Dnode.bootstrap=" + file.getAbsolutePath, "-Dnode.name=" + minicloudName, "-Dnode.log.level=DEBUG", "-jar",
+                platformJAR.getAbsolutePath))
 
 
-                //LOAD MODEL
-                val loadCmd = new LoadModelCommand();
-                loadCmd.setKernel(editor.getPanel.getKernel);
-                loadCmd.execute(bootstrapModel);
-              }
+              //LOAD MODEL
+              val loadCmd = new LoadModelCommand();
+              loadCmd.setKernel(editor.getPanel.getKernel);
+              loadCmd.execute(skyModel);
             }
+
           }
           thread = null
         }
@@ -88,10 +88,10 @@ class MiniKloudForm (editor: KevoreeEditor) {
 
   }
 
-  def shutdownMiniCloud (): Boolean = {
+  def shutdownMiniCloud(): Boolean = {
     if (thread == null) {
       thread = new Thread() {
-        override def run () {
+        override def run() {
           var exitValue = -1
           try {
             exitValue = minicloud.exitValue()
@@ -105,7 +105,6 @@ class MiniKloudForm (editor: KevoreeEditor) {
           logger.debug("minicloud shutted down")
           minicloud = null
           minicloudName = null
-          bootstrapModel = null
           thread = null
         }
       }
@@ -116,17 +115,21 @@ class MiniKloudForm (editor: KevoreeEditor) {
     }
   }
 
-  private def buildBootstrapModel : ContainerRoot =  {
+  private def buildBootstrapModel: ContainerRoot = {
     editor.getPanel.getKernel.getModelHandler.getActualModel.getNodes
       .find(n => n.getTypeDefinition.getName == "MiniCloudNode" && n.getHosts.size == editor.getPanel.getKernel.getModelHandler.getActualModel.getNodes.size - 1 && !n.getHosts.contains(n)) match {
       case Some(minicloudNode) => {
         logger.debug("start a minicloud with your own minicloud node")
         minicloudName = minicloudNode.getName
-        val file = File.createTempFile("editorBootstrapModel", "kev")
-        file.deleteOnExit()
-        PositionedEMFHelper.updateModelUIMetaData(editor.getPanel.getKernel)
-        KevoreeXmiHelper.save(file.getAbsolutePath, editor.getPanel.getKernel.getModelHandler.getActualModel);
-        bootstrapModel = file.getAbsolutePath
+
+        editor.getPanel.getKernel.getModelHandler.getActualModel
+
+        /*
+      val file = File.createTempFile("editorBootstrapModel", "kev")
+      file.deleteOnExit()
+      PositionedEMFHelper.updateModelUIMetaData(editor.getPanel.getKernel)
+      KevoreeXmiHelper.save(file.getAbsolutePath, editor.getPanel.getKernel.getModelHandler.getActualModel);
+      bootstrapModel = file.getAbsolutePath*/
       }
       case None => {
         logger.debug("start a minicloud with an editor node")
@@ -137,7 +140,7 @@ class MiniKloudForm (editor: KevoreeEditor) {
         val scriptBuilder = new StringBuilder
         scriptBuilder append "tblock {\n"
         scriptBuilder append "merge \"mvn:org.kevoree.library.model/org.kevoree.library.model.sky/" + KevoreeFactory.getVersion + "\"\n"
-      //  scriptBuilder append "merge \"mvn:org.kevoree.library.javase/org.kevoree.library.javase.rest/" + KevoreeFactory.getVersion + "\"\n"
+        //  scriptBuilder append "merge \"mvn:org.kevoree.library.javase/org.kevoree.library.javase.rest/" + KevoreeFactory.getVersion + "\"\n"
         scriptBuilder append "addNode " + minicloudName + ": MiniCloudNode {role=\"host\", port=\"6001\"}\n"
         scriptBuilder append "addGroup editor_group : NanoRestGroup\n"
         scriptBuilder append "addToGroup editor_group " + minicloudName + "\n"
@@ -155,13 +158,17 @@ class MiniKloudForm (editor: KevoreeEditor) {
           case Some(script) => {
             val result = script.interpret(KevsInterpreterContext(skyModel))
             if (result) {
+              /*
               val file = File.createTempFile("editorBootstrapModel", "kev")
               file.deleteOnExit()
               KevoreeXmiHelper.save(file.getAbsolutePath, skyModel);
-              bootstrapModel = file.getAbsolutePath
+              bootstrapModel = file.getAbsolutePath*/
+              skyModel
+            } else {
+              null
             }
           }
-          case _ => logger.debug("Unable to apply the script:\n{}", scriptBuilder.toString())
+          case _ => logger.debug("Unable to apply the script:\n{}", scriptBuilder.toString()); null
         }
       }
     }
