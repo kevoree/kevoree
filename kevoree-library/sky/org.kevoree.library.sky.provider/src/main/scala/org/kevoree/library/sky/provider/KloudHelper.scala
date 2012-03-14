@@ -1,12 +1,13 @@
 package org.kevoree.library.sky.provider
 
 import org.slf4j.{LoggerFactory, Logger}
-import org.kevoree.framework.{KevoreePropertyHelper}
 import java.net._
 import org.kevoree._
 import cloner.ModelCloner
 import core.basechecker.RootChecker
+import framework.{KevoreeXmiHelper, KevoreePropertyHelper}
 import scala.collection.JavaConversions._
+import java.io._
 
 
 /**
@@ -36,11 +37,7 @@ object KloudHelper {
     val foundGroupSelf = potentialUserModel.getGroups.find(g => g.getName == groupName).isDefined
     val foundHost = potentialUserModel.getNodes.find(n => n.getName == fragmentHostName).isDefined
 
-//    (foundGroupSelf && !foundHost)
-    // FIXME Currently the host node is also available on the model but if it is a user model, the node is empty (no components, no channels, no groups
-    val foundHostIsEmpty = potentialUserModel.getNodes.find(n => n.getName == fragmentHostName && n.getComponents.size == 0 && n.getHosts.size == 0
-      && potentialUserModel.getGroups.filter(g => g.getSubNodes.find(sn => sn.getName == fragmentHostName).isDefined).size == 0).isDefined
-    (foundGroupSelf && foundHostIsEmpty)
+    (foundGroupSelf && !foundHost)
   }
 
   def isIaaSNode (currentModel: ContainerRoot, groupName: String, nodeName: String): Boolean = {
@@ -81,15 +78,6 @@ object KloudHelper {
 
   def getGroup (groupName: String, currentModel: ContainerRoot): Option[Group] = {
     currentModel.getGroups.find(g => g.getName == groupName)
-  }
-
-  def lookForAccessPoint (groupName: String, nodeName: String, currentModel: ContainerRoot): Option[String] = {
-    currentModel.getGroups.find(g => g.getName == groupName) match {
-      case None => None
-      case Some(group) => {
-        KevoreePropertyHelper.getStringPropertyForGroup(currentModel, groupName, "masterNode")
-      }
-    }
   }
 
   def selectPortNumber (address: String, ports: Array[Int]): Int = {
@@ -270,38 +258,47 @@ object KloudHelper {
     }
   }
 
-  /*
-  def sendUserModel (urlString: String, model: ContainerRoot, nbTime: Int): Boolean = {
-    var isSend = false
-    var i = 0
-    while (!isSend && i < nbTime) {
-      try {
-        logger.debug("try to send user model at {}", urlString)
-        val url = new URL(urlString)
-        val conn: URLConnection = url.openConnection
-        conn.setConnectTimeout(3000)
-        conn.setDoOutput(true)
-        val wr: OutputStreamWriter = new OutputStreamWriter(conn.getOutputStream)
-        val outStream: ByteArrayOutputStream = new ByteArrayOutputStream
-        KevoreeXmiHelper.saveStream(outStream, model)
-        outStream.flush()
-        wr.write(outStream.toString)
-        wr.flush()
-        // Get the response
-        val rd: BufferedReader = new BufferedReader(new InputStreamReader(conn.getInputStream))
-        var line: String = rd.readLine
-        while (line != null) {
-          line = rd.readLine
-        }
-        wr.close()
-        rd.close()
-
-        isSend = true
-      } catch {
-        case _@e => i += 1;
-      }
-      Thread.sleep(5000)
+  def pullModel (urlPath: String): ContainerRoot = {
+    try {
+      val url: URL = new URL(urlPath)
+      val conn: URLConnection = url.openConnection
+      conn.setConnectTimeout(2000)
+      val inputStream: InputStream = conn.getInputStream
+      KevoreeXmiHelper.loadStream(inputStream)
     }
-    isSend
-  }*/
+    catch {
+      case e: IOException => {
+        null
+      }
+    }
+  }
+
+  def sendModel (model: ContainerRoot, urlPath: String): Boolean = {
+    try {
+      val outStream: ByteArrayOutputStream = new ByteArrayOutputStream
+      KevoreeXmiHelper.saveStream(outStream, model)
+      outStream.flush()
+      val url: URL = new URL(urlPath)
+      val conn: URLConnection = url.openConnection
+      conn.setConnectTimeout(3000)
+      conn.setDoOutput(true)
+      val wr: OutputStreamWriter = new OutputStreamWriter(conn.getOutputStream)
+      wr.write(outStream.toString)
+      wr.flush()
+      val rd: BufferedReader = new BufferedReader(new InputStreamReader(conn.getInputStream))
+      var line: String = rd.readLine
+      while (line != null) {
+        line = rd.readLine
+      }
+      wr.close()
+      rd.close()
+      true
+    }
+    catch {
+      case e: Exception => {
+        false
+      }
+    }
+  }
+
 }

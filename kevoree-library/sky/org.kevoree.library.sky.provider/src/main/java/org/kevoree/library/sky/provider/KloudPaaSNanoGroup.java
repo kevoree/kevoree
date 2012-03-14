@@ -11,11 +11,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import scala.Option;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
@@ -79,7 +79,7 @@ public class KloudPaaSNanoGroup extends AbstractGroupType {
 							if (externalSender) {
 								if (getDictionary().get("masterNode") != null) {
 									for (String ipPort : KloudHelper.getMasterIP_PORT(getDictionary().get("masterNode").toString())) {
-										sendModel(model, "http://" + ipPort + "/model/current");
+										KloudHelper.sendModel(model, "http://" + ipPort + "/model/current");
 									}
 								}
 							}
@@ -149,6 +149,24 @@ public class KloudPaaSNanoGroup extends AbstractGroupType {
 		}
 	}
 
+
+	@Override
+	public boolean triggerPreUpdate (ContainerRoot currentModel, ContainerRoot proposedModel) {
+		logger.debug("Trigger pre update : {}", KloudHelper.isIaaSNode(currentModel, getName(), getNodeName()));
+		if (KloudHelper.isIaaSNode(currentModel, getName(), getNodeName()) && KloudHelper.isUserModel(proposedModel, getName(), getNodeName())) {
+			logger.debug("A new user model is received, adding a task to process a deployment");
+
+			IaaSUpdate jobUpdate = new IaaSUpdate(userModel, proposedModel);
+			userModel = proposedModel;
+			poolUpdate.submit(jobUpdate);
+
+			return false;
+		} else {
+			logger.debug("nothing specified, update can be done");
+			return true;
+		}
+	}
+
 	@Override
 	public void triggerModelUpdate () {
 		if (userModel.getNodes().size() == 0) {
@@ -156,7 +174,7 @@ public class KloudPaaSNanoGroup extends AbstractGroupType {
 				// pull the model to the master node
 				if (getDictionary().get("masterNode") != null) {
 					for (String ipPort : KloudHelper.getMasterIP_PORT(getDictionary().get("masterNode").toString())) {
-						userModel = pullModel("http://" + ipPort + "/model/current");
+						userModel = KloudHelper.pullModel("http://" + ipPort + "/model/current");
 						if (userModel != null) {
 							logger.debug("Try to apply a new model on PaaSNode coming from {}", this.getDictionary().get("masterNode").toString());
 							this.getModelService().atomicUpdateModel(userModel);
@@ -186,24 +204,24 @@ public class KloudPaaSNanoGroup extends AbstractGroupType {
 		boolean sent = false;
 		for (String ip : ips) {
 			logger.debug("try to send model on url=>" + "http://" + ip + ":" + PORT + "/model/current" + param);
-			if (sendModel(model, "http://" + ip + ":" + PORT + "/model/current" + param)) {
+			if (KloudHelper.sendModel(model, "http://" + ip + ":" + PORT + "/model/current" + param)) {
 				sent = true;
 				break;
 			}
 		}
 		if (!sent) {
 			logger.debug("try to send model on url=>" + "http://127.0.0.1:" + PORT + "/model/current" + param);
-			if (!sendModel(model, "http://127.0.0.1:" + PORT + "/model/current" + param)) {
+			if (!KloudHelper.sendModel(model, "http://127.0.0.1:" + PORT + "/model/current" + param)) {
 				logger.debug("Unable to push a model on {}", targetNodeName);
 				logger.debug("try to send model using master node property");
-				if (!sendModel(model, this.getDictionary().get("masterNode").toString() + param)) {
+				if (!KloudHelper.sendModel(model, this.getDictionary().get("masterNode").toString() + param)) {
 					logger.debug("Unable to send model using master node property");
 				}
 			}
 		}
 	}
 
-	private boolean sendModel (ContainerRoot model, String urlPath) {
+	/*private boolean sendModel (ContainerRoot model, String urlPath) {
 		try {
 			ByteArrayOutputStream outStream = new ByteArrayOutputStream();
 			KevoreeXmiHelper.saveStream(outStream, model);
@@ -227,7 +245,7 @@ public class KloudPaaSNanoGroup extends AbstractGroupType {
 		} catch (Exception e) {
 			return false;
 		}
-	}
+	}*/
 
 	@Override
 	public ContainerRoot pull (String targetNodeName) {
@@ -245,12 +263,12 @@ public class KloudPaaSNanoGroup extends AbstractGroupType {
 
 		for (String ip : ips) {
 			logger.debug("try to pull model on url=>" + "http://" + ip + ":" + PORT + "/model/current" + param);
-			ContainerRoot model = pullModel("http://" + ip + ":" + PORT + "/model/current" + param);
+			ContainerRoot model = KloudHelper.pullModel("http://" + ip + ":" + PORT + "/model/current" + param);
 			if (model != null) {
 				return model;
 			}
 		}
-		ContainerRoot model = pullModel("http://127.0.0.1:" + PORT + "/model/current" + param);
+		ContainerRoot model = KloudHelper.pullModel("http://127.0.0.1:" + PORT + "/model/current" + param);
 		if (model == null) {
 			logger.debug("Unable to pull a model on " + targetNodeName);
 			return null;
@@ -259,7 +277,7 @@ public class KloudPaaSNanoGroup extends AbstractGroupType {
 		}
 	}
 
-	private ContainerRoot pullModel (String urlPath) {
+	/*private ContainerRoot pullModel (String urlPath) {
 		try {
 			URL url = new URL(urlPath);
 			URLConnection conn = url.openConnection();
@@ -269,36 +287,7 @@ public class KloudPaaSNanoGroup extends AbstractGroupType {
 		} catch (IOException e) {
 			return null;
 		}
-	}
-
-
-	@Override
-	public boolean triggerPreUpdate (ContainerRoot currentModel, ContainerRoot proposedModel) {
-		logger.debug("Trigger pre update : {}", KloudHelper.isIaaSNode(currentModel, getName(), getNodeName()));
-		if (KloudHelper.isIaaSNode(currentModel, getName(), getNodeName()) && KloudHelper.isUserModel(proposedModel, getName(), getNodeName())) {
-			logger.debug("A new user model is received, adding a task to process a deployment");
-
-
-			/*IaaSUpdate jobUpdate = new IaaSUpdate(userModel, proposedModel);
-			userModel = proposedModel;
-			poolUpdate.submit(jobUpdate);*/
-
-
-			logger.debug("cleaning model by removing useless IaaSNode");
-			Option<ContainerRoot> userModelUpdated = KloudReasoner.removeLocalIaaSNode(getNodeName(), proposedModel,currentModel, getKevScriptEngineFactory());
-			if (userModelUpdated.isDefined()) {
-				IaaSUpdate jobUpdate = new IaaSUpdate(userModel, userModelUpdated.get());
-				userModel = userModelUpdated.get();
-				poolUpdate.submit(jobUpdate);
-			} else {
-				logger.debug("Unable to clean model so it cannot be used");
-			}
-			return false;
-		} else {
-			logger.debug("nothing specified, update can be done");
-			return true;
-		}
-	}
+	}*/
 
 
 	private class IaaSUpdate implements Runnable {
