@@ -133,22 +133,28 @@ object KloudReasoner {
       case None => {
 
         val ipOption = KevoreePropertyHelper.getStringNetworkProperty(kloudModel, nodeName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP)
+        var ip = "127.0.0.1"
+        if (ipOption.isDefined) {
+          ip = ipOption.get
+        }
+
         val portNumber = if (ipOption.isDefined) {
           KloudHelper.selectPortNumber(ipOption.get, Array[Int]())
         } else {
           KloudHelper.selectPortNumber("", Array[Int]())
         }
+
         val scriptBuilder = new StringBuilder()
 
         scriptBuilder append
-          "addGroup " + groupName + " : KloudPaaSNanoGroup {SSH_Public_Key=\"" + sshKey + "\", masterNode=\"http://" + ipOption.get + ":" + portNumber + "/model/current\", displayIP=\"" + displayIP +
+          "addGroup " + groupName + " : KloudPaaSNanoGroup {SSH_Public_Key=\"" + sshKey + "\", masterNode=\"http://" + ip + ":" + portNumber + "/model/current\", displayIP=\"" + displayIP +
             "\"}\n"
 
         scriptBuilder append "addToGroup " + groupName + " " + nodeName + "\n"
 
         var updateDictionary = "updateDictionary " + groupName + " {port=\"" + portNumber + "\"}@" + nodeName + "\n"
         if (ipOption.isDefined) {
-          updateDictionary = "updateDictionary " + groupName + " {port=\"" + portNumber + "\", ip=\"" + ipOption.get + "\"}@" + nodeName + "\n"
+          updateDictionary = "updateDictionary " + groupName + " {port=\"" + portNumber + "\", ip=\"" + ip + "\"}@" + nodeName + "\n"
         }
         scriptBuilder append updateDictionary
 
