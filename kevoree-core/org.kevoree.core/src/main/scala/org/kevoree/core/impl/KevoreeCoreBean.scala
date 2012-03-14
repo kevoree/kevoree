@@ -151,7 +151,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
     //Fires the update to listeners
     //new Actor {
     //  def act() {
-        listenerActor.notifyAllListener()
+    listenerActor.notifyAllListener()
     //  }
     //}.start()
   }
@@ -317,7 +317,16 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
           logger.debug("Before listeners PreCheck !")
           val preCheckResult = listenerActor.preUpdate(model, precheckModel)
           logger.debug("PreCheck result = " + preCheckResult)
-          if (preCheckResult) {
+
+          val precheckModel2 = cloner.clone(pnewmodel)
+          logger.debug("Before listeners InitUpdate !")
+          val initUpdateResult = listenerActor.preUpdate(model, precheckModel2)
+          logger.debug("InitUpdate result = " + precheckModel2)
+
+          if (preCheckResult && initUpdateResult) {
+
+
+
             var newmodel = cloner.clone(pnewmodel)
             //CHECK FOR HARA KIRI
             if (HaraKiriHelper.detectNodeHaraKiri(model, newmodel, getNodeName())) {
@@ -498,4 +507,15 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
   def releaseLock(uuid: UUID) {
     this ! RELEASE_LOCK(uuid)
   }
+
+  def checkModel(tModel: ContainerRoot): Boolean = {
+    val model = cloner.clone(tModel)
+    val checkResult = modelChecker.check(model)
+    if (checkResult.isEmpty) {
+      listenerActor.preUpdate(model, model)
+    } else {
+      false
+    }
+  }
+
 }

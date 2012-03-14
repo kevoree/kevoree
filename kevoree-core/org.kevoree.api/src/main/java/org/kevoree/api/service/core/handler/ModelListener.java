@@ -18,8 +18,13 @@ import org.kevoree.ContainerRoot;
 
 public interface ModelListener {
 
+    /* Method called before Kevoree Core accept an input model. Synchronized this methods is not suppose to block */
     public boolean preUpdate(ContainerRoot currentModel, ContainerRoot proposedModel);
 
+    /* Method called to prepare the core to be update. Synchronized this methods can bloc Kevoree core  */
+    public boolean initUpdate(ContainerRoot currentModel, ContainerRoot proposedModel);
+
+    /* Method called asynchronisly after a model update */
     public void modelUpdated();
 
 }

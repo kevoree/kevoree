@@ -63,6 +63,7 @@ class MiniKloudForm(editor: KevoreeEditor) {
               val skyModel = buildBootstrapModel
               val file = File.createTempFile("editorBootstrapModel", "kev")
               file.deleteOnExit()
+
               KevoreeXmiHelper.save(file.getAbsolutePath, skyModel);
               logger.debug("trying to start the minicloud")
               minicloud = Runtime.getRuntime

@@ -53,6 +53,12 @@ class KevoreeListeners extends DaemonActor {
 
   case class PREUPDATE(currentModel: ContainerRoot, proposedModel: ContainerRoot)
 
+  case class INITUPDATE(currentModel: ContainerRoot, proposedModel: ContainerRoot)
+
+  def initUpdate(currentModel: ContainerRoot, pmodel: ContainerRoot): Boolean = {
+    (this !? INITUPDATE(currentModel, pmodel)).asInstanceOf[Boolean]
+  }
+
   def preUpdate(currentModel: ContainerRoot, pmodel: ContainerRoot): Boolean = {
     (this !? PREUPDATE(currentModel, pmodel)).asInstanceOf[Boolean]
   }
@@ -60,6 +66,9 @@ class KevoreeListeners extends DaemonActor {
   def act() {
     loop {
       react {
+        case INITUPDATE(currentModel, pmodel) => {
+          reply(registeredListeners.forall(l => l._1.initUpdate(currentModel, pmodel)))
+        }
         case PREUPDATE(currentModel, pmodel) => {
           reply(registeredListeners.forall(l => l._1.preUpdate(currentModel, pmodel)))
         }
@@ -112,7 +121,7 @@ class KevoreeListeners extends DaemonActor {
             try {
               listener.modelUpdated()
             } catch {
-              case _ @ e => logger.error("Error while trigger model update ",e)
+              case _@e => logger.error("Error while trigger model update ", e)
             }
           }
           case STOP_LISTENER() => exit()
