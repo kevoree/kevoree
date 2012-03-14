@@ -58,8 +58,7 @@ public class IaaSKloudResourceManager extends AbstractComponentType implements M
 			} catch (Exception e) {
 				try {
 					Thread.sleep(1000);
-				} catch (InterruptedException e1) {
-				}
+				} catch (InterruptedException ignored) {}
 				modelUpdated();
 			}
 		}
