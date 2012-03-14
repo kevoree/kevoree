@@ -184,7 +184,12 @@ public class KevoreeGUIFrame extends JFrame {
                     return true;
                 }
 
-                @Override
+				@Override
+				public boolean initUpdate (ContainerRoot containerRoot, ContainerRoot containerRoot1) {
+					return true;
+				}
+
+				@Override
                 public void modelUpdated() {
                     for (ContainerNode node : btA.getCore().getLastModel().getNodesForJ()) {
                         if (node.getName().equals(System.getProperty("node.name"))) {
