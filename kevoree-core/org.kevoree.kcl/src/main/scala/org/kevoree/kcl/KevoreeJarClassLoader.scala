@@ -34,7 +34,7 @@ import java.lang.{Class, String}
 import ref.WeakReference
 import org.slf4j.LoggerFactory
 import java.io._
-import java.util.{ArrayList, Collections, Enumeration}
+import java.util.{HashMap, ArrayList, Collections, Enumeration}
 
 /**
  * Created by IntelliJ IDEA.
@@ -44,6 +44,20 @@ import java.util.{ArrayList, Collections, Enumeration}
  */
 
 class KevoreeJarClassLoader extends JarClassLoader {
+
+  private val nativeMap = new HashMap[String,String]();
+  
+  def addNativeMapping(name : String, url : String){
+    nativeMap.put(name,url)
+  }
+  
+  override def findLibrary(p1: String): String = {
+    if(nativeMap.containsKey(p1)){
+      nativeMap.get(p1)
+    } else {
+      super.findLibrary(p1)
+    }
+  }
 
   def getLoadedURLs: java.util.List[URL] = {
     import scala.collection.JavaConversions._
