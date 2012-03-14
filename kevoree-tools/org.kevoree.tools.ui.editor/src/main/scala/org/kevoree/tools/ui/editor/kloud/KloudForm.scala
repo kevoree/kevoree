@@ -148,7 +148,7 @@ class KloudForm (editor: KevoreeEditor) {
         // send the current model of the editor on Kloud
         new Thread() {
           override def run () {
-            if (sendModel(loginTxtField.getText, password, sshTxtField.getText, addressTxtField.getText, model)) {
+            if (sendModel(password, sshTxtField.getText, addressTxtField.getText + "/" + loginTxtField.getText + "/model", model)) {
               ok_lbl.setText("OK")
               ok_lbl.setForeground(Color.GREEN)
             } else {
@@ -183,7 +183,7 @@ class KloudForm (editor: KevoreeEditor) {
         new Thread() {
           override def run () {
             // send a empty model to release all previous nodes already build
-            if (release(loginTxtField.getText, password, addressTxtField.getText + "/release")) {
+            if (release(password, addressTxtField.getText + "/" + loginTxtField.getText + "/release")) {
               ok_lbl.setText("OK")
               ok_lbl.setForeground(Color.GREEN)
             } else {
@@ -230,12 +230,13 @@ class KloudForm (editor: KevoreeEditor) {
     newPopup.getJDialog.setVisible(false)
   }
 
-  private def sendModel (login: String, password: String, sshKey: String, address: String, model: ContainerRoot): Boolean = {
+  private def sendModel (password: String, sshKey: String, address: String, model: ContainerRoot): Boolean = {
     val bodyBuilder = new StringBuilder
-
-    bodyBuilder append "login="
-    bodyBuilder append URLEncoder.encode(login, "UTF-8")
-    bodyBuilder append "&password="
+    /*
+        bodyBuilder append "login="
+        bodyBuilder append URLEncoder.encode(login, "UTF-8")*/
+    //    bodyBuilder append "&password="
+    bodyBuilder append "password="
     bodyBuilder append URLEncoder.encode(password, "UTF-8")
     bodyBuilder append "&ssh_key="
     bodyBuilder append URLEncoder.encode(sshKey, "UTF-8")
@@ -270,14 +271,12 @@ class KloudForm (editor: KevoreeEditor) {
 
       var nbTry = 20;
       // look the answer to know if the model has been correctly sent
-      while (!response.contains("Please contact the admins.") && !response.contains("A previous configuration has already submitted.") &&
-        !response.contains("One of your nodes is accessible at this address:") && nbTry > 0) {
+      while (!response.startsWith("<wait") && nbTry > 0) {
         logger.debug(response)
         nbTry = nbTry - 1
         Thread.sleep(1000)
         try {
-
-          val url = new URL(address + "/" + login)
+          //          val url = new URL(address + "/" + login)
           val connection = url.openConnection()
           val rd = connection.getInputStream
           val bytes = new Array[Byte](2048)
@@ -295,72 +294,20 @@ class KloudForm (editor: KevoreeEditor) {
           case _@e =>
         }
       }
-      if (response.contains("One of your nodes is accessible at this address:")) {
-        logger.debug(response)
-        // try to merge with kloud user model
-        var addressData = response.split("One of your nodes is accessible at this address:")(1).trim().split("</p>")(0)
-        addressData = addressData.substring(0, addressData.indexOf("(") /*, addressData.indexOf(" on the editor")*/)
-        logger.debug("try to merge model with the kloud one coming from {}", addressData)
-        // merge
-        val url = new URL(addressData)
-        val conn = url.openConnection();
-        conn.setConnectTimeout(2000);
-        val inputStream = conn.getInputStream
-
-        try {
-          /*val dataArrayStream = new ByteArrayOutputStream()
-          val bytes = new Array[Byte](2048)
-          var length = inputStream.read(bytes)
-          while (length != -1) {
-            dataArrayStream.write(bytes, 0, length)
-            length = inputStream.read(bytes)
-          }
-
-          logger.debug(new String(dataArrayStream.toByteArray, "UTF-8"))
-          val model = KevoreeXmiHelper.loadString(new String(dataArrayStream.toByteArray, "UTF-8"))*/
-          val model = KevoreeXmiHelper.loadStream(inputStream)
-
-          val lcommand = new LoadModelCommand()
-          editor.getPanel.getKernel.getModelHandler.merge(model)
-          PositionedEMFHelper.updateModelUIMetaData(editor.getPanel.getKernel)
-          lcommand.setKernel(editor.getPanel.getKernel)
-          lcommand.execute(editor.getPanel.getKernel.getModelHandler.getActualModel)
-          true
-        } catch {
-          case _@e => logger.debug("Unable to load a model from stream", e);false
-        }
-
-      } else if (response.contains("A previous configuration has already submitted.<br/>Please use this access point to reconfigure it: ")) {
-        logger.debug(response)
-        var addressData = URLDecoder.decode (response, "UTF-8").split("A previous configuration has already submitted.<br/>Please use this access point to reconfigure it:")(1).trim().split("</p>")(0)
-        addressData = addressData.substring(addressData.indexOf("(") + 1, addressData.indexOf(" on the editor"))
-        logger.debug("try to merge model with the kloud one coming from {}", addressData)
-        // merge
-        val url = new URL(addressData)
-        val conn = url.openConnection();
-        conn.setConnectTimeout(2000);
-        val inputStream = conn.getInputStream
-
+      if (response.startsWith("<wait")) {
+        logger.debug("Timeout, unable to get your configuration model on the Kloud")
+        false
+      } else if (response.startsWith("<nack")) {
+        val errorMessage = URLDecoder.decode(response, "UTF-8").split("error=\"")(1)
+        logger.debug("Unable to submit or sink your model on the Kloud: {}", errorMessage.substring(0, errorMessage.indexOf("\"")))
+        false
+      } else {
         val lcommand = new LoadModelCommand()
-        editor.getPanel.getKernel.getModelHandler.merge(KevoreeXmiHelper.loadStream(inputStream))
+        editor.getPanel.getKernel.getModelHandler.merge(KevoreeXmiHelper.loadString(response))
         PositionedEMFHelper.updateModelUIMetaData(editor.getPanel.getKernel)
         lcommand.setKernel(editor.getPanel.getKernel)
         lcommand.execute(editor.getPanel.getKernel.getModelHandler.getActualModel)
         true
-      } else {
-        /*logger.debug(response.toString())
-        val rd = new InputStreamReader(connection.getInputStream)
-        val bytes = new Array[Char](2048)
-        var length = 0
-        //      var line: String = rd.readLine
-        length = rd.read(bytes)
-        val response = new StringBuilder
-        while (length != -1) {
-          response append bytes + "\n"
-          length = rd.read(bytes)
-        }*/
-        logger.debug(response)
-        false
       }
     } catch {
       case _@e => logger.error("Unable to deploy on Kloud", e)
@@ -368,11 +315,9 @@ class KloudForm (editor: KevoreeEditor) {
     }
   }
 
-  private def release (login: String, password: String, address: String): Boolean = {
+  private def release (password: String, address: String): Boolean = {
     val bodyBuilder = new StringBuilder
 
-    bodyBuilder append "login="
-    bodyBuilder append URLEncoder.encode(login, "UTF-8")
     bodyBuilder append "&password="
     bodyBuilder append URLEncoder.encode(password, "UTF-8")
 
@@ -405,10 +350,11 @@ class KloudForm (editor: KevoreeEditor) {
 
       val response = new String(byteArrayOutputStream.toByteArray, "UTF-8")
       // look the answer to know if the model has been correctly sent
-      if (response.contains("Now all configurations for user")) {
+      if (response.startsWith("<ack")) {
         true
       } else {
-        logger.debug(response)
+        val errorMessage = URLDecoder.decode(response, "UTF-8").split("error=\"")(1)
+        logger.debug("Unable to release your configuration on the Kloud: {}", errorMessage.substring(0, errorMessage.indexOf("\"")))
         false
       }
     } catch {
