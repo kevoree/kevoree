@@ -41,10 +41,7 @@ case class KevsAddChildInterpreter (addChild: AddChildStatment) extends KevsAbst
           case Some(father) => {
             father.getHosts.find(c => c.getName == child.getName) match {
               case None => {
-                context.model.getNodes.find(n => n.getHosts.find(c => c.getName == child.getName) match {
-                  case None => true
-                  case Some(f) => false
-                }) match {
+                context.model.getNodes.find(n => n.getHosts.find(c => c.getName == child.getName).isDefined) match {
                   case None => father.addHosts(child) ; true
                   case Some(f) => logger.error("The child {} has already a parent: {}", child.getName, f.getName); false
                 }
