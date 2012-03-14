@@ -25,9 +25,6 @@ import java.io.InputStream;
  */
 @Library(name = "SKY")
 @ComponentType
-@DictionaryType({
-		@DictionaryAttribute(name = "displayIP", optional = false, defaultValue = "true", vals = {"true", "false"})
-})
 @Requires({
 		@RequiredPort(name = "deploy", type = PortType.MESSAGE, optional = false), // TODO define a message type
 		@RequiredPort(name = "release", type = PortType.MESSAGE, optional = false) // TODO define a message type
