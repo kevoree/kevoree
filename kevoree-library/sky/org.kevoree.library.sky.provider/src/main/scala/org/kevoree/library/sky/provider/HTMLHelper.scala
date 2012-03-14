@@ -1,3 +1,4 @@
+/*
 package org.kevoree.library.sky.provider
 
 /**
@@ -232,4 +233,4 @@ object HTMLHelper {
       </head>
     </html>.toString()
   }
-}
+}*/

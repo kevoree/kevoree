@@ -46,6 +46,11 @@ public class IaaSKloudResourceManager extends AbstractComponentType implements M
 	}
 
 	@Override
+	public boolean initUpdate (ContainerRoot containerRoot, ContainerRoot containerRoot1) {
+		return true;
+	}
+
+	@Override
 	public void modelUpdated () {
 		UUIDModel uuidModel = this.getModelService().getLastUUIDModel();
 		Option<ContainerRoot> modelOption = KloudReasoner.configureChildNodes(uuidModel.getModel(), this.getKevScriptEngineFactory());

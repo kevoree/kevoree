@@ -21,83 +21,80 @@ import scala.Option;
 @Library(name = "SKY")
 @ComponentType
 @Provides({
-        @ProvidedPort(name = "deploy", type = PortType.MESSAGE), // TODO define a message type
-        @ProvidedPort(name = "release", type = PortType.MESSAGE) // TODO define a message type
+		@ProvidedPort(name = "deploy", type = PortType.MESSAGE), // TODO define a message type
+		@ProvidedPort(name = "release", type = PortType.MESSAGE) // TODO define a message type
 })
 public class PaaSKloudResourceManager extends AbstractComponentType {
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	@Start
 	@Stop
-	public void dummy(){}
+	public void dummy () {
+	}
 
-    @Port(name = "deploy")
-    public void deploy(Object message) {
-        if (message instanceof StdKevoreeMessage) {
-            StdKevoreeMessage stdMessage = (StdKevoreeMessage) message;
-            if (stdMessage.getValue("login").isDefined() && stdMessage.getValue("model").isDefined()) {
-                String login = (String) stdMessage.getValue("login").get();
-                ContainerRoot model = KevoreeXmiHelper.loadString((String) stdMessage.getValue("model").get());
+	@Port(name = "deploy")
+	public void deploy (Object message) {
+		if (message instanceof StdKevoreeMessage) {
+			StdKevoreeMessage stdMessage = (StdKevoreeMessage) message;
+			if (stdMessage.getValue("login").isDefined() && stdMessage.getValue("model").isDefined()) {
+				String login = (String) stdMessage.getValue("login").get();
+				ContainerRoot model = KevoreeXmiHelper.loadString((String) stdMessage.getValue("model").get());
 				String sshKey = null;
 				if (stdMessage.getValue("sshKey").isDefined()) {
-					sshKey = (String)stdMessage.getValue("sshKey").get();
+					sshKey = (String) stdMessage.getValue("sshKey").get();
 				}
-                // check if a previous deploy has already done for this login
-                if (!KloudHelper.lookForAGroup(login, this.getModelService().getLastModel())) {
-                    processNew(model, login, sshKey);
-                }
-            }
-        }
-    }
-
-    @Port(name = "release")
-    public void release(Object message) {
-        if (message instanceof StdKevoreeMessage) {
-            StdKevoreeMessage stdMessage = (StdKevoreeMessage) message;
-            if (stdMessage.getValue("login").isDefined()) {
-                String login = (String) stdMessage.getValue("login").get();
-                KevScriptEngine kengine = getKevScriptEngineFactory().createKevScriptEngine();
-                KloudReasoner.appendScriptToCleanupIaaSModelFromUser(kengine, login, getModelService().getLastModel());
-                for (int i = 0; i < 5; i++) {
-                    try {
-                        if (kengine.atomicInterpretDeploy()) {
-                            return;
-                        }
-                    } catch (Exception e) {
-                        logger.warn("Error while cleanup user, try number " + i);
-                    }
-                }
-            }
-        }
-    }
-
-    private void processNew(ContainerRoot userModel, String login, String sshKey) {
-        logger.debug("starting processNew");
-        KevScriptEngine kengine = getKevScriptEngineFactory().createKevScriptEngine();
-        KloudReasoner.appendCreateGroupScript(getModelService().getLastModel(), login, this.getNodeName(), kengine, sshKey);
-        for (int i = 0; i < 5; i++) {
-            try {
-                if (kengine.atomicInterpretDeploy()) {
-                    break;
-                }
-            } catch (Exception e) {
-                logger.warn("Error while adding user master group, try number " + i);
-            }
-        }
-        //ADD GROUP
-        Option<ContainerRoot> userModelUpdated = KloudReasoner.updateUserConfiguration(login, userModel, getModelService().getLastModel(), getKevScriptEngineFactory());
-        if (userModelUpdated.isDefined()) {
-			// Add temporarly the local node
-			userModelUpdated = KloudReasoner.addLocalIaaSNode(getNodeName(), userModelUpdated.get(), getModelService().getLastModel(), getKevScriptEngineFactory());
-			if (userModelUpdated.isDefined()) {
-            /* Send blindly the model to the core , PaaS Group are in charge to trigger this request , reply false and forward to Master interested node  */
-            getModelService().updateModel(userModelUpdated.get());
+				// check if a previous deploy has already done for this login
+				if (!KloudHelper.lookForAGroup(login, this.getModelService().getLastModel())) {
+					processNew(model, login, sshKey);
+				}
 			}
-        } else {
-            //TODO CALL RELEASE
-        }
+		}
+	}
+
+	@Port(name = "release")
+	public void release (Object message) {
+		if (message instanceof StdKevoreeMessage) {
+			StdKevoreeMessage stdMessage = (StdKevoreeMessage) message;
+			if (stdMessage.getValue("login").isDefined()) {
+				String login = (String) stdMessage.getValue("login").get();
+				KevScriptEngine kengine = getKevScriptEngineFactory().createKevScriptEngine();
+				KloudReasoner.appendScriptToCleanupIaaSModelFromUser(kengine, login, getModelService().getLastModel());
+				for (int i = 0; i < 5; i++) {
+					try {
+						if (kengine.atomicInterpretDeploy()) {
+							return;
+						}
+					} catch (Exception e) {
+						logger.warn("Error while cleanup user, try number " + i);
+					}
+				}
+			}
+		}
+	}
+
+	private void processNew (ContainerRoot userModel, String login, String sshKey) {
+		logger.debug("starting processNew");
+		KevScriptEngine kengine = getKevScriptEngineFactory().createKevScriptEngine();
+		KloudReasoner.appendCreateGroupScript(getModelService().getLastModel(), login, this.getNodeName(), kengine, sshKey);
+		for (int i = 0; i < 5; i++) {
+			try {
+				if (kengine.atomicInterpretDeploy()) {
+					break;
+				}
+			} catch (Exception e) {
+				logger.warn("Error while adding user master group, try number " + i);
+			}
+		}
+		//ADD GROUP
+		Option<ContainerRoot> userModelUpdated = KloudReasoner.updateUserConfiguration(login, userModel, getModelService().getLastModel(), getKevScriptEngineFactory());
+		if (userModelUpdated.isDefined()) {
+			/* Send blindly the model to the core , PaaS Group are in charge to trigger this request , reply false and forward to Master interested node  */
+			getModelService().checkModel(userModelUpdated.get());
+		} else {
+			//TODO CALL RELEASE
+		}
 
 
-    }
+	}
 }
