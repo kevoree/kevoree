@@ -95,8 +95,8 @@ public class FileNIOHelper {
                         filtered = filtered || targetFile.getName().endsWith(ex.trim());
                     }
                     for (String in : inclusions) {
-                       // logger.debug("Check for incluseion => "+targetFile.getName()+"-"+in.trim()+"="+targetFile.getName().trim().equals(in.trim()));
-                        if(targetFile.getName().endsWith(in.trim())||targetFile.getName().equals(in.trim())){
+                        // logger.debug("Check for incluseion => "+targetFile.getName()+"-"+in.trim()+"="+targetFile.getName().trim().equals(in.trim()));
+                        if (targetFile.getName().endsWith(in.trim()) || targetFile.getName().equals(in.trim())) {
                             filtered = false;
                         }
                     }
@@ -136,5 +136,43 @@ public class FileNIOHelper {
             throw new IOException("Unable to create parent directories of " + file);
         }
     }
+
+
+    public static void addStringToFile(String data, File outputFile) {
+        try {
+            logger.debug("trying to add \"{}\" into {}", data, outputFile);
+            StringBuilder stringBuilder = new StringBuilder();
+            if (outputFile.exists()) {
+                InputStream reader = new DataInputStream(new FileInputStream(outputFile));
+                ByteArrayOutputStream writer = new ByteArrayOutputStream();
+
+                byte[] bytes = new byte[2048];
+                int length = reader.read(bytes);
+                while (length != -1) {
+                    writer.write(bytes, 0, length);
+                    length = reader.read(bytes);
+
+                }
+                writer.flush();
+                writer.close();
+                reader.close();
+                stringBuilder.append(new String(writer.toByteArray(), "UTF-8"));
+            }
+            boolean added = false;
+            if (!stringBuilder.toString().contains(data)) {
+                stringBuilder.append(data).append("\n");
+                added = true;
+            }
+
+            if (added){ copyFile(new ByteArrayInputStream(stringBuilder.toString().getBytes()), outputFile); }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 
 }
