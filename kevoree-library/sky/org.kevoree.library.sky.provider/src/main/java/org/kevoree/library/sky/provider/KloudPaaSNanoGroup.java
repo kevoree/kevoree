@@ -152,7 +152,8 @@ public class KloudPaaSNanoGroup extends AbstractGroupType {
 
 	@Override
 	public boolean triggerPreUpdate (ContainerRoot currentModel, ContainerRoot proposedModel) {
-		logger.debug("Trigger pre update : {}", KloudHelper.isIaaSNode(currentModel, getName(), getNodeName()));
+		logger.debug("Trigger pre update");
+
 		if (KloudHelper.isIaaSNode(currentModel, getName(), getNodeName()) && KloudHelper.isUserModel(proposedModel, getName(), getNodeName())) {
 			logger.debug("A new user model is received, adding a task to process a deployment");
 
@@ -162,7 +163,7 @@ public class KloudPaaSNanoGroup extends AbstractGroupType {
 
 			return false;
 		} else {
-			logger.debug("nothing specified, update can be done");
+			logger.debug("nothing specific, update can be done");
 			return true;
 		}
 	}

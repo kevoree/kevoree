@@ -503,7 +503,7 @@ object KloudReasoner {
     //FOUND IAAS GROUP
     iaasModel.getGroups.find(g => g.getName == login) match {
       case Some(iaasPreviousGroup) => {
-        //COPY NON FRAGEMENT DEPENDENT PROPERTY
+        //COPY NON FRAGMENT DEPENDENT PROPERTY
         iaasPreviousGroup.getDictionary.get.getValues.filter(v => v.getTargetNode.isEmpty).foreach {
           value =>
             kengine.append("updateDictionary {groupName} { " + value.getAttribute.getName + "='" + value.getValue + "' }")

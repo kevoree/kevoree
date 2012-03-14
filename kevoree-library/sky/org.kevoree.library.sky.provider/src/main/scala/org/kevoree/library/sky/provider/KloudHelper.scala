@@ -42,10 +42,10 @@ object KloudHelper {
 
   def isIaaSNode (currentModel: ContainerRoot, groupName: String, nodeName: String): Boolean = {
     currentModel.getGroups.find(g => g.getName == groupName) match {
-      case None => false
+      case None => logger.debug("There is no group named {}", groupName);false
       case Some(group) =>
         group.getSubNodes.find(n => n.getName == nodeName) match {
-          case None => false
+          case None => logger.debug("There is no node named {}", nodeName);false
           case Some(node) =>
             node.getTypeDefinition.asInstanceOf[NodeType].getManagedPrimitiveTypes.filter(p => p.getName == "RemoveNode" || p.getName == "AddNode").size == 2
         }
