@@ -1,8 +1,7 @@
 package org.kevoree.library.sky.provider
 
 import org.slf4j.{LoggerFactory, Logger}
-import java.io.{ByteArrayOutputStream, InputStreamReader, BufferedReader, OutputStreamWriter}
-import org.kevoree.framework.{KevoreeXmiHelper, KevoreePropertyHelper}
+import org.kevoree.framework.{KevoreePropertyHelper}
 import java.net._
 import org.kevoree._
 import cloner.ModelCloner
@@ -21,6 +20,23 @@ import scala.collection.JavaConversions._
 
 object KloudHelper {
   private val logger: Logger = LoggerFactory.getLogger(this.getClass)
+
+  def getMasterIP_PORT(masterProp : String) : java.util.List[String] = {
+    val result = new java.util.ArrayList[String]();
+    masterProp.split(",").foreach( ips => {
+      val vals = ips.split("=")
+      if(vals.size == 2){
+        result.add(vals(1))
+      }
+    })
+    result
+  }
+  
+  def isUserModel(potentialUserModel : ContainerRoot , groupName : String, fragmentHostName : String) : Boolean = {
+    val foundGroupSelf = potentialUserModel.getGroups.find(g => g.getName == groupName).isDefined
+    val foundHost = potentialUserModel.getNodes.find(n => n.getName == fragmentHostName).isDefined
+    (foundGroupSelf && !foundHost)
+  }
 
   def isIaaSNode (currentModel: ContainerRoot, groupName: String, nodeName: String): Boolean = {
     currentModel.getGroups.find(g => g.getName == groupName) match {
@@ -68,33 +84,6 @@ object KloudHelper {
       case Some(group) => {
         KevoreePropertyHelper.getStringPropertyForGroup(currentModel, groupName, "masterNode")
       }
-    }
-  }
-
-  def pushOnMaster (userModel: ContainerRoot, groupName: String, urlPath: String): Option[String] = {
-    logger.debug("try to push the user model on the group")
-    try {
-      val url: URL = new URL(urlPath)
-      val conn: URLConnection = url.openConnection
-      conn.setConnectTimeout(3000)
-      conn.setDoOutput(true)
-      val wr: OutputStreamWriter = new OutputStreamWriter(conn.getOutputStream)
-      val outStream: ByteArrayOutputStream = new ByteArrayOutputStream
-      KevoreeXmiHelper.saveStream(outStream, userModel)
-      outStream.flush()
-      wr.write(outStream.toString("UTF-8"))
-      wr.flush()
-      // Get the response
-      val rd: BufferedReader = new BufferedReader(new InputStreamReader(conn.getInputStream))
-      var line: String = rd.readLine
-      while (line != null) {
-        line = rd.readLine
-      }
-      wr.close()
-      rd.close()
-      Some(urlPath)
-    } catch {
-      case _@e => logger.error("Unable to push the user model on the group", e); None
     }
   }
 
@@ -276,6 +265,7 @@ object KloudHelper {
     }
   }
 
+  /*
   def sendUserModel (urlString: String, model: ContainerRoot, nbTime: Int): Boolean = {
     var isSend = false
     var i = 0
@@ -308,5 +298,5 @@ object KloudHelper {
       Thread.sleep(5000)
     }
     isSend
-  }
+  }*/
 }
