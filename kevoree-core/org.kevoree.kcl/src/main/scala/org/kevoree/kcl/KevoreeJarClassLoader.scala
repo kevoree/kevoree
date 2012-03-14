@@ -242,7 +242,7 @@ class KevoreeJarClassLoader extends JarClassLoader {
     if (res != null) {
       new ByteArrayInputStream(res)
     } else {
-      logger.debug("Not found res " + name + " in " + this)
+      //logger.debug("Not found res " + name + " in " + this)
       null
     }
   }
