@@ -81,6 +81,8 @@
         <module>../org.kevoree.library.javase.nanohttp</module>
         <module>../org.kevoree.library.javase.airReceiver.server</module>
         <module>../org.kevoree.library.javase.camel</module>
+        <module>../org.kevoree.library.javase.authentication</module>
+        <!--<module>../org.kevoree.library.javase.consensus</module>-->
     </modules>
 
 
