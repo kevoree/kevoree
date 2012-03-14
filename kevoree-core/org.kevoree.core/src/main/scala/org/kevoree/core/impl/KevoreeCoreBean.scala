@@ -323,8 +323,6 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
 
           if (preCheckResult && initUpdateResult) {
 
-
-
             var newmodel = cloner.clone(pnewmodel)
             //CHECK FOR HARA KIRI
             if (HaraKiriHelper.detectNodeHaraKiri(model, newmodel, getNodeName())) {
@@ -391,7 +389,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
             logger.debug("End deploy result=" + deployResult + "-" + milliEnd)
             deployResult
           } else {
-            logger.debug("PreCheck Step was refused, update aborded !")
+            logger.debug("PreCheck or InitUpdate Step was refused, update aborded !")
             false
           }
         }
@@ -507,10 +505,9 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
   }
 
   def checkModel(tModel: ContainerRoot): Boolean = {
-    val model = cloner.clone(tModel)
     val checkResult = modelChecker.check(model)
     if (checkResult.isEmpty) {
-      listenerActor.preUpdate(model, model)
+      listenerActor.preUpdate(cloner.clone(model), cloner.clone(tModel))
     } else {
       false
     }
