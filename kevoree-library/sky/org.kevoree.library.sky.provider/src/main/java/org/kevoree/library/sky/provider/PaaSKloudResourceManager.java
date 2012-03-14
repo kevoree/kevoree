@@ -38,6 +38,11 @@ import java.net.URLConnection;
 
 public class PaaSKloudResourceManager extends AbstractComponentType {
 
+	@Start
+	@Stop
+	public void dummy(){}
+
+
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	@Port(name = "deploy")
