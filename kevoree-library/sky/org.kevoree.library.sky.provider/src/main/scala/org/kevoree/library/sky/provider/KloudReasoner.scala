@@ -534,34 +534,4 @@ object KloudReasoner {
       case None => None
     }
   }
-
-  def addLocalIaaSNode (nodeName: String, userModel: ContainerRoot, iaasModel: ContainerRoot, kevScriptEngineFactory: KevScriptEngineFactory): Option[ContainerRoot] = {
-    val kengine = kevScriptEngineFactory.createKevScriptEngine(userModel)
-    iaasModel.getNodes.find(n => n.getName == nodeName) match {
-      case Some(node) => {
-        kengine.addVariable("nodeName", nodeName)
-        kengine.addVariable("nodeTypeName", node.getTypeDefinition.getName)
-        kengine append "addNode {nodeName} : {nodeTypeName}"
-
-        try {
-          Some(kengine.interpret())
-        } catch {
-          case _@e => logger.warn("Error while updating user model configuration"); None
-        }
-      }
-      case None => None
-    }
-  }
-
-  def removeLocalIaaSNode (nodeName: String, userModel: ContainerRoot, iaasModel: ContainerRoot, kevScriptEngineFactory: KevScriptEngineFactory): Option[ContainerRoot] = {
-    val kengine = kevScriptEngineFactory.createKevScriptEngine(userModel)
-    kengine.addVariable("nodeName", nodeName)
-    kengine append "removeNode {nodeName}"
-
-    try {
-      Some(kengine.interpret())
-    } catch {
-      case _@e => logger.warn("Error while updating user model configuration"); None
-    }
-  }
 }
