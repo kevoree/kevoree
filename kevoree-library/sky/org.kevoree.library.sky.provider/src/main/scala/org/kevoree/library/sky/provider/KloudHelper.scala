@@ -21,21 +21,26 @@ import scala.collection.JavaConversions._
 object KloudHelper {
   private val logger: Logger = LoggerFactory.getLogger(this.getClass)
 
-  def getMasterIP_PORT(masterProp : String) : java.util.List[String] = {
+  def getMasterIP_PORT (masterProp: String): java.util.List[String] = {
     val result = new java.util.ArrayList[String]();
-    masterProp.split(",").foreach( ips => {
+    masterProp.split(",").foreach(ips => {
       val vals = ips.split("=")
-      if(vals.size == 2){
+      if (vals.size == 2) {
         result.add(vals(1))
       }
     })
     result
   }
-  
-  def isUserModel(potentialUserModel : ContainerRoot , groupName : String, fragmentHostName : String) : Boolean = {
+
+  def isUserModel (potentialUserModel: ContainerRoot, groupName: String, fragmentHostName: String): Boolean = {
     val foundGroupSelf = potentialUserModel.getGroups.find(g => g.getName == groupName).isDefined
     val foundHost = potentialUserModel.getNodes.find(n => n.getName == fragmentHostName).isDefined
-    (foundGroupSelf && !foundHost)
+
+//    (foundGroupSelf && !foundHost)
+    // FIXME Currently the host node is also available on the model but if it is a user model, the node is empty (no components, no channels, no groups
+    val foundHostIsEmpty = potentialUserModel.getNodes.find(n => n.getName == fragmentHostName && n.getComponents.size == 0 && n.getHosts.size == 0
+      && potentialUserModel.getGroups.filter(g => g.getSubNodes.find(sn => sn.getName == fragmentHostName).isDefined).size == 0).isDefined
+    (foundGroupSelf && foundHostIsEmpty)
   }
 
   def isIaaSNode (currentModel: ContainerRoot, groupName: String, nodeName: String): Boolean = {

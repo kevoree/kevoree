@@ -28,14 +28,21 @@ public class PaaSKloudResourceManager extends AbstractComponentType {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
+	@Start
+	@Stop
+	public void dummy(){}
+
     @Port(name = "deploy")
     public void deploy(Object message) {
         if (message instanceof StdKevoreeMessage) {
             StdKevoreeMessage stdMessage = (StdKevoreeMessage) message;
             if (stdMessage.getValue("login").isDefined() && stdMessage.getValue("model").isDefined()) {
-                final String login = (String) stdMessage.getValue("login").get();
-                final ContainerRoot model = KevoreeXmiHelper.loadString((String) stdMessage.getValue("model").get());
-                final String sshKey = (String) stdMessage.getValue("sshKey").get();
+                String login = (String) stdMessage.getValue("login").get();
+                ContainerRoot model = KevoreeXmiHelper.loadString((String) stdMessage.getValue("model").get());
+				String sshKey = null;
+				if (stdMessage.getValue("sshKey").isDefined()) {
+					sshKey = (String)stdMessage.getValue("sshKey").get();
+				}
                 // check if a previous deploy has already done for this login
                 if (!KloudHelper.lookForAGroup(login, this.getModelService().getLastModel())) {
                     processNew(model, login, sshKey);
@@ -80,10 +87,13 @@ public class PaaSKloudResourceManager extends AbstractComponentType {
         }
         //ADD GROUP
         Option<ContainerRoot> userModelUpdated = KloudReasoner.updateUserConfiguration(login, userModel, getModelService().getLastModel(), getKevScriptEngineFactory());
-
         if (userModelUpdated.isDefined()) {
+			// Add temporarly the local node
+			userModelUpdated = KloudReasoner.addLocalIaaSNode(getNodeName(), userModelUpdated.get(), getModelService().getLastModel(), getKevScriptEngineFactory());
+			if (userModelUpdated.isDefined()) {
             /* Send blindly the model to the core , PaaS Group are in charge to trigger this request , reply false and forward to Master interested node  */
-            getModelService().updateModel(userModel);
+            getModelService().updateModel(userModelUpdated.get());
+			}
         } else {
             //TODO CALL RELEASE
         }

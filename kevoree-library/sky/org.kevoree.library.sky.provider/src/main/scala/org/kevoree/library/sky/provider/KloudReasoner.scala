@@ -18,7 +18,7 @@ import org.kevoree.api.service.core.script.{KevScriptEngine, KevScriptEngineFact
 object KloudReasoner {
   private val logger: Logger = LoggerFactory.getLogger(this.getClass)
 
-  def appendScriptToCleanupIaaSModelFromUser(kengine: KevScriptEngine, login: String, currentIaaSModel: ContainerRoot) {
+  def appendScriptToCleanupIaaSModelFromUser (kengine: KevScriptEngine, login: String, currentIaaSModel: ContainerRoot) {
     currentIaaSModel.getGroups.find(g => g.getName == login) match {
       case None => logger.warn("No Group found, nothing to cleanup")
       case Some(userGroup) => {
@@ -36,7 +36,7 @@ object KloudReasoner {
    * check if a new Deployment is needed.
    * A new deployment is needed if there are new nodes or some nodes have disappeared
    */
-  def needsNewDeployment(newModel: ContainerRoot, currentModel: ContainerRoot): Boolean = {
+  def needsNewDeployment (newModel: ContainerRoot, currentModel: ContainerRoot): Boolean = {
     if (newModel != null && currentModel != null) {
       // check if there is the same number of nodes
       if (newModel.getNodes.size == currentModel.getNodes.size) {
@@ -55,7 +55,7 @@ object KloudReasoner {
     }
   }
 
-  def createProxy(groupName: String, nodeName: String, proxyPath: String, kloudModel: ContainerRoot, kevScriptEngineFactory: KevScriptEngineFactory): Option[ContainerRoot] = {
+  def createProxy (groupName: String, nodeName: String, proxyPath: String, kloudModel: ContainerRoot, kevScriptEngineFactory: KevScriptEngineFactory): Option[ContainerRoot] = {
 
     // val scriptBuilder = new StringBuilder()
     //find Web Server
@@ -109,7 +109,7 @@ object KloudReasoner {
     }
   }
 
-  def removeProxy(groupName: String, nodeName: String, modelHandlerService: KevoreeModelHandlerService, kevScriptEngineFactory: KevScriptEngineFactory, nbTry: Int): Boolean = {
+  def removeProxy (groupName: String, nodeName: String, modelHandlerService: KevoreeModelHandlerService, kevScriptEngineFactory: KevScriptEngineFactory, nbTry: Int): Boolean = {
     val scriptBuilder = new StringBuilder()
     val uuidModel = modelHandlerService.getLastUUIDModel
 
@@ -140,7 +140,7 @@ object KloudReasoner {
     }
   }
 
-  def appendCreateGroupScript(kloudModel: ContainerRoot, login: String, nodeName: String, kevScriptEngine: KevScriptEngine, sshKey: String = "") {
+  def appendCreateGroupScript (kloudModel: ContainerRoot, login: String, nodeName: String, kevScriptEngine: KevScriptEngine, sshKey: String = "") {
     val ipOption = KevoreePropertyHelper.getStringNetworkProperty(kloudModel, nodeName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP)
     var ip = "127.0.0.1"
     if (ipOption.isDefined) {
@@ -152,13 +152,17 @@ object KloudReasoner {
     kevScriptEngine.addVariable("nodeName", nodeName)
     kevScriptEngine.addVariable("ip", ip)
     kevScriptEngine.addVariable("port", portNumber.toString)
-    kevScriptEngine append
-      "addGroup {groupName} : KloudPaaSNanoGroup {SSH_Public_Key=\"" + sshKey + "\", masterNode='{nodeName}={ip}:{port}'}"
+
+    kevScriptEngine append "addGroup {groupName} : KloudPaaSNanoGroup {masterNode='{nodeName}={ip}:{port}'}"
+    if (sshKey != null) {
+      kevScriptEngine append "updateDictionary {groupName} {SSH_Public_Key='" + sshKey + "'}"
+    }
     kevScriptEngine append "addToGroup {groupName} {nodeName}"
-    kevScriptEngine append "updateDictionary {groupName} {port=\"{port}\", ip=\"{ip}\"}@{nodeName}"
+    kevScriptEngine append "updateDictionary {groupName} {port='{port}', ip='{ip}'}@{nodeName}"
+
   }
 
-  def removeGroup(groupName: String, modelHandlerService: KevoreeModelHandlerService, kevScriptEngineFactory: KevScriptEngineFactory, nbTry: Int): Boolean = {
+  def removeGroup (groupName: String, modelHandlerService: KevoreeModelHandlerService, kevScriptEngineFactory: KevScriptEngineFactory, nbTry: Int): Boolean = {
     val scriptBuilder = new StringBuilder()
     val uuidModel = modelHandlerService.getLastUUIDModel
     scriptBuilder append "removeGroup " + groupName + "\n"
@@ -183,7 +187,7 @@ object KloudReasoner {
   /**
    * compare models and built a tuple of sets of added nodes and removed nodes
    */
-  def getAddAndRemove(newModel: ContainerRoot, userModel: ContainerRoot): (List[ContainerNode], List[ContainerNode]) = {
+  def getAddAndRemove (newModel: ContainerRoot, userModel: ContainerRoot): (List[ContainerNode], List[ContainerNode]) = {
     var addedNodes = List[ContainerNode]()
     var removedNodes = List[ContainerNode]()
     userModel.getNodes.foreach {
@@ -209,7 +213,7 @@ object KloudReasoner {
     (addedNodes, removedNodes)
   }
 
-  def removeNodes(removedNodes: List[ContainerNode], kloudModel: ContainerRoot, kevScriptEngineFactory: KevScriptEngineFactory): Option[ContainerRoot] = {
+  def removeNodes (removedNodes: List[ContainerNode], kloudModel: ContainerRoot, kevScriptEngineFactory: KevScriptEngineFactory): Option[ContainerRoot] = {
     if (!removedNodes.isEmpty) {
       logger.debug("Try to remove useless PaaS nodes into the Kloud")
 
@@ -251,7 +255,7 @@ object KloudReasoner {
    * all node are disseminate on parent node
    * A parent node is defined by two adaptation primitives <b>addNode</b> and <b>removeNode</b>
    */
-  def addNodes(groupName: String, addedNodes: List[ContainerNode], kloudModel: ContainerRoot, kevScriptEngineFactory: KevScriptEngineFactory): Option[ContainerRoot] = {
+  def addNodes (groupName: String, addedNodes: List[ContainerNode], kloudModel: ContainerRoot, kevScriptEngineFactory: KevScriptEngineFactory): Option[ContainerRoot] = {
     if (!addedNodes.isEmpty) {
       logger.debug("Try to add all user nodes into the Kloud")
 
@@ -301,7 +305,7 @@ object KloudReasoner {
     }
   }
 
-  def configureChildNodes(kloudModel: ContainerRoot, kevScriptEngineFactory: KevScriptEngineFactory): Option[ContainerRoot] = {
+  def configureChildNodes (kloudModel: ContainerRoot, kevScriptEngineFactory: KevScriptEngineFactory): Option[ContainerRoot] = {
     // count current child for each Parent nodes
     val parents = KloudHelper.countChilds(kloudModel)
 
@@ -363,7 +367,7 @@ object KloudReasoner {
         }
       }
     } else {
-      logger.debug("No child to add")
+      //      logger.debug("No child to add")
       None
     }
   }
@@ -371,7 +375,7 @@ object KloudReasoner {
   /**
    * configure the default user group into the kloud model and bind all the user nodes on it
    */
-  def configureGroup(userModel: ContainerRoot, kloudModel: ContainerRoot, groupName: String, kevScriptEngineFactory: KevScriptEngineFactory): Option[ContainerRoot] = {
+  def configureGroup (userModel: ContainerRoot, kloudModel: ContainerRoot, groupName: String, kevScriptEngineFactory: KevScriptEngineFactory): Option[ContainerRoot] = {
     logger.debug("Try to add the user nodes on default group {} into the Kloud", groupName)
     kloudModel.getGroups.find(g => g.getName == groupName) match {
       case None => logger.error("Unable to find the group {}", groupName); None //must never appear
@@ -429,61 +433,61 @@ object KloudReasoner {
   /**
    * compute a new deployment and apply it
    */
-  def processDeployment(newModel: ContainerRoot, userModel: ContainerRoot, modelHandlerService: KevoreeModelHandlerService, kevScripEngineFactory: KevScriptEngineFactory,
-                        groupName: String): Boolean = {
+  def processDeployment (newModel: ContainerRoot, userModel: ContainerRoot, modelHandlerService: KevoreeModelHandlerService, kevScripEngineFactory: KevScriptEngineFactory,
+    groupName: String): Boolean = {
 
-      // clean newModel and userModel: get only nodes and one group
-      val cleanedNewModelOption = KloudHelper.cleanUserModel(newModel)
-      val cleanedUserModelOption = KloudHelper.cleanUserModel(userModel)
-      if (cleanedNewModelOption.isDefined && cleanedUserModelOption.isDefined) {
+    // clean newModel and userModel: get only nodes and one group
+    val cleanedNewModelOption = KloudHelper.cleanUserModel(newModel)
+    val cleanedUserModelOption = KloudHelper.cleanUserModel(userModel)
+    if (cleanedNewModelOption.isDefined && cleanedUserModelOption.isDefined) {
 
-        // compare newModel and userModel to know which nodes must be added or removed
-        val comparison = getAddAndRemove(cleanedNewModelOption.get, cleanedUserModelOption.get)
-        val addedNodes = comparison._1
-        val removedNodes = comparison._2
+      // compare newModel and userModel to know which nodes must be added or removed
+      val comparison = getAddAndRemove(cleanedNewModelOption.get, cleanedUserModelOption.get)
+      val addedNodes = comparison._1
+      val removedNodes = comparison._2
 
-        val uuidModel = modelHandlerService.getLastUUIDModel
+      val uuidModel = modelHandlerService.getLastUUIDModel
 
-        // remove useless nodes on the Kloud model
-        var newKloudModelOption = removeNodes(removedNodes, uuidModel.getModel, kevScripEngineFactory)
+      // remove useless nodes on the Kloud model
+      var newKloudModelOption = removeNodes(removedNodes, uuidModel.getModel, kevScripEngineFactory)
+      if (newKloudModelOption.isDefined) {
+
+        // distribute the new user nodes on the Kloud model
+        newKloudModelOption = addNodes(groupName, addedNodes, newKloudModelOption.get, kevScripEngineFactory)
         if (newKloudModelOption.isDefined) {
 
-          // distribute the new user nodes on the Kloud model
-          newKloudModelOption = addNodes(groupName, addedNodes, newKloudModelOption.get, kevScripEngineFactory)
+          // add the default group or bind this group with all user nodes
+          newKloudModelOption = configureGroup(cleanedNewModelOption.get, newKloudModelOption.get, groupName, kevScripEngineFactory)
           if (newKloudModelOption.isDefined) {
 
-            // add the default group or bind this group with all user nodes
-            newKloudModelOption = configureGroup(cleanedNewModelOption.get, newKloudModelOption.get, groupName, kevScripEngineFactory)
-            if (newKloudModelOption.isDefined) {
-
-              // update the Kloud model with the result of the distribution
-              try {
-                modelHandlerService.atomicCompareAndSwapModel(uuidModel, newKloudModelOption.get)
-                true
-              } catch {
-                case _@e =>
-                  logger.debug("Unable to swap model, maybe because the new model is based on a too old configuration", e)
-                  false
-              }
-            } else {
-              logger.debug("Unable to configure the access point to your nodes.")
-              false
+            // update the Kloud model with the result of the distribution
+            try {
+              modelHandlerService.atomicCompareAndSwapModel(uuidModel, newKloudModelOption.get)
+              true
+            } catch {
+              case _@e =>
+                logger.debug("Unable to swap model, maybe because the new model is based on a too old configuration", e)
+                false
             }
           } else {
-            logger.debug("Unable to define the user nodes.")
+            logger.debug("Unable to configure the access point to your nodes.")
             false
           }
         } else {
-          logger.debug("Unable to define user nodes")
+          logger.debug("Unable to define the user nodes.")
           false
         }
       } else {
-        logger.debug("Unable to manipulate user model.")
+        logger.debug("Unable to define user nodes")
         false
       }
+    } else {
+      logger.debug("Unable to manipulate user model.")
+      false
+    }
   }
 
-  def updateUserConfiguration(login: String, userModel: ContainerRoot, iaasModel: ContainerRoot, kevScriptEngineFactory: KevScriptEngineFactory): Option[ContainerRoot] = {
+  def updateUserConfiguration (login: String, userModel: ContainerRoot, iaasModel: ContainerRoot, kevScriptEngineFactory: KevScriptEngineFactory): Option[ContainerRoot] = {
 
     val kengine = kevScriptEngineFactory.createKevScriptEngine(userModel)
     kengine.addVariable("kevVersion", KevoreeFactory.getVersion)
@@ -510,6 +514,8 @@ object KloudReasoner {
             val portOption = KevoreePropertyHelper.getIntPropertyForGroup(iaasModel, login, "port", true, node.getName)
             if (portOption.isDefined) {
               kengine append "updateDictionary {groupName} {port='" + portOption.get + "'}@" + node.getName
+            } else {
+              kengine append "updateDictionary {groupName} {port='8000'}@" + node.getName // this value will be override later by kloud update
             }
             // set IP of user nodes if needed
             val displayIPOption = KevoreePropertyHelper.getBooleanPropertyForGroup(iaasModel, login, "displayIP")
@@ -529,44 +535,33 @@ object KloudReasoner {
     }
   }
 
-  /**
-   * Send the user model into the user nodes using the default groups that are set on the cleanModel
-   */
-  /*
-  def sendUserConfiguration(groupName: String, userModel: ContainerRoot, modelHandlerService: KevoreeModelHandlerService, kevScriptEngineFactory: KevScriptEngineFactory, nodeName: String) {
-    val newUserModelOption = Some(userModel)
-    if (newUserModelOption.isDefined) {
-      val kloudModel = modelHandlerService.getLastModel
-      kloudModel.getGroups.find(g => g.getName == groupName) match {
-        case None =>
-        case Some(group) => {
-          group.getSubNodes.filter(n => userModel.getNodes.find(sn => sn.getName == n.getName) match {
-            case None => false
-            case Some(node) => true
-          }).foreach {
-            subNode =>
-              val ips: java.util.List[String] = KevoreePropertyHelper.getStringNetworkProperties(kloudModel, subNode.getName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP)
-              val portOption: Option[Integer] = KevoreePropertyHelper.getIntPropertyForGroup(kloudModel, groupName, "port", true, subNode.getName)
-              var PORT: Int = 8000
-              if (portOption.isDefined) {
-                PORT = portOption.get
-              }
+  def addLocalIaaSNode (nodeName: String, userModel: ContainerRoot, iaasModel: ContainerRoot, kevScriptEngineFactory: KevScriptEngineFactory): Option[ContainerRoot] = {
+    val kengine = kevScriptEngineFactory.createKevScriptEngine(userModel)
+    iaasModel.getNodes.find(n => n.getName == nodeName) match {
+      case Some(node) => {
+        kengine.addVariable("nodeName", nodeName)
+        kengine.addVariable("nodeTypeName", node.getTypeDefinition.getName)
+        kengine append "addNode {nodeName} : {nodeTypeName}"
 
-              var param = "";
-              if (!nodeName.equals("")) {
-                param = "?nodesrc=" + nodeName;
-              }
-
-              ips.forall {
-                ip =>
-                  logger.debug("try to send model on url=>{}", "http://" + ip + ":" + PORT + "/model/current" + param)
-                  !KloudHelper.sendUserModel("http://" + ip + ":" + PORT + "/model/current" + param, newUserModelOption.get, 1)
-              }
-          }
+        try {
+          Some(kengine.interpret())
+        } catch {
+          case _@e => logger.warn("Error while updating user model configuration"); None
         }
       }
-    } else {
-      logger.debug("Unable to update the user configuration")
+      case None => None
     }
-  }*/
+  }
+
+  def removeLocalIaaSNode (nodeName: String, userModel: ContainerRoot, iaasModel: ContainerRoot, kevScriptEngineFactory: KevScriptEngineFactory): Option[ContainerRoot] = {
+    val kengine = kevScriptEngineFactory.createKevScriptEngine(userModel)
+    kengine.addVariable("nodeName", nodeName)
+    kengine append "removeNode {nodeName}"
+
+    try {
+      Some(kengine.interpret())
+    } catch {
+      case _@e => logger.warn("Error while updating user model configuration"); None
+    }
+  }
 }
