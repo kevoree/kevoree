@@ -45,14 +45,14 @@ import java.util.{HashMap, ArrayList, Collections, Enumeration}
 
 class KevoreeJarClassLoader extends JarClassLoader {
 
-  private val nativeMap = new HashMap[String,String]();
-  
-  def addNativeMapping(name : String, url : String){
-    nativeMap.put(name,url)
+  private val nativeMap = new HashMap[String, String]();
+
+  def addNativeMapping(name: String, url: String) {
+    nativeMap.put(name, url)
   }
-  
+
   override def findLibrary(p1: String): String = {
-    if(nativeMap.containsKey(p1)){
+    if (nativeMap.containsKey(p1)) {
       nativeMap.get(p1)
     } else {
       super.findLibrary(p1)
@@ -67,7 +67,7 @@ class KevoreeJarClassLoader extends JarClassLoader {
   def getLinkedLoadedURLs(): java.util.List[URL] = {
     val resultURL = new ArrayList[URL]()
     val alreadyPassed = new ArrayList[ClassLoader]()
-    internal_getAllLoadedURLs(resultURL,alreadyPassed)
+    internal_getAllLoadedURLs(resultURL, alreadyPassed)
     resultURL
   }
 
@@ -83,13 +83,13 @@ class KevoreeJarClassLoader extends JarClassLoader {
       }
     }
     )
-/*
-    subWeakClassLoaders.foreach(l => {
-      if (l.get.get.isInstanceOf[KevoreeJarClassLoader] && !cls.contains(l.get.get)) {
-        l.get.get.asInstanceOf[KevoreeJarClassLoader].getAllLoadedURLs(res, cls)
-      }
-    })
-*/
+    /*
+        subWeakClassLoaders.foreach(l => {
+          if (l.get.get.isInstanceOf[KevoreeJarClassLoader] && !cls.contains(l.get.get)) {
+            l.get.get.asInstanceOf[KevoreeJarClassLoader].getAllLoadedURLs(res, cls)
+          }
+        })
+    */
   }
 
 
@@ -152,42 +152,62 @@ class KevoreeJarClassLoader extends JarClassLoader {
     super[JarClassLoader].loadClass(className, resolveIt)
   }
 
-
   override def loadClass(className: String, resolveIt: Boolean): Class[_] = {
-    this.synchronized {
-      try {
-        return callSuperConcreteLoader(className, resolveIt)
-      } catch {
-        case nf: ClassNotFoundException =>
-      }
-      if (resolveIt) {
-        subClassLoaders.foreach {
-          subCL =>
-            try {
-              return subCL.loadClass(className)
-            } catch {
-              case nf: ClassNotFoundException =>
-            }
-        }
-        subWeakClassLoaders.foreach {
-          subCL =>
-            try {
-              subCL.get.map {
-                m =>
-                  if (m.isInstanceOf[KevoreeJarClassLoader]) {
-                    return m.asInstanceOf[KevoreeJarClassLoader].loadClass(className, false)
-                  }
-              }
-            } catch {
-              case nf: ClassNotFoundException =>
-            }
-        }
-      }
-
+    val result = internal_loadClass(className, resolveIt)
+    if (result == null) {
       throw new ClassNotFoundException(className)
     }
+    result
+  }
 
-
+  def internal_loadClass(className: String, resolveIt: Boolean): Class[_] = {
+    var result: Class[_] = null
+    result = callSuperConcreteLoader(className, resolveIt)
+    if (result != null) {
+      return result
+    }
+    if (resolveIt) {
+      subClassLoaders.foreach {
+        subCL =>
+          result = subCL match {
+            case kcl: KevoreeJarClassLoader => kcl.internal_loadClass(className, false)
+            case _ => {
+              try {
+                subCL.loadClass(className)
+              } catch {
+                case nf: ClassNotFoundException => null
+              }
+            }
+          }
+          if (result != null) {
+            return result
+          }
+      }
+      subWeakClassLoaders.foreach {
+        subCL =>
+          try {
+            subCL.get.map {
+              m =>
+                result = m match {
+                  case kcl: KevoreeJarClassLoader => kcl.internal_loadClass(className, false)
+                  case _ => {
+                    try {
+                      m.loadClass(className)
+                    } catch {
+                      case nf: ClassNotFoundException => null
+                    }
+                  }
+                }
+                if (result != null) {
+                  return result
+                }
+            }
+          } catch {
+            case nf: ClassNotFoundException =>
+          }
+      }
+    }
+    result
   }
 
   override def loadClass(className: String): Class[_] = {

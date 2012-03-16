@@ -102,10 +102,6 @@ public abstract class AbstractClassLoader extends ClassLoader {
                 }
             }
         }
-
-        if (clazz == null)
-            throw new ClassNotFoundException( className );
-
         return clazz;
     }
 

@@ -25,6 +25,9 @@ public class App {
 
         //TO REMOVE
         System.setProperty("node.groupType","NanoRestGroup");
+
+        System.setProperty("node.update.timeout","100000");
+
         //System.setProperty("actors.enableForkJoin", "false");
 
         ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(ch.qos.logback.classic.Logger.ROOT_LOGGER_NAME);

@@ -72,6 +72,8 @@ object KevsInterpreterAspects {
         case createComponentType: CreateComponentTypeStatment => KevsCreateComponentTypeInterpreter(createComponentType)
         case createChannelType: CreateChannelTypeStatment => KevsCreateChannelTypeInterpreter(createChannelType)
 
+
+
         //Network
         case networkStatement: NetworkPropertyStatement => KevsNetworkInterpreter(networkStatement)
 
