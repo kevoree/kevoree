@@ -25,8 +25,9 @@ public class App {
 
         //TO REMOVE
         System.setProperty("node.groupType","NanoRestGroup");
-
         System.setProperty("node.update.timeout","100000");
+
+        System.setProperty("kevoree.offline","true");
 
         //System.setProperty("actors.enableForkJoin", "false");
 
