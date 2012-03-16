@@ -40,6 +40,8 @@ trait KevsTypeParser extends KevsAbstractParser {
     }
   }
 
+
+ // val createChannelTypeCommandFormat = "createChannelType <ChannelTypeName> @ <libraryName>"
   val addPortTypeCommandFormat = "addPortType <PortName> : <PortType> => <ComponentTypeName> "
   def parseAddPortType : Parser[List[Statment]] = "addPortType" ~ orFailure(ident,addPortTypeCommandFormat) ~ orFailure(parsePortType, addPortTypeCommandFormat) ~ orFailure("=>",addPortTypeCommandFormat) ~ orFailure(ident,addPortTypeCommandFormat) ^^{ case _ ~ portTypeName ~ oPTClassName ~ _ ~ targetTypeName =>
     List(AddPortTypeStatment(portTypeName,targetTypeName,oPTClassName))

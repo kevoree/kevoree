@@ -11,7 +11,6 @@ import javax.xml.bind.DatatypeConverter
  * User: duke
  * Date: 17/01/12
  * Time: 09:13
- * To change this template use File | Settings | File Templates.
  */
 
 object InriaLdap extends App {

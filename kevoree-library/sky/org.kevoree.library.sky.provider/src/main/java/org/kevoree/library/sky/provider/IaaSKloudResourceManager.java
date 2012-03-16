@@ -46,6 +46,11 @@ public class IaaSKloudResourceManager extends AbstractComponentType implements M
 	}
 
 	@Override
+	public boolean initUpdate (ContainerRoot containerRoot, ContainerRoot containerRoot1) {
+		return true;
+	}
+
+	@Override
 	public void modelUpdated () {
 		UUIDModel uuidModel = this.getModelService().getLastUUIDModel();
 		Option<ContainerRoot> modelOption = KloudReasoner.configureChildNodes(uuidModel.getModel(), this.getKevScriptEngineFactory());
@@ -58,8 +63,7 @@ public class IaaSKloudResourceManager extends AbstractComponentType implements M
 			} catch (Exception e) {
 				try {
 					Thread.sleep(1000);
-				} catch (InterruptedException e1) {
-				}
+				} catch (InterruptedException ignored) {}
 				modelUpdated();
 			}
 		}

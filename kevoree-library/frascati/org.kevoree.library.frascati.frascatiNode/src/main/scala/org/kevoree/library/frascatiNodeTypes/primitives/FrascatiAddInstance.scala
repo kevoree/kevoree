@@ -1,17 +1,15 @@
 package org.kevoree.library.frascatiNodeTypes.primitives
 
-import java.io.PrintWriter
 import org.kevoree.api.PrimitiveCommand
 import org.kevoree.framework.aspects.KevoreeAspects._
 import org.kevoreeAdaptation.AdaptationPrimitive
 import org.kevoree.ContainerRoot
-import org.ow2.frascati.assembly.factory.processor.ProcessingContextImpl
 import org.ow2.frascati.FraSCAti
 import org.slf4j.LoggerFactory
-import javax.xml.namespace.QName
-import org.kevoree.library.frascatiNodeTypes.{FrascatiClassLoaderWrapper, FrascatiNode}
 import org.objectweb.fractal.api.Component
 import org.kevoree.library.defaultNodeTypes.jcl.deploy.context.{KevoreeDeployManager, KevoreeMapping}
+import org.kevoree.library.frascatiNodeTypes.{FrascatiNode, FrascatiClassLoaderWrapper}
+import org.kevoree.kcl.KevoreeJarClassLoader
 
 
 /**
@@ -33,18 +31,20 @@ case class FrascatiAddInstance(adaptationPrimitive: AdaptationPrimitive, frascat
       if (c_instance.getTypeDefinition.asInstanceOf[org.kevoree.ComponentType].getBean.endsWith(".composite")) {
         val kcl = bs.getKevoreeClassLoaderHandler.getKevoreeClassLoader(deployUnit)
         val compositeURL = kcl.getResource(c_instance.getTypeDefinition.getBean)
+
+        //  println(compositeURL+"-"+compositeURL.getPath+"-"+compositeURL.getFile)
+
+
+        // new Thread(){
+        //    override def run() {
         
-      //  println(compositeURL+"-"+compositeURL.getPath+"-"+compositeURL.getFile)
-        
-        
-       // new Thread(){
-      //    override def run() {
-            val component : Component = frascati.getComposite(compositeURL.toString, new FrascatiClassLoaderWrapper(kcl))
-                    KevoreeDeployManager.addMapping(KevoreeMapping(c_instance.getName, c_instance.getClass.getName, component))
-       //   }
-       // }.start()
 
         
+        val component: Component = frascati.getComposite(compositeURL.toString, new FrascatiClassLoaderWrapper(classOf[FrascatiNode].getClassLoader.asInstanceOf[KevoreeJarClassLoader]))
+        KevoreeDeployManager.addMapping(KevoreeMapping(c_instance.getName, c_instance.getClass.getName, component))
+        //   }
+        // }.start()
+
 
       } else {
 

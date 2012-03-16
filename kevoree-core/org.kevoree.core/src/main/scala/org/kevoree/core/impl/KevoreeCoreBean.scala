@@ -151,7 +151,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
     //Fires the update to listeners
     //new Actor {
     //  def act() {
-        listenerActor.notifyAllListener()
+    listenerActor.notifyAllListener()
     //  }
     //}.start()
   }
@@ -313,11 +313,16 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
           false
         } else {
           //Model check is OK.
-          val precheckModel = cloner.clone(pnewmodel)
           logger.debug("Before listeners PreCheck !")
-          val preCheckResult = listenerActor.preUpdate(model, precheckModel)
+          val preCheckResult = listenerActor.preUpdate(cloner.clone(model), cloner.clone(pnewmodel))
           logger.debug("PreCheck result = " + preCheckResult)
-          if (preCheckResult) {
+
+          logger.debug("Before listeners InitUpdate !")
+          val initUpdateResult = listenerActor.initUpdate(cloner.clone(model), cloner.clone(pnewmodel))
+          logger.debug("InitUpdate result = " + initUpdateResult)
+
+          if (preCheckResult && initUpdateResult) {
+
             var newmodel = cloner.clone(pnewmodel)
             //CHECK FOR HARA KIRI
             if (HaraKiriHelper.detectNodeHaraKiri(model, newmodel, getNodeName())) {
@@ -384,7 +389,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
             logger.debug("End deploy result=" + deployResult + "-" + milliEnd)
             deployResult
           } else {
-            logger.debug("PreCheck Step was refused, update aborded !")
+            logger.debug("PreCheck or InitUpdate Step was refused, update aborded !")
             false
           }
         }
@@ -498,4 +503,14 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
   def releaseLock(uuid: UUID) {
     this ! RELEASE_LOCK(uuid)
   }
+
+  def checkModel(tModel: ContainerRoot): Boolean = {
+    val checkResult = modelChecker.check(model)
+    if (checkResult.isEmpty) {
+      listenerActor.preUpdate(cloner.clone(model), cloner.clone(tModel))
+    } else {
+      false
+    }
+  }
+
 }

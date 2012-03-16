@@ -38,11 +38,19 @@ class ServerBootstrap(request : MessagePort,compo : AbstractComponentType) {
     }
     try {
       Actor.registry.actors.foreach(actor=> {
+        println("BeforeID="+actor.getId())
         if(actor.getId().contains(id))
         actor ! PoisonPill
       })
       supervisorRef.shutdown()
       //httpServer.dispatcher.asInstanceOf[SelectorWakingDispatcher].killDispatcher()
+
+
+      Actor.registry.actors.foreach(actor=> {
+              println("AfterID="+actor.getId())
+      })
+
+
     } catch {
       case _ @ e => logger.warn("Error while stopping Spray Server")
     }

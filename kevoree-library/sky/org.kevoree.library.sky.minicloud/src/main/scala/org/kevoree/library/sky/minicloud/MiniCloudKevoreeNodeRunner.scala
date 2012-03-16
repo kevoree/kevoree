@@ -20,8 +20,10 @@ import java.io._
 import java.lang.Thread
 import actors.{TIMEOUT, Actor}
 import util.matching.Regex
-import java.util.UUID
-import org.kevoree.library.sky.manager.{KevoreeNodeRunner, Helper}
+import org.kevoree.library.sky.manager.{KevoreeNodeRunner}
+import org.kevoree.library.sky.manager.nodeType.IaaSNode
+import org.kevoree.{ContainerRoot, KevoreeFactory}
+import org.kevoree.framework.KevoreeXmiHelper
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -31,7 +33,7 @@ import org.kevoree.library.sky.manager.{KevoreeNodeRunner, Helper}
  * @author Erwan Daubert
  * @version 1.0
  */
-class MiniCloudKevoreeNodeRunner (nodeName: String, bootStrapModel: String) extends KevoreeNodeRunner(nodeName, bootStrapModel) {
+class MiniCloudKevoreeNodeRunner (nodeName: String,iaasNode : IaaSNode) extends KevoreeNodeRunner(nodeName) {
   private val logger: Logger = LoggerFactory.getLogger(classOf[MiniCloudKevoreeNodeRunner])
   private var nodePlatformProcess: Process = null
   private var outputStreamReader: Thread = null
@@ -47,19 +49,18 @@ class MiniCloudKevoreeNodeRunner (nodeName: String, bootStrapModel: String) exte
 
   case class ErrorResult ()
 
-  val actor = new UpdateManagementActor(10000)
-  actor.start()
+  //val actor = new UpdateManagementActor(10000)
+ // actor.start()
 
-  def startNode (): Boolean = {
+  def startNode(iaasModel : ContainerRoot,jailBootStrapModel : ContainerRoot): Boolean = {
     try {
       logger.debug("Start " + nodeName)
+
+      val platformFile = iaasNode.getBootStrapperService.resolveKevoreeArtifact("org.kevoree.platform.standalone","org.kevoree.platform",KevoreeFactory.getVersion);
       val java: String = getJava
+      if (platformFile != null) {
 
-      if (Helper.getJarPath != null) {
-
-        logger.debug("use bootstrap model path => " + bootStrapModel)
-
-        val root = LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME).asInstanceOf[Logger]
+       /* val root = LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME).asInstanceOf[Logger]
         var debug = "ERROR"
         if (root.isWarnEnabled) {
           debug = "WARN"
@@ -70,11 +71,14 @@ class MiniCloudKevoreeNodeRunner (nodeName: String, bootStrapModel: String) exte
         if (root.isDebugEnabled) {
           debug = "DEBUG"
         }
-        logger.debug("child node log level will be set to {}", debug)
+        logger.debug("child node log level will be set to {}", debug)*/
 
+        val tempFile = File.createTempFile("bootModel"+nodeName,".kev");
+        KevoreeXmiHelper.save(tempFile.getAbsolutePath,jailBootStrapModel)
+        
         nodePlatformProcess = Runtime.getRuntime
-          .exec(Array[String](java, "-Dnode.bootstrap=" + bootStrapModel, "-Dnode.name=" + nodeName,
-                               "-Dnode.log.level=" + debug, "-jar", Helper.getJarPath))
+          .exec(Array[String](java, "-Dnode.bootstrap=" + tempFile.getAbsolutePath, "-Dnode.name=" + nodeName,
+                               "-Dnode.log.level=INFO"/* + debug*/, "-jar", platformFile.getAbsolutePath))
 
         outputStreamReader = new Thread {
           outFile = new File(System.getProperty("java.io.tmpdir") + File.separator + "sysout" + nodeName + ".log")
@@ -86,6 +90,7 @@ class MiniCloudKevoreeNodeRunner (nodeName: String, bootStrapModel: String) exte
               val reader = new BufferedReader(new InputStreamReader(stream))
               var line = reader.readLine()
               while (line != null) {
+                /*
                 line match {
                   case deployRegex(uuid) => {
                     actor ! DeployResult(uuid)
@@ -95,7 +100,7 @@ class MiniCloudKevoreeNodeRunner (nodeName: String, bootStrapModel: String) exte
                   }
                   case errorRegex(uuid) => actor ! ErrorResult()
                   case _ =>
-                }
+                }*/
                 line = line + "\n"
                 logStream.write(line.getBytes)
                 logStream.flush()
@@ -164,7 +169,6 @@ class MiniCloudKevoreeNodeRunner (nodeName: String, bootStrapModel: String) exte
   def stopNode (): Boolean = {
     logger.debug("Kill " + nodeName)
     try {
-      actor.stop()
       val watchdog = new KillWatchDog(nodePlatformProcess, 20000)
       nodePlatformProcess.getOutputStream.write("shutdown\n".getBytes)
       nodePlatformProcess.getOutputStream.flush()
@@ -184,6 +188,7 @@ class MiniCloudKevoreeNodeRunner (nodeName: String, bootStrapModel: String) exte
     }
   }
 
+  /*
   def updateNode (model: String): Boolean = {
     val uuid = UUID.randomUUID()
     actor.manage(DeployResult(uuid.toString))
@@ -191,81 +196,11 @@ class MiniCloudKevoreeNodeRunner (nodeName: String, bootStrapModel: String) exte
     nodePlatformProcess.getOutputStream.flush()
 
     actor.waitFor()
-  }
+  }*/
 
   private def getJava: String = {
     val java_home: String = System.getProperty("java.home")
     java_home + File.separator + "bin" + File.separator + "java"
-  }
-
-  class UpdateManagementActor (timeout: Int) extends Actor {
-
-    case class STOP ()
-
-    case class WAITINFOR ()
-
-    def stop () {
-      this ! STOP()
-    }
-
-    def manage (res: DeployResult) {
-      this !? res
-    }
-
-    def manage (res: BackupResult) {
-      this !? res
-    }
-
-    def manage (res: ErrorResult) {
-      this !? res
-    }
-
-    def waitFor (): Boolean = {
-      (this !? WAITINFOR()).asInstanceOf[Option[Boolean]].get
-    }
-
-    var firstSender = null
-
-    def act () {
-      loop {
-        react {
-          case STOP() => this.exit()
-          case ErrorResult() =>
-          case DeployResult(uuid) => {
-            var firstSender = this.sender
-            reply()
-            react {
-              case STOP() => this.exit()
-              case WAITINFOR() => {
-                firstSender = this.sender
-                reactWithin(timeout) {
-                  case STOP() => this.exit()
-                  case DeployResult(uuid2) if (uuid == uuid2) => {
-                    firstSender ! Some(true)
-                  }
-                  case TIMEOUT => firstSender ! Some(false)
-                  case ErrorResult() => {
-                    firstSender ! Some(false)
-                  }
-                }
-              }
-              case DeployResult(uuid2) if (uuid == uuid2) => {
-                react {
-                  case STOP() => this.exit()
-                  case WAITINFOR() => sender ! Some(true)
-                }
-              }
-              case ErrorResult() => {
-                react {
-                  case STOP() => this.exit()
-                  case WAITINFOR() => sender ! Some(false)
-                }
-              }
-            }
-          }
-        }
-      }
-    }
   }
 
 }

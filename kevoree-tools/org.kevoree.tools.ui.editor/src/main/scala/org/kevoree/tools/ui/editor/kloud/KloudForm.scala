@@ -14,17 +14,18 @@
 package org.kevoree.tools.ui.editor.kloud
 
 import com.explodingpixels.macwidgets.HudWindow
-import org.kevoree.tools.ui.editor.KevoreeEditor
 import javax.swing._
 import java.awt.{FlowLayout, Color, BorderLayout}
 import java.awt.event.{ActionEvent, ActionListener, FocusEvent, FocusListener}
 import org.kevoree.tools.ui.editor.property.SpringUtilities
 import org.kevoree.{KevoreeFactory, ContainerRoot}
 import org.kevoree.framework.KevoreeXmiHelper
-import java.io.{InputStreamReader, BufferedReader, OutputStreamWriter}
 import org.slf4j.LoggerFactory
 import com.explodingpixels.macwidgets.plaf.{HudPasswordFieldUI, HudButtonUI, HudTextFieldUI, HudLabelUI}
-import java.net.{URLEncoder, HttpURLConnection, URL}
+import java.io.{ByteArrayOutputStream, InputStreamReader, BufferedReader, OutputStreamWriter}
+import org.kevoree.tools.ui.editor.{PositionedEMFHelper, KevoreeEditor}
+import org.kevoree.tools.ui.editor.command.LoadModelCommand
+import java.net.{URLDecoder, URLEncoder, HttpURLConnection, URL}
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -147,9 +148,12 @@ class KloudForm (editor: KevoreeEditor) {
         // send the current model of the editor on Kloud
         new Thread() {
           override def run () {
-            if (sendModel(loginTxtField.getText, password, sshTxtField.getText, addressTxtField.getText, model)) {
+            if (sendModel(password, sshTxtField.getText, addressTxtField.getText + "/" + loginTxtField.getText + "/model", model)) {
               ok_lbl.setText("OK")
               ok_lbl.setForeground(Color.GREEN)
+            } else {
+              ok_lbl.setText("KO")
+              ok_lbl.setForeground(Color.RED)
             }
           }
         }.start()
@@ -179,7 +183,7 @@ class KloudForm (editor: KevoreeEditor) {
         new Thread() {
           override def run () {
             // send a empty model to release all previous nodes already build
-            if (release(loginTxtField.getText, password, addressTxtField.getText + "/release")) {
+            if (release(password, addressTxtField.getText + "/" + loginTxtField.getText + "/release")) {
               ok_lbl.setText("OK")
               ok_lbl.setForeground(Color.GREEN)
             } else {
@@ -226,12 +230,13 @@ class KloudForm (editor: KevoreeEditor) {
     newPopup.getJDialog.setVisible(false)
   }
 
-  private def sendModel (login: String, password: String, sshKey: String, address: String, model: ContainerRoot): Boolean = {
+  private def sendModel (password: String, sshKey: String, address: String, model: ContainerRoot): Boolean = {
     val bodyBuilder = new StringBuilder
-
-    bodyBuilder append "login="
-    bodyBuilder append URLEncoder.encode(login, "UTF-8")
-    bodyBuilder append "&password="
+    /*
+        bodyBuilder append "login="
+        bodyBuilder append URLEncoder.encode(login, "UTF-8")*/
+    //    bodyBuilder append "&password="
+    bodyBuilder append "password="
     bodyBuilder append URLEncoder.encode(password, "UTF-8")
     bodyBuilder append "&ssh_key="
     bodyBuilder append URLEncoder.encode(sshKey, "UTF-8")
@@ -250,30 +255,59 @@ class KloudForm (editor: KevoreeEditor) {
       val wr: OutputStreamWriter = new OutputStreamWriter(connection.getOutputStream)
       wr.write(bodyBuilder.toString())
       wr.flush()
-      val rd = new InputStreamReader(connection.getInputStream)
-      val bytes = new Array[Char](2048)
+      val rd = connection.getInputStream
+      val bytes = new Array[Byte](2048)
       var length = 0
-      //      var line: String = rd.readLine
+      val byteArrayOutputStream = new ByteArrayOutputStream()
       length = rd.read(bytes)
-      val response = new StringBuilder
       while (length != -1) {
-        response append bytes + "\n"
+        byteArrayOutputStream.write(bytes, 0, length)
         length = rd.read(bytes)
       }
       wr.close()
       rd.close()
+
+      var response = new String(byteArrayOutputStream.toByteArray, "UTF-8")
+
       var nbTry = 20;
       // look the answer to know if the model has been correctly sent
-      while (!response.toString().contains("One of your nodes is accessible at this address:") && nbTry > 0) {
+      while (!response.startsWith("<wait") && nbTry > 0) {
+        logger.debug(response)
         nbTry = nbTry - 1
-        Thread.sleep(200)
+        Thread.sleep(1000)
+        try {
+          //          val url = new URL(address + "/" + login)
+          val connection = url.openConnection()
+          val rd = connection.getInputStream
+          val bytes = new Array[Byte](2048)
+          var length = 0
+          val byteArrayOutputStream = new ByteArrayOutputStream()
+          length = rd.read(bytes)
+          while (length != -1) {
+            byteArrayOutputStream.write(bytes, 0, length)
+            length = rd.read(bytes)
+          }
+          wr.close()
+          rd.close()
+          response = new String(byteArrayOutputStream.toByteArray, "UTF-8")
+        } catch {
+          case _@e =>
+        }
       }
-      if (response.toString().contains("One of your nodes is accessible at this address:")) {
-        // TODO merge with kloud user model
-        true
-      } else {
-        logger.debug(response.toString())
+      if (response.startsWith("<wait")) {
+        logger.debug("Timeout, unable to get your configuration model on the Kloud")
         false
+      } else if (response.startsWith("<nack")) {
+        val errorMessage = URLDecoder.decode(response, "UTF-8").split("error=\"")(1)
+        logger.debug("Unable to submit or sink your model on the Kloud: {}", errorMessage.substring(0, errorMessage.indexOf("\"")))
+        false
+      } else {
+        val lcommand = new LoadModelCommand()
+        editor.getPanel.getKernel.getModelHandler.merge(KevoreeXmiHelper.loadString(response))
+        PositionedEMFHelper.updateModelUIMetaData(editor.getPanel.getKernel)
+        lcommand.setKernel(editor.getPanel.getKernel)
+        lcommand.execute(editor.getPanel.getKernel.getModelHandler.getActualModel)
+        true
       }
     } catch {
       case _@e => logger.error("Unable to deploy on Kloud", e)
@@ -281,11 +315,9 @@ class KloudForm (editor: KevoreeEditor) {
     }
   }
 
-  private def release (login: String, password: String, address: String): Boolean = {
+  private def release (password: String, address: String): Boolean = {
     val bodyBuilder = new StringBuilder
 
-    bodyBuilder append "login="
-    bodyBuilder append URLEncoder.encode(login, "UTF-8")
     bodyBuilder append "&password="
     bodyBuilder append URLEncoder.encode(password, "UTF-8")
 
@@ -301,23 +333,28 @@ class KloudForm (editor: KevoreeEditor) {
       val wr: OutputStreamWriter = new OutputStreamWriter(connection.getOutputStream)
       wr.write(bodyBuilder.toString())
       wr.flush()
-      val rd = new InputStreamReader(connection.getInputStream)
-      val bytes = new Array[Char](2048)
+      val rd = connection.getInputStream
+      val byteArrayOutputStream = new ByteArrayOutputStream()
+      val bytes = new Array[Byte](2048)
       var length = 0
       //      var line: String = rd.readLine
       length = rd.read(bytes)
-      val response = new StringBuilder
       while (length != -1) {
-        response append bytes + "\n"
+        byteArrayOutputStream.write(bytes, 0, length)
+        //        response append bytes + "\n"
         length = rd.read(bytes)
       }
+
       wr.close()
       rd.close()
+
+      val response = new String(byteArrayOutputStream.toByteArray, "UTF-8")
       // look the answer to know if the model has been correctly sent
-      if (response.toString().contains("Now all configurations for user")) {
+      if (response.startsWith("<ack")) {
         true
       } else {
-        logger.debug(response.toString())
+        val errorMessage = URLDecoder.decode(response, "UTF-8").split("error=\"")(1)
+        logger.debug("Unable to release your configuration on the Kloud: {}", errorMessage.substring(0, errorMessage.indexOf("\"")))
         false
       }
     } catch {

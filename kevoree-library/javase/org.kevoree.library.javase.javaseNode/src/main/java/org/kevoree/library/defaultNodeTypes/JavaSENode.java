@@ -13,7 +13,8 @@ import org.kevoree.library.defaultNodeTypes.jcl.deploy.CommandMapper;
 import org.kevoree.library.defaultNodeTypes.jcl.deploy.context.KevoreeDeployManager;
 import org.kevoreeAdaptation.AdaptationModel;
 import org.kevoreeAdaptation.AdaptationPrimitive;
-import org.slf4j.Logger;
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
@@ -26,10 +27,13 @@ import java.io.InputStreamReader;
  */
 @Library(name = "JavaSE")
 @NodeType
+@DictionaryType({
+        @DictionaryAttribute(name = "logLevel", defaultValue = "INFO", optional = true, vals = {"INFO","WARN","DEBUG","ERROR"})
+})
 @PrimitiveCommands(
         values = {"UpdateType", "UpdateDeployUnit", "AddType", "AddDeployUnit", "AddThirdParty", "RemoveType", "RemoveDeployUnit", "UpdateInstance", "UpdateBinding", "UpdateDictionaryInstance", "AddInstance", "RemoveInstance", "AddBinding", "RemoveBinding", "AddFragmentBinding", "RemoveFragmentBinding", "UpdateFragmentBinding", "StartInstance", "StopInstance", "StartThirdParty","RemoveThirdParty"}, value = {})
 public class JavaSENode extends AbstractNodeType {
-    private static final Logger logger = LoggerFactory.getLogger(JavaSENode.class);
+    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(JavaSENode.class);
 
     private KevoreeKompareBean kompareBean = null;
     private CommandMapper mapper = null;
@@ -43,6 +47,9 @@ public class JavaSENode extends AbstractNodeType {
         kompareBean = new KevoreeKompareBean();
         mapper = new CommandMapper();
         mapper.setNodeType(this);
+
+        updateNode();
+
 		new Thread() {
 			@Override
 			public void run () {
@@ -61,6 +68,17 @@ public class JavaSENode extends AbstractNodeType {
         //Cleanup the local runtime
         KevoreeDeployManager.clearAll(this);
     }
+
+    @Update
+    @Override
+    public void updateNode(){
+        Logger root = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
+        if("DEBUG".equals(getDictionary().get("logLevel"))){root.setLevel(Level.DEBUG);}
+        if("WARN".equals(getDictionary().get("logLevel"))){root.setLevel(Level.WARN);}
+        if("INFO".equals(getDictionary().get("logLevel"))){root.setLevel(Level.INFO);}
+        if("ERROR".equals(getDictionary().get("logLevel"))){root.setLevel(Level.ERROR);}
+    }
+
 
     @Override
     public AdaptationModel kompare(ContainerRoot current, ContainerRoot target) {

@@ -6,14 +6,18 @@
     <artifactId>org.kevoree.library.javase.javaseNode</artifactId>
     <packaging>jar</packaging>
     <name>Kevoree :: Library :: JavaSE :: JavaSENode</name>
-    <version>1.6.0-BETA4</version>
+    <version>1.6.0-BETA5</version>
 
     <parent>
         <artifactId>org.kevoree.library.javase.root</artifactId>
         <groupId>org.kevoree.library.javase</groupId>
-        <version>1.6.0-BETA4</version>
+        <version>1.6.0-BETA5</version>
         <relativePath>../org.kevoree.library.javase.root/pom.xml</relativePath>
     </parent>
+
+    <properties>
+        <kevoree.exclude>ch.qos.logback:*</kevoree.exclude>
+    </properties>
 
     <dependencies>
         <dependency>
@@ -26,6 +30,18 @@
             <artifactId>org.kevoree.kompare</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-core</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+
     </dependencies>
 
     <build>

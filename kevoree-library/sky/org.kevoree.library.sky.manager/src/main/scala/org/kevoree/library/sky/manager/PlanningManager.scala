@@ -7,7 +7,6 @@ import org.slf4j.{LoggerFactory, Logger}
 import org.kevoree._
 import api.PrimitiveCommand
 
-import scala.collection.JavaConversions._
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -21,7 +20,7 @@ import scala.collection.JavaConversions._
 object PlanningManager {
   private val logger: Logger = LoggerFactory.getLogger(PlanningManager.getClass)
 
-  def kompare (current: ContainerRoot, target: ContainerRoot, skyNode: IaaSNode): AdaptationModel = {
+  def kompare(current: ContainerRoot, target: ContainerRoot, skyNode: IaaSNode): AdaptationModel = {
     logger.debug("starting kompare...")
     val adaptationModel: AdaptationModel = KevoreeAdaptationFactory.eINSTANCE.createAdaptationModel
     var step: ParallelStep = KevoreeAdaptationFactory.eINSTANCE.createParallelStep
@@ -127,21 +126,8 @@ object PlanningManager {
     adaptationModel
   }
 
-  private def isContaining (step: Option[ParallelStep]): Boolean = {
+  private def isContaining(step: Option[ParallelStep]): Boolean = {
     if (step.isDefined) {
-      /*logger.debug("Trying to limit the adaptation action to apply (add Component and Channel is not allowed)")
-      val adaptations = step.get.getAdaptations
-        .filter(adaptation => adaptation.getPrimitiveType.getName == "UpdateType" || adaptation.getPrimitiveType.getName == "UpdateDeployUnit" ||
-        adaptation.getPrimitiveType.getName == "AddType" || adaptation.getPrimitiveType.getName == "AddDeployUnit" || adaptation.getPrimitiveType.getName == "AddThirdParty" ||
-        adaptation.getPrimitiveType.getName == "RemoveType" || adaptation.getPrimitiveType.getName == "RemoveDeployUnit" || adaptation.getPrimitiveType.getName == "UpdateDictionaryInstance" ||
-        adaptation.getPrimitiveType.getName == "StartThirdParty" || (adaptation.getPrimitiveType.getName == "AddInstance" && adaptation.getRef.isInstanceOf[Group]) ||
-        (adaptation.getPrimitiveType.getName == "UpdateInstance" && adaptation.getRef.isInstanceOf[Group]) ||
-        (adaptation.getPrimitiveType.getName == "RemoveInstance" && adaptation.getRef.isInstanceOf[Group]) ||
-        (adaptation.getPrimitiveType.getName == "StartInstance" && adaptation.getRef.isInstanceOf[Group]) ||
-        (adaptation.getPrimitiveType.getName == "StopInstance" && adaptation.getRef.isInstanceOf[Group]))
-
-      step.get.removeAllAdaptations()
-      step.get.addAllAdaptations(adaptations)*/
       step.get.getAdaptations.forall(adaptation => adaptation.getPrimitiveType.getName == "UpdateType" || adaptation.getPrimitiveType.getName == "UpdateDeployUnit" ||
         adaptation.getPrimitiveType.getName == "AddType" || adaptation.getPrimitiveType.getName == "AddDeployUnit" || adaptation.getPrimitiveType.getName == "AddThirdParty" ||
         adaptation.getPrimitiveType.getName == "RemoveType" || adaptation.getPrimitiveType.getName == "RemoveDeployUnit" || adaptation.getPrimitiveType.getName == "UpdateDictionaryInstance" ||
@@ -155,20 +141,22 @@ object PlanningManager {
     }
   }
 
-  def getPrimitive (adaptationPrimitive: AdaptationPrimitive, skyNode: IaaSNode): PrimitiveCommand = {
+  def getPrimitive(adaptationPrimitive: AdaptationPrimitive, skyNode: IaaSNode): PrimitiveCommand = {
     logger.debug("ask for primitiveCommand corresponding to " + adaptationPrimitive.getPrimitiveType.getName)
     var command: PrimitiveCommand = null
     if (adaptationPrimitive.getPrimitiveType.getName == IaaSNode.REMOVE_NODE) {
       logger.debug("add REMOVE_NODE command on " + (adaptationPrimitive.getRef.asInstanceOf[ContainerNode]).getName)
-      command = new RemoveNodeCommand(adaptationPrimitive.getRef.asInstanceOf[ContainerNode],
-                                       ((adaptationPrimitive.getRef.asInstanceOf[ContainerNode]).eContainer)
-                                         .asInstanceOf[ContainerRoot])
+
+      val targetNode = adaptationPrimitive.getRef.asInstanceOf[ContainerNode]
+      val targetNodeRoot = adaptationPrimitive.getRef.asInstanceOf[ContainerNode].eContainer.asInstanceOf[ContainerRoot]
+      command = new RemoveNodeCommand(targetNodeRoot,targetNode.getName,skyNode)
     }
     else if (adaptationPrimitive.getPrimitiveType.getName == IaaSNode.ADD_NODE) {
       logger.debug("add ADD_NODE command on " + (adaptationPrimitive.getRef.asInstanceOf[ContainerNode]).getName)
-      command = new AddNodeCommand(adaptationPrimitive.getRef.asInstanceOf[ContainerNode],
-                                    ((adaptationPrimitive.getRef.asInstanceOf[ContainerNode]).eContainer)
-                                      .asInstanceOf[ContainerRoot])
+
+      val targetNode = adaptationPrimitive.getRef.asInstanceOf[ContainerNode]
+      val targetNodeRoot = adaptationPrimitive.getRef.asInstanceOf[ContainerNode].eContainer.asInstanceOf[ContainerRoot]
+      command = new AddNodeCommand(targetNodeRoot,targetNode.getName,skyNode)
     }
     if (command == null) {
       command = skyNode.superGetPrimitive(adaptationPrimitive)

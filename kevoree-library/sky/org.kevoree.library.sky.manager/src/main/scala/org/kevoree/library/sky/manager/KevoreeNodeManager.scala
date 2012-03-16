@@ -14,62 +14,54 @@ import org.slf4j.{LoggerFactory, Logger}
  * @author Erwan Daubert
  * @version 1.0
  */
-object KevoreeNodeManager extends DaemonActor {
-  private val logger: Logger = LoggerFactory.getLogger(KevoreeNodeManager.getClass)
-  
-  logger.debug("KevoreeNodeManager initialization...")
-  private var node : IaaSNode = null
+class KevoreeNodeManager(node: IaaSNode) extends DaemonActor {
 
-  def setNode(n : IaaSNode) {
-    node = n
-  }
+  private val logger: Logger = LoggerFactory.getLogger(this.getClass)
 
   var runners: List[KevoreeNodeRunner] = List()
 
-  start()
+  case class STOP()
 
-  case class STOP ()
+  case class ADD_NODE(iaasModel: ContainerRoot, targetChildName: String, targetChildModel: ContainerRoot)
 
-  case class ADD_NODE (containerNode: ContainerNode, model: ContainerRoot)
+  case class REMOVE_NODE(iaasModel: ContainerRoot, targetChildName: String)
 
-  case class REMOVE_NODE (containerNode: ContainerNode)
+ // case class UPDATE_NODE(containerNode: ContainerNode, model: ContainerRoot)
 
-  case class UPDATE_NODE (containerNode: ContainerNode, model: ContainerRoot)
-
-  def stop () {
+  def stop() {
     this ! STOP()
   }
 
-  def addNode (containerNode: ContainerNode, model: ContainerRoot): Boolean = {
-    (this !? ADD_NODE(containerNode, model)).asInstanceOf[Boolean]
+  def addNode(iaasModel: ContainerRoot, targetChildName: String, targetChildModel: ContainerRoot): Boolean = {
+    (this !? ADD_NODE(iaasModel, targetChildName, targetChildModel)).asInstanceOf[Boolean]
   }
 
-  def removeNode (containerNode: ContainerNode): Boolean = {
-    (this !? REMOVE_NODE(containerNode)).asInstanceOf[Boolean]
+  def removeNode(iaasModel: ContainerRoot, targetChildName: String): Boolean = {
+    (this !? REMOVE_NODE(iaasModel,targetChildName)).asInstanceOf[Boolean]
   }
-
-  def updateNode (containerNode: ContainerNode, model: ContainerRoot): Boolean = {
+/*
+  def updateNode(containerNode: ContainerNode, model: ContainerRoot): Boolean = {
     (this !? UPDATE_NODE(containerNode, model)).asInstanceOf[Boolean]
-  }
+  }*/
 
-  def act () {
+  def act() {
     loop {
       react {
         case STOP() => {
           removeAllInternal()
           this.exit()
         }
-        case ADD_NODE(containerNode, model) => reply(addNodeInternal(containerNode, model))
-        case REMOVE_NODE(containerNode) => reply(removeNodeInternal(containerNode))
-        case UPDATE_NODE(containerNode, model) => reply(updateNodeInternal(containerNode, model))
+        case ADD_NODE(iaasModel, targetChildName, targetChildModel) => reply(addNodeInternal(iaasModel, targetChildName, targetChildModel))
+        case REMOVE_NODE(iaasModel,targetNodeName) => reply(removeNodeInternal(iaasModel,targetNodeName))
+        //case UPDATE_NODE(containerNode, model) => reply(updateNodeInternal(containerNode, model))
       }
     }
   }
 
-  private def addNodeInternal (containerNode: ContainerNode, model: ContainerRoot): Boolean = {
-    logger.debug("try to add a node: " + containerNode.getName)
-    val newRunner = node.createKevoreeNodeRunner(containerNode.getName, Helper.saveModelOnFile(model), model)
-    val result = newRunner.startNode()
+  private def addNodeInternal(iaasModel: ContainerRoot, targetChildName: String, targetChildModel: ContainerRoot): Boolean = {
+    logger.debug("try to add a node: " + targetChildName)
+    val newRunner = node.createKevoreeNodeRunner(targetChildName)
+    val result = newRunner.startNode(iaasModel,targetChildModel)
     if (result) {
       runners = runners ++ List(newRunner)
     } else {
@@ -78,9 +70,9 @@ object KevoreeNodeManager extends DaemonActor {
     result
   }
 
-  private def removeNodeInternal (containerNode: ContainerNode): Boolean = {
-    logger.debug("try to remove " + containerNode.getName)
-    runners.find(runner => runner.nodeName == containerNode.getName) match {
+  private def removeNodeInternal(iaasModel: ContainerRoot, targetChildName: String): Boolean = {
+    logger.debug("try to remove " + targetChildName)
+    runners.find(runner => runner.nodeName == targetChildName) match {
       case None => // we do nothing because there is no node with this name
       case Some(runner) => {
         runner.stopNode()
@@ -90,7 +82,7 @@ object KevoreeNodeManager extends DaemonActor {
     true
   }
 
-  private def removeAllInternal () {
+  private def removeAllInternal() {
     logger.debug("try to stop all nodes")
     runners.foreach {
       runner => runner.stopNode()
@@ -98,6 +90,7 @@ object KevoreeNodeManager extends DaemonActor {
     runners = List()
   }
 
+  /*
   private def updateNodeInternal (containerNode: ContainerNode, model: ContainerRoot): Boolean = {
     logger.debug("try to update " + containerNode.getName)
     runners.find(runner => runner.nodeName == containerNode.getName) match {
@@ -108,5 +101,5 @@ object KevoreeNodeManager extends DaemonActor {
         runner.updateNode(Helper.saveModelOnFile(model))
       }
     }
-  }
+  }*/
 }

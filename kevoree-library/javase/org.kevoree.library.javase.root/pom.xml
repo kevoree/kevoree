@@ -6,12 +6,12 @@
     <artifactId>org.kevoree.library.javase.root</artifactId>
     <packaging>pom</packaging>
     <name>Kevoree :: Library :: JavaSE :: Root</name>
-    <version>1.6.0-BETA4</version>
+    <version>1.6.0-BETA5</version>
 
     <parent>
         <artifactId>org.kevoree.library</artifactId>
         <groupId>org.kevoree.library</groupId>
-        <version>1.6.0-BETA4</version>
+        <version>1.6.0-BETA5</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
@@ -64,8 +64,10 @@
         <module>../org.kevoree.library.javase.webserver.aceEditor</module>
         <module>../org.kevoree.library.javase.webserver.reasoner</module>
         <module>../org.kevoree.library.javase.webserver.servlet</module>
-   <!--     <module>../org.kevoree.library.javase.webserver.wordpress</module>
         <module>../org.kevoree.library.javase.webserver.jenkins</module>
+
+   <!--     <module>../org.kevoree.library.javase.webserver.wordpress</module>
+
         <module>../org.kevoree.library.javase.webserver.archiva</module>
 -->
         <module>../org.kevoree.library.javase.kestrelChannels</module>
@@ -81,6 +83,8 @@
         <module>../org.kevoree.library.javase.nanohttp</module>
         <module>../org.kevoree.library.javase.airReceiver.server</module>
         <module>../org.kevoree.library.javase.camel</module>
+        <module>../org.kevoree.library.javase.authentication</module>
+        <!--<module>../org.kevoree.library.javase.consensus</module>-->
     </modules>
 
 

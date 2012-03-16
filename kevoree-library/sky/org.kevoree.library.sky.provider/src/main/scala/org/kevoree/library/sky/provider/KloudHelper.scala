@@ -1,13 +1,13 @@
 package org.kevoree.library.sky.provider
 
 import org.slf4j.{LoggerFactory, Logger}
-import java.io.{ByteArrayOutputStream, InputStreamReader, BufferedReader, OutputStreamWriter}
-import org.kevoree.framework.{KevoreeXmiHelper, KevoreePropertyHelper}
 import java.net._
 import org.kevoree._
 import cloner.ModelCloner
 import core.basechecker.RootChecker
+import framework.{KevoreeXmiHelper, KevoreePropertyHelper}
 import scala.collection.JavaConversions._
+import java.io._
 
 
 /**
@@ -22,12 +22,30 @@ import scala.collection.JavaConversions._
 object KloudHelper {
   private val logger: Logger = LoggerFactory.getLogger(this.getClass)
 
+  def getMasterIP_PORT (masterProp: String): java.util.List[String] = {
+    val result = new java.util.ArrayList[String]();
+    masterProp.split(",").foreach(ips => {
+      val vals = ips.split("=")
+      if (vals.size == 2) {
+        result.add(vals(1))
+      }
+    })
+    result
+  }
+
+  def isUserModel (potentialUserModel: ContainerRoot, groupName: String, fragmentHostName: String): Boolean = {
+    val foundGroupSelf = potentialUserModel.getGroups.find(g => g.getName == groupName).isDefined
+    val foundHost = potentialUserModel.getNodes.find(n => n.getName == fragmentHostName).isDefined
+
+    (foundGroupSelf && !foundHost)
+  }
+
   def isIaaSNode (currentModel: ContainerRoot, groupName: String, nodeName: String): Boolean = {
     currentModel.getGroups.find(g => g.getName == groupName) match {
-      case None => false
+      case None => logger.debug("There is no group named {}", groupName);false
       case Some(group) =>
         group.getSubNodes.find(n => n.getName == nodeName) match {
-          case None => false
+          case None => logger.debug("There is no node named {}", nodeName);false
           case Some(node) =>
             node.getTypeDefinition.asInstanceOf[NodeType].getManagedPrimitiveTypes.filter(p => p.getName == "RemoveNode" || p.getName == "AddNode").size == 2
         }
@@ -60,42 +78,6 @@ object KloudHelper {
 
   def getGroup (groupName: String, currentModel: ContainerRoot): Option[Group] = {
     currentModel.getGroups.find(g => g.getName == groupName)
-  }
-
-  def lookForAccessPoint (groupName: String, nodeName: String, currentModel: ContainerRoot): Option[String] = {
-    currentModel.getGroups.find(g => g.getName == groupName) match {
-      case None => None
-      case Some(group) => {
-        KevoreePropertyHelper.getStringPropertyForGroup(currentModel, groupName, "masterNode")
-      }
-    }
-  }
-
-  def pushOnMaster (userModel: ContainerRoot, groupName: String, urlPath: String): Option[String] = {
-    logger.debug("try to push the user model on the group")
-    try {
-      val url: URL = new URL(urlPath)
-      val conn: URLConnection = url.openConnection
-      conn.setConnectTimeout(3000)
-      conn.setDoOutput(true)
-      val wr: OutputStreamWriter = new OutputStreamWriter(conn.getOutputStream)
-      val outStream: ByteArrayOutputStream = new ByteArrayOutputStream
-      KevoreeXmiHelper.saveStream(outStream, userModel)
-      outStream.flush()
-      wr.write(outStream.toString("UTF-8"))
-      wr.flush()
-      // Get the response
-      val rd: BufferedReader = new BufferedReader(new InputStreamReader(conn.getInputStream))
-      var line: String = rd.readLine
-      while (line != null) {
-        line = rd.readLine
-      }
-      wr.close()
-      rd.close()
-      Some(urlPath)
-    } catch {
-      case _@e => logger.error("Unable to push the user model on the group", e); None
-    }
   }
 
   def selectPortNumber (address: String, ports: Array[Int]): Int = {
@@ -276,37 +258,47 @@ object KloudHelper {
     }
   }
 
-  def sendUserModel (urlString: String, model: ContainerRoot, nbTime: Int): Boolean = {
-    var isSend = false
-    var i = 0
-    while (!isSend && i < nbTime) {
-      try {
-        logger.debug("try to send user model at {}", urlString)
-        val url = new URL(urlString)
-        val conn: URLConnection = url.openConnection
-        conn.setConnectTimeout(3000)
-        conn.setDoOutput(true)
-        val wr: OutputStreamWriter = new OutputStreamWriter(conn.getOutputStream)
-        val outStream: ByteArrayOutputStream = new ByteArrayOutputStream
-        KevoreeXmiHelper.saveStream(outStream, model)
-        outStream.flush()
-        wr.write(outStream.toString)
-        wr.flush()
-        // Get the response
-        val rd: BufferedReader = new BufferedReader(new InputStreamReader(conn.getInputStream))
-        var line: String = rd.readLine
-        while (line != null) {
-          line = rd.readLine
-        }
-        wr.close()
-        rd.close()
-
-        isSend = true
-      } catch {
-        case _@e => i += 1;
-      }
-      Thread.sleep(5000)
+  def pullModel (urlPath: String): ContainerRoot = {
+    try {
+      val url: URL = new URL(urlPath)
+      val conn: URLConnection = url.openConnection
+      conn.setConnectTimeout(2000)
+      val inputStream: InputStream = conn.getInputStream
+      KevoreeXmiHelper.loadStream(inputStream)
     }
-    isSend
+    catch {
+      case e: IOException => {
+        null
+      }
+    }
   }
+
+  def sendModel (model: ContainerRoot, urlPath: String): Boolean = {
+    try {
+      val outStream: ByteArrayOutputStream = new ByteArrayOutputStream
+      KevoreeXmiHelper.saveStream(outStream, model)
+      outStream.flush()
+      val url: URL = new URL(urlPath)
+      val conn: URLConnection = url.openConnection
+      conn.setConnectTimeout(3000)
+      conn.setDoOutput(true)
+      val wr: OutputStreamWriter = new OutputStreamWriter(conn.getOutputStream)
+      wr.write(outStream.toString)
+      wr.flush()
+      val rd: BufferedReader = new BufferedReader(new InputStreamReader(conn.getInputStream))
+      var line: String = rd.readLine
+      while (line != null) {
+        line = rd.readLine
+      }
+      wr.close()
+      rd.close()
+      true
+    }
+    catch {
+      case e: Exception => {
+        false
+      }
+    }
+  }
+
 }
