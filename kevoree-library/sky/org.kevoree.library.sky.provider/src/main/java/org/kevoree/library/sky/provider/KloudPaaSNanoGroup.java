@@ -71,9 +71,12 @@ public class KloudPaaSNanoGroup extends AbstractGroupType {
 					//CHECK
 					if (KloudHelper.check(model).isEmpty()) {
 						if (KloudHelper.isIaaSNode(getModelService().getLastModel(), getName(), getNodeName())) {
-							//TODO ADD TO STACK
+							//ADD TO STACK
+							logger.debug("A new user model is received, adding a task to process a deployment");
 
-
+							IaaSUpdate jobUpdate = new IaaSUpdate(userModel, model);
+							userModel = model;
+							poolUpdate.submit(jobUpdate);
 						} else {
 							//FORWARD TO MASTER
 							if (externalSender) {

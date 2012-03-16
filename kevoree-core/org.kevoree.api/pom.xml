@@ -7,11 +7,11 @@
     <packaging>jar</packaging>
     <name>Kevoree :: Api</name>
 
-    <version>1.6.0-BETA5</version>
+    <version>1.6.0-BETA6</version>
     <parent>
         <artifactId>org.kevoree.root</artifactId>
         <groupId>org.kevoree</groupId>
-        <version>1.6.0-BETA5</version>
+        <version>1.6.0-BETA6</version>
         <relativePath>../org.kevoree.root/pom.xml</relativePath>
     </parent>
 

@@ -95,7 +95,13 @@ object AetherUtil extends TempFileCacheManager {
 
     val artifactRequest = new ArtifactRequest
     artifactRequest.setArtifact(artifact)
-    val urls = buildPotentialMavenURL(du.eContainer.asInstanceOf[ContainerRoot])
+
+    var urls : List[String] = null
+    if (System.getProperty("kevoree.offline") != null && System.getProperty("kevoree.offline").equals("true")){
+      urls = List()
+    } else {
+      urls = buildPotentialMavenURL(du.eContainer.asInstanceOf[ContainerRoot])
+    }
 
     val repositories: java.util.List[RemoteRepository] = new java.util.ArrayList();
     urls.foreach {
