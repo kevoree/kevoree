@@ -180,4 +180,8 @@ class ModelHandlerServiceProxy extends KevoreeModelHandlerService with DaemonAct
   def releaseLock(uuid: UUID) {
     proxy.releaseLock(uuid)
   }
+
+  def checkModel(targetModel: ContainerRoot): Boolean = {
+    proxy.checkModel(targetModel)
+  }
 }

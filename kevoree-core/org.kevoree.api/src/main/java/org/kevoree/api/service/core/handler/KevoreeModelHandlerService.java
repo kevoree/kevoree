@@ -57,4 +57,6 @@ public interface KevoreeModelHandlerService {
 
     public void releaseLock(UUID uuid);
 
+    public boolean checkModel(ContainerRoot targetModel);
+
 }

@@ -65,4 +65,5 @@ class ModelHandlerServiceWrapper(kernel : KevoreeUIKernel) extends KevoreeModelH
 
   def releaseLock(uuid: UUID) {}
 
+  def checkModel(targetModel: ContainerRoot): Boolean = true
 }

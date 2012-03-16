@@ -27,8 +27,7 @@ trait UpdateNodeKompare extends AbstractKompare with UpdateChannelKompare {
 
   def getUpdateNodeAdaptationModel(actualNode: ContainerNode, updateNode: ContainerNode): AdaptationModel = {
     val adaptationModel = org.kevoreeAdaptation.KevoreeAdaptationFactory.eINSTANCE.createAdaptationModel
-    logger.info("UPDATE NODE " + actualNode.getName)
-
+    logger.debug("UPDATE NODE " + actualNode.getName)
 
     val actualRoot = actualNode.eContainer.asInstanceOf[ContainerRoot]
     val updateRoot = updateNode.eContainer.asInstanceOf[ContainerRoot]
@@ -212,6 +211,16 @@ trait UpdateNodeKompare extends AbstractKompare with UpdateChannelKompare {
         }
     }
 
+    //SELF DICTIONARY CHECK
+    if (updateNode.getDictionary.getOrElse(KevoreeFactory.createDictionary)
+      .isUpdated(actualNode.getDictionary.getOrElse(KevoreeFactory.createDictionary))) {
+      val adaptcmd = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive
+      adaptcmd.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.UpdateDictionaryInstance,
+        actualNode.eContainer.asInstanceOf[ContainerRoot]))
+      adaptcmd.setRef(updateNode)
+      adaptationModel.addAdaptations(adaptcmd)
+    }
+
     //INSTANCE STEP
     updateNode.getInstances.foreach {
       uc =>
@@ -300,12 +309,6 @@ trait UpdateNodeKompare extends AbstractKompare with UpdateChannelKompare {
 
             } else {
               //CHECK IS DICTIONARY IS UPDATED
-              /* if (uc.getDictionary.isEmpty) {
-                                         uc.setDictionary(Some(KevoreeFactory.createDictionary))
-                                       }
-                                       if (c.getDictionary.isEmpty) {
-                                         c.setDictionary(Some(KevoreeFactory.createDictionary))
-                                       } */
               if (uc.getDictionary.getOrElse(KevoreeFactory.createDictionary)
                 .isUpdated(c.getDictionary.getOrElse(KevoreeFactory.createDictionary))) {
                 val adaptcmd = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive

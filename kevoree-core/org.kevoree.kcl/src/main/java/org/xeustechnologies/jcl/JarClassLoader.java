@@ -13,6 +13,9 @@
  */
 package org.xeustechnologies.jcl;
 
+import org.xeustechnologies.jcl.exception.JclException;
+import org.xeustechnologies.jcl.exception.ResourceNotFoundException;
+
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.net.URL;
@@ -23,16 +26,11 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.kevoree.kcl.KevoreeJarClassLoader;
-import org.xeustechnologies.jcl.exception.JclException;
-import org.xeustechnologies.jcl.exception.ResourceNotFoundException;
-
 /**
  * Reads the class bytes from jar files and other resources using
  * ClasspathResources
- * 
+ *
  * @author Kamran Zafar
- * 
  */
 @SuppressWarnings("unchecked")
 public class JarClassLoader extends AbstractClassLoader {
@@ -45,150 +43,149 @@ public class JarClassLoader extends AbstractClassLoader {
     private char classNameReplacementChar;
     private final ProxyClassLoader localLoader = new LocalLoader();
 
-    private static Logger logger = Logger.getLogger( JarClassLoader.class.getName() );
+    private static Logger logger = Logger.getLogger(JarClassLoader.class.getName());
 
     private final JarClassLoader selfPointer = this;
 
     public JarClassLoader() {
         classpathResources = new ClasspathResources();
-        classes = Collections.synchronizedMap( new HashMap<String, Class>() );
+        classes = Collections.synchronizedMap(new HashMap<String, Class>());
         initialize();
     }
 
 
     /**
      * Some initialisations
-     * 
      */
     public void initialize() {
-        loaders.add( localLoader );
+        loaders.add(localLoader);
     }
 
     /**
      * Loads classes from different sources
-     * 
+     *
      * @param sources
      */
     public JarClassLoader(Object[] sources) {
         this();
-        addAll( sources );
+        addAll(sources);
     }
 
     /**
      * Loads classes from different sources
-     * 
+     *
      * @param sources
      */
     public JarClassLoader(List sources) {
         this();
-        addAll( sources );
+        addAll(sources);
     }
 
     /**
      * Add all jar/class sources
-     * 
+     *
      * @param sources
      */
     public void addAll(Object[] sources) {
         for (Object source : sources) {
-            add( source );
+            add(source);
         }
     }
 
     /**
      * Add all jar/class sources
-     * 
+     *
      * @param sources
      */
     public void addAll(List sources) {
         for (Object source : sources) {
-            add( source );
+            add(source);
         }
     }
 
     /**
      * Loads local/remote source
-     * 
+     *
      * @param source
      */
     public void add(Object source) {
         if (source instanceof InputStream)
-            add( (InputStream) source );
+            add((InputStream) source);
         else if (source instanceof URL)
-            add( (URL) source );
+            add((URL) source);
         else if (source instanceof String)
-            add( (String) source );
+            add((String) source);
         else
-            throw new JclException( "Unknown Resource type" );
+            throw new JclException("Unknown Resource type");
 
     }
 
     /**
      * Loads local/remote resource
-     * 
+     *
      * @param resourceName
      */
     public void add(String resourceName) {
-        classpathResources.loadResource( resourceName );
+        classpathResources.loadResource(resourceName);
     }
 
     /**
      * Loads classes from InputStream
-     * 
+     *
      * @param jarStream
      */
     public void add(InputStream jarStream) {
-        classpathResources.loadJar( jarStream );
+        classpathResources.loadJar(jarStream);
     }
 
     /**
      * Loads local/remote resource
-     * 
+     *
      * @param url
      */
     public void add(URL url) {
-        classpathResources.loadResource( url );
+        classpathResources.loadResource(url);
     }
 
     /**
      * Reads the class bytes from different local and remote resources using
      * ClasspathResources
-     * 
+     *
      * @param className
      * @return byte[]
      */
     protected byte[] loadClassBytes(String className) {
-        className = formatClassName( className );
+        className = formatClassName(className);
 
-        return classpathResources.getResource( className );
+        return classpathResources.getResource(className);
     }
 
     /**
      * Attempts to unload class, it only unloads the locally loaded classes by
      * JCL
-     * 
+     *
      * @param className
      */
     public void unloadClass(String className) {
-        if (logger.isLoggable( Level.FINEST ))
-            logger.finest( "Unloading class " + className );
+        if (logger.isLoggable(Level.FINEST))
+            logger.finest("Unloading class " + className);
 
-        if (classes.containsKey( className )) {
-            if (logger.isLoggable( Level.FINEST ))
-                logger.finest( "Removing loaded class " + className );
-            classes.remove( className );
+        if (classes.containsKey(className)) {
+            if (logger.isLoggable(Level.FINEST))
+                logger.finest("Removing loaded class " + className);
+            classes.remove(className);
             try {
-                classpathResources.unload( formatClassName( className ) );
+                classpathResources.unload(formatClassName(className));
             } catch (ResourceNotFoundException e) {
-                throw new JclException( "Something is very wrong!!!"
-                        + "The locally loaded classes must be in synch with ClasspathResources", e );
+                throw new JclException("Something is very wrong!!!"
+                        + "The locally loaded classes must be in synch with ClasspathResources", e);
             }
         } else {
             try {
-                classpathResources.unload( formatClassName( className ) );
+                classpathResources.unload(formatClassName(className));
             } catch (ResourceNotFoundException e) {
-                throw new JclException( "Class could not be unloaded "
-                        + "[Possible reason: Class belongs to the system]", e );
+                throw new JclException("Class could not be unloaded "
+                        + "[Possible reason: Class belongs to the system]", e);
             }
         }
     }
@@ -198,27 +195,26 @@ public class JarClassLoader extends AbstractClassLoader {
      * @return String
      */
     protected String formatClassName(String className) {
-        className = className.replace( '/', '~' );
+        className = className.replace('/', '~');
 
         if (classNameReplacementChar == '\u0000') {
             // '/' is used to map the package to the path
-            className = className.replace( '.', '/' ) + ".class";
+            className = className.replace('.', '/') + ".class";
         } else {
             // Replace '.' with custom char, such as '_'
-            className = className.replace( '.', classNameReplacementChar ) + ".class";
+            className = className.replace('.', classNameReplacementChar) + ".class";
         }
 
-        className = className.replace( '~', '/' );
+        className = className.replace('~', '/');
         return className;
     }
 
     /**
      * Local class loader
-     * 
      */
     class LocalLoader extends ProxyClassLoader {
 
-        private final Logger logger = Logger.getLogger( LocalLoader.class.getName() );
+        private final Logger logger = Logger.getLogger(LocalLoader.class.getName());
 
         public LocalLoader() {
             order = 1;
@@ -227,53 +223,66 @@ public class JarClassLoader extends AbstractClassLoader {
 
         @Override
         public Class loadClass(String className, boolean resolveIt) {
+          //  System.out.println("Try to loadClass");
             Class result = null;
-            byte[] classBytes;
-
-            result = classes.get( className );
+            result = classes.get(className);
             if (result != null) {
-                if (logger.isLoggable( Level.FINEST ))
-                    logger.finest( "Returning local loaded class [" + className + "] from cache" );
+                if (logger.isLoggable(Level.FINEST))
+                    logger.finest("Returning local loaded class [" + className + "] from cache");
+                return result;
+            } else {
+                byte[] classBytes = loadClassBytes(className);
+                if(classBytes != null){
+                    return p_loadClass(className, resolveIt,classBytes);
+                } else {
+                    return null;
+                }
+            }
+
+        }
+
+        public synchronized Class p_loadClass(String className, boolean resolveIt,byte[] classBytes) {
+            Class result = null;
+            result = classes.get(className); //ALWAYS TRY
+            if (result != null) {
+                if (logger.isLoggable(Level.FINEST))
+                    logger.finest("Returning local loaded class [" + className + "] from cache");
                 return result;
             }
-
-            classBytes = loadClassBytes( className );
-            if (classBytes == null) {
-                return null;
-            }
-
-            result = defineClass( className, classBytes, 0, classBytes.length );
-
+            result = defineClass(className, classBytes, 0, classBytes.length);
             if (result == null) {
                 return null;
             }
 
             /*
-             * Preserve package name.
-             */
+            * Preserve package name.
+            */
             if (result.getPackage() == null) {
-                String packageName = className.substring( 0, className.lastIndexOf( '.' ) );
-                definePackage( packageName, null, null, null, null, null, null, null );
+                String packageName = className.substring(0, className.lastIndexOf('.'));
+                definePackage(packageName, null, null, null, null, null, null, null);
             }
 
-            if (resolveIt)
-                resolveClass( result );
+            /*
+        if (resolveIt)
+            resolveClass(result);*/
 
-            classes.put( className, result );
-            if (logger.isLoggable( Level.FINEST ))
-                logger.finest( "Return new local loaded class " + className );
-
+            classes.put(className, result);
+            if (logger.isLoggable(Level.FINEST))
+                logger.finest("Return new local loaded class " + className);
+            //TO REMOVE
+            //classpathResources.unload( formatClassName( className ) );
             return result;
         }
 
+
         @Override
         public InputStream loadResource(String name) {
-            byte[] arr = classpathResources.getResource( name );
+            byte[] arr = classpathResources.getResource(name);
             if (arr != null) {
-                if (logger.isLoggable( Level.FINEST ))
-                    logger.finest( "Returning newly loaded resource " + name );
+                if (logger.isLoggable(Level.FINEST))
+                    logger.finest("Returning newly loaded resource " + name);
 
-                return new ByteArrayInputStream( arr );
+                return new ByteArrayInputStream(arr);
             }
 
             return null;
@@ -290,7 +299,7 @@ public class JarClassLoader extends AbstractClassLoader {
 
     /**
      * Returns all loaded classes and resources
-     * 
+     *
      * @return Map
      */
     public Map<String, byte[]> getLoadedResources() {
@@ -306,10 +315,10 @@ public class JarClassLoader extends AbstractClassLoader {
 
     /**
      * Returns all JCL-loaded classes as an immutable Map
-     * 
+     *
      * @return Map
      */
     public Map<String, Class> getLoadedClasses() {
-        return Collections.unmodifiableMap( classes );
+        return Collections.unmodifiableMap(classes);
     }
 }
