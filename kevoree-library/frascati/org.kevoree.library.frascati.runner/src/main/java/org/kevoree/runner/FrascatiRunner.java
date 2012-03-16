@@ -19,7 +19,7 @@ public class FrascatiRunner {
         System.setProperty("node.bootstrap", FrascatiRunner.class.getClassLoader().getResource("run.kev").getPath());
         System.setProperty("node.name", "node0");
         System.setProperty("node.log.level","DEBUG");
-        System.setProperty("node.update.timeout","100000");
+        System.setProperty("node.update.timeout","1000000");
 
         App.main(args);
 
