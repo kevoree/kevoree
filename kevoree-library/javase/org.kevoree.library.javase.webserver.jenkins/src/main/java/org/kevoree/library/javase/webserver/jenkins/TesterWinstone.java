@@ -20,7 +20,10 @@ import org.codehaus.groovy.tools.shell.Main;
 public class TesterWinstone {
 
     public static void main(String[] args) throws Exception {
-        
+
+
+
+        System.out.println(TesterWinstone.class.getClassLoader().getResource("javax/servlet/resources/web-app_2_5.xsd"));
 
         JenkinsServer server = new JenkinsServer();
         server.startServer();

@@ -35,9 +35,7 @@ public class App {
 
     protected void start() {
 
-      //  System.setProperty("actors.enableForkJoin", "false");
-
-
+       // System.setProperty("actors.enableForkJoin", "false");
         DefaultSystem.saveSystemFlux();
 
         // System.setProperty("actors.corePoolSize", "10");
