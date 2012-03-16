@@ -35,6 +35,7 @@ import ref.WeakReference
 import org.slf4j.LoggerFactory
 import java.io._
 import java.util.{HashMap, ArrayList, Collections, Enumeration}
+import java.util.concurrent.ConcurrentHashMap
 
 /**
  * Created by IntelliJ IDEA.
@@ -160,6 +161,19 @@ class KevoreeJarClassLoader extends JarClassLoader {
     result
   }
 
+  private val scoreMap = new ConcurrentHashMap[Int,Int]
+
+  def getScore(kcl : ClassLoader):Int={
+    if(scoreMap.containsKey(kcl.hashCode())){
+      scoreMap.get(kcl.hashCode())
+    } else {
+      0
+    }
+  }
+  def incScore(kcl : ClassLoader):Int={
+    scoreMap.put(kcl.hashCode(),getScore(kcl)+1)
+  }
+
   def internal_loadClass(className: String, resolveIt: Boolean): Class[_] = {
     var result: Class[_] = null
     result = callSuperConcreteLoader(className, resolveIt)
@@ -167,7 +181,14 @@ class KevoreeJarClassLoader extends JarClassLoader {
       return result
     }
     if (resolveIt) {
-      subClassLoaders.foreach {
+      /*
+      println("Score =")
+      subClassLoaders.sortWith((e1, e2) => (getScore(e1) > getScore(e2))).foreach{
+        sub => println(getScore(sub)+"-"+sub.toString)
+      }
+      println("---")
+      */
+      subClassLoaders.sortWith((e1, e2) => (getScore(e1) > getScore(e2))).foreach {
         subCL =>
           result = subCL match {
             case kcl: KevoreeJarClassLoader => kcl.internal_loadClass(className, false)
@@ -180,10 +201,11 @@ class KevoreeJarClassLoader extends JarClassLoader {
             }
           }
           if (result != null) {
+            incScore(subCL)
             return result
           }
       }
-      subWeakClassLoaders.foreach {
+      subWeakClassLoaders.filter(p => p.get.isDefined).sortWith((e1, e2) => ( getScore(e1.get.get) < getScore(e2.get.get))).foreach {
         subCL =>
           try {
             subCL.get.map {
@@ -199,6 +221,7 @@ class KevoreeJarClassLoader extends JarClassLoader {
                   }
                 }
                 if (result != null) {
+                  incScore(m)
                   return result
                 }
             }
