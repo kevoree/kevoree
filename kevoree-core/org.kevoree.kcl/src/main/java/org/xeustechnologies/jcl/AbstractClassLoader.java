@@ -35,11 +35,7 @@ import org.xeustechnologies.jcl.utils.Utils;
 @SuppressWarnings("unchecked")
 public abstract class AbstractClassLoader extends ClassLoader {
 
-
-
-
     protected final List<ProxyClassLoader> loaders = new ArrayList<ProxyClassLoader>();
-
     private final ProxyClassLoader systemLoader = new SystemLoader();
     private final ProxyClassLoader parentLoader = new ParentLoader();
     private final ProxyClassLoader currentLoader = new CurrentLoader();
