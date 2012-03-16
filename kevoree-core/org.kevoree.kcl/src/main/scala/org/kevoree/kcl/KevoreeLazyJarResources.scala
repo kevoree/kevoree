@@ -156,47 +156,54 @@ class KevoreeLazyJarResources extends ClasspathResources {
                   detectedResourcesURL.get(jarEntry.getName).add(new URL("jar:" + baseurl + "!/" + jarEntry.getName))
                 }
               } else {
-                val b = new Array[Byte](2048)
-                val out = new ByteArrayOutputStream();
-                var len = 0;
-                while (len != -1) {
-
-                  //while (jis.available() > 0) {
-                  len = jis.read(b);
-                  if (len > 0) {
-                    out.write(b, 0, len);
-                  }
-                }
-                out.flush()
-                out.close()
-                val key_url = "file:kclstream:" + jarStream.hashCode() + jarEntry.getName
-                if (jarEntry.getName.endsWith(".class")) {
-                  jarContentURL.put(jarEntry.getName, new URL(key_url))
-                } else {
+                if (!jarEntry.getName.endsWith(".class") && baseurl != null) { //IF URL OK , DON'T COPY RESOURCES
                   if (!detectedResourcesURL.containsKey(jarEntry.getName)) {
                     detectedResourcesURL.put(jarEntry.getName, new ArrayList[URL]())
                   }
-                  detectedResourcesURL.get(jarEntry.getName).add(new URL(key_url))
-                }
-                if (jarEntry.getName.endsWith(".jar")) {
-
-                  if (baseurl != null) {
-                    val subRUL = new URL("jar:" + baseurl + "!/" + jarEntry.getName)
-                    lastLoadedJars = lastLoadedJars ++ List(subRUL)
-                  }
-
-                  //  println("subParentURL="+baseurl +jarEntry.getName)
-                  logger.debug("KCL Found sub Jar => " + jarEntry.getName)
-                  loadJar(new ByteArrayInputStream(out.toByteArray))
+                  detectedResourcesURL.get(jarEntry.getName).add(new URL("jar:" + baseurl + "!/" + jarEntry.getName))
                 } else {
-                  if (jarEntry.getName.endsWith(".class")) {
-                    jarEntryContents.put(jarEntry.getName, out.toByteArray)
-                  } else {
+                  val b = new Array[Byte](2048)
+                  val out = new ByteArrayOutputStream();
+                  var len = 0;
+                  while (len != -1) {
 
-                    detectedResources.put(new URL(key_url), out.toByteArray)
-
+                    //while (jis.available() > 0) {
+                    len = jis.read(b);
+                    if (len > 0) {
+                      out.write(b, 0, len);
+                    }
                   }
+                  out.flush()
+                  out.close()
+                  val key_url = "file:kclstream:" + jarStream.hashCode() + jarEntry.getName
+                  if (jarEntry.getName.endsWith(".class")) {
+                    jarContentURL.put(jarEntry.getName, new URL(key_url))
+                  } else {
+                    if (!detectedResourcesURL.containsKey(jarEntry.getName)) {
+                      detectedResourcesURL.put(jarEntry.getName, new ArrayList[URL]())
+                    }
+                    detectedResourcesURL.get(jarEntry.getName).add(new URL(key_url))
+                  }
+                  if (jarEntry.getName.endsWith(".jar")) {
+                    if (baseurl != null) {
+                      val subRUL = new URL("jar:" + baseurl + "!/" + jarEntry.getName)
+                      lastLoadedJars = lastLoadedJars ++ List(subRUL)
+                    }
+
+                    //  println("subParentURL="+baseurl +jarEntry.getName)
+                    logger.debug("KCL Found sub Jar => " + jarEntry.getName)
+                    loadJar(new ByteArrayInputStream(out.toByteArray))
+                  } else {
+                    if (jarEntry.getName.endsWith(".class")) {
+                      jarEntryContents.put(jarEntry.getName, out.toByteArray)
+                    } else {
+                      detectedResources.put(new URL(key_url), out.toByteArray)
+                    }
+                  }
+
                 }
+
+
               }
             }
           }
