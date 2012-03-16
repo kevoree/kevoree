@@ -6,9 +6,10 @@ import org.kevoreeAdaptation.AdaptationPrimitive
 import org.kevoree.ContainerRoot
 import org.ow2.frascati.FraSCAti
 import org.slf4j.LoggerFactory
-import org.kevoree.library.frascatiNodeTypes.FrascatiClassLoaderWrapper
 import org.objectweb.fractal.api.Component
 import org.kevoree.library.defaultNodeTypes.jcl.deploy.context.{KevoreeDeployManager, KevoreeMapping}
+import org.kevoree.library.frascatiNodeTypes.{FrascatiNode, FrascatiClassLoaderWrapper}
+import org.kevoree.kcl.KevoreeJarClassLoader
 
 
 /**
@@ -39,7 +40,7 @@ case class FrascatiAddInstance(adaptationPrimitive: AdaptationPrimitive, frascat
         
 
         
-        val component: Component = frascati.getComposite(compositeURL.toString, new FrascatiClassLoaderWrapper(kcl))
+        val component: Component = frascati.getComposite(compositeURL.toString, new FrascatiClassLoaderWrapper(classOf[FrascatiNode].getClassLoader.asInstanceOf[KevoreeJarClassLoader]))
         KevoreeDeployManager.addMapping(KevoreeMapping(c_instance.getName, c_instance.getClass.getName, component))
         //   }
         // }.start()

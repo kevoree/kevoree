@@ -131,8 +131,8 @@ public class FelixShell extends JPanel {
         layoutBOTTOM.setBorder(null);
         add(layoutBOTTOM, BorderLayout.SOUTH);
 
-        System.setOut(STDwriter);
-        System.setErr(ERRwriter);
+       System.setOut(STDwriter);
+       System.setErr(ERRwriter);
 
 
 
