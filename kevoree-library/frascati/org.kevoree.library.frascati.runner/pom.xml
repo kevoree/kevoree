@@ -50,11 +50,9 @@
                         <id>run</id>
                         <mainClass>org.kevoree.runner.FrascatiRunner
                         </mainClass>
-                        <args>
-                            <arg>arg1</arg>
-                        </args>
                         <jvmArgs>
-                            <jvmArg>-Xmx128m</jvmArg>
+                            <jvmArg>-Xmx4096m</jvmArg>
+                            <jvmArg>-Xms512m</jvmArg>
                         </jvmArgs>
                     </launcher>
 

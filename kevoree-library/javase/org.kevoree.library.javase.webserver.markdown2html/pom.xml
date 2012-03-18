@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>org.kevoree.library.javase.root</artifactId>
+        <groupId>org.kevoree.library.javase</groupId>
+        <version>1.6.0-BETA6</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <packaging>jar</packaging>
+
+    <artifactId>org.kevoree.library.javase.webserver.markdowntohtmlWarTuto</artifactId>
+    <name>Kevoree :: Library :: JavaSE :: WebServer :: MarkDownToHtmlWarTuto</name>
+
+    <properties>
+        <gwtVersion>2.4.0</gwtVersion>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	<webappDirectory>${project.build.directory}/${project.build.finalName}</webappDirectory>
+	<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <hibernate.version>4.1.0.Final</hibernate.version>
+	<kevoree.include>*:*</kevoree.include> 
+
+  </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.kevoree.library.javase</groupId>
+            <artifactId>org.kevoree.library.javase.webserver</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.kevoree.library.javase</groupId>
+            <artifactId>org.kevoree.library.javase.webserver.servlet</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
+	<dependency>
+            <groupId>com.google.gwt</groupId>
+            <artifactId>gwt-servlet</artifactId>
+            <version>${gwtVersion}</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+    <!--<outputDirectory>${webappDirectory}/WEB-INF/classes</outputDirectory>-->
+        <resources>
+            <resource>
+                <directory>${basedir}/src/main/webapp/</directory>
+            </resource>
+            <resource>
+                <directory>
+                    ${project.build.directory}/${project.build.finalName}
+                </directory>
+            </resource>
+        </resources>
+
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>gwt-maven-plugin</artifactId>
+                <version>2.4.0</version>
+                <executions>
+                    <execution>
+                        <phase>generate-resources</phase>
+                        <configuration>
+<!--                            <module>org.kevoree.library.javase.webserver.markdown2htmlwar.Markdown2htmlwar</module>-->
+                            <module>org.kevoree.library.javase.webserver.markdown2htmlwar.Markdown2htmlwar</module>
+                        
+                <localWorkers>4</localWorkers>
+                <!-- use style OBF for prod -->
+                <style>OBFUSCATED</style>                   
+                <extraJvmArgs>-Xmx2048m -Xss1024k</extraJvmArgs>
+                <gwtVersion>${version.gwt}</gwtVersion>
+          <runTarget>TarificateurDirectM.html</runTarget>
+          <hostedWebapp>${webappDirectory}</hostedWebapp>
+          <i18nMessagesBundle>fr.directm.tarificateur.client.Messages</i18nMessagesBundle>
+        </configuration>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.kevoree.tools</groupId>
+                <artifactId>org.kevoree.tools.annotation.mavenplugin</artifactId>
+                <version>${kevoree.version}</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <nodeTypeNames>JavaSENode</nodeTypeNames>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generate</goal>
+                            <goal>compile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>
