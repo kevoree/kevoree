@@ -68,7 +68,7 @@ trait KCLBootstrap extends  Bootstraper {
          // KevoreeDeployManager.addMapping(KevoreeJCLBundle(buildKEY(du), du.getClass.getName,kcl, -1 ))
           Some(kcl)
         } else {
-          logger.error("Can't resolve node type")
+          logger.error("Can't resolve deploy unit "+du.getUnitName)
           None
         }
       } catch {
