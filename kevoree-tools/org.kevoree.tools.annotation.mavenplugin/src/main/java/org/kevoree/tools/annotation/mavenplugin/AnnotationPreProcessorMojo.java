@@ -27,6 +27,7 @@ import org.kevoree.ContainerRoot;
 import org.kevoree.framework.KevoreeXmiHelper;
 import org.kevoree.framework.annotation.processor.visitor.KevoreeAnnotationProcessor;
 import org.kevoree.merger.KevoreeMergerComponent;
+import org.sonatype.aether.repository.RemoteRepository;
 
 import javax.tools.*;
 import java.io.*;
@@ -614,14 +615,15 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
             }
         }
         String otherRepositories = ";";
+      
+
         Iterator repoIterator = project.getRepositories().iterator();
         while (repoIterator.hasNext()) {
             Repository repo = (Repository) repoIterator.next();
             otherRepositories += ";" + repo.getUrl();
         }
-
-        String thirdParties = ";";
         
+        String thirdParties = ";";
         for(Dependency dep : ThirdPartyManagement.processKevoreeProperty(project,getLog())){
             thirdParties += ";" + dep.getGroupId() + "/" + dep.getArtifactId() + "/" + toBaseVersion(dep.getVersion()) +"/"+ dep.getType();
         }

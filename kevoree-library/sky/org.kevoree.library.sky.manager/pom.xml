@@ -13,7 +13,9 @@
     <name>Kevoree :: Library :: Sky :: Manager</name>
 
     <properties>
-        <kevoree.include>org.kevoree.extra:org.kevoree.extra.spray,org.kevoree.library.javase:*,org.kevoree:*,se.scalablesolutions.akka:akka-actor</kevoree.include>
+        <kevoree.include>
+            org.kevoree.extra:org.kevoree.extra.spray,org.kevoree.library.javase:*,org.kevoree:*,se.scalablesolutions.akka:akka-actor
+        </kevoree.include>
     </properties>
 
     <dependencies>
@@ -40,5 +42,13 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+    <repositories>
+        <repository>
+            <id>typesafe</id>
+            <name>Typesafe Repository</name>
+            <url>http://repo.typesafe.com/typesafe/releases/</url>
+        </repository>
+    </repositories>
 
 </project>
