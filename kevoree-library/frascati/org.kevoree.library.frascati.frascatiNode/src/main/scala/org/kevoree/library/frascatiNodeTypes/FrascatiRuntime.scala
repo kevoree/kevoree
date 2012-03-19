@@ -58,8 +58,6 @@ class FrascatiRuntime extends Actor {
         }
         case ExecuteContextCommand(cmd: PrimitiveCommand) => {
           try {
-            println("I will execute on Thread "+Thread.currentThread().getName+"-"+Thread.currentThread().getId)
-            
             reply(cmd.execute())
           } catch {
             case _@e => {
