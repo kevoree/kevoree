@@ -38,11 +38,11 @@ public class JarClassLoader extends AbstractClassLoader {
     /**
      * Class cache
      */
-    protected final Map<String, Class> classes;
+    //protected final Map<String, Class> classes;
 
     protected ClasspathResources classpathResources;
     private char classNameReplacementChar;
-    private final ProxyClassLoader localLoader = new LocalLoader();
+   // private final ProxyClassLoader localLoader = new LocalLoader();
 
     private static Logger logger = Logger.getLogger(JarClassLoader.class.getName());
 
@@ -50,17 +50,18 @@ public class JarClassLoader extends AbstractClassLoader {
 
     public JarClassLoader() {
         classpathResources = new ClasspathResources();
-        classes = Collections.synchronizedMap(new HashMap<String, Class>());
-        initialize();
+        //classes = Collections.synchronizedMap(new HashMap<String, Class>());
+        //initialize();
     }
 
 
     /**
      * Some initialisations
      */
+    /*
     public void initialize() {
         loaders.add(localLoader);
-    }
+    }*/
 
     /**
      * Loads classes from different sources
@@ -155,9 +156,8 @@ public class JarClassLoader extends AbstractClassLoader {
      * @param className
      * @return byte[]
      */
-    protected byte[] loadClassBytes(String className) {
+    public byte[] loadClassBytes(String className) {
         className = formatClassName(className);
-
         return classpathResources.getResource(className);
     }
 
@@ -170,7 +170,7 @@ public class JarClassLoader extends AbstractClassLoader {
     public void unloadClass(String className) {
         if (logger.isLoggable(Level.FINEST))
             logger.finest("Unloading class " + className);
-
+/*
         if (classes.containsKey(className)) {
             if (logger.isLoggable(Level.FINEST))
                 logger.finest("Removing loaded class " + className);
@@ -188,7 +188,7 @@ public class JarClassLoader extends AbstractClassLoader {
                 throw new JclException("Class could not be unloaded "
                         + "[Possible reason: Class belongs to the system]", e);
             }
-        }
+        }*/
     }
 
     /**
@@ -226,7 +226,8 @@ public class JarClassLoader extends AbstractClassLoader {
         public Class loadClass(String className, boolean resolveIt) {
             //  System.out.println("Try to loadClass");
             Class result = null;
-            result = classes.get(className);
+            //result = classes.get(className);
+            result = findLoadedClass(className);
             if (result != null) {
                 if (logger.isLoggable(Level.FINEST))
                     logger.finest("Returning local loaded class [" + className + "] from cache");
@@ -241,45 +242,15 @@ public class JarClassLoader extends AbstractClassLoader {
 
         }
 
-     //   private Semaphore loadSema = new Semaphore(1);
-
         private Class p_loadClass(String className, boolean resolveIt, byte[] classBytes) {
             Class result = null;
             try {
-            //    loadSema.acquire();
-               // System.out.println("lock "+className);
-                result = classes.get(className); //ALWAYS TRY
-                if (result != null) {
-                    if (logger.isLoggable(Level.FINEST))
-                        logger.finest("Returning local loaded class [" + className + "] from cache");
-                    return result;
-                }
-                result = defineClass(className, classBytes, 0, classBytes.length);
-                if (result == null) {
-                    return null;
-                }
-                /*
-                * Preserve package name.
-                */
-                if (result.getPackage() == null) {
-                    String packageName = className.substring(0, className.lastIndexOf('.'));
-                    definePackage(packageName, null, null, null, null, null, null, null);
-                }
-                /*
-            if (resolveIt)
-                resolveClass(result);*/
-                classes.put(className, result);
-                if (logger.isLoggable(Level.FINEST))
-                    logger.finest("Return new local loaded class " + className);
-                //TO REMOVE
-                //classpathResources.unload( formatClassName( className ) );
-                //System.out.println("Ok my result will be "+result);
-                return result;
-
+                result = findLoadedClass(className);
+                if(result == null){result = defineClass(className, classBytes, 0, classBytes.length);}
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            return null;
+            return result;
         }
 
 
@@ -317,16 +288,18 @@ public class JarClassLoader extends AbstractClassLoader {
     /**
      * @return Local JCL ProxyClassLoader
      */
+    /*
     public ProxyClassLoader getLocalLoader() {
         return localLoader;
-    }
+    }*/
 
     /**
      * Returns all JCL-loaded classes as an immutable Map
      *
      * @return Map
      */
+    /*
     public Map<String, Class> getLoadedClasses() {
         return Collections.unmodifiableMap(classes);
-    }
+    }*/
 }
