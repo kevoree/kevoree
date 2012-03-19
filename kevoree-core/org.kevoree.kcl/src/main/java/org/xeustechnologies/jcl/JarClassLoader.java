@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Semaphore;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -223,7 +224,7 @@ public class JarClassLoader extends AbstractClassLoader {
 
         @Override
         public Class loadClass(String className, boolean resolveIt) {
-          //  System.out.println("Try to loadClass");
+            //  System.out.println("Try to loadClass");
             Class result = null;
             result = classes.get(className);
             if (result != null) {
@@ -232,46 +233,53 @@ public class JarClassLoader extends AbstractClassLoader {
                 return result;
             } else {
                 byte[] classBytes = loadClassBytes(className);
-                if(classBytes != null){
-                    return p_loadClass(className, resolveIt,classBytes);
-                } else {
-                    return null;
+                if (classBytes != null) {
+                    result = p_loadClass(className, resolveIt, classBytes);
                 }
+                return result;
             }
 
         }
 
-        public synchronized Class p_loadClass(String className, boolean resolveIt,byte[] classBytes) {
+     //   private Semaphore loadSema = new Semaphore(1);
+
+        private Class p_loadClass(String className, boolean resolveIt, byte[] classBytes) {
             Class result = null;
-            result = classes.get(className); //ALWAYS TRY
-            if (result != null) {
+            try {
+            //    loadSema.acquire();
+               // System.out.println("lock "+className);
+                result = classes.get(className); //ALWAYS TRY
+                if (result != null) {
+                    if (logger.isLoggable(Level.FINEST))
+                        logger.finest("Returning local loaded class [" + className + "] from cache");
+                    return result;
+                }
+                result = defineClass(className, classBytes, 0, classBytes.length);
+                if (result == null) {
+                    return null;
+                }
+                /*
+                * Preserve package name.
+                */
+                if (result.getPackage() == null) {
+                    String packageName = className.substring(0, className.lastIndexOf('.'));
+                    definePackage(packageName, null, null, null, null, null, null, null);
+                }
+                /*
+            if (resolveIt)
+                resolveClass(result);*/
+                classes.put(className, result);
                 if (logger.isLoggable(Level.FINEST))
-                    logger.finest("Returning local loaded class [" + className + "] from cache");
+                    logger.finest("Return new local loaded class " + className);
+                //TO REMOVE
+                //classpathResources.unload( formatClassName( className ) );
+                //System.out.println("Ok my result will be "+result);
                 return result;
-            }
-            result = defineClass(className, classBytes, 0, classBytes.length);
-            if (result == null) {
-                return null;
-            }
 
-            /*
-            * Preserve package name.
-            */
-            if (result.getPackage() == null) {
-                String packageName = className.substring(0, className.lastIndexOf('.'));
-                definePackage(packageName, null, null, null, null, null, null, null);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-
-            /*
-        if (resolveIt)
-            resolveClass(result);*/
-
-            classes.put(className, result);
-            if (logger.isLoggable(Level.FINEST))
-                logger.finest("Return new local loaded class " + className);
-            //TO REMOVE
-            //classpathResources.unload( formatClassName( className ) );
-            return result;
+            return null;
         }
 
 
