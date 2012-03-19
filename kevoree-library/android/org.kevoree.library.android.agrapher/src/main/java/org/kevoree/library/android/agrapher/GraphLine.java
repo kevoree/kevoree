@@ -26,7 +26,7 @@ public class GraphLine {
     private GraphicalView StatsChartView;
     private LinkedList<Double> data = new LinkedList<Double>();
     private XYSeries series;
-    private  int max_points =5;
+    private  int max_points =50;
     private int color_axes = Color.GRAY;
     private int color_courbe = Color.RED;
 
@@ -49,15 +49,20 @@ public class GraphLine {
     public GraphicalView CreateView(Context context){
         StatsRenderer.setAxesColor(color_axes);
         StatsDataset.addSeries(series);
+        StatsRenderer.setXAxisMin(0);
+        StatsRenderer.setXAxisMax(max_points);
         XYSeriesRenderer renderer = new XYSeriesRenderer();
         renderer.setColor(color_courbe);
         renderer.setLineWidth(3);
         StatsRenderer.addSeriesRenderer(renderer);
         StatsChartView =ChartFactory.getLineChartView(context, StatsDataset,StatsRenderer);
+
+
         return StatsChartView;
     }
 
-    public void refreshLine() {
+    public synchronized void refreshLine() {
+
         try
         {
            series.clear();
@@ -83,19 +88,18 @@ public class GraphLine {
     {
         if (data.size() > max_points-1) {
             data.removeFirst();
+            refreshLine();
         }
 
         if (value > StatsRenderer.getXAxisMax()) {
-            StatsRenderer.setXAxisMax(value);
+            StatsRenderer.setYAxisMax(value);
         }
 
         if (value < StatsRenderer.getXAxisMin()) {
-            StatsRenderer.setXAxisMax(value);
+            StatsRenderer.setYAxisMin(value);
         }
-
-
         data.addLast(value);
-        refreshLine();
+
     }
 
 }
