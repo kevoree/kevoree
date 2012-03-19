@@ -274,6 +274,7 @@ object KloudHelper {
   }
 
   def sendModel (model: ContainerRoot, urlPath: String): Boolean = {
+    logger.debug("send model on {}",urlPath);
     try {
       val outStream: ByteArrayOutputStream = new ByteArrayOutputStream
       KevoreeXmiHelper.saveStream(outStream, model)
