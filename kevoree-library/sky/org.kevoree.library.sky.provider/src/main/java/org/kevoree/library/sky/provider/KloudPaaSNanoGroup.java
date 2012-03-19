@@ -217,13 +217,22 @@ public class KloudPaaSNanoGroup extends AbstractGroupType {
 				break;
 			}
 		}
+
 		if (!sent) {
-			logger.debug("try to send model on url=>" + "http://127.0.0.1:" + PORT + "/model/current" + param);
-			if (!KloudHelper.sendModel(model, "http://127.0.0.1:" + PORT + "/model/current" + param)) {
-				logger.debug("Unable to push a model on {}", targetNodeName);
-				logger.debug("try to send model using master node property");
-				if (!KloudHelper.sendModel(model, this.getDictionary().get("masterNode").toString() + param)) {
-					logger.debug("Unable to send model using master node property");
+			if (getDictionary().get("masterNode") != null) {
+				for (String ipPort : KloudHelper.getMasterIP_PORT(getDictionary().get("masterNode").toString())) {
+					logger.debug("send model on {} using masterNode" + ipPort);
+					sent = KloudHelper.sendModel(model, "http://" + ipPort + "/model/current");
+				}
+			}
+			if (!sent) {
+				logger.debug("try to send model on url=>" + "http://127.0.0.1:" + PORT + "/model/current" + param);
+				if (!KloudHelper.sendModel(model, "http://127.0.0.1:" + PORT + "/model/current" + param)) {
+					logger.debug("Unable to push a model on {}", targetNodeName);
+					logger.debug("try to send model using master node property");
+					if (!KloudHelper.sendModel(model, this.getDictionary().get("masterNode").toString() + param)) {
+						logger.debug("Unable to send model using master node property");
+					}
 				}
 			}
 		}
