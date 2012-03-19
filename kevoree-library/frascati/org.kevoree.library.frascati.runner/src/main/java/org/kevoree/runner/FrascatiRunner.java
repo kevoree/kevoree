@@ -16,8 +16,8 @@ public class FrascatiRunner {
      //   System.setProperty("kevoree.offline","true");
         System.setProperty("node.bootstrap", FrascatiRunner.class.getClassLoader().getResource("run.kev").getPath());
         System.setProperty("node.name", "node0");
-        System.setProperty("node.log.level","DEBUG");
-        System.setProperty("node.update.timeout","30000");
+        //System.setProperty("node.log.level","DEBUG");
+        //System.setProperty("node.update.timeout","30000");
         App.main(args);
     }
 
