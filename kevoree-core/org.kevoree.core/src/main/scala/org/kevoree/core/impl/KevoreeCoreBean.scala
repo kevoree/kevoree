@@ -294,6 +294,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
       .warn("unknow message  " + unknow.toString + " - sender" + sender.toString + "-" + this.getClass.getName)
   }
 
+
   private def internal_update_model(pnewmodel: ContainerRoot): Boolean = {
     if (pnewmodel == null || !pnewmodel.getNodes.exists(p => p.getName == getNodeName())) {
       logger.error("Asking for update with a NULL model or node name was not found in target model !")
@@ -325,8 +326,14 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
 
             var newmodel = cloner.clone(pnewmodel)
             //CHECK FOR HARA KIRI
+
+            var previousHaraKiriModel: ContainerRoot = null
+
             if (HaraKiriHelper.detectNodeHaraKiri(model, newmodel, getNodeName())) {
               logger.warn("HaraKiri detected , flush platform")
+
+              previousHaraKiriModel = model
+
               // Creates an empty model, removes the current node (harakiri)
               newmodel = checkUnbootstrapNode(model).get
               try {
@@ -384,6 +391,11 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
             } else {
               //KEEP FAIL MODEL, TODO
               logger.warn("Update failed")
+              //IF HARAKIRI
+              if (previousHaraKiriModel != null) {
+                internal_update_model(previousHaraKiriModel)
+                previousHaraKiriModel = null //CLEAR
+              }
             }
             val milliEnd = System.currentTimeMillis - milli
             logger.debug("End deploy result=" + deployResult + "-" + milliEnd)
