@@ -5,11 +5,11 @@
     <packaging>jar</packaging>
     <name>Kevoree :: AdaptationModel</name>
 
-    <version>1.6.0-BETA6</version>
+    <version>1.6.0-BETA7</version>
     <parent>
         <artifactId>org.kevoree.root</artifactId>
         <groupId>org.kevoree</groupId>
-        <version>1.6.0-BETA6</version>
+        <version>1.6.0-BETA7</version>
         <relativePath>../org.kevoree.root/pom.xml</relativePath>
     </parent>
 
