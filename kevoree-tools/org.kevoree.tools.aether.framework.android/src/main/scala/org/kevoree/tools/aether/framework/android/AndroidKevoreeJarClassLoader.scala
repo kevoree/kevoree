@@ -98,7 +98,8 @@ class AndroidKevoreeJarClassLoader(gkey: String, ctx: android.content.Context, p
           case nf: ClassNotFoundException =>
         }
     }
-    throw new ClassNotFoundException(className)
+    null
+    //throw new ClassNotFoundException(className)
   }
 
   override def unload() {
