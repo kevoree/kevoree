@@ -42,9 +42,11 @@ class FrascatiRuntime extends Actor {
       receive {
         case StartRuntime() => {
 
+
           //val fcl = new FrascatiClassLoader(classOf[FrascatiNode].getClassLoader) {
             val fcl = new FrascatiClassLoaderWrapper(classOf[FrascatiNode].getClassLoader.asInstanceOf[KevoreeJarClassLoader])
           Thread.currentThread().setContextClassLoader(fcl);
+
           internal_frascati = FraSCAti.newFraSCAti(fcl);
           reply(internal_frascati)
         }

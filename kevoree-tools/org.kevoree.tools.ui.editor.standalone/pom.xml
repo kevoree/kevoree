@@ -272,6 +272,29 @@
             </plugin>
 
 
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>osxappbundle-maven-plugin</artifactId>
+                <version>1.0-alpha-2</version>
+                <configuration>
+                    <bundleName>KevoreeEditor</bundleName>
+                    <jvmVersion>1.6+</jvmVersion>
+                    <mainClass>org.kevoree.tools.ui.editor.standalone.App</mainClass>
+                    <iconFile>${basedir}/src/main/resources/kev-logo-full.icns</iconFile>
+                    <!--  Created by interpolate-infoplist above -->
+               <!--     <dictionaryFile>${basedir}/src/main/resources/Info.plist</dictionaryFile> -->
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>bundle</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+
         </plugins>
     </build>
 
