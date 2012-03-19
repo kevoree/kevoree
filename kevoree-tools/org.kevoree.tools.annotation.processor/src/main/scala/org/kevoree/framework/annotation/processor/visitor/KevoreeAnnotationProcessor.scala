@@ -33,6 +33,7 @@ import javax.tools.Diagnostic.Kind
 import org.kevoree.annotation._
 import javax.lang.model.SourceVersion
 import javax.lang.model.element.TypeElement
+import java.util.HashSet
 
 class KevoreeAnnotationProcessor() extends javax.annotation.processing.AbstractProcessor {
 
@@ -80,6 +81,9 @@ class KevoreeAnnotationProcessor() extends javax.annotation.processing.AbstractP
     return SourceVersion.latest
   }
 
+  private val threadProtectionAsked = new HashSet[String]
+
+
   def process(annotations: java.util.Set[_ <: TypeElement], roundEnv: RoundEnvironment): Boolean = {
 
     if (annotations.size() == 0) {
@@ -88,6 +92,11 @@ class KevoreeAnnotationProcessor() extends javax.annotation.processing.AbstractP
 
     val root = KevoreeFactory.eINSTANCE.createContainerRoot
     LocalUtility.root = (root)
+    /* Look for reserved thread protection */
+    roundEnv.getElementsAnnotatedWith(classOf[org.kevoree.annotation.ReservedThread]).foreach {
+      typeDecl =>
+        threadProtectionAsked.add(typeDecl.getSimpleName.toString)
+    }
     roundEnv.getElementsAnnotatedWith(classOf[org.kevoree.annotation.ComponentType]).foreach {
       typeDecl =>
         processComponentType(typeDecl.getAnnotation(classOf[org.kevoree.annotation.ComponentType]), typeDecl.asInstanceOf[TypeElement], root)
