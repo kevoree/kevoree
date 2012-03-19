@@ -27,7 +27,5 @@ public interface IController extends KevoreeAndroidUIScreen {
 	boolean handleMessage(Request req);
 	boolean handleMessage(Request req, Object data);
 	boolean handleMessage(Request req,String key,  View data);
-
-
     public ManagerUI getViewManager();
 }

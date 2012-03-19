@@ -55,7 +55,6 @@ public class BaseKevoreeUI extends LinearLayout {
         super(context);
         ctx = context;
         this.kController = kController;
-
         initUI();
         configUI();
         callbacksUI();
