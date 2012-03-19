@@ -75,16 +75,27 @@ public class MarkDown2Html extends AbstractPage {
     public KevoreeHttpResponse process(final KevoreeHttpRequest request, final KevoreeHttpResponse response) {
 
     	
-    	MyTask t = new MyTask(servletRepository, request, response);
+    	/*MyTask t = new MyTask(servletRepository, request, response);
     	t.start();
     	try {
 			t.join();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-    	
     	if (t.isResult())
     		return response;
+    		*/
+    	ClassLoader l = Thread.currentThread().getContextClassLoader();
+    	Thread.currentThread().setContextClassLoader(MarkDown2HtmlService.class.getClassLoader() );
+    	boolean res = servletRepository.tryURL(request.getUrl(),request,response);
+    	Thread.currentThread().setContextClassLoader(l );
+    	if ( res ){	
+    		return response;
+    		
+    	}
+        
+    	
+    	
         if (FileServiceHelper.checkStaticFile(request.getUrl(), this, request, response)) {
             return response;
         }
