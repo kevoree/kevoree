@@ -46,6 +46,12 @@ import java.util.concurrent.ConcurrentHashMap
 
 class KevoreeJarClassLoader extends JarClassLoader {
 
+  classpathResources = new KevoreeLazyJarResources
+  classpathResources.asInstanceOf[KevoreeLazyJarResources].setParentKCL(this)
+  val local_loader = new KevoreeLocalLoader(classpathResources.asInstanceOf[KevoreeLazyJarResources],this)
+  local_loader.start()
+  addLoader(local_loader)
+
   private val nativeMap = new HashMap[String, String]();
 
   def addNativeMapping(name: String, url: String) {
@@ -116,8 +122,7 @@ class KevoreeJarClassLoader extends JarClassLoader {
     subWeakClassLoaders = subWeakClassLoaders.filter(scl => scl.get.isDefined && scl.get.get != c)
   }
 
-  classpathResources = new KevoreeLazyJarResources
-  classpathResources.asInstanceOf[KevoreeLazyJarResources].setParentKCL(this)
+
 
   def setLazyLoad(lazyload: Boolean) {
     classpathResources.asInstanceOf[KevoreeLazyJarResources].setLazyLoad(lazyload)
@@ -233,6 +238,14 @@ class KevoreeJarClassLoader extends JarClassLoader {
     result
   }
 
+  def getLoadedClass(className: String) : Class[_] = {
+    findLoadedClass(className)
+  }
+  
+  def internal_defineClass(className: String,bytes : Array[Byte]) : Class[_] = {
+    defineClass(className, bytes, 0, bytes.length)
+  }
+  
   override def loadClass(className: String): Class[_] = {
     loadClass(className, true)
   }
@@ -296,7 +309,6 @@ class KevoreeJarClassLoader extends JarClassLoader {
   }
 
   def internal_getResource(s: String): URL = {
-
     if (classpathResources.asInstanceOf[KevoreeLazyJarResources].containResource(s)) {
       if (classpathResources.asInstanceOf[KevoreeLazyJarResources].getResourceURL(s).toString.startsWith("file:kclstream:")) {
         val cleanName = if (s.contains("/")) {
@@ -323,11 +335,13 @@ class KevoreeJarClassLoader extends JarClassLoader {
   }
 
   def unload() {
+    local_loader.killActor()
+    /*
     import scala.collection.JavaConversions._
     (this.getLoadedClasses.keySet().toList ++ List()).foreach {
       lc =>
         unloadClass(lc)
-    }
+    }*/
   }
 
   override def findResource(s: java.lang.String): java.net.URL = {
