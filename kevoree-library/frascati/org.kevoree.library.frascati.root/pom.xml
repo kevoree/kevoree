@@ -6,7 +6,7 @@
     <artifactId>org.kevoree.library.frascati.root</artifactId>
     <packaging>pom</packaging>
     <name>Kevoree :: Library :: Frascati :: Root</name>
-    <version>1.6.0-BETA5</version>
+    <version>1.6.0-BETA6</version>
 
     <parent>
         <artifactId>org.kevoree.library</artifactId>

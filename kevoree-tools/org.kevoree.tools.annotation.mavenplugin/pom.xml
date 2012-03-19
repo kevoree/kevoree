@@ -26,28 +26,6 @@
             <artifactId>slf4j-jdk14</artifactId>
             <version>1.6.2</version>
         </dependency>
-<!--
-        <dependency>
-            <groupId>org.codehaus.plexus</groupId>
-            <artifactId>plexus-utils</artifactId>
-            <version>2.0.6</version>
-        </dependency>
-        <dependency>
-            <groupId>org.codehaus.plexus</groupId>
-            <artifactId>plexus-compiler-api</artifactId>
-            <version>1.8.1</version>
-        </dependency>
-        <dependency>
-            <groupId>asm</groupId>
-            <artifactId>asm</artifactId>
-            <version>3.3.1</version>
-        </dependency>
-        <dependency>
-            <groupId>asm</groupId>
-            <artifactId>asm-commons</artifactId>
-            <version>3.3.1</version>
-        </dependency>
--->
         <dependency>
             <groupId>org.scala-lang</groupId>
             <artifactId>scala-compiler</artifactId>
@@ -78,22 +56,9 @@
             <artifactId>org.kevoree.framework</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
-<!--
-        <dependency>
-            <groupId>org.bsc.maven</groupId>
-            <artifactId>maven-processor-plugin</artifactId>
-            <version>2.0.5</version>
-        </dependency>
--->
-
     </dependencies>
 
     <repositories>
-        <repository>
-            <id>scala-tools.org</id>
-            <name>Scala-tools Maven2 Repository</name>
-            <url>http://scala-tools.org/repo-releases</url>
-        </repository>
         <repository>
             <id>kevoree-libs-release-local</id>
             <url>http://maven.kevoree.org/release/</url>
@@ -101,11 +66,6 @@
     </repositories>
 
     <pluginRepositories>
-        <pluginRepository>
-            <id>plugin.scala-tools.org</id>
-            <name>Plugin Scala-tools Maven2 Repository</name>
-            <url>http://scala-tools.org/repo-releases</url>
-        </pluginRepository>
         <pluginRepository>
             <id>plugin.kevoree-github</id>
             <url>http://maven.kevoree.org/release/</url>

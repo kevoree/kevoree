@@ -38,8 +38,8 @@ object MainRunner {
   def main(args: Array[String]): Unit = {
     println("Hello, world!")
 
-    val model = KevoreeXmiHelper.load("/Users/duke/Desktop/arduinoTest.kev")
-    KevsModelHandlers.put(1,model)
+    //val model = KevoreeXmiHelper.load("/Users/duke/Desktop/arduinoTest.kev")
+    //KevsModelHandlers.put(1,model)
 
 
 
