@@ -23,11 +23,7 @@ import android.widget.LinearLayout;
 import org.kevoree.platform.android.boot.utils.KObservable;
 import org.kevoree.platform.android.ui.KevoreeAndroidUIScreen;
 
-import java.util.HashSet;
 import java.util.LinkedList;
-import java.util.Set;
-import java.util.TreeSet;
-import java.util.concurrent.ConcurrentSkipListSet;
 
 /**
  * Created by jed
@@ -38,44 +34,45 @@ import java.util.concurrent.ConcurrentSkipListSet;
 public class ManagerUI extends KObservable<ManagerUI> implements KevoreeAndroidUIScreen, ActionBar.TabListener {
 
     private static final String TAG = ManagerUI.class.getSimpleName();
-    private LinkedList<ActionBar.Tab> views = new LinkedList<ActionBar.Tab>();
+    private LinkedList<ActionBar.Tab> tabs = new LinkedList<ActionBar.Tab>();
     private FragmentActivity ctx = null;
-    private ActionBar.Tab currentTab = null;
+    private int selectedTab = 0;
 
     public ManagerUI(FragmentActivity context) {
         this.ctx = context;
         ctx.getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
     }
 
+    /**
+     * this method is charge of restoring views during a rotation of the screen
+     */
     public void restoreViews(FragmentActivity newctx) {
-        ctx.getSupportActionBar().removeAllTabs(); //Remove from all context
+        ctx.getSupportActionBar().removeAllTabs();
         newctx.getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-        ctx = newctx; //Save new context
-
-        LinkedList<ActionBar.Tab> newViews = new LinkedList<ActionBar.Tab>();
-        newViews.addAll(views);
-        views.clear();
-
-        for (ActionBar.Tab tab : newViews) {
-            String tabName = tab.getText().toString();
-            Log.i(TAG, "Restore " + tab.getText());
+        ctx = newctx;
+        LinkedList<ActionBar.Tab>  backup =new LinkedList<ActionBar.Tab>();
+        backup.addAll(tabs);
+        tabs.clear();
+        for (ActionBar.Tab tab : backup) {
+            Log.i(TAG,"Restore "+tab.getText());
             // if exist remove parent
             if (tab.getCustomView().getParent() != null) {
                 ((ViewGroup) tab.getCustomView().getParent()).removeView(tab.getCustomView());
             }
-            
-            ActionBar.Tab newTab = ctx.getSupportActionBar().newTab();
-            newTab.setText(tab.getText());
-            //newTab.setCustomView(tab.getCustomView());
-            views.add(newTab);
-            ctx.getSupportActionBar().addTab(newTab);
+            LinearLayout tabLayout = (LinearLayout) tab.getCustomView();
+            int childcount = tabLayout.getChildCount();
+            for (int i=0; i < childcount; i++)
+            {
+                View v = tabLayout.getChildAt(i);
+                // remove link to linearlayout
+                if(v.getParent() != null)
+                {
+                    ((ViewGroup) v.getParent()).removeView(v);
+                }
+                addToGroup(tab.getText().toString(),v);
+            }
         }
-
-
-
-        if (currentTab != null) {
-            currentTab.select();
-        }
+        ctx.getSupportActionBar().setSelectedNavigationItem(selectedTab);
     }
 
 
@@ -83,7 +80,6 @@ public class ManagerUI extends KObservable<ManagerUI> implements KevoreeAndroidU
     public void addToGroup(String groupKey, View view) {
         ActionBar.Tab idTab = getTabById(groupKey);
         Log.i("KevoreeBoot", "Add" + groupKey + "-" + idTab + "-" + view);
-
         if (idTab == null) {
             idTab = ctx.getSupportActionBar().newTab();
             idTab.setText(groupKey);
@@ -91,31 +87,51 @@ public class ManagerUI extends KObservable<ManagerUI> implements KevoreeAndroidU
             ctx.getSupportActionBar().addTab(idTab);
             LinearLayout tabLayout = new LinearLayout(ctx);
             idTab.setCustomView(tabLayout);
-            views.add(idTab);
+            tabs.add(idTab);
         }
         ((LinearLayout) idTab.getCustomView()).addView(view);
 
+        if(selectedTab == idTab.getPosition()){
+            ctx.setContentView(idTab.getCustomView());
+        }
         /// Set the screen content to an the groupkey
-        ctx.setContentView(idTab.getCustomView());
         notifyObservers(this);
     }
 
 
     @Override
-    public void removeView(View view) {
-        for (ActionBar.Tab idTab : views) {
-            if (idTab != null) {
-                LinearLayout l = (LinearLayout) idTab.getCustomView();
-                l.removeView(view);
-                if (l.getChildCount() == 0) {
-                    ctx.getSupportActionBar().removeTab(idTab);
-                    views.remove(idTab);
+    public void removeView(View view)
+    {
+        LinkedList<ActionBar.Tab>  newtabs =new LinkedList<ActionBar.Tab>();
+        for (ActionBar.Tab tab : tabs)
+        {
+            LinearLayout tabLayout = (LinearLayout) tab.getCustomView();
+            int childcount = tabLayout.getChildCount();
+            for (int i=0; i < childcount; i++)
+            {
+                View v = tabLayout.getChildAt(i);
+                if(v.equals(view))
+                {
+                    tabLayout.removeView(view);
                 }
             }
+            if(tabLayout.getChildCount() == 0)
+            {
+                if(tab.getPosition() == selectedTab)
+                {
+                    selectedTab =0;
+                }
+                ctx.getSupportActionBar().removeTab(tab);
+            }
+            else
+            {
+                newtabs.add(tab);
+            }
         }
+        tabs.clear();
+        tabs.addAll(newtabs);
         notifyObservers(this);
     }
-
 
     @Override
     public void onTabReselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
@@ -123,7 +139,7 @@ public class ManagerUI extends KObservable<ManagerUI> implements KevoreeAndroidU
     }
 
     public ActionBar.Tab getTabById(String id) {
-        for (ActionBar.Tab t : views) {
+        for (ActionBar.Tab t : tabs) {
             if (t.getText().equals(id)) {
                 return t;
             }
@@ -139,8 +155,7 @@ public class ManagerUI extends KObservable<ManagerUI> implements KevoreeAndroidU
                 ((ViewGroup) tab.getCustomView().getParent()).removeView(tab.getCustomView());
             }
             ctx.setContentView(tab.getCustomView());
-            Log.i("fuck",tab.getText().toString());
-            currentTab = tab;
+            selectedTab = tab.getPosition();
         }
     }
 
