@@ -22,4 +22,8 @@ package org.kevoree.tools.marShell.ast
  * @version 1.0
  */
 
-case class MoveChildStatment (childNodeName: String, oldFatherNodeName : String, fatherNodeName: String) extends Statment {}
+case class MoveChildStatment (childNodeName: String, oldFatherNodeName : String, fatherNodeName: String) extends Statment {
+  def getTextualForm: String = {
+    ""
+  }
+}
