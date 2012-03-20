@@ -15,6 +15,7 @@ package org.kevoree.library.sky.jails
  */
 
 import log.{ProcessStreamManager, ResultManagementActor}
+import nodeType.JailNode
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.lang.Thread
@@ -22,7 +23,6 @@ import util.matching.Regex
 import org.kevoree.library.sky.manager.KevoreeNodeRunner
 import scala.Array._
 import java.io._
-import org.kevoree.library.sky.manager.nodeType.IaaSNode
 import org.kevoree.{KevoreeFactory, ContainerRoot}
 import org.kevoree.framework.{KevoreeXmiHelper, Constants, KevoreePropertyHelper}
 
@@ -35,7 +35,7 @@ import org.kevoree.framework.{KevoreeXmiHelper, Constants, KevoreePropertyHelper
  * @author Erwan Daubert
  * @version 1.0
  */
-class JailKevoreeNodeRunner(nodeName: String, inet: String, subnet: String, mask: String, flavor: String,iaasNode : IaaSNode) extends KevoreeNodeRunner(nodeName) {
+class JailKevoreeNodeRunner (iaasNode: JailNode) extends KevoreeNodeRunner(iaasNode.getNodeName) {
 
   private val logger: Logger = LoggerFactory.getLogger(this.getClass)
 
@@ -52,7 +52,7 @@ class JailKevoreeNodeRunner(nodeName: String, inet: String, subnet: String, mask
 
   var nodeProcess: Process = null
 
-  def startNode(iaasModel : ContainerRoot,jailBootStrapModel : ContainerRoot): Boolean = {
+  def startNode (iaasModel: ContainerRoot, jailBootStrapModel: ContainerRoot): Boolean = {
     logger.debug("Start " + nodeName)
     // looking for currently launched jail
     listJailsProcessBuilder = new ProcessBuilder
@@ -84,13 +84,13 @@ class JailKevoreeNodeRunner(nodeName: String, inet: String, subnet: String, mask
         newIp = ipOption.get
       } else {
         // we create a new IP alias according to the existing ones
-        newIp = PropertyHelper.lookingForNewIp(ips, subnet, mask)
+        newIp = PropertyHelper.lookingForNewIp(ips, iaasNode.getNetwork, iaasNode.getMask)
       }
 
       val resultActor2 = new ResultManagementActor()
       resultActor2.starting()
-      logger.debug("running {} {} alias {}", Array[AnyRef](ifconfig, inet, newIp))
-      p = Runtime.getRuntime.exec(Array[String](ifconfig, inet, "alias", newIp))
+      logger.debug("running {} {} alias {}", Array[AnyRef](ifconfig, iaasNode.getNetworkInterface, newIp))
+      p = Runtime.getRuntime.exec(Array[String](ifconfig, iaasNode.getNetworkInterface, "alias", newIp))
       new Thread(new
           ProcessStreamManager(resultActor2, p.getInputStream, Array(), Array(new Regex("ifconfig: ioctl \\(SIOCDIFADDR\\): .*")), p))
         .start()
@@ -100,8 +100,8 @@ class JailKevoreeNodeRunner(nodeName: String, inet: String, subnet: String, mask
 
         val resultActor = new ResultManagementActor()
         resultActor.starting()
-        logger.debug("running {} create -f {} {} {}", Array[AnyRef](ezjailAdmin, flavor, nodeName, newIp))
-        p = Runtime.getRuntime.exec(Array[String](ezjailAdmin, "create", "-f", flavor, nodeName, newIp))
+        logger.debug("running {} create -f {} {} {}", Array[AnyRef](ezjailAdmin, iaasNode.getFlavor, nodeName, newIp))
+        p = Runtime.getRuntime.exec(Array[String](ezjailAdmin, "create", "-f", iaasNode.getFlavor, nodeName, newIp))
         new Thread(new ProcessStreamManager(resultActor, p.getErrorStream, Array(), Array(new Regex("^Error.*")), p)).start()
         result = resultActor.waitingFor(120000)
         if (result._1) {
@@ -124,8 +124,8 @@ class JailKevoreeNodeRunner(nodeName: String, inet: String, subnet: String, mask
               }
           }
 
-          val platformFile = iaasNode.getBootStrapperService.resolveKevoreeArtifact("org.kevoree.platform.standalone","org.kevoree.platform",KevoreeFactory.getVersion);
-          KevoreeXmiHelper.save(jailPath + File.separator + "root" + File.separator + "bootstrapmodel.kev",jailBootStrapModel)
+          val platformFile = iaasNode.getBootStrapperService.resolveKevoreeArtifact("org.kevoree.platform.standalone", "org.kevoree.platform", KevoreeFactory.getVersion);
+          KevoreeXmiHelper.save(jailPath + File.separator + "root" + File.separator + "bootstrapmodel.kev", jailBootStrapModel)
           if (PropertyHelper.copyFile(platformFile.getAbsolutePath, jailPath + File.separator + "root" + File.separator + "kevoree-runtime.jar")) {
 
             // specify limitation on jail such as CPU, RAM
@@ -158,7 +158,7 @@ class JailKevoreeNodeRunner(nodeName: String, inet: String, subnet: String, mask
                       case _ =>
                     }
                 }
-              /*  val root = LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME).asInstanceOf[Logger]
+                /*  val root = LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME).asInstanceOf[Logger]
                 var debug = "ERROR"
                 if (root.isWarnEnabled) {
                   debug = "WARN"
@@ -170,7 +170,7 @@ class JailKevoreeNodeRunner(nodeName: String, inet: String, subnet: String, mask
                   debug = "DEBUG" // TODO must  be use to set the log level of the kevoree core
                 }*/
                 var exec = Array[String](jexec, jailId, "/usr/local/bin/java", "-Dnode.name=" + nodeName, "-Dnode.bootstrap=" + File.separator + "root" + File.separator + "bootstrapmodel.kev",
-                  "-Dnode.log.level=INFO"/* + debug*/)
+                                          "-Dnode.log.level=INFO" /* + debug*/)
                 exec = exec ++ Array[String]("-jar", File.separator + "root" + File.separator + "kevoree-runtime.jar")
                 logger.debug("trying to launch {} {} {} {} {} {} {} {}", exec)
                 nodeProcess = Runtime.getRuntime.exec(exec)
@@ -219,7 +219,7 @@ class JailKevoreeNodeRunner(nodeName: String, inet: String, subnet: String, mask
 
   }
 
-  def stopNode(): Boolean = {
+  def stopNode (): Boolean = {
     logger.debug("stop " + nodeName)
     // looking for the jail that must be at least created
     val resultActor = new ResultManagementActor()
@@ -261,13 +261,13 @@ class JailKevoreeNodeRunner(nodeName: String, inet: String, subnet: String, mask
           // release IP alias to allow next IP select to use this one
           val resultActor = new ResultManagementActor()
           resultActor.starting()
-          p = Runtime.getRuntime.exec(Array[String](ifconfig, inet, "-alias", oldIP))
+          p = Runtime.getRuntime.exec(Array[String](ifconfig, iaasNode.getNetworkInterface, "-alias", oldIP))
           new Thread(new
               ProcessStreamManager(resultActor, p.getInputStream, Array(), Array(new Regex("ifconfig: ioctl \\(SIOCDIFADDR\\): .*")), p))
             .start()
           result = resultActor.waitingFor(1000)
           if (!result._1) {
-            logger.debug("unable to release ip alias {} for the network interface {}", oldIP, inet)
+            logger.debug("unable to release ip alias {} for the network interface {}", oldIP, iaasNode.getNetworkInterface)
           }
           true
         } else {
@@ -285,9 +285,9 @@ class JailKevoreeNodeRunner(nodeName: String, inet: String, subnet: String, mask
     }
   }
 
-  class ProcessStreamFileLogger(inputStream: InputStream, file: File)
+  class ProcessStreamFileLogger (inputStream: InputStream, file: File)
     extends Runnable {
-    override def run() {
+    override def run () {
       try {
         val outputStream = new FileWriter(file)
         val readerIn = new BufferedReader(new InputStreamReader(inputStream))
