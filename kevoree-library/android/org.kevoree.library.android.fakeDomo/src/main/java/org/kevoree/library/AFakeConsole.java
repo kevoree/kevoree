@@ -1,14 +1,10 @@
 package org.kevoree.library;
 
 import android.graphics.Color;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.text.method.ScrollingMovementMethod;
-import android.view.Display;
-import android.view.KeyEvent;
+import android.util.Log;
 import android.view.View;
 import android.widget.*;
-import android.widget.Button;
 import org.kevoree.android.framework.helper.UIServiceHandler;
 import org.kevoree.android.framework.service.KevoreeAndroidService;
 import org.kevoree.annotation.*;
@@ -72,7 +68,8 @@ public class AFakeConsole extends AbstractComponentType {
             @Override
             public void onClick(View view) {
                 if (isPortBinded("textEntered")) {
-                    getPortByName("textEntered", MessagePort.class).process(texteditor.getText());
+                    getPortByName("textEntered", MessagePort.class).process(texteditor.getText().toString()+"\n");
+                    Log.i("Sending", texteditor.getText().toString());
                 }
             }
         });
@@ -105,6 +102,13 @@ public class AFakeConsole extends AbstractComponentType {
                     } else {
                         textview.append("->"+text.toString());
                     }
+
+                    final int scrollAmount = textview.getLayout().getLineTop(textview.getLineCount()) - textview.getHeight();
+
+                    if (scrollAmount > 0)
+                        textview.scrollTo(0, scrollAmount);
+                    else
+                        textview.scrollTo(0, 0);
                 }
 
             }
