@@ -19,5 +19,7 @@
 package org.kevoree.tools.marShell.ast
 
 case class RemoveNodeStatment(nodeName : String) extends Statment {
-
+  def getTextualForm: String = {
+    ""
+  }
 }

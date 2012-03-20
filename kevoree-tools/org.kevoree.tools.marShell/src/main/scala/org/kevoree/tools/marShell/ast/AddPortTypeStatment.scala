@@ -20,5 +20,7 @@ package org.kevoree.tools.marShell.ast
 
 /* None className assume Message Port Type */
 case class AddPortTypeStatment(portTypeName : String,componentTypeName : String,className : Option[String]) extends TypeStatment {
-
+  def getTextualForm: String = {
+    ""
+  }
 }

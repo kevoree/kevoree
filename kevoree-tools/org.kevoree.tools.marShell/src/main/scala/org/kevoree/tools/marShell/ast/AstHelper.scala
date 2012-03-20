@@ -20,5 +20,15 @@ object AstHelper {
     TransactionalBloc(List(s))
   }
 
+  def toStringDictionary(dico : java.util.Properties) : String = {
+    val buffer = new StringBuffer()
+    buffer.append("{")
+    import scala.collection.JavaConversions._
+    dico.keys().foreach(k => {
+      buffer.append(k+"='"+dico.get(k)+"'")
+    })
+    buffer.append("}")
+    buffer.toString
+  }
 
 }

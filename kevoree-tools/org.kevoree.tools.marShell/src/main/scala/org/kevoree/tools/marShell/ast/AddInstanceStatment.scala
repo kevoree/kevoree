@@ -14,8 +14,12 @@
 package org.kevoree.tools.marShell.ast
 
 
-class AddInstanceStatment(pprops : java.util.Properties) extends Statment {
+class AddInstanceStatment(pprops: java.util.Properties) extends Statment {
 
-    def props = pprops
+  def props = pprops
+
+  def getTextualForm: String = {
+    ""
+  }
 
 }

@@ -21,4 +21,8 @@ package org.kevoree.tools.marShell.ast
  * To change this template use File | Settings | File Templates.
  */
 
-case class MergeStatement(url : String) extends Statment {}
+case class MergeStatement(url : String) extends Statment {
+  def getTextualForm: String = {
+    ""
+  }
+}

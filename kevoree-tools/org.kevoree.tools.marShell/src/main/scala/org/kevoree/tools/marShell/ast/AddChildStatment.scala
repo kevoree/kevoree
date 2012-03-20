@@ -23,5 +23,7 @@ package org.kevoree.tools.marShell.ast
  */
 
 case class AddChildStatment (childNodeName: String, fatherNodeName: String) extends Statment {
-
+  def getTextualForm: String = {
+    ""
+  }
 }

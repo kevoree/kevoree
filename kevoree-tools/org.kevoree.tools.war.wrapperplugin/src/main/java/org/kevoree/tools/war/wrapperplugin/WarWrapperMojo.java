@@ -86,6 +86,10 @@ public class WarWrapperMojo extends AbstractMojo {
                 getLog().info("Dowloading = " + war + " -> " + tempWarFile.getAbsolutePath());
                 UrlHelper.getFile(war, tempWarFile);
             }
+
+
+
+            /*
             ZipHelper.unzipToTempDir(tempWarFile, outputClasses);
             BundlerHelper.copyWebInf(outputClasses);
 
@@ -106,7 +110,7 @@ public class WarWrapperMojo extends AbstractMojo {
             resource2.setTargetPath("KEV-INF");
             project.getResources().add(resource2);
             
-
+*/
             //GENERATE KEVOREE COMPONENT WRAPPER
             /*
             Dependency dep = new Dependency();
@@ -134,9 +138,9 @@ public class WarWrapperMojo extends AbstractMojo {
             dep3.setScope("compile");
             project.getCompileDependencies().add(dep3);*/
 
-            WrapperGenerator.generate(sourceOutputDirectory,project,BundlerHelper.getWebInfParams(outputClasses),lsjars);
+            //WrapperGenerator.generate(sourceOutputDirectory,project,BundlerHelper.getWebInfParams(outputClasses),lsjars);
 
-            project.getBuild().setSourceDirectory(sourceOutputDirectory.getAbsolutePath());
+            //project.getBuild().setSourceDirectory(sourceOutputDirectory.getAbsolutePath());
 
         } catch (Exception e) {
             e.printStackTrace();
