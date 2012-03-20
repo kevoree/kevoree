@@ -55,28 +55,50 @@ public class ControllerImpl implements IController  {
                 ctx.stopService(intent_stop);
                 System.exit(0);
                 break;
-        }
-        return false;
-    }
 
-    @Override
-    public boolean handleMessage(Request req, Object data) {
-        switch(req)
-        {
-            case KEVOREE_START:
-                Log.i(TAG, "KEVOREE_START");
-                Intent intent_start = new Intent(ctx, KevoreeService.class);
-                String nodeName = (String)data;
-                intent_start.putExtra("nodeName", nodeName);
-                ctx.startService(intent_start);
+            default:
+                Log.e(TAG, "THE Controller can't handle this message "+req);
                 break;
         }
         return false;
     }
 
     @Override
-    public boolean handleMessage(Request req, final String key, final View view) {
+    public boolean handleMessage(Request req, final Object data) {
+        switch(req)
+        {
+            case KEVOREE_START:
+                Log.i(TAG, "KEVOREE_START");
+                System.out.println("Kevoree is starting");
+                Intent intent_start = new Intent(ctx, KevoreeService.class);
+                String nodeName = (String)data;
+                intent_start.putExtra("nodeName", nodeName);
+                ctx.startService(intent_start);
+                break;
 
+            case REMOVE_VIEW:
+                Log.i(TAG, "MESSAGE_REMOVE_VIEW");
+                ctx.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        View viewtoremove =  (View) data;
+                        viewmanager.removeView(viewtoremove);
+                    }
+                });
+
+                break;
+
+            default:
+                Log.e(TAG, "THE Controller can't handle this message "+req);
+                break;
+
+
+        }
+        return false;
+    }
+
+    @Override
+    public boolean handleMessage(Request req, final String key, final View view) {
         switch(req)
         {
             case ADD_TO_GROUP:
@@ -89,17 +111,11 @@ public class ControllerImpl implements IController  {
                 });
 
                 break;
-
-            case REMOVE_VIEW:
-                Log.i(TAG, "MESSAGE_REMOVE_VIEW");
-                ctx.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        viewmanager.removeView(view);
-                    }
-                });
-
+            default:
+                Log.e(TAG, "THE Controller can't handle this message "+req);
                 break;
+
+
         }
         return false;
     }
