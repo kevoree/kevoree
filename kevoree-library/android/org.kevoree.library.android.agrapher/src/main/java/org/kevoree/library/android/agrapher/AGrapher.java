@@ -2,7 +2,7 @@ package org.kevoree.library.android.agrapher;
 
 import android.graphics.Color;
 import android.widget.LinearLayout;
-import org.archartengine.GraphicalView;
+import org.achartengine.GraphicalView;
 import org.kevoree.android.framework.helper.UIServiceHandler;
 import org.kevoree.android.framework.service.KevoreeAndroidService;
 import org.kevoree.annotation.*;
@@ -76,7 +76,6 @@ public class AGrapher extends AbstractComponentType  {
     }
 
     public void updateDico(){
-
         try
         {
             title=              getDictionary().get("title").toString() ;
