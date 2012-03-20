@@ -102,7 +102,7 @@ public class BaseKevoreeUI extends LinearLayout {
         addView(messages);
 
         STDwriter = new PrintStream(new PrintStreamTraceLogger(kController.getViewManager().getCtx(),messages, Color.BLACK));
-        ERRwriter = new PrintStream(new PrintStreamTraceLogger(kController.getViewManager().getCtx(),messages, Color.RED));
+        ERRwriter = new PrintStream(new PrintStreamTraceLogger(kController.getViewManager().getCtx(),messages, Color.BLACK));
         System.setOut(STDwriter);
         System.setErr(ERRwriter);
 

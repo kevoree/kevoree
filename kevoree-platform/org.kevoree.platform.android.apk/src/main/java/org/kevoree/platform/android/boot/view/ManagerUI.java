@@ -37,6 +37,7 @@ public class ManagerUI extends KObservable<ManagerUI> implements KevoreeAndroidU
     private LinkedList<ActionBar.Tab> tabs = new LinkedList<ActionBar.Tab>();
     private FragmentActivity ctx = null;
     private int selectedTab = 0;
+    private int ktab = -1;
 
     public ManagerUI(FragmentActivity context) {
         this.ctx = context;
@@ -46,7 +47,12 @@ public class ManagerUI extends KObservable<ManagerUI> implements KevoreeAndroidU
     /**
      * this method is charge of restoring views during a rotation of the screen
      */
-    public void restoreViews(FragmentActivity newctx) {
+    public void restoreViews(FragmentActivity newctx)
+    {
+        if(ctx.getSupportActionBar().getTabAt(selectedTab) == null)
+        {
+            selectedTab = ktab;
+        }
         ctx.getSupportActionBar().removeAllTabs();
         newctx.getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
         ctx = newctx;
@@ -64,15 +70,20 @@ public class ManagerUI extends KObservable<ManagerUI> implements KevoreeAndroidU
             for (int i=0; i < childcount; i++)
             {
                 View v = tabLayout.getChildAt(i);
-                // remove link to linearlayout
-                if(v.getParent() != null)
-                {
-                    ((ViewGroup) v.getParent()).removeView(v);
+                if(v != null){
+                    // remove link to linearlayout
+                    if(v.getParent() != null)
+                    {
+                        ((ViewGroup) v.getParent()).removeView(v);
+                    }
+                    addToGroup(tab.getText().toString(),v);
                 }
-                addToGroup(tab.getText().toString(),v);
             }
+        } try {
+            ctx.getSupportActionBar().setSelectedNavigationItem(selectedTab);
+        } catch (Exception e){
+            // ignore
         }
-        ctx.getSupportActionBar().setSelectedNavigationItem(selectedTab);
     }
 
 
@@ -93,6 +104,7 @@ public class ManagerUI extends KObservable<ManagerUI> implements KevoreeAndroidU
 
         if(selectedTab == idTab.getPosition()){
             ctx.setContentView(idTab.getCustomView());
+            ktab = selectedTab;
         }
         /// Set the screen content to an the groupkey
         notifyObservers(this);
@@ -102,6 +114,7 @@ public class ManagerUI extends KObservable<ManagerUI> implements KevoreeAndroidU
     @Override
     public void removeView(View view)
     {
+        Log.i("Request remove view","");
         LinkedList<ActionBar.Tab>  newtabs =new LinkedList<ActionBar.Tab>();
         for (ActionBar.Tab tab : tabs)
         {
@@ -110,16 +123,19 @@ public class ManagerUI extends KObservable<ManagerUI> implements KevoreeAndroidU
             for (int i=0; i < childcount; i++)
             {
                 View v = tabLayout.getChildAt(i);
-                if(v.equals(view))
-                {
-                    tabLayout.removeView(view);
+                if(v != null && view != null){
+                    if(v.equals(view))
+                    {
+                        tabLayout.removeView(view);
+                    }
                 }
             }
-            if(tabLayout.getChildCount() == 0)
+            Log.i("Remove view "+tab.getText()," "+((LinearLayout) tab.getCustomView()).getChildCount());
+            if(((LinearLayout) tab.getCustomView()).getChildCount() == 0)
             {
                 if(tab.getPosition() == selectedTab)
                 {
-                    selectedTab =0;
+                    selectedTab =ktab;
                 }
                 ctx.getSupportActionBar().removeTab(tab);
             }

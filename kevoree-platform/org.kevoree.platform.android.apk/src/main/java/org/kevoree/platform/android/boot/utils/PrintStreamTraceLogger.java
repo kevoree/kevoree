@@ -47,7 +47,7 @@ public class PrintStreamTraceLogger extends OutputStream {
                             currentLine.append("\n");
                             if (!currentLine.toString().startsWith("Error reading from ")) {
 
-                                _textArea.setText(currentLine);
+                                _textArea.append(currentLine);
                                 final int scrollAmount = _textArea.getLayout().getLineTop(_textArea.getLineCount()) - _textArea.getHeight();
 
                                 if (scrollAmount > 0)
@@ -57,6 +57,7 @@ public class PrintStreamTraceLogger extends OutputStream {
 
                                 _textArea.setTextColor(_color);
                                 Log.i("kevoree.activity.logger", currentLine.toString());
+                                currentLine = new StringBuilder();
                             }
 
 
