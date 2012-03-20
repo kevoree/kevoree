@@ -24,9 +24,7 @@ network fog8 => fog8 { "KEVOREE.remote.node.ip"= "10.0.8.1"}
 network fog9 => fog9 { "KEVOREE.remote.node.ip"= "10.0.9.1"}
 network fog10 => fog10 { "KEVOREE.remote.node.ip"= "10.0.10.1"}
 
-addGroup sync : SSHRestConsensusGroup {lock_timeout="60000",lock_percent="51",pull_interval="600000", SSH_Public_Key=""}
-
-updateDictionary sync {ip="10.0.0.2", port="8000"}@cumulus,{ip="10.0.1.1", port="8000"}@fog1,{ip="10.0.2.1", port="8000"}@fog2,{ip="10.0.3.1", port="8000"}@fog3,{ip="10.0.4.1", port="8000"}@fog4,{ip="10.0.5.1", port="8000"}@fog5,{ip="10.0.6.1", port="8000"}@fog6,{ip="10.0.7.1", port="8000"}@fog7,{ip="10.0.8.1", port="8000"}@fog8,{ip="10.0.9.1", port="8000"}@fog9,{ip="10.0.10.1", port="8000"}@fog10
+addGroup sync : NanoRestGroup
 
 addToGroup sync cumulus
 addToGroup sync fog1
@@ -40,16 +38,31 @@ addToGroup sync fog8
 addToGroup sync fog9
 addToGroup sync fog10
 
-addComponent webServer@cumulus : WebServer {port = "8080", timeout = "60000"}
-addComponent kloudManager@cumulus : KloudResourceManager {urlpattern = "/kloud"}
+updateDictionary sync {ip="10.0.0.2", port="8000"}@cumulus,{ip="10.0.1.1", port="8000"}@fog1,{ip="10.0.2.1", port="8000"}@fog2,{ip="10.0.3.1", port="8000"}@fog3,{ip="10.0.4.1", port="8000"}@fog4,{ip="10.0.5.1", port="8000"}@fog5,{ip="10.0.6.1", port="8000"}@fog6,{ip="10.0.7.1", port="8000"}@fog7,{ip="10.0.8.1", port="8000"}@fog8,{ip="10.0.9.1", port="8000"}@fog9,{ip="10.0.10.1", port="8000"}@fog10
+
+addComponent webServer@cumulus : WebServer {port = "8080", timeout = "5000"}
+addComponent paaSKloudResourceManagerPage@cumulus : PaaSKloudResourceManagerPage {urlpattern = "/kloud/{login}/{action}"}
+addComponent paaSKloudResourceManager@cumulus : PaaSKloudResourceManager
+addComponent iaaSKloudResourceManager@cumulus : IaaSKloudResourceManager
+addComponent ldapAuthentication@cumulus : LDAPAuthentication {host = "ldap://ildap1-ren.irisa.fr:389", context = "com.sun.jndi.ldap.LdapCtxFactory", base = "ou=people,dc=inria,dc=fr", filter = "(&amp;(objectclass=inriaperson)(inriaentrystatus=valid))", loginKey = "inriaLogin"}
 
 addChannel requestChannel : defMSG
 addChannel responseChannel : defMSG
+addChannel deployChannel : defMSG
+addChannel releaseChannel : defMSG
+addChannel authenticationChannel : defSERVICE
 
 bind webServer.handler@cumulus => requestChannel
-bind kloudManager.request@cumulus => requestChannel
+bind paaSKloudResourceManagerPage.request@cumulus => requestChannel
 bind webServer.response@cumulus => responseChannel
-bind kloudManager.content@cumulus => responseChannel
+bind paaSKloudResourceManagerPage.content@cumulus => responseChannel
 
+bind paaSKloudResourceManagerPage.deploy@cumulus => deployChannel
+bind paaSKloudResourceManager.deploy@cumulus => deployChannel
+bind paaSKloudResourceManagerPage.release@cumulus => releaseChannel
+bind paaSKloudResourceManager.release@cumulus => releaseChannel
+
+bind ldapAuthentication.authenticate@cumulus => authenticationChannel
+bind paaSKloudResourceManagerPage.authentication@cumulus => authenticationChannel
 
 }
