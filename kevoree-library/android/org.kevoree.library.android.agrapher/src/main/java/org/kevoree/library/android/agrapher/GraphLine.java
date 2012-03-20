@@ -60,6 +60,10 @@ public class GraphLine {
 
         return StatsChartView;
     }
+    public void reset(){
+        series.clear();
+        data.clear();
+    }
 
     public void refreshLine() {
 
@@ -82,7 +86,7 @@ public class GraphLine {
         }
     }
 
-    public synchronized void add(double value)
+    public  void add(double value)
     {
         if (data.size() > max_points-1) {
             data.removeFirst();

@@ -68,6 +68,7 @@ public class AGrapher extends AbstractComponentType  {
     @Stop
     public void stop() {
         uiService.remove(layout);
+        graphline =  null;
     }
 
     @Update
@@ -95,6 +96,7 @@ public class AGrapher extends AbstractComponentType  {
             double value = Double.parseDouble(msg.toString());
             if(graphline !=null)
                 graphline.add(value);
+            Thread.sleep(100);
         }  catch (Exception e){
             e.printStackTrace();
         }
