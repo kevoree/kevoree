@@ -54,6 +54,7 @@ trait DictionaryAttributeResolver {
                     dictionaryType.getAttributes.find(att => att.getName == attName) match {
                       case Some(attFound)=> value.setAttribute(attFound)
                       case None => {
+                        dictionaryInstance.removeValues(value)
                         logger.error("Unconsitent dictionary type , att not found for name "+attName)
                       }
                     }
