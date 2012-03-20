@@ -2,7 +2,10 @@ package org.kevoree.library.javase.webserver.jenkins;
 
 import org.kevoree.annotation.*;
 import org.kevoree.framework.AbstractComponentType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -23,6 +26,7 @@ import java.util.UUID;
 public class JenkinsServer extends AbstractComponentType {
 
     private KevLauncher winstone = null;
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Start
     public void startServer() throws ClassNotFoundException, NoSuchMethodException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException, InvocationTargetException, InstantiationException, IOException {
@@ -36,8 +40,12 @@ public class JenkinsServer extends AbstractComponentType {
 
         if(this.getDictionary().get("home") != null && !this.getDictionary().get("home").equals("")){
             System.setProperty("JENKINS_HOME", this.getDictionary().get("home").toString());
+        } else {
+            File tempUserDir = new File(System.getProperty("java.io.tmpdir")+File.separator+"jenkinsHome"+getName());
+            tempUserDir.mkdirs();
+            System.setProperty("JENKINS_HOME", tempUserDir.getAbsolutePath());
         }
-
+        logger.info("Jenkins User Home at "+System.getProperty("JENKINS_HOME"));
         //   EnvVars.masterEnvVars.put("JENKINS_HOME", "/Users/duke/Documents/dev/sandbox/jenkinsHome");
         Field f = this.getClass().getClassLoader().loadClass("winstone.WinstoneSession").getField("SESSION_COOKIE_NAME");
         f.setAccessible(true);
@@ -56,6 +64,7 @@ public class JenkinsServer extends AbstractComponentType {
 
         org.kevoree.framework.FileNIOHelper.unzipToTempDir(this.getClass().getClassLoader().getResourceAsStream("jenkins.war"), tempWarDir, java.util.Arrays.asList(".filtered"), java.util.Arrays.asList(".filtered"));
         args.put("webroot", tempWarDir.getAbsolutePath());
+        args.put("httpPort",this.getDictionary().get("port"));
         winstone = new KevLauncher(args);
     }
 

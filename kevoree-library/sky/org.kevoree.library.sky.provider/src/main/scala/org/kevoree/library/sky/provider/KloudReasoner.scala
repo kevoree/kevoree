@@ -432,18 +432,18 @@ object KloudReasoner {
         }
         userModel.getNodes.foreach {
           node =>
-            kengine.append("addToGroup {groupName} " + node.getName)
+            kengine.addVariable("nodeName", node.getName)
+            kengine.append("addToGroup {groupName} {nodeName}")
             val portOption = KevoreePropertyHelper.getIntPropertyForGroup(iaasModel, login, "port", true, node.getName)
             if (portOption.isDefined) {
-              kengine append "updateDictionary {groupName} {port='" + portOption.get + "'}@" + node.getName
-            } else {
-              kengine append "updateDictionary {groupName} {port='8000'}@" + node.getName // this value will be override later by kloud update
-            }
+              kengine append "updateDictionary {groupName} {port='" + portOption.get + "'}@{nodeName}"
+            }/* else {
+              kengine append "updateDictionary {groupName} {port='8000'}@{nodeName}" // this value will be override later by kloud update
+            }*/
             // set IP of user nodes if needed
-            val displayIPOption = KevoreePropertyHelper.getBooleanPropertyForGroup(iaasModel, login, "displayIP")
             val addressOption = KevoreePropertyHelper.getStringNetworkProperty(iaasModel, node.getName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP)
-            if (displayIPOption.isDefined && addressOption.isDefined) {
-              kengine append "network " + node.getName + " {'" + Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP + "' = '" + addressOption.get + "' }"
+            if (addressOption.isDefined) {
+              kengine append "network {nodeName} {'" + Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP + "' = '" + addressOption.get + "' }"
             }
         }
         try {
