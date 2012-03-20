@@ -13,8 +13,8 @@
  */
 package org.kevoree.merger
 
-import org.kevoree.{ComponentInstance, ContainerRoot}
 import resolver._
+import org.kevoree.{TypeDefinition, ComponentInstance, ContainerRoot}
 
 /**
  * Created by IntelliJ IDEA.
@@ -85,6 +85,7 @@ trait CrossReferenceMerger {
           instanceDictionary =>
             instanceDictionary.getValues.foreach {
               dictionaryValue =>
+
                 dictionaryValue.setAttribute(UnresolvedDictionaryAttribute(dictionaryValue.getAttribute.getName))
                 dictionaryValue.getTargetNode.map {
                   targetNode =>
