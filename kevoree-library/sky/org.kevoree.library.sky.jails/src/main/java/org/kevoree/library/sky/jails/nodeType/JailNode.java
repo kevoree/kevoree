@@ -32,7 +32,7 @@ public class JailNode extends IaaSNode {
 
 	@Override
 	public KevoreeNodeRunner createKevoreeNodeRunner (String nodeName) {
-		return new JailKevoreeNodeRunner(this);
+		return new JailKevoreeNodeRunner(nodeName, this);
 	}
 
 	public String getNetworkInterface () {
