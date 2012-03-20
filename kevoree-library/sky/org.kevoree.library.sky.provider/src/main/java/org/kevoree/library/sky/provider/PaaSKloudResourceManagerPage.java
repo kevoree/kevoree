@@ -82,6 +82,7 @@ public class PaaSKloudResourceManagerPage extends ParentAbstractPage {
 
 	private KevoreeHttpResponse processModel (KevoreeHttpRequest request, KevoreeHttpResponse response) {
 		if (request.getResolvedParams().get("model") != null) {
+			logger.debug("A model has been received");
 			ContainerRoot model = KevoreeXmiHelper.loadString(request.getResolvedParams().get("model"));
 			// forward model to group if it exist or submit a new model
 			Option<String> masterNodeOption = KevoreePropertyHelper
@@ -89,7 +90,7 @@ public class PaaSKloudResourceManagerPage extends ParentAbstractPage {
 			if (masterNodeOption.isDefined()) {
 				List<String> accessPoints = KloudHelper.getMasterIP_PORT(masterNodeOption.get());
 				if (accessPoints.size() > 0) {
-					for (String ipPort : KloudHelper.getMasterIP_PORT(getDictionary().get("masterNode").toString())) {
+					for (String ipPort : accessPoints) {
 						if (KloudHelper.sendModel(model, "http://" + ipPort + "/model/current")) {
 							ContainerRoot newModel = KloudHelper.pullModel("http://" + ipPort + "/model/current");
 							if (newModel != null) {
@@ -105,9 +106,11 @@ public class PaaSKloudResourceManagerPage extends ParentAbstractPage {
 				}
 
 			} else {
+				logger.debug("Unable to get a existing configuration for the user {}. We try to create a new configuration for this user.", request.getResolvedParams().get("login"));
 				response.setContent(deploy(request.getResolvedParams().get("login"), request.getResolvedParams().get("ssh_key"), model));
 			}
 		} else {
+			logger.debug("No model has been received, looking for an already submitted one or create a empty one");
 			response.setContent(findModel(request.getResolvedParams().get("login"), request.getResolvedParams().get("ssh_key")));
 		}
 		return response;
