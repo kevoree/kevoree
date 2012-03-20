@@ -35,7 +35,7 @@ import org.kevoree.framework.{KevoreeXmiHelper, Constants, KevoreePropertyHelper
  * @author Erwan Daubert
  * @version 1.0
  */
-class JailKevoreeNodeRunner (iaasNode: JailNode) extends KevoreeNodeRunner(iaasNode.getNodeName) {
+class JailKevoreeNodeRunner (nodeName : String, iaasNode: JailNode) extends KevoreeNodeRunner(nodeName) {
 
   private val logger: Logger = LoggerFactory.getLogger(this.getClass)
 
@@ -169,7 +169,7 @@ class JailKevoreeNodeRunner (iaasNode: JailNode) extends KevoreeNodeRunner(iaasN
                 if (root.isDebugEnabled) {
                   debug = "DEBUG" // TODO must  be use to set the log level of the kevoree core
                 }*/
-                var exec = Array[String](jexec, jailId, "/usr/local/bin/java", "-Dnode.name=" + nodeName, "-Dnode.bootstrap=" + File.separator + "root" + File.separator + "bootstrapmodel.kev",
+                var exec = Array[String](jexec, jailId, "/usr/local/bin/java", "-Djava.awt.headless=true", "-Dnode.name=" + nodeName, "-Dnode.bootstrap=" + File.separator + "root" + File.separator + "bootstrapmodel.kev",
                                           "-Dnode.log.level=INFO" /* + debug*/)
                 exec = exec ++ Array[String]("-jar", File.separator + "root" + File.separator + "kevoree-runtime.jar")
                 logger.debug("trying to launch {} {} {} {} {} {} {} {}", exec)
