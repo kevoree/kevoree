@@ -38,11 +38,12 @@ public class PaaSKloudResourceManagerPage extends ParentAbstractPage {
 
 	public KevoreeHttpResponse process (KevoreeHttpRequest request, KevoreeHttpResponse response) {
 		if (request != null) {
-			if (request.getResolvedParams().get("login") != null && request.getResolvedParams().get("password") != null) {
+			if (request.getResolvedParams().get("login") != null) {
 				// check authentication information
 				boolean isAuthenticate = true;
 				if (isPortBinded("authentication")) {
-					isAuthenticate = getPortByName("authentication", Authentication.class).authenticate(request.getResolvedParams().get("login"), request.getResolvedParams().get("password"));
+					isAuthenticate = request.getResolvedParams().get("password") != null && getPortByName("authentication", Authentication.class)
+							.authenticate(request.getResolvedParams().get("login"), request.getResolvedParams().get("password"));
 				}
 				if (isAuthenticate) {
 					if (request.getResolvedParams().get("action") != null) {
@@ -58,9 +59,12 @@ public class PaaSKloudResourceManagerPage extends ParentAbstractPage {
 				} else {
 					response.setContent("<nack login=\"" + request.getResolvedParams().get("login") + "\" error=\"Authentication failure\" />");
 				}
+			} else {
+				response.setContent("<nack error=\"login not available\" />");
 			}
 		} else {
 			logger.debug("Request seems to be null: {}", request);
+			response.setContent("<nack error=\"Null :-(\" />");
 		}
 		logger.debug("sending response");
 		return response;
@@ -78,6 +82,7 @@ public class PaaSKloudResourceManagerPage extends ParentAbstractPage {
 
 	private KevoreeHttpResponse processModel (KevoreeHttpRequest request, KevoreeHttpResponse response) {
 		if (request.getResolvedParams().get("model") != null) {
+			logger.debug("A model has been received");
 			ContainerRoot model = KevoreeXmiHelper.loadString(request.getResolvedParams().get("model"));
 			// forward model to group if it exist or submit a new model
 			Option<String> masterNodeOption = KevoreePropertyHelper
@@ -85,7 +90,7 @@ public class PaaSKloudResourceManagerPage extends ParentAbstractPage {
 			if (masterNodeOption.isDefined()) {
 				List<String> accessPoints = KloudHelper.getMasterIP_PORT(masterNodeOption.get());
 				if (accessPoints.size() > 0) {
-					for (String ipPort : KloudHelper.getMasterIP_PORT(getDictionary().get("masterNode").toString())) {
+					for (String ipPort : accessPoints) {
 						if (KloudHelper.sendModel(model, "http://" + ipPort + "/model/current")) {
 							ContainerRoot newModel = KloudHelper.pullModel("http://" + ipPort + "/model/current");
 							if (newModel != null) {
@@ -101,9 +106,11 @@ public class PaaSKloudResourceManagerPage extends ParentAbstractPage {
 				}
 
 			} else {
+				logger.debug("Unable to get a existing configuration for the user {}. We try to create a new configuration for this user.", request.getResolvedParams().get("login"));
 				response.setContent(deploy(request.getResolvedParams().get("login"), request.getResolvedParams().get("ssh_key"), model));
 			}
 		} else {
+			logger.debug("No model has been received, looking for an already submitted one or create a empty one");
 			response.setContent(findModel(request.getResolvedParams().get("login"), request.getResolvedParams().get("ssh_key")));
 		}
 		return response;
@@ -116,7 +123,7 @@ public class PaaSKloudResourceManagerPage extends ParentAbstractPage {
 		if (masterNodeOption.isDefined()) {
 			List<String> accessPoints = KloudHelper.getMasterIP_PORT(masterNodeOption.get());
 			if (accessPoints.size() > 0) {
-				for (String ipPort : KloudHelper.getMasterIP_PORT(getDictionary().get("masterNode").toString())) {
+				for (String ipPort : accessPoints) {
 					ContainerRoot model = KloudHelper.pullModel("http://" + ipPort + "/model/current");
 					if (model != null) {
 						return KevoreeXmiHelper.saveToString(model, false);
@@ -127,7 +134,8 @@ public class PaaSKloudResourceManagerPage extends ParentAbstractPage {
 				return deploy(login, sshKey, KevoreeFactory.createContainerRoot());
 			}
 		} else {
-			return "<nack login=\"" + login + "\" error=\"Unable to send model to the group\"";
+			return deploy(login, sshKey, KevoreeFactory.createContainerRoot());
+//			return "<nack login=\"" + login + "\" error=\"Unable to send model to the group\"";
 		}
 	}
 
