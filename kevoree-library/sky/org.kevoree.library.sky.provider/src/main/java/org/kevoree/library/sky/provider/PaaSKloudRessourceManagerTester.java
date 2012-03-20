@@ -5,6 +5,8 @@ import org.kevoree.framework.AbstractComponentType;
 import org.kevoree.framework.KevoreeXmiHelper;
 import org.kevoree.framework.MessagePort;
 import org.kevoree.framework.message.StdKevoreeMessage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -24,6 +26,7 @@ import org.kevoree.framework.message.StdKevoreeMessage;
 		@RequiredPort(name = "release", type = PortType.MESSAGE, needCheckDependency = true)
 })
 public class PaaSKloudRessourceManagerTester extends AbstractComponentType {
+	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	private boolean starting = true;
 
@@ -31,6 +34,7 @@ public class PaaSKloudRessourceManagerTester extends AbstractComponentType {
 	@Stop
 	public void process () {
 		if (starting) {
+			logger.debug("Starting PaaS manager tester");
 			starting = false;
 			StdKevoreeMessage message = new StdKevoreeMessage();
 			message.putValue("login", this.getDictionary().get("login"));

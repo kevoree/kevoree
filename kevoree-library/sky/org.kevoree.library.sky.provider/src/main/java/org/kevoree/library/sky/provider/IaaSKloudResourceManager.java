@@ -3,11 +3,10 @@ package org.kevoree.library.sky.provider;
 import org.kevoree.ContainerRoot;
 import org.kevoree.annotation.*;
 import org.kevoree.api.service.core.handler.ModelListener;
-import org.kevoree.api.service.core.handler.UUIDModel;
+import org.kevoree.api.service.core.script.KevScriptEngine;
 import org.kevoree.framework.AbstractComponentType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import scala.Option;
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -52,20 +51,24 @@ public class IaaSKloudResourceManager extends AbstractComponentType implements M
 
 	@Override
 	public void modelUpdated () {
-		UUIDModel uuidModel = this.getModelService().getLastUUIDModel();
-		Option<ContainerRoot> modelOption = KloudReasoner.configureChildNodes(uuidModel.getModel(), this.getKevScriptEngineFactory());
-		if (modelOption.isDefined()) {
+		KevScriptEngine kengine = getKevScriptEngineFactory().createKevScriptEngine();
+		if (KloudReasoner.configureChildNodes(getModelService().getLastModel(), kengine)) {
+			this.getModelService().unregisterModelListener(this);
+			updateKloudConfiguration(kengine);
+			this.getModelService().registerModelListener(this);
+		}
+	}
+
+	private void updateKloudConfiguration (KevScriptEngine kengine) {
+		try {
+			kengine.atomicInterpretDeploy();
+		} catch (Exception e) {
+			logger.error("Unable to apply script", e);
 			try {
-				logger.debug("Try to configure child nodes");
-				this.getModelService().unregisterModelListener(this);
-				this.getModelService().atomicCompareAndSwapModel(uuidModel, modelOption.get());
-				this.getModelService().registerModelListener(this);
-			} catch (Exception e) {
-				try {
-					Thread.sleep(1000);
-				} catch (InterruptedException ignored) {}
-				modelUpdated();
+				Thread.sleep(1000);
+			} catch (InterruptedException ignored) {
 			}
+			updateKloudConfiguration(kengine);
 		}
 	}
 }

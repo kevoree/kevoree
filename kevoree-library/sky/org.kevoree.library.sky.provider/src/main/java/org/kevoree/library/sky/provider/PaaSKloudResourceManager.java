@@ -86,7 +86,8 @@ public class PaaSKloudResourceManager extends AbstractComponentType {
 				logger.warn("Error while adding user master group, try number " + i);
 			}
 		}
-		//ADD GROUP
+		//ADD GROUP to user model
+		logger.debug("update user configuration when user model must be forwarded");
 		Option<ContainerRoot> userModelUpdated = KloudReasoner.updateUserConfiguration(login, userModel, getModelService().getLastModel(), getKevScriptEngineFactory());
 		if (userModelUpdated.isDefined()) {
 			/* Send blindly the model to the core , PaaS Group are in charge to trigger this request , reply false and forward to Master interested node  */

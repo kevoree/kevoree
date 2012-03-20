@@ -1,9 +1,9 @@
 package org.kevoree.library.sky.provider;
 
-import org.kevoree.ContainerNode;
 import org.kevoree.ContainerRoot;
 import org.kevoree.KevoreeFactory;
 import org.kevoree.annotation.*;
+import org.kevoree.api.service.core.script.KevScriptEngine;
 import org.kevoree.framework.*;
 import org.kevoree.framework.Constants;
 import org.kevoree.library.nanohttp.NanoHTTPD;
@@ -82,6 +82,7 @@ public class KloudPaaSNanoGroup extends AbstractGroupType {
 							if (externalSender) {
 								if (getDictionary().get("masterNode") != null) {
 									for (String ipPort : KloudHelper.getMasterIP_PORT(getDictionary().get("masterNode").toString())) {
+										logger.debug("send model on {}" + ipPort);
 										KloudHelper.sendModel(model, "http://" + ipPort + "/model/current");
 									}
 								}
@@ -97,6 +98,7 @@ public class KloudPaaSNanoGroup extends AbstractGroupType {
 					if (uri.endsWith("/model/current")) {
 						String msg;
 						if (KloudHelper.isIaaSNode(getModelService().getLastModel(), getName(), getNodeName())) {
+							logger.debug("GET request about user model");
 							Option<ContainerRoot> userModelOption = KloudReasoner.updateUserConfiguration(getName(), userModel, getModelService().getLastModel(), getKevScriptEngineFactory());
 							if (userModelOption.isDefined()) {
 								msg = KevoreeXmiHelper.saveToString(userModelOption.get(), false);
@@ -114,7 +116,9 @@ public class KloudPaaSNanoGroup extends AbstractGroupType {
 						return new NanoHTTPD.Response(HTTP_OK, MIME_HTML, msg);
 					} else if (uri.endsWith("/release")) {
 						if (KloudHelper.isIaaSNode(getModelService().getLastModel(), getName(), getNodeName())) {
-							KloudReasoner.processDeployment(KevoreeFactory.createContainerRoot(), userModel, getModelService(), getKevScriptEngineFactory(), getName());
+							IaaSUpdate jobUpdate = new IaaSUpdate(userModel, KevoreeFactory.createContainerRoot());
+							userModel = KevoreeFactory.createContainerRoot();
+							poolUpdate.submit(jobUpdate);
 							return new NanoHTTPD.Response(HTTP_OK, MIME_HTML, "");
 						}
 					}
@@ -308,11 +312,30 @@ public class KloudPaaSNanoGroup extends AbstractGroupType {
 		public void run () {
 			if (KloudReasoner.needsNewDeployment(proposedModel, currentModel)) {
 				logger.debug("A new Deployment must be done!");
-				boolean deploymentOK = KloudReasoner.processDeployment(proposedModel, currentModel, getModelService(), getKevScriptEngineFactory(), getName());
+				KevScriptEngine kengine = getKevScriptEngineFactory().createKevScriptEngine();
+				if (KloudReasoner.processDeployment(proposedModel, currentModel, getModelService().getLastModel(), kengine, getName())) {
+					for (int i = 0; i < 5; i++) {
+						try {
+							if (kengine.atomicInterpretDeploy()) {
+								break;
+							}
+						} catch (Exception e) {
+							logger.warn("Error while update user configuration, try number " + i);
+						}
+					}
+				}
+
 			}
-			for (ContainerNode userNode : proposedModel.getNodesForJ()) {
-				push(proposedModel, userNode.getName());
-			}
+			//ADD GROUP to user model
+			/*logger.debug("update user configuration when user model must be forwarded");
+			Option<ContainerRoot> userModelUpdated = KloudReasoner.updateUserConfiguration(getName(), userModel, getModelService().getLastModel(), getKevScriptEngineFactory());
+			if (userModelUpdated.isDefined()) {
+				for (ContainerNode userNode : proposedModel.getNodesForJ()) {
+					push(proposedModel, userNode.getName());
+				}
+			} else {
+				logger.error("Unable to update user configuration, with user group");
+			}*/
 		}
 	}
 

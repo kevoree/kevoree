@@ -5,10 +5,11 @@ import org.kevoree.ContainerRoot;
 import org.kevoree.Group;
 import org.kevoree.annotation.*;
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService;
-import org.kevoree.framework.*;
+import org.kevoree.framework.AbstractGroupType;
 import org.kevoree.framework.Constants;
+import org.kevoree.framework.KevoreePropertyHelper;
+import org.kevoree.framework.KevoreeXmiHelper;
 import org.kevoree.library.javase.nanohttp.NodeNetworkHelper;
-import org.kevoree.serializer.ModelSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import scala.Option;
@@ -41,7 +42,7 @@ public class NanoRestGroup extends AbstractGroupType {
 
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 	private NanoHTTPD server = null;
-	private ModelSerializer modelSaver = new ModelSerializer();
+//	private ModelSerializer modelSaver = new ModelSerializer();
 	private KevoreeModelHandlerService handler = null;
 	private boolean starting;
 
@@ -61,7 +62,7 @@ public class NanoRestGroup extends AbstractGroupType {
 			//        server = new NanoHTTPD(port) {
 			@Override
 			public Response serve (String uri, String method, Properties header, Properties parms, Properties files, InputStream body) {
-				if (method.equals("POST")) {
+				if ("POST".equals(method)) {
 					try {
 						logger.debug("Model receive, process to load");
 
@@ -70,8 +71,7 @@ public class NanoRestGroup extends AbstractGroupType {
 						logger.debug("Model loaded,send to core");
 						String srcNodeName = "";
 						Boolean externalSender = true;
-						Enumeration e = header.propertyNames();
-						e = parms.propertyNames();
+						Enumeration e = parms.propertyNames();
 						while (e.hasMoreElements()) {
 							String value = (String) e.nextElement();
 							if (value.endsWith("nodesrc")) {
@@ -107,7 +107,7 @@ public class NanoRestGroup extends AbstractGroupType {
 						return new NanoHTTPD.Response(HTTP_BADREQUEST, MIME_HTML, "Error while uploading model");
 					}
 				}
-				if (method.equals("GET")) {
+				if ("GET".equals(method)) {
 					String msg = KevoreeXmiHelper.saveToString(handler.getLastModel(), false);
 					return new NanoHTTPD.Response(HTTP_OK, MIME_HTML, msg);
 				}
