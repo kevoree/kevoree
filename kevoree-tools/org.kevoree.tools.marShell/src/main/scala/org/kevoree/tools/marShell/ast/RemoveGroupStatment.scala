@@ -13,4 +13,8 @@
  */
 package org.kevoree.tools.marShell.ast
 
-case class RemoveGroupStatment (groupName : String) extends Statment
+case class RemoveGroupStatment (groupName : String) extends Statment {
+  def getTextualForm: String = {
+    ""
+  }
+}

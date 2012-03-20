@@ -13,4 +13,8 @@
  */
 package org.kevoree.tools.marShell.ast
 
-case class RemoveLibraryStatment(libraryName : String) extends Statment
+case class RemoveLibraryStatment(libraryName : String) extends Statment {
+  def getTextualForm: String = {
+    ""
+  }
+}

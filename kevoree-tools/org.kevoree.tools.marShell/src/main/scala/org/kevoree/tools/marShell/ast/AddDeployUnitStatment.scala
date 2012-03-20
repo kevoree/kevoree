@@ -13,4 +13,8 @@ package org.kevoree.tools.marShell.ast
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-case class AddDeployUnitStatment(unitName : String,groupName :String, version: String) extends Statment
+case class AddDeployUnitStatment(unitName : String,groupName :String, version: String) extends Statment {
+  def getTextualForm: String = {
+    ""
+  }
+}

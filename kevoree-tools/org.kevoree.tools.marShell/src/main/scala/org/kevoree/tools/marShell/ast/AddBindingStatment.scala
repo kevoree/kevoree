@@ -13,7 +13,16 @@
  */
 package org.kevoree.tools.marShell.ast
 
-case class AddBindingStatment(cid:ComponentInstanceID,portName:String, bindingInstanceName: String)
+case class AddBindingStatment(cid: ComponentInstanceID, portName: String, bindingInstanceName: String)
   extends Statment {
-    
+
+  def getTextualForm: String = {
+    val nodeDesc = if (cid.nodeName.isDefined) {
+      "@" + cid.nodeName.get
+    } else {
+      ""
+    }
+    "bind " + cid.componentInstanceName + "." + portName + nodeDesc + " => " + bindingInstanceName
   }
+
+}
