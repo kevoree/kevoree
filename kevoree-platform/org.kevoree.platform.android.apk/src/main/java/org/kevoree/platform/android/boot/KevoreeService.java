@@ -121,7 +121,7 @@ public class KevoreeService extends Service {
                 notificationManager.notify(ART2SERVICE_NOTIFICATION_ID, notification);
             } catch (Exception e) {
                 // Should not happen.
-                Log.e("art2.osgi.service.logger", "Unable to invoke startForeground", e);
+                Log.e("kevoree.service.logger", "Unable to invoke startForeground", e);
             }
         } catch (NoSuchMethodException e) {
             // Running on an older platform -> Fall back on the old API.
@@ -146,7 +146,7 @@ public class KevoreeService extends Service {
                 stopForegroundMethod.invoke(this, stopForegroundMethodArgs);
             } catch (Exception e) {
                 // Should not happen.
-                Log.e("art2.osgi.service.logger", "Unable to invoke stopForeground", e);
+                Log.e("kevoree.service.logger", "Unable to invoke stopForeground", e);
             }
             notificationManager.cancel(ART2SERVICE_NOTIFICATION_ID);
         } catch (NoSuchMethodException e) {
