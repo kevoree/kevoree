@@ -1,26 +1,24 @@
-
 package org.kevoree.library.javase.webserver.jenkins;
-
-import hudson.EnvVars;
-import java.io.IOException;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.util.*;
 
 import org.kevoree.annotation.*;
 import org.kevoree.framework.AbstractComponentType;
-import winstone.Launcher;
+
+import java.io.IOException;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 /**
- *
  * @author duke
  */
 @Library(name = "JavaSE")
 @DictionaryType({
-        @DictionaryAttribute(name = "port" , defaultValue = "8080"),
-        @DictionaryAttribute(name = "timeout" , defaultValue = "5000", optional = true),
-        @DictionaryAttribute(name = "home" , defaultValue = "", optional = true)
+        @DictionaryAttribute(name = "port", defaultValue = "8080"),
+        @DictionaryAttribute(name = "home", defaultValue = "", optional = true)
 })
+
 @ComponentType
 public class JenkinsServer extends AbstractComponentType {
 
@@ -35,7 +33,12 @@ public class JenkinsServer extends AbstractComponentType {
         if (System.getProperty("hudson.diyChunking") == null) {
             System.setProperty("hudson.diyChunking", "true");
         }
-        EnvVars.masterEnvVars.put("JENKINS_HOME", "/Users/duke/Documents/dev/sandbox/jenkinsHome");
+
+        if(this.getDictionary().get("home") != null && !this.getDictionary().get("home").equals("")){
+            System.setProperty("JENKINS_HOME", this.getDictionary().get("home").toString());
+        }
+
+        //   EnvVars.masterEnvVars.put("JENKINS_HOME", "/Users/duke/Documents/dev/sandbox/jenkinsHome");
         Field f = this.getClass().getClassLoader().loadClass("winstone.WinstoneSession").getField("SESSION_COOKIE_NAME");
         f.setAccessible(true);
         f.set(null, "JSESSIONID." + UUID.randomUUID().toString().replace("-", "").substring(0, 8));
@@ -45,19 +48,20 @@ public class JenkinsServer extends AbstractComponentType {
         //args.put("preferredClassLoader",KevWebappClassLoader.class.getName());
         //args.put("preferredClassLoader",KevWebappClassLoader.class.getName());
         KevLauncher.initLogger(args);
+        args.put("ajp13Port", "-1");
 
+        java.io.File tempWarDir = java.io.File.createTempFile("-t-", "-t-");
+        tempWarDir.delete();
+        tempWarDir.mkdirs();
 
+        org.kevoree.framework.FileNIOHelper.unzipToTempDir(this.getClass().getClassLoader().getResourceAsStream("jenkins.war"), tempWarDir, java.util.Arrays.asList(".filtered"), java.util.Arrays.asList(".filtered"));
+        args.put("webroot", tempWarDir.getAbsolutePath());
         winstone = new KevLauncher(args);
-        /*
-        java.io.File tempWar = java.io.File.createTempFile("-t-", "-t-");
-         tempWar.delete();
-         tempWar.mkdirs();
-          org.kevoree.framework.FileNIOHelper.unzipToTempDir(jarFile,tempWar,java.util.Arrays.asList("",".filtered"),java.util.Arrays.asList(".jar"));
-        */
     }
 
+
     @Stop
-    public void stopServer(){
+    public void stopServer() {
         winstone.shutdown();
     }
 
@@ -66,6 +70,6 @@ public class JenkinsServer extends AbstractComponentType {
         stopServer();
         startServer();
     }
-    
-    
+
+
 }

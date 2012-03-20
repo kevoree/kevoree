@@ -14,4 +14,8 @@
 package org.kevoree.tools.marShell.ast
 
 
-case class AddLibraryStatment(libraryName : String) extends Statment
+case class AddLibraryStatment(libraryName : String) extends Statment {
+  def getTextualForm: String = {
+    ""
+  }
+}

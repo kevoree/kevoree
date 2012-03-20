@@ -11,13 +11,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+
 
 package org.kevoree.tools.marShell.ast
 
 case class AddChannelInstanceStatment(channelName : String,channelType:String,dictionary : java.util.Properties) extends AddInstanceStatment(dictionary) {
-
+  override def getTextualForm: String = {
+    "addChannel "+channelName+" : "+channelType +" "+AstHelper.toStringDictionary(dictionary)
+  }
 }

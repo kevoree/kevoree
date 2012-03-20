@@ -57,6 +57,12 @@ public class KevoreeMenuBar extends JMenuBar {
         saveImage.addActionListener(new CommandActionListener(cmdImage));
         file.add(saveImage);
 
+        JMenuItem saveKCS = new JMenuItem("SaveAsKevScript");
+        SaveAsKevScript cmdSaveKCS = new SaveAsKevScript();
+        cmdSaveKCS.setKernel(kernel);
+        saveKCS.addActionListener(new CommandActionListener(cmdSaveKCS));
+        file.add(saveKCS);
+
 
         JMenuItem refresh = new JMenuItem("Refresh");
         RefreshModelCommand cmdRM = new RefreshModelCommand();

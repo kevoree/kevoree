@@ -13,6 +13,9 @@
  */
 package org.kevoree.tools.marShell.ast
 
-abstract class Statment
+abstract class Statment {
+  def getTextualForm : String
+}
 
-abstract class TypeStatment extends Statment
+abstract class TypeStatment extends Statment {
+}
