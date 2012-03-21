@@ -1,7 +1,8 @@
 package org.kevoree.library.javase.webserver.markdown2htmlwar.server;
 
 import org.kevoree.annotation.ComponentType;
-import org.kevoree.kcl.KevoreeJarClassLoader;
+import org.kevoree.annotation.RequiredPort;
+import org.kevoree.annotation.Requires;
 import org.kevoree.library.javase.webserver.AbstractPage;
 import org.kevoree.library.javase.webserver.FileServiceHelper;
 import org.kevoree.library.javase.webserver.KevoreeHttpRequest;
@@ -9,47 +10,11 @@ import org.kevoree.library.javase.webserver.KevoreeHttpResponse;
 import org.kevoree.library.javase.webserver.markdown2htmlwar.client.MarkDown2HtmlService;
 import org.kevoree.library.javase.webserver.servlet.LocalServletRegistry;
 
-import com.google.gwt.user.server.rpc.RPC;
-
 
 @ComponentType 
-/*@Requires({
-        @RequiredPort(name = "files", type = org.kevoree.annotation.PortType.SERVICE, className = MarkDown2HtmlService.class)
-})*/
-class MyTask extends Thread{
-
-	private LocalServletRegistry servletRepository = null;
-	KevoreeHttpRequest request;
-	KevoreeHttpResponse response;
-	
-	boolean result=false;
-	
-	public boolean isResult() {
-		return result;
-	}
-
-
-
-	public MyTask(LocalServletRegistry servletRepository,
-			KevoreeHttpRequest request, KevoreeHttpResponse response) {
-		super();
-		this.servletRepository = servletRepository;
-		this.request = request;
-		this.response = response;
-	}
-
-	
-	
-	@Override
-	public void run() {
-		Thread.currentThread().setContextClassLoader(MarkDown2HtmlService.class.getClassLoader() );
-        result = servletRepository.tryURL(request.getUrl(),request,response);
-        }
-
-	
-}
-
-
+@Requires({
+        @RequiredPort(name = "markdown2html", type = org.kevoree.annotation.PortType.SERVICE, className = org.kevoree.library.javase.markdown2html.MarkDown2HtmlService.class)
+})
 public class MarkDown2Html extends AbstractPage {
 
 
@@ -63,28 +28,29 @@ public class MarkDown2Html extends AbstractPage {
             }
         };
         super.startPage();
-        ((KevoreeJarClassLoader)RPC.class.getClassLoader()).addWeakClassLoader(Thread.currentThread().getContextClassLoader());
+        //        ((KevoreeJarClassLoader)RPC.class.getClassLoader()).addWeakClassLoader(Thread.currentThread().getContextClassLoader());
         servletRepository.registerServlet("/markdown2htmlwar/markdown2html",new MarkDown2HtmlServiceImpl(this));
         //servletRepository.unregisterUrl(("/markdown2html/markdown2htmlservice");
     }
 
- 
+    
    
     
     @Override
     public KevoreeHttpResponse process(final KevoreeHttpRequest request, final KevoreeHttpResponse response) {
 
     	
-    	MyTask t = new MyTask(servletRepository, request, response);
-    	t.start();
-    	try {
-			t.join();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-    	
-    	if (t.isResult())
+    	ClassLoader l = Thread.currentThread().getContextClassLoader();
+    	Thread.currentThread().setContextClassLoader(MarkDown2HtmlService.class.getClassLoader() );
+    	boolean res = servletRepository.tryURL(request.getUrl(),request,response);
+    	Thread.currentThread().setContextClassLoader(l );
+    	if ( res ){	
     		return response;
+    		
+    	}
+        
+    	
+    	
         if (FileServiceHelper.checkStaticFile(request.getUrl(), this, request, response)) {
             return response;
         }
@@ -95,11 +61,10 @@ public class MarkDown2Html extends AbstractPage {
         return response;
     }
     
-    
-    
 	public String markdown2html(String name) {
-		return "toto";
+		org.kevoree.library.javase.markdown2html.MarkDown2HtmlService s = (org.kevoree.library.javase.markdown2html.MarkDown2HtmlService) getPortByName("markdown2html");
+		return s.markdown2html(name);
+		
 	}
-
 
 }

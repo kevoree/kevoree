@@ -33,6 +33,7 @@ import org.sonatype.aether.repository.{Authentication, RepositoryPolicy, RemoteR
 import scala.collection.JavaConversions._
 import org.slf4j.LoggerFactory
 import org.sonatype.aether.{ConfigurationProperties, RepositorySystem}
+import org.sonatype.aether.transfer.{TransferEvent, TransferListener}
 
 /**
  * User: ffouquet
@@ -138,6 +139,21 @@ object AetherUtil extends TempFileCacheManager {
 
   def newRepositorySystemSession = {
     val session = new MavenRepositorySystemSession()
+    session.setTransferListener(new TransferListener(){
+      def transferInitiated(p1: TransferEvent) {}
+
+      def transferStarted(p1: TransferEvent) {}
+
+      def transferProgressed(p1: TransferEvent) {}
+
+      def transferCorrupted(p1: TransferEvent) {}
+
+      def transferSucceeded(p1: TransferEvent) {}
+
+      def transferFailed(p1: TransferEvent) {
+        logger.error("TransferFailed : "+p1.getResource.getResourceName)
+      }
+    })
     session.setUpdatePolicy(RepositoryPolicy.UPDATE_POLICY_ALWAYS)
     session.setConfigProperty("aether.connector.ahc.provider", "jdk")
     //DEFAULT VALUE
@@ -171,7 +187,7 @@ object AetherUtil extends TempFileCacheManager {
         }
     }
     //BUILD FROM ALL NODE
-
+/*
     root.getNodes.foreach {
       node =>
         buildURL(root, node.getName).map {
@@ -181,7 +197,7 @@ object AetherUtil extends TempFileCacheManager {
             }
         }
 
-    }
+    }*/
     result
   }
 

@@ -14,7 +14,7 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 
 
-public class MarkDown2HtmlServiceImpl extends RemoteServiceServlet implements MarkDown2HtmlService {
+public class MarkDown2HtmlServiceImpl extends RemoteServiceServlet implements MarkDown2HtmlService,org.kevoree.library.javase.markdown2html.MarkDown2HtmlService {
 
 	/**
 	 * 
