@@ -42,7 +42,7 @@ public class NanoRestGroup extends AbstractGroupType {
 
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 	private NanoHTTPD server = null;
-//	private ModelSerializer modelSaver = new ModelSerializer();
+	//	private ModelSerializer modelSaver = new ModelSerializer();
 	private KevoreeModelHandlerService handler = null;
 	private boolean starting;
 
@@ -63,53 +63,56 @@ public class NanoRestGroup extends AbstractGroupType {
 			@Override
 			public Response serve (String uri, String method, Properties header, Properties parms, Properties files, InputStream body) {
 				if ("POST".equals(method)) {
-					try {
-						logger.debug("Model receive, process to load");
+					if (uri.endsWith("/model/current")) {
+						try {
+							logger.debug("Model receive, process to load");
 
-						final ContainerRoot model = KevoreeXmiHelper.loadStream(body);
-						body.close();
-						logger.debug("Model loaded,send to core");
-						String srcNodeName = "";
-						Boolean externalSender = true;
-						Enumeration e = parms.propertyNames();
-						while (e.hasMoreElements()) {
-							String value = (String) e.nextElement();
-							if (value.endsWith("nodesrc")) {
-								srcNodeName = parms.getProperty(value);
-							}
-						}
-						for (ContainerNode subNode : getModelElement().getSubNodesForJ()) {
-							if (subNode.getName().trim().equals(srcNodeName.trim())) {
-								externalSender = false;
-							}
-						}
-
-						//DO NOT NOTIFY ALL WHEN REC FROM THIS GROUP
-						final Boolean finalexternalSender = externalSender;
-						Runnable t = new Runnable() {
-							@Override
-							public void run () {
-								if (!finalexternalSender) {
-									getModelService().unregisterModelListener(getModelListener());
-								}
-								handler.atomicUpdateModel(model);
-								if (!finalexternalSender) {
-									getModelService().registerModelListener(getModelListener());
+							final ContainerRoot model = KevoreeXmiHelper.loadStream(body);
+							body.close();
+							logger.debug("Model loaded,send to core");
+							String srcNodeName = "";
+							Boolean externalSender = true;
+							Enumeration e = parms.propertyNames();
+							while (e.hasMoreElements()) {
+								String value = (String) e.nextElement();
+								if (value.endsWith("nodesrc")) {
+									srcNodeName = parms.getProperty(value);
 								}
 							}
-						};
-						poolUpdate.submit(t);
+							for (ContainerNode subNode : getModelElement().getSubNodesForJ()) {
+								if (subNode.getName().trim().equals(srcNodeName.trim())) {
+									externalSender = false;
+								}
+							}
 
-						return new NanoHTTPD.Response(HTTP_OK, MIME_HTML, "<ack nodeName=\"" + getNodeName() + "\" />");
-					} catch (Exception e) {
-						logger.error("Error while loading model");
-						//logger.debug("Model="+body.trim(),e);
-						return new NanoHTTPD.Response(HTTP_BADREQUEST, MIME_HTML, "Error while uploading model");
+							//DO NOT NOTIFY ALL WHEN REC FROM THIS GROUP
+							final Boolean finalexternalSender = externalSender;
+							Runnable t = new Runnable() {
+								@Override
+								public void run () {
+									if (!finalexternalSender) {
+										getModelService().unregisterModelListener(getModelListener());
+									}
+									handler.atomicUpdateModel(model);
+									if (!finalexternalSender) {
+										getModelService().registerModelListener(getModelListener());
+									}
+								}
+							};
+							poolUpdate.submit(t);
+
+							return new NanoHTTPD.Response(HTTP_OK, MIME_HTML, "<ack nodeName=\"" + getNodeName() + "\" />");
+						} catch (Exception e) {
+							logger.error("Error while loading model");
+							//logger.debug("Model="+body.trim(),e);
+							return new NanoHTTPD.Response(HTTP_BADREQUEST, MIME_HTML, "Error while uploading model");
+						}
 					}
-				}
-				if ("GET".equals(method)) {
-					String msg = KevoreeXmiHelper.saveToString(handler.getLastModel(), false);
-					return new NanoHTTPD.Response(HTTP_OK, MIME_HTML, msg);
+				} else if ("GET".equals(method)) {
+					if (uri.endsWith("/model/current")) {
+						String msg = KevoreeXmiHelper.saveToString(handler.getLastModel(), false);
+						return new NanoHTTPD.Response(HTTP_OK, MIME_HTML, msg);
+					}
 				}
 				return new NanoHTTPD.Response(HTTP_BADREQUEST, MIME_XML, "ONLY GET OR POST METHOD SUPPORTED");
 			}

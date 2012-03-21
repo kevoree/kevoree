@@ -37,9 +37,7 @@ runtime="kevoree-runtime"  # name of the exec file without (.jar)
 runtime_updater="kevoree-service-updater"
 
 java="/usr/local/bin/java"
-#java_args="-Dnode.log.level=DEBUG -Dnode.name=`/bin/hostname` -Dnode.log.appender=FILE -Dnode.log.appender.file=$kevoree_home/`/bin/hostname`.log -Dnode.groupType=JmDNSRestGroup -Dnode.update.timeout=300000 -Xmx1024M -Xms1024M -jar $kevoree_home/$runtime.jar"
-#java_args="-Dnode.log.level=DEBUG -Dnode.name=`/bin/hostname` -Dnode.log.appender=FILE -Dnode.log.appender.file=$kevoree_home/`/bin/hostname`.log -Dnode.groupType=RestGroup -Dnode.update.timeout=300000 -Xmx1024M -Xms1024M -jar $kevoree_home/$runtime.jar"
-java_args="-Dnode.bootstrap=http://10.0.0.2:6001/ -Dnode.log.level=DEBUG -Dnode.name=`/bin/hostname` -Dnode.log.appender=FILE -Dnode.log.appender.file=$kevoree_home/`/bin/hostname`.log -Dnode.groupType=RestGroup -Dnode.update.timeout=300000 -Xmx1024M -Xms1024M -jar $kevoree_home/$runtime.jar"
+java_args="-Djava.awt.headless=true -Dnode.bootstrap=http://10.0.0.2:6001/ -Dnode.log.level=DEBUG -Dnode.name=`/bin/hostname` -Dnode.log.appender=FILE -Dnode.log.appender.file=$kevoree_home/`/bin/hostname`.log -Dnode.groupType=RestGroup -Dnode.update.timeout=300000 -Xmx1024M -Xms1024M -jar $kevoree_home/$runtime.jar"
 
 command="/usr/sbin/daemon"
 command_args="-f -p ${pidfile} ${java} ${java_args}"
@@ -55,7 +53,7 @@ pid_touch() {
 }
 
 kevoree_update() {
-	$java -jar "$kevoree_home/$runtime_updater.jar" "$kevoree_home/$runtime.jar"
+	$java -jar "$kevoree_home/$runtime_updater.jar" "$kevoree_home/$runtime.jar" "1.6.0-SNAPSHOT"
 }
 
 kevoree_start() {
