@@ -20,6 +20,8 @@ package org.kevoree.tools.marShell.ast
 
 case class CreateComponentTypeStatment(newTypeName : String, libName : Option[String]) extends TypeStatment {
 
-
+  def getTextualForm: String = {
+    ""
+  }
 
 }

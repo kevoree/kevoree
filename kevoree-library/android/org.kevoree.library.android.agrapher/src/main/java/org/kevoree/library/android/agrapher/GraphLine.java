@@ -3,12 +3,12 @@ package org.kevoree.library.android.agrapher;
 
 import android.content.Context;
 import android.graphics.Color;
-import org.archartengine.ChartFactory;
-import org.archartengine.GraphicalView;
-import org.archartengine.model.XYMultipleSeriesDataset;
-import org.archartengine.model.XYSeries;
-import org.archartengine.renderer.XYMultipleSeriesRenderer;
-import org.archartengine.renderer.XYSeriesRenderer;
+import org.achartengine.ChartFactory;
+import org.achartengine.GraphicalView;
+import org.achartengine.model.XYMultipleSeriesDataset;
+import org.achartengine.model.XYSeries;
+import org.achartengine.renderer.XYMultipleSeriesRenderer;
+import org.achartengine.renderer.XYSeriesRenderer;
 
 import java.util.LinkedList;
 
@@ -26,7 +26,7 @@ public class GraphLine {
     private GraphicalView StatsChartView;
     private LinkedList<Double> data = new LinkedList<Double>();
     private XYSeries series;
-    private  int max_points =5;
+    private  int max_points =50;
     private int color_axes = Color.GRAY;
     private int color_courbe = Color.RED;
 
@@ -49,20 +49,27 @@ public class GraphLine {
     public GraphicalView CreateView(Context context){
         StatsRenderer.setAxesColor(color_axes);
         StatsDataset.addSeries(series);
+        StatsRenderer.setXAxisMin(0);
+        StatsRenderer.setXAxisMax(max_points);
         XYSeriesRenderer renderer = new XYSeriesRenderer();
         renderer.setColor(color_courbe);
         renderer.setLineWidth(3);
         StatsRenderer.addSeriesRenderer(renderer);
-        StatsChartView =ChartFactory.getLineChartView(context, StatsDataset,StatsRenderer);
+        StatsChartView = ChartFactory.getLineChartView(context, StatsDataset, StatsRenderer);
+
+
         return StatsChartView;
+    }
+    public void reset(){
+        series.clear();
+        data.clear();
     }
 
     public void refreshLine() {
+
         try
         {
-           series.clear();
             int index = 0;
-
             StringBuffer s = new StringBuffer();
             for (int h = 0; h < series.getItemCount(); h++)
                 s.append(series.getY(h)).append(",");
@@ -79,21 +86,18 @@ public class GraphLine {
         }
     }
 
-    public void add(double value)
+    public  void add(double value)
     {
         if (data.size() > max_points-1) {
             data.removeFirst();
         }
-
         if (value > StatsRenderer.getXAxisMax()) {
-            StatsRenderer.setXAxisMax(value);
+            StatsRenderer.setYAxisMax(value);
         }
 
         if (value < StatsRenderer.getXAxisMin()) {
-            StatsRenderer.setXAxisMax(value);
+            StatsRenderer.setYAxisMin(value);
         }
-
-
         data.addLast(value);
         refreshLine();
     }

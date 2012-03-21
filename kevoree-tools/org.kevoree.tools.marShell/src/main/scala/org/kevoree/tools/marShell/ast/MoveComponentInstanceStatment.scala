@@ -13,4 +13,8 @@
  */
 package org.kevoree.tools.marShell.ast
 
-case class MoveComponentInstanceStatment(cid:ComponentInstanceID, targetNodeName : String) extends Statment
+case class MoveComponentInstanceStatment(cid:ComponentInstanceID, targetNodeName : String) extends Statment {
+  def getTextualForm: String = {
+    ""
+  }
+}

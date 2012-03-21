@@ -6,12 +6,12 @@
     <packaging>maven-plugin</packaging>
     <name>Kevoree :: Tools :: War WrapperPlugin</name>
     <groupId>org.kevoree.tools</groupId>
-    <version>1.6.0-BETA6</version>
+    <version>1.6.0-SNAPSHOT</version>
 
     <parent>
         <artifactId>org.kevoree.tools.root</artifactId>
         <groupId>org.kevoree.tools</groupId>
-        <version>1.6.0-BETA6</version>
+        <version>1.6.0-SNAPSHOT</version>
         <relativePath>../org.kevoree.tools.root/pom.xml</relativePath>
     </parent>
 
@@ -23,7 +23,7 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-jdk14</artifactId>
-            <version>1.6.2</version>
+            <version>1.6.4</version>
         </dependency>
         <dependency>
             <groupId>org.scala-lang</groupId>
@@ -59,22 +59,12 @@
 
     <repositories>
         <repository>
-            <id>scala-tools.org</id>
-            <name>Scala-tools Maven2 Repository</name>
-            <url>http://scala-tools.org/repo-releases</url>
-        </repository>
-        <repository>
             <id>kevoree-libs-release-local</id>
             <url>http://maven.kevoree.org/release/</url>
         </repository>
     </repositories>
 
     <pluginRepositories>
-        <pluginRepository>
-            <id>plugin.scala-tools.org</id>
-            <name>Plugin Scala-tools Maven2 Repository</name>
-            <url>http://scala-tools.org/repo-releases</url>
-        </pluginRepository>
         <pluginRepository>
             <id>plugin.kevoree-github</id>
             <url>http://maven.kevoree.org/release/</url>

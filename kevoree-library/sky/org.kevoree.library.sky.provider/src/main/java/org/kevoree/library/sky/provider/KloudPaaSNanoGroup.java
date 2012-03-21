@@ -4,6 +4,7 @@ import org.kevoree.ContainerNode;
 import org.kevoree.ContainerRoot;
 import org.kevoree.KevoreeFactory;
 import org.kevoree.annotation.*;
+import org.kevoree.api.service.core.script.KevScriptEngine;
 import org.kevoree.framework.*;
 import org.kevoree.framework.Constants;
 import org.kevoree.library.nanohttp.NanoHTTPD;
@@ -36,7 +37,7 @@ import java.util.concurrent.Executors;
 @GroupType
 @DictionaryType({
 		@DictionaryAttribute(name = "masterNode", optional = false),
-		@DictionaryAttribute(name = "port", optional = false, fragmentDependant = true),
+		@DictionaryAttribute(name = "port", optional = true, fragmentDependant = true),
 		@DictionaryAttribute(name = "ip", defaultValue = "0.0.0.0", optional = true, fragmentDependant = true),
 		@DictionaryAttribute(name = "SSH_Public_Key", optional = true)
 })
@@ -82,6 +83,7 @@ public class KloudPaaSNanoGroup extends AbstractGroupType {
 							if (externalSender) {
 								if (getDictionary().get("masterNode") != null) {
 									for (String ipPort : KloudHelper.getMasterIP_PORT(getDictionary().get("masterNode").toString())) {
+										logger.debug("send model on {}" + ipPort);
 										KloudHelper.sendModel(model, "http://" + ipPort + "/model/current");
 									}
 								}
@@ -97,6 +99,7 @@ public class KloudPaaSNanoGroup extends AbstractGroupType {
 					if (uri.endsWith("/model/current")) {
 						String msg;
 						if (KloudHelper.isIaaSNode(getModelService().getLastModel(), getName(), getNodeName())) {
+							logger.debug("GET request about user model");
 							Option<ContainerRoot> userModelOption = KloudReasoner.updateUserConfiguration(getName(), userModel, getModelService().getLastModel(), getKevScriptEngineFactory());
 							if (userModelOption.isDefined()) {
 								msg = KevoreeXmiHelper.saveToString(userModelOption.get(), false);
@@ -114,7 +117,9 @@ public class KloudPaaSNanoGroup extends AbstractGroupType {
 						return new NanoHTTPD.Response(HTTP_OK, MIME_HTML, msg);
 					} else if (uri.endsWith("/release")) {
 						if (KloudHelper.isIaaSNode(getModelService().getLastModel(), getName(), getNodeName())) {
-							KloudReasoner.processDeployment(KevoreeFactory.createContainerRoot(), userModel, getModelService(), getKevScriptEngineFactory(), getName());
+							IaaSUpdate jobUpdate = new IaaSUpdate(userModel, KevoreeFactory.createContainerRoot());
+							userModel = KevoreeFactory.createContainerRoot();
+							poolUpdate.submit(jobUpdate);
 							return new NanoHTTPD.Response(HTTP_OK, MIME_HTML, "");
 						}
 					}
@@ -197,30 +202,41 @@ public class KloudPaaSNanoGroup extends AbstractGroupType {
 	public void push (ContainerRoot model, String targetNodeName) {
 		List<String> ips = KevoreePropertyHelper.getStringNetworkProperties(model, targetNodeName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP());
 		Option<Integer> portOption = KevoreePropertyHelper.getIntPropertyForGroup(model, this.getName(), "port", true, targetNodeName);
-		int PORT = 8000;
 		if (portOption.isDefined()) {
-			PORT = portOption.get();
-		}
-		String param = "";
-		if (!getNodeName().equals("")) {
-			param = "?nodesrc=" + getNodeName();
-		}
-		boolean sent = false;
-		for (String ip : ips) {
-			logger.debug("try to send model on url=>" + "http://" + ip + ":" + PORT + "/model/current" + param);
-			if (KloudHelper.sendModel(model, "http://" + ip + ":" + PORT + "/model/current" + param)) {
-				sent = true;
-				break;
+			int PORT = portOption.get();
+			String param = "";
+			if (!getNodeName().equals("")) {
+				param = "?nodesrc=" + getNodeName();
 			}
-		}
-		if (!sent) {
-			logger.debug("try to send model on url=>" + "http://127.0.0.1:" + PORT + "/model/current" + param);
-			if (!KloudHelper.sendModel(model, "http://127.0.0.1:" + PORT + "/model/current" + param)) {
-				logger.debug("Unable to push a model on {}", targetNodeName);
-				logger.debug("try to send model using master node property");
-				if (!KloudHelper.sendModel(model, this.getDictionary().get("masterNode").toString() + param)) {
-					logger.debug("Unable to send model using master node property");
+			boolean sent = false;
+			for (String ip : ips) {
+				logger.debug("try to send model on url=>" + "http://" + ip + ":" + PORT + "/model/current" + param);
+				if (KloudHelper.sendModel(model, "http://" + ip + ":" + PORT + "/model/current" + param)) {
+					sent = true;
+					break;
 				}
+			}
+
+			if (!sent) {
+				logger.debug("try to send model on url=>" + "http://127.0.0.1:" + PORT + "/model/current" + param);
+				if (!KloudHelper.sendModel(model, "http://127.0.0.1:" + PORT + "/model/current" + param)) {
+					logger.debug("Unable to push a model on {}", targetNodeName);
+					logger.debug("try to send model using master node property");
+					if (!KloudHelper.sendModel(model, this.getDictionary().get("masterNode").toString() + param)) {
+						logger.debug("Unable to send model using master node property");
+					}
+				}
+			}
+		} else {
+			if (getDictionary().get("masterNode") != null) {
+				for (String ipPort : KloudHelper.getMasterIP_PORT(getDictionary().get("masterNode").toString())) {
+					logger.debug("send model on {} using masterNode", ipPort);
+					if (KloudHelper.sendModel(model, "http://" + ipPort + "/model/current")) {
+						break;
+					}
+				}
+			} else {
+				logger.error("Unable to push a model on {} because there is not enough information to localize this node", targetNodeName);
 			}
 		}
 	}
@@ -308,10 +324,29 @@ public class KloudPaaSNanoGroup extends AbstractGroupType {
 		public void run () {
 			if (KloudReasoner.needsNewDeployment(proposedModel, currentModel)) {
 				logger.debug("A new Deployment must be done!");
-				boolean deploymentOK = KloudReasoner.processDeployment(proposedModel, currentModel, getModelService(), getKevScriptEngineFactory(), getName());
+				KevScriptEngine kengine = getKevScriptEngineFactory().createKevScriptEngine();
+				if (KloudReasoner.processDeployment(proposedModel, currentModel, getModelService().getLastModel(), kengine, getName())) {
+					for (int i = 0; i < 5; i++) {
+						try {
+							if (kengine.atomicInterpretDeploy()) {
+								break;
+							}
+						} catch (Exception e) {
+							logger.debug("Error while update user configuration, try number " + i);
+						}
+					}
+				}
+
 			}
-			for (ContainerNode userNode : proposedModel.getNodesForJ()) {
-				push(proposedModel, userNode.getName());
+			//ADD GROUP to user model
+			logger.debug("update user configuration when user model must be forwarded");
+			Option<ContainerRoot> userModelUpdated = KloudReasoner.updateUserConfiguration(getName(), proposedModel, getModelService().getLastModel(), getKevScriptEngineFactory());
+			if (userModelUpdated.isDefined()) {
+				for (ContainerNode userNode : currentModel.getNodesForJ()) {
+					push(userModelUpdated.get(), userNode.getName());
+				}
+			} else {
+				logger.error("Unable to update user configuration, with user group");
 			}
 		}
 	}

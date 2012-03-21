@@ -13,4 +13,14 @@
  */
 package org.kevoree.tools.marShell.ast
 
-case class Script(blocks : List[Block])
+case class Script(blocks : List[Block]) {
+
+  def getTextualForm : String = {
+    val buffer = new StringBuilder
+    blocks.foreach{ b =>
+      buffer.append(b.getTextualForm+"\n")
+    }
+    buffer.toString()
+  }
+
+}

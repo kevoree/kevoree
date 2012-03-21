@@ -19,5 +19,7 @@
 package org.kevoree.tools.marShell.ast
 
 case class RemoveChannelInstanceStatment(channelName : String) extends Statment {
-
+  def getTextualForm: String = {
+    ""
+  }
 }

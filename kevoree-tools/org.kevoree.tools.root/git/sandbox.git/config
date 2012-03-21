@@ -1,0 +1,19 @@
+[core]
+	repositoryformatversion = 0
+	filemode = true
+	bare = true
+	logallrefupdates = false
+	autocrlf = false
+[gitblit]
+	description =
+	owner =
+	useTickets = false
+	useDocs = false
+	accessRestriction = NONE
+	showRemoteBranches = false
+	isFrozen = false
+	showReadme = false
+	skipSizeCalculation = false
+	skipSummaryMetrics = false
+	federationStrategy = FEDERATE_THIS
+	isFederated = false

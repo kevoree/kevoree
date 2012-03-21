@@ -48,46 +48,27 @@ case class AddInstance(c: Instance, nodeName: String,modelservice : KevoreeModel
     val activatorPackage = KevoreeGeneratorHelper.getTypeDefinitionGeneratedPackage(c.getTypeDefinition, nodeTypeName)
     val factoryName = activatorPackage + "." + c.getTypeDefinition.getName + "Factory"
     try {
-      
-      //println(bs.getKevoreeClassLoaderHandler.getKevoreeClassLoader(deployUnit))
-
-    //  logger.debug("AddInstance :: beforeLoadFactory "+factoryName+" - "+c.getName)
-    
-    println("BeforeFactoryCall "+c.getName)
       val kevoreeFactory = bs.getKevoreeClassLoaderHandler.getKevoreeClassLoader(deployUnit).loadClass(factoryName).newInstance().asInstanceOf[KevoreeInstanceFactory]
-
-    println("AfterFactoryCall "+c.getName)
-
-      //logger.debug("AddInstance :: beforeInstanceCreation "+factoryName+" - "+c.getName)
       val newInstance: KevoreeInstanceActivator = kevoreeFactory.registerInstance(c.getName, nodeName)
-     // logger.debug("AddInstance :: beforeAddMapping "+factoryName+" - "+c.getName)
       KevoreeDeployManager.addMapping(KevoreeMapping(c.getName, c.getClass.getName, newInstance))
-
       newInstance.setKevScriptEngineFactory(kscript)
       newInstance.setModelHandlerService(modelservice)
-     // logger.debug("AddInstance :: beforeActorStart "+factoryName+" - "+c.getName)
       newInstance.start()
-
-     // logger.debug("AddInstance :: afterActorStart "+factoryName+" - "+c.getName)
 
       if(newInstance.isInstanceOf[KevoreeGroupActivator]){
         newInstance.asInstanceOf[KevoreeGroupActivator].groupActor.setBootStrapperService(bs)
       }
-
-     // logger.debug("AddInstance :: SetBootService "+factoryName+" - "+c.getName)
 
 
       if(newInstance.isInstanceOf[KevoreeChannelFragmentActivator]){
         newInstance.asInstanceOf[KevoreeChannelFragmentActivator].channelActor.asInstanceOf[AbstractChannelFragment].setBootStrapperService(bs)
       }
 
-      //logger.debug("AddInstance :: End "+factoryName+" - "+c.getName)
-
       true
     } catch {
       case _@e => {
-        var message = "Could not start the instance " + c.getName + ":" + c.getClass.getName + " maybe because one of its dependencies is missing.\n"
-        message += "Please check that all dependencies of your components are marked with a 'bundle' type (or 'kjar' type) in the pom of the component/channel's project.\n"
+        val message = "Could not start the instance " + c.getName + ":" + c.getClass.getName + "\n"/*+ " maybe because one of its dependencies is missing.\n"
+        message += "Please check that all dependencies of your components are marked with a 'bundle' type (or 'kjar' type) in the pom of the component/channel's project.\n"*/
         logger.error(message, e)
         false
       }

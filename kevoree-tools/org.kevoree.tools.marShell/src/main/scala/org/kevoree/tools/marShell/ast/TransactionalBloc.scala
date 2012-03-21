@@ -13,4 +13,19 @@
  */
 package org.kevoree.tools.marShell.ast
 
-case class TransactionalBloc(tl : List[Statment]) extends Block (tl)
+case class TransactionalBloc(tl : List[Statment]) extends Block (tl){
+  
+  def getTextualForm : String = {
+    val buffer = new StringBuilder
+    buffer.append("tblock {\n")
+    tl.foreach{ b =>
+      buffer.append(b.getTextualForm+"\n")
+    }
+    buffer.append("}\n")
+    buffer.toString()
+
+  }
+
+
+
+}

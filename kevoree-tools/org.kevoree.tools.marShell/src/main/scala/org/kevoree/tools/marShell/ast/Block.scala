@@ -16,4 +16,6 @@ package org.kevoree.tools.marShell.ast
 abstract class Block(ll : List[Statment]){
   def l = ll
 
+
+  def getTextualForm : String
 }

@@ -13,4 +13,8 @@
  */
 package org.kevoree.tools.marShell.ast
 
-case class AddComponentInstanceStatment(cid:ComponentInstanceID, typeDefinitionName : String,dictionary : java.util.Properties) extends AddInstanceStatment(dictionary)
+case class AddComponentInstanceStatment(cid:ComponentInstanceID, typeDefinitionName : String,dictionary : java.util.Properties) extends AddInstanceStatment(dictionary){
+  override def getTextualForm: String = {
+    ""
+  }
+}

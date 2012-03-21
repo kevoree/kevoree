@@ -2,6 +2,8 @@ package org.kevoree.library.javase.authentication;
 
 import org.kevoree.annotation.*;
 import org.kevoree.framework.AbstractComponentType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.naming.Context;
 import javax.naming.NamingEnumeration;
@@ -33,6 +35,7 @@ import java.util.Hashtable;
 		@ProvidedPort(name = "authenticate", type = PortType.SERVICE, className = Authentication.class)
 })
 public class LDAPAuthentication extends AbstractComponentType implements Authentication {
+	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	@Start
 	@Stop
@@ -76,6 +79,7 @@ public class LDAPAuthentication extends AbstractComponentType implements Authent
 			ctx.search(getDictionary().get("base").toString(), getDictionary().get("filter").toString(), sc);
 			return true;
 		} catch (NamingException e) {
+			logger.error("Unable to authenticate", e);
 			return false;
 		}
 	}
