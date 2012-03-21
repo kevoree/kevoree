@@ -7,10 +7,15 @@
 		}
 	</ui:style>
 	<g:HTMLPanel>
-		<g:VerticalPanel width="600" height="800">
-			<g:RichTextArea width="600" height="300" ui:field="richTextArea"/>
-			<g:HTML wordWrap="true" height="500" width="600" ui:field="html"/>
+		<g:HorizontalPanel width="1200" height="800">
+			<g:VerticalPanel width="600" height="800">
+			<g:RichTextArea width="600px" height="300px" ui:field="richTextArea"/>
+			<g:HTML wordWrap="true" height="500px" width="600px" ui:field="html"/>
 		</g:VerticalPanel>
+			<g:VerticalPanel>
+				<g:Frame url="cheatsheet.html" width="600px" height="800px"/>
+			</g:VerticalPanel>
+		</g:HorizontalPanel>
 	
 	</g:HTMLPanel>
 
