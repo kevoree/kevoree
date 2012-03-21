@@ -89,7 +89,7 @@ class KloudForm (editor: KevoreeEditor) {
   configLayout.add(passwordLbl)
   configLayout.add(passwordTxtField)
 
-  passwordTxtField.addFocusListener(new FocusListener() {
+  /*passwordTxtField.addFocusListener(new FocusListener() {
     def focusGained (p1: FocusEvent) {
       passwordLbl.setForeground(Color.WHITE)
     }
@@ -99,7 +99,7 @@ class KloudForm (editor: KevoreeEditor) {
         passwordLbl.setForeground(Color.RED)
       }
     }
-  })
+  })*/
 
   // set the ssh key
   val sshTxtField = new JTextField()
@@ -141,8 +141,9 @@ class KloudForm (editor: KevoreeEditor) {
   btSubmit.setUI(new HudButtonUI)
   btSubmit.addActionListener(new ActionListener {
     def actionPerformed (p1: ActionEvent) {
+      ok_lbl.setForeground(Color.WHITE)
       // check data (login, password, ssh_key must be defined, kloud address must also be set but a default value exists)
-      if (loginTxtField.getText != "" && passwordTxtField.getPassword.length > 0 && addressTxtField.getText != "") {
+      if (loginTxtField.getText != "" /*&& passwordTxtField.getPassword.length > 0*/ && addressTxtField.getText != "") {
         val password = new String(passwordTxtField.getPassword)
         val model = editor.getPanel.getKernel.getModelHandler.getActualModel
         // send the current model of the editor on Kloud
@@ -163,9 +164,9 @@ class KloudForm (editor: KevoreeEditor) {
         if (loginTxtField.getText == "") {
           logger.warn("You need to use a login to access the Kloud")
         }
-        if (passwordTxtField.getPassword.length == 0) {
+        /*if (passwordTxtField.getPassword.length == 0) {
           logger.warn("You may have a password to access the Kloud")
-        }
+        }*/
         if (addressTxtField.getText == "") {
           logger.warn("You need to specify the address of the Kloud (default = {})", defaultAddress)
         }
@@ -178,7 +179,7 @@ class KloudForm (editor: KevoreeEditor) {
   btRelease.addActionListener(new ActionListener {
     def actionPerformed (p1: ActionEvent) {
       // check data (login, password, ssh_key must be defined, kloud address must also be set but a default value exist)
-      if (loginTxtField.getText != "" && passwordTxtField.getPassword.length > 0 && addressTxtField.getText != "") {
+      if (loginTxtField.getText != "" /*&& passwordTxtField.getPassword.length > 0*/ && addressTxtField.getText != "") {
         val password = new String(passwordTxtField.getPassword)
         new Thread() {
           override def run () {
@@ -197,9 +198,10 @@ class KloudForm (editor: KevoreeEditor) {
         ok_lbl.setForeground(Color.RED)
         if (loginTxtField.getText == "") {
           logger.warn("You need to use a login to access the Kloud")
-        } else if (passwordTxtField.getPassword.length == 0) {
+        } /* else if (passwordTxtField.getPassword.length == 0) {
           logger.warn("You may have a password to access the Kloud")
-        } else if (addressTxtField.getText == "") {
+        }*/
+        else if (addressTxtField.getText == "") {
           logger.warn("You need to specify the address of the Kloud (default = {})", defaultAddress)
         }
       }
@@ -271,13 +273,24 @@ class KloudForm (editor: KevoreeEditor) {
 
       var nbTry = 20;
       // look the answer to know if the model has been correctly sent
-      while (!response.startsWith("<wait") && nbTry > 0) {
+      while (response.startsWith("<wait") && nbTry > 0) {
         logger.debug(response)
         nbTry = nbTry - 1
-        Thread.sleep(1000)
+        Thread.sleep(3000)
         try {
+          bodyBuilder.clear()
+          bodyBuilder append "password="
+          bodyBuilder append URLEncoder.encode(password, "UTF-8")
           //          val url = new URL(address + "/" + login)
-          val connection = url.openConnection()
+          val connection = url.openConnection().asInstanceOf[HttpURLConnection]
+          connection.setRequestMethod("POST")
+          connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded")
+          connection.setRequestProperty("Content-Length", "" + Integer.toString(bodyBuilder.length))
+          connection.setConnectTimeout(3000)
+          connection.setDoOutput(true)
+          val wr: OutputStreamWriter = new OutputStreamWriter(connection.getOutputStream)
+          wr.write(bodyBuilder.toString())
+          wr.flush()
           val rd = connection.getInputStream
           val bytes = new Array[Byte](2048)
           var length = 0

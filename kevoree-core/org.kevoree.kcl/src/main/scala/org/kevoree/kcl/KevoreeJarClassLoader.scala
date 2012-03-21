@@ -34,8 +34,9 @@ import java.lang.{Class, String}
 import ref.WeakReference
 import org.slf4j.LoggerFactory
 import java.io._
-import java.util.{HashMap, ArrayList, Collections, Enumeration}
 import java.util.concurrent.ConcurrentHashMap
+import scala.collection.JavaConversions._
+import java.util.{Collections, HashMap, ArrayList}
 
 /**
  * Created by IntelliJ IDEA.
@@ -48,7 +49,7 @@ class KevoreeJarClassLoader extends JarClassLoader {
 
   classpathResources = new KevoreeLazyJarResources
   classpathResources.asInstanceOf[KevoreeLazyJarResources].setParentKCL(this)
-  val local_loader = new KevoreeLocalLoader(classpathResources.asInstanceOf[KevoreeLazyJarResources],this)
+  val local_loader = new KevoreeLocalLoader(classpathResources.asInstanceOf[KevoreeLazyJarResources], this)
   local_loader.start()
   addLoader(local_loader)
 
@@ -123,7 +124,6 @@ class KevoreeJarClassLoader extends JarClassLoader {
   }
 
 
-
   def setLazyLoad(lazyload: Boolean) {
     classpathResources.asInstanceOf[KevoreeLazyJarResources].setLazyLoad(lazyload)
   }
@@ -166,17 +166,18 @@ class KevoreeJarClassLoader extends JarClassLoader {
     result
   }
 
-  private val scoreMap = new ConcurrentHashMap[Int,Int]
+  private val scoreMap = new ConcurrentHashMap[Int, Int]
 
-  def getScore(kcl : ClassLoader):Int={
-    if(scoreMap.containsKey(kcl.hashCode())){
+  def getScore(kcl: ClassLoader): Int = {
+    if (scoreMap.containsKey(kcl.hashCode())) {
       scoreMap.get(kcl.hashCode())
     } else {
       0
     }
   }
-  def incScore(kcl : ClassLoader):Int={
-    scoreMap.put(kcl.hashCode(),getScore(kcl)+1)
+
+  def incScore(kcl: ClassLoader): Int = {
+    scoreMap.put(kcl.hashCode(), getScore(kcl) + 1)
   }
 
   def internal_loadClass(className: String, resolveIt: Boolean): Class[_] = {
@@ -210,7 +211,7 @@ class KevoreeJarClassLoader extends JarClassLoader {
             return result
           }
       }
-      subWeakClassLoaders.filter(p => p.get.isDefined).sortWith((e1, e2) => ( getScore(e1.get.get) < getScore(e2.get.get))).foreach {
+      subWeakClassLoaders.filter(p => p.get.isDefined).sortWith((e1, e2) => (getScore(e1.get.get) < getScore(e2.get.get))).foreach {
         subCL =>
           try {
             subCL.get.map {
@@ -238,14 +239,14 @@ class KevoreeJarClassLoader extends JarClassLoader {
     result
   }
 
-  def getLoadedClass(className: String) : Class[_] = {
+  def getLoadedClass(className: String): Class[_] = {
     findLoadedClass(className)
   }
-  
-  def internal_defineClass(className: String,bytes : Array[Byte]) : Class[_] = {
+
+  def internal_defineClass(className: String, bytes: Array[Byte]): Class[_] = {
     defineClass(className, bytes, 0, bytes.length)
   }
-  
+
   override def loadClass(className: String): Class[_] = {
     loadClass(className, true)
   }
@@ -286,19 +287,20 @@ class KevoreeJarClassLoader extends JarClassLoader {
 
   def internal_getResourceAsStream(name: String): InputStream = {
     //logger.debug("Get RessourceAsStream : " + name)
-    var res: Array[Byte] = null
     if (name.endsWith(".class")) {
-      res = this.classpathResources.getResource(name)
-    } else {
-      val url = this.classpathResources.asInstanceOf[KevoreeLazyJarResources].getResourceURL(name)
-      if (url != null) {
-        res = this.classpathResources.asInstanceOf[KevoreeLazyJarResources].getResourceContent(url)
+      val res = this.classpathResources.getResource(name)
+      if (res != null) {
+        return new ByteArrayInputStream(res)
       }
     }
-    if (res != null) {
-      new ByteArrayInputStream(res)
+    val url = this.classpathResources.asInstanceOf[KevoreeLazyJarResources].getResourceURL(name)
+    if (url != null) {
+      if (url.toString.startsWith("file:kclstream:")) {
+        new ByteArrayInputStream(this.classpathResources.asInstanceOf[KevoreeLazyJarResources].getResourceContent(url))
+      } else {
+        url.openStream()
+      }
     } else {
-      //logger.debug("Not found res " + name + " in " + this)
       null
     }
   }
@@ -384,7 +386,6 @@ class KevoreeJarClassLoader extends JarClassLoader {
     if (classpathResources.asInstanceOf[KevoreeLazyJarResources].containResource(p1)) {
       val urls = classpathResources.asInstanceOf[KevoreeLazyJarResources].getResourceURLS(p1)
       val resolvedUrl = new ArrayList[URL]
-      import scala.collection.JavaConversions._
       urls.foreach {
         u =>
           if (u.toString.startsWith("file:kclstream:")) {
@@ -409,7 +410,7 @@ class KevoreeJarClassLoader extends JarClassLoader {
     }
   }
 
-  override def findResources(p1: String): Enumeration[URL] = {
+  override def findResources(p1: String): java.util.Enumeration[URL] = {
     //logger.debug("CallFind Resources for " + p1 + "-")
     val selfRes: ArrayList[URL] = internal_findResources(p1)
     //Then call on all
@@ -445,12 +446,12 @@ class KevoreeJarClassLoader extends JarClassLoader {
         }
     }
     /*
-    logger.debug("ResourcesEnumSize={}",selfRes.size())
-    if(logger.isDebugEnabled){
-      selfRes.toArray.foreach{  u =>
-        logger.debug("URL="+u)
-      }
-    }   */
+ logger.debug("ResourcesEnumSize={}",selfRes.size())
+ if(logger.isDebugEnabled){
+ selfRes.toArray.foreach{  u =>
+  logger.debug("URL="+u)
+ }
+ }   */
     Collections.enumeration(selfRes)
   }
 

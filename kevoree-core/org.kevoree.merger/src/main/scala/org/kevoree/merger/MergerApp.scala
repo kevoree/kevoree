@@ -36,13 +36,10 @@ object MergerApp {
     val merger = new RootMerger
     val emtpyModel = KevoreeFactory.eINSTANCE.createContainerRoot
 
-    val model1 = KevoreeXmiHelper.load("/Users/duke/Desktop/beforeMerge.kev")
-
-
-    val model2 = KevoreeXmiHelper.load("/Users/duke/Documents/dev/dukeboard/kevoree/kevoree-library/javase/org.kevoree.library.javase.fakeDomo/target/classes/KEV-INF/lib.kev")
-    val model3 = KevoreeXmiHelper.load("/Users/duke/Documents/dev/dukeboard/kevoree/kevoree-library/javase/org.kevoree.library.javase.javaseNode/target/classes/KEV-INF/lib.kev")
-    val model4 = KevoreeXmiHelper.load("/Users/duke/Documents/dev/dukeboard/kevoree/kevoree-library/javase/org.kevoree.library.javase.nanohttp/target/classes/KEV-INF/lib.kev")
-
+    val model1 = KevoreeXmiHelper.load("/Users/duke/Desktop/aGood.kev")
+    val model2 = KevoreeXmiHelper.load("/Users/duke/Desktop/generatedgoodASE.kev")
+   // val model3 = KevoreeXmiHelper.load("/Users/duke/Documents/dev/dukeboard/kevoree/kevoree-library/javase/org.kevoree.library.javase.javaseNode/target/classes/KEV-INF/lib.kev")
+  //  val model4 = KevoreeXmiHelper.load("/Users/duke/Documents/dev/dukeboard/kevoree/kevoree-library/javase/org.kevoree.library.javase.nanohttp/target/classes/KEV-INF/lib.kev")
     /*
     val model1 = KevoreeXmiHelper.load("/Users/duke/Documents/dev/dukeboard/kevoree/kevoree-library/javase/org.kevoree.library.javase.restNode/target/classes/KEV-INF/lib.kev")
     val model2 = KevoreeXmiHelper.load("/Users/duke/Documents/dev/dukeboard/kevoree/kevoree-library/javase/org.kevoree.library.javase.javaseNode/target/classes/KEV-INF/lib.kev")
@@ -55,9 +52,9 @@ object MergerApp {
     println("%%%%%%%%%%%%%%%%%%%%%%%%%% 2")
     //merger.merge(model1, model3)
     println("%%%%%%%%%%%%%%%%%%%%%%%%%% 3")
-    //merger.merge(model1, model2)
+    merger.merge(model1, model2)
     println("%%%%%%%%%%%%%%%%%%%%%%%%%% 4")
-    merger.merge(model1, model4)
+  //  merger.merge(model1, model4)
     println("!!!!!!!!!!!!!!!!!!!!!!!!!! end")
 
 

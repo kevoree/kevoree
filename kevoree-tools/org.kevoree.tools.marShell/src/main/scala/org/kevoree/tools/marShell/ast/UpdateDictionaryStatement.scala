@@ -19,5 +19,7 @@
 package org.kevoree.tools.marShell.ast
 
 case class UpdateDictionaryStatement(instanceName : String,nodeName:Option[String],fraProperties : java.util.HashMap[String,java.util.Properties]) extends Statment {
-
+  def getTextualForm: String = {
+    ""
+  }
 }

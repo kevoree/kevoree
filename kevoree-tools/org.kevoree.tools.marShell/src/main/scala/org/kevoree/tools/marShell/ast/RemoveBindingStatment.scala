@@ -13,7 +13,9 @@
  */
 package org.kevoree.tools.marShell.ast
 
-case class RemoveBindingStatment(cid:ComponentInstanceID,portName:String, bindingInstanceName: String)
+case class RemoveBindingStatment(cid: ComponentInstanceID, portName: String, bindingInstanceName: String)
   extends Statment {
-    
+  def getTextualForm: String = {
+    ""
   }
+}

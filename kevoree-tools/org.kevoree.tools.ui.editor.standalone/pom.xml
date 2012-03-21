@@ -5,12 +5,12 @@
     <packaging>jar</packaging>
     <name>Kevoree :: Tools :: UI Editor Standalone</name>
     <url>https://github.com/dukeboard/kevoree/</url>
-    <version>1.6.0-BETA6</version>
+    <version>1.6.0-SNAPSHOT</version>
 
     <parent>
         <artifactId>org.kevoree.tools.root</artifactId>
         <groupId>org.kevoree.tools</groupId>
-        <version>1.6.0-BETA6</version>
+        <version>1.6.0-SNAPSHOT</version>
         <relativePath>../org.kevoree.tools.root/pom.xml</relativePath>
     </parent>
 
@@ -152,6 +152,12 @@
                                 <groupId>org.kevoree.tools</groupId>
                                 <artifactId>org.kevoree.tools.marShell</artifactId>
                             </inclusion>
+
+                            <inclusion>
+                                <groupId>org.kevoree.tools</groupId>
+                                <artifactId>org.kevoree.tools.marShellTransform</artifactId>
+                            </inclusion>
+
                             <inclusion>
                                 <groupId>org.kevoree.tools</groupId>
                                 <artifactId>org.kevoree.tools.marShellGUI</artifactId>
@@ -272,7 +278,7 @@
             </plugin>
 
 
-            <plugin>
+           <!-- <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>osxappbundle-maven-plugin</artifactId>
                 <version>1.0-alpha-2</version>
@@ -281,8 +287,6 @@
                     <jvmVersion>1.6+</jvmVersion>
                     <mainClass>org.kevoree.tools.ui.editor.standalone.App</mainClass>
                     <iconFile>${basedir}/src/main/resources/kev-logo-full.icns</iconFile>
-                    <!--  Created by interpolate-infoplist above -->
-               <!--     <dictionaryFile>${basedir}/src/main/resources/Info.plist</dictionaryFile> -->
                 </configuration>
                 <executions>
                     <execution>
@@ -292,7 +296,7 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
+            </plugin>-->
 
 
         </plugins>

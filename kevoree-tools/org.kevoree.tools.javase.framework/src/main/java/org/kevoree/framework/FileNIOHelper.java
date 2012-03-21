@@ -80,9 +80,9 @@ public class FileNIOHelper {
         }
     }
 
-    public static void unzipToTempDir(File inputWar, File outputDir, List<String> inclusions, List<String> exclusions) {
+    public static void unzipToTempDir(InputStream inputWarST, File outputDir, List<String> inclusions, List<String> exclusions) {
         try {
-            FileInputStream inputWarST = new FileInputStream(inputWar);
+            //FileInputStream inputWarST = new FileInputStream(inputWar);
             ZipInputStream zis = new ZipInputStream(inputWarST);
             ZipEntry entry;
             while ((entry = zis.getNextEntry()) != null) {
