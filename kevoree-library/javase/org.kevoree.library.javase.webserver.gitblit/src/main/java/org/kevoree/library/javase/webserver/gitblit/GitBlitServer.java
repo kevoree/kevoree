@@ -1,4 +1,4 @@
-package org.kevoree.library.javase.webserver.jenkins;
+package org.kevoree.library.javase.webserver.gitblit;
 
 import org.kevoree.annotation.*;
 import org.kevoree.framework.AbstractComponentType;
@@ -23,33 +23,13 @@ import java.util.UUID;
 })
 
 @ComponentType
-public class JenkinsServer extends AbstractComponentType {
+public class GitBlitServer extends AbstractComponentType {
 
     private KevLauncher winstone = null;
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Start
     public void startServer() throws ClassNotFoundException, NoSuchMethodException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException, InvocationTargetException, InstantiationException, IOException {
-
-        // this is so that JFreeChart can work nicely even if we are launched as a daemon
-        System.setProperty("java.awt.headless", "true");
-        // tell Jenkins that Winstone doesn't support chunked encoding.
-        if (System.getProperty("hudson.diyChunking") == null) {
-            System.setProperty("hudson.diyChunking", "true");
-        }
-
-        if(this.getDictionary().get("home") != null && !this.getDictionary().get("home").equals("")){
-            System.setProperty("JENKINS_HOME", this.getDictionary().get("home").toString());
-        } else {
-            File tempUserDir = new File(System.getProperty("java.io.tmpdir")+File.separator+"jenkinsHome"+getName());
-            tempUserDir.mkdirs();
-            System.setProperty("JENKINS_HOME", tempUserDir.getAbsolutePath());
-        }
-        logger.info("Jenkins User Home at "+System.getProperty("JENKINS_HOME"));
-        //   EnvVars.masterEnvVars.put("JENKINS_HOME", "/Users/duke/Documents/dev/sandbox/jenkinsHome");
-        Field f = this.getClass().getClassLoader().loadClass("winstone.WinstoneSession").getField("SESSION_COOKIE_NAME");
-        f.setAccessible(true);
-        f.set(null, "JSESSIONID." + UUID.randomUUID().toString().replace("-", "").substring(0, 8));
 
         Map args = new HashMap();
         //args.put("preferredClassLoader",KevWebappClassLoader.class.getName());
@@ -61,7 +41,7 @@ public class JenkinsServer extends AbstractComponentType {
         tempWarDir.delete();
         tempWarDir.mkdirs();
 
-        org.kevoree.framework.FileNIOHelper.unzipToTempDir(this.getClass().getClassLoader().getResourceAsStream("jenkins.war"), tempWarDir, java.util.Arrays.asList(".filtered"), java.util.Arrays.asList(".filtered"));
+        org.kevoree.framework.FileNIOHelper.unzipToTempDir(this.getClass().getClassLoader().getResourceAsStream("gitblit-0.8.2.war"), tempWarDir, java.util.Arrays.asList(".filtered"), java.util.Arrays.asList(".filtered"));
         args.put("webroot", tempWarDir.getAbsolutePath());
         args.put("httpPort",this.getDictionary().get("port"));
         winstone = new KevLauncher(args);
@@ -70,7 +50,9 @@ public class JenkinsServer extends AbstractComponentType {
 
     @Stop
     public void stopServer() {
-        winstone.shutdown();
+        if(winstone != null){
+            winstone.shutdown();
+        }
     }
 
     @Update

@@ -72,7 +72,6 @@ case class KevsAddComponentInstanceInterpreter(addCompo: AddComponentInstanceSta
 
                     //MERGE DICTIONARY
                     Merger.mergeDictionary(newcomponent, addCompo.props,None)
-
                     targetNode.addComponents(newcomponent)
                     true
                   }
