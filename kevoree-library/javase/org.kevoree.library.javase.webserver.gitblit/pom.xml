@@ -40,12 +40,6 @@
     </repositories>
 
     <build>
-        <resources>
-            <resource>
-                <directory>${project.build.directory}/embwar</directory>
-            </resource>
-        </resources>
-
         <plugins>
             <plugin>
                 <groupId>org.kevoree.tools</groupId>
@@ -72,6 +66,7 @@
                 <configuration>
                     <war>http://gitblit.googlecode.com/files/gitblit-0.8.2.war</war>
                     <tempWar>${project.build.directory}/embwar</tempWar>
+                    <filtered>slf4j-api-1.6.1.jar,slf4j-log4j12-1.6.1.jar,javax.servlet-3.0.1.jar,log4j-1.2.16.jar</filtered>
                 </configuration>
                 <executions>
                     <execution>
