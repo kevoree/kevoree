@@ -15,7 +15,6 @@
 
     <properties>
         <kevoree.include>*:*</kevoree.include>
-        <groovy.version>1.8.6</groovy.version>
     </properties>
 
     <dependencies>
@@ -23,16 +22,6 @@
             <groupId>org.jenkins-ci</groupId>
             <artifactId>winstone</artifactId>
             <version>0.9.10-jenkins-35</version>
-        </dependency>
-        <dependency>
-            <groupId>org.codehaus.groovy</groupId>
-            <artifactId>groovy-all</artifactId>
-            <version>${groovy.version}</version>
-        </dependency>
-        <dependency>
-        	<groupId>org.apache.ant</groupId>
-        	<artifactId>ant</artifactId>
-        	<version>1.8.3</version>
         </dependency>
     </dependencies>
 
@@ -83,7 +72,6 @@
                 <configuration>
                     <war>http://mirrors.jenkins-ci.org/war/latest/jenkins.war</war>
                     <tempWar>${project.build.directory}/embwar</tempWar>
-                    <filtered>groovy-all-1.8.5.jar,ant-1.8.3.jar</filtered>
                 </configuration>
                 <executions>
                     <execution>
