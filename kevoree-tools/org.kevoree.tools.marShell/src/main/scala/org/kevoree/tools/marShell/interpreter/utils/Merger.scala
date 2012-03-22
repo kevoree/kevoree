@@ -28,8 +28,6 @@ object Merger {
     import scala.collection.JavaConversions._
     
     fragmentProps.keySet().foreach { propKey =>
-      println("Merge key "+propKey)
-      
       propKey match {
         case "*"=> mergeDictionary(inst,fragmentProps.get(propKey),None)
         case _ @ searchNodeName => {

@@ -115,7 +115,7 @@ public class ZipHelper {
             if(subFile.isDirectory()){
                 addFolderToZip("", subFile.getAbsolutePath(), zip);
             } else {
-                addFileToZip(subFile.getName(), subFile.getAbsolutePath(), zip, false);
+                addFileToZip("", subFile.getAbsolutePath(), zip, false);
             }
 
         }
@@ -159,7 +159,13 @@ public class ZipHelper {
                 byte[] buf = new byte[1024];
                 int len;
                 FileInputStream in = new FileInputStream(srcFile);
-                zip.putNextEntry(new ZipEntry(path + "/" + folder.getName()));
+
+                if(path.equals("")){
+                    zip.putNextEntry(new ZipEntry(folder.getName()));
+                } else {
+                    zip.putNextEntry(new ZipEntry(path + "/" + folder.getName()));
+                }
+
                 while ((len = in.read(buf)) > 0) {
                     /*
                      * Write the Result
