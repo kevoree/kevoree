@@ -27,29 +27,28 @@ import com.google.gwt.user.client.ui.Widget;
 
 	public MainWindows() {
 		initWidget(uiBinder.createAndBindUi(this));
+		
+		
 	}
 
 
-	public MainWindows(String firstName) {
-		initWidget(uiBinder.createAndBindUi(this));
-	}
 
 
-
-	@UiHandler("richTextArea")
-	void onRichTextAreaKeyPress(KeyPressEvent event) {
-		serv.markdown2html(richTextArea.getText(), new AsyncCallback<String>() {
-			
-			@Override
-			public void onSuccess(String arg0) {
-				html.setHTML(arg0);	
-			}
-			
-			@Override
-			public void onFailure(Throwable arg0) {
-				Window.alert("toto");
+	 	@UiHandler("richTextArea")
+	 	void onRichTextAreaKeyPress(KeyPressEvent event) {
+	 		serv.markdown2html(richTextArea.getText() + event.getCharCode(), new AsyncCallback<String>() {
 				
-			}
-		});
-	}
+				@Override
+				public void onSuccess(String arg0) {
+					html.setHTML(arg0);	
+				}
+				
+				@Override
+				public void onFailure(Throwable arg0) {
+					Window.alert("toto");
+					
+				}
+			});
+	 		
+	 	}
 }

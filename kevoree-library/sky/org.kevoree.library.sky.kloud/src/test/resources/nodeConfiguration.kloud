@@ -1,6 +1,6 @@
 tblock {
 
-addNode cumulus : JailNode {role="host/container", port="7000", inet="alc0", subnet="10.0.0.0", mask="24", flavor="kevjail", logLevel="DEBUG"}
+addNode cumulus : JailNode {role="host/container", port="7000", inet="bge1", subnet="10.0.0.0", mask="24", flavor="kevjail", logLevel="DEBUG"}
 addNode fog1 : JailNode {role="host", port="7000", inet="alc0", subnet="10.0.1.0", mask="24", flavor="kevjail", logLevel="DEBUG"}
 addNode fog2 : JailNode {role="host", port="7000", inet="alc0", subnet="10.0.2.0", mask="24", flavor="kevjail", logLevel="DEBUG"}
 addNode fog3 : JailNode {role="host", port="7000", inet="alc0", subnet="10.0.3.0", mask="24", flavor="kevjail", logLevel="DEBUG"}
