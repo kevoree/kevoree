@@ -169,6 +169,9 @@
         <module>../org.kevoree.tools.dpa</module>
         <module>../org.kevoree.tools.model2code</module>
         <module>../org.kevoree.tools.war.wrapperplugin</module>
+
+        <module>../org.kevoree.tools.emf.compat</module>
+
       <!--  <module>../org.kevoree.tools.jar.wrapperplugin</module>-->
         <module>../org.kevoree.tools.ui.editor.standalone</module>
     </modules>
