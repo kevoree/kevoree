@@ -44,6 +44,13 @@ import org.kevoree.kcl.KevoreeJarClassLoader
 
 class NodeTypeBootstrapHelper extends Bootstraper with KCLBootstrap {
 
+  var kevoreeLogService: org.kevoree.api.service.core.logging.KevoreeLogService = null
+
+  def getKevoreeLogService : org.kevoree.api.service.core.logging.KevoreeLogService = kevoreeLogService
+
+  def setKevoreeLogService(ls : org.kevoree.api.service.core.logging.KevoreeLogService) {
+    kevoreeLogService = ls
+  }
 
   val classLoaderHandler = new JCLContextHandler
 
@@ -274,10 +281,6 @@ class NodeTypeBootstrapHelper extends Bootstraper with KCLBootstrap {
     du.setVersion(version)
     classLoaderHandler.manuallyAddToCache(du, kcl)
   }
-
-
-
-
 
 
 }
