@@ -53,7 +53,6 @@ public class JenkinsServer extends AbstractComponentType {
 
         Map args = new HashMap();
         //args.put("preferredClassLoader",KevWebappClassLoader.class.getName());
-        //args.put("preferredClassLoader",KevWebappClassLoader.class.getName());
         KevLauncher.initLogger(args);
         args.put("ajp13Port", "-1");
 
