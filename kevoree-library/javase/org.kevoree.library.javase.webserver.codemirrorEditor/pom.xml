@@ -17,65 +17,36 @@
     <properties>
         <gwtVersion>2.4.0</gwtVersion>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
+	<webappDirectory>${project.build.directory}/${project.build.finalName}</webappDirectory>
+	<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <hibernate.version>4.1.0.Final</hibernate.version>
+	<kevoree.include>*:*</kevoree.include> 
+
+  </properties>
 
     <dependencies>
-        <dependency>
-            <groupId>com.google.gwt</groupId>
-            <artifactId>gwt-servlet</artifactId>
-            <version>${gwtVersion}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.google.gwt</groupId>
-            <artifactId>gwt-user</artifactId>
-            <version>${gwtVersion}</version>
-        </dependency>
-        <dependency>
-            <groupId>javax.validation</groupId>
-            <artifactId>validation-api</artifactId>
-            <version>1.0.0.GA</version>
-           <!-- <scope>test</scope>-->
-        </dependency>
-        <dependency>
-            <groupId>javax.validation</groupId>
-            <artifactId>validation-api</artifactId>
-            <version>1.0.0.GA</version>
-            <classifier>sources</classifier>
-            <scope>test</scope>
-        </dependency>
         <dependency>
             <groupId>org.kevoree.library.javase</groupId>
             <artifactId>org.kevoree.library.javase.webserver</artifactId>
             <version>${kevoree.version}</version>
-            <type>bundle</type>
-        </dependency>
-        <dependency>
-            <groupId>org.kevoree.library.javase</groupId>
-            <artifactId>org.kevoree.library.javase.fileSystem</artifactId>
-            <version>${kevoree.version}</version>
-            <type>bundle</type>
         </dependency>
         <dependency>
             <groupId>org.kevoree.library.javase</groupId>
             <artifactId>org.kevoree.library.javase.webserver.servlet</artifactId>
             <version>${kevoree.version}</version>
-            <type>bundle</type>
         </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.8.1</version>
-            <scope>test</scope>
-        </dependency>
-
-
-
+	<dependency>
+            <groupId>com.google.gwt</groupId>
+            <artifactId>gwt-servlet</artifactId>
+            <version>${gwtVersion}</version>
+        </dependency>	    
     </dependencies>
 
     <build>
+    <!--<outputDirectory>${webappDirectory}/WEB-INF/classes</outputDirectory>-->
         <resources>
             <resource>
-                <directory>${basedir}/war</directory>
+                <directory>${basedir}/src/main/webapp/</directory>
             </resource>
             <resource>
                 <directory>
@@ -94,7 +65,16 @@
                         <phase>generate-resources</phase>
                         <configuration>
                             <module>org.kevoree.library.javase.webserver.codemirrorEditor.htmlEditor</module>
-                        </configuration>
+                        
+                <localWorkers>4</localWorkers>
+                <!-- use style OBF for prod -->
+                <style>OBFUSCATED</style>                   
+                <extraJvmArgs>-Xmx2048m -Xss1024k</extraJvmArgs>
+                <gwtVersion>${version.gwt}</gwtVersion>
+          <runTarget>TarificateurDirectM.html</runTarget>
+          <hostedWebapp>${webappDirectory}</hostedWebapp>
+          <i18nMessagesBundle>fr.directm.tarificateur.client.Messages</i18nMessagesBundle>
+        </configuration>
                         <goals>
                             <goal>compile</goal>
                         </goals>
@@ -120,4 +100,26 @@
             </plugin>
         </plugins>
     </build>
+
+    <repositories>
+        <repository>
+            <id>kevoree-release</id>
+            <url>http://maven.kevoree.org/release</url>
+        </repository>
+        <repository>
+            <id>kevoree-snapshot</id>
+            <url>http://maven.kevoree.org/snapshots</url>
+        </repository>
+       
+    </repositories>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>kevoree-release</id>
+            <url>http://maven.kevoree.org/release</url>
+        </pluginRepository>
+        <pluginRepository>
+            <id>kevoree-snapshot</id>
+            <url>http://maven.kevoree.org/snapshots</url>
+        </pluginRepository>
+    </pluginRepositories>
 </project>

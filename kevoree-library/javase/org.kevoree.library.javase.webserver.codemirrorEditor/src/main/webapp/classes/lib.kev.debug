@@ -1,0 +1,71 @@
+<kevoree:ContainerRoot xsi:type="kevoree:ContainerRoot" xmlns:xml="http://www.omg.org/XMI" xmi:version="2.0" xmlns:xsi="http://wwww.w3.org/2001/XMLSchema-instance" xmlns:kevoree="http://kevoree/1.0">
+ <typeDefinitions deployUnits="//@deployUnits.0" updateMethod="updatePage" stopMethod="stopPage" startMethod="startPage" bean="org.kevoree.library.javase.webserver.latexEditor.LatexEditor" factoryBean="org.kevoree.library.javase.webserver.latexEditor.LatexEditorFactory" name="LatexEditor" xsi:type="kevoree:ComponentType">
+  <dictionaryType>
+   <attributes fragmentDependant="false" state="false" optional="true" name="urlpattern" xsi:type="kevoree:DictionaryAttribute"></attributes>
+   <defaultValues attribute="//@typeDefinitions.0/@dictionaryType/@attributes.0" value="/" xsi:type="kevoree:DictionaryValue"></defaultValues>
+  </dictionaryType>
+  <required ref="//@typeDefinitions.2" noDependency="true" optional="false" name="content" xsi:type="kevoree:PortTypeRef"></required>
+  <required ref="//@typeDefinitions.4" noDependency="true" optional="false" name="files" xsi:type="kevoree:PortTypeRef"></required>
+  <required ref="//@typeDefinitions.5" noDependency="true" optional="true" name="compile" xsi:type="kevoree:PortTypeRef"></required>
+  <provided ref="//@typeDefinitions.2" noDependency="false" optional="false" name="request" xsi:type="kevoree:PortTypeRef">
+   <mappings serviceMethodName="process" beanMethodName="requestHandler" xsi:type="kevoree:PortTypeMapping"></mappings>
+   <mappings serviceMethodName="process" beanMethodName="requestHandler" xsi:type="kevoree:PortTypeMapping"></mappings>
+  </provided>
+  <provided ref="//@typeDefinitions.3" noDependency="false" optional="false" name="compileCallback" xsi:type="kevoree:PortTypeRef">
+   <mappings serviceMethodName="process" beanMethodName="compileCallback" xsi:type="kevoree:PortTypeMapping"></mappings>
+   <mappings serviceMethodName="process" beanMethodName="compileCallback" xsi:type="kevoree:PortTypeMapping"></mappings>
+  </provided>
+ </typeDefinitions>
+ <typeDefinitions name="JavaSENode" xsi:type="kevoree:NodeType"></typeDefinitions>
+ <typeDefinitions synchrone="false" name="org.kevoree.framework.MessagePort" xsi:type="kevoree:MessagePortType"></typeDefinitions>
+ <typeDefinitions synchrone="false" name="org.kevoree.framework.MessagePort" xsi:type="kevoree:MessagePortType">
+  <dictionaryType>
+   <attributes fragmentDependant="false" datatype="java.util.UUID" state="false" optional="false" name="id" xsi:type="kevoree:DictionaryAttribute"></attributes>
+   <attributes fragmentDependant="false" datatype="java.lang.String" state="false" optional="false" name="path" xsi:type="kevoree:DictionaryAttribute"></attributes>
+   <attributes fragmentDependant="false" datatype="java.lang.String" state="false" optional="false" name="log" xsi:type="kevoree:DictionaryAttribute"></attributes>
+   <attributes fragmentDependant="false" datatype="boolean" state="false" optional="false" name="success" xsi:type="kevoree:DictionaryAttribute"></attributes>
+  </dictionaryType>
+ </typeDefinitions>
+ <typeDefinitions synchrone="false" name="org.kevoree.library.javase.fileSystem.LockFilesService" xsi:type="kevoree:ServicePortType">
+  <operations returnType="//@dataTypes.1" name="getFilesPath" xsi:type="kevoree:Operation"></operations>
+  <operations returnType="//@dataTypes.1" name="getFilteredFilesPath" xsi:type="kevoree:Operation">
+   <parameters type="//@dataTypes.1" name="arg0" xsi:type="kevoree:Parameter"></parameters>
+  </operations>
+  <operations returnType="//@dataTypes.2" name="getFileContent" xsi:type="kevoree:Operation">
+   <parameters type="//@dataTypes.0" name="arg0" xsi:type="kevoree:Parameter"></parameters>
+   <parameters type="//@dataTypes.3" name="arg1" xsi:type="kevoree:Parameter"></parameters>
+  </operations>
+  <operations returnType="//@dataTypes.0" name="getAbsolutePath" xsi:type="kevoree:Operation">
+   <parameters type="//@dataTypes.0" name="arg0" xsi:type="kevoree:Parameter"></parameters>
+  </operations>
+  <operations returnType="//@dataTypes.4" name="saveFile" xsi:type="kevoree:Operation">
+   <parameters type="//@dataTypes.0" name="arg0" xsi:type="kevoree:Parameter"></parameters>
+   <parameters type="//@dataTypes.2" name="arg1" xsi:type="kevoree:Parameter"></parameters>
+   <parameters type="//@dataTypes.3" name="arg2" xsi:type="kevoree:Parameter"></parameters>
+  </operations>
+  <operations returnType="//@dataTypes.5" name="unlock" xsi:type="kevoree:Operation">
+   <parameters type="//@dataTypes.0" name="arg0" xsi:type="kevoree:Parameter"></parameters>
+  </operations>
+ </typeDefinitions>
+ <typeDefinitions synchrone="false" name="org.kevoree.framework.MessagePort" xsi:type="kevoree:MessagePortType">
+  <dictionaryType>
+   <attributes fragmentDependant="false" datatype="java.util.UUID" state="false" optional="false" name="id" xsi:type="kevoree:DictionaryAttribute"></attributes>
+   <attributes fragmentDependant="false" datatype="java.lang.String" state="false" optional="false" name="file" xsi:type="kevoree:DictionaryAttribute"></attributes>
+  </dictionaryType>
+ </typeDefinitions>
+ <repositories url="http://maven.kevoree.org/archiva/repository/snapshots/" xsi:type="kevoree:Repository"></repositories>
+ <repositories url="http://maven.kevoree.org/release" xsi:type="kevoree:Repository"></repositories>
+ <repositories url="http://maven.kevoree.org/snapshots" xsi:type="kevoree:Repository"></repositories>
+ <repositories url="http://repo1.maven.org/maven2" xsi:type="kevoree:Repository"></repositories>
+ <dataTypes name="java.lang.String" xsi:type="kevoree:TypedElement"></dataTypes>
+ <dataTypes genericTypes="//@dataTypes.0" name="java.util.Set" xsi:type="kevoree:TypedElement"></dataTypes>
+ <dataTypes name="Array[Byte]" xsi:type="kevoree:TypedElement"></dataTypes>
+ <dataTypes name="java.lang.Boolean" xsi:type="kevoree:TypedElement"></dataTypes>
+ <dataTypes name="scala.Boolean" xsi:type="kevoree:TypedElement"></dataTypes>
+ <dataTypes name="void" xsi:type="kevoree:TypedElement"></dataTypes>
+ <libraries subTypes="//@typeDefinitions.0" name="JavaSE" xsi:type="kevoree:TypeLibrary"></libraries>
+ <deployUnits targetNodeType="//@typeDefinitions.1" requiredLibs="//@deployUnits.1 //@deployUnits.2 //@deployUnits.3" type="jar" hashcode="201203211640344" version="1.6.0-SNAPSHOT" unitName="org.kevoree.library.javase.webserver.codemirrorEditor" groupName="org.kevoree.library.javase" xsi:type="kevoree:DeployUnit"></deployUnits>
+ <deployUnits targetNodeType="//@typeDefinitions.1" type="bundle" version="1.6.0-SNAPSHOT" unitName="org.kevoree.library.javase.webserver" groupName="org.kevoree.library.javase" xsi:type="kevoree:DeployUnit"></deployUnits>
+ <deployUnits targetNodeType="//@typeDefinitions.1" type="bundle" version="1.6.0-SNAPSHOT" unitName="org.kevoree.library.javase.fileSystem" groupName="org.kevoree.library.javase" xsi:type="kevoree:DeployUnit"></deployUnits>
+ <deployUnits targetNodeType="//@typeDefinitions.1" type="bundle" version="1.6.0-SNAPSHOT" unitName="org.kevoree.library.javase.webserver.servlet" groupName="org.kevoree.library.javase" xsi:type="kevoree:DeployUnit"></deployUnits>
+</kevoree:ContainerRoot>
