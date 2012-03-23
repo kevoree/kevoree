@@ -24,7 +24,6 @@ import org.kevoree.api.service.core.script.{KevScriptEngine, KevScriptEngineExce
  * User: duke
  * Date: 11/12/11
  * Time: 20:32
- * To change this template use File | Settings | File Templates.
  */
 
 class KevScriptCoreEngine(core: KevoreeModelHandlerService) extends KevScriptAbstractEngine {

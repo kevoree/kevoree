@@ -21,6 +21,7 @@ import com.explodingpixels.macwidgets.plaf.HudComboBoxUI;
 import com.explodingpixels.macwidgets.plaf.HudLabelUI;
 import org.kevoree.*;
 import org.kevoree.tools.ui.editor.KevoreeUIKernel;
+import org.kevoree.tools.ui.editor.command.AsyncCommandWrapper;
 import org.kevoree.tools.ui.editor.command.SynchNodeTypeCommand;
 import org.kevoree.tools.ui.editor.command.UpdatePhysicalNode;
 import org.kevoree.tools.ui.editor.widget.JCommandButton;
@@ -143,8 +144,8 @@ public class NodePropertyEditor extends InstancePropertyEditor {
             }
         };
 
-
-        btPushNodeType.setCommand(sendNodeType);
+        AsyncCommandWrapper pushAsync = new AsyncCommandWrapper(sendNodeType);
+        btPushNodeType.setCommand(pushAsync);
         groupTypeComboBox.setUI(new HudComboBoxUI());
         JPanel layout = new JPanel();
         layout.setOpaque(false);

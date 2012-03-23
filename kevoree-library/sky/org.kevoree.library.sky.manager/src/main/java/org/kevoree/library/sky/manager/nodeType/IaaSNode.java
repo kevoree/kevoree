@@ -36,10 +36,7 @@ public abstract class IaaSNode extends JavaSENode {
 
 	private IaaSHTTPServer server = new IaaSHTTPServer(this);
 
-	public abstract KevoreeNodeRunner createKevoreeNodeRunner(String nodeName);/* {
-		logger.error("createKevoreeNodeRunner from IaaSNode must be override by subtypes and never be used as is");
-		return null;
-	}*/
+	public abstract KevoreeNodeRunner createKevoreeNodeRunner(String nodeName);
 
     private KevoreeNodeManager nodeManager = null;
 

@@ -30,7 +30,12 @@ import xml.PrettyPrinter
 object Tester extends App {
 
   val current = System.currentTimeMillis()
-  val localModel = ContainerRootLoader.loadModel(new File(("/Users/duke/Desktop/modelcloud.kev")));
+  
+  for(i <- 0 until 30){
+    ContainerRootLoader.loadModel(new File(("/Users/duke/Documents/dev/dukeboard/kevoree-experiment/org.kevoree.experiment.smartForest/duke.irisa.fr-duke.irisa.fr-generated/kevoreeIndividualModel.kev")));
+  }
+  
+  val localModel = ContainerRootLoader.loadModel(new File(("/Users/duke/Documents/dev/dukeboard/kevoree-experiment/org.kevoree.experiment.smartForest/duke.irisa.fr-duke.irisa.fr-generated/kevoreeIndividualModel.kev")));
 
   localModel match {
     case Some(m) => {

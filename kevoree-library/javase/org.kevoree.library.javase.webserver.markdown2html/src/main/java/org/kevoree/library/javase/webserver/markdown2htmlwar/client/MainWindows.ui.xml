@@ -1,0 +1,23 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	<ui:style>
+		.important {
+			font-weight: bold;
+		}
+	</ui:style>
+	<g:HTMLPanel>
+		<g:HorizontalPanel width="1200" height="800">
+			<g:VerticalPanel width="600" height="800">
+			<g:RichTextArea width="600px" height="300px" ui:field="richTextArea"/>
+			<g:HTML wordWrap="true" height="500px" width="600px" ui:field="html"/>
+		</g:VerticalPanel>
+			<g:VerticalPanel>
+				<g:Frame url="cheatsheet.html" width="600px" height="800px"/>
+			</g:VerticalPanel>
+		</g:HorizontalPanel>
+	
+	</g:HTMLPanel>
+
+
+</ui:UiBinder> 

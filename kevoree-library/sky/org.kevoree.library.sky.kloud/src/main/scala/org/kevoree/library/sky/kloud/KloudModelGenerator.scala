@@ -1,11 +1,9 @@
 package org.kevoree.library.sky.kloud
 
-import org.kevoree.framework.KevoreeXmiHelper
-import org.kevoree.tools.marShell.KevsEngine
 import org.kevoree.KevoreeFactory
-import org.kevoree.tools.aether.framework.AetherUtil
-import java.io.{FileInputStream, BufferedReader, FileReader, File}
-import java.util.jar.{JarEntry, JarFile}
+import java.io.{BufferedReader, FileReader, File}
+import org.kevoree.tools.marShell.{KevScriptOfflineEngine, KevsEngine}
+import org.kevoree.framework.KevoreeXmiHelper
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -37,7 +35,7 @@ object KloudModelGenerator extends App {
     }
 
 
-    val file: File = AetherUtil
+    /* val file: File = AetherUtil
       .resolveMavenArtifact("org.kevoree.library.model.sky", "org.kevoree.library.model", KevoreeFactory.getVersion, List("http://maven.kevoree.org/release", "http://maven.kevoree.org/snapshots"))
 
 
@@ -54,6 +52,16 @@ object KloudModelGenerator extends App {
       } else {
         println("Unable to apply the script from " + script)
       }
+    }*/
+
+    val kevEngine = new KevScriptOfflineEngine(KevoreeFactory.createContainerRoot)
+    kevEngine.addVariable("kevoree.version", KevoreeFactory.getVersion)
+    kevEngine.append(loadScript(new File(script)))
+    val model = kevEngine.interpret()
+    if (model != null) {
+      KevoreeXmiHelper.save(outputModel, model)
+    } else {
+      println("Unable to apply the script from " + script)
     }
   } else {
     println("We need at least one parameter which define the file that contains the kloud kevovree script configuration")

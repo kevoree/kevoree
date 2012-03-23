@@ -24,7 +24,9 @@ object KloudReasoner {
       case Some(userGroup) => {
         userGroup.getSubNodes.foreach {
           sub =>
-            kengine.append("removeNode " + sub.getName)
+            if (KloudHelper.isPaaSNode(currentIaaSModel, userGroup.getName, sub.getName)) {
+              kengine.append("removeNode " + sub.getName)
+            }
         }
         kengine.append("removeGroup " + userGroup.getName)
       }

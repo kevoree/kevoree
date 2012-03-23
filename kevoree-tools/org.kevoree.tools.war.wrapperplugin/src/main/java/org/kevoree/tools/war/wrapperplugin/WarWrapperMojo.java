@@ -13,17 +13,15 @@
  */
 package org.kevoree.tools.war.wrapperplugin;
 
-import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
-import org.kevoree.KevoreeFactory;
-import scala.io.Source;
 
 import java.io.File;
 import java.net.URL;
+import java.util.Arrays;
 
 /**
  * @author ffouquet
@@ -38,12 +36,18 @@ public class WarWrapperMojo extends AbstractMojo {
     /**
      * @parameter default-value=""
      */
-    private String singletonJars;
-    
+    private String filtered;
+
     /**
      * @parameter default-value="${project.build.directory}"
      */
     private File tempWar;
+
+    /**
+     * @parameter default-value="${project.build.directory}/filtered"
+     */
+    private File filteredWar;
+
 
     /**
      * The directory root under which processor-generated source files will be placed; files are placed in
@@ -86,31 +90,55 @@ public class WarWrapperMojo extends AbstractMojo {
                 getLog().info("Dowloading = " + war + " -> " + tempWarFile.getAbsolutePath());
                 UrlHelper.getFile(war, tempWarFile);
             }
+            File previous = new File(tempWar.getAbsolutePath() + File.separator + "extracted");
+            if (previous.exists()) {
+                previous.delete();
+            }
+            previous = new File(tempWar.getAbsolutePath() + File.separator + "extracted");
 
+            Resource res = new Resource();
+            res.setDirectory(filteredWar.getAbsolutePath());
+
+            project.getResources().add(res);
+            String[] names = new String[0];
+            if (filtered != null) {
+                names = filtered.split(",");
+                for (String name : Arrays.asList(names)) {
+                    System.out.println("Filter=" + name);
+                }
+            }
+
+
+            ZipHelper.unzipToTempDir(tempWarFile, previous, Arrays.asList(names));
+            if(!filteredWar.exists()){
+                filteredWar.mkdirs();
+            }
+
+            ZipHelper.zipFolder(previous.getAbsolutePath(), filteredWar.getAbsolutePath() + File.separator + targetFile);
 
 
             /*
-            ZipHelper.unzipToTempDir(tempWarFile, outputClasses);
-            BundlerHelper.copyWebInf(outputClasses);
+                        ZipHelper.unzipToTempDir(tempWarFile, outputClasses)
+                        BundlerHelper.copyWebInf(outputClasses);
 
-            String sjars = singletonJars;
-            if(sjars == null){
-                sjars = "";
-            }
-            String[] lsjars = sjars.split(",");
-            
-            BundlerHelper.generateManifest(project, outputClasses,lsjars);
+                        String sjars = singletonJars;
+                        if(sjars == null){
+                            sjars = "";
+                        }
+                        String[] lsjars = sjars.split(",");
 
-            Resource resource = new Resource();
-            resource.setDirectory(outputClasses.getPath());
-            project.getResources().add(resource);
-            
-            Resource resource2 = new Resource();
-            resource2.setDirectory(sourceOutputDirectory.getPath()+File.separator+"KEV-INF");
-            resource2.setTargetPath("KEV-INF");
-            project.getResources().add(resource2);
-            
-*/
+                        BundlerHelper.generateManifest(project, outputClasses,lsjars);
+
+                        Resource resource = new Resource();
+                        resource.setDirectory(outputClasses.getPath());
+                        project.getResources().add(resource);
+
+                        Resource resource2 = new Resource();
+                        resource2.setDirectory(sourceOutputDirectory.getPath()+File.separator+"KEV-INF");
+                        resource2.setTargetPath("KEV-INF");
+                        project.getResources().add(resource2);
+
+            */
             //GENERATE KEVOREE COMPONENT WRAPPER
             /*
             Dependency dep = new Dependency();

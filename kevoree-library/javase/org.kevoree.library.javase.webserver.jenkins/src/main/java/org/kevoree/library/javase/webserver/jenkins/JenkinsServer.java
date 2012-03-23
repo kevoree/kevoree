@@ -52,8 +52,6 @@ public class JenkinsServer extends AbstractComponentType {
         f.set(null, "JSESSIONID." + UUID.randomUUID().toString().replace("-", "").substring(0, 8));
 
         Map args = new HashMap();
-        args.put("webroot", "/Users/duke/Desktop/jenkinsHome");
-        //args.put("preferredClassLoader",KevWebappClassLoader.class.getName());
         //args.put("preferredClassLoader",KevWebappClassLoader.class.getName());
         KevLauncher.initLogger(args);
         args.put("ajp13Port", "-1");

@@ -33,6 +33,7 @@ import org.sonatype.aether.repository.{Authentication, RepositoryPolicy, RemoteR
 import scala.collection.JavaConversions._
 import org.slf4j.LoggerFactory
 import org.sonatype.aether.{ConfigurationProperties, RepositorySystem}
+import org.sonatype.aether.transfer.{TransferEvent, TransferListener}
 
 /**
  * User: ffouquet
@@ -138,6 +139,31 @@ object AetherUtil extends TempFileCacheManager {
 
   def newRepositorySystemSession = {
     val session = new MavenRepositorySystemSession()
+    session.setTransferListener(new TransferListener(){
+      def transferInitiated(p1: TransferEvent) {
+        logger.debug("Transfert init for Artifact "+p1.getResource.getResourceName)
+      }
+
+      def transferStarted(p1: TransferEvent) {
+        logger.debug("Transfert begin for Artifact "+p1.getResource.getResourceName)
+      }
+
+      def transferProgressed(p1: TransferEvent) {
+        logger.debug("Transfert in progress for Artifact "+p1.getResource.getResourceName)
+      }
+
+      def transferCorrupted(p1: TransferEvent) {
+        logger.error("TransfertCorrupted : "+p1.getResource.getResourceName)
+      }
+
+      def transferSucceeded(p1: TransferEvent) {
+        logger.debug("Transfert succeeded for Artifact "+p1.getResource.getResourceName)
+      }
+
+      def transferFailed(p1: TransferEvent) {
+        logger.debug("TransferFailed : "+p1.getResource.getResourceName)
+      }
+    })
     session.setUpdatePolicy(RepositoryPolicy.UPDATE_POLICY_ALWAYS)
     session.setConfigProperty("aether.connector.ahc.provider", "jdk")
     //DEFAULT VALUE
@@ -154,8 +180,8 @@ object AetherUtil extends TempFileCacheManager {
     } else {
       logger.debug("settings.xml not found")
     }
-    session.getConfigProperties.put(ConfigurationProperties.REQUEST_TIMEOUT, 3000.asInstanceOf[java.lang.Integer])
-    session.getConfigProperties.put(ConfigurationProperties.CONNECT_TIMEOUT, 5000.asInstanceOf[java.lang.Integer])
+    session.getConfigProperties.put(ConfigurationProperties.REQUEST_TIMEOUT, 2000.asInstanceOf[java.lang.Integer])
+    session.getConfigProperties.put(ConfigurationProperties.CONNECT_TIMEOUT, 1000.asInstanceOf[java.lang.Integer])
     session
   }
 
@@ -171,7 +197,7 @@ object AetherUtil extends TempFileCacheManager {
         }
     }
     //BUILD FROM ALL NODE
-
+/*
     root.getNodes.foreach {
       node =>
         buildURL(root, node.getName).map {
@@ -181,7 +207,7 @@ object AetherUtil extends TempFileCacheManager {
             }
         }
 
-    }
+    }*/
     result
   }
 

@@ -13,7 +13,6 @@
  */
 package org.kevoree.platform.service
 
-import org.kevoree.KevoreeFactory
 import java.io.File
 import org.kevoree.tools.aether.framework.AetherUtil
 
