@@ -15,14 +15,69 @@
 
     <properties>
         <kevoree.include>*:*</kevoree.include>
+        <wicket.version>1.4.19</wicket.version>
+        <groovy.version>1.8.6</groovy.version>
     </properties>
 
     <dependencies>
         <dependency>
-            <groupId>org.jenkins-ci</groupId>
+            <groupId>net.sourceforge.winstone</groupId>
             <artifactId>winstone</artifactId>
-            <version>0.9.10-jenkins-35</version>
+            <version>0.9.10</version>
         </dependency>
+        <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy-all</artifactId>
+            <version>${groovy.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.wicket</groupId>
+            <artifactId>wicket</artifactId>
+            <version>${wicket.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.wicket</groupId>
+            <artifactId>wicket-auth-roles</artifactId>
+            <version>${wicket.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.wicket</groupId>
+            <artifactId>wicket-extensions</artifactId>
+            <version>${wicket.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-jdk16</artifactId>
+            <version>1.46</version>
+        </dependency>
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcmail-jdk16</artifactId>
+            <version>1.46</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.mail</groupId>
+            <artifactId>mail</artifactId>
+            <version>1.4.3</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.eclipse.jgit</groupId>
+            <artifactId>org.eclipse.jgit</artifactId>
+            <version>1.3.0.201202151440-r</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jgit</groupId>
+            <artifactId>org.eclipse.jgit.http.server</artifactId>
+            <version>1.3.0.201202151440-r</version>
+        </dependency>
+
     </dependencies>
 
 
@@ -40,12 +95,6 @@
     </repositories>
 
     <build>
-        <resources>
-            <resource>
-                <directory>${project.build.directory}/embwar</directory>
-            </resource>
-        </resources>
-
         <plugins>
             <plugin>
                 <groupId>org.kevoree.tools</groupId>
@@ -72,6 +121,9 @@
                 <configuration>
                     <war>http://gitblit.googlecode.com/files/gitblit-0.8.2.war</war>
                     <tempWar>${project.build.directory}/embwar</tempWar>
+                    <filtered>
+                        slf4j-api-1.6.1.jar,slf4j-log4j12-1.6.1.jar,javax.servlet-3.0.1.jar,log4j-1.2.16.jar,wicket-1.4.19.jar,wicket-auth-roles-1.4.19.jar,wicket-extensions-1.4.19.jar,groovy-all-1.8.5.jar,bcprov-jdk16-1.46.jar,bcmail-jdk16-1.46.jar,mail-1.4.3.jar,org.eclipse.jgit-1.1.0.201109151100-r.jar,org.eclipse.jgit-1.2.0.201112221803-r.jar,org.eclipse.jgit.http.server-1.1.0.201109151100-r.jar,org.eclipse.jgit.http.server-1.2.0.201112221803-r.jar,jsch-0.1.44-1.jar
+                    </filtered>
                 </configuration>
                 <executions>
                     <execution>

@@ -45,17 +45,17 @@ public class FileServiceHelper {
             file = index;//"latexEditor.html";
         }
         logger.debug("Request rec for file " + file);
-        File in = new File(baseDir+File.separator+file);
+        File in = new File(baseDir + File.separator + file);
         if (in.exists()) {
             try {
                 FileInputStream ins = new FileInputStream(in);
-                
+
                 if (isRaw(request.getUrl())) {
                     response.setRawContent(convertStream(ins));
                 } else {
                     response.setContent(new String(convertStream(ins), "UTF-8"));
                 }
-				response.getHeaders().put("Content-Type", (getHttpHeaderFromURL(request.getUrl())));
+                response.getHeaders().put("Content-Type", (getHttpHeaderFromURL(request.getUrl())));
 
                 ins.close();
 
@@ -140,6 +140,9 @@ public class FileServiceHelper {
         }
         if (url.endsWith(".pdf")) {
             return "application/pdf";
+        }
+        if (url.endsWith(".xml")) {
+            return "application/xml";
         }
         return "text/html";
     }

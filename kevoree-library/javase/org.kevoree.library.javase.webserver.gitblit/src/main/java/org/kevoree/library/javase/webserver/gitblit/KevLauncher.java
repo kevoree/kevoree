@@ -14,12 +14,8 @@ package org.kevoree.library.javase.webserver.gitblit;
  * - the GNU Lesser General Public License, v2.1 or later
  */
 
-import winstone.cmdline.CmdLineParser;
-import winstone.cmdline.Option;
 import winstone.*;
-import javax.servlet.http.HttpUtils;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InterruptedIOException;
@@ -28,12 +24,9 @@ import java.io.OutputStream;
 import java.lang.reflect.Constructor;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.URL;
-import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
 
 /**
  * Implements the main launcher daemon thread. This is the class that gets
@@ -70,7 +63,7 @@ public class KevLauncher implements Runnable {
     public KevLauncher(Map args) throws IOException {
         boolean success=false;
         try {
-            boolean useJNDI = Option.USE_JNDI.get(args);
+            boolean useJNDI = false;
 
             // Set jndi resource handler if not set (workaround for JamVM bug)
             if (useJNDI) try {
@@ -86,14 +79,14 @@ public class KevLauncher implements Runnable {
             Logger.log(Logger.MAX, RESOURCES, "Launcher.StartupArgs", args + "");
 
             this.args = args;
-            this.controlPort =Option.CONTROL_PORT.get(args);
 
             // Check for java home
             List jars = new ArrayList();
             List commonLibCLPaths = new ArrayList();
             String defaultJavaHome = System.getProperty("java.home");
-            File javaHome = Option.JAVA_HOME.get(args,new File(defaultJavaHome));
+            File javaHome = new File(defaultJavaHome);
             Logger.log(Logger.DEBUG, RESOURCES, "Launcher.UsingJavaHome", javaHome.getPath());
+            /*
             File toolsJar = Option.TOOLS_JAR.get(args);
             if (toolsJar == null) {
                 toolsJar = new File(javaHome, "lib/tools.jar");
@@ -116,8 +109,7 @@ public class KevLauncher implements Runnable {
                 commonLibCLPaths.add(toolsJar);
                 Logger.log(Logger.DEBUG, RESOURCES, "Launcher.AddedCommonLibJar",
                         toolsJar.getName());
-            } else if (Option.USE_JASPER.get(args))
-                Logger.log(Logger.WARNING, RESOURCES, "Launcher.ToolsJarNotFound");
+            }*/
 
             // Set up common lib class loader
             /*
@@ -149,29 +141,12 @@ public class KevLauncher implements Runnable {
 
             this.objectPool = new ObjectPool(args);
 
-            // Optionally set up clustering if enabled and libraries are available
-            if (Option.USE_CLUSTER.get(args)) {
-                if (this.controlPort < 0) {
-                    Logger.log(Logger.INFO, RESOURCES,
-                            "Launcher.ClusterOffNoControlPort");
-                } else {
-                    try {
-                        Class clusterClass = Option.CLUSTER_CLASS_NAME.get(args, Cluster.class);
-                        Constructor clusterConstructor = clusterClass
-                                .getConstructor(new Class[]{Map.class, Integer.class});
-                        this.cluster = (Cluster) clusterConstructor
-                                .newInstance(args, this.controlPort);
-                    } catch (Throwable err) {
-                        Logger.log(Logger.WARNING, RESOURCES, "Launcher.ClusterStartupError", err);
-                    }
-                }
-            }
 
             // If jndi is enabled, run the container wide jndi populator
             if (useJNDI) {
                 try {
                     // Build the realm
-                    Class jndiMgrClass = Option.CONTAINER_JNDI_CLASSNAME.get(args,JNDIManager.class,commonLibCL);
+                    Class jndiMgrClass = JNDIManager.class;
                     Constructor jndiMgrConstr = jndiMgrClass.getConstructor(new Class[] {
                             Map.class, List.class, ClassLoader.class });
                     this.globalJndiManager = (JNDIManager) jndiMgrConstr.newInstance(args, null, commonLibCL);
@@ -250,11 +225,6 @@ public class KevLauncher implements Runnable {
                 controlSocket = new ServerSocket(this.controlPort);
                 controlSocket.setSoTimeout(CONTROL_TIMEOUT);
             }
-
-            Logger.log(Logger.INFO, RESOURCES, "Launcher.StartupOK",
-                    RESOURCES.getString("ServerVersion"),
-                    (this.controlPort > 0 ? "" + this.controlPort
-                            : RESOURCES.getString("Launcher.ControlDisabled")));
 
             // Enter the main loop
             while (!interrupted) {
@@ -359,94 +329,7 @@ public class KevLauncher implements Runnable {
         return (this.controlThread != null) && this.controlThread.isAlive();
     }
 
-    /**
-     * Main method. This basically just accepts a few args, then initialises the
-     * listener thread. For now, just shut it down with a control-C.
-     */
-    public static void main(String argv[]) throws IOException {
-        Map args = getArgsFromCommandLine(argv);
-
-        if (Option.USAGE.isIn(args) || Option.HELP.isIn(args)) {
-            printUsage();
-            return;
-        }
-
-        // Check for embedded war
-        deployEmbeddedWarfile(args);
-
-        // Check for embedded warfile
-        if (!Option.WEBROOT.isIn(args) && !Option.WARFILE.isIn(args)
-         && !Option.WEBAPPS_DIR.isIn(args) && !Option.HOSTS_DIR.isIn(args)) {
-            printUsage();
-            return;
-        }
-
-
-        int maxParameterCount = Option.MAX_PARAM_COUNT.get(args);
-        if (maxParameterCount>0) {
-            HttpUtils.MAX_PARAMETER_COUNT = maxParameterCount;
-        }
-
-        // Launch
-        try {
-            new KevLauncher(args);
-        } catch (Throwable err) {
-            Logger.log(Logger.ERROR, RESOURCES, "Launcher.ContainerStartupError", err);
-        }
-    }
-
-    public static Map getArgsFromCommandLine(String argv[]) throws IOException {
-        Map args = new CmdLineParser(Option.all(Option.class)).parse(argv,"nonSwitch");
-
-        // Small hack to allow re-use of the command line parsing inside the control tool
-        String firstNonSwitchArgument = (String) args.get("nonSwitch");
-        args.remove("nonSwitch");
-
-        // Check if the non-switch arg is a file or folder, and overwrite the config
-        if (firstNonSwitchArgument != null) {
-            File webapp = new File(firstNonSwitchArgument);
-            if (webapp.exists()) {
-                if (webapp.isDirectory()) {
-                    args.put(Option.WEBROOT.name, firstNonSwitchArgument);
-                } else if (webapp.isFile()) {
-                    args.put(Option.WARFILE.name, firstNonSwitchArgument);
-                }
-            }
-        }
-        return args;
-    }
-
-    protected static void deployEmbeddedWarfile(Map args) throws IOException {
-        String embeddedWarfileName = RESOURCES.getString("Launcher.EmbeddedWarFile");
-        InputStream embeddedWarfile = KevLauncher.class.getResourceAsStream(
-                embeddedWarfileName);
-        if (embeddedWarfile != null) {
-            File tempWarfile = File.createTempFile("embedded", ".war").getAbsoluteFile();
-            tempWarfile.getParentFile().mkdirs();
-            tempWarfile.deleteOnExit();
-
-            String embeddedWebroot = RESOURCES.getString("Launcher.EmbeddedWebroot");
-            File tempWebroot = new File(tempWarfile.getParentFile(), embeddedWebroot);
-            tempWebroot.mkdirs();
-
-            Logger.log(Logger.DEBUG, RESOURCES, "Launcher.CopyingEmbeddedWarfile",
-                    tempWarfile.getAbsolutePath());
-            OutputStream out = new FileOutputStream(tempWarfile, true);
-            int read;
-            byte buffer[] = new byte[2048];
-            while ((read = embeddedWarfile.read(buffer)) != -1) {
-                out.write(buffer, 0, read);
-            }
-            out.close();
-            embeddedWarfile.close();
-
-            Option.WARFILE.put(args, tempWarfile.getAbsolutePath());
-            Option.WARFILE.put(args, tempWebroot.getAbsolutePath());
-            Option.WEBAPPS_DIR.remove(args);
-            Option.HOSTS_DIR.remove(args);
-        }
-    }
-
+    /*
     public static void initLogger(Map args) throws IOException {
         // Reset the log level
         int logLevel = WebAppConfiguration.intArg(args, "debug", Logger.INFO.intValue());
@@ -461,8 +344,8 @@ public class KevLauncher implements Runnable {
             logStream = System.out;
         }
 //        Logger.init(logLevel, logStream, showThrowingLineNo, showThrowingThread);
-        Logger.init(Level.parse(String.valueOf(logLevel)), logStream, showThrowingThread);
-    }
+      //  Logger.init(Level.parse(String.valueOf(logLevel)), logStream, showThrowingThread);
+    }*/
 
     protected static void printUsage() {
         // if the caller overrides the usage, use that instead.

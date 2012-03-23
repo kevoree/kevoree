@@ -140,18 +140,28 @@ object AetherUtil extends TempFileCacheManager {
   def newRepositorySystemSession = {
     val session = new MavenRepositorySystemSession()
     session.setTransferListener(new TransferListener(){
-      def transferInitiated(p1: TransferEvent) {}
+      def transferInitiated(p1: TransferEvent) {
+        logger.debug("Transfert init for Artifact "+p1.getResource.getResourceName)
+      }
 
-      def transferStarted(p1: TransferEvent) {}
+      def transferStarted(p1: TransferEvent) {
+        logger.debug("Transfert begin for Artifact "+p1.getResource.getResourceName)
+      }
 
-      def transferProgressed(p1: TransferEvent) {}
+      def transferProgressed(p1: TransferEvent) {
+        logger.debug("Transfert in progress for Artifact "+p1.getResource.getResourceName)
+      }
 
-      def transferCorrupted(p1: TransferEvent) {}
+      def transferCorrupted(p1: TransferEvent) {
+        logger.error("TransfertCorrupted : "+p1.getResource.getResourceName)
+      }
 
-      def transferSucceeded(p1: TransferEvent) {}
+      def transferSucceeded(p1: TransferEvent) {
+        logger.debug("Transfert succeeded for Artifact "+p1.getResource.getResourceName)
+      }
 
       def transferFailed(p1: TransferEvent) {
-        logger.error("TransferFailed : "+p1.getResource.getResourceName)
+        logger.debug("TransferFailed : "+p1.getResource.getResourceName)
       }
     })
     session.setUpdatePolicy(RepositoryPolicy.UPDATE_POLICY_ALWAYS)
