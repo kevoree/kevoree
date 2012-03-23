@@ -64,16 +64,23 @@ public class RestGroup extends AbstractGroupType {
 	@Override
 	public void triggerModelUpdate () {
 		if (starting) {
-			NodeNetworkHelper.updateModelWithNetworkProperty(this);
+			final Option<ContainerRoot> modelOption = NodeNetworkHelper.updateModelWithNetworkProperty(this);
+			if (modelOption.isDefined()) {
+				new Thread() {
+					public void run () {
+						getModelService().unregisterModelListener(getModelListener());
+						getModelService().atomicUpdateModel(modelOption.get());
+						getModelService().registerModelListener(getModelListener());
+					}
+				}.start();
+			}
 			starting = false;
-		}
-
-		Group group = getModelElement();
-		ContainerRoot model = this.getModelService().getLastModel();
-
-		for (ContainerNode subNode : group.getSubNodesForJ()) {
-			if (!subNode.getName().equals(this.getNodeName())) {
-				internalPush(model, subNode.getName(), this.getNodeName());
+		} else {
+			Group group = getModelElement();
+			for (ContainerNode subNode : group.getSubNodesForJ()) {
+				if (!subNode.getName().equals(this.getNodeName())) {
+					internalPush(getModelService().getLastModel(), subNode.getName(), this.getNodeName());
+				}
 			}
 		}
 	}

@@ -20,23 +20,22 @@ object NodeNetworkHelper {
   private val logger = LoggerFactory.getLogger(getClass)
 
 
-  def updateModelWithNetworkProperty (group: AbstractGroupType) {
-    val ipObject = group.getDictionary.get("ip")
-    if (ipObject != null && ipObject.toString != "" && ipObject.toString != "0.0.0.0") {
-      val modelOption = addNetworkProperty(group.getModelService.getLastModel, group.getNodeName, Array[(String, String)]((ipObject.toString, "unknown")), group.getKevScriptEngineFactory)
-      if (modelOption.isDefined) {
-        group.getModelService.updateModel(modelOption.get)
-      }
-    } else {
-      val addresses = getAddresses
-      if (addresses.length > 0) {
-        val modelOption = addNetworkProperty(group.getModelService.getLastModel, group.getNodeName, addresses, group.getKevScriptEngineFactory)
-        if (modelOption.isDefined) {
-          group.getModelService.updateModel(modelOption.get)
+  def updateModelWithNetworkProperty (group: AbstractGroupType) : Option[ContainerRoot] = {
+      val ipObject = group.getDictionary.get("ip")
+      if (ipObject != null && ipObject.toString != "" && ipObject.toString != "0.0.0.0") {
+        addNetworkProperty(group.getModelService.getLastModel, group.getNodeName, Array[(String, String)]((ipObject.toString, "unknown")), group.getKevScriptEngineFactory)
+      } else {
+        val addresses = getAddresses
+        if (addresses.length > 0) {
+          /*val modelOption = */addNetworkProperty(group.getModelService.getLastModel, group.getNodeName, addresses, group.getKevScriptEngineFactory)
+          /*if (modelOption.isDefined) {
+            group.getModelService.updateModel(modelOption.get)
+          }*/
+        } else {
+          None
         }
       }
     }
-  }
 
   /*def addNetworkProperty (model: ContainerRoot, nodeName: String, ips: Array[(String, String)], kevScriptEngineFactory :  KevScriptEngineFactory): Option[ContainerRoot] = {
     val newModel = (new ModelCloner).clone(model)

@@ -132,13 +132,23 @@ public class NanoRestGroup extends AbstractGroupType {
 	@Override
 	public void triggerModelUpdate () {
 		if (starting) {
-			NodeNetworkHelper.updateModelWithNetworkProperty(this);
+			final Option<ContainerRoot> modelOption = NodeNetworkHelper.updateModelWithNetworkProperty(this);
+			if (modelOption.isDefined()) {
+				new Thread() {
+					public void run () {
+						getModelService().unregisterModelListener(getModelListener());
+						getModelService().atomicUpdateModel(modelOption.get());
+						getModelService().registerModelListener(getModelListener());
+					}
+				}.start();
+			}
 			starting = false;
-		}
-		Group group = getModelElement();
-		for (ContainerNode subNode : group.getSubNodesForJ()) {
-			if (!subNode.getName().equals(this.getNodeName())) {
-				internalPush(getModelService().getLastModel(), subNode.getName(), this.getNodeName());
+		} else {
+			Group group = getModelElement();
+			for (ContainerNode subNode : group.getSubNodesForJ()) {
+				if (!subNode.getName().equals(this.getNodeName())) {
+					internalPush(getModelService().getLastModel(), subNode.getName(), this.getNodeName());
+				}
 			}
 		}
 	}
@@ -168,7 +178,7 @@ public class NanoRestGroup extends AbstractGroupType {
 	}
 
 
-	public void internalPush (ContainerRoot model, String targetNodeName, String sender) {
+	private void internalPush (ContainerRoot model, String targetNodeName, String sender) {
 		List<String> ips = KevoreePropertyHelper.getStringNetworkProperties(model, targetNodeName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP());
 		Option<Integer> portOption = KevoreePropertyHelper.getIntPropertyForGroup(model, this.getName(), "port", true, targetNodeName);
 		int PORT = 8000;
