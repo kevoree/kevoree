@@ -33,6 +33,14 @@ import org.slf4j.LoggerFactory
 
 class NodeTypeBootstrapHelper(ctx: android.content.Context, parent: ClassLoader) extends Bootstraper {
 
+  var kevoreeLogService: org.kevoree.api.service.core.logging.KevoreeLogService = null
+
+  def getKevoreeLogService : org.kevoree.api.service.core.logging.KevoreeLogService = kevoreeLogService
+
+  def setKevoreeLogService(ls : org.kevoree.api.service.core.logging.KevoreeLogService) {
+    kevoreeLogService = ls
+  }
+
   protected val logger = LoggerFactory.getLogger(this.getClass)
   val classLoaderHandler = new AndroidJCLContextHandler(ctx,parent)
 

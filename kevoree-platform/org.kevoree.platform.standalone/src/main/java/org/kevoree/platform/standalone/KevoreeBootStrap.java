@@ -23,6 +23,7 @@ import org.kevoree.api.Bootstraper;
 import org.kevoree.api.configuration.ConfigConstants;
 import org.kevoree.api.configuration.ConfigurationService;
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService;
+import org.kevoree.api.service.core.logging.KevoreeLogService;
 import org.kevoree.api.service.core.script.KevScriptEngine;
 import org.kevoree.api.service.core.script.KevScriptEngineFactory;
 import org.kevoree.core.impl.KevoreeConfigServiceBean;
@@ -63,6 +64,10 @@ public class KevoreeBootStrap {
         }
         try {
             KevoreeConfigServiceBean configBean = new KevoreeConfigServiceBean();
+
+            KevoreeLogbackService logbackService = new KevoreeLogbackService();
+
+
             coreBean = new KevoreeCoreBean();
 
             KevoreeJarClassLoader jcl = new KevoreeJarClassLoader();
@@ -70,6 +75,8 @@ public class KevoreeBootStrap {
 
             Class clazz = jcl.loadClass("org.kevoree.tools.aether.framework.NodeTypeBootstrapHelper");
             org.kevoree.api.Bootstraper bootstraper = (Bootstraper) clazz.newInstance();
+            clazz.getMethod("setKevoreeLogService", KevoreeLogService.class).invoke(bootstraper,logbackService);
+
             Class selfRegisteredClazz = bootstraper.getClass();
             jcl.lockLinks();
 

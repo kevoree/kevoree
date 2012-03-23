@@ -13,6 +13,7 @@
  */
 package org.kevoree.platform.android.core
 
+import log.KevoreeLogbackService
 import org.slf4j.LoggerFactory
 import org.kevoree.core.impl.{KevoreeCoreBean, KevoreeConfigServiceBean}
 import android.content.Context
@@ -25,6 +26,7 @@ import android.app.Activity
 import android.widget.TabHost
 import org.kevoree.api.Bootstraper
 import android.util.Log
+import org.kevoree.api.service.core.logging.KevoreeLogService
 
 /**
  * Created with IntelliJ IDEA.
@@ -54,6 +56,11 @@ class KevoreeAndroidBootStrap {
       coreBean = new KevoreeCoreBean
       val clazz = clusterCL.loadClass("org.kevoree.tools.aether.framework.android.NodeTypeBootstrapHelper")
       val bootstraper = clazz.getConstructor(classOf[Context], classOf[ClassLoader]).newInstance(ctx, clusterCL);
+      clazz.getMethod("setKevoreeLogService", classOf[KevoreeLogService]).invoke(bootstraper,logbackService);
+      val logbackService = new KevoreeLogbackService();
+
+
+
       coreBean.setBootstraper(bootstraper.asInstanceOf[Bootstraper]);
       coreBean.setConfigService(configBean);
       coreBean.setKevsEngineFactory(new KevScriptEngineFactory() {
