@@ -19,6 +19,7 @@ import org.kevoree.api.service.core.script.KevScriptEngineFactory
 import service.core.classloading.KevoreeClassLoaderHandler
 import java.io.File
 import org.kevoree.{DeployUnit, ContainerRoot}
+import service.core.logging.KevoreeLogService
 
 /**
  * Created by IntelliJ IDEA.
@@ -42,4 +43,7 @@ trait Bootstraper {
   def close : Unit
   
   def clear : Unit
+
+  def getKevoreeLogService : KevoreeLogService
+
 }
