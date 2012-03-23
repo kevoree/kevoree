@@ -20,20 +20,19 @@ object NodeNetworkHelper {
   private val logger = LoggerFactory.getLogger(getClass)
 
 
-  def updateModelWithNetworkProperty (group: AbstractGroupType) {
+  def updateModelWithNetworkProperty (group: AbstractGroupType) : Option[ContainerRoot] = {
     val ipObject = group.getDictionary.get("ip")
     if (ipObject != null && ipObject.toString != "" && ipObject.toString != "0.0.0.0") {
-      val modelOption = addNetworkProperty(group.getModelService.getLastModel, group.getNodeName, Array[(String, String)]((ipObject.toString, "unknown")), group.getKevScriptEngineFactory)
-      if (modelOption.isDefined) {
-        group.getModelService.updateModel(modelOption.get)
-      }
+      addNetworkProperty(group.getModelService.getLastModel, group.getNodeName, Array[(String, String)]((ipObject.toString, "unknown")), group.getKevScriptEngineFactory)
     } else {
       val addresses = getAddresses
       if (addresses.length > 0) {
-        val modelOption = addNetworkProperty(group.getModelService.getLastModel, group.getNodeName, addresses, group.getKevScriptEngineFactory)
-        if (modelOption.isDefined) {
+        /*val modelOption = */addNetworkProperty(group.getModelService.getLastModel, group.getNodeName, addresses, group.getKevScriptEngineFactory)
+        /*if (modelOption.isDefined) {
           group.getModelService.updateModel(modelOption.get)
-        }
+        }*/
+      } else {
+        None
       }
     }
   }
