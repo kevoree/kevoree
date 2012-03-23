@@ -92,19 +92,6 @@
                 </configuration>
             </plugin>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>2.3.1</version>
-                <configuration>
-                    <archive>
-                        <manifest>
-                            <mainClass>org.kevoree.platform.service.KevoreeServiceUpdate</mainClass>
-                        </manifest>
-                    </archive>
-                </configuration>
-            </plugin>
-
-            <plugin>
                 <groupId>com.pyx4me</groupId>
                 <artifactId>proguard-maven-plugin</artifactId>
                 <version>2.0.4</version>
@@ -126,7 +113,7 @@
                 </dependencies>
                 <configuration>
                     <injar>${project.build.finalName}.jar</injar>
-                    <outjar>${project.build.finalName}-small.jar</outjar>
+                    <outjar>${project.build.finalName}.jar</outjar>
                     <obfuscate>false</obfuscate>
                     <maxMemory>1024m</maxMemory>
                     <proguardVersion>4.4</proguardVersion>
@@ -218,6 +205,18 @@
                     <libs>
                         <lib>${java.lib.location}</lib>
                     </libs>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.3.1</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>org.kevoree.platform.service.KevoreeServiceUpdate</mainClass>
+                        </manifest>
+                    </archive>
                 </configuration>
             </plugin>
         </plugins>

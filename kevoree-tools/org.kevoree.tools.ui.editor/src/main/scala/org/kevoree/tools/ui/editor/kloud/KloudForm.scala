@@ -198,9 +198,10 @@ class KloudForm (editor: KevoreeEditor) {
         ok_lbl.setForeground(Color.RED)
         if (loginTxtField.getText == "") {
           logger.warn("You need to use a login to access the Kloud")
-        }/* else if (passwordTxtField.getPassword.length == 0) {
+        } /* else if (passwordTxtField.getPassword.length == 0) {
           logger.warn("You may have a password to access the Kloud")
-        }*/ else if (addressTxtField.getText == "") {
+        }*/
+        else if (addressTxtField.getText == "") {
           logger.warn("You need to specify the address of the Kloud (default = {})", defaultAddress)
         }
       }
@@ -277,8 +278,19 @@ class KloudForm (editor: KevoreeEditor) {
         nbTry = nbTry - 1
         Thread.sleep(3000)
         try {
+          bodyBuilder.clear()
+          bodyBuilder append "password="
+          bodyBuilder append URLEncoder.encode(password, "UTF-8")
           //          val url = new URL(address + "/" + login)
-          val connection = url.openConnection()
+          val connection = url.openConnection().asInstanceOf[HttpURLConnection]
+          connection.setRequestMethod("POST")
+          connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded")
+          connection.setRequestProperty("Content-Length", "" + Integer.toString(bodyBuilder.length))
+          connection.setConnectTimeout(3000)
+          connection.setDoOutput(true)
+          val wr: OutputStreamWriter = new OutputStreamWriter(connection.getOutputStream)
+          wr.write(bodyBuilder.toString())
+          wr.flush()
           val rd = connection.getInputStream
           val bytes = new Array[Byte](2048)
           var length = 0
