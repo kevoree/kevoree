@@ -57,7 +57,7 @@ case class TypeDefinitionAspect(selfTD: TypeDefinition) {
       return true
     }
     if (pTD.getFactoryBean != selfTD.getFactoryBean) {
-      logger.debug("{} => {}", pTD.getFactoryBean, selfTD.getFactoryBean)
+//      logger.debug("{} => {}", pTD.getFactoryBean, selfTD.getFactoryBean)
       return true
     }
     //DICTIONARY TYPE CHECK
@@ -142,7 +142,7 @@ case class TypeDefinitionAspect(selfTD: TypeDefinition) {
                 case None => false
               }
             })
-            logger.debug("Equality check: {} - {} - {}", Array(selfTD.getName, providedEquality, requiredEquality))
+//            logger.debug("Equality check: {} - {} - {}", Array(selfTD.getName, providedEquality, requiredEquality))
 
             !providedEquality || !requiredEquality
           }
@@ -214,7 +214,7 @@ case class TypeDefinitionAspect(selfTD: TypeDefinition) {
             case None =>
           }
       }
-      return None
+      None
     }
   }
 
@@ -227,10 +227,10 @@ case class TypeDefinitionAspect(selfTD: TypeDefinition) {
         //logger.debug("found deploy unit => {} for type {}", e.getUnitName, selfTD.getName)
         deployUnitfound = e
       }
-      case _ => logger.debug("Deploy Unit not found on first level {}", selfTD.getName)
+      case _ => //logger.debug("Deploy Unit not found on first level {}", selfTD.getName)
     }
     if (deployUnitfound == null) {
-      logger.debug("No deploy unit has been found for deployment of {} on node {} : {}", Array(selfTD.getName,node.getName,node.getTypeDefinition.getName))
+//      logger.debug("No deploy unit has been found for deployment of {} on node {} : {}", Array(selfTD.getName,node.getName,node.getTypeDefinition.getName))
       deployUnitfound = foundRelevantDeployUnitOnNodeSuperTypes(node.getTypeDefinition.asInstanceOf[NodeType], selfTD)
     }
     //logger.debug("will exit with => {}", deployUnitfound)
@@ -247,13 +247,13 @@ case class TypeDefinitionAspect(selfTD: TypeDefinition) {
         td.getTargetNodeType.map {
           tNode =>
             if (tNode.getName == nodeType.getName) {
-              tNode.getDeployUnits.foreach {
+              /*tNode.getDeployUnits.foreach {
                 chooseDP =>
                   logger.debug("candidate deploy unit => {}", chooseDP.getUnitName)
-              }
+              }*/
               deployUnitfound = td //tNode.getDeployUnits(0)
 
-              logger.debug("found & exit={}", deployUnitfound.getUnitName)
+//              logger.debug("found & exit={}", deployUnitfound.getUnitName)
               return deployUnitfound
             }
         }
@@ -262,7 +262,7 @@ case class TypeDefinitionAspect(selfTD: TypeDefinition) {
     if (deployUnitfound == null) {
       nodeType.getSuperTypes.foreach(superNode => {
         // call recursively for super types and test if something has been found {
-        logger.debug("Search on super type => {}", superNode.getName)
+//        logger.debug("Search on super type => {}", superNode.getName)
         deployUnitfound = foundRelevantDeployUnitOnNodeSuperTypes(superNode.asInstanceOf[NodeType], t)
         if (deployUnitfound != null) {
           return deployUnitfound
