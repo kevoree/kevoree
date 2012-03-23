@@ -41,18 +41,17 @@ object WebInfHelper extends App {
       xmlnode.child.foreach {
         cNode =>
           cNode.label match {
-            case "env-entry" => { //NOOP
+            case "context-param" => { //NOOP
             }
             case _@e => listChilds = listChilds ++ List(cNode)
           }
       }
 
       dictionary.foreach{ dicP =>
-        listChilds = listChilds ++ List(<env-entry>
-            <env-entry-name>{dicP._1}</env-entry-name>
-            <env-entry-type>java.lang.String</env-entry-type>
-            <env-entry-value>{dicP._2}</env-entry-value>
-          </env-entry>)
+        listChilds = listChilds ++ List(<context-param>
+            <param-name>{dicP._1}</param-name>
+            <param-value>{dicP._2}</param-value>
+          </context-param>)
       }
 
       val newFile = new File(warDir.getAbsolutePath + File.separator + "web.xml")
