@@ -213,6 +213,7 @@
                         <option>-keep class org.restlet.**</option>
                         -->
                         <option>-keep class org.slf4j.** { *; }</option>
+                        <option>-keep class org.logback.** { *; }</option> <!-- TODO check with François -->
                         <option>-keep class scala.runtime.** { *; }</option>
                         <option>-keep class scala.Tuple2 { *; }</option>
                         <option>-keep class scala.** { *; }</option>
