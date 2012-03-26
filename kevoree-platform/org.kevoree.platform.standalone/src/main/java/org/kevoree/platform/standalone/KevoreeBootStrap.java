@@ -36,6 +36,8 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.lang.reflect.Method;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -161,8 +163,44 @@ public class KevoreeBootStrap {
 					try {
 						logger.info("Try to load bootstrap platform from system parameter");
 						String bootstrapModelPath = configBean.getProperty(ConfigConstants.KEVOREE_NODE_BOOTSTRAP());
-						if (bootstrapModelPath.startsWith("http://")) {
+						if (bootstrapModelPath.startsWith("mvn://")) {
+							try {
+								String mavenurl = bootstrapModelPath.substring(4);
+								File file = null;
+								if (file == null && mavenurl.startsWith("http://")) {
+									String repourl = mavenurl.substring(0, mavenurl.indexOf("!"));
+									String urlids = mavenurl.substring(mavenurl.indexOf("!") + 1);
+									String[] part = urlids.split("/");
+									if (part.length == 3) {
+										List<String> list = new ArrayList<String>();
+//										file = bootstraper.resolveArtifact(part[1], part[0], part[2], list); // TODO maybe refactor Bootstraper to use a java list instead of a scala immutable list
+									}
+								}
+								if (file == null) {
+									String[] part = mavenurl.split("/");
+									if (part.length == 3) {
+										file = bootstraper.resolveKevoreeArtifact(part[1], part[0], part[2]);
+									} else {
+										logger.warn("Kevscript merger : Bad MVN URL <mvn:[repourl!]groupID/artefactID/version>");
+									}
+								}
+								if (file != null) {
+									JarFile jar = new JarFile(new File(file.getAbsolutePath()));
+									JarEntry entry = jar.getJarEntry("KEV-INF/lib.kev");
+									if (entry != null) {
+										bootstrapModel = KevoreeXmiHelper.loadStream(jar.getInputStream(entry));
+									}
+								}
+							} catch (Exception e) {
+								logger.error("Bootstrap failed", e);
+							}
+						} else if (bootstrapModelPath.startsWith("http://")) {
 							bootstrapModel = KevoreeXmiHelper.loadStream(new URL(bootstrapModelPath).openStream());
+						} else if (bootstrapModelPath.endsWith(".jar")) {
+							File filebootmodel = new File(bootstrapModelPath);
+							JarFile jar = new JarFile(filebootmodel);
+							JarEntry entry = jar.getJarEntry("KEV-INF/lib.kev");
+							bootstrapModel = KevoreeXmiHelper.loadStream(jar.getInputStream(entry));
 						} else {
 							bootstrapModel = KevoreeXmiHelper.load(bootstrapModelPath);
 						}
@@ -199,7 +237,7 @@ public class KevoreeBootStrap {
 			KevoreeLogLevel coreLogLevel = KevoreeLogLevel.INFO;
 			if (System.getProperty("kevoree.log.level") != null) {
 				if ("DEBUG".equals(System.getProperty("kevoree.log.level"))) {
-						coreLogLevel = KevoreeLogLevel.DEBUG;
+					coreLogLevel = KevoreeLogLevel.DEBUG;
 				} else if ("WARN".equals(System.getProperty("kevoree.log.level"))) {
 					coreLogLevel = KevoreeLogLevel.WARN;
 				} else if ("INFO".equals(System.getProperty("kevoree.log.level"))) {
