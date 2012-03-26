@@ -25,7 +25,7 @@ class BluetoothAwayNode(val manager : BluetoothManager) extends  DaemonActor {
           case STOP() =>   stop()
           case SEND_TIMEOUT(message) =>
           {
-              Thread.sleep(1)
+              Thread.sleep(1000)
               manager.sendMessage(message)
           }
         }
