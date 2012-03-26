@@ -19,7 +19,7 @@
     <dependencies>
         <dependency>
             <groupId>org.kevoree.library.sky</groupId>
-            <artifactId>org.kevoree.library.sky.manager</artifactId>
+            <artifactId>org.kevoree.library.sky.api</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
