@@ -46,4 +46,6 @@ trait Bootstraper {
 
   def getKevoreeLogService : KevoreeLogService
 
+  def setKevoreeLogService(kl : KevoreeLogService)
+
 }
