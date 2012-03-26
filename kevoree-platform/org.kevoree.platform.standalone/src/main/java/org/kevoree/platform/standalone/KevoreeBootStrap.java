@@ -77,7 +77,9 @@ public class KevoreeBootStrap {
 
 			Class clazz = jcl.loadClass("org.kevoree.tools.aether.framework.NodeTypeBootstrapHelper");
 			org.kevoree.api.Bootstraper bootstraper = (Bootstraper) clazz.newInstance();
-			clazz.getMethod("setKevoreeLogService", KevoreeLogService.class).invoke(bootstraper, logbackService);
+            bootstraper.setKevoreeLogService(logbackService);
+
+			//clazz.getMethod("setKevoreeLogService", KevoreeLogService.class).invoke(bootstraper, logbackService);
 
 			Class selfRegisteredClazz = bootstraper.getClass();
 			jcl.lockLinks();
