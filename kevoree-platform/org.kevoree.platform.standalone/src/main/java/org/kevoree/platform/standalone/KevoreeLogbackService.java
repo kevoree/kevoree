@@ -37,7 +37,8 @@ public class KevoreeLogbackService implements KevoreeLogService {
 					|| logger.getName().startsWith("org.kevoree.kcl")
 					|| logger.getName().startsWith("org.kevoree.merger")
 					|| logger.getName().startsWith("org.kevoree.model")
-					|| logger.getName().startsWith("org.kevoree.api")) {
+					|| logger.getName().startsWith("org.kevoree.api")
+					|| logger.getName().startsWith("org.kevoree.tools.aether")) {
 				logger.setLevel(logLevel);
 			}
 		}
@@ -70,7 +71,8 @@ public class KevoreeLogbackService implements KevoreeLogService {
 					|| logger.getName().startsWith("org.kevoree.kcl")
 					|| logger.getName().startsWith("org.kevoree.merger")
 					|| logger.getName().startsWith("org.kevoree.model")
-					|| logger.getName().startsWith("org.kevoree.api")) {
+					|| logger.getName().startsWith("org.kevoree.api")
+					|| logger.getName().startsWith("org.kevoree.tools.aether")) {
 				return convertLogbackLogLeveltoKevoreeLogLevel(logger.getLevel());
 			}
 		}
