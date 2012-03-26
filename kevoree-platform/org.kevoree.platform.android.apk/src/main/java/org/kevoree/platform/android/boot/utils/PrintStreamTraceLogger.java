@@ -14,7 +14,6 @@
 package org.kevoree.platform.android.boot.utils;
 
 import android.support.v4.app.FragmentActivity;
-import android.util.Log;
 import android.widget.TextView;
 
 import java.io.OutputStream;
@@ -56,7 +55,6 @@ public class PrintStreamTraceLogger extends OutputStream {
                                     _textArea.scrollTo(0, 0);
 
                                 _textArea.setTextColor(_color);
-                                Log.i("kevoree.activity.logger", currentLine.toString());
                                 currentLine = new StringBuilder();
                             }
 
