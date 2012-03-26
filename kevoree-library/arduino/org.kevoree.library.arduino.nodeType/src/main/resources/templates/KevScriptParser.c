@@ -6,6 +6,12 @@
      char * portID;
      const char delims[] = ":";
      boolean parseAndSaveAdminMsg(){
+         if( inBytes[0]=='g' && inBytes[1]=='e' && inBytes[2]=='t' && inBytes[3]=='m' ){
+            //RETURN CURRENT COMPRESSED KEVSCRIPT
+            //RETURN IN A NEW LIGNE
+            printScriptFromEEPROM();
+            return true;
+         }
          if( inBytes[0]=='p' && inBytes[1]=='i' && inBytes[2]=='n' && inBytes[3]=='g' ){
            return true;
          }

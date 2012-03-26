@@ -59,6 +59,29 @@
                 parseForCAdminMsg();                                                     
                 flushAdminBuffer();                                                      
               }
-            }                                                                            
+            }
+
+            void printScriptFromEEPROM () {
+                  inBytes[serialIndex] = readPMemory(eepromIndex);
+                  while (inBytes[serialIndex] != endAdminChar && eepromIndex < EEPROM_MAX_SIZE) {
+                    if (inBytes[serialIndex] == sepAdminChar) {
+                      inBytes[serialIndex] = '\0';
+                      //PRINT  inBytes to SERIAL   // HASH + CHUNK
+                      flushAdminBuffer();
+                    } else {
+                      serialIndex ++;
+                    }
+                    eepromIndex ++;
+                    inBytes[serialIndex] = readPMemory(eepromIndex);
+                  }
+                  //PROCESS LAST CMD
+                  if (inBytes[serialIndex] == endAdminChar) {
+                    inBytes[serialIndex] = '\0';
+                     //PRINT  inBytes to SERIAL   // HASH + CHUNK
+                    flushAdminBuffer();
+                  }
+                }
+
+
                                                           
                                                           
