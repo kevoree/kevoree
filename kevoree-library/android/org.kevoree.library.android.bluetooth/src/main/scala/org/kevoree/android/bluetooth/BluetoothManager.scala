@@ -31,7 +31,7 @@ class BluetoothManager extends DaemonActor
 
   def act() {
     loop {
-      receive {
+      react {
         case SEND(msg) =>
         {
           try
