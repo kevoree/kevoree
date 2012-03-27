@@ -67,63 +67,6 @@ abstract class KevoreeNodeRunner (var nodeName: String) {
     }
   }
 
-  /*private def copyFileFromStream (inputStream: InputStream, outputFile: String): Boolean = {
-    logger.debug("trying to copy a stream into {}", outputFile)
-    if (inputStream != null) {
-      try {
-        if (new File(outputFile).exists()) {
-          new File(outputFile).delete()
-        }
-        val reader = new DataInputStream(inputStream)
-        val writer = new DataOutputStream(new FileOutputStream(new File(outputFile)))
-
-        val bytes = new Array[Byte](2048)
-        var length = reader.read(bytes)
-        while (length != -1) {
-          writer.write(bytes, 0, length)
-          length = reader.read(bytes)
-
-        }
-        writer.flush()
-        writer.close()
-        reader.close()
-        true
-      } catch {
-        case _@e => logger.error("Unable to copy a stream into {}", outputFile, e); false
-      }
-    } else {
-      logger.debug("The stream is undefined")
-      false
-    }
-  }
-
-  private def addStringToFile (data: String, outputFile: String) {
-    if (data != null && data != "") {
-      logger.debug("trying to add \"{}\" into {}", data, outputFile)
-      val stringBuilder = new StringBuilder
-      stringBuilder append data + "\n"
-      if (new File(outputFile).exists()) {
-        val reader = new DataInputStream(new FileInputStream(new File(outputFile)))
-        val writer = new ByteArrayOutputStream()
-
-        val bytes = new Array[Byte](2048)
-        var length = reader.read(bytes)
-        while (length != -1) {
-          writer.write(bytes, 0, length)
-          length = reader.read(bytes)
-
-        }
-        writer.flush()
-        writer.close()
-        reader.close()
-        stringBuilder append new String(writer.toByteArray)
-      }
-
-      copyStringToFile(stringBuilder.toString(), outputFile)
-      logger.debug("adding \"{}\" into {} is done", data, outputFile)
-    }
-  }*/
-
   private def copyStringToFile (data: String, outputFile: String) {
     if (data != null && data != "") {
       logger.debug("trying to copy \"{}\" to {}", data, outputFile)

@@ -9,8 +9,8 @@
         <relativePath>../org.kevoree.library.sky.root/pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>org.kevoree.library.sky.manager</artifactId>
-    <name>Kevoree :: Library :: Sky :: Manager</name>
+    <artifactId>org.kevoree.library.sky.api</artifactId>
+    <name>Kevoree :: Library :: Sky :: Api</name>
 
     <properties>
         <kevoree.include>

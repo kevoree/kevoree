@@ -108,3 +108,16 @@
                 updateParam(index, instances[index] -> subTypeCode, paramCode, & params[ 2] );
               }
             }
+
+
+          /*
+            3 byte checksum
+          */
+        char *checksumArduino( char * buffer ) {
+         static char tBuf[4];
+         long index;
+         unsigned int checksum;
+         for( index = 0L, checksum = 0; index < strlen(buffer); checksum += (unsigned int) buffer[index++] );
+         sprintf( tBuf, "%03d", (unsigned int) ( checksum % 256 ) );
+         return( tBuf );
+    }

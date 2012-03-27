@@ -2,7 +2,7 @@ package org.kevoree.library.sky.manager
 
 import actors.DaemonActor
 import nodeType.IaaSNode
-import org.kevoree.{ContainerRoot, ContainerNode}
+import org.kevoree.ContainerRoot
 
 import org.slf4j.{LoggerFactory, Logger}
 
@@ -61,10 +61,9 @@ class KevoreeNodeManager(node: IaaSNode) extends DaemonActor {
   private def addNodeInternal(iaasModel: ContainerRoot, targetChildName: String, targetChildModel: ContainerRoot): Boolean = {
     logger.debug("try to add a node: " + targetChildName)
     val newRunner = node.createKevoreeNodeRunner(targetChildName)
+    runners = runners ++ List(newRunner)
     val result = newRunner.startNode(iaasModel,targetChildModel)
-    if (result) {
-      runners = runners ++ List(newRunner)
-    } else {
+    if (!result) {
       logger.error("Can't start node")
     }
     result
