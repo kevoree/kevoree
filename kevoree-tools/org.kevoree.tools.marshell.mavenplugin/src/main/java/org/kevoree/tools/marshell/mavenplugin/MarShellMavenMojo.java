@@ -21,6 +21,8 @@ import org.kevoree.ContainerRoot;
 import org.kevoree.KevoreeFactory;
 import org.kevoree.framework.KevoreeXmiHelper;
 import org.kevoree.merger.KevoreeMergerComponent;
+import org.kevoree.tools.aether.framework.AetherUtil;
+import org.sonatype.aether.RepositorySystemSession;
 
 import java.io.File;
 
@@ -58,22 +60,31 @@ public class MarShellMavenMojo extends AbstractMojo {
 	 */
 	private MavenProject project;
 
+	/**
+	 *
+	 * The current repository/network configuration of Maven.
+	 *
+	 * @parameter default-value="${repositorySystemSession}"
+	 * @readonly
+	 */
+	private RepositorySystemSession repoSession;
+
 	private KevoreeMergerComponent mergerComponent;
 
 	public void execute () throws MojoExecutionException {
 
+		AetherUtil.setRepositorySystemSession(repoSession);
 		mergerComponent = new KevoreeMergerComponent();
 
 		ContainerRoot model = executeOnDirectory(sourceMarShellDirectory);
-		File outputDir = new File(sourceOutputDirectory + File.separator + "lib.kev");
-		if (!outputDir.exists() && !outputDir.mkdirs()) {
-			throw new MojoExecutionException("Unable to build target packages " + outputDir.getAbsolutePath());
+		if (!sourceOutputDirectory.exists() && !sourceOutputDirectory.mkdirs()) {
+			throw new MojoExecutionException("Unable to build target packages " + sourceOutputDirectory.getAbsolutePath());
 		}
-		KevoreeXmiHelper.save(outputDir.getAbsolutePath(), model);
+		KevoreeXmiHelper.save(sourceOutputDirectory.getAbsolutePath() + File.separator + "lib.kev", model);
 
 		Resource resource = new Resource();
 		resource.setTargetPath("KEV-INF");
-		resource.setDirectory(outputDir.getAbsolutePath());
+		resource.setDirectory(sourceOutputDirectory.getAbsolutePath());
 
 		project.addResource(resource);
 	}
