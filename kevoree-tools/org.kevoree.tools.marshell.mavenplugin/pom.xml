@@ -26,10 +26,89 @@
         </dependency>
         <dependency>
             <groupId>org.kevoree.tools</groupId>
-            <artifactId>org.kevoree.tools.marShell</artifactId>
+            <artifactId>org.kevoree.tools.javase.framework</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
         <dependency>
+            <groupId>org.kevoree.tools</groupId>
+            <artifactId>org.kevoree.tools.marShell</artifactId>
+            <version>${kevoree.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.kevoree.tools</groupId>
+                    <artifactId>org.kevoree.tools.aether.framework</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+
+        <!--<dependency>
+            <groupId>org.sonatype.aether</groupId>
+            <artifactId>aether-api</artifactId>
+            <version>1.13</version>
+        </dependency>
+        <dependency>
+            <groupId>org.sonatype.aether</groupId>
+            <artifactId>aether-spi</artifactId>
+            <version>1.13</version>
+        </dependency>
+        <dependency>
+            <groupId>org.sonatype.aether</groupId>
+            <artifactId>aether-util</artifactId>
+            <version>1.13</version>
+        </dependency>
+        <dependency>
+            <groupId>org.sonatype.aether</groupId>
+            <artifactId>aether-impl</artifactId>
+            <version>1.13</version>
+        </dependency>
+        <dependency>
+            <groupId>org.sonatype.aether</groupId>
+            <artifactId>aether-connector-file</artifactId>
+            <version>1.13</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.sonatype.aether</groupId>
+            <artifactId>aether-connector-asynchttpclient</artifactId>
+            <version>1.13</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>netty</artifactId>
+                    <groupId>org.jboss.netty</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.maven</groupId>
+            <artifactId>maven-aether-provider</artifactId>
+            <version>3.0.3</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.codehaus.plexus</groupId>
+            <artifactId>plexus-component-annotations</artifactId>
+            <version>1.5.5</version>
+        </dependency>-->
+        <!--<dependency>
+            <groupId>org.sonatype.aether</groupId>
+            <artifactId>aether-connector-file</artifactId>
+            <version>1.13</version>
+        </dependency>
+        <dependency>
+            <groupId>org.sonatype.aether</groupId>
+            <artifactId>aether-connector-asynchttpclient</artifactId>
+            <version>1.13</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>netty</artifactId>
+                    <groupId>org.jboss.netty</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>-->
+        <!--<dependency>
             <groupId>org.kevoree.tools</groupId>
             <artifactId>org.kevoree.tools.aether.framework</artifactId>
             <version>${kevoree.version}</version>
@@ -67,7 +146,7 @@
                     <artifactId>plexus-component-annotations</artifactId>
                 </exclusion>
             </exclusions>
-        </dependency>
+        </dependency>-->
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-core</artifactId>
