@@ -44,7 +44,7 @@ void executeScriptFromEEPROM () {
 	inBytes[serialIndex] = readPMemory(eepromIndex);                           
 	while (inBytes[serialIndex] != endAdminChar && eepromIndex < EEPROM_MAX_SIZE) {        
 		if (inBytes[serialIndex] == sepAdminChar) {                              
-			inBytes[serialIndex] = '\0';                                           
+			inBytes[serialIndex] = '\0';
 			parseForCAdminMsg();                                                   
 			flushAdminBuffer();                                                    
 		} else {                                                                 
@@ -55,15 +55,15 @@ void executeScriptFromEEPROM () {
 	}                                                                          
 	//PROCESS LAST CMD                                                         
 	if (inBytes[serialIndex] == endAdminChar) {                                
-		inBytes[serialIndex] = '\0';                                             
+		inBytes[serialIndex] = '\0';
 		parseForCAdminMsg();                                                     
 		flushAdminBuffer();                                                      
 	}
 }
 
 void printScriptFromEEPROM () {
-    int indexInBytes=0;
-    int indexEEPROM=0;
+	int indexInBytes=0;
+	int indexEEPROM=0;
 	inBytes[indexInBytes] = readPMemory(indexEEPROM);
 	while (inBytes[indexInBytes] != endAdminChar && (indexEEPROM < EEPROM_MAX_SIZE)) {
 		if (inBytes[indexInBytes] == sepAdminChar) {
@@ -73,7 +73,9 @@ void printScriptFromEEPROM () {
 			Serial.print("*");
 			Serial.println(checksumArduino(inBytes));
 			flushAdminBuffer();
-		} else {
+		}
+		else
+		{
 			indexInBytes ++;
 		}
 		indexEEPROM ++;
