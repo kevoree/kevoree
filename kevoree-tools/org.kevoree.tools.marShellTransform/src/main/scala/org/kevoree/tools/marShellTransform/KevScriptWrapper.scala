@@ -29,6 +29,18 @@ object KevScriptWrapper {
   val paramSep = ":"
   val instrSep = "/"
 
+  val UDI_C = 0
+  val AIN_C = 1
+  val RIN_C = 2
+  val ABI_C = 3
+  val RBI_C = 4
+
+
+  def generateKevScriptFromCompressed(cscript: String) : Script = {
+    null
+  }
+
+  
   def generateDictionaryString(dictionary: java.util.Properties): String = {
     if (dictionary == null) {
       return ""
