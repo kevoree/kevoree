@@ -13,8 +13,8 @@
 
 
     <properties>
-	<kevoree.include>*:*</kevoree.include> 
-  </properties>
+        <kevoree.include>*:*</kevoree.include>
+    </properties>
 
 
     <artifactId>org.kevoree.library.javase.webserver</artifactId>
