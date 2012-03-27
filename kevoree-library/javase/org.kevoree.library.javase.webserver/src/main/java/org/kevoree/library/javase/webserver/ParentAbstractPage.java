@@ -17,17 +17,19 @@ import org.kevoree.annotation.Update;
 @ComponentFragment
 public class ParentAbstractPage extends AbstractPage {
 
-	@Override
-	@Start
-	public void startPage () {
-		this.getDictionary().put("urlpattern", this.getDictionary().get("urlpattern").toString() + "**");
-		logger.debug("Parent abstract page start with pattern = {}", this.getDictionary().get("urlpattern").toString());
-		super.startPage();
-	}
+    @Override
+    @Start
+    public void startPage() {
+        if (!this.getDictionary().get("urlpattern").toString().endsWith("**")) {
+            this.getDictionary().put("urlpattern", this.getDictionary().get("urlpattern").toString() + "**");
+            logger.debug("Parent abstract page start with pattern = {}", this.getDictionary().get("urlpattern").toString());
+        }
+        super.startPage();
+    }
 
-	@Override
-	@Update
-	public void updatePage () {
-		startPage();
-	}
+    @Override
+    @Update
+    public void updatePage() {
+        startPage();
+    }
 }

@@ -82,8 +82,13 @@ public class FileServiceHelper {
 
         //String file = request.getUrl().substring(request.getUrl().lastIndexOf("/"));
         if (file == null || file.equals("") || file.equals("/")) {
-            file = index;//"latexEditor.html";
+            file = index;
         }
+        
+        if(file.startsWith("/")){
+            file = file.substring(1);
+        }
+        
         logger.debug("Request rec for file " + file);
         InputStream in = origin.getClass().getClassLoader().getResourceAsStream(file);
         if (in != null) {

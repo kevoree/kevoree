@@ -1,8 +1,12 @@
 
-void sleepNowFor(long duration){
+void
+sleepNowFor (long duration)
+{
 
 }
 
-unsigned long currentMillis(){
-    return millis();
+unsigned long
+currentMillis ()
+{
+  return millis ();
 }
