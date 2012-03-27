@@ -1,4 +1,4 @@
-package org.kevoree.library.sky.jails.log
+package org.kevoree.library.sky.jails.process
 
 import actors.{TIMEOUT, Actor}
 
@@ -14,13 +14,13 @@ class ResultManagementActor extends Actor {
 
   //case class STOP()
 
-  case class WAITINGFOR(timeout: Int)
+  case class WAITINGFOR (timeout: Int)
 
-  case class STARTING()
+  case class STARTING ()
 
-  case class OUTPUT(data: String)
+  case class OUTPUT (data: String)
 
-  case class ERROR(data: String)
+  case class ERROR (data: String)
 
   start()
 
@@ -29,25 +29,25 @@ class ResultManagementActor extends Actor {
     this ! STOP()
   }*/
 
-  def starting() {
+  def starting () {
     this ! STARTING()
   }
 
-  def waitingFor(timeout: Int): (Boolean, String) = {
+  def waitingFor (timeout: Int): (Boolean, String) = {
     (this !? WAITINGFOR(timeout)).asInstanceOf[(Boolean, String)]
   }
 
-  def output(data: String) {
+  def output (data: String) {
     this ! OUTPUT(data)
   }
 
-  def error(data: String) {
+  def error (data: String) {
     this ! ERROR(data)
   }
 
   var firstSender = null
 
-  def act() {
+  def act () {
     loop {
       react {
         //case STOP() => this.exit()
@@ -61,21 +61,31 @@ class ResultManagementActor extends Actor {
               firstSender = this.sender
               reactWithin(timeout) {
                 //case STOP() => this.exit()
-                case OUTPUT(data) => { firstSender ! (true, data) ; exit() }
-                case TIMEOUT => { firstSender ! (false, "Timeout exceeds.") ; exit() }
-                case ERROR(data) => { firstSender ! (false, data) ; exit() }
+                case OUTPUT(data) => {
+                  firstSender !(true, data); exit()
+                }
+                case TIMEOUT => {
+                  firstSender !(false, "Timeout exceeds."); exit()
+                }
+                case ERROR(data) => {
+                  firstSender !(false, data); exit()
+                }
               }
             }
             case OUTPUT(data) => {
               react {
-               // case STOP() => this.exit()
-                case WAITINGFOR(timeout) => { firstSender ! (true, data) ; exit() }
+                // case STOP() => this.exit()
+                case WAITINGFOR(timeout) => {
+                  firstSender !(true, data); exit()
+                }
               }
             }
             case ERROR(data) => {
               react {
                 //case STOP() => this.exit()
-                case WAITINGFOR(timeout) => { firstSender !(false, data) ; exit() }
+                case WAITINGFOR(timeout) => {
+                  firstSender !(false, data); exit()
+                }
               }
             }
           }
