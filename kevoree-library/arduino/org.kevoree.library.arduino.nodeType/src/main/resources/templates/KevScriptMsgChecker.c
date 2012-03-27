@@ -30,7 +30,6 @@ void checkForAdminMsg () {
 			}else
 			{
 				// error
-
 			}
 		}
 		else
