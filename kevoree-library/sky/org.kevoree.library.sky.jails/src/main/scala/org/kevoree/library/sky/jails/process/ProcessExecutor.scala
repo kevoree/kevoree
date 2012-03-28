@@ -79,7 +79,7 @@ class ProcessExecutor {
     resultActor.starting()
     val p = Runtime.getRuntime.exec(exec)
     new Thread(new ProcessStreamManager(resultActor, p.getErrorStream, Array(), Array(new Regex("^Error.*")), p)).start()
-    val result = resultActor.waitingFor(120000)
+    val result = resultActor.waitingFor(240000)
     if (!result._1) {
       logger.debug(result._2)
     }
@@ -92,7 +92,7 @@ class ProcessExecutor {
     resultActor.starting()
     val p = listJailsProcessBuilder.start()
     new Thread(new ProcessStreamManager(resultActor, p.getInputStream, Array(ezjailListRegex), Array(), p)).start()
-    val result = resultActor.waitingFor(10000)
+    val result = resultActor.waitingFor(1000)
     var jailPath = ""
     if (result._1) {
       result._2.split("\n").foreach {
@@ -202,7 +202,7 @@ class ProcessExecutor {
     logger.debug("running {} delete -w {}", Array[AnyRef](ezjailAdmin, nodeName))
     val p = Runtime.getRuntime.exec(Array[String](ezjailAdmin, "delete", "-w", nodeName))
     new Thread(new ProcessStreamManager(resultActor, p.getInputStream, Array(), Array(), p)).start()
-    val result = resultActor.waitingFor(10000)
+    val result = resultActor.waitingFor(240000)
     if (!result._1) {
       logger.debug(result._2)
     }
