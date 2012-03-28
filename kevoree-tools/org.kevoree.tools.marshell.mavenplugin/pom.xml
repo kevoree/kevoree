@@ -5,7 +5,7 @@
     <parent>
         <artifactId>org.kevoree.tools.root</artifactId>
         <groupId>org.kevoree.tools</groupId>
-        <version>1.6.0-SNAPSHOT</version>
+        <version>1.6.0-RC1</version>
         <relativePath>../org.kevoree.tools.root/pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -26,45 +26,17 @@
         </dependency>
         <dependency>
             <groupId>org.kevoree.tools</groupId>
-            <artifactId>org.kevoree.tools.marShell</artifactId>
+            <artifactId>org.kevoree.tools.javase.framework</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
         <dependency>
             <groupId>org.kevoree.tools</groupId>
-            <artifactId>org.kevoree.tools.aether.framework</artifactId>
+            <artifactId>org.kevoree.tools.marShell</artifactId>
             <version>${kevoree.version}</version>
             <exclusions>
                 <exclusion>
-                    <groupId>org.sonatype.aether</groupId>
-                    <artifactId>aether-api</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.sonatype.aether</groupId>
-                    <artifactId>aether-spi</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.sonatype.aether</groupId>
-                    <artifactId>aether-util</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.sonatype.aether</groupId>
-                    <artifactId>aether-impl</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.sonatype.aether</groupId>
-                    <artifactId>aether-connector-file</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.sonatype.aether</groupId>
-                    <artifactId>aether-connector-asynchttpclient</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.apache.maven</groupId>
-                    <artifactId>maven-aether-provider</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.codehaus.plexus</groupId>
-                    <artifactId>plexus-component-annotations</artifactId>
+                    <groupId>org.kevoree.tools</groupId>
+                    <artifactId>org.kevoree.tools.aether.framework</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>

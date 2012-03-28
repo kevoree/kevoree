@@ -15,9 +15,11 @@ import org.kevoree.library.javase.webserver.ParentAbstractPage;
 @ComponentType
 public class StaticFilesPage extends ParentAbstractPage {
 
+    protected String basePage = "hello.html";
+    
     @Override
     public KevoreeHttpResponse process(KevoreeHttpRequest request, KevoreeHttpResponse response) {
-        if (FileServiceHelper.checkStaticFile("hello.html", this, request, response)) {
+        if (FileServiceHelper.checkStaticFile(basePage, this, request, response)) {
             if (request.getUrl().equals("/") || request.getUrl().endsWith(".html")) {
                 String pattern = getDictionary().get("urlpattern").toString();
                 if(pattern.endsWith("**")){

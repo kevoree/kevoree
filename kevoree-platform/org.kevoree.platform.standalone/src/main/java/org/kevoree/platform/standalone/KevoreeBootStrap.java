@@ -23,7 +23,6 @@ import org.kevoree.api.Bootstraper;
 import org.kevoree.api.configuration.ConfigConstants;
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService;
 import org.kevoree.api.service.core.logging.KevoreeLogLevel;
-import org.kevoree.api.service.core.logging.KevoreeLogService;
 import org.kevoree.api.service.core.script.KevScriptEngine;
 import org.kevoree.api.service.core.script.KevScriptEngineFactory;
 import org.kevoree.core.impl.KevoreeConfigServiceBean;
@@ -165,7 +164,7 @@ public class KevoreeBootStrap {
 					try {
 						logger.info("Try to load bootstrap platform from system parameter");
 						String bootstrapModelPath = configBean.getProperty(ConfigConstants.KEVOREE_NODE_BOOTSTRAP());
-						if (bootstrapModelPath.startsWith("mvn://")) {
+						if (bootstrapModelPath.startsWith("mvn:")) {
 							try {
 								String mavenurl = bootstrapModelPath.substring(4);
 								File file = null;

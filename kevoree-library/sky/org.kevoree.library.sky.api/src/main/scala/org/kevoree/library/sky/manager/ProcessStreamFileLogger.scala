@@ -13,12 +13,12 @@ import java.io._
 
 class ProcessStreamFileLogger (inputStream: InputStream, file: File) extends Runnable {
   override def run () {
+    val outputStream = new FileWriter(file)
+    val readerIn = new BufferedReader(new InputStreamReader(inputStream))
     try {
       if (!file.exists()) {
         file.createNewFile()
       }
-      val outputStream = new FileWriter(file)
-      val readerIn = new BufferedReader(new InputStreamReader(inputStream))
       var lineIn = readerIn.readLine()
       while (lineIn != null) {
         //            logger.info(lineIn)
@@ -28,6 +28,10 @@ class ProcessStreamFileLogger (inputStream: InputStream, file: File) extends Run
       }
     } catch {
       case _@e => e.printStackTrace()
+    } finally {
+      outputStream.flush()
+      outputStream.close()
+      readerIn.close()
     }
   }
 }

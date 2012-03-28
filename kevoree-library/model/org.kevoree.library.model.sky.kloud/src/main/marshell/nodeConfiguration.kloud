@@ -67,7 +67,7 @@ bind paaSKloudResourceManagerPage.authentication@cumulus => authenticationChanne
 
 merge "mvn:org.kevoree.library.javase/org.kevoree.library.javase.webserver.jenkins/{kevoree.version}"
 merge "mvn:org.kevoree.library.javase/org.kevoree.library.javase.system.bsd/{kevoree.version}"
-addNode KevoreeBuildNode : PJavaSENode {ARCH="x86_64", RAM="1024", CPU_FREQUENCY="N/A", WALLCLOCKTIME="N/A", DATA_SIZE="N/A", logLevel="INFO"}
+addNode KevoreeBuildNode : PJailNode {ARCH="x86_64", RAM="1024", CPU_FREQUENCY="N/A", WALLCLOCKTIME="N/A", DATA_SIZE="N/A", archive="true", flavors="KevoreeBuildNode", logLevel="INFO"}
 network KevoreeBuildNode => KevoreeBuildNode { "KEVOREE.remote.node.ip"= "10.0.0.3"}
 
 addComponent JenkinsKevoree@KevoreeBuildNode : JenkinsServer {port="8090"}
