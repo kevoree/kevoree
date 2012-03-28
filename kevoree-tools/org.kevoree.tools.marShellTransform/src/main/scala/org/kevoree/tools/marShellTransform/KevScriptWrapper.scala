@@ -19,7 +19,6 @@
 package org.kevoree.tools.marShellTransform
 
 import org.kevoree.tools.marShell.ast._
-
 import org.slf4j.LoggerFactory
 import java.util.{Properties, Dictionary}
 
@@ -29,14 +28,37 @@ object KevScriptWrapper {
   val paramSep = ":"
   val instrSep = "/"
 
-  val UDI_C = 0
-  val AIN_C = 1
-  val RIN_C = 2
-  val ABI_C = 3
-  val RBI_C = 4
-
-
   def generateKevScriptFromCompressed(cscript: String) : Script = {
+
+    val parser  = new ParserPush()
+
+    try
+    {
+      parser.parseAdaptations(cscript).adaptations.toArray.foreach( c => {
+        
+       c match {
+         case ABI =>
+         case UDI  =>
+         case AIN  =>
+         case RBI  =>
+         case _ =>
+
+       }
+
+      }
+
+
+      )
+
+    } catch {
+
+      case _ => println("Caught an exception!")
+    }
+
+
+
+
+
     null
   }
 
@@ -83,14 +105,14 @@ object KevScriptWrapper {
                 if (s.fraProperties.containsKey(targetNodeName)) {
                   dic.putAll(s.fraProperties.get(targetNodeName))
                 }
-                content append "udi" + paramSep + s.instanceName + paramSep + generateDictionaryString(dic)
+                content append Op.UDI_C + paramSep + s.instanceName + paramSep + generateDictionaryString(dic)
               }
               case s: AddComponentInstanceStatment => {
                 if (!firstStatment) {
                   content append instrSep
                 }
                 firstStatment = false
-                content append "ain" + paramSep + s.cid.componentInstanceName + paramSep + s.typeDefinitionName
+                content append Op.AIN_C + paramSep + s.cid.componentInstanceName + paramSep + s.typeDefinitionName
                 if (s.dictionary != null) {
                   content append paramSep + generateDictionaryString(s.dictionary)
                 }
@@ -100,7 +122,7 @@ object KevScriptWrapper {
                   content append instrSep
                 }
                 firstStatment = false
-                content append "ain" + paramSep + s.channelName + paramSep + s.channelType
+                content append Op.AIN_C + paramSep + s.channelName + paramSep + s.channelType
                 if (s.dictionary != null) {
                   content append paramSep + generateDictionaryString(s.dictionary)
                 }
@@ -110,28 +132,28 @@ object KevScriptWrapper {
                   content append instrSep
                 }
                 firstStatment = false
-                content append "rin" + paramSep + s.cid.componentInstanceName
+                content append Op.RIN_C + paramSep + s.cid.componentInstanceName
               }
               case s: RemoveChannelInstanceStatment => {
                 if (!firstStatment) {
                   content append instrSep
                 }
                 firstStatment = false
-                content append "rin" + paramSep + s.channelName
+                content append Op.RIN_C + paramSep + s.channelName
               }
               case s: AddBindingStatment => {
                 if (!firstStatment) {
                   content append instrSep
                 }
                 firstStatment = false
-                content append "abi" + paramSep + s.cid.componentInstanceName + paramSep + s.bindingInstanceName + paramSep + s.portName
+                content append Op.ABI_C + paramSep + s.cid.componentInstanceName + paramSep + s.bindingInstanceName + paramSep + s.portName
               }
               case s: RemoveBindingStatment => {
                 if (!firstStatment) {
                   content append instrSep
                 }
                 firstStatment = false
-                content append "rbi" + paramSep + s.cid.componentInstanceName + paramSep + s.bindingInstanceName + paramSep + s.portName
+                content append Op.RBI_C+ paramSep + s.cid.componentInstanceName + paramSep + s.bindingInstanceName + paramSep + s.portName
               }
               case _@s => logger.warn("Uncatch " + s) //DO NOTHING FOR OTHER STATEMENT
             }

@@ -33,7 +33,7 @@ class KevS2CompressedKevsTest extends KevSTestSuiteHelper {
     val baseScript = KevScriptWrapper.miniPlanKevScript(AdaptationModelWrapper.generateScriptFromAdaptModel(adaptModel))
     val result = KevScriptWrapper.generateKevScriptCompressed(baseScript,"KEVOREEDefaultNodeName")
     println(result)
-    assert(result == "{udi:t1:period=100}")
+    assert(result == "{"+Op.UDI_C+":t1:period=100}")
   }
 
   @Test def update1Pin() {
@@ -44,7 +44,7 @@ class KevS2CompressedKevsTest extends KevSTestSuiteHelper {
     val baseScript = KevScriptWrapper.miniPlanKevScript(AdaptationModelWrapper.generateScriptFromAdaptModel(adaptModel))
     val result = KevScriptWrapper.generateKevScriptCompressed(baseScript,"KEVOREEDefaultNodeName")
     println(result)
-    assert(result == "{udi:DigitalLight138771701:pin=10}")
+    assert(result == "{"+Op.UDI_C+":DigitalLight138771701:pin=10}")
   }
 
   @Test def update2Param() {
@@ -55,10 +55,11 @@ class KevS2CompressedKevsTest extends KevSTestSuiteHelper {
     val baseScript = KevScriptWrapper.miniPlanKevScript(AdaptationModelWrapper.generateScriptFromAdaptModel(adaptModel))
     val result = KevScriptWrapper.generateKevScriptCompressed(baseScript,"KEVOREEDefaultNodeName")
     println(result)
-    assert(result == "{udi:DigitalLight138771701:pin=10/udi:t1:period=100}")
+    assert(result == "{"+Op.UDI_C+":DigitalLight138771701:pin=10/"+Op.UDI_C+":t1:period=100}")
   }
 
-  @Test def update_1ain_1abi() {
+  @Test def update_1ain_1abi()
+  {
     val baseModel = model("komModel/baseSLed.kev")
     val updatedModel = model("komModel/SLed_1ain.kev")
     val kompareBean = new KevoreeKompareBean
@@ -66,7 +67,7 @@ class KevS2CompressedKevsTest extends KevSTestSuiteHelper {
     val baseScript = KevScriptWrapper.miniPlanKevScript(AdaptationModelWrapper.generateScriptFromAdaptModel(adaptModel))
     val result = KevScriptWrapper.generateKevScriptCompressed(baseScript,"KEVOREEDefaultNodeName")
     println(result)
-    assert(result == "{ain:DigitalLight1925293585:DigitalLight:pin=10/abi:DigitalLight1925293585:hub846068439:toggle/udi:DigitalLight1925293585:pin=10}")
+    assert(result == "{"+Op.AIN_C+":DigitalLight1925293585:DigitalLight:pin=10/"+Op.ABI_C+":DigitalLight1925293585:hub846068439:toggle/"+Op.UDI_C+":DigitalLight1925293585:pin=10}")
   }
 
 }
