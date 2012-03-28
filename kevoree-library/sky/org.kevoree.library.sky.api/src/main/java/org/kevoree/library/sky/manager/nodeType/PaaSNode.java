@@ -22,7 +22,7 @@ import org.kevoree.annotation.NodeFragment;
 		// number of allowed cores, N/A means undefined
 		@DictionaryAttribute(name = "WALLCLOCKTIME", defaultValue = "N/A", optional = false),
 		// the wall time for the jail (see wikipedia for more details), N/A means undefined
-		@DictionaryAttribute(name = "DATA_SIZE", defaultValue = "2GB", optional = false)
+		@DictionaryAttribute(name = "DATA_SIZE", defaultValue = "5GB", optional = false)
 		// the data size allowed for the jail (GB, MB, KB is allowed), undefined value can be set using N/A
 })
 @NodeFragment
