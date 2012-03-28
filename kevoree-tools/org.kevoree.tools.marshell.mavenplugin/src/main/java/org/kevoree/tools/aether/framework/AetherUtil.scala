@@ -14,20 +14,17 @@ package org.kevoree.tools.aether.framework
  * limitations under the License.
  */
 
-import org.apache.maven.repository.internal.DefaultServiceLocator
 import org.sonatype.aether.resolution.ArtifactRequest
 import org.sonatype.aether.util.artifact.DefaultArtifact
-import org.apache.maven.repository.internal.MavenRepositorySystemSession
 import org.kevoree.{ContainerRoot, DeployUnit}
 import java.io.File
 import org.sonatype.aether.artifact.Artifact
 import org.kevoree.framework.KevoreePlatformHelper
-import util.matching.Regex
-import org.sonatype.aether.repository.{Authentication, RepositoryPolicy, RemoteRepository, LocalRepository}
+import org.sonatype.aether.repository.{Authentication, RemoteRepository}
 import scala.collection.JavaConversions._
 import org.slf4j.LoggerFactory
-import org.sonatype.aether.transfer.{TransferEvent, TransferListener}
-import org.sonatype.aether.{RepositorySystemSession, ConfigurationProperties, RepositorySystem}
+import org.sonatype.aether.{RepositorySystemSession, RepositorySystem}
+import scala.util.matching.Regex
 
 /**
  * User: ffouquet
@@ -40,7 +37,7 @@ object AetherUtil extends TempFileCacheManager {
   private val logger = LoggerFactory.getLogger(this.getClass)
 
 
-  def newRepositorySystem: RepositorySystem = {
+  /*def newRepositorySystem: RepositorySystem = {
 
     val locator = new DefaultServiceLocator()
     /*
@@ -50,7 +47,15 @@ object AetherUtil extends TempFileCacheManager {
     locator.setService(classOf[RepositoryConnectorFactory], classOf[AsyncRepositoryConnectorFactory])
     */
     locator.getService(classOf[RepositorySystem])
+  }*/
+  var repoSystem: RepositorySystem = null
+
+  def setRepositorySystem (repo: RepositorySystem) {
+    repoSystem = repo
   }
+
+
+  def newRepositorySystem: RepositorySystem = repoSystem
 
   def resolveKevoreeArtifact (unitName: String, groupName: String, version: String): File = {
     if (version.endsWith("SNAPSHOT")) {
@@ -134,9 +139,9 @@ object AetherUtil extends TempFileCacheManager {
 
   }
 
-  var repoSession : RepositorySystemSession = null
+  var repoSession: RepositorySystemSession = null
 
-  def setRepositorySystemSession(rs: RepositorySystemSession ){
+  def setRepositorySystemSession (rs: RepositorySystemSession) {
     repoSession = rs
   }
 
