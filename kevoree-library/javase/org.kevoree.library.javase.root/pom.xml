@@ -66,6 +66,7 @@
         <module>../org.kevoree.library.javase.webserver.servlet</module>
         <module>../org.kevoree.library.javase.webserver.jenkins</module>
         <module>../org.kevoree.library.javase.webserver.gitblit</module>
+        <module>../org.kevoree.library.javase.webserver.codemirrorEditor</module>
 
    <!--     <module>../org.kevoree.library.javase.webserver.wordpress</module>
 
@@ -85,6 +86,8 @@
         <module>../org.kevoree.library.javase.airReceiver.server</module>
         <module>../org.kevoree.library.javase.camel</module>
         <module>../org.kevoree.library.javase.authentication</module>
+        <module>../org.kevoree.library.javase.system</module>
+        <module>../org.kevoree.library.javase.system.bsd</module>
         <!--<module>../org.kevoree.library.javase.consensus</module>-->
     </modules>
 
