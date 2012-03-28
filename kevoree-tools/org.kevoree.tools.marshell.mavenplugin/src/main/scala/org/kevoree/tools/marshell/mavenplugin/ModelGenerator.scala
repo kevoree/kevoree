@@ -15,7 +15,6 @@ package org.kevoree.tools.marshell.mavenplugin
 
 import java.io.{BufferedReader, FileReader, File}
 import org.kevoree.tools.marShell.KevScriptOfflineEngine
-import org.kevoree.framework.KevoreeXmiHelper
 import org.kevoree.{ContainerRoot, KevoreeFactory}
 
 /**

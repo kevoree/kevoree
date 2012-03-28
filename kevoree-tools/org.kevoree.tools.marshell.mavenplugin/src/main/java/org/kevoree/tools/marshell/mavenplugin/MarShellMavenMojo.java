@@ -21,6 +21,9 @@ import org.kevoree.ContainerRoot;
 import org.kevoree.KevoreeFactory;
 import org.kevoree.framework.KevoreeXmiHelper;
 import org.kevoree.merger.KevoreeMergerComponent;
+import org.kevoree.tools.aether.framework.AetherUtil;
+import org.sonatype.aether.RepositorySystem;
+import org.sonatype.aether.RepositorySystemSession;
 
 import java.io.File;
 
@@ -58,22 +61,39 @@ public class MarShellMavenMojo extends AbstractMojo {
 	 */
 	private MavenProject project;
 
+	/**
+	 * The current repository/network configuration of Maven.
+	 *
+	 * @parameter default-value="${repositorySystemSession}"
+	 * @readonly
+	 */
+	private RepositorySystemSession repoSession;
+
+	/**
+	 * The entry point to Aether, i.e. the component doing all the work.
+	 *
+	 * @component
+	 */
+	private RepositorySystem repoSystem;
+
 	private KevoreeMergerComponent mergerComponent;
 
 	public void execute () throws MojoExecutionException {
 
+		AetherUtil.setRepositorySystemSession(repoSession);
+		AetherUtil.setRepositorySystem(repoSystem);
+
 		mergerComponent = new KevoreeMergerComponent();
 
 		ContainerRoot model = executeOnDirectory(sourceMarShellDirectory);
-		File outputDir = new File(sourceOutputDirectory + File.separator + "lib.kev");
-		if (!outputDir.exists() && !outputDir.mkdirs()) {
-			throw new MojoExecutionException("Unable to build target packages " + outputDir.getAbsolutePath());
+		if (!sourceOutputDirectory.exists() && !sourceOutputDirectory.mkdirs()) {
+			throw new MojoExecutionException("Unable to build target packages " + sourceOutputDirectory.getAbsolutePath());
 		}
-		KevoreeXmiHelper.save(outputDir.getAbsolutePath(), model);
+		KevoreeXmiHelper.save(sourceOutputDirectory.getAbsolutePath() + File.separator + "lib.kev", model);
 
 		Resource resource = new Resource();
 		resource.setTargetPath("KEV-INF");
-		resource.setDirectory(outputDir.getAbsolutePath());
+		resource.setDirectory(sourceOutputDirectory.getAbsolutePath());
 
 		project.addResource(resource);
 	}
@@ -85,12 +105,12 @@ public class MarShellMavenMojo extends AbstractMojo {
 				ContainerRoot model = executeOnDirectory(f);
 				mergedModel = mergerComponent.merge(mergedModel, model);
 			} else {
-				try {
-					ContainerRoot model = ModelGenerator.generate(f.getAbsolutePath());
-					mergedModel = mergerComponent.merge(mergedModel, model);
-				} catch (Exception e) {
-					getLog().warn("Unable to parse the source file", e);
-				}
+//				try {
+				ContainerRoot model = ModelGenerator.generate(f.getAbsolutePath());
+				mergedModel = mergerComponent.merge(mergedModel, model);
+				/*} catch (Exception e) {
+					getLog().error("Unable to parse the source file", e);
+				}*/
 			}
 		}
 		return mergedModel;
