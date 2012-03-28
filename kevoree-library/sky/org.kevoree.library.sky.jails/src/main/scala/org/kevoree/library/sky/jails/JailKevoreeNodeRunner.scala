@@ -55,8 +55,10 @@ class JailKevoreeNodeRunner (nodeName: String, iaasNode: JailNode) extends Kevor
         newIp = PropertyHelper.lookingForNewIp(result._2, iaasNode.getNetwork, iaasNode.getMask)
       }
       if (processExecutor.addNetworkAlias(iaasNode.getNetworkInterface, newIp)) {
+        // looking for the flavors
+        val flavors = lookingForFlavors(iaasModel, nodeName)
         // create the new jail
-        if (processExecutor.createJail(iaasNode.getFlavor, nodeName, newIp)) {
+        if (processExecutor.createJail(Array[String](iaasNode.getFlavor) ++ flavors, nodeName, newIp, findArchive(nodeName))) {
           var jailPath = processExecutor.findPathForJail(nodeName)
           // install the model on the jail
           val platformFile = iaasNode.getBootStrapperService.resolveKevoreeArtifact("org.kevoree.platform.standalone", "org.kevoree.platform", KevoreeFactory.getVersion);
@@ -73,10 +75,11 @@ class JailKevoreeNodeRunner (nodeName: String, iaasNode: JailNode) extends Kevor
                 jailPath = jailData._1
                 val jailId = jailData._2
                 if (jailId != "-1") {
+                  logger.debug("Jail {} is correctly configure, now we try to start the Kevoree Node", nodeName)
                   val logFile = System.getProperty("java.io.tmpdir") + File.separator + nodeName + ".log"
                   outFile = new File(logFile + ".out")
                   errFile = new File(logFile + ".err")
-                  processExecutor.startKevoreeOnJail(jailId, iaasNode.getDictionary.get("RAM").toString, nodeName, outFile, errFile)
+                  processExecutor.startKevoreeOnJail(jailId, KevoreePropertyHelper.getStringPropertyForNode(iaasModel, nodeName, "RAM").getOrElse("N/A"), nodeName, outFile, errFile)
                 } else {
                   logger.error("Unable to find the jail {}", nodeName)
                   false
@@ -140,6 +143,20 @@ class JailKevoreeNodeRunner (nodeName: String, iaasNode: JailNode) extends Kevor
       logger.error("Unable to find the corresponding jail {}", nodeName)
       false
     }
+  }
+
+  private def lookingForFlavors (iaasModel: ContainerRoot, nodeName: String) : Array[String] = {
+    val flavorsOption = KevoreePropertyHelper.getStringPropertyForNode(iaasModel, nodeName, "flavors")
+    if (flavorsOption.isDefined) {
+      flavorsOption.get.split(",")
+    } else {
+      Array[String]()
+    }
+  }
+
+  private def findArchive(nodName : String) : Option[String] = {
+    // TODO
+    None
   }
 }
 
