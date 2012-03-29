@@ -152,13 +152,14 @@ class MiniCloudKevoreeNodeRunner (nodeName: String, iaasNode: IaaSNode) extends 
   def stopNode (): Boolean = {
     logger.debug("Kill " + nodeName)
     try {
-      val watchdog = new KillWatchDog(nodePlatformProcess, 20000)
+      /*val watchdog = new KillWatchDog(nodePlatformProcess, 20000)
       nodePlatformProcess.getOutputStream.write("shutdown\n".getBytes)
       nodePlatformProcess.getOutputStream.flush()
 
       watchdog.start()
       nodePlatformProcess.waitFor()
-      watchdog.stop()
+      watchdog.stop()*/
+      nodePlatformProcess.destroy()
       true
     }
     catch {

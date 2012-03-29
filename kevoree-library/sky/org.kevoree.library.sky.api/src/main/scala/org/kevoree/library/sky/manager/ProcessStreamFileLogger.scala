@@ -27,7 +27,7 @@ class ProcessStreamFileLogger (inputStream: InputStream, file: File) extends Run
         lineIn = readerIn.readLine()
       }
     } catch {
-      case _@e => e.printStackTrace()
+      case _@e => /*e.printStackTrace()*/
     } finally {
       outputStream.flush()
       outputStream.close()
