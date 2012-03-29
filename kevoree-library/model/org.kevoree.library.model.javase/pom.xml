@@ -17,8 +17,24 @@
         <kevoree.version>${project.version}</kevoree.version>
     </properties>
 
-
     <build>
+        <plugins>
+            <plugin>
+                <groupId>org.kevoree.tools</groupId>
+                <artifactId>org.kevoree.tools.marshell.mavenplugin</artifactId>
+                <version>${kevoree.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <!--<build>
         <plugins>
             <plugin>
                 <groupId>org.apache.felix</groupId>
@@ -142,7 +158,6 @@
             <version>${kevoree.version}</version>
         </dependency>
 
-        <!-- WebServer -->
         <dependency>
             <groupId>org.kevoree.library.javase</groupId>
             <artifactId>org.kevoree.library.javase.webserver</artifactId>
@@ -176,6 +191,6 @@
             <version>${kevoree.version}</version>
         </dependency>
 
-    </dependencies>
+    </dependencies>-->
 
 </project>

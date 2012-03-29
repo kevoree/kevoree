@@ -1,0 +1,13 @@
+// Jenkins jail configuration
+merge "mvn:org.kevoree.library.model/org.kevoree.library.model.sky/{kevoree.version}"
+
+merge "mvn:org.kevoree.library.javase/org.kevoree.library.javase.webserver.jenkins/{kevoree.version}"
+merge "mvn:org.kevoree.library.javase/org.kevoree.library.javase.system.bsd/{kevoree.version}"
+addNode KevoreeBuildNode : JavaSENode
+network KevoreeBuildNode => KevoreeBuildNode { "KEVOREE.remote.node.ip"= "10.0.0.3"}
+
+addComponent JenkinsKevoree@KevoreeBuildNode : JenkinsServer {port="8090"}
+addComponent GitInstaller@KevoreeBuildNode : Git
+addGroup KevoreeBuildGroup : NanoRestGroup
+addToGroup KevoreeBuildGroup KevoreeBuildNode
+updateDictionary KevoreeBuildGroup  { ip= "10.0.0.3", port="8000"}@KevoreeBuildNode

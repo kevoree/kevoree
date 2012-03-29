@@ -1,0 +1,3 @@
+merge "mvn:org.kevoree.library.android/org.kevoree.library.android.nodeType/{kevoree.version}"
+merge "mvn:org.kevoree.library.android/org.kevoree.library.android.nanohttp/{kevoree.version}"
+merge "mvn:org.kevoree.library.javase/org.kevoree.library.javase.nanohttp/{kevoree.version}"
