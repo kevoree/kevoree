@@ -29,8 +29,8 @@ import collection.JavaConversions._
 
 class ParserPush extends StandardTokenParsers{
 
-  lexical.delimiters ++= List("$")
-  lexical.reserved +=(":",",","=","{","}")
+  lexical.delimiters ++= List("/",":",",","=","{","}","node=")
+
 
   def operation  =numericLit ^^ {
     case s => s
@@ -43,6 +43,12 @@ class ParserPush extends StandardTokenParsers{
   def instanceID  =ident ^^ {
     case s => s
   }
+
+
+  def nodeName  =ident ^^ {
+    case s => s
+  }
+
 
   def portID  =ident ^^ {
     case s => s
@@ -96,9 +102,9 @@ class ParserPush extends StandardTokenParsers{
 
   }
   //  global
-  def requestParse: Parser[Adaptations] =  "{" ~ rep1sep(( parseABI | parseAIN | parseUDI | parseRIN ), "//") ~ "}"  ^^
+  def requestParse: Parser[Adaptations] =  "{" ~ nodeName ~ "/" ~ rep1sep(( parseABI | parseAIN | parseUDI | parseRIN ), "/") ~ opt("/") ~ "}"   ^^
     {
-      case _~ mylist ~_ => new  Adaptations(mylist)
+      case _ ~ _ ~ nodename ~ mylist ~ _ ~ _ => new  Adaptations(nodename,mylist)
     }
 
   def  parseAdaptations(chaine : String) :Adaptations = {

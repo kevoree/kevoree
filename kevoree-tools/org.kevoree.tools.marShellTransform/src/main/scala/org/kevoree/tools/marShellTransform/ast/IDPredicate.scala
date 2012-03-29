@@ -23,9 +23,17 @@ package org.kevoree.tools.marShellTransform.ast
  */
 
 
-case class IDPredicate(id : Int,instanceID :String) {
+case class IDPredicate(op : Int,instanceID :String) {
+
+  def getOp: Int= {
+      return op
+    }
+
+  def getinstanceID: String= {
+      return instanceID
+    }
 
   override def toString: String = {
-    return " id=" + id + " T=" + instanceID
+    return " id=" + op + " T=" + instanceID
   }
 }

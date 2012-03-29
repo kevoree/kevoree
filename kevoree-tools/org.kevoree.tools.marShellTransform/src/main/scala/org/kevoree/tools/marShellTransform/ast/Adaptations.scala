@@ -20,7 +20,7 @@ package org.kevoree.tools.marShellTransform.ast
  * Time: 16:40
  */
 
-case class Adaptations(adaptations : java.util.List[Adaptation]) {
+case class Adaptations(nodeName : String, adaptations : java.util.List[Adaptation]) {
 
 }
 

@@ -83,6 +83,8 @@ printScriptFromEEPROM ()
   // cleaning memory
   memset (&inBytes, 0, sizeof (inBytes));
   Serial.println (startBAdminChar);
+  printNodeName();
+  Serial.println (sepAdminChar);
   do
     {
       inBytes[indexInBytes] = readPMemory (indexEEPROM);
@@ -95,9 +97,9 @@ printScriptFromEEPROM ()
 	    {
 	      insID = strtok (&inBytes[1], delims);
 	      Serial.print (UDI_C);
-	      Serial.print (":");
+	      Serial.print (delimitation);
 	      Serial.print (insID);
-	      Serial.print (":");
+	      Serial.print (delimitation);
 	      i = (strlen (insID) + 3);
 	      do
 		{
@@ -119,11 +121,11 @@ printScriptFromEEPROM ()
 	      insID = strtok (&inBytes[1], delims);
 	      typeIDB = (byte) inBytes[strlen (insID) + 3];
 	      Serial.print (AIN_C);
-	      Serial.print (":");
+	      Serial.print (delimitation);
 	      Serial.print (insID);
-	      Serial.print (":");
+	      Serial.print (delimitation);
 	      Serial.print (typeIDB);
-	      Serial.print (":");
+	      Serial.print (delimitation);
 	      i = strlen (insID) + 5;
 	    do
 		{
@@ -147,18 +149,18 @@ printScriptFromEEPROM ()
 	      portIDB = (byte) chID[strlen (chID) + 1];
 
 	      Serial.print (ABI_C);
-	      Serial.print (":");
+	      Serial.print (delimitation);
 	      Serial.print (insID);
-	      Serial.print (":");
+	      Serial.print (delimitation);
 	      Serial.print (chID);
-	      Serial.print (":");
+	      Serial.print (delimitation);
 	      Serial.print (portIDB);
 	    }
 	  else if (inBytes[0] == RIN_C)
 	    {
 	      insID = strtok (&inBytes[1], delims);
 	      Serial.print (RIN_C);
-	      Serial.print (":");
+	      Serial.print (delimitation);
 	      Serial.println (insID);
 	    }
 	  else if (inBytes[0] == RBI_C)
@@ -167,7 +169,7 @@ printScriptFromEEPROM ()
 	      chID = strtok (NULL, delims);
 	      portIDB = (byte) chID[strlen (chID) + 1];
 	      Serial.print (RBI_C);
-	      Serial.print (":");
+	      Serial.print (delimitation);
 	      Serial.print (insID);
 	      Serial.print (chID);
 	      Serial.print (portIDB);
@@ -175,7 +177,7 @@ printScriptFromEEPROM ()
 
 		if(firstAdd == false)
 		{
-    	    Serial.println ("$");
+    	    Serial.println (sepAdminChar);
          }else
          {
          firstAdd=false;
@@ -183,11 +185,7 @@ printScriptFromEEPROM ()
     	     Serial.flush();
 	  indexInBytes = 0;
 	  memset (&inBytes, 0, sizeof (inBytes));
-	}
-      else
-	{
-	  indexInBytes++;
-	}
+	} else 	{    indexInBytes++;  	}
       indexEEPROM++;
     }
   while ((inBytes[indexInBytes - 1] != endAdminChar)	 && (indexEEPROM < EEPROM_MAX_SIZE));

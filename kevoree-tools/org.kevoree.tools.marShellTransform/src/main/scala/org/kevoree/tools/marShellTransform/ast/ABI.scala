@@ -20,6 +20,16 @@ package org.kevoree.tools.marShellTransform.ast
  * Time: 16:45
  */
 
-class ABI(a : IDPredicate, chID : String,portIDB : Int) extends Adaptation {
+class ABI(id : IDPredicate, chID : String,portIDB : Int) extends Adaptation {
 
+  def getIDPredicate() :  IDPredicate = {
+     id
+  }
+  
+  def getchID() : String ={
+    chID
+  }
+  def getportIDB: Int = {
+    portIDB
+  }
 }
