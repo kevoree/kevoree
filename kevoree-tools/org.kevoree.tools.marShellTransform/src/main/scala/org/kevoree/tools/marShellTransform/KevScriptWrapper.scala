@@ -69,7 +69,7 @@ object KevScriptWrapper {
           case classOf: AIN  =>
           {
 
-            val cid = new ComponentInstanceID(s.asInstanceOf[RBI].getIDPredicate().getinstanceID,Some(nodeName))
+            val cid = new ComponentInstanceID(s.asInstanceOf[AIN].getIDPredicate().getinstanceID,Some(nodeName))
             val typeIDB = s.asInstanceOf[AIN].getTypeIDB()
 
             val props = new java.util.Properties()
@@ -105,7 +105,7 @@ object KevScriptWrapper {
 
       )
       blocks +=  TransactionalBloc(statments.toList)
-
+       println(blocks)
     } catch {
 
       case msg => println("Caught an exception!"+msg)
