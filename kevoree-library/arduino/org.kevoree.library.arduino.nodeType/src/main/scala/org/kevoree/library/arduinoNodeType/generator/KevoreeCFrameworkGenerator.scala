@@ -135,7 +135,7 @@ trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
   }
 
 
-  def generateKcConstMethods(types: List[TypeDefinition]): Unit = {
+  def generateKcConstMethods(nodename : String, types: List[TypeDefinition]): Unit = {
 
     var nbPorts = 0
     types.filter(p => p.isInstanceOf[ComponentType]).foreach {
@@ -174,6 +174,14 @@ trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
     context b "   if(strcmp_P(propName, (char*)pgm_read_word(&(properties[i]))  )==0) { return i; }"
     context b "  }"
     context b "  return -1;"
+    context b "}"
+
+    context b "void printNodeName() {"
+    context b "Serial.print(F(\""+nodename+"\")); "
+    context b "}"
+
+    context b "void printlnNodeName() {"
+    context b "Serial.println(F(\""+nodename+"\")); "
     context b "}"
 
   }

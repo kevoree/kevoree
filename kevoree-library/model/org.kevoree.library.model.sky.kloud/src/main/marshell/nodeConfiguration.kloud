@@ -1,3 +1,4 @@
+// nodes configuration
 merge "mvn:org.kevoree.library.model/org.kevoree.library.model.sky/{kevoree.version}"
 
 addNode cumulus : JailNode {role="host/container", port="7000", inet="bge1", subnet="10.0.0.0", mask="24", flavor="kevjail", logLevel="DEBUG"}
@@ -24,6 +25,7 @@ network fog8 => fog8 { "KEVOREE.remote.node.ip"= "10.0.8.1"}
 network fog9 => fog9 { "KEVOREE.remote.node.ip"= "10.0.9.1"}
 network fog10 => fog10 { "KEVOREE.remote.node.ip"= "10.0.10.1"}
 
+// group configuration
 addGroup sync : NanoRestGroup
 
 addToGroup sync cumulus
@@ -40,6 +42,7 @@ addToGroup sync fog10
 
 updateDictionary sync {ip="10.0.0.2", port="8000"}@cumulus,{ip="10.0.1.1", port="8000"}@fog1,{ip="10.0.2.1", port="8000"}@fog2,{ip="10.0.3.1", port="8000"}@fog3,{ip="10.0.4.1", port="8000"}@fog4,{ip="10.0.5.1", port="8000"}@fog5,{ip="10.0.6.1", port="8000"}@fog6,{ip="10.0.7.1", port="8000"}@fog7,{ip="10.0.8.1", port="8000"}@fog8,{ip="10.0.9.1", port="8000"}@fog9,{ip="10.0.10.1", port="8000"}@fog10
 
+// Kloud manager configuration
 addComponent webServer@cumulus : WebServer {port = "8080", timeout = "5000"}
 addComponent paaSKloudResourceManagerPage@cumulus : PaaSKloudResourceManagerPage {urlpattern = "/kloud/{login}/{action}"}
 addComponent paaSKloudResourceManager@cumulus : PaaSKloudResourceManager
@@ -65,9 +68,10 @@ bind paaSKloudResourceManager.release@cumulus => releaseChannel
 bind ldapAuthentication.authenticate@cumulus => authenticationChannel
 bind paaSKloudResourceManagerPage.authentication@cumulus => authenticationChannel
 
+// Jenkins jail configuration
 merge "mvn:org.kevoree.library.javase/org.kevoree.library.javase.webserver.jenkins/{kevoree.version}"
 merge "mvn:org.kevoree.library.javase/org.kevoree.library.javase.system.bsd/{kevoree.version}"
-addNode KevoreeBuildNode : PJavaSENode {ARCH="x86_64", RAM="1024", CPU_FREQUENCY="N/A", WALLCLOCKTIME="N/A", DATA_SIZE="N/A", logLevel="INFO"}
+addNode KevoreeBuildNode : PJailNode {ARCH="x86_64", RAM="1024", CPU_FREQUENCY="N/A", WALLCLOCKTIME="N/A", DATA_SIZE="N/A", archive="true", flavors="KevoreeBuildNode", logLevel="INFO"}
 network KevoreeBuildNode => KevoreeBuildNode { "KEVOREE.remote.node.ip"= "10.0.0.3"}
 
 addComponent JenkinsKevoree@KevoreeBuildNode : JenkinsServer {port="8090"}
@@ -77,3 +81,25 @@ addToGroup KevoreeBuildGroup KevoreeBuildNode
 updateDictionary KevoreeBuildGroup  { ip= "10.0.0.3", port="8000"}@KevoreeBuildNode
 
 addChild KevoreeBuildNode @ cumulus
+
+// Kevoree website Jail node configuration
+merge "mvn:org.kevoree.web/org.kevoree.web.base/{kevoree.version}"
+addNode KevoreeWebSiteNode : PJailNode {ARCH="x86_64", RAM="1024", CPU_FREQUENCY="N/A", WALLCLOCKTIME="N/A", DATA_SIZE="N/A", archive="true", logLevel="INFO"}
+network KevoreeWebSiteNode => KevoreeWebSiteNode { "KEVOREE.remote.node.ip"= "10.0.0.4"}
+
+addGroup KevoreeWebSiteGroup : NanoRestGroup
+addToGroup KevoreeWebSiteGroup KevoreeWebSiteNode
+updateDictionary KevoreeWebSiteGroup  { ip= "10.0.0.4", port="8000"}@KevoreeWebSiteNode
+
+addComponent KevoreeWebSiteServer@KevoreeWebSiteNode : WebServer {port = "8090", timeout = "5000"}
+addComponent KevoreeWebSitePage@KevoreeWebSiteNode : KevoreeMainSite {urlpattern = "/"}
+
+addChannel requestChannelWebSite : defMSG
+addChannel responseChannelWebSite : defMSG
+
+bind KevoreeWebSiteServer.handler@KevoreeWebSiteNode => requestChannelWebSite
+bind KevoreeWebSitePage.request@KevoreeWebSiteNode => requestChannelWebSite
+bind KevoreeWebSiteServer.response@KevoreeWebSiteNode => responseChannelWebSite
+bind KevoreeWebSitePage.content@KevoreeWebSiteNode => responseChannelWebSite
+
+addChild KevoreeWebSiteNode @ cumulus

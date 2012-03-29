@@ -18,10 +18,11 @@
 
 package org.kevoree.tools.marShellTransform
 
+import ast._
 import org.kevoree.tools.marShell.ast._
-
 import org.slf4j.LoggerFactory
 import java.util.{Properties, Dictionary}
+import collection.immutable.HashSet
 
 object KevScriptWrapper {
   var logger = LoggerFactory.getLogger(this.getClass);
@@ -29,18 +30,91 @@ object KevScriptWrapper {
   val paramSep = ":"
   val instrSep = "/"
 
-  val UDI_C = 0
-  val AIN_C = 1
-  val RIN_C = 2
-  val ABI_C = 3
-  val RBI_C = 4
+  def generateKevScriptFromCompressed(cscript: String) : Script =
+  {
 
+    val parser  = new ParserPush()
+    val result =  parser.parseAdaptations(cscript)
+    val nodeName = result.nodeName
+    var statments = new HashSet[Statment]
+    var blocks = new HashSet[TransactionalBloc]
 
-  def generateKevScriptFromCompressed(cscript: String) : Script = {
-    null
+    try
+    {
+      result.adaptations.toArray.foreach( s => {
+
+        s match
+        {
+          case classOf: UDI  => {
+            // UpdateDictionaryStatement
+            val props = new java.util.Properties()
+            s.asInstanceOf[UDI].getParams.toArray.foreach( p => {
+              props.put(p.asInstanceOf[PropertiePredicate].dictionnaryID.toString,p.asInstanceOf[PropertiePredicate].value.toString)
+            })
+            val fraProperties = new java.util.HashMap[String,java.util.Properties]
+            fraProperties.put(result.nodeName.toString,props)
+            statments +=  UpdateDictionaryStatement(s.asInstanceOf[UDI].getIDPredicate().getinstanceID,Some(nodeName),fraProperties)
+          }
+
+          case classOf: ABI =>
+          {
+
+            val cid = new ComponentInstanceID(s.asInstanceOf[ABI].getIDPredicate().getinstanceID,Some(nodeName))
+            val idPort = s.asInstanceOf[ABI].getportIDB
+            // TODO search mapping  portName
+
+            statments += AddBindingStatment(cid, "portName",s.asInstanceOf[ABI].getchID())
+
+          }
+          case classOf: AIN  =>
+          {
+
+            val cid = new ComponentInstanceID(s.asInstanceOf[RBI].getIDPredicate().getinstanceID,Some(nodeName))
+            val typeIDB = s.asInstanceOf[AIN].getTypeIDB()
+
+            val props = new java.util.Properties()
+            s.asInstanceOf[AIN].getParams.toArray.foreach( p => {
+              props.put(p.asInstanceOf[PropertiePredicate].dictionnaryID.toString,p.asInstanceOf[PropertiePredicate].value.toString)
+            }
+            )
+            // TODO search mapping  typeDefinitionName
+            statments += AddComponentInstanceStatment(cid,"typeDefinitionName",props)
+
+          }
+
+          case classOf : RIN => {
+            val idInstance = s.asInstanceOf[RIN].getInsID
+            // TODO search mapping  componentInstanceName
+            val cid = new ComponentInstanceID("componentInstanceName",Some(nodeName))
+            statments += RemoveComponentInstanceStatment(cid)
+          }
+          case classOf: RBI  =>  {
+            //RemoveBindingStatment
+            val cid = new ComponentInstanceID(s.asInstanceOf[RBI].getIDPredicate().getinstanceID,Some(nodeName))
+            val idPort = s.asInstanceOf[RBI].getportIDB
+
+            //  statments += RemoveBindingStatment(cid,portName,bindingInstanceName)
+          }
+
+          case _ => {
+            None
+          }
+
+        }
+      }
+
+      )
+      blocks +=  TransactionalBloc(statments.toList)
+
+    } catch {
+
+      case msg => println("Caught an exception!"+msg)
+    }
+
+    new Script(blocks.toList)
   }
 
-  
+
   def generateDictionaryString(dictionary: java.util.Properties): String = {
     if (dictionary == null) {
       return ""
@@ -83,14 +157,14 @@ object KevScriptWrapper {
                 if (s.fraProperties.containsKey(targetNodeName)) {
                   dic.putAll(s.fraProperties.get(targetNodeName))
                 }
-                content append "udi" + paramSep + s.instanceName + paramSep + generateDictionaryString(dic)
+                content append Op.UDI_C + paramSep + s.instanceName + paramSep + generateDictionaryString(dic)
               }
               case s: AddComponentInstanceStatment => {
                 if (!firstStatment) {
                   content append instrSep
                 }
                 firstStatment = false
-                content append "ain" + paramSep + s.cid.componentInstanceName + paramSep + s.typeDefinitionName
+                content append Op.AIN_C + paramSep + s.cid.componentInstanceName + paramSep + s.typeDefinitionName
                 if (s.dictionary != null) {
                   content append paramSep + generateDictionaryString(s.dictionary)
                 }
@@ -100,7 +174,7 @@ object KevScriptWrapper {
                   content append instrSep
                 }
                 firstStatment = false
-                content append "ain" + paramSep + s.channelName + paramSep + s.channelType
+                content append Op.AIN_C + paramSep + s.channelName + paramSep + s.channelType
                 if (s.dictionary != null) {
                   content append paramSep + generateDictionaryString(s.dictionary)
                 }
@@ -110,28 +184,28 @@ object KevScriptWrapper {
                   content append instrSep
                 }
                 firstStatment = false
-                content append "rin" + paramSep + s.cid.componentInstanceName
+                content append Op.RIN_C + paramSep + s.cid.componentInstanceName
               }
               case s: RemoveChannelInstanceStatment => {
                 if (!firstStatment) {
                   content append instrSep
                 }
                 firstStatment = false
-                content append "rin" + paramSep + s.channelName
+                content append Op.RIN_C + paramSep + s.channelName
               }
               case s: AddBindingStatment => {
                 if (!firstStatment) {
                   content append instrSep
                 }
                 firstStatment = false
-                content append "abi" + paramSep + s.cid.componentInstanceName + paramSep + s.bindingInstanceName + paramSep + s.portName
+                content append Op.ABI_C + paramSep + s.cid.componentInstanceName + paramSep + s.bindingInstanceName + paramSep + s.portName
               }
               case s: RemoveBindingStatment => {
                 if (!firstStatment) {
                   content append instrSep
                 }
                 firstStatment = false
-                content append "rbi" + paramSep + s.cid.componentInstanceName + paramSep + s.bindingInstanceName + paramSep + s.portName
+                content append Op.RBI_C+ paramSep + s.cid.componentInstanceName + paramSep + s.bindingInstanceName + paramSep + s.portName
               }
               case _@s => logger.warn("Uncatch " + s) //DO NOTHING FOR OTHER STATEMENT
             }

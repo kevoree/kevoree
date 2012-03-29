@@ -69,7 +69,7 @@ abstract class KevoreeNodeRunner (var nodeName: String) {
 
   private def copyStringToFile (data: String, outputFile: String) {
     if (data != null && data != "") {
-      logger.debug("trying to copy \"{}\" to {}", data, outputFile)
+//      logger.debug("trying to copy \"{}\" to {}", data, outputFile)
       try {
         if (new File(outputFile).exists()) {
           new File(outputFile).delete()
@@ -79,7 +79,7 @@ abstract class KevoreeNodeRunner (var nodeName: String) {
         writer.write(data.getBytes)
         writer.flush()
         writer.close()
-        logger.debug("copying \"{}\" into {} uis done", data, outputFile)
+//        logger.debug("copying \"{}\" into {} uis done", data, outputFile)
       } catch {
         case _@e => logger.error("Unable to copy \"{}\" on {}", Array[AnyRef](data, outputFile), e)
       }
@@ -88,7 +88,7 @@ abstract class KevoreeNodeRunner (var nodeName: String) {
 
   private def replaceStringIntoFile (dataToReplace: String, newData: String, file: String) {
     if (dataToReplace != null && dataToReplace != "" && newData != null && newData != "") {
-      logger.debug("trying to replace \"{}\" by \"{}\" into {}", Array[AnyRef](dataToReplace, newData, file))
+//      logger.debug("trying to replace \"{}\" by \"{}\" into {}", Array[AnyRef](dataToReplace, newData, file))
       if (new File(file).exists()) {
         try {
           val stringBuilder = new StringBuilder
@@ -109,7 +109,7 @@ abstract class KevoreeNodeRunner (var nodeName: String) {
           stringBuilder.replace(stringBuilder.indexOf(dataToReplace), stringBuilder.indexOf(dataToReplace) + dataToReplace.length(), newData)
 
           copyStringToFile(stringBuilder.toString(), file)
-          logger.debug("replacing \"{}\" by \"{}\" into {} is done", Array[AnyRef](dataToReplace, newData, file))
+//          logger.debug("replacing \"{}\" by \"{}\" into {} is done", Array[AnyRef](dataToReplace, newData, file))
         } catch {
           case _@e => logger.error("Unable to replace a string", e)
         }

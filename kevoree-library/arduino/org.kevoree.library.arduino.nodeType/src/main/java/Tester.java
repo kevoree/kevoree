@@ -35,7 +35,6 @@ public class Tester {
 
     public static void main (String[] args){
 
-
         try {
             System.out.println(checksumArduino("HELLO2"));
         } catch (UnsupportedEncodingException e) {

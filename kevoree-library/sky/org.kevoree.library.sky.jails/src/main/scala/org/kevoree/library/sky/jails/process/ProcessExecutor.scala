@@ -63,9 +63,7 @@ class ProcessExecutor {
     val resultActor = new ResultManagementActor()
     resultActor.starting()
     val p = Runtime.getRuntime.exec(Array[String](ifconfig, networkInterface, "alias", newIp))
-    new Thread(new
-        ProcessStreamManager(resultActor, p.getInputStream, Array(), Array(new Regex("ifconfig: ioctl \\(SIOCDIFADDR\\): .*")), p))
-      .start()
+    new Thread(new ProcessStreamManager(resultActor, p.getInputStream, Array(), Array(new Regex("ifconfig: ioctl \\(SIOCDIFADDR\\): .*")), p)).start()
     val result = resultActor.waitingFor(1000)
     if (!result._1) {
       logger.debug(result._2)
@@ -73,13 +71,15 @@ class ProcessExecutor {
     result._1
   }
 
-  def createJail (flavor: String, nodeName: String, newIp: String): Boolean = {// TODO if a flavor has the name of the jail, we use it instead the configured one ?
-    logger.debug("running {} create -f {} {} {}", Array[AnyRef](ezjailAdmin, flavor, nodeName, newIp))
+  def createJail (flavors: Array[String], nodeName: String, newIp: String, archive : Option[String]): Boolean = {
+    // TODO add archive attribute and use it to save the jail => the archive must be available from all nodes of the network
+    logger.debug("running {} create -f {} {} {}", Array[AnyRef](ezjailAdmin, flavors, nodeName, newIp))
+    val exec = Array[String](ezjailAdmin, "create", "-f") ++ Array[String](flavors.mkString(" ")) ++ Array[String](nodeName, newIp)
     val resultActor = new ResultManagementActor()
     resultActor.starting()
-    val p = Runtime.getRuntime.exec(Array[String](ezjailAdmin, "create", "-f", flavor, nodeName, newIp))
+    val p = Runtime.getRuntime.exec(exec)
     new Thread(new ProcessStreamManager(resultActor, p.getErrorStream, Array(), Array(new Regex("^Error.*")), p)).start()
-    val result = resultActor.waitingFor(120000)
+    val result = resultActor.waitingFor(240000)
     if (!result._1) {
       logger.debug(result._2)
     }
@@ -92,7 +92,7 @@ class ProcessExecutor {
     resultActor.starting()
     val p = listJailsProcessBuilder.start()
     new Thread(new ProcessStreamManager(resultActor, p.getInputStream, Array(ezjailListRegex), Array(), p)).start()
-    val result = resultActor.waitingFor(10000)
+    val result = resultActor.waitingFor(1000)
     var jailPath = ""
     if (result._1) {
       result._2.split("\n").foreach {
@@ -130,7 +130,7 @@ class ProcessExecutor {
     resultActor.starting()
     val p = listJailsProcessBuilder.start()
     new Thread(new ProcessStreamManager(resultActor, p.getInputStream, Array(ezjailListRegex), Array(), p)).start()
-    val result = resultActor.waitingFor(10000)
+    val result = resultActor.waitingFor(1000)
     var jailPath = "-1"
     var jailId = "-1"
     if (result._1) {
@@ -153,6 +153,7 @@ class ProcessExecutor {
   }
 
   def startKevoreeOnJail (jailId: String, ram: String, nodeName: String, outFile: File, errFile: File): Boolean = {
+    logger.debug("trying to start Kevoree node on jail {} ", nodeName)
     // FIXME java memory properties must define as Node properties
     // Currently the kloud provider only manages PJavaSeNode that hosts the software user configuration
     // It will be better to add a new node hosted by the PJavaSeNode
@@ -201,7 +202,7 @@ class ProcessExecutor {
     logger.debug("running {} delete -w {}", Array[AnyRef](ezjailAdmin, nodeName))
     val p = Runtime.getRuntime.exec(Array[String](ezjailAdmin, "delete", "-w", nodeName))
     new Thread(new ProcessStreamManager(resultActor, p.getInputStream, Array(), Array(), p)).start()
-    val result = resultActor.waitingFor(10000)
+    val result = resultActor.waitingFor(240000)
     if (!result._1) {
       logger.debug(result._2)
     }

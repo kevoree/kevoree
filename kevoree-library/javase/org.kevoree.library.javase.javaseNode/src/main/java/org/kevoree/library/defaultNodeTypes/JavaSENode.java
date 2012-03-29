@@ -40,6 +40,10 @@ public class JavaSENode extends AbstractNodeType {
 
 	private boolean isRunning;
 
+	protected boolean isDaemon () {
+		return false;
+	}
+
 	@Start
 	@Override
 	public void startNode () {
@@ -50,12 +54,14 @@ public class JavaSENode extends AbstractNodeType {
 
 		updateNode();
 
-		new Thread() {
-			@Override
-			public void run () {
-				catchShutdown();
-			}
-		}.start();
+		if (!isDaemon()) {
+			new Thread() {
+				@Override
+				public void run () {
+					catchShutdown();
+				}
+			}.start();
+		}
 	}
 
 
@@ -71,7 +77,7 @@ public class JavaSENode extends AbstractNodeType {
 
 	@Update
 	@Override
-	public void updateNode() {
+	public void updateNode () {
 		KevoreeLogLevel logLevel = KevoreeLogLevel.WARN;
 		if ("DEBUG".equals(getDictionary().get("logLevel"))) {
 			logLevel = KevoreeLogLevel.DEBUG;
@@ -105,21 +111,21 @@ public class JavaSENode extends AbstractNodeType {
 
 	private void catchShutdown () {
 		BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-		String line;
-		boolean shutdown = false;
 		try {
-			while (isRunning) {
-				line = reader.readLine();
-				if (line == null) {
-					shutdown = true;
-				}
+			String line = reader.readLine();
+			boolean shutdown = false;
+			while (isRunning && !shutdown) {
 				if ("shutdown".equalsIgnoreCase(line)) {
-					isRunning = false;
 					shutdown = true;
 				} else if ("kcl".equalsIgnoreCase(line)) {
 					System.out.println(this.getBootStrapperService().getKevoreeClassLoaderHandler().getKCLDump());
 				} else if ("help".equalsIgnoreCase(line)) {
 					System.out.println("commands:\n\tshutdown: allow to shutdown the node\n\tkcl: allow to list all the KCLClassLoader and their relationships");
+				}
+				line = reader.readLine();
+				if (line == null) {
+					logger.debug("line is null");
+					shutdown = true;
 				}
 			}
 			reader.close();

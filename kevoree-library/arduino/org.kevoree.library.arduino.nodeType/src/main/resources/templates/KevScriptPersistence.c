@@ -51,6 +51,7 @@ void
 saveUDI_CMD (char *instName, char *params)
 {
   save2Memory (UDI_C);
+
   save2Memory (delimitation);
   for (int j = 0; j < strlen (instName); j++)
     {
