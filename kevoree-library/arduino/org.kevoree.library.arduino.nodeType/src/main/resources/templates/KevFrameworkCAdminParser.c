@@ -79,11 +79,11 @@ printScriptFromEEPROM ()
   int i = 0;
   int indexInBytes = 0;
   int indexEEPROM = 2;
-   firstAdd = true;
+  firstAdd = true;
   // cleaning memory
   memset (&inBytes, 0, sizeof (inBytes));
   Serial.println (startBAdminChar);
-  printNodeName();
+  printNodeName ();
   Serial.println (sepAdminChar);
   do
     {
@@ -101,17 +101,24 @@ printScriptFromEEPROM ()
 	      Serial.print (insID);
 	      Serial.print (delimitation);
 	      i = (strlen (insID) + 3);
+
 	      do
 		{
-		  //propertie
+
 		  Serial.print (inBytes[i], DEC);
-		  i++;
+		  Serial.print (F ("="));
+		  i = i + 2;
 		  do
 		    {
 		      Serial.print (inBytes[i]);
 		      i++;
 		    }
 		  while (inBytes[i] != ',' && inBytes[i] != '\0');
+		  if (inBytes[i + 1] != '\0')
+		    {
+		      Serial.print (F (","));
+		    }
+		  i++;
 		}
 	      while (inBytes[i] != '\0');
 
@@ -127,17 +134,23 @@ printScriptFromEEPROM ()
 	      Serial.print (typeIDB);
 	      Serial.print (delimitation);
 	      i = strlen (insID) + 5;
-	    do
+	      do
 		{
-		  //propertie
+
 		  Serial.print (inBytes[i], DEC);
-		  i++;
+		  Serial.print (F ("="));
+		  i = i + 2;
 		  do
 		    {
 		      Serial.print (inBytes[i]);
 		      i++;
 		    }
 		  while (inBytes[i] != ',' && inBytes[i] != '\0');
+		  if (inBytes[i + 1] != '\0')
+		    {
+		      Serial.print (F (","));
+		    }
+		  i++;
 		}
 	      while (inBytes[i] != '\0');
 
@@ -175,20 +188,26 @@ printScriptFromEEPROM ()
 	      Serial.print (portIDB);
 	    }
 
-		if(firstAdd == false)
-		{
-    	    Serial.println (sepAdminChar);
-         }else
-         {
-         firstAdd=false;
-         }
-    	     Serial.flush();
+	  if (firstAdd == false)
+	    {
+	      Serial.println (sepAdminChar);
+	    }
+	  else
+	    {
+	      firstAdd = false;
+	    }
+	  Serial.flush ();
 	  indexInBytes = 0;
 	  memset (&inBytes, 0, sizeof (inBytes));
-	} else 	{    indexInBytes++;  	}
+	}
+      else
+	{
+	  indexInBytes++;
+	}
       indexEEPROM++;
     }
-  while ((inBytes[indexInBytes - 1] != endAdminChar)	 && (indexEEPROM < EEPROM_MAX_SIZE));
+  while ((inBytes[indexInBytes - 1] != endAdminChar)
+	 && (indexEEPROM < EEPROM_MAX_SIZE));
 
   Serial.println (endAdminChar);
   Serial.flush ();

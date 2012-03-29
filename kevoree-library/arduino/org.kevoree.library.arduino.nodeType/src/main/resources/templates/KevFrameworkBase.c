@@ -195,7 +195,7 @@ updateParams (int index, char *params)
 
 
 /*
-            3 byte checksum
+   3 byte checksum
  */
 char *
 checksumArduino (char *buffer)
@@ -207,4 +207,19 @@ checksumArduino (char *buffer)
        checksum += (unsigned int) buffer[index++]);
   sprintf (tBuf, "%03d", (unsigned int) (checksum % 256));
   return (tBuf);
+}
+
+/*
+  print a string from the flash
+*/
+void
+printStringF (const prog_char str[])
+{
+  char c;
+  if (!str)
+    return;
+  while ((c = pgm_read_byte (str++)))
+    {
+      Serial.print (c);
+    }
 }
