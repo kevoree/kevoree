@@ -27,13 +27,14 @@ import collection.immutable.HashSet
 
 object TesterParser extends  App {
 
-  val cscriptRAW = "{" +
-    "node0/" +
-    "0:t1:0=100/" +
-    "0:DigitalLight138771701:0=10,1=10/" +
-    "0:t1:0=100/" +
-    "0:DigitalLight1925293585:0=10/" +
-    "}"
+  val cscriptRAW = "{  " +
+    "node0/ " +
+    "1:D1:0:0=1,1=500/   " +
+    "1:T1:1:2=1000/   " +
+    "3:T1:S1:3/     " +
+    "3:D1:S1:0/    " +
+    "0:T1:2=800/" +
+    "}  "
 
 
   KevScriptWrapper.generateKevScriptFromCompressed(cscriptRAW)
