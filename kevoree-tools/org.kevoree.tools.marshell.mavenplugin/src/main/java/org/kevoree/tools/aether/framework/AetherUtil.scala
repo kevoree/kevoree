@@ -36,18 +36,6 @@ object AetherUtil extends TempFileCacheManager {
 
   private val logger = LoggerFactory.getLogger(this.getClass)
 
-
-  /*def newRepositorySystem: RepositorySystem = {
-
-    val locator = new DefaultServiceLocator()
-    /*
-    locator.setServices(classOf[Logger], new AetherLogger) // Doesn't work to JdkAsyncHttpProvider because this class uses its own logger and not the one provided by plexus and set with this line
-    locator.setService(classOf[LocalRepositoryManagerFactory], classOf[EnhancedLocalRepositoryManagerFactory])
-    locator.setService(classOf[RepositoryConnectorFactory], classOf[FileRepositoryConnectorFactory])
-    locator.setService(classOf[RepositoryConnectorFactory], classOf[AsyncRepositoryConnectorFactory])
-    */
-    locator.getService(classOf[RepositorySystem])
-  }*/
   var repoSystem: RepositorySystem = null
 
   def setRepositorySystem (repo: RepositorySystem) {
