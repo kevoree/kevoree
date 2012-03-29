@@ -79,12 +79,74 @@ printScriptFromEEPROM ()
   int i = 0;
   int indexInBytes = 0;
   int indexEEPROM = 2;
-  firstAdd = true;
-  // cleaning memory
-  memset (&inBytes, 0, sizeof (inBytes));
+
   Serial.println (startBAdminChar);
   printNodeName ();
   Serial.println (sepAdminChar);
+
+  firstAdd = true;
+  // send properties
+  for (i = 0; i < nbProps; i++)
+    {
+      if (firstAdd)
+	{
+	  firstAdd = false;
+	}
+      else
+	{
+	  Serial.print (delimitation);
+	}
+      printStringF (properties[i]);
+    }
+  Serial.print (",");
+  // send properties
+  firstAdd = true;
+  for (i = 0; i < nbProps; i++)
+    {
+      if (firstAdd)
+	{
+	  firstAdd = false;
+	}
+      else
+	{
+	  Serial.print (delimitation);
+	}
+      printStringF (properties[i]);
+    }
+  Serial.print (",");
+  // send typedefinition
+  firstAdd = true;
+  for (i = 0; i < nbTypeDef; i++)
+    {
+      if (firstAdd)
+	{
+	  firstAdd = false;
+	}
+      else
+	{
+	  Serial.print (delimitation);
+	}
+      printStringF (typedefinition[i]);
+    }
+
+  Serial.print (",");
+  // send portdefinition
+  firstAdd = true;
+  for (i = 0; i < nbPortType; i++)
+    {
+      if (firstAdd)
+	{
+	  firstAdd = false;
+	}
+      else
+	{
+	  Serial.print (delimitation);
+	}
+      printStringF (portdefinition[i]);
+    }
+  firstAdd = true;
+  Serial.println (sepAdminChar);
+
   do
     {
       inBytes[indexInBytes] = readPMemory (indexEEPROM);
@@ -101,7 +163,6 @@ printScriptFromEEPROM ()
 	      Serial.print (insID);
 	      Serial.print (delimitation);
 	      i = (strlen (insID) + 3);
-
 	      do
 		{
 
@@ -153,7 +214,6 @@ printScriptFromEEPROM ()
 		  i++;
 		}
 	      while (inBytes[i] != '\0');
-
 	    }
 	  else if (inBytes[0] == ABI_C)
 	    {
