@@ -20,6 +20,19 @@ package org.kevoree.tools.marShellTransform.ast
  * Time: 17:36
  */
 
-class AIN(a : IDPredicate, typeIDB : Int,params : java.util.List[PropertiePredicate]) extends  Adaptation {
+class AIN(id : IDPredicate, typeIDB : Int,params : java.util.List[PropertiePredicate]) extends  Adaptation {
+
+  def getIDPredicate() :  IDPredicate = {
+      id
+   }
+
+  def getTypeIDB() : Int = {
+    typeIDB
+  }
+
+  def getParams: java.util.List[PropertiePredicate] = {
+    return params
+  }
+
 
 }

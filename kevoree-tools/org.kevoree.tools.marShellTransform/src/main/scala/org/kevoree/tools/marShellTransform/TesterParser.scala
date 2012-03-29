@@ -14,7 +14,8 @@
 package org.kevoree.tools.marShellTransform
 
 import ast._
-import org.kevoree.tools.marShell.ast.{ComponentInstanceID, AddBindingStatment, Statment, UpdateDictionaryStatement}
+import org.kevoree.tools.marShell.ast._
+import collection.immutable.HashSet
 
 
 /**
@@ -26,7 +27,6 @@ import org.kevoree.tools.marShell.ast.{ComponentInstanceID, AddBindingStatment, 
 
 object TesterParser extends  App {
 
-  val parser  = new ParserPush()
   val cscriptRAW = "{" +
     "node0/" +
     "0:t1:0=100/" +
@@ -35,53 +35,7 @@ object TesterParser extends  App {
     "0:DigitalLight1925293585:0=10/" +
     "}"
 
-  try
-  {
 
-    val result =  parser.parseAdaptations(cscriptRAW)
-
-    result.adaptations.toArray.foreach( c => {
-
-      c match
-      {
-        case classOf: UDI  => {
-
-          // UpdateDictionaryStatement
-          val props = new java.util.Properties()
-          c.asInstanceOf[UDI].getParams.toArray.foreach( p => {
-            props.put(p.asInstanceOf[PropertiePredicate].dictionnaryID.toString,p.asInstanceOf[PropertiePredicate].value.toString)
-          }
-          )
-          val fraProperties = new java.util.HashMap[String,java.util.Properties]
-          fraProperties.put(result.nodeName.toString,props)
-
-          UpdateDictionaryStatement(c.asInstanceOf[UDI].getIDPredicate().getinstanceID,Some(result.nodeName),fraProperties)
-        }
-
-        case classOf: ABI =>  {
-          println("abi")
-          val cid = new ComponentInstanceID(c.asInstanceOf[ABI].getIDPredicate().getinstanceID,Some(result.nodeName))
-          AddBindingStatment(cid, "portName",c.asInstanceOf[ABI].getchID())
-
-        }
-        case classOf: AIN  =>   {
-
-        }
-        case classOf: RBI  =>          println("rbi")
-        case _ =>  None
-
-      }
-
-    }
-
-
-    )
-
-  } catch {
-
-    case msg => println("Caught an exception!"+msg)
-  }
-
-
+  KevScriptWrapper.generateKevScriptFromCompressed(cscriptRAW)
 
 }

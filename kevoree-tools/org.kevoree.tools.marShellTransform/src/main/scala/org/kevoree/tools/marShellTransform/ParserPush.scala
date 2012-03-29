@@ -20,6 +20,7 @@ import util.parsing.combinator.syntactical.StandardTokenParsers
 import collection.JavaConversions._
 
 
+
 /**
  * Created by jed
  * User: jedartois@gmail.com
@@ -104,7 +105,7 @@ class ParserPush extends StandardTokenParsers{
   //  global
   def requestParse: Parser[Adaptations] =  "{" ~ nodeName ~ "/" ~ rep1sep(( parseABI | parseAIN | parseUDI | parseRIN ), "/") ~ opt("/") ~ "}"   ^^
     {
-      case _ ~ _ ~ nodename ~ mylist ~ _ ~ _ => new  Adaptations(nodename,mylist)
+      case _ ~ nodename ~ _  ~ mylist ~ _ ~ _ => new  Adaptations(nodename,mylist)
     }
 
   def  parseAdaptations(chaine : String) :Adaptations = {

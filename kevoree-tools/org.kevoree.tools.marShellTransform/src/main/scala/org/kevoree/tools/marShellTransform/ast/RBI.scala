@@ -20,6 +20,15 @@ package org.kevoree.tools.marShellTransform.ast
  * Time: 17:41
  */
 
-class RBI(a : IDPredicate, chID :Int, portIDB : Int) extends Adaptation {
+class RBI(id : IDPredicate, chID :Int, portIDB : Int) extends Adaptation {
+  def getIDPredicate() :  IDPredicate = {
+     id
+  }
 
+  def getchID() : Int ={
+    chID
+  }
+  def getportIDB: Int = {
+    portIDB
+  }
 }

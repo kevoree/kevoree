@@ -18,10 +18,11 @@
 
 package org.kevoree.tools.marShellTransform
 
-import ast.{RBI, AIN, UDI, ABI}
+import ast._
 import org.kevoree.tools.marShell.ast._
 import org.slf4j.LoggerFactory
 import java.util.{Properties, Dictionary}
+import collection.immutable.HashSet
 
 object KevScriptWrapper {
   var logger = LoggerFactory.getLogger(this.getClass);
@@ -30,18 +31,76 @@ object KevScriptWrapper {
   val instrSep = "/"
 
   def generateKevScriptFromCompressed(cscript: String) : Script = {
-
     val parser  = new ParserPush()
 
     try
     {
-      parser.parseAdaptations(cscript).adaptations.toArray.foreach( c => {
-        c match {
-          case c: Class[ABI] =>
-          case c:  Class[UDI]  =>
-          case c:  Class[AIN]  =>
-          case c:  Class[RBI]  =>
-          case _ =>  None
+
+      val result =  parser.parseAdaptations(cscript)
+      val nodeName = result.nodeName
+      var statments = new HashSet[Statment]
+
+      result.adaptations.toArray.foreach( s => {
+
+        s match
+        {
+          case classOf: UDI  => {
+            // UpdateDictionaryStatement
+            val props = new java.util.Properties()
+            s.asInstanceOf[UDI].getParams.toArray.foreach( p => {
+              props.put(p.asInstanceOf[PropertiePredicate].dictionnaryID.toString,p.asInstanceOf[PropertiePredicate].value.toString)
+            }
+            )
+            val fraProperties = new java.util.HashMap[String,java.util.Properties]
+            fraProperties.put(result.nodeName.toString,props)
+
+            statments +=  UpdateDictionaryStatement(s.asInstanceOf[UDI].getIDPredicate().getinstanceID,Some(nodeName),fraProperties)
+          }
+
+          case classOf: ABI =>
+          {
+
+            val cid = new ComponentInstanceID(s.asInstanceOf[ABI].getIDPredicate().getinstanceID,Some(nodeName))
+            val idPort = s.asInstanceOf[ABI].getportIDB
+            // TODO search mapping  portName
+
+            statments += AddBindingStatment(cid, "portName",s.asInstanceOf[ABI].getchID())
+
+          }
+          case classOf: AIN  =>
+          {
+
+            val cid = new ComponentInstanceID(s.asInstanceOf[RBI].getIDPredicate().getinstanceID,Some(nodeName))
+            val typeIDB = s.asInstanceOf[AIN].getTypeIDB()
+
+            val props = new java.util.Properties()
+            s.asInstanceOf[AIN].getParams.toArray.foreach( p => {
+              props.put(p.asInstanceOf[PropertiePredicate].dictionnaryID.toString,p.asInstanceOf[PropertiePredicate].value.toString)
+            }
+            )
+            // TODO search mapping  typeDefinitionName
+            statments += AddComponentInstanceStatment(cid,"typeDefinitionName",props)
+
+          }
+
+          case classOf : RIN => {
+            val idInstance = s.asInstanceOf[RIN].getInsID
+            // TODO search mapping  componentInstanceName
+            val cid = new ComponentInstanceID("componentInstanceName",Some(nodeName))
+            statments += RemoveComponentInstanceStatment(cid)
+          }
+          case classOf: RBI  =>  {
+            //RemoveBindingStatment
+            val cid = new ComponentInstanceID(s.asInstanceOf[RBI].getIDPredicate().getinstanceID,Some(nodeName))
+            val idPort = s.asInstanceOf[RBI].getportIDB
+
+            //  statments += RemoveBindingStatment(cid,portName,bindingInstanceName)
+          }
+
+
+          case _ => {
+            None
+          }
 
         }
 
@@ -50,12 +109,12 @@ object KevScriptWrapper {
 
       )
 
+      println(statments)
+
     } catch {
 
-      case _ => println("Caught an exception!")
+      case msg => println("Caught an exception!"+msg)
     }
-
-
 
 
 
