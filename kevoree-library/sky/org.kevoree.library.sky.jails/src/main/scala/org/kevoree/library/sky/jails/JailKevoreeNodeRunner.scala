@@ -38,7 +38,7 @@ class JailKevoreeNodeRunner (nodeName: String, iaasNode: JailNode) extends Kevor
 
   val processExecutor = new ProcessExecutor()
 
-  var nodeProcess: Process = null
+//  var nodeProcess: Process = null
 
   def startNode (iaasModel: ContainerRoot, jailBootStrapModel: ContainerRoot): Boolean = {
     logger.debug("Starting " + nodeName)
