@@ -31,6 +31,11 @@ import org.slf4j.LoggerFactory;
 public class JailNode extends IaaSNode {
 	private static final Logger logger = LoggerFactory.getLogger(JailNode.class);
 
+
+	protected boolean isDaemon() {
+		return true;
+	}
+
 	@Override
 	public KevoreeNodeRunner createKevoreeNodeRunner (String nodeName) {
 		return new JailKevoreeNodeRunner(nodeName, this);
