@@ -18,6 +18,7 @@
 
 package org.kevoree.tools.marShellTransform
 
+import ast.{RBI, AIN, UDI, ABI}
 import org.kevoree.tools.marShell.ast._
 import org.slf4j.LoggerFactory
 import java.util.{Properties, Dictionary}
@@ -35,15 +36,14 @@ object KevScriptWrapper {
     try
     {
       parser.parseAdaptations(cscript).adaptations.toArray.foreach( c => {
-        
-       c match {
-         case ABI =>
-         case UDI  =>
-         case AIN  =>
-         case RBI  =>
-         case _ =>
+        c match {
+          case c: Class[ABI] =>
+          case c:  Class[UDI]  =>
+          case c:  Class[AIN]  =>
+          case c:  Class[RBI]  =>
+          case _ =>  None
 
-       }
+        }
 
       }
 
@@ -62,7 +62,7 @@ object KevScriptWrapper {
     null
   }
 
-  
+
   def generateDictionaryString(dictionary: java.util.Properties): String = {
     if (dictionary == null) {
       return ""
