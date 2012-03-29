@@ -60,10 +60,10 @@ public abstract class IaaSNode extends JavaSENode {
     @Override
     public void stopNode() {
         logger.debug("stopping node type of " + this.getNodeName());
-        super.stopNode();
-        nodeManager.stop();
-//        server.close(Duration.apply(300, TimeUnit.MILLISECONDS));
 		server.stop();
+		nodeManager.stop();
+        super.stopNode();
+//        server.close(Duration.apply(300, TimeUnit.MILLISECONDS));
     }
 
     public boolean isHost() {

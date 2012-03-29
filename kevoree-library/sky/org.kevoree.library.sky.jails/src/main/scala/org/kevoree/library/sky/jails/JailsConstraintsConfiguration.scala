@@ -206,7 +206,7 @@ object JailsConstraintsConfiguration {
     new Thread(new ProcessStreamManager(resultActor, p.getInputStream, Array(new Regex(".*")), Array(), p)).start()
     val result = resultActor.waitingFor(500)
     if (!result._1) {
-      logger.debug("unable to set DATA_SIZE limitation:\n{}", result._2)
+      logger.debug("unable to remove jail limitations:\n{}", result._2)
     }
     result._1
   }
