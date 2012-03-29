@@ -30,16 +30,17 @@ object KevScriptWrapper {
   val paramSep = ":"
   val instrSep = "/"
 
-  def generateKevScriptFromCompressed(cscript: String) : Script = {
+  def generateKevScriptFromCompressed(cscript: String) : Script =
+  {
+
     val parser  = new ParserPush()
+    val result =  parser.parseAdaptations(cscript)
+    val nodeName = result.nodeName
+    var statments = new HashSet[Statment]
+    var blocks = new HashSet[TransactionalBloc]
 
     try
     {
-
-      val result =  parser.parseAdaptations(cscript)
-      val nodeName = result.nodeName
-      var statments = new HashSet[Statment]
-
       result.adaptations.toArray.foreach( s => {
 
         s match
@@ -49,11 +50,9 @@ object KevScriptWrapper {
             val props = new java.util.Properties()
             s.asInstanceOf[UDI].getParams.toArray.foreach( p => {
               props.put(p.asInstanceOf[PropertiePredicate].dictionnaryID.toString,p.asInstanceOf[PropertiePredicate].value.toString)
-            }
-            )
+            })
             val fraProperties = new java.util.HashMap[String,java.util.Properties]
             fraProperties.put(result.nodeName.toString,props)
-
             statments +=  UpdateDictionaryStatement(s.asInstanceOf[UDI].getIDPredicate().getinstanceID,Some(nodeName),fraProperties)
           }
 
@@ -97,28 +96,22 @@ object KevScriptWrapper {
             //  statments += RemoveBindingStatment(cid,portName,bindingInstanceName)
           }
 
-
           case _ => {
             None
           }
 
         }
-
       }
 
-
       )
-
-      println(statments)
+      blocks +=  TransactionalBloc(statments.toList)
 
     } catch {
 
       case msg => println("Caught an exception!"+msg)
     }
 
-
-
-    null
+    new Script(blocks.toList)
   }
 
 
