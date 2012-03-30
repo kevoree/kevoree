@@ -4,6 +4,7 @@ import org.kevoree.annotation.ComponentType;
 import org.kevoree.annotation.*;
 import org.kevoree.framework.AbstractComponentType;
 import org.kevoree.framework.MessagePort;
+import org.slf4j.LoggerFactory;
 
 import java.net.InetSocketAddress;
 
@@ -32,6 +33,9 @@ public class WebServer extends AbstractComponentType {
 
     @Start
     public void start() {
+
+        LoggerFactory.getLogger(this.getClass()).error("Starting on BSD !!");
+
         bootstrap = new ServerBootstrap(this.getPortByName("handler", MessagePort.class),this);
         bootstrap.startServer(Integer.parseInt(this.getDictionary().get("port").toString()),
                 Long.parseLong(this.getDictionary().get("timeout").toString())

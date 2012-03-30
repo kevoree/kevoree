@@ -16,19 +16,22 @@ package org.kevoree.tools.marShellTransform.ast
 /**
  * Created by jed
  * User: jedartois@gmail.com
- * Date: 28/03/12
- * Time: 17:41
+ * Date: 29/03/12
+ * Time: 16:53
  */
 
-class RBI(id : IDPredicate, chID :String, portIDB : Int) extends Adaptation {
-  def getIDPredicate() :  IDPredicate = {
-     id
+case class GlobalDefintions(properties : java.util.List[String],typedefinition : java.util.List[String],portdefinition : java.util.List[String]) extends  Adaptation{
+
+  def getPropertieById(id : Int) : String = {
+    properties.get(id)
   }
 
-  def getchID() : String ={
-    chID
+  def getTypedefinitionById(id : Int): String = {
+    typedefinition.get(id)
   }
-  def getportIDB: Int = {
-    portIDB
+
+  def getPortdefinitionById(id : Int) : String = {
+    portdefinition.get(id)
   }
+
 }

@@ -13,18 +13,18 @@ class ServerBootstrap(request : MessagePort,compo : AbstractComponentType) {
   val logger = LoggerFactory.getLogger(this.getClass)
   var id = ""
   var supervisorRef : Supervisor = _
-  var httpServer : ActorRef= _
+  //var httpServer : ActorRef= _
 
   def startServer(port : Int, timeout : Long){
     id = "kevoree.javase.webserver.spray-service."+compo.getName
     val config = ServerConfig(host = "0.0.0.0",port = port, serverActorId= id+"-server",serviceActorId=id,timeoutActorId=id,requestTimeout=timeout)
-    httpServer = Actor.actorOf(new HttpServer(config))
+    //httpServer = Actor.actorOf(new HttpServer(config))
     supervisorRef = Supervisor(
         SupervisorConfig(
           OneForOneStrategy(List(classOf[Exception]), 3, 100),
           List(
             Supervise(Actor.actorOf(new RootService(id,request,this,timeout)), Permanent),
-            Supervise(httpServer, Permanent)
+            Supervise(Actor.actorOf(new HttpServer(config)), Permanent)
           )
         )
       )
