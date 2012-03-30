@@ -21,6 +21,24 @@
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.kevoree.tools</groupId>
+                <artifactId>org.kevoree.tools.marshell.mavenplugin</artifactId>
+                <version>${kevoree.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+
+    <!--<build>
+        <plugins>
 
             <plugin>
                 <groupId>org.kevoree.tools</groupId>
@@ -43,8 +61,6 @@
     </build>
 
     <dependencies>
-
-        <!-- Android -->
         <dependency>
             <groupId>org.kevoree.library.android</groupId>
             <artifactId>org.kevoree.library.android.nodeType</artifactId>
@@ -64,7 +80,7 @@
             <version>${kevoree.version}</version>
         </dependency>
 
-    </dependencies>
+    </dependencies>-->
 
 
 </project>

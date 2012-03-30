@@ -1,0 +1,20 @@
+// Kevoree website Jail node configuration
+merge "mvn:org.kevoree.library.model/org.kevoree.library.model.sky/{kevoree.version}"
+merge "mvn:org.kevoree.web/org.kevoree.web.base/{kevoree.version}"
+addNode KevoreeWebSiteNode : JavaSENode
+network KevoreeWebSiteNode => KevoreeWebSiteNode { "KEVOREE.remote.node.ip"= "10.0.0.4"}
+
+addGroup KevoreeWebSiteGroup : NanoRestGroup
+addToGroup KevoreeWebSiteGroup KevoreeWebSiteNode
+updateDictionary KevoreeWebSiteGroup  { ip= "10.0.0.4", port="8000"}@KevoreeWebSiteNode
+
+addComponent KevoreeWebSiteServer@KevoreeWebSiteNode : WebServer {port = "8090", timeout = "5000"}
+addComponent KevoreeWebSitePage@KevoreeWebSiteNode : KevoreeMainSite {urlpattern = "/"}
+
+addChannel requestChannelWebSite : defMSG
+addChannel responseChannelWebSite : defMSG
+
+bind KevoreeWebSiteServer.handler@KevoreeWebSiteNode => requestChannelWebSite
+bind KevoreeWebSitePage.request@KevoreeWebSiteNode => requestChannelWebSite
+bind KevoreeWebSiteServer.response@KevoreeWebSiteNode => responseChannelWebSite
+bind KevoreeWebSitePage.content@KevoreeWebSiteNode => responseChannelWebSite

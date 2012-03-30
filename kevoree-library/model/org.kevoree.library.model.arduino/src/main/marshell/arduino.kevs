@@ -1,0 +1,5 @@
+merge "mvn:org.kevoree.library.javase/org.kevoree.library.javase.javaseNode/{kevoree.version}"
+merge "mvn:org.kevoree.library.javase/org.kevoree.library.javase.rest/{kevoree.version}"
+merge "mvn:org.kevoree.library.arduino/org.kevoree.library.arduino.nodeType/{kevoree.version}"
+merge "mvn:org.kevoree.library.arduino/org.kevoree.library.arduino.components/{kevoree.version}"
+merge "mvn:org.kevoree.library.arduino/org.kevoree.library.arduino.groupType/{kevoree.version}"

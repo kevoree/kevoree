@@ -30,6 +30,8 @@
         <module>../org.kevoree.library.model.javase.webserver</module>
         <module>../org.kevoree.library.model.bootstrap.android</module>
         <module>../org.kevoree.library.model.sky.kloud</module>
+        <module>../org.kevoree.library.model.jenkins</module>
+        <module>../org.kevoree.library.model.website</module>
     </modules>
 
     <repositories>
