@@ -123,10 +123,6 @@ public class JavaSENode extends AbstractNodeType {
 					System.out.println("commands:\n\tshutdown: allow to shutdown the node\n\tkcl: allow to list all the KCLClassLoader and their relationships");
 				}
 				line = reader.readLine();
-				if (line == null) {
-					logger.debug("line is null");
-					shutdown = true;
-				}
 			}
 			reader.close();
 			if (shutdown) {
