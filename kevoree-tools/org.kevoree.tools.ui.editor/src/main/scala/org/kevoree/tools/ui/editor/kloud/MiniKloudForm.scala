@@ -201,7 +201,7 @@ class MiniKloudForm (editor: KevoreeEditor) {
               node =>
                 kevEngine.addVariable("nodeName", node.getName)
                 kevEngine.append("addToGroup editor_group {nodeName}")
-                // TODO add specific port for each node
+                // add specific port for each node
                 val port = selectPort(blackListedPorts)
                 blackListedPorts = blackListedPorts ++ Array[Int](port)
                 kevEngine.addVariable("portValue", port.toString)
