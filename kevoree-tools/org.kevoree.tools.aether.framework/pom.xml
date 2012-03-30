@@ -18,6 +18,7 @@
         <relativePath>../org.kevoree.tools.root/pom.xml</relativePath>
     </parent>
 
+<!-- TODO / CLEANUP this mess -->
     <profiles>
         <profile>
             <id>org.kevoree.tools.ui.editor.standalone.mac</id>
