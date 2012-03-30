@@ -110,10 +110,8 @@ public class ArduinoNode extends AbstractNodeType {
         int lastVersion = 0;
         //Try to find previous version
         if (getDictionary().get("incremental") != null && getDictionary().get("incremental").equals("true")) {
-
             logger.debug("Incremental search");
-
-
+            /*
             File lastModelFile = null;
             for (File f : newdir.listFiles()) {
                 if (f.getName().endsWith(".kev")) {
@@ -130,9 +128,20 @@ public class ArduinoNode extends AbstractNodeType {
                 }
             }
             try {
+
                 lastVersionModel = KevoreeXmiHelper.load(lastModelFile.getAbsolutePath());
             } catch (Exception e) {
-            }
+            }  */
+
+            //TODO INSERT GETTER CODE
+            //INIT GOOD MODEL IN LAST VERSION MODEL
+
+            lastVersionModel = ArduinoModelGetHelper.getCurrentModel(root,targetNodeName,boardPortName);
+
+
+
+
+
 
         } else {
             //CLEAR PREVIOUS SAVED MODEL
