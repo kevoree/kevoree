@@ -51,20 +51,25 @@ class ParserPush extends StandardTokenParsers{
   }
 
 
+  def propertie  =ident ^^ {
+    case s => s
+  }
+
+
   def portID  =ident ^^ {
     case s => s
   }
   def chID = ident ^^ {
     case s => s
   }
-  
+
   def typeIDB = numericLit ^^ {
     case s => s
   }
 
   def portIDB   =numericLit ^^ {
-      case s => s
-    }
+    case s => s
+  }
 
   // 3:T1
   def  parseIDPredicate: Parser[IDPredicate]   = operation ~ ":" ~ instanceID ^^  {
@@ -75,38 +80,50 @@ class ParserPush extends StandardTokenParsers{
   def  parsePropertiesPredicate: Parser[PropertiePredicate]   = operation ~ "=" ~ value ^^  {
     case     d  ~ _ ~ t =>  new PropertiePredicate(d.toInt,t.toInt)
   }
-
+   //0:T1:period=1000
   def parseUDI: Parser[Adaptation] =
-     parseIDPredicate ~ ":" ~ rep1sep (parsePropertiesPredicate, ",") ^^  {
+    parseIDPredicate ~ ":" ~ rep1sep (parsePropertiesPredicate, ",") ^^  {
       case  a  ~ _ ~ b =>    new UDI(a,b)
     }
 
   //1:T1:0:0=50000
   def parseAIN: Parser[Adaptation] =
-       parseIDPredicate ~ ":" ~  typeIDB ~ ":" ~ rep1sep (parsePropertiesPredicate, ",") ^^  {
+    parseIDPredicate ~ ":" ~  typeIDB ~ ":" ~ rep1sep (parsePropertiesPredicate, ",") ^^  {
       case  a  ~ _ ~ b  ~ _ ~ c =>    new AIN(a,b.toInt,c)
     }
 
-   //1:1
-   def parseRIN : Parser[Adaptation] =   value ~ ":" ~ value ^^{
-     case a   ~ _  ~ b => new RIN(a.toInt,b.toInt)
-   }
+  //2:S1
+  def parseRIN : Parser[Adaptation] =   value ~ ":" ~ instanceID ^^{
+    case a   ~ _  ~ b => new RIN(a.toInt,b)
+  }
 
   //3:T1: S1:0$
   def parseABI: Parser[Adaptation] =
-       parseIDPredicate ~ ":" ~  chID  ~ ":" ~ portIDB  ^^  {
+    parseIDPredicate ~ ":" ~  chID  ~ ":" ~ portIDB  ^^  {
       case  a  ~ _ ~ b  ~ _ ~ c   =>    new ABI(a,b,c.toInt)
     }
 
+  //
   def parseRBI  : Parser[Adaptation] =    parseIDPredicate ~ ":" ~  chID   ~ ":" ~  portIDB  ^^ {
-    case  a  ~ _ ~ b  ~ _ ~ c   =>    new RBI(a,b.toInt,c.toInt)
-
+    case  a  ~ _ ~ b  ~ _ ~ c   =>    new RBI(a,b,c.toInt)
   }
-  //  global
-  def requestParse: Parser[Adaptations] =  "{" ~ nodeName ~ "/" ~ rep1sep(( parseABI | parseAIN | parseUDI | parseRIN ), "/") ~ opt("/") ~ "}"   ^^
-    {
-      case _ ~ nodename ~ _  ~ mylist ~ _ ~ _ => new  Adaptations(nodename,mylist)
+
+
+
+//    "period:serialport,period:serialport,Timer:SerialCT,tick/ " +
+  def parseGlobalDefinitions : Parser[GlobalDefintions] =    rep1sep(propertie,":")  ~ opt (":") ~ "," ~ rep1sep(propertie,":") ~ opt (":") ~ "," ~ rep1sep(propertie,":")  ~ opt (":") ~ "/"  ^^ {
+    case properties ~ _ ~  _ ~ typedefinition  ~ _ ~  _ ~ portdefinition  ~ _ ~  _ => {
+      new GlobalDefintions(properties,typedefinition,portdefinition)
     }
+  }
+
+  //  global
+  def requestParse: Parser[Adaptations] =  "{" ~ nodeName ~ "/" ~ opt(parseGlobalDefinitions) ~rep1sep(( parseABI | parseAIN | parseUDI | parseRIN ), "/") ~ opt("/") ~ "}"   ^^
+    {
+      case _ ~ nodename ~ _ ~  definitions ~ adaptations ~ _ ~ _ => new  Adaptations(nodename,definitions,adaptations)
+    }
+
+
 
   def  parseAdaptations(chaine : String) :Adaptations = {
 

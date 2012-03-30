@@ -85,7 +85,7 @@ printScriptFromEEPROM ()
   Serial.println (sepAdminChar);
 
   firstAdd = true;
-  // send properties
+  // 1 send properties
   for (i = 0; i < nbProps; i++)
     {
       if (firstAdd)
@@ -99,22 +99,7 @@ printScriptFromEEPROM ()
       printStringF (properties[i]);
     }
   Serial.print (",");
-  // send properties
-  firstAdd = true;
-  for (i = 0; i < nbProps; i++)
-    {
-      if (firstAdd)
-	{
-	  firstAdd = false;
-	}
-      else
-	{
-	  Serial.print (delimitation);
-	}
-      printStringF (properties[i]);
-    }
-  Serial.print (",");
-  // send typedefinition
+  // 2 send typedefinition
   firstAdd = true;
   for (i = 0; i < nbTypeDef; i++)
     {
@@ -128,9 +113,8 @@ printScriptFromEEPROM ()
 	}
       printStringF (typedefinition[i]);
     }
-
   Serial.print (",");
-  // send portdefinition
+  // 3 send typedefinition
   firstAdd = true;
   for (i = 0; i < nbPortType; i++)
     {
@@ -144,6 +128,7 @@ printScriptFromEEPROM ()
 	}
       printStringF (portdefinition[i]);
     }
+
   firstAdd = true;
   Serial.println (sepAdminChar);
 
@@ -234,7 +219,7 @@ printScriptFromEEPROM ()
 	      insID = strtok (&inBytes[1], delims);
 	      Serial.print (RIN_C);
 	      Serial.print (delimitation);
-	      Serial.println (insID);
+	      Serial.print (insID);
 	    }
 	  else if (inBytes[0] == RBI_C)
 	    {
