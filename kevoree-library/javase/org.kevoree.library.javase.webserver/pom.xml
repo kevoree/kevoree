@@ -25,6 +25,12 @@
             <groupId>org.kevoree.extra</groupId>
             <artifactId>org.kevoree.extra.spray</artifactId>
             <version>0.9.2</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.scala-lang</groupId>
+                    <artifactId>scala-library</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
