@@ -20,8 +20,8 @@ package org.kevoree.tools.marShellTransform.ast
  * Time: 17:40
  */
 
-class RIN(op : Int,insID : Int) extends Adaptation {
-  def getInsID : Int = {
+class RIN(op : Int,insID : String) extends Adaptation {
+  def getInsID : String = {
     insID
   }
 }

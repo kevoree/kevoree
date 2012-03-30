@@ -24,6 +24,22 @@
         <plugins>
             <plugin>
                 <groupId>org.kevoree.tools</groupId>
+                <artifactId>org.kevoree.tools.marshell.mavenplugin</artifactId>
+                <version>${kevoree.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+    <!--<build>
+        <plugins>
+            <plugin>
+                <groupId>org.kevoree.tools</groupId>
                 <artifactId>org.kevoree.tools.merger.mavenplugin</artifactId>
                 <version>${kevoree.version}</version>
                 <extensions>true</extensions>
@@ -48,7 +64,6 @@
     </build>
 
     <dependencies>
-        <!-- JavaSE -->
         <dependency>
             <groupId>org.kevoree.library.javase</groupId>
             <artifactId>org.kevoree.library.javase.javaseNode</artifactId>
@@ -140,9 +155,6 @@
             <version>${kevoree.version}</version>
         </dependency>
 
-        
-
-        <!-- WebServer -->
         <dependency>
             <groupId>org.kevoree.library.javase</groupId>
             <artifactId>org.kevoree.library.javase.webserver</artifactId>
@@ -169,7 +181,6 @@
             <version>${kevoree.version}</version>
         </dependency>
 
-        <!-- Sky computing -->
         <dependency>
             <groupId>org.kevoree.library.sky</groupId>
             <artifactId>org.kevoree.library.sky.minicloud</artifactId>
@@ -186,7 +197,6 @@
             <version>${kevoree.version}</version>
         </dependency>
 
-        <!-- Arduino -->
         <dependency>
             <groupId>org.kevoree.library.arduino</groupId>
             <artifactId>org.kevoree.library.arduino.nodeType</artifactId>
@@ -202,48 +212,7 @@
             <artifactId>org.kevoree.library.arduino.groupType</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
-
-
-        <!-- Android -->
-        <!--
-        <dependency>
-            <groupId>org.kevoree.library.android</groupId>
-            <artifactId>org.kevoree.library.android.nodeType</artifactId>
-            <version>${kevoree.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.kevoree.library.android</groupId>
-            <artifactId>org.kevoree.library.android.fakeDomo</artifactId>
-            <version>${kevoree.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.kevoree.library.android</groupId>
-            <artifactId>org.kevoree.library.android.defaultChannels</artifactId>
-            <version>${kevoree.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.kevoree.library.android</groupId>
-            <artifactId>org.kevoree.library.android.logger</artifactId>
-            <version>${kevoree.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.kevoree.library.android</groupId>
-            <artifactId>org.kevoree.library.android.rest</artifactId>
-            <version>${kevoree.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.kevoree.library.android</groupId>
-            <artifactId>org.kevoree.library.android.text2speech</artifactId>
-            <version>${kevoree.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.kevoree.library.android</groupId>
-            <artifactId>org.kevoree.library.android.agrapher</artifactId>
-            <version>${kevoree.version}</version>
-        </dependency>
--->
-    </dependencies>
+    </dependencies>-->
 
 
 </project>
