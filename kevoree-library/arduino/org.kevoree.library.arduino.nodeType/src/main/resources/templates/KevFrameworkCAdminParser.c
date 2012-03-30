@@ -136,7 +136,7 @@ printScriptFromEEPROM ()
     {
       inBytes[indexInBytes] = readPMemory (indexEEPROM);
 
-      if (inBytes[indexInBytes] == sepAdminChar)
+   if (inBytes[indexInBytes] == sepAdminChar |  inBytes[indexInBytes] == endAdminChar)
 	{
 	  inBytes[indexInBytes] = '\0';
 
