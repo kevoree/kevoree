@@ -242,7 +242,7 @@ class MiniKloudForm (editor: KevoreeEditor) {
       group =>
         model.getNodes.foreach {
           node =>
-            logger.warn("Looking for property 'port' on group {} with node {}", group.getName, node.getName)
+            logger.debug("Looking for property 'port' on group {} with node {}", group.getName, node.getName)
             val portOption = KevoreePropertyHelper.getIntPropertyForGroup(model, group.getName, "port", true, node.getName)
             if (portOption.isDefined) {
               ports = ports ++ Array[Int](portOption.get)
@@ -253,7 +253,7 @@ class MiniKloudForm (editor: KevoreeEditor) {
     // looking for port on channel
     model.getMBindings.foreach {
       binding =>
-        logger.warn("Looking for property 'port' on channel {} with node {}", binding.getHub.getName, binding.getPort.eContainer.eContainer.asInstanceOf[ContainerNode].getName)
+        logger.debug("Looking for property 'port' on channel {} with node {}", binding.getHub.getName, binding.getPort.eContainer.eContainer.asInstanceOf[ContainerNode].getName)
         val portOption = KevoreePropertyHelper.getIntPropertyForChannel(model,binding.getHub.getName, "port", true, binding.getPort.eContainer.eContainer.asInstanceOf[ContainerNode].getName)
         if (portOption.isDefined) {
           ports = ports ++ Array[Int](portOption.get)
@@ -265,7 +265,7 @@ class MiniKloudForm (editor: KevoreeEditor) {
       node =>
         node.getComponents.foreach {
           component =>
-            logger.warn("Looking for property 'port' on component {}", component.getName)
+            logger.debug("Looking for property 'port' on component {}", component.getName)
             val portOption = KevoreePropertyHelper.getIntPropertyForComponent(model, component.getName, "port")
             if (portOption.isDefined) {
               ports = ports ++ Array[Int](portOption.get)
