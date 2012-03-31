@@ -55,31 +55,33 @@ class KevoreeAndroidBootStrap {
       val configBean = new KevoreeConfigServiceBean
       coreBean = new KevoreeCoreBean
       val clazz = clusterCL.loadClass("org.kevoree.tools.aether.framework.android.NodeTypeBootstrapHelper")
-      val bootstraper = clazz.getConstructor(classOf[Context], classOf[ClassLoader]).newInstance(ctx, clusterCL);
-      clazz.getMethod("setKevoreeLogService", classOf[KevoreeLogService]).invoke(bootstraper,logbackService);
-      val logbackService = new KevoreeLogbackService();
+      val bootstraper = clazz.getConstructor(classOf[Context], classOf[ClassLoader]).newInstance(ctx, clusterCL).asInstanceOf[org.kevoree.api.Bootstraper]
+      val logbackService = new KevoreeLogbackService()
+      bootstraper.setKevoreeLogService(logbackService)
+
+     // clazz.getMethod("setKevoreeLogService", classOf[KevoreeLogService]).invoke(bootstraper,logbackService);
 
 
 
-      coreBean.setBootstraper(bootstraper.asInstanceOf[Bootstraper]);
+      coreBean.setBootstraper(bootstraper.asInstanceOf[Bootstraper])
       coreBean.setConfigService(configBean);
       coreBean.setKevsEngineFactory(new KevScriptEngineFactory() {
         override def createKevScriptEngine(): KevScriptEngine = {
           try {
-            return new org.kevoree.tools.marShell.KevScriptCoreEngine(coreBean);
+            return new org.kevoree.tools.marShell.KevScriptCoreEngine(coreBean)
           } catch {
             case _@e => e.printStackTrace();
           }
-          null;
+          null
         }
 
         override def createKevScriptEngine(srcModel: ContainerRoot): KevScriptEngine = {
           try {
-            return new org.kevoree.tools.marShell.KevScriptOfflineEngine(srcModel);
+            return new org.kevoree.tools.marShell.KevScriptOfflineEngine(srcModel)
           } catch {
-            case _@e => e.printStackTrace();
+            case _@e => e.printStackTrace()
           }
-          return null;
+          null
         }
       });
 
