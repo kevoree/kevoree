@@ -15,7 +15,7 @@ public class CodeMirrorEditorWrapper {
 	}-*/;
 
 	public static native void addOnChangeHandler(MirrorEditorCallback callback)
-	/*-{ $wnd.codeMirrorEditor.on("change", function (e) {
+	/*-{ $wnd.codeMirrorEditor.onChange(function (e) {
 	  callback.@org.kevoree.library.javase.webserver.codemirrorEditor.client.MirrorEditorCallback::invokeMirrorCallback(Lcom/google/gwt/core/client/JavaScriptObject;)(e);
 	  }); }-*/;
 	 
