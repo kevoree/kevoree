@@ -23,8 +23,8 @@
     <link rel="stylesheet" href="./theme/night.css">
     <link rel="stylesheet" href="./theme/eclipse.css">
     <link rel="stylesheet" href="./doc/docs.css">
+    <link type="text/css" rel="stylesheet" href="codemirrorEditor.css">
 
-<!-- 	<script type="text/javascript" language="javascript" src="codemirrorEditor/codemirrorEditor.nocache.js"></script> -->
 
 	<style type="text/css">
       .CodeMirror {border-top: 1px solid black; border-bottom: 1px solid black;}
@@ -43,7 +43,62 @@
             opacity: 1;
         }
     </style>
-    <link type="text/css" rel="stylesheet" href="codemirrorEditor.css">
+	
+	
+	<script>
+	var codeMirrorEditor = null;
+    window.onload = function () {
+	    
+	var	editor = CodeMirror.fromTextArea(document.getElementById("code"), {
+  	  mode: "text/html", 
+  	  tabMode: "indent",
+  		  lineNumbers: true,
+  		  lineWrapping: true,
+  		  onCursorActivity: function() {
+  		    editor.setLineClass(hlLine, null);
+  		    hlLine = editor.setLineClass(editor.getCursor().line, "activeline");
+  		  },
+  		  extraKeys: {
+  				"'>'": function(cm) { cm.closeTag(cm, '>'); },
+    				"'/'": function(cm) { cm.closeTag(cm, '/'); },
+  	            "F11": function() {
+  	                var scroller = editor.getScrollerElement();
+  	                if (scroller.className.search(/\bCodeMirror-fullscreen\b/) === -1) {
+  	                  scroller.className += " CodeMirror-fullscreen";
+  	                  scroller.style.height = "100%";
+  	                  scroller.style.width = "100%";
+  	                  editor.setOption("theme", "night");
+  	                  editor.refresh();
+  	                } else {
+  	                  scroller.className = scroller.className.replace(" CodeMirror-fullscreen", "");
+  	                  scroller.style.height = '';
+  	                  scroller.style.width = '';
+	      	                editor.setOption("theme", "eclipse");
+  	                  editor.refresh();
+  	                  
+  	                }
+  	              },
+  	              "Esc": function() {
+  	                var scroller = editor.getScrollerElement();
+  	                if (scroller.className.search(/\bCodeMirror-fullscreen\b/) !== -1) {
+  	                  scroller.className = scroller.className.replace(" CodeMirror-fullscreen", "");
+  	                  scroller.style.height = '';
+  	                  scroller.style.width = '';
+  	                  editor.refresh();
+  	                }
+  	                editor.setOption("theme", "eclipse");
+  	              },
+  	              "Ctrl-Space": function(cm) {CodeMirror.simpleHint(cm, CodeMirror.javascriptHint);}
+    	    	              
+  		  }
+    });
+    var hlLine = editor.setLineClass(0, "activeline");
+    codeMirrorEditor = editor;
+    };
+    </script>
+	
+	
+ 	<script type="text/javascript" language="javascript" src="htmlEditor/htmlEditor.nocache.js"></script>
     
     <!--                                            -->
     <!-- This script is required bootstrap stuff.   -->
@@ -54,6 +109,8 @@
 
     <!--  JSON stringify - useful for inspecting javascript objects -->
 
+
+	
 
     
 </head>
@@ -76,57 +133,12 @@
 </noscript>
 
   <body>
-    <form><textarea id="code" name="code">
-
+	<form>
+    <textarea id="code" name="code">
 	</textarea></form>
-    <script>
-      var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
-    	  mode: "text/html", 
-    	  tabMode: "indent",
-    		  lineNumbers: true,
-    		  lineWrapping: true,
-    		  onCursorActivity: function() {
-    		    editor.setLineClass(hlLine, null);
-    		    hlLine = editor.setLineClass(editor.getCursor().line, "activeline");
-    		  },
-    		  extraKeys: {
-    				"'>'": function(cm) { cm.closeTag(cm, '>'); },
-      				"'/'": function(cm) { cm.closeTag(cm, '/'); },
-    	            "F11": function() {
-    	                var scroller = editor.getScrollerElement();
-    	                if (scroller.className.search(/\bCodeMirror-fullscreen\b/) === -1) {
-    	                  scroller.className += " CodeMirror-fullscreen";
-    	                  scroller.style.height = "100%";
-    	                  scroller.style.width = "100%";
-    	                  editor.setOption("theme", "night");
-    	                  editor.refresh();
-    	                } else {
-    	                  scroller.className = scroller.className.replace(" CodeMirror-fullscreen", "");
-    	                  scroller.style.height = '';
-    	                  scroller.style.width = '';
-	      	                editor.setOption("theme", "eclipse");
-    	                  editor.refresh();
-    	                  
-    	                }
-    	              },
-    	              "Esc": function() {
-    	                var scroller = editor.getScrollerElement();
-    	                if (scroller.className.search(/\bCodeMirror-fullscreen\b/) !== -1) {
-    	                  scroller.className = scroller.className.replace(" CodeMirror-fullscreen", "");
-    	                  scroller.style.height = '';
-    	                  scroller.style.width = '';
-    	                  editor.refresh();
-    	                }
-    	                editor.setOption("theme", "eclipse");
-    	              },
-    	              "Ctrl-Space": function(cm) {CodeMirror.simpleHint(cm, CodeMirror.javascriptHint);}
-      	    	              
-    		  }
-      });
-      var hlLine = editor.setLineClass(0, "activeline");
-    </script>
 
 </body>
+
 
 
 </html>
