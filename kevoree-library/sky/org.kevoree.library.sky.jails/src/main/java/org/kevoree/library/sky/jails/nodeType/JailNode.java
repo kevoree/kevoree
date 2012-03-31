@@ -24,11 +24,17 @@ import org.slf4j.LoggerFactory;
 		@DictionaryAttribute(name = "inet", defaultValue = "alc0", optional = false),
 		@DictionaryAttribute(name = "subnet", defaultValue = "10.0.0.0", optional = false),
 		@DictionaryAttribute(name = "mask", defaultValue = "24", vals = {"8", "16", "24"}, optional = false),
-		@DictionaryAttribute(name = "flavor", defaultValue = "kevjail", optional = false)
+		@DictionaryAttribute(name = "flavor", defaultValue = "kevjail", optional = false)/*,
+		@DictionaryAttribute(name = "archives", defaultValue = "http://10.0.0.2:8080/archives/", optional = true)*/
 })
 @NodeType
 public class JailNode extends IaaSNode {
 	private static final Logger logger = LoggerFactory.getLogger(JailNode.class);
+
+
+	protected boolean isDaemon() {
+		return true;
+	}
 
 	@Override
 	public KevoreeNodeRunner createKevoreeNodeRunner (String nodeName) {

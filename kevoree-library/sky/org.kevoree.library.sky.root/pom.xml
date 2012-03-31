@@ -6,12 +6,12 @@
     <artifactId>org.kevoree.library.sky.root</artifactId>
     <packaging>pom</packaging>
     <name>Kevoree :: Library :: Sky :: Root</name>
-    <version>1.6.0-SNAPSHOT</version>
+    <version>1.6.0-RC2</version>
 
     <parent>
         <artifactId>org.kevoree.library</artifactId>
         <groupId>org.kevoree.library</groupId>
-        <version>1.6.0-SNAPSHOT</version>
+        <version>1.6.0-RC2</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
@@ -21,11 +21,11 @@
     </properties>
 
     <modules>
-        <module>../org.kevoree.library.sky.manager</module>
+        <module>../org.kevoree.library.sky.api</module>
         <module>../org.kevoree.library.sky.minicloud</module>
         <module>../org.kevoree.library.sky.jails</module>
         <module>../org.kevoree.library.sky.provider</module>
-        <module>../org.kevoree.library.sky.kloud</module>
+        <!--<module>../org.kevoree.library.sky.kloud</module>-->
         <!--<module>../org.kevoree.library.sky.vagrant</module>-->
         <!--<module>../org.kevoree.library.sky.jclouds</module>-->
     </modules>
@@ -42,11 +42,6 @@
             <artifactId>org.kevoree.tools.annotation.api</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
-        <!--<dependency>
-            <groupId>org.kevoree.extra</groupId>
-            <artifactId>org.kevoree.extra.finagle</artifactId>
-            <version>1.7.3</version>
-        </dependency>-->
     </dependencies>
 
     <build>

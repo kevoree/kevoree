@@ -20,10 +20,10 @@ import java.io._
 import java.lang.Thread
 import actors.{TIMEOUT, Actor}
 import util.matching.Regex
-import org.kevoree.library.sky.manager.{KevoreeNodeRunner}
 import org.kevoree.library.sky.manager.nodeType.IaaSNode
 import org.kevoree.{ContainerRoot, KevoreeFactory}
 import org.kevoree.framework.KevoreeXmiHelper
+import org.kevoree.library.sky.manager.{ProcessStreamFileLogger, KevoreeNodeRunner}
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -33,7 +33,7 @@ import org.kevoree.framework.KevoreeXmiHelper
  * @author Erwan Daubert
  * @version 1.0
  */
-class MiniCloudKevoreeNodeRunner (nodeName: String,iaasNode : IaaSNode) extends KevoreeNodeRunner(nodeName) {
+class MiniCloudKevoreeNodeRunner (nodeName: String, iaasNode: IaaSNode) extends KevoreeNodeRunner(nodeName) {
   private val logger: Logger = LoggerFactory.getLogger(classOf[MiniCloudKevoreeNodeRunner])
   private var nodePlatformProcess: Process = null
   private var outputStreamReader: Thread = null
@@ -50,37 +50,24 @@ class MiniCloudKevoreeNodeRunner (nodeName: String,iaasNode : IaaSNode) extends 
   case class ErrorResult ()
 
   //val actor = new UpdateManagementActor(10000)
- // actor.start()
+  // actor.start()
 
-  def startNode(iaasModel : ContainerRoot,jailBootStrapModel : ContainerRoot): Boolean = {
+  def startNode (iaasModel: ContainerRoot, jailBootStrapModel: ContainerRoot): Boolean = {
     try {
       logger.debug("Start " + nodeName)
 
-      val platformFile = iaasNode.getBootStrapperService.resolveKevoreeArtifact("org.kevoree.platform.standalone","org.kevoree.platform",KevoreeFactory.getVersion);
+      val platformFile = iaasNode.getBootStrapperService.resolveKevoreeArtifact("org.kevoree.platform.standalone", "org.kevoree.platform", KevoreeFactory.getVersion);
       val java: String = getJava
       if (platformFile != null) {
 
-       /* val root = LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME).asInstanceOf[Logger]
-        var debug = "ERROR"
-        if (root.isWarnEnabled) {
-          debug = "WARN"
-        }
-        if (root.isInfoEnabled) {
-          debug = "INFO"
-        }
-        if (root.isDebugEnabled) {
-          debug = "DEBUG"
-        }
-        logger.debug("child node log level will be set to {}", debug)*/
+        val tempFile = File.createTempFile("bootModel" + nodeName, ".kev");
+        KevoreeXmiHelper.save(tempFile.getAbsolutePath, jailBootStrapModel)
+        // FIXME java memory properties must define as Node properties
+          // Currently the kloud provider only manages PJavaSeNode that hosts the software user configuration
+          // It will be better to add a new node hosted by the PJavaSeNode
+        nodePlatformProcess = Runtime.getRuntime.exec(Array[String](java, "-Dnode.bootstrap=" + tempFile.getAbsolutePath, "-Dnode.name=" + nodeName, "-jar", platformFile.getAbsolutePath))
 
-        val tempFile = File.createTempFile("bootModel"+nodeName,".kev");
-        KevoreeXmiHelper.save(tempFile.getAbsolutePath,jailBootStrapModel)
-        
-        nodePlatformProcess = Runtime.getRuntime
-          .exec(Array[String](java, "-Dnode.bootstrap=" + tempFile.getAbsolutePath, "-Dnode.name=" + nodeName,
-                               "-Dnode.log.level=INFO"/* + debug*/, "-jar", platformFile.getAbsolutePath))
-
-        outputStreamReader = new Thread {
+        /*outputStreamReader = new Thread {
           outFile = new File(System.getProperty("java.io.tmpdir") + File.separator + "sysout" + nodeName + ".log")
           val logStream: OutputStream = new FileOutputStream(outFile)
           logger.debug(outFile.getAbsolutePath + " is used as a log file")
@@ -90,17 +77,6 @@ class MiniCloudKevoreeNodeRunner (nodeName: String,iaasNode : IaaSNode) extends 
               val reader = new BufferedReader(new InputStreamReader(stream))
               var line = reader.readLine()
               while (line != null) {
-                /*
-                line match {
-                  case deployRegex(uuid) => {
-                    actor ! DeployResult(uuid)
-                  }
-                  case backupRegex(uuid) => {
-                    actor ! BackupResult(uuid)
-                  }
-                  case errorRegex(uuid) => actor ! ErrorResult()
-                  case _ =>
-                }*/
                 line = line + "\n"
                 logStream.write(line.getBytes)
                 logStream.flush()
@@ -146,7 +122,14 @@ class MiniCloudKevoreeNodeRunner (nodeName: String,iaasNode : IaaSNode) extends 
           private val stream: InputStream = nodePlatformProcess.getErrorStream
         }
         outputStreamReader.start()
-        errorStreamReader.start()
+        errorStreamReader.start()*/
+        val logFile = System.getProperty("java.io.tmpdir") + File.separator + nodeName + ".log"
+        outFile = new File(logFile + ".out")
+        logger.debug("writing logs about {} on {}", nodeName, outFile.getAbsolutePath)
+        new Thread(new ProcessStreamFileLogger(nodePlatformProcess.getInputStream, outFile)).start()
+        errFile = new File(logFile + ".err")
+        logger.debug("writing logs about {} on {}", nodeName, errFile.getAbsolutePath)
+        new Thread(new ProcessStreamFileLogger(nodePlatformProcess.getErrorStream, errFile)).start()
         nodePlatformProcess.exitValue
         false
       } else {
@@ -169,13 +152,14 @@ class MiniCloudKevoreeNodeRunner (nodeName: String,iaasNode : IaaSNode) extends 
   def stopNode (): Boolean = {
     logger.debug("Kill " + nodeName)
     try {
-      val watchdog = new KillWatchDog(nodePlatformProcess, 20000)
+      /*val watchdog = new KillWatchDog(nodePlatformProcess, 20000)
       nodePlatformProcess.getOutputStream.write("shutdown\n".getBytes)
       nodePlatformProcess.getOutputStream.flush()
 
       watchdog.start()
       nodePlatformProcess.waitFor()
-      watchdog.stop()
+      watchdog.stop()*/
+      nodePlatformProcess.destroy()
       true
     }
     catch {

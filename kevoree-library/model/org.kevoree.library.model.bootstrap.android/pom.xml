@@ -6,7 +6,7 @@
     <artifactId>org.kevoree.library.model.bootstrap.android</artifactId>
     <packaging>jar</packaging>
     <name>Kevoree :: Library :: Model :: Bootstrap Android</name>
-    <version>1.6.0-SNAPSHOT</version>
+    <version>1.6.0-RC2</version>
 
     <properties>
         <kevoree.version>${project.version}</kevoree.version>
@@ -15,11 +15,29 @@
     <parent>
         <artifactId>org.kevoree.library.model.root</artifactId>
         <groupId>org.kevoree.library.model</groupId>
-        <version>1.6.0-SNAPSHOT</version>
+        <version>1.6.0-RC2</version>
         <relativePath>../org.kevoree.library.model.root/pom.xml</relativePath>
     </parent>
 
     <build>
+        <plugins>
+            <plugin>
+                <groupId>org.kevoree.tools</groupId>
+                <artifactId>org.kevoree.tools.marshell.mavenplugin</artifactId>
+                <version>${kevoree.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+
+    <!--<build>
         <plugins>
 
             <plugin>
@@ -43,8 +61,6 @@
     </build>
 
     <dependencies>
-
-        <!-- Android -->
         <dependency>
             <groupId>org.kevoree.library.android</groupId>
             <artifactId>org.kevoree.library.android.nodeType</artifactId>
@@ -64,7 +80,7 @@
             <version>${kevoree.version}</version>
         </dependency>
 
-    </dependencies>
+    </dependencies>-->
 
 
 </project>

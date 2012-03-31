@@ -5,7 +5,7 @@
     <parent>
         <artifactId>org.kevoree.library.model.root</artifactId>
         <groupId>org.kevoree.library.model</groupId>
-        <version>1.6.0-SNAPSHOT</version>
+        <version>1.6.0-RC2</version>
         <relativePath>../org.kevoree.library.model.root/pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -18,6 +18,22 @@
     </properties>
 
     <build>
+            <plugins>
+                <plugin>
+                    <groupId>org.kevoree.tools</groupId>
+                    <artifactId>org.kevoree.tools.marshell.mavenplugin</artifactId>
+                    <version>${kevoree.version}</version>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>generate</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+            </plugins>
+        </build>
+    <!--<build>
         <plugins>
             <plugin>
                 <groupId>org.apache.felix</groupId>
@@ -51,7 +67,7 @@
         </plugins>
     </build>
 
-    <dependencies>
+    <dependencies>-->
         <!-- consensus group -->
         <!--
         <dependency>
@@ -62,7 +78,7 @@
         -->
 
         <!-- Sky computing -->
-        <dependency>
+       <!-- <dependency>
             <groupId>org.kevoree.library.sky</groupId>
             <artifactId>org.kevoree.library.sky.minicloud</artifactId>
             <version>${kevoree.version}</version>
@@ -92,7 +108,7 @@
             <artifactId>org.kevoree.library.javase.nioChannels</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
-    </dependencies>
+    </dependencies>-->
 
 
 </project>

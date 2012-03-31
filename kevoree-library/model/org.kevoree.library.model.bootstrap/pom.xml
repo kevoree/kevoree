@@ -6,7 +6,7 @@
     <artifactId>org.kevoree.library.model.bootstrap</artifactId>
     <packaging>jar</packaging>
     <name>Kevoree :: Library :: Model :: Bootstrap</name>
-    <version>1.6.0-SNAPSHOT</version>
+    <version>1.6.0-RC2</version>
 
     <properties>
         <kevoree.version>${project.version}</kevoree.version>
@@ -16,11 +16,27 @@
     <parent>
         <artifactId>org.kevoree.library.model.root</artifactId>
         <groupId>org.kevoree.library.model</groupId>
-        <version>1.6.0-SNAPSHOT</version>
+        <version>1.6.0-RC2</version>
         <relativePath>../org.kevoree.library.model.root/pom.xml</relativePath>
     </parent>
 
     <build>
+        <plugins>
+            <plugin>
+                <groupId>org.kevoree.tools</groupId>
+                <artifactId>org.kevoree.tools.marshell.mavenplugin</artifactId>
+                <version>${kevoree.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+    <!--<build>
         <plugins>
             <plugin>
                 <groupId>org.apache.felix</groupId>
@@ -55,12 +71,6 @@
     </build>
 
     <dependencies>
-
-        <!--<dependency>
-            <groupId>org.kevoree.library.javase</groupId>
-            <artifactId>org.kevoree.library.javase.miniCloudGroup</artifactId>
-            <version>${kevoree.version}</version>
-        </dependency>-->
         <dependency>
             <groupId>org.kevoree.library.javase</groupId>
             <artifactId>org.kevoree.library.javase.javaseNode</artifactId>
@@ -82,36 +92,7 @@
             <artifactId>org.kevoree.library.javase.nanohttp</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
-
-        <!-- Sky computing -->
-        <!--
-        <dependency>
-            <groupId>org.kevoree.library.sky</groupId>
-            <artifactId>org.kevoree.library.sky.minicloud</artifactId>
-            <version>${kevoree.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.kevoree.library.sky</groupId>
-            <artifactId>org.kevoree.library.sky.jails</artifactId>
-            <version>${kevoree.version}</version>
-        </dependency>
--->
-        <!--
-        <dependency>
-            <groupId>org.kevoree.library.javase</groupId>
-            <artifactId>org.kevoree.library.javase.restAutoDiscovery</artifactId>
-            <version>${kevoree.version}</version>
-        </dependency>-->
-<!--
-        <dependency>
-            <groupId>org.kevoree.library.frascati</groupId>
-            <artifactId>org.kevoree.library.frascati.frascatiNode</artifactId>
-            <version>${kevoree.version}</version>
-        </dependency>
--->
-
-    </dependencies>
+    </dependencies>-->
 
 
 </project>
