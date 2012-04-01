@@ -9,7 +9,7 @@
         <relativePath>../org.kevoree.library.javase.root/pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <packaging>war</packaging>
+    <packaging>jar</packaging>
 
     <artifactId>org.kevoree.library.javase.webserver.codemirrorEditor</artifactId>
     <name>Kevoree :: Library :: JavaSE :: WebServer :: CodeMirrorEditor</name>
