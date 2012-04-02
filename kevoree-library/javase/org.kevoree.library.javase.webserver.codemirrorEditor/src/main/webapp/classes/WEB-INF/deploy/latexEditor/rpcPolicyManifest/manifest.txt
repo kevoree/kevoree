@@ -1,3 +1,0 @@
-# Module latexEditor
-# RPC service class, partial path of RPC policy file
-org.kevoree.library.javase.webserver.latexEditor.client.latexEditorService, 3D20B337CA83162B3D0225B4DC89BA41.gwt.rpc
