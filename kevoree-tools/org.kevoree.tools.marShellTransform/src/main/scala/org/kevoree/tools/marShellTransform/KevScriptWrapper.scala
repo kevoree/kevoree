@@ -46,7 +46,6 @@ object KevScriptWrapper {
     try
     {
       result.adaptations.toArray.foreach( s => {
-
         s match
         {
           case classOf: UDI  => {
@@ -104,18 +103,15 @@ object KevScriptWrapper {
           case _ => {
             None
           }
-
         }
       }
-
       )
       blocks +=  TransactionalBloc(statments.toList)
-      println(blocks)
+    //  println(blocks)
     } catch {
       case e:IndexOutOfBoundsException => logger.error("The Arduino globals definitions (properties or typedefinition or portdefinition)  are not compliant to the adaptations")
       case msg =>  logger.error("Caught an exception!"+msg)
     }
-
     new Script(blocks.toList)
   }
 

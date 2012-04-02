@@ -30,7 +30,7 @@ import collection.JavaConversions._
 
 class ParserPush extends StandardTokenParsers{
 
-  lexical.delimiters ++= List("/",":",",","=","{","}","node=")
+  lexical.delimiters ++= List("/",":",",","=","{","}","@")
 
 
   def operation  =numericLit ^^ {
@@ -118,7 +118,7 @@ class ParserPush extends StandardTokenParsers{
   }
 
   //  global
-  def requestParse: Parser[Adaptations] =  "{" ~ nodeName ~ "/" ~ opt(parseGlobalDefinitions) ~rep1sep(( parseABI | parseAIN | parseUDI | parseRIN ), "/") ~ opt("/") ~ "}"   ^^
+  def requestParse: Parser[Adaptations] =  "{" ~ nodeName ~ "@" ~ opt(parseGlobalDefinitions) ~rep1sep(( parseABI | parseAIN | parseUDI | parseRIN ), "/") ~ opt("/") ~ "}"   ^^
     {
       case _ ~ nodename ~ _ ~  definitions ~ adaptations ~ _ ~ _ => new  Adaptations(nodename,definitions,adaptations)
     }

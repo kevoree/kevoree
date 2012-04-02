@@ -82,7 +82,7 @@ printScriptFromEEPROM ()
 
   Serial.println (startBAdminChar);
   printNodeName ();
-  Serial.println (sepAdminChar);
+  Serial.println (F"@");
 
   firstAdd = true;
   // 1 send properties
