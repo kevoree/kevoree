@@ -37,7 +37,7 @@ object TesterParser extends  App {
     "0:T1:2=800/" +
     "}  "
 
-       val csriptraw = "{  node0/  " +
+       val csriptraw = "{  node0@  " +
          "period:serialport,Timer:SerialCT,tick/ " +
          " 1:T1:0:0=1000/   " +
          "0:T1:0=800/         " +
