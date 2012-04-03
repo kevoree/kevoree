@@ -103,6 +103,7 @@ trait ProvidedPortProcessor {
                               case e: javax.lang.model.`type`.MirroredTypeException =>
                                 dicAtt.setDatatype(e.getTypeMirror.toString)
                             }
+                            dicAtt.setOptional(elem.optional())
                             dicoType.addAttributes(dicAtt)
                         }
                         messagePortType.setDictionaryType(Some(dicoType))
