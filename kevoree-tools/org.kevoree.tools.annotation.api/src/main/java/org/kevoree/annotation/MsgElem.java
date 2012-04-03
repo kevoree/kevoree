@@ -23,4 +23,5 @@ package org.kevoree.annotation;
 public @interface MsgElem {
     java.lang.String name();
     Class className() default Object.class;
+	boolean optional() default true;
 }
