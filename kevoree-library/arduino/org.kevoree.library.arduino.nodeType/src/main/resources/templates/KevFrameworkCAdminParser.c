@@ -80,36 +80,37 @@ printScriptFromEEPROM ()
   int indexInBytes = 0;
   int indexEEPROM = 2;
 
-
   printNodeName ();
   Serial.print (F("@"));
   Serial.println (startBAdminChar);
 
-  firstAdd = true;
-  // 1 send properties
   for (i = 0; i < nbProps; i++)
     {
-      printStringF (properties[i]);
+        strcpy_P(inBytes, (char*)pgm_read_word(&(properties[i])));
+        Serial.print( inBytes );
+        Serial.print(F(":"));
     }
-
     if(nbProps > 0){
       Serial.print (F(","));
     }
 
-  // 2 send typedefinitio
   for (i = 0; i < nbTypeDef; i++)
     {
-      printStringF (typedefinition[i]);
+        strcpy_P(inBytes, (char*)pgm_read_word(&(typedefinition[i])));
+        Serial.print( inBytes );
+        Serial.print(F(":"));
     }
     if(nbTypeDef > 0){
       Serial.print (F(","));
     }
-  // 3 send typedefinition
 
   for (i = 0; i < nbPortType; i++)
     {
-      printStringF (portdefinition[i]);
+     strcpy_P(inBytes, (char*)pgm_read_word(&(portdefinition[i])));
+     Serial.print( inBytes );
+     Serial.print(F(":"));
     }
+
     if(nbTypeDef > 0|nbProps > 0|nbPortType > 0 )
     {
          Serial.println (sepAdminChar);
