@@ -1,5 +1,6 @@
 package org.kevoree.library.arduinoNodeType;
 
+import org.kevoree.ContainerNode;
 import org.kevoree.ContainerRoot;
 import org.kevoree.framework.KevoreeXmiHelper;
 import org.kevoree.tools.aether.framework.NodeTypeBootstrapHelper;
@@ -23,10 +24,12 @@ public class Tester {
 
 
         
-        ContainerRoot model = KevoreeXmiHelper.loadStream(Tester.class.getClassLoader().getResourceAsStream("model.kev"));
+        ContainerRoot model = KevoreeXmiHelper.loadStream(Tester.class.getClassLoader().getResourceAsStream("test.kev"));
+
       //  ContainerRoot model = KevoreeXmiHelper.load("/Users/duke/Desktop/kev.kev");
 
         ArduinoNode node = new ArduinoNode();
+        node.setNodeName("n0");
 
         //FOR TEST
         NodeTypeBootstrapHelper bs = new NodeTypeBootstrapHelper();
@@ -35,7 +38,6 @@ public class Tester {
         node.setForceUpdate(true);
 
         node.getDictionary().put("boardTypeName", "uno");
-        node.getDictionary().put("osgi.bundle", null);
         //node.getDictionary().put("boardPortName","/dev/tty.usbserial-A400g2se");
 //        node.getDictionary().put("pmem","EEPROM");
         // node.getDictionary().put("boardPortName","/dev/tty.usbserial-A400g2se");
@@ -43,7 +45,7 @@ public class Tester {
 
         node.getDictionary().put("incremental", "false");
         node.startNode();
-        node.push("node0", model, "/dev/ttyACM1");
+        node.push("n0", model, "/dev/tty.usbmodem26231");
 
     }
 

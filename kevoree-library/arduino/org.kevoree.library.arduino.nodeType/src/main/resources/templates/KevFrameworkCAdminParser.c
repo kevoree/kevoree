@@ -135,7 +135,7 @@ printScriptFromEEPROM ()
     }
 
   firstAdd = true;
-    if(nbTypeDef > 0 |nbProps > 0 | nbPortType > 0 )
+    if(nbTypeDef > 0|nbProps > 0|nbPortType > 0 )
     {
          Serial.println (sepAdminChar);
     }
