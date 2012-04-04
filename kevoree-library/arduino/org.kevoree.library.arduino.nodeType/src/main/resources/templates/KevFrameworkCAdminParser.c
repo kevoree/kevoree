@@ -82,7 +82,7 @@ printScriptFromEEPROM ()
 
   Serial.println (startBAdminChar);
   printNodeName ();
-  Serial.println (F"@");
+  Serial.println (F("@"));
 
   firstAdd = true;
   // 1 send properties
@@ -98,7 +98,10 @@ printScriptFromEEPROM ()
 	}
       printStringF (properties[i]);
     }
-  Serial.print (",");
+    if(nbProps > 0){
+      Serial.print (",");
+    }
+
   // 2 send typedefinition
   firstAdd = true;
   for (i = 0; i < nbTypeDef; i++)
@@ -113,7 +116,9 @@ printScriptFromEEPROM ()
 	}
       printStringF (typedefinition[i]);
     }
-  Serial.print (",");
+    if(nbTypeDef > 0){
+      Serial.print (",");
+    }
   // 3 send typedefinition
   firstAdd = true;
   for (i = 0; i < nbPortType; i++)
@@ -130,13 +135,16 @@ printScriptFromEEPROM ()
     }
 
   firstAdd = true;
-  Serial.println (sepAdminChar);
+    if(nbTypeDef > 0 |nbProps > 0 | nbPortType > 0 )
+    {
+         Serial.println (sepAdminChar);
+    }
 
   do
     {
       inBytes[indexInBytes] = readPMemory (indexEEPROM);
 
-   if (inBytes[indexInBytes] == sepAdminChar |  inBytes[indexInBytes] == endAdminChar)
+   if (inBytes[indexInBytes] == sepAdminChar | indexEEPROM == eepromIndex )
 	{
 	  inBytes[indexInBytes] = '\0';
 
@@ -250,11 +258,10 @@ printScriptFromEEPROM ()
 	  indexInBytes++;
 	}
       indexEEPROM++;
+
     }
-  while ((inBytes[indexInBytes - 1] != endAdminChar)
-	 && (indexEEPROM < EEPROM_MAX_SIZE));
+  while ((inBytes[indexInBytes - 1] != endAdminChar)&&  (indexEEPROM != eepromIndex+1)	 && (indexEEPROM < EEPROM_MAX_SIZE));
 
   Serial.println (endAdminChar);
   Serial.flush ();
-
 }
