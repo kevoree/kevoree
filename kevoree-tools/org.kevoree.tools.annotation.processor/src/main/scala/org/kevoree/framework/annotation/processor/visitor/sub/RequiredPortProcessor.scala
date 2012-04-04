@@ -104,6 +104,7 @@ trait RequiredPortProcessor {
                               case e: javax.lang.model.`type`.MirroredTypeException =>
                                 dicAtt.setDatatype(e.getTypeMirror.toString)
                             }
+                            dicAtt.setOptional(elem.optional())
                             dicoType.addAttributes(dicAtt)
                         }
                         mpt.setDictionaryType(Some(dicoType))
