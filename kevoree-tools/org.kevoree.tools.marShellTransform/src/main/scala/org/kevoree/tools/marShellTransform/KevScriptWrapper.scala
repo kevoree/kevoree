@@ -43,14 +43,17 @@ object KevScriptWrapper {
     val nodeName = result.nodeName
     var statments = new HashSet[Statment]
     var blocks = new HashSet[TransactionalBloc]
+    
+
     try
     {
       result.adaptations.toArray.foreach( s => {
+        println(s)
         s match
         {
           case classOf: UDI  => {
             // UpdateDictionaryStatement
-            logger.info("Detect UpdateDictionaryStatement")
+            println("Detect UpdateDictionaryStatement")
             val props = new java.util.Properties()
             s.asInstanceOf[UDI].getParams.toArray.foreach( p =>
             {
@@ -65,7 +68,7 @@ object KevScriptWrapper {
 
           case classOf: ABI =>
           {
-            logger.info("Detect AddBindingStatment")
+            println("Detect AddBindingStatment")
             val cid = new ComponentInstanceID(s.asInstanceOf[ABI].getIDPredicate().getinstanceID,Some(nodeName))
             val idPort = definitions.getPortdefinitionById(s.asInstanceOf[ABI].getportIDB)
 
@@ -73,7 +76,7 @@ object KevScriptWrapper {
           }
           case classOf: AIN  =>
           {
-            logger.info("Detect AddComponentInstanceStatment")
+            println("Detect AddComponentInstanceStatment")
             val cid = new ComponentInstanceID(s.asInstanceOf[AIN].getIDPredicate().getinstanceID,Some(nodeName))
             val typeIDB = definitions.getTypedefinitionById(s.asInstanceOf[AIN].getTypeIDB())
 
@@ -88,13 +91,13 @@ object KevScriptWrapper {
           }
 
           case classOf : RIN => {
-            logger.info("Detect RemoveComponentInstanceStatment")
+            println("Detect RemoveComponentInstanceStatment")
             val cid = new ComponentInstanceID(s.asInstanceOf[RIN].getInsID,Some(nodeName))
 
             statments += RemoveComponentInstanceStatment(cid)
           }
           case classOf: RBI  =>  {
-            logger.info("Detect RemoveBindingStatment")
+            println("Detect RemoveBindingStatment")
             val cid = new ComponentInstanceID(s.asInstanceOf[RBI].getIDPredicate().getinstanceID,Some(nodeName))
             val idPort = definitions.getPortdefinitionById(s.asInstanceOf[RBI].getportIDB)
             statments += RemoveBindingStatment(cid,idPort,s.asInstanceOf[RBI].getchID())
@@ -107,10 +110,10 @@ object KevScriptWrapper {
       }
       )
       blocks +=  TransactionalBloc(statments.toList)
-    //  println(blocks)
+      println(blocks)
     } catch {
-      case e:IndexOutOfBoundsException => logger.error("The Arduino globals definitions (properties or typedefinition or portdefinition)  are not compliant to the adaptations")
-      case msg =>  logger.error("Caught an exception!"+msg)
+      case e:IndexOutOfBoundsException => println("The Arduino globals definitions (properties or typedefinition or portdefinition)  are not compliant to the adaptations")
+      case msg =>  println("Caught an exception!"+msg)
     }
     new Script(blocks.toList)
   }
