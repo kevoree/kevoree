@@ -43,7 +43,6 @@ object KevScriptWrapper {
     val nodeName = result.nodeName
     var statments = new HashSet[Statment]
     var blocks = new HashSet[TransactionalBloc]
-    
 
     try
     {

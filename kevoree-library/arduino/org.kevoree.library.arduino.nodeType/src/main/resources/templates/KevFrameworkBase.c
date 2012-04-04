@@ -222,4 +222,5 @@ printStringF (const prog_char str[])
     {
       Serial.print (c);
     }
+    Serial.print(F(":"));
 }
