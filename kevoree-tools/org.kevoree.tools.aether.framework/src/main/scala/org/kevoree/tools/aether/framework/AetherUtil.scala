@@ -14,7 +14,7 @@
 
 package org.kevoree.tools.aether.framework
 
-import common.{MavenUrlBuilder, AbstractDeployUnitResolver, AbstractRepositorySession, AbstractRepositorySystem}
+import common._
 import org.sonatype.aether.spi.connector.RepositoryConnectorFactory
 import org.apache.maven.repository.internal.MavenRepositorySystemSession
 import java.io.File
@@ -33,10 +33,18 @@ object AetherUtil extends TempFileCacheManager
                   with JavaRepositorySystem
                   with JavaRepositorySession
                   with JavaDeployUnitResolver
+                  with JavaArtifactResolver
+                  with KevoreeResolver
 
 
+trait JavaArtifactResolver extends MavenResolver {
+  def installInCache(artifact: Artifact): File
 
-
+  def resolveMavenArtifact(unitName: String, groupName: String, version: String, repositoriesUrl: List[String]): File = {
+    val artifact = resolve(unitName, groupName, version, repositoriesUrl)
+     installInCache(artifact)
+  }
+}
 
 trait JavaDeployUnitResolver extends AbstractDeployUnitResolver { this: MavenUrlBuilder =>
 
@@ -51,6 +59,7 @@ trait JavaDeployUnitResolver extends AbstractDeployUnitResolver { this: MavenUrl
 
   def processResult(artifact: Artifact): File = installInCache(artifact)
 }
+
 
 trait JavaRepositorySession extends AbstractRepositorySession { this: AbstractRepositorySystem =>
 
@@ -105,6 +114,7 @@ trait JavaRepositorySession extends AbstractRepositorySession { this: AbstractRe
   }
 }
 
+
 trait JavaRepositorySystem extends AbstractRepositorySystem {
 
   def repositorySystem: RepositorySystem = {
@@ -114,4 +124,3 @@ trait JavaRepositorySystem extends AbstractRepositorySystem {
     locator.getService(classOf[RepositorySystem])
   }
 }
-

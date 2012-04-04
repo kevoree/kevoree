@@ -29,9 +29,16 @@ object AetherUtil extends NodeUrlBuilder
                   with AndroidRepositorySystem
                   with AndroidRepositorySession
                   with AndroidDeployUnitResolver
-                  with MavenResolver
+                  with AndroidArtifactResolver
+                  with KevoreeResolver
 
 
+trait AndroidArtifactResolver extends MavenResolver {
+  def resolveMavenArtifact(unitName: String, groupName: String, version: String, repositoriesUrl: List[String]): File = {
+    val artifact = resolve(unitName, groupName, version, repositoriesUrl)
+    artifact.getFile
+  }
+}
 
 
 trait AndroidDeployUnitResolver extends AbstractDeployUnitResolver { this: NodeUrlBuilder =>
@@ -86,5 +93,3 @@ trait AndroidRepositorySystem extends AbstractRepositorySystem {
     locator.getService(classOf[RepositorySystem])
   }
 }
-
-
