@@ -28,17 +28,19 @@ import collection.immutable.HashSet
 object TesterParser extends  App {
 
 
-       val csriptraw = "{" +
-         "node0 @ " +
+       val csriptraw = "node0 @ {" +
          "period:serialport,Timer:SerialCT,tick/" +
          "1:T1:0:0=1000/" +
          "3:T1:S1:0/" +
          "}"
 
-
-
-
-
-  KevScriptWrapper.generateKevScriptFromCompressed(csriptraw)
+ val test = " node0@{" +
+   "pin:freq:period:,DigitalTone:Timer:LocalChannel:,on:off:toggle:tick:/" +
+   "1:T1:1:2=1000/" +
+   "1:D1:0:0=0,1=500/" +
+   "3:T1:L1:3/" +
+   "3:D1:L1:2/" +
+   "}"
+  KevScriptWrapper.generateKevScriptFromCompressed(test)
 
 }
