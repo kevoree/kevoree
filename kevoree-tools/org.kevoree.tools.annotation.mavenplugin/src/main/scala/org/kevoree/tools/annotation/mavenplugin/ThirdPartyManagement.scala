@@ -37,6 +37,10 @@ object ThirdPartyManagement {
 
   def processKevoreeProperty(pomModel: MavenProject, log: Log) : java.util.List[Dependency] = {
 
+    if(!pomModel.getPackaging.equals("bundle") && pomModel.getProperties.get(includeProp) == null){
+      pomModel.getProperties.put(includeProp,"*:*")
+    }
+
     var includeRegex = List[Tuple2[Regex, Regex]]()
     if (pomModel.getProperties.containsKey(includeProp)) {
       pomModel.getProperties.get(includeProp).toString.split(seperatorProp).foreach {
@@ -67,11 +71,14 @@ object ThirdPartyManagement {
 
     var selectedDeps = List[Dependency]()
 
+    var excludedScope = List[String]("test")
+
+
     //FILTER
     (pomModel.getRuntimeDependencies ++ pomModel.getDependencies).foreach {
       loopDep => {
         if (loopDep.getScope.equals("provided") || loopDep.getType.equals("bundle") || loopDep.getType.equals("kjar") || loopDep.getType.equals("kbundle")) {
-          if (!selectedDeps.exists(preDep => preDep.getGroupId == loopDep.getGroupId && preDep.getArtifactId == loopDep.getArtifactId && preDep.getVersion == loopDep.getVersion)) {
+          if (!excludedScope.exists(exScope => loopDep.getScope == exScope) && !selectedDeps.exists(preDep => preDep.getGroupId == loopDep.getGroupId && preDep.getArtifactId == loopDep.getArtifactId && preDep.getVersion == loopDep.getVersion)) {
             selectedDeps = selectedDeps ++ List(loopDep)
           }
         } else {
