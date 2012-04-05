@@ -78,24 +78,25 @@ public class JavaSENode extends AbstractNodeType {
 	@Update
 	@Override
 	public void updateNode () {
-		KevoreeLogLevel logLevel = KevoreeLogLevel.WARN;
-		if ("DEBUG".equals(getDictionary().get("logLevel"))) {
-			logLevel = KevoreeLogLevel.DEBUG;
+		if (getBootStrapperService().getKevoreeLogService() != null) {
+			KevoreeLogLevel logLevel = KevoreeLogLevel.WARN;
+			if ("DEBUG".equals(getDictionary().get("logLevel"))) {
+				logLevel = KevoreeLogLevel.DEBUG;
+			}
+			if ("WARN".equals(getDictionary().get("logLevel"))) {
+				logLevel = KevoreeLogLevel.WARN;
+			}
+			if ("INFO".equals(getDictionary().get("logLevel"))) {
+				logLevel = KevoreeLogLevel.INFO;
+			}
+			if ("ERROR".equals(getDictionary().get("logLevel"))) {
+				logLevel = KevoreeLogLevel.ERROR;
+			}
+			if ("FINE".equals(getDictionary().get("logLevel"))) {
+				logLevel = KevoreeLogLevel.FINE;
+			}
+			getBootStrapperService().getKevoreeLogService().setUserLogLevel(logLevel);
 		}
-		if ("WARN".equals(getDictionary().get("logLevel"))) {
-			logLevel = KevoreeLogLevel.WARN;
-		}
-		if ("INFO".equals(getDictionary().get("logLevel"))) {
-			logLevel = KevoreeLogLevel.INFO;
-		}
-		if ("ERROR".equals(getDictionary().get("logLevel"))) {
-			logLevel = KevoreeLogLevel.ERROR;
-		}
-		if ("FINE".equals(getDictionary().get("logLevel"))) {
-			logLevel = KevoreeLogLevel.FINE;
-		}
-		getBootStrapperService().getKevoreeLogService().setUserLogLevel(logLevel);
-
 	}
 
 
