@@ -20,6 +20,7 @@ object ArduinoModelGetHelper {
   var scriptRaw = ""
   var logger = LoggerFactory.getLogger(this.getClass);
 
+
   def getCurrentModel(targetNewModel : ContainerRoot,targetNodeName : String,boardPortName:String) : ContainerRoot = {
     var found : Boolean = false
     var  scriptRaw = new StringBuilder()
@@ -41,12 +42,13 @@ object ArduinoModelGetHelper {
       count +=1;
     } while(found == false && count < 10)
 
-    if(found){
+    if(found)
+    {
       val s = scriptRaw.subSequence(scriptRaw.indexOf('$')+1, scriptRaw.indexOf('}')+1)
       logger.debug("Compressed script from arduino node : "+s)
       //GET SCRIPT FROM COM PORT
       var script : Script =    KevScriptWrapper.generateKevScriptFromCompressed(s.toString)
-
+      logger.debug("The generated script : "+Script)
       //APPLY TO BUILD A CURRENT MODEL
       import org.kevoree.tools.marShell.interpreter.KevsInterpreterAspects._
       var current = KevoreeFactory.createContainerRoot
@@ -60,6 +62,7 @@ object ArduinoModelGetHelper {
     }
     else
     {
+      logger.error("The node '"+targetNodeName+"' did not respond in time or is not present on the port "+boardPortName+". The firmware have to be flashed with a kevoree runtime")
       null
     }
   }
