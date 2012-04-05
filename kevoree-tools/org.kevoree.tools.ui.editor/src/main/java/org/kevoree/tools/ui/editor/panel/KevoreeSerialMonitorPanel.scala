@@ -50,10 +50,11 @@ class KevoreeSerialMonitorPanel(kernel: KevoreeUIKernel) extends JPanel {
 
   var serial: SerialPort = new SerialPort(boardPortName, speed)
 
+  /*
   if(KHelpers.getPortIdentifiers.size() >0)
   {
     serial.open();
-  }
+  }  */
 
 
   setLayout(new BorderLayout)
@@ -67,7 +68,7 @@ class KevoreeSerialMonitorPanel(kernel: KevoreeUIKernel) extends JPanel {
   var incoming: Style = doc.addStyle("incoming", `def`)
   var system: Style = doc.addStyle("system", `def`)
   var outgoing: Style = doc.addStyle("outgoing", `def`)
-  val INITIAL_MESSAGE: String = "Type your text here"
+  val INITIAL_MESSAGE: String = ""
 
 
   StyleConstants.setForeground(system, Color.GRAY)
@@ -104,7 +105,7 @@ class KevoreeSerialMonitorPanel(kernel: KevoreeUIKernel) extends JPanel {
       serial.close()
       boardPortName =     KHelpers.getPortIdentifiers().get(device_available.getSelectedIndex)
       serial.setPort_name(boardPortName)
-      serial.open
+      serial.open()
     }
   });
 
@@ -113,6 +114,7 @@ class KevoreeSerialMonitorPanel(kernel: KevoreeUIKernel) extends JPanel {
   inputTextField.addKeyListener(new KeyAdapter() {
 
     override def keyPressed( e:KeyEvent) {
+
       if(e.getKeyCode ==10){
         if (inputTextField.getText.length > 1) {
           serial.write(inputTextField.getText().getBytes())
