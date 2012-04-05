@@ -34,13 +34,15 @@ object TesterParser extends  App {
          "3:T1:S1:0/" +
          "}"
 
- val test = " node0@{" +
-   "pin:freq:period:,DigitalTone:Timer:LocalChannel:,on:off:toggle:tick:/" +
-   "1:T1:1:2=1000/" +
-   "1:D1:0:0=0,1=500/" +
-   "3:T1:L1:3/" +
-   "3:D1:L1:2/" +
-   "}"
+ val test = "       " +
+   "node0@{    " +
+   "  period:pin,Timer:DigitalLight:LocalChannel,tick:on:off:toggle:flash/ " +
+   "1:D:1:1=13/" +
+   " 1:T1:0:0=50/" +
+   " 3:D:L1:3/" +
+   "3:T1:L1:0/} "
+
+
   KevScriptWrapper.generateKevScriptFromCompressed(test)
 
 }
