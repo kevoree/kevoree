@@ -37,17 +37,16 @@ object KevScriptWrapper {
    */
   def generateKevScriptFromCompressed(cscript: String) : Script =
   {
-    val parser  = new ParserPush()
-    val result =  parser.parseAdaptations(cscript)
-    val definitions = result.definitions.get
-    val nodeName = result.nodeName
     var statments = new HashSet[Statment]
     var blocks = new HashSet[TransactionalBloc]
-
     try
     {
+      val parser  = new ParserPush()
+      val result =  parser.parseAdaptations(cscript)
+      val definitions = result.definitions.get
+      val nodeName = result.nodeName
+
       result.adaptations.toArray.foreach( s => {
-        println(s)
         s match
         {
           case classOf: UDI  => {
@@ -103,6 +102,7 @@ object KevScriptWrapper {
           }
 
           case _ => {
+            logger.error("This Statment is not managed "+s.getClass.getName)
             None
           }
         }
@@ -112,6 +112,7 @@ object KevScriptWrapper {
       logger.debug(blocks.toString())
     } catch {
       case e:IndexOutOfBoundsException => logger.error("The Arduino globals definitions (properties or typedefinition or portdefinition)  are not compliant to the adaptations")
+      case e:java.lang.Exception => logger.error("Fail to parse the script :  "+e+ " script was : "+cscript)
       case msg =>  logger.error("Caught an exception!"+msg)
     }
     new Script(blocks.toList)

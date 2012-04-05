@@ -15,6 +15,7 @@ package org.kevoree.tools.ui.editor.command
 
 import javax.swing.JFrame
 import org.kevoree.tools.ui.editor.{KevoreeUIKernel, KevModelTextEditorPanel}
+import java.awt.event.{WindowEvent, WindowAdapter}
 
 /**
  * Created by IntelliJ IDEA.
@@ -43,7 +44,13 @@ class DisplayModelTextEditor extends Command {
     j.setSize(800,600)
     j.setPreferredSize(j.getPreferredSize)
     j.setVisible(true)
-    
+
+    j.addWindowListener(new WindowAdapter() {
+      override def windowClosing( e : WindowEvent) {
+        j.dispose()
+      }
+    });
+
     
   }
   
