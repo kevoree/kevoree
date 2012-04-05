@@ -80,6 +80,7 @@ printScriptFromEEPROM ()
   int indexInBytes = 0;
   int indexEEPROM = 2;
 
+  Serial.print (F("$"));
   printNodeName ();
   Serial.print (F("@"));
   Serial.println (startBAdminChar);
@@ -88,7 +89,9 @@ printScriptFromEEPROM ()
     {
         strcpy_P(inBytes, (char*)pgm_read_word(&(properties[i])));
         Serial.print( inBytes );
-        Serial.print(F(":"));
+        if(i < nbProps-1){
+                   Serial.print(F(":"));
+        }
     }
     if(nbProps > 0){
       Serial.print (F(","));
@@ -98,7 +101,9 @@ printScriptFromEEPROM ()
     {
         strcpy_P(inBytes, (char*)pgm_read_word(&(typedefinition[i])));
         Serial.print( inBytes );
-        Serial.print(F(":"));
+        if(i < nbTypeDef-1){
+                   Serial.print(F(":"));
+        }
     }
     if(nbTypeDef > 0){
       Serial.print (F(","));
@@ -108,7 +113,9 @@ printScriptFromEEPROM ()
     {
      strcpy_P(inBytes, (char*)pgm_read_word(&(portdefinition[i])));
      Serial.print( inBytes );
-     Serial.print(F(":"));
+        if(i < nbPortType-1){
+                   Serial.print(F(":"));
+        }
     }
 
     if(nbTypeDef > 0|nbProps > 0|nbPortType > 0 )
@@ -219,7 +226,9 @@ printScriptFromEEPROM ()
 
 	  if (firstAdd == false)
 	    {
-	      Serial.println (sepAdminChar);
+	    if(inBytes[0] == RBI_C | inBytes[0] == RIN_C |inBytes[0] == ABI_C |inBytes[0] == AIN_C | inBytes[0] == UDI_C) {
+	   	      Serial.println (sepAdminChar);
+	    }
 	    }
 	  else
 	    {

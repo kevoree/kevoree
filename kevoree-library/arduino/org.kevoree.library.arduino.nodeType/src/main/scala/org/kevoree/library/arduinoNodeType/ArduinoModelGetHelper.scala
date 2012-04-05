@@ -6,6 +6,7 @@ import org.kevoree.tools.marShell.interpreter.KevsInterpreterContext
 import org.kevoree.tools.marShellTransform.KevScriptWrapper
 import org.kevoree.extra.kserial.{KevoreeSharedCom, ContentListener}
 import org.kevoree.framework.KevoreePropertyHelper
+import org.slf4j.LoggerFactory
 
 
 /**
@@ -17,9 +18,7 @@ import org.kevoree.framework.KevoreePropertyHelper
 object ArduinoModelGetHelper {
 
   var scriptRaw = ""
-
-
-
+  var logger = LoggerFactory.getLogger(this.getClass);
 
   def getCurrentModel(targetNewModel : ContainerRoot,targetNodeName : String,boardPortName:String) : ContainerRoot = {
     var found : Boolean = false
@@ -43,7 +42,8 @@ object ArduinoModelGetHelper {
     } while(found == false && count < 10)
 
     if(found){
-      val s = scriptRaw.subSequence(scriptRaw.indexOf('{'), scriptRaw.indexOf('}')+1)
+      val s = scriptRaw.subSequence(scriptRaw.indexOf('$')+1, scriptRaw.indexOf('}')+1)
+      logger.debug("Compressed script from arduino node : "+s)
       //GET SCRIPT FROM COM PORT
       var script : Script =    KevScriptWrapper.generateKevScriptFromCompressed(s.toString)
 
