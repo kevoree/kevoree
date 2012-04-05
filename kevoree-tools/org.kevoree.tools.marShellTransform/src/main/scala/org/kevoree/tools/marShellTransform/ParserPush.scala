@@ -118,9 +118,9 @@ class ParserPush extends StandardTokenParsers{
   }
 
   //  global
-  def requestParse: Parser[Adaptations] =  "{" ~ nodeName ~ "@" ~ opt(parseGlobalDefinitions) ~rep1sep(( parseABI | parseAIN | parseUDI | parseRIN ), "/") ~ opt("/") ~ "}"   ^^
+  def requestParse: Parser[Adaptations] =  nodeName ~ "@"  ~ "{" ~ opt(parseGlobalDefinitions) ~rep1sep(( parseABI | parseAIN | parseUDI | parseRIN ), "/") ~ opt("/") ~ "}"   ^^
     {
-      case _ ~ nodename ~ _ ~  definitions ~ adaptations ~ _ ~ _ => new  Adaptations(nodename,definitions,adaptations)
+      case  nodename  ~ _ ~ _ ~  definitions ~ adaptations ~ _ ~ _ => new  Adaptations(nodename,definitions,adaptations)
     }
 
 

@@ -80,61 +80,44 @@ printScriptFromEEPROM ()
   int indexInBytes = 0;
   int indexEEPROM = 2;
 
-  Serial.println (startBAdminChar);
+  Serial.print (F("$"));
   printNodeName ();
-  Serial.println (F("@"));
+  Serial.print (F("@"));
+  Serial.println (startBAdminChar);
 
-  firstAdd = true;
-  // 1 send properties
   for (i = 0; i < nbProps; i++)
     {
-      if (firstAdd)
-	{
-	  firstAdd = false;
-	}
-      else
-	{
-	  Serial.print (delimitation);
-	}
-      printStringF (properties[i]);
+        strcpy_P(inBytes, (char*)pgm_read_word(&(properties[i])));
+        Serial.print( inBytes );
+        if(i < nbProps-1){
+                   Serial.print(F(":"));
+        }
     }
     if(nbProps > 0){
-      Serial.print (",");
+      Serial.print (F(","));
     }
 
-  // 2 send typedefinition
-  firstAdd = true;
   for (i = 0; i < nbTypeDef; i++)
     {
-      if (firstAdd)
-	{
-	  firstAdd = false;
-	}
-      else
-	{
-	  Serial.print (delimitation);
-	}
-      printStringF (typedefinition[i]);
+        strcpy_P(inBytes, (char*)pgm_read_word(&(typedefinition[i])));
+        Serial.print( inBytes );
+        if(i < nbTypeDef-1){
+                   Serial.print(F(":"));
+        }
     }
     if(nbTypeDef > 0){
-      Serial.print (",");
-    }
-  // 3 send typedefinition
-  firstAdd = true;
-  for (i = 0; i < nbPortType; i++)
-    {
-      if (firstAdd)
-	{
-	  firstAdd = false;
-	}
-      else
-	{
-	  Serial.print (delimitation);
-	}
-      printStringF (portdefinition[i]);
+      Serial.print (F(","));
     }
 
-  firstAdd = true;
+  for (i = 0; i < nbPortType; i++)
+    {
+     strcpy_P(inBytes, (char*)pgm_read_word(&(portdefinition[i])));
+     Serial.print( inBytes );
+        if(i < nbPortType-1){
+                   Serial.print(F(":"));
+        }
+    }
+
     if(nbTypeDef > 0|nbProps > 0|nbPortType > 0 )
     {
          Serial.println (sepAdminChar);
@@ -243,7 +226,9 @@ printScriptFromEEPROM ()
 
 	  if (firstAdd == false)
 	    {
-	      Serial.println (sepAdminChar);
+	    if(inBytes[0] == RBI_C | inBytes[0] == RIN_C |inBytes[0] == ABI_C |inBytes[0] == AIN_C | inBytes[0] == UDI_C) {
+	   	      Serial.println (sepAdminChar);
+	    }
 	    }
 	  else
 	    {
