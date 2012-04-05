@@ -37,6 +37,10 @@ object ThirdPartyManagement {
 
   def processKevoreeProperty(pomModel: MavenProject, log: Log) : java.util.List[Dependency] = {
 
+    if(!pomModel.getPackaging.equals("bundle") && pomModel.getProperties.get(includeProp) == null){
+      pomModel.getProperties.put(includeProp,"*:*")
+    }
+
     var includeRegex = List[Tuple2[Regex, Regex]]()
     if (pomModel.getProperties.containsKey(includeProp)) {
       pomModel.getProperties.get(includeProp).toString.split(seperatorProp).foreach {
