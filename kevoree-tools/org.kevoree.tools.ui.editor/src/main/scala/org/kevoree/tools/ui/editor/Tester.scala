@@ -11,38 +11,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kevoree.tools.marShellTransform
+package org.kevoree.tools.ui.editor
 
-import ast._
-import org.kevoree.tools.marShell.ast._
-import collection.immutable.HashSet
-
+import javax.swing.JFrame
+import panel.KevoreeSerialMonitorPanel
+import java.awt.event.{WindowEvent, WindowAdapter}
 
 /**
  * Created by jed
  * User: jedartois@gmail.com
- * Date: 28/03/12
- * Time: 13:29
+ * Date: 05/04/12
+ * Time: 12:19
  */
 
-object TesterParser extends  App {
+object Tester extends  App {
 
 
-       val csriptraw = "node0 @ {" +
-         "period:serialport,Timer:SerialCT,tick/" +
-         "1:T1:0:0=1000/" +
-         "3:T1:S1:0/" +
-         "}"
+  val j = new JFrame("Kevoree Model Text Editor")
+      val p = new KevoreeSerialMonitorPanel(null)
 
- val test = "       " +
-   "node0@{    " +
-   "  period:pin,Timer:DigitalLight:LocalChannel,tick:on:off:toggle:flash/ " +
-   "1:D:1:1=13/" +
-   " 1:T1:0:0=50/" +
-   " 3:D:L1:3/" +
-   "3:T1:L1:0/} "
+      j.add(p)
+      j.setSize(800,600)
+      j.setPreferredSize(j.getPreferredSize)
+      j.setVisible(true)
 
-
-  KevScriptWrapper.generateKevScriptFromCompressed(test)
-
+  j.addWindowListener(new WindowAdapter() {
+    override def windowClosing( e : WindowEvent) {
+      p.close()
+      System.exit(0);
+    }
+  });
 }

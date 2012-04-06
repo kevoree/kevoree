@@ -146,6 +146,12 @@ public class KevoreeMenuBar extends JMenuBar {
 
         tools = new JMenu("Tools");
 
+        JMenuItem serialmonitorItem = new JMenuItem("Serial Monitor");
+        DisplaySerialMonitor serialMonitor = new DisplaySerialMonitor();
+        serialMonitor.setKernel(kernel);
+        serialmonitorItem.addActionListener(new CommandActionListener(serialMonitor));
+        tools.add(serialmonitorItem);
+
         JMenuItem sourceEditorItem = new JMenuItem("Source editor");
         DisplayModelTextEditor sourceEditorCmd = new DisplayModelTextEditor();
         sourceEditorCmd.setKernel(kernel);
