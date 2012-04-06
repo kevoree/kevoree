@@ -51,17 +51,9 @@ class KevoreeSerialMonitorPanel(kernel: KevoreeUIKernel)  extends JPanel with  R
 
   p.start()
 
-<<<<<<< HEAD
 
   var serial: SerialPort = new SerialPort(boardPortName, speed)
   println(KHelpers.getPortIdentifiers())
-=======
-  /*
-  if(KHelpers.getPortIdentifiers.size() >0)
-  {
-    serial.open();
-  }  */
->>>>>>> origin/master
 
 
   setLayout(new BorderLayout)
@@ -75,7 +67,7 @@ class KevoreeSerialMonitorPanel(kernel: KevoreeUIKernel)  extends JPanel with  R
   var incoming: Style = doc.addStyle("incoming", `def`)
   var system: Style = doc.addStyle("system", `def`)
   var outgoing: Style = doc.addStyle("outgoing", `def`)
-  val INITIAL_MESSAGE: String = ""
+  val INITIAL_MESSAGE: String = "Type your text here"
 
 
   StyleConstants.setForeground(system, Color.GRAY)
@@ -106,7 +98,6 @@ class KevoreeSerialMonitorPanel(kernel: KevoreeUIKernel)  extends JPanel with  R
 
   device_available.addActionListener(new ActionListener {
     def actionPerformed(e: ActionEvent) {
-<<<<<<< HEAD
       try
       {
         serial.close()
@@ -123,27 +114,15 @@ class KevoreeSerialMonitorPanel(kernel: KevoreeUIKernel)  extends JPanel with  R
         }
         case e: Exception =>   logger.error("Fail to open serial port "+boardPortName+" "+e)
       }
-=======
-      serial.close()
-      boardPortName =     KHelpers.getPortIdentifiers().get(device_available.getSelectedIndex)
-      serial.setPort_name(boardPortName)
-      serial.open()
->>>>>>> origin/master
     }
   });
 
   inputTextField.addKeyListener(new KeyAdapter() {
     override def keyPressed( e:KeyEvent) {
-<<<<<<< HEAD
       try
       {
         if (inputTextField.getText.length > 1 && e.getKeyCode ==10)
         {
-=======
-
-      if(e.getKeyCode ==10){
-        if (inputTextField.getText.length > 1) {
->>>>>>> origin/master
           serial.write(inputTextField.getText().getBytes())
           appendOutgoing(inputTextField.getText())
           inputTextField.setText("")
