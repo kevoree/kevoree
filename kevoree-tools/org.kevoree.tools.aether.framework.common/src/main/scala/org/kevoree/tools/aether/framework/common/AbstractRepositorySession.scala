@@ -11,11 +11,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kevoree.core.basechecker.cyclechecker
+package org.kevoree.tools.aether.framework.common
 
-import org.kevoree.{Channel, MBinding}
+import org.apache.maven.repository.internal.MavenRepositorySystemSession
 
-
-case class ChannelFragment (channel: Channel, binding: MBinding) {}
-
-case class BindingFragment (binding: MBinding, binding1: MBinding) {}
+/**
+ * Abstract maven repository session.
+ */
+trait AbstractRepositorySession {
+  def repositorySystemSession: MavenRepositorySystemSession
+}

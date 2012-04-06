@@ -11,24 +11,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kevoree.framework
 
-/**
- * Created by IntelliJ IDEA.
- * User: duke
- * Date: 03/01/12
- * Time: 13:59
- * To change this template use File | Settings | File Templates.
- */
+package org.kevoree.tools.aether.framework.common
 
-object ContextKeyHelper {
+import org.kevoree.DeployUnit
 
-  def createKey(nodeID:String, instanceID : String, name:String, timestamp : java.lang.Long){
-    CaseContextKey(nodeID,instanceID,name,timestamp)
+trait Key extends Query {
+  def buildKey(unit: DeployUnit): String = {
+    unit.getName + "/" + buildQuery(unit, None)
   }
-
-  def createAllQuery(nodeID:String, instanceID : String, name:String){
-    CaseContextKey(nodeID,instanceID,name,-1)
-  }
-  
 }

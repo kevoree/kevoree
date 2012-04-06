@@ -1,9 +1,9 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>org.kevoree.tools.aether.framework</artifactId>
+    <artifactId>org.kevoree.tools.aether.framework.common</artifactId>
     <packaging>bundle</packaging>
-    <name>Kevoree :: Tools :: Aether Framework</name>
+    <name>Kevoree :: Tools :: Aether Framework Common</name>
     <version>1.7.0-SNAPSHOT</version>
 
     <properties>
@@ -18,7 +18,7 @@
         <relativePath>../org.kevoree.tools.root/pom.xml</relativePath>
     </parent>
 
-<!-- TODO / CLEANUP this mess -->
+    <!-- TODO / CLEANUP this mess -->
     <profiles>
         <profile>
             <id>org.kevoree.tools.ui.editor.standalone.mac</id>
@@ -45,12 +45,6 @@
     </profiles>
 
     <dependencies>
-        <dependency>
-            <groupId>org.kevoree.tools</groupId>
-            <artifactId>org.kevoree.tools.aether.framework.common</artifactId>
-            <version>${kevoree.version}</version>
-            <scope>provided</scope>
-        </dependency>
         <dependency>
             <groupId>org.kevoree</groupId>
             <artifactId>org.kevoree.model</artifactId>
