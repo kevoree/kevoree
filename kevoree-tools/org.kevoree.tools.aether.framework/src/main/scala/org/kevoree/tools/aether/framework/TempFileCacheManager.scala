@@ -19,12 +19,6 @@ import util.Random
 import java.io.{FileInputStream, File}
 import org.kevoree.framework.FileNIOHelper
 
-/**
- * Created by IntelliJ IDEA.
- * User: duke
- * Date: 08/03/12
- * Time: 10:28
- */
 
 trait TempFileCacheManager {
 
