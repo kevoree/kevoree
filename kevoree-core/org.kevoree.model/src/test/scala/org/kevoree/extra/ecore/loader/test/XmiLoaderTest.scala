@@ -13,12 +13,12 @@
  */
 package org.kevoree.extra.ecore.loader.test
 
-import java.io.File
 import org.junit.Assert._
 import org.kevoree.loader.ContainerRootLoader
 import org.junit.{Test, BeforeClass}
 import org.kevoree.serializer.ModelSerializer
 import org.kevoree.{NodeType, ContainerRoot}
+import java.io.{PrintWriter, File}
 
 /**
  * Created by IntelliJ IDEA.
@@ -45,10 +45,20 @@ object XmiLoaderTest {
 
 class XmiLoaderTest {
   @Test
-  def testSave() {
-    val serializer = new ModelSerializer
-
-    println(serializer.serialize(XmiLoaderTest.model))
+  def testSaveAndLoad() {
+    System.out.println("Saving model from memory to tempFile")
+    val tempFile = File.createTempFile("kmfTest_" + System.currentTimeMillis(),"kev")
+    val pr = new PrintWriter(tempFile)
+    val ms = new ModelSerializer()
+    pr.println(ms.serialize(XmiLoaderTest.model))
+    pr.close()
+    System.out.println("Loading saved model")
+    val localModel = ContainerRootLoader.loadModel(tempFile);
+    localModel match {
+      case Some(m) =>
+      case None => fail("Model not loaded!")
+    }
+    System.out.println("Loding OK.")
   }
 
   @Test

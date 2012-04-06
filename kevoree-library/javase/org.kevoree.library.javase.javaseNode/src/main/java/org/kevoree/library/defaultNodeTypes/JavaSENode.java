@@ -39,6 +39,7 @@ public class JavaSENode extends AbstractNodeType {
 	private CommandMapper mapper = null;
 
 	private boolean isRunning;
+	private Thread shutdownThread;
 
 	protected boolean isDaemon () {
 		return false;
@@ -55,12 +56,13 @@ public class JavaSENode extends AbstractNodeType {
 		updateNode();
 
 		if (!isDaemon()) {
-			new Thread() {
+			shutdownThread = new Thread() {
 				@Override
 				public void run () {
 					catchShutdown();
 				}
-			}.start();
+			};
+			shutdownThread.start();
 		}
 	}
 
@@ -71,6 +73,7 @@ public class JavaSENode extends AbstractNodeType {
 		kompareBean = null;
 		mapper = null;
 		isRunning = false;
+		shutdownThread.stop();
 		//Cleanup the local runtime
 		KevoreeDeployManager.clearAll(this);
 	}
@@ -78,24 +81,25 @@ public class JavaSENode extends AbstractNodeType {
 	@Update
 	@Override
 	public void updateNode () {
-		KevoreeLogLevel logLevel = KevoreeLogLevel.WARN;
-		if ("DEBUG".equals(getDictionary().get("logLevel"))) {
-			logLevel = KevoreeLogLevel.DEBUG;
+		if (getBootStrapperService().getKevoreeLogService() != null) {
+			KevoreeLogLevel logLevel = KevoreeLogLevel.WARN;
+			if ("DEBUG".equals(getDictionary().get("logLevel"))) {
+				logLevel = KevoreeLogLevel.DEBUG;
+			}
+			if ("WARN".equals(getDictionary().get("logLevel"))) {
+				logLevel = KevoreeLogLevel.WARN;
+			}
+			if ("INFO".equals(getDictionary().get("logLevel"))) {
+				logLevel = KevoreeLogLevel.INFO;
+			}
+			if ("ERROR".equals(getDictionary().get("logLevel"))) {
+				logLevel = KevoreeLogLevel.ERROR;
+			}
+			if ("FINE".equals(getDictionary().get("logLevel"))) {
+				logLevel = KevoreeLogLevel.FINE;
+			}
+			getBootStrapperService().getKevoreeLogService().setUserLogLevel(logLevel);
 		}
-		if ("WARN".equals(getDictionary().get("logLevel"))) {
-			logLevel = KevoreeLogLevel.WARN;
-		}
-		if ("INFO".equals(getDictionary().get("logLevel"))) {
-			logLevel = KevoreeLogLevel.INFO;
-		}
-		if ("ERROR".equals(getDictionary().get("logLevel"))) {
-			logLevel = KevoreeLogLevel.ERROR;
-		}
-		if ("FINE".equals(getDictionary().get("logLevel"))) {
-			logLevel = KevoreeLogLevel.FINE;
-		}
-		getBootStrapperService().getKevoreeLogService().setUserLogLevel(logLevel);
-
 	}
 
 
@@ -124,12 +128,16 @@ public class JavaSENode extends AbstractNodeType {
 				}
 				line = reader.readLine();
 			}
-			reader.close();
 			if (shutdown) {
 				// start the shutdown of the platform
 				System.exit(0);
 			}
 		} catch (IOException ignored) {
+		} finally {
+			try {
+				reader.close();
+			} catch (IOException ignored) {
+			}
 		}
 	}
 
