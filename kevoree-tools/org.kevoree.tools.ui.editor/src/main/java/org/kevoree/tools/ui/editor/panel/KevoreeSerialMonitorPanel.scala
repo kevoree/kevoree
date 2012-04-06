@@ -30,17 +30,18 @@ import java.awt.event.{KeyEvent, KeyAdapter, ActionEvent, ActionListener}
  * Time: 11:38
  */
 
-class KevoreeSerialMonitorPanel(kernel: KevoreeUIKernel) extends JPanel {
+class KevoreeSerialMonitorPanel(kernel: KevoreeUIKernel)  extends JPanel with  Runnable {
 
   val logger: Logger = LoggerFactory.getLogger(this.getClass)
   var screen: JTextPane = null
   var toppanel: JPanel = null
   var inputTextField: JTextArea = null
   var send: JButton = null
-  var boardPortName  = "/dev/ttyACM0"
+  var boardPortName  = ""
   var bottomPanel: JPanel = new JPanel
   var speed : Int = 115200
   var device_available = new JComboBox(KHelpers.getPortIdentifiers.toArray)
+  val p = new Thread(this);
   // var baudrate_available = new JComboBox()
 
   // KHelpers.getbaudrates.foreach( s => baudrate_available.addItem(s))
@@ -48,18 +49,17 @@ class KevoreeSerialMonitorPanel(kernel: KevoreeUIKernel) extends JPanel {
   // close the
   KevoreeSharedCom.killAll()
 
-  var serial: SerialPort = new SerialPort(boardPortName, speed)
+  p.start()
 
-  if(KHelpers.getPortIdentifiers.size() >0)
-  {
-    serial.open();
-  }
+
+  var serial: SerialPort = new SerialPort(boardPortName, speed)
+  println(KHelpers.getPortIdentifiers())
 
 
   setLayout(new BorderLayout)
   send = new JButton("Send")
   screen = new JTextPane
-  screen.setFocusable(false)
+  screen.setFocusable(true)
   screen.setEditable(true)
 
   var doc: StyledDocument = screen.getStyledDocument
@@ -78,10 +78,7 @@ class KevoreeSerialMonitorPanel(kernel: KevoreeUIKernel) extends JPanel {
   inputTextField = new JTextArea
   inputTextField.setText(INITIAL_MESSAGE)
   inputTextField.setFocusable(true)
-  inputTextField.setRequestFocusEnabled(true)
   inputTextField.requestFocus
-  inputTextField.setCaretPosition(0)
-  inputTextField.setSelectionStart(0)
   inputTextField.setSelectionEnd(INITIAL_MESSAGE.length());
 
   toppanel = new JPanel()
@@ -101,26 +98,42 @@ class KevoreeSerialMonitorPanel(kernel: KevoreeUIKernel) extends JPanel {
 
   device_available.addActionListener(new ActionListener {
     def actionPerformed(e: ActionEvent) {
-      serial.close()
-      boardPortName =     KHelpers.getPortIdentifiers().get(device_available.getSelectedIndex)
-      serial.setPort_name(boardPortName)
-      serial.open
+      try
+      {
+        serial.close()
+        boardPortName =     KHelpers.getPortIdentifiers().get(device_available.getSelectedIndex)
+        serial.setPort_name(boardPortName)
+        serial.setPort_bitrate(speed)
+        screen.setText("")
+        serial.open
+      }catch {
+        case se: SerialPortException =>  {
+          logger.error(boardPortName+" "+se.toString)
+          device_available.remove(device_available.getSelectedIndex)
+          //   KHelpers.getPortIdentifiers.toArray.foreach(s =>   device_available.addItem(s)
+        }
+        case e: Exception =>   logger.error("Fail to open serial port "+boardPortName+" "+e)
+      }
     }
   });
 
-
-
   inputTextField.addKeyListener(new KeyAdapter() {
-
     override def keyPressed( e:KeyEvent) {
-      if(e.getKeyCode ==10){
-        if (inputTextField.getText.length > 1) {
+      try
+      {
+        if (inputTextField.getText.length > 1 && e.getKeyCode ==10)
+        {
           serial.write(inputTextField.getText().getBytes())
           appendOutgoing(inputTextField.getText())
           inputTextField.setText("")
         }
+      }catch {
+        case se: SerialPortException =>   logger.error(boardPortName+" "+se.toString)
+        case e: Exception =>   logger.error("Fail to open serial port "+boardPortName+" "+e)
       }
+
     }
+
   });
 
   send.addActionListener(new ActionListener {
@@ -147,40 +160,115 @@ class KevoreeSerialMonitorPanel(kernel: KevoreeUIKernel) extends JPanel {
   def appendIn(text: String): Unit = {
     try {
       var doc: StyledDocument = screen.getStyledDocument
+      val overLength = doc.getLength() + text.length() - 4096
+      if (overLength > 0)
+      {
+        doc.remove(0, overLength);
+      }
+
       doc.insertString(doc.getLength,formatForPrint(text), doc.getStyle("incoming"))
       //scroll the text as it gets more and more
       screen.scrollRectToVisible( new Rectangle(0,screen.getHeight()-2,1,1));
-
     }
     catch {
+      case e : Exception => //ignore
       case ex: BadLocationException => {
         logger.error("Error while trying to append local message in the " + this.getName, ex)
       }
     }
   }
 
-
-  serial.addEventListener(new SerialPortEventListener(){
+  var mylistener = new SerialPortEventListener(){
     def incomingDataEvent(p1: SerialPortEvent) {
       appendIn(new String(p1.read()))
     }
 
     def disconnectionEvent(p1: SerialPortDisconnectionEvent) {
-      try {
+      try
+      {
         serial.autoReconnect(20, this)
       }
       catch {
         case e: SerialPortException => {
+          logger.error("Fail to open serial port "+boardPortName)
+          serial.close()
         }
       }
     }
-  })
+  }
 
-  def close () = {
-    serial.close()
+  serial.addEventListener(mylistener)
+
+  def close () =
+  {
+    try {
+      serial.close()
+      serial.exit()
+      p.interrupt()
+      serial.removeEventListener(mylistener)
+      mylistener = null
+      serial = null
+    }
+    catch {
+      case _ => //ignore
+    }
   }
 
   private def formatForPrint(text: String): String = {
     return (if (text.endsWith("\n")) text else text + "\n")
   }
+
+
+  /*     def searchingKevoreeNode()= {
+
+  var found : Boolean = false
+  var  scriptRaw = new StringBuilder()
+  var count : Int =0;
+
+
+  KHelpers.getPortIdentifiers().toArray.foreach(p => {
+    KevoreeSharedCom.addObserver(boardPortName, new ContentListener
+        {
+          def recContent(content: String) {
+            scriptRaw.append(content.trim())
+            if(content.contains("}")) {   found = true; }
+          }
+        }
+        )
+        do
+        {
+          KevoreeSharedCom.send(boardPortName,"$g")
+          Thread.sleep(500)
+          count +=1;
+        } while(found == false && count < 10)
+
+        if(found)
+        {
+          val s = scriptRaw.subSequence(scriptRaw.indexOf('$')+1, scriptRaw.indexOf('}')+1)
+        }
+
+  }
+  )
+  */
+  def run()
+  {
+
+    if(KHelpers.getPortIdentifiers.size() >0)
+    {
+      try
+      {
+        boardPortName =     KHelpers.getPortIdentifiers().get(0)
+        serial.setPort_bitrate(speed)
+        serial.setPort_name(boardPortName)
+        serial.open
+
+      }catch
+        {
+          case se: SerialPortException =>   logger.error(boardPortName+" "+se.toString)
+          case e: Exception =>   logger.error("Fail to open serial port "+boardPortName+" "+e)
+        }
+    }
+
+  }
+
 }
