@@ -81,7 +81,9 @@ printScriptFromEEPROM ()
   int indexEEPROM = 2;
 
   Serial.print (F("$"));
-  printNodeName ();
+  printNodeName();
+  Serial.print(F(":"));
+  printNodeTypeName();
   Serial.print (F("@"));
   Serial.println (startBAdminChar);
 

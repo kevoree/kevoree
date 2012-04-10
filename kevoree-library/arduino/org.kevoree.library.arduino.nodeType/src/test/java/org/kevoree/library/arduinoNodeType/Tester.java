@@ -43,7 +43,7 @@ public class Tester {
         // node.getDictionary().put("boardPortName","/dev/tty.usbserial-A400g2se");
 
 
-        node.getDictionary().put("incremental", "false");
+        node.getDictionary().put("incremental", "true");
         node.startNode();
         node.push("n0", model, "/dev/tty.usbmodem26231");
 

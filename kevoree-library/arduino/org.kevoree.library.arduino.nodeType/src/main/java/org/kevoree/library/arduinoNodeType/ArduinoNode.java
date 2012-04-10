@@ -110,7 +110,7 @@ public class ArduinoNode extends AbstractNodeType {
         int lastVersion = 0;
         //Try to find previous version
         if (getDictionary().get("incremental") != null && getDictionary().get("incremental").equals("true")) {
-            logger.debug("Incremental search");
+            logger.info("Incremental search");
             /*
             File lastModelFile = null;
             for (File f : newdir.listFiles()) {
