@@ -26,8 +26,7 @@
         <dependency>
             <groupId>org.kevoree.extra</groupId>
             <artifactId>org.kevoree.extra.kserial</artifactId>
-            <version>1.0</version>
-            <type>bundle</type>
+            <version>1.1</version>
         </dependency>
 
         <dependency>
