@@ -59,6 +59,10 @@
         <module>../org.kevoree.library.javase.vlc</module>
         <module>../org.kevoree.library.javase.swingUI</module>
         <module>../org.kevoree.library.javase.webserver</module>
+        <module>../org.kevoree.library.javase.webserver.api</module>
+        <module>../org.kevoree.library.javase.webserver.tjws</module>
+
+
         <module>../org.kevoree.library.javase.webserver.components</module>
         <module>../org.kevoree.library.javase.webserver.gallery</module>
         <module>../org.kevoree.library.javase.webserver.aceEditor</module>
@@ -66,6 +70,9 @@
         <module>../org.kevoree.library.javase.webserver.servlet</module>
         <module>../org.kevoree.library.javase.webserver.jenkins</module>
         <module>../org.kevoree.library.javase.webserver.gitblit</module>
+        <module>../org.kevoree.library.javase.webserver.pebble</module>
+
+
         <!--<module>../org.kevoree.library.javase.webserver.codemirrorEditor</module>-->
 
    <!--     <module>../org.kevoree.library.javase.webserver.wordpress</module>
