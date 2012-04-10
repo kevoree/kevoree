@@ -1,5 +1,6 @@
 package org.kevoree.library.android.osmdroid;
 
+import android.util.DisplayMetrics;
 import android.widget.LinearLayout;
 import org.kevoree.android.framework.helper.UIServiceHandler;
 import org.kevoree.android.framework.service.KevoreeAndroidService;
@@ -37,7 +38,7 @@ public class MapComponent extends AbstractComponentType {
     private MapView mMapView;
     private MapController mMapController;
     private LinearLayout layout=null;
-    private final int sizeTitle = 30;
+    private final int sizeTitle = 15;
     private String title= "";
     private double latitude=48117861;
     private double longitude=-1639552;
@@ -54,16 +55,20 @@ public class MapComponent extends AbstractComponentType {
             @Override
             public void run ()
             {
-
                 mMapView = new MapView(uiService.getRootActivity(),sizeTitle);
-                mMapView.setTileSource(TileSourceFactory.MAPNIK);
-
                 mMapView.setBuiltInZoomControls(true);
                 mMapController = mMapView.getController();
-                mMapController.setZoom(8);
-                GeoPoint gPt = new GeoPoint(latitude,longitude);
+                mMapController.setZoom(5);
+                GeoPoint gPt = new GeoPoint(48096397,-1743137);
                 mMapController.setCenter(gPt);
+                mMapView.setTileSource(TileSourceFactory.MAPNIK);
+                mMapView.setActivated(true);
 
+                DisplayMetrics dm = new DisplayMetrics();
+                uiService.getRootActivity().getWindowManager().getDefaultDisplay().getMetrics(dm);
+
+                mMapView.setMinimumHeight(dm.heightPixels);
+                mMapView.setMinimumWidth(dm.widthPixels);
                 layout.addView(mMapView);
             }
         });
@@ -76,7 +81,8 @@ public class MapComponent extends AbstractComponentType {
     @Stop
     public void stop() {
 
-
+        mMapView = null;
+        uiService.remove(layout);
     }
 
     @Update
@@ -105,7 +111,6 @@ public class MapComponent extends AbstractComponentType {
     @Port(name = "zoomOut")
     public void manageZoomOut(Object msg) {
         mMapController.zoomOut();
-
     }
 
     @Port(name = "pos_map_latitude")
@@ -114,7 +119,6 @@ public class MapComponent extends AbstractComponentType {
         try
         {
             latitude = Double.parseDouble(msg.toString());
-
         }  catch (Exception e){
             logger.error("Fail to update pos_map_latitude "+e.getMessage());
         }
@@ -131,11 +135,9 @@ public class MapComponent extends AbstractComponentType {
         try
         {
             longitude = Double.parseDouble(msg.toString());
-
         }  catch (Exception e){
             logger.error("Fail to update pos_map_longitude "+e.getMessage());
         }
-
         GeoPoint gPt = new GeoPoint(latitude,longitude);
         mMapController.setCenter(gPt);
     }
