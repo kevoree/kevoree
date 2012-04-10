@@ -22,7 +22,7 @@
             <plugin>
                 <groupId>org.kevoree.modeling</groupId>
                 <artifactId>org.kevoree.modeling.emf.scala.gencode.mavenplugin</artifactId>
-                <version>1.1.0</version>
+                <version>1.2.0</version>
                 <extensions>true</extensions>
                 <executions>
                     <execution>
@@ -32,8 +32,7 @@
                         </goals>
                         <configuration>
                             <ecore>${metamodel.ecore}</ecore>
-                            <rootPackage>org</rootPackage>
-                           <!-- <packagePrefix>org</packagePrefix>  -->
+                            <packagePrefix>org</packagePrefix>
                         </configuration>
                     </execution>
                 </executions>
