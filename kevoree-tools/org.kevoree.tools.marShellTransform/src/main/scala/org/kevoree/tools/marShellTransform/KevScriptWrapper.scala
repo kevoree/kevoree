@@ -37,7 +37,7 @@ object KevScriptWrapper {
    */
   def generateKevScriptFromCompressed(cscript: String) : Script =
   {
-    var statments = new HashSet[Statment]
+    var statments = new scala.collection.mutable.ListBuffer[Statment]
     var blocks = new HashSet[TransactionalBloc]
     try
     {
@@ -45,6 +45,8 @@ object KevScriptWrapper {
       val result =  parser.parseAdaptations(cscript)
       val definitions = result.definitions.get
       val nodeName = result.nodeName
+
+      statments += AddNodeStatment(nodeName,result.nodeTypeName,new Properties())
 
       result.adaptations.toArray.foreach( s => {
         s match
@@ -74,7 +76,7 @@ object KevScriptWrapper {
           }
           case classOf: AIN  =>
           {
-            logger.debug("Detect AddComponentInstanceStatment")
+            logger.debug("Detect AddComponentInstanceStatment "+s.asInstanceOf[AIN].getIDPredicate().getinstanceID)
             val cid = new ComponentInstanceID(s.asInstanceOf[AIN].getIDPredicate().getinstanceID,Some(nodeName))
             val typeIDB = definitions.getTypedefinitionById(s.asInstanceOf[AIN].getTypeIDB())
 
@@ -223,6 +225,13 @@ object KevScriptWrapper {
 
   def miniPlanKevScript(s: Script): Script = {
     var resultStatmentList: List[Statment] = List()
+
+    //AddNode BINDING FIRST
+    s.blocks.foreach {
+      block =>
+        resultStatmentList = resultStatmentList ++ block.l.filter(statement => statement.isInstanceOf[AddNodeStatment])
+    }
+
     //REMOVE BINDING FIRST
     s.blocks.foreach {
       block =>
