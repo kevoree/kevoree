@@ -7,6 +7,7 @@ import org.kevoree.tools.marShellTransform.KevScriptWrapper
 import org.kevoree.extra.kserial.{KevoreeSharedCom, ContentListener}
 import org.kevoree.framework.KevoreePropertyHelper
 import org.slf4j.LoggerFactory
+import org.kevoree.cloner.ModelCloner
 
 
 /**
@@ -47,11 +48,24 @@ object ArduinoModelGetHelper {
       val s = scriptRaw.subSequence(scriptRaw.indexOf('$')+1, scriptRaw.indexOf('}')+1)
       logger.debug("Compressed script from arduino node : "+s)
       //GET SCRIPT FROM COM PORT
-      var script : Script =    KevScriptWrapper.generateKevScriptFromCompressed(s.toString)
-      logger.debug("The generated script : "+Script)
+      logger.info("The generated script : "+KevScriptWrapper.generateKevScriptFromCompressed(s.toString))
+
+      var script : Script =    KevScriptWrapper.miniPlanKevScript(KevScriptWrapper.generateKevScriptFromCompressed(s.toString))
+      logger.info("The plan script : "+script)
       //APPLY TO BUILD A CURRENT MODEL
       import org.kevoree.tools.marShell.interpreter.KevsInterpreterAspects._
-      var current = KevoreeFactory.createContainerRoot
+
+      val cc = new ModelCloner
+      var current = cc.clone(targetNewModel)
+
+      current.removeAllGroups()
+      current.removeAllHubs()
+      current.removeAllMBindings()
+      current.getNodes.foreach {
+        node =>
+          current.removeNodes(node)
+      }
+
       val result = script.interpret(KevsInterpreterContext(current))
       if(result){
         current
