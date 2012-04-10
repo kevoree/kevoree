@@ -69,9 +69,6 @@
             <resource>
                 <directory>${basedir}/target/dex</directory>
             </resource>
-            <resource>
-                <directory>${basedir}/src/main/resources</directory>
-            </resource>
         </resources>
         <plugins>
 
@@ -115,7 +112,7 @@
                                     <groupId>org.kevoree.tools</groupId>
                                     <artifactId>org.kevoree.tools.aether.framework.android</artifactId>
                                     <version>${kevoree.version}</version>
-                                    <overWrite>false</overWrite>
+                                    <overWrite>true</overWrite>
                                     <outputDirectory>
                                         ${project.build.directory}/dex/boot/org.kevoree.tools.aether.framework.android
                                     </outputDirectory>
@@ -124,7 +121,7 @@
                                     <groupId>org.kevoree.platform</groupId>
                                     <artifactId>org.kevoree.platform.android.core</artifactId>
                                     <version>${kevoree.version}</version>
-                                    <overWrite>false</overWrite>
+                                    <overWrite>true</overWrite>
                                     <outputDirectory>
                                         ${project.build.directory}/dex/boot/org.kevoree.platform.android.core
                                     </outputDirectory>
@@ -135,7 +132,7 @@
                                     <groupId>org.scala.android</groupId>
                                     <artifactId>scala.library.android.actor</artifactId>
                                     <version>${scala.version}</version>
-                                    <overWrite>false</overWrite>
+                                    <overWrite>true</overWrite>
                                     <outputDirectory>
                                         ${project.build.directory}/dex/boot/scala.library.android.actor
                                     </outputDirectory>
@@ -144,7 +141,7 @@
                                     <groupId>org.scala.android</groupId>
                                     <artifactId>scala.library.android.base</artifactId>
                                     <version>${scala.version}</version>
-                                    <overWrite>false</overWrite>
+                                    <overWrite>true</overWrite>
                                     <outputDirectory>
                                         ${project.build.directory}/dex/boot/scala.library.android.base
                                     </outputDirectory>
@@ -153,7 +150,7 @@
                                     <groupId>org.scala.android</groupId>
                                     <artifactId>scala.library.android.collection.base</artifactId>
                                     <version>${scala.version}</version>
-                                    <overWrite>false</overWrite>
+                                    <overWrite>true</overWrite>
                                     <outputDirectory>
                                         ${project.build.directory}/dex/boot/scala.library.android.collection.base
                                     </outputDirectory>
@@ -162,7 +159,7 @@
                                     <groupId>org.scala.android</groupId>
                                     <artifactId>scala.library.android.collection.immutable</artifactId>
                                     <version>${scala.version}</version>
-                                    <overWrite>false</overWrite>
+                                    <overWrite>true</overWrite>
                                     <outputDirectory>
                                         ${project.build.directory}/dex/boot/scala.library.android.collection.immutable
                                     </outputDirectory>
@@ -171,7 +168,7 @@
                                     <groupId>org.scala.android</groupId>
                                     <artifactId>scala.library.android.collection.mutable</artifactId>
                                     <version>${scala.version}</version>
-                                    <overWrite>false</overWrite>
+                                    <overWrite>true</overWrite>
                                     <outputDirectory>
                                         ${project.build.directory}/dex/boot/scala.library.android.collection.mutable
                                     </outputDirectory>
@@ -180,7 +177,7 @@
                                     <groupId>org.scala.android</groupId>
                                     <artifactId>scala.library.android.collection.parallel</artifactId>
                                     <version>${scala.version}</version>
-                                    <overWrite>false</overWrite>
+                                    <overWrite>true</overWrite>
                                     <outputDirectory>
                                         ${project.build.directory}/dex/boot/scala.library.android.collection.parallel
                                     </outputDirectory>
@@ -189,7 +186,7 @@
                                     <groupId>org.scala.android</groupId>
                                     <artifactId>scala.library.android.runtime</artifactId>
                                     <version>${scala.version}</version>
-                                    <overWrite>false</overWrite>
+                                    <overWrite>true</overWrite>
                                     <outputDirectory>
                                         ${project.build.directory}/dex/boot/scala.library.android.runtime
                                     </outputDirectory>
@@ -198,7 +195,7 @@
                                     <groupId>org.scala.android</groupId>
                                     <artifactId>scala.library.android.util</artifactId>
                                     <version>${scala.version}</version>
-                                    <overWrite>false</overWrite>
+                                    <overWrite>true</overWrite>
                                     <outputDirectory>
                                         ${project.build.directory}/dex/boot/scala.library.android.util
                                     </outputDirectory>
