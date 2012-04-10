@@ -15,12 +15,16 @@
         <relativePath>../org.kevoree.library.arduino.root/pom.xml</relativePath>
     </parent>
 
+    <properties>
+        <kevoree.include>*:*</kevoree.include>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.kevoree.tools</groupId>
             <artifactId>org.kevoree.tools.arduino.framework</artifactId>
             <version>${kevoree.version}</version>
-            <type>bundle</type>
+            <!--<type>bundle</type>-->
         </dependency>
     </dependencies>
 </project>
