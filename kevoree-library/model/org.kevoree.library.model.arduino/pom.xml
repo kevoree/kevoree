@@ -32,52 +32,8 @@
                 <version>${kevoree.version}</version>
                 <extensions>true</extensions>
             </plugin>
-            <plugin>
-                <groupId>org.kevoree.tools</groupId>
-                <artifactId>org.kevoree.tools.merger.mavenplugin</artifactId>
-                <version>${kevoree.version}</version>
-                <extensions>true</extensions>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                        <configuration>
-                            <model>${project.build.directory}/classes/KEV-INF/lib.kev</model>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
         </plugins>
     </build>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.kevoree.library.javase</groupId>
-            <artifactId>org.kevoree.library.javase.javaseNode</artifactId>
-            <version>${kevoree.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.kevoree.library.javase</groupId>
-            <artifactId>org.kevoree.library.javase.rest</artifactId>
-            <version>${kevoree.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.kevoree.library.arduino</groupId>
-            <artifactId>org.kevoree.library.arduino.nodeType</artifactId>
-            <version>${kevoree.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.kevoree.library.arduino</groupId>
-            <artifactId>org.kevoree.library.arduino.components</artifactId>
-            <version>${kevoree.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.kevoree.library.arduino</groupId>
-            <artifactId>org.kevoree.library.arduino.groupType</artifactId>
-            <version>${kevoree.version}</version>
-        </dependency>
-    </dependencies>
 
 </project>

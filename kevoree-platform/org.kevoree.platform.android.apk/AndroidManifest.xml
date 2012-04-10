@@ -36,7 +36,7 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" /> <!-- Location based on GPS -->
     <uses-permission android:name="android.permission.WAKE_LOCK" /> <!-- Required for WiFi management -->
     <uses-permission android:name="android.permission.VIBRATE" /> <!-- Allow vibration -->
-
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />    <!-- required osmdroid map -->
     <uses-feature android:name="android.hardware.location.network" />
     <uses-feature android:name="android.hardware.location.gps" />
     <uses-feature android:name="android.hardware.usb.accessory" />
