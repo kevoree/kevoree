@@ -18,20 +18,21 @@
     <properties>
         <android.tools.aapt>${android.home}/platform-tools/aapt</android.tools.aapt>
         <android.tools.dx>${android.home}/platform-tools/dx</android.tools.dx>
+        <kevoree.include>*:*</kevoree.include>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>org.kevoree.extra</groupId>
             <artifactId>org.kevoree.extra.kserial</artifactId>
-            <version>1.0</version>
-            <type>kjar</type>
+            <version>1.1</version>
+            <!--<type>kjar</type>-->
         </dependency>
         <dependency>
             <groupId>net.java.dev.jna</groupId>
             <artifactId>jna</artifactId>
             <version>3.3.0</version>
-            <type>kjar</type>
+            <!--<type>kjar</type>-->
         </dependency>
     </dependencies>
 
