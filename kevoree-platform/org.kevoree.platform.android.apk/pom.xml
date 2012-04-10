@@ -65,6 +65,14 @@
     </dependencies>
 
     <build>
+        <resources>
+            <resource>
+                <directory>${basedir}/target/dex</directory>
+            </resource>
+            <resource>
+                <directory>${basedir}/src/main/resources</directory>
+            </resource>
+        </resources>
         <plugins>
 
             <plugin>
@@ -109,7 +117,7 @@
                                     <version>${kevoree.version}</version>
                                     <overWrite>false</overWrite>
                                     <outputDirectory>
-                                        ${project.basedir}/src/main/resources/boot/org.kevoree.tools.aether.framework.android
+                                        ${project.build.directory}/dex/boot/org.kevoree.tools.aether.framework.android
                                     </outputDirectory>
                                 </artifactItem>
                                 <artifactItem>
@@ -118,7 +126,7 @@
                                     <version>${kevoree.version}</version>
                                     <overWrite>false</overWrite>
                                     <outputDirectory>
-                                        ${project.basedir}/src/main/resources/boot/org.kevoree.platform.android.core
+                                        ${project.build.directory}/dex/boot/org.kevoree.platform.android.core
                                     </outputDirectory>
                                 </artifactItem>
 
@@ -129,7 +137,7 @@
                                     <version>${scala.version}</version>
                                     <overWrite>false</overWrite>
                                     <outputDirectory>
-                                        ${project.basedir}/src/main/resources/boot/scala.library.android.actor
+                                        ${project.build.directory}/dex/boot/scala.library.android.actor
                                     </outputDirectory>
                                 </artifactItem>
                                 <artifactItem>
@@ -138,7 +146,7 @@
                                     <version>${scala.version}</version>
                                     <overWrite>false</overWrite>
                                     <outputDirectory>
-                                        ${project.basedir}/src/main/resources/boot/scala.library.android.base
+                                        ${project.build.directory}/dex/boot/scala.library.android.base
                                     </outputDirectory>
                                 </artifactItem>
                                 <artifactItem>
@@ -147,7 +155,7 @@
                                     <version>${scala.version}</version>
                                     <overWrite>false</overWrite>
                                     <outputDirectory>
-                                        ${project.basedir}/src/main/resources/boot/scala.library.android.collection.base
+                                        ${project.build.directory}/dex/boot/scala.library.android.collection.base
                                     </outputDirectory>
                                 </artifactItem>
                                 <artifactItem>
@@ -156,7 +164,7 @@
                                     <version>${scala.version}</version>
                                     <overWrite>false</overWrite>
                                     <outputDirectory>
-                                        ${project.basedir}/src/main/resources/boot/scala.library.android.collection.immutable
+                                        ${project.build.directory}/dex/boot/scala.library.android.collection.immutable
                                     </outputDirectory>
                                 </artifactItem>
                                 <artifactItem>
@@ -165,7 +173,7 @@
                                     <version>${scala.version}</version>
                                     <overWrite>false</overWrite>
                                     <outputDirectory>
-                                        ${project.basedir}/src/main/resources/boot/scala.library.android.collection.mutable
+                                        ${project.build.directory}/dex/boot/scala.library.android.collection.mutable
                                     </outputDirectory>
                                 </artifactItem>
                                 <artifactItem>
@@ -174,7 +182,7 @@
                                     <version>${scala.version}</version>
                                     <overWrite>false</overWrite>
                                     <outputDirectory>
-                                        ${project.basedir}/src/main/resources/boot/scala.library.android.collection.parallel
+                                        ${project.build.directory}/dex/boot/scala.library.android.collection.parallel
                                     </outputDirectory>
                                 </artifactItem>
                                 <artifactItem>
@@ -183,7 +191,7 @@
                                     <version>${scala.version}</version>
                                     <overWrite>false</overWrite>
                                     <outputDirectory>
-                                        ${project.basedir}/src/main/resources/boot/scala.library.android.runtime
+                                        ${project.build.directory}/dex/boot/scala.library.android.runtime
                                     </outputDirectory>
                                 </artifactItem>
                                 <artifactItem>
@@ -192,7 +200,7 @@
                                     <version>${scala.version}</version>
                                     <overWrite>false</overWrite>
                                     <outputDirectory>
-                                        ${project.basedir}/src/main/resources/boot/scala.library.android.util
+                                        ${project.build.directory}/dex/boot/scala.library.android.util
                                     </outputDirectory>
                                 </artifactItem>
                             </artifactItems>
