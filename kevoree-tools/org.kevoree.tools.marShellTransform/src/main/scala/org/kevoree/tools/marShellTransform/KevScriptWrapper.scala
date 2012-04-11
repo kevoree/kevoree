@@ -76,18 +76,39 @@ object KevScriptWrapper {
           }
           case classOf: AIN  =>
           {
-            logger.debug("Detect AddComponentInstanceStatment "+s.asInstanceOf[AIN].getIDPredicate().getinstanceID)
+            var typestatment = 0
             val cid = new ComponentInstanceID(s.asInstanceOf[AIN].getIDPredicate().getinstanceID,Some(nodeName))
             val typeIDB = definitions.getTypedefinitionById(s.asInstanceOf[AIN].getTypeIDB())
 
             val props = new java.util.Properties()
             s.asInstanceOf[AIN].getParams.toArray.foreach( p =>
             {
-              val prop  = definitions.getPropertieById(p.asInstanceOf[PropertiePredicate].dictionnaryID)
-              props.put(prop,p.asInstanceOf[PropertiePredicate].value.toString)
+              val prop  = definitions.getPropertieById(p.asInstanceOf[Propertie].getdictionnaryID())
+              p match {
+                case classOf:  PropertieChannel =>
+                {
+                  typestatment =   0
+                  props.put(prop,p.asInstanceOf[PropertieChannel].value)
+                }
+                case classOf:  PropertiePredicate =>
+                {
+                  typestatment =   1
+                  props.put(prop,p.asInstanceOf[PropertiePredicate].value.toString)
+                }
+              }
+
             }
             )
-            statments += AddComponentInstanceStatment(cid,typeIDB,props)
+            if(typestatment == 0)
+            {
+              logger.debug("Detect AddChannelInstanceStatment "+s.asInstanceOf[AIN].getIDPredicate().getinstanceID)
+              statments += AddChannelInstanceStatment(s.asInstanceOf[AIN].getIDPredicate().getinstanceID,typeIDB,props)
+            } else if(typestatment == 1){
+              logger.debug("Detect AddComponentInstanceStatment "+s.asInstanceOf[AIN].getIDPredicate().getinstanceID)
+              statments += AddComponentInstanceStatment(cid,typeIDB,props)
+            }
+
+
           }
 
           case classOf : RIN => {

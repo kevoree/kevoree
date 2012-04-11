@@ -78,7 +78,7 @@ printScriptFromEEPROM ()
 {
   int i = 0;
   int indexInBytes = 0;
-  int indexEEPROM = 2;
+  int indexEEPROM = 3;
 
   Serial.print (F("$"));
   printNodeName();
