@@ -20,7 +20,7 @@ package org.kevoree.tools.marShellTransform.ast
  * Time: 13:07
  */
 
-case class PropertiePredicate(dictionnaryID : Int,value :Int) extends  Propertie {
+case class PropertiePredicate(dictionnaryID : Int,value :String) extends  Propertie {
   override  def getdictionnaryID() : Int =  {
       dictionnaryID
     }

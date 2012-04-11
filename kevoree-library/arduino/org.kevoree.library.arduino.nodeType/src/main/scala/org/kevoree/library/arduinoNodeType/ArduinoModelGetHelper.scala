@@ -48,9 +48,7 @@ object ArduinoModelGetHelper {
       val s = scriptRaw.subSequence(scriptRaw.indexOf('$')+1, scriptRaw.indexOf('}')+1)
       logger.debug("Compressed script from arduino node : "+s)
       //GET SCRIPT FROM COM PORT
-      logger.info("The generated script : "+KevScriptWrapper.generateKevScriptFromCompressed(s.toString))
-
-      var script : Script =    KevScriptWrapper.miniPlanKevScript(KevScriptWrapper.generateKevScriptFromCompressed(s.toString))
+      var script : Script =    KevScriptWrapper.miniPlanKevScript(KevScriptWrapper.generateKevScriptFromCompressed(s.toString,targetNewModel))
       logger.info("The plan script : "+script)
       //APPLY TO BUILD A CURRENT MODEL
       import org.kevoree.tools.marShell.interpreter.KevsInterpreterAspects._
