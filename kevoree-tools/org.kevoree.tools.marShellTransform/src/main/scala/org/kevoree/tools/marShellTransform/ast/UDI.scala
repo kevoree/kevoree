@@ -22,13 +22,15 @@ package org.kevoree.tools.marShellTransform.ast
 
 
 
-class UDI(id : IDPredicate, params : java.util.List[Propertie])  extends  Adaptation
+class UDI(id : IDPredicate, params : Option[List[Propertie]])  extends  Adaptation
 {
   def getIDPredicate() :  IDPredicate = {
     return  id
   }
-  def getParams: java.util.List[Propertie] = {
-    return params
-  }
 
+  def getParams: java.util.List[Propertie] = {
+    val jl = new java.util.ArrayList [Propertie] (params.size)
+    params.get.foreach (jl.add(_))
+    return jl
+  }
 }

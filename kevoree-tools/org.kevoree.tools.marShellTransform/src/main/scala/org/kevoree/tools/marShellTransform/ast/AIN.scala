@@ -13,6 +13,8 @@
  */
 package org.kevoree.tools.marShellTransform.ast
 
+import collection.mutable.ListBuffer
+
 /**
  * Created by jed
  * User: jedartois@gmail.com
@@ -20,7 +22,7 @@ package org.kevoree.tools.marShellTransform.ast
  * Time: 17:36
  */
 
-class AIN(id : IDPredicate, typeIDB : Int,params : java.util.List[Propertie]) extends  Adaptation {
+class AIN(id : IDPredicate, typeIDB : Int,params : Option[List[Propertie]]) extends  Adaptation {
 
   def getIDPredicate() :  IDPredicate = {
       id
@@ -31,7 +33,9 @@ class AIN(id : IDPredicate, typeIDB : Int,params : java.util.List[Propertie]) ex
   }
 
   def getParams: java.util.List[Propertie] = {
-    return params
+    val jl = new java.util.ArrayList [Propertie] (params.size)
+    params.get.foreach (jl.add(_))
+    return jl
   }
 
 
