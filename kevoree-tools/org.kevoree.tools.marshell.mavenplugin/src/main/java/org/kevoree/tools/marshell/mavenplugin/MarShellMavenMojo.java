@@ -45,6 +45,12 @@ public class MarShellMavenMojo extends AbstractMojo {
 	 */
 	private File sourceMarShellDirectory;
 
+    /**
+     * @parameter default-value="${project.basedir}/src/main/kevs"
+     */
+    private File sourceMarShellDirectory2;
+
+
 	/**
 	 * The directory root under which processor-generated source files will be placed; files are placed in
 	 * subdirectories based on package namespace. This is equivalent to the <code>-s</code> argument for apt.
@@ -86,9 +92,15 @@ public class MarShellMavenMojo extends AbstractMojo {
 		mergerComponent = new KevoreeMergerComponent();
 
 		ContainerRoot model = executeOnDirectory(sourceMarShellDirectory);
+        ContainerRoot model2 = executeOnDirectory(sourceMarShellDirectory2);
+        mergerComponent.merge(model,model2);
+
 		if (!sourceOutputDirectory.exists() && !sourceOutputDirectory.mkdirs()) {
 			throw new MojoExecutionException("Unable to build target packages " + sourceOutputDirectory.getAbsolutePath());
 		}
+
+
+
 		KevoreeXmiHelper.save(sourceOutputDirectory.getAbsolutePath() + File.separator + "lib.kev", model);
 
 		Resource resource = new Resource();

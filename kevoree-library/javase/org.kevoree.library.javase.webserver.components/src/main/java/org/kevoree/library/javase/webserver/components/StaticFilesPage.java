@@ -19,6 +19,9 @@ public class StaticFilesPage extends ParentAbstractPage {
     
     @Override
     public KevoreeHttpResponse process(KevoreeHttpRequest request, KevoreeHttpResponse response) {
+
+        System.out.println("Result="+this.getClass().getClassLoader().getResource("hello.html"));
+
         if (FileServiceHelper.checkStaticFile(basePage, this, request, response)) {
             if (request.getUrl().equals("/") || request.getUrl().endsWith(".html")) {
                 String pattern = getDictionary().get("urlpattern").toString();
