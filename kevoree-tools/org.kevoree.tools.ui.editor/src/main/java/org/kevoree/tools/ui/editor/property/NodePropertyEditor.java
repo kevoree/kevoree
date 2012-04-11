@@ -129,6 +129,8 @@ public class NodePropertyEditor extends InstancePropertyEditor {
         sendNodeType.setProgressBar(progressBar);
         sendNodeType.setResultLabel(resultLabel);
 
+        final JCheckBox checkBox = HudWidgetFactory.createHudCheckBox("AutoMerge");
+
         JCommandButton btPushNodeType = new JCommandButton("Push via") {
             @Override
             public void doBeforeExecution() {
@@ -138,6 +140,7 @@ public class NodePropertyEditor extends InstancePropertyEditor {
                     resultLabel.setText("Sending...");
                     sendNodeType.setDestNodeName(elem.getName());
                     sendNodeType.setViaGroupName(groupTypeComboBox.getSelectedItem().toString());
+                    sendNodeType.setAutoMerge(checkBox.isSelected());
                 } else {
                     resultLabel.setText("No group found !");
                 }
@@ -150,7 +153,15 @@ public class NodePropertyEditor extends InstancePropertyEditor {
         JPanel layout = new JPanel();
         layout.setOpaque(false);
         layout.setLayout(new SpringLayout());
-        layout.add(btPushNodeType);
+
+
+        JPanel subLayout = new JPanel();
+        subLayout.setOpaque(false);
+        subLayout.setLayout(new BoxLayout(subLayout,BoxLayout.LINE_AXIS));
+        subLayout.add(checkBox);
+        subLayout.add(btPushNodeType);
+
+        layout.add(subLayout);
         layout.add(groupTypeComboBox);
 
         layout.add(progressBar);
