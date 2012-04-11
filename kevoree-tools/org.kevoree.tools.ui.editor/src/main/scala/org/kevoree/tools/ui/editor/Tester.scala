@@ -27,8 +27,8 @@ import java.awt.event.{WindowEvent, WindowAdapter}
 object Tester extends  App {
 
 
-  val j = new JFrame("Kevoree Model Text Editor")
-      val p = new KevoreeSerialMonitorPanel(null)
+  val j = new JFrame("Kevoree Serial Monitor")
+      var p = new KevoreeSerialMonitorPanel(null)
 
       j.add(p)
       j.setSize(800,600)
@@ -38,7 +38,8 @@ object Tester extends  App {
   j.addWindowListener(new WindowAdapter() {
     override def windowClosing( e : WindowEvent) {
       p.close()
-      System.exit(0);
+      p = null
+      j.dispose()
     }
   });
 }

@@ -16,23 +16,10 @@ package org.kevoree.tools.marShellTransform.ast
 /**
  * Created by jed
  * User: jedartois@gmail.com
- * Date: 28/03/12
- * Time: 17:36
+ * Date: 11/04/12
+ * Time: 14:33
  */
 
-class AIN(id : IDPredicate, typeIDB : Int,params : java.util.List[Propertie]) extends  Adaptation {
-
-  def getIDPredicate() :  IDPredicate = {
-      id
-   }
-
-  def getTypeIDB() : Int = {
-    typeIDB
-  }
-
-  def getParams: java.util.List[Propertie] = {
-    return params
-  }
-
-
+trait Propertie {
+  def getdictionnaryID() :Int
 }
