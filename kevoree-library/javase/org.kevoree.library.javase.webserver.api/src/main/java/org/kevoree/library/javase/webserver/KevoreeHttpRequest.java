@@ -10,63 +10,28 @@ import java.util.UUID;
  * Date: 14/10/11
  * Time: 08:41
  */
-public class KevoreeHttpRequest implements Serializable {
+public interface KevoreeHttpRequest extends Serializable {
 
-	private String url = "";
+	public HashMap<String, String> getHeaders ();
 
-	private String rawParams = "";
+	public void setHeaders (HashMap<String, String> headers);
 
-	private HashMap<String, String> resolvedParams = new HashMap<String, String>();
+	public UUID getTokenID ();
 
-	public HashMap<String, String> getHeaders () {
-		return headers;
-	}
+	public String getUrl ();
 
-	public void setHeaders (HashMap<String, String> headers) {
-		this.headers = headers;
-	}
+	public void setUrl (String url);
 
-	private HashMap<String, String> headers = new HashMap<String, String>();
+	public HashMap<String, String> getResolvedParams ();
 
-	private UUID tokenID = UUID.randomUUID();
+	public void setResolvedParams (HashMap<String, String> resolvedParams) ;
 
-	public UUID getTokenID () {
-		return tokenID;
-	}
+	public byte[] getRawBody () ;
 
-	public String getUrl () {
-		return url;
-	}
+	public void setRawBody (byte[] rawBody);
 
-	public void setUrl (String url) {
-		this.url = url;
-	}
+	public String getRawParams ();
 
-	public HashMap<String, String> getResolvedParams () {
-		return resolvedParams;
-	}
-
-	public void setResolvedParams (HashMap<String, String> resolvedParams) {
-		this.resolvedParams = resolvedParams;
-	}
-
-	private byte[] rawBody = new byte[0];
-
-
-	public byte[] getRawBody () {
-		return rawBody;
-	}
-
-	public void setRawBody (byte[] rawBody) {
-		this.rawBody = rawBody;
-	}
-
-	public String getRawParams () {
-		return rawParams;
-	}
-
-	public void setRawParams(String rawParams) {
-		this.rawParams = rawParams;
-	}
+	public void setRawParams(String rawParams);
 }
 

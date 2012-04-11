@@ -10,65 +10,25 @@ import java.util.UUID;
  * Date: 14/10/11
  * Time: 08:41
  */
-public class KevoreeHttpResponse implements Serializable {
+public interface KevoreeHttpResponse extends Serializable {
 
-    private UUID tokenID = UUID.randomUUID();
+    public UUID getTokenID();
 
-    private String content = "";
+    public void setTokenID(UUID tokenID);
 
-	private int status = 200;
+    public String getContent();
 
-    /*public String getContentType() {
-        return contentType;
-    }
+    public void setContent(String content);
 
-    public void setContentType(String contentType) {
-        this.contentType = contentType;
-    }
+    public byte[] getRawContent();
 
-    private String contentType = "text/html";*/
+    public void setRawContent(byte[] rawContent) ;
 
-    public UUID getTokenID() {
-        return tokenID;
-    }
+    public HashMap<String, String> getHeaders();
 
-    public void setTokenID(UUID tokenID) {
-        this.tokenID = tokenID;
-    }
+    public void setHeaders(HashMap<String, String> headers);
 
-    public String getContent() {
-        return content;
-    }
+	public int getStatus () ;
 
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    private byte[] rawContent = null;
-
-    public byte[] getRawContent() {
-        return rawContent;
-    }
-
-    public void setRawContent(byte[] rawContent) {
-        this.rawContent = rawContent;
-    }
-    
-    private HashMap<String,String> headers = new HashMap<String,String>();
-
-    public HashMap<String, String> getHeaders() {
-        return headers;
-    }
-
-    public void setHeaders(HashMap<String, String> headers) {
-        this.headers = headers;
-    }
-
-	public int getStatus () {
-		return status;
-	}
-
-	public void setStatus (int status) {
-		this.status = status;
-	}
+	public void setStatus (int status);
 }
