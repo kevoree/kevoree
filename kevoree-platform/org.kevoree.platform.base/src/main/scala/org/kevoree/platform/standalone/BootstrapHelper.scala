@@ -48,7 +48,6 @@ object BootstrapHelper {
       if (groupType != null) {
         model.getTypeDefinitions.find(td => td.getName == groupType) match {
           case Some(typeDefFound) => {
-            logger.warn("Init default node instance for name " + nodeName)
             val g = KevoreeFactory.createGroup
             g.setName("sync")
             g.setTypeDefinition(typeDefFound)

@@ -11,16 +11,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kevoree.tools.marShellTransform
+package org.kevoree.tools.marShellTransform.ast
 
 /**
  * Created by jed
  * User: jedartois@gmail.com
- * Date: 27/03/12
- * Time: 13:36
+ * Date: 11/04/12
+ * Time: 14:30
  */
 
-object Tester extends  App {
-
+case class PropertieChannel (dictionnaryID : Int,value :String) extends  Propertie  {
+  
+override  def getdictionnaryID() : Int =  {
+    dictionnaryID
+  }
 
 }

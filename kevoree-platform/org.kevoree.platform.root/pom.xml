@@ -83,6 +83,7 @@
     </build>
 
     <modules>
+        <module>../org.kevoree.platform.base</module>
         <module>../org.kevoree.platform.standalone</module>
         <module>../org.kevoree.platform.standalone.gui</module>
         <module>../org.kevoree.platform.service</module>
