@@ -1,5 +1,3 @@
-package org.kevoree.tools.aether.framework
-
 /**
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
  * you may not use this file except in compliance with the License.
@@ -13,11 +11,25 @@ package org.kevoree.tools.aether.framework
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.kevoree.tools.aether.framework
+
+/**
+ * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.gnu.org/licenses/lgpl-3.0.txt
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 import org.apache.maven.repository.internal.DefaultServiceLocator
 import org.sonatype.aether.spi.connector.RepositoryConnectorFactory
 import org.sonatype.aether.connector.file.FileRepositoryConnectorFactory
-import org.sonatype.aether.resolution.ArtifactRequest
 import org.sonatype.aether.util.artifact.DefaultArtifact
 import org.apache.maven.repository.internal.MavenRepositorySystemSession
 import org.kevoree.{ContainerRoot, DeployUnit}
@@ -34,6 +46,7 @@ import scala.collection.JavaConversions._
 import org.slf4j.LoggerFactory
 import org.sonatype.aether.{ConfigurationProperties, RepositorySystem}
 import org.sonatype.aether.transfer.{TransferEvent, TransferListener}
+import org.sonatype.aether.resolution.{VersionRequest, ArtifactRequest}
 
 /**
  * User: ffouquet
@@ -55,7 +68,7 @@ object AetherUtil extends TempFileCacheManager {
     locator.getService(classOf[RepositorySystem])
   }
 
-  def resolveKevoreeArtifact(unitName: String, groupName: String, version: String): File = {
+  def resolveKevoreeArtifact (unitName: String, groupName: String, version: String): File = {
     if (version.endsWith("SNAPSHOT")) {
       resolveMavenArtifact(unitName, groupName, version, List("http://maven.kevoree.org/snapshots/"))
     } else {
@@ -63,10 +76,10 @@ object AetherUtil extends TempFileCacheManager {
     }
   }
 
-  def resolveMavenArtifact4J(unitName: String, groupName: String, version: String, repositoriesUrl: java.util.List[String]): File =
+  def resolveMavenArtifact4J (unitName: String, groupName: String, version: String, repositoriesUrl: java.util.List[String]): File =
     resolveMavenArtifact(unitName, groupName, version, repositoriesUrl.toList)
 
-  def resolveMavenArtifact(unitName: String, groupName: String, version: String, repositoriesUrl: List[String]): File = {
+  def resolveMavenArtifact (unitName: String, groupName: String, version: String, repositoriesUrl: List[String]): File = {
     val artifact: Artifact = new DefaultArtifact(List(groupName.trim(), unitName.trim(), version.trim()).mkString(":"))
     val artifactRequest = new ArtifactRequest
     artifactRequest.setArtifact(artifact)
@@ -86,7 +99,7 @@ object AetherUtil extends TempFileCacheManager {
   }
 
 
-  def resolveDeployUnit(du: DeployUnit): File = {
+  def resolveDeployUnit (du: DeployUnit): File = {
     var artifact: Artifact = null
     if (du.getUrl != null && du.getUrl.contains("mvn:")) {
       artifact = new DefaultArtifact(du.getUrl.replaceAll("mvn:", "").replace("/", ":"))
@@ -96,14 +109,14 @@ object AetherUtil extends TempFileCacheManager {
 
     val artifactRequest = new ArtifactRequest
     artifactRequest.setArtifact(artifact)
-    var urls : List[String] = null
-    if (System.getProperty("kevoree.offline") != null && System.getProperty("kevoree.offline").equals("true")){
+    var urls: List[String] = null
+    if (System.getProperty("kevoree.offline") != null && System.getProperty("kevoree.offline").equals("true")) {
       urls = List()
     } else {
       urls = buildPotentialMavenURL(du.eContainer.asInstanceOf[ContainerRoot])
     }
 
-  //  val urls = buildPotentialMavenURL(du.eContainer.asInstanceOf[ContainerRoot])
+    //  val urls = buildPotentialMavenURL(du.eContainer.asInstanceOf[ContainerRoot])
 
     val repositories: java.util.List[RemoteRepository] = new java.util.ArrayList();
     urls.foreach {
@@ -129,7 +142,7 @@ object AetherUtil extends TempFileCacheManager {
       installInCache(artefactResult.getArtifact)
     } catch {
       case _@e => {
-        logger.debug("Error while resolving {}",du.getUnitName.trim(),e)
+        logger.debug("Error while resolving {}", du.getUnitName.trim(), e)
         null
       }
     }
@@ -139,29 +152,29 @@ object AetherUtil extends TempFileCacheManager {
 
   def newRepositorySystemSession = {
     val session = new MavenRepositorySystemSession()
-    session.setTransferListener(new TransferListener(){
-      def transferInitiated(p1: TransferEvent) {
-        logger.debug("Transfert init for Artifact "+p1.getResource.getResourceName)
+    session.setTransferListener(new TransferListener() {
+      def transferInitiated (p1: TransferEvent) {
+        logger.debug("Transfert init for Artifact " + p1.getResource.getResourceName)
       }
 
-      def transferStarted(p1: TransferEvent) {
-        logger.debug("Transfert begin for Artifact "+p1.getResource.getResourceName)
+      def transferStarted (p1: TransferEvent) {
+        logger.debug("Transfert begin for Artifact " + p1.getResource.getResourceName)
       }
 
-      def transferProgressed(p1: TransferEvent) {
-        logger.debug("Transfert in progress for Artifact "+p1.getResource.getResourceName)
+      def transferProgressed (p1: TransferEvent) {
+        logger.debug("Transfert in progress for Artifact " + p1.getResource.getResourceName)
       }
 
-      def transferCorrupted(p1: TransferEvent) {
-        logger.error("TransfertCorrupted : "+p1.getResource.getResourceName)
+      def transferCorrupted (p1: TransferEvent) {
+        logger.error("TransfertCorrupted : " + p1.getResource.getResourceName)
       }
 
-      def transferSucceeded(p1: TransferEvent) {
-        logger.debug("Transfert succeeded for Artifact "+p1.getResource.getResourceName)
+      def transferSucceeded (p1: TransferEvent) {
+        logger.debug("Transfert succeeded for Artifact " + p1.getResource.getResourceName)
       }
 
-      def transferFailed(p1: TransferEvent) {
-        logger.debug("TransferFailed : "+p1.getResource.getResourceName)
+      def transferFailed (p1: TransferEvent) {
+        logger.debug("TransferFailed : " + p1.getResource.getResourceName)
       }
     })
     session.setUpdatePolicy(RepositoryPolicy.UPDATE_POLICY_ALWAYS)
@@ -186,7 +199,7 @@ object AetherUtil extends TempFileCacheManager {
   }
 
 
-  def buildPotentialMavenURL(root: ContainerRoot): List[String] = {
+  def buildPotentialMavenURL (root: ContainerRoot): List[String] = {
     var result: List[String] = List()
     //BUILD FROM ALL REPO
     root.getRepositories.foreach {
@@ -197,7 +210,7 @@ object AetherUtil extends TempFileCacheManager {
         }
     }
     //BUILD FROM ALL NODE
-/*
+    /*
     root.getNodes.foreach {
       node =>
         buildURL(root, node.getName).map {
@@ -211,7 +224,7 @@ object AetherUtil extends TempFileCacheManager {
     result
   }
 
-  def buildURL(root: ContainerRoot, nodeName: String): Option[String] = {
+  def buildURL (root: ContainerRoot, nodeName: String): Option[String] = {
     var ip = KevoreePlatformHelper.getProperty(root, nodeName, org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP);
     if (ip == null || ip == "") {
       ip = "127.0.0.1";
@@ -236,5 +249,22 @@ object AetherUtil extends TempFileCacheManager {
 
   }
 
+
+  def resolveVersion (groupName: String, unitName: String, versionProperty: String): String = {
+    val artifact: Artifact = new DefaultArtifact(List(groupName.trim(), unitName.trim(), versionProperty.trim()).mkString(":"))
+    val versionRequest = new VersionRequest()
+    versionRequest.setArtifact(artifact)
+    val repository = "http://maven.kevoree.org/release/"
+    val repo = new RemoteRepository
+    val purl = repository.trim.replace(':', '_').replace('/', '_').replace('\\', '_')
+    repo.setId(purl)
+    repo.setUrl(repository)
+    repo.setContentType("default")
+    val repositories: java.util.List[RemoteRepository] = new java.util.ArrayList();
+    repositories.add(repo)
+    versionRequest.setRepositories(repositories)
+    val versionResult = newRepositorySystem.resolveVersion(newRepositorySystemSession, versionRequest)
+    versionResult.getVersion
+  }
 
 }
