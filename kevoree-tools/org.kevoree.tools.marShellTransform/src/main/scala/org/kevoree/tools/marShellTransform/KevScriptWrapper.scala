@@ -11,6 +11,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/**
+ * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.gnu.org/licenses/lgpl-3.0.txt
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 /*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
@@ -23,6 +36,8 @@ import org.kevoree.tools.marShell.ast._
 import org.slf4j.LoggerFactory
 import java.util.{Properties, Dictionary}
 import collection.immutable.HashSet
+import org.kevoree.framework.ComponentType
+import org.kevoree.{ChannelType, ContainerRoot}
 
 object KevScriptWrapper {
   var logger = LoggerFactory.getLogger(this.getClass);
@@ -35,108 +50,96 @@ object KevScriptWrapper {
    * @param cscript   to optain the cscript you need to send $g to arduino
    * @return  KevScript
    */
-  def generateKevScriptFromCompressed(cscript: String) : Script =
-  {
+  def generateKevScriptFromCompressed(cscript: String, baseModel: ContainerRoot): Script = {
     var statments = new scala.collection.mutable.ListBuffer[Statment]
     var blocks = new HashSet[TransactionalBloc]
-    try
-    {
-      val parser  = new ParserPush()
-      val result =  parser.parseAdaptations(cscript)
+    try {
+      val parser = new ParserPush()
+      val result = parser.parseAdaptations(cscript)
       val definitions = result.definitions.get
       val nodeName = result.nodeName
 
-      statments += AddNodeStatment(nodeName,result.nodeTypeName,new Properties())
+      statments += AddNodeStatment(nodeName, result.nodeTypeName, new Properties())
 
-      result.adaptations.toArray.foreach( s => {
-        s match
-        {
-          case classOf: UDI  => {
+      result.adaptations.toArray.foreach(s => {
+        s match {
+          case classOf: UDI => {
             // UpdateDictionaryStatement
             logger.debug("Detect UpdateDictionaryStatement")
             val props = new java.util.Properties()
-            s.asInstanceOf[UDI].getParams.toArray.foreach( p =>
-            {
-              val prop  = definitions.getPropertieById(p.asInstanceOf[PropertiePredicate].dictionnaryID)
-              props.put(prop,p.asInstanceOf[PropertiePredicate].value.toString)
+            s.asInstanceOf[UDI].getParams.toArray.foreach(p => {
+              val prop = definitions.getPropertieById(p.asInstanceOf[PropertiePredicate].dictionnaryID)
+              props.put(prop, p.asInstanceOf[PropertiePredicate].value.toString)
             })
-            val fraProperties = new java.util.HashMap[String,java.util.Properties]
-            fraProperties.put(result.nodeName.toString,props)
+            val fraProperties = new java.util.HashMap[String, java.util.Properties]
+            fraProperties.put(result.nodeName.toString, props)
 
-            statments +=  UpdateDictionaryStatement(s.asInstanceOf[UDI].getIDPredicate().getinstanceID,Some(nodeName),fraProperties)
+            statments += UpdateDictionaryStatement(s.asInstanceOf[UDI].getIDPredicate().getinstanceID, Some(nodeName), fraProperties)
           }
 
-          case classOf: ABI =>
-          {
+          case classOf: ABI => {
             logger.debug("Detect AddBindingStatment")
-            val cid = new ComponentInstanceID(s.asInstanceOf[ABI].getIDPredicate().getinstanceID,Some(nodeName))
+            val cid = new ComponentInstanceID(s.asInstanceOf[ABI].getIDPredicate().getinstanceID, Some(nodeName))
             val idPort = definitions.getPortdefinitionById(s.asInstanceOf[ABI].getportIDB)
 
-            statments += AddBindingStatment(cid, idPort,s.asInstanceOf[ABI].getchID())
+            statments += AddBindingStatment(cid, idPort, s.asInstanceOf[ABI].getchID())
           }
-          case classOf: AIN  =>
-          {
-            var typestatment = 0
-            val cid = new ComponentInstanceID(s.asInstanceOf[AIN].getIDPredicate().getinstanceID,Some(nodeName))
-            val typeIDB = definitions.getTypedefinitionById(s.asInstanceOf[AIN].getTypeIDB())
+          case classOf: AIN => {
 
+            val cid = new ComponentInstanceID(s.asInstanceOf[AIN].getIDPredicate().getinstanceID, Some(nodeName))
+            val typeIDB = definitions.getTypedefinitionById(s.asInstanceOf[AIN].getTypeIDB())
+            /* Feed prop value */
             val props = new java.util.Properties()
-            s.asInstanceOf[AIN].getParams.toArray.foreach( p =>
-            {
-              val prop  = definitions.getPropertieById(p.asInstanceOf[Propertie].getdictionnaryID())
-              p match {
-                case classOf:  PropertieChannel =>
-                {
-                  typestatment =   0
-                  props.put(prop,p.asInstanceOf[PropertieChannel].value)
-                }
-                case classOf:  PropertiePredicate =>
-                {
-                  typestatment =   1
-                  props.put(prop,p.asInstanceOf[PropertiePredicate].value.toString)
+            s.asInstanceOf[AIN].getParams.toArray.foreach(p => {
+              val prop = definitions.getPropertieById(p.asInstanceOf[Propertie].getdictionnaryID())
+              props.put(prop, p.asInstanceOf[PropertiePredicate].value)
+            })
+
+            baseModel.getTypeDefinitions.find(td => td.getName == typeIDB) match {
+              case Some(td_found) => {
+                td_found match {
+                  case i : org.kevoree.ComponentType => {
+                    logger.debug("Detect AddComponentInstanceStatment " + s.asInstanceOf[AIN].getIDPredicate().getinstanceID)
+                    statments += AddComponentInstanceStatment(cid, typeIDB, props)
+                  }
+                  case i : org.kevoree.ChannelType => {
+                    logger.debug("Detect AddChannelInstanceStatment " + s.asInstanceOf[AIN].getIDPredicate().getinstanceID)
+                    statments += AddChannelInstanceStatment(s.asInstanceOf[AIN].getIDPredicate().getinstanceID, typeIDB, props)
+                  }
                 }
               }
-
+              case None => {
+                throw new Exception("KevScript uncompression error")
+              }
             }
-            )
-            if(typestatment == 0)
-            {
-              logger.debug("Detect AddChannelInstanceStatment "+s.asInstanceOf[AIN].getIDPredicate().getinstanceID)
-              statments += AddChannelInstanceStatment(s.asInstanceOf[AIN].getIDPredicate().getinstanceID,typeIDB,props)
-            } else if(typestatment == 1){
-              logger.debug("Detect AddComponentInstanceStatment "+s.asInstanceOf[AIN].getIDPredicate().getinstanceID)
-              statments += AddComponentInstanceStatment(cid,typeIDB,props)
-            }
-
-
           }
 
-          case classOf : RIN => {
+          case classOf: RIN => {
             logger.debug("Detect RemoveComponentInstanceStatment")
-            val cid = new ComponentInstanceID(s.asInstanceOf[RIN].getInsID,Some(nodeName))
+            val cid = new ComponentInstanceID(s.asInstanceOf[RIN].getInsID, Some(nodeName))
 
             statments += RemoveComponentInstanceStatment(cid)
           }
-          case classOf: RBI  =>  {
+          case classOf: RBI => {
             logger.debug("Detect RemoveBindingStatment")
-            val cid = new ComponentInstanceID(s.asInstanceOf[RBI].getIDPredicate().getinstanceID,Some(nodeName))
+            val cid = new ComponentInstanceID(s.asInstanceOf[RBI].getIDPredicate().getinstanceID, Some(nodeName))
             val idPort = definitions.getPortdefinitionById(s.asInstanceOf[RBI].getportIDB)
-            statments += RemoveBindingStatment(cid,idPort,s.asInstanceOf[RBI].getchID())
+            statments += RemoveBindingStatment(cid, idPort, s.asInstanceOf[RBI].getchID())
           }
 
           case _ => {
-            logger.error("This Statment is not managed "+s.getClass.getName)
+            logger.error("This Statment is not managed " + s.getClass.getName)
             None
           }
         }
       }
       )
-      blocks +=  TransactionalBloc(statments.toList)
+      blocks += TransactionalBloc(statments.toList)
       logger.debug(blocks.toString())
     } catch {
-      case e:IndexOutOfBoundsException => logger.error("The Arduino globals definitions (properties or typedefinition or portdefinition)  are not compliant to the adaptations")
-      case e:java.lang.Exception => logger.error("Fail to parse the script :  "+e+ " script was : "+cscript)
-      case msg =>  logger.error("Caught an exception!"+msg)
+      case e: IndexOutOfBoundsException => logger.error("The Arduino globals definitions (properties or typedefinition or portdefinition)  are not compliant to the adaptations")
+      case e: java.lang.Exception => logger.error("Fail to parse the script : "+cscript ,e)
+      case msg => logger.error("Caught an exception!" + msg)
     }
     new Script(blocks.toList)
   }
@@ -232,7 +235,7 @@ object KevScriptWrapper {
                   content append instrSep
                 }
                 firstStatment = false
-                content append Op.RBI_C+ paramSep + s.cid.componentInstanceName + paramSep + s.bindingInstanceName + paramSep + s.portName
+                content append Op.RBI_C + paramSep + s.cid.componentInstanceName + paramSep + s.bindingInstanceName + paramSep + s.portName
               }
               case _@s => logger.warn("Uncatch " + s) //DO NOTHING FOR OTHER STATEMENT
             }

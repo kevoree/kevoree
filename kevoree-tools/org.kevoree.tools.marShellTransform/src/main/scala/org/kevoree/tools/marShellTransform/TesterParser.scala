@@ -57,6 +57,6 @@ object TesterParser extends App {
 
 
 
-  KevScriptWrapper.generateKevScriptFromCompressed(test)
+  KevScriptWrapper.generateKevScriptFromCompressed(test,null)
 
 }
