@@ -100,13 +100,13 @@ class ParserPush extends StandardTokenParsers {
 
   //0:T1:period=1000
   def parseUDI: Parser[Adaptation] =
-    parseIDPredicate ~ ":" ~ rep1sep(parsePropertiesPredicate, ",") ^^ {
+    parseIDPredicate ~ ":" ~ opt(rep1sep(parsePropertiesPredicate, ",")) ^^ {
       case a ~ _ ~ b => new UDI(a, b)
     }
 
   //1:T1:0:0=50000
   def parseAIN: Parser[Adaptation] =
-    parseIDPredicate ~ ":" ~ typeIDB ~ ":" ~ rep1sep(parsePropertiesPredicate, ",") ^^ {
+    parseIDPredicate ~ ":" ~ typeIDB ~ ":" ~ opt(rep1sep(parsePropertiesPredicate, ",")) ^^ {
       case a ~ _ ~ b ~ _ ~ c => { new AIN(a, b.toInt, c) }
     }
 

@@ -49,14 +49,25 @@ object TesterParser extends App {
 
 
   val test = "node0:ArduinoNode@{" +
-    "period:serialport,Timer:SerialCT,tick/" +
-    "1:S1:1:1=devttyACM0/" +
-    "1:T1:0:0=1000/" +
-    "3:T1:S1:0/" +
+    "pin:period:serialport,DigitalLight:Timer:SerialCT:LocalChannel,on:off:toggle:flash:tick/" +
+    "1:L1:3/" +
+    "1:S1:2:2=devttyACM0/" +
+    "1:T1:1:1=1000/" +
+    "n1:D1:0/" +
+    "1:T2:1:1=1000/" +
+    "3:T1:L1:4/" +
+    "3:D1:L1:3/" +
+    "3:T2:S1:4/" +
     "} "
 
 
+   try {
 
-  KevScriptWrapper.generateKevScriptFromCompressed(test,null)
+     KevScriptWrapper.generateKevScriptFromCompressed(test,null)
+     
+   } catch {
+     case _ @ e => println(e)
+   }
+
 
 }
