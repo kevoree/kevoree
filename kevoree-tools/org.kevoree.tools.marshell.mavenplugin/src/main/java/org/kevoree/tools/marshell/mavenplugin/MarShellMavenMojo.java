@@ -91,15 +91,22 @@ public class MarShellMavenMojo extends AbstractMojo {
 
 		mergerComponent = new KevoreeMergerComponent();
 
-		ContainerRoot model = executeOnDirectory(sourceMarShellDirectory);
-        ContainerRoot model2 = executeOnDirectory(sourceMarShellDirectory2);
-        mergerComponent.merge(model,model2);
+		ContainerRoot model = KevoreeFactory.createContainerRoot();
+
+        if(sourceMarShellDirectory != null){
+            ContainerRoot model2 = executeOnDirectory(sourceMarShellDirectory);
+            mergerComponent.merge(model,model2);
+        }
+
+        if(sourceMarShellDirectory2 != null){
+            ContainerRoot model2 = executeOnDirectory(sourceMarShellDirectory2);
+            mergerComponent.merge(model,model2);
+        }
+
 
 		if (!sourceOutputDirectory.exists() && !sourceOutputDirectory.mkdirs()) {
 			throw new MojoExecutionException("Unable to build target packages " + sourceOutputDirectory.getAbsolutePath());
 		}
-
-
 
 		KevoreeXmiHelper.save(sourceOutputDirectory.getAbsolutePath() + File.separator + "lib.kev", model);
 
@@ -112,19 +119,21 @@ public class MarShellMavenMojo extends AbstractMojo {
 
 	private ContainerRoot executeOnDirectory (File dir) throws MojoExecutionException {
 		ContainerRoot mergedModel = KevoreeFactory.createContainerRoot();
-		for (File f : dir.listFiles()) {
-			if (f.isDirectory()) {
-				ContainerRoot model = executeOnDirectory(f);
-				mergedModel = mergerComponent.merge(mergedModel, model);
-			} else {
+        if(dir.listFiles() != null){
+            for (File f : dir.listFiles()) {
+                if (f.isDirectory()) {
+                    ContainerRoot model = executeOnDirectory(f);
+                    mergedModel = mergerComponent.merge(mergedModel, model);
+                } else {
 //				try {
-				ContainerRoot model = ModelGenerator.generate(f.getAbsolutePath());
-				mergedModel = mergerComponent.merge(mergedModel, model);
-				/*} catch (Exception e) {
-					getLog().error("Unable to parse the source file", e);
-				}*/
-			}
-		}
+                    ContainerRoot model = ModelGenerator.generate(f.getAbsolutePath());
+                    mergedModel = mergerComponent.merge(mergedModel, model);
+                    /*} catch (Exception e) {
+                         getLog().error("Unable to parse the source file", e);
+                     }*/
+                }
+            }
+        }
 		return mergedModel;
 	}
 }
