@@ -1,4 +1,4 @@
-package org.kevoree.common.api;
+package org.kevoree.common.gps.api;
 
 /**
  * Created by jed
