@@ -2,17 +2,17 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.kevoree.common.android</groupId>
-    <artifactId>org.kevoree.common.android.root</artifactId>
+    <groupId>org.kevoree.common.gps.android</groupId>
+    <artifactId>org.kevoree.common.gps.android.root</artifactId>
     <packaging>jar</packaging>
     <name>Kevoree :: Common :: Android </name>
     <version>1.7.0-SNAPSHOT</version>
 
     <parent>
-        <artifactId>org.kevoree.common</artifactId>
-        <groupId>org.kevoree.common</groupId>
+        <artifactId>org.kevoree.common.gps</artifactId>
+        <groupId>org.kevoree.common.gps</groupId>
         <version>1.7.0-SNAPSHOT</version>
-        <relativePath>../../pom.xml</relativePath>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <properties>
@@ -22,7 +22,7 @@
     </properties>
 
     <build>
-        <sourceDirectory>../../org.kevoree.common/src/main/java</sourceDirectory>
+        <sourceDirectory>../org.kevoree.common.gps.root/src/main/</sourceDirectory>
         <plugins>
 
             <plugin>

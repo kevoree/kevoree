@@ -1,13 +1,12 @@
 package org.kevoree.library.arduinoNodeType;
 
-import org.kevoree.ContainerNode;
 import org.kevoree.ContainerRoot;
 import org.kevoree.framework.KevoreeXmiHelper;
 import org.kevoree.tools.aether.framework.NodeTypeBootstrapHelper;
 
 import java.io.IOException;
 
-public class Tester {
+public class Tester2 {
 
     public static void main(String[] args) throws IOException {
 
@@ -24,7 +23,7 @@ public class Tester {
 
 
         
-        ContainerRoot model = KevoreeXmiHelper.loadStream(Tester.class.getClassLoader().getResourceAsStream("test.kev"));
+        ContainerRoot model = KevoreeXmiHelper.loadStream(Tester2.class.getClassLoader().getResourceAsStream("test.kev"));
 
       //  ContainerRoot model = KevoreeXmiHelper.load("/Users/duke/Desktop/kev.kev");
 
