@@ -93,14 +93,10 @@ class ParserPush extends StandardTokenParsers {
   }
 
   // 0=100, ...
-  def parsePropertiesPredicate: Parser[Propertie] = operation ~ "=" ~ value ^^ {
-    case d ~ _ ~ t => new PropertiePredicate(d.toInt, t.toInt)
+  def parsePropertiesPredicate: Parser[Propertie] = operation ~ "=" ~ (value | ident ) ^^ {
+    case d ~ _ ~ t => new PropertiePredicate(d.toInt, t.toString)
   }
 
-    //1:S1:1:1=devttyACM0/" +
-  def parseChannelProperite: Parser[Propertie] = operation ~ "=" ~ ident ^^ {
-    case d ~ _ ~ t => new PropertieChannel(d.toInt, t)
-  }
 
   //0:T1:period=1000
   def parseUDI: Parser[Adaptation] =
@@ -110,7 +106,7 @@ class ParserPush extends StandardTokenParsers {
 
   //1:T1:0:0=50000
   def parseAIN: Parser[Adaptation] =
-    parseIDPredicate ~ ":" ~ typeIDB ~ ":" ~ rep1sep((parsePropertiesPredicate | parseChannelProperite), ",") ^^ {
+    parseIDPredicate ~ ":" ~ typeIDB ~ ":" ~ rep1sep(parsePropertiesPredicate, ",") ^^ {
       case a ~ _ ~ b ~ _ ~ c => { new AIN(a, b.toInt, c) }
     }
 
