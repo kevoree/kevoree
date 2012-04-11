@@ -1,8 +1,9 @@
-package org.kevoree.common.impl;
+package org.kevoree.common.gps.impl;
 
-import org.kevoree.common.api.GeoConstants;
-import org.kevoree.common.api.IGpsPoint;
-import org.kevoree.common.api.MathConstants;
+
+import org.kevoree.common.gps.api.GeoConstants;
+import org.kevoree.common.gps.api.IGpsPoint;
+import org.kevoree.common.gps.api.MathConstants;
 
 /**
  * Created by jed
