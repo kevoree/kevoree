@@ -20,8 +20,6 @@ public class StaticFilesPage extends ParentAbstractPage {
     @Override
     public KevoreeHttpResponse process(KevoreeHttpRequest request, KevoreeHttpResponse response) {
 
-        System.out.println("Result="+this.getClass().getClassLoader().getResource("hello.html"));
-
         if (FileServiceHelper.checkStaticFile(basePage, this, request, response)) {
             if (request.getUrl().equals("/") || request.getUrl().endsWith(".html")) {
                 String pattern = getDictionary().get("urlpattern").toString();
@@ -31,7 +29,12 @@ public class StaticFilesPage extends ParentAbstractPage {
                 if (!pattern.endsWith("/")) {
                     pattern = pattern + "/";
                 }
-                response.setContent(response.getContent().replace("{urlpattern}", pattern));
+
+                if(response.getRawContent() != null){
+                    response.setRawContent(new String(response.getRawContent()).replace("{urlpattern}", pattern).getBytes());
+                } else {
+                    response.setContent(response.getContent().replace("{urlpattern}", pattern));
+                }
             }
             return response;
         }

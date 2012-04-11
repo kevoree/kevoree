@@ -80,9 +80,9 @@ printScriptFromEEPROM ()
   int indexInBytes = 0;
   int indexEEPROM = 3;
 
-  Serial.print (F("$"));
+  Serial.print (startAdminChar);
   printNodeName();
-  Serial.print(F(":"));
+  Serial.print(delimitation);
   printNodeTypeName();
   Serial.print (F("@"));
   Serial.println (startBAdminChar);
@@ -92,7 +92,7 @@ printScriptFromEEPROM ()
         strcpy_P(inBytes, (char*)pgm_read_word(&(properties[i])));
         Serial.print( inBytes );
         if(i < nbProps-1){
-                   Serial.print(F(":"));
+                   Serial.print(delimitation);
         }
     }
     if(nbProps > 0){
@@ -104,7 +104,7 @@ printScriptFromEEPROM ()
         strcpy_P(inBytes, (char*)pgm_read_word(&(typedefinition[i])));
         Serial.print( inBytes );
         if(i < nbTypeDef-1){
-                   Serial.print(F(":"));
+                   Serial.print(delimitation);
         }
     }
     if(nbTypeDef > 0){
@@ -116,7 +116,7 @@ printScriptFromEEPROM ()
      strcpy_P(inBytes, (char*)pgm_read_word(&(portdefinition[i])));
      Serial.print( inBytes );
         if(i < nbPortType-1){
-                   Serial.print(F(":"));
+                   Serial.print(delimitation);
         }
     }
 
@@ -139,28 +139,30 @@ printScriptFromEEPROM ()
 	      Serial.print (UDI_C);
 	      Serial.print (delimitation);
 	      Serial.print (insID);
-	      Serial.print (delimitation);
 	      i = (strlen (insID) + 3);
-	      do
-		{
+	      if(inBytes[i] != '\0')
+	      {
+	           Serial.print (delimitation);
+           	      do
+           		{
 
-		  Serial.print (inBytes[i], DEC);
-		  Serial.print (F ("="));
-		  i = i + 2;
-		  do
-		    {
-		      Serial.print (inBytes[i]);
-		      i++;
-		    }
-		  while (inBytes[i] != ',' && inBytes[i] != '\0');
-		  if (inBytes[i + 1] != '\0')
-		    {
-		      Serial.print (F (","));
-		    }
-		  i++;
-		}
-	      while (inBytes[i] != '\0');
-
+           		  Serial.print (inBytes[i], DEC);
+           		  Serial.print (F ("="));
+           		  i = i + 2;
+           		  do
+           		    {
+           		      Serial.print (inBytes[i]);
+           		      i++;
+           		    }
+           		  while (inBytes[i] != ',' && inBytes[i] != '\0' && inBytes[i]!= sepAdminChar );
+           		  if (inBytes[i + 1] != '\0')
+           		    {
+           		      Serial.print (F (","));
+           		    }
+           		  i++;
+           		}
+           	      while (inBytes[i] != '\0');
+	      }
 	    }
 	  else if (inBytes[0] == AIN_C)
 	    {
@@ -171,8 +173,12 @@ printScriptFromEEPROM ()
 	      Serial.print (insID);
 	      Serial.print (delimitation);
 	      Serial.print (typeIDB);
-	      Serial.print (delimitation);
+
 	      i = strlen (insID) + 5;
+
+	      	      if(inBytes[i] != '\0')
+          	      {
+          	           Serial.print (delimitation);
 	      do
 		{
 
@@ -184,7 +190,7 @@ printScriptFromEEPROM ()
 		      Serial.print (inBytes[i]);
 		      i++;
 		    }
-		  while (inBytes[i] != ',' && inBytes[i] != '\0');
+		  while (inBytes[i] != ',' && inBytes[i] != '\0' && inBytes[i]!= sepAdminChar );
 		  if (inBytes[i + 1] != '\0')
 		    {
 		      Serial.print (F (","));
@@ -192,6 +198,7 @@ printScriptFromEEPROM ()
 		  i++;
 		}
 	      while (inBytes[i] != '\0');
+	           }
 	    }
 	  else if (inBytes[0] == ABI_C)
 	    {
