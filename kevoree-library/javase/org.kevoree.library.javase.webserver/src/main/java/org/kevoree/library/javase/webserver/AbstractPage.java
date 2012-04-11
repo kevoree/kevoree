@@ -5,10 +5,7 @@ import org.kevoree.framework.AbstractComponentType;
 import org.kevoree.framework.MessagePort;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import scala.None;
 import scala.Option;
-
-import java.util.HashMap;
 
 /**
  * Created by IntelliJ IDEA.
@@ -25,7 +22,7 @@ import java.util.HashMap;
         @ProvidedPort(name = "request", type = PortType.MESSAGE)
 })
 @Requires({
-        @RequiredPort(name = "content", type = PortType.MESSAGE)
+        @RequiredPort(name = "content", type = PortType.MESSAGE, optional = true)
 })
 @DictionaryType({
         @DictionaryAttribute(name = "urlpattern",optional = true, defaultValue = "/")
