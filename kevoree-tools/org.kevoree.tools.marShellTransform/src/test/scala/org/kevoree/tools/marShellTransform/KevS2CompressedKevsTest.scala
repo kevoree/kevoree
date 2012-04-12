@@ -70,4 +70,21 @@ class KevS2CompressedKevsTest extends KevSTestSuiteHelper {
     assert(result == "{"+Op.AIN_C+":DigitalLight1925293585:DigitalLight:pin=10/"+Op.ABI_C+":DigitalLight1925293585:hub846068439:toggle/"+Op.UDI_C+":DigitalLight1925293585:pin=10}")
   }
 
+  @Test
+  def parser_test(){
+
+    val test = "node0:ArduinoNode@{" +
+        "pin:period:serialport,DigitalLight:Timer:SerialCT:LocalChannel,on:off:toggle:flash:tick/" +
+        "1:L1:3/"  +
+        "1:S1:2:2=devttyACM0/" +
+        "1:T1:1:1=1000/" +
+        "1:D1:0:0=13/" +
+        "1:T2:1:1=1000/" +
+        "3:T1:L1:4/" +
+        "3:D1:L1:3/" +
+        "3:T2:S1:4/" +
+        "} "
+
+  }
+
 }

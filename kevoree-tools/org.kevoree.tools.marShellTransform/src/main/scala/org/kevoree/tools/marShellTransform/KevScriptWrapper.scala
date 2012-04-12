@@ -146,8 +146,14 @@ object KevScriptWrapper {
       blocks += TransactionalBloc(statments.toList)
       logger.debug(blocks.toString())
     } catch {
-      case e: IndexOutOfBoundsException => throw new Exception("The Arduino globals definitions (properties or typedefinition or portdefinition)  are not compliant to the adaptations")
-      case e: java.lang.Exception => throw new Exception("Fail to parse the script : "+cscript+" "+e)
+      case e: IndexOutOfBoundsException => {
+        logger.error("The Arduino globals definitions (properties or typedefinition or portdefinition)  are not compliant to the adaptations")
+        new Script(blocks.toList)
+      }
+      case e: java.lang.Exception => {
+        logger.error("Fail to parse the script : "+cscript+" "+e)
+        new Script(blocks.toList)
+      }
     }
 
     new Script(blocks.toList)
