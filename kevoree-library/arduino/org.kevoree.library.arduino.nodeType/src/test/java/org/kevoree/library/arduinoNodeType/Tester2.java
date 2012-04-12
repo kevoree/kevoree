@@ -34,7 +34,7 @@ public class Tester2 {
         NodeTypeBootstrapHelper bs = new NodeTypeBootstrapHelper();
         node.setBootStrapperService(bs);
 
-        node.setForceUpdate(true);
+
 
         node.getDictionary().put("boardTypeName", "uno");
         //node.getDictionary().put("boardPortName","/dev/tty.usbserial-A400g2se");

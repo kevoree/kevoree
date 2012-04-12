@@ -34,7 +34,6 @@ public class GeneratorTrack  extends AbstractComponentType implements  Runnable{
     }
 
 
-
     @Stop
     public void stop() {
         alive  = false;
@@ -50,28 +49,17 @@ public class GeneratorTrack  extends AbstractComponentType implements  Runnable{
     @Override
     public void run() {
         int count = 0;
-        GpsPoint pt;
+        GpsPoint pt = new GpsPoint();
         while(alive)
         {
-            if(count > 10)
-            {
-                getPortByName("generatedtrack", MessagePort.class).process(track);
-                count =0;
-                track.clear();
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                  //ignore
-                }
+            track.clear();
+            track.generatePoints(pt.randomPoint(),5);
+            getPortByName("generatedtrack", MessagePort.class).process(track);
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                //ignore
             }
-            else
-            {
-                pt = new GpsPoint();
-                logger.info("Generate "+pt);
-                track.addPoint(pt);
-                count ++;
-            }
-
         }
     }
 }

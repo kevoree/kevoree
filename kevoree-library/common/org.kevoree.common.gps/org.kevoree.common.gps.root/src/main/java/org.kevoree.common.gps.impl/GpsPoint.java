@@ -26,12 +26,16 @@ public class GpsPoint implements IGpsPoint {
 
     public GpsPoint(){
         // random
-        double lat =    48.115683+ (Math.random() * 0.00001 );
-        double lon =         -1.664286+ (Math.random() * 0.00001);
+        double lat =    48.115683+ (Math.random() * 0.1 );
+        double lon =         -1.664286+ (Math.random() * 0.1);
         this.lat =  (int)(lat* 1E6);
         this.long_ =  (int)(lon* 1E6);
     }
-    
+
+    public GpsPoint randomPoint(){
+        return new GpsPoint(this.getLat()+ (Math.random() * 0.1 ),this.getLong_()+ (Math.random() * 0.1 ));
+    }
+
 
     public GpsPoint(String latitude,String longitude,String satellites_used ,
                     String mode ,

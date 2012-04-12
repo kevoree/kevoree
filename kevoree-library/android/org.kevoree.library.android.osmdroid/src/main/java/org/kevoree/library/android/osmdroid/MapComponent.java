@@ -139,28 +139,23 @@ public class MapComponent extends AbstractComponentType {
     }
 
     @Port(name = "track")
-    public void manage_track(Object msg)
+    public void manage_track(final Object msg)
     {
         if(msg instanceof TracK)
         {
-            TracK tmp = (TracK) msg;
-            for(GpsPoint p : tmp.getPoints())
-            {
-                GpsPoint t=null ;
-                try {
-                    t = (GpsPoint) p.clone();
-                } catch (CloneNotSupportedException e) {
+            uiService.getRootActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run ()
+                {
+                    TracK tmp = (TracK) msg;
+                    for(GpsPoint p : tmp.getPoints())
+                    {
+                        track.addPoint(p);
+                        mMapController.animateTo(new GeoPoint(p.getLat(),p.getLong_()));
+                        mMapView.invalidate();
+                    }
                 }
-
-                if(t != null){
-                    getTrack().addPoint(t);
-                    logger.error("track "+t);
-                     mMapController.animateTo(new GeoPoint(t.getLat(),t.getLong_()));
-                    mMapView.invalidate();
-                }
-
-
-            }
+            });
 
         } else
         {

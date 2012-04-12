@@ -45,4 +45,22 @@ public class TracK implements ITrack {
         return c.toString();
     }
 
+    public List<GpsPoint> getTrack() {
+        return track;
+    }
+
+    public void setTrack(List<GpsPoint> track) {
+        this.track = track;
+    }
+
+    public void generatePoints(GpsPoint src,int nb){
+        GpsPoint last =src;
+        for(int i=0;i<nb;i++)
+        {
+            GpsPoint current = last.randomPoint();
+            addPoint(current);
+            last =  current;
+        }
+    }
+
 }

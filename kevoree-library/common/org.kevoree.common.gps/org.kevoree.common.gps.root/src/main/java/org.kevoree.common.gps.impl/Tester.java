@@ -9,8 +9,10 @@ package org.kevoree.common.gps.impl;
 public class Tester {
 
     public static void main(String [] args) throws InterruptedException {
+        TracK t = new TracK();
          while (true){
-             System.out.println(new GpsPoint());
+         t.generatePoints(new GpsPoint(),2);
+             System.out.println(t.getPoints());
              Thread.sleep(1000);
          }
     }
