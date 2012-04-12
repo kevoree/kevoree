@@ -139,9 +139,12 @@ printScriptFromEEPROM ()
 	      Serial.print (UDI_C);
 	      Serial.print (delimitation);
 	      Serial.print (insID);
+
+
 	      i = (strlen (insID) + 3);
-	      if(inBytes[i] != '\0')
-	      {
+                if(i != indexInBytes)
+                     {
+
 	           Serial.print (delimitation);
            	      do
            		{
@@ -163,6 +166,7 @@ printScriptFromEEPROM ()
            		}
            	      while (inBytes[i] != '\0');
 	      }
+
 	    }
 	  else if (inBytes[0] == AIN_C)
 	    {
@@ -175,9 +179,8 @@ printScriptFromEEPROM ()
 	      Serial.print (typeIDB);
 
 	      i = strlen (insID) + 5;
-
-	      	      if(inBytes[i] != '\0')
-          	      {
+                  if(i != indexInBytes)
+                    {
           	           Serial.print (delimitation);
 	      do
 		{

@@ -22,7 +22,7 @@ import collection.mutable.ListBuffer
  * Time: 17:36
  */
 
-class AIN(id : IDPredicate, typeIDB : Int,params : Option[List[Propertie]]) extends  Adaptation {
+case class AIN(id : IDPredicate, typeIDB : Int,params : Option[List[Propertie]]) extends  Adaptation {
 
   def getIDPredicate() :  IDPredicate = {
       id
