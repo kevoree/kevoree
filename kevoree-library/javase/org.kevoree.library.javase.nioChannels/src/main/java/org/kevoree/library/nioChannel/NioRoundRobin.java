@@ -15,26 +15,28 @@ import scala.util.Random;
 @Library(name = "JavaSE", names = {"Android"})
 @ChannelTypeFragment
 public class NioRoundRobin extends NioChannel {
+	private Random random = new Random();
 
-    private static String currentUUIdMessage = "";
-        private Random random = new Random();
+	@Override
+	public Object dispatch (Message message) {
+		int rang;
+		if (message.getDestNodeName().equals(this.getNodeName())) {
+			int bindedSize = getBindedPorts().size();
+			rang = random.nextInt(bindedSize);
+		} else {
+			int bindedSize = getBindedPorts().size() + getOtherFragments().size();
+			rang = random.nextInt(bindedSize);
+		}
 
-        @Override
-        public Object dispatch(Message message) {
+		if (rang < getBindedPorts().size()) {
+			forward(getBindedPorts().get(rang), message);
+		} else {
+			rang = rang - getBindedPorts().size();
+			forward(getOtherFragments().get(rang), message);
+		}
 
-            /*       Generate the UUID of the message           */
-            /*   Local Node  */
-            int bindedSize = getBindedPorts().size() + getOtherFragments().size();
-            int rang = random.nextInt(bindedSize);
-            if(rang < getBindedPorts().size()){
-                forward(getBindedPorts().get(rang),message);
-            } else {
-                rang = rang - getBindedPorts().size();
-                forward(getOtherFragments().get(rang),message);
-            }
-
-            return null;
-        }
+		return null;
+	}
 
 
 }
