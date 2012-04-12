@@ -68,8 +68,6 @@ public class KTinyWebServer extends AbstractWebServer implements Runnable {
 
     @Override
     public void responseHandler(Object param) {
-        System.out.println(param);
-
         if (param instanceof KevoreeHttpResponse) {
             handler.internalSend((KevoreeHttpResponse)param);
         }
