@@ -1,7 +1,10 @@
-package org.kevoree.library.javase.webserver;
+package org.kevoree.library.javase.webserver.sample;
 
 import org.kevoree.annotation.*;
 import org.kevoree.framework.MessagePort;
+import org.kevoree.library.javase.webserver.AbstractPage;
+import org.kevoree.library.javase.webserver.KevoreeHttpRequest;
+import org.kevoree.library.javase.webserver.KevoreeHttpResponse;
 
 @ComponentType
 public class HelloWorldPage extends AbstractPage {

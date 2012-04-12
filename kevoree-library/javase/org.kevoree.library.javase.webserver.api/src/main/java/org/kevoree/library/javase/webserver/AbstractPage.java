@@ -3,6 +3,7 @@ package org.kevoree.library.javase.webserver;
 import org.kevoree.annotation.*;
 import org.kevoree.framework.AbstractComponentType;
 import org.kevoree.framework.MessagePort;
+import org.kevoree.library.javase.webserver.impl.KevoreeHttpResponseImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import scala.None;
@@ -72,7 +73,7 @@ public class AbstractPage extends AbstractComponentType {
     }
 
     public KevoreeHttpResponse buildResponse(KevoreeHttpRequest request){
-          KevoreeHttpResponse responseKevoree = new KevoreeHttpResponse();
+          KevoreeHttpResponse responseKevoree = new KevoreeHttpResponseImpl();
           responseKevoree.setTokenID(request.getTokenID());
           return responseKevoree;
     }

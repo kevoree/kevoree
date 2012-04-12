@@ -2,7 +2,10 @@ package org.kevoree.library.webserver;
 
 import org.kevoree.annotation.*;
 import org.kevoree.library.javase.webserver.AbstractWebServer;
+import org.kevoree.library.javase.webserver.KevoreeHttpRequest;
+import org.kevoree.library.javase.webserver.KevoreeHttpResponse;
 import org.kevoree.library.webserver.internal.KTinyWebServerInternalServe;
+import org.kevoree.library.webserver.tjws.RequestHandler;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -22,8 +25,12 @@ public class KTinyWebServer extends AbstractWebServer implements Runnable {
 
     private KTinyWebServerInternalServe srv = null;
     private Thread mainT = null;
+    private RequestHandler handler = null;
+
 
     public void start() {
+        handler = new RequestHandler(this);
+        handler.start();
         srv = new KTinyWebServerInternalServe();
         java.util.Properties properties = new java.util.Properties();
         properties.put("port", Integer.parseInt(getDictionary().get("port").toString()));
@@ -32,24 +39,23 @@ public class KTinyWebServer extends AbstractWebServer implements Runnable {
         mainT = new Thread(this);
         mainT.start();
 
-        srv.addServlet("/*",new HttpServlet() {
+        srv.addServlet("/*", new HttpServlet() {
             @Override
             protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-                System.out.println("Waiting ");
-                try {
-                    Thread.sleep(2000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+                KevoreeHttpResponse res = handler.sendAndWait((KevoreeHttpRequest) req);
+                if (res.getRawContent() != null) {
+                    resp.getOutputStream().write(res.getRawContent());
+                } else {
+                    resp.getOutputStream().write(res.getContent().getBytes());
                 }
-                System.out.println("After Wait");
-                resp.getOutputStream().write("Hello".getBytes());
             }
         });
 
     }
 
     public void stop() {
-       mainT.interrupt();
+        handler.$bang(false);
+        mainT.interrupt();
     }
 
     public void update() {
@@ -59,7 +65,9 @@ public class KTinyWebServer extends AbstractWebServer implements Runnable {
 
     @Override
     public void responseHandler(Object param) {
-
+        if (param instanceof KevoreeHttpResponse) {
+            handler.$bang(param);
+        }
     }
 
 
