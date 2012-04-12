@@ -93,15 +93,14 @@ class ParserPush extends StandardTokenParsers {
   }
 
   // 0=100, ...
-  def parsePropertiesPredicate: Parser[Propertie] = operation ~ "=" ~ (value | ident ) ^^ {
+  def parsePropertiesPredicate: Parser[PropertiePredicate] = operation ~ "=" ~ opt((value | ident )) ^^ {
     case d ~ _ ~ t => new PropertiePredicate(d.toInt, t.toString)
   }
 
-
   //0:T1:period=1000
   def parseUDI: Parser[Adaptation] =
-    parseIDPredicate ~ opt (":") ~ opt(rep1sep(parsePropertiesPredicate, ",")) ^^ {
-      case a ~ _ ~ b => new UDI(a, b)
+    parseIDPredicate ~ ":" ~ rep1sep(parsePropertiesPredicate, ",") ^^ {
+      case a ~ _ ~ b => new UDI(a, Some(b))
     }
 
   //1:T1:0:0=50000
@@ -136,7 +135,7 @@ class ParserPush extends StandardTokenParsers {
   }
 
   //  global
-  def requestParse: Parser[Adaptations] = nodeName ~ ":" ~ nodeTypeName ~ "@" ~ "{" ~ opt(parseGlobalDefinitions) ~ rep1sep((parseABI | parseAIN | parseUDI | parseRIN), "/") ~ opt("/") ~ "}" ^^ {
+  def requestParse: Parser[Adaptations] = nodeName ~ ":" ~ nodeTypeName ~ "@" ~ "{" ~ opt(parseGlobalDefinitions) ~ rep1sep(( parseABI | parseUDI | parseAIN | parseRIN ), "/") ~ opt("/") ~ "}" ^^ {
     case nodename ~ _ ~ nodeTypeName ~ _ ~ _ ~ definitions ~ adaptations ~ _ ~ _ => new Adaptations(nodename, nodeTypeName, definitions, adaptations)
   }
 
