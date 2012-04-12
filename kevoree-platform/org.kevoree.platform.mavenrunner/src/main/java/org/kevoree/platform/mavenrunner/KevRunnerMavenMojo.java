@@ -74,7 +74,7 @@ public class KevRunnerMavenMojo extends AbstractMojo {
             KevoreeBootStrap.byPassAetherBootstrap =true;
             org.kevoree.tools.aether.framework.AetherUtil.setRepositorySystemSession(repoSession);
             org.kevoree.tools.aether.framework.AetherUtil.setRepositorySystem(repoSystem);
-            ContainerRoot model = KevScriptHelper.generate(kevsFile);
+            ContainerRoot model = KevScriptHelper.generate(kevsFile,project);
 
 
             File tFile = new File(project.getBuild().getOutputDirectory(), "runner.kev");
