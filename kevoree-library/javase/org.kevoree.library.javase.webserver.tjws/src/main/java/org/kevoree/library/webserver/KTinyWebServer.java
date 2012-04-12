@@ -43,14 +43,19 @@ public class KTinyWebServer extends AbstractWebServer implements Runnable {
             @Override
             protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
                 KevoreeHttpResponse res = handler.sendAndWait((KevoreeHttpRequest) req);
+
+                if(res.getHeaders().get("Content-Type") != null){
+                    resp.setContentType(res.getHeaders().get("Content-Type").toString());
+                }
+
                 if (res.getRawContent() != null) {
                     resp.getOutputStream().write(res.getRawContent());
                 } else {
                     resp.getOutputStream().write(res.getContent().getBytes());
                 }
+
             }
         });
-
     }
 
     public void stop() {
@@ -68,8 +73,6 @@ public class KTinyWebServer extends AbstractWebServer implements Runnable {
 
     @Override
     public void responseHandler(Object param) {
-        System.out.println(param);
-
         if (param instanceof KevoreeHttpResponse) {
             handler.internalSend((KevoreeHttpResponse)param);
         }

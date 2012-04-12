@@ -32,7 +32,7 @@
         <module>../org.kevoree.library.android.socketChannels</module>
         <module>../org.kevoree.library.android.agrapher</module>
         <module>../org.kevoree.library.android.serialCT</module>
-       
+        <module>../org.kevoree.library.android.osmdroid</module>
     </modules>
 
     <dependencies>

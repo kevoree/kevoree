@@ -15,7 +15,7 @@ object Tester extends  App {
 
 
 
-  ArduinoModelGetHelper.getCurrentModel(model, "node0","/dev/tty.usbmodem26231")
+  ArduinoModelGetHelper.getCurrentModel(model, "node0","/dev/ttyACM0")
 
 
   

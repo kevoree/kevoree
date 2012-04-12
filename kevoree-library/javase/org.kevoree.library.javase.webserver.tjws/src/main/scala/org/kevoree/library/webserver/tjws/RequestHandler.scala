@@ -14,6 +14,7 @@ import org.kevoree.framework.{MessagePort, AbstractComponentType}
  */
 
 case class CLOSE()
+case class REMOVE(id : UUID)
 
 class RequestHandler(origin: AbstractWebServer) extends DaemonActor {
   def killActor() {
@@ -31,31 +32,34 @@ class RequestHandler(origin: AbstractWebServer) extends DaemonActor {
     handler.sendAndWait()
   }
 
-  def internalSend(resp : KevoreeHttpResponse){
-    println("Found responder Before Send")
+  def internalSend(resp: KevoreeHttpResponse) {
     this ! resp
   }
 
 
+
   def act() {
-    react {
-      case msg: KevoreeHttpResponse => {
-        map.get(msg.getTokenID) match {
-          case Some(responder) => {
-            println("Found responder")
+    loop {
+      react {
 
-            responder.checkAndReply(msg)
-            map.remove(msg.getTokenID)
-          }
-          case None => log.error("responder not found for tokenID=" + msg.getTokenID)
+        case REMOVE(i) => {
+          map.remove(i)
         }
-        //TEST IF FINAL
+        case msg: KevoreeHttpResponse => {
+          map.get(msg.getTokenID) match {
+            case Some(responder) => {
+              responder.checkAndReply(msg)
+              map.remove(msg.getTokenID)
+            }
+            case None => log.error("responder not found for tokenID=" + msg.getTokenID)
+          }
+          //TEST IF FINAL
+        }
+        case rr: Tuple2[UUID, ResponseHandler] => {
+          map.put(rr._1, rr._2);
+        }
+        case CLOSE() => exit()
       }
-      case rr: Tuple2[UUID, ResponseHandler] => {
-        map.put(rr._1, rr._2);
-      }
-      case CLOSE() => exit()
     }
-
   }
 }

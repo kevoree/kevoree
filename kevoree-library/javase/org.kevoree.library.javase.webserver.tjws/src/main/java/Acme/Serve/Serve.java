@@ -2028,6 +2028,7 @@ public class Serve implements ServletContext, Serializable {
                                 String value = s.substring(c + 1).trim();
                                 reqHeaderNames.addElement(key);
                                 reqHeaderValues.addElement(value);
+
                             } else
                                 serve.log("TJWS: header field '" + s + "' without ':'");
                         }
@@ -2919,14 +2920,17 @@ public class Serve implements ServletContext, Serializable {
         // Same as the information passed in the CGI variabled HTTP_*.
         // @param name the header field name
         public String getHeader(String name) {
-            name = name.toLowerCase();
+            name = name.toLowerCase().trim();
             int i = -1;
-            if (serve.proxyConfig && HOST.equals(name))
+            if (serve.proxyConfig && HOST.equals(name)) {
                 i = reqHeaderNames.indexOf(FORWARDED_HOST);
-            if (i < 0)
+            }
+            if (i < 0) {
                 i = reqHeaderNames.indexOf(name);
-            if (i < 0)
+            }
+            if (i < 0) {
                 return null;
+            }
             return (String) reqHeaderValues.elementAt(i);
         }
 
@@ -3662,6 +3666,9 @@ public class Serve implements ServletContext, Serializable {
                 resHeaderNames.remove(header);
             else {
                 resHeaderNames.put(header, value);
+
+                //System.out.println("put;"+header+"->"+value);
+
                 // if (header.equals(CONTENTTYPE)) {
                 // String enc = extractEncodingFromContentType(value);
                 // if (enc != null)
@@ -3711,6 +3718,7 @@ public class Serve implements ServletContext, Serializable {
                 else
                     out.println(reqProtocol + " " + resCode + " "
                             + resMessage.substring(0, 255).replace('\r', '/').replace('\n', '/'));
+
                 Enumeration he = resHeaderNames.keys();
                 while (he.hasMoreElements()) {
                     String name = (String) he.nextElement();
