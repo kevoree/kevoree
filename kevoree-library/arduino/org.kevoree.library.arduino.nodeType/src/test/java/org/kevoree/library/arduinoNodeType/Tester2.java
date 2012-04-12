@@ -23,12 +23,12 @@ public class Tester2 {
 
 
         
-        ContainerRoot model = KevoreeXmiHelper.loadStream(Tester2.class.getClassLoader().getResourceAsStream("test.kev"));
+        ContainerRoot   model = KevoreeXmiHelper.load("/home/jed/Desktop/model.kev") ;
 
       //  ContainerRoot model = KevoreeXmiHelper.load("/Users/duke/Desktop/kev.kev");
 
         ArduinoNode node = new ArduinoNode();
-        node.setNodeName("n0");
+        node.setNodeName("node0");
 
         //FOR TEST
         NodeTypeBootstrapHelper bs = new NodeTypeBootstrapHelper();
@@ -44,7 +44,7 @@ public class Tester2 {
 
         node.getDictionary().put("incremental", "true");
         node.startNode();
-        node.push("n0", model, "/dev/tty.usbmodem26231");
+        node.push("node0", model, "/dev/ttyACM0");
 
     }
 
