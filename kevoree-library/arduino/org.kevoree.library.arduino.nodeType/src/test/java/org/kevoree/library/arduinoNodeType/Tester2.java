@@ -23,7 +23,7 @@ public class Tester2 {
 
 
         
-        ContainerRoot model = KevoreeXmiHelper.loadStream(Tester2.class.getClassLoader().getResourceAsStream("test.kev"));
+        ContainerRoot   model = KevoreeXmiHelper.load("/home/jed/Desktop/model.kev") ;
 
       //  ContainerRoot model = KevoreeXmiHelper.load("/Users/duke/Desktop/kev.kev");
 
@@ -34,7 +34,7 @@ public class Tester2 {
         NodeTypeBootstrapHelper bs = new NodeTypeBootstrapHelper();
         node.setBootStrapperService(bs);
 
-        //node.setForceUpdate(true);
+
 
         node.getDictionary().put("boardTypeName", "uno");
         //node.getDictionary().put("boardPortName","/dev/tty.usbserial-A400g2se");
@@ -44,7 +44,7 @@ public class Tester2 {
 
         node.getDictionary().put("incremental", "true");
         node.startNode();
-        node.push("node0", model, "/dev/tty.usbmodem26231");
+        node.push("node0", model, "/dev/ttyACM0");
 
     }
 

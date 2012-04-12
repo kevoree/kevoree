@@ -5,6 +5,8 @@ import android.widget.LinearLayout;
 import org.kevoree.android.framework.helper.UIServiceHandler;
 import org.kevoree.android.framework.service.KevoreeAndroidService;
 import org.kevoree.annotation.*;
+import org.kevoree.common.gps.impl.GpsPoint;
+import org.kevoree.common.gps.impl.TracK;
 import org.kevoree.framework.AbstractComponentType;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
@@ -12,6 +14,7 @@ import org.osmdroid.views.MapController;
 import org.osmdroid.views.MapView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 
 /**
  * Created by jed
@@ -24,8 +27,9 @@ import org.slf4j.LoggerFactory;
 @Provides(value = {
         @ProvidedPort(name = "zoomIn", type = PortType.MESSAGE),
         @ProvidedPort(name = "zoomOut", type = PortType.MESSAGE),
-        @ProvidedPort(name = "pos_map_latitude", type = PortType.MESSAGE),
-        @ProvidedPort(name = "pos_map_longitude", type = PortType.MESSAGE)
+        @ProvidedPort(name = "positionMAP", type = PortType.MESSAGE),
+        @ProvidedPort(name = "track", type = PortType.MESSAGE),
+        @ProvidedPort(name = "cleartrack", type = PortType.MESSAGE)
 })
 @DictionaryType({
         @DictionaryAttribute(name = "title", defaultValue = "Map", optional = false)
@@ -40,8 +44,7 @@ public class MapComponent extends AbstractComponentType {
     private LinearLayout layout=null;
     private final int sizeTitle = 15;
     private String title= "";
-    private double latitude=48117861;
-    private double longitude=-1639552;
+    private TrackMap track;
 
     @Start
     public void start() {
@@ -59,10 +62,11 @@ public class MapComponent extends AbstractComponentType {
                 mMapView.setBuiltInZoomControls(true);
                 mMapController = mMapView.getController();
                 mMapController.setZoom(5);
-                GeoPoint gPt = new GeoPoint(48096397,-1743137);
+                GeoPoint gPt = new GeoPoint(48096397, -1743137);
                 mMapController.setCenter(gPt);
                 mMapView.setTileSource(TileSourceFactory.MAPNIK);
                 mMapView.setActivated(true);
+                track = new TrackMap(uiService.getRootActivity(), mMapView);
 
                 DisplayMetrics dm = new DisplayMetrics();
                 uiService.getRootActivity().getWindowManager().getDefaultDisplay().getMetrics(dm);
@@ -73,10 +77,17 @@ public class MapComponent extends AbstractComponentType {
             }
         });
 
-
-
     }
 
+
+    public TrackMap getTrack() {
+        return track;
+    }
+
+
+    public void setTrack(TrackMap track) {
+        this.track = track;
+    }
 
     @Stop
     public void stop() {
@@ -89,7 +100,6 @@ public class MapComponent extends AbstractComponentType {
     public void update() {
 
     }
-
 
 
     public void updateDico(){
@@ -113,34 +123,55 @@ public class MapComponent extends AbstractComponentType {
         mMapController.zoomOut();
     }
 
-    @Port(name = "pos_map_latitude")
-    public void pos_map_latitude(Object msg)
+
+    @Port(name = "positionMAP")
+    public void positionMAP(Object msg)
     {
-        try
+        if(msg instanceof GpsPoint)
         {
-            latitude = Double.parseDouble(msg.toString());
-        }  catch (Exception e){
-            logger.error("Fail to update pos_map_latitude "+e.getMessage());
+            GpsPoint tmp = (GpsPoint) msg;
+            GeoPoint gPt = new GeoPoint(tmp.getLatitudeE6(),tmp.getLongitudeE6());
+            mMapController.setCenter(gPt);
+
+        } else {
+            logger.error("WTF !");
         }
-
-
-
-        GeoPoint gPt = new GeoPoint(latitude,longitude);
-        mMapController.setCenter(gPt);
     }
 
-    @Port(name = "pos_map_longitude")
-    public void pos_map_longitude(Object msg)
+    @Port(name = "track")
+    public void manage_track(final Object msg)
     {
-        try
+        if(msg instanceof TracK)
         {
-            longitude = Double.parseDouble(msg.toString());
-        }  catch (Exception e){
-            logger.error("Fail to update pos_map_longitude "+e.getMessage());
+            uiService.getRootActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run ()
+                {
+                    TracK tmp = (TracK) msg;
+                    for(GpsPoint p : tmp.getPoints())
+                    {
+                        track.addPoint(p);
+                        mMapController.animateTo(new GeoPoint(p.getLat(),p.getLong_()));
+                        mMapView.invalidate();
+                    }
+                }
+            });
+
+        } else
+        {
+            logger.error("WTF !");
         }
-        GeoPoint gPt = new GeoPoint(latitude,longitude);
-        mMapController.setCenter(gPt);
+
     }
+
+
+    @Port(name = "cleartrack")
+    public void cleartrack(Object msg)
+    {
+        getTrack().clean();
+    }
+
+
 
 
 }

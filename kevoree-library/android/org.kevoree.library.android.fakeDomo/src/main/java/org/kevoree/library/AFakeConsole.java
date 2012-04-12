@@ -56,7 +56,7 @@ public class AFakeConsole extends AbstractComponentType {
         textview.setHeight(200);
         textview.setWidth(500);
         textview.setMovementMethod(new ScrollingMovementMethod());
-
+        textview.setText(" ");
         texteditor = new EditText(uiService.getRootActivity());
         texteditor.setWidth(200);
 
@@ -87,6 +87,7 @@ public class AFakeConsole extends AbstractComponentType {
     @Port(name = "showText")
     public void appendIncoming(final Object text)
     {
+
         uiService.getRootActivity().runOnUiThread(new Runnable() {
             @Override
             public void run ()
@@ -102,8 +103,12 @@ public class AFakeConsole extends AbstractComponentType {
                     } else {
                         textview.append("->"+text.toString());
                     }
-
-                    final int scrollAmount = textview.getLayout().getLineTop(textview.getLineCount()) - textview.getHeight();
+                     int scrollAmount=0;
+                      if(textview.getText().length() > 0 & textview !=null){
+                          if(textview.getLayout() !=null){
+                              scrollAmount = textview.getLayout().getLineTop(textview.getLineCount()) - textview.getHeight();
+                          }
+                      }
 
                     if (scrollAmount > 0)
                         textview.scrollTo(0, scrollAmount);
