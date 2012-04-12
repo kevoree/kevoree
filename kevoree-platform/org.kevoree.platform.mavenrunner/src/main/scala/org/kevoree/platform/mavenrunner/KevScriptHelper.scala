@@ -30,6 +30,7 @@ package org.kevoree.platform.mavenrunner
 import java.io.{BufferedReader, FileReader, File}
 import org.kevoree.tools.marShell.KevScriptOfflineEngine
 import org.kevoree.{ContainerRoot, KevoreeFactory}
+import org.apache.maven.project.MavenProject
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -42,9 +43,20 @@ import org.kevoree.{ContainerRoot, KevoreeFactory}
 
 object KevScriptHelper extends App {
 
-  def generate(scriptFile: File): ContainerRoot = {
+  def generate(scriptFile: File,mavenSource : MavenProject): ContainerRoot = {
     val kevEngine = new KevScriptOfflineEngine(KevoreeFactory.createContainerRoot)
     kevEngine.addVariable("kevoree.version", KevoreeFactory.getVersion)
+
+    val propEnum = mavenSource.getProperties.propertyNames()
+    while(propEnum.hasMoreElements){
+      val propName = propEnum.nextElement()
+      val propVal = mavenSource.getProperties.get(propName)
+      kevEngine.addVariable(propName.toString,propVal.toString)
+    }
+    kevEngine.addVariable("basedir",mavenSource.getBasedir.getAbsolutePath)
+
+
+
     kevEngine.append(loadScript(scriptFile))
     kevEngine.interpret()
   }
