@@ -28,13 +28,13 @@ public class Tester2 {
       //  ContainerRoot model = KevoreeXmiHelper.load("/Users/duke/Desktop/kev.kev");
 
         ArduinoNode node = new ArduinoNode();
-        node.setNodeName("n0");
+        node.setNodeName("node0");
 
         //FOR TEST
         NodeTypeBootstrapHelper bs = new NodeTypeBootstrapHelper();
         node.setBootStrapperService(bs);
 
-        node.setForceUpdate(true);
+        //node.setForceUpdate(true);
 
         node.getDictionary().put("boardTypeName", "uno");
         //node.getDictionary().put("boardPortName","/dev/tty.usbserial-A400g2se");
@@ -44,7 +44,7 @@ public class Tester2 {
 
         node.getDictionary().put("incremental", "true");
         node.startNode();
-        node.push("n0", model, "/dev/tty.usbmodem26231");
+        node.push("node0", model, "/dev/tty.usbmodem26231");
 
     }
 
