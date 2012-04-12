@@ -30,7 +30,9 @@ case class KevsRemoveChannelInterpreter(removeChannel: RemoveChannelInstanceStat
   var logger = LoggerFactory.getLogger(this.getClass)
 
   def interpret(context: KevsInterpreterContext): Boolean = {
-    context.model.getHubs.find(n => n.getName == removeChannel.channelName) match {
+    context.model.getHubs.find{n =>
+      n.getName.equals(removeChannel.channelName)
+    } match {
       case Some(target) => {
 
         val root = target.eContainer.asInstanceOf[ContainerRoot]
@@ -42,8 +44,8 @@ case class KevsRemoveChannelInterpreter(removeChannel: RemoveChannelInstanceStat
         true
       }
       case None => {
-        logger.error("Channel not exist " + removeChannel.channelName);
-        false
+        logger.error("Channel "+removeChannel.channelName+" does not exist in the model. The removeChannel command has been ignored." );
+        true
       }
     }
   }
