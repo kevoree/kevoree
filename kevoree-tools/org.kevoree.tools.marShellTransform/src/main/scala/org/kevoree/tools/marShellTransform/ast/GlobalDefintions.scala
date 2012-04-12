@@ -23,15 +23,28 @@ package org.kevoree.tools.marShellTransform.ast
 case class GlobalDefintions(properties : java.util.List[String],typedefinition : java.util.List[String],portdefinition : java.util.List[String]) extends  Adaptation{
 
   def getPropertieById(id : Int) : String = {
-    properties.get(id)
+    try {
+      properties.get(id)
+    }catch {
+      case _ @ e => " "
+    }
+
   }
 
   def getTypedefinitionById(id : Int): String = {
-    typedefinition.get(id)
+    try {
+      typedefinition.get(id)
+    }catch {
+      case _ @ e => " "
+    }
   }
 
   def getPortdefinitionById(id : Int) : String = {
-    portdefinition.get(id)
+    try {
+      portdefinition.get(id)
+    }catch {
+      case _ @ e => " "
+    }
   }
 
 }

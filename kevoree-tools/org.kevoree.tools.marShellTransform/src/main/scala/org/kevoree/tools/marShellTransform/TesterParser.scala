@@ -29,6 +29,8 @@ package org.kevoree.tools.marShellTransform
 import ast._
 import org.kevoree.tools.marShell.ast._
 import collection.immutable.HashSet
+import org.kevoree.ContainerRoot
+import org.kevoree.framework.KevoreeXmiHelper
 
 
 /**
@@ -47,13 +49,12 @@ object TesterParser extends App {
     "3:T1:S1:0/" +
     "}"
 
-
   val test = "node0:ArduinoNode@{" +
     "pin:period:serialport,DigitalLight:Timer:SerialCT:LocalChannel,on:off:toggle:flash:tick/" +
-    "1:L1:3/" +
+    "1:L1:3/"  +
     "1:S1:2:2=devttyACM0/" +
     "1:T1:1:1=1000/" +
-    "n1:D1:0/" +
+    "1:D1:0:0=13/" +
     "1:T2:1:1=1000/" +
     "3:T1:L1:4/" +
     "3:D1:L1:3/" +
@@ -62,9 +63,10 @@ object TesterParser extends App {
 
 
    try {
+     var model: ContainerRoot = KevoreeXmiHelper.load("/home/jed/Desktop/model.kev")
+    println (KevScriptWrapper.generateKevScriptFromCompressed(test,model))
 
-     KevScriptWrapper.generateKevScriptFromCompressed(test,null)
-     
+
    } catch {
      case _ @ e => println(e)
    }
