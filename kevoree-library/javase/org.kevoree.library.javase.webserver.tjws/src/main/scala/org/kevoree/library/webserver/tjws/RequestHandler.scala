@@ -31,13 +31,20 @@ class RequestHandler(origin: AbstractWebServer) extends DaemonActor {
     handler.sendAndWait()
   }
 
+  def internalSend(resp : KevoreeHttpResponse){
+    println("Found responder Before Send")
+    this ! resp
+  }
+
 
   def act() {
     react {
       case msg: KevoreeHttpResponse => {
         map.get(msg.getTokenID) match {
           case Some(responder) => {
-            map.get(msg.getTokenID).map(r => r.checkAndReply(msg))
+            println("Found responder")
+
+            responder.checkAndReply(msg)
             map.remove(msg.getTokenID)
           }
           case None => log.error("responder not found for tokenID=" + msg.getTokenID)
