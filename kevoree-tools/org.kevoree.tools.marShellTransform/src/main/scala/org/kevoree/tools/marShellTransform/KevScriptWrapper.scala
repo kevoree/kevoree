@@ -56,7 +56,9 @@ object KevScriptWrapper {
     try {
       val parser = new ParserPush()
       val result = parser.parseAdaptations(cscript)
+
       val definitions = result.definitions.get
+
       val nodeName = result.nodeName
 
       statments += AddNodeStatment(nodeName, result.nodeTypeName, new Properties())
@@ -67,10 +69,13 @@ object KevScriptWrapper {
             // UpdateDictionaryStatement
             logger.debug("Detect UpdateDictionaryStatement")
             val props = new java.util.Properties()
-            s.asInstanceOf[UDI].getParams.toArray.foreach(p => {
-              val prop = definitions.getPropertieById(p.asInstanceOf[PropertiePredicate].dictionnaryID)
-              props.put(prop, p.asInstanceOf[PropertiePredicate].value.toString)
-            })
+
+            if(s.asInstanceOf[UDI].params != None){
+              s.asInstanceOf[UDI].getParams.toArray.foreach(p => {
+                val prop = definitions.getPropertieById(p.asInstanceOf[PropertiePredicate].dictionnaryID)
+                props.put(prop, p.asInstanceOf[PropertiePredicate].value.toString)
+              })
+            }
             val fraProperties = new java.util.HashMap[String, java.util.Properties]
             fraProperties.put(result.nodeName.toString, props)
 
@@ -88,12 +93,16 @@ object KevScriptWrapper {
 
             val cid = new ComponentInstanceID(s.asInstanceOf[AIN].getIDPredicate().getinstanceID, Some(nodeName))
             val typeIDB = definitions.getTypedefinitionById(s.asInstanceOf[AIN].getTypeIDB())
+
             /* Feed prop value */
             val props = new java.util.Properties()
-            s.asInstanceOf[AIN].getParams.toArray.foreach(p => {
-              val prop = definitions.getPropertieById(p.asInstanceOf[Propertie].getdictionnaryID())
-              props.put(prop, p.asInstanceOf[PropertiePredicate].value)
-            })
+
+            if(s.asInstanceOf[AIN].params != None){
+              s.asInstanceOf[AIN].getParams.toArray.foreach(p => {
+                val prop = definitions.getPropertieById(p.asInstanceOf[Propertie].getdictionnaryID())
+                props.put(prop, p.asInstanceOf[PropertiePredicate].value)
+              })
+            }
 
             baseModel.getTypeDefinitions.find(td => td.getName == typeIDB) match {
               case Some(td_found) => {
@@ -138,7 +147,7 @@ object KevScriptWrapper {
       logger.debug(blocks.toString())
     } catch {
       case e: IndexOutOfBoundsException => throw new Exception("The Arduino globals definitions (properties or typedefinition or portdefinition)  are not compliant to the adaptations")
-      case e: java.lang.Exception => throw new Exception("Fail to parse the script : "+cscript ,e)
+      case e: java.lang.Exception => throw new Exception("Fail to parse the script : "+cscript+" "+e)
     }
 
     new Script(blocks.toList)

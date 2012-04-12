@@ -22,7 +22,7 @@ package org.kevoree.tools.marShellTransform.ast
 
 
 
-class UDI(id : IDPredicate, params : Option[List[Propertie]])  extends  Adaptation
+case class UDI(id : IDPredicate, params : Option[List[Propertie]])  extends  Adaptation
 {
   def getIDPredicate() :  IDPredicate = {
     return  id

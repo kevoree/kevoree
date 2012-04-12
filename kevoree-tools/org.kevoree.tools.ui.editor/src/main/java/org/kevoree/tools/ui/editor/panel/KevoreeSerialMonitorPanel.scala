@@ -51,10 +51,8 @@ class KevoreeSerialMonitorPanel(kernel: KevoreeUIKernel)  extends JPanel with  R
 
   p.start()
 
-
   var serial: SerialPort = new SerialPort(boardPortName, speed)
-  println(KHelpers.getPortIdentifiers())
-
+  logger.info("Ports "+KHelpers.getPortIdentifiers())
 
   setLayout(new BorderLayout)
   send = new JButton("Send")
@@ -67,13 +65,12 @@ class KevoreeSerialMonitorPanel(kernel: KevoreeUIKernel)  extends JPanel with  R
   var incoming: Style = doc.addStyle("incoming", `def`)
   var system: Style = doc.addStyle("system", `def`)
   var outgoing: Style = doc.addStyle("outgoing", `def`)
-  val INITIAL_MESSAGE: String = "Type your text here"
+  val INITIAL_MESSAGE: String = ""
 
 
   StyleConstants.setForeground(system, Color.GRAY)
   StyleConstants.setForeground(incoming, Color.BLUE)
   StyleConstants.setForeground(outgoing, Color.GREEN)
-
 
   inputTextField = new JTextArea
   inputTextField.setText(INITIAL_MESSAGE)
