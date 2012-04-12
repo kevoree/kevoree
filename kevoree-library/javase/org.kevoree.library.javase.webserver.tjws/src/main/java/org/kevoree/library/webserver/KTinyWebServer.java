@@ -54,6 +54,9 @@ public class KTinyWebServer extends AbstractWebServer implements Runnable {
     }
 
     public void stop() {
+        srv.notifyStop();
+        srv.destroyAllServlets();
+
         handler.$bang(false);
         mainT.interrupt();
     }
@@ -65,11 +68,12 @@ public class KTinyWebServer extends AbstractWebServer implements Runnable {
 
     @Override
     public void responseHandler(Object param) {
+        System.out.println(param);
+
         if (param instanceof KevoreeHttpResponse) {
-            handler.$bang(param);
+            handler.internalSend((KevoreeHttpResponse)param);
         }
     }
-
 
     @Override
     public void run() {

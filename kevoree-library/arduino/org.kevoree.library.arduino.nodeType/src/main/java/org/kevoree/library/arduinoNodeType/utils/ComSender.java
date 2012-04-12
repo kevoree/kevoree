@@ -16,6 +16,22 @@ public class ComSender {
 
    // private static HashMap<String, TwoWayActors> map = new HashMap<String, TwoWayActors>();
 
+    public static Boolean ping(String portName) throws IOException, InterruptedException {
+        int token = new Random().nextInt(10);
+        String msgToSend = "$p"+token;
+        boolean result = false;
+        int nbTry = 5;
+        while(nbTry > 0 && !result){
+            nbTry = nbTry -1;
+            System.out.println("Before");
+            result = KevoreeSharedCom.sendSynch(portName, msgToSend, "ack" + token, 500);
+            System.out.println("After");
+        }
+        System.out.println("Send => " + msgToSend);
+        System.out.println("Result => " + result);
+        return true;
+    }
+
     public static Boolean send(String msg, String portName) throws IOException, InterruptedException {
            /*
         if (!map.containsKey(portName)) {

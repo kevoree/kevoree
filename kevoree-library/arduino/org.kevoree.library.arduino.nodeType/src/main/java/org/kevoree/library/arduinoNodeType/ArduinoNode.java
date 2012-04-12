@@ -1,10 +1,6 @@
 package org.kevoree.library.arduinoNodeType;
 
-import org.kevoree.ContainerNode;
-import org.kevoree.ContainerRoot;
-import org.kevoree.KevoreeFactory;
-import org.kevoree.TypeDefinition;
-import org.kevoree.annotation.*;
+import org.kevoree.*;
 import org.kevoree.api.service.core.checker.CheckerViolation;
 import org.kevoree.cloner.ModelCloner;
 import org.kevoree.extra.kserial.KevoreeSharedCom;
@@ -34,15 +30,15 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-@NodeType
-@Library(name = "Arduino")
-@DictionaryType({
-        @DictionaryAttribute(name = "boardTypeName", defaultValue = "uno", optional = true, vals = {"uno", "atmega328", "mega2560"}),
-        @DictionaryAttribute(name = "incremental", defaultValue = "true", optional = true, vals = {"true", "false"}),
-        @DictionaryAttribute(name = "pmem", defaultValue = "eeprom", optional = true, vals = {"eeprom", "sd"}),
-        @DictionaryAttribute(name = "psize", defaultValue = "MAX", optional = true)
+@org.kevoree.annotation.NodeType
+@org.kevoree.annotation.Library(name = "Arduino")
+@org.kevoree.annotation.DictionaryType({
+        @org.kevoree.annotation.DictionaryAttribute(name = "boardTypeName", defaultValue = "uno", optional = true, vals = {"uno", "atmega328", "mega2560"}),
+        @org.kevoree.annotation.DictionaryAttribute(name = "incremental", defaultValue = "true", optional = true, vals = {"true", "false"}),
+        @org.kevoree.annotation.DictionaryAttribute(name = "pmem", defaultValue = "eeprom", optional = true, vals = {"eeprom", "sd"}),
+        @org.kevoree.annotation.DictionaryAttribute(name = "psize", defaultValue = "MAX", optional = true)
 })
-@PrimitiveCommands(values = {"StartThirdParty", "UpdateType", "UpdateDeployUnit", "AddType", "AddDeployUnit", "AddThirdParty", "RemoveType", "RemoveDeployUnit", "UpdateInstance", "UpdateBinding", "UpdateDictionaryInstance", "AddInstance", "RemoveInstance", "AddBinding", "RemoveBinding", "AddFragmentBinding", "RemoveFragmentBinding", "StartInstance", "StopInstance", "StartThirdParty"}, value = {})
+@org.kevoree.annotation.PrimitiveCommands(values = {"StartThirdParty", "UpdateType", "UpdateDeployUnit", "AddType", "AddDeployUnit", "AddThirdParty", "RemoveType", "RemoveDeployUnit", "UpdateInstance", "UpdateBinding", "UpdateDictionaryInstance", "AddInstance", "RemoveInstance", "AddBinding", "RemoveBinding", "AddFragmentBinding", "RemoveFragmentBinding", "StartInstance", "StopInstance", "StartThirdParty"}, value = {})
 public class ArduinoNode extends AbstractNodeType {
     private static final Logger logger = LoggerFactory.getLogger(ArduinoNode.class);
 
@@ -56,13 +52,13 @@ public class ArduinoNode extends AbstractNodeType {
         forceUpdate = f;
     }
 
-    @Start
+    @org.kevoree.annotation.Start
     public void startNode() {
         localChecker = new ArduinoChecker(getNodeName());
         ArduinoResourceHelper.setBs(getBootStrapperService());
     }
 
-    @Stop
+    @org.kevoree.annotation.Stop
     public void stopNode() {
         ArduinoResourceHelper.setBs(null);
     }
@@ -136,11 +132,7 @@ public class ArduinoNode extends AbstractNodeType {
             //TODO INSERT GETTER CODE
             //INIT GOOD MODEL IN LAST VERSION MODEL
 
-            lastVersionModel = ArduinoModelGetHelper.getCurrentModel(root,targetNodeName,boardPortName);
-
-
-
-
+            lastVersionModel = ArduinoModelGetHelper.getCurrentModel(root, targetNodeName, boardPortName);
 
 
         } else {
@@ -155,7 +147,7 @@ public class ArduinoNode extends AbstractNodeType {
 
 
         if (lastVersionModel == null || lastVersionModel.getNodes().size() == 0) {
-
+            logger.info("No Previous Model , Init one from targetModel");
             ModelCloner cloner = new ModelCloner();
             lastVersionModel = cloner.clone(root);
             for (ContainerNode node : lastVersionModel.getNodesForJ()) {
@@ -164,47 +156,54 @@ public class ArduinoNode extends AbstractNodeType {
             }
             lastVersionModel.removeAllMBindings();
             lastVersionModel.removeAllGroups();
-
         }
 
-        AdaptationModel kompareModel = kompare.kompare(lastVersionModel, root, targetNodeName);
+        /* */
 
-        //System.out.println(kompareModel.getAdaptationsForJ().size());
+        tempRoot = root;
+
+        ModelCloner cc = new ModelCloner();
+        ContainerRoot cloned = cc.clone(root);
+        cloned.removeAllGroups();
+
+
+        AdaptationModel kompareModel = kompare.kompare(lastVersionModel, cloned, targetNodeName);
+       /* System.out.println(kompareModel.getAdaptationsForJ().size());
+        for (AdaptationPrimitive p : kompareModel.getAdaptationsForJ()) {
+            System.out.println("ad =>"+p.getRef());
+        }    */
+
 
         progress.endTask();
 
+        if (kompareModel.getAdaptationsForJ().size() > 0) {
+            progress.beginTask("Prepare model generation", 20);
 
-        progress.beginTask("Prepare model generation", 20);
-        File newdirTarget = new File(newdir.getAbsolutePath() + File.separator + "target");
+            File newdirTarget = new File(newdir.getAbsolutePath() + File.separator + "target");
+            org.kevoree.library.arduinoNodeType.FileHelper.createAndCleanDirectory(newdirTarget);
+            TargetDirectoryService.rootPath = newdirTarget.getAbsolutePath();
+            outputPath = newdir.getAbsolutePath();
+            logger.debug("outDir=" + outputPath);
+            progress.endTask();
+            progress.beginTask("Compute firmware update", 30);
+            try {
 
-        org.kevoree.library.arduinoNodeType.FileHelper.createAndCleanDirectory(newdirTarget);
-
-        //DO RECURSIVE CLEAN
-
-
-        TargetDirectoryService.rootPath = newdirTarget.getAbsolutePath();
-
-        outputPath = newdir.getAbsolutePath();
-        logger.debug("outDir=" + outputPath);
-        progress.endTask();
-
-        progress.beginTask("Compute firmware update", 30);
-        try {
-            if (deploy(kompareModel, targetNodeName, boardPortName)) {
-                progress.endTask();
-            } else {
+                if (deploy(kompareModel, targetNodeName, boardPortName)) {
+                    progress.endTask();
+                } else {
+                    progress.failTask();
+                }
+            } catch (Exception e) {
                 progress.failTask();
-            }
-        } catch (Exception e) {
-            progress.failTask();
 //                    e.printStackTrace();
-            logger.error("Error appears when we compute the firmware update", e);
+                logger.error("Error appears when we compute the firmware update", e);
+            }
+            progress.beginTask("Save model for incremental deployment", 100);
+            KevoreeXmiHelper.save(newdir.getAbsolutePath() + File.separator + targetNodeName + "_" + (lastVersion + 1) + ".kev", root);
+
+            progress.endTask();
         }
 
-
-        progress.beginTask("Save model for incremental deployment", 100);
-        KevoreeXmiHelper.save(newdir.getAbsolutePath() + File.separator + targetNodeName + "_" + (lastVersion + 1) + ".kev", root);
-        progress.endTask();
 
         frame.setVisible(false);
         frame.dispose();
@@ -219,6 +218,8 @@ public class ArduinoNode extends AbstractNodeType {
     public String outputPath = "";
 
 
+    private ContainerRoot tempRoot = null;
+
     public boolean deploy(AdaptationModel modelIn, String nodeName, String boardPortName) {
         boolean typeAdaptationFound = false;
         ContainerRoot rootModel = null;
@@ -229,13 +230,15 @@ public class ArduinoNode extends AbstractNodeType {
 
             if (addType || removeType || updateType) {
                 typeAdaptationFound = true;
-                rootModel = (ContainerRoot) ((TypeDefinition) p.getRef()).eContainer();
-            }
+               // rootModel = (ContainerRoot) ((TypeDefinition) p.getRef()).eContainer();
+            } /*else {
+                rootModel = tempRoot;
+            }   */
+            rootModel = tempRoot;
         }
 
 
         if (typeAdaptationFound || forceUpdate) {
-
             java.util.List<CheckerViolation> result = localChecker.check(rootModel);
             if (result.size() > 0) {
                 for (CheckerViolation cv : result) {
@@ -371,9 +374,7 @@ public class ArduinoNode extends AbstractNodeType {
                 boardName = GuiAskForComPort.askPORT();
             }
             try {
-                ComSender.send("{ping}", boardName);
-               // Thread.sleep(500);
-
+                ComSender.ping(boardName);
                 ComSender.send(resultScript, boardName);
             } catch (Exception e) {
 //                e.printStackTrace();
