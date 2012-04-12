@@ -44,6 +44,10 @@ import java.util.jar.JarFile;
  * @author ffouquet
  */
 public class KevoreeBootStrap {
+
+    public static boolean byPassAetherBootstrap = false;
+
+
 	/* Bootstrap Model to init default nodeType */
 	private ContainerRoot bootstrapModel = null;
 
@@ -72,7 +76,9 @@ public class KevoreeBootStrap {
 			coreBean = new KevoreeCoreBean();
 
 			KevoreeJarClassLoader jcl = new KevoreeJarClassLoader();
-			jcl.add(this.getClass().getClassLoader().getResourceAsStream("org.kevoree.tools.aether.framework-" + KevoreeFactory.getVersion() + ".jar"));
+            if(!byPassAetherBootstrap){
+                jcl.add(this.getClass().getClassLoader().getResourceAsStream("org.kevoree.tools.aether.framework-" + KevoreeFactory.getVersion() + ".jar"));
+            }
 
 			Class clazz = jcl.loadClass("org.kevoree.tools.aether.framework.NodeTypeBootstrapHelper");
 			org.kevoree.api.Bootstraper bootstraper = (Bootstraper) clazz.newInstance();

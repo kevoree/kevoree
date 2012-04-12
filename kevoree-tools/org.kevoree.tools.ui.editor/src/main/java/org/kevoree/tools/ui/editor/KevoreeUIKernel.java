@@ -30,7 +30,7 @@ public class KevoreeUIKernel {
 
     public KevoreeUIKernel(){
         uifactory = new KevoreeUIFactory(this);
-        modelHandler = new Art2Handler(this);
+        modelHandler = new KevoreeHandler(this);
         modelPanel = uifactory.createModelPanelUI(modelHandler.getActualModel());
         //Art2Cluster.start();
 
@@ -45,7 +45,7 @@ public class KevoreeUIKernel {
     private KevoreeUIFactory uifactory;
     private ModelPanel modelPanel;
 
-    private Art2Handler modelHandler;
+    private KevoreeHandler modelHandler;
     private KevoreeEditorPanel editorPanel;
 
     public void setEditorPanel(KevoreeEditorPanel editorPanel) {
@@ -56,7 +56,7 @@ public class KevoreeUIKernel {
         return editorPanel;
     }
 
-    public Art2Handler getModelHandler() {
+    public KevoreeHandler getModelHandler() {
         return modelHandler;
     }
 

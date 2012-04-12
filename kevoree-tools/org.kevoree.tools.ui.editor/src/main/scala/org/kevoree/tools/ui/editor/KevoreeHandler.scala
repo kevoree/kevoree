@@ -23,7 +23,7 @@ import org.kevoree.ContainerRoot
 import org.kevoree.KevoreeFactory
 import org.kevoree.merger.KevoreeMergerComponent
 
-class Art2Handler(kernel: KevoreeUIKernel) {
+class KevoreeHandler(kernel: KevoreeUIKernel) {
 
   private var listenerCommand: List[Command] = List[Command]()
   private val merger = new KevoreeMergerComponent

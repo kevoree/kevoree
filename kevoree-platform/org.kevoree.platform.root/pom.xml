@@ -12,6 +12,7 @@
         <scala.version>2.10.0-M2</scala.version>
         <slf4j.version>1.6.4</slf4j.version>
         <bundle.vendor>IRISA/INRIA</bundle.vendor>
+        <kevoree.version>${project.version}</kevoree.version>
     </properties>
 
     <dependencies>
@@ -87,6 +88,7 @@
         <module>../org.kevoree.platform.standalone</module>
         <module>../org.kevoree.platform.standalone.gui</module>
         <module>../org.kevoree.platform.service</module>
+        <module>../org.kevoree.platform.mavenrunner</module>
 
         <module>../org.kevoree.platform.android.ui</module>
         <module>../org.kevoree.platform.android.core</module>

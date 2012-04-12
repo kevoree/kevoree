@@ -26,6 +26,9 @@ class SynchNodeTypeCommand extends Command {
   var logger = LoggerFactory.getLogger(this.getClass)
 
   @BeanProperty
+  var autoMerge: Boolean = true
+
+  @BeanProperty
   var kernel: KevoreeUIKernel = null
 
   @BeanProperty
@@ -46,10 +49,12 @@ class SynchNodeTypeCommand extends Command {
     try {
       bootstrap.clear
       PositionedEMFHelper.updateModelUIMetaData(kernel);
-      resultLabel.setText("Update model...")
-      val autoUpdate = new AutoUpdateCommand
-      autoUpdate.setKernel(kernel)
-      autoUpdate.execute(null)
+      if(autoMerge){
+        resultLabel.setText("Update model...")
+        val autoUpdate = new AutoUpdateCommand
+        autoUpdate.setKernel(kernel)
+        autoUpdate.execute(null)
+      }
 
       val model: ContainerRoot = kernel.getModelHandler.getActualModel
 
