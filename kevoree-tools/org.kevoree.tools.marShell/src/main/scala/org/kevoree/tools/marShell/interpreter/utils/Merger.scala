@@ -68,10 +68,14 @@ object Merger {
             //CHECK IF ATTRIBUTE ALREADY EXISTE WITHOUT VALUE
             val att = inst.getTypeDefinition.getDictionaryType.get.getAttributes.find(att => att.getName == key) match {
               case None => {
-                val newDictionaryValue = KevoreeFactory.eINSTANCE.createDictionaryAttribute
-                newDictionaryValue.setName(key.toString)
-                inst.getTypeDefinition.getDictionaryType.get.addAttributes(newDictionaryValue)
-                newDictionaryValue
+               /* if(allowTypeUpdate){
+                  val newDictionaryValue = KevoreeFactory.eINSTANCE.createDictionaryAttribute
+                  newDictionaryValue.setName(key.toString)
+                  inst.getTypeDefinition.getDictionaryType.get.addAttributes(newDictionaryValue)
+                  newDictionaryValue
+                } else { */
+                     throw new Exception("Dictionary Type does not contain attribute named "+key+" type modification not allowed in this scope")
+               // }
               }
               case Some(previousAtt) => previousAtt
             }

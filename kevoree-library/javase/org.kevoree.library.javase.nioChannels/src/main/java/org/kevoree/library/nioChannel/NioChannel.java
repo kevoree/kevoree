@@ -30,7 +30,6 @@ import java.util.concurrent.Executors;
  * User: duke
  * Date: 16/11/11
  * Time: 16:32
- * To change this template use File | Settings | File Templates.
  */
 
 @Library(name = "JavaSE", names = {"Android"})
