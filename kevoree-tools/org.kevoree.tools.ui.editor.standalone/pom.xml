@@ -237,6 +237,12 @@
                                 <artifactId>javaparser</artifactId>
                                 <filter>!META-INF/**</filter>
                             </inclusion>
+
+                            <inclusion>
+                                <groupId>org.kevoree.extra</groupId>
+                                <artifactId>org.kevoree.extra.kserial</artifactId>
+                            </inclusion>
+
                         </inclusions>
                     </assembly>
                     <libs>
@@ -278,7 +284,7 @@
             </plugin>
 
 
-           <!-- <plugin>
+            <!-- <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>osxappbundle-maven-plugin</artifactId>
                 <version>1.0-alpha-2</version>
