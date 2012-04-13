@@ -16,7 +16,9 @@ public interface KevoreeHttpRequest extends Serializable {
 
 	public void setHeaders (HashMap<String, String> headers);
 
-	public UUID getTokenID ();
+	public int getTokenID();
+
+    public void setTokenID(int t);
 
 	public String getUrl ();
 

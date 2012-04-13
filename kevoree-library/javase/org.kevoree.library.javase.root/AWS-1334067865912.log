@@ -1,4 +1,0 @@
-Can't read from CLI file (cmdparams) at /Users/duke/Documents/dev/dukeboard/kevoree/kevoree-library/javase/org.kevoree.library.javase.root
-
-[Tue Apr 10 16:24:26 CEST 2012] TJWS: Problem initializing war deployer: java.lang.ClassNotFoundException: rogatkin.web.WarRoller
-[Tue Apr 10 16:24:32 CEST 2012] TJWS: Accept: java.net.SocketException: Socket closed

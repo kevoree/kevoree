@@ -4028,11 +4028,15 @@ public class Serve implements ServletContext, Serializable {
         public void setHeaders(HashMap<String, String> headers) {
         }
 
-        private UUID tokenID = UUID.randomUUID();
+        private int tokenID = -1;
 
         @Override
-        public UUID getTokenID() {
+        public int getTokenID() {
             return tokenID;
+        }
+
+        public void setTokenID(int i){
+            tokenID = i;
         }
 
         @Override

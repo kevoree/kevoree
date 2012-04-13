@@ -29,8 +29,14 @@ public class KTinyWebServer extends AbstractWebServer implements Runnable {
 
 
     public void start() {
+
+        System.setProperty("actors.enableForkJoin","false");
+
         handler = new RequestHandler(this);
         handler.start();
+        handler.staticInit();
+
+
         srv = new KTinyWebServerInternalServe();
         java.util.Properties properties = new java.util.Properties();
         properties.put("port", Integer.parseInt(getDictionary().get("port").toString()));
@@ -44,7 +50,7 @@ public class KTinyWebServer extends AbstractWebServer implements Runnable {
             protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
                 KevoreeHttpResponse res = handler.sendAndWait((KevoreeHttpRequest) req);
 
-                if(res.getHeaders().get("Content-Type") != null){
+                if (res.getHeaders().get("Content-Type") != null) {
                     resp.setContentType(res.getHeaders().get("Content-Type").toString());
                 }
 
@@ -56,13 +62,13 @@ public class KTinyWebServer extends AbstractWebServer implements Runnable {
 
             }
         });
+
     }
 
     public void stop() {
         srv.notifyStop();
         srv.destroyAllServlets();
-
-        handler.$bang(false);
+        handler.killActors();
         mainT.interrupt();
     }
 
@@ -74,7 +80,7 @@ public class KTinyWebServer extends AbstractWebServer implements Runnable {
     @Override
     public void responseHandler(Object param) {
         if (param instanceof KevoreeHttpResponse) {
-            handler.internalSend((KevoreeHttpResponse)param);
+            handler.internalSend((KevoreeHttpResponse) param);
         }
     }
 
