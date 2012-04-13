@@ -5,12 +5,12 @@ import scala.collection.JavaConversions._
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService
 import java.lang.Math
 import org.slf4j.LoggerFactory
-import actors.DaemonActor
 import org.kevoree.library.javase.gossiperNetty.PeerSelector
 import org.kevoree.ContainerNode
+import actors.{Actor, DaemonActor}
 
 class ChannelScorePeerSelector (timeout: Long, modelHandlerService: KevoreeModelHandlerService, nodeName: String)
-  extends PeerSelector with DaemonActor {
+  extends PeerSelector with Actor {
 
   private val logger = LoggerFactory.getLogger(classOf[ChannelScorePeerSelector])
   private val peerCheckMap = new HashMap[String, (Long, Int)]

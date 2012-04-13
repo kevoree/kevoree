@@ -19,7 +19,7 @@
     </parent>
 
     <properties>
-        <kevoree.include>*:*</kevoree.include>
+        <kevoree.include>org.kevoree.extra:*,org.kevoree:org.kevoree.merger,org.kevoree.tools:org.kevoree.tools.marShell</kevoree.include>
     </properties>
 
 

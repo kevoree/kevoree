@@ -1,6 +1,7 @@
 package org.kevoree.library.javase.gossiperNetty
 
-import actors.{DaemonActor, TIMEOUT}
+import actors.{Actor, DaemonActor, TIMEOUT}
+
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -9,7 +10,7 @@ import actors.{DaemonActor, TIMEOUT}
  */
 
 class GossiperActor (instance: GossiperComponent, timeout: Long, selector: PeerSelector, process: ProcessValue)
-  extends DaemonActor {
+  extends Actor {
 
   case class STOP ()
 

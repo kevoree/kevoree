@@ -1,6 +1,5 @@
 package org.kevoree.library.javase.gossiperNetty
 
-import actors.DaemonActor
 import org.kevoree.library.gossiperNetty.protocol.message.KevoreeMessage.Message
 import org.jboss.netty.channel.Channel
 import java.util.UUID
@@ -10,6 +9,7 @@ import org.slf4j.LoggerFactory
 import java.net.InetSocketAddress
 
 import scala.collection.JavaConversions._
+import actors.{Actor, DaemonActor}
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -18,7 +18,7 @@ import scala.collection.JavaConversions._
  */
 
 class ProcessRequest (instance: GossiperComponent, dataManager: DataManager, serializer: Serializer,
-  process: ProcessValue, protocolSelector: NetworkProtocolSelector) extends DaemonActor {
+  process: ProcessValue, protocolSelector: NetworkProtocolSelector) extends Actor {
   private val logger = LoggerFactory.getLogger(classOf[ProcessRequest])
 
   case class STOP ()

@@ -18,7 +18,7 @@ import org.kevoree.library.gossiperNetty.protocol.version.Version.{ClockEntry, V
 import org.kevoree.merger.KevoreeMergerComponent
 
 class DataManagerForGroup (nameInstance: String, selfNodeName: String, modelService: KevoreeModelHandlerService, merge: Boolean)
-  extends DataManager with actors.DaemonActor {
+  extends DataManager with actors.Actor {
 
   private val mergerComponent = new KevoreeMergerComponent();
   private var lastCheckedTimeStamp = new Date(0l)

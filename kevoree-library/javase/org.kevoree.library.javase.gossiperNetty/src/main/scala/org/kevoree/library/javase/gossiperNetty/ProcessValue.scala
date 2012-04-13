@@ -1,6 +1,5 @@
 package org.kevoree.library.javase.gossiperNetty
 
-import actors.DaemonActor
 import java.net.InetSocketAddress
 import org.slf4j.LoggerFactory
 import java.util.UUID
@@ -9,6 +8,7 @@ import org.kevoree.library.gossiperNetty.protocol.gossip.Gossip._
 import org.kevoree.library.gossiperNetty.protocol.version.Version.{ClockEntry, VectorClock}
 
 import scala.collection.JavaConversions._
+import actors.{Actor, DaemonActor}
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -17,8 +17,7 @@ import scala.collection.JavaConversions._
  */
 
 class ProcessValue (instance: GossiperComponent, alwaysAskData: Boolean, protocolSelector: NetworkProtocolSelector,
-  dataManager: DataManager, serializer: Serializer, doGarbage: Boolean) extends DaemonActor {
-
+  dataManager: DataManager, serializer: Serializer, doGarbage: Boolean) extends Actor {
 
   implicit def vectorDebug (vc: VectorClock) = VectorClockAspect(vc)
 

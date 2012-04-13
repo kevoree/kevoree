@@ -25,7 +25,7 @@ import org.jboss.netty.buffer.ChannelBuffers
  */
 
 class HTTPServer (group: NettyGossiperGroup, port: Int) {
-  private val logger = LoggerFactory.getLogger(classOf[HTTPServer])
+  private val logger = LoggerFactory.getLogger(this.getClass)
 
   // configure the server
   var factoryServer = new
@@ -44,6 +44,7 @@ class HTTPServer (group: NettyGossiperGroup, port: Int) {
   })
   bootstrapServer.setOption("tcpNoDelay", true)
   var channelServer: Channel = bootstrapServer.bind(new InetSocketAddress(port))
+
 
   def push (model: ContainerRoot, targetNodeName: String) {
     val ipOption = KevoreePropertyHelper.getStringNetworkProperty(model, targetNodeName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP)

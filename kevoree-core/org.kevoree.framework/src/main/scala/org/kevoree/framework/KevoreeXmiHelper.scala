@@ -106,29 +106,14 @@ object KevoreeXmiHelper {
   def saveCompressedStream(output: OutputStream, root: ContainerRoot) : Unit = {
     val modelStream = new ByteArrayOutputStream()
     saveStream(modelStream, root)
-    val compressor = new Deflater()
-    compressor.setLevel(Deflater.BEST_COMPRESSION)
-    compressor.setInput(modelStream.toByteArray)
-    compressor.finish()
-    val buf = new Array[Byte](1024)
-    while (!compressor.finished()) {
-      val count = compressor.deflate(buf)
-      output.write(buf, 0, count)
-    }
+    output.write(ZipUtil.compressByteArray(modelStream.toByteArray))
     output.flush()
+
   }
 
   def loadCompressedStream(input: InputStream): ContainerRoot = {
-    val decompressor = new Inflater()
     val inputData: Array[Byte] = Stream.continually(input.read).takeWhile(-1 !=).map(_.toByte).toArray
-    decompressor.setInput(inputData)
-    val bos = new ByteArrayOutputStream(inputData.length)
-    val buf = new Array[Byte](1024)
-    while (!decompressor.finished()) {
-      val count = decompressor.inflate(buf)
-      bos.write(buf, 0, count)
-    }
-    val inputS = new ByteArrayInputStream(bos.toByteArray)
+    val inputS = new ByteArrayInputStream(ZipUtil.uncompressByteArray(inputData))
     loadStream(inputS)
   }
 

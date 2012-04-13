@@ -70,7 +70,7 @@ public class NettyGossiperGroup extends AbstractGroupType implements GossiperCom
 			protocolSelector.setProtocolForData(tcpActor);
 		}
 
-		logger.debug(this.getName() + ": initialize GossiperActor");
+		logger.debug("{}: initialize GossiperActor", this.getName());
 
 		actor = new GossiperActor(this, timeoutLong, selector, processValue);
 
@@ -82,8 +82,10 @@ public class NettyGossiperGroup extends AbstractGroupType implements GossiperCom
 		selector.start();
 		actor.start();
 
+		logger.debug("{}: starting HTTP server", this.getName());
 		// starting HTTP server to accept http model update coming from the editor for example
 		httpServer = new HTTPServer(this, Integer.parseInt(this.getDictionary().get("http_port").toString()));
+		logger.debug("{}: HTTP server started", this.getName());
 
 	}
 
@@ -157,8 +159,9 @@ public class NettyGossiperGroup extends AbstractGroupType implements GossiperCom
 
 	@Override
 	public int parsePortNumber (String nodeName) {
-		logger.debug("look for port on " + nodeName);
+		logger.debug("look for port on {}", nodeName);
 		Option<Integer> portOption = KevoreePropertyHelper.getIntPropertyForGroup(this.getModelService().getLastModel(), this.getName(), "port", true, nodeName);
+		logger.debug("port on {} is {}", nodeName, portOption);
 		if (portOption.isDefined()) {
 			return portOption.get();
 		} else {
@@ -171,7 +174,7 @@ public class NettyGossiperGroup extends AbstractGroupType implements GossiperCom
 		try {
 			return Integer.parseInt(portProperty);
 		} catch (NumberFormatException e) {
-			logger.warn("Invalid value for port parameter for " + this.getName() + " on " + this.getNodeName());
+			logger.warn("Invalid value for port parameter for {} on {}", this.getName(), this.getNodeName());
 			return 0;
 		}
 	}
