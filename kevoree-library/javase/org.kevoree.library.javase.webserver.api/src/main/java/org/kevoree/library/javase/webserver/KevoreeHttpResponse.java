@@ -12,9 +12,9 @@ import java.util.UUID;
  */
 public interface KevoreeHttpResponse extends Serializable {
 
-    public UUID getTokenID();
+    public int getTokenID();
 
-    public void setTokenID(UUID tokenID);
+    public void setTokenID(int tokenID);
 
     public String getContent();
 

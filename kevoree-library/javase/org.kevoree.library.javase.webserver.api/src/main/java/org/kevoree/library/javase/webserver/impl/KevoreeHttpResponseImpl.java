@@ -14,8 +14,6 @@ import java.util.UUID;
  */
 public class KevoreeHttpResponseImpl implements KevoreeHttpResponse {
 
-    private UUID tokenID = UUID.randomUUID();
-
     private String content = "";
 
 	private int status = 200;
@@ -29,12 +27,13 @@ public class KevoreeHttpResponseImpl implements KevoreeHttpResponse {
     }
 
     private String contentType = "text/html";*/
+    private int tokenID = -1;
 
-    public UUID getTokenID() {
+    public int getTokenID() {
         return tokenID;
     }
 
-    public void setTokenID(UUID tokenID) {
+    public void setTokenID(int tokenID) {
         this.tokenID = tokenID;
     }
 
