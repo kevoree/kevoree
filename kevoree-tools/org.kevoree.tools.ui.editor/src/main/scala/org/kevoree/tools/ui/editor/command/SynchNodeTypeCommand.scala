@@ -61,7 +61,7 @@ class SynchNodeTypeCommand extends Command {
   bootstrap.registerManuallyDeployUnit(  "org.kevoree.tools.annotation.api", "org.kevoree.tools", KevoreeFactory.getVersion, dummyKCL);
   bootstrap.registerManuallyDeployUnit(  "org.kevoree.tools.javase.framework", "org.kevoree.tools", KevoreeFactory.getVersion, dummyKCL);
   bootstrap.registerManuallyDeployUnit(  "org.kevoree.extra.kserial", "org.kevoree.extra", "1.1", dummyKCL);
-
+  bootstrap.registerManuallyDeployUnit(  "jna", "net.java.dev.jna", "3.3.0", dummyKCL);
 
   @BeanProperty
   var resultLabel : JLabel = null

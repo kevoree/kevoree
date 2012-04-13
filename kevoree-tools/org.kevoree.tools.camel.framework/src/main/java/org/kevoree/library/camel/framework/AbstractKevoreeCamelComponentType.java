@@ -38,7 +38,7 @@ public abstract class AbstractKevoreeCamelComponentType extends AbstractComponen
         return context;
     }
 
-    public CamelContext buildCamelContext(){
+    public CamelContext buildCamelContext() {
         return new DefaultCamelContext();
     }
 
@@ -46,17 +46,35 @@ public abstract class AbstractKevoreeCamelComponentType extends AbstractComponen
 
     @Start
     public void start() throws Exception {
-        context = buildCamelContext();
-        context.setClassResolver(new ClassLoaderClassResolver(this.getClass().getClassLoader()));
-        cc = new KevoreePortComponent(this);
-        context.addComponent("kport",cc);
-        RouteBuilder rb = new RouteBuilder() {
-            public void configure() {
-                buildRoutes(this);
+        final Exception[] initError = {null};
+        final AbstractKevoreeCamelComponentType selfPointer = this;
+        Thread tempThread = new Thread() {
+            @Override
+            public void run() {
+                try {
+                    setContextClassLoader(selfPointer.getClass().getClassLoader());
+                    context = buildCamelContext();
+                    context.setClassResolver(new ClassLoaderClassResolver(selfPointer.getClass().getClassLoader()));
+                    cc = new KevoreePortComponent(selfPointer);
+                    context.addComponent("kport", cc);
+                    RouteBuilder rb = new RouteBuilder() {
+                        public void configure() {
+                            buildRoutes(this);
+                        }
+                    };
+                    context.addRoutes(rb);
+                    context.start();
+                } catch (Exception e) {
+                    initError[0] = e;
+                }
+
             }
         };
-        context.addRoutes(rb);
-        context.start();
+        tempThread.start();
+        tempThread.join();
+        if (initError[0] != null) {
+            throw initError[0];
+        }
     }
 
     @Stop
@@ -77,8 +95,8 @@ public abstract class AbstractKevoreeCamelComponentType extends AbstractComponen
     protected abstract void buildRoutes(RouteBuilder rb);
 
     @Port(name = "*")
-    public void globalInput(Object o,String pname){
-        if(cc.consumerInput.containsKey(pname)){
+    public void globalInput(Object o, String pname) {
+        if (cc.consumerInput.containsKey(pname)) {
             cc.consumerInput.get(pname).forwardMessage(o);
         }
     }
