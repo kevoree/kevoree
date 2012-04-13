@@ -5,13 +5,15 @@ import org.kevoree.common.gps.api.GeoConstants;
 import org.kevoree.common.gps.api.IGpsPoint;
 import org.kevoree.common.gps.api.MathConstants;
 
+import java.io.Serializable;
+
 /**
  * Created by jed
  * User: jedartois@gmail.com
  * Date: 10/04/12
  * Time: 16:04
  */
-public class GpsPoint implements IGpsPoint {
+public class GpsPoint implements IGpsPoint,Serializable {
 
     protected static final String LAT_EDEFAULT = null;
     protected static final String LONG_EDEFAULT = null;

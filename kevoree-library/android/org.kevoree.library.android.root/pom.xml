@@ -33,6 +33,7 @@
         <module>../org.kevoree.library.android.agrapher</module>
         <module>../org.kevoree.library.android.serialCT</module>
         <module>../org.kevoree.library.android.osmdroid</module>
+        <module>../org.kevoree.library.android.generatorGps</module>
     </modules>
 
     <dependencies>

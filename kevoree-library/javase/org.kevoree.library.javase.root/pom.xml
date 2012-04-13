@@ -97,6 +97,8 @@
         <module>../org.kevoree.library.javase.authentication</module>
         <module>../org.kevoree.library.javase.system</module>
         <module>../org.kevoree.library.javase.system.bsd</module>
+
+        <module>../org.kevoree.library.javase.generatorGps</module>
         <!--<module>../org.kevoree.library.javase.consensus</module>-->
         <!--<module>../org.kevoree.library.javase.freepastry</module>-->
     </modules>
