@@ -25,15 +25,70 @@ public class GpsPoint implements IGpsPoint {
 
 
     public GpsPoint(){
-        // random
+        // random base on RENNES
         double lat =    48.115683+ (Math.random() * 0.1 );
         double lon =         -1.664286+ (Math.random() * 0.1);
         this.lat =  (int)(lat* 1E6);
         this.long_ =  (int)(lon* 1E6);
     }
 
-    public GpsPoint randomPoint(){
-        return new GpsPoint(this.getLat()+ (Math.random() * 0.1 ),this.getLong_()+ (Math.random() * 0.1 ));
+    public double meters2degrees_lat(double meters) {
+        return meters / (2.0*Math.PI*6356752.3142/360.0);
+    }
+    public double meters2degrees_lon(double meters) {
+        return (double)((meters / (2.0*Math.PI*6378137.0/360.0)));
+    }
+
+    public double feet2meters(double feet) {
+        return feet * 0.3048006096;
+    }
+    public double meters2feet(double meters) {
+        return meters / 0.3048006096;
+    }
+
+    public  double deg2rad2(double degrees) { /* convert degrees to radians */
+        return degrees * (Math.PI/180.0);
+    }
+
+    public  double rad2deg2(double radians) { /* convert radian to degree */
+        return radians * (180.0/Math.PI);
+    }
+
+
+    int Random (int _iMin, int _iMax)
+    {
+        return (int)(Math.random() * (_iMax-_iMin)) + _iMin;
+    }
+
+
+    public GpsPoint randomPoint()
+    {
+        double width, height,distance;
+        int yaw = Random(0,360);
+        double lat;
+        double lon;
+        distance = 100;
+        if (yaw< 90)
+        {
+            width  =  distance * Math.sin(deg2rad2(yaw));
+            height =  distance * Math.cos(deg2rad2(yaw));
+        } else if (yaw < 180) {
+            width  =  distance * Math.cos(deg2rad2(yaw-90));
+            height = -distance * Math.sin(deg2rad2(yaw-90));
+        } else if (yaw < 270) {
+            width  = -distance * Math.sin(deg2rad2(yaw-180));
+            height = -distance * Math.cos(deg2rad2(yaw-180));
+        } else {
+            width  = -distance * Math.cos(deg2rad2(yaw-270));
+            height =  distance * Math.sin(deg2rad2(yaw-270));
+        }
+
+        lat  =(this.lat /1E6)+ meters2degrees_lat(height);
+        lon = (this.long_ /1E6)+  meters2degrees_lon(width);
+
+        this.lat =  (int)(lat* 1E6);
+        this.long_ =  (int)(lon* 1E6);
+        return  this;
     }
 
 
@@ -123,18 +178,12 @@ public class GpsPoint implements IGpsPoint {
         final double a2 = MathConstants.DEG2RAD * (src.getLong_() / 1E6);
         final double b1 = MathConstants.DEG2RAD * (dest.getLat() / 1E6);
         final double b2 = MathConstants.DEG2RAD * (dest.getLong_() / 1E6);
-
         final double cosa1 = Math.cos(a1);
         final double cosb1 = Math.cos(b1);
-
         final double t1 = cosa1*Math.cos(a2)*cosb1*Math.cos(b2);
-
         final double t2 = cosa1*Math.sin(a2)*cosb1*Math.sin(b2);
-
         final double t3 = Math.sin(a1)*Math.sin(b1);
-
         final double tt = Math.acos( t1 + t2 + t3 );
-
         return (int)(GeoConstants.RADIUS_EARTH_METERS*tt);
     }
 
