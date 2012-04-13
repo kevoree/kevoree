@@ -56,8 +56,12 @@ case class KevsUpdateDictionaryInterpreter(statement: UpdateDictionaryStatement)
             targetInstance = targetInstance ++ context.model.getHubs.filter(n=>n.getName == statement.instanceName).toList ++ context.model.getGroups.filter(n=>n.getName == statement.instanceName).toList
           }
         }
-    }    
+    }
+
+    var errorDetected = false
+
     targetInstance.foreach{instance =>
+
       Merger.mergeFragmentDictionary(instance, statement.fraProperties)
     }
     
@@ -65,7 +69,7 @@ case class KevsUpdateDictionaryInterpreter(statement: UpdateDictionaryStatement)
       logger.debug("Warning : No dictionary merged")
     }
     
-    true// ALWAYS RETURN TRUE 
+    !errorDetected// ALWAYS RETURN TRUE
     //TODO BETTER ERROR OR AMBIGUITY MANAGEMENT
 
   }

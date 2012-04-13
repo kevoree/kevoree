@@ -54,6 +54,7 @@ class KevoreeAndroidBootStrap {
     try {
       val configBean = new KevoreeConfigServiceBean
       coreBean = new KevoreeCoreBean
+      coreBean.setNodeName(nodeName)
       val clazz = clusterCL.loadClass("org.kevoree.tools.aether.framework.android.NodeTypeBootstrapHelper")
       val bootstraper = clazz.getConstructor(classOf[Context], classOf[ClassLoader]).newInstance(ctx, clusterCL).asInstanceOf[org.kevoree.api.Bootstraper]
       val logbackService = new KevoreeLogbackService()
