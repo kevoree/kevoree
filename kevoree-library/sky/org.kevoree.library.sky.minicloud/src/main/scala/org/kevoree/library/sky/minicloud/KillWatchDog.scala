@@ -1,6 +1,7 @@
 package org.kevoree.library.sky.minicloud
 
-import actors.{TIMEOUT, DaemonActor}
+import actors.{Actor, TIMEOUT, DaemonActor}
+
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -11,7 +12,7 @@ import actors.{TIMEOUT, DaemonActor}
  * @version 1.0
  */
 
-class KillWatchDog(process : Process, timout : Int)  extends DaemonActor {
+class KillWatchDog(process : Process, timout : Int)  extends Actor {
   case class STOP()
 
   def stop() {

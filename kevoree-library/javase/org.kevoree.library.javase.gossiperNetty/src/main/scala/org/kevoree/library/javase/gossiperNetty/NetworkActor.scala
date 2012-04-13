@@ -1,9 +1,9 @@
 package org.kevoree.library.javase.gossiperNetty
 
-import actors.DaemonActor
 import java.net.InetSocketAddress
 import org.kevoree.library.gossiperNetty.protocol.message.KevoreeMessage.Message
 import org.jboss.netty.channel.Channel
+import actors.{Actor, DaemonActor}
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -11,7 +11,7 @@ import org.jboss.netty.channel.Channel
  * Time: 10:44
  */
 
-abstract class NetworkActor extends DaemonActor {
+abstract class NetworkActor extends Actor {
 
   case class STOP()
   case class SEND_MESSAGE(o: Message, address: InetSocketAddress)

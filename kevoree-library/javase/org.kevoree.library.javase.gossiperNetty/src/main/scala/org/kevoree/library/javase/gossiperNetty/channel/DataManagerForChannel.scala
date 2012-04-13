@@ -10,7 +10,7 @@ import org.kevoree.library.javase.gossiperNetty.{GossiperComponent, DataManager}
 import scala.Any
 
 class DataManagerForChannel (instance: GossiperComponent, nodeName: String)
-  extends DataManager with actors.DaemonActor {
+  extends DataManager with actors.Actor {
 
   private val datas = new HashMap[UUID, /*(*/ (VectorClock, Message) /*, Int)*/ ]()
   private val logger = LoggerFactory.getLogger(classOf[DataManagerForChannel])
