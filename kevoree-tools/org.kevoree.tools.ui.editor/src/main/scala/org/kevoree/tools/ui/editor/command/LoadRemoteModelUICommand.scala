@@ -22,6 +22,7 @@ import java.net.URL
 import javax.swing.JOptionPane
 import org.kevoree.framework.KevoreeXmiHelper
 import org.kevoree.tools.ui.editor.{PositionedEMFHelper, KevoreeUIKernel}
+import org.slf4j.LoggerFactory
 
 object LoadRemoteModelUICommand {
   var lastRemoteNodeAddress : String = "localhost:8000"
@@ -34,10 +35,10 @@ class LoadRemoteModelUICommand extends Command {
   def setKernel(k: KevoreeUIKernel) = kernel = k
   
   private val lcommand = new LoadModelCommand();
-  
-  def execute(p: Object) = {
-    
-    //ASK USER FOR ADRESS & PORT
+
+  var logger = LoggerFactory.getLogger(this.getClass)
+
+  def tryRemoteLoad(zip : Boolean) : Boolean ={
     try{
       val result = JOptionPane.showInputDialog("Remote target node : ip@port", LoadRemoteModelUICommand.lastRemoteNodeAddress)
       if (result != null && result != "") {
@@ -47,23 +48,38 @@ class LoadRemoteModelUICommand extends Command {
           val ip = results(0)
           val port = results(1)
           //CALL POST REMOTE URL
-          val url = new URL("http://"+ip+":"+port+"/model/current");
-
-          val conn = url.openConnection();
-          conn.setConnectTimeout(2000);
-          val inputStream = conn.getInputStream
-
-
-          kernel.getModelHandler.merge(KevoreeXmiHelper.loadStream(inputStream))
+          if (zip){
+            val url = new URL("http://"+ip+":"+port+"/model/current/zip");
+            val conn = url.openConnection();
+            conn.setConnectTimeout(2000);
+            val inputStream = conn.getInputStream
+            kernel.getModelHandler.merge(KevoreeXmiHelper.loadCompressedStream(inputStream))
+            logger.debug("Load model from zip stream")
+          } else {
+            val url = new URL("http://"+ip+":"+port+"/model/current");
+            val conn = url.openConnection();
+            conn.setConnectTimeout(2000);
+            val inputStream = conn.getInputStream
+            kernel.getModelHandler.merge(KevoreeXmiHelper.loadStream(inputStream))
+            logger.debug("Load model from xml stream")
+          }
           PositionedEMFHelper.updateModelUIMetaData(kernel)
           lcommand.setKernel(kernel)
           lcommand.execute(kernel.getModelHandler.getActualModel)
         }
       }
+      true
     } catch {
-      case _ @ e => e.printStackTrace
+      case _ @ e => {e.printStackTrace ; false }
     }
+  }
 
+  def execute(p: Object) = {
+
+    //ASK USER FOR ADRESS & PORT
+    if (!tryRemoteLoad(true)){
+      tryRemoteLoad(false)
+    }
   }
   
 }
