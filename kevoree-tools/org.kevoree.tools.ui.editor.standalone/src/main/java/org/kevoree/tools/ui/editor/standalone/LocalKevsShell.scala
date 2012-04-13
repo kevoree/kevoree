@@ -23,20 +23,22 @@ import java.io._
 import org.slf4j.LoggerFactory
 import org.kevoree.tools.marShellGUI.{KevsPanel, KevsModelHandlers}
 import java.awt.BorderLayout
-import org.kevoree.tools.ui.editor.command.{Command, LoadModelCommand}
 import javax.swing._
 import com.explodingpixels.macwidgets.MacButtonFactory
 import java.net.URL
 import org.kevoree.cloner.ModelCloner
+import org.kevoree.tools.ui.editor.command.{KevScriptCommand, Command, LoadModelCommand}
 
 
 class LocalKevsShell extends JPanel {
 
   var logger = LoggerFactory.getLogger(this.getClass)
   var kernel: KevoreeUIKernel = null
+  val kevSCommand = new KevScriptCommand
 
   def setKernel(k: KevoreeUIKernel) = {
     kernel = k
+    kevSCommand.setKernel(kernel)
     KevsModelHandlers.put(1, kernel.getModelHandler.getActualModel)
     kernel.getModelHandler.addListenerCommand(new Command {
       def execute(p: java.lang.Object): Unit = {
@@ -55,8 +57,16 @@ class LocalKevsShell extends JPanel {
   var btExecution = MacButtonFactory.makeUnifiedToolBarButton(new JButton("Run", icon))
 
 
+
+
+
   btExecution.addMouseListener(new MouseAdapter() {
     override def mouseClicked(p1: MouseEvent) = {
+      kevSCommand.setKernel(kernel)
+      kevSCommand.execute(kevsPanel.codeEditor.getText)
+
+
+                    /*
       //TODO SAVE CURRENT MODEL
       val script = kevsPanel.getModel
       if (script != null) {
@@ -80,7 +90,7 @@ class LocalKevsShell extends JPanel {
 
 
         }
-      }
+      }    */
     }
   })
   add(btExecution, BorderLayout.WEST);
