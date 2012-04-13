@@ -28,3 +28,4 @@ merge "mvn:org.kevoree.library.javase/org.kevoree.library.javase.webserver.aceEd
 merge "mvn:org.kevoree.library.javase/org.kevoree.library.javase.webserver.jenkins/{kevoree.version}"
 merge "mvn:org.kevoree.library.javase/org.kevoree.library.javase.webserver.gitblit/{kevoree.version}"
 merge "mvn:org.kevoree.library.javase/org.kevoree.library.javase.webserver.reasoner/{kevoree.version}"
+merge "mvn:org.kevoree.library.javase/org.kevoree.library.javase.generatorGps/{kevoree.version}"

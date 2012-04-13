@@ -2,6 +2,7 @@ package org.kevoree.common.gps.impl;
 
 import org.kevoree.common.gps.api.ITrack;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,7 +12,7 @@ import java.util.List;
  * Date: 12/04/12
  * Time: 15:04
  */
-public class TracK implements ITrack {
+public class TracK implements ITrack,Serializable {
 
     private List<GpsPoint> track = new ArrayList<GpsPoint>();
 
