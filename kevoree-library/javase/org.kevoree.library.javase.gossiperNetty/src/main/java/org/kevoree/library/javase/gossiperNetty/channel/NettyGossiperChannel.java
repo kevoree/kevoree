@@ -8,6 +8,7 @@ import org.kevoree.library.gossiperNetty.protocol.version.Version;
 import org.kevoree.library.javase.gossiperNetty.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import scala.Option;
 import scala.Tuple2;
 
 import java.util.*;
@@ -175,14 +176,18 @@ public class NettyGossiperChannel extends AbstractChannelFragment implements Gos
 	public String getAddress (String remoteNodeName) {
 		String ip = KevoreePlatformHelper.getProperty(this.getModelService().getLastModel(), remoteNodeName,
 				org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP());
-		if (ip == null || ip.equals("")) {
+		if ("".equals(ip)) {
 			ip = "127.0.0.1";
 		}
 		return ip;
 	}
 	@Override
 	public int parsePortNumber (String nodeName) {
-		return KevoreeFragmentPropertyHelper.getIntPropertyFromFragmentChannel(this.getModelService().getLastModel(), this.getName(), "port", nodeName);
+		Option<Integer> portOption = KevoreePropertyHelper.getIntPropertyForChannel(this.getModelService().getLastModel(), this.getName(), "port", true, nodeName);
+		if (portOption.isDefined()) {
+			return portOption.get();
+		}
+		return 9000;
 	}
 
 	public int parsePortNumber () {
@@ -197,7 +202,7 @@ public class NettyGossiperChannel extends AbstractChannelFragment implements Gos
 
 	@Override
 	public Boolean parseBooleanProperty (String name) {
-		return this.getDictionary().get(name) != null && this.getDictionary().get(name).toString().equals("true");
+		return this.getDictionary().get(name) != null && "true".equals(this.getDictionary().get(name).toString());
 	}
 
 	/*@Override
