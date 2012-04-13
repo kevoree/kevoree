@@ -61,13 +61,12 @@ public class GpsPoint implements IGpsPoint {
     }
 
 
-    public GpsPoint randomPoint()
+    public GpsPoint randomPoint(double distance)
     {
-        double width, height,distance;
+        double width, height;
         int yaw = Random(0,360);
         double lat;
         double lon;
-        distance = 100;
         if (yaw< 90)
         {
             width  =  distance * Math.sin(deg2rad2(yaw));

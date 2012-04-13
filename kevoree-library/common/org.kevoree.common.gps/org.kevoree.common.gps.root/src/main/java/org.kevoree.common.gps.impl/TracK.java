@@ -53,11 +53,11 @@ public class TracK implements ITrack {
         this.track = track;
     }
 
-    public void generatePoints(GpsPoint src,int nb){
+    public void generatePoints(GpsPoint src,double distance,int nb){
         GpsPoint last =src;
         for(int i=0;i<nb;i++)
         {
-            GpsPoint current = last.randomPoint();
+            GpsPoint current = last.randomPoint(distance);
             addPoint(current);
             last =  current;
         }

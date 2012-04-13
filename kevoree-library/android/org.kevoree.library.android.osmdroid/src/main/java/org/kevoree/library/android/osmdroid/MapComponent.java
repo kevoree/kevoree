@@ -61,7 +61,7 @@ public class MapComponent extends AbstractComponentType {
                 mMapView = new MapView(uiService.getRootActivity(),sizeTitle);
                 mMapView.setBuiltInZoomControls(true);
                 mMapController = mMapView.getController();
-                mMapController.setZoom(5);
+                mMapController.setZoom(16);
                 GeoPoint gPt = new GeoPoint(48096397, -1743137);
                 mMapController.setCenter(gPt);
                 mMapView.setTileSource(TileSourceFactory.MAPNIK);

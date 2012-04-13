@@ -16,5 +16,5 @@ public interface ITrack {
     public void clear();
     public  float getTrackDistance();
     public List<GpsPoint> getPoints();
-    public void generatePoints(GpsPoint src,int nb);
+    public void generatePoints(GpsPoint src,double distance,int nb);
 }

@@ -10,10 +10,12 @@ public class Tester {
 
     public static void main(String [] args) throws InterruptedException {
         TracK t = new TracK();
+        GpsPoint pt = new GpsPoint();
          while (true){
-         t.generatePoints(new GpsPoint(),2);
-             System.out.println(t.getPoints());
+
+             System.out.println(pt.randomPoint(100));
              Thread.sleep(1000);
+             t.clear();
          }
     }
 }
