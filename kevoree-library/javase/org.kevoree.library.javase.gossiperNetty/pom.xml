@@ -19,7 +19,7 @@
     </parent>
 
     <properties>
-        <kevoree.include>org.kevoree.extra:*,org.kevoree:org.kevoree.merger,org.kevoree.tools:org.kevoree.tools.marShell</kevoree.include>
+        <kevoree.include>io.netty:*,org.kevoree.extra:*,org.kevoree:org.kevoree.merger,org.kevoree.tools:org.kevoree.tools.marShell</kevoree.include>
     </properties>
 
 
@@ -35,9 +35,9 @@
             <version>${kevoree.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.kevoree.extra</groupId>
-            <artifactId>org.kevoree.extra.netty</artifactId>
-            <version>3.2.4</version>
+            <groupId>io.netty</groupId>
+            <artifactId>netty</artifactId>
+            <version>3.4.0.Final</version>
         </dependency>
         <dependency>
             <groupId>org.kevoree.extra</groupId>

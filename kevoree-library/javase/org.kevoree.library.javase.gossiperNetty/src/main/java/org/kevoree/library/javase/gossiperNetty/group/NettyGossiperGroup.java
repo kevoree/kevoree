@@ -22,10 +22,10 @@ import java.util.List;
 @DictionaryType({
 		@DictionaryAttribute(name = "interval", defaultValue = "30000", optional = true),
 		@DictionaryAttribute(name = "port", defaultValue = "9010", optional = true, fragmentDependant = true),
-		@DictionaryAttribute(name = "FullUDP", defaultValue = "false", optional = true, vals= {"true", "false"}),
-		@DictionaryAttribute(name = "sendNotification", defaultValue = "true", optional = true, vals= {"true", "false"}),
-		@DictionaryAttribute(name = "alwaysAskModel", defaultValue = "false", optional = true, vals= {"true", "false"}),
-		@DictionaryAttribute(name = "merge", defaultValue = "false", optional = true, vals= {"true", "false"}),
+		@DictionaryAttribute(name = "FullUDP", defaultValue = "false", optional = true, vals = {"true", "false"}),
+		@DictionaryAttribute(name = "sendNotification", defaultValue = "true", optional = true, vals = {"true", "false"}),
+		@DictionaryAttribute(name = "alwaysAskModel", defaultValue = "false", optional = true, vals = {"true", "false"}),
+		@DictionaryAttribute(name = "merge", defaultValue = "false", optional = true, vals = {"true", "false"}),
 		@DictionaryAttribute(name = "http_port", defaultValue = "8000", optional = true, fragmentDependant = true)
 })
 public class NettyGossiperGroup extends AbstractGroupType implements GossiperComponent {
@@ -42,6 +42,7 @@ public class NettyGossiperGroup extends AbstractGroupType implements GossiperCom
 	protected boolean sendNotification;
 
 	private HTTPServer httpServer;
+	private HTTPClient httpClient;
 
 	@Start
 	public void startGossiperGroup () {
@@ -85,6 +86,7 @@ public class NettyGossiperGroup extends AbstractGroupType implements GossiperCom
 		logger.debug("{}: starting HTTP server", this.getName());
 		// starting HTTP server to accept http model update coming from the editor for example
 		httpServer = new HTTPServer(this, Integer.parseInt(this.getDictionary().get("http_port").toString()));
+		httpClient = new HTTPClient(this.getName());
 		logger.debug("{}: HTTP server started", this.getName());
 
 	}
@@ -123,10 +125,12 @@ public class NettyGossiperGroup extends AbstractGroupType implements GossiperCom
 			httpServer.stop();
 			httpServer = null;
 		}
+
 	}
 
 	@Update
 	public void updateGossiperGroup () {
+		logger.info("try to update configuration of {}", this.getName());
 		stopGossiperGroup();
 		startGossiperGroup();
 	}
@@ -149,7 +153,8 @@ public class NettyGossiperGroup extends AbstractGroupType implements GossiperCom
 
 	@Override
 	public String getAddress (String remoteNodeName) {
-		Option<String> ipOption = KevoreePropertyHelper.getStringNetworkProperty(this.getModelService().getLastModel(), remoteNodeName, org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP());
+		Option<String> ipOption = KevoreePropertyHelper
+				.getStringNetworkProperty(this.getModelService().getLastModel(), remoteNodeName, org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP());
 		if (ipOption.isDefined()) {
 			return ipOption.get();
 		} else {
@@ -159,9 +164,7 @@ public class NettyGossiperGroup extends AbstractGroupType implements GossiperCom
 
 	@Override
 	public int parsePortNumber (String nodeName) {
-		logger.debug("look for port on {}", nodeName);
 		Option<Integer> portOption = KevoreePropertyHelper.getIntPropertyForGroup(this.getModelService().getLastModel(), this.getName(), "port", true, nodeName);
-		logger.debug("port on {} is {}", nodeName, portOption);
 		if (portOption.isDefined()) {
 			return portOption.get();
 		} else {
@@ -181,7 +184,7 @@ public class NettyGossiperGroup extends AbstractGroupType implements GossiperCom
 
 	@Override
 	public Boolean parseBooleanProperty (String name) {
-		return this.getDictionary().get(name) != null && this.getDictionary().get(name).toString().equals("true");
+		return this.getDictionary().get(name) != null && "true".equals(this.getDictionary().get(name).toString());
 	}
 
 	@Override
@@ -198,11 +201,17 @@ public class NettyGossiperGroup extends AbstractGroupType implements GossiperCom
 
 	@Override
 	public void push (ContainerRoot containerRoot, String s) {
-		httpServer.push(containerRoot, s);
+		if (httpClient == null) {
+			httpClient = new HTTPClient(this.getName());
+		}
+		httpClient.push(containerRoot, s);
 	}
 
 	@Override
 	public ContainerRoot pull (String s) {
-		return httpServer.pull(this.getModelService().getLastModel(), s);
+		if (httpClient == null) {
+			httpClient = new HTTPClient(this.getName());
+		}
+		return httpClient.pull(this.getModelService().getLastModel(), s);
 	}
 }

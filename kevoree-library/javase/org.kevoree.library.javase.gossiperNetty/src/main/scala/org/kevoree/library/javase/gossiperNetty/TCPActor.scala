@@ -22,9 +22,8 @@ class TCPActor (port: Int, processValue: ProcessValue, processRequest: ProcessRe
   private val logger = LoggerFactory.getLogger(classOf[TCPActor])
 
   // configure the server
-  var factoryServer = new
-      NioServerSocketChannelFactory(Executors.newCachedThreadPool(), Executors.newCachedThreadPool())
-  var bootstrapServer = new ServerBootstrap(factoryServer)
+  val factoryServer = new NioServerSocketChannelFactory(Executors.newCachedThreadPool(), Executors.newCachedThreadPool())
+  val bootstrapServer = new ServerBootstrap(factoryServer)
   bootstrapServer.setPipelineFactory(new ChannelPipelineFactory() {
     override def getPipeline: ChannelPipeline = {
       val p: ChannelPipeline = Channels.pipeline()
@@ -39,7 +38,8 @@ class TCPActor (port: Int, processValue: ProcessValue, processRequest: ProcessRe
     }
   })
   bootstrapServer.setOption("tcpNoDelay", true)
-  var channelServer: Channel = bootstrapServer.bind(new InetSocketAddress(port))
+  val channelServer: Channel = bootstrapServer.bind(new InetSocketAddress(port))
+  val serverChannelGroup = new DefaultChannelGroup("TCP-server")
 
   // Configure the client.
   val factory = new NioClientSocketChannelFactory(Executors.newCachedThreadPool(), Executors.newCachedThreadPool())
@@ -59,19 +59,30 @@ class TCPActor (port: Int, processValue: ProcessValue, processRequest: ProcessRe
   });
 
   // keep all created channels to delete it when we stop
-  // we only keep 5 channels, if a sixth channel is created, we release the fifth first.
-  val channelGroup = new DefaultChannelGroup();
+  // we only keep 10 channels, if a eleventh channel is created, we release the fifth first.
+  val channelGroup = new DefaultChannelGroup("TCP-client")
 
 
   protected def stopInternal () {
-    channelServer.unbind()
-    if (!channelServer.getCloseFuture.awaitUninterruptibly(5000)) {
-      channelServer.close().awaitUninterruptibly()
-    }
+//    logger.debug("stopping TCP Gossip manager")
+//    logger.debug("stopping channel server")
+    channelServer.close().awaitUninterruptibly()
+//    logger.debug("channel server stopped")
+//    logger.debug("stopping channel group")
     channelGroup.close().awaitUninterruptibly()
+    serverChannelGroup.close().awaitUninterruptibly()
+//    logger.debug("channel group stopped")
     // Shut down all thread pools to exit.
-    bootstrap.releaseExternalResources();
-    bootstrapServer.releaseExternalResources();
+//    logger.debug("releasing netty bootstrap resource")
+    factory.releaseExternalResources()
+    bootstrap.releaseExternalResources()
+//    logger.debug("netty bootstrap resource released")
+    logger.debug("releasing netty bootstrap server resource")
+    factoryServer.releaseExternalResources()
+    logger.debug("factory server released")
+    bootstrapServer.releaseExternalResources()
+    logger.debug("netty bootstrap server resource released")
+    logger.debug("TCP Gossip manager stopped")
   }
 
   protected def sendMessageInternal (o: Message, address: InetSocketAddress) {
@@ -96,7 +107,7 @@ class TCPActor (port: Int, processValue: ProcessValue, processRequest: ProcessRe
   }
 
   protected def sendMessageToChannelInternal (o: Message, channel: Channel, address: InetSocketAddress) {
-    channel.write(o)/*.addListener(new ChannelFutureListener() {
+    channel.write(o) /*.addListener(new ChannelFutureListener() {
       def operationComplete (future: ChannelFuture) {
         channel.close()
       }
@@ -109,6 +120,7 @@ class TCPActor (port: Int, processValue: ProcessValue, processRequest: ProcessRe
         processRequest.receiveRequest(e.getMessage.asInstanceOf[Message], e.getChannel,
                                        e.getRemoteAddress.asInstanceOf[InetSocketAddress])
       }
+      serverChannelGroup.add(e.getChannel)
       //e.getChannel.getCloseFuture.addListener(ChannelFutureListener.CLOSE)
     }
 

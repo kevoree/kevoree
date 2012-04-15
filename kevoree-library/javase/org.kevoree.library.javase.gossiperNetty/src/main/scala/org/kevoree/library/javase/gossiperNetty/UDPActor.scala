@@ -55,14 +55,16 @@ class UDPActor (port: Int, processValue: ProcessValue, processRequest: ProcessRe
 
 
   protected def stopInternal () {
+    logger.debug("stopping UDP Gossip manager")
     channelServer.unbind()
-    if (!channelServer.getCloseFuture.awaitUninterruptibly(5000)) {
-      channelServer.close().awaitUninterruptibly();
-    }
+    channelServer.close().awaitUninterruptibly()
     channel.close().awaitUninterruptibly()
     // Shut down all thread pools to exit.
-    bootstrap.releaseExternalResources();
-    bootstrapServer.releaseExternalResources();
+    factory.releaseExternalResources()
+    bootstrap.releaseExternalResources()
+    factoryServer.releaseExternalResources()
+    bootstrapServer.releaseExternalResources()
+    logger.debug("UDP Gossip manager stopped")
   }
 
   protected def sendMessageInternal (o: Message, address: InetSocketAddress) {
