@@ -25,7 +25,7 @@ import java.util.List;
 		@DictionaryAttribute(name = "FullUDP", defaultValue = "false", optional = true, vals = {"true", "false"}),
 		@DictionaryAttribute(name = "sendNotification", defaultValue = "true", optional = true, vals = {"true", "false"}),
 		@DictionaryAttribute(name = "alwaysAskModel", defaultValue = "false", optional = true, vals = {"true", "false"}),
-		@DictionaryAttribute(name = "merge", defaultValue = "false", optional = true, vals = {"true", "false"}),
+		@DictionaryAttribute(name = "mergeModel", defaultValue = "false", optional = true, vals = {"true", "false"}),
 		@DictionaryAttribute(name = "http_port", defaultValue = "8000", optional = true, fragmentDependant = true)
 })
 public class NettyGossiperGroup extends AbstractGroupType implements GossiperComponent {
@@ -49,7 +49,7 @@ public class NettyGossiperGroup extends AbstractGroupType implements GossiperCom
 		sendNotification = parseBooleanProperty("sendNotification");
 
 		Long timeoutLong = Long.parseLong((String) this.getDictionary().get("interval"));
-		boolean merge = "true".equalsIgnoreCase(this.getDictionary().get("merge").toString());
+		boolean merge = "true".equalsIgnoreCase(this.getDictionary().get("mergeModel").toString());
 
 		NetworkProtocolSelector protocolSelector = new NetworkProtocolSelector();
 
