@@ -22,7 +22,7 @@ public class CamelAtomReader extends AbstractKevoreeCamelComponentType {
 
     protected void buildRoutes(RouteBuilder rb) {
         rb.from("atom://" + getDictionary().get("url") + "?consumer.delay=" + getDictionary().get("period"))
-        .to("kport:tick");
+        .to("kport:feeds");
     }
 
 }

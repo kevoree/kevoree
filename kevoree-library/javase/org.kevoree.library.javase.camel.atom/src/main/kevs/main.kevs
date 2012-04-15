@@ -4,7 +4,7 @@ merge "mvn:org.kevoree.library.javase/org.kevoree.library.javase.fakeDomo/{kevor
 merge "mvn:org.kevoree.library.javase/org.kevoree.library.javase.defaultChannels/{kevoree.version}"
 
 addNode node0 : JavaSENode
-addComponent fread@node0 : CamelAtomReader { url = 'https://github.com/dukeboard/kevoree/commits/master.atom' }
+addComponent fread@node0 : CamelAtomReader { url = 'https://github.com/dukeboard/kevoree/commits/master.atom',period='5000' }
 addComponent console@node0 : FakeConsole
 addChannel feedQueue : defMSG
 bind fread.feeds@node0 => feedQueue
