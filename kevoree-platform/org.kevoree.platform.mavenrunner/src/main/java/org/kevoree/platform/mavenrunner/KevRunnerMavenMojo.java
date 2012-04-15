@@ -33,7 +33,7 @@ import java.io.File;
  * @version 1.0
  * @goal run
  * @phase install
- * @requiresDependencyResolution compile
+ * @requiresDependencyResolution compile+runtime
  */
 public class KevRunnerMavenMojo extends AbstractMojo {
 
