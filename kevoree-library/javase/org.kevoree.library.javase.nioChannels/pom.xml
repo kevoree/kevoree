@@ -19,11 +19,9 @@
         <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty</artifactId>
-            <version>3.3.1.Final</version>
-            <type>bundle</type>
+            <version>3.4.0.Final</version>
           </dependency>
     </dependencies>
-
 
     <build>
         <plugins>
@@ -73,16 +71,6 @@
                     </execution>
                 </executions>
             </plugin>
-
-            <!--<plugin>
-                <groupId>org.apache.felix</groupId>
-                <artifactId>maven-bundle-plugin</artifactId>
-                <configuration>
-                    <instructions>
-                        <DynamicImport-Package>*</DynamicImport-Package>
-                    </instructions>
-                </configuration>
-            </plugin>-->
         </plugins>
     </build>
 

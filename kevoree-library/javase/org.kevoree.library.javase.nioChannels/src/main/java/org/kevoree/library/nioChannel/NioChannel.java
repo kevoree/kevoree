@@ -17,6 +17,7 @@ import org.kevoree.annotation.*;
 import org.kevoree.framework.*;
 import org.kevoree.framework.message.Message;
 import org.slf4j.LoggerFactory;
+import scala.Option;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -59,7 +60,7 @@ public class NioChannel extends AbstractChannelFragment {
 
         final NioChannel selfPointer = this;
 
-        if(this.getDictionary().get("type").equals("nio")){
+        if("nio".equals(this.getDictionary().get("type"))){
             bootstrap = new ServerBootstrap(
                     new NioServerSocketChannelFactory(
                             Executors.newCachedThreadPool(),
@@ -80,7 +81,7 @@ public class NioChannel extends AbstractChannelFragment {
             }
         });
 
-        if(this.getDictionary().get("type").equals("nio")){
+        if("nio".equals(this.getDictionary().get("type"))){
             clientBootStrap = new ClientBootstrap(new NioClientSocketChannelFactory(Executors.newCachedThreadPool(), Executors.newCachedThreadPool()));
         } else {
             clientBootStrap = new ClientBootstrap(new OioClientSocketChannelFactory(Executors.newCachedThreadPool()));
@@ -107,6 +108,7 @@ public class NioChannel extends AbstractChannelFragment {
     public void stopNio() {
         msgQueue.flushChannel();
         clientBootStrap.releaseExternalResources();
+		bootstrap.releaseExternalResources();
         logger.debug("Client channels flushed");
         msgQueue.stop();
 
@@ -165,7 +167,7 @@ public class NioChannel extends AbstractChannelFragment {
     public String getAddress(String remoteNodeName) {
         String ip = KevoreePlatformHelper.getProperty(this.getModelService().getLastModel(), remoteNodeName,
                 org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP());
-        if (ip == null || ip.equals("")) {
+        if ("".equals(ip)) {
             ip = "127.0.0.1";
         }
         return ip;
@@ -174,9 +176,12 @@ public class NioChannel extends AbstractChannelFragment {
     public int parsePortNumber(String nodeName) throws IOException {
         try {
             //logger.debug("look for port on " + nodeName);
-            return KevoreeFragmentPropertyHelper
-                    .getIntPropertyFromFragmentChannel(this.getModelService().getLastModel(), this.getName(), "port",
-                            nodeName);
+			Option<Integer> portOption = KevoreePropertyHelper.getIntPropertyForChannel(this.getModelService().getLastModel(), this.getName(), "port", true, nodeName);
+			if (portOption.isDefined()) {
+            return portOption.get();
+			} else {
+				return 9000;
+			}
         } catch (NumberFormatException e) {
             throw new IOException(e.getMessage());
         }

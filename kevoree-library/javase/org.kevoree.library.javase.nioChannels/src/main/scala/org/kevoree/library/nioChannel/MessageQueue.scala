@@ -1,6 +1,6 @@
 package org.kevoree.library.nioChannel
 
-import actors.{DaemonActor, Actor}
+import actors.DaemonActor
 import org.kevoree.framework.message.Message
 import org.jboss.netty.channel.Channel
 import org.jboss.netty.bootstrap.ClientBootstrap
@@ -12,7 +12,6 @@ import java.net.InetSocketAddress
  * User: duke
  * Date: 16/11/11
  * Time: 17:26
- * To change this template use File | Settings | File Templates.
  */
 
 class MessageQueue(bootstrap: ClientBootstrap) extends DaemonActor {

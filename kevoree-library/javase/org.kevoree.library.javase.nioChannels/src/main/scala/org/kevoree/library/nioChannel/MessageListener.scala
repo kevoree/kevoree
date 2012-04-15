@@ -9,9 +9,7 @@ import org.kevoree.framework.message.Message
  * User: duke
  * Date: 17/11/11
  * Time: 11:14
- * To change this template use File | Settings | File Templates.
  */
-
 class MessageListener(host: String, port: Int, channel: Channel, msgQ: MessageQueue) extends DaemonActor {
 
   case class STOP()
