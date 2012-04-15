@@ -217,7 +217,14 @@ public class NanoRestGroup extends AbstractGroupType {
     }
 
     private boolean sendModel(ContainerRoot model, String urlPath) {
-        if (!sendModel(model, urlPath + "/zip", true)) {
+
+        String urlPath2 = urlPath;
+        if(urlPath2.contains("?")){
+            urlPath2 = urlPath2.replace("?","/zip?");
+        } else {
+            urlPath2  = urlPath2 + "/zip";
+        }
+        if (!sendModel(model, urlPath2, true)) {
             return sendModel(model, urlPath, false);
         } else {
             return true;
@@ -234,6 +241,7 @@ public class NanoRestGroup extends AbstractGroupType {
                 KevoreeXmiHelper.saveStream(outStream, model);
             }
             outStream.flush();
+            logger.debug("Try URL PATH "+urlPath);
             URL url = new URL(urlPath);
             URLConnection conn = url.openConnection();
             conn.setConnectTimeout(3000);
