@@ -97,6 +97,7 @@
                         <option>-keep class org.kevoreeAdaptation.** { *; }</option>
                         <option>-keep class org.slf4j.** { *; }</option>
                         <option>-keep class japa.parser.ast.** { *; }</option>
+                        <option>-keep class com.sun.jna.** { *; }</option>
                         <option>-keepattributes *Annotation*</option>
                         <option>-keepattributes **</option>
 
