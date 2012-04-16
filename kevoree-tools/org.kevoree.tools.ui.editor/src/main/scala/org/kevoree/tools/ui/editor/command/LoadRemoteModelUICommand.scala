@@ -3,7 +3,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * 	http://www.gnu.org/licenses/lgpl-3.0.txt
+ * http://www.gnu.org/licenses/lgpl-3.0.txt
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -25,7 +25,7 @@ import org.kevoree.tools.ui.editor.{PositionedEMFHelper, KevoreeUIKernel}
 import org.slf4j.LoggerFactory
 
 object LoadRemoteModelUICommand {
-  var lastRemoteNodeAddress : String = "localhost:8000"
+  var lastRemoteNodeAddress: String = "localhost:8000"
 }
 
 class LoadRemoteModelUICommand extends Command {
@@ -33,53 +33,63 @@ class LoadRemoteModelUICommand extends Command {
   var kernel: KevoreeUIKernel = null
 
   def setKernel(k: KevoreeUIKernel) = kernel = k
-  
+
   private val lcommand = new LoadModelCommand();
 
   var logger = LoggerFactory.getLogger(this.getClass)
 
-  def tryRemoteLoad(zip : Boolean) : Boolean ={
-    try{
-      val result = JOptionPane.showInputDialog("Remote target node : ip@port", LoadRemoteModelUICommand.lastRemoteNodeAddress)
-      if (result != null && result != "") {
-        LoadRemoteModelUICommand.lastRemoteNodeAddress = result
-        val results = result.split(":").toList
-        if(results.size >= 2){
-          val ip = results(0)
-          val port = results(1)
-          //CALL POST REMOTE URL
-          if (zip){
-            val url = new URL("http://"+ip+":"+port+"/model/current/zip");
-            val conn = url.openConnection();
-            conn.setConnectTimeout(2000);
-            val inputStream = conn.getInputStream
-            kernel.getModelHandler.merge(KevoreeXmiHelper.loadCompressedStream(inputStream))
-            logger.debug("Load model from zip stream")
-          } else {
-            val url = new URL("http://"+ip+":"+port+"/model/current");
-            val conn = url.openConnection();
-            conn.setConnectTimeout(2000);
-            val inputStream = conn.getInputStream
-            kernel.getModelHandler.merge(KevoreeXmiHelper.loadStream(inputStream))
-            logger.debug("Load model from xml stream")
-          }
-          PositionedEMFHelper.updateModelUIMetaData(kernel)
-          lcommand.setKernel(kernel)
-          lcommand.execute(kernel.getModelHandler.getActualModel)
-        }
+  def tryRemoteLoad(ip: String, port: String, zip: Boolean): Boolean = {
+    try {
+      //CALL POST REMOTE URL
+      if (zip) {
+        val url = new URL("http://" + ip + ":" + port + "/model/current/zip");
+        val conn = url.openConnection();
+        conn.setConnectTimeout(2000);
+        val inputStream = conn.getInputStream
+        kernel.getModelHandler.merge(KevoreeXmiHelper.loadCompressedStream(inputStream))
+        logger.debug("Load model from zip stream")
+      } else {
+        val url = new URL("http://" + ip + ":" + port + "/model/current");
+        val conn = url.openConnection();
+        conn.setConnectTimeout(2000);
+        val inputStream = conn.getInputStream
+        kernel.getModelHandler.merge(KevoreeXmiHelper.loadStream(inputStream))
+        logger.debug("Load model from xml stream")
       }
+      PositionedEMFHelper.updateModelUIMetaData(kernel)
+      lcommand.setKernel(kernel)
+      lcommand.execute(kernel.getModelHandler.getActualModel)
       true
     } catch {
-      case _ @ e => {e.printStackTrace ; false }
+      case _@e => {
+        logger.debug("Push failed to "+ip+":"+port)
+        false
+      }
     }
   }
 
   def execute(p: Object) = {
 
-    //ASK USER FOR ADRESS & PORT
-    if (!tryRemoteLoad(true)){
-      tryRemoteLoad(false)
+    try {
+      val result = JOptionPane.showInputDialog("Remote target node : ip@port", LoadRemoteModelUICommand.lastRemoteNodeAddress)
+      if (result != null && result != "") {
+        LoadRemoteModelUICommand.lastRemoteNodeAddress = result
+        val results = result.split(":").toList
+        if (results.size >= 2) {
+          val ip = results(0)
+          val port = results(1)
+          if (!tryRemoteLoad(ip, port, true)) {
+            tryRemoteLoad(ip, port, false)
+          }
+        }
+        true
+      }
+    } catch {
+      case _@e => {
+        logger.error("Bad Input , ip@port needed")
+        false
+      }
     }
   }
-  
+
 }
