@@ -70,34 +70,6 @@ public class KevoreeEditor {
         SaveActuelModelCommand.setDefaultLocation(url);
     }
 
-    public String getEditorVersion() {
 
-        InputStream is = getClass().getResourceAsStream("/META-INF/maven/org.kevoree.tools/org.kevoree.tools.ui.editor/pom.properties");
-        //System.out.println("VErsion ???"+is);
-
-        String version = null;
-
-        if(is != null) {
-            try {
-                Properties p = new Properties();
-                p.load(is);
-                version = p.getProperty("version");
-            } catch (IOException ex) {
-                Logger.getLogger(KevoreeEditor.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            try {
-                is.close();
-            } catch (IOException ex) {
-                Logger.getLogger(KevoreeEditor.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-
-        if(version == null) {
-            return "";
-        } else {
-            return version;
-        }
-
-    }
 
 }
