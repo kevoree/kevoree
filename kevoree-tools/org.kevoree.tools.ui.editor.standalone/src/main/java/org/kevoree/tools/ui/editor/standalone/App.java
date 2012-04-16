@@ -57,13 +57,6 @@ public class App {
                 kevsPanel.setKernel(artpanel.getPanel().getKernel());
                 String frameName = "Kevoree Editor - " + KevoreeFactory.getVersion();
 
-                if (!artpanel.getEditorVersion().equals("")) {
-                    frameName += " - " + artpanel.getEditorVersion();
-                }
-
-                //frameName += ("Argument "+args[0]);
-
-
                 JFrame jframe = new JFrame(frameName);
                 MacUtils.makeWindowLeopardStyle(jframe.getRootPane());
                 UnifiedToolBar toolBar = new UnifiedToolBar();
