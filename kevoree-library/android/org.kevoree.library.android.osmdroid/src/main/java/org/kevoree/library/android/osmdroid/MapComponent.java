@@ -45,13 +45,14 @@ public class MapComponent extends AbstractComponentType {
     private final int sizeTitle = 15;
     private String title= "";
     private TrackMap track;
+    private  LowMemory lowMemory = new LowMemory();
 
     @Start
     public void start() {
 
         uiService = UIServiceHandler.getUIService();
         layout = new LinearLayout(uiService.getRootActivity());
-
+        lowMemory.setLowMemory();
         uiService.addToGroup("Map", layout);
 
         uiService.getRootActivity().runOnUiThread(new Runnable() {
@@ -150,9 +151,18 @@ public class MapComponent extends AbstractComponentType {
                     TracK tmp = (TracK) msg;
                     for(GpsPoint p : tmp.getPoints())
                     {
-                        track.addPoint(p);
-                        mMapController.animateTo(new GeoPoint(p.getLat(),p.getLong_()));
-                        mMapView.invalidate();
+                        if (!lowMemory.isLowMemory())
+                        {
+                            track.addPoint(p);
+                            mMapController.animateTo(new GeoPoint(p.getLat(),p.getLong_()));
+                            mMapView.invalidate();
+                        }else
+                        {
+                            // TODO save track
+
+                            track.clean();
+
+                        }
                     }
                 }
             });

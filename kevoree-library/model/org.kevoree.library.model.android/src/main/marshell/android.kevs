@@ -7,3 +7,4 @@ merge "mvn:org.kevoree.library.android/org.kevoree.library.android.text2speech/{
 merge "mvn:org.kevoree.library.android/org.kevoree.library.android.agrapher/{kevoree.version}"
 merge "mvn:org.kevoree.library.android/org.kevoree.library.android.socketChannels/{kevoree.version}"
 merge "mvn:org.kevoree.library.android/org.kevoree.library.android.generatorGps/{kevoree.version}"
+merge "mvn:org.kevoree.library.android/org.kevoree.library.android.osmdroid/{kevoree.version}"
