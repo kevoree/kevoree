@@ -32,7 +32,12 @@ object LocalUtility {
 
   def getOraddDataType(datatype: TypedElement): TypedElement = {
     root.getDataTypes.find({
-      t => t.getName.equals(datatype.getName)
+      t => 
+        if(t.getName.equals(datatype.getName)) {
+          t.getGenericTypes.forall(genericType=>datatype.getGenericTypes.contains(genericType))
+        } else {
+          false
+        }
     }).getOrElse {
       root.addDataTypes(datatype)
       datatype
