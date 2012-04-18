@@ -129,9 +129,9 @@ public class KevoreeUIFactory {
         SelectInstanceCommand command = new SelectInstanceCommand();
         command.setKernel(kernel);
         listener.setLeftClickCommand(command);
-        ContextualMenuCommand rightClicCommand = new ContextualMenuCommand();
-        rightClicCommand.setKernel(kernel);
-        listener.setRightClickCommand(rightClicCommand);
+        //ContextualMenuCommand rightClicCommand = new ContextualMenuCommand();
+       // rightClicCommand.setKernel(kernel);
+       // listener.setRightClickCommand(rightClicCommand);
         nui.addMouseListener(listener);
 
 
