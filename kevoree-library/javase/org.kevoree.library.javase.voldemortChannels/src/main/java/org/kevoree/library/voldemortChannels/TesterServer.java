@@ -36,7 +36,7 @@ public class TesterServer {
 
         nodes.add(node0);
         nodes.add(node1);
-        nodes.add(node2);
+        //nodes.add(node2);
 
 
         try {
@@ -45,10 +45,10 @@ public class TesterServer {
 
 
             KServer t1 = new KServer(Utils.createServerConfig(1),"kcluster",nodes);
-            //   t1.start();
+              t1.start();
 
             KServer t2 = new KServer(Utils.createServerConfig(2),"kcluster",nodes);
-            t2.start();
+         //   t2.start();
             Thread.sleep(2000000);
 
             t.stop();

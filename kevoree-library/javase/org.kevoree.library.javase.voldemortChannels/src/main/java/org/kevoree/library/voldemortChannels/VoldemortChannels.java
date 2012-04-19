@@ -22,6 +22,7 @@ import voldemort.client.StoreClient;
 import voldemort.cluster.Node;
 import voldemort.server.VoldemortConfig;
 import voldemort.utils.Props;
+import voldemort.versioning.Versioned;
 
 import java.io.File;
 import java.io.IOException;
@@ -165,7 +166,23 @@ public class VoldemortChannels extends AbstractChannelFragment implements Runnab
                 try {
                     KClient t = new KClient(nodes);
                     StoreClient store = t.getStore("kevoree");
-                    store.put(remoteNodeName,msg);
+
+                    Versioned data =  store.get(remoteNodeName);
+                    Versioned<Message> version=null;
+
+                    if(data !=null)
+                    {
+                        // get the value
+                        version = store.get(remoteNodeName);
+                        // modify the value
+                        version.setObject(msg);
+
+                        // update the value
+                        store.put(remoteNodeName,version);
+                    }else
+                    {
+                        store.put(remoteNodeName,msg);
+                    }
 
                 } catch (Exception e) {
 
@@ -219,7 +236,6 @@ public class VoldemortChannels extends AbstractChannelFragment implements Runnab
         }
 
         try {
-
             if(!nodes.isEmpty())
             {
                 String clustername = this.getDictionary().get("clusterName").toString();
@@ -235,21 +251,50 @@ public class VoldemortChannels extends AbstractChannelFragment implements Runnab
 
         KClient t = new KClient(nodes);
 
-
-
+        StoreClient store  = null;
+        Message last =null;
         while(alive)
         {
 
-            StoreClient store = t.getStore("kevoree");
-
-
-            store.
-            if(store.get(getNodeName()) != null)
+            if(store == null)
             {
-                Message c = (Message) store.get(this.getNodeName()).getValue();
-                remoteDispatch(c);
+                store = t.getStore("kevoree");
             }
 
+            try
+            {
+                Versioned<Message> data = store.get(getNodeName());
+                if(data != null)
+                {
+                    Message msg = (Message) store.get(this.getNodeName()).getValue();
+
+                    if (!msg.getPassedNodes().contains(getNodeName()))
+                    {
+                        msg.getPassedNodes().add(getNodeName());
+                    }
+                    if(last==null){
+                     last = msg;
+                        remoteDispatch(msg);
+                    }
+                    else {
+
+                        if(!last.getUuid().toString().equals(msg.getUuid().toString()))
+                        {
+                            remoteDispatch(msg);
+                            last = msg;
+                        }else
+                        {
+
+                            store.delete(this.getNodeName(),data.getVersion());
+                            Thread.sleep(500);
+                        }
+                    }
+                }
+
+            } catch (Exception e) {
+                logger.error(" "+e);
+                store = null;
+            }
 
 
         }
