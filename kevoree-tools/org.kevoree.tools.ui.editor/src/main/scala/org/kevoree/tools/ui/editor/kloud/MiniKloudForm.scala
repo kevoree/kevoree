@@ -109,7 +109,7 @@ class MiniKloudForm (editor: KevoreeEditor) {
                 KevoreeXmiHelper.save(file.getAbsolutePath, skyModel);
                 logger.debug("trying to start the minicloud")
                 minicloud = Runtime.getRuntime
-                  .exec(Array[String](java, "-Dnode.gui.config=false", "-Dnode.bootstrap=" + file.getAbsolutePath, "-Dnode.name=" + minicloudName, "-Dnode.log.level=INFO", "-jar",
+                  .exec(Array[String](java, "-Dnode.gui.config=false", "-Dnode.bootstrap=" + file.getAbsolutePath, "-Dnode.name=" + minicloudName, "-Dkevoree.log.level=INFO", "-jar",
                                        platformJAR.getAbsolutePath))
 
 
