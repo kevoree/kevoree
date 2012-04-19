@@ -30,12 +30,9 @@ public class KTinyWebServer extends AbstractWebServer implements Runnable {
 
     public void start() {
 
-        System.setProperty("actors.enableForkJoin","false");
-
         handler = new RequestHandler(this);
         handler.start();
         handler.staticInit();
-
 
         srv = new KTinyWebServerInternalServe();
         java.util.Properties properties = new java.util.Properties();
