@@ -37,6 +37,7 @@ public class DeadMessageQueueThread extends Thread {
     public void stopProcess() {
         alive = false;
         queue_node_dead.clear();
+        this.interrupt();
     }
 
     public void addToDeadQueue(Message m) {
@@ -101,8 +102,6 @@ public class DeadMessageQueueThread extends Thread {
                         client_consumer = null;
                         os = null;
                         oos = null;
-
-
                     } catch (Exception e) {
 
                         try {
@@ -116,7 +115,7 @@ public class DeadMessageQueueThread extends Thread {
                             stepFailMsgQueue.add(current);
 
                         } catch (Exception e2) {
-                            e2.printStackTrace();
+                            // ignore
                         }
                     }
                 }  // for
