@@ -18,9 +18,13 @@ import org.slf4j.LoggerFactory;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.UnknownHostException;
-import java.util.*;
-import java.util.concurrent.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Semaphore;
 
 @Library(name = "JavaSE", names = {"Android"})
 @ChannelTypeFragment
@@ -107,7 +111,7 @@ public class SocketChannel extends AbstractChannelFragment implements Runnable {
     public void stopChannel() {
 
         sending_messages_node_dead.stopProcess();
-        alive = false;
+        this.alive = false;
         logger.debug("Socket channel is closing ");
         try {
             reception_messages.interrupt();

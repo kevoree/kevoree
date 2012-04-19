@@ -54,16 +54,13 @@ package org.kevoree.tools.ui.editor.kloud
 
 import java.io._
 import org.kevoree.tools.aether.framework.AetherUtil
-import org.kevoree.tools.marShell.parser.KevsParser
-import org.kevoree.tools.marShell.interpreter.KevsInterpreterContext
-import org.kevoree.tools.marShell.interpreter.KevsInterpreterAspects._
 import org.slf4j.LoggerFactory
 import org.kevoree.tools.ui.editor.command.LoadModelCommand
 import org.kevoree.tools.ui.editor.{PositionedEMFHelper, KevoreeEditor}
 import org.kevoree.tools.marShell.KevScriptOfflineEngine
 import java.net.{ServerSocket, InetSocketAddress, Socket}
 import org.kevoree.framework.{KevoreePropertyHelper, KevoreeXmiHelper}
-import org.kevoree.{ContainerNode, ComponentInstance, ContainerRoot, KevoreeFactory}
+import org.kevoree.{ContainerNode, ContainerRoot, KevoreeFactory}
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -109,7 +106,7 @@ class MiniKloudForm (editor: KevoreeEditor) {
                 KevoreeXmiHelper.save(file.getAbsolutePath, skyModel);
                 logger.debug("trying to start the minicloud")
                 minicloud = Runtime.getRuntime
-                  .exec(Array[String](java, "-Dnode.gui.config=false", "-Dnode.bootstrap=" + file.getAbsolutePath, "-Dnode.name=" + minicloudName, "-Dnode.log.level=INFO", "-jar",
+                  .exec(Array[String](java, "-Dnode.gui.config=false", "-Dnode.bootstrap=" + file.getAbsolutePath, "-Dnode.name=" + minicloudName, "-Dkevoree.log.level=INFO", "-jar",
                                        platformJAR.getAbsolutePath))
 
 
