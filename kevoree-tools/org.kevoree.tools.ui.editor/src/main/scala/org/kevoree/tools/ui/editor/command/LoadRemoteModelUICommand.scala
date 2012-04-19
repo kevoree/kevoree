@@ -62,7 +62,7 @@ class LoadRemoteModelUICommand extends Command {
       true
     } catch {
       case _@e => {
-        logger.debug("Push failed to "+ip+":"+port)
+        logger.debug("Pull failed to "+ip+":"+port+" , zip activated="+zip)
         false
       }
     }
@@ -71,7 +71,7 @@ class LoadRemoteModelUICommand extends Command {
   def execute(p: Object) = {
 
     try {
-      val result = JOptionPane.showInputDialog("Remote target node : ip@port", LoadRemoteModelUICommand.lastRemoteNodeAddress)
+      val result = JOptionPane.showInputDialog("Remote target node <ip:port>", LoadRemoteModelUICommand.lastRemoteNodeAddress)
       if (result != null && result != "") {
         LoadRemoteModelUICommand.lastRemoteNodeAddress = result
         val results = result.split(":").toList
