@@ -1,7 +1,5 @@
 package org.kevoree.library.nanohttp;
 
-import com.sun.xml.internal.messaging.saaj.util.ByteInputStream;
-import com.sun.xml.internal.messaging.saaj.util.ByteOutputStream;
 import org.kevoree.ContainerNode;
 import org.kevoree.ContainerRoot;
 import org.kevoree.Group;
@@ -122,10 +120,9 @@ public class NanoRestGroup extends AbstractGroupType {
                         return new NanoHTTPD.Response(HTTP_OK, MIME_HTML, msg);
                     }
                     if (uri.endsWith("/model/current/zip")) {
-                        ByteOutputStream st = new ByteOutputStream();
+                        ByteArrayOutputStream st = new ByteArrayOutputStream();
                         KevoreeXmiHelper.saveCompressedStream(st, handler.getLastModel());
-                        ByteInputStream resultStream = new ByteInputStream();
-                        resultStream.setBuf(st.getBytes());
+                        ByteArrayInputStream resultStream = new ByteArrayInputStream(st.toByteArray());
                         return new NanoHTTPD.Response(HTTP_OK, MIME_HTML, resultStream);
                     }
                 }
