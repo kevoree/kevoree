@@ -62,7 +62,7 @@ case class AddInstance(c: Instance, nodeName: String,modelservice : KevoreeModel
         newInstance.asInstanceOf[KevoreeChannelFragmentActivator].channelActor.asInstanceOf[AbstractChannelFragment].setBootStrapperService(bs)
       }
       if(newInstance.isInstanceOf[KevoreeComponentActivator]){
-        newInstance.asInstanceOf[KevoreeComponentActivator].componentActor.asInstanceOf[AbstractComponentType].setBootStrapperService(bs)
+        newInstance.asInstanceOf[KevoreeComponentActivator].componentActor.getKevoreeComponentType.asInstanceOf[AbstractComponentType].setBootStrapperService(bs)
       }
       true
     } catch {
