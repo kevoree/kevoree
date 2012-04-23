@@ -73,4 +73,8 @@ abstract class KevoreeChannelFragmentActivator extends KevoreeInstanceActivator 
     channelActor.stop
     channelActor = null
   }
+
+  def getKInstance : KInstance = channelActor
+
+
 }

@@ -19,8 +19,9 @@ package org.kevoree.framework
  */
 
 import org.kevoree.framework.message.Message
-import scala.actors.Actor
-import scala.reflect.BeanProperty
+import scala.beans.BeanProperty
+import java.util.HashMap
+import org.kevoree.ContainerRoot
 
 class KevoreeChannelFragmentProxy(remoteNodeName : String,remoteChannelName : String) extends KevoreeChannelFragment {
 
@@ -42,4 +43,9 @@ class KevoreeChannelFragmentProxy(remoteNodeName : String,remoteChannelName : St
   @BeanProperty
   var channelSender : ChannelFragmentSender = null
 
+  def kInstanceStart(tmodel: ContainerRoot) = false
+
+  def kInstanceStop(tmodel: ContainerRoot) = false
+
+  def kUpdateDictionary(d: HashMap[String, AnyRef], cmodel: ContainerRoot) = null
 }

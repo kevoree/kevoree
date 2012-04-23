@@ -18,7 +18,7 @@ package org.kevoree.framework
  * and open the template in the editor.
  */
 
-trait KevoreeChannelFragment extends KevoreeActor {
+trait KevoreeChannelFragment extends KevoreeActor with KInstance {
   def getName : String
   def getNodeName : String
 

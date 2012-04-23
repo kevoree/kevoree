@@ -26,7 +26,7 @@ trait KInstance {
 
   def kInstanceStart(tmodel : ContainerRoot) : Boolean
 
-  def kInstanceSop(tmodel : ContainerRoot) : Boolean
+  def kInstanceStop(tmodel : ContainerRoot) : Boolean
 
   def kUpdateDictionary(d : java.util.HashMap[String,AnyRef], cmodel: ContainerRoot) : java.util.HashMap[String,AnyRef]
 
