@@ -60,7 +60,14 @@ abstract class KevoreeComponentActivator extends KevoreeInstanceActivator {
 
 
     /* Start actor */
-    componentActor.start()
+
+
+    //componentActor.start()
+
+
+
+
+
     /* Expose component in OSGI */
 
     /*
@@ -108,7 +115,7 @@ abstract class KevoreeComponentActivator extends KevoreeInstanceActivator {
     }
 
     if (componentActor.isStarted) {
-      componentActor !? StopMessage(null)
+      componentActor.kInstanceStop(null)// !? StopMessage(null)
       println("Stopping => " + componentName)
     }
 
@@ -128,7 +135,7 @@ abstract class KevoreeComponentActivator extends KevoreeInstanceActivator {
     componentActor.getKevoreeComponentType.getHostedPorts.foreach {
       hp => hp._2.asInstanceOf[KevoreePort].stop
     }
-    componentActor.stop
+    //componentActor.stop
     componentActor = null
 /*
     services.foreach {

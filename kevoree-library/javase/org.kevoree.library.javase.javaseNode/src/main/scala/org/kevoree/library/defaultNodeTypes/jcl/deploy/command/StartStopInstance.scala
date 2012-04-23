@@ -27,6 +27,7 @@ case class StartStopInstance(c: Instance, nodeName: String,start : Boolean) exte
 
   def execute(): Boolean = {
 
+
     KevoreeDeployManager.bundleMapping.find(map => map.objClassName == c.getClass.getName && map.name == c.getName) match {
       case None => false
       case Some(mapfound) => {
@@ -39,8 +40,16 @@ case class StartStopInstance(c: Instance, nodeName: String,start : Boolean) exte
 
         mapfound.asInstanceOf[KevoreeMapping].ref match {
           case c_act: KevoreeComponentActivator => {
-            val startResult = (c_act.componentActor !? msg).asInstanceOf[Boolean]
-            startResult
+            //val startResult = (c_act.componentActor !? msg).asInstanceOf[Boolean]
+            //startResult
+
+            Thread.currentThread().setContextClassLoader(c_act.componentActor.getClass.getClassLoader)
+            if(start){
+              c_act.componentActor.kInstanceStart(c.getTypeDefinition.eContainer.asInstanceOf[ContainerRoot])
+            } else {
+              c_act.componentActor.kInstanceStop(c.getTypeDefinition.eContainer.asInstanceOf[ContainerRoot])
+            }
+
           }
           case c_act: KevoreeChannelFragmentActivator => {
             val startResult = (c_act.channelActor !? msg).asInstanceOf[Boolean]

@@ -33,7 +33,7 @@ case class RemoveBindingCommand(c : MBinding,nodeName:String) extends PrimitiveC
 
   def execute() : Boolean= {
 
-    logger.info("Try to remove binding , component=>"+ c.getPort.eContainer.asInstanceOf[ComponentInstance].getName +"portname =>"+c.getPort.getPortTypeRef.getName+", channel="+c.getHub.getName)
+    logger.debug("Try to remove binding , component=>"+ c.getPort.eContainer.asInstanceOf[ComponentInstance].getName +"portname =>"+c.getPort.getPortTypeRef.getName+", channel="+c.getHub.getName)
 
     val KevoreeChannelFound = KevoreeDeployManager.bundleMapping.find(map => map.objClassName == c.getHub.getClass.getName && map.name == c.getHub.getName) match {
           case None => logger.error("Channel Fragment Mapping not found"); None
