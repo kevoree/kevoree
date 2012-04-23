@@ -30,11 +30,11 @@ package org.kevoree.tools.marShell.interpreter.sub
 import org.kevoree.tools.marShell.interpreter.{KevsInterpreterContext, KevsAbstractInterpreter}
 import org.slf4j.LoggerFactory
 import org.kevoree.tools.marShell.ast.IncludeStatement
-import org.kevoree.tools.marShell.parser.KevsParser
 import java.io.File
 import io.Source
 import org.kevoree.tools.marShell.interpreter
 import interpreter.KevsInterpreterAspects._
+import org.kevoree.tools.marShell.parser.{ParserUtil, KevsParser}
 
 
 /**
@@ -55,7 +55,7 @@ case class KevsIncludeInterpreter(includeStatement: IncludeStatement) extends Ke
 
     try {
       val inputFile = new File(includeStatement.url)
-      var includeScript = Source.fromFile(inputFile).getLines().mkString("\n")
+      var includeScript =  ParserUtil.loadFile(inputFile.getAbsolutePath)
       import scala.collection.JavaConversions._
       context.getVarMap.foreach {
         varR =>
@@ -63,8 +63,7 @@ case class KevsIncludeInterpreter(includeStatement: IncludeStatement) extends Ke
       }
       var resolvScriptString = "tblock {\n"+includeScript+"\n}"
 
-      println(resolvScriptString)
-
+      println("-----"+resolvScriptString+"---------")
       parser.parseScript(resolvScriptString.trim).get.interpret(context)
     } catch {
       case _@e => {
