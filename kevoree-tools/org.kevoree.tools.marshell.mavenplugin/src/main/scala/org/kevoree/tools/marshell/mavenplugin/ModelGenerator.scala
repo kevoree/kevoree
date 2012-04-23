@@ -16,6 +16,7 @@ package org.kevoree.tools.marshell.mavenplugin
 import java.io.{BufferedReader, FileReader, File}
 import org.kevoree.tools.marShell.KevScriptOfflineEngine
 import org.kevoree.{ContainerRoot, KevoreeFactory}
+import org.apache.maven.project.MavenProject
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -28,9 +29,10 @@ import org.kevoree.{ContainerRoot, KevoreeFactory}
 
 object ModelGenerator extends App {
 
-  def generate (scriptPath: String) : ContainerRoot = {
+  def generate (scriptPath: String,mavenSource:MavenProject) : ContainerRoot = {
     val kevEngine = new KevScriptOfflineEngine(KevoreeFactory.createContainerRoot)
     kevEngine.addVariable("kevoree.version", KevoreeFactory.getVersion)
+    kevEngine.addVariable("basedir",mavenSource.getBasedir.getAbsolutePath)
     kevEngine.append(loadScript(new File(scriptPath)))
     kevEngine.interpret()
   }
