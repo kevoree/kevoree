@@ -39,6 +39,7 @@ object KevsInterpreterAspects {
         case tb: TransactionalBloc => KevsAddTBlockInterpreter(tb)
       }
       case st: Statment => st match {
+        case includeSt: IncludeStatement => KevsIncludeInterpreter(includeSt)
 
         case mergeSt: MergeStatement => KevsMergerInterpreter(mergeSt)
 

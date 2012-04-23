@@ -54,9 +54,6 @@ object KevScriptHelper extends App {
       kevEngine.addVariable(propName.toString,propVal.toString)
     }
     kevEngine.addVariable("basedir",mavenSource.getBasedir.getAbsolutePath)
-
-
-
     kevEngine.append(loadScript(scriptFile))
     kevEngine.interpret()
   }

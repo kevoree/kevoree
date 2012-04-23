@@ -16,8 +16,13 @@ package org.kevoree.platform.mavenrunner;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.project.MavenProject;
+import org.kevoree.ContainerRoot;
 import org.kevoree.framework.KevoreeXmiHelper$;
+import org.kevoree.platform.standalone.KevoreeBootStrap;
 import org.kevoree.tools.modelsync.ModelSyncBean;
+import org.sonatype.aether.RepositorySystem;
+import org.sonatype.aether.RepositorySystemSession;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -59,16 +64,56 @@ public class KevDeployMavenMojo extends AbstractMojo {
      */
     private String viaGroup;
 
+    /**
+     * The maven project.
+     *
+     * @parameter expression="${project}"
+     * @required
+     * @readonly
+     */
+    private MavenProject project;
+
 
     private ModelSyncBean bean = new ModelSyncBean();
+
+
+    /**
+     * The current repository/network configuration of Maven.
+     *
+     * @parameter default-value="${repositorySystemSession}"
+     * @readonly
+     */
+    private RepositorySystemSession repoSession;
+
+    /**
+     * The entry point to Aether, i.e. the component doing all the work.
+     *
+     * @component
+     */
+    private RepositorySystem repoSystem;
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         try {
-            FileInputStream ins = new FileInputStream(model);
-            bean.pushTo(org.kevoree.framework.KevoreeXmiHelper.loadStream(ins), targetNode, viaGroup);
+            KevoreeBootStrap.byPassAetherBootstrap =true;
+            org.kevoree.tools.aether.framework.AetherUtil.setRepositorySystemSession(repoSession);
+            org.kevoree.tools.aether.framework.AetherUtil.setRepositorySystem(repoSystem);
+            ContainerRoot modelLoad = null;
+            if(model.getName().endsWith(".kev")){
+                FileInputStream ins = new FileInputStream(model);
+                modelLoad = org.kevoree.framework.KevoreeXmiHelper.loadStream(ins);
+                ins.close();
+            } else {
+                if(model.getName().endsWith(".kevs")){
+                    modelLoad = KevScriptHelper.generate(model,project);
+                } else {
+                    throw new Exception("Bad input file, must be .kev or .kevs");
+                }
+            }
+
+            bean.pushTo(modelLoad, targetNode, viaGroup);
         } catch (Exception e) {
-            getLog().error("Error while loading model");
+            getLog().error("Error while loading model ",e);
         }
     }
 

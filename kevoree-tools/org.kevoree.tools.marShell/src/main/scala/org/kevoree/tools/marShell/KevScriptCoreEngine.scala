@@ -40,7 +40,7 @@ class KevScriptCoreEngine(core: KevoreeModelHandlerService) extends KevScriptAbs
     parser.parseScript(resolvedScript) match {
       case Some(s) => {
         val inputModel = core.getLastModel
-        if (s.interpret(KevsInterpreterContext(inputModel))) {
+        if (s.interpret(KevsInterpreterContext(inputModel).setVarMap(varMap))) {
           return inputModel;
         }
         throw new KevScriptEngineException {

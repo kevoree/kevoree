@@ -38,7 +38,7 @@ class KevScriptOfflineEngine(srcModel: ContainerRoot) extends KevScriptAbstractE
     parser.parseScript(resolvedScript) match {
       case Some(s) => {
         val inputModel = modelCloner.clone(srcModel)
-        if (s.interpret(KevsInterpreterContext(inputModel))) {
+        if (s.interpret(KevsInterpreterContext(inputModel).setVarMap(varMap))) {
           return inputModel;
         }
         throw new KevScriptEngineException {
