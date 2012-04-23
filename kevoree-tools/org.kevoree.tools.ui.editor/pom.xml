@@ -28,7 +28,6 @@
             <artifactId>org.kevoree.extra.kserial</artifactId>
             <version>1.1</version>
         </dependency>
-
         <dependency>
             <groupId>org.kevoree</groupId>
             <artifactId>org.kevoree.model</artifactId>
@@ -99,6 +98,11 @@
         <dependency>
             <groupId>org.kevoree.tools</groupId>
             <artifactId>org.kevoree.tools.model2code</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.kevoree.tools</groupId>
+            <artifactId>org.kevoree.tools.modelsync</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
         <dependency>

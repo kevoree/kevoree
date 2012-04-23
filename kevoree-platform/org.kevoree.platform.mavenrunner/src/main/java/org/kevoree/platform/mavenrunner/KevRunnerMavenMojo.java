@@ -69,13 +69,11 @@ public class KevRunnerMavenMojo extends AbstractMojo {
 
     public void execute() throws MojoExecutionException {
 
-
         try {
             KevoreeBootStrap.byPassAetherBootstrap =true;
             org.kevoree.tools.aether.framework.AetherUtil.setRepositorySystemSession(repoSession);
             org.kevoree.tools.aether.framework.AetherUtil.setRepositorySystem(repoSystem);
             ContainerRoot model = KevScriptHelper.generate(kevsFile,project);
-
 
             File tFile = new File(project.getBuild().getOutputDirectory(), "runner.kev");
             org.kevoree.framework.KevoreeXmiHelper.save(tFile.getAbsolutePath(), model);
@@ -85,9 +83,7 @@ public class KevRunnerMavenMojo extends AbstractMojo {
 
             App.main(new String[0]);
 
-
             Thread.currentThread().join();
-
 
         } catch (Exception e) {
             getLog().error(e);
