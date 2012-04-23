@@ -145,4 +145,7 @@ abstract class KevoreeComponentActivator extends KevoreeInstanceActivator {
 
   }
 
+  def getKInstance : KInstance = componentActor
+
+
 }

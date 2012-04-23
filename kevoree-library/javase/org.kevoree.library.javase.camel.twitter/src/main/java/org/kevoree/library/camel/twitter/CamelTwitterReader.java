@@ -1,4 +1,4 @@
-package org.kevoree.library.camel.atom;
+package org.kevoree.library.camel.twitter;
 
 import org.apache.abdera.model.Entry;
 import org.apache.camel.Exchange;
@@ -21,18 +21,18 @@ import org.kevoree.library.camel.framework.AbstractKevoreeCamelComponentType;
 @Requires({
         @RequiredPort(name = "feeds", type = PortType.MESSAGE, needCheckDependency = true, optional = true)
 })
-public class CamelAtomReader extends AbstractKevoreeCamelComponentType {
+public class CamelTwitterReader extends AbstractKevoreeCamelComponentType {
 
     protected void buildRoutes(RouteBuilder rb) {
-        rb.from("atom://" + getDictionary().get("url") + "?consumer.delay=" + getDictionary().get("period"))
-                .process(new Processor() {
+        rb.from("twitter://timeline/home?type=polling&delay=5" + getDictionary().get("url") + "?consumer.delay=" + getDictionary().get("period"))
+                /*.process(new Processor() {
                     @Override
                     public void process(Exchange exchange) throws Exception {
                         Entry entry = exchange.getIn().getBody(Entry.class);
                         String msg = entry.getUpdated()+":"+entry.getAuthor().getName()+"@"+entry.getTitle();
                         exchange.getOut().setBody(msg);
                     }
-                })
+                }) */
         .to("kport:feeds");
     }
 

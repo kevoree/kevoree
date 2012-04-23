@@ -16,7 +16,7 @@ package org.kevoree.framework.osgi
 
 import java.util.Hashtable
 import org.kevoree.framework.message.StopMessage
-import org.kevoree.framework.{ModelHandlerServiceProxy, KevoreeGroup, Constants}
+import org.kevoree.framework.{KInstance, ModelHandlerServiceProxy, KevoreeGroup, Constants}
 
 abstract class KevoreeGroupActivator extends KevoreeInstanceActivator {
 
@@ -43,7 +43,7 @@ abstract class KevoreeGroupActivator extends KevoreeInstanceActivator {
 
 
     /* Start actor */
-    groupActor.start
+    //groupActor.start
     /* Expose component in OSGI */
     val props = new Hashtable[String, String]()
     props.put(Constants.KEVOREE_NODE_NAME, nodeName)
@@ -73,7 +73,7 @@ abstract class KevoreeGroupActivator extends KevoreeInstanceActivator {
     }
 
     if (groupActor.asInstanceOf[KevoreeGroup].getIsStarted) {
-      groupActor !? StopMessage(null)
+      groupActor.kInstanceStop(null)
       println("Stopping => " + instanceName)
     }
 
@@ -83,7 +83,7 @@ abstract class KevoreeGroupActivator extends KevoreeInstanceActivator {
     }
 
 
-    groupActor.stop
+    //groupActor.stop
     groupActor = null
 /*
     if(mainService != null){
@@ -92,4 +92,7 @@ abstract class KevoreeGroupActivator extends KevoreeInstanceActivator {
 
 
   }
+
+  def getKInstance : KInstance = groupActor
+
 }

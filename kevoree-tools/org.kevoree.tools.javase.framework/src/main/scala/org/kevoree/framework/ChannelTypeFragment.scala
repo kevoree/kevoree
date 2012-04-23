@@ -1,3 +1,16 @@
+/**
+ * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * 	http://www.gnu.org/licenses/lgpl-3.0.txt
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.kevoree.framework
 
 /**
@@ -5,7 +18,7 @@ package org.kevoree.framework
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * 	http://www.gnu.org/licenses/lgpl-3.0.txt
+ * http://www.gnu.org/licenses/lgpl-3.0.txt
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -22,6 +35,7 @@ import java.util.HashMap
 import org.kevoree.framework.message._
 import org.slf4j.LoggerFactory
 import actors.Actor
+import org.kevoree.ContainerRoot
 
 trait ChannelTypeFragment extends KevoreeChannelFragment with ChannelFragment {
 
@@ -118,8 +132,72 @@ trait ChannelTypeFragment extends KevoreeChannelFragment with ChannelFragment {
 
   private var ct_started: Boolean = false
 
-  override def internal_process(msgg: Any) = msgg match {
+  def kInstanceStart(tmodel: ContainerRoot): Boolean = {
+    if (!ct_started) {
+      try {
+        getModelService.asInstanceOf[ModelHandlerServiceProxy].setTempModel(tmodel)
+        startChannelFragment
+        getModelService.asInstanceOf[ModelHandlerServiceProxy].unsetTempModel()
+        local_queue.start()
+        ct_started = true
+        true
+      } catch {
+        case _@e => {
+          kevoree_internal_logger.error("Kevoree Channel Instance Start Error !", e)
+          false
+        }
+      }
+    } else {
+      false
+    }
+  }
 
+  def kInstanceStop(tmodel: ContainerRoot): Boolean = {
+    if (ct_started) {
+      try {
+        //TODO CHECK QUEUE SIZE AND SAVE STATE
+        local_queue.forceStop
+        getModelService.asInstanceOf[ModelHandlerServiceProxy].setTempModel(tmodel)
+        stopChannelFragment
+        getModelService.asInstanceOf[ModelHandlerServiceProxy].unsetTempModel()
+        ct_started = false
+        true
+      } catch {
+        case _@e => {
+          kevoree_internal_logger.error("Kevoree Channel Instance Stop Error !", e)
+          false
+        }
+      }
+    } else {
+      false
+    }
+  }
+
+  def kUpdateDictionary(d: java.util.HashMap[String, AnyRef], cmodel: ContainerRoot): java.util.HashMap[String, AnyRef] = {
+    try {
+      import scala.collection.JavaConversions._
+      val previousDictionary = dictionary.clone()
+      d.keySet.foreach {
+        v =>
+          dictionary.put(v, d.get(v))
+      }
+      if (ct_started) {
+        getModelService.asInstanceOf[ModelHandlerServiceProxy].setTempModel(cmodel)
+        updateChannelFragment
+        getModelService.asInstanceOf[ModelHandlerServiceProxy].unsetTempModel()
+      }
+      previousDictionary.asInstanceOf[java.util.HashMap[String, AnyRef]]
+    } catch {
+      case _@e => {
+        kevoree_internal_logger.error("Kevoree Channel Instance Update Error !", e)
+        null
+      }
+    }
+  }
+
+
+  override def internal_process(msgg: Any) = msgg match {
+         /*
     case UpdateDictionaryMessage(d, cmodel) => {
       try {
         import scala.collection.JavaConversions._
@@ -140,24 +218,24 @@ trait ChannelTypeFragment extends KevoreeChannelFragment with ChannelFragment {
           reply(false)
         }
       }
-    }
-    case StartMessage(cmodel) if (!ct_started) => {
-      try {
-
-        getModelService.asInstanceOf[ModelHandlerServiceProxy].setTempModel(cmodel)
-        startChannelFragment
-        getModelService.asInstanceOf[ModelHandlerServiceProxy].unsetTempModel()
-
-        local_queue.start()
-        ct_started = true
-        reply(true)
-      } catch {
-        case _@e => {
-          kevoree_internal_logger.error("Kevoree Channel Instance Start Error !", e)
-          reply(false)
-        }
-      }
-    }
+    }  */
+    /*
+   case StartMessage(cmodel) if (!ct_started) => {
+     try {
+       getModelService.asInstanceOf[ModelHandlerServiceProxy].setTempModel(cmodel)
+       startChannelFragment
+       getModelService.asInstanceOf[ModelHandlerServiceProxy].unsetTempModel()
+       local_queue.start()
+       ct_started = true
+       reply(true)
+     } catch {
+       case _@e => {
+         kevoree_internal_logger.error("Kevoree Channel Instance Start Error !", e)
+         reply(false)
+       }
+     }
+   } */
+      /*
     case StopMessage(cmodel) if (ct_started) => {
       try {
         //TODO CHECK QUEUE SIZE AND SAVE STATE
@@ -181,7 +259,7 @@ trait ChannelTypeFragment extends KevoreeChannelFragment with ChannelFragment {
     }
     case StartMessage(_) if (ct_started) => {
       reply(false)
-    }
+    }*/
 
     case msg: FragmentBindMessage => {
 

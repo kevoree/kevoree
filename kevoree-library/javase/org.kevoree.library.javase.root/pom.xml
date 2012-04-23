@@ -93,6 +93,8 @@
         <module>../org.kevoree.library.javase.airReceiver.server</module>
         <module>../org.kevoree.library.javase.camel</module>
         <module>../org.kevoree.library.javase.camel.atom</module>
+        <module>../org.kevoree.library.javase.camel.twitter</module>
+
 
         <module>../org.kevoree.library.javase.authentication</module>
         <module>../org.kevoree.library.javase.system</module>

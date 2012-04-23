@@ -2,6 +2,7 @@ package org.kevoree.framework.osgi
 
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService
 import org.kevoree.api.service.core.script.KevScriptEngineFactory
+import org.kevoree.framework.KInstance
 
 /**
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
@@ -45,5 +46,8 @@ trait KevoreeInstanceActivator {
 
   def start()
   def stop()
+
+
+  def getKInstance : KInstance
 
 }
