@@ -126,7 +126,7 @@ public class MarShellMavenMojo extends AbstractMojo {
                     mergedModel = mergerComponent.merge(mergedModel, model);
                 } else {
 //				try {
-                    ContainerRoot model = ModelGenerator.generate(f.getAbsolutePath());
+                    ContainerRoot model = ModelGenerator.generate(f.getAbsolutePath(),project);
                     mergedModel = mergerComponent.merge(mergedModel, model);
                     /*} catch (Exception e) {
                          getLog().error("Unable to parse the source file", e);
