@@ -41,7 +41,11 @@
                 </exclusion>
             </exclusions>
         </dependency>
-
+        <dependency>
+            <groupId>org.kevoree.tools</groupId>
+            <artifactId>org.kevoree.tools.modelsync</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
 
     </dependencies>
 
