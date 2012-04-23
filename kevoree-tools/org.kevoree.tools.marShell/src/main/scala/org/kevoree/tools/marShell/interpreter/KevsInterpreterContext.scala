@@ -19,7 +19,14 @@
 package org.kevoree.tools.marShell.interpreter
 
 import org.kevoree.ContainerRoot
+import java.util.HashMap
 
 case class KevsInterpreterContext(model : ContainerRoot) {
+
+  protected var varMap = new HashMap[String, String]()
+
+  def setVarMap( v : HashMap[String, String]) : KevsInterpreterContext = { varMap = v ; this }
+
+  def getVarMap = varMap
 
 }

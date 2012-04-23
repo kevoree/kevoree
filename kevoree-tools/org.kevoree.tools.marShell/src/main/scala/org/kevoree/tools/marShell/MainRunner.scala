@@ -33,8 +33,6 @@ object MainRunner {
 
     val newModel = KevoreeXmiHelper.load("/Users/duke/Documents/dev/dukeboard/kevoree/kevoree-tools/org.kevoree.tools.marShell/src/test/resources/baseModel/defaultLibrary.kev")
 
-
-
     val parser =new KevsParser();
     val oscript = parser.parseScript(ParserUtil.loadFile("/Users/duke/Documents/dev/dukeboard/kevoree/kevoree-tools/org.kevoree.tools.marShell/src/test/resources/scripts/t1.kevs"));
 
