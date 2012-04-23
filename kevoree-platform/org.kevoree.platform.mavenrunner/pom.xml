@@ -45,6 +45,12 @@
             <groupId>org.kevoree.tools</groupId>
             <artifactId>org.kevoree.tools.modelsync</artifactId>
             <version>${kevoree.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.kevoree.tools</groupId>
+                    <artifactId>org.kevoree.tools.aether.framework</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
     </dependencies>

@@ -209,7 +209,7 @@ class NodeTypeBootstrapHelper extends Bootstraper with KCLBootstrap {
           None
         }
       }
-      case None => logger.error("Node not found using name " + destGroupName); None
+      case None => logger.error("Group not found using name " + destGroupName); None
     }
   }
 
