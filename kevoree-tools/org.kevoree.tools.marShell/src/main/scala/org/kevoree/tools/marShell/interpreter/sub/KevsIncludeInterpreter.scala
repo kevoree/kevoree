@@ -61,10 +61,11 @@ case class KevsIncludeInterpreter(includeStatement: IncludeStatement) extends Ke
         varR =>
           includeScript = includeScript.replace("{" + varR._1 + "}", varR._2)
       }
-      var resolvScriptString = "tblock {\n"+includeScript+"\n}"
+      includeScript = includeScript.replace("'", "\"")
+      includeScript = "tblock{\n" + includeScript + "\n}"
 
-      println("-----"+resolvScriptString+"---------")
-      parser.parseScript(resolvScriptString.trim).get.interpret(context)
+     // println("-----"+includeScript+"---------")
+      parser.parseScript(includeScript.trim).get.interpret(context)
     } catch {
       case _@e => {
         logger.error("Error interpret include statement : " + includeStatement.getTextualForm + "\n" + parser.lastNoSuccess)

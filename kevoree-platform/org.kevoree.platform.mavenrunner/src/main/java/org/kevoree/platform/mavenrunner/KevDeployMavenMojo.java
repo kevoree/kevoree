@@ -13,20 +13,20 @@
  */
 package org.kevoree.platform.mavenrunner;
 
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
 import org.kevoree.ContainerRoot;
-import org.kevoree.framework.KevoreeXmiHelper$;
 import org.kevoree.platform.standalone.KevoreeBootStrap;
 import org.kevoree.tools.modelsync.ModelSyncBean;
+import org.slf4j.LoggerFactory;
 import org.sonatype.aether.RepositorySystem;
 import org.sonatype.aether.RepositorySystemSession;
-
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 
 /**
  * Created with IntelliJ IDEA.
@@ -50,17 +50,17 @@ import java.io.FileNotFoundException;
 public class KevDeployMavenMojo extends AbstractMojo {
 
     /**
-     * @parameter
+     * @parameter default-value="${project.basedir}/src/main/kevs/main.kevs"
      */
     private File model;
 
     /**
-     * @parameter
+     * @parameter default-value="node0"
      */
     private String targetNode;
 
     /**
-     * @parameter
+     * @parameter default-value="sync"
      */
     private String viaGroup;
 
@@ -95,6 +95,8 @@ public class KevDeployMavenMojo extends AbstractMojo {
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         try {
+            //Logger root = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
+            //root.setLevel(Level.ALL);
             KevoreeBootStrap.byPassAetherBootstrap =true;
             org.kevoree.tools.aether.framework.AetherUtil.setRepositorySystemSession(repoSession);
             org.kevoree.tools.aether.framework.AetherUtil.setRepositorySystem(repoSystem);
@@ -110,8 +112,8 @@ public class KevDeployMavenMojo extends AbstractMojo {
                     throw new Exception("Bad input file, must be .kev or .kevs");
                 }
             }
-
             bean.pushTo(modelLoad, targetNode, viaGroup);
+            getLog().info("Model pushed on "+targetNode+" via "+viaGroup);
         } catch (Exception e) {
             getLog().error("Error while loading model ",e);
         }
