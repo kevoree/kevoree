@@ -172,6 +172,9 @@
       <!--  <module>../org.kevoree.tools.jar.wrapperplugin</module>-->
         <module>../org.kevoree.tools.ui.editor.standalone</module>
         <module>../org.kevoree.tools.marshell.mavenplugin</module>
+
+        <module>../org.kevoree.tools.annotation.scalaprocessor</module>
+
     </modules>
 
     <properties>
