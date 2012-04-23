@@ -46,35 +46,19 @@ public abstract class AbstractKevoreeCamelComponentType extends AbstractComponen
 
     @Start
     public void start() throws Exception {
-        final Exception[] initError = {null};
-        final AbstractKevoreeCamelComponentType selfPointer = this;
-        Thread tempThread = new Thread() {
-            @Override
-            public void run() {
-                try {
-                    setContextClassLoader(selfPointer.getClass().getClassLoader());
-                    context = buildCamelContext();
-                    context.setClassResolver(new ClassLoaderClassResolver(selfPointer.getClass().getClassLoader()));
-                    cc = new KevoreePortComponent(selfPointer);
-                    context.addComponent("kport", cc);
-                    RouteBuilder rb = new RouteBuilder() {
-                        public void configure() {
-                            buildRoutes(this);
-                        }
-                    };
-                    context.addRoutes(rb);
-                    context.start();
-                } catch (Exception e) {
-                    initError[0] = e;
-                }
 
+        final AbstractKevoreeCamelComponentType selfPointer = this;
+        context = buildCamelContext();
+        context.setClassResolver(new ClassLoaderClassResolver(selfPointer.getClass().getClassLoader()));
+        cc = new KevoreePortComponent(selfPointer);
+        context.addComponent("kport", cc);
+        RouteBuilder rb = new RouteBuilder() {
+            public void configure() {
+                buildRoutes(this);
             }
         };
-        tempThread.start();
-        tempThread.join();
-        if (initError[0] != null) {
-            throw initError[0];
-        }
+        context.addRoutes(rb);
+        context.start();
     }
 
     @Stop
