@@ -59,4 +59,14 @@
         </repository>
     </repositories>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.kevoree.platform</groupId>
+                <artifactId>org.kevoree.platform.mavenrunner</artifactId>
+                <version>${kevoree.version}</version>
+            </plugin>
+        </plugins>
+    </build>
+
 </project>

@@ -1,0 +1,16 @@
+merge "mvn:org.kevoree.library.frascati/org.kevoree.library.frascati.frascatiNode/{kevoree.version}"
+merge "mvn:org.kevoree.library.frascati/org.kevoree.library.frascati.components/{kevoree.version}"
+merge "mvn:org.kevoree.library.javase/org.kevoree.library.javase.javaseNode/{kevoree.version}"
+merge "mvn:org.kevoree.library.javase/org.kevoree.library.javase.fakeDomo/{kevoree.version}"
+merge "mvn:org.kevoree.library.javase/org.kevoree.library.javase.defaultChannels/{kevoree.version}"
+
+addNode node0 : FrascatiNode
+addComponent helloworld1@node0 : helloworld-pojo
+addComponent run1@node0 : RunnableWrapper
+addComponent fk1@node0 : FakeSimpleSwitch
+addChannel rs1 : defSERVICE
+bind helloworld1.r@node0 => rs1
+bind run1.run@node0 => rs1
+addChannel msg1 : defMSG
+bind fk1.on@node0 => msg1
+bind run1.trig@node0 => msg1

@@ -39,12 +39,12 @@ class MergeDefaultLibrary(lib : Int) extends Command {
   def execute(p: Object) {
     try {
       val file : File = lib match {
-        case ALL =>AetherUtil.resolveMavenArtifact("org.kevoree.library.model.all","org.kevoree.library.model",KevoreeFactory.getVersion,List("http://maven.kevoree.org/release","http://maven.kevoree.org/snapshots"))
-        case JAVASE =>AetherUtil.resolveMavenArtifact("org.kevoree.library.model.javase","org.kevoree.library.model",KevoreeFactory.getVersion,List("http://maven.kevoree.org/release","http://maven.kevoree.org/snapshots"))
-        case WEBSERVER =>AetherUtil.resolveMavenArtifact("org.kevoree.library.model.javase.webserver","org.kevoree.library.model",KevoreeFactory.getVersion,List("http://maven.kevoree.org/release","http://maven.kevoree.org/snapshots"))
-        case ARDUINO =>AetherUtil.resolveMavenArtifact("org.kevoree.library.model.arduino","org.kevoree.library.model",KevoreeFactory.getVersion,List("http://maven.kevoree.org/release","http://maven.kevoree.org/snapshots"))
-        case SKY =>AetherUtil.resolveMavenArtifact("org.kevoree.library.model.sky","org.kevoree.library.model",KevoreeFactory.getVersion,List("http://maven.kevoree.org/release","http://maven.kevoree.org/snapshots"))
-        case ANDROID =>AetherUtil.resolveMavenArtifact("org.kevoree.library.model.android","org.kevoree.library.model",KevoreeFactory.getVersion,List("http://maven.kevoree.org/release","http://maven.kevoree.org/snapshots"))
+        case ALL =>AetherUtil.resolveMavenArtifact("org.kevoree.library.model.all","org.kevoree.corelibrary.model",KevoreeFactory.getVersion,List("http://maven.kevoree.org/release","http://maven.kevoree.org/snapshots"))
+        case JAVASE =>AetherUtil.resolveMavenArtifact("org.kevoree.library.model.javase","org.kevoree.corelibrary.model",KevoreeFactory.getVersion,List("http://maven.kevoree.org/release","http://maven.kevoree.org/snapshots"))
+        case WEBSERVER =>AetherUtil.resolveMavenArtifact("org.kevoree.library.model.javase.webserver","org.kevoree.corelibrary.model",KevoreeFactory.getVersion,List("http://maven.kevoree.org/release","http://maven.kevoree.org/snapshots"))
+        case ARDUINO =>AetherUtil.resolveMavenArtifact("org.kevoree.library.model.arduino","org.kevoree.corelibrary.model",KevoreeFactory.getVersion,List("http://maven.kevoree.org/release","http://maven.kevoree.org/snapshots"))
+        case SKY =>AetherUtil.resolveMavenArtifact("org.kevoree.library.model.sky","org.kevoree.corelibrary.model",KevoreeFactory.getVersion,List("http://maven.kevoree.org/release","http://maven.kevoree.org/snapshots"))
+        case ANDROID =>AetherUtil.resolveMavenArtifact("org.kevoree.library.model.android","org.kevoree.corelibrary.model",KevoreeFactory.getVersion,List("http://maven.kevoree.org/release","http://maven.kevoree.org/snapshots"))
       }
 //       val file = AetherUtil.resolveMavenArtifact("org.kevoree.library.model.all","org.kevoree.library.model",KevoreeFactory.getVersion,List("http://maven.kevoree.org/release","http://maven.kevoree.org/snapshots"))
        val jar = new JarFile(file)
