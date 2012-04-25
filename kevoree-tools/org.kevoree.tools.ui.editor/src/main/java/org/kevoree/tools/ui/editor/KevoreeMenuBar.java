@@ -88,7 +88,7 @@ public class KevoreeMenuBar extends JMenuBar {
         model.add(mergeLib);
 
 
-        JMenu mergelibraries = new JMenu("Load Std Library");
+        JMenu mergelibraries = new JMenu("Load CoreLibrary");
 
         JMenuItem mergeDefLib0 = new JMenuItem("ALL");
         MergeDefaultLibrary cmdLDEFL0 = new MergeDefaultLibrary(0);
