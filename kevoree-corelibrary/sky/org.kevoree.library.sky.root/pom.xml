@@ -2,15 +2,15 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.kevoree.library.sky</groupId>
+    <groupId>org.kevoree.corelibrary.sky</groupId>
     <artifactId>org.kevoree.library.sky.root</artifactId>
     <packaging>pom</packaging>
-    <name>Kevoree :: Library :: Sky :: Root</name>
+    <name>Kevoree :: CoreLibrary :: Sky :: Root</name>
     <version>1.7.0-SNAPSHOT</version>
 
     <parent>
         <artifactId>org.kevoree.library</artifactId>
-        <groupId>org.kevoree.library</groupId>
+        <groupId>org.kevoree.corelibrary</groupId>
         <version>1.7.0-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
@@ -25,9 +25,6 @@
         <module>../org.kevoree.library.sky.minicloud</module>
         <module>../org.kevoree.library.sky.jails</module>
         <module>../org.kevoree.library.sky.provider</module>
-        <!--<module>../org.kevoree.library.sky.kloud</module>-->
-        <!--<module>../org.kevoree.library.sky.vagrant</module>-->
-        <!--<module>../org.kevoree.library.sky.jclouds</module>-->
     </modules>
 
 
@@ -89,13 +86,6 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
-            <!-- Felix BnD plugin : allow Bundle packaging : generate OSGi JAR  -->
-            <plugin>
-                <groupId>org.apache.felix</groupId>
-                <artifactId>maven-bundle-plugin</artifactId>
-                <version>2.3.5</version>
-                <extensions>true</extensions>
             </plugin>
             <!-- Java compiler plugin -->
             <plugin>
