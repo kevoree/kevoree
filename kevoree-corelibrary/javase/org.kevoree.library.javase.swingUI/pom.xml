@@ -2,15 +2,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.kevoree.library.javase</groupId>
     <artifactId>org.kevoree.library.javase.swingUI</artifactId>
-    <packaging>jar</packaging>
     <version>1.7.0-SNAPSHOT</version>
-    <name>Kevoree :: Library :: JavaSE :: SwingUI</name>
+    <name>Kevoree :: CoreLibrary :: JavaSE :: SwingUI</name>
 
     <parent>
         <artifactId>org.kevoree.library.javase.root</artifactId>
-        <groupId>org.kevoree.library.javase</groupId>
+        <groupId>org.kevoree.corelibrary.javase</groupId>
         <version>1.7.0-SNAPSHOT</version>
         <relativePath>../org.kevoree.library.javase.root/pom.xml</relativePath>
     </parent>
@@ -20,7 +18,6 @@
             <groupId>org.kevoree.extra</groupId>
             <artifactId>org.kevoree.extra.macwidgets</artifactId>
             <version>0.9.6</version>
-            <type>kjar</type>
         </dependency>
     </dependencies>
 

@@ -2,15 +2,14 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.kevoree.library.javase</groupId>
     <artifactId>org.kevoree.library.javase.fileSystem</artifactId>
     <packaging>bundle</packaging>
     <version>1.7.0-SNAPSHOT</version>
-    <name>Kevoree :: Library :: JavaSE :: FileSystem</name>
+    <name>Kevoree :: CoreLibrary :: JavaSE :: FileSystem</name>
 
     <parent>
         <artifactId>org.kevoree.library.javase.root</artifactId>
-        <groupId>org.kevoree.library.javase</groupId>
+        <groupId>org.kevoree.corelibrary.javase</groupId>
         <version>1.7.0-SNAPSHOT</version>
         <relativePath>../org.kevoree.library.javase.root/pom.xml</relativePath>
     </parent>

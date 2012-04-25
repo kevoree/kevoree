@@ -1,4 +1,4 @@
-package org.kevoree.library.javase.webserver.components;
+package org.kevoree.library.javase.webserver.sample;
 
 import org.kevoree.annotation.*;
 import org.kevoree.library.javase.webserver.AbstractPage;

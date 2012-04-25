@@ -4,14 +4,14 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>org.kevoree.library.javase.root</artifactId>
-        <groupId>org.kevoree.library.javase</groupId>
+        <groupId>org.kevoree.corelibrary.javase</groupId>
         <version>1.7.0-SNAPSHOT</version>
         <relativePath>../org.kevoree.library.javase.root/pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>org.kevoree.library.javase.webserver.tjws</artifactId>
-    <name>Kevoree :: Library :: JavaSE :: WebServer :: TJWS</name>
+    <name>Kevoree :: CoreLibrary :: JavaSE :: WebServer :: TJWS</name>
 
     <dependencies>
         <dependency>
@@ -20,7 +20,7 @@
             <version>2.5</version>
         </dependency>
         <dependency>
-            <groupId>org.kevoree.library.javase</groupId>
+            <groupId>org.kevoree.corelibrary.javase</groupId>
             <artifactId>org.kevoree.library.javase.webserver.api</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
