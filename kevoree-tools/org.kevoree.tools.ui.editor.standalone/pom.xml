@@ -168,7 +168,7 @@
                             </inclusion>
                             <inclusion>
                                 <groupId>org.kevoree.tools</groupId>
-                                <artifactId>org.kevoree.tools.aether.framework</artifactId>
+                                <artifactId>org.kevoree.tools.aether.framework.pack</artifactId>
                             </inclusion>
                             <inclusion>
                                 <groupId>org.kevoree.tools</groupId>
