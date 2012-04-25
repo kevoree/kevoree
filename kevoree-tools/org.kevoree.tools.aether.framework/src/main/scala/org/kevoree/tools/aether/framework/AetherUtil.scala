@@ -27,25 +27,15 @@
 
 package org.kevoree.tools.aether.framework
 
-import org.apache.maven.repository.internal.DefaultServiceLocator
-import org.sonatype.aether.spi.connector.RepositoryConnectorFactory
-import org.sonatype.aether.connector.file.FileRepositoryConnectorFactory
 import org.sonatype.aether.util.artifact.DefaultArtifact
-import org.apache.maven.repository.internal.MavenRepositorySystemSession
 import org.kevoree.{ContainerRoot, DeployUnit}
 import java.io.File
 import org.sonatype.aether.artifact.Artifact
 import org.kevoree.framework.KevoreePlatformHelper
-import org.sonatype.aether.connector.async.AsyncRepositoryConnectorFactory
-import org.sonatype.aether.spi.log.Logger
-import org.sonatype.aether.spi.localrepo.LocalRepositoryManagerFactory
-import org.sonatype.aether.impl.internal.EnhancedLocalRepositoryManagerFactory
 import util.matching.Regex
-import org.sonatype.aether.repository.{Authentication, RepositoryPolicy, RemoteRepository, LocalRepository}
+import org.sonatype.aether.repository.{Authentication, RemoteRepository}
 import scala.collection.JavaConversions._
 import org.slf4j.LoggerFactory
-import org.sonatype.aether.{ConfigurationProperties, RepositorySystem}
-import org.sonatype.aether.transfer.{TransferEvent, TransferListener}
 import org.sonatype.aether.resolution.{VersionRequest, ArtifactRequest}
 
 /**
@@ -54,19 +44,9 @@ import org.sonatype.aether.resolution.{VersionRequest, ArtifactRequest}
  * Time: 15:06
  */
 
-object AetherUtil extends TempFileCacheManager {
+object AetherUtil extends TempFileCacheManager with AetherRepositoryHandler {
 
   private val logger = LoggerFactory.getLogger(this.getClass)
-
-
-  def newRepositorySystem: RepositorySystem = {
-    val locator = new DefaultServiceLocator()
-    locator.setServices(classOf[Logger], new AetherLogger) // Doesn't work to JdkAsyncHttpProvider because this class uses its own logger and not the one provided by plexus and set with this line
-    locator.setService(classOf[LocalRepositoryManagerFactory], classOf[EnhancedLocalRepositoryManagerFactory])
-    locator.setService(classOf[RepositoryConnectorFactory], classOf[FileRepositoryConnectorFactory])
-    locator.setService(classOf[RepositoryConnectorFactory], classOf[AsyncRepositoryConnectorFactory])
-    locator.getService(classOf[RepositorySystem])
-  }
 
   def resolveKevoreeArtifact (unitName: String, groupName: String, version: String): File = {
     if (version.endsWith("SNAPSHOT")) {
@@ -96,7 +76,7 @@ object AetherUtil extends TempFileCacheManager {
         repositories.add(repo)
     }
     artifactRequest.setRepositories(repositories)
-    val artefactResult = newRepositorySystem.resolveArtifact(newRepositorySystemSession, artifactRequest)
+    val artefactResult = getRepositorySystem.resolveArtifact(getRepositorySystemSession, artifactRequest)
     installInCache(artefactResult.getArtifact)
   }
 
@@ -140,7 +120,7 @@ object AetherUtil extends TempFileCacheManager {
 
     try {
       artifactRequest.setRepositories(repositories)
-      val artefactResult = newRepositorySystem.resolveArtifact(newRepositorySystemSession, artifactRequest)
+      val artefactResult = getRepositorySystem.resolveArtifact(getRepositorySystemSession, artifactRequest)
       installInCache(artefactResult.getArtifact)
     } catch {
       case _@e => {
@@ -148,58 +128,7 @@ object AetherUtil extends TempFileCacheManager {
         null
       }
     }
-
-
   }
-
-  def newRepositorySystemSession = {
-    val session = new MavenRepositorySystemSession()
-    session.setTransferListener(new TransferListener() {
-      def transferInitiated (p1: TransferEvent) {
-        logger.debug("Transfert init for Artifact " + p1.getResource.getResourceName)
-      }
-
-      def transferStarted (p1: TransferEvent) {
-        logger.debug("Transfert begin for Artifact " + p1.getResource.getResourceName)
-      }
-
-      def transferProgressed (p1: TransferEvent) {
-        logger.debug("Transfert in progress for Artifact " + p1.getResource.getResourceName)
-      }
-
-      def transferCorrupted (p1: TransferEvent) {
-        logger.error("TransfertCorrupted : " + p1.getResource.getResourceName)
-      }
-
-      def transferSucceeded (p1: TransferEvent) {
-        logger.debug("Transfert succeeded for Artifact " + p1.getResource.getResourceName)
-      }
-
-      def transferFailed (p1: TransferEvent) {
-        logger.debug("TransferFailed : " + p1.getResource.getResourceName)
-      }
-    })
-    session.setUpdatePolicy(RepositoryPolicy.UPDATE_POLICY_ALWAYS)
-    session.setConfigProperty("aether.connector.ahc.provider", "jdk")
-    //DEFAULT VALUE
-    session.setLocalRepositoryManager(newRepositorySystem.newLocalRepositoryManager(new LocalRepository(System.getProperty("user.home").toString + "/.m2/repository")))
-    //TRY TO FOUND MAVEN CONFIGURATION
-    val configFile = new File(System.getProperty("user.home").toString + File.separator + ".m2" + File.separator + "settings.xml")
-    if (configFile.exists()) {
-      val configRoot = scala.xml.XML.loadFile(configFile)
-      configRoot.child.find(c => c.label == "localRepository").map {
-        localRepo =>
-          logger.info("Found localRepository value from settings.xml in user path => " + localRepo.text)
-          session.setLocalRepositoryManager(newRepositorySystem.newLocalRepositoryManager(new LocalRepository(localRepo.text)))
-      }
-    } else {
-      logger.debug("settings.xml not found")
-    }
-    session.getConfigProperties.put(ConfigurationProperties.REQUEST_TIMEOUT, 2000.asInstanceOf[java.lang.Integer])
-    session.getConfigProperties.put(ConfigurationProperties.CONNECT_TIMEOUT, 1000.asInstanceOf[java.lang.Integer])
-    session
-  }
-
 
   def buildPotentialMavenURL (root: ContainerRoot): List[String] = {
     var result: List[String] = List()
@@ -268,7 +197,7 @@ object AetherUtil extends TempFileCacheManager {
         repositories.add(repo)
     }
     versionRequest.setRepositories(repositories)
-    val versionResult = newRepositorySystem.resolveVersion(newRepositorySystemSession, versionRequest)
+    val versionResult = getRepositorySystem.resolveVersion(getRepositorySystemSession, versionRequest)
     versionResult.getVersion
   }
 
