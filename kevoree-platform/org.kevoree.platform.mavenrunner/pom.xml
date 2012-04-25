@@ -36,8 +36,12 @@
             <version>${kevoree.version}</version>
             <exclusions>
                 <exclusion>
-                    <groupId>org.kevoree.tools</groupId>
-                    <artifactId>org.kevoree.tools.aether.framework</artifactId>
+                    <groupId>org.sonatype.aether</groupId>
+                    <artifactId>aether-connector-file</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.sonatype.aether</groupId>
+                    <artifactId>aether-connector-asynchttpclient</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -52,7 +56,6 @@
                 </exclusion>
             </exclusions>
         </dependency>
-
     </dependencies>
 
     <build>
@@ -93,10 +96,7 @@
                     <goalPrefix>kev</goalPrefix>
                 </configuration>
             </plugin>
-
         </plugins>
-
-
     </build>
 
 </project>

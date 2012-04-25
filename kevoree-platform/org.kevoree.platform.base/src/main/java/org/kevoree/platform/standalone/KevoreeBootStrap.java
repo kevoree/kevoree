@@ -216,7 +216,7 @@ public class KevoreeBootStrap {
 					}
 				} else {
 					try {
-						File filebootmodel = bootstraper.resolveKevoreeArtifact("org.kevoree.library.model.bootstrap", "org.kevoree.library.model", KevoreeFactory.getVersion());
+						File filebootmodel = bootstraper.resolveKevoreeArtifact("org.kevoree.library.model.bootstrap", "org.kevoree.corelibrary.model", KevoreeFactory.getVersion());
 						JarFile jar = new JarFile(filebootmodel);
 						JarEntry entry = jar.getJarEntry("KEV-INF/lib.kev");
 						bootstrapModel = KevoreeXmiHelper.loadStream(jar.getInputStream(entry));
