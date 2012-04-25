@@ -1,8 +1,0 @@
-merge "mvn:org.kevoree.library.javase/org.kevoree.library.javase.javaseNode/{kevoree.version}"
-//merge "mvn:org.kevoree.library.javase/org.kevoree.library.javase.javaseOSGINode/{kevoree.version}"
-
-merge "mvn:org.kevoree.library.javase/org.kevoree.library.javase.nanohttp/{kevoree.version}"
-//merge "mvn:org.kevoree.library.javase/org.kevoree.library.javase.rest/{kevoree.version}"
-//merge "mvn:org.kevoree.library.javase/org.kevoree.library.javase.restAutoDiscovery/{kevoree.version}"
-//merge "mvn:org.kevoree.library.javase/org.kevoree.library.javase.gossiperNetty/{kevoree.version}"
-//merge "mvn:org.kevoree.library.javase/org.kevoree.library.javase.serialCT/{kevoree.version}"

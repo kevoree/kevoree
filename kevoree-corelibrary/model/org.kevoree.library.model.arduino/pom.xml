@@ -4,36 +4,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>org.kevoree.library.model.root</artifactId>
-        <groupId>org.kevoree.library.model</groupId>
+        <groupId>org.kevoree.corelibrary.model</groupId>
         <version>1.7.0-SNAPSHOT</version>
         <relativePath>../org.kevoree.library.model.root/pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>org.kevoree.library.model.arduino</artifactId>
-    <name>Kevoree :: Library :: Model :: Arduino</name>
-
-    <properties>
-        <kevoree.version>${project.version}</kevoree.version>
-    </properties>
-
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.kevoree.tools</groupId>
-                <artifactId>org.kevoree.tools.marshell.mavenplugin</artifactId>
-                <version>${kevoree.version}</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
-
+    <name>Kevoree :: CoreLibrary :: Model :: Arduino</name>
 
 </project>

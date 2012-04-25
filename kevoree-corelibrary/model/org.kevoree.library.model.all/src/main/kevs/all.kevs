@@ -1,0 +1,15 @@
+merge "mvn:org.kevoree.corelibrary.model/org.kevoree.library.model.android/{kevoree.version}"
+merge "mvn:org.kevoree.corelibrary.model/org.kevoree.library.model.arduino/{kevoree.version}"
+merge "mvn:org.kevoree.corelibrary.model/org.kevoree.library.model.bootstrap/{kevoree.version}"
+merge "mvn:org.kevoree.corelibrary.model/org.kevoree.library.model.bootstrap.android/{kevoree.version}"
+merge "mvn:org.kevoree.corelibrary.model/org.kevoree.library.model.javase/{kevoree.version}"
+merge "mvn:org.kevoree.corelibrary.model/org.kevoree.library.model.sky/{kevoree.version}"
+merge "mvn:org.kevoree.corelibrary.model/org.kevoree.library.model.sky.kloud/{kevoree.version}"
+merge "mvn:org.kevoree.corelibrary.model/org.kevoree.library.model.webserver/{kevoree.version}"
+
+
+
+
+
+
+

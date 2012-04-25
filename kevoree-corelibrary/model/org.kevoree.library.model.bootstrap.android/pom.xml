@@ -2,41 +2,16 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.kevoree.library.model</groupId>
+    <groupId>org.kevoree.corelibrary.model</groupId>
     <artifactId>org.kevoree.library.model.bootstrap.android</artifactId>
-    <packaging>jar</packaging>
-    <name>Kevoree :: Library :: Model :: Bootstrap Android</name>
+    <name>Kevoree :: CoreLibrary :: Model :: Bootstrap Android</name>
     <version>1.7.0-SNAPSHOT</version>
-
-    <properties>
-        <kevoree.version>${project.version}</kevoree.version>
-    </properties>
 
     <parent>
         <artifactId>org.kevoree.library.model.root</artifactId>
-        <groupId>org.kevoree.library.model</groupId>
+        <groupId>org.kevoree.corelibrary.model</groupId>
         <version>1.7.0-SNAPSHOT</version>
         <relativePath>../org.kevoree.library.model.root/pom.xml</relativePath>
     </parent>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.kevoree.tools</groupId>
-                <artifactId>org.kevoree.tools.marshell.mavenplugin</artifactId>
-                <version>${kevoree.version}</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
-
-
-
 
 </project>

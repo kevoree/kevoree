@@ -1,5 +1,5 @@
 // nodes configuration
-merge "mvn:org.kevoree.library.model/org.kevoree.library.model.sky/{kevoree.version}"
+merge "mvn:org.kevoree.corelibrary.model/org.kevoree.library.model.sky/{kevoree.version}"
 
 addNode cumulus : JailNode {role="host/container", port="7000", inet="bge1", subnet="10.0.0.0", mask="24", flavor="kevjail", logLevel="INFO"}
 addNode fog1 : JailNode {role="host", port="7000", inet="alc0", subnet="10.0.1.0", mask="24", flavor="kevjail", logLevel="INFO"}
