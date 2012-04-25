@@ -14,10 +14,6 @@
         <relativePath>../org.kevoree.library.frascati.root/pom.xml</relativePath>
     </parent>
 
-    <properties>
-        <kevoree.version>${project.version}</kevoree.version>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>org.slf4j</groupId>

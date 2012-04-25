@@ -3,28 +3,25 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>org.kevoree.corelibrary.sky.root</artifactId>
-        <groupId>org.kevoree.library.sky</groupId>
+        <artifactId>org.kevoree.library.sky.root</artifactId>
+        <groupId>org.kevoree.corelibrary.sky</groupId>
         <version>1.7.0-SNAPSHOT</version>
         <relativePath>../org.kevoree.library.sky.root/pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-
     <artifactId>org.kevoree.library.sky.provider</artifactId>
     <name>Kevoree :: CoreLibrary :: Sky :: Provider</name>
 
     <dependencies>
         <dependency>
-            <groupId>org.kevoree.corelibrary.javase</groupId>
+            <groupId>org.kevoree.library.javase</groupId>
             <artifactId>org.kevoree.library.javase.webserver</artifactId>
             <version>${kevoree.version}</version>
-            <type>bundle</type>
         </dependency>
         <dependency>
             <groupId>org.kevoree.corelibrary.javase</groupId>
             <artifactId>org.kevoree.library.javase.nanohttp</artifactId>
             <version>${kevoree.version}</version>
-            <type>bundle</type>
         </dependency>
         <dependency>
             <groupId>org.kevoree</groupId>
@@ -32,7 +29,7 @@
             <version>${kevoree.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.kevoree.library.javase</groupId>
+            <groupId>org.kevoree.corelibrary.javase</groupId>
             <artifactId>org.kevoree.library.javase.authentication</artifactId>
             <version>${kevoree.version}</version>
         </dependency>

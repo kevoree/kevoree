@@ -3,6 +3,7 @@
 
     <modelVersion>4.0.0</modelVersion>
     <artifactId>org.kevoree.library.frascati.root</artifactId>
+    <groupId>org.kevoree.corelibrary.frascati</groupId>
     <packaging>pom</packaging>
     <name>Kevoree :: CoreLibrary :: Frascati :: Root</name>
     <version>1.7.0-SNAPSHOT</version>
@@ -21,9 +22,7 @@
 
     <modules>
         <module>../org.kevoree.library.frascati.mavenplugin</module>
-    <!--    <module>../org.kevoree.library.frascati.helloworld.pojo</module> -->
         <module>../org.kevoree.library.frascati.frascatiNode</module>
-
         <module>../org.kevoree.library.frascati.components</module>
         <module>../org.kevoree.library.frascati.runner</module>
     </modules>

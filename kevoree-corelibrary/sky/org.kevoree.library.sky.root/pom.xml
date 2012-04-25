@@ -27,7 +27,6 @@
         <module>../org.kevoree.library.sky.provider</module>
     </modules>
 
-
     <dependencies>
         <dependency>
             <groupId>org.kevoree.tools</groupId>
