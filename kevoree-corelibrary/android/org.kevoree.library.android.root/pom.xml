@@ -51,7 +51,6 @@
 
     <build>
         <plugins>
-
             <plugin>
                 <groupId>org.kevoree.tools</groupId>
                 <artifactId>org.kevoree.tools.annotation.mavenplugin</artifactId>
