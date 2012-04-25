@@ -3,14 +3,12 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
-    <groupId>org.kevoree.library.frascati</groupId>
     <artifactId>org.kevoree.library.frascati.helloworld.pojo</artifactId>
-    <name>Kevoree :: Library :: Frascati :: HelloWorld POJO</name>
+    <name>Kevoree :: CoreLibrary :: Frascati :: HelloWorld POJO</name>
 
     <parent>
         <artifactId>org.kevoree.library.frascati.root</artifactId>
-        <groupId>org.kevoree.library.frascati</groupId>
+        <groupId>org.kevoree.corelibrary.frascati</groupId>
         <version>1.6.0-BETA4</version>
         <relativePath>../org.kevoree.library.frascati.root/pom.xml</relativePath>
     </parent>
@@ -75,7 +73,7 @@
             </plugin>
 
             <plugin>
-                <groupId>org.kevoree.library.frascati</groupId>
+                <groupId>org.kevoree.corelibrary.frascati</groupId>
                 <artifactId>org.kevoree.library.frascati.mavenplugin</artifactId>
                 <version>${kevoree.version}</version>
                 <extensions>true</extensions>

@@ -2,15 +2,14 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.kevoree.library.frascati</groupId>
     <artifactId>org.kevoree.library.frascati.root</artifactId>
     <packaging>pom</packaging>
-    <name>Kevoree :: Library :: Frascati :: Root</name>
+    <name>Kevoree :: CoreLibrary :: Frascati :: Root</name>
     <version>1.7.0-SNAPSHOT</version>
 
     <parent>
         <artifactId>org.kevoree.library</artifactId>
-        <groupId>org.kevoree.library</groupId>
+        <groupId>org.kevoree.corelibrary</groupId>
         <version>1.7.0-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
@@ -37,10 +36,8 @@
         </dependency>
     </dependencies>
 
-
     <build>
         <plugins>
-
             <plugin>
                 <groupId>org.scala-tools</groupId>
                 <artifactId>maven-scala-plugin</artifactId>
@@ -128,6 +125,4 @@
             <url>http://maven.kevoree.org/snapshots</url>
         </pluginRepository>
     </pluginRepositories>
-
-
 </project>

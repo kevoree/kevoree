@@ -2,15 +2,15 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.kevoree.library.android</groupId>
+    <groupId>org.kevoree.corelibrary.android</groupId>
     <artifactId>org.kevoree.library.android.root</artifactId>
     <packaging>pom</packaging>
-    <name>Kevoree :: Library :: Android :: Root</name>
+    <name>Kevoree :: CoreLibrary :: Android :: Root</name>
     <version>1.7.0-SNAPSHOT</version>
 
     <parent>
         <artifactId>org.kevoree.library</artifactId>
-        <groupId>org.kevoree.library</groupId>
+        <groupId>org.kevoree.corelibrary</groupId>
         <version>1.7.0-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
@@ -25,15 +25,10 @@
     <modules>
         <module>../org.kevoree.library.android.nodeType</module>
         <module>../org.kevoree.library.android.logger</module>
-        <module>../org.kevoree.library.android.text2speech</module>
         <module>../org.kevoree.library.android.fakeDomo</module>
         <module>../org.kevoree.library.android.nanohttp</module>
         <module>../org.kevoree.library.android.defaultChannels</module>
         <module>../org.kevoree.library.android.socketChannels</module>
-        <module>../org.kevoree.library.android.agrapher</module>
-        <module>../org.kevoree.library.android.serialCT</module>
-        <module>../org.kevoree.library.android.osmdroid</module>
-        <module>../org.kevoree.library.android.generatorGps</module>
     </modules>
 
     <dependencies>
@@ -73,13 +68,6 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
-            <!-- Felix BnD plugin : allow Bundle packaging : generate OSGi JAR  -->
-            <plugin>
-                <groupId>org.apache.felix</groupId>
-                <artifactId>maven-bundle-plugin</artifactId>
-                <version>2.3.5</version>
-                <extensions>true</extensions>
             </plugin>
             <!-- Java compiler plugin -->
             <plugin>
