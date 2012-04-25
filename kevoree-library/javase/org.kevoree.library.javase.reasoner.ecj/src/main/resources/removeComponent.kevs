@@ -1,3 +1,0 @@
-tblock { 
-  removeComponent ${component}@${node}
-}

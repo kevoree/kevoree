@@ -1,3 +1,0 @@
-tblock { 
-  addComponent ${component}@${node} : ${type}
-}

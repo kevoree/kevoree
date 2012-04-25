@@ -1,0 +1,185 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.kevoree.corelibrary.javase</groupId>
+    <artifactId>org.kevoree.library.javase.root</artifactId>
+    <packaging>pom</packaging>
+    <name>Kevoree :: Library :: JavaSE :: Root</name>
+    <version>1.7.0-SNAPSHOT</version>
+
+    <parent>
+        <artifactId>org.kevoree.library</artifactId>
+        <groupId>org.kevoree.library</groupId>
+        <version>1.7.0-SNAPSHOT</version>
+        <relativePath>../../pom.xml</relativePath>
+    </parent>
+
+    <properties>
+        <kevoree.version>${project.version}</kevoree.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <modules>
+
+        <module>../org.kevoree.library.javase.rest</module>
+        <module>../org.kevoree.library.javase.restAutoDiscovery</module>
+        <module>../org.kevoree.library.javase.jPaxos</module>
+        <module>../org.kevoree.library.javase.fileSystem</module>
+        <module>../org.kevoree.library.javase.fileSystemSVN</module>
+        <module>../org.kevoree.library.javase.fileSystemGit</module>
+
+        <!--   <module>../org.kevoree.library.javase.xmpp</module>     -->
+        <!--<module>../org.kevoree.library.javase.sample</module>-->
+        <!-- <module>../org.kevoree.library.javase.restChannels</module> -->
+        <!--<module>../org.kevoree.library.javase.reasoner.ecj</module> -->
+        <!--  <module>../org.kevoree.library.javase.logger.greg</module> -->
+        <!-- <module>../org.kevoree.library.javase.jscriptengine</module>  -->
+        <module>../org.kevoree.library.javase.javaseNode</module>
+        <module>../org.kevoree.library.javase.javaseOSGINode</module>
+
+        <!--  <module>../org.kevoree.library.javase.javaseKratiNode</module> -->
+
+        <module>../org.kevoree.library.javase.socketChannels</module>
+        <module>../org.kevoree.library.javase.nioChannels</module>
+
+        <module>../org.kevoree.library.javase.gossiperNetty</module>
+        <module>../org.kevoree.library.javase.fakeDomo</module>
+        <!--<module>../org.kevoree.library.javase.esper</module>  -->
+        <module>../org.kevoree.library.javase.defaultChannels</module>
+        <!--<module>../org.kevoree.library.javase.com.skype</module> -->
+        <module>../org.kevoree.library.javase.serialCT</module>
+        <module>../org.kevoree.library.javase.hidrfid</module>
+        <module>../org.kevoree.library.javase.kinect</module>
+        <!-- <module>../org.kevoree.library.javase.bluetooth</module>  -->
+        <!-- <module>../org.kevoree.library.javase.derby</module> -->
+        <module>../org.kevoree.library.javase.grapher</module>
+        <module>../org.kevoree.library.javase.javacv</module>
+        <!-- <module>../org.kevoree.library.javase.hadoop</module> -->
+        <module>../org.kevoree.library.javase.vlc</module>
+        <module>../org.kevoree.library.javase.swingUI</module>
+        <module>../org.kevoree.library.javase.webserver</module>
+        <module>../org.kevoree.library.javase.webserver.api</module>
+        <module>../org.kevoree.library.javase.webserver.tjws</module>
+
+
+        <module>../org.kevoree.library.javase.webserver.components</module>
+        <module>../org.kevoree.library.javase.webserver.gallery</module>
+        <module>../org.kevoree.library.javase.webserver.aceEditor</module>
+        <module>../org.kevoree.library.javase.webserver.reasoner</module>
+        <module>../org.kevoree.library.javase.webserver.servlet</module>
+        <module>../org.kevoree.library.javase.webserver.jenkins</module>
+        <module>../org.kevoree.library.javase.webserver.gitblit</module>
+      <!--  <module>../org.kevoree.library.javase.webserver.pebble</module> -->
+
+
+        <!--<module>../org.kevoree.library.javase.webserver.codemirrorEditor</module>-->
+
+   <!--     <module>../org.kevoree.library.javase.webserver.wordpress</module>
+
+        <module>../org.kevoree.library.javase.webserver.archiva</module>
+-->
+        <module>../org.kevoree.library.javase.kestrelChannels</module>
+
+        <!--<module>../org.kevoree.library.javase.miniCloudGroup</module>-->
+        <module>../org.kevoree.library.javase.pipe</module>
+        <module>../org.kevoree.library.javase.latex</module>
+        <module>../org.kevoree.library.javase.ssh</module>
+
+
+        <module>../org.kevoree.library.javase.esper</module>
+        <module>../org.kevoree.library.javase.webSocket</module>
+        <module>../org.kevoree.library.javase.nanohttp</module>
+        <module>../org.kevoree.library.javase.airReceiver.server</module>
+        <module>../org.kevoree.library.javase.camel</module>
+        <module>../org.kevoree.library.javase.camel.atom</module>
+        <module>../org.kevoree.library.javase.camel.twitter</module>
+
+
+        <module>../org.kevoree.library.javase.authentication</module>
+        <module>../org.kevoree.library.javase.system</module>
+        <module>../org.kevoree.library.javase.system.bsd</module>
+
+        <module>../org.kevoree.library.javase.generatorGps</module>
+        <!--<module>../org.kevoree.library.javase.consensus</module>-->
+        <!--<module>../org.kevoree.library.javase.freepastry</module>-->
+    </modules>
+
+
+    <dependencies>
+        <dependency>
+            <groupId>org.kevoree.tools</groupId>
+            <artifactId>org.kevoree.tools.javase.framework</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.kevoree.tools</groupId>
+            <artifactId>org.kevoree.tools.annotation.api</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.kevoree.tools</groupId>
+                <artifactId>org.kevoree.tools.annotation.mavenplugin</artifactId>
+                <version>${kevoree.version}</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <nodeTypeNames>JavaSENode</nodeTypeNames>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generate</goal>
+                            <goal>compile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- Felix BnD plugin : allow Bundle packaging : generate OSGi JAR  -->
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <version>2.3.5</version>
+                <extensions>true</extensions>
+            </plugin>
+            <!-- Java compiler plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.3.2</version>
+                <configuration>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                    <encoding>${project.build.sourceEncoding}</encoding>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <repositories>
+        <repository>
+            <id>kevoree-release</id>
+            <url>http://maven.kevoree.org/release</url>
+        </repository>
+        <repository>
+            <id>kevoree-snapshots</id>
+            <url>http://maven.kevoree.org/snapshots</url>
+        </repository>
+    </repositories>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>plugin.kevoree-github</id>
+            <url>http://maven.kevoree.org/release</url>
+        </pluginRepository>
+        <pluginRepository>
+            <id>plugin.kevoree-snapshots</id>
+            <url>http://maven.kevoree.org/snapshots</url>
+        </pluginRepository>
+    </pluginRepositories>
+
+
+</project>

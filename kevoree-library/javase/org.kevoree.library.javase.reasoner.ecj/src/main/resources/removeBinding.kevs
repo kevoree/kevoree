@@ -1,3 +1,0 @@
-tblock { 
- unbind ${component}.${port}@${node} => ${channel}
- }

@@ -1,3 +1,0 @@
-tblock { 
- moveComponent ${component}@${node1} => ${node2}
- }

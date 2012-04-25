@@ -1,3 +1,0 @@
-tblock { 
-  addChannel ${channel} : ${type}
-}
