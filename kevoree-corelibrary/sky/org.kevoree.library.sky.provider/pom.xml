@@ -15,7 +15,7 @@
     <dependencies>
         <dependency>
             <groupId>org.kevoree.library.javase</groupId>
-            <artifactId>org.kevoree.library.javase.webserver</artifactId>
+            <artifactId>org.kevoree.library.javase.webserver.api</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
         <dependency>
