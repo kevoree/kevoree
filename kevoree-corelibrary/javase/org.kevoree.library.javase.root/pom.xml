@@ -34,6 +34,7 @@
         <module>../org.kevoree.library.javase.webserver.api</module>
         <module>../org.kevoree.library.javase.webserver.tjws</module>
         <module>../org.kevoree.library.javase.nanohttp</module>
+        <module>../org.kevoree.library.javase.nanohttpAutoDiscovery</module>
         <module>../org.kevoree.library.javase.camel</module>
         <module>../org.kevoree.library.javase.camel.atom</module>
         <module>../org.kevoree.library.javase.authentication</module>
@@ -88,6 +89,11 @@
                     <target>1.6</target>
                     <encoding>${project.build.sourceEncoding}</encoding>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.kevoree.platform</groupId>
+                <artifactId>org.kevoree.platform.mavenrunner</artifactId>
+                <version>${kevoree.version}</version>
             </plugin>
         </plugins>
     </build>

@@ -1,0 +1,5 @@
+merge "mvn:org.kevoree.library.javase/org.kevoree.library.javase.javaseNode/{kevoree.version}"
+merge "mvn:org.kevoree.library.javase/org.kevoree.library.javase.nanohttpAutoDiscovery/{kevoree.version}"
+addNode node0 : JavaSENode
+addGroup sync : JmDNSNanoRestGroup
+addToGroup sync node0

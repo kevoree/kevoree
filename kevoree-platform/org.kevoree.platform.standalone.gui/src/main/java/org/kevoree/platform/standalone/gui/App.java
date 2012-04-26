@@ -66,7 +66,7 @@ public class App {
 
                 Class clazz = temp_cl.loadClass("org.kevoree.tools.aether.framework.NodeTypeBootstrapHelper");
                 org.kevoree.api.Bootstraper bootstraper = (Bootstraper) clazz.newInstance();
-                File fileMarShell = bootstraper.resolveKevoreeArtifact("org.kevoree.library.model.bootstrap", "org.kevoree.library.model", KevoreeFactory.getVersion());
+                File fileMarShell = bootstraper.resolveKevoreeArtifact("org.kevoree.library.model.bootstrap", "org.kevoree.corelibrary.model", KevoreeFactory.getVersion());
                 JarFile jar = new JarFile(fileMarShell);
                 JarEntry entry = jar.getJarEntry("KEV-INF/lib.kev");
                 model = KevoreeXmiHelper.loadStream(jar.getInputStream(entry));
