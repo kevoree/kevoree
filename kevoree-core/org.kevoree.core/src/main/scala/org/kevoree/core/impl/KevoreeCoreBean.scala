@@ -33,8 +33,9 @@ import _root_.java.util.{UUID, Date}
 import org.kevoree.api.service.core.handler._
 import org.kevoree.api.service.core.script.KevScriptEngineFactory
 import org.kevoree.api.Bootstraper
-import java.lang.Long
 import actors.{DaemonActor, TIMEOUT, Actor}
+import org.kevoree.core.basechecker.kevoreeVersionChecker.KevoreeNodeVersionChecker
+import java.lang.Long
 
 class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor {
 
@@ -304,7 +305,8 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
 
         //Model checking
         val checkResult = modelChecker.check(pnewmodel)
-        if (!checkResult.isEmpty) {
+        val checkVersionResult = new KevoreeNodeVersionChecker(getNodeName).check(pnewmodel)
+        if (!checkResult.isEmpty && !checkVersionResult.isEmpty) {
           logger.error("There is check failure on update model, update refused !")
           import _root_.scala.collection.JavaConversions._
           checkResult.foreach {
