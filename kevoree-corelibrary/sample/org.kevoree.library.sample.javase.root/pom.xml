@@ -1,0 +1,47 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>org.kevoree.library.sample.javase.root</artifactId>
+    <name>Kevoree :: CoreLibrary :: Sample :: JavaSE :: Root</name>
+    <packaging>pom</packaging>
+
+    <parent>
+        <groupId>org.kevoree.corelibrary.sample</groupId>
+        <artifactId>org.kevoree.library.sample.root</artifactId>
+        <version>1.7.0-SNAPSHOT</version>
+        <relativePath>../org.kevoree.library.sample.root/pom.xml</relativePath>
+    </parent>
+
+    <!--<modules>
+        <module>../org.kevoree.library.sample.javase.helloworld</module>
+    </modules>-->
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>2.2.2</version>
+                <configuration>
+                    <descriptors>
+                        <descriptor>src/main/assembly/zip.xml</descriptor>
+                    </descriptors>
+                    <appendAssemblyId>false</appendAssemblyId>
+                    <finalName>org.kevoree.library.sample.javase.helloworld</finalName>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <!-- this is used for inheritance merges -->
+                        <phase>package</phase>
+                        <!-- append to the packaging phase. -->
+                        <goals>
+                            <goal>single</goal>
+                            <!-- goals == mojos -->
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

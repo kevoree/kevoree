@@ -1,13 +1,12 @@
-package org.kevoree.library.javase.helloworld.${package};
+package org.kevoree.library.javase.helloworld;
 
-import java.util.*;
+import java.util.ArrayList;
 
 /**
  * Created by IntelliJ IDEA.
  * User: gnain
  * Date: 27/10/11
  * Time: 14:33
- * To change this template use File | Settings | File Templates.
  */
 public class HelloProducerThread extends Thread {
 
@@ -39,7 +38,7 @@ public class HelloProducerThread extends Thread {
             try {
                 Thread.sleep(delay);
             } catch (InterruptedException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                e.printStackTrace();
             }
         }
     }

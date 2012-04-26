@@ -1,4 +1,4 @@
-package org.kevoree.library.javase.helloworld.org.kevoree.sample.typeid;
+package org.kevoree.library.javase.helloworld;
 
 import org.kevoree.annotation.*;
 import org.kevoree.framework.AbstractComponentType;
@@ -8,11 +8,10 @@ import org.kevoree.framework.AbstractComponentType;
  * User: gnain
  * Date: 27/10/11
  * Time: 13:43
- * To change this template use File | Settings | File Templates.
  */
 
 @Provides({
-        @ProvidedPort(name = "receive", type = PortType.MESSAGE)
+        @ProvidedPort(name = "consume", type = PortType.MESSAGE)
 })
 @ComponentType
 public class HelloConsumerComponent extends AbstractComponentType {
@@ -32,7 +31,7 @@ public class HelloConsumerComponent extends AbstractComponentType {
         System.out.println("Consumer:: Update");
     }
 
-    @Port(name = "receive")
+    @Port(name = "consume")
     public void consumeHello(Object o) {
         System.out.println("Consumer:: Received " + o.toString());
         if(o instanceof String) {

@@ -1,8 +1,8 @@
-package org.kevoree.library.javase.helloworld.org.kevoree.sample.typeid;
+package org.kevoree.library.javase.helloworld;
 
 import org.kevoree.annotation.*;
-import org.kevoree.annotation.ComponentType;
-import org.kevoree.framework.*;
+import org.kevoree.framework.AbstractComponentType;
+import org.kevoree.framework.MessagePort;
 
 
 /**
@@ -10,12 +10,11 @@ import org.kevoree.framework.*;
  * User: gnain
  * Date: 27/10/11
  * Time: 13:42
- * To change this template use File | Settings | File Templates.
  */
 
 
 @Requires({
-        @RequiredPort(name = "prod", type = PortType.MESSAGE, optional = true)
+        @RequiredPort(name = "produce", type = PortType.MESSAGE, optional = true)
 })
 @DictionaryType({
         @DictionaryAttribute(name = "helloProductionDelay", defaultValue = "2000", optional = true)
@@ -48,7 +47,7 @@ public class HelloProducerComponent extends AbstractComponentType implements Hel
     }
 
     public void helloProduced(String helloValue) {
-        MessagePort prodPort = getPortByName("prod",MessagePort.class);
+        MessagePort prodPort = getPortByName("produce",MessagePort.class);
         if(prodPort != null) {
             prodPort.process(helloValue);
         }
