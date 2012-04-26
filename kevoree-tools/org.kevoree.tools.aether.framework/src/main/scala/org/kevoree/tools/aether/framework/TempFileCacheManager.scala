@@ -33,7 +33,7 @@ trait TempFileCacheManager {
 
   def installInCache(jarArtifact: Artifact): File = {
     try {
-      val lastTempFile = File.createTempFile(random.nextInt() + "", ".jar")
+      val lastTempFile = File.createTempFile(jarArtifact.getArtifactId+random.nextInt() + "", ".jar")
       lastTempFile.deleteOnExit()
       val jarStream = new FileInputStream(jarArtifact.getFile);
       FileNIOHelper.copyFile(jarStream, lastTempFile)

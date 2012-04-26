@@ -94,6 +94,7 @@ class JCLContextHandler extends DaemonActor with KevoreeClassLoaderHandler {
 
 
   private def clearInternals() {
+    logger.debug("Clear Internal")
     kcl_cache.keySet().toList.foreach {
       key =>
         if (!lockedDu.contains(key)) {
@@ -136,7 +137,8 @@ class JCLContextHandler extends DaemonActor with KevoreeClassLoaderHandler {
   }
 
 
-  private val failedLinks = new java.util.HashMap[DeployUnit, KevoreeJarClassLoader]()
+  /* Temp Zone for temporary unresolved KCL links */
+  private val failedLinks = new java.util.HashMap[String, KevoreeJarClassLoader]()
 
   def clearFailedLinks() {
     failedLinks.clear()
@@ -161,10 +163,10 @@ class JCLContextHandler extends DaemonActor with KevoreeClassLoaderHandler {
       logger.debug("Add KCL for {}->{}", du.getUnitName, buildKEY(du))
 
       //TRY TO RECOVER FAILED LINK
-      if (failedLinks.containsKey(du)) {
-        failedLinks.get(du).addSubClassLoader(newcl)
-        newcl.addWeakClassLoader(failedLinks.get(du))
-        failedLinks.remove(du)
+      if (failedLinks.containsKey(buildKEY(du))) {
+        failedLinks.get(buildKEY(du)).addSubClassLoader(newcl)
+        newcl.addWeakClassLoader(failedLinks.get(buildKEY(du)))
+        failedLinks.remove(buildKEY(du))
         logger.debug("Failed Link {} remain size : {}", du.getUnitName, failedLinks.size())
       }
 
@@ -185,7 +187,7 @@ class JCLContextHandler extends DaemonActor with KevoreeClassLoaderHandler {
             })
           } else {
             logger.debug("Fail link ! Warning ")
-            failedLinks.put(rLib, newcl)
+            failedLinks.put(buildKEY(du), newcl)
           }
       }
 
@@ -204,20 +206,27 @@ class JCLContextHandler extends DaemonActor with KevoreeClassLoaderHandler {
   }
 
   private def removeDeployUnitInternals(du: DeployUnit) {
-    if (failedLinks.containsKey(du)) {
-      failedLinks.remove(du)
-    }
     val key = buildKEY(du)
+    if (failedLinks.containsKey(key)) {
+      failedLinks.remove(key)
+    }
     if (!lockedDu.contains(key)) {
       val kcl_to_remove = kcl_cache.get(key)
+      failedLinks.filter(fl => fl._2 == kcl_to_remove).toList.foreach{ k =>
+        failedLinks.remove(k._1)
+      }
       if (!lockedDu.contains(key)) {
         if (kcl_cache.containsKey(key)) {
-          logger.debug("Remove KCL for {}->{}", du.getUnitName, buildKEY(du))
-          //logger.debug("Cache To cleanuip size"+kcl_cache.values().size()+"-"+kcl_cache.size()+"-"+kcl_cache.keySet().size())
+          logger.debug("Try to remove KCL for {}->{}", du.getUnitName, buildKEY(du))
+          logger.debug("Cache To cleanuip size"+kcl_cache.values().size()+"-"+kcl_cache.size()+"-"+kcl_cache.keySet().size())
           kcl_cache.values().foreach {
             vals => {
+              if(vals.getSubClassLoaders().contains(kcl_to_remove)){
+                failedLinks.put(key,vals)
+                logger.debug("Pending Fail link "+key)
+              }
               vals.cleanupLinks(kcl_to_remove)
-              //logger.debug("Cleanup {} from {}",vals.toString(),du.getUnitName)
+              logger.debug("Cleanup {} from {}",vals.toString(),du.getUnitName)
             }
           }
           kcl_cache.get(key).unload()

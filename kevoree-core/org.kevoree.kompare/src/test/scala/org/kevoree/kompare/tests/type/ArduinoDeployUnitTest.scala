@@ -31,7 +31,7 @@ class ArduinoDeployUnitTest extends KompareSuite {
   }
 
   @Test def testNoTypeInstall()={
-    val kompareModel = component.kompare(emptyModel, model("test_deployUnit/testArduino.kev"), "duke")
+   // val kompareModel = component.kompare(emptyModel, model("test_deployUnit/testArduino.kev"), "duke")
     /*
     kompareModel shouldContainSize(classOf[UpdateDeployUnit],1)
     kompareModel shouldContain(classOf[UpdateType],"ComponentPrimitiveTypeService")
@@ -44,7 +44,7 @@ class ArduinoDeployUnitTest extends KompareSuite {
 
     kompareModel.verifySize(8)   */
 
-    kompareModel.print
+  //  kompareModel.print
 
   }
 

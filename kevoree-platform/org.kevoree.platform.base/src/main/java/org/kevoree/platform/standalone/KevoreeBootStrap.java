@@ -243,15 +243,15 @@ public class KevoreeBootStrap {
 
 			KevoreeLogLevel coreLogLevel = KevoreeLogLevel.INFO;
 			if (System.getProperty("kevoree.log.level") != null) {
-				if ("DEBUG".equals(System.getProperty("kevoree.log.level"))) {
+				if ("DEBUG".equalsIgnoreCase(System.getProperty("kevoree.log.level"))) {
 					coreLogLevel = KevoreeLogLevel.DEBUG;
-				} else if ("WARN".equals(System.getProperty("kevoree.log.level"))) {
+				} else if ("WARN".equalsIgnoreCase(System.getProperty("kevoree.log.level"))) {
 					coreLogLevel = KevoreeLogLevel.WARN;
-				} else if ("INFO".equals(System.getProperty("kevoree.log.level"))) {
+				} else if ("INFO".equalsIgnoreCase(System.getProperty("kevoree.log.level"))) {
 					coreLogLevel = KevoreeLogLevel.INFO;
-				} else if ("ERROR".equals(System.getProperty("kevoree.log.level"))) {
+				} else if ("ERROR".equalsIgnoreCase(System.getProperty("kevoree.log.level"))) {
 					coreLogLevel = KevoreeLogLevel.ERROR;
-				} else if ("ALL".equals(System.getProperty("kevoree.log.level"))) {
+				} else if ("ALL".equalsIgnoreCase(System.getProperty("kevoree.log.level"))) {
 					coreLogLevel = KevoreeLogLevel.FINE;
 				}
 			}

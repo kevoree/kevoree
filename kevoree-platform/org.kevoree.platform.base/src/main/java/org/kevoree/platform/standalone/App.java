@@ -23,6 +23,9 @@ public class App {
 
     public void start() throws Exception {
 
+    //    System.setProperty("kevoree.log.level", "DEBUG");
+
+
         //TO REMOVE
         if(System.getProperty("node.groupType") == null){
             System.setProperty("node.groupType","NanoRestGroup");
