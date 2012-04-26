@@ -75,7 +75,7 @@ class NodeTypeBootStrapUI(private var pkernel: ContainerRoot) extends JPanel {
     val groupTypeModel = new DefaultComboBoxModel
     kernel.getTypeDefinitions.
       filter(td => td.isInstanceOf[org.kevoree.GroupType] && td.getDeployUnits.exists(du => du.getTargetNodeType != null ))
-     // .sortWith( (td,td2) => if(td2.getName=="RestGroup"){true}else{td.getName < td2.getName } )
+      .sortWith( (td,td2) => if(td2.getName.toLowerCase=="nanohttprestgroup"){true}else{td.getName < td2.getName } )
       .reverse
       .foreach {
           td =>

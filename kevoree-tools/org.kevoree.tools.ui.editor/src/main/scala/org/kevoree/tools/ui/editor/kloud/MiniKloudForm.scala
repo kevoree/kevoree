@@ -175,7 +175,7 @@ class MiniKloudForm (editor: KevoreeEditor) {
         val kevEngine = new KevScriptOfflineEngine(skyModel)
         kevEngine.addVariable("kevoree.version", KevoreeFactory.getVersion)
         kevEngine.addVariable("minicloudNodeName", minicloudName)
-        kevEngine.append("merge 'mvn:org.kevoree.library.model/org.kevoree.library.model.sky/{kevoree.version}'")
+        kevEngine.append("merge 'mvn:org.kevoree.corelibrary.model/org.kevoree.library.model.sky/{kevoree.version}'")
         kevEngine.append("addNode {minicloudNodeName}: MiniCloudNode {role='host', port='6001'}")
 
         // add all user nodes as child of the minicloud node
@@ -213,7 +213,7 @@ class MiniKloudForm (editor: KevoreeEditor) {
           kevEngine.interpret()
         } catch {
           case _@e => {
-            logger.warn("Unable to compute model to deploy on minicloud.", e)
+            logger.error("Unable to compute model to deploy on minicloud.", e)
             null
           }
         }
