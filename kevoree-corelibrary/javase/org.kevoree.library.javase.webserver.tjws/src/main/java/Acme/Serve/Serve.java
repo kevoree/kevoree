@@ -4019,13 +4019,15 @@ public class Serve implements ServletContext, Serializable {
 
         @Override
         public HashMap<String, String> getHeaders() {
-            HashMap<String, String> headers = new HashMap<String, String>();
+            return resolvedParams;
 
-            return headers;
+            // HashMap<String, String> headers = new HashMap<String, String>();
+            // return headers;
         }
 
         @Override
         public void setHeaders(HashMap<String, String> headers) {
+
         }
 
         private int tokenID = -1;
@@ -4035,7 +4037,7 @@ public class Serve implements ServletContext, Serializable {
             return tokenID;
         }
 
-        public void setTokenID(int i){
+        public void setTokenID(int i) {
             tokenID = i;
         }
 
@@ -4051,12 +4053,14 @@ public class Serve implements ServletContext, Serializable {
 
         @Override
         public HashMap<String, String> getResolvedParams() {
-            return this.getHeaders();
+            return resolvedParams;
         }
 
-        @Override
-        public void setResolvedParams(HashMap<String, String> resolvedParams) {
+        private HashMap<String, String> resolvedParams = new HashMap<String, String>();
 
+        @Override
+        public void setResolvedParams(HashMap<String, String> rps) {
+            resolvedParams = rps;
         }
 
         @Override

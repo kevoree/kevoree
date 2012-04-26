@@ -20,6 +20,9 @@ public class HelloWorldPage extends AbstractPage {
             for (String key : request.getResolvedParams().keySet()) {
                 builder.append(key + "->" + request.getResolvedParams().get(key) + "<br>");
             }
+
+            builder.append("lastParam->" + getLastParam(request.getUrl()) + "<br>");
+
             builder.append("Served by node "+this.getNodeName()+"<br />");
             builder.append("</body></html>");
             response.setContent(builder.toString());
