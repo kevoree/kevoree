@@ -29,22 +29,24 @@ import java.util.HashMap;
         @RequiredPort(name = "content", type = PortType.MESSAGE)
 })
 @DictionaryType({
-        @DictionaryAttribute(name = "urlpattern",optional = true, defaultValue = "/")
+        @DictionaryAttribute(name = "urlpattern", optional = true, defaultValue = "/")
 })
 public class AbstractPage extends AbstractComponentType {
 
     protected Logger logger = LoggerFactory.getLogger(this.getClass());
     protected URLHandlerScala handler = new URLHandlerScala();
 
-    public String getLastParam(String url){
-        Option<String> result = handler.getLastParam(url,this.getDictionary().get("urlpattern").toString());
-        if(result.isDefined()){
+    public String getLastParam(String url) {
+
+        String urlPattern = this.getDictionary().get("urlpattern").toString();
+        Option<String> result = handler.getLastParam(url, urlPattern);
+        if (result.isDefined()) {
             return result.get();
         } else {
             return null;
         }
     }
-    
+
     @Start
     public void startPage() {
         handler.initRegex(this.getDictionary().get("urlpattern").toString());
@@ -53,7 +55,7 @@ public class AbstractPage extends AbstractComponentType {
 
     @Stop
     public void stopPage() {
-       //NOOP
+        //NOOP
     }
 
     @Update
@@ -72,10 +74,10 @@ public class AbstractPage extends AbstractComponentType {
         }
     }
 
-    public KevoreeHttpResponse buildResponse(KevoreeHttpRequest request){
-          KevoreeHttpResponse responseKevoree = new KevoreeHttpResponseImpl();
-          responseKevoree.setTokenID(request.getTokenID());
-          return responseKevoree;
+    public KevoreeHttpResponse buildResponse(KevoreeHttpRequest request) {
+        KevoreeHttpResponse responseKevoree = new KevoreeHttpResponseImpl();
+        responseKevoree.setTokenID(request.getTokenID());
+        return responseKevoree;
     }
 
     @Port(name = "request")
@@ -83,13 +85,13 @@ public class AbstractPage extends AbstractComponentType {
         KevoreeHttpRequest request = resolveRequest(param);
         if (request != null) {
             KevoreeHttpResponse response = buildResponse(request);
-            response = process(request,response);
+            response = process(request, response);
             this.getPortByName("content", MessagePort.class).process(response);//SEND MESSAGE
         }
     }
 
 
-    public KevoreeHttpResponse process(KevoreeHttpRequest request,KevoreeHttpResponse response){
+    public KevoreeHttpResponse process(KevoreeHttpRequest request, KevoreeHttpResponse response) {
         //TO OVERRIDE
         return response;
     }
