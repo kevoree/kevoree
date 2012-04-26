@@ -3,7 +3,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * 	http://www.gnu.org/licenses/lgpl-3.0.txt
+ * http://www.gnu.org/licenses/lgpl-3.0.txt
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -54,18 +54,18 @@ case class ContainerNodeAspect (node: ContainerNode) {
     //  }
 
     /* ADD COMPONENT TYPE USED */
-    node.getComponents.foreach(c => usedType = usedType ++ getTypeAndInherited(c.getTypeDefinition) )
-      /*
-    node.getComponents.foreach { c =>
-        if (!usedType.exists({
-          e => e.getName == c.getTypeDefinition.getName
-        })) {
-          //usedType = usedType ++ List(c.getTypeDefinition)
-          //if (c.getTypeDefinition.getSuperTypes != null) {
-          usedType = usedType ++ getTypeAndInherited(c.getTypeDefinition)
-          //}
-        }
-    }   */
+    node.getComponents.foreach(c => usedType = usedType ++ getTypeAndInherited(c.getTypeDefinition))
+    /*
+        node.getComponents.foreach { c =>
+            if (!usedType.exists({
+              e => e.getName == c.getTypeDefinition.getName
+            })) {
+              //usedType = usedType ++ List(c.getTypeDefinition)
+              //if (c.getTypeDefinition.getSuperTypes != null) {
+              usedType = usedType ++ getTypeAndInherited(c.getTypeDefinition)
+              //}
+            }
+        }   */
 
     /* ADD CHANNEL TYPE USED */
     /* add channel fragment on node */
@@ -137,15 +137,20 @@ case class ContainerNodeAspect (node: ContainerNode) {
     types
   }
 
-  def isDeployUnitUsed(du : DeployUnit) : Boolean = {
-    node.getUsedTypeDefinition.exists( usedTypeDef => {
+  def isDeployUnitUsed (du: DeployUnit): Boolean = {
+    node.getUsedTypeDefinition.exists(usedTypeDef => {
       val usedDU = usedTypeDef.foundRelevantDeployUnit(node)
       usedDU.isDeployUnitUsed(du)
     })
   }
 
 
-
+  def getKevoreeVersion: String = {
+    node.getTypeDefinition.foundRelevantDeployUnit(node).getRequiredLibs.find(du => du.getGroupName == "org.kevoree" && du.getUnitName == "org.kevoree.api") match {
+      case None => "" // must never appear
+      case Some(du) => du.getVersion
+    }
+  }
 
 
 }
