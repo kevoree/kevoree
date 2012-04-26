@@ -43,7 +43,7 @@ addToGroup sync fog10
 updateDictionary sync {ip="10.0.0.2", port="8000"}@cumulus,{ip="10.0.1.1", port="8000"}@fog1,{ip="10.0.2.1", port="8000"}@fog2,{ip="10.0.3.1", port="8000"}@fog3,{ip="10.0.4.1", port="8000"}@fog4,{ip="10.0.5.1", port="8000"}@fog5,{ip="10.0.6.1", port="8000"}@fog6,{ip="10.0.7.1", port="8000"}@fog7,{ip="10.0.8.1", port="8000"}@fog8,{ip="10.0.9.1", port="8000"}@fog9,{ip="10.0.10.1", port="8000"}@fog10
 
 // Kloud manager configuration
-addComponent webServer@cumulus : WebServer {port = "8080", timeout = "5000"}
+addComponent webServer@cumulus : KTinyWebServer {port = "8080", timeout = "5000"}
 addComponent paaSKloudResourceManagerPage@cumulus : PaaSKloudResourceManagerPage {urlpattern = "/kloud/{login}/{action}"}
 addComponent paaSKloudResourceManager@cumulus : PaaSKloudResourceManager
 addComponent iaaSKloudResourceManager@cumulus : IaaSKloudResourceManager
