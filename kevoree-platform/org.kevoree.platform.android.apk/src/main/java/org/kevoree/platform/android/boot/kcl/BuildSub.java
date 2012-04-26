@@ -45,7 +45,13 @@ public class BuildSub implements Runnable{
         try
         {
             st  = this.getClass().getClassLoader().getResourceAsStream("boot/"+name+"/classes.dex");
-            String cleanName = System.currentTimeMillis() + name.replaceAll(File.separator, "_").replaceAll(":", "_")+".dex";
+
+            String cleanName = "";
+            if(name.contains("scala.library.android")){
+                 cleanName = name.replaceAll(File.separator, "_").replaceAll(":", "_")+".dex";
+            } else {
+                 cleanName = System.currentTimeMillis() + name.replaceAll(File.separator, "_").replaceAll(":", "_")+".dex";
+            }
 
             File dexInternalStoragePath = new File(ctx.getDir("dex", Context.MODE_WORLD_WRITEABLE), cleanName);
             dexWriter = new BufferedOutputStream(new FileOutputStream(dexInternalStoragePath));
