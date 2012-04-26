@@ -25,7 +25,6 @@ public class NioFilteredChannel extends NioChannel {
 
 	@Override
 	public Object dispatch (Message message) {
-		logger.debug("TOTO");
 		if (message.getDestNodeName().equals(this.getNodeName())) {
 			if (message.getContent() instanceof StdKevoreeMessage
 					&& ((StdKevoreeMessage) message.getContent()).getValue("destComponentName").isDefined()
