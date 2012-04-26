@@ -11,6 +11,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/**
+ * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.gnu.org/licenses/lgpl-3.0.txt
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 /*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
@@ -21,6 +34,7 @@ package org.kevoree.framework.aspects
 import org.kevoree._
 import KevoreeAspects._
 import org.slf4j.LoggerFactory
+import collection.mutable.HashMap
 
 case class TypeDefinitionAspect(selfTD: TypeDefinition) {
 
@@ -57,7 +71,7 @@ case class TypeDefinitionAspect(selfTD: TypeDefinition) {
       return true
     }
     if (pTD.getFactoryBean != selfTD.getFactoryBean) {
-//      logger.debug("{} => {}", pTD.getFactoryBean, selfTD.getFactoryBean)
+      //      logger.debug("{} => {}", pTD.getFactoryBean, selfTD.getFactoryBean)
       return true
     }
     //DICTIONARY TYPE CHECK
@@ -142,7 +156,7 @@ case class TypeDefinitionAspect(selfTD: TypeDefinition) {
                 case None => false
               }
             })
-//            logger.debug("Equality check: {} - {} - {}", Array(selfTD.getName, providedEquality, requiredEquality))
+            //            logger.debug("Equality check: {} - {} - {}", Array(selfTD.getName, providedEquality, requiredEquality))
 
             !providedEquality || !requiredEquality
           }
@@ -182,16 +196,7 @@ case class TypeDefinitionAspect(selfTD: TypeDefinition) {
     val oneUpdated = selfTD.getDeployUnits.exists(selfDU => {
       pTD.getDeployUnits.find(p => p.isModelEquals(selfDU)) match {
         case Some(pDU) => {
-          try {
-            val pDUInteger = java.lang.Long.parseLong(pDU.getHashcode)
-            val selfDUInteger = java.lang.Long.parseLong(selfDU.getHashcode)
-            selfDUInteger < pDUInteger
-          } catch {
-            case _@e => {
-              logger.error("Bad HashCode - equiality verification - {} != {}", Array(pDU.getHashcode, selfDU.getHashcode), e)
-              pDU.getHashcode != selfDU.getHashcode
-            }
-          }
+          selfDU.isUpdated(pDU,new java.util.HashMap[String,Boolean]())
         }
         case _ => {
           true
@@ -230,7 +235,7 @@ case class TypeDefinitionAspect(selfTD: TypeDefinition) {
       case _ => //logger.debug("Deploy Unit not found on first level {}", selfTD.getName)
     }
     if (deployUnitfound == null) {
-//      logger.debug("No deploy unit has been found for deployment of {} on node {} : {}", Array(selfTD.getName,node.getName,node.getTypeDefinition.getName))
+      //      logger.debug("No deploy unit has been found for deployment of {} on node {} : {}", Array(selfTD.getName,node.getName,node.getTypeDefinition.getName))
       deployUnitfound = foundRelevantDeployUnitOnNodeSuperTypes(node.getTypeDefinition.asInstanceOf[NodeType], selfTD)
     }
     //logger.debug("will exit with => {}", deployUnitfound)
@@ -253,7 +258,7 @@ case class TypeDefinitionAspect(selfTD: TypeDefinition) {
               }*/
               deployUnitfound = td //tNode.getDeployUnits(0)
 
-//              logger.debug("found & exit={}", deployUnitfound.getUnitName)
+              //              logger.debug("found & exit={}", deployUnitfound.getUnitName)
               return deployUnitfound
             }
         }
@@ -262,7 +267,7 @@ case class TypeDefinitionAspect(selfTD: TypeDefinition) {
     if (deployUnitfound == null) {
       nodeType.getSuperTypes.foreach(superNode => {
         // call recursively for super types and test if something has been found {
-//        logger.debug("Search on super type => {}", superNode.getName)
+        //        logger.debug("Search on super type => {}", superNode.getName)
         deployUnitfound = foundRelevantDeployUnitOnNodeSuperTypes(superNode.asInstanceOf[NodeType], t)
         if (deployUnitfound != null) {
           return deployUnitfound

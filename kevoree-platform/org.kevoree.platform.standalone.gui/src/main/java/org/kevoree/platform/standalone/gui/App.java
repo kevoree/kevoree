@@ -35,6 +35,9 @@ public class App {
 
     protected void start() {
 
+
+        //System.setProperty("kevoree.log.level", "DEBUG");
+
        // System.setProperty("actors.enableForkJoin", "false");
         DefaultSystem.saveSystemFlux();
 

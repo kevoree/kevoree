@@ -36,6 +36,7 @@ trait KevoreeScheduler {
       var currentStep = step
       adaptionModel.setOrderedPrimitiveSet(Some(currentStep))
       //PROCESS STOP
+
       scheduling.schedule(adaptionModel.getAdaptations
         .filter(adapt => adapt.getPrimitiveType.getName == JavaSePrimitive.StopInstance).toList, false).foreach {
         p =>
