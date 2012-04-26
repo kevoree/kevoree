@@ -75,7 +75,14 @@ class URLHandlerScala {
   }
   
   def getLastParam(url : String, urlPattern : String) : Option[String] = {
-    val regexText = urlPattern.toString.replaceAll("\\*{2,}","(.*)").replaceAll("[^.]\\*{1,}","(/?[^/]*)")
+
+    var purlPattern = urlPattern
+    val m = Pattern.compile("\\{(\\w+)\\}").matcher(purlPattern)
+    while (m.find) {
+      purlPattern = purlPattern.replace("{"+m.group(1)+"}",".*")
+    }
+
+    val regexText = purlPattern.toString.replaceAll("\\*{2,}","(.*)").replaceAll("[^.]\\*{1,}","(/?[^/]*)")
     (new Regex(regexText)).unapplySeq(url) match {
       case Some(l)=> {
         if(l.length > 0 ){

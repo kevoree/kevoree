@@ -11,6 +11,6 @@ object UrlHandlerTester extends App {
 
   val h = new URLHandlerScala
   
-  println(h.getLastParam("/core","/**"))
+  println(h.getLastParam("/core/t","/{p1}/**"))
   
 }
