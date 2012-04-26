@@ -13,11 +13,6 @@
         <relativePath>../org.kevoree.library.android.root/pom.xml</relativePath>
     </parent>
 
-    <properties>
-        <android.tools.aapt>${android.home}/platform-tools/aapt</android.tools.aapt>
-        <android.tools.dx>${android.home}/platform-tools/dx</android.tools.dx>
-    </properties>
-
     <build>
         <sourceDirectory>../../javase/org.kevoree.library.javase.defaultChannels/src</sourceDirectory>
         <plugins>

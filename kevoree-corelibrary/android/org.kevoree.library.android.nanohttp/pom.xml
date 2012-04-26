@@ -14,8 +14,6 @@
     </parent>
 
     <properties>
-        <android.tools.aapt>${android.home}/platform-tools/aapt</android.tools.aapt>
-        <android.tools.dx>${android.home}/platform-tools/dx</android.tools.dx>
         <kevoree.include>org.kevoree:*,org.kevoree.tools:*</kevoree.include>
     </properties>
 
