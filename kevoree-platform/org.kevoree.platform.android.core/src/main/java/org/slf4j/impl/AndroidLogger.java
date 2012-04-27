@@ -125,26 +125,26 @@ public class AndroidLogger extends MarkerIgnoringBase {
     /* @see org.slf4j.Logger#info(java.lang.String, java.lang.Object) */
     public void info(final String format, final Object arg) {
         Log.i(name, format(format, arg, null));
-        System.err.println(name+"->"+format(format, arg,null));
+        System.out.println(name+"->"+format(format, arg,null));
     }
 
     /* @see org.slf4j.Logger#info(java.lang.String, java.lang.Object, java.lang.Object) */
     public void info(final String format, final Object arg1, final Object arg2) {
         Log.i(name, format(format, arg1, arg2));
-        System.err.println(name+"->"+format(format, arg1,arg2));
+        System.out.println(name+"->"+format(format, arg1,arg2));
     }
 
     /* @see org.slf4j.Logger#info(java.lang.String, java.lang.Object[]) */
     public void info(final String format, final Object[] argArray) {
         Log.i(name, format(format, argArray));
-        System.err.println(name+"->"+format(format, argArray));
+        System.out.println(name+"->"+format(format, argArray));
     }
 
     /* @see org.slf4j.Logger#info(java.lang.String, java.lang.Throwable) */
     public void info(final String msg, final Throwable t) {
         Log.i(name, msg, t);
         System.out.println(name+"->"+t.getMessage());
-        t.printStackTrace();
+//        t.printStackTrace();
     }
 
     /* @see org.slf4j.Logger#isWarnEnabled() */
