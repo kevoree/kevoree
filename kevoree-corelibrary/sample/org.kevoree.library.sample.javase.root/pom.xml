@@ -12,10 +12,6 @@
         <relativePath>../org.kevoree.library.sample.root/pom.xml</relativePath>
     </parent>
 
-    <!--<modules>
-        <module>../org.kevoree.library.sample.javase.helloworld</module>
-    </modules>-->
-
     <build>
         <plugins>
             <plugin>
@@ -28,6 +24,7 @@
                     <appendAssemblyId>false</appendAssemblyId>
                     <finalName>org.kevoree.library.sample.javase.helloworld</finalName>
                 </configuration>
+                <extensions>true</extensions>
                 <executions>
                     <execution>
                         <id>make-assembly</id>
