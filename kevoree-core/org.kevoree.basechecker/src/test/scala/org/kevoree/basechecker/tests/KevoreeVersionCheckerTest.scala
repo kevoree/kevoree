@@ -28,7 +28,7 @@ import org.kevoree.core.basechecker.kevoreeVersionChecker.{KevoreeNodeVersionChe
  */
 
 class KevoreeVersionCheckerTest extends AssertionsForJUnit with BaseCheckerSuite {
-
+   /*
   @Test def checkKevoreeNodeVersionOK () {
     val m = model("test_checker/kevoreeVersionChecker/validModel.kev")
     val kevoreeVersionChecker = new KevoreeNodeVersionChecker("node0")
@@ -44,7 +44,7 @@ class KevoreeVersionCheckerTest extends AssertionsForJUnit with BaseCheckerSuite
       v => println(v.getMessage)
     }*/
     assert(violations.size().equals(1))
-  }
+  } */
 
   @Test def checkKevoreeVersionOK () {
     val m = model("test_checker/kevoreeVersionChecker/validModel.kev")
