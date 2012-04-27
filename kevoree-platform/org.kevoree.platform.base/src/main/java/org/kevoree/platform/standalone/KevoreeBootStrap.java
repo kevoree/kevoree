@@ -77,7 +77,7 @@ public class KevoreeBootStrap {
 
 			KevoreeJarClassLoader jcl = new KevoreeJarClassLoader();
             if(!byPassAetherBootstrap){
-                jcl.add(this.getClass().getClassLoader().getResourceAsStream("org.kevoree.tools.aether.framework-" + KevoreeFactory.getVersion() + ".jar"));
+                jcl.add(this.getClass().getClassLoader().getResourceAsStream("org.kevoree.tools.aether.framework-" + KevoreeFactory.getVersion() + ".pack.jar"));
             }
 
 			Class clazz = jcl.loadClass("org.kevoree.tools.aether.framework.NodeTypeBootstrapHelper");
