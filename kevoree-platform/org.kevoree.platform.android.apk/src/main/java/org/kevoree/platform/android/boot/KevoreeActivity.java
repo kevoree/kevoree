@@ -38,6 +38,10 @@ public class KevoreeActivity extends FragmentActivity implements  OnChangeListen
     @Override
     protected synchronized void onCreate(Bundle savedInstanceState)
     {
+
+        System.setProperty("actors.enableForkJoin", "false");
+        System.setProperty("actors.maxPoolSize", "256");
+
         super.onCreate(savedInstanceState);
 
         if(controller == null)
@@ -56,6 +60,7 @@ public class KevoreeActivity extends FragmentActivity implements  OnChangeListen
 
     @Override
     public void onChange(ManagerUI model) {
+        /*
         Log.i(TAG,"onChange triggered") ;
         runOnUiThread(new Runnable() {
             @Override
@@ -65,6 +70,6 @@ public class KevoreeActivity extends FragmentActivity implements  OnChangeListen
             }
         });
         ;
-
+         */
     }
 }

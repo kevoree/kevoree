@@ -39,19 +39,20 @@ public class TinyKCL {
     public void start(/*Activity act,*/Context ctx,ClassLoader parentCL)
     {
         //INIT BOOT SEQUENCE
-        pool = Executors.newFixedThreadPool(10);
-        pool.execute(new BuildSub(ctx,parentCL,"scala.library.android.actor",clusterKCL));
-        pool.execute(new BuildSub(ctx,parentCL,"scala.library.android.base",clusterKCL));
-        pool.execute(new BuildSub(ctx,parentCL,"scala.library.android.collection.base",clusterKCL));
-        pool.execute(new BuildSub(ctx,parentCL,"scala.library.android.collection.immutable",clusterKCL));
-        pool.execute(new BuildSub(ctx,parentCL,"scala.library.android.collection.mutable",clusterKCL));
-        pool.execute(new BuildSub(ctx,parentCL,"scala.library.android.collection.parallel",clusterKCL));
-        pool.execute(new BuildSub(ctx,parentCL,"scala.library.android.runtime",clusterKCL));
-        pool.execute(new BuildSub(ctx,parentCL,"scala.library.android.util",clusterKCL));
-        pool.execute(new BuildSub(ctx,parentCL,"org.kevoree.platform.android.core",clusterKCL));
-        pool.execute(new BuildSub(ctx,parentCL,"org.kevoree.tools.aether.framework.android",clusterKCL));
+       // pool = Executors.newFixedThreadPool(10);
+        new BuildSub(ctx,parentCL,"scala.library.android.actor",clusterKCL).run();
+        new BuildSub(ctx,parentCL,"scala.library.android.base",clusterKCL).run();
+        new BuildSub(ctx,parentCL,"scala.library.android.collection.base",clusterKCL).run();
+        new BuildSub(ctx,parentCL,"scala.library.android.collection.immutable",clusterKCL).run();
+        new BuildSub(ctx,parentCL,"scala.library.android.collection.mutable",clusterKCL).run();
+        new BuildSub(ctx,parentCL,"scala.library.android.collection.parallel",clusterKCL).run();
+        new BuildSub(ctx,parentCL,"scala.library.android.runtime",clusterKCL).run();
+        new BuildSub(ctx,parentCL,"scala.library.android.util",clusterKCL).run();
+        new BuildSub(ctx,parentCL,"org.kevoree.platform.android.core",clusterKCL).run();
+        new BuildSub(ctx,parentCL,"org.kevoree.tools.aether.framework.android",clusterKCL).run();
     }
 
+    /*
     public  void waitTinyKCL(){
         try
         {
@@ -62,7 +63,7 @@ public class TinyKCL {
         {
             Log.e("TinyKCL ExecutorService", ignored.getMessage());
         }
-    }
+    }   */
 
     public void stop(){
 

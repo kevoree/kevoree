@@ -52,14 +52,13 @@ public class BuildSub implements Runnable{
             } else {
                  cleanName = System.currentTimeMillis() + name.replaceAll(File.separator, "_").replaceAll(":", "_")+".dex";
             }
-
             File dexInternalStoragePath = new File(ctx.getDir("dex", Context.MODE_WORLD_WRITEABLE), cleanName);
             dexWriter = new BufferedOutputStream(new FileOutputStream(dexInternalStoragePath));
             byte[] b = new byte[1024*16];
             int len = 0;
-            while ((len = st.read(b)) != -1)
+            while ((len = st.read(b)) != -1){
                 dexWriter.write(b, 0, len);
-
+            }
             dexWriter.flush();
             dexWriter.close();
             st.close();
