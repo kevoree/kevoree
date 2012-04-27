@@ -23,7 +23,7 @@ public class App {
 
     public void start() throws Exception {
 
-        System.setProperty("kevoree.log.level", "DEBUG");
+      //  System.setProperty("kevoree.log.level", "DEBUG");
 
 
         //TO REMOVE
