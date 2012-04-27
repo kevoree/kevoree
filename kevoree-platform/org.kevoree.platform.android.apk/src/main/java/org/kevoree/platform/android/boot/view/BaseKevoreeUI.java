@@ -138,7 +138,7 @@ public class BaseKevoreeUI extends LinearLayout {
         checkbox_list = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+				// TODO manage log level modification
             }
         };
 
