@@ -29,14 +29,14 @@ package org.kevoree.tools.aether.framework
 
 import org.sonatype.aether.util.artifact.DefaultArtifact
 import org.kevoree.{ContainerRoot, DeployUnit}
-import java.io.File
-import org.sonatype.aether.artifact.Artifact
 import org.kevoree.framework.KevoreePlatformHelper
 import util.matching.Regex
-import org.sonatype.aether.repository.{Authentication, RemoteRepository}
 import scala.collection.JavaConversions._
 import org.slf4j.LoggerFactory
 import org.sonatype.aether.resolution.{VersionRequest, ArtifactRequest}
+import org.sonatype.aether.artifact.Artifact
+import org.sonatype.aether.repository.{RemoteRepository, Authentication}
+import java.io.File
 
 /**
  * User: ffouquet
@@ -44,7 +44,7 @@ import org.sonatype.aether.resolution.{VersionRequest, ArtifactRequest}
  * Time: 15:06
  */
 
-object AetherUtil extends TempFileCacheManager with AetherRepositoryHandler {
+object AetherUtil extends TempFileCacheManager with AetherRepositoryHandler with CorruptedFileChecker {
 
   private val logger = LoggerFactory.getLogger(this.getClass)
 
@@ -120,8 +120,18 @@ object AetherUtil extends TempFileCacheManager with AetherRepositoryHandler {
 
     try {
       artifactRequest.setRepositories(repositories)
-      val artefactResult = getRepositorySystem.resolveArtifact(getRepositorySystemSession, artifactRequest)
-      installInCache(artefactResult.getArtifact)
+      var artefactResult = getRepositorySystem.resolveArtifact(getRepositorySystemSession, artifactRequest)
+      val corruptedFile = artefactResult.getArtifact
+      if(corruptedFile == null || !checkFile(corruptedFile.getFile)){
+        artefactResult = getRepositorySystem.resolveArtifact(getRepositorySystemSession, artifactRequest)
+      }
+
+      if(checkFile(artefactResult.getArtifact.getFile)){
+        installInCache(artefactResult.getArtifact)
+      } else {
+        logger.warn("Aether return bad Corrupted File after second try , abording")
+        null
+      }
     } catch {
       case _@e => {
         logger.debug("Error while resolving {}", du.getUnitName.trim(), e)
