@@ -105,7 +105,7 @@
                                     <version>${kevoree.version}</version>
                                     <overWrite>false</overWrite>
                                     <outputDirectory>${project.basedir}/target/boot</outputDirectory>
-                                    <destFileName>org.kevoree.tools.aether.framework-${kevoree.version}.jar</destFileName>
+                                    <destFileName>org.kevoree.tools.aether.framework-${kevoree.version}.pack.jar</destFileName>
                                 </artifactItem>
                             </artifactItems>
                             <overWriteReleases>false</overWriteReleases>
