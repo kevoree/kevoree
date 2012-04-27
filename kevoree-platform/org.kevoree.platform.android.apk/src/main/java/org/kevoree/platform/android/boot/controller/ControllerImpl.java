@@ -13,6 +13,7 @@
  */
 package org.kevoree.platform.android.boot.controller;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Environment;
 import android.support.v4.app.FragmentActivity;
@@ -31,23 +32,21 @@ import java.io.File;
  * Time: 15:09
  */
 
-public class ControllerImpl implements IController  {
+public class ControllerImpl implements IController {
     private static final String TAG = ControllerImpl.class.getSimpleName();
-    private ManagerUI viewmanager=null;
+    private ManagerUI viewmanager = null;
     public static TinyKCL tkcl = null;
-    private FragmentActivity ctx=null;
+    private FragmentActivity ctx = null;
 
-    public ControllerImpl(FragmentActivity act)
-    {
+    public ControllerImpl(FragmentActivity act) {
         viewmanager = new ManagerUI(act);
-        this.ctx  = viewmanager.getCtx();
-        initKCL();
+        this.ctx = viewmanager.getCtx();
+
     }
 
     @Override
     public boolean handleMessage(Request req) {
-        switch(req)
-        {
+        switch (req) {
             case KEVOREE_STOP:
                 Log.i(TAG, "KEVOREE_STOP");
                 Intent intent_stop = new Intent(ctx, KevoreeService.class);
@@ -56,7 +55,7 @@ public class ControllerImpl implements IController  {
                 break;
 
             default:
-                Log.e(TAG, "THE Controller can't handle this message "+req);
+                Log.e(TAG, "THE Controller can't handle this message " + req);
                 break;
         }
         return false;
@@ -64,14 +63,12 @@ public class ControllerImpl implements IController  {
 
     @Override
     public boolean handleMessage(Request req, final Object data) {
-        try
-        {
-            switch(req)
-            {
+        try {
+            switch (req) {
                 case KEVOREE_START:
                     Log.i(TAG, "KEVOREE_START");
                     Intent intent_start = new Intent(ctx, KevoreeService.class);
-                    String nodeName = (String)data;
+                    String nodeName = (String) data;
                     intent_start.putExtra("nodeName", nodeName);
                     ctx.startService(intent_start);
                     break;
@@ -81,7 +78,7 @@ public class ControllerImpl implements IController  {
                     ctx.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            View viewtoremove =  (View) data;
+                            View viewtoremove = (View) data;
                             viewmanager.removeView(viewtoremove);
 
                         }
@@ -90,13 +87,13 @@ public class ControllerImpl implements IController  {
                     break;
 
                 default:
-                    Log.e(TAG, "THE Controller can't handle this message "+req);
+                    Log.e(TAG, "THE Controller can't handle this message " + req);
                     break;
 
 
             }
             return true;
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
@@ -104,10 +101,8 @@ public class ControllerImpl implements IController  {
 
     @Override
     public boolean handleMessage(Request req, final String key, final View view) {
-        try
-        {
-            switch(req)
-            {
+        try {
+            switch (req) {
                 case ADD_TO_GROUP:
                     Log.i(TAG, "MESSAGE_ADD_TO_GROUP");
                     ctx.runOnUiThread(new Runnable() {
@@ -119,20 +114,20 @@ public class ControllerImpl implements IController  {
 
                     break;
                 default:
-                    Log.e(TAG, "THE Controller can't handle this message "+req);
+                    Log.e(TAG, "THE Controller can't handle this message " + req);
                     break;
 
 
             }
             return true;
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
     }
 
 
-    public ManagerUI getViewManager(){
+    public ManagerUI getViewManager() {
         return viewmanager;
     }
 
@@ -144,39 +139,32 @@ public class ControllerImpl implements IController  {
         this.ctx = ctx;
     }
 
-    public void initKCL()
-    {
-        new Thread(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                tkcl = new TinyKCL();
-                File sdDir = Environment.getExternalStorageDirectory();
-                File kevoree_cache = new File(sdDir.getAbsolutePath() + "/KEVOREE");
-                Log.i("kevoree.android", kevoree_cache.getAbsolutePath());
-                if (!kevoree_cache.exists()) {
-                    if (!kevoree_cache.mkdirs()) {
-                        Log.e("kevoree.M2", "unable to create cache");
-                        throw new IllegalStateException("Unable to create kevoree maven repo cache dir");
-                    } else {
-                        Log.i("kevoree.M2", "cache created");
-                    }
-                }
-                System.setProperty("user.home", kevoree_cache.getAbsolutePath());
-                tkcl.start(ctx.getBaseContext(), ctx.getClassLoader());
+
+    public static void initKCL(Context c) {
+        tkcl = new TinyKCL();
+        File sdDir = Environment.getExternalStorageDirectory();
+        File kevoree_cache = new File(sdDir.getAbsolutePath() + "/KEVOREE");
+        Log.i("kevoree.android", kevoree_cache.getAbsolutePath());
+        if (!kevoree_cache.exists()) {
+            if (!kevoree_cache.mkdirs()) {
+                Log.e("kevoree.M2", "unable to create cache");
+                throw new IllegalStateException("Unable to create kevoree maven repo cache dir");
+            } else {
+                Log.i("kevoree.M2", "cache created");
             }
-        }).start();
+        }
+        System.setProperty("user.home", kevoree_cache.getAbsolutePath());
+        tkcl.start(c, c.getClassLoader());
     }
 
 
     @Override
     public void addToGroup(String groupKey, View view) {
-        handleMessage(Request.ADD_TO_GROUP,groupKey,view);
+        handleMessage(Request.ADD_TO_GROUP, groupKey, view);
     }
 
     @Override
     public void removeView(View view) {
-        handleMessage(Request.REMOVE_VIEW,view);
+        handleMessage(Request.REMOVE_VIEW, view);
     }
 }

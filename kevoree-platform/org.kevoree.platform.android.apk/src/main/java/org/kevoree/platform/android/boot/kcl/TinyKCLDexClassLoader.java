@@ -13,7 +13,10 @@
  */
 package org.kevoree.platform.android.boot.kcl;
 
+import android.util.Log;
 import dalvik.system.DexClassLoader;
+
+import java.net.URL;
 
 /**
  * Created with IntelliJ IDEA.
@@ -37,5 +40,15 @@ public class TinyKCLDexClassLoader extends DexClassLoader {
     @Override
     public Class<?> loadClass(String s) throws ClassNotFoundException {
         return clusterCL.loadClass(s);
+    }
+
+    @Override
+    protected URL findResource(String name) {
+        try {
+          return super.findResource(name);
+        } catch(Exception e) {
+            Log.i("KCL not find resources ",name);
+        }
+        return null;
     }
 }

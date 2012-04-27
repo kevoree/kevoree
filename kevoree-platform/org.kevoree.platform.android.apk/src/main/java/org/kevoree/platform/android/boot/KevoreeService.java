@@ -49,10 +49,7 @@ public class KevoreeService extends Service {
         super.onStart(intent, startId);
 
         nodeName =  intent.getExtras().getString("nodeName");
-
-
         Log.i("KevoreeService onStartCommand",""+nodeName);
-
         System.setProperty("java.net.preferIPv6Addresses", "false");
         System.setProperty("java.net.preferIPv4Addresses", "true");
         System.setProperty("java.net.preferIPv4Stack", "true");
@@ -60,10 +57,9 @@ public class KevoreeService extends Service {
         new Thread() {
             @Override
             public void run() {
-
-                ControllerImpl.tkcl.waitTinyKCL();
                 try
                 {
+                    ControllerImpl.initKCL(getBaseContext());
                     Class bootClazz =  ControllerImpl.tkcl.getClusterKCL().loadClass("org.kevoree.platform.android.core.KevoreeAndroidBootStrap");
                     bootObj = bootClazz.newInstance();
                     Method startM = bootClazz.getMethod("start",Activity.class, android.content.Context.class, ClassLoader.class, KevoreeAndroidUIScreen.class, String.class);
