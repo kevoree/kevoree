@@ -167,7 +167,7 @@ class KevoreeAndroidBootStrap {
       coreBean.start();
 
 
-      val file = bootstraper.asInstanceOf[Bootstraper].resolveKevoreeArtifact("org.kevoree.library.model.bootstrap.android", "org.kevoree.library.model", KevoreeFactory.getVersion)
+      val file = bootstraper.asInstanceOf[Bootstraper].resolveKevoreeArtifact("org.kevoree.library.model.bootstrap.android", "org.kevoree.corelibrary.model", KevoreeFactory.getVersion)
       val jar = new JarFile(file)
       val entry = jar.getJarEntry("KEV-INF/lib.kev")
       val bootstrapModel = KevoreeXmiHelper.loadStream(jar.getInputStream(entry))
