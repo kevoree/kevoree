@@ -100,6 +100,15 @@ class KevoreeAndroidBootStrap {
       val selfRegisteredClazz = bootstraper.asInstanceOf[Bootstraper].getClass
       selfRegisteredClazz.getMethods.find(m => m.getName == "registerManuallyDeployUnit").map {
         m =>
+
+          m.invoke(bootstraper, "scala-library", "org.scala-lang", "2.9.2", dummyKCL);
+          m.invoke(bootstraper, "cglib-nodep", "cglib", "2.2.2", dummyKCL);
+          m.invoke(bootstraper, "slf4j-api", "org.slf4j", "1.6.4", dummyKCL);
+          m.invoke(bootstraper, "slf4j-api", "org.slf4j", "1.6.2", dummyKCL);
+          m.invoke(bootstraper, "objenesis", "org.objenesis", "1.2", dummyKCL);
+
+
+
           m.invoke(bootstraper, "org.kevoree.adaptation.model", "org.kevoree", KevoreeFactory.getVersion, dummyKCL);
           m.invoke(bootstraper, "org.kevoree.api", "org.kevoree", KevoreeFactory.getVersion, dummyKCL);
           m.invoke(bootstraper, "org.kevoree.basechecker", "org.kevoree", KevoreeFactory.getVersion, dummyKCL);
@@ -115,55 +124,12 @@ class KevoreeAndroidBootStrap {
           m.invoke(bootstraper, "org.kevoree.tools.marShell", "org.kevoree.tools", KevoreeFactory.getVersion, dummyKCL);
           m.invoke(bootstraper, "org.kevoree.tools.aether.framework.android", "org.kevoree.tools", KevoreeFactory.getVersion, dummyKCL);
 
+
+
+
+
       }
 
-
-      // selfRegisteredClazz.get
-
-
-      /*
-    for (Method m: selfRegisteredClazz.getMethods()) {
-    if (m.getName().equals("registerManuallyDeployUnit")) {
-      logger.debug("Manual Init Aether KCL");
-      // m.invoke(bootstraper, "org.kevoree.tools.aether.framework", "org.kevoree.tools", KevoreeFactory.getVersion(), jcl);
-
-      // logger.debug("Manual Init MarShell KCL");
-      // m.invoke(bootstraper, "org.kevoree.tools.marShell", "org.kevoree.tools", KevoreeFactory.getVersion(), scriptEngineKCL);
-
-      logger.debug("Manual Init AdaptationModel");
-      m.invoke(bootstraper, "org.kevoree.adaptation.model", "org.kevoree", KevoreeFactory.getVersion(), dummyKCL);
-      m.invoke(bootstraper, "org.kevoree.api", "org.kevoree", KevoreeFactory.getVersion(), dummyKCL);
-      m.invoke(bootstraper, "org.kevoree.basechecker", "org.kevoree", KevoreeFactory.getVersion(), dummyKCL);
-      m.invoke(bootstraper, "org.kevoree.core", "org.kevoree", KevoreeFactory.getVersion(), dummyKCL);
-      m.invoke(bootstraper, "org.kevoree.framework", "org.kevoree", KevoreeFactory.getVersion(), dummyKCL);
-      m.invoke(bootstraper, "org.kevoree.kcl", "org.kevoree", KevoreeFactory.getVersion(), dummyKCL);
-      m.invoke(bootstraper, "org.kevoree.kompare", "org.kevoree", KevoreeFactory.getVersion(), dummyKCL);
-      m.invoke(bootstraper, "org.kevoree.merger", "org.kevoree", KevoreeFactory.getVersion(), dummyKCL);
-      m.invoke(bootstraper, "org.kevoree.model", "org.kevoree", KevoreeFactory.getVersion(), dummyKCL);
-
-      m.invoke(bootstraper, "org.kevoree.tools.annotation.api", "org.kevoree.tools", KevoreeFactory.getVersion(), dummyKCL);
-      m.invoke(bootstraper, "org.kevoree.tools.android.framework", "org.kevoree.tools", KevoreeFactory.getVersion(), dummyKCL);
-
-    }
-  }    */
-
-      /*
-  bootstraper.registerManuallyDeployUnit("org.kevoree.tools.aether.framework", "org.kevoree.tools", KevoreeFactory.getVersion(), dummyKCL);
-  bootstraper.registerManuallyDeployUnit("org.kevoree.tools.aether.framework.android", "org.kevoree.tools", KevoreeFactory.getVersion(), dummyKCL);
-  bootstraper.registerManuallyDeployUnit("org.kevoree.tools.marShell", "org.kevoree.tools", KevoreeFactory.getVersion(), dummyKCL);
-
-  bootstraper.registerManuallyDeployUnit("org.kevoree.adaptation.model", "org.kevoree", KevoreeFactory.getVersion(), dummyKCL);
-  bootstraper.registerManuallyDeployUnit("org.kevoree.api", "org.kevoree", KevoreeFactory.getVersion(), dummyKCL);
-  bootstraper.registerManuallyDeployUnit("org.kevoree.basechecker", "org.kevoree", KevoreeFactory.getVersion(), dummyKCL);
-  bootstraper.registerManuallyDeployUnit("org.kevoree.core", "org.kevoree", KevoreeFactory.getVersion(), dummyKCL);
-  bootstraper.registerManuallyDeployUnit("org.kevoree.framework", "org.kevoree", KevoreeFactory.getVersion(), dummyKCL);
-  bootstraper.registerManuallyDeployUnit("org.kevoree.kcl", "org.kevoree", KevoreeFactory.getVersion(), dummyKCL);
-  bootstraper.registerManuallyDeployUnit("org.kevoree.kompare", "org.kevoree", KevoreeFactory.getVersion(), dummyKCL);
-  bootstraper.registerManuallyDeployUnit("org.kevoree.merger", "org.kevoree", KevoreeFactory.getVersion(), dummyKCL);
-  bootstraper.registerManuallyDeployUnit("org.kevoree.model", "org.kevoree", KevoreeFactory.getVersion(), dummyKCL);
-  bootstraper.registerManuallyDeployUnit("org.kevoree.tools.annotation.api", "org.kevoree.tools", KevoreeFactory.getVersion(), dummyKCL);
-  bootstraper.registerManuallyDeployUnit("org.kevoree.tools.android.framework", "org.kevoree.tools", KevoreeFactory.getVersion(), dummyKCL);
-      */
       coreBean.start();
 
 
@@ -173,6 +139,8 @@ class KevoreeAndroidBootStrap {
       val bootstrapModel = KevoreeXmiHelper.loadStream(jar.getInputStream(entry))
       if (bootstrapModel != null) {
         try {
+          coreBean.setNodeName(nodeName)
+          logger.info("Bootstrap step will init "+coreBean.getNodeName());
           logger.debug("Bootstrap step !");
           val bsh = new BootstrapHelper
           bsh.initModelInstance(bootstrapModel, "AndroidNode", "NanoRestGroup", nodeName);

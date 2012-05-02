@@ -37,6 +37,7 @@ import org.kevoree.core.basechecker.kevoreeVersionChecker.KevoreeNodeVersionChec
 import java.lang.Long
 import reflect.BeanProperty
 
+
 class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor {
 
   val listenerActor = new KevoreeListeners
@@ -50,7 +51,14 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
   }
 
   @BeanProperty var bootstraper: Bootstraper = null
-  @BeanProperty var nodeName: String = ""
+
+  var nodeName: String = ""
+  def getNodeName : String = nodeName
+  def setNodeName(nn : String) {
+    nodeName = nn
+  }
+
+
   @BeanProperty var nodeInstance: org.kevoree.api.NodeType = null
 
   var models: scala.collection.mutable.ArrayBuffer[ContainerRoot] = new scala.collection.mutable.ArrayBuffer[ContainerRoot]()

@@ -43,6 +43,11 @@
         </dependency>
         <dependency>
             <groupId>org.kevoree.tools</groupId>
+            <artifactId>org.kevoree.tools.aether.framework</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.kevoree.tools</groupId>
             <artifactId>org.kevoree.tools.android.framework</artifactId>
             <version>${kevoree.version}</version>
         </dependency>

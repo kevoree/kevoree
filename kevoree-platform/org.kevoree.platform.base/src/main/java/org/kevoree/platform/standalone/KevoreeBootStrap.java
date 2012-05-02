@@ -101,7 +101,7 @@ public class KevoreeBootStrap {
 			for (Method m : selfRegisteredClazz.getMethods()) {
 				if (m.getName().equals("registerManuallyDeployUnit")) {
 
-					m.invoke(bootstraper, "scala-library", "org.scala-lang", "2.10.0-M2", dummyKCL);
+					m.invoke(bootstraper, "scala-library", "org.scala-lang", "2.9.2", dummyKCL);
 
 					logger.debug("Manual Init Aether KCL");
 					m.invoke(bootstraper, "org.kevoree.tools.aether.framework", "org.kevoree.tools", KevoreeFactory.getVersion(), jcl);
