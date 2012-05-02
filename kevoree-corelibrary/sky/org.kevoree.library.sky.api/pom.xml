@@ -13,9 +13,7 @@
     <name>Kevoree :: CoreLibrary :: Sky :: Api</name>
 
     <properties>
-        <kevoree.include>
-            org.kevoree.extra:org.kevoree.extra.spray,org.kevoree.library.javase:*,org.kevoree:*,se.scalablesolutions.akka:akka-actor
-        </kevoree.include>
+        <kevoree.include>*:*</kevoree.include>
     </properties>
 
     <dependencies>
@@ -25,15 +23,9 @@
             <version>${kevoree.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.kevoree.extra</groupId>
-            <artifactId>org.kevoree.extra.spray</artifactId>
-            <version>0.9.2</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.scala-lang</groupId>
-                    <artifactId>scala-library</artifactId>
-                </exclusion>
-            </exclusions>
+            <groupId>org.kevoree.corelibrary.javase</groupId>
+            <artifactId>org.kevoree.library.javase.webserver.tjws</artifactId>
+            <version>${kevoree.version}</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -42,13 +34,4 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
-    <repositories>
-        <repository>
-            <id>typesafe</id>
-            <name>Typesafe Repository</name>
-            <url>http://repo.typesafe.com/typesafe/releases/</url>
-        </repository>
-    </repositories>
-
 </project>

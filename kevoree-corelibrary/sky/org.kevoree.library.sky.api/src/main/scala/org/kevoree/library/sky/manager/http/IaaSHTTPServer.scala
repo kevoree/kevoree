@@ -1,67 +1,78 @@
 package org.kevoree.library.sky.manager.http
 
-import org.slf4j.LoggerFactory
-import cc.spray.can.{ServerConfig, HttpServer}
-import org.kevoree.framework.AbstractNodeType
-import akka.actor._
-import akka.config.Supervision._
+import org.kevoree.library.webserver.internal.KTinyWebServerInternalServe
 import org.kevoree.library.sky.manager.nodeType.IaaSNode
+import org.slf4j.LoggerFactory
+import java.util.Properties
+import javax.servlet.http.{HttpServletResponse, HttpServletRequest, HttpServlet}
+import util.matching.Regex
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
- * Date: 06/02/12
- * Time: 16:18
+ * Date: 02/05/12
+ * Time: 17:52
  *
  * @author Erwan Daubert
  * @version 1.0
  */
 
-class IaaSHTTPServer (node: IaaSNode) {
-
+class IaaSHTTPServer (node: IaaSNode) extends Runnable {
   val logger = LoggerFactory.getLogger(this.getClass)
-  var id = ""
-  var supervisorRef: Supervisor = _
+  private var srv: KTinyWebServerInternalServe = null
+  private var mainT: Thread = null
+  val NodeSubRequest = new Regex("/nodes/(.+)/(.+)")
+  val NodeHomeRequest = new Regex("/nodes/(.+)")
 
-  def startServer (port: Int) {
-
-    id = "iaas.spray-service." + node.getNodeName
-    val config = ServerConfig("0.0.0.0", port, id + "-server", id, id)
-
-    supervisorRef = Supervisor(
-                                SupervisorConfig(
-                                                  OneForOneStrategy(List(classOf[Exception]), 3, 100),
-                                                  List(
-                                                        Supervise(Actor.actorOf(new HTTPServerRoot(id, node)), Permanent),
-                                                        Supervise(Actor.actorOf(new HttpServer(config)), Permanent)
-                                                      )
-                                                )
-                              )
+  def start (port: Int) {
+    srv = new KTinyWebServerInternalServe
+    val properties: Properties = new Properties
+    properties.put("port", new Integer(port))
+    properties.setProperty(Acme.Serve.Serve.ARG_NOHUP, "nohup")
+    srv.arguments = properties
+    mainT = new Thread(this)
+    mainT.start()
+    srv.addServlet("/*", new HttpServlet {
+      protected override def service (req: HttpServletRequest, resp: HttpServletResponse) {
+        req.getRequestURI match {
+          case "/" => sendAdminNodeList(req, resp)
+          case NodeSubRequest(nodeName, fluxName) => sendNodeFlux(req, resp, fluxName, nodeName)
+          case NodeHomeRequest(nodeName) => sendNodeHome(req, resp, nodeName)
+          case _ => sendError(req, resp)
+        }
+      }
+    })
   }
 
   def stop () {
-    try {
-      Actor.registry.actors.foreach(actor => {
-        if (actor.getId().contains(id)) {
-          try {
-            val result = actor ? PoisonPill
-            result.get
-          } catch {
-            case e: akka.actor.ActorKilledException =>
-          }
-        }
-      })
-
-      try {
-        val result = Actor.registry.actorFor(supervisorRef.uuid).get ? PoisonPill
-        result.get
-      } catch {
-        case e: akka.actor.ActorKilledException =>
-      }
-
-    } catch {
-      case _@e => logger.warn("Error while stopping Spray Server ", e)
-    }
+    srv.notifyStop()
+    srv.destroyAllServlets()
+    mainT.interrupt()
   }
 
+  def run () {
+    srv.serve
+  }
 
+  private def sendAdminNodeList (req: HttpServletRequest, resp: HttpServletResponse) {
+    val htmlContent = VirtualNodeHTMLHelper.exportNodeListAsHTML(node.getNodeManager)
+    resp.setStatus(200)
+    resp.getOutputStream.write(htmlContent.getBytes("UTF-8"))
+  }
+
+  private def sendNodeHome (req: HttpServletRequest, resp: HttpServletResponse, nodeName: String) {
+    val htmlContent = VirtualNodeHTMLHelper.getNodeHomeAsHTML(nodeName, node.getNodeManager)
+    resp.setStatus(200)
+    resp.getOutputStream.write(htmlContent.getBytes("UTF-8"))
+  }
+
+  private def sendNodeFlux (req: HttpServletRequest, resp: HttpServletResponse, fluxName: String, nodeName: String) {
+    val htmlContent = VirtualNodeHTMLHelper.getNodeStreamAsHTML(nodeName, fluxName, node.getNodeManager)
+    resp.setStatus(200)
+    resp.getOutputStream.write(htmlContent.getBytes("UTF-8"))
+  }
+
+  private def sendError (req: HttpServletRequest, resp: HttpServletResponse) {
+    resp.setStatus(400)
+    resp.getOutputStream.write("Unknown Requt!".getBytes("UTF-8"))
+  }
 }

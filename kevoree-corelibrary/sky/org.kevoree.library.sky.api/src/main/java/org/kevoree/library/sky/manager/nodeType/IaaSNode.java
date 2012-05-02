@@ -52,8 +52,8 @@ public abstract class IaaSNode extends JavaSENode {
         nodeManager.start();
         // start HTTP Server
         String port = (String) this.getDictionary().get("port");
-        int portint = Integer.parseInt(port);
-		server.startServer(portint);
+        int portInt = Integer.parseInt(port);
+		server.start(portInt);
     }
 
     @Stop
