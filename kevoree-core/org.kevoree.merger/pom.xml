@@ -2,24 +2,17 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <artifactId>org.kevoree.merger</artifactId>
-    <packaging>jar</packaging>
     <name>Kevoree :: Merger</name>
 
-    <version>1.7.0-SNAPSHOT</version>
+    <version>1.7.0-RC2</version>
     <parent>
         <artifactId>org.kevoree.root</artifactId>
         <groupId>org.kevoree</groupId>
-        <version>1.7.0-SNAPSHOT</version>
+        <version>1.7.0-RC2</version>
         <relativePath>../org.kevoree.root/pom.xml</relativePath>
     </parent>
 
-    <properties>
-        <slf4j.version>1.6.4</slf4j.version>
-        <kevoree.version>${project.version}</kevoree.version>
-    </properties>
-
     <dependencies>
-
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>org.kevoree.framework</artifactId>
@@ -31,46 +24,15 @@
             <version>${kevoree.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>${slf4j.version}</version>
-        </dependency>
-<!--
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-core</artifactId>
-            <version>1.0.0</version>
-        </dependency>
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-            <version>1.0.0</version>
-        </dependency>
--->
-
-        <dependency>
             <groupId>org.scalatest</groupId>
-            <artifactId>scalatest_2.10.0-M2</artifactId>
-            <version>1.8-SNAPSHOT</version>
+            <artifactId>scalatest_2.9.2</artifactId>
+            <version>1.6.1</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
 
     <build>
         <plugins>
-            <plugin>
-                <groupId>org.apache.felix</groupId>
-                <artifactId>maven-bundle-plugin</artifactId>
-                <extensions>true</extensions>
-                <version>2.3.5</version>
-                <configuration>
-                    <instructions>
-                        <Import-Package>!org.kevoree.merger.*,org.slf4j.*;version="${slf4j.version.range}",*
-                        </Import-Package>
-                        <Export-Package>org.kevoree.merger.*</Export-Package>
-                    </instructions>
-                </configuration>
-            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
