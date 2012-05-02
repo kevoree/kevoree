@@ -32,10 +32,10 @@ import scala.Predef._
 
 class JCLContextHandler extends DaemonActor with KevoreeClassLoaderHandler {
 
-  private val kcl_cache = new java.util.HashMap[String, KevoreeJarClassLoader]()
-  private val kcl_cache_file = new java.util.HashMap[String, File]()
-  private var lockedDu: List[String] = List()
-  private val logger = LoggerFactory.getLogger(this.getClass)
+  protected val kcl_cache = new java.util.HashMap[String, KevoreeJarClassLoader]()
+  protected val kcl_cache_file = new java.util.HashMap[String, File]()
+  protected var lockedDu: List[String] = List()
+  protected val logger = LoggerFactory.getLogger(this.getClass)
 
   start()
 
@@ -94,7 +94,7 @@ class JCLContextHandler extends DaemonActor with KevoreeClassLoaderHandler {
   }
 
 
-  private def clearInternals() {
+  protected def clearInternals() {
     logger.debug("Clear Internal")
     kcl_cache.keySet().toList.foreach {
       key =>
@@ -117,7 +117,7 @@ class JCLContextHandler extends DaemonActor with KevoreeClassLoaderHandler {
     }*/
   }
 
-  private def getCacheFileInternals(du: DeployUnit): File = {
+  protected def getCacheFileInternals(du: DeployUnit): File = {
     kcl_cache_file.get(buildKEY(du))
   }
 
@@ -127,7 +127,7 @@ class JCLContextHandler extends DaemonActor with KevoreeClassLoaderHandler {
     // kcl_cache_file.put(buildKEY(du), f)
   }
 
-  private def printDumpInternals() {
+  protected def printDumpInternals() {
     logger.debug("------------------ KCL Dump -----------------------")
     kcl_cache.foreach {
       k =>
@@ -139,13 +139,13 @@ class JCLContextHandler extends DaemonActor with KevoreeClassLoaderHandler {
 
 
   /* Temp Zone for temporary unresolved KCL links */
-  private val failedLinks = new java.util.HashMap[String, KevoreeJarClassLoader]()
+  protected val failedLinks = new java.util.HashMap[String, KevoreeJarClassLoader]()
 
   def clearFailedLinks() {
     failedLinks.clear()
   }
 
-  private def installDeployUnitInternals(du: DeployUnit, file: File): KevoreeJarClassLoader = {
+  protected def installDeployUnitInternals(du: DeployUnit, file: File): KevoreeJarClassLoader = {
     val previousKCL = getKCLInternals(du)
     val res = if (previousKCL != null) {
       logger.debug("Take already installed {}", buildKEY(du))
@@ -202,11 +202,11 @@ class JCLContextHandler extends DaemonActor with KevoreeClassLoaderHandler {
     res
   }
 
-  private def getKCLInternals(du: DeployUnit): KevoreeJarClassLoader = {
+  protected def getKCLInternals(du: DeployUnit): KevoreeJarClassLoader = {
     kcl_cache.get(buildKEY(du))
   }
 
-  private def removeDeployUnitInternals(du: DeployUnit) {
+  protected def removeDeployUnitInternals(du: DeployUnit) {
     val key = buildKEY(du)
     if (failedLinks.containsKey(key)) {
       failedLinks.remove(key)
@@ -244,7 +244,7 @@ class JCLContextHandler extends DaemonActor with KevoreeClassLoaderHandler {
   }
 
 
-  private def buildKEY(du: DeployUnit): String = {
+  protected def buildKEY(du: DeployUnit): String = {
     du.getName + "/" + buildQuery(du, None)
   }
 

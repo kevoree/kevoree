@@ -32,6 +32,7 @@ import util.matching.Regex
 import org.sonatype.aether.repository.{Authentication, RepositoryPolicy, RemoteRepository, LocalRepository}
 import scala.collection.JavaConversions._
 import org.sonatype.aether.{ConfigurationProperties, RepositorySystem}
+import org.kevoree.tools.aether.framework.AetherFramework
 
 //import org.sonatype.aether.connector.wagon.WagonProvider
 
@@ -41,11 +42,11 @@ import org.sonatype.aether.{ConfigurationProperties, RepositorySystem}
  * Time: 15:06
  */
 
-object AetherUtil {
+object AetherUtil extends AetherFramework {
 
   val logger = LoggerFactory.getLogger(this.getClass)
 
-  def newRepositorySystem: RepositorySystem = {
+  override def getRepositorySystem: RepositorySystem = {
     val locator = new DefaultServiceLocator()
     locator.addService(classOf[LocalRepositoryManagerFactory], classOf[EnhancedLocalRepositoryManagerFactory])
     locator.addService(classOf[RepositoryConnectorFactory], classOf[FileRepositoryConnectorFactory])
@@ -55,142 +56,19 @@ object AetherUtil {
     locator.getService(classOf[RepositorySystem])
   }
 
-  def resolveKevoreeArtifact(unitName: String, groupName: String, version: String): File = {
-    if (version.endsWith("SNAPSHOT")) {
-      resolveMavenArtifact(unitName, groupName, version, List("http://maven.kevoree.org/snapshots/"))
-    } else {
-      resolveMavenArtifact(unitName, groupName, version, List("http://maven.kevoree.org/release/"))
-    }
-  }
-
-  def resolveMavenArtifact4J(unitName: String, groupName: String, version: String, repositoriesUrl: java.util.List[String]): File =
-    resolveMavenArtifact(unitName, groupName, version, repositoriesUrl.toList)
-
-  def resolveMavenArtifact(unitName: String, groupName: String, version: String, repositoriesUrl: List[String]): File = {
-    val artifact: Artifact = new DefaultArtifact(List(groupName, unitName, version).mkString(":"))
-    val artifactRequest = new ArtifactRequest
-    artifactRequest.setArtifact(artifact)
-    val repositories: java.util.List[RemoteRepository] = new java.util.ArrayList();
-    repositoriesUrl.foreach {
-      repository =>
-        val repo = new RemoteRepository
-        val purl = repository.trim.replace(':', '_').replace('/', '_').replace('\\', '_')
-        repo.setId(purl)
-        repo.setUrl(repository)
-        repo.setContentType("default")
-        repositories.add(repo)
-    }
-    artifactRequest.setRepositories(repositories)
-    val artefactResult = newRepositorySystem.resolveArtifact(newRepositorySystemSession, artifactRequest)
-    artefactResult.getArtifact.getFile
-  }
-
-
-  def resolveDeployUnit(du: DeployUnit): File = {
-
-
-    var artifact: Artifact = null
-    if (du.getUrl != null && du.getUrl.contains("mvn:")) {
-      artifact = new DefaultArtifact(du.getUrl.replaceAll("mvn:", "").replace("/", ":"))
-    } else {
-      artifact = new DefaultArtifact(List(du.getGroupName.trim(), du.getUnitName.trim(), du.getVersion.trim()).mkString(":"))
-    }
-
-    val artifactRequest = new ArtifactRequest
-    artifactRequest.setArtifact(artifact)
-    val urls = buildPotentialMavenURL(du.eContainer.asInstanceOf[ContainerRoot])
-
-    val repositories: java.util.List[RemoteRepository] = new java.util.ArrayList();
-    urls.foreach {
-      url =>
-        val repo = new RemoteRepository
-        val purl = url.trim.replace(':', '_').replace('/', '_').replace('\\', '_')
-        repo.setId(purl)
-        repo.setContentType("default")
-        val HttpAuthRegex = new Regex("http://(.*):(.*)@(.*)")
-        url match {
-          case HttpAuthRegex(login, password, urlp) => {
-            repo.setAuthentication(new Authentication(login, password))
-            repo.setUrl("http://" + urlp)
-          }
-          case _ => repo.setUrl(url)
-        }
-        repositories.add(repo)
-    }
-
-    try {
-      artifactRequest.setRepositories(repositories)
-      val artefactResult = newRepositorySystem.resolveArtifact(newRepositorySystemSession, artifactRequest)
-      artefactResult.getArtifact.getFile
-    } catch {
-      case _@e => {
-        logger.debug("Error while resolving {}",du.getUnitName.trim(),e)
-        null
-      }
-    }
-
-
-  }
-
-  def newRepositorySystemSession = {
+  override def getRepositorySystemSession = {
     val session = new MavenRepositorySystemSession()
     session.setUpdatePolicy(RepositoryPolicy.UPDATE_POLICY_ALWAYS)
     session.setConfigProperty("aether.connector.ahc.provider", "jdk")
-    session.setLocalRepositoryManager(newRepositorySystem.newLocalRepositoryManager(new LocalRepository(System.getProperty("user.home").toString + "/.m2/repository")))
-    session.getConfigProperties.put(ConfigurationProperties.REQUEST_TIMEOUT, 3000.asInstanceOf[java.lang.Integer])
-    session.getConfigProperties.put(ConfigurationProperties.CONNECT_TIMEOUT, 5000.asInstanceOf[java.lang.Integer])
+    session.setLocalRepositoryManager(getRepositorySystem.newLocalRepositoryManager(new LocalRepository(System.getProperty("user.home").toString + "/.m2/repository")))
+    session.getConfigProperties.put(ConfigurationProperties.REQUEST_TIMEOUT, 2000.asInstanceOf[java.lang.Integer])
+    session.getConfigProperties.put(ConfigurationProperties.CONNECT_TIMEOUT, 2000.asInstanceOf[java.lang.Integer])
     session
   }
 
-
-  def buildPotentialMavenURL(root: ContainerRoot): List[String] = {
-    var result: List[String] = List()
-    //BUILD FROM ALL REPO
-    root.getRepositories.foreach {
-      repo =>
-        val nurl = repo.getUrl
-        if (!result.exists(p => p == nurl)) {
-          result = result ++ List(nurl)
-        }
-    }
-    //BUILD FROM ALL NODE
-
-    root.getNodes.foreach {
-      node =>
-        buildURL(root, node.getName).map {
-          nurl =>
-            if (!result.exists(p => p == nurl)) {
-              result = result ++ List(nurl)
-            }
-        }
-
-    }
-    result
+  override def installInCache(jarArtifact: Artifact): File = {
+    jarArtifact.getFile
   }
 
-  def buildURL(root: ContainerRoot, nodeName: String): Option[String] = {
-    var ip = KevoreePlatformHelper.getProperty(root, nodeName, org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP);
-    if (ip == null || ip == "") {
-      ip = "127.0.0.1";
-    }
-
-    root.getNodes.find(n => n.getName == nodeName) match {
-      case Some(node) => {
-        node.getDictionary match {
-          case Some(dic) => {
-            dic.getValues.find(v => v.getAttribute.getName == "port") match {
-              case Some(att) => {
-                Some("http://" + ip + ":" + att.getValue + "/provisioning/")
-              }
-              case None => None
-            }
-          }
-          case None => None
-        }
-      }
-      case None => None
-    }
-
-  }
 
 }
