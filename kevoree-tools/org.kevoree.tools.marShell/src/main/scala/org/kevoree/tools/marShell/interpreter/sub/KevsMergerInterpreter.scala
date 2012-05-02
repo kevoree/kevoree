@@ -67,9 +67,13 @@ case class KevsMergerInterpreter(mergeStatement: MergeStatement) extends KevsAbs
           mergerComponent.merge(context.model, newModel)
           true
         } else {
+          try {
           val newModel = KevoreeXmiHelper.load(mergeStatement.url)
           mergerComponent.merge(context.model, newModel)
           true
+          } catch {
+            case _@e => logger.error("Unable to load library from {}. Maybe it's not a Kevoree model nor a Kevoree DeployUnit", mergeStatement.url);false
+          }
         }
       } else {
         false
