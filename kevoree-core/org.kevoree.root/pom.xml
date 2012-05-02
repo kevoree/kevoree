@@ -7,11 +7,14 @@
     <name>Kevoree :: Root</name>
     <url>https://github.com/dukeboard/kevoree</url>
 
-    <version>1.7.0-SNAPSHOT</version>
+    <version>1.7.0-RC2</version>
 
     <properties>
-        <scala.version>2.10.0-M2</scala.version>
+        <scala.version>2.9.2</scala.version>
         <bundle.vendor>IRISA/INRIA</bundle.vendor>
+        <slf4j.version>1.6.4</slf4j.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <kevoree.version>${project.version}</kevoree.version>
     </properties>
 
     <dependencies>
@@ -25,6 +28,11 @@
             <groupId>org.scala-lang</groupId>
             <artifactId>scala-library</artifactId>
             <version>${scala.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
         </dependency>
     </dependencies>
 
@@ -176,30 +184,5 @@
             <url>http://maven.kevoree.org/archiva/repository/snapshots/</url>
         </snapshotRepository>
     </distributionManagement>
-
-    <profiles>
-        <profile>
-            <id>graph</id>
-            <pluginRepositories>
-                <pluginRepository>
-                    <id>mvnplugins.fusesource.org</id>
-                    <url>http://mvnplugins.fusesource.org/repo/release</url>
-                    <releases>
-                        <enabled>true</enabled>
-                    </releases>
-                </pluginRepository>
-            </pluginRepositories>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.fusesource.mvnplugins</groupId>
-                        <artifactId>maven-graph-plugin</artifactId>
-                        <version>1.0</version>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
-
 
 </project>

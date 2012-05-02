@@ -4,20 +4,15 @@
 
     <modelVersion>4.0.0</modelVersion>
     <artifactId>org.kevoree.api</artifactId>
-    <packaging>jar</packaging>
     <name>Kevoree :: Api</name>
 
-    <version>1.7.0-SNAPSHOT</version>
+    <version>1.7.0-RC2</version>
     <parent>
         <artifactId>org.kevoree.root</artifactId>
         <groupId>org.kevoree</groupId>
-        <version>1.7.0-SNAPSHOT</version>
+        <version>1.7.0-RC2</version>
         <relativePath>../org.kevoree.root/pom.xml</relativePath>
     </parent>
-
-    <properties>
-        <kevoree.version>${project.version}</kevoree.version>
-    </properties>
 
     <dependencies>
         <dependency>
@@ -36,25 +31,5 @@
             <version>${kevoree.version}</version>
         </dependency>
     </dependencies>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.felix</groupId>
-                <artifactId>maven-bundle-plugin</artifactId>
-                <extensions>true</extensions>
-                <version>2.3.5</version>
-                <configuration>
-                    <instructions>
-                        <Bundle-ClassPath>.</Bundle-ClassPath>
-                        <Import-Package>org.kevoree.*,org.kevoreeAdaptation.*,scala.*</Import-Package>
-                        <Export-Package>org.kevoree.api.*</Export-Package>
-                    </instructions>
-                </configuration>
-            </plugin>
-
-        </plugins>
-    </build>
-
 
 </project>

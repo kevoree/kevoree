@@ -5,19 +5,13 @@
     <packaging>jar</packaging>
     <name>Kevoree :: Kompare</name>
 
-    <version>1.7.0-SNAPSHOT</version>
+    <version>1.7.0-RC2</version>
     <parent>
         <artifactId>org.kevoree.root</artifactId>
         <groupId>org.kevoree</groupId>
-        <version>1.7.0-SNAPSHOT</version>
+        <version>1.7.0-RC2</version>
         <relativePath>../org.kevoree.root/pom.xml</relativePath>
     </parent>
-
-    <properties>
-        <slf4j.version>1.6.1</slf4j.version>
-        <slf4j.version.range>[1.5,2)</slf4j.version.range>
-        <kevoree.version>${project.version}</kevoree.version>
-    </properties>
 
     <build>
         <plugins>
@@ -29,8 +23,6 @@
                     <testFailureIgnore>true</testFailureIgnore>
                 </configuration>
             </plugin>
-
-
         </plugins>
     </build>
     <dependencies>
@@ -46,14 +38,9 @@
         </dependency>
         <dependency>
             <groupId>org.scalatest</groupId>
-            <artifactId>scalatest_2.10.0-M2</artifactId>
-            <version>1.8-SNAPSHOT</version>
+            <artifactId>scalatest_2.9.2</artifactId>
+            <version>1.6.1</version>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>${slf4j.version}</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
