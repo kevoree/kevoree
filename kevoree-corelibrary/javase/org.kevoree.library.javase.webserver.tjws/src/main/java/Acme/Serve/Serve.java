@@ -394,7 +394,7 @@ public class Serve implements ServletContext, Serializable {
     protected void initMime() {
         mime = new Properties();
         try {
-            mime.load(getClass().getClassLoader().getResourceAsStream("Acme/Resource/mime.properties"));
+            mime.load(getClass().getClassLoader().getResourceAsStream("mime.properties"));
         } catch (Exception ex) {
             log("TJWS: MIME map can't be loaded:" + ex);
         }

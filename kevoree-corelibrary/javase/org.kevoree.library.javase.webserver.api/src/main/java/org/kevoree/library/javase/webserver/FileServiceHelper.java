@@ -8,6 +8,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.util.Properties;
 
 /**
  * Created by IntelliJ IDEA.
@@ -19,6 +20,18 @@ import java.io.InputStream;
 public class FileServiceHelper {
 
 	private static Logger logger = LoggerFactory.getLogger(FileServiceHelper.class);
+
+	static Properties mime = initMime();
+
+	protected static Properties initMime () {
+		Properties p = new Properties();
+		try {
+			p.load(FileServiceHelper.class.getClassLoader().getResourceAsStream("mime.properties"));
+		} catch (Exception ex) {
+			logger.debug("MIME map can't be loaded:" + ex);
+		}
+		return p;
+	}
 
 	public static byte[] convertStream (InputStream in) throws Exception {
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -126,32 +139,9 @@ public class FileServiceHelper {
 	}
 
 	private static String getHttpHeaderFromURL (String url) {
-		if (url.endsWith(".js")) {
-			return "text/javascript";
-		}
-		if (url.endsWith(".html")) {
-			return "text/html";
-		}
-		if (url.endsWith(".css")) {
-			return "text/css";
-		}
-		if (url.endsWith(".png")) {
-			return "image/png";
-		}
-		if (url.endsWith(".gif")) {
-			return "image/gif";
-		}
-		if (url.endsWith(".jpg")) {
-			return "image/jpg";
-		}
-		if (url.endsWith(".pdf")) {
-			return "application/pdf";
-		}
-		if (url.endsWith(".xml")) {
-			return "application/xml";
-		}
-		if (url.endsWith(".jnlp")) {
-			return "application/x-java-jnlp-file";
+		int dp = url.lastIndexOf('.');
+		if (dp > 0) {
+			return mime.getProperty(url.substring(dp + 1).toUpperCase());
 		}
 		return "text/html";
 	}
