@@ -55,8 +55,8 @@ trait ComponentTypeProcessor extends TypeDefinitionProcessor {
     annots.filter(annot => annot.atp.toString() == classOf[Requires].getName).foreach(annot => {
       val arrayRPort = annot.assocs.find(assoc => assoc._1.toString() == "value").get._2.asInstanceOf[ArrayAnnotArg]
       arrayRPort.args.foreach{arg =>
-        val typeName =arg.asInstanceOf[NestedAnnotArg].annInfo.asInstanceOf[CompleteAnnotationInfo].args
-        val assocs =arg.asInstanceOf[NestedAnnotArg].annInfo.asInstanceOf[CompleteAnnotationInfo].assocs
+        val typeName =arg.asInstanceOf[NestedAnnotArg].annInfo.asInstanceOf[AnnotationInfo].args
+        val assocs =arg.asInstanceOf[NestedAnnotArg].annInfo.asInstanceOf[AnnotationInfo].assocs
         val portTypeRef = KevoreeFactory.eINSTANCE.createPortTypeRef
         assocs.foreach(assoc =>{
           assoc._1.toString() match {
@@ -100,8 +100,8 @@ trait ComponentTypeProcessor extends TypeDefinitionProcessor {
     annots.filter(annot => annot.atp.toString() == classOf[Provides].getName).foreach(annot => {
       val arrayRPort = annot.assocs.find(assoc => assoc._1.toString() == "value").get._2.asInstanceOf[ArrayAnnotArg]
       arrayRPort.args.foreach{arg =>
-        val typeName =arg.asInstanceOf[NestedAnnotArg].annInfo.asInstanceOf[CompleteAnnotationInfo].args
-        val assocs =arg.asInstanceOf[NestedAnnotArg].annInfo.asInstanceOf[CompleteAnnotationInfo].assocs
+        val typeName =arg.asInstanceOf[NestedAnnotArg].annInfo.asInstanceOf[AnnotationInfo].args
+        val assocs =arg.asInstanceOf[NestedAnnotArg].annInfo.asInstanceOf[AnnotationInfo].assocs
         val portTypeRef = KevoreeFactory.eINSTANCE.createPortTypeRef
         assocs.foreach(assoc =>{
           assoc._1.toString() match {

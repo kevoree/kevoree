@@ -5,17 +5,13 @@
     <packaging>jar</packaging>
     <name>Kevoree :: Framework</name>
 
-    <version>1.7.0-SNAPSHOT</version>
+    <version>1.7.0-RC2</version>
     <parent>
         <artifactId>org.kevoree.root</artifactId>
         <groupId>org.kevoree</groupId>
-        <version>1.7.0-SNAPSHOT</version>
+        <version>1.7.0-RC2</version>
         <relativePath>../org.kevoree.root/pom.xml</relativePath>
     </parent>
-
-    <properties>
-        <kevoree.version>${project.version}</kevoree.version>
-    </properties>
 
     <dependencies>
         <dependency>
@@ -23,43 +19,7 @@
             <artifactId>org.kevoree.api</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
-        <!--
-        <dependency>
-            <groupId>org.osgi</groupId>
-            <artifactId>org.osgi.core</artifactId>
-            <version>4.2.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.osgi</groupId>
-            <artifactId>org.osgi.compendium</artifactId>
-            <version>4.2.0</version>
-        </dependency>
-        -->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>1.6.4</version>
-        </dependency>
     </dependencies>
-<!--
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.felix</groupId>
-                <artifactId>maven-bundle-plugin</artifactId>
-                <version>2.3.5</version>
-                <extensions>true</extensions>
-                <configuration>
-                    <instructions>
-                        <Bundle-SymbolicName>org.kevoree.framework</Bundle-SymbolicName>
-                        <Import-Package>!org.w3c.dom.ls,!org.w3c.dom.bootstrap,!com.sun.*,!org.kevoree.annotation.*,!org.joda.*,!org.codehaus.jackson.*,org.slf4j.*,*</Import-Package>
-                        <Export-Package>org.kevoree.framework.*,org.codehaus.jackson.*,org.joda.*</Export-Package>
-                    </instructions>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
--->
 
 </project>
 

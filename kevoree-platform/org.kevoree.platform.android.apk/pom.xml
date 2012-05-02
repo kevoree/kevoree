@@ -4,12 +4,12 @@
     <artifactId>org.kevoree.platform.android.apk</artifactId>
     <packaging>apk</packaging>
     <name>Kevoree :: Platform :: Android :: APK</name>
-    <version>1.7.0-SNAPSHOT</version>
+    <version>1.7.0-RC2</version>
 
     <parent>
         <artifactId>org.kevoree.platform.root</artifactId>
         <groupId>org.kevoree.platform</groupId>
-        <version>1.7.0-SNAPSHOT</version>
+        <version>1.7.0-RC2</version>
         <relativePath>../org.kevoree.platform.root/pom.xml</relativePath>
     </parent>
 
@@ -73,7 +73,6 @@
             <version>${slf4j.version}</version>
             <scope>provided</scope>
         </dependency>
-
     </dependencies>
 
     <build>
@@ -149,8 +148,6 @@
                                         ${project.build.directory}/dex/boot/org.kevoree.platform.android.core
                                     </outputDirectory>
                                 </artifactItem>
-
-
                                 <artifactItem>
                                     <groupId>org.scala.android</groupId>
                                     <artifactId>scala.library.android.actor</artifactId>
