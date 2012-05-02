@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory
 
 class ChannelClassResolver(nioChannel: AbstractChannelFragment) {
   def resolve(className: String): Class[_] = {
-    println("tryRoResolveClass="+className)
+   // println("tryRoResolveClass="+className)
     
     val model = nioChannel.getModelService.getLastModel
     val currentNode = model.getNodes.find(n => n.getName == nioChannel.getNodeName).get
@@ -44,9 +44,9 @@ class ChannelClassResolver(nioChannel: AbstractChannelFragment) {
     }
     if(resolvedClass == null){
       LoggerFactory.getLogger(this.getClass).error("Fail to resolve class="+className)
-    } else {
+    } /*else {
       println("Resolved,"+className+"-"+resolvedClass)
-    }
+    } */
     resolvedClass
   }
 }

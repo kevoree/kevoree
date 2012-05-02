@@ -5,12 +5,12 @@
     <packaging>jar</packaging>
     <name>Kevoree :: Tools :: UI Editor Standalone</name>
     <url>https://github.com/dukeboard/kevoree/</url>
-    <version>1.7.0-RC2</version>
+    <version>1.7.0-SNAPSHOT</version>
 
     <parent>
         <artifactId>org.kevoree.tools.root</artifactId>
         <groupId>org.kevoree.tools</groupId>
-        <version>1.7.0-RC2</version>
+        <version>1.7.0-SNAPSHOT</version>
         <relativePath>../org.kevoree.tools.root/pom.xml</relativePath>
     </parent>
 
@@ -87,12 +87,7 @@
                         <option>-keep class org.kevoree.tools.marShellGUI.** { *; }</option>
                         <option>-keep class org.kevoree.kompare.** { *; }</option>
                         <option>-keep class scala.collection.immutable.HashMap { *; }</option>
-                        <option>-keep class scala.Predef** { *; }</option>
-                        <option>-keep class scala.collection.** { *; }</option>
-                        <option>-keep class scala.actors.** { *; }</option>
-                        <option>-keep class scala.io.** { *; }</option>
-                        <option>-keep class scala.util.control.** { *; }</option>
-                        <option>-keep class scala.util.parsing.** { *; }</option>
+                        <option>-keep class scala.** { *; }</option>
                         <option>-keep class org.kevoree.** { *; }</option>
                         <option>-keep class org.kevoreeAdaptation.** { *; }</option>
                         <option>-keep class org.slf4j.** { *; }</option>
