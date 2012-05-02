@@ -22,7 +22,6 @@ import _root_.org.kevoree.KevoreeFactory
 import _root_.org.kevoree.ContainerRoot
 import _root_.org.kevoree.api.configuration.ConfigurationService
 import _root_.org.slf4j.LoggerFactory
-import _root_.scala.beans.BeanProperty
 import _root_.org.kevoree.api.configuration.ConfigConstants
 import _root_.org.kevoree.framework._
 import _root_.org.kevoree.core.impl.message._
@@ -36,6 +35,7 @@ import org.kevoree.api.Bootstraper
 import actors.{DaemonActor, TIMEOUT, Actor}
 import org.kevoree.core.basechecker.kevoreeVersionChecker.KevoreeNodeVersionChecker
 import java.lang.Long
+import reflect.BeanProperty
 
 class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor {
 

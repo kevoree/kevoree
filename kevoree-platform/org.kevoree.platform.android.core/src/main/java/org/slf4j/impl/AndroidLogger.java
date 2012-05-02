@@ -161,25 +161,25 @@ public class AndroidLogger extends MarkerIgnoringBase {
     /* @see org.slf4j.Logger#warn(java.lang.String, java.lang.Object) */
     public void warn(final String format, final Object arg) {
         Log.w(name, format(format, arg, null));
-        System.err.println(name+"->"+format(format, arg, null));
+        System.out.println(name+"->"+format(format, arg, null));
     }
 
     /* @see org.slf4j.Logger#warn(java.lang.String, java.lang.Object, java.lang.Object) */
     public void warn(final String format, final Object arg1, final Object arg2) {
         Log.w(name, format(format, arg1, arg2));
-        System.err.println(name+"->"+format(format, arg1, arg2));
+        System.out.println(name+"->"+format(format, arg1, arg2));
     }
 
     /* @see org.slf4j.Logger#warn(java.lang.String, java.lang.Object[]) */
     public void warn(final String format, final Object[] argArray) {
         Log.w(name, format(format, argArray));
-        System.err.println(name+"->"+format(format, argArray));
+        System.out.println(name+"->"+format(format, argArray));
     }
 
     /* @see org.slf4j.Logger#warn(java.lang.String, java.lang.Throwable) */
     public void warn(final String msg, final Throwable t) {
         Log.w(name, msg, t);
-        System.err.println(name+"->"+t.getMessage());
+        System.out.println(name+"->"+t.getMessage());
         t.printStackTrace();
     }
 
@@ -191,31 +191,31 @@ public class AndroidLogger extends MarkerIgnoringBase {
     /* @see org.slf4j.Logger#error(java.lang.String) */
     public void error(final String msg) {
         Log.e(name, msg);
-        System.err.println(name+"->"+msg);
+        System.out.println(name+"->"+msg);
     }
 
     /* @see org.slf4j.Logger#error(java.lang.String, java.lang.Object) */
     public void error(final String format, final Object arg) {
         Log.e(name, format(format, arg, null));
-        System.err.println(name+"->"+format(format, arg,null));
+        System.out.println(name+"->"+format(format, arg,null));
     }
 
     /* @see org.slf4j.Logger#error(java.lang.String, java.lang.Object, java.lang.Object) */
     public void error(final String format, final Object arg1, final Object arg2) {
         Log.e(name, format(format, arg1, arg2));
-        System.err.println(name+"->"+format(format, arg1,arg2));
+        System.out.println(name+"->"+format(format, arg1,arg2));
     }
 
     /* @see org.slf4j.Logger#error(java.lang.String, java.lang.Object[]) */
     public void error(final String format, final Object[] argArray) {
         Log.e(name, format(format, argArray));
-        System.err.println(name+"->"+format(format, argArray));
+        System.out.println(name+"->"+format(format, argArray));
     }
 
     /* @see org.slf4j.Logger#error(java.lang.String, java.lang.Throwable) */
     public void error(final String msg, final Throwable t) {
         Log.e(name, msg, t);
-        System.err.println(name+"->"+t.getMessage());
+        System.out.println(name+"->"+t.getMessage());
         t.printStackTrace();
     }
 
