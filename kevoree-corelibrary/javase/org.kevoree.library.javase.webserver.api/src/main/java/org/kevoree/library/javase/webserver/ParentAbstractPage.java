@@ -15,7 +15,7 @@ import org.kevoree.annotation.Update;
  */
 @Library(name = "JavaSE")
 @ComponentFragment
-public class ParentAbstractPage extends AbstractPage {
+public abstract class ParentAbstractPage extends AbstractPage {
 
     @Override
     @Start

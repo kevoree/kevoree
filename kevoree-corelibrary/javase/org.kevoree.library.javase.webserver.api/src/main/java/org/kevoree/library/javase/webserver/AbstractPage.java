@@ -6,10 +6,7 @@ import org.kevoree.framework.MessagePort;
 import org.kevoree.library.javase.webserver.impl.KevoreeHttpResponseImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import scala.None;
 import scala.Option;
-
-import java.util.HashMap;
 
 /**
  * Created by IntelliJ IDEA.
@@ -31,7 +28,7 @@ import java.util.HashMap;
 @DictionaryType({
         @DictionaryAttribute(name = "urlpattern", optional = true, defaultValue = "/")
 })
-public class AbstractPage extends AbstractComponentType {
+public abstract class AbstractPage extends AbstractComponentType {
 
     protected Logger logger = LoggerFactory.getLogger(this.getClass());
     protected URLHandlerScala handler = new URLHandlerScala();
@@ -50,7 +47,7 @@ public class AbstractPage extends AbstractComponentType {
     @Start
     public void startPage() {
         handler.initRegex(this.getDictionary().get("urlpattern").toString());
-        logger.debug("Abstract page start2");
+        logger.debug("Abstract page start");
     }
 
     @Stop
@@ -91,9 +88,9 @@ public class AbstractPage extends AbstractComponentType {
     }
 
 
-    public KevoreeHttpResponse process(KevoreeHttpRequest request, KevoreeHttpResponse response) {
+    public abstract KevoreeHttpResponse process(KevoreeHttpRequest request, KevoreeHttpResponse response); /*{
         //TO OVERRIDE
         return response;
-    }
+    }*/
 
 }
