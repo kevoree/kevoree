@@ -110,18 +110,19 @@ class PostAptChecker(root: ContainerRoot, env: ProcessingEnvironment) {
     td match {
       case ct: ComponentType => {
         if (td.getBean == "") {
-          env.getMessager.printMessage(Kind.ERROR,"TypeDefinition bean is null for " + td.getName)
-          nbErrors += 1
+         // env.getMessager.printMessage(Kind.ERROR,"TypeDefinition bean is null for " + td.getName)
+          //nbErrors += 1
         } else {
           if (td.getBean.lastIndexOf(".") == -1) {
             env.getMessager.printMessage(Kind.ERROR,"The TypeDefinition seems to be out of any package. (lastIndexOf('.') returned -1 for bean : " + td.getBean)
             nbErrors += 1
           }
+          if (td.getFactoryBean.lastIndexOf(".") == -1) {
+            env.getMessager.printMessage(Kind.ERROR,"The TypeDefinition seems to be out of any package. (lastIndexOf('.') returned -1 for FactoryBean : " + td.getFactoryBean)
+            nbErrors += 1
+          }
         }
-        if (td.getFactoryBean.lastIndexOf(".") == -1) {
-          env.getMessager.printMessage(Kind.ERROR,"The TypeDefinition seems to be out of any package. (lastIndexOf('.') returned -1 for FactoryBean : " + td.getFactoryBean)
-          nbErrors += 1
-        }
+
       }
       case _ =>
     }
