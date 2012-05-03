@@ -20,8 +20,8 @@ public abstract class ParentAbstractPage extends AbstractPage {
     @Override
     @Start
     public void startPage() {
-        if (!this.getDictionary().get("urlpattern").toString().endsWith("**")) {
-            this.getDictionary().put("urlpattern", this.getDictionary().get("urlpattern").toString() + "**");
+        if (!this.getDictionary().get("urlpattern").toString().endsWith("/**")) {
+            this.getDictionary().put("urlpattern", this.getDictionary().get("urlpattern").toString() + "/**");
             logger.debug("Parent abstract page start with pattern = {}", this.getDictionary().get("urlpattern").toString());
         }
         super.startPage();
