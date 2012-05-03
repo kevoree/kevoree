@@ -91,6 +91,8 @@ public class MarShellMavenMojo extends AbstractMojo {
 
 		mergerComponent = new KevoreeMergerComponent();
 
+		ModelGenerator.setProperties(project.getProperties());
+
 		ContainerRoot model = KevoreeFactory.createContainerRoot();
 
         if(sourceMarShellDirectory != null){
