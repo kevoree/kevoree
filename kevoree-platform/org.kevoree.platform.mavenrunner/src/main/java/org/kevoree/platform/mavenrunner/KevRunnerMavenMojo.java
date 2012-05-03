@@ -37,60 +37,66 @@ import java.io.File;
  */
 public class KevRunnerMavenMojo extends AbstractMojo {
 
-    /**
-     * @parameter default-value="${project.basedir}/src/main/kevs/main.kevs"
-     */
-    private File kevsFile;
+	/**
+	 * @parameter default-value="${project.basedir}/src/main/kevs/main.kevs"
+	 */
+	private File kevsFile;
 
-    /**
-     * The maven project.
-     *
-     * @parameter expression="${project}"
-     * @required
-     * @readonly
-     */
-    private MavenProject project;
+	/**
+	 * The maven project.
+	 *
+	 * @parameter expression="${project}"
+	 * @required
+	 * @readonly
+	 */
+	private MavenProject project;
 
-    /**
-     * The current repository/network configuration of Maven.
-     *
-     * @parameter default-value="${repositorySystemSession}"
-     * @readonly
-     */
-    private RepositorySystemSession repoSession;
+	/**
+	 * The current repository/network configuration of Maven.
+	 *
+	 * @parameter default-value="${repositorySystemSession}"
+	 * @readonly
+	 */
+	private RepositorySystemSession repoSession;
 
-    /**
-     * The entry point to Aether, i.e. the component doing all the work.
-     *
-     * @component
-     */
-    private RepositorySystem repoSystem;
-
-
-    public void execute() throws MojoExecutionException {
-
-        try {
-            KevoreeBootStrap.byPassAetherBootstrap =true;
-            org.kevoree.tools.aether.framework.AetherUtil.setRepositorySystemSession(repoSession);
-            org.kevoree.tools.aether.framework.AetherUtil.setRepositorySystem(repoSystem);
-            ContainerRoot model = KevScriptHelper.generate(kevsFile,project);
-
-            File tFile = new File(project.getBuild().getOutputDirectory(), "runner.kev");
-            org.kevoree.framework.KevoreeXmiHelper.save(tFile.getAbsolutePath(), model);
-
-            System.setProperty("node.bootstrap", tFile.getAbsolutePath());
-            System.setProperty("node.name", "node0");
-
-            App.main(new String[0]);
-
-            Thread.currentThread().join();
-
-        } catch (Exception e) {
-            getLog().error(e);
-        }
+	/**
+	 * The entry point to Aether, i.e. the component doing all the work.
+	 *
+	 * @component
+	 */
+	private RepositorySystem repoSystem;
 
 
-    }
+	public void execute () throws MojoExecutionException {
+
+		try {
+			KevoreeBootStrap.byPassAetherBootstrap = true;
+			org.kevoree.tools.aether.framework.AetherUtil.setRepositorySystemSession(repoSession);
+			org.kevoree.tools.aether.framework.AetherUtil.setRepositorySystem(repoSystem);
+			ContainerRoot model = KevScriptHelper.generate(kevsFile, project);
+
+			File tFile = new File(project.getBuild().getOutputDirectory(), "runner.kev");
+			org.kevoree.framework.KevoreeXmiHelper.save(tFile.getAbsolutePath(), model);
+
+//			System.setProperties(project.getProperties());
+			for (Object key : project.getProperties().keySet()) {
+				System.setProperty(key.toString(), project.getProperties().get(key).toString());
+			}
+			System.setProperty("node.bootstrap", tFile.getAbsolutePath());
+			if (System.getProperty("node.name") == null) {
+				System.setProperty("node.name", "node0");
+			}
+
+			App.main(new String[0]);
+
+			Thread.currentThread().join();
+
+		} catch (Exception e) {
+			getLog().error(e);
+		}
+
+
+	}
 
 
 }
