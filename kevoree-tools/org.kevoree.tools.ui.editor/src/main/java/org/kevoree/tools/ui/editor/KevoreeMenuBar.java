@@ -164,12 +164,12 @@ public class KevoreeMenuBar extends JMenuBar {
         jmdnsLookup.addActionListener(new CommandActionListener(jmdnsLookupCmd));
         tools.add(jmdnsLookup);
 
-
+        /*
         JMenuItem closeOsgi = new JMenuItem("Clean OSGi Cache");
         KillOSGICommand closeOsgiCmd = new KillOSGICommand();
         closeOsgi.addActionListener(new CommandActionListener(closeOsgiCmd));
         tools.add(closeOsgi);
-
+         */
         JMenu loggerMenu = new JMenu("Logger");
 
         ButtonGroup logGroup = new ButtonGroup();

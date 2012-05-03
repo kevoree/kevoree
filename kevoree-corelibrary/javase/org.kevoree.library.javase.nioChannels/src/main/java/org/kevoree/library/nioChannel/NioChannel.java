@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Executors;
 
@@ -108,7 +109,7 @@ public class NioChannel extends AbstractChannelFragment {
     public void stopNio() {
         msgQueue.flushChannel();
         clientBootStrap.releaseExternalResources();
-		bootstrap.releaseExternalResources();
+		//bootstrap.releaseExternalResources();
         logger.debug("Client channels flushed");
         msgQueue.stop();
 
@@ -120,7 +121,7 @@ public class NioChannel extends AbstractChannelFragment {
 
         serverChannel.close().awaitUninterruptibly(200);
         logger.debug("Server channel closed");
-     //   bootstrap.releaseExternalResources();
+        bootstrap.releaseExternalResources();
 
     }
 
@@ -165,8 +166,20 @@ public class NioChannel extends AbstractChannelFragment {
     }
 
     public String getAddress(String remoteNodeName) {
-        String ip = KevoreePlatformHelper.getProperty(this.getModelService().getLastModel(), remoteNodeName,
+
+        List<String> ips = KevoreePropertyHelper.getStringNetworkProperties(this.getModelService().getLastModel(), remoteNodeName,
                 org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP());
+
+        String ip = "";
+        for(String loopIP : ips){
+           if(loopIP.split(".").length == 4){
+               ip = loopIP;
+           }
+        }
+
+
+        //String ip = KevoreePlatformHelper.getProperty(this.getModelService().getLastModel(), remoteNodeName,
+        //        org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP());
         if ("".equals(ip)) {
             ip = "127.0.0.1";
         }
