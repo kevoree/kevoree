@@ -78,6 +78,10 @@ public class KevRunnerMavenMojo extends AbstractMojo {
             File tFile = new File(project.getBuild().getOutputDirectory(), "runner.kev");
             org.kevoree.framework.KevoreeXmiHelper.save(tFile.getAbsolutePath(), model);
 
+//			System.setProperties(project.getProperties());
+			for (Object key : project.getProperties().keySet()) {
+				System.setProperty(key.toString(), project.getProperties().get(key).toString());
+			}
             System.setProperty("node.bootstrap", tFile.getAbsolutePath());
             System.setProperty("node.name", "node0");
 
