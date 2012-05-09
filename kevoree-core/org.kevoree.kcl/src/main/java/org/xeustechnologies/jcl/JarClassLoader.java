@@ -246,7 +246,17 @@ public class JarClassLoader extends AbstractClassLoader {
             Class result = null;
             try {
                 result = findLoadedClass(className);
-                if(result == null){result = defineClass(className, classBytes, 0, classBytes.length);}
+                if(result == null){
+                    try {
+                        String packageName = className.substring( 0, className.lastIndexOf( '.' ) );
+                        if(getPackage(packageName) == null){
+                            definePackage( packageName, null, null, null, null, null, null, null );
+                        }
+                    } catch (Exception empty) {
+                        empty.printStackTrace();
+                    }
+                    result = defineClass(className, classBytes, 0, classBytes.length);
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
