@@ -98,13 +98,13 @@ public class NettyGossiperChannel extends AbstractChannelFragment implements Gos
 			tcpActor.stop();
 			tcpActor = null;
 		}
-		if (processValue != null) {
-			processValue.stop();
-			processValue = null;
-		}
 		if (processRequest != null) {
 			processRequest.stop();
 			processRequest = null;
+		}
+		if (processValue != null) {
+			processValue.stop();
+			processValue = null;
 		}
 		if (dataManager != null) {
 			dataManager.stop();

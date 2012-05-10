@@ -5,7 +5,7 @@ package org.kevoree.framework.message
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * 	http://www.gnu.org/licenses/lgpl-3.0.txt
+ * http://www.gnu.org/licenses/lgpl-3.0.txt
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,55 +13,112 @@ package org.kevoree.framework.message
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 
-import scala.reflect.BeanProperty
 import java.util.UUID
 
-class Message extends Serializable{
+class Message extends Serializable {
 
-  @BeanProperty
   var destNodeName = "default"
 
-  @BeanProperty
+  def getDestNodeName: String = {
+    destNodeName
+  }
+
+  def setDestNodeName (newDestNodeName: String) {
+    destNodeName = newDestNodeName
+  }
+
   var destChannelName = "default"
 
-  @BeanProperty
-  var content : Any = null
+  def getDestChannelName: String = {
+    destChannelName
+  }
 
-  @BeanProperty
-  var contentClass : String = null
+  def setDestChannelName (newDestChannelName: String) {
+    destChannelName = newDestChannelName
+  }
 
-  @BeanProperty
-  var inOut : java.lang.Boolean = false
+  var content: Any = null
 
-  @BeanProperty
+  def getContent: Any = {
+    content
+  }
+
+  def setContent (newContent: Any) {
+    content = newContent
+  }
+
+  var contentClass: String = null
+
+  def getContentClass: String = {
+    contentClass
+  }
+
+  def setContentClass (newContentClass: String) {
+    contentClass = newContentClass
+  }
+
+  var inOut: java.lang.Boolean = false
+
+  def getInOut: java.lang.Boolean = {
+    inOut
+  }
+
+  def setInOut (newInOut: java.lang.Boolean) {
+    inOut = newInOut
+  }
+
   var responseTag = ""
 
-  @BeanProperty
-  var timeout : Long = 3000
+  def getResponseTag: String = {
+    responseTag
+  }
 
-  @BeanProperty
-  var passedNodes : java.util.List[String] = new java.util.ArrayList[String]()
+  def setResponseTag (newResponseTag: String) {
+    responseTag = newResponseTag
+  }
 
-  @BeanProperty
-  var uuid : UUID = UUID.randomUUID()
+  var timeout: Long = 3000
 
+  def getTimeout: Long = {
+    timeout
+  }
 
-  def getClone : Message = {
+  def setTimeout (newTimeout: Long) {
+    timeout = newTimeout
+  }
+
+  var passedNodes: java.util.List[String] = new java.util.ArrayList[String]()
+
+  def getPassedNodes: java.util.List[String] = {
+    passedNodes
+  }
+
+  def setPassedNodes (newPassedNodes: java.util.List[String]) {
+    passedNodes = newPassedNodes
+  }
+
+  var uuid: UUID = UUID.randomUUID()
+
+  def getUuid: UUID = {
+    uuid
+  }
+
+  def setUuid (newUuid: UUID) {
+    uuid = newUuid
+  }
+
+  override def clone: Message = {
     val clone = new Message
-    clone.setDestNodeName(this.getDestNodeName())
-    clone.setDestChannelName(this.getDestChannelName())
-    clone.setContent(this.getContent())
-    clone.setContentClass(this.getContentClass())
-    clone.setInOut(this.getInOut())
-    clone.setResponseTag(this.getResponseTag())
-    clone.setTimeout(this.getTimeout())
-    clone.setPassedNodes(this.getPassedNodes())
-    clone.setUuid(this.getUuid())
+    clone.setDestNodeName(this.getDestNodeName)
+    clone.setDestChannelName(this.getDestChannelName)
+    clone.setContent(this.getContent)
+    clone.setContentClass(this.getContentClass)
+    clone.setInOut(this.getInOut)
+    clone.setResponseTag(this.getResponseTag)
+    clone.setTimeout(this.getTimeout)
+    clone.setPassedNodes(this.getPassedNodes)
+    clone.setUuid(this.getUuid)
     clone
   }
 
