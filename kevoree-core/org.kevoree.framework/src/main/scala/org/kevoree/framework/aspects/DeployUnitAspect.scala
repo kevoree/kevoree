@@ -55,6 +55,15 @@ case class DeployUnitAspect(self: DeployUnit) {
 
   def isModelEquals(other: DeployUnit): Boolean = {
 
+    if(other == null){
+      if(self == null){
+          return true
+      } else {
+         return false
+      }
+
+    }
+
     if (other.getUnitName != self.getUnitName || other.getGroupName != self.getGroupName || other.getVersion != self.getVersion) {
       return false
     }

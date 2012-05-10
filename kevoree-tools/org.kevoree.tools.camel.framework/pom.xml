@@ -4,17 +4,17 @@
     <artifactId>org.kevoree.tools.camel.framework</artifactId>
     <packaging>jar</packaging>
     <name>Kevoree :: Tools :: Apache Camel Framework</name>
-    <version>1.7.0-SNAPSHOT</version>
+    <version>1.7.0</version>
 
     <parent>
         <artifactId>org.kevoree.tools.root</artifactId>
         <groupId>org.kevoree.tools</groupId>
-        <version>1.7.0-SNAPSHOT</version>
+        <version>1.7.0</version>
         <relativePath>../org.kevoree.tools.root/pom.xml</relativePath>
     </parent>
 
     <properties>
-        <camel.version>2.9.1</camel.version>
+        <camel.version>2.9.2</camel.version>
         <kevoree.include>*:*</kevoree.include>
     </properties>
 

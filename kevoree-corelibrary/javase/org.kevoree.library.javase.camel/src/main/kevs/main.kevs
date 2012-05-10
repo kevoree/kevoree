@@ -1,11 +1,12 @@
-merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.camel.atom/{kevoree.version}"
+merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.camel/{kevoree.version}"
 merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.javaseNode/{kevoree.version}"
 merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.fakeDomo/{kevoree.version}"
 merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.defaultChannels/{kevoree.version}"
 
 addNode node0 : JavaSENode
-addComponent fread@node0 : CamelAtomReader { url = 'https://github.com/dukeboard/kevoree/commits/master.atom',period='5000' }
+addComponent input@node0 : CamelTimer { period='2000' }
+addChannel logQueue : CamelNetty
+bind input.tick@node0 => logQueue
+
 addComponent console@node0 : FakeConsole
-addChannel feedQueue : defMSG
-bind fread.feeds@node0 => feedQueue
-bind console.showText@node0 => feedQueue
+bind console.showText@node0 => logQueue
