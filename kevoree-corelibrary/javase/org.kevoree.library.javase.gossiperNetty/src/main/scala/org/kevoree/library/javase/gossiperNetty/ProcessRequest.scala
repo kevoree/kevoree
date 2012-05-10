@@ -86,9 +86,9 @@ class ProcessRequest (instance: GossiperComponent, dataManager: DataManager, ser
         logger.debug("UUIDDataRequest received")
         val uuidDataRequest = UUIDDataRequest.parseFrom(message.getContent)
         val data = dataManager.getData(UUID.fromString(uuidDataRequest.getUuid))
-        //        logger.debug("before serializing data")
+        logger.debug("before serializing data")
         val bytes: Array[Byte] = serializer.serialize(data._2);
-        //        logger.debug("after serializing data")
+        logger.debug("after serializing data")
         if (bytes != null) {
           val modelBytes = ByteString.copyFrom(bytes)
 
