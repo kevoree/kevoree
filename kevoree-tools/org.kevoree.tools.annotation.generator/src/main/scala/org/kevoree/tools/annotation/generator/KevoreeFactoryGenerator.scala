@@ -39,7 +39,7 @@ object KevoreeFactoryGenerator {
 
         val componentPackage = KevoreeGeneratorHelper.getTypeDefinitionGeneratedPackage(ct, targetNodeType)
         val factoryName = ct.getFactoryBean.substring(ct.getFactoryBean.lastIndexOf(".") + 1)
-        val componentBean = ct.getFactoryBean.substring(0, ct.getFactoryBean.indexOf("Factory"))
+        val componentBean = ct.getFactoryBean.substring(0, ct.getFactoryBean.lastIndexOf("Factory"))
         val wrapper = filer.createResource(StandardLocation.SOURCE_OUTPUT, "", new String(componentPackage.replace(".", "/") + "/" + factoryName + ".scala"))
         val writer = wrapper.openWriter()
         writer.append("package " + componentPackage + "\n");

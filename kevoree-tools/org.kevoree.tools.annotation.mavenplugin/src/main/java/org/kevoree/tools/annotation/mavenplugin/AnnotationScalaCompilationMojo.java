@@ -58,13 +58,16 @@ public class AnnotationScalaCompilationMojo extends AbstractMojo {
     private ScalaCompiler ScalaCompiler = new ScalaCompiler();
 
     @Override
-    public void execute() throws MojoExecutionException, MojoFailureException {
+    public void execute() throws MojoExecutionException, MojoFailureException{
         try {
             Integer result = ScalaCompiler.compile(sourceOutputDirectory.getPath(),outputClasses.getPath(),project.getCompileClasspathElements());
             if(result != 0){
-                getLog().error("Embedded Scala compilation error !");
+                throw new MojoExecutionException("Embedded Scala compilation error !");
             }
-        } catch (Exception e) {
+        } catch (MojoExecutionException e) {
+            getLog().error(e);
+            throw e;
+        } catch (Exception e){
             getLog().error(e);
         }
     }
