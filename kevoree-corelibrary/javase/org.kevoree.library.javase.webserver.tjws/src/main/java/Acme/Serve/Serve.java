@@ -2053,7 +2053,7 @@ public class Serve implements ServletContext, Serializable {
                     return;
                 }
                 s = getHeader(CONNECTION);
-                keepAlive = "close".equalsIgnoreCase(s) == false;
+                keepAlive = !"close".equalsIgnoreCase(s);
                 if (keepAlive) {
                     s = getHeader(KEEPALIVE);
                     // FF specific ?
@@ -2100,7 +2100,7 @@ public class Serve implements ServletContext, Serializable {
                     return;
                 }
             }
-            if (assureHeaders() && socket.getKeepAlive() == false)
+            if (assureHeaders() && !socket.getKeepAlive())
                 socket.setKeepAlive(true);
             socket.setSoTimeout(0);
             serve.setHost(getHeader(HOST));
@@ -2115,7 +2115,7 @@ public class Serve implements ServletContext, Serializable {
                     // / TODO put time mark here to monitor actual servicing
 
                     // System.err.println("Servlet "+os[0]+" for path "+reqUriPath);
-                    uriLen = ((Integer) os[1]).intValue();
+                    uriLen = (Integer) os[1];
                     runServlet((HttpServlet) os[0]);
                 } else {
                     problem("No any servlet found for serving " + reqUriPath, SC_BAD_REQUEST);
@@ -2757,10 +2757,10 @@ public class Serve implements ServletContext, Serializable {
                                 && WWWFORMURLENCODE.regionMatches(true, 0, contentType, 0, WWWFORMURLENCODE.length())) {
                             if (postCache == null) {
                                 postCache = new String[1];
-                                InputStream is = null;
+//                                InputStream is = null;
                                 try {
                                     formParameters = Acme.Utils.parsePostData(getContentLength(),
-                                            is = getInputStream(), charEncoding, postCache);
+                                            /*is =*/ getInputStream(), charEncoding, postCache);
                                 } catch (Exception ex) {
                                     serve.log("TJWS: Exception " + ex + " at parsing 'POST' data of length "
                                             + getContentLength());
@@ -3463,9 +3463,9 @@ public class Serve implements ServletContext, Serializable {
                     ehp = url.indexOf('#');
                 if (ehp < 0)
                     ehp = url.length();
-                if (url.regionMatches(true, 0, getRequestURL().toString(), 0, ehp) == false)
+                if (!url.regionMatches(true, 0, getRequestURL().toString(), 0, ehp))
                     return url;
-            } catch (MalformedURLException e) {
+            } catch (MalformedURLException ignored) {
             }
 
             return url + SESSION_URL_NAME + sessionValue;
@@ -4018,7 +4018,7 @@ public class Serve implements ServletContext, Serializable {
         }
 
         @Override
-        public HashMap<String, String> getHeaders() {
+        public Map<String, String> getHeaders() {
             return resolvedParams;
 
             // HashMap<String, String> headers = new HashMap<String, String>();
@@ -4026,7 +4026,7 @@ public class Serve implements ServletContext, Serializable {
         }
 
         @Override
-        public void setHeaders(HashMap<String, String> headers) {
+        public void setHeaders(Map<String, String> headers) {
 
         }
 
@@ -4052,14 +4052,18 @@ public class Serve implements ServletContext, Serializable {
         }
 
         @Override
-        public HashMap<String, String> getResolvedParams() {
-            return resolvedParams;
+        public Map<String, String> getResolvedParams() {
+//            return resolvedParams;
+			if (resolvedParams == null) {
+				resolvedParams = (Map<String, String>)getParameterMap();
+			}
+			return resolvedParams;
         }
 
-        private HashMap<String, String> resolvedParams = new HashMap<String, String>();
+        private Map<String, String> resolvedParams = null;//new HashMap<String, String>();
 
         @Override
-        public void setResolvedParams(HashMap<String, String> rps) {
+        public void setResolvedParams(Map<String, String> rps) {
             resolvedParams = rps;
         }
 

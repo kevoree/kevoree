@@ -125,15 +125,16 @@ public class Utils {
 					value = /* URLDecoder. */decode(value, encoding);
 			} catch (UnsupportedEncodingException uee) {
 			}
-			String[] values = (String[]) result.get(key);
-			String[] newValues;
+			String/*[]*/ values = (String/*[]*/) result.get(key); // Why does he want to use array ?
+			String/*[]*/ newValues;
 			if (values == null) {
-				newValues = new String[1];
-				newValues[0] = value;
+//				newValues = new String[1];
+				newValues/*[0]*/ = value;
 			} else {
-				newValues = new String[values.length + 1];
+				/*newValues = new String[values.length + 1];
 				System.arraycopy(values, 0, newValues, 0, values.length);
-				newValues[values.length] = value;
+				newValues[values.length] = value;*/
+				newValues = values + " " + value;
 			}
 			result.put(key, newValues);
 		}
