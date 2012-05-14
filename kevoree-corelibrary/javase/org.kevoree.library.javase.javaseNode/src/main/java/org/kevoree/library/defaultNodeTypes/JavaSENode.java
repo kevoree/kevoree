@@ -74,7 +74,9 @@ public class JavaSENode extends AbstractNodeType {
 		kompareBean = null;
 		mapper = null;
 		isRunning = false;
-		shutdownThread.stop();
+		if (shutdownThread != null) {
+			shutdownThread.stop();
+		}
 		//Cleanup the local runtime
 		KevoreeDeployManager.clearAll(this);
 	}
