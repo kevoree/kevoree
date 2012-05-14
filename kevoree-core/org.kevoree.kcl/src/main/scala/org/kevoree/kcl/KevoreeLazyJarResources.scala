@@ -36,7 +36,7 @@ import java.lang.String
 import org.slf4j.LoggerFactory
 import java.util.ArrayList
 import java.lang.ref.WeakReference
-;
+
 
 /**
  * Created by IntelliJ IDEA.
@@ -157,10 +157,13 @@ class KevoreeLazyJarResources extends ClasspathResources {
                 }
               } else {
                 if (!jarEntry.getName.endsWith(".class") && baseurl != null) { //IF URL OK , DON'T COPY RESOURCES
-                  if (!detectedResourcesURL.containsKey(jarEntry.getName)) {
-                    detectedResourcesURL.put(jarEntry.getName, new ArrayList[URL]())
+
+                  var rurl = detectedResourcesURL.get(jarEntry.getName)
+                  if (rurl == null) {
+                    rurl = new ArrayList[URL]()
+                    detectedResourcesURL.put(jarEntry.getName, rurl)
                   }
-                  detectedResourcesURL.get(jarEntry.getName).add(new URL("jar:" + baseurl + "!/" + jarEntry.getName))
+                  rurl.add(new URL("jar:" + baseurl + "!/" + jarEntry.getName))
                 } else {
                   val b = new Array[Byte](2048)
                   val out = new ByteArrayOutputStream();
@@ -175,14 +178,21 @@ class KevoreeLazyJarResources extends ClasspathResources {
                   }
                   out.flush()
                   out.close()
+
+
+                  //val bytebuf = ByteBuffer.allocateDirect(out.toByteArray.length);
+
+
                   val key_url = "file:kclstream:" + jarStream.hashCode() + jarEntry.getName
                   if (jarEntry.getName.endsWith(".class")) {
                     jarContentURL.put(jarEntry.getName, new URL(key_url))
                   } else {
-                    if (!detectedResourcesURL.containsKey(jarEntry.getName)) {
-                      detectedResourcesURL.put(jarEntry.getName, new ArrayList[URL]())
+                    var rurl = detectedResourcesURL.get(jarEntry.getName)
+                    if (rurl == null) {
+                      rurl = new ArrayList[URL]()
+                      detectedResourcesURL.put(jarEntry.getName, rurl)
                     }
-                    detectedResourcesURL.get(jarEntry.getName).add(new URL(key_url))
+                    rurl.add(new URL(key_url))
                   }
                   if (jarEntry.getName.endsWith(".jar")) {
                     if (baseurl != null) {
