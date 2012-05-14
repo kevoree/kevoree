@@ -33,7 +33,7 @@ class KevoreeChannelFragmentProxy(remoteNodeName : String,remoteChannelName : St
   def stopChannelFragment = {}
 
   def internal_process(msg : Any) = msg match {
-    case msg : Message => msg match {
+    case msg : Message => msg.content match {
         case mcm : MethodCallMessage => reply(channelSender.sendMessageToRemote(msg))
         case _ => channelSender.sendMessageToRemote(msg)
     }
