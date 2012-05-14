@@ -2,9 +2,8 @@ package org.kevoree.library.javase.webserver.impl;
 
 import org.kevoree.library.javase.webserver.KevoreeHttpRequest;
 
-import java.io.Serializable;
 import java.util.HashMap;
-import java.util.UUID;
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -18,17 +17,17 @@ public class KevoreeHttpRequestImpl implements KevoreeHttpRequest {
 
     private String rawParams = "";
 
-    private HashMap<String, String> resolvedParams = new HashMap<String, String>();
+    private Map<String, String> resolvedParams = new HashMap<String, String>();
 
-    public HashMap<String, String> getHeaders() {
+    public Map<String, String> getHeaders() {
         return headers;
     }
 
-    public void setHeaders(HashMap<String, String> headers) {
+    public void setHeaders(Map<String, String> headers) {
         this.headers = headers;
     }
 
-    private HashMap<String, String> headers = new HashMap<String, String>();
+    private Map<String, String> headers = new HashMap<String, String>();
 
     private int tokenID = -1;
 
@@ -49,11 +48,11 @@ public class KevoreeHttpRequestImpl implements KevoreeHttpRequest {
         this.url = url;
     }
 
-    public HashMap<String, String> getResolvedParams() {
+    public Map<String, String> getResolvedParams() {
         return resolvedParams;
     }
 
-    public void setResolvedParams(HashMap<String, String> resolvedParams) {
+    public void setResolvedParams(Map<String, String> resolvedParams) {
         this.resolvedParams = resolvedParams;
     }
 

@@ -1,8 +1,7 @@
 package org.kevoree.library.javase.webserver;
 
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.UUID;
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -12,9 +11,9 @@ import java.util.UUID;
  */
 public interface KevoreeHttpRequest extends Serializable {
 
-	public HashMap<String, String> getHeaders ();
+	public Map<String, String> getHeaders ();
 
-	public void setHeaders (HashMap<String, String> headers);
+	public void setHeaders (Map<String, String> headers);
 
 	public int getTokenID();
 
@@ -24,9 +23,9 @@ public interface KevoreeHttpRequest extends Serializable {
 
 	public void setUrl (String url);
 
-	public HashMap<String, String> getResolvedParams ();
+	public Map<String, String> getResolvedParams ();
 
-	public void setResolvedParams (HashMap<String, String> resolvedParams) ;
+	public void setResolvedParams (Map<String, String> resolvedParams) ;
 
 	public byte[] getRawBody () ;
 

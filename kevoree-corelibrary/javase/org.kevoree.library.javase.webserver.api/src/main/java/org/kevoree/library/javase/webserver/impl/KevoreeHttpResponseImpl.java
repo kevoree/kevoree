@@ -2,9 +2,8 @@ package org.kevoree.library.javase.webserver.impl;
 
 import org.kevoree.library.javase.webserver.KevoreeHttpResponse;
 
-import java.io.Serializable;
 import java.util.HashMap;
-import java.util.UUID;
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -55,13 +54,13 @@ public class KevoreeHttpResponseImpl implements KevoreeHttpResponse {
         this.rawContent = rawContent;
     }
     
-    private HashMap<String,String> headers = new HashMap<String,String>();
+    private Map<String,String> headers = new HashMap<String,String>();
 
-    public HashMap<String, String> getHeaders() {
+    public Map<String, String> getHeaders() {
         return headers;
     }
 
-    public void setHeaders(HashMap<String, String> headers) {
+    public void setHeaders(Map<String, String> headers) {
         this.headers = headers;
     }
 
