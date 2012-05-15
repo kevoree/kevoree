@@ -31,13 +31,19 @@ load_rc_config "${name}"
 
 : ${kevoree_enable="NO"}
 : ${kevoree_home="$HOME/kevoree-service"}
+: ${kevoree_version="1.6.0"}
+: ${kevoree_log_level="INFO"}
+: ${node_update_timeout="300000"}
+: ${node_groupType="NanoRestGroup"}
+: ${kevoree_node_bootstrap="mvn:org.kevoree.corelibrary.model/org.kevoree.library.model.sky.kloud/${kevoree_version}"}
 
 #APP_PATH="$HOME/kevoree-service" # path where your exec file are
 runtime="kevoree-runtime"  # name of the exec file without (.jar)
 runtime_updater="kevoree-service-updater"
 
 java="/usr/local/bin/java"
-java_args="-Djava.awt.headless=true -Dnode.bootstrap=http://10.0.0.2:6001/ -Dnode.log.level=DEBUG -Dnode.name=`/bin/hostname` -Dnode.log.appender=FILE -Dnode.log.appender.file=$kevoree_home/`/bin/hostname`.log -Dnode.groupType=RestGroup -Dnode.update.timeout=300000 -Xmx1024M -Xms1024M -jar $kevoree_home/$runtime.jar"
+#java_args="-Dcom.sun.management.jmxremote.port=5555 -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.authenticate=false -Xmx1024M -Xms1024M -Djava.awt.headless=true -Dnode.bootstrap=${kevoree_node_bootstrap} -Dkevoree.log.level=${kevoree_log_level} -Dnode.name=`/bin/hostname` -Dnode.log.appender=FILE -Dnode.log.appender.file=$kevoree_home/`/bin/hostname`.log -Dnode.groupType=${node_groupType} -Dnode.update.timeout=${node_update_timeout} -jar $kevoree_home/$runtime.jar"
+java_args="-Xmx1024M -Xms1024M -Djava.awt.headless=true -Dnode.bootstrap=${kevoree_node_bootstrap} -Dkevoree.log.level=${kevoree_log_level} -Dnode.name=`/bin/hostname` -Dnode.log.appender=FILE -Dnode.log.appender.file=$kevoree_home/`/bin/hostname`.log -Dnode.groupType=${node_groupType} -Dnode.update.timeout=${node_update_timeout} -jar $kevoree_home/$runtime.jar"
 
 command="/usr/sbin/daemon"
 command_args="-f -p ${pidfile} ${java} ${java_args}"
@@ -53,7 +59,7 @@ pid_touch() {
 }
 
 kevoree_update() {
-	$java -jar "$kevoree_home/$runtime_updater.jar" "$kevoree_home/$runtime.jar" "1.6.0-SNAPSHOT"
+	$java -jar "$kevoree_home/$runtime_updater.jar" "$kevoree_home/$runtime.jar" model=${kevoree_node_bootstrap}
 }
 
 kevoree_start() {
