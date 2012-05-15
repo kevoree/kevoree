@@ -251,7 +251,7 @@ class KloudForm (editor: KevoreeEditor) {
       val connection = url.openConnection().asInstanceOf[HttpURLConnection]
       connection.setRequestMethod("POST")
       connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded")
-      connection.setRequestProperty("Content-Length", "" + Integer.toString(bodyBuilder.length))
+      connection.setRequestProperty("Content-Length", Integer.toString(bodyBuilder.length))
       connection.setConnectTimeout(3000)
       connection.setDoOutput(true)
       val wr: OutputStreamWriter = new OutputStreamWriter(connection.getOutputStream)
@@ -312,7 +312,7 @@ class KloudForm (editor: KevoreeEditor) {
         false
       } else if (response.startsWith("<nack")) {
         val errorMessage = URLDecoder.decode(response, "UTF-8").split("error=\"")(1)
-        logger.debug("Unable to submit or sink your model on the Kloud: {}", errorMessage.substring(0, errorMessage.indexOf("\"")))
+        logger.warn("Unable to submit or sink your model on the Kloud: {}", errorMessage.substring(0, errorMessage.indexOf("\"")))
         false
       } else {
         val lcommand = new LoadModelCommand()
