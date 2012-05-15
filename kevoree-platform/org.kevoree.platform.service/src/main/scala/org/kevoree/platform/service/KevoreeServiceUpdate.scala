@@ -57,12 +57,17 @@ object KevoreeServiceUpdate extends App {
     arg => getFromModel = true; model = arg.substring("model=".size, arg.size)
   }
 
+  var repos = List[String]("http://maven.kevoree.org/snapshots/", "http://maven.kevoree.org/release/")
   if (getFromModel) {
     try {
       // look if its a file, a http url or a mvn url
       if (model.startsWith("mvn:")) {
         val splittedUrl = model.substring("mvn:".length).split("/")
-        val modelJarFile = AetherUtil.resolveMavenArtifact(splittedUrl(1), splittedUrl(0), splittedUrl(2), List[String]("http://maven.kevoree.org/snapshots/", "http://maven.kevoree.org/release/"))
+        if (splittedUrl(2) == "RELEASE") {
+          repos = List[String]("http://maven.kevoree.org/release/")
+          splittedUrl(2) = "LATEST"
+        }
+        val modelJarFile = AetherUtil.resolveMavenArtifact(splittedUrl(1), splittedUrl(0), splittedUrl(2), repos)
         val jar: JarFile = new JarFile(modelJarFile)
         val entry: JarEntry = jar.getJarEntry("KEV-INF/lib.kev")
         if (entry != null) {
@@ -84,7 +89,7 @@ object KevoreeServiceUpdate extends App {
 
 
     val jarFile: File = AetherUtil
-      .resolveMavenArtifact("org.kevoree.platform.standalone", "org.kevoree.platform", version, List[String]("http://maven.kevoree.org/snapshots/", "http://maven.kevoree.org/release/"))
+      .resolveMavenArtifact("org.kevoree.platform.standalone", "org.kevoree.platform", version, repos)
 
     if (jarFile.exists) {
       val p = Runtime.getRuntime.exec(Array[String]("cp", jarFile.getAbsolutePath, defaultLocation))
@@ -110,8 +115,10 @@ object KevoreeServiceUpdate extends App {
   }
 
   private def findVersionFromModel (path: String): String = {
+    //<deployUnits type="jar" unitName="org.kevoree.framework" xsi:type="kevoree:DeployUnit" groupName="org.kevoree" version="1.7.1-SNAPSHOT" targetNodeType="//@typeDefinitions.17"></deployUnits>
     val frameworkRegex = new
-        Regex("<deployUnits targetNodeType=\"//@typeDefinitions.[0-9][0-9]*\" type=\".*\" version=\"(.*)\" unitName=\"org.kevoree.framework\" groupName=\"org.kevoree\" xsi:type=\"kevoree:DeployUnit\"></deployUnits>")
+        //Regex("<deployUnits targetNodeType=\"//@typeDefinitions.[0-9][0-9]*\" type=\".*\" version=\"(.*)\" unitName=\"org.kevoree.framework\" groupName=\"org.kevoree\" xsi:type=\"kevoree:DeployUnit\"></deployUnits>")
+        Regex("<deployUnits\\s(?:(?:(?:version=\"([^\\s]*)\")|(?:targetNodeType=\"//@typeDefinitions.[0-9][0-9]*\")|(?:type=\"[^\\s]*\")|(?:unitName=\"org.kevoree.framework\")|(?:groupName=\"org.kevoree\")|(?:xsi:type=\"kevoree:DeployUnit\"))(\\s)*){6}></deployUnits>")
     var frameworkVersion = "LATEST"
     path.lines.forall(l => {
       val m = frameworkRegex.pattern.matcher(l)
@@ -122,6 +129,7 @@ object KevoreeServiceUpdate extends App {
         true
       }
     })
+    println(frameworkVersion)
     frameworkVersion
   }
 }
