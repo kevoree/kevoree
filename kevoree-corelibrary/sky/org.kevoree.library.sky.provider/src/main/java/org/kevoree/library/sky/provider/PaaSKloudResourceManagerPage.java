@@ -84,6 +84,7 @@ public class PaaSKloudResourceManagerPage extends ParentAbstractPage {
 		if (request.getResolvedParams().get("model") != null) {
 			logger.debug("A model has been received");
 			ContainerRoot model = KevoreeXmiHelper.loadString(request.getResolvedParams().get("model"));
+			// TODO ensure there is no IaaS node with the same name than a user node => maybe by using Listener to push the model on the IaaS and then the IaaS check the nodeNames, if they are OK, the IaaSResourceManager refuse the model but push a new one with resource allocation
 			// forward model to group if it exist or submit a new model
 			Option<String> masterNodeOption = KevoreePropertyHelper
 					.getStringPropertyForGroup(getModelService().getLastModel(), request.getResolvedParams().get("login"), "masterNode", false, "");
