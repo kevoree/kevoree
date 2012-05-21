@@ -41,6 +41,10 @@
     <uses-feature android:name="android.hardware.location.gps" />
     <uses-feature android:name="android.hardware.usb.accessory" />
 
+    <uses-feature android:name="android.permission.BLUETOOTH" />
+    <uses-feature android:name="android.permission.BLUETOOTH_ADMIN" />
+
+
     <application android:icon="@drawable/kicon" android:label="@string/app_name" android:theme="@style/Theme.Sherlock.Light">
         <activity android:name=".KevoreeActivity" android:label="@string/app_name">
             <intent-filter>
