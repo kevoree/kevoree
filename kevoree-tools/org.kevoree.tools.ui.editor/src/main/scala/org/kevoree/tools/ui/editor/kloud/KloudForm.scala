@@ -3,7 +3,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * 	http://www.gnu.org/licenses/lgpl-3.0.txt
+ * http://www.gnu.org/licenses/lgpl-3.0.txt
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -142,6 +142,7 @@ class KloudForm (editor: KevoreeEditor) {
   btSubmit.addActionListener(new ActionListener {
     def actionPerformed (p1: ActionEvent) {
       ok_lbl.setForeground(Color.WHITE)
+      ok_lbl.setText("")
       // check data (login, password, ssh_key must be defined, kloud address must also be set but a default value exists)
       if (loginTxtField.getText != "" /*&& passwordTxtField.getPassword.length > 0*/ && addressTxtField.getText != "") {
         val password = new String(passwordTxtField.getPassword)
@@ -178,6 +179,8 @@ class KloudForm (editor: KevoreeEditor) {
   btRelease.setUI(new HudButtonUI)
   btRelease.addActionListener(new ActionListener {
     def actionPerformed (p1: ActionEvent) {
+      ok_lbl.setForeground(Color.WHITE)
+      ok_lbl.setText("")
       // check data (login, password, ssh_key must be defined, kloud address must also be set but a default value exist)
       if (loginTxtField.getText != "" /*&& passwordTxtField.getPassword.length > 0*/ && addressTxtField.getText != "") {
         val password = new String(passwordTxtField.getPassword)
@@ -271,7 +274,7 @@ class KloudForm (editor: KevoreeEditor) {
 
       var response = new String(byteArrayOutputStream.toByteArray, "UTF-8")
 
-      var nbTry = 20;
+      var nbTry = 20
       // look the answer to know if the model has been correctly sent
       while (response.startsWith("<wait") && nbTry > 0) {
         logger.debug(response)
@@ -311,16 +314,24 @@ class KloudForm (editor: KevoreeEditor) {
         logger.debug("Timeout, unable to get your configuration model on the Kloud")
         false
       } else if (response.startsWith("<nack")) {
-        val errorMessage = URLDecoder.decode(response, "UTF-8").split("error=\"")(1)
-        logger.warn("Unable to submit or sink your model on the Kloud: {}", errorMessage.substring(0, errorMessage.indexOf("\"")))
+        try {
+          val errorMessage = URLDecoder.decode(response, "UTF-8").split("error=\"")(1)
+          logger.warn("Unable to release your configuration on the Kloud: {}", errorMessage.substring(0, errorMessage.indexOf("\"")))
+        } catch {
+          case _@e => logger.debug("Unable to catch error", e)
+        }
         false
       } else {
         val lcommand = new LoadModelCommand()
-        editor.getPanel.getKernel.getModelHandler.merge(KevoreeXmiHelper.loadString(response))
-        PositionedEMFHelper.updateModelUIMetaData(editor.getPanel.getKernel)
-        lcommand.setKernel(editor.getPanel.getKernel)
-        lcommand.execute(editor.getPanel.getKernel.getModelHandler.getActualModel)
-        true
+        try {
+          editor.getPanel.getKernel.getModelHandler.merge(KevoreeXmiHelper.loadString(response))
+          PositionedEMFHelper.updateModelUIMetaData(editor.getPanel.getKernel)
+          lcommand.setKernel(editor.getPanel.getKernel)
+          lcommand.execute(editor.getPanel.getKernel.getModelHandler.getActualModel)
+          true
+        } catch {
+          case _@e => logger.debug("Unable to load model:\n{}", response); false
+        }
       }
     } catch {
       case _@e => logger.error("Unable to deploy on Kloud", e)
@@ -366,12 +377,16 @@ class KloudForm (editor: KevoreeEditor) {
       if (response.startsWith("<ack")) {
         true
       } else {
-        val errorMessage = URLDecoder.decode(response, "UTF-8").split("error=\"")(1)
-        logger.debug("Unable to release your configuration on the Kloud: {}", errorMessage.substring(0, errorMessage.indexOf("\"")))
+        try {
+          val errorMessage = URLDecoder.decode(response, "UTF-8").split("error=\"")(1)
+          logger.warn("Unable to release your configuration on the Kloud: {}", errorMessage.substring(0, errorMessage.indexOf("\"")))
+        } catch {
+          case _@e => logger.debug("Unable to catch error", e)
+        }
         false
       }
     } catch {
-      case _@e => logger.error("Unable to deploy on Kloud", e)
+      case _@e => logger.error("Unable to release model on Kloud", e)
       false
     }
 
