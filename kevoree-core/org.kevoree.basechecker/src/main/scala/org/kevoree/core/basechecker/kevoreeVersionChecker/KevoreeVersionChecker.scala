@@ -30,7 +30,7 @@ import collection.JavaConversions._
 
 class KevoreeVersionChecker extends CheckerService {
   def check (model: ContainerRoot): java.util.List[CheckerViolation] = {
-    var violations: java.util.List[CheckerViolation] = new ArrayList[CheckerViolation]()
+    val violations: java.util.List[CheckerViolation] = new ArrayList[CheckerViolation]()
     model.getNodes.foreach {
       node =>
         node.getComponents.foreach {
@@ -59,7 +59,7 @@ class KevoreeVersionChecker extends CheckerService {
   }
 
   private def check (instanceName: String, deployUnit: DeployUnit, node: ContainerNode): java.util.List[CheckerViolation] = {
-    var violations: java.util.List[CheckerViolation] = new ArrayList[CheckerViolation]()
+    val violations: java.util.List[CheckerViolation] = new ArrayList[CheckerViolation]()
     if (((deployUnit.getGroupName == "org.kevoree" && deployUnit.getUnitName == "org.kevoree.api")
       || (deployUnit.getGroupName == "org.kevoree" && deployUnit.getUnitName == "org.kevoree.core")
       || (deployUnit.getGroupName == "org.kevoree" && deployUnit.getUnitName == "org.kevoree.framework")

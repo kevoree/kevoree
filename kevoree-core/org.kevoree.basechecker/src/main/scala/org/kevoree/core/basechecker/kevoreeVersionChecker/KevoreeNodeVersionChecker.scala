@@ -30,7 +30,7 @@ import collection.JavaConversions._
 
 class KevoreeNodeVersionChecker (nodeName: String) extends CheckerService {
   def check (model: ContainerRoot): java.util.List[CheckerViolation] = {
-    var violations: java.util.List[CheckerViolation] = new ArrayList[CheckerViolation]()
+    val violations: java.util.List[CheckerViolation] = new ArrayList[CheckerViolation]()
     model.getNodes.find(node => node.getName == nodeName) match {
       case None =>
       case Some(node) => if (node.getKevoreeVersion != KevoreeFactory.getVersion) {
