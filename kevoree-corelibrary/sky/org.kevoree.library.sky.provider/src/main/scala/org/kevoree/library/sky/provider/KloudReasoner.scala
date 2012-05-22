@@ -57,7 +57,7 @@ object KloudReasoner {
     }
   }
 
-  def createProxy (groupName: String, nodeName: String, proxyPath: String, kloudModel: ContainerRoot, kevScriptEngineFactory: KevScriptEngineFactory): Option[ContainerRoot] = {
+  /*def createProxy (groupName: String, nodeName: String, proxyPath: String, kloudModel: ContainerRoot, kevScriptEngineFactory: KevScriptEngineFactory): Option[ContainerRoot] = {
 
     // val scriptBuilder = new StringBuilder()
     //find Web Server
@@ -109,9 +109,9 @@ object KloudReasoner {
         }
       }
     }
-  }
+  }*/
 
-  def removeProxy (groupName: String, nodeName: String, modelHandlerService: KevoreeModelHandlerService, kevScriptEngineFactory: KevScriptEngineFactory, nbTry: Int): Boolean = {
+  /*def removeProxy (groupName: String, nodeName: String, modelHandlerService: KevoreeModelHandlerService, kevScriptEngineFactory: KevScriptEngineFactory, nbTry: Int): Boolean = {
     val scriptBuilder = new StringBuilder()
     val uuidModel = modelHandlerService.getLastUUIDModel
 
@@ -140,7 +140,7 @@ object KloudReasoner {
         }
       }
     }
-  }
+  }*/
 
   def appendCreateGroupScript (kloudModel: ContainerRoot, login: String, nodeName: String, kevScriptEngine: KevScriptEngine, sshKey: String = "") {
     val ipOption = KevoreePropertyHelper.getStringNetworkProperty(kloudModel, nodeName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP)
@@ -421,7 +421,9 @@ object KloudReasoner {
 
     //CHECK TYPPE
     if (userModel.getTypeDefinitions.find(td => td.getName == groupType).isEmpty) {
-      kengine append "merge \"mvn:org.kevoree.library.sky/org.kevoree.library.sky.provider/{kevVersion}\""
+      kengine append "merge \"mvn:org.kevoree.corelibrary.sky/org.kevoree.library.sky.api/{kevVersion}\""
+      kengine append "merge \"mvn:org.kevoree.corelibrary.sky/org.kevoree.library.sky.minicloud/{kevVersion}\""
+      kengine append "merge \"mvn:org.kevoree.corelibrary.sky/org.kevoree.library.sky.provider/{kevVersion}\""
     }
     kengine.append("addGroup {groupName} : {groupType}")
     //FOUND IAAS GROUP
@@ -436,7 +438,7 @@ object KloudReasoner {
           node =>
             kengine.addVariable("nodeName", node.getName)
             kengine.append("addToGroup {groupName} {nodeName}")
-            val portOption = KevoreePropertyHelper.getIntPropertyForGroup(iaasModel, login, "port", true, node.getName)
+            val portOption = KevoreePropertyHelper.getIntPropertyForGroup(iaasModel, login, "port", isFragment = true, nodeNameForFragment = node.getName)
             if (portOption.isDefined) {
               kengine append "updateDictionary {groupName} {port='" + portOption.get + "'}@{nodeName}"
             }/* else {
@@ -451,7 +453,7 @@ object KloudReasoner {
         try {
           Some(kengine.interpret())
         } catch {
-          case _@e => logger.warn("Error while updating user model configuration"); None
+          case _@e => logger.warn("Error while updating user model configuration", e); None
         }
 
       }
