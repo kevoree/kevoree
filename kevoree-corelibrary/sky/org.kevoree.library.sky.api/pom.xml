@@ -12,10 +12,6 @@
     <artifactId>org.kevoree.library.sky.api</artifactId>
     <name>Kevoree :: CoreLibrary :: Sky :: Api</name>
 
-    <properties>
-        <kevoree.include>*:*</kevoree.include>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>org.kevoree.corelibrary.javase</groupId>
