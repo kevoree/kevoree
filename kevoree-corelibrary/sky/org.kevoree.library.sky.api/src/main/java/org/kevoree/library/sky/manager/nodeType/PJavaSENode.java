@@ -15,4 +15,8 @@ import org.kevoree.library.defaultNodeTypes.JavaSENode;
 @Library(name = "SKY")
 @NodeType
 public class PJavaSENode extends JavaSENode implements PaaSNode {
+	@Override
+	protected boolean isDaemon () {
+		return true;
+	}
 }
