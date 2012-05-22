@@ -28,7 +28,7 @@ import java.io.InputStreamReader;
 @NodeType
 @DictionaryType({
 		@DictionaryAttribute(name = "logLevel", defaultValue = "INFO", optional = true, vals = {"INFO", "WARN", "DEBUG", "ERROR", "FINE"}),
-        @DictionaryAttribute(name = "coreLogLevel", defaultValue = "WARN", optional = true, vals = {"INFO", "WARN", "DEBUG", "ERROR", "FINE"})
+		@DictionaryAttribute(name = "coreLogLevel", defaultValue = "WARN", optional = true, vals = {"INFO", "WARN", "DEBUG", "ERROR", "FINE"})
 })
 @PrimitiveCommands(
 		values = {"UpdateType", "UpdateDeployUnit", "AddType", "AddDeployUnit", "AddThirdParty", "RemoveType", "RemoveDeployUnit", "UpdateInstance", "UpdateBinding", "UpdateDictionaryInstance", "AddInstance", "RemoveInstance", "AddBinding", "RemoveBinding", "AddFragmentBinding", "RemoveFragmentBinding", "UpdateFragmentBinding", "StartInstance", "StopInstance", "StartThirdParty", "RemoveThirdParty"},
@@ -86,41 +86,41 @@ public class JavaSENode extends AbstractNodeType {
 	public void updateNode () {
 		if (getBootStrapperService().getKevoreeLogService() != null) {
 			KevoreeLogLevel logLevel = KevoreeLogLevel.WARN;
-            KevoreeLogLevel corelogLevel = KevoreeLogLevel.WARN;
-            if ("DEBUG".equals(getDictionary().get("logLevel"))) {
-                logLevel = KevoreeLogLevel.DEBUG;
-            }
-            if ("WARN".equals(getDictionary().get("logLevel"))) {
-                logLevel = KevoreeLogLevel.WARN;
-            }
-            if ("INFO".equals(getDictionary().get("logLevel"))) {
-                logLevel = KevoreeLogLevel.INFO;
-            }
-            if ("ERROR".equals(getDictionary().get("logLevel"))) {
-                logLevel = KevoreeLogLevel.ERROR;
-            }
-            if ("FINE".equals(getDictionary().get("logLevel"))) {
-                logLevel = KevoreeLogLevel.FINE;
-            }
+			KevoreeLogLevel corelogLevel = KevoreeLogLevel.WARN;
+			if ("DEBUG".equals(getDictionary().get("logLevel"))) {
+				logLevel = KevoreeLogLevel.DEBUG;
+			}
+			if ("WARN".equals(getDictionary().get("logLevel"))) {
+				logLevel = KevoreeLogLevel.WARN;
+			}
+			if ("INFO".equals(getDictionary().get("logLevel"))) {
+				logLevel = KevoreeLogLevel.INFO;
+			}
+			if ("ERROR".equals(getDictionary().get("logLevel"))) {
+				logLevel = KevoreeLogLevel.ERROR;
+			}
+			if ("FINE".equals(getDictionary().get("logLevel"))) {
+				logLevel = KevoreeLogLevel.FINE;
+			}
 
-            KevoreeLogLevel coreLogLevel = KevoreeLogLevel.WARN;
-            if ("DEBUG".equals(getDictionary().get("coreLogLevel"))) {
-                corelogLevel = KevoreeLogLevel.DEBUG;
-            }
-            if ("WARN".equals(getDictionary().get("coreLogLevel"))) {
-                corelogLevel = KevoreeLogLevel.WARN;
-            }
-            if ("INFO".equals(getDictionary().get("coreLogLevel"))) {
-                corelogLevel = KevoreeLogLevel.INFO;
-            }
-            if ("ERROR".equals(getDictionary().get("coreLogLevel"))) {
-                corelogLevel = KevoreeLogLevel.ERROR;
-            }
-            if ("FINE".equals(getDictionary().get("coreLogLevel"))) {
-                corelogLevel = KevoreeLogLevel.FINE;
-            }
+			KevoreeLogLevel coreLogLevel = KevoreeLogLevel.WARN;
+			if ("DEBUG".equals(getDictionary().get("coreLogLevel"))) {
+				corelogLevel = KevoreeLogLevel.DEBUG;
+			}
+			if ("WARN".equals(getDictionary().get("coreLogLevel"))) {
+				corelogLevel = KevoreeLogLevel.WARN;
+			}
+			if ("INFO".equals(getDictionary().get("coreLogLevel"))) {
+				corelogLevel = KevoreeLogLevel.INFO;
+			}
+			if ("ERROR".equals(getDictionary().get("coreLogLevel"))) {
+				corelogLevel = KevoreeLogLevel.ERROR;
+			}
+			if ("FINE".equals(getDictionary().get("coreLogLevel"))) {
+				corelogLevel = KevoreeLogLevel.FINE;
+			}
 			getBootStrapperService().getKevoreeLogService().setUserLogLevel(logLevel);
-            getBootStrapperService().getKevoreeLogService().setCoreLogLevel(corelogLevel);
+			getBootStrapperService().getKevoreeLogService().setCoreLogLevel(corelogLevel);
 		}
 	}
 
@@ -146,6 +146,8 @@ public class JavaSENode extends AbstractNodeType {
 					System.out.println(this.getBootStrapperService().getKevoreeClassLoaderHandler().getKCLDump());
 				} else if ("help".equalsIgnoreCase(line)) {
 					System.out.println("commands:\n\tshutdown: allow to shutdown the node\n\tkcl: allow to list all the KCLClassLoader and their relationships");
+				} else if (line == null) {
+					isRunning = false;
 				}
 				line = reader.readLine();
 			}
