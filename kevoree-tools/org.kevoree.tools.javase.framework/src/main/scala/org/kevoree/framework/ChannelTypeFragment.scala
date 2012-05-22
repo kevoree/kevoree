@@ -11,6 +11,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/**
+ * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.gnu.org/licenses/lgpl-3.0.txt
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.kevoree.framework
 
 /**
@@ -37,7 +50,9 @@ trait ChannelTypeFragment extends KevoreeChannelFragment with ChannelFragment {
 
   val kevoree_internal_logger = LoggerFactory.getLogger(this.getClass)
 
-  override def remoteDispatch (msg: Message): Object = {
+  var eventHandler : event.MonitorEventHandler = null
+
+  override def remoteDispatch(msg: Message): Object = {
     if (msg.inOut.booleanValue) {
       (this !? msg).asInstanceOf[Object]
     } else {
@@ -57,7 +72,7 @@ trait ChannelTypeFragment extends KevoreeChannelFragment with ChannelFragment {
 
   override def getNodeName = nodeName
 
-  def setNodeName (n: String) {
+  def setNodeName(n: String) {
     nodeName = n
   }
 
@@ -66,31 +81,31 @@ trait ChannelTypeFragment extends KevoreeChannelFragment with ChannelFragment {
 
   override def getName = name
 
-  def setName (n: String) {
+  def setName(n: String) {
     name = n
   }
 
   //@BeanProperty
   var dictionary: HashMap[String, Object] = new HashMap[String, Object]()
 
-  def setDictionary (d: HashMap[String, Object]) {
+  def setDictionary(d: HashMap[String, Object]) {
     dictionary = d
   }
 
-  override def getDictionary (): HashMap[String, Object] = dictionary
+  override def getDictionary(): HashMap[String, Object] = dictionary
 
-  override def getBindedPorts (): java.util.List[KevoreePort] = {
+  override def getBindedPorts(): java.util.List[KevoreePort] = {
     import scala.collection.JavaConversions._
     portsBinded.values.toList
   }
 
   //OVERRIDE BY FACTORY
-  override def getOtherFragments (): java.util.List[KevoreeChannelFragment] = {
+  override def getOtherFragments(): java.util.List[KevoreeChannelFragment] = {
     import scala.collection.JavaConversions._
     fragementBinded.values.toList
   }
 
-  override def forward (delegate: KevoreeActor, inmsg: Message): Object = {
+  override def forward(delegate: KevoreeActor, inmsg: Message): Object = {
     val msg = inmsg.clone
     delegate match {
       case p: KevoreePort => {
@@ -115,7 +130,7 @@ trait ChannelTypeFragment extends KevoreeChannelFragment with ChannelFragment {
     }
   }
 
-  private def createPortKey (a: Any): String = {
+  private def createPortKey(a: Any): String = {
     a match {
       case msg: PortBindMessage => msg.getNodeName + "-" + msg.getComponentName + "-" + msg.getPortName
       case msg: PortUnbindMessage => msg.getNodeName + "-" + msg.getComponentName + "-" + msg.getPortName
@@ -128,7 +143,7 @@ trait ChannelTypeFragment extends KevoreeChannelFragment with ChannelFragment {
 
   private var ct_started: Boolean = false
 
-  def kInstanceStart (tmodel: ContainerRoot): Boolean = {
+  def kInstanceStart(tmodel: ContainerRoot): Boolean = {
     if (!ct_started) {
       try {
         getModelService.asInstanceOf[ModelHandlerServiceProxy].setTempModel(tmodel)
@@ -148,7 +163,7 @@ trait ChannelTypeFragment extends KevoreeChannelFragment with ChannelFragment {
     }
   }
 
-  def kInstanceStop (tmodel: ContainerRoot): Boolean = {
+  def kInstanceStop(tmodel: ContainerRoot): Boolean = {
     if (ct_started) {
       try {
         //TODO CHECK QUEUE SIZE AND SAVE STATE
@@ -169,7 +184,7 @@ trait ChannelTypeFragment extends KevoreeChannelFragment with ChannelFragment {
     }
   }
 
-  def kUpdateDictionary (d: java.util.HashMap[String, AnyRef], cmodel: ContainerRoot): java.util.HashMap[String, AnyRef] = {
+  def kUpdateDictionary(d: java.util.HashMap[String, AnyRef], cmodel: ContainerRoot): java.util.HashMap[String, AnyRef] = {
     try {
       import scala.collection.JavaConversions._
       val previousDictionary = dictionary.clone()
@@ -192,7 +207,7 @@ trait ChannelTypeFragment extends KevoreeChannelFragment with ChannelFragment {
   }
 
 
-  override def internal_process (msgg: Any) = msgg match {
+  override def internal_process(msgg: Any) = msgg match {
     /*
         case UpdateDictionaryMessage(d, cmodel) => {
           try {
@@ -294,43 +309,49 @@ trait ChannelTypeFragment extends KevoreeChannelFragment with ChannelFragment {
     case _@msg => local_queue forward msg
   }
 
+
+
   val local_queue = new KevoreeActor {
-    override def internal_process (msgg: Any) = msgg match {
-      case msg: Message => {
-        if (msg.inOut.booleanValue) {
-          reply(dispatch(msg))
-        } else {
-          dispatch(msg)
+    override def internal_process(msgg: Any) = {
+      if(eventHandler != null){
+        eventHandler.triggerEvent(event.MonitorEvent(classOf[ChannelFragment],getName))
+      }
+      msgg match {
+        case msg: Message => {
+          if (msg.inOut.booleanValue) {
+            reply(dispatch(msg))
+          } else {
+            dispatch(msg)
+          }
+        }
+        case msg: MethodCallMessage => {
+          val msg2 = new Message
+          msg2.setInOut(true)
+          msg2.setContent(msg)
+          reply(dispatch(msg2))
+        }
+        case msg: Object => {
+          val msg2 = new Message
+          msg2.setInOut(false)
+          msg2.setContent(msg)
+          dispatch(msg2)
+        }
+        case _@msg => {
+          println("Msg does not seem to be an object =>" + msg)
+          val msg2 = new Message
+          msg2.setInOut(false)
+          msg2.setContent(msg)
+          dispatch(msg2)
         }
       }
-      case msg: MethodCallMessage => {
-        val msg2 = new Message
-        msg2.setInOut(true)
-        msg2.setContent(msg)
-        reply(dispatch(msg2))
-      }
-      case msg: Object => {
-        val msg2 = new Message
-        msg2.setInOut(false)
-        msg2.setContent(msg)
-        dispatch(msg2)
-      }
-      case _@msg => {
-        println("Msg does not seem to be an object =>" + msg)
-        val msg2 = new Message
-        msg2.setInOut(false)
-        msg2.setContent(msg)
-        dispatch(msg2)
-      }
-
     }
   }
 
 
   /* LifeCycle Method */
-  def startChannelFragment (): Unit = {}
+  def startChannelFragment(): Unit = {}
 
-  def stopChannelFragment (): Unit = {}
+  def stopChannelFragment(): Unit = {}
 
   def updateChannelFragment: Unit = {}
 

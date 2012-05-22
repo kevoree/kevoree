@@ -24,6 +24,8 @@
         <module>../org.kevoree.library.javase.kotlin</module>
         <module>../org.kevoree.library.javase.fileSystem</module>
         <module>../org.kevoree.library.javase.javaseNode</module>
+        <module>../org.kevoree.library.javase.MonitoredJavaSENode</module>
+
         <module>../org.kevoree.library.javase.socketChannels</module>
         <module>../org.kevoree.library.javase.nioChannels</module>
         <module>../org.kevoree.library.javase.gossiperNetty</module>
@@ -32,8 +34,11 @@
         <module>../org.kevoree.library.javase.serialCT</module>
         <module>../org.kevoree.library.javase.grapher</module>
         <module>../org.kevoree.library.javase.swingUI</module>
+
         <module>../org.kevoree.library.javase.webserver.api</module>
         <module>../org.kevoree.library.javase.webserver.tjws</module>
+        <module>../org.kevoree.library.javase.webserver.sample</module>
+
         <module>../org.kevoree.library.javase.nanohttp</module>
         <module>../org.kevoree.library.javase.nanohttpAutoDiscovery</module>
         <module>../org.kevoree.library.javase.camel</module>

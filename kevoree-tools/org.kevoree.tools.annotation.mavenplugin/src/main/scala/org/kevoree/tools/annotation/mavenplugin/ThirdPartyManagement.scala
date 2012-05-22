@@ -11,6 +11,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/**
+ * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.gnu.org/licenses/lgpl-3.0.txt
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.kevoree.tools.annotation.mavenplugin
 
 import org.apache.maven.project.MavenProject
@@ -35,10 +48,10 @@ object ThirdPartyManagement {
   val groupSepProp = ":"
   val propWildcard = "*"
 
-  def processKevoreeProperty(pomModel: MavenProject, log: Log) : java.util.List[Dependency] = {
+  def processKevoreeProperty(pomModel: MavenProject, log: Log): java.util.List[Dependency] = {
 
-    if(!pomModel.getPackaging.equals("bundle") && pomModel.getProperties.get(includeProp) == null){
-      pomModel.getProperties.put(includeProp,"*:*")
+    if (!pomModel.getPackaging.equals("bundle") && pomModel.getProperties.get(includeProp) == null) {
+      pomModel.getProperties.put(includeProp, "*:*")
     }
 
     var includeRegex = List[Tuple2[Regex, Regex]]()
@@ -86,7 +99,9 @@ object ThirdPartyManagement {
             rt =>
               if (rt._1.unapplySeq(loopDep.getGroupId).isDefined && rt._2.unapplySeq(loopDep.getArtifactId).isDefined) {
                 if (!selectedDeps.exists(preDep => preDep.getGroupId == loopDep.getGroupId && preDep.getArtifactId == loopDep.getArtifactId && preDep.getVersion == loopDep.getVersion)) {
-                  selectedDeps = selectedDeps ++ List(loopDep)
+                  if (!excludedScope.exists(exScope => loopDep.getScope == exScope)) {
+                    selectedDeps = selectedDeps ++ List(loopDep)
+                  }
                 }
               }
           }
@@ -104,15 +119,16 @@ object ThirdPartyManagement {
             }
         }
     }
-    
-    selectedDeps.foreach { previousSelectedDep =>
-      if(previousSelectedDep.getType == "pom" ){
-        selectedDeps = selectedDeps.filter(s => s != previousSelectedDep) //REMOVE
-      }
+
+    selectedDeps.foreach {
+      previousSelectedDep =>
+        if (previousSelectedDep.getType == "pom") {
+          selectedDeps = selectedDeps.filter(s => s != previousSelectedDep) //REMOVE
+        }
     }
 
-    
-    
+
+
     selectedDeps
 
   }

@@ -1,0 +1,18 @@
+
+merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.javaseNode/{kevoree.version}"
+merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.nanohttp/{kevoree.version}"
+merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.defaultChannels/{kevoree.version}"
+merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.webserver.tjws/{kevoree.version}"
+merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.webserver.sample/{kevoree.version}"
+
+addNode node0 : JavaSENode
+
+addComponent webSrv@node0 : KTinyWebServer
+addComponent helloPage@node0 : MonitorPage
+addComponent consoleMetrics@node0 : ConsoleMetricsReporter
+addChannel req : defMSG
+addChannel res : defMSG
+bind webSrv.handler@node0 => req
+bind helloPage.request@node0 => req
+bind helloPage.content@node0 => res
+bind webSrv.response@node0 => res
