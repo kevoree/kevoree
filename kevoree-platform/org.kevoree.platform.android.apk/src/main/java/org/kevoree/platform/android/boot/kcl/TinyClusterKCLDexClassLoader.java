@@ -14,6 +14,7 @@
 package org.kevoree.platform.android.boot.kcl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -26,24 +27,36 @@ public class TinyClusterKCLDexClassLoader extends ClassLoader {
 
     private List<TinyKCLDexClassLoader> subs = new ArrayList<TinyKCLDexClassLoader>();
 
-    public void addKCL(TinyKCLDexClassLoader sub){
+    public void addKCL(TinyKCLDexClassLoader sub) {
         subs.add(sub);
     }
 
+    private HashMap<String, Class> cache = new HashMap<String, Class>();
+
+
     @Override
     public Class<?> loadClass(String s) throws ClassNotFoundException {
-        //Log.i("ClusterCL","Try to resolve Class "+s);
-        for(TinyKCLDexClassLoader sub : subs){
-            try {
-                Class clazz = sub.internalLoad(s);
-                if(clazz != null){
-                    return clazz;
+
+        Class c = cache.get(s);
+        if (c != null) {
+            return c;
+        } else {
+            //Log.i("ClusterCL","Try to resolve Class "+s);
+            for (TinyKCLDexClassLoader sub : subs) {
+                try {
+                    Class clazz = sub.internalLoad(s);
+                    if (clazz != null) {
+                        cache.put(s,clazz);
+                        return clazz;
+                    }
+                } catch (Exception e) {
+                    //SILENTLY IGNORE
                 }
-            }   catch (Exception e){
-              //SILENTLY IGNORE
             }
+            //Log.i("ClusterCL","Not resolved in cluster "+s);
+            throw new ClassNotFoundException(s);
         }
-        //Log.i("ClusterCL","Not resolved in cluster "+s);
-        throw new ClassNotFoundException(s);
+
+
     }
 }

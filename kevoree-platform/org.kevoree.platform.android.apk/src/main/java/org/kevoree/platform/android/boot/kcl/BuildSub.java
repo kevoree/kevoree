@@ -15,6 +15,7 @@ package org.kevoree.platform.android.boot.kcl;
 
 
 import android.content.Context;
+import android.util.Log;
 
 import java.io.*;
 
@@ -24,14 +25,14 @@ import java.io.*;
  * Date: 07/03/12
  * Time: 09:50
  */
-public class BuildSub implements Runnable{
+public class BuildSub implements Runnable {
 
     private Context ctx;
     private ClassLoader parentCL;
     private String name;
     private TinyClusterKCLDexClassLoader clusterKCL;
 
-    public BuildSub(Context ctx,ClassLoader parentCL,String name,TinyClusterKCLDexClassLoader clusterKCL){
+    public BuildSub(Context ctx, ClassLoader parentCL, String name, TinyClusterKCLDexClassLoader clusterKCL) {
         this.ctx = ctx;
         this.parentCL = parentCL;
         this.name = name;
@@ -41,31 +42,44 @@ public class BuildSub implements Runnable{
     @Override
     public void run() {
         BufferedOutputStream dexWriter = null;
-        InputStream st  = null;
-        try
-        {
-            st  = this.getClass().getClassLoader().getResourceAsStream("boot/"+name+"/classes.dex");
+        InputStream st = null;
+        try {
+            st = this.getClass().getClassLoader().getResourceAsStream("boot/" + name + "/classes.dex");
+            //int toCopySize = st.available();
 
             String cleanName = "";
-            if(name.contains("scala.library.android")){
-                 cleanName = name.replaceAll(File.separator, "_").replaceAll(":", "_")+".dex";
+            if (name.contains("scala.library.android") /*|| name.contains("org.kevoree.tools.aether.framework.android") || name.contains("org.kevoree.platform.android.core")*/) {
+                cleanName = name.replaceAll(File.separator, "_").replaceAll(":", "_") + ".dex";
             } else {
-                 cleanName = System.currentTimeMillis() + name.replaceAll(File.separator, "_").replaceAll(":", "_")+".dex";
+                cleanName = System.currentTimeMillis() + name.replaceAll(File.separator, "_").replaceAll(":", "_") + ".dex";
             }
             File dexInternalStoragePath = new File(ctx.getDir("dex", Context.MODE_WORLD_WRITEABLE), cleanName);
-            dexWriter = new BufferedOutputStream(new FileOutputStream(dexInternalStoragePath));
-            byte[] b = new byte[1024*16];
-            int len = 0;
-            while ((len = st.read(b)) != -1){
-                dexWriter.write(b, 0, len);
+
+            if (!dexInternalStoragePath.exists()) {
+                Log.d("Kevoree TKCL","Will copy "+cleanName+"->"+dexInternalStoragePath.getAbsolutePath());
+                dexWriter = new BufferedOutputStream(new FileOutputStream(dexInternalStoragePath));
+                byte[] b = new byte[1024 * 16];
+                int len = 0;
+                while ((len = st.read(b)) != -1) {
+                    dexWriter.write(b, 0, len);
+                }
+                dexWriter.flush();
+                dexWriter.close();
+                st.close();
             }
-            dexWriter.flush();
-            dexWriter.close();
-            st.close();
-            File dexOptStoragePath = ctx.getDir("odex" + System.currentTimeMillis(), Context.MODE_WORLD_WRITEABLE);
-            dexOptStoragePath.mkdirs();
-            TinyKCLDexClassLoader c = new TinyKCLDexClassLoader(dexInternalStoragePath.getAbsolutePath(), dexOptStoragePath.getAbsolutePath(), null, parentCL,clusterKCL);
+            File dexOptStoragePath = null;
+            if (name.contains("scala.library.android") /*|| name.contains("org.kevoree.tools.aether.framework.android") || name.contains("org.kevoree.platform.android.core")*/) {
+                dexOptStoragePath = ctx.getDir("odex" , Context.MODE_WORLD_WRITEABLE);
+            } else {
+                dexOptStoragePath = ctx.getDir("odex" + System.currentTimeMillis(), Context.MODE_WORLD_WRITEABLE);
+            }
+
+            if(!dexOptStoragePath.exists()){
+                dexOptStoragePath.mkdirs();
+            }
+            TinyKCLDexClassLoader c = new TinyKCLDexClassLoader(dexInternalStoragePath.getAbsolutePath(), dexOptStoragePath.getAbsolutePath(), null, parentCL, clusterKCL);
             clusterKCL.addKCL(c);
+
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -73,10 +87,7 @@ public class BuildSub implements Runnable{
         } catch (IOException e) {
             e.printStackTrace();
 
-        }
-
-        finally
-        {
+        } finally {
             try {
                 if (dexWriter != null) {
                     dexWriter.close();
@@ -85,7 +96,7 @@ public class BuildSub implements Runnable{
                     st.close();
                 }
             } catch (IOException e) {
-              //ignore
+                //ignore
             }
         }
 
