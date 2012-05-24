@@ -13,6 +13,10 @@
         <relativePath>../org.kevoree.library.android.root/pom.xml</relativePath>
     </parent>
 
+    <properties>
+        <kevoree.exclude>org.scalastuff*:*,com.fasterxml*:*,com.google.android:*,commons-*:*,org.apache.httpcomponents:*,org.khronos:*,xerces:*,xpp3:*,org.json:*,cglib:*,org.objenesis:*</kevoree.exclude>
+    </properties>
+
     <build>
         <sourceDirectory>../../javase/org.kevoree.library.javase.defaultChannels/src</sourceDirectory>
         <plugins>

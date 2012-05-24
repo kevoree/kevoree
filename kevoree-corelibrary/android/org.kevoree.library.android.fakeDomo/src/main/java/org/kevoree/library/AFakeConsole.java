@@ -74,7 +74,7 @@ public class AFakeConsole extends AbstractComponentType {
             }
         });
 
-        uiService.addToGroup("Fake Console", layout);
+        uiService.addToGroup("Console"+getName(), layout);
     }
 
 

@@ -31,12 +31,14 @@ public class AFakeSimpleSwitch extends AbstractComponentType {
 	private Boolean on;
 	private Button buttonToggle;
 
+    private LinearLayout layout = null;
+
 	@Start
 	public void start () {
         uiService = UIServiceHandler.getUIService();
 
         //uiService = UIServiceHandler.getUIService((Bundle) this.getDictionary().get("osgi.bundle"));
-		LinearLayout layout = new LinearLayout(uiService.getRootActivity());
+		layout = new LinearLayout(uiService.getRootActivity());
 		layout.setOrientation(LinearLayout.VERTICAL);
 
 		Button buttonON = new Button(uiService.getRootActivity());
@@ -64,12 +66,12 @@ public class AFakeSimpleSwitch extends AbstractComponentType {
 		layout.addView(buttonON);
 		layout.addView(buttonOFF);
 		layout.addView(buttonToggle);
-        uiService.addToGroup("kevSwitch", layout);
+        uiService.addToGroup("kevSwitch"+getName(), layout);
 	}
 
 	@Stop
 	public void stop () {
-
+        uiService.remove(layout);
 	}
 
 

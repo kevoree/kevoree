@@ -16,6 +16,7 @@ package org.kevoree.platform.android.boot.kcl;
 
 import android.content.Context;
 import android.util.Log;
+import dalvik.system.DexFile;
 
 import java.io.*;
 
@@ -48,7 +49,7 @@ public class BuildSub implements Runnable {
             //int toCopySize = st.available();
 
             String cleanName = "";
-            if (name.contains("scala.library.android") /*|| name.contains("org.kevoree.tools.aether.framework.android") || name.contains("org.kevoree.platform.android.core")*/) {
+            if (name.contains("scala.library.android") || name.contains("org.kevoree.tools.aether.framework.android") || name.contains("org.kevoree.platform.android.core")) {
                 cleanName = name.replaceAll(File.separator, "_").replaceAll(":", "_") + ".dex";
             } else {
                 cleanName = System.currentTimeMillis() + name.replaceAll(File.separator, "_").replaceAll(":", "_") + ".dex";
@@ -71,7 +72,7 @@ public class BuildSub implements Runnable {
             if (name.contains("scala.library.android") /*|| name.contains("org.kevoree.tools.aether.framework.android") || name.contains("org.kevoree.platform.android.core")*/) {
                 dexOptStoragePath = ctx.getDir("odex" , Context.MODE_WORLD_WRITEABLE);
             } else {
-                dexOptStoragePath = ctx.getDir("odex" + System.currentTimeMillis(), Context.MODE_WORLD_WRITEABLE);
+                dexOptStoragePath = ctx.getDir("odex" + cleanName, Context.MODE_WORLD_WRITEABLE);
             }
 
             if(!dexOptStoragePath.exists()){

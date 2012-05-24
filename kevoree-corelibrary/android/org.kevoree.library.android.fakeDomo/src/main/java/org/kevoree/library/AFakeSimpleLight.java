@@ -54,7 +54,7 @@ public class AFakeSimpleLight extends AbstractComponentType implements AToggleLi
         uiService = UIServiceHandler.getUIService();
         view = new ImageView(uiService.getRootActivity());
         on = false;
-        uiService.addToGroup("kevLight", view);
+        uiService.addToGroup("kevLight"+getName(), view);
         uiService.getRootActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -65,7 +65,7 @@ public class AFakeSimpleLight extends AbstractComponentType implements AToggleLi
 
     @Stop
     public void stop() {
-
+        uiService.remove(view);
     }
 
     @Update

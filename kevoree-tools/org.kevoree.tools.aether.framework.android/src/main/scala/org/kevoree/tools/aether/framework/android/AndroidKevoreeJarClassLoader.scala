@@ -38,17 +38,20 @@ class AndroidKevoreeJarClassLoader(gkey: String, ctx: android.content.Context, p
 
 
 
-  private class KevoreeDexClassLoader(c1:String,c2:String,c3:String,parentCL : ClassLoader) extends DexClassLoader(c1,c2,c3,parentCL) {
+  private class KevoreeDexClassLoader(c1:String,c2:String,c3:String,parentCL : ClassLoader) extends ClassLoader(parentCL) {
 
-   // val dexFile = DexFile.loadDex(c1,c2,0)
+    val dexFile = DexFile.loadDex(c1,c2,0)
 
     def internalLoad(name:String) : Class[_] = {
-      super[DexClassLoader].loadClass(name)
-      //dexFile.loadClass(name,this)
+      super[ClassLoader].loadClass(name)
     }
 
     override def loadClass(p1: String) : Class[_] = {
       selfPointer.loadClass(p1)
+    }
+
+    override def findClass(className : String) : Class[_] = {
+       dexFile.loadClass(className,this)
     }
 
   }
@@ -75,7 +78,7 @@ class AndroidKevoreeJarClassLoader(gkey: String, ctx: android.content.Context, p
   private var subDexClassLoader: List[KevoreeDexClassLoader] = List()
 
   def declareLocalDexClassLoader(dexStream: InputStream, idName: String) {
-    logger.debug("Begin declare subClassLoader " + idName)
+    logger.debug("Begin declare subClassLoader v2 " + idName)
     //val cleanName = System.currentTimeMillis() + idName.replaceAll(File.separator, "_").replaceAll(":", "_")
 
     val cleanName : String = (if(idName.contains("SNAPSHOT")){
@@ -83,7 +86,7 @@ class AndroidKevoreeJarClassLoader(gkey: String, ctx: android.content.Context, p
     } else {
       idName.replaceAll(File.separator, "_").replaceAll(":", "_")
     })
-
+        /*
     val dexInternalStoragePath = new File(ctx.getDir("dex", Context.MODE_WORLD_WRITEABLE), cleanName)
     if (!dexInternalStoragePath.exists()){
       logger.debug("File Create " + dexInternalStoragePath.getAbsolutePath)
@@ -98,13 +101,16 @@ class AndroidKevoreeJarClassLoader(gkey: String, ctx: android.content.Context, p
       }
       dexWriter.flush()
       dexWriter.close()
-    }
+    }        */
 
-    val dexOptStoragePath = ctx.getDir("odex" + cleanName, Context.MODE_WORLD_WRITEABLE)
+    val dexOptStoragePath = ctx.getDir("kevCache", Context.MODE_WORLD_WRITEABLE)
+
+    val outDex = new File(dexOptStoragePath,cleanName+".dex")
+
     //logger.info("create ODEX dir = "+dexOptStoragePath.mkdirs()+"-"+dexOptStoragePath.isDirectory)
     odexPaths = odexPaths ++ List(dexOptStoragePath)
     dexOptStoragePath.mkdirs()
-    val newDexCL = new KevoreeDexClassLoader(dexInternalStoragePath.getAbsolutePath, dexOptStoragePath.getAbsolutePath, null, parent)
+    val newDexCL = new KevoreeDexClassLoader(getLoadedURLs.get(0).getPath/*dexInternalStoragePath.getAbsolutePath*/, outDex.getAbsolutePath/*dexOptStoragePath.getAbsolutePath*/, null, parent)
     subDexClassLoader = subDexClassLoader ++ List(newDexCL)
   }
 

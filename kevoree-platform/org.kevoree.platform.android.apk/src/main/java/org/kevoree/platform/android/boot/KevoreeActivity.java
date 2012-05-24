@@ -16,12 +16,16 @@ package org.kevoree.platform.android.boot;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
+import dalvik.system.DexFile;
 import org.kevoree.platform.android.boot.controller.ControllerImpl;
 import org.kevoree.platform.android.boot.controller.IController;
 import org.kevoree.platform.android.boot.controller.Request;
 import org.kevoree.platform.android.boot.utils.OnChangeListener;
 import org.kevoree.platform.android.boot.view.BaseKevoreeUI;
 import org.kevoree.platform.android.boot.view.ManagerUI;
+
+import java.io.File;
+import java.io.IOException;
 
 /**
  * Created by jed
