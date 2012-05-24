@@ -15,26 +15,28 @@ package org.kevoree.framework.aspects
 
 import org.kevoree.Operation
  import KevoreeAspects._
+import org.slf4j.LoggerFactory
 
 case class OperationAspect(selfOperation: Operation) {
+  private val logger = LoggerFactory.getLogger(this.getClass)
 
   def contractChanged(otherOperation: Operation): Boolean = {
     "" match {
-      case _ if (otherOperation.getParameters.size != selfOperation.getParameters.size) => true
+      case _ if (otherOperation.getParameters.size != selfOperation.getParameters.size) => logger.debug("otherOperation.getParameters.size != selfOperation.getParameters.size");true
       case _ => {
         val parameterChanged = otherOperation.getParameters.forall(otherParam => {
           selfOperation.getParameters.find(selfParam => selfParam.getName == otherParam.getName) match {
             case Some(selfParam) =>  {
               !selfParam.getType.get.isModelEquals(otherParam.getType.get)
             }
-            case None => true
+            case None => logger.debug("Parameters are not the same");true
           }
         })
         val returnType = !selfOperation.getReturnType.get.isModelEquals(otherOperation.getReturnType.get)
         parameterChanged || returnType
       }
     }
-    true
+//    true
   }
 
 }

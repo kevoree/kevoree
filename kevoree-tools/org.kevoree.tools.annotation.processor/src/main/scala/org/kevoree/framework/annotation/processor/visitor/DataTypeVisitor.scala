@@ -37,13 +37,13 @@ class DataTypeVisitor extends SimpleTypeVisitor6[Any, Any] {
 
 
   override def visitDeclared(p1: _root_.javax.lang.model.`type`.DeclaredType, p: Any) {
-    dataType.setName(p1.asElement().toString);
+    dataType.setName(p1.asElement().toString)
     import scala.collection.JavaConversions._
     p1.getTypeArguments.foreach {
       tm =>
-        val dtv = new DataTypeVisitor();
-        tm.accept(dtv, tm);
-        dataType.addGenericTypes(LocalUtility.getOraddDataType(dtv.getDataType()));
+        val dtv = new DataTypeVisitor()
+        tm.accept(dtv, tm)
+        dataType.addGenericTypes(LocalUtility.getOraddDataType(dtv.getDataType()))
     }
   }
 
@@ -52,9 +52,9 @@ class DataTypeVisitor extends SimpleTypeVisitor6[Any, Any] {
     name = name.replace("[]", "")
     val sb = new StringBuffer()
     sb.append("Array[")
-    sb.append(name.substring(0, 1).toUpperCase);
-    sb.append(name.substring(1).toLowerCase);
-    sb.append("]");
+    sb.append(name.substring(0, 1).toUpperCase)
+    sb.append(name.substring(1).toLowerCase)
+    sb.append("]")
     dataType.setName(sb.toString)
   }
 
@@ -76,11 +76,11 @@ class DataTypeVisitor extends SimpleTypeVisitor6[Any, Any] {
   }
 
   override def visitNoType(p1: _root_.javax.lang.model.`type`.NoType, p: Any) {
-    dataType.setName("void");
+    dataType.setName("void")
   }
 
   def visitEnumType(t: DeclaredType) = {
-    dataType.setName(t.asElement().toString);
+    dataType.setName(t.asElement().toString)
   }
 
   /*

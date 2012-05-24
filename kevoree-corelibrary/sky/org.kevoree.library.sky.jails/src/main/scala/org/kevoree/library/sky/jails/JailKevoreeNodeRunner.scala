@@ -113,9 +113,9 @@ class JailKevoreeNodeRunner (nodeName: String, iaasNode: JailNode) extends Kevor
   }
 
   def stopNode (): Boolean = {
-    logger.debug("stop " + nodeName)
+    logger.info("stop " + nodeName)
     // looking for the jail that must be at least created
-    val oldIP = processExecutor.findJail(nodeName)._2
+    val oldIP = processExecutor.findJail(nodeName)._3
     if (oldIP != "-1") {
       // stop the jail
       if (processExecutor.stopJail(nodeName)) {
@@ -123,11 +123,11 @@ class JailKevoreeNodeRunner (nodeName: String, iaasNode: JailNode) extends Kevor
         if (processExecutor.deleteJail(nodeName)) {
           // release IP alias to allow next IP select to use this one
           if (!processExecutor.deleteNetworkAlias(iaasNode.getNetworkInterface, oldIP)) {
-            logger.debug("unable to release ip alias {} for the network interface {}", oldIP, iaasNode.getNetworkInterface)
+            logger.warn("unable to release ip alias {} for the network interface {}", oldIP, iaasNode.getNetworkInterface)
           }
           // remove rctl constraint using rctl -r jail:<jailNode>
           if (!JailsConstraintsConfiguration.removeJailConstraints(nodeName)) {
-            logger.debug("unable to remove rctl constraints about {}", nodeName)
+            logger.warn("unable to remove rctl constraints about {}", nodeName)
           }
           true
         } else {

@@ -3,7 +3,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * 	http://www.gnu.org/licenses/lgpl-3.0.txt
+ * http://www.gnu.org/licenses/lgpl-3.0.txt
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -36,11 +36,11 @@ import KevoreeAspects._
 import org.slf4j.LoggerFactory
 import collection.mutable.HashMap
 
-case class TypeDefinitionAspect(selfTD: TypeDefinition) {
+case class TypeDefinitionAspect (selfTD: TypeDefinition) {
 
   val logger = LoggerFactory.getLogger(this.getClass)
 
-  def isModelEquals(pct: TypeDefinition): Boolean = {
+  def isModelEquals (pct: TypeDefinition): Boolean = {
 
     selfTD match {
       case pt: PortType => {
@@ -57,8 +57,9 @@ case class TypeDefinitionAspect(selfTD: TypeDefinition) {
   }
 
   /* Check if the new type definition define new deploy unit than self */
-  def contractChanged(pTD: TypeDefinition): Boolean = {
+  def contractChanged (pTD: TypeDefinition): Boolean = {
     if (selfTD.getSuperTypes.size != pTD.getSuperTypes.size) {
+      logger.debug(" != {} is true", selfTD.getSuperTypes.size, pTD.getSuperTypes.size)
       return true
     }
     selfTD.getSuperTypes.foreach {
@@ -68,10 +69,12 @@ case class TypeDefinitionAspect(selfTD: TypeDefinition) {
         }
     }
     if (pTD.getName != selfTD.getName) {
+      logger.debug("{} != {} is true", pTD.getName, selfTD.getName)
       return true
     }
     if (pTD.getFactoryBean != selfTD.getFactoryBean) {
       //      logger.debug("{} => {}", pTD.getFactoryBean, selfTD.getFactoryBean)
+      logger.debug("{} != {} is true", pTD.getFactoryBean, selfTD.getFactoryBean)
       return true
     }
     //DICTIONARY TYPE CHECK
@@ -85,14 +88,16 @@ case class TypeDefinitionAspect(selfTD: TypeDefinition) {
         selfTD.getDictionaryType match {
           case Some(seflDico) => {
             if (!dico.isModelEquals(selfTD.getDictionaryType.get)) {
+              logger.debug("!dico.isModelEquals(selfTD.getDictionaryType.get) is true")
               return true
             }
           }
-          case None => return true
+          case None => logger.debug("selfTD.getDictionaryType is None"); return true
         }
       }
       case None => {
         if (selfTD.getDictionaryType.isDefined) {
+          logger.debug("selfTD.getDictionaryType.isDefined is true")
           return true
         }
       }
@@ -111,6 +116,7 @@ case class TypeDefinitionAspect(selfTD: TypeDefinition) {
               val selfSPT = selfTD.asInstanceOf[ServicePortType]
               "" match {
                 case _ if (selfSPT.getOperations.size != otherSPT.getOperations.size) => {
+                  logger.debug("selfSPT.getOperations.size != otherSPT.getOperations.size")
                   true
                 }
                 case _ => {
@@ -119,12 +125,13 @@ case class TypeDefinitionAspect(selfTD: TypeDefinition) {
                     otherSPT.getOperations
                       .find(otherOperation => otherOperation.getName == selfOperation.getName) match {
                       case Some(otherOperation) => {
+                        logger.debug("{} => {}", selfOperation.getName, selfOperation.contractChanged(otherOperation))
                         selfOperation.contractChanged(otherOperation)
                       }
-                      case None => true
+                      case None => logger.debug("There is no equivalent operation for {}", selfOperation.getName); true
                     }
-                  )
-                  //println(selfTD+"_"+interfaceChanged+"_"+operationsChanged)
+                                                                      )
+                  logger.debug(selfTD+"_"+interfaceChanged+"_"+operationsChanged)
                   interfaceChanged || operationsChanged
                 }
               }
@@ -134,10 +141,10 @@ case class TypeDefinitionAspect(selfTD: TypeDefinition) {
       case otherTD: ComponentType => {
         val selfCT = selfTD.asInstanceOf[ComponentType]
         "" match {
-          case _ if (otherTD.getProvided.size != selfCT.getProvided.size) => true
-          case _ if (otherTD.getRequired.size != selfCT.getRequired.size) => true
+          case _ if (otherTD.getProvided.size != selfCT.getProvided.size) => logger.debug("otherTD.getProvided.size != selfCT.getProvided.size"); true
+          case _ if (otherTD.getRequired.size != selfCT.getRequired.size) => logger.debug("otherTD.getRequired.size != selfCT.getRequired.size"); true
           case _ => {
-            val providedEquality = selfCT.getProvided.exists(selfPTypeRef => {
+            val providedChanged = selfCT.getProvided.exists(selfPTypeRef => {
               otherTD.getProvided.find(otherTypeRef => otherTypeRef.getName == selfPTypeRef.getName) match {
                 case Some(otherEquivalentTypeRef) => {
                   selfPTypeRef.getRef.contractChanged(otherEquivalentTypeRef.getRef)
@@ -145,7 +152,7 @@ case class TypeDefinitionAspect(selfTD: TypeDefinition) {
                 case None => false
               }
             })
-            val requiredEquality = selfCT.getRequired.exists(selfRTypeRef => {
+            val requiredChanged = selfCT.getRequired.exists(selfRTypeRef => {
               otherTD.getRequired.find(otherTypeRef =>
                 otherTypeRef.getName == selfRTypeRef.getName
                   && otherTypeRef.getNoDependency == selfRTypeRef.getNoDependency
@@ -156,14 +163,14 @@ case class TypeDefinitionAspect(selfTD: TypeDefinition) {
                 case None => false
               }
             })
-            //            logger.debug("Equality check: {} - {} - {}", Array(selfTD.getName, providedEquality, requiredEquality))
+            logger.debug("Changed: {} - {} - {}", Array(selfTD.getName, providedChanged, requiredChanged))
 
-            !providedEquality || !requiredEquality
+            providedChanged || requiredChanged
           }
         }
       }
       case otherTD: ChannelType => {
-        val selfCT = selfTD.asInstanceOf[ChannelType]
+//        val selfCT = selfTD.asInstanceOf[ChannelType]
         false
       }
       case nodeType: NodeType => {
@@ -176,7 +183,7 @@ case class TypeDefinitionAspect(selfTD: TypeDefinition) {
     }
   }
 
-  def isUpdated(pTD: TypeDefinition): Boolean = {
+  def isUpdated (pTD: TypeDefinition): Boolean = {
     if (pTD.getDeployUnits.size == 0 && selfTD.getDeployUnits.size > 0) {
       return false
     } //SPECIAL CASE DONT MERGE TYPE DEFINITION WITHOUT DEPLOY UNIT
@@ -196,7 +203,7 @@ case class TypeDefinitionAspect(selfTD: TypeDefinition) {
     val oneUpdated = selfTD.getDeployUnits.exists(selfDU => {
       pTD.getDeployUnits.find(p => p.isModelEquals(selfDU)) match {
         case Some(pDU) => {
-          selfDU.isUpdated(pDU,new java.util.HashMap[String,Boolean]())
+          selfDU.isUpdated(pDU, new java.util.HashMap[String, Boolean]())
         }
         case _ => {
           true
@@ -207,7 +214,7 @@ case class TypeDefinitionAspect(selfTD: TypeDefinition) {
   }
 
   //CHECKED
-  def foundRelevantHostNodeType(nodeType: NodeType, targetTypeDef: TypeDefinition): Option[NodeType] = {
+  def foundRelevantHostNodeType (nodeType: NodeType, targetTypeDef: TypeDefinition): Option[NodeType] = {
     if (targetTypeDef.getDeployUnits
       .exists(du => du.getTargetNodeType.isDefined && du.getTargetNodeType.get == nodeType)) {
       Some(nodeType)
@@ -223,7 +230,7 @@ case class TypeDefinitionAspect(selfTD: TypeDefinition) {
     }
   }
 
-  def foundRelevantDeployUnit(node: ContainerNode) = {
+  def foundRelevantDeployUnit (node: ContainerNode) = {
 
     /* add all reLib from found deploy Unit*/
     var deployUnitfound: DeployUnit = null
@@ -242,7 +249,7 @@ case class TypeDefinitionAspect(selfTD: TypeDefinition) {
     deployUnitfound
   }
 
-  private def foundRelevantDeployUnitOnNodeSuperTypes(nodeType: NodeType, t: TypeDefinition): DeployUnit = {
+  private def foundRelevantDeployUnitOnNodeSuperTypes (nodeType: NodeType, t: TypeDefinition): DeployUnit = {
     var deployUnitfound: DeployUnit = null
     // looking for relevant deployunits on super types
 

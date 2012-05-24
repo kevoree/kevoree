@@ -254,7 +254,8 @@ public class NanoRestGroup extends AbstractGroupType {
             rd.close();
             return true;
         } catch (Exception e) {
-            e.printStackTrace();
+            //e.printStackTrace();
+			logger.debug("Unable to connect using {} as url", urlPath);
             return false;
         }
     }
