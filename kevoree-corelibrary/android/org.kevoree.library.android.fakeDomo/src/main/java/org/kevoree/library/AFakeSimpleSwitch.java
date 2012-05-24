@@ -33,7 +33,9 @@ public class AFakeSimpleSwitch extends AbstractComponentType {
 
 	@Start
 	public void start () {
-		//uiService = UIServiceHandler.getUIService((Bundle) this.getDictionary().get("osgi.bundle"));
+        uiService = UIServiceHandler.getUIService();
+
+        //uiService = UIServiceHandler.getUIService((Bundle) this.getDictionary().get("osgi.bundle"));
 		LinearLayout layout = new LinearLayout(uiService.getRootActivity());
 		layout.setOrientation(LinearLayout.VERTICAL);
 
