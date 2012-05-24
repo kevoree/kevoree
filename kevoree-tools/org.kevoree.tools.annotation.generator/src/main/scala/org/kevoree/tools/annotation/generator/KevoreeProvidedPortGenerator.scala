@@ -19,29 +19,25 @@
 package org.kevoree.tools.annotation.generator
 
 import java.io.File
-import org.kevoree.ContainerRoot
-import org.kevoree.MessagePortType
-import org.kevoree.PortTypeRef
-import org.kevoree.{ComponentType => KevoreeComponentType}
-import org.kevoree.ServicePortType
 import org.kevoree.framework.aspects.KevoreeAspects._
 
 import org.kevoree.framework.{KevoreeGeneratorHelper, Constants}
 import javax.tools.StandardLocation
+import org.kevoree.{TypedElement, ContainerRoot, MessagePortType, PortTypeRef, ComponentType => KevoreeComponentType, ServicePortType}
 
 object KevoreeProvidedPortGenerator {
 
   def generate(root: ContainerRoot, filer: javax.annotation.processing.Filer, ct: KevoreeComponentType, ref: PortTypeRef, targetNodeType: String) {
     val portPackage = KevoreeGeneratorHelper.getTypeDefinitionGeneratedPackage(ct, targetNodeType)
     // var portPackage = ct.getFactoryBean().substring(0, ct.getFactoryBean().lastIndexOf("."));
-    val portName = ct.getName + "PORT" + ref.getName;
-    val wrapper = filer.createResource(StandardLocation.SOURCE_OUTPUT, "", new String(portPackage.replace(".", "/") + "/" + portName + ".scala"));
+    val portName = ct.getName + "PORT" + ref.getName
+    val wrapper = filer.createResource(StandardLocation.SOURCE_OUTPUT, "", new String(portPackage.replace(".", "/") + "/" + portName + ".scala"))
     val writer = wrapper.openWriter()
-    writer.append("package " + portPackage + "\n");
-    writer.append("import org.kevoree.framework.port._\n");
+    writer.append("package " + portPackage + "\n")
+    writer.append("import org.kevoree.framework.port._\n")
     writer.append("import " + KevoreeGeneratorHelper.getTypeDefinitionBasePackage(ct) + "._\n")
     writer.append("import scala.{Unit=>void}\n")
-    writer.append("class " + portName + "(component : " + ct.getName + ") extends " + ref.getRef.getName + " with KevoreeProvidedPort {\n");
+    writer.append("class " + portName + "(component : " + ct.getName + ") extends " + ref.getRef.getName + " with KevoreeProvidedPort {\n")
 
     writer.append("def getName : String = \"" + ref.getName + "\"\n")
     writer.append("def getComponentName : String = component.getName \n")
@@ -104,18 +100,23 @@ object KevoreeProvidedPortGenerator {
                   writer.append(",")
                 }
             }
-            writer.append(") : " + op.getReturnType.get.print('[', ']') + " ={\n");
+            /* GENERATES RETURN TYPE in rt */
+            var rt = op.getReturnType.get.getName
+            if(op.getReturnType.get.getGenericTypes.size > 0) {
+              rt += op.getReturnType.get.getGenericTypes.collect{case s:TypedElement=>s.getName}.mkString("[",",","]")
+            }
+            writer.append(") : " + rt + " ={\n")
 
 
             /* Generate method corpus */
             /* CREATE MSG OP CALL */
-            writer.append("var msgcall = new org.kevoree.framework.MethodCallMessage\n")
-            writer.append("msgcall.setMethodName(\"" + op.getName + "\");\n")
+            writer.append("val msgcall = new org.kevoree.framework.MethodCallMessage\n")
+            writer.append("msgcall.setMethodName(\"" + op.getName + "\")\n")
             op.getParameters.foreach {
               param =>
-                writer.append("msgcall.getParams.put(\"" + param.getName + "\"," + param.getName + ".asInstanceOf[AnyRef]);\n")
+                writer.append("msgcall.getParams.put(\"" + param.getName + "\"," + param.getName + ".asInstanceOf[AnyRef])\n")
             }
-            writer.append("(this !? msgcall).asInstanceOf[" + op.getReturnType.get.print('[', ']') + "]")
+            writer.append("(this !? msgcall).asInstanceOf[" + rt + "]")
             writer.append("}\n")
         }
         /* CREATE ACTOR LOOP */
@@ -162,8 +163,8 @@ object KevoreeProvidedPortGenerator {
 
     }
 
-    writer.append("}\n");
-    writer.close();
+    writer.append("}\n")
+    writer.close()
   }
 
 }

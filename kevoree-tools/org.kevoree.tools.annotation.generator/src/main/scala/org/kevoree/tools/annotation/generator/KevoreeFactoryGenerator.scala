@@ -42,28 +42,28 @@ object KevoreeFactoryGenerator {
         val componentBean = ct.getFactoryBean.substring(0, ct.getFactoryBean.lastIndexOf("Factory"))
         val wrapper = filer.createResource(StandardLocation.SOURCE_OUTPUT, "", new String(componentPackage.replace(".", "/") + "/" + factoryName + ".scala"))
         val writer = wrapper.openWriter()
-        writer.append("package " + componentPackage + "\n");
+        writer.append("package " + componentPackage + "\n")
         writer.append("import org.kevoree.framework._\n")
         writer.append("import " + KevoreeGeneratorHelper.getTypeDefinitionBasePackage(ct) + "._\n")
 
         writer.append("class "+factoryName+" extends org.kevoree.framework.osgi.KevoreeInstanceFactory {\n")
         writer.append("override def registerInstance(instanceName : String, nodeName : String)="+factoryName+".registerInstance(instanceName,nodeName)\n")
         writer.append("override def remove(instanceName : String)="+factoryName+".remove(instanceName)\n")
-        writer.append("def createInstanceActivator = "+factoryName+".createInstanceActivator")
+        writer.append("def createInstanceActivator = "+factoryName+".createInstanceActivator\n")
         writer.append("}\n")
 
-        writer.append("object " + factoryName + " extends org.kevoree.framework.osgi.KevoreeInstanceFactory {\n")
+        writer.append("\nobject " + factoryName + " extends org.kevoree.framework.osgi.KevoreeInstanceFactory {\n")
         writer.append("def createInstanceActivator: org.kevoree.framework.osgi.KevoreeInstanceActivator = new "+ct.getName+"Activator\n")
 
         /* create Component Actor */
         writer.append("def createComponentActor() : KevoreeComponent = {\n")
-        writer.append("new KevoreeComponent(create" + ct.getName + "()){")
+        writer.append("\tnew KevoreeComponent(create" + ct.getName + "()){")
 
         if (ct.getStartMethod == "") {
-          error("Start method is mandatory for component name => " + ct.getName);
+          sys.error("Start method is mandatory for component name => " + ct.getName)
         }
         if (ct.getStopMethod == "") {
-          error("Stop method is mandatory for component name => " + ct.getName);
+          sys.error("Stop method is mandatory for component name => " + ct.getName)
         }
         writer.append("def startComponent(){getKevoreeComponentType.asInstanceOf[" + componentBean + "]." +
           ct.getStartMethod + "()}\n")
@@ -80,7 +80,7 @@ object KevoreeFactoryGenerator {
 
         /* create Component */
         writer.append("def " + "create" + ct.getName + "() : " + componentBean + " ={\n")
-        writer.append("var newcomponent = new " + componentBean + "();\n")
+        writer.append("val newcomponent = new " + componentBean + "();\n")
         /* INJECT HOSTED PORT */
         ct.getProvided.foreach {
           ref =>

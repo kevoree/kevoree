@@ -20,13 +20,16 @@ package org.kevoree.framework.aspects
 
 import org.kevoree._
  import KevoreeAspects._
+import org.slf4j.LoggerFactory
 
 case class TypedElementAspect(e : TypedElement) {
 
+  private val logger = LoggerFactory.getLogger(this.getClass)
   def isModelEquals(remote : TypedElement) : Boolean = {
     val nameEquality = e.getName == remote.getName
     val genericEquality = e.getGenericTypes.forall(p=> remote.getGenericTypes.exists(remoteP => remoteP.isModelEquals(p)  )  )
     val sizeEquality = e.getGenericTypes.size == remote.getGenericTypes.size
+    logger.debug("{}", Array(e.getName, nameEquality, genericEquality, sizeEquality))
     nameEquality && genericEquality && sizeEquality
   }
 
@@ -41,7 +44,7 @@ case class TypedElementAspect(e : TypedElement) {
     }
 
     if(e.getGenericTypes.size>0){  res.append(closeSep) }
-    res.toString
+    res.toString()
   }
 
 }
