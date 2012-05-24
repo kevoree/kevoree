@@ -125,7 +125,7 @@ class ProcessExecutor {
     result._1
   }
 
-  def findJail (nodeName: String): (String, String) = {
+  def findJail (nodeName: String): (String, String, String) = {
     val resultActor = new ResultManagementActor()
     resultActor.starting()
     val p = listJailsProcessBuilder.start()
@@ -133,6 +133,7 @@ class ProcessExecutor {
     val result = resultActor.waitingFor(1000)
     var jailPath = "-1"
     var jailId = "-1"
+    var jailIP = "-1"
     if (result._1) {
       result._2.split("\n").foreach {
         line =>
@@ -141,6 +142,7 @@ class ProcessExecutor {
               if (name == nodeName) {
                 jailPath = path
                 jailId = jid
+                jailIP = ip
               }
             }
             case _ =>
@@ -149,7 +151,7 @@ class ProcessExecutor {
     } else {
       logger.debug(result._2)
     }
-    (jailPath, jailId)
+    (jailPath, jailId, jailIP)
   }
 
   def startKevoreeOnJail (jailId: String, ram: String, nodeName: String, outFile: File, errFile: File): Boolean = {
