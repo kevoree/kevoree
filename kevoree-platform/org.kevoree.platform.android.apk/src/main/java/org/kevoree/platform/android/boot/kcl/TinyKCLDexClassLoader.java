@@ -15,7 +15,9 @@ package org.kevoree.platform.android.boot.kcl;
 
 import android.util.Log;
 import dalvik.system.DexClassLoader;
+import dalvik.system.DexFile;
 
+import java.io.IOException;
 import java.net.URL;
 
 /**
@@ -24,17 +26,41 @@ import java.net.URL;
  * Date: 29/02/12
  * Time: 18:19
  */
-public class TinyKCLDexClassLoader extends DexClassLoader {
+public class TinyKCLDexClassLoader extends ClassLoader {
 
-    private  ClassLoader clusterCL = null;
+    private ClassLoader clusterCL = null;
+    private DexFile df = null;
 
-    public TinyKCLDexClassLoader(String dexPath, String optimizedDirectory, String libraryPath, ClassLoader parent, ClassLoader clusterCL) {
-        super(dexPath, optimizedDirectory, libraryPath, parent);
+    public TinyKCLDexClassLoader(String dexPath, String optimizedDirectory, String libraryPath, ClassLoader parent, ClassLoader clusterCL) throws IOException {
+        super(parent);
         this.clusterCL = clusterCL;
+        df = DexFile.loadDex(dexPath, preparePath(dexPath,optimizedDirectory),0);
     }
 
+    public String preparePath(String dexPath, String optimizedDirectory) {
+        StringBuilder newStr = new StringBuilder(80);
+        newStr.append(optimizedDirectory);
+        if (!optimizedDirectory.endsWith("/")) {
+            newStr.append("/");
+        }
+        String sourceFileName;
+        int lastSlash = dexPath.lastIndexOf("/");
+        if (lastSlash < 0)
+            sourceFileName = dexPath;
+        else
+            sourceFileName = dexPath.substring(lastSlash + 1);
+        int lastDot = sourceFileName.lastIndexOf(".");
+        if (lastDot < 0)
+            newStr.append(sourceFileName);
+        else
+            newStr.append(sourceFileName, 0, lastDot);
+        newStr.append(".dex");
+        return newStr.toString();
+    }
+
+
     public Class internalLoad(String clazzName) throws ClassNotFoundException {
-      return super.loadClass(clazzName);
+        return super.loadClass(clazzName);
     }
 
     @Override
@@ -45,10 +71,15 @@ public class TinyKCLDexClassLoader extends DexClassLoader {
     @Override
     protected URL findResource(String name) {
         try {
-          return super.findResource(name);
-        } catch(Exception e) {
-            Log.i("KCL not find resources ",name);
+            return super.findResource(name);
+        } catch (Exception e) {
+            Log.i("KCL not find resources ", name);
         }
         return null;
+    }
+
+    @Override
+    protected Class<?> findClass(String className) throws ClassNotFoundException {
+        return df.loadClass(className,this);
     }
 }
