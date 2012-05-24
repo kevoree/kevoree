@@ -89,6 +89,11 @@ public class ManagerUI extends KObservable<ManagerUI> implements KevoreeAndroidU
 
     @Override
     public void addToGroup(String groupKey, View view) {
+
+        if(groupKey == null || view == null){
+            return ;
+        }
+
         ActionBar.Tab idTab = getTabById(groupKey);
         Log.i("KevoreeBoot", "Add" + groupKey + "-" + idTab + "-" + view);
         if (idTab == null) {
@@ -114,6 +119,11 @@ public class ManagerUI extends KObservable<ManagerUI> implements KevoreeAndroidU
     @Override
     public void removeView(View view)
     {
+
+        if(view == null){
+            return ;
+        }
+
         Log.i("Request remove view","");
         LinkedList<ActionBar.Tab>  newtabs =new LinkedList<ActionBar.Tab>();
         for (ActionBar.Tab tab : tabs)
