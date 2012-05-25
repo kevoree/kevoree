@@ -38,10 +38,10 @@ public class BaseKevoreeUI extends LinearLayout {
     private  Button btstart=null;
     private  Button btstop=null;
     private  EditText nodeNameView=null;
-    private OnClickListener checkbox_list;
-    private  CheckBox checkbox_info=null;
+//    private OnClickListener checkbox_list;
+    /*private  CheckBox checkbox_info=null;
     private  CheckBox checkbox_debug=null;
-    private  CheckBox checkbox_warn=null;
+    private  CheckBox checkbox_warn=null;*/
     private  Scroller scroller=null;
     private TextView messages;
 
@@ -65,9 +65,9 @@ public class BaseKevoreeUI extends LinearLayout {
         btstart = new Button(ctx);
         btstop = new Button(ctx);
         nodeNameView = new EditText(ctx);
-        checkbox_info = new CheckBox(ctx);
+        /*checkbox_info = new CheckBox(ctx);
         checkbox_debug = new CheckBox(ctx);
-        checkbox_warn = new CheckBox(ctx);
+        checkbox_warn = new CheckBox(ctx);*/
         scroller = new Scroller(ctx);
         messages = new TextView(ctx);
     }
@@ -81,11 +81,11 @@ public class BaseKevoreeUI extends LinearLayout {
         btstop.setText("Stop");
         nodeNameView.setText("node0");
         nodeNameView.setWidth(150);
-        checkbox_info.setText("INFO");
+        /*checkbox_info.setText("INFO");
         checkbox_info.setChecked(true);
         checkbox_debug.setText("DEBUG");
         checkbox_warn.setChecked(true);
-        checkbox_warn.setText("WARN");
+        checkbox_warn.setText("WARN");*/
         messages.setSingleLine(false);
         messages.setScroller(scroller);
         messages.setMovementMethod(new ScrollingMovementMethod());
@@ -95,14 +95,14 @@ public class BaseKevoreeUI extends LinearLayout {
         layout.addView(nodeNameView);
         layout.addView(btstart);
         layout.addView(btstop);
-        layout.addView(checkbox_info);
+        /*layout.addView(checkbox_info);
         layout.addView(checkbox_debug);
-        layout.addView(checkbox_warn);
+        layout.addView(checkbox_warn);*/
         addView(layout);
         addView(messages);
 
         STDwriter = new PrintStream(new PrintStreamTraceLogger(kController.getViewManager().getCtx(),messages, Color.BLACK));
-        ERRwriter = new PrintStream(new PrintStreamTraceLogger(kController.getViewManager().getCtx(),messages, Color.BLACK));
+        ERRwriter = new PrintStream(new PrintStreamTraceLogger(kController.getViewManager().getCtx(),messages, Color.RED));
         System.setOut(STDwriter);
         System.setErr(ERRwriter);
 
@@ -131,16 +131,16 @@ public class BaseKevoreeUI extends LinearLayout {
         });
 
 
-        checkbox_warn.setOnClickListener(checkbox_list);
+        /*checkbox_warn.setOnClickListener(checkbox_list);
         checkbox_debug.setOnClickListener(checkbox_list);
-        checkbox_info.setOnClickListener(checkbox_list);
+        checkbox_info.setOnClickListener(checkbox_list);*/
 
-        checkbox_list = new View.OnClickListener() {
+        /*checkbox_list = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-				// TODO manage log level modification
+
             }
-        };
+        };*/
 
     }
 
