@@ -2,6 +2,7 @@ package org.kevoree.library.android.nodeType;
 
 import org.kevoree.ContainerRoot;
 import org.kevoree.annotation.*;
+import org.kevoree.api.service.core.logging.KevoreeLogLevel;
 import org.kevoree.framework.AbstractNodeType;
 import org.kevoree.kompare.KevoreeKompareBean;
 import org.kevoree.library.defaultNodeTypes.jcl.deploy.CommandMapper;
@@ -20,43 +21,91 @@ import org.slf4j.LoggerFactory;
 
 @Library(name = "Android")
 @NodeType
+@DictionaryType({
+		@DictionaryAttribute(name = "logLevel", defaultValue = "INFO", optional = true, vals = {"INFO", "WARN", "DEBUG", "ERROR", "FINE"}),
+		@DictionaryAttribute(name = "coreLogLevel", defaultValue = "WARN", optional = true, vals = {"INFO", "WARN", "DEBUG", "ERROR", "FINE"})
+})
 @PrimitiveCommands(
-        values = {"UpdateType", "UpdateDeployUnit", "AddType", "AddDeployUnit", "AddThirdParty", "RemoveType", "RemoveDeployUnit", "UpdateInstance", "UpdateBinding", "UpdateDictionaryInstance", "AddInstance", "RemoveInstance", "AddBinding", "RemoveBinding", "AddFragmentBinding", "RemoveFragmentBinding", "UpdateFragmentBinding", "StartInstance", "StopInstance", "StartThirdParty", "RemoveThirdParty"}, value = {})
+		values = {"UpdateType", "UpdateDeployUnit", "AddType", "AddDeployUnit", "AddThirdParty", "RemoveType", "RemoveDeployUnit", "UpdateInstance", "UpdateBinding", "UpdateDictionaryInstance", "AddInstance", "RemoveInstance", "AddBinding", "RemoveBinding", "AddFragmentBinding", "RemoveFragmentBinding", "UpdateFragmentBinding", "StartInstance", "StopInstance", "StartThirdParty", "RemoveThirdParty"},
+		value = {})
 public class AndroidNode extends AbstractNodeType {
 
-    private static final Logger logger = LoggerFactory.getLogger(AndroidNode.class);
+	private static final Logger logger = LoggerFactory.getLogger(AndroidNode.class);
 
-        private KevoreeKompareBean kompareBean = null;
-        private CommandMapper mapper = null;
-    	private boolean isRunning;
+	private KevoreeKompareBean kompareBean = null;
+	private CommandMapper mapper = null;
+	private boolean isRunning;
 
-        @Start
-        @Override
-        public void startNode() {
-    		isRunning = true;
-            kompareBean = new KevoreeKompareBean();
-            mapper = new CommandMapper();
-            mapper.setNodeType(this);
-        }
+	@Start
+	@Override
+	public void startNode () {
+		isRunning = true;
+		kompareBean = new KevoreeKompareBean();
+		mapper = new CommandMapper();
+		mapper.setNodeType(this);
+	}
 
 
-        @Stop
-        @Override
-        public void stopNode() {
-            kompareBean = null;
-            mapper = null;
-    		isRunning = false;
-            //Cleanup the local runtime
-            KevoreeDeployManager.clearAll(this);
-        }
+	@Stop
+	@Override
+	public void stopNode () {
+		kompareBean = null;
+		mapper = null;
+		isRunning = false;
+		//Cleanup the local runtime
+		KevoreeDeployManager.clearAll(this);
+	}
 
-        @Override
-        public AdaptationModel kompare(ContainerRoot current, ContainerRoot target) {
-            return kompareBean.kompare(current, target, this.getNodeName());
-        }
+	@Update
+	public void updateNode () {
+		logger.info("Updating node and maybe log levels...");
+		if (getBootStrapperService().getKevoreeLogService() != null) {
+			logger.info("Updating node and log levels...");
+			KevoreeLogLevel logLevel = KevoreeLogLevel.WARN;
+			KevoreeLogLevel corelogLevel = KevoreeLogLevel.WARN;
+			if ("DEBUG".equals(getDictionary().get("logLevel"))) {
+				logLevel = KevoreeLogLevel.DEBUG;
+			}
+			if ("WARN".equals(getDictionary().get("logLevel"))) {
+				logLevel = KevoreeLogLevel.WARN;
+			}
+			if ("INFO".equals(getDictionary().get("logLevel"))) {
+				logLevel = KevoreeLogLevel.INFO;
+			}
+			if ("ERROR".equals(getDictionary().get("logLevel"))) {
+				logLevel = KevoreeLogLevel.ERROR;
+			}
+			if ("FINE".equals(getDictionary().get("logLevel"))) {
+				logLevel = KevoreeLogLevel.FINE;
+			}
 
-        @Override
-        public org.kevoree.api.PrimitiveCommand getPrimitive(AdaptationPrimitive adaptationPrimitive) {
-            return mapper.buildPrimitiveCommand(adaptationPrimitive, this.getNodeName());
-        }
+			if ("DEBUG".equals(getDictionary().get("coreLogLevel"))) {
+				corelogLevel = KevoreeLogLevel.DEBUG;
+			}
+			if ("WARN".equals(getDictionary().get("coreLogLevel"))) {
+				corelogLevel = KevoreeLogLevel.WARN;
+			}
+			if ("INFO".equals(getDictionary().get("coreLogLevel"))) {
+				corelogLevel = KevoreeLogLevel.INFO;
+			}
+			if ("ERROR".equals(getDictionary().get("coreLogLevel"))) {
+				corelogLevel = KevoreeLogLevel.ERROR;
+			}
+			if ("FINE".equals(getDictionary().get("coreLogLevel"))) {
+				corelogLevel = KevoreeLogLevel.FINE;
+			}
+			getBootStrapperService().getKevoreeLogService().setUserLogLevel(logLevel);
+			getBootStrapperService().getKevoreeLogService().setCoreLogLevel(corelogLevel);
+		}
+	}
+
+	@Override
+	public AdaptationModel kompare (ContainerRoot current, ContainerRoot target) {
+		return kompareBean.kompare(current, target, this.getNodeName());
+	}
+
+	@Override
+	public org.kevoree.api.PrimitiveCommand getPrimitive (AdaptationPrimitive adaptationPrimitive) {
+		return mapper.buildPrimitiveCommand(adaptationPrimitive, this.getNodeName());
+	}
 }
