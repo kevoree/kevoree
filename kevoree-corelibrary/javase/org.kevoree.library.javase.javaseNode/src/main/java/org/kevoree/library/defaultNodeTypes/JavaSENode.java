@@ -103,7 +103,6 @@ public class JavaSENode extends AbstractNodeType {
 				logLevel = KevoreeLogLevel.FINE;
 			}
 
-			KevoreeLogLevel coreLogLevel = KevoreeLogLevel.WARN;
 			if ("DEBUG".equals(getDictionary().get("coreLogLevel"))) {
 				corelogLevel = KevoreeLogLevel.DEBUG;
 			}
