@@ -13,7 +13,6 @@
  */
 package org.kevoree.platform.android.core
 
-import log.KevoreeLogbackService
 import org.slf4j.LoggerFactory
 import org.kevoree.core.impl.{KevoreeCoreBean, KevoreeConfigServiceBean}
 import android.content.Context
@@ -23,10 +22,9 @@ import org.kevoree.{KevoreeFactory, ContainerRoot}
 import java.util.jar.JarFile
 import org.kevoree.framework.KevoreeXmiHelper
 import android.app.Activity
-import android.widget.TabHost
 import org.kevoree.api.Bootstraper
-import android.util.Log
 import org.kevoree.api.service.core.logging.KevoreeLogService
+import org.slf4j.impl.StaticLoggerBinder
 
 /**
  * Created with IntelliJ IDEA.
@@ -40,11 +38,11 @@ class KevoreeAndroidBootStrap {
   /* Bootstrap Model to init default nodeType */
   val logger = LoggerFactory.getLogger(this.getClass)
   var started = false
-  var coreBean: KevoreeCoreBean = null;
+  var coreBean: KevoreeCoreBean = null
 
   def start(act: Activity, ctx: android.content.Context, clusterCL: ClassLoader, kui: org.kevoree.platform.android.ui.KevoreeAndroidUIScreen, nodeName: String) {
     if (started) {
-      return;
+      return
     }
 
     //Build UI PROXY
@@ -57,21 +55,21 @@ class KevoreeAndroidBootStrap {
       coreBean.setNodeName(nodeName)
       val clazz = clusterCL.loadClass("org.kevoree.tools.aether.framework.android.NodeTypeBootstrapHelper")
       val bootstraper = clazz.getConstructor(classOf[Context], classOf[ClassLoader]).newInstance(ctx, clusterCL).asInstanceOf[org.kevoree.api.Bootstraper]
-      val logbackService = new KevoreeLogbackService()
-      bootstraper.setKevoreeLogService(logbackService)
+//      val logbackService = new KevoreeLogbackService()
+      bootstraper.setKevoreeLogService(StaticLoggerBinder.getSingleton.getLoggerFactory.asInstanceOf[KevoreeLogService])
 
      // clazz.getMethod("setKevoreeLogService", classOf[KevoreeLogService]).invoke(bootstraper,logbackService);
 
 
 
       coreBean.setBootstraper(bootstraper.asInstanceOf[Bootstraper])
-      coreBean.setConfigService(configBean);
+      coreBean.setConfigService(configBean)
       coreBean.setKevsEngineFactory(new KevScriptEngineFactory() {
         override def createKevScriptEngine(): KevScriptEngine = {
           try {
             return new org.kevoree.tools.marShell.KevScriptCoreEngine(coreBean)
           } catch {
-            case _@e => e.printStackTrace();
+            case _@e => e.printStackTrace()
           }
           null
         }
@@ -84,7 +82,7 @@ class KevoreeAndroidBootStrap {
           }
           null
         }
-      });
+      })
 
       val dummyKCL = new KevoreeJarClassLoader{
 
@@ -95,33 +93,33 @@ class KevoreeAndroidBootStrap {
           clazz
         }
       }
-      dummyKCL.lockLinks();
+      dummyKCL.lockLinks()
 
       val selfRegisteredClazz = bootstraper.asInstanceOf[Bootstraper].getClass
       selfRegisteredClazz.getMethods.find(m => m.getName == "registerManuallyDeployUnit").map {
         m =>
 
-          m.invoke(bootstraper, "scala-library", "org.scala-lang", "2.9.2", dummyKCL);
-          m.invoke(bootstraper, "cglib-nodep", "cglib", "2.2.2", dummyKCL);
-          m.invoke(bootstraper, "slf4j-api", "org.slf4j", "1.6.4", dummyKCL);
-          m.invoke(bootstraper, "slf4j-api", "org.slf4j", "1.6.2", dummyKCL);
-          m.invoke(bootstraper, "objenesis", "org.objenesis", "1.2", dummyKCL);
-          m.invoke(bootstraper, "jgrapht-jdk1.5", "org.jgrapht", "0.7.3", dummyKCL);
+          m.invoke(bootstraper, "scala-library", "org.scala-lang", "2.9.2", dummyKCL)
+          m.invoke(bootstraper, "cglib-nodep", "cglib", "2.2.2", dummyKCL)
+          m.invoke(bootstraper, "slf4j-api", "org.slf4j", "1.6.4", dummyKCL)
+          m.invoke(bootstraper, "slf4j-api", "org.slf4j", "1.6.2", dummyKCL)
+          m.invoke(bootstraper, "objenesis", "org.objenesis", "1.2", dummyKCL)
+          m.invoke(bootstraper, "jgrapht-jdk1.5", "org.jgrapht", "0.7.3", dummyKCL)
 
-          m.invoke(bootstraper, "org.kevoree.adaptation.model", "org.kevoree", KevoreeFactory.getVersion, dummyKCL);
-          m.invoke(bootstraper, "org.kevoree.api", "org.kevoree", KevoreeFactory.getVersion, dummyKCL);
-          m.invoke(bootstraper, "org.kevoree.basechecker", "org.kevoree", KevoreeFactory.getVersion, dummyKCL);
-          m.invoke(bootstraper, "org.kevoree.core", "org.kevoree", KevoreeFactory.getVersion, dummyKCL);
-          m.invoke(bootstraper, "org.kevoree.framework", "org.kevoree", KevoreeFactory.getVersion, dummyKCL);
-          m.invoke(bootstraper, "org.kevoree.kcl", "org.kevoree", KevoreeFactory.getVersion, dummyKCL);
-          m.invoke(bootstraper, "org.kevoree.kompare", "org.kevoree", KevoreeFactory.getVersion, dummyKCL);
-          m.invoke(bootstraper, "org.kevoree.merger", "org.kevoree", KevoreeFactory.getVersion, dummyKCL);
-          m.invoke(bootstraper, "org.kevoree.model", "org.kevoree", KevoreeFactory.getVersion, dummyKCL);
-          m.invoke(bootstraper, "org.kevoree.tools.annotation.api", "org.kevoree.tools", KevoreeFactory.getVersion, dummyKCL);
-          m.invoke(bootstraper, "org.kevoree.tools.android.framework", "org.kevoree.tools", KevoreeFactory.getVersion, dummyKCL);
-          m.invoke(bootstraper, "org.kevoree.tools.javase.framework", "org.kevoree.tools", KevoreeFactory.getVersion, dummyKCL);
-          m.invoke(bootstraper, "org.kevoree.tools.marShell", "org.kevoree.tools", KevoreeFactory.getVersion, dummyKCL);
-          m.invoke(bootstraper, "org.kevoree.tools.aether.framework.android", "org.kevoree.tools", KevoreeFactory.getVersion, dummyKCL);
+          m.invoke(bootstraper, "org.kevoree.adaptation.model", "org.kevoree", KevoreeFactory.getVersion, dummyKCL)
+          m.invoke(bootstraper, "org.kevoree.api", "org.kevoree", KevoreeFactory.getVersion, dummyKCL)
+          m.invoke(bootstraper, "org.kevoree.basechecker", "org.kevoree", KevoreeFactory.getVersion, dummyKCL)
+          m.invoke(bootstraper, "org.kevoree.core", "org.kevoree", KevoreeFactory.getVersion, dummyKCL)
+          m.invoke(bootstraper, "org.kevoree.framework", "org.kevoree", KevoreeFactory.getVersion, dummyKCL)
+          m.invoke(bootstraper, "org.kevoree.kcl", "org.kevoree", KevoreeFactory.getVersion, dummyKCL)
+          m.invoke(bootstraper, "org.kevoree.kompare", "org.kevoree", KevoreeFactory.getVersion, dummyKCL)
+          m.invoke(bootstraper, "org.kevoree.merger", "org.kevoree", KevoreeFactory.getVersion, dummyKCL)
+          m.invoke(bootstraper, "org.kevoree.model", "org.kevoree", KevoreeFactory.getVersion, dummyKCL)
+          m.invoke(bootstraper, "org.kevoree.tools.annotation.api", "org.kevoree.tools", KevoreeFactory.getVersion, dummyKCL)
+          m.invoke(bootstraper, "org.kevoree.tools.android.framework", "org.kevoree.tools", KevoreeFactory.getVersion, dummyKCL)
+          m.invoke(bootstraper, "org.kevoree.tools.javase.framework", "org.kevoree.tools", KevoreeFactory.getVersion, dummyKCL)
+          m.invoke(bootstraper, "org.kevoree.tools.marShell", "org.kevoree.tools", KevoreeFactory.getVersion, dummyKCL)
+          m.invoke(bootstraper, "org.kevoree.tools.aether.framework.android", "org.kevoree.tools", KevoreeFactory.getVersion, dummyKCL)
 
 
 
@@ -129,7 +127,7 @@ class KevoreeAndroidBootStrap {
 
       }
 
-      coreBean.start();
+      coreBean.start()
 
 
       val file = bootstraper.asInstanceOf[Bootstraper].resolveKevoreeArtifact("org.kevoree.library.model.bootstrap.android", "org.kevoree.corelibrary.model", KevoreeFactory.getVersion)
@@ -139,29 +137,29 @@ class KevoreeAndroidBootStrap {
       if (bootstrapModel != null) {
         try {
           coreBean.setNodeName(nodeName)
-          logger.info("Bootstrap step will init "+coreBean.getNodeName());
-          logger.debug("Bootstrap step !");
+          logger.info("Bootstrap step will init "+coreBean.getNodeName())
+          logger.debug("Bootstrap step !")
           val bsh = new BootstrapHelper
-          bsh.initModelInstance(bootstrapModel, "AndroidNode", "NanoRestGroup", nodeName);
-          coreBean.updateModel(bootstrapModel);
+          bsh.initModelInstance(bootstrapModel, "AndroidNode", "NanoRestGroup", nodeName)
+          coreBean.updateModel(bootstrapModel)
         } catch {
-          case _@e => logger.error("Bootstrap failed", e);
+          case _@e => logger.error("Bootstrap failed", e)
         }
       } else {
-        logger.error("Can't bootstrap nodeType");
+        logger.error("Can't bootstrap nodeType")
       }
-      started = true;
+      started = true
     } catch {
-      case _@e => e.printStackTrace();
+      case _@e => e.printStackTrace()
     }
   }
 
   def stop() {
     if (!started) {
-      return;
+      return
     }
-    coreBean.stop();
-    started = false;
+    coreBean.stop()
+    started = false
   }
 
 }

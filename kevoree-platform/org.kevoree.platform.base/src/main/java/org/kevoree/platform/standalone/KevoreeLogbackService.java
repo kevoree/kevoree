@@ -88,11 +88,11 @@ public class KevoreeLogbackService implements KevoreeLogService {
 	@Override
 	public KevoreeLogLevel getLogLevel (String s) {
 		Logger root = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
-				for (Logger logger : root.getLoggerContext().getLoggerList()) {
-					if (logger.getName().equals(s)) {
-						return convertLogbackLogLeveltoKevoreeLogLevel(logger.getLevel());
-					}
-				}
+		for (Logger logger : root.getLoggerContext().getLoggerList()) {
+			if (logger.getName().equals(s)) {
+				return convertLogbackLogLeveltoKevoreeLogLevel(logger.getLevel());
+			}
+		}
 		return null;
 	}
 
