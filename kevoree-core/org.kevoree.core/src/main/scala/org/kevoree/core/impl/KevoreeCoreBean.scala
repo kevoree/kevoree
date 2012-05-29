@@ -166,8 +166,8 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
   }
 
   override def start: Actor = {
-    logger.info("Kevoree Start event : node name = " + getNodeName)
     setNodeName(configService.getProperty(ConfigConstants.KEVOREE_NODE_NAME))
+    logger.info("Kevoree Start event : node name = " + getNodeName)
     super.start()
 
     //State recovery phase
