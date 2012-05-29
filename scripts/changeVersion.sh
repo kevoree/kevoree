@@ -33,3 +33,9 @@ cd $BASE_RELEASE_DIR
 #CHANGE PLATFORM VERSION
 cd kevoree-platform/org.kevoree.platform.root
 mvn versions:set -DnewVersion=$KEVOREE_RELEASE -DgenerateBackupPoms=false
+
+cd $BASE_RELEASE_DIR
+
+#CHANGE SAMPLE VERSION
+cd kevoree-corelibrary/sample/org.kevoree.library.sample.javase.helloworld
+mvn versions:set -DnewVersion=$KEVOREE_RELEASE -DgenerateBackupPoms=false
