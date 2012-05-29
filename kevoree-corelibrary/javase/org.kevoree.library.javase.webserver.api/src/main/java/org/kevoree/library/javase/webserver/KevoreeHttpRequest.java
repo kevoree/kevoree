@@ -15,24 +15,28 @@ public interface KevoreeHttpRequest extends Serializable {
 
 	public void setHeaders (Map<String, String> headers);
 
-	public int getTokenID();
+	public int getTokenID ();
 
-    public void setTokenID(int t);
+	public void setTokenID (int t);
 
 	public String getUrl ();
 
-	public void setUrl (String url);
+	public String getCompleteUrl ();
+
+	public void setUrl (String uri);
+
+	public void setCompleteUrl (String url);
 
 	public Map<String, String> getResolvedParams ();
 
-	public void setResolvedParams (Map<String, String> resolvedParams) ;
+	public void setResolvedParams (Map<String, String> resolvedParams);
 
-	public byte[] getRawBody () ;
+	public byte[] getRawBody ();
 
 	public void setRawBody (byte[] rawBody);
 
 	public String getRawParams ();
 
-	public void setRawParams(String rawParams);
+	public void setRawParams (String rawParams);
 }
 

@@ -13,7 +13,8 @@ import java.util.Map;
  */
 public class KevoreeHttpRequestImpl implements KevoreeHttpRequest {
 
-    private String url = "";
+    private String uri = "";
+	private String url = "";
 
     private String rawParams = "";
 
@@ -39,12 +40,19 @@ public class KevoreeHttpRequestImpl implements KevoreeHttpRequest {
         tokenID = i;
     }
 
-
-    public String getUrl() {
-        return url;
+	public String getUrl() {
+        return uri;
     }
 
     public void setUrl(String url) {
+        this.uri = url;
+    }
+
+    public String getCompleteUrl() {
+        return url;
+    }
+
+    public void setCompleteUrl(String url) {
         this.url = url;
     }
 
