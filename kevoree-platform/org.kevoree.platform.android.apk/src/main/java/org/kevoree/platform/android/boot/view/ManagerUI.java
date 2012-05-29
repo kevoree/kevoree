@@ -133,7 +133,7 @@ public class ManagerUI extends KObservable<ManagerUI> implements KevoreeAndroidU
             for (int i=0; i < childcount; i++)
             {
                 View v = tabLayout.getChildAt(i);
-                if(v != null && view != null){
+                if(v != null){
                     if(v.equals(view))
                     {
                         tabLayout.removeView(view);
