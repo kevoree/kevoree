@@ -6,7 +6,7 @@
     <packaging>pom</packaging>
     <name>Kevoree :: Tools :: Root</name>
     <url>https://github.com/dukeboard/kevoree</url>
-    <version>1.7.4</version>
+    <version>1.7.5-SNAPSHOT</version>
 
     <dependencies>
         <dependency>
