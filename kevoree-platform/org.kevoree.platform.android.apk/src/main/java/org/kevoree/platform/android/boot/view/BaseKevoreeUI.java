@@ -73,6 +73,7 @@ public class BaseKevoreeUI extends LinearLayout {
     }
 
     public void configUI(){
+
         LinearLayout layout = new LinearLayout(ctx);
         setLayoutParams(new AbsListView.LayoutParams(AbsListView.LayoutParams.FILL_PARENT, AbsListView.LayoutParams.FILL_PARENT));
         setOrientation(LinearLayout.VERTICAL);

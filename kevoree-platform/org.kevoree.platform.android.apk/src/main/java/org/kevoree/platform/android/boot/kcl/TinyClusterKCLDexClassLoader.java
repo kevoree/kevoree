@@ -31,7 +31,7 @@ public class TinyClusterKCLDexClassLoader extends ClassLoader {
         subs.add(sub);
     }
 
-    private HashMap<String, Class> cache = new HashMap<String, Class>();
+    private final HashMap<String, Class> cache = new HashMap<String, Class>();
 
 
     @Override
@@ -41,20 +41,31 @@ public class TinyClusterKCLDexClassLoader extends ClassLoader {
         if (c != null) {
             return c;
         } else {
-            //Log.i("ClusterCL","Try to resolve Class "+s);
-            for (TinyKCLDexClassLoader sub : subs) {
-                try {
-                    Class clazz = sub.internalLoad(s);
-                    if (clazz != null) {
-                        cache.put(s,clazz);
-                        return clazz;
-                    }
-                } catch (Exception e) {
-                    //SILENTLY IGNORE
+
+            synchronized (cache){
+
+                Class lastCheck = cache.get(s);
+                if (lastCheck != null) {
+                    return lastCheck;
                 }
+
+                //Log.i("ClusterCL","Try to resolve Class "+s);
+                for (TinyKCLDexClassLoader sub : subs) {
+                    try {
+                        Class clazz = sub.internalLoad(s);
+                        if (clazz != null) {
+                            cache.put(s,clazz);
+                            return clazz;
+                        }
+                    } catch (Exception e) {
+                        //SILENTLY IGNORE
+                    }
+                }
+                //Log.i("ClusterCL","Not resolved in cluster "+s);
+                throw new ClassNotFoundException(s);
             }
-            //Log.i("ClusterCL","Not resolved in cluster "+s);
-            throw new ClassNotFoundException(s);
+
+
         }
 
 
