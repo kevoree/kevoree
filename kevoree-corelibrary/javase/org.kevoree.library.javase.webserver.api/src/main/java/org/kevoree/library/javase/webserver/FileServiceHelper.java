@@ -135,6 +135,9 @@ public class FileServiceHelper {
 		if (url.endsWith(".css")) {
 			return false;
 		}
+		if (url.endsWith(".jnlp")) {
+			return false;
+		}
 		return true;
 	}
 
