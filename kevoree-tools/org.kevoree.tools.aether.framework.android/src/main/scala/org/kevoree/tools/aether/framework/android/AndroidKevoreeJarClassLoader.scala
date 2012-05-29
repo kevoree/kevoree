@@ -61,6 +61,12 @@ class AndroidKevoreeJarClassLoader(gkey: String, ctx: android.content.Context, p
 
 
   /* Constructor */
+  addSpecialLoaders(new KevoreeResourcesLoader(".jar") {
+    def doLoad(key: String, stream: InputStream) {
+      //logger.debug("Ignore class => "+key)
+      //NOOP
+    }
+  })
   addSpecialLoaders(new KevoreeResourcesLoader(".class") {
     def doLoad(key: String, stream: InputStream) {
       //logger.debug("Ignore class => "+key)
@@ -114,6 +120,26 @@ class AndroidKevoreeJarClassLoader(gkey: String, ctx: android.content.Context, p
     subDexClassLoader = subDexClassLoader ++ List(newDexCL)
   }
 
+  override def internal_defineClass(className: String, bytes: Array[Byte]) : Class[_] = {
+    subDexClassLoader.foreach {
+      subCL =>
+        try {
+          return subCL.internalLoad(className)
+        } catch {
+          case nf: ClassNotFoundException =>
+        }
+    }
+    null
+  }
+
+  override def loadClassBytes( className : String) : Array[Byte] = {
+      "dummy".getBytes
+  }
+
+
+
+
+            /*
   override def callSuperConcreteLoader(className: String, resolveIt: Boolean): Class[_] = {
     //logger.debug("Try to load " + className)
     subDexClassLoader.foreach {
@@ -126,7 +152,9 @@ class AndroidKevoreeJarClassLoader(gkey: String, ctx: android.content.Context, p
     }
     null
     //throw new ClassNotFoundException(className)
-  }
+  }   */
+
+
 
   override def unload() {
     subDexClassLoader = null
