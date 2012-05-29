@@ -33,8 +33,10 @@ package org.kevoree.framework.aspects
 
 import org.kevoree._
 import KevoreeAspects._
+import org.slf4j.LoggerFactory
 
 case class ContainerNodeAspect (node: ContainerNode) {
+  private val logger = LoggerFactory.getLogger(this.getClass)
 
   def isModelEquals (ct: ContainerNode): Boolean = {
     ct.getName == node.getName
@@ -159,9 +161,13 @@ case class ContainerNodeAspect (node: ContainerNode) {
 
 
   def getKevoreeVersion: String = {
+    try {
     node.getTypeDefinition.foundRelevantDeployUnit(node).getRequiredLibs.find(du => du.getGroupName == "org.kevoree" && du.getUnitName == "org.kevoree.api") match {
       case None => "" // must never appear
       case Some(du) => du.getVersion
+    }
+    } catch {
+      case _@e => logger.debug("Unable to find kevoree version", e);""
     }
   }
 
