@@ -79,19 +79,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.SingleThreadModel;
 import javax.servlet.UnavailableException;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletRequestWrapper;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import javax.servlet.http.HttpSessionActivationListener;
-import javax.servlet.http.HttpSessionAttributeListener;
-import javax.servlet.http.HttpSessionBindingEvent;
-import javax.servlet.http.HttpSessionBindingListener;
-import javax.servlet.http.HttpSessionContext;
-import javax.servlet.http.HttpSessionEvent;
-import javax.servlet.http.HttpSessionListener;
+import javax.servlet.http.*;
 
 import Acme.Utils;
 import org.kevoree.library.javase.webserver.KevoreeHttpRequest;
@@ -2274,7 +2262,7 @@ public class Serve implements ServletContext, Serializable {
 				sessionValue = reqSessionValue;
 				if (authenificate()) {
 //					if (resolvedParams == null) {
-						resolvedParams = (Map<String, String>) getParameterMap();
+					resolvedParams = (Map<String, String>) getParameterMap();
 //					}
 					if (servlete instanceof SingleThreadModel) {
 						synchronized (servlete) {
@@ -4237,6 +4225,16 @@ public class Serve implements ServletContext, Serializable {
 
 		@Override
 		public void setUrl (String url) {
+
+		}
+
+		@Override
+		public String getCompleteUrl () {
+			return getRequestURL().toString();
+		}
+
+		@Override
+		public void setCompleteUrl (String url) {
 
 		}
 
