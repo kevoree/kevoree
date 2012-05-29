@@ -261,6 +261,9 @@ class NodeTypeBootstrapHelper extends Bootstraper with KCLBootstrap {
 
   def resolveArtifact(artId: String, groupId: String, version: String, repos: List[String]): File = AetherUtil.resolveMavenArtifact(artId, groupId, version, repos)
 
+
+  def resolveArtifact(artId: String, groupId: String, version: String, extension : String, repos: List[String]): File = AetherUtil.resolveMavenArtifact(artId, groupId, version, extension, repos)
+
   def resolveKevoreeArtifact(artId: String, groupId: String, version: String): File = AetherUtil.resolveKevoreeArtifact(artId, groupId, version)
 
   def resolveDeployUnit(du: DeployUnit): File = AetherUtil.resolveDeployUnit(du)
