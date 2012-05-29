@@ -4,11 +4,11 @@
     <artifactId>org.kevoree.merger</artifactId>
     <name>Kevoree :: Merger</name>
 
-    <version>1.7.4-SNAPSHOT</version>
+    <version>1.7.4</version>
     <parent>
         <artifactId>org.kevoree.root</artifactId>
         <groupId>org.kevoree</groupId>
-        <version>1.7.4-SNAPSHOT</version>
+        <version>1.7.4</version>
         <relativePath>../org.kevoree.root/pom.xml</relativePath>
     </parent>
 
