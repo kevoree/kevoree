@@ -52,7 +52,7 @@ trait AetherFramework extends TempFileCacheManager with AetherRepositoryHandler 
     val artifact: Artifact = new DefaultArtifact(List(groupName.trim(), unitName.trim(), version.trim()).mkString(":"))
     val artifactRequest = new ArtifactRequest
     artifactRequest.setArtifact(artifact)
-    val repositories: java.util.List[RemoteRepository] = new java.util.ArrayList();
+    val repositories: java.util.List[RemoteRepository] = new java.util.ArrayList()
     repositoriesUrl.foreach {
       repository =>
         val repo = new RemoteRepository
@@ -66,6 +66,25 @@ trait AetherFramework extends TempFileCacheManager with AetherRepositoryHandler 
     val artefactResult = getRepositorySystem.resolveArtifact(getRepositorySystemSession, artifactRequest)
     installInCache(artefactResult.getArtifact)
   }
+
+  def resolveMavenArtifact (unitName: String, groupName: String, version: String, extension : String, repositoriesUrl: List[String]): File = {
+      val artifact: Artifact = new DefaultArtifact(groupName.trim(), unitName.trim(), extension.trim(), version.trim())
+      val artifactRequest = new ArtifactRequest
+      artifactRequest.setArtifact(artifact)
+      val repositories: java.util.List[RemoteRepository] = new java.util.ArrayList()
+      repositoriesUrl.foreach {
+        repository =>
+          val repo = new RemoteRepository
+          val purl = repository.trim.replace(':', '_').replace('/', '_').replace('\\', '_')
+          repo.setId(purl)
+          repo.setUrl(repository)
+          repo.setContentType("default")
+          repositories.add(repo)
+      }
+      artifactRequest.setRepositories(repositories)
+      val artefactResult = getRepositorySystem.resolveArtifact(getRepositorySystemSession, artifactRequest)
+      installInCache(artefactResult.getArtifact)
+    }
 
 
   def resolveDeployUnit (du: DeployUnit): File = {
@@ -87,7 +106,7 @@ trait AetherFramework extends TempFileCacheManager with AetherRepositoryHandler 
 
     //  val urls = buildPotentialMavenURL(du.eContainer.asInstanceOf[ContainerRoot])
 
-    val repositories: java.util.List[RemoteRepository] = new java.util.ArrayList();
+    val repositories: java.util.List[RemoteRepository] = new java.util.ArrayList()
     urls.foreach {
       url =>
         val repo = new RemoteRepository
@@ -153,9 +172,9 @@ trait AetherFramework extends TempFileCacheManager with AetherRepositoryHandler 
   }
 
   def buildURL (root: ContainerRoot, nodeName: String): Option[String] = {
-    var ip = KevoreePlatformHelper.getProperty(root, nodeName, org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP);
+    var ip = KevoreePlatformHelper.getProperty(root, nodeName, org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP)
     if (ip == null || ip == "") {
-      ip = "127.0.0.1";
+      ip = "127.0.0.1"
     }
 
     root.getNodes.find(n => n.getName == nodeName) match {
