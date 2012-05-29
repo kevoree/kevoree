@@ -64,11 +64,11 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
   var models: scala.collection.mutable.ArrayBuffer[ContainerRoot] = new scala.collection.mutable.ArrayBuffer[ContainerRoot]()
   var model: ContainerRoot = KevoreeFactory.eINSTANCE.createContainerRoot
   var lastDate: Date = new Date(System.currentTimeMillis)
-  var currentModelUUID: UUID = UUID.randomUUID();
+  var currentModelUUID: UUID = UUID.randomUUID()
 
   def getLastModification = lastDate
 
-  var logger = LoggerFactory.getLogger(this.getClass);
+  var logger = LoggerFactory.getLogger(this.getClass)
   val modelClone = new ModelCloner
 
   var selfActorPointer = this
@@ -81,7 +81,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
             //  val bt = new NodeTypeBootstrapHelper
             bootstraper.bootstrapNodeType(currentModel, nodeName, this, kevsEngineFactory) match {
               case Some(ist: org.kevoree.api.NodeType) => {
-                nodeInstance = ist;
+                nodeInstance = ist
                 nodeInstance.startNode()
                 //SET CURRENT MODEL
                 model = modelClone.clone(currentModel)
@@ -166,8 +166,8 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
   }
 
   override def start: Actor = {
-    logger.info("Kevoree Start event : node name = " + configService.getProperty(ConfigConstants.KEVOREE_NODE_NAME))
-    setNodeName(configService.getProperty(ConfigConstants.KEVOREE_NODE_NAME));
+    logger.info("Kevoree Start event : node name = " + getNodeName)
+    setNodeName(configService.getProperty(ConfigConstants.KEVOREE_NODE_NAME))
     super.start()
 
     //State recovery phase
@@ -190,7 +190,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
       try {
         val stopModel = checkUnbootstrapNode(model)
         if (stopModel.isDefined) {
-          val adaptationModel = nodeInstance.kompare(model, stopModel.get);
+          val adaptationModel = nodeInstance.kompare(model, stopModel.get)
           val deployResult = PrimitiveCommandExecutionHelper.execute(adaptationModel, nodeInstance)
         } else {
           logger.error("Unable to use the stopModel !")

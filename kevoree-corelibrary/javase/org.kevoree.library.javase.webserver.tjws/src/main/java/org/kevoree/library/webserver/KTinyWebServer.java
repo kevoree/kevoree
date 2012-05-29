@@ -6,6 +6,8 @@ import org.kevoree.library.javase.webserver.KevoreeHttpRequest;
 import org.kevoree.library.javase.webserver.KevoreeHttpResponse;
 import org.kevoree.library.webserver.internal.KTinyWebServerInternalServe;
 import org.kevoree.library.webserver.tjws.RequestHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -23,66 +25,74 @@ import java.io.IOException;
 @ComponentType
 public class KTinyWebServer extends AbstractWebServer implements Runnable {
 
-    private KTinyWebServerInternalServe srv = null;
-    private Thread mainT = null;
-    private RequestHandler handler = null;
+	protected Logger logger = LoggerFactory.getLogger(KTinyWebServer.class.getName());
+	private KTinyWebServerInternalServe srv = null;
+	private Thread mainT = null;
+	private RequestHandler handler = null;
 
 
-    public void start() {
+	public void start () {
 
-        handler = new RequestHandler(this);
-        handler.start();
-        handler.staticInit();
+		handler = new RequestHandler(this);
+		handler.start();
+		handler.staticInit();
 
-        srv = new KTinyWebServerInternalServe();
-        java.util.Properties properties = new java.util.Properties();
-        properties.put("port", Integer.parseInt(getDictionary().get("port").toString()));
-        properties.setProperty(Acme.Serve.Serve.ARG_NOHUP, "nohup");
-        srv.arguments = properties;
-        mainT = new Thread(this);
-        mainT.start();
+		srv = new KTinyWebServerInternalServe();
+		java.util.Properties properties = new java.util.Properties();
+		properties.put("port", Integer.parseInt(getDictionary().get("port").toString()));
+		properties.setProperty(Acme.Serve.Serve.ARG_NOHUP, "nohup");
+		srv.arguments = properties;
+		mainT = new Thread(this);
+		mainT.start();
 
-        srv.addServlet("/*", new HttpServlet() {
-            @Override
-            protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-                KevoreeHttpResponse res = handler.sendAndWait((KevoreeHttpRequest) req);
+		srv.addServlet("/*", new HttpServlet() {
+			@Override
+			protected void service (HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+				KevoreeHttpResponse res = handler.sendAndWait((KevoreeHttpRequest) req);
 
-                if (res.getHeaders().get("Content-Type") != null) {
-                    resp.setContentType(res.getHeaders().get("Content-Type").toString());
-                }
+				if (res.getHeaders().get("Content-Type") != null) {
+					resp.setContentType(res.getHeaders().get("Content-Type"));
+				}
+				try {
+					if (res.getHeaders().get("Content-Length") != null) {
+						resp.setContentLength(Integer.parseInt(res.getHeaders().get("Content-Length")));
+					}
+				} catch (NumberFormatException e) {
+					logger.warn("{} is not an Integer", res.getHeaders().get("Content-Length"));
+				}
 
-                if (res.getRawContent() != null) {
-                    resp.getOutputStream().write(res.getRawContent());
-                } else {
-                    resp.getOutputStream().write(res.getContent().getBytes());
-                }
+				if (res.getRawContent() != null) {
+					resp.getOutputStream().write(res.getRawContent());
+				} else {
+					resp.getOutputStream().write(res.getContent().getBytes());
+				}
 
-            }
-        });
+			}
+		});
 
-    }
+	}
 
-    public void stop() {
-        srv.notifyStop();
-        srv.destroyAllServlets();
-        handler.killActors();
-        mainT.interrupt();
-    }
+	public void stop () {
+		srv.notifyStop();
+		srv.destroyAllServlets();
+		handler.killActors();
+		mainT.interrupt();
+	}
 
-    public void update() {
-        stop();
-        start();
-    }
+	public void update () {
+		stop();
+		start();
+	}
 
-    @Override
-    public void responseHandler(Object param) {
-        if (param instanceof KevoreeHttpResponse) {
-            handler.internalSend((KevoreeHttpResponse) param);
-        }
-    }
+	@Override
+	public void responseHandler (Object param) {
+		if (param instanceof KevoreeHttpResponse) {
+			handler.internalSend((KevoreeHttpResponse) param);
+		}
+	}
 
-    @Override
-    public void run() {
-        srv.serve();
-    }
+	@Override
+	public void run () {
+		srv.serve();
+	}
 }

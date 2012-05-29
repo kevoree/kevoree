@@ -16,11 +16,14 @@ package org.kevoree.platform.android.boot.view;
 import android.content.Context;
 import android.graphics.Color;
 import android.text.method.ScrollingMovementMethod;
+import android.util.Log;
 import android.view.View;
 import android.widget.*;
 import org.kevoree.platform.android.boot.controller.IController;
 import org.kevoree.platform.android.boot.controller.Request;
 import org.kevoree.platform.android.boot.utils.PrintStreamTraceLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.PrintStream;
 
@@ -116,6 +119,8 @@ public class BaseKevoreeUI extends LinearLayout {
 
             public void onClick(View v) {
                 kController.handleMessage(Request.KEVOREE_START,nodeNameView.getText().toString());
+				Log.i("Kevoree", "Bootstrapping Kevoree");
+				System.out.println("Bootstrapping Kevoree");
                 btstart.setEnabled(false);
                 nodeNameView.setEnabled(false);
             }

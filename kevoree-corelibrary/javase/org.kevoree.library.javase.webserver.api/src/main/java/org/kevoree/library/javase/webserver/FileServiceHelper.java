@@ -56,7 +56,7 @@ public class FileServiceHelper {
 			file = fileOptPath.get();
 		}
 		if (file == null || file.equals("") || file.equals("/")) {
-			file = index;//"latexEditor.html";
+			file = index;
 		}
 		logger.debug("Request rec for file " + file);
 		File in = new File(baseDir + File.separator + file);

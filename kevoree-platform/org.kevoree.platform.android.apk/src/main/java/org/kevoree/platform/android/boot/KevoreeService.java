@@ -111,7 +111,7 @@ public class KevoreeService extends Service {
             Notification notification = new Notification(R.drawable.kicon, getString(R.string.app_name), System.currentTimeMillis());
             PendingIntent contentIntent = PendingIntent.getActivity(getApplicationContext(), 0, new Intent(), 0);
             notification.setLatestEventInfo(getApplicationContext(), getString(R.string.app_name), getString(R.string.notification_description), contentIntent);
-            Object[] startForegroundMethodArgs = new Object[]{Integer.valueOf(ART2SERVICE_NOTIFICATION_ID), notification};
+            Object[] startForegroundMethodArgs = new Object[]{ART2SERVICE_NOTIFICATION_ID, notification};
             try {
                 startForegroundMethod.invoke(this, startForegroundMethodArgs);
                 notificationManager.notify(ART2SERVICE_NOTIFICATION_ID, notification);
