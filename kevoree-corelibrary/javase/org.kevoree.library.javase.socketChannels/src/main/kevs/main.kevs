@@ -1,0 +1,57 @@
+merge "mvn:org.kevoree.corelibrary.sky/org.kevoree.library.sky.minicloud/{kevoree.version}"
+merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.javaseNode/{kevoree.version}"
+merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.defaultChannels/{kevoree.version}"
+merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.fakeDomo/{kevoree.version}"
+merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.nanohttp/{kevoree.version}"
+merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.socketChannels/{kevoree.version}"
+
+
+merge "mvn:org.kevoree.corelibrary.android/org.kevoree.library.android.nodeType/{kevoree.version}"
+merge "mvn:org.kevoree.corelibrary.android/org.kevoree.library.android.nanohttp/{kevoree.version}"
+merge "mvn:org.kevoree.corelibrary.android/org.kevoree.library.android.fakeDomo/{kevoree.version}"
+merge "mvn:org.kevoree.corelibrary.android/org.kevoree.library.android.socketChannels/{kevoree.version}"
+
+addNode node0:MiniCloudNode {logLevel="DEBUG"}
+addNode subNode1 : JavaSENode {logLevel="DEBUG"}
+addNode subNode2 : JavaSENode {logLevel="DEBUG"}
+addNode subNode3 : AndroidNode
+
+addChild subNode1@node0
+addChild subNode2@node0
+
+addGroup sync: NanoRestGroup
+addToGroup sync node0
+addToGroup sync subNode1
+addToGroup sync subNode2
+addToGroup sync subNode3
+
+updateDictionary sync {port="8000"}@node0, {port="8001"}@subNode1, {port="8002"}@subNode2
+
+//addComponent console1@subNode1 : FakeConsole
+//addComponent console2@subNode2 : FakeConsole
+
+addComponent switch1@subNode1 : FakeSimpleSwitch
+addComponent light2@subNode2 : FakeSimpleLight
+addComponent light3@subNode3 : AFakeSimpleLight
+
+addChannel channel1 : SocketChannel
+//addChannel channel2 : SocketChannel
+
+//bind console1.textEntered@subNode1 => channel1
+//bind console2.showText@subNode2 => channel1
+
+//bind console2.textEntered@subNode2 => channel2
+//bind console1.showText@subNode1 => channel2
+
+bind switch1.toggle@subNode1 => channel1
+bind light2.toggle@subNode2 => channel1
+
+bind light3.toggle@subNode3 => channel1
+
+//bind console2.textEntered@subNode2 => channel2
+//bind console1.showText@subNode1 => channel2
+
+updateDictionary channel1 {port="9011"}@subNode1, {port="9012"}@subNode2, {port="9013"}@subNode3
+//updateDictionary channel2 {port="9021"}@subNode1, {port="9022"}@subNode2, {port="9023"}@subNode3
+
+network subNode3 {"KEVOREE.remote.node.ip" = "192.168.1.114"}
