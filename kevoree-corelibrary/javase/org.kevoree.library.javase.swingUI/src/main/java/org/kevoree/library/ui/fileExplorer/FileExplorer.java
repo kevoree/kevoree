@@ -6,6 +6,7 @@ import com.explodingpixels.macwidgets.SourceListControlBar;
 import org.kevoree.annotation.*;
 import org.kevoree.framework.AbstractComponentType;
 import org.kevoree.framework.MessagePort;
+import org.kevoree.library.ui.layout.KevoreeLayout;
 
 import javax.swing.*;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
@@ -33,13 +34,13 @@ import java.io.IOException;
 @ComponentType
 public class FileExplorer extends AbstractComponentType {
 
-    private JFrame frame = null;
+    //private JFrame frame = null;
     private DirectoryExplorerPanel dirExplorer = null;
     private FileExplorerPanel fileExplorer = null;
 
     @Start
     public void start() throws IOException {
-        frame = new JFrame("Kevoree File Explorer - " + this.getName());
+        //frame = new JFrame("Kevoree File Explorer - " + this.getName());
         dirExplorer = new DirectoryExplorerPanel(this);
         fileExplorer = new FileExplorerPanel(this);
         if (this.getDictionary().get("basedir") != null) {
@@ -66,9 +67,12 @@ public class FileExplorer extends AbstractComponentType {
 
 
         //frame.add(scrollPane, BorderLayout.WEST);
-        frame.add(splitPane, BorderLayout.CENTER);
-        frame.setVisible(true);
-        frame.pack();
+        //frame.add(splitPane, BorderLayout.CENTER);
+        //frame.setVisible(true);
+       // frame.pack();
+
+        KevoreeLayout.getInstance().displayTab(splitPane,getName());
+
         splitPane.setDividerLocation(0.3);
     }
 
@@ -80,7 +84,7 @@ public class FileExplorer extends AbstractComponentType {
     }
 
     public void fileSelected(File selected) {
-        frame.setTitle(selected.getName());
+        //frame.setTitle(selected.getName());
         if (getPortByName("fileurl") != null) {
             getPortByName("fileurl", MessagePort.class).process(selected);
         }
@@ -88,8 +92,9 @@ public class FileExplorer extends AbstractComponentType {
 
     @Stop
     public void stop() {
-        frame.dispose();
-        frame = null;
+        KevoreeLayout.getInstance().releaseTab(getName());
+        //frame.dispose();
+       // frame = null;
     }
 
     @Update

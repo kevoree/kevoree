@@ -6,6 +6,7 @@ import info.monitorenter.gui.chart.ITrace2D;
 import info.monitorenter.gui.chart.traces.Trace2DLtd;
 import org.kevoree.annotation.*;
 import org.kevoree.framework.AbstractComponentType;
+import org.kevoree.library.ui.layout.KevoreeLayout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,7 +29,7 @@ public class Grapher extends AbstractComponentType {
 
     Chart2D chart = null;
     HashMap<String, ITrace2D> traces = new HashMap<String, ITrace2D>();
-    JFrame frame = null;
+    //JFrame frame = null;
 
 	private static final Logger logger = LoggerFactory.getLogger(Grapher.class);
 
@@ -39,11 +40,11 @@ public class Grapher extends AbstractComponentType {
         IAxis axisX = chart.getAxisX();
         axisX.setStartMajorTick(false);
         axisX.setMajorTickSpacing(10);
-        frame = new JFrame("Kevoree Grapher " + this.getName() + "@" + this.getNodeName());
-        frame.getContentPane().add(chart);
-        frame.setSize(800, 600);
-        frame.setVisible(true);
-
+        //frame = new JFrame("Kevoree Grapher " + this.getName() + "@" + this.getNodeName());
+        //frame.getContentPane().add(chart);
+        //frame.setSize(800, 600);
+        //frame.setVisible(true);
+        KevoreeLayout.getInstance().displayTab(chart,getName());
     }
 
     private ITrace2D getTraceByName(String traceName) {
@@ -62,9 +63,11 @@ public class Grapher extends AbstractComponentType {
     public void stopGraph() {
         chart.removeAllTraces();
         traces.clear();
-        frame.setVisible(false);
-        frame.dispose();
-        frame = null;
+        //frame.setVisible(false);
+       // frame.dispose();
+       // frame = null;
+        KevoreeLayout.getInstance().releaseTab(getName());
+
     }
 
     @Port(name = "input")
