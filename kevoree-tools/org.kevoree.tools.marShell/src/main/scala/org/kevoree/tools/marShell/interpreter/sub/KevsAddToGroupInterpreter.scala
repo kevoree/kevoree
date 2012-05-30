@@ -23,8 +23,10 @@ import org.kevoree.tools.marShell.interpreter.KevsInterpreterContext
 
 import org.kevoree.tools.marShell.ast.{AddToGroupStatement, AddBindingStatment}
 import org.kevoree.{ContainerNode, Group, KevoreeFactory}
+import org.slf4j.LoggerFactory
 
 case class KevsAddToGroupInterpreter(addToGroup : AddToGroupStatement) extends KevsAbstractInterpreter {
+  private val logger = LoggerFactory.getLogger(this.getClass)
 
   def interpret(context : KevsInterpreterContext):Boolean={
 
@@ -34,7 +36,7 @@ case class KevsAddToGroupInterpreter(addToGroup : AddToGroupStatement) extends K
     } else {
        context.model.getGroups.find(g=> g.getName == addToGroup.groupName ) match {
          case Some(g)=> groups = List(g)
-         case None => return false
+         case None => logger.debug("There is no group named {}", addToGroup.groupName);return false
        }
     }
 
@@ -44,7 +46,7 @@ case class KevsAddToGroupInterpreter(addToGroup : AddToGroupStatement) extends K
     } else {
        context.model.getNodes.find(g=> g.getName == addToGroup.nodeName ) match {
          case Some(g)=> nodes = List(g)
-         case None => return false
+         case None => logger.debug("There is no node named {}", addToGroup.nodeName);return false
        }
     }
 
