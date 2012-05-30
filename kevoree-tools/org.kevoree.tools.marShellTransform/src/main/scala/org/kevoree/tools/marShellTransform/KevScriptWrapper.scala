@@ -57,8 +57,6 @@ object KevScriptWrapper {
       val parser = new ParserPush()
       val result = parser.parseAdaptations(cscript)
 
-      val definitions = result.definitions.get
-
       val nodeName = result.nodeName
 
       statments += AddNodeStatment(nodeName, result.nodeTypeName, new Properties())
@@ -72,8 +70,12 @@ object KevScriptWrapper {
 
             if(s.asInstanceOf[UDI].params != None){
               s.asInstanceOf[UDI].getParams.toArray.foreach(p => {
-                val prop = definitions.getPropertieById(p.asInstanceOf[PropertiePredicate].dictionnaryID)
+                val prop = result.definitions.get.getPropertieById(p.asInstanceOf[PropertiePredicate].dictionnaryID)
                 props.put(prop, p.asInstanceOf[PropertiePredicate].value.toString)
+
+
+
+
               })
             }
             val fraProperties = new java.util.HashMap[String, java.util.Properties]
@@ -85,21 +87,21 @@ object KevScriptWrapper {
           case classOf: ABI => {
             logger.debug("Detect AddBindingStatment")
             val cid = new ComponentInstanceID(s.asInstanceOf[ABI].getIDPredicate().getinstanceID, Some(nodeName))
-            val idPort = definitions.getPortdefinitionById(s.asInstanceOf[ABI].getportIDB)
+            val idPort = result.definitions.get.getPortdefinitionById(s.asInstanceOf[ABI].getportIDB)
 
             statments += AddBindingStatment(cid, idPort, s.asInstanceOf[ABI].getchID())
           }
           case classOf: AIN => {
 
             val cid = new ComponentInstanceID(s.asInstanceOf[AIN].getIDPredicate().getinstanceID, Some(nodeName))
-            val typeIDB = definitions.getTypedefinitionById(s.asInstanceOf[AIN].getTypeIDB())
+            val typeIDB = result.definitions.get.getTypedefinitionById(s.asInstanceOf[AIN].getTypeIDB())
 
             /* Feed prop value */
             val props = new java.util.Properties()
 
             if(s.asInstanceOf[AIN].params != None){
               s.asInstanceOf[AIN].getParams.toArray.foreach(p => {
-                val prop = definitions.getPropertieById(p.asInstanceOf[Propertie].getdictionnaryID())
+                val prop = result.definitions.get.getPropertieById(p.asInstanceOf[Propertie].getdictionnaryID())
                 props.put(prop, p.asInstanceOf[PropertiePredicate].value)
               })
             }
@@ -132,10 +134,9 @@ object KevScriptWrapper {
           case classOf: RBI => {
             logger.debug("Detect RemoveBindingStatment")
             val cid = new ComponentInstanceID(s.asInstanceOf[RBI].getIDPredicate().getinstanceID, Some(nodeName))
-            val idPort = definitions.getPortdefinitionById(s.asInstanceOf[RBI].getportIDB)
+            val idPort = result.definitions.get.getPortdefinitionById(s.asInstanceOf[RBI].getportIDB)
             statments += RemoveBindingStatment(cid, idPort, s.asInstanceOf[RBI].getchID())
           }
-
           case _ => {
             logger.error("This Statment is not managed " + s.getClass.getName)
             None
@@ -151,7 +152,7 @@ object KevScriptWrapper {
         new Script(blocks.toList)
       }
       case e: java.lang.Exception => {
-        logger.error("Fail to parse the script : "+cscript+" "+e)
+        logger.error("Fail to parse the script : "+cscript,e)
         new Script(blocks.toList)
       }
     }
