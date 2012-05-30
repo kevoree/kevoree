@@ -4,3 +4,4 @@ merge "mvn:org.kevoree.corelibrary.android/org.kevoree.library.android.defaultCh
 merge "mvn:org.kevoree.corelibrary.android/org.kevoree.library.android.logger/{kevoree.version}"
 merge "mvn:org.kevoree.corelibrary.android/org.kevoree.library.android.nanohttp/{kevoree.version}"
 merge "mvn:org.kevoree.corelibrary.android/org.kevoree.library.android.socketChannels/{kevoree.version}"
+merge "mvn:org.kevoree.corelibrary.android/org.kevoree.library.android.nioChannels/{kevoree.version}"
