@@ -51,6 +51,8 @@ class FakeBootstraperService {
   bootstrap.registerManuallyDeployUnit(  "org.kevoree.tools.javase.framework", "org.kevoree.tools", KevoreeFactory.getVersion, dummyKCL);
   bootstrap.registerManuallyDeployUnit(  "org.kevoree.extra.kserial", "org.kevoree.extra", "1.2", dummyKCL)
   bootstrap.registerManuallyDeployUnit(  "jna", "net.java.dev.jna", "3.3.0", dummyKCL)
+  bootstrap.registerManuallyDeployUnit(  "jgrapht-jdk1.5", "org.jgrapht", "0.7.3", dummyKCL)
+
 
   def getBootstrap : NodeTypeBootstrapHelper = {
     bootstrap
