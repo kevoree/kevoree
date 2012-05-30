@@ -3,7 +3,6 @@
 
     <modelVersion>4.0.0</modelVersion>
     <artifactId>org.kevoree.library.javase.grapher</artifactId>
-    <packaging>bundle</packaging>
     <version>1.7.5-SNAPSHOT</version>
     <name>Kevoree :: CoreLibrary :: JavaSE :: Grapher</name>
 
@@ -19,9 +18,16 @@
             <artifactId>org.kevoree.extra.chart2d</artifactId>
             <groupId>org.kevoree.extra</groupId>
             <version>3.2.1</version>
-            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.kevoree.corelibrary.javase</groupId>
+            <artifactId>org.kevoree.library.javase.swingUI</artifactId>
+            <version>${kevoree.version}</version>
         </dependency>
     </dependencies>
 
+    <properties>
+        <kevoree.exclude>org.apache.xml*:*,com.jidesoft:*,commons-*:*</kevoree.exclude>
+    </properties>
 
 </project>

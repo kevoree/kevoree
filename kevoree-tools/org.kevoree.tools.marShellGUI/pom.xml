@@ -15,10 +15,6 @@
         <relativePath>../org.kevoree.tools.root/pom.xml</relativePath>
     </parent>
 
-    <properties>
-        <kevoree.version>${project.version}</kevoree.version>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>org.kevoree.tools</groupId>

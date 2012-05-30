@@ -13,4 +13,12 @@
         <relativePath>../org.kevoree.library.javase.root/pom.xml</relativePath>
     </parent>
 
+    <dependencies>
+        <dependency>
+            <groupId>org.kevoree.corelibrary.javase</groupId>
+            <artifactId>org.kevoree.library.javase.swingUI</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
+    </dependencies>
+
 </project>

@@ -1,0 +1,24 @@
+merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.javaseNode/{kevoree.version}"
+merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.fakeDomo/{kevoree.version}"
+merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.defaultChannels/{kevoree.version}"
+merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.nanohttp/{kevoree.version}"
+merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.swingUI/{kevoree.version}"
+merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.grapher/{kevoree.version}"
+
+
+
+addNode node0 : JavaSENode
+//addComponent fread@node0 : FileExplorer { basedir='{basedir}' }
+addComponent console@node0 : FakeConsole
+addComponent consoleDuke@node0 : FakeConsole
+//addChannel feedQueue : defMSG
+//bind console.showText@node0 => feedQueue
+
+addComponent kevs@node0 : KevScriptEditor
+
+
+addComponent graph1@node0 : Grapher
+addComponent graph3@node0 : Grapher
+
+addGroup sync : NanoRestGroup
+addToGroup sync node0

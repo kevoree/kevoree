@@ -20,6 +20,7 @@ package org.kevoree.library;
 import org.kevoree.annotation.*;
 import org.kevoree.framework.KevoreeMessage;
 import org.kevoree.framework.MessagePort;
+import org.kevoree.library.ui.layout.KevoreeLayout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,14 +53,16 @@ public class FakeConsole extends AbstractFakeStuffComponent {
     @Override
     public void start() throws Exception {
         frame = new MyFrame();
-        frame.setTitle(getName() + "@@@" + getNodeName());
-        frame.setVisible(true);
+       // frame.setTitle(getName() + "@@@" + getNodeName());
+      //  frame.setVisible(true);
         frame.appendSystem("/***** CONSOLE INITIALIZED ********/ ");
+        KevoreeLayout.getInstance().displayTab(frame,getName());
+
     }
 
     @Override
     public void stop() {
-        frame.dispose();
+        KevoreeLayout.getInstance().releaseTab(getName());
         frame = null;
     }
 
@@ -89,14 +92,13 @@ public class FakeConsole extends AbstractFakeStuffComponent {
         }
     }
 
-    private class MyFrame extends JFrame {
+    private class MyFrame extends JPanel {
 
         private JTextPane screen;
         private JTextArea inputTextField;
         private JButton send;
 
         public MyFrame() {
-
             setPreferredSize(new Dimension(FRAME_WIDTH, FRAME_HEIGHT));
             setLayout(new BorderLayout());
             send = new JButton("Send");
@@ -160,8 +162,6 @@ public class FakeConsole extends AbstractFakeStuffComponent {
 
             add(new JScrollPane(screen), BorderLayout.CENTER);
             add(bottomPanel, BorderLayout.SOUTH);
-            this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-            pack();
             setVisible(true);
         }
 
