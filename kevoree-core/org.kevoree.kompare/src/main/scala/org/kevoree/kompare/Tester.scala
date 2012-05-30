@@ -28,8 +28,8 @@ import org.kevoree.{MBinding, DeployUnit, NamedElement}
 object Tester extends App {
 
   val bean = new KevoreeKompareBean
-  val model1 = KevoreeXmiHelper.load("/Users/duke/Desktop/Kev_BUG1/before.kev")
-  val model2 = KevoreeXmiHelper.load("/Users/duke/Desktop/Kev_BUG1/after.kev")
+  val model1 = KevoreeXmiHelper.load("/Users/duke/Desktop/model_test0.kev")
+  val model2 = KevoreeXmiHelper.load("/Users/duke/Desktop/model_test1.kev")
   val adapModel = bean.kompare(model1, model2, "node0")
 
 
