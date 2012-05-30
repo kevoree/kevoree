@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
 @Library(name = "Arduino")
 @GroupType
 @DictionaryType({
-        @DictionaryAttribute(name = "serialport", fragmentDependant = true)
+        @DictionaryAttribute(name = "serialport", fragmentDependant = true, defaultValue = "*")
 })
 public class ArduinoSerialDelegation extends AbstractGroupType {
 
@@ -24,9 +24,6 @@ public class ArduinoSerialDelegation extends AbstractGroupType {
 
     @Start
     public void startGroupDelegation() {
-        
-        System.out.println("hi=>"+getBootStrapperService());
-        
         delegationPush = new ArduinoDelegationPush(getModelService(), this.getName(),getBootStrapperService(),getKevScriptEngineFactory());
         //triggerModelUpdate();
     }

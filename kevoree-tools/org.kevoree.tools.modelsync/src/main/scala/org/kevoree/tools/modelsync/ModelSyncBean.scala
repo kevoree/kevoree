@@ -31,6 +31,7 @@ class ModelSyncBean {
 
   @throws(classOf[Exception])
   def pushTo(model : ContainerRoot, destNodeName : String, viaGroupName : String){
+    bootstraper.getBootstrap.clear
     bootstraper.getBootstrap.bootstrapGroupType(model, viaGroupName, ModelHandlerServiceNoKernel(model)) match {
       case Some(groupTypeInstance) => {
         groupTypeInstance.push(model,destNodeName)

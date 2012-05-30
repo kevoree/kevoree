@@ -6,6 +6,7 @@ import org.kevoree.{KevoreeFactory, ContainerRoot}
 import java.lang.String
 import org.kevoree.api.service.core.handler.{KevoreeModelHandlerService}
 import org.kevoree.api.service.core.script.KevScriptEngineFactory
+import org.kevoree.extra.kserial.Utils.KHelpers
 
 /**
  * User: ffouquet
@@ -49,7 +50,13 @@ class ArduinoDelegationPush(handler: KevoreeModelHandlerService, groupName: Stri
                 val newdic = KevoreeFactory.createDictionary; group.setDictionary(Some(newdic)); newdic
               })
 
-              val serialPort = org.kevoree.framework.KevoreeFragmentPropertyHelper.getPropertyFromFragmentGroup(group.eContainer.asInstanceOf[ContainerRoot],group.getName,"serialport",targetNodeName)
+              var serialPort = org.kevoree.framework.KevoreeFragmentPropertyHelper.getPropertyFromFragmentGroup(group.eContainer.asInstanceOf[ContainerRoot],group.getName,"serialport",targetNodeName)
+              if(serialPort != null && serialPort == "*"){
+                val ports = KHelpers.getPortIdentifiers
+                if(ports.size() > 0){
+                  serialPort = ports.get(0)
+                }
+              }
 
             //  val att = dictionary.getValues.find(value => value.getAttribute.getName == "serialport" && value.getTargetNode == targetNodeName).getOrElse(null)
               gNodeType.startNode()

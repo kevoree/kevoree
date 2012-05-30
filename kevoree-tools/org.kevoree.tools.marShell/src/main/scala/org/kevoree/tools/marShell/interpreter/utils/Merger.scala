@@ -74,7 +74,7 @@ object Merger {
                   inst.getTypeDefinition.getDictionaryType.get.addAttributes(newDictionaryValue)
                   newDictionaryValue
                 } else { */
-                     throw new Exception("Dictionary Type does not contain attribute named "+key+" type modification not allowed in this scope")
+                     throw new Exception("Dictionary Type does not contain attribute named -"+key+"- type modification not allowed in this scope")
                // }
               }
               case Some(previousAtt) => previousAtt
