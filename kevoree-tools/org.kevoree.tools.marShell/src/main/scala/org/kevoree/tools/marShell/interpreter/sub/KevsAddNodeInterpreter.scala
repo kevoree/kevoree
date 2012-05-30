@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory
 
 case class KevsAddNodeInterpreter(addN: AddNodeStatment) extends KevsAbstractInterpreter {
 
-  var logger = LoggerFactory.getLogger(this.getClass)
+  private val logger = LoggerFactory.getLogger(this.getClass)
 
   def interpret(context: KevsInterpreterContext): Boolean = {
 
