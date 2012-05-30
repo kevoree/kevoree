@@ -154,14 +154,9 @@ public class SocketChannel extends AbstractChannelFragment implements Runnable {
             public Object sendMessageToRemote(Message msg) {
                 int port=0;
                 String host="";
-
-                try {
+                try
+                {
                     sem.acquire();
-                } catch (InterruptedException e) {
-                    // ignore
-                }
-
-                try {
 
                     logger.debug("Sending message to " + remoteNodeName);
                     msg.setDestNodeName(remoteNodeName);
@@ -178,6 +173,7 @@ public class SocketChannel extends AbstractChannelFragment implements Runnable {
                     OutputStream os = client_consumer.getOutputStream();
                     ObjectOutputStream oos = new ObjectOutputStream(os);
                     oos.writeObject(msg);
+
                     oos.flush();
 
                     client_consumer = null;
@@ -185,7 +181,7 @@ public class SocketChannel extends AbstractChannelFragment implements Runnable {
                     oos = null;
                 } catch (Exception e) {
 
-                    logger.warn("Unable to send message to " + msg.getDestNodeName()+e);
+                    logger.debug("Unable to send message to " + msg.getDestNodeName()+" ",e);
 
                     delete_link(host,port);
                     if(getDictionary().get("replay").toString().equals("true"))
@@ -205,7 +201,8 @@ public class SocketChannel extends AbstractChannelFragment implements Runnable {
 
 
     public void nodeDown(Socket client){
-        logger.warn("Node is down ");
+
+        logger.warn("Node is down "+client.getLocalAddress()+":"+client.getPort());
         localServerSockets.remove(client);
         try
         {
@@ -219,141 +216,145 @@ public class SocketChannel extends AbstractChannelFragment implements Runnable {
     @Override
     public void run() {
         int port;
-        try {
+
+        try
+        {
             port = parsePortNumber(getNodeName());
             logger.debug("Running Socket server <" + getNodeName() + "> port <" + port + ">");
             server = new ServerSocket(port);
-            server.setSoTimeout(2000);
+            //  server.setSoTimeout(2000);
             server.setReuseAddress(true);
-        } catch (IOException e) {
-            logger.error("Unable to create ServerSocket", e);
-        }
 
-        int maxConcurrentClients = 50;
-        final Semaphore sem = new Semaphore(maxConcurrentClients);
-        Executor pool = Executors.newFixedThreadPool(50);
-        while (alive) {
-            try {
-                sem.acquire();
-            } catch (InterruptedException e) {
-                continue;
-            }
-            final Socket client;
-            final InputStream stream;
-            try {
-                client = server.accept();
-                localServerSockets.add(client);
-                stream = client.getInputStream();
-            } catch (Exception e) {
-                if (alive) {
-                  //  logger.warn("Failed to accept client or get its input stream", e);
+            int maxConcurrentClients = 50;
+            final Semaphore sem = new Semaphore(maxConcurrentClients);
+            Executor pool = Executors.newFixedThreadPool(50);
+            while (alive) {
+                try {
+                    sem.acquire();
+                } catch (InterruptedException e) {
+                    continue;
                 }
-                continue;
-            }
-            pool.execute(new Runnable() {
-                Message msg = null;
-                boolean _alive = true;
-                @Override
-                public void run() {
-                    while (_alive) {
-                        try {
-                            if (stream != null) {
-                                ObjectInputStream ois =null;
-                                try {
-                                    ois = new ObjectInputStream(stream){
-                                        @Override
-                                        protected Class<?> resolveClass(ObjectStreamClass objectStreamClass) throws IOException, ClassNotFoundException {
-                                            Class c = null;
-                                            try {
-                                                if(c == null){
-                                                    c = resolver.resolve(objectStreamClass.getName());
-                                                }
-                                            } catch (Exception e) { }
-                                            try {
-                                                if(c == null){
-                                                    c = super.resolveClass(objectStreamClass);
-                                                }
-                                            } catch (Exception e) { }
-                                            try {
-                                                if(c == null){
-                                                    c= Class.forName(objectStreamClass.getName());
-                                                }
-                                            } catch (Exception e) { }                                            
+                final Socket client;
+                final InputStream stream;
+                try {
+                    client = server.accept();
+                    localServerSockets.add(client);
+                    stream = client.getInputStream();
+                } catch (Exception e) {
+                    if (alive) {
+                        //  logger.warn("Failed to accept client or get its input stream", e);
+                    }
+                    continue;
+                }
+                pool.execute(new Runnable() {
+                    Message msg = null;
+                    boolean _alive = true;
+                    @Override
+                    public void run() {
+                        while (_alive && !(Thread.currentThread().isInterrupted())) {
+                            try {
+                                if (stream != null) {
+                                    ObjectInputStream ois =null;
+                                    try {
+                                        ois = new ObjectInputStream(stream){
+                                            @Override
+                                            protected Class<?> resolveClass(ObjectStreamClass objectStreamClass) throws IOException, ClassNotFoundException {
+                                                Class c = null;
+                                                try {
+                                                    if(c == null){
+                                                        c = resolver.resolve(objectStreamClass.getName());
+                                                    }
+                                                } catch (Exception e) { }
+                                                try {
+                                                    if(c == null){
+                                                        c = super.resolveClass(objectStreamClass);
+                                                    }
+                                                } catch (Exception e) { }
+                                                try {
+                                                    if(c == null){
+                                                        c= Class.forName(objectStreamClass.getName());
+                                                    }
+                                                } catch (Exception e) { }
 
-                                            return c;
-                                        }
-                                    };
-                                    msg = (Message) ois.readObject();
-                                } catch (Exception e) {
-                                    ois = null;
+                                                return c;
+                                            }
+                                        };
+                                        msg = (Message) ois.readObject();
+                                    } catch (Exception e) {
+                                        ois = null;
+                                        nodeDown(client);
+                                        _alive =false;
+                                        msg = null;
+                                    }
+                                } else {
+                                    // the remote node close the channel (update, down )
                                     nodeDown(client);
                                     _alive =false;
                                     msg = null;
                                 }
-                            } else {
-                                // the remote node close the channel (update, down )
-                                nodeDown(client);
-                                _alive =false;
-                                msg = null;
-                            }
 
-                            if (msg != null) {
-                                logger.debug("Reading message from " + msg.getDestNodeName());
+                                if (msg != null) {
+                                    logger.debug("Reading message from " + msg.getDestNodeName());
 
-                                if (!msg.getPassedNodes().contains(getNodeName())) {
-                                    msg.getPassedNodes().add(getNodeName());
-                                }
-                                // remove duplicate message
-                                if (getOtherFragments().size() > 1) {
-                                    int val=1;
-                                    if (fragments.containsKey(msg.getUuid().toString()))
-                                    {
-                                        val = fragments.get(msg.getUuid().toString());
-                                        val = val +1;
-                                    }else {
-                                        val =1;
+                                    if (!msg.getPassedNodes().contains(getNodeName())) {
+                                        msg.getPassedNodes().add(getNodeName());
+                                    }
+                                    // remove duplicate message
+                                    if (getOtherFragments().size() > 1) {
+                                        int val=1;
+                                        if (fragments.containsKey(msg.getUuid().toString()))
+                                        {
+                                            val = fragments.get(msg.getUuid().toString());
+                                            val = val +1;
+                                        }else {
+                                            val =1;
+                                            remoteDispatch(msg);
+                                        }
+                                        // save
+                                        fragments.put(msg.getUuid().toString(), val);
+
+                                        if (val == getOtherFragments().size())
+                                        {
+                                            fragments.remove(msg.getUuid());
+                                        }
+
+                                    } else {
+                                        // two nodes
                                         remoteDispatch(msg);
                                     }
-                                    // save
-                                    fragments.put(msg.getUuid().toString(), val);
 
-                                    if (val == getOtherFragments().size())
-                                    {
-                                        fragments.remove(msg.getUuid());
-                                    }
-
-                                } else {
-                                    // two nodes
-                                    remoteDispatch(msg);
+                                }else
+                                {
+                                    nodeDown(client);
+                                    _alive =false;
+                                    msg = null;
                                 }
-
-                            }else
-                            {
-                                nodeDown(client);
-                                _alive =false;
                                 msg = null;
+                            } finally {
+                                sem.release();
                             }
-                            msg = null;
-                        } finally {
-                            sem.release();
+                        }
+                        try {
+                            client.close();
+                        } catch (Exception e) {
+                            // Ignore
                         }
                     }
-                    try {
-                        client.close();
-                    } catch (Exception e) {
-                        // Ignore
-                    }
+                });
+            }   // while
+            logger.debug("The ServerSocket pool is closing");
+            try {
+                if (server != null) {
+                    server.close();
                 }
-            });
-        }   // while
-        logger.debug("The ServerSocket pool is closing");
-        try {
-            if (server != null) {
-                server.close();
+                logger.debug("ServerSocket is closed");
+            } catch (IOException e) {
             }
-            logger.debug("ServerSocket is closed");
+
         } catch (IOException e) {
+            logger.error("Unable to create ServerSocket", e);
         }
+
     }
 
     public void delete_link(String host,Integer port){
@@ -374,7 +375,7 @@ public class SocketChannel extends AbstractChannelFragment implements Runnable {
             client_consumer.setTcpNoDelay(true);
             //When a TCP connection is closed the connection may remain in a timeout state for a period of time after the connection is closed (typically known as the TIME_WAIT state or 2MSL wait state). For applications using a well known socket address or port it may not be possible to bind a socket to the required SocketAddress if there is a connection in the timeout state involving the socket address or port.
             client_consumer.setReuseAddress(true);
-            client_consumer.setSoTimeout(2000);
+            //   client_consumer.setSoTimeout(2000);
             client_consumer.setKeepAlive(true);
 
             clientSockets.put(host+port, client_consumer);

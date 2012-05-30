@@ -30,6 +30,7 @@
         <module>../org.kevoree.library.android.nanohttp</module>
         <module>../org.kevoree.library.android.defaultChannels</module>
         <module>../org.kevoree.library.android.socketChannels</module>
+        <module>../org.kevoree.library.android.nioChannels</module>
     </modules>
 
     <dependencies>
