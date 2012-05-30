@@ -9,11 +9,11 @@ package org.kevoree.library.nioChannel {
 
 import java.lang.Class
 import org.jboss.netty.handler.codec.serialization.ClassResolver
+import scala.collection.JavaConversions._
+import org.kevoree.framework.aspects.KevoreeAspects._
 
-class ChannelClassResolver(nioChannel: NioChannel) extends ClassResolver {
-  def resolve(className: String): Class[_] = {
-    import scala.collection.JavaConversions._
-    import org.kevoree.framework.aspects.KevoreeAspects._
+class ChannelClassResolver (nioChannel: NioChannel) extends ClassResolver {
+  def resolve (className: String): Class[_] = {
     val model = nioChannel.getModelService.getLastModel
     val currentNode = model.getNodes.find(n => n.getName == nioChannel.getNodeName).get
     var resolvedClass: Class[_] = null
