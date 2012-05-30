@@ -38,7 +38,7 @@ public class KevoreeLayout {
 
         // SwingUtilities.invokeLater(new Runnable() {
         //   public void run() {
-        frame = new JFrame("Kevoree");
+        frame = new JFrame("Kevoree node : "+System.getProperty("node.name"));
         frame.getRootPane().putClientProperty("apple.awt.brushMetalLook", Boolean.TRUE);
         p = new JChromeTabbedPane("osx",content);
         p.setPreferredSize(new Dimension(50, 40));
