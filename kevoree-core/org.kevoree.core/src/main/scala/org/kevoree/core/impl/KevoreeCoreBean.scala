@@ -11,6 +11,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/**
+ * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.gnu.org/licenses/lgpl-3.0.txt
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 /*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
@@ -46,15 +59,17 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
   @BeanProperty var configService: ConfigurationService = null
   var kevsEngineFactory: KevScriptEngineFactory = null
 
-  def setKevsEngineFactory(k: KevScriptEngineFactory) {
+  def setKevsEngineFactory (k: KevScriptEngineFactory) {
     kevsEngineFactory = k
   }
 
   @BeanProperty var bootstraper: Bootstraper = null
 
   var nodeName: String = ""
-  def getNodeName : String = nodeName
-  def setNodeName(nn : String) {
+
+  def getNodeName: String = nodeName
+
+  def setNodeName (nn: String) {
     nodeName = nn
   }
 
@@ -73,7 +88,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
 
   var selfActorPointer = this
 
-  private def checkBootstrapNode(currentModel: ContainerRoot): Unit = {
+  private def checkBootstrapNode (currentModel: ContainerRoot): Unit = {
     try {
       if (nodeInstance == null) {
         currentModel.getNodes.find(n => n.getName == nodeName) match {
@@ -115,7 +130,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
     }
   }
 
-  private def checkUnbootstrapNode(currentModel: ContainerRoot): Option[ContainerRoot] = {
+  private def checkUnbootstrapNode (currentModel: ContainerRoot): Option[ContainerRoot] = {
     try {
       if (nodeInstance != null) {
         currentModel.getNodes.find(n => n.getName == nodeName) match {
@@ -143,7 +158,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
     }
   }
 
-  private def switchToNewModel(c: ContainerRoot) = {
+  private def switchToNewModel (c: ContainerRoot) = {
     //current model is backed-up
     models.append(model)
 
@@ -166,7 +181,9 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
   }
 
   override def start: Actor = {
-    setNodeName(configService.getProperty(ConfigConstants.KEVOREE_NODE_NAME))
+    if (getNodeName == "") {
+      setNodeName(configService.getProperty(ConfigConstants.KEVOREE_NODE_NAME))
+    }
     logger.info("Kevoree Start event : node name = " + getNodeName)
     super.start()
 
@@ -182,7 +199,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
     this
   }
 
-  override def stop() {
+  override def stop () {
     logger.warn("Kevoree Core will be stopped !")
     listenerActor.stop()
     super[KevoreeThreadActor].forceStop
@@ -219,7 +236,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
   val modelChecker = new RootChecker
 
   // treatment of incoming messages
-  def internal_process(msg: Any) = msg match {
+  def internal_process (msg: Any) = msg match {
     //Returns the collection of previous models
     case PreviousModel() => reply(models)
     //Returns a clone of the current system model
@@ -267,7 +284,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
         currentLock = (lockUUID, handler)
         //RUN ACTOR
         currentLockTimer = new DaemonActor {
-          def act() {
+          def act () {
             reactWithin(timeout) {
               case TIMEOUT => {
                 selfActorPointer ! LOCK_TIMEOUT();
@@ -304,7 +321,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
   }
 
 
-  private def internal_update_model(pnewmodel: ContainerRoot): Boolean = {
+  private def internal_update_model (pnewmodel: ContainerRoot): Boolean = {
     if (pnewmodel == null || !pnewmodel.getNodes.exists(p => p.getName == getNodeName())) {
       logger.error("Asking for update with a NULL model or node name was not found in target model !")
       false
@@ -444,9 +461,9 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
    * @see Consider using #compareAndSwapModel for concurrency reasons
    */
   @Deprecated
-  override def updateModel(model: ContainerRoot) {
+  override def updateModel (model: ContainerRoot) {
     new Actor() {
-      def act() {
+      def act () {
         selfActorPointer ! UpdateModel(model)
       }
     }.start()
@@ -458,7 +475,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
    * @see Consider using #atomicCompareAndSwapModel for concurrency reasons.
    */
   @Deprecated
-  override def atomicUpdateModel(model: ContainerRoot) = {
+  override def atomicUpdateModel (model: ContainerRoot) = {
     (this !? UpdateModel(model))
     lastDate
   }
@@ -467,9 +484,9 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
    * Compares the UUID of the model and the current UUID to verify that no update occurred in between the moment the model had been delivered and the moment the update is asked.<br/>
    * If OK, updates the system and switches to the new model, asynchronously
    */
-  override def compareAndSwapModel(previousModel: UUIDModel, targetModel: ContainerRoot) {
+  override def compareAndSwapModel (previousModel: UUIDModel, targetModel: ContainerRoot) {
     new Actor() {
-      def act() {
+      def act () {
         selfActorPointer ! UpdateUUIDModel(previousModel, targetModel)
       }
     }.start()
@@ -479,7 +496,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
    * Compares the UUID of the model and the current UUID to verify that no update occurred in between the moment the model had been delivered and the moment the update is asked.<br/>
    * If OK, updates the system and switches to the new model, synchronously (blocking)
    */
-  override def atomicCompareAndSwapModel(previousModel: UUIDModel, targetModel: ContainerRoot): Date = {
+  override def atomicCompareAndSwapModel (previousModel: UUIDModel, targetModel: ContainerRoot): Date = {
     val result = (this !? UpdateUUIDModel(previousModel, targetModel)).asInstanceOf[Boolean]
     if (!result) {
       throw new KevoreeModelUpdateException //SEND AND EXCEPTION - Compare&Swap fail !
@@ -495,11 +512,11 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
     (this !? PreviousModel()).asInstanceOf[scala.collection.mutable.ArrayBuffer[ContainerRoot]].toList
   }
 
-  override def registerModelListener(listener: ModelListener) {
+  override def registerModelListener (listener: ModelListener) {
     listenerActor.addListener(listener)
   }
 
-  override def unregisterModelListener(listener: ModelListener) {
+  override def unregisterModelListener (listener: ModelListener) {
     listenerActor.removeListener(listener)
   }
 
@@ -512,21 +529,21 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
   private var currentLock: Tuple2[UUID, ModelHandlerLockCallBack] = null
   private var currentLockTimer: Actor = null
 
-  case class RELEASE_LOCK(uuid: UUID)
+  case class RELEASE_LOCK (uuid: UUID)
 
-  case class ACQUIRE_LOCK(callBack: ModelHandlerLockCallBack, timeout: Long)
+  case class ACQUIRE_LOCK (callBack: ModelHandlerLockCallBack, timeout: Long)
 
-  case class LOCK_TIMEOUT()
+  case class LOCK_TIMEOUT ()
 
-  def acquireLock(callBack: ModelHandlerLockCallBack, timeout: Long) {
+  def acquireLock (callBack: ModelHandlerLockCallBack, timeout: Long) {
     this ! ACQUIRE_LOCK(callBack, timeout)
   }
 
-  def releaseLock(uuid: UUID) {
+  def releaseLock (uuid: UUID) {
     this ! RELEASE_LOCK(uuid)
   }
 
-  def checkModel(tModel: ContainerRoot): Boolean = {
+  def checkModel (tModel: ContainerRoot): Boolean = {
     val checkResult = modelChecker.check(model)
     if (checkResult.isEmpty) {
       listenerActor.preUpdate(cloner.clone(model), cloner.clone(tModel))
