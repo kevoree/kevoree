@@ -179,15 +179,18 @@ class KevoreeLazyJarResources extends ClasspathResources {
                   }
                   rurl.add(new URL("jar:" + baseurl + "!/" + jarEntry.getName))
                 } else {
+
+                  logger.debug("Cache {} Input {}",baseurl,jarEntry.getName)
+
                   val b = new Array[Byte](2048)
-                  val out = new ByteArrayOutputStream();
-                  var len = 0;
+                  val out = new ByteArrayOutputStream()
+                  var len = 0
                   while (len != -1) {
 
                     //while (jis.available() > 0) {
-                    len = jis.read(b);
+                    len = jis.read(b)
                     if (len > 0) {
-                      out.write(b, 0, len);
+                      out.write(b, 0, len)
                     }
                   }
                   out.flush()
