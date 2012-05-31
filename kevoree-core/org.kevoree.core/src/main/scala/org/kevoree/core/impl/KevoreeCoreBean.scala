@@ -265,6 +265,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
           reply(false)
         }
       }
+      System.gc()
     }
     //Updates the system to fit to the new model
     case UpdateModel(pnewmodel) => {
@@ -274,6 +275,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
         logger.debug("Core Locked , UUID mandatory")
         reply(false)
       }
+      System.gc()
     }
 
     case ACQUIRE_LOCK(handler, timeout) => {
