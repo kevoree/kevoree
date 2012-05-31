@@ -31,8 +31,8 @@ import org.sonatype.aether.impl.internal.{EnhancedLocalRepositoryManagerFactory}
 import util.matching.Regex
 import org.sonatype.aether.repository.{Authentication, RepositoryPolicy, RemoteRepository, LocalRepository}
 import scala.collection.JavaConversions._
-import org.sonatype.aether.{ConfigurationProperties, RepositorySystem}
-import org.kevoree.tools.aether.framework.AetherFramework
+import org.sonatype.aether.{RepositoryCache, ConfigurationProperties, RepositorySystem}
+import org.kevoree.tools.aether.framework.{NoopCache, AetherFramework}
 
 //import org.sonatype.aether.connector.wagon.WagonProvider
 
@@ -48,6 +48,7 @@ object AetherUtil extends AetherFramework {
 
   override def getRepositorySystem: RepositorySystem = {
     val locator = new DefaultServiceLocator()
+    locator.setService(classOf[RepositoryCache], classOf[NoopCache])
     locator.addService(classOf[LocalRepositoryManagerFactory], classOf[EnhancedLocalRepositoryManagerFactory])
     locator.addService(classOf[RepositoryConnectorFactory], classOf[FileRepositoryConnectorFactory])
     locator.setServices(classOf[WagonProvider], new ManualWagonProvider())

@@ -5,7 +5,7 @@ package org.kevoree.tools.aether.framework
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * 	http://www.gnu.org/licenses/lgpl-3.0.txt
+ * http://www.gnu.org/licenses/lgpl-3.0.txt
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -207,34 +207,60 @@ class JCLContextHandler extends DaemonActor with KevoreeClassLoaderHandler {
   }
 
   protected def removeDeployUnitInternals(du: DeployUnit) {
+
+    // println("DEBUG REMOVE DU "+du.getUnitName)
+
     val key = buildKEY(du)
     if (failedLinks.containsKey(key)) {
       failedLinks.remove(key)
     }
     if (!lockedDu.contains(key)) {
       val kcl_to_remove = kcl_cache.get(key)
-      failedLinks.filter(fl => fl._2 == kcl_to_remove).toList.foreach{ k =>
-        failedLinks.remove(k._1)
+      failedLinks.filter(fl => fl._2 == kcl_to_remove).toList.foreach {
+        k =>
+          failedLinks.remove(k._1)
       }
       if (!lockedDu.contains(key)) {
         if (kcl_cache.containsKey(key)) {
           logger.debug("Try to remove KCL for {}->{}", du.getUnitName, buildKEY(du))
-          logger.debug("Cache To cleanuip size"+kcl_cache.values().size()+"-"+kcl_cache.size()+"-"+kcl_cache.keySet().size())
+          logger.debug("Cache To cleanuip size" + kcl_cache.values().size() + "-" + kcl_cache.size() + "-" + kcl_cache.keySet().size())
           kcl_cache.values().foreach {
             vals => {
-              if(vals.getSubClassLoaders().contains(kcl_to_remove)){
-                failedLinks.put(key,vals)
-                logger.debug("Pending Fail link "+key)
+              if (vals.getSubClassLoaders().contains(kcl_to_remove)) {
+                failedLinks.put(key, vals)
+                logger.debug("Pending Fail link " + key)
               }
               vals.cleanupLinks(kcl_to_remove)
-              logger.debug("Cleanup {} from {}",vals.toString(),du.getUnitName)
+              logger.debug("Cleanup {} from {}", vals.toString(), du.getUnitName)
             }
           }
-          kcl_cache.get(key).unload()
+
+          val toRemoveKCL = kcl_cache.get(key)
+
+          //GET
+          var rootGroup = Thread.currentThread().getThreadGroup
+          var parentGroup: ThreadGroup = null
+          while ( {
+            parentGroup = rootGroup.getParent; parentGroup
+          } != null) {
+            rootGroup = parentGroup
+          }
+          val numThreads = rootGroup.activeCount()
+          val listOfThreads = new Array[Thread](numThreads)
+          rootGroup.enumerate(listOfThreads)
+          for (i <- 0 until numThreads) {
+            val tloop = listOfThreads(i)
+            if (tloop.getContextClassLoader == toRemoveKCL) {
+              logger.warn("Change Thread " + tloop.getName + " currentClassLoader to avoid memory leak")
+              tloop.setContextClassLoader(getClass.getClassLoader)
+            }
+
+          }
+          toRemoveKCL.unload()
           kcl_cache.remove(key)
         }
         if (kcl_cache_file.containsKey(key)) {
-          logger.debug("Cleanup Cache File"+kcl_cache_file.get(key).getAbsolutePath)
+          logger.debug("Cleanup Cache File" + kcl_cache_file.get(key).getAbsolutePath)
           kcl_cache_file.get(key).delete()
           kcl_cache_file.remove(key)
           logger.debug("Remove File Cache " + key)

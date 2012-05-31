@@ -9,7 +9,7 @@ import javax.swing.ImageIcon;
 
 public class ImageUtils
 {
-  private static final ClassLoader loader = Thread.currentThread().getContextClassLoader();
+ // private static final ClassLoader loader = Thread.currentThread().getContextClassLoader();
 
   public static Image load(String path)
   {
@@ -17,7 +17,7 @@ public class ImageUtils
 
     try
     {
-      InputStream in = loader.getResourceAsStream(path);
+      InputStream in = ImageUtils.class.getClassLoader().getResourceAsStream(path);
       image = ImageIO.read(in);
       in.close();
     }

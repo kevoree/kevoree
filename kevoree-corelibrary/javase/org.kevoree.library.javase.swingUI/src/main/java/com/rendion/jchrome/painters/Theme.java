@@ -56,14 +56,10 @@ public class Theme
 
     try
     {
-      InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream(getPath(THEME_PROPERTIES));
-
+      InputStream in = Theme.class.getClassLoader().getResourceAsStream(getPath(THEME_PROPERTIES));
       p = new Properties();
-
       p.load(in);
-
       in.close();
-
     }
     catch (Exception e)
     {

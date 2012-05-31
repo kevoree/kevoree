@@ -42,10 +42,17 @@ case class StartStopInstance(c: Instance, nodeName: String,start : Boolean) exte
           case iact: KevoreeInstanceActivator => {
             Thread.currentThread().setContextClassLoader(iact.getKInstance.getClass.getClassLoader)
             if(start){
+              Thread.currentThread().setName("KevoreeStartInstance"+c.getName)
               iact.getKInstance.kInstanceStart(c.getTypeDefinition.eContainer.asInstanceOf[ContainerRoot])
             } else {
-              iact.getKInstance.kInstanceStop(c.getTypeDefinition.eContainer.asInstanceOf[ContainerRoot])
+              Thread.currentThread().setName("KevoreeStopInstance"+c.getName)
+              val res = iact.getKInstance.kInstanceStop(c.getTypeDefinition.eContainer.asInstanceOf[ContainerRoot])
+              Thread.currentThread().setContextClassLoader(null)
+              res
             }
+
+
+
           }
             /*
           case c_act: KevoreeChannelFragmentActivator => {

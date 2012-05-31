@@ -24,6 +24,26 @@ package org.kevoree.kcl
 
 object Tester extends App {
 
+  val jcl2 = new KevoreeJarClassLoader
+  jcl2.add("/Users/duke/Documents/dev/dukeboard/kevoree/kevoree-platform/org.kevoree.platform.standalone.gui/target/org.kevoree.platform.standalone.gui-1.7.4.jar")
+
+   println("Begin loop")
+  for (i <- 0 until 30) {
+
+
+      val jcl3 = new KevoreeJarClassLoader
+     // jcl3.setLazyLoad(false)
+      jcl3.add("/Users/duke/Documents/dev/dukeboard/kevoree/kevoree-corelibrary/javase/org.kevoree.library.javase.grapher/target/org.kevoree.library.javase.grapher-1.7.5-SNAPSHOT.jar")
+      jcl3.addSubClassLoader(jcl2)
+      jcl3.loadClass("org.kevoree.library.javase.grapher.Grapher")
+      println("iteration i=" + i)
+    }
+
+ //   System.gc()
+
+
+  Thread.sleep(Long.MaxValue)
+
 
 
 
