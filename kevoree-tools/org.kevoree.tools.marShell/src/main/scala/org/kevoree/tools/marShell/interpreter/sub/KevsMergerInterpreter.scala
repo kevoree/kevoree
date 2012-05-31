@@ -3,7 +3,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * 	http://www.gnu.org/licenses/lgpl-3.0.txt
+ * http://www.gnu.org/licenses/lgpl-3.0.txt
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -21,6 +21,7 @@ import org.kevoree.framework.KevoreeXmiHelper
 import org.kevoree.tools.aether.framework.AetherUtil
 import java.util.jar.{JarEntry, JarFile}
 import java.io.File
+import java.net.URL
 
 /**
  * Created by IntelliJ IDEA.
@@ -30,12 +31,12 @@ import java.io.File
  * To change this template use File | Settings | File Templates.
  */
 
-case class KevsMergerInterpreter(mergeStatement: MergeStatement) extends KevsAbstractInterpreter {
+case class KevsMergerInterpreter (mergeStatement: MergeStatement) extends KevsAbstractInterpreter {
 
   private val mergerComponent = new KevoreeMergerComponent();
   private val logger = LoggerFactory.getLogger(this.getClass)
 
-  def interpret(context: KevsInterpreterContext): Boolean = {
+  def interpret (context: KevsInterpreterContext): Boolean = {
 
     if (mergeStatement.url.startsWith("mvn:")) {
       val mavenurl = mergeStatement.url.substring(4)
@@ -68,16 +69,20 @@ case class KevsMergerInterpreter(mergeStatement: MergeStatement) extends KevsAbs
           true
         } else {
           try {
-          val newModel = KevoreeXmiHelper.load(mergeStatement.url)
-          mergerComponent.merge(context.model, newModel)
-          true
+            val newModel = KevoreeXmiHelper.load(mergeStatement.url)
+            mergerComponent.merge(context.model, newModel)
+            true
           } catch {
-            case _@e => logger.error("Unable to load library from {}. Maybe it's not a Kevoree model nor a Kevoree DeployUnit", mergeStatement.url);false
+            case _@e => logger.error("Unable to load library from {}. Maybe it's not a Kevoree model nor a Kevoree DeployUnit", mergeStatement.url); false
           }
         }
       } else {
         false
       }
+    } else if (mergeStatement.url.startsWith("http://")) {
+      val newModel = KevoreeXmiHelper.loadStream(new URL(mergeStatement.url).openStream)
+      mergerComponent.merge(context.model, newModel)
+      true
     } else {
       try {
         val newModel = KevoreeXmiHelper.load(mergeStatement.url)
@@ -85,7 +90,7 @@ case class KevsMergerInterpreter(mergeStatement: MergeStatement) extends KevsAbs
         true
       } catch {
         case _@e => {
-          logger.warn("KevScript error while merging from url " + mergeStatement.url);
+          logger.warn("KevScript error while merging from url " + mergeStatement.url)
           false
         }
       }
