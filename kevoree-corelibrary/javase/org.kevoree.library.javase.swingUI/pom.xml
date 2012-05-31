@@ -13,6 +13,10 @@
         <relativePath>../org.kevoree.library.javase.root/pom.xml</relativePath>
     </parent>
 
+    <properties>
+
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.kevoree.extra</groupId>
@@ -23,8 +27,23 @@
             <groupId>org.kevoree.tools</groupId>
             <artifactId>org.kevoree.tools.marShellGUI</artifactId>
             <version>${kevoree.version}</version>
-        </dependency>
 
+            <exclusions>
+                <exclusion>
+                    <groupId>org.kevoree.tools</groupId>
+                    <artifactId>org.kevoree.tools.aether.framework</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.kevoree</groupId>
+                    <artifactId>org.kevoree.merger</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.kevoree</groupId>
+                    <artifactId>org.kevoree.model</artifactId>
+                </exclusion>
+            </exclusions>
+
+        </dependency>
     </dependencies>
 
     <build>
