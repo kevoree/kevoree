@@ -1925,6 +1925,7 @@ public class Serve implements ServletContext, Serializable {
 		private void restart () throws IOException {
 
 			resolvedParams = null;
+			headers = null;
 			// new Exception("RESTART").printStackTrace();
 			reqMethod = null;
 			reqUriPath = reqUriPathUn = null;
@@ -2263,6 +2264,13 @@ public class Serve implements ServletContext, Serializable {
 				if (authenificate()) {
 //					if (resolvedParams == null) {
 					resolvedParams = (Map<String, String>) getParameterMap();
+					headers = new HashMap<String, String>(reqHeaderNames.size());
+					Iterator<String> headerIterator = reqHeaderNames.iterator();
+					while (headerIterator.hasNext()) {
+						int i = reqHeaderNames.indexOf(headerIterator.next());
+						headers.put((String) reqHeaderNames.get(i), (String) reqHeaderValues.get(i));
+
+					}
 //					}
 					if (servlete instanceof SingleThreadModel) {
 						synchronized (servlete) {
@@ -4196,7 +4204,16 @@ public class Serve implements ServletContext, Serializable {
 
 		@Override
 		public Map<String, String> getHeaders () {
-			return resolvedParams;
+			if (headers == null) {
+				headers=  new HashMap<String, String>(reqHeaderNames.size());
+				Iterator<String> headerIterator = reqHeaderNames.iterator();
+				while (headerIterator.hasNext()) {
+					int i = reqHeaderNames.indexOf(headerIterator.next());
+					headers.put((String)reqHeaderNames.get(i), (String)reqHeaderValues.get(i));
+
+				}
+			}
+			return headers;
 
 			// HashMap<String, String> headers = new HashMap<String, String>();
 			// return headers;
@@ -4230,7 +4247,11 @@ public class Serve implements ServletContext, Serializable {
 
 		@Override
 		public String getCompleteUrl () {
-			return getRequestURL().toString();
+			if (getHeader("HOST") != null) {
+				return "http://" + getHeader("HOST") + getRequestURI();
+			} else {
+				return getRequestURL().toString();
+			}
 		}
 
 		@Override
@@ -4244,6 +4265,7 @@ public class Serve implements ServletContext, Serializable {
 		}
 
 		private Map<String, String> resolvedParams = null;//new HashMap<String, String>();
+		private Map<String, String> headers = null;//new HashMap<String, String>();
 
 		@Override
 		public void setResolvedParams (Map<String, String> rps) {
