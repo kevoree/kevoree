@@ -6,11 +6,11 @@
     <artifactId>org.kevoree.api</artifactId>
     <name>Kevoree :: Api</name>
 
-    <version>1.7.5-SNAPSHOT</version>
+    <version>1.7.5</version>
     <parent>
         <artifactId>org.kevoree.root</artifactId>
         <groupId>org.kevoree</groupId>
-        <version>1.7.5-SNAPSHOT</version>
+        <version>1.7.5</version>
         <relativePath>../org.kevoree.root/pom.xml</relativePath>
     </parent>
 

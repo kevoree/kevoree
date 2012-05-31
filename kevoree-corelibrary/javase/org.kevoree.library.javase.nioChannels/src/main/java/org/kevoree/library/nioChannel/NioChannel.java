@@ -158,7 +158,7 @@ public class NioChannel extends AbstractChannelFragment {
                     msgQueue.putMsg(getAddress(remoteNodeName), parsePortNumber(remoteNodeName), message);
                     //    clientBootStrap.connect(new InetSocketAddress(getAddress(remoteNodeName),parsePortNumber(remoteNodeName)));
                 } catch (IOException e) {
-                    logger.error("Error while sending message to " + remoteNodeName + "-" + remoteChannelName);
+                    logger.debug("Error while sending message to " + remoteNodeName + "-" + remoteChannelName);
                 }
                 return null;
             }
