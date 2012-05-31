@@ -207,6 +207,9 @@ class JCLContextHandler extends DaemonActor with KevoreeClassLoaderHandler {
   }
 
   protected def removeDeployUnitInternals(du: DeployUnit) {
+
+   // println("DEBUG REMOVE DU "+du.getUnitName)
+
     val key = buildKEY(du)
     if (failedLinks.containsKey(key)) {
       failedLinks.remove(key)
