@@ -30,6 +30,7 @@ import scala.Option;
 public abstract class AbstractPage extends AbstractComponentType {
 
     protected Logger logger = LoggerFactory.getLogger(this.getClass());
+	protected static final int NO_RETURN_RESPONSE = 418;
     protected URLHandlerScala handler = new URLHandlerScala();
 
     public String getLastParam(String url) {
@@ -63,8 +64,7 @@ public abstract class AbstractPage extends AbstractComponentType {
         logger.debug("KevoreeHttpRequest handler triggered");
         Option<KevoreeHttpRequest> parseResult = handler.check(param);
         if (parseResult.isDefined()) {
-            KevoreeHttpRequest requestKevoree = parseResult.get();
-            return requestKevoree;
+			return parseResult.get();
         } else {
             return null;
         }
@@ -82,7 +82,9 @@ public abstract class AbstractPage extends AbstractComponentType {
         if (request != null) {
             KevoreeHttpResponse response = buildResponse(request);
             response = process(request, response);
-            this.getPortByName("content", MessagePort.class).process(response);//SEND MESSAGE
+			if (response.getStatus() != 418) {
+				this.getPortByName("content", MessagePort.class).process(response);//SEND MESSAGE
+			}
         }
     }
 
