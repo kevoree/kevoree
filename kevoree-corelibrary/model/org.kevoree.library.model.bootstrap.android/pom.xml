@@ -5,12 +5,12 @@
     <groupId>org.kevoree.corelibrary.model</groupId>
     <artifactId>org.kevoree.library.model.bootstrap.android</artifactId>
     <name>Kevoree :: CoreLibrary :: Model :: Bootstrap Android</name>
-    <version>1.7.5-SNAPSHOT</version>
+    <version>1.7.5</version>
 
     <parent>
         <artifactId>org.kevoree.library.model.root</artifactId>
         <groupId>org.kevoree.corelibrary.model</groupId>
-        <version>1.7.5-SNAPSHOT</version>
+        <version>1.7.5</version>
         <relativePath>../org.kevoree.library.model.root/pom.xml</relativePath>
     </parent>
 

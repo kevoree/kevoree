@@ -29,14 +29,14 @@ public class NioRoundRobin extends NioChannel {
 		}
 
 		if (rang < getBindedPorts().size()) {
-			logger.info("select rang: {} for channel {} with DestNodeName={}", new Object[]{rang, this.getName(), message.getDestNodeName()});
-			logger.info("send message to {}", getBindedPorts().get(rang).getName());
+			logger.debug("select rang: {} for channel {} with DestNodeName={}", new Object[]{rang, this.getName(), message.getDestNodeName()});
+			logger.debug("send message to {}", getBindedPorts().get(rang).getName());
 			forward(getBindedPorts().get(rang), message);
 		} else {
 			// FIXME the otherFragment must be a provided port else an exception will thrown
 			rang = rang - getBindedPorts().size();
-			logger.info("select rang: {} for channel {} with DestNodeName={}", new Object[]{rang, this.getName(), message.getDestNodeName()});
-			logger.info("send message to {} on {}", getOtherFragments().get(rang).getName(), getOtherFragments().get(rang).getNodeName());
+			logger.debug("select rang: {} for channel {} with DestNodeName={}", new Object[]{rang, this.getName(), message.getDestNodeName()});
+			logger.debug("send message to {} on {}", getOtherFragments().get(rang).getName(), getOtherFragments().get(rang).getNodeName());
 			forward(getOtherFragments().get(rang), message);
 		}
 
