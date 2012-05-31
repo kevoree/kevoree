@@ -120,7 +120,7 @@ object PrimitiveCommandExecutionHelper {
             var waitingThread: List[Thread] = List()
             ps.foreach {
               primitive =>
-                val pt = new Thread(new BooleanRunnableTask(primitive, pointerSelf))
+                val pt = new Thread(new BooleanRunnableTask(primitive, pointerSelf),"KevoreeExecutor "+primitive.getClass.getSimpleName)
                 pt.start()
                 waitingThread = waitingThread ++ List(pt)
             }

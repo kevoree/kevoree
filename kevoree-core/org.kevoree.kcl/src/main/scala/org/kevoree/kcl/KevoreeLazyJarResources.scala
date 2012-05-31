@@ -95,9 +95,9 @@ class KevoreeLazyJarResources extends ClasspathResources {
   override def loadJar(url: URL) {
     var in: InputStream = null;
     try {
-      in = url.openStream();
+      in = url.openStream()
       lastLoadedJars = lastLoadedJars ++ List(url)
-      loadJar(in, url);
+      loadJar(in, url)
     } catch {
       case e: IOException => throw new JclException(e);
     } finally {
@@ -111,7 +111,7 @@ class KevoreeLazyJarResources extends ClasspathResources {
   }
 
   override def loadJar(jarFile: String) {
-    var fis: FileInputStream = null;
+    var fis: FileInputStream = null
     try {
       val f = new File(jarFile)
       fis = new FileInputStream(jarFile);
@@ -119,22 +119,19 @@ class KevoreeLazyJarResources extends ClasspathResources {
       lastLoadedJars = lastLoadedJars ++ List(url)
       loadJar(fis, url)
     } catch {
-      case e: IOException => throw new JclException(e);
+      case e: IOException => throw new JclException(e)
     } finally {
       if (fis != null)
         try {
-          fis.close();
+          fis.close()
         } catch {
-          case e: IOException => throw new JclException(e);
+          case e: IOException => throw new JclException(e)
         }
     }
 
   }
 
   def loadJar(jarStream: InputStream, baseurl: URL) {
-
-    //logger.debug("Load From " + jarStream.toString)
-
     var bis: BufferedInputStream = null;
     var jis: JarInputStream = null;
     try {
@@ -179,8 +176,6 @@ class KevoreeLazyJarResources extends ClasspathResources {
                   }
                   rurl.add(new URL("jar:" + baseurl + "!/" + jarEntry.getName))
                 } else {
-
-                  logger.debug("Cache {} Input {}",baseurl,jarEntry.getName)
 
                   val b = new Array[Byte](2048)
                   val out = new ByteArrayOutputStream()

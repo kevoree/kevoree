@@ -11,6 +11,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/**
+ * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.gnu.org/licenses/lgpl-3.0.txt
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.kevoree.tools.aether.framework
 
 import org.slf4j.LoggerFactory
@@ -35,7 +48,7 @@ import scala.collection.JavaConversions._
 trait AetherFramework extends TempFileCacheManager with AetherRepositoryHandler with CorruptedFileChecker {
   private val logger = LoggerFactory.getLogger(this.getClass)
 
-  def resolveKevoreeArtifact (unitName: String, groupName: String, version: String): File = {
+  def resolveKevoreeArtifact(unitName: String, groupName: String, version: String): File = {
     if (version.endsWith("SNAPSHOT")) {
       resolveMavenArtifact(unitName, groupName, version, List("http://maven.kevoree.org/snapshots/"))
     } else if (version.equals("LATEST")) {
@@ -45,10 +58,10 @@ trait AetherFramework extends TempFileCacheManager with AetherRepositoryHandler 
     }
   }
 
-  def resolveMavenArtifact4J (unitName: String, groupName: String, version: String, repositoriesUrl: java.util.List[String]): File =
+  def resolveMavenArtifact4J(unitName: String, groupName: String, version: String, repositoriesUrl: java.util.List[String]): File =
     resolveMavenArtifact(unitName, groupName, version, repositoriesUrl.toList)
 
-  def resolveMavenArtifact (unitName: String, groupName: String, version: String, repositoriesUrl: List[String]): File = {
+  def resolveMavenArtifact(unitName: String, groupName: String, version: String, repositoriesUrl: List[String]): File = {
     val artifact: Artifact = new DefaultArtifact(List(groupName.trim(), unitName.trim(), version.trim()).mkString(":"))
     val artifactRequest = new ArtifactRequest
     artifactRequest.setArtifact(artifact)
@@ -67,27 +80,27 @@ trait AetherFramework extends TempFileCacheManager with AetherRepositoryHandler 
     installInCache(artefactResult.getArtifact)
   }
 
-  def resolveMavenArtifact (unitName: String, groupName: String, version: String, extension : String, repositoriesUrl: List[String]): File = {
-      val artifact: Artifact = new DefaultArtifact(groupName.trim(), unitName.trim(), extension.trim(), version.trim())
-      val artifactRequest = new ArtifactRequest
-      artifactRequest.setArtifact(artifact)
-      val repositories: java.util.List[RemoteRepository] = new java.util.ArrayList()
-      repositoriesUrl.foreach {
-        repository =>
-          val repo = new RemoteRepository
-          val purl = repository.trim.replace(':', '_').replace('/', '_').replace('\\', '_')
-          repo.setId(purl)
-          repo.setUrl(repository)
-          repo.setContentType("default")
-          repositories.add(repo)
-      }
-      artifactRequest.setRepositories(repositories)
-      val artefactResult = getRepositorySystem.resolveArtifact(getRepositorySystemSession, artifactRequest)
-      installInCache(artefactResult.getArtifact)
+  def resolveMavenArtifact(unitName: String, groupName: String, version: String, extension: String, repositoriesUrl: List[String]): File = {
+    val artifact: Artifact = new DefaultArtifact(groupName.trim(), unitName.trim(), extension.trim(), version.trim())
+    val artifactRequest = new ArtifactRequest
+    artifactRequest.setArtifact(artifact)
+    val repositories: java.util.List[RemoteRepository] = new java.util.ArrayList()
+    repositoriesUrl.foreach {
+      repository =>
+        val repo = new RemoteRepository
+        val purl = repository.trim.replace(':', '_').replace('/', '_').replace('\\', '_')
+        repo.setId(purl)
+        repo.setUrl(repository)
+        repo.setContentType("default")
+        repositories.add(repo)
     }
+    artifactRequest.setRepositories(repositories)
+    val artefactResult = getRepositorySystem.resolveArtifact(getRepositorySystemSession, artifactRequest)
+    installInCache(artefactResult.getArtifact)
+  }
 
 
-  def resolveDeployUnit (du: DeployUnit): File = {
+  def resolveDeployUnit(du: DeployUnit): File = {
     var artifact: Artifact = null
     if (du.getUrl != null && du.getUrl.contains("mvn:")) {
       artifact = new DefaultArtifact(du.getUrl.replaceAll("mvn:", "").replace("/", ":"))
@@ -128,11 +141,11 @@ trait AetherFramework extends TempFileCacheManager with AetherRepositoryHandler 
       artifactRequest.setRepositories(repositories)
       var artefactResult = getRepositorySystem.resolveArtifact(getRepositorySystemSession, artifactRequest)
       val corruptedFile = artefactResult.getArtifact
-      if(corruptedFile == null || !checkFile(corruptedFile.getFile)){
+      if (corruptedFile == null || !checkFile(corruptedFile.getFile)) {
         artefactResult = getRepositorySystem.resolveArtifact(getRepositorySystemSession, artifactRequest)
       }
 
-      if(checkFile(artefactResult.getArtifact.getFile)){
+      if (checkFile(artefactResult.getArtifact.getFile)) {
         installInCache(artefactResult.getArtifact)
       } else {
         logger.warn("Aether return bad Corrupted File after second try , abording")
@@ -146,16 +159,20 @@ trait AetherFramework extends TempFileCacheManager with AetherRepositoryHandler 
     }
   }
 
-  def buildPotentialMavenURL (root: ContainerRoot): List[String] = {
+  def buildPotentialMavenURL(root: ContainerRoot): List[String] = {
     var result: List[String] = List()
     //BUILD FROM ALL REPO
-    root.getRepositories.foreach {
-      repo =>
-        val nurl = repo.getUrl
-        if (!result.exists(p => p == nurl)) {
-          result = result ++ List(nurl)
-        }
+    if (root != null && root.getRepositories != null) {
+      root.getRepositories.foreach {
+        repo =>
+          val nurl = repo.getUrl
+          if (!result.exists(p => p == nurl)) {
+            result = result ++ List(nurl)
+          }
+      }
     }
+
+
     //BUILD FROM ALL NODE
     /*
     root.getNodes.foreach {
@@ -171,7 +188,7 @@ trait AetherFramework extends TempFileCacheManager with AetherRepositoryHandler 
     result
   }
 
-  def buildURL (root: ContainerRoot, nodeName: String): Option[String] = {
+  def buildURL(root: ContainerRoot, nodeName: String): Option[String] = {
     var ip = KevoreePlatformHelper.getProperty(root, nodeName, org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP)
     if (ip == null || ip == "") {
       ip = "127.0.0.1"
@@ -197,7 +214,7 @@ trait AetherFramework extends TempFileCacheManager with AetherRepositoryHandler 
   }
 
 
-  def resolveVersion (groupName: String, unitName: String, versionProperty: String, repositoryUrls: List[String]): String = {
+  def resolveVersion(groupName: String, unitName: String, versionProperty: String, repositoryUrls: List[String]): String = {
     val artifact: Artifact = new DefaultArtifact(List(groupName.trim(), unitName.trim(), versionProperty.trim()).mkString(":"))
     val versionRequest = new VersionRequest()
     versionRequest.setArtifact(artifact)

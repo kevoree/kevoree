@@ -23,8 +23,8 @@ import org.apache.maven.repository.internal.{MavenRepositorySystemSession, Defau
 import org.sonatype.aether.transfer.{TransferEvent, TransferListener}
 import org.sonatype.aether.repository.{LocalRepository, RepositoryPolicy}
 import java.io.File
-import org.sonatype.aether.{ConfigurationProperties, RepositorySystem}
 import org.slf4j.LoggerFactory
+import org.sonatype.aether.{RepositoryCache, ConfigurationProperties, RepositorySystem}
 
 /**
  * Created with IntelliJ IDEA.
@@ -40,6 +40,7 @@ object AetherRepositoryStandalone {
   def newRepositorySystem: RepositorySystem = {
     val locator = new DefaultServiceLocator()
     locator.setServices(classOf[Logger], new AetherLogger) // Doesn't work to JdkAsyncHttpProvider because this class uses its own logger and not the one provided by plexus and set with this line
+    locator.setService(classOf[RepositoryCache], classOf[NoopCache])
     locator.setService(classOf[LocalRepositoryManagerFactory], classOf[EnhancedLocalRepositoryManagerFactory])
     locator.setService(classOf[RepositoryConnectorFactory], classOf[FileRepositoryConnectorFactory])
     locator.setService(classOf[RepositoryConnectorFactory], classOf[AsyncRepositoryConnectorFactory])
