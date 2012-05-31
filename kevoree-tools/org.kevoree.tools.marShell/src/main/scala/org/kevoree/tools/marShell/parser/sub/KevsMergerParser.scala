@@ -25,7 +25,7 @@ import org.kevoree.tools.marShell.ast.{MergeStatement, Statment}
 
 trait KevsMergerParser extends KevsAbstractParser {
 
-  val mergeCommandFormat = "merge <url>"
+  val mergeCommandFormat = "merge (<mvn:[repourl!]groupID/artefactID/version> || <http url> || <file path>)"
   def parseMerge : Parser[List[Statment]] = "merge" ~ orFailure(stringLit,mergeCommandFormat) ^^{ case _ ~ url =>
       List(MergeStatement(url))
   }
