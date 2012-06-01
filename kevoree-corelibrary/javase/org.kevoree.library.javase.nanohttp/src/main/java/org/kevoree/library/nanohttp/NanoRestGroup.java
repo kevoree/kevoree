@@ -221,11 +221,7 @@ public class NanoRestGroup extends AbstractGroupType {
         } else {
             urlPath2  = urlPath2 + "/zip";
         }
-        if (!sendModel(model, urlPath2, true)) {
-            return sendModel(model, urlPath, false);
-        } else {
-            return true;
-        }
+		return sendModel(model, urlPath2, true) || sendModel(model, urlPath, false);
 
     }
 
