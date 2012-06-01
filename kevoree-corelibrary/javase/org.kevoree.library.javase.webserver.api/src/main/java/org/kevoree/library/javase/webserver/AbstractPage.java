@@ -103,6 +103,7 @@ public abstract class AbstractPage extends AbstractComponentType {
 		}
 		request.setUrl(url);
 		if (isPortBinded("forward")) {
+			logger.debug("forward request for url = {}", url);
 			getPortByName("forward", MessagePort.class).process(request);
 			response.setStatus(NO_RETURN_RESPONSE);
 		} else {
