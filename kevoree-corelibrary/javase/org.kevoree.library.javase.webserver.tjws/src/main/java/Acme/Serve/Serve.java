@@ -1926,6 +1926,7 @@ public class Serve implements ServletContext, Serializable {
 
 			resolvedParams = null;
 			headers = null;
+			url = null;
 			// new Exception("RESTART").printStackTrace();
 			reqMethod = null;
 			reqUriPath = reqUriPathUn = null;
@@ -2271,6 +2272,7 @@ public class Serve implements ServletContext, Serializable {
 						headers.put((String) reqHeaderNames.get(i), (String) reqHeaderValues.get(i));
 
 					}
+					url = getRequestURI();
 //					}
 					if (servlete instanceof SingleThreadModel) {
 						synchronized (servlete) {
@@ -4204,7 +4206,7 @@ public class Serve implements ServletContext, Serializable {
 
 		@Override
 		public Map<String, String> getHeaders () {
-			if (headers == null) {
+			/*if (headers == null) {
 				headers=  new HashMap<String, String>(reqHeaderNames.size());
 				Iterator<String> headerIterator = reqHeaderNames.iterator();
 				while (headerIterator.hasNext()) {
@@ -4212,7 +4214,7 @@ public class Serve implements ServletContext, Serializable {
 					headers.put((String)reqHeaderNames.get(i), (String)reqHeaderValues.get(i));
 
 				}
-			}
+			}*/
 			return headers;
 
 			// HashMap<String, String> headers = new HashMap<String, String>();
@@ -4237,18 +4239,18 @@ public class Serve implements ServletContext, Serializable {
 
 		@Override
 		public String getUrl () {
-			return getRequestURI();
+			return url;
 		}
 
 		@Override
 		public void setUrl (String url) {
-
+			this.url = url;
 		}
 
 		@Override
 		public String getCompleteUrl () {
 			if (getHeader("HOST") != null) {
-				return "http://" + getHeader("HOST") + getRequestURI();
+				return "http://" + getHeader("HOST") + url;//getRequestURI();
 			} else {
 				return getRequestURL().toString();
 			}
@@ -4256,7 +4258,6 @@ public class Serve implements ServletContext, Serializable {
 
 		@Override
 		public void setCompleteUrl (String url) {
-
 		}
 
 		@Override
@@ -4266,6 +4267,7 @@ public class Serve implements ServletContext, Serializable {
 
 		private Map<String, String> resolvedParams = null;//new HashMap<String, String>();
 		private Map<String, String> headers = null;//new HashMap<String, String>();
+		private String url = null;
 
 		@Override
 		public void setResolvedParams (Map<String, String> rps) {

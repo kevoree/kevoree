@@ -126,6 +126,7 @@ public class FileServiceHelper {
 
 
 	private static boolean isRaw (String url) {
+		logger.debug("look extension file to know if the file '{}' is a raw file", url);
 		if (url.endsWith(".js")) {
 			return false;
 		}
