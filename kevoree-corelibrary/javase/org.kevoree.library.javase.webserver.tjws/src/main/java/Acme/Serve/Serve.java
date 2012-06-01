@@ -1927,6 +1927,7 @@ public class Serve implements ServletContext, Serializable {
 			resolvedParams = null;
 			headers = null;
 			url = null;
+			completeUrl = null;
 			// new Exception("RESTART").printStackTrace();
 			reqMethod = null;
 			reqUriPath = reqUriPathUn = null;
@@ -2273,6 +2274,11 @@ public class Serve implements ServletContext, Serializable {
 
 					}
 					url = getRequestURI();
+					if (getHeader("HOST") != null) {
+						completeUrl = "http://" + getHeader("HOST") + url;//getRequestURI();
+					} else {
+						completeUrl = getRequestURL().toString();
+					}
 //					}
 					if (servlete instanceof SingleThreadModel) {
 						synchronized (servlete) {
@@ -4249,11 +4255,7 @@ public class Serve implements ServletContext, Serializable {
 
 		@Override
 		public String getCompleteUrl () {
-			if (getHeader("HOST") != null) {
-				return "http://" + getHeader("HOST") + url;//getRequestURI();
-			} else {
-				return getRequestURL().toString();
-			}
+			return completeUrl;
 		}
 
 		@Override
@@ -4268,6 +4270,7 @@ public class Serve implements ServletContext, Serializable {
 		private Map<String, String> resolvedParams = null;//new HashMap<String, String>();
 		private Map<String, String> headers = null;//new HashMap<String, String>();
 		private String url = null;
+		private String completeUrl = null;
 
 		@Override
 		public void setResolvedParams (Map<String, String> rps) {

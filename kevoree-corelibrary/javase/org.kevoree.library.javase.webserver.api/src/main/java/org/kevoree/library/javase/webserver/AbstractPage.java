@@ -102,6 +102,9 @@ public abstract class AbstractPage extends AbstractComponentType {
 			url = "/" + url;
 		}
 		request.setUrl(url);
+		url = request.getCompleteUrl().replace(getLastParam(request.getUrl()), "");
+
+		request.setCompleteUrl(url);
 		if (isPortBinded("forward")) {
 			logger.debug("forward request for url = {}", url);
 			getPortByName("forward", MessagePort.class).process(request);
