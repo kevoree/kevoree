@@ -69,7 +69,6 @@ public class KTinyWebServer extends AbstractWebServer implements Runnable {
 
 			}
 		});
-
 	}
 
 	public void stop () {
