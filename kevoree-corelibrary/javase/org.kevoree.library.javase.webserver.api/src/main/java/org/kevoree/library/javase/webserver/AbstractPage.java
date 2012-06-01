@@ -19,79 +19,96 @@ import scala.Option;
 @Library(name = "JavaSE")
 @ComponentFragment
 @Provides({
-        @ProvidedPort(name = "request", type = PortType.MESSAGE)
+		@ProvidedPort(name = "request", type = PortType.MESSAGE)
 })
 @Requires({
-        @RequiredPort(name = "content", type = PortType.MESSAGE)
+		@RequiredPort(name = "content", type = PortType.MESSAGE),
+		@RequiredPort(name = "forward", type = PortType.MESSAGE, optional = true)
 })
 @DictionaryType({
-        @DictionaryAttribute(name = "urlpattern", optional = true, defaultValue = "/")
+		@DictionaryAttribute(name = "urlpattern", optional = true, defaultValue = "/")
 })
 public abstract class AbstractPage extends AbstractComponentType {
 
-    protected Logger logger = LoggerFactory.getLogger(this.getClass());
+	protected Logger logger = LoggerFactory.getLogger(this.getClass());
 	protected static final int NO_RETURN_RESPONSE = 418;
-    protected URLHandlerScala handler = new URLHandlerScala();
+	protected URLHandlerScala handler = new URLHandlerScala();
 
-    public String getLastParam(String url) {
+	public String getLastParam (String url) {
 
-        String urlPattern = this.getDictionary().get("urlpattern").toString();
-        Option<String> result = handler.getLastParam(url, urlPattern);
-        if (result.isDefined()) {
-            return result.get();
-        } else {
-            return null;
-        }
-    }
+		String urlPattern = this.getDictionary().get("urlpattern").toString();
+		Option<String> result = handler.getLastParam(url, urlPattern);
+		if (result.isDefined()) {
+			return result.get();
+		} else {
+			return null;
+		}
+	}
 
-    @Start
-    public void startPage() {
-        handler.initRegex(this.getDictionary().get("urlpattern").toString());
-        logger.debug("Abstract page start");
-    }
+	@Start
+	public void startPage () {
+		handler.initRegex(this.getDictionary().get("urlpattern").toString());
+		logger.debug("Abstract page start");
+	}
 
-    @Stop
-    public void stopPage() {
-        //NOOP
-    }
+	@Stop
+	public void stopPage () {
+		//NOOP
+	}
 
-    @Update
-    public void updatePage() {
-        handler.initRegex(this.getDictionary().get("urlpattern").toString());
-    }
+	@Update
+	public void updatePage () {
+		handler.initRegex(this.getDictionary().get("urlpattern").toString());
+	}
 
-    public KevoreeHttpRequest resolveRequest(Object param) {
-        logger.debug("KevoreeHttpRequest handler triggered");
-        Option<KevoreeHttpRequest> parseResult = handler.check(param);
-        if (parseResult.isDefined()) {
+	public KevoreeHttpRequest resolveRequest (Object param) {
+		logger.debug("KevoreeHttpRequest handler triggered");
+		Option<KevoreeHttpRequest> parseResult = handler.check(param);
+		if (parseResult.isDefined()) {
 			return parseResult.get();
-        } else {
-            return null;
-        }
-    }
+		} else {
+			return null;
+		}
+	}
 
-    public KevoreeHttpResponse buildResponse(KevoreeHttpRequest request) {
-        KevoreeHttpResponse responseKevoree = new KevoreeHttpResponseImpl();
-        responseKevoree.setTokenID(request.getTokenID());
-        return responseKevoree;
-    }
+	public KevoreeHttpResponse buildResponse (KevoreeHttpRequest request) {
+		KevoreeHttpResponse responseKevoree = new KevoreeHttpResponseImpl();
+		responseKevoree.setTokenID(request.getTokenID());
+		return responseKevoree;
+	}
 
-    @Port(name = "request")
-    public void requestHandler(Object param) {
-        KevoreeHttpRequest request = resolveRequest(param);
-        if (request != null) {
-            KevoreeHttpResponse response = buildResponse(request);
-            response = process(request, response);
+	@Port(name = "request")
+	public void requestHandler (Object param) {
+		KevoreeHttpRequest request = resolveRequest(param);
+		if (request != null) {
+			KevoreeHttpResponse response = buildResponse(request);
+			response = process(request, response);
 			if (response.getStatus() != 418) {
 				this.getPortByName("content", MessagePort.class).process(response);//SEND MESSAGE
 			}
-        }
-    }
+		}
+	}
 
 
-    public abstract KevoreeHttpResponse process(KevoreeHttpRequest request, KevoreeHttpResponse response); /*{
+	public abstract KevoreeHttpResponse process (KevoreeHttpRequest request, KevoreeHttpResponse response); /*{
         //TO OVERRIDE
         return response;
     }*/
+
+	public KevoreeHttpResponse forward (KevoreeHttpRequest request, KevoreeHttpResponse response) {
+		// TODO enlever l'urlpattern déjà consommé => /getLastParam
+		String url = getLastParam(request.getUrl());
+		if (!url.startsWith("/")) {
+			url = "/" + url;
+		}
+		request.setUrl(url);
+		if (isPortBinded("forward")) {
+			getPortByName("forward", MessagePort.class).process(request);
+			response.setStatus(NO_RETURN_RESPONSE);
+		} else {
+			response.setContent("Bad request from " + getName() + "@" + getNodeName());
+		}
+		return response;
+	}
 
 }
