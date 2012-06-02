@@ -110,7 +110,7 @@ case class KevsAddBindingInterpreter (addBinding: AddBindingStatment) extends Ke
           }
           case Some(binding) => {
             logger.warn("Binding {}.{}@{} => {} already exists",
-                         Array[AnyRef](addBinding.cid.componentInstanceName, addBinding.portName, addBinding.cid.nodeName, addBinding.bindingInstanceName))
+                         Array[AnyRef](addBinding.cid.componentInstanceName, addBinding.portName, addBinding.cid.nodeName.get, addBinding.bindingInstanceName))
             true
           }
         }
