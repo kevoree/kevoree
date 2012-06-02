@@ -1,9 +1,9 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>org.kevoree.platform.android.core</artifactId>
+    <artifactId>org.kevoree.platform.android.core.model</artifactId>
     <packaging>jar</packaging>
-    <name>Kevoree :: Platform :: Android :: Core</name>
+    <name>Kevoree :: Platform :: Android :: Core :: Model</name>
     <version>1.7.5</version>
 
     <parent>
@@ -46,97 +46,17 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.kevoree.platform</groupId>
-            <artifactId>org.kevoree.platform.android.ui</artifactId>
-            <version>${kevoree.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.google.android</groupId>
-            <artifactId>android</artifactId>
-            <version>4.0.1.2</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.kevoree.tools</groupId>
-            <artifactId>org.kevoree.tools.javase.framework</artifactId>
-            <version>${kevoree.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.kevoree.tools</groupId>
-            <artifactId>org.kevoree.tools.android.framework</artifactId>
+            <groupId>org.kevoree</groupId>
+            <artifactId>org.kevoree.model</artifactId>
             <version>${kevoree.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.kevoree</groupId>
-            <artifactId>org.kevoree.api</artifactId>
+            <artifactId>org.kevoree.adaptation.model</artifactId>
             <version>${kevoree.version}</version>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>org.kevoree</groupId>
-            <artifactId>org.kevoree.framework</artifactId>
-            <version>${kevoree.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.kevoree</groupId>
-            <artifactId>org.kevoree.kcl</artifactId>
-            <version>${kevoree.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.kevoree.tools</groupId>
-            <artifactId>org.kevoree.tools.annotation.api</artifactId>
-            <version>${kevoree.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.kevoree</groupId>
-            <artifactId>org.kevoree.kompare</artifactId>
-            <version>${kevoree.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.kevoree</groupId>
-            <artifactId>org.kevoree.core</artifactId>
-            <version>${kevoree.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.kevoree</groupId>
-            <artifactId>org.kevoree.basechecker</artifactId>
-            <version>${kevoree.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.jgrapht</groupId>
-            <artifactId>jgrapht-jdk1.5</artifactId>
-            <version>0.7.3</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.kevoree.tools</groupId>
-            <artifactId>org.kevoree.tools.marShell</artifactId>
-            <version>${kevoree.version}</version>
-            <scope>provided</scope>
-            <exclusions>
-                <exclusion>
-                    <artifactId>org.kevoree.tools.aether.framework</artifactId>
-                    <groupId>org.kevoree.tools</groupId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <!--
-        <dependency>
-            <groupId>org.kevoree.tools</groupId>
-            <artifactId>org.kevoree.tools.aether.framework.android</artifactId>
-            <version>${kevoree.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        -->
-
     </dependencies>
 
     <build>
@@ -229,10 +149,8 @@
                         </option>
                         <option>-keepnames class * implements java.io.Serializable</option>
                         <option>-dontnote</option>
-                        <option>-keep class org.xeustechnologies.** { *; }</option>
                         <option>-keep class org.kevoree.** { *; }</option>
-                        <option>-keep class org.slf4j.** { *; }</option>
-                        <option>-keep class com.actionbarsherlock.** { *; }</option>
+                        <option>-keep class org.kevoreeAdaptation.** { *; }</option>
                         <option>-dontskipnonpubliclibraryclasses</option>
                         <option>-dontskipnonpubliclibraryclassmembers</option>
                         <option>-dontoptimize</option>
@@ -249,58 +167,13 @@
                         <inclusions>
                             <inclusion>
                                 <groupId>org.kevoree</groupId>
-                                <artifactId>org.kevoree.kcl</artifactId>
-                            </inclusion>
-                           <!-- <inclusion>
-                                <groupId>org.kevoree</groupId>
-                                <artifactId>org.kevoree.adaptation.model</artifactId>
-                            </inclusion>
-                            -->
-
-                           <!-- <inclusion>
-                                <groupId>org.kevoree</groupId>
                                 <artifactId>org.kevoree.model</artifactId>
                                 <filter>!metamodel/**</filter>
                             </inclusion>
-                            -->
                             <inclusion>
                                 <groupId>org.kevoree</groupId>
-                                <artifactId>org.kevoree.framework</artifactId>
-                            </inclusion>
-
-                            <inclusion>
-                                <groupId>org.kevoree.tools</groupId>
-                                <artifactId>org.kevoree.tools.javase.framework</artifactId>
-                            </inclusion>
-
-                            <inclusion>
-                                <groupId>org.kevoree.tools</groupId>
-                                <artifactId>org.kevoree.tools.android.framework</artifactId>
-                            </inclusion>
-                            <inclusion>
-                                <groupId>org.kevoree</groupId>
-                                <artifactId>org.kevoree.api</artifactId>
-                            </inclusion>
-                            <inclusion>
-                                <groupId>org.kevoree</groupId>
-                                <artifactId>org.kevoree.kompare</artifactId>
-                            </inclusion>
-                            <inclusion>
-                                <groupId>org.kevoree</groupId>
-                                <artifactId>org.kevoree.core</artifactId>
-                            </inclusion>
-                            <inclusion>
-                                <groupId>org.kevoree</groupId>
-                                <artifactId>org.kevoree.basechecker</artifactId>
-                            </inclusion>
-                            <inclusion>
-                                <groupId>org.kevoree.tools</groupId>
-                                <artifactId>org.kevoree.tools.marShell</artifactId>
-                            </inclusion>
-                            <inclusion>
-                                <groupId>org.jgrapht</groupId>
-                                <artifactId>jgrapht-jdk1.5</artifactId>
-                                <filter>!META-INF/**</filter>
+                                <artifactId>org.kevoree.adaptation.model</artifactId>
+                                <filter>!metamodel/**</filter>
                             </inclusion>
                         </inclusions>
                     </assembly>
@@ -352,6 +225,4 @@
             </plugin>
         </plugins>
     </build>
-
-
 </project>
