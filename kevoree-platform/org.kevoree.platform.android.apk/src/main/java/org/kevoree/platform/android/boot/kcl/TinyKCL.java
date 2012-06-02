@@ -48,6 +48,7 @@ public class TinyKCL {
         new BuildSub(ctx,parentCL,"scala.library.android.collection.parallel",clusterKCL).run();
         new BuildSub(ctx,parentCL,"scala.library.android.runtime",clusterKCL).run();
         new BuildSub(ctx,parentCL,"scala.library.android.util",clusterKCL).run();
+        new BuildSub(ctx,parentCL,"org.kevoree.platform.android.core.model",clusterKCL).run();
         new BuildSub(ctx,parentCL,"org.kevoree.platform.android.core",clusterKCL).run();
         new BuildSub(ctx,parentCL,"org.kevoree.tools.aether.framework.android",clusterKCL).run();
     }

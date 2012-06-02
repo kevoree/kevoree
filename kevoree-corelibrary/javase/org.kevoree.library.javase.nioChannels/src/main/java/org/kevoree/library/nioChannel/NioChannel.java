@@ -108,7 +108,7 @@ public class NioChannel extends AbstractChannelFragment {
     @Stop
     public void stopNio() {
         msgQueue.flushChannel();
-        clientBootStrap.releaseExternalResources();
+
 		//bootstrap.releaseExternalResources();
         logger.debug("Client channels flushed");
         msgQueue.stop();
@@ -121,6 +121,7 @@ public class NioChannel extends AbstractChannelFragment {
 
         serverChannel.close().awaitUninterruptibly(200);
         logger.debug("Server channel closed");
+        clientBootStrap.releaseExternalResources();
         bootstrap.releaseExternalResources();
 
     }
