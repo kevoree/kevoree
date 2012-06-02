@@ -85,6 +85,8 @@ public abstract class AbstractPage extends AbstractComponentType {
 			response = process(request, response);
 			if (response.getStatus() != 418) {
 				this.getPortByName("content", MessagePort.class).process(response);//SEND MESSAGE
+			} else {
+				logger.debug("Status code correspond to tea pot: No response returns!");
 			}
 		}
 	}
@@ -96,13 +98,17 @@ public abstract class AbstractPage extends AbstractComponentType {
     }*/
 
 	public KevoreeHttpResponse forward (KevoreeHttpRequest request, KevoreeHttpResponse response) {
-		// TODO enlever l'urlpattern déjà consommé => /getLastParam
-		String url = getLastParam(request.getUrl());
+		// remove already used pattern => / + getLastParam(...)
+		String previousUrl = request.getUrl();
+		String url = getLastParam(previousUrl);
 		if (!url.startsWith("/")) {
 			url = "/" + url;
 		}
 		request.setUrl(url);
-		url = request.getCompleteUrl().replace(getLastParam(request.getUrl()), "");
+		logger.debug(request.getCompleteUrl());
+		logger.debug(previousUrl);
+		logger.debug(url);
+		url = request.getCompleteUrl().replace(previousUrl, url);
 
 		request.setCompleteUrl(url);
 		if (isPortBinded("forward")) {

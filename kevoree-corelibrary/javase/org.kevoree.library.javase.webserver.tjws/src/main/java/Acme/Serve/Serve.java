@@ -4260,6 +4260,7 @@ public class Serve implements ServletContext, Serializable {
 
 		@Override
 		public void setCompleteUrl (String url) {
+			completeUrl = url;
 		}
 
 		@Override
