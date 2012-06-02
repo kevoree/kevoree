@@ -3,7 +3,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * 	http://www.gnu.org/licenses/lgpl-3.0.txt
+ * http://www.gnu.org/licenses/lgpl-3.0.txt
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -162,12 +162,17 @@ case class ContainerNodeAspect (node: ContainerNode) {
 
   def getKevoreeVersion: String = {
     try {
-    node.getTypeDefinition.foundRelevantDeployUnit(node).getRequiredLibs.find(du => du.getGroupName == "org.kevoree" && du.getUnitName == "org.kevoree.api") match {
-      case None => "" // must never appear
-      case Some(du) => du.getVersion
-    }
+      if (node.getTypeDefinition.foundRelevantDeployUnit(node) != null) {
+        node.getTypeDefinition.foundRelevantDeployUnit(node).getRequiredLibs.find(du => du.getGroupName == "org.kevoree" && du.getUnitName == "org.kevoree.api") match {
+          case None => "" // must never appear
+          case Some(du) => du.getVersion
+        }
+
+      } else {
+        ""
+      }
     } catch {
-      case _@e => logger.debug("Unable to find kevoree version", e);""
+      case _@e => logger.debug("Unable to find kevoree version", e); ""
     }
   }
 
