@@ -149,6 +149,16 @@
                                     </outputDirectory>
                                 </artifactItem>
                                 <artifactItem>
+                                    <groupId>org.kevoree.platform</groupId>
+                                    <artifactId>org.kevoree.platform.android.core.model</artifactId>
+                                    <version>${kevoree.version}</version>
+                                    <overWrite>true</overWrite>
+                                    <outputDirectory>
+                                        ${project.build.directory}/dex/boot/org.kevoree.platform.android.core.model
+                                    </outputDirectory>
+                                </artifactItem>
+
+                                <artifactItem>
                                     <groupId>org.scala.android</groupId>
                                     <artifactId>scala.library.android.actor</artifactId>
                                     <version>${scala.version}</version>

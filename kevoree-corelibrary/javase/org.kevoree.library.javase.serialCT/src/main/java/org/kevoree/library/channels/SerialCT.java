@@ -2,6 +2,7 @@ package org.kevoree.library.channels;
 
 import org.kevoree.annotation.*;
 import org.kevoree.extra.kserial.KevoreeSharedCom;
+import org.kevoree.extra.kserial.Utils.KHelpers;
 import org.kevoree.framework.AbstractChannelFragment;
 import org.kevoree.framework.ChannelFragmentSender;
 import org.kevoree.framework.KevoreeChannelFragment;
@@ -12,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import scala.Option;
 
 import java.util.HashMap;
+import java.util.List;
 
 
 /**
@@ -19,7 +21,7 @@ import java.util.HashMap;
  */
 @Library(name = "JavaSE")
 @DictionaryType({
-		@DictionaryAttribute(name = "serialport", fragmentDependant = true)
+		@DictionaryAttribute(name = "serialport", fragmentDependant = true, optional = true, defaultValue = "*")
 })
 @ChannelTypeFragment
 public class SerialCT extends AbstractChannelFragment {
@@ -32,15 +34,26 @@ public class SerialCT extends AbstractChannelFragment {
 	protected HashMap<String, String> nodePortCache = new HashMap<String, String>();
 
 	protected String getPortFromNode (String remoteNodeName) {
-
 		if (!nodePortCache.containsKey(remoteNodeName)) {
-			String remotePort = "/dev/tty_unknown";
+			String remotePort = "*";
 			Option<String> remotePortOption = KevoreePropertyHelper.getStringPropertyForChannel(this.getModelService().getLastModel(), this.getName(), "serialport", true, remoteNodeName);
-			if (remotePortOption.isDefined()) {
+            if (remotePortOption.isDefined()) {
                 remotePort = remotePortOption.get();
+                if(remotePort.equals("*")){
+                    List<String> ports = KHelpers.getPortIdentifiers();
+                    if(ports.size() > 0){
+                        remotePort = ports.get(0);
+                    }
+                }
 				nodePortCache.put(remoteNodeName, remotePort);
 				//logger.warn(this.getName() + ":SerailCT on node " + this.getNodeName() + " using port " + nodePortCache.get(remoteNodeName));
 			} else {
+                if(remotePort.equals("*")){
+                    List<String> ports = KHelpers.getPortIdentifiers();
+                    if(ports.size() > 0){
+                        remotePort = ports.get(0);
+                    }
+                }
                 nodePortCache.put(remoteNodeName, remotePort);
 				logger.error("unable to find the given dictionary attribute \"serialport\"!");
 			}
@@ -57,7 +70,7 @@ public class SerialCT extends AbstractChannelFragment {
 				try {
 					Thread.sleep(3000);
 				} catch (InterruptedException e) {
-					e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+					e.printStackTrace();
 				}
 				for (KevoreeChannelFragment cf : getOtherFragments()) {
 					String port = getPortFromNode(cf.getNodeName());

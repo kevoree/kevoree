@@ -45,16 +45,14 @@ public class JChromeTabbedPane extends JPanel implements WindowFocusListener, Mo
     private int rightMargin = 25;
     private Theme theme;
 
-    private JPanel target ;
+    private JPanel target;
 
 
-
-
-    public JChromeTabbedPane(String themeName,JPanel target) {
-        this(new Theme(themeName),target);
+    public JChromeTabbedPane(String themeName, JPanel target) {
+        this(new Theme(themeName), target);
     }
 
-    public JChromeTabbedPane(Theme aTheme,JPanel target) {
+    public JChromeTabbedPane(Theme aTheme, JPanel target) {
         this.target = target;
         this.theme = aTheme;
 
@@ -69,7 +67,6 @@ public class JChromeTabbedPane extends JPanel implements WindowFocusListener, Mo
     }
 
 
-
     public Tab addTab() {
         return this.addTab(null, null);
     }
@@ -79,16 +76,16 @@ public class JChromeTabbedPane extends JPanel implements WindowFocusListener, Mo
     }
 
     public Tab addTab(ImageIcon icon, String caption) {
-        final Tab t = new Tab(this){
+        final Tab t = new Tab(this) {
             @Override
             public void setSelected(boolean isSelected) {
                 super.setSelected(isSelected);
-                if(isSelected){
-                    if(target != null){
-                        if(target.getComponentCount() > 0){
+                if (isSelected) {
+                    if (target != null) {
+                        if (target.getComponentCount() > 0) {
                             target.remove(0);
                         }
-                        if(getInternPanel() != null){
+                        if (getInternPanel() != null) {
                             target.add(getInternPanel(), BorderLayout.CENTER);
                         }
                         target.repaint();
@@ -152,11 +149,13 @@ public class JChromeTabbedPane extends JPanel implements WindowFocusListener, Mo
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                Point p = MouseInfo.getPointerInfo().getLocation();
-                Point p2 = getLocationOnScreen();
-                mouseMoved(new MouseEvent(JChromeTabbedPane.this, MouseEvent.MOUSE_MOVED, 0, 0, p.x - p2.x, p.y - p2.y, 0, 0,
-                        0, false, 0));
-
+                try {
+                    Point p = MouseInfo.getPointerInfo().getLocation();
+                    Point p2 = getLocationOnScreen();
+                    mouseMoved(new MouseEvent(JChromeTabbedPane.this, MouseEvent.MOUSE_MOVED, 0, 0, p.x - p2.x, p.y - p2.y, 0, 0,
+                            0, false, 0));
+                } catch (Exception ignore) {
+                }
             }
         });
 
@@ -199,7 +198,7 @@ public class JChromeTabbedPane extends JPanel implements WindowFocusListener, Mo
         try {
             tabRowPainter.paint((Graphics2D) g);
             toolbarPainter.paint((Graphics2D) g);
-        }  catch (Exception e){
+        } catch (Exception e) {
 
         }
 
