@@ -24,6 +24,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/**
+ * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.gnu.org/licenses/lgpl-3.0.txt
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.kevoree.tools.aether.framework
 
 import org.slf4j.LoggerFactory
@@ -142,6 +155,8 @@ trait AetherFramework extends TempFileCacheManager with AetherRepositoryHandler 
       var artefactResult = getRepositorySystem.resolveArtifact(getRepositorySystemSession, artifactRequest)
       val corruptedFile = artefactResult.getArtifact
       if (corruptedFile == null || !checkFile(corruptedFile.getFile)) {
+        //OPTIONAL REMOVE : _maven.repositories
+        clearRepoCacheFile(getRepositorySystemSession, artifactRequest.getArtifact)
         artefactResult = getRepositorySystem.resolveArtifact(getRepositorySystemSession, artifactRequest)
       }
 
@@ -153,8 +168,22 @@ trait AetherFramework extends TempFileCacheManager with AetherRepositoryHandler 
       }
     } catch {
       case _@e => {
-        logger.debug("Error while resolving {}", du.getUnitName.trim(), e)
-        null
+        try {
+          logger.debug("Error while resolving {} -> second try", du.getUnitName.trim(), e)
+          clearRepoCacheFile(getRepositorySystemSession, artifactRequest.getArtifact)
+          val artefactResult = getRepositorySystem.resolveArtifact(getRepositorySystemSession, artifactRequest)
+          if (checkFile(artefactResult.getArtifact.getFile)) {
+            installInCache(artefactResult.getArtifact)
+          } else {
+            logger.warn("Aether return bad Corrupted File after second try , abording")
+            null
+          }
+        } catch {
+          case _ => {
+            logger.debug("Error while resolving {}", du.getUnitName.trim(), e)
+            null
+          }
+        }
       }
     }
   }

@@ -16,6 +16,7 @@ package org.kevoree.tools.aether.framework
 import java.io.File
 import java.util.zip.ZipFile
 import org.slf4j.LoggerFactory
+import org.sonatype.aether.RepositorySystemSession
 
 /**
  * Created with IntelliJ IDEA.
@@ -27,6 +28,16 @@ import org.slf4j.LoggerFactory
 trait CorruptedFileChecker {
 
   private val logger = LoggerFactory.getLogger(this.getClass)
+
+  def clearRepoCacheFile(repoSession : RepositorySystemSession,arteFact : org.sonatype.aether.artifact.Artifact){
+    val fileM2REPO = repoSession.getLocalRepository.getBasedir
+    val cacheFile = new File(fileM2REPO.getAbsolutePath+File.separator+arteFact.getGroupId.replace(".",File.separator)+File.separator+arteFact.getArtifactId+File.separator+arteFact.getVersion+File.separator+"_maven.repositories")
+    if (cacheFile.exists()){
+      cacheFile.delete()
+      logger.info("Delete Maven Repository potentially corrupted cache to force resolution")
+    }
+  }
+
 
   def checkFile(f: File): Boolean = {
     if (f.exists()) {
