@@ -2274,12 +2274,7 @@ public class Serve implements ServletContext, Serializable {
 
 					}
 					url = getRequestURI();
-					if (getHeader("HOST") != null) {
-						completeUrl = "http://" + getHeader("HOST") + url;//getRequestURI();
-					} else {
-						completeUrl = getRequestURL().toString();
-					}
-//					}
+					completeUrl = getRequestURL().toString();
 					if (servlete instanceof SingleThreadModel) {
 						synchronized (servlete) {
 							servlete.service((ServletRequest) this, (ServletResponse) this);
@@ -3523,7 +3518,7 @@ public class Serve implements ServletContext, Serializable {
 				String dispatchPath = getContextPath();
 				String pathInfo = getPathInfo();
 				String servletPath = getServletPath();
-				;
+
 				if (pathInfo != null) {
 					dispatchPath += servletPath;
 					int slp = pathInfo.indexOf('/', 1);
