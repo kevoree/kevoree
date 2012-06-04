@@ -91,6 +91,10 @@ class InstanceParamPanel(pnodeTypeDefinition: TypeDefinition, defaultName: Strin
   })
 
   def reload() {
+
+   // println(previousFound)
+
+
     currentProperties.clear()
     val props = getDefValue(instanceTextField.getText, nodeTypeDefinition.eContainer.asInstanceOf[ContainerRoot], nodeTypeDefinition)
     currentProperties.putAll(props)
