@@ -5,6 +5,7 @@ import org.kevoree.annotation.*;
 import org.kevoree.api.service.core.logging.KevoreeLogLevel;
 import org.kevoree.framework.AbstractNodeType;
 import org.kevoree.kompare.KevoreeKompareBean;
+import org.kevoree.kompare.JavaSePrimitive;
 import org.kevoree.library.defaultNodeTypes.jcl.deploy.CommandMapper;
 import org.kevoree.library.defaultNodeTypes.jcl.deploy.context.KevoreeDeployManager;
 import org.kevoreeAdaptation.AdaptationModel;
@@ -106,6 +107,10 @@ public class AndroidNode extends AbstractNodeType {
 
 	@Override
 	public org.kevoree.api.PrimitiveCommand getPrimitive (AdaptationPrimitive adaptationPrimitive) {
-		return mapper.buildPrimitiveCommand(adaptationPrimitive, this.getNodeName());
+        if(adaptationPrimitive.getPrimitiveType().getName().equals(JavaSePrimitive.RemoveDeployUnit())){
+              return new NoopPrimitiveCommand();
+        } else {
+            return mapper.buildPrimitiveCommand(adaptationPrimitive, this.getNodeName());
+        }
 	}
 }
