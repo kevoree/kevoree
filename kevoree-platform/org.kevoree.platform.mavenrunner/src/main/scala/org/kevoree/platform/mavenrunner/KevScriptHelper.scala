@@ -3,21 +3,6 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * 	http://www.gnu.org/licenses/lgpl-3.0.txt
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-package org.kevoree.platform.mavenrunner
-
-/**
- * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
  * http://www.gnu.org/licenses/lgpl-3.0.txt
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -26,6 +11,7 @@ package org.kevoree.platform.mavenrunner
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.kevoree.platform.mavenrunner
 
 import java.io.{BufferedReader, FileReader, File}
 import org.kevoree.tools.marShell.KevScriptOfflineEngine
@@ -43,23 +29,29 @@ import org.apache.maven.project.MavenProject
 
 object KevScriptHelper extends App {
 
-  def generate(scriptFile: File,mavenSource : MavenProject): ContainerRoot = {
+  def generate (scriptFile: File, mavenSource: MavenProject): ContainerRoot = {
     val kevEngine = new KevScriptOfflineEngine(KevoreeFactory.createContainerRoot)
     kevEngine.addVariable("kevoree.version", KevoreeFactory.getVersion)
 
     val propEnum = mavenSource.getProperties.propertyNames()
-    while(propEnum.hasMoreElements){
+    val propName = "project.version"
+    val propVal = mavenSource.getVersion
+    kevEngine.addVariable(propName.toString, propVal.toString)
+    import scala.collection.JavaConversions._
+    println(mavenSource.getModel.getProperties.mkString("\n"))
+    while (propEnum.hasMoreElements) {
       val propName = propEnum.nextElement()
+      println(propName)
       val propVal = mavenSource.getProperties.get(propName)
-      kevEngine.addVariable(propName.toString,propVal.toString)
+      kevEngine.addVariable(propName.toString, propVal.toString)
     }
-    kevEngine.addVariable("basedir",mavenSource.getBasedir.getAbsolutePath)
+    kevEngine.addVariable("basedir", mavenSource.getBasedir.getAbsolutePath)
     kevEngine.append(loadScript(scriptFile))
     kevEngine.interpret()
   }
 
 
-  private def loadScript(file: File): String = {
+  private def loadScript (file: File): String = {
     val fileReader = new BufferedReader(new FileReader(file))
     val scriptBuilder = new StringBuilder
     var line = fileReader.readLine()

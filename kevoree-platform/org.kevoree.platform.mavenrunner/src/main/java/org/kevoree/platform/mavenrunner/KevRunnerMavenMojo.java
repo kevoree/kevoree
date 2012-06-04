@@ -23,6 +23,7 @@ import org.sonatype.aether.RepositorySystem;
 import org.sonatype.aether.RepositorySystemSession;
 
 import java.io.File;
+import java.io.FileInputStream;
 
 /**
  * User: Francois Fouquet - fouquet.f@gmail.com
@@ -40,7 +41,12 @@ public class KevRunnerMavenMojo extends AbstractMojo {
 	/**
 	 * @parameter default-value="${project.basedir}/src/main/kevs/main.kevs"
 	 */
-	private File kevsFile;
+	private File model;
+
+	/**
+	 * @parameter default-value="node0"
+	 */
+	private String targetNode;
 
 	/**
 	 * The maven project.
@@ -73,19 +79,28 @@ public class KevRunnerMavenMojo extends AbstractMojo {
 			KevoreeBootStrap.byPassAetherBootstrap = true;
 			org.kevoree.tools.aether.framework.AetherUtil.setRepositorySystemSession(repoSession);
 			org.kevoree.tools.aether.framework.AetherUtil.setRepositorySystem(repoSystem);
-			ContainerRoot model = KevScriptHelper.generate(kevsFile, project);
+			ContainerRoot modelRoot = null;
+			if (model.getName().endsWith(".kev")) {
+				FileInputStream ins = new FileInputStream(model);
+				modelRoot = org.kevoree.framework.KevoreeXmiHelper.loadStream(ins);
+				ins.close();
+			} else if (model.getName().endsWith(".kevs")) {
+				modelRoot = KevScriptHelper.generate(model, project);
+			} else {
+				throw new Exception("Bad input file, must be .kev or .kevs");
+			}
 
 			File tFile = new File(project.getBuild().getOutputDirectory(), "runner.kev");
-			org.kevoree.framework.KevoreeXmiHelper.save(tFile.getAbsolutePath(), model);
+			org.kevoree.framework.KevoreeXmiHelper.save(tFile.getAbsolutePath(), modelRoot);
 
 //			System.setProperties(project.getProperties());
 			for (Object key : project.getProperties().keySet()) {
 				System.setProperty(key.toString(), project.getProperties().get(key).toString());
 			}
 			System.setProperty("node.bootstrap", tFile.getAbsolutePath());
-			if (System.getProperty("node.name") == null) {
-				System.setProperty("node.name", "node0");
-			}
+//			if (System.getProperty("node.name") == null) {
+				System.setProperty("node.name", targetNode);
+//			}
 
 			App.main(new String[0]);
 

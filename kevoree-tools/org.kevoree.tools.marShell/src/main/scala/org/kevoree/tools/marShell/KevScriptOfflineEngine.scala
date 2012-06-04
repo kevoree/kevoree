@@ -29,7 +29,7 @@ import org.kevoree.api.service.core.script.{KevScriptEngine, KevScriptEngineExce
 class KevScriptOfflineEngine(srcModel: ContainerRoot) extends KevScriptAbstractEngine {
   
   def clearVariables() {
-    varMap.clear();
+    varMap.clear()
   }
 
   def interpret(): ContainerRoot = {
@@ -39,7 +39,7 @@ class KevScriptOfflineEngine(srcModel: ContainerRoot) extends KevScriptAbstractE
       case Some(s) => {
         val inputModel = modelCloner.clone(srcModel)
         if (s.interpret(KevsInterpreterContext(inputModel).setVarMap(varMap))) {
-          return inputModel;
+          return inputModel
         }
         throw new KevScriptEngineException {
           override def getMessage = "Interpreter Error : "
