@@ -43,7 +43,6 @@ class ArduinoDelegationPush(handler: KevoreeModelHandlerService, groupName: Stri
       val nodeType = bs.bootstrapNodeType(model, targetNodeName,handler,kevSFact)
       nodeType match {
         case Some(gNodeType) => {
-
           model.getGroups.find(g => g.getName == groupName) match {
             case Some(group) => {
               val dictionary = group.getDictionary.getOrElse({

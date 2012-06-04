@@ -115,11 +115,11 @@ public class NioChannel extends AbstractChannelFragment {
 
         //CLOSE ALREADY CONNECTED CLIENT
         for(Channel c :  serverConnectedChannel){
-           c.close().awaitUninterruptibly(200);
+           c.close().awaitUninterruptibly(500);
         }
         serverConnectedChannel.clear();
 
-        serverChannel.close().awaitUninterruptibly(200);
+        serverChannel.close().awaitUninterruptibly(500);
         logger.debug("Server channel closed");
         clientBootStrap.releaseExternalResources();
         bootstrap.releaseExternalResources();

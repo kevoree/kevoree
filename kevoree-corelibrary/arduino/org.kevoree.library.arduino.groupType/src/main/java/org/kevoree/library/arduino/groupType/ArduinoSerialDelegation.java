@@ -24,7 +24,7 @@ public class ArduinoSerialDelegation extends AbstractGroupType {
 
     @Start
     public void startGroupDelegation() {
-        delegationPush = new ArduinoDelegationPush(getModelService(), this.getName(),getBootStrapperService(),getKevScriptEngineFactory());
+        delegationPush = new ArduinoDelegationPush(getModelService(), this.getName(), getBootStrapperService(), getKevScriptEngineFactory());
         //triggerModelUpdate();
     }
 
@@ -37,15 +37,21 @@ public class ArduinoSerialDelegation extends AbstractGroupType {
         }*/
     }
 
+
+
+
+    Thread previous = null;
+
     @Override
     public void triggerModelUpdate() {
-        new Thread() {
+        previous = new Thread() {
             @Override
             public void run() {
                 delegationPush.setModel(null);//INVALIDATE MODEl
                 delegationPush.deployAll();
             }
-        }.start();
+        };
+        previous.start();
     }
 
     @Override
