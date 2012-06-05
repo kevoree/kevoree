@@ -39,7 +39,6 @@ object KevScriptHelper extends App {
     kevEngine.addVariable(propName.toString, propVal.toString)
     while (propEnum.hasMoreElements) {
       val propName = propEnum.nextElement()
-      println(propName)
       val propVal = mavenSource.getProperties.get(propName)
       kevEngine.addVariable(propName.toString, propVal.toString)
     }
