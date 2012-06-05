@@ -43,6 +43,7 @@ public class AndroidNode extends AbstractNodeType {
 		kompareBean = new KevoreeKompareBean();
 		mapper = new CommandMapper();
 		mapper.setNodeType(this);
+		setLogLevel();
 	}
 
 
@@ -59,8 +60,12 @@ public class AndroidNode extends AbstractNodeType {
 	@Update
 	public void updateNode () {
 		logger.info("Updating node and maybe log levels...");
+		setLogLevel();
+	}
+
+	private void setLogLevel () {
 		if (getBootStrapperService().getKevoreeLogService() != null) {
-			logger.info("Updating node and log levels...");
+			logger.info("setting log levels...");
 			KevoreeLogLevel logLevel = KevoreeLogLevel.WARN;
 			KevoreeLogLevel corelogLevel = KevoreeLogLevel.WARN;
 			if ("DEBUG".equals(getDictionary().get("logLevel"))) {
