@@ -1,8 +1,12 @@
 package org.kevoree.library.camel;
 
+import org.apache.camel.CamelContext;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
+import org.apache.camel.impl.DefaultCamelContext;
+import org.apache.camel.impl.DefaultClassResolver;
+import org.apache.camel.util.jndi.JndiContext;
 import org.kevoree.annotation.*;
 import org.kevoree.framework.KevoreeChannelFragment;
 import org.kevoree.framework.message.Message;
@@ -24,6 +28,9 @@ import java.util.List;
 
 @Library(name = "JavaSE")
 @ChannelTypeFragment
+@DictionaryType({
+        @DictionaryAttribute(name = "port", defaultValue = "10000", optional = true, fragmentDependant = true)
+})
 public class CamelNetty extends AbstractKevoreeCamelChannelType {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -62,24 +69,31 @@ public class CamelNetty extends AbstractKevoreeCamelChannelType {
                                 }
                             }
                             for (KevoreeChannelFragment cf : getOtherFragments()) {
-                                getContext().createProducerTemplate().sendBody("netty:tcp://"+getAddress(cf.getNodeName())+":"+parsePortNumber(cf.getNodeName()), exchange.getIn().getBody());
+                                getContext().createProducerTemplate().sendBody("netty:tcp://" + getAddress(cf.getNodeName()) + ":" + parsePortNumber(cf.getNodeName()), exchange.getIn().getBody());
                             }
                         }
                     }
                 }
                 );
-        routeBuilder.from("netty:tcp://localhost:5155?sync=true").
-                process(new Processor() {
-                    public void process(Exchange exchange) throws Exception {
-                        exchange.getOut().setBody("result daFuck");
-                        for (org.kevoree.framework.KevoreePort p : getBindedPorts()) {
-                            if (exchange.getIn().getBody() instanceof Message) {
-                                forward(p, (Message) exchange.getIn().getBody());
-                            }
-                        }
 
-                    }
-                });
+        try {
+            routeBuilder.from("netty:tcp://0.0.0.0:" + parsePortNumber(getNodeName()) + "?sync=true").
+                    process(new Processor() {
+                        public void process(Exchange exchange) throws Exception {
+                            exchange.getOut().setBody("result Async TODO");
+                            for (org.kevoree.framework.KevoreePort p : getBindedPorts()) {
+                                if (exchange.getIn().getBody() instanceof Message) {
+                                    forward(p, (Message) exchange.getIn().getBody());
+                                }
+                            }
+
+                        }
+                    });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
     }
 
 
