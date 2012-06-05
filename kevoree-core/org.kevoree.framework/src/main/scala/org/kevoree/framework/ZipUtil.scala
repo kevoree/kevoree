@@ -15,6 +15,7 @@ package org.kevoree.framework
 
 import java.io.ByteArrayOutputStream
 import java.util.zip.{Inflater, Deflater}
+import org.slf4j.LoggerFactory
 
 /**
  * Created by jed
@@ -25,19 +26,21 @@ import java.util.zip.{Inflater, Deflater}
 
 object ZipUtil {
 
+  private val logger = LoggerFactory.getLogger(this.getClass.getName)
+
     def compressByteArray(input: Array[Byte]): Array[Byte] = {
       val compressor  = new Deflater()
       compressor.setLevel(Deflater.BEST_COMPRESSION)
       compressor.setInput(input)
-      compressor.finish
-      val bos = new ByteArrayOutputStream(input.length);
+      compressor.finish()
+      val bos = new ByteArrayOutputStream(input.length)
       val buf = new Array[Byte](1024)
       while (!compressor.finished) {
         val count = compressor.deflate(buf)
         bos.write(buf, 0, count)
       }
       try {
-        bos.close
+        bos.close()
         bos.flush()
       }
       catch {
@@ -51,7 +54,7 @@ object ZipUtil {
     def uncompressByteArray(compressedData: Array[Byte]): Array[Byte] = {
       val decompressor = new Inflater()
       decompressor.setInput(compressedData)
-      val bos = new ByteArrayOutputStream(compressedData.length);
+      val bos = new ByteArrayOutputStream(compressedData.length)
       val buf: Array[Byte] = new Array[Byte](1024)
       while (!decompressor.finished) {
         try {
@@ -59,13 +62,14 @@ object ZipUtil {
           bos.write(buf, 0, count)
         }
         catch {
-          case _ => {
+          case _@ex => {
+            logger.debug("Unable to inflate stream", ex)
             None
           }
         }
       }
       try {
-        bos.close
+        bos.close()
         bos.flush()
       }
       catch {
