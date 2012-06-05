@@ -37,8 +37,6 @@ object KevScriptHelper extends App {
     val propName = "project.version"
     val propVal = mavenSource.getVersion
     kevEngine.addVariable(propName.toString, propVal.toString)
-    import scala.collection.JavaConversions._
-    println(mavenSource.getModel.getProperties.mkString("\n"))
     while (propEnum.hasMoreElements) {
       val propName = propEnum.nextElement()
       println(propName)
