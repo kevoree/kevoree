@@ -22,13 +22,16 @@ import org.kevoree.tools.marShell.ast.ComponentInstanceID
 
 trait KevsComponentInstanceParser extends KevsAbstractParser {
 
-  def parseCID : Parser[ComponentInstanceID] = ident ~ opt("@" ~ ident) ^^ { case cid ~ nodeID =>
+  def parseCID : Parser[ComponentInstanceID] = ident ~ "@" ~ ident ^^ { case cid ~ _ ~ nodeID =>
+
+    ComponentInstanceID(cid,Some(nodeID))
+    /*
       nodeID match {
         case Some(nodeIDD) => nodeIDD match {
             case "@"~nid => ComponentInstanceID(cid,Some(nid))
         }
         case None => ComponentInstanceID(cid,None)
-      }
+      } */
   }
 
 }
