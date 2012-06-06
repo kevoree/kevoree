@@ -18,6 +18,9 @@
                <groupId>org.kevoree.platform</groupId>
                <artifactId>org.kevoree.platform.mavenrunner</artifactId>
                <version>${kevoree.version}</version>
+        <configuration>
+            <targetNode>virtualbsd</targetNode>
+        </configuration>
            </plugin>
 
     </plugins>
