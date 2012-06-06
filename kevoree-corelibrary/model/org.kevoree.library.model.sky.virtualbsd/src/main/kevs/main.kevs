@@ -1,0 +1,41 @@
+// nodes configuration
+merge "mvn:org.kevoree.corelibrary.model/org.kevoree.library.model.sky/1.7.5"
+
+addNode virtualbsd : JailNode {role="host/container", port="7000", inet="em0", subnet="172.16.78.0", mask="24", flavor="kevjail", logLevel="INFO"}
+//addNode fog1 : JailNode {role="host", port="7000", inet="alc0", subnet="10.0.1.0", mask="24", flavor="kevjail", logLevel="INFO"}
+
+network virtualbsd => virtualbsd { "KEVOREE.remote.node.ip"= "172.16.78.158"}
+
+// group configuration
+addGroup sync : NanoRestGroup
+
+addToGroup sync virtualbsd
+//addToGroup sync fog1
+
+updateDictionary sync {ip="172.16.78.158", port="8000"}@virtualbsd
+
+// Kloud manager configuration
+addComponent webServer@virtualbsd : KTinyWebServer {port = "8080", timeout = "5000"}
+addComponent paaSKloudResourceManagerPage@virtualbsd : PaaSKloudResourceManagerPage {urlpattern = "/kloud/{login}/{action}"}
+addComponent paaSKloudResourceManager@virtualbsd : PaaSKloudResourceManager
+addComponent iaaSKloudResourceManager@virtualbsd : IaaSKloudResourceManager
+//addComponent ldapAuthentication@cumulus : LDAPAuthentication {host = "ldap://ildap1-ren.irisa.fr:389", context = "com.sun.jndi.ldap.LdapCtxFactory", base = "ou=people,dc=inria,dc=fr", filter = "(&(objectclass=inriaperson)(inriaentrystatus=valid)(ou=UR-Rennes))", loginKey = "inriaLogin"}
+
+addChannel requestChannel : defMSG
+addChannel responseChannel : defMSG
+addChannel deployChannel : defMSG
+addChannel releaseChannel : defMSG
+//addChannel authenticationChannel : defSERVICE
+
+bind webServer.handler@virtualbsd => requestChannel
+bind paaSKloudResourceManagerPage.request@virtualbsd => requestChannel
+bind webServer.response@virtualbsd => responseChannel
+bind paaSKloudResourceManagerPage.content@virtualbsd => responseChannel
+
+bind paaSKloudResourceManagerPage.deploy@virtualbsd => deployChannel
+bind paaSKloudResourceManager.deploy@virtualbsd => deployChannel
+bind paaSKloudResourceManagerPage.release@virtualbsd => releaseChannel
+bind paaSKloudResourceManager.release@virtualbsd => releaseChannel
+
+//bind ldapAuthentication.authenticate@cumulus => authenticationChannel
+//bind paaSKloudResourceManagerPage.authentication@cumulus => authenticationChannel

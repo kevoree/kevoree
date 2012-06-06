@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>org.kevoree.library.model.root</artifactId>
+        <groupId>org.kevoree.corelibrary.model</groupId>
+        <version>1.7.5</version>
+        <relativePath>../org.kevoree.library.model.root/pom.xml</relativePath>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>org.kevoree.library.model.sky.virtualbsd</artifactId>
+    <name>Kevoree :: CoreLibrary :: Model :: Sky :: VirtualBSD</name>
+
+	<build>
+    <plugins>
+    <plugin>
+               <groupId>org.kevoree.platform</groupId>
+               <artifactId>org.kevoree.platform.mavenrunner</artifactId>
+               <version>${kevoree.version}</version>
+           </plugin>
+
+    </plugins>
+</build>
+
+
+</project>
