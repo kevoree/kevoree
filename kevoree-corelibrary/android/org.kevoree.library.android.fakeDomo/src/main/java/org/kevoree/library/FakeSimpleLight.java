@@ -21,7 +21,7 @@ import java.io.InputStream;
 @Provides({
         @ProvidedPort(name = "on", type = PortType.MESSAGE),
         @ProvidedPort(name = "off", type = PortType.MESSAGE),
-        @ProvidedPort(name = "toggle", type = PortType.SERVICE, className = AToggleLightService.class)
+        @ProvidedPort(name = "toggle", type = PortType.SERVICE, className = ToggleLightService.class)
 })
 /*@DictionaryType({
 		@DictionaryAttribute(name = "COLOR_ON", defaultValue = "GREEN", optional = true,
@@ -31,8 +31,8 @@ import java.io.InputStream;
 })*/
 @Library(name = "Android")
 @ComponentType
-public class AFakeSimpleLight extends AbstractComponentType implements AToggleLightService {
-    private static final Logger logger = LoggerFactory.getLogger(AFakeSimpleLight.class);
+public class FakeSimpleLight extends AbstractComponentType implements ToggleLightService {
+    private static final Logger logger = LoggerFactory.getLogger(FakeSimpleLight.class);
 
     private KevoreeAndroidService uiService = null;
     private ImageView view = null;
@@ -81,12 +81,14 @@ public class AFakeSimpleLight extends AbstractComponentType implements AToggleLi
                 InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream("ampAllume.png");
                 image = BitmapFactory.decodeStream(inputStream);
             } catch (Exception e) {
+				logger.debug("Unable to apply color on light", e);
             }
         } else {
             try {
                 InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream("ampEteinte.png");
                 image = BitmapFactory.decodeStream(inputStream);
             } catch (Exception e) {
+				logger.debug("Unable to apply color on light", e);
             }
         }
         if (image != null) {

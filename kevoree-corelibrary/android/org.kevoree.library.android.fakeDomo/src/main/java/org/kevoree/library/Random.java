@@ -1,10 +1,8 @@
 package org.kevoree.library;
 
-import android.util.Log;
 import org.kevoree.annotation.*;
 import org.kevoree.framework.AbstractComponentType;
 import org.kevoree.framework.MessagePort;
-
 
 import java.io.IOException;
 
@@ -30,7 +28,7 @@ import java.io.IOException;
 })
 @GroupType
 @Library(name = "Android")
-public class ARandom extends AbstractComponentType implements  Runnable{
+public class Random extends AbstractComponentType implements  Runnable{
 
     Boolean alive=false;
     Thread t=null;

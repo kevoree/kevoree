@@ -28,7 +28,7 @@ import org.kevoree.framework.MessagePort;
 })
 @ComponentType
 @Library(name = "Android")
-public class AFakeConsole extends AbstractComponentType {
+public class FakeConsole extends AbstractComponentType {
     KevoreeAndroidService uiService = null;
     Object bundle;
     LinearLayout layout;
