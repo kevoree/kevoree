@@ -13,7 +13,7 @@
     <name>Kevoree :: CoreLibrary :: Model :: Sky :: VirtualBSD</name>
 
  	  <properties>
- 	       <node.update.timeout>100000</node.update.timeout>
+ 	       <node.update.timeout>500000</node.update.timeout>
  	   </properties>
 	<build>
     <plugins>
