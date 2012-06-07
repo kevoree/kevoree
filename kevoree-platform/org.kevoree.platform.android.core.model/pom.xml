@@ -4,12 +4,12 @@
     <artifactId>org.kevoree.platform.android.core.model</artifactId>
     <packaging>jar</packaging>
     <name>Kevoree :: Platform :: Android :: Core :: Model</name>
-    <version>1.7.5</version>
+    <version>1.7.6-SNAPSHOT</version>
 
     <parent>
         <artifactId>org.kevoree.platform.root</artifactId>
         <groupId>org.kevoree.platform</groupId>
-        <version>1.7.5</version>
+        <version>1.7.6-SNAPSHOT</version>
         <relativePath>../org.kevoree.platform.root/pom.xml</relativePath>
     </parent>
 

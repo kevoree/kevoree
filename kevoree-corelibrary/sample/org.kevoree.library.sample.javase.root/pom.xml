@@ -8,7 +8,7 @@
     <parent>
         <groupId>org.kevoree.corelibrary.sample</groupId>
         <artifactId>org.kevoree.library.sample.root</artifactId>
-        <version>1.7.5</version>
+        <version>1.7.6-SNAPSHOT</version>
         <relativePath>../org.kevoree.library.sample.root/pom.xml</relativePath>
     </parent>
 
