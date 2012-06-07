@@ -20,7 +20,7 @@ object KloudReasoner {
 
   def appendScriptToCleanupIaaSModelFromUser (kengine: KevScriptEngine, login: String, currentIaaSModel: ContainerRoot) {
     currentIaaSModel.getGroups.find(g => g.getName == login) match {
-      case None => logger.warn("No Group found, nothing to cleanup")
+      case None => logger.debug("No Group found, nothing to cleanup")
       case Some(userGroup) => {
         userGroup.getSubNodes.foreach {
           sub =>
