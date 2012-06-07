@@ -28,11 +28,12 @@ trait KevsBlockParser extends KevsAbstractParser {
 
   var logger = LoggerFactory.getLogger(this.getClass)
 
-  def parseTBlock : Parser[Block] = parseBlockType ~ "{" ~ parseStatmentList ~ "}" ^^  { case btype ~ _ ~ l ~ _ =>
-      btype match {
+  def parseTBlock : Parser[Block] = opt(parseBlockType) ~ "{" ~ parseStatmentList ~ "}" ^^  { case btype ~ _ ~ l ~ _ =>
+     /* btype match {
         case "tblock" => TransactionalBloc(l)
         case _ => logger.error("TODO");null
-      }
+      }  */
+    TransactionalBloc(l)
   }
 
   def parseBlockType : Parser[String] = "tblock"
@@ -43,6 +44,19 @@ trait KevsBlockParser extends KevsAbstractParser {
         res = res ++ newl
       }
       res
+  }
+
+  def parseBlockList : Parser[List[Statment]] = "{" ~ rep(kevStatement) ~ "}" ^^{ case _ ~ l ~ _ =>
+    var res : List[Statment] = List()
+    l.foreach{newl=>
+      res = res ++ newl
+    }
+    res
+  }
+
+
+  def parseImplicitTBlock : Parser[Block] = parseStatmentList ^^ {
+    case l => TransactionalBloc(l)
   }
 
 

@@ -11,26 +11,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package org.kevoree.api.service.core.merger;
 
-import org.kevoree.ContainerRoot;
-
-
 /**
- *
- * @author ffouquet
+ * Created with IntelliJ IDEA.
+ * User: duke
+ * Date: 06/06/12
+ * Time: 20:06
  */
-public interface MergerService {
+public interface MergerErrorListener {
 
-    public ContainerRoot merge(ContainerRoot actualModel, ContainerRoot targetModel);
-
-    public void registerMergerListener(MergerErrorListener listener);
-
-    public void unregisterMergerListener(MergerErrorListener listener);
+   public void triggerEvent(String message);
 
 }

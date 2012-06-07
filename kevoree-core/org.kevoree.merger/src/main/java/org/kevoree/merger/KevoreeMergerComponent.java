@@ -19,6 +19,10 @@
 package org.kevoree.merger;
 
 import org.kevoree.ContainerRoot;
+import org.kevoree.api.service.core.merger.MergerErrorListener;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -32,6 +36,18 @@ public class KevoreeMergerComponent implements org.kevoree.api.service.core.merg
     public ContainerRoot merge(ContainerRoot actualModel, ContainerRoot targetModel) {
         rootMerger.merge(actualModel, targetModel);
         return actualModel;
+    }
+
+    private List<MergerErrorListener> listeners = new ArrayList<MergerErrorListener>();
+
+    @Override
+    public void registerMergerListener(MergerErrorListener listener) {
+        listeners.add(listener);
+    }
+
+    @Override
+    public void unregisterMergerListener(MergerErrorListener listener) {
+        listeners.remove(listener);
     }
 
 }

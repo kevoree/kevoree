@@ -23,14 +23,18 @@ import org.kevoree.{ContainerRoot, AdaptationPrimitiveType}
 
 trait AbstractKompare {
 
-  var logger = LoggerFactory.getLogger(this.getClass);
+  var logger = LoggerFactory.getLogger(this.getClass)
+
+  object UnreasolvedPrimitiveType extends org.kevoree.AdaptationPrimitiveType {
+      override def getName = "unresolvedPrimitiveType"
+  }
 
   def getAdaptationPrimitive(typeName: String, model: ContainerRoot): AdaptationPrimitiveType = {
     model.getAdaptationPrimitiveTypes.find(p => p.getName == typeName) match {
       case Some(p) => p
       case None => {
-        logger.error("Error while searching for adaptation primitive type for name = {}", typeName)
-        null
+        logger.debug("Error while searching for adaptation primitive type for name = {}", typeName)
+        UnreasolvedPrimitiveType
       }
     }
   }
