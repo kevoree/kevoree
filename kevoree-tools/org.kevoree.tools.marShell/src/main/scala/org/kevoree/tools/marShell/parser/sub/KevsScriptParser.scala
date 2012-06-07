@@ -22,6 +22,6 @@ import org.kevoree.tools.marShell.ast.Script
 
 trait KevsScriptParser extends KevsAbstractParser with KevsBlockParser {
 
-  def parseScript : Parser[Script] = (parseTBlock*) ^^ { case blocks => Script(blocks)}
+  def parseScript : Parser[Script] = rep(parseTBlock) ^^ { case blocks => Script(blocks)}
 
 }

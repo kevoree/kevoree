@@ -7,7 +7,6 @@
         <groupId>org.kevoree.corelibrary.model</groupId>
         <version>1.7.6-SNAPSHOT</version>
 	<relativePath>../org.kevoree.library.model.root/pom.xml</relativePath>
-
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>org.kevoree.library.model.sky.virtualbsd</artifactId>
@@ -16,8 +15,6 @@
  	  <properties>
  	       <node.update.timeout>100000</node.update.timeout>
  	   </properties>
-
-
 	<build>
     <plugins>
     <plugin>

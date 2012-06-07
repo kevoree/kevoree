@@ -4,12 +4,12 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>org.kevoree.library.javase.socketChannels</artifactId>
     <name>Kevoree :: CoreLibrary :: JavaSE :: SocketChannels</name>
-    <version>1.7.5</version>
+    <version>1.7.6-SNAPSHOT</version>
 
     <parent>
         <artifactId>org.kevoree.library.javase.root</artifactId>
         <groupId>org.kevoree.corelibrary.javase</groupId>
-        <version>1.7.5</version>
+        <version>1.7.6-SNAPSHOT</version>
         <relativePath>../org.kevoree.library.javase.root/pom.xml</relativePath>
     </parent>
 
@@ -44,5 +44,73 @@
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>android-message</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.kevoree.platform</groupId>
+                        <artifactId>org.kevoree.platform.mavenrunner</artifactId>
+                        <version>${kevoree.version}</version>
+                        <configuration>
+                            <targetNode>nodeA</targetNode>
+                            <viaGroup>sync</viaGroup>
+                            <model>${project.basedir}/src/main/kevs/main_message.kevs</model>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>java-message</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.kevoree.platform</groupId>
+                        <artifactId>org.kevoree.platform.mavenrunner</artifactId>
+                        <version>${kevoree.version}</version>
+                        <configuration>
+                            <model>${project.basedir}/src/main/kevs/main_message.kevs</model>
+                        </configuration>
+
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>android-service</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.kevoree.platform</groupId>
+                        <artifactId>org.kevoree.platform.mavenrunner</artifactId>
+                        <version>${kevoree.version}</version>
+                        <configuration>
+                            <targetNode>nodeA</targetNode>
+                            <viaGroup>sync</viaGroup>
+                            <model>${project.basedir}/src/main/kevs/main_service.kevs</model>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>java-service</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.kevoree.platform</groupId>
+                        <artifactId>org.kevoree.platform.mavenrunner</artifactId>
+                        <version>${kevoree.version}</version>
+                        <configuration>
+                            <model>${project.basedir}/src/main/kevs/main_service.kevs</model>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
 </project>

@@ -6,12 +6,12 @@
     <artifactId>org.kevoree.library.model.root</artifactId>
     <packaging>pom</packaging>
     <name>Kevoree :: CoreLibrary :: Model :: Root</name>
-    <version>1.7.5</version>
+    <version>1.7.6-SNAPSHOT</version>
 
     <parent>
         <artifactId>org.kevoree.library</artifactId>
         <groupId>org.kevoree.corelibrary</groupId>
-        <version>1.7.5</version>
+        <version>1.7.6-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
@@ -29,6 +29,7 @@
         <module>../org.kevoree.library.model.javase.webserver</module>
         <module>../org.kevoree.library.model.bootstrap.android</module>
         <module>../org.kevoree.library.model.sky.kloud</module>
+        <module>../org.kevoree.library.model.sky.virtualbsd</module>
         <module>../org.kevoree.library.model.all</module>
     </modules>
 

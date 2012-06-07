@@ -61,7 +61,7 @@ class JailKevoreeNodeRunner (nodeName: String, iaasNode: JailNode) extends Kevor
         if (processExecutor.createJail(Array[String](iaasNode.getFlavor) ++ flavors, nodeName, newIp, findArchive(nodeName))) {
           var jailPath = processExecutor.findPathForJail(nodeName)
           // install the model on the jail
-          val platformFile = iaasNode.getBootStrapperService.resolveKevoreeArtifact("org.kevoree.platform.standalone", "org.kevoree.platform", KevoreeFactory.getVersion);
+          val platformFile = iaasNode.getBootStrapperService.resolveKevoreeArtifact("org.kevoree.platform.standalone", "org.kevoree.platform", KevoreeFactory.getVersion)
           KevoreeXmiHelper.save(jailPath + File.separator + "root" + File.separator + "bootstrapmodel.kev", jailBootStrapModel)
           if (PropertyHelper.copyFile(platformFile.getAbsolutePath, jailPath + File.separator + "root" + File.separator + "kevoree-runtime.jar")) {
             // specify limitation on jail such as CPU, RAM
@@ -101,7 +101,7 @@ class JailKevoreeNodeRunner (nodeName: String, iaasNode: JailNode) extends Kevor
           false
         }
       } else {
-        logger.error("Unable to define a new alias {} with {}", nodeName)
+        logger.error("Unable to define a new alias {} with {}", nodeName, newIp)
         false
       }
     } else {

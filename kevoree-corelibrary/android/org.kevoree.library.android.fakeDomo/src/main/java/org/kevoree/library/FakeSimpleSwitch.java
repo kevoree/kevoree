@@ -20,11 +20,11 @@ import java.util.HashMap;
 @Requires({
 		@RequiredPort(name = "on", type = PortType.MESSAGE, needCheckDependency = false , optional = true),
 		@RequiredPort(name = "off", type = PortType.MESSAGE, needCheckDependency = false ,  optional = true),
-		@RequiredPort(name = "toggle", type = PortType.SERVICE, className = AToggleLightService.class, optional = true)
+		@RequiredPort(name = "toggle", type = PortType.SERVICE, className = ToggleLightService.class, optional = true)
 })
 @Library(name = "Android")
 @ComponentType
-public class AFakeSimpleSwitch extends AbstractComponentType {
+public class FakeSimpleSwitch extends AbstractComponentType {
 
 	private KevoreeAndroidService uiService = null;
 	private ImageView view = null;
@@ -95,7 +95,7 @@ public class AFakeSimpleSwitch extends AbstractComponentType {
 
 	public void toggle () {
 		if (isPortBinded("toggle")) {
-			String state = getPortByName("toggle", AToggleLightService.class).toggle();
+			String state = getPortByName("toggle", ToggleLightService.class).toggle();
 			buttonToggle.setText(state);
 		}
 	}

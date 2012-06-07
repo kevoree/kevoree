@@ -63,6 +63,7 @@ public class FakeReasoner extends AbstractComponentType implements ModelListener
                     engine.append("addComponent {nodeName}Console@{nodeName} : FakeConsole");
             }
                 engine.interpretDeploy();
+
             try {
                 Thread.sleep(5000);
             } catch (InterruptedException e) {

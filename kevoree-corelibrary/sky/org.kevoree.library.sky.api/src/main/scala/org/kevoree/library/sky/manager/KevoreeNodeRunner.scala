@@ -10,7 +10,7 @@ import java.io._
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * 	http://www.gnu.org/licenses/lgpl-3.0.txt
+ * http://www.gnu.org/licenses/lgpl-3.0.txt
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -32,7 +32,7 @@ abstract class KevoreeNodeRunner (var nodeName: String) {
 
   private val logger: Logger = LoggerFactory.getLogger(classOf[KevoreeNodeRunner])
 
-  def startNode (iaasModel : ContainerRoot,jailBootStrapModel : ContainerRoot): Boolean
+  def startNode (iaasModel: ContainerRoot, jailBootStrapModel: ContainerRoot): Boolean
 
   def stopNode (): Boolean
 
@@ -56,7 +56,12 @@ abstract class KevoreeNodeRunner (var nodeName: String) {
   def configureSSHServer (model: ContainerRoot, path: String, ip: String) {
     if (ip != null && ip != "") {
       logger.debug("configure ssh server ip")
-      replaceStringIntoFile("<ip_address>", ip, path + File.separator + "etc" + File.separator + "ssh" + File.separator + "sshd_config")
+      try {
+        replaceStringIntoFile("<ip_address>", ip, path + File.separator + "etc" + File.separator + "ssh" + File.separator + "sshd_config")
+      } catch {
+        case _@e =>
+          logger.debug("Unable to configure ssh server", e)
+      }
     }
   }
 
@@ -67,52 +72,54 @@ abstract class KevoreeNodeRunner (var nodeName: String) {
     }
   }
 
+  @throws(classOf[Exception])
   private def copyStringToFile (data: String, outputFile: String) {
     if (data != null && data != "") {
-//      logger.debug("trying to copy \"{}\" to {}", data, outputFile)
-      try {
-        if (new File(outputFile).exists()) {
-          new File(outputFile).delete()
-        }
-        val writer = new DataOutputStream(new FileOutputStream(new File(outputFile)))
-
-        writer.write(data.getBytes)
-        writer.flush()
-        writer.close()
-//        logger.debug("copying \"{}\" into {} uis done", data, outputFile)
-      } catch {
-        case _@e => logger.error("Unable to copy \"{}\" on {}", Array[AnyRef](data, outputFile), e)
+      //      logger.debug("trying to copy \"{}\" to {}", data, outputFile)
+      //      try {
+      if (new File(outputFile).exists()) {
+        new File(outputFile).delete()
       }
+      val writer = new DataOutputStream(new FileOutputStream(new File(outputFile)))
+
+      writer.write(data.getBytes)
+      writer.flush()
+      writer.close()
+      //        logger.debug("copying \"{}\" into {} uis done", data, outputFile)
+      /* } catch {
+        case _@e => logger.error("Unable to copy \"{}\" on {}", Array[AnyRef](data, outputFile), e)
+      }*/
     }
   }
 
+  @throws(classOf[java.lang.StringIndexOutOfBoundsException])
   private def replaceStringIntoFile (dataToReplace: String, newData: String, file: String) {
     if (dataToReplace != null && dataToReplace != "" && newData != null && newData != "") {
-//      logger.debug("trying to replace \"{}\" by \"{}\" into {}", Array[AnyRef](dataToReplace, newData, file))
+      //      logger.debug("trying to replace \"{}\" by \"{}\" into {}", Array[AnyRef](dataToReplace, newData, file))
       if (new File(file).exists()) {
-        try {
-          val stringBuilder = new StringBuilder
-          val reader = new DataInputStream(new FileInputStream(new File(file)))
-          val writer = new ByteArrayOutputStream()
+        //        try {
+        val stringBuilder = new StringBuilder
+        val reader = new DataInputStream(new FileInputStream(new File(file)))
+        val writer = new ByteArrayOutputStream()
 
-          val bytes = new Array[Byte](2048)
-          var length = reader.read(bytes)
-          while (length != -1) {
-            writer.write(bytes, 0, length)
-            length = reader.read(bytes)
+        val bytes = new Array[Byte](2048)
+        var length = reader.read(bytes)
+        while (length != -1) {
+          writer.write(bytes, 0, length)
+          length = reader.read(bytes)
 
-          }
-          writer.flush()
-          writer.close()
-          reader.close()
-          stringBuilder append new String(writer.toByteArray)
-          stringBuilder.replace(stringBuilder.indexOf(dataToReplace), stringBuilder.indexOf(dataToReplace) + dataToReplace.length(), newData)
-
-          copyStringToFile(stringBuilder.toString(), file)
-//          logger.debug("replacing \"{}\" by \"{}\" into {} is done", Array[AnyRef](dataToReplace, newData, file))
-        } catch {
-          case _@e => logger.error("Unable to replace a string", e)
         }
+        writer.flush()
+        writer.close()
+        reader.close()
+        stringBuilder append new String(writer.toByteArray)
+        stringBuilder.replace(stringBuilder.indexOf(dataToReplace), stringBuilder.indexOf(dataToReplace) + dataToReplace.length(), newData)
+
+        copyStringToFile(stringBuilder.toString(), file)
+        //          logger.debug("replacing \"{}\" by \"{}\" into {} is done", Array[AnyRef](dataToReplace, newData, file))
+        /* } catch {
+          case _@e => logger.debug("Unable to replace a string", e)
+        }*/
       } else {
         logger.debug("The file {} doesn't exist, nothing can be replace.", file)
       }
