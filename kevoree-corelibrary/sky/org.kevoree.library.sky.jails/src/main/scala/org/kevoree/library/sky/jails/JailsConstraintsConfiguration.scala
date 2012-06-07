@@ -125,11 +125,11 @@ object JailsConstraintsConfiguration {
         property = KevoreePropertyHelper.getPropertyForNode(model, nodeName, "DATA_SIZE").getOrElse("N/A").toString
         if (execResult && property != "N/A") {
           var limit = 5 * 1024 * 1024
-          if (property.toLowerCase.endsWith("gb")) {
+          if (property.toLowerCase.endsWith("gb") || property.toLowerCase.endsWith("g")) {
             limit = Integer.parseInt(property.substring(0, property.length - 2)) * 1024 * 1024 * 1024
-          } else if (property.toLowerCase.endsWith("mb")) {
+          } else if (property.toLowerCase.endsWith("mb") || property.toLowerCase.endsWith("m")) {
             limit = Integer.parseInt(property.substring(0, property.length - 2)) * 1024 * 1024
-          } else if (property.toLowerCase.endsWith("kb")) {
+          } else if (property.toLowerCase.endsWith("kb") || property.toLowerCase.endsWith("k")) {
             limit = Integer.parseInt(property.substring(0, property.length - 2)) * 1024 * 1024
           } else {
             try {
