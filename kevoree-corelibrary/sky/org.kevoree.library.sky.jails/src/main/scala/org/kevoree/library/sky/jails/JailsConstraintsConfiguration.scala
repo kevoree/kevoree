@@ -124,23 +124,33 @@ object JailsConstraintsConfiguration {
         }
         property = KevoreePropertyHelper.getPropertyForNode(model, nodeName, "DATA_SIZE").getOrElse("N/A").toString
         if (execResult && property != "N/A") {
-          try {
-            val limit = Integer.parseInt(property.toString)
-            exec = Array[String]("rctl", "-a", "jail:" + nodeName + ":datasize:" + modeId + "=" + limit)
-            val resultActor = new ResultManagementActor()
-            resultActor.starting()
-            logger.debug("running {}", exec.asInstanceOf[Array[AnyRef]])
-            val p = Runtime.getRuntime.exec(exec)
-            new Thread(new ProcessStreamManager(resultActor, p.getInputStream, Array(new Regex(".*")), Array(), p)).start()
-            val result = resultActor.waitingFor(500)
-            if (result._1) {
-              execResult = true
-            } else {
-              logger.debug("unable to set DATA_SIZE limitation:\n{}", result._2)
-              execResult = false
+          var limit = 5 * 1024 * 1024
+          if (property.toLowerCase.endsWith("gb")) {
+            limit = Integer.parseInt(property.substring(0, property.length - 2)) * 1024 * 1024 * 1024
+          } else if (property.toLowerCase.endsWith("mb")) {
+            limit = Integer.parseInt(property.substring(0, property.length - 2)) * 1024 * 1024
+          } else if (property.toLowerCase.endsWith("kb")) {
+            limit = Integer.parseInt(property.substring(0, property.length - 2)) * 1024 * 1024
+          } else {
+            try {
+              limit = Integer.parseInt(property.toString)
+            } catch {
+              case e: NumberFormatException => logger.warn("Unable to take into account DATA_SIZE limitation because the value {} is not well defined for {}. Default value used.", property, nodeName)
             }
-          } catch {
-            case e: NumberFormatException => logger.warn("Unable to take into account DATA_SIZE limitation because the value {} is not well defined for {}", property, nodeName)
+          }
+
+          exec = Array[String]("rctl", "-a", "jail:" + nodeName + ":datasize:" + modeId + "=" + limit)
+          val resultActor = new ResultManagementActor()
+          resultActor.starting()
+          logger.debug("running {}", exec.asInstanceOf[Array[AnyRef]])
+          val p = Runtime.getRuntime.exec(exec)
+          new Thread(new ProcessStreamManager(resultActor, p.getInputStream, Array(new Regex(".*")), Array(), p)).start()
+          val result = resultActor.waitingFor(500)
+          if (result._1) {
+            execResult = true
+          } else {
+            logger.debug("unable to set DATA_SIZE limitation:\n{}", result._2)
+            execResult = false
           }
         }
         logger.debug("specify constraints is done: {}", execResult)
@@ -197,7 +207,7 @@ object JailsConstraintsConfiguration {
   }
 
 
-  def removeJailConstraints (nodeName: String) : Boolean = {
+  def removeJailConstraints (nodeName: String): Boolean = {
     val exec = Array[String]("rctl", "-r", "jail:" + nodeName)
     val resultActor = new ResultManagementActor()
     resultActor.starting()
