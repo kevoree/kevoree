@@ -36,7 +36,7 @@ class JailKevoreeNodeRunner (nodeName: String, iaasNode: JailNode) extends Kevor
 
   private val logger: Logger = LoggerFactory.getLogger(this.getClass)
 
-  val processExecutor = new ProcessExecutor()
+  val processExecutor = new ProcessExecutor(Integer.parseInt(iaasNode.getDictionary.get("jailCreationTimeout").toString), Integer.parseInt(iaasNode.getDictionary.get("jailStartTimeout").toString))
 
 //  var nodeProcess: Process = null
 

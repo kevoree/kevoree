@@ -16,7 +16,7 @@ import org.slf4j.{LoggerFactory, Logger}
  * @version 1.0
  **/
 
-class ProcessExecutor {
+class ProcessExecutor(creationTimeout : Int, startTimeout : Int) {
   private val logger: Logger = LoggerFactory.getLogger(this.getClass)
   private val listJailsProcessBuilder = new ProcessBuilder
   listJailsProcessBuilder.command("/usr/local/bin/ezjail-admin", "list")
@@ -79,7 +79,7 @@ class ProcessExecutor {
     resultActor.starting()
     val p = Runtime.getRuntime.exec(exec)
     new Thread(new ProcessStreamManager(resultActor, p.getErrorStream, Array(), Array(new Regex("^Error.*")), p)).start()
-    val result = resultActor.waitingFor(240000)
+    val result = resultActor.waitingFor(creationTimeout)
     if (!result._1) {
       logger.debug(result._2)
     }
@@ -118,7 +118,7 @@ class ProcessExecutor {
     resultActor.starting()
     val p = Runtime.getRuntime.exec(Array[String](ezjailAdmin, "onestart", nodeName))
     new Thread(new ProcessStreamManager(resultActor, p.getErrorStream, Array(), Array(), p)).start()
-    val result = resultActor.waitingFor(10000)
+    val result = resultActor.waitingFor(startTimeout)
     if (!result._1) {
       logger.debug(result._2)
     }
@@ -191,7 +191,7 @@ class ProcessExecutor {
     logger.debug("running {} onestop {}", Array[AnyRef](ezjailAdmin, nodeName))
     val p = Runtime.getRuntime.exec(Array[String](ezjailAdmin, "onestop", nodeName))
     new Thread(new ProcessStreamManager(resultActor, p.getInputStream, Array(), Array(), p)).start()
-    val result = resultActor.waitingFor(10000)
+    val result = resultActor.waitingFor(startTimeout)
     if (!result._1) {
       logger.debug(result._2)
     }
@@ -204,7 +204,7 @@ class ProcessExecutor {
     logger.debug("running {} delete -w {}", Array[AnyRef](ezjailAdmin, nodeName))
     val p = Runtime.getRuntime.exec(Array[String](ezjailAdmin, "delete", "-w", nodeName))
     new Thread(new ProcessStreamManager(resultActor, p.getInputStream, Array(), Array(), p)).start()
-    val result = resultActor.waitingFor(240000)
+    val result = resultActor.waitingFor(creationTimeout)
     if (!result._1) {
       logger.debug(result._2)
     }
