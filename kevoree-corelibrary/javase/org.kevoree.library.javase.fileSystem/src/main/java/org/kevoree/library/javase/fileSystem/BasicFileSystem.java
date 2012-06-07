@@ -53,14 +53,16 @@ public class BasicFileSystem extends AbstractComponentType implements LockFilesS
         if (base.exists() && !base.getName().startsWith(".")) {
             if (base.isDirectory()) {
                 File[] childs = base.listFiles();
-                for (int i = 0; i < childs.length; i++) {
-                    if (root) {
-                        files.addAll(getFlatFiles(childs[i], relativePath, false, extensions));
-                    } else {
-                        files.addAll(getFlatFiles(childs[i], relativePath + "/" + base.getName(), false, extensions));
-                    }
-                }
-            } else {
+				if (childs != null) {
+					for (File child : childs) {
+						if (root) {
+							files.addAll(getFlatFiles(child, relativePath, false, extensions));
+						} else {
+							files.addAll(getFlatFiles(child, relativePath + "/" + base.getName(), false, extensions));
+						}
+					}
+				}
+			} else {
 
                 boolean filtered = false;
                 if (extensions != null) {
