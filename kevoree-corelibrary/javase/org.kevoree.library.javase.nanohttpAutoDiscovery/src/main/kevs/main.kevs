@@ -1,5 +1,19 @@
-merge "mvn:org.kevoree.library.javase/org.kevoree.library.javase.javaseNode/{kevoree.version}"
-merge "mvn:org.kevoree.library.javase/org.kevoree.library.javase.nanohttpAutoDiscovery/{kevoree.version}"
-addNode node0 : JavaSENode
+merge "mvn:org.kevoree.corelibrary.sky/org.kevoree.library.sky.minicloud/{kevoree.version}"
+merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.javaseNode/{kevoree.version}"
+merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.nanohttpAutoDiscovery/{kevoree.version}"
+
+addNode minicloud : MiniCloudNode {logLevel = "WARN"}
+
+addNode node0 : PJavaSENode {logLevel = "WARN"}
+addNode node1 : PJavaSENode {logLevel = "WARN"}
+
+addChild node0@minicloud
+addChild node1@minicloud
+
 addGroup sync : JmDNSNanoRestGroup
+
+addToGroup sync minicloud
 addToGroup sync node0
+addToGroup sync node1
+
+updateDictionary sync {port = "6002"}@minicloud, {port = "8010"}@node0, {port = "8011"}@node1

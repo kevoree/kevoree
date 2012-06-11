@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.util.ArrayList;
@@ -22,99 +23,98 @@ import java.util.Enumeration;
 
 
 @DictionaryType({
-        @DictionaryAttribute(name = "timer", defaultValue = "5000", optional = false, fragmentDependant = true)   // gap between request scan of the network
+		@DictionaryAttribute(name = "timer", defaultValue = "5000", optional = false, fragmentDependant = true)   // gap between request scan of the network
 })
 @GroupType
-@Library(name="JavaSE")
-public class JmDNSNanoRestGroup extends NanoRestGroup implements  Runnable{
+@Library(name = "JavaSE")
+public class JmDNSNanoRestGroup extends NanoRestGroup implements Runnable {
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
-    private ArrayList<JmDnsComponent> jmdns = null ;
-    private  Thread thread = null;
-    private  boolean  alive;
-    private int timer;
+	private Logger logger = LoggerFactory.getLogger(this.getClass());
+	private ArrayList<JmDnsComponent> jmdns = null;
+	private Thread thread = null;
+	private boolean alive;
+	private int timer;
 
-    @Start
-    public void startJmdnsGroup() throws IOException {
-        super.startRestGroup();
-        jmdns = new ArrayList<JmDnsComponent>();
-        thread = new Thread(this);
-        updateDico();
-        alive = true;
-        thread.start();
-    }
+	@Start
+	public void startJmdnsGroup () throws IOException {
+		super.startRestGroup();
+		jmdns = new ArrayList<JmDnsComponent>();
+		thread = new Thread(this);
+		updateDico();
+		alive = true;
+		thread.start();
+	}
 
-    @Stop
-    public void stopJmdnsGroup() {
-        alive = false;
-        thread.interrupt();
-        for(JmDnsComponent _jmdns : jmdns){
-            _jmdns.close();
-        }
-        jmdns = null;
-        super.stopRestGroup();
-    }
-    @Update
-    public void updateJmDNSGroup(){
-        updateDico();
-    }
+	@Stop
+	public void stopJmdnsGroup () {
+		alive = false;
+		thread.interrupt();
+		for (JmDnsComponent _jmdns : jmdns) {
+			_jmdns.close();
+		}
+		jmdns = null;
+		super.stopRestGroup();
+	}
 
-    public void updateDico(){
-        try{
-            timer = Integer.parseInt(getDictionary().get("timer").toString());
-        } catch (Exception e){
-            timer = 9000;
-        }
-    }
+	@Update
+	public void updateJmDNSGroup () {
+		logger.warn("update group");
+		updateDico();
+	}
 
-    public ArrayList<InetAddress> getIps(){
-        ArrayList<InetAddress> ips = new ArrayList<InetAddress>();
-        try
-        {
-            Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
-            while (interfaces.hasMoreElements()) {
-                NetworkInterface interfaceN = interfaces.nextElement();
-                Enumeration<InetAddress> ienum = interfaceN.getInetAddresses();
-                while (ienum.hasMoreElements()) {
-                    InetAddress ia = ienum.nextElement();
-                    if(!ia.getHostAddress().startsWith("127")){
-                        ips.add(ia);
-                    }
-                }
-            }
-        }
-        catch(Exception e){
-            logger.error("There is no network interface", e);
-        }
-        return ips;
-    }
+	public void updateDico () {
+		try {
+			timer = Integer.parseInt(getDictionary().get("timer").toString());
+		} catch (Exception e) {
+			timer = 9000;
+		}
+	}
 
-    @Override
-    public void run() {
-        ArrayList<InetAddress> ips =    getIps();
-        ContainerRoot model = getModelService().getLastModel();
-        // update local address interfaces
-        for(InetAddress ip : ips)
-        {
-            KevoreePlatformHelper.updateNodeLinkProp(model,this.getNodeName(),this.getNodeName(),org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP(),ip.getHostAddress(),"LAN"+ip.getHostName(), 100);
-            KevoreePlatformHelper.updateNodeLinkProp(model,this.getNodeName(),this.getNodeName(), org.kevoree.framework.Constants.KEVOREE_MODEL_PORT(),this.getDictionary().get("port").toString(), "LAN", 100);
-        }
-        getModelService().updateModel(model);
+	public ArrayList<InetAddress> getIps () {
+		ArrayList<InetAddress> ips = new ArrayList<InetAddress>();
+		try {
+			Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
+			while (interfaces.hasMoreElements()) {
+				NetworkInterface interfaceN = interfaces.nextElement();
+				Enumeration<InetAddress> ienum = interfaceN.getInetAddresses();
+				while (ienum.hasMoreElements()) {
+					InetAddress ia = ienum.nextElement();
+					if (ia instanceof Inet4Address && !ia.getHostAddress().startsWith("127")) {
+						ips.add(ia);
+					}
+				}
+			}
+		} catch (Exception e) {
+			logger.error("There is no network interface", e);
+		}
+		return ips;
+	}
 
-        for(InetAddress ip : ips)
-        {
-            jmdns.add(new JmDnsComponent(this.getNodeName(),this.getName() ,Integer.parseInt(this.getDictionary().get("port").toString()),this.getModelService(),"JmDNSNanoRestGroup",ip));
-        }
-        while(alive)
-        {
-            for(JmDnsComponent _jmdns : jmdns){
-                _jmdns.requestUpdateList(timer);
-            }
-            try {
-                Thread.sleep(timer);
-            } catch (InterruptedException e) {
-                logger.debug("requestUpdateList: "+e.getMessage());
-            }
-        }
-    }
+	@Override
+	public void run () {
+		ArrayList<InetAddress> ips = getIps();
+		ContainerRoot model = getModelService().getLastModel();
+		// update local address interfaces
+		for (InetAddress ip : ips) {
+			KevoreePlatformHelper
+					.updateNodeLinkProp(model, this.getNodeName(), this.getNodeName(), org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP(), ip.getHostAddress(), "LAN" + ip.getHostName(),
+							100);
+//            KevoreePlatformHelper.updateNodeLinkProp(model,this.getNodeName(),this.getNodeName(), org.kevoree.framework.Constants.KEVOREE_MODEL_PORT(),this.getDictionary().get("port").toString(), "LAN", 100);
+		}
+		getModelService().updateModel(model);
+
+		for (InetAddress ip : ips) {
+			jmdns.add(new JmDnsComponent(this.getNodeName(), this.getName(), Integer.parseInt(this.getDictionary().get("port").toString()), this.getModelService(), "JmDNSNanoRestGroup", ip));
+		}
+		while (alive) {
+			for (JmDnsComponent _jmdns : jmdns) {
+				_jmdns.requestUpdateList(timer);
+			}
+			try {
+				Thread.sleep(timer);
+			} catch (InterruptedException e) {
+				logger.debug("requestUpdateList: " + e.getMessage());
+			}
+		}
+	}
 }

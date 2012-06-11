@@ -55,6 +55,14 @@
                     </jvmArgs>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.kevoree.platform</groupId>
+                <artifactId>org.kevoree.platform.mavenrunner</artifactId>
+                <version>${kevoree.version}</version>
+                <configuration>
+                    <targetNode>minicloud</targetNode>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
