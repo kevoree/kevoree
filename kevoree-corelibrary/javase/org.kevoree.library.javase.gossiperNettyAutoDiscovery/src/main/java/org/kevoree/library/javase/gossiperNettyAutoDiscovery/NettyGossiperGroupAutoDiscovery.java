@@ -1,10 +1,8 @@
 package org.kevoree.library.javase.gossiperNettyAutoDiscovery;
 
 import org.kevoree.ContainerRoot;
-import org.kevoree.Group;
 import org.kevoree.annotation.*;
 import org.kevoree.framework.KevoreePlatformHelper;
-import org.kevoree.framework.KevoreePropertyHelper;
 import org.kevoree.library.javase.gossiperNetty.group.NettyGossiperGroup;
 import org.kevoree.library.jmdnsrest.JmDnsComponent;
 import org.slf4j.Logger;
@@ -114,21 +112,5 @@ public class NettyGossiperGroupAutoDiscovery extends NettyGossiperGroup implemen
 			logger.error("There is no network interface", e);
 		}
 		return ips;
-	}
-
-	@Override
-	public void triggerModelUpdate () {
-		super.triggerModelUpdate();
-		for (Group g : getModelService().getLastModel().getGroupsForJ()) {
-			if (g.getName().equals("sync")) {
-				logger.warn("{}", KevoreePropertyHelper.getIntPropertyForGroup(getModelService().getLastModel(), "sync", "port", true, "minicloud"));
-				logger.warn("{}", KevoreePropertyHelper.getIntPropertyForGroup(getModelService().getLastModel(), "sync", "port", true, "node0"));
-				logger.warn("{}", KevoreePropertyHelper.getIntPropertyForGroup(getModelService().getLastModel(), "sync", "port", true, "node1"));
-
-				logger.warn("{}", KevoreePropertyHelper.getIntPropertyForGroup(getModelService().getLastModel(), "sync", "http_port", true, "minicloud"));
-				logger.warn("{}", KevoreePropertyHelper.getIntPropertyForGroup(getModelService().getLastModel(), "sync", "http_port", true, "node0"));
-				logger.warn("{}", KevoreePropertyHelper.getIntPropertyForGroup(getModelService().getLastModel(), "sync", "http_port", true, "node1"));
-			}
-		}
 	}
 }
