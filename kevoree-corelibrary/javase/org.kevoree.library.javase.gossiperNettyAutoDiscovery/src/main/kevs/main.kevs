@@ -1,16 +1,16 @@
 merge "mvn:org.kevoree.corelibrary.sky/org.kevoree.library.sky.minicloud/{kevoree.version}"
 merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.javaseNode/{kevoree.version}"
-merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.gossiperNetty/{kevoree.version}"
+merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.gossiperNettyAutoDiscovery/{kevoree.version}"
 
-addNode minicloud : MiniCloudNode {logLevel = "DEBUG"}
+addNode minicloud : MiniCloudNode {logLevel = "WARN"}
 
-addNode node0 : PJavaSENode {logLevel = "DEBUG"}
-addNode node1 : PJavaSENode {logLevel = "DEBUG"}
+addNode node0 : PJavaSENode {logLevel = "WARN"}
+addNode node1 : PJavaSENode {logLevel = "WARN"}
 
 addChild node0@minicloud
 addChild node1@minicloud
 
-addGroup sync : NettyGossiperGroup
+addGroup sync : NettyGossiperGroupAutoDiscovery {mergeModel = "true"}
 
 addToGroup sync minicloud
 addToGroup sync node0

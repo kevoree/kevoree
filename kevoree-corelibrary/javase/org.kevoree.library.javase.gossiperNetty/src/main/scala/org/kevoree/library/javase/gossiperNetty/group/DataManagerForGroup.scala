@@ -16,6 +16,8 @@ import org.slf4j.LoggerFactory
 import org.kevoree.library.javase.gossiperNetty.{Occured, VersionUtils, VectorClockAspect, DataManager}
 import org.kevoree.library.gossiperNetty.protocol.version.Version.{ClockEntry, VectorClock}
 import org.kevoree.merger.KevoreeMergerComponent
+import org.kevoree.framework.{KevoreeXmiHelper, FileNIOHelper}
+import java.io.{File, ByteArrayOutputStream, ByteArrayInputStream}
 
 class DataManagerForGroup (nameInstance: String, selfNodeName: String, modelService: KevoreeModelHandlerService, merge: Boolean)
   extends DataManager with actors.Actor {
@@ -184,8 +186,8 @@ class DataManagerForGroup (nameInstance: String, selfNodeName: String, modelServ
       }
       case Occured.CONCURRENTLY => {
         logger.debug("VectorClocks comparison into DataManager give us: CONCURRENTLY")
-        val localDate = new Date(vectorClock.getTimestamp);
-        val remoteDate = new Date(tuple._1.getTimestamp);
+        val localDate = new Date(vectorClock.getTimestamp)
+        val remoteDate = new Date(tuple._1.getTimestamp)
         if (merge) { // TODO need to be tested
           logger.debug("merge local and remote model due to concurrency")
           updateModelOrHaraKiri(mergerComponent.merge(modelService.getLastModel, tuple._2))

@@ -65,7 +65,7 @@ class GroupScorePeerSelector (timeout: Long, modelHandlerService: KevoreeModelHa
     model.getGroups.find(group => group.getName == groupName) match {
       case Some(group) => {
         //Found minima score node name
-        var foundNodeName = List[String]();
+        var foundNodeName = List[String]()
         var minScore = Long.MaxValue
 
 
