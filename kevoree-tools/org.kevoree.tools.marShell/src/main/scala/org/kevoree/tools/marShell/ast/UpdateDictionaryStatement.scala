@@ -20,6 +20,25 @@ package org.kevoree.tools.marShell.ast
 
 case class UpdateDictionaryStatement(instanceName : String,nodeName:Option[String],fraProperties : java.util.HashMap[String,java.util.Properties]) extends Statment {
   def getTextualForm: String = {
-    ""
+    "updateDictionary "+instanceName+getNodeName+" "+generateDico(fraProperties)
   }
+
+  def generateDico(fraProperties : java.util.HashMap[String,java.util.Properties]): String = {
+    import scala.collection.JavaConversions._
+    var res = List[String]()
+    fraProperties.foreach{ t =>
+      if(!t._2.isEmpty){
+        res = res ++ List(AstHelper.toStringDictionary(t._2)+"@"+t._1)
+      }
+    }
+    res.mkString(",")
+  }
+
+  def getNodeName : String = {
+    nodeName match {
+      case None => ""
+      case Some(n)=> "@"+n
+    }
+  }
+
 }

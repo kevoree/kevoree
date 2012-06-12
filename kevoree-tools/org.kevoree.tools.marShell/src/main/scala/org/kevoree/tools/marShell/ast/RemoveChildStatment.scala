@@ -24,6 +24,6 @@ package org.kevoree.tools.marShell.ast
 
 case class RemoveChildStatment (childNodeName: String, fatherNodeName: String) extends Statment {
   def getTextualForm: String = {
-    ""
+    "removeChild "+childNodeName+"@"+fatherNodeName
   }
 }

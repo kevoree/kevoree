@@ -4,12 +4,12 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>org.kevoree.library.model.bootstrap</artifactId>
     <name>Kevoree :: CoreLibrary :: Model :: Bootstrap</name>
-    <version>1.7.7</version>
+    <version>1.7.8-SNAPSHOT</version>
 
     <parent>
         <artifactId>org.kevoree.library.model.root</artifactId>
         <groupId>org.kevoree.corelibrary.model</groupId>
-        <version>1.7.7</version>
+        <version>1.7.8-SNAPSHOT</version>
         <relativePath>../org.kevoree.library.model.root/pom.xml</relativePath>
     </parent>
 

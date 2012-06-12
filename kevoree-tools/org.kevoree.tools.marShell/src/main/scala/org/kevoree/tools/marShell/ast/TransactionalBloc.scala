@@ -17,7 +17,7 @@ case class TransactionalBloc(tl : List[Statment]) extends Block (tl){
   
   def getTextualForm : String = {
     val buffer = new StringBuilder
-    buffer.append("tblock {\n")
+    buffer.append(" {\n")
     tl.foreach{ b =>
       buffer.append(b.getTextualForm+"\n")
     }
