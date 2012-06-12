@@ -4,12 +4,12 @@
     <artifactId>org.kevoree.platform.standalone</artifactId>
     <packaging>jar</packaging>
     <name>Kevoree :: Platform :: Standalone</name>
-    <version>1.7.7</version>
+    <version>1.7.8-SNAPSHOT</version>
 
     <parent>
         <artifactId>org.kevoree.platform.root</artifactId>
         <groupId>org.kevoree.platform</groupId>
-        <version>1.7.7</version>
+        <version>1.7.8-SNAPSHOT</version>
         <relativePath>../org.kevoree.platform.root/pom.xml</relativePath>
     </parent>
 

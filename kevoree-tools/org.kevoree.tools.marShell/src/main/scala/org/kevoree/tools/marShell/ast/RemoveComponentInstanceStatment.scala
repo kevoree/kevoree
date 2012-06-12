@@ -16,6 +16,6 @@ package org.kevoree.tools.marShell.ast
 case class RemoveComponentInstanceStatment(cid:ComponentInstanceID)
   extends Statment {
   def getTextualForm: String = {
-    ""
+    "removeComponent "+cid.getTextualForm
   }
 }
