@@ -20,6 +20,6 @@ package org.kevoree.tools.marShell.ast
 
 case class AddGroupStatment(groupName : String, groupTypeName : String,dictionary : java.util.Properties) extends AddInstanceStatment(dictionary) {
   override def getTextualForm: String = {
-    ""
+    "addGroup "+groupName+" : "+groupTypeName+" "+AstHelper.toStringDictionary(dictionary)
   }
 }

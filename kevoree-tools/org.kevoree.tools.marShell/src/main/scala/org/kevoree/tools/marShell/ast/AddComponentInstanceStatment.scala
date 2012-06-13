@@ -15,6 +15,6 @@ package org.kevoree.tools.marShell.ast
 
 case class AddComponentInstanceStatment(cid:ComponentInstanceID, typeDefinitionName : String,dictionary : java.util.Properties) extends AddInstanceStatment(dictionary){
   override def getTextualForm: String = {
-    ""
+    "  addComponent "+cid.getTextualForm+" : "+typeDefinitionName+" "+AstHelper.toStringDictionary(dictionary)
   }
 }
