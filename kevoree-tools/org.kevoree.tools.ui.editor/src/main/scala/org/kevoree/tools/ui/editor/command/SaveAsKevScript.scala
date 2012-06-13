@@ -40,7 +40,6 @@ class SaveAsKevScript extends Command {
     val currentModel = kernel.getModelHandler.getActualModel
 
     val scriptBuffer = new StringBuffer()
-
     scriptBuffer.append(" {\n")
     currentModel.getDeployUnits.foreach{du => scriptBuffer.append("merge 'mvn:"+du.getGroupName+"/"+du.getUnitName+"/"+du.getVersion+"'\n") }
     currentModel.getNodes.foreach( n => {

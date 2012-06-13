@@ -56,10 +56,6 @@ class LocalKevsShell extends JPanel {
 
   var btExecution = MacButtonFactory.makeUnifiedToolBarButton(new JButton("Run", icon))
 
-
-
-
-
   btExecution.addMouseListener(new MouseAdapter() {
     override def mouseClicked(p1: MouseEvent) = {
       kevSCommand.setKernel(kernel)
