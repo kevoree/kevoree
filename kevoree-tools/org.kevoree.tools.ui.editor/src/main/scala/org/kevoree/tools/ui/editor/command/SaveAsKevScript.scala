@@ -41,9 +41,10 @@ class SaveAsKevScript extends Command {
 
     val scriptBuffer = new StringBuffer()
 
-    scriptBuffer.append("tblock {\n")
-    currentModel.getDeployUnits.foreach{du => scriptBuffer.append("merge 'mvn:"+du.getGroupName+"/"+du.getUnitName+"/"+du.getVersion+"\n") }
+    scriptBuffer.append(" {\n")
+    currentModel.getDeployUnits.foreach{du => scriptBuffer.append("merge 'mvn:"+du.getGroupName+"/"+du.getUnitName+"/"+du.getVersion+"'\n") }
     currentModel.getNodes.foreach( n => {
+      scriptBuffer.append("addNode "+n.getName+":"+n.getTypeDefinition.getName+"\n")
       val adapModel =kompareBean.kompare(emptyModel,currentModel,n.getName)
       val script = AdaptationModelWrapper.generateScriptFromAdaptModel(adapModel)
       val planScript = KevScriptWrapper.miniPlanKevScript(script)
@@ -52,7 +53,7 @@ class SaveAsKevScript extends Command {
     scriptBuffer.append("}\n")
     
     
-    println("Script =>"+scriptBuffer.toString)
+    println("Script =================> \n"+scriptBuffer.toString)
     
   }
 

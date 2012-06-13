@@ -38,6 +38,9 @@ import com.explodingpixels.macwidgets.plaf.HudLabelUI
 import java.awt.Color
 import com.explodingpixels.macwidgets.{HudWidgetFactory, HudWindow}
 import javax.swing._
+import org.kevoree.tools.marShell.KevScriptOfflineEngine
+import org.kevoree.cloner.ModelCloner
+import org.kevoree.KevoreeFactory
 
 /**
  * Created by IntelliJ IDEA.
@@ -88,6 +91,25 @@ class KevScriptCommand extends Command {
       def act() {
         p match {
           case s: String => {
+
+            val cloner = new ModelCloner
+            val clonedModel = cloner.clone(kernel.getModelHandler.getActualModel)
+            val kevOfflineEngine = new KevScriptOfflineEngine(clonedModel)
+            kevOfflineEngine.addVariable("kevoree.verions",KevoreeFactory.getVersion)
+            import scala.collection.JavaConversions._
+            System.getProperties.foreach{ prop =>
+              kevOfflineEngine.addVariable(prop._1,prop._2)
+            }
+            kevOfflineEngine.append("{"+s.replace("tblock","")+"}")
+            try {
+              val newModel = kevOfflineEngine.interpret()
+              val loadCMD = new LoadModelCommand
+              loadCMD.setKernel(kernel)
+              loadCMD.execute(newModel)
+            } catch {
+              case _@e => displayError(e.getMessage)
+            }
+              /*
             val parser = new KevsParser
             parser.parseScript(s) match {
               case Some(script) => {
@@ -119,7 +141,7 @@ class KevScriptCommand extends Command {
                 logger.error("Error while parsing KevScript " + parser.lastNoSuccess)
                 displayError(parser.lastNoSuccess.toString)
               }
-            }
+            } */
           }
           case _@e => logger.error("Bad parameter while trying to execute KevScript=> " + e)
         }

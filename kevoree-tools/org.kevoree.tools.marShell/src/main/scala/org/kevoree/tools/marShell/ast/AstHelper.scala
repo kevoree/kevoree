@@ -24,8 +24,13 @@ object AstHelper {
     val buffer = new StringBuffer()
     buffer.append("{")
     import scala.collection.JavaConversions._
+    var isFirst = true
     dico.keys().foreach(k => {
+      if (!isFirst){
+        buffer.append(",")
+      }
       buffer.append(k+"='"+dico.get(k)+"'")
+      isFirst = false
     })
     buffer.append("}")
     buffer.toString

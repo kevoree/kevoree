@@ -20,4 +20,12 @@ package org.kevoree.tools.marShell.ast
 
 case class ComponentInstanceID(componentInstanceName : String,nodeName : Option[String]) {
 
+  def getTextualForm: String = {
+    nodeName match {
+      case None =>  componentInstanceName
+      case Some(e)=> componentInstanceName+"@"+e
+
+    }
+  }
+
 }

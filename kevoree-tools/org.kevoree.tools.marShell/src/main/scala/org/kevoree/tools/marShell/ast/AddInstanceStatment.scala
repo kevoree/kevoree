@@ -19,7 +19,7 @@ class AddInstanceStatment(pprops: java.util.Properties) extends Statment {
   def props = pprops
 
   def getTextualForm: String = {
-    ""
+    "" //Always overrided
   }
 
 }
