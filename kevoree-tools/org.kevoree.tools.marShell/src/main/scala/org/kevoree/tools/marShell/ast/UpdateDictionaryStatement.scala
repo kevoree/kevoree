@@ -27,7 +27,7 @@ case class UpdateDictionaryStatement(instanceName : String,nodeName:Option[Strin
     import scala.collection.JavaConversions._
     var res = List[String]()
     fraProperties.foreach{ t =>
-      if(!t._2.isEmpty){
+      if(!t._2.isEmpty && t._1 != "*"){
         res = res ++ List(AstHelper.toStringDictionary(t._2)+"@"+t._1)
       }
     }
@@ -36,8 +36,8 @@ case class UpdateDictionaryStatement(instanceName : String,nodeName:Option[Strin
 
   def getNodeName : String = {
     nodeName match {
-      case None => ""
-      case Some(n)=> "@"+n
+      case Some(n) if (n!="*")=> "@"+n
+      case _ => ""
     }
   }
 
