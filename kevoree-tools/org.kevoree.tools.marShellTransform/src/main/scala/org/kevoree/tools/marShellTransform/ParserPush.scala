@@ -33,6 +33,7 @@ import util.parsing.combinator.syntactical.StandardTokenParsers
 import collection.JavaConversions._
 
 
+
 /**
  * Created by jed
  * User: jedartois@gmail.com
@@ -42,7 +43,7 @@ import collection.JavaConversions._
 
 class ParserPush extends StandardTokenParsers {
 
-  lexical.delimiters ++= List("/", ":", ",", "=", "{", "}", "@")
+  lexical.delimiters ++= List("/", ":", ",", "=", "{", "}", "@","+","!","*")
 
 
   def operation = numericLit ^^ {
@@ -87,13 +88,20 @@ class ParserPush extends StandardTokenParsers {
     case s => s
   }
 
+  def checksum = numericLit ^^ {
+    case s => s
+  }
+
   // 3:T1
   def parseIDPredicate: Parser[IDPredicate] = operation ~ ":" ~ instanceID ^^ {
     case d ~ _ ~ t => new IDPredicate(d.toInt, t)
   }
 
+  def parseSerialAll : Parser[String]  = "*" ^^ {
+    case s => s
+  }
   // 0=100, ...
-  def parsePropertiesPredicate: Parser[PropertiePredicate] = operation ~ "=" ~ opt((value | ident )) ^^ {
+  def parsePropertiesPredicate: Parser[PropertiePredicate] = operation ~ "=" ~ (value | ident | parseSerialAll) ^^ {
     case d ~ _ ~ t => new PropertiePredicate(d.toInt, t.toString)
   }
 
@@ -135,13 +143,13 @@ class ParserPush extends StandardTokenParsers {
   }
 
   //  global
-  def requestParse: Parser[Adaptations] = nodeName ~ ":" ~ nodeTypeName ~ "@" ~ "{" ~ opt(parseGlobalDefinitions) ~ repsep(( parseABI | parseUDI | parseAIN | parseRIN ), "/") ~ opt("/") ~ "}" ^^ {
-    case nodename ~ _ ~ nodeTypeName ~ _ ~ _ ~ definitions ~ adaptations ~ _ ~ _ => new Adaptations(nodename, nodeTypeName, definitions, adaptations)
+  def requestParse: Parser[Adaptations] = nodeName ~ ":" ~ nodeTypeName ~ "@" ~ "{" ~ opt(parseGlobalDefinitions) ~ repsep(( parseABI | parseUDI | parseAIN | parseRIN ), "/") ~ opt("/") ~ "}" ~ "+" ~checksum~ "!" ^^ {
+    case nodename ~ _ ~ nodeTypeName ~ _ ~ _ ~ definitions ~ adaptations ~ _ ~ _~ _ ~ checksum~ _=> new Adaptations(nodename, nodeTypeName, definitions, adaptations,checksum.toLong)
   }
 
 
-  def parseAdaptations(chaine: String): Adaptations = {
-
+  def parseAdaptations(chaine: String): Adaptations =
+  {
     requestParse(new lexical.Scanner(chaine)) match {
       case Success(_rules, _) => _rules
       case Failure(msg, _) => throw new Exception("Bad syntax: " + msg)
