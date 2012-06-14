@@ -33,17 +33,48 @@ public class KevoreeMenuBar extends JMenuBar {
 
         /* Load command */
         JMenuItem fileOpen = new JMenuItem("Open");
-        LoadModelCommandUI cmdLM = new LoadModelCommandUI();
-        cmdLM.setKernel(kernel);
+        LoadModelCommandUI cmdLM2 = new LoadModelCommandUI();
+        ClearModelCommand cmdLM1 = new ClearModelCommand();
+        cmdLM1.setKernel(kernel);
+        cmdLM2.setKernel(kernel);
+        CompositeCommand cmdLM = new CompositeCommand();
+        cmdLM.addCommand(cmdLM1);
+        cmdLM.addCommand(cmdLM2);
         fileOpen.addActionListener(new CommandActionListener(cmdLM));
         file.add(fileOpen);
 
+        JMenuItem fileMerge = new JMenuItem("Merge");
+        LoadModelCommandUI cmdLMerge = new LoadModelCommandUI();
+        cmdLMerge.setKernel(kernel);
+        fileMerge.addActionListener(new CommandActionListener(cmdLMerge));
+        file.add(fileMerge);
+
+        /* Load command */
+        JMenuItem kevsOpen = new JMenuItem("Open from KevScript");
+        LoadKevScriptCommandUI cmdKevOpen = new LoadKevScriptCommandUI();
+        cmdKevOpen.setKernel(kernel);
+        kevsOpen.addActionListener(new CommandActionListener(cmdKevOpen));
+        file.add(kevsOpen);
+
         /* Load remote ui command */
-        JMenuItem fileOpenRemote = new JMenuItem("Open from node");
+        JMenuItem fileMergeRemote = new JMenuItem("Merge from node");
         LoadRemoteModelUICommand cmdLMRemote = new LoadRemoteModelUICommand();
         cmdLMRemote.setKernel(kernel);
-        fileOpenRemote.addActionListener(new CommandActionListener(cmdLMRemote));
+        fileMergeRemote.addActionListener(new CommandActionListener(cmdLMRemote));
+        file.add(fileMergeRemote);
+
+        /* Load remote ui command */
+        JMenuItem fileOpenRemote = new JMenuItem("Open from node");
+        LoadRemoteModelUICommand cmdLMORemote2 = new LoadRemoteModelUICommand();
+        ClearModelCommand cmdLMORemote1 = new ClearModelCommand();
+        cmdLMORemote2.setKernel(kernel);
+        cmdLMORemote1.setKernel(kernel);
+        CompositeCommand cmdLMORemote = new CompositeCommand();
+        cmdLM.addCommand(cmdLMORemote1);
+        cmdLM.addCommand(cmdLMORemote2);
+        fileOpenRemote.addActionListener(new CommandActionListener(cmdLMORemote));
         file.add(fileOpenRemote);
+
 
         JMenuItem fileSave = new JMenuItem("Save");
         SaveActuelModelCommand cmdSM = new SaveActuelModelCommand();
@@ -58,7 +89,7 @@ public class KevoreeMenuBar extends JMenuBar {
         file.add(saveImage);
 
         JMenuItem saveKCS = new JMenuItem("SaveAsKevScript");
-        SaveAsKevScript cmdSaveKCS = new SaveAsKevScript();
+        SaveAsKevScriptCommandUI cmdSaveKCS = new SaveAsKevScriptCommandUI();
         cmdSaveKCS.setKernel(kernel);
         saveKCS.addActionListener(new CommandActionListener(cmdSaveKCS));
         file.add(saveKCS);
