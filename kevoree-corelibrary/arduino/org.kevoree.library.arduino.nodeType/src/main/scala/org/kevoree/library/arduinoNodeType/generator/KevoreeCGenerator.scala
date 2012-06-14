@@ -45,7 +45,8 @@ class KevoreeCGenerator
     context.getGenerator.addLibrary("QueueList.h",this.getClass.getClassLoader.getResourceAsStream("arduino/library/QueueList/QueueList.h"))
 
     generateKcFrameworkHeaders(ktypes, ArduinoBoardType.getFromTypeName(boardName), pmax)
-    generateKcConstMethods(nodeName,anodeType.getClass.getSimpleName,ktypes);
+    generateKcConstMethods(nodeName,anodeType.getClass.getSimpleName,ktypes)
+    generateConstCheckSum(nodeName,anodeType.getClass.getSimpleName,ktypes)
     generateKcFramework
 
     componentTypes.foreach {
