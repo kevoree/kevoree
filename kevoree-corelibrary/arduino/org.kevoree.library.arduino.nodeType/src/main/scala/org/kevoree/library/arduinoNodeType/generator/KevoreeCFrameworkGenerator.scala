@@ -19,7 +19,9 @@ import util.Random
 import org.kevoree.library.arduinoNodeType.ArduinoBoardType._
 import org.kevoree.library.arduinoNodeType.ArduinoBoardType
 import org.kevoree.tools.arduino.framework.RawTypeHelper
-
+import org.kevoree.library.arduinoNodeType.ArduinoNode
+import org.kevoree.library.arduinoNodeType.utils.ArduinoHelper
+;
 trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
 
   def generateMaxSize(boardType: ArduinoBoardType): String = {
@@ -134,6 +136,57 @@ trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
 
   }
 
+  def generateConstCheckSum(nodename : String,nodeTypeName:String, types: List[TypeDefinition]): Unit = {
+
+    var checksum : Long = 0
+    var checksum_header : Long = 0
+    var checksum_typedefinition : Long = 0
+    var checksum_portdefinition : Long = 0
+    var checksum_properties : Long = 0
+
+    checksum_header +=ArduinoHelper.checksumArduino(nodename.toLowerCase)
+    checksum_header +=ArduinoHelper.checksumArduino(nodeTypeName.toLowerCase)
+
+    //typedefinition
+    types.foreach {
+      ktype => {
+        val typename = ktype.getName
+        checksum_typedefinition   +=ArduinoHelper.checksumArduino(typename.toLowerCase)
+      }
+    }
+    //portdefinition
+    types.filter(p => p.isInstanceOf[ComponentType]).foreach {
+      ktype =>
+        val ct = ktype.asInstanceOf[ComponentType]
+        (ct.getProvided.toList ++ ct.getRequired.toList).toList.foreach {
+          ptRef =>
+          {
+            val portName = ptRef.getName
+            checksum_portdefinition +=ArduinoHelper.checksumArduino(portName.toLowerCase)
+          }}}
+
+    //properties
+    var propertiesGenerated: List[String] = List()
+    types.foreach {
+      ktype =>
+        if (ktype.getDictionaryType.isDefined) {
+          ktype.getDictionaryType.get.getAttributes.foreach {
+            att =>  {
+              val propName = att.getName
+              checksum_properties +=ArduinoHelper.checksumArduino(propName.toLowerCase)
+
+            }
+
+          }
+        }
+    }
+    checksum +=checksum_header
+   // checksum +=checksum_typedefinition
+   // checksum +=checksum_portdefinition
+    //checksum += checksum_properties
+
+    context b "const long checksumTypeDefiniton = " + checksum + ";"
+  }
 
   def generateKcConstMethods(nodename : String,nodeTypeName:String, types: List[TypeDefinition]): Unit = {
 
@@ -179,16 +232,17 @@ trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
     context b "void printNodeName() {"
     context b "Serial.print(F(\""+nodename+"\")); "
     context b "}"
+
     context b "void printNodeTypeName() {"
     context b "Serial.print(F(\""+nodeTypeName+"\")); "
     context b "}"
 
 
-           /*
-    context b "void printlnNodeName() {"
-    context b "Serial.println(F(\""+nodename+"\")); "
-    context b "}"
-             */
+    /*
+context b "void printlnNodeName() {"
+context b "Serial.println(F(\""+nodename+"\")); "
+context b "}"
+    */
   }
 
 
@@ -232,11 +286,11 @@ trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
 
               if(RawTypeHelper.isArduinoTypeArray(rawType))
               {
-               // parsing array
+                // parsing array
                 rawType match {
                   case _ if (rawType.contains("IntList4")) =>
                   {
-                        context b  "parse_IntList4(val,instance->"+attribute.getName+");"
+                    context b  "parse_IntList4(val,instance->"+attribute.getName+");"
                   }
 
                 }
@@ -442,7 +496,7 @@ trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
     context b "char instNameBuf2[MAX_INST_ID];"
     context b "unsigned long previousBootTime;"
     context b "void setup(){"
-    context b "Serial.begin(115200);" //TO REMOVE DEBUG ONLY
+    context b "Serial.begin("+ ArduinoNode.baudrate+");" //TO REMOVE DEBUG ONLY
 
     context b "initPMEM();"
 
@@ -488,7 +542,7 @@ trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
           //context b "EEPROM.write(eepromIndex," + propsCodeMap.get(dic._1).get + ");eepromIndex++;"
           //context b "EEPROM.write(eepromIndex,delimsEQ[0]);eepromIndex++;"
             val key = dic._1.filter(keyC => (Character.isLetterOrDigit(keyC) || keyC == '_') )
-            val value = dic._2.filter(keyC => (Character.isLetterOrDigit(keyC) || keyC == '_' || keyC == ';' || keyC == '.' || keyC == '\\' || keyC == '-' ) )
+            val value = dic._2.filter(keyC => (Character.isLetterOrDigit(keyC) || keyC == '_' || keyC == ';' || keyC == '.' || keyC == '\\' || keyC == '-' || keyC == '*' ) )
             if (dictionaryResult.length() != 0) {
               dictionaryResult.append(",")
             }
