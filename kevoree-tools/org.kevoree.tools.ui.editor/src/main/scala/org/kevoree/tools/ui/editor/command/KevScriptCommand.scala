@@ -95,7 +95,7 @@ class KevScriptCommand extends Command {
             val cloner = new ModelCloner
             val clonedModel = cloner.clone(kernel.getModelHandler.getActualModel)
             val kevOfflineEngine = new KevScriptOfflineEngine(clonedModel)
-            kevOfflineEngine.addVariable("kevoree.verions",KevoreeFactory.getVersion)
+            kevOfflineEngine.addVariable("kevoree.version",KevoreeFactory.getVersion)
             import scala.collection.JavaConversions._
             System.getProperties.foreach{ prop =>
               kevOfflineEngine.addVariable(prop._1,prop._2)

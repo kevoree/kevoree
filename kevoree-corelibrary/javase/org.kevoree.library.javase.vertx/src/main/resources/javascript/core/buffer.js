@@ -1,9 +1,11 @@
-/**
- * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
+/*
+ * Copyright 2011-2012 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * 	http://www.gnu.org/licenses/lgpl-3.0.txt
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -11,17 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kevoree.tools.marShellTransform.ast
 
-/**
- * Created by jed
- * User: jedartois@gmail.com
- * Date: 28/03/12
- * Time: 16:40
- */
+var vertx = vertx || {};
 
-case class Adaptations(nodeName : String, nodeTypeName : String, definitions : Option[GlobalDefintions],adaptations : java.util.List[Adaptation],checksum : Long) {
-
+if (!vertx.Buffer) {
+  vertx.Buffer = function(p) {
+    return new org.vertx.java.core.buffer.Buffer(p);
+  }
 }
-
-

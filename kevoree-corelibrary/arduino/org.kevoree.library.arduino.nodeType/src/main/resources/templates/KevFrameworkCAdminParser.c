@@ -124,7 +124,7 @@ printScriptFromEEPROM ()
     {
          Serial.println (sepAdminChar);
     }
-
+   // todo checksum EEPROM
   do
     {
       inBytes[indexInBytes] = readPMemory (indexEEPROM);
@@ -158,13 +158,13 @@ printScriptFromEEPROM ()
            		      i++;
            		    }
            		  while (inBytes[i] != ',' && inBytes[i] != '\0' && inBytes[i]!= sepAdminChar );
-           		  if (inBytes[i + 1] != '\0')
+           		  if (inBytes[i] != '\0')
            		    {
            		      Serial.print (F (","));
            		    }
            		  i++;
            		}
-           	      while (inBytes[i] != '\0');
+	      while (inBytes[i+1]  != '\0' && i <= indexInBytes);
 	      }
 
 	    }
@@ -194,13 +194,13 @@ printScriptFromEEPROM ()
 		      i++;
 		    }
 		  while (inBytes[i] != ',' && inBytes[i] != '\0' && inBytes[i]!= sepAdminChar );
-		  if (inBytes[i + 1] != '\0')
+		  if (inBytes[i] != '\0')
 		    {
 		      Serial.print (F (","));
 		    }
 		  i++;
 		}
-	      while (inBytes[i] != '\0');
+	      while (inBytes[i+1]  != '\0' && i <= indexInBytes);
 	           }
 	    }
 	  else if (inBytes[0] == ABI_C)
@@ -259,6 +259,10 @@ printScriptFromEEPROM ()
     }
   while ((inBytes[indexInBytes - 1] != endAdminChar)&&  (indexEEPROM != eepromIndex+1)	 && (indexEEPROM < EEPROM_MAX_SIZE));
 
-  Serial.println (endAdminChar);
+  Serial.print (endAdminChar);
+  Serial.print("+");
+  Serial.print(checksumTypeDefiniton);
+  Serial.println("!");
+
   Serial.flush ();
 }
