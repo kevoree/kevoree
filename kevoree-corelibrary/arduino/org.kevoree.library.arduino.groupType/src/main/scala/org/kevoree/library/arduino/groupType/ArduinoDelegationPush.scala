@@ -2,11 +2,11 @@ package org.kevoree.library.arduino.groupType
 
 import org.slf4j.{Logger, LoggerFactory}
 import reflect.BeanProperty
-import org.kevoree.{KevoreeFactory, ContainerRoot}
 import java.lang.String
 import org.kevoree.api.service.core.handler.{KevoreeModelHandlerService}
 import org.kevoree.api.service.core.script.KevScriptEngineFactory
 import org.kevoree.extra.kserial.Utils.KHelpers
+import org.kevoree.{Instance, KevoreeFactory, ContainerRoot}
 
 /**
  * User: ffouquet
@@ -35,6 +35,24 @@ class ArduinoDelegationPush(handler: KevoreeModelHandlerService, groupName: Stri
     }
   }
 
+
+  private def setProperty (model: ContainerRoot, instance: Instance, name: String, key: String, isFragment: Boolean = false, nodeNameForFragment: String = "",value : Object) = {
+    instance.getDictionary match {
+      case None => {
+        None
+      }
+      case Some(dictionary) => {
+        dictionary.getValues.find(dictionaryAttribute =>
+          dictionaryAttribute.getAttribute.getName == key &&
+            ((isFragment && dictionaryAttribute.getTargetNode.isDefined && dictionaryAttribute.getTargetNode.get.getName == nodeNameForFragment) || !isFragment)) match {
+          case None =>   // todo
+          case Some(dictionaryAttribute) => dictionaryAttribute.setValue(value.toString)
+        }
+      }
+    }
+  }
+
+
   def deployNode(targetNodeName: String) {
     if (model == null) {
       model = handler.getLastModel
@@ -50,12 +68,24 @@ class ArduinoDelegationPush(handler: KevoreeModelHandlerService, groupName: Stri
               })
 
               var serialPort = org.kevoree.framework.KevoreeFragmentPropertyHelper.getPropertyFromFragmentGroup(group.eContainer.asInstanceOf[ContainerRoot],group.getName,"serialport",targetNodeName)
-              if(serialPort != null && serialPort == "*"){
+              if(serialPort != null && serialPort == "*")
+              {
                 val ports = KHelpers.getPortIdentifiers
                 if(ports.size() > 0){
                   serialPort = ports.get(0)
                 }
+              }else
+              {
+                  // update model
+                  model.getHubs.foreach(channel =>
+                  {
+                    setProperty(model, channel, channel.getName, "serialport", true, targetNodeName,serialPort.replace("/",";"))
+                  }
+                  )
+
               }
+
+
 
             //  val att = dictionary.getValues.find(value => value.getAttribute.getName == "serialport" && value.getTargetNode == targetNodeName).getOrElse(null)
               gNodeType.startNode()

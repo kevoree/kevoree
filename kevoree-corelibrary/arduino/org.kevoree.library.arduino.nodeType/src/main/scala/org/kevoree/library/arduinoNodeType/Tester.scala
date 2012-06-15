@@ -11,11 +11,17 @@ import org.kevoree.framework.KevoreeXmiHelper
 
 object Tester extends  App {
 
-  val model = KevoreeXmiHelper.load("/home/jed/Desktop/model.kev")
+  //val model = KevoreeXmiHelper.load("/home/jed/arduino.kev")
 
 
+  while(true){
 
-  ArduinoModelGetHelper.getCurrentModel(model, "node0","/dev/ttyACM0")
+
+    println(ArduinoModelGetHelper.pull_model_arduino("*",10))
+
+
+  }
+
 
 
   
