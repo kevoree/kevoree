@@ -137,8 +137,15 @@ class OpenKevsShell extends Command {
         //TODO SAVE CURRENT MODEL
         val script = kevsPanel.getModel
         if (script != null) {
-          import org.kevoree.tools.marShell.interpreter.KevsInterpreterAspects._
           PositionedEMFHelper.updateModelUIMetaData(kernel)
+          val kevSCommand = new KevScriptCommand
+          kevSCommand.setKernel(kernel)
+          kevSCommand.execute(kevsPanel.codeEditor.getText)
+
+
+
+          /*
+          import org.kevoree.tools.marShell.interpreter.KevsInterpreterAspects._
 
           val outputStream: ByteArrayOutputStream = new ByteArrayOutputStream
           KevoreeXmiHelper.saveStream(outputStream, kernel.getModelHandler.getActualModel)
@@ -155,9 +162,7 @@ class OpenKevsShell extends Command {
             val loadCMD = new LoadModelCommand
             loadCMD.setKernel(kernel)
             loadCMD.execute(file.getAbsolutePath)
-
-
-          }
+          } */
         }
       }
     })
