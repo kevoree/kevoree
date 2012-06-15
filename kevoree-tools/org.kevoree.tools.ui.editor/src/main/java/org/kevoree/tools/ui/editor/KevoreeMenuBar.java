@@ -70,8 +70,8 @@ public class KevoreeMenuBar extends JMenuBar {
         cmdLMORemote2.setKernel(kernel);
         cmdLMORemote1.setKernel(kernel);
         CompositeCommand cmdLMORemote = new CompositeCommand();
-        cmdLM.addCommand(cmdLMORemote1);
-        cmdLM.addCommand(cmdLMORemote2);
+        cmdLMORemote.addCommand(cmdLMORemote1);
+        cmdLMORemote.addCommand(cmdLMORemote2);
         fileOpenRemote.addActionListener(new CommandActionListener(cmdLMORemote));
         file.add(fileOpenRemote);
 
