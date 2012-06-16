@@ -112,10 +112,10 @@ public class AndroidNode extends AbstractNodeType {
 
 	@Override
 	public org.kevoree.api.PrimitiveCommand getPrimitive (AdaptationPrimitive adaptationPrimitive) {
-        if(adaptationPrimitive.getPrimitiveType().getName().equals(JavaSePrimitive.RemoveDeployUnit())){
-              return new NoopPrimitiveCommand();
-        } else {
+        //if(adaptationPrimitive.getPrimitiveType().getName().equals(JavaSePrimitive.RemoveDeployUnit())){
+        //      return new NoopPrimitiveCommand();
+        //} else {
             return mapper.buildPrimitiveCommand(adaptationPrimitive, this.getNodeName());
-        }
+        //}
 	}
 }

@@ -91,9 +91,9 @@
         <module>../org.kevoree.platform.service</module>
         <module>../org.kevoree.platform.mavenrunner</module>
 
-        <module>../org.kevoree.platform.android.ui</module>
+     <!--   <module>../org.kevoree.platform.android.ui</module>
         <module>../org.kevoree.platform.android.core.model</module>
-        <module>../org.kevoree.platform.android.core</module>
+        <module>../org.kevoree.platform.android.core</module>-->
         <module>../org.kevoree.platform.android.apk</module>
     </modules>
 
