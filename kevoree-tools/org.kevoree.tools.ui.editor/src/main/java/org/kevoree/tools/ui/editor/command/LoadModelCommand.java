@@ -154,6 +154,8 @@ public class LoadModelCommand implements Command {
             kernel.getModelPanel().addBinding(uib);
         }
 
+        kernel.getEditorPanel().unshowPropertyEditor(); //CLOSE PROPERTY EDITOR IF OPEN
+
 
         //REFRESH UI
         kernel.getEditorPanel().doLayout();
