@@ -48,14 +48,18 @@ public class ArduinoSerialDelegation extends AbstractGroupType {
             @Override
             public void run() {
                 delegationPush.setModel(null);//INVALIDATE MODEl
+				try {
                 delegationPush.deployAll();
+				} catch (Exception e) {
+					logger.error("Unable to take into account model update", e);
+				}
             }
         };
         previous.start();
     }
 
     @Override
-    public void push(ContainerRoot model, String targetNodeName) {
+    public void push(ContainerRoot model, String targetNodeName) throws Exception{
         if (!isStarted) {
             startGroupDelegation();
         }

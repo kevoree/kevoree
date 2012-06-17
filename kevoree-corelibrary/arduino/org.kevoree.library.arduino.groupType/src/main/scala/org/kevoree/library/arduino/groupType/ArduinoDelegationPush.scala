@@ -14,12 +14,12 @@ import org.kevoree.{Instance, KevoreeFactory, ContainerRoot}
  * Time: 13:55
  */
 
-class ArduinoDelegationPush(handler: KevoreeModelHandlerService, groupName: String,bs : org.kevoree.api.Bootstraper,kevSFact : KevScriptEngineFactory) {
+class ArduinoDelegationPush (handler: KevoreeModelHandlerService, groupName: String, bs: org.kevoree.api.Bootstraper, kevSFact: KevScriptEngineFactory) {
   protected var logger: Logger = LoggerFactory.getLogger(this.getClass)
   @BeanProperty
   var model: ContainerRoot = _
 
-  def deployAll() {
+  def deployAll () {
 
     if (model == null) {
       model = handler.getLastModel
@@ -36,7 +36,7 @@ class ArduinoDelegationPush(handler: KevoreeModelHandlerService, groupName: Stri
   }
 
 
-  private def setProperty (model: ContainerRoot, instance: Instance, name: String, key: String, isFragment: Boolean = false, nodeNameForFragment: String = "",value : Object) = {
+  private def setProperty (model: ContainerRoot, instance: Instance, name: String, key: String, isFragment: Boolean = false, nodeNameForFragment: String = "", value: Object) = {
     instance.getDictionary match {
       case None => {
         None
@@ -45,7 +45,7 @@ class ArduinoDelegationPush(handler: KevoreeModelHandlerService, groupName: Stri
         dictionary.getValues.find(dictionaryAttribute =>
           dictionaryAttribute.getAttribute.getName == key &&
             ((isFragment && dictionaryAttribute.getTargetNode.isDefined && dictionaryAttribute.getTargetNode.get.getName == nodeNameForFragment) || !isFragment)) match {
-          case None =>   // todo
+          case None => // todo
           case Some(dictionaryAttribute) => dictionaryAttribute.setValue(value.toString)
         }
       }
@@ -53,59 +53,60 @@ class ArduinoDelegationPush(handler: KevoreeModelHandlerService, groupName: Stri
   }
 
 
-  def deployNode(targetNodeName: String) {
+  def deployNode (targetNodeName: String): Boolean = {
     if (model == null) {
       model = handler.getLastModel
     }
     try {
-      val nodeType = bs.bootstrapNodeType(model, targetNodeName,handler,kevSFact)
+      val nodeType = bs.bootstrapNodeType(model, targetNodeName, handler, kevSFact)
       nodeType match {
         case Some(gNodeType) => {
           model.getGroups.find(g => g.getName == groupName) match {
             case Some(group) => {
               val dictionary = group.getDictionary.getOrElse({
-                val newdic = KevoreeFactory.createDictionary; group.setDictionary(Some(newdic)); newdic
+                val newdic = KevoreeFactory.createDictionary
+                group.setDictionary(Some(newdic))
+                newdic
               })
 
-              var serialPort = org.kevoree.framework.KevoreeFragmentPropertyHelper.getPropertyFromFragmentGroup(group.eContainer.asInstanceOf[ContainerRoot],group.getName,"serialport",targetNodeName)
-              if(serialPort != null && serialPort == "*")
-              {
+              val serialPortOption = org.kevoree.framework.KevoreePropertyHelper.getStringPropertyForGroup(group.eContainer.asInstanceOf[ContainerRoot], group.getName, "serialport", isFragment = true, nodeNameForFragment = targetNodeName)
+              var serialPort = "*"
+              if ((serialPortOption.isDefined && serialPortOption.get == "*") || serialPortOption.isEmpty) {
                 val ports = KHelpers.getPortIdentifiers
-                if(ports.size() > 0){
+                if (ports.size() > 0) {
                   serialPort = ports.get(0)
                 }
-              }else
-              {
-                  // update model
-                  model.getHubs.foreach(channel =>
-                  {
-                    setProperty(model, channel, channel.getName, "serialport", true, targetNodeName,serialPort.replace("/",";"))
-                  }
-                  )
+              } else {
+                // update model
+                model.getHubs.foreach(channel => {
+                  setProperty(model, channel, channel.getName, "serialport", true, targetNodeName, serialPort.replace("/", ";"))
+                }
+                                     )
 
               }
 
 
 
-            //  val att = dictionary.getValues.find(value => value.getAttribute.getName == "serialport" && value.getTargetNode == targetNodeName).getOrElse(null)
+              var sent = false
+              //  val att = dictionary.getValues.find(value => value.getAttribute.getName == "serialport" && value.getTargetNode == targetNodeName).getOrElse(null)
               gNodeType.startNode()
               gNodeType.getClass.getMethods.find(method => method.getName == "push") match {
                 case Some(method) => {
-                  method.invoke(gNodeType, targetNodeName, model, serialPort)
+                  sent = method.invoke(gNodeType, targetNodeName, model, serialPort).asInstanceOf[Boolean]
                 }
-                case None => logger.error("No push method in group for name " + groupName)
+                case None => logger.error("No push method in group for name {}", groupName); throw new Exception("No push method in group for name " + groupName)
               }
               gNodeType.stopNode()
-
+              sent
 
             }
-            case None => logger.error("Group not found for name " + groupName)
+            case None => logger.error("Group not found for name {}", groupName); throw new Exception("Group not found for name " + groupName)
           }
         }
-        case None => logger.warn("Can't bootstrap NodeType")
+        case None => logger.warn("Can't bootstrap NodeType"); throw new Exception("Can't bootstrap NodeType")
       }
     } catch {
-      case _@e => logger.error("Can deploy model to node " + targetNodeName, e)
+      case _@e => logger.error("Can deploy model to node " + targetNodeName, e); throw e
     }
   }
 
