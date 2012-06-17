@@ -1,19 +1,18 @@
 package org.kevoree.library.javase.gossiperNetty.group
 
-import collection.mutable.HashMap
 import scala.collection.JavaConversions._
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService
 import java.lang.Math
 import org.slf4j.LoggerFactory
 import org.kevoree.library.javase.gossiperNetty.PeerSelector
-import actors.{Actor, DaemonActor}
+import actors.Actor
+import collection.mutable
 
-class GroupScorePeerSelector (timeout: Long, modelHandlerService: KevoreeModelHandlerService, nodeName: String)
-  extends PeerSelector with Actor {
+class GroupScorePeerSelector (timeout: Long, modelHandlerService: KevoreeModelHandlerService, nodeName: String) extends PeerSelector with Actor {
 
   private val logger = LoggerFactory.getLogger(classOf[GroupScorePeerSelector])
-  private val peerCheckMap = new HashMap[String, (Long, Int)]
-  private val peerNbFailure = new HashMap[String, Int]
+  private val peerCheckMap = new mutable.HashMap[String, (Long, Int)]
+  private val peerNbFailure = new mutable.HashMap[String, Int]
 
   case class STOP ()
 
@@ -69,10 +68,9 @@ class GroupScorePeerSelector (timeout: Long, modelHandlerService: KevoreeModelHa
         var minScore = Long.MaxValue
 
 
-        group.getSubNodes
-          .filter(node => !node.getName.equals(nodeName))
-          .filter(node => model.getNodeNetworks
-          .exists(nn => nn.getInitBy.get.getName == nodeName && nn.getTarget.getName == node.getName))
+        group.getSubNodes.filter(node => !node.getName.equals(nodeName)).filter(node => model.getNodeNetworks
+          .exists(nn => nn.getInitBy.get.getName == nodeName && nn.getTarget.getName == node.getName
+          || nn.getInitBy.get.getName == node.getName && nn.getTarget.getName == node.getName))
           .foreach {
           subNode => {
             if (getScore(subNode.getName) <= minScore) {
@@ -80,8 +78,7 @@ class GroupScorePeerSelector (timeout: Long, modelHandlerService: KevoreeModelHa
             }
           }
         }
-        group.getSubNodes
-          .filter(node => !node.getName.equals(nodeName))
+        group.getSubNodes.filter(node => !node.getName.equals(nodeName))
           /*.filter(node => model.getNodeNetworks
           .exists(nn => nn.getInitBy.getName == nodeName && nn.getTarget.getName == node.getName))*/
           .foreach {
@@ -97,16 +94,17 @@ class GroupScorePeerSelector (timeout: Long, modelHandlerService: KevoreeModelHa
 
           //Init node score
           //initNodeScore(nodeName)
-          modifyNodeScore(nodeName1, false)
+          modifyNodeScore(nodeName1, failure = false)
 
 
           logger.debug("return a peer between connected nodes: " + nodeName1)
           nodeName1
         } else {
+          logger.debug("Unable to select a peer")
           ""
         }
       }
-      case None => logger.debug(groupName + " not Found"); ""
+      case None => logger.debug(groupName + " not Found so we are unable to select a peer"); ""
     }
   }
 

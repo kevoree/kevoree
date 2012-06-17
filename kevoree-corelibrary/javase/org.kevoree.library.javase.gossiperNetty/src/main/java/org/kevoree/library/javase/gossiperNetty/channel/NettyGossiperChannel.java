@@ -20,10 +20,10 @@ import java.util.*;
 @Library(name = "JavaSE")
 @DictionaryType({
 		@DictionaryAttribute(name = "interval", defaultValue = "30000", optional = true),
-		@DictionaryAttribute(name = "port", defaultValue = "9000", optional = true, fragmentDependant = true),
-		@DictionaryAttribute(name = "FullUDP", defaultValue = "true", optional = true, vals= {"true", "false"}),
-		@DictionaryAttribute(name = "sendNotification", defaultValue = "false", optional = true, vals= {"true", "false"}),
-		@DictionaryAttribute(name = "alwaysAskModel", defaultValue = "false", optional = true, vals= {"true", "false"})
+		@DictionaryAttribute(name = "gossip_port", defaultValue = "9000", optional = true, fragmentDependant = true),
+		@DictionaryAttribute(name = "FullUDP", defaultValue = "true", optional = true, vals = {"true", "false"}),
+		@DictionaryAttribute(name = "sendNotification", defaultValue = "false", optional = true, vals = {"true", "false"}),
+		@DictionaryAttribute(name = "alwaysAskModel", defaultValue = "false", optional = true, vals = {"true", "false"})
 })
 @ChannelTypeFragment
 public class NettyGossiperChannel extends AbstractChannelFragment implements GossiperComponent {
@@ -174,13 +174,15 @@ public class NettyGossiperChannel extends AbstractChannelFragment implements Gos
 
 	@Override
 	public String getAddress (String remoteNodeName) {
-		String ip = KevoreePlatformHelper.getProperty(this.getModelService().getLastModel(), remoteNodeName,
-				org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP());
-		if ("".equals(ip)) {
-			ip = "127.0.0.1";
+		Option<String> ipOption = NetworkHelper.getAccessibleIP(KevoreePropertyHelper
+				.getStringNetworkProperties(this.getModelService().getLastModel(), remoteNodeName, org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP()));
+		if (ipOption.isDefined()) {
+			return ipOption.get();
+		} else {
+			return "127.0.0.1";
 		}
-		return ip;
 	}
+
 	@Override
 	public int parsePortNumber (String nodeName) {
 		Option<Integer> portOption = KevoreePropertyHelper.getIntPropertyForChannel(this.getModelService().getLastModel(), this.getName(), "port", true, nodeName);
@@ -191,7 +193,7 @@ public class NettyGossiperChannel extends AbstractChannelFragment implements Gos
 	}
 
 	public int parsePortNumber () {
-		String portProperty = this.getDictionary().get("port").toString();
+		String portProperty = this.getDictionary().get("gossip_port").toString();
 		try {
 			return Integer.parseInt(portProperty);
 		} catch (NumberFormatException e) {

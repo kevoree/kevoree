@@ -71,32 +71,34 @@ class ProcessValue (instance: GossiperComponent, alwaysAskData: Boolean, protoco
       peer =>
         if (!peer.equals(instance.getNodeName)) {
           logger.debug("send notification to " + peer)
-          val messageBuilder: Message.Builder = Message.newBuilder.setDestName(instance.getName)
-            .setDestNodeName(instance.getNodeName)
-          messageBuilder.setContentClass(classOf[UpdatedValueNotification].getName)
-            .setContent(UpdatedValueNotification.newBuilder.build.toByteString)
-          protocolSelector.selectForMetaData().sendMessage(messageBuilder.build, new
-              InetSocketAddress(instance.getAddress(peer), instance.parsePortNumber(peer)))
+          val messageBuilder: Message.Builder = Message.newBuilder.setDestName(instance.getName).setDestNodeName(instance.getNodeName)
+          messageBuilder.setContentClass(classOf[UpdatedValueNotification].getName).setContent(UpdatedValueNotification.newBuilder.build.toByteString)
+          val address = instance.getAddress(peer)
+//          addresses.foreach {
+//            ipAddress =>
+              protocolSelector.selectForMetaData().sendMessage(messageBuilder.build, new InetSocketAddress(address, instance.parsePortNumber(peer)))
+//          }
         }
     }
   }
 
   private def initGossipInternal (peer: String) {
     if (peer != null && peer != "") {
-      val address = new
-          InetSocketAddress(instance.getAddress(peer), instance.parsePortNumber(peer))
-      if (alwaysAskData) {
-        dataManager.getUUIDVectorClocks.keySet().foreach {
-          uuid =>
-            askForData(uuid, instance.getNodeName, address)
-        }
-      } else {
-        val messageBuilder: Message.Builder = Message.newBuilder.setDestName(instance.getName)
-          .setDestNodeName(instance.getNodeName)
-        messageBuilder.setContentClass(classOf[VectorClockUUIDsRequest].getName)
-          .setContent(VectorClockUUIDsRequest.newBuilder.build.toByteString)
-        protocolSelector.selectForMetaData().sendMessage(messageBuilder.build, address)
-      }
+      val address = instance.getAddress(peer)
+     /* addresses.foreach {
+        ipAddress =>*/
+          val inetAddress = new InetSocketAddress(address, instance.parsePortNumber(peer))
+          if (alwaysAskData) {
+            dataManager.getUUIDVectorClocks.keySet().foreach {
+              uuid =>
+                askForData(uuid, instance.getNodeName, inetAddress)
+            }
+          } else {
+            val messageBuilder: Message.Builder = Message.newBuilder.setDestName(instance.getName).setDestNodeName(instance.getNodeName)
+            messageBuilder.setContentClass(classOf[VectorClockUUIDsRequest].getName).setContent(VectorClockUUIDsRequest.newBuilder.build.toByteString)
+            protocolSelector.selectForMetaData().sendMessage(messageBuilder.build, inetAddress)
+          }
+//      }
     }
   }
 
@@ -150,15 +152,19 @@ class ProcessValue (instance: GossiperComponent, alwaysAskData: Boolean, protoco
             }
             case Occured.BEFORE => {
               logger.debug("VectorClocks comparison into GossiperRequestSender give us: BEFORE")
-              askForData(uuid, message.getDestNodeName, new
-                  InetSocketAddress(instance.getAddress(message.getDestNodeName),
-                                     instance.parsePortNumber(message.getDestNodeName)))
+              val address = instance.getAddress(message.getDestNodeName)
+//              addresses.foreach {
+//                ipAddress =>
+                  askForData(uuid, message.getDestNodeName, new InetSocketAddress(address, instance.parsePortNumber(message.getDestNodeName)))
+//              }
             }
             case Occured.CONCURRENTLY => {
               logger.debug("VectorClocks comparison into GossiperRequestSender give us: CONCURRENTLY")
-              askForData(uuid, message.getDestNodeName, new
-                  InetSocketAddress(instance.getAddress(message.getDestNodeName),
-                                     instance.parsePortNumber(message.getDestNodeName)))
+              val address = instance.getAddress(message.getDestNodeName)
+//              addresses.foreach {
+//                ipAddress =>
+                  askForData(uuid, message.getDestNodeName, new InetSocketAddress(address, instance.parsePortNumber(message.getDestNodeName)))
+//              }
             }
             case _ => logger.error("unexpected match into initSecondStep")
           }
@@ -175,18 +181,22 @@ class ProcessValue (instance: GossiperComponent, alwaysAskData: Boolean, protoco
       val data = serializer.deserialize(versionedModel.getModel.toByteArray)
 
       if (data != null) {
+        var sendOnLocal = false
+        if (dataManager.getData(UUID.fromString(uuid)) == null) {
+          sendOnLocal = true
+        }
         if (dataManager.setData(UUID.fromString(uuid), (vectorClock, data), message.getDestNodeName)) {
-          instance.localNotification(data)
+          if (sendOnLocal) {
+            instance.localNotification(data)
+          }
 
           // UPDATE clock
           vectorClock.getEntiesList.find(p => p.getNodeID == instance.getNodeName) match {
             case Some(p) => //NOOP
             case None => {
               logger.debug("add entries for the local node.")
-              val newenties = ClockEntry.newBuilder.setNodeID(instance.getNodeName)
-                /*.setTimestamp(System.currentTimeMillis)*/ .setVersion(1).build
-              vectorClock = VectorClock.newBuilder(vectorClock).addEnties(newenties)
-                .setTimestamp(System.currentTimeMillis).build
+              val newenties = ClockEntry.newBuilder.setNodeID(instance.getNodeName) /*.setTimestamp(System.currentTimeMillis)*/ .setVersion(1).build
+              vectorClock = VectorClock.newBuilder(vectorClock).addEnties(newenties).setTimestamp(System.currentTimeMillis).build
             }
           }
         }

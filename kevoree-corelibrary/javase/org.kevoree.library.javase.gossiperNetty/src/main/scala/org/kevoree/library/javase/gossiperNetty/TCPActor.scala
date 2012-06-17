@@ -38,7 +38,8 @@ class TCPActor (port: Int, processValue: ProcessValue, processRequest: ProcessRe
     }
   })
   bootstrapServer.setOption("tcpNoDelay", true)
-  val channelServer: Channel = bootstrapServer.bind(new InetSocketAddress(port))
+  var channelServer: Channel = null
+  initializeChannelServer()
   val serverChannelGroup = new DefaultChannelGroup("TCP-server")
 
   // Configure the client.
@@ -56,7 +57,7 @@ class TCPActor (port: Int, processValue: ProcessValue, processRequest: ProcessRe
       p.addLast("handler", new TCPValueHandler(processValue))
       p
     }
-  });
+  })
 
   // keep all created channels to delete it when we stop
   // we only keep 10 channels, if a eleventh channel is created, we release the fifth first.
@@ -64,19 +65,19 @@ class TCPActor (port: Int, processValue: ProcessValue, processRequest: ProcessRe
 
 
   protected def stopInternal () {
-//    logger.debug("stopping TCP Gossip manager")
-//    logger.debug("stopping channel server")
+    //    logger.debug("stopping TCP Gossip manager")
+    //    logger.debug("stopping channel server")
     channelServer.close().awaitUninterruptibly()
-//    logger.debug("channel server stopped")
-//    logger.debug("stopping channel group")
+    //    logger.debug("channel server stopped")
+    //    logger.debug("stopping channel group")
     channelGroup.close().awaitUninterruptibly()
     serverChannelGroup.close().awaitUninterruptibly()
-//    logger.debug("channel group stopped")
+    //    logger.debug("channel group stopped")
     // Shut down all thread pools to exit.
-//    logger.debug("releasing netty bootstrap resource")
+    //    logger.debug("releasing netty bootstrap resource")
     factory.releaseExternalResources()
     bootstrap.releaseExternalResources()
-//    logger.debug("netty bootstrap resource released")
+    //    logger.debug("netty bootstrap resource released")
     logger.debug("releasing netty bootstrap server resource")
     factoryServer.releaseExternalResources()
     logger.debug("factory server released")
@@ -102,7 +103,7 @@ class TCPActor (port: Int, processValue: ProcessValue, processRequest: ProcessRe
         }
         channelGroup.clear()
       }
-      channelGroup.add(channel);
+      channelGroup.add(channel)
     }
   }
 
@@ -125,7 +126,7 @@ class TCPActor (port: Int, processValue: ProcessValue, processRequest: ProcessRe
     }
 
     override def exceptionCaught (ctx: ChannelHandlerContext, e: ExceptionEvent) {
-      logger.error("Communication failed between " + ctx.getChannel.getLocalAddress + " and " +
+      logger.debug("Communication failed between " + ctx.getChannel.getLocalAddress + " and " +
         ctx.getChannel.getRemoteAddress, e.getCause)
       e.getChannel.close()
     }
@@ -140,10 +141,17 @@ class TCPActor (port: Int, processValue: ProcessValue, processRequest: ProcessRe
     }
 
     override def exceptionCaught (ctx: ChannelHandlerContext, e: ExceptionEvent) {
-      logger.error("Communication failed between " + ctx.getChannel.getLocalAddress + " and " +
+      logger.debug("Communication failed between " + ctx.getChannel.getLocalAddress + " and " +
         ctx.getChannel.getRemoteAddress, e.getCause)
       e.getChannel.close()
+      if (!channelServer.isBound) {
+        initializeChannelServer()
+      }
     }
+  }
+
+  private def initializeChannelServer () {
+    channelServer = bootstrapServer.bind(new InetSocketAddress(port))
   }
 
 }

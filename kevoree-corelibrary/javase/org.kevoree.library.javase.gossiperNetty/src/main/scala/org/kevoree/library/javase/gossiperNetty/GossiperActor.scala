@@ -1,6 +1,7 @@
 package org.kevoree.library.javase.gossiperNetty
 
 import actors.{Actor, DaemonActor, TIMEOUT}
+import org.slf4j.LoggerFactory
 
 
 /**
@@ -9,8 +10,9 @@ import actors.{Actor, DaemonActor, TIMEOUT}
  * Time: 10:24
  */
 
-class GossiperActor (instance: GossiperComponent, timeout: Long, selector: PeerSelector, process: ProcessValue)
-  extends Actor {
+class GossiperActor (instance: GossiperComponent, timeout: Long, selector: PeerSelector, process: ProcessValue) extends Actor {
+
+  private val logger = LoggerFactory.getLogger(this.getClass.getName)
 
   case class STOP ()
 
@@ -57,6 +59,7 @@ class GossiperActor (instance: GossiperComponent, timeout: Long, selector: PeerS
   private def pull () {
     val peer = selector.selectPeer(instance.getName)
     if (!peer.equals("")) {
+      logger.debug("start pulling")
       process.initGossip(peer)
     }
   }

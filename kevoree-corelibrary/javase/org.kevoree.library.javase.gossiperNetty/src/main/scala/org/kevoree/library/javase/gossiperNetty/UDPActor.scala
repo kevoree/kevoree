@@ -34,7 +34,7 @@ class UDPActor (port: Int, processValue: ProcessValue, processRequest: ProcessRe
       p
     }
   })
-  var channelServer: Channel = bootstrapServer.bind(new InetSocketAddress(port))
+  var channelServer: Channel = null
 
 
   var factory = new NioDatagramChannelFactory(Executors.newCachedThreadPool())
@@ -51,8 +51,9 @@ class UDPActor (port: Int, processValue: ProcessValue, processRequest: ProcessRe
       p
     }
   })
-  var channel: Channel = bootstrap.bind(new InetSocketAddress(0))
+  var channel: Channel = null
 
+  initializeChannels()
 
   protected def stopInternal () {
     logger.debug("stopping UDP Gossip manager")
@@ -88,7 +89,7 @@ class UDPActor (port: Int, processValue: ProcessValue, processRequest: ProcessRe
     }
 
     override def exceptionCaught (ctx: ChannelHandlerContext, e: ExceptionEvent) {
-      logger.error("Communication failed between " + ctx.getChannel.getLocalAddress + " and " +
+      logger.debug("Communication failed between " + ctx.getChannel.getLocalAddress + " and " +
         ctx.getChannel.getRemoteAddress, e.getCause)
       e.getChannel.close()
     }
@@ -104,10 +105,27 @@ class UDPActor (port: Int, processValue: ProcessValue, processRequest: ProcessRe
     }
 
     override def exceptionCaught (ctx: ChannelHandlerContext, e: ExceptionEvent) {
-      logger.error("Communication failed between " + ctx.getChannel.getLocalAddress + " and " +
+      logger.debug("Communication failed between " + ctx.getChannel.getLocalAddress + " and " +
         ctx.getChannel.getRemoteAddress, e.getCause)
       e.getChannel.close()
+      if (!channelServer.isBound) {
+        initializeChannelServer()
+      }
+      if (!channel.isBound) {
+        initializeChannel()
+      }
     }
   }
 
+  private def initializeChannels() {
+    initializeChannelServer()
+    initializeChannel()
+  }
+  private def initializeChannelServer() {
+    channelServer = bootstrapServer.bind(new InetSocketAddress(port))
+  }
+
+  private def initializeChannel() {
+    channel = bootstrap.bind(new InetSocketAddress(0))
+  }
 }

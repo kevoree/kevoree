@@ -57,8 +57,7 @@ class ProcessRequest (instance: GossiperComponent, dataManager: DataManager, ser
         var vectorClockUUIDsBuilder = VectorClockUUIDs.newBuilder
         uuidVectorClocks.keySet.foreach {
           uuid: UUID =>
-            vectorClockUUIDsBuilder.addVectorClockUUIDs(VectorClockUUID.newBuilder.setUuid(uuid.toString)
-              .setVector(uuidVectorClocks.get(uuid)).build)
+            vectorClockUUIDsBuilder.addVectorClockUUIDs(VectorClockUUID.newBuilder.setUuid(uuid.toString).setVector(uuidVectorClocks.get(uuid)).build)
             if (vectorClockUUIDsBuilder.getVectorClockUUIDsCount == 1) {
               // it is possible to increase the number of vectorClockUUID on each message
               responseBuilder = Message.newBuilder.setDestName(instance.getName).setDestNodeName(instance.getNodeName)
@@ -72,8 +71,7 @@ class ProcessRequest (instance: GossiperComponent, dataManager: DataManager, ser
         if (uuidVectorClocks.size() == 0) {
           //vectorClockUUIDsBuilder.addVectorClockUUIDs(VectorClockUUID.newBuilder.build)
           // it is possible to increase the number of vectorClockUUID on each message
-          responseBuilder = Message.newBuilder.setDestName(instance.getName)
-            .setDestNodeName(instance.getNodeName)
+          responseBuilder = Message.newBuilder.setDestName(instance.getName).setDestNodeName(instance.getNodeName)
           val modelBytes = vectorClockUUIDsBuilder.build.toByteString
           responseBuilder.setContentClass(classOf[VectorClockUUIDs].getName).setContent(modelBytes)
 
@@ -86,24 +84,23 @@ class ProcessRequest (instance: GossiperComponent, dataManager: DataManager, ser
         logger.debug("UUIDDataRequest received")
         val uuidDataRequest = UUIDDataRequest.parseFrom(message.getContent)
         val data = dataManager.getData(UUID.fromString(uuidDataRequest.getUuid))
-        logger.debug("before serializing data")
-        val bytes: Array[Byte] = serializer.serialize(data._2);
+        logger.debug("before serializing data : {}", data)
+        val bytes: Array[Byte] = serializer.serialize(data._2)
         logger.debug("after serializing data")
         if (bytes != null) {
           val modelBytes = ByteString.copyFrom(bytes)
 
-          val modelBytes2 = VersionedModel.newBuilder.setUuid(uuidDataRequest.getUuid).setVector(data._1)
-            .setModel(modelBytes).build.toByteString
+          val modelBytes2 = VersionedModel.newBuilder.setUuid(uuidDataRequest.getUuid).setVector(data._1).setModel(modelBytes).build.toByteString
           responseBuilder.setContentClass(classOf[VersionedModel].getName).setContent(modelBytes2)
 
-          protocolSelector.selectForMetaData().sendMessage(responseBuilder.build(), channel, address);
+          protocolSelector.selectForMetaData().sendMessage(responseBuilder.build(), channel, address)
         } else {
           logger.warn("Serialization failed !")
         }
 
       }
       case s: String if (s == classOf[UpdatedValueNotification].getName) => {
-        logger.debug("notification received from " + channel.getRemoteAddress)
+        logger.debug("notification received from " + message.getDestNodeName)
         process.initGossip(message.getDestNodeName)
       }
     }

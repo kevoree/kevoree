@@ -6,7 +6,9 @@ import org.kevoree.Group;
 import org.kevoree.annotation.*;
 import org.kevoree.framework.AbstractGroupType;
 import org.kevoree.framework.KevoreePropertyHelper;
+import org.kevoree.framework.NetworkHelper;
 import org.kevoree.library.javase.gossiperNetty.*;
+import org.kevoree.library.javase.network.NodeNetworkHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import scala.Option;
@@ -21,12 +23,12 @@ import java.util.List;
 @GroupType
 @DictionaryType({
 		@DictionaryAttribute(name = "interval", defaultValue = "30000", optional = true),
-		@DictionaryAttribute(name = "port", defaultValue = "9010", optional = true, fragmentDependant = true),
+		@DictionaryAttribute(name = "gossip_port", defaultValue = "9010", optional = true, fragmentDependant = true),
+				@DictionaryAttribute(name = "port", defaultValue = "8000", optional = true, fragmentDependant = true),
 		@DictionaryAttribute(name = "FullUDP", defaultValue = "false", optional = true, vals = {"true", "false"}),
 		@DictionaryAttribute(name = "sendNotification", defaultValue = "true", optional = true, vals = {"true", "false"}),
 		@DictionaryAttribute(name = "alwaysAskModel", defaultValue = "false", optional = true, vals = {"true", "false"}),
-		@DictionaryAttribute(name = "mergeModel", defaultValue = "false", optional = true, vals = {"true", "false"}),
-		@DictionaryAttribute(name = "http_port", defaultValue = "8000", optional = true, fragmentDependant = true)
+		@DictionaryAttribute(name = "mergeModel", defaultValue = "false", optional = true, vals = {"true", "false"})
 })
 public class NettyGossiperGroup extends AbstractGroupType implements GossiperComponent {
 
@@ -40,6 +42,7 @@ public class NettyGossiperGroup extends AbstractGroupType implements GossiperCom
 	protected Logger logger = LoggerFactory.getLogger(NettyGossiperGroup.class);
 
 	protected boolean sendNotification;
+	private boolean starting;
 
 	private HTTPServer httpServer;
 	private HTTPClient httpClient;
@@ -59,7 +62,7 @@ public class NettyGossiperGroup extends AbstractGroupType implements GossiperCom
 				serializer, false);
 		processRequest = new ProcessRequest(this, dataManager, serializer, processValue, protocolSelector);
 
-		selector = new GroupScorePeerSelector(timeoutLong, this.getModelService(), this.getName());
+		selector = new GroupScorePeerSelector(timeoutLong, this.getModelService(), this.getNodeName());
 
 		udpActor = new UDPActor(parsePortNumber(), processValue, processRequest);
 		tcpActor = new TCPActor(parsePortNumber(), processValue, processRequest);
@@ -82,10 +85,11 @@ public class NettyGossiperGroup extends AbstractGroupType implements GossiperCom
 		tcpActor.start();
 		selector.start();
 		actor.start();
+		starting = true;
 
 		logger.debug("{}: starting HTTP server", this.getName());
 		// starting HTTP server to accept http model update coming from the editor for example
-		httpServer = new HTTPServer(this, Integer.parseInt(this.getDictionary().get("http_port").toString()));
+		httpServer = new HTTPServer(this, Integer.parseInt(this.getDictionary().get("port").toString()));
 		httpClient = new HTTPClient(this.getName());
 		logger.debug("{}: HTTP server started", this.getName());
 
@@ -153,8 +157,8 @@ public class NettyGossiperGroup extends AbstractGroupType implements GossiperCom
 
 	@Override
 	public String getAddress (String remoteNodeName) {
-		Option<String> ipOption = KevoreePropertyHelper
-				.getStringNetworkProperty(this.getModelService().getLastModel(), remoteNodeName, org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP());
+		Option<String> ipOption = NetworkHelper.getAccessibleIP(KevoreePropertyHelper
+				.getStringNetworkProperties(this.getModelService().getLastModel(), remoteNodeName, org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP()));
 		if (ipOption.isDefined()) {
 			return ipOption.get();
 		} else {
@@ -173,7 +177,7 @@ public class NettyGossiperGroup extends AbstractGroupType implements GossiperCom
 	}
 
 	private int parsePortNumber () {
-		String portProperty = this.getDictionary().get("port").toString();
+		String portProperty = this.getDictionary().get("gossip_port").toString();
 		try {
 			return Integer.parseInt(portProperty);
 		} catch (NumberFormatException e) {
@@ -194,13 +198,28 @@ public class NettyGossiperGroup extends AbstractGroupType implements GossiperCom
 
 	@Override
 	public void triggerModelUpdate () {
-		if (sendNotification) {
-			actor.notifyPeers();
+		if (starting) {
+			final Option<ContainerRoot> modelOption = NodeNetworkHelper.updateModelWithNetworkProperty(this);
+			if (modelOption.isDefined()) {
+				/*new Thread() {
+					public void run () {*/
+				getModelService().unregisterModelListener(getModelListener());
+				getModelService().atomicUpdateModel(modelOption.get());
+				getModelService().registerModelListener(getModelListener());
+				/*	}
+				}.start();*/
+			}
+			starting = false;
+		} else {
+			if (sendNotification) {
+				actor.notifyPeers();
+			}
 		}
+
 	}
 
 	@Override
-	public void push (ContainerRoot containerRoot, String s) {
+	public void push (ContainerRoot containerRoot, String s) throws Exception {
 		if (httpClient == null) {
 			httpClient = new HTTPClient(this.getName());
 		}
@@ -208,7 +227,7 @@ public class NettyGossiperGroup extends AbstractGroupType implements GossiperCom
 	}
 
 	@Override
-	public ContainerRoot pull (String s) {
+	public ContainerRoot pull (String s) throws Exception {
 		if (httpClient == null) {
 			httpClient = new HTTPClient(this.getName());
 		}

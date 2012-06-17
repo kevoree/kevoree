@@ -1,7 +1,7 @@
 package org.kevoree.library.javase.gossiperNetty.group
 
 import org.kevoree.ContainerRoot
-import org.kevoree.framework.{KevoreeXmiHelper, Constants, KevoreePropertyHelper}
+import org.kevoree.framework.{NetworkHelper, KevoreeXmiHelper, Constants, KevoreePropertyHelper}
 import java.io._
 import org.slf4j.LoggerFactory
 import java.util.concurrent.Executors
@@ -49,15 +49,11 @@ class HTTPClient (groupName: String) {
 
   private class HTTPClientHandler extends SimpleChannelUpstreamHandler {
     private var push: Boolean = false
-    private var zip: Boolean = false
+    private var zip: Boolean = true
     private var ip: String = ""
     private var port: Int = 0
     private var model: ContainerRoot = null
     private var targetNodeName: String = ""
-
-    def setZip (zip: Boolean) {
-      this.zip = zip
-    }
 
     override def messageReceived (ctx: ChannelHandlerContext, e: MessageEvent) {
       logger.debug("model sent")
@@ -65,17 +61,17 @@ class HTTPClient (groupName: String) {
     }
 
     override def exceptionCaught (ctx: ChannelHandlerContext, e: ExceptionEvent) {
-      logger.debug("Unable to send model", e)
       if (zip) {
         zip = false
         logger.debug("url=>" + "http://" + ip + ":" + port + "/model/current")
-        if (!sendModel(model, ip, port, "/model/current", zip = false)) {
-          logger.debug("Unable to push a model on " + targetNodeName)
-        }
-
+        sendModel(model, ip, port, "/model/current", zip = false)
+      } else {
+        logger.debug("Unable to push a model on " + targetNodeName)
+        zip = true
       }
     }
 
+    @throws(classOf[Exception])
     def push (ip: String, port: Int, model: ContainerRoot, targetNodeName: String) {
       this.ip = ip
       this.port = port
@@ -86,14 +82,20 @@ class HTTPClient (groupName: String) {
       if (!sendModel(model, ip, port, "/model/current/zip", zip)) {
           logger.debug("Unable to push a model on " + targetNodeName)
       }*/
-      zip = false
-      logger.debug("url=>" + "http://" + ip + ":" + port + "/model/current")
-      if (!sendModel(model, ip, port, "/model/current", zip = false)) {
-        logger.debug("Unable to push a model on " + targetNodeName)
+      try {
+        logger.debug("url=>" + "http://" + ip + ":" + port + "/model/current/zip")
+        sendModel(model, ip, port, "/model/current/zip", zip = true)
+      } catch {
+        case _@e => {
+          logger.debug("url=>" + "http://" + ip + ":" + port + "/model/current")
+          sendModel(model, ip, port, "/model/current", zip = false)
+        }
       }
+
     }
 
-    private def sendModel (model: ContainerRoot, hostName: String, port: Int, uri: String, zip: Boolean): Boolean = {
+    @throws(classOf[Exception])
+    private def sendModel (model: ContainerRoot, hostName: String, port: Int, uri: String, zip: Boolean) {
       val socketAddress = new InetSocketAddress(hostName, port)
       val socketChannel = bootstrapClient.connect(socketAddress)
       socketChannel.awaitUninterruptibly()
@@ -118,16 +120,16 @@ class HTTPClient (groupName: String) {
         // Send the HTTP request.
         socketChannel.getChannel.write(request)
         channelGroup.add(socketChannel.getChannel)
-        true
       } else {
         logger.debug("Unable to connect to {}:{}", Array[AnyRef](hostName, Integer.toString(port)), socketChannel.getCause)
-        false
+        throw new Exception("Unable to connect to " + hostName + ":" + Integer.toString(port), socketChannel.getCause)
       }
     }
   }
 
+  @throws(classOf[Exception])
   def push (model: ContainerRoot, targetNodeName: String) {
-    val ipOption = KevoreePropertyHelper.getStringNetworkProperty(model, targetNodeName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP)
+    val ipOption = NetworkHelper.getAccessibleIP(KevoreePropertyHelper.getStringNetworkProperties(model, targetNodeName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP))
     var ip = "127.0.0.1"
     if (ipOption.isDefined) {
       ip = ipOption.get
@@ -142,54 +144,38 @@ class HTTPClient (groupName: String) {
 
   }
 
+  @throws(classOf[Exception])
   def pull (model: ContainerRoot, targetNodeName: String): ContainerRoot = {
     var localhost: String = "localhost"
     var port: Int = 8000
-    try {
-      val addressOption = KevoreePropertyHelper.getStringNetworkProperty(model, targetNodeName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP)
-      if (addressOption.isDefined) {
-        localhost = addressOption.get
-      }
-      val portOption = KevoreePropertyHelper.getIntPropertyForGroup(model, groupName, "port", isFragment = true, nodeNameForFragment = targetNodeName)
-      if (portOption.isDefined) {
-        port = portOption.get
-      }
+    val addressOption = NetworkHelper.getAccessibleIP(KevoreePropertyHelper.getStringNetworkProperties(model, targetNodeName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP))
+    if (addressOption.isDefined) {
+      localhost = addressOption.get
     }
-    catch {
-      case e: IOException => {
-        logger.error("Unable to getAddress or Port of {}", targetNodeName, e)
-      }
+    val portOption = KevoreePropertyHelper.getIntPropertyForGroup(model, groupName, "port", isFragment = true, nodeNameForFragment = targetNodeName)
+    if (portOption.isDefined) {
+      port = portOption.get
     }
     logger.debug("Pulling model for {} on {}", targetNodeName, "http://" + localhost + ":" + port + "/model/current")
 
-    var root = pullModel("http://" + localhost + ":" + port + "/model/current/zip", zip = true)
-    if (root == null) {
-      root = pullModel("http://" + localhost + ":" + port + "/model/current", zip = false)
-      if (root == null) {
-        logger.warn("Unable to get model for {}", targetNodeName)
-      }
+    try {
+      pullModel("http://" + localhost + ":" + port + "/model/current/zip", zip = true)
+    } catch {
+      case _@e => pullModel("http://" + localhost + ":" + port + "/model/current", zip = false)
     }
-    root
   }
 
+  @throws(classOf[Exception])
   private def pullModel (urlPath: String, zip: Boolean): ContainerRoot = {
-    try {
       val url: URL = new URL(urlPath)
       val conn: URLConnection = url.openConnection
       conn.setConnectTimeout(2000)
       val inputStream: InputStream = conn.getInputStream
       if (zip) {
         KevoreeXmiHelper.loadCompressedStream(inputStream)
-      }
-      else {
+      } else {
         KevoreeXmiHelper.loadStream(inputStream)
       }
-    } catch {
-      case e: IOException => {
-        logger.error("error while pulling model on {}", urlPath, e)
-        null
-      }
-    }
   }
 
 }

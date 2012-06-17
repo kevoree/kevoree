@@ -1,20 +1,20 @@
 package org.kevoree.library.javase.gossiperNetty.channel
 
-import collection.mutable.HashMap
 import scala.collection.JavaConversions._
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService
 import java.lang.Math
 import org.slf4j.LoggerFactory
 import org.kevoree.library.javase.gossiperNetty.PeerSelector
 import org.kevoree.ContainerNode
-import actors.{Actor, DaemonActor}
+import actors.Actor
+import collection.mutable
 
 class ChannelScorePeerSelector (timeout: Long, modelHandlerService: KevoreeModelHandlerService, nodeName: String)
   extends PeerSelector with Actor {
 
   private val logger = LoggerFactory.getLogger(classOf[ChannelScorePeerSelector])
-  private val peerCheckMap = new HashMap[String, (Long, Int)]
-  private val peerNbFailure = new HashMap[String, Int]
+  private val peerCheckMap = new mutable.HashMap[String, (Long, Int)]
+  private val peerNbFailure = new mutable.HashMap[String, Int]
 
   case class STOP ()
 
@@ -68,7 +68,7 @@ class ChannelScorePeerSelector (timeout: Long, modelHandlerService: KevoreeModel
     model.getHubs.find(channel => channel.getName == name) match {
       case Some(channel) => {
         //Found minima score node name
-        var foundNodeName = List[String]();
+        var foundNodeName = List[String]()
         var minScore = Long.MaxValue
 
         model.getMBindings.filter(b => b.getHub.getName.equals(channel.getName))
@@ -97,7 +97,7 @@ class ChannelScorePeerSelector (timeout: Long, modelHandlerService: KevoreeModel
 
         //Init node score
         //initNodeScore(nodeName)
-        modifyNodeScore(nodeName1, false)
+        modifyNodeScore(nodeName1, failure = false)
 
 
         logger.debug("return a peer between connected nodes: " + nodeName1)
