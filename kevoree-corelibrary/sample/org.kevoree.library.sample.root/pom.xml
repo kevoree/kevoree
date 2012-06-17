@@ -5,13 +5,13 @@
     <groupId>org.kevoree.corelibrary.sample</groupId>
     <artifactId>org.kevoree.library.sample.root</artifactId>
     <name>Kevoree :: CoreLibrary :: Sample :: Root</name>
-    <version>1.7.8-SNAPSHOT</version>
+    <version>1.7.8</version>
     <packaging>pom</packaging>
 
     <parent>
         <artifactId>org.kevoree.library</artifactId>
         <groupId>org.kevoree.corelibrary</groupId>
-        <version>1.7.8-SNAPSHOT</version>
+        <version>1.7.8</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
