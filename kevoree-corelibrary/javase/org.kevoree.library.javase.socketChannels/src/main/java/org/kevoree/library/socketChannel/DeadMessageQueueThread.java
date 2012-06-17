@@ -43,7 +43,7 @@ public class DeadMessageQueueThread extends Thread {
 
 	public void addToDeadQueue (Message m) {
 
-		logger.debug("addToDeadQueue to " + m.getDestNodeName());
+		logger.debug("addToDeadQueue to {}", m.getDestNodeName());
 
 		if (queue_node_dead.size() < maximum_deadqueue_size) {
 			if ("true".equals(parentChannel.getDictionary().get("replay"))) {
@@ -73,7 +73,7 @@ public class DeadMessageQueueThread extends Thread {
 		while (alive) {
 			size = queue_node_dead.size();
 
-			logger.debug("size queue " + size);
+			logger.debug("size queue {}", size);
 			if (size > 0) {
 				Message current = null;
 				for (i = 0; i < size; i++) {
@@ -86,7 +86,7 @@ public class DeadMessageQueueThread extends Thread {
 						String host = parentChannel.getAddress(current.getDestNodeName());
 						int port = parentChannel.parsePortNumber(current.getDestNodeName());
 
-						logger.debug("Sending backup message to " + host + " port <" + port);
+						logger.debug("Sending backup message to {}:{}", host, port);
 
 						/* adding the current node */
 						if (!current.getPassedNodes().contains(parentChannel.getNodeName())) {
@@ -101,7 +101,7 @@ public class DeadMessageQueueThread extends Thread {
 					} catch (Exception e) {
 						try {
 							Thread.sleep(timer);
-							logger.warn("Unable to send message to  " + current.getDestNodeName());
+							logger.info("Unable to send message to {}", current.getDestNodeName());
 
 							String host = parentChannel.getAddress(current.getDestNodeName());
 							int port = parentChannel.parsePortNumber(current.getDestNodeName());
@@ -129,7 +129,7 @@ public class DeadMessageQueueThread extends Thread {
 					}
 				}  // for
 				if (stepFailMsgQueue.size() > 0) {
-					logger.debug("Undo queue " + stepFailMsgQueue.size());
+					logger.debug("Undo queue {}", stepFailMsgQueue.size());
 					/* backup message connection refused */
 					queue_node_dead.addAll(stepFailMsgQueue);
 					stepFailMsgQueue.clear();
@@ -144,6 +144,6 @@ public class DeadMessageQueueThread extends Thread {
 				}
 			}
 		}// while
-		logger.debug("The Queue pool is closed ");
+		logger.debug("The Queue pool is closed");
 	}
 }

@@ -8,11 +8,9 @@ package org.kevoree.library.socketChannel;
  * To change this template use File | Settings | File Templates.
  */
 
+import org.kevoree.annotation.ChannelTypeFragment;
 import org.kevoree.annotation.*;
-import org.kevoree.framework.AbstractChannelFragment;
-import org.kevoree.framework.ChannelFragmentSender;
-import org.kevoree.framework.KevoreeChannelFragment;
-import org.kevoree.framework.KevoreePropertyHelper;
+import org.kevoree.framework.*;
 import org.kevoree.framework.message.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,18 +38,18 @@ import java.util.concurrent.Semaphore;
 )
 public class SocketChannel extends AbstractChannelFragment implements Runnable {
 
-	//<<<<<<< HEAD
 	private ServerSocket server = null;
 	private List<Socket> localServerSockets = new ArrayList<Socket>();
 
-	/* thread in charge for receiving messages   PRODUCTEUR  */
+	private DataManager dataManager;
+	/* thread in charge for receiving messages   PRODUCER  */
 	private Thread reception_messages = null;
 	private DeadMessageQueueThread sending_messages_node_dead;
 	private boolean alive = false;
 	/* Current ID of the message */
 
 
-	private HashMap<String, Integer> fragments = null;
+	private HashMap<String, List<String>> fragments = null;
 	final Semaphore sem = new java.util.concurrent.Semaphore(1);
 
 	private Logger logger = LoggerFactory.getLogger(SocketChannel.class);
@@ -66,16 +64,34 @@ public class SocketChannel extends AbstractChannelFragment implements Runnable {
 	@Override
 	public Object dispatch (Message message) {
 
+		Object result = localDispatch(message);
+		Object resultTmp = remoteMessageDispatch(message);
+		if (resultTmp == null) {
+			result = resultTmp;
+		}
+		return result;
+	}
+
+	private Object localDispatch (Message message) {
 		Object result = null;
-		for (org.kevoree.framework.KevoreePort p : getBindedPorts()) {
-			if (result == null) {
-				result = forward(p, message);
+		if (!message.getPassedNodes().contains(getNodeName())) {
+			for (org.kevoree.framework.KevoreePort p : getBindedPorts()) {
+				Object resultTmp = forward(p, message);
+				if (result == null && resultTmp != null) {
+					result = resultTmp;
+				}
 			}
 		}
+		return result;
+	}
+
+	private Object remoteMessageDispatch (Message message) {
+		Object result = null;
 		for (KevoreeChannelFragment cf : getOtherFragments()) {
 			if (!message.getPassedNodes().contains(cf.getNodeName())) {
-				if (result == null) {
-					result = forward(cf, message);
+				Object resultTmp = forward(cf, message);
+				if (result == null && resultTmp != null) {
+					result = resultTmp;
 				}
 			}
 		}
@@ -83,18 +99,17 @@ public class SocketChannel extends AbstractChannelFragment implements Runnable {
 	}
 
 	public String getAddress (String remoteNodeName) {
-		Option<String> ipOption = KevoreePropertyHelper
-				.getStringNetworkProperty(this.getModelService().getLastModel(), remoteNodeName, org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP());
 		String ip = "127.0.0.1";
-		if (ipOption.isDefined()) {
-			ip = ipOption.get();
-		}
+				Option<String> ipOption = NetworkHelper.getAccessibleIP(KevoreePropertyHelper
+						.getStringNetworkProperties(this.getModelService().getLastModel(), remoteNodeName, org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP()));
+				if (ipOption.isDefined()) {
+					ip = ipOption.get();
+				}
 		return ip;
 	}
 
 	public int parsePortNumber (String nodeName) throws IOException {
 		try {
-			//logger.debug("look for port on " + nodeName);
 			Option<Integer> portOption = KevoreePropertyHelper.getIntPropertyForChannel(this.getModelService().getLastModel(), this.getName(), "port", true, nodeName);
 			int port = 9000;
 			if (portOption.isDefined()) {
@@ -116,12 +131,12 @@ public class SocketChannel extends AbstractChannelFragment implements Runnable {
 		alive = true;
 		reception_messages.start();
 		sending_messages_node_dead.start();
-		fragments = new HashMap<String, Integer>();
+		fragments = new HashMap<String, List<String>>();
+		dataManager = new DataManager(this);
 	}
 
 	@Stop
 	public void stopChannel () {
-
 		sending_messages_node_dead.stopProcess();
 		this.alive = false;
 		logger.debug("Socket channel is closing");
@@ -174,12 +189,12 @@ public class SocketChannel extends AbstractChannelFragment implements Runnable {
 
 				try {
 					sem.acquire();
-					logger.debug("Sending message to {}", remoteNodeName);
+					logger.info("Sending message to {}", remoteNodeName);
 					msg.setDestNodeName(remoteNodeName);
 					host = getAddress(msg.getDestNodeName());
 					port = parsePortNumber(msg.getDestNodeName());
 
-					// adding the current node  to passedNodes
+					// adding the current node to passedNodes
 					if (!msg.getPassedNodes().contains(getNodeName())) {
 						msg.getPassedNodes().add(getNodeName());
 					}
@@ -190,7 +205,7 @@ public class SocketChannel extends AbstractChannelFragment implements Runnable {
 					oos = new ObjectOutputStream(os);
 					oos.writeObject(msg);
 					oos.flush();*/
-					writeData(client_consumer, msg);
+					dataManager.writeData(client_consumer, msg);
 
 					if (msg.inOut()) {
 						is = client_consumer.getInputStream();
@@ -200,7 +215,8 @@ public class SocketChannel extends AbstractChannelFragment implements Runnable {
 						return null;
 					}
 				} catch (Exception e) {
-					logger.warn("Unable to send message to {}", msg.getDestNodeName(), e);
+					logger.info("Unable to send message to {}", msg.getDestNodeName());
+					logger.debug("due to {}", e.getMessage(), e);
 
 					delete_link(host, port);
 					if (getDictionary().get("replay").toString().equals("true")) {
@@ -237,16 +253,16 @@ public class SocketChannel extends AbstractChannelFragment implements Runnable {
 		};
 	}
 
-	private void writeData (Socket socket, Object msg) throws IOException {
+	/*private void writeData (Socket socket, Object msg) throws IOException {
 		OutputStream os = socket.getOutputStream();
 		ObjectOutputStream oos = new ObjectOutputStream(os);
 		oos.writeObject(msg);
 		oos.flush();
-	}
+	}*/
 
 
 	public void nodeDown (Socket client) {
-		logger.warn("Node is down");
+		logger.debug("Node is down");
 		localServerSockets.remove(client);
 		try {
 			client.close();
@@ -314,7 +330,7 @@ public class SocketChannel extends AbstractChannelFragment implements Runnable {
 			try {
 				sem.acquire();
 				client = server.accept();
-				logger.debug("Message received");
+				logger.info("Message received from {}", client.getRemoteSocketAddress().toString());
 				localServerSockets.add(client);
 				final Socket tmpClient = client;
 
@@ -336,7 +352,7 @@ public class SocketChannel extends AbstractChannelFragment implements Runnable {
 		}
 	}
 
-	private void readIncomingMessage (/*InputStream stream, */Socket client) {
+	private void readIncomingMessage (Socket client) {
 		boolean _alive = true;
 		Message msg;
 		ObjectInputStream ois = null;
@@ -355,18 +371,13 @@ public class SocketChannel extends AbstractChannelFragment implements Runnable {
 				}
 
 				if (msg != null) {
-					logger.debug("message is read from {}", msg.getDestNodeName());
-
-					if (!msg.getPassedNodes().contains(getNodeName())) {
-						msg.getPassedNodes().add(getNodeName());
-					}
-
+					logger.debug("message is read on {}", msg.getDestNodeName());
 
 					Object result = forwardMessage(msg);
-					logger.debug("message forwarded");
+					logger.info("message forwarded");
 					if (msg.inOut()) {
 						logger.debug("waiting for response ...");
-						writeData(client, result);
+						dataManager.writeData(client, msg);
 					}
 				} else {
 					logger.debug("MSG is null so we can't use it");
@@ -378,7 +389,7 @@ public class SocketChannel extends AbstractChannelFragment implements Runnable {
 
 			}
 		} catch (ClassNotFoundException e) {
-			logger.warn("Unable to read message", e);
+			logger.debug("Unable to read message", e);
 			nodeDown(client);
 			try {
 				if (ois != null) {
@@ -387,7 +398,7 @@ public class SocketChannel extends AbstractChannelFragment implements Runnable {
 			} catch (IOException ignored) {
 			}
 		} catch (IOException e) {
-			logger.warn("Unable to read message", e);
+			logger.debug("Unable to read message", e);
 			nodeDown(client);
 			try {
 				if (ois != null) {
@@ -403,28 +414,49 @@ public class SocketChannel extends AbstractChannelFragment implements Runnable {
 
 	private Object forwardMessage (Message msg) {
 		logger.debug("Forward message to corresponding nodes");
+		Object result = null;
+		if (!msg.getPassedNodes().contains(getNodeName())) {
+			result = localDispatch(msg);
+		}
 		// remove duplicate message
 		if (getOtherFragments().size() > 1) {
-			int val;
+			List<String> val;
 			if (fragments.containsKey(msg.getUuid().toString())) {
 				val = fragments.get(msg.getUuid().toString());
-				val = val + 1;
-				msg.getPassedNodes().add(getNodeName());
+				for (String nodeName : val) {
+					if (!msg.getPassedNodes().contains(nodeName)) {
+						msg.getPassedNodes().add(nodeName);
+					}
+				}
 			} else {
-				val = 1;
-//				Object result = remoteDispatch(msg); // FIXME return result to the client
+				val = new ArrayList<String>(getOtherFragments().size());
+				val.add(getNodeName());
+				final Message message = msg;
+				new Thread() {
+					@Override
+					public void run () {
+						remoteMessageDispatch(message);
+					}
+				}.start();
+			}
+			for (String nodeName : msg.getPassedNodes()) {
+				if (!val.contains(nodeName)) {
+					val.add(nodeName);
+				}
 			}
 			// save
 			fragments.put(msg.getUuid().toString(), val);
 
-
-			if (val == getOtherFragments().size()) {
+			/*for (String nodeName : msg.getPassedNodes()) {
+				logger.debug("passedNode for {} contains {}", msg.getUuid().toString(), nodeName);
+			}
+			for (String nodeName : val) {
+				logger.debug("valFragment for {} contains {}", msg.getUuid().toString(), nodeName);
+			}*/
+			if (val.size() == getOtherFragments().size() + 1) {
 				fragments.remove(msg.getUuid().toString());
 			}
-
-		}// else {
-		// two nodes
-		return dispatch(msg); // FIXME return result to the client
-//		}
+		}
+		return result;
 	}
 }
