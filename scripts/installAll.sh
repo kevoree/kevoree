@@ -9,8 +9,9 @@ cd $BASE_RELEASE_DIR
 sh scripts/installTools.sh
 
 cd $BASE_RELEASE_DIR
-sh scripts/installPlatform.sh
+sh scripts/installLibrary.sh
+
 
 cd $BASE_RELEASE_DIR
-sh scripts/installLibrary.sh
+sh scripts/installPlatform.sh
 
