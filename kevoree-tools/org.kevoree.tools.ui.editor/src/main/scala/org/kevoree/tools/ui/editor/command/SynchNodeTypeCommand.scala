@@ -3,7 +3,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * 	http://www.gnu.org/licenses/lgpl-3.0.txt
+ * http://www.gnu.org/licenses/lgpl-3.0.txt
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -35,8 +35,9 @@ import javax.swing.{JProgressBar, JLabel}
 import org.kevoree.kcl.KevoreeJarClassLoader
 import org.kevoree.{KevoreeFactory, ContainerRoot}
 import org.kevoree.tools.modelsync.ModelSyncBean
+import org.kevoree.framework.KevoreeXmiHelper
 
-class SynchNodeTypeCommand extends Command {
+class SynchNodeTypeCommand (isPush: Boolean) extends Command {
 
   var logger = LoggerFactory.getLogger(this.getClass)
 
@@ -60,31 +61,69 @@ class SynchNodeTypeCommand extends Command {
   @BeanProperty
   var progressBar: JProgressBar = null
 
-  def execute(p: AnyRef) {
+  var threadCommand: Thread = null
 
-    new Thread() {
-      override def run() {
-        try {
-          modelSyncBean.clear()
-          PositionedEMFHelper.updateModelUIMetaData(kernel);
-          if (autoMerge) {
-            resultLabel.setText("Update model...")
-            val autoUpdate = new AutoUpdateCommand
-            autoUpdate.setKernel(kernel)
-            autoUpdate.execute(null)
+  def execute (p: AnyRef) {
+
+    threadCommand = new Thread() {
+      override def run () {
+
+        if (isPush) {
+          try {
+            modelSyncBean.clear()
+            PositionedEMFHelper.updateModelUIMetaData(kernel)
+            if (autoMerge) {
+              resultLabel.setText("Update model...")
+              val autoUpdate = new AutoUpdateCommand
+              autoUpdate.setKernel(kernel)
+              autoUpdate.execute(null)
+            }
+            modelSyncBean.pushTo(kernel.getModelHandler.getActualModel, destNodeName, viaGroupName)
+            resultLabel.setText("Pushed ;-)")
+          } catch {
+            case _@e => {
+              logger.error("", e)
+              resultLabel.setText(e.getMessage)
+            }
+          } finally {
+            progressBar.setIndeterminate(false)
+            progressBar.setEnabled(false)
           }
-          modelSyncBean.pushTo(kernel.getModelHandler.getActualModel,destNodeName,viaGroupName)
-          resultLabel.setText("Pushed ;-)")
-        } catch {
-          case _@e => {
-            logger.error("", e)
-            resultLabel.setText(e.getMessage)
+        } else {
+          try {
+            modelSyncBean.clear()
+            PositionedEMFHelper.updateModelUIMetaData(kernel)
+            if (autoMerge) {
+              resultLabel.setText("Asking model...")
+              val autoUpdate = new AutoUpdateCommand
+              autoUpdate.setKernel(kernel)
+              autoUpdate.execute(null)
+            }
+            val model = modelSyncBean.pullTo(kernel.getModelHandler.getActualModel, destNodeName, viaGroupName)
+            val lcommand = new LoadModelCommand()
+            try {
+              kernel.getModelHandler.merge(model)
+              PositionedEMFHelper.updateModelUIMetaData(kernel)
+              lcommand.setKernel(kernel)
+              lcommand.execute(kernel.getModelHandler.getActualModel)
+              resultLabel.setText("Received ;-)")
+              true
+            } catch {
+              case _@e => logger.debug("Unable to load model", e)
+              resultLabel.setText("Unable to receive or use model ;-(")
+            }
+          } catch {
+            case _@e => {
+              logger.error("", e)
+              resultLabel.setText(e.getMessage)
+            }
+          } finally {
+            progressBar.setIndeterminate(false)
+            progressBar.setEnabled(false)
           }
-        } finally {
-          progressBar.setIndeterminate(false);
-          progressBar.setEnabled(false);
         }
       }
-    }.start()
+    }
+    threadCommand.start()
   }
 }

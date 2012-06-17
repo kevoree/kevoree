@@ -27,17 +27,17 @@ public abstract class AbstractGroupType {
 
 	public abstract void triggerModelUpdate ();
 
-	public boolean triggerPreUpdate (ContainerRoot currentModel, ContainerRoot proposedModel ) {
+	public boolean triggerPreUpdate (ContainerRoot currentModel, ContainerRoot proposedModel) {
 		return true;
 	}
 
-    public boolean triggerInitUpdate (ContainerRoot currentModel, ContainerRoot proposedModel ) {
-    		return true;
-    }
+	public boolean triggerInitUpdate (ContainerRoot currentModel, ContainerRoot proposedModel) {
+		return true;
+	}
 
-	public abstract void push (ContainerRoot model, String targetNodeName);
+	public abstract void push (ContainerRoot model, String targetNodeName) throws Exception;
 
-	public abstract ContainerRoot pull (String targetNodeName);
+	public abstract ContainerRoot pull (String targetNodeName) throws Exception;
 
 	public KevoreeModelHandlerService getModelService () {
 		return null;
@@ -83,18 +83,19 @@ public abstract class AbstractGroupType {
 	}
 
 
-    private Bootstraper bootstrapService = null;
+	private Bootstraper bootstrapService = null;
 
-    public void setBootStrapperService(Bootstraper brs){
-        bootstrapService = brs;
-    }
+	public void setBootStrapperService (Bootstraper brs) {
+		bootstrapService = brs;
+	}
 
-    public Bootstraper getBootStrapperService(){
-        return bootstrapService;
-    }
+	public Bootstraper getBootStrapperService () {
+		return bootstrapService;
+	}
 
-	    public ModelListener getModelListener(){return null;
-	    }
+	public ModelListener getModelListener () {
+		return null;
+	}
 
 
 }

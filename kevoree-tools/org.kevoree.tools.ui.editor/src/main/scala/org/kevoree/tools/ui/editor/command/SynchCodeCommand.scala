@@ -27,7 +27,9 @@ import org.kevoree.{DeployUnit, ContainerRoot, TypeDefinition}
 class SynchCodeCommand extends Command {
   var kernel: KevoreeUIKernel = null
 
-  def setKernel(k: KevoreeUIKernel) = kernel = k
+  def setKernel(k: KevoreeUIKernel) {
+    kernel = k
+  }
 
   def execute(p: Object) {
     if (p != null) {

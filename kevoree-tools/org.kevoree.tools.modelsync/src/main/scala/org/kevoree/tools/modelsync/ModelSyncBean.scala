@@ -3,7 +3,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * 	http://www.gnu.org/licenses/lgpl-3.0.txt
+ * http://www.gnu.org/licenses/lgpl-3.0.txt
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -30,11 +30,11 @@ class ModelSyncBean {
   var bootstraper = new FakeBootstraperService
 
   @throws(classOf[Exception])
-  def pushTo(model : ContainerRoot, destNodeName : String, viaGroupName : String){
+  def pushTo (model: ContainerRoot, destNodeName: String, viaGroupName: String) {
     bootstraper.getBootstrap.clear
     bootstraper.getBootstrap.bootstrapGroupType(model, viaGroupName, ModelHandlerServiceNoKernel(model)) match {
       case Some(groupTypeInstance) => {
-        groupTypeInstance.push(model,destNodeName)
+        groupTypeInstance.push(model, destNodeName)
       }
       case None => {
         logger.error("Error while bootstraping group type")
@@ -43,7 +43,21 @@ class ModelSyncBean {
     }
   }
 
-  def clear() {
+  @throws(classOf[Exception])
+  def pullTo (model: ContainerRoot, destNodeName: String, viaGroupName: String) : ContainerRoot = {
+    bootstraper.getBootstrap.clear
+    bootstraper.getBootstrap.bootstrapGroupType(model, viaGroupName, ModelHandlerServiceNoKernel(model)) match {
+      case Some(groupTypeInstance) => {
+        groupTypeInstance.pull(destNodeName)
+      }
+      case None => {
+        logger.error("Error while bootstraping group type")
+        throw new Exception("Error while bootstraping group type")
+      }
+    }
+  }
+
+  def clear () {
     bootstraper.getBootstrap.clear
   }
 
