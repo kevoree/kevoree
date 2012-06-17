@@ -65,7 +65,7 @@ class ModificationGenerator(ips : List[String]) {
     val port = model.getNodes.find(n => n.getName == nodeName) match {
       case Some(node) => {
         if (node.getDictionary.isDefined) {
-          node.getDictionary.get.getValues.find(v => v.getAttribute.getName == "port") match {
+          node.getDictionary.get.getValues.find(v => v.getAttribute.getName == "gossip_port") match {
             case Some(att) => {
               att.getValue
             }
@@ -82,7 +82,7 @@ class ModificationGenerator(ips : List[String]) {
 
     val urlString = "http://" + ip + ":" + port + "/model/current"
 
-    val parser = new KevsParser();
+    val parser = new KevsParser()
     val script = parser.parseScript(kevScript.toString)
     script match {
       case Some(validScript) => {

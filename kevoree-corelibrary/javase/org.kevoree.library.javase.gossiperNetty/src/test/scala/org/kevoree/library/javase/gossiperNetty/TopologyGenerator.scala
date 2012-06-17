@@ -97,7 +97,7 @@ object TopologyGenerator {
     //ADD GLOBAL GROUP
     tscript append "\n"
     tscript append "addGroup gossipGroup : NettyGossiperGroup {"
-    tscript append "port=\"" + groupPort.toString + "\"\n"
+    tscript append "gossip_port=\"" + groupPort.toString + "\"\n"
     tscript append ",sendNotification=\"" + sendNotification + "\""
     tscript append ",alwaysAskModel=\"" + alwaysAskMoldel + "\""
     tscript append ",interval=\"" + delay + "\""
