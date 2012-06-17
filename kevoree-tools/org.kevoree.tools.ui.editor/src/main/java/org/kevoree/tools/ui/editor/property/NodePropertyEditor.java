@@ -138,7 +138,7 @@ public class NodePropertyEditor extends InstancePropertyEditor {
 				if (groupTypeComboBox.getSelectedItem() != null) {
 					progressBar.setEnabled(true);
 					progressBar.setIndeterminate(true);
-					resultLabel.setText("Sending...");
+					resultLabel.setText("Connect...");
 					sendNodeType.setDestNodeName(elem.getName());
 					sendNodeType.setViaGroupName(groupTypeComboBox.getSelectedItem().toString());
 					sendNodeType.setAutoMerge(checkBox.isSelected());
