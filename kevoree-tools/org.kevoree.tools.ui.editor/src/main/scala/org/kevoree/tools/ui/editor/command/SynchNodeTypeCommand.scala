@@ -74,16 +74,19 @@ class SynchNodeTypeCommand (isPush: Boolean) extends Command {
             PositionedEMFHelper.updateModelUIMetaData(kernel)
             if (autoMerge) {
               resultLabel.setText("Update model...")
+              resultLabel.setToolTipText("Update model...")
               val autoUpdate = new AutoUpdateCommand
               autoUpdate.setKernel(kernel)
               autoUpdate.execute(null)
             }
             modelSyncBean.pushTo(kernel.getModelHandler.getActualModel, destNodeName, viaGroupName)
             resultLabel.setText("Pushed ;-)")
+            resultLabel.setToolTipText("Pushed ;-)")
           } catch {
             case _@e => {
               logger.error("", e)
               resultLabel.setText(e.getMessage)
+              resultLabel.setToolTipText(e.getMessage)
             }
           } finally {
             progressBar.setIndeterminate(false)
@@ -95,6 +98,7 @@ class SynchNodeTypeCommand (isPush: Boolean) extends Command {
             PositionedEMFHelper.updateModelUIMetaData(kernel)
             if (autoMerge) {
               resultLabel.setText("Asking model...")
+              resultLabel.setToolTipText("Asking model...")
               val autoUpdate = new AutoUpdateCommand
               autoUpdate.setKernel(kernel)
               autoUpdate.execute(null)
@@ -107,15 +111,18 @@ class SynchNodeTypeCommand (isPush: Boolean) extends Command {
               lcommand.setKernel(kernel)
               lcommand.execute(kernel.getModelHandler.getActualModel)
               resultLabel.setText("Received ;-)")
+              resultLabel.setToolTipText("Received ;-)")
               true
             } catch {
               case _@e => logger.debug("Unable to load model", e)
-              resultLabel.setText("Unable to receive or use model ;-(")
+              resultLabel.setText("Unable to receive or use model ;-( "+e.getMessage)
+              resultLabel.setToolTipText("Unable to receive or use model ;-( "+e.getMessage)
             }
           } catch {
             case _@e => {
               logger.error("", e)
               resultLabel.setText(e.getMessage)
+              resultLabel.setToolTipText(e.getMessage)
             }
           } finally {
             progressBar.setIndeterminate(false)
