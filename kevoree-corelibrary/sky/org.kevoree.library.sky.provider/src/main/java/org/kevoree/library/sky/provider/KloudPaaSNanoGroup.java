@@ -6,7 +6,6 @@ import org.kevoree.KevoreeFactory;
 import org.kevoree.annotation.*;
 import org.kevoree.api.service.core.script.KevScriptEngine;
 import org.kevoree.framework.*;
-import org.kevoree.framework.Constants;
 import org.kevoree.library.nanohttp.NanoHTTPD;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +17,6 @@ import java.io.InputStream;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.util.Enumeration;
-import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -199,8 +197,15 @@ public class KloudPaaSNanoGroup extends AbstractGroupType {
 	}
 
 	@Override
-	public void push (ContainerRoot model, String targetNodeName) {
-		List<String> ips = KevoreePropertyHelper.getStringNetworkProperties(model, targetNodeName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP());
+	public void push (ContainerRoot model, String targetNodeName) throws Exception {
+		String ip = "127.0.0.1";
+		Option<String> ipOption = NetworkHelper.getAccessibleIP(KevoreePropertyHelper
+				.getStringNetworkProperties(this.getModelService().getLastModel(), targetNodeName, org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP()));
+		if (ipOption.isDefined()) {
+			ip = ipOption.get();
+		}
+
+//		List<String> ips = KevoreePropertyHelper.getStringNetworkProperties(model, targetNodeName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP());
 		Option<Integer> portOption = KevoreePropertyHelper.getIntPropertyForGroup(model, this.getName(), "port", true, targetNodeName);
 		if (portOption.isDefined()) {
 			int PORT = portOption.get();
@@ -208,35 +213,45 @@ public class KloudPaaSNanoGroup extends AbstractGroupType {
 			if (!getNodeName().equals("")) {
 				param = "?nodesrc=" + getNodeName();
 			}
-			boolean sent = false;
-			for (String ip : ips) {
-				logger.debug("try to send model on url=>" + "http://" + ip + ":" + PORT + "/model/current" + param);
-				if (KloudHelper.sendModel(model, "http://" + ip + ":" + PORT + "/model/current" + param)) {
-					sent = true;
-					break;
-				}
-			}
-
-			if (!sent) {
+//			boolean sent = false;
+//			for (String ip : ips) {
+			logger.debug("try to send model on url=>" + "http://" + ip + ":" + PORT + "/model/current" + param);
+			if (KloudHelper.sendModel(model, "http://" + ip + ":" + PORT + "/model/current" + param)) {
 				logger.debug("try to send model on url=>" + "http://127.0.0.1:" + PORT + "/model/current" + param);
 				if (!KloudHelper.sendModel(model, "http://127.0.0.1:" + PORT + "/model/current" + param)) {
 					logger.debug("Unable to push a model on {}", targetNodeName);
 					logger.debug("try to send model using master node property");
 					if (!KloudHelper.sendModel(model, this.getDictionary().get("masterNode").toString() + param)) {
 						logger.debug("Unable to send model using master node property");
+						throw new Exception("Unable to send model using master node property");
 					}
 				}
 			}
+//		}
+
+//			if (!sent) {
+//				logger.debug("try to send model on url=>" + "http://127.0.0.1:" + PORT + "/model/current" + param);
+//				if (!KloudHelper.sendModel(model, "http://127.0.0.1:" + PORT + "/model/current" + param)) {
+//					logger.debug("Unable to push a model on {}", targetNodeName);
+//					logger.debug("try to send model using master node property");
+//					if (!KloudHelper.sendModel(model, this.getDictionary().get("masterNode").toString() + param)) {
+//						logger.debug("Unable to send model using master node property");
+//						return false;
+//					}
+//				}
+//			}
 		} else {
 			if (getDictionary().get("masterNode") != null) {
 				for (String ipPort : KloudHelper.getMasterIP_PORT(getDictionary().get("masterNode").toString())) {
 					logger.debug("send model on {} using masterNode", ipPort);
-					if (KloudHelper.sendModel(model, "http://" + ipPort + "/model/current")) {
-						break;
+					if (!KloudHelper.sendModel(model, "http://" + ipPort + "/model/current")) {
+						logger.debug("Unable to send model using master node property");
+						throw new Exception("Unable to send model using master node property");
 					}
 				}
 			} else {
 				logger.error("Unable to push a model on {} because there is not enough information to localize this node", targetNodeName);
+				throw new Exception("Unable to push a model on " + targetNodeName + " because there is not enough information to localize this node");
 			}
 		}
 	}
@@ -268,9 +283,14 @@ public class KloudPaaSNanoGroup extends AbstractGroupType {
 	}*/
 
 	@Override
-	public ContainerRoot pull (String targetNodeName) {
-
-		List<String> ips = KevoreePropertyHelper.getStringNetworkProperties(this.getModelService().getLastModel(), targetNodeName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP());
+	public ContainerRoot pull (String targetNodeName) throws Exception {
+		String ip = "127.0.0.1";
+		Option<String> ipOption = NetworkHelper.getAccessibleIP(KevoreePropertyHelper
+				.getStringNetworkProperties(this.getModelService().getLastModel(), targetNodeName, org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP()));
+		if (ipOption.isDefined()) {
+			ip = ipOption.get();
+		}
+//		List<String> ips = KevoreePropertyHelper.getStringNetworkProperties(this.getModelService().getLastModel(), targetNodeName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP());
 		Option<Integer> portOption = KevoreePropertyHelper.getIntPropertyForGroup(this.getModelService().getLastModel(), this.getName(), "port", true, targetNodeName);
 		int PORT = 8000;
 		if (portOption.isDefined()) {
@@ -281,33 +301,22 @@ public class KloudPaaSNanoGroup extends AbstractGroupType {
 			param = "?nodesrc=" + getNodeName();
 		}
 
-		for (String ip : ips) {
-			logger.debug("try to pull model on url=>" + "http://" + ip + ":" + PORT + "/model/current" + param);
-			ContainerRoot model = KloudHelper.pullModel("http://" + ip + ":" + PORT + "/model/current" + param);
-			if (model != null) {
-				return model;
-			}
-		}
-		ContainerRoot model = KloudHelper.pullModel("http://127.0.0.1:" + PORT + "/model/current" + param);
-		if (model == null) {
-			logger.debug("Unable to pull a model on " + targetNodeName);
-			return null;
-		} else {
-			return model;
-		}
+//		for (String ip : ips) {
+		logger.debug("try to pull model on url=>" + "http://" + ip + ":" + PORT + "/model/current" + param);
+			return KloudHelper.pullModel("http://" + ip + ":" + PORT + "/model/current" + param);
 	}
 
-	/*private ContainerRoot pullModel (String urlPath) {
-		try {
-			URL url = new URL(urlPath);
-			URLConnection conn = url.openConnection();
-			conn.setConnectTimeout(2000);
-			InputStream inputStream = conn.getInputStream();
-			return KevoreeXmiHelper.loadStream(inputStream);
-		} catch (IOException e) {
-			return null;
-		}
-	}*/
+/*private ContainerRoot pullModel (String urlPath) {
+	   try {
+		   URL url = new URL(urlPath);
+		   URLConnection conn = url.openConnection();
+		   conn.setConnectTimeout(2000);
+		   InputStream inputStream = conn.getInputStream();
+		   return KevoreeXmiHelper.loadStream(inputStream);
+	   } catch (IOException e) {
+		   return null;
+	   }
+   }*/
 
 
 	private class IaaSUpdate implements Runnable {
@@ -343,7 +352,11 @@ public class KloudPaaSNanoGroup extends AbstractGroupType {
 			Option<ContainerRoot> userModelUpdated = KloudReasoner.updateUserConfiguration(getName(), proposedModel, getModelService().getLastModel(), getKevScriptEngineFactory());
 			if (userModelUpdated.isDefined()) {
 				for (ContainerNode userNode : currentModel.getNodesForJ()) {
-					push(userModelUpdated.get(), userNode.getName());
+					try {
+						push(userModelUpdated.get(), userNode.getName());
+					} catch (Exception ignored) {
+
+					}
 				}
 			} else {
 				logger.error("Unable to update user configuration, with user group");

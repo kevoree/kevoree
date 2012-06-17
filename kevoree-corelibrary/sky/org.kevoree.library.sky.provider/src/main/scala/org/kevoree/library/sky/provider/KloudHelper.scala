@@ -5,7 +5,7 @@ import java.net._
 import org.kevoree._
 import cloner.ModelCloner
 import core.basechecker.RootChecker
-import framework.{KevoreeXmiHelper, KevoreePropertyHelper}
+import framework.{NetworkHelper, KevoreeXmiHelper, KevoreePropertyHelper}
 import scala.collection.JavaConversions._
 import java.io._
 
@@ -23,7 +23,7 @@ object KloudHelper {
   private val logger: Logger = LoggerFactory.getLogger(this.getClass)
 
   def getMasterIP_PORT (masterProp: String): java.util.List[String] = {
-    val result = new java.util.ArrayList[String]();
+    val result = new java.util.ArrayList[String]()
     masterProp.split(",").foreach(ips => {
       val vals = ips.split("=")
       if (vals.size == 2) {
@@ -150,8 +150,9 @@ object KloudHelper {
           while (l < 255 && checkMask(i, j, k, l, subnet, mask) && !found) {
             val tmpIp = i + "." + j + "." + k + "." + l
             if (!ips.contains(tmpIp)) {
+              if (NetworkHelper.isAccessible(tmpIp)) {/*
               val inet = InetAddress.getByName(tmpIp)
-              if (!inet.isReachable(1000)) {
+              if (!inet.isReachable(1000)) {*/
                 newIp = tmpIp
                 found = true
               }
@@ -274,7 +275,7 @@ object KloudHelper {
   }
 
   def sendModel (model: ContainerRoot, urlPath: String): Boolean = {
-    logger.debug("send model on {}",urlPath);
+    logger.debug("send model on {}",urlPath)
     try {
       val outStream: ByteArrayOutputStream = new ByteArrayOutputStream
       KevoreeXmiHelper.saveStream(outStream, model)
