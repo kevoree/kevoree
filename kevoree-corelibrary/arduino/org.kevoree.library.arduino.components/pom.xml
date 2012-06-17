@@ -4,12 +4,12 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>org.kevoree.library.arduino.components</artifactId>
     <name>Kevoree :: CoreLibrary :: Arduino :: Components</name>
-    <version>1.7.8</version>
+    <version>1.7.9-SNAPSHOT</version>
 
     <parent>
         <artifactId>org.kevoree.library.arduino.root</artifactId>
         <groupId>org.kevoree.corelibrary.arduino</groupId>
-        <version>1.7.8</version>
+        <version>1.7.9-SNAPSHOT</version>
         <relativePath>../org.kevoree.library.arduino.root/pom.xml</relativePath>
     </parent>
 
