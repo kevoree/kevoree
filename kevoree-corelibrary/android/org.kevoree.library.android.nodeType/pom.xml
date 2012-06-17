@@ -71,6 +71,8 @@
                 </configuration>
             </plugin>
             <!-- android dex phase -->
+
+            <!--
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
@@ -85,9 +87,9 @@
                         <configuration>
                             <executable>${android.tools.dx}</executable>
                             <arguments>
-                                <argument>--dex</argument>
-                                <argument>--core-library</argument>
-                                <argument>--output=${project.build.directory}/classes.dex</argument>
+                                <argument>-dex</argument>
+                                <argument>-core-library</argument>
+                                <argument>-output=${project.build.directory}/classes.dex</argument>
                                 <argument>${project.build.directory}/${project.build.finalName}.jar</argument>
                             </arguments>
                         </configuration>
@@ -110,6 +112,8 @@
                     </execution>
                 </executions>
             </plugin>
+            -->
+
         </plugins>
     </build>
 

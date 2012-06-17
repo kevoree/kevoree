@@ -20,7 +20,6 @@ import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
 import org.kevoree.platform.android.boot.KevoreeService;
-import org.kevoree.platform.android.boot.kcl.TinyKCL;
 import org.kevoree.platform.android.boot.view.ManagerUI;
 
 import java.io.File;
@@ -35,7 +34,6 @@ import java.io.File;
 public class ControllerImpl implements IController {
     private static final String TAG = ControllerImpl.class.getSimpleName();
     private ManagerUI viewmanager = null;
-    public static TinyKCL tkcl = null;
     private FragmentActivity ctx = null;
 
     public ControllerImpl(FragmentActivity act) {
@@ -141,7 +139,6 @@ public class ControllerImpl implements IController {
 
 
     public static void initKCL(Context c) {
-        tkcl = new TinyKCL();
         File sdDir = Environment.getExternalStorageDirectory();
         File kevoree_cache = new File(sdDir.getAbsolutePath() + "/KEVOREE");
         Log.i("kevoree.android", kevoree_cache.getAbsolutePath());
@@ -154,7 +151,6 @@ public class ControllerImpl implements IController {
             }
         }
         System.setProperty("user.home", kevoree_cache.getAbsolutePath());
-        tkcl.start(c, c.getClassLoader());
     }
 
 

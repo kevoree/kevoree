@@ -23,6 +23,7 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.util.Log;
 import org.kevoree.platform.android.boot.controller.ControllerImpl;
+import org.kevoree.platform.android.core.KevoreeAndroidBootStrap;
 import org.kevoree.platform.android.ui.KevoreeAndroidUIScreen;
 
 import java.lang.reflect.Method;
@@ -35,7 +36,7 @@ public class KevoreeService extends Service {
 
     private String nodeName;
 
-    private Object bootObj = null;
+    private KevoreeAndroidBootStrap bootObj = null;
 
     @Override
     public IBinder onBind(Intent intent)
@@ -60,11 +61,15 @@ public class KevoreeService extends Service {
                 try
                 {
                     ControllerImpl.initKCL(getBaseContext());
-                    Class bootClazz =  ControllerImpl.tkcl.getClusterKCL().loadClass("org.kevoree.platform.android.core.KevoreeAndroidBootStrap");
-                    bootObj = bootClazz.newInstance();
-                    Method startM = bootClazz.getMethod("start",Activity.class, android.content.Context.class, ClassLoader.class, KevoreeAndroidUIScreen.class, String.class);
-                    startM.invoke(bootObj,KevoreeActivity.controller.getViewManager().getCtx(),getBaseContext(), ControllerImpl.tkcl.getClusterKCL(),KevoreeActivity.controller,nodeName);
+                    //Class bootClazz =  org.kevoree.platform.android.core.KevoreeAndroidBootStrap.class;//ControllerImpl.tkcl.getClusterKCL().loadClass("org.kevoree.platform.android.core.KevoreeAndroidBootStrap");
+                    //bootObj = bootClazz.newInstance();
+                    bootObj = new KevoreeAndroidBootStrap();
+                    //Method startM = bootClazz.getMethod("start",Activity.class, android.content.Context.class, ClassLoader.class, KevoreeAndroidUIScreen.class, String.class);
+                    bootObj.start(KevoreeActivity.controller.getViewManager().getCtx(),getBaseContext(), this.getClass().getClassLoader(),KevoreeActivity.controller,nodeName);
+
+                   // startM.invoke(bootObj,KevoreeActivity.controller.getViewManager().getCtx(),getBaseContext(), bootClazz.getClassLoader(),KevoreeActivity.controller,nodeName);
                 } catch (Exception e) {
+                    Log.e("KevBoot","KevBoot",e);
                     e.printStackTrace();
                 }
 
