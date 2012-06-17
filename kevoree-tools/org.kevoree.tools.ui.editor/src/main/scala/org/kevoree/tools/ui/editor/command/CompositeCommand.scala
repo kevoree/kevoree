@@ -23,13 +23,14 @@ package org.kevoree.tools.ui.editor.command
 
 class CompositeCommand extends Command {
 
-  private val cmds: scala.collection.mutable.HashSet[Command] = scala.collection.mutable.HashSet[Command]()
+  private val cmds: java.util.List[Command] = new java.util.ArrayList[Command]()
 
   def addCommand(c: Command) {
     cmds.add(c)
   }
 
   def execute(p: Any) {
+    import scala.collection.JavaConversions._
     cmds.foreach{ c =>
       c.execute(p)
     }
