@@ -40,6 +40,7 @@ public class StaticLoggerBinder implements LoggerFactoryBinder {
         if (SINGLETON == null) {
             SINGLETON = new StaticLoggerBinder();
         }
+        return SINGLETON;
     }
 
     /**

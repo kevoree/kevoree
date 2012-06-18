@@ -320,6 +320,8 @@ class KevoreeJarClassLoader extends JarClassLoader {
         url.openStream()
       }
     } else {
+      //STRANGE ERROR
+      //logger.debug("Resource not found as Stream {}",name)
       null
     }
   }

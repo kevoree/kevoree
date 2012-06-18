@@ -40,11 +40,11 @@ class AndroidKevoreeJarClassLoader(gkey: String, ctx: android.content.Context, p
     super.setLazyLoad(true)
   }
 
-  private class KevoreeDexClassLoader(c1:String,c2:String,c3:String,parentCL : ClassLoader) extends ClassLoader() {
+  private class KevoreeDexClassLoader(c1:String,c2:String,c3:String,jarKCL : KevoreeJarClassLoader) {
 
     val dexFile = DexFile.loadDex(c1,c2,0)
 
-    def internalLoad(name:String) : Class[_] = {
+    /*def internalLoad(name:String) : Class[_] = {
       super[ClassLoader].loadClass(name)
     }
 
@@ -53,8 +53,15 @@ class AndroidKevoreeJarClassLoader(gkey: String, ctx: android.content.Context, p
     }
 
     override def findClass(className : String) : Class[_] = {
-       dexFile.loadClass(className,this)
+       dexFile.loadClass(className,jarKCL)
     }
+
+     */
+
+    def tryLoadClass(className : String) : Class[_] = {
+      dexFile.loadClass(className,jarKCL)
+    }
+
 
   }
 
@@ -118,7 +125,7 @@ class AndroidKevoreeJarClassLoader(gkey: String, ctx: android.content.Context, p
     //logger.info("create ODEX dir = "+dexOptStoragePath.mkdirs()+"-"+dexOptStoragePath.isDirectory)
     odexPaths = odexPaths ++ List(dexOptStoragePath)
     dexOptStoragePath.mkdirs()
-    val newDexCL = new KevoreeDexClassLoader(getLoadedURLs.get(0).getPath/*dexInternalStoragePath.getAbsolutePath*/, outDex.getAbsolutePath/*dexOptStoragePath.getAbsolutePath*/, null, parent)
+    val newDexCL = new KevoreeDexClassLoader(getLoadedURLs.get(0).getPath/*dexInternalStoragePath.getAbsolutePath*/, outDex.getAbsolutePath/*dexOptStoragePath.getAbsolutePath*/, null, this)
     subDexClassLoader = subDexClassLoader ++ List(newDexCL)
   }
 
@@ -126,7 +133,12 @@ class AndroidKevoreeJarClassLoader(gkey: String, ctx: android.content.Context, p
     subDexClassLoader.foreach {
       subCL =>
         try {
-          return subCL.internalLoad(className)
+          val classLoaded = subCL.tryLoadClass(className)
+          if(classLoaded != null){
+            return classLoaded
+          }
+
+          //return subCL.internalLoad(className)
         } catch {
           case nf: ClassNotFoundException =>
         }
