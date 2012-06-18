@@ -31,7 +31,6 @@ public class StaticLoggerBinder implements LoggerFactoryBinder {
      */
     private static StaticLoggerBinder SINGLETON = null;
 
-<<<<<<< HEAD
     /**
      * Return the singleton of this class.
      *
@@ -41,18 +40,6 @@ public class StaticLoggerBinder implements LoggerFactoryBinder {
         if (SINGLETON == null) {
             SINGLETON = new StaticLoggerBinder();
         }
-=======
-	/**
-	 * Return the singleton of this class.
-	 *
-	 * @return the StaticLoggerBinder singleton
-	 */
-	public static final StaticLoggerBinder getSingleton () {
-		return SINGLETON;
-	}
->>>>>>> origin/master
-
-        return SINGLETON;
     }
 
     /**
@@ -64,7 +51,6 @@ public class StaticLoggerBinder implements LoggerFactoryBinder {
 
     private static final String loggerFactoryClassStr = AndroidLoggerFactory.class.getName();
 
-<<<<<<< HEAD
     /**
      * The ILoggerFactory instance returned by the {@link #getLoggerFactory}
      * method should always be the same object
@@ -82,17 +68,6 @@ public class StaticLoggerBinder implements LoggerFactoryBinder {
     public String getLoggerFactoryClassStr() {
         return loggerFactoryClassStr;
     }
-=======
-	private StaticLoggerBinder () {
-		loggerFactory = new AndroidLoggerFactory();
-	}
 
-	public ILoggerFactory getLoggerFactory () {
-		return loggerFactory;
-	}
 
-	public String getLoggerFactoryClassStr () {
-		return loggerFactoryClassStr;
-	}
->>>>>>> origin/master
 }
