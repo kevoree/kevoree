@@ -24,8 +24,7 @@ import org.slf4j.spi.LoggerFactoryBinder;
  * @author Thorsten M&ouml;ler
  * @version $Rev:$; $Author:$; $Date:$
  */
-public class StaticLoggerBinder implements LoggerFactoryBinder
-{
+public class StaticLoggerBinder implements LoggerFactoryBinder {
 
 	/**
 	 * The unique instance of this class.
@@ -37,8 +36,7 @@ public class StaticLoggerBinder implements LoggerFactoryBinder
 	 *
 	 * @return the StaticLoggerBinder singleton
 	 */
-	public static final StaticLoggerBinder getSingleton()
-	{
+	public static final StaticLoggerBinder getSingleton () {
 		return SINGLETON;
 	}
 
@@ -57,18 +55,15 @@ public class StaticLoggerBinder implements LoggerFactoryBinder
 	 */
 	private final ILoggerFactory loggerFactory;
 
-	private StaticLoggerBinder()
-	{
+	private StaticLoggerBinder () {
 		loggerFactory = new AndroidLoggerFactory();
 	}
 
-	public ILoggerFactory getLoggerFactory()
-	{
+	public ILoggerFactory getLoggerFactory () {
 		return loggerFactory;
 	}
 
-	public String getLoggerFactoryClassStr()
-	{
+	public String getLoggerFactoryClassStr () {
 		return loggerFactoryClassStr;
 	}
 }
