@@ -64,7 +64,7 @@ public class AndroidLogger extends MarkerIgnoringBase {
 
 	/* @see org.slf4j.Logger#isTraceEnabled() */
 	public boolean isTraceEnabled () {
-		return Log.isLoggable(name, Log.DEBUG);
+		return Log.isLoggable(name, Log.DEBUG) || logLevel.equals(KevoreeLogLevel.DEBUG);
 	}
 
 	/* @see org.slf4j.Logger#trace(java.lang.String) */
@@ -109,7 +109,7 @@ public class AndroidLogger extends MarkerIgnoringBase {
 
 	/* @see org.slf4j.Logger#isDebugEnabled() */
 	public boolean isDebugEnabled () {
-		return Log.isLoggable(name, Log.DEBUG);
+		return Log.isLoggable(name, Log.DEBUG) || logLevel.equals(KevoreeLogLevel.DEBUG);
 	}
 
 	/* @see org.slf4j.Logger#debug(java.lang.String) */
@@ -155,7 +155,7 @@ public class AndroidLogger extends MarkerIgnoringBase {
 
 	/* @see org.slf4j.Logger#isInfoEnabled() */
 	public boolean isInfoEnabled () {
-		return Log.isLoggable(name, Log.INFO);
+		return Log.isLoggable(name, Log.INFO) || logLevel.equals(KevoreeLogLevel.INFO);
 	}
 
 	/* @see org.slf4j.Logger#info(java.lang.String) */
@@ -201,7 +201,7 @@ public class AndroidLogger extends MarkerIgnoringBase {
 
 	/* @see org.slf4j.Logger#isWarnEnabled() */
 	public boolean isWarnEnabled () {
-		return Log.isLoggable(name, Log.WARN);
+		return Log.isLoggable(name, Log.WARN) || logLevel.equals(KevoreeLogLevel.WARN);
 	}
 
 	/* @see org.slf4j.Logger#warn(java.lang.String) */
@@ -247,7 +247,7 @@ public class AndroidLogger extends MarkerIgnoringBase {
 
 	/* @see org.slf4j.Logger#isErrorEnabled() */
 	public boolean isErrorEnabled () {
-		return Log.isLoggable(name, Log.ERROR);
+		return Log.isLoggable(name, Log.ERROR) || logLevel.equals(KevoreeLogLevel.ERROR);
 	}
 
 	/* @see org.slf4j.Logger#error(java.lang.String) */
