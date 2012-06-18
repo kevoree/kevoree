@@ -27,8 +27,8 @@
         </dependency>
         <dependency>
             <groupId>org.scalatest</groupId>
-            <artifactId>scalatest_2.10.0-M2</artifactId>
-            <version>1.8-SNAPSHOT</version>
+            <artifactId>scalatest_2.9.2</artifactId>
+            <version>1.8</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
