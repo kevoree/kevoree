@@ -150,6 +150,12 @@ class KevoreeLazyJarResources extends ClasspathResources {
               case _ =>
             }
           }
+
+          if(logger.isDebugEnabled){
+            logger.debug("Not filtered => ",jarEntry.getName)
+          }
+
+
           if (!filtered) {
             if (jarContentURL.containsKey(jarEntry.getName)) {
               if (!collisionAllowed) {
@@ -162,6 +168,9 @@ class KevoreeLazyJarResources extends ClasspathResources {
                 } else {
                   if (!detectedResourcesURL.containsKey(jarEntry.getName)) {
                     detectedResourcesURL.put(jarEntry.getName, new ArrayList[URL]())
+                    if(logger.isDebugEnabled){
+                      logger.debug("KCL load res = ",jarEntry.getName)
+                    }
                   }
                   detectedResourcesURL.get(jarEntry.getName).add(new URL("jar:" + baseurl + "!/" + jarEntry.getName))
                 }

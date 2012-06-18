@@ -24,51 +24,50 @@ import org.slf4j.spi.LoggerFactoryBinder;
  * @author Thorsten M&ouml;ler
  * @version $Rev:$; $Author:$; $Date:$
  */
-public class StaticLoggerBinder implements LoggerFactoryBinder
-{
+public class StaticLoggerBinder implements LoggerFactoryBinder {
 
-	/**
-	 * The unique instance of this class.
-	 */
-	private static final StaticLoggerBinder SINGLETON = new StaticLoggerBinder();
+    /**
+     * The unique instance of this class.
+     */
+    private static StaticLoggerBinder SINGLETON = null;
 
-	/**
-	 * Return the singleton of this class.
-	 *
-	 * @return the StaticLoggerBinder singleton
-	 */
-	public static final StaticLoggerBinder getSingleton()
-	{
-		return SINGLETON;
-	}
+    /**
+     * Return the singleton of this class.
+     *
+     * @return the StaticLoggerBinder singleton
+     */
+    public static final StaticLoggerBinder getSingleton() {
+        if (SINGLETON == null) {
+            SINGLETON = new StaticLoggerBinder();
+        }
 
-	/**
-	 * Declare the version of the SLF4J API this implementation is compiled
-	 * against. The value of this field is usually modified with each release.
-	 */
-	// to avoid constant folding by the compiler, this field must *not* be final
-	public static String REQUESTED_API_VERSION = "1.6"; // !final
+        return SINGLETON;
+    }
 
-	private static final String loggerFactoryClassStr = AndroidLoggerFactory.class.getName();
+    /**
+     * Declare the version of the SLF4J API this implementation is compiled
+     * against. The value of this field is usually modified with each release.
+     */
+    // to avoid constant folding by the compiler, this field must *not* be final
+    public static String REQUESTED_API_VERSION = "1.6"; // !final
 
-	/**
-	 * The ILoggerFactory instance returned by the {@link #getLoggerFactory}
-	 * method should always be the same object
-	 */
-	private final ILoggerFactory loggerFactory;
+    private static final String loggerFactoryClassStr = AndroidLoggerFactory.class.getName();
 
-	private StaticLoggerBinder()
-	{
-		loggerFactory = new AndroidLoggerFactory();
-	}
+    /**
+     * The ILoggerFactory instance returned by the {@link #getLoggerFactory}
+     * method should always be the same object
+     */
+    private final ILoggerFactory loggerFactory;
 
-	public ILoggerFactory getLoggerFactory()
-	{
-		return loggerFactory;
-	}
+    private StaticLoggerBinder() {
+        loggerFactory = new AndroidLoggerFactory();
+    }
 
-	public String getLoggerFactoryClassStr()
-	{
-		return loggerFactoryClassStr;
-	}
+    public ILoggerFactory getLoggerFactory() {
+        return loggerFactory;
+    }
+
+    public String getLoggerFactoryClassStr() {
+        return loggerFactoryClassStr;
+    }
 }
