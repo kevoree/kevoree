@@ -132,11 +132,11 @@ class KevoreeLazyJarResources extends ClasspathResources {
   }
 
   def loadJar(jarStream: InputStream, baseurl: URL) {
-    var bis: BufferedInputStream = null;
-    var jis: JarInputStream = null;
+    var bis: BufferedInputStream = null
+    var jis: JarInputStream = null
     try {
-      bis = new BufferedInputStream(jarStream);
-      jis = new JarInputStream(bis);
+      bis = new BufferedInputStream(jarStream)
+      jis = new JarInputStream(bis)
       var jarEntry = jis.getNextJarEntry
       while (jarEntry != null) {
         if (!jarEntry.isDirectory) {
@@ -146,17 +146,16 @@ class KevoreeLazyJarResources extends ClasspathResources {
               case Some(e) => {
                 e.doLoad(jarEntry.getName, jis)
                 filtered = true
+                //if(logger.isDebugEnabled){
+                  //logger.debug("Special Loader found => {}",jarEntry.getName)
+                //}
               }
               case _ =>
             }
           }
 
-          if(logger.isDebugEnabled){
-            logger.debug("Not filtered => ",jarEntry.getName)
-          }
-
-
           if (!filtered) {
+            //logger.debug("Not filtered => {}",jarEntry.getName)
             if (jarContentURL.containsKey(jarEntry.getName)) {
               if (!collisionAllowed) {
                 throw new JclException("Class/Resource " + jarEntry.getName() + " already loaded");
@@ -168,9 +167,9 @@ class KevoreeLazyJarResources extends ClasspathResources {
                 } else {
                   if (!detectedResourcesURL.containsKey(jarEntry.getName)) {
                     detectedResourcesURL.put(jarEntry.getName, new ArrayList[URL]())
-                    if(logger.isDebugEnabled){
-                      logger.debug("KCL load res = ",jarEntry.getName)
-                    }
+                   // if(logger.isDebugEnabled){
+                      //logger.debug("KCL load res = {}",jarEntry.getName)
+                   // }
                   }
                   detectedResourcesURL.get(jarEntry.getName).add(new URL("jar:" + baseurl + "!/" + jarEntry.getName))
                 }
@@ -309,6 +308,13 @@ class KevoreeLazyJarResources extends ClasspathResources {
   }
 
   def containResource(name: String): Boolean = {
+ /*
+    import scala.collection.JavaConversions._
+    detectedResourcesURL.keySet.foreach{ url =>
+        logger.debug("not found "+name+" "+url)
+    }
+    */
+
     if (detectedResourcesURL.get(name) != null) {
       !detectedResourcesURL.get(name).isEmpty
     } else {
@@ -345,6 +351,11 @@ class KevoreeLazyJarResources extends ClasspathResources {
           out.close()
           detectedResources.put(resUrl, out.toByteArray)
           out.toByteArray
+        } catch {
+          case _ @ e => {
+            logger.debug("Error while copying "+resUrl,e)
+            null
+          }
         } finally {
           if (stream != null) {
             stream.close()

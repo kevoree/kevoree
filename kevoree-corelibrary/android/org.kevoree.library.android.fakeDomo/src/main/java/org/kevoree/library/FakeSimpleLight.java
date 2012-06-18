@@ -94,7 +94,7 @@ public class FakeSimpleLight extends AbstractComponentType implements ToggleLigh
         if (image != null) {
             view.setImageBitmap(image);
         } else {
-            logger.debug("Image not found");
+            logger.debug("Image not found vua classloader {}",this.getClass().getClassLoader());
         }
     }
 
