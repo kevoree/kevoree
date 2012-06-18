@@ -64,19 +64,19 @@ public class AndroidLogger extends MarkerIgnoringBase {
 
 	/* @see org.slf4j.Logger#isTraceEnabled() */
 	public boolean isTraceEnabled () {
-		return Log.isLoggable(name, Log.DEBUG);
+		return Log.isLoggable(name, Log.DEBUG) || logLevel.equals(KevoreeLogLevel.DEBUG);
 	}
 
 	/* @see org.slf4j.Logger#trace(java.lang.String) */
 	public void trace (final String msg) {
-		if (this.logLevel == KevoreeLogLevel.DEBUG) {
+		if (this.logLevel.equals(KevoreeLogLevel.DEBUG)) {
 			Log.v(name, msg);
 		}
 	}
 
 	/* @see org.slf4j.Logger#trace(java.lang.String, java.lang.Object) */
 	public void trace (final String format, final Object param1) {
-		if (this.logLevel == KevoreeLogLevel.DEBUG) {
+		if (this.logLevel.equals( KevoreeLogLevel.DEBUG)) {
 			Log.v(name, format(format, param1, null));
 			System.out.println(name + "->" + format(format, param1, null));
 		}
@@ -84,7 +84,7 @@ public class AndroidLogger extends MarkerIgnoringBase {
 
 	/* @see org.slf4j.Logger#trace(java.lang.String, java.lang.Object, java.lang.Object) */
 	public void trace (final String format, final Object param1, final Object param2) {
-		if (this.logLevel == KevoreeLogLevel.DEBUG) {
+		if (this.logLevel.equals(KevoreeLogLevel.DEBUG)) {
 			Log.v(name, format(format, param1, param2));
 			System.out.println(name + "->" + format(format, param1, param2));
 		}
@@ -92,7 +92,7 @@ public class AndroidLogger extends MarkerIgnoringBase {
 
 	/* @see org.slf4j.Logger#trace(java.lang.String, java.lang.Object[]) */
 	public void trace (final String format, final Object[] argArray) {
-		if (this.logLevel == KevoreeLogLevel.DEBUG) {
+		if (this.logLevel.equals(KevoreeLogLevel.DEBUG)) {
 			Log.v(name, format(format, argArray));
 			System.out.println(name + "->" + format(format, argArray));
 		}
@@ -100,7 +100,7 @@ public class AndroidLogger extends MarkerIgnoringBase {
 
 	/* @see org.slf4j.Logger#trace(java.lang.String, java.lang.Throwable) */
 	public void trace (final String msg, final Throwable t) {
-		if (this.logLevel == KevoreeLogLevel.DEBUG) {
+		if (this.logLevel.equals(KevoreeLogLevel.DEBUG)) {
 			Log.v(name, msg, t);
 			System.out.println(name + "->" + msg);
 			t.printStackTrace(System.out);
@@ -109,12 +109,12 @@ public class AndroidLogger extends MarkerIgnoringBase {
 
 	/* @see org.slf4j.Logger#isDebugEnabled() */
 	public boolean isDebugEnabled () {
-		return Log.isLoggable(name, Log.DEBUG);
+		return Log.isLoggable(name, Log.DEBUG) || logLevel.equals(KevoreeLogLevel.DEBUG);
 	}
 
 	/* @see org.slf4j.Logger#debug(java.lang.String) */
 	public void debug (final String msg) {
-		if (this.logLevel == KevoreeLogLevel.DEBUG) {
+		if (this.logLevel.equals(KevoreeLogLevel.DEBUG)) {
 			Log.d(name, msg);
 			System.out.println(name + "=>" + msg);
 		}
@@ -122,7 +122,7 @@ public class AndroidLogger extends MarkerIgnoringBase {
 
 	/* @see org.slf4j.Logger#debug(java.lang.String, java.lang.Object) */
 	public void debug (final String format, final Object arg1) {
-		if (this.logLevel == KevoreeLogLevel.DEBUG) {
+		if (this.logLevel.equals(KevoreeLogLevel.DEBUG)) {
 			Log.d(name, format(format, arg1, null));
 			System.out.println(name + "=>" + format(format, arg1, null));
 		}
@@ -130,7 +130,7 @@ public class AndroidLogger extends MarkerIgnoringBase {
 
 	/* @see org.slf4j.Logger#debug(java.lang.String, java.lang.Object, java.lang.Object) */
 	public void debug (final String format, final Object param1, final Object param2) {
-		if (this.logLevel == KevoreeLogLevel.DEBUG) {
+		if (this.logLevel.equals(KevoreeLogLevel.DEBUG)) {
 			Log.d(name, format(format, param1, param2));
 			System.out.println(name + "=>" + format(format, param1, param2));
 		}
@@ -138,7 +138,7 @@ public class AndroidLogger extends MarkerIgnoringBase {
 
 	/* @see org.slf4j.Logger#debug(java.lang.String, java.lang.Object[]) */
 	public void debug (final String format, final Object[] argArray) {
-		if (this.logLevel == KevoreeLogLevel.DEBUG) {
+		if (this.logLevel.equals(KevoreeLogLevel.DEBUG)) {
 			Log.d(name, format(format, argArray));
 			System.out.println(name + "=>" + format(format, argArray));
 		}
@@ -146,7 +146,7 @@ public class AndroidLogger extends MarkerIgnoringBase {
 
 	/* @see org.slf4j.Logger#debug(java.lang.String, java.lang.Throwable) */
 	public void debug (final String msg, final Throwable t) {
-		if (this.logLevel == KevoreeLogLevel.WARN) {
+		if (this.logLevel.equals(KevoreeLogLevel.WARN)) {
 			Log.d(name, msg, t);
 			System.out.println(name + "=>" + msg);
 			t.printStackTrace(System.out);
@@ -155,12 +155,12 @@ public class AndroidLogger extends MarkerIgnoringBase {
 
 	/* @see org.slf4j.Logger#isInfoEnabled() */
 	public boolean isInfoEnabled () {
-		return Log.isLoggable(name, Log.INFO);
+		return Log.isLoggable(name, Log.INFO) || logLevel.equals(KevoreeLogLevel.INFO);
 	}
 
 	/* @see org.slf4j.Logger#info(java.lang.String) */
 	public void info (final String msg) {
-		if (this.logLevel == KevoreeLogLevel.INFO) {
+		if (this.logLevel.equals(KevoreeLogLevel.INFO)) {
 			Log.i(name, msg);
 			System.out.println(name + "->" + msg);
 		}
@@ -168,7 +168,7 @@ public class AndroidLogger extends MarkerIgnoringBase {
 
 	/* @see org.slf4j.Logger#info(java.lang.String, java.lang.Object) */
 	public void info (final String format, final Object arg) {
-		if (this.logLevel == KevoreeLogLevel.INFO) {
+		if (this.logLevel.equals(KevoreeLogLevel.INFO)) {
 			Log.i(name, format(format, arg, null));
 			System.out.println(name + "->" + format(format, arg, null));
 		}
@@ -176,7 +176,7 @@ public class AndroidLogger extends MarkerIgnoringBase {
 
 	/* @see org.slf4j.Logger#info(java.lang.String, java.lang.Object, java.lang.Object) */
 	public void info (final String format, final Object arg1, final Object arg2) {
-		if (this.logLevel == KevoreeLogLevel.INFO) {
+		if (this.logLevel.equals(KevoreeLogLevel.INFO)) {
 			Log.i(name, format(format, arg1, arg2));
 			System.out.println(name + "->" + format(format, arg1, arg2));
 		}
@@ -184,7 +184,7 @@ public class AndroidLogger extends MarkerIgnoringBase {
 
 	/* @see org.slf4j.Logger#info(java.lang.String, java.lang.Object[]) */
 	public void info (final String format, final Object[] argArray) {
-		if (this.logLevel == KevoreeLogLevel.INFO) {
+		if (this.logLevel.equals(KevoreeLogLevel.INFO)) {
 			Log.i(name, format(format, argArray));
 			System.out.println(name + "->" + format(format, argArray));
 		}
@@ -192,7 +192,7 @@ public class AndroidLogger extends MarkerIgnoringBase {
 
 	/* @see org.slf4j.Logger#info(java.lang.String, java.lang.Throwable) */
 	public void info (final String msg, final Throwable t) {
-		if (this.logLevel == KevoreeLogLevel.INFO) {
+		if (this.logLevel.equals(KevoreeLogLevel.INFO)) {
 			Log.i(name, msg, t);
 			System.out.println(name + "->" + msg);
 			t.printStackTrace(System.out);
@@ -201,12 +201,12 @@ public class AndroidLogger extends MarkerIgnoringBase {
 
 	/* @see org.slf4j.Logger#isWarnEnabled() */
 	public boolean isWarnEnabled () {
-		return Log.isLoggable(name, Log.WARN);
+		return Log.isLoggable(name, Log.WARN) || logLevel.equals(KevoreeLogLevel.WARN);
 	}
 
 	/* @see org.slf4j.Logger#warn(java.lang.String) */
 	public void warn (final String msg) {
-		if (this.logLevel == KevoreeLogLevel.WARN) {
+		if (this.logLevel.equals(KevoreeLogLevel.WARN)) {
 			Log.w(name, msg);
 			System.out.println(name + "->" + msg);
 		}
@@ -214,7 +214,7 @@ public class AndroidLogger extends MarkerIgnoringBase {
 
 	/* @see org.slf4j.Logger#warn(java.lang.String, java.lang.Object) */
 	public void warn (final String format, final Object arg) {
-		if (this.logLevel == KevoreeLogLevel.WARN) {
+		if (this.logLevel.equals(KevoreeLogLevel.WARN)) {
 			Log.w(name, format(format, arg, null));
 			System.out.println(name + "->" + format(format, arg, null));
 		}
@@ -222,7 +222,7 @@ public class AndroidLogger extends MarkerIgnoringBase {
 
 	/* @see org.slf4j.Logger#warn(java.lang.String, java.lang.Object, java.lang.Object) */
 	public void warn (final String format, final Object arg1, final Object arg2) {
-		if (this.logLevel == KevoreeLogLevel.WARN) {
+		if (this.logLevel.equals(KevoreeLogLevel.WARN)) {
 			Log.w(name, format(format, arg1, arg2));
 			System.out.println(name + "->" + format(format, arg1, arg2));
 		}
@@ -230,7 +230,7 @@ public class AndroidLogger extends MarkerIgnoringBase {
 
 	/* @see org.slf4j.Logger#warn(java.lang.String, java.lang.Object[]) */
 	public void warn (final String format, final Object[] argArray) {
-		if (this.logLevel == KevoreeLogLevel.WARN) {
+		if (this.logLevel.equals(KevoreeLogLevel.WARN)) {
 			Log.w(name, format(format, argArray));
 			System.out.println(name + "->" + format(format, argArray));
 		}
@@ -238,7 +238,7 @@ public class AndroidLogger extends MarkerIgnoringBase {
 
 	/* @see org.slf4j.Logger#warn(java.lang.String, java.lang.Throwable) */
 	public void warn (final String msg, final Throwable t) {
-		if (this.logLevel == KevoreeLogLevel.WARN) {
+		if (this.logLevel.equals(KevoreeLogLevel.WARN)) {
 			Log.w(name, msg, t);
 			System.out.println(name + "->" + msg);
 			t.printStackTrace(System.out);
@@ -247,12 +247,12 @@ public class AndroidLogger extends MarkerIgnoringBase {
 
 	/* @see org.slf4j.Logger#isErrorEnabled() */
 	public boolean isErrorEnabled () {
-		return Log.isLoggable(name, Log.ERROR);
+		return Log.isLoggable(name, Log.ERROR) || logLevel.equals(KevoreeLogLevel.ERROR);
 	}
 
 	/* @see org.slf4j.Logger#error(java.lang.String) */
 	public void error (final String msg) {
-		if (this.logLevel == KevoreeLogLevel.ERROR) {
+		if (this.logLevel.equals(KevoreeLogLevel.ERROR)) {
 			Log.e(name, msg);
 			System.err.println(name + "->" + msg);
 		}
@@ -260,7 +260,7 @@ public class AndroidLogger extends MarkerIgnoringBase {
 
 	/* @see org.slf4j.Logger#error(java.lang.String, java.lang.Object) */
 	public void error (final String format, final Object arg) {
-		if (this.logLevel == KevoreeLogLevel.ERROR) {
+		if (this.logLevel.equals(KevoreeLogLevel.ERROR)) {
 			Log.e(name, format(format, arg, null));
 			System.err.println(name + "->" + format(format, arg, null));
 		}
@@ -268,7 +268,7 @@ public class AndroidLogger extends MarkerIgnoringBase {
 
 	/* @see org.slf4j.Logger#error(java.lang.String, java.lang.Object, java.lang.Object) */
 	public void error (final String format, final Object arg1, final Object arg2) {
-		if (this.logLevel == KevoreeLogLevel.WARN) {
+		if (this.logLevel.equals(KevoreeLogLevel.WARN)) {
 			Log.e(name, format(format, arg1, arg2));
 			System.err.println(name + "->" + format(format, arg1, arg2));
 		}
@@ -276,7 +276,7 @@ public class AndroidLogger extends MarkerIgnoringBase {
 
 	/* @see org.slf4j.Logger#error(java.lang.String, java.lang.Object[]) */
 	public void error (final String format, final Object[] argArray) {
-		if (this.logLevel == KevoreeLogLevel.ERROR) {
+		if (this.logLevel.equals(KevoreeLogLevel.ERROR)) {
 			Log.e(name, format(format, argArray));
 			System.err.println(name + "->" + format(format, argArray));
 		}
@@ -284,7 +284,7 @@ public class AndroidLogger extends MarkerIgnoringBase {
 
 	/* @see org.slf4j.Logger#error(java.lang.String, java.lang.Throwable) */
 	public void error (final String msg, final Throwable t) {
-		if (this.logLevel == KevoreeLogLevel.ERROR) {
+		if (this.logLevel.equals(KevoreeLogLevel.ERROR)) {
 			Log.e(name, msg, t);
 			System.err.println(name + "->" + msg);
 			t.printStackTrace();
