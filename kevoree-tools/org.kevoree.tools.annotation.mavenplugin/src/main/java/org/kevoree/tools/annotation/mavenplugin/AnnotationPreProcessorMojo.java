@@ -649,7 +649,12 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
         this.options.put("kevoree.lib.id", this.project.getArtifactId());
         this.options.put("kevoree.lib.group", this.project.getGroupId());
         this.options.put("kevoree.lib.version", this.project.getVersion());
-        this.options.put("kevoree.lib.type", this.project.getPackaging());
+
+        String packaging = this.project.getPackaging();
+        if(packaging == null || packaging.equals("")){
+            packaging = "jar";
+        }
+        this.options.put("kevoree.lib.type", packaging);
         this.options.put("kevoree.lib.target", sourceOutputDirectory.getPath() + File.separator + "KEV-INF" + File.separator + "lib.kev");
         this.options.put("kevoree.lib.tag", dateFormat.format(new Date()));
         this.options.put("repositories", repositories);
