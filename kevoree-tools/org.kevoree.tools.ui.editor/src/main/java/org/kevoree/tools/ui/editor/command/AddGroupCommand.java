@@ -36,6 +36,16 @@ public class AddGroupCommand implements Command {
         this.point = p;
     }
 
+
+    protected Boolean isArduinoManaged(TypeDefinition td){
+        for(DeployUnit du : td.getDeployUnitsForJ()){
+            if(du.getTargetNodeType().isDefined() && du.getTargetNodeType().get().getName().toLowerCase().contains("arduino")){
+                return true;
+            }
+        }
+        return false;
+    }
+
     @Override
     public void execute(Object p) {
         Group newgroup = KevoreeFactory.createGroup();
@@ -43,7 +53,13 @@ public class AddGroupCommand implements Command {
         newgroup.setTypeDefinition(type);
 
         //CREATE NEW NAME
-        newgroup.setName("group" + Math.abs(random.nextInt()));
+
+        if(isArduinoManaged(type)){
+            newgroup.setName("g" + Math.abs(random.nextInt(99)));
+        } else {
+            newgroup.setName("group" + Math.abs(random.nextInt()));
+        }
+
         GroupPanel newgrouppanel = kernel.getUifactory().createGroup(newgroup);
         kernel.getModelHandler().getActualModel().addGroups(newgroup);
         kernel.getModelPanel().addGroup(newgrouppanel);

@@ -44,6 +44,10 @@ public class AddComponentCommand implements Command {
         this.nodepanel = nodepanel;
     }
 
+
+
+
+
     @Override
     public void execute(Object p) {
         if(p instanceof ComponentTypePanel){
@@ -52,7 +56,13 @@ public class AddComponentCommand implements Command {
             ContainerNode node = (ContainerNode) kernel.getUifactory().getMapping().get(nodepanel);
             ComponentType type = (ComponentType) kernel.getUifactory().getMapping().get(p);
             instance.setTypeDefinition(type);
-            instance.setName(type.getName().substring(0,Math.min(type.getName().length(),9))+""+Math.abs(new Random().nextInt(999)));
+
+            if(node.getTypeDefinition().getName().toLowerCase().contains("arduino")){
+                instance.setName(type.getName().substring(0,Math.min(type.getName().length(),1))+""+Math.abs(new Random().nextInt(99)));
+            } else {
+                instance.setName(type.getName().substring(0,Math.min(type.getName().length(),9))+""+Math.abs(new Random().nextInt(999)));
+            }
+
             ComponentPanel insPanel = kernel.getUifactory().createComponentInstance(instance);
 
             for(PortTypeRef ref : type.getProvidedForJ()){

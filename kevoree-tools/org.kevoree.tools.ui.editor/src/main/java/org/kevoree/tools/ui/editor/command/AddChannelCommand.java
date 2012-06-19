@@ -16,9 +16,7 @@
  * Copyright  : IRISA / INRIA / Universite de Rennes 1 */
 package org.kevoree.tools.ui.editor.command;
 
-import org.kevoree.Channel;
-import org.kevoree.ChannelType;
-import org.kevoree.KevoreeFactory;
+import org.kevoree.*;
 import org.kevoree.tools.ui.editor.KevoreeUIKernel;
 import org.kevoree.tools.ui.editor.ModelHelper;
 import org.kevoree.tools.ui.framework.elements.ChannelPanel;
@@ -43,6 +41,16 @@ public class AddChannelCommand implements Command {
         this.point = p;
     }
 
+
+    protected Boolean isArduinoManaged(TypeDefinition td){
+        for(DeployUnit du : td.getDeployUnitsForJ()){
+            if(du.getTargetNodeType().isDefined() && du.getTargetNodeType().get().getName().toLowerCase().contains("arduino")){
+                return true;
+            }
+        }
+        return false;
+    }
+
     @Override
     public void execute(Object p) {
         Channel newhub = KevoreeFactory.createChannel();
@@ -51,7 +59,13 @@ public class AddChannelCommand implements Command {
 
         //CREATE NEW NAME
         //newhub.setName("hub" + Math.abs(random.nextInt()));
-        newhub.setName(type.getName().substring(0, Math.min(type.getName().length(), 9)) + "" + Math.abs(new java.util.Random().nextInt(999)));
+
+        if(isArduinoManaged(type)){
+            newhub.setName(type.getName().substring(0, Math.min(type.getName().length(), 1)) + "" + Math.abs(new java.util.Random().nextInt(99)));
+        }   else {
+            newhub.setName(type.getName().substring(0, Math.min(type.getName().length(), 9)) + "" + Math.abs(new java.util.Random().nextInt(999)));
+        }
+
 
 
         ChannelPanel newhubpanel = kernel.getUifactory().createHub(newhub);
