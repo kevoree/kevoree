@@ -24,15 +24,64 @@ case class OperationAspect(selfOperation: Operation) {
     "" match {
       case _ if (otherOperation.getParameters.size != selfOperation.getParameters.size) => logger.debug("otherOperation.getParameters.size != selfOperation.getParameters.size");true
       case _ => {
-        val parameterChanged = otherOperation.getParameters.forall(otherParam => {
+        var parameterChanged = otherOperation.getParameters.forall(otherParam => {
           selfOperation.getParameters.find(selfParam => selfParam.getName == otherParam.getName) match {
             case Some(selfParam) =>  {
               !selfParam.getType.get.isModelEquals(otherParam.getType.get)
             }
-            case None => logger.debug("Parameters are not the same");true
+            case None => logger.debug("Parameters are not found in previous operation {}",otherParam.getName);true
           }
         })
+
+        if(parameterChanged){
+          val selfOpeInherit = selfOperation.getParameters.forall(p => p.getName.startsWith("arg"))
+          val otherOpeInherit = otherOperation.getParameters.forall(p => p.getName.startsWith("arg"))
+          if (otherOpeInherit && !selfOpeInherit){
+            val selfArr = selfOperation.getParameters.toArray
+            val otherArr = otherOperation.getParameters.toArray
+            var consistencyImpact = false
+            for(i <- 0 until selfArr.length){
+                 if (!selfArr(i).getType.get.isModelEquals(otherArr(i).getType.get)){
+                   consistencyImpact = true
+                 }
+            }
+            if(!consistencyImpact){
+              parameterChanged = false
+              logger.debug("Conflict resolved")
+            } else {
+              logger.debug("Conflict unresolved")
+            }
+          }
+          if (!otherOpeInherit && selfOpeInherit){
+            val selfArr = selfOperation.getParameters.toArray
+            val otherArr = otherOperation.getParameters.toArray
+            var consistencyImpact = false
+            for(i <- 0 until selfArr.length){
+              if (!selfArr(i).getType.get.isModelEquals(otherArr(i).getType.get)){
+                consistencyImpact = true
+              }
+            }
+            if(!consistencyImpact){
+              parameterChanged = false
+              for(i <- 0 until selfArr.length){
+                selfArr(i).setName(otherArr(i).getName)
+              }
+              logger.debug("Conflict resolved")
+            } else {
+              logger.debug("Conflict unresolved")
+            }
+          }
+
+
+        }
+
         val returnType = !selfOperation.getReturnType.get.isModelEquals(otherOperation.getReturnType.get)
+        if (returnType){
+          logger.debug("Return type changed {}=>{}",selfOperation.getName,Array(selfOperation.getReturnType,otherOperation.getReturnType))
+        }
+        if (parameterChanged){
+          logger.debug("Parameters changed {}=>{}",selfOperation.getName,Array(otherOperation.getParameters.size,selfOperation.getParameters.size))
+        }
         parameterChanged || returnType
       }
     }
