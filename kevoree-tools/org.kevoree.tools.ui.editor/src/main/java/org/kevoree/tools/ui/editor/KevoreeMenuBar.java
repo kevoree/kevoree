@@ -94,6 +94,13 @@ public class KevoreeMenuBar extends JMenuBar {
         saveKCS.addActionListener(new CommandActionListener(cmdSaveKCS));
         file.add(saveKCS);
 
+        JMenuItem openArduino = new JMenuItem("Open from ArduinoNode");
+        OpenArduinoNode cmdOpenArduino = new OpenArduinoNode();
+        cmdOpenArduino.setKernel(kernel);
+        openArduino.addActionListener(new CommandActionListener(cmdOpenArduino));
+        file.add(openArduino);
+
+
 
         JMenuItem refresh = new JMenuItem("Refresh");
         RefreshModelCommand cmdRM = new RefreshModelCommand();
