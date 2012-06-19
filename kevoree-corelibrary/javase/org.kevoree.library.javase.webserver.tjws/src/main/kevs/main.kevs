@@ -14,3 +14,6 @@ bind webSrv.handler@node0 => req
 bind helloPage.request@node0 => req
 bind helloPage.content@node0 => res
 bind webSrv.response@node0 => res
+
+addGroup sync : NanoRestGroup
+addToGroup sync node0
