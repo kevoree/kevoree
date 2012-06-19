@@ -31,6 +31,7 @@
         <module>../org.kevoree.library.android.defaultChannels</module>
         <module>../org.kevoree.library.android.socketChannels</module>
         <module>../org.kevoree.library.android.nioChannels</module>
+        <module>../org.kevoree.library.android.agrapher</module>
     </modules>
 
     <dependencies>
