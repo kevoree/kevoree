@@ -29,7 +29,9 @@ case class TypedElementAspect(e : TypedElement) {
     val nameEquality = e.getName == remote.getName
     val genericEquality = e.getGenericTypes.forall(p=> remote.getGenericTypes.exists(remoteP => remoteP.isModelEquals(p)  )  )
     val sizeEquality = e.getGenericTypes.size == remote.getGenericTypes.size
-    logger.debug("{}", Array(e.getName, nameEquality, genericEquality, sizeEquality))
+    if(!(nameEquality && genericEquality && sizeEquality)){
+      logger.debug("{}", Array(e.getName, nameEquality, genericEquality, sizeEquality))
+    }
     nameEquality && genericEquality && sizeEquality
   }
 
