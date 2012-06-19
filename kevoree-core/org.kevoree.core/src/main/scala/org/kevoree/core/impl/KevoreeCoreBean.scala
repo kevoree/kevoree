@@ -69,8 +69,11 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
 
   def getNodeName: String = nodeName
 
+  private var modelVersionChecker : KevoreeNodeVersionChecker= null
+
   def setNodeName (nn: String) {
     nodeName = nn
+    modelVersionChecker = new KevoreeNodeVersionChecker(nodeName)
   }
 
 
@@ -332,11 +335,11 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
 
         //Model checking
         val checkResult = modelChecker.check(pnewmodel)
-        val checkVersionResult = new KevoreeNodeVersionChecker(getNodeName).check(pnewmodel)
-        if (!checkResult.isEmpty || !checkVersionResult.isEmpty) {
+        val versionCheckResult = modelVersionChecker.check(pnewmodel)
+        if ( (!checkResult.isEmpty) || (!versionCheckResult.isEmpty)) {
           logger.error("There is check failure on update model, update refused !")
           import _root_.scala.collection.JavaConversions._
-          checkResult.foreach {
+          (checkResult++versionCheckResult).foreach {
             cr =>
               logger.error("error=>" + cr.getMessage + ",objects" + cr.getTargetObjects.mkString(","))
           }
