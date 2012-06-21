@@ -177,7 +177,7 @@ case class ContainerNodeAspect (node: ContainerNode) {
     try {
       if (node.getTypeDefinition.foundRelevantDeployUnit(node) != null) {
         node.getTypeDefinition.foundRelevantDeployUnit(node).getRequiredLibs.find(du => du.getGroupName == "org.kevoree" && du.getUnitName == "org.kevoree.api") match {
-          case None => "" // must never appear
+          case None => KevoreeFactory.getVersion // must never appear
           case Some(du) => du.getVersion
         }
 
