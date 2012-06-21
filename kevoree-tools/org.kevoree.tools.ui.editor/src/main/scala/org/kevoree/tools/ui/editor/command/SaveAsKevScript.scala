@@ -85,6 +85,9 @@ class SaveAsKevScript extends Command {
 
     if(p.isInstanceOf[String]){
       val f = new File(p.asInstanceOf[String]);
+      if(f.exists()){
+        f.delete()
+      }
       val fw = new FileWriter(f)
       try {
         fw.write(scriptBuffer.toString)
