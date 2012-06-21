@@ -177,11 +177,15 @@ case class ContainerNodeAspect (node: ContainerNode) {
     try {
       if (node.getTypeDefinition.foundRelevantDeployUnit(node) != null) {
         node.getTypeDefinition.foundRelevantDeployUnit(node).getRequiredLibs.find(du => du.getGroupName == "org.kevoree" && du.getUnitName == "org.kevoree.api") match {
-          case None => KevoreeFactory.getVersion // must never appear
+          case None => {
+            logger.error("Error found api deploy unit for "+node.getName)
+            ""
+          } // must never appear
           case Some(du) => du.getVersion
         }
 
       } else {
+        logger.error("Error found relevant deploy unit for "+node.getName)
         ""
       }
     } catch {
