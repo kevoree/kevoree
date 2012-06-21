@@ -19,7 +19,7 @@
             org.eclipse.*:*,
             org.objectweb.*:*,
             org.ow2.*:*,
-            org.kevoree.*:*,
+            org.kevoree*:*,
             org.oasis-open.*:*,
             com.google.*:*,
             aopalliance:*,
@@ -28,6 +28,11 @@
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>org.kevoree</groupId>
+            <artifactId>org.kevoree.api</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
         <dependency>
             <groupId>org.kevoree</groupId>
             <artifactId>org.kevoree.kcl</artifactId>
