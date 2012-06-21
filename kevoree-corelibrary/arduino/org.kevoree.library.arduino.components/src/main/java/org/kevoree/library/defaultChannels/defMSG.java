@@ -1,5 +1,5 @@
 
-package org.kevoree.library.sensors;
+package org.kevoree.library.defaultChannels;
 
 import org.kevoree.annotation.ChannelTypeFragment;
 import org.kevoree.annotation.Library;
@@ -15,7 +15,7 @@ import org.kevoree.framework.message.Message;
  */
 @Library(name="Arduino")
 @ChannelTypeFragment
-public class LocalChannel extends AbstractChannelFragment {
+public class defMSG extends AbstractChannelFragment {
 
     @Start
     @Stop

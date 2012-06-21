@@ -40,8 +40,8 @@ object MergerApp {
     val merger = new RootMerger
     val emtpyModel = KevoreeFactory.eINSTANCE.createContainerRoot
 
-    val model1 = KevoreeXmiHelper.load("/home/edaubert/workspace/daum-library/android/org.daum.library.android.replicatingMap/target/generated-sources/kevoree/KEV-INF/lib.kev")
-    val model2 = KevoreeXmiHelper.load("/home/edaubert/workspace/daum-library/javase/org.daum.library.javase.replicatingMap/target/generated-sources/kevoree/KEV-INF/lib.kev")
+    val model2 = KevoreeXmiHelper.load("/Users/duke/Downloads/models/javaModelError.kev")
+    val model1 = KevoreeXmiHelper.load("/Users/duke/Downloads/models/alib.kev")
 //    val model3 = KevoreeXmiHelper.load("/home/edaubert/workspace/kevoree/kevoree-corelibrary/android/org.kevoree.library.android.nanohttp/target/generated-sources/kevoree/KEV-INF/lib.kev.debug")
 
 
