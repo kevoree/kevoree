@@ -1,0 +1,81 @@
+<?xml version="1.0"?>
+<!--
+  * OW2 FraSCAti Examples: HelloWorld POJO
+  *
+  * Copyright (c) 2009-2010 INRIA, University of Lille 1
+  *
+  * This library is free software; you can redistribute it and/or
+  * modify it under the terms of the GNU Lesser General Public
+  * License as published by the Free Software Foundation; either
+  * version 2 of the License, or (at your option) any later version.
+  *
+  * This library is distributed in the hope that it will be useful,
+  * but WITHOUT ANY WARRANTY; without even the implied warranty of
+  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  * Lesser General Public License for more details.
+  *
+  * You should have received a copy of the GNU Lesser General Public
+  * License along with this library; if not, write to the Free Software
+  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+  *
+  * Contact: frascati@ow2.org
+  *
+  * Author: Nicolas Dolet
+  *
+  * Contributor(s): Philippe Merle
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  
+  <groupId>org.ow2.frascati.examples</groupId>
+  <artifactId>helloworld-pojo</artifactId>
+  <packaging>jar</packaging>
+
+  <name>OW2 FraSCAti Examples: HelloWorld POJO</name>
+  
+  <parent>
+    <groupId>org.ow2.frascati.examples</groupId>
+    <artifactId>parent</artifactId>
+    <version>1.5-SNAPSHOT</version>
+  </parent>
+  
+  <properties>
+    <composite.file>helloworld-pojo</composite.file>
+    <service.name>r</service.name>
+    <method.name>run</method.name>
+    <distribution.test>true</distribution.test>
+  </properties>
+ 
+  <dependencies>
+    <dependency>
+      <groupId>org.ow2.frascati.examples.test</groupId>
+      <artifactId>frascati-test</artifactId>
+      <version>${project.version}</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+  
+  <build>
+  	<plugins>
+  	            <plugin>
+                <groupId>org.kevoree.corelibrary.frascati</groupId>
+                <artifactId>org.kevoree.library.frascati.mavenplugin</artifactId>
+                <version>1.8.0-SNAPSHOT</version>
+                <extensions>true</extensions>
+                <configuration>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+  	</plugins>
+  </build>
+  
+
+  
+  
+ </project>

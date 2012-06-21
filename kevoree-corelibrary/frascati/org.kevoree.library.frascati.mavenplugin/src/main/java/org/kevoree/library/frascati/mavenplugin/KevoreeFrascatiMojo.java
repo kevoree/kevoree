@@ -62,12 +62,8 @@ public class KevoreeFrascatiMojo extends AbstractMojo {
 
     public void execute() throws MojoExecutionException, MojoFailureException {
 
-        getLog().info("Hello !!!!");
-    	System.err.println("pass par la");
     	List<File> res = new ArrayList<File>();
     	listFile(resources,res);
-    	System.err.println("pass par la " + res.size());
-    	
   	    ContainerRoot root = KevoreeFactory.createContainerRoot();
   	    for (File f : res){
   	    	org.kevoree.library.frascati.mavenplugin.CompositeParser.parseCompositeFile(root,f,project.getVersion(),project.getGroupId(),project.getArtifactId(),f.getName());

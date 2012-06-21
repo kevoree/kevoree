@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="ISO-8859-15"?>
+<!--  OW2 FraSCAti Examples : HelloWorld POJO                                       -->
+<!--  Copyright (C) 2008-2010 INRIA, University of Lille 1                          -->
+<!--                                                                                -->
+<!--  This library is free software; you can redistribute it and/or                 -->
+<!--  modify it under the terms of the GNU Lesser General Public                    -->
+<!--  License as published by the Free Software Foundation; either                  -->
+<!--  version 2 of the License, or (at your option) any later version.              -->
+<!--                                                                                -->
+<!--  This library is distributed in the hope that it will be useful,               -->
+<!--  but WITHOUT ANY WARRANTY; without even the implied warranty of                -->
+<!--  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU             -->
+<!--  Lesser General Public License for more details.                               -->
+<!--                                                                                -->
+<!--  You should have received a copy of the GNU Lesser General Public              -->
+<!--  License along with this library; if not, write to the Free Software           -->
+<!--  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA     -->
+<!--                                                                                -->
+<!--  Contact: frascati@ow2.org                                                     -->
+<!--                                                                                -->
+<!--  Author: Christophe Demarey                                                    -->
+<!--                                                                                -->
+<!--  Contributor(s): Nicolas Dolet                                                 -->
+
+<project name="helloworld-pojo" default="dist" basedir=".">
+    <description>
+        A simple SCA application (Hello World) using POJOs. 
+    </description>
+  <!-- set global properties for this build -->
+  <property name="src" location="src/main"/>
+  <property name="target" location="target"/>
+  <property name="target.classes" location="${target}/classes"/>
+
+  <target name="init">
+    <!-- Create the time stamp -->
+    <tstamp/>
+    <!-- Create the build directory structure used by compile -->
+    <mkdir dir="${target}"/>
+    <mkdir dir="${target.classes}"/>
+  </target>
+
+  <target name="compile" depends="init"
+          description="compile the source " >
+    <!-- Compile the java code from ${src} into ${target} -->
+    <javac srcdir="${src}/java" destdir="${target.classes}"/>
+  </target>
+
+  <target name="dist" depends="compile"
+        description="generate the distribution" >
+    <!-- Copy SCA composite definitions into the ${target} dir -->
+    <copy todir="${target.classes}">
+        <fileset dir="${src}/resources">
+            <include name="**/*.composite"/>
+        </fileset>
+    </copy>
+
+    <!-- Put everything in ${target} into the ${ant.project.name}.jar file -->
+    <jar jarfile="${target}/${ant.project.name}.jar" basedir="${target.classes}"/>
+  </target>
+
+  <target name="clean"
+        description="clean up" >
+    <!-- Delete the ${target} directory trees -->
+    <delete dir="${target}"/>
+  </target>
+</project>

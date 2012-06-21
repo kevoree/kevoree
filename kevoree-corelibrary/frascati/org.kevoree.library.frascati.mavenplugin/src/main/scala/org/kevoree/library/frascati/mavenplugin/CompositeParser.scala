@@ -29,7 +29,7 @@ object CompositeParser {
         case "component" => {
           val newkev = KevoreeFactory.createComponentType
           cNode.attribute("name").map { nameAtt =>
-            newkev.setName(nameAtt.text)
+            newkev.setName(nameAtt.text.replace("-","_"))
           }
           cNode.child.filter(imp => imp.label.equals("implementation.java")).foreach(nameAtt =>
             nameAtt.attribute("class").map { nameAtt1 =>
@@ -81,7 +81,7 @@ object CompositeParser {
           val newkev = KevoreeFactory.createComponentType
           newkev.setBean(compositeFileName)
           xmlnode.attribute("name").map { nameAtt =>
-            newkev.setName(nameAtt.text)
+            newkev.setName(nameAtt.text.replace("-","_"))
           }
           xmlnode.child.foreach(node => node.label match {
             case "service" => {
