@@ -3,6 +3,7 @@ merge "mvn:org.kevoree.corelibrary.frascati/org.kevoree.library.frascati.compone
 merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.javaseNode/{kevoree.version}"
 merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.fakeDomo/{kevoree.version}"
 merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.defaultChannels/{kevoree.version}"
+merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.nanohttp/{kevoree.version}"
 merge "mvn:org.ow2.frascati.examples/helloworld-pojo/1.5-SNAPSHOT"
 
 
@@ -16,3 +17,6 @@ bind run1.run@node0 => rs1
 addChannel msg1 : defMSG
 bind fk1.on@node0 => msg1
 bind run1.trig@node0 => msg1
+
+addGroup sync : NanoRestGroup
+addToGroup sync node0
