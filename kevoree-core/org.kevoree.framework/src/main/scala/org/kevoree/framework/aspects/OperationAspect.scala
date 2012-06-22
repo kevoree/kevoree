@@ -24,7 +24,7 @@ case class OperationAspect(selfOperation: Operation) {
     "" match {
       case _ if (otherOperation.getParameters.size != selfOperation.getParameters.size) => logger.debug("otherOperation.getParameters.size != selfOperation.getParameters.size");true
       case _ => {
-        var parameterChanged = otherOperation.getParameters.forall(otherParam => {
+        var parameterChanged = otherOperation.getParameters.size != 0 && otherOperation.getParameters.forall(otherParam => {
           selfOperation.getParameters.find(selfParam => selfParam.getName == otherParam.getName) match {
             case Some(selfParam) =>  {
               !selfParam.getType.get.isModelEquals(otherParam.getType.get)
