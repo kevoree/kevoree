@@ -105,14 +105,22 @@ class KevoreeAnnotationProcessor() extends javax.annotation.processing.AbstractP
       typeDecl =>
         processChannelType(typeDecl.getAnnotation(classOf[org.kevoree.annotation.ChannelTypeFragment]), typeDecl.asInstanceOf[TypeElement], root)
     }
+
+   // KevoreeXmiHelper.save(LocalUtility.generateLibURI(options) + ".beforeGTdebug", root);
+
+
     roundEnv.getElementsAnnotatedWith(classOf[org.kevoree.annotation.GroupType]).foreach {
       typeDecl =>
         processGroupType(typeDecl.getAnnotation(classOf[org.kevoree.annotation.GroupType]), typeDecl.asInstanceOf[TypeElement], root)
     }
+
     roundEnv.getElementsAnnotatedWith(classOf[org.kevoree.annotation.NodeType]).foreach {
       typeDecl =>
         processNodeType(typeDecl.getAnnotation(classOf[org.kevoree.annotation.NodeType]), typeDecl.asInstanceOf[TypeElement], root)
     }
+
+    //KevoreeXmiHelper.save(LocalUtility.generateLibURI(options) + ".beforeCheckerdebug", root);
+
 
     //POST APT PROCESS CHECKER
     val checker: PostAptChecker = new PostAptChecker(root, env)
@@ -125,9 +133,9 @@ class KevoreeAnnotationProcessor() extends javax.annotation.processing.AbstractP
       val nodeTypeNameList: List[String] = nodeTypeNames.split(",").filter(r => r != null && r != "").toList
       nodeTypeNameList.foreach {
         targetNodeName =>
-          KevoreeGenerator.generatePort(root, env.getFiler, targetNodeName);
-          KevoreeFactoryGenerator.generateFactory(root, env.getFiler, targetNodeName);
-          KevoreeActivatorGenerator.generateActivator(root, env.getFiler, targetNodeName);
+          KevoreeGenerator.generatePort(root, env.getFiler, targetNodeName)
+          KevoreeFactoryGenerator.generateFactory(root, env.getFiler, targetNodeName)
+          KevoreeActivatorGenerator.generateActivator(root, env.getFiler, targetNodeName)
       }
       env.getMessager.printMessage(Kind.OTHER, "Save Kevoree library")
       KevoreeXmiHelper.save(LocalUtility.generateLibURI(options), root);
@@ -140,7 +148,7 @@ class KevoreeAnnotationProcessor() extends javax.annotation.processing.AbstractP
 
 
   def processNodeType(nodeTypeAnnotation: org.kevoree.annotation.NodeType, typeDecl: TypeElement, root: ContainerRoot) = {
-    //Checks that the root KevoreeChannelFragment is present in hierarchy.
+    //Checks that the root AbstractNodeType is present in hierarchy.
     val superTypeChecker = new SuperTypeValidationVisitor(classOf[AbstractNodeType].getName)
     typeDecl.accept(superTypeChecker, typeDecl)
 
@@ -166,7 +174,6 @@ class KevoreeAnnotationProcessor() extends javax.annotation.processing.AbstractP
         nodeType.setBean(typeDecl.getQualifiedName.toString)
         nodeType.setFactoryBean(typeDecl.getQualifiedName + "Factory")
       }
-
 
       root.addTypeDefinitions(nodeType)
 

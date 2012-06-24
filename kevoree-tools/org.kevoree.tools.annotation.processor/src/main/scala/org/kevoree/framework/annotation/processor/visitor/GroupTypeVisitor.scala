@@ -23,6 +23,8 @@ import javax.annotation.processing.ProcessingEnvironment
 import javax.lang.model.util.SimpleElementVisitor6
 import org.kevoree.GroupType
 import javax.lang.model.element.{ExecutableElement, ElementKind, TypeElement, Element}
+import org.kevoree.framework.KevoreeXmiHelper
+import org.kevoree.framework.annotation.processor.LocalUtility
 
 case class GroupTypeVisitor(groupType: GroupType, env: ProcessingEnvironment, rootVisitor: KevoreeAnnotationProcessor)
   extends SimpleElementVisitor6[Any, Element]
@@ -47,8 +49,11 @@ case class GroupTypeVisitor(groupType: GroupType, env: ProcessingEnvironment, ro
     //SUB PROCESSOR
     processDictionary(groupType, p2.asInstanceOf[TypeElement])
     processDeployUnit(groupType, p2.asInstanceOf[TypeElement], env, rootVisitor.getOptions)
+
     processLibrary(groupType, p2.asInstanceOf[TypeElement])
+
     processThirdParty(groupType, p2.asInstanceOf[TypeElement], env, rootVisitor)
+
     import scala.collection.JavaConversions._
     p2.getEnclosedElements.foreach {
       method => {
