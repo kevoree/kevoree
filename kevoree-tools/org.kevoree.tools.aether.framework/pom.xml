@@ -57,12 +57,12 @@
             <groupId>org.sonatype.aether</groupId>
             <artifactId>aether-connector-asynchttpclient</artifactId>
             <version>1.13</version>
-            <exclusions>
+           <!--<exclusions>
                 <exclusion>
                     <artifactId>netty</artifactId>
                     <groupId>org.jboss.netty</groupId>
                 </exclusion>
-            </exclusions>
+            </exclusions> -->
         </dependency>
         <dependency>
             <groupId>org.apache.maven</groupId>

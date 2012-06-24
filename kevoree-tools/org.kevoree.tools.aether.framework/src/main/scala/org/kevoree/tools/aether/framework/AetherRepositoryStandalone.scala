@@ -75,7 +75,8 @@ object AetherRepositoryStandalone {
       }
     })
     session.setUpdatePolicy(RepositoryPolicy.UPDATE_POLICY_ALWAYS)
-    session.setConfigProperty("aether.connector.ahc.provider", "jdk")
+    session.setChecksumPolicy(RepositoryPolicy.CHECKSUM_POLICY_WARN)
+    //session.setConfigProperty("aether.connector.ahc.provider", "jdk")
     //DEFAULT VALUE
     session.setLocalRepositoryManager(newRepositorySystem.newLocalRepositoryManager(new LocalRepository(System.getProperty("user.home").toString + "/.m2/repository")))
     //TRY TO FOUND MAVEN CONFIGURATION
@@ -90,7 +91,7 @@ object AetherRepositoryStandalone {
     } else {
       logger.debug("settings.xml not found")
     }
-    session.getConfigProperties.put(ConfigurationProperties.REQUEST_TIMEOUT, 2000.asInstanceOf[java.lang.Integer])
+    session.getConfigProperties.put(ConfigurationProperties.REQUEST_TIMEOUT, 3000.asInstanceOf[java.lang.Integer])
     session.getConfigProperties.put(ConfigurationProperties.CONNECT_TIMEOUT, 1000.asInstanceOf[java.lang.Integer])
     session
   }
