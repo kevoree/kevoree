@@ -63,7 +63,7 @@ public class Random extends AbstractComponentType implements  Runnable{
         {
             int rand_valeur = range_min + rand.nextInt(range_max - range_min);
             MessagePort port =   (MessagePort)     this.getPortByName("out");
-            port.process(rand_valeur);
+            port.process("rand="+rand_valeur);
             try
             {
                 Thread.sleep(refresh_speed);
