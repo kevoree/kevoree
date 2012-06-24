@@ -4,12 +4,12 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>org.kevoree.tools.marShellTransform</artifactId>
     <name>Kevoree :: Tools :: M@R Shell Transformation</name>
-    <version>1.8.1-SNAPSHOT</version>
+    <version>1.8.2-SNAPSHOT</version>
 
     <parent>
         <artifactId>org.kevoree.tools.root</artifactId>
         <groupId>org.kevoree.tools</groupId>
-        <version>1.8.1-SNAPSHOT</version>
+        <version>1.8.2-SNAPSHOT</version>
         <relativePath>../org.kevoree.tools.root/pom.xml</relativePath>
     </parent>
 
