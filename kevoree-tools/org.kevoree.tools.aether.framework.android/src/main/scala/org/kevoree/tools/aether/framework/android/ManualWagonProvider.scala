@@ -27,8 +27,8 @@ import org.apache.maven.wagon.providers.http.LightweightHttpWagon
 class ManualWagonProvider extends WagonProvider {
   def lookup(roleHint: String): Wagon = {
     if ("http".equals(roleHint)) {
-      val httpC = new LightweightHttpWagon();
-      return httpC;
+      val httpC = new LightweightHttpWagon()
+      return httpC
     }
     null
   }
