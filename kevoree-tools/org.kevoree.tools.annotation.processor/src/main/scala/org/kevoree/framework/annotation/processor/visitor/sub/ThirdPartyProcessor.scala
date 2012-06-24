@@ -52,7 +52,7 @@ trait ThirdPartyProcessor {
     val thirdPartiesList: List[String] = thirdParties.split(";").filter(r => r != null && r != "").toList
 
     val nodeTypeNames = rootVisitor.getOptions.get("nodeTypeNames")
-    val nodeTypeNameList: List[String] = nodeTypeNames.split(";").filter(r => r != null && r != "").toList
+    val nodeTypeNameList: List[String] = nodeTypeNames.split(",").filter(r => r != null && r != "").toList
 
 
     /* CHECK THIRDPARTIES */
