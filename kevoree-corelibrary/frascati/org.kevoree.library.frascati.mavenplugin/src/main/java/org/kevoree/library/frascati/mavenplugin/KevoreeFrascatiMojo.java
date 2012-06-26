@@ -82,6 +82,11 @@ public class KevoreeFrascatiMojo extends AbstractMojo {
 		GenericExtFilter filter = new GenericExtFilter("composite");
 		// list out all the file name and filter by the extension
 		File[] list = dir.listFiles(filter);
+        if(list == null){
+            return ;
+        }
+
+
 		for (File file : list) {
 			files.add(file);
 		}
