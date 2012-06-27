@@ -216,6 +216,12 @@ class KevoreeSerialMonitorPanel(kernel: KevoreeUIKernel)  extends JPanel  {
         }
       }
     }
+
+    def concurrentOpenEvent(p1: SerialConcurrentOpenEvent) {
+      logger.warn("Request Concurrent close");
+      serial.close()
+
+    }
   }
 
   serial.addEventListener(mylistener)
