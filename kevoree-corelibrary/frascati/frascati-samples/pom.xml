@@ -96,6 +96,12 @@
     <plugins>
     
     
+    <plugin>
+<groupId>org.ow2.frascati.mojo</groupId>
+<artifactId>frascati-compiler-plugin</artifactId>
+</plugin>
+    
+    
       	            <plugin>
                 <groupId>org.kevoree.corelibrary.frascati</groupId>
                 <artifactId>org.kevoree.library.frascati.mavenplugin</artifactId>
