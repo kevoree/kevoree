@@ -15,6 +15,7 @@ package org.kevoree.framework
 
 import java.net.InetAddress
 import scala.collection.JavaConversions._
+import org.slf4j.LoggerFactory
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -27,9 +28,18 @@ import scala.collection.JavaConversions._
 
 object NetworkHelper {
 
+  private val logger = LoggerFactory.getLogger(getClass)
+
   def isAccessible (ip: String): Boolean = {
-    val inet = InetAddress.getByName(ip)
-    inet.isReachable(1000)
+    try {
+      val inet = InetAddress.getByName(ip)
+      inet.isReachable(1000)
+    } catch {
+      case _ @ e => {
+        logger.debug("Error in network helper ",e)
+        false
+      }
+    }
   }
 
   def getAccessibleIP (ips: java.util.List[String]): Option[String] = {
