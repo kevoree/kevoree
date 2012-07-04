@@ -33,7 +33,7 @@ import java.util.concurrent.Semaphore;
         @DictionaryAttribute(name = "port", optional = false, fragmentDependant = true),
         @DictionaryAttribute(name = "maximum_size_messaging", defaultValue = "50", optional = false),
         @DictionaryAttribute(name = "timer", defaultValue = "2000", optional = false),
-        @DictionaryAttribute(name = "replay", defaultValue = "true", optional = false, vals = {"true", "false"})
+        @DictionaryAttribute(name = "replay", defaultValue = "false", optional = false, vals = {"true", "false"})
 }
 )
 public class SocketChannel extends AbstractChannelFragment implements Runnable {
@@ -41,7 +41,6 @@ public class SocketChannel extends AbstractChannelFragment implements Runnable {
     private ServerSocket server = null;
     private List<Socket> localServerSockets = new ArrayList<Socket>();
 
-    private DataManager dataManager;
     /* thread in charge for receiving messages   PRODUCER  */
     private Thread reception_messages = null;
     private DeadMessageQueueThread sending_messages_node_dead;
@@ -134,7 +133,6 @@ public class SocketChannel extends AbstractChannelFragment implements Runnable {
         reception_messages.start();
         sending_messages_node_dead.start();
         fragments = new HashMap<String, List<String>>();
-        dataManager = new DataManager(this);
     }
 
     @Stop
@@ -191,7 +189,7 @@ public class SocketChannel extends AbstractChannelFragment implements Runnable {
 
                 try {
                     semSender.acquire();
-                    logger.info("Sending message to {}", remoteNodeName);
+                    logger.debug("Sending message to {}", remoteNodeName);
                     msg.setDestNodeName(remoteNodeName);
                     host = getAddress(msg.getDestNodeName());
                     port = parsePortNumber(msg.getDestNodeName());
@@ -207,7 +205,12 @@ public class SocketChannel extends AbstractChannelFragment implements Runnable {
                          oos = new ObjectOutputStream(os);
                          oos.writeObject(msg);
                          oos.flush();*/
-                    dataManager.writeData(client_consumer, msg);
+
+                    os = client_consumer.getOutputStream();
+                    oos = new ObjectOutputStream(os);
+                    oos.writeObject(msg);
+                    oos.flush();
+
 
                     if (msg.inOut()) {
                         is = client_consumer.getInputStream();
@@ -217,7 +220,7 @@ public class SocketChannel extends AbstractChannelFragment implements Runnable {
                         return null;
                     }
                 } catch (Exception e) {
-                    logger.info("Unable to send message to {}", msg.getDestNodeName());
+                    logger.warn("Unable to send message to {}", msg.getDestNodeName());
                     logger.debug("due to {}", e.getMessage(), e);
 
                     delete_link(host, port);
@@ -225,6 +228,8 @@ public class SocketChannel extends AbstractChannelFragment implements Runnable {
                         sending_messages_node_dead.addToDeadQueue(msg);
                     } else {
                         try {
+
+                            /*
                             if (ois != null) {
                                 ois.close();
                             }
@@ -236,7 +241,7 @@ public class SocketChannel extends AbstractChannelFragment implements Runnable {
                             }
                             if (os != null) {
                                 os.close();
-                            }
+                            }   */
                             if (client_consumer != null) {
                                 client_consumer.close();
                             }
@@ -330,7 +335,7 @@ public class SocketChannel extends AbstractChannelFragment implements Runnable {
             try {
                 semClients.acquire();
                 client = server.accept();
-                logger.info("Message received from {}", client.getRemoteSocketAddress().toString());
+                logger.debug("Message received from {}", client.getRemoteSocketAddress().toString());
                 localServerSockets.add(client);
                 final Socket tmpClient = client;
 
@@ -374,10 +379,17 @@ public class SocketChannel extends AbstractChannelFragment implements Runnable {
                     logger.debug("message is read on {}", msg.getDestNodeName());
 
                     Object result = forwardMessage(msg);
-                    logger.info("message forwarded");
+                    logger.debug("message forwarded");
                     if (msg.inOut()) {
                         logger.debug("waiting for response ...");
-                        dataManager.writeData(client, msg);
+
+
+                        OutputStream os = client.getOutputStream();
+                        ObjectOutputStream oos = new ObjectOutputStream(os);
+                        oos.writeObject(msg);
+                        oos.flush();
+
+
                     }
                 } else {
                     logger.debug("MSG is null so we can't use it");
@@ -389,7 +401,7 @@ public class SocketChannel extends AbstractChannelFragment implements Runnable {
 
             }
         } catch (ClassNotFoundException e) {
-            logger.debug("Unable to read message", e);
+            logger.warn("Unable to read message");
             nodeDown(client);
             try {
                 if (ois != null) {
@@ -398,7 +410,7 @@ public class SocketChannel extends AbstractChannelFragment implements Runnable {
             } catch (IOException ignored) {
             }
         } catch (IOException e) {
-            logger.debug("Unable to read message", e);
+            logger.warn("Unable to read message");
             nodeDown(client);
             try {
                 if (ois != null) {

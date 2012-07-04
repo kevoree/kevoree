@@ -98,10 +98,11 @@ public class DeadMessageQueueThread extends Thread {
 						oos = new ObjectOutputStream(os);
 						oos.writeObject(current);
 						oos.flush();
+
 					} catch (Exception e) {
 						try {
 							Thread.sleep(timer);
-							logger.info("Unable to send message to {}", current.getDestNodeName());
+							logger.warn("Unable to send backup message to "+current.getDestNodeName()+"",e);
 
 							String host = parentChannel.getAddress(current.getDestNodeName());
 							int port = parentChannel.parsePortNumber(current.getDestNodeName());
