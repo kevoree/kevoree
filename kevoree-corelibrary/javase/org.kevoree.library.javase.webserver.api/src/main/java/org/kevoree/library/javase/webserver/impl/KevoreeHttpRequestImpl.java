@@ -4,6 +4,7 @@ import org.kevoree.library.javase.webserver.KevoreeHttpRequest;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 /**
  * Created by IntelliJ IDEA.
@@ -30,7 +31,12 @@ public class KevoreeHttpRequestImpl implements KevoreeHttpRequest {
 
     private Map<String, String> headers = new HashMap<String, String>();
 
-    private int tokenID = -1;
+    private int tokenID = getRandomID();
+	private static Random random = new Random();
+
+	private int getRandomID() {
+		return random.nextInt();
+	}
 
     public int getTokenID() {
         return tokenID;

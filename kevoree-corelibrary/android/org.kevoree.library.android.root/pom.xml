@@ -25,6 +25,7 @@
 
     <modules>
         <module>../org.kevoree.library.android.nodeType</module>
+        <module>../org.kevoree.library.android.authentication</module>
         <module>../org.kevoree.library.android.logger</module>
         <module>../org.kevoree.library.android.fakeDomo</module>
         <module>../org.kevoree.library.android.nanohttp</module>
