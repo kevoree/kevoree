@@ -41,6 +41,7 @@ import javax.swing._
 import org.kevoree.tools.marShell.KevScriptOfflineEngine
 import org.kevoree.cloner.ModelCloner
 import org.kevoree.KevoreeFactory
+import org.kevoree.tools.modelsync.FakeBootstraperService
 
 /**
  * Created by IntelliJ IDEA.
@@ -94,7 +95,8 @@ class KevScriptCommand extends Command {
 
             val cloner = new ModelCloner
             val clonedModel = cloner.clone(kernel.getModelHandler.getActualModel)
-            val kevOfflineEngine = new KevScriptOfflineEngine(clonedModel)
+            val bootstraper = new FakeBootstraperService
+            val kevOfflineEngine = new KevScriptOfflineEngine(clonedModel,bootstraper.getBootstrap)
             kevOfflineEngine.addVariable("kevoree.version",KevoreeFactory.getVersion)
             import scala.collection.JavaConversions._
             System.getProperties.foreach{ prop =>

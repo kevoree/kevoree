@@ -82,7 +82,7 @@ class KevoreeAndroidBootStrap {
       coreBean.setKevsEngineFactory(new KevScriptEngineFactory() {
         override def createKevScriptEngine(): KevScriptEngine = {
           try {
-            return new org.kevoree.tools.marShell.KevScriptCoreEngine(coreBean)
+            return new org.kevoree.tools.marShell.KevScriptCoreEngine(coreBean,bootstraper)
           } catch {
             case _@e => e.printStackTrace()
           }
@@ -91,7 +91,7 @@ class KevoreeAndroidBootStrap {
 
         override def createKevScriptEngine(srcModel: ContainerRoot): KevScriptEngine = {
           try {
-            return new org.kevoree.tools.marShell.KevScriptOfflineEngine(srcModel)
+            return new org.kevoree.tools.marShell.KevScriptOfflineEngine(srcModel,bootstraper)
           } catch {
             case _@e => e.printStackTrace()
           }
@@ -131,10 +131,9 @@ class KevoreeAndroidBootStrap {
       bootstraper.registerManuallyDeployUnit("org.kevoree.tools.android.framework", "org.kevoree.tools", KevoreeFactory.getVersion, dummyKCL)
       bootstraper.registerManuallyDeployUnit("org.kevoree.tools.javase.framework", "org.kevoree.tools", KevoreeFactory.getVersion, dummyKCL)
       bootstraper.registerManuallyDeployUnit("org.kevoree.tools.marShell", "org.kevoree.tools", KevoreeFactory.getVersion, dummyKCL)
+      bootstraper.registerManuallyDeployUnit("org.kevoree.tools.aether.framework", "org.kevoree.tools", KevoreeFactory.getVersion, dummyKCL)
       bootstraper.registerManuallyDeployUnit("org.kevoree.tools.aether.framework.android", "org.kevoree.tools", KevoreeFactory.getVersion, dummyKCL)
       bootstraper.registerManuallyDeployUnit("org.kevoree.library.android.nodeType", "org.kevoree.corelibrary.android", KevoreeFactory.getVersion, dummyKCL)
-
-
 
       coreBean.start()
 

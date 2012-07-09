@@ -45,6 +45,7 @@ import org.kevoree.{ContainerRoot, KevoreeFactory}
 import org.apache.maven.project.MavenProject
 import java.util.Properties
 import scala.collection.JavaConversions._
+import org.kevoree.tools.aether.framework.NodeTypeBootstrapHelper
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -58,7 +59,7 @@ import scala.collection.JavaConversions._
 object ModelGenerator extends App {
 
   def generate (scriptPath: String, mavenSource: MavenProject): ContainerRoot = {
-    val kevEngine = new KevScriptOfflineEngine(KevoreeFactory.createContainerRoot)
+    val kevEngine = new KevScriptOfflineEngine(KevoreeFactory.createContainerRoot,new NodeTypeBootstrapHelper())
     mavenSource.getProperties.keySet().foreach {
       key => kevEngine.addVariable(key.toString, mavenSource.getProperties.get(key.toString).toString);
     }
