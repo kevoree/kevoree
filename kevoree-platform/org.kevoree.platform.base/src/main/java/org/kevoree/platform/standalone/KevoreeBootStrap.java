@@ -72,7 +72,6 @@ public class KevoreeBootStrap {
 
 			KevoreeLogbackService logbackService = new KevoreeLogbackService();
 
-
 			coreBean = new KevoreeCoreBean();
 
 			KevoreeJarClassLoader jcl = new KevoreeJarClassLoader();
@@ -81,7 +80,7 @@ public class KevoreeBootStrap {
             }
 
 			Class clazz = jcl.loadClass("org.kevoree.tools.aether.framework.NodeTypeBootstrapHelper");
-			org.kevoree.api.Bootstraper bootstraper = (Bootstraper) clazz.newInstance();
+			final org.kevoree.api.Bootstraper bootstraper = (Bootstraper) clazz.newInstance();
             bootstraper.setKevoreeLogService(logbackService);
 
 			//clazz.getMethod("setKevoreeLogService", KevoreeLogService.class).invoke(bootstraper, logbackService);
