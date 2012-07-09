@@ -21,7 +21,6 @@ import org.kevoree.platform.standalone.App;
 import org.kevoree.platform.standalone.KevoreeBootStrap;
 import org.sonatype.aether.RepositorySystem;
 import org.sonatype.aether.RepositorySystemSession;
-
 import java.io.File;
 import java.io.FileInputStream;
 
