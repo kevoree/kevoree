@@ -62,10 +62,11 @@ public class ManagerUI extends KObservable<ManagerUI> implements KevoreeAndroidU
         for (ActionBar.Tab tab : backup) {
             Log.i(TAG,"Restore "+tab.getText());
             // if exist remove parent
-            if (tab.getCustomView().getParent() != null) {
-                ((ViewGroup) tab.getCustomView().getParent()).removeView(tab.getCustomView());
+            View contentView = (View) tab.getTag();
+            if (contentView.getParent() != null) {
+                ((ViewGroup) contentView.getParent()).removeView(contentView);
             }
-            LinearLayout tabLayout = (LinearLayout) tab.getCustomView();
+            LinearLayout tabLayout = (LinearLayout) contentView;
             int childcount = tabLayout.getChildCount();
             for (int i=0; i < childcount; i++)
             {
@@ -80,10 +81,10 @@ public class ManagerUI extends KObservable<ManagerUI> implements KevoreeAndroidU
                 }
             }
         } try {
-            ctx.getSupportActionBar().setSelectedNavigationItem(selectedTab);
-        } catch (Exception e){
-            // ignore
-        }
+        ctx.getSupportActionBar().setSelectedNavigationItem(selectedTab);
+    } catch (Exception e){
+        // ignore
+    }
     }
 
 
@@ -102,13 +103,13 @@ public class ManagerUI extends KObservable<ManagerUI> implements KevoreeAndroidU
             idTab.setTabListener(this);
             ctx.getSupportActionBar().addTab(idTab);
             LinearLayout tabLayout = new LinearLayout(ctx);
-            idTab.setCustomView(tabLayout);
+            idTab.setTag(tabLayout);
             tabs.add(idTab);
         }
-        ((LinearLayout) idTab.getCustomView()).addView(view);
+        ((LinearLayout) idTab.getTag()).addView(view);
 
         if(selectedTab == idTab.getPosition()){
-            ctx.setContentView(idTab.getCustomView());
+            ctx.setContentView((View) idTab.getTag());
             ktab = selectedTab;
         }
         /// Set the screen content to an the groupkey
@@ -128,7 +129,7 @@ public class ManagerUI extends KObservable<ManagerUI> implements KevoreeAndroidU
         LinkedList<ActionBar.Tab>  newtabs =new LinkedList<ActionBar.Tab>();
         for (ActionBar.Tab tab : tabs)
         {
-            LinearLayout tabLayout = (LinearLayout) tab.getCustomView();
+            LinearLayout tabLayout = (LinearLayout) tab.getTag();
             int childcount = tabLayout.getChildCount();
             for (int i=0; i < childcount; i++)
             {
@@ -140,8 +141,8 @@ public class ManagerUI extends KObservable<ManagerUI> implements KevoreeAndroidU
                     }
                 }
             }
-            Log.i("Remove view "+tab.getText()," "+((LinearLayout) tab.getCustomView()).getChildCount());
-            if(((LinearLayout) tab.getCustomView()).getChildCount() == 0)
+            Log.i("Remove view "+tab.getText()," "+((LinearLayout) tab.getTag()).getChildCount());
+            if(((LinearLayout) tab.getTag()).getChildCount() == 0)
             {
                 if(tab.getPosition() == selectedTab)
                 {
@@ -176,11 +177,16 @@ public class ManagerUI extends KObservable<ManagerUI> implements KevoreeAndroidU
 
     @Override
     public void onTabSelected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
-        if (tab.getCustomView() != null) {
-            if (tab.getCustomView().getParent() != null) {
-                ((ViewGroup) tab.getCustomView().getParent()).removeView(tab.getCustomView());
+        View contentView = (View) tab.getTag();
+        if (tab.getTag() != null) {
+
+            if (contentView.getParent() != null) {
+                ((ViewGroup) contentView.getParent()).removeView(contentView);
             }
-            ctx.setContentView(tab.getCustomView());
+            ctx.setContentView(contentView);
+            // if you don't call this method some views can behave
+            // weirdly after setContentView(View)
+            doRequestLayout(contentView);
             selectedTab = tab.getPosition();
         }
     }
@@ -192,5 +198,25 @@ public class ManagerUI extends KObservable<ManagerUI> implements KevoreeAndroidU
 
     public FragmentActivity getCtx() {
         return ctx;
+    }
+
+    /**
+     * Call requestLayout() recursively on each child view
+     * contained into this view if it has any. Otherwise
+     * the call will only be made on the given view
+     *
+     * @param view a View object
+     */
+    private void doRequestLayout(View view) {
+        ViewGroup vg = null;
+        if (view instanceof ViewGroup) {
+            vg = (ViewGroup) view;
+            for (int i=0; i<vg.getChildCount(); i++) {
+                doRequestLayout(vg.getChildAt(i));
+            }
+
+        } else {
+            view.requestLayout();
+        }
     }
 }
