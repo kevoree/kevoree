@@ -28,7 +28,7 @@ import org.kevoree.api.Bootstraper
 class FakeBootstraperService {
 
   val bootstrap = new NodeTypeBootstrapHelper
-  val dummyKCL = new KevoreeJarClassLoader();
+  val dummyKCL = new KevoreeJarClassLoader()
 
   /* Manually register */
   bootstrap.registerManuallyDeployUnit( "scala-library", "org.scala-lang", "2.9.2", dummyKCL);

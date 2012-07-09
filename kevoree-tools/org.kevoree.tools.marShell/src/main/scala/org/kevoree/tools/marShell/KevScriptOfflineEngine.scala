@@ -17,6 +17,7 @@ import interpreter.KevsInterpreterContext
 import org.kevoree.ContainerRoot
 import interpreter.KevsInterpreterAspects._
 import org.kevoree.api.service.core.script.{KevScriptEngine, KevScriptEngineException}
+import org.kevoree.api.Bootstraper
 
 
 /**
@@ -26,7 +27,7 @@ import org.kevoree.api.service.core.script.{KevScriptEngine, KevScriptEngineExce
  * Time: 16:14
  */
 
-class KevScriptOfflineEngine(srcModel: ContainerRoot) extends KevScriptAbstractEngine {
+class KevScriptOfflineEngine(srcModel: ContainerRoot, bootstraper : Bootstraper) extends KevScriptAbstractEngine {
   
   def clearVariables() {
     varMap.clear()
@@ -38,7 +39,9 @@ class KevScriptOfflineEngine(srcModel: ContainerRoot) extends KevScriptAbstractE
     parser.parseScript(resolvedScript) match {
       case Some(s) => {
         val inputModel = modelCloner.clone(srcModel)
-        if (s.interpret(KevsInterpreterContext(inputModel).setVarMap(varMap))) {
+        val ctx = KevsInterpreterContext(inputModel)
+        ctx.setBootstraper(bootstraper)
+        if (s.interpret(ctx.setVarMap(varMap))) {
           return inputModel
         }
         throw new KevScriptEngineException {

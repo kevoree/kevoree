@@ -20,6 +20,7 @@ package org.kevoree.tools.marShell.interpreter
 
 import org.kevoree.ContainerRoot
 import java.util.HashMap
+import org.kevoree.api.Bootstraper
 
 case class KevsInterpreterContext(model : ContainerRoot) {
 
@@ -28,5 +29,13 @@ case class KevsInterpreterContext(model : ContainerRoot) {
   def setVarMap( v : HashMap[String, String]) : KevsInterpreterContext = { varMap = v ; this }
 
   def getVarMap = varMap
+
+  protected var bootstraper : Bootstraper = null
+
+  def getBootstraper = bootstraper
+
+  def setBootstraper(b : Bootstraper) {
+    bootstraper = b
+  }
 
 }

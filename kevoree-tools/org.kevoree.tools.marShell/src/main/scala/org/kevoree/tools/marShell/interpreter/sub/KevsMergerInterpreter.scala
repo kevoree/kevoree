@@ -31,7 +31,6 @@ import org.kevoree.tools.marShell.interpreter.{KevsInterpreterContext, KevsAbstr
 import org.kevoree.merger.KevoreeMergerComponent
 import org.slf4j.LoggerFactory
 import org.kevoree.framework.KevoreeXmiHelper
-import org.kevoree.tools.aether.framework.AetherUtil
 import java.util.jar.{JarEntry, JarFile}
 import java.io.File
 import java.net.URL
@@ -59,7 +58,7 @@ case class KevsMergerInterpreter (mergeStatement: MergeStatement) extends KevsAb
         val urlids = mavenurl.substring(mavenurl.indexOf("!") + 1)
         val part = urlids.split("/")
         if (part.size == 3) {
-          file = AetherUtil.resolveMavenArtifact(part(1), part(0), part(2), List(repourl))
+          file = context.getBootstraper.resolveArtifact(part(1), part(0), part(2), List(repourl))
         } else {
           logger.warn("Kevscript merger : Bad MVN URL <mvn:[repourl!]groupID/artefactID/version>")
         }
@@ -67,7 +66,7 @@ case class KevsMergerInterpreter (mergeStatement: MergeStatement) extends KevsAb
       if (file == null) {
         val part = mavenurl.split("/")
         if (part.size == 3) {
-          file = AetherUtil.resolveKevoreeArtifact(part(1), part(0), part(2))
+          file = context.getBootstraper.resolveKevoreeArtifact(part(1), part(0), part(2))
         } else {
           logger.warn("Kevscript merger : Bad MVN URL <mvn:[repourl!]groupID/artefactID/version>")
         }

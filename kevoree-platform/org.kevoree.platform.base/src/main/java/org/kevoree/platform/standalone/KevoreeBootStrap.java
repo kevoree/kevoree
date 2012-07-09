@@ -142,7 +142,7 @@ public class KevoreeBootStrap {
 				@Override
 				public KevScriptEngine createKevScriptEngine () {
 					try {
-						return (KevScriptEngine) onlineMShellEngineClazz.getDeclaredConstructor(KevoreeModelHandlerService.class).newInstance(coreBean);
+						return (KevScriptEngine) onlineMShellEngineClazz.getDeclaredConstructor(KevoreeModelHandlerService.class).newInstance(coreBean,bootstraper);
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
@@ -152,7 +152,7 @@ public class KevoreeBootStrap {
 				@Override
 				public KevScriptEngine createKevScriptEngine (ContainerRoot srcModel) {
 					try {
-						return (KevScriptEngine) offLineMShellEngineClazz.getDeclaredConstructor(ContainerRoot.class).newInstance(srcModel);
+						return (KevScriptEngine) offLineMShellEngineClazz.getDeclaredConstructor(ContainerRoot.class).newInstance(srcModel,bootstraper);
 					} catch (Exception e) {
 						e.printStackTrace();
 					}

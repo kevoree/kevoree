@@ -18,6 +18,7 @@ import org.kevoree.ContainerRoot
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService
 import interpreter.KevsInterpreterAspects._
 import org.kevoree.api.service.core.script.{KevScriptEngine, KevScriptEngineException}
+import org.kevoree.api.Bootstraper
 
 /**
  * Created by IntelliJ IDEA.
@@ -26,7 +27,7 @@ import org.kevoree.api.service.core.script.{KevScriptEngine, KevScriptEngineExce
  * Time: 20:32
  */
 
-class KevScriptCoreEngine(core: KevoreeModelHandlerService) extends KevScriptAbstractEngine {
+class KevScriptCoreEngine(core: KevoreeModelHandlerService, bootstraper : Bootstraper) extends KevScriptAbstractEngine {
 
   clearVariables()
   def clearVariables() {
@@ -40,7 +41,9 @@ class KevScriptCoreEngine(core: KevoreeModelHandlerService) extends KevScriptAbs
     parser.parseScript(resolvedScript) match {
       case Some(s) => {
         val inputModel = core.getLastModel
-        if (s.interpret(KevsInterpreterContext(inputModel).setVarMap(varMap))) {
+        val ctx = KevsInterpreterContext(inputModel)
+        ctx.setBootstraper(bootstraper)
+        if (s.interpret(ctx.setVarMap(varMap))) {
           return inputModel;
         }
         throw new KevScriptEngineException {

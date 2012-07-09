@@ -61,6 +61,7 @@ import org.kevoree.tools.marShell.KevScriptOfflineEngine
 import java.net.{ServerSocket, InetSocketAddress, Socket}
 import org.kevoree.framework.{KevoreePropertyHelper, KevoreeXmiHelper}
 import org.kevoree.{ContainerNode, ContainerRoot, KevoreeFactory}
+import org.kevoree.tools.modelsync.FakeBootstraperService
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -171,7 +172,7 @@ class MiniKloudForm (editor: KevoreeEditor) {
         val skyModel = editor.getPanel.getKernel.getModelHandler.getActualModel
 
 
-        val kevEngine = new KevScriptOfflineEngine(skyModel)
+        val kevEngine = new KevScriptOfflineEngine(skyModel, new FakeBootstraperService().getBootstrap)
         kevEngine.addVariable("kevoree.version", KevoreeFactory.getVersion)
         kevEngine.addVariable("minicloudNodeName", minicloudName)
         kevEngine.append("merge 'mvn:org.kevoree.corelibrary.model/org.kevoree.library.model.sky/{kevoree.version}'")
