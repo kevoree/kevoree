@@ -36,8 +36,7 @@ import org.kevoree.tools.marShell.ast._
 import org.slf4j.LoggerFactory
 import java.util.{Properties, Dictionary}
 import collection.immutable.HashSet
-import org.kevoree.framework.ComponentType
-import org.kevoree.{ChannelType, ContainerRoot}
+import org.kevoree.{ContainerRoot}
 
 object KevScriptWrapper {
   var logger = LoggerFactory.getLogger(this.getClass);
