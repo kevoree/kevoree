@@ -81,6 +81,17 @@ class SaveAsKevScript extends Command {
       val planScript = KevScriptWrapper.miniPlanKevScript(script)
       scriptBuffer.append(planScript.getTextualForm)
     })
+
+    currentModel.getGroups.foreach{ g =>
+      scriptBuffer.append("addGroup " + g.getName + ":" + g.getTypeDefinition.getName + "\n")
+      g.getSubNodes.foreach{ subN =>
+        scriptBuffer.append("addToGroup " + g.getName + " " + subN.getName + "\n")
+      }
+    }
+
+
+
+
     scriptBuffer.append("}\n")
 
     if(p.isInstanceOf[String]){

@@ -1,0 +1,19 @@
+merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.camel/{kevoree.version}"
+merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.javaseNode/{kevoree.version}"
+merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.fakeDomo/{kevoree.version}"
+merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.defaultChannels/{kevoree.version}"
+merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.nioChannels/{kevoree.version}"
+
+
+addNode node0 : JavaSENode
+addComponent input@node0 : CamelTimer { period='2000' }
+addChannel logQueue : NioRoundRobin
+bind input.tick@node0 => logQueue
+
+addComponent console@node0 : FakeConsole
+addComponent console2@node0 : FakeConsole
+
+
+bind console.showText@node0 => logQueue
+bind console2.showText@node0 => logQueue
+
