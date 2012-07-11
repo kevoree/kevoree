@@ -38,17 +38,6 @@ public class FakeSimpleLight extends AbstractComponentType implements ToggleLigh
     private ImageView view = null;
     private Boolean on;
 
-    /*private static Map<String, Integer> colors = defineColors();
-
-     private static Map<String, Integer> defineColors () {
-         Map<String, Integer> colors = new HashMap<String, Integer>(4);
-         colors.put("GREEN", Color.GREEN);
-         colors.put("RED", Color.RED);
-         colors.put("BLUE", Color.BLUE);
-         colors.put("YELLOW", Color.YELLOW);
-         return colors;
-     }*/
-
     @Start
     public void start() {
         uiService = UIServiceHandler.getUIService();
@@ -94,7 +83,7 @@ public class FakeSimpleLight extends AbstractComponentType implements ToggleLigh
         if (image != null) {
             view.setImageBitmap(image);
         } else {
-            logger.debug("Image not found vua classloader {}",this.getClass().getClassLoader());
+            logger.debug("Image not found via classloader {}",this.getClass().getClassLoader());
         }
     }
 
