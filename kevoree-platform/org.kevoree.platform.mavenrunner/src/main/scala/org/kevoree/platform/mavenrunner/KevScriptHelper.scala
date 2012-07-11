@@ -61,7 +61,6 @@ object KevScriptHelper extends App {
     kevEngine.interpret()
   }
 
-
   private def loadScript (file: File): String = {
     val fileReader = new BufferedReader(new FileReader(file))
     val scriptBuilder = new StringBuilder
