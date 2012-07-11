@@ -11,11 +11,11 @@ merge "mvn:org.kevoree.corelibrary.android/org.kevoree.library.android.nanohttp/
 merge "mvn:org.kevoree.corelibrary.android/org.kevoree.library.android.fakeDomo/{kevoree.version}"
 merge "mvn:org.kevoree.corelibrary.android/org.kevoree.library.android.socketChannels/{kevoree.version}"
 
-addNode node0:MiniCloudNode {logLevel="DEBUG"}
-addNode subNode1 : JavaSENode {logLevel="DEBUG"}
-addNode subNode2 : JavaSENode {logLevel="DEBUG"}
-addNode subNode3 : JavaSENode {logLevel="DEBUG"}
-addNode nodeA : AndroidNode {logLevel="DEBUG"}
+addNode node0:MiniCloudNode {logLevel="DEBUG", coreLogLevel = "DEBUG"}
+addNode subNode1 : JavaSENode {logLevel="DEBUG", coreLogLevel = "DEBUG"}
+addNode subNode2 : JavaSENode {logLevel="DEBUG", coreLogLevel = "DEBUG"}
+addNode subNode3 : JavaSENode {logLevel="DEBUG", coreLogLevel = "DEBUG"}
+//addNode nodeA : AndroidNode {logLevel="DEBUG", coreLogLevel = "DEBUG"}
 
 addChild subNode1@node0
 addChild subNode2@node0
@@ -26,14 +26,14 @@ addToGroup sync node0
 addToGroup sync subNode1
 addToGroup sync subNode2
 addToGroup sync subNode3
-addToGroup sync nodeA
+//addToGroup sync nodeA
 
 updateDictionary sync {port="8000"}@node0, {port="8001"}@subNode1, {port="8002"}@subNode2, {port="8003"}@subNode3
 
 addComponent switch1@subNode1 : FakeSimpleSwitch
 addComponent light2@subNode2 : FakeSimpleLight
 addComponent light3@subNode3 : FakeSimpleLight
-addComponent lightA@nodeA : AFakeSimpleLight
+//addComponent lightA@nodeA : FakeSimpleLight
 
 addChannel channel1 : SocketChannel
 addChannel channel2 : SocketChannel
@@ -41,14 +41,16 @@ addChannel channel2 : SocketChannel
 bind switch1.on@subNode1 => channel1
 bind light2.on@subNode2 => channel1
 bind light3.on@subNode3 => channel1
-bind lightA.on@nodeA => channel1
+//bind lightA.on@nodeA => channel1
 
 bind switch1.off@subNode1 => channel2
 bind light2.off@subNode2 => channel2
 bind light3.off@subNode3 => channel2
-bind lightA.off@nodeA => channel2
+//bind lightA.off@nodeA => channel2
 
-updateDictionary channel1 {port="9011"}@subNode1, {port="9012"}@subNode2, {port="9013"}@subNode3, {port="9013"}@nodeA
-updateDictionary channel2 {port="9021"}@subNode1, {port="9022"}@subNode2, {port="9023"}@subNode3, {port="9023"}@nodeA
+updateDictionary channel1 {port="9011"}@subNode1, {port="9012"}@subNode2, {port="9013"}@subNode3
+//, {port="9013"}@nodeA
+updateDictionary channel2 {port="9021"}@subNode1, {port="9022"}@subNode2, {port="9023"}@subNode3
+//, {port="9023"}@nodeA
 
-network nodeA {"KEVOREE.remote.node.ip" = "192.168.1.113"}
+//network nodeA {"KEVOREE.remote.node.ip" = "192.168.1.113"}
