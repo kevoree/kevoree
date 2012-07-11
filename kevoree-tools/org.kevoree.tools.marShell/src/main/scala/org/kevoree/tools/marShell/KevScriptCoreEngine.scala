@@ -73,7 +73,11 @@ class KevScriptCoreEngine(core: KevoreeModelHandlerService, bootstraper : Bootst
         case Some(s) => {
           val inputModel = core.getLastUUIDModel
           val targetModel = modelCloner.clone(inputModel.getModel)
-          if (s.interpret(KevsInterpreterContext(targetModel))) {
+
+          val ctx = KevsInterpreterContext(targetModel)
+          ctx.setBootstraper(bootstraper)
+
+          if (s.interpret(ctx.setVarMap(varMap))) {
             if (atomic) {
               try {
                 core.atomicCompareAndSwapModel(inputModel, targetModel)
