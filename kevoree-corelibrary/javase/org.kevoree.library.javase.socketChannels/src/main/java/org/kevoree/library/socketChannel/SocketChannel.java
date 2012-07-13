@@ -34,7 +34,7 @@ import java.util.concurrent.Semaphore;
 		@DictionaryAttribute(name = "port", optional = false, fragmentDependant = true),
 		@DictionaryAttribute(name = "maximum_size_messaging", defaultValue = "50", optional = false),
 		@DictionaryAttribute(name = "timer", defaultValue = "2000", optional = false),
-		@DictionaryAttribute(name = "replay", defaultValue = "true", optional = false, vals = {"true", "false"})
+		@DictionaryAttribute(name = "replay", defaultValue = "false", optional = false, vals = {"true", "false"})
 }
 )
 public class SocketChannel extends AbstractChannelFragment implements Runnable {

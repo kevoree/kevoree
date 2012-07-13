@@ -14,7 +14,6 @@
 package org.kevoree.library;
 
 import org.kevoree.annotation.*;
-import org.kevoree.framework.MessagePort;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,7 +36,6 @@ public class FakeSimpleLight extends AbstractFakeStuffComponent {
 
     private static final int FRAME_WIDTH = 300;
     private static final int FRAME_HEIGHT = 300;
-//    private static Logger logger;
     private MyFrame frame;
     private Boolean state = false;
 
@@ -91,14 +89,6 @@ public class FakeSimpleLight extends AbstractFakeStuffComponent {
     public void lightOff(Object o) {
         frame.setColor(Color.red);
         state = false;
-    }
-
-    public Boolean getState() {
-        return state;
-    }
-
-    public void setState(Boolean state) {
-        this.state = state;
     }
 
     private static class MyFrame extends JFrame {
