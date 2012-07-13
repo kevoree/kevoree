@@ -60,7 +60,7 @@ public class FileServiceHelper {
 		}
 		logger.debug("Request rec for file " + file);
 		File in = new File(baseDir + File.separator + file);
-		if (in.exists()) {
+		if (in.exists() && in.isFile()) {
 			try {
 				FileInputStream ins = new FileInputStream(in);
 
