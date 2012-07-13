@@ -23,6 +23,7 @@ import org.kevoree.api.Bootstraper;
 import org.kevoree.api.configuration.ConfigConstants;
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService;
 import org.kevoree.api.service.core.logging.KevoreeLogLevel;
+import org.kevoree.api.service.core.logging.KevoreeLogService;
 import org.kevoree.api.service.core.script.KevScriptEngine;
 import org.kevoree.api.service.core.script.KevScriptEngineFactory;
 import org.kevoree.core.impl.KevoreeConfigServiceBean;
@@ -47,6 +48,9 @@ public class KevoreeBootStrap {
 
     public static boolean byPassAetherBootstrap = false;
 
+    public static KevoreeLogService logService = null;
+    public static String nodeBootClass = "org.kevoree.tools.aether.framework.NodeTypeBootstrapHelper";
+
 
 	/* Bootstrap Model to init default nodeType */
 	private ContainerRoot bootstrapModel = null;
@@ -70,18 +74,24 @@ public class KevoreeBootStrap {
 		try {
 			KevoreeConfigServiceBean configBean = new KevoreeConfigServiceBean();
 
-			KevoreeLogbackService logbackService = new KevoreeLogbackService();
 
 			coreBean = new KevoreeCoreBean();
 
 			KevoreeJarClassLoader jcl = new KevoreeJarClassLoader();
+           // jcl.setLazyLoad(true);
             if(!byPassAetherBootstrap){
                 jcl.add(this.getClass().getClassLoader().getResourceAsStream("org.kevoree.tools.aether.framework-" + KevoreeFactory.getVersion() + ".pack.jar"));
             }
 
-			Class clazz = jcl.loadClass("org.kevoree.tools.aether.framework.NodeTypeBootstrapHelper");
+			Class clazz = jcl.loadClass(nodeBootClass);
 			final org.kevoree.api.Bootstraper bootstraper = (Bootstraper) clazz.newInstance();
-            bootstraper.setKevoreeLogService(logbackService);
+
+
+            if(logService == null){
+                logService = (KevoreeLogService) this.getClass().getClassLoader().loadClass("org.kevoree.platform.standalone.KevoreeLogbackService").newInstance();
+            }
+
+            bootstraper.setKevoreeLogService(logService);
 
 			//clazz.getMethod("setKevoreeLogService", KevoreeLogService.class).invoke(bootstraper, logbackService);
 
@@ -253,7 +263,7 @@ public class KevoreeBootStrap {
 					coreLogLevel = KevoreeLogLevel.FINE;
 				}
 			}
-			logbackService.setCoreLogLevel(coreLogLevel);
+            logService.setCoreLogLevel(coreLogLevel);
 
 			started = true;
 

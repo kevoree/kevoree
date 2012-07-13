@@ -52,7 +52,7 @@ class NodeTypeBootstrapHelper extends Bootstraper with KCLBootstrap {
     kevoreeLogService = ls
   }
 
-  val classLoaderHandler = new JCLContextHandler
+  var classLoaderHandler = new JCLContextHandler
 
   def bootstrapNodeType(model: ContainerRoot, destNodeName: String, mservice: KevoreeModelHandlerService, kevsEngineFactory: KevScriptEngineFactory): Option[org.kevoree.api.NodeType] = {
     //LOCATE NODE
