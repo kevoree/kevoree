@@ -42,7 +42,7 @@ trait KevSTestSuiteHelper extends JUnitSuite {
 
 
   def getScript(url:String) : Script = {
-    val parser =new KevsParser();
+    val parser =new KevsParser()
     val script = parser.parseScript(ParserUtil.loadFile(this.getClass.getClassLoader.getResource(url).getPath))
 
     if(!script.isDefined) {
@@ -77,6 +77,7 @@ case class RichContainerRoot(self: ContainerRoot) extends KevSTestSuiteHelper {
 
   def testSave(path: String, file: String) {
     try {
+      println(this.getClass.getClassLoader.getResource(path).getPath + "/" + file)
       KevoreeXmiHelper.save(this.getClass.getClassLoader.getResource(path).getPath + "/" + file, self)
       assertTrue("At least one relative reference have been detected in model " + path + "/" + file, hasNoRelativeReference(path, file))
     } catch {
