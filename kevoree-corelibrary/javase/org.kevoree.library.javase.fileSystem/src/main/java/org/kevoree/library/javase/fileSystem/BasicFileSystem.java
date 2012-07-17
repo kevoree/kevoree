@@ -138,7 +138,19 @@ public class BasicFileSystem extends AbstractComponentType implements LockFilesS
         //NOOP
     }
 
-    public boolean saveFile(String relativePath, byte[] data) {
+	@Override
+	@Port(name = "files", method = "mkdirs")
+	public boolean mkdirs (String relativePath) {
+		return new File(baseURL + File.separator + relativePath).mkdirs();
+	}
+
+	@Override
+	@Port(name = "files", method = "delete")
+	public boolean delete (String relativePath) {
+		return new File(baseURL + File.separator + relativePath).delete();
+	}
+
+	public boolean saveFile(String relativePath, byte[] data) {
         File f = new File(baseURL + relativePath);
         if (f.exists()) {
             try {
