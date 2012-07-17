@@ -25,7 +25,6 @@ public class CamelTimer extends AbstractKevoreeCamelComponentType {
         rb.from("timer://" + getName() + "?fixedRate=true&period=" + getDictionary().get("period"))
           .setBody(new ConstantExpression("tick-" + System.currentTimeMillis()))
           .to("kport:tick");
-
     }
 
 }

@@ -147,27 +147,30 @@ public class KevoreeBootStrap {
 
 			coreBean.setBootstraper(bootstraper);
 			coreBean.setConfigService(configBean);
-			coreBean.setKevsEngineFactory(new KevScriptEngineFactory() {
-				@Override
-				public KevScriptEngine createKevScriptEngine () {
-					try {
-						return (KevScriptEngine) onlineMShellEngineClazz.getDeclaredConstructor(KevoreeModelHandlerService.class).newInstance(coreBean,bootstraper);
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-					return null;
-				}
 
-				@Override
-				public KevScriptEngine createKevScriptEngine (ContainerRoot srcModel) {
-					try {
-						return (KevScriptEngine) offLineMShellEngineClazz.getDeclaredConstructor(ContainerRoot.class).newInstance(srcModel,bootstraper);
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-					return null;
-				}
-			});
+            KevScriptEngineFactory factory = new KevScriptEngineFactory() {
+                @Override
+                public KevScriptEngine createKevScriptEngine () {
+                    try {
+                        return (KevScriptEngine) onlineMShellEngineClazz.getDeclaredConstructor(KevoreeModelHandlerService.class,Bootstraper.class).newInstance(coreBean,bootstraper);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    return null;
+                }
+
+                @Override
+                public KevScriptEngine createKevScriptEngine (ContainerRoot srcModel) {
+                    try {
+                        return (KevScriptEngine) offLineMShellEngineClazz.getDeclaredConstructor(ContainerRoot.class,Bootstraper.class).newInstance(srcModel,bootstraper);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    return null;
+                }
+            };
+
+			coreBean.setKevsEngineFactory(factory);
 			coreBean.start();
 
 
@@ -217,7 +220,20 @@ public class KevoreeBootStrap {
 							JarEntry entry = jar.getJarEntry("KEV-INF/lib.kev");
 							bootstrapModel = KevoreeXmiHelper.loadStream(jar.getInputStream(entry));
 						} else {
-							bootstrapModel = KevoreeXmiHelper.load(bootstrapModelPath);
+
+                            try {
+                                File filebootmodel = new File(bootstrapModelPath);
+                                bootstrapModel= BootstrapHelper.generateFromKevS(filebootmodel,factory.createKevScriptEngine(KevoreeFactory.createContainerRoot()));
+                            } catch(final Exception e) {
+                                try {
+                                    bootstrapModel = KevoreeXmiHelper.load(bootstrapModelPath);
+                                } catch(Exception e2){
+                                    e.printStackTrace();
+                                    e2.printStackTrace();
+                                    throw new Exception("Error while bootstrap from "+bootstrapModelPath);
+
+                                }
+                            }
 						}
 					} catch (Exception e) {
 						logger.error("Bootstrap failed from {}", configBean.getProperty(ConfigConstants.KEVOREE_NODE_BOOTSTRAP()), e);
