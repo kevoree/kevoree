@@ -61,7 +61,7 @@ object ModelGenerator extends App {
   def generate (scriptPath: String, mavenSource: MavenProject): ContainerRoot = {
     val kevEngine = new KevScriptOfflineEngine(KevoreeFactory.createContainerRoot,new NodeTypeBootstrapHelper())
     mavenSource.getProperties.keySet().foreach {
-      key => kevEngine.addVariable(key.toString, mavenSource.getProperties.get(key.toString).toString);
+      key => kevEngine.addVariable(key.toString, mavenSource.getProperties.get(key.toString).toString)
     }
 //    kevEngine.addVariable("kevoree.version", KevoreeFactory.getVersion)
     kevEngine.addVariable("basedir",mavenSource.getBasedir.getAbsolutePath)

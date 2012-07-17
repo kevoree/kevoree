@@ -28,15 +28,15 @@ case class KevsNetworkInterpreter(networkStatement: NetworkPropertyStatement) ex
     networkStatement.props.foreach {
       prop =>
         networkStatement.srcNodeName match {
-          case Some(srcNode)=> updateNodeLinkProp(context.model, srcNode, networkStatement.targetNodeName, prop._1, prop._2, "", 100);
-          case None => updateNodeLinkProp(context.model, networkStatement.targetNodeName, networkStatement.targetNodeName, prop._1, prop._2, "", 100);
+          case Some(srcNode)=> updateNodeLinkProp(context.model, srcNode, networkStatement.targetNodeName, prop._1, prop._2, "", 100)
+          case None => updateNodeLinkProp(context.model, networkStatement.targetNodeName, networkStatement.targetNodeName, prop._1, prop._2, "", 100)
         }
     }
     true
   }
 
 
-  def updateNodeLinkProp(actualModel: ContainerRoot, currentNodeName: String, targetNodeName: String, key: String, value: String, networkType: String, weight: Int) = {
+  def updateNodeLinkProp(actualModel: ContainerRoot, currentNodeName: String, targetNodeName: String, key: String, value: String, networkType: String, weight: Int) {
     /* SEARCH THE NODE NETWORK */
     val nodenetwork = actualModel.getNodeNetworks.find({
       nn =>
