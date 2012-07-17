@@ -15,6 +15,9 @@ package org.kevoree.platform.standalone
 
 import org.slf4j.LoggerFactory
 import org.kevoree.{ContainerNode, KevoreeFactory, ContainerRoot}
+import java.io.File
+import org.kevoree.api.service.core.script.KevScriptEngine
+import io.Source
 
 /**
  * Created by IntelliJ IDEA.
@@ -60,6 +63,19 @@ object BootstrapHelper {
 
 
     }
+  }
+
+
+  def generateFromKevS(scriptFile: File , kevEngine : KevScriptEngine): ContainerRoot = {
+    kevEngine.addVariable("kevoree.version", KevoreeFactory.getVersion)
+    import scala.collection.JavaConversions._
+    System.getProperties.foreach{ p=>
+      kevEngine.addVariable(p._1, p._2)
+    }
+    Source.fromFile(scriptFile).getLines().foreach{ line =>
+      kevEngine.append(line)
+    }
+    kevEngine.interpret()
   }
 
 

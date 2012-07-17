@@ -31,6 +31,7 @@ import org.kevoree.tools.marShell.KevScriptOfflineEngine
 import org.kevoree.{ContainerRoot, KevoreeFactory}
 import org.apache.maven.project.MavenProject
 import org.kevoree.tools.modelsync.FakeBootstraperService
+import io.Source
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -57,10 +58,12 @@ object KevScriptHelper extends App {
       kevEngine.addVariable(propName.toString, propVal.toString)
     }
     kevEngine.addVariable("basedir", mavenSource.getBasedir.getAbsolutePath)
-    kevEngine.append(loadScript(scriptFile))
+    Source.fromFile(scriptFile).getLines().foreach{ line =>
+      kevEngine.append(line)
+    }
     kevEngine.interpret()
   }
-
+       /*
   private def loadScript (file: File): String = {
     val fileReader = new BufferedReader(new FileReader(file))
     val scriptBuilder = new StringBuilder
@@ -73,5 +76,5 @@ object KevScriptHelper extends App {
 
     fileReader.close()
     scriptBuilder.toString()
-  }
+  }    */
 }
