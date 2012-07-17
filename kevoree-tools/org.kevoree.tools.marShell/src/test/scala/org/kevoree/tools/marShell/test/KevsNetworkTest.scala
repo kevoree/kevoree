@@ -22,7 +22,7 @@ class KevsNetworkTest extends KevSTestSuiteHelper {
   @Test def verifyInstanceMove() {
 
     val baseModel = model("baseModel/defaultLibrary.kev")
-    val oscript = getScript("scripts/kevsNetwork.kevs");
+    val oscript = getScript("scripts/kevsNetwork.kevs")
 
     assert(oscript.interpret(KevsInterpreterContext(baseModel)))
     baseModel.testSave("results", "kevsNetworkResult.kev")

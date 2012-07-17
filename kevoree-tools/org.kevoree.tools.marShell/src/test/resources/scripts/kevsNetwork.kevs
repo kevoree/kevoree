@@ -2,7 +2,10 @@
 tblock {
 
  addNode myJavaNode : JavaSENode
- network myJavaNode { "KEVOREE.remote.node.modelsynch.port" = "8000" }
- network myJavaNode => myJavaNode { "KEVOREE.remote.node.modelsynch.port" = "8000" }
+ addNode toto : JavaSENode
+ network toto => toto { "KEVOREE.remote.node.ip" = "127.0.0.1" }
+ network myJavaNode => myJavaNode { "KEVOREE.remote.node.ip" = "127.0.0.1" }
+ network toto => myJavaNode { "KEVOREE.remote.node.ip" = "10.0.0.3" }
+ network myJavaNode => toto { "KEVOREE.remote.node.ip" = "10.0.0.2" }
 
  }
