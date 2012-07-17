@@ -13,7 +13,6 @@
  */
 package org.kevoree.platform.service
 
-import org.xeustechnologies.jcl.JclObjectFactory
 import org.kevoree.kcl.KevoreeJarClassLoader
 
 
@@ -32,7 +31,7 @@ object WinstoneEmbedded extends App {
    var jcl = new KevoreeJarClassLoader
    jcl.addSubClassLoader(jcl2)
 
-
+     /*
   val factory = JclObjectFactory.getInstance
   val obj = factory.create(jcl, "org.kevoree.platform.standalone.gui.App");
   obj.getClass.getMethods.find(m => m.getName == "main") match {
@@ -41,6 +40,6 @@ object WinstoneEmbedded extends App {
     }
     case None =>
   }
-
+          */
 
 }
