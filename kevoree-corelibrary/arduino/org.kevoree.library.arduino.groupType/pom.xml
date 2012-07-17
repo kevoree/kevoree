@@ -4,12 +4,12 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>org.kevoree.library.arduino.groupType</artifactId>
     <name>Kevoree :: CoreLibrary :: Arduino :: GroupType</name>
-    <version>1.8.2-SNAPSHOT</version>
+    <version>1.8.3-SNAPSHOT</version>
 
     <parent>
         <artifactId>org.kevoree.library.arduino.root</artifactId>
         <groupId>org.kevoree.corelibrary.arduino</groupId>
-        <version>1.8.2-SNAPSHOT</version>
+        <version>1.8.3-SNAPSHOT</version>
         <relativePath>../org.kevoree.library.arduino.root/pom.xml</relativePath>
     </parent>
 
