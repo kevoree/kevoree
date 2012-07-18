@@ -15,7 +15,7 @@ package org.kevoree.tools.aether.framework
 
 import org.sonatype.aether.spi.log.Logger
 import org.sonatype.aether.spi.localrepo.LocalRepositoryManagerFactory
-import org.sonatype.aether.impl.internal.EnhancedLocalRepositoryManagerFactory
+import org.sonatype.aether.impl.internal.{SimpleLocalRepositoryManagerFactory, EnhancedLocalRepositoryManagerFactory}
 import org.sonatype.aether.spi.connector.RepositoryConnectorFactory
 import org.sonatype.aether.connector.file.FileRepositoryConnectorFactory
 import org.sonatype.aether.connector.async.AsyncRepositoryConnectorFactory
@@ -41,7 +41,11 @@ object AetherRepositoryStandalone {
     val locator = new DefaultServiceLocator()
     locator.setServices(classOf[Logger], new AetherLogger) // Doesn't work to JdkAsyncHttpProvider because this class uses its own logger and not the one provided by plexus and set with this line
     locator.setService(classOf[RepositoryCache], classOf[NoopCache])
-    locator.setService(classOf[LocalRepositoryManagerFactory], classOf[EnhancedLocalRepositoryManagerFactory])
+   // locator.setService(classOf[LocalRepositoryManagerFactory], classOf[EnhancedLocalRepositoryManagerFactory])
+    locator.setService( classOf[LocalRepositoryManagerFactory], classOf[SimpleLocalRepositoryManagerFactory])
+
+
+
     locator.setService(classOf[RepositoryConnectorFactory], classOf[FileRepositoryConnectorFactory])
     locator.setService(classOf[RepositoryConnectorFactory], classOf[AsyncRepositoryConnectorFactory])
     locator.getService(classOf[RepositorySystem])
