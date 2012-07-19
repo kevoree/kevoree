@@ -69,5 +69,7 @@ trait AetherRepositoryHandler {
     }
   }
 
+  def getDefaultURLS =  AetherRepositoryStandalone.getConfigURLS
+
 
 }
