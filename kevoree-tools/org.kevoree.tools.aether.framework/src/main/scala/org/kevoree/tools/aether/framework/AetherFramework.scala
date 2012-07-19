@@ -49,6 +49,7 @@ import org.sonatype.aether.repository.{Authentication, RemoteRepository}
 import org.kevoree.framework.KevoreePlatformHelper
 import org.sonatype.aether.resolution.{VersionRequest, ArtifactRequest}
 import scala.collection.JavaConversions._
+import java.util
 
 
 /**
@@ -75,30 +76,19 @@ trait AetherFramework extends TempFileCacheManager with AetherRepositoryHandler 
     resolveMavenArtifact(unitName, groupName, version, repositoriesUrl.toList)
 
   def resolveMavenArtifact(unitName: String, groupName: String, version: String, repositoriesUrl: List[String]): File = {
-    val artifact: Artifact = new DefaultArtifact(List(groupName.trim(), unitName.trim(), version.trim()).mkString(":"))
-    val artifactRequest = new ArtifactRequest
-    artifactRequest.setArtifact(artifact)
-    val repositories: java.util.List[RemoteRepository] = new java.util.ArrayList()
-    repositoriesUrl.foreach {
-      repository =>
-        val repo = new RemoteRepository
-        val purl = repository.trim.replace(':', '_').replace('/', '_').replace('\\', '_')
-        repo.setId(purl)
-        repo.setUrl(repository)
-        repo.setContentType("default")
-        repositories.add(repo)
-    }
-    artifactRequest.setRepositories(repositories)
-    val artefactResult = getRepositorySystem.resolveArtifact(getRepositorySystemSession, artifactRequest)
-    installInCache(artefactResult.getArtifact)
+    resolveMavenArtifact(unitName,groupName,version,null,repositoriesUrl)
   }
 
   def resolveMavenArtifact(unitName: String, groupName: String, version: String, extension: String, repositoriesUrl: List[String]): File = {
-    val artifact: Artifact = new DefaultArtifact(groupName.trim(), unitName.trim(), extension.trim(), version.trim())
+    val artifact: Artifact = if(extension == null){
+      new DefaultArtifact(List(groupName.trim(), unitName.trim(), version.trim()).mkString(":"))
+    } else {
+      new DefaultArtifact(groupName.trim(), unitName.trim(), extension.trim(), version.trim())
+    }
     val artifactRequest = new ArtifactRequest
     artifactRequest.setArtifact(artifact)
     val repositories: java.util.List[RemoteRepository] = new java.util.ArrayList()
-    repositoriesUrl.foreach {
+    (repositoriesUrl++ getDefaultURLS).foreach {
       repository =>
         val repo = new RemoteRepository
         val purl = repository.trim.replace(':', '_').replace('/', '_').replace('\\', '_')
@@ -106,6 +96,7 @@ trait AetherFramework extends TempFileCacheManager with AetherRepositoryHandler 
         repo.setUrl(repository)
         repo.setContentType("default")
         repositories.add(repo)
+        logger.debug("Add URL for Request {}",repository)
     }
     artifactRequest.setRepositories(repositories)
     val artefactResult = getRepositorySystem.resolveArtifact(getRepositorySystemSession, artifactRequest)
@@ -120,7 +111,6 @@ trait AetherFramework extends TempFileCacheManager with AetherRepositoryHandler 
     } else {
       artifact = new DefaultArtifact(List(du.getGroupName.trim(), du.getUnitName.trim(), du.getVersion.trim()).mkString(":"))
     }
-
     val artifactRequest = new ArtifactRequest
     artifactRequest.setArtifact(artifact)
     var urls: List[String] = null
@@ -129,6 +119,7 @@ trait AetherFramework extends TempFileCacheManager with AetherRepositoryHandler 
     } else {
       urls = buildPotentialMavenURL(du.eContainer.asInstanceOf[ContainerRoot])
     }
+   // urls = urls ++ getDefaultURLS
 
     //  val urls = buildPotentialMavenURL(du.eContainer.asInstanceOf[ContainerRoot])
 
@@ -159,7 +150,6 @@ trait AetherFramework extends TempFileCacheManager with AetherRepositoryHandler 
         clearRepoCacheFile(getRepositorySystemSession, artifactRequest.getArtifact)
         artefactResult = getRepositorySystem.resolveArtifact(getRepositorySystemSession, artifactRequest)
       }
-
       if (checkFile(artefactResult.getArtifact.getFile)) {
         installInCache(artefactResult.getArtifact)
       } else {
@@ -214,7 +204,7 @@ trait AetherFramework extends TempFileCacheManager with AetherRepositoryHandler 
         }
 
     }*/
-    result
+    result ++ getDefaultURLS
   }
 
   def buildURL(root: ContainerRoot, nodeName: String): Option[String] = {
