@@ -31,11 +31,11 @@ load_rc_config "${name}"
 
 : ${kevoree_enable="NO"}
 : ${kevoree_home="$HOME/kevoree-service"}
-: ${kevoree_version="1.6.0"}
+: ${kevoree_version="RELEASE"}
 : ${kevoree_log_level="INFO"}
 : ${node_update_timeout="300000"}
 : ${node_groupType="NanoRestGroup"}
-: ${kevoree_node_bootstrap="mvn:org.kevoree.corelibrary.model/org.kevoree.library.model.sky.kloud/${kevoree_version}"}
+: ${kevoree_node_bootstrap="mvn:org.kevoree.corelibrary.model/org.kevoree.library.model.javase/${kevoree_version}"}
 
 #APP_PATH="$HOME/kevoree-service" # path where your exec file are
 runtime="kevoree-runtime"  # name of the exec file without (.jar)
