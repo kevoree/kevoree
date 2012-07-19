@@ -22,6 +22,7 @@
             <groupId>org.kevoree.platform</groupId>
             <artifactId>org.kevoree.platform.base</artifactId>
             <version>${kevoree.version}</version>
+            <!--
             <exclusions>
                 <exclusion>
                     <groupId>org.kevoree.tools</groupId>
@@ -36,18 +37,7 @@
                     <artifactId>logback-classic</artifactId>
                 </exclusion>
             </exclusions>
-        </dependency>
-        <!--
-        <dependency>
-            <groupId>org.kevoree.tools</groupId>
-            <artifactId>org.kevoree.tools.aether.framework.pack</artifactId>
-            <version>${kevoree.version}</version>
-        </dependency>
-        -->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-simple</artifactId>
-            <version>1.6.4</version>
+            -->
         </dependency>
     </dependencies>
 
