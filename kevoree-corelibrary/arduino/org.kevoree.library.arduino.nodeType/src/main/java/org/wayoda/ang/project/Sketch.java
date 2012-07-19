@@ -204,6 +204,10 @@ public class Sketch {
         return null;
     }
 
+    public String getPath(Target target){
+        return  ""+getBuildRoot(target)+"/"+ sketchName + ".hex";
+    }
+
     /**
      * Preprocesses the sources of the Sketch and creates the build-directories
      * needed for running the sketch through the compiler.

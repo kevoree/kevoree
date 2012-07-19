@@ -1,5 +1,6 @@
 package org.kevoree.library.arduinoNodeType;
 
+
 import org.kevoree.*;
 import org.kevoree.api.service.core.checker.CheckerViolation;
 import org.kevoree.cloner.ModelCloner;
@@ -26,7 +27,6 @@ import org.wayoda.ang.project.Sketch;
 import org.wayoda.ang.project.Target;
 import org.wayoda.ang.project.TargetDirectoryService;
 
-import javax.swing.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -40,16 +40,16 @@ import java.io.IOException;
         @org.kevoree.annotation.DictionaryAttribute(name = "psize", defaultValue = "MAX", optional = true)
 })
 @org.kevoree.annotation.PrimitiveCommands(values = {"StartThirdParty", "UpdateType", "UpdateDeployUnit", "AddType", "AddDeployUnit", "AddThirdParty", "RemoveType", "RemoveDeployUnit", "UpdateInstance", "UpdateBinding", "UpdateDictionaryInstance", "AddInstance", "RemoveInstance", "AddBinding", "RemoveBinding", "AddFragmentBinding", "RemoveFragmentBinding", "StartInstance", "StopInstance", "StartThirdParty"}, value = {})
+
 public class ArduinoNode extends AbstractNodeType {
 
     private static final Logger logger = LoggerFactory.getLogger(ArduinoNode.class);
     public static final int baudrate = 19200;
-   // private JFrame frame =null;
-    //public ArduinoGuiProgressBar progress = null;
-    public File newdir = null;
-    private ArduinoChecker localChecker = null;
+    protected File newdir = null;
+    protected ArduinoChecker localChecker = null;
     protected Boolean forceUpdate = false;
-
+    protected String outputPath = "";
+    protected ContainerRoot tempRoot = null;
 
     public void setForceUpdate(Boolean f) {
         forceUpdate = f;
@@ -77,32 +77,21 @@ public class ArduinoNode extends AbstractNodeType {
     }
 
     //@Override
-    public synchronized void push(final String targetNodeName, final ContainerRoot root, String boardPortName) throws IOException {
+    public  void push(final String targetNodeName, final ContainerRoot root, String boardPortName) throws IOException {
 
         try
         {
             if(boardPortName.equals("*"))
             {
-                if(KHelpers.getPortIdentifiers().size() > 0){
+                if(KHelpers.getPortIdentifiers().size() > 0)
+                {
+                    KHelpers.getPortIdentifiers().size();
                     boardPortName =  KHelpers.getPortIdentifiers().get(0);
                 } else
                 {
                     logger.error("Sorry, we have not detected on your machine arduino ");
                 }
-
             }
-         /*   frame = new JFrame("Arduino model push");
-
-            progress = new ArduinoGuiProgressBar();
-
-            frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-            frame.setContentPane(progress);
-            frame.pack();
-            frame.setVisible(true);
-                    progress.beginTask("Build diff model", 10);
-                    */
-
-
 
             KevoreeKompareBean kompare = new KevoreeKompareBean();
 
@@ -143,9 +132,6 @@ public class ArduinoNode extends AbstractNodeType {
                 lastVersionModel.removeAllMBindings();
                 lastVersionModel.removeAllGroups();
             }
-
-            /* */
-
             tempRoot = root;
 
             ModelCloner cc = new ModelCloner();
@@ -156,57 +142,37 @@ public class ArduinoNode extends AbstractNodeType {
             AdaptationModel kompareModel = kompare.kompare(lastVersionModel, cloned, targetNodeName);
 
 
-        //    progress.endTask();
-
             if (kompareModel.getAdaptationsForJ().size() > 0) {
-             //   progress.beginTask("Prepare model generation", 20);
 
                 File newdirTarget = new File(newdir.getAbsolutePath() + File.separator + "target");
                 org.kevoree.library.arduinoNodeType.FileHelper.createAndCleanDirectory(newdirTarget);
                 TargetDirectoryService.rootPath = newdirTarget.getAbsolutePath();
                 outputPath = newdir.getAbsolutePath();
                 logger.debug("outDir=" + outputPath);
-            //    progress.endTask();
-              //  progress.beginTask("Compute firmware update", 30);
+
                 try {
 
                     if (deploy(kompareModel, targetNodeName, boardPortName)) {
-                   //     progress.endTask();
+                        //     progress.endTask();
                     } else {
-                     //   progress.failTask();
+                        logger.error("Error appears when we compute the firmware update");
                     }
                 } catch (Exception e) {
-                   // progress.failTask();
+                    // progress.failTask();
 
                     logger.error("Error appears when we compute the firmware update", e);
                 }
-             //   progress.beginTask("Save model for incremental deployment", 100);
+
                 KevoreeXmiHelper.save(newdir.getAbsolutePath() + File.separator + targetNodeName + "_" + (lastVersion + 1) + ".kev", root);
-
-               // progress.endTask();
             }
-
-             /*
-            frame.setVisible(false);
-            frame.dispose();
-            */
 
         }catch (Exception e)
         {
             logger.error("",e);
         }
-        finally
-        {
-       //     progress.endTask();
-       //     frame.dispose();
-        }
-
     }
 
-    public String outputPath = "";
 
-
-    private ContainerRoot tempRoot = null;
 
     public boolean deploy(AdaptationModel modelIn, String nodeName, String boardPortName) {
         boolean typeAdaptationFound = false;
@@ -284,7 +250,7 @@ public class ArduinoNode extends AbstractNodeType {
             generator.generate(model, nodeName, outputPath, getDictionary().get("boardTypeName").toString(), pm, psize, this);
 
 //STEP 3 : Deploy by commnication channel
-           // progress.beginTask("Prepare compilation", 40);
+            // progress.beginTask("Prepare compilation", 40);
             ArduinoCompilation arduinoCompilation = new ArduinoCompilation();
             ArduinoLink arduinoLink = new ArduinoLink();
             ArduinoArchive arduinoArchive = new ArduinoArchive();
@@ -297,16 +263,16 @@ public class ArduinoNode extends AbstractNodeType {
             arduinoDeploy.prepareCommands();
             ArduinoBuildEnvironment arduinoBuildEnvironment = ArduinoBuildEnvironment.getInstance();
             Target target = arduinoBuildEnvironment.getDefaultTargetList().getTarget(getDictionary().get("boardTypeName").toString());
-           // progress.endTask();
+            // progress.endTask();
             try {
-              //  progress.beginTask("Prepare sketch", 50);
+                //  progress.beginTask("Prepare sketch", 50);
                 Sketch sketch = new Sketch(newdir);
                 sketch.preprocess(target);
-             //   progress.endTask();
+                //   progress.endTask();
                 Core core = CodeManager.getInstance().getCore(target);
                 //System.err.println("core :=> " + core + " -> " + target.getCore());
                 arduinoCompilation.compileCore(sketch, target, core);
-               // progress.beginTask("Library processing", 60);
+                // progress.beginTask("Library processing", 60);
 
                 for (org.wayoda.ang.libraries.Library library : sketch.getLibraries()) {
                     logger.debug("----Lib " + library.getName());
@@ -314,7 +280,7 @@ public class ArduinoNode extends AbstractNodeType {
                 }
                 //progress.endTask();
 
-               // progress.beginTask("Firmware compilation", 70);
+                // progress.beginTask("Firmware compilation", 70);
                 arduinoCompilation.compileSketch(sketch, target, core, generator.context().getGenerator());
                 arduinoArchive.archiveSketch(sketch, target);
                 //progress.endTask();
@@ -322,7 +288,7 @@ public class ArduinoNode extends AbstractNodeType {
                 //progress.beginTask("Firmware linkage", 80);
                 arduinoLink.linkSketch(sketch, target);
                 arduinoPostCompilation.postCompileSketch(sketch, target);
-             //   progress.endTask();
+                //   progress.endTask();
 
                 String boardName = "";
                 if (boardPortName != null && !boardPortName.equals("")) {
@@ -335,18 +301,18 @@ public class ArduinoNode extends AbstractNodeType {
 
                 logger.debug("boardPortName=" + boardName);
 
-              //  progress.beginTask("Upload to arduino board", 90);
+                //  progress.beginTask("Upload to arduino board", 90);
                 KevoreeSharedCom.lockPort(boardName);
 
                 arduinoDeploy.uploadSketch(sketch, target, boardName);
 
                 KevoreeSharedCom.unlockPort(boardName);
 
-              //  progress.endTask();
+                //  progress.endTask();
 
             } catch (FileNotFoundException ex) {
                 logger.error("", ex);
-             //   progress.failTask();
+                //   progress.failTask();
             }
 
         } else {
