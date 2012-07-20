@@ -99,7 +99,7 @@ class KevoreeSerialMonitorPanel(kernel: KevoreeUIKernel)  extends JPanel  {
     def actionPerformed(e: ActionEvent) {
       try
       {
-        serial.close()
+        serial.exit()
         boardPortName =     KHelpers.getPortIdentifiers().get(device_available.getSelectedIndex)
         serial.setPort_name(boardPortName)
         serial.setPort_bitrate(speed)
@@ -121,7 +121,7 @@ class KevoreeSerialMonitorPanel(kernel: KevoreeUIKernel)  extends JPanel  {
     def actionPerformed(e: ActionEvent) {
       try
       {
-        serial.close()
+        serial.exit()
         speed =     KHelpers.getbaudrates()(device_baudrates.getSelectedIndex)
         serial.setPort_name(boardPortName)
         serial.setPort_bitrate(speed)
@@ -212,14 +212,14 @@ class KevoreeSerialMonitorPanel(kernel: KevoreeUIKernel)  extends JPanel  {
       catch {
         case e: SerialPortException => {
           logger.error("Fail to open serial port "+boardPortName)
-          serial.close()
+          serial.exit()
         }
       }
     }
 
     def concurrentOpenEvent(p1: SerialConcurrentOpenEvent) {
       logger.warn("Request Concurrent close");
-      serial.close()
+      serial.exit()
 
     }
   }
