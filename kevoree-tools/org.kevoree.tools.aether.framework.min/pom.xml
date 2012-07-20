@@ -102,11 +102,13 @@
                     <instructions>
                         <Bundle-SymbolicName>org.kevoree.tools.aether.framework.min</Bundle-SymbolicName>
                         <Import-Package>
+                            !org.sonatype.guice.*,
                             !org.apache.commons.codec.*,
                             !org.apache.commons.logging.*,
                             !org.kevoree.tools.aether.framework.*,*
                         </Import-Package>
                         <Export-Package>
+                            !org.sonatype.guice.*,
                             !org.apache.commons.codec.*,
                             !org.apache.commons.logging.*,
                             org.kevoree.tools.aether.framework.*,
