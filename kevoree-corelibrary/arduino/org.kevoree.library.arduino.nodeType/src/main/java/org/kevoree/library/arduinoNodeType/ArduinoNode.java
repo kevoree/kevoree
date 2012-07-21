@@ -50,6 +50,9 @@ public class ArduinoNode extends AbstractNodeType {
     protected Boolean forceUpdate = false;
     protected String outputPath = "";
     protected ContainerRoot tempRoot = null;
+    protected  ArduinoDeploy arduinoDeploy=null;
+    protected  Sketch sketch=null;
+    protected Target target= null;
 
     public void setForceUpdate(Boolean f) {
         forceUpdate = f;
@@ -175,170 +178,168 @@ public class ArduinoNode extends AbstractNodeType {
 
 
     public boolean deploy(AdaptationModel modelIn, String nodeName, String boardPortName) {
-        boolean typeAdaptationFound = false;
-        ContainerRoot rootModel = null;
-        for (AdaptationPrimitive p : modelIn.getAdaptationsForJ()) {
-            Boolean addType = p.getPrimitiveType().getName().equals(JavaSePrimitive.AddType());
-            Boolean removeType = p.getPrimitiveType().getName().equals(JavaSePrimitive.RemoveType());
-            Boolean updateType = p.getPrimitiveType().getName().equals(JavaSePrimitive.UpdateType());
 
-            if (addType || removeType || updateType) {
-                typeAdaptationFound = true;
-                // rootModel = (ContainerRoot) ((TypeDefinition) p.getRef()).eContainer();
-            } /*else {
-                rootModel = tempRoot;
-            }   */
-            rootModel = tempRoot;
+        if (needAdaptation(modelIn) || forceUpdate)
+        {
+            if(checker() == false){ return false;}
+            // compile
+            compile(tempRoot, nodeName, boardPortName);
+            // lock port
+            KevoreeSharedCom.lockPort(boardPortName);
+            // avrdude
+            arduinoDeploy.uploadSketch(sketch, target, boardPortName);
+            // unlock
+            KevoreeSharedCom.unlockPort(boardPortName);
+        } else
+        {
+            incremental(modelIn, nodeName, boardPortName);
+        }
+        return true;
+    }
+
+
+
+    public boolean compile(ContainerRoot rootModel, String nodeName, String boardPortName){
+
+        KevoreeKompareBean kompare = new KevoreeKompareBean();
+
+        ModelCloner cloner = new ModelCloner();
+        ContainerRoot lastVersionModel = cloner.clone(rootModel);
+        for (ContainerNode node : lastVersionModel.getNodesForJ()) {
+            node.removeAllComponents();
+            node.removeAllHosts();
+        }
+        lastVersionModel.removeAllMBindings();
+        lastVersionModel.removeAllGroups();
+
+        AdaptationModel model = kompare.kompare(lastVersionModel, rootModel, nodeName);
+
+        //Must compute a dif from scratch model
+
+        logger.debug("Type adaptation detected -> full firmware update needed !");
+
+        logger.debug("Install Type definitions");
+        TypeBundleBootstrap.bootstrapTypeBundle(model, this);
+
+        KevoreeCGenerator generator = new KevoreeCGenerator();
+
+
+        PMemory pm = PMemory.EEPROM;
+        if (this.getDictionary().get("pmem") != null) {
+            String s = this.getDictionary().get("pmem").toString();
+            if (s.toLowerCase().equals("eeprom")) {
+                pm = PMemory.EEPROM;
+            }
+            if (s.toLowerCase().equals("sd")) {
+                pm = PMemory.SD;
+            }
+        }
+        String psize = "";
+        if (this.getDictionary().get("psize") != null && this.getDictionary().get("psize") != "MAX") {
+            psize = this.getDictionary().get("psize").toString();
         }
 
+        generator.generate(model, nodeName, outputPath, getDictionary().get("boardTypeName").toString(), pm, psize, this);
 
-        if (typeAdaptationFound || forceUpdate) {
-            java.util.List<CheckerViolation> result = localChecker.check(rootModel);
-            if (result.size() > 0) {
-                for (CheckerViolation cv : result) {
-                    logger.error("Checker Error = " + cv.getMessage());
-                }
-                return false;
+        ArduinoCompilation arduinoCompilation = new ArduinoCompilation();
+        ArduinoLink arduinoLink = new ArduinoLink();
+        ArduinoArchive arduinoArchive = new ArduinoArchive();
+        ArduinoPostCompilation arduinoPostCompilation = new ArduinoPostCompilation();
+        arduinoDeploy = new ArduinoDeploy();
+        arduinoCompilation.prepareCommands();
+        arduinoLink.prepareCommands();
+        arduinoArchive.prepareCommands();
+        arduinoPostCompilation.prepareCommands();
+        arduinoDeploy.prepareCommands();
+        ArduinoBuildEnvironment arduinoBuildEnvironment = ArduinoBuildEnvironment.getInstance();
+        target = arduinoBuildEnvironment.getDefaultTargetList().getTarget(getDictionary().get("boardTypeName").toString());
+        try
+        {
+
+            sketch = new Sketch(newdir);
+            sketch.preprocess(target);
+
+            Core core = CodeManager.getInstance().getCore(target);
+            logger.debug("core :=> " + core + " -> " + target.getCore());
+            arduinoCompilation.compileCore(sketch, target, core);
+
+            for (org.wayoda.ang.libraries.Library library : sketch.getLibraries()) {
+                logger.debug("----Lib " + library.getName());
+                arduinoCompilation.compileLibrary(sketch, target, library, core);
             }
 
-            KevoreeKompareBean kompare = new KevoreeKompareBean();
+            arduinoCompilation.compileSketch(sketch, target, core, generator.context().getGenerator());
+            arduinoArchive.archiveSketch(sketch, target);
+            arduinoLink.linkSketch(sketch, target);
+            arduinoPostCompilation.postCompileSketch(sketch, target);
 
-            ModelCloner cloner = new ModelCloner();
-            ContainerRoot lastVersionModel = cloner.clone(rootModel);
-            for (ContainerNode node : lastVersionModel.getNodesForJ()) {
-                node.removeAllComponents();
-                node.removeAllHosts();
-            }
-            lastVersionModel.removeAllMBindings();
-            lastVersionModel.removeAllGroups();
-
-            AdaptationModel model = kompare.kompare(lastVersionModel, rootModel, nodeName);
-
-            //Must compute a dif from scratch model
-
-            logger.debug("Type adaptation detected -> full firmware update needed !");
-            //Step : Type Bundle preparation step
-
-            // Bundle bundle = (Bundle) this.getDictionary().get(Constants.KEVOREE_PROPERTY_OSGI_BUNDLE());
-
-            //if (bundle != null) {
-            logger.debug("Install Type definitions");
-            TypeBundleBootstrap.bootstrapTypeBundle(model, this);
-            //} else {
-            //    logger.warn("No OSGi runtime available");
-            //}
-            //Step : Generate firmware code to output path
-            KevoreeCGenerator generator = new KevoreeCGenerator();
-
-
-            PMemory pm = PMemory.EEPROM;
-            if (this.getDictionary().get("pmem") != null) {
-                String s = this.getDictionary().get("pmem").toString();
-                if (s.toLowerCase().equals("eeprom")) {
-                    pm = PMemory.EEPROM;
-                }
-                if (s.toLowerCase().equals("sd")) {
-                    pm = PMemory.SD;
-                }
-            }
-            String psize = "";
-            if (this.getDictionary().get("psize") != null && this.getDictionary().get("psize") != "MAX") {
-                psize = this.getDictionary().get("psize").toString();
-            }
-
-
-            generator.generate(model, nodeName, outputPath, getDictionary().get("boardTypeName").toString(), pm, psize, this);
-
-//STEP 3 : Deploy by commnication channel
-            // progress.beginTask("Prepare compilation", 40);
-            ArduinoCompilation arduinoCompilation = new ArduinoCompilation();
-            ArduinoLink arduinoLink = new ArduinoLink();
-            ArduinoArchive arduinoArchive = new ArduinoArchive();
-            ArduinoPostCompilation arduinoPostCompilation = new ArduinoPostCompilation();
-            ArduinoDeploy arduinoDeploy = new ArduinoDeploy();
-            arduinoCompilation.prepareCommands();
-            arduinoLink.prepareCommands();
-            arduinoArchive.prepareCommands();
-            arduinoPostCompilation.prepareCommands();
-            arduinoDeploy.prepareCommands();
-            ArduinoBuildEnvironment arduinoBuildEnvironment = ArduinoBuildEnvironment.getInstance();
-            Target target = arduinoBuildEnvironment.getDefaultTargetList().getTarget(getDictionary().get("boardTypeName").toString());
-            // progress.endTask();
-            try {
-                //  progress.beginTask("Prepare sketch", 50);
-                Sketch sketch = new Sketch(newdir);
-                sketch.preprocess(target);
-                //   progress.endTask();
-                Core core = CodeManager.getInstance().getCore(target);
-                //System.err.println("core :=> " + core + " -> " + target.getCore());
-                arduinoCompilation.compileCore(sketch, target, core);
-                // progress.beginTask("Library processing", 60);
-
-                for (org.wayoda.ang.libraries.Library library : sketch.getLibraries()) {
-                    logger.debug("----Lib " + library.getName());
-                    arduinoCompilation.compileLibrary(sketch, target, library, core);
-                }
-                //progress.endTask();
-
-                // progress.beginTask("Firmware compilation", 70);
-                arduinoCompilation.compileSketch(sketch, target, core, generator.context().getGenerator());
-                arduinoArchive.archiveSketch(sketch, target);
-                //progress.endTask();
-
-                //progress.beginTask("Firmware linkage", 80);
-                arduinoLink.linkSketch(sketch, target);
-                arduinoPostCompilation.postCompileSketch(sketch, target);
-                //   progress.endTask();
-
-                String boardName = "";
-                if (boardPortName != null && !boardPortName.equals("")) {
-                    boardName = boardPortName;
-                }
-
-                if (boardName == null || boardName.equals("")) {
-                    boardName = GuiAskForComPort.askPORT();
-                }
-
-                logger.debug("boardPortName=" + boardName);
-
-                //  progress.beginTask("Upload to arduino board", 90);
-                KevoreeSharedCom.lockPort(boardName);
-
-                arduinoDeploy.uploadSketch(sketch, target, boardName);
-
-                KevoreeSharedCom.unlockPort(boardName);
-
-                //  progress.endTask();
-
-            } catch (FileNotFoundException ex) {
-                logger.error("", ex);
-                //   progress.failTask();
-            }
-
-        } else {
-            logger.debug("incremental update available -> try to generate KevScript !");
-            Script baseScript = KevScriptWrapper.miniPlanKevScript(AdaptationModelWrapper.generateScriptFromAdaptModel(modelIn));
-            String resultScript = KevScriptWrapper.generateKevScriptCompressed(baseScript, this.getNodeName());
-            logger.debug(resultScript);
             String boardName = "";
             if (boardPortName != null && !boardPortName.equals("")) {
                 boardName = boardPortName;
             }
+
             if (boardName == null || boardName.equals("")) {
                 boardName = GuiAskForComPort.askPORT();
             }
-            try {
-                ComSender.ping(boardName);
-                ComSender.send(resultScript, boardName);
-            } catch (Exception e) {
-//                e.printStackTrace();
-                logger.error("", e);
-            }
 
+            logger.debug("boardPortName=" + boardName);
 
+        } catch (FileNotFoundException ex) {
+            logger.error("", ex);
+            return false;
         }
-
-        logger.info("Arduino finished");
         return true;
     }
+
+    public  boolean needAdaptation(AdaptationModel modelIn){
+        boolean typeAdaptationFound = false;
+        for (AdaptationPrimitive p : modelIn.getAdaptationsForJ()) {
+            Boolean addType = p.getPrimitiveType().getName().equals(JavaSePrimitive.AddType());
+            Boolean removeType = p.getPrimitiveType().getName().equals(JavaSePrimitive.RemoveType());
+            Boolean updateType = p.getPrimitiveType().getName().equals(JavaSePrimitive.UpdateType());
+            if (addType || removeType || updateType) {
+                typeAdaptationFound = true;
+            }
+        }
+        return typeAdaptationFound;
+    }
+
+    public  boolean  checker()
+    {
+        // checker
+        java.util.List<CheckerViolation> result = localChecker.check(tempRoot);
+        if (result.size() > 0) {
+            for (CheckerViolation cv : result) {
+                logger.error("Checker Error = " + cv.getMessage());
+            }
+            return false;
+        }
+        return true;
+    }
+
+
+
+    public void incremental(AdaptationModel modelIn,String nodeName, String boardPortName){
+
+        logger.debug("incremental update available -> try to generate KevScript !");
+        Script baseScript = KevScriptWrapper.miniPlanKevScript(AdaptationModelWrapper.generateScriptFromAdaptModel(modelIn));
+        String resultScript = KevScriptWrapper.generateKevScriptCompressed(baseScript, this.getNodeName());
+        logger.debug(resultScript);
+        String boardName = "";
+        if (boardPortName != null && !boardPortName.equals("")) {
+            boardName = boardPortName;
+        }
+        if (boardName == null || boardName.equals("")) {
+            boardName = GuiAskForComPort.askPORT();
+        }
+        try {
+            ComSender.ping(boardName);
+            ComSender.send(resultScript, boardName);
+
+        } catch (Exception e) {
+            logger.error("", e);
+        }
+
+    }
+
 }
