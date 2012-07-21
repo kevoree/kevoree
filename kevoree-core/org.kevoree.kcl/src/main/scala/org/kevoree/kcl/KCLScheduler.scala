@@ -1,5 +1,3 @@
-package org.kevoree.core.impl.message
-
 /**
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
  * you may not use this file except in compliance with the License.
@@ -13,16 +11,31 @@ package org.kevoree.core.impl.message
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+package org.kevoree.kcl
+
+import java.util.concurrent.Executors
+
+/**
+ * Created with IntelliJ IDEA.
+ * User: duke
+ * Date: 20/07/12
+ * Time: 16:01
  */
 
+object KCLScheduler {
 
-//case class UpdateModel(model : ContainerRoot)
-//case class LastModel()
-//case class PreviousModel()
+  lazy val scheduler = {
+    val pool = Executors.newSingleThreadExecutor()
+    Runtime.getRuntime.addShutdownHook(new Thread(){
+      override def run() {
+        pool.shutdownNow()
+      }
+    })
+    pool
+  }
 
+  def getScheduler = {
+    scheduler
+  }
 
-//case class LastUUIDModel()
-//case class UpdateUUIDModel(prev : UUIDModel,target: ContainerRoot)
+}

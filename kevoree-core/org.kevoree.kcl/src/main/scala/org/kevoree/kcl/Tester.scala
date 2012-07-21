@@ -11,6 +11,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/**
+ * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.gnu.org/licenses/lgpl-3.0.txt
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.kevoree.kcl
 
 /**
@@ -40,6 +53,14 @@ object Tester extends App {
   val jcl2 = new KevoreeJarClassLoader
   jcl2.add("/Users/duke/Desktop/org.kevoree.library.javase.webserver.collaborationToolsBasics20987646844231618581117939900.jar")
   println(jcl2.getResourceAsStream("ihmcodemirror/E86E16CE2F26CDDCFD23F909A16BAE6A.gwt.rpc"))
+  try {
+    jcl2.loadClass("org.kevoree.library.javase.webserver.collaborationToolsBasics.client.RepositoryToolsServices")
+  } catch {
+    case _@e => e.printStackTrace()
+  }
+
+  //KCLScheduler.scheduler.shutdownNow()
+
 
   //jcl2.add("/Users/duke/Documents/dev/dukeboard/kevoree/kevoree-platform/org.kevoree.platform.standalone.gui/target/org.kevoree.platform.standalone.gui-1.7.4.jar")
   /*
