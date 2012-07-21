@@ -63,7 +63,7 @@ class KevoreeJarClassLoader extends JarClassLoader {
   classpathResources = new KevoreeLazyJarResources
   classpathResources.asInstanceOf[KevoreeLazyJarResources].setParentKCL(this)
   val local_loader = new KevoreeLocalLoader(classpathResources.asInstanceOf[KevoreeLazyJarResources], this)
-  local_loader.start()
+  //local_loader.start()
   addLoader(local_loader)
 
   private val nativeMap = new HashMap[String, String]();
@@ -358,7 +358,7 @@ class KevoreeJarClassLoader extends JarClassLoader {
   }
 
   def unload() {
-    local_loader.killActor()
+   // local_loader.killActor()
     /*
     import scala.collection.JavaConversions._
     (this.getLoadedClasses.keySet().toList ++ List()).foreach {

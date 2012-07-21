@@ -26,8 +26,8 @@ public class App {
     public static void main(String[] args) throws Exception {
 
         System.setProperty("kcl.lazy", "true");
-        System.setProperty("actors.corePoolSize","25");
-        System.setProperty("actors.maxPoolSize","100");
+       // System.setProperty("actors.corePoolSize","25");
+      //  System.setProperty("actors.maxPoolSize","50");
 
        // KevoreeBootStrap.logService = new SimpleLogService();
         KevoreeBootStrap.nodeBootClass = "org.kevoree.tools.aether.framework.min.MinNodeTypeBootstrapHelper";

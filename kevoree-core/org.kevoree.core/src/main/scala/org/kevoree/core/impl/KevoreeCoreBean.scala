@@ -24,6 +24,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/**
+ * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.gnu.org/licenses/lgpl-3.0.txt
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 /*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
@@ -37,7 +50,6 @@ import _root_.org.kevoree.api.configuration.ConfigurationService
 import _root_.org.slf4j.LoggerFactory
 import _root_.org.kevoree.api.configuration.ConfigConstants
 import _root_.org.kevoree.framework._
-import _root_.org.kevoree.core.impl.message._
 import deploy.PrimitiveCommandExecutionHelper
 import _root_.org.kevoree.cloner.ModelCloner
 import _root_.org.kevoree.core.basechecker.RootChecker
@@ -45,13 +57,15 @@ import _root_.java.util.{UUID, Date}
 import org.kevoree.api.service.core.handler._
 import org.kevoree.api.service.core.script.KevScriptEngineFactory
 import org.kevoree.api.Bootstraper
-import actors.{DaemonActor, TIMEOUT, Actor}
 import org.kevoree.core.basechecker.kevoreeVersionChecker.KevoreeNodeVersionChecker
 import java.lang.Long
 import reflect.BeanProperty
+import java.util.concurrent._
+import scala.Some
+import scala.Tuple2
 
 
-class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor {
+class KevoreeCoreBean extends KevoreeModelHandlerService /*with KevoreeThreadActor*/ {
 
   val listenerActor = new KevoreeListeners
   listenerActor.start()
@@ -59,7 +73,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
   @BeanProperty var configService: ConfigurationService = null
   var kevsEngineFactory: KevScriptEngineFactory = null
 
-  def setKevsEngineFactory (k: KevScriptEngineFactory) {
+  def setKevsEngineFactory(k: KevScriptEngineFactory) {
     kevsEngineFactory = k
   }
 
@@ -69,13 +83,12 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
 
   def getNodeName: String = nodeName
 
-  private var modelVersionChecker : KevoreeNodeVersionChecker= null
+  private var modelVersionChecker: KevoreeNodeVersionChecker = null
 
-  def setNodeName (nn: String) {
+  def setNodeName(nn: String) {
     nodeName = nn
     modelVersionChecker = new KevoreeNodeVersionChecker(nodeName)
   }
-
 
   @BeanProperty var nodeInstance: org.kevoree.api.NodeType = null
 
@@ -91,7 +104,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
 
   var selfActorPointer = this
 
-  private def checkBootstrapNode (currentModel: ContainerRoot): Unit = {
+  private def checkBootstrapNode(currentModel: ContainerRoot): Unit = {
     try {
       if (nodeInstance == null) {
         currentModel.getNodes.find(n => n.getName == nodeName) match {
@@ -133,7 +146,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
     }
   }
 
-  private def checkUnbootstrapNode (currentModel: ContainerRoot): Option[ContainerRoot] = {
+  private def checkUnbootstrapNode(currentModel: ContainerRoot): Option[ContainerRoot] = {
     try {
       if (nodeInstance != null) {
         currentModel.getNodes.find(n => n.getName == nodeName) match {
@@ -161,7 +174,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
     }
   }
 
-  private def switchToNewModel (c: ContainerRoot) = {
+  private def switchToNewModel(c: ContainerRoot) = {
     //current model is backed-up
     models.append(model)
 
@@ -183,12 +196,16 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
     //}.start()
   }
 
-  override def start: Actor = {
+  private var scheduler: ExecutorService = _
+
+  def start() /*: Actor*/ = {
+    scheduler = java.util.concurrent.Executors.newSingleThreadExecutor()
+
     if (getNodeName == "") {
       setNodeName(configService.getProperty(ConfigConstants.KEVOREE_NODE_NAME))
     }
     logger.info("Kevoree Start event : node name = " + getNodeName)
-    super.start()
+    // super.start()
 
     //State recovery phase
     /*
@@ -202,10 +219,12 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
     this
   }
 
-  override def stop () {
+  def stop() {
     logger.warn("Kevoree Core will be stopped !")
     listenerActor.stop()
-    super[KevoreeThreadActor].forceStop
+    //super[KevoreeThreadActor].forceStop
+    scheduler.shutdownNow()
+    scheduler = null
     if (nodeInstance != null) {
       try {
         val stopModel = checkUnbootstrapNode(model)
@@ -239,94 +258,9 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
   val modelChecker = new RootChecker
 
   // treatment of incoming messages
-  def internal_process (msg: Any) = msg match {
-    //Returns the collection of previous models
-    case PreviousModel() => reply(models)
-    //Returns a clone of the current system model
-    case LastModel() => {
-      reply(cloner.clone(model))
-    }
-    // returns a clone of the current system model with a companion UUID for concurrency management
-    case LastUUIDModel() => {
-      reply(UUIDModelImpl(currentModelUUID, cloner.clone(model)))
-    }
-    //Update the system with the model given in parameter, with the UUID for checking
-    case UpdateUUIDModel(prevUUIDModel, targetModel) => {
-      if (currentLock != null) {
-        if (prevUUIDModel.getUUID.compareTo(currentLock._1) == 0) {
-          reply(internal_update_model(targetModel))
-        } else {
-          logger.debug("Core Locked , bad UUID " + prevUUIDModel.getUUID)
-          reply(false) //LOCK REFUSED !
-        }
-      } else {
-        //COMMON CHECK
-        if (prevUUIDModel.getUUID.compareTo(currentModelUUID) == 0) {
-          //TODO CHECK WITH MODEL SHA-1 HASHCODE
-          reply(internal_update_model(targetModel))
-        } else {
-          reply(false)
-        }
-      }
-      System.gc()
-    }
-    //Updates the system to fit to the new model
-    case UpdateModel(pnewmodel) => {
-      if (currentLock == null) {
-        reply(internal_update_model(pnewmodel))
-      } else {
-        logger.debug("Core Locked , UUID mandatory")
-        reply(false)
-      }
-      System.gc()
-    }
-
-    case ACQUIRE_LOCK(handler, timeout) => {
-      if (currentLock != null) {
-        handler.lockRejected()
-      } else {
-        val lockUUID = UUID.randomUUID()
-        currentLock = (lockUUID, handler)
-        //RUN ACTOR
-        currentLockTimer = new DaemonActor {
-          def act () {
-            reactWithin(timeout) {
-              case TIMEOUT => {
-                selfActorPointer ! LOCK_TIMEOUT();
-                exit()
-              }
-              case RELEASE_LOCK(uuid) => exit()
-            }
-          }
-        }
-        currentLockTimer.start()
-        handler.lockAcquired(lockUUID)
-      }
-    }
-    case LOCK_TIMEOUT() => {
-      if (currentLock != null) {
-        currentLock._2.lockTimeout()
-        currentLock = null
-        currentLockTimer = null
-      }
-    }
-    case RELEASE_LOCK(uuid: UUID) => {
-      if (currentLock != null) {
-        if (currentLock._1.compareTo(uuid) == 0) {
-          currentLock = null
-          currentLockTimer ! RELEASE_LOCK(uuid) // KILL ACTOR
-          currentLockTimer = null
-        }
-      }
-    }
 
 
-    case _@unknow => logger
-      .warn("unknow message  " + unknow.toString + " - sender" + sender.toString + "-" + this.getClass.getName)
-  }
-
-
-  private def internal_update_model (pnewmodel: ContainerRoot): Boolean = {
+  private def internal_update_model(pnewmodel: ContainerRoot): Boolean = {
     if (pnewmodel == null || !pnewmodel.getNodes.exists(p => p.getName == getNodeName())) {
       logger.error("Asking for update with a NULL model or node name was not found in target model !")
       false
@@ -336,10 +270,10 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
         //Model checking
         val checkResult = modelChecker.check(pnewmodel)
         val versionCheckResult = modelVersionChecker.check(pnewmodel)
-        if ( (!checkResult.isEmpty) || (!versionCheckResult.isEmpty)) {
+        if ((!checkResult.isEmpty) || (!versionCheckResult.isEmpty)) {
           logger.error("There is check failure on update model, update refused !")
           import _root_.scala.collection.JavaConversions._
-          (checkResult++versionCheckResult).foreach {
+          (checkResult ++ versionCheckResult).foreach {
             cr =>
               logger.error("error=>" + cr.getMessage + ",objects" + cr.getTargetObjects.mkString(","))
           }
@@ -451,28 +385,51 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
    */
   @Deprecated
   override def getLastModel: ContainerRoot = {
-    (this !? LastModel()).asInstanceOf[ContainerRoot]
+    scheduler.submit(LastModelCallable()).get()
+  }
+
+  private case class LastModelCallable() extends Callable[ContainerRoot] {
+    def call(): ContainerRoot = {
+      cloner.clone(model)
+    }
   }
 
   /**
    * Returns the current model with a unique token
    */
   override def getLastUUIDModel: UUIDModel = {
-    (this !? LastUUIDModel()).asInstanceOf[UUIDModel]
+    scheduler.submit(LastUUIDModelCallable()).get()
   }
+
+  private case class LastUUIDModelCallable() extends Callable[UUIDModel]{
+    def call() : UUIDModel = {
+      UUIDModelImpl(currentModelUUID, cloner.clone(model))
+    }
+  }
+
 
   /**
    * Asks for an update of the system to the new system described by the model.
    * @see Consider using #compareAndSwapModel for concurrency reasons
    */
   @Deprecated
-  override def updateModel (model: ContainerRoot) {
-    new Actor() {
-      def act () {
-        selfActorPointer ! UpdateModel(model)
-      }
-    }.start()
+  override def updateModel(model: ContainerRoot) {
+    scheduler.submit(UpdateModelCallable(model))
   }
+
+  case class UpdateModelCallable(model: ContainerRoot) extends Callable[Boolean]{
+    def call() : Boolean = {
+      val res = if (currentLock == null) {
+        internal_update_model(model)
+      } else {
+        logger.debug("Core Locked , UUID mandatory")
+        false
+      }
+      System.gc()
+      res
+    }
+  }
+
 
   /**
    * Asks for an update of the system to fit the model given in parameter.<br/>
@@ -480,29 +437,48 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
    * @see Consider using #atomicCompareAndSwapModel for concurrency reasons.
    */
   @Deprecated
-  override def atomicUpdateModel (model: ContainerRoot) = {
-    (this !? UpdateModel(model))
+  override def atomicUpdateModel(model: ContainerRoot) = {
+    scheduler.submit(UpdateModelCallable(model)).get()
     lastDate
+  }
+
+  case class CompareAndSwapCallable(previousModel: UUIDModel, targetModel: ContainerRoot) extends Callable[Boolean] {
+    def call() : Boolean = {
+      val res = if (currentLock != null) {
+        if (previousModel.getUUID.compareTo(currentLock._1) == 0) {
+          internal_update_model(targetModel)
+        } else {
+          logger.debug("Core Locked , bad UUID " + previousModel.getUUID)
+          false //LOCK REFUSED !
+        }
+      } else {
+        //COMMON CHECK
+        if (previousModel.getUUID.compareTo(currentModelUUID) == 0) {
+          //TODO CHECK WITH MODEL SHA-1 HASHCODE
+          internal_update_model(targetModel)
+        } else {
+          false
+        }
+      }
+      System.gc()
+      res
+    }
   }
 
   /**
    * Compares the UUID of the model and the current UUID to verify that no update occurred in between the moment the model had been delivered and the moment the update is asked.<br/>
    * If OK, updates the system and switches to the new model, asynchronously
    */
-  override def compareAndSwapModel (previousModel: UUIDModel, targetModel: ContainerRoot) {
-    new Actor() {
-      def act () {
-        selfActorPointer ! UpdateUUIDModel(previousModel, targetModel)
-      }
-    }.start()
+  override def compareAndSwapModel(previousModel: UUIDModel, targetModel: ContainerRoot) {
+    scheduler.submit(CompareAndSwapCallable(previousModel,targetModel))
   }
 
   /**
    * Compares the UUID of the model and the current UUID to verify that no update occurred in between the moment the model had been delivered and the moment the update is asked.<br/>
    * If OK, updates the system and switches to the new model, synchronously (blocking)
    */
-  override def atomicCompareAndSwapModel (previousModel: UUIDModel, targetModel: ContainerRoot): Date = {
-    val result = (this !? UpdateUUIDModel(previousModel, targetModel)).asInstanceOf[Boolean]
+  override def atomicCompareAndSwapModel(previousModel: UUIDModel, targetModel: ContainerRoot): Date = {
+    val result = scheduler.submit(CompareAndSwapCallable(previousModel,targetModel)).get()
     if (!result) {
       throw new KevoreeModelUpdateException //SEND AND EXCEPTION - Compare&Swap fail !
     }
@@ -513,15 +489,22 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
    * Provides the collection of last models (short system history)
    */
   override def getPreviousModel: java.util.List[ContainerRoot] = {
-    import scala.collection.JavaConversions._
-    (this !? PreviousModel()).asInstanceOf[scala.collection.mutable.ArrayBuffer[ContainerRoot]].toList
+    scheduler.submit(GetPreviousModelCallable()).get()
   }
 
-  override def registerModelListener (listener: ModelListener) {
+  private case class GetPreviousModelCallable() extends Callable[java.util.List[ContainerRoot]] {
+    def call(): java.util.List[ContainerRoot] = {
+      import scala.collection.JavaConversions._
+      models.toList
+    }
+  }
+
+
+  override def registerModelListener(listener: ModelListener) {
     listenerActor.addListener(listener)
   }
 
-  override def unregisterModelListener (listener: ModelListener) {
+  override def unregisterModelListener(listener: ModelListener) {
     listenerActor.removeListener(listener)
   }
 
@@ -532,23 +515,78 @@ class KevoreeCoreBean extends KevoreeModelHandlerService with KevoreeThreadActor
   /* Lock Management */
 
   private var currentLock: Tuple2[UUID, ModelHandlerLockCallBack] = null
-  private var currentLockTimer: Actor = null
+  //private var currentLockTimer: Actor = null
 
-  case class RELEASE_LOCK (uuid: UUID)
+  case class RELEASE_LOCK(uuid: UUID)
 
-  case class ACQUIRE_LOCK (callBack: ModelHandlerLockCallBack, timeout: Long)
+  //case class ACQUIRE_LOCK(callBack: ModelHandlerLockCallBack, timeout: Long)
 
-  case class LOCK_TIMEOUT ()
+  //case class LOCK_TIMEOUT()
 
-  def acquireLock (callBack: ModelHandlerLockCallBack, timeout: Long) {
-    this ! ACQUIRE_LOCK(callBack, timeout)
+  def acquireLock(callBack: ModelHandlerLockCallBack, timeout: Long) {
+    scheduler.submit(AcquireLock(callBack,timeout))
   }
 
-  def releaseLock (uuid: UUID) {
-    this ! RELEASE_LOCK(uuid)
+  private var lockWatchDog : ScheduledExecutorService = _
+  private var futurWatchDog : ScheduledFuture[_] = _
+
+  case class AcquireLock(callBack: ModelHandlerLockCallBack, timeout: Long) extends Runnable{
+    def run() {
+      if (currentLock != null) {
+        callBack.lockRejected()
+      } else {
+        val lockUUID = UUID.randomUUID()
+        currentLock = (lockUUID, callBack)
+        lockWatchDog = java.util.concurrent.Executors.newSingleThreadScheduledExecutor()
+        futurWatchDog = lockWatchDog.schedule(WatchDogCallable(),timeout,TimeUnit.MILLISECONDS)
+        callBack.lockAcquired(lockUUID)
+      }
+    }
   }
 
-  def checkModel (tModel: ContainerRoot): Boolean = {
+  case class WatchDogCallable() extends Runnable {
+    def run() {
+      lockTimeout()
+    }
+  }
+
+
+
+  def releaseLock(uuid: UUID) {
+    scheduler.submit(ReleaseLockCallable(uuid))
+  }
+
+  case class ReleaseLockCallable(uuid: UUID) extends Runnable{
+    def run() {
+      if (currentLock != null) {
+        if (currentLock._1.compareTo(uuid) == 0) {
+          currentLock = null
+          futurWatchDog.cancel(true)
+          futurWatchDog = null
+          lockWatchDog.shutdownNow()
+          lockWatchDog = null
+        }
+      }
+    }
+  }
+
+  private def lockTimeout(){
+    scheduler.submit(LockTimeoutCallable())
+  }
+
+  case class LockTimeoutCallable() extends Runnable {
+    def run() {
+      if (currentLock != null) {
+        currentLock._2.lockTimeout()
+        currentLock = null
+        lockWatchDog.shutdownNow()
+        lockWatchDog = null
+        futurWatchDog = null
+      }
+    }
+  }
+
+  def checkModel(tModel: ContainerRoot): Boolean = {
     val checkResult = modelChecker.check(model)
     if (checkResult.isEmpty) {
       listenerActor.preUpdate(cloner.clone(model), cloner.clone(tModel))
