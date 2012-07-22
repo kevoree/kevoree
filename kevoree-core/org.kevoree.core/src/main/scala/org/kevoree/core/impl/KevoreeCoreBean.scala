@@ -199,12 +199,32 @@ class KevoreeCoreBean extends KevoreeModelHandlerService /*with KevoreeThreadAct
   private var scheduler: ExecutorService = _
 
   def start() /*: Actor*/ = {
-    scheduler = java.util.concurrent.Executors.newSingleThreadExecutor()
-
     if (getNodeName == "") {
       setNodeName(configService.getProperty(ConfigConstants.KEVOREE_NODE_NAME))
     }
     logger.info("Kevoree Start event : node name = " + getNodeName)
+
+    scheduler = java.util.concurrent.Executors.newSingleThreadExecutor(new ThreadFactory() {
+      val s = System.getSecurityManager
+      val group = if (s != null) {
+        s.getThreadGroup
+      } else {
+        Thread.currentThread().getThreadGroup
+      }
+
+      def newThread(p1: Runnable) = {
+        val t = new Thread(group, p1, "Kevoree_Core_Scheduler_"+getNodeName)
+        if (t.isDaemon) {
+          t.setDaemon(false)
+        }
+        if (t.getPriority != Thread.NORM_PRIORITY) {
+          t.setPriority(Thread.NORM_PRIORITY)
+        }
+        t
+      }
+    })
+
+
     // super.start()
 
     //State recovery phase

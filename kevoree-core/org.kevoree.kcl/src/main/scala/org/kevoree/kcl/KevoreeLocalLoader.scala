@@ -147,7 +147,9 @@ def loadClass(className: String, resolveIt: Boolean): Class[_] = {
     }) {
       try {
         logger.debug("KCL sync lock for {}",className)
-        obj.wait()
+        obj.synchronized{
+          obj.wait()
+        }
       } catch {
         case _ @ e => logger.error("Error while sync KCL",e)
       }
@@ -173,7 +175,9 @@ def loadClass(className: String, resolveIt: Boolean): Class[_] = {
     val obj = KCLScheduler.getScheduler.submit(call).get()
     if (obj != null) {
       try {
-        obj.notifyAll()
+        obj.synchronized{
+          obj.notifyAll()
+        }
       } catch {
         case ie : java.lang.InterruptedException =>
         case _ @ e => logger.error("Error while sync KCL",e)
