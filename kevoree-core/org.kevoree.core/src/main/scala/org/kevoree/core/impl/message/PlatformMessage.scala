@@ -18,13 +18,11 @@ package org.kevoree.core.impl.message
  * and open the template in the editor.
  */
 
-import org.kevoree.ContainerRoot
-import org.kevoree.api.service.core.handler.UUIDModel
 
-case class UpdateModel(model : ContainerRoot)
-case class LastModel()
-case class PreviousModel()
+//case class UpdateModel(model : ContainerRoot)
+//case class LastModel()
+//case class PreviousModel()
 
 
-case class LastUUIDModel()
-case class UpdateUUIDModel(prev : UUIDModel,target: ContainerRoot)
+//case class LastUUIDModel()
+//case class UpdateUUIDModel(prev : UUIDModel,target: ContainerRoot)

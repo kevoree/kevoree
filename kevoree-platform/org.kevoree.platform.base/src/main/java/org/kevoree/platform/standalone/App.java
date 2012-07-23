@@ -23,7 +23,8 @@ public class App {
 
     public void start() throws Exception {
 
-      //  System.setProperty("kevoree.log.level", "DEBUG");
+    //    System.setProperty("kevoree.log.level", "DEBUG");
+      //  System.setProperty("node.bootstrap","/Users/duke/Documents/dev/dukeboard/kevoree/kevoree-platform/org.kevoree.platform.standalone.min/boot.kevs");
 
 
         //TO REMOVE

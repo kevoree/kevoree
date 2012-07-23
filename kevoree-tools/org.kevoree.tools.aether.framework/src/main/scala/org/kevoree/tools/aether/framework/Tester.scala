@@ -16,6 +16,7 @@ package org.kevoree.tools.aether.framework
 import org.kevoree.KevoreeFactory
 import org.kevoree.kcl.KevoreeJarClassLoader
 import java.io.File
+import org.sonatype.aether.repository.LocalRepository
 
 /**
  * Created with IntelliJ IDEA.
@@ -25,7 +26,7 @@ import java.io.File
  */
 
 object Tester extends App {
-
+  /*
   val handler = new JCLContextHandler
   val graph = new File("/Users/duke/Documents/dev/dukeboard/kevoree/kevoree-corelibrary/javase/org.kevoree.library.javase.grapher/target/org.kevoree.library.javase.grapher-1.7.5-SNAPSHOT.jar")
 
@@ -46,5 +47,18 @@ object Tester extends App {
 
 
   Thread.sleep(Long.MaxValue)
+ */
+
+  val configFile = new File(System.getProperty("user.home").toString + File.separator + ".m2" + File.separator + "settings.xml")
+  if (configFile.exists()) {
+    val configRoot = scala.xml.XML.loadFile(configFile)
+    val nodes = configRoot \\ "repositories" \ "repository" \ "url"
+    nodes.foreach{ url =>
+      println(url.text)
+    }
+
+
+  }
+
 
 }
