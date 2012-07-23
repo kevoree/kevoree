@@ -176,11 +176,14 @@ object PrimitiveCommandExecutionHelper {
           primitive =>
             workers.add(new Worker(primitive))
         }
-        val futures = pool.invokeAll(workers, timeout, TimeUnit.MILLISECONDS)
-        pool.shutdownNow()
-        import scala.collection.JavaConversions._
-        futures.forall {
-          f => f.isDone
+        try {
+          val futures = pool.invokeAll(workers, timeout, TimeUnit.MILLISECONDS)
+          import scala.collection.JavaConversions._
+          futures.forall {
+            f => f.isDone
+          }
+        } finally {
+          pool.shutdownNow()
         }
       }
     }
