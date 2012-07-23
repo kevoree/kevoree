@@ -18,6 +18,7 @@ import org.kevoree.KevoreeFactory;
 import org.kevoree.api.Bootstraper;
 import org.kevoree.kcl.KevoreeJarClassLoader;
 import org.kevoree.framework.KevoreeXmiHelper;
+import org.kevoree.platform.standalone.KevoreeBootStrap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,8 +65,12 @@ public class App {
                 System.setSecurityManager(null);
 
                 KevoreeJarClassLoader temp_cl = new KevoreeJarClassLoader();
-                temp_cl.add(App.class.getClassLoader().getResourceAsStream("org.kevoree.tools.aether.framework-" + KevoreeFactory.getVersion() + ".jar"));
+                temp_cl.add(KevoreeBootStrap.class.getClassLoader().getResourceAsStream("org.kevoree.tools.aether.framework-" + KevoreeFactory.getVersion() + ".pack.jar"));
                 //JclObjectFactory factory = JclObjectFactory.getInstance();
+
+              //  System.out.println("org.kevoree.tools.aether.framework-" + KevoreeFactory.getVersion() + ".pack.jar");
+              //  System.out.println(KevoreeBootStrap.class.getClassLoader().getResourceAsStream("org.kevoree.tools.aether.framework-" + KevoreeFactory.getVersion() + ".pack.jar"));
+
 
                 Class clazz = temp_cl.loadClass("org.kevoree.tools.aether.framework.NodeTypeBootstrapHelper");
                 org.kevoree.api.Bootstraper bootstraper = (Bootstraper) clazz.newInstance();

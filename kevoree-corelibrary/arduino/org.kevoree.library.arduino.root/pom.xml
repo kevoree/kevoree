@@ -48,7 +48,7 @@
                 <version>${kevoree.version}</version>
                 <extensions>true</extensions>
                 <configuration>
-                    <nodeTypeNames>ArduinoNode</nodeTypeNames>
+                    <nodeTypeNames>ArduinoNode,ArduinoWirelessNode</nodeTypeNames>
                 </configuration>
                 <executions>
                     <execution>

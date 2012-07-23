@@ -23,7 +23,7 @@ import org.sonatype.aether.artifact.Artifact
 import org.sonatype.aether.spi.localrepo.LocalRepositoryManagerFactory
 import org.sonatype.aether.connector.wagon.WagonProvider
 import org.slf4j.LoggerFactory
-import org.sonatype.aether.impl.internal.EnhancedLocalRepositoryManagerFactory
+import org.sonatype.aether.impl.internal.{SimpleLocalRepositoryManagerFactory, EnhancedLocalRepositoryManagerFactory}
 import org.sonatype.aether.repository.{RepositoryPolicy, LocalRepository}
 import scala.collection.JavaConversions._
 import org.sonatype.aether.{RepositoryCache, ConfigurationProperties, RepositorySystem}
@@ -44,7 +44,7 @@ object AetherUtil extends AetherFramework {
   override def getRepositorySystem: RepositorySystem = {
     val locator = new DefaultServiceLocator()
     locator.setService(classOf[RepositoryCache], classOf[NoopCache])
-    locator.addService(classOf[LocalRepositoryManagerFactory], classOf[EnhancedLocalRepositoryManagerFactory])
+    locator.addService(classOf[LocalRepositoryManagerFactory], classOf[SimpleLocalRepositoryManagerFactory])
     locator.addService(classOf[RepositoryConnectorFactory], classOf[FileRepositoryConnectorFactory])
     locator.setServices(classOf[WagonProvider], new ManualWagonProvider())
     //locator.setServices(classOf[UpdateCheckManager], new DefaultUpdateCheckManager())

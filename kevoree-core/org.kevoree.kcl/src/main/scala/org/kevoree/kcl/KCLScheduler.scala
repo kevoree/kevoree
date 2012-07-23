@@ -24,52 +24,49 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kevoree.tools.aether.framework
+package org.kevoree.kcl
 
-import org.sonatype.aether.{RepositorySystemSession, RepositorySystem}
-import org.slf4j.LoggerFactory
+import java.util.concurrent.{ThreadFactory, Executors}
 
 /**
  * Created with IntelliJ IDEA.
  * User: duke
- * Date: 25/04/12
- * Time: 22:06
+ * Date: 20/07/12
+ * Time: 16:01
  */
 
-trait AetherRepositoryHandler {
+object KCLScheduler {
 
-  private val logger = LoggerFactory.getLogger(this.getClass)
+  lazy val scheduler = {
+    val pool = Executors.newSingleThreadExecutor(new ThreadFactory() {
+      val s = System.getSecurityManager
+      val group = if (s != null) {
+        s.getThreadGroup
+      } else {
+        Thread.currentThread().getThreadGroup
+      }
 
-  var repositorySystem: RepositorySystem = null
-
-  def setRepositorySystem(rs: RepositorySystem) {
-    repositorySystem = rs
+      def newThread(p1: Runnable) = {
+        val t = new Thread(group, p1, "KCL_Scheduler")
+        if (!t.isDaemon) {
+          t.setDaemon(true)
+        }
+        if (t.getPriority != Thread.NORM_PRIORITY) {
+          t.setPriority(Thread.NORM_PRIORITY)
+        }
+        t
+      }
+    })
+    /*  Runtime.getRuntime.addShutdownHook(new Thread(){
+  override def run() {
+    pool.shutdownNow()
+  }
+})    */
+    pool
   }
 
-  def getRepositorySystem: RepositorySystem = {
-    if (repositorySystem == null) {
-      AetherRepositoryStandalone.newRepositorySystem
-    } else {
-      repositorySystem
-    }
+  def getScheduler = {
+    scheduler
   }
-
-
-  var repositorySession: RepositorySystemSession = null
-
-  def setRepositorySystemSession(rs: RepositorySystemSession) {
-    repositorySession = rs
-  }
-
-  def getRepositorySystemSession: RepositorySystemSession = {
-    if (repositorySession == null) {
-      AetherRepositoryStandalone.newRepositorySystemSession
-    } else {
-      repositorySession
-    }
-  }
-
-  def getDefaultURLS =  AetherRepositoryStandalone.getConfigURLS
-
 
 }
