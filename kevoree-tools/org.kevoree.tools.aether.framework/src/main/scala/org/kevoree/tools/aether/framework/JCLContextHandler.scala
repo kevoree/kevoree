@@ -24,6 +24,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/**
+ * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.gnu.org/licenses/lgpl-3.0.txt
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+/**
+ * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.gnu.org/licenses/lgpl-3.0.txt
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.kevoree.tools.aether.framework
 
 /**
@@ -48,6 +74,7 @@ import scala.collection.JavaConversions._
 import org.kevoree.api.service.core.classloading.KevoreeClassLoaderHandler
 import org.kevoree.kcl.KevoreeJarClassLoader
 import scala.Predef._
+import java.util.concurrent.{ThreadFactory, Executors, Callable}
 
 /**
  * Created by IntelliJ IDEA.
@@ -56,69 +83,116 @@ import scala.Predef._
  * Time: 14:29
  */
 
-class JCLContextHandler extends DaemonActor with KevoreeClassLoaderHandler {
+class JCLContextHandler extends KevoreeClassLoaderHandler {
 
   protected val kcl_cache = new java.util.HashMap[String, KevoreeJarClassLoader]()
   protected val kcl_cache_file = new java.util.HashMap[String, File]()
   protected var lockedDu: List[String] = List()
   protected val logger = LoggerFactory.getLogger(this.getClass)
 
-  start()
-
-  case class DUMP()
-
-  case class INSTALL_DEPLOYUNIT_FILE(du: DeployUnit, file: File)
-
-  case class INSTALL_DEPLOYUNIT(du: DeployUnit)
-
-  case class REMOVE_DEPLOYUNIT(du: DeployUnit)
-
-  case class GET_KCL(du: DeployUnit)
-
-  case class MANUALLY_ADD_TO_CACHE(du: DeployUnit, kcl: KevoreeJarClassLoader)
-
-  case class GET_CACHE_FILE(du: DeployUnit)
-
-  case class CLEAR()
-
-  case class KILLActor()
-
-  def stop() {
-    this ! KILLActor()
-  }
-
-  def act() {
-    loop {
-      react {
-        case GET_CACHE_FILE(du) => reply(getCacheFileInternals(du))
-        case INSTALL_DEPLOYUNIT_FILE(du, file) => reply(installDeployUnitInternals(du, file))
-        case INSTALL_DEPLOYUNIT(du) => reply(installDeployUnitNoFileInternals(du))
-        case GET_KCL(du) => reply(getKCLInternals(du))
-        case REMOVE_DEPLOYUNIT(du) => removeDeployUnitInternals(du)
-        case MANUALLY_ADD_TO_CACHE(du, kcl) => manuallyAddToCacheInternals(du, kcl)
-        case DUMP() => printDumpInternals()
-        case CLEAR() => clearInternals(); reply()
-        case KILLActor() => exit()
-      }
+  case class DUMP() extends Runnable {
+    def run() {
+      printDumpInternals()
     }
   }
 
+  case class INSTALL_DEPLOYUNIT_FILE(du: DeployUnit, file: File) extends Callable[KevoreeJarClassLoader] {
+    def call() = installDeployUnitInternals(du, file)
+  }
+
+  case class INSTALL_DEPLOYUNIT(du: DeployUnit) extends Callable[KevoreeJarClassLoader] {
+    def call() = installDeployUnitNoFileInternals(du)
+  }
+
+  case class REMOVE_DEPLOYUNIT(du: DeployUnit) extends Runnable {
+    def run() {
+      removeDeployUnitInternals(du)
+    }
+  }
+
+  case class GET_KCL(du: DeployUnit) extends Callable[KevoreeJarClassLoader] {
+    def call() = getKCLInternals(du)
+  }
+
+  case class MANUALLY_ADD_TO_CACHE(du: DeployUnit, kcl: KevoreeJarClassLoader) extends Runnable {
+    def run() {
+      manuallyAddToCacheInternals(du, kcl)
+    }
+  }
+
+
+  case class CLEAR() extends Runnable {
+    def run() {
+      clearInternals()
+    }
+  }
+
+  //case class KILLActor()
+
+  def stop() {
+    //TODO REMOVE ALL BEFORE
+    pool.shutdownNow()
+    //this ! KILLActor()
+  }
+
+  val pool = Executors.newSingleThreadExecutor(new ThreadFactory() {
+    val s = System.getSecurityManager
+    val group = if (s != null) {
+      s.getThreadGroup
+    } else {
+      Thread.currentThread().getThreadGroup
+    }
+
+    def newThread(p1: Runnable) = {
+      val t = new Thread(group, p1, "Kevoree_KCLHandler_Scheduler_" + hashCode())
+      if (t.isDaemon) {
+        t.setDaemon(false)
+      }
+      if (t.getPriority != Thread.NORM_PRIORITY) {
+        t.setPriority(Thread.NORM_PRIORITY)
+      }
+      t
+    }
+  })
+
+  case class GET_CACHE_FILE(du: DeployUnit) extends Callable[File] {
+    def call(): File = {
+      getCacheFileInternals(du)
+    }
+  }
+
+  /*
+def act() {
+loop {
+ react {
+   // case GET_CACHE_FILE(du) => reply(getCacheFileInternals(du))
+   //case INSTALL_DEPLOYUNIT_FILE(du, file) => reply(installDeployUnitInternals(du, file))
+   case INSTALL_DEPLOYUNIT(du) => reply(installDeployUnitNoFileInternals(du))
+  // case GET_KCL(du) => reply(getKCLInternals(du))
+   case REMOVE_DEPLOYUNIT(du) => removeDeployUnitInternals(du)
+   //case MANUALLY_ADD_TO_CACHE(du, kcl) => manuallyAddToCacheInternals(du, kcl)
+   //case DUMP() => printDumpInternals()
+  // case CLEAR() => clearInternals(); reply()
+   //case KILLActor() => exit()
+ }
+}
+}     */
+
   def clear() {
-    this !? CLEAR()
+    pool.submit(CLEAR()).get()
   }
 
   def getCacheFile(du: DeployUnit): File = {
-    (this !? GET_CACHE_FILE(du)).asInstanceOf[File]
+    pool.submit(GET_CACHE_FILE(du)).get()
   }
 
   def manuallyAddToCache(du: DeployUnit, kcl: KevoreeJarClassLoader) {
-    this ! MANUALLY_ADD_TO_CACHE(du, kcl)
+    pool.submit(MANUALLY_ADD_TO_CACHE(du, kcl))
   }
 
   def printDump() {
-    this ! DUMP()
+    pool.submit(DUMP())
   }
-
 
   protected def clearInternals() {
     logger.debug("Clear Internal")
@@ -182,7 +256,7 @@ class JCLContextHandler extends DaemonActor with KevoreeClassLoaderHandler {
 
       //if (du.getVersion.contains("SNAPSHOT")) {
 
-      if(System.getProperty("kcl.lazy") != null && "true".equals(System.getProperty("kcl.lazy"))){
+      if (System.getProperty("kcl.lazy") != null && "true".equals(System.getProperty("kcl.lazy"))) {
         newcl.setLazyLoad(true)
       } else {
         newcl.setLazyLoad(false)
@@ -329,15 +403,15 @@ class JCLContextHandler extends DaemonActor with KevoreeClassLoaderHandler {
 
 
   def installDeployUnit(du: DeployUnit, file: File): KevoreeJarClassLoader = {
-    (this !? INSTALL_DEPLOYUNIT_FILE(du, file)).asInstanceOf[KevoreeJarClassLoader]
+    pool.submit(INSTALL_DEPLOYUNIT_FILE(du, file)).get()
   }
 
   def getKevoreeClassLoader(du: DeployUnit): KevoreeJarClassLoader = {
-    (this !? GET_KCL(du)).asInstanceOf[KevoreeJarClassLoader]
+    pool.submit(GET_KCL(du)).get()
   }
 
   def removeDeployUnitClassLoader(du: DeployUnit) {
-    this ! REMOVE_DEPLOYUNIT(du)
+    pool.submit(REMOVE_DEPLOYUNIT(du))
   }
 
 
@@ -352,7 +426,7 @@ class JCLContextHandler extends DaemonActor with KevoreeClassLoaderHandler {
   }
 
   def installDeployUnit(du: DeployUnit): KevoreeJarClassLoader = {
-    (this !? INSTALL_DEPLOYUNIT(du)).asInstanceOf[KevoreeJarClassLoader]
+    pool.submit(INSTALL_DEPLOYUNIT(du)).get()
   }
 
   def getKCLDump: String = {
