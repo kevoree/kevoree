@@ -151,7 +151,8 @@ def loadClass(className: String, resolveIt: Boolean): Class[_] = {
           obj.wait()
         }
       } catch {
-        case _ @ e => logger.error("Error while sync KCL",e)
+        case ie : java.lang.InterruptedException =>
+        case _ @ e => logger.error("Error while sync KCL ",e)
       }
     }
   }
