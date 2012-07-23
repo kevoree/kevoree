@@ -45,7 +45,7 @@ class ModelHandlerServiceProxy extends KevoreeModelHandlerService with DaemonAct
 
   case class LOCAL_STOP()
 
-  case class SET_PROXY(proxy: KevoreeModelHandlerService)
+  //case class SET_PROXY(proxy: KevoreeModelHandlerService)
 
   case class SET_TEMP_MODEL(tempModel: ContainerRoot)
 
@@ -56,7 +56,8 @@ class ModelHandlerServiceProxy extends KevoreeModelHandlerService with DaemonAct
   }
 
   def setProxy(pproxy: KevoreeModelHandlerService) {
-    this ! SET_PROXY(pproxy)
+    proxy = pproxy
+    //this ! SET_PROXY(pproxy)
   }
 
   def setTempModel(tempModel: ContainerRoot) {
@@ -97,9 +98,9 @@ class ModelHandlerServiceProxy extends KevoreeModelHandlerService with DaemonAct
             reply(proxy.getLastModel)
           }
         }
-        case SET_PROXY(new_proxy) => {
+       /* case SET_PROXY(new_proxy) => {
           proxy = new_proxy
-        }
+        }  */
         case SET_TEMP_MODEL(new_tempModel) => {
           proxyModel = modelCloner.clone(new_tempModel)
         }
