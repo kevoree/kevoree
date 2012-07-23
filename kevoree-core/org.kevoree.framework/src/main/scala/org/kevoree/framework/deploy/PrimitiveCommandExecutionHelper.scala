@@ -180,7 +180,11 @@ object PrimitiveCommandExecutionHelper {
           val futures = pool.invokeAll(workers, timeout, TimeUnit.MILLISECONDS)
           import scala.collection.JavaConversions._
           futures.forall {
-            f => f.isDone
+            f => f.isDone && f.get()
+          }
+        } catch {
+          case _ @ ignore => {
+            false
           }
         } finally {
           pool.shutdownNow()
