@@ -48,8 +48,8 @@ object KCLScheduler {
 
       def newThread(p1: Runnable) = {
         val t = new Thread(group, p1, "KCL_Scheduler")
-        if (t.isDaemon) {
-          t.setDaemon(false)
+        if (!t.isDaemon) {
+          t.setDaemon(true)
         }
         if (t.getPriority != Thread.NORM_PRIORITY) {
           t.setPriority(Thread.NORM_PRIORITY)
