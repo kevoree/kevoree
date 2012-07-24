@@ -193,9 +193,9 @@ public class FileNIOHelper {
 			reader.close();
 			return writer.toByteArray();
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+			logger.error("Unable to get Bytes from file {}", inputFile.getAbsolutePath(), e);
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error("Unable to get Bytes from file {}", inputFile.getAbsolutePath(), e);
 		}
 		return new byte[0];
 	}
