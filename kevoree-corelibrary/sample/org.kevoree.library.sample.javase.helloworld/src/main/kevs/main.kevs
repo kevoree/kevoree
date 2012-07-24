@@ -4,6 +4,8 @@ merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.defaultChan
 merge "mvn:org.kevoree.library.sample/org.kevoree.library.sample.javase.helloworld/{kevoree.version}"
 
 addNode node0 : JavaSENode {logLevel="DEBUG"}
+addGroup sync : NanoRestGroup
+addToGroup sync node0
 
 addComponent producer@node0 : HelloProducerComponent
 addComponent consumer@node0 : HelloConsumerComponent
