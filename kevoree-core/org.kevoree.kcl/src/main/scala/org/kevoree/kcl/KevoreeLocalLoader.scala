@@ -37,13 +37,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/**
+ * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.gnu.org/licenses/lgpl-3.0.txt
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.kevoree.kcl
 
 import org.xeustechnologies.jcl.ProxyClassLoader
 import java.lang.Class
 import java.io.{ByteArrayInputStream, InputStream}
 import actors.{OutputChannel, DaemonActor}
-import java.util.concurrent.Callable
+import java.util.concurrent.{Semaphore, Callable}
 import org.slf4j.LoggerFactory
 
 /**
@@ -110,61 +123,46 @@ def loadClass(className: String, resolveIt: Boolean): Class[_] = {
     null
   }
 
-  class AcquireLockCallable(className: String) extends Callable[Object] {
-    def call(): Object = {
+  class AcquireLockCallable(className: String) extends Callable[Semaphore] {
+    def call(): Semaphore = {
       if (locked.containsKey(className)) {
-        var obj = locked.get(className)
-        if (obj == null){
-          obj = new Object()
-          locked.put(className, obj)
-        }
-
-        obj
+        val tuple = locked.get(className)
+        locked.put(className,(tuple._1,(tuple._2+1)))
+        tuple._1
       } else {
-        locked.put(className, null)
-        null
+        val obj = new Semaphore(0)
+        locked.put(className, (obj,1))
+        null //don't block first thread
       }
     }
   }
 
-  var lock = new Object
 
   def acquireLock(className: String) {
     val call = new AcquireLockCallable(className)
-    var obj: Object = null
-    while ( {
-      try {
-        //logger.info("Will wait "+Thread.currentThread().getName)
-        obj = KCLScheduler.getScheduler.submit(call).get()
-      } catch {
-        case ie : java.lang.InterruptedException =>
-        case _ @ e => {
-          obj = null
-          logger.error("Error while sync "+className+" KCL thread : {}" ,Thread.currentThread().getName,e)
-        }
+    try {
+      val obj: Semaphore = KCLScheduler.getScheduler.submit(call).get()
+      if (obj != null){
+        logger.debug("Lock KCL to avoid concurrency {}",className)
+        obj.acquire()
       }
-      obj != null
-    }) {
-      try {
-        logger.debug("KCL sync lock for {}",className)
-        obj.synchronized{
-          obj.wait()
-        }
-      } catch {
-        case ie : java.lang.InterruptedException =>
-        case _ @ e => logger.error("Error while sync KCL ",e)
+    } catch {
+      case ie: java.lang.InterruptedException =>
+      case _@e => {
+        logger.error("Error while sync " + className + " KCL thread : {}", Thread.currentThread().getName, e)
       }
     }
   }
 
-  class ReleaseLockCallable(className: String) extends Callable[Object] {
-    def call(): Object = {
+  class ReleaseLockCallable(className: String) extends Runnable {
+    def run() {
       if (locked.containsKey(className)) {
         val lobj = locked.get(className)
-        locked.remove(className)
-        lobj
-      } else {
-        null
+        if(lobj == 1){
+          locked.remove(className)
+        } else {
+          lobj._1.release()
+        }
       }
     }
   }
@@ -172,19 +170,16 @@ def loadClass(className: String, resolveIt: Boolean): Class[_] = {
   private val logger = LoggerFactory.getLogger(this.getClass)
 
   def releaseLock(className: String) {
-    val call = new ReleaseLockCallable(className)
-    val obj = KCLScheduler.getScheduler.submit(call).get()
-    if (obj != null) {
-      try {
-        obj.synchronized{
-          obj.notifyAll()
-        }
-      } catch {
-        case ie : java.lang.InterruptedException =>
-        case _ @ e => logger.error("Error while sync KCL",e)
+    try {
+      val call = new ReleaseLockCallable(className)
+      KCLScheduler.getScheduler.submit(call).get()
+    } catch {
+      case ie: java.lang.InterruptedException =>
+      case _@e => {
+        logger.error("Error while sync " + className + " KCL thread : {}", Thread.currentThread().getName, e)
       }
-
     }
+
   }
 
 
@@ -208,7 +203,7 @@ this ! KILL()
 }       */
 
 
-  private val locked = new java.util.HashMap[String, Object]
+  private val locked = new java.util.HashMap[String, Tuple2[Semaphore,Int]]
   /*
 def act() {
  loop {
