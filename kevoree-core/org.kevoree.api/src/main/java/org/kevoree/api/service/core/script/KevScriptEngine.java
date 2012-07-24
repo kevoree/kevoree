@@ -27,8 +27,8 @@ public interface KevScriptEngine {
     public void clearVariables();
     public KevScriptEngine append(String scriptStatement);
     public void clearScript();
-    public ContainerRoot interpret();
-    public void interpretDeploy();
-    public boolean atomicInterpretDeploy();
+    public ContainerRoot interpret() throws KevScriptEngineException;
+    public void interpretDeploy() throws KevScriptEngineException;
+    public void atomicInterpretDeploy() throws KevScriptEngineException;
     
 }
