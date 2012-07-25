@@ -41,9 +41,6 @@ with KevsIncludeParser {
    */
   override def kevStatement: Parser[List[Statment]] = (parseInst | parseNode | parseBindingsStatments | parseType | parseLibrary | parseNetworkProperty | parseDeployUnit | parseMerge | parseInclude | parseBlockList )
 
-
-
-
   override def componentID: Parser[ComponentInstanceID] = parseCID
 
   def parseScript(content: String): Option[Script] = {
