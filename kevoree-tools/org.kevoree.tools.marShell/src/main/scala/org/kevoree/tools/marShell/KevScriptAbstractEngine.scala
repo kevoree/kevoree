@@ -40,7 +40,7 @@ trait KevScriptAbstractEngine extends KevScriptEngine {
     if(varMap.containsKey(name)){
       replaceVariable(name,varMap.get(name))
     }
-    varMap.put(name, value);
+    varMap.put(name, value)
     this
   }
 

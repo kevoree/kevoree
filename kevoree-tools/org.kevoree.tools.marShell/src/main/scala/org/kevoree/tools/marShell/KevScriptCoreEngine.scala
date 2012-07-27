@@ -27,15 +27,17 @@ import org.kevoree.api.Bootstraper
  * Time: 20:32
  */
 
-class KevScriptCoreEngine(core: KevoreeModelHandlerService, bootstraper : Bootstraper) extends KevScriptAbstractEngine {
+class KevScriptCoreEngine (core: KevoreeModelHandlerService, bootstraper: Bootstraper) extends KevScriptAbstractEngine {
 
   clearVariables()
-  def clearVariables() {
-    varMap.clear();
+
+  def clearVariables () {
+    varMap.clear()
     varMap.put("nodename", core.getNodeName)
   }
 
-  def interpret(): ContainerRoot = {
+  @throws(classOf[KevScriptEngineException])
+  def interpret (): ContainerRoot = {
     val resolvedScript = resolveVariables
     logger.debug("KevScriptEngine before execution with script = {}", resolvedScript)
     parser.parseScript(resolvedScript) match {
@@ -44,7 +46,7 @@ class KevScriptCoreEngine(core: KevoreeModelHandlerService, bootstraper : Bootst
         val ctx = KevsInterpreterContext(inputModel)
         ctx.setBootstraper(bootstraper)
         if (s.interpret(ctx.setVarMap(varMap))) {
-          return inputModel;
+          return inputModel
         }
         throw new KevScriptEngineException {
           override def getMessage = "Interpreter Error : "
@@ -56,16 +58,19 @@ class KevScriptCoreEngine(core: KevoreeModelHandlerService, bootstraper : Bootst
     }
   }
 
-  def interpretDeploy() {
+  @throws(classOf[KevScriptEngineException])
+  def interpretDeploy () {
     internal_interpret_deploy(false)
   }
 
-  def atomicInterpretDeploy(): Boolean = {
+  @throws(classOf[KevScriptEngineException])
+  def atomicInterpretDeploy () {
     internal_interpret_deploy(true)
   }
 
 
-  private def internal_interpret_deploy(atomic: Boolean): Boolean = {
+  @throws(classOf[KevScriptEngineException])
+  private def internal_interpret_deploy (atomic: Boolean): Boolean = {
     try {
       val resolvedScript = resolveVariables
       logger.debug("KevScriptEngine before execution with script = {}", resolvedScript)
@@ -81,13 +86,17 @@ class KevScriptCoreEngine(core: KevoreeModelHandlerService, bootstraper : Bootst
             if (atomic) {
               try {
                 core.atomicCompareAndSwapModel(inputModel, targetModel)
-                return true;
+                //                return true
               } catch {
-                case _@e => return false;
+                case _@e => throw new KevScriptEngineException {
+                  override def getMessage = "Unable to compare and swap model : " + e.getMessage
+
+                  override def getCause = e
+                } //return false
               }
             } else {
               core.compareAndSwapModel(inputModel, targetModel)
-              return true
+              //              return true
             }
           }
           throw new KevScriptEngineException {
@@ -104,11 +113,6 @@ class KevScriptCoreEngine(core: KevoreeModelHandlerService, bootstraper : Bootst
       }
     }
   }
-
-
-
-
-
 
 
 }

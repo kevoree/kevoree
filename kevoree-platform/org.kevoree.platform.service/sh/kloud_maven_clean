@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 ssh root@10.0.0.2 "rm -rf /root/.m2/repository/*"
 ssh root@10.0.1.1 "rm -rf /root/.m2/repository/*"
