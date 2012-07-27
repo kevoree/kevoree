@@ -6,29 +6,29 @@
         <artifactId>org.kevoree.library.model.root</artifactId>
         <groupId>org.kevoree.corelibrary.model</groupId>
         <version>1.8.3-SNAPSHOT</version>
-	<relativePath>../org.kevoree.library.model.root/pom.xml</relativePath>
+        <relativePath>../org.kevoree.library.model.root/pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>org.kevoree.library.model.sky.virtualbsd</artifactId>
     <name>Kevoree :: CoreLibrary :: Model :: Sky :: VirtualBSD</name>
 
- 	  <properties>
- 	       <node.update.timeout>500000</node.update.timeout>
- 	   </properties>
-	<build>
-    <plugins>
-    <plugin>
-               <groupId>org.kevoree.platform</groupId>
-               <artifactId>org.kevoree.platform.mavenrunner</artifactId>
-               <version>${kevoree.version}</version>
-		 <configuration>
+    <properties>
+        <node.update.timeout>500000</node.update.timeout>
+    </properties>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.kevoree.platform</groupId>
+                <artifactId>org.kevoree.platform.mavenrunner</artifactId>
+                <version>${kevoree.version}</version>
+                <configuration>
                     <model>${basedir}/src/main/kevs/main.kevs</model>
                     <targetNode>virtualbsd</targetNode>
                     <viaGroup>sync</viaGroup>
                 </configuration>
-           </plugin>
-    </plugins>
-</build>
+            </plugin>
+        </plugins>
+    </build>
 
 
 </project>

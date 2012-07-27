@@ -1,13 +1,14 @@
 // nodes configuration
 merge "mvn:org.kevoree.corelibrary.model/org.kevoree.library.model.sky/{kevoree.version}"
 
-addNode virtualbsd : JailNode {role="host/container", port="7000", inet="em0", subnet="172.16.78.0", mask="24", flavor="kevjail", jailCreationTimeout="100000", jailStartTimeout="200000",logLevel="DEBUG"}
+addNode virtualbsd : JailNode {role="host/container", port="7000", inet="em1", subnet="172.16.78.0", mask="24", flavor="openjdk6", jailCreationTimeout="100000", jailStartTimeout="200000",logLevel="DEBUG"}
 
+network virtualbsd => virtualbsd { "KEVOREE.remote.node.ip"= "172.16.78.101"}
 // group configuration
 addGroup sync : NanoRestGroup
 
 addToGroup sync virtualbsd
-updateDictionary sync {port="8000"}@virtualbsd
+updateDictionary sync {port="8000", ip="172.16.78.101"}@virtualbsd
 
 // Kloud manager configuration
 addComponent webServer@virtualbsd : KTinyWebServer {port = "8080", timeout = "5000"}
