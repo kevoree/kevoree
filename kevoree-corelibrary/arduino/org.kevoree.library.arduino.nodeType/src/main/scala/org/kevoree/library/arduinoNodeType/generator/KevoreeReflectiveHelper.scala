@@ -5,7 +5,7 @@
 
 package org.kevoree.library.arduinoNodeType.generator
 
-import org.kevoree.{ContainerRoot, TypeDefinition}
+import org.kevoree.{NodeType, ContainerRoot, TypeDefinition}
 import scala.collection.JavaConversions._
 import org.slf4j.{LoggerFactory, Logger}
 import org.kevoree.annotation.{Generate => KGenerate}
@@ -50,10 +50,7 @@ trait KevoreeReflectiveHelper {
 
     val nodeHost = ct.eContainer.asInstanceOf[ContainerRoot].getNodes.find(n => n.getName == nodeName).get
     val nodeTypeName = nodeHost.getTypeDefinition
-    val genPackage = KevoreeGeneratorHelper.getTypeDefinitionGeneratedPackage(ct, nodeTypeName.getName)
-    val activatorName = ct.getName + "Activator"
 
-    val activatorClassName = genPackage + "." + activatorName
     /*if (bundleContext != null) {
       clazzFactory = bundleContext.getBundle.loadClass(activatorClassName)
     } else {
@@ -61,6 +58,11 @@ trait KevoreeReflectiveHelper {
     }*/
     
     val  du = ct.foundRelevantDeployUnit(nodeHost)
+
+    val resolvedNodeType = ct.foundRelevantHostNodeType(nodeTypeName.asInstanceOf[NodeType],ct)
+    val genPackage = KevoreeGeneratorHelper.getTypeDefinitionGeneratedPackage(ct, resolvedNodeType.get.getName)
+    val activatorName = ct.getName + "Activator"
+    val activatorClassName = genPackage + "." + activatorName
 
     clazzFactory = nodeTypeInstance.getBootStrapperService.getKevoreeClassLoaderHandler.getKevoreeClassLoader(du).loadClass(activatorClassName)
     val activatorInstance = clazzFactory.newInstance
