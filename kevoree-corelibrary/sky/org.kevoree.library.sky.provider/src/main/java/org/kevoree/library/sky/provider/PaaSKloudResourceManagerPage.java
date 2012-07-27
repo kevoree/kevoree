@@ -3,6 +3,7 @@ package org.kevoree.library.sky.provider;
 import org.kevoree.ContainerRoot;
 import org.kevoree.KevoreeFactory;
 import org.kevoree.annotation.*;
+import org.kevoree.api.service.core.checker.CheckerViolation;
 import org.kevoree.framework.KevoreePropertyHelper;
 import org.kevoree.framework.KevoreeXmiHelper;
 import org.kevoree.framework.MessagePort;
@@ -11,6 +12,7 @@ import org.kevoree.library.javase.authentication.Authentication;
 import org.kevoree.library.javase.webserver.KevoreeHttpRequest;
 import org.kevoree.library.javase.webserver.KevoreeHttpResponse;
 import org.kevoree.library.javase.webserver.ParentAbstractPage;
+import org.kevoree.library.sky.provider.checker.RootKloudChecker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import scala.Option;
@@ -35,17 +37,12 @@ import java.util.List;
 public class PaaSKloudResourceManagerPage extends ParentAbstractPage {
 
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
+	private RootKloudChecker rootKloudChecker = new RootKloudChecker();
 
 	public KevoreeHttpResponse process (KevoreeHttpRequest request, KevoreeHttpResponse response) {
 		if (request != null) {
 			if (request.getResolvedParams().get("login") != null) {
-				// check authentication information
-				boolean isAuthenticate = true;
-				if (isPortBinded("authentication")) {
-					isAuthenticate = request.getResolvedParams().get("password") != null && getPortByName("authentication", Authentication.class)
-							.authenticate(request.getResolvedParams().get("login"), request.getResolvedParams().get("password"));
-				}
-				if (isAuthenticate) {
+				if (checkAuthentication(request)) {
 					if (request.getResolvedParams().get("action") != null) {
 						if (request.getResolvedParams().get("action").equals("release")) {
 							response = processRelease(request, response);
@@ -57,9 +54,11 @@ public class PaaSKloudResourceManagerPage extends ParentAbstractPage {
 						response.setContent("<nack error=\"unknown uri\" />");
 					}
 				} else {
+					logger.debug("Unable to process {} due to authentication failure for {}", request.getUrl(), request.getResolvedParams().get("login"));
 					response.setContent("<nack login=\"" + request.getResolvedParams().get("login") + "\" error=\"Authentication failure\" />");
 				}
 			} else {
+				logger.debug("Unable to process {} due to missing login parameter", request.getUrl());
 				response.setContent("<nack error=\"login not available\" />");
 			}
 		} else {
@@ -68,6 +67,16 @@ public class PaaSKloudResourceManagerPage extends ParentAbstractPage {
 		}
 		logger.debug("sending response");
 		return response;
+	}
+
+	private boolean checkAuthentication (KevoreeHttpRequest request) {
+		// check authentication information
+		boolean isAuthenticate = true;
+		if (isPortBinded("authentication")) {
+			isAuthenticate = request.getResolvedParams().get("password") != null && getPortByName("authentication", Authentication.class)
+					.authenticate(request.getResolvedParams().get("login"), request.getResolvedParams().get("password"));
+		}
+		return isAuthenticate;
 	}
 
 	private KevoreeHttpResponse processRelease (KevoreeHttpRequest request, KevoreeHttpResponse response) {
@@ -84,42 +93,68 @@ public class PaaSKloudResourceManagerPage extends ParentAbstractPage {
 		if (request.getResolvedParams().get("model") != null) {
 			logger.debug("A model has been received");
 			ContainerRoot model = KevoreeXmiHelper.loadString(request.getResolvedParams().get("model"));
-			// TODO ensure there is no IaaS node with the same name than a user node => maybe by using Listener to push the model on the IaaS and then the IaaS check the nodeNames, if they are OK, the IaaSResourceManager refuse the model but push a new one with resource allocation
-			// forward model to group if it exist or submit a new model
-			Option<String> masterNodeOption = KevoreePropertyHelper
-					.getStringPropertyForGroup(getModelService().getLastModel(), request.getResolvedParams().get("login"), "masterNode", false, "");
-			if (masterNodeOption.isDefined()) {
-				List<String> accessPoints = KloudHelper.getMasterIP_PORT(masterNodeOption.get());
-				if (accessPoints.size() > 0) {
-					for (String ipPort : accessPoints) {
-						if (KloudHelper.sendModel(model, "http://" + ipPort + "/model/current")) {
-							ContainerRoot newModel = KloudHelper.pullModel("http://" + ipPort + "/model/current");
-							if (newModel != null) {
-								response.setContent(KevoreeXmiHelper.saveToString(newModel, false));
-							}
-							break;
-						} else {
-							response.setContent("<nack login=\"" + request.getResolvedParams().get("login") + "\" error=\"Unable to send model to the group\" />");
-						}
-					}
+			// TODO ensure there is no IaaS node with the same name than a user node => maybe by using Listener to push the model on the IaaS
+			// and then the IaaS check the nodeNames, if they are OK, the IaaSResourceManager refuse the model but push a new one with resource allocation
+			if (checkModel(model, request.getResolvedParams().get("login"), response)) {
+				// forward model to group if it exist or submit a new model
+				Option<String> masterNodeOption = KevoreePropertyHelper
+						.getStringPropertyForGroup(getModelService().getLastModel(), request.getResolvedParams().get("login"), "masterNode", false, "");
+				if (masterNodeOption.isDefined()) {
+					response = forwardModelToUserGroup(request, response, masterNodeOption.get(), model);
 				} else {
-					response.setContent("<nack login=\"" + request.getResolvedParams().get("login") + "\" error=\"Unable to send model to the group\" />");
+					logger.debug("Unable to get a existing configuration for the user {}. We try to create a new configuration for this user.", request.getResolvedParams().get("login"));
+					response = deploy(request, response, /*request.getResolvedParams().get("login"), request.getResolvedParams().get("ssh_key"), */model);
+//					response.setContent(deploy(request.getResolvedParams().get("login"), request.getResolvedParams().get("ssh_key"), model));
 				}
-
-			} else {
-				logger.debug("Unable to get a existing configuration for the user {}. We try to create a new configuration for this user.", request.getResolvedParams().get("login"));
-				response.setContent(deploy(request.getResolvedParams().get("login"), request.getResolvedParams().get("ssh_key"), model));
 			}
 		} else {
 			logger.debug("No model has been received, looking for an already submitted one or create a empty one");
-			response.setContent(findModel(request.getResolvedParams().get("login"), request.getResolvedParams().get("ssh_key")));
+			response = findModel(request, response);
 		}
 		return response;
 	}
 
-	private String findModel (String login, String sshKey) { // Here we may had the proxy page
-		logger.info("Try to find model for {}", login);
+	private KevoreeHttpResponse forwardModelToUserGroup (KevoreeHttpRequest request, KevoreeHttpResponse response, String masterNode, ContainerRoot model) {
+		List<String> accessPoints = KloudHelper.getMasterIP_PORT(masterNode);
+		if (accessPoints.size() > 0) {
+			for (String ipPort : accessPoints) {
+				if (KloudHelper.sendModel(model, "http://" + ipPort + "/model/current")) {
+					ContainerRoot newModel = KloudHelper.pullModel("http://" + ipPort + "/model/current");
+					if (newModel != null) {
+						response.setContent(KevoreeXmiHelper.saveToString(newModel, false));
+					}
+					break;
+				} else {
+					response.setContent("<nack login=\"" + request.getResolvedParams().get("login") + "\" error=\"Unable to send model to the group\" />");
+				}
+			}
+		} else {
+			response.setContent("<nack login=\"" + request.getResolvedParams().get("login") + "\" error=\"Unable to send model to the group\" />");
+		}
+		return response;
+	}
 
+	private boolean checkModel (ContainerRoot model, String login, KevoreeHttpResponse response) {
+		rootKloudChecker.setLogin(login);
+		List<CheckerViolation> violations = rootKloudChecker.check(model);
+		if (violations.size() > 0) {
+			logger.debug("Unable to deploy model because it doesn't respect the rule define on Kloud: {} violations", violations);
+			StringBuilder errorBuilder = new StringBuilder();
+			for (CheckerViolation violation : violations) {
+				logger.debug("{}", violation.getMessage());
+				errorBuilder.append(violation.getMessage()).append("\n");
+			}
+			response.setContent("<nack login=\"" + login + "\" error=\"" + errorBuilder.toString() + "\" />");
+			return false;
+		} else {
+			return true;
+		}
+	}
+
+	private KevoreeHttpResponse findModel (KevoreeHttpRequest request, KevoreeHttpResponse response) { // Here we may had the proxy page
+		String login = request.getResolvedParams().get("login");
+//		String sshKey = request.getResolvedParams().get("ssh_key");
+		logger.info("Try to find model for {}", login);
 		Option<String> masterNodeOption = KevoreePropertyHelper.getStringPropertyForGroup(getModelService().getLastModel(), login, "masterNode", false, "");
 		if (masterNodeOption.isDefined()) {
 			List<String> accessPoints = KloudHelper.getMasterIP_PORT(masterNodeOption.get());
@@ -127,28 +162,33 @@ public class PaaSKloudResourceManagerPage extends ParentAbstractPage {
 				for (String ipPort : accessPoints) {
 					ContainerRoot model = KloudHelper.pullModel("http://" + ipPort + "/model/current");
 					if (model != null) {
-						return KevoreeXmiHelper.saveToString(model, false);
+						response.setContent(KevoreeXmiHelper.saveToString(model, false));
+						return response;
 					}
 				}
-				return "<nack login=\"" + login + "\" error=\"No model found\"";
+				response.setContent("<nack login=\"" + login + "\" error=\"No model found\"");
+				return response;
 			} else {
-				return deploy(login, sshKey, KevoreeFactory.createContainerRoot());
+				return deploy(request, response/*login, sshKey*/, KevoreeFactory.createContainerRoot());
 			}
 		} else {
-			return deploy(login, sshKey, KevoreeFactory.createContainerRoot());
+			return deploy(request, response/*login, sshKey*/, KevoreeFactory.createContainerRoot());
 //			return "<nack login=\"" + login + "\" error=\"Unable to send model to the group\"";
 		}
 	}
 
-	private String deploy (String login, String sshKey, ContainerRoot model) {
+	private KevoreeHttpResponse deploy (KevoreeHttpRequest request, KevoreeHttpResponse response, /*String login, String sshKey,*/ ContainerRoot model) {
 		StdKevoreeMessage message = new StdKevoreeMessage();
+		String login = request.getResolvedParams().get("login");
+		String sshKey = request.getResolvedParams().get("ssh_key");
 		message.putValue("login", login);
 		message.putValue("model", KevoreeXmiHelper.saveToString(model, false));
 		if (sshKey != null && !sshKey.equals((""))) {
 			message.putValue("sshKey", sshKey);
 		}
 		getPortByName("deploy", MessagePort.class).process(message);
-		return "<wait login=\"" + login + "\" />";
+		response.setContent("<wait login=\"" + login + "\" />");
+		return response;
 	}
 
 	/*private boolean createProxy (String login, int nbTry) {

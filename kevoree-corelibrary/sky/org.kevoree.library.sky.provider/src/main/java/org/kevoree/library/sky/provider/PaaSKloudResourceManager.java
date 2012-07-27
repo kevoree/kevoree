@@ -65,9 +65,8 @@ public class PaaSKloudResourceManager extends AbstractComponentType {
 				KloudReasoner.appendScriptToCleanupIaaSModelFromUser(kengine, login, getModelService().getLastModel());
 				for (int i = 0; i < 5; i++) {
 					try {
-						/*if (*/kengine.atomicInterpretDeploy();//){
+						kengine.atomicInterpretDeploy();
 						break;
-//						}
 					} catch (Exception e) {
 						logger.warn("Error while cleanup user, try number " + i);
 					}
@@ -82,9 +81,8 @@ public class PaaSKloudResourceManager extends AbstractComponentType {
 		KloudReasoner.appendCreateGroupScript(getModelService().getLastModel(), login, this.getNodeName(), kengine, sshKey, false);
 		for (int i = 0; i < 5; i++) {
 			try {
-				/*if (*/kengine.atomicInterpretDeploy();//) {
+				kengine.atomicInterpretDeploy();
 				break;
-//				}
 			} catch (Exception e) {
 				logger.warn("Error while adding user master group, try number {}", i);
 			}
