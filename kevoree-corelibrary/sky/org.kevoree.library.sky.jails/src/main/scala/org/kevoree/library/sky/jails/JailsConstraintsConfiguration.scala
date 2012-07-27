@@ -142,7 +142,7 @@ object JailsConstraintsConfiguration {
           exec = Array[String]("rctl", "-a", "jail:" + nodeName + ":datasize:" + modeId + "=" + limit)
           val resultActor = new ResultManagementActor()
           resultActor.starting()
-          logger.debug("running {}", exec.asInstanceOf[Array[AnyRef]])
+          logger.debug("running {}", exec)
           val p = Runtime.getRuntime.exec(exec)
           new Thread(new ProcessStreamManager(resultActor, p.getInputStream, Array(new Regex(".*")), Array(), p)).start()
           val result = resultActor.waitingFor(500)
