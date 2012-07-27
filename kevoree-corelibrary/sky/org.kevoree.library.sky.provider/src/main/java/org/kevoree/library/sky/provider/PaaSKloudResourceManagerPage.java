@@ -34,6 +34,9 @@ import java.util.List;
 		@RequiredPort(name = "release", type = PortType.MESSAGE, optional = false), // TODO define a message type
 		@RequiredPort(name = "authentication", type = PortType.SERVICE, className = Authentication.class, optional = true)
 })
+@DictionaryType({
+		@DictionaryAttribute(name = "checkModel", defaultValue = "true", vals = {"true", "false"})
+})
 public class PaaSKloudResourceManagerPage extends ParentAbstractPage {
 
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
