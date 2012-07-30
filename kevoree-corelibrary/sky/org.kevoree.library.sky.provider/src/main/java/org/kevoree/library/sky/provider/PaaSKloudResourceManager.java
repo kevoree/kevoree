@@ -26,11 +26,14 @@ import scala.Option;
 })
 public class PaaSKloudResourceManager extends AbstractComponentType {
 
-	private Logger logger = LoggerFactory.getLogger(this.getClass());
+	Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	@Start
+	public void start () throws Exception {
+	}
+
 	@Stop
-	public void dummy () {
+	public void stop () {
 	}
 
 	@Port(name = "deploy")
@@ -62,9 +65,8 @@ public class PaaSKloudResourceManager extends AbstractComponentType {
 				KloudReasoner.appendScriptToCleanupIaaSModelFromUser(kengine, login, getModelService().getLastModel());
 				for (int i = 0; i < 5; i++) {
 					try {
-						if (kengine.atomicInterpretDeploy()) {
-							return;
-						}
+						kengine.atomicInterpretDeploy();
+						break;
 					} catch (Exception e) {
 						logger.warn("Error while cleanup user, try number " + i);
 					}
@@ -76,14 +78,13 @@ public class PaaSKloudResourceManager extends AbstractComponentType {
 	private void processNew (ContainerRoot userModel, String login, String sshKey) {
 		logger.debug("starting processNew");
 		KevScriptEngine kengine = getKevScriptEngineFactory().createKevScriptEngine();
-		KloudReasoner.appendCreateGroupScript(getModelService().getLastModel(), login, this.getNodeName(), kengine, sshKey);
+		KloudReasoner.appendCreateGroupScript(getModelService().getLastModel(), login, this.getNodeName(), kengine, sshKey, false);
 		for (int i = 0; i < 5; i++) {
 			try {
-				if (kengine.atomicInterpretDeploy()) {
-					break;
-				}
+				kengine.atomicInterpretDeploy();
+				break;
 			} catch (Exception e) {
-				logger.warn("Error while adding user master group, try number " + i);
+				logger.warn("Error while adding user master group, try number {}", i);
 			}
 		}
 		//ADD GROUP to user model
@@ -93,9 +94,8 @@ public class PaaSKloudResourceManager extends AbstractComponentType {
 			/* Send blindly the model to the core , PaaS Group are in charge to trigger this request , reply false and forward to Master interested node  */
 			getModelService().checkModel(userModelUpdated.get());
 		} else {
-			//TODO CALL RELEASE
+			//TODO CALL RELEASE ?
+
 		}
-
-
 	}
 }

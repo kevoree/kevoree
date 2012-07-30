@@ -81,7 +81,6 @@ public class ArduinoNode extends AbstractNodeType {
 
     //@Override
     public  void push(final String targetNodeName, final ContainerRoot root, String boardPortName) throws IOException {
-
         try
         {
             if(boardPortName.equals("*"))
@@ -97,7 +96,6 @@ public class ArduinoNode extends AbstractNodeType {
             }
 
             KevoreeKompareBean kompare = new KevoreeKompareBean();
-
             newdir = new File(System.getProperty("java.io.tmpdir") + File.separator + "arduinoGenerated" + targetNodeName);
             newdir.delete();
             newdir.mkdirs();

@@ -2,11 +2,14 @@ package org.kevoree.library.arduinoNodeType;
 
 import org.kevoree.ContainerRoot;
 import org.kevoree.annotation.Update;
+import org.kevoree.api.service.core.classloading.KevoreeClassLoaderHandler;
 import org.kevoree.extra.kserial.KevoreeSharedCom;
 import org.kevoree.fota.Fota;
+import org.kevoree.fota.Nativelib;
 import org.kevoree.fota.api.FotaEventListener;
 import org.kevoree.fota.events.FotaEvent;
 import org.kevoree.fota.utils.Board;
+import org.kevoree.kcl.KevoreeJarClassLoader;
 import org.kevoreeAdaptation.AdaptationModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,9 +25,6 @@ import java.io.IOException;
  */
 @org.kevoree.annotation.DictionaryType({
         @org.kevoree.annotation.DictionaryAttribute(name = "boardTypeName", defaultValue = "uno", optional = true, vals = {"uno"}),
-        @org.kevoree.annotation.DictionaryAttribute(name = "incremental", defaultValue = "true", optional = true, vals = {"true", "false"}),
-        @org.kevoree.annotation.DictionaryAttribute(name = "pmem", defaultValue = "eeprom", optional = true, vals = {"eeprom", "sd"}),
-        @org.kevoree.annotation.DictionaryAttribute(name = "psize", defaultValue = "MAX", optional = true)  ,
         @org.kevoree.annotation.DictionaryAttribute(name = "timeout", defaultValue = "60", optional = false)
 })
 @org.kevoree.annotation.NodeType
@@ -33,7 +33,7 @@ public class ArduinoWirelessNode extends ArduinoNode
     private static final Logger logger = LoggerFactory.getLogger(ArduinoWirelessNode.class);
     public String outputPath = "";
     private boolean finished = false;
-    private int timeout = 120;
+    private int timeout = 10;
     private String boardName = "";
 
     @org.kevoree.annotation.Start
@@ -85,23 +85,31 @@ public class ArduinoWirelessNode extends ArduinoNode
                 Thread flash = new Thread(new Runnable() {
                     @Override
                     public void run() {
+                        Fota fota=null;
 
                         try
                         {
 
-                            Fota fota = new Fota(boardPortName, Board.ATMEGA328);
 
-                            fota.addEventListener(new FotaEventListener()
-                            {
+                         KevoreeJarClassLoader kcl = (KevoreeJarClassLoader) this.getClass().getClassLoader();
+
+                            kcl.addNativeMapping("native",Nativelib.configureCL());
+
+                            System.loadLibrary("native");
+
+
+                            fota = new Fota(boardPortName, Board.ATMEGA328);
+
+                            fota.addEventListener(new FotaEventListener() {
                                 // @Override
                                 public void progressEvent(FotaEvent evt) {
-                                    logger.info(" Uploaded " + evt.getSize_uploaded()+"/"+evt.getProgram_size() + " octets");
+                                    logger.info(" Uploaded " + evt.getSize_uploaded() + "/" + evt.getProgram_size() + " octets");
                                     timeout += 1;
                                 }
 
                                 @Override
                                 public void completedEvent(FotaEvent evt) {
-                                    logger.info("Transmission completed successfully <" + evt.getProgram_size() + " octets "+evt.getDuree()+" secondes >");
+                                    logger.info("Transmission completed successfully <" + evt.getProgram_size() + " octets " + evt.getDuree() + " secondes >");
                                     finished = true;
 
                                 }
@@ -110,10 +118,14 @@ public class ArduinoWirelessNode extends ArduinoNode
                             String path_hex =sketch.getPath(target);
                             logger.debug("Fota with "+path_hex);
                             fota.upload(path_hex);
-
+                            dico();
                             fota.waitingUpload(timeout);
+
+                            fota = null;
+
                         }catch(Exception e)
                         {
+                            System.out.println(e);
                             logger.error("Fota ",e);
                         }
                     }
@@ -122,8 +134,9 @@ public class ArduinoWirelessNode extends ArduinoNode
                 flash.start();
 
                 flash.join();
-            }  catch (Exception e){
 
+            }  catch (Exception e){
+                  logger.error("Fota ",e);
             }  finally
             {
                 KevoreeSharedCom.unlockPort(boardPortName);
@@ -134,8 +147,6 @@ public class ArduinoWirelessNode extends ArduinoNode
             incremental(modelIn,nodeName,boardPortName);
         }
 
-
-        logger.info("Arduino finished");
         return true;
 
     }

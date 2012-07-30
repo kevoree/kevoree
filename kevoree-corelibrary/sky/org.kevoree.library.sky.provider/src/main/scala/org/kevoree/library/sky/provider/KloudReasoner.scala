@@ -2,7 +2,6 @@ package org.kevoree.library.sky.provider
 
 import org.slf4j.{LoggerFactory, Logger}
 import org.kevoree.{ContainerNode, KevoreeFactory, ContainerRoot}
-import org.kevoree.api.service.core.handler.KevoreeModelHandlerService
 import org.kevoree.framework.{Constants, KevoreePropertyHelper}
 import org.kevoree.api.service.core.script.{KevScriptEngine, KevScriptEngineFactory}
 
@@ -24,7 +23,7 @@ object KloudReasoner {
       case Some(userGroup) => {
         userGroup.getSubNodes.foreach {
           sub =>
-            if (KloudHelper.isPaaSNode(currentIaaSModel, userGroup.getName, sub.getName)) {
+            if (KloudHelper.isPaaSNode(currentIaaSModel /*, userGroup.getName*/ , sub.getName)) {
               kengine.append("removeNode " + sub.getName)
             }
         }
@@ -142,7 +141,7 @@ object KloudReasoner {
     }
   }*/
 
-  def appendCreateGroupScript (kloudModel: ContainerRoot, login: String, nodeName: String, kevScriptEngine: KevScriptEngine, sshKey: String = "") {
+  def appendCreateGroupScript (kloudModel: ContainerRoot, login: String, nodeName: String, kevScriptEngine: KevScriptEngine, sshKey: String = "", storage: Boolean = false) {
     val ipOption = KevoreePropertyHelper.getStringNetworkProperty(kloudModel, nodeName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP)
     var ip = "127.0.0.1"
     if (ipOption.isDefined) {
@@ -152,26 +151,50 @@ object KloudReasoner {
     val portNumber = KloudHelper.selectPortNumber(ip, Array[Int]())
     kevScriptEngine.addVariable("groupName", login)
     kevScriptEngine.addVariable("nodeName", nodeName)
-    kevScriptEngine.addVariable("ip", ip)
     kevScriptEngine.addVariable("port", portNumber.toString)
+    kevScriptEngine.addVariable("ip", ip)
+    if (storage) {
+      kevScriptEngine.addVariable("groupType", "KloudPaaSNanoGroupStateFull")
+    } else {
+      kevScriptEngine.addVariable("groupType", "KloudPaaSNanoGroup")
+    }
 
     kevScriptEngine append "addGroup {groupName} : KloudPaaSNanoGroup {masterNode='{nodeName}={ip}:{port}'}"
-    if (sshKey != null) {
-      kevScriptEngine append "updateDictionary {groupName} {SSH_Public_Key='" + sshKey + "'}"
+    if (sshKey != null && sshKey != "") {
+      kevScriptEngine.addVariable("sshKey", sshKey)
+      kevScriptEngine append "updateDictionary {groupName} {SSH_Public_Key='{sshKey}'}"
     }
     kevScriptEngine append "addToGroup {groupName} {nodeName}"
     kevScriptEngine append "updateDictionary {groupName} {port='{port}', ip='{ip}'}@{nodeName}"
 
+
   }
 
-  def removeGroup (groupName: String, modelHandlerService: KevoreeModelHandlerService, kevScriptEngineFactory: KevScriptEngineFactory, nbTry: Int): Boolean = {
-    val scriptBuilder = new StringBuilder()
+  /*def appendRemoveGroupScript (groupName: String, modelHandlerService: KevoreeModelHandlerService, kevScriptEngineFactory: KevScriptEngineFactory, nbTry: Int)/*: Boolean = */{
+    //    val scriptBuilder = new StringBuilder()
     val uuidModel = modelHandlerService.getLastUUIDModel
-    scriptBuilder append "removeGroup " + groupName + "\n"
-
     val kengine = kevScriptEngineFactory.createKevScriptEngine(uuidModel.getModel)
-    try {
-      kengine.append(scriptBuilder.toString())
+    //    scriptBuilder append "removeGroup " + groupName + "\n"
+    kengine addVariable("groupName", groupName)
+    kengine append "removeGroup {groupName}"
+    /*var i: Int = 0
+    while (i < nbTry) {
+      try {
+        if (kengine.atomicInterpretDeploy) {
+          i = nbTry
+          return true
+        }
+      }
+      catch {
+        case e: Exception => {
+          logger.warn("Error while removing the group {}, try number ", groupName, i)
+        }
+      }
+      i+= 1
+    }*/
+
+    /*try {
+      //      kengine.append(scriptBuilder.toString())
       modelHandlerService.atomicCompareAndSwapModel(uuidModel, kengine.interpret())
       true
     } catch {
@@ -183,8 +206,9 @@ object KloudReasoner {
           removeGroup(groupName, modelHandlerService, kevScriptEngineFactory, nbTry - 1)
         }
       }
-    }
-  }
+    }*/
+//    false
+  }*/
 
   /**
    * compare models and built a tuple of sets of added nodes and removed nodes
@@ -204,7 +228,8 @@ object KloudReasoner {
     }
     newModel.getNodes.foreach {
       newUserNode =>
-        userModel.getNodes.find(node => node.getName == newUserNode.getName) match {
+      // the kloud platform must use PJavaSeNode or a subtype of it so JavaSeNode will not be instanciated on the Kloud
+        userModel.getNodes.find(node => node.getName == newUserNode.getName && KloudHelper.isPaaSNode(userModel, node.getName)) match {
           case None => {
             logger.debug("{} must be added on the kloud.", newUserNode.getName)
             addedNodes = addedNodes ++ List[ContainerNode](newUserNode)
@@ -220,8 +245,6 @@ object KloudReasoner {
       logger.debug("Try to remove useless PaaS nodes into the Kloud")
 
       // build kevscript to remove useless nodes into the kloud model
-      val scriptBuilder = new StringBuilder()
-
       removedNodes.foreach {
         node =>
           kloudModel.getNodes.find(n => n.getHosts.find(host => host.getName == node.getName) match {
@@ -231,9 +254,11 @@ object KloudReasoner {
             case None => logger
               .debug("Unable to find the parent of {}. Houston, maybe we have a problem!", node.getName)
             case Some(parent) =>
-              kengine append "removeChild " + node.getName + "@" + parent.getName
-              kengine append "removeFromGroup * " + node.getName
-              kengine append "removeNode " + node.getName
+              kengine.addVariable("nodeName", node.getName)
+              kengine.addVariable("parentNodeName", parent.getName)
+              kengine append "removeChild {nodeName}@{parentNodeName}"
+              kengine append "removeFromGroup * {nodeName}"
+              kengine append "removeNode {nodeName}"
           }
 
       }
@@ -252,16 +277,17 @@ object KloudReasoner {
       logger.debug("Try to add all user nodes into the Kloud")
 
       // build kevscript to add user nodes into the kloud model
-      val scriptBuilder = new StringBuilder()
+      //      val scriptBuilder = new StringBuilder()
 
       // create new node using PJavaSENode as type for each user node
       addedNodes.foreach {
         node =>
-        // add node
-          scriptBuilder append "addNode " + node.getName + " : PJavaSENode "
+          kengine.addVariable("nodeName", node.getName)
+          // add node
+          kengine append "addNode {nodeName} : PJavaSENode"
           // set dictionary attributes of node
           if (node.getDictionary.isDefined) {
-            scriptBuilder append "{"
+            //            scriptBuilder append "{"
             val defaultAttributes = KloudHelper.getDefaultNodeAttributes(kloudModel, "PJavaSENode")
             node.getDictionary.get.getValues
               .filter(value => defaultAttributes.find(a => a.getName == value.getAttribute.getName) match {
@@ -269,18 +295,13 @@ object KloudReasoner {
               case None => false
             }).foreach {
               value =>
-                if (scriptBuilder.last != '{') {
-                  scriptBuilder append ", "
-                }
-                scriptBuilder append
-                  value.getAttribute.getName + "=\"" + value.getValue + "\""
+                kengine.addVariable("attributeName", value.getAttribute.getName)
+                kengine.addVariable("attributeValue", value.getValue)
+                kengine append "updateDictionary {nodeName} {{attributeName} = '{attributeValue}'}"
             }
-            scriptBuilder append "}"
           }
-          kengine append scriptBuilder.toString()
       }
       true
-
     } else {
       true
     }
@@ -441,7 +462,7 @@ object KloudReasoner {
             val portOption = KevoreePropertyHelper.getIntPropertyForGroup(iaasModel, login, "port", isFragment = true, nodeNameForFragment = node.getName)
             if (portOption.isDefined) {
               kengine append "updateDictionary {groupName} {port='" + portOption.get + "'}@{nodeName}"
-            }/* else {
+            } /* else {
               kengine append "updateDictionary {groupName} {port='8000'}@{nodeName}" // this value will be override later by kloud update
             }*/
             // set IP of user nodes if needed

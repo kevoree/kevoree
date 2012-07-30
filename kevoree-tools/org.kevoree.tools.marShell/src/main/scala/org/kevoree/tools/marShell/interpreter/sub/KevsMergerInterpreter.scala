@@ -45,7 +45,7 @@ import java.net.URL
 
 case class KevsMergerInterpreter (mergeStatement: MergeStatement) extends KevsAbstractInterpreter {
 
-  private val mergerComponent = new KevoreeMergerComponent();
+  private val mergerComponent = new KevoreeMergerComponent()
   private val logger = LoggerFactory.getLogger(this.getClass)
 
   def interpret (context: KevsInterpreterContext): Boolean = {

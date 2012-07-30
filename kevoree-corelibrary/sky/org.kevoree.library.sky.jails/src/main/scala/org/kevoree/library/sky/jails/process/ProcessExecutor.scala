@@ -66,7 +66,7 @@ class ProcessExecutor(creationTimeout : Int, startTimeout : Int) {
     new Thread(new ProcessStreamManager(resultActor, p.getInputStream, Array(), Array(new Regex("ifconfig: ioctl \\(SIOCDIFADDR\\): .*")), p)).start()
     val result = resultActor.waitingFor(1000)
     if (!result._1) {
-      logger.debug(result._2)
+      logger.debug("Unable to configure alias: {}", result._2)
     }
     result._1
   }
@@ -214,6 +214,7 @@ class ProcessExecutor(creationTimeout : Int, startTimeout : Int) {
   def deleteNetworkAlias (networkInterface: String, oldIP: String): Boolean = {
     val resultActor = new ResultManagementActor()
     resultActor.starting()
+    logger.debug("running {} {} -alias {}", Array[AnyRef](ezjailAdmin, networkInterface, oldIP))
     val p = Runtime.getRuntime.exec(Array[String](ifconfig, networkInterface, "-alias", oldIP))
     new Thread(new ProcessStreamManager(resultActor, p.getInputStream, Array(), Array(new Regex("ifconfig: ioctl \\(SIOCDIFADDR\\): .*")), p)).start()
     val result = resultActor.waitingFor(1000)

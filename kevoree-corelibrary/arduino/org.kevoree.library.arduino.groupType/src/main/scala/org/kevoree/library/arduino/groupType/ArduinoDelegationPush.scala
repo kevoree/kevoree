@@ -78,6 +78,7 @@ class ArduinoDelegationPush (handler: KevoreeModelHandlerService, groupName: Str
                 }
               } else {
                 // update model
+                serialPort = serialPortOption.get
                 model.getHubs.foreach(channel => {
                   setProperty(model, channel, channel.getName, "serialport", true, targetNodeName, serialPort.replace("/", ";"))
                 }

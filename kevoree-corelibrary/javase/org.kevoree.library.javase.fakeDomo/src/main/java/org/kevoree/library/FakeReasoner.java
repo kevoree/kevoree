@@ -1,6 +1,5 @@
 package org.kevoree.library;
 
-import org.kevoree.ComponentInstance;
 import org.kevoree.ContainerNode;
 import org.kevoree.ContainerRoot;
 import org.kevoree.annotation.ComponentType;
@@ -63,18 +62,16 @@ public class FakeReasoner extends AbstractComponentType implements ModelListener
                     engine.addVariable("nodeName", node.getName());
                     engine.append("addComponent {nodeName}Console@{nodeName} : FakeConsole");
             }
-            try {
-                engine.interpretDeploy();
-            } catch (KevScriptEngineException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-            }
 
             try {
+				engine.interpretDeploy();
                 Thread.sleep(5000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
-            }
-        }
+            } catch (KevScriptEngineException e) {
+				e.printStackTrace();
+			}
+		}
 
     }
 }

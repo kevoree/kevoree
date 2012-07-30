@@ -17,7 +17,7 @@ checkForAdminMsg ()
 	  delay (10);
 	}
       ackToken = Serial.read ();
-      if (ackToken == 'g' || ackToken == 'p')
+      if (ackToken == 'g' || ackToken == 'p' || ackToken == 'r')
 	{
 	  if (ackToken == 'g')
 	    {
@@ -32,7 +32,11 @@ checkForAdminMsg ()
 	      ackToken = Serial.read ();
 	      Serial.print ("ack");
 	      Serial.println (ackToken);
-	    }
+	    } else if (ackToken == 'r')
+         {
+         	  Serial.println ("ack");
+              reset();
+         }
 	  else
 	    {
 	      // error

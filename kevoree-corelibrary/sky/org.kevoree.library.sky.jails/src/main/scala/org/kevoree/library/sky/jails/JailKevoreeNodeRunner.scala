@@ -146,6 +146,7 @@ class JailKevoreeNodeRunner (nodeName: String, iaasNode: JailNode) extends Kevor
   }
 
   private def lookingForFlavors (iaasModel: ContainerRoot, nodeName: String) : Array[String] = {
+    logger.debug("looking for specific flavors")
     val flavorsOption = KevoreePropertyHelper.getStringPropertyForNode(iaasModel, nodeName, "flavors")
     if (flavorsOption.isDefined) {
       flavorsOption.get.split(",")
@@ -156,6 +157,9 @@ class JailKevoreeNodeRunner (nodeName: String, iaasNode: JailNode) extends Kevor
 
   private def findArchive(nodName : String) : Option[String] = {
     // TODO
+    //val archivesURL = iaasNode.getArchives
+
+
     None
   }
 }

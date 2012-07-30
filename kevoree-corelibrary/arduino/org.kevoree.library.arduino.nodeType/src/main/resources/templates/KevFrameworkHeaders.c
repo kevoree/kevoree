@@ -31,3 +31,5 @@ int currentMsgBufIndex = -1;
 int currentMsgIndex = -1;
 boolean messageInProgress = false;
 boolean instanceNameRead = false;
+ //declare reset function @ address 0
+void(* reset) (void) = 0;

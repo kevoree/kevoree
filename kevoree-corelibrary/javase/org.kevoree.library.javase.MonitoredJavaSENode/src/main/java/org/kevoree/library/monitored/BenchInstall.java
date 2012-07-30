@@ -1,11 +1,11 @@
 package org.kevoree.library.monitored;
 
-import org.kevoree.KevoreeFactory$;
 import org.kevoree.annotation.ComponentType;
 import org.kevoree.annotation.Library;
 import org.kevoree.annotation.Start;
 import org.kevoree.annotation.Stop;
 import org.kevoree.api.service.core.script.KevScriptEngine;
+import org.kevoree.api.service.core.script.KevScriptEngineException;
 import org.kevoree.framework.AbstractComponentType;
 
 import java.util.Random;
@@ -46,14 +46,22 @@ public class BenchInstall extends AbstractComponentType implements Runnable {
         engine.addVariable("benchName",name);
         engine.addVariable("nodeName",getNodeName());
         engine.append("addComponent {benchName}@{nodeName} : FakeConsole");
-        engine.interpretDeploy();
-        /*try {
-            Thread.sleep(4000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }  */
+		try {
+			engine.interpretDeploy();
+		} catch (KevScriptEngineException e) {
+			e.printStackTrace();
+		}
+		/*try {
+					Thread.sleep(4000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}  */
         engine.clearScript();
         engine.append("removeComponent {benchName}@{nodeName}");
-        engine.interpretDeploy();
-    }
+		try {
+			engine.interpretDeploy();
+		} catch (KevScriptEngineException e) {
+			e.printStackTrace();
+		}
+	}
 }
