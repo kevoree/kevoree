@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 scp $1 root@10.0.0.2:/root/kevoree-service/kevoree-service-updater.jar
 scp $1 root@10.0.1.1:/root/kevoree-service/kevoree-service-updater.jar
