@@ -9,6 +9,7 @@ import org.kevoree.annotation.Start;
 import org.kevoree.annotation.Stop;
 import org.kevoree.api.service.core.handler.ModelListener;
 import org.kevoree.api.service.core.script.KevScriptEngine;
+import org.kevoree.api.service.core.script.KevScriptEngineException;
 import org.kevoree.framework.AbstractComponentType;
 
 /**
@@ -62,7 +63,11 @@ public class FakeReasoner extends AbstractComponentType implements ModelListener
                     engine.addVariable("nodeName", node.getName());
                     engine.append("addComponent {nodeName}Console@{nodeName} : FakeConsole");
             }
+            try {
                 engine.interpretDeploy();
+            } catch (KevScriptEngineException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            }
 
             try {
                 Thread.sleep(5000);
