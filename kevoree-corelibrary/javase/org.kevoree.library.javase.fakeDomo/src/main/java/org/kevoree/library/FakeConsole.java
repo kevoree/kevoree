@@ -42,6 +42,9 @@ import java.awt.event.KeyEvent;
 @Requires({
         @RequiredPort(name = "textEntered", type = PortType.MESSAGE, optional = true)
 })
+@DictionaryType({
+        @DictionaryAttribute(name = "singleFrame", defaultValue = "true", optional = true)
+})
 @ComponentType
 public class FakeConsole extends AbstractFakeStuffComponent {
     private static final Logger logger = LoggerFactory.getLogger(FakeConsole.class);
@@ -49,6 +52,7 @@ public class FakeConsole extends AbstractFakeStuffComponent {
     private static final int FRAME_WIDTH = 300;
     private static final int FRAME_HEIGHT = 600;
     private MyFrame frame = null;
+    private JFrame localFrame = null;
 
     @Override
     public void start() throws Exception {
@@ -56,14 +60,48 @@ public class FakeConsole extends AbstractFakeStuffComponent {
        // frame.setTitle(getName() + "@@@" + getNodeName());
       //  frame.setVisible(true);
         frame.appendSystem("/***** CONSOLE INITIALIZED ********/ ");
-        KevoreeLayout.getInstance().displayTab(frame,getName());
-
+        if(Boolean.valueOf((String)getDictionary().get("singleFrame"))) {
+            KevoreeLayout.getInstance().displayTab((JPanel)frame,getName());
+        } else {
+            localFrame = new JFrame(getName() + "@@@" + getNodeName());
+            localFrame.setContentPane(frame);
+            localFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+            localFrame.pack();
+            localFrame.setVisible(true);
+        }
     }
 
     @Override
     public void stop() {
-        KevoreeLayout.getInstance().releaseTab(getName());
+        if(Boolean.valueOf((String)getDictionary().get("singleFrame"))) {
+            KevoreeLayout.getInstance().releaseTab(getName());
+        } else {
+            if(localFrame != null) {
+                localFrame.dispose();
+            }
+        }
         frame = null;
+        localFrame = null;
+    }
+
+    @Update
+    public void update() {
+        if(Boolean.valueOf((String)getDictionary().get("singleFrame"))) {
+            if(localFrame != null) {
+                KevoreeLayout.getInstance().displayTab((JPanel)frame,getName());
+                localFrame.dispose();
+                localFrame = null;
+            }
+        } else {
+            if(localFrame == null) {
+                KevoreeLayout.getInstance().releaseTab(getName());
+                localFrame = new JFrame(getName() + "@@@" + getNodeName());
+                localFrame.setContentPane(frame);
+                localFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+                localFrame.pack();
+                localFrame.setVisible(true);
+            }
+        }
     }
 
     public void appendSystem(String text) {
