@@ -33,7 +33,7 @@ public class ArduinoWirelessNode extends ArduinoNode
     private static final Logger logger = LoggerFactory.getLogger(ArduinoWirelessNode.class);
     public String outputPath = "";
     private boolean finished = false;
-    private int timeout = 10;
+    private int timeout = 120;
     private String boardName = "";
 
     @org.kevoree.annotation.Start
@@ -62,13 +62,8 @@ public class ArduinoWirelessNode extends ArduinoNode
     }
 
 
-    public  void push(final String targetNodeName, final ContainerRoot root, String boardPortName) throws IOException {
-        super.push(targetNodeName,root,boardPortName);
-    }
-
     public boolean deploy(AdaptationModel modelIn, String nodeName, final String boardPortName)
     {
-
 
         if (needAdaptation(modelIn) || forceUpdate)
         {
@@ -78,66 +73,52 @@ public class ArduinoWirelessNode extends ArduinoNode
 
             // compile
             compile(tempRoot, nodeName, boardPortName);
+
+            KevoreeSharedCom.lockPort(boardPortName);
+
+            Fota fota=null;
+
             try
             {
-                KevoreeSharedCom.lockPort(boardPortName);
 
-                Thread flash = new Thread(new Runnable() {
+                /*
+                KevoreeJarClassLoader kcl = (KevoreeJarClassLoader) this.getClass().getClassLoader();
+                kcl.addNativeMapping("libnative.so",Nativelib.configureCL());
+
+                System.loadLibrary("libnative.so");  */
+
+
+                fota = new Fota(boardPortName, Board.ATMEGA328);
+
+                fota.addEventListener(new FotaEventListener() {
+                    // @Override
+                    public void progressEvent(FotaEvent evt) {
+                        System.out.println(" Uploaded " + evt.getSize_uploaded() + "/" + evt.getProgram_size() + " octets");
+                        timeout += 1;
+                    }
+
                     @Override
-                    public void run() {
-                        Fota fota=null;
+                    public void completedEvent(FotaEvent evt) {
+                        System.out.println("Transmission completed successfully <" + evt.getProgram_size() + " octets " + evt.getDuree() + " secondes >");
+                        finished = true;
 
-                        try
-                        {
-
-
-                         KevoreeJarClassLoader kcl = (KevoreeJarClassLoader) this.getClass().getClassLoader();
-
-                            kcl.addNativeMapping("native",Nativelib.configureCL());
-
-                            System.loadLibrary("native");
-
-
-                            fota = new Fota(boardPortName, Board.ATMEGA328);
-
-                            fota.addEventListener(new FotaEventListener() {
-                                // @Override
-                                public void progressEvent(FotaEvent evt) {
-                                    logger.info(" Uploaded " + evt.getSize_uploaded() + "/" + evt.getProgram_size() + " octets");
-                                    timeout += 1;
-                                }
-
-                                @Override
-                                public void completedEvent(FotaEvent evt) {
-                                    logger.info("Transmission completed successfully <" + evt.getProgram_size() + " octets " + evt.getDuree() + " secondes >");
-                                    finished = true;
-
-                                }
-                            });
-
-                            String path_hex =sketch.getPath(target);
-                            logger.debug("Fota with "+path_hex);
-                            fota.upload(path_hex);
-                            dico();
-                            fota.waitingUpload(timeout);
-
-                            fota = null;
-
-                        }catch(Exception e)
-                        {
-                            System.out.println(e);
-                            logger.error("Fota ",e);
-                        }
                     }
                 });
 
-                flash.start();
+                String path_hex =sketch.getPath(target);
+                logger.debug("Fota with "+path_hex);
+                fota.upload(path_hex);
+                dico();
+                fota.waitingUpload(timeout);
 
-                flash.join();
+                fota = null;
 
-            }  catch (Exception e){
-                  logger.error("Fota ",e);
-            }  finally
+            }catch(Exception e)
+            {
+                System.out.println(e);
+                logger.error("Fota ",e);
+            }
+            finally
             {
                 KevoreeSharedCom.unlockPort(boardPortName);
             }
