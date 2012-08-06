@@ -3,7 +3,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * 	http://www.gnu.org/licenses/lgpl-3.0.txt
+ * http://www.gnu.org/licenses/lgpl-3.0.txt
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -60,7 +60,7 @@ import org.kevoree.tools.ui.editor.{PositionedEMFHelper, KevoreeEditor}
 import org.kevoree.tools.marShell.KevScriptOfflineEngine
 import java.net.{ServerSocket, InetSocketAddress, Socket}
 import org.kevoree.framework.{KevoreePropertyHelper, KevoreeXmiHelper}
-import org.kevoree.{ContainerNode, ContainerRoot, KevoreeFactory}
+import org.kevoree.{TypeDefinition, ContainerNode, ContainerRoot, KevoreeFactory}
 import org.kevoree.tools.modelsync.FakeBootstraperService
 
 /**
@@ -157,8 +157,9 @@ class MiniKloudForm (editor: KevoreeEditor) {
   }
 
   private def buildBootstrapModel: ContainerRoot = {
+    val nodes = editor.getPanel.getKernel.getModelHandler.getActualModel.getNodes.filter(n => n.getTypeDefinition.getName == "JavaSENode" || isASubType(n.getTypeDefinition, "JavaSENode"))
     editor.getPanel.getKernel.getModelHandler.getActualModel.getNodes
-      .find(n => n.getTypeDefinition.getName == "MiniCloudNode" && n.getHosts.size == editor.getPanel.getKernel.getModelHandler.getActualModel.getNodes.size - 1 && !n.getHosts.contains(n)) match {
+      .find(n => n.getTypeDefinition.getName == "MiniCloudNode" && n.getHosts.size == nodes.size && !n.getHosts.contains(n)) match {
       case Some(minicloudNode) => {
         logger.debug("start a minicloud with your own minicloud node")
         minicloudName = minicloudNode.getName
@@ -187,14 +188,14 @@ class MiniKloudForm (editor: KevoreeEditor) {
 
         var groupName = "editor_group"
         var blackListedPorts = Array[Int](6001, 6002)
-        // looking for a group that manage all the user nodes
-        editor.getPanel.getKernel.getModelHandler.getActualModel.getGroups.find(g => g.getSubNodes.size == editor.getPanel.getKernel.getModelHandler.getActualModel.getNodes.size) match {
+        // looking for a group that manage all the user nodes that can be hosted on a minicloud node
+        editor.getPanel.getKernel.getModelHandler.getActualModel.getGroups.find(g => g.getSubNodes.size == nodes.size && g.getSubNodes.forall(n => nodes.contains(n))) match {
           case Some(group) => groupName = group.getName
           case None =>
             // add a new group
             kevEngine.append("addGroup editor_group : NanoRestGroup")
             // add all node on the same group
-            editor.getPanel.getKernel.getModelHandler.getActualModel.getNodes.foreach {
+            nodes.foreach {
               node =>
                 kevEngine.addVariable("nodeName", node.getName)
                 kevEngine.append("addToGroup editor_group {nodeName}")
@@ -221,6 +222,13 @@ class MiniKloudForm (editor: KevoreeEditor) {
     }
   }
 
+  def isASubType (nodeType: TypeDefinition, typeName: String): Boolean = {
+    nodeType.getSuperTypes.find(td => td.getName == typeName || isASubType(td, typeName)) match {
+      case None => false
+      case Some(typeDefinition) => true
+    }
+  }
+
   private def selectPort (blackListedPorts: Array[Int]): Int = {
     // get all port defined on the model
     // concatenate the ports of the model with the blacklisted ones
@@ -240,7 +248,7 @@ class MiniKloudForm (editor: KevoreeEditor) {
         model.getNodes.foreach {
           node =>
             logger.debug("Looking for property 'port' on group {} with node {}", group.getName, node.getName)
-            val portOption = KevoreePropertyHelper.getIntPropertyForGroup(model, group.getName, "port", true, node.getName)
+            val portOption = KevoreePropertyHelper.getIntPropertyForGroup(model, group.getName, "port", isFragment = true, nodeNameForFragment = node.getName)
             if (portOption.isDefined) {
               ports = ports ++ Array[Int](portOption.get)
             }
@@ -251,7 +259,8 @@ class MiniKloudForm (editor: KevoreeEditor) {
     model.getMBindings.foreach {
       binding =>
         logger.debug("Looking for property 'port' on channel {} with node {}", binding.getHub.getName, binding.getPort.eContainer.eContainer.asInstanceOf[ContainerNode].getName)
-        val portOption = KevoreePropertyHelper.getIntPropertyForChannel(model,binding.getHub.getName, "port", true, binding.getPort.eContainer.eContainer.asInstanceOf[ContainerNode].getName)
+        val portOption = KevoreePropertyHelper.getIntPropertyForChannel(model, binding.getHub.getName, "port", isFragment = true, nodeNameForFragment = binding.getPort.eContainer.eContainer
+          .asInstanceOf[ContainerNode].getName)
         if (portOption.isDefined) {
           ports = ports ++ Array[Int](portOption.get)
         }
