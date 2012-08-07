@@ -40,29 +40,43 @@ object KloudHelper {
     (foundGroupSelf && !foundHost)
   }
 
-  def isIaaSNode (currentModel: ContainerRoot, groupName: String, nodeName: String): Boolean = {
-    currentModel.getGroups.find(g => g.getName == groupName) match {
-      case None => logger.debug("There is no group named {}", groupName);false
-      case Some(group) =>
-        group.getSubNodes.find(n => n.getName == nodeName) match {
-          case None => logger.debug("There is no node named {}", nodeName);false
-          case Some(node) =>
-            node.getTypeDefinition.asInstanceOf[NodeType].getManagedPrimitiveTypes.filter(p => p.getName == "RemoveNode" || p.getName == "AddNode").size == 2
-        }
+  def isUserModel (potentialUserModel: ContainerRoot): Boolean = {
+    getKloudUserGroup(potentialUserModel).isDefined
+  }
+
+  def getKloudUserGroup (userModel: ContainerRoot): Option[String] = {
+    val potentialKloudUserNodes = userModel.getNodes.filter(n => (n.getTypeDefinition.getName == "PJavaSENode" || KloudHelper.isASubType(n.getTypeDefinition, "PJavaSENode")))
+    val potentialKloudUserGroups = userModel.getGroups.find(g => g.getSubNodes.size >= potentialKloudUserNodes.size)
+    potentialKloudUserGroups.find(g => (g.getTypeDefinition.getName == "KloudPaaSNanoGroup" || KloudHelper.isASubType(g.getTypeDefinition, "KloudPaaSNanoGroup")) &&
+      g.getSubNodes.forall(n => potentialKloudUserNodes.contains(n))) match {
+      case None => None
+      case Some(group) => Some(group.getName)
     }
   }
 
-  def isPaaSNode (currentModel: ContainerRoot, groupName: String, nodeName: String): Boolean = {
-    currentModel.getGroups.find(g => g.getName == groupName) match {
+  def isIaaSNode (currentModel: ContainerRoot, groupName: String, nodeName: String): Boolean = {
+    currentModel.getNodes/*getGroups.find(g => g.getName == groupName) match {
+      case None => logger.debug("There is no group named {}", groupName); false
+      case Some(group) =>
+        group.getSubNodes*/.find(n => n.getName == nodeName) match {
+          case None => logger.debug("There is no node named {}", nodeName); false
+          case Some(node) =>
+            node.getTypeDefinition.asInstanceOf[NodeType].getManagedPrimitiveTypes.filter(p => p.getName == "RemoveNode" || p.getName == "AddNode").size == 2
+        }
+//    }
+  }
+
+  def isPaaSNode (currentModel: ContainerRoot/*, groupName: String*/, nodeName: String): Boolean = {
+    currentModel.getNodes/*Groups.find(g => g.getName == groupName) match {
       case None => false
       case Some(group) =>
-        group.getSubNodes.find(n => n.getName == nodeName) match {
+        group.getSubNodes*/.find(n => n.getName == nodeName) match {
           case None => false
           case Some(node) =>
             node.getTypeDefinition.getName == "PJavaSENode" ||
               KloudHelper.isASubType(node.getTypeDefinition, "PJavaSENode")
         }
-    }
+//    }
   }
 
   def isASubType (nodeType: TypeDefinition, typeName: String): Boolean = {
@@ -127,7 +141,7 @@ object KloudHelper {
         val subnetOption = KevoreePropertyHelper.getStringPropertyForNode(kloudModel, parentNodeName, "subnet")
         val maskOption = KevoreePropertyHelper.getStringPropertyForNode(kloudModel, parentNodeName, "mask")
         if (subnetOption.isDefined && maskOption.isDefined) {
-          Some(lookingForNewIp(List(), subnetOption.get, maskOption.get))
+          Some(lookingForNewIp(/*List(),*/ subnetOption.get, maskOption.get))
         } else {
           Some("127.0.0.1")
         }
@@ -135,7 +149,7 @@ object KloudHelper {
     }
   }
 
-  private def lookingForNewIp (ips: List[String], subnet: String, mask: String): String = {
+  private def lookingForNewIp (/*ips: List[String],*/ subnet: String, mask: String): String = {
     var newIp = subnet
     val ipBlock = subnet.split("\\.")
     var i = Integer.parseInt(ipBlock(0))
@@ -149,14 +163,17 @@ object KloudHelper {
         while (k < 255 && checkMask(i, j, k, l, subnet, mask) && !found) {
           while (l < 255 && checkMask(i, j, k, l, subnet, mask) && !found) {
             val tmpIp = i + "." + j + "." + k + "." + l
-            if (!ips.contains(tmpIp)) {
-              if (NetworkHelper.isAccessible(tmpIp)) {/*
+//            if (!ips.contains(tmpIp)) {
+              if (!NetworkHelper.isAccessible(tmpIp)) {
+                /*
               val inet = InetAddress.getByName(tmpIp)
               if (!inet.isReachable(1000)) {*/
                 newIp = tmpIp
                 found = true
-              }
-            }
+              }/* else {
+                ips = ips ++ List[String](tmpIp)
+              }*/
+//            }
             l += 1
           }
           l = 1
@@ -275,7 +292,7 @@ object KloudHelper {
   }
 
   def sendModel (model: ContainerRoot, urlPath: String): Boolean = {
-    logger.debug("send model on {}",urlPath)
+    logger.debug("send model on {}", urlPath)
     try {
       val outStream: ByteArrayOutputStream = new ByteArrayOutputStream
       KevoreeXmiHelper.saveStream(outStream, model)

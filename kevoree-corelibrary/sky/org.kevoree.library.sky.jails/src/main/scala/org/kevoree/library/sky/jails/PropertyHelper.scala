@@ -24,7 +24,7 @@ object PropertyHelper {
     (subnetInt & maskInt) == (ipInt & maskInt)
   }
 
-  def lookingForNewIp(ips: List[String], subnet: String, mask: String): String = {
+  def lookingForNewIp(ips: List[String], subnet: String, mask: String): String = { // TODO sometimes the address returned is X.X.X.0
     var newIp = subnet
     val ipBlock = subnet.split("\\.")
     var i = Integer.parseInt(ipBlock(0))

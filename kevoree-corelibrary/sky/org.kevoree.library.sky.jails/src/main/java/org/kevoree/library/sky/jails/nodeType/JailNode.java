@@ -1,12 +1,9 @@
 package org.kevoree.library.sky.jails.nodeType;
 
-import org.kevoree.annotation.DictionaryAttribute;
-import org.kevoree.annotation.DictionaryType;
-import org.kevoree.annotation.Library;
-import org.kevoree.annotation.NodeType;
+import org.kevoree.annotation.*;
 import org.kevoree.library.sky.jails.JailKevoreeNodeRunner;
-import org.kevoree.library.sky.manager.KevoreeNodeRunner;
-import org.kevoree.library.sky.manager.nodeType.IaaSNode;
+import org.kevoree.library.sky.api.KevoreeNodeRunner;
+import org.kevoree.library.sky.api.nodeType.IaaSNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,19 +19,42 @@ import org.slf4j.LoggerFactory;
 @Library(name = "SKY")
 @DictionaryType({
 		@DictionaryAttribute(name = "inet", defaultValue = "alc0", optional = false),
-		@DictionaryAttribute(name = "subnet", defaultValue = "10.0.0.0", optional = false),
+		@DictionaryAttribute(name = "subnet", defaultValue = "10.0.0.0", optional = true),
 		@DictionaryAttribute(name = "mask", defaultValue = "24", vals = {"8", "16", "24"}, optional = false),
-		@DictionaryAttribute(name = "flavor", defaultValue = "kevjail", optional = false),
+		@DictionaryAttribute(name = "flavor", optional = true),
 		@DictionaryAttribute(name = "jailCreationTimeout", defaultValue = "240000", optional = true),
 		@DictionaryAttribute(name = "jailStartTimeout", defaultValue = "10000", optional = true)/*,
-		@DictionaryAttribute(name = "archives", defaultValue = "http://10.0.0.2:8080/archives/", optional = true)*/
+		@DictionaryAttribute(name = "useArchive", defaultValue = "false", vals= {"true", "false"}, optional = true),
+		@DictionaryAttribute(name = "archives", defaultValue = "http://localhost:8080/archives/", optional = true)*/
 })
 @NodeType
 public class JailNode extends IaaSNode {
 	private static final Logger logger = LoggerFactory.getLogger(JailNode.class);
 
+	private String inet;
+	private String subnet;
+	private String mask;
 
-	protected boolean isDaemon() {
+	@Start
+	public void startNode () {
+		inet = this.getDictionary().get("inet").toString();
+		subnet = this.getDictionary().get("subnet").toString();
+		mask = this.getDictionary().get("mask").toString();
+		super.startNode();
+	}
+
+	@Update
+	public void updateNode () {
+		if (!inet.equals(this.getDictionary().get("inet").toString())
+				|| !subnet.equals(this.getDictionary().get("subnet").toString())
+				|| !mask.equals(this.getDictionary().get("mask").toString())) {
+			stopNode();
+			startNode();
+		}
+		super.updateNode();
+	}
+
+	protected boolean isDaemon () {
 		return true;
 	}
 
@@ -44,18 +64,29 @@ public class JailNode extends IaaSNode {
 	}
 
 	public String getNetworkInterface () {
-		return this.getDictionary().get("inet").toString();
+		return inet;
 	}
 
 	public String getNetwork () {
-		return this.getDictionary().get("subnet").toString();
+		return subnet;
 	}
 
 	public String getMask () {
-		return this.getDictionary().get("mask").toString();
+		return mask;
 	}
 
 	public String getFlavor () {
-		return this.getDictionary().get("flavor").toString();
+		if (this.getDictionary().get("flavor") != null) {
+			return this.getDictionary().get("flavor").toString();
+		}
+		return null;
+	}
+
+	public boolean useArchive () {
+		return "true".equals(this.getDictionary().get("useArchive").toString());
+	}
+
+	public String getArchives () {
+		return this.getDictionary().get("archives").toString();
 	}
 }

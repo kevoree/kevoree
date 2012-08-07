@@ -2,11 +2,14 @@ package org.kevoree.library.arduinoNodeType;
 
 import org.kevoree.ContainerRoot;
 import org.kevoree.annotation.Update;
+import org.kevoree.api.service.core.classloading.KevoreeClassLoaderHandler;
 import org.kevoree.extra.kserial.KevoreeSharedCom;
 import org.kevoree.fota.Fota;
+import org.kevoree.fota.Nativelib;
 import org.kevoree.fota.api.FotaEventListener;
 import org.kevoree.fota.events.FotaEvent;
 import org.kevoree.fota.utils.Board;
+import org.kevoree.kcl.KevoreeJarClassLoader;
 import org.kevoreeAdaptation.AdaptationModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,9 +25,6 @@ import java.io.IOException;
  */
 @org.kevoree.annotation.DictionaryType({
         @org.kevoree.annotation.DictionaryAttribute(name = "boardTypeName", defaultValue = "uno", optional = true, vals = {"uno"}),
-        @org.kevoree.annotation.DictionaryAttribute(name = "incremental", defaultValue = "true", optional = true, vals = {"true", "false"}),
-        @org.kevoree.annotation.DictionaryAttribute(name = "pmem", defaultValue = "eeprom", optional = true, vals = {"eeprom", "sd"}),
-        @org.kevoree.annotation.DictionaryAttribute(name = "psize", defaultValue = "MAX", optional = true)  ,
         @org.kevoree.annotation.DictionaryAttribute(name = "timeout", defaultValue = "60", optional = false)
 })
 @org.kevoree.annotation.NodeType
@@ -62,13 +62,8 @@ public class ArduinoWirelessNode extends ArduinoNode
     }
 
 
-    public  void push(final String targetNodeName, final ContainerRoot root, String boardPortName) throws IOException {
-        super.push(targetNodeName,root,boardPortName);
-    }
-
     public boolean deploy(AdaptationModel modelIn, String nodeName, final String boardPortName)
     {
-
 
         if (needAdaptation(modelIn) || forceUpdate)
         {
@@ -78,53 +73,52 @@ public class ArduinoWirelessNode extends ArduinoNode
 
             // compile
             compile(tempRoot, nodeName, boardPortName);
+
+            KevoreeSharedCom.lockPort(boardPortName);
+
+            Fota fota=null;
+
             try
             {
-                KevoreeSharedCom.lockPort(boardPortName);
 
-                Thread flash = new Thread(new Runnable() {
+                /*
+                KevoreeJarClassLoader kcl = (KevoreeJarClassLoader) this.getClass().getClassLoader();
+                kcl.addNativeMapping("libnative.so",Nativelib.configureCL());
+
+                System.loadLibrary("libnative.so");  */
+
+
+                fota = new Fota(boardPortName, Board.ATMEGA328);
+
+                fota.addEventListener(new FotaEventListener() {
+                    // @Override
+                    public void progressEvent(FotaEvent evt) {
+                        System.out.println(" Uploaded " + evt.getSize_uploaded() + "/" + evt.getProgram_size() + " octets");
+                        timeout += 1;
+                    }
+
                     @Override
-                    public void run() {
+                    public void completedEvent(FotaEvent evt) {
+                        System.out.println("Transmission completed successfully <" + evt.getProgram_size() + " octets " + evt.getDuree() + " secondes >");
+                        finished = true;
 
-                        try
-                        {
-
-                            Fota fota = new Fota(boardPortName, Board.ATMEGA328);
-
-                            fota.addEventListener(new FotaEventListener()
-                            {
-                                // @Override
-                                public void progressEvent(FotaEvent evt) {
-                                    logger.info(" Uploaded " + evt.getSize_uploaded()+"/"+evt.getProgram_size() + " octets");
-                                    timeout += 1;
-                                }
-
-                                @Override
-                                public void completedEvent(FotaEvent evt) {
-                                    logger.info("Transmission completed successfully <" + evt.getProgram_size() + " octets "+evt.getDuree()+" secondes >");
-                                    finished = true;
-
-                                }
-                            });
-
-                            String path_hex =sketch.getPath(target);
-                            logger.debug("Fota with "+path_hex);
-                            fota.upload(path_hex);
-
-                            fota.waitingUpload(timeout);
-                        }catch(Exception e)
-                        {
-                            logger.error("Fota ",e);
-                        }
                     }
                 });
 
-                flash.start();
+                String path_hex =sketch.getPath(target);
+                logger.debug("Fota with "+path_hex);
+                fota.upload(path_hex);
+                dico();
+                fota.waitingUpload(timeout);
 
-                flash.join();
-            }  catch (Exception e){
+                fota = null;
 
-            }  finally
+            }catch(Exception e)
+            {
+                System.out.println(e);
+                logger.error("Fota ",e);
+            }
+            finally
             {
                 KevoreeSharedCom.unlockPort(boardPortName);
             }
@@ -134,8 +128,6 @@ public class ArduinoWirelessNode extends ArduinoNode
             incremental(modelIn,nodeName,boardPortName);
         }
 
-
-        logger.info("Arduino finished");
         return true;
 
     }

@@ -20,17 +20,29 @@ import scala.Option;
  */
 @Library(name = "SKY")
 @ComponentType
+@MessageTypes({
+		@MessageType(name = "kloud_request", elems =
+				{@MsgElem(name = "login", className = String.class, optional = false),
+						@MsgElem(name = "password", className = String.class, optional = true),
+						@MsgElem(name = "action", className = String.class, optional = true),
+						@MsgElem(name = "ssh_key", className = String.class, optional = true),
+						@MsgElem(name = "model", className = String.class, optional = true)}
+		)
+})
 @Provides({
-		@ProvidedPort(name = "deploy", type = PortType.MESSAGE), // TODO define a message type
-		@ProvidedPort(name = "release", type = PortType.MESSAGE) // TODO define a message type
+		@ProvidedPort(name = "deploy", type = PortType.MESSAGE, messageType = "kloud_request"),
+		@ProvidedPort(name = "release", type = PortType.MESSAGE, messageType = "kloud_request")
 })
 public class PaaSKloudResourceManager extends AbstractComponentType {
 
-	private Logger logger = LoggerFactory.getLogger(this.getClass());
+	Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	@Start
+	public void start () throws Exception {
+	}
+
 	@Stop
-	public void dummy () {
+	public void stop () {
 	}
 
 	@Port(name = "deploy")
@@ -57,18 +69,20 @@ public class PaaSKloudResourceManager extends AbstractComponentType {
 		if (message instanceof StdKevoreeMessage) {
 			StdKevoreeMessage stdMessage = (StdKevoreeMessage) message;
 			if (stdMessage.getValue("login").isDefined()) {
-				String login = (String) stdMessage.getValue("login").get();
-				KevScriptEngine kengine = getKevScriptEngineFactory().createKevScriptEngine();
-				KloudReasoner.appendScriptToCleanupIaaSModelFromUser(kengine, login, getModelService().getLastModel());
-				for (int i = 0; i < 5; i++) {
-					try {
-						if (kengine.atomicInterpretDeploy()) {
-							return;
-						}
-					} catch (Exception e) {
-						logger.warn("Error while cleanup user, try number " + i);
-					}
-				}
+				release((String) stdMessage.getValue("login").get());
+			}
+		}
+	}
+
+	private void release (String login) {
+		KevScriptEngine kengine = getKevScriptEngineFactory().createKevScriptEngine();
+		KloudReasoner.appendScriptToCleanupIaaSModelFromUser(kengine, login, getModelService().getLastModel());
+		for (int i = 0; i < 5; i++) {
+			try {
+				kengine.atomicInterpretDeploy();
+				break;
+			} catch (Exception e) {
+				logger.warn("Error while cleanup user, try number " + i);
 			}
 		}
 	}
@@ -76,14 +90,13 @@ public class PaaSKloudResourceManager extends AbstractComponentType {
 	private void processNew (ContainerRoot userModel, String login, String sshKey) {
 		logger.debug("starting processNew");
 		KevScriptEngine kengine = getKevScriptEngineFactory().createKevScriptEngine();
-		KloudReasoner.appendCreateGroupScript(getModelService().getLastModel(), login, this.getNodeName(), kengine, sshKey);
+		KloudReasoner.appendCreateGroupScript(getModelService().getLastModel(), login, this.getNodeName(), kengine, sshKey, false);
 		for (int i = 0; i < 5; i++) {
 			try {
-				if (kengine.atomicInterpretDeploy()) {
-					break;
-				}
+				kengine.atomicInterpretDeploy();
+				break;
 			} catch (Exception e) {
-				logger.warn("Error while adding user master group, try number " + i);
+				logger.warn("Error while adding user master group, try number {}", i);
 			}
 		}
 		//ADD GROUP to user model
@@ -93,9 +106,8 @@ public class PaaSKloudResourceManager extends AbstractComponentType {
 			/* Send blindly the model to the core , PaaS Group are in charge to trigger this request , reply false and forward to Master interested node  */
 			getModelService().checkModel(userModelUpdated.get());
 		} else {
-			//TODO CALL RELEASE
+//			release(login); // FIXME CALL RELEASE ?
+
 		}
-
-
 	}
 }

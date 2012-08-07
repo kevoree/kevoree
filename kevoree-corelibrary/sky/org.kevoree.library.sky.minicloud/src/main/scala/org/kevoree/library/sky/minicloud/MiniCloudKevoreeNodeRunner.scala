@@ -18,12 +18,11 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io._
 import java.lang.Thread
-import actors.{TIMEOUT, Actor}
 import util.matching.Regex
-import org.kevoree.library.sky.manager.nodeType.IaaSNode
+import org.kevoree.library.sky.api.nodeType.IaaSNode
 import org.kevoree.{ContainerRoot, KevoreeFactory}
 import org.kevoree.framework.KevoreeXmiHelper
-import org.kevoree.library.sky.manager.{ProcessStreamFileLogger, KevoreeNodeRunner}
+import org.kevoree.library.sky.api.{ProcessStreamFileLogger, KevoreeNodeRunner}
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -36,8 +35,8 @@ import org.kevoree.library.sky.manager.{ProcessStreamFileLogger, KevoreeNodeRunn
 class MiniCloudKevoreeNodeRunner (nodeName: String, iaasNode: IaaSNode) extends KevoreeNodeRunner(nodeName) {
   private val logger: Logger = LoggerFactory.getLogger(classOf[MiniCloudKevoreeNodeRunner])
   private var nodePlatformProcess: Process = null
-  private var outputStreamReader: Thread = null
-  private var errorStreamReader: Thread = null
+//  private var outputStreamReader: Thread = null
+//  private var errorStreamReader: Thread = null
 
   val backupRegex = new Regex(".*<saveRes(.*)/>.*")
   val deployRegex = new Regex(".*<deployRes(.*)/>.*")
@@ -56,11 +55,11 @@ class MiniCloudKevoreeNodeRunner (nodeName: String, iaasNode: IaaSNode) extends 
     try {
       logger.debug("Start " + nodeName)
 
-      val platformFile = iaasNode.getBootStrapperService.resolveKevoreeArtifact("org.kevoree.platform.standalone", "org.kevoree.platform", KevoreeFactory.getVersion);
+      val platformFile = iaasNode.getBootStrapperService.resolveKevoreeArtifact("org.kevoree.platform.standalone", "org.kevoree.platform", KevoreeFactory.getVersion)
       val java: String = getJava
       if (platformFile != null) {
 
-        val tempFile = File.createTempFile("bootModel" + nodeName, ".kev");
+        val tempFile = File.createTempFile("bootModel" + nodeName, ".kev")
         KevoreeXmiHelper.save(tempFile.getAbsolutePath, jailBootStrapModel)
         // FIXME java memory properties must define as Node properties
           // Currently the kloud provider only manages PJavaSeNode that hosts the software user configuration

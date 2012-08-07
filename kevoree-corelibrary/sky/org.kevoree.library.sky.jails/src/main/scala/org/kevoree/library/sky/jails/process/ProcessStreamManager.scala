@@ -43,6 +43,9 @@ class ProcessStreamManager (resultActor: ResultManagementActor, inputStream: Inp
     val exitValue = p.waitFor()
     if (errorBuilder || exitValue != 0) {
       resultActor.error(outputBuilder.toString())
+      if (exitValue != 0) {
+        resultActor.error("The process failed to end")
+      }
     } else {
       resultActor.output(outputBuilder.toString())
     }

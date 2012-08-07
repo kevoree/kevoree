@@ -1,6 +1,6 @@
 package org.kevoree.library.sky.minicloud
 
-import actors.{Actor, TIMEOUT, DaemonActor}
+import actors.{Actor, TIMEOUT}
 
 
 /**

@@ -3,8 +3,9 @@ package org.kevoree.library.sky.jails.process
 import scala.Array._
 import util.matching.Regex
 import java.io.File
-import org.kevoree.library.sky.manager.ProcessStreamFileLogger
+import org.kevoree.library.sky.api.ProcessStreamFileLogger
 import org.slf4j.{LoggerFactory, Logger}
+import org.kevoree.library.sky.api.property.PropertyConversionHelper
 
 
 /**
@@ -16,7 +17,7 @@ import org.slf4j.{LoggerFactory, Logger}
  * @version 1.0
  **/
 
-class ProcessExecutor(creationTimeout : Int, startTimeout : Int) {
+class ProcessExecutor (creationTimeout: Int, startTimeout: Int) {
   private val logger: Logger = LoggerFactory.getLogger(this.getClass)
   private val listJailsProcessBuilder = new ProcessBuilder
   listJailsProcessBuilder.command("/usr/local/bin/ezjail-admin", "list")
@@ -66,15 +67,15 @@ class ProcessExecutor(creationTimeout : Int, startTimeout : Int) {
     new Thread(new ProcessStreamManager(resultActor, p.getInputStream, Array(), Array(new Regex("ifconfig: ioctl \\(SIOCDIFADDR\\): .*")), p)).start()
     val result = resultActor.waitingFor(1000)
     if (!result._1) {
-      logger.debug(result._2)
+      logger.debug("Unable to configure alias: {}", result._2)
     }
     result._1
   }
 
-  def createJail (flavors: Array[String], nodeName: String, newIp: String, archive : Option[String]): Boolean = {
+  def createJail (flavor: String, nodeName: String, newIp: String, archive: Option[String]): Boolean = {
     // TODO add archive attribute and use it to save the jail => the archive must be available from all nodes of the network
-    logger.debug("running {} create -f {} {} {}", Array[AnyRef](ezjailAdmin, flavors, nodeName, newIp))
-    val exec = Array[String](ezjailAdmin, "create", "-f") ++ Array[String](flavors.mkString(" ")) ++ Array[String](nodeName, newIp)
+    logger.debug("running {} create -f {} {} {}", Array[AnyRef](ezjailAdmin, flavor, nodeName, newIp))
+    val exec = Array[String](ezjailAdmin, "create", "-f") ++ Array[String](flavor) ++ Array[String](nodeName, newIp)
     val resultActor = new ResultManagementActor()
     resultActor.starting()
     val p = Runtime.getRuntime.exec(exec)
@@ -161,8 +162,14 @@ class ProcessExecutor(creationTimeout : Int, startTimeout : Int) {
     // It will be better to add a new node hosted by the PJavaSeNode
     var exec = Array[String](jexec, jailId, "/usr/local/bin/java")
     if (ram != null && ram != "N/A") {
-      // FIXME currently we use RAM properties as raw value
-      exec = exec ++ Array[String](/*"-Xms512m", */ "-Xmx" + ram + "m")
+      var limit = 0l
+      try {
+        limit = PropertyConversionHelper.getRAM(ram)
+        exec = exec ++ Array[String](/*"-Xms512m", */ "-Xmx" + limit + "m")
+      } catch {
+        case e : NumberFormatException => logger.warn("Unable to take into account RAM limitation because the value {} is not well defined for {}. Default value used.", ram, nodeName)
+      }
+
     }
     exec = exec ++ Array[String](/*"-XX:PermSize=256m", "-XX:MaxPermSize=512m", */ "-Djava.awt.headless=true",
                                   "-Dnode.name=" + nodeName, "-Dnode.update.timeout=" + System.getProperty("node.update.timeout"),
@@ -214,6 +221,7 @@ class ProcessExecutor(creationTimeout : Int, startTimeout : Int) {
   def deleteNetworkAlias (networkInterface: String, oldIP: String): Boolean = {
     val resultActor = new ResultManagementActor()
     resultActor.starting()
+    logger.debug("running {} {} -alias {}", Array[AnyRef](ezjailAdmin, networkInterface, oldIP))
     val p = Runtime.getRuntime.exec(Array[String](ifconfig, networkInterface, "-alias", oldIP))
     new Thread(new ProcessStreamManager(resultActor, p.getInputStream, Array(), Array(new Regex("ifconfig: ioctl \\(SIOCDIFADDR\\): .*")), p)).start()
     val result = resultActor.waitingFor(1000)

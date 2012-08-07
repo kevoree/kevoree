@@ -5,6 +5,7 @@ import util.matching.Regex
 import org.slf4j.LoggerFactory
 import org.kevoree.ContainerRoot
 import org.kevoree.framework.KevoreePropertyHelper
+import org.kevoree.library.sky.api.property.PropertyConversionHelper
 
 /**
  * Created by IntelliJ IDEA.
@@ -37,19 +38,37 @@ object JailsConstraintsConfiguration {
         logger.debug("{} = {}", "RAM", property)
         if (property != "N/A") {
           try {
-            val limit = java.lang.Long.parseLong(property.toString) * 1024 * 1024
-            exec = Array[String]("rctl", "-a", "jail:" + nodeName + ":vmemoryuse:" + modeId + "=" + limit)
-            val resultActor = new ResultManagementActor()
-            resultActor.starting()
-            logger.debug("running {}", exec.asInstanceOf[Array[AnyRef]])
-            val p = Runtime.getRuntime.exec(exec)
-            new Thread(new ProcessStreamManager(resultActor, p.getInputStream, Array(new Regex(".*")), Array(), p)).start()
-            val result = resultActor.waitingFor(500)
-            if (result._1) {
-              execResult = true
+            //            var limit = 0
+            /*if (property.toLowerCase.endsWith("gb") || property.toLowerCase.endsWith("g")) {
+              limit = Integer.parseInt(property.substring(0, property.length - 2)) * 1024 * 1024 * 1024
+            } else if (property.toLowerCase.endsWith("mb") || property.toLowerCase.endsWith("m")) {
+              limit = Integer.parseInt(property.substring(0, property.length - 2)) * 1024 * 1024
+            } else if (property.toLowerCase.endsWith("kb") || property.toLowerCase.endsWith("k")) {
+              limit = Integer.parseInt(property.substring(0, property.length - 2)) * 1024 * 1024
             } else {
-              logger.debug("unable to set RAM limitation:\n{}", result._2)
-              execResult = false
+              try {
+                limit = Integer.parseInt(property)
+              } catch {
+                case e: NumberFormatException => logger
+                  .warn("Unable to take into account RAM limitation because the value {} is not well defined for {}. Default value used.", property, nodeName)
+              }
+            }*/
+            val limit = PropertyConversionHelper.getRAM(property)
+            // set RAM limitation if the attribute can be used
+            if (limit > 0) {
+              exec = Array[String]("rctl", "-a", "jail:" + nodeName + ":vmemoryuse:" + modeId + "=" + limit)
+              val resultActor = new ResultManagementActor()
+              resultActor.starting()
+              logger.debug("running {}", exec.asInstanceOf[Array[AnyRef]])
+              val p = Runtime.getRuntime.exec(exec)
+              new Thread(new ProcessStreamManager(resultActor, p.getInputStream, Array(new Regex(".*")), Array(), p)).start()
+              val result = resultActor.waitingFor(500)
+              if (result._1) {
+                execResult = true
+              } else {
+                logger.debug("unable to set RAM limitation:\n{}", result._2)
+                execResult = false
+              }
             }
           } catch {
             case e: NumberFormatException => logger.warn("Unable to take into account RAM limitation because the value {} is not well defined for {}", property, nodeName)
@@ -104,7 +123,7 @@ object JailsConstraintsConfiguration {
         property = KevoreePropertyHelper.getPropertyForNode(model, nodeName, "WALLCLOCKTIME").getOrElse("N/A").toString
         if (execResult && property != "N/A") {
           try {
-            val limit = Integer.parseInt(property.toString)
+            val limit = Integer.parseInt(property)
             exec = Array[String]("rctl", "-a", "jail:" + nodeName + ":wallclock:" + modeId + "=" + limit)
             val resultActor = new ResultManagementActor()
             resultActor.starting()
@@ -124,8 +143,8 @@ object JailsConstraintsConfiguration {
         }
         property = KevoreePropertyHelper.getPropertyForNode(model, nodeName, "DATA_SIZE").getOrElse("N/A").toString
         if (execResult && property != "N/A") {
-          var limit = 5 * 1024 * 1024
-          if (property.toLowerCase.endsWith("gb") || property.toLowerCase.endsWith("g")) {
+          //          var limit = 5 * 1024 * 1024
+          /*if (property.toLowerCase.endsWith("gb") || property.toLowerCase.endsWith("g")) {
             limit = Integer.parseInt(property.substring(0, property.length - 2)) * 1024 * 1024 * 1024
           } else if (property.toLowerCase.endsWith("mb") || property.toLowerCase.endsWith("m")) {
             limit = Integer.parseInt(property.substring(0, property.length - 2)) * 1024 * 1024
@@ -133,24 +152,28 @@ object JailsConstraintsConfiguration {
             limit = Integer.parseInt(property.substring(0, property.length - 2)) * 1024 * 1024
           } else {
             try {
-              limit = Integer.parseInt(property.toString)
+              limit = Integer.parseInt(property)
             } catch {
               case e: NumberFormatException => logger.warn("Unable to take into account DATA_SIZE limitation because the value {} is not well defined for {}. Default value used.", property, nodeName)
             }
-          }
-
-          exec = Array[String]("rctl", "-a", "jail:" + nodeName + ":datasize:" + modeId + "=" + limit)
-          val resultActor = new ResultManagementActor()
-          resultActor.starting()
-          logger.debug("running {}", exec.asInstanceOf[Array[AnyRef]])
-          val p = Runtime.getRuntime.exec(exec)
-          new Thread(new ProcessStreamManager(resultActor, p.getInputStream, Array(new Regex(".*")), Array(), p)).start()
-          val result = resultActor.waitingFor(500)
-          if (result._1) {
-            execResult = true
-          } else {
-            logger.debug("unable to set DATA_SIZE limitation:\n{}", result._2)
-            execResult = false
+          }*/
+          try {
+            val limit = PropertyConversionHelper.getDataSize(property)
+            exec = Array[String]("rctl", "-a", "jail:" + nodeName + ":datasize:" + modeId + "=" + limit)
+            val resultActor = new ResultManagementActor()
+            resultActor.starting()
+            logger.debug("running {}", exec)
+            val p = Runtime.getRuntime.exec(exec)
+            new Thread(new ProcessStreamManager(resultActor, p.getInputStream, Array(new Regex(".*")), Array(), p)).start()
+            val result = resultActor.waitingFor(500)
+            if (result._1) {
+              execResult = true
+            } else {
+              logger.debug("unable to set DATA_SIZE limitation:\n{}", result._2)
+              execResult = false
+            }
+          } catch {
+            case e: NumberFormatException => logger.warn("Unable to take into account DATA_SIZE limitation because the value {} is not well defined for {}. Default value used.", property, nodeName)
           }
         }
         logger.debug("specify constraints is done: {}", execResult)
@@ -173,26 +196,28 @@ object JailsConstraintsConfiguration {
         val result = resultActor.waitingFor(500)
         if (result._1) {
           val frequency = result._2.trim()
-          var valueFrequency = java.lang.Double.parseDouble(frequency.substring(0, frequency.length() - 3))
-          val unit = frequency.substring(frequency.length() - 3)
+//          var valueFrequency = java.lang.Double.parseDouble(frequency.substring(0, frequency.length() - 3))
+          /*val unit = frequency.substring(frequency.length() - 3)
           if (unit.equalsIgnoreCase("ghz")) {
             valueFrequency = valueFrequency * 1024 * 1024 * 1024
           } else if (unit.equalsIgnoreCase("mhz")) {
             valueFrequency = valueFrequency * 1024 * 1024
           } else if (unit.equalsIgnoreCase("khz")) {
             valueFrequency = valueFrequency * 1024
-          }
-          valueFrequency = valueFrequency.longValue()
-          var valueFrequency4Jail = java.lang.Double.parseDouble(property.substring(0, property.length() - 3))
-          val unit4Jail = frequency.substring(frequency.length() - 3)
+          }*/
+          val valueFrequency = PropertyConversionHelper.getCPUFrequency(property)
+//          valueFrequency = valueFrequency.longValue()
+//          var valueFrequency4Jail = java.lang.Double.parseDouble(property.substring(0, property.length() - 3))
+          /*val unit4Jail = frequency.substring(frequency.length() - 3)
           if (unit4Jail.equalsIgnoreCase("ghz")) {
             valueFrequency4Jail = valueFrequency4Jail * 1024 * 1024 * 1024
           } else if (unit4Jail.equalsIgnoreCase("mhz")) {
             valueFrequency4Jail = valueFrequency4Jail * 1024 * 1024
           } else if (unit4Jail.equalsIgnoreCase("khz")) {
             valueFrequency4Jail = valueFrequency4Jail * 1024
-          }
-          valueFrequency4Jail = valueFrequency4Jail.longValue()
+          }*/
+          val valueFrequency4Jail = PropertyConversionHelper.getCPUFrequency(property)
+//          valueFrequency4Jail = valueFrequency4Jail.longValue()
           ((valueFrequency4Jail * 100 / valueFrequency) + 0.5).intValue() + ""
         } else {
           "N/A"
