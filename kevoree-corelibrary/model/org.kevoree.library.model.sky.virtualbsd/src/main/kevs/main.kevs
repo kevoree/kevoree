@@ -1,7 +1,7 @@
 // nodes configuration
 merge "mvn:org.kevoree.corelibrary.model/org.kevoree.library.model.sky/{kevoree.version}"
 
-addNode virtualbsd : JailNode {role="host/container", port="7000", inet="em1", subnet="172.16.78.0", mask="24", flavor="openjdk6", jailCreationTimeout="100000", jailStartTimeout="200000",logLevel="DEBUG"}
+addNode virtualbsd : JailNode {role="host/container", port="7000", inet="em1", subnet="172.16.78.0", mask="24", flavor="base-openjdk6-inria", jailCreationTimeout="100000", jailStartTimeout="200000",logLevel="DEBUG"}
 
 network virtualbsd => virtualbsd { "KEVOREE.remote.node.ip"= "172.16.78.101"}
 // group configuration
