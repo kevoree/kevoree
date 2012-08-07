@@ -29,9 +29,18 @@ import java.util.List;
  */
 @Library(name = "SKY")
 @ComponentType
+@MessageTypes({
+		@MessageType(name = "kloud_request", elems =
+				{@MsgElem(name = "login", className = String.class, optional = false),
+						@MsgElem(name = "password", className = String.class, optional = true),
+						@MsgElem(name = "action", className = String.class, optional = true),
+						@MsgElem(name = "ssh_key", className = String.class, optional = true),
+						@MsgElem(name = "model", className = String.class, optional = true)}
+		)
+})
 @Requires({
-		@RequiredPort(name = "deploy", type = PortType.MESSAGE, optional = false), // TODO define a message type
-		@RequiredPort(name = "release", type = PortType.MESSAGE, optional = false), // TODO define a message type
+		@RequiredPort(name = "deploy", type = PortType.MESSAGE, optional = false, messageType = "kloud_request"),
+		@RequiredPort(name = "release", type = PortType.MESSAGE, optional = false, messageType = "kloud_request"),
 		@RequiredPort(name = "authentication", type = PortType.SERVICE, className = Authentication.class, optional = true)
 })
 @DictionaryType({

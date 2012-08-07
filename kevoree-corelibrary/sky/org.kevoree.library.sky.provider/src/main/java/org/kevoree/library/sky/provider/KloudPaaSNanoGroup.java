@@ -45,7 +45,7 @@ public class KloudPaaSNanoGroup extends AbstractGroupType {
 
 	private int port;
 
-	ExecutorService poolUpdate = Executors.newSingleThreadExecutor();
+	protected ExecutorService poolUpdate = Executors.newSingleThreadExecutor();
 
 	@Start
 	public void startRestGroup () throws IOException {
