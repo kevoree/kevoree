@@ -24,13 +24,13 @@ public class BenchInstall extends AbstractComponentType implements Runnable {
 
 
     @Start
-    public void start(){
-       t = new Thread(this);
+    public void start() {
+        t = new Thread(this);
         t.start();
     }
 
     @Stop
-    public void stop(){
+    public void stop() {
         t.interrupt();
         t = null;
     }
@@ -41,27 +41,29 @@ public class BenchInstall extends AbstractComponentType implements Runnable {
     public void run() {
 
         KevScriptEngine engine = getKevScriptEngineFactory().createKevScriptEngine();
-        engine.append("merge 'mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.fakeDomo/"+ org.kevoree.KevoreeFactory.getVersion()+"'");
-        String name = "benchConsole"+Math.abs(r.nextInt());
-        engine.addVariable("benchName",name);
-        engine.addVariable("nodeName",getNodeName());
+        engine.append("merge 'mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.fakeDomo/" + org.kevoree.KevoreeFactory.getVersion() + "'");
+        String name = "benchConsole" + Math.abs(r.nextInt());
+        engine.addVariable("benchName", name);
+        engine.addVariable("nodeName", getNodeName());
         engine.append("addComponent {benchName}@{nodeName} : FakeConsole");
-		try {
-			engine.interpretDeploy();
-		} catch (KevScriptEngineException e) {
-			e.printStackTrace();
-		}
-		/*try {
-					Thread.sleep(4000);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}  */
+        try {
+            engine.atomicInterpretDeploy();
+        } catch (KevScriptEngineException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println("After install Console");
+        try {
+            Thread.sleep(4000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         engine.clearScript();
         engine.append("removeComponent {benchName}@{nodeName}");
-		try {
-			engine.interpretDeploy();
-		} catch (KevScriptEngineException e) {
-			e.printStackTrace();
-		}
-	}
+        try {
+            engine.atomicInterpretDeploy();
+        } catch (KevScriptEngineException e) {
+            e.printStackTrace();
+        }
+    }
 }
