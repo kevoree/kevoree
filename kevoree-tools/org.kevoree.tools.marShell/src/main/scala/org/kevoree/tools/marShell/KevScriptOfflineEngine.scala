@@ -33,6 +33,7 @@ class KevScriptOfflineEngine(srcModel: ContainerRoot, bootstraper : Bootstraper)
     varMap.clear()
   }
 
+  @throws(classOf[KevScriptEngineException])
   def interpret(): ContainerRoot = {
     val resolvedScript = resolveVariables
     logger.debug("KevScriptEngine before execution with script = {}", resolvedScript)
@@ -54,10 +55,14 @@ class KevScriptOfflineEngine(srcModel: ContainerRoot, bootstraper : Bootstraper)
     }
   }
 
+  @throws(classOf[KevScriptEngineException])
   def interpretDeploy() {
     throw new Exception("Deploy not allowed for offline KevSEngine")
   }
 
-  def atomicInterpretDeploy(): Boolean = false
+  @throws(classOf[KevScriptEngineException])
+  def atomicInterpretDeploy(){
+    throw new Exception("Deploy not allowed for offline KevSEngine")
+  }
   
 }
