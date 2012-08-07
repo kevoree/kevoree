@@ -11,6 +11,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/**
+ * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.gnu.org/licenses/lgpl-3.0.txt
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.kevoree.tools.marShell
 
 import interpreter.KevsInterpreterContext
@@ -60,17 +73,17 @@ class KevScriptCoreEngine (core: KevoreeModelHandlerService, bootstraper: Bootst
 
   @throws(classOf[KevScriptEngineException])
   def interpretDeploy () {
-    internal_interpret_deploy(false)
+    internal_interpret_deploy(atomic = false)
   }
 
   @throws(classOf[KevScriptEngineException])
   def atomicInterpretDeploy () {
-    internal_interpret_deploy(true)
+    internal_interpret_deploy(atomic = true)
   }
 
 
   @throws(classOf[KevScriptEngineException])
-  private def internal_interpret_deploy (atomic: Boolean): Boolean = {
+  private def internal_interpret_deploy (atomic: Boolean)/*: Boolean*/ = {
     try {
       val resolvedScript = resolveVariables
       logger.debug("KevScriptEngine before execution with script = {}", resolvedScript)
@@ -86,7 +99,7 @@ class KevScriptCoreEngine (core: KevoreeModelHandlerService, bootstraper: Bootst
             if (atomic) {
               try {
                 core.atomicCompareAndSwapModel(inputModel, targetModel)
-                //                return true
+//                return true
               } catch {
                 case _@e => throw new KevScriptEngineException {
                   override def getMessage = "Unable to compare and swap model : " + e.getMessage
@@ -96,11 +109,12 @@ class KevScriptCoreEngine (core: KevoreeModelHandlerService, bootstraper: Bootst
               }
             } else {
               core.compareAndSwapModel(inputModel, targetModel)
-              //              return true
+//                            return true
             }
-          }
-          throw new KevScriptEngineException {
-            override def getMessage = "Interpreter Error : "
+          } else {
+            throw new KevScriptEngineException {
+              override def getMessage = "Interpreter Error : "
+            }
           }
         }
         case None => throw new KevScriptEngineException {
