@@ -497,6 +497,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService /*with KevoreeThreadAct
    * Compares the UUID of the model and the current UUID to verify that no update occurred in between the moment the model had been delivered and the moment the update is asked.<br/>
    * If OK, updates the system and switches to the new model, synchronously (blocking)
    */
+  @throws(classOf[KevoreeModelUpdateException])
   override def atomicCompareAndSwapModel(previousModel: UUIDModel, targetModel: ContainerRoot): Date = {
     val result = scheduler.submit(CompareAndSwapCallable(previousModel,targetModel)).get()
     if (!result) {

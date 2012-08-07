@@ -14,16 +14,14 @@
 package org.kevoree.api.service.core.script;
 
 /**
- * Created by IntelliJ IDEA.
+ * Created with IntelliJ IDEA.
  * User: duke
- * Date: 11/12/11
- * Time: 20:22
+ * Date: 07/08/12
+ * Time: 22:12
  */
-public class KevScriptEngineException extends Exception {
+public class KevScriptEngineParseErrorException extends KevScriptEngineException {
 
-
-    public KevScriptEngineException(String msg){
+    public KevScriptEngineParseErrorException(String msg) {
         super(msg);
     }
-
 }

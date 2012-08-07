@@ -3,7 +3,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * 	http://www.gnu.org/licenses/lgpl-3.0.txt
+ * http://www.gnu.org/licenses/lgpl-3.0.txt
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,7 +16,7 @@ package org.kevoree.tools.marShell
 import interpreter.KevsInterpreterContext
 import org.kevoree.ContainerRoot
 import interpreter.KevsInterpreterAspects._
-import org.kevoree.api.service.core.script.{KevScriptEngine, KevScriptEngineException}
+import org.kevoree.api.service.core.script.{KevScriptEngineParseErrorException, KevScriptEngine, KevScriptEngineException}
 import org.kevoree.api.Bootstraper
 
 
@@ -27,8 +27,8 @@ import org.kevoree.api.Bootstraper
  * Time: 16:14
  */
 
-class KevScriptOfflineEngine(srcModel: ContainerRoot, bootstraper : Bootstraper) extends KevScriptAbstractEngine {
-  
+class KevScriptOfflineEngine(srcModel: ContainerRoot, bootstraper: Bootstraper) extends KevScriptAbstractEngine {
+
   def clearVariables() {
     varMap.clear()
   }
@@ -43,26 +43,24 @@ class KevScriptOfflineEngine(srcModel: ContainerRoot, bootstraper : Bootstraper)
         val ctx = KevsInterpreterContext(inputModel)
         ctx.setBootstraper(bootstraper)
         if (s.interpret(ctx.setVarMap(varMap))) {
-          return inputModel
-        }
-        throw new KevScriptEngineException {
-          override def getMessage = "Interpreter Error : "
+          inputModel
+        } else {
+          throw new KevScriptEngineException("Interpreter Error : ")
         }
       }
-      case None => throw new KevScriptEngineException {
-        override def getMessage = "Parser Error : " + parser.lastNoSuccess.toString
-      }
+      case None => throw new KevScriptEngineParseErrorException("Parser Error : " + parser.lastNoSuccess.toString)
     }
   }
 
+
   @throws(classOf[KevScriptEngineException])
   def interpretDeploy() {
-    throw new Exception("Deploy not allowed for offline KevSEngine")
+    throw new KevScriptEngineException("Deploy not allowed for offline KevSEngine")
   }
 
   @throws(classOf[KevScriptEngineException])
-  def atomicInterpretDeploy(){
-    throw new Exception("Deploy not allowed for offline KevSEngine")
+  def atomicInterpretDeploy() {
+    throw new KevScriptEngineException("Deploy not allowed for offline KevSEngine")
   }
-  
+
 }
