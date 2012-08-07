@@ -41,7 +41,7 @@ public interface KevoreeModelHandlerService {
 
     public void compareAndSwapModel(UUIDModel previousModel, ContainerRoot targetModel);
 
-    public Date atomicCompareAndSwapModel(UUIDModel previousModel, ContainerRoot targetModel);
+    public Date atomicCompareAndSwapModel(UUIDModel previousModel, ContainerRoot targetModel) throws KevoreeModelUpdateException;
 
     public List<ContainerRoot> getPreviousModel();
 
