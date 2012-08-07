@@ -38,6 +38,9 @@
         <module>../org.kevoree.library.javase.webserver.api</module>
         <module>../org.kevoree.library.javase.webserver.tjws</module>
         <module>../org.kevoree.library.javase.webserver.sample</module>
+        <module>../org.kevoree.library.javase.webserver.spray</module>
+        <module>../org.kevoree.library.javase.webserver.servlet</module>
+
 
         <module>../org.kevoree.library.javase.nanohttp</module>
         <module>../org.kevoree.library.javase.nanohttpAutoDiscovery</module>
