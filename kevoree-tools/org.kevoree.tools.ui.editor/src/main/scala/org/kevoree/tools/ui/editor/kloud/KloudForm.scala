@@ -3,7 +3,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * 	http://www.gnu.org/licenses/lgpl-3.0.txt
+ * http://www.gnu.org/licenses/lgpl-3.0.txt
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -29,7 +29,7 @@ package org.kevoree.tools.ui.editor.kloud
 import com.explodingpixels.macwidgets.HudWindow
 import javax.swing._
 import java.awt.{FlowLayout, Color, BorderLayout}
-import java.awt.event.{ActionEvent, ActionListener, FocusEvent, FocusListener}
+import java.awt.event._
 import org.kevoree.tools.ui.editor.property.SpringUtilities
 import org.kevoree.{KevoreeFactory, ContainerRoot}
 import org.kevoree.framework.KevoreeXmiHelper
@@ -49,7 +49,7 @@ import java.net.{URLDecoder, URLEncoder, HttpURLConnection, URL}
  * @version 1.0
  */
 
-class KloudForm (editor: KevoreeEditor) {
+class KloudForm (editor: KevoreeEditor, button: AbstractButton) {
   var logger = LoggerFactory.getLogger(this.getClass)
   private val defaultAddress = "http://10.0.0.2:8080/kloud"
 
@@ -72,10 +72,10 @@ class KloudForm (editor: KevoreeEditor) {
   // set the login
   val loginTxtField = new JTextField()
   loginTxtField.setUI(new HudTextFieldUI())
-  val loginLbl = new JLabel("Login: ", SwingConstants.TRAILING);
-  loginLbl.setUI(new HudLabelUI());
-  loginLbl.setOpaque(false);
-  loginLbl.setLabelFor(loginTxtField);
+  val loginLbl = new JLabel("Login: ", SwingConstants.TRAILING)
+  loginLbl.setUI(new HudLabelUI())
+  loginLbl.setOpaque(false)
+  loginLbl.setLabelFor(loginTxtField)
   configLayout.add(loginLbl)
   configLayout.add(loginTxtField)
 
@@ -94,11 +94,11 @@ class KloudForm (editor: KevoreeEditor) {
   // set the password
   val passwordTxtField = new JPasswordField()
   passwordTxtField.setUI(new HudPasswordFieldUI())
-  val passwordLbl = new JLabel("Password: ", SwingConstants.TRAILING);
+  val passwordLbl = new JLabel("Password: ", SwingConstants.TRAILING)
   passwordLbl.setForeground(Color.WHITE)
-  passwordLbl.setUI(new HudLabelUI());
-  passwordLbl.setOpaque(false);
-  passwordLbl.setLabelFor(passwordTxtField);
+  passwordLbl.setUI(new HudLabelUI())
+  passwordLbl.setOpaque(false)
+  passwordLbl.setLabelFor(passwordTxtField)
   configLayout.add(passwordLbl)
   configLayout.add(passwordTxtField)
 
@@ -117,20 +117,20 @@ class KloudForm (editor: KevoreeEditor) {
   // set the ssh key
   val sshTxtField = new JTextField()
   sshTxtField.setUI(new HudTextFieldUI())
-  val sshLbl = new JLabel("SSH Public Key: ", SwingConstants.TRAILING);
-  sshLbl.setUI(new HudLabelUI());
-  sshLbl.setOpaque(false);
-  sshLbl.setLabelFor(sshTxtField);
+  val sshLbl = new JLabel("SSH Public Key: ", SwingConstants.TRAILING)
+  sshLbl.setUI(new HudLabelUI())
+  sshLbl.setOpaque(false)
+  sshLbl.setLabelFor(sshTxtField)
   configLayout.add(sshLbl)
   configLayout.add(sshTxtField)
 
   // set the Kloud address
   val addressTxtField = new JTextField(defaultAddress)
   addressTxtField.setUI(new HudTextFieldUI())
-  val addressLbl = new JLabel("Kloud address: ", SwingConstants.TRAILING);
-  addressLbl.setUI(new HudLabelUI());
-  addressLbl.setOpaque(false);
-  addressLbl.setLabelFor(addressTxtField);
+  val addressLbl = new JLabel("Kloud address: ", SwingConstants.TRAILING)
+  addressLbl.setUI(new HudLabelUI())
+  addressLbl.setOpaque(false)
+  addressLbl.setLabelFor(addressTxtField)
   configLayout.add(addressLbl)
   configLayout.add(addressTxtField)
 
@@ -239,13 +239,21 @@ class KloudForm (editor: KevoreeEditor) {
   layoutPopup.add(configLayout, BorderLayout.CENTER)
   layoutPopup.add(submissionLayout, BorderLayout.SOUTH)
   newPopup.getContentPane.add(layoutPopup)
+  newPopup.getJDialog.addComponentListener(new ComponentAdapter() {
+
+    override def componentHidden (e: ComponentEvent) {
+      hide()
+    }
+  })
 
   def display () {
     newPopup.getJDialog.setVisible(true)
+    button.setEnabled(true)
   }
 
   def hide () {
     newPopup.getJDialog.setVisible(false)
+    button.setEnabled(false)
   }
 
   private def sendModel (password: String, sshKey: String, address: String, model: ContainerRoot): Boolean = {
@@ -258,8 +266,10 @@ class KloudForm (editor: KevoreeEditor) {
     bodyBuilder append URLEncoder.encode(password, "UTF-8")
     bodyBuilder append "&ssh_key="
     bodyBuilder append URLEncoder.encode(sshKey, "UTF-8")
-    bodyBuilder append "&model="
-    bodyBuilder append URLEncoder.encode(KevoreeXmiHelper.saveToString(model, false), "UTF-8")
+    if (model.getGroups.size > 0 && model.getNodes.size > 0) {
+      bodyBuilder append "&model="
+      bodyBuilder append URLEncoder.encode(KevoreeXmiHelper.saveToString(model, prettyPrint = false), "UTF-8")
+    }
 
     logger.debug("url=>" + address)
     try {
@@ -385,17 +395,62 @@ class KloudForm (editor: KevoreeEditor) {
       wr.close()
       rd.close()
 
-      val response = new String(byteArrayOutputStream.toByteArray, "UTF-8")
+      var response = new String(byteArrayOutputStream.toByteArray, "UTF-8")
+
+      var nbTry = 20
+      while (response.startsWith("<wait") && nbTry > 0) {
+        logger.debug(response)
+        nbTry = nbTry - 1
+        Thread.sleep(3000)
+        try {
+          val url = new URL(address)
+          val connection = url.openConnection().asInstanceOf[HttpURLConnection]
+          connection.setRequestMethod("POST")
+          connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded")
+          connection.setRequestProperty("Content-Length", "" + Integer.toString(bodyBuilder.length))
+          connection.setRequestProperty("HOST", "kevoree.org")
+          connection.setConnectTimeout(3000)
+          connection.setDoOutput(true)
+          val wr: OutputStreamWriter = new OutputStreamWriter(connection.getOutputStream)
+          wr.write(bodyBuilder.toString())
+          wr.flush()
+          val rd = connection.getInputStream
+          val byteArrayOutputStream = new ByteArrayOutputStream()
+          val bytes = new Array[Byte](2048)
+          var length = 0
+          //      var line: String = rd.readLine
+          length = rd.read(bytes)
+          while (length != -1) {
+            byteArrayOutputStream.write(bytes, 0, length)
+            //        response append bytes + "\n"
+            length = rd.read(bytes)
+          }
+
+          wr.close()
+          rd.close()
+
+          response = new String(byteArrayOutputStream.toByteArray, "UTF-8")
+        } catch {
+          case _@e =>
+        }
+      }
       // look the answer to know if the model has been correctly sent
-      if (response.startsWith("<ack")) {
-        true
-      } else {
+      if (response.startsWith("<wait")) {
+        logger.debug("Timeout, unable to get your configuration model on the Kloud")
+        false
+      } else if (response.startsWith("<nack")) {
         try {
           val errorMessage = URLDecoder.decode(response, "UTF-8").split("error=\"")(1)
           logger.warn("Unable to release your configuration on the Kloud: {}", errorMessage.substring(0, errorMessage.indexOf("\"")))
         } catch {
           case _@e => logger.debug("Unable to catch error", e)
         }
+        false
+      } else if (response.startsWith("<ack")) {
+        // TODO clean the model by removing all IP data and the user group
+        true
+      } else {
+        logger.warn("Unknown response: {}", response)
         false
       }
     } catch {
