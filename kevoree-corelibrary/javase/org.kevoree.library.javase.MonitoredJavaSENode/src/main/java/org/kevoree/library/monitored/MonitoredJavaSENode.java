@@ -36,7 +36,7 @@ public class MonitoredJavaSENode extends JavaSENode implements MonitorEventHandl
         mapper = new CommandMapper(this,this);
         gauges = new FastMap<String,Meter>().shared();
         super.startNode();
-        ConsoleReporter.enable(5, TimeUnit.SECONDS);
+        //ConsoleReporter.enable(5, TimeUnit.SECONDS);
        // GangliaReporter.enable(30, TimeUnit.SECONDS, "10.0.0.2", 8649);
     }
 

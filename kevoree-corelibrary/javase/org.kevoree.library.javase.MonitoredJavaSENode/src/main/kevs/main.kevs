@@ -6,11 +6,12 @@ merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.defaultChan
 
 addNode node0 : MonitoredJavaSENode
 
-//addComponent input@node0 : CamelTimer { period='500' }
-//addChannel logQueue : CamelNetty
-//bind input.tick@node0 => logQueue
+/*
+addComponent input@node0 : CamelTimer { period='500' }
+addChannel logQueue : CamelNetty
+bind input.tick@node0 => logQueue
 
-//addComponent console@node0 : FakeConsole
-//bind console.showText@node0 => logQueue
-
+addComponent console@node0 : FakeConsole
+bind console.showText@node0 => logQueue
+*/
 addComponent b@node0 : BenchInstall
