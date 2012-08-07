@@ -1,6 +1,5 @@
-package org.kevoree.library.sky.manager
+package org.kevoree.library.sky.api
 
-import org.kevoree.framework.KevoreePropertyHelper
 import org.slf4j.{LoggerFactory, Logger}
 import org.kevoree.{TypeDefinition, ContainerRoot}
 import java.io._

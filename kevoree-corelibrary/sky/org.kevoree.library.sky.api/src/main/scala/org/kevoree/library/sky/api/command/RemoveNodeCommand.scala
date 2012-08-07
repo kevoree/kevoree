@@ -1,8 +1,8 @@
-package org.kevoree.library.sky.manager.command
+package org.kevoree.library.sky.api.command
 
-import org.kevoree.{ContainerRoot, ContainerNode}
+import org.kevoree.ContainerRoot
 import org.kevoree.api.PrimitiveCommand
-import org.kevoree.library.sky.manager.nodeType.IaaSNode
+import org.kevoree.library.sky.api.nodeType.IaaSNode
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com

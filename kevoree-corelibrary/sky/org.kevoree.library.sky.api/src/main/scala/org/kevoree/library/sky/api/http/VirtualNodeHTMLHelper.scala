@@ -1,7 +1,7 @@
-package org.kevoree.library.sky.manager.http
+package org.kevoree.library.sky.api.http
 
 import io.Source
-import org.kevoree.library.sky.manager.{KevoreeNodeRunner, KevoreeNodeManager}
+import org.kevoree.library.sky.api.{KevoreeNodeRunner, KevoreeNodeManager}
 
 /**
  * Created by IntelliJ IDEA.

@@ -1,6 +1,6 @@
-package org.kevoree.library.sky.manager
+package org.kevoree.library.sky.api
 
-import actors.{Actor, TIMEOUT, DaemonActor}
+import actors.{Actor, TIMEOUT}
 
 
 /**
@@ -12,10 +12,11 @@ import actors.{Actor, TIMEOUT, DaemonActor}
  * @version 1.0
  */
 
-class KillWatchDog(process : Process, timout : Int)  extends Actor {
-  case class STOP()
+class KillWatchDog (process: Process, timout: Int) extends Actor {
 
-  def stop() {
+  case class STOP ()
+
+  def stop () {
     this ! STOP()
   }
 

@@ -1,7 +1,7 @@
-package org.kevoree.library.sky.manager.http
+package org.kevoree.library.sky.api.http
 
 import org.kevoree.library.webserver.internal.KTinyWebServerInternalServe
-import org.kevoree.library.sky.manager.nodeType.IaaSNode
+import org.kevoree.library.sky.api.nodeType.IaaSNode
 import org.slf4j.LoggerFactory
 import java.util.Properties
 import javax.servlet.http.{HttpServletResponse, HttpServletRequest, HttpServlet}

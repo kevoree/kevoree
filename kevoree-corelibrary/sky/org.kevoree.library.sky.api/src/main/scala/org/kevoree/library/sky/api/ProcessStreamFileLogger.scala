@@ -1,4 +1,4 @@
-package org.kevoree.library.sky.manager
+package org.kevoree.library.sky.api
 
 import java.io._
 

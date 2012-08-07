@@ -1,4 +1,4 @@
-package org.kevoree.library.sky.manager.nodeType;
+package org.kevoree.library.sky.api.nodeType;
 
 import org.kevoree.annotation.Library;
 import org.kevoree.annotation.NodeType;

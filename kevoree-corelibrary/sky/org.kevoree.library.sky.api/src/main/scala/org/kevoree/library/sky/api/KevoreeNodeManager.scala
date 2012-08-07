@@ -1,10 +1,10 @@
-package org.kevoree.library.sky.manager
+package org.kevoree.library.sky.api
 
 import nodeType.IaaSNode
 import org.kevoree.ContainerRoot
 
 import org.slf4j.{LoggerFactory, Logger}
-import actors.{Actor, DaemonActor}
+import actors.Actor
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com

@@ -1,12 +1,12 @@
-package org.kevoree.library.sky.manager.nodeType;
+package org.kevoree.library.sky.api.nodeType;
 
 import org.kevoree.ContainerRoot;
 import org.kevoree.annotation.*;
 import org.kevoree.library.defaultNodeTypes.JavaSENode;
-import org.kevoree.library.sky.manager.KevoreeNodeManager;
-import org.kevoree.library.sky.manager.KevoreeNodeRunner;
-import org.kevoree.library.sky.manager.PlanningManager;
-import org.kevoree.library.sky.manager.http.IaaSHTTPServer;
+import org.kevoree.library.sky.api.KevoreeNodeManager;
+import org.kevoree.library.sky.api.KevoreeNodeRunner;
+import org.kevoree.library.sky.api.PlanningManager;
+import org.kevoree.library.sky.api.http.IaaSHTTPServer;
 import org.kevoreeAdaptation.AdaptationModel;
 import org.kevoreeAdaptation.AdaptationPrimitive;
 import org.slf4j.Logger;
@@ -34,11 +34,11 @@ public abstract class IaaSNode extends JavaSENode {
     public static final String REMOVE_NODE = "RemoveNode";
     public static final String ADD_NODE = "AddNode";
 
-	private IaaSHTTPServer server = new IaaSHTTPServer(this);
+	private IaaSHTTPServer server;
+
+    private KevoreeNodeManager nodeManager;
 
 	public abstract KevoreeNodeRunner createKevoreeNodeRunner(String nodeName);
-
-    private KevoreeNodeManager nodeManager = null;
 
     public KevoreeNodeManager getNodeManager() {
         return nodeManager;
@@ -51,6 +51,7 @@ public abstract class IaaSNode extends JavaSENode {
         nodeManager = new KevoreeNodeManager(this);
         nodeManager.start();
         // start HTTP Server
+        server = new IaaSHTTPServer(this);
         String port = (String) this.getDictionary().get("port");
         int portInt = Integer.parseInt(port);
 		server.start(portInt);
