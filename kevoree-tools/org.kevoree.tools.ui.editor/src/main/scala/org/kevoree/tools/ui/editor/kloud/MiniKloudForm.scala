@@ -11,45 +11,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.gnu.org/licenses/lgpl-3.0.txt
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-/**
- * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.gnu.org/licenses/lgpl-3.0.txt
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-/**
- * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.gnu.org/licenses/lgpl-3.0.txt
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package org.kevoree.tools.ui.editor.kloud
 
 import java.io._
@@ -62,6 +23,7 @@ import java.net.{ServerSocket, InetSocketAddress, Socket}
 import org.kevoree.framework.{KevoreePropertyHelper, KevoreeXmiHelper}
 import org.kevoree.{TypeDefinition, ContainerNode, ContainerRoot, KevoreeFactory}
 import org.kevoree.tools.modelsync.FakeBootstraperService
+import javax.swing.AbstractButton
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -72,7 +34,7 @@ import org.kevoree.tools.modelsync.FakeBootstraperService
  * @version 1.0
  */
 
-class MiniKloudForm (editor: KevoreeEditor) {
+class MiniKloudForm (editor: KevoreeEditor, button: AbstractButton) {
   var logger = LoggerFactory.getLogger(this.getClass)
   private var minicloud: Process = null
   private var platformJAR: File = null
@@ -114,6 +76,10 @@ class MiniKloudForm (editor: KevoreeEditor) {
                 val loadCmd = new LoadModelCommand()
                 loadCmd.setKernel(editor.getPanel.getKernel)
                 loadCmd.execute(skyModel)
+
+                monitorMiniCloud()
+
+                button.setEnabled(true)
               }
             }
 
@@ -147,6 +113,7 @@ class MiniKloudForm (editor: KevoreeEditor) {
           minicloud = null
           minicloudName = null
           thread = null
+          button.setEnabled(false)
         }
       }
       thread.start()
@@ -154,6 +121,20 @@ class MiniKloudForm (editor: KevoreeEditor) {
     } else {
       false
     }
+  }
+
+  private def monitorMiniCloud () {
+    logger.info("toto")
+    new Thread() {
+      override def run () {
+        minicloud.waitFor()
+        logger.debug("minicloud shutted down")
+        minicloud = null
+        minicloudName = null
+        thread = null
+        button.setEnabled(false)
+      }
+    }.start()
   }
 
   private def buildBootstrapModel: ContainerRoot = {
