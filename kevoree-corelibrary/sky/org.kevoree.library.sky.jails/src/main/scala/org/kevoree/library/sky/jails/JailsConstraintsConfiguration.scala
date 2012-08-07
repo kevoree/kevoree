@@ -66,7 +66,7 @@ object JailsConstraintsConfiguration {
               if (result._1) {
                 execResult = true
               } else {
-                logger.debug("unable to set RAM limitation:\n{}", result._2)
+                logger.debug("unable to set RAM limitation (empty line maybe mean the BSD kernel is not implemented rctl):\n{}", result._2)
                 execResult = false
               }
             }
@@ -89,7 +89,7 @@ object JailsConstraintsConfiguration {
             if (result._1) {
               execResult = true
             } else {
-              logger.debug("unable to set CPU_FREQUENCY limitation:\n{}", result._2)
+              logger.debug("unable to set CPU_FREQUENCY limitation (empty line maybe mean the BSD kernel is not implemented rctl):\n{}", result._2)
               execResult = false
             }
           } catch {
@@ -111,7 +111,7 @@ object JailsConstraintsConfiguration {
             if (result._1) {
               execResult = true
             } else {
-              logger.debug("unable to set CPU_CORE limitation:\n{}", result._2)
+              logger.debug("unable to set CPU_CORE limitation (empty line maybe mean the BSD kernel is not implemented rctl):\n{}", result._2)
               execResult = false
             }
           } catch {
@@ -134,7 +134,7 @@ object JailsConstraintsConfiguration {
             if (result._1) {
               execResult = true
             } else {
-              logger.debug("unable to set WALLCLOCKTIME limitation:\n{}", result._2)
+              logger.debug("unable to set WALLCLOCKTIME limitation (empty line maybe mean the BSD kernel is not implemented rctl):\n{}", result._2)
               execResult = false
             }
           } catch {
@@ -169,7 +169,7 @@ object JailsConstraintsConfiguration {
             if (result._1) {
               execResult = true
             } else {
-              logger.debug("unable to set DATA_SIZE limitation:\n{}", result._2)
+              logger.debug("unable to set DATA_SIZE limitation (empty line maybe mean the BSD kernel is not implemented rctl):\n{}", result._2)
               execResult = false
             }
           } catch {

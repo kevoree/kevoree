@@ -54,14 +54,14 @@ public abstract class IaaSNode extends JavaSENode {
         server = new IaaSHTTPServer(this);
         String port = (String) this.getDictionary().get("port");
         int portInt = Integer.parseInt(port);
-		server.start(portInt);
+		server.startServer(portInt);
     }
 
     @Stop
     @Override
     public void stopNode() {
         logger.debug("stopping node type of " + this.getNodeName());
-		server.stop();
+		server.stopServer();
 		nodeManager.stop();
         super.stopNode();
 //        server.close(Duration.apply(300, TimeUnit.MILLISECONDS));

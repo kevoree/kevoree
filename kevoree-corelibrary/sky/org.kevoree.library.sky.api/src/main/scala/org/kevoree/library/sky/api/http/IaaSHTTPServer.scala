@@ -23,7 +23,7 @@ class IaaSHTTPServer (node: IaaSNode) extends Runnable {
   val NodeSubRequest = new Regex("/nodes/(.+)/(.+)")
   val NodeHomeRequest = new Regex("/nodes/(.+)")
 
-  def start (port: Int) {
+  def startServer (port: Int) {
     srv = new KTinyWebServerInternalServe
     val properties: Properties = new Properties
     properties.put("port", new Integer(port))
@@ -43,7 +43,7 @@ class IaaSHTTPServer (node: IaaSNode) extends Runnable {
     })
   }
 
-  def stop () {
+  def stopServer () {
     srv.notifyStop()
     srv.destroyAllServlets()
     mainT.interrupt()

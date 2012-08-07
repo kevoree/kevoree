@@ -324,7 +324,7 @@ public class App {
                 });
 
 
-                final KloudForm kloudForm = new KloudForm(artpanel);
+                final KloudForm kloudForm = new KloudForm(artpanel, finalToggleKloudDialog);
                 toogleKloud.addMouseListener(new MouseAdapter() {
                     @Override
                     public void mouseClicked(MouseEvent e) {
@@ -340,25 +340,20 @@ public class App {
                     }
                 });
 
-                final MiniKloudForm minikloudForm = new MiniKloudForm(artpanel);
+                final MiniKloudForm minikloudForm = new MiniKloudForm(artpanel, finalToggleMiniKloudDialog);
                 toogleMiniKloud.addMouseListener(new MouseAdapter() {
                     @Override
                     public void mouseClicked(MouseEvent e) {
                         // Display the Dialog to configure the kloud and send the model on it
                         boolean toggle = !finalToggleMiniKloudDialog.isEnabled();
                         if (toggle) {
-                            // display the Dialog
-//							minikloudForm.display();
-                            if (minikloudForm.startMiniCloud()) {
+                            /*if (*/minikloudForm.startMiniCloud();/*) {
                                 finalToggleMiniKloudDialog.setEnabled(toggle);
-                            }
+                            }*/
                         } else {
-                            // hide the Dialog
-//							minikloudForm.hide();
-//							logger.debug("trying to shutdown the minicloud");
-                            if (minikloudForm.shutdownMiniCloud()) {
+                            /*if (*/minikloudForm.shutdownMiniCloud();/*) {
                                 finalToggleMiniKloudDialog.setEnabled(toggle);
-                            }
+                            }*/
                         }
                     }
                 });
