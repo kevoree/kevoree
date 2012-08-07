@@ -40,7 +40,7 @@ public class FakeSimpleLight extends AbstractFakeStuffComponent {
     private Boolean state = false;
 
     @Port(name = "toggle",method = "toggle")
-    public String toogle(){
+    public String toogle() throws Exception {
         if(state){
             this.lightOff("");
         } else {
