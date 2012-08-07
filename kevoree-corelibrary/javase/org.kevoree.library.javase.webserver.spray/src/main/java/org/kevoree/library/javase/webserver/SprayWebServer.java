@@ -27,7 +27,7 @@ import java.net.InetSocketAddress;
 @Provides({
         @ProvidedPort(name = "response", type = PortType.MESSAGE)
 })
-public class WebServer extends AbstractComponentType {
+public class SprayWebServer extends AbstractComponentType {
 
     ServerBootstrap bootstrap = null;
 

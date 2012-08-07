@@ -13,10 +13,6 @@
         <relativePath>../org.kevoree.library.javase.root/pom.xml</relativePath>
     </parent>
 
-    <properties>
-
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>org.kevoree.extra</groupId>
@@ -27,7 +23,6 @@
             <groupId>org.kevoree.tools</groupId>
             <artifactId>org.kevoree.tools.marShellGUI</artifactId>
             <version>${kevoree.version}</version>
-
             <exclusions>
                 <exclusion>
                     <groupId>org.kevoree.tools</groupId>
