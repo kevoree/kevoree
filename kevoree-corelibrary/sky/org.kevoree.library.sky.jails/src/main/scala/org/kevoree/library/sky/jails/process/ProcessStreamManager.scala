@@ -2,7 +2,6 @@ package org.kevoree.library.sky.jails.process
 
 import java.io.{InputStream, InputStreamReader, BufferedReader}
 import util.matching.Regex
-import org.slf4j.LoggerFactory
 
 
 /**

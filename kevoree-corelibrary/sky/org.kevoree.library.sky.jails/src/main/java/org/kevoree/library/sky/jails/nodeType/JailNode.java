@@ -2,8 +2,8 @@ package org.kevoree.library.sky.jails.nodeType;
 
 import org.kevoree.annotation.*;
 import org.kevoree.library.sky.jails.JailKevoreeNodeRunner;
-import org.kevoree.library.sky.manager.KevoreeNodeRunner;
-import org.kevoree.library.sky.manager.nodeType.IaaSNode;
+import org.kevoree.library.sky.api.KevoreeNodeRunner;
+import org.kevoree.library.sky.api.nodeType.IaaSNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory;
 		@DictionaryAttribute(name = "inet", defaultValue = "alc0", optional = false),
 		@DictionaryAttribute(name = "subnet", defaultValue = "10.0.0.0", optional = true),
 		@DictionaryAttribute(name = "mask", defaultValue = "24", vals = {"8", "16", "24"}, optional = false),
-		@DictionaryAttribute(name = "flavor", defaultValue = "openjdk6", optional = false),
+		@DictionaryAttribute(name = "flavor", optional = true),
 		@DictionaryAttribute(name = "jailCreationTimeout", defaultValue = "240000", optional = true),
 		@DictionaryAttribute(name = "jailStartTimeout", defaultValue = "10000", optional = true)/*,
 		@DictionaryAttribute(name = "useArchive", defaultValue = "false", vals= {"true", "false"}, optional = true),
@@ -76,7 +76,10 @@ public class JailNode extends IaaSNode {
 	}
 
 	public String getFlavor () {
-		return this.getDictionary().get("flavor").toString();
+		if (this.getDictionary().get("flavor") != null) {
+			return this.getDictionary().get("flavor").toString();
+		}
+		return null;
 	}
 
 	public boolean useArchive () {
