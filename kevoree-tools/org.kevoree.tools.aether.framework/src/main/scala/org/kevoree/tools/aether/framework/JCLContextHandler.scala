@@ -357,10 +357,9 @@ loop {
             for (i <- 0 until numThreads) {
               val tloop = listOfThreads(i)
               if (tloop != null && tloop.getContextClassLoader == toRemoveKCL) {
-                logger.warn("Change Thread " + tloop.getName + " currentClassLoader to avoid memory leak")
+                logger.debug("Change Thread " + tloop.getName + " currentClassLoader to avoid memory leak")
                 tloop.setContextClassLoader(getClass.getClassLoader)
               }
-
             }
           } catch {
             case _ =>
