@@ -129,7 +129,7 @@ object KevoreeProvidedPortGenerator {
               map.getServiceMethodName.equals(op.getName)
             }) match {
               case Some(mapping) => {
-                writer.append("case \"" + op.getName + "\"=> component." + mapping.getBeanMethodName + "(")
+                writer.append("case \"" + op.getName + "\"=> try { component." + mapping.getBeanMethodName + "(")
                 var i = 0
                 op.getParameters.foreach {
                   param =>
@@ -144,11 +144,11 @@ object KevoreeProvidedPortGenerator {
                     }
                     i = i + 1
                 }
-                writer.append(")\n")
+                writer.append(")} catch {case _ @ e => e.printStackTrace();println(\"Uncatched exception while processing Kevoree message\");null }\n")
 
               }
               case None => {
-                error("No mapping found for method '" + op.getName + "' of ServicePort '" + ref.getName + "' in component '" + ct.getName + "'")
+                sys.error("No mapping found for method '" + op.getName + "' of ServicePort '" + ref.getName + "' in component '" + ct.getName + "'")
                 //println("No mapping found for method '"+op.getName+"' of ServicePort '" + ref.getName + "' in component '" + ct.getName + "'")
 
               }
