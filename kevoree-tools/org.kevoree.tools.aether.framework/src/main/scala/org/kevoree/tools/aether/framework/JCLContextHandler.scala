@@ -222,6 +222,7 @@ loop {
           }
         }
     }
+    failedLinks.clear()
     /*
     if (logger.isDebugEnabled) {
       logger.debug("-----------------------------DUMP after clear-------------------------")
@@ -310,14 +311,8 @@ loop {
             failedLinks.put(buildKEY(du), newcl)
           }
       }
-
-
       newcl
     }
-    /*
-    if (logger.isDebugEnabled) {
-      printDumpInternals()
-    }*/
     res
   }
 
@@ -326,8 +321,6 @@ loop {
   }
 
   protected def removeDeployUnitInternals(du: DeployUnit) {
-
-    // println("DEBUG REMOVE DU "+du.getUnitName)
 
     val key = buildKEY(du)
     if (failedLinks.containsKey(key)) {
