@@ -29,7 +29,7 @@ class KevoreeNodeManager(node: IaaSNode) extends Actor {
  // case class UPDATE_NODE(containerNode: ContainerNode, model: ContainerRoot)
 
   def stop() {
-    this ! STOP()
+    this !? STOP()
   }
 
   def addNode(iaasModel: ContainerRoot, targetChildName: String, targetChildModel: ContainerRoot): Boolean = {
@@ -49,6 +49,7 @@ class KevoreeNodeManager(node: IaaSNode) extends Actor {
       react {
         case STOP() => {
           removeAllInternal()
+          reply()
           this.exit()
         }
         case ADD_NODE(iaasModel, targetChildName, targetChildModel) => reply(addNodeInternal(iaasModel, targetChildName, targetChildModel))
