@@ -122,8 +122,6 @@ class KevoreeCoreBean extends KevoreeModelHandlerService /*with KevoreeThreadAct
       if (nodeInstance == null) {
         currentModel.getNodes.find(n => n.getName == nodeName) match {
           case Some(foundNode) => {
-            logger.debug("KCL State {}",bootstraper.getKevoreeClassLoaderHandler.getKCLDump)
-
             bootstraper.bootstrapNodeType(currentModel, nodeName, this, kevsEngineFactory) match {
               case Some(ist: org.kevoree.api.NodeType) => {
                 nodeInstance = ist
