@@ -5,7 +5,7 @@ package org.kevoree.library.defaultNodeTypes.jcl.deploy.context
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * 	http://www.gnu.org/licenses/lgpl-3.0.txt
+ * http://www.gnu.org/licenses/lgpl-3.0.txt
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -19,120 +19,92 @@ package org.kevoree.library.defaultNodeTypes.jcl.deploy.context
  */
 
 
-import actors.DaemonActor
 import org.slf4j.LoggerFactory
 import org.kevoree.DeployUnit
 import org.kevoree.framework.AbstractNodeType
+import java.util.concurrent.{Callable, ThreadFactory, Executors}
 
-object KevoreeDeployManager extends DaemonActor {
+object KevoreeDeployManager {
 
-//  var bundle: Bundle = null
   val logger = LoggerFactory.getLogger(this.getClass)
-/*
-  def setBundle(b: Bundle) {
-    bundle = b
-    //val sr = bundle.getBundleContext.getServiceReference(classOf[PackageAdmin].getName)
-    //servicePackageAdmin = Some(bundle.getBundleContext.getService(sr).asInstanceOf[PackageAdmin])
+  private var private_bundleMapping: List[KevoreeMapping] = List[KevoreeMapping]()
+
+  private var pool : java.util.concurrent.ExecutorService = null
+
+  def startPool() {
+    if(pool != null){
+       logger.error("Error JavaSE Node can't run as duplicated instance on the same JVM")
+       return
+    }
+    pool = Executors.newSingleThreadExecutor(new ThreadFactory() {
+      val s = System.getSecurityManager
+      val group = if (s != null) {
+        s.getThreadGroup
+      } else {
+        Thread.currentThread().getThreadGroup
+      }
+
+      def newThread(p1: Runnable) = {
+        val t = new Thread(group, p1, "Kevoree_JavaSENode_DeployManager_" + hashCode())
+        if (t.isDaemon) {
+          t.setDaemon(false)
+        }
+        if (t.getPriority != Thread.NORM_PRIORITY) {
+          t.setPriority(Thread.NORM_PRIORITY)
+        }
+        t
+      }
+    })
   }
 
-  def getBundleContext = bundle.getBundleContext;*/
+  def stopPool(){
+    pool.shutdownNow()
+    pool=null
+  }
 
-  private var private_bundleMapping: List[KevoreeMapping] = List[KevoreeMapping]();
-//  var servicePackageAdmin: Option[PackageAdmin] = null
-/*
-  def getServicePackageAdmin: PackageAdmin = {
-    servicePackageAdmin.get
-  }*/
 
-  def clearAll(nodeType : AbstractNodeType) {
-    KevoreeDeployManager.bundleMapping.filter(bm => bm.ref.isInstanceOf[DeployUnit]).foreach( mapping => {
+  def clearAll(nodeType: AbstractNodeType) {
+    KevoreeDeployManager.bundleMapping.filter(bm => bm.ref.isInstanceOf[DeployUnit]).foreach(mapping => {
       val old_du = mapping.ref.asInstanceOf[DeployUnit]
       //CLEANUP KCL CONTEXT
-      if(nodeType.getBootStrapperService.getKevoreeClassLoaderHandler.getKevoreeClassLoader(old_du) != null){
+      if (nodeType.getBootStrapperService.getKevoreeClassLoaderHandler.getKevoreeClassLoader(old_du) != null) {
         logger.debug("Force cleanup unitName {}", old_du.getUnitName)
       }
     })
     private_bundleMapping = List[KevoreeMapping]()
-    /*
-    KevoreeDeployManager.bundleMapping.foreach {
-      bm =>
-        try {
-          logger.debug("Try to cleanup " + bm.bundleId + "," + bm.objClassName + "," + bm.name)
-          KevoreeDeployManager.removeMapping(bm)
-          val b_toremove = getBundleContext.getBundle(bm.bundleId)
-          if (b_toremove != null) {
-            b_toremove.uninstall()
-          }
-        } catch {
-          case _@e => logger.debug("Error while cleanup platform ", e)
-        }
-    }*/
     logger.debug("Deploy manager cache size after HaraKiri" + KevoreeDeployManager.bundleMapping.size)
   }
 
 
-  /*
-    Garbage unsed mapping
-  */
-  /*
-  def garbage(): Unit = {
-    this !? GARBAGE()
-  }
-
-  case class GARBAGE()
-*/
-
   def bundleMapping: List[KevoreeMapping] = {
-    (this !? GET_MAPPINGS()).asInstanceOf[List[KevoreeMapping]]
+    pool.submit(GET_MAPPINGS()).get()
   }
 
-  case class GET_MAPPINGS()
-
-  def addMapping(newMap: KevoreeMapping) {
-    this !? ADD_MAPPING(newMap)
-  }
-
-  case class ADD_MAPPING(newMap: KevoreeMapping)
-
-  def removeMapping(newMap: KevoreeMapping) {
-    this !? REMOVE_MAPPING(newMap)
-  }
-
-  case class REMOVE_MAPPING(oldMap: KevoreeMapping)
-
-  def act() {
-    loop {
-      react {
-        /*
-        case GARBAGE() => {
-          private_bundleMapping.foreach {
-            mapping =>
-              if (bundle != null) {
-                if (bundle.getState == Bundle.UNINSTALLED) {
-                  private_bundleMapping = private_bundleMapping.filter(mp => mp != mapping)
-                }
-              } else {
-                private_bundleMapping = private_bundleMapping.filter(mp => mp != mapping)
-              }
-          }
-          reply(true)
-        }*/
-        case GET_MAPPINGS() => {
-          reply(private_bundleMapping)
-        }
-        case ADD_MAPPING(newMap) => {
-          private_bundleMapping = private_bundleMapping ++ List(newMap)
-          reply(true)
-        }
-        case REMOVE_MAPPING(oldMap) => {
-          private_bundleMapping = private_bundleMapping.filter(p => p != oldMap)
-          reply(true)
-        }
-      }
+  case class GET_MAPPINGS() extends Callable[List[KevoreeMapping]] {
+    def call() = {
+      private_bundleMapping
     }
   }
 
-  start()
+  def addMapping(newMap: KevoreeMapping) {
+    pool.submit(ADD_MAPPING(newMap)).get()
+  }
+
+  case class ADD_MAPPING(newMap: KevoreeMapping) extends Runnable {
+    def run() {
+      private_bundleMapping = private_bundleMapping ++ List(newMap)
+    }
+  }
+
+  def removeMapping(newMap: KevoreeMapping) {
+    pool.submit(REMOVE_MAPPING(newMap)).get()
+  }
+
+  case class REMOVE_MAPPING(oldMap: KevoreeMapping) extends Runnable {
+    def run() {
+      private_bundleMapping = private_bundleMapping.filter(p => p != oldMap)
+    }
+  }
 
 }
 
