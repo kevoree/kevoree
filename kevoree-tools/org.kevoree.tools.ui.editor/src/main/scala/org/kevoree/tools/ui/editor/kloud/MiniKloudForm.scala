@@ -153,7 +153,7 @@ class MiniKloudForm (editor: KevoreeEditor, button: AbstractButton) {
   private def buildBootstrapModel: ContainerRoot = {
     val nodes = editor.getPanel.getKernel.getModelHandler.getActualModel.getNodes.filter(n => n.getTypeDefinition.getName == "JavaSENode" || isASubType(n.getTypeDefinition, "JavaSENode"))
     editor.getPanel.getKernel.getModelHandler.getActualModel.getNodes
-      .find(n => n.getTypeDefinition.getName == "MiniCloudNode" && n.getHosts.size == nodes.size && !n.getHosts.contains(n)) match {
+      .find(n => n.getTypeDefinition.getName == "MiniCloudNode" && n.getHosts.size == nodes.size - 1 && !n.getHosts.contains(n)) match {
       case Some(minicloudNode) => {
         logger.debug("start a minicloud with your own minicloud node")
         minicloudName = minicloudNode.getName
