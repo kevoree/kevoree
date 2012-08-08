@@ -87,7 +87,7 @@ public class PaaSKloudResourceManager extends AbstractComponentType {
 		}
 	}
 
-	private void processNew (ContainerRoot userModel, String login, String sshKey) {
+	protected void processNew (ContainerRoot userModel, String login, String sshKey) {
 		logger.debug("starting processNew");
 		KevScriptEngine kengine = getKevScriptEngineFactory().createKevScriptEngine();
 		KloudReasoner.appendCreateGroupScript(getModelService().getLastModel(), login, this.getNodeName(), kengine, sshKey, false);
