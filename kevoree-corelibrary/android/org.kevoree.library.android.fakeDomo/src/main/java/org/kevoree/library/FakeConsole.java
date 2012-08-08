@@ -18,13 +18,17 @@ import org.kevoree.framework.MessagePort;
  * User: jed
  * Date: 09/11/11
  * Time: 14:58
- * To change this template use File | Settings | File Templates.
  */
+
+
 @Provides({
         @ProvidedPort(name = "showText", type = PortType.MESSAGE)
 })
 @Requires({
         @RequiredPort(name = "textEntered", type = PortType.MESSAGE, optional = true)
+})
+@DictionaryType({
+        @DictionaryAttribute(name = "singleFrame", defaultValue = "true", optional = true)
 })
 @ComponentType
 @Library(name = "Android")

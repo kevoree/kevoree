@@ -5,8 +5,6 @@ import org.kevoree.framework.message.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Collections;
-
 /**
  * Created by IntelliJ IDEA.
  * User: duke
