@@ -1,0 +1,19 @@
+
+merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.javaseNode/{kevoree.version}"
+merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.nanohttp/{kevoree.version}"
+merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.defaultChannels/{kevoree.version}"
+merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.webserver.spray/{kevoree.version}"
+
+addNode node0 : JavaSENode
+
+addComponent webSrv@node0 : SprayWebServer
+addComponent helloPage@node0 : HelloWorldPage
+addChannel req : defMSG
+addChannel res : defMSG
+bind webSrv.handler@node0 => req
+bind helloPage.request@node0 => req
+bind helloPage.content@node0 => res
+bind webSrv.response@node0 => res
+
+addGroup sync : NanoRestGroup
+addToGroup sync node0
