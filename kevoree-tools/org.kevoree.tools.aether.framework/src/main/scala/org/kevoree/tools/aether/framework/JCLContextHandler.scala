@@ -127,9 +127,9 @@ class JCLContextHandler extends KevoreeClassLoaderHandler {
     def call() = getKCLInternals(du)
   }
 
-  case class MANUALLY_ADD_TO_CACHE(du: DeployUnit, kcl: KevoreeJarClassLoader) extends Runnable {
+  case class MANUALLY_ADD_TO_CACHE(du: DeployUnit, kcl: KevoreeJarClassLoader, toLock : Boolean) extends Runnable {
     def run() {
-      manuallyAddToCacheInternals(du, kcl)
+      manuallyAddToCacheInternals(du, kcl,toLock)
     }
   }
 
@@ -200,7 +200,11 @@ loop {
   }
 
   def manuallyAddToCache(du: DeployUnit, kcl: KevoreeJarClassLoader) {
-    pool.submit(MANUALLY_ADD_TO_CACHE(du, kcl))
+    pool.submit(MANUALLY_ADD_TO_CACHE(du, kcl,toLock = true))
+  }
+
+  def attachKCL(du: DeployUnit, kcl: KevoreeJarClassLoader) {
+    pool.submit(MANUALLY_ADD_TO_CACHE(du, kcl,toLock = false)).get()
   }
 
   def printDump() {
@@ -235,9 +239,11 @@ loop {
     kcl_cache_file.get(buildKEY(du))
   }
 
-  private def manuallyAddToCacheInternals(du: DeployUnit, kcl: KevoreeJarClassLoader) {
+  private def manuallyAddToCacheInternals(du: DeployUnit, kcl: KevoreeJarClassLoader, toLock : Boolean) {
     kcl_cache.put(buildKEY(du), kcl)
-    lockedDu = lockedDu ++ List(buildKEY(du))
+    if(toLock){
+      lockedDu = lockedDu ++ List(buildKEY(du))
+    }
     // kcl_cache_file.put(buildKEY(du), f)
   }
 
