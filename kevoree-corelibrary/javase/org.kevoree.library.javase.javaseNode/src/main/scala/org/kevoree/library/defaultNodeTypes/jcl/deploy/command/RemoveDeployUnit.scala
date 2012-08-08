@@ -49,15 +49,15 @@ case class RemoveDeployUnit(du: DeployUnit, bootstrap: org.kevoree.api.Bootstrap
   //LET THE UNINSTALL
   def execute(): Boolean = {
     try {
-
       val cachedFile = bootstrap.getKevoreeClassLoaderHandler.getCacheFile(du)
       if (cachedFile != null) {
         lastTempFile = File.createTempFile(random.nextInt() + "", ".jar")
         lastTempFile.deleteOnExit()
-        val jarStream = new FileInputStream(cachedFile);
+        val jarStream = new FileInputStream(cachedFile)
         FileNIOHelper.copyFile(jarStream, lastTempFile)
         jarStream.close()
       }
+
 
 
       bootstrap.getKevoreeClassLoaderHandler.removeDeployUnitClassLoader(du)
