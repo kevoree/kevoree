@@ -45,6 +45,8 @@ public class AndroidNode extends AbstractNodeType {
 		mapper = new CommandMapper();
 		mapper.setNodeType(this);
 		setLogLevel();
+
+        KevoreeDeployManager.startPool();
 	}
 
 
@@ -56,6 +58,7 @@ public class AndroidNode extends AbstractNodeType {
 		isRunning = false;
 		//Cleanup the local runtime
 		KevoreeDeployManager.clearAll(this);
+        KevoreeDeployManager.stopPool();
 	}
 
 	@Update
