@@ -90,6 +90,7 @@ public class KloudPaaSNanoGroup extends AbstractGroupType {
 									}
 								}
 							}
+							getModelService().updateModel(model);
 						}
 						return new NanoHTTPD.Response(HTTP_OK, MIME_HTML, "<ack nodeName=\"" + getNodeName() + "\" />");
 					} else {
@@ -335,7 +336,9 @@ public class KloudPaaSNanoGroup extends AbstractGroupType {
 				if (KloudReasoner.processDeployment(proposedModel, currentModel, getModelService().getLastModel(), kengine, getName())) {
 					for (int i = 0; i < 5; i++) {
 						try {
+							getModelService().unregisterModelListener(getModelListener());
 							kengine.atomicInterpretDeploy();
+							getModelService().registerModelListener(getModelListener());
 							break;
 						} catch (Exception e) {
 							logger.debug("Error while update user configuration, try number " + i);
@@ -355,6 +358,10 @@ public class KloudPaaSNanoGroup extends AbstractGroupType {
 
 					}
 				}
+				/* Send blindly the model to the core , PaaS Kloud Resource manager is in charge to trigger this request , replies false and stores the model*/
+				getModelService().unregisterModelListener(getModelListener());
+				getModelService().checkModel(userModelUpdated.get());
+				getModelService().registerModelListener(getModelListener());
 			} else {
 				logger.error("Unable to update user configuration, with user group");
 			}

@@ -15,15 +15,16 @@ updateDictionary sync {ip="127.0.0.1", port="8000"}@node0
 // Kloud manager configuration
 addComponent webServer@node0 : KTinyWebServer {port = "8080", timeout = "5000"}
 addComponent paaSKloudResourceManagerPage@node0 : PaaSKloudResourceManagerPage {urlpattern = "/kloud/{login}/{action}"}
-addComponent paaSKloudResourceManager@node0 : PaaSKloudResourceManager
+//addComponent paaSKloudResourceManager@node0 : PaaSKloudResourceManager
+addComponent paaSKloudResourceManager@node0 : PaaSKloudResourceManagerStateFull {storage = "/home/edaubert/kevoree-state"}
 addComponent iaaSKloudResourceManager@node0 : IaaSKloudResourceManager
-addComponent ldapAuthentication@node0 : LDAPAuthentication {host = "ldap://ildap1-ren.irisa.fr:389", context = "com.sun.jndi.ldap.LdapCtxFactory", base = "ou=people,dc=inria,dc=fr", filter = "(&(objectclass=inriaperson)(inriaentrystatus=valid)(ou=UR-Rennes))", loginKey = "inriaLogin"}
+//addComponent ldapAuthentication@node0 : LDAPAuthentication {host = "ldap://ildap1-ren.irisa.fr:389", context = "com.sun.jndi.ldap.LdapCtxFactory", base = "ou=people,dc=inria,dc=fr", filter = "(&(objectclass=inriaperson)(inriaentrystatus=valid)(ou=UR-Rennes))", loginKey = "inriaLogin"}
 
 addChannel requestChannel : defMSG
 addChannel responseChannel : defMSG
 addChannel deployChannel : defMSG
 addChannel releaseChannel : defMSG
-addChannel authenticationChannel : defSERVICE
+//addChannel authenticationChannel : defSERVICE
 
 bind webServer.handler@node0 => requestChannel
 bind paaSKloudResourceManagerPage.request@node0 => requestChannel
@@ -35,5 +36,5 @@ bind paaSKloudResourceManager.deploy@node0 => deployChannel
 bind paaSKloudResourceManagerPage.release@node0 => releaseChannel
 bind paaSKloudResourceManager.release@node0 => releaseChannel
 
-bind ldapAuthentication.authenticate@node0 => authenticationChannel
-bind paaSKloudResourceManagerPage.authentication@node0 => authenticationChannel
+//bind ldapAuthentication.authenticate@node0 => authenticationChannel
+//bind paaSKloudResourceManagerPage.authentication@node0 => authenticationChannel

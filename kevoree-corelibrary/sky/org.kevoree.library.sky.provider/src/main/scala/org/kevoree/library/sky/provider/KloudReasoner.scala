@@ -459,9 +459,7 @@ object KloudReasoner {
 
     //CHECK TYPPE
     if (userModel.getTypeDefinitions.find(td => td.getName == groupType).isEmpty) {
-      kengine append "merge \"mvn:org.kevoree.corelibrary.sky/org.kevoree.library.sky.api/{kevVersion}\""
-      kengine append "merge \"mvn:org.kevoree.corelibrary.sky/org.kevoree.library.sky.minicloud/{kevVersion}\""
-      kengine append "merge \"mvn:org.kevoree.corelibrary.sky/org.kevoree.library.sky.provider/{kevVersion}\""
+      kengine append "merge \"mvn:org.kevoree.corelibrary.model/org.kevoree.library.model.sky/{kevVersion}\""
     }
     kengine.append("addGroup {groupName} : {groupType}")
 

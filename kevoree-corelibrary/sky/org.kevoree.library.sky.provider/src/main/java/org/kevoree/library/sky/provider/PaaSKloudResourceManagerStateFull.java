@@ -26,27 +26,18 @@ import java.io.File;
 })
 public class PaaSKloudResourceManagerStateFull extends PaaSKloudResourceManager implements ModelListener {
 
+	private boolean isStarting;
+
 	@Start
 	public void start () throws Exception {
 		super.start();
-		File f = new File(getStorage());
-		if (!f.exists()) {
-			if (!f.mkdirs()) {
-				throw new Exception("Unable to mkdirs the storage folder: " + f.getAbsolutePath());
-			}
-		} else if (f.isDirectory()) {
-			for (File modelFile : f.listFiles()) {
-				try {
-					ContainerRoot model = KevoreeXmiHelper.load(modelFile.getAbsolutePath());
-					processNew(model, modelFile.getName(), "");
-				} catch (Exception ignored) {
-				}
-			}
-		}
+		isStarting = true;
+		getModelService().registerModelListener(this);
 	}
 
 	@Stop
 	public void stop () {
+		getModelService().unregisterModelListener(this);
 	}
 
 	public String getStorage () {
@@ -68,8 +59,10 @@ public class PaaSKloudResourceManagerStateFull extends PaaSKloudResourceManager 
 		KloudReasoner.appendScriptToCleanupIaaSModelFromUser(kengine, login, getModelService().getLastModel());
 		for (int i = 0; i < 5; i++) {
 			try {
+				getModelService().unregisterModelListener(this);
 				kengine.atomicInterpretDeploy();
-				// TODO remove stored model
+				getModelService().registerModelListener(this);
+				deleteStoredModel(login);
 				break;
 			} catch (Exception e) {
 				logger.warn("Error while cleanup user, try number " + i);
@@ -83,7 +76,9 @@ public class PaaSKloudResourceManagerStateFull extends PaaSKloudResourceManager 
 		KloudReasoner.appendCreateGroupScript(getModelService().getLastModel(), login, this.getNodeName(), kengine, sshKey, true);
 		for (int i = 0; i < 5; i++) {
 			try {
+				getModelService().unregisterModelListener(this);
 				kengine.atomicInterpretDeploy();
+				getModelService().registerModelListener(this);
 				break;
 			} catch (Exception e) {
 				logger.warn("Error while adding user master group, try number " + i);
@@ -93,9 +88,12 @@ public class PaaSKloudResourceManagerStateFull extends PaaSKloudResourceManager 
 		logger.debug("update user configuration when user model must be forwarded");
 		Option<ContainerRoot> userModelUpdated = KloudReasoner.updateUserConfiguration(login, userModel, getModelService().getLastModel(), getKevScriptEngineFactory());
 		if (userModelUpdated.isDefined()) {
+			logger.debug("Send blindly the model to the core , PaaS Group are in charge to trigger this request , reply false and forward to Master interested node");
 			/* Send blindly the model to the core , PaaS Group are in charge to trigger this request , reply false and forward to Master interested node  */
+			getModelService().unregisterModelListener(this);
 			getModelService().checkModel(userModelUpdated.get());
-			storeModel(userModelUpdated.get(), login);
+			getModelService().registerModelListener(this);
+//			storeModel(userModelUpdated.get(), login);
 		} else {
 			//TODO CALL RELEASE
 
@@ -125,7 +123,7 @@ public class PaaSKloudResourceManagerStateFull extends PaaSKloudResourceManager 
 			if (userModelFile.exists() || userModelFile.createNewFile()) {
 				logger.debug("Storing user model for {}.", login);
 				KevoreeXmiHelper.save(userModelFile.getAbsolutePath(), userModel);
-				logger.debug("New model store for {}.", login);
+				logger.debug("New model store for {} on {}.", login, userModelFile.getAbsolutePath());
 			} else {
 				logger.warn("Unable to store user model for {}.", login);
 			}
@@ -136,6 +134,19 @@ public class PaaSKloudResourceManagerStateFull extends PaaSKloudResourceManager 
 
 	}
 
+	private void deleteStoredModel (String login) {
+		try {
+			File userModelFile = new File(getStorage() + File.separator + login);
+			if (userModelFile.exists() && userModelFile.delete()) {
+				logger.debug("stored user model for {} has been deleted.", login);
+			} else {
+				logger.warn("Unable to delete the stored user model for {} on {}.", login, userModelFile.getAbsolutePath());
+			}
+		} catch (Exception e) {
+			logger.warn("Unable to delete stored user model for {}.", login, e);
+		}
+	}
+
 	@Override
 	public boolean initUpdate (ContainerRoot containerRoot, ContainerRoot containerRoot1) {
 		return true;
@@ -143,5 +154,27 @@ public class PaaSKloudResourceManagerStateFull extends PaaSKloudResourceManager 
 
 	@Override
 	public void modelUpdated () {
+		if (isStarting) {
+			isStarting = false;
+			File f = new File(getStorage());
+			if (!f.exists()) {
+				if (!f.mkdirs()) {
+					logger.warn("Unable to mkdirs the storage folder: " + f.getAbsolutePath());
+				}
+			} else if (f.isDirectory()) {
+				for (final File modelFile : f.listFiles()) {
+					try {
+						final ContainerRoot model = KevoreeXmiHelper.load(modelFile.getAbsolutePath());
+						new Thread() {
+							@Override
+							public void run () {
+								processNew(model, modelFile.getName(), "");
+							}
+						}.start();
+					} catch (Exception ignored) {
+					}
+				}
+			}
+		}
 	}
 }
