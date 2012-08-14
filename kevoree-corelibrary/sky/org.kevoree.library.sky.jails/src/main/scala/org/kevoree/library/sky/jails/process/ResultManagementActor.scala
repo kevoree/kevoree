@@ -62,13 +62,16 @@ class ResultManagementActor extends Actor {
               reactWithin(timeout) {
                 //case STOP() => this.exit()
                 case OUTPUT(data) => {
-                  firstSender !(true, data); exit()
+                  firstSender !(true, data)
+                  exit()
                 }
                 case TIMEOUT => {
-                  firstSender !(false, "Timeout exceeds."); exit()
+                  firstSender !(false, "Timeout exceeds.")
+                  exit()
                 }
                 case ERROR(data) => {
-                  firstSender !(false, data); exit()
+                  firstSender !(false, data)
+                  exit()
                 }
               }
             }
@@ -76,7 +79,8 @@ class ResultManagementActor extends Actor {
               react {
                 // case STOP() => this.exit()
                 case WAITINGFOR(timeout) => {
-                  firstSender !(true, data); exit()
+                  firstSender !(true, data)
+                  exit()
                 }
               }
             }
@@ -84,7 +88,8 @@ class ResultManagementActor extends Actor {
               react {
                 //case STOP() => this.exit()
                 case WAITINGFOR(timeout) => {
-                  firstSender !(false, data); exit()
+                  firstSender !(false, data)
+                  exit()
                 }
               }
             }

@@ -150,12 +150,12 @@ public class PaaSKloudResourceManagerPage extends ParentAbstractPage {
 		rootKloudChecker.setLogin(login);
 		List<CheckerViolation> violations = rootKloudChecker.check(model);
 		if (violations.size() > 0) {
-			logger.debug("Unable to deploy model because it doesn't respect the rule define on Kloud: {} violations", violations);
 			StringBuilder errorBuilder = new StringBuilder();
 			for (CheckerViolation violation : violations) {
 				logger.debug("{}", violation.getMessage());
 				errorBuilder.append(violation.getMessage()).append("\n");
 			}
+			logger.debug("Unable to deploy model because it doesn't respect the rule define on Kloud: {} violations", errorBuilder.toString());
 			response.setContent("<nack login=\"" + login + "\" error=\"" + errorBuilder.toString() + "\" />");
 			return false;
 		} else {

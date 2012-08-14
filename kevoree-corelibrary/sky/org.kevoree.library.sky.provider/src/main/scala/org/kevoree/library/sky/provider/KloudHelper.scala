@@ -45,7 +45,7 @@ object KloudHelper {
   }
 
   def getKloudUserGroup (userModel: ContainerRoot): Option[String] = {
-    val potentialKloudUserNodes = userModel.getNodes.filter(n => (n.getTypeDefinition.getName == "PJavaSENode" || KloudHelper.isASubType(n.getTypeDefinition, "PJavaSENode")))
+    val potentialKloudUserNodes = userModel.getNodes.filter(n => isPaaSNode(userModel, n.getName))
     val potentialKloudUserGroups = userModel.getGroups.find(g => g.getSubNodes.size >= potentialKloudUserNodes.size)
     potentialKloudUserGroups.find(g => (g.getTypeDefinition.getName == "KloudPaaSNanoGroup" || KloudHelper.isASubType(g.getTypeDefinition, "KloudPaaSNanoGroup")) &&
       g.getSubNodes.forall(n => potentialKloudUserNodes.contains(n))) match {
@@ -55,28 +55,32 @@ object KloudHelper {
   }
 
   def isIaaSNode (currentModel: ContainerRoot, groupName: String, nodeName: String): Boolean = {
-    currentModel.getNodes/*getGroups.find(g => g.getName == groupName) match {
+    currentModel.getNodes /*getGroups.find(g => g.getName == groupName) match {
       case None => logger.debug("There is no group named {}", groupName); false
       case Some(group) =>
-        group.getSubNodes*/.find(n => n.getName == nodeName) match {
-          case None => logger.debug("There is no node named {}", nodeName); false
-          case Some(node) =>
-            node.getTypeDefinition.asInstanceOf[NodeType].getManagedPrimitiveTypes.filter(p => p.getName == "RemoveNode" || p.getName == "AddNode").size == 2
-        }
-//    }
+        group.getSubNodes*/ .find(n => n.getName == nodeName) match {
+      case None => logger.debug("There is no node named {}", nodeName); false
+      case Some(node) =>
+        node.getTypeDefinition.asInstanceOf[NodeType].getManagedPrimitiveTypes.filter(p => p.getName == "RemoveNode" || p.getName == "AddNode").size == 2
+    }
+    //    }
   }
 
-  def isPaaSNode (currentModel: ContainerRoot/*, groupName: String*/, nodeName: String): Boolean = {
-    currentModel.getNodes/*Groups.find(g => g.getName == groupName) match {
+  def isPaaSNode (currentModel: ContainerRoot /*, groupName: String*/ , nodeName: String): Boolean = {
+    currentModel.getNodes /*Groups.find(g => g.getName == groupName) match {
       case None => false
       case Some(group) =>
-        group.getSubNodes*/.find(n => n.getName == nodeName) match {
-          case None => false
-          case Some(node) =>
-            node.getTypeDefinition.getName == "PJavaSENode" ||
-              KloudHelper.isASubType(node.getTypeDefinition, "PJavaSENode")
-        }
-//    }
+        group.getSubNodes*/ .find(n => n.getName == nodeName) match {
+      case None => false
+      case Some(node) =>
+        node.getTypeDefinition.getName == "PJavaSENode" ||
+          KloudHelper.isASubType(node.getTypeDefinition, "PJavaSENode")
+    }
+    //    }
+  }
+
+  def isKloudGroup/*ForNode */(kloudModel: ContainerRoot, groupName: String/*, nodeName: String*/): Boolean = {
+    kloudModel.getGroups.find(g => g.getName == groupName && (g.getTypeDefinition.getName == "KloudPaaSNanoGroup" || KloudHelper.isASubType(g.getTypeDefinition, "KloudPaaSNanoGroup")) /*&&g.getSubNodes.find(n => n.getName == nodeName).isDefined*/).isDefined
   }
 
   def isASubType (nodeType: TypeDefinition, typeName: String): Boolean = {
@@ -163,17 +167,17 @@ object KloudHelper {
         while (k < 255 && checkMask(i, j, k, l, subnet, mask) && !found) {
           while (l < 255 && checkMask(i, j, k, l, subnet, mask) && !found) {
             val tmpIp = i + "." + j + "." + k + "." + l
-//            if (!ips.contains(tmpIp)) {
-              if (!NetworkHelper.isAccessible(tmpIp)) {
-                /*
-              val inet = InetAddress.getByName(tmpIp)
-              if (!inet.isReachable(1000)) {*/
-                newIp = tmpIp
-                found = true
-              }/* else {
+            //            if (!ips.contains(tmpIp)) {
+            if (!NetworkHelper.isAccessible(tmpIp)) {
+              /*
+                            val inet = InetAddress.getByName(tmpIp)
+                            if (!inet.isReachable(1000)) {*/
+              newIp = tmpIp
+              found = true
+            } /* else {
                 ips = ips ++ List[String](tmpIp)
               }*/
-//            }
+            //            }
             l += 1
           }
           l = 1

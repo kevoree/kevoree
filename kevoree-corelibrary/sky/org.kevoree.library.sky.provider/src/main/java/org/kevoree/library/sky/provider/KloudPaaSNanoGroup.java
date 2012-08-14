@@ -11,7 +11,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import scala.Option;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.util.Enumeration;
@@ -83,7 +85,7 @@ public class KloudPaaSNanoGroup extends AbstractGroupType {
 							if (externalSender) {
 								if (getDictionary().get("masterNode") != null) {
 									for (String ipPort : KloudHelper.getMasterIP_PORT(getDictionary().get("masterNode").toString())) {
-										logger.debug("send model on {}" + ipPort);
+										logger.debug("send model on {}", ipPort);
 										KloudHelper.sendModel(model, "http://" + ipPort + "/model/current");
 									}
 								}
@@ -163,7 +165,7 @@ public class KloudPaaSNanoGroup extends AbstractGroupType {
 		logger.debug("Trigger pre update");
 
 		if (KloudHelper.isIaaSNode(currentModel, getName(), getNodeName()) && KloudHelper.isUserModel(proposedModel, getName(), getNodeName())) {
-			logger.debug("A new user model is received, adding a task to process a deployment");
+			logger.debug("A new user model is received (sent by the core), adding a task to process a deployment");
 			submitJob(proposedModel);
 
 			return false;
@@ -263,38 +265,46 @@ public class KloudPaaSNanoGroup extends AbstractGroupType {
 
 	@Override
 	public ContainerRoot pull (String targetNodeName) throws Exception {
-		String ip = "127.0.0.1";
+//		String ip = "127.0.0.1";
 		Option<String> ipOption = NetworkHelper.getAccessibleIP(KevoreePropertyHelper
 				.getStringNetworkProperties(this.getModelService().getLastModel(), targetNodeName, org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP()));
+		ContainerRoot model = null;
 		if (ipOption.isDefined()) {
-			ip = ipOption.get();
-		}
-		Option<Integer> portOption = KevoreePropertyHelper.getIntPropertyForGroup(this.getModelService().getLastModel(), this.getName(), "port", true, targetNodeName);
-		int PORT = 8000;
-		if (portOption.isDefined()) {
-			PORT = portOption.get();
-		}
-		String param = "";
-		if (getNodeName().equals("")) {
-			param = "?nodesrc=" + getNodeName();
-		}
+			String ip = ipOption.get();
+//		}
+			Option<Integer> portOption = KevoreePropertyHelper.getIntPropertyForGroup(this.getModelService().getLastModel(), this.getName(), "port", true, targetNodeName);
+//			int PORT = 8000;
+			if (portOption.isDefined()) {
+				int port = portOption.get();
+//			}
+				String param = "";
+				if (!getNodeName().equals("")) {
+					param = "?nodesrc=" + getNodeName();
+				}
 
-		logger.debug("try to pull model on url=>" + "http://" + ip + ":" + PORT + "/model/current" + param);
-		ContainerRoot model = KloudHelper.pullModel("http://" + ip + ":" + PORT + "/model/current" + param);
-		if (model == null) {
-			logger.debug("Unable to get model on {} using specific url: {}", targetNodeName, "http://" + ip + ":" + PORT + "/model/current" + param);
-			for (String ipPort : KloudHelper.getMasterIP_PORT(getDictionary().get("masterNode").toString())) {
-				model = KloudHelper.pullModel("http://" + ipPort + "/model/current");
+				logger.debug("try to pull model on url=>" + "http://" + ip + ":" + port + "/model/current" + param);
+				model = KloudHelper.pullModel("http://" + ip + ":" + port + "/model/current" + param);
 				if (model != null) {
-					logger.debug("Model received from {} using {}", targetNodeName, "http://" + ipPort + "/model/current");
-					break;
+					return model;
+				} else {
+					logger.debug("Unable to get model on {} using specific url: {}", targetNodeName, "http://" + ip + ":" + port + "/model/current" + param);
 				}
 			}
 		}
-		if (model == null) {
-			logger.error("Unable to get model from {}", targetNodeName);
+		for (String ipPort : KloudHelper.getMasterIP_PORT(getDictionary().get("masterNode").toString())) {
+			model = KloudHelper.pullModel("http://" + ipPort + "/model/current");
+			if (model != null) {
+				logger.debug("Model received from {} using {}", targetNodeName, "http://" + ipPort + "/model/current");
+				break;
+			}
 		}
-		return model;
+
+		if (model != null) {
+			return model;
+		} else {
+			logger.error("Unable to get model from {}", targetNodeName);
+			return null;
+		}
 	}
 
 	void submitJob (ContainerRoot model) {
@@ -315,6 +325,10 @@ public class KloudPaaSNanoGroup extends AbstractGroupType {
 
 		@Override
 		public void run () {
+
+			logger.debug("process a deployment as \n\n{}\n\n as currentModel and \n\n{}\n\n as new model", KevoreeXmiHelper.saveToString(currentModel, false),
+					KevoreeXmiHelper.saveToString(proposedModel, false));
+
 			if (KloudReasoner.needsNewDeployment(proposedModel, currentModel)) {
 				logger.debug("A new Deployment must be done!");
 				KevScriptEngine kengine = getKevScriptEngineFactory().createKevScriptEngine();
