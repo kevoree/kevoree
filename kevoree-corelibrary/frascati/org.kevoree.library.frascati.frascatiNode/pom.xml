@@ -4,12 +4,12 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>org.kevoree.library.frascati.frascatiNode</artifactId>
     <name>Kevoree :: CoreLibrary :: Frascati :: FrascatiNode</name>
-    <version>1.8.3-SNAPSHOT</version>
+    <version>1.8.3</version>
 
     <parent>
         <artifactId>org.kevoree.library.frascati.root</artifactId>
         <groupId>org.kevoree.corelibrary.frascati</groupId>
-        <version>1.8.3-SNAPSHOT</version>
+        <version>1.8.3</version>
         <relativePath>../org.kevoree.library.frascati.root/pom.xml</relativePath>
     </parent>
 
