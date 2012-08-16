@@ -2,6 +2,7 @@ package org.kevoree.library.sky.jails.process
 
 import java.io.{InputStream, InputStreamReader, BufferedReader}
 import util.matching.Regex
+import org.slf4j.LoggerFactory
 
 
 /**
@@ -12,6 +13,7 @@ import util.matching.Regex
  */
 
 class ProcessStreamManager (resultActor: ResultManagementActor, inputStream: InputStream, outputRegexes: Array[Regex], errorRegexes: Array[Regex], p: Process) extends Runnable {
+  private val logger = LoggerFactory.getLogger(this.getClass)
 
   override def run () {
     val outputBuilder = new StringBuilder
@@ -40,7 +42,9 @@ class ProcessStreamManager (resultActor: ResultManagementActor, inputStream: Inp
     } catch {
       case _@e =>
     }
+    logger.debug("waiting for the end of the process")
     val exitValue = p.waitFor()
+    logger.debug("Process complete")
     if (errorBuilder || exitValue != 0) {
       resultActor.error(outputBuilder.toString())
       if (exitValue != 0) {

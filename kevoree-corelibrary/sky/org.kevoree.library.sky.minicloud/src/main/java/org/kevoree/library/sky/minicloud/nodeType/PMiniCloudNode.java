@@ -2,6 +2,7 @@ package org.kevoree.library.sky.minicloud.nodeType;
 
 import org.kevoree.annotation.Library;
 import org.kevoree.annotation.NodeType;
+import org.kevoree.library.sky.api.nodeType.PJavaSENode;
 import org.kevoree.library.sky.api.nodeType.PaaSNode;
 
 /**
@@ -15,6 +16,6 @@ import org.kevoree.library.sky.api.nodeType.PaaSNode;
 
 @Library(name = "SKY")
 @NodeType
-public class PMiniCloudNode extends MiniCloudNode implements PaaSNode {
+public class PMiniCloudNode extends PJavaSENode implements PaaSNode {
 
 }

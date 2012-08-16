@@ -18,7 +18,7 @@ class NodeNameKloudChecker () extends KloudCheckerService {
 
   def check (model: ContainerRoot): util.List[CheckerViolation] = {
     val violations: java.util.List[CheckerViolation] = new util.ArrayList[CheckerViolation]()
-    (model.getGroups ++ model.getNodes.filter(n => (n.getTypeDefinition.getName == "PJavaSENode" || KloudHelper.isASubType(n.getTypeDefinition, "PJavaSENode")))).foreach {
+    (model.getGroups.filter(g => g.getName == KloudHelper.getKloudUserGroup(model)) ++ model.getNodes.filter(n => KloudHelper.isPaaSNode(model, n.getName))).foreach {
       // check only groups and nodes that will be host on Kloud => inherits of PJavaSENode
       instance =>
         if (!instance.getName.startsWith(getLogin)) {

@@ -216,9 +216,9 @@ object KloudReasoner {
   def getAddAndRemove (newModel: ContainerRoot, userModel: ContainerRoot): (List[ContainerNode], List[ContainerNode]) = {
     var addedNodes = List[ContainerNode]()
     var removedNodes = List[ContainerNode]()
-    userModel.getNodes.foreach {
+    userModel.getNodes.filter(n => KloudHelper.isPaaSNode(userModel, n.getName)).foreach {
       userNode =>
-        newModel.getNodes.find(node => node.getName == userNode.getName) match {
+        newModel.getNodes.filter(n => KloudHelper.isPaaSNode(newModel, n.getName)).find(node => node.getName == userNode.getName) match {
           case None => {
             logger.debug("{} must be removed from the kloud.", userNode.getName)
             removedNodes = removedNodes ++ List[ContainerNode](userNode)
@@ -226,10 +226,10 @@ object KloudReasoner {
           case Some(newUserNode) =>
         }
     }
-    newModel.getNodes.foreach {
+    newModel.getNodes.filter(n => KloudHelper.isPaaSNode(newModel, n.getName)).foreach {
       newUserNode =>
       // the kloud platform must use PJavaSeNode or a subtype of it so JavaSeNode will not be instanciated on the Kloud
-        userModel.getNodes.find(node => node.getName == newUserNode.getName && KloudHelper.isPaaSNode(userModel, node.getName)) match {
+        userModel.getNodes.filter(n => KloudHelper.isPaaSNode(userModel, n.getName)).find(node => node.getName == newUserNode.getName) match {
           case None => {
             logger.debug("{} must be added on the kloud.", newUserNode.getName)
             addedNodes = addedNodes ++ List[ContainerNode](newUserNode)
@@ -276,19 +276,19 @@ object KloudReasoner {
     if (!addedNodes.isEmpty) {
       logger.debug("Try to add all user nodes into the Kloud")
 
-      // build kevscript to add user nodes into the kloud model
-      //      val scriptBuilder = new StringBuilder()
-
       // create new node using PJavaSENode as type for each user node
       addedNodes.foreach {
         node =>
           kengine.addVariable("nodeName", node.getName)
+          kengine.addVariable("nodeType", node.getTypeDefinition.getName)
+          // TODO maybe we need to merge the deploy unit that offer this type if it is not one of our types
           // add node
-          kengine append "addNode {nodeName} : PJavaSENode"
+          logger.debug("addNode {} : {}", node.getName, node.getTypeDefinition.getName)
+          kengine append "addNode {nodeName} : {nodeType}"
           // set dictionary attributes of node
           if (node.getDictionary.isDefined) {
             //            scriptBuilder append "{"
-            val defaultAttributes = KloudHelper.getDefaultNodeAttributes(kloudModel, "PJavaSENode")
+            val defaultAttributes = KloudHelper.getDefaultNodeAttributes(kloudModel, node.getTypeDefinition.getName)
             node.getDictionary.get.getValues
               .filter(value => defaultAttributes.find(a => a.getName == value.getAttribute.getName) match {
               case Some(attribute) => true
@@ -315,7 +315,7 @@ object KloudReasoner {
     var potentialParents = List[String]()
 
     // filter nodes that are not IaaSNode and are not child of IaaSNode
-    kloudModel.getNodes.filter(n => (n.getTypeDefinition.getName == "PJavaSENode" || KloudHelper.isASubType(n.getTypeDefinition, "PJavaSENode"))
+    kloudModel.getNodes.filter(n => KloudHelper.isPaaSNode(kloudModel, n.getName)
       && kloudModel.getNodes.forall(parent => !parent.getHosts.contains(n))).foreach {
       node => {
         logger.debug("try to select a parent for {}", node.getName)
@@ -338,13 +338,24 @@ object KloudReasoner {
             }
           }
         }
+        kengine.addVariable("nodeName", node.getName)
         val index = (java.lang.Math.random() * potentialParents.size).asInstanceOf[Int]
-        kengine append "addChild " + node.getName + "@" + potentialParents(index) + "\n"
+        kengine.addVariable("parentName", potentialParents(index))
+        kengine append "addChild {nodeName}@{parentName}"
 
         // define IP using selecting node to know what it the network used in this machine
         val ipOption = KloudHelper.selectIP(potentialParents(index), kloudModel)
         if (ipOption.isDefined) {
-          kengine append "network " + node.getName + " {\"" + Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP + "\" = \"" + ipOption.get + "\" }\n"
+          kengine.addVariable("ipKey", Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP)
+          kengine.addVariable("ip", ipOption.get)
+          kengine append "network {nodeName} {'{ipKey}' = '{ip}' }\n"
+          // find corresponding Kloud group to update the user group configuration on the kloud
+          kloudModel.getGroups.filter(g => KloudHelper.isKloudGroup(kloudModel, g.getName) && g.getSubNodes.find(n => n.getName == node.getName).isDefined).foreach {
+            group =>
+              kengine.addVariable("groupName", group.getName)
+              kengine append "updateDictionary {groupName} {ip='{ip}'}@{nodeName}"
+          }
+
         } else {
           logger.debug("Unable to select an IP for {}", node.getName)
         }
@@ -362,16 +373,22 @@ object KloudReasoner {
    */
   def configureGroup (userModel: ContainerRoot, kloudModel: ContainerRoot, groupName: String, kengine: KevScriptEngine): Boolean = {
     logger.debug("Try to add the user nodes on default group {} into the Kloud", groupName)
+
+    val kloudUserNodes = userModel.getNodes.filter(n => KloudHelper.isPaaSNode(userModel, n.getName))
+
     kloudModel.getGroups.find(g => g.getName == groupName) match {
       case None => logger.error("Unable to find the group {}", groupName); false //must never appear
       case Some(group) =>
-        if (group.getSubNodes.size - 1 /*due to master node*/ == userModel.getNodes.size && group.getTypeDefinition.getName == "KloudPaaSNanoGroup") {
+        if (group.getSubNodes.size - 1 /*due to master node*/ == kloudUserNodes.size &&
+          KloudHelper.isKloudGroup(kloudModel, group.getName) /*group.getTypeDefinition.getName == "KloudPaaSNanoGroup" || KloudHelper.isASubType(group.getTypeDefinition, "KloudPaaSNanoGroup")*/ ) {
+
+          //          KloudHelper.isKloudGroupForNode(kloudModel, group.getName,
           true
         } else {
           // build kevscript to add user nodes into the kloud model
           var ports = Array[Int]()
 
-          userModel.getNodes.foreach {
+          kloudUserNodes.foreach {
             node =>
               group.getSubNodes.find(n => n.getName == node.getName) match {
                 case Some(n) =>
@@ -408,7 +425,7 @@ object KloudReasoner {
    * compute a new deployment and apply it
    */
   def processDeployment (newModel: ContainerRoot, userModel: ContainerRoot, kloudModel: ContainerRoot, kengine: KevScriptEngine, groupName: String): Boolean = {
-
+    logger.debug("startin processDeployment method")
     // compare newModel and userModel to know which nodes must be added or removed
     val comparison = getAddAndRemove(newModel, userModel)
     val addedNodes = comparison._1
@@ -442,11 +459,11 @@ object KloudReasoner {
 
     //CHECK TYPPE
     if (userModel.getTypeDefinitions.find(td => td.getName == groupType).isEmpty) {
-      kengine append "merge \"mvn:org.kevoree.corelibrary.sky/org.kevoree.library.sky.api/{kevVersion}\""
-      kengine append "merge \"mvn:org.kevoree.corelibrary.sky/org.kevoree.library.sky.minicloud/{kevVersion}\""
-      kengine append "merge \"mvn:org.kevoree.corelibrary.sky/org.kevoree.library.sky.provider/{kevVersion}\""
+      kengine append "merge \"mvn:org.kevoree.corelibrary.model/org.kevoree.library.model.sky/{kevVersion}\""
     }
     kengine.append("addGroup {groupName} : {groupType}")
+
+    val kloudUserNodes = userModel.getNodes.filter(n => KloudHelper.isPaaSNode(userModel, n.getName))
     //FOUND IAAS GROUP
     iaasModel.getGroups.find(g => g.getName == login) match {
       case Some(iaasPreviousGroup) => {
@@ -455,7 +472,7 @@ object KloudReasoner {
           value =>
             kengine.append("updateDictionary {groupName} { " + value.getAttribute.getName + "='" + value.getValue + "' }")
         }
-        userModel.getNodes.foreach {
+        kloudUserNodes.foreach {
           node =>
             kengine.addVariable("nodeName", node.getName)
             kengine.append("addToGroup {groupName} {nodeName}")
@@ -469,6 +486,7 @@ object KloudReasoner {
             val addressOption = KevoreePropertyHelper.getStringNetworkProperty(iaasModel, node.getName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP)
             if (addressOption.isDefined) {
               kengine append "network {nodeName} {'" + Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP + "' = '" + addressOption.get + "' }"
+              kengine append "updateDictionary {groupName} {ip='" + addressOption.get + "'}@{nodeName}"
             }
         }
         try {
