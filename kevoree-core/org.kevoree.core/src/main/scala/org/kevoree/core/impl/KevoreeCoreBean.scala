@@ -11,49 +11,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * 	http://www.gnu.org/licenses/lgpl-3.0.txt
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-/**
- * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.gnu.org/licenses/lgpl-3.0.txt
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-/**
- * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.gnu.org/licenses/lgpl-3.0.txt
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 
 package org.kevoree.core.impl
 
@@ -78,10 +35,9 @@ import scala.Some
 import scala.Tuple2
 
 
-class KevoreeCoreBean extends KevoreeModelHandlerService /*with KevoreeThreadActor*/ {
+class KevoreeCoreBean extends KevoreeModelHandlerService {
 
   val listenerActor = new KevoreeListeners
-  listenerActor.start()
 
   @BeanProperty var configService: ConfigurationService = null
   var kevsEngineFactory: KevScriptEngineFactory = null
@@ -214,9 +170,11 @@ class KevoreeCoreBean extends KevoreeModelHandlerService /*with KevoreeThreadAct
   private var scheduler: ExecutorService = _
 
   def start() /*: Actor*/ = {
+
     if (getNodeName == "") {
       setNodeName(configService.getProperty(ConfigConstants.KEVOREE_NODE_NAME))
     }
+    listenerActor.start(getNodeName())
     logger.info("Kevoree Start event : node name = " + getNodeName)
 
     scheduler = java.util.concurrent.Executors.newSingleThreadExecutor(new ThreadFactory() {
@@ -228,7 +186,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService /*with KevoreeThreadAct
       }
 
       def newThread(p1: Runnable) = {
-        val t = new Thread(group, p1, "Kevoree_Core_Scheduler_"+getNodeName)
+        val t = new Thread(group, p1, "Kevoree_Core_Scheduler_" + getNodeName)
         if (t.isDaemon) {
           t.setDaemon(false)
         }
@@ -254,6 +212,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService /*with KevoreeThreadAct
     this
   }
 
+
   def stop() {
     logger.warn("Kevoree Core will be stopped !")
     listenerActor.stop()
@@ -265,7 +224,11 @@ class KevoreeCoreBean extends KevoreeModelHandlerService /*with KevoreeThreadAct
         val stopModel = checkUnbootstrapNode(model)
         if (stopModel.isDefined) {
           val adaptationModel = nodeInstance.kompare(model, stopModel.get)
-          val deployResult = PrimitiveCommandExecutionHelper.execute(adaptationModel, nodeInstance)
+          def afterUpdateTest(): Boolean = {
+            true
+            //listenerActor.afterUpdate(model, stopModel.get)
+          }
+          val ignoredDeployResult = PrimitiveCommandExecutionHelper.execute(adaptationModel, nodeInstance, afterUpdateTest)
         } else {
           logger.error("Unable to use the stopModel !")
         }
@@ -349,7 +312,11 @@ class KevoreeCoreBean extends KevoreeModelHandlerService /*with KevoreeThreadAct
                   }
                 }
                 //Executes the adaptation
-                PrimitiveCommandExecutionHelper.execute(adaptationModel, nodeInstance)
+                def afterUpdateTest(): Boolean = {
+                  true
+                  //listenerActor.afterUpdate(model, newmodel)
+                }
+                PrimitiveCommandExecutionHelper.execute(adaptationModel, nodeInstance,afterUpdateTest)
                 nodeInstance.stopNode()
                 //end of harakiri
                 nodeInstance = null
@@ -375,11 +342,14 @@ class KevoreeCoreBean extends KevoreeModelHandlerService /*with KevoreeThreadAct
             try {
               // Compare the two models and plan the adaptation
               logger.info("Comparing models and planning adaptation.")
-              val adaptationModel = nodeInstance.kompare(model, newmodel);
+              val adaptationModel = nodeInstance.kompare(model, newmodel)
 
               //Execution of the adaptation
               logger.info("Launching adaptation of the system.")
-              deployResult = PrimitiveCommandExecutionHelper.execute(adaptationModel, nodeInstance)
+              def afterUpdateTest(): Boolean = {
+                listenerActor.afterUpdate(model, newmodel)
+              }
+              deployResult = PrimitiveCommandExecutionHelper.execute(adaptationModel, nodeInstance,afterUpdateTest)
             } catch {
               case _@e => {
                 logger.error("Error while update ", e)
@@ -436,8 +406,8 @@ class KevoreeCoreBean extends KevoreeModelHandlerService /*with KevoreeThreadAct
     scheduler.submit(LastUUIDModelCallable()).get()
   }
 
-  private case class LastUUIDModelCallable() extends Callable[UUIDModel]{
-    def call() : UUIDModel = {
+  private case class LastUUIDModelCallable() extends Callable[UUIDModel] {
+    def call(): UUIDModel = {
       UUIDModelImpl(currentModelUUID, cloner.clone(model))
     }
   }
@@ -452,8 +422,8 @@ class KevoreeCoreBean extends KevoreeModelHandlerService /*with KevoreeThreadAct
     scheduler.submit(UpdateModelCallable(model))
   }
 
-  case class UpdateModelCallable(model: ContainerRoot) extends Callable[Boolean]{
-    def call() : Boolean = {
+  case class UpdateModelCallable(model: ContainerRoot) extends Callable[Boolean] {
+    def call(): Boolean = {
       val res = if (currentLock == null) {
         internal_update_model(model)
       } else {
@@ -478,7 +448,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService /*with KevoreeThreadAct
   }
 
   case class CompareAndSwapCallable(previousModel: UUIDModel, targetModel: ContainerRoot) extends Callable[Boolean] {
-    def call() : Boolean = {
+    def call(): Boolean = {
       val res = if (currentLock != null) {
         if (previousModel.getUUID.compareTo(currentLock._1) == 0) {
           internal_update_model(targetModel)
@@ -505,7 +475,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService /*with KevoreeThreadAct
    * If OK, updates the system and switches to the new model, asynchronously
    */
   override def compareAndSwapModel(previousModel: UUIDModel, targetModel: ContainerRoot) {
-    scheduler.submit(CompareAndSwapCallable(previousModel,targetModel))
+    scheduler.submit(CompareAndSwapCallable(previousModel, targetModel))
   }
 
   /**
@@ -514,7 +484,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService /*with KevoreeThreadAct
    */
   @throws(classOf[KevoreeModelUpdateException])
   override def atomicCompareAndSwapModel(previousModel: UUIDModel, targetModel: ContainerRoot): Date = {
-    val result = scheduler.submit(CompareAndSwapCallable(previousModel,targetModel)).get()
+    val result = scheduler.submit(CompareAndSwapCallable(previousModel, targetModel)).get()
     if (!result) {
       throw new KevoreeModelUpdateException //SEND AND EXCEPTION - Compare&Swap fail !
     }
@@ -551,22 +521,17 @@ class KevoreeCoreBean extends KevoreeModelHandlerService /*with KevoreeThreadAct
   /* Lock Management */
 
   private var currentLock: Tuple2[UUID, ModelHandlerLockCallBack] = null
-  //private var currentLockTimer: Actor = null
 
   case class RELEASE_LOCK(uuid: UUID)
 
-  //case class ACQUIRE_LOCK(callBack: ModelHandlerLockCallBack, timeout: Long)
-
-  //case class LOCK_TIMEOUT()
-
   def acquireLock(callBack: ModelHandlerLockCallBack, timeout: Long) {
-    scheduler.submit(AcquireLock(callBack,timeout))
+    scheduler.submit(AcquireLock(callBack, timeout))
   }
 
-  private var lockWatchDog : ScheduledExecutorService = _
-  private var futurWatchDog : ScheduledFuture[_] = _
+  private var lockWatchDog: ScheduledExecutorService = _
+  private var futurWatchDog: ScheduledFuture[_] = _
 
-  case class AcquireLock(callBack: ModelHandlerLockCallBack, timeout: Long) extends Runnable{
+  case class AcquireLock(callBack: ModelHandlerLockCallBack, timeout: Long) extends Runnable {
     def run() {
       if (currentLock != null) {
         callBack.lockRejected()
@@ -574,7 +539,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService /*with KevoreeThreadAct
         val lockUUID = UUID.randomUUID()
         currentLock = (lockUUID, callBack)
         lockWatchDog = java.util.concurrent.Executors.newSingleThreadScheduledExecutor()
-        futurWatchDog = lockWatchDog.schedule(WatchDogCallable(),timeout,TimeUnit.MILLISECONDS)
+        futurWatchDog = lockWatchDog.schedule(WatchDogCallable(), timeout, TimeUnit.MILLISECONDS)
         callBack.lockAcquired(lockUUID)
       }
     }
@@ -586,13 +551,11 @@ class KevoreeCoreBean extends KevoreeModelHandlerService /*with KevoreeThreadAct
     }
   }
 
-
-
   def releaseLock(uuid: UUID) {
     scheduler.submit(ReleaseLockCallable(uuid))
   }
 
-  case class ReleaseLockCallable(uuid: UUID) extends Runnable{
+  case class ReleaseLockCallable(uuid: UUID) extends Runnable {
     def run() {
       if (currentLock != null) {
         if (currentLock._1.compareTo(uuid) == 0) {
@@ -606,7 +569,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService /*with KevoreeThreadAct
     }
   }
 
-  private def lockTimeout(){
+  private def lockTimeout() {
     scheduler.submit(LockTimeoutCallable())
   }
 

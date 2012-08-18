@@ -47,6 +47,9 @@ public interface ModelListener {
      */
     public boolean initUpdate(ContainerRoot currentModel, ContainerRoot proposedModel);
 
+    /* Method called after the local update of the runtime. Synchronized this method can bloc Kevoree core and must return true if update is accepted or not if there is any failure  */
+    public boolean afterLocalUpdate(ContainerRoot currentModel, ContainerRoot proposedModel);
+
     /**
      *  Method called asynchronisly after a model update
      */

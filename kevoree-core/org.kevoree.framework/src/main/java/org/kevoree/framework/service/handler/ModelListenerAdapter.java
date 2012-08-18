@@ -34,7 +34,6 @@ import org.kevoree.api.service.core.handler.ModelListener;
  * User: gregory.nain
  * Date: 16/04/12
  * Time: 09:54
- * To change this template use File | Settings | File Templates.
  */
 public abstract class ModelListenerAdapter implements ModelListener {
     @Override
@@ -44,6 +43,11 @@ public abstract class ModelListenerAdapter implements ModelListener {
 
     @Override
     public boolean initUpdate(ContainerRoot currentModel, ContainerRoot proposedModel) {
+        return true;
+    }
+
+    @Override
+    public boolean afterLocalUpdate(ContainerRoot currentModel, ContainerRoot proposedModel) {
         return true;
     }
 

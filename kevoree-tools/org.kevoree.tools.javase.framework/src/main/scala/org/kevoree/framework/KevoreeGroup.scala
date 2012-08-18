@@ -47,6 +47,8 @@ trait KevoreeGroup extends AbstractGroupType with KInstance /*with KevoreeActor*
 
   def initUpdate(currentModel : ContainerRoot, proposedModel : ContainerRoot) : Boolean = triggerInitUpdate(currentModel, proposedModel)
 
+  def afterLocalUpdate(currentModel : ContainerRoot, proposedModel : ContainerRoot) = true
+
   override def getModelListener : ModelListener = this
 
 

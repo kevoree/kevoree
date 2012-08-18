@@ -11,58 +11,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * 	http://www.gnu.org/licenses/lgpl-3.0.txt
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-/**
- * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.gnu.org/licenses/lgpl-3.0.txt
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-/**
- * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.gnu.org/licenses/lgpl-3.0.txt
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-/**
- * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.gnu.org/licenses/lgpl-3.0.txt
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package org.kevoree.framework.deploy
 
 import org.kevoreeAdaptation.{ParallelStep, AdaptationModel}
@@ -83,11 +31,18 @@ object PrimitiveCommandExecutionHelper {
 
   var logger = LoggerFactory.getLogger(this.getClass)
 
-  def execute(adaptionModel: AdaptationModel, nodeInstance: NodeType): Boolean = {
+  def execute(adaptionModel: AdaptationModel, nodeInstance: NodeType, afterUpdateFunc : ()=>Boolean): Boolean = {
     if (adaptionModel.getOrderedPrimitiveSet != null) {
       adaptionModel.getOrderedPrimitiveSet match {
         case Some(orderedPrimitiveSet) => {
-          executeStep(orderedPrimitiveSet, nodeInstance)
+          val phase = new KevoreeParDeployPhase
+          val res = executeStep(orderedPrimitiveSet, nodeInstance, phase)
+          if (res) {
+            if (!afterUpdateFunc()){
+              phase.rollBack()
+            }
+          }
+          res
         }
         case None => true
       }
@@ -97,11 +52,10 @@ object PrimitiveCommandExecutionHelper {
     }
   }
 
-  private def executeStep(step: ParallelStep, nodeInstance: NodeType): Boolean = {
+  private def executeStep(step: ParallelStep, nodeInstance: NodeType, phase: KevoreeParDeployPhase): Boolean = {
     if (step == null) {
       return true
     }
-    val phase = new KevoreeParDeployPhase
     val populateResult = step.getAdaptations.forall {
       adapt =>
         val primitive = nodeInstance.getPrimitive(adapt)
@@ -119,7 +73,9 @@ object PrimitiveCommandExecutionHelper {
       if (phaseResult) {
         val subResult = step.getNextStep match {
           case Some(nextStep) => {
-            executeStep(nextStep, nodeInstance)
+            val nextPhase = new KevoreeParDeployPhase
+            phase.sucessor = Some(nextPhase)
+            executeStep(nextStep, nodeInstance, nextPhase)
           }
           case None => true
         }
@@ -142,6 +98,8 @@ object PrimitiveCommandExecutionHelper {
   private class KevoreeParDeployPhase {
     var primitives: List[PrimitiveCommand] = List()
 
+    var sucessor: Option[KevoreeParDeployPhase] = None
+
     class Worker(primitive: PrimitiveCommand) extends Callable[Boolean] {
 
       def call(): Boolean = {
@@ -156,17 +114,17 @@ object PrimitiveCommandExecutionHelper {
       }
     }
 
-    class WorkerThreadFactory(id : String) extends ThreadFactory {
+    class WorkerThreadFactory(id: String) extends ThreadFactory {
       val threadNumber = new AtomicInteger(1)
 
-      override def newThread(p1: Runnable) : Thread = {
+      override def newThread(p1: Runnable): Thread = {
         val s = System.getSecurityManager
         val group = if (s != null) {
           s.getThreadGroup
         } else {
           Thread.currentThread().getThreadGroup
         }
-        val t = new Thread(group, p1, "Kevoree_Deploy_"+id+"_Worker_" + threadNumber.getAndIncrement)
+        val t = new Thread(group, p1, "Kevoree_Deploy_" + id + "_Worker_" + threadNumber.getAndIncrement)
         if (t.isDaemon) {
           t.setDaemon(false)
         }
@@ -183,7 +141,7 @@ object PrimitiveCommandExecutionHelper {
       if (ps.isEmpty) {
         true
       } else {
-        val pool = java.util.concurrent.Executors.newFixedThreadPool(Runtime.getRuntime.availableProcessors() , new WorkerThreadFactory(System.currentTimeMillis().toString))
+        val pool = java.util.concurrent.Executors.newFixedThreadPool(Runtime.getRuntime.availableProcessors(), new WorkerThreadFactory(System.currentTimeMillis().toString))
         val workers = new util.ArrayList[Worker]()
         ps.foreach {
           primitive =>
@@ -196,7 +154,7 @@ object PrimitiveCommandExecutionHelper {
             f => f.isDone && f.get()
           }
         } catch {
-          case _ @ ignore => {
+          case _@ignore => {
             false
           }
         } finally {
@@ -204,68 +162,6 @@ object PrimitiveCommandExecutionHelper {
         }
       }
     }
-
-
-    /*
-class WatchDogActor(timeout: Long) extends Actor {
-  var rec = 0
-  val pointerSelf = this
-  var noError = true
-
-  def act() {
-    react {
-      case ps: List[PrimitiveCommand] => {
-        var waitingThread: List[java.util.concurrent.Future[_]] = List()
-        val pool = java.util.concurrent.Executors.newFixedThreadPool(Runtime.getRuntime.availableProcessors())
-        ps.foreach {
-          primitive =>
-            val worker = new BooleanRunnableTask(primitive, pointerSelf)
-            val future = pool.submit(worker)
-            waitingThread = waitingThread ++ List(future)
-        }
-        logger.debug("Waiting for {} threads", waitingThread.size)
-        val responseActor = sender
-        if (ps.isEmpty) {
-          logger.debug("Empty list result true")
-          responseActor ! true
-          exit()
-        }
-        loop {
-          reactWithin(timeout) {
-            case TIMEOUT => {
-              logger.debug("TimeOut detected")
-              waitingThread.foreach {
-                wt =>
-                  try {
-                    wt.cancel(true)
-                  } catch {
-                    case _ =>
-                  }
-              }
-              pool.shutdownNow()
-              waitingThread = List()
-              responseActor ! false
-              exit()
-            }
-            case b: Boolean => {
-              rec = rec + 1
-              if (!b) {
-                noError = false
-              }
-              logger.debug("getResult {}", rec)
-              if (rec == ps.size) {
-                waitingThread = List()
-                pool.shutdownNow()
-                responseActor ! noError
-                exit()
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-}    */
 
     def populate(cmd: PrimitiveCommand) {
       primitives = primitives ++ List(cmd)
@@ -297,6 +193,12 @@ class WatchDogActor(timeout: Long) extends Actor {
 
     def rollBack() {
       logger.debug("Rollback phase")
+
+      if (sucessor.isDefined) {
+        logger.debug("Rollback sucessor first")
+        sucessor.get.rollBack()
+      }
+
       // SEQUENCIAL ROOLBACK
       primitives.reverse.foreach(c => {
         try {

@@ -32,9 +32,7 @@
 package org.kevoree.core.impl
 
 import org.kevoree.api.configuration.ConfigurationService
-import java.io.File
 import org.kevoree.api.configuration.ConfigConstants.ConfigConstant
-import org.kevoree.api.configuration.ConfigConstants
 import org.slf4j.LoggerFactory
 
 class KevoreeConfigServiceBean extends ConfigurationService {
