@@ -45,7 +45,7 @@ class DataTypeVisitor extends SimpleTypeVisitor6[Any, Any] {
   var dataType = KevoreeFactory.eINSTANCE.createTypedElement
 
   def getDataType(): TypedElement = {
-    return dataType
+    dataType
   }
 
 
@@ -56,7 +56,7 @@ class DataTypeVisitor extends SimpleTypeVisitor6[Any, Any] {
       tm =>
         val dtv = new DataTypeVisitor()
         tm.accept(dtv, tm)
-        dataType.addGenericTypes(LocalUtility.getOraddDataType(dtv.getDataType()))
+        dataType.addGenericTypes(LocalUtility.getOraddDataType(dtv.getDataType))
     }
   }
 
@@ -65,14 +65,14 @@ class DataTypeVisitor extends SimpleTypeVisitor6[Any, Any] {
     name = name.replace("[]", "")
     val sb = new StringBuffer()
     sb.append("Array[")
-    sb.append(name.substring(0, 1).toUpperCase)
-    sb.append(name.substring(1).toLowerCase)
+//    sb.append(name.substring(0, 1).toUpperCase)
+//    sb.append(name.substring(1).toLowerCase)
+    sb.append(visitArrayComponentType(p1.getComponentType))
     sb.append("]")
     dataType.setName(sb.toString)
   }
 
   override def visitPrimitive(p1: _root_.javax.lang.model.`type`.PrimitiveType, p: Any) {
-
     p1.getKind match {
       case TypeKind.BOOLEAN => dataType.setName("scala.Boolean")
       case TypeKind.BYTE => dataType.setName("scala.Byte")
@@ -92,8 +92,14 @@ class DataTypeVisitor extends SimpleTypeVisitor6[Any, Any] {
     dataType.setName("void")
   }
 
-  def visitEnumType(t: DeclaredType) = {
+  def visitEnumType(t: DeclaredType) {
     dataType.setName(t.asElement().toString)
+  }
+
+  private def visitArrayComponentType(p1 : javax.lang.model.`type`.TypeMirror) : String = {
+    val dtv = new DataTypeVisitor()
+    p1.accept(dtv, p1)
+    dtv.getDataType.getName
   }
 
   /*
