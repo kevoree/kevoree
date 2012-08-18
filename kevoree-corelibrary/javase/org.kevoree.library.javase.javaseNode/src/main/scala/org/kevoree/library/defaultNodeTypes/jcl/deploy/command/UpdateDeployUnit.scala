@@ -20,6 +20,7 @@ import org.kevoree.framework.{FileNIOHelper}
 import java.io.{FileInputStream, File}
 import java.util.Random
 import org.kevoree.api.PrimitiveCommand
+import org.kevoree.kcl.KevoreeJarClassLoader
 
 /**
  * Created by IntelliJ IDEA.
@@ -28,30 +29,40 @@ import org.kevoree.api.PrimitiveCommand
  * Time: 16:35
  */
 
-case class UpdateDeployUnit(du : DeployUnit,bs : org.kevoree.api.Bootstraper) extends PrimitiveCommand {
+case class UpdateDeployUnit(du : DeployUnit,bs : org.kevoree.api.Bootstraper) extends EndAwareCommand {
 
   val logger = LoggerFactory.getLogger(this.getClass)
-  var lastTempFile : File = _
+  var lastKCL : KevoreeJarClassLoader = null
   var random = new Random
 
   def undo() {
-    if(lastTempFile != null){
+    if(lastKCL != null){
+
+
       bs.getKevoreeClassLoaderHandler.removeDeployUnitClassLoader(du)
-      bs.getKevoreeClassLoaderHandler.installDeployUnit(du,lastTempFile)
+      bs.getKevoreeClassLoaderHandler.attachKCL(du,lastKCL)
+     // bs.getKevoreeClassLoaderHandler.installDeployUnit(du,lastTempFile)
     }
   }
 
   def execute(): Boolean = {
     try {
+      /*
       lastTempFile = File.createTempFile(random.nextInt() + "", ".jar")
       val jarStream = new FileInputStream(bs.getKevoreeClassLoaderHandler.getCacheFile(du));
       FileNIOHelper.copyFile(jarStream, lastTempFile)
       jarStream.close()
+      */
+      lastKCL = bs.getKevoreeClassLoaderHandler.getKevoreeClassLoader(du)
       bs.getKevoreeClassLoaderHandler.removeDeployUnitClassLoader(du)
       bs.getKevoreeClassLoaderHandler.installDeployUnit(du)
       true
     } catch {
       case _@ e =>logger.debug("error ",e);false
     }
+  }
+
+  def doEnd {
+    lastKCL = null
   }
 }

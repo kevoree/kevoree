@@ -34,7 +34,6 @@ import java.lang.String
  * User: duke
  * Date: 03/01/12
  * Time: 13:55
- * To change this template use File | Settings | File Templates.
  */
 
 case class CaseContextKey(nodeID: String, instanceID: String, name: String, timestamp: Long) extends ContextKey {

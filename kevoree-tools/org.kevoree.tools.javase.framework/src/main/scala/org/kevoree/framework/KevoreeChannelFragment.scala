@@ -26,10 +26,6 @@ package org.kevoree.framework
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 
 trait KevoreeChannelFragment extends KevoreeActor with KInstance {
   def getName : String
@@ -38,9 +34,5 @@ trait KevoreeChannelFragment extends KevoreeActor with KInstance {
   def startChannelFragment
   def stopChannelFragment
   def getDictionary : java.util.HashMap[String,Object]
-
- // def createProxy(remoteNodeName:String,remoteChannelName:String) : KevoreeChannelFragmentProxy
-
-
 
 }

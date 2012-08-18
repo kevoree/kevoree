@@ -7,6 +7,7 @@ package org.kevoree.library.defaultNodeTypes;
 
 import org.kevoree.ContainerRoot;
 import org.kevoree.annotation.*;
+import org.kevoree.api.service.core.handler.ModelListener;
 import org.kevoree.api.service.core.logging.KevoreeLogLevel;
 import org.kevoree.framework.AbstractNodeType;
 import org.kevoree.kompare.KevoreeKompareBean;
@@ -33,7 +34,7 @@ import java.io.InputStreamReader;
 @PrimitiveCommands(
         values = {"UpdateType", "UpdateDeployUnit", "AddType", "AddDeployUnit", "AddThirdParty", "RemoveType", "RemoveDeployUnit", "UpdateInstance", "UpdateBinding", "UpdateDictionaryInstance", "AddInstance", "RemoveInstance", "AddBinding", "RemoveBinding", "AddFragmentBinding", "RemoveFragmentBinding", "UpdateFragmentBinding", "StartInstance", "StopInstance", "StartThirdParty", "RemoveThirdParty"},
         value = {})
-public class JavaSENode extends AbstractNodeType {
+public class JavaSENode extends AbstractNodeType implements ModelListener {
     private static final org.slf4j.Logger logger = LoggerFactory.getLogger(JavaSENode.class);
 
     private KevoreeKompareBean kompareBean = null;
@@ -42,6 +43,7 @@ public class JavaSENode extends AbstractNodeType {
     private boolean isRunning;
     private Thread shutdownThread;
 
+
     protected boolean isDaemon() {
         return false;
     }
@@ -49,9 +51,10 @@ public class JavaSENode extends AbstractNodeType {
     @Start
     @Override
     public void startNode() {
+        mapper = new CommandMapper();
+        getModelService().registerModelListener(this);
         isRunning = true;
         kompareBean = new KevoreeKompareBean();
-        mapper = new CommandMapper();
         mapper.setNodeType(this);
         updateNode();
         if (!isDaemon()) {
@@ -70,6 +73,7 @@ public class JavaSENode extends AbstractNodeType {
     @Stop
     @Override
     public void stopNode() {
+        getModelService().unregisterModelListener(this);
         kompareBean = null;
         mapper = null;
         isRunning = false;
@@ -163,4 +167,23 @@ public class JavaSENode extends AbstractNodeType {
         }
     }
 
+    @Override
+    public boolean preUpdate(ContainerRoot currentModel, ContainerRoot proposedModel) {
+        return true;
+    }
+
+    @Override
+    public boolean initUpdate(ContainerRoot currentModel, ContainerRoot proposedModel) {
+        return true;
+    }
+
+    @Override
+    public boolean afterLocalUpdate(ContainerRoot currentModel, ContainerRoot proposedModel) {
+        mapper.doEnd();
+        return true;
+    }
+
+    @Override
+    public void modelUpdated() {
+    }
 }

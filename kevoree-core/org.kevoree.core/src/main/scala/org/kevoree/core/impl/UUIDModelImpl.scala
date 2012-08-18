@@ -35,7 +35,6 @@ import java.util.UUID
  * User: duke
  * Date: 13/12/11
  * Time: 11:03
- * To change this template use File | Settings | File Templates.
  */
 
 case class UUIDModelImpl(uuid: UUID, model: ContainerRoot) extends UUIDModel {
