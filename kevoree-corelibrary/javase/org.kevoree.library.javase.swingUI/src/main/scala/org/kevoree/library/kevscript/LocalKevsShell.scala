@@ -50,6 +50,8 @@ class LocalKevsShell(mhs: KevoreeModelHandlerService, kevsfact: KevScriptEngineF
     def modelUpdated() {
       KevsModelHandlers.put(1, mhs.getLastModel)
     }
+
+    def afterLocalUpdate(currentModel: ContainerRoot, proposedModel: ContainerRoot) = true
   })
 
 
