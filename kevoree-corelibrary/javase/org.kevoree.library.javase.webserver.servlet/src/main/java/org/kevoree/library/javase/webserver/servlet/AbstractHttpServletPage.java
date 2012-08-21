@@ -9,17 +9,13 @@ import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
  * User: duke
  * Date: 07/12/11
  * Time: 12:50
- * To change this template use File | Settings | File Templates.
  */
 @ComponentFragment
 public abstract class AbstractHttpServletPage extends AbstractPage {
@@ -48,16 +44,14 @@ public abstract class AbstractHttpServletPage extends AbstractPage {
 						return getSharedServletContext();
 					}
 
-					private Map<String, String> initParameterNames = new HashMap<String, String>();
-
 					@Override
 					public String getInitParameter (String name) {
-						return initParameterNames.get(name);
+						return null;
 					}
 
 					@Override
 					public Enumeration<String> getInitParameterNames () {
-						return Collections.enumeration(initParameterNames.keySet());
+						return Collections.enumeration(new ArrayList<String>(0));
 					}
 				};
 			}
