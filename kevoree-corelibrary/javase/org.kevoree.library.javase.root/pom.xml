@@ -24,6 +24,8 @@
         <module>../org.kevoree.library.javase.swingUI</module>
         <module>../org.kevoree.library.javase.kotlin</module>
         <module>../org.kevoree.library.javase.fileSystem</module>
+        <module>../org.kevoree.library.javase.fileSystem.git</module>
+        <module>../org.kevoree.library.javase.fileSystem.svn</module>
         <module>../org.kevoree.library.javase.javaseNode</module>
         <module>../org.kevoree.library.javase.MonitoredJavaSENode</module>
 

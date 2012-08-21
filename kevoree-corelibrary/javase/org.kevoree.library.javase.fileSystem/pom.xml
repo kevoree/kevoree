@@ -1,16 +1,41 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-
-    <modelVersion>4.0.0</modelVersion>
-    <artifactId>org.kevoree.library.javase.fileSystem</artifactId>
-    <version>1.8.4-SNAPSHOT</version>
-    <name>Kevoree :: CoreLibrary :: JavaSE :: FileSystem</name>
-
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>org.kevoree.library.javase.root</artifactId>
         <groupId>org.kevoree.corelibrary.javase</groupId>
         <version>1.8.4-SNAPSHOT</version>
         <relativePath>../org.kevoree.library.javase.root/pom.xml</relativePath>
     </parent>
+    <modelVersion>4.0.0</modelVersion>
 
+    <artifactId>org.kevoree.library.javase.fileSystem</artifactId>
+    <name>Kevoree :: CoreLibrary :: JavaSE :: FileSystem :: API</name>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>2.1.2</version>
+                <executions>
+                    <execution>
+                        <id>bind-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+
+    </build>
+    <dependencies>
+        <dependency>
+            <groupId>com.google.gwt</groupId>
+            <artifactId>gwt-user</artifactId>
+            <version>2.5.0-rc1</version>
+        </dependency>
+    </dependencies>
 </project>
