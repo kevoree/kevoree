@@ -53,6 +53,10 @@
         <!--
         <module>../org.kevoree.library.javase.vertx</module>
         -->
+
+
+        <module>../org.kevoree.library.javase.mongoDB</module>
+
     </modules>
 
     <dependencies>
