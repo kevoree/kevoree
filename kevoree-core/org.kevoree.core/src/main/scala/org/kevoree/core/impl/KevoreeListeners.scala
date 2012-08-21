@@ -58,7 +58,11 @@ class KevoreeListeners {
     }
   }
 
-  def removeListener(l: ModelListener) = scheduler.submit(RemoveListener(l))
+  def removeListener(l: ModelListener) = {
+    if(scheduler != null){
+      scheduler.submit(RemoveListener(l))
+    }
+  }
 
   case class RemoveListener(l: ModelListener) extends Runnable {
     def run() {
