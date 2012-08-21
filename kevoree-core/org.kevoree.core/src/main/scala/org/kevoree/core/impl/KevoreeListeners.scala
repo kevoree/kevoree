@@ -93,6 +93,7 @@ class KevoreeListeners {
       value =>
         value ! STOP_LISTENER()
     }
+    registeredListeners.clear()
     scheduler.shutdownNow()
     scheduler = null
   }
