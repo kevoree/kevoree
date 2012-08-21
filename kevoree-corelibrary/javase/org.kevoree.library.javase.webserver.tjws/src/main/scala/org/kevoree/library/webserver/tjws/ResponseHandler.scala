@@ -31,10 +31,11 @@ class ResponseHandler(timeout: Long, origin: RequestHandler) extends Actor {
             case res: KevoreeHttpResponse => {
               resultSender ! res
               origin ! REMOVE(index)
-            };
+            }
             case TIMEOUT => {
               val result = new KevoreeHttpResponseImpl
               result.setTokenID(index)
+              result.setStatus(504)
               result.setContent("Kevoree Server Timeout")
               resultSender ! result
               origin ! REMOVE(index)

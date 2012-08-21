@@ -4,6 +4,7 @@ import util.matching.Regex
 import java.util.HashMap
 import org.slf4j.LoggerFactory
 import java.util.regex.Pattern
+import java.util
 
 /**
  * Created by IntelliJ IDEA.
@@ -25,7 +26,7 @@ class URLHandlerScala {
     val rsb = new StringBuffer()
     while (m.find) {
       paramNames = paramNames ++ List(m.group(1))
-      rsb.replace(0, rsb.length, m.group(1));
+      rsb.replace(0, rsb.length, m.group(1))
       m.appendReplacement(sb, "(\\\\w+)")
     }
     m.appendTail(sb)
@@ -54,7 +55,7 @@ class URLHandlerScala {
       case request: KevoreeHttpRequest => {
         LocalURLPattern.unapplySeq(request.getUrl) match {
           case Some(paramsList) => {
-            val params = new HashMap[String, String]
+            val params = new util.HashMap[String, String]
             params.putAll(request.getResolvedParams)
             var i = 0
             paramsList.foreach{ param =>
@@ -65,7 +66,7 @@ class URLHandlerScala {
             Some(request)
           }
           case _ => {
-            logger.debug("Bad Pattern " + request.getUrl);
+            logger.debug("Bad Pattern " + request.getUrl)
             None
           }
         }

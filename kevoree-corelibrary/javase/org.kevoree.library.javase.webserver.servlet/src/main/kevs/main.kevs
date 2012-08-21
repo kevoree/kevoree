@@ -1,0 +1,28 @@
+merge 'mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.webserver.api/{kevoree.version}'
+merge 'mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.nanohttp/{kevoree.version}'
+merge 'mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.defaultChannels/{kevoree.version}'
+merge 'mvn:org.kevoree.corelibrary.android/org.kevoree.library.android.nanohttp/{kevoree.version}'
+merge 'mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.javaseNode/{kevoree.version}'
+merge 'mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.webserver.servlet/{kevoree.version}'
+merge 'mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.webserver.tjws/{kevoree.version}'
+
+addNode node0:JavaSENode {logLevel = "DEBUG"}
+addComponent webserver@node0 : KTinyWebServer
+addComponent HelloFilter@node0 : HelloFilter
+addComponent HelloWorldPage@node0 : HelloWorldPage
+addChannel channel1 : defMSG
+addChannel channel2 : defMSG
+addChannel channel3 : defMSG
+addChannel channel4 : defMSG
+bind webserver.handler@node0 => channel1
+bind webserver.response@node0 => channel2
+bind HelloFilter.request@node0 => channel1
+bind HelloFilter.content@node0 => channel2
+bind HelloFilter.filteredResponse@node0 => channel3
+bind HelloFilter.filteredRequest@node0 => channel4
+bind HelloWorldPage.content@node0 => channel3
+bind HelloWorldPage.request@node0 => channel4
+
+
+//bind HelloWorldPage.content@node0 => channel2
+//bind HelloWorldPage.request@node0 => channel1

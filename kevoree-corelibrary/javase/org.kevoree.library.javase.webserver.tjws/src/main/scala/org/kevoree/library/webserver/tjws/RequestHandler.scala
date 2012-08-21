@@ -5,6 +5,7 @@ import org.kevoree.library.javase.webserver.{AbstractWebServer, KevoreeHttpReque
 import org.kevoree.framework.{MessagePort, AbstractComponentType}
 import collection.mutable.Stack
 import actors.{Actor}
+import collection.mutable
 
 /**
  * Created with IntelliJ IDEA.
@@ -31,7 +32,7 @@ class RequestHandler(origin: AbstractWebServer) extends Actor {
 
   val log = LoggerFactory.getLogger(this.getClass)
   var handlers = new Array[ResponseHandler](100)
-  var freeIDS = new Stack[Int]()
+  var freeIDS = new mutable.Stack[Int]()
 
   def staticInit() {
     val pointer = this

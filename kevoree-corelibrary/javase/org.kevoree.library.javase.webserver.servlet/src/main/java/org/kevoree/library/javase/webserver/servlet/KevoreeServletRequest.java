@@ -57,6 +57,11 @@ public class KevoreeServletRequest implements HttpServletRequest {
         return kevRequest.getResolvedParams().get(s);
     }
 
+
+	public int getTokenID () {
+		return kevRequest.getTokenID();
+	}
+
     @Override
     public Enumeration<String> getAttributeNames() {
         return Collections.enumeration(kevRequest.getResolvedParams().keySet());

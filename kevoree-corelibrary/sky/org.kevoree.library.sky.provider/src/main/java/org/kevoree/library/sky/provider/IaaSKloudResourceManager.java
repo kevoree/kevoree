@@ -50,6 +50,11 @@ public class IaaSKloudResourceManager extends AbstractComponentType implements M
 	}
 
 	@Override
+	public boolean afterLocalUpdate (ContainerRoot containerRoot, ContainerRoot containerRoot1) {
+		return true;
+	}
+
+	@Override
 	public void modelUpdated () {
 		KevScriptEngine kengine = getKevScriptEngineFactory().createKevScriptEngine();
 		if (KloudReasoner.configureChildNodes(getModelService().getLastModel(), kengine)) {

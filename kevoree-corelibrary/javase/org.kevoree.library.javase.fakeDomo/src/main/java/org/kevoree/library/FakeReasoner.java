@@ -1,6 +1,5 @@
 package org.kevoree.library;
 
-import org.kevoree.ComponentInstance;
 import org.kevoree.ContainerNode;
 import org.kevoree.ContainerRoot;
 import org.kevoree.annotation.ComponentType;
@@ -47,7 +46,12 @@ public class FakeReasoner extends AbstractComponentType implements ModelListener
         return true;
     }
 
-    @Override
+	@Override
+	public boolean afterLocalUpdate (ContainerRoot containerRoot, ContainerRoot containerRoot1) {
+		return true;
+	}
+
+	@Override
     public void modelUpdated() {
 
     }

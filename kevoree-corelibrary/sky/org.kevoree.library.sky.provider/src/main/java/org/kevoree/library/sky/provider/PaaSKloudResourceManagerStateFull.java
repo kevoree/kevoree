@@ -153,6 +153,11 @@ public class PaaSKloudResourceManagerStateFull extends PaaSKloudResourceManager 
 	}
 
 	@Override
+	public boolean afterLocalUpdate (ContainerRoot containerRoot, ContainerRoot containerRoot1) {
+		return true;
+	}
+
+	@Override
 	public void modelUpdated () {
 		if (isStarting) {
 			isStarting = false;

@@ -15,7 +15,6 @@ import java.io.PrintWriter;
  * User: duke
  * Date: 07/12/11
  * Time: 14:00
- * To change this template use File | Settings | File Templates.
  */
 @ComponentType
 public class HelloServlet extends AbstractHttpServletPage {
