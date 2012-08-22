@@ -212,29 +212,4 @@ public class FileNIOHelper {
 		}
 		return new byte[0];
 	}
-
-	public static byte[] getBytesFromStream (InputStream stream) {
-			try {
-//				InputStream reader = new DataInputStream(stream);
-				ByteArrayOutputStream writer = new ByteArrayOutputStream();
-
-				byte[] bytes = new byte[2048];
-				int length = stream.read(bytes);
-				while (length != -1) {
-					writer.write(bytes, 0, length);
-					length = stream.read(bytes);
-
-				}
-				writer.flush();
-				writer.close();
-//				reader.close();
-				return writer.toByteArray();
-			} catch (FileNotFoundException e) {
-				logger.error("Unable to get Bytes from stream", e);
-			} catch (IOException e) {
-				logger.error("Unable to get Bytes from file", e);
-			}
-			return new byte[0];
-		}
-
 }
