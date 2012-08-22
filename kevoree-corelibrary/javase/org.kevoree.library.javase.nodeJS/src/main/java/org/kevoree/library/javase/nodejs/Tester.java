@@ -22,8 +22,10 @@ public class Tester {
 
 
 
-        NodejsConfig nodejsConfig = new NodejsConfig(NodejsVersion.V0_8_6, "/Users/duke/Documents/dev/sandbox/etherpad-lite/node_modules/ep_etherpad-lite/node/server.js", params, "/Users/duke/Documents/dev/sandbox/etherpad-lite");
 
+        NodejsConfig nodejsConfig = new NodejsConfig(NodejsVersion.V0_8_6, "/Users/duke/Downloads/tempDir-470817257/etherpad-lite/node_modules/ep_etherpad-lite/node/server.js", params, "/Users/duke/Downloads/tempDir-470817257/etherpad-lite");
+
+        //NodejsConfig nodejsConfig = new NodejsConfig(NodejsVersion.V0_8_6, "/Users/duke/Documents/dev/sandbox/etherpad-lite/node_modules/ep_etherpad-lite/node/server.js", params, "/Users/duke/Documents/dev/sandbox/etherpad-lite");
 
         //NodejsConfig nodejsConfig = new NodejsConfig(NodejsVersion.V0_8_6, "/Users/duke/Documents/dev/dukeboard/kevoree/kevoree-corelibrary/javase/org.kevoree.library.javase.nodeJS/src/main/resources/tester.js", params, "/Users/duke/Documents/dev/dukeboard/kevoree/kevoree-corelibrary/javase/org.kevoree.library.javase.nodeJS/src/main/resources");
         NodejsStarter runtime = new NodejsStarter(runtimeConfig);

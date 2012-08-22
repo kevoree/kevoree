@@ -23,15 +23,11 @@ import java.util.Random;
 public class EtherPad extends AbstractNodeJSComponentType {
     @Override
     public String getMainFile() {
-        return "node_modules/ep_etherpad-lite/node/server.js";
-       // return "node/server.js";
+        return "node_modules"+File.separator+"ep_etherpad-lite"+File.separator+"node"+File.separator+"server.js";
     }
 
     @Override
     public String getMainDir() {
-       ///return "/Users/duke/Documents/dev/sandbox/etherpad-lite";
-
-
         File tempDir = createTempDir();
         FileNIOHelper.unzipToTempDir(getClass().getClassLoader().getResourceAsStream("etherpad-lite.zip"),tempDir,new ArrayList<String>(),new ArrayList<String>());
          logger.info("Extract EtherPad to dir : "+tempDir.getAbsolutePath());
