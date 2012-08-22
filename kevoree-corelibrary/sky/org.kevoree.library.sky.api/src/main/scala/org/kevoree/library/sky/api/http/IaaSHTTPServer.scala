@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory
 import java.util.Properties
 import javax.servlet.http.{HttpServletResponse, HttpServletRequest, HttpServlet}
 import util.matching.Regex
+import org.kevoree.framework.FileNIOHelper
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -35,6 +36,8 @@ class IaaSHTTPServer (node: IaaSNode) extends Runnable {
       protected override def service (req: HttpServletRequest, resp: HttpServletResponse) {
         req.getRequestURI match {
           case "/" => sendAdminNodeList(req, resp)
+          case "/bootstrap.min.css" => sendFile(req, resp, FileNIOHelper.getBytesFromStream(this.getClass.getClassLoader.getResourceAsStream("bootstrap.min.css")), "text/css")
+          case "/scaled500.png" => sendFile(req, resp, FileNIOHelper.getBytesFromStream(this.getClass.getClassLoader.getResourceAsStream("scaled500.png")), "image/png")
           case NodeSubRequest(nodeName, fluxName) => sendNodeFlux(req, resp, fluxName, nodeName)
           case NodeHomeRequest(nodeName) => sendNodeHome(req, resp, nodeName)
           case _ => sendError(req, resp)
@@ -74,5 +77,11 @@ class IaaSHTTPServer (node: IaaSNode) extends Runnable {
   private def sendError (req: HttpServletRequest, resp: HttpServletResponse) {
     resp.setStatus(400)
     resp.getOutputStream.write("Unknown Requt!".getBytes("UTF-8"))
+  }
+
+  private def sendFile(req: HttpServletRequest, resp: HttpServletResponse, bytes : Array[Byte], contentType : String) {
+    resp.setStatus(200)
+    resp.setContentType(contentType)
+    resp.getOutputStream.write(bytes)
   }
 }

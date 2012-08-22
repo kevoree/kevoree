@@ -1,7 +1,7 @@
 package org.kevoree.library.sky.api.http
 
 import io.Source
-import org.kevoree.library.sky.api.{KevoreeNodeRunner, KevoreeNodeManager}
+import org.kevoree.library.sky.api.KevoreeNodeManager
 
 /**
  * Created by IntelliJ IDEA.
@@ -16,7 +16,7 @@ object VirtualNodeHTMLHelper {
   def getNodeStreamAsHTML(nodeName: String, streamName: String, manager: KevoreeNodeManager): String = {
     (<html>
       <head>
-          <link rel="stylesheet" href="http://twitter.github.com/bootstrap/1.3.0/bootstrap.min.css"/>
+          <link rel="stylesheet" href="/bootstrap.min.css"/>
       </head>
       <body>
         <ul class="breadcrumb">
@@ -41,7 +41,7 @@ object VirtualNodeHTMLHelper {
               {streamName match {
               case "out" => {
                 var subresult: List[scala.xml.Elem] = List()
-                Source.fromFile(runner.asInstanceOf[KevoreeNodeRunner].getOutFile).getLines().toList.reverse.foreach {
+                Source.fromFile(runner.getOutFile).getLines().toList/*.reverse*/.foreach {
                   line =>
                     subresult = subresult ++ List(<p>
                       {line}
@@ -51,7 +51,7 @@ object VirtualNodeHTMLHelper {
               }
               case "err" => {
                 var subresult: List[scala.xml.Elem] = List()
-                Source.fromFile(runner.asInstanceOf[KevoreeNodeRunner].getErrFile).getLines().toList.reverse.foreach {
+                Source.fromFile(runner.getErrFile).getLines().toList/*.reverse*/.foreach {
                   line =>
                     subresult = subresult ++ List(<p>
                       {line}
@@ -81,7 +81,7 @@ object VirtualNodeHTMLHelper {
   def getNodeHomeAsHTML(nodeName: String, manager: KevoreeNodeManager): String = {
     (<html>
       <head>
-          <link rel="stylesheet" href="http://twitter.github.com/bootstrap/1.3.0/bootstrap.min.css"/>
+          <link rel="stylesheet" href="/bootstrap.min.css"/>
       </head>
       <body>
         <ul class="breadcrumb">
@@ -124,10 +124,10 @@ object VirtualNodeHTMLHelper {
   def exportNodeListAsHTML(manager: KevoreeNodeManager): String = {
     (<html>
       <head>
-          <link rel="stylesheet" href="http://twitter.github.com/bootstrap/1.3.0/bootstrap.min.css"/>
+          <link rel="stylesheet" href="/bootstrap.min.css"/>
       </head>
       <body>
-          <img height="200px" src="http://s3.amazonaws.com/files.posterous.com/headers/3005281/scaled500.png"/>
+          <img height="200px" src="/scaled500.png"/>
         <ul class="breadcrumb">
           <li class="active">
             <a href="/">Home</a> <span class="divider">/</span>
