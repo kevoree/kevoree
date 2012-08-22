@@ -6,6 +6,8 @@ import org.slf4j.LoggerFactory
 import java.util.Properties
 import javax.servlet.http.{HttpServletResponse, HttpServletRequest, HttpServlet}
 import util.matching.Regex
+import org.kevoree.framework.FileNIOHelper
+import java.io.{IOException, FileNotFoundException, InputStream, ByteArrayOutputStream}
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -35,6 +37,8 @@ class IaaSHTTPServer (node: IaaSNode) extends Runnable {
       protected override def service (req: HttpServletRequest, resp: HttpServletResponse) {
         req.getRequestURI match {
           case "/" => sendAdminNodeList(req, resp)
+          case "/bootstrap.min.css" => sendFile(req, resp, getBytesFromStream(this.getClass.getClassLoader.getResourceAsStream("bootstrap.min.css")), "text/css")
+          case "/scaled500.png" => sendFile(req, resp, getBytesFromStream(this.getClass.getClassLoader.getResourceAsStream("scaled500.png")), "image/png")
           case NodeSubRequest(nodeName, fluxName) => sendNodeFlux(req, resp, fluxName, nodeName)
           case NodeHomeRequest(nodeName) => sendNodeHome(req, resp, nodeName)
           case _ => sendError(req, resp)
@@ -74,5 +78,35 @@ class IaaSHTTPServer (node: IaaSNode) extends Runnable {
   private def sendError (req: HttpServletRequest, resp: HttpServletResponse) {
     resp.setStatus(400)
     resp.getOutputStream.write("Unknown Requt!".getBytes("UTF-8"))
+  }
+
+  private def sendFile(req: HttpServletRequest, resp: HttpServletResponse, bytes : Array[Byte], contentType : String) {
+    resp.setStatus(200)
+    resp.setContentType(contentType)
+    resp.getOutputStream.write(bytes)
+  }
+
+  private def getBytesFromStream (stream: InputStream): Array[Byte] = {
+    try {
+      val writer: ByteArrayOutputStream = new ByteArrayOutputStream
+      val bytes: Array[Byte] = new Array[Byte](2048)
+      var length: Int = stream.read(bytes)
+      while (length != -1) {
+        writer.write(bytes, 0, length)
+        length = stream.read(bytes)
+      }
+      writer.flush()
+      writer.close()
+      return writer.toByteArray
+    }
+    catch {
+      case e: FileNotFoundException => {
+        logger.error("Unable to get Bytes from stream", e)
+      }
+      case e: IOException => {
+        logger.error("Unable to get Bytes from file", e)
+      }
+    }
+    new Array[Byte](0)
   }
 }

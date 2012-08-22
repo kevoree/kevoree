@@ -212,5 +212,4 @@ public class FileNIOHelper {
 		}
 		return new byte[0];
 	}
-
 }

@@ -5,7 +5,7 @@ package org.kevoree.library.sky.minicloud
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * 	http://www.gnu.org/licenses/lgpl-3.0.txt
+ * http://www.gnu.org/licenses/lgpl-3.0.txt
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -35,8 +35,6 @@ import org.kevoree.library.sky.api.{ProcessStreamFileLogger, KevoreeNodeRunner}
 class MiniCloudKevoreeNodeRunner (nodeName: String, iaasNode: IaaSNode) extends KevoreeNodeRunner(nodeName) {
   private val logger: Logger = LoggerFactory.getLogger(classOf[MiniCloudKevoreeNodeRunner])
   private var nodePlatformProcess: Process = null
-//  private var outputStreamReader: Thread = null
-//  private var errorStreamReader: Thread = null
 
   val backupRegex = new Regex(".*<saveRes(.*)/>.*")
   val deployRegex = new Regex(".*<deployRes(.*)/>.*")
@@ -48,80 +46,39 @@ class MiniCloudKevoreeNodeRunner (nodeName: String, iaasNode: IaaSNode) extends 
 
   case class ErrorResult ()
 
-  //val actor = new UpdateManagementActor(10000)
-  // actor.start()
-
   def startNode (iaasModel: ContainerRoot, jailBootStrapModel: ContainerRoot): Boolean = {
     try {
       logger.debug("Start " + nodeName)
 
-      val platformFile = iaasNode.getBootStrapperService.resolveKevoreeArtifact("org.kevoree.platform.standalone", "org.kevoree.platform", KevoreeFactory.getVersion)
+      // find the classpath of the current node
+      // if classpath is null then we download the jar with aether
+      // else we start the child node with the same classpath as its parent.
+      // main class  = org.kevoree.platform.standalone.app.Main
+      logger.debug(System.getProperty("java.class.path"))
+      if (System.getProperty("java.class.path") != null) {
+        logger.debug("trying to start child node with parent's classpath")
+        if (!startWithClassPath(jailBootStrapModel)) {
+          logger.debug("Unable to start child node with parent's classpath, try to use aether bootstrap")
+          startWithAether(jailBootStrapModel)
+        } else {
+          true
+        }
+      } else {
+        logger.debug("trying to start child node with aether bootstrap")
+        startWithAether(jailBootStrapModel)
+      }
+
+
+      /*val platformFile = iaasNode.getBootStrapperService.resolveKevoreeArtifact("org.kevoree.platform.standalone", "org.kevoree.platform", KevoreeFactory.getVersion)
       val java: String = getJava
       if (platformFile != null) {
 
         val tempFile = File.createTempFile("bootModel" + nodeName, ".kev")
         KevoreeXmiHelper.save(tempFile.getAbsolutePath, jailBootStrapModel)
         // FIXME java memory properties must define as Node properties
-          // Currently the kloud provider only manages PJavaSeNode that hosts the software user configuration
-          // It will be better to add a new node hosted by the PJavaSeNode
-        nodePlatformProcess = Runtime.getRuntime.exec(Array[String](java, "-Dnode.bootstrap=" + tempFile.getAbsolutePath, "-Dnode.name=" + nodeName, "-jar", platformFile.getAbsolutePath))
+        nodePlatformProcess = Runtime.getRuntime
+          .exec(Array[String](java, "-Dnode.headless=true", "-Dnode.bootstrap=" + tempFile.getAbsolutePath, "-Dnode.name=" + nodeName, "-jar", platformFile.getAbsolutePath))
 
-        /*outputStreamReader = new Thread {
-          outFile = new File(System.getProperty("java.io.tmpdir") + File.separator + "sysout" + nodeName + ".log")
-          val logStream: OutputStream = new FileOutputStream(outFile)
-          logger.debug(outFile.getAbsolutePath + " is used as a log file")
-
-          override def run () {
-            try {
-              val reader = new BufferedReader(new InputStreamReader(stream))
-              var line = reader.readLine()
-              while (line != null) {
-                line = line + "\n"
-                logStream.write(line.getBytes)
-                logStream.flush()
-                line = reader.readLine()
-              }
-            } catch {
-              case _@e => {
-                logger.debug("Stream has been closed, we close " + outFile.getAbsolutePath + " too")
-              }
-            } finally {
-              logStream.flush()
-              logStream.close()
-            }
-          }
-
-          private val stream: InputStream = nodePlatformProcess.getInputStream
-        }
-
-        errorStreamReader = new Thread {
-          errFile = new File(System.getProperty("java.io.tmpdir") + File.separator + "syserr" + nodeName + ".log")
-          val logStream: OutputStream = new FileOutputStream(errFile)
-          logger.debug(errFile.getAbsolutePath + " is used as a log file")
-
-          override def run () {
-            try {
-              val bytes: Array[Byte] = new Array[Byte](512)
-              var length = 0;
-              while (true) {
-                length = stream.read(bytes)
-                logStream.write(bytes, 0, length)
-
-              }
-            } catch {
-              case _@e => {
-                logger.debug("Stream has been closed, we close " + errFile.getAbsolutePath + " too")
-              }
-            } finally {
-              logStream.flush()
-              logStream.close()
-            }
-          }
-
-          private val stream: InputStream = nodePlatformProcess.getErrorStream
-        }
-        outputStreamReader.start()
-        errorStreamReader.start()*/
         val logFile = System.getProperty("java.io.tmpdir") + File.separator + nodeName + ".log"
         outFile = new File(logFile + ".out")
         logger.debug("writing logs about {} on {}", nodeName, outFile.getAbsolutePath)
@@ -134,10 +91,9 @@ class MiniCloudKevoreeNodeRunner (nodeName: String, iaasNode: IaaSNode) extends 
       } else {
         logger.error("Unable to start node because the platform jar file is not available")
         false
-      }
+      }*/
     } catch {
       case e: IOException => {
-        //        e.printStackTrace()
         logger.error("Unexpected error while trying to start " + nodeName, e)
         false
       }
@@ -151,13 +107,6 @@ class MiniCloudKevoreeNodeRunner (nodeName: String, iaasNode: IaaSNode) extends 
   def stopNode (): Boolean = {
     logger.debug("Kill " + nodeName)
     try {
-      /*val watchdog = new KillWatchDog(nodePlatformProcess, 20000)
-      nodePlatformProcess.getOutputStream.write("shutdown\n".getBytes)
-      nodePlatformProcess.getOutputStream.flush()
-
-      watchdog.start()
-      nodePlatformProcess.waitFor()
-      watchdog.stop()*/
       nodePlatformProcess.destroy()
       true
     }
@@ -186,5 +135,65 @@ class MiniCloudKevoreeNodeRunner (nodeName: String, iaasNode: IaaSNode) extends 
     java_home + File.separator + "bin" + File.separator + "java"
   }
 
+  private def startWithClassPath (jailBootStrapModel: ContainerRoot): Boolean = {
+    try {
+      val java: String = getJava
+      val tempFile = File.createTempFile("bootModel" + nodeName, ".kev")
+      KevoreeXmiHelper.save(tempFile.getAbsolutePath, jailBootStrapModel)
+
+      // FIXME java memory properties must define as Node properties
+      nodePlatformProcess = Runtime.getRuntime
+        .exec(Array[String](java, "-Dnode.headless=true", "-Dnode.bootstrap=" + tempFile.getAbsolutePath, "-Dnode.name=" + nodeName, "-classpath", System.getProperty("java.class.path"),
+                             "org.kevoree.platform.standalone.gui.App"))
+
+      configureLogFile()
+
+      nodePlatformProcess.exitValue
+      false
+    } catch {
+      case e: IllegalThreadStateException => {
+        logger.debug("platform " + nodeName + " is started")
+        true
+      }
+    }
+  }
+
+  private def startWithAether (jailBootStrapModel: ContainerRoot): Boolean = {
+    try {
+      val platformFile = iaasNode.getBootStrapperService.resolveKevoreeArtifact("org.kevoree.platform.standalone", "org.kevoree.platform", KevoreeFactory.getVersion)
+      val java: String = getJava
+      if (platformFile != null) {
+
+        val tempFile = File.createTempFile("bootModel" + nodeName, ".kev")
+        KevoreeXmiHelper.save(tempFile.getAbsolutePath, jailBootStrapModel)
+
+        // FIXME java memory properties must define as Node properties
+        nodePlatformProcess = Runtime.getRuntime
+          .exec(Array[String](java, "-Dnode.headless=true", "-Dnode.bootstrap=" + tempFile.getAbsolutePath, "-Dnode.name=" + nodeName, "-jar", platformFile.getAbsolutePath))
+        configureLogFile()
+
+        nodePlatformProcess.exitValue
+        false
+      } else {
+        logger.error("Unable to start node because the platform jar file is not available")
+        false
+      }
+    } catch {
+      case e: IllegalThreadStateException => {
+        logger.debug("platform " + nodeName + " is started")
+        true
+      }
+    }
+  }
+
+  private def configureLogFile () {
+    val logFile = System.getProperty("java.io.tmpdir") + File.separator + nodeName + ".log"
+    outFile = new File(logFile + ".out")
+    logger.debug("writing logs about {} on {}", nodeName, outFile.getAbsolutePath)
+    new Thread(new ProcessStreamFileLogger(nodePlatformProcess.getInputStream, outFile)).start()
+    errFile = new File(logFile + ".err")
+    logger.debug("writing logs about {} on {}", nodeName, errFile.getAbsolutePath)
+    new Thread(new ProcessStreamFileLogger(nodePlatformProcess.getErrorStream, errFile)).start()
+  }
 }
 
