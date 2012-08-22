@@ -50,9 +50,9 @@ public class App {
     protected void start() {
 
 
-       // System.setProperty("kevoree.log.level", "DEBUG");
+        // System.setProperty("kevoree.log.level", "DEBUG");
 
-       // System.setProperty("actors.enableForkJoin", "false");
+        // System.setProperty("actors.enableForkJoin", "false");
         DefaultSystem.saveSystemFlux();
 
         // System.setProperty("actors.corePoolSize", "10");
@@ -81,8 +81,8 @@ public class App {
                 temp_cl.add(KevoreeBootStrap.class.getClassLoader().getResourceAsStream("org.kevoree.tools.aether.framework-" + KevoreeFactory.getVersion() + ".pack.jar"));
                 //JclObjectFactory factory = JclObjectFactory.getInstance();
 
-              //  System.out.println("org.kevoree.tools.aether.framework-" + KevoreeFactory.getVersion() + ".pack.jar");
-              //  System.out.println(KevoreeBootStrap.class.getClassLoader().getResourceAsStream("org.kevoree.tools.aether.framework-" + KevoreeFactory.getVersion() + ".pack.jar"));
+                //  System.out.println("org.kevoree.tools.aether.framework-" + KevoreeFactory.getVersion() + ".pack.jar");
+                //  System.out.println(KevoreeBootStrap.class.getClassLoader().getResourceAsStream("org.kevoree.tools.aether.framework-" + KevoreeFactory.getVersion() + ".pack.jar"));
 
 
                 Class clazz = temp_cl.loadClass("org.kevoree.tools.aether.framework.NodeTypeBootstrapHelper");
@@ -106,14 +106,13 @@ public class App {
         final KevoreeGUIFrame frame = new KevoreeGUIFrame(model);
     }
 
-    public static void main(String[] args) {
-
-        // System.out.println(ManagementFactory.getOperatingSystemMXBean().getSystemLoadAverage());
-        // System.setProperty("apple.awt.graphics.UseQuartz","true");
-
-
-        App app = new App();
-        app.start();
+    public static void main(String[] args) throws Exception {
+        if(System.getProperty("node.headless") != null && System.getProperty("node.headless").equals("true")){
+            org.kevoree.platform.standalone.App.main(args);
+        } else {
+            App app = new App();
+            app.start();
+        }
     }
 
 
