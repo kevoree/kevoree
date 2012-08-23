@@ -148,7 +148,8 @@
                     }
                     if (log.innerHTML.slice(-'out'.length) == 'out') {
                         console.log(log.innerHTML);
-                        selector[0].selected=true;
+                        log.selected=true;
+                        socket.emit('message', {log:log.innerHTML});
                     }
                 });
                 selector.bind('change', function (e) {
