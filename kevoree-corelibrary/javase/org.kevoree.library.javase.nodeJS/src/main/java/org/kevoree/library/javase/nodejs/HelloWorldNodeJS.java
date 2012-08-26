@@ -21,28 +21,17 @@ public class HelloWorldNodeJS extends AbstractNodeJSComponentType {
 
     @Override
     public String getMainFile() {
-        return "tester.js";
+        return "hello.js";
     }
 
     @Override
     public String getMainDir() {
         File tempDir = createTempDir();
-        File mainFile = new File(tempDir, getMainFile());
-        InputStream inputStream = getClass().getClassLoader().getResourceAsStream(getMainFile());
-        OutputStream out = null;
         try {
-            out = new FileOutputStream(mainFile);
-            byte buf[] = new byte[1024];
-            int len;
-            while ((len = inputStream.read(buf)) > 0)
-                out.write(buf, 0, len);
-            out.close();
-            inputStream.close();
-        } catch (Exception e) {
+            org.apache.commons.io.FileUtils.copyInputStreamToFile(getClass().getClassLoader().getResourceAsStream(getMainFile()),new File(tempDir,getMainFile()));
+        } catch (IOException e) {
             logger.error("Error preparing NodeJS Hello",e);
         }
-
-
         return tempDir.getAbsolutePath();
     }
 
@@ -57,4 +46,5 @@ public class HelloWorldNodeJS extends AbstractNodeJSComponentType {
         tempDir.deleteOnExit();
         return tempDir;
     }
+
 }

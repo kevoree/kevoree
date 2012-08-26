@@ -30,7 +30,8 @@ public class LoggingMonitor extends AbstractNodeJSComponentType {
 			copyFile(tmpDir.getAbsolutePath(), "/logger.js");
 			copyFile(tmpDir.getAbsolutePath(), "/manager.js");
 			copyFile(tmpDir.getAbsolutePath(), "/namespace.js");
-			copyFile(tmpDir.getAbsolutePath(), "/parser.js");
+            copyFile(tmpDir.getAbsolutePath(), "/jquery-1.8.0.min.js");
+            copyFile(tmpDir.getAbsolutePath(), "/parser.js");
 			copyFile(tmpDir.getAbsolutePath(), "/server.js");
 			copyFile(tmpDir.getAbsolutePath(), "/socket.io.js");
 			copyFile(tmpDir.getAbsolutePath(), "/socket.js");

@@ -1,3 +1,12 @@
+var WebSocketServer = require('ws').Server
+    , wss = new WebSocketServer({port: 8080});
+
+var gws = null
+
+wss.on('connection', function(ws) {
+    gws = ws;
+});
+
 var port = 8022
 for(var i=0;i<process.argv.length;i++)
 {
@@ -8,10 +17,21 @@ for(var i=0;i<process.argv.length;i++)
     }
 }
 console.log("NodeJS WebServer on "+port);
-
 var http = require('http');
 var server = http.createServer(function(req, res) {
-    res.writeHead(200);
-    res.end('Hello Http2');
-});
+    if(req.url == "/"){
+        if(gws){
+            gws.onmessage = (function(rec){
+                console.log("DaFuck"+rec);
+                res.writeHead(200);
+                res.end("Response accepted");
+            });
+            gws.send("hello");
+        } else {
+            res.writeHead(200);
+            res.end("Sub Not connected !");
+        }
+
+    }
+    });
 server.listen(port);

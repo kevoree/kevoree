@@ -13,3 +13,6 @@ merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.camel/{kevo
 merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.camel.atom/{kevoree.version}"
 merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.webserver.api/{kevoree.version}"
 merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.webserver.tjws/{kevoree.version}"
+merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.webserver.spray/{kevoree.version}"
+merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.nodejs/{kevoree.version}"
+merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.etherpad/{kevoree.version}"

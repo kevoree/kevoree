@@ -29,6 +29,8 @@ package org.kevoree.tools.ui.editor.standalone;
 import com.explodingpixels.macwidgets.*;
 import org.kevoree.KevoreeFactory;
 import org.kevoree.tools.ui.editor.KevoreeEditor;
+import org.kevoree.tools.ui.editor.UIEventHandler;
+import org.kevoree.tools.ui.editor.command.Command;
 import org.kevoree.tools.ui.editor.kloud.KloudForm;
 import org.kevoree.tools.ui.editor.kloud.MiniKloudForm;
 
@@ -203,18 +205,26 @@ public class App {
                 jframe.add(p, BorderLayout.CENTER);
 
 
-                BottomBar bottomBar = new BottomBar(BottomBarSize.EXTRA_SMALL);
-                       /*
-                JProgressBar jbar = new  JProgressBar(0, 100);
-                jbar.setSize(250, 10);
-                jbar.setValue(0);
-                jbar.setVisible(true);
-                jbar.setStringPainted(true);
-                jbar.setString("Starting test run");
+                final BottomBar bottomBar = new BottomBar(BottomBarSize.EXTRA_SMALL);
+                UIEventHandler.addCommand(new Command() {
+                    @Override
+                    public void execute(Object p) {
+                        bottomBar.addComponentToLeft(MacWidgetFactory.createEmphasizedLabel(p.toString()));
+                    }
+                });
 
-                jbar.setIndeterminate(true);
-                bottomBar.addComponentToLeft(jbar);
-                        */
+
+                /*
+        JProgressBar jbar = new  JProgressBar(0, 100);
+        jbar.setSize(250, 10);
+        jbar.setValue(0);
+        jbar.setVisible(true);
+        jbar.setStringPainted(true);
+        jbar.setString("Starting test run");
+
+        jbar.setIndeterminate(true);
+        bottomBar.addComponentToLeft(jbar);
+                */
                 //bottomBar.addComponentToCenter(MacWidgetFactory.createEmphasizedLabel("Kevoree Model"));
                 jframe.add(bottomBar.getComponent(), BorderLayout.SOUTH);
                 bottomBar.installWindowDraggerOnWindow(jframe);
@@ -360,11 +370,13 @@ public class App {
                         // Display the Dialog to configure the kloud and send the model on it
                         boolean toggle = !finalToggleMiniKloudDialog.isEnabled();
                         if (toggle) {
-                            /*if (*/minikloudForm.startMiniCloud();/*) {
+                            /*if (*/
+                            minikloudForm.startMiniCloud();/*) {
                                 finalToggleMiniKloudDialog.setEnabled(toggle);
                             }*/
                         } else {
-                            /*if (*/minikloudForm.shutdownMiniCloud();/*) {
+                            /*if (*/
+                            minikloudForm.shutdownMiniCloud();/*) {
                                 finalToggleMiniKloudDialog.setEnabled(toggle);
                             }*/
                         }

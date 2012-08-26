@@ -52,6 +52,7 @@ public class JavaSENode extends AbstractNodeType implements ModelListener {
     @Override
     public void startNode() {
         mapper = new CommandMapper();
+        preTime = System.currentTimeMillis();
         getModelService().registerModelListener(this);
         isRunning = true;
         kompareBean = new KevoreeKompareBean();
@@ -67,6 +68,7 @@ public class JavaSENode extends AbstractNodeType implements ModelListener {
             shutdownThread.start();
         }
         KevoreeDeployManager.startPool();
+
     }
 
 
@@ -167,8 +169,12 @@ public class JavaSENode extends AbstractNodeType implements ModelListener {
         }
     }
 
+    private Long preTime = 0l;
+
     @Override
     public boolean preUpdate(ContainerRoot currentModel, ContainerRoot proposedModel) {
+        preTime = System.currentTimeMillis();
+        logger.info("JavaSENode apply new model");
         return true;
     }
 
@@ -180,6 +186,7 @@ public class JavaSENode extends AbstractNodeType implements ModelListener {
     @Override
     public boolean afterLocalUpdate(ContainerRoot currentModel, ContainerRoot proposedModel) {
         mapper.doEnd();
+        logger.info("JavaSENode Model updated in {} ms",(System.currentTimeMillis() - preTime));
         return true;
     }
 
