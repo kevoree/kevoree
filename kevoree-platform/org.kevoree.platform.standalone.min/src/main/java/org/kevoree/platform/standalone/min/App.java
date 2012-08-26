@@ -27,6 +27,8 @@
 package org.kevoree.platform.standalone.min;
 
 import org.kevoree.platform.standalone.KevoreeBootStrap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Created with IntelliJ IDEA.
@@ -36,7 +38,12 @@ import org.kevoree.platform.standalone.KevoreeBootStrap;
  */
 public class App {
 
+    private static final Logger logger = LoggerFactory.getLogger(App.class);
+
+
     public static void main(String[] args) throws Exception {
+        Long startTime = System.currentTimeMillis();
+
 
         System.setProperty("kcl.lazy", "true");
        // System.setProperty("actors.corePoolSize","25");
@@ -66,6 +73,8 @@ public class App {
         });
 
         kb.start();
+        logger.info("Kevoree runtime boot time {} ms", (System.currentTimeMillis() - startTime));
+
 
     }
 
