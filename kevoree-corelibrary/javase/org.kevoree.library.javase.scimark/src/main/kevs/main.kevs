@@ -1,0 +1,18 @@
+merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.javaseNode/{kevoree.version}"
+merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.fakeDomo/{kevoree.version}"
+merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.defaultChannels/{kevoree.version}"
+merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.scimark/{kevoree.version}"
+
+addNode node0 : JavaSENode
+addComponent bench@node0 : SciMarkBench { }
+addComponent console@node0 : FakeConsole { }
+addComponent sw@node0 : FakeSimpleSwitch { }
+
+addChannel q1 : defMSG
+addChannel q2 : defMSG
+
+bind sw.on@node0 => q1
+bind bench.trigger@node0 => q1
+
+bind bench.result@node0 => q2
+bind console.showText@node0 => q2
