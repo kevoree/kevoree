@@ -43,13 +43,13 @@ import java.io._
 import org.kevoree.tools.aether.framework.AetherUtil
 import org.slf4j.LoggerFactory
 import org.kevoree.tools.ui.editor.command.LoadModelCommand
-import org.kevoree.tools.ui.editor.{PositionedEMFHelper, KevoreeEditor}
+import org.kevoree.tools.ui.editor.{UIEventHandler, PositionedEMFHelper, KevoreeEditor}
 import org.kevoree.tools.marShell.KevScriptOfflineEngine
-import java.net.{ServerSocket, InetSocketAddress, Socket}
+import java.net.{URL, ServerSocket, InetSocketAddress, Socket}
 import org.kevoree.framework.{KevoreePropertyHelper, KevoreeXmiHelper}
 import org.kevoree.{TypeDefinition, ContainerNode, ContainerRoot, KevoreeFactory}
 import org.kevoree.tools.modelsync.FakeBootstraperService
-import javax.swing.AbstractButton
+import javax.swing.{ImageIcon, AbstractButton}
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -67,10 +67,21 @@ class MiniKloudForm (editor: KevoreeEditor, button: AbstractButton) {
   private var thread: Thread = null
   private var minicloudName: String = null
 
+  val url: URL = this.getClass.getClassLoader.getResource("ajax-loader.gif")
+  val iconLoading: ImageIcon = new ImageIcon(url)
+
   def startMiniCloud (): Boolean = {
     if (thread == null) {
       thread = new Thread() {
         override def run () {
+
+          val previousIcon = button.getIcon
+          button.setIcon(iconLoading)
+          button.setDisabledIcon(iconLoading)
+          button.setEnabled(true)
+
+
+
           logger.debug("sending a model on a local minicloud")
           var exitValue = -1
           try {
@@ -84,7 +95,9 @@ class MiniKloudForm (editor: KevoreeEditor, button: AbstractButton) {
             val java = getJava
 
             // build default model of the minicloud
+            UIEventHandler.info("Download org.kevoree.platform.standalone.gui")
             platformJAR = AetherUtil.resolveKevoreeArtifact("org.kevoree.platform.standalone.gui", "org.kevoree.platform", KevoreeFactory.getVersion)
+            UIEventHandler.info("org.kevoree.platform.standalone.gui resolved")
             if (platformJAR != null) {
               PositionedEMFHelper.updateModelUIMetaData(editor.getPanel.getKernel)
               val skyModel = buildBootstrapModel
@@ -104,8 +117,10 @@ class MiniKloudForm (editor: KevoreeEditor, button: AbstractButton) {
                 loadCmd.execute(skyModel)
 
                 monitorMiniCloud()
-
                 button.setEnabled(true)
+                button.setIcon(previousIcon)
+                button.setDisabledIcon(previousIcon)
+                UIEventHandler.info("MiniKloud node Started !")
               }
             }
 
@@ -140,6 +155,7 @@ class MiniKloudForm (editor: KevoreeEditor, button: AbstractButton) {
           minicloudName = null
           thread = null
           button.setEnabled(false)
+          UIEventHandler.info("MiniKloud killed !")
         }
       }
       thread.start()
@@ -150,7 +166,6 @@ class MiniKloudForm (editor: KevoreeEditor, button: AbstractButton) {
   }
 
   private def monitorMiniCloud () {
-    logger.info("toto")
     new Thread() {
       override def run () {
         minicloud.waitFor()
