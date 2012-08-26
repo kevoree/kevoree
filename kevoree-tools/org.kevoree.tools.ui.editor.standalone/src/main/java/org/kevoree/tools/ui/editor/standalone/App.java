@@ -206,10 +206,14 @@ public class App {
 
 
                 final BottomBar bottomBar = new BottomBar(BottomBarSize.EXTRA_SMALL);
+                final javax.swing.JLabel labelBot = MacWidgetFactory.createEmphasizedLabel("");
+                bottomBar.addComponentToLeft(labelBot);
+
                 UIEventHandler.addCommand(new Command() {
                     @Override
                     public void execute(Object p) {
-                        bottomBar.addComponentToLeft(MacWidgetFactory.createEmphasizedLabel(p.toString()));
+                        labelBot.setText(p.toString());
+                       // labelBot.setFont(new Font("Serif", Font.PLAIN, 10));
                     }
                 });
 
