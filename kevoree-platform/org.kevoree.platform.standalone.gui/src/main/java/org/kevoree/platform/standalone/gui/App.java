@@ -45,7 +45,7 @@ import java.util.jar.JarFile;
  */
 public class App {
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private static Logger logger = LoggerFactory.getLogger(App.class);
 
     protected void start() {
 
