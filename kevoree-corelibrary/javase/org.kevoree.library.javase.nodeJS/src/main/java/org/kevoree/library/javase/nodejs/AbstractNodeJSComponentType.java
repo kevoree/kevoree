@@ -34,7 +34,13 @@ public abstract class AbstractNodeJSComponentType extends AbstractComponentType 
         t = new Thread() {
             @Override
             public void run() {
+                NodejsProcess node = null;
                 NodejsRuntimeConfig runtimeConfig = new NodejsRuntimeConfig();
+                ExtNodejsDownloadConfig dwlConfig = new ExtNodejsDownloadConfig();
+                dwlConfig.setPackageResolver(new ExtNodejsPaths());
+                runtimeConfig.setDownloadConfig(dwlConfig);
+
+
                 List<String> params = new ArrayList<String>();
                 for(String key : getDictionary().keySet()){
                     params.add(key+"="+getDictionary().get(key));

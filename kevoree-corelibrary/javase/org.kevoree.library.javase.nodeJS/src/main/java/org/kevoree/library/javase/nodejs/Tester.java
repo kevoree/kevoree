@@ -16,6 +16,10 @@ public class Tester {
     public static void main(String[] args) throws IOException, InterruptedException {
         NodejsProcess node = null;
         NodejsRuntimeConfig runtimeConfig = new NodejsRuntimeConfig();
+        ExtNodejsDownloadConfig dwlConfig = new ExtNodejsDownloadConfig();
+        dwlConfig.setPackageResolver(new ExtNodejsPaths());
+        runtimeConfig.setDownloadConfig(dwlConfig);
+
 
         List<String> params = new ArrayList<String>();
         params.add("port=8066");

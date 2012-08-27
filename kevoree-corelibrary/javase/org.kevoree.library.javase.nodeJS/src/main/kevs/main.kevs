@@ -4,5 +4,5 @@ merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.defaultChan
 merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.nodeJS/{kevoree.version}"
 
 addNode node0 : JavaSENode
-//addComponent input@node0 : HelloWorldNodeJS {  }
-addComponent input@node0 : OneInputNodeJS {  }
+addComponent input@node0 : HelloWorldNodeJS {  }
+//addComponent input@node0 : OneInputNodeJS {  }
