@@ -22,4 +22,34 @@
     </dependencies>
 
 
+    <build>
+        <plugins>
+
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>initialize</phase>
+                        <configuration>
+                            <tasks>
+                                <mkdir dir="${build.directory}/classes"/>
+                                <zip destfile="${build.directory}/classes/emb.zip"
+                                     basedir="${basedir}/src/main/knode"/>
+                            </tasks>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+        <resources>
+            <resource>
+                <directory>${build.directory}/knodeZip</directory>
+            </resource>
+        </resources>
+    </build>
+
+
 </project>

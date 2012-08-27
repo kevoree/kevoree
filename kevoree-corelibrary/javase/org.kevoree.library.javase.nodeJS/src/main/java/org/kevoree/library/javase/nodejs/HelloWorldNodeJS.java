@@ -23,7 +23,7 @@ public class HelloWorldNodeJS extends AbstractNodeJSComponentType {
     public String getMainFile() {
         return "hello.js";
     }
-
+             /*
     @Override
     public String getMainDir() {
         File tempDir = createTempDir();
@@ -45,6 +45,6 @@ public class HelloWorldNodeJS extends AbstractNodeJSComponentType {
         }
         tempDir.deleteOnExit();
         return tempDir;
-    }
+    }    */
 
 }

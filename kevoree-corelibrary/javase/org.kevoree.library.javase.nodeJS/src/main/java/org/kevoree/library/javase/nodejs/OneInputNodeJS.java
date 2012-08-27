@@ -23,6 +23,7 @@ public class OneInputNodeJS extends AbstractNodeJSComponentType {
         return "oneInput.js";
     }
 
+    /*
     @Override
     public String getMainDir() {
         try {
@@ -46,6 +47,6 @@ public class OneInputNodeJS extends AbstractNodeJSComponentType {
         }
         tempDir.deleteOnExit();
         return tempDir;
-    }
+    }  */
 
 }

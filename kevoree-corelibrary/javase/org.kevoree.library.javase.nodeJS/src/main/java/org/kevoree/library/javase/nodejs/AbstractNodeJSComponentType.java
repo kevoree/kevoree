@@ -1,15 +1,19 @@
 package org.kevoree.library.javase.nodejs;
 
 import com.google.common.collect.Lists;
+import com.google.common.io.Files;
 import de.flapdoodle.embed.nodejs.*;
 import org.kevoree.annotation.*;
 import org.kevoree.framework.AbstractComponentType;
+import org.kevoree.framework.FileNIOHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Created with IntelliJ IDEA.
@@ -23,7 +27,16 @@ public abstract class AbstractNodeJSComponentType extends AbstractComponentType 
 
     public abstract String getMainFile();
 
-    public abstract String getMainDir();
+    protected String getMainDir(){
+        File temp = Files.createTempDir();
+        FileNIOHelper.unzipToTempDir(getClass().getClassLoader().getResourceAsStream("emb.zip"), temp, new ArrayList<String>(), new ArrayList<String>());
+        try {
+            org.apache.commons.io.FileUtils.forceDeleteOnExit(temp);
+        } catch (IOException e) {
+            logger.error("Error while cleaning temp dir ",e);
+        }
+        return temp.getAbsolutePath();
+    }
 
     private Thread t = null;
     NodejsProcess node = null;
@@ -79,5 +92,17 @@ public abstract class AbstractNodeJSComponentType extends AbstractComponentType 
     @Update
     public void update() {
          stop();start();
+    }
+
+    public static File createTempDir() {
+        final String baseTempPath = System.getProperty("java.io.tmpdir");
+        Random rand = new Random();
+        int randomInt = 1 + rand.nextInt();
+        File tempDir = new File(baseTempPath + File.separator + "tempDir" + randomInt);
+        if (tempDir.exists() == false) {
+            tempDir.mkdir();
+        }
+        tempDir.deleteOnExit();
+        return tempDir;
     }
 }
