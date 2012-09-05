@@ -1,0 +1,53 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>org.kevoree.library.javase.nodeJS.visu</artifactId>
+    <version>1.8.4-SNAPSHOT</version>
+    <name>Kevoree :: CoreLibrary :: JavaSE :: NodeJS :: Visu</name>
+
+    <parent>
+        <artifactId>org.kevoree.library.javase.root</artifactId>
+        <groupId>org.kevoree.corelibrary.javase</groupId>
+        <version>1.8.4-SNAPSHOT</version>
+        <relativePath>../org.kevoree.library.javase.root/pom.xml</relativePath>
+    </parent>
+
+    <dependencies>
+           <dependency>
+               <groupId>${parent.groupId}</groupId>
+               <artifactId>org.kevoree.library.javase.nodeJS</artifactId>
+               <version>${kevoree.version}</version>
+           </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>initialize</phase>
+                        <configuration>
+                            <tasks>
+                                <mkdir dir="${build.directory}/classes"/>
+                                <zip destfile="${build.directory}/classes/emb.zip"
+                                     basedir="${basedir}/src/main/knode"/>
+                            </tasks>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+        <resources>
+            <resource>
+                <directory>${build.directory}/knodeZip</directory>
+            </resource>
+        </resources>
+    </build>
+
+</project>

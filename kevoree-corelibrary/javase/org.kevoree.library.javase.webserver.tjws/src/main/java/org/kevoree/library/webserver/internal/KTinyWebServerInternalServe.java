@@ -1,6 +1,7 @@
 package org.kevoree.library.webserver.internal;
 
 import Acme.Serve.SelectorAcceptor;
+import Acme.Serve.SimpleAcceptor;
 
 import java.io.IOException;
 import java.util.Map;
@@ -20,7 +21,7 @@ public class KTinyWebServerInternalServe extends Acme.Serve.Serve  {
 
     @Override
     protected Acceptor createAcceptor() throws IOException {
-		Acceptor acceptor = new SelectorAcceptor();
+		Acceptor acceptor = new SimpleAcceptor();
         Map acceptorProperties = new Properties();
         acceptor.init(arguments, acceptorProperties);
         hostName = (String) acceptorProperties.get(ARG_BINDADDRESS);

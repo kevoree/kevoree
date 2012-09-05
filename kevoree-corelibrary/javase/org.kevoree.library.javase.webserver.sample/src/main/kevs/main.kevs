@@ -7,12 +7,15 @@ merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.webserver.s
 
 addNode node0 : JavaSENode
 
-addComponent webSrv@node0 : KTinyWebServer
-addComponent helloPage@node0 : MonitorPage
+//addComponent webSrv@node0 : KTinyWebServer
+//addComponent helloPage@node0 : MonitorPage
+addComponent jsoupPage@node0 : CurrentModelReport
 addComponent consoleMetrics@node0 : ConsoleMetricsReporter
 addChannel req : defMSG
 addChannel res : defMSG
-bind webSrv.handler@node0 => req
-bind helloPage.request@node0 => req
-bind helloPage.content@node0 => res
-bind webSrv.response@node0 => res
+//bind webSrv.handler@node0 => req
+//bind helloPage.request@node0 => req
+bind jsoupPage.request@node0 => req
+//bind helloPage.content@node0 => res
+//bind webSrv.response@node0 => res
+bind jsoupPage.content@node0 => res
