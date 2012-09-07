@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html><head><title>Kevoree Smoothie visualisation</title></head>
+<script src="smoothie.js"></script>
+<script src="/socket.io/socket.io.js"></script>
+<canvas id="graph1" width="1024" height="768"></canvas>
+<script>
+    var smoothie = new SmoothieChart({
+        grid: { strokeStyle:'rgb(125, 0, 0)', fillStyle:'rgb(60, 0, 0)',
+            lineWidth: 1, millisPerLine: 250, verticalSections: 6 },
+        labels: { fillStyle:'rgb(60, 0, 0)' }
+    });
+    smoothie.streamTo(document.getElementById("graph1"));
+    var line1 = new TimeSeries();
+    var line2 = new TimeSeries();
+    smoothie.addTimeSeries(line1,
+            { strokeStyle:'rgb(0, 255, 0)', fillStyle:'rgba(0, 255, 0, 0.4)', lineWidth:3 });
+    smoothie.addTimeSeries(line2,
+            { strokeStyle:'rgb(255, 0, 255)', fillStyle:'rgba(255, 0, 255, 0.3)', lineWidth:3 });
+</script>
+<script>
+    var socket = io.connect('http://localhost');
+    socket.on('data', function (data) {
+        line1.append(new Date().getTime(), data);
+    });
+    socket.on('data2', function (data) {
+        line2.append(new Date().getTime(), data);
+    });
+</script>
+</html>
