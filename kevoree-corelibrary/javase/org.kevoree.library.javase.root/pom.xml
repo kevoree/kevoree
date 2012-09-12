@@ -60,6 +60,7 @@
 
         <module>../org.kevoree.library.javase.etherpad</module>
         <module>../org.kevoree.library.javase.scimark</module>
+        <module>../org.kevoree.library.javase.hazelcast</module>
 
     </modules>
 

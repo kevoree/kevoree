@@ -1,0 +1,16 @@
+merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.javaseNode/{kevoree.version}"
+merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.fakeDomo/{kevoree.version}"
+merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.defaultChannels/{kevoree.version}"
+merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.hazelcast/{kevoree.version}"
+merge "mvn:org.kevoree.corelibrary.sky/org.kevoree.library.sky.minicloud/{kevoree.version}"
+
+
+addNode node0 : MiniCloudNode
+addNode worker1 : JavaSENode
+addNode worker2 : JavaSENode
+addChild worker1,worker2@node0
+
+addGroup gWorker : HazelGroup
+addToGroup gWorker node0
+addToGroup gWorker worker1
+addToGroup gWorker worker2

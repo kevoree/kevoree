@@ -16,7 +16,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * 	http://www.gnu.org/licenses/lgpl-3.0.txt
+ * http://www.gnu.org/licenses/lgpl-3.0.txt
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -45,11 +45,13 @@ import org.slf4j.LoggerFactory
 import org.kevoree.tools.ui.editor.command.LoadModelCommand
 import org.kevoree.tools.ui.editor.{UIEventHandler, PositionedEMFHelper, KevoreeEditor}
 import org.kevoree.tools.marShell.KevScriptOfflineEngine
-import java.net.{URL, ServerSocket, InetSocketAddress, Socket}
+import java.net._
 import org.kevoree.framework.{KevoreePropertyHelper, KevoreeXmiHelper}
 import org.kevoree.{TypeDefinition, ContainerNode, ContainerRoot, KevoreeFactory}
 import org.kevoree.tools.modelsync.FakeBootstraperService
 import javax.swing.{ImageIcon, AbstractButton}
+import java.awt.Desktop
+import scala.Some
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -60,7 +62,7 @@ import javax.swing.{ImageIcon, AbstractButton}
  * @version 1.0
  */
 
-class MiniKloudForm (editor: KevoreeEditor, button: AbstractButton) {
+class MiniKloudForm(editor: KevoreeEditor, button: AbstractButton) {
   var logger = LoggerFactory.getLogger(this.getClass)
   private var minicloud: Process = null
   private var platformJAR: File = null
@@ -70,10 +72,10 @@ class MiniKloudForm (editor: KevoreeEditor, button: AbstractButton) {
   val url: URL = this.getClass.getClassLoader.getResource("ajax-loader.gif")
   val iconLoading: ImageIcon = new ImageIcon(url)
 
-  def startMiniCloud (): Boolean = {
+  def startMiniCloud(): Boolean = {
     if (thread == null) {
       thread = new Thread() {
-        override def run () {
+        override def run() {
 
           val previousIcon = button.getIcon
           button.setIcon(iconLoading)
@@ -109,7 +111,7 @@ class MiniKloudForm (editor: KevoreeEditor, button: AbstractButton) {
                 logger.debug("trying to start the minicloud")
                 minicloud = Runtime.getRuntime
                   .exec(Array[String](java, "-Dnode.gui.config=false", "-Dnode.bootstrap=" + file.getAbsolutePath, "-Dnode.name=" + minicloudName, "-Dkevoree.log.level=INFO", "-jar",
-                                       platformJAR.getAbsolutePath))
+                  platformJAR.getAbsolutePath))
 
                 //LOAD MODEL
                 val loadCmd = new LoadModelCommand()
@@ -121,6 +123,21 @@ class MiniKloudForm (editor: KevoreeEditor, button: AbstractButton) {
                 button.setIcon(previousIcon)
                 button.setDisabledIcon(previousIcon)
                 UIEventHandler.info("MiniKloud node Started !")
+
+                for (i <- 0 until 5) {
+                  try {
+                    new URL("http://localhost:7000/").openConnection().connect()
+                  } catch {
+                    case _ => Thread.sleep(1000)
+                  }
+                }
+
+
+
+                if (Desktop.isDesktopSupported) {
+                  Desktop.getDesktop.browse(new URI("http://localhost:7000/"))
+                }
+
               }
             }
 
@@ -136,10 +153,10 @@ class MiniKloudForm (editor: KevoreeEditor, button: AbstractButton) {
 
   }
 
-  def shutdownMiniCloud (): Boolean = {
+  def shutdownMiniCloud(): Boolean = {
     if (thread == null) {
       thread = new Thread() {
-        override def run () {
+        override def run() {
           var exitValue = -1
           try {
             exitValue = minicloud.exitValue()
@@ -165,9 +182,9 @@ class MiniKloudForm (editor: KevoreeEditor, button: AbstractButton) {
     }
   }
 
-  private def monitorMiniCloud () {
+  private def monitorMiniCloud() {
     new Thread() {
-      override def run () {
+      override def run() {
         minicloud.waitFor()
         logger.debug("minicloud shutted down")
         minicloud = null
@@ -199,7 +216,7 @@ class MiniKloudForm (editor: KevoreeEditor, button: AbstractButton) {
         kevEngine.addVariable("kevoree.version", KevoreeFactory.getVersion)
         kevEngine.addVariable("minicloudNodeName", minicloudName)
         kevEngine.append("merge 'mvn:org.kevoree.corelibrary.model/org.kevoree.library.model.sky/{kevoree.version}'")
-        kevEngine.append("addNode {minicloudNodeName}: MiniCloudNode {role='host', port='6001'}")
+        kevEngine.append("addNode {minicloudNodeName}: MiniCloudNode {role='host', port='7000'}")
 
         // add all user nodes as child of the minicloud node
         editor.getPanel.getKernel.getModelHandler.getActualModel.getNodes.foreach {
@@ -244,14 +261,14 @@ class MiniKloudForm (editor: KevoreeEditor, button: AbstractButton) {
     }
   }
 
-  def isASubType (nodeType: TypeDefinition, typeName: String): Boolean = {
+  def isASubType(nodeType: TypeDefinition, typeName: String): Boolean = {
     nodeType.getSuperTypes.find(td => td.getName == typeName || isASubType(td, typeName)) match {
       case None => false
       case Some(typeDefinition) => true
     }
   }
 
-  private def selectPort (blackListedPorts: Array[Int]): Int = {
+  private def selectPort(blackListedPorts: Array[Int]): Int = {
     // get all port defined on the model
     // concatenate the ports of the model with the blacklisted ones
     val ports = blackListedPorts ++ getAllUsedPorts
@@ -305,7 +322,7 @@ class MiniKloudForm (editor: KevoreeEditor, button: AbstractButton) {
     ports
   }
 
-  private def selectPortNumber (address: String, ports: Array[Int]): Int = {
+  private def selectPortNumber(address: String, ports: Array[Int]): Int = {
     var i = 6003
     if (address != "") {
       var found = false

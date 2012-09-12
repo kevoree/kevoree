@@ -141,10 +141,18 @@ class MiniCloudKevoreeNodeRunner (nodeName: String, iaasNode: IaaSNode) extends 
       val tempFile = File.createTempFile("bootModel" + nodeName, ".kev")
       KevoreeXmiHelper.save(tempFile.getAbsolutePath, jailBootStrapModel)
 
+      //TRY THE CURRENT CLASSLOADER
+      try {
+        classOf[Object].getClassLoader.loadClass("org.kevoree.platform.standalone.App")
+      } catch {
+        case _ =>return false
+      }
+
+
       // FIXME java memory properties must define as Node properties
       nodePlatformProcess = Runtime.getRuntime
         .exec(Array[String](java, "-Dnode.headless=true", "-Dnode.bootstrap=" + tempFile.getAbsolutePath, "-Dnode.name=" + nodeName, "-classpath", System.getProperty("java.class.path"),
-                             "org.kevoree.platform.standalone.gui.App"))
+                             "org.kevoree.platform.standalone.App"))
 
       configureLogFile()
 
