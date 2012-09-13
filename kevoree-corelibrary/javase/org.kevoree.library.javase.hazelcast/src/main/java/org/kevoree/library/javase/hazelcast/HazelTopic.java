@@ -10,6 +10,8 @@ import org.kevoree.framework.AbstractChannelFragment;
 import org.kevoree.framework.ChannelFragmentSender;
 import org.kevoree.framework.NoopChannelFragmentSender;
 import org.kevoree.framework.message.Message;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -28,18 +30,18 @@ public class HazelTopic extends AbstractChannelFragment implements MessageListen
 
     HazelcastInstance hazelInstance = null;
     ITopic<Object> topic = null;
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
     ExecutorService messageExecutor = null;
 
     @Start
     public void startHazel(){
         messageExecutor = Executors.newSingleThreadExecutor();
         Config configApp = new Config();
-        configApp.getGroupConfig().setName("KevoreeChannel_"+getName());
-        configApp.setInstanceName("KevoreeNode_"+getNodeName());
+        configApp.getGroupConfig().setName("KChannel_HazelTopic_"+getName());
+        configApp.setInstanceName("KChannel_HazelTopic_"+getNodeName());
         hazelInstance = Hazelcast.newHazelcastInstance(configApp);
-        Cluster cluster = hazelInstance.getCluster();
         topic = hazelInstance.getTopic(getName());
-
+        topic.addMessageListener(this);
     }
 
     @Stop
@@ -61,15 +63,17 @@ public class HazelTopic extends AbstractChannelFragment implements MessageListen
         return new NoopChannelFragmentSender();
     }
 
-
-
     @Override
     public void onMessage(final com.hazelcast.core.Message message) {
         messageExecutor.execute(new Runnable() {
             @Override
             public void run() {
                 for (org.kevoree.framework.KevoreePort p : getBindedPorts()) {
-                    forward(p, (Message) message.getMessageObject());
+                    try {
+                        forward(p, (Message) message.getMessageObject());
+                    } catch(Exception e){
+                        logger.error("Can't cast message");
+                    }
                 }
             }
         });

@@ -2,10 +2,7 @@ package org.kevoree.library.javase.hazelcast;
 
 import com.hazelcast.config.Config;
 import com.hazelcast.core.*;
-import org.kevoree.annotation.ChannelTypeFragment;
-import org.kevoree.annotation.Library;
-import org.kevoree.annotation.Start;
-import org.kevoree.annotation.Stop;
+import org.kevoree.annotation.*;
 import org.kevoree.framework.AbstractChannelFragment;
 import org.kevoree.framework.ChannelFragmentSender;
 import org.kevoree.framework.NoopChannelFragmentSender;
@@ -34,29 +31,42 @@ public class HazelQueue extends AbstractChannelFragment implements Runnable {
 
     @Start
     public void startHazel() {
-        pollThread = new Thread(this);
-        pollThread.start();
         Config configApp = new Config();
-        configApp.getGroupConfig().setName("KevoreeChannel_" + getName());
-        configApp.setInstanceName("KevoreeNode_" + getNodeName());
+        configApp.getGroupConfig().setName("KChannel_HazelQueue_"+getName());
+        configApp.setInstanceName("KChannel_HazelQueue_"+getNodeName());
         hazelInstance = Hazelcast.newHazelcastInstance(configApp);
-        Cluster cluster = hazelInstance.getCluster();
         dqueue = hazelInstance.getQueue(getName());
-
+        updateHazel();
     }
 
     @Stop
     public void stopHazel() {
         try {
-            pollThread.interrupt();//CLEAR IN FLIGHT MESSAGE
-        } catch (Exception ignore) {
-
-        }
+            if (pollThread != null) {
+                pollThread.interrupt();//CLEAR IN FLIGHT MESSAGE
+            }
+        } catch (Exception ignore) {}
         pollThread = null;
         dqueue = null;
         hazelInstance.shutdown();
         hazelInstance = null;
     }
+
+    @Update
+    public void updateHazel() {
+        if (getBindedPorts().size() > 0) {
+            pollThread = new Thread(this);
+            pollThread.start();
+        } else {
+            try {
+                if (pollThread != null) {
+                    pollThread.interrupt();//CLEAR IN FLIGHT MESSAGE
+                }
+            } catch (Exception ignore) {
+            }
+        }
+    }
+
 
     @Override
     public Object dispatch(org.kevoree.framework.message.Message message) {
@@ -76,9 +86,18 @@ public class HazelQueue extends AbstractChannelFragment implements Runnable {
     @Override
     public void run() {
         try {
-            Message msg = (Message) dqueue.poll();
-            for (org.kevoree.framework.KevoreePort p : getBindedPorts()) {
-                forward(p, msg);
+            for (; ; ) {
+                Object o = dqueue.take();
+                Message msg = null;
+                if (o instanceof Message) {
+                    msg = (Message) o;
+                } else {
+                    msg = new Message();
+                    msg.setContent(o);
+                }
+                for (org.kevoree.framework.KevoreePort p : getBindedPorts()) {
+                    forward(p, msg);
+                }
             }
         } catch (Exception e) {
             logger.error("Bad message rec", e);

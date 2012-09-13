@@ -22,8 +22,8 @@ public class HazelGroup extends AbstractGroupType implements MembershipListener 
     @Start
     public void startHazel(){
         Config configApp = new Config();
-        configApp.getGroupConfig().setName("KevoreeGroup_"+getName());
-        configApp.setInstanceName("KevoreeNode_"+getNodeName());
+        configApp.getGroupConfig().setName("KGroup_HazelGroup_"+getName());
+        configApp.setInstanceName("KGroup_HazelGroup_"+getNodeName());
         hazelInstance = Hazelcast.newHazelcastInstance(configApp);
         Cluster cluster = hazelInstance.getCluster();
         cluster.addMembershipListener(this);
@@ -34,7 +34,6 @@ public class HazelGroup extends AbstractGroupType implements MembershipListener 
         hazelInstance.shutdown();
         hazelInstance = null;
     }
-
 
     @Override
     public void triggerModelUpdate() {
@@ -54,11 +53,11 @@ public class HazelGroup extends AbstractGroupType implements MembershipListener 
 
     @Override
     public void memberAdded(MembershipEvent membershipEvent) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        System.out.println("source="+membershipEvent.getSource());
     }
 
     @Override
     public void memberRemoved(MembershipEvent membershipEvent) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        System.out.println("source="+membershipEvent.getSource());
     }
 }

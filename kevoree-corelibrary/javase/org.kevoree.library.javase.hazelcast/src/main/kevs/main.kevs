@@ -3,14 +3,26 @@ merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.fakeDomo/{k
 merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.defaultChannels/{kevoree.version}"
 merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.hazelcast/{kevoree.version}"
 merge "mvn:org.kevoree.corelibrary.sky/org.kevoree.library.sky.minicloud/{kevoree.version}"
+merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.camel/{kevoree.version}"
 
 
 addNode node0 : MiniCloudNode
 addNode worker1 : JavaSENode
-addNode worker2 : JavaSENode
-addChild worker1,worker2@node0
+//addNode worker2 : JavaSENode
+addChild worker1@node0
 
-addGroup gWorker : HazelGroup
-addToGroup gWorker node0
-addToGroup gWorker worker1
-addToGroup gWorker worker2
+//addGroup gWorker : HazelGroup
+//addToGroup gWorker node0
+//addToGroup gWorker worker1
+//addToGroup gWorker worker2
+
+
+addComponent timer@worker1 : CamelTimer { period='1000' }
+addChannel qt : HazelQueue
+bind timer.tick@worker1 => qt
+
+addComponent console@node0 : FakeConsole { }
+bind console.showText@node0 => qt
+
+addComponent console@worker1 : FakeConsole { }
+bind console.showText@worker1 => qt
