@@ -292,7 +292,8 @@ trait ChannelTypeFragment extends KevoreeChannelFragment with ChannelFragment {
       val proxy = new KevoreeChannelFragmentProxy(msg.getFragmentNodeName, msg.getChannelName)
       proxy.setChannelSender(sender)
       fragementBinded += ((createPortKey(msg), proxy))
-      proxy.start();
+      proxy.start()
+      local_queue ! CALL_UPDATE()
       reply(true)
     }
     case msg: FragmentUnbindMessage => {
@@ -301,11 +302,13 @@ trait ChannelTypeFragment extends KevoreeChannelFragment with ChannelFragment {
       if (actorPort.isDefined) {
         actorPort.get.stop
         fragementBinded = fragementBinded.filter(p => p._1 != (createPortKey(msg)))
+        local_queue ! CALL_UPDATE()
         reply(true)
       } else {
         kevoree_internal_logger.debug("Can't unbind Fragment " + createPortKey(msg))
         reply(false)
       }
+
     }
     case msg: PortBindMessage => {
       portsBinded.put(createPortKey(msg), msg.getProxy);
@@ -322,6 +325,7 @@ trait ChannelTypeFragment extends KevoreeChannelFragment with ChannelFragment {
     case _@msg => local_queue forward msg
   }
 
+  case class CALL_UPDATE()
 
 
   val local_queue = new KevoreeActor {
@@ -330,6 +334,13 @@ trait ChannelTypeFragment extends KevoreeChannelFragment with ChannelFragment {
         eventHandler.triggerEvent(event.MonitorEvent(classOf[ChannelFragment],getName))
       }
       msgg match {
+
+        case callmsg : CALL_UPDATE => {
+          if(ct_started){
+            updateChannelFragment
+          }
+        }
+
         case msg: Message => {
           if (msg.inOut.booleanValue) {
             reply(dispatch(msg))
