@@ -31,7 +31,9 @@ import java.util.Set;
 @DictionaryType({
 		@DictionaryAttribute(name = "url", optional = true),
 		@DictionaryAttribute(name = "login", optional = true),
-		@DictionaryAttribute(name = "pass", optional = true)
+		@DictionaryAttribute(name = "pass", optional = true),
+        @DictionaryAttribute(name = "pulldelayinms", defaultValue = "15000")
+
 })
 @ComponentType
 public class GitFileSystemMineFirst extends GitFileSystem {
@@ -39,6 +41,25 @@ public class GitFileSystemMineFirst extends GitFileSystem {
 
 
 
+
+    @Start
+    public void start () throws Exception {
+        super.start();
+
+        delay = Long.parseLong((String) this.getDictionary().get("pulldelayinms"));
+
+    }
+
+    @Stop
+    public void stop () {
+
+    }
+
+    @Update
+    public void update () throws Exception {
+        stop();
+        start();
+    }
 
 
 	@Port(name = "files", method = "list")
@@ -54,13 +75,24 @@ public class GitFileSystemMineFirst extends GitFileSystem {
 	}
 
 
-//	private long lastRevisionCheck = -1;
+	private long lastRevisionCheck = -1;
+    private long delay = -1;
 
-	@Override
+
+
+    @Override
 	@Port(name = "files", method = "getFileContent")
 	public byte[] getFileContent (String relativePath/*, Boolean lock*/) {
-		pull();
-		return super.getFileContent(relativePath);
+
+        long newtime = System.currentTimeMillis();
+
+        if (newtime - lastRevisionCheck > delay){
+            pull();
+            lastRevisionCheck =  newtime;
+        }
+
+
+        return super.getFileContent(relativePath);
 	}
 
 
