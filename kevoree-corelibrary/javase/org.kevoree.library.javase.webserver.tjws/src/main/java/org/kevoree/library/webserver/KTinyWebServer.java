@@ -35,7 +35,7 @@ public class KTinyWebServer extends AbstractWebServer implements Runnable {
 
 		handler = new RequestHandler(this);
 		handler.start();
-		handler.staticInit(getDictionary().get("timeout").toString());
+		handler.staticInit(Integer.parseInt(getDictionary().get("timeout").toString()));
 
 		srv = new KTinyWebServerInternalServe();
 		java.util.Properties properties = new java.util.Properties();
