@@ -25,19 +25,19 @@ case class GetHandler()
 class RequestHandler(origin: AbstractWebServer) extends Actor {
   def killActors() {
     this ! CLOSE()
-    for (i <- 0 until 100) {
-      handlers(i) ! CLOSE()
+    handlers.foreach{ handler =>
+      handler ! CLOSE()
     }
   }
 
   val log = LoggerFactory.getLogger(this.getClass)
-  var handlers = new Array[ResponseHandler](100)
+  var handlers = new Array[ResponseHandler](200)
   var freeIDS = new mutable.Stack[Int]()
 
-  def staticInit() {
+  def staticInit(timeout : Int) {
     val pointer = this
-    for (i <- 0 until 100) {
-      handlers(i) = new ResponseHandler(3000, pointer)
+    for (i <- 0 until handlers.length) {
+      handlers(i) = new ResponseHandler(timeout, pointer)
       handlers(i).start()
       freeIDS.push(i)
     }

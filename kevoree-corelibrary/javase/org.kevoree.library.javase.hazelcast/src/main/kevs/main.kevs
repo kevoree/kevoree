@@ -17,7 +17,7 @@ addChild worker1@node0
 //addToGroup gWorker worker2
 
 
-addComponent timer@worker1 : CamelTimer { period='1000' }
+addComponent timer@worker1 : CamelTimer { period='300' }
 addChannel qt : HazelQueue
 bind timer.tick@worker1 => qt
 

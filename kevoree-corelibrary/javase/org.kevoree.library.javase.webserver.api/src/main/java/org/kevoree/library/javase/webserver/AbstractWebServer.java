@@ -1,12 +1,7 @@
 package org.kevoree.library.javase.webserver;
 
-import org.kevoree.annotation.ComponentType;
 import org.kevoree.annotation.*;
 import org.kevoree.framework.AbstractComponentType;
-import org.kevoree.framework.MessagePort;
-import org.slf4j.LoggerFactory;
-
-import java.net.InetSocketAddress;
 
 /**
  * Created by IntelliJ IDEA.
