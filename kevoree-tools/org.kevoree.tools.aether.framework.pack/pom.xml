@@ -4,12 +4,12 @@
     <artifactId>org.kevoree.tools.aether.framework.pack</artifactId>
     <packaging>bundle</packaging>
     <name>Kevoree :: Tools :: Aether Framework :: Pack</name>
-    <version>1.8.5-SNAPSHOT</version>
+    <version>1.8.6</version>
 
     <parent>
         <artifactId>org.kevoree.tools.root</artifactId>
         <groupId>org.kevoree.tools</groupId>
-        <version>1.8.5-SNAPSHOT</version>
+        <version>1.8.6</version>
         <relativePath>../org.kevoree.tools.root/pom.xml</relativePath>
     </parent>
 
