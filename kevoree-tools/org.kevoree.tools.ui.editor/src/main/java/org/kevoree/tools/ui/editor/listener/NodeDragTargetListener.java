@@ -35,11 +35,9 @@ import org.kevoree.ContainerNode;
 import org.kevoree.tools.ui.editor.KevoreeUIKernel;
 import org.kevoree.tools.ui.editor.command.AddComponentCommand;
 import org.kevoree.tools.ui.editor.command.AddGroupBindingCommand;
+import org.kevoree.tools.ui.editor.command.AddNodeCommand;
 import org.kevoree.tools.ui.editor.command.MoveComponentCommand;
-import org.kevoree.tools.ui.framework.elements.ComponentPanel;
-import org.kevoree.tools.ui.framework.elements.ComponentTypePanel;
-import org.kevoree.tools.ui.framework.elements.GroupAnchorPanel;
-import org.kevoree.tools.ui.framework.elements.NodePanel;
+import org.kevoree.tools.ui.framework.elements.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -89,6 +87,9 @@ public class NodeDragTargetListener extends DropTarget {
         if (o instanceof GroupAnchorPanel) {
             return true;
         }
+        if (o instanceof NodeTypePanel) {
+            return true;
+        }
         return false;
     }
 
@@ -118,6 +119,13 @@ public class NodeDragTargetListener extends DropTarget {
                     AddGroupBindingCommand command = new AddGroupBindingCommand();
                     command.setKernel(kernel);
                     command.setTarget(target);
+                    command.execute(o);
+                }
+                if (o instanceof NodeTypePanel) {
+                    AddNodeCommand command = new AddNodeCommand();
+                    command.setParentPanel(target);
+                    command.setPoint(arg0.getLocation());
+                    command.setKernel(kernel);
                     command.execute(o);
                 }
                 kernel.getModelPanel().repaint();

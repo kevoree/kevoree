@@ -55,6 +55,16 @@ public class AddNodeCommand implements Command {
         this.point = p;
     }
 
+    NodePanel parentPanel;
+
+    public NodePanel getParentPanel() {
+        return parentPanel;
+    }
+
+    public void setParentPanel(NodePanel parentPanel) {
+        this.parentPanel = parentPanel;
+    }
+
     @Override
     public void execute(Object p) {
 
@@ -71,16 +81,20 @@ public class AddNodeCommand implements Command {
 
         NodePanel newnodepanel = kernel.getUifactory().createComponentNode(newnode);
         kernel.getModelHandler().getActualModel().addNodes(newnode);
-        kernel.getModelPanel().addNode(newnodepanel);
-
-        if ((point.x - newnodepanel.getPreferredSize().getHeight() / 2 > 0) && (point.y - newnodepanel.getPreferredSize().getHeight() / 2 > 0)) {
-            newnodepanel.setLocation((int) (point.x - newnodepanel.getPreferredSize().getWidth() / 2), (int) (point.y - newnodepanel.getPreferredSize().getHeight() / 2));
+        if(parentPanel != null){
+            parentPanel.add(newnodepanel);
+            ContainerNode parentNode = (ContainerNode) kernel.getUifactory().getMapping().get(parentPanel);
+            parentNode.addHosts(newnode);
         } else {
-            newnodepanel.setLocation(point.x, point.y);
+            kernel.getModelPanel().addNode(newnodepanel);
+            if ((point.x - newnodepanel.getPreferredSize().getHeight() / 2 > 0) && (point.y - newnodepanel.getPreferredSize().getHeight() / 2 > 0)) {
+                newnodepanel.setLocation((int) (point.x - newnodepanel.getPreferredSize().getWidth() / 2), (int) (point.y - newnodepanel.getPreferredSize().getHeight() / 2));
+            } else {
+                newnodepanel.setLocation(point.x, point.y);
+            }
         }
 
         kernel.getEditorPanel().getPalette().updateTypeValue(ModelHelper.getTypeNbInstance(kernel.getModelHandler().getActualModel(), type),type.getName());
-
         kernel.getModelHandler().notifyChanged();
 
 
