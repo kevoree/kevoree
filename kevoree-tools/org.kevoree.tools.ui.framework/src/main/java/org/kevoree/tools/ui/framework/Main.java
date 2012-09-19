@@ -70,11 +70,16 @@ public class Main {
         model.addNode(node2);
         model.addNode(node1);
 
+        NodePanel childNode = new NodePanel();
+        childNode.setTitle("ChildNode");
+        node1.add(childNode);
+        ComponentPanel childC1 = new ComponentPanel();
+        childC1.setTypeName("childSub");
+        childNode.add(childC1);
 
         ChannelPanel hub1 = new ChannelPanel();
         hub1.setTitle("topic1");
         model.addHub(hub1);
-
 
         ComponentPanel c1 = new ComponentPanel();
         c1.setTypeName("MyTpe1");
@@ -86,7 +91,6 @@ public class Main {
         PortPanel p11 = new PortPanel();
         p11.setType(PortType.PROVIDED);
         p11.setNature(PortPanel.PortNature.SERVICE);
-
 
         PortPanel p12 = new PortPanel();
         p12.setType(PortType.REQUIRED);

@@ -40,8 +40,10 @@ import org.kevoree.tools.ui.framework.elements.PortPanel.PortType;
 
 import java.awt.*;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 
 
 /**
@@ -87,47 +89,27 @@ public class LoadModelCommand implements Command {
         subCommand.execute(null);
 
 
-        //LOAD NODE
-
+        //FIND TOP LEVEL NODE
+        HashSet<ContainerNode> childNodes = new HashSet<ContainerNode>();
         for (ContainerNode newnode : kernel.getModelHandler().getActualModel().getNodesForJ()) {
-            NodePanel newnodepanel = kernel.getUifactory().createComponentNode(newnode);
-            kernel.getModelPanel().addNode(newnodepanel);
-            //UI
-            HashMap<String, String> metaData = MetaDataHelper.getMetaDataFromInstance(newnode);
-            if (MetaDataHelper.containKeys(Arrays.asList("x", "y"), metaData)) {
-                newnodepanel.setLocation(new Point(Integer.parseInt(metaData.get("x").toString()),
-                        Integer.parseInt(metaData.get("y").toString())));
-            }
+            childNodes.addAll(newnode.getHostsForJ());
+        }
 
-            for (ComponentInstance ci : newnode.getComponentsForJ()) {
-                ComponentPanel insPanel = kernel.getUifactory().createComponentInstance(ci);
-                for (Port portP : ci.getProvidedForJ()) {
-                    //ADDING NEW PORT TO UI
-                    PortPanel portPanel = kernel.getUifactory().createPort(portP);
-                    portPanel.setType(PortType.PROVIDED);
-                    insPanel.addLeft(portPanel);
-                }
-                for (Port portR : ci.getRequiredForJ()) {
-                    //ADDING NEW PORT TO UI
-                    PortPanel portPanel = kernel.getUifactory().createPort(portR);
-                    portPanel.setType(PortType.REQUIRED);
-                    insPanel.addRight(portPanel);
-                }
-                newnodepanel.add(insPanel);
-                //kernel.getModelPanel().add(insPanel);
+        //LOAD NODE
+        for (ContainerNode newnode : kernel.getModelHandler().getActualModel().getNodesForJ()) {
+            if(!childNodes.contains(newnode)){
+               loadNodes(null,newnode);
             }
         }
         //LOAD HUB
         for (Channel hub : kernel.getModelHandler().getActualModel().getHubsForJ()) {
             ChannelPanel newhubpanel = kernel.getUifactory().createHub(hub);
             kernel.getModelPanel().addHub(newhubpanel);
-
             HashMap<String, String> metaData = MetaDataHelper.getMetaDataFromInstance(hub);
             if (MetaDataHelper.containKeys(Arrays.asList("x", "y"), metaData)) {
                 newhubpanel.setLocation(new Point(Integer.parseInt(metaData.get("x").toString()),
                         Integer.parseInt(metaData.get("y").toString())));
             }
-
         }
 
         //LOAD GROUP
@@ -178,4 +160,43 @@ public class LoadModelCommand implements Command {
         kernel.getModelHandler().notifyChanged();
 
     }
+
+    public void loadNodes(NodePanel parentPanel, ContainerNode newnode) {
+        NodePanel newnodepanel = kernel.getUifactory().createComponentNode(newnode);
+        if (parentPanel == null) {
+            kernel.getModelPanel().addNode(newnodepanel);
+        } else {
+            parentPanel.add(newnodepanel);
+        }
+        //UI
+        HashMap<String, String> metaData = MetaDataHelper.getMetaDataFromInstance(newnode);
+        if (MetaDataHelper.containKeys(Arrays.asList("x", "y"), metaData)) {
+            newnodepanel.setLocation(new Point(Integer.parseInt(metaData.get("x").toString()),
+                    Integer.parseInt(metaData.get("y").toString())));
+        }
+
+        for (ComponentInstance ci : newnode.getComponentsForJ()) {
+            ComponentPanel insPanel = kernel.getUifactory().createComponentInstance(ci);
+            for (Port portP : ci.getProvidedForJ()) {
+                //ADDING NEW PORT TO UI
+                PortPanel portPanel = kernel.getUifactory().createPort(portP);
+                portPanel.setType(PortType.PROVIDED);
+                insPanel.addLeft(portPanel);
+            }
+            for (Port portR : ci.getRequiredForJ()) {
+                //ADDING NEW PORT TO UI
+                PortPanel portPanel = kernel.getUifactory().createPort(portR);
+                portPanel.setType(PortType.REQUIRED);
+                insPanel.addRight(portPanel);
+            }
+            newnodepanel.add(insPanel);
+            //kernel.getModelPanel().add(insPanel);
+        }
+
+        //load child nodes
+        for (ContainerNode childNode : newnode.getHostsForJ()) {
+              loadNodes(newnodepanel,childNode);
+        }
+    }
+
 }
