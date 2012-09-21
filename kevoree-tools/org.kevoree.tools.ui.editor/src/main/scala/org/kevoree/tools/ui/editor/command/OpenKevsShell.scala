@@ -16,7 +16,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * 	http://www.gnu.org/licenses/lgpl-3.0.txt
+ * http://www.gnu.org/licenses/lgpl-3.0.txt
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -30,9 +30,7 @@ import javax.swing.filechooser.FileFilter
 import javax.swing.{JButton, BoxLayout, JPanel, JFileChooser}
 import java.awt.BorderLayout
 import java.awt.event.{MouseEvent, MouseAdapter}
-import org.kevoree.tools.marShell.interpreter.KevsInterpreterContext
-import org.kevoree.framework.KevoreeXmiHelper
-import java.util.Random
+
 import org.kevoree.tools.marShell.parser.ParserUtil
 import org.kevoree.tools.marShellGUI.{KevsModelHandlers, KevsFrame}
 import org.kevoree.tools.ui.editor.{PositionedEMFHelper, KevoreeUIKernel}
@@ -144,7 +142,22 @@ class OpenKevsShell extends Command {
     buttons.add(btLoad)
 
 
-    var btExecution = new JButton("execute");
+    var bTCurrent = new JButton("CurrentModel")
+    bTCurrent.addMouseListener(new MouseAdapter() {
+      override def mouseClicked(p1: MouseEvent) = {
+        val cmdSave = new SaveAsKevScript()
+        cmdSave.setKernel(kernel)
+        val buffer = new StringBuffer()
+        cmdSave.execute(buffer)
+        kevsPanel.codeEditor.setText(null)
+        kevsPanel.codeEditor.setText(buffer.toString)
+        kevsPanel.repaint()
+
+      }
+    })
+    buttons.add(bTCurrent)
+
+    var btExecution = new JButton("execute")
     btExecution.addMouseListener(new MouseAdapter() {
       override def mouseClicked(p1: MouseEvent) = {
         //TODO SAVE CURRENT MODEL
