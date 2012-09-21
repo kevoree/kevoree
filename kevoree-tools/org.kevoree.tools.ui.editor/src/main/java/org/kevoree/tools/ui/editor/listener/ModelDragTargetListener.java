@@ -149,6 +149,7 @@ public class ModelDragTargetListener extends DropTarget {
                                     }
                                 }
                             }
+                            kernel.getModelHandler().notifyChanged();
                         }
                     }
                     if (o instanceof GroupTypePanel) {

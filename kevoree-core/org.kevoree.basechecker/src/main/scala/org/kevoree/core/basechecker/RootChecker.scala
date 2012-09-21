@@ -32,7 +32,7 @@ import cyclechecker.{ComponentCycleChecker, NodeCycleChecker}
 import dictionaryChecker.DictionaryOptionalChecker
 import kevoreeVersionChecker.KevoreeVersionChecker
 import namechecker.{IdChecker, NameChecker}
-import nodechecker.NodeChecker
+import nodechecker.{NodeContainerChecker, NodeChecker}
 import org.kevoree.ContainerRoot
 import org.kevoree.api.service.core.checker.{CheckerViolation, CheckerService}
 import java.util.ArrayList
@@ -45,14 +45,23 @@ class RootChecker extends CheckerService {
   private val logger = LoggerFactory.getLogger(this.getClass)
   
   var subcheckers: List[CheckerService] = List(new KevoreeVersionChecker, new ComponentCycleChecker, new NodeCycleChecker, new NameChecker,
-                                                new PortChecker, new NodeChecker, new BindingChecker, new BoundsChecker, new IdChecker, new DictionaryOptionalChecker)
+                                                new PortChecker, new NodeChecker, new BindingChecker, new BoundsChecker, new IdChecker, new DictionaryOptionalChecker, new NodeContainerChecker)
 
   def check (model: ContainerRoot): java.util.List[CheckerViolation] = {
     val result: java.util.List[CheckerViolation] = new ArrayList()
     val beginTime = System.currentTimeMillis()
     subcheckers.foreach({
-      sub =>
+      sub =>   try {
         result.addAll(sub.check(model))
+      } catch {
+        case _ @ e => {
+          val violation: CheckerViolation = new CheckerViolation
+          violation.setMessage("Checker fatal exception "+sub.getClass.getSimpleName+"-"+e.getMessage)
+          result.add(violation)
+        }
+      }
+
+
     })
     logger.debug("Model checked in "+(System.currentTimeMillis()-beginTime))
     result
