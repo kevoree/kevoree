@@ -119,6 +119,9 @@ class SaveAsKevScript extends Command {
         fw.close()
       }
     }
+    if(p.isInstanceOf[StringBuffer]){
+      p.asInstanceOf[StringBuffer].append(scriptBuffer.toString)
+    }
 
   }
 
