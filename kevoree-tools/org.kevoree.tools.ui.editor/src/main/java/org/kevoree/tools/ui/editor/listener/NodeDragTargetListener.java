@@ -150,6 +150,7 @@ public class NodeDragTargetListener extends DropTarget {
                             }
                         }
                         newParent.addHosts((ContainerNode) kernel.getUifactory().getMapping().get(o));
+                        kernel.getModelHandler().notifyChanged();
                     }
                 }
                 kernel.getModelPanel().repaint();

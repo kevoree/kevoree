@@ -31,17 +31,13 @@ package org.kevoree.tools.ui.editor.property;
 
 import com.explodingpixels.macwidgets.HudWidgetFactory;
 import com.explodingpixels.macwidgets.plaf.HudComboBoxUI;
-import com.explodingpixels.macwidgets.plaf.HudLabelUI;
 import org.kevoree.*;
 import org.kevoree.tools.ui.editor.KevoreeUIKernel;
 import org.kevoree.tools.ui.editor.command.AsyncCommandWrapper;
 import org.kevoree.tools.ui.editor.command.SynchNodeTypeCommand;
 import org.kevoree.tools.ui.editor.command.UpdatePhysicalNode;
 import org.kevoree.tools.ui.editor.widget.JCommandButton;
-
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 /**
  * @author ffouquet
@@ -54,61 +50,10 @@ public class NodePropertyEditor extends InstancePropertyEditor {
 
 		final ContainerNode node = (ContainerNode) elem;
 
-
-		JPanel pnameLayout = new JPanel(new SpringLayout());
-		pnameLayout.setBorder(null);
-		pnameLayout.setOpaque(false);
-
-
-		JLabel physicalNodeNameLabel = new JLabel("Host node", JLabel.TRAILING);
-		physicalNodeNameLabel.setUI(new HudLabelUI());
-		pnameLayout.add(physicalNodeNameLabel);
-
-
-		DefaultComboBoxModel hostNodeModel = new DefaultComboBoxModel();
-		hostNodeModel.addElement("nohost");
-		hostNodeModel.setSelectedItem("nohost");
-
-		for (ContainerNode loopNode : ((ContainerRoot) elem.eContainer()).getNodesForJ()) {
-			NodeType ntype = (org.kevoree.NodeType) loopNode.getTypeDefinition();
-			boolean hostedCapable = false;
-			for (AdaptationPrimitiveType ptype : ntype.getManagedPrimitiveTypesForJ()) {
-				if (ptype.getName().toLowerCase().equals("addnode")) {
-					hostedCapable = true;
-				}
-				if (ptype.getName().toLowerCase().equals("removenode")) {
-					hostedCapable = true;
-				}
-			}
-			if (hostedCapable && !(loopNode.getName().equals(node.getName()))) {
-				hostNodeModel.addElement(loopNode.getName());
-				if (loopNode.getHostsForJ().contains(node)) {
-					hostNodeModel.setSelectedItem(loopNode.getName());
-				}
-			}
-		}
-		final JComboBox hostNodeComboBox = new JComboBox(hostNodeModel);
-		hostNodeComboBox.setUI(new HudComboBoxUI());
-		physicalNodeNameLabel.setLabelFor(hostNodeComboBox);
-		pnameLayout.add(hostNodeComboBox);
-
-		SpringUtilities.makeCompactGrid(pnameLayout,
-				1, 2, //rows, cols
-				6, 6,        //initX, initY
-				6, 6);
-
-		this.addCenter(pnameLayout);
-
 		final UpdatePhysicalNode commandUpdate = new UpdatePhysicalNode();
 		commandUpdate.setKernel(_kernel);
 		commandUpdate.setTargetCNode(node);
 
-		hostNodeComboBox.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed (ActionEvent actionEvent) {
-				commandUpdate.execute(hostNodeComboBox.getSelectedItem());
-			}
-		});
 
 		/*
 			 JTable table = new JTable(new InstanceTableModel(node));
@@ -143,7 +88,7 @@ public class NodePropertyEditor extends InstancePropertyEditor {
 		sendNodeType.setProgressBar(progressBar);
 		sendNodeType.setResultLabel(resultLabel);
 
-		final JCheckBox checkBox = HudWidgetFactory.createHudCheckBox("AutoMerge");
+		final JCheckBox checkBox = HudWidgetFactory.createHudCheckBox("AMerge");
 
 		JCommandButton btPushNodeType = new JCommandButton("Push") {
 			@Override
