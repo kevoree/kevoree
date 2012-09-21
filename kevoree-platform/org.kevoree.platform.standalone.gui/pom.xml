@@ -209,6 +209,7 @@
                     </option>
                         <option>-ignorewarnings</option>
                         <option>-keep public class org.kevoree.platform.standalone.gui.App { *; }</option>
+                        <option>-keep public class org.kevoree.platform.standalone.App { *; }</option>
                         <option>-keep class * extends javax.swing.plaf.ComponentUI {
                             public static javax.swing.plaf.ComponentUI createUI(javax.swing.JComponent);
                             }
