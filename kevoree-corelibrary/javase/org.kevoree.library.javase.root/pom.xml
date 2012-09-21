@@ -57,6 +57,8 @@
         <module>../org.kevoree.library.javase.mongoDB</module>
         <module>../org.kevoree.library.javase.nodeJS</module>
         <module>../org.kevoree.library.javase.nodeJS.visu</module>
+        <module>../org.kevoree.library.javase.nodeJS.proxy</module>
+
 
         <module>../org.kevoree.library.javase.etherpad</module>
         <module>../org.kevoree.library.javase.scimark</module>

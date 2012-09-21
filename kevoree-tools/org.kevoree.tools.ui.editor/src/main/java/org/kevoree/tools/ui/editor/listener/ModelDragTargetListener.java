@@ -39,10 +39,7 @@ import java.util.*;
 
 import org.kevoree.ContainerNode;
 import org.kevoree.tools.ui.editor.KevoreeUIKernel;
-import org.kevoree.tools.ui.editor.command.AddChannelCommand;
-import org.kevoree.tools.ui.editor.command.AddGroupCommand;
-import org.kevoree.tools.ui.editor.command.AddNodeCommand;
-import org.kevoree.tools.ui.editor.command.LoadNewLibCommand;
+import org.kevoree.tools.ui.editor.command.*;
 import org.kevoree.tools.ui.framework.elements.*;
 
 import java.awt.dnd.*;
@@ -171,9 +168,18 @@ public class ModelDragTargetListener extends DropTarget {
                 logger.debug("Url: " + url.toString().trim());
                 URI uri = new URI(url.toString().trim());
                 logger.debug("UriPath: " + uri.getPath());
-                LoadNewLibCommand loadLib = new LoadNewLibCommand();
-                loadLib.setKernel(kernel);
-                loadLib.execute(uri.getPath());
+
+                if(uri.getPath().endsWith(".kev")){
+                    LoadNewLibCommand loadLib = new LoadNewLibCommand();
+                    loadLib.setKernel(kernel);
+                    loadLib.execute(uri.getPath());
+                }
+                if(uri.getPath().endsWith(".kevs")){
+                    LoadKevScriptCommandUI loadLib = new LoadKevScriptCommandUI();
+                    loadLib.setKernel(kernel);
+                    loadLib.execute(uri.getPath());
+                }
+
                 arg0.dropComplete(true);
             } else {
                 logger.debug("No matching flavour for this drop.");

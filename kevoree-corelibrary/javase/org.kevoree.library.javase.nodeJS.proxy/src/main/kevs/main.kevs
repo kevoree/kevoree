@@ -1,0 +1,5 @@
+merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.javaseNode/{kevoree.version}"
+merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.nodeJS.proxy/{kevoree.version}"
+
+addNode node0 : JavaSENode
+addComponent input@node0 : NodeJSProxy { ip="192.168.1.217",port="8667",remotePort="80" }
