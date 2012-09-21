@@ -59,6 +59,7 @@ public class NodeDragTargetListener extends DropTarget {
     KevoreeUIKernel kernel;
     NodePanel target;
 
+
     /**
      * constructor
      *
@@ -87,7 +88,10 @@ public class NodeDragTargetListener extends DropTarget {
         if (o instanceof GroupAnchorPanel) {
             return true;
         }
-        if (o instanceof NodeTypePanel) {
+        if ( (o instanceof NodeTypePanel)) {
+            return true;
+        }
+        if (o instanceof NodePanel) {
             return true;
         }
         return false;
@@ -100,6 +104,10 @@ public class NodeDragTargetListener extends DropTarget {
      */
     @Override
     public void drop(DropTargetDropEvent arg0) {
+        target.setSelected(false);
+        target.repaint();
+        target.revalidate();
+
         try {
             Object o = arg0.getTransferable().getTransferData(new DataFlavor(DataFlavor.javaJVMLocalObjectMimeType));
             if (isDropAccept(o)) {
@@ -127,6 +135,22 @@ public class NodeDragTargetListener extends DropTarget {
                     command.setPoint(arg0.getLocation());
                     command.setKernel(kernel);
                     command.execute(o);
+                } else {
+                    if (o instanceof NodePanel) {
+                        ContainerNode newParent = (ContainerNode) kernel.getUifactory().getMapping().get(target);
+                        if (((NodePanel) o).getParent() != null) {
+                            ((NodePanel) o).getParent().remove((NodePanel) o);
+                        }
+                        target.add((NodePanel) o);
+                        NodeDragSourceListener lis = new NodeDragSourceListener((NodePanel) o,kernel);
+
+                        for(ContainerNode node : kernel.getModelHandler().getActualModel().getNodesForJ()){
+                            if(node.getHostsForJ().contains((ContainerNode) kernel.getUifactory().getMapping().get(o))){
+                                node.removeHosts((ContainerNode) kernel.getUifactory().getMapping().get(o));
+                            }
+                        }
+                        newParent.addHosts((ContainerNode) kernel.getUifactory().getMapping().get(o));
+                    }
                 }
                 kernel.getModelPanel().repaint();
                 kernel.getModelPanel().revalidate();
@@ -148,6 +172,9 @@ public class NodeDragTargetListener extends DropTarget {
      */
     @Override
     public void dragEnter(DropTargetDragEvent dtde) {
+        target.setSelected(true);
+        target.repaint();
+        target.revalidate();
     }
 
     /**
@@ -157,6 +184,9 @@ public class NodeDragTargetListener extends DropTarget {
      */
     @Override
     public void dragExit(DropTargetEvent arg0) {
+       target.setSelected(false);
+        target.repaint();
+        target.revalidate();
     }
 
     /**
@@ -166,7 +196,6 @@ public class NodeDragTargetListener extends DropTarget {
      */
     @Override
     public void dragOver(DropTargetDragEvent arg0) {
-
         if (kernel.getModelPanel().getFlightObject() != null) {
 
             Point p2 = arg0.getLocation();

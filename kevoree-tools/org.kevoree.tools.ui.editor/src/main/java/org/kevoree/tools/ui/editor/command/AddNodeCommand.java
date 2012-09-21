@@ -34,6 +34,7 @@ import org.kevoree.KevoreeFactory;
 import org.kevoree.NodeType;
 import org.kevoree.tools.ui.editor.KevoreeUIKernel;
 import org.kevoree.tools.ui.editor.ModelHelper;
+import org.kevoree.tools.ui.editor.listener.NodeDragSourceListener;
 import org.kevoree.tools.ui.framework.elements.NodePanel;
 
 import java.awt.*;
@@ -85,6 +86,7 @@ public class AddNodeCommand implements Command {
             parentPanel.add(newnodepanel);
             ContainerNode parentNode = (ContainerNode) kernel.getUifactory().getMapping().get(parentPanel);
             parentNode.addHosts(newnode);
+            NodeDragSourceListener sourceListener = new NodeDragSourceListener(newnodepanel,kernel);
         } else {
             kernel.getModelPanel().addNode(newnodepanel);
             if ((point.x - newnodepanel.getPreferredSize().getHeight() / 2 > 0) && (point.y - newnodepanel.getPreferredSize().getHeight() / 2 > 0)) {

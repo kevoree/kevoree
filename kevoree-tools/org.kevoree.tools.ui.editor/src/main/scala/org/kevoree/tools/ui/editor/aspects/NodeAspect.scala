@@ -90,8 +90,13 @@ case class NodeAspect(self: ContainerNode) {
     }
 
     //REMOVE UI
+
     val modelPanel = kernel.getUifactory.getMapping.get(self.eContainer).asInstanceOf[ModelPanel]
+
     modelPanel.removeInstance(nodePanel)
+    if(nodePanel.getParent != null){
+      nodePanel.getParent.remove(nodePanel)
+    }
 
     //REMOVE INSTANCE
     root.removeNodes(self)
