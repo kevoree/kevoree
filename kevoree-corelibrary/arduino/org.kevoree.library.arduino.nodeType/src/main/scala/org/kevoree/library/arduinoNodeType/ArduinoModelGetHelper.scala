@@ -35,17 +35,22 @@ object ArduinoModelGetHelper {
         scriptRaw.append(p1.trim())
         if(scriptRaw.contains('{') && scriptRaw.contains('}')&& scriptRaw.contains('@')&& scriptRaw.contains('$')&& scriptRaw.contains(':')&& scriptRaw.contains('+')&& scriptRaw.contains('!') && found != true) {
           // extract cscript
-          cscript_pulled = scriptRaw.subSequence(scriptRaw.indexOf('$')+1, scriptRaw.indexOf('!')+1).toString
-          // verify checksum
-          if(KevScriptWrapper.checksum_csript(cscript_pulled) == true)
-          {
-            found = true;
-          } else
-          {
-            logger.warn("The checksum is not correct "+cscript_pulled)
-            cscript_pulled = null
-            scriptRaw.clear()
+          try {
+            cscript_pulled = scriptRaw.subSequence(scriptRaw.indexOf('$')+1, scriptRaw.indexOf('!')+1).toString
+            // verify checksum
+            if(KevScriptWrapper.checksum_csript(cscript_pulled) == true)
+            {
+              found = true;
+            } else
+            {
+              logger.warn("The checksum is not correct "+cscript_pulled)
+              cscript_pulled = null
+              scriptRaw.clear()
+            }
+          }  catch {
+            case _  => logger.warn("non consistant message {}",p1)
           }
+
         }
       }
     })
