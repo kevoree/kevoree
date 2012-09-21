@@ -34,6 +34,7 @@ import org.kevoree.*;
 import org.kevoree.framework.KevoreeXmiHelper;
 import org.kevoree.tools.ui.editor.KevoreeUIKernel;
 import org.kevoree.tools.ui.editor.MetaDataHelper;
+import org.kevoree.tools.ui.editor.listener.NodeDragSourceListener;
 import org.kevoree.tools.ui.editor.widget.TempGroupBinding;
 import org.kevoree.tools.ui.framework.elements.*;
 import org.kevoree.tools.ui.framework.elements.PortPanel.PortType;
@@ -167,6 +168,7 @@ public class LoadModelCommand implements Command {
             kernel.getModelPanel().addNode(newnodepanel);
         } else {
             parentPanel.add(newnodepanel);
+            NodeDragSourceListener sourceListener = new NodeDragSourceListener(newnodepanel,kernel);
         }
         //UI
         HashMap<String, String> metaData = MetaDataHelper.getMetaDataFromInstance(newnode);

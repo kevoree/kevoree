@@ -67,31 +67,6 @@ class MiniCloudKevoreeNodeRunner (nodeName: String, iaasNode: IaaSNode) extends 
         logger.debug("trying to start child node with aether bootstrap")
         startWithAether(jailBootStrapModel)
       }
-
-
-      /*val platformFile = iaasNode.getBootStrapperService.resolveKevoreeArtifact("org.kevoree.platform.standalone", "org.kevoree.platform", KevoreeFactory.getVersion)
-      val java: String = getJava
-      if (platformFile != null) {
-
-        val tempFile = File.createTempFile("bootModel" + nodeName, ".kev")
-        KevoreeXmiHelper.save(tempFile.getAbsolutePath, jailBootStrapModel)
-        // FIXME java memory properties must define as Node properties
-        nodePlatformProcess = Runtime.getRuntime
-          .exec(Array[String](java, "-Dnode.headless=true", "-Dnode.bootstrap=" + tempFile.getAbsolutePath, "-Dnode.name=" + nodeName, "-jar", platformFile.getAbsolutePath))
-
-        val logFile = System.getProperty("java.io.tmpdir") + File.separator + nodeName + ".log"
-        outFile = new File(logFile + ".out")
-        logger.debug("writing logs about {} on {}", nodeName, outFile.getAbsolutePath)
-        new Thread(new ProcessStreamFileLogger(nodePlatformProcess.getInputStream, outFile)).start()
-        errFile = new File(logFile + ".err")
-        logger.debug("writing logs about {} on {}", nodeName, errFile.getAbsolutePath)
-        new Thread(new ProcessStreamFileLogger(nodePlatformProcess.getErrorStream, errFile)).start()
-        nodePlatformProcess.exitValue
-        false
-      } else {
-        logger.error("Unable to start node because the platform jar file is not available")
-        false
-      }*/
     } catch {
       case e: IOException => {
         logger.error("Unexpected error while trying to start " + nodeName, e)
@@ -120,16 +95,6 @@ class MiniCloudKevoreeNodeRunner (nodeName: String, iaasNode: IaaSNode) extends 
     }
   }
 
-  /*
-  def updateNode (model: String): Boolean = {
-    val uuid = UUID.randomUUID()
-    actor.manage(DeployResult(uuid.toString))
-    nodePlatformProcess.getOutputStream.write(("sendModel " + model + " " + uuid.toString + "\n").getBytes)
-    nodePlatformProcess.getOutputStream.flush()
-
-    actor.waitFor()
-  }*/
-
   private def getJava: String = {
     val java_home: String = System.getProperty("java.home")
     java_home + File.separator + "bin" + File.separator + "java"
@@ -140,15 +105,15 @@ class MiniCloudKevoreeNodeRunner (nodeName: String, iaasNode: IaaSNode) extends 
       val java: String = getJava
       val tempFile = File.createTempFile("bootModel" + nodeName, ".kev")
       KevoreeXmiHelper.save(tempFile.getAbsolutePath, jailBootStrapModel)
-
       //TRY THE CURRENT CLASSLOADER
       try {
         classOf[Object].getClassLoader.loadClass("org.kevoree.platform.standalone.App")
       } catch {
-        case _ =>return false
+        case _ =>{
+          logger.info("Can't find bootstrap class {}","org.kevoree.platform.standalone.App")
+          return false
+        }
       }
-
-
       // FIXME java memory properties must define as Node properties
       nodePlatformProcess = Runtime.getRuntime
         .exec(Array[String](java, "-Dnode.headless=true", "-Dnode.bootstrap=" + tempFile.getAbsolutePath, "-Dnode.name=" + nodeName, "-classpath", System.getProperty("java.class.path"),

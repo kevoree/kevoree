@@ -32,16 +32,10 @@ package org.kevoree.tools.ui.framework.listener;
 
 import java.awt.Point;
 import java.awt.datatransfer.Transferable;
-import java.awt.dnd.DragGestureEvent;
-import java.awt.dnd.DragGestureListener;
-import java.awt.dnd.DragSource;
-import java.awt.dnd.DragSourceAdapter;
-import java.awt.dnd.DragSourceDragEvent;
-import java.awt.dnd.DragSourceDropEvent;
-import java.awt.dnd.DragSourceMotionListener;
+import java.awt.dnd.*;
 import java.awt.Component;
 import java.awt.datatransfer.DataFlavor;
-import java.awt.dnd.DnDConstants;
+import java.awt.event.MouseListener;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
@@ -52,16 +46,28 @@ import org.kevoree.tools.ui.framework.elements.ModelPanel;
  */
 public class InstanceDragSourceListener extends DragSourceAdapter implements DragSourceMotionListener, DragGestureListener {
 
-    private JPanel flightComponent;
+    public JPanel flightComponent;
     private DragSource dragSource;
     private DragGestureEvent dragOriginEvent;
     private Transferable transferable;
     private Point origin2;
+    public DragGestureRecognizer dgr = null;
+
+    private DropTarget flightNodeDropTarget = null;
+
 
     public InstanceDragSourceListener(JPanel _panel) {
         flightComponent = _panel;
         this.dragSource = DragSource.getDefaultDragSource();
-        this.dragSource.createDefaultDragGestureRecognizer((Component) this.flightComponent, DnDConstants.ACTION_MOVE, this);
+
+        for(MouseListener ml : this.flightComponent.getMouseListeners()){
+            if(ml.getClass().getSimpleName().contains("DragGestureRecognizer")){
+                this.flightComponent.removeMouseListener(ml);
+            }
+        }
+
+
+       dgr= this.dragSource.createDefaultDragGestureRecognizer((Component) this.flightComponent, DnDConstants.ACTION_MOVE, this);
         dragSource.addDragSourceMotionListener(this);
         transferable = new Transferable() {
 
@@ -90,7 +96,22 @@ public class InstanceDragSourceListener extends DragSourceAdapter implements Dra
         origin2 = (Point) origin.clone();
         //SwingUtilities.convertPointToScreen(origin2, p);
         //SwingUtilities.convertPointFromScreen(origin2,(Component) p);
-        dragSource.startDrag(dragOriginEvent, DragSource.DefaultLinkDrop, transferable, this);
+        flightNodeDropTarget = ((Component) this.flightComponent).getDropTarget();
+        ((Component) this.flightComponent).setDropTarget(null);
+        try {
+            dragSource.startDrag(dragOriginEvent, DragSource.DefaultLinkDrop, transferable, this);
+        } catch (Exception e){
+            e.printStackTrace();
+            System.out.println(this.flightComponent.getMouseListeners().length);
+            for(MouseListener ml : this.flightComponent.getMouseListeners()){
+                System.out.println(ml);
+            }
+        }
+    }
+
+    @Override
+    public void dragDropEnd(DragSourceDropEvent dragSourceDropEvent) {
+        ((Component) this.flightComponent).setDropTarget(flightNodeDropTarget);
     }
 
     @Override

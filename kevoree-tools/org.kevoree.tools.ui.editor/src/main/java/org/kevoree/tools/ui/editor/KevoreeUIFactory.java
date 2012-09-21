@@ -228,18 +228,6 @@ public class KevoreeUIFactory {
         return pui;
     }
 
-
-    /*
-    public Binding createBinding(org.kevoree.Binding mb) {
-    Binding bui = new Binding(Binding.Type.simple);
-    PortPanel fromPortPanel = (PortPanel) kernel.getUifactory().getMapping().get(mb.getPorts().get(0));
-    PortPanel toPortPanel = (PortPanel) kernel.getUifactory().getMapping().get(mb.getPorts().get(1));
-    bui.setFrom(fromPortPanel);
-    bui.setTo(toPortPanel);
-    mapping.bind(bui, mb);
-    return bui;
-    }*/
-
     public Binding createGroupBinding(TempGroupBinding binding) {
         final org.kevoree.tools.ui.framework.elements.Binding uib = new Binding(Binding.Type.groupLink);
         uib.setFrom(binding.getGroupPanel());
@@ -256,7 +244,6 @@ public class KevoreeUIFactory {
         
         return uib;
     }
-
 
     public Binding createMBinding(org.kevoree.MBinding mb) {
         Binding bui = null;

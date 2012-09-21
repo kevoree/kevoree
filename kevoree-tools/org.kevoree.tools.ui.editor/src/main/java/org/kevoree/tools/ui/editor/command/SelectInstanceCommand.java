@@ -61,10 +61,7 @@ public class SelectInstanceCommand implements Command {
                 alreadySelected.setSelected(false);
             }
             alreadySelected = component;
-
-
             component.setSelected(!component.getSelected());
-
             if (component.getSelected()) {
                 kernel.getEditorPanel().showPropertyFor((JPanel) component);
             } else {
@@ -78,6 +75,8 @@ public class SelectInstanceCommand implements Command {
             belem.setSelected(!belem.getSelected());
             }
              */
+            ((JPanel)component).repaint();
+            ((JPanel)component).revalidate();
             kernel.getModelPanel().repaint();
             kernel.getModelPanel().revalidate();
         }
