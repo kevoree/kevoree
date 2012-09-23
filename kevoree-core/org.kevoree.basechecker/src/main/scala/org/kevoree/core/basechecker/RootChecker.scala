@@ -29,7 +29,7 @@ package org.kevoree.core.basechecker
 import bindingchecker.BindingChecker
 import channelchecker.BoundsChecker
 import cyclechecker.{ComponentCycleChecker, NodeCycleChecker}
-import dictionaryChecker.DictionaryOptionalChecker
+import dictionaryChecker.{DictionaryNetworkPortChecker, DictionaryOptionalChecker}
 import kevoreeVersionChecker.KevoreeVersionChecker
 import namechecker.{IdChecker, NameChecker}
 import nodechecker.{NodeContainerChecker, NodeChecker}
@@ -45,7 +45,7 @@ class RootChecker extends CheckerService {
   private val logger = LoggerFactory.getLogger(this.getClass)
   
   var subcheckers: List[CheckerService] = List(new KevoreeVersionChecker, new ComponentCycleChecker, new NodeCycleChecker, new NameChecker,
-                                                new PortChecker, new NodeChecker, new BindingChecker, new BoundsChecker, new IdChecker, new DictionaryOptionalChecker, new NodeContainerChecker)
+                                                new PortChecker, new NodeChecker, new BindingChecker, new BoundsChecker, new IdChecker, new DictionaryOptionalChecker, new NodeContainerChecker, new DictionaryNetworkPortChecker)
 
   def check (model: ContainerRoot): java.util.List[CheckerViolation] = {
     val result: java.util.List[CheckerViolation] = new ArrayList()

@@ -98,7 +98,7 @@ class MiniKloudForm(editor: KevoreeEditor, button: AbstractButton) {
                 button.setDisabledIcon(previousIcon)
                 UIEventHandler.info("MiniKloud node Started !")
 
-                for (i <- 0 until 5) {
+                for (i <- 0 until 10) {
                   try {
                     new URL("http://localhost:7000/").openConnection().connect()
                   } catch {

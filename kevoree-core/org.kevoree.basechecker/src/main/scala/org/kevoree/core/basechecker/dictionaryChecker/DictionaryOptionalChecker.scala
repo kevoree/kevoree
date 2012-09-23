@@ -37,7 +37,6 @@ import org.kevoree._
  * User: duke
  * Date: 16/10/11
  * Time: 18:48
- * To change this template use File | Settings | File Templates.
  */
 
 class DictionaryOptionalChecker extends CheckerService {
