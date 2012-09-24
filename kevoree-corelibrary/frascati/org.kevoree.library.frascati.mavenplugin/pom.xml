@@ -5,12 +5,12 @@
     <artifactId>org.kevoree.library.frascati.mavenplugin</artifactId>
     <packaging>maven-plugin</packaging>
     <name>Kevoree :: CoreLibrary :: Frascati :: MavenPlugin</name>
-    <version>1.8.7-SNAPSHOT</version>
+    <version>1.8.7</version>
 
     <parent>
         <artifactId>org.kevoree.library.frascati.root</artifactId>
         <groupId>org.kevoree.corelibrary.frascati</groupId>
-        <version>1.8.7-SNAPSHOT</version>
+        <version>1.8.7</version>
         <relativePath>../org.kevoree.library.frascati.root/pom.xml</relativePath>
     </parent>
 
