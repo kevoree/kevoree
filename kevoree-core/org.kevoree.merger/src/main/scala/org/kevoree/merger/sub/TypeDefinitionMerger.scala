@@ -16,7 +16,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * 	http://www.gnu.org/licenses/lgpl-3.0.txt
+ * http://www.gnu.org/licenses/lgpl-3.0.txt
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -44,7 +44,8 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
   //TYPE DEFINITION MERGER ENTRYPOINT
   def mergeTypeDefinition(actualModel: ContainerRoot, modelToMerge: ContainerRoot): Unit = {
 
-    modelToMerge.getTypeDefinitions.foreach { toMergeTypeDef =>
+    modelToMerge.getTypeDefinitions.foreach {
+      toMergeTypeDef =>
         actualModel.getTypeDefinitions.find(actualTypeDef => actualTypeDef.isModelEquals(toMergeTypeDef)) match {
           case Some(found_type_definition) => {
             val root = found_type_definition.eContainer.asInstanceOf[ContainerRoot]
@@ -56,7 +57,7 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
               }
             } else {
               //cleanCrossReference(found_type_definition, toMergeTypeDef)
-              logger.debug("No update found for type "+toMergeTypeDef.getName)
+              logger.debug("No update found for type " + toMergeTypeDef.getName)
             }
           }
           //SIMPLE CASE ? JUST MERGE THE NEW TYPE DEFINITION
@@ -77,14 +78,14 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
 
   private def mergeConsistency(root: ContainerRoot, actuelTypeDefinition: TypeDefinition,
                                newTypeDefinition: TypeDefinition) = {
-    
+
     //UPDATE & MERGE DEPLOYS UNIT
     //CONCAT & MERGE BOTH TYPE DEF DEPLOY UNIT
     val allDeployUnits = newTypeDefinition.getDeployUnits ++ actuelTypeDefinition.getDeployUnits
     actuelTypeDefinition.removeAllDeployUnits()
     allDeployUnits.foreach {
       ldu =>
-        val merged = mergeDeployUnit(root, ldu/*, newTypeDefinition.getDeployUnits.contains(ldu) */  )
+        val merged = mergeDeployUnit(root, ldu /*, newTypeDefinition.getDeployUnits.contains(ldu) */)
         if (!actuelTypeDefinition.getDeployUnits.contains(merged)) {
           actuelTypeDefinition.addDeployUnits(merged)
         }
@@ -94,11 +95,11 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
 
   private def consistencyImpacted(root: ContainerRoot, actuelTypeDefinition: TypeDefinition,
                                   newTypeDefinition: TypeDefinition) = {
-    logger.debug("consistency Impacted="+actuelTypeDefinition.getName)
+    logger.debug("consistency Impacted=" + actuelTypeDefinition.getName)
     //REMOVE OLD AND ADD NEW TYPE
-    
+
     root.removeTypeDefinitions(actuelTypeDefinition)
-    mergeNewTypeDefinition(root, newTypeDefinition,true)
+    mergeNewTypeDefinition(root, newTypeDefinition, true)
 
     //PARTICULAR CASE - CHECK
     if (newTypeDefinition.isInstanceOf[NodeType]) {
@@ -107,7 +108,7 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
       nodeType.removeAllManagedPrimitiveTypes()
       pl.foreach {
         pll =>
-          if (!nodeType.getManagedPrimitiveTypes.exists(ap => ap.getName == pll.getName)){
+          if (!nodeType.getManagedPrimitiveTypes.exists(ap => ap.getName == pll.getName)) {
             nodeType.addManagedPrimitiveTypes(mergeAdaptationPrimitive(root, pll))
           }
       }
@@ -117,7 +118,7 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
     newTypeDefinition.removeAllDeployUnits()
     allDeployUnits.foreach {
       ndu =>
-        val merged = mergeDeployUnit(root, ndu.asInstanceOf[DeployUnit],true)
+        val merged = mergeDeployUnit(root, ndu.asInstanceOf[DeployUnit], true)
         if (!newTypeDefinition.getDeployUnits.contains(merged)) {
           newTypeDefinition.addDeployUnits(merged)
         }
@@ -199,14 +200,14 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
   }
 
   /* MERGE A SIMPLE NEW TYPE DEFINITION */
-  private def mergeNewTypeDefinition(actualModel: ContainerRoot, newTypeDefinition: TypeDefinition, force : Boolean = false) = {
+  private def mergeNewTypeDefinition(actualModel: ContainerRoot, newTypeDefinition: TypeDefinition, force: Boolean = false) = {
     logger.debug("addNewTypeDef " + newTypeDefinition.getName)
     //MERGE TYPE DEPLOY UNITS
     val newTypeDefinitionDeployUnits = newTypeDefinition.getDeployUnits
     newTypeDefinition.removeAllDeployUnits()
     newTypeDefinitionDeployUnits.foreach {
       ndu =>
-        newTypeDefinition.addDeployUnits(mergeDeployUnit(actualModel, ndu.asInstanceOf[DeployUnit],true))
+        newTypeDefinition.addDeployUnits(mergeDeployUnit(actualModel, ndu.asInstanceOf[DeployUnit], true))
     }
     //ADD RECUSIVE DEFINITON TO ROOT
     newTypeDefinition match {
@@ -228,9 +229,13 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
         nt.removeAllManagedPrimitiveTypes()
         pl.foreach {
           pll =>
-            if (!nt.getManagedPrimitiveTypes.exists(ap => ap.getName == pll.getName)){
+            if (!nt.getManagedPrimitiveTypes.exists(ap => ap.getName == pll.getName)) {
               nt.addManagedPrimitiveTypes(mergeAdaptationPrimitive(actualModel, pll))
             }
+        }
+        nt.getManagedPrimitiveTypeRefs.foreach {
+          ref =>
+              ref.setRef(mergeAdaptationPrimitive(actualModel, ref.getRef))
         }
       }
       case gt: GroupType => {

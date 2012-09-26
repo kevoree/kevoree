@@ -228,7 +228,8 @@ class KevoreeCoreBean extends KevoreeModelHandlerService {
             true
             //listenerActor.afterUpdate(model, stopModel.get)
           }
-          val ignoredDeployResult = PrimitiveCommandExecutionHelper.execute(adaptationModel, nodeInstance, afterUpdateTest)
+          val rootNode = model.getNodes.find(n => n.getName == getNodeName).get
+          val ignoredDeployResult = PrimitiveCommandExecutionHelper.execute(rootNode,adaptationModel, nodeInstance, afterUpdateTest)
         } else {
           logger.error("Unable to use the stopModel !")
         }
@@ -316,7 +317,8 @@ class KevoreeCoreBean extends KevoreeModelHandlerService {
                   true
                   //listenerActor.afterUpdate(model, newmodel)
                 }
-                PrimitiveCommandExecutionHelper.execute(adaptationModel, nodeInstance,afterUpdateTest)
+                val rootNode = newmodel.getNodes.find(n => n.getName == getNodeName).get
+                PrimitiveCommandExecutionHelper.execute(rootNode,adaptationModel, nodeInstance,afterUpdateTest)
                 nodeInstance.stopNode()
                 //end of harakiri
                 nodeInstance = null
@@ -349,7 +351,8 @@ class KevoreeCoreBean extends KevoreeModelHandlerService {
               def afterUpdateTest(): Boolean = {
                 listenerActor.afterUpdate(model, newmodel)
               }
-              deployResult = PrimitiveCommandExecutionHelper.execute(adaptationModel, nodeInstance,afterUpdateTest)
+              val rootNode = newmodel.getNodes.find(n => n.getName == getNodeName).get
+              deployResult = PrimitiveCommandExecutionHelper.execute(rootNode,adaptationModel, nodeInstance,afterUpdateTest)
             } catch {
               case _@e => {
                 logger.error("Error while update ", e)

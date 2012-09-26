@@ -27,7 +27,7 @@
 package org.kevoree.framework.annotation.processor.visitor.sub
 
 import org.kevoree.annotation.PrimitiveCommand
-import org.kevoree.{KevoreeFactory, AdaptationPrimitiveType, ContainerRoot, NodeType}
+import org.kevoree._
 import javax.lang.model.element.TypeElement
 import javax.annotation.processing.ProcessingEnvironment
 import javax.tools.Diagnostic.Kind
@@ -57,6 +57,12 @@ trait AdaptationPrimitiveProcessor {
           if (primitiveCommandAnnotations.find(a => a.name() == primitiveCommandAnnotation.name()).size == 1) {
             val primitiveType: AdaptationPrimitiveType = KevoreeFactory.eINSTANCE.createAdaptationPrimitiveType
             primitiveType.setName(primitiveCommandAnnotation.name())
+
+            val primitiveTypeRef: AdaptationPrimitiveTypeRef = KevoreeFactory.eINSTANCE.createAdaptationPrimitiveTypeRef
+            primitiveTypeRef.setMaxTime(primitiveCommandAnnotation.maxTime().toString)
+            primitiveTypeRef.setRef(primitiveType)
+            typeDef.addManagedPrimitiveTypeRefs(primitiveTypeRef)
+
 
             addPrimitiveType(typeDef, primitiveType)
 
