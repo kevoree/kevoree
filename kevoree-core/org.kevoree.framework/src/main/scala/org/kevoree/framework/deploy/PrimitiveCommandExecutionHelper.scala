@@ -19,6 +19,7 @@ import org.slf4j.LoggerFactory
 import java.util
 import util.concurrent.atomic.AtomicInteger
 import util.concurrent.{Callable, TimeUnit, ThreadFactory}
+import org.kevoree.ContainerNode
 
 /**
  * Created by IntelliJ IDEA.
@@ -31,14 +32,14 @@ object PrimitiveCommandExecutionHelper {
 
   var logger = LoggerFactory.getLogger(this.getClass)
 
-  def execute(adaptionModel: AdaptationModel, nodeInstance: NodeType, afterUpdateFunc : ()=>Boolean): Boolean = {
+  def execute(rootNode: ContainerNode, adaptionModel: AdaptationModel, nodeInstance: NodeType, afterUpdateFunc: () => Boolean): Boolean = {
     if (adaptionModel.getOrderedPrimitiveSet != null) {
       adaptionModel.getOrderedPrimitiveSet match {
         case Some(orderedPrimitiveSet) => {
           val phase = new KevoreeParDeployPhase
-          val res = executeStep(orderedPrimitiveSet, nodeInstance, phase)
+          val res = executeStep(rootNode, orderedPrimitiveSet, nodeInstance, phase)
           if (res) {
-            if (!afterUpdateFunc()){
+            if (!afterUpdateFunc()) {
               phase.rollBack()
             }
           }
@@ -52,7 +53,7 @@ object PrimitiveCommandExecutionHelper {
     }
   }
 
-  private def executeStep(step: ParallelStep, nodeInstance: NodeType, phase: KevoreeParDeployPhase): Boolean = {
+  private def executeStep(rootNode: ContainerNode, step: ParallelStep, nodeInstance: NodeType, phase: KevoreeParDeployPhase): Boolean = {
     if (step == null) {
       return true
     }
@@ -61,6 +62,18 @@ object PrimitiveCommandExecutionHelper {
         val primitive = nodeInstance.getPrimitive(adapt)
         if (primitive != null) {
           logger.debug("Populate primitive => " + primitive)
+
+          try {
+            val aTypeRef = rootNode.getTypeDefinition.asInstanceOf[org.kevoree.NodeType].getManagedPrimitiveTypeRefs.find(ref => ref.getRef.getName == adapt.getPrimitiveType.getName)
+            if (aTypeRef.isDefined) {
+              phase.setMaxTime(java.lang.Long.parseLong(aTypeRef.get.getMaxTime))
+            }
+          } catch {
+            case _@e => logger.error("Bad value for timeout in model ", e)
+          }
+
+          //adapt.getPrimitiveType
+
           phase.populate(primitive)
           true
         } else {
@@ -75,7 +88,7 @@ object PrimitiveCommandExecutionHelper {
           case Some(nextStep) => {
             val nextPhase = new KevoreeParDeployPhase
             phase.sucessor = Some(nextPhase)
-            executeStep(nextStep, nodeInstance, nextPhase)
+            executeStep(rootNode, nextStep, nodeInstance, nextPhase)
           }
           case None => true
         }
@@ -97,6 +110,12 @@ object PrimitiveCommandExecutionHelper {
 
   private class KevoreeParDeployPhase {
     var primitives: List[PrimitiveCommand] = List()
+
+    var maxTimeout = 30000l
+
+    def setMaxTime(mt: Long) {
+      maxTimeout = scala.math.max(maxTimeout, mt)
+    }
 
     var sucessor: Option[KevoreeParDeployPhase] = None
 
@@ -174,7 +193,7 @@ object PrimitiveCommandExecutionHelper {
       }
 
       val watchdogTimeout = System.getProperty("node.update.timeout")
-      var watchDogTimeoutInt = 30000
+      var watchDogTimeoutInt = maxTimeout
       if (watchdogTimeout != null) {
         try {
           watchDogTimeoutInt = Integer.parseInt(watchdogTimeout.toString)
@@ -187,6 +206,11 @@ object PrimitiveCommandExecutionHelper {
       val stepResult = (wt !? primitives).asInstanceOf[Boolean]
       stepResult
       */
+
+
+
+
+
       executeAllWorker(primitives, watchDogTimeoutInt)
 
     }

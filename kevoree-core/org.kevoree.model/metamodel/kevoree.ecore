@@ -223,6 +223,12 @@
   <eClassifiers xsi:type="ecore:EClass" name="NodeType" eSuperTypes="#//LifeCycleTypeDefinition">
     <eStructuralFeatures xsi:type="ecore:EReference" name="managedPrimitiveTypes"
         upperBound="-1" eType="#//AdaptationPrimitiveType"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="managedPrimitiveTypeRefs"
+        upperBound="-1" eType="#//AdaptationPrimitiveTypeRef" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="AdaptationPrimitiveType" eSuperTypes="#//NamedElement"/>
+  <eClassifiers xsi:type="ecore:EClass" name="AdaptationPrimitiveTypeRef">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="ref" lowerBound="1" eType="#//AdaptationPrimitiveType"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="maxTime" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
 </ecore:EPackage>

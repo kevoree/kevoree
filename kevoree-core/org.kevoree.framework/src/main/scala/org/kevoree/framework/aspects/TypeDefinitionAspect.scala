@@ -221,7 +221,14 @@ case class TypeDefinitionAspect(selfTD: TypeDefinition) {
         false
       }
       case nodeType: NodeType => {
-        false
+        val selfNT = selfTD.asInstanceOf[NodeType]
+
+        val atypeDefSize = selfNT.getManagedPrimitiveTypes.size == nodeType.getManagedPrimitiveTypes.size
+        val atypeDef = selfNT.getManagedPrimitiveTypes.forall(mpt => nodeType.getManagedPrimitiveTypes.exists(lmpt=>lmpt.getName == mpt.getName))
+
+        val atypeDefRefSize = selfNT.getManagedPrimitiveTypeRefs.size == nodeType.getManagedPrimitiveTypeRefs.size
+        val atypeDefRef = selfNT.getManagedPrimitiveTypeRefs.forall(mpt => nodeType.getManagedPrimitiveTypeRefs.exists(lmpt=>lmpt.getMaxTime == mpt.getMaxTime && lmpt.getRef.getName == mpt.getRef.getName))
+        !(atypeDefSize && atypeDef && atypeDefRefSize && atypeDefRef)
       }
       case g: GroupType => {
         false
