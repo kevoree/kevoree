@@ -112,8 +112,22 @@ trait AetherFramework extends TempFileCacheManager with AetherRepositoryHandler 
         logger.debug("Add URL for Request {}",repository)
     }
     artifactRequest.setRepositories(repositories)
-    val artefactResult = getRepositorySystem.resolveArtifact(getRepositorySystemSession, artifactRequest)
-    installInCache(artefactResult.getArtifact)
+    var artefactResult = getRepositorySystem.resolveArtifact(getRepositorySystemSession, artifactRequest)
+
+    val corruptedFile = artefactResult.getArtifact
+    if (corruptedFile == null || !checkFile(corruptedFile.getFile)) {
+      //OPTIONAL REMOVE : _maven.repositories
+      clearRepoCacheFile(getRepositorySystemSession, artifactRequest.getArtifact)
+      artefactResult = getRepositorySystem.resolveArtifact(getRepositorySystemSession, artifactRequest)
+    }
+
+    if (checkFile(artefactResult.getArtifact.getFile)) {
+      installInCache(artefactResult.getArtifact)
+    } else {
+      logger.warn("Aether return bad Corrupted File after second try , abording")
+      null
+    }
+
   }
 
 
