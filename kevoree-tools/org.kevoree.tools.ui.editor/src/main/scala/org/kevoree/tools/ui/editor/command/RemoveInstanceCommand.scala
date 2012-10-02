@@ -47,7 +47,16 @@ class RemoveInstanceCommand(elem: org.kevoree.NamedElement) extends Command {
     elem match {
       case inst: Channel => {inst.removeModelAndUI(kernel); updateType(inst) }
       case inst: ComponentInstance => {inst.removeModelAndUI(kernel) ; updateType(inst) }
-      case inst: ContainerNode => {inst.removeModelAndUI(kernel); updateType(inst)    }
+      case inst: ContainerNode => {
+
+        inst.getHosts.foreach{ hn =>
+          val c = new RemoveInstanceCommand(hn)
+          c.setKernel(kernel)
+          c.execute(null)
+        }
+
+        inst.removeModelAndUI(kernel); updateType(inst)
+      }
       case inst: Group => {inst.removeModelAndUI(kernel) ; updateType(inst)      }
     }
 
