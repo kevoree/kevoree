@@ -33,11 +33,12 @@ package org.kevoree.tools.marShell.parser.sub
 
 import org.kevoree.tools.marShell.ast.{CreateChannelTypeStatment, AddPortTypeStatment, CreateComponentTypeStatment, Statment}
 
+
 trait KevsTypeParser extends KevsAbstractParser {
 
-  def parseType : Parser[List[Statment]]= parseCreateComponentType | parseCreateChannelType | parseAddPortType
-  
-  
+  def parseType : Parser[List[Statment]]= parseCreateComponentType | parseCreateChannelType | parseAddInPortType | parseAddOutPortType
+
+
   //example : removeNode node1,node2
   val createComponentTypeCommandFormat = "createComponentType <ComponentTypeName> @ <libraryName> "
   def parseCreateComponentType : Parser[List[Statment]] = "createComponentType" ~ orFailure( (ident~opt("@"~>ident)),createComponentTypeCommandFormat) ^^{ case _ ~ nodeIDs =>
@@ -53,14 +54,37 @@ trait KevsTypeParser extends KevsAbstractParser {
     }
   }
 
-
- // val createChannelTypeCommandFormat = "createChannelType <ChannelTypeName> @ <libraryName>"
-  val addPortTypeCommandFormat = "addPortType <PortName> : <PortType> => <ComponentTypeName> "
-  def parseAddPortType : Parser[List[Statment]] = "addPortType" ~ orFailure(ident,addPortTypeCommandFormat) ~ orFailure(parsePortType, addPortTypeCommandFormat) ~ orFailure("=>",addPortTypeCommandFormat) ~ orFailure(ident,addPortTypeCommandFormat) ^^{ case _ ~ portTypeName ~ oPTClassName ~ _ ~ targetTypeName =>
-    List(AddPortTypeStatment(portTypeName,targetTypeName,oPTClassName))
-  }
   def parsePortType : Parser[Option[String]] = opt( ":" ~> ident )
-  
-  
-  
+
+  // val createChannelTypeCommandFormat = "createChannelType <ChannelTypeName> @ <libraryName>"
+  val addInPortTypeCommandFormat = "addInPortType <PortName> : <Message | Service : interfaceName > : <optional> => <ComponentTypeName>"
+  def parseAddInPortType : Parser[List[Statment]] =
+      "addInPortType" ~
+      orFailure(ident,addOutPortTypeCommandFormat) ~
+      orFailure(":", addOutPortTypeCommandFormat) ~
+      orFailure("Message" | "Service" ,addOutPortTypeCommandFormat)~
+      orFailure(opt(":"), addOutPortTypeCommandFormat) ~
+      orFailure(opt(stringLit),addOutPortTypeCommandFormat)~
+      orFailure(opt(":"), addOutPortTypeCommandFormat) ~
+      orFailure(opt(ident),addOutPortTypeCommandFormat)~
+      orFailure("=>",addOutPortTypeCommandFormat) ~
+      orFailure(ident,addOutPortTypeCommandFormat) ^^{
+      case _ ~ portTypeName ~_ ~  typeport~  _ ~  oPTClassName~ _ ~  optional ~ _ ~ targetTypeName =>     List(AddPortTypeStatment(portTypeName,targetTypeName,typeport,oPTClassName,optional,true))
+    }
+
+
+  val addOutPortTypeCommandFormat = "addOutPortType <PortName> : <Message | Service : interfaceName > : <optional> => <ComponentTypeName> "
+  def parseAddOutPortType : Parser[List[Statment]] =
+    "addOutPortType" ~
+      orFailure(ident,addOutPortTypeCommandFormat) ~
+      orFailure(":", addOutPortTypeCommandFormat) ~
+      orFailure("Message" | "Service" ,addOutPortTypeCommandFormat)~
+      orFailure(opt(":"), addOutPortTypeCommandFormat) ~
+      orFailure(opt(stringLit),addOutPortTypeCommandFormat)~
+      orFailure(opt(":"), addOutPortTypeCommandFormat) ~
+      orFailure(opt(ident),addOutPortTypeCommandFormat)~
+      orFailure("=>",addOutPortTypeCommandFormat) ~
+      orFailure(ident,addOutPortTypeCommandFormat) ^^{
+      case _ ~ portTypeName ~_ ~  typeport~  _ ~  oPTClassName~ _ ~  optional ~ _ ~ targetTypeName =>     List(AddPortTypeStatment(portTypeName,targetTypeName,typeport,oPTClassName,optional,false))
+    }
 }
