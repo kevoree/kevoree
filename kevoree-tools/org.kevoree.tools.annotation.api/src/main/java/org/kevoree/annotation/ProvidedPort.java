@@ -48,4 +48,7 @@ public @interface ProvidedPort {
     String messageType() default "untyped";
 
     boolean async() default false;
+
+    ThreadStrategy theadStrategy() default ThreadStrategy.SCALA_ACTOR;
+
 }

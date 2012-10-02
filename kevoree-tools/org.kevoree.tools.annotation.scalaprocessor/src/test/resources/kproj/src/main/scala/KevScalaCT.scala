@@ -38,8 +38,8 @@ import org.kevoree.annotation._
 
 @ComponentType
 @Library(name="JavaSE")
-@Requires(value=Array(new RequiredPort(name = "outPort", `type` = PortType.MESSAGE,optional=true)))
-@Provides(value=Array(new ProvidedPort(name = "inPort", `type` = PortType.MESSAGE)))
+//@Requires(value=Array(new RequiredPort(name = "outPort", `type` = PortType.MESSAGE,optional=true)))
+//@Provides(value=Array(new ProvidedPort(name = "inPort", `type` = PortType.MESSAGE)))
 class KevScalaCT {
 
 }
