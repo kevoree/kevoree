@@ -17,6 +17,7 @@ import org.kevoree.ContainerRoot
 import org.kevoree.api.service.core.checker.{CheckerService, CheckerViolation}
 import java.util
 import org.kevoree.NodeType
+import org.kevoree.framework.aspects.NodeTypeAspect
 
 /**
  * Created with IntelliJ IDEA.
@@ -31,6 +32,8 @@ class NodeContainerChecker extends CheckerService {
       node => //For each Node
         if (node.getHosts.size > 0) {
           val ntype = node.getTypeDefinition.asInstanceOf[NodeType]
+
+          /*
           var hostedCapable = false
           ntype.getManagedPrimitiveTypes.foreach {
             ptype =>
@@ -40,7 +43,8 @@ class NodeContainerChecker extends CheckerService {
               if (ptype.getName.toLowerCase.equals("removenode")) {
                 hostedCapable = true;
               }
-          }
+          } */
+          val hostedCapable = NodeTypeAspect(ntype).defineAdaptationPrimitiveType("addnode") && NodeTypeAspect(ntype).defineAdaptationPrimitiveType("addnode")
           if (!hostedCapable) {
             val violation: CheckerViolation = new CheckerViolation
             violation.setMessage(ntype.getName + " hos not Node hosting capability " +

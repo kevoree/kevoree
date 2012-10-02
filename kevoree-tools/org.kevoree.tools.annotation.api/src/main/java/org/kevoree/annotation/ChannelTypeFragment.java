@@ -40,4 +40,5 @@ import java.lang.annotation.Target;
 @Target({ElementType.TYPE})
 public @interface ChannelTypeFragment {
     java.lang.String description() default "empty";
+
 }
