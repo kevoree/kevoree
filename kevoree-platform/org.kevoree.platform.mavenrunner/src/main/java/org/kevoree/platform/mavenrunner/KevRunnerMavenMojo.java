@@ -110,9 +110,9 @@ public class KevRunnerMavenMojo extends AbstractMojo {
 				System.setProperty(key.toString(), project.getProperties().get(key).toString());
 			}
 			System.setProperty("node.bootstrap", tFile.getAbsolutePath());
-//			if (System.getProperty("node.name") == null) {
+			if (System.getProperty("node.name") == null) {
 				System.setProperty("node.name", targetNode);
-//			}
+			}
 
 			App.main(new String[0]);
 

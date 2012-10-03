@@ -33,7 +33,6 @@ import org.kevoree.tools.ui.editor.UIEventHandler;
 import org.kevoree.tools.ui.editor.command.Command;
 import org.kevoree.tools.ui.editor.kloud.KloudForm;
 import org.kevoree.tools.ui.editor.kloud.MiniKloudForm;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -52,7 +51,7 @@ public class App {
     static int dividerPos = 0;
     static LocalKevsShell kevsPanel = new LocalKevsShell();
 
-    public static void main(final String[] args) {
+    public static void main(final String[] args) throws Exception {
 
         System.setSecurityManager(null);
 
@@ -213,7 +212,7 @@ public class App {
                     @Override
                     public void execute(Object p) {
                         labelBot.setText(p.toString());
-                       // labelBot.setFont(new Font("Serif", Font.PLAIN, 10));
+                        // labelBot.setFont(new Font("Serif", Font.PLAIN, 10));
                     }
                 });
 
