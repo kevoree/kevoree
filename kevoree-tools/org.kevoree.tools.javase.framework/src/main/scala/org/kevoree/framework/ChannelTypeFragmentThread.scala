@@ -20,6 +20,6 @@ package org.kevoree.framework
  * Time: 10:24
  */
 
-trait ChannelTypeFragmentThread extends KInstance with ChannelFragment {
+trait ChannelTypeFragmentThread extends KevoreeChannelFragment with KInstance with ChannelFragment {
 
 }
