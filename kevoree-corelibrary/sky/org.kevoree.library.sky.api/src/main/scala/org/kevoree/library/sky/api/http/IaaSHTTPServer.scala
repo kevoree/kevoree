@@ -1,7 +1,7 @@
 package org.kevoree.library.sky.api.http
 
 import org.kevoree.library.webserver.internal.KTinyWebServerInternalServe
-import org.kevoree.library.sky.api.nodeType.IaaSNode
+import org.kevoree.library.sky.api.nodeType.{AbstractHostNode, AbstractIaaSNode, IaaSNode}
 import org.slf4j.LoggerFactory
 import java.util.Properties
 import javax.servlet.http.{HttpServletResponse, HttpServletRequest, HttpServlet}
@@ -18,7 +18,7 @@ import java.io.{IOException, FileNotFoundException, InputStream, ByteArrayOutput
  * @version 1.0
  */
 
-class IaaSHTTPServer (node: IaaSNode) extends Runnable {
+class IaaSHTTPServer (node: AbstractHostNode) extends Runnable {
   val logger = LoggerFactory.getLogger(this.getClass)
   private var srv: KTinyWebServerInternalServe = null
   private var mainT: Thread = null

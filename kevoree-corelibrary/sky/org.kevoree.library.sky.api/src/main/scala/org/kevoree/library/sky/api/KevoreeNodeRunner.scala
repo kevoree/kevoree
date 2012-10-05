@@ -1,8 +1,10 @@
 package org.kevoree.library.sky.api
 
+import nodeType.AbstractIaaSNode
 import org.slf4j.{LoggerFactory, Logger}
-import org.kevoree.{TypeDefinition, ContainerRoot}
+import org.kevoree.{ContainerNode, KevoreeFactory, TypeDefinition, ContainerRoot}
 import java.io._
+import util.matching.Regex
 
 /**
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
@@ -113,6 +115,29 @@ abstract class KevoreeNodeRunner (var nodeName: String) {
         }
       } else {
         logger.debug("The file {} doesn't exist, nothing can be replace.", file)
+      }
+    }
+  }
+
+
+  def findVersionForChildNode (nodeName: String, model: ContainerRoot, iaasNode: ContainerNode): String = {
+    logger.debug("looking for Kevoree version for node {}", nodeName)
+    model.getNodes.find(n => n.getName == nodeName) match {
+      case None => KevoreeFactory.getVersion
+      case Some(node) => {
+        logger.debug("looking for deploy unit")
+        node.getTypeDefinition.getDeployUnits.find(d => d.getTargetNodeType.get.getName == iaasNode.getTypeDefinition.getName ||
+          isASubType(iaasNode.getTypeDefinition, d.getTargetNodeType.get.getName)) match {
+          case None => KevoreeFactory.getVersion
+          case Some(d) => {
+            logger.debug("looking for version of kevoree framework for the found deploy unit")
+            d.getRequiredLibs.find(rd => rd.getUnitName == "org.kevoree" && rd.getGroupName == "org.kevoree.framework") match {
+              case None => KevoreeFactory.getVersion
+              case Some(rd) => rd.getVersion
+            }
+          }
+        }
+
       }
     }
   }

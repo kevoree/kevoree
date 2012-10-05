@@ -40,7 +40,7 @@ class JailKevoreeNodeRunner (nodeName: String, iaasNode: JailNode) extends Kevor
 
   //  var nodeProcess: Process = null
 
-  def startNode (iaasModel: ContainerRoot, jailBootStrapModel: ContainerRoot): Boolean = {
+  def startNode (iaasModel: ContainerRoot, childBootstrapModel: ContainerRoot): Boolean = {
     logger.debug("Starting " + nodeName)
     // looking for currently launched jail
     val result = processExecutor.listIpJails(nodeName)
@@ -63,9 +63,11 @@ class JailKevoreeNodeRunner (nodeName: String, iaasNode: JailNode) extends Kevor
         // create the new jail
         if (processExecutor.createJail(flavor, nodeName, newIp, findArchive(nodeName))) {
           var jailPath = processExecutor.findPathForJail(nodeName)
+          // find the needed version of Kevoree for the child node
+          val version = findVersionForChildNode(nodeName, childBootstrapModel, iaasModel.getNodes.find(n => n.getName == iaasNode.getNodeName).get)
           // install the model on the jail
-          val platformFile = iaasNode.getBootStrapperService.resolveKevoreeArtifact("org.kevoree.platform.standalone", "org.kevoree.platform", KevoreeFactory.getVersion)
-          KevoreeXmiHelper.save(jailPath + File.separator + "root" + File.separator + "bootstrapmodel.kev", jailBootStrapModel)
+          val platformFile = iaasNode.getBootStrapperService.resolveKevoreeArtifact("org.kevoree.platform.standalone", "org.kevoree.platform", version)
+          KevoreeXmiHelper.save(jailPath + File.separator + "root" + File.separator + "bootstrapmodel.kev", childBootstrapModel)
           if (PropertyHelper.copyFile(platformFile.getAbsolutePath, jailPath + File.separator + "root" + File.separator + "kevoree-runtime.jar")) {
             // specify limitation on jail such as CPU, RAM
             if (JailsConstraintsConfiguration.applyJailConstraints(iaasModel, nodeName)) {

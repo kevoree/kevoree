@@ -1,6 +1,6 @@
 package org.kevoree.library.sky.api
 
-import nodeType.IaaSNode
+import nodeType.AbstractHostNode
 import org.kevoree.ContainerRoot
 
 import org.slf4j.{LoggerFactory, Logger}
@@ -14,7 +14,7 @@ import actors.Actor
  * @author Erwan Daubert
  * @version 1.0
  */
-class KevoreeNodeManager(node: IaaSNode) extends Actor {
+class KevoreeNodeManager(node: AbstractHostNode) extends Actor {
 
   private val logger: Logger = LoggerFactory.getLogger(this.getClass)
 

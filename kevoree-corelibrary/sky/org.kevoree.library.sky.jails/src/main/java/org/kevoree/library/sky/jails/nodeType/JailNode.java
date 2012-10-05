@@ -1,9 +1,9 @@
 package org.kevoree.library.sky.jails.nodeType;
 
 import org.kevoree.annotation.*;
-import org.kevoree.library.sky.jails.JailKevoreeNodeRunner;
 import org.kevoree.library.sky.api.KevoreeNodeRunner;
-import org.kevoree.library.sky.api.nodeType.IaaSNode;
+import org.kevoree.library.sky.api.nodeType.AbstractIaaSNode;
+import org.kevoree.library.sky.jails.JailKevoreeNodeRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,17 +18,17 @@ import org.slf4j.LoggerFactory;
 
 @Library(name = "SKY")
 @DictionaryType({
-		@DictionaryAttribute(name = "inet", defaultValue = "alc0", optional = false),
-		@DictionaryAttribute(name = "subnet", defaultValue = "10.0.0.0", optional = true),
-		@DictionaryAttribute(name = "mask", defaultValue = "24", vals = {"8", "16", "24"}, optional = false),
+//		@DictionaryAttribute(name = "inet", defaultValue = "alc0", optional = false),
+//		@DictionaryAttribute(name = "subnet", defaultValue = "10.0.0.0", optional = true),
+//		@DictionaryAttribute(name = "mask", defaultValue = "24", vals = {"8", "16", "24"}, optional = false),
 		@DictionaryAttribute(name = "flavor", optional = true),
-		@DictionaryAttribute(name = "jailCreationTimeout", defaultValue = "240000", optional = true),
+		@DictionaryAttribute(name = "jailCreationTimeout", defaultValue = "240000", optional = true), // TODO check with Timeout on adaptation primitive
 		@DictionaryAttribute(name = "jailStartTimeout", defaultValue = "10000", optional = true)/*,
 		@DictionaryAttribute(name = "useArchive", defaultValue = "false", vals= {"true", "false"}, optional = true),
 		@DictionaryAttribute(name = "archives", defaultValue = "http://localhost:8080/archives/", optional = true)*/
 })
 @NodeType
-public class JailNode extends IaaSNode {
+public class JailNode extends AbstractIaaSNode {
 	private static final Logger logger = LoggerFactory.getLogger(JailNode.class);
 
 	private String inet;

@@ -2,7 +2,7 @@ package org.kevoree.library.sky.api.command
 
 import org.kevoree.ContainerRoot
 import org.kevoree.api.PrimitiveCommand
-import org.kevoree.library.sky.api.nodeType.IaaSNode
+import org.kevoree.library.sky.api.nodeType.{AbstractHostNode, AbstractIaaSNode}
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -13,7 +13,7 @@ import org.kevoree.library.sky.api.nodeType.IaaSNode
  * @version 1.0
  */
 
-class RemoveNodeCommand (iaasModel: ContainerRoot,targetChildName : String,node: IaaSNode)
+class RemoveNodeCommand (iaasModel: ContainerRoot,targetChildName : String,node: AbstractHostNode)
   extends PrimitiveCommand {
 
   override def execute (): Boolean = {

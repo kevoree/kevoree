@@ -19,7 +19,7 @@ import org.slf4j.LoggerFactory
 import java.io._
 import java.lang.Thread
 import util.matching.Regex
-import org.kevoree.library.sky.api.nodeType.IaaSNode
+import org.kevoree.library.sky.api.nodeType.{AbstractHostNode, AbstractIaaSNode, IaaSNode}
 import org.kevoree.{ContainerRoot, KevoreeFactory}
 import org.kevoree.framework.KevoreeXmiHelper
 import org.kevoree.library.sky.api.{ProcessStreamFileLogger, KevoreeNodeRunner}
@@ -32,7 +32,7 @@ import org.kevoree.library.sky.api.{ProcessStreamFileLogger, KevoreeNodeRunner}
  * @author Erwan Daubert
  * @version 1.0
  */
-class MiniCloudKevoreeNodeRunner (nodeName: String, iaasNode: IaaSNode) extends KevoreeNodeRunner(nodeName) {
+class MiniCloudKevoreeNodeRunner (nodeName: String, iaasNode: AbstractHostNode) extends KevoreeNodeRunner(nodeName) {
   private val logger: Logger = LoggerFactory.getLogger(classOf[MiniCloudKevoreeNodeRunner])
   private var nodePlatformProcess: Process = null
 
@@ -46,26 +46,33 @@ class MiniCloudKevoreeNodeRunner (nodeName: String, iaasNode: IaaSNode) extends 
 
   case class ErrorResult ()
 
-  def startNode (iaasModel: ContainerRoot, jailBootStrapModel: ContainerRoot): Boolean = {
+  def startNode (iaasModel: ContainerRoot, childBootstrapModel: ContainerRoot): Boolean = {
     try {
       logger.debug("Start " + nodeName)
+      val version = findVersionForChildNode(nodeName, childBootstrapModel, iaasModel.getNodes.find(n => n.getName == iaasNode.getNodeName).get)
 
-      // find the classpath of the current node
-      // if classpath is null then we download the jar with aether
-      // else we start the child node with the same classpath as its parent.
-      // main class  = org.kevoree.platform.standalone.app.Main
-      logger.debug(System.getProperty("java.class.path"))
-      if (System.getProperty("java.class.path") != null) {
-        logger.debug("trying to start child node with parent's classpath")
-        if (!startWithClassPath(jailBootStrapModel)) {
-          logger.debug("Unable to start child node with parent's classpath, try to use aether bootstrap")
-          startWithAether(jailBootStrapModel)
+      if (version == KevoreeFactory.getVersion) {
+        logger.debug("try to start child node with the same Kevoree version")
+        // find the classpath of the current node
+        // if classpath is null then we download the jar with aether
+        // else we start the child node with the same classpath as its parent.
+        // main class  = org.kevoree.platform.standalone.app.Main
+        logger.debug(System.getProperty("java.class.path"))
+        if (System.getProperty("java.class.path") != null) {
+          logger.debug("trying to start child node with parent's classpath")
+          if (!startWithClassPath(childBootstrapModel)) {
+            logger.debug("Unable to start child node with parent's classpath, try to use aether bootstrap")
+            startWithAether(childBootstrapModel, version)
+          } else {
+            true
+          }
         } else {
-          true
+          logger.debug("trying to start child node with aether bootstrap")
+          startWithAether(childBootstrapModel, version)
         }
       } else {
-        logger.debug("trying to start child node with aether bootstrap")
-        startWithAether(jailBootStrapModel)
+        logger.debug("try to start child node with {} as Kevoree version", version)
+        startWithAether(childBootstrapModel, version)
       }
     } catch {
       case e: IOException => {
@@ -100,17 +107,17 @@ class MiniCloudKevoreeNodeRunner (nodeName: String, iaasNode: IaaSNode) extends 
     java_home + File.separator + "bin" + File.separator + "java"
   }
 
-  private def startWithClassPath (jailBootStrapModel: ContainerRoot): Boolean = {
+  private def startWithClassPath (childBootStrapModel: ContainerRoot): Boolean = {
     try {
       val java: String = getJava
       val tempFile = File.createTempFile("bootModel" + nodeName, ".kev")
-      KevoreeXmiHelper.save(tempFile.getAbsolutePath, jailBootStrapModel)
+      KevoreeXmiHelper.save(tempFile.getAbsolutePath, childBootStrapModel)
       //TRY THE CURRENT CLASSLOADER
       try {
         classOf[Object].getClassLoader.loadClass("org.kevoree.platform.standalone.App")
       } catch {
-        case _ =>{
-          logger.info("Can't find bootstrap class {}","org.kevoree.platform.standalone.App")
+        case e: Throwable => {
+          logger.info("Can't find bootstrap class {}", "org.kevoree.platform.standalone.App")
           return false
         }
       }
@@ -131,14 +138,14 @@ class MiniCloudKevoreeNodeRunner (nodeName: String, iaasNode: IaaSNode) extends 
     }
   }
 
-  private def startWithAether (jailBootStrapModel: ContainerRoot): Boolean = {
+  private def startWithAether (childBootStrapModel: ContainerRoot, kevoreeVersion: String): Boolean = {
     try {
-      val platformFile = iaasNode.getBootStrapperService.resolveKevoreeArtifact("org.kevoree.platform.standalone", "org.kevoree.platform", KevoreeFactory.getVersion)
+      val platformFile = iaasNode.getBootStrapperService.resolveKevoreeArtifact("org.kevoree.platform.standalone", "org.kevoree.platform", kevoreeVersion)
       val java: String = getJava
       if (platformFile != null) {
 
         val tempFile = File.createTempFile("bootModel" + nodeName, ".kev")
-        KevoreeXmiHelper.save(tempFile.getAbsolutePath, jailBootStrapModel)
+        KevoreeXmiHelper.save(tempFile.getAbsolutePath, childBootStrapModel)
 
         // FIXME java memory properties must define as Node properties
         nodePlatformProcess = Runtime.getRuntime
