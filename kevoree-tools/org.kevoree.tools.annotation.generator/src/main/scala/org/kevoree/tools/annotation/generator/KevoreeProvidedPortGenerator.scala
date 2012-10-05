@@ -16,7 +16,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * 	http://www.gnu.org/licenses/lgpl-3.0.txt
+ * http://www.gnu.org/licenses/lgpl-3.0.txt
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -37,6 +37,7 @@ import org.kevoree.framework.aspects.KevoreeAspects._
 import org.kevoree.framework.{KevoreeGeneratorHelper, Constants}
 import javax.tools.StandardLocation
 import org.kevoree.{TypedElement, ContainerRoot, MessagePortType, PortTypeRef, ComponentType => KevoreeComponentType, ServicePortType}
+import org.kevoree.annotation.ThreadStrategy
 
 object KevoreeProvidedPortGenerator {
 
@@ -50,7 +51,18 @@ object KevoreeProvidedPortGenerator {
     writer.append("import org.kevoree.framework.port._\n")
     writer.append("import " + KevoreeGeneratorHelper.getTypeDefinitionBasePackage(ct) + "._\n")
     writer.append("import scala.{Unit=>void}\n")
-    writer.append("class " + portName + "(component : " + ct.getName + ") extends " + ref.getRef.getName + " with KevoreeProvidedPort {\n")
+
+    ThreadingMapping.getMappings.get(Tuple2(ct.getName, ref.getName)) match {
+      case ThreadStrategy.THREAD_QUEUE => {
+        writer.append("class " + portName + "(component : " + ct.getName + ") extends " + ref.getRef.getName + " with KevoreeProvidedThreadPort {\n")
+      }
+      case ThreadStrategy.SHARED_THREAD => {
+        writer.append("class " + portName + "(component : " + ct.getName + ") extends " + ref.getRef.getName + " with KevoreeProvidedExecutorPort {\n")
+      }
+      case _ => {
+        writer.append("class " + portName + "(component : " + ct.getName + ") extends " + ref.getRef.getName + " with KevoreeProvidedPort {\n")
+      }
+    }
 
     writer.append("def getName : String = \"" + ref.getName + "\"\n")
     writer.append("def getComponentName : String = component.getName \n")
@@ -58,6 +70,7 @@ object KevoreeProvidedPortGenerator {
     ref.getRef match {
       case mPT: MessagePortType => {
         /* GENERATE METHOD MAPPING */
+
         writer.append("def process(o : Object) = {this ! o}\n")
 
         ref.getMappings.find(map => {
@@ -70,25 +83,26 @@ object KevoreeProvidedPortGenerator {
             writer.append("case _ @ msg =>try{component.")
 
             writer.append(mapping.getBeanMethodName + "(")
-            if(mapping.getParamTypes != null && mapping.getParamTypes != "" && mapping.getParamTypes.split(",").size >1 ){
-              
+            if (mapping.getParamTypes != null && mapping.getParamTypes != "" && mapping.getParamTypes.split(",").size > 1) {
+
               val elemsT = mapping.getParamTypes.split(",")
-              elemsT.foreach{ t =>
-                t match {
-                  case "java.lang.String" => writer.append("getName")
-                  case "java.lang.Object" => writer.append("msg")
-                  case _ => writer.append("null")
-                }
-                if(elemsT.last != t){
-                  writer.append(",")
-                }
+              elemsT.foreach {
+                t =>
+                  t match {
+                    case "java.lang.String" => writer.append("getName")
+                    case "java.lang.Object" => writer.append("msg")
+                    case _ => writer.append("null")
+                  }
+                  if (elemsT.last != t) {
+                    writer.append(",")
+                  }
               }
-              
+
             } else {
               writer.append("msg")
             }
-            
-            
+
+
             writer.append(")}catch{case _ @ e => {e.printStackTrace();println(\"Uncatched exception while processing Kevoree message\")}}\n")
             writer.append("}\n")
           }
@@ -115,8 +129,10 @@ object KevoreeProvidedPortGenerator {
             }
             /* GENERATES RETURN TYPE in rt */
             var rt = op.getReturnType.get.getName
-            if(op.getReturnType.get.getGenericTypes.size > 0) {
-              rt += op.getReturnType.get.getGenericTypes.collect{case s:TypedElement=>s.getName}.mkString("[",",","]")
+            if (op.getReturnType.get.getGenericTypes.size > 0) {
+              rt += op.getReturnType.get.getGenericTypes.collect {
+                case s: TypedElement => s.getName
+              }.mkString("[", ",", "]")
             }
             writer.append(") : " + rt + " ={\n")
 

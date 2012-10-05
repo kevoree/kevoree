@@ -16,7 +16,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * 	http://www.gnu.org/licenses/lgpl-3.0.txt
+ * http://www.gnu.org/licenses/lgpl-3.0.txt
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -63,7 +63,7 @@ trait ChannelTypeFragment extends KevoreeChannelFragment with ChannelFragment {
 
   val kevoree_internal_logger = LoggerFactory.getLogger(this.getClass)
 
-  var eventHandler : event.MonitorEventHandler = null
+  var eventHandler: event.MonitorEventHandler = null
 
   override def remoteDispatch(msg: Message): Object = {
     if (msg.inOut.booleanValue) {
@@ -77,35 +77,8 @@ trait ChannelTypeFragment extends KevoreeChannelFragment with ChannelFragment {
   private val portsBinded: HashMap[String, KevoreePort] = new HashMap[String, KevoreePort]()
   private var fragementBinded: scala.collection.immutable.HashMap[String, KevoreeChannelFragment] = scala.collection.immutable.HashMap[String, KevoreeChannelFragment]()
 
-  //@BeanProperty
-  var nodeName: String = ""
-
   // @BeanProperty
   def isStarted: Boolean = ct_started
-
-  override def getNodeName = nodeName
-
-  def setNodeName(n: String) {
-    nodeName = n
-  }
-
-  //@BeanProperty
-  var name: String = ""
-
-  override def getName = name
-
-  def setName(n: String) {
-    name = n
-  }
-
-  //@BeanProperty
-  var dictionary: HashMap[String, Object] = new HashMap[String, Object]()
-
-  def setDictionary(d: HashMap[String, Object]) {
-    dictionary = d
-  }
-
-  override def getDictionary(): HashMap[String, Object] = dictionary
 
   override def getBindedPorts(): java.util.List[KevoreePort] = {
     import scala.collection.JavaConversions._
@@ -118,28 +91,27 @@ trait ChannelTypeFragment extends KevoreeChannelFragment with ChannelFragment {
     fragementBinded.values.toList
   }
 
-  override def forward(delegate: KevoreeActor, inmsg: Message): Object = {
+  override def forward(delegate: KevoreeChannelFragment, inmsg: Message): Object = {
     val msg = inmsg.clone
-    delegate match {
-      case p: KevoreePort => {
-        if (msg.inOut.booleanValue) {
-          (delegate !? msg.getContent).asInstanceOf[Object]
-        } else {
-          (delegate ! msg.getContent);
-          null
-        }
-      }
-      case f: KevoreeChannelFragment =>
-        msg.setDestChannelName(f.getName)
-        msg.setDestNodeName(f.getNodeName)
+    msg.setDestChannelName(delegate.getName)
+    msg.setDestNodeName(delegate.getNodeName)
 
-        if (msg.inOut.booleanValue) {
-          (delegate !? msg).asInstanceOf[Object]
-        } else {
-          (delegate ! msg);
-          null
-        }
-      case _ => println("Call on forward on bad object type ! => Only Port or Channel accepted"); return null
+    if (msg.inOut.booleanValue) {
+      (delegate !? msg).asInstanceOf[Object]
+    } else {
+      (delegate ! msg)
+      null
+    }
+  }
+
+
+  override def forward(delegate: KevoreePort, inmsg: Message): Object = {
+    val msg = inmsg.clone
+    if (msg.inOut.booleanValue) {
+      (delegate !? msg.getContent).asInstanceOf[Object]
+    } else {
+      (delegate ! msg.getContent)
+      null
     }
   }
 
@@ -197,13 +169,16 @@ trait ChannelTypeFragment extends KevoreeChannelFragment with ChannelFragment {
     }
   }
 
+  def getDictionary : java.util.HashMap[String,Object]
+  def getName : String
+
   def kUpdateDictionary(d: java.util.HashMap[String, AnyRef], cmodel: ContainerRoot): java.util.HashMap[String, AnyRef] = {
     try {
       import scala.collection.JavaConversions._
-      val previousDictionary = dictionary.clone()
+      val previousDictionary = getDictionary.clone()
       d.keySet.foreach {
         v =>
-          dictionary.put(v, d.get(v))
+          getDictionary.put(v, d.get(v))
       }
       if (ct_started) {
         getModelService.asInstanceOf[ModelHandlerServiceProxy].setTempModel(cmodel)
@@ -297,7 +272,7 @@ trait ChannelTypeFragment extends KevoreeChannelFragment with ChannelFragment {
       reply(true)
     }
     case msg: FragmentUnbindMessage => {
-      kevoree_internal_logger.debug("Try to unbind channel " + name)
+      kevoree_internal_logger.debug("Try to unbind channel " + getName)
       val actorPort: Option[KevoreeChannelFragment] = fragementBinded.get(createPortKey(msg))
       if (actorPort.isDefined) {
         actorPort.get.stop
@@ -330,13 +305,13 @@ trait ChannelTypeFragment extends KevoreeChannelFragment with ChannelFragment {
 
   val local_queue = new KevoreeActor {
     override def internal_process(msgg: Any) = {
-      if(eventHandler != null){
-        eventHandler.triggerEvent(event.MonitorEvent(classOf[ChannelFragment],getName))
+      if (eventHandler != null) {
+        eventHandler.triggerEvent(event.MonitorEvent(classOf[ChannelFragment], getName))
       }
       msgg match {
 
-        case callmsg : CALL_UPDATE => {
-          if(ct_started){
+        case callmsg: CALL_UPDATE => {
+          if (ct_started) {
             updateChannelFragment
           }
         }

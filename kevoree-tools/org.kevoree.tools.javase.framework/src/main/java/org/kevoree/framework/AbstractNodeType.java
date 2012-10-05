@@ -41,17 +41,7 @@ import org.kevoreeAdaptation.AdaptationPrimitive;
 import java.util.HashMap;
 
 public abstract class
-		AbstractNodeType implements NodeType {
-
-	private HashMap<String, Object> dictionary = new HashMap<String, Object>();
-
-	public HashMap<String, Object> getDictionary () {
-		return this.dictionary;
-	}
-
-	public void setDictionary (HashMap<String, Object> dic) {
-		dictionary = dic;
-	}
+		AbstractNodeType extends AbstractTypeDefinition implements NodeType {
 
 	public void startNode () {
 	}
@@ -62,40 +52,21 @@ public abstract class
 	public void updateNode () {
 	}
 
-	private KevoreeModelHandlerService modelService;
+    @Override
+    public void setNodeName(String pnodeName) {
+        super.setNodeName(pnodeName);
+        super.setName(pnodeName);
+    }
 
-	public void setModelService (KevoreeModelHandlerService ms) {
-		modelService = ms;
-	}
+    @Override
+    public void setName(String pname) {
+        super.setName(pname);
+        super.setNodeName(pname);
+    }
 
-	public KevoreeModelHandlerService getModelService () {
-		return modelService;
-	}
-
-	private String nodeName = "";
-
-	public String getNodeName () {
-		return nodeName;
-	}
-
-	public void setNodeName (String pnodeName) {
-		nodeName = pnodeName;
-	}
-
-
-	public abstract AdaptationModel kompare (ContainerRoot actualModel, ContainerRoot targetModel);
+    public abstract AdaptationModel kompare (ContainerRoot actualModel, ContainerRoot targetModel);
 
 	public abstract PrimitiveCommand getPrimitive (AdaptationPrimitive primitive);
-
-	private KevScriptEngineFactory kevScriptEngineFactory = null;
-
-	public KevScriptEngineFactory getKevScriptEngineFactory () {
-		return kevScriptEngineFactory;
-	}
-
-	public void setKevScriptEngineFactory (KevScriptEngineFactory kf) {
-		kevScriptEngineFactory = kf;
-	}
 
 	private HashMapContextModel contextModel = new HashMapContextModel();
 
@@ -112,16 +83,6 @@ public abstract class
 	public ContainerNode getModelElement () {
 		return KevoreeElementHelper.getNodeElement(this.getNodeName(), this.getModelService().getLastModel()).get();
 	}
-
-    private Bootstraper bootstrapService = null;
-
-    public void setBootStrapperService(Bootstraper brs){
-        bootstrapService = brs;
-    }
-
-    public Bootstraper getBootStrapperService(){
-        return bootstrapService;
-    }
 
 }
 
