@@ -44,19 +44,16 @@
             <artifactId>org.kevoree.basechecker</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
-
         <dependency>
             <groupId>org.scala-lang</groupId>
             <artifactId>scala-compiler</artifactId>
             <version>${scala.version}</version>
         </dependency>
-
         <dependency>
             <groupId>org.clapper</groupId>
             <artifactId>classutil_2.9.2</artifactId>
             <version>0.4.6</version>
         </dependency>
-
     </dependencies>
 
 
