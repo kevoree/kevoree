@@ -44,9 +44,18 @@ trait TempFileCacheManager {
   private val random = new Random
   private val logger = LoggerFactory.getLogger(this.getClass)
 
+
+  def getFileExtension(jarArtifact: Artifact) : String = {
+    val posPoint = jarArtifact.getFile.getName.lastIndexOf('.')
+    if (0 < posPoint && posPoint <= jarArtifact.getFile.getName().length() - 2 ) {
+      return jarArtifact.getFile.getName().substring(posPoint);
+    }
+    ""
+  }
+
   def installInCache(jarArtifact: Artifact): File = {
     try {
-      val lastTempFile = File.createTempFile(jarArtifact.getArtifactId+random.nextInt() + "", ".jar")
+      val lastTempFile = File.createTempFile(jarArtifact.getArtifactId+random.nextInt() + "", getFileExtension(jarArtifact))
       lastTempFile.deleteOnExit()
       val jarStream = new FileInputStream(jarArtifact.getFile);
       FileNIOHelper.copyFile(jarStream, lastTempFile)

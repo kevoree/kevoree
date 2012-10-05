@@ -88,6 +88,10 @@ trait AetherFramework extends TempFileCacheManager with AetherRepositoryHandler 
   def resolveMavenArtifact4J(unitName: String, groupName: String, version: String, repositoriesUrl: java.util.List[String]): File =
     resolveMavenArtifact(unitName, groupName, version, repositoriesUrl.toList)
 
+  def resolveMavenArtifact4J(unitName: String, groupName: String, version: String, extension: String, repositoriesUrl: java.util.List[String]): File =
+    resolveMavenArtifact(unitName, groupName, version,extension, repositoriesUrl.toList)
+
+
   def resolveMavenArtifact(unitName: String, groupName: String, version: String, repositoriesUrl: List[String]): File = {
     resolveMavenArtifact(unitName,groupName,version,null,repositoriesUrl)
   }
@@ -146,7 +150,7 @@ trait AetherFramework extends TempFileCacheManager with AetherRepositoryHandler 
     } else {
       urls = buildPotentialMavenURL(du.eContainer.asInstanceOf[ContainerRoot])
     }
-   // urls = urls ++ getDefaultURLS
+    // urls = urls ++ getDefaultURLS
 
     //  val urls = buildPotentialMavenURL(du.eContainer.asInstanceOf[ContainerRoot])
 
