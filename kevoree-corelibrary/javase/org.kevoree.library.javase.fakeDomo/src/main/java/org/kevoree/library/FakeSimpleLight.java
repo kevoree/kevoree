@@ -25,7 +25,7 @@ import java.awt.*;
  * @author ffouquet
  */
 @Provides({
-    @ProvidedPort(name = "on", type = PortType.MESSAGE),
+    @ProvidedPort(name = "on", type = PortType.MESSAGE,theadStrategy = ThreadStrategy.SHARED_THREAD),
     @ProvidedPort(name = "off", type = PortType.MESSAGE),
     @ProvidedPort(name = "toggle", type = PortType.SERVICE, className = ToggleLightService.class)
 })
@@ -33,7 +33,6 @@ import java.awt.*;
 public class FakeSimpleLight extends AbstractFakeStuffComponent {
 
 	private static final Logger logger = LoggerFactory.getLogger(FakeSimpleLight.class);
-
     private static final int FRAME_WIDTH = 300;
     private static final int FRAME_HEIGHT = 300;
     private MyFrame frame;

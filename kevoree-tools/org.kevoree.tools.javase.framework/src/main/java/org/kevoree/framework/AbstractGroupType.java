@@ -36,79 +36,50 @@ import org.kevoree.api.service.core.script.KevScriptEngineFactory;
 
 import java.util.HashMap;
 
-public abstract class AbstractGroupType {
+public abstract class AbstractGroupType extends AbstractTypeDefinition implements ModelListener {
 
-	public abstract void triggerModelUpdate ();
+    public abstract void triggerModelUpdate();
 
-	public boolean triggerPreUpdate (ContainerRoot currentModel, ContainerRoot proposedModel) {
-		return true;
-	}
+    public boolean triggerPreUpdate(ContainerRoot currentModel, ContainerRoot proposedModel) {
+        return true;
+    }
 
-	public boolean triggerInitUpdate (ContainerRoot currentModel, ContainerRoot proposedModel) {
-		return true;
-	}
+    public boolean triggerInitUpdate(ContainerRoot currentModel, ContainerRoot proposedModel) {
+        return true;
+    }
 
-	public abstract void push (ContainerRoot model, String targetNodeName) throws Exception;
+    public abstract void push(ContainerRoot model, String targetNodeName) throws Exception;
 
-	public abstract ContainerRoot pull (String targetNodeName) throws Exception;
-
-	public KevoreeModelHandlerService getModelService () {
-		return null;
-	}
-
-	public void setModelService (KevoreeModelHandlerService ms) {
-
-	}
-
-	public HashMap<String, Object> getDictionary () {
-		return null;
-	} //OVERRIDE BY FACTORY
-
-	public String getNodeName () {
-		return null;
-	}
-
-	public String getName () {
-		return null;
-	}
-
-	public void setName (String name) {
-	}
-
-	private KevScriptEngineFactory kevScriptEngineFactory = null;
-
-	public KevScriptEngineFactory getKevScriptEngineFactory () {
-		return kevScriptEngineFactory;
-	}
-
-	public void setKevScriptEngineFactory (KevScriptEngineFactory kf) {
-		kevScriptEngineFactory = kf;
-	}
-
-	/**
-	 * Allow to find the corresponding element into the model
-	 * Be careful, this method use the KevoreeModelHandlerService#getLastModel but this method is locked in some cases
-	 *
-	 * @return the group corresponding to this
-	 */
-	public Group getModelElement () {
-		return KevoreeElementHelper.getGroupElement(this.getName(), this.getModelService().getLastModel()).get();
-	}
+    public abstract ContainerRoot pull(String targetNodeName) throws Exception;
 
 
-	private Bootstraper bootstrapService = null;
+    /**
+     * Allow to find the corresponding element into the model
+     * Be careful, this method use the KevoreeModelHandlerService#getLastModel but this method is locked in some cases
+     *
+     * @return the group corresponding to this
+     */
+    public Group getModelElement() {
+        return KevoreeElementHelper.getGroupElement(this.getName(), this.getModelService().getLastModel()).get();
+    }
 
-	public void setBootStrapperService (Bootstraper brs) {
-		bootstrapService = brs;
-	}
+    @Override
+    public boolean preUpdate(ContainerRoot currentModel, ContainerRoot proposedModel) {
+        return triggerPreUpdate(currentModel, proposedModel);
+    }
 
-	public Bootstraper getBootStrapperService () {
-		return bootstrapService;
-	}
+    @Override
+    public boolean initUpdate(ContainerRoot currentModel, ContainerRoot proposedModel) {
+        return triggerInitUpdate(currentModel, proposedModel);
+    }
 
-	public ModelListener getModelListener () {
-		return null;
-	}
+    @Override
+    public boolean afterLocalUpdate(ContainerRoot currentModel, ContainerRoot proposedModel) {
+        return true;
+    }
 
-
+    @Override
+    public void modelUpdated() {
+        triggerModelUpdate();
+    }
 }

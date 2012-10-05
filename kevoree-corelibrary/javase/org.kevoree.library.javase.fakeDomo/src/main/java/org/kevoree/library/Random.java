@@ -11,10 +11,7 @@ import java.io.IOException;
  * User: jed
  * Date: 09/11/11
  * Time: 14:59
- * To change this template use File | Settings | File Templates.
  */
-
-
 @DictionaryType({
 		@DictionaryAttribute(name = "refresh_speed", defaultValue = "2000", optional = true),
 		@DictionaryAttribute(name = "range_min", defaultValue = "0", optional = true),
@@ -24,7 +21,6 @@ import java.io.IOException;
 @Requires({
 		@RequiredPort(name = "out", type = PortType.MESSAGE, optional = true)
 })
-@GroupType
 @Library(name = "JavaSE")
 public class Random extends AbstractComponentType implements Runnable {
 

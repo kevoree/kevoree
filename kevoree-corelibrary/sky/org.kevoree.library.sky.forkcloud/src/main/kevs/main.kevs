@@ -1,0 +1,7 @@
+
+merge "mvn:org.kevoree.corelibrary.sky/org.kevoree.library.sky.forkcloud/{kevoree.version}"
+merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.nanohttp/{kevoree.version}"
+
+addNode node0 : ForkCloudNode { coreLogLevel="DEBUG",logLevel="DEBUG" }
+addNode worker1 : ForkedJavaNode
+addChild worker1@node0

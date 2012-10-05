@@ -25,6 +25,8 @@
         <module>../org.kevoree.library.sky.minicloud</module>
         <module>../org.kevoree.library.sky.jails</module>
         <module>../org.kevoree.library.sky.provider</module>
+
+        <module>../org.kevoree.library.sky.forkcloud</module>
       <!--  <module>../org.kevoree.library.sky.logging</module>  -->
     </modules>
 

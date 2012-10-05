@@ -11,79 +11,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.kevoree.framework
 
-/**
- * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * 	http://www.gnu.org/licenses/lgpl-3.0.txt
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-import message.{StopMessage, StartMessage, UpdateDictionaryMessage}
 import reflect.BeanProperty
 import java.util.HashMap
 import org.slf4j.LoggerFactory
-import org.kevoree.api.service.core.handler.{ModelListener, KevoreeModelHandlerService}
+import org.kevoree.api.service.core.handler.{ModelListener}
 import org.kevoree.ContainerRoot
 
-
-trait KevoreeGroup extends AbstractGroupType with KInstance /*with KevoreeActor*/ with ModelListener {
+trait KevoreeGroup extends AbstractGroupType with KInstance with ModelListener {
 
   val kevoree_internal_logger = LoggerFactory.getLogger(this.getClass)
-
-
-  def modelUpdated() {
-    triggerModelUpdate()
-  }
-
-  def preUpdate(currentModel : ContainerRoot, proposedModel : ContainerRoot) : Boolean = triggerPreUpdate(currentModel, proposedModel)
-
-  def initUpdate(currentModel : ContainerRoot, proposedModel : ContainerRoot) : Boolean = triggerInitUpdate(currentModel, proposedModel)
-
-  def afterLocalUpdate(currentModel : ContainerRoot, proposedModel : ContainerRoot) = true
-
-  override def getModelListener : ModelListener = this
-
-
-  var mhandler: ModelHandlerServiceProxy = new ModelHandlerServiceProxy();
-
-  override def getModelService: KevoreeModelHandlerService = {
-    mhandler
-  }
-  override def setModelService(s : KevoreeModelHandlerService) {
-    mhandler.setProxy(s);
-  }
-
-  var nodeName: String = ""
 
   @BeanProperty
   var isStarted: Boolean = false
 
-  override def getNodeName = nodeName
-
-  //@BeanProperty
-  var name: String = ""
-
-  override def getName = name
-
-  override def setName(n: String) {
-    name = n
-  }
-
-  def setNodeName(nn : String){
-    nodeName = nn
-  }
-
-  var dictionary: HashMap[String, Object] = new HashMap[String, Object]()
-
-  override def getDictionary: HashMap[String, Object] = dictionary
+  override def getDictionary: HashMap[String, Object]
 
   def startGroup {}
 
@@ -95,10 +39,10 @@ trait KevoreeGroup extends AbstractGroupType with KInstance /*with KevoreeActor*
   def kInstanceStart(tmodel : ContainerRoot) : Boolean = {
     if (!isStarted){
       try {
-        mhandler.registerModelListener(this)
-        getModelService().asInstanceOf[ModelHandlerServiceProxy].setTempModel(tmodel)
+        getModelService.registerModelListener(this)
+        getModelService.asInstanceOf[ModelHandlerServiceProxy].setTempModel(tmodel)
         startGroup
-        getModelService().asInstanceOf[ModelHandlerServiceProxy].unsetTempModel()
+        getModelService.asInstanceOf[ModelHandlerServiceProxy].unsetTempModel()
         isStarted = true
         true
       } catch {
@@ -115,11 +59,10 @@ trait KevoreeGroup extends AbstractGroupType with KInstance /*with KevoreeActor*
   def kInstanceStop(tmodel : ContainerRoot) : Boolean = {
     if (isStarted){
       try {
-        mhandler.unregisterModelListener(this)
-
-        getModelService().asInstanceOf[ModelHandlerServiceProxy].setTempModel(tmodel)
+        getModelService.unregisterModelListener(this)
+        getModelService.asInstanceOf[ModelHandlerServiceProxy].setTempModel(tmodel)
         stopGroup
-        getModelService().asInstanceOf[ModelHandlerServiceProxy].unsetTempModel()
+        getModelService.asInstanceOf[ModelHandlerServiceProxy].unsetTempModel()
         isStarted = false
         true
       } catch {
@@ -136,14 +79,14 @@ trait KevoreeGroup extends AbstractGroupType with KInstance /*with KevoreeActor*
   def kUpdateDictionary(d : java.util.HashMap[String,AnyRef], cmodel: ContainerRoot) : java.util.HashMap[String,AnyRef] = {
     try {
       import scala.collection.JavaConversions._
-      val previousDictionary = dictionary.clone()
+      val previousDictionary = getDictionary.clone()
       d.keySet.foreach {
-        v => dictionary.put(v, d.get(v))
+        v => getDictionary.put(v, d.get(v))
       }
       if (isStarted) {
-        getModelService().asInstanceOf[ModelHandlerServiceProxy].setTempModel(cmodel)
+        getModelService.asInstanceOf[ModelHandlerServiceProxy].setTempModel(cmodel)
         updateGroup
-        getModelService().asInstanceOf[ModelHandlerServiceProxy].unsetTempModel()
+        getModelService.asInstanceOf[ModelHandlerServiceProxy].unsetTempModel()
       }
       previousDictionary.asInstanceOf[java.util.HashMap[String,AnyRef]]
     } catch {
@@ -153,74 +96,5 @@ trait KevoreeGroup extends AbstractGroupType with KInstance /*with KevoreeActor*
       }
     }
   }
-
-
-
-
-     /*
-  override def internal_process(msgg: Any) = msgg match {
-    case UpdateDictionaryMessage(d,cmodel) => {
-      try {
-        import scala.collection.JavaConversions._
-        val previousDictionary = dictionary.clone()
-        d.keySet.foreach {
-          v => dictionary.put(v, d.get(v))
-        }
-        if (isStarted) {
-          getModelService().asInstanceOf[ModelHandlerServiceProxy].setTempModel(cmodel)
-          updateGroup
-          getModelService().asInstanceOf[ModelHandlerServiceProxy].unsetTempModel()
-        }
-        reply(previousDictionary)
-      } catch {
-        case _@e => {
-          kevoree_internal_logger.error("Kevoree Group Instance Update Error !", e)
-          reply(false)
-        }
-      }
-    }
-    case StartMessage(cmodel) if (!isStarted) => {
-      try {
-        mhandler.registerModelListener(this)
-
-        getModelService().asInstanceOf[ModelHandlerServiceProxy].setTempModel(cmodel)
-        startGroup
-        getModelService().asInstanceOf[ModelHandlerServiceProxy].unsetTempModel()
-
-        isStarted = true
-        reply(true)
-      } catch {
-        case _@e => {
-          kevoree_internal_logger.error("Kevoree Group Instance Start Error !", e)
-          reply(false)
-        }
-      }
-    }
-    case StopMessage(cmodel) if (isStarted) => {
-      try {
-        mhandler.unregisterModelListener(this)
-
-        getModelService().asInstanceOf[ModelHandlerServiceProxy].setTempModel(cmodel)
-        stopGroup
-        getModelService().asInstanceOf[ModelHandlerServiceProxy].unsetTempModel()
-        isStarted = false
-        reply(true)
-      } catch {
-        case _@e => {
-          kevoree_internal_logger.error("Kevoree Group Instance Stop Error !", e)
-          reply(false)
-        }
-      }
-    }
-    case StopMessage(_) if (!isStarted) =>  {
-      reply(false)
-    }
-    case StartMessage(_) if (isStarted) =>  {
-      reply(false)
-    }
-
-    case _@msg => println("Uncatch message group " + name)
-  } */
-
 
 }

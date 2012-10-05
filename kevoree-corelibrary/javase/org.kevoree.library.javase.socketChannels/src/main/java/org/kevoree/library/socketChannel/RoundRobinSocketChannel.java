@@ -14,8 +14,8 @@ import scala.util.Random;
  * Date: 09/11/11
  * Time: 12:09
  */
-@Library(name = "JavaSE", names = {"Android"})
-@ChannelTypeFragment
+//@Library(name = "JavaSE", names = {"Android"})
+//@ChannelTypeFragment
 public class RoundRobinSocketChannel extends SocketChannel {
 
     private static String currentUUIdMessage = "";
@@ -34,7 +34,7 @@ public class RoundRobinSocketChannel extends SocketChannel {
         if(rang < getBindedPorts().size()){
 
 			// remove the future receiver to be sure that the receiver accepts the message
-			message.getPassedNodes().remove(((ContainerNode) ((ComponentInstance) getBindedPorts().get(rang).getModelElement().eContainer()).eContainer()).getName());
+			//message.getPassedNodes().remove(((ContainerNode) ((ComponentInstance) getBindedPorts().get(rang).getModelElement().eContainer()).eContainer()).getName());
 
 			forward(getBindedPorts().get(rang),message);
         } else {

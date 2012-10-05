@@ -41,65 +41,10 @@ import java.util.HashMap;
 /**
  * @author ffouquet
  */
-public class AbstractComponentType implements ComponentType {
-
-    private KevScriptEngineFactory kevScriptEngineFactory = null;
-
-    public KevScriptEngineFactory getKevScriptEngineFactory() {
-        return kevScriptEngineFactory;
-    }
-
-    public void setKevScriptEngineFactory(KevScriptEngineFactory kf) {
-        kevScriptEngineFactory = kf;
-    }
-
-
-    private ModelHandlerServiceProxy modelServiceProxy = new ModelHandlerServiceProxy();
-
-    public void setModelService(KevoreeModelHandlerService ms) {
-        modelServiceProxy.setProxy(ms);
-    }
-
-    public KevoreeModelHandlerService getModelService() {
-        return modelServiceProxy;
-    }
+public class AbstractComponentType extends AbstractTypeDefinition implements ComponentType {
 
     private HashMap<String, Object> hostedPorts = new HashMap<String, Object>();
     private HashMap<String, Object> neededPorts = new HashMap<String, Object>();
-    private HashMap<String, Object> dictionary = new HashMap<String, Object>();
-
-    @Override
-    public HashMap<String, Object> getDictionary() {
-        return this.dictionary;
-    }
-
-    private String nodeName = "";
-
-    @Override
-    public String getNodeName() {
-        return nodeName;
-    }
-
-    public void setNodeName(String pnodeName) {
-        nodeName = pnodeName;
-    }
-
-    private String name = "";
-
-    @Override
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String pname) {
-        name = pname;
-    }
-
-
-    @Override
-    public void setDictionary(HashMap<String, Object> dictionary) {
-        this.dictionary = dictionary;
-    }
 
     @Override
     public void setHostedPorts(HashMap<String, Object> ports) {
@@ -152,7 +97,7 @@ public class AbstractComponentType implements ComponentType {
             port = this.getNeededPorts().get(portName);
         }
         if (port != null) {
-            KevoreeRequiredPort rport = (KevoreeRequiredPort) port;
+            KevoreePort rport = (KevoreePort) port;
             return rport.getIsBound();
         } else {
             return false;
@@ -169,15 +114,7 @@ public class AbstractComponentType implements ComponentType {
     }
 
 
-    private Bootstraper bootstrapService = null;
 
-    public void setBootStrapperService(Bootstraper brs) {
-        bootstrapService = brs;
-    }
-
-    public Bootstraper getBootStrapperService() {
-        return bootstrapService;
-    }
 
 
 }
