@@ -29,7 +29,7 @@ import osgi.{KevoreeChannelFragmentActivator, KevoreeComponentActivator}
 
 case class AddBindingCommand(c: MBinding, nodeName: String) extends PrimitiveCommand {
 
-  var logger = LoggerFactory.getLogger(this.getClass);
+  var logger = LoggerFactory.getLogger(this.getClass)
 
   def execute(): Boolean = {
 
@@ -76,7 +76,7 @@ case class AddBindingCommand(c: MBinding, nodeName: String) extends PrimitiveCom
                 val newbindmsg = new FragmentBindMessage
                 newbindmsg.setChannelName(c.getHub.getName)
                 newbindmsg.setProxy(channelProxy)
-                (portfound !? newbindmsg).asInstanceOf[Boolean]
+                portfound.asInstanceOf[KevoreePort].processAdminMsg(newbindmsg)
               }
             }
           }

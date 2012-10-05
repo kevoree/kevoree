@@ -77,7 +77,7 @@ case class RemoveBindingCommand(c : MBinding,nodeName:String) extends PrimitiveC
                   case Some(channelProxy) => {
                       val newbindmsg = new FragmentUnbindMessage
                       newbindmsg.setChannelName(c.getHub.getName)
-                      (portfound !? newbindmsg).asInstanceOf[Boolean]
+                      portfound.asInstanceOf[KevoreePort].processAdminMsg(newbindmsg)
                     }
                 }
               }
