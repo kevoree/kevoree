@@ -91,8 +91,8 @@ abstract class KevoreeGroupActivator extends KevoreeInstanceActivator {
     }
 
     //STOP PROXY MODEL
-    if(groupActor.getModelService().isInstanceOf[ModelHandlerServiceProxy]){
-      groupActor.getModelService().asInstanceOf[ModelHandlerServiceProxy].stopProxy()
+    if(groupActor.getModelService.isInstanceOf[ModelHandlerServiceProxy]){
+      groupActor.getModelService.asInstanceOf[ModelHandlerServiceProxy].stopProxy()
     }
 
 

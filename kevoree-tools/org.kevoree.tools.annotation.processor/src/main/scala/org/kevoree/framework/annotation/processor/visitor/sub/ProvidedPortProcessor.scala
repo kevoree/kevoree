@@ -39,6 +39,7 @@ import javax.lang.model.element.TypeElement
 import javax.annotation.processing.ProcessingEnvironment
 import javax.tools.Diagnostic.Kind
 import org.kevoree.annotation.MessageTypes
+import org.kevoree.tools.annotation.generator.ThreadingMapping
 
 
 trait ProvidedPortProcessor {
@@ -147,6 +148,8 @@ trait ProvidedPortProcessor {
             env.getMessager.printMessage(Kind.ERROR, "Port name duplicated in " + componentType.getName + " Scope => " + providedPort.name)
           }
         }
+
+        ThreadingMapping.getMappings.put(Tuple2(componentType.getName,providedPort.name),providedPort.theadStrategy())
 
     }
   }

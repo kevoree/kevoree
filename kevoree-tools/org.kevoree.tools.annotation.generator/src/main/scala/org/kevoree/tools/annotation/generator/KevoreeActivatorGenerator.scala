@@ -54,9 +54,6 @@ object KevoreeActivatorGenerator {
         /* IMPORTED PACKAGE */
         writer.append("import java.util.Hashtable\n")
         writer.append("import org.kevoree.api.service.core.handler.KevoreeModelHandlerService\n")
-       // writer.append("import org.osgi.framework.BundleActivator\n")
-       // writer.append("import org.osgi.framework.BundleContext\n")
-       // writer.append("import org.osgi.util.tracker.ServiceTracker\n")
         writer.append("import org.kevoree.framework.KevoreeActor\n")
         writer.append("import org.kevoree.framework.KevoreeComponent\n")
         writer.append("import org.kevoree.framework._\n")
@@ -67,7 +64,7 @@ object KevoreeActivatorGenerator {
         writer.append("}\n")
 
         /* END CONTENT GENERATION */
-        writer.close();
+        writer.close()
     }
 
     /* STEP CHANNEL TYPE DEFINITION */
@@ -83,9 +80,6 @@ object KevoreeActivatorGenerator {
         /* IMPORTED PACKAGE */
         writer.append("import java.util.Hashtable\n")
         writer.append("import org.kevoree.api.service.core.handler.KevoreeModelHandlerService\n")
-      //  writer.append("import org.osgi.framework.BundleActivator\n")
-     //   writer.append("import org.osgi.framework.BundleContext\n")
-       // writer.append("import org.osgi.util.tracker.ServiceTracker\n")
         writer.append("import org.kevoree.framework.KevoreeActor\n")
         writer.append("import org.kevoree.framework._\n")
         writer.append("import org.kevoree.framework.KevoreeComponent\n")
@@ -94,7 +88,7 @@ object KevoreeActivatorGenerator {
         writer.append("def callFactory() : org.kevoree.framework.KevoreeChannelFragment = { " + factoryName + ".createChannel() } ")
         writer.append("}\n")
         /* END CONTENT GENERATION */
-        writer.close();
+        writer.close()
 
     }
 
