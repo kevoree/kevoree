@@ -11,55 +11,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.gnu.org/licenses/lgpl-3.0.txt
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-/**
- * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.gnu.org/licenses/lgpl-3.0.txt
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-package org.kevoree.framework
 
-/**
- * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.gnu.org/licenses/lgpl-3.0.txt
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+package org.kevoree.framework
 
 import java.util.HashMap
 import org.kevoree.framework.message._
 import org.slf4j.LoggerFactory
-import actors.Actor
 import org.kevoree.ContainerRoot
 
-trait ChannelTypeFragment extends KevoreeChannelFragment with ChannelFragment {
+trait ChannelTypeFragment extends KevoreeChannelFragment with ChannelFragment with KevoreeActor {
 
   val kevoree_internal_logger = LoggerFactory.getLogger(this.getClass)
 
@@ -195,71 +155,14 @@ trait ChannelTypeFragment extends KevoreeChannelFragment with ChannelFragment {
   }
 
 
+  def startC {
+    start()
+  }
+  def stopC {
+    stop
+  }
+
   override def internal_process(msgg: Any) = msgg match {
-    /*
-        case UpdateDictionaryMessage(d, cmodel) => {
-          try {
-            import scala.collection.JavaConversions._
-            val previousDictionary = dictionary.clone()
-            d.keySet.foreach {
-              v =>
-                dictionary.put(v, d.get(v))
-            }
-            if (ct_started) {
-              getModelService.asInstanceOf[ModelHandlerServiceProxy].setTempModel(cmodel)
-              updateChannelFragment
-              getModelService.asInstanceOf[ModelHandlerServiceProxy].unsetTempModel()
-            }
-            reply(previousDictionary)
-          } catch {
-            case _@e => {
-              kevoree_internal_logger.error("Kevoree Channel Instance Update Error !", e)
-              reply(false)
-            }
-          }
-        }  */
-    /*
-   case StartMessage(cmodel) if (!ct_started) => {
-     try {
-       getModelService.asInstanceOf[ModelHandlerServiceProxy].setTempModel(cmodel)
-       startChannelFragment
-       getModelService.asInstanceOf[ModelHandlerServiceProxy].unsetTempModel()
-       local_queue.start()
-       ct_started = true
-       reply(true)
-     } catch {
-       case _@e => {
-         kevoree_internal_logger.error("Kevoree Channel Instance Start Error !", e)
-         reply(false)
-       }
-     }
-   } */
-    /*
-    case StopMessage(cmodel) if (ct_started) => {
-      try {
-        //TODO CHECK QUEUE SIZE AND SAVE STATE
-        local_queue.forceStop
-
-        getModelService.asInstanceOf[ModelHandlerServiceProxy].setTempModel(cmodel)
-        stopChannelFragment
-        getModelService.asInstanceOf[ModelHandlerServiceProxy].unsetTempModel()
-
-        ct_started = false
-        reply(true)
-      } catch {
-        case _@e => {
-          kevoree_internal_logger.error("Kevoree Channel Instance Stop Error !", e)
-          reply(false)
-        }
-      }
-    }
-    case StopMessage(_) if (!ct_started) => {
-      reply(false)
-    }
-    case StartMessage(_) if (ct_started) => {
-      reply(false)
-    }*/
-
     case msg: FragmentBindMessage => {
 
       kevoree_internal_logger.debug("FragmentBindMessage=>" + createPortKey(msg))
@@ -267,7 +170,7 @@ trait ChannelTypeFragment extends KevoreeChannelFragment with ChannelFragment {
       val proxy = new KevoreeChannelFragmentProxy(msg.getFragmentNodeName, msg.getChannelName)
       proxy.setChannelSender(sender)
       fragementBinded += ((createPortKey(msg), proxy))
-      proxy.start()
+      proxy.startC
       local_queue ! CALL_UPDATE()
       reply(true)
     }
@@ -275,7 +178,7 @@ trait ChannelTypeFragment extends KevoreeChannelFragment with ChannelFragment {
       kevoree_internal_logger.debug("Try to unbind channel " + getName)
       val actorPort: Option[KevoreeChannelFragment] = fragementBinded.get(createPortKey(msg))
       if (actorPort.isDefined) {
-        actorPort.get.stop
+        actorPort.get.stopC
         fragementBinded = fragementBinded.filter(p => p._1 != (createPortKey(msg)))
         local_queue ! CALL_UPDATE()
         reply(true)

@@ -29,7 +29,7 @@ package org.kevoree.framework.osgi
 
 import java.util.Hashtable
 import org.kevoree.framework.message.StopMessage
-import org.kevoree.framework.{KInstance, ModelHandlerServiceProxy, KevoreeGroup, Constants}
+import org.kevoree.framework._
 
 abstract class KevoreeGroupActivator extends KevoreeInstanceActivator {
 
@@ -72,10 +72,10 @@ abstract class KevoreeGroupActivator extends KevoreeInstanceActivator {
       groupActor.getDictionary.put(Constants.KEVOREE_PROPERTY_OSGI_BUNDLE, bundleContext.getBundle)
     }*/
 
-    groupActor.asInstanceOf[KevoreeGroup].setName(instanceName)
-    groupActor.asInstanceOf[KevoreeGroup].setNodeName(nodeName)
-    groupActor.asInstanceOf[KevoreeGroup].setModelService(modelHandlerService)
-    groupActor.asInstanceOf[KevoreeGroup].setKevScriptEngineFactory(kevScriptEngine)
+    groupActor.asInstanceOf[AbstractTypeDefinition].setName(instanceName)
+    groupActor.asInstanceOf[AbstractTypeDefinition].setNodeName(nodeName)
+    groupActor.asInstanceOf[AbstractTypeDefinition].setModelService(modelHandlerService)
+    groupActor.asInstanceOf[AbstractTypeDefinition].setKevScriptEngineFactory(kevScriptEngine)
     //channelActor.startChannelFragment //DEPRECATED DONE BY DEPLOY
   }
 
