@@ -34,6 +34,7 @@ import org.kevoree.framework.KevoreeGeneratorHelper
 import javax.annotation.processing.Filer
 import javax.tools.{StandardLocation}
 import org.kevoree.{TypedElement, ContainerRoot, MessagePortType, PortTypeRef, ComponentType => KevoreeComponentType, ServicePortType}
+import org.kevoree.annotation.ThreadStrategy
 
 object KevoreeRequiredPortGenerator {
 
@@ -49,7 +50,20 @@ object KevoreeRequiredPortGenerator {
     writer.append("import org.kevoree.framework.port._\n")
     writer.append("import scala.{Unit=>void}\n")
     writer.append("import "+KevoreeGeneratorHelper.getTypeDefinitionBasePackage(ct)+"._\n")
-    writer.append("class "+portName+"(component : "+ct.getName+") extends "+ref.getRef.getName+" with KevoreeRequiredPort {\n")
+
+
+    ThreadingMapping.getMappings.get(Tuple2(ct.getName,ref.getName)) match {
+      case ThreadStrategy.THREAD_QUEUE => {
+        writer.append("class "+portName+"(component : "+ct.getName+") extends "+ref.getRef.getName+" with KevoreeRequiredThreadPort {\n")
+      }
+      case ThreadStrategy.SHARED_THREAD => {
+        writer.append("class "+portName+"(component : "+ct.getName+") extends "+ref.getRef.getName+" with KevoreeRequiredExecutorPort {\n")
+      }
+      case _ => {
+        writer.append("class "+portName+"(component : "+ct.getName+") extends "+ref.getRef.getName+" with KevoreeRequiredPort {\n")
+      }
+    }
+
 
     writer.append("def getName : String = \""+ref.getName+"\"\n")
     writer.append("def getComponentName : String = component.getName \n")

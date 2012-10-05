@@ -56,7 +56,7 @@ abstract class KevoreeComponent(c: AbstractComponentType) /*extends KevoreeActor
           hp =>
             val port = hp._2.asInstanceOf[KevoreePort]
             if (port.isInPause) {
-              port.resume
+              port.resume()
             }
         }
         ct_started = true
@@ -120,88 +120,6 @@ abstract class KevoreeComponent(c: AbstractComponentType) /*extends KevoreeActor
       }
     }
   }
-
-
-     /*
-  override def internal_process(msg: Any) = msg match {
-
-    case UpdateDictionaryMessage(d,cmodel) => {
-      try {
-        import scala.collection.JavaConversions._
-        val previousDictionary = c.getDictionary.clone()
-        d.keySet.foreach {
-          v => getKevoreeComponentType.getDictionary.put(v, d.get(v))
-        }
-        if (ct_started) {
-          getKevoreeComponentType.getModelService.asInstanceOf[ModelHandlerServiceProxy].setTempModel(cmodel)
-          updateComponent
-          getKevoreeComponentType.getModelService.asInstanceOf[ModelHandlerServiceProxy].unsetTempModel()
-        }
-        reply(previousDictionary)
-      } catch {
-        case _@e => {
-          kevoree_internal_logger.error("Kevoree Component Instance Update Error !", e)
-          reply(false)
-        }
-      }
-    }
-
-    case StartMessage(cmodel) if (!ct_started) => {
-      try {
-        getKevoreeComponentType.getModelService.asInstanceOf[ModelHandlerServiceProxy].setTempModel(cmodel)
-        startComponent
-        getKevoreeComponentType.getModelService.asInstanceOf[ModelHandlerServiceProxy].unsetTempModel()
-        import scala.collection.JavaConversions._
-        getKevoreeComponentType.getHostedPorts.foreach {
-          hp =>
-            val port = hp._2.asInstanceOf[KevoreePort]
-            if (port.isInPause) {
-              port.resume
-            }
-        }
-        ct_started = true
-        reply(true)
-      } catch {
-        case _@e => {
-          kevoree_internal_logger.error("Kevoree Component Instance Start Error !", e)
-          ct_started = true //WE PUT COMPONENT IN START STATE TO ALLOW ROLLBACK TO UNSET VARIABLE
-          reply(false)
-        }
-      }
-    }
-    case StopMessage(cmodel) if (ct_started) => {
-      try {
-        import scala.collection.JavaConversions._
-        getKevoreeComponentType.getHostedPorts.foreach {
-          hp =>
-            val port = hp._2.asInstanceOf[KevoreePort]
-            if (!port.isInPause) {
-              port.pause
-            }
-        }
-
-        getKevoreeComponentType.getModelService.asInstanceOf[ModelHandlerServiceProxy].setTempModel(cmodel)
-        stopComponent
-        getKevoreeComponentType.getModelService.asInstanceOf[ModelHandlerServiceProxy].unsetTempModel()
-
-        ct_started = false
-        reply(true)
-      } catch {
-        case _@e => {
-          kevoree_internal_logger.error("Kevoree Component Instance Stop Error !", e)
-          //e.printStackTrace()
-          reply(false)
-        }
-      }
-    }
-    case StopMessage(_) if (!ct_started) => {
-      reply(false)
-    }
-    case StartMessage(_) if (ct_started) => {
-      reply(false)
-    }
-    case _@umsg => println("unknow message " + umsg + "-sender-" + sender.getClass.getName)
-  }     */
 
   def startComponent
 

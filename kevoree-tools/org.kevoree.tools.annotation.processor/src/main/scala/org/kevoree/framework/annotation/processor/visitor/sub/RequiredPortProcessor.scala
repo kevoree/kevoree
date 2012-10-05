@@ -39,6 +39,7 @@ import javax.lang.model.element.TypeElement
 import javax.annotation.processing.ProcessingEnvironment
 import javax.tools.Diagnostic.Kind
 import org.kevoree.annotation.MessageTypes
+import org.kevoree.tools.annotation.generator.ThreadingMapping
 
 trait RequiredPortProcessor {
   def processRequiredPort(componentType: ComponentType, classdef: TypeElement, env: ProcessingEnvironment) = {
@@ -138,6 +139,8 @@ trait RequiredPortProcessor {
             env.getMessager.printMessage(Kind.ERROR, "Port name duplicated in " + componentType.getName + " Scope => " + requiredPort.name)
           }
         }
+        ThreadingMapping.getMappings.put(Tuple2(componentType.getName,requiredPort.name),requiredPort.theadStrategy())
+
     }
   }
 }

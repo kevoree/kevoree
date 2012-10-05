@@ -45,7 +45,7 @@ object KevoreeAdaptationPrimitiveTypeGenerator {
 
     val wrapper = filer.createResource(StandardLocation.SOURCE_OUTPUT, "", new String(nodeTypePackage.replace(".", "/") + "/" + nt.getName + "_aspect.scala"));
     val writer = wrapper.openWriter()
-    writer.append("package " + nodeTypePackage + "\n");
+    writer.append("package " + nodeTypePackage + "\n")
 
     writer append ("trait " + nt.getName + "_aspect {\n")
 

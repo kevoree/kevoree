@@ -31,9 +31,7 @@ package org.kevoree.framework.osgi
  * and open the template in the editor.
  */
 
-import java.util.Hashtable
 import org.kevoree.framework._
-import message.StopMessage
 
 
 /* ABSTRACT COMPONENT */
@@ -71,50 +69,16 @@ abstract class KevoreeComponentActivator extends KevoreeInstanceActivator {
     componentActor.getKevoreeComponentType.asInstanceOf[AbstractComponentType].setKevScriptEngineFactory(kevScriptEngine)
 
 
-
-    /* Start actor */
-
-
-    //componentActor.start()
-
-
-
-
-
-    /* Expose component in OSGI */
-
-    /*
-    if (bundleContext != null) {
-      val props = new Hashtable[String, String]()
-      props.put(Constants.KEVOREE_NODE_NAME, nodeName)
-      props.put(Constants.KEVOREE_INSTANCE_NAME, componentName)
-      services = services ++ List(bundleContext.registerService(classOf[KevoreeComponent].getName, componentActor, props))
-    }*/
-
-    /* Expose component provided port in OSGI */
-
     import scala.collection.JavaConversions._
-
-/*
-    if (bundleContext != null) {
-      componentActor.getKevoreeComponentType.getHostedPorts.foreach {
-        hpref =>
-          val portProps = new Hashtable[String, String]()
-          portProps.put(Constants.KEVOREE_NODE_NAME, nodeName)
-          portProps.put(Constants.KEVOREE_INSTANCE_NAME, componentName)
-          portProps.put(Constants.KEVOREE_PORT_NAME, hpref._1)
-          services = services ++ List(bundleContext.registerService(classOf[KevoreePort].getName, hpref._2, portProps))
-      }
-    }*/
     /* START NEEDPORT ACTOR */
     componentActor.getKevoreeComponentType.getNeededPorts.foreach {
-      np => np._2.asInstanceOf[KevoreePort].start()
+      np => np._2.asInstanceOf[Port].startPort()
     }
 
     /* START HOSTED ACTOR */
     componentActor.getKevoreeComponentType.getHostedPorts.foreach {
       hp =>
-        hp._2.asInstanceOf[KevoreePort].start()
+        hp._2.asInstanceOf[Port].startPort()
       //hp._2.asInstanceOf[KevoreePort].pause
     }
 
@@ -142,11 +106,11 @@ abstract class KevoreeComponentActivator extends KevoreeInstanceActivator {
     /* STOP NEEDED PORT */
     import scala.collection.JavaConversions._
     componentActor.getKevoreeComponentType.getNeededPorts.foreach {
-      np => np._2.asInstanceOf[KevoreePort].stop
+      np => np._2.asInstanceOf[Port].stop()
     }
     /* STOP NEEDED PORT */
     componentActor.getKevoreeComponentType.getHostedPorts.foreach {
-      hp => hp._2.asInstanceOf[KevoreePort].stop
+      hp => hp._2.asInstanceOf[Port].stop()
     }
     //componentActor.stop
     componentActor = null

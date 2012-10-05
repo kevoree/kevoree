@@ -26,24 +26,28 @@ package org.kevoree.framework.port
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 
 import org.kevoree.framework.KevoreeActor
 import org.kevoree.framework.KevoreePort
 import org.kevoree.framework.message.FragmentBindMessage
 import org.kevoree.framework.message.FragmentUnbindMessage
 
-trait KevoreeRequiredPort extends KevoreePort {
+trait KevoreeRequiredPort extends KevoreeActor with KevoreePort {
 
   def getName : String
   def getInOut : Boolean
   var delegate : Option[KevoreeActor] = None
 
+  def startPort(){
+    start()
+  }
+
+  def processAdminMsg(o: Any): Boolean = {
+    (this !? o).asInstanceOf[Boolean]
+  }
+
   private var isBound : Boolean = false
-  def getIsBound = isBound
+  override def getIsBound = isBound
 
   private def bind(bindmsg : FragmentBindMessage) ={
     delegate = Some(bindmsg.getProxy)

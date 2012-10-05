@@ -26,15 +26,15 @@ package org.kevoree.framework
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 
-trait KevoreePort extends KevoreeActor with Port {
+trait KevoreePort extends Port {
 
-  def getModelElement : org.kevoree.Port = {
-    null
+  def !(o : Any)
+  def !?(o: Any) : Any
+
+  def processAdminMsg(o : Any) : Boolean
+  def getIsBound : Boolean = {
+     false
   }
 
 }

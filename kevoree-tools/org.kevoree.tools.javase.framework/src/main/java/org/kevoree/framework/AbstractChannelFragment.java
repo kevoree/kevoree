@@ -41,17 +41,7 @@ import java.util.HashMap;
 /**
  * @author ffouquet
  */
-public abstract class AbstractChannelFragment implements ChannelFragment {
-
-    private ModelHandlerServiceProxy modelServiceProxy = new ModelHandlerServiceProxy();
-
-    public void setModelService(KevoreeModelHandlerService ms) {
-        modelServiceProxy.setProxy(ms);
-    }
-
-    public KevoreeModelHandlerService getModelService() {
-        return modelServiceProxy;
-    }
+public abstract class AbstractChannelFragment extends AbstractTypeDefinition implements ChannelFragment {
 
     public java.util.List<KevoreePort> getBindedPorts() {
         return null;
@@ -61,36 +51,17 @@ public abstract class AbstractChannelFragment implements ChannelFragment {
         return null;
     } //OVERRIDE BY FACTORY
 
-    public Object forward(KevoreeActor delegate, Message msg) {
+    public Object forward(KevoreePort delegate, Message msg) {
         return null;
     } //OVERRIDE BY FACTORY
 
-    public HashMap<String, Object> getDictionary() {
+    public Object forward(KevoreeChannelFragment delegate, Message msg) {
         return null;
     } //OVERRIDE BY FACTORY
-
-    public String getNodeName() {
-        return null;
-    }
-
-    public String getName() {
-        return null;
-    }
 
     public Object remoteDispatch(Message msg) {
         return null;
     }
-
-    private KevScriptEngineFactory kevScriptEngineFactory = null;
-
-    public KevScriptEngineFactory getKevScriptEngineFactory() {
-        return kevScriptEngineFactory;
-    }
-
-    public void setKevScriptEngineFactory(KevScriptEngineFactory kf) {
-        kevScriptEngineFactory = kf;
-    }
-
 
     /**
      * Allow to find the corresponding element into the model
@@ -100,16 +71,5 @@ public abstract class AbstractChannelFragment implements ChannelFragment {
     public Channel getModelElement() {
         return KevoreeElementHelper.getChannelElement(this.getName(), this.getModelService().getLastModel()).get();
     }
-
-    private Bootstraper bootstrapService = null;
-
-    public void setBootStrapperService(Bootstraper brs) {
-        bootstrapService = brs;
-    }
-
-    public Bootstraper getBootStrapperService() {
-        return bootstrapService;
-    }
-
 
 }

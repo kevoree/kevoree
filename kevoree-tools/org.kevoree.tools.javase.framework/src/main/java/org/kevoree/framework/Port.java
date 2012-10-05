@@ -40,8 +40,25 @@ public interface Port {
 
     public String getComponentName();
 
+    //public org.kevoree.Port getModelElement();
+
     /*
         public String getComponentName();
         public String getNodeName();
     */
+
+
+    public void stop();
+
+    public void forceStop();
+
+    public void resume();
+
+    public void pause();
+
+    public void startPort();
+
+    public boolean isInPause();
+
+
 }

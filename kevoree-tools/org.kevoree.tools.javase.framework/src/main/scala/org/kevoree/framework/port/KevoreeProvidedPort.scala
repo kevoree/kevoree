@@ -18,7 +18,7 @@ package org.kevoree.framework.port
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * 	http://www.gnu.org/licenses/lgpl-3.0.txt
+ * http://www.gnu.org/licenses/lgpl-3.0.txt
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -31,9 +31,17 @@ package org.kevoree.framework.port
  * and open the template in the editor.
  */
 
-import org.kevoree.framework.KevoreePort
+import org.kevoree.framework.{KevoreeActor, KevoreePort}
 
-trait KevoreeProvidedPort extends KevoreePort {
+trait KevoreeProvidedPort extends KevoreeActor with KevoreePort {
+
+  def startPort() {
+    start()
+  }
+
+  def processAdminMsg(o: Any): Boolean = {
+    (this !? o).asInstanceOf[Boolean]
+  }
 
   /* Provided Port paused by default */
 
@@ -62,8 +70,6 @@ trait KevoreeProvidedPort extends KevoreePort {
         }
       }
     }
-
-
   }
 
 

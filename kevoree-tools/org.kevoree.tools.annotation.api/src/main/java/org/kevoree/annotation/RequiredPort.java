@@ -31,7 +31,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 /**
- *
  * @author ffouquet
  */
 @Retention(RetentionPolicy.CLASS)
@@ -44,15 +43,16 @@ public @interface RequiredPort {
     String name();
 
     Class className() default Void.class;
-    
+
     String messageType() default "untyped";
 
     boolean optional() default false;
 
     boolean needCheckDependency() default false; // replace noDependency
-            /*
-    boolean async() default false;  */
-    
-    
-    
+    /*
+boolean async() default false;  */
+
+    ThreadStrategy theadStrategy() default ThreadStrategy.SCALA_ACTOR;
+
+
 }

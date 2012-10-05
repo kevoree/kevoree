@@ -49,7 +49,8 @@ public interface ChannelFragment {
 
     public java.util.List<KevoreeChannelFragment> getOtherFragments();
 
-    public Object forward(KevoreeActor delegate, Message msg);
+    public Object forward(KevoreePort delegate, Message msg);
+    public Object forward(KevoreeChannelFragment delegate, Message msg);
 
     public HashMap<String, Object> getDictionary();
 

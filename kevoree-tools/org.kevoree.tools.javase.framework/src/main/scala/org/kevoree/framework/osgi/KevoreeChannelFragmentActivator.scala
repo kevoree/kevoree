@@ -43,8 +43,6 @@ abstract class KevoreeChannelFragmentActivator extends KevoreeInstanceActivator 
   var instanceName: String = ""
   var channelActor: KevoreeChannelFragment = null
 
-
-
   def setNodeName(n: String) {
     nodeName = n
   }
@@ -66,10 +64,10 @@ abstract class KevoreeChannelFragmentActivator extends KevoreeInstanceActivator 
     if (bundleContext != null) {
       channelActor.getDictionary.put(Constants.KEVOREE_PROPERTY_OSGI_BUNDLE, bundleContext.getBundle)
     }*/
-    channelActor.asInstanceOf[ChannelTypeFragment].setName(instanceName)
-    channelActor.asInstanceOf[ChannelTypeFragment].setNodeName(nodeName)
-    channelActor.asInstanceOf[AbstractChannelFragment].setModelService(modelHandlerService)
-    channelActor.asInstanceOf[AbstractChannelFragment].setKevScriptEngineFactory(kevScriptEngine)
+    channelActor.asInstanceOf[AbstractTypeDefinition].setName(instanceName)
+    channelActor.asInstanceOf[AbstractTypeDefinition].setNodeName(nodeName)
+    channelActor.asInstanceOf[AbstractTypeDefinition].setModelService(modelHandlerService)
+    channelActor.asInstanceOf[AbstractTypeDefinition].setKevScriptEngineFactory(kevScriptEngine)
   }
 
   def stop() {
