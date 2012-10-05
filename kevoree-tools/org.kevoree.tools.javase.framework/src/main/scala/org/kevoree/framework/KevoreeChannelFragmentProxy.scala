@@ -18,7 +18,7 @@ package org.kevoree.framework
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * 	http://www.gnu.org/licenses/lgpl-3.0.txt
+ * http://www.gnu.org/licenses/lgpl-3.0.txt
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -36,29 +36,40 @@ import java.util.HashMap
 import org.kevoree.ContainerRoot
 import reflect.BeanProperty
 
-class KevoreeChannelFragmentProxy(remoteNodeName : String,remoteChannelName : String) extends KevoreeChannelFragment {
+class KevoreeChannelFragmentProxy(remoteNodeName: String, remoteChannelName: String) extends KevoreeChannelFragment with KevoreeActor {
 
   def getNodeName = remoteNodeName
+
   def getName = remoteChannelName
-  def getDictionary : java.util.HashMap[String,Object] = null
+
+  def getDictionary: java.util.HashMap[String, Object] = null
 
   def startChannelFragment = {}
+
   def stopChannelFragment = {}
 
-  def internal_process(msg : Any) = msg match {
-    case msg : Message => msg.content match {
-        case mcm : MethodCallMessage => reply(channelSender.sendMessageToRemote(msg))
-        case _ => channelSender.sendMessageToRemote(msg)
+  def internal_process(msg: Any) = msg match {
+    case msg: Message => msg.content match {
+      case mcm: MethodCallMessage => reply(channelSender.sendMessageToRemote(msg))
+      case _ => channelSender.sendMessageToRemote(msg)
     }
     case _ => println("WTF !!")
   }
 
   @BeanProperty
-  var channelSender : ChannelFragmentSender = null
+  var channelSender: ChannelFragmentSender = null
 
   def kInstanceStart(tmodel: ContainerRoot) = false
 
   def kInstanceStop(tmodel: ContainerRoot) = false
 
   def kUpdateDictionary(d: HashMap[String, AnyRef], cmodel: ContainerRoot) = null
+
+  def startC {
+    start()
+  }
+
+  def stopC {
+    stop
+  }
 }

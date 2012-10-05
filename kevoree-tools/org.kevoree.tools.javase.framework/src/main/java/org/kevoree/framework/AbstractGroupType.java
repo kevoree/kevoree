@@ -82,4 +82,9 @@ public abstract class AbstractGroupType extends AbstractTypeDefinition implement
     public void modelUpdated() {
         triggerModelUpdate();
     }
+
+    public ModelListener getModelListener(){
+        return this;
+    }
+
 }

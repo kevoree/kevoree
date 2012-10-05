@@ -27,12 +27,18 @@ package org.kevoree.framework
  * limitations under the License.
  */
 
-trait KevoreeChannelFragment extends KevoreeActor with KInstance {
+trait KevoreeChannelFragment extends /*KevoreeActor with*/ KInstance {
   def getName : String
   def getNodeName : String
 
   def startChannelFragment
   def stopChannelFragment
   def getDictionary : java.util.HashMap[String,Object]
+
+  def !(o:Any)
+  def !?(o:Any):Any
+
+  def startC
+  def stopC
 
 }

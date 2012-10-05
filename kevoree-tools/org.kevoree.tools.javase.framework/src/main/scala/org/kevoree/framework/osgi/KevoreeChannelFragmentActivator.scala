@@ -53,7 +53,7 @@ abstract class KevoreeChannelFragmentActivator extends KevoreeInstanceActivator 
 
   def start() {
     channelActor = callFactory()
-    channelActor.start()
+    channelActor.startC
     /* Expose component in OSGI */
     val props = new Hashtable[String, String]()
     props.put(Constants.KEVOREE_NODE_NAME, nodeName)
@@ -81,7 +81,7 @@ abstract class KevoreeChannelFragmentActivator extends KevoreeInstanceActivator 
     if (channelActor.asInstanceOf[AbstractChannelFragment].isInstanceOf[ModelHandlerServiceProxy]) {
       channelActor.asInstanceOf[AbstractChannelFragment].asInstanceOf[ModelHandlerServiceProxy].stopProxy()
     }
-    channelActor.stop
+    channelActor.stopC
     channelActor = null
   }
 

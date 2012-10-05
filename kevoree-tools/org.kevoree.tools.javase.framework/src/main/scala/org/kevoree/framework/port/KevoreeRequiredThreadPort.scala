@@ -27,8 +27,7 @@ package org.kevoree.framework.port
  * limitations under the License.
  */
 
-import org.kevoree.framework.KevoreeActor
-import org.kevoree.framework.KevoreePort
+import org.kevoree.framework.{KevoreeChannelFragment, KevoreeActor, KevoreePort}
 import org.kevoree.framework.message.FragmentBindMessage
 import org.kevoree.framework.message.FragmentUnbindMessage
 
@@ -46,7 +45,7 @@ trait KevoreeRequiredThreadPort extends KevoreePort with Runnable {
 
   private var isPaused = true
 
-  var delegate: Option[KevoreeActor] = None
+  var delegate: Option[KevoreeChannelFragment] = None
   val queue = new java.util.concurrent.ConcurrentLinkedQueue[Any]()
 
   def isInPause = isPaused
