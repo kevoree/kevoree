@@ -23,9 +23,10 @@ import java.net._
 import org.kevoree.framework.{KevoreePropertyHelper, KevoreeXmiHelper}
 import org.kevoree.{TypeDefinition, ContainerNode, ContainerRoot, KevoreeFactory}
 import org.kevoree.tools.modelsync.FakeBootstraperService
-import javax.swing.{ImageIcon, AbstractButton}
+import javax.swing.{JOptionPane, ImageIcon, AbstractButton}
 import java.awt.Desktop
 import scala.Some
+import org.kevoree.core.basechecker.RootChecker
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -47,6 +48,16 @@ class MiniKloudForm(editor: KevoreeEditor, button: AbstractButton) {
   val iconLoading: ImageIcon = new ImageIcon(url)
 
   def startMiniCloud(): Boolean = {
+
+    var checker = new RootChecker
+    if (!checker.check(editor.getPanel.getKernel.getModelHandler.getActualModel).isEmpty) {
+      logger.error("Check found errors, please correct your model")
+      JOptionPane.showMessageDialog(null,"Check found errors, please correct your model")
+      return false
+
+    }
+
+
     if (thread == null) {
       thread = new Thread() {
         override def run() {
@@ -190,7 +201,7 @@ class MiniKloudForm(editor: KevoreeEditor, button: AbstractButton) {
         kevEngine.addVariable("kevoree.version", KevoreeFactory.getVersion)
         kevEngine.addVariable("minicloudNodeName", minicloudName)
         kevEngine.append("merge 'mvn:org.kevoree.corelibrary.model/org.kevoree.library.model.sky/{kevoree.version}'")
-        kevEngine.append("addNode {minicloudNodeName}: MiniCloudNode {role='host', port='7000'}")
+        kevEngine.append("addNode {minicloudNodeName}: MiniCloudNode {}")
 
         // add all JavaSE (or inherited) user nodes as child of the minicloud node
         nodes.foreach {

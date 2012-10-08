@@ -62,7 +62,10 @@ class CheckCurrentModel extends Command {
       notificationSeamless ! "checkNeeded"
   }
 
+
+
   def effectiveCheck() {
+    val previousNoError = objectInError.isEmpty
     objectInError.foreach(o => o.setState(ErrorHighlightableElement.STATE.NO_ERROR))
     objectInError = List()
     ErrorPanel.clear()
@@ -89,9 +92,12 @@ class CheckCurrentModel extends Command {
             }
         }
     })
+    if (previousNoError && !result.isEmpty){
+      kernel.getModelPanel.repaint()
+      kernel.getModelPanel.revalidate()
+    }
 
-    kernel.getModelPanel.repaint()
-    kernel.getModelPanel.revalidate()
+
   }
 
 

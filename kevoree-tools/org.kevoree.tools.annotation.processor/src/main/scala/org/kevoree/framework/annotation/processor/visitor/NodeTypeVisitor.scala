@@ -18,7 +18,7 @@ package org.kevoree.framework.annotation.processor.visitor
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * 	http://www.gnu.org/licenses/lgpl-3.0.txt
+ * http://www.gnu.org/licenses/lgpl-3.0.txt
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -37,7 +37,7 @@ import javax.lang.model.util.SimpleElementVisitor6
 import org.kevoree.NodeType
 import javax.lang.model.element.{ExecutableElement, ElementKind, TypeElement, Element}
 
-case class NodeTypeVisitor (nodeType: NodeType, env: ProcessingEnvironment, rootVisitor: KevoreeAnnotationProcessor)
+case class NodeTypeVisitor(nodeType: NodeType, env: ProcessingEnvironment, rootVisitor: KevoreeAnnotationProcessor)
   extends SimpleElementVisitor6[Any, Element]
   with AdaptationPrimitiveProcessor
   with DeployUnitProcessor
@@ -48,14 +48,14 @@ case class NodeTypeVisitor (nodeType: NodeType, env: ProcessingEnvironment, root
   with TypeDefinitionProcessor {
 
 
-  def commonProcess (classdef: TypeElement) {
+  def commonProcess(classdef: TypeElement) {
     //SUB PROCESSOR
     import scala.collection.JavaConversions._
     classdef.getInterfaces.foreach {
       it =>
         it match {
           case dt: javax.lang.model.`type`.DeclaredType => {
-            var annotFragment : Any = dt.asElement().getAnnotation(classOf[org.kevoree.annotation.NodeFragment])
+            var annotFragment: Any = dt.asElement().getAnnotation(classOf[org.kevoree.annotation.NodeFragment])
             if (annotFragment != null) {
               dt.asElement().accept(this, dt.asElement())
             }
@@ -87,13 +87,13 @@ case class NodeTypeVisitor (nodeType: NodeType, env: ProcessingEnvironment, root
 
   }
 
-  override def visitType (p1: TypeElement, p2: Element): Any = {
+  override def visitType(p1: TypeElement, p2: Element): Any = {
     p1.getSuperclass match {
       case dt: javax.lang.model.`type`.DeclaredType => {
         var an: Any = dt.asElement().getAnnotation(classOf[org.kevoree.annotation.NodeFragment])
         if (an != null) {
           dt.asElement().accept(this, dt.asElement())
-//          defineAsSuperType(nodeType, dt.asElement().getSimpleName.toString, classOf[NodeFragment])
+          //          defineAsSuperType(nodeType, dt.asElement().getSimpleName.toString, classOf[NodeFragment])
         }
         an = dt.asElement().getAnnotation(classOf[org.kevoree.annotation.NodeType])
         if (an != null) {

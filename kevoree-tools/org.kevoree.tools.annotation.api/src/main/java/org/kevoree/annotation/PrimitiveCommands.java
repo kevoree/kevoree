@@ -26,11 +26,19 @@
  */
 package org.kevoree.annotation;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
  * Date: 21/09/11
  * Time: 09:23
  */
+
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.TYPE})
 public @interface PrimitiveCommands {
 	 PrimitiveCommand[] value();
      String[] values() default {};
