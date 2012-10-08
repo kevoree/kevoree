@@ -631,6 +631,10 @@
         <element xmi:type="ecore:EAttribute" href="kevoree.ecore#//TypeDefinition/bean"/>
         <layoutConstraint xmi:type="notation:Location" xmi:id="_3HihwNiIEeCEZrILMa00RQ"/>
       </children>
+      <children xmi:type="notation:Node" xmi:id="_ZJQ3EBF_EeKBRMQc3sto5Q" type="2001">
+        <element xmi:type="ecore:EAttribute" href="kevoree.ecore#//TypeDefinition/nature"/>
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_ZJReIBF_EeKBRMQc3sto5Q"/>
+      </children>
       <styles xmi:type="notation:DrawerStyle" xmi:id="_3Hh6sdiIEeCEZrILMa00RQ"/>
       <styles xmi:type="notation:SortingStyle" xmi:id="_3Hh6stiIEeCEZrILMa00RQ"/>
       <styles xmi:type="notation:FilteringStyle" xmi:id="_3Hh6s9iIEeCEZrILMa00RQ"/>
