@@ -101,6 +101,14 @@ public class KevoreeMenuBar extends JMenuBar {
         saveImage.addActionListener(new CommandActionListener(cmdImage));
         file.add(saveImage);
 
+
+        JMenuItem saveSVG = new JMenuItem("SaveAsSVG");
+        ExportModelSVGImage cmdImageSVG = new ExportModelSVGImage();
+        cmdImageSVG.setKernel(kernel);
+        saveSVG.addActionListener(new CommandActionListener(cmdImageSVG));
+        file.add(saveSVG);
+
+
         JMenuItem saveKCS = new JMenuItem("SaveAsKevScript");
         SaveAsKevScriptCommandUI cmdSaveKCS = new SaveAsKevScriptCommandUI();
         cmdSaveKCS.setKernel(kernel);
