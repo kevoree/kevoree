@@ -1,5 +1,6 @@
 package org.kevoree.library.sky.api.nodeType;
 
+import org.kevoree.annotation.NodeFragment;
 import org.kevoree.annotation.PrimitiveCommands;
 
 /**
@@ -10,7 +11,7 @@ import org.kevoree.annotation.PrimitiveCommands;
  * @author Erwan Daubert
  * @version 1.0
  */
-
+@NodeFragment
 @PrimitiveCommands(value = {}, values = {HostNode.REMOVE_NODE, HostNode.ADD_NODE})
 public interface HostNode {
 	public static final String REMOVE_NODE = "RemoveNode";

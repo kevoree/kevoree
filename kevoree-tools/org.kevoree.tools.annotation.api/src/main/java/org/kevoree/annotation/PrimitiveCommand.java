@@ -14,11 +14,15 @@
 
 package org.kevoree.annotation;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
  * Date: 21/09/11
  * Time: 09:23
  */
+@Retention(RetentionPolicy.RUNTIME)
 public @interface PrimitiveCommand {
 	java.lang.String name();
     long maxTime() default 10000; //set default

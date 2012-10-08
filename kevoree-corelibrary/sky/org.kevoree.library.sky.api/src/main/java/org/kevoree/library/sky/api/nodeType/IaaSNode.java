@@ -20,4 +20,5 @@ import org.kevoree.annotation.NodeFragment;
 })
 @NodeFragment
 public interface IaaSNode extends CloudNode,HostNode {
+
 }
