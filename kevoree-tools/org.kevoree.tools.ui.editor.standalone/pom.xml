@@ -93,6 +93,7 @@
                         <option>-keep class japa.parser.ast.** { *; }</option>
                         <option>-keep class com.sun.jna.** { *; }</option>
                         <option>-keep class com.ning.** { *; }</option>
+                        <option>-keep class org.apache.batik.** {*;}</option>
                         <option>-keepattributes *Annotation*</option>
                         <option>-keepattributes **</option>
                     </options>
@@ -234,6 +235,54 @@
                                 <groupId>net.java.dev.jna</groupId>
                                 <artifactId>jna</artifactId>
                             </inclusion>
+
+
+                            <inclusion>
+                                <groupId>batik</groupId>
+                                <artifactId>batik-gvt</artifactId>
+                            </inclusion>
+                            <inclusion>
+                                <groupId>batik</groupId>
+                                <artifactId>batik-svg-dom</artifactId>
+                            </inclusion>
+                            <inclusion>
+                                <groupId>batik</groupId>
+                                <artifactId>batik-svggen</artifactId>
+                            </inclusion>
+                            <inclusion>
+                                <groupId>batik</groupId>
+                                <artifactId>batik-dom</artifactId>
+                            </inclusion>
+                            <inclusion>
+                                <groupId>batik</groupId>
+                                <artifactId>batik-parser</artifactId>
+                            </inclusion>
+                            <inclusion>
+                                <groupId>batik</groupId>
+                                <artifactId>batik-css</artifactId>
+                            </inclusion>
+                            <inclusion>
+                                <groupId>batik</groupId>
+                                <artifactId>batik-xml</artifactId>
+                            </inclusion>
+                            <inclusion>
+                                <groupId>batik</groupId>
+                                <artifactId>batik-awt-util</artifactId>
+                            </inclusion>
+                            <inclusion>
+                                <groupId>batik</groupId>
+                                <artifactId>batik-util</artifactId>
+                            </inclusion>
+                            <inclusion>
+                                <groupId>batik</groupId>
+                                <artifactId>batik-gui-util</artifactId>
+                            </inclusion>
+                            <inclusion>
+                                <groupId>batik</groupId>
+                                <artifactId>batik-ext</artifactId>
+                            </inclusion>
+
+
                         </inclusions>
                     </assembly>
                     <libs>
