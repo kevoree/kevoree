@@ -100,13 +100,19 @@
             <version>3.4.1-hack</version>
         </dependency>
 
-
         <!-- AETHER EMBEDDED REPO API -->
         <dependency>
             <groupId>org.kevoree.tools</groupId>
             <artifactId>org.kevoree.tools.aether.framework.pack</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>batik</groupId>
+            <artifactId>batik-svggen</artifactId>
+            <version>1.6-1</version>
+        </dependency>
+
     </dependencies>
 
     <repositories>
