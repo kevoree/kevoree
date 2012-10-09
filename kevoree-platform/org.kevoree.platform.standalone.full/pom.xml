@@ -25,7 +25,7 @@
         </dependency>
         <dependency>
             <groupId>org.kevoree.tools</groupId>
-            <artifactId>org.kevoree.tools.ui.editor.standalone</artifactId>
+            <artifactId>org.kevoree.tools.ui.editor</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
         <dependency>
@@ -67,9 +67,7 @@
                             <filters>
                                 <filter>
                                     <includes>
-                                        <include>org.slf4j:*</include>
-                                        <include>ch.qos.logback:*</include>
-                                        <include>org.kevoree</include>
+                                        <include>*:*</include>
                                     </includes>
                                 </filter>
                                 <filter>
