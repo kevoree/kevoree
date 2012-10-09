@@ -5,3 +5,8 @@ merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.nanohttp/{k
 addNode node0 : MiniCloudNode { coreLogLevel="DEBUG",logLevel="DEBUG" }
 addGroup sync : NanoRestGroup
 addToGroup sync node0
+
+
+
+addNode worker1 : JavaSENode
+addChild worker1@node0

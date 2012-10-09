@@ -110,9 +110,15 @@ class MiniCloudKevoreeNodeRunner (nodeName: String, iaasNode: AbstractHostNode) 
       val java: String = getJava
       val tempFile = File.createTempFile("bootModel" + nodeName, ".kev")
       KevoreeXmiHelper.save(tempFile.getAbsolutePath, childBootStrapModel)
+
+
+      if(System.getProperty("java.class.path").contains("plexus-classworlds")){
+        return false//maven use case
+      }
+
       //TRY THE CURRENT CLASSLOADER
       try {
-        classOf[Object].getClassLoader.loadClass("org.kevoree.platform.standalone.App")
+        Thread.currentThread().getContextClassLoader.loadClass("org.kevoree.platform.standalone.App")
       } catch {
         case e: Throwable => {
           logger.info("Can't find bootstrap class {}", "org.kevoree.platform.standalone.App")

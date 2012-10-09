@@ -14,7 +14,7 @@
     </parent>
 
     <properties>
-        <kotlin.version>0.1.2580</kotlin.version>
+        <kotlin.version>0.1.3395</kotlin.version>
     </properties>
 
     <dependencies>
@@ -74,7 +74,7 @@
     <pluginRepositories>
         <pluginRepository>
             <id>jetbrains-release</id>
-            <url>http://repository.jetbrains.com/releases</url>
+            <url>http://repository.jetbrains.com/all</url>
             <releases>
                 <enabled>true</enabled>
             </releases>
@@ -84,7 +84,7 @@
         </pluginRepository>
         <pluginRepository>
             <id>jetbrains-snapshots</id>
-            <url>http://repository.jetbrains.com/snapshots</url>
+            <url>http://repository.jetbrains.com/all</url>
             <releases>
                 <enabled>false</enabled>
             </releases>

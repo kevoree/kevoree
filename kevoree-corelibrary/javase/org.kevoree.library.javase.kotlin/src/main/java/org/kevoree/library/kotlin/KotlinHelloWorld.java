@@ -16,19 +16,18 @@ import org.kevoree.framework.AbstractComponentType;
 public class KotlinHelloWorld extends AbstractComponentType {
 
     public static String JavaHelloString = "Hello from Java!";
-
+    /*
     public static String getHelloStringFromKotlin() {
         return namespace.KotlinHelloString;
     }
 
     private KotlinHelper khel = new KotlinHelper();
-
+   */
     @Start
     public void start() {
-        System.out.println(getHelloStringFromKotlin());
-        System.out.println(namespace.getHelloStringFromJava());
-        System.out.println(khel.sayHello("wtf"));
-        khel.sayHelloToAll();
+
+        MyTest t = new MyTest();
+        t.titi("RR");
 
     }
 

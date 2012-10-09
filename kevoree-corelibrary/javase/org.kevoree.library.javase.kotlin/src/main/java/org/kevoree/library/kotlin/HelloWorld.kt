@@ -1,11 +1,11 @@
 package org.kevoree.library.kotlin
 
 
-
+    /*
 public val KotlinHelloString : String = "Hello from Kotlin!!!"
 
 public fun getHelloStringFromJava() : String {
-    return KotlinHelloWorld.JavaHelloString.sure();
+    return KotlinHelloWorld.JavaHelloString!!;
 }
 
 class KotlinHelper() {
@@ -23,3 +23,4 @@ class KotlinHelper() {
 
 }
 
+     */
