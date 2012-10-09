@@ -5,6 +5,7 @@ import org.slf4j.{LoggerFactory, Logger}
 import org.kevoree.{ContainerNode, KevoreeFactory, TypeDefinition, ContainerRoot}
 import java.io._
 import util.matching.Regex
+import java.util.concurrent.Callable
 
 /**
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
@@ -50,11 +51,10 @@ abstract class KevoreeNodeRunner (var nodeName: String) {
 
   /**
    * configure the ssh server
-   * @param model
    * @param path
    * @param ip
    */
-  def configureSSHServer (model: ContainerRoot, path: String, ip: String) {
+  def configureSSHServer (path: String, ip: String) {
     if (ip != null && ip != "") {
       logger.debug("configure ssh server ip")
       try {

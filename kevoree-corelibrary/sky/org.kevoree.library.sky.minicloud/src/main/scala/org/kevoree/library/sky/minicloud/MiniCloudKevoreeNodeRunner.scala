@@ -19,10 +19,11 @@ import org.slf4j.LoggerFactory
 import java.io._
 import java.lang.Thread
 import util.matching.Regex
-import org.kevoree.library.sky.api.nodeType.{AbstractHostNode, AbstractIaaSNode, IaaSNode}
+import org.kevoree.library.sky.api.nodeType.AbstractHostNode
 import org.kevoree.{ContainerRoot, KevoreeFactory}
 import org.kevoree.framework.KevoreeXmiHelper
 import org.kevoree.library.sky.api.{ProcessStreamFileLogger, KevoreeNodeRunner}
+import java.util.concurrent.Callable
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -39,6 +40,7 @@ class MiniCloudKevoreeNodeRunner (nodeName: String, iaasNode: AbstractHostNode) 
   val backupRegex = new Regex(".*<saveRes(.*)/>.*")
   val deployRegex = new Regex(".*<deployRes(.*)/>.*")
   val errorRegex = new Regex(".*Error while update.*")
+  val starting = true
 
   case class DeployResult (uuid: String)
 
@@ -78,10 +80,6 @@ class MiniCloudKevoreeNodeRunner (nodeName: String, iaasNode: AbstractHostNode) 
       case e: IOException => {
         logger.error("Unexpected error while trying to start " + nodeName, e)
         false
-      }
-      case e: IllegalThreadStateException => {
-        logger.debug("platform " + nodeName + " is started")
-        true
       }
     }
   }
@@ -150,6 +148,7 @@ class MiniCloudKevoreeNodeRunner (nodeName: String, iaasNode: AbstractHostNode) 
         // FIXME java memory properties must define as Node properties
         nodePlatformProcess = Runtime.getRuntime
           .exec(Array[String](java, "-Dnode.headless=true", "-Dnode.bootstrap=" + tempFile.getAbsolutePath, "-Dnode.name=" + nodeName, "-jar", platformFile.getAbsolutePath))
+
         configureLogFile()
 
         nodePlatformProcess.exitValue

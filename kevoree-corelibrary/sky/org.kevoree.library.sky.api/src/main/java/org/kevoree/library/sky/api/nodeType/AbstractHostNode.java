@@ -45,7 +45,7 @@ public abstract class AbstractHostNode extends JavaSENode implements HostNode {
 	public void startNode () {
 		super.startNode();
 		nodeManager = new KevoreeNodeManager(this);
-		nodeManager.start();
+//		nodeManager.start();
 		// start HTTP Server
 		server = new IaaSHTTPServer(this);
 		String port = (String) this.getDictionary().get("port");

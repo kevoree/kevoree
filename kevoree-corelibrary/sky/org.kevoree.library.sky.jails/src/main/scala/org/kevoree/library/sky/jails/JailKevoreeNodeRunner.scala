@@ -72,7 +72,7 @@ class JailKevoreeNodeRunner (nodeName: String, iaasNode: JailNode) extends Kevor
             // specify limitation on jail such as CPU, RAM
             if (JailsConstraintsConfiguration.applyJailConstraints(iaasModel, nodeName)) {
               // configure ssh access
-              configureSSHServer(iaasModel, jailPath, newIp)
+              configureSSHServer(jailPath, newIp)
               // launch the jail
               if (processExecutor.startJail(nodeName)) {
                 logger.debug("{} started", nodeName)
