@@ -57,13 +57,14 @@ import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.painter.CompoundPainter;
 import org.jdesktop.swingx.painter.ImagePainter;
 import org.jdesktop.swingx.painter.MattePainter;
+import org.kevoree.tools.ui.framework.BufferedElement;
 import org.kevoree.tools.ui.framework.listener.DragDropLayout;
 import org.kevoree.tools.ui.framework.listener.InstanceDragSourceListener;
 
 /**
  * @author ffouquet
  */
-public class ModelPanel extends JLayeredPane {
+public class ModelPanel extends JLayeredPane implements BufferedElement {
 
     // private JLayeredPane layeredPane;
     private BindingPanel bindingPanel;
@@ -200,5 +201,14 @@ public class ModelPanel extends JLayeredPane {
     public void clear() {
         bindingPanel.clear();
         nodePanel.removeAll();
+    }
+
+    @Override
+    public void clearBuffer() {
+        for(Component c : getComponents()){
+            if(c instanceof BufferedElement){
+                ((BufferedElement)c).clearBuffer();
+            }
+        }
     }
 }

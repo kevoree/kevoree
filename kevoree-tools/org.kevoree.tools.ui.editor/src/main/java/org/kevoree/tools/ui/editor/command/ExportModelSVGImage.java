@@ -27,29 +27,48 @@
 package org.kevoree.tools.ui.editor.command;
 
 import org.apache.batik.dom.GenericDOMImplementation;
+import org.apache.batik.dom.svg.SAXSVGDocumentFactory;
+import org.apache.batik.dom.util.SAXDocumentFactory;
+import org.apache.batik.svggen.SVGGeneratorContext;
 import org.apache.batik.svggen.SVGGraphics2D;
+import org.apache.batik.util.XMLResourceDescriptor;
 import org.kevoree.tools.ui.editor.KevoreeUIKernel;
 import org.kevoree.tools.ui.editor.UIEventHandler;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
+import org.w3c.dom.svg.SVGDocument;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * User: ffouquet
  * Date: 15/06/11
  * Time: 23:16
  */
-public class ExportModelSVGImage implements Command {
+public class ExportModelSVGImage implements Command, Runnable {
     public void setKernel(KevoreeUIKernel kernel) {
         this.kernel = kernel;
     }
+
+    public ExportModelSVGImage() {
+    }
+
+    private File selectedFile = null;
+
+    public ExportModelSVGImage(KevoreeUIKernel k ,File f) {
+        selectedFile = f;
+        kernel = k ;
+    }
+
 
     private KevoreeUIKernel kernel;
     private JFileChooser filechooser = new JFileChooser();
@@ -63,33 +82,41 @@ public class ExportModelSVGImage implements Command {
         defaultLocation = uri;
     }
 
+    private ExecutorService pool = Executors.newSingleThreadExecutor();
+
     @Override
     public void execute(Object p) {
-
-
         filechooser.showSaveDialog(kernel.getModelPanel());
-
         if (filechooser.getSelectedFile() != null) {
-            try {
-                UIEventHandler.info("generating SVG file !");
-                DOMImplementation domImpl = GenericDOMImplementation.getDOMImplementation();
-                String svgNS = "http://www.w3.org/2000/svg";
-                Document document = domImpl.createDocument(svgNS, "svg", null);
-                SVGGraphics2D g2 = new SVGGraphics2D(document);
-                kernel.getModelPanel().paintComponents(g2);
-                kernel.getModelPanel().paint(g2);
-                FileOutputStream fout = new FileOutputStream(filechooser.getSelectedFile());
-                Writer out = new OutputStreamWriter(fout, "UTF-8");
-                g2.stream(out, true);
-                fout.close();
-                UIEventHandler.info("SVGG generation complete !");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-
+            pool.submit(new ExportModelSVGImage(kernel,filechooser.getSelectedFile()));
         }
 
+    }
 
+    @Override
+    public void run() {
+        try {
+            UIEventHandler.info("generating SVG file !");
+            kernel.getModelPanel().clearBuffer();
+
+            DOMImplementation impl =
+                    GenericDOMImplementation.getDOMImplementation();
+            String svgNS = "http://www.w3.org/2000/svg";
+            Document myFactory = impl.createDocument(svgNS, "svg", null);
+
+            SVGGeneratorContext ctx = SVGGeneratorContext.createDefault(myFactory);
+            ctx.setEmbeddedFontsOn(true);
+            SVGGraphics2D g2 = new SVGGraphics2D(ctx,true);
+            kernel.getModelPanel().paintComponents(g2);
+            kernel.getModelPanel().paint(g2);
+            FileOutputStream fout = new FileOutputStream(selectedFile);
+            Writer out = new OutputStreamWriter(fout, "UTF-8");
+            g2.stream(out, true);
+            fout.close();
+            UIEventHandler.info("SVGG generation complete !");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
+
