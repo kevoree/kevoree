@@ -89,6 +89,8 @@ public class InstanceDragSourceListener extends DragSourceAdapter implements Dra
 
     }
 
+    private DropTargetListener tempDropTarget = null;
+
     @Override
     public void dragGestureRecognized(DragGestureEvent dge) {
         dragOriginEvent = dge;
@@ -107,6 +109,9 @@ public class InstanceDragSourceListener extends DragSourceAdapter implements Dra
                 System.out.println(ml);
             }
         }
+
+
+
     }
 
     @Override

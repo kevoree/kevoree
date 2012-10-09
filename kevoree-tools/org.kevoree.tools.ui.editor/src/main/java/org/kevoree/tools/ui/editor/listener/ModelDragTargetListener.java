@@ -92,7 +92,14 @@ public class ModelDragTargetListener extends DropTarget {
             return true;
         }
         if (o instanceof NodePanel) {
-            return true;
+            //Only if accepted if node was previously in another node
+            for (ContainerNode node : kernel.getModelHandler().getActualModel().getNodesForJ()) {
+                ContainerNode flightNode =(ContainerNode) kernel.getUifactory().getMapping().get(o);
+                if (node.getHostsForJ().contains(flightNode)) {
+                    return true;
+                }
+            }
+            return false;
         }
         //otherwise return false / no other type accepted
         return false;
