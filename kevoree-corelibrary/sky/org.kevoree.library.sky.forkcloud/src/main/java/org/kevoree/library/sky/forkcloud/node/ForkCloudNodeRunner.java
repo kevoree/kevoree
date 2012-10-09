@@ -1,10 +1,10 @@
 package org.kevoree.library.sky.forkcloud.node;
 
+import com.sun.akuma.Daemon;
+import com.sun.akuma.JavaVMArguments;
 import org.kevoree.ContainerRoot;
 import org.kevoree.framework.KevoreeXmiHelper;
 import org.kevoree.library.sky.api.KevoreeNodeRunner;
-import org.skife.gressil.Daemon;
-import org.skife.gressil.Status;
 
 import java.io.File;
 
@@ -18,42 +18,33 @@ public class ForkCloudNodeRunner extends KevoreeNodeRunner {
 
     private String childNodeName = "";
     private ForkCloudNode sourceNode = null;
-    Daemon daemon = null;
-    Status status = null;
+    private Daemon deamon = null;
 
-    public ForkCloudNodeRunner(String nodeName, ForkCloudNode origin) {
+    public ForkCloudNodeRunner(String nodeName, ForkCloudNode origin, Daemon d) {
         super(nodeName);
         childNodeName = nodeName;
         sourceNode = origin;
-        daemon = new Daemon();
+        deamon = d;
     }
 
     @Override
-    public boolean startNode(ContainerRoot iaasModel, ContainerRoot jailBootStrapModel) {
+    public synchronized boolean startNode(ContainerRoot iaasModel, ContainerRoot jailBootStrapModel) {
         try {
-            // argsChild.setSystemProperty("node.name", childNodeName);
+            JavaVMArguments argsChild = JavaVMArguments.current();
+            argsChild.setSystemProperty("node.name", childNodeName);
             File tempLoader = File.createTempFile("kevtemp", "bootmodel");
             tempLoader.deleteOnExit();
             KevoreeXmiHelper.save(tempLoader.getAbsolutePath(), iaasModel);
-            // argsChild.setSystemProperty("node.bootstrap", tempLoader.getAbsolutePath());
-
-            //PID = daemon.daemonize(argsChild);
-
-            status = daemon.forkish();
-
-            System.out.println("Yop");
-
-
+            argsChild.setSystemProperty("node.bootstrap",tempLoader.getAbsolutePath());
+            deamon.daemonize(argsChild);
             return true;
         } catch (Exception e) {
-            e.printStackTrace();
             return false;
         }
     }
 
     @Override
     public boolean stopNode() {
-        //daemon.kill(PID, 2);
-        return true;
+        return false;
     }
 }
