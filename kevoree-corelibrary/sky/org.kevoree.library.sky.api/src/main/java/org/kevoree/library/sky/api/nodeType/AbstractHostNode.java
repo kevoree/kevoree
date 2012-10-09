@@ -22,7 +22,8 @@ import org.slf4j.LoggerFactory;
  */
 
 @DictionaryType({
-		@DictionaryAttribute(name = "port", defaultValue = "7000", optional = false)
+		@DictionaryAttribute(name = "port", defaultValue = "7000", optional = false)      ,
+        @DictionaryAttribute(name = "role", defaultValue = "host/container", vals = {"host", "container", "host/container"}, optional = true)
 })
 @NodeFragment
 public abstract class AbstractHostNode extends JavaSENode implements HostNode {
