@@ -32,6 +32,7 @@ package org.kevoree.tools.ui.framework.elements;
 
 import org.jdesktop.swingx.graphics.GraphicsUtilities;
 import org.jdesktop.swingx.graphics.ShadowRenderer;
+import org.kevoree.tools.ui.framework.BufferedElement;
 import org.kevoree.tools.ui.framework.ErrorHighlightableElement;
 import org.kevoree.tools.ui.framework.SelectElement;
 import org.kevoree.tools.ui.framework.TitledElement;
@@ -43,7 +44,7 @@ import java.awt.image.BufferedImage;
 /**
  * @author ffouquet
  */
-public class ChannelPanel extends JPanel implements TitledElement, SelectElement, ErrorHighlightableElement {
+public class ChannelPanel extends JPanel implements TitledElement, SelectElement, ErrorHighlightableElement,BufferedElement {
 
     private String title = "";
 
@@ -197,5 +198,10 @@ public class ChannelPanel extends JPanel implements TitledElement, SelectElement
     @Override
     public Boolean getSelected() {
         return selected;
+    }
+
+    @Override
+    public void clearBuffer() {
+        bufferGhost = null;
     }
 }

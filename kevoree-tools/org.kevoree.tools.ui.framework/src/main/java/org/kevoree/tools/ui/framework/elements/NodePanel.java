@@ -34,6 +34,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.VolatileImage;
 
+import org.kevoree.tools.ui.framework.BufferedElement;
 import org.kevoree.tools.ui.framework.ErrorHighlightableElement;
 import org.kevoree.tools.ui.framework.RoundedTitledPanel;
 import org.kevoree.tools.ui.framework.SelectElement;
@@ -41,7 +42,7 @@ import org.kevoree.tools.ui.framework.SelectElement;
 /**
  * @author ffouquet
  */
-public class NodePanel extends RoundedTitledPanel implements SelectElement, ErrorHighlightableElement {
+public class NodePanel extends RoundedTitledPanel implements SelectElement, ErrorHighlightableElement,BufferedElement {
 
     private String nodeTypeName = "Node";
 
@@ -127,5 +128,16 @@ public Dimension getPreferredSize() {
     public void notifyUIChanged() {
         bufferGhost = null;
         super.notifyUIChanged();
+    }
+
+    @Override
+    public void clearBuffer() {
+        bufferGhost = null;
+        for(Component c : getComponents()){
+            if(c instanceof BufferedElement){
+                ((BufferedElement)c).clearBuffer();
+            }
+        }
+
     }
 }
