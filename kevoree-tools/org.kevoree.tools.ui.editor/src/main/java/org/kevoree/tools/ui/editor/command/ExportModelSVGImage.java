@@ -89,6 +89,7 @@ public class ExportModelSVGImage implements Command, Runnable {
         filechooser.showSaveDialog(kernel.getModelPanel());
         if (filechooser.getSelectedFile() != null) {
             pool.submit(new ExportModelSVGImage(kernel,filechooser.getSelectedFile()));
+            UIEventHandler.info("generating SVG file !");
         }
 
     }
@@ -96,14 +97,11 @@ public class ExportModelSVGImage implements Command, Runnable {
     @Override
     public void run() {
         try {
-            UIEventHandler.info("generating SVG file !");
             kernel.getModelPanel().clearBuffer();
-
             DOMImplementation impl =
                     GenericDOMImplementation.getDOMImplementation();
             String svgNS = "http://www.w3.org/2000/svg";
             Document myFactory = impl.createDocument(svgNS, "svg", null);
-
             SVGGeneratorContext ctx = SVGGeneratorContext.createDefault(myFactory);
             ctx.setEmbeddedFontsOn(true);
             SVGGraphics2D g2 = new SVGGraphics2D(ctx,true);
@@ -113,7 +111,7 @@ public class ExportModelSVGImage implements Command, Runnable {
             Writer out = new OutputStreamWriter(fout, "UTF-8");
             g2.stream(out, true);
             fout.close();
-            UIEventHandler.info("SVGG generation complete !");
+            UIEventHandler.info("SVG generation complete !");
         } catch (Exception e) {
             e.printStackTrace();
         }
