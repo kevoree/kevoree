@@ -1,10 +1,10 @@
 package org.kevoree.library.sky.forkcloud.node;
 
-import com.sun.akuma.Daemon;
-import com.sun.akuma.JavaVMArguments;
 import org.kevoree.ContainerRoot;
 import org.kevoree.framework.KevoreeXmiHelper;
 import org.kevoree.library.sky.api.KevoreeNodeRunner;
+import org.skife.gressil.Daemon;
+import org.skife.gressil.Status;
 
 import java.io.File;
 
@@ -18,33 +18,42 @@ public class ForkCloudNodeRunner extends KevoreeNodeRunner {
 
     private String childNodeName = "";
     private ForkCloudNode sourceNode = null;
-    private Daemon deamon = null;
+    Daemon daemon = null;
+    Status status = null;
 
-    public ForkCloudNodeRunner(String nodeName, ForkCloudNode origin, Daemon d) {
+    public ForkCloudNodeRunner(String nodeName, ForkCloudNode origin) {
         super(nodeName);
         childNodeName = nodeName;
         sourceNode = origin;
-        deamon = d;
+        daemon = new Daemon();
     }
 
     @Override
     public boolean startNode(ContainerRoot iaasModel, ContainerRoot jailBootStrapModel) {
         try {
-            JavaVMArguments argsChild = JavaVMArguments.current();
-            argsChild.setSystemProperty("node.name", childNodeName);
+            // argsChild.setSystemProperty("node.name", childNodeName);
             File tempLoader = File.createTempFile("kevtemp", "bootmodel");
             tempLoader.deleteOnExit();
             KevoreeXmiHelper.save(tempLoader.getAbsolutePath(), iaasModel);
-            argsChild.setSystemProperty("node.bootstrap",tempLoader.getAbsolutePath());
-            deamon.daemonize(argsChild);
+            // argsChild.setSystemProperty("node.bootstrap", tempLoader.getAbsolutePath());
+
+            //PID = daemon.daemonize(argsChild);
+
+            status = daemon.forkish();
+
+            System.out.println("Yop");
+
+
             return true;
         } catch (Exception e) {
+            e.printStackTrace();
             return false;
         }
     }
 
     @Override
     public boolean stopNode() {
-        return false;
+        //daemon.kill(PID, 2);
+        return true;
     }
 }
