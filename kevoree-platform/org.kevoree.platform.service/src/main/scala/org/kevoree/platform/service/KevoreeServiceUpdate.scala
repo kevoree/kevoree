@@ -45,6 +45,7 @@ import java.util.Random
 import java.io._
 import util.matching.Regex
 import java.net.URL
+import java.util
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -70,16 +71,24 @@ object KevoreeServiceUpdate extends App {
     arg => getFromModel = true; model = arg.substring("model=".size, arg.size)
   }
 
-  var repos = List[String]("http://maven.kevoree.org/snapshots/", "http://maven.kevoree.org/release/")
+  var repos = new util.ArrayList[String]()
+  repos.add("http://maven.kevoree.org/snapshots/")
+  repos.add("http://maven.kevoree.org/release/")
+
+
   if (getFromModel) {
     try {
       // look if its a file, a http url or a mvn url
       if (model.startsWith("mvn:")) {
         val splittedUrl = model.substring("mvn:".length).split("/")
         if (splittedUrl(2) == "RELEASE") {
-          repos = List[String]("http://maven.kevoree.org/release/")
+          //repos = List[String]("http://maven.kevoree.org/release/")
           splittedUrl(2) = "LATEST"
         }
+
+
+
+
         val modelJarFile = AetherUtil.resolveMavenArtifact(splittedUrl(1), splittedUrl(0), splittedUrl(2), repos)
         val jar: JarFile = new JarFile(modelJarFile)
         val entry: JarEntry = jar.getJarEntry("KEV-INF/lib.kev")
@@ -99,10 +108,7 @@ object KevoreeServiceUpdate extends App {
       case _@e => e.printStackTrace(); println("Unable to get model")
     }
 
-
-
-    val jarFile: File = AetherUtil
-      .resolveMavenArtifact("org.kevoree.platform.standalone", "org.kevoree.platform", version, repos)
+    val jarFile: File = AetherUtil.resolveMavenArtifact("org.kevoree.platform.standalone", "org.kevoree.platform", version, repos)
 
     if (jarFile.exists) {
       val p = Runtime.getRuntime.exec(Array[String]("cp", jarFile.getAbsolutePath, defaultLocation))

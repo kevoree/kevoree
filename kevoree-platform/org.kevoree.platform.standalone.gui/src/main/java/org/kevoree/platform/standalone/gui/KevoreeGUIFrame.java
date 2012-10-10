@@ -215,6 +215,16 @@ public class KevoreeGUIFrame extends JFrame {
                         }
                     }
                 }
+
+                @Override
+                public void preRollback(ContainerRoot currentModel, ContainerRoot proposedModel) {
+
+                }
+
+                @Override
+                public void postRollback(ContainerRoot currentModel, ContainerRoot proposedModel) {
+
+                }
             });
 
         } catch (Exception e) {
