@@ -87,7 +87,15 @@ case class KevsMergerInterpreter (mergeStatement: MergeStatement) extends KevsAb
       if (file == null) {
         val part = mavenurl.split("/")
         if (part.size == 3) {
-          file = context.getBootstraper.resolveKevoreeArtifact(part(1), part(0), part(2))
+          val repos = new util.ArrayList[String]()
+          context.model.getRepositories.foreach { repo =>
+            repos.add(repo.getUrl)
+
+
+          }
+          repos.add("http://maven.kevoree.org/release")
+          repos.add("http://maven.kevoree.org/snapshots")
+          file = context.getBootstraper.resolveArtifact(part(1), part(0), part(2),repos)
         } else {
           logger.warn("Kevscript merger : Bad MVN URL <mvn:[repourl!]groupID/artefactID/version>")
         }

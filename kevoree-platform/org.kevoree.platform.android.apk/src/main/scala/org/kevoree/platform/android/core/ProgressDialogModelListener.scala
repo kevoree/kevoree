@@ -17,6 +17,7 @@ import org.kevoree.api.service.core.handler.ModelListener
 import org.kevoree.ContainerRoot
 import android.app.{Activity, ProgressDialog}
 import android.widget.Toast
+import android.util.Log
 
 /**
  * Created with IntelliJ IDEA.
@@ -49,7 +50,7 @@ class ProgressDialogModelListener(ctx : Activity) extends ModelListener {
   }
 
   def afterLocalUpdate(currentModel: ContainerRoot, proposedModel: ContainerRoot) = {
-    ctx.runOnUiThread(new Runnable {
+   ctx.runOnUiThread(new Runnable {
       def run() {
         dialog.setProgress(100)
         dialog.dismiss()
@@ -73,7 +74,11 @@ class ProgressDialogModelListener(ctx : Activity) extends ModelListener {
         Toast.makeText(ctx, "Error detected, rollback performed!", Toast.LENGTH_SHORT);
       }
     })
+    Log.e("Kevoree GUI","PostRollBack")
   }
 
-  def preRollback(currentModel: ContainerRoot, proposedModel: ContainerRoot) {}
+  def preRollback(currentModel: ContainerRoot, proposedModel: ContainerRoot) {
+    Log.e("Kevoree GUI","PreRollBack")
+
+  }
 }
