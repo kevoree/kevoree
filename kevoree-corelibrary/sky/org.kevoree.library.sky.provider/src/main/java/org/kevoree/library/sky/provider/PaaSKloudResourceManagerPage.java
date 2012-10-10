@@ -6,7 +6,6 @@ import org.kevoree.annotation.*;
 import org.kevoree.api.service.core.checker.CheckerViolation;
 import org.kevoree.framework.KevoreePropertyHelper;
 import org.kevoree.framework.KevoreeXmiHelper;
-import org.kevoree.framework.MessagePort;
 import org.kevoree.framework.message.StdKevoreeMessage;
 import org.kevoree.library.javase.authentication.Authentication;
 import org.kevoree.library.javase.webserver.KevoreeHttpRequest;
@@ -39,14 +38,14 @@ import java.util.List;
 		)
 })
 @Requires({
-		@RequiredPort(name = "deploy", type = PortType.MESSAGE, optional = false, messageType = "kloud_request"),
-		@RequiredPort(name = "release", type = PortType.MESSAGE, optional = false, messageType = "kloud_request"),
+		@RequiredPort(name = "submit", type = PortType.SERVICE, optional = false, className = HostService.class),
+//		@RequiredPort(name = "release", type = PortType.MESSAGE, optional = false, messageType = "kloud_request"),
 		@RequiredPort(name = "authentication", type = PortType.SERVICE, className = Authentication.class, optional = true)
 })
 @DictionaryType({
 		@DictionaryAttribute(name = "checkModel", defaultValue = "true", vals = {"true", "false"})
 })
-public class PaaSKloudResourceManagerPage extends ParentAbstractPage {
+public class PaaSKloudResourceManagerPage extends ParentAbstractPage implements HostService {
 
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 	private RootKloudChecker rootKloudChecker = new RootKloudChecker();
@@ -95,8 +94,13 @@ public class PaaSKloudResourceManagerPage extends ParentAbstractPage {
 		logger.debug("Try to release {} configuration", request.getResolvedParams().get("login"));
 		StdKevoreeMessage message = new StdKevoreeMessage();
 		message.putValue("login", request.getResolvedParams().get("login"));
-		getPortByName("release", MessagePort.class).process(message);
-		response.setContent("<ack login=\"" + request.getResolvedParams().get("login") + "\" />");
+		try {
+//			getPortByName("release", HostService.class).release(request.getResolvedParams().get("login"));
+			release(request.getResolvedParams().get("login"));
+			response.setContent("<ack login=\"" + request.getResolvedParams().get("login") + "\" />");
+		} catch (SubmissionException e) {
+			response.setContent("<nack login=\"" + request.getResolvedParams().get("login") + "\" error=\"" + e.getMessage() + "\" />");
+		}
 
 		return response;
 	}
@@ -147,6 +151,7 @@ public class PaaSKloudResourceManagerPage extends ParentAbstractPage {
 	}
 
 	private boolean checkModel (ContainerRoot model, String login, KevoreeHttpResponse response) {
+		logger.debug("starting to check Cloud user model");
 		rootKloudChecker.setLogin(login);
 		List<CheckerViolation> violations = rootKloudChecker.check(model);
 		if (violations.size() > 0) {
@@ -190,16 +195,27 @@ public class PaaSKloudResourceManagerPage extends ParentAbstractPage {
 	}
 
 	private KevoreeHttpResponse deploy (KevoreeHttpRequest request, KevoreeHttpResponse response, /*String login, String sshKey,*/ ContainerRoot model) {
-		StdKevoreeMessage message = new StdKevoreeMessage();
+//		StdKevoreeMessage message = new StdKevoreeMessage();
 		String login = request.getResolvedParams().get("login");
 		String sshKey = request.getResolvedParams().get("ssh_key");
-		message.putValue("login", login);
-		message.putValue("model", KevoreeXmiHelper.saveToString(model, false));
-		if (sshKey != null && !sshKey.equals((""))) {
-			message.putValue("sshKey", sshKey);
+//		message.putValue("login", login);
+//		message.putValue("model", KevoreeXmiHelper.saveToString(model, false));
+//		if (sshKey != null && !sshKey.equals((""))) {
+//			message.putValue("sshKey", sshKey);
+//		}
+//		getPortByName("deploy", MessagePort.class).process(message);
+		try {
+
+			if (deploy(login, model, sshKey)) {
+				response = findModel(request, response);
+//				response.setContent("<ack login=\"" + request.getResolvedParams().get("login") + "\" />");
+			} else {
+				response.setContent("<nack login=\"" + request.getResolvedParams().get("login") + "\" error=\"Unknown ! Please contact the administrator\"/>");
+			}
+		} catch (SubmissionException e) {
+			response.setContent("<nack login=\"" + request.getResolvedParams().get("login") + "\" error=\"" + e.getMessage() + "\" />");
 		}
-		getPortByName("deploy", MessagePort.class).process(message);
-		response.setContent("<wait login=\"" + login + "\" />");
+//		response.setContent("<wait login=\"" + login + "\" />");
 		return response;
 	}
 
@@ -215,4 +231,14 @@ public class PaaSKloudResourceManagerPage extends ParentAbstractPage {
 						 }
 						 return nbTry > 0 && createProxy(login, nbTry - 1);
 					 }*/
+
+	@Override
+	public boolean deploy (String login, ContainerRoot model, String sshKey) throws SubmissionException {
+		return getPortByName("submit", HostService.class).deploy(login, model, sshKey);
+	}
+
+	@Override
+	public boolean release (String login) throws SubmissionException {
+		return getPortByName("submit", HostService.class).release(login);
+	}
 }

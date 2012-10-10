@@ -44,7 +44,7 @@ public class PaaSKloudResourceManagerStateFull extends PaaSKloudResourceManager 
 		return this.getDictionary().get("storage").toString();
 	}
 
-	@Port(name = "release")
+	@Port(name = "submit", method = "release")
 	public void release (Object message) {
 		if (message instanceof StdKevoreeMessage) {
 			StdKevoreeMessage stdMessage = (StdKevoreeMessage) message;
@@ -54,7 +54,7 @@ public class PaaSKloudResourceManagerStateFull extends PaaSKloudResourceManager 
 		}
 	}
 
-	private void release (String login) {
+	public boolean release (String login) {
 		KevScriptEngine kengine = getKevScriptEngineFactory().createKevScriptEngine();
 		KloudReasoner.appendScriptToCleanupIaaSModelFromUser(kengine, login, getModelService().getLastModel());
 		for (int i = 0; i < 5; i++) {
@@ -63,11 +63,12 @@ public class PaaSKloudResourceManagerStateFull extends PaaSKloudResourceManager 
 				kengine.atomicInterpretDeploy();
 				getModelService().registerModelListener(this);
 				deleteStoredModel(login);
-				break;
+				return true;
 			} catch (Exception e) {
 				logger.warn("Error while cleanup user, try number " + i);
 			}
 		}
+		return false;
 	}
 
 	protected void processNew (ContainerRoot userModel, String login, String sshKey) {
