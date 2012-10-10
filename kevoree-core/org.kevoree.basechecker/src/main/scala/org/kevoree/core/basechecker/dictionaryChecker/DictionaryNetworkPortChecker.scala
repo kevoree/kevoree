@@ -27,32 +27,42 @@ import org.kevoree.framework.{Constants, KevoreePropertyHelper, KevoreePlatformH
 class DictionaryNetworkPortChecker extends CheckerService {
   def check(model: ContainerRoot) = {
     val violations: java.util.List[CheckerViolation] = new util.ArrayList[CheckerViolation]()
-    val collectedPort = new util.HashMap[String, util.HashMap[String, util.HashSet[Object]]]()
+    val collectedPort = new util.HashMap[String, util.HashMap[String, util.HashMap[String,Object]]]()
+
     model.getNodes.foreach {
       instance => {
         instanceCollect(instance, collectedPort, instance.getName)
         instance.getComponents.foreach(c => instanceCollect(c, collectedPort, instance.getName))
       }
     }
-    model.getHubs.foreach {hub =>
-      instanceDCollect(hub, collectedPort)
+
+
+    model.getHubs.foreach {
+      hub =>
+        instanceDCollect(model,hub, collectedPort)
     }
-    model.getGroups.foreach {g =>
-      instanceDCollect(g, collectedPort)
+    model.getGroups.foreach {
+      g =>
+        instanceDCollect(model,g, collectedPort)
     }
+
+    println(collectedPort)
+
     import scala.collection.JavaConversions._
-    collectedPort.foreach{ nodeC =>
-      nodeC._2.filter(portP => portP._2.size() >1).foreach{ portP =>
-        val violation: CheckerViolation = new CheckerViolation
-        violation.setMessage("Duplicated collected port usage "+portP._1)
-        violation.setTargetObjects(portP._2.toList)
-        violations.add(violation)
-      }
+    collectedPort.foreach {
+      nodeC =>
+        nodeC._2.filter(portP => portP._2.size() > 1).foreach {
+          portP =>
+            val violation: CheckerViolation = new CheckerViolation
+            violation.setMessage("Duplicated collected port usage " + portP._1 + "-" + portP._2.toList)
+            violation.setTargetObjects(portP._2.toList)
+            violations.add(violation)
+        }
     }
     violations
   }
 
-  def instanceDCollect(ist: Instance, collector: util.HashMap[String, util.HashMap[String, util.HashSet[Object]]]) {
+  def instanceDCollect(model:ContainerRoot,ist: Instance, collector: util.HashMap[String, util.HashMap[String, util.HashMap[String,Object]]]) {
     val nodeConnected = new util.ArrayList[String]()
     ist match {
       case c: org.kevoree.Channel => {
@@ -71,12 +81,12 @@ class DictionaryNetworkPortChecker extends CheckerService {
     import scala.collection.JavaConversions._
     nodeConnected.foreach {
       node =>
-        instanceCollect(ist, collector, node)
+        instanceCollect(ist,collector, node)
     }
   }
 
 
-  def instanceCollect(ist: Instance, collector: util.HashMap[String, util.HashMap[String, util.HashSet[Object]]], nodeName: String) {
+  def instanceCollect(ist: Instance, collector: util.HashMap[String, util.HashMap[String, util.HashMap[String,Object]]], nodeName: String) {
     var portFound: String = null
     ist.getTypeDefinition.getDictionaryType.map {
       dicType =>
@@ -87,27 +97,28 @@ class DictionaryNetworkPortChecker extends CheckerService {
     }
     ist.getDictionary.map {
       dic => {
-        dic.getValues.filter(dv => dv.getAttribute.getName == "port" && (dv.getTargetNode.getOrElse(nodeName) == nodeName)).foreach {
+        dic.getValues.filter(dv => dv.getAttribute.getName == "port" && (dv.getTargetNode.isEmpty || dv.getTargetNode.get.getName == nodeName)).foreach {
           dv =>
             portFound = dv.getValue
         }
       }
     }
+
     if (portFound != null) {
-      val ipFound = KevoreePropertyHelper.getNetworkProperty(ist.getTypeDefinition.eContainer.asInstanceOf[ContainerRoot],nodeName,Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP).getOrElse("localhost").toString
+      val ipFound = KevoreePropertyHelper.getNetworkProperty(ist.getTypeDefinition.eContainer.asInstanceOf[ContainerRoot], nodeName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP).getOrElse("localhost").toString
       val nodeIDMethod = ipFound
 
       var nodeCollector = collector.get(nodeIDMethod)
       if (nodeCollector == null) {
-        nodeCollector = new util.HashMap[String, util.HashSet[Object]]
+        nodeCollector = new util.HashMap[String, util.HashMap[String,Object]]
         collector.put(nodeIDMethod, nodeCollector)
       }
       var nodePortCollector = nodeCollector.get(portFound)
       if (nodePortCollector == null) {
-        nodePortCollector = new util.HashSet[Object]
+        nodePortCollector = new util.HashMap[String,Object]
         nodeCollector.put(portFound, nodePortCollector)
       }
-      nodePortCollector.add(ist)
+      nodePortCollector.put(nodeName,ist)
     }
   }
 
