@@ -27,21 +27,27 @@ import org.kevoree.framework.{Constants, KevoreePropertyHelper, KevoreePlatformH
 class DictionaryNetworkPortChecker extends CheckerService {
   def check(model: ContainerRoot) = {
     val violations: java.util.List[CheckerViolation] = new util.ArrayList[CheckerViolation]()
-    val collectedPort = new util.HashMap[String, util.HashMap[String, util.HashSet[Object]]]()
+    val collectedPort = new util.HashMap[String, util.HashMap[String, util.HashMap[String,Object]]]()
+
     model.getNodes.foreach {
       instance => {
         instanceCollect(instance, collectedPort, instance.getName)
         instance.getComponents.foreach(c => instanceCollect(c, collectedPort, instance.getName))
       }
     }
+
+
     model.getHubs.foreach {
       hub =>
-        instanceDCollect(hub, collectedPort)
+        instanceDCollect(model,hub, collectedPort)
     }
     model.getGroups.foreach {
       g =>
-        instanceDCollect(g, collectedPort)
+        instanceDCollect(model,g, collectedPort)
     }
+
+    println(collectedPort)
+
     import scala.collection.JavaConversions._
     collectedPort.foreach {
       nodeC =>
@@ -56,7 +62,7 @@ class DictionaryNetworkPortChecker extends CheckerService {
     violations
   }
 
-  def instanceDCollect(ist: Instance, collector: util.HashMap[String, util.HashMap[String, util.HashSet[Object]]]) {
+  def instanceDCollect(model:ContainerRoot,ist: Instance, collector: util.HashMap[String, util.HashMap[String, util.HashMap[String,Object]]]) {
     val nodeConnected = new util.ArrayList[String]()
     ist match {
       case c: org.kevoree.Channel => {
@@ -75,12 +81,12 @@ class DictionaryNetworkPortChecker extends CheckerService {
     import scala.collection.JavaConversions._
     nodeConnected.foreach {
       node =>
-        instanceCollect(ist, collector, node)
+        instanceCollect(ist,collector, node)
     }
   }
 
 
-  def instanceCollect(ist: Instance, collector: util.HashMap[String, util.HashMap[String, util.HashSet[Object]]], nodeName: String) {
+  def instanceCollect(ist: Instance, collector: util.HashMap[String, util.HashMap[String, util.HashMap[String,Object]]], nodeName: String) {
     var portFound: String = null
     ist.getTypeDefinition.getDictionaryType.map {
       dicType =>
@@ -91,7 +97,7 @@ class DictionaryNetworkPortChecker extends CheckerService {
     }
     ist.getDictionary.map {
       dic => {
-        dic.getValues.filter(dv => dv.getAttribute.getName == "port" && ( dv.getTargetNode.isEmpty || dv.getTargetNode.get.getName ==  nodeName )).foreach {
+        dic.getValues.filter(dv => dv.getAttribute.getName == "port" && (dv.getTargetNode.isEmpty || dv.getTargetNode.get.getName == nodeName)).foreach {
           dv =>
             portFound = dv.getValue
         }
@@ -104,15 +110,15 @@ class DictionaryNetworkPortChecker extends CheckerService {
 
       var nodeCollector = collector.get(nodeIDMethod)
       if (nodeCollector == null) {
-        nodeCollector = new util.HashMap[String, util.HashSet[Object]]
+        nodeCollector = new util.HashMap[String, util.HashMap[String,Object]]
         collector.put(nodeIDMethod, nodeCollector)
       }
       var nodePortCollector = nodeCollector.get(portFound)
       if (nodePortCollector == null) {
-        nodePortCollector = new util.HashSet[Object]
+        nodePortCollector = new util.HashMap[String,Object]
         nodeCollector.put(portFound, nodePortCollector)
       }
-      nodePortCollector.add(ist)
+      nodePortCollector.put(nodeName,ist)
     }
   }
 
