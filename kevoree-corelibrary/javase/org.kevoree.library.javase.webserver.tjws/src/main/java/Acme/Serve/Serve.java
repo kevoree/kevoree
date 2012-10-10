@@ -1714,19 +1714,19 @@ public class Serve implements ServletContext, Serializable {
 
 		private static final Map EMPTYHASHTABLE = new Hashtable();
 
-		private Socket socket;
+		private transient Socket socket;
 
 		private Hashtable sslAttributes;
 
-		private Serve serve;
+		private transient Serve serve;
 
-		private ServletInputStream in;
+		private transient ServletInputStream in;
 
-		private ServletOutputStream out;
+		private transient ServletOutputStream out;
 
 		private String scheme;
 
-		private AsyncCallback asyncMode;
+		private transient AsyncCallback asyncMode;
 
 		private long asyncTimeout;
 
