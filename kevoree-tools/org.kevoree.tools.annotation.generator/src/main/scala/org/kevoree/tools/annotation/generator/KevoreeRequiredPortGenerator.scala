@@ -16,7 +16,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * 	http://www.gnu.org/licenses/lgpl-3.0.txt
+ * http://www.gnu.org/licenses/lgpl-3.0.txt
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -38,39 +38,42 @@ import org.kevoree.annotation.ThreadStrategy
 
 object KevoreeRequiredPortGenerator {
 
-  def generate(root:ContainerRoot,filer:Filer,ct: KevoreeComponentType,ref:PortTypeRef,targetNodeType:String){
-   // var portPackage = ct.getFactoryBean().substring(0, ct.getFactoryBean().lastIndexOf("."));
+  def generate(root: ContainerRoot, filer: Filer, ct: KevoreeComponentType, ref: PortTypeRef, targetNodeType: String) {
+    // var portPackage = ct.getFactoryBean().substring(0, ct.getFactoryBean().lastIndexOf("."));
 
-    val portPackage = KevoreeGeneratorHelper.getTypeDefinitionGeneratedPackage(ct,targetNodeType)
-    val portName = ct.getName+"PORT"+ref.getName
-    val wrapper = filer.createResource(StandardLocation.SOURCE_OUTPUT, "", new String(portPackage.replace(".", "/")+"/"+portName+".scala"))
+    val portPackage = KevoreeGeneratorHelper.getTypeDefinitionGeneratedPackage(ct, targetNodeType)
+    val portName = ct.getName + "PORT" + ref.getName
+    val wrapper = filer.createResource(StandardLocation.SOURCE_OUTPUT, "", new String(portPackage.replace(".", "/") + "/" + portName + ".scala"))
     val writer = wrapper.openWriter()
 
-    writer.append("package "+portPackage+"\n")
+    writer.append("package " + portPackage + "\n")
     writer.append("import org.kevoree.framework.port._\n")
     writer.append("import scala.{Unit=>void}\n")
-    writer.append("import "+KevoreeGeneratorHelper.getTypeDefinitionBasePackage(ct)+"._\n")
+    writer.append("import " + KevoreeGeneratorHelper.getTypeDefinitionBasePackage(ct) + "._\n")
 
 
-    ThreadingMapping.getMappings.get(Tuple2(ct.getName,ref.getName)) match {
+    ThreadingMapping.getMappings.get(Tuple2(ct.getName, ref.getName)) match {
       case ThreadStrategy.THREAD_QUEUE => {
-        writer.append("class "+portName+"(component : "+ct.getName+") extends "+ref.getRef.getName+" with KevoreeRequiredThreadPort {\n")
+        writer.append("class " + portName + "(component : " + ct.getName + ") extends " + ref.getRef.getName + " with KevoreeRequiredThreadPort {\n")
       }
       case ThreadStrategy.SHARED_THREAD => {
-        writer.append("class "+portName+"(component : "+ct.getName+") extends "+ref.getRef.getName+" with KevoreeRequiredExecutorPort {\n")
+        writer.append("class " + portName + "(component : " + ct.getName + ") extends " + ref.getRef.getName + " with KevoreeRequiredExecutorPort {\n")
+      }
+      case ThreadStrategy.NONE => {
+        writer.append("class " + portName + "(component : " + ct.getName + ") extends " + ref.getRef.getName + " with KevoreeRequiredNonePort {\n")
       }
       case _ => {
-        writer.append("class "+portName+"(component : "+ct.getName+") extends "+ref.getRef.getName+" with KevoreeRequiredPort {\n")
+        writer.append("class " + portName + "(component : " + ct.getName + ") extends " + ref.getRef.getName + " with KevoreeRequiredPort {\n")
       }
     }
 
 
-    writer.append("def getName : String = \""+ref.getName+"\"\n")
+    writer.append("def getName : String = \"" + ref.getName + "\"\n")
     writer.append("def getComponentName : String = component.getName \n")
 
     ref.getRef match {
-      case mPT : MessagePortType => {
-          /* GENERATE METHOD MAPPING */
+      case mPT: MessagePortType => {
+        /* GENERATE METHOD MAPPING */
         writer.append("def process(o : Object) = {\n")
         writer.append("{this ! o}\n")
         /*
@@ -84,37 +87,44 @@ object KevoreeRequiredPortGenerator {
          writer.append("}\n") */
         writer.append("}\n")
         writer.append("def getInOut = false\n")
-        }
+      }
 
-      case sPT : ServicePortType=> {
+      case sPT: ServicePortType => {
         writer.append("def getInOut = true\n")
-          /* CREATE INTERFACE ACTOR MOK */
-          sPT.getOperations.foreach{op=>
-            /* GENERATE METHOD SIGNATURE */
-            writer.append("def "+op.getName+"(")
-            op.getParameters.foreach{param=>
-              writer.append(param.getName+":"+param.getType.get.print('[',']'))
-              if(op.getParameters.indexOf(param) != (op.getParameters.size-1)){writer.append(",")}
+        /* CREATE INTERFACE ACTOR MOK */
+        sPT.getOperations.foreach {
+          op =>
+          /* GENERATE METHOD SIGNATURE */
+            writer.append("def " + op.getName + "(")
+            op.getParameters.foreach {
+              param =>
+                writer.append(param.getName + ":" + param.getType.get.print('[', ']'))
+                if (op.getParameters.indexOf(param) != (op.getParameters.size - 1)) {
+                  writer.append(",")
+                }
             }
 
             var rt = op.getReturnType.get.getName
-            if(op.getReturnType.get.getGenericTypes.size > 0) {
-              rt += op.getReturnType.get.getGenericTypes.collect{case s:TypedElement=>s.getName}.mkString("[",",","]")
+            if (op.getReturnType.get.getGenericTypes.size > 0) {
+              rt += op.getReturnType.get.getGenericTypes.collect {
+                case s: TypedElement => s.getName
+              }.mkString("[", ",", "]")
             }
             writer.append(") : " + rt + " ={\n")
 
             /* Generate method corpus */
             /* CREATE MSG OP CALL */
             writer.append("val msgcall = new org.kevoree.framework.MethodCallMessage\n")
-            writer.append("msgcall.setMethodName(\""+op.getName+"\")\n")
-            op.getParameters.foreach{param=>
-              writer.append("msgcall.getParams.put(\""+param.getName+"\","+param.getName+".asInstanceOf[AnyRef])\n")
+            writer.append("msgcall.setMethodName(\"" + op.getName + "\")\n")
+            op.getParameters.foreach {
+              param =>
+                writer.append("msgcall.getParams.put(\"" + param.getName + "\"," + param.getName + ".asInstanceOf[AnyRef])\n")
             }
 
-            writer.append("(this !? msgcall).asInstanceOf["+rt+"]")
+            writer.append("(this !? msgcall).asInstanceOf[" + rt + "]")
             writer.append("}\n")
-          }
         }
+      }
 
     }
 
