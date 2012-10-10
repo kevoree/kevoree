@@ -47,6 +47,7 @@ import org.kevoree.framework.KevoreeXmiHelper
 import java.util.jar.{JarEntry, JarFile}
 import java.io.File
 import java.net.URL
+import java.util
 
 /**
  * Created by IntelliJ IDEA.
@@ -71,7 +72,9 @@ case class KevsMergerInterpreter (mergeStatement: MergeStatement) extends KevsAb
         val urlids = mavenurl.substring(mavenurl.indexOf("!") + 1)
         val part = urlids.split("/")
         if (part.size == 3) {
-          file = context.getBootstraper.resolveArtifact(part(1), part(0), part(2), List(repourl))
+          val repos = new util.ArrayList[String]()
+          repos.add(repourl)
+          file = context.getBootstraper.resolveArtifact(part(1), part(0), part(2), repos)
         } else {
           logger.warn("Kevscript merger : Bad MVN URL <mvn:[repourl!]groupID/artefactID/version>")
         }
