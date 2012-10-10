@@ -5,7 +5,6 @@ import org.kevoree.ContainerRoot;
 import org.kevoree.Group;
 import org.kevoree.annotation.*;
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService;
-import org.kevoree.api.service.core.handler.ModelListener;
 import org.kevoree.framework.AbstractGroupType;
 import org.kevoree.framework.KevoreePropertyHelper;
 import org.kevoree.framework.KevoreeXmiHelper;
@@ -58,6 +57,7 @@ public class NanoRestGroup extends AbstractGroupType {
 		if (addressObject != null) {
 			address = addressObject.toString();
 		}
+		final NanoRestGroup self = this;
 		server = new NanoHTTPD(new InetSocketAddress(InetAddress.getByName(address), port)) {
 			//        server = new NanoHTTPD(port) {
 			@Override
@@ -87,6 +87,7 @@ public class NanoRestGroup extends AbstractGroupType {
 							}
 							for (ContainerNode subNode : getModelElement().getSubNodesForJ()) {
 								if (subNode.getName().trim().equals(srcNodeName.trim())) {
+									logger.debug("model received from another node: forward is not needed");
 									externalSender = false;
 								}
 							}
@@ -98,11 +99,11 @@ public class NanoRestGroup extends AbstractGroupType {
 								@Override
 								public void run () {
 									if (!finalexternalSender) {
-										getModelService().unregisterModelListener(getModelListener());
+										getModelService().unregisterModelListener(self);
 									}
 									handler.atomicUpdateModel(finalModel);
 									if (!finalexternalSender) {
-										getModelService().registerModelListener(getModelListener());
+										getModelService().registerModelListener(self);
 									}
 								}
 							};
@@ -146,11 +147,12 @@ public class NanoRestGroup extends AbstractGroupType {
 		if (starting) {
 			final Option<ContainerRoot> modelOption = NodeNetworkHelper.updateModelWithNetworkProperty(this);
 			if (modelOption.isDefined()) {
+				final NanoRestGroup self = this;
 				new Thread() {
 					public void run () {
-						getModelService().unregisterModelListener(getModelListener());
+						getModelService().unregisterModelListener(self);
 						getModelService().atomicUpdateModel(modelOption.get());
-						getModelService().registerModelListener(getModelListener());
+						getModelService().registerModelListener(self);
 					}
 				}.start();
 			}

@@ -1,0 +1,9 @@
+
+merge 'mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.javaseNode/{kevoree.version}'
+merge 'mvn:org.kevoree.corelibrary.sky/org.kevoree.library.sky.minicloud/{kevoree.version}'
+merge 'mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.nanohttp/{kevoree.version}'
+
+addNode node0:MiniCloudNode {logLevel = "debug"}
+
+addGroup editor_group:NanoRestGroup
+addToGroup editor_group node0
