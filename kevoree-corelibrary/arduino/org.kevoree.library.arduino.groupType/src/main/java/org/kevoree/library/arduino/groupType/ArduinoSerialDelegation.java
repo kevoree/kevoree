@@ -71,4 +71,12 @@ public class ArduinoSerialDelegation extends AbstractGroupType {
     public ContainerRoot pull(String targetNodeName) {
         return null;  //TODO
     }
+
+	@Override
+	public void preRollback (ContainerRoot containerRoot, ContainerRoot containerRoot1) {
+	}
+
+	@Override
+	public void postRollback (ContainerRoot containerRoot, ContainerRoot containerRoot1) {
+	}
 }
