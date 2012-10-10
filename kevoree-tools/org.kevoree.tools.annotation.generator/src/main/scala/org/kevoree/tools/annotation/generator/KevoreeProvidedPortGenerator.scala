@@ -59,6 +59,9 @@ object KevoreeProvidedPortGenerator {
       case ThreadStrategy.SHARED_THREAD => {
         writer.append("class " + portName + "(component : " + ct.getName + ") extends " + ref.getRef.getName + " with KevoreeProvidedExecutorPort {\n")
       }
+      case ThreadStrategy.NONE => {
+        writer.append("class " + portName + "(component : " + ct.getName + ") extends " + ref.getRef.getName + " with KevoreeProvidedNonePort {\n")
+      }
       case _ => {
         writer.append("class " + portName + "(component : " + ct.getName + ") extends " + ref.getRef.getName + " with KevoreeProvidedPort {\n")
       }
