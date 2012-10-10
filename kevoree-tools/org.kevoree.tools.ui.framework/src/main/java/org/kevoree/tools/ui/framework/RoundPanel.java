@@ -53,6 +53,7 @@ public class RoundPanel extends JPanel implements ChangeAwareComponent {
     private BufferedImage shadow;
     protected boolean active = false;
     private Color backgroundColor = new Color(0, 0, 0, 200);
+    private int arc = 15;
 
     @Override
     public void setBackground(Color newc) {
@@ -92,7 +93,7 @@ public class RoundPanel extends JPanel implements ChangeAwareComponent {
         int yy = (SHADOW_SIZE - 6);
         int w = getWidth() - xx * 2;
         int h = getHeight() - yy * 2;
-        int arc = 15;
+
         RoundRectangle2D.Double rec = new RoundRectangle2D.Double(xx, yy, w, h, arc, arc);
         //System.out.println("cont"+x+" "+y+" "+rec.contains(x, y));
         return rec.contains(x, y);
