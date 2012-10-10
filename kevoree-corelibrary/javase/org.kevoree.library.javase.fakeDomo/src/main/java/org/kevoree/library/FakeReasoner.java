@@ -56,7 +56,15 @@ public class FakeReasoner extends AbstractComponentType implements ModelListener
 
     }
 
-    @Override
+	@Override
+	public void preRollback (ContainerRoot containerRoot, ContainerRoot containerRoot1) {
+	}
+
+	@Override
+	public void postRollback (ContainerRoot containerRoot, ContainerRoot containerRoot1) {
+	}
+
+	@Override
     public void run() {
         while (true) {
             ContainerRoot root = getModelService().getLastModel();

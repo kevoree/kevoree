@@ -315,4 +315,11 @@ public class NanoRestGroup extends AbstractGroupType {
 		}
 	}
 
+	@Override
+	public void preRollback (ContainerRoot containerRoot, ContainerRoot containerRoot1) {
+	}
+
+	@Override
+	public void postRollback (ContainerRoot containerRoot, ContainerRoot containerRoot1) {
+	}
 }

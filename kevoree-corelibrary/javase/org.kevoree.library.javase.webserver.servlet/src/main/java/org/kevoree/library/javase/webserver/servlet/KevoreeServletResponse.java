@@ -138,7 +138,7 @@ public class KevoreeServletResponse implements HttpServletResponse {
 			setContentType(response.getHeaders().get("Content-Type"));
 			stream.write(content, 0, content.length);
 		} else {
-			content = "Unable to get content coing from KevoreeHttpResponse".getBytes();
+			content = "Unable to get content coming from KevoreeHttpResponse".getBytes();
 			setStatus(404);
 			stream.write(content, 0, content.length);
 		}
