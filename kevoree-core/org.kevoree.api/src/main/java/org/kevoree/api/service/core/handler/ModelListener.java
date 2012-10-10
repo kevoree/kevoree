@@ -55,4 +55,8 @@ public interface ModelListener {
      */
     public void modelUpdated();
 
+
+    public void preRollback(ContainerRoot currentModel, ContainerRoot proposedModel);
+    public void postRollback(ContainerRoot currentModel, ContainerRoot proposedModel);
+
 }

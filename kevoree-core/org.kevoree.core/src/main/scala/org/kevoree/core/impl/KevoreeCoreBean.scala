@@ -229,7 +229,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService {
             //listenerActor.afterUpdate(model, stopModel.get)
           }
           val rootNode = model.getNodes.find(n => n.getName == getNodeName).get
-          val ignoredDeployResult = PrimitiveCommandExecutionHelper.execute(rootNode,adaptationModel, nodeInstance, afterUpdateTest)
+          val ignoredDeployResult = PrimitiveCommandExecutionHelper.execute(rootNode,adaptationModel, nodeInstance, afterUpdateTest,afterUpdateTest,afterUpdateTest)
         } else {
           logger.error("Unable to use the stopModel !")
         }
@@ -318,7 +318,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService {
                   //listenerActor.afterUpdate(model, newmodel)
                 }
                 val rootNode = newmodel.getNodes.find(n => n.getName == getNodeName).get
-                PrimitiveCommandExecutionHelper.execute(rootNode,adaptationModel, nodeInstance,afterUpdateTest)
+                PrimitiveCommandExecutionHelper.execute(rootNode,adaptationModel, nodeInstance,afterUpdateTest,afterUpdateTest,afterUpdateTest)
                 nodeInstance.stopNode()
                 //end of harakiri
                 nodeInstance = null
@@ -351,8 +351,27 @@ class KevoreeCoreBean extends KevoreeModelHandlerService {
               def afterUpdateTest(): Boolean = {
                 listenerActor.afterUpdate(model, newmodel)
               }
+
+              class PreCommand(){
+                var alreadyCall = false
+                def preRollbackTest(): Boolean = {
+                  if(!alreadyCall){
+                    listenerActor.preRollback(model, newmodel)
+                    alreadyCall = true
+                  }
+                  true
+                }
+              }
+
+              val preCmd = new PreCommand
+
+
+              def postRollbackTest(): Boolean = {
+                listenerActor.postRollback(model, newmodel)
+                true
+              }
               val rootNode = newmodel.getNodes.find(n => n.getName == getNodeName).get
-              deployResult = PrimitiveCommandExecutionHelper.execute(rootNode,adaptationModel, nodeInstance,afterUpdateTest)
+              deployResult = PrimitiveCommandExecutionHelper.execute(rootNode,adaptationModel, nodeInstance,afterUpdateTest,preCmd.preRollbackTest,postRollbackTest)
             } catch {
               case _@e => {
                 logger.error("Error while update ", e)
