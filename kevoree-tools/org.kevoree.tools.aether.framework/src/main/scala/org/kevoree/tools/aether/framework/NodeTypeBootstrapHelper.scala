@@ -48,6 +48,7 @@ import org.kevoree.framework.aspects.KevoreeAspects._
 import java.io.File
 import org.kevoree.{DeployUnit, KevoreeFactory, GroupType, ContainerRoot}
 import org.kevoree.kcl.KevoreeJarClassLoader
+import scala.collection.JavaConversions._
 
 /**
  * User: ffouquet
@@ -112,7 +113,7 @@ class NodeTypeBootstrapHelper extends Bootstraper with KCLBootstrap {
           }
           //KevoreeDeployManager.addMapping(KevoreeOSGiBundle(node.getTypeDefinition.getName, node.getTypeDefinition.getClass.getName, lastBundleID))
         } else {
-          logger.error("NodeType deploy unit not found , have you forgotten to merge nodetype library ?");
+          logger.error("NodeType deploy unit not found , have you forgotten to merge nodetype library ?")
           None
         }
       }
@@ -218,7 +219,7 @@ class NodeTypeBootstrapHelper extends Bootstraper with KCLBootstrap {
             None
           }
         } else {
-          logger.error("NodeType deploy unit not found , have you forgotten to merge nodetype library ?");
+          logger.error("NodeType deploy unit not found , have you forgotten to merge nodetype library ?")
           None
         }
       }
@@ -272,10 +273,10 @@ class NodeTypeBootstrapHelper extends Bootstraper with KCLBootstrap {
     }
   }
 
-  def resolveArtifact(artId: String, groupId: String, version: String, repos: List[String]): File = AetherUtil.resolveMavenArtifact(artId, groupId, version, repos)
+  def resolveArtifact(artId: String, groupId: String, version: String, repos: java.util.List[String]): File = AetherUtil.resolveMavenArtifact(artId, groupId, version, repos)
 
 
-  def resolveArtifact(artId: String, groupId: String, version: String, extension : String, repos: List[String]): File = AetherUtil.resolveMavenArtifact(artId, groupId, version, extension, repos)
+  def resolveArtifact(artId: String, groupId: String, version: String, extension : String, repos: java.util.List[String]): File = AetherUtil.resolveMavenArtifact(artId, groupId, version, extension, repos)
 
   def resolveKevoreeArtifact(artId: String, groupId: String, version: String): File = AetherUtil.resolveKevoreeArtifact(artId, groupId, version)
 
