@@ -112,7 +112,6 @@ public class RoundPanel extends JPanel implements ChangeAwareComponent {
             int y = (SHADOW_SIZE - 6);
             int w = getWidth() - x * 2;
             int h = getHeight() - y * 2;
-            int arc = 15;
 
             Graphics2D g2 =bufferGhost.createGraphics();
             g2.setComposite(AlphaComposite.Src);
@@ -152,7 +151,6 @@ public class RoundPanel extends JPanel implements ChangeAwareComponent {
         int h = getHeight() - (SHADOW_SIZE - 2) * 2;
         if (h < 0 || w < 0) return;
 
-        int arc = 15;
         int shadowSize = SHADOW_SIZE;
         shadow =
                 GraphicsUtilities.createCompatibleTranslucentImage(w, h);
