@@ -92,11 +92,11 @@ trait AetherFramework extends TempFileCacheManager with AetherRepositoryHandler 
     resolveMavenArtifact(unitName, groupName, version,extension, repositoriesUrl.toList)
 
 
-  def resolveMavenArtifact(unitName: String, groupName: String, version: String, repositoriesUrl: List[String]): File = {
+  def resolveMavenArtifact(unitName: String, groupName: String, version: String, repositoriesUrl: java.util.List[String]): File = {
     resolveMavenArtifact(unitName,groupName,version,null,repositoriesUrl)
   }
 
-  def resolveMavenArtifact(unitName: String, groupName: String, version: String, extension: String, repositoriesUrl: List[String]): File = {
+  def resolveMavenArtifact(unitName: String, groupName: String, version: String, extension: String, repositoriesUrl: java.util.List[String]): File = {
     val artifact: Artifact = if(extension == null){
       new DefaultArtifact(List(groupName.trim(), unitName.trim(), version.trim()).mkString(":"))
     } else {
