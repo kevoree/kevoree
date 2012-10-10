@@ -153,7 +153,7 @@ public class NanoRestGroup extends AbstractGroupType {
 						getModelService().unregisterModelListener(self);
 						getModelService().atomicUpdateModel(modelOption.get());
 						getModelService().registerModelListener(self);
-					}
+                    }
 				}.start();
 			}
 			starting = false;

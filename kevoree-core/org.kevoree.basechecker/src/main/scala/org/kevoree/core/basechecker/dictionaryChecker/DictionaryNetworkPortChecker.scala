@@ -46,7 +46,7 @@ class DictionaryNetworkPortChecker extends CheckerService {
         instanceDCollect(model,g, collectedPort)
     }
 
-    println(collectedPort)
+   // println(collectedPort)
 
     import scala.collection.JavaConversions._
     collectedPort.foreach {

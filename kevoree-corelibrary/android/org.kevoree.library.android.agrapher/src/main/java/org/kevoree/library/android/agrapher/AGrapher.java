@@ -113,7 +113,12 @@ public class AGrapher extends AbstractComponentType  {
                 }
             }
         } catch (Exception e) {
-            logger.warn("Grapher bad message => " + e.getMessage());
+            try {
+               double val = Double.parseDouble(msg.toString());
+                graphline.add(val);
+            } catch(Exception e2){
+                logger.warn("Grapher bad message => " + e.getMessage());
+            }
         }
 
 
