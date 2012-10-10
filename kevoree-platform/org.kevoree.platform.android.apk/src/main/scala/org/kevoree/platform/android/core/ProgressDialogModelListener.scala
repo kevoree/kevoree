@@ -66,4 +66,14 @@ class ProgressDialogModelListener(ctx : Activity) extends ModelListener {
     })
   }
 
+  def postRollback(currentModel: ContainerRoot, proposedModel: ContainerRoot) {
+    ctx.runOnUiThread(new Runnable {
+      def run() {
+        dialog.dismiss()
+        Toast.makeText(ctx, "Error detected, rollback performed!", Toast.LENGTH_SHORT);
+      }
+    })
+  }
+
+  def preRollback(currentModel: ContainerRoot, proposedModel: ContainerRoot) {}
 }

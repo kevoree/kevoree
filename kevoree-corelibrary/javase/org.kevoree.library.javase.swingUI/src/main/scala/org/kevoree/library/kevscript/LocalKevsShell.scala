@@ -52,6 +52,10 @@ class LocalKevsShell(mhs: KevoreeModelHandlerService, kevsfact: KevScriptEngineF
     }
 
     def afterLocalUpdate(currentModel: ContainerRoot, proposedModel: ContainerRoot) = true
+
+    def preRollback(currentModel: ContainerRoot, proposedModel: ContainerRoot) {}
+
+    def postRollback(currentModel: ContainerRoot, proposedModel: ContainerRoot) {}
   })
 
 
