@@ -337,6 +337,14 @@ public class KloudPaaSNanoGroup extends AbstractGroupType {
 		poolUpdate.submit(jobUpdate);
 	}
 
+	@Override
+	public void preRollback (ContainerRoot containerRoot, ContainerRoot containerRoot1) {
+	}
+
+	@Override
+	public void postRollback (ContainerRoot containerRoot, ContainerRoot containerRoot1) {
+	}
+
 	private class IaaSUpdate implements Runnable {
 
 		private ContainerRoot currentModel = null;
@@ -359,9 +367,9 @@ public class KloudPaaSNanoGroup extends AbstractGroupType {
 				if (KloudReasoner.processDeployment(proposedModel, currentModel, getModelService().getLastModel(), kengine, getName())) {
 					for (int i = 0; i < 5; i++) {
 						try {
-							getModelService().unregisterModelListener(getModelListener());
+							getModelService().unregisterModelListener(KloudPaaSNanoGroup.this);
 							kengine.atomicInterpretDeploy();
-							getModelService().registerModelListener(getModelListener());
+							getModelService().registerModelListener(KloudPaaSNanoGroup.this);
 							break;
 						} catch (Exception e) {
 							logger.debug("Error while update user configuration, try number " + i);
@@ -382,9 +390,9 @@ public class KloudPaaSNanoGroup extends AbstractGroupType {
 					}
 				}
 				/* Send blindly the model to the core , PaaS Kloud Resource manager is in charge to trigger this request , replies false and stores the model*/
-				getModelService().unregisterModelListener(getModelListener());
+				getModelService().unregisterModelListener(KloudPaaSNanoGroup.this);
 				getModelService().checkModel(userModelUpdated.get());
-				getModelService().registerModelListener(getModelListener());
+				getModelService().registerModelListener(KloudPaaSNanoGroup.this);
 			} else {
 				logger.error("Unable to update user configuration, with user group");
 			}

@@ -183,4 +183,12 @@ public class PaaSKloudResourceManagerStateFull extends PaaSKloudResourceManager 
 			}
 		}
 	}
+
+	@Override
+	public void preRollback (ContainerRoot containerRoot, ContainerRoot containerRoot1) { // TODO maybe something to do
+	}
+
+	@Override
+	public void postRollback (ContainerRoot containerRoot, ContainerRoot containerRoot1) {
+	}
 }

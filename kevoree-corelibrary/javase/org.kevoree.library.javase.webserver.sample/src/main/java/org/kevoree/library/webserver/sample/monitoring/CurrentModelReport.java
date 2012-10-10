@@ -13,9 +13,7 @@ import org.kevoree.library.javase.webserver.AbstractPage;
 import org.kevoree.library.javase.webserver.KevoreeHttpRequest;
 import org.kevoree.library.javase.webserver.KevoreeHttpResponse;
 
-import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -32,7 +30,7 @@ public class CurrentModelReport extends AbstractPage implements ModelListener {
 
     @Override
     public KevoreeHttpResponse process(KevoreeHttpRequest request, KevoreeHttpResponse response) {
-        response.setContent(pageBuffer.get().toString());
+        response.setContent(pageBuffer.get());
         return response;
     }
 
@@ -63,7 +61,15 @@ public class CurrentModelReport extends AbstractPage implements ModelListener {
         }
     }
 
-    @Override
+	@Override
+	public void preRollback (ContainerRoot containerRoot, ContainerRoot containerRoot1) {
+	}
+
+	@Override
+	public void postRollback (ContainerRoot containerRoot, ContainerRoot containerRoot1) {
+	}
+
+	@Override
     public void startPage() {
         super.startPage();
         getModelService().registerModelListener(this);

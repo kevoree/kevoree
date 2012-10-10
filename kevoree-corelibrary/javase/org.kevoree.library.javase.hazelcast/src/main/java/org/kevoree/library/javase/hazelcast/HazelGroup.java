@@ -60,4 +60,12 @@ public class HazelGroup extends AbstractGroupType implements MembershipListener 
     public void memberRemoved(MembershipEvent membershipEvent) {
         System.out.println("source="+membershipEvent.getSource());
     }
+
+	@Override
+	public void preRollback (ContainerRoot containerRoot, ContainerRoot containerRoot1) {
+	}
+
+	@Override
+	public void postRollback (ContainerRoot containerRoot, ContainerRoot containerRoot1) {
+	}
 }

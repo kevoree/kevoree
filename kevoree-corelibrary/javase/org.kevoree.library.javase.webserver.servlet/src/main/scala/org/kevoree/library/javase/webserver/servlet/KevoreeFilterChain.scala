@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory
 import org.kevoree.library.javase.webserver.impl.KevoreeHttpResponseImpl
 import com.sun.org.apache.bcel.internal.generic.AllocationInstruction
 import collection.immutable.HashMap
+import javax.servlet.http.{HttpServletRequestWrapper, HttpServletResponseWrapper}
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -19,7 +20,7 @@ import collection.immutable.HashMap
  */
 case class FILTER_REQUEST (request: KevoreeServletRequest, response: KevoreeServletResponse)
 
-case class SEND_FILTERED_REQUEST (request: KevoreeServletRequest, actorID: Int, firstSender : scala.actors.OutputChannel[scala.Any])
+case class SEND_FILTERED_REQUEST (request: KevoreeServletRequest, actorID: Int, firstSender: scala.actors.OutputChannel[scala.Any])
 
 case class RECEIVE_FILTERED_RESPONSE (response: KevoreeHttpResponse)
 
@@ -47,20 +48,34 @@ class KevoreeFilterChain (filterPage: AbstractFilterPage) extends Actor with Fil
     }
   }
 
-  def getFilterPage : AbstractFilterPage = filterPage
-
+  def getFilterPage: AbstractFilterPage = filterPage
 
 
   /*@throws(classOf[IOException])
   @throws(classOf[ServletException])*/
   def doFilter (request: ServletRequest, response: ServletResponse) {
     logger.debug("doFilter")
+    logger.debug("{} - {}", request, response)
     (request, response) match {
       case t: (KevoreeServletRequest, KevoreeServletResponse) => {
-        logger.debug("execute doFilter")
+        logger.debug("execute doFilter with KevoreeServletRequest and KevoreeServletResponse")
         val resp = (this !? FILTER_REQUEST(t._1, t._2)).asInstanceOf[KevoreeHttpResponse]
         t._2.populateFromKevoreeResponse(resp)
       }
+      /*case t: (KevoreeServletRequest, KevoreeServletResponse) => {
+        // TODO wrap the wrapper onto KevoreeServletResponse
+        logger.debug("execute doFilter with KevoreeServletRequest and HttpServletResponseWrapper")
+//        val response = new KevoreeServletWrappedResponse()
+        val resp = (this !? FILTER_REQUEST(t._1, t._2)).asInstanceOf[KevoreeHttpResponse]
+//        response.populateFromKevoreeResponse(resp)
+      }*/
+     /* case t: (HttpServletRequestWrapper, HttpServletResponseWrapper) => {
+        // TODO wrap the wrapper onto KevoreeServletResponse
+        logger.debug("execute doFilter with KevoreeServletRequest and HttpServletResponseWrapper")
+//        val response = new KevoreeServletWrappedResponse()
+        val resp = (this !? FILTER_REQUEST(t._1, t._2)).asInstanceOf[KevoreeHttpResponse]
+//        response.populateFromKevoreeResponse(resp)
+      }*/
       case _ => logger.debug("Unable to manage this kind of request: {}", request.getClass)
     }
   }
@@ -97,7 +112,7 @@ class KevoreeFilterChain (filterPage: AbstractFilterPage) extends Actor with Fil
         case FREED(actorID) =>
           freeIDS.push(actorID)
         case CLOSE() => exit()
-        case e : AnyRef => logger.warn("Unknown Actor message: {}", e)
+        case e: AnyRef => logger.warn("Unknown Actor message: {}", e)
       }
     }
   }

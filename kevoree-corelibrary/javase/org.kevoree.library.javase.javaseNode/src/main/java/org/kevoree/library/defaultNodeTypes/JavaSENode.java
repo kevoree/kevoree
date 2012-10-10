@@ -193,4 +193,14 @@ public class JavaSENode extends AbstractNodeType implements ModelListener {
     @Override
     public void modelUpdated() {
     }
+
+	@Override
+	public void preRollback (ContainerRoot containerRoot, ContainerRoot containerRoot1) {
+		logger.info("JavaSENode aborts last model");
+	}
+
+	@Override
+	public void postRollback (ContainerRoot containerRoot, ContainerRoot containerRoot1) {
+		logger.info("JavaSENode Model aborted in {} ms",(System.currentTimeMillis() - preTime));
+	}
 }

@@ -203,9 +203,9 @@ public class NettyGossiperGroup extends AbstractGroupType implements GossiperCom
 			if (modelOption.isDefined()) {
 				/*new Thread() {
 					public void run () {*/
-				getModelService().unregisterModelListener(getModelListener());
+				getModelService().unregisterModelListener(this);
 				getModelService().atomicUpdateModel(modelOption.get());
-				getModelService().registerModelListener(getModelListener());
+				getModelService().registerModelListener(this);
 				/*	}
 				}.start();*/
 			}
@@ -232,5 +232,13 @@ public class NettyGossiperGroup extends AbstractGroupType implements GossiperCom
 			httpClient = new HTTPClient(this.getName());
 		}
 		return httpClient.pull(this.getModelService().getLastModel(), s);
+	}
+
+	@Override
+	public void preRollback (ContainerRoot containerRoot, ContainerRoot containerRoot1) {
+	}
+
+	@Override
+	public void postRollback (ContainerRoot containerRoot, ContainerRoot containerRoot1) {
 	}
 }

@@ -64,6 +64,14 @@ public class IaaSKloudResourceManager extends AbstractComponentType implements M
 		}
 	}
 
+	@Override
+	public void preRollback (ContainerRoot containerRoot, ContainerRoot containerRoot1) {
+	}
+
+	@Override
+	public void postRollback (ContainerRoot containerRoot, ContainerRoot containerRoot1) {
+	}
+
 	private void updateKloudConfiguration (KevScriptEngine kengine) {
 		try {
 			kengine.atomicInterpretDeploy();
