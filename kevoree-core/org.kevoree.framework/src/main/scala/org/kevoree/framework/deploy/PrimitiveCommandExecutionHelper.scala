@@ -45,6 +45,8 @@ object PrimitiveCommandExecutionHelper {
               phase.rollBack()
               postRollback()
             }
+          } else {
+            postRollback()
           }
           res
         }
@@ -98,13 +100,14 @@ object PrimitiveCommandExecutionHelper {
           case None => true
         }
         if (!subResult) {
-          preRollBack
+          preRollBack()
           phase.rollBack()
           false
         } else {
           true
         }
       } else {
+        preRollBack()
         phase.rollBack()
         false
       }
