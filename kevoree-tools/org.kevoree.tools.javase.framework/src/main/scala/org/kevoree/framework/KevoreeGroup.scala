@@ -20,7 +20,7 @@ import org.slf4j.LoggerFactory
 import org.kevoree.api.service.core.handler.{ModelListener}
 import org.kevoree.ContainerRoot
 
-trait KevoreeGroup extends AbstractGroupType with KInstance with ModelListener {
+trait KevoreeGroup extends AbstractGroupType with KInstance with ModelListener { self =>
 
   val kevoree_internal_logger = LoggerFactory.getLogger(this.getClass)
 
@@ -39,7 +39,7 @@ trait KevoreeGroup extends AbstractGroupType with KInstance with ModelListener {
   def kInstanceStart(tmodel : ContainerRoot) : Boolean = {
     if (!isStarted){
       try {
-        getModelService.registerModelListener(this)
+        getModelService.registerModelListener(self)
         getModelService.asInstanceOf[ModelHandlerServiceProxy].setTempModel(tmodel)
         startGroup
         getModelService.asInstanceOf[ModelHandlerServiceProxy].unsetTempModel()
@@ -59,7 +59,7 @@ trait KevoreeGroup extends AbstractGroupType with KInstance with ModelListener {
   def kInstanceStop(tmodel : ContainerRoot) : Boolean = {
     if (isStarted){
       try {
-        getModelService.unregisterModelListener(this)
+        getModelService.unregisterModelListener(self)
         getModelService.asInstanceOf[ModelHandlerServiceProxy].setTempModel(tmodel)
         stopGroup
         getModelService.asInstanceOf[ModelHandlerServiceProxy].unsetTempModel()

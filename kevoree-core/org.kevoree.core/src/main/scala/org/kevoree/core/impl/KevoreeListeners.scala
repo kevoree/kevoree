@@ -86,7 +86,7 @@ class KevoreeListeners {
 
   case class RemoveListener(l: ModelListener) extends Runnable {
     def run() {
-      if (!registeredListeners.contains(l)) {
+      if (registeredListeners.contains(l)) {
         registeredListeners.remove(l)
       }
     }
