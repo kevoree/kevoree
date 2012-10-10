@@ -52,8 +52,7 @@ addComponent ldapAuthentication@atmosphere : LDAPAuthentication {host = "ldap://
 
 addChannel requestChannel : defMSG
 addChannel responseChannel : defMSG
-addChannel deployChannel : defMSG
-addChannel releaseChannel : defMSG
+addChannel submitChannel : defSERVICE
 addChannel authenticationChannel : defSERVICE
 
 bind webServer.handler@atmosphere => requestChannel
@@ -61,10 +60,8 @@ bind paaSKloudResourceManagerPage.request@atmosphere => requestChannel
 bind webServer.response@atmosphere => responseChannel
 bind paaSKloudResourceManagerPage.content@atmosphere => responseChannel
 
-bind paaSKloudResourceManagerPage.deploy@atmosphere => deployChannel
-bind paaSKloudResourceManager.deploy@atmosphere => deployChannel
-bind paaSKloudResourceManagerPage.release@atmosphere => releaseChannel
-bind paaSKloudResourceManager.release@atmosphere => releaseChannel
+bind paaSKloudResourceManagerPage.submit@atmosphere => submitChannel
+bind paaSKloudResourceManager.submit@atmosphere => submitChannel
 
 bind ldapAuthentication.authenticate@atmosphere => authenticationChannel
 bind paaSKloudResourceManagerPage.authentication@atmosphere => authenticationChannel
