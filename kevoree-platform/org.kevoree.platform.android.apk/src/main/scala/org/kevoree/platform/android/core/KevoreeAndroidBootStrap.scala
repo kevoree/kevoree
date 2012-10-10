@@ -150,6 +150,8 @@ class KevoreeAndroidBootStrap {
 
       coreBean.start()
 
+      coreBean.registerModelListener(new ProgressDialogModelListener(act))
+
 
       val file = bootstraper.asInstanceOf[Bootstraper].resolveKevoreeArtifact("org.kevoree.library.model.bootstrap.android", "org.kevoree.corelibrary.model", KevoreeFactory.getVersion)
       val jar = new JarFile(file)
