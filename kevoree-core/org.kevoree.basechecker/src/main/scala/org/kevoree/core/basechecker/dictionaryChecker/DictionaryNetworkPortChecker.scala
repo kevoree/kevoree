@@ -34,20 +34,24 @@ class DictionaryNetworkPortChecker extends CheckerService {
         instance.getComponents.foreach(c => instanceCollect(c, collectedPort, instance.getName))
       }
     }
-    model.getHubs.foreach {hub =>
-      instanceDCollect(hub, collectedPort)
+    model.getHubs.foreach {
+      hub =>
+        instanceDCollect(hub, collectedPort)
     }
-    model.getGroups.foreach {g =>
-      instanceDCollect(g, collectedPort)
+    model.getGroups.foreach {
+      g =>
+        instanceDCollect(g, collectedPort)
     }
     import scala.collection.JavaConversions._
-    collectedPort.foreach{ nodeC =>
-      nodeC._2.filter(portP => portP._2.size() >1).foreach{ portP =>
-        val violation: CheckerViolation = new CheckerViolation
-        violation.setMessage("Duplicated collected port usage "+portP._1)
-        violation.setTargetObjects(portP._2.toList)
-        violations.add(violation)
-      }
+    collectedPort.foreach {
+      nodeC =>
+        nodeC._2.filter(portP => portP._2.size() > 1).foreach {
+          portP =>
+            val violation: CheckerViolation = new CheckerViolation
+            violation.setMessage("Duplicated collected port usage " + portP._1 + "-" + portP._2.toList)
+            violation.setTargetObjects(portP._2.toList)
+            violations.add(violation)
+        }
     }
     violations
   }
@@ -87,14 +91,15 @@ class DictionaryNetworkPortChecker extends CheckerService {
     }
     ist.getDictionary.map {
       dic => {
-        dic.getValues.filter(dv => dv.getAttribute.getName == "port" && (dv.getTargetNode.getOrElse(nodeName) == nodeName)).foreach {
+        dic.getValues.filter(dv => dv.getAttribute.getName == "port" && ( dv.getTargetNode.isEmpty || dv.getTargetNode.get.getName ==  nodeName )).foreach {
           dv =>
             portFound = dv.getValue
         }
       }
     }
+
     if (portFound != null) {
-      val ipFound = KevoreePropertyHelper.getNetworkProperty(ist.getTypeDefinition.eContainer.asInstanceOf[ContainerRoot],nodeName,Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP).getOrElse("localhost").toString
+      val ipFound = KevoreePropertyHelper.getNetworkProperty(ist.getTypeDefinition.eContainer.asInstanceOf[ContainerRoot], nodeName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP).getOrElse("localhost").toString
       val nodeIDMethod = ipFound
 
       var nodeCollector = collector.get(nodeIDMethod)

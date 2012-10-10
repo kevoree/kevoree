@@ -45,11 +45,13 @@ object PrimitiveCommandExecutionHelper {
           }
           res
         }
-        case None => true
+        case None => {
+          afterUpdateFunc()
+        }
       }
 
     } else {
-      true
+      afterUpdateFunc()
     }
   }
 
