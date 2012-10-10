@@ -4,8 +4,6 @@ import org.kevoree.ContainerRoot;
 import org.kevoree.annotation.*;
 import org.kevoree.api.service.core.script.KevScriptEngine;
 import org.kevoree.framework.AbstractComponentType;
-import org.kevoree.framework.KevoreeXmiHelper;
-import org.kevoree.framework.message.StdKevoreeMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import scala.Option;
@@ -30,10 +28,9 @@ import scala.Option;
 		)
 })
 @Provides({
-		@ProvidedPort(name = "deploy", type = PortType.MESSAGE, messageType = "kloud_request"),
-		@ProvidedPort(name = "release", type = PortType.MESSAGE, messageType = "kloud_request")
+		@ProvidedPort(name = "submit", type = PortType.SERVICE, className = HostService.class)
 })
-public class PaaSKloudResourceManager extends AbstractComponentType {
+public class PaaSKloudResourceManager extends AbstractComponentType implements HostService {
 
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -45,49 +42,43 @@ public class PaaSKloudResourceManager extends AbstractComponentType {
 	public void stop () {
 	}
 
-	@Port(name = "deploy")
-	public void deploy (Object message) {
-		if (message instanceof StdKevoreeMessage) {
-			StdKevoreeMessage stdMessage = (StdKevoreeMessage) message;
-			if (stdMessage.getValue("login").isDefined() && stdMessage.getValue("model").isDefined()) {
-				String login = (String) stdMessage.getValue("login").get();
-				ContainerRoot model = KevoreeXmiHelper.loadString((String) stdMessage.getValue("model").get());
-				String sshKey = null;
-				if (stdMessage.getValue("sshKey").isDefined()) {
-					sshKey = (String) stdMessage.getValue("sshKey").get();
-				}
-				// check if a previous deploy has already done for this login
-				if (!KloudHelper.lookForAGroup(login, this.getModelService().getLastModel())) {
-					processNew(model, login, sshKey);
-				}
-			}
+	@Port(name = "submit", method = "deploy") // TODO add exception to return error message (need to check if service port is able to return an exception
+	public boolean deploy (/*Object message*/String login, ContainerRoot model, String sshKey) {
+//		if (message instanceof StdKevoreeMessage) {
+//			StdKevoreeMessage stdMessage = (StdKevoreeMessage) message;
+//			if (stdMessage.getValue("login").isDefined() && stdMessage.getValue("model").isDefined()) {
+//				String login = (String) stdMessage.getValue("login").get();
+//				ContainerRoot model = KevoreeXmiHelper.loadString((String) stdMessage.getValue("model").get());
+//				String sshKey = null;
+//				if (stdMessage.getValue("sshKey").isDefined()) {
+//					sshKey = (String) stdMessage.getValue("sshKey").get();
+//				}
+		// check if a previous deploy has already done for this login
+		if (!KloudHelper.lookForAGroup(login, this.getModelService().getLastModel())) {
+			return processNew(login, model, sshKey);
+		} else {
+			return false;
 		}
+//			}
+//		}
 	}
 
-	@Port(name = "release")
-	public void release (Object message) {
-		if (message instanceof StdKevoreeMessage) {
-			StdKevoreeMessage stdMessage = (StdKevoreeMessage) message;
-			if (stdMessage.getValue("login").isDefined()) {
-				release((String) stdMessage.getValue("login").get());
-			}
-		}
-	}
-
-	private void release (String login) {
+	@Port(name = "submit", method = "release")
+	public boolean release (String login) {
 		KevScriptEngine kengine = getKevScriptEngineFactory().createKevScriptEngine();
 		KloudReasoner.appendScriptToCleanupIaaSModelFromUser(kengine, login, getModelService().getLastModel());
 		for (int i = 0; i < 5; i++) {
 			try {
 				kengine.atomicInterpretDeploy();
-				break;
+				return true;
 			} catch (Exception e) {
 				logger.warn("Error while cleanup user, try number " + i);
 			}
 		}
+		return false;
 	}
 
-	protected void processNew (ContainerRoot userModel, String login, String sshKey) {
+	protected boolean processNew (String login, ContainerRoot userModel, String sshKey) {
 		logger.debug("starting processNew");
 		KevScriptEngine kengine = getKevScriptEngineFactory().createKevScriptEngine();
 		KloudReasoner.appendCreateGroupScript(getModelService().getLastModel(), login, this.getNodeName(), kengine, sshKey, false);
@@ -105,8 +96,10 @@ public class PaaSKloudResourceManager extends AbstractComponentType {
 		if (userModelUpdated.isDefined()) {
 			/* Send blindly the model to the core , PaaS Group are in charge to trigger this request , reply false and forward to Master interested node  */
 			getModelService().checkModel(userModelUpdated.get());
+			return true;
 		} else {
 //			release(login); // FIXME CALL RELEASE ?
+			return false;
 
 		}
 	}

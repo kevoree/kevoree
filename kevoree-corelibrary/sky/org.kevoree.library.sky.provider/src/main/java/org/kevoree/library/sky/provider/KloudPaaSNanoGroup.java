@@ -4,9 +4,11 @@ import org.kevoree.ContainerNode;
 import org.kevoree.ContainerRoot;
 import org.kevoree.KevoreeFactory;
 import org.kevoree.annotation.*;
+import org.kevoree.api.service.core.checker.CheckerViolation;
 import org.kevoree.api.service.core.script.KevScriptEngine;
 import org.kevoree.framework.*;
 import org.kevoree.library.nanohttp.NanoHTTPD;
+import org.kevoree.library.sky.provider.checker.RootKloudChecker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import scala.Option;
@@ -21,6 +23,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -45,9 +48,11 @@ public class KloudPaaSNanoGroup extends AbstractGroupType {
 	ContainerRoot userModel = KevoreeFactory.createContainerRoot();
 	private NanoHTTPD server = null;
 
+	private RootKloudChecker rootKloudChecker = new RootKloudChecker();
+
 	private int port;
 
-	protected ExecutorService poolUpdate = Executors.newSingleThreadExecutor();
+	protected ExecutorService poolUpdate = null;
 
 	@Start
 	public void startRestGroup () throws IOException {
@@ -78,16 +83,28 @@ public class KloudPaaSNanoGroup extends AbstractGroupType {
 						if (KloudHelper.isIaaSNode(getModelService().getLastModel(), getName(), getNodeName())) {
 							//ADD TO STACK
 							logger.debug("A new user model is received, adding a task to process a deployment");
-
-							submitJob(model);
+							rootKloudChecker.setLogin(getName());
+							List<CheckerViolation> violations = rootKloudChecker.check(model);
+							if (violations.size() == 0) {
+								submitJob(model);
+							} else {
+								logViolations(violations);
+							}
 						} else {
 							//FORWARD TO MASTER
 							if (externalSender) {
-								if (getDictionary().get("masterNode") != null) {
-									for (String ipPort : KloudHelper.getMasterIP_PORT(getDictionary().get("masterNode").toString())) {
-										logger.debug("send model on {}", ipPort);
-										KloudHelper.sendModel(model, "http://" + ipPort + "/model/current");
+								// validate model before to send it
+								rootKloudChecker.setLogin(getName());
+								List<CheckerViolation> violations = rootKloudChecker.check(model);
+								if (violations.size() == 0) {
+									if (getDictionary().get("masterNode") != null) {
+										for (String ipPort : KloudHelper.getMasterIP_PORT(getDictionary().get("masterNode").toString())) {
+											logger.debug("send model on {}", ipPort);
+											KloudHelper.sendModel(model, "http://" + ipPort + "/model/current");
+										}
 									}
+								} else {
+									logViolations(violations);
 								}
 							}
 							getModelService().updateModel(model);
@@ -147,7 +164,14 @@ public class KloudPaaSNanoGroup extends AbstractGroupType {
 
 	@Stop
 	public void stopRestGroup () {
+		logger.info("Stopping GROUP");
 		poolUpdate.shutdownNow();
+		try {
+			poolUpdate.awaitTermination(2, TimeUnit.SECONDS);
+		} catch (InterruptedException e) {
+			logger.error("Unable to wat for termination", e);
+		}
+		poolUpdate = null;
 		server.stop();
 
 	}
@@ -168,7 +192,6 @@ public class KloudPaaSNanoGroup extends AbstractGroupType {
 		if (KloudHelper.isIaaSNode(currentModel, getName(), getNodeName()) && KloudHelper.isUserModel(proposedModel, getName(), getNodeName())) {
 			logger.debug("A new user model is received (sent by the core), adding a task to process a deployment");
 			submitJob(proposedModel);
-
 			return false;
 		} else {
 			logger.debug("nothing specific, update can be done");
@@ -326,9 +349,9 @@ public class KloudPaaSNanoGroup extends AbstractGroupType {
 
 		@Override
 		public void run () {
+//			logger.debug("process a deployment as \n\n{}\n\n as currentModel and \n\n{}\n\n as new model", KevoreeXmiHelper.saveToString(currentModel, false),
+//					KevoreeXmiHelper.saveToString(proposedModel, false));
 
-			logger.debug("process a deployment as \n\n{}\n\n as currentModel and \n\n{}\n\n as new model", KevoreeXmiHelper.saveToString(currentModel, false),
-					KevoreeXmiHelper.saveToString(proposedModel, false));
 
 			if (KloudReasoner.needsNewDeployment(proposedModel, currentModel)) {
 				logger.debug("A new Deployment must be done!");
@@ -368,5 +391,10 @@ public class KloudPaaSNanoGroup extends AbstractGroupType {
 		}
 	}
 
+	private void logViolations (List<CheckerViolation> violations) {
+		for (CheckerViolation violation : violations) {
+			logger.info("{}: {}", getName(), violation.getMessage());
+		}
+	}
 
 }

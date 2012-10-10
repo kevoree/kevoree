@@ -20,7 +20,7 @@ addComponent iaaSKloudResourceManager@virtualbsd : IaaSKloudResourceManager
 
 addChannel requestChannel : defMSG
 addChannel responseChannel : defMSG
-addChannel deployChannel : defMSG
+addChannel submitChannel : defSERVICE
 addChannel releaseChannel : defMSG
 //addChannel authenticationChannel : defSERVICE
 
@@ -29,10 +29,8 @@ bind paaSKloudResourceManagerPage.request@virtualbsd => requestChannel
 bind webServer.response@virtualbsd => responseChannel
 bind paaSKloudResourceManagerPage.content@virtualbsd => responseChannel
 
-bind paaSKloudResourceManagerPage.deploy@virtualbsd => deployChannel
-bind paaSKloudResourceManager.deploy@virtualbsd => deployChannel
-bind paaSKloudResourceManagerPage.release@virtualbsd => releaseChannel
-bind paaSKloudResourceManager.release@virtualbsd => releaseChannel
+bind paaSKloudResourceManagerPage.submit@virtualbsd => submitChannel
+bind paaSKloudResourceManager.submit@virtualbsd => submitChannel
 
 //bind ldapAuthentication.authenticate@cumulus => authenticationChannel
 //bind paaSKloudResourceManagerPage.authentication@cumulus => authenticationChannel

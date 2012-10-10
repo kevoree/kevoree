@@ -22,8 +22,7 @@ addComponent iaaSKloudResourceManager@node0 : IaaSKloudResourceManager
 
 addChannel requestChannel : defMSG
 addChannel responseChannel : defMSG
-addChannel deployChannel : defMSG
-addChannel releaseChannel : defMSG
+addChannel submitChannel : defSERVICE
 //addChannel authenticationChannel : defSERVICE
 
 bind webServer.handler@node0 => requestChannel
@@ -31,10 +30,8 @@ bind paaSKloudResourceManagerPage.request@node0 => requestChannel
 bind webServer.response@node0 => responseChannel
 bind paaSKloudResourceManagerPage.content@node0 => responseChannel
 
-bind paaSKloudResourceManagerPage.deploy@node0 => deployChannel
-bind paaSKloudResourceManager.deploy@node0 => deployChannel
-bind paaSKloudResourceManagerPage.release@node0 => releaseChannel
-bind paaSKloudResourceManager.release@node0 => releaseChannel
+bind paaSKloudResourceManagerPage.submit@node0 => submitChannel
+bind paaSKloudResourceManager.submit@node0 => submitChannel
 
 //bind ldapAuthentication.authenticate@node0 => authenticationChannel
 //bind paaSKloudResourceManagerPage.authentication@node0 => authenticationChannel
