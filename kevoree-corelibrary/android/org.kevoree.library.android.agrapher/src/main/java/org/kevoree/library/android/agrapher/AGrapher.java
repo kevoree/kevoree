@@ -33,16 +33,16 @@ import org.slf4j.LoggerFactory;
         // @DictionaryAttribute(name = "color_courbe", defaultValue = "1", optional = true)
 })
 @ComponentType
-public class AGrapher extends AbstractComponentType  {
+public class AGrapher extends AbstractComponentType {
 
     private KevoreeAndroidService uiService = null;
-    private String title= "";
-    private int history_size= 60;
-    private int color_axe= Color.WHITE;
-    private int color_courbe= Color.RED;
+    private String title = "";
+    private int history_size = 60;
+    private int color_axe = Color.WHITE;
+    private int color_courbe = Color.RED;
     private static final Logger logger = LoggerFactory.getLogger(AGrapher.class);
-    private LinearLayout layout=null;
-    private GraphLine graphline=null;
+    private LinearLayout layout = null;
+    private GraphLine graphline = null;
     // private Logger logger = LoggerFactory.getLogger(AGrapher.class);
 
     @Start
@@ -50,7 +50,7 @@ public class AGrapher extends AbstractComponentType  {
         // logger.debug("AGrapher ","starting");
         updateDico();
         uiService = UIServiceHandler.getUIService();
-        graphline = new GraphLine(title,history_size, color_axe,color_courbe);
+        graphline = new GraphLine(title, history_size, color_axe, color_courbe);
 
         layout = new LinearLayout(uiService.getRootActivity());
 
@@ -58,9 +58,8 @@ public class AGrapher extends AbstractComponentType  {
 
         uiService.getRootActivity().runOnUiThread(new Runnable() {
             @Override
-            public void run ()
-            {
-                GraphicalView view= graphline.CreateView(uiService.getRootActivity());
+            public void run() {
+                GraphicalView view = graphline.CreateView(uiService.getRootActivity());
                 layout.addView(view);
             }
         });
@@ -70,7 +69,7 @@ public class AGrapher extends AbstractComponentType  {
     @Stop
     public void stop() {
         uiService.remove(layout);
-        graphline =  null;
+        graphline = null;
     }
 
     @Update
@@ -78,14 +77,13 @@ public class AGrapher extends AbstractComponentType  {
         updateDico();
     }
 
-    public void updateDico(){
-        try
-        {
-            title=              getDictionary().get("title").toString() ;
-            history_size=       Integer.parseInt(getDictionary().get("history_size").toString()) ;
+    public void updateDico() {
+        try {
+            title = getDictionary().get("title").toString();
+            history_size = Integer.parseInt(getDictionary().get("history_size").toString());
             //color_axe=          Integer.parseInt(getDictionary().get("color_axe").toString()) ;
             //color_courbe=       Integer.parseInt(getDictionary().get("color_courbe").toString());
-        }  catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -93,27 +91,39 @@ public class AGrapher extends AbstractComponentType  {
 
     @Port(name = "input")
     public void appendIncoming(Object msg) {
-        try
-        {
-            String[] values = msg.toString().split(",");
-            //System.out.println(values.length);;
-            for (int i = 0; i < values.length; i++) {
-                String[] lvl = values[i].split("=");
-                //System.out.println(values[i]);
-                //System.out.println(lvl.length);
-                if (lvl.length >= 2) {
-                    Double value = Double.parseDouble(lvl[1]);
-                    Long time = System.currentTimeMillis();
+        try {
 
-                    //System.out.println(lvl[0]);
-                    // System.out.println(value);
-                    // System.out.println(time);
-                    graphline.add(value);
+            if (msg.toString().contains(",")) {
+                String[] values = msg.toString().split(",");
+                //System.out.println(values.length);;
+                for (int i = 0; i < values.length; i++) {
+                    String[] lvl = values[i].split("=");
+                    //System.out.println(values[i]);
+                    //System.out.println(lvl.length);
+                    if (lvl.length >= 2) {
+                        Double value = Double.parseDouble(lvl[1]);
+                        Long time = System.currentTimeMillis();
 
+                        //System.out.println(lvl[0]);
+                        // System.out.println(value);
+                        // System.out.println(time);
+                        graphline.add(value);
+
+                    }
                 }
+            } else {
+                double val = Double.parseDouble(msg.toString());
+                graphline.add(val);
             }
+
+
         } catch (Exception e) {
-            logger.warn("Grapher bad message => " + e.getMessage());
+            try {
+                double val = Double.parseDouble(msg.toString());
+                graphline.add(val);
+            } catch (Exception e2) {
+                logger.warn("Grapher bad message => " + e2.getMessage());
+            }
         }
 
 

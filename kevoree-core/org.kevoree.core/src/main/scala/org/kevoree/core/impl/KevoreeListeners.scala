@@ -86,7 +86,7 @@ class KevoreeListeners {
 
   case class RemoveListener(l: ModelListener) extends Runnable {
     def run() {
-      if (!registeredListeners.contains(l)) {
+      if (registeredListeners.contains(l)) {
         registeredListeners.remove(l)
       }
     }
@@ -143,9 +143,38 @@ class KevoreeListeners {
     }
   }
 
+
   def afterUpdate(currentModel: ContainerRoot, pmodel: ContainerRoot): Boolean = {
     scheduler.submit(AFTERUPDATE(currentModel, pmodel)).get()
   }
+
+
+
+
+  //ROLLBACK STEP
+  case class PREROLLBACK(currentModel: ContainerRoot, proposedModel: ContainerRoot) extends Callable[Boolean] {
+    def call(): Boolean = {
+      import scala.collection.JavaConversions._
+      registeredListeners.foreach(l => l.preRollback(currentModel, proposedModel))
+      true
+    }
+  }
+  def preRollback(currentModel: ContainerRoot, pmodel: ContainerRoot): Boolean = {
+    scheduler.submit(PREROLLBACK(currentModel, pmodel)).get()
+  }
+  case class POSTROLLBACK(currentModel: ContainerRoot, proposedModel: ContainerRoot) extends Callable[Boolean] {
+    def call(): Boolean = {
+      import scala.collection.JavaConversions._
+      registeredListeners.foreach(l => l.postRollback(currentModel, proposedModel))
+      true
+    }
+  }
+  def postRollback(currentModel: ContainerRoot, pmodel: ContainerRoot): Boolean = {
+    scheduler.submit(POSTROLLBACK(currentModel, pmodel)).get()
+  }
+
+
+
 
 
   case class Notify()
