@@ -79,6 +79,10 @@ class SaveAsKevScript extends Command {
         }
     }
 
+    currentModel.getRepositories.foreach{ repo =>
+         scriptBuffer.append("addRepo \""+repo.getUrl+"\"\n")
+    }
+
     duS.foreach {
 
       du => scriptBuffer.append("merge 'mvn:" + du.getGroupName + "/" + du.getUnitName + "/" + (if(du.getVersion==KevoreeFactory.getVersion){"{kevoree.version}"}else {du.getVersion})  + "'\n")
