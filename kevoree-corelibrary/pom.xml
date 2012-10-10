@@ -6,7 +6,7 @@
     <artifactId>org.kevoree.library</artifactId>
     <packaging>pom</packaging>
     <name>Kevoree :: Library</name>
-    <version>1.8.8-SNAPSHOT</version>
+    <version>1.8.8</version>
 
     <properties>
         <kevoree.version>${project.version}</kevoree.version>

@@ -13,15 +13,16 @@
  */
 package org.kevoree.core.impl
 
-import actors.{Actor, DaemonActor}
 import org.kevoree.api.service.core.handler.ModelListener
 import org.kevoree.ContainerRoot
 import org.slf4j.LoggerFactory
 import java.util.concurrent.{Callable, ThreadFactory, ExecutorService}
+import java.util.concurrent.atomic.AtomicInteger
 
 class KevoreeListeners {
 
   private var scheduler: ExecutorService = _
+  private var schedulerAsync: ExecutorService = _
 
   def start(nodeName: String) {
     scheduler = java.util.concurrent.Executors.newSingleThreadExecutor(new ThreadFactory() {
@@ -31,8 +32,29 @@ class KevoreeListeners {
       } else {
         Thread.currentThread().getThreadGroup
       }
+
       def newThread(p1: Runnable) = {
-        val t = new Thread(group, p1, "Kevoree_Core_ListenerScheduler_"+nodeName)
+        val t = new Thread(group, p1, "Kevoree_Core_ListenerScheduler_" + nodeName)
+        if (t.isDaemon) {
+          t.setDaemon(false)
+        }
+        if (t.getPriority != Thread.NORM_PRIORITY) {
+          t.setPriority(Thread.NORM_PRIORITY)
+        }
+        t
+      }
+    })
+    schedulerAsync = java.util.concurrent.Executors.newCachedThreadPool(new ThreadFactory() {
+      val numCreated = new AtomicInteger();
+      val s = System.getSecurityManager
+      val group = if (s != null) {
+        s.getThreadGroup
+      } else {
+        Thread.currentThread().getThreadGroup
+      }
+
+      def newThread(p1: Runnable) = {
+        val t = new Thread(group, p1, "Kevoree_Core_ListenerSchedulerAsync_" + nodeName + "_" + numCreated.getAndIncrement)
         if (t.isDaemon) {
           t.setDaemon(false)
         }
@@ -44,35 +66,28 @@ class KevoreeListeners {
     })
   }
 
-  private val registeredListeners = new scala.collection.mutable.HashMap[ModelListener, Actor]()
+  private val registeredListeners = new java.util.ArrayList[ModelListener]()
 
   def addListener(l: ModelListener) = scheduler.submit(AddListener(l))
 
   case class AddListener(l: ModelListener) extends Runnable {
     def run() {
       if (!registeredListeners.contains(l)) {
-        val myActor = new ListenerActor(l)
-        myActor.start()
-        registeredListeners.put(l, myActor)
+        registeredListeners.add(l)
       }
     }
   }
 
   def removeListener(l: ModelListener) = {
-    if(scheduler != null){
+    if (scheduler != null) {
       scheduler.submit(RemoveListener(l))
     }
   }
 
   case class RemoveListener(l: ModelListener) extends Runnable {
     def run() {
-      registeredListeners.get(l) match {
-        case Some(previousActor) => {
-          previousActor ! STOP_LISTENER()
-          registeredListeners.remove(l)
-          Unit
-        }
-        case None => //NOOP
+      if (!registeredListeners.contains(l)) {
+        registeredListeners.remove(l)
       }
     }
   }
@@ -81,34 +96,35 @@ class KevoreeListeners {
 
   case class NotifyAll() extends Runnable {
     def run() {
-      registeredListeners.values.foreach {
+      import scala.collection.JavaConversions._
+      registeredListeners.foreach {
         value =>
-          value ! Notify()
+          schedulerAsync.submit(new AsyncModelUpdateRunner(value))
       }
     }
   }
 
   def stop() = {
-    registeredListeners.values.foreach {
-      value =>
-        value ! STOP_LISTENER()
-    }
     registeredListeners.clear()
+    schedulerAsync.shutdownNow()
+    schedulerAsync = null
     scheduler.shutdownNow()
     scheduler = null
   }
 
   case class STOP_ACTOR()
 
-  case class PREUPDATE(currentModel: ContainerRoot, proposedModel: ContainerRoot) extends Callable[Boolean]{
-    def call() : Boolean = {
-      registeredListeners.forall(l => l._1.preUpdate(currentModel, proposedModel))
+  case class PREUPDATE(currentModel: ContainerRoot, proposedModel: ContainerRoot) extends Callable[Boolean] {
+    def call(): Boolean = {
+      import scala.collection.JavaConversions._
+      registeredListeners.forall(l => l.preUpdate(currentModel, proposedModel))
     }
   }
 
-  case class INITUPDATE(currentModel: ContainerRoot, proposedModel: ContainerRoot) extends Callable[Boolean]{
-    def call() : Boolean = {
-      registeredListeners.forall(l => l._1.initUpdate(currentModel, proposedModel))
+  case class INITUPDATE(currentModel: ContainerRoot, proposedModel: ContainerRoot) extends Callable[Boolean] {
+    def call(): Boolean = {
+      import scala.collection.JavaConversions._
+      registeredListeners.forall(l => l.initUpdate(currentModel, proposedModel))
     }
   }
 
@@ -120,9 +136,10 @@ class KevoreeListeners {
     scheduler.submit(PREUPDATE(currentModel, pmodel)).get()
   }
 
-  case class AFTERUPDATE(currentModel: ContainerRoot, proposedModel: ContainerRoot) extends Callable[Boolean]{
-    def call() : Boolean = {
-      registeredListeners.forall(l => l._1.afterLocalUpdate(currentModel, proposedModel))
+  case class AFTERUPDATE(currentModel: ContainerRoot, proposedModel: ContainerRoot) extends Callable[Boolean] {
+    def call(): Boolean = {
+      import scala.collection.JavaConversions._
+      registeredListeners.forall(l => l.afterLocalUpdate(currentModel, proposedModel))
     }
   }
 
@@ -138,19 +155,12 @@ class KevoreeListeners {
 
   private val logger = LoggerFactory.getLogger(this.getClass)
 
-  class ListenerActor(listener: ModelListener) extends DaemonActor {
-    def act() {
-      loop {
-        react {
-          case Notify() => {
-            try {
-              listener.modelUpdated()
-            } catch {
-              case _@e => logger.error("Error while trigger model update ", e)
-            }
-          }
-          case STOP_LISTENER() => exit()
-        }
+  class AsyncModelUpdateRunner(listener: ModelListener) extends Runnable {
+    def run() {
+      try {
+        listener.modelUpdated()
+      } catch {
+        case _@e => logger.error("Error while trigger model update ", e)
       }
     }
   }
