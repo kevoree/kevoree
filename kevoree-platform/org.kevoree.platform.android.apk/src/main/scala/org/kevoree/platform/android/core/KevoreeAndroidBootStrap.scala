@@ -51,6 +51,8 @@ import android.app.Activity
 import org.kevoree.api.Bootstraper
 import org.kevoree.api.service.core.logging.KevoreeLogService
 import org.slf4j.impl.StaticLoggerBinder
+import android.content.pm.ActivityInfo
+import org.kevoree.android.framework.helper.UIServiceHandler
 
 /**
  * Created with IntelliJ IDEA.
@@ -70,6 +72,13 @@ class KevoreeAndroidBootStrap {
     if (started) {
       return
     }
+
+    act.runOnUiThread(new Runnable {
+      def run() {
+        UIServiceHandler.getUIService().getRootActivity().setRequestedOrientation ( ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+      }
+    })
+
 
     //Build UI PROXY
     val uiService = new KevoreeActivityAndroidService(act, kui)
