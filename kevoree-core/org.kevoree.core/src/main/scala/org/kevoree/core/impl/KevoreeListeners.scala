@@ -162,14 +162,15 @@ class KevoreeListeners {
   def preRollback(currentModel: ContainerRoot, pmodel: ContainerRoot): Boolean = {
     scheduler.submit(PREROLLBACK(currentModel, pmodel)).get()
   }
-  case class AFTERUPDATE(currentModel: ContainerRoot, proposedModel: ContainerRoot) extends Callable[Boolean] {
+  case class POSTROLLBACK(currentModel: ContainerRoot, proposedModel: ContainerRoot) extends Callable[Boolean] {
     def call(): Boolean = {
       import scala.collection.JavaConversions._
-      registeredListeners.forall(l => l.afterLocalUpdate(currentModel, proposedModel))
+      registeredListeners.foreach(l => l.postRollback(currentModel, proposedModel))
+      true
     }
   }
-  def afterUpdate(currentModel: ContainerRoot, pmodel: ContainerRoot): Boolean = {
-    scheduler.submit(AFTERUPDATE(currentModel, pmodel)).get()
+  def postRollback(currentModel: ContainerRoot, pmodel: ContainerRoot): Boolean = {
+    scheduler.submit(POSTROLLBACK(currentModel, pmodel)).get()
   }
 
 

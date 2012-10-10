@@ -83,4 +83,11 @@ public abstract class AbstractGroupType extends AbstractTypeDefinition implement
         triggerModelUpdate();
     }
 
+    @Override
+    public void preRollback(ContainerRoot currentModel, ContainerRoot proposedModel) {
+    }
+
+    @Override
+    public void postRollback(ContainerRoot currentModel, ContainerRoot proposedModel) {
+    }
 }
