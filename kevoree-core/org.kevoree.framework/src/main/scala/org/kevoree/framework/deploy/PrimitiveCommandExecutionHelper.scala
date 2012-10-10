@@ -32,15 +32,18 @@ object PrimitiveCommandExecutionHelper {
 
   var logger = LoggerFactory.getLogger(this.getClass)
 
-  def execute(rootNode: ContainerNode, adaptionModel: AdaptationModel, nodeInstance: NodeType, afterUpdateFunc: () => Boolean): Boolean = {
+  def execute(rootNode: ContainerNode, adaptionModel: AdaptationModel, nodeInstance: NodeType, afterUpdateFunc: () => Boolean,preRollBack: () => Boolean,postRollback: () => Boolean): Boolean = {
     if (adaptionModel.getOrderedPrimitiveSet != null) {
       adaptionModel.getOrderedPrimitiveSet match {
         case Some(orderedPrimitiveSet) => {
           val phase = new KevoreeParDeployPhase
-          val res = executeStep(rootNode, orderedPrimitiveSet, nodeInstance, phase)
+          val res = executeStep(rootNode, orderedPrimitiveSet, nodeInstance, phase,preRollBack)
           if (res) {
             if (!afterUpdateFunc()) {
+              //CASE REFUSE BY LISTENERS
+              preRollBack()
               phase.rollBack()
+              postRollback()
             }
           }
           res
@@ -55,7 +58,7 @@ object PrimitiveCommandExecutionHelper {
     }
   }
 
-  private def executeStep(rootNode: ContainerNode, step: ParallelStep, nodeInstance: NodeType, phase: KevoreeParDeployPhase): Boolean = {
+  private def executeStep(rootNode: ContainerNode, step: ParallelStep, nodeInstance: NodeType, phase: KevoreeParDeployPhase,preRollBack: () => Boolean): Boolean = {
     if (step == null) {
       return true
     }
@@ -90,11 +93,12 @@ object PrimitiveCommandExecutionHelper {
           case Some(nextStep) => {
             val nextPhase = new KevoreeParDeployPhase
             phase.sucessor = Some(nextPhase)
-            executeStep(rootNode, nextStep, nodeInstance, nextPhase)
+            executeStep(rootNode, nextStep, nodeInstance, nextPhase,preRollBack)
           }
           case None => true
         }
         if (!subResult) {
+          preRollBack
           phase.rollBack()
           false
         } else {
@@ -208,13 +212,7 @@ object PrimitiveCommandExecutionHelper {
       val stepResult = (wt !? primitives).asInstanceOf[Boolean]
       stepResult
       */
-
-
-
-
-
       executeAllWorker(primitives, watchDogTimeoutInt)
-
     }
 
     def rollBack() {
