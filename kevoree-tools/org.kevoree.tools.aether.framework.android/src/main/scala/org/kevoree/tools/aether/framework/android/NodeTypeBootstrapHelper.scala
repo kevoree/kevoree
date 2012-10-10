@@ -103,7 +103,7 @@ class NodeTypeBootstrapHelper(ctx: android.content.Context, parent: ClassLoader)
           }
           //KevoreeDeployManager.addMapping(KevoreeOSGiBundle(node.getTypeDefinition.getName, node.getTypeDefinition.getClass.getName, lastBundleID))
         } else {
-          logger.error("NodeType deploy unit not found , have you forgotten to merge nodetype library ?");
+          logger.error("NodeType deploy unit not found , have you forgotten to merge nodetype library ?")
           None
         }
       }
@@ -205,7 +205,7 @@ class NodeTypeBootstrapHelper(ctx: android.content.Context, parent: ClassLoader)
             None
           }
         } else {
-          logger.error("NodeType deploy unit not found , have you forgotten to merge nodetype library ?");
+          logger.error("NodeType deploy unit not found , have you forgotten to merge nodetype library ?")
           None
         }
       }
@@ -252,9 +252,9 @@ class NodeTypeBootstrapHelper(ctx: android.content.Context, parent: ClassLoader)
     }
   }
 
-  def resolveArtifact(artId: String, groupId: String, version: String, repos: List[String]): File = AetherUtil.resolveMavenArtifact(artId, groupId, version, repos)
+  def resolveArtifact(artId: String, groupId: String, version: String, repos: java.util.List[String]): File = AetherUtil.resolveMavenArtifact(artId, groupId, version, repos)
 
-  def resolveArtifact(artId: String, groupId: String, version: String, extension : String, repos: List[String]): File = AetherUtil.resolveMavenArtifact(artId, groupId, version, extension, repos)
+  def resolveArtifact(artId: String, groupId: String, version: String, extension : String, repos: java.util.List[String]): File = AetherUtil.resolveMavenArtifact(artId, groupId, version, extension, repos)
 
   def resolveKevoreeArtifact(artId: String, groupId: String, version: String): File = AetherUtil.resolveKevoreeArtifact(artId, groupId, version)
 

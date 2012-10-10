@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
 })
 @NodeFragment
 public abstract class AbstractHostNode extends JavaSENode implements HostNode {
-	private static final Logger logger = LoggerFactory.getLogger(IaaSNode.class);
+	private static final Logger logger = LoggerFactory.getLogger(AbstractHostNode.class);
 
 
 	private IaaSHTTPServer server;

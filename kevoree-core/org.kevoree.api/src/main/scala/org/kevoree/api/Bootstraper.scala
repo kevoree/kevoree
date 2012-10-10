@@ -47,8 +47,8 @@ trait Bootstraper {
 
   def bootstrapNodeType(currentModel: ContainerRoot, nodeName: String, mservice: KevoreeModelHandlerService, kevsEngineFactory: KevScriptEngineFactory): Option[org.kevoree.api.NodeType]
 
-  def resolveArtifact(artId: String, groupId: String, version: String, repos: List[String]): File
-  def resolveArtifact(artId: String, groupId: String, version: String, extension : String, repos: List[String]): File
+  def resolveArtifact(artId: String, groupId: String, version: String, repos: java.util.List[String]): File
+  def resolveArtifact(artId: String, groupId: String, version: String, extension : String, repos: java.util.List[String]): File
 
   def resolveKevoreeArtifact(artId: String, groupId: String, version: String): File
 
