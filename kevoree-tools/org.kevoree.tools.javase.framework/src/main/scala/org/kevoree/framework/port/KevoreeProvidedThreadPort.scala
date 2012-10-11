@@ -23,7 +23,7 @@ import org.kevoree.framework.KevoreePort
  */
 trait KevoreeProvidedThreadPort extends KevoreePort with Runnable {
 
-  val queue = new java.util.concurrent.ConcurrentLinkedQueue[Any]()
+  val queue = new java.util.concurrent.LinkedBlockingDeque[Any]()
   var reader: Thread = null
 
   private var isPaused = true
