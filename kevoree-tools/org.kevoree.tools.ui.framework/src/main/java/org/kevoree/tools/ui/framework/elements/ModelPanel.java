@@ -126,6 +126,7 @@ public class ModelPanel extends JLayeredPane implements BufferedElement {
         });
     }
 
+
     public void addNode(JPanel p) {
         nodePanel.add(p);
         p.setBounds(50, 50, (int) p.getLayout().preferredLayoutSize(p).getWidth(), (int) p.getLayout().preferredLayoutSize(p).getHeight());
