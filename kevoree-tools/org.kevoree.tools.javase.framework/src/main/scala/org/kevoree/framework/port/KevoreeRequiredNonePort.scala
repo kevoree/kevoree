@@ -31,7 +31,7 @@ import org.kevoree.framework.{KevoreeChannelFragment, KevoreePort}
 import org.kevoree.framework.message.FragmentBindMessage
 import org.kevoree.framework.message.FragmentUnbindMessage
 
-trait KevoreeRequiredNonePort extends KevoreePort with Runnable {
+trait KevoreeRequiredNonePort extends KevoreePort {
 
   def getName: String
   def getInOut: Boolean
