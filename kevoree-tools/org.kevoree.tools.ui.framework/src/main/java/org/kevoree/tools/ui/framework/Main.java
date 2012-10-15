@@ -59,6 +59,13 @@ public class Main {
 
         ModelPanel model = new ModelPanel();
 
+        //Test trianflePanel
+        IconPanel panel = new IconPanel("1349960253_triangle.png");
+        panel.setTitle("[3..*]");
+        model.addNode(panel);
+
+
+
         //Test Group Panel
         GroupPanel groupPanel = new GroupPanel();
         groupPanel.setTitle("G1");
@@ -176,7 +183,7 @@ public class Main {
         JPanel prop = new JPanel();
         prop.add(new JButton("TOTO"));
 
-        epanel.displayProperties(prop);
+       // epanel.displayProperties(prop);
 
 
         jframe.pack();
@@ -188,7 +195,7 @@ public class Main {
         hud.getJDialog().setLocationRelativeTo(jframe);
         hud.getJDialog().setResizable(true);
         hud.getJDialog().setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        hud.getJDialog().setVisible(true);
+       // hud.getJDialog().setVisible(true);
 
         JTextField textField = HudWidgetFactory.createHudTextField("Text field");
          hud.getJDialog().add(textField);
