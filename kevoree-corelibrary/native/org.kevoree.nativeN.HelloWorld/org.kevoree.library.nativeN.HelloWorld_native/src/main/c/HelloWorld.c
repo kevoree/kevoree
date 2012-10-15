@@ -8,7 +8,7 @@ int counter = 0;
 /* @Port(name = "input_port") */
 void input_port(void *input) {
 // USE INPUT
-    sprintf(input_msg,"Receive from java '%s' counter = %d \n",input,counter);
+    sprintf(input_msg,"Receive from java '%s' counter = %d \n",(char *)input,counter);
 
    output_port((char*)input_msg);
    counter++;

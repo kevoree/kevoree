@@ -21,11 +21,6 @@
         <platform.jni>jnilib</platform.jni>
     </properties>
 
-
-    <properties>
-        <kevoree.version>1.8.9-SNAPSHOT</kevoree.version>
-    </properties>
-
     <build>
         <plugins>
             <plugin>
