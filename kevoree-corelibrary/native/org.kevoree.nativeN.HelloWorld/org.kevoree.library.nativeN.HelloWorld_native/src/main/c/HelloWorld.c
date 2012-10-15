@@ -2,10 +2,16 @@
 
 extern void output_port(void *input);
 
+char input_msg[1024];
+int counter = 0;
+
 /* @Port(name = "input_port") */
 void input_port(void *input) {
 // USE INPUT
+    sprintf(input_msg,"Receive from java '%s' counter = %d \n",input,counter);
 
+   output_port((char*)input_msg);
+   counter++;
 
 }
 
@@ -14,10 +20,10 @@ int start()
 {
 	fprintf(stderr,"Component starting \n");
 
-	while(1){
-
-	     output_port((char*)"Hello World 2");
-	usleep(1000*1000);
+	while(1)
+	{
+	     output_port((char*)"Hello World");
+	     usleep(1000*1000);
 	}
 
 return 0;
