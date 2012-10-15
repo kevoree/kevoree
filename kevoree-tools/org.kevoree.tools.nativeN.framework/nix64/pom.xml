@@ -1,0 +1,88 @@
+<project>
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.kevoree.tools.nativeN</groupId>
+        <artifactId>org.kevoree.tools.nativeN.framework</artifactId>
+        <version>1.8.9-SNAPSHOT</version>
+    </parent>
+
+    <groupId>org.kevoree.tools.nativeN.framework</groupId>
+    <artifactId>org.kevoree.tools.nativeN.framework.nix64</artifactId>
+    <version>1.8.9-SNAPSHOT</version>
+
+    <name>Kevoree :: Tools :: NativeN :: NIX64 </name>
+
+    <packaging>so</packaging>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.kevoree.tools.nativeN</groupId>
+            <artifactId>org.kevoree.tools.nativeN.core</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>native-maven-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <!--  trigger javah -->
+                    <javahOS>linux</javahOS>
+
+                    <compilerProvider>generic-classic</compilerProvider>
+
+                    <compilerExecutable>cc</compilerExecutable>
+                    <linkerExecutable>cc</linkerExecutable>
+
+                    <sources>
+                        <source>
+                            <directory>../src/main/c</directory>
+                            <fileNames>
+                                <fileName>native.c</fileName>
+                            </fileNames>
+                        </source>
+                    </sources>
+
+                    <linkerEndOptions>
+                        <linkerEndOption> -lpthread</linkerEndOption>
+                    </linkerEndOptions>
+                    <linkerStartOptions>
+                        <linkerStartOption>-shared -static -lc</linkerStartOption>
+                    </linkerStartOptions>
+
+                </configuration>
+
+
+                <executions>
+                    <execution>
+                        <id>javah</id>
+                        <phase>generate-sources</phase>
+                        <configuration>
+                            <!-- <javahOS>linux</javahOS>  -->
+                            <javahProvider>default</javahProvider>
+                            <javahOutputDirectory>${project.build.directory}/custom-javah</javahOutputDirectory>
+                            <workingDirectory>${basedir}</workingDirectory>
+                            <javahOutputFileName>nativelib.h</javahOutputFileName>
+                            <javahClassNames>
+                                <javahClassName>org.kevoree.tools.nativeN.NativeJNI</javahClassName>
+                            </javahClassNames>
+                        </configuration>
+                        <goals>
+                            <goal>javah</goal>
+                        </goals>
+                    </execution>
+                </executions>
+
+            </plugin>
+
+
+
+
+        </plugins>
+    </build>
+</project>

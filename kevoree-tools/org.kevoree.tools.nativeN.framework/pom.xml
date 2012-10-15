@@ -1,0 +1,61 @@
+<project>
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <artifactId>org.kevoree.tools.root</artifactId>
+        <groupId>org.kevoree.tools</groupId>
+        <version>1.8.9-SNAPSHOT</version>
+        <relativePath>../org.kevoree.tools.root/pom.xml</relativePath>
+    </parent>
+
+    <groupId>org.kevoree.tools.nativeN</groupId>
+    <artifactId>org.kevoree.tools.nativeN.framework</artifactId>
+    <packaging>pom</packaging>
+    <name>Kevoree :: Tools :: Native :: Framework</name>
+
+    <profiles>
+        <profile>
+            <id>nix32</id>
+            <activation>
+                <os>
+                    <family>unix</family>
+                    <name>Linux</name>
+                    <arch>i386</arch>
+                </os>
+            </activation>
+            <modules>
+                <module>nix32</module>
+            </modules>
+        </profile>
+
+        <profile>
+            <id>nix64</id>
+            <activation>
+                <os>
+                    <family>unix</family>
+                    <name>Linux</name>
+                    <arch>x64</arch>
+                </os>
+            </activation>
+            <modules>
+                <module>nix64</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>osx</id>
+            <activation>
+                <os>
+                    <family>mac</family>
+                </os>
+            </activation>
+
+
+            <modules>
+                <module>osx</module>
+            </modules>
+        </profile>
+
+    </profiles>
+
+</project>
