@@ -1,0 +1,5 @@
+tblock
+{
+    createComponentType FaceDetection @ Native
+    addOutPortType faceDetected : Message : optional=>  FaceDetection
+}
