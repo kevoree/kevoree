@@ -26,6 +26,29 @@
 
         <plugins>
             <plugin>
+                <groupId>com.mycila.maven-license-plugin</groupId>
+                <artifactId>maven-license-plugin</artifactId>
+                <version>1.9.0</version>
+                <configuration>
+                    <basedir>${basedir}</basedir>
+                    <header>${basedir}/../../../LICENSE_HEADER</header>
+                    <strictCheck>true</strictCheck>
+                    <properties>
+                        <owner>Jean-Emile DARTOIS</owner>
+                        <year>${project.inceptionYear}</year>
+                        <email>jedartois@gmail.com</email>
+                    </properties>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>process-sources</phase>
+                        <goals>
+                            <goal>format</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>native-maven-plugin</artifactId>
                 <extensions>true</extensions>
