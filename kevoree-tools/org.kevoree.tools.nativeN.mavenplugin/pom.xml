@@ -14,20 +14,9 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.apache.maven</groupId>
-            <artifactId>maven-plugin-api</artifactId>
-            <version>3.0.3</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.maven</groupId>
-            <artifactId>maven-project</artifactId>
-            <version>2.2.1</version>
-        </dependency>
-
-        <dependency>
             <groupId>org.kevoree.tools.nativeN</groupId>
             <artifactId>org.kevoree.tools.nativeN.core</artifactId>
-            <version>1.4-SNAPSHOT</version>
+            <version>${kevoree.version}</version>
         </dependency>
 
         <dependency>
@@ -37,15 +26,21 @@
         </dependency>
 
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>1.6.4</version>
-        </dependency>
-
-        <dependency>
             <groupId>org.kevoree.tools</groupId>
             <artifactId>org.kevoree.tools.marShell</artifactId>
             <version>${kevoree.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.maven</groupId>
+            <artifactId>maven-plugin-api</artifactId>
+            <version>3.0.3</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.maven</groupId>
+            <artifactId>maven-project</artifactId>
+            <version>2.2.1</version>
         </dependency>
     </dependencies>
 
