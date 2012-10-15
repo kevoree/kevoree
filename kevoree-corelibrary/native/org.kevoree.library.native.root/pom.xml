@@ -6,12 +6,12 @@
     <artifactId>org.kevoree.library.native.root</artifactId>
     <packaging>pom</packaging>
     <name>Kevoree :: CoreLibrary :: Native :: Root</name>
-    <version>1.8.3-SNAPSHOT</version>
+    <version>1.8.9-SNAPSHOT</version>
 
     <parent>
         <artifactId>org.kevoree.library</artifactId>
         <groupId>org.kevoree.corelibrary</groupId>
-        <version>1.8.3-SNAPSHOT</version>
+        <version>1.8.9-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
@@ -21,7 +21,8 @@
     </properties>
 
     <modules>
-        <module>../org.kevoree.library.native.helloworld</module>
+        <module>../org.kevoree.nativeN.faceDetection</module>
+        <module>../org.kevoree.nativeN.HelloWorld</module>
     </modules>
 
     <build>
