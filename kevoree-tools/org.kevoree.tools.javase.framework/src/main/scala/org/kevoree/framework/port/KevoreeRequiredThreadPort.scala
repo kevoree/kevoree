@@ -46,7 +46,7 @@ trait KevoreeRequiredThreadPort extends KevoreePort with Runnable {
   private var isPaused = true
 
   var delegate: Option[KevoreeChannelFragment] = None
-  val queue = new java.util.concurrent.ConcurrentLinkedQueue[Any]()
+  val queue = new java.util.concurrent.LinkedBlockingDeque[Any]()
 
   def isInPause = isPaused
 
