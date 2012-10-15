@@ -154,8 +154,6 @@
         <module>../org.kevoree.tools.annotation.processor</module>
         <module>../org.kevoree.tools.ui.framework</module>
         <module>../org.kevoree.tools.ui.editor</module>
-
-
         <module>../org.kevoree.tools.merger.mavenplugin</module>
         <module>../org.kevoree.tools.annotation.mavenplugin</module>
         <module>../org.kevoree.tools.marShell</module>
@@ -167,10 +165,10 @@
         <module>../org.kevoree.tools.war.wrapperplugin</module>
 
         <module>../org.kevoree.tools.emf.compat</module>
-
-        <module>../org.kevoree.tools.native.framework</module>
-        <module>../org.kevoree.tools.native.mavenplugin</module>
-
+             <!-- Native -->
+        <module>../org.kevoree.tools.nativeN.core</module>
+        <module>../org.kevoree.tools.nativeN.framework</module>
+        <module>../org.kevoree.tools.nativeN.mavenplugin</module>
 
         <!--  <module>../org.kevoree.tools.jar.wrapperplugin</module>-->
         <module>../org.kevoree.tools.ui.editor.standalone</module>

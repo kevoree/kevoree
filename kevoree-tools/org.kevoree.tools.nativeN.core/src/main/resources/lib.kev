@@ -1,0 +1,56 @@
+<kevoree:ContainerRoot xmlns:xml="http://www.omg.org/XMI" xmlns:xsi="http://wwww.w3.org/2001/XMLSchema-instance" xmlns:kevoree="http://kevoree/1.0" xmi:version="2.0" xsi:type="kevoree:ContainerRoot">
+ <typeDefinitions updateMethod="update" startMethod="start" factoryBean="org.kevoree.nativeN.HelloWorld.HelloWorldFactory" xsi:type="kevoree:ComponentType" name="HelloWorld" bean="org.kevoree.nativeN.HelloWorld.HelloWorld" stopMethod="stop" deployUnits="//@deployUnits.0">
+  <dictionaryType>
+   <attributes state="false" name="ipc_key" xsi:type="kevoree:DictionaryAttribute" optional="false" fragmentDependant="false"></attributes>
+   <attributes state="false" name="portEvents_tcp" xsi:type="kevoree:DictionaryAttribute" optional="false" fragmentDependant="false"></attributes>
+   <attributes state="false" name="portEvents_udp" xsi:type="kevoree:DictionaryAttribute" optional="false" fragmentDependant="false"></attributes>
+   <defaultValues xsi:type="kevoree:DictionaryValue" attribute="//@typeDefinitions.0/@dictionaryType/@attributes.0"></defaultValues>
+   <defaultValues xsi:type="kevoree:DictionaryValue" attribute="//@typeDefinitions.0/@dictionaryType/@attributes.1"></defaultValues>
+   <defaultValues xsi:type="kevoree:DictionaryValue" attribute="//@typeDefinitions.0/@dictionaryType/@attributes.2"></defaultValues>
+  </dictionaryType>
+  <required noDependency="true" name="output_port" xsi:type="kevoree:PortTypeRef" optional="true" ref="//@typeDefinitions.2"></required>
+  <provided noDependency="false" name="input_port" xsi:type="kevoree:PortTypeRef" optional="false" ref="//@typeDefinitions.2">
+   <mappings beanMethodName="input_port" xsi:type="kevoree:PortTypeMapping" serviceMethodName="process"></mappings>
+   <mappings beanMethodName="input_port" xsi:type="kevoree:PortTypeMapping" serviceMethodName="process"></mappings>
+  </provided>
+ </typeDefinitions>
+ <typeDefinitions xsi:type="kevoree:NodeType" name="JavaSENode"></typeDefinitions>
+ <typeDefinitions name="org.kevoree.framework.MessagePort" xsi:type="kevoree:MessagePortType" synchrone="false"></typeDefinitions>
+ <repositories xsi:type="kevoree:Repository" url="http://maven.kevoree.org/archiva/repository/daum/snapshots"></repositories>
+ <repositories xsi:type="kevoree:Repository" url="http://maven.kevoree.org/release"></repositories>
+ <repositories xsi:type="kevoree:Repository" url="http://maven.kevoree.org/snapshots"></repositories>
+ <repositories xsi:type="kevoree:Repository" url="http://maven.kevoree.org/daum/release"></repositories>
+ <repositories xsi:type="kevoree:Repository" url="http://maven.kevoree.org/daum/snapshots"></repositories>
+ <repositories xsi:type="kevoree:Repository" url="http://repo.maven.apache.org/maven2"></repositories>
+ <libraries name="JavaSE" xsi:type="kevoree:TypeLibrary" subTypes="//@typeDefinitions.0"></libraries>
+ <deployUnits requiredLibs="//@deployUnits.1 //@deployUnits.2 //@deployUnits.3 //@deployUnits.4 //@deployUnits.5 //@deployUnits.6 //@deployUnits.7 //@deployUnits.8 //@deployUnits.9 //@deployUnits.10 //@deployUnits.11 //@deployUnits.12 //@deployUnits.13 //@deployUnits.14 //@deployUnits.15 //@deployUnits.16 //@deployUnits.17 //@deployUnits.18 //@deployUnits.19 //@deployUnits.20 //@deployUnits.21 //@deployUnits.22 //@deployUnits.23 //@deployUnits.24 //@deployUnits.25 //@deployUnits.26 //@deployUnits.27 //@deployUnits.28 //@deployUnits.29" hashcode="201210081343966" unitName="org.kevoree.nativeN.testcomponent" xsi:type="kevoree:DeployUnit" groupName="org.kevoree.nativeN" version="1.2-SNAPSHOT" type="jar" targetNodeType="//@typeDefinitions.1"></deployUnits>
+ <deployUnits type="jar" unitName="org.kevoree.nativeN.framework" xsi:type="kevoree:DeployUnit" groupName="org.kevoree.nativeN" version="1.2-SNAPSHOT" targetNodeType="//@typeDefinitions.1"></deployUnits>
+ <deployUnits type="jar" unitName="org.kevoree.tools.modelsync" xsi:type="kevoree:DeployUnit" groupName="org.kevoree.tools" version="1.8.8-SNAPSHOT" targetNodeType="//@typeDefinitions.1"></deployUnits>
+ <deployUnits type="jar" unitName="scala-library" xsi:type="kevoree:DeployUnit" groupName="org.scala-lang" version="2.9.2" targetNodeType="//@typeDefinitions.1"></deployUnits>
+ <deployUnits type="jar" unitName="org.kevoree.tools.javase.framework" xsi:type="kevoree:DeployUnit" groupName="org.kevoree.tools" version="1.8.8-SNAPSHOT" targetNodeType="//@typeDefinitions.1"></deployUnits>
+ <deployUnits type="jar" unitName="org.kevoree.framework" xsi:type="kevoree:DeployUnit" groupName="org.kevoree" version="1.8.8-SNAPSHOT" targetNodeType="//@typeDefinitions.1"></deployUnits>
+ <deployUnits type="jar" unitName="org.kevoree.api" xsi:type="kevoree:DeployUnit" groupName="org.kevoree" version="1.8.8-SNAPSHOT" targetNodeType="//@typeDefinitions.1"></deployUnits>
+ <deployUnits type="jar" unitName="org.kevoree.adaptation.model" xsi:type="kevoree:DeployUnit" groupName="org.kevoree" version="1.8.8-SNAPSHOT" targetNodeType="//@typeDefinitions.1"></deployUnits>
+ <deployUnits type="jar" unitName="org.kevoree.tools.annotation.api" xsi:type="kevoree:DeployUnit" groupName="org.kevoree.tools" version="1.8.8-SNAPSHOT" targetNodeType="//@typeDefinitions.1"></deployUnits>
+ <deployUnits type="jar" unitName="org.kevoree.tools.aether.framework" xsi:type="kevoree:DeployUnit" groupName="org.kevoree.tools" version="1.8.8-SNAPSHOT" targetNodeType="//@typeDefinitions.1"></deployUnits>
+ <deployUnits type="jar" unitName="org.kevoree.model" xsi:type="kevoree:DeployUnit" groupName="org.kevoree" version="1.8.8-SNAPSHOT" targetNodeType="//@typeDefinitions.1"></deployUnits>
+ <deployUnits type="jar" unitName="aether-api" xsi:type="kevoree:DeployUnit" groupName="org.sonatype.aether" version="1.13" targetNodeType="//@typeDefinitions.1"></deployUnits>
+ <deployUnits type="jar" unitName="aether-spi" xsi:type="kevoree:DeployUnit" groupName="org.sonatype.aether" version="1.13" targetNodeType="//@typeDefinitions.1"></deployUnits>
+ <deployUnits type="jar" unitName="aether-util" xsi:type="kevoree:DeployUnit" groupName="org.sonatype.aether" version="1.13" targetNodeType="//@typeDefinitions.1"></deployUnits>
+ <deployUnits type="jar" unitName="aether-impl" xsi:type="kevoree:DeployUnit" groupName="org.sonatype.aether" version="1.13" targetNodeType="//@typeDefinitions.1"></deployUnits>
+ <deployUnits type="jar" unitName="aether-connector-file" xsi:type="kevoree:DeployUnit" groupName="org.sonatype.aether" version="1.13" targetNodeType="//@typeDefinitions.1"></deployUnits>
+ <deployUnits type="jar" unitName="aether-connector-asynchttpclient" xsi:type="kevoree:DeployUnit" groupName="org.sonatype.aether" version="1.13" targetNodeType="//@typeDefinitions.1"></deployUnits>
+ <deployUnits type="jar" unitName="async-http-client" xsi:type="kevoree:DeployUnit" groupName="com.ning" version="1.6.5" targetNodeType="//@typeDefinitions.1"></deployUnits>
+ <deployUnits type="jar" unitName="netty" xsi:type="kevoree:DeployUnit" groupName="org.jboss.netty" version="3.2.5.Final" targetNodeType="//@typeDefinitions.1"></deployUnits>
+ <deployUnits type="jar" unitName="maven-aether-provider" xsi:type="kevoree:DeployUnit" groupName="org.apache.maven" version="3.0.3" targetNodeType="//@typeDefinitions.1"></deployUnits>
+ <deployUnits type="jar" unitName="maven-model" xsi:type="kevoree:DeployUnit" groupName="org.apache.maven" version="3.0.3" targetNodeType="//@typeDefinitions.1"></deployUnits>
+ <deployUnits type="jar" unitName="maven-model-builder" xsi:type="kevoree:DeployUnit" groupName="org.apache.maven" version="3.0.3" targetNodeType="//@typeDefinitions.1"></deployUnits>
+ <deployUnits type="jar" unitName="plexus-interpolation" xsi:type="kevoree:DeployUnit" groupName="org.codehaus.plexus" version="1.14" targetNodeType="//@typeDefinitions.1"></deployUnits>
+ <deployUnits type="jar" unitName="maven-repository-metadata" xsi:type="kevoree:DeployUnit" groupName="org.apache.maven" version="3.0.3" targetNodeType="//@typeDefinitions.1"></deployUnits>
+ <deployUnits type="jar" unitName="plexus-utils" xsi:type="kevoree:DeployUnit" groupName="org.codehaus.plexus" version="2.0.6" targetNodeType="//@typeDefinitions.1"></deployUnits>
+ <deployUnits type="jar" unitName="plexus-component-annotations" xsi:type="kevoree:DeployUnit" groupName="org.codehaus.plexus" version="1.5.5" targetNodeType="//@typeDefinitions.1"></deployUnits>
+ <deployUnits type="jar" unitName="org.kevoree.kcl" xsi:type="kevoree:DeployUnit" groupName="org.kevoree" version="1.8.8-SNAPSHOT" targetNodeType="//@typeDefinitions.1"></deployUnits>
+ <deployUnits type="jar" unitName="slf4j-api" xsi:type="kevoree:DeployUnit" groupName="org.slf4j" version="1.6.4" targetNodeType="//@typeDefinitions.1"></deployUnits>
+ <deployUnits type="jar" unitName="org.kevoree.tools.marShell" xsi:type="kevoree:DeployUnit" groupName="org.kevoree.tools" version="1.8.8-SNAPSHOT" targetNodeType="//@typeDefinitions.1"></deployUnits>
+ <deployUnits type="jar" unitName="org.kevoree.merger" xsi:type="kevoree:DeployUnit" groupName="org.kevoree" version="1.8.8-SNAPSHOT" targetNodeType="//@typeDefinitions.1"></deployUnits>
+</kevoree:ContainerRoot>
