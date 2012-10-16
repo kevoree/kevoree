@@ -41,6 +41,19 @@
             </modules>
         </profile>
         <profile>
+            <id>arm</id>
+            <activation>
+                <os>
+                    <family>unix</family>
+                    <name>Linux</name>
+                    <arch>nix32</arch>
+                </os>
+            </activation>
+            <modules>
+                <module>arm</module>
+            </modules>
+        </profile>
+        <profile>
             <id>osx</id>
             <activation>
                 <os>
@@ -54,5 +67,39 @@
         </profile>
 
     </profiles>
+
+        <distributionManagement>
+            <repository>
+                <id>maven2.kevoree.release</id>
+                <url>http://maven.kevoree.org/archiva/repository/release/</url>
+            </repository>
+            <snapshotRepository>
+                <id>maven2.kevoree.snapshots</id>
+                <url>http://maven.kevoree.org/archiva/repository/snapshots/</url>
+            </snapshotRepository>
+        </distributionManagement>
+
+        <repositories>
+            <repository>
+                <id>kevoree-libs-release-local</id>
+                <url>http://maven.kevoree.org/release</url>
+            </repository>
+            <repository>
+                <id>kevoree-snapshots</id>
+                <url>http://maven.kevoree.org/snapshots</url>
+            </repository>
+        </repositories>
+
+        <pluginRepositories>
+            <pluginRepository>
+                <id>plugin.kevoree-github</id>
+                <url>http://maven.kevoree.org/release</url>
+            </pluginRepository>
+            <pluginRepository>
+                <id>plugin.kevoree-snapshots</id>
+                <url>http://maven.kevoree.org/snapshots</url>
+            </pluginRepository>
+        </pluginRepositories>
+
 
 </project>

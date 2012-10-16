@@ -1,16 +1,3 @@
-/**
- * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.gnu.org/licenses/lgpl-3.0.txt
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 <project>
 
        <modelVersion>4.0.0</modelVersion>
@@ -65,7 +52,53 @@
                 <module>osx</module>
             </modules>
         </profile>
-
+            <profile>
+                       <id>arm</id>
+                       <activation>
+                           <os>
+                               <family>unix</family>
+                               <name>Linux</name>
+                               <arch>arm</arch>
+                           </os>
+                       </activation>
+                       <modules>
+                           <module>arm</module>
+                       </modules>
+                   </profile>
     </profiles>
+
+        <distributionManagement>
+            <repository>
+                <id>maven2.kevoree.release</id>
+                <url>http://maven.kevoree.org/archiva/repository/release/</url>
+            </repository>
+            <snapshotRepository>
+                <id>maven2.kevoree.snapshots</id>
+                <url>http://maven.kevoree.org/archiva/repository/snapshots/</url>
+            </snapshotRepository>
+        </distributionManagement>
+
+        <repositories>
+            <repository>
+                <id>kevoree-libs-release-local</id>
+                <url>http://maven.kevoree.org/release</url>
+            </repository>
+            <repository>
+                <id>kevoree-snapshots</id>
+                <url>http://maven.kevoree.org/snapshots</url>
+            </repository>
+        </repositories>
+
+        <pluginRepositories>
+            <pluginRepository>
+                <id>plugin.kevoree-github</id>
+                <url>http://maven.kevoree.org/release</url>
+            </pluginRepository>
+            <pluginRepository>
+                <id>plugin.kevoree-snapshots</id>
+                <url>http://maven.kevoree.org/snapshots</url>
+            </pluginRepository>
+        </pluginRepositories>
+
 
 </project>

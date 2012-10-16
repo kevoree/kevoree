@@ -7,7 +7,7 @@
         <version>1.8.9-SNAPSHOT</version>
         <relativePath>../org.kevoree.tools.root/pom.xml</relativePath>
     </parent>
-
+    <version>1.8.9-SNAPSHOT</version>
     <groupId>org.kevoree.tools.nativeN</groupId>
     <artifactId>org.kevoree.tools.nativeN.core</artifactId>
     <packaging>jar</packaging>
@@ -31,13 +31,13 @@
             <artifactId>org.kevoree.tools.annotation.api</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
-         <!--
-        <dependency>
-            <groupId>org.kevoree.tools</groupId>
-            <artifactId>org.kevoree.tools.aether.framework</artifactId>
-            <version>${kevoree.version}</version>
-            <scope>test</scope>
-        </dependency>    -->
+        <!--
+    <dependency>
+        <groupId>org.kevoree.tools</groupId>
+        <artifactId>org.kevoree.tools.aether.framework</artifactId>
+        <version>${kevoree.version}</version>
+        <scope>test</scope>
+    </dependency>    -->
 
         <dependency>
             <groupId>org.kevoree.tools</groupId>
