@@ -42,6 +42,20 @@
                 <module>nix64</module>
             </modules>
         </profile>
+
+        <profile>
+            <id>arm</id>
+            <activation>
+                <os>
+                    <family>unix</family>
+                    <name>Linux</name>
+                    <arch>arm</arch>
+                </os>
+            </activation>
+            <modules>
+                <module>arm</module>
+            </modules>
+        </profile>
         <profile>
             <id>osx</id>
             <activation>

@@ -1,27 +1,26 @@
 <project>
         <modelVersion>4.0.0</modelVersion>
        <groupId>$groupId$</groupId>
-      <artifactId>$artifactId$-nix64</artifactId>
-      <name>$NAME$-nix64</name>
+      <artifactId>$artifactId$-arm</artifactId>
+      <name>$NAME$-ARM</name>
       <packaging>uexe</packaging>
 
-         <parent>
+     <parent>
                <groupId>$groupId$</groupId>
                <artifactId>$artifactId_parent$</artifactId>
                <version>$version_parent$</version>
            </parent>
-
     <build>
         <plugins>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>native-maven-plugin</artifactId>
                 <extensions>true</extensions>
-                   <version>1.0-alpha-8</version>
+                <version>1.0-alpha-8</version>
                 <configuration>
                     <compilerProvider>generic-classic</compilerProvider>
-                    <compilerExecutable>g++</compilerExecutable>
-                    <linkerExecutable>g++</linkerExecutable>
+                    <compilerExecutable>arm-linux-gnueabi-cpp</compilerExecutable>
+                    <linkerExecutable>arm-linux-gnueabi-cpp</linkerExecutable>
 
                     <compilerStartOptions>
                         <compilerStartOption>-W -O2 -Wall -g  -I.</compilerStartOption>
@@ -29,10 +28,10 @@
 
                     <sources>
                         <source>
-               <directory>../src/main/c</directory>
+                    <directory>../src/main/c</directory>
                             <includes>
                                 <include>**/*.c</include>
-                                <include>**/*.cpp</include>
+                                 <include>**/*.cpp</include>
                             </includes>
                         </source>
                     </sources>
@@ -41,6 +40,7 @@
                     </linkerEndOptions>
                 </configuration>
             </plugin>
+
         </plugins>
     </build>
 

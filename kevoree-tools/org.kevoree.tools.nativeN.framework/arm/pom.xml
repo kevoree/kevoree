@@ -1,0 +1,111 @@
+<project>
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.kevoree.tools.nativeN</groupId>
+        <artifactId>org.kevoree.tools.nativeN.framework</artifactId>
+        <version>1.8.9-SNAPSHOT</version>
+    </parent>
+
+    <groupId>org.kevoree.tools.nativeN.framework</groupId>
+    <artifactId>org.kevoree.tools.nativeN.framework.arm</artifactId>
+    <version>1.8.9-SNAPSHOT</version>
+    <name>Kevoree :: Tools :: NativeN :: ARM </name>
+
+    <packaging>so</packaging>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.kevoree.tools.nativeN</groupId>
+            <artifactId>org.kevoree.tools.nativeN.core</artifactId>
+            <version>1.4-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+
+        <plugins>
+            <plugin>
+                <groupId>com.mycila.maven-license-plugin</groupId>
+                <artifactId>maven-license-plugin</artifactId>
+                <version>1.9.0</version>
+                <configuration>
+                    <basedir>${basedir}</basedir>
+                    <header>${basedir}/../../../LICENSE_HEADER</header>
+                    <strictCheck>true</strictCheck>
+                    <properties>
+                        <owner>Jean-Emile DARTOIS</owner>
+                        <year>${project.inceptionYear}</year>
+                        <email>jedartois@gmail.com</email>
+                    </properties>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>process-sources</phase>
+                        <goals>
+                            <goal>format</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>native-maven-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <!--  trigger javah -->
+                    <javahOS>linux</javahOS>
+
+                    <compilerProvider>generic-classic</compilerProvider>
+
+                    <compilerExecutable>arm-linux-gnueabi-gcc</compilerExecutable>
+                    <linkerExecutable>arm-linux-gnueabi-gcc</linkerExecutable>
+
+                    <sources>
+                        <source>
+                            <directory>../src/main/c</directory>
+                            <fileNames>
+                                <fileName>native.c</fileName>
+                            </fileNames>
+                        </source>
+                    </sources>
+
+                    <linkerEndOptions>
+                        <linkerEndOption> -lpthread</linkerEndOption>
+                    </linkerEndOptions>
+                    <linkerStartOptions>
+                        <linkerStartOption>-shared -lc</linkerStartOption>
+                    </linkerStartOptions>
+
+
+                </configuration>
+
+
+                <executions>
+                    <execution>
+                        <id>javah</id>
+                        <phase>generate-sources</phase>
+                        <configuration>
+                            <javahOS>linux</javahOS>
+                            <javahProvider>default</javahProvider>
+                            <javahOutputDirectory>${project.build.directory}/custom-javah</javahOutputDirectory>
+                            <workingDirectory>${basedir}</workingDirectory>
+                            <javahOutputFileName>nativelib.h</javahOutputFileName>
+                            <javahClassNames>
+                                <javahClassName>org.kevoree.tools.nativeN.NativeJNI</javahClassName>
+                            </javahClassNames>
+                        </configuration>
+                        <goals>
+                            <goal>javah</goal>
+                        </goals>
+                    </execution>
+                </executions>
+
+            </plugin>
+
+
+
+
+        </plugins>
+    </build>
+</project>

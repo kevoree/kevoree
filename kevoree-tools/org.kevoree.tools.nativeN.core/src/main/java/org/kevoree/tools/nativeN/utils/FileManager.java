@@ -116,34 +116,7 @@ public class FileManager {
         folder.delete();
     }
 
-    public static String getExtension() {
-        if (System.getProperty("os.name").toLowerCase().contains("nux")) {
-            return ".so";
-        }
-        if (System.getProperty("os.name").toLowerCase().contains("mac")) {
-            return ".dynlib";
-        }
-        return null;
-    }
 
-    public static String getPath(String lib) {
-        if (System.getProperty("os.name").toLowerCase().contains("nux")) {
-            if (is64()) {
-                return "nix64/"+lib;
-            } else {
-                return "nix32/"+lib;
-            }
-        }
-        if (System.getProperty("os.name").toLowerCase().contains("mac")) {
-            return "osx/"+lib;
-        }
-        return null;
-    }
-
-    public static boolean is64() {
-        String os = System.getProperty("os.arch").toLowerCase();
-        return (os.contains("64"));
-    }
 
     public static String copyFileFromStream(String inputFile, String path, String targetName) throws IOException {
         InputStream inputStream = FileManager.class.getClassLoader().getResourceAsStream(inputFile);
