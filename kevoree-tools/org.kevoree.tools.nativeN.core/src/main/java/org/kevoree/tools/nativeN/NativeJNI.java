@@ -17,6 +17,7 @@ package org.kevoree.tools.nativeN;
 
 import org.kevoree.tools.nativeN.api.NativeEventPort;
 import org.kevoree.tools.nativeN.utils.FileManager;
+import org.kevoree.tools.nativeN.utils.SystemHelper;
 
 import java.io.*;
 import java.util.EventObject;
@@ -66,8 +67,8 @@ public class NativeJNI extends AbstractNativeJNI implements NativeEventPort {
             folder.mkdirs();
             // todo
             String r = ""+new Random().nextInt(800);
-            String absolutePath = FileManager.copyFileFromStream(FileManager.getPath("native.so"), folder.getAbsolutePath(),"libnative"+r+""+ FileManager.getExtension());
-
+            String absolutePath = FileManager.copyFileFromStream(SystemHelper.getPath("native.so"), folder.getAbsolutePath(),"libnative"+r+""+ SystemHelper.getExtension());
+            System.out.println("Loading "+absolutePath);
             System.load(absolutePath);
 
             return absolutePath;

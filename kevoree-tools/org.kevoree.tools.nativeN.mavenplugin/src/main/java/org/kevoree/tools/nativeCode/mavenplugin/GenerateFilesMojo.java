@@ -145,6 +145,7 @@ public class GenerateFilesMojo extends AbstractMojo {
         MavenHelper.createPom("poms/pom.xml.c.nix32", component_c, project,component_c.getPomFile().getPath().replace("pom.xml","nix32/pom.xml"),sub_c);
         MavenHelper.createPom("poms/pom.xml.c.nix64", component_c, project,component_c.getPomFile().getPath().replace("pom.xml","nix64/pom.xml"),sub_c);
         MavenHelper.createPom("poms/pom.xml.c.osx", component_c, project,component_c.getPomFile().getPath().replace("pom.xml", "osx/pom.xml"),sub_c);
+        MavenHelper.createPom("poms/pom.xml.c.arm", component_c, project,component_c.getPomFile().getPath().replace("pom.xml", "arm/pom.xml"),sub_c);
 
         getLog().info("Generating files");
         /// GENERATE JAVA FILES

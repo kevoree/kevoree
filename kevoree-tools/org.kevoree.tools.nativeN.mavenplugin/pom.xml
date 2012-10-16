@@ -5,6 +5,8 @@
     <groupId>org.kevoree.tools</groupId>
     <packaging>maven-plugin</packaging>
     <name>Kevoree :: Tools :: Native :: MavenPlugin</name>
+    <version>1.8.9-SNAPSHOT</version>
+
     <parent>
         <artifactId>org.kevoree.tools.root</artifactId>
         <groupId>org.kevoree.tools</groupId>
