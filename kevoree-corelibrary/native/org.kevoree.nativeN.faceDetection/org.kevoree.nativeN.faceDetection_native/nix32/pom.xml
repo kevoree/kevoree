@@ -1,0 +1,47 @@
+<project>
+        <modelVersion>4.0.0</modelVersion>
+       <groupId>org.kevoree.nativeN</groupId>
+      <artifactId>org.kevoree.nativeN.faceDetection_native-nix32</artifactId>
+      <name>Kevoree :: Tools :: Native :: C-nix32</name>
+      <packaging>uexe</packaging>
+
+     <parent>
+               <groupId>org.kevoree.nativeN</groupId>
+               <artifactId>org.kevoree.nativeN.faceDetection_native</artifactId>
+               <version>2.1-SNAPSHOT</version>
+           </parent>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>native-maven-plugin</artifactId>
+                <extensions>true</extensions>
+
+                <configuration>
+                    <compilerProvider>generic-classic</compilerProvider>
+                    <compilerExecutable>g++</compilerExecutable>
+                    <linkerExecutable>g++</linkerExecutable>
+
+                    <compilerStartOptions>
+                        <compilerStartOption>-ggdb -I /usr/include/opencv2</compilerStartOption>
+                    </compilerStartOptions>
+
+                    <sources>
+                        <source>
+                            <directory>../src/main/c</directory>
+                            <includes>
+                                <include>**/*.c</include>
+                                <include>**/*.cpp</include>
+                            </includes>
+                        </source>
+                    </sources>
+                    <linkerEndOptions>
+                        <linkerEndOption> -lpthread -lopencv_core -lopencv_imgproc -lopencv_video -lopencv_highgui -lopencv_objdetect</linkerEndOption>
+                    </linkerEndOptions>
+                </configuration>
+            </plugin>
+
+        </plugins>
+    </build>
+
+</project>

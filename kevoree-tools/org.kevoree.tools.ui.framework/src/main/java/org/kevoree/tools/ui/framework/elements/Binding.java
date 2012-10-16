@@ -100,13 +100,13 @@ public class Binding extends AbstractSelectElement implements ErrorHighlightable
             stroke = new BasicStroke(5, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_ROUND);
             focusedStroke  = new BasicStroke(8, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_ROUND);
         }
-        if (t.equals(Type.ouput)) {
+        else if (t.equals(Type.ouput)) {
             selectedcolor = new Color(254, 0, 0, 180);
             unselectedcolor = new Color(200, 0, 0, 180);
             stroke = new BasicStroke(5, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_ROUND);
             focusedStroke  = new BasicStroke(8, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_ROUND);
         }
-        if (t.equals(Type.groupLink)) {
+        else if (t.equals(Type.groupLink)) {
             selectedcolor = new Color(45, 236, 64, 200);
             unselectedcolor = new Color(45, 236, 64, 200);
             float dash1[] = {8.0f};

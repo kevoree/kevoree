@@ -55,7 +55,6 @@ public class RoundedTitledPanel extends RoundPanel implements TitledElement {
         layoutPanel.add(contentPanel, BorderLayout.CENTER);
         title.setHorizontalAlignment(SwingConstants.CENTER);
         title.setForeground(Color.WHITE);
-
         contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.PAGE_AXIS));
     }
 
