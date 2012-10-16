@@ -19,6 +19,7 @@
         <platform.define>__DARWIN__</platform.define>
         <platform.shlib>dylib</platform.shlib>
         <platform.jni>jnilib</platform.jni>
+        <kevoree.version>1.8.9-SNAPSHOT</kevoree.version>
     </properties>
 
     <build>

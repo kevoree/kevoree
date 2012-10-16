@@ -21,8 +21,11 @@ void dispatch(int port,int id_queue)
                      }
 
     } while(msg != NULL);
-}int main (int argc,char *argv[])
+}
+int main (int argc,char *argv[])
 {
+
+    printf("argc= %d \n",argc);
    	if(argc >2)
     {
 	    key_t key =   atoi(argv[1]);
@@ -34,6 +37,13 @@ void dispatch(int port,int id_queue)
         ctx->update   = &update;
         ctx->dispatch = &dispatch;
 	    ctx->start();
-       pause();
+    pause();
+     } else
+     {
+
+
+         return -1;
+
      }
+     return 0;
 }

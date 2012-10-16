@@ -1,32 +1,45 @@
-  /*
-  *
-  *
-  *
-  *                          THIS IS A GENERATED FILE, DO NOT EDIT
-  *
-  *
-  *
-  *
-  *
-  *
-  **/
- package org.kevoree.library.nativeN.HelloWorld;
+/**
+ * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.gnu.org/licenses/lgpl-3.0.txt
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+/*
+*
+*
+*
+*                          THIS IS A GENERATED FILE, DO NOT EDIT
+*
+*
+*
+*
+*
+*
+**/
+package org.kevoree.library.nativeN.HelloWorld;
 
-         import org.kevoree.ContainerRoot;
-  import org.kevoree.annotation.*;
-  import org.kevoree.api.service.core.script.KevScriptEngineException;
-  import org.kevoree.framework.AbstractComponentType;
-  import org.kevoree.framework.KevoreeXmiHelper;
-  import org.kevoree.framework.MessagePort;
-  import org.kevoree.tools.aether.framework.AetherUtil;
-  import org.kevoree.tools.nativeN.NativeHandlerException;
-  import org.kevoree.tools.nativeN.NativeManager;
-  import org.kevoree.tools.nativeN.api.NativeEventPort;
-  import org.kevoree.tools.nativeN.api.NativeListenerPorts;
+import org.kevoree.ContainerRoot;
+import org.kevoree.annotation.*;
+import org.kevoree.api.service.core.script.KevScriptEngineException;
+import org.kevoree.framework.AbstractComponentType;
+import org.kevoree.framework.KevoreeXmiHelper;
+import org.kevoree.framework.MessagePort;
+import org.kevoree.tools.aether.framework.AetherUtil;
+import org.kevoree.tools.nativeN.NativeHandlerException;
+import org.kevoree.tools.nativeN.NativeManager;
+import org.kevoree.tools.nativeN.api.NativeEventPort;
+import org.kevoree.tools.nativeN.api.NativeListenerPorts;
 
-  import java.io.File;
-  import java.net.URL;
-  import java.util.ArrayList;
+import java.io.File;
+import java.net.URL;
+import java.util.ArrayList;
 /**
  * this is a generated file, DO NOT EDIT
  * User: jed
@@ -56,36 +69,27 @@ public class HelloWorld extends AbstractComponentType {
     public void start () {
         try
         {
-
             ipc_key  = Integer.parseInt(getDictionary().get("ipc_key").toString());
             portEvents_tcp =       Integer.parseInt(getDictionary().get("portEvents_tcp").toString());
 
             ArrayList<String> repos = new ArrayList<String>();
-            repos.add("http://maven.kevoree.org/release/");
-            repos.add("http://maven.kevoree.org/snapshots/");
+            for(Repository repo :  getModelService().getLastModel().getRepositoriesForJ())
+            {
+                repos.add(repo.getUrl());
+            }
+            // loading model from jar
+            ContainerRoot model = KevoreeXmiHelper.loadStream(getClass().getResourceAsStream("/KEV-INF/lib.kev"));
 
-            /*
-                 for(Repository repo :  getModelService().getLastModel().getRepositoriesForJ())
-                 {
-                        repos.add(repo.getUrl());
-                 }
-            */
+            File binary =    getBootStrapperService().resolveArtifact("org.kevoree.library.nativeN.HelloWorld_native"+getOs(), "org.kevoree.library.nativeN", "2.1-SNAPSHOT", "uexe", repos);
 
-           // loading model from jar
-           ContainerRoot model = KevoreeXmiHelper.loadStream(getClass().getResourceAsStream("/KEV-INF/lib.kev"));
-
-
-           File binary =   getBootStrapperService().resolveArtifact("org.kevoree.library.nativeN.HelloWorld_native"+getOs(), "org.kevoree.library.nativeN", "2.1-SNAPSHOT", "uexe", repos);
-
-           if(!binary.canExecute())
-           {
+            if(!binary.canExecute())
+            {
                 binary.setExecutable(true);
-           }
+            }
 
-           nativeManager = new NativeManager(ipc_key,portEvents_tcp,"HelloWorld",binary.getPath(),model);
+            nativeManager = new NativeManager(ipc_key,portEvents_tcp,"HelloWorld",binary.getPath(),model);
 
-           nativeManager.addEventListener(new NativeListenerPorts() {
-
+            nativeManager.addEventListener(new NativeListenerPorts() {
                 @Override
                 public void disptach(NativeEventPort event, String port_name, String msg)
                 {
@@ -96,11 +100,9 @@ public class HelloWorld extends AbstractComponentType {
 
             started = nativeManager.start();
 
-
         } catch (NativeHandlerException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            e.printStackTrace();
         }
-
     }
 
     @Stop
@@ -112,7 +114,7 @@ public class HelloWorld extends AbstractComponentType {
                 if(nativeManager !=null)
                     nativeManager.stop();
             } catch (NativeHandlerException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                e.printStackTrace();
             }
 
         }
@@ -125,25 +127,33 @@ public class HelloWorld extends AbstractComponentType {
         nativeManager.update();
     }
 
+    public boolean isArm() {
+        String os = System.getProperty("os.arch").toLowerCase();
+        return (os.contains("arm"));
+    }
 
-        public boolean is64() {
-            String os = System.getProperty("os.arch").toLowerCase();
-            return (os.contains("64"));
-        }
+    public boolean is64() {
+        String os = System.getProperty("os.arch").toLowerCase();
+        return (os.contains("64"));
+    }
 
-        public  String getOs() {
-            if (System.getProperty("os.name").toLowerCase().contains("nux")) {
-                if (is64()) {
-                    return "-nix64";
-                } else {
-                    return "-nix32";
-                }
+    public  String getOs() {
+        if (System.getProperty("os.name").toLowerCase().contains("nux")) {
+            if(isArm())
+            {
+                return "-arm";
             }
-            if (System.getProperty("os.name").toLowerCase().contains("mac")) {
-                return "-osx";
+            if (is64()) {
+                return "-nix64";
+            } else {
+                return "-nix32";
             }
-            return null;
         }
+        if (System.getProperty("os.name").toLowerCase().contains("mac")) {
+            return "-osx";
+        }
+        return null;
+    }
 
         @Port(name = "input_port")
     public void input_port(Object o)
@@ -157,5 +167,4 @@ public class HelloWorld extends AbstractComponentType {
             System.err.println("Error processing message");
         }
     }
-
 }
