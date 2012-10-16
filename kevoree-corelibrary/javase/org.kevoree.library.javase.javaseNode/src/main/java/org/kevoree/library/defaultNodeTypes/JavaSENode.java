@@ -35,7 +35,7 @@ import java.io.InputStreamReader;
         values = {"UpdateType", "AddType", "AddThirdParty", "RemoveType", "RemoveDeployUnit", "UpdateInstance", "UpdateBinding", "UpdateDictionaryInstance", "AddInstance", "RemoveInstance", "AddBinding", "RemoveBinding", "AddFragmentBinding", "RemoveFragmentBinding", "UpdateFragmentBinding", "StartInstance", "StopInstance", "StartThirdParty", "RemoveThirdParty"},
         value = {@PrimitiveCommand(name="AddDeployUnit",maxTime = 120000),@PrimitiveCommand(name="UpdateDeployUnit",maxTime = 120000)})
 public class JavaSENode extends AbstractNodeType implements ModelListener {
-    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(JavaSENode.class);
+    protected static final org.slf4j.Logger logger = LoggerFactory.getLogger(JavaSENode.class);
 
     private KevoreeKompareBean kompareBean = null;
     private CommandMapper mapper = null;
