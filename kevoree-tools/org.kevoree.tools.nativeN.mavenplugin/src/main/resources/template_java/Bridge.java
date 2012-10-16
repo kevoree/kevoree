@@ -25,7 +25,8 @@
 **/
 $PACKAGE$
 
-        import org.kevoree.ContainerRoot;
+import org.kevoree.ContainerRoot;
+import org.kevoree.Repository;
 import org.kevoree.annotation.*;
 import org.kevoree.api.service.core.script.KevScriptEngineException;
 import org.kevoree.framework.AbstractComponentType;
@@ -70,14 +71,10 @@ public class $CLASS$ extends AbstractComponentType {
             portEvents_tcp =       Integer.parseInt(getDictionary().get("portEvents_tcp").toString());
 
             ArrayList<String> repos = new ArrayList<String>();
-            /* repos.add("http://maven.kevoree.org/release/");
-          repos.add("http://maven.kevoree.org/snapshots/");  */
-
             for(Repository repo :  getModelService().getLastModel().getRepositoriesForJ())
             {
                 repos.add(repo.getUrl());
             }
-
             // loading model from jar
             ContainerRoot model = KevoreeXmiHelper.loadStream(getClass().getResourceAsStream("/KEV-INF/lib.kev"));
 
@@ -91,7 +88,6 @@ public class $CLASS$ extends AbstractComponentType {
             nativeManager = new NativeManager(ipc_key,portEvents_tcp,"$CLASS$",binary.getPath(),model);
 
             nativeManager.addEventListener(new NativeListenerPorts() {
-
                 @Override
                 public void disptach(NativeEventPort event, String port_name, String msg)
                 {
@@ -129,6 +125,11 @@ public class $CLASS$ extends AbstractComponentType {
         nativeManager.update();
     }
 
+    public boolean isArm() {
+        String os = System.getProperty("os.arch").toLowerCase();
+        return (os.contains("arm"));
+    }
+
     public boolean is64() {
         String os = System.getProperty("os.arch").toLowerCase();
         return (os.contains("64"));
@@ -136,6 +137,10 @@ public class $CLASS$ extends AbstractComponentType {
 
     public  String getOs() {
         if (System.getProperty("os.name").toLowerCase().contains("nux")) {
+            if(isArm())
+            {
+                return "-arm";
+            }
             if (is64()) {
                 return "-nix64";
             } else {
