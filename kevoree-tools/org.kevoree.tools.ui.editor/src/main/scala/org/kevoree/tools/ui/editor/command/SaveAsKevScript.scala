@@ -61,7 +61,7 @@ class SaveAsKevScript extends Command {
 
   def setKernel(k: KevoreeUIKernel) = kernel = k
 
-  val kompareBean = new org.kevoree.kompare.KevoreeKompareBean();
+  val kompareBean = new org.kevoree.kompare.KevoreeKompareBean()
 
   def execute(p: AnyRef) {
     val emptyModel = KevoreeFactory.createContainerRoot
@@ -97,6 +97,11 @@ class SaveAsKevScript extends Command {
       val script = AdaptationModelWrapper.generateScriptFromAdaptModel(adapModel)
       val planScript = KevScriptWrapper.miniPlanKevScript(script)
       scriptBuffer.append(planScript.getTextualForm)
+
+      n.getHosts.foreach {
+        child =>
+          scriptBuffer.append("addChild " + child.getName + "@" + n.getName + "\n")
+      }
     })
 
     currentModel.getGroups.foreach{ g =>
