@@ -93,37 +93,33 @@ public class JavaSENode extends AbstractNodeType implements ModelListener {
         if (getBootStrapperService().getKevoreeLogService() != null) {
             KevoreeLogLevel logLevel = KevoreeLogLevel.WARN;
             KevoreeLogLevel corelogLevel = KevoreeLogLevel.WARN;
-            if ("DEBUG".equals(getDictionary().get("logLevel"))) {
+
+            String logLevelVal = (String)getDictionary().get("logLevel");
+            if ("DEBUG".equals(logLevelVal)) {
                 logLevel = KevoreeLogLevel.DEBUG;
-            }
-            if ("WARN".equals(getDictionary().get("logLevel"))) {
+            } else if ("WARN".equals(logLevelVal)) {
                 logLevel = KevoreeLogLevel.WARN;
-            }
-            if ("INFO".equals(getDictionary().get("logLevel"))) {
+            } else if ("INFO".equals(logLevelVal)) {
                 logLevel = KevoreeLogLevel.INFO;
-            }
-            if ("ERROR".equals(getDictionary().get("logLevel"))) {
+            } else if ("ERROR".equals(logLevelVal)) {
                 logLevel = KevoreeLogLevel.ERROR;
-            }
-            if ("FINE".equals(getDictionary().get("logLevel"))) {
+            } else if ("FINE".equals(logLevelVal)) {
                 logLevel = KevoreeLogLevel.FINE;
             }
 
-            if ("DEBUG".equals(getDictionary().get("coreLogLevel"))) {
+            String coreLogLevelVal = (String)getDictionary().get("coreLogLevel");
+            if ("DEBUG".equals(coreLogLevelVal)) {
                 corelogLevel = KevoreeLogLevel.DEBUG;
-            }
-            if ("WARN".equals(getDictionary().get("coreLogLevel"))) {
+            } else if ("WARN".equals(coreLogLevelVal)) {
                 corelogLevel = KevoreeLogLevel.WARN;
-            }
-            if ("INFO".equals(getDictionary().get("coreLogLevel"))) {
+            } else if ("INFO".equals(coreLogLevelVal)) {
                 corelogLevel = KevoreeLogLevel.INFO;
-            }
-            if ("ERROR".equals(getDictionary().get("coreLogLevel"))) {
+            } else if ("ERROR".equals(coreLogLevelVal)) {
                 corelogLevel = KevoreeLogLevel.ERROR;
-            }
-            if ("FINE".equals(getDictionary().get("coreLogLevel"))) {
+            } else if ("FINE".equals(coreLogLevelVal)) {
                 corelogLevel = KevoreeLogLevel.FINE;
             }
+
             getBootStrapperService().getKevoreeLogService().setUserLogLevel(logLevel);
             getBootStrapperService().getKevoreeLogService().setCoreLogLevel(corelogLevel);
         }
@@ -150,7 +146,7 @@ public class JavaSENode extends AbstractNodeType implements ModelListener {
                 } else if ("kcl".equalsIgnoreCase(line)) {
                     System.out.println(this.getBootStrapperService().getKevoreeClassLoaderHandler().getKCLDump());
                 } else if ("help".equalsIgnoreCase(line)) {
-                    System.out.println("commands:\n\tshutdown: allow to shutdown the node\n\tkcl: allow to list all the KCLClassLoader and their relationships");
+                    System.out.println("commands:\n\tshutdown: shutdown the node\n\tkcl: lists all KCLClassLoaders and their relationships\n\thelp: displays this list");
                 } else if (line == null) {
                     isRunning = false;
                 }
@@ -174,7 +170,7 @@ public class JavaSENode extends AbstractNodeType implements ModelListener {
     @Override
     public boolean preUpdate(ContainerRoot currentModel, ContainerRoot proposedModel) {
         preTime = System.currentTimeMillis();
-        logger.info("JavaSENode apply new model");
+        logger.info("JavaSENode received a new Model to apply...");
         return true;
     }
 
@@ -186,7 +182,7 @@ public class JavaSENode extends AbstractNodeType implements ModelListener {
     @Override
     public boolean afterLocalUpdate(ContainerRoot currentModel, ContainerRoot proposedModel) {
         mapper.doEnd();
-        logger.info("JavaSENode Model updated in {} ms",(System.currentTimeMillis() - preTime));
+        logger.info("JavaSENode Update completed in {} ms",(System.currentTimeMillis() - preTime));
         return true;
     }
 
@@ -196,11 +192,11 @@ public class JavaSENode extends AbstractNodeType implements ModelListener {
 
 	@Override
 	public void preRollback (ContainerRoot containerRoot, ContainerRoot containerRoot1) {
-		logger.info("JavaSENode aborts last model");
+		logger.warn("JavaSENode is aborting last update...");
 	}
 
 	@Override
 	public void postRollback (ContainerRoot containerRoot, ContainerRoot containerRoot1) {
-		logger.info("JavaSENode Model aborted in {} ms",(System.currentTimeMillis() - preTime));
+		logger.warn("JavaSENode update aborted in {} ms",(System.currentTimeMillis() - preTime));
 	}
 }
