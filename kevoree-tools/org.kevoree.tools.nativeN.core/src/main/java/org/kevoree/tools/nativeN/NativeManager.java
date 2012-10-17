@@ -17,7 +17,6 @@ import org.kevoree.ComponentType;
 import org.kevoree.ContainerRoot;
 import org.kevoree.PortTypeRef;
 import org.kevoree.TypeDefinition;
-import org.kevoree.api.service.core.script.KevScriptEngineException;
 import org.kevoree.tools.nativeN.api.INativeManager;
 import org.kevoree.tools.nativeN.api.NativeEventPort;
 import org.kevoree.tools.nativeN.api.NativeListenerPorts;
@@ -35,21 +34,20 @@ import java.util.LinkedHashMap;
 public class NativeManager implements INativeManager {
 
     protected EventListenerList listenerList = new EventListenerList();
-    private NativeJNI nativeHandler;
+    private NativeJNI nativeJNI;
     private String path_uexe;
     private int key;
+
     private LinkedHashMap<String,Integer> inputs_ports =new LinkedHashMap<String, Integer>();
     private LinkedHashMap<String,Integer> ouputs_ports = new LinkedHashMap<String, Integer>();
 
-
-    public NativeManager(final int key, int port,final String componentName,final String path_uexe ,ContainerRoot model) throws NativeHandlerException
+    public NativeManager(final int key,final String componentName,final String path_uexe ,ContainerRoot model) throws NativeHandlerException
     {
-
         this.key = key;
         this.path_uexe =path_uexe;
-        nativeHandler = new NativeJNI(this);
-        nativeHandler.configureCL();
-        nativeHandler.init(key,port);
+        nativeJNI = new NativeJNI(this);
+        nativeJNI.configureCL();
+        nativeJNI.init(key);
         for(TypeDefinition type :  model.getTypeDefinitionsForJ())
         {
             if(type instanceof ComponentType)
@@ -59,26 +57,23 @@ public class NativeManager implements INativeManager {
                 {
                     for(PortTypeRef portP :  c.getProvidedForJ())
                     {
-                        inputs_ports.put(portP.getName(), nativeHandler.create_input(key,portP.getName()));
+                        inputs_ports.put(portP.getName(), nativeJNI.create_input(key, portP.getName()));
                     }
-
                     for(PortTypeRef portR :  c.getRequiredForJ())
                     {
-                        inputs_ports.put(portR.getName(), nativeHandler.create_output(key, portR.getName()));
+                        inputs_ports.put(portR.getName(), nativeJNI.create_output(key, portR.getName()));
                     }
                     break;
                 }
             }
         }
-
-        nativeHandler.register();
-
+        nativeJNI.register();
     }
 
 
     public  boolean start() throws NativeHandlerException {
 
-        if(nativeHandler.start(key, path_uexe) < 0)
+        if(nativeJNI.start(key, path_uexe) < 0)
         {
           return false;
         }
@@ -92,8 +87,12 @@ public class NativeManager implements INativeManager {
 
     public boolean stop() throws NativeHandlerException
     {
-       // Thread.sleep(3000);
-        nativeHandler.stop(key);
+        nativeJNI.stop(key);
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
         return  true;
     }
 
@@ -120,7 +119,7 @@ public class NativeManager implements INativeManager {
     }
     public boolean update()
     {
-        if(nativeHandler.update(key) != 0){
+        if(nativeJNI.update(key) != 0){
             return  false;
         }
         return  true;
@@ -136,9 +135,15 @@ public class NativeManager implements INativeManager {
 
 
 
+    public  boolean setDico(String name,String value){
+        if(nativeJNI.setDico(key,name,value) != 0){
+            return  false;
+        }
+        return  true;
+    }
     public boolean push(String port, String msg)
     {
-        if(nativeHandler.enqueue(key,inputs_ports.get(port),msg) != 0){
+        if(nativeJNI.putPort(key, inputs_ports.get(port), msg) != 0){
             return  false;
         }
         return  true;

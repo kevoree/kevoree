@@ -23,6 +23,7 @@
 *
 *
 **/
+
 $PACKAGE$
 
 import org.kevoree.ContainerRoot;
@@ -37,6 +38,7 @@ import org.kevoree.tools.nativeN.NativeHandlerException;
 import org.kevoree.tools.nativeN.NativeManager;
 import org.kevoree.tools.nativeN.api.NativeEventPort;
 import org.kevoree.tools.nativeN.api.NativeListenerPorts;
+import java.util.Random;
 
 import java.io.File;
 import java.net.URL;
@@ -47,37 +49,36 @@ import java.util.ArrayList;
  * Date: 08/10/12
  * Time: 08:10
  */
-@DictionaryType({
-        @DictionaryAttribute(name = "ipc_key", optional = false),
-        @DictionaryAttribute(name = "portEvents_tcp", optional = false),
-        @DictionaryAttribute(name = "portEvents_udp", optional = false)
-})
+
 @ComponentType
 $HEADER_PORTS$
 @Library(name = "Native")
 public class $CLASS$ extends AbstractComponentType {
 
     private  int ipc_key = 251102;
-    private int portEvents_tcp = 9865;
     private NativeManager nativeManager = null;
     private boolean started = false;
+    private final int range_min = 2000;
+    private final int range_max = 65535;
 
+    public int gerRandom(){
+        return range_min + new Random().nextInt(range_max - range_min);
+    }
 
     @Start
     public void start () {
         try
         {
-            ipc_key  = Integer.parseInt(getDictionary().get("ipc_key").toString());
-            portEvents_tcp =       Integer.parseInt(getDictionary().get("portEvents_tcp").toString());
+            ipc_key  = gerRandom();
 
             ArrayList<String> repos = new ArrayList<String>();
             for(Repository repo :  getModelService().getLastModel().getRepositoriesForJ())
             {
                 repos.add(repo.getUrl());
             }
+
             // loading model from jar
             ContainerRoot model = KevoreeXmiHelper.loadStream(getClass().getResourceAsStream("/KEV-INF/lib.kev"));
-
             File binary =    getBootStrapperService().resolveArtifact("$artifactId$"+getOs(), "$groupId$", "$version$", "uexe", repos);
 
             if(!binary.canExecute())
@@ -85,7 +86,7 @@ public class $CLASS$ extends AbstractComponentType {
                 binary.setExecutable(true);
             }
 
-            nativeManager = new NativeManager(ipc_key,portEvents_tcp,"$CLASS$",binary.getPath(),model);
+            nativeManager = new NativeManager(ipc_key,"$CLASS$",binary.getPath(),model);
 
             nativeManager.addEventListener(new NativeListenerPorts() {
                 @Override
@@ -114,14 +115,11 @@ public class $CLASS$ extends AbstractComponentType {
             } catch (NativeHandlerException e) {
                 e.printStackTrace();
             }
-
         }
     }
 
     @Update
     public void update () {
-        ipc_key  = Integer.parseInt(getDictionary().get("ipc_key").toString());
-        portEvents_tcp =       Integer.parseInt(getDictionary().get("portEvents_tcp").toString());
         nativeManager.update();
     }
 
