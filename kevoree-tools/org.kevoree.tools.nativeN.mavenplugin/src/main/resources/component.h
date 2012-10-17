@@ -31,9 +31,13 @@
 #include "kqueue.h"
 #include "events_udp.h"
 #include "events_tcp.h"
+#include "events_fifo.h"
 
-#define LENGHT_MAX_NAME_PORT 32
+#define LENGHT_MAX_NAME_PORT 64
 #define NUMBER_PORTS 100
+
+#define SIZE_FIFO 512
+char fifo_name[SIZE_FIFO];
 
 typedef struct _port
 {
@@ -62,9 +66,12 @@ int update ();
 int alive_component = 0;
 
 Context *ctx;
+/*
 EventBroker event_broker_tcp;
-EventBroker event_broker_udp;
+EventBroker event_broker_udp;     */
 //Publisher component_event_publisher;
+
+EventBroker event_broker_fifo;
 
 void notify(Events ev)
 {
@@ -99,8 +106,12 @@ void notify(Events ev)
             }
 
           ctx->stop ();
+          /*
           close(event_broker_tcp.sckServer);
           close(event_broker_udp.sckServer);
+          */
+          // todo close fifo
+
           exit (0);
         break;
 
@@ -111,7 +122,7 @@ void notify(Events ev)
     }
 }
 
-
+/*
 void *   t_broker_tcp (void *p)
 {
   p = NULL;
@@ -129,14 +140,24 @@ void *   t_broker_udp (void *p)
   createEventBroker_udp (&event_broker_udp);
   pthread_exit (NULL);
 }
+*/
+
+void *   t_broker_fifo(void *p)
+{
+
+  fprintf(stderr,"event_broker_fifo %s \n",(char*)p);
+  createEventBroker_fifo (&event_broker_fifo);
+  pthread_exit (NULL);
+}
 
 
 int bootstrap (key_t key,int port_event_broker)
 {
    int shmid;
    void *ptr_mem_partagee;
-   pthread_t t_event_broker_tcp;
-   pthread_t t_event_broker_udp;
+  /* pthread_t t_event_broker_tcp;
+   pthread_t t_event_broker_udp;   */
+   pthread_t t_event_broker_fifo;
 
   /* create memory shared   */
    shmid = shmget (key, sizeof (Context), S_IRUSR | S_IWUSR);
@@ -154,21 +175,29 @@ int bootstrap (key_t key,int port_event_broker)
     ctx = (Context *) ptr_mem_partagee;
     ctx->pid = getpid ();
 
-    event_broker_tcp.port = port_event_broker;
+    sprintf(fifo_name,"%d.fifo",key);
+    strcpy (event_broker_fifo.name_pipe,fifo_name);
+    // dispather
+    event_broker_fifo.dispatch = &notify;
+
+    if (pthread_create (&t_event_broker_fifo, NULL, &t_broker_fifo, fifo_name) != 0)
+    {
+       return -1;
+    }
+
+     /*
+    event_broker_fifo.port = port_event_broker;
     event_broker_tcp.dispatch = &notify;
 
     event_broker_udp.port = port_event_broker+1;
     event_broker_udp.dispatch = &notify;
 
-    if (pthread_create (&t_event_broker_tcp, NULL, &t_broker_tcp, NULL) != 0)
-    {
-      return -1;
-    }
 
     if (pthread_create (&t_event_broker_udp, NULL, &t_broker_udp, NULL) != 0)
     {
        return -1;
-    }
+    }    */
+
   return 0;
 }
 

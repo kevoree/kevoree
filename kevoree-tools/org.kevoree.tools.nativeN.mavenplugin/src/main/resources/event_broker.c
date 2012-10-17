@@ -21,7 +21,7 @@
 
 #include "events_udp.h"
 #include "events_tcp.h"
-
+#include "events_fifo.h"
 
 int count=0;
 
@@ -44,6 +44,7 @@ int main(void)
      ev_tcp.port = 8084;
      ev_tcp.dispatch = &notify_tcp;
 
+     strcpy(ev_tcp.name_pipe,"/tmp/test");
 
           EventBroker ev_udp;
           ev_udp.port = 8085;
@@ -51,7 +52,9 @@ int main(void)
 
       //  createEventBroker_udp (&ev_udp);
 
-     createEventBroker_tcp (&ev_tcp);
+
+
+     createEventBroker_fifo (&ev_tcp);
 
 
 }

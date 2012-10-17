@@ -193,6 +193,7 @@ public class GenerateFilesMojo extends AbstractMojo {
                 FileManager.copyFileFromStream(GenerateFilesMojo.class.getClassLoader().getResourceAsStream("events_common.h"), file.getPath(), "events_common.h");
                 FileManager.copyFileFromStream(GenerateFilesMojo.class.getClassLoader().getResourceAsStream("events_udp.h"), file.getPath(), "events_udp.h");
                 FileManager.copyFileFromStream(GenerateFilesMojo.class.getClassLoader().getResourceAsStream("events_tcp.h"), file.getPath(), "events_tcp.h");
+                FileManager.copyFileFromStream(GenerateFilesMojo.class.getClassLoader().getResourceAsStream("events_fifo.h"), file.getPath(), "events_fifo.h");
             }  else
             {
                 getLog().error("Creating thirdparty directory");
