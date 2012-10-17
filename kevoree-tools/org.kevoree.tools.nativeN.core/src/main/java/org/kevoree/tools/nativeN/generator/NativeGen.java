@@ -156,12 +156,12 @@ public class NativeGen implements INativeGen {
 
         gen.append("int main (int argc,char *argv[])\n" +
                 "{\n" +
-                "   \tif(argc >2)\n" +
+                "   \tif(argc  > 1)\n" +
                 "    {\n" +
                 "\t    key_t key =   atoi(argv[1]);\n" +
-                "\t    int port=   atoi(argv[2]);\n" +
+                "\t   // int port=   atoi(argv[2]);\n" +
                 "\n" +
-                "\t     bootstrap(key,port);\n" +
+                "\t     bootstrap(key,-1);\n" +
                 "        ctx->start= &start;\n" +
                 "        ctx->stop = &stop;\n" +
                 "        ctx->update   = &update;\n" +
