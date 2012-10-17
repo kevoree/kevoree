@@ -69,7 +69,7 @@ trait KevoreeProvidedThreadPort extends KevoreePort with Runnable {
   def run() {
     while (true) {   //TO CLEAN STOP
       try {
-        val obj = queue.poll()
+        val obj = queue.take()
         if (obj != null) {
           internal_process(obj)
         }

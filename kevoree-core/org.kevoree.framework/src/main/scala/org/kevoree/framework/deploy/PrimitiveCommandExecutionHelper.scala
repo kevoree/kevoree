@@ -193,6 +193,7 @@ object PrimitiveCommandExecutionHelper {
 
     def populate(cmd: PrimitiveCommand) {
       primitives = primitives ++ List(cmd)
+      rollbackPerformed = false
     }
 
     def runPhase(): Boolean = {
@@ -218,6 +219,8 @@ object PrimitiveCommandExecutionHelper {
       executeAllWorker(primitives, watchDogTimeoutInt)
     }
 
+    var rollbackPerformed = false
+
     def rollBack() {
       logger.debug("Rollback phase")
 
@@ -226,15 +229,20 @@ object PrimitiveCommandExecutionHelper {
         sucessor.get.rollBack()
       }
 
-      // SEQUENCIAL ROOLBACK
-      primitives.reverse.foreach(c => {
-        try {
-          logger.debug("Undo adaptation command " + c.getClass)
-          c.undo()
-        } catch {
-          case _@e => logger.warn("Exception during rollback", e);
-        }
-      })
+      if(!rollbackPerformed){
+        // SEQUENCIAL ROOLBACK
+        primitives.reverse.foreach(c => {
+          try {
+            logger.debug("Undo adaptation command " + c.getClass)
+            c.undo()
+          } catch {
+            case _@e => logger.warn("Exception during rollback", e);
+          }
+        })
+        rollbackPerformed = true
+      }
+
+
     }
   }
 
