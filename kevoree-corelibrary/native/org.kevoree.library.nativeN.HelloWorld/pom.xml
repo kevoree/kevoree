@@ -56,6 +56,9 @@
             <url>http://maven.kevoree.org/snapshots</url>
         </pluginRepository>
     </pluginRepositories>
+
+
+
     <modules>
         <module>org.kevoree.library.nativeN.HelloWorld_native</module>
         <module>org.kevoree.library.nativeN.HelloWorld_bridge</module>

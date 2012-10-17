@@ -5,12 +5,22 @@ extern void output_port(void *input);
 /* @Port(name = "input_port") */
 void input_port(void *input) {
 // USE INPUT
+
+printf("input = %s \n",(char*)input);
 }
 
 /*@Start*/
 int start()
 {
 	fprintf(stderr,"Component starting \n");
+
+
+	while(1){
+	  output_port((char*)"Hello World");
+
+	  sleep(1);
+
+	}
 
 return 0;
 }
