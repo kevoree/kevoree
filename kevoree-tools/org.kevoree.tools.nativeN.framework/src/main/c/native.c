@@ -34,13 +34,16 @@
 void *ptr_mem_partagee;
 int shmid;
 
-
 JavaVM *g_vm;
 jobject g_obj;
 jmethodID g_mid;
-
+ /*
 Publisher   p_event_udp;
 Publisher   p_event_tcp;
+*/
+#define SIZE_FIFO 512
+char fifo_name[SIZE_FIFO];
+Publisher   p_event_fifo;
 
 int alive=0;
 
@@ -165,16 +168,11 @@ void native_notify(Events ev)
 
 
 
-JNIEXPORT jint JNICALL Java_org_kevoree_tools_nativeN_NativeJNI_init (JNIEnv * env, jobject obj, jint key,jint port)
+JNIEXPORT jint JNICALL Java_org_kevoree_tools_nativeN_NativeJNI_init (JNIEnv * env, jobject obj, jint key)
 {
 
- p_event_tcp.port = port;
- p_event_tcp.socket = -1;
- strcpy (p_event_tcp.hostname, "127.0.0.1");
-
-  p_event_udp.port = port+1;
-  p_event_udp.socket = -1;
-  strcpy (p_event_udp.hostname, "127.0.0.1");
+  sprintf(fifo_name,"%d.fifo",key);
+  strcpy (p_event_fifo.name_pipe,fifo_name);
 
   // create memory shared
   shmid = shmget (key, sizeof (Context), IPC_CREAT | S_IRUSR | S_IWUSR);
@@ -216,8 +214,7 @@ Java_org_kevoree_tools_nativeN_NativeJNI_start (JNIEnv * env, jobject obj,
       return -1;
     case 0:
       sprintf (cipckey, "%d", key);
-      sprintf(port,"%d", p_event_tcp.port );
-      if (execl (n_path_binary, n_path_binary, cipckey,port, NULL) != 0)
+      if (execl (n_path_binary, n_path_binary, cipckey, NULL) != 0)
 	{
 	  perror ("execlp");
 	  return -1;
@@ -230,9 +227,9 @@ Java_org_kevoree_tools_nativeN_NativeJNI_start (JNIEnv * env, jobject obj,
 
 
 
-JNIEXPORT jint JNICALL   Java_org_kevoree_tools_nativeN_NativeJNI_stop (JNIEnv * env, jobject obj,
-					    jint key)
+JNIEXPORT jint JNICALL   Java_org_kevoree_tools_nativeN_NativeJNI_stop (JNIEnv * env, jobject obj,jint key)
 {
+
   ctx = (Context *) ptr_mem_partagee;
   if(ctx !=NULL)
   {
@@ -240,7 +237,7 @@ JNIEXPORT jint JNICALL   Java_org_kevoree_tools_nativeN_NativeJNI_stop (JNIEnv *
     Events      ev;
     ev.ev_type = EV_STOP;
 
-    send_event_tcp(p_event_tcp,ev);
+    send_event_fifo(p_event_fifo,ev);
 
     shmdt (ptr_mem_partagee);	/* detach segment */
     /* Deallocate the shared memory segment.  */
@@ -260,16 +257,14 @@ Java_org_kevoree_tools_nativeN_NativeJNI_update (JNIEnv * env, jobject obj,
 					      jint key)
 {
   ctx = (Context *) ptr_mem_partagee;
-
   Events      ev;
   ev.ev_type = EV_UPDATE;
-
-    send_event_tcp(p_event_tcp,ev);
+  send_event_fifo(p_event_fifo,ev);
 }
 
 
 JNIEXPORT jint JNICALL
-Java_org_kevoree_tools_nativeN_NativeJNI_create_1input (JNIEnv * env,  						     jobject obj, jint key,
+Java_org_kevoree_tools_nativeN_NativeJNI_create_1input (JNIEnv * env, jobject obj, jint key,
 						     jstring queue)
 {
   const char *n_port_name = (*env)->GetStringUTFChars (env, queue, 0);
@@ -294,7 +289,7 @@ JNIEXPORT jint JNICALL    Java_org_kevoree_tools_nativeN_NativeJNI_create_1outpu
   return  ctx->outputs_count-1;
 }
 
-JNIEXPORT jint JNICALL Java_org_kevoree_tools_nativeN_NativeJNI_enqueue (JNIEnv * env, jobject obj,  jint key, jint id_port,    jstring msg)
+JNIEXPORT jint JNICALL Java_org_kevoree_tools_nativeN_NativeJNI_putPort (JNIEnv * env, jobject obj,  jint key, jint id_port,    jstring msg)
 {
   ctx = (Context *) ptr_mem_partagee;
 
@@ -307,11 +302,10 @@ JNIEXPORT jint JNICALL Java_org_kevoree_tools_nativeN_NativeJNI_enqueue (JNIEnv 
 
       if(enqueue (ctx->inputs[id_port].id, kmsg) == 0)
       {
-
              Events      ev;
              ev.ev_type = EV_PORT_INPUT;
              ev.id_port =   id_port;
-               send_event_udp(p_event_udp,ev);
+             send_event_fifo(p_event_fifo,ev);
 
       }
        else
@@ -324,6 +318,12 @@ JNIEXPORT jint JNICALL Java_org_kevoree_tools_nativeN_NativeJNI_enqueue (JNIEnv 
   {
   return -1;
   }
-
-
 }
+
+
+JNIEXPORT jint JNICALL Java_org_kevoree_tools_nativeN_NativeJNI_setDico  (JNIEnv * env, jobject obj,  jint key, jstring dicoName, jstring value)
+{
+
+   // todo dico
+
+ }

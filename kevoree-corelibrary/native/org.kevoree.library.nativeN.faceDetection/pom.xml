@@ -1,0 +1,64 @@
+<project>
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.kevoree.library.nativeN</groupId>
+    <artifactId>org.kevoree.library.nativeN.faceDetection</artifactId>
+    <version>1.8.9-SNAPSHOT</version>
+    <name>Kevoree :: Native :: faceDetection Root</name>
+    <packaging>pom</packaging>
+
+     <parent>
+         <groupId>org.kevoree.corelibrary.native</groupId>
+         <artifactId>org.kevoree.library.native.root</artifactId>
+         <version>1.8.9-SNAPSHOT</version>
+         <relativePath>../org.kevoree.library.native.root/pom.xml</relativePath>
+     </parent>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>org.kevoree.tools.native.mavenplugin</artifactId>
+                <groupId>org.kevoree.tools</groupId>
+                <version>${kevoree.version}</version>
+            </plugin>
+        </plugins>
+    </build>
+
+    <distributionManagement>
+        <repository>
+            <id>maven2.kevoree.release</id>
+            <url>http://maven.kevoree.org/archiva/repository/release/</url>
+        </repository>
+        <snapshotRepository>
+            <id>maven2.kevoree.snapshots</id>
+            <url>http://maven.kevoree.org/archiva/repository/snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+    <repositories>
+        <repository>
+            <id>kevoree-libs-release-local</id>
+            <url>http://maven.kevoree.org/release</url>
+        </repository>
+        <repository>
+            <id>kevoree-snapshots</id>
+            <url>http://maven.kevoree.org/snapshots</url>
+        </repository>
+    </repositories>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>plugin.kevoree-github</id>
+            <url>http://maven.kevoree.org/release</url>
+        </pluginRepository>
+        <pluginRepository>
+            <id>plugin.kevoree-snapshots</id>
+            <url>http://maven.kevoree.org/snapshots</url>
+        </pluginRepository>
+    </pluginRepositories>
+
+    <modules>
+        <module>org.kevoree.nativeN.faceDetection_native</module>
+        <module>org.kevoree.nativeN.faceDetection_bridge</module>
+    </modules>
+</project>

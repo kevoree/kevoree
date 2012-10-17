@@ -32,15 +32,15 @@ import java.util.Random;
  */
 public class NativeJNI extends AbstractNativeJNI implements NativeEventPort {
 
-    protected native int init(int key,int port_event);
+    protected native int init(int key);
     protected native boolean register();
     protected native int start(int key,String path);
     public native int stop(int key);
     protected native int update(int key);
     protected native int create_input(int key,String name);
     protected native int create_output(int key,String name);
-    protected native int enqueue(int key,int port,String msg);
-
+    protected native int putPort(int key, int port, String msg);
+    protected native int setDico(int key,String port,String value);
 
     private NativeManager handler=null;
 
@@ -68,7 +68,7 @@ public class NativeJNI extends AbstractNativeJNI implements NativeEventPort {
             // todo
             String r = ""+new Random().nextInt(800);
             String absolutePath = FileManager.copyFileFromStream(SystemHelper.getPath("native.so"), folder.getAbsolutePath(),"libnative"+r+""+ SystemHelper.getExtension());
-            System.out.println("Loading "+absolutePath);
+          //  System.out.println("Loading "+absolutePath);
             System.load(absolutePath);
 
             return absolutePath;

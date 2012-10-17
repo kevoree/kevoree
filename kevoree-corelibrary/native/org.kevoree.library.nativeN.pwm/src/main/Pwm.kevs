@@ -1,0 +1,5 @@
+tblock
+{
+    createComponentType Pwm @ Native
+    addInPortType in_pwm : Message : optional =>  Pwm
+}

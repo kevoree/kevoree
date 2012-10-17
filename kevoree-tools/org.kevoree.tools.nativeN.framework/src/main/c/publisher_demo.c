@@ -22,6 +22,7 @@
 
 #include "events_udp.h"
 #include "events_tcp.h"
+#include "events_fifo.h"
 
 #include <strings.h>
 
@@ -40,15 +41,20 @@ int main(void)
   strcpy (publisher_udp.hostname, "127.0.0.1");
 
 
-       for(i=0;i<50;i++)
+   strcpy(publisher_udp.name_pipe,"/tmp/test");
+
+
+
+
+
+
+       for(i=0;i<1000;i++)
        {
-                     send_event_udp(publisher_udp,t);
+                     //send_event_udp(publisher_udp,t);
+                             send_event_fifo(publisher_udp,t);
        }
 
-
-
-
-         /*
+     /*
  Publisher publisher_tcp;
  publisher_tcp.port = 8084;
  strcpy (publisher_tcp.hostname, "127.0.0.1");

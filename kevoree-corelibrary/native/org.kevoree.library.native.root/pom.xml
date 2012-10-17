@@ -21,8 +21,9 @@
     </properties>
 
     <modules>
-        <module>../org.kevoree.nativeN.faceDetection</module>
-        <module>../org.kevoree.nativeN.HelloWorld</module>
+        <module>../org.kevoree.library.nativeN.faceDetection</module>
+        <module>../org.kevoree.library.nativeN.HelloWorld</module>
+        <module>../org.kevoree.library.nativeN.realtime</module>
     </modules>
 
     <build>

@@ -29,11 +29,18 @@
  } Events;
 
  typedef struct _EventBroker {
+
+   /* TCP & UDP */
  	unsigned short  port; /* Port */
  	int sckServer; /* descripteur socket  Serveur*/
  	int sckClient; /* Descripteur du socket du client */
+
+ 	/* named pipe */
+ 	char name_pipe[512];
+
+
+ 	/* DISPACHER */
  	void (*dispatch)(Events ev);
- 	struct sockaddr_in client;
  } EventBroker;
 
 
@@ -44,6 +51,11 @@
  	struct sockaddr_in   adr ;
  	char hostname[512];
    	socklen_t            lgradr ;
+
+   /* named pipe */
+   char name_pipe[512];
+
+
  } Publisher;
 
 
