@@ -99,7 +99,7 @@ public class GenerateFilesMojo extends AbstractMojo {
                 {
                     generateSources(f.getName().replace(".kevs", ""), f.getPath(), f.getPath().replace(f.getName(), ""));
                 } catch (Exception e) {
-                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                    e.printStackTrace();
                 }
             }
         }
@@ -136,12 +136,12 @@ public class GenerateFilesMojo extends AbstractMojo {
         getLog().info("Reading poms");
         // Reading poms
         Model component_java =     MavenHelper.createModel(project.getGroupId(), project.getArtifactId() + sub_java, project.getVersion(), MavenHelper.createParent(project), project);
-        component_java.setName("Kevoree :: Tools :: Native :: Bridge Java");
+        component_java.setName("Kevoree :: Tools :: Native :: Bridge Java :: "+project.getName());
         Model component_c=     MavenHelper.createModel(project.getGroupId(), project.getArtifactId() + sub_c, project.getVersion(), MavenHelper.createParent(project), project);
-        component_c.setName("Kevoree :: Tools :: Native :: C");
+        component_c.setName("Kevoree :: Tools :: Native :: C :: "+project.getName());
 
         MavenHelper.createPom("poms/pom.xml.component", component_java, project,component_java.getPomFile().getPath(),"");
-        MavenHelper.createPom("poms/pom.xml.c", component_c, project,component_c.getPomFile().getPath(),"");
+        MavenHelper.createPom("poms/pom.xml.c.profil", component_c, project,component_c.getPomFile().getPath(),"");
         MavenHelper.createPom("poms/pom.xml.c.nix32", component_c, project,component_c.getPomFile().getPath().replace("pom.xml","nix32/pom.xml"),sub_c);
         MavenHelper.createPom("poms/pom.xml.c.nix64", component_c, project,component_c.getPomFile().getPath().replace("pom.xml","nix64/pom.xml"),sub_c);
         MavenHelper.createPom("poms/pom.xml.c.osx", component_c, project,component_c.getPomFile().getPath().replace("pom.xml", "osx/pom.xml"),sub_c);

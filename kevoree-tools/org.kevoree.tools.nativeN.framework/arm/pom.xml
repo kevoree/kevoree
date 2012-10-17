@@ -10,7 +10,7 @@
     <groupId>org.kevoree.tools.nativeN.framework</groupId>
     <artifactId>org.kevoree.tools.nativeN.framework.arm</artifactId>
     <version>1.8.9-SNAPSHOT</version>
-    <name>Kevoree :: Tools :: NativeN :: ARM </name>
+    <name>Kevoree :: Tools :: NativeN :: Framework ARM </name>
 
     <packaging>so</packaging>
 
@@ -18,7 +18,7 @@
         <dependency>
             <groupId>org.kevoree.tools.nativeN</groupId>
             <artifactId>org.kevoree.tools.nativeN.core</artifactId>
-            <version>1.4-SNAPSHOT</version>
+            <version>${kevoree.version}</version>
         </dependency>
     </dependencies>
 
@@ -58,8 +58,9 @@
 
                     <compilerProvider>generic-classic</compilerProvider>
 
-                    <compilerExecutable>arm-linux-gnueabi-gcc</compilerExecutable>
-                    <linkerExecutable>arm-linux-gnueabi-gcc</linkerExecutable>
+                    <compilerExecutable>/home/jed/raspberryPI/tools/arm-bcm2708/arm-bcm2708-linux-gnueabi/bin/arm-bcm2708-linux-gnueabi-gcc</compilerExecutable>
+                    <linkerExecutable>/home/jed/raspberryPI/tools/arm-bcm2708/arm-bcm2708-linux-gnueabi/bin/arm-bcm2708-linux-gnueabi-gcc</linkerExecutable>
+
 
                     <sources>
                         <source>
