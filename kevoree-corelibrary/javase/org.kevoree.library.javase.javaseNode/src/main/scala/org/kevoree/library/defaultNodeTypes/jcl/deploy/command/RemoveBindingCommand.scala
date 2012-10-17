@@ -92,7 +92,7 @@ case class RemoveBindingCommand(c : MBinding,nodeName:String) extends PrimitiveC
                       bindmsg.setNodeName(nodeName)
                       bindmsg.setComponentName(c.getPort.eContainer.asInstanceOf[ComponentInstance].getName)
                       bindmsg.setPortName(portfound.getName)
-                      val res = (channelProxy.asInstanceOf[KevoreeChannelFragment] !? bindmsg).asInstanceOf[Boolean]
+                      val res = (channelProxy.asInstanceOf[KevoreeChannelFragment].processAdminMsg(bindmsg))
                       res
                     }
                 }

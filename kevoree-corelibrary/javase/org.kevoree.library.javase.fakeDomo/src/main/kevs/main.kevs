@@ -8,12 +8,18 @@ addNode node0 : JavaSENode
 addComponent light@node0 : FakeSimpleLight
 addComponent sw@node0 : FakeSimpleSwitch
 
-addChannel onQ : defMSG
-addChannel offQ : defMSG
+addChannel onQ : defMSGT
+addChannel offQ : defMSGT
+addChannel toggleQ : defSERVICET
+
 bind light.on@node0 => onQ
 bind light.off@node0 => offQ
 bind sw.on@node0 => onQ
 bind sw.off@node0 => offQ
+
+bind sw.toggle@node0 => toggleQ
+bind light.toggle@node0 => toggleQ
+
 
 addGroup sync : NanoRestGroup
 addToGroup sync node0

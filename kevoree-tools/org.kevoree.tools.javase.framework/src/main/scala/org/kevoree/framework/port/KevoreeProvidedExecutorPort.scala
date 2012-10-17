@@ -24,7 +24,7 @@ import java.util.concurrent.{Executors, Callable}
  */
 trait KevoreeProvidedExecutorPort extends KevoreePort {
 
-  val pool = PausablePortThreadPoolExecutor.newPausableThreadPool(1)
+  var pool : PausablePortThreadPoolExecutor = null
 
   case class CallMethodCallable(o : Any) extends Callable[Any]{
     def call() {
@@ -44,11 +44,13 @@ trait KevoreeProvidedExecutorPort extends KevoreePort {
 
   def startPort() {
     //PAUSED AT STARTUP
+    pool = PausablePortThreadPoolExecutor.newPausableThreadPool(1)
   }
 
   def stop() {
     if(pool != null){
       pool.shutdownNow()
+      pool = null
     }
   }
 

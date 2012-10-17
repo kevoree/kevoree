@@ -41,4 +41,6 @@ trait KevoreeChannelFragment extends /*KevoreeActor with*/ KInstance {
   def startC
   def stopC
 
+  def processAdminMsg(o : Any) : Boolean
+
 }

@@ -258,4 +258,9 @@ trait ChannelTypeFragment extends KevoreeChannelFragment with ChannelFragment wi
   def updateChannelFragment: Unit = {}
 
 
+  def processAdminMsg(o : Any) : Boolean = {
+      (this !? o).asInstanceOf[Boolean]
+  }
+
+
 }

@@ -92,7 +92,7 @@ case class AddBindingCommand(c: MBinding, nodeName: String) extends PrimitiveCom
                 bindmsg.setComponentName(c.getPort.eContainer.asInstanceOf[ComponentInstance].getName)
                 bindmsg.setPortName(portfound.getName)
                 bindmsg.setProxy(portfound)
-                (channelProxy.asInstanceOf[KevoreeChannelFragment] !? bindmsg).asInstanceOf[Boolean]
+                (channelProxy.asInstanceOf[KevoreeChannelFragment].processAdminMsg(bindmsg))
               }
             }
 

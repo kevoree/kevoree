@@ -52,7 +52,7 @@ case class RemoveFragmentBindingCommand(c: Channel, remoteNodeName: String, node
         val unbindmsg = new FragmentUnbindMessage
         unbindmsg.setChannelName(c.getName)
         unbindmsg.setFragmentNodeName(remoteNodeName)
-        (channel !? unbindmsg).asInstanceOf[Boolean]
+        (channel.processAdminMsg(unbindmsg))
       }
     }
   }

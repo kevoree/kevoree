@@ -45,7 +45,7 @@ case class AddFragmentBindingCommand(c: Channel, remoteNodeName: String, nodeNam
         val bindmsg = new FragmentBindMessage
         bindmsg.setChannelName(c.getName)
         bindmsg.setFragmentNodeName(remoteNodeName)
-        (channel !? bindmsg).asInstanceOf[Boolean]
+        (channel.processAdminMsg(bindmsg))
       }
     }
   }
