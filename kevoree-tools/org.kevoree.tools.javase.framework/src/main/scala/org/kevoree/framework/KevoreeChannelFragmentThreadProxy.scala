@@ -36,7 +36,7 @@ import java.util.HashMap
 import org.kevoree.ContainerRoot
 import reflect.BeanProperty
 
-class KevoreeChannelFragmentProxy(remoteNodeName: String, remoteChannelName: String) extends KevoreeChannelFragment with KevoreeActor {
+class KevoreeChannelFragmentThreadProxy(remoteNodeName: String, remoteChannelName: String) extends KevoreeChannelFragment {
 
   def getNodeName = remoteNodeName
 
@@ -48,9 +48,9 @@ class KevoreeChannelFragmentProxy(remoteNodeName: String, remoteChannelName: Str
 
   def stopChannelFragment = {}
 
-  def internal_process(msg: Any) = msg match {
+  def internal_process(msg: Any) : Any = msg match {
     case msg: Message => msg.content match {
-      case mcm: MethodCallMessage => reply(channelSender.sendMessageToRemote(msg))
+      case mcm: MethodCallMessage => channelSender.sendMessageToRemote(msg)
       case _ => channelSender.sendMessageToRemote(msg)
     }
     case _ => println("WTF !!")
@@ -66,11 +66,18 @@ class KevoreeChannelFragmentProxy(remoteNodeName: String, remoteChannelName: Str
   def kUpdateDictionary(d: HashMap[String, AnyRef], cmodel: ContainerRoot) = null
 
   def startC {
-    start()
+  //  start()
   }
 
   def stopC {
-    stop
+    //stop
+  }
+
+  def !(o:Any){
+    internal_process(o)
+  }
+  def !?(o:Any):Any={
+    internal_process(o)
   }
 
   def processAdminMsg(o : Any) : Boolean = {

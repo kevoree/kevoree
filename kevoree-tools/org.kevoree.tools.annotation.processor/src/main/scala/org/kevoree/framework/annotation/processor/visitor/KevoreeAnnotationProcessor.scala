@@ -35,9 +35,7 @@ import org.kevoree.KevoreeFactory
 import org.kevoree.ContainerRoot
 import org.kevoree.framework.annotation.processor.LocalUtility
 import org.kevoree.framework.annotation.processor.PostAptChecker
-import org.kevoree.tools.annotation.generator.KevoreeActivatorGenerator
-import org.kevoree.tools.annotation.generator.KevoreeFactoryGenerator
-import org.kevoree.tools.annotation.generator.KevoreeGenerator
+import org.kevoree.tools.annotation.generator.{ThreadingMapping, KevoreeActivatorGenerator, KevoreeFactoryGenerator, KevoreeGenerator}
 
 import org.kevoree.framework._
 import scala.collection.JavaConversions._
@@ -116,6 +114,7 @@ class KevoreeAnnotationProcessor() extends javax.annotation.processing.AbstractP
     }
     roundEnv.getElementsAnnotatedWith(classOf[org.kevoree.annotation.ChannelTypeFragment]).foreach {
       typeDecl =>
+
         processChannelType(typeDecl.getAnnotation(classOf[org.kevoree.annotation.ChannelTypeFragment]), typeDecl.asInstanceOf[TypeElement], root)
     }
 
@@ -230,6 +229,8 @@ class KevoreeAnnotationProcessor() extends javax.annotation.processing.AbstractP
 
 
   def processChannelType(channelTypeAnnotation: org.kevoree.annotation.ChannelTypeFragment, typeDecl: TypeElement, root: ContainerRoot) = {
+
+    ThreadingMapping.getMappings.put((typeDecl.getSimpleName.toString,typeDecl.getSimpleName.toString),channelTypeAnnotation.theadStrategy())
 
     //Checks that the root KevoreeChannelFragment is present in hierarchy.
     val superTypeChecker = new SuperTypeValidationVisitor(classOf[AbstractChannelFragment].getName)

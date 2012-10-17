@@ -36,6 +36,7 @@ import java.io.File
 import org.kevoree.framework.aspects.KevoreeAspects._
 import org.kevoree.framework.KevoreeGeneratorHelper
 import org.kevoree._
+import annotation.ThreadStrategy
 import javax.annotation.processing.Filer
 import javax.tools.StandardLocation
 
@@ -160,7 +161,23 @@ object KevoreeFactoryGenerator {
         writer.append("def createInstanceActivator: org.kevoree.framework.osgi.KevoreeInstanceActivator = new "+ct.getName+"Activator\n")
 
 
-        writer.append("def createChannel()={new " + ct.getBean + " with ChannelTypeFragment {\n")
+
+        ThreadingMapping.getMappings.get(Tuple2(ct.getName, ct.getName)) match {
+          case ThreadStrategy.THREAD_QUEUE => {
+            writer.append("def createChannel()={new " + ct.getBean + " with ChannelTypeFragmentThread {\n")
+          }
+          case ThreadStrategy.SHARED_THREAD => {
+            writer.append("def createChannel()={new " + ct.getBean + " with ChannelTypeFragmentThread {\n")
+          }
+          case ThreadStrategy.NONE => {
+            writer.append("def createChannel()={new " + ct.getBean + " with ChannelTypeFragmentNone {\n")
+          }
+          case _ => {
+            writer.append("def createChannel()={new " + ct.getBean + " with ChannelTypeFragment {\n")
+          }
+        }
+
+      //  writer.append("def createChannel()={new " + ct.getBean + " with ChannelTypeFragment {\n")
 
 
         if (ct.getStartMethod != "") {
