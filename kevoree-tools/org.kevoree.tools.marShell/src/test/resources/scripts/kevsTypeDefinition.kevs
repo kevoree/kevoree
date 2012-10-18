@@ -13,4 +13,11 @@ tblock {
     addOutPortType portnameOut2 : Service : "org.kevoree.framework.MessagePort"  =>  myNewComponent
     addOutPortType portnameOut3 : Service : "org.kevoree.framework.MessagePort" : optional =>  myNewComponent
 
+
+    createDictionaryType myNewComponent {
+        optional fragDep myParam : "String" values "hello,hello2" default "hello",
+        myParam2 : "String"
+    }
+
+
  }

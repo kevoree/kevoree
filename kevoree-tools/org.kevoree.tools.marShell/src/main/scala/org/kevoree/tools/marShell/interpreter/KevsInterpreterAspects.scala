@@ -86,6 +86,8 @@ object KevsInterpreterAspects {
         case createComponentType: CreateComponentTypeStatment => KevsCreateComponentTypeInterpreter(createComponentType)
         case createChannelType: CreateChannelTypeStatment => KevsCreateChannelTypeInterpreter(createChannelType)
         case addPortType: AddPortTypeStatment => KevsAddPortTypeInterpreter(addPortType)
+        case stmt: CreateDictionaryTypeStatment => KevsCreateDictionaryTypeInterpreter(stmt)
+
 
           //ADD REPO INTERPRETER
         case addRepo: AddRepoStatment => KevsAddRepoInterpreter(addRepo)

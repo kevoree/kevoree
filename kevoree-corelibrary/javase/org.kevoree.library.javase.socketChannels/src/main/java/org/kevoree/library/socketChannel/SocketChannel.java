@@ -28,7 +28,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Semaphore;
 
 @Library(name = "JavaSE", names = {"Android"})
-@ChannelTypeFragment
+@ChannelTypeFragment(theadStrategy = ThreadStrategy.SHARED_THREAD)
 @DictionaryType({
         @DictionaryAttribute(name = "port", optional = false, fragmentDependant = true),
         @DictionaryAttribute(name = "maximum_size_messaging", defaultValue = "50", optional = false),
