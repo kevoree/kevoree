@@ -12,7 +12,7 @@
     <groupId>org.kevoree.tools.nativeN</groupId>
     <artifactId>org.kevoree.tools.nativeN.framework</artifactId>
     <packaging>pom</packaging>
-    <name>Kevoree :: Tools :: Native :: Framework</name>
+    <name>Kevoree :: Tools :: NativeN :: Framework</name>
 
     <profiles>
         <profile>
