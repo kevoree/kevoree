@@ -2,12 +2,14 @@
 
 
 void input_port(void *input);
+
 void output_port(void *input) {
  process_output(0,input);
 }
 void dispatch(int port,int id_queue)
 {
     kmessage *msg = NULL;
+  //  fprintf(stderr,"dispatcher %d : %d \n",port,id_queue);
           msg = dequeue(id_queue);
           if(msg !=NULL)
           {
@@ -16,9 +18,11 @@ void dispatch(int port,int id_queue)
 					 input_port(msg->value);
 			 break;
                      }
-                     }
 
-}int main (int argc,char *argv[])
+           }
+}
+
+int main (int argc,char *argv[])
 {
    	if(argc  > 1)
     {
@@ -31,6 +35,6 @@ void dispatch(int port,int id_queue)
         ctx->update   = &update;
         ctx->dispatch = &dispatch;
 	    ctx->start();
-    pause();
+        pause();
      }
 }

@@ -85,6 +85,8 @@ void notify(Events ev)
 
         case EV_STOP:
 
+            fprintf(stderr,"Receive REQUEST STOP \n");
+
         for (i = 0; i < ctx->inputs_count; i++)
             {
               if (destroy_queue (ctx->inputs[i].id) != 0)
