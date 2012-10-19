@@ -83,35 +83,6 @@ class KevoreeLocalLoader(classpathResources: KevoreeLazyJarResources, kcl: Kevor
 
   order = 1
 
-  /*
-class LoadClassCallable(className: String) extends Callable[Class[_]] {
- def call(): Class[_] = {
-   var result = kcl.getLoadedClass(className)
-   if (result == null) {
-     val bytes = kcl.loadClassBytes(className)
-     if (bytes != null) {
-       result = kcl.internal_defineClass(className, bytes)
-     }
-   }
-   result
- }
-}
-
-def loadClass(className: String, resolveIt: Boolean): Class[_] = {
- var result = kcl.getLoadedClass(className)
- if (result == null) {
-   val bytes = kcl.loadClassBytes(className)
-   if (bytes != null) {
-     val call = new LoadClassCallable(className)
-     println("Before" +className)
-     result = KCLScheduler.getScheduler.submit[Class[_]](call).get()
-     println("After "+result)
-   }
- }
- result
-}   */
-
-
   def loadClass(className: String, resolveIt: Boolean): Class[_] = {
     var result = kcl.getLoadedClass(className)
     if (result == null) {
@@ -195,54 +166,6 @@ def loadClass(className: String, resolveIt: Boolean): Class[_] = {
 
   }
 
-
-  /*
-case class LockClassLoad(className: String)
-
-case class UnlockClassLoad(className: String)
-
-def acquireLock(className: String) {
-(this !? LockClassLoad(className))
-}
-
-def releaseLock(className: String) {
-(this ! UnlockClassLoad(className))
-}
-
-case class KILL()
-
-def killActor() {
-this ! KILL()
-}       */
-
-
   private val locked = new java.util.HashMap[String, Tuple2[Semaphore,Int]]
-  /*
-def act() {
- loop {
-   react {
-     case LockClassLoad(cName) => {
-       if (locked.containsKey(cName)) {
-         // println("Conflict locked "+cName+"-"+locked.keySet().size()+"-"+locked.get(cName).size)
-         locked.put(cName, locked.get(cName) ++ List(sender))
-       } else {
-         locked.put(cName, List())
-         reply(true)
-       }
-     }
-     case UnlockClassLoad(cName) => {
-       if (locked.containsKey(cName)) {
-         // println("Unlock "+cName)
-         locked.get(cName).foreach(l => l ! true)
-         locked.remove(cName)
-
-       }
-     }
-     case KILL() => exit()
-     case _ => println("RTFM")
-   }
- }
-}   */
-
 
 }
