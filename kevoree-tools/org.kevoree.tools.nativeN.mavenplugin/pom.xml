@@ -4,7 +4,7 @@
     <groupId>org.kevoree.tools</groupId>
     <artifactId>org.kevoree.tools.nativeN.mavenplugin</artifactId>
     <packaging>maven-plugin</packaging>
-    <name>Kevoree :: Tools :: Native :: MavenPlugin</name>
+    <name>Kevoree :: Tools :: NativeN :: MavenPlugin</name>
     <version>1.8.9-SNAPSHOT</version>
 
     <parent>

@@ -49,7 +49,6 @@ public abstract  class AbstractCodeGenerator implements ICodeGenerator
                 ComponentType c = (ComponentType)type;
                     for(PortTypeRef portP :  c.getProvidedForJ() )    {  create_input(portP.getName()); }
                     for(PortTypeRef portR :  c.getRequiredForJ()) { create_output(portR.getName()); }
-
             }
         }
     }
