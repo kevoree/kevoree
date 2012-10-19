@@ -27,8 +27,10 @@ public interface INativeManager {
 
     public boolean start() throws NativeHandlerException;
     public boolean stop() throws NativeHandlerException;
-    public boolean update();
+    public boolean update() throws NativeHandlerException;
+
     public boolean push(String port_name, String data);
+    public  boolean setDico(String name,String value);
 
     public void addEventListener (NativeListenerPorts listener);
     public void removeEventListener (NativeListenerPorts listener);

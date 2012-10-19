@@ -28,8 +28,9 @@
 #include <stdio.h>
 #include <sys/shm.h>
 #include <sys/stat.h>
-#include "component.h"
+#include "../../../../org.kevoree.tools.nativeN.mavenplugin/src/main/resources/component.h"
 
+#define ERROR_MEMORY_SHARED -5
 
 void *ptr_mem_partagee;
 int shmid;
@@ -46,6 +47,13 @@ char fifo_name[SIZE_FIFO];
 Publisher   p_event_fifo;
 
 int alive=0;
+
+
+void destroyHashMapKDico()
+{
+   // todo
+}
+
 
 void   process (char *queue, void *msg)
 {
@@ -98,6 +106,10 @@ void *manage_callbacks(void *p)
               }
               usleep(1000);
          }
+         else
+         {
+            fprintf(stderr,"shared memory is null");
+         }
     }
     pthread_exit(NULL);
 }
@@ -111,14 +123,16 @@ JNI_OnLoad (JavaVM * jvm, void *reserved)
 }
 
 
-JNIEXPORT jboolean JNICALL
+JNIEXPORT jint JNICALL
 Java_org_kevoree_tools_nativeN_NativeJNI_register (JNIEnv * env, jobject obj)
 {
     pthread_t callbacks;
     alive = 1;
-        if(pthread_create (& callbacks, NULL,&manage_callbacks, NULL) != 0){
-            return -1;
-        }
+    if(pthread_create (& callbacks, NULL,&manage_callbacks, NULL) != 0)
+    {
+         fprintf(stderr,"create callback");
+         return (jboolean)-1;
+    }
   // convert local to global reference
   g_obj = (*env)->NewGlobalRef (env, obj);
   // save refs for callback
@@ -135,10 +149,11 @@ Java_org_kevoree_tools_nativeN_NativeJNI_register (JNIEnv * env, jobject obj)
   g_mid =       (*env)->GetMethodID (env, g_clazz, "dispatchEvent", "(Ljava/lang/String;Ljava/lang/String;)V");
   if (g_mid == NULL)
     {
-      printf ("Unable to get method ref");
+      fprintf (stderr,"Unable to get method ref");
+      return -1;
 
     }
-  return (jboolean) 0;
+  return 0;
 }
 
 
@@ -195,7 +210,10 @@ JNIEXPORT jint JNICALL Java_org_kevoree_tools_nativeN_NativeJNI_init (JNIEnv * e
 
   ctx->pid_jvm = getpid ();
 
-  //    fprintf (stderr,"shared memory attached at address %p\n", ptr_mem_partagee);
+  ctx->map = newHashMap(&destroyHashMapKDico,NULL);
+
+  fprintf (stderr,"Component started with shared memory attached at address %p\n", ptr_mem_partagee);
+
   return shmid;
 }
 
@@ -227,26 +245,27 @@ Java_org_kevoree_tools_nativeN_NativeJNI_start (JNIEnv * env, jobject obj,
 
 
 
-JNIEXPORT jint JNICALL   Java_org_kevoree_tools_nativeN_NativeJNI_stop (JNIEnv * env, jobject obj,jint key)
+JNIEXPORT jint JNICALL   Java_org_kevoree_tools_nativeN_NativeJNI_stop (JNIEnv * env, jobject obj,
+					    jint key)
 {
-
   ctx = (Context *) ptr_mem_partagee;
   if(ctx !=NULL)
   {
     alive =0;
     Events      ev;
     ev.ev_type = EV_STOP;
-
     send_event_fifo(p_event_fifo,ev);
 
     shmdt (ptr_mem_partagee);	/* detach segment */
     /* Deallocate the shared memory segment.  */
     shmctl (shmid, IPC_RMID, 0);
 
-      return 0;
+
+
+    return 0;
   } else
   {
-  return -1;
+    return ERROR_MEMORY_SHARED;
   }
 
 }
@@ -256,10 +275,17 @@ JNIEXPORT jint JNICALL
 Java_org_kevoree_tools_nativeN_NativeJNI_update (JNIEnv * env, jobject obj,
 					      jint key)
 {
-  ctx = (Context *) ptr_mem_partagee;
-  Events      ev;
-  ev.ev_type = EV_UPDATE;
-  send_event_fifo(p_event_fifo,ev);
+    ctx = (Context *) ptr_mem_partagee;
+    if(ctx != NULL)
+    {
+        Events      ev;
+        ev.ev_type = EV_UPDATE;
+        return send_event_fifo(p_event_fifo,ev);
+    }
+    else
+    {
+        return ERROR_MEMORY_SHARED;
+    }
 }
 
 
@@ -267,63 +293,92 @@ JNIEXPORT jint JNICALL
 Java_org_kevoree_tools_nativeN_NativeJNI_create_1input (JNIEnv * env, jobject obj, jint key,
 						     jstring queue)
 {
-  const char *n_port_name = (*env)->GetStringUTFChars (env, queue, 0);
-  int id_queue = init_queue ();
   ctx = (Context *) ptr_mem_partagee;
-  strcpy (ctx->inputs[ctx->inputs_count].name, n_port_name);
-  ctx->inputs[ctx->inputs_count].id = id_queue;
-  ctx->inputs_count = ctx->inputs_count + 1;
-  return   ctx->inputs_count-1;
+  if(ctx != NULL)
+  {
+       const char *n_port_name = (*env)->GetStringUTFChars (env, queue, 0);
+       int id_queue = init_queue ();
+       strcpy (ctx->inputs[ctx->inputs_count].name, n_port_name);
+       ctx->inputs[ctx->inputs_count].id = id_queue;
+       ctx->inputs_count = ctx->inputs_count + 1;
+       #ifdef  DEBUG
+         fprintf (stderr,"Input %d : %d  \n",id_queue,       ctx->inputs_count-1);
+       #endif
+       return   ctx->inputs_count-1;
+  } else
+  {
+      fprintf (stderr,"Error shared memory create_1input");
+    return ERROR_MEMORY_SHARED;
+  }
+
 }
 
 JNIEXPORT jint JNICALL    Java_org_kevoree_tools_nativeN_NativeJNI_create_1output (JNIEnv * env,
 						      jobject obj, jint key,
 						      jstring queue)
 {
-  const char *n_port_name = (*env)->GetStringUTFChars (env, queue, 0);
-  int id_queue = init_queue ();
   ctx = (Context *) ptr_mem_partagee;
-  strcpy (ctx->outputs[ctx->outputs_count].name, n_port_name);
-  ctx->outputs[ctx->outputs_count].id = id_queue;
-  ctx->outputs_count = ctx->outputs_count + 1;
-  return  ctx->outputs_count-1;
-}
-
-JNIEXPORT jint JNICALL Java_org_kevoree_tools_nativeN_NativeJNI_putPort (JNIEnv * env, jobject obj,  jint key, jint id_port,    jstring msg)
-{
-  ctx = (Context *) ptr_mem_partagee;
-
   if(ctx != NULL)
   {
-     const char *n_value = (*env)->GetStringUTFChars (env, msg, 0);
+     const char *n_port_name = (*env)->GetStringUTFChars (env, queue, 0);
+     int id_queue = init_queue ();
+     strcpy (ctx->outputs[ctx->outputs_count].name, n_port_name);
+     ctx->outputs[ctx->outputs_count].id = id_queue;
+     ctx->outputs_count = ctx->outputs_count + 1;
+      return  ctx->outputs_count-1;
+  } else
+  {
+    fprintf (stderr,"Error shared memory create_1output");
+    return ERROR_MEMORY_SHARED;
+  }
+}
+
+JNIEXPORT jint JNICALL Java_org_kevoree_tools_nativeN_NativeJNI_putPort (JNIEnv * env, jobject obj,  jint key, jint id_port,jstring msg)
+{
+  ctx = (Context *) ptr_mem_partagee;
+  if(ctx != NULL)
+  {
+      const char *n_value = (*env)->GetStringUTFChars (env, msg, 0);
+      #ifdef  DEBUG
+      fprintf (stderr,"PutPort %d->%s  id queue = %d\n", id_port,n_value,ctx->inputs[id_port].id);
+      #endif
       kmessage kmsg;
       kmsg.type = 1;
       strcpy (kmsg.value, n_value);
 
       if(enqueue (ctx->inputs[id_port].id, kmsg) == 0)
       {
-             Events      ev;
-             ev.ev_type = EV_PORT_INPUT;
-             ev.id_port =   id_port;
-             send_event_fifo(p_event_fifo,ev);
+         Events      ev;
+         ev.ev_type = EV_PORT_INPUT;
+         ev.id_port =   id_port;
 
-      }
-       else
+         // notify
+         send_event_fifo(p_event_fifo,ev);
+         return 0;
+      } else
       {
-      return -1;
+           fprintf (stderr,"Error : enqueue %d->%s \n", id_port,n_value);
+        return -1;
       }
-      return 0;
-
   } else
   {
-  return -1;
+    return ERROR_MEMORY_SHARED;
   }
 }
 
 
-JNIEXPORT jint JNICALL Java_org_kevoree_tools_nativeN_NativeJNI_setDico  (JNIEnv * env, jobject obj,  jint key, jstring dicoName, jstring value)
+JNIEXPORT jint JNICALL Java_org_kevoree_tools_nativeN_NativeJNI_setDico  (JNIEnv * env, jobject obj,  jint key, jstring key_dico, jstring value_dico)
 {
+    ctx = (Context *) ptr_mem_partagee;
+     if(ctx != NULL)
+     {
+         const char *key_n = (*env)->GetStringUTFChars (env, key_dico, 0);
+         const char *value_n = (*env)->GetStringUTFChars (env, value_dico, 0);
+         addToHashMap(ctx->map,key_n,value_n);
 
-   // todo dico
-
+     } else
+     {
+        fprintf(stderr,"update kdico");
+        return -1;
+     }
  }

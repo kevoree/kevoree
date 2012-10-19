@@ -80,7 +80,6 @@
 
             </plugin>
 
-
             <plugin>
                 <groupId>com.mycila.maven-license-plugin</groupId>
                 <artifactId>maven-license-plugin</artifactId>
@@ -100,6 +99,26 @@
                         <phase>process-sources</phase>
                         <goals>
                             <goal>format</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>install</phase>
+                        <configuration>
+                            <tasks>
+                                <copy tofile="../../org.kevoree.tools.nativeN.core/src/main/resources/nix64/native.so">
+                                    <fileset file="${project.build.directory}/org.kevoree.tools.nativeN.framework.nix64.so"/>
+                                </copy>
+                            </tasks>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
                         </goals>
                     </execution>
                 </executions>

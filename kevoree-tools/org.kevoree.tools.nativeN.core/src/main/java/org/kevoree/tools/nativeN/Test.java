@@ -14,7 +14,18 @@
 package org.kevoree.tools.nativeN;
 
 
+import org.kevoree.ContainerRoot;
+import org.kevoree.framework.KevoreeXmiHelper;
+import org.kevoree.tools.aether.framework.AetherUtil;
+import org.kevoree.tools.nativeN.api.NativeEventPort;
+import org.kevoree.tools.nativeN.api.NativeListenerPorts;
+import org.kevoree.tools.nativeN.generator.AbstractCodeGenerator;
+import org.kevoree.tools.nativeN.generator.CodeGeneratorC;
+import org.kevoree.tools.nativeN.generator.CodeGeneratorJava;
+import org.kevoree.tools.nativeN.utils.KevScriptLoader;
 
+import java.io.File;
+import java.util.ArrayList;
 
 public class Test {
 
@@ -23,27 +34,46 @@ public class Test {
 
 
     public static void main(String[] args) throws Exception {
-       /*
-        int ipc_key = 251102;
-        int portEvents_tcp = 9865;
 
+
+        ContainerRoot model =  KevScriptLoader.getModel("/home/jed/KEVOREE_PROJECT/kevoree/kevoree-corelibrary/native/org.kevoree.library.nativeN.HelloWorld/src/main/HelloWorld.kevs");
+
+        AbstractCodeGenerator codeGeneratorC = new CodeGeneratorC(model);
+        codeGeneratorC.execute();
+
+        AbstractCodeGenerator codeGeneratorJava = new CodeGeneratorJava(model);
+        codeGeneratorJava.execute();
+
+
+
+        System.exit(0);
+        int ipc_key = 6819;
 
         ArrayList<String> repos = new ArrayList<String>();
         repos.add("http://maven.kevoree.org/release/");
         repos.add("http://maven.kevoree.org/snapshots/");
 
-        File binary =   AetherUtil.resolveMavenArtifact4J("org.kevoree.nativeN.testcomponent_c", "org.kevoree.nativeN", "1.5-SNAPSHOT", "uexe", repos);
+        /*
+        <groupId>org.kevoree.library.nativeN</groupId>
+        <artifactId>org.kevoree.library.nativeN.HelloWorld_native</artifactId>*/
 
-        if(!binary.canExecute())
-        {
-            binary.setExecutable(true);
-        }
+        /*    File binary =   AetherUtil.resolveMavenArtifact4J("org.kevoree.library.nativeN.HelloWorld_native", "org.kevoree.library.nativeN", "1.8.9-SNAPSHOT", "uexe", repos);
 
+    if(!binary.canExecute())
+    {
+        binary.setExecutable(true);
+    }
+        */
+        String path_uexe = "/home/jed/KEVOREE_PROJECT/kevoree/kevoree-corelibrary/native/org.kevoree.library.nativeN.HelloWorld/org.kevoree.library.nativeN.HelloWorld_native/nix32/target/org.kevoree.library.nativeN.HelloWorld_native-nix32.uexe";
+        // System.out.println(binary.getPath());
 
+        KevScriptLoader kevScriptLoader =new KevScriptLoader();
+
+        //  ContainerRoot model =   kevScriptLoader.getModel("/home/jed/KEVOREE_PROJECT/kevoree/kevoree-corelibrary/native/org.kevoree.library.nativeN.HelloWorld/src/main/HelloWorld.kevs");
         // loading model from jar
-        ContainerRoot model = KevoreeXmiHelper.load("/home/jed/DAUM_PROJECT/daum-library/pocXenomai/org.kevoree.tools.nativeN/org.kevoree.tools.nativeN.core/src/main/resources/lib.kev");
+        ContainerRoot model2 = KevoreeXmiHelper.load("/home/jed/DAUM_PROJECT/daum-library/pocXenomai/org.kevoree.tools.nativeN/org.kevoree.tools.nativeN.core/src/main/resources/lib.kev");
 
-        NativeManager nativeManager = new NativeManager(ipc_key,portEvents_tcp,"HelloWorld",binary.getPath(),model);
+        NativeManager nativeManager = new NativeManager(ipc_key,"HelloWorld",path_uexe,model);
 
 
         nativeManager.addEventListener(new NativeListenerPorts() {
@@ -54,16 +84,15 @@ public class Test {
             }
         });
 
+
         boolean  started = nativeManager.start();
 
         if(started)
         {
 
-            nativeManager.update();
-
-            nativeManager.push("input_port", "hello world ");
-           Thread.sleep(10000);
-            nativeManager.stop();
+            for(int i = 0;i <100;i++){
+                nativeManager.push("input_port", "hello world " + i);
+            }
 
 
         } else
@@ -71,7 +100,11 @@ public class Test {
             System.out.println("error");
         }
 
-                 System.exit(0);  */
+        nativeManager.stop();
+
+        System.exit(0);
+
+
 
 
     }
