@@ -57,17 +57,28 @@ public class NativeManager implements INativeManager {
                 {
                     for(PortTypeRef portP :  c.getProvidedForJ())
                     {
-                        inputs_ports.put(portP.getName(), nativeJNI.create_input(key, portP.getName()));
+                        int id =  nativeJNI.create_input(key, portP.getName());
+                        if(id < 0){
+                            throw new NativeHandlerException();
+                        }
+                        inputs_ports.put(portP.getName(),id);
                     }
                     for(PortTypeRef portR :  c.getRequiredForJ())
                     {
-                        inputs_ports.put(portR.getName(), nativeJNI.create_output(key, portR.getName()));
+                        int id =    nativeJNI.create_output(key, portR.getName());
+                        if(id < 0){
+                            throw new NativeHandlerException();
+                        }
+                        inputs_ports.put(portR.getName(),id);
                     }
                     break;
                 }
             }
         }
-        nativeJNI.register();
+        if(nativeJNI.register() < 0)
+        {
+            throw new NativeHandlerException();
+        }
     }
 
 
@@ -75,7 +86,7 @@ public class NativeManager implements INativeManager {
 
         if(nativeJNI.start(key, path_uexe) < 0)
         {
-          return false;
+            return false;
         }
         //todo check started  remove sleep
         try {
@@ -87,12 +98,12 @@ public class NativeManager implements INativeManager {
 
     public boolean stop() throws NativeHandlerException
     {
-        nativeJNI.stop(key);
-        try {
-            Thread.sleep(3000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        if(nativeJNI.stop(key) < 0)
+        {
+            return false;
         }
+
+        // todo check process
         return  true;
     }
 
@@ -135,12 +146,13 @@ public class NativeManager implements INativeManager {
 
 
 
-    public  boolean setDico(String name,String value){
+    public  boolean setDico(String name,String value) {
         if(nativeJNI.setDico(key,name,value) != 0){
             return  false;
         }
         return  true;
     }
+
     public boolean push(String port, String msg)
     {
         if(nativeJNI.putPort(key, inputs_ports.get(port), msg) != 0){

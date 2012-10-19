@@ -33,7 +33,7 @@ import java.util.Random;
 public class NativeJNI extends AbstractNativeJNI implements NativeEventPort {
 
     protected native int init(int key);
-    protected native boolean register();
+    protected native int register();
     protected native int start(int key,String path);
     public native int stop(int key);
     protected native int update(int key);

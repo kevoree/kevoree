@@ -11,7 +11,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kevoree.tools.nativeN;
+package org.kevoree.tools.nativeN.utils;
 
 import org.kevoree.ContainerRoot;
 import org.kevoree.KevoreeFactory;
@@ -19,7 +19,6 @@ import org.kevoree.api.service.core.script.KevScriptEngineException;
 
 import org.kevoree.tools.marShell.KevScriptOfflineEngine;
 import org.kevoree.tools.modelsync.FakeBootstraperService;
-import org.kevoree.tools.nativeN.api.IKevScriptLoader;
 import org.kevoree.tools.nativeN.utils.FileManager;
 
 /**
@@ -29,7 +28,7 @@ import org.kevoree.tools.nativeN.utils.FileManager;
  * Time: 15:35
  * To change this template use File | Settings | File Templates.
  */
-public class KevScriptLoader implements IKevScriptLoader {
+public class KevScriptLoader  {
 
     /**
      * Loading kevScript in ContainerRoot from file
@@ -37,7 +36,7 @@ public class KevScriptLoader implements IKevScriptLoader {
      * @param path_file
      * @return
      */
-    public ContainerRoot loadKevScript(String path_file) throws KevScriptEngineException {
+    public static ContainerRoot getModel(String path_file) throws KevScriptEngineException {
 
         ContainerRoot basemodel = KevoreeFactory.createContainerRoot();
         byte [] file = FileManager.load(path_file);
@@ -49,12 +48,19 @@ public class KevScriptLoader implements IKevScriptLoader {
             kevOfflineEngine.addVariable(pro,System.getProperty(pro));
         }
         kevOfflineEngine.addVariable("kevoree.version", KevoreeFactory.getVersion());
-        // add MessagePort
-        String kev_framework ="merge 'mvn:org.kevoree.corelibrary.android/org.kevoree.library.android.logger/{kevoree.version}'";
 
-        kevOfflineEngine.append("{"+kev_framework+"\n"+kevScript.replace("tblock","")+"}") ;
+
+        // add MessagePort
+      //  String kev_framework ="merge 'mvn:org.kevoree.corelibrary.android/org.kevoree.library.android.logger/{kevoree.version}'";
+
+        kevOfflineEngine.append("{"+kevScript.replace("tblock","")+"}") ;
+        System.out.println(kevScript);
         ContainerRoot model = kevOfflineEngine.interpret();
 
         return model;
     }
+
+
+
+
 }

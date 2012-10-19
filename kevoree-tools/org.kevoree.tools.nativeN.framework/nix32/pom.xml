@@ -102,8 +102,24 @@
 
             </plugin>
 
-
-
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>install</phase>
+                        <configuration>
+                            <tasks>
+                                <copy tofile="../../org.kevoree.tools.nativeN.core/src/main/resources/nix32/native.so">
+                                    <fileset file="${project.build.directory}/org.kevoree.tools.nativeN.framework.nix32.so"/>
+                                </copy>
+                            </tasks>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
 
         </plugins>
     </build>
