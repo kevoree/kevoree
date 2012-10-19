@@ -31,7 +31,7 @@
                         </goals>
                         <configuration>
                             <ecore>${metamodel.ecore}</ecore>
-                            <rootPackage>org</rootPackage>
+                            <packagePrefix>org</packagePrefix>
                             <modelOnly>true</modelOnly>
                         </configuration>
                     </execution>

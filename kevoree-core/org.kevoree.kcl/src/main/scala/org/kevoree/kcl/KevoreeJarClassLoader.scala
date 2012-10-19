@@ -479,13 +479,7 @@ class KevoreeJarClassLoader extends JarClassLoader {
           }
         }
     }
-    /*
- logger.debug("ResourcesEnumSize={}",selfRes.size())
- if(logger.isDebugEnabled){
- selfRes.toArray.foreach{  u =>
-  logger.debug("URL="+u)
- }
- }   */
+
     Collections.enumeration(selfRes)
   }
 
