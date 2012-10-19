@@ -33,13 +33,10 @@ struct HashMap {
   int  numEntries;
 };
 
-struct HashMap *newHashMap(void (*destructor)(void *arg, char *key,
-                                              char *value),
-                           void *arg);
-void initHashMap(struct HashMap *hashmap,
-                 void (*destructor)(void *arg, char *key, char *value),
-                 void *arg);
+struct HashMap *newHashMap();
+void initHashMap(struct HashMap *hashmap);
 void destroyHashMap(struct HashMap *hashmap);
+
 void deleteHashMap(struct HashMap *hashmap);
 const void *addToHashMap(struct HashMap *hashmap, const char *key,
                          const char *value);
@@ -83,20 +80,22 @@ void fatal(const char *fmt, ...) __attribute__((format(printf, 1, 2),
 #endif
 
 
-struct HashMap *newHashMap(void (*destructor)(void *arg, char *key,
-                                              char *value),
-                           void *arg) {
+
+void destroy(void *arg, char *key, char *value)
+{
+   // todo
+}
+
+struct HashMap *newHashMap() {
   struct HashMap *hashmap;
   check(hashmap =( struct HashMap *) malloc(sizeof(struct HashMap)));
-  initHashMap(hashmap, destructor, arg);
+  initHashMap(hashmap);
   return hashmap;
 }
 
-void initHashMap(struct HashMap *hashmap,
-                 void (*destructor)(void *arg, char *key, char *value),
-                 void *arg) {
-  hashmap->destructor  = destructor;
-  hashmap->arg         = arg;
+void initHashMap(struct HashMap *hashmap) {
+  hashmap->destructor  = &destroy;
+  hashmap->arg         = NULL;
   hashmap->entries     = NULL;
   hashmap->mapSize     = 0;
   hashmap->numEntries  = 0;

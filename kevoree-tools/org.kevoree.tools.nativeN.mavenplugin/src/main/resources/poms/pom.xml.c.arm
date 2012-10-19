@@ -23,7 +23,7 @@
                     <linkerExecutable>arm-linux-gnueabi-cpp</linkerExecutable>
 
                     <compilerStartOptions>
-                        <compilerStartOption>-W -O2 -Wall -g  -I.</compilerStartOption>
+                        <compilerStartOption>-I.</compilerStartOption>
                     </compilerStartOptions>
 
                     <sources>

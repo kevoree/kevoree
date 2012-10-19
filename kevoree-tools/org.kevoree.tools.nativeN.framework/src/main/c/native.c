@@ -210,8 +210,6 @@ JNIEXPORT jint JNICALL Java_org_kevoree_tools_nativeN_NativeJNI_init (JNIEnv * e
 
   ctx->pid_jvm = getpid ();
 
-  ctx->map = newHashMap(&destroyHashMapKDico,NULL);
-
   fprintf (stderr,"Component started with shared memory attached at address %p\n", ptr_mem_partagee);
 
   return shmid;
@@ -374,8 +372,11 @@ JNIEXPORT jint JNICALL Java_org_kevoree_tools_nativeN_NativeJNI_setDico  (JNIEnv
      {
          const char *key_n = (*env)->GetStringUTFChars (env, key_dico, 0);
          const char *value_n = (*env)->GetStringUTFChars (env, value_dico, 0);
-         addToHashMap(ctx->map,key_n,value_n);
-
+         Events      ev;
+         ev.ev_type = EV_DICO_SET;
+         strcpy(ev.key,key_n);
+         strcpy(ev.value,value_n);
+         send_event_fifo(p_event_fifo,ev);
      } else
      {
         fprintf(stderr,"update kdico");
