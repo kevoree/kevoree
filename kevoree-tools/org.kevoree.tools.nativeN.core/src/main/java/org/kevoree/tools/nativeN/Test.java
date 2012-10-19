@@ -37,17 +37,17 @@ public class Test {
 
 
         ContainerRoot model =  KevScriptLoader.getModel("/home/jed/KEVOREE_PROJECT/kevoree/kevoree-corelibrary/native/org.kevoree.library.nativeN.HelloWorld/src/main/HelloWorld.kevs");
+        /*
+     AbstractCodeGenerator codeGeneratorC = new CodeGeneratorC(model);
+     codeGeneratorC.execute();
 
-        AbstractCodeGenerator codeGeneratorC = new CodeGeneratorC(model);
-        codeGeneratorC.execute();
-
-        AbstractCodeGenerator codeGeneratorJava = new CodeGeneratorJava(model);
-        codeGeneratorJava.execute();
+     AbstractCodeGenerator codeGeneratorJava = new CodeGeneratorJava(model);
+     codeGeneratorJava.execute();
 
 
 
-        System.exit(0);
-        int ipc_key = 6819;
+     System.exit(0);   */
+        int ipc_key = 215151;
 
         ArrayList<String> repos = new ArrayList<String>();
         repos.add("http://maven.kevoree.org/release/");
@@ -89,11 +89,13 @@ public class Test {
 
         if(started)
         {
-
-            for(int i = 0;i <100;i++){
+            for(int i = 0;i <1;i++)
+            {
                 nativeManager.push("input_port", "hello world " + i);
             }
 
+            nativeManager.setDico("jed","value");
+            nativeManager.update();
 
         } else
         {

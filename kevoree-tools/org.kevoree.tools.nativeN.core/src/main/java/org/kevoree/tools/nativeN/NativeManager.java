@@ -47,7 +47,10 @@ public class NativeManager implements INativeManager {
         this.path_uexe =path_uexe;
         nativeJNI = new NativeJNI(this);
         nativeJNI.configureCL();
-        nativeJNI.init(key);
+        if(nativeJNI.init(key) <0)
+        {
+            throw new NativeHandlerException();
+        }
         for(TypeDefinition type :  model.getTypeDefinitionsForJ())
         {
             if(type instanceof ComponentType)

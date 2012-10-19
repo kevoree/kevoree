@@ -70,6 +70,19 @@ EventBroker event_broker_udp;     */
 
 EventBroker event_broker_fifo;
 
+
+const char * getPortByName(char *key)
+{
+     if(ctx != NULL)
+     {
+         return getFromHashMap(ctx->map,key);
+     }
+     else
+     {
+         return NULL;
+     }
+}
+
 void notify(Events ev)
 {
     int i;
@@ -81,6 +94,10 @@ void notify(Events ev)
 
         case EV_UPDATE:
               ctx->update ();
+        break;
+
+        case EV_DICO_SET:
+             addToHashMap(ctx->map,ev.key,ev.value);
         break;
 
         case EV_STOP:
@@ -174,8 +191,11 @@ int bootstrap (key_t key,int port_event_broker)
 
     sprintf(fifo_name,"%d.fifo",key);
     strcpy (event_broker_fifo.name_pipe,fifo_name);
+
     // dispather
     event_broker_fifo.dispatch = &notify;
+
+    ctx->map = newHashMap();
 
     if (pthread_create (&t_event_broker_fifo, NULL, &t_broker_fifo, fifo_name) != 0)
     {
@@ -206,7 +226,6 @@ void  process_output (int id_output, void *n_value)
 	  strcpy (kmsg.value,(const char*) n_value);
 	  enqueue (ctx->outputs[id_output].id, kmsg);
 }
-
 
 
 #endif

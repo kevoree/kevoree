@@ -54,7 +54,7 @@ public class KevScriptLoader  {
       //  String kev_framework ="merge 'mvn:org.kevoree.corelibrary.android/org.kevoree.library.android.logger/{kevoree.version}'";
 
         kevOfflineEngine.append("{"+kevScript.replace("tblock","")+"}") ;
-        System.out.println(kevScript);
+
         ContainerRoot model = kevOfflineEngine.interpret();
 
         return model;

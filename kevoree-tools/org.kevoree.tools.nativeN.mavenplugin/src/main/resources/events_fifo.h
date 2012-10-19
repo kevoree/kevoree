@@ -51,26 +51,27 @@
 int send_event_fifo(Publisher publisher,Events ev)
 {
   int fd;
-  switch(ev.ev_type)
-  {
-          case EV_PORT_INPUT:
-             fprintf(stderr,"sending event fifo %s EV_PORT_INPUT \n",publisher.name_pipe);
-          break;
+  #ifdef DEBUG
+      switch(ev.ev_type)
+      {
+              case EV_PORT_INPUT:
+                 fprintf(stderr,"sending event fifo %s EV_PORT_INPUT \n",publisher.name_pipe);
+              break;
 
 
-        case EV_UPDATE:
-             fprintf(stderr,"sending event fifo %s EV_UPDATE \n",publisher.name_pipe);
-        break;
+            case EV_UPDATE:
+                 fprintf(stderr,"sending event fifo %s EV_UPDATE \n",publisher.name_pipe);
+            break;
 
-        case EV_STOP:
-             fprintf(stderr,"sending event fifo %s EV_STOP \n",publisher.name_pipe);
-        break;
+            case EV_STOP:
+                 fprintf(stderr,"sending event fifo %s EV_STOP \n",publisher.name_pipe);
+            break;
 
-        case EV_PORT_OUTPUT:
-             fprintf(stderr,"sending event fifo %s EV_PORT_OUTPUT \n",publisher.name_pipe);
-        break;
-  }
-
+            case EV_PORT_OUTPUT:
+                 fprintf(stderr,"sending event fifo %s EV_PORT_OUTPUT \n",publisher.name_pipe);
+            break;
+      }
+  #endif
 
   fd = open(publisher.name_pipe, O_WRONLY);
   write(fd, &ev, sizeof(Events));

@@ -70,6 +70,18 @@ EventBroker event_broker_udp;     */
 
 EventBroker event_broker_fifo;
 
+const char * getPortByName(char *key)
+{
+     if(ctx != NULL)
+     {
+         return getFromHashMap(ctx->map,key);
+     }
+     else
+     {
+         return NULL;
+     }
+}
+
 void notify(Events ev)
 {
     int i;
@@ -82,6 +94,11 @@ void notify(Events ev)
         case EV_UPDATE:
               ctx->update ();
         break;
+
+        case EV_DICO_SET:
+                     addToHashMap(ctx->map,ev.key,ev.value);
+        break;
+
 
         case EV_STOP:
 

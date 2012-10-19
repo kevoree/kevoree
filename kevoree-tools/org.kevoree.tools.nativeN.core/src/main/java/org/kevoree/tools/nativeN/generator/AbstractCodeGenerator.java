@@ -13,10 +13,7 @@
  */
 package org.kevoree.tools.nativeN.generator;
 
-import org.kevoree.ComponentType;
-import org.kevoree.ContainerRoot;
-import org.kevoree.PortTypeRef;
-import org.kevoree.TypeDefinition;
+import org.kevoree.*;
 import org.kevoree.tools.nativeN.api.ICodeGenerator;
 
 import java.util.LinkedHashMap;
@@ -40,6 +37,7 @@ public abstract  class AbstractCodeGenerator implements ICodeGenerator
 
     protected LinkedHashMap<String,Integer> inputs_ports = new LinkedHashMap<String, Integer>();
     protected LinkedHashMap<String,Integer> ouputs_ports = new LinkedHashMap<String, Integer>();
+    protected LinkedHashMap<String,String> dicos = new LinkedHashMap<String, String>();
 
     public  AbstractCodeGenerator(ContainerRoot model)
     {
@@ -47,8 +45,14 @@ public abstract  class AbstractCodeGenerator implements ICodeGenerator
         for(TypeDefinition type :  model.getTypeDefinitionsForJ()) {
             if(type instanceof ComponentType) {
                 ComponentType c = (ComponentType)type;
-                    for(PortTypeRef portP :  c.getProvidedForJ() )    {  create_input(portP.getName()); }
-                    for(PortTypeRef portR :  c.getRequiredForJ()) { create_output(portR.getName()); }
+                for(PortTypeRef portP :  c.getProvidedForJ() )    {  create_input(portP.getName()); }
+                for(PortTypeRef portR :  c.getRequiredForJ()) { create_output(portR.getName()); }
+                if( c.getDictionaryType().isDefined())
+                {
+                    for(DictionaryAttribute entry:  c.getDictionaryType().get().getAttributesForJ()){
+                        dicos.put(entry.getName(),"default");
+                    }
+                }
             }
         }
     }

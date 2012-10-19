@@ -3,4 +3,10 @@ tblock
     createComponentType HelloWorld @ Native
     addInPortType input_port : Message : optional =>  HelloWorld
     addOutPortType output_port : Message : optional=>  HelloWorld
+
+    createDictionaryType HelloWorld
+    {
+            optional fragDep myParam : "String" values "hello,hello2" default "hello",
+            myParam2 : "String"
+    }
 }

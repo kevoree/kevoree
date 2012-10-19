@@ -17,15 +17,18 @@
  typedef enum
    {
  	EV_STOP,
-     EV_UPDATE,
+    EV_UPDATE,
  	EV_PORT_INPUT,
- 	EV_PORT_OUTPUT
+ 	EV_PORT_OUTPUT,
+ 	EV_DICO_SET
    } Type;
 
  typedef struct Events
  {
      Type ev_type;
      int id_port;
+     char key[512];
+     char value[1024];
  } Events;
 
  typedef struct _EventBroker {
