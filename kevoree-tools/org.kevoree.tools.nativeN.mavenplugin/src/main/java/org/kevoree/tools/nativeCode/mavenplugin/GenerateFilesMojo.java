@@ -36,11 +36,11 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
 import org.kevoree.*;
-import org.kevoree.api.service.core.script.KevScriptEngineException;
 import org.kevoree.tools.nativeCode.mavenplugin.utils.MavenHelper;
-import org.kevoree.tools.nativeN.KevScriptLoader;
-import org.kevoree.tools.nativeN.api.IKevScriptLoader;
-import org.kevoree.tools.nativeN.generator.NativeGen;
+import org.kevoree.tools.nativeN.utils.KevScriptLoader;
+import org.kevoree.tools.nativeN.generator.AbstractCodeGenerator;
+import org.kevoree.tools.nativeN.generator.CodeGeneratorC;
+import org.kevoree.tools.nativeN.generator.CodeGeneratorJava;
 import org.kevoree.tools.nativeN.utils.FileManager;
 
 import java.io.*;
@@ -80,14 +80,13 @@ public class GenerateFilesMojo extends AbstractMojo {
      */
 
     protected MavenProject project;
-    private NativeGen nativeSourceGen = new NativeGen();
-    private IKevScriptLoader loader = new KevScriptLoader();
+
     private final String sub_c = "_native";
     private final String sub_java = "_bridge";
+    final String[] files_thirdparty = { "component.h","kqueue.h","events_common.h","events_fifo.h","HashMap.h","settings.h"};
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
-
         if(inputCFile == null || !(inputCFile.exists())){
             getLog().warn("InputDir null => ");
         } else {
@@ -105,35 +104,35 @@ public class GenerateFilesMojo extends AbstractMojo {
         }
     }
 
-    public  void parseKevscript(String path_file, String componentName) throws KevScriptEngineException {
-        getLog().info("Parsing KevSript "+path_file);
-        ContainerRoot model =  loader.loadKevScript(path_file);
-        for(TypeDefinition type :  model.getTypeDefinitionsForJ()) {
-            if(type instanceof ComponentType) {
-                ComponentType c = (ComponentType)type;
-                if(c.getName().equals(componentName)){
-                    for(PortTypeRef portP :  c.getProvidedForJ() )    {  nativeSourceGen.create_input(portP.getName()); }
-                    for(PortTypeRef portR :  c.getRequiredForJ()) { nativeSourceGen.create_output(portR.getName()); }
-                    break;
-                }
-            }
-        }
+
+    public boolean createDirectory(String path)
+    {
+
+   return true;
     }
 
     /**
      * Generate interfaces
      * @param componentName
-     * @param path_file
+     * @param path_to_kevScript_file
      * @param path_out
      * @throws Exception
      */
-    public  void generateSources(String componentName, String path_file, String path_out) throws Exception {
+    public  void generateSources(String componentName, String path_to_kevScript_file, String path_out) throws Exception {
 
-        // Parsing Kevscript
-        getLog().info("Parsing Kevscript");
-        parseKevscript(path_file, componentName);
+        ContainerRoot model =  KevScriptLoader.getModel(path_to_kevScript_file);
+
+        // Gen JAVA CODE
+        AbstractCodeGenerator codeGeneratorJava = new CodeGeneratorJava(model);
+        codeGeneratorJava.execute();
+
+       // Gen C CODE
+        AbstractCodeGenerator codeGeneratorC = new CodeGeneratorC(model);
+        codeGeneratorC.execute();
+
 
         getLog().info("Reading poms");
+
         // Reading poms
         Model component_java =     MavenHelper.createModel(project.getGroupId(), project.getArtifactId() + sub_java, project.getVersion(), MavenHelper.createParent(project), project);
         component_java.setName("Kevoree :: Tools :: Native :: Bridge Java :: "+project.getName());
@@ -147,16 +146,17 @@ public class GenerateFilesMojo extends AbstractMojo {
         MavenHelper.createPom("poms/pom.xml.c.osx", component_c, project,component_c.getPomFile().getPath().replace("pom.xml", "osx/pom.xml"),sub_c);
         MavenHelper.createPom("poms/pom.xml.c.arm", component_c, project,component_c.getPomFile().getPath().replace("pom.xml", "arm/pom.xml"),sub_c);
 
+
         getLog().info("Generating files");
         /// GENERATE JAVA FILES
         File file_java = new File(component_java.getPomFile().getAbsolutePath().replace("pom.xml","")+"src/main/java/org/kevoree/library/nativeN/"+componentName);
-
+        createDirectory()
         if(file_java.mkdirs())
         {
-            String bridge = new String(FileManager.load(GenerateFilesMojo.class.getClassLoader().getResourceAsStream("template_java/Bridge.java")));
+            String bridge = new String(FileManager.load(GenerateFilesMojo.class.getClassLoader().getResourceAsStream("template_java/Bridge.java.template")));
             bridge =  bridge.replace("$PACKAGE$","package org.kevoree.library.nativeN."+componentName+";");
-            bridge =   bridge.replace("$HEADER_PORTS$",nativeSourceGen.gen_bridge_ProvidedPort()+"\n"+nativeSourceGen.gen_bridge_RequiredPort());
-            bridge =    bridge.replace("$PORTS$",nativeSourceGen.gen_bridge_Ports());
+            bridge =   bridge.replace("$HEADER_PORTS$",codeGeneratorJava.getHeaderPorts());
+            bridge =    bridge.replace("$PORTS$",codeGeneratorJava.getPorts());
             bridge = bridge.replace("$CLASS$",componentName);
             bridge = bridge.replace("$artifactId$",component_c.getArtifactId());
             bridge = bridge.replace("$groupId$",component_c.getGroupId());
@@ -167,6 +167,8 @@ public class GenerateFilesMojo extends AbstractMojo {
             getLog().error("Generating component java");
         }
 
+
+
         /// GENERATE C FILES
         String path_c = component_c.getPomFile().getAbsolutePath().replace("pom.xml","")+"src/main/c/";
 
@@ -175,25 +177,23 @@ public class GenerateFilesMojo extends AbstractMojo {
         {
 
             getLog().info("-> "+componentName+".c");
-            MavenHelper.writeFile(file_c.getPath() + "/" + componentName + ".c", nativeSourceGen.generateStepPreCompile().replace("$NAME$", componentName), false);
+            MavenHelper.writeFile(file_c.getPath() + "/" + componentName + ".c", codeGeneratorC.getHeaderPorts().replace("$NAME$", componentName), false);
 
             getLog().info("-> " + componentName + ".h");
 
-            MavenHelper.writeFile(file_c.getPath() + "/" + componentName + ".h", nativeSourceGen.generateStepCompile(), false);
+            MavenHelper.writeFile(file_c.getPath() + "/" + componentName + ".h", codeGeneratorC.getBody(), false);
 
             // lib
             File file = new File(path_c+"/thirdparty");
             if(file.mkdir())
             {
                 getLog().info("-> Thirdparty");
+                for(String n : files_thirdparty)
+                {
+                    FileManager.copyFileFromStream(GenerateFilesMojo.class.getClassLoader().getResourceAsStream(n), file.getPath(), n);
+                }
 
-                FileManager.copyFileFromStream(GenerateFilesMojo.class.getClassLoader().getResourceAsStream("component.h"), file.getPath(), "component.h");
-                FileManager.copyFileFromStream(GenerateFilesMojo.class.getClassLoader().getResourceAsStream("kqueue.h"), file.getPath(), "kqueue.h");
-                // events
-                FileManager.copyFileFromStream(GenerateFilesMojo.class.getClassLoader().getResourceAsStream("events_common.h"), file.getPath(), "events_common.h");
-                FileManager.copyFileFromStream(GenerateFilesMojo.class.getClassLoader().getResourceAsStream("events_udp.h"), file.getPath(), "events_udp.h");
-                FileManager.copyFileFromStream(GenerateFilesMojo.class.getClassLoader().getResourceAsStream("events_tcp.h"), file.getPath(), "events_tcp.h");
-                FileManager.copyFileFromStream(GenerateFilesMojo.class.getClassLoader().getResourceAsStream("events_fifo.h"), file.getPath(), "events_fifo.h");
+
             }  else
             {
                 getLog().error("Creating thirdparty directory");

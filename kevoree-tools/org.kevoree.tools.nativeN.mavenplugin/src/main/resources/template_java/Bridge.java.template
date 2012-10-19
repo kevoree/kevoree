@@ -119,7 +119,10 @@ public class $CLASS$ extends AbstractComponentType {
     }
 
     @Update
-    public void update () {
+    public void update ()
+    {
+        // TODO DICO
+        nativeManager.setDico("test","test2");
         nativeManager.update();
     }
 

@@ -36,7 +36,7 @@ extern int errno;       // error NO.
 typedef struct _kmsg
 {
          long    type;
-         char value[1024];
+         char value[2048];
  } kmessage;
 
 

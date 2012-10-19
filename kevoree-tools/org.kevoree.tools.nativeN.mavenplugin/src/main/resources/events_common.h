@@ -45,12 +45,13 @@
 
 
  typedef struct _Publisher {
- 	int socket; /* point rdv */
- 	unsigned short 	     port; /* Port */
+ 	/* int socket; point rdv
+ 	unsigned short 	     port;
  	struct hostent*      hp ;
  	struct sockaddr_in   adr ;
  	char hostname[512];
    	socklen_t            lgradr ;
+                                     */
 
    /* named pipe */
    char name_pipe[512];

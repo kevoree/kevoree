@@ -28,15 +28,11 @@
 #include <sys/stat.h>
 #include <pthread.h>
 
+#include "settings.h"
 #include "kqueue.h"
-#include "events_udp.h"
-#include "events_tcp.h"
 #include "events_fifo.h"
+#include "HashMap.h"
 
-#define LENGHT_MAX_NAME_PORT 64
-#define NUMBER_PORTS 100
-
-#define SIZE_FIFO 512
 char fifo_name[SIZE_FIFO];
 
 typedef struct _port
@@ -50,6 +46,7 @@ typedef struct _context
   int pid;
   int pid_jvm;
   int inputs_count;
+  struct HashMap  *map;
   Ports inputs[NUMBER_PORTS];
   int outputs_count;
   Ports outputs[NUMBER_PORTS];
