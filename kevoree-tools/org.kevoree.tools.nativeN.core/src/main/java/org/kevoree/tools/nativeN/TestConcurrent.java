@@ -13,38 +13,46 @@
  */
 package org.kevoree.tools.nativeN;
 
-
 import org.kevoree.ContainerRoot;
 import org.kevoree.framework.KevoreeXmiHelper;
-import org.kevoree.tools.aether.framework.AetherUtil;
 import org.kevoree.tools.nativeN.api.NativeEventPort;
 import org.kevoree.tools.nativeN.api.NativeListenerPorts;
-import org.kevoree.tools.nativeN.generator.AbstractCodeGenerator;
-import org.kevoree.tools.nativeN.generator.CodeGeneratorC;
-import org.kevoree.tools.nativeN.generator.CodeGeneratorJava;
 import org.kevoree.tools.nativeN.utils.KevScriptLoader;
 
-import java.io.File;
 import java.util.ArrayList;
 
-public class Test {
+/**
+ * Created with IntelliJ IDEA.
+ * User: jed
+ * Date: 22/10/12
+ * Time: 13:09
+ * To change this template use File | Settings | File Templates.
+ */
+public class TestConcurrent {
 
 
-
-
-
-    public static void main(String[] args) throws Exception {
-
+    public static void main(String[] args) throws Exception
+    {
         ContainerRoot model =  KevScriptLoader.getModel("/home/jed/KEVOREE_PROJECT/kevoree/kevoree-corelibrary/native/org.kevoree.library.nativeN.HelloWorld/src/main/HelloWorld.kevs");
         String path_uexe = "/home/jed/KEVOREE_PROJECT/kevoree/kevoree-corelibrary/native/org.kevoree.library.nativeN.HelloWorld/org.kevoree.library.nativeN.HelloWorld_native/nix32/target/org.kevoree.library.nativeN.HelloWorld_native-nix32.uexe";
+        ContainerRoot model2 = KevScriptLoader.getModel("/home/jed/KEVOREE_PROJECT/kevoree/kevoree-tools/org.kevoree.tools.nativeN.core/src/main/java/org/kevoree/tools/nativeN/HelloWorld.kevs");
 
-        int ipc_key = 215168;
+
+
+        int ipc_key = 215169;
+
+        int ipc_key2 = 2151775;
+
 
         ArrayList<String> repos = new ArrayList<String>();
         repos.add("http://maven.kevoree.org/release/");
         repos.add("http://maven.kevoree.org/snapshots/");
 
+
+
         NativeManager nativeManager = new NativeManager(ipc_key,path_uexe,model);
+
+
         nativeManager.addEventListener(new NativeListenerPorts() {
 
             @Override
@@ -67,13 +75,40 @@ public class Test {
         }
 
 
+        NativeManager nativeManager2 = new NativeManager(ipc_key2,path_uexe,model2);
+
+
+        nativeManager2.addEventListener(new NativeListenerPorts() {
+
+            @Override
+            public void disptach(NativeEventPort event, String port_name, String msg) {
+                System.out.println("DISPATCH from 2 " + port_name + " =" + msg);
+            }
+        });
+
+
+        boolean  started2 = nativeManager2.start();
+        nativeManager2.setDico("myParam","value2");
+        if(started2)
+        {
+
+            nativeManager2.update();
+
+        } else
+        {
+            System.out.println("error");
+        }
+
+
+
+
         Thread.sleep(9000);
 
         nativeManager.stop();
 
-        System.exit(0);
+        nativeManager2.stop();
+
+   System.exit(0);
 
     }
-
-
 }
