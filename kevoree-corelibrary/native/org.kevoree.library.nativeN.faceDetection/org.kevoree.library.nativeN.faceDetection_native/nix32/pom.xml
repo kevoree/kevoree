@@ -1,16 +1,15 @@
 <project>
         <modelVersion>4.0.0</modelVersion>
-       <groupId>org.kevoree.nativeN</groupId>
-      <artifactId>org.kevoree.nativeN.faceDetection_native-nix64</artifactId>
-      <name>Kevoree :: Tools :: Native :: C-nix64</name>
+       <groupId>org.kevoree.library.nativeN</groupId>
+      <artifactId>org.kevoree.library.nativeN.faceDetection_native-nix32</artifactId>
+      <name>Kevoree :: Tools :: Native :: C :: Kevoree :: Native :: faceDetection Root-nix32</name>
       <packaging>uexe</packaging>
 
-         <parent>
-               <groupId>org.kevoree.nativeN</groupId>
-               <artifactId>org.kevoree.nativeN.faceDetection_native</artifactId>
-               <version>2.1-SNAPSHOT</version>
+     <parent>
+               <groupId>org.kevoree.library.nativeN</groupId>
+               <artifactId>org.kevoree.library.nativeN.faceDetection_native</artifactId>
+               <version>1.8.9-SNAPSHOT</version>
            </parent>
-
     <build>
         <plugins>
             <plugin>
@@ -24,12 +23,12 @@
                     <linkerExecutable>g++</linkerExecutable>
 
                     <compilerStartOptions>
-                        <compilerStartOption>-W -O2 -Wall -g  -I.</compilerStartOption>
+                        <compilerStartOption>-ggdb -I /usr/include/opencv2</compilerStartOption>
                     </compilerStartOptions>
 
                     <sources>
                         <source>
-               <directory>../src/main/c</directory>
+                            <directory>../src/main/c</directory>
                             <includes>
                                 <include>**/*.c</include>
                                 <include>**/*.cpp</include>
@@ -37,10 +36,12 @@
                         </source>
                     </sources>
                     <linkerEndOptions>
-                        <linkerEndOption> -lpthread</linkerEndOption>
+                        <linkerEndOption> -lpthread -lopencv_core -lopencv_imgproc -lopencv_video -lopencv_highgui -lopencv_objdetect</linkerEndOption>
                     </linkerEndOptions>
                 </configuration>
             </plugin>
+
+
         </plugins>
     </build>
 

@@ -7,8 +7,6 @@ void faceDetected(void *input) {
 void dispatch(int port,int id_queue)
 {
     kmessage *msg = NULL;
-    do
-    {
           msg = dequeue(id_queue);
           if(msg !=NULL)
           {
@@ -16,15 +14,14 @@ void dispatch(int port,int id_queue)
              {                     }
                      }
 
-    } while(msg != NULL);
 }int main (int argc,char *argv[])
 {
-   	if(argc >2)
+   	if(argc  > 1)
     {
 	    key_t key =   atoi(argv[1]);
-	    int port=   atoi(argv[2]);
+	   // int port=   atoi(argv[2]);
 
-	     bootstrap(key,port);
+	     bootstrap(key,-1);
         ctx->start= &start;
         ctx->stop = &stop;
         ctx->update   = &update;

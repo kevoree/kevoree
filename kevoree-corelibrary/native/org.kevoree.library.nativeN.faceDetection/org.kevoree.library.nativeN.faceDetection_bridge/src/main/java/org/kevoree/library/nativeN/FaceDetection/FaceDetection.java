@@ -7,7 +7,7 @@
 *
 **/
 
-package org.kevoree.library.nativeN.HelloWorld;
+package org.kevoree.library.nativeN.FaceDetection;
 
 import org.kevoree.ContainerRoot;
 import org.kevoree.Repository;
@@ -34,13 +34,10 @@ import java.util.ArrayList;
  */
 
 @ComponentType
-@Provides({ @ProvidedPort(name = "input_port", type = PortType.MESSAGE,theadStrategy = ThreadStrategy.NONE)
-})@Requires({ @RequiredPort(name = "output_port", type = PortType.MESSAGE,optional = true,theadStrategy = ThreadStrategy.NONE)
-})@DictionaryType({ @DictionaryAttribute(name = "myParam", defaultValue = "", optional = true),
-@DictionaryAttribute(name = "myParam2", defaultValue = "", optional = true)
+@Requires({ @RequiredPort(name = "faceDetected", type = PortType.MESSAGE,optional = true,theadStrategy = ThreadStrategy.NONE)
 })
 @Library(name = "Native")
-public class HelloWorld extends AbstractComponentType {
+public class FaceDetection extends AbstractComponentType {
 
     private  int ipc_key = 251102;
     private NativeManager nativeManager = null;
@@ -67,14 +64,14 @@ public class HelloWorld extends AbstractComponentType {
 
             // loading model from jar
             ContainerRoot model = KevoreeXmiHelper.loadStream(getClass().getResourceAsStream("/KEV-INF/lib.kev"));
-            File binary =    getBootStrapperService().resolveArtifact("org.kevoree.library.nativeN.HelloWorld_native"+getOs(), "org.kevoree.library.nativeN", "1.8.9-SNAPSHOT", "uexe", repos);
+            File binary =    getBootStrapperService().resolveArtifact("org.kevoree.library.nativeN.faceDetection_native"+getOs(), "org.kevoree.library.nativeN", "1.8.9-SNAPSHOT", "uexe", repos);
 
             if(!binary.canExecute())
             {
                 binary.setExecutable(true);
             }
 
-            nativeManager = new NativeManager(ipc_key,"HelloWorld",binary.getPath(),model);
+            nativeManager = new NativeManager(ipc_key,"FaceDetection",binary.getPath(),model);
 
             nativeManager.addEventListener(new NativeListenerPorts() {
                 @Override
@@ -87,9 +84,7 @@ public class HelloWorld extends AbstractComponentType {
 
             started = nativeManager.start();
 
-            nativeManager.setDico("myParam",getDictionary().get("myParam").toString()); 
-nativeManager.setDico("myParam2",getDictionary().get("myParam2").toString()); 
-
+            
 
         } catch (NativeHandlerException e) {
             e.printStackTrace();
@@ -113,9 +108,7 @@ nativeManager.setDico("myParam2",getDictionary().get("myParam2").toString());
     @Update
     public void update ()
     {
-        nativeManager.setDico("myParam",getDictionary().get("myParam").toString()); 
-nativeManager.setDico("myParam2",getDictionary().get("myParam2").toString()); 
-
+        
         nativeManager.update();
     }
 
@@ -147,16 +140,5 @@ nativeManager.setDico("myParam2",getDictionary().get("myParam2").toString());
         return null;
     }
 
-        @Port(name = "input_port")
-    public void input_port(Object o)
-    {
-        if(nativeManager != null)
-        {
-            nativeManager.push("input_port",o.toString());
-            
-        }   else 
-        {
-            System.err.println("Error processing message");
-        }
-    }
+    
 }

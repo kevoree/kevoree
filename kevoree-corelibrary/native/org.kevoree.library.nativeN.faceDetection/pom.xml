@@ -17,7 +17,7 @@
     <build>
         <plugins>
             <plugin>
-                <artifactId>org.kevoree.tools.native.mavenplugin</artifactId>
+                <artifactId>org.kevoree.tools.nativeN.mavenplugin</artifactId>
                 <groupId>org.kevoree.tools</groupId>
                 <version>${kevoree.version}</version>
             </plugin>
@@ -58,7 +58,7 @@
     </pluginRepositories>
 
     <modules>
-        <module>org.kevoree.nativeN.faceDetection_native</module>
-        <module>org.kevoree.nativeN.faceDetection_bridge</module>
+        <module>org.kevoree.library.nativeN.faceDetection_native</module>
+        <module>org.kevoree.library.nativeN.faceDetection_bridge</module>
     </modules>
 </project>
