@@ -1,25 +1,8 @@
-/**
- * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.gnu.org/licenses/lgpl-3.0.txt
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 /*
 *
 *
 *
 *                          THIS IS A GENERATED FILE, DO NOT EDIT
-*
-*
-*
-*
 *
 *
 **/
@@ -69,6 +52,7 @@ public class $CLASS$ extends AbstractComponentType {
     public void start () {
         try
         {
+            // todo check if not used
             ipc_key  = gerRandom();
 
             ArrayList<String> repos = new ArrayList<String>();
@@ -99,6 +83,8 @@ public class $CLASS$ extends AbstractComponentType {
 
             started = nativeManager.start();
 
+            $DICO$
+
         } catch (NativeHandlerException e) {
             e.printStackTrace();
         }
@@ -121,8 +107,7 @@ public class $CLASS$ extends AbstractComponentType {
     @Update
     public void update ()
     {
-        // TODO DICO
-        nativeManager.setDico("test","test2");
+        $DICO$
         nativeManager.update();
     }
 

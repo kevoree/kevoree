@@ -30,23 +30,37 @@
     mkfifo(eventbroker->name_pipe, 0666);
 
     fd = open(eventbroker->name_pipe, O_RDONLY);
-
+    if(fd <0)
+    {
+        perror("createEventBroker_fifo");
+      return -1;
+    }
     for(;;)
     {
-
        size =  read(fd, &ev,sizeof(Events));
 
        if(size >0)
        {
              eventbroker->dispatch(ev);
+       }else
+        {
+            usleep(3000);
        }
 
     }
    /* remove the FIFO */
-   unlink(eventbroker->name_pipe);
+
    return 0;
  }
 
+
+void destroy_fifo(const char *name_pipe)
+{
+  #ifdef DEBUG
+    fprintf(stderr,"Destroy fifo %s",name_pipe);
+  #endif
+    unlink(name_pipe);
+}
 
 int send_event_fifo(Publisher publisher,Events ev)
 {
@@ -57,7 +71,6 @@ int send_event_fifo(Publisher publisher,Events ev)
               case EV_PORT_INPUT:
                  fprintf(stderr,"sending event fifo %s EV_PORT_INPUT \n",publisher.name_pipe);
               break;
-
 
             case EV_UPDATE:
                  fprintf(stderr,"sending event fifo %s EV_UPDATE \n",publisher.name_pipe);
@@ -72,8 +85,12 @@ int send_event_fifo(Publisher publisher,Events ev)
             break;
       }
   #endif
-
   fd = open(publisher.name_pipe, O_WRONLY);
+  if(fd <0)
+  {
+      perror("send_event_fifo");
+      return -1;
+  }
   write(fd, &ev, sizeof(Events));
   close(fd);
  return 0;
