@@ -67,13 +67,13 @@ void fatal(const char *fmt, ...) {
 void fatal(const char *fmt, ...) __attribute__((format(printf, 1, 2),
                                                 noreturn));
 #ifndef NDEBUG
-#define check(x) do {                                                         \
+#define check_HASHMAP(x) do {                                                         \
                    if (!(x))                                                  \
                      fatal("Check failed at "__FILE__":%d in %s(): %s",       \
                             __LINE__, __func__, #x);                          \
                  } while (0)
 #else
-#define check(x) do {                                                         \
+#define check_HASHMAP(x) do {                                                         \
                    if (!(x))                                                  \
                      fatal("Fatal error!\n");                                 \
                  } while (0)
@@ -88,7 +88,7 @@ void destroy(void *arg, char *key, char *value)
 
 struct HashMap *newHashMap() {
   struct HashMap *hashmap;
-  check(hashmap =( struct HashMap *) malloc(sizeof(struct HashMap)));
+  check_HASHMAP(hashmap =( struct HashMap *) malloc(sizeof(struct HashMap)));
   initHashMap(hashmap);
   return hashmap;
 }
@@ -147,7 +147,7 @@ const void *addToHashMap(struct HashMap *hashmap, const char *key,
     } else {
       newMap.mapSize             = hashmap->mapSize + 1024;
     }
-    check(newMap.entries   = (Entry**)calloc(sizeof(void *), newMap.mapSize));
+    check_HASHMAP(newMap.entries   = (Entry**)calloc(sizeof(void *), newMap.mapSize));
     for (i = 0; i < hashmap->mapSize; i++) {
       if (!hashmap->entries[i]) {
         continue;
@@ -180,7 +180,7 @@ const void *addToHashMap(struct HashMap *hashmap, const char *key,
       }
     }
   }
-  check(hashmap->entries[idx]    = ((Entry*)realloc(hashmap->entries[idx],
+  check_HASHMAP(hashmap->entries[idx]    = ((Entry*)realloc(hashmap->entries[idx],
                                         (i+2)*sizeof(*hashmap->entries[idx]))));
   hashmap->entries[idx][i].key   = key;
   hashmap->entries[idx][i].value = value;
@@ -215,7 +215,7 @@ void deleteFromHashMap(struct HashMap *hashmap, const char *key) {
                sizeof(*hashmap->entries[idx]));
       }
       memset(&hashmap->entries[idx][j-1], 0, sizeof(*hashmap->entries[idx]));
-      check(--hashmap->numEntries >= 0);
+      check_HASHMAP(--hashmap->numEntries >= 0);
     }
   }
 }

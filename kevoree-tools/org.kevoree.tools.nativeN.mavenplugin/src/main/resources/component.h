@@ -27,7 +27,7 @@
 #include <sys/shm.h>
 #include <sys/stat.h>
 #include <pthread.h>
-
+#include <string.h>
 #include "settings.h"
 #include "kqueue.h"
 #include "events_fifo.h"
@@ -70,14 +70,22 @@ EventBroker event_broker_udp;     */
 
 EventBroker event_broker_fifo;
 
-const char * getPortByName(char *key)
+const char * getPortByName(const char *key)
 {
      if(ctx != NULL)
      {
-         return getFromHashMap(ctx->map,key);
+        if(ctx->map != NULL)
+        {
+                  return getFromHashMap(ctx->map,key);
+        }else
+        {
+             fprintf(stderr,"Error hashmap is null [%s] \n",key);
+              return NULL;
+        }
      }
      else
      {
+      	 fprintf(stderr,"Error  getPortByName ctx is null %s \n",key);
          return NULL;
      }
 }
@@ -96,37 +104,39 @@ void notify(Events ev)
         break;
 
         case EV_DICO_SET:
-                     addToHashMap(ctx->map,ev.key,ev.value);
+              #ifdef DEBUG
+                 fprintf(stderr,"addToHashMap %s %s \n",ev.key,ev.value);
+              #endif
+              addToHashMap(ctx->map,strdup(ev.key),strdup(ev.value));
         break;
-
 
         case EV_STOP:
 
-        for (i = 0; i < ctx->inputs_count; i++)
-            {
-              if (destroy_queue (ctx->inputs[i].id) != 0)
-            {
-              //error
-              	fprintf(stderr,"destroy_queue INPUT %s \n",ctx->inputs[i].name);
-            }
-            }
-          for (i = 0; i < ctx->outputs_count; i++)
-            {
-              if (destroy_queue (ctx->outputs[i].id) != 0)
-            {
-              //error
-              fprintf(stderr,"destroy_queue OUTPUT %s \n",ctx->inputs[i].name);
-            }
-            }
+            for (i = 0; i < ctx->inputs_count; i++)
+                {
+                  if (destroy_queue (ctx->inputs[i].id) != 0)
+                {
+                  //error
+                    fprintf(stderr,"destroy_queue INPUT %s \n",ctx->inputs[i].name);
+                }
+                }
+              for (i = 0; i < ctx->outputs_count; i++)
+                {
+                  if (destroy_queue (ctx->outputs[i].id) != 0)
+                {
+                  //error
+                  fprintf(stderr,"destroy_queue OUTPUT %s \n",ctx->inputs[i].name);
+                }
+                }
 
-          ctx->stop ();
-          /*
-          close(event_broker_tcp.sckServer);
-          close(event_broker_udp.sckServer);
-          */
-          // todo close fifo
-
-          exit (0);
+              ctx->stop ();
+              /*
+              close(event_broker_tcp.sckServer);
+              close(event_broker_udp.sckServer);
+              */
+              // todo close fifo
+               destroy_fifo(event_broker_fifo.name_pipe);
+              exit (0);
         break;
 
         case EV_PORT_OUTPUT:
@@ -194,23 +204,18 @@ int bootstrap (key_t key,int port_event_broker)
     // dispather
     event_broker_fifo.dispatch = &notify;
 
+    ctx->map = newHashMap();
+    if(ctx->map == NULL)
+    {
+         perror ("newHashMap");
+         return -1;
+    }
+
     if (pthread_create (&t_event_broker_fifo, NULL, &t_broker_fifo, fifo_name) != 0)
     {
        return -1;
     }
 
-     /*
-    event_broker_fifo.port = port_event_broker;
-    event_broker_tcp.dispatch = &notify;
-
-    event_broker_udp.port = port_event_broker+1;
-    event_broker_udp.dispatch = &notify;
-
-
-    if (pthread_create (&t_event_broker_udp, NULL, &t_broker_udp, NULL) != 0)
-    {
-       return -1;
-    }    */
 
   return 0;
 }
@@ -223,7 +228,6 @@ void  process_output (int id_output, void *n_value)
 	  strcpy (kmsg.value,(const char*) n_value);
 	  enqueue (ctx->outputs[id_output].id, kmsg);
 }
-
 
 
 #endif

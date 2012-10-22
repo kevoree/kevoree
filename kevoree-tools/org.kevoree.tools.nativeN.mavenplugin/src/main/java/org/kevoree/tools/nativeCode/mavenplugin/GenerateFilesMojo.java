@@ -150,17 +150,20 @@ public class GenerateFilesMojo extends AbstractMojo {
         getLog().info("Generating files");
         /// GENERATE JAVA FILES
         File file_java = new File(component_java.getPomFile().getAbsolutePath().replace("pom.xml","")+"src/main/java/org/kevoree/library/nativeN/"+componentName);
-        createDirectory()
+
         if(file_java.mkdirs())
         {
             String bridge = new String(FileManager.load(GenerateFilesMojo.class.getClassLoader().getResourceAsStream("template_java/Bridge.java.template")));
-            bridge =  bridge.replace("$PACKAGE$","package org.kevoree.library.nativeN."+componentName+";");
-            bridge =   bridge.replace("$HEADER_PORTS$",codeGeneratorJava.getHeaderPorts());
-            bridge =    bridge.replace("$PORTS$",codeGeneratorJava.getPorts());
+            bridge = bridge.replace("$PACKAGE$","package org.kevoree.library.nativeN."+componentName+";");
+            bridge = bridge.replace("$HEADER_PORTS$",codeGeneratorJava.getHeaderPorts());
+            bridge = bridge.replace("$PORTS$",codeGeneratorJava.getPorts());
             bridge = bridge.replace("$CLASS$",componentName);
             bridge = bridge.replace("$artifactId$",component_c.getArtifactId());
             bridge = bridge.replace("$groupId$",component_c.getGroupId());
             bridge = bridge.replace("$version$",project.getVersion());
+            bridge = bridge.replace("$DICO$",codeGeneratorJava.getBody());
+            bridge = bridge.replace("$DICO$",codeGeneratorJava.getBody());
+
             MavenHelper.writeFile(file_java.getPath() + "/" + componentName + ".java", bridge, false);
         }  else
         {

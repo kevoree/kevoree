@@ -86,21 +86,18 @@ public class Test {
 
 
         boolean  started = nativeManager.start();
-
+        nativeManager.setDico("myParam","value");
         if(started)
         {
-            for(int i = 0;i <1;i++)
-            {
-                nativeManager.push("input_port", "hello world " + i);
-            }
 
-            nativeManager.setDico("jed","value");
-            nativeManager.update();
+          //  nativeManager.update();
 
         } else
         {
             System.out.println("error");
         }
+
+        Thread.sleep(5000);
 
         nativeManager.stop();
 

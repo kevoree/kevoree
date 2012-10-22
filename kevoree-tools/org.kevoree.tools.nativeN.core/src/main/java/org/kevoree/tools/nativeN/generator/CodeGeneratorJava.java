@@ -34,10 +34,13 @@ public class CodeGeneratorJava extends  AbstractCodeGenerator {
         // gen header ports
         gen_headerPorts.append(getProvidedPort());
         gen_headerPorts.append(getRequiredPort());
+        gen_headerPorts.append(getDictonnaryHeader());
 
         // gen port java to jni port   dispatcher
         gen_ports.append(getJavaDispatcher());
 
+        // setter dico bridge
+        gen_body.append(getBridgeDictonnary());
     }
 
 
@@ -54,7 +57,6 @@ public class CodeGeneratorJava extends  AbstractCodeGenerator {
                 } else {
                     gen.append("\n");
                 }
-
                 count++;
             }
             gen.append("})");
@@ -73,10 +75,10 @@ public class CodeGeneratorJava extends  AbstractCodeGenerator {
                 gen.append(" @RequiredPort(name = \""+name+"\", type = PortType.MESSAGE,optional = true,theadStrategy = ThreadStrategy.NONE)");
                 if(count < ouputs_ports.size()-1) {
                     gen.append(",\n");
-                } else {
+                } else
+                {
                     gen.append("\n");
                 }
-
                 count++;
             }
             gen.append("})");
@@ -84,6 +86,38 @@ public class CodeGeneratorJava extends  AbstractCodeGenerator {
         return gen.toString();
     }
 
+    public String getBridgeDictonnary(){
+        StringBuilder gen = new StringBuilder();
+        if(dicos.size() > 0)
+        {
+            for(String dico : dicos.keySet())
+            {
+                gen.append("nativeManager.setDico(\""+dico+"\",getDictionary().get(\""+dico+"\").toString()); \n");
+            }
+        }
+        return gen.toString();
+    }
+
+
+    public String getDictonnaryHeader(){
+        StringBuilder gen = new StringBuilder();
+        int count=0;
+        if(dicos.size() > 0){
+            gen.append("@DictionaryType({ ");
+            for(String dico : dicos.keySet())
+            {
+                gen.append("@DictionaryAttribute(name = \""+dico+"\", defaultValue = \"\", optional = true)");
+                if(count < dicos.size()-1) {
+                    gen.append(",\n");
+                } else {
+                    gen.append("\n");
+                }
+                count++;
+            }
+            gen.append("})");
+        }
+        return gen.toString();
+    }
     public String getJavaDispatcher(){
 
         StringBuilder gen = new StringBuilder();

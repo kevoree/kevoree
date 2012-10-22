@@ -34,7 +34,6 @@ public class CodeGeneratorC extends  AbstractCodeGenerator {
     public void execute() {
 
         gen_headerPorts.append("#include \"$NAME$.h\"\n\n");
-        gen_headerPorts.append(generateDico());
         gen_headerPorts.append(generateOutputsPorts());
         gen_headerPorts.append(generateInputsPorts());
         gen_headerPorts.append(generateMethods());
@@ -48,8 +47,8 @@ public class CodeGeneratorC extends  AbstractCodeGenerator {
         StringBuilder gen = new StringBuilder();
 
         gen.append("#include \"$NAME$.h\"\n\n");
-        gen.append(generateOutputsPorts());
 
+        gen.append(generateOutputsPorts());
         gen.append(generateInputsPorts());
 
         gen.append(generateMethods());
@@ -57,17 +56,6 @@ public class CodeGeneratorC extends  AbstractCodeGenerator {
         return gen.toString();
     }
 
-
-    public String generateDico(){
-        StringBuilder gen = new StringBuilder();
-
-        for (String name : dicos.keySet())
-        {
-            gen.append("char "+name+"[LENGHT_MAX_VALUE_DICO];") ;
-        }
-
-        return gen.toString();
-    }
 
     public String generateInputsPorts()
     {

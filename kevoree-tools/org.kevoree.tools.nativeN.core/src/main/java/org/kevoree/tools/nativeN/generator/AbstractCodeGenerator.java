@@ -38,6 +38,7 @@ public abstract  class AbstractCodeGenerator implements ICodeGenerator
     protected LinkedHashMap<String,Integer> inputs_ports = new LinkedHashMap<String, Integer>();
     protected LinkedHashMap<String,Integer> ouputs_ports = new LinkedHashMap<String, Integer>();
     protected LinkedHashMap<String,String> dicos = new LinkedHashMap<String, String>();
+    protected ComponentType current=null;
 
     public  AbstractCodeGenerator(ContainerRoot model)
     {
@@ -52,6 +53,7 @@ public abstract  class AbstractCodeGenerator implements ICodeGenerator
                     for(DictionaryAttribute entry:  c.getDictionaryType().get().getAttributesForJ()){
                         dicos.put(entry.getName(),"default");
                     }
+                    current = c;
                 }
             }
         }
