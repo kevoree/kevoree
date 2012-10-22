@@ -18,6 +18,7 @@ int start()
     	    if(getPortByName("myParam") != NULL)
     	    {
     	      output_port((char*)getPortByName("myParam"));
+
     	    }
 
             sleep(1);

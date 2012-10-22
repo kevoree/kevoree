@@ -35,6 +35,7 @@ import java.util.ArrayList;
 
 @ComponentType
 @Requires({ @RequiredPort(name = "faceDetected", type = PortType.MESSAGE,optional = true,theadStrategy = ThreadStrategy.NONE)
+})@DictionaryType({ @DictionaryAttribute(name = "video", defaultValue = "false", optional = true)
 })
 @Library(name = "Native")
 public class FaceDetection extends AbstractComponentType {
@@ -45,46 +46,48 @@ public class FaceDetection extends AbstractComponentType {
     private final int range_min = 2000;
     private final int range_max = 65535;
 
-    public int gerRandom(){
-        return range_min + new Random().nextInt(range_max - range_min);
-    }
-
     @Start
     public void start () {
         try
         {
             // todo check if not used
             ipc_key  = gerRandom();
-
             ArrayList<String> repos = new ArrayList<String>();
             for(Repository repo :  getModelService().getLastModel().getRepositoriesForJ())
             {
                 repos.add(repo.getUrl());
             }
-
             // loading model from jar
             ContainerRoot model = KevoreeXmiHelper.loadStream(getClass().getResourceAsStream("/KEV-INF/lib.kev"));
             File binary =    getBootStrapperService().resolveArtifact("org.kevoree.library.nativeN.faceDetection_native"+getOs(), "org.kevoree.library.nativeN", "1.8.9-SNAPSHOT", "uexe", repos);
-
-            if(!binary.canExecute())
+            if(binary != null)
             {
-                binary.setExecutable(true);
-            }
 
-            nativeManager = new NativeManager(ipc_key,"FaceDetection",binary.getPath(),model);
-
-            nativeManager.addEventListener(new NativeListenerPorts() {
-                @Override
-                public void disptach(NativeEventPort event, String port_name, String msg)
+                if(!binary.canExecute())
                 {
-                    MessagePort port = (MessagePort) getPortByName(port_name);
-                    port.process(msg);
+                    binary.setExecutable(true);
                 }
-            });
 
-            started = nativeManager.start();
+                nativeManager = new NativeManager(ipc_key,binary.getPath(),model);
 
-            
+                nativeManager.addEventListener(new NativeListenerPorts() {
+                    @Override
+                    public void disptach(NativeEventPort event, String port_name, String msg)
+                    {
+                        MessagePort port = (MessagePort) getPortByName(port_name);
+                        port.process(msg);
+                    }
+                });
+
+                started = nativeManager.start();
+
+                nativeManager.setDico("video",getDictionary().get("video").toString()); 
+
+
+             } else
+             {
+                 System.err.println("The binary org.kevoree.library.nativeN.faceDetection_native for the architecture "+getOs()+" is not found");
+             }
 
         } catch (NativeHandlerException e) {
             e.printStackTrace();
@@ -108,8 +111,12 @@ public class FaceDetection extends AbstractComponentType {
     @Update
     public void update ()
     {
-        
-        nativeManager.update();
+       if(nativeManager !=null)
+       {
+            nativeManager.setDico("video",getDictionary().get("video").toString()); 
+
+            nativeManager.update();
+       }
     }
 
     public boolean isArm() {
@@ -139,6 +146,10 @@ public class FaceDetection extends AbstractComponentType {
         }
         return null;
     }
+
+  public int gerRandom(){
+            return range_min + new Random().nextInt(range_max - range_min);
+  }
 
     
 }

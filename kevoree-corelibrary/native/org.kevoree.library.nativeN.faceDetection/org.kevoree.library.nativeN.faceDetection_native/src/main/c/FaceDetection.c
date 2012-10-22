@@ -155,7 +155,7 @@ int update()
     fprintf(stderr,"Component updating \n");
  return 0;
 }
-
+   int last=0;
     char test[512];
 void detectAndDraw( Mat& img,CascadeClassifier& cascade, CascadeClassifier& nestedCascade,  double scale)
 {
@@ -191,8 +191,12 @@ void detectAndDraw( Mat& img,CascadeClassifier& cascade, CascadeClassifier& nest
 
       sprintf(test," Faces %d \n",faces.size());
 
+        if(last != faces.size())
+        {
+             faceDetected((char*)&test);
+             last = faces.size();
+        }
 
-       faceDetected((char*)&test);
 
 
     for( vector<Rect>::const_iterator r = faces.begin(); r != faces.end(); r++, i++ )

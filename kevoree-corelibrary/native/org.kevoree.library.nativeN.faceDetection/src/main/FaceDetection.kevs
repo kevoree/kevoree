@@ -2,4 +2,9 @@ tblock
 {
     createComponentType FaceDetection @ Native
     addOutPortType faceDetected : Message : optional=>  FaceDetection
+
+     createDictionaryType FaceDetection
+     {
+                video : "String"
+     }
 }

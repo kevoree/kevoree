@@ -74,7 +74,7 @@ public class HelloWorld extends AbstractComponentType {
                 binary.setExecutable(true);
             }
 
-            nativeManager = new NativeManager(ipc_key,"HelloWorld",binary.getPath(),model);
+            nativeManager = new NativeManager(ipc_key,binary.getPath(),model);
 
             nativeManager.addEventListener(new NativeListenerPorts() {
                 @Override
