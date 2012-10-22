@@ -22,6 +22,7 @@ import org.kevoree.tools.nativeN.api.NativeEventPort;
 import org.kevoree.tools.nativeN.api.NativeListenerPorts;
 
 import javax.swing.event.EventListenerList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 /**
@@ -34,56 +35,58 @@ import java.util.LinkedHashMap;
 public class NativeManager implements INativeManager {
 
     protected EventListenerList listenerList = new EventListenerList();
-    private NativeJNI nativeJNI;
     private String path_uexe;
     private int key;
-
     private LinkedHashMap<String,Integer> inputs_ports =new LinkedHashMap<String, Integer>();
     private LinkedHashMap<String,Integer> ouputs_ports = new LinkedHashMap<String, Integer>();
+    private static NativeJNI nativeJNI=null;
+    public static  HashMap<Integer,NativeManager> callbacks = new HashMap<Integer, NativeManager>();
 
-    public NativeManager(final int key,final String componentName,final String path_uexe ,ContainerRoot model) throws NativeHandlerException
+    public NativeManager(final int key,final String path_uexe ,ContainerRoot model) throws NativeHandlerException
     {
         this.key = key;
         this.path_uexe =path_uexe;
-        nativeJNI = new NativeJNI(this);
-        nativeJNI.configureCL();
+        if( nativeJNI == null)
+        {
+            nativeJNI = new NativeJNI(this);
+            nativeJNI.configureCL();
+        }
         if(nativeJNI.init(key) <0)
         {
             throw new NativeHandlerException();
         }
+
         for(TypeDefinition type :  model.getTypeDefinitionsForJ())
         {
             if(type instanceof ComponentType)
             {
                 ComponentType c = (ComponentType)type;
-                if(c.getName().equals(componentName))
+                for(PortTypeRef portP :  c.getProvidedForJ())
                 {
-                    for(PortTypeRef portP :  c.getProvidedForJ())
-                    {
-                        int id =  nativeJNI.create_input(key, portP.getName());
-                        if(id < 0){
-                            throw new NativeHandlerException();
-                        }
-                        inputs_ports.put(portP.getName(),id);
+                    int id =  nativeJNI.create_input(key, portP.getName());
+                    if(id < 0){
+                        throw new NativeHandlerException();
                     }
-                    for(PortTypeRef portR :  c.getRequiredForJ())
-                    {
-                        int id =    nativeJNI.create_output(key, portR.getName());
-                        if(id < 0){
-                            throw new NativeHandlerException();
-                        }
-                        inputs_ports.put(portR.getName(),id);
-                    }
-                    break;
+                    inputs_ports.put(portP.getName(),id);
                 }
+                for(PortTypeRef portR :  c.getRequiredForJ())
+                {
+                    int id =    nativeJNI.create_output(key, portR.getName());
+                    if(id < 0){
+                        throw new NativeHandlerException();
+                    }
+                    inputs_ports.put(portR.getName(),id);
+                }
+
             }
         }
-        if(nativeJNI.register() < 0)
+        if(nativeJNI.register(key) < 0)
         {
             throw new NativeHandlerException();
         }
+        // workraround
+        callbacks.put(key,this);
     }
-
 
     public  boolean start() throws NativeHandlerException {
 
@@ -105,7 +108,7 @@ public class NativeManager implements INativeManager {
         {
             return false;
         }
-
+        callbacks.remove(key);
         // todo check process
         return  true;
     }
@@ -150,7 +153,7 @@ public class NativeManager implements INativeManager {
 
 
     public  boolean setDico(String name,String value) {
-        if(nativeJNI.setDico(key,name,value) != 0){
+        if(nativeJNI.setDico(key, name, value) != 0){
             return  false;
         }
         return  true;

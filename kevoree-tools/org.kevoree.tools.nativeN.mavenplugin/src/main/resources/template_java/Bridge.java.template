@@ -44,46 +44,47 @@ public class $CLASS$ extends AbstractComponentType {
     private final int range_min = 2000;
     private final int range_max = 65535;
 
-    public int gerRandom(){
-        return range_min + new Random().nextInt(range_max - range_min);
-    }
-
     @Start
     public void start () {
         try
         {
             // todo check if not used
             ipc_key  = gerRandom();
-
             ArrayList<String> repos = new ArrayList<String>();
             for(Repository repo :  getModelService().getLastModel().getRepositoriesForJ())
             {
                 repos.add(repo.getUrl());
             }
-
             // loading model from jar
             ContainerRoot model = KevoreeXmiHelper.loadStream(getClass().getResourceAsStream("/KEV-INF/lib.kev"));
             File binary =    getBootStrapperService().resolveArtifact("$artifactId$"+getOs(), "$groupId$", "$version$", "uexe", repos);
-
-            if(!binary.canExecute())
+            if(binary != null)
             {
-                binary.setExecutable(true);
-            }
 
-            nativeManager = new NativeManager(ipc_key,"$CLASS$",binary.getPath(),model);
-
-            nativeManager.addEventListener(new NativeListenerPorts() {
-                @Override
-                public void disptach(NativeEventPort event, String port_name, String msg)
+                if(!binary.canExecute())
                 {
-                    MessagePort port = (MessagePort) getPortByName(port_name);
-                    port.process(msg);
+                    binary.setExecutable(true);
                 }
-            });
 
-            started = nativeManager.start();
+                nativeManager = new NativeManager(ipc_key,binary.getPath(),model);
 
-            $DICO$
+                nativeManager.addEventListener(new NativeListenerPorts() {
+                    @Override
+                    public void disptach(NativeEventPort event, String port_name, String msg)
+                    {
+                        MessagePort port = (MessagePort) getPortByName(port_name);
+                        port.process(msg);
+                    }
+                });
+
+                started = nativeManager.start();
+
+                $DICO$
+
+             } else
+             {
+                 System.err.println("The binary $artifactId$ for the architecture "+getOs()+" is not found");
+             }
 
         } catch (NativeHandlerException e) {
             e.printStackTrace();
@@ -107,8 +108,11 @@ public class $CLASS$ extends AbstractComponentType {
     @Update
     public void update ()
     {
-        $DICO$
-        nativeManager.update();
+       if(nativeManager !=null)
+       {
+            $DICO$
+            nativeManager.update();
+       }
     }
 
     public boolean isArm() {
@@ -138,6 +142,10 @@ public class $CLASS$ extends AbstractComponentType {
         }
         return null;
     }
+
+  public int gerRandom(){
+            return range_min + new Random().nextInt(range_max - range_min);
+  }
 
     $PORTS$
 }

@@ -50,11 +50,36 @@ typedef struct _context
   Ports inputs[NUMBER_PORTS];
   int outputs_count;
   Ports outputs[NUMBER_PORTS];
+  Publisher   p_event_fifo;
+  int ipc_key;
+  int alive;
   int (*start) ();
   int (*stop) ();
   int (*update) ();
   void (*dispatch) (int id_port,int id_queue);
 } Context;
+
+
+Context * getContext(int key)
+{
+    void *addr;
+   // create memory shared
+   int shmid = shmget(key,sizeof(Context), S_IRUSR | S_IWUSR );
+   if(shmid < 0)
+   {
+       perror("shmid");
+       return NULL;
+   }
+   addr = shmat(shmid, 0, 0);
+   if(addr < 0)
+   {
+      perror("shmat");
+      return NULL;
+   }
+    // bind to memory shared
+  return  (Context *) addr;
+}
+
 
 
 int start ();
@@ -63,10 +88,6 @@ int update ();
 int alive_component = 0;
 
 Context *ctx;
-/*
-EventBroker event_broker_tcp;
-EventBroker event_broker_udp;     */
-//Publisher component_event_publisher;
 
 EventBroker event_broker_fifo;
 
@@ -146,26 +167,6 @@ void notify(Events ev)
     }
 }
 
-/*
-void *   t_broker_tcp (void *p)
-{
-  p = NULL;
-  fprintf(stderr,"createEventBroker_tcp %d \n",event_broker_tcp.port);
-
-  createEventBroker_tcp (&event_broker_tcp);
-  pthread_exit (NULL);
-}
-
-void *   t_broker_udp (void *p)
-{
-  p = NULL;
-    fprintf(stderr,"event_broker_udp %d \n",event_broker_udp.port);
-
-  createEventBroker_udp (&event_broker_udp);
-  pthread_exit (NULL);
-}
-*/
-
 void *   t_broker_fifo(void *p)
 {
 
@@ -177,26 +178,8 @@ void *   t_broker_fifo(void *p)
 
 int bootstrap (key_t key,int port_event_broker)
 {
-   int shmid;
-   void *ptr_mem_partagee;
-  /* pthread_t t_event_broker_tcp;
-   pthread_t t_event_broker_udp;   */
-   pthread_t t_event_broker_fifo;
-
-  /* create memory shared   */
-   shmid = shmget (key, sizeof (Context), S_IRUSR | S_IWUSR);
-   if (shmid < 0)
-    {
-      perror ("shmid");
-      return -1;
-    }
-
-    if ((ptr_mem_partagee = shmat (shmid, NULL, 0)) == (void *) -1)
-    {
-      perror ("shmat");
-      exit (1);
-    }
-    ctx = (Context *) ptr_mem_partagee;
+    pthread_t t_event_broker_fifo;
+    ctx = getContext(key);
     ctx->pid = getpid ();
 
     sprintf(fifo_name,"%d.fifo",key);
