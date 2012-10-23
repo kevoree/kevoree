@@ -54,7 +54,12 @@ public class NativeJNI extends AbstractNativeJNI implements NativeEventPort {
 
     public void dispatchEvent(int key,String port_name,String data)
     {
-        handler.callbacks.get(key).fireEvent(this, port_name, data);
+        if(handler != null &&  handler.callbacks != null){
+            handler.callbacks.get(key).fireEvent(this, port_name, data);
+        }else {
+            System.err.print("msg lost");
+        }
+
     }
 
     public boolean configureCL()
