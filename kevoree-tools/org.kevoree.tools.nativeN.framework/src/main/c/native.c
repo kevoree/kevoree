@@ -30,6 +30,7 @@
 #include <sys/stat.h>
 #include "../../../../org.kevoree.tools.nativeN.mavenplugin/src/main/resources/component.h"
 
+//#define DEBUG
 
 Context * getContext(int key);
 
@@ -114,6 +115,7 @@ void *manage_callbacks(void *c)
     #ifdef DEBUG
          fprintf(stderr,"Closing callbacks ipc key {%d}  \n",ctxN->ipc_key);
      #endif
+    shmdt (ctxN);
     pthread_exit(NULL);
 }
 
@@ -134,6 +136,7 @@ JNIEXPORT jint JNICALL  Java_org_kevoree_tools_nativeN_NativeJNI_register (JNIEn
     if(pthread_create (& callbacks, NULL,&manage_callbacks, ctxN) != 0)
     {
          fprintf(stderr,"create callback");
+         shmdt (ctxN);
          return (jboolean)-1;
     }
   // convert local to global reference
@@ -154,7 +157,6 @@ JNIEXPORT jint JNICALL  Java_org_kevoree_tools_nativeN_NativeJNI_register (JNIEn
     {
       fprintf (stderr,"Unable to get method ref");
       return -1;
-
     }
   return 0;
 }
@@ -257,12 +259,15 @@ JNIEXPORT jint JNICALL
 Java_org_kevoree_tools_nativeN_NativeJNI_update (JNIEnv * env, jobject obj,
 					      jint key)
 {
-   Context *ctxN = getContext(key);
+    int rt;
+    Context *ctxN = getContext(key);
     if(ctxN != NULL)
     {
         Events      ev;
         ev.ev_type = EV_UPDATE;
-        return send_event_fifo(ctxN->p_event_fifo,ev);
+        rt = send_event_fifo(ctxN->p_event_fifo,ev);
+        shmdt (ctxN);
+        return rt;
     }
     else
     {
@@ -283,10 +288,12 @@ Java_org_kevoree_tools_nativeN_NativeJNI_create_1input (JNIEnv * env, jobject ob
        strcpy (ctxN->inputs[ctxN->inputs_count].name, n_port_name);
        ctxN->inputs[ctxN->inputs_count].id = id_queue;
        ctxN->inputs_count = ctxN->inputs_count + 1;
-       #ifdef  DEBUG
-         fprintf (stderr,"Input %d : %d  \n",id_queue,       ctxN->inputs_count-1);
-       #endif
-       return   ctxN->inputs_count-1;
+       int pos = ctxN->inputs_count-1;
+       shmdt (ctxN);
+        #ifdef  DEBUG
+           fprintf (stderr,"Input %d : %d  \n",id_queue,pos);
+        #endif
+       return  pos;
   } else
   {
       fprintf (stderr,"Error shared memory create_1input");
@@ -307,7 +314,12 @@ JNIEXPORT jint JNICALL    Java_org_kevoree_tools_nativeN_NativeJNI_create_1outpu
      strcpy (ctxN->outputs[ctxN->outputs_count].name, n_port_name);
      ctxN->outputs[ctxN->outputs_count].id = id_queue;
      ctxN->outputs_count = ctxN->outputs_count + 1;
-      return  ctxN->outputs_count-1;
+     int pos =  ctxN->outputs_count-1;
+     shmdt (ctxN);
+      #ifdef  DEBUG
+                fprintf (stderr,"Ouput %d : %d  \n",id_queue,pos);
+      #endif
+      return pos;
   } else
   {
     fprintf (stderr,"Error shared memory create_1output");
@@ -324,6 +336,7 @@ JNIEXPORT jint JNICALL Java_org_kevoree_tools_nativeN_NativeJNI_putPort (JNIEnv 
       #ifdef  DEBUG
       fprintf (stderr,"PutPort %d->%s  id queue = %d\n", id_port,n_value,ctxN->inputs[id_port].id);
       #endif
+      int rt;
       kmessage kmsg;
       kmsg.type = 1;
       strcpy (kmsg.value, n_value);
@@ -333,13 +346,14 @@ JNIEXPORT jint JNICALL Java_org_kevoree_tools_nativeN_NativeJNI_putPort (JNIEnv 
          Events      ev;
          ev.ev_type = EV_PORT_INPUT;
          ev.id_port =   id_port;
-
          // notify
-         send_event_fifo(ctxN->p_event_fifo,ev);
-         return 0;
+         rt = send_event_fifo(ctxN->p_event_fifo,ev);
+         shmdt (ctxN);
+         return rt;
       } else
       {
-           fprintf (stderr,"Error : enqueue %d->%s \n", id_port,n_value);
+        fprintf (stderr,"Error : enqueue %d->%s \n", id_port,n_value);
+        shmdt (ctxN);
         return -1;
       }
   } else
@@ -354,13 +368,20 @@ JNIEXPORT jint JNICALL Java_org_kevoree_tools_nativeN_NativeJNI_setDico  (JNIEnv
     Context *ctxN = getContext(key);
      if(ctxN != NULL)
      {
+         int rt;
          const char *key_n = (*env)->GetStringUTFChars (env, key_dico, 0);
          const char *value_n = (*env)->GetStringUTFChars (env, value_dico, 0);
+         #ifdef  DEBUG
+               fprintf (stderr,"SetDico  %s - %s \n", key_n,value_n);
+         #endif
          Events      ev;
          ev.ev_type = EV_DICO_SET;
          strcpy(ev.key,key_n);
          strcpy(ev.value,value_n);
-         send_event_fifo(ctxN->p_event_fifo,ev);
+         rt = send_event_fifo(ctxN->p_event_fifo,ev);
+         shmdt (ctxN);
+         return rt;
+
      } else
      {
         fprintf(stderr,"update kdico");
