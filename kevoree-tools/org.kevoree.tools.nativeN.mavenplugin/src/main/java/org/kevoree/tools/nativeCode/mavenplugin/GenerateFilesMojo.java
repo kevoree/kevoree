@@ -135,9 +135,9 @@ public class GenerateFilesMojo extends AbstractMojo {
 
         // Reading poms
         Model component_java =     MavenHelper.createModel(project.getGroupId(), project.getArtifactId() + sub_java, project.getVersion(), MavenHelper.createParent(project), project);
-        component_java.setName("Kevoree :: Tools :: Native :: Bridge Java :: "+project.getName());
+        component_java.setName(project.getName()+" :: Bridge Java");
         Model component_c=     MavenHelper.createModel(project.getGroupId(), project.getArtifactId() + sub_c, project.getVersion(), MavenHelper.createParent(project), project);
-        component_c.setName("Kevoree :: Tools :: Native :: C :: "+project.getName());
+        component_c.setName(project.getName()+" :: NativeCode ");
 
         MavenHelper.createPom("poms/pom.xml.component", component_java, project,component_java.getPomFile().getPath(),"");
         MavenHelper.createPom("poms/pom.xml.c.profil", component_c, project,component_c.getPomFile().getPath(),"");
