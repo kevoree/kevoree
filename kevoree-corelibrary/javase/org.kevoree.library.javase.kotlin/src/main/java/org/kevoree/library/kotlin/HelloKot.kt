@@ -11,6 +11,21 @@ import org.kevoree.framework.osgi.KevoreeInstanceActivator
  * To change this template use File | Settings | File Templates.
  */
 
+fun main(args : Array<String>) {
+    println("Hello ${args.size}");
+
+    var l = java.util.ArrayList<String>()
+     l.add("Yop")
+
+    l.forEach { a -> (println("elem=${a}"))}
+    var result = l.all { a -> a.contains("Y")}
+    println("Result "+result)
+
+    println("Hello ${l.size}");
+
+}
+
+
 class MyTest {
     fun titi(t : String): Int {
         return 3

@@ -2,10 +2,10 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.kevoree.corelibrary.native</groupId>
-    <artifactId>org.kevoree.library.native.root</artifactId>
+    <groupId>org.kevoree.corelibrary.nativeN</groupId>
+    <artifactId>org.kevoree.library.nativeN.root</artifactId>
     <packaging>pom</packaging>
-    <name>Kevoree :: CoreLibrary :: Native :: Root</name>
+    <name>Kevoree :: CoreLibrary :: NativeN :: Root</name>
     <version>1.8.9-SNAPSHOT</version>
 
     <parent>
@@ -23,7 +23,7 @@
     <modules>
         <module>../org.kevoree.library.nativeN.faceDetection</module>
         <module>../org.kevoree.library.nativeN.HelloWorld</module>
-        <module>../org.kevoree.library.nativeN.realtime</module>
+        <module>../org.kevoree.library.nativeN.pwm</module>
     </modules>
 
     <build>
@@ -42,6 +42,11 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.kevoree.platform</groupId>
+                <artifactId>org.kevoree.platform.mavenrunner</artifactId>
+                <version>${kevoree.version}</version>
             </plugin>
         </plugins>
     </build>
