@@ -76,14 +76,22 @@ public class NativeJNI extends AbstractNativeJNI implements NativeEventPort {
 
             String r = ""+new Random().nextInt(800);
             String absolutePath = FileManager.copyFileFromStream(SystemHelper.getPath("native.so"), folder.getAbsolutePath(),"libnative"+r+""+ SystemHelper.getExtension());
-            System.load(absolutePath);
 
-               /*
+
            if(getClass().getClassLoader() instanceof KevoreeJarClassLoader){
 
                KevoreeJarClassLoader  classLoader = (KevoreeJarClassLoader) getClass().getClassLoader();
                classLoader.addNativeMapping("nativeWrapper",absolutePath);
-           } */
+               ClassLoader current = Thread.currentThread().getContextClassLoader();
+               Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
+               System.loadLibrary("nativeWrapper");
+               Thread.currentThread().setContextClassLoader(current);
+
+
+           } else {
+               System.err.println("Failback on System global load");
+               System.load(absolutePath);
+           }
 
             return true;
         } catch (Exception e) {
