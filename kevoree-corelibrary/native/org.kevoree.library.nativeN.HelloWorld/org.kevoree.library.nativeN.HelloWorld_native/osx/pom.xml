@@ -3,7 +3,7 @@
        <modelVersion>4.0.0</modelVersion>
       <groupId>org.kevoree.library.nativeN</groupId>
       <artifactId>org.kevoree.library.nativeN.HelloWorld_native-osx</artifactId>
-      <name>Kevoree :: Tools :: Native :: C :: Kevoree :: Native :: HelloWorld Root-osx</name>
+      <name>Kevoree :: Native :: HelloWorld Root :: NativeCode -osx</name>
       <packaging>uexe</packaging>
 
          <parent>

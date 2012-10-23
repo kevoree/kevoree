@@ -10,6 +10,7 @@
 package org.kevoree.library.nativeN.HelloWorld;
 
 import org.kevoree.ContainerRoot;
+import org.kevoree.KevoreeFactory;
 import org.kevoree.Repository;
 import org.kevoree.annotation.*;
 import org.kevoree.api.service.core.script.KevScriptEngineException;
@@ -69,7 +70,7 @@ public class HelloWorld extends AbstractComponentType {
 
             // loading model from jar
             ContainerRoot model = KevoreeXmiHelper.loadStream(getClass().getResourceAsStream("/KEV-INF/lib.kev"));
-            File binary = getBootStrapperService().resolveArtifact("org.kevoree.library.nativeN.HelloWorld_native" + getOs(), "org.kevoree.library.nativeN", "1.8.9-SNAPSHOT", "uexe", repos);
+            File binary = getBootStrapperService().resolveArtifact("org.kevoree.library.nativeN.HelloWorld_native" + getOs(), "org.kevoree.library.nativeN", KevoreeFactory.getVersion(), "uexe", repos);
 
             if (!binary.canExecute()) {
                 binary.setExecutable(true);
