@@ -13,6 +13,8 @@
  */
 package org.kevoree.tools.nativeN.api;
 
+import org.kevoree.ComponentType;
+
 /**
  * Created with IntelliJ IDEA.
  * User: jed
@@ -21,8 +23,12 @@ package org.kevoree.tools.nativeN.api;
  * To change this template use File | Settings | File Templates.
  */
 public interface ICodeGenerator {
-    // do
+
+    // generate code
     void execute();
+
+    //get current component type
+    public ComponentType getComponentType();
 
     // getters
     public String getHeaderPorts();

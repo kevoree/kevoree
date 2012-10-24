@@ -38,10 +38,22 @@ public class FileManager {
         return toByteArray(tab);
     }
 
-    public static String copyFileFromStream( InputStream inputStream , String path, String targetName) throws IOException {
+    public static String copyFileFromStream( InputStream inputStream , String path, String targetName,boolean replace) throws IOException {
 
         if (inputStream != null) {
             File copy = new File(path + File.separator + targetName);
+            copy.mkdirs();
+            if(replace)
+            {
+                if(copy.exists()){
+                    if(!copy.delete()){
+                       throw new IOException("delete file "+copy.getPath());
+                    }
+                    if(!copy.createNewFile()){
+                        throw new IOException("createNewFile file "+copy.getPath());
+                    }
+                }
+            }
             //copy.deleteOnExit();
             OutputStream outputStream = new FileOutputStream(copy);
             byte[] bytes = new byte[1024];

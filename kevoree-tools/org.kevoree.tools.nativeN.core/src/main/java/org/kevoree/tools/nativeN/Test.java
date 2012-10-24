@@ -58,7 +58,7 @@ public class Test {
         nativeManager.setDico("myParam","value1");
         if(started)
         {
-
+            nativeManager.setDico("myParam","valu2");
             nativeManager.update();
 
         } else
