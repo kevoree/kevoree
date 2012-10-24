@@ -24,8 +24,8 @@
             <version>${kevoree.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.kevoree</groupId>
-            <artifactId>org.kevoree.basechecker</artifactId>
+            <groupId>org.kevoree.corelibrary.sky</groupId>
+            <artifactId>org.kevoree.library.sky.api</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
         <dependency>

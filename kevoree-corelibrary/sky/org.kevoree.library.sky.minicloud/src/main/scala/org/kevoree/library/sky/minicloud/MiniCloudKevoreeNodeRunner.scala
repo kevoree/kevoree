@@ -87,13 +87,17 @@ class MiniCloudKevoreeNodeRunner (nodeName: String, iaasNode: AbstractHostNode) 
   def stopNode (): Boolean = {
     logger.debug("Kill " + nodeName)
     try {
-      nodePlatformProcess.destroy()
+      if (nodePlatformProcess != null) {
+        nodePlatformProcess.destroy()
+      }
       true
     }
     catch {
       case _@e => {
         logger.debug(nodeName + " cannot be killed. Try to force kill...")
-        nodePlatformProcess.destroy()
+        if (nodePlatformProcess != null) {
+          nodePlatformProcess.destroy()
+        }
         logger.debug(nodeName + " has been forcibly killed")
         true
       }
@@ -112,8 +116,8 @@ class MiniCloudKevoreeNodeRunner (nodeName: String, iaasNode: AbstractHostNode) 
       KevoreeXmiHelper.save(tempFile.getAbsolutePath, childBootStrapModel)
 
 
-      if(System.getProperty("java.class.path").contains("plexus-classworlds")){
-        return false//maven use case
+      if (System.getProperty("java.class.path").contains("plexus-classworlds")) {
+        return false //maven use case
       }
 
       //TRY THE CURRENT CLASSLOADER
@@ -125,10 +129,16 @@ class MiniCloudKevoreeNodeRunner (nodeName: String, iaasNode: AbstractHostNode) 
           return false
         }
       }
-      // FIXME java memory properties must define as Node properties
-      nodePlatformProcess = Runtime.getRuntime
-        .exec(Array[String](java, "-Dnode.headless=true", "-Dnode.bootstrap=" + tempFile.getAbsolutePath, "-Dnode.name=" + nodeName, "-classpath", System.getProperty("java.class.path"),
-                             "org.kevoree.platform.standalone.App"))
+
+      val vmargsObject = iaasNode.getDictionary.get()
+      var exec = Array[String](java)
+      if (vmargsObject != null) {
+        exec = Array[String](java, vmargsObject.toString)
+      }
+      exec = exec ++ List[String]("-Dnode.headless=true", "-Dnode.bootstrap=" + tempFile.getAbsolutePath, "-Dnode.name=" + nodeName, "-classpath", System.getProperty("java.class.path"),
+                                   "org.kevoree.platform.standalone.App")
+      logger.debug("Start node with command: {}", exec.mkString(" "))
+      nodePlatformProcess = Runtime.getRuntime.exec(exec)
 
       configureLogFile()
 
@@ -151,9 +161,16 @@ class MiniCloudKevoreeNodeRunner (nodeName: String, iaasNode: AbstractHostNode) 
         val tempFile = File.createTempFile("bootModel" + nodeName, ".kev")
         KevoreeXmiHelper.save(tempFile.getAbsolutePath, childBootStrapModel)
 
-        // FIXME java memory properties must define as Node properties
-        nodePlatformProcess = Runtime.getRuntime
-          .exec(Array[String](java, "-Dnode.headless=true", "-Dnode.bootstrap=" + tempFile.getAbsolutePath, "-Dnode.name=" + nodeName, "-jar", platformFile.getAbsolutePath))
+        val vmargsObject = iaasNode.getDictionary.get()
+        var exec = Array[String](java)
+        if (vmargsObject != null) {
+          exec = Array[String](java, vmargsObject.toString)
+        }
+        exec = exec ++ List[String]("-Dnode.headless=true", "-Dnode.bootstrap=" + tempFile.getAbsolutePath, "-Dnode.name=" + nodeName, "-jar", platformFile.getAbsolutePath)
+
+
+        logger.debug("Start node with command: {}", exec.mkString(" "))
+        nodePlatformProcess = Runtime.getRuntime.exec(exec)
 
         configureLogFile()
 

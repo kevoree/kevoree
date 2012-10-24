@@ -19,10 +19,8 @@ import org.kevoree.library.sky.api.nodeType.PJavaSENode;
 @NodeType
 @DictionaryType({
 		@DictionaryAttribute(name = "archive", defaultValue = "false", vals = {"false", "true"}, optional = true),
-		@DictionaryAttribute(name = "flavor", optional = true),
-		@DictionaryAttribute(name = "MODE", defaultValue = "RELAX", vals = {"STRICT", "RELAX", "AVOID"}, optional = true)//,
-		// how the restrictions are manage : STRICT = the jail is stopped, RELAX = the jail continue to execute, AVOID means to refused to execute something that break the limitation
-		//		@DictionaryAttribute(name = "OS", defaultValue = "N/A", vals={"N/A", "Windows 7", "Ubuntu-11.10", "BSD-9"}, optional = false)
+		@DictionaryAttribute(name = "flavor", optional = true)
+
 })
 public class PJailNode extends PJavaSENode {
 

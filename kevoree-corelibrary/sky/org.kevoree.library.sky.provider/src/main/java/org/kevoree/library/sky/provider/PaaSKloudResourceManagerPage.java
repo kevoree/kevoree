@@ -11,6 +11,7 @@ import org.kevoree.library.javase.authentication.Authentication;
 import org.kevoree.library.javase.webserver.KevoreeHttpRequest;
 import org.kevoree.library.javase.webserver.KevoreeHttpResponse;
 import org.kevoree.library.javase.webserver.ParentAbstractPage;
+import org.kevoree.library.sky.api.helper.KloudHelper;
 import org.kevoree.library.sky.provider.checker.RootKloudChecker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

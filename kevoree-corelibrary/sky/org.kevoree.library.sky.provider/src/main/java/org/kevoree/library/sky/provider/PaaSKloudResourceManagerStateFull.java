@@ -6,6 +6,7 @@ import org.kevoree.api.service.core.handler.ModelListener;
 import org.kevoree.api.service.core.script.KevScriptEngine;
 import org.kevoree.framework.KevoreeXmiHelper;
 import org.kevoree.framework.message.StdKevoreeMessage;
+import org.kevoree.library.sky.api.helper.KloudHelper;
 import scala.Option;
 
 import java.io.File;

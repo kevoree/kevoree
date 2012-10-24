@@ -2,7 +2,7 @@
 merge "mvn:org.kevoree.corelibrary.sky/org.kevoree.library.sky.minicloud/{kevoree.version}"
 merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.nanohttp/{kevoree.version}"
 
-addNode node0 : MiniCloudNode { coreLogLevel="DEBUG",logLevel="DEBUG" }
+addNode node0 : MiniCloudNode { coreLogLevel="DEBUG",logLevel="DEBUG", VMARGS = "-Xmx1024m -XX:MaxPermSize=512m" }
 addGroup sync : NanoRestGroup
 addToGroup sync node0
 

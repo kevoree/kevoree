@@ -1,4 +1,4 @@
-package org.kevoree.library.sky.provider
+package org.kevoree.library.sky.api.helper
 
 import org.slf4j.{LoggerFactory, Logger}
 import java.net._
@@ -78,6 +78,19 @@ object KloudHelper {
     }
     //    }
   }
+
+  def isPaaSNodeType (currentModel: ContainerRoot /*, groupName: String*/ , nodeTypeName: String): Boolean = {
+      currentModel.getTypeDefinitions /*Groups.find(g => g.getName == groupName) match {
+        case None => false
+        case Some(group) =>
+          group.getSubNodes*/ .find(n => n.getName == nodeTypeName) match {
+        case None => false
+        case Some(nodeType) =>
+          nodeType.getName == "PJavaSENode" ||
+            KloudHelper.isASubType(nodeType, "PJavaSENode")
+      }
+      //    }
+    }
 
   def isKloudGroup/*ForNode */(kloudModel: ContainerRoot, groupName: String/*, nodeName: String*/): Boolean = {
     kloudModel.getGroups.find(g => g.getName == groupName && (g.getTypeDefinition.getName == "KloudPaaSNanoGroup" || KloudHelper.isASubType(g.getTypeDefinition, "KloudPaaSNanoGroup")) /*&&g.getSubNodes.find(n => n.getName == nodeName).isDefined*/).isDefined
