@@ -65,7 +65,6 @@ public class GenerateFilesMojo extends AbstractMojo {
     private File sourceOutputDirectory;
 
     /**
-     *
      * @parameter default-value="${basedir}/src/main"
      */
     private File inputCFile;
@@ -82,19 +81,18 @@ public class GenerateFilesMojo extends AbstractMojo {
     protected MavenProject project;
 
     private final String sub_c = "-native";
-    final String[] files_thirdparty = { "component.h","kqueue.h","events_common.h","events_fifo.h","HashMap.h","settings.h"};
+    final String[] files_thirdparty = {"component.h", "kqueue.h", "events_common.h", "events_fifo.h", "HashMap.h", "settings.h"};
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
-        if(inputCFile == null || !(inputCFile.exists())){
+        if (inputCFile == null || !(inputCFile.exists())) {
             getLog().warn("InputDir null => ");
         } else {
             List<File> componentFiles = MavenHelper.scanForKevScript(inputCFile);
             System.out.println(inputCFile + " size = " + componentFiles.size());
-            for(File f : componentFiles){
-                getLog().info("File found =>"+f.getAbsolutePath());
-                try
-                {
+            for (File f : componentFiles) {
+                getLog().info("File found =>" + f.getAbsolutePath());
+                try {
                     generateSources(f.getName().replace(".kevs", ""), f.getPath(), f.getPath().replace(f.getName(), ""));
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -104,37 +102,49 @@ public class GenerateFilesMojo extends AbstractMojo {
     }
 
 
-
-    public  String generateJavaSources(AbstractCodeGenerator code) throws IOException
-    {
+    public String generateJavaSources(AbstractCodeGenerator code) throws IOException {
         // Create Java Project Wrapper
-        Model wrapper_java =     MavenHelper.createModel(project.getGroupId(), project.getArtifactId() +"-wrapper", project.getVersion(), MavenHelper.createParent(project), project);
+
+        File modulesFiles = new File(project.getBasedir(), "modules");
+        if (!modulesFiles.exists()) {
+            modulesFiles.mkdirs();
+        }
+        File wrapperPomProject = new File(modulesFiles, "wrapper");
+        if (!wrapperPomProject.exists()) {
+            modulesFiles.mkdirs();
+        }
+
+        Model wrapper_java = MavenHelper.createModel(project.getGroupId(), project.getArtifactId() + "-wrapper", project.getVersion(), MavenHelper.createParent(project), project);
         wrapper_java.setName(project.getName() + " :: Wrapper Java");
+        wrapper_java.setPomFile(new File(wrapperPomProject, "pom.xml"));
 
         getLog().info("Create Wrapper Pom");
 
-        MavenHelper.createPom("poms/pom.xml.component", wrapper_java.getPomFile().getPath(),wrapper_java, project,"");
+
+        MavenHelper.createPom("poms/pom.xml.component", wrapper_java.getPomFile().getPath(), wrapper_java, project, "");
 
         getLog().info("Generating files");
-        String root_build =   inputCFile.getPath();
-        /// GENERATE JAVA FILES
-        File file_java = new File(root_build+"src/main/java/org/kevoree/library/nativeN/"+code.getComponentType().getName());
+        String root_build = inputCFile.getPath();
+        if (!root_build.endsWith(File.separator)) {
+            root_build = root_build + File.separator;
+        }
 
-        if(file_java.mkdirs())
-        {
+        /// GENERATE JAVA FILES
+        File file_java = new File(root_build + "java/org/kevoree/library/nativeN/" + code.getComponentType().getName());
+
+        if (file_java.mkdirs()) {
             String bridge = new String(FileManager.load(GenerateFilesMojo.class.getClassLoader().getResourceAsStream("template_java/Bridge.java.template")));
-            bridge = bridge.replace("$PACKAGE$","package org.kevoree.library.nativeN."+code.getComponentType().getName()+";");
-            bridge = bridge.replace("$HEADER_PORTS$",code.getHeaderPorts());
+            bridge = bridge.replace("$PACKAGE$", "package org.kevoree.library.nativeN." + code.getComponentType().getName() + ";");
+            bridge = bridge.replace("$HEADER_PORTS$", code.getHeaderPorts());
             bridge = bridge.replace("$PORTS$", code.getPorts());
-            bridge = bridge.replace("$CLASS$",code.getComponentType().getName());
-            bridge = bridge.replace("$artifactId$", project.getArtifactId() +"-wrapper");
-            bridge = bridge.replace("$groupId$",project.getGroupId());
+            bridge = bridge.replace("$CLASS$", code.getComponentType().getName());
+            bridge = bridge.replace("$artifactId$", project.getArtifactId() + "-native");
+            bridge = bridge.replace("$groupId$", project.getGroupId());
             bridge = bridge.replace("$version$", project.getVersion());
-            bridge = bridge.replace("$DICO$",code.getBody());
-            bridge = bridge.replace("$DICO$",code.getBody());
-            MavenHelper.writeFile(file_java.getPath() + "/" + code.getComponentType().getName() + ".java", bridge, false,false);
-        }  else
-        {
+            bridge = bridge.replace("$DICO$", code.getBody());
+            bridge = bridge.replace("$DICO$", code.getBody());
+            MavenHelper.writeFile(file_java.getPath() + "/" + code.getComponentType().getName() + ".java", bridge, false, false);
+        } else {
             getLog().error("Generating component java");
         }
         // add module
@@ -147,45 +157,54 @@ public class GenerateFilesMojo extends AbstractMojo {
 
         String componentName = code.getComponentType().getName();
 
+        File modulesFiles = new File(project.getBasedir(), "modules");
+        if (!modulesFiles.exists()) {
+            modulesFiles.mkdirs();
+        }
+
+
         // Create NativeCode Pom Root
-        Model component_c=     MavenHelper.createModel(project.getGroupId(), project.getArtifactId() + sub_c, project.getVersion(), MavenHelper.createParent(project), project);
-        component_c.setName(project.getName()+" :: NativeCode ");
+        Model component_c = MavenHelper.createModel(project.getGroupId(), project.getArtifactId() + sub_c, project.getVersion(), MavenHelper.createParent(project), project);
+        component_c.setName(project.getName() + " :: NativeCode ");
 
         // Create sub NativeCode {arm,osx,nix32,nix64}
-        MavenHelper.createPom("poms/pom.xml.c.profil", component_c.getPomFile().getPath(),component_c, project,"");
-        MavenHelper.createPom("poms/pom.xml.c.nix32",component_c.getPomFile().getPath().replace("pom.xml", "nix32/pom.xml"), component_c, project,sub_c);
-        MavenHelper.createPom("poms/pom.xml.c.nix64", component_c.getPomFile().getPath().replace("pom.xml","nix64/pom.xml"),component_c, project,sub_c);
-        MavenHelper.createPom("poms/pom.xml.c.osx",component_c.getPomFile().getPath().replace("pom.xml", "osx/pom.xml"), component_c,project,sub_c);
-        MavenHelper.createPom("poms/pom.xml.c.arm", component_c.getPomFile().getPath().replace("pom.xml", "arm/pom.xml"),component_c, project,sub_c);
+
+
+        MavenHelper.createPom("poms/pom.xml.c.nix32", modulesFiles.getAbsolutePath()+File.separator+"nix32/pom.xml", component_c, project, sub_c);
+        MavenHelper.createPom("poms/pom.xml.c.nix64", modulesFiles.getAbsolutePath()+File.separator+"nix64/pom.xml", component_c, project, sub_c);
+        MavenHelper.createPom("poms/pom.xml.c.osx", modulesFiles.getAbsolutePath()+File.separator+"osx/pom.xml", component_c, project, sub_c);
+        MavenHelper.createPom("poms/pom.xml.c.arm", modulesFiles.getAbsolutePath()+File.separator+"arm/pom.xml", component_c, project, sub_c);
 
         /// GENERATE C FILES
-        String path_c = component_c.getPomFile().getAbsolutePath().replace("pom.xml","")+"src/main/c/";
+        //String path_c = component_c.getPomFile().getAbsolutePath().replace("pom.xml","")+"src/main/c/";
+
+        String root_build = inputCFile.getPath();
+        if (!root_build.endsWith(File.separator)) {
+            root_build = root_build + File.separator;
+        }
+        /// GENERATE C FILES
+        String path_c = root_build + "c/";
+
 
         File file_c = new File(path_c);
-        if(file_c.mkdirs())
-        {
+        if (file_c.mkdirs()) {
 
-            getLog().info("-> "+componentName+".c");
-            MavenHelper.writeFile(file_c.getPath() + "/" + componentName + ".c", code.getHeaderPorts().replace("$NAME$", componentName),false,true);
+            getLog().info("-> " + componentName + ".c");
+            MavenHelper.writeFile(file_c.getPath() + "/" + componentName + ".c", code.getHeaderPorts().replace("$NAME$", componentName), false, true);
             getLog().info("-> " + componentName + ".h");
-            MavenHelper.writeFile(file_c.getPath() + "/" + componentName + ".h", code.getBody(),false,true);
+            MavenHelper.writeFile(file_c.getPath() + "/" + componentName + ".h", code.getBody(), false, true);
             // lib
-            File file = new File(path_c+"/thirdparty");
-            if(file.mkdir())
-            {
+            File file = new File(path_c + "/thirdparty");
+            if (file.mkdir()) {
                 getLog().info("-> Thirdparty");
-                for(String n : files_thirdparty)
-                {
-                    FileManager.copyFileFromStream(GenerateFilesMojo.class.getClassLoader().getResourceAsStream(n), file.getPath(), n,true);
+                for (String n : files_thirdparty) {
+                    FileManager.copyFileFromStream(GenerateFilesMojo.class.getClassLoader().getResourceAsStream(n), file.getPath(), n, true);
                 }
 
-            }  else
-            {
+            } else {
                 getLog().error("Creating thirdparty directory");
             }
-        }
-        else
-        {
+        } else {
             getLog().error("Creating sources directory");
         }
         // add module
@@ -197,20 +216,20 @@ public class GenerateFilesMojo extends AbstractMojo {
     }
 
 
-
     /**
      * Generate interfaces
+     *
      * @param componentName
      * @param path_to_kevScript_file
      * @param path_out
      * @throws Exception
      */
-    public  void generateSources(String componentName, String path_to_kevScript_file, String path_out) throws Exception {
+    public void generateSources(String componentName, String path_to_kevScript_file, String path_out) throws Exception {
 
         getLog().info("Reading KevScript");
 
         // getting model from KevScript where CreatingType exist
-        ContainerRoot model =  KevScriptLoader.getModel(path_to_kevScript_file);
+        ContainerRoot model = KevScriptLoader.getModel(path_to_kevScript_file);
         //Set model to generators
         AbstractCodeGenerator codeGeneratorJava = new CodeGeneratorJava(model);
         AbstractCodeGenerator codeGeneratorC = new CodeGeneratorC(model);
@@ -220,21 +239,75 @@ public class GenerateFilesMojo extends AbstractMojo {
         // Generate C CODE according with the model
         codeGeneratorC.execute();
 
-        String ArtifactIdJava = generateJavaSources(codeGeneratorJava);
-        String ArtifactIdC = generateCSources(codeGeneratorC);
+        generateJavaSources(codeGeneratorJava);
+        generateCSources(codeGeneratorC);
 
-        String path_pom_root =project.getModel().getPomFile().getPath();
+        String path_pom_root = project.getModel().getPomFile().getPath();
 
         String pom_root = new String(FileManager.load(path_pom_root));
 
-        if(!pom_root.contains("modules"))
-        {
+        if (!pom_root.contains("modules")) {
             String modules = "    <modules>\n" +
-                    "        <module>"+ArtifactIdJava+"</module>\n" +
-                    "        <module>"+ArtifactIdC+"</module>\n" +
+                    "        <module>modules/wrapper</module>\n" +
                     "    </modules>\n" +
+                    "<profiles>\n" +
+                    "        <profile>\n" +
+                    "            <id>nix32</id>\n" +
+                    "            <activation>\n" +
+                    "                <os>\n" +
+                    "                    <family>unix</family>\n" +
+                    "                    <name>Linux</name>\n" +
+                    "                    <arch>i386</arch>\n" +
+                    "                </os>\n" +
+                    "            </activation>\n" +
+                    "            <modules>\n" +
+                    "                <module>modules/nix32</module>\n" +
+                    "            </modules>\n" +
+                    "        </profile>\n" +
+                    "\n" +
+                    "        <profile>\n" +
+                    "            <id>nix64</id>\n" +
+                    "            <activation>\n" +
+                    "                <os>\n" +
+                    "                    <family>unix</family>\n" +
+                    "                    <name>Linux</name>\n" +
+                    "                    <arch>x64</arch>\n" +
+                    "                </os>\n" +
+                    "            </activation>\n" +
+                    "            <modules>\n" +
+                    "                <module>modules/nix64</module>\n" +
+                    "            </modules>\n" +
+                    "        </profile>\n" +
+                    "        <profile>\n" +
+                    "            <id>osx</id>\n" +
+                    "            <activation>\n" +
+                    "                <os>\n" +
+                    "                    <family>mac</family>\n" +
+                    "                </os>\n" +
+                    "            </activation>\n" +
+                    "\n" +
+                    "            <modules>\n" +
+                    "                <module>modules/osx</module>\n" +
+                    "            </modules>\n" +
+                    "        </profile>\n" +
+                    "            <profile>\n" +
+                    "                       <id>arm</id>\n" +
+                    "                       <activation>\n" +
+                    "                           <os>\n" +
+                    "                               <family>unix</family>\n" +
+                    "                               <name>Linux</name>\n" +
+                    "                               <arch>arm</arch>\n" +
+                    "                           </os>\n" +
+                    "                       </activation>\n" +
+                    "                       <modules>\n" +
+                    "                           <module>modules/arm</module>\n" +
+                    "                       </modules>\n" +
+                    "                   </profile>\n" +
+                    "    </profiles>" +
+                    "" +
+                    "" +
                     "</project>";
-            MavenHelper.writeFile(path_pom_root,pom_root.replace("</project>",modules),false,false);
+            MavenHelper.writeFile(path_pom_root, pom_root.replace("</project>", modules), false, false);
         }
 
     }
