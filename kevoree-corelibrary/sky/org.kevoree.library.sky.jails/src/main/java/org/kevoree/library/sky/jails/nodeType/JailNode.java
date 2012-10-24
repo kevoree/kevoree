@@ -23,9 +23,11 @@ import org.slf4j.LoggerFactory;
 //		@DictionaryAttribute(name = "mask", defaultValue = "24", vals = {"8", "16", "24"}, optional = false),
 		@DictionaryAttribute(name = "flavor", optional = true),
 		@DictionaryAttribute(name = "jailCreationTimeout", defaultValue = "240000", optional = true), // TODO check with Timeout on adaptation primitive
-		@DictionaryAttribute(name = "jailStartTimeout", defaultValue = "10000", optional = true)/*,
+		@DictionaryAttribute(name = "jailStartTimeout", defaultValue = "10000", optional = true),/*
 		@DictionaryAttribute(name = "useArchive", defaultValue = "false", vals= {"true", "false"}, optional = true),
 		@DictionaryAttribute(name = "archives", defaultValue = "http://localhost:8080/archives/", optional = true)*/
+		@DictionaryAttribute(name = "MODE", defaultValue = "RELAX", vals = {"STRICT", "RELAX", "AVOID"}, optional = true)
+		// how the restrictions are manage : STRICT = the jail is stopped, RELAX = the jail continue to execute, AVOID means to refused to execute something that break the limitation
 })
 @NodeType
 public class JailNode extends AbstractIaaSNode {
