@@ -1,15 +1,16 @@
 <project>
-        <modelVersion>4.0.0</modelVersion>
-       <groupId>org.kevoree.library.nativeN</groupId>
-      <artifactId>org.kevoree.library.nativeN.faceDetection_native-nix32</artifactId>
-      <name>Kevoree :: Tools :: Native :: C :: Kevoree :: Native :: faceDetection Root-nix32</name>
-      <packaging>uexe</packaging>
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.kevoree.library.nativeN</groupId>
+    <artifactId>org.kevoree.library.nativeN.faceDetection_native-nix32</artifactId>
+    <name>Kevoree :: Tools :: Native :: C :: Kevoree :: Native :: faceDetection Root-nix32</name>
+    <packaging>uexe</packaging>
 
-     <parent>
-               <groupId>org.kevoree.library.nativeN</groupId>
-               <artifactId>org.kevoree.library.nativeN.faceDetection_native</artifactId>
-               <version>1.8.9-SNAPSHOT</version>
-           </parent>
+    <parent>
+        <groupId>org.kevoree.library.nativeN</groupId>
+        <artifactId>org.kevoree.library.nativeN.faceDetection_native</artifactId>
+        <version>1.8.9-SNAPSHOT</version>
+    </parent>
+
     <build>
         <plugins>
             <plugin>
@@ -36,7 +37,9 @@
                         </source>
                     </sources>
                     <linkerEndOptions>
-                        <linkerEndOption> -lpthread -lopencv_core -lopencv_imgproc -lopencv_video -lopencv_highgui -lopencv_objdetect</linkerEndOption>
+                        <linkerEndOption>-lpthread -lopencv_core -lopencv_imgproc -lopencv_video -lopencv_highgui
+                            -lopencv_objdetect
+                        </linkerEndOption>
                     </linkerEndOptions>
                 </configuration>
             </plugin>

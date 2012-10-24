@@ -1,0 +1,9 @@
+{
+merge 'mvn:org.kevoree.library.nativeN/org.kevoree.library.nativeN.faceDetection_bridge/{kevoree.version}'
+merge 'mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.javaseNode/{kevoree.version}'
+
+addNode node0:JavaSENode
+addComponent fc1@node0 : FaceDetection
+
+
+}

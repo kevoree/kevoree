@@ -24,8 +24,13 @@ size_t nestedCascadeOptLen = nestedCascadeOpt.length();
 String inputName;
 
 
-String cascadeName = "/usr/share/OpenCV/haarcascades/haarcascade_frontalface_alt.xml";
-String nestedCascadeName = "/usr/share/OpenCV/haarcascades/haarcascade_eye_tree_eyeglasses.xml";
+//String cascadeName = "/usr/share/OpenCV/haarcascades/haarcascade_frontalface_alt.xml";
+//String nestedCascadeName = "/usr/share/OpenCV/haarcascades/haarcascade_eye_tree_eyeglasses.xml";
+
+String cascadeName = "/usr/local/Cellar/opencv/2.4.2/share/OpenCV/haarcascades/haarcascade_frontalface_alt.xml";
+String nestedCascadeName = "/usr/local/Cellar/opencv/2.4.2/share/OpenCV/haarcascades/haarcascade_eye_tree_eyeglasses.xml";
+
+
 
 void detectAndDraw( Mat& img, CascadeClassifier& cascade, CascadeClassifier& nestedCascade, double scale);
 
