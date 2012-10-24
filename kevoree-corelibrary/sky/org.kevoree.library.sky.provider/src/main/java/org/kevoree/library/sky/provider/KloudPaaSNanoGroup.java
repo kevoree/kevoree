@@ -8,6 +8,7 @@ import org.kevoree.api.service.core.checker.CheckerViolation;
 import org.kevoree.api.service.core.script.KevScriptEngine;
 import org.kevoree.framework.*;
 import org.kevoree.library.nanohttp.NanoHTTPD;
+import org.kevoree.library.sky.api.helper.KloudHelper;
 import org.kevoree.library.sky.provider.checker.RootKloudChecker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

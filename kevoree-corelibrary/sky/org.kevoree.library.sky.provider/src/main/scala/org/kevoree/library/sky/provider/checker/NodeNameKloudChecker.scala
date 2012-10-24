@@ -3,7 +3,7 @@ package org.kevoree.library.sky.provider.checker
 import org.kevoree.api.service.core.checker.CheckerViolation
 import org.kevoree.ContainerRoot
 import java.util
-import org.kevoree.library.sky.provider.KloudHelper
+import org.kevoree.library.sky.api.helper.KloudHelper
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com

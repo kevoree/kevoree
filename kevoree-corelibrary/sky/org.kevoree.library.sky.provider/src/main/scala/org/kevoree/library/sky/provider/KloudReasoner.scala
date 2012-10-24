@@ -4,6 +4,7 @@ import org.slf4j.{LoggerFactory, Logger}
 import org.kevoree.{ContainerNode, KevoreeFactory, ContainerRoot}
 import org.kevoree.framework.{Constants, KevoreePropertyHelper}
 import org.kevoree.api.service.core.script.{KevScriptEngine, KevScriptEngineFactory}
+import org.kevoree.library.sky.api.helper.KloudHelper
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
