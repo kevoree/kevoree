@@ -2,12 +2,9 @@
 
 
 void input_port(void *input);
-
-
 void output_port(void *input) {
  process_output(0,input);
 }
-
 void dispatch(int port,int id_queue)
 {
     kmessage *msg = NULL;
@@ -18,13 +15,10 @@ void dispatch(int port,int id_queue)
              {			 case 0:
 					 input_port(msg->value);
 			 break;
-           }
-       }
+                     }
+                     }
 
-}
-
-
-int main (int argc,char *argv[])
+}int main (int argc,char *argv[])
 {
    	if(argc  > 1)
     {
