@@ -59,6 +59,14 @@ public abstract  class AbstractCodeGenerator implements ICodeGenerator
         }
     }
 
+    public ComponentType getComponentType() {
+        return current;
+    }
+
+    public void setCurrent(ComponentType current) {
+        this.current = current;
+    }
+
     private int create_input(String name)
     {
         inputs_ports.put(name,inputs_ports.size());

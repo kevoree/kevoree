@@ -60,7 +60,7 @@ public class MavenHelper {
     }
 
 
-    public static  void createPom(String path_template,Model model,MavenProject project,String path,String name ) throws IOException {
+    public static  void createPom(String path_template,String path_ouput,Model model,MavenProject project,String pom_arch ) throws IOException {
 
         String pom_component = new String(FileManager.load(GenerateFilesMojo.class.getClassLoader().getResourceAsStream(path_template)));
 
@@ -70,10 +70,10 @@ public class MavenHelper {
         pom_component= pom_component.replace("$NAME$",model.getName());
         pom_component = pom_component.replace("$VERSION_K$", KevoreeFactory.getVersion());
 
-        pom_component = pom_component.replace("$artifactId_parent$",project.getArtifactId()+name);
+        pom_component = pom_component.replace("$artifactId_parent$",project.getArtifactId()+pom_arch);
         pom_component = pom_component.replace("$version_parent$",project.getVersion());
 
-        MavenHelper.writeFile(path,pom_component,false);
+        MavenHelper.writeFile(path_ouput,pom_component,false,false);
     }
     public static void writeModel(Model model)   throws IOException
     {
@@ -120,23 +120,22 @@ public class MavenHelper {
         model.setModelVersion("4.0.0");
         model.setParent(parent);
         model.setName("");
-
         File parentBase = parentProject.getBasedir();
-
         File  pomFile = new File( parentBase, artifactId+"/pom.xml");
-
         model.setPomFile(pomFile);
-
         return model;
     }
 
-    public static void writeFile(String path,String data,Boolean append) throws IOException {
-        File createpath = new File(path.substring(0,path.lastIndexOf("/")));
-        createpath.mkdirs();
+    public static void writeFile(String path,String data,Boolean append,boolean backup) throws IOException
+    {
+        File file = new File(path.substring(0,path.lastIndexOf("/")));
+        file.mkdirs();
 
         FileWriter fileWriter = new FileWriter(path,append);
         BufferedWriter out_j = new BufferedWriter(fileWriter);
         out_j.write(data);
         out_j.close();
+
+
     }
 }
