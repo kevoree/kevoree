@@ -22,6 +22,7 @@
         <module>./android/org.kevoree.library.android.root</module>
         <module>./model/org.kevoree.library.model.root</module>
         <module>./sample/org.kevoree.library.sample.root</module>
+        <module>./native/org.kevoree.library.nativeN.root</module>
     </modules>
 
     <distributionManagement>

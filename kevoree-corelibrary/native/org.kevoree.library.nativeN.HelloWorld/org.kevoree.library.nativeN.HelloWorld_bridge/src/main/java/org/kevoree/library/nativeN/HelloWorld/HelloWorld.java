@@ -10,6 +10,7 @@
 package org.kevoree.library.nativeN.HelloWorld;
 
 import org.kevoree.ContainerRoot;
+import org.kevoree.KevoreeFactory;
 import org.kevoree.Repository;
 import org.kevoree.annotation.*;
 import org.kevoree.api.service.core.script.KevScriptEngineException;
@@ -21,11 +22,13 @@ import org.kevoree.tools.nativeN.NativeHandlerException;
 import org.kevoree.tools.nativeN.NativeManager;
 import org.kevoree.tools.nativeN.api.NativeEventPort;
 import org.kevoree.tools.nativeN.api.NativeListenerPorts;
+
 import java.util.Random;
 
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
+
 /**
  * this is a generated file, DO NOT EDIT
  * User: jed
@@ -34,52 +37,50 @@ import java.util.ArrayList;
  */
 
 @ComponentType
-@Provides({ @ProvidedPort(name = "input_port", type = PortType.MESSAGE,theadStrategy = ThreadStrategy.NONE)
-})@Requires({ @RequiredPort(name = "output_port", type = PortType.MESSAGE,optional = true,theadStrategy = ThreadStrategy.NONE)
-})@DictionaryType({ @DictionaryAttribute(name = "myParam", defaultValue = "", optional = true),
-@DictionaryAttribute(name = "myParam2", defaultValue = "", optional = true)
+@Provides({@ProvidedPort(name = "input_port", type = PortType.MESSAGE, theadStrategy = ThreadStrategy.NONE)
+})
+@Requires({@RequiredPort(name = "output_port", type = PortType.MESSAGE, optional = true, theadStrategy = ThreadStrategy.NONE)
+})
+@DictionaryType({@DictionaryAttribute(name = "myParam", defaultValue = "", optional = true),
+        @DictionaryAttribute(name = "myParam2", defaultValue = "", optional = true)
 })
 @Library(name = "Native")
 public class HelloWorld extends AbstractComponentType {
 
-    private  int ipc_key = 251102;
+    private int ipc_key = 251102;
     private NativeManager nativeManager = null;
     private boolean started = false;
     private final int range_min = 2000;
     private final int range_max = 65535;
 
-    public int gerRandom(){
+    public int gerRandom() {
         return range_min + new Random().nextInt(range_max - range_min);
     }
 
     @Start
-    public void start () {
-        try
-        {
+    public void start() {
+        try {
             // todo check if not used
-            ipc_key  = gerRandom();
+            ipc_key = gerRandom();
 
             ArrayList<String> repos = new ArrayList<String>();
-            for(Repository repo :  getModelService().getLastModel().getRepositoriesForJ())
-            {
+            for (Repository repo : getModelService().getLastModel().getRepositoriesForJ()) {
                 repos.add(repo.getUrl());
             }
 
             // loading model from jar
             ContainerRoot model = KevoreeXmiHelper.loadStream(getClass().getResourceAsStream("/KEV-INF/lib.kev"));
-            File binary =    getBootStrapperService().resolveArtifact("org.kevoree.library.nativeN.HelloWorld_native"+getOs(), "org.kevoree.library.nativeN", "1.8.9-SNAPSHOT", "uexe", repos);
+            File binary = getBootStrapperService().resolveArtifact("org.kevoree.library.nativeN.HelloWorld_native" + getOs(), "org.kevoree.library.nativeN", KevoreeFactory.getVersion(), "uexe", repos);
 
-            if(!binary.canExecute())
-            {
+            if (!binary.canExecute()) {
                 binary.setExecutable(true);
             }
 
-            nativeManager = new NativeManager(ipc_key,binary.getPath(),model);
+            nativeManager = new NativeManager(ipc_key, binary.getPath(), model);
 
             nativeManager.addEventListener(new NativeListenerPorts() {
                 @Override
-                public void disptach(NativeEventPort event, String port_name, String msg)
-                {
+                public void disptach(NativeEventPort event, String port_name, String msg) {
                     MessagePort port = (MessagePort) getPortByName(port_name);
                     port.process(msg);
                 }
@@ -87,8 +88,8 @@ public class HelloWorld extends AbstractComponentType {
 
             started = nativeManager.start();
 
-            nativeManager.setDico("myParam",getDictionary().get("myParam").toString()); 
-nativeManager.setDico("myParam2",getDictionary().get("myParam2").toString()); 
+            nativeManager.setDico("myParam", getDictionary().get("myParam").toString());
+            nativeManager.setDico("myParam2", getDictionary().get("myParam2").toString());
 
 
         } catch (NativeHandlerException e) {
@@ -97,12 +98,10 @@ nativeManager.setDico("myParam2",getDictionary().get("myParam2").toString());
     }
 
     @Stop
-    public void stop () {
-        if(started)
-        {
-            try
-            {
-                if(nativeManager !=null)
+    public void stop() {
+        if (started) {
+            try {
+                if (nativeManager != null)
                     nativeManager.stop();
             } catch (NativeHandlerException e) {
                 e.printStackTrace();
@@ -111,10 +110,9 @@ nativeManager.setDico("myParam2",getDictionary().get("myParam2").toString());
     }
 
     @Update
-    public void update ()
-    {
-        nativeManager.setDico("myParam",getDictionary().get("myParam").toString()); 
-nativeManager.setDico("myParam2",getDictionary().get("myParam2").toString()); 
+    public void update() {
+        nativeManager.setDico("myParam", getDictionary().get("myParam").toString());
+        nativeManager.setDico("myParam2", getDictionary().get("myParam2").toString());
 
         nativeManager.update();
     }
@@ -129,10 +127,9 @@ nativeManager.setDico("myParam2",getDictionary().get("myParam2").toString());
         return (os.contains("64"));
     }
 
-    public  String getOs() {
+    public String getOs() {
         if (System.getProperty("os.name").toLowerCase().contains("nux")) {
-            if(isArm())
-            {
+            if (isArm()) {
                 return "-arm";
             }
             if (is64()) {
@@ -147,15 +144,12 @@ nativeManager.setDico("myParam2",getDictionary().get("myParam2").toString());
         return null;
     }
 
-        @Port(name = "input_port")
-    public void input_port(Object o)
-    {
-        if(nativeManager != null)
-        {
-            nativeManager.push("input_port",o.toString());
-            
-        }   else 
-        {
+    @Port(name = "input_port")
+    public void input_port(Object o) {
+        if (nativeManager != null) {
+            nativeManager.push("input_port", o.toString());
+
+        } else {
             System.err.println("Error processing message");
         }
     }

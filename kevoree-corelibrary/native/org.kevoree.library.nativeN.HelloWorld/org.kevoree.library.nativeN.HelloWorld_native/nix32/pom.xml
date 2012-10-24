@@ -2,7 +2,7 @@
         <modelVersion>4.0.0</modelVersion>
        <groupId>org.kevoree.library.nativeN</groupId>
       <artifactId>org.kevoree.library.nativeN.HelloWorld_native-nix32</artifactId>
-      <name>Kevoree :: Tools :: Native :: C :: Kevoree :: Native :: HelloWorld Root-nix32</name>
+      <name>Kevoree :: Native :: HelloWorld Root :: NativeCode -nix32</name>
       <packaging>uexe</packaging>
 
      <parent>

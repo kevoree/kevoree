@@ -8,10 +8,10 @@
     <packaging>pom</packaging>
 
     <parent>
-        <groupId>org.kevoree.corelibrary.native</groupId>
-        <artifactId>org.kevoree.library.native.root</artifactId>
+        <groupId>org.kevoree.corelibrary.nativeN</groupId>
+        <artifactId>org.kevoree.library.nativeN.root</artifactId>
         <version>1.8.9-SNAPSHOT</version>
-        <relativePath>../org.kevoree.library.native.root/pom.xml</relativePath>
+        <relativePath>../org.kevoree.library.nativeN.root/pom.xml</relativePath>
     </parent>
 
     <build>

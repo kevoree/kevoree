@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.kevoree.library.nativeN</groupId>
     <artifactId>org.kevoree.library.nativeN.HelloWorld_bridge</artifactId>
-    <name>Kevoree :: Tools :: Native :: Bridge Java :: Kevoree :: Native :: HelloWorld Root</name>
+    <name>Kevoree :: Native :: HelloWorld Root :: Bridge Java</name>
     <packaging>jar</packaging>
 
     <parent>

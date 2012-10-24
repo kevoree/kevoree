@@ -49,7 +49,10 @@ public class MavenHelper {
             {
                 if (f.getName().endsWith(".kevs"))
                 {
-                    models.add(f);
+                    String file = new String(FileManager.load(f.getAbsolutePath()));
+                    if(file.contains("createComponentType")){
+                        models.add(f);
+                    }
                 }
             }
         }

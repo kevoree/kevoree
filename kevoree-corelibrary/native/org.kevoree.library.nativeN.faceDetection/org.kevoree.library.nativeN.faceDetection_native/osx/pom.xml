@@ -36,7 +36,7 @@
                     <linkerExecutable>g++</linkerExecutable>
 
                     <compilerStartOptions>
-                        <compilerStartOption>-I.</compilerStartOption>
+                        <compilerStartOption>-I/usr/local/Cellar/opencv/2.4.2/include</compilerStartOption>
                     </compilerStartOptions>
 
                     <sources>
@@ -49,7 +49,9 @@
                         </source>
                     </sources>
                     <linkerEndOptions>
-                        <linkerEndOption> -lpthread</linkerEndOption>
+                        <linkerEndOption>-lpthread -lopencv_core -lopencv_imgproc -lopencv_video -lopencv_highgui
+                            -lopencv_objdetect
+                        </linkerEndOption>
                     </linkerEndOptions>
                 </configuration>
             </plugin>

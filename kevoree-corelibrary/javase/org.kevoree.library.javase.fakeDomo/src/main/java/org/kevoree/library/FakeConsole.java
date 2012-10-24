@@ -186,7 +186,7 @@ public class FakeConsole extends AbstractFakeStuffComponent {
                             inputTextField.append("\n");
                         } else {
                             if (inputTextField.getText().length() > 1) {
-                                FakeConsole.this.appendOutgoing(inputTextField.getText());
+                                appendOutgoing(inputTextField.getText());
                             }
                             inputTextField.setText("");
                         }
