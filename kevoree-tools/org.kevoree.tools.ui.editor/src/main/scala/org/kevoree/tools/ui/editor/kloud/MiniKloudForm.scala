@@ -37,7 +37,7 @@ import org.kevoree.core.basechecker.RootChecker
  * @version 1.0
  */
 
-class MiniKloudForm(editor: KevoreeEditor, button: AbstractButton) {
+class MiniKloudForm (editor: KevoreeEditor, button: AbstractButton) {
   var logger = LoggerFactory.getLogger(this.getClass)
   private var minicloud: Process = null
   private var platformJAR: File = null
@@ -47,12 +47,12 @@ class MiniKloudForm(editor: KevoreeEditor, button: AbstractButton) {
   val url: URL = this.getClass.getClassLoader.getResource("ajax-loader.gif")
   val iconLoading: ImageIcon = new ImageIcon(url)
 
-  def startMiniCloud(): Boolean = {
+  def startMiniCloud (): Boolean = {
 
-    var checker = new RootChecker
+    val checker = new RootChecker
     if (!checker.check(editor.getPanel.getKernel.getModelHandler.getActualModel).isEmpty) {
       logger.error("Check found errors, please correct your model")
-      JOptionPane.showMessageDialog(null,"Check found errors, please correct your model")
+      JOptionPane.showMessageDialog(null, "Check found errors, please correct your model")
       return false
 
     }
@@ -60,7 +60,7 @@ class MiniKloudForm(editor: KevoreeEditor, button: AbstractButton) {
 
     if (thread == null) {
       thread = new Thread() {
-        override def run() {
+        override def run () {
 
           val previousIcon = button.getIcon
           button.setIcon(iconLoading)
@@ -96,7 +96,7 @@ class MiniKloudForm(editor: KevoreeEditor, button: AbstractButton) {
                 logger.debug("trying to start the minicloud")
                 minicloud = Runtime.getRuntime
                   .exec(Array[String](java, "-Dnode.gui.config=false", "-Dnode.bootstrap=" + file.getAbsolutePath, "-Dnode.name=" + minicloudName, "-Dkevoree.log.level=INFO", "-jar",
-                  platformJAR.getAbsolutePath))
+                                       platformJAR.getAbsolutePath))
 
                 //LOAD MODEL
                 val loadCmd = new LoadModelCommand()
@@ -138,10 +138,10 @@ class MiniKloudForm(editor: KevoreeEditor, button: AbstractButton) {
 
   }
 
-  def shutdownMiniCloud(): Boolean = {
+  def shutdownMiniCloud (): Boolean = {
     if (thread == null) {
       thread = new Thread() {
-        override def run() {
+        override def run () {
           var exitValue = -1
           try {
             exitValue = minicloud.exitValue()
@@ -167,9 +167,9 @@ class MiniKloudForm(editor: KevoreeEditor, button: AbstractButton) {
     }
   }
 
-  private def monitorMiniCloud() {
+  private def monitorMiniCloud () {
     new Thread() {
-      override def run() {
+      override def run () {
         minicloud.waitFor()
         logger.debug("minicloud shutted down")
         minicloud = null
@@ -200,7 +200,9 @@ class MiniKloudForm(editor: KevoreeEditor, button: AbstractButton) {
         val kevEngine = new KevScriptOfflineEngine(skyModel, new FakeBootstraperService().getBootstrap)
         kevEngine.addVariable("kevoree.version", KevoreeFactory.getVersion)
         kevEngine.addVariable("minicloudNodeName", minicloudName)
-        kevEngine.append("merge 'mvn:org.kevoree.corelibrary.model/org.kevoree.library.model.sky/{kevoree.version}'")
+        kevEngine.append("merge 'mvn:org.kevoree.corelibrary.sky/org.kevoree.library.sky.minicloud/{kevoree.version}'")
+        kevEngine.append("merge 'mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.nanohttp/{kevoree.version}'")
+
         kevEngine.append("addNode {minicloudNodeName}: MiniCloudNode {}")
 
         // add all JavaSE (or inherited) user nodes as child of the minicloud node
@@ -246,14 +248,14 @@ class MiniKloudForm(editor: KevoreeEditor, button: AbstractButton) {
     }
   }
 
-  def isASubType(nodeType: TypeDefinition, typeName: String): Boolean = {
+  def isASubType (nodeType: TypeDefinition, typeName: String): Boolean = {
     nodeType.getSuperTypes.find(td => td.getName == typeName || isASubType(td, typeName)) match {
       case None => false
       case Some(typeDefinition) => true
     }
   }
 
-  private def selectPort(blackListedPorts: Array[Int]): Int = {
+  private def selectPort (blackListedPorts: Array[Int]): Int = {
     // get all port defined on the model
     // concatenate the ports of the model with the blacklisted ones
     val ports = blackListedPorts ++ getAllUsedPorts
@@ -307,7 +309,7 @@ class MiniKloudForm(editor: KevoreeEditor, button: AbstractButton) {
     ports
   }
 
-  private def selectPortNumber(address: String, ports: Array[Int]): Int = {
+  private def selectPortNumber (address: String, ports: Array[Int]): Int = {
     var i = 6003
     if (address != "") {
       var found = false
