@@ -1,5 +1,7 @@
 package org.kevoree.library.sky.minicloud.nodeType;
 
+import org.kevoree.annotation.DictionaryAttribute;
+import org.kevoree.annotation.DictionaryType;
 import org.kevoree.annotation.Library;
 import org.kevoree.annotation.NodeType;
 import org.kevoree.library.sky.api.KevoreeNodeRunner;
@@ -16,8 +18,10 @@ import org.slf4j.LoggerFactory;
  * @author Erwan Daubert
  * @version 1.0
  */
-
 @Library(name = "SKY")
+@DictionaryType({
+		@DictionaryAttribute(name = "VMARGS", optional = true)
+})
 @NodeType
 public class MiniCloudNode extends AbstractHostNode {
 	private static final Logger logger = LoggerFactory.getLogger(MiniCloudNode.class);
