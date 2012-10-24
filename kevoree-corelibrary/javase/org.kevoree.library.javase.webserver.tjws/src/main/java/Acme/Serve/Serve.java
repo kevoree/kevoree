@@ -2935,7 +2935,12 @@ public class Serve implements ServletContext, Serializable {
 		// array of strings, or null if the named parameter does not exist.
 		public String[] getParameterValues (String name) {
 			assureParametersFromRequest();
-			return (String[]) formParameters.get(name);
+			Object value = formParameters.get(name);
+			if (value instanceof String) {
+				return new String[] {(String)value};
+			} else {
+				return (String[]) formParameters.get(name);
+			}
 		}
 
 		// / Returns the value of the named attribute of the request, or null if
