@@ -18,6 +18,8 @@ public class KevoreeHttpRequestImpl implements KevoreeHttpRequest {
 
     private String rawParams = "";
 
+	private String method = "GET";
+
     private Map<String, String> resolvedParams = new HashMap<String, String>();
 
     public Map<String, String> getHeaders() {
@@ -28,7 +30,17 @@ public class KevoreeHttpRequestImpl implements KevoreeHttpRequest {
         this.headers = headers;
     }
 
-    private Map<String, String> headers = new HashMap<String, String>();
+	@Override
+	public void setMethod (String method) {
+		this.method = method;
+	}
+
+	@Override
+	public String getMethod () {
+		return method;
+	}
+
+	private Map<String, String> headers = new HashMap<String, String>();
 
     private int tokenID = -1;
 
