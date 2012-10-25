@@ -8,7 +8,7 @@
 
          <parent>
                <groupId>org.kevoree.library.nativeN</groupId>
-               <artifactId>org.kevoree.library.nativeN.HelloWorld-native</artifactId>
+               <artifactId>org.kevoree.library.nativeN.HelloWorld</artifactId>
                <version>1.8.9-SNAPSHOT</version>
                <relativePath>../../pom.xml</relativePath>
            </parent>

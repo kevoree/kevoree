@@ -89,7 +89,7 @@ nativeManager.setDico("myParam2",getDictionary().get("myParam2").toString());
 
              } else
              {
-                 System.err.println("The binary org.kevoree.library.nativeN.HelloWorld-wrapper for the architecture "+getOs()+" is not found");
+                 System.err.println("The binary org.kevoree.library.nativeN.HelloWorld-native for the architecture "+getOs()+" is not found");
              }
 
         } catch (NativeHandlerException e) {
