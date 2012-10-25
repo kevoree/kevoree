@@ -15,6 +15,10 @@ public interface KevoreeHttpRequest extends Serializable {
 
 	public void setHeaders (Map<String, String> headers);
 
+	public void setMethod(String method);
+
+	public String getMethod();
+
 	public int getTokenID ();
 
 	public void setTokenID (int t);
