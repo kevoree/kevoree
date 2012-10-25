@@ -94,6 +94,7 @@ class RootService (id: String, request: MessagePort, bootstrap: ServerBootstrap,
 
     case RequestContext(HttpRequest(HttpMethods.GET, url, headers, _, _), _, responder) =>
       val kevMsg = new KevoreeHttpRequestImpl
+      kevMsg.setMethod("GET")
       kevMsg.setTokenID(random.nextInt())
       actorRef ! RequestResponderTuple(responder, kevMsg.getTokenID, System.currentTimeMillis())
       val paramsRes = GetParamsParser.getParams(url)
@@ -108,6 +109,7 @@ class RootService (id: String, request: MessagePort, bootstrap: ServerBootstrap,
 
     case RequestContext(HttpRequest(HttpMethods.POST, url, headers, body, _), _, responder) =>
       val kevMsg = new KevoreeHttpRequestImpl
+      kevMsg.setMethod("POST")
       kevMsg.setTokenID(random.nextInt())
       actorRef ! RequestResponderTuple(responder, kevMsg.getTokenID, System.currentTimeMillis())
 
