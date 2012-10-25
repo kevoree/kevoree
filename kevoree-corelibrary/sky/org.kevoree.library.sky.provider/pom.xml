@@ -13,11 +13,11 @@
     <name>Kevoree :: CoreLibrary :: Sky :: Provider</name>
 
     <dependencies>
-        <dependency>
+        <!--<dependency>
             <groupId>org.kevoree.corelibrary.javase</groupId>
             <artifactId>org.kevoree.library.javase.webserver.api</artifactId>
             <version>${kevoree.version}</version>
-        </dependency>
+        </dependency>-->
         <dependency>
             <groupId>org.kevoree.corelibrary.javase</groupId>
             <artifactId>org.kevoree.library.javase.nanohttp</artifactId>
@@ -28,11 +28,11 @@
             <artifactId>org.kevoree.library.sky.api</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
-        <dependency>
+       <!-- <dependency>
             <groupId>org.kevoree.corelibrary.javase</groupId>
             <artifactId>org.kevoree.library.javase.authentication</artifactId>
             <version>${kevoree.version}</version>
-        </dependency>
+        </dependency>-->
         <dependency>
             <groupId>org.kevoree</groupId>
             <artifactId>org.kevoree.framework</artifactId>
@@ -45,14 +45,4 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.kevoree.platform</groupId>
-                <artifactId>org.kevoree.platform.mavenrunner</artifactId>
-                <version>${kevoree.version}</version>
-            </plugin>
-        </plugins>
-    </build>
 </project>
