@@ -35,9 +35,8 @@
 
 
 const char * getDictionary(const char *key);
-Context * getContext(int key);
 
-char fifo_name[SIZE_FIFO];
+char fifo_name[SIZE_FIFO_NAME];
 
 typedef struct _port
 {
