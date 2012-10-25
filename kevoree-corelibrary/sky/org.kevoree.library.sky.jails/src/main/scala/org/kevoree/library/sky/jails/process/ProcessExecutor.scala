@@ -3,9 +3,10 @@ package org.kevoree.library.sky.jails.process
 import scala.Array._
 import util.matching.Regex
 import java.io.File
-import org.kevoree.library.sky.api.ProcessStreamFileLogger
+import org.kevoree.library.sky.api.{KevoreeNodeRunner, ProcessStreamFileLogger}
 import org.slf4j.{LoggerFactory, Logger}
 import org.kevoree.library.sky.api.property.PropertyConversionHelper
+import org.kevoree.library.sky.api.nodeType.AbstractHostNode
 
 
 /**
@@ -155,7 +156,7 @@ class ProcessExecutor (creationTimeout: Int, startTimeout: Int) {
     (jailPath, jailId, jailIP)
   }
 
-  def startKevoreeOnJail (jailId: String, ram: String, nodeName: String, outFile: File, errFile: File): Boolean = {
+  def startKevoreeOnJail (jailId: String, ram: String, nodeName: String/*, outFile: File, errFile: File*/, runner : KevoreeNodeRunner, iaasNode : AbstractHostNode): Boolean = {
     logger.debug("trying to start Kevoree node on jail {} ", nodeName)
     // FIXME java memory properties must define as Node properties
     // Currently the kloud provider only manages PJavaSeNode that hosts the software user configuration
@@ -177,10 +178,11 @@ class ProcessExecutor (creationTimeout: Int, startTimeout: Int) {
                                   File.separator + "root" + File.separator + "kevoree-runtime.jar")
     logger.debug("trying to launch {} {} {} {} {} {} {} {}", exec.asInstanceOf[Array[AnyRef]])
     val nodeProcess = Runtime.getRuntime.exec(exec)
-    logger.debug("writing logs about {} on {}", nodeName, outFile.getAbsolutePath)
+    /*logger.debug("writing logs about {} on {}", nodeName, outFile.getAbsolutePath)
     new Thread(new ProcessStreamFileLogger(nodeProcess.getInputStream, outFile)).start()
     logger.debug("writing logs about {} on {}", nodeName, errFile.getAbsolutePath)
-    new Thread(new ProcessStreamFileLogger(nodeProcess.getErrorStream, errFile)).start()
+    new Thread(new ProcessStreamFileLogger(nodeProcess.getErrorStream, errFile)).start()*/
+    runner.configureLogFile(iaasNode, nodeProcess)
     try {
       nodeProcess.exitValue
       false
