@@ -14,6 +14,8 @@
  #ifndef EVENTS_COMMON_H
  #define EVENTS_COMMON_H
 
+#include "settings.h"
+
  typedef enum
    {
  	EV_STOP,
@@ -27,39 +29,19 @@
  {
      Type ev_type;
      int id_port;
-     char key[512];
-     char value[1024];
+     char key[SIZE_FIFO_KEY];
+     char value[SIZE_FIFO_VALUE];
  } Events;
 
  typedef struct _EventBroker {
-
-   /* TCP & UDP */
- 	unsigned short  port; /* Port */
- 	int sckServer; /* descripteur socket  Serveur*/
- 	int sckClient; /* Descripteur du socket du client */
-
- 	/* named pipe */
- 	char name_pipe[512];
-
-
+ 	char name_pipe[SIZE_FIFO_NAME];	/* named pipe */
  	/* DISPACHER */
  	void (*dispatch)(Events ev);
  } EventBroker;
 
 
  typedef struct _Publisher {
- 	/* int socket; point rdv
- 	unsigned short 	     port;
- 	struct hostent*      hp ;
- 	struct sockaddr_in   adr ;
- 	char hostname[512];
-   	socklen_t            lgradr ;
-                                     */
-
-   /* named pipe */
-   char name_pipe[512];
-
-
+   char name_pipe[SIZE_FIFO_NAME];   /* named pipe */
  } Publisher;
 
 

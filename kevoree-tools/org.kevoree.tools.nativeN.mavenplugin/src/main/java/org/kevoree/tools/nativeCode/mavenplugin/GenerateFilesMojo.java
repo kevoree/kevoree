@@ -79,8 +79,6 @@ public class GenerateFilesMojo extends AbstractMojo {
      */
 
     protected MavenProject project;
-
-    private final String sub_c = "-native";
     final String[] files_thirdparty = {"component.h", "kqueue.h", "events_common.h", "events_fifo.h", "HashMap.h", "settings.h"};
 
     @Override
@@ -121,7 +119,7 @@ public class GenerateFilesMojo extends AbstractMojo {
         getLog().info("Create Wrapper Pom");
 
 
-        MavenHelper.createPom("poms/pom.xml.component", wrapper_java.getPomFile().getPath(), wrapper_java, project, "");
+        MavenHelper.createPom("poms/pom.xml.component", wrapper_java.getPomFile().getPath(), wrapper_java, project);
 
         getLog().info("Generating files");
         String root_build = inputCFile.getPath();
@@ -162,22 +160,17 @@ public class GenerateFilesMojo extends AbstractMojo {
             modulesFiles.mkdirs();
         }
 
-
         // Create NativeCode Pom Root
-        Model component_c = MavenHelper.createModel(project.getGroupId(), project.getArtifactId() + sub_c, project.getVersion(), MavenHelper.createParent(project), project);
+        Model component_c = MavenHelper.createModel(project.getGroupId(), project.getArtifactId() + "-native", project.getVersion(), MavenHelper.createParent(project), project);
         component_c.setName(project.getName() + " :: NativeCode ");
 
         // Create sub NativeCode {arm,osx,nix32,nix64}
-
-
-        MavenHelper.createPom("poms/pom.xml.c.nix32", modulesFiles.getAbsolutePath()+File.separator+"nix32/pom.xml", component_c, project, sub_c);
-        MavenHelper.createPom("poms/pom.xml.c.nix64", modulesFiles.getAbsolutePath()+File.separator+"nix64/pom.xml", component_c, project, sub_c);
-        MavenHelper.createPom("poms/pom.xml.c.osx", modulesFiles.getAbsolutePath()+File.separator+"osx/pom.xml", component_c, project, sub_c);
-        MavenHelper.createPom("poms/pom.xml.c.arm", modulesFiles.getAbsolutePath()+File.separator+"arm/pom.xml", component_c, project, sub_c);
+        MavenHelper.createPom("poms/pom.xml.c.nix32", modulesFiles.getAbsolutePath()+File.separator+"nix32/pom.xml", component_c, project);
+        MavenHelper.createPom("poms/pom.xml.c.nix64", modulesFiles.getAbsolutePath()+File.separator+"nix64/pom.xml", component_c, project);
+        MavenHelper.createPom("poms/pom.xml.c.osx", modulesFiles.getAbsolutePath()+File.separator+"osx/pom.xml", component_c, project);
+        MavenHelper.createPom("poms/pom.xml.c.arm", modulesFiles.getAbsolutePath()+File.separator+"arm/pom.xml", component_c, project);
 
         /// GENERATE C FILES
-        //String path_c = component_c.getPomFile().getAbsolutePath().replace("pom.xml","")+"src/main/c/";
-
         String root_build = inputCFile.getPath();
         if (!root_build.endsWith(File.separator)) {
             root_build = root_build + File.separator;
