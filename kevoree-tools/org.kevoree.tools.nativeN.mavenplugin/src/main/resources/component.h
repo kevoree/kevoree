@@ -35,9 +35,8 @@
 
 
 const char * getDictionary(const char *key);
-Context * getContext(int key);
 
-char fifo_name[SIZE_FIFO];
+char fifo_name[SIZE_FIFO_NAME];
 
 typedef struct _port
 {
@@ -132,7 +131,14 @@ void notify(Events ev)
               #ifdef DEBUG
                  fprintf(stderr,"addToHashMap %s %s \n",ev.key,ev.value);
               #endif
-              addToHashMap(ctx->map,strdup(ev.key),strdup(ev.value));
+              if(ctx->map != NULL)
+              {
+                    addToHashMap(ctx->map,strdup(ev.key),strdup(ev.value));
+              }else
+              {
+                 fprintf(stderr,"FATAL ERROR  addToHashMap is null");
+              }
+
         break;
 
         case EV_STOP:
@@ -173,9 +179,14 @@ void notify(Events ev)
 
 void *   t_broker_fifo(void *p)
 {
+  #ifdef DEBUG
+    fprintf(stderr,"Creating Event broker  %s \n",(char*)p);
+  #endif
+  if(createEventBroker_fifo (&event_broker_fifo))
+  {
+     fprintf(stderr,"FATAL ERROR  Event broker  %s \n",(char*)p);
 
-  fprintf(stderr,"event_broker_fifo %s \n",(char*)p);
-  createEventBroker_fifo (&event_broker_fifo);
+  }
   pthread_exit (NULL);
 }
 
@@ -185,7 +196,6 @@ int bootstrap (key_t key,int port_event_broker)
     pthread_t t_event_broker_fifo;
     ctx = getContext(key);
     ctx->pid = getpid ();
-
     sprintf(fifo_name,"%d.fifo",key);
     strcpy (event_broker_fifo.name_pipe,fifo_name);
     // dispather

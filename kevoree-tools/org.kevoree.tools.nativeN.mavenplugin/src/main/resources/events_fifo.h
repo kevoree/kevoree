@@ -44,7 +44,7 @@
              eventbroker->dispatch(ev);
        }else
         {
-            usleep(3000);
+            usleep(5000);
        }
 
     }
