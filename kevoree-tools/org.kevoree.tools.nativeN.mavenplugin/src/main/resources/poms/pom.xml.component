@@ -10,6 +10,7 @@
         <groupId>$groupId$</groupId>
         <artifactId>$artifactId_parent$</artifactId>
         <version>$version_parent$</version>
+        <relativePath>../../pom.xml</relativePath>
     </parent>
 
     <properties>
@@ -36,6 +37,13 @@
     </dependencies>
 
     <build>
+        <sourceDirectory>../../src/main/java</sourceDirectory>
+        <resources>
+            <resource>
+                 <directory>../../src/main/resources</directory>
+            </resource>
+        </resources>
+
         <plugins>
             <plugin>
                 <groupId>org.kevoree.tools</groupId>

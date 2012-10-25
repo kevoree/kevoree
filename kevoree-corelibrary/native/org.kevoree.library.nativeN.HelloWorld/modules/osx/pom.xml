@@ -2,14 +2,15 @@
 
        <modelVersion>4.0.0</modelVersion>
       <groupId>org.kevoree.library.nativeN</groupId>
-      <artifactId>org.kevoree.library.nativeN.HelloWorld_native-osx</artifactId>
+      <artifactId>org.kevoree.library.nativeN.HelloWorld-native-osx</artifactId>
       <name>Kevoree :: Native :: HelloWorld Root :: NativeCode -osx</name>
       <packaging>uexe</packaging>
 
          <parent>
                <groupId>org.kevoree.library.nativeN</groupId>
-               <artifactId>org.kevoree.library.nativeN.HelloWorld_native</artifactId>
+               <artifactId>org.kevoree.library.nativeN.HelloWorld-native</artifactId>
                <version>1.8.9-SNAPSHOT</version>
+               <relativePath>../../pom.xml</relativePath>
            </parent>
 
     <properties>
@@ -41,7 +42,7 @@
 
                     <sources>
                         <source>
-                    <directory>../src/main/c</directory>
+                    <directory>../../src/main/c</directory>
                             <includes>
                                 <include>**/*.c</include>
                                 <include>**/*.cpp</include>

@@ -1,14 +1,15 @@
 <project>
         <modelVersion>4.0.0</modelVersion>
        <groupId>org.kevoree.library.nativeN</groupId>
-      <artifactId>org.kevoree.library.nativeN.HelloWorld_native-arm</artifactId>
+      <artifactId>org.kevoree.library.nativeN.HelloWorld-native-arm</artifactId>
       <name>Kevoree :: Native :: HelloWorld Root :: NativeCode -ARM</name>
       <packaging>uexe</packaging>
 
      <parent>
                <groupId>org.kevoree.library.nativeN</groupId>
-               <artifactId>org.kevoree.library.nativeN.HelloWorld_native</artifactId>
+               <artifactId>org.kevoree.library.nativeN.HelloWorld-native</artifactId>
                <version>1.8.9-SNAPSHOT</version>
+               <relativePath>../../pom.xml</relativePath>
            </parent>
     <build>
         <plugins>
@@ -28,7 +29,7 @@
 
                     <sources>
                         <source>
-                    <directory>../src/main/c</directory>
+                    <directory>../../src/main/c</directory>
                             <includes>
                                 <include>**/*.c</include>
                                  <include>**/*.cpp</include>

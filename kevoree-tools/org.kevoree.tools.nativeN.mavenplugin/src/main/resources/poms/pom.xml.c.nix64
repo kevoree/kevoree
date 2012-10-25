@@ -9,6 +9,7 @@
                <groupId>$groupId$</groupId>
                <artifactId>$artifactId_parent$</artifactId>
                <version>$version_parent$</version>
+               <relativePath>../../pom.xml</relativePath>
            </parent>
 
     <build>
@@ -29,7 +30,7 @@
 
                     <sources>
                         <source>
-               <directory>../src/main/c</directory>
+               <directory>../../src/main/c</directory>
                             <includes>
                                 <include>**/*.c</include>
                                 <include>**/*.cpp</include>

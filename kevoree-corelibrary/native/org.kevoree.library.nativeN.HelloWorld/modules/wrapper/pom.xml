@@ -2,14 +2,15 @@
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.kevoree.library.nativeN</groupId>
-    <artifactId>org.kevoree.library.nativeN.HelloWorld_bridge</artifactId>
-    <name>Kevoree :: Native :: HelloWorld Root :: Bridge Java</name>
+    <artifactId>org.kevoree.library.nativeN.HelloWorld-wrapper</artifactId>
+    <name>Kevoree :: Native :: HelloWorld Root :: Wrapper Java</name>
     <packaging>jar</packaging>
 
     <parent>
         <groupId>org.kevoree.library.nativeN</groupId>
         <artifactId>org.kevoree.library.nativeN.HelloWorld</artifactId>
         <version>1.8.9-SNAPSHOT</version>
+        <relativePath>../../pom.xml</relativePath>
     </parent>
 
     <properties>
@@ -36,6 +37,13 @@
     </dependencies>
 
     <build>
+        <sourceDirectory>../../src/main/java</sourceDirectory>
+        <resources>
+            <resource>
+                 <directory>../../src/main/resources</directory>
+            </resource>
+        </resources>
+
         <plugins>
             <plugin>
                 <groupId>org.kevoree.tools</groupId>
