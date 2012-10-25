@@ -4232,6 +4232,11 @@ public class Serve implements ServletContext, Serializable {
 
 		}
 
+		@Override
+		public void setMethod (String method) {
+
+		}
+
 		private int tokenID = -1;
 
 		@Override
