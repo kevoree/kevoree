@@ -28,7 +28,7 @@
     <modules>
         <module>modules/wrapper</module>
     </modules>
-    <profiles>
+<profiles>
         <profile>
             <id>nix32</id>
             <activation>
@@ -68,18 +68,17 @@
                 <module>modules/osx</module>
             </modules>
         </profile>
-        <profile>
-            <id>arm</id>
-            <activation>
-                <os>
-                    <family>unix</family>
-                    <name>Linux</name>
-                    <arch>arm</arch>
-                </os>
-            </activation>
-            <modules>
-                <module>modules/arm</module>
-            </modules>
-        </profile>
-    </profiles>
-</project>
+            <profile>
+                       <id>arm</id>
+                       <activation>
+                           <os>
+                               <family>unix</family>
+                               <name>Linux</name>
+                               <arch>arm</arch>
+                           </os>
+                       </activation>
+                       <modules>
+                           <module>modules/arm</module>
+                       </modules>
+                   </profile>
+    </profiles></project>
