@@ -33,6 +33,10 @@
 #include "events_fifo.h"
 #include "HashMap.h"
 
+
+const char * getDictionary(const char *key);
+Context * getContext(int key);
+
 char fifo_name[SIZE_FIFO];
 
 typedef struct _port
@@ -91,7 +95,7 @@ Context *ctx;
 
 EventBroker event_broker_fifo;
 
-const char * getPortByName(const char *key)
+const char * getDictionary(const char *key)
 {
      if(ctx != NULL)
      {
@@ -100,13 +104,13 @@ const char * getPortByName(const char *key)
                   return getFromHashMap(ctx->map,key);
         }else
         {
-             fprintf(stderr,"Error hashmap is null [%s] \n",key);
+             fprintf(stderr,"Fatal Error the getDictionary is null [%s] \n",key);
               return NULL;
         }
      }
      else
      {
-      	 fprintf(stderr,"Error  getPortByName ctx is null %s \n",key);
+      	 fprintf(stderr,"Fatal Error the  getDictionary ctx is null %s \n",key);
          return NULL;
      }
 }
