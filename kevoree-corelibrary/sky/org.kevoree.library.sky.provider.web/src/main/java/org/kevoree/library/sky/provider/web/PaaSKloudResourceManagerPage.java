@@ -1,5 +1,10 @@
 package org.kevoree.library.sky.provider.web;
 
+import org.kevoree.annotation.ComponentType;
+import org.kevoree.annotation.DictionaryAttribute;
+import org.kevoree.annotation.DictionaryType;
+import org.kevoree.annotation.Library;
+
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
  * Date: 24/10/12
@@ -8,5 +13,22 @@ package org.kevoree.library.sky.provider.web;
  * @author Erwan Daubert
  * @version 1.0
  */
-public class PaaSKloudResourceManagerPage {
+@Library(name = "SKY")
+@ComponentType
+@DictionaryType({
+		@DictionaryAttribute(name = "urlpattern", optional = true, defaultValue = "/{login}/")
+})
+public class PaaSKloudResourceManagerPage  extends KloudResourceManagerPage {
+
+	@Override
+	public void startPage () {
+		super.startPage();
+		generator = new PaaSKloudResourceManagerPageGenerator(this, getPattern());
+	}
+
+	@Override
+	public void updatePage () {
+		super.updatePage();
+		generator = new PaaSKloudResourceManagerPageGenerator(this, getPattern());
+	}
 }

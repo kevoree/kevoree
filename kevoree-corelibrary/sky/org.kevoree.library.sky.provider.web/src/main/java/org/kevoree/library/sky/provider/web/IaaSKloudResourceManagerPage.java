@@ -1,10 +1,9 @@
 package org.kevoree.library.sky.provider.web;
 
 import org.kevoree.annotation.ComponentType;
+import org.kevoree.annotation.DictionaryAttribute;
+import org.kevoree.annotation.DictionaryType;
 import org.kevoree.annotation.Library;
-import org.kevoree.library.javase.webserver.KevoreeHttpRequest;
-import org.kevoree.library.javase.webserver.KevoreeHttpResponse;
-import org.kevoree.library.javase.webserver.ParentAbstractPage;
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -16,35 +15,20 @@ import org.kevoree.library.javase.webserver.ParentAbstractPage;
  */
 @Library(name = "SKY")
 @ComponentType
-public class IaaSKloudResourceManagerPage extends ParentAbstractPage {
-
-	private IaaSKloudResourceManagerPageGenerator generator;
+@DictionaryType({
+		@DictionaryAttribute(name = "urlpattern", optional = true, defaultValue = "/nodes")
+})
+public class IaaSKloudResourceManagerPage extends KloudResourceManagerPage {
 
 	@Override
 	public void startPage () {
 		super.startPage();
-		generator = new IaaSKloudResourceManagerPageGenerator(this, getNodeName(), getPattern());
+		generator = new IaaSKloudResourceManagerPageGenerator(this, getPattern(), getNodeName());
 	}
 
 	@Override
 	public void updatePage () {
 		super.updatePage();
-		generator = new IaaSKloudResourceManagerPageGenerator(this, getNodeName(), getPattern());
-	}
-
-	private String getPattern () {
-		String pattern = getDictionary().get("urlpattern").toString();
-		if (pattern.endsWith("**")) {
-			pattern = pattern.replace("**", "");
-		}
-		if (!pattern.endsWith("/")) {
-			pattern = pattern + "/";
-		}
-		return pattern;
-	}
-
-	@Override
-	public KevoreeHttpResponse process (KevoreeHttpRequest request, KevoreeHttpResponse response) {
-		return generator.process(request, response);
+		generator = new IaaSKloudResourceManagerPageGenerator(this, getPattern(), getNodeName());
 	}
 }

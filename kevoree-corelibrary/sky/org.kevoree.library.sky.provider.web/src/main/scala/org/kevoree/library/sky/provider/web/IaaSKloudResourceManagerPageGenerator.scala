@@ -3,11 +3,10 @@ package org.kevoree.library.sky.provider.web
 import org.kevoree.library.javase.webserver.{KevoreeHttpResponse, KevoreeHttpRequest}
 import org.kevoree.library.sky.api.helper.KloudHelper
 import org.json.JSONStringer
-import org.kevoree.framework.Constants
 import org.kevoree.api.service.core.script.{KevScriptEngineException, KevScriptEngine}
-import java.io.{IOException, FileNotFoundException, ByteArrayOutputStream, InputStream}
 import org.slf4j.LoggerFactory
 import util.matching.Regex
+import org.kevoree.framework.Constants
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -17,80 +16,46 @@ import util.matching.Regex
  * @author Erwan Daubert
  * @version 1.0
  */
-class IaaSKloudResourceManagerPageGenerator (instance: IaaSKloudResourceManagerPage, parentNodeName: String, pattern: String) {
-  val logger = LoggerFactory.getLogger(this.getClass)
+class IaaSKloudResourceManagerPageGenerator (instance: KloudResourceManagerPage, pattern: String, parentNodeName: String) extends KloudResourceManagerPageGenerator(instance, pattern) {
+  logger = LoggerFactory.getLogger(this.getClass)
 
   val rootRequest = new Regex(pattern)
-  val NodeSubRequest = new Regex(pattern + "nodes/(.+)/(.+)")
-  val NodeHomeRequest = new Regex(pattern + "nodes/(.+)")
   val addChildRequest = new Regex(pattern + "AddChild")
   val removeChildRequest = new Regex(pattern + "RemoveChild")
-  val bootstrapCSSRequest = new Regex(pattern + "bootstrap.min.css")
-  val bootstrapJSRequest = new Regex(pattern + "bootstrap.min.js")
-  val jqueryRequest = new Regex(pattern + "jquery.min.js")
-  val jqueryFormRequest = new Regex(pattern + "jquery.form.js")
-  val addChildJSRequest = new Regex(pattern + "add_child.js")
-  val kevoreePictureRequest = new Regex(pattern + "scaled500.png")
-  val addChildCSSRequest = new Regex(pattern + "add_child.css")
+  val NodeSubRequest = new Regex(pattern + "nodes/(.+)/(.+)") // TODO maybe remove nodes on regex
+  val NodeHomeRequest = new Regex(pattern + "nodes/(.+)") // TODO maybe remove nodes on regex
 
-  def process (request: KevoreeHttpRequest, response: KevoreeHttpResponse): KevoreeHttpResponse = {
-
-    request.getUrl match {
-      case bootstrapCSSRequest() => sendFile(request, response, getBytesFromStream(this.getClass.getClassLoader.getResourceAsStream("bootstrap.min.css")), "text/css")
-      case bootstrapJSRequest() => sendFile(request, response, getBytesFromStream(this.getClass.getClassLoader.getResourceAsStream("bootstrap.min.js")), "text/javascript")
-      case jqueryRequest() => sendFile(request, response, getBytesFromStream(this.getClass.getClassLoader.getResourceAsStream("jquery.min.js")), "text/javascript")
-      case jqueryFormRequest() => sendFile(request, response, getBytesFromStream(this.getClass.getClassLoader.getResourceAsStream("jquery.form.js")), "text/javascript")
-      case addChildJSRequest() => sendFile(request, response, getBytesFromStream(this.getClass.getClassLoader.getResourceAsStream("add_child.js")), "text/javascript")
-      case addChildCSSRequest() => sendFile(request, response, getBytesFromStream(this.getClass.getClassLoader.getResourceAsStream("add_child.css")), "text/css")
-      case kevoreePictureRequest() => sendFile(request, response, getBytesFromStream(this.getClass.getClassLoader.getResourceAsStream("scaled500.png")), "image/png")
-      case _ => {
-        request.getUrl match {
-          case rootRequest() => sendAdminNodeList(request, response)
-          case addChildRequest() => sendAddChildPage(request, response)
-          case removeChildRequest() => removeChild(request, response)
-          case NodeSubRequest(nodeName, fluxName) => sendNodeFlux(request, response, fluxName, nodeName)
-          case NodeHomeRequest(nodeName) => sendNodeHome(request, response, nodeName)
-          case _ => sendError(request, response)
-        }
-      }
-    }
+  def internalProcess (request: KevoreeHttpRequest, response: KevoreeHttpResponse): PartialFunction[String, KevoreeHttpResponse] = {
+    case rootRequest() => getIaasPage(request, response)
+    case addChildRequest() => addChild(request, response)
+    case removeChildRequest() => removeChild(instance, request, response)
+    case NodeSubRequest(nodeName, fluxName) => getNodeLogPage(request, response, fluxName, nodeName)
+    case NodeHomeRequest(nodeName) => getNodePage(request, response, nodeName)
   }
 
-  private def sendAdminNodeList (request: KevoreeHttpRequest, response: KevoreeHttpResponse): KevoreeHttpResponse = {
-    val htmlContent = VirtualNodeHTMLHelper.exportNodeListAsHTML(pattern, parentNodeName, instance.getModelService.getLastModel)
+  private def getNodeLogPage (request: KevoreeHttpRequest, response: KevoreeHttpResponse, fluxName: String, nodeName: String): KevoreeHttpResponse = {
+    val htmlContent = /*VirtualNodeHTMLHelper.*/ HTMLPageBuilder.getNodeLogPage(pattern, parentNodeName, nodeName, fluxName, instance.getModelService.getLastModel)
     response.setStatus(200)
     response.setContent(htmlContent)
     response
   }
 
-  private def sendNodeHome (request: KevoreeHttpRequest, response: KevoreeHttpResponse, nodeName: String): KevoreeHttpResponse = {
-    val htmlContent = VirtualNodeHTMLHelper.getNodeHomeAsHTML(pattern, parentNodeName, nodeName, instance.getModelService.getLastModel)
+  private def getNodePage (request: KevoreeHttpRequest, response: KevoreeHttpResponse, nodeName: String): KevoreeHttpResponse = {
+    val htmlContent = /*VirtualNodeHTMLHelper.*/ HTMLPageBuilder.getNodePage(pattern, parentNodeName, nodeName, instance.getModelService.getLastModel)
     response.setStatus(200)
     response.setContent(htmlContent)
     response
   }
 
-  private def sendNodeFlux (request: KevoreeHttpRequest, response: KevoreeHttpResponse, fluxName: String, nodeName: String): KevoreeHttpResponse = {
-    val htmlContent = VirtualNodeHTMLHelper.getNodeStreamAsHTML(pattern, parentNodeName, nodeName, fluxName, instance.getModelService.getLastModel)
+
+  private def getIaasPage (request: KevoreeHttpRequest, response: KevoreeHttpResponse): KevoreeHttpResponse = {
+    val htmlContent = /*VirtualNodeHTMLHelper.*/ HTMLPageBuilder.getIaasPage(pattern, parentNodeName, instance.getModelService.getLastModel)
     response.setStatus(200)
     response.setContent(htmlContent)
     response
   }
 
-  private def sendError (request: KevoreeHttpRequest, response: KevoreeHttpResponse): KevoreeHttpResponse = {
-    response.setStatus(400)
-    response.setContent("Unknown Request!")
-    response
-  }
-
-  private def sendFile (request: KevoreeHttpRequest, response: KevoreeHttpResponse, bytes: Array[Byte], contentType: String): KevoreeHttpResponse = {
-    response.setStatus(200)
-    response.getHeaders.put("Content-Type", contentType)
-    response.setRawContent(bytes)
-    response
-  }
-
-  private def sendAddChildPage (request: KevoreeHttpRequest, response: KevoreeHttpResponse): KevoreeHttpResponse = {
+  private def addChild (request: KevoreeHttpRequest, response: KevoreeHttpResponse): KevoreeHttpResponse = {
     if (request.getMethod.equalsIgnoreCase("GET")) {
       val model = instance.getModelService.getLastModel
       model.getNodes.find(n => n.getName == parentNodeName) match {
@@ -102,26 +67,18 @@ class IaaSKloudResourceManagerPageGenerator (instance: IaaSKloudResourceManagerP
           val paasNodeTypes = model.getTypeDefinitions.filter(nt => KloudHelper.isPaaSNodeType(model, nt.getName) &&
             nt.getDeployUnits.find(dp => dp.getTargetNodeType.find(targetNodeType => KloudHelper.isASubType(parent.getTypeDefinition, targetNodeType.getName)).isDefined).isDefined)
 
-          val htmlContent = VirtualNodeHTMLHelper.exportPaaSNodeList(pattern, paasNodeTypes)
+          val htmlContent = /*VirtualNodeHTMLHelper.*/ HTMLPageBuilder.addNodePage(pattern, paasNodeTypes)
           response.setStatus(200)
           response.setContent(htmlContent)
         }
       }
-
     } else {
-      /*logger.info("blablabla")
-              req.getParameterMap.entrySet().foreach {
-                p =>
-                  logger.warn(p.getKey + " => " + p.getValue)
-                  sendAdminNodeList(req, resp)
-              }*/
       var jsonString: String = null
       if (request.getResolvedParams.get("request") == "add") {
         jsonString = addChildNode(request)
       } else if (request.getResolvedParams.get("request") == "list") {
-        jsonString = createTypeList()
+        jsonString = getNodeTypeList
       }
-      // interpret json message and build response
       if (jsonString != null) {
         logger.debug(jsonString)
         response.setStatus(200)
@@ -195,7 +152,7 @@ class IaaSKloudResourceManagerPageGenerator (instance: IaaSKloudResourceManagerP
     jsonresponse.endObject().toString
   }
 
-  private def createTypeList (): String = {
+  private def getNodeTypeList: String = {
     val jsonresponse = new JSONStringer().`object`()
     val model = instance.getModelService.getLastModel
     model.getNodes.find(n => n.getName == parentNodeName) match {
@@ -241,10 +198,9 @@ class IaaSKloudResourceManagerPageGenerator (instance: IaaSKloudResourceManagerP
         jsonresponse.toString
       }
     }
-
   }
 
-  private def removeChild (request: KevoreeHttpRequest, response: KevoreeHttpResponse): KevoreeHttpResponse = {
+  private def removeChild (instance: KloudResourceManagerPage, request: KevoreeHttpRequest, response: KevoreeHttpResponse): KevoreeHttpResponse = {
     val nodeName = request.getResolvedParams.get("name")
     val kengine: KevScriptEngine = instance.getKevScriptEngineFactory.createKevScriptEngine
     kengine append "removeNode " + nodeName
@@ -253,30 +209,6 @@ class IaaSKloudResourceManagerPageGenerator (instance: IaaSKloudResourceManagerP
     } catch {
       case e: KevScriptEngineException => logger.warn("Unable to remove {}", nodeName, e)
     }
-    sendAdminNodeList(request, response)
-  }
-
-  private def getBytesFromStream (stream: InputStream): Array[Byte] = {
-    try {
-      val writer: ByteArrayOutputStream = new ByteArrayOutputStream
-      val bytes: Array[Byte] = new Array[Byte](2048)
-      var length: Int = stream.read(bytes)
-      while (length != -1) {
-        writer.write(bytes, 0, length)
-        length = stream.read(bytes)
-      }
-      writer.flush()
-      writer.close()
-      return writer.toByteArray
-    }
-    catch {
-      case e: FileNotFoundException => {
-        logger.error("Unable to get Bytes from stream", e)
-      }
-      case e: IOException => {
-        logger.error("Unable to get Bytes from file", e)
-      }
-    }
-    new Array[Byte](0)
+    getIaasPage(request, response)
   }
 }

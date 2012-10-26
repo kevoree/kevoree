@@ -1,26 +1,131 @@
-/*
 package org.kevoree.library.sky.provider.web
 
-import io.Source
-import org.kevoree.{ContainerRoot, TypeDefinition}
+import org.kevoree.{ContainerNode, ContainerRoot, TypeDefinition}
 import org.kevoree.framework.KevoreePropertyHelper
-import scala.collection.JavaConversions._
-import xml.Node
 import java.io.File
+import io.Source
+import xml.Node
+import scala.collection.JavaConversions._
+import org.kevoree.library.sky.api.helper.KloudHelper
+import org.slf4j.LoggerFactory
 
 /**
- * Created by IntelliJ IDEA.
- * User: duke
- * Date: 27/09/11
- * Time: 00:01
+ * User: Erwan Daubert - erwan.daubert@gmail.com
+ * Date: 24/10/12
+ * Time: 16:08
+ *
+ * @author Erwan Daubert
+ * @version 1.0
  */
+object HTMLPageBuilder {
+  val logger = LoggerFactory.getLogger(this.getClass)
 
-object VirtualNodeHTMLHelper {
-
-  def getNodeStreamAsHTML (pattern: String, parentNodeName: String, nodeName: String, streamName: String, model: ContainerRoot): String = {
+  def getIaasPage (pattern: String, nodeName: String, model: ContainerRoot): String = {
     (<html>
       <head>
-        <link rel="stylesheet" href={pattern + "bootstrap.min.css"}/>
+        <link rel="stylesheet" href={pattern + "bootstrap/bootstrap.min.css"}/>
+      </head>
+      <body>
+        <img height="200px" src={pattern + "scaled500.png"} alt="Kevoree"/>
+        <ul class="breadcrumb">
+          <li class="active">
+            <a href={pattern}>Home</a> <span class="divider">/</span>
+          </li>
+        </ul>{val nodesList = model.getNodes.find(n => n.getName == nodeName) match {
+        case None => List[ContainerNode]()
+        case Some(node) => node.getHosts.toList
+      }
+      nodeList(pattern, model, nodesList)}
+
+      </body>
+    </html>).toString()
+  }
+
+  def getPaasPage (pattern: String, model: ContainerRoot): String = {
+    (<html>
+      <head>
+        <link rel="stylesheet" href={pattern + "bootstrap/bootstrap.min.css"}/>
+      </head>
+      <body>
+        <ul class="breadcrumb">
+          <li class="active">
+            <a href={pattern}>Home</a> <span class="divider">/</span>
+          </li>
+        </ul>
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <td>User name
+              </td> <td>number of nodes</td> <td>action(s)</td>
+            </tr>
+          </thead>
+          <tbody>
+            {var result: List[scala.xml.Elem] = List()
+          KloudHelper.getKloudUserGroups(model).foreach {
+            group => {
+              logger.debug("{} is a user and he/she has {} nodes", group.getName, group.getSubNodes)
+              result = result ++ List(
+                                       <tr>
+                                         <td>
+                                           {group.getName}
+                                         </td>
+                                         <td>
+                                           <a href={pattern + group.getName}>
+                                             <span class="label notice">
+                                               {group.getSubNodes.length}
+                                             </span>
+                                           </a>
+                                         </td>
+                                         <td>
+                                           <button type="button" class="btn btn-warning">
+                                             <a href={pattern + group.getName + "/release"}>release</a>
+                                           </button>
+                                         </td>
+                                       </tr>
+                                     )
+            }
+          }
+          result}
+          </tbody>
+        </table>
+      </body>
+    </html>).toString()
+  }
+
+  def getPaasUserPage (login: String, pattern: String, model: ContainerRoot): String = {
+    (<html>
+      <head>
+        <link rel="stylesheet" href={pattern + "bootstrap/bootstrap.min.css"}/>
+        <link rel="stylesheet" href={pattern + "fileuploader/fileuploader.css"}/>
+        <link rel="stylesheet" href={pattern + "bootstrap/css/bootstrap.min.css"}/>
+        <link rel="stylesheet" href={pattern + "bootstrap/css/bootstrap-responsive.min.css"}/>
+        <script type="text/javascript" src={pattern + "jquery/jquery.min.js"}></script>
+        <script type="text/javascript" src={pattern + "jquery/jquery.form.js"}></script>
+        <script type="text/javascript" src={pattern + "bootstrap/js/bootstrap.min.js"}></script>
+        <script type="text/javascript" src={pattern + "fileuploader/fileuploader.js"}></script>
+        <script type="text/javascript" src={pattern + "fileuploader-init.js"}></script>
+      </head>
+      <body>
+        <ul class="breadcrumb">
+          <li class="active">
+            <a href={pattern}>Home</a> <span class="divider">/</span> <a href={pattern + login}>
+            {login}
+          </a> <span class="divider">/</span>
+          </li>
+        </ul>{val nodesList = model.getGroups.find(g => g.getName == login) match {
+        case None => List[ContainerNode]()
+        case Some(group) => group.getSubNodes
+      }
+      nodeList(pattern, model, nodesList)}
+
+      </body>
+    </html>).toString()
+  }
+
+  def getNodeLogPage (pattern: String, parentNodeName: String, nodeName: String, streamName: String, model: ContainerRoot): String = {
+    (<html>
+      <head>
+        <link rel="stylesheet" href={pattern + "bootstrap/bootstrap.min.css"}/>
       </head>
       <body>
         <ul class="breadcrumb">
@@ -97,10 +202,10 @@ object VirtualNodeHTMLHelper {
     </html>).toString()
   }
 
-  def getNodeHomeAsHTML (pattern: String, parentNodeName: String, nodeName: String, model: ContainerRoot): String = {
+  def getNodePage (pattern: String, parentNodeName: String, nodeName: String, model: ContainerRoot): String = {
     (<html>
       <head>
-        <link rel="stylesheet" href={pattern + "bootstrap.min.css"}/>
+        <link rel="stylesheet" href={pattern + "bootstrap/bootstrap.min.css"}/>
       </head>
       <body>
         <ul class="breadcrumb">
@@ -142,80 +247,65 @@ object VirtualNodeHTMLHelper {
     </html>).toString()
   }
 
-  def exportNodeListAsHTML (pattern: String, nodeName: String, model: ContainerRoot): String = {
-    (<html>
-      <head>
-        <link rel="stylesheet" href={pattern + "bootstrap.min.css"}/>
-      </head>
-      <body>
-        <img height="200px" src={pattern + "scaled500.png"} alt="Kevoree"/>
-        <ul class="breadcrumb">
-          <li class="active">
-            <a href={pattern}>Home</a> <span class="divider">/</span>
-          </li>
-        </ul>{nodeList(pattern, nodeName, model)}
-
-      </body>
-    </html>).toString()
-  }
-
-  def nodeList (pattern: String, nodeName: String, model: ContainerRoot): Seq[Node] = {
-    (<table class="zebra-striped">
+  private def nodeList (pattern: String, model: ContainerRoot, nodeList: List[ContainerNode]): Seq[Node] = {
+    (<table class="table table-bordered">
       <thead>
         <tr>
           <td>#
-            <button type="button" class="btn btn-primary">
+            <button type="button" class="btn btn-success">
               <a href={pattern + "AddChild"}>add child</a>
             </button>
-          </td> <td>virtual node</td> <td>ip</td>
+          </td> <td>virtual node</td> <td>ip</td> <td>action(s)</td>
         </tr>
       </thead>
       <tbody>
         {var result: List[scala.xml.Elem] = List()
-      model.getNodes.find(n => n.getName == nodeName) match {
-        case None =>
-        case Some(node) => {
-          node.getHosts.foreach {
-            child => {
-              val ips = KevoreePropertyHelper.getStringNetworkProperties(model, child.getName, org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP)
-              val ipString = ips.mkString(", ")
-              result = result ++ List(
-                                       <tr>
-                                         <td>
-                                           {node.getHosts.indexOf(child)}
-                                         </td> <td>
-                                         <a href={pattern + "nodes/" + child.getName}>
-                                           <span class="label notice">
-                                             {child.getName}
-                                           </span>
-                                           <span class="divider">/</span>
-                                           <button type="button" class="btn btn-primary">
-                                             <a href={pattern + "RemoveChild?name=" + child.getName}>delete</a>
-                                           </button>
-                                         </a>
-                                       </td>
-                                         <td>
-                                           {ipString}
-                                         </td>
-                                       </tr>
-                                     )
-            }
-          }
+      /*model.getNodes.find(n => n.getName == nodeName) match {
+                case None =>
+                case Some(node) => {*/
+      nodeList.foreach {
+        child => {
+          val ips = KevoreePropertyHelper.getStringNetworkProperties(model, child.getName, org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP)
+          val ipString = ips.mkString(", ")
+          result = result ++ List(
+                                   <tr>
+                                     <td>
+                                       {nodeList.indexOf(child)}
+                                     </td>
+                                     <td>
+                                       <a href={pattern + "nodes/" + child.getName}>
+                                         <span class="label notice">
+                                           {child.getName}
+                                         </span>
+                                       </a>
+                                     </td>
+                                     <td>
+                                       {ipString}
+                                     </td>
+                                     <td>
+                                       <button type="button" class="btn btn-warning">
+                                         <a href={pattern + "RemoveChild?name=" + child.getName}>delete</a>
+                                       </button>
+                                     </td>
+                                   </tr>
+                                 )
         }
+        /* }
+                  }*/
       }
       result}
       </tbody>
     </table>)
   }
 
-  def exportPaaSNodeList (pattern: String, paasNodeList: List[TypeDefinition]): String = {
+  def addNodePage (pattern: String, paasNodeList: List[TypeDefinition]): String = {
     (<html>
       <head>
-        <link rel="stylesheet" href={pattern + "bootstrap.min.css"}/>
+        <link rel="stylesheet" href={pattern + "bootstrap/bootstrap.min.css"}/>
         <link rel="stylesheet" href={pattern + "add_child.css"}/>
-        <script type="text/javascript" src={pattern + "jquery.min.js"}/>
-        <script type="text/javascript" src={pattern + "jquery.form.js"}/>
-        <script type="text/javascript" src={pattern + "bootstrap.min.js"}/>
+        <script type="text/javascript" src={pattern + "jquery/jquery.min.js"}/>
+        <script type="text/javascript" src={pattern + "jquery/jquery.form.js"}/>
+        <script type="text/javascript" src={pattern + "bootstrap/bootstrap.min.js"}/>
         <script type="text/javascript" src={pattern + "add_child.js"}/>
 
       </head>
@@ -250,4 +340,5 @@ object VirtualNodeHTMLHelper {
       </body>
     </html>).toString()
   }
-}*/
+
+}
