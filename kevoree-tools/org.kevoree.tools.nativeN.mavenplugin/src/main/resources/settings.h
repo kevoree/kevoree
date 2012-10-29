@@ -20,5 +20,6 @@
 #define SIZE_FIFO_KEY 512
 #define SIZE_FIFO_VALUE 2048
 #define LENGHT_MAX_VALUE_DICO 2048
-
+#define PATH_SEPARATOR '/'
+.
 #endif

@@ -25,7 +25,11 @@ import org.kevoree.tools.nativeN.generator.CodeGeneratorJava;
 import org.kevoree.tools.nativeN.utils.KevScriptLoader;
 
 import java.io.File;
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 public class Test {
 
@@ -37,6 +41,24 @@ public class Test {
 
         ContainerRoot model =  KevScriptLoader.getModel("/home/jed/KEVOREE_PROJECT/kevoree/kevoree-corelibrary/native/org.kevoree.library.nativeN.HelloWorld/src/main/HelloWorld.kevs");
         String path_uexe = "/home/jed/KEVOREE_PROJECT/kevoree/kevoree-corelibrary/native/org.kevoree.library.nativeN.HelloWorld/org.kevoree.library.nativeN.HelloWorld_native/nix32/target/org.kevoree.library.nativeN.HelloWorld_native-nix32.uexe";
+
+
+
+        //File jarfile =    getBootStrapperService().resolveArtifact("org.kevoree.library.nativeN.pwm_native"+getOs(), "org.kevoree.library.nativeN", "1.8.9-SNAPSHOT", "uexe", repos);
+
+        JarFile jarFile = new JarFile("/home/jed/KEVOREE_PROJECT/kevoree/kevoree-corelibrary/native/org.kevoree.library.nativeN.faceDetection/modules/wrapper/target/org.kevoree.library.nativeN.faceDetection-wrapper-1.8.9-SNAPSHOT.jar");
+
+        final Enumeration<JarEntry> entries = jarFile.entries();
+        while (entries.hasMoreElements()) {
+            final JarEntry entry = entries.nextElement();
+            if (entry.getName().contains(".")) {
+                System.out.println("File : " + entry.getName());
+                JarEntry fileEntry = jarFile.getJarEntry(entry.getName());
+                InputStream input = jarFile.getInputStream(fileEntry);
+                //process(input);
+            }
+        }
+        System.exit(0);
 
         int ipc_key = 215168;
 
