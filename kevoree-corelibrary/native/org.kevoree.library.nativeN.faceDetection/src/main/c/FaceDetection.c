@@ -22,11 +22,10 @@ size_t cascadeOptLen = cascadeOpt.length();
 const String nestedCascadeOpt = "--nested-cascade";
 size_t nestedCascadeOptLen = nestedCascadeOpt.length();
 String inputName;
+string cascadeName =  "/tmp/haarcascades/haarcascade_frontalface_alt.xml";
+string nestedCascadeName = "/tmp/haarcascades/haarcascade_eye_tree_eyeglasses.xml";
 
 
-
-String cascadeName = getRessource("haarcascades/haarcascade_frontalface_alt.xml");
-String nestedCascadeName =  getRessource("haarcascades/haarcascade_eye_tree_eyeglasses.xml");
 
 
 void detectAndDraw( Mat& img, CascadeClassifier& cascade, CascadeClassifier& nestedCascade, double scale);
@@ -35,6 +34,11 @@ void detectAndDraw( Mat& img, CascadeClassifier& cascade, CascadeClassifier& nes
 int start()
 {
 	fprintf(stderr,"Component starting \n");
+
+
+ // get Ressources
+  const char *cascadeName_c =  getRessource("haarcascades/haarcascade_frontalface_alt.xml");
+  const char * nestedCascadeName_c = getRessource("haarcascades/haarcascade_eye_tree_eyeglasses.xml");
 
 	 CascadeClassifier cascade, nestedCascade;
         double scale = 1;
