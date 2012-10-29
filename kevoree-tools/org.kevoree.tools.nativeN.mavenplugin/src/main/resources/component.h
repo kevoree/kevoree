@@ -114,6 +114,15 @@ const char * getDictionary(const char *key)
      }
 }
 
+static void *task_stop (void *p_data)
+{
+   ctx->stop ();
+   (void) p_data;
+   return NULL;
+}
+
+
+
 void notify(Events ev)
 {
     int i;
@@ -159,8 +168,10 @@ void notify(Events ev)
                   fprintf(stderr,"destroy_queue OUTPUT %s \n",ctx->inputs[i].name);
                 }
                 }
-
-              ctx->stop ();
+             pthread_t pstop;
+             pthread_create (&pstop, NULL, task_stop, NULL);
+             // todo join timeout
+             //pthread_join (pstop, NULL);
               /*
               close(event_broker_tcp.sckServer);
               close(event_broker_udp.sckServer);
@@ -196,6 +207,9 @@ int bootstrap (key_t key,int port_event_broker)
     pthread_t t_event_broker_fifo;
     ctx = getContext(key);
     ctx->pid = getpid ();
+
+    fprintf(stderr,"Boostrap native \n");
+
     sprintf(fifo_name,"%d.fifo",key);
     strcpy (event_broker_fifo.name_pipe,fifo_name);
     // dispather
