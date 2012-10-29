@@ -135,6 +135,14 @@ public class KevoreeMenuBar extends JMenuBar {
         //  cmdAN.setKernel(kernel);
         // addNode.addActionListener(new CommandActionListener(cmdAN));
         // model.add(addNode);
+
+        JMenuItem statItem = new JMenuItem("ShowStats");
+        ShowStatsCommand statCMD = new ShowStatsCommand();
+        statCMD.setKernel(kernel);
+        statItem.addActionListener(new CommandActionListener(statCMD));
+        model.add(statItem);
+
+
         JMenuItem clearModel = new JMenuItem("Clear");
         ClearModelCommand cmdCM = new ClearModelCommand();
         cmdCM.setKernel(kernel);
