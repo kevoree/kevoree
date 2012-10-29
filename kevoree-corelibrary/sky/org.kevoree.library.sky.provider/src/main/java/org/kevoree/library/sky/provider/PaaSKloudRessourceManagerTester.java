@@ -25,6 +25,7 @@ import org.slf4j.LoggerFactory;
 		@RequiredPort(name = "deploy", type = PortType.MESSAGE, needCheckDependency = true),
 		@RequiredPort(name = "release", type = PortType.MESSAGE, needCheckDependency = true)
 })
+@Library(name = "Test")
 public class PaaSKloudRessourceManagerTester extends AbstractComponentType {
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 

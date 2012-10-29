@@ -25,7 +25,11 @@ import org.kevoree.tools.nativeN.generator.CodeGeneratorJava;
 import org.kevoree.tools.nativeN.utils.KevScriptLoader;
 
 import java.io.File;
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 public class Test {
 
@@ -35,10 +39,11 @@ public class Test {
 
     public static void main(String[] args) throws Exception {
 
-        ContainerRoot model =  KevScriptLoader.getModel("/home/jed/KEVOREE_PROJECT/kevoree/kevoree-corelibrary/native/org.kevoree.library.nativeN.HelloWorld/src/main/HelloWorld.kevs");
-        String path_uexe = "/home/jed/KEVOREE_PROJECT/kevoree/kevoree-corelibrary/native/org.kevoree.library.nativeN.HelloWorld/org.kevoree.library.nativeN.HelloWorld_native/nix32/target/org.kevoree.library.nativeN.HelloWorld_native-nix32.uexe";
+        ContainerRoot model =  KevScriptLoader.getModel("/home/jed/KEVOREE_PROJECT/kevoree/kevoree-corelibrary/native/org.kevoree.library.nativeN.faceDetection/src/main/kevs/FaceDetection.kevs");
+        String path_uexe = "/home/jed/KEVOREE_PROJECT/kevoree/kevoree-corelibrary/native/org.kevoree.library.nativeN.faceDetection/modules/nix32/target/org.kevoree.library.nativeN.faceDetection-wrapper-nix32.uexe";
 
-        int ipc_key = 215168;
+
+        int ipc_key = 51516;
 
         ArrayList<String> repos = new ArrayList<String>();
         repos.add("http://maven.kevoree.org/release/");
@@ -55,10 +60,10 @@ public class Test {
 
 
         boolean  started = nativeManager.start();
-        nativeManager.setDico("myParam","value1");
+
         if(started)
         {
-            nativeManager.setDico("myParam","valu2");
+
             nativeManager.update();
 
         } else

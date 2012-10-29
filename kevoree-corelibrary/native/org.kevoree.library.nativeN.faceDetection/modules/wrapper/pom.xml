@@ -1,0 +1,74 @@
+<project>
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.kevoree.library.nativeN</groupId>
+    <artifactId>org.kevoree.library.nativeN.faceDetection-wrapper</artifactId>
+    <name>Kevoree :: Native :: faceDetection Root :: Wrapper Java</name>
+    <packaging>jar</packaging>
+
+    <parent>
+        <groupId>org.kevoree.library.nativeN</groupId>
+        <artifactId>org.kevoree.library.nativeN.faceDetection</artifactId>
+        <version>1.8.9-SNAPSHOT</version>
+        <relativePath>../../pom.xml</relativePath>
+    </parent>
+
+    <properties>
+        <kevoree.version>1.8.9-SNAPSHOT</kevoree.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.kevoree.tools.nativeN</groupId>
+            <artifactId>org.kevoree.tools.nativeN.core</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.kevoree.tools</groupId>
+            <artifactId>org.kevoree.tools.javase.framework</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.kevoree.tools</groupId>
+            <artifactId>org.kevoree.tools.annotation.api</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <sourceDirectory>../../src/main/java</sourceDirectory>
+        <resources>
+            <resource>
+                 <directory>../../src/main/resources</directory>
+            </resource>
+        </resources>
+
+        <plugins>
+            <plugin>
+                <groupId>org.kevoree.tools</groupId>
+                <artifactId>org.kevoree.tools.annotation.mavenplugin</artifactId>
+                <version>${kevoree.version}</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <nodeTypeNames>JavaSENode</nodeTypeNames>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generate</goal>
+                            <goal>compile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.kevoree.platform</groupId>
+                <artifactId>org.kevoree.platform.mavenrunner</artifactId>
+                <version>${kevoree.version}</version>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

@@ -84,7 +84,7 @@ class JailKevoreeNodeRunner (nodeName: String, iaasNode: JailNode) extends Kevor
                   val logFile = System.getProperty("java.io.tmpdir") + File.separator + nodeName + ".log"
                   outFile = new File(logFile + ".out")
                   errFile = new File(logFile + ".err")
-                  processExecutor.startKevoreeOnJail(jailId, KevoreePropertyHelper.getStringPropertyForNode(iaasModel, nodeName, "RAM").getOrElse("N/A"), nodeName, outFile, errFile)
+                  processExecutor.startKevoreeOnJail(jailId, KevoreePropertyHelper.getStringPropertyForNode(iaasModel, nodeName, "RAM").getOrElse("N/A"), nodeName/*, outFile, errFile*/, this, iaasNode)
                 } else {
                   logger.error("Unable to find the jail {}", nodeName)
                   false

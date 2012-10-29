@@ -80,7 +80,7 @@ public class GenerateFilesMojo extends AbstractMojo {
 
     protected MavenProject project;
     final String[] files_thirdparty = {"component.h", "kqueue.h", "events_common.h", "events_fifo.h", "HashMap.h", "settings.h"};
-
+    final String nameWrapper ="-wrapper";
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         if (inputCFile == null || !(inputCFile.exists())) {
@@ -112,7 +112,7 @@ public class GenerateFilesMojo extends AbstractMojo {
             modulesFiles.mkdirs();
         }
 
-        Model wrapper_java = MavenHelper.createModel(project.getGroupId(), project.getArtifactId() + "-wrapper", project.getVersion(), MavenHelper.createParent(project), project);
+        Model wrapper_java = MavenHelper.createModel(project.getGroupId(), project.getArtifactId() + nameWrapper, project.getVersion(), MavenHelper.createParent(project), project);
         wrapper_java.setName(project.getName() + " :: Wrapper Java");
         wrapper_java.setPomFile(new File(wrapperPomProject, "pom.xml"));
 
@@ -131,17 +131,18 @@ public class GenerateFilesMojo extends AbstractMojo {
         File file_java = new File(root_build + "java/org/kevoree/library/nativeN/" + code.getComponentType().getName());
 
         if (file_java.mkdirs()) {
-            String bridge = new String(FileManager.load(GenerateFilesMojo.class.getClassLoader().getResourceAsStream("template_java/Bridge.java.template")));
-            bridge = bridge.replace("$PACKAGE$", "package org.kevoree.library.nativeN." + code.getComponentType().getName() + ";");
-            bridge = bridge.replace("$HEADER_PORTS$", code.getHeaderPorts());
-            bridge = bridge.replace("$PORTS$", code.getPorts());
-            bridge = bridge.replace("$CLASS$", code.getComponentType().getName());
-            bridge = bridge.replace("$artifactId$", project.getArtifactId() + "-native");
-            bridge = bridge.replace("$groupId$", project.getGroupId());
-            bridge = bridge.replace("$version$", project.getVersion());
-            bridge = bridge.replace("$DICO$", code.getBody());
-            bridge = bridge.replace("$DICO$", code.getBody());
-            MavenHelper.writeFile(file_java.getPath() + "/" + code.getComponentType().getName() + ".java", bridge, false, false);
+            String gen_wrapper = new String(FileManager.load(GenerateFilesMojo.class.getClassLoader().getResourceAsStream("wrapper/wrapper.template")));
+            gen_wrapper = gen_wrapper.replace("$PACKAGE$", "package org.kevoree.library.nativeN." + code.getComponentType().getName() + ";");
+            gen_wrapper = gen_wrapper.replace("$HEADER_PORTS$", code.getHeaderPorts());
+            gen_wrapper = gen_wrapper.replace("$PORTS$", code.getPorts());
+            gen_wrapper = gen_wrapper.replace("$CLASS$", code.getComponentType().getName());
+            gen_wrapper = gen_wrapper.replace("$artifactId$", project.getArtifactId() + nameWrapper);
+            gen_wrapper = gen_wrapper.replace("$groupId$", project.getGroupId());
+            gen_wrapper = gen_wrapper.replace("$version$", project.getVersion());
+            gen_wrapper = gen_wrapper.replace("$DICO$", code.getBody());
+            gen_wrapper = gen_wrapper.replace("$DICO$", code.getBody());
+            gen_wrapper  = gen_wrapper.replace("$CNAME$",code.getComponentType().getName());
+            MavenHelper.writeFile(file_java.getPath() + "/" + code.getComponentType().getName() + ".java", gen_wrapper, false, false);
         } else {
             getLog().error("Generating component java");
         }
@@ -161,7 +162,7 @@ public class GenerateFilesMojo extends AbstractMojo {
         }
 
         // Create NativeCode Pom Root
-        Model component_c = MavenHelper.createModel(project.getGroupId(), project.getArtifactId() + "-native", project.getVersion(), MavenHelper.createParent(project), project);
+        Model component_c = MavenHelper.createModel(project.getGroupId(), project.getArtifactId() +nameWrapper, project.getVersion(), MavenHelper.createParent(project), project);
         component_c.setName(project.getName() + " :: NativeCode ");
 
         // Create sub NativeCode {arm,osx,nix32,nix64}

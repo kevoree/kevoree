@@ -130,7 +130,7 @@ class MiniCloudKevoreeNodeRunner (nodeName: String, iaasNode: AbstractHostNode) 
         }
       }
 
-      val vmargsObject = iaasNode.getDictionary.get()
+      val vmargsObject = iaasNode.getDictionary.get("VMARGS")
       var exec = Array[String](java)
       if (vmargsObject != null) {
         exec = Array[String](java, vmargsObject.toString)
@@ -140,7 +140,7 @@ class MiniCloudKevoreeNodeRunner (nodeName: String, iaasNode: AbstractHostNode) 
       logger.debug("Start node with command: {}", exec.mkString(" "))
       nodePlatformProcess = Runtime.getRuntime.exec(exec)
 
-      configureLogFile()
+      configureLogFile(iaasNode, nodePlatformProcess)
 
       nodePlatformProcess.exitValue
       false
@@ -161,7 +161,7 @@ class MiniCloudKevoreeNodeRunner (nodeName: String, iaasNode: AbstractHostNode) 
         val tempFile = File.createTempFile("bootModel" + nodeName, ".kev")
         KevoreeXmiHelper.save(tempFile.getAbsolutePath, childBootStrapModel)
 
-        val vmargsObject = iaasNode.getDictionary.get()
+        val vmargsObject = iaasNode.getDictionary.get("VMARGS")
         var exec = Array[String](java)
         if (vmargsObject != null) {
           exec = Array[String](java, vmargsObject.toString)
@@ -172,7 +172,7 @@ class MiniCloudKevoreeNodeRunner (nodeName: String, iaasNode: AbstractHostNode) 
         logger.debug("Start node with command: {}", exec.mkString(" "))
         nodePlatformProcess = Runtime.getRuntime.exec(exec)
 
-        configureLogFile()
+        configureLogFile(iaasNode, nodePlatformProcess)
 
         nodePlatformProcess.exitValue
         false
@@ -186,16 +186,6 @@ class MiniCloudKevoreeNodeRunner (nodeName: String, iaasNode: AbstractHostNode) 
         true
       }
     }
-  }
-
-  private def configureLogFile () {
-    val logFile = System.getProperty("java.io.tmpdir") + File.separator + nodeName + ".log"
-    outFile = new File(logFile + ".out")
-    logger.debug("writing logs about {} on {}", nodeName, outFile.getAbsolutePath)
-    new Thread(new ProcessStreamFileLogger(nodePlatformProcess.getInputStream, outFile)).start()
-    errFile = new File(logFile + ".err")
-    logger.debug("writing logs about {} on {}", nodeName, errFile.getAbsolutePath)
-    new Thread(new ProcessStreamFileLogger(nodePlatformProcess.getErrorStream, errFile)).start()
   }
 }
 

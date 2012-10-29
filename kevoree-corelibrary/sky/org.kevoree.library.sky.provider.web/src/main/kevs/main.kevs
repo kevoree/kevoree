@@ -1,0 +1,44 @@
+
+merge "mvn:org.kevoree.corelibrary.sky/org.kevoree.library.sky.minicloud/{kevoree.version}"
+merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.nanohttp/{kevoree.version}"
+
+merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.defaultChannels/{kevoree.version}"
+merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.socketChannels/{kevoree.version}"
+merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.nioChannels/{kevoree.version}"
+
+merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.webserver.api/{kevoree.version}"
+merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.webserver.tjws/{kevoree.version}"
+
+merge "mvn:org.kevoree.corelibrary.sky/org.kevoree.library.sky.provider/{kevoree.version}"
+merge "mvn:org.kevoree.corelibrary.sky/org.kevoree.library.sky.provider.web/{kevoree.version}"
+
+
+addNode node0 : MiniCloudNode { coreLogLevel="WARN",logLevel="DEBUG"}
+addGroup sync : NanoRestGroup
+addToGroup sync node0
+
+addComponent webServer@node0 : KTinyWebServer {port = "8080", timeout = "5000"}
+addComponent iaasPage@node0 : IaaSKloudResourceManagerPage { urlpattern="/iaas"}
+addComponent paasPage@node0 : PaaSKloudResourceManagerPage { urlpattern="/paas"}
+
+addChannel requestChannel : defMSG
+addChannel responseChannel : defMSG
+
+bind webServer.handler@node0 => requestChannel
+bind iaasPage.request@node0 => requestChannel
+bind paasPage.request@node0 => requestChannel
+
+bind webServer.response@node0 => responseChannel
+bind iaasPage.content@node0 => responseChannel
+bind paasPage.content@node0 => responseChannel
+
+
+addNode edaubert_worker1 : PJavaSENode
+addChild edaubert_worker1@node0
+
+addGroup edaubert : KloudPaaSNanoGroup
+
+addToGroup edaubert edaubert_worker1
+
+updateDictionary edaubert { masterNode = "node0=127.0.0.1:8000"}
+updateDictionary edaubert { port = "8888"}@edaubert_worker1

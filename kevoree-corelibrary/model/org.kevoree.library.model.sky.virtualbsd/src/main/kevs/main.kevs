@@ -12,7 +12,7 @@ updateDictionary sync {port="8000", ip="172.16.78.101"}@virtualbsd
 
 // Kloud manager configuration
 addComponent webServer@virtualbsd : KTinyWebServer {port = "8080", timeout = "5000"}
-addComponent paaSKloudResourceManagerPage@virtualbsd : PaaSKloudResourceManagerPage {urlpattern = "/kloud/{login}/{action}"}
+addComponent paaSKloudResourceManagerRest@virtualbsd : PaaSKloudResourceManagerRest {urlpattern = "/kloud/{login}/{action}"}
 addComponent paaSKloudResourceManager@virtualbsd : PaaSKloudResourceManager
 //addComponent paaSKloudResourceManager@virtualbsd : PaaSKloudResourceManagerStateFull {storage = "/root/kevoree-state"}
 addComponent iaaSKloudResourceManager@virtualbsd : IaaSKloudResourceManager
@@ -25,12 +25,12 @@ addChannel releaseChannel : defMSG
 //addChannel authenticationChannel : defSERVICE
 
 bind webServer.handler@virtualbsd => requestChannel
-bind paaSKloudResourceManagerPage.request@virtualbsd => requestChannel
+bind paaSKloudResourceManagerRest.request@virtualbsd => requestChannel
 bind webServer.response@virtualbsd => responseChannel
-bind paaSKloudResourceManagerPage.content@virtualbsd => responseChannel
+bind paaSKloudResourceManagerRest.content@virtualbsd => responseChannel
 
-bind paaSKloudResourceManagerPage.submit@virtualbsd => submitChannel
+bind paaSKloudResourceManagerRest.submit@virtualbsd => submitChannel
 bind paaSKloudResourceManager.submit@virtualbsd => submitChannel
 
 //bind ldapAuthentication.authenticate@cumulus => authenticationChannel
-//bind paaSKloudResourceManagerPage.authentication@cumulus => authenticationChannel
+//bind paaSKloudResourceManagerRest.authentication@cumulus => authenticationChannel

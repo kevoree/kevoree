@@ -1,0 +1,61 @@
+<project>
+
+       <modelVersion>4.0.0</modelVersion>
+      <groupId>org.kevoree.library.nativeN</groupId>
+      <artifactId>org.kevoree.library.nativeN.faceDetection-wrapper-osx</artifactId>
+      <name>Kevoree :: Native :: faceDetection Root :: NativeCode -osx</name>
+      <packaging>uexe</packaging>
+
+         <parent>
+               <groupId>org.kevoree.library.nativeN</groupId>
+               <artifactId>org.kevoree.library.nativeN.faceDetection</artifactId>
+               <version>1.8.9-SNAPSHOT</version>
+               <relativePath>../../pom.xml</relativePath>
+           </parent>
+
+    <properties>
+        <platform>osx</platform>
+        <platform.jdk.include.dir>${java.home}/include</platform.jdk.include.dir>
+        <platform.javahOS>macosx</platform.javahOS>
+        <platform.define>__DARWIN__</platform.define>
+        <platform.shlib>dylib</platform.shlib>
+        <platform.jni>jnilib</platform.jni>
+        <kevoree.version>1.8.9-SNAPSHOT</kevoree.version>
+    </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>native-maven-plugin</artifactId>
+                <extensions>true</extensions>
+                <version>1.0-alpha-8</version>
+
+                <configuration>
+                    <compilerProvider>generic-classic</compilerProvider>
+                    <compilerExecutable>g++</compilerExecutable>
+                    <linkerExecutable>g++</linkerExecutable>
+
+                    <compilerStartOptions>
+                        <compilerStartOption>-I/usr/local/Cellar/opencv/2.4.2/include</compilerStartOption>
+                    </compilerStartOptions>
+
+                    <sources>
+                        <source>
+                            <directory>../../src/main/c</directory>
+                            <includes>
+                                <include>**/*.c</include>
+                                <include>**/*.cpp</include>
+                            </includes>
+                        </source>
+                    </sources>
+                    <linkerEndOptions>
+                        <linkerEndOption>-lpthread -lopencv_core -lopencv_imgproc -lopencv_video -lopencv_highgui
+                            -lopencv_objdetect
+                        </linkerEndOption>
+                    </linkerEndOptions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

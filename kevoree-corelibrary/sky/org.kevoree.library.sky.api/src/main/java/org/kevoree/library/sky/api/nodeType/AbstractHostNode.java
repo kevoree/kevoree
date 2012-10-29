@@ -6,7 +6,7 @@ import org.kevoree.library.defaultNodeTypes.JavaSENode;
 import org.kevoree.library.sky.api.KevoreeNodeManager;
 import org.kevoree.library.sky.api.KevoreeNodeRunner;
 import org.kevoree.library.sky.api.PlanningManager;
-import org.kevoree.library.sky.api.http.IaaSHTTPServer;
+//import org.kevoree.library.sky.api.http.IaaSHTTPServer;
 import org.kevoreeAdaptation.AdaptationModel;
 import org.kevoreeAdaptation.AdaptationPrimitive;
 import org.slf4j.Logger;
@@ -22,15 +22,16 @@ import org.slf4j.LoggerFactory;
  */
 
 @DictionaryType({
-		@DictionaryAttribute(name = "port", defaultValue = "7000", optional = false)      ,
-        @DictionaryAttribute(name = "role", defaultValue = "host/container", vals = {"host", "container", "host/container"}, optional = true)
+//		@DictionaryAttribute(name = "port", defaultValue = "7000", optional = false)      ,
+        @DictionaryAttribute(name = "role", defaultValue = "host/container", vals = {"host", "container", "host/container"}, optional = true),
+		@DictionaryAttribute(name = "log_folder", defaultValue = "/tmp", optional = true)
 })
 @NodeFragment
 public abstract class AbstractHostNode extends JavaSENode implements HostNode {
 	private static final Logger logger = LoggerFactory.getLogger(AbstractHostNode.class);
 
 
-	private IaaSHTTPServer server;
+//	private IaaSHTTPServer server;
 
 	private KevoreeNodeManager nodeManager;
 
@@ -47,18 +48,18 @@ public abstract class AbstractHostNode extends JavaSENode implements HostNode {
 		nodeManager = new KevoreeNodeManager(this);
 //		nodeManager.start();
 		// start HTTP Server
-		server = new IaaSHTTPServer(this);
-		String port = (String) this.getDictionary().get("port");
-		int portInt = Integer.parseInt(port);
-		server.startServer(portInt);
-		logger.info("IaaS node started , web console : http://localhost:{}", portInt);
+//		server = new IaaSHTTPServer(this);
+//		String port = (String) this.getDictionary().get("port");
+//		int portInt = Integer.parseInt(port);
+//		server.startServer(portInt);
+//		logger.info("IaaS node started , web console : http://localhost:{}", portInt);
 	}
 
 	@Stop
 	@Override
 	public void stopNode () {
 		logger.debug("stopping node type of " + this.getNodeName());
-		server.stopServer();
+//		server.stopServer();
 		nodeManager.stop();
 		super.stopNode();
 //        server.close(Duration.apply(300, TimeUnit.MILLISECONDS));
