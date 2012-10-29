@@ -39,28 +39,11 @@ public class Test {
 
     public static void main(String[] args) throws Exception {
 
-        ContainerRoot model =  KevScriptLoader.getModel("/home/jed/KEVOREE_PROJECT/kevoree/kevoree-corelibrary/native/org.kevoree.library.nativeN.HelloWorld/src/main/HelloWorld.kevs");
-        String path_uexe = "/home/jed/KEVOREE_PROJECT/kevoree/kevoree-corelibrary/native/org.kevoree.library.nativeN.HelloWorld/org.kevoree.library.nativeN.HelloWorld_native/nix32/target/org.kevoree.library.nativeN.HelloWorld_native-nix32.uexe";
+        ContainerRoot model =  KevScriptLoader.getModel("/home/jed/KEVOREE_PROJECT/kevoree/kevoree-corelibrary/native/org.kevoree.library.nativeN.faceDetection/src/main/kevs/FaceDetection.kevs");
+        String path_uexe = "/home/jed/KEVOREE_PROJECT/kevoree/kevoree-corelibrary/native/org.kevoree.library.nativeN.faceDetection/modules/nix32/target/org.kevoree.library.nativeN.faceDetection-wrapper-nix32.uexe";
 
 
-
-        //File jarfile =    getBootStrapperService().resolveArtifact("org.kevoree.library.nativeN.pwm_native"+getOs(), "org.kevoree.library.nativeN", "1.8.9-SNAPSHOT", "uexe", repos);
-
-        JarFile jarFile = new JarFile("/home/jed/KEVOREE_PROJECT/kevoree/kevoree-corelibrary/native/org.kevoree.library.nativeN.faceDetection/modules/wrapper/target/org.kevoree.library.nativeN.faceDetection-wrapper-1.8.9-SNAPSHOT.jar");
-
-        final Enumeration<JarEntry> entries = jarFile.entries();
-        while (entries.hasMoreElements()) {
-            final JarEntry entry = entries.nextElement();
-            if (entry.getName().contains(".")) {
-                System.out.println("File : " + entry.getName());
-                JarEntry fileEntry = jarFile.getJarEntry(entry.getName());
-                InputStream input = jarFile.getInputStream(fileEntry);
-                //process(input);
-            }
-        }
-        System.exit(0);
-
-        int ipc_key = 215168;
+        int ipc_key = 51516;
 
         ArrayList<String> repos = new ArrayList<String>();
         repos.add("http://maven.kevoree.org/release/");
@@ -77,10 +60,10 @@ public class Test {
 
 
         boolean  started = nativeManager.start();
-        nativeManager.setDico("myParam","value1");
+
         if(started)
         {
-            nativeManager.setDico("myParam","valu2");
+
             nativeManager.update();
 
         } else
