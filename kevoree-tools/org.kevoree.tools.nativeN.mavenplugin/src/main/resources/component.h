@@ -51,7 +51,7 @@ const char * getRessource(const char*key)
    length = strlen(rindex(get_runtime_path(), PATH_SEPARATOR));
    memset(path_ressource,0,sizeof(path_ressource));
    strncpy(path_ressource,get_runtime_path(),strlen(get_runtime_path()) - length);
-   strcat(path_ressource,PATH_SEPARATOR);
+   strcat(path_ressource,(const char*)PATH_SEPARATOR);
    strcat(path_ressource,key);
    fprintf(stderr,"%s \n",path_ressource);
   return path_ressource;
