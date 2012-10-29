@@ -28,7 +28,6 @@
 #include <sys/stat.h>
 #include <pthread.h>
 #include <string.h>
-#include <dlfcn.h>
 #include "settings.h"
 #include "kqueue.h"
 #include "events_fifo.h"
@@ -36,26 +35,6 @@
 
 
 const char * getDictionary(const char *key);
-void dummy_function() { }
-static const char *get_runtime_path ()
-{
-    Dl_info info;
-    if (0 == dladdr((void*)dummy_function, &info)) return "unknown";
-    return info.dli_fname;
-}
-char path_ressource[4096];
-
-const char * getRessource(const char*key)
-{
-   int length;
-   length = strlen(rindex(get_runtime_path(), PATH_SEPARATOR));
-   memset(path_ressource,0,sizeof(path_ressource));
-   strncpy(path_ressource,get_runtime_path(),strlen(get_runtime_path()) - length);
-   strcat(path_ressource,(const char*)PATH_SEPARATOR);
-   strcat(path_ressource,key);
-   fprintf(stderr,"%s \n",path_ressource);
-  return path_ressource;
-}
 
 char fifo_name[SIZE_FIFO_NAME];
 
@@ -135,6 +114,15 @@ const char * getDictionary(const char *key)
      }
 }
 
+static void *task_stop (void *p_data)
+{
+   ctx->stop ();
+   (void) p_data;
+   return NULL;
+}
+
+
+
 void notify(Events ev)
 {
     int i;
@@ -180,8 +168,10 @@ void notify(Events ev)
                   fprintf(stderr,"destroy_queue OUTPUT %s \n",ctx->inputs[i].name);
                 }
                 }
-
-              ctx->stop ();
+             pthread_t pstop;
+             pthread_create (&pstop, NULL, task_stop, NULL);
+             // todo join timeout
+             //pthread_join (pstop, NULL);
               /*
               close(event_broker_tcp.sckServer);
               close(event_broker_udp.sckServer);
@@ -217,6 +207,9 @@ int bootstrap (key_t key,int port_event_broker)
     pthread_t t_event_broker_fifo;
     ctx = getContext(key);
     ctx->pid = getpid ();
+
+    fprintf(stderr,"Boostrap native \n");
+
     sprintf(fifo_name,"%d.fifo",key);
     strcpy (event_broker_fifo.name_pipe,fifo_name);
     // dispather

@@ -114,6 +114,7 @@ public class CodeGeneratorC extends  AbstractCodeGenerator {
     {
         StringBuilder gen = new StringBuilder();
 
+        gen.append("#include <dlfcn.h>\n");
         gen.append("#include \"thirdparty/component.h\" \n\n\n");
 
         for (String name : inputs_ports.keySet())
@@ -121,6 +122,25 @@ public class CodeGeneratorC extends  AbstractCodeGenerator {
             gen.append("void "+name+"(void *input);\n");
         }
 
+ gen.append("void dummy_function() { }\n" +
+         "static const char *get_runtime_path ()\n" +
+         "{\n" +
+         "    Dl_info info;\n" +
+         "    if (0 == dladdr((void*)dummy_function, &info)) return \"unknown\";\n" +
+         "    return info.dli_fname;\n" +
+         "}\n" +
+         "char path_ressource[4096];\n" +
+         "\n" +
+         "const char * getRessource(const char*key)\n" +
+         "{\n" +
+         "   int length;\n" +
+         "   length = strlen(rindex(get_runtime_path(), '/'));\n" +
+         "   memset(path_ressource,0,sizeof(path_ressource));\n" +
+         "   strncpy(path_ressource,get_runtime_path(),strlen(get_runtime_path()) - length);\n" +
+         "   strcat(path_ressource,\"/\");\n" +
+         "   strcat(path_ressource,key);\n" +
+         "  return path_ressource;\n" +
+         "}");
 
         for (String name : ouputs_ports.keySet()){
             gen.append("void "+name+"(void *input) {\n");
