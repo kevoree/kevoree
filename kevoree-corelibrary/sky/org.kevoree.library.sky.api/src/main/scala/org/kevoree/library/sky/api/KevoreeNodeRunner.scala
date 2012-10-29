@@ -1,6 +1,6 @@
 package org.kevoree.library.sky.api
 
-import nodeType.AbstractIaaSNode
+import nodeType.{AbstractHostNode, AbstractIaaSNode}
 import org.slf4j.{LoggerFactory, Logger}
 import org.kevoree.{ContainerNode, KevoreeFactory, TypeDefinition, ContainerRoot}
 import java.io._
@@ -140,6 +140,21 @@ abstract class KevoreeNodeRunner (var nodeName: String) {
 
       }
     }
+  }
+
+
+  def configureLogFile (iaasNode: AbstractHostNode, process : Process) {
+    var logFolder = System.getProperty("java.io.tmpdir")
+    if (iaasNode.getDictionary.get("log_folder") != null && new File(iaasNode.getDictionary.get("log_folder").toString).exists()) {
+      logFolder = iaasNode.getDictionary.get("log_folder").toString
+    }
+    val logFile = logFolder + File.separator + nodeName + ".log"
+    outFile = new File(logFile + ".out")
+    logger.debug("writing logs about {} on {}", nodeName, outFile.getAbsolutePath)
+    new Thread(new ProcessStreamFileLogger(process.getInputStream, outFile)).start()
+    errFile = new File(logFile + ".err")
+    logger.debug("writing logs about {} on {}", nodeName, errFile.getAbsolutePath)
+    new Thread(new ProcessStreamFileLogger(process.getErrorStream, errFile)).start()
   }
 }
 

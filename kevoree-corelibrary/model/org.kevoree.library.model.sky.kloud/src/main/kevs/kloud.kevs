@@ -45,7 +45,7 @@ updateDictionary sync {ip="10.0.0.2", port="8000"}@atmosphere,{ip="10.0.1.1", po
 
 // Kloud manager configuration
 addComponent webServer@atmosphere : KTinyWebServer {port = "8080", timeout = "5000"}
-addComponent paaSKloudResourceManagerPage@atmosphere : PaaSKloudResourceManagerPage {urlpattern = "/kloud/{login}/{action}"}
+addComponent paaSKloudResourceManagerRest@atmosphere : PaaSKloudResourceManagerRest {urlpattern = "/kloud/{login}/{action}"}
 addComponent paaSKloudResourceManager@atmosphere : PaaSKloudResourceManager
 addComponent iaaSKloudResourceManager@atmosphere : IaaSKloudResourceManager
 addComponent ldapAuthentication@atmosphere : LDAPAuthentication {host = "ldap://ildap1-ren.irisa.fr:389", context = "com.sun.jndi.ldap.LdapCtxFactory", base = "ou=people,dc=inria,dc=fr", filter = "(&(objectclass=inriaperson)(inriaentrystatus=valid)(ou=UR-Rennes))", loginKey = "inriaLogin"}
@@ -56,12 +56,12 @@ addChannel submitChannel : defSERVICE
 addChannel authenticationChannel : defSERVICE
 
 bind webServer.handler@atmosphere => requestChannel
-bind paaSKloudResourceManagerPage.request@atmosphere => requestChannel
+bind paaSKloudResourceManagerRest.request@atmosphere => requestChannel
 bind webServer.response@atmosphere => responseChannel
-bind paaSKloudResourceManagerPage.content@atmosphere => responseChannel
+bind paaSKloudResourceManagerRest.content@atmosphere => responseChannel
 
-bind paaSKloudResourceManagerPage.submit@atmosphere => submitChannel
+bind paaSKloudResourceManagerRest.submit@atmosphere => submitChannel
 bind paaSKloudResourceManager.submit@atmosphere => submitChannel
 
 bind ldapAuthentication.authenticate@atmosphere => authenticationChannel
-bind paaSKloudResourceManagerPage.authentication@atmosphere => authenticationChannel
+bind paaSKloudResourceManagerRest.authentication@atmosphere => authenticationChannel

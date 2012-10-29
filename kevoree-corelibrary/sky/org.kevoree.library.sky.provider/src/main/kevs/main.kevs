@@ -1,5 +1,11 @@
 // nodes configuration
-merge "mvn:org.kevoree.corelibrary.model/org.kevoree.library.model.sky/{kevoree.version}"
+merge "mvn:org.kevoree.corelibrary.sky/org.kevoree.library.sky.provider/{kevoree.version}"
+merge "mvn:org.kevoree.corelibrary.sky/org.kevoree.library.sky.minicloud/{kevoree.version}"
+merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.defaultChannels/{kevoree.version}"
+merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.socketChannels/{kevoree.version}"
+merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.nioChannels/{kevoree.version}"
+merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.webserver.api/{kevoree.version}"
+merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.webserver.tjws/{kevoree.version}"
 
 addNode node0 : MiniCloudNode {role="host/container", port="7000", logLevel="DEBUG"}
 
@@ -14,9 +20,9 @@ updateDictionary sync {ip="127.0.0.1", port="8000"}@node0
 
 // Kloud manager configuration
 addComponent webServer@node0 : KTinyWebServer {port = "8080", timeout = "5000"}
-addComponent paaSKloudResourceManagerPage@node0 : PaaSKloudResourceManagerPage {urlpattern = "/kloud/{login}/{action}"}
-//addComponent paaSKloudResourceManager@node0 : PaaSKloudResourceManager
-addComponent paaSKloudResourceManager@node0 : PaaSKloudResourceManagerStateFull {storage = "/home/edaubert/kevoree-state"}
+addComponent paaSKloudResourceManagerRest@node0 : PaaSKloudResourceManagerRest {urlpattern = "/kloud/{login}/{action}"}
+addComponent paaSKloudResourceManager@node0 : PaaSKloudResourceManager
+//addComponent paaSKloudResourceManager@node0 : PaaSKloudResourceManagerStateFull {storage = "/home/edaubert/kevoree/kevoree-state"}
 addComponent iaaSKloudResourceManager@node0 : IaaSKloudResourceManager
 //addComponent ldapAuthentication@node0 : LDAPAuthentication {host = "ldap://ildap1-ren.irisa.fr:389", context = "com.sun.jndi.ldap.LdapCtxFactory", base = "ou=people,dc=inria,dc=fr", filter = "(&(objectclass=inriaperson)(inriaentrystatus=valid)(ou=UR-Rennes))", loginKey = "inriaLogin"}
 
@@ -26,12 +32,12 @@ addChannel submitChannel : defSERVICE
 //addChannel authenticationChannel : defSERVICE
 
 bind webServer.handler@node0 => requestChannel
-bind paaSKloudResourceManagerPage.request@node0 => requestChannel
+bind paaSKloudResourceManagerRest.request@node0 => requestChannel
 bind webServer.response@node0 => responseChannel
-bind paaSKloudResourceManagerPage.content@node0 => responseChannel
+bind paaSKloudResourceManagerRest.content@node0 => responseChannel
 
 bind paaSKloudResourceManagerPage.submit@node0 => submitChannel
 bind paaSKloudResourceManager.submit@node0 => submitChannel
 
 //bind ldapAuthentication.authenticate@node0 => authenticationChannel
-//bind paaSKloudResourceManagerPage.authentication@node0 => authenticationChannel
+//bind paaSKloudResourceManagerRest.authentication@node0 => authenticationChannel

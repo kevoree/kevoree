@@ -44,6 +44,12 @@ object KloudHelper {
     getKloudUserGroup(potentialUserModel).isDefined
   }
 
+  def getKloudUserGroups (model: ContainerRoot): List[Group] = {
+    val potentialKloudUserNodes = model.getNodes.filter(n => isPaaSNode(model, n.getName))
+    model.getGroups.filter(g => (g.getTypeDefinition.getName == "KloudPaaSNanoGroup" || KloudHelper.isASubType(g.getTypeDefinition, "KloudPaaSNanoGroup")) &&
+      g.getSubNodes.forall(n => potentialKloudUserNodes.contains(n)))
+  }
+
   def getKloudUserGroup (userModel: ContainerRoot): Option[String] = {
     val potentialKloudUserNodes = userModel.getNodes.filter(n => isPaaSNode(userModel, n.getName))
     val potentialKloudUserGroups = userModel.getGroups.find(g => g.getSubNodes.size >= potentialKloudUserNodes.size)
@@ -80,20 +86,22 @@ object KloudHelper {
   }
 
   def isPaaSNodeType (currentModel: ContainerRoot /*, groupName: String*/ , nodeTypeName: String): Boolean = {
-      currentModel.getTypeDefinitions /*Groups.find(g => g.getName == groupName) match {
+    currentModel.getTypeDefinitions /*Groups.find(g => g.getName == groupName) match {
         case None => false
         case Some(group) =>
           group.getSubNodes*/ .find(n => n.getName == nodeTypeName) match {
-        case None => false
-        case Some(nodeType) =>
-          nodeType.getName == "PJavaSENode" ||
-            KloudHelper.isASubType(nodeType, "PJavaSENode")
-      }
-      //    }
+      case None => false
+      case Some(nodeType) =>
+        nodeType.getName == "PJavaSENode" ||
+          KloudHelper.isASubType(nodeType, "PJavaSENode")
     }
+    //    }
+  }
 
-  def isKloudGroup/*ForNode */(kloudModel: ContainerRoot, groupName: String/*, nodeName: String*/): Boolean = {
-    kloudModel.getGroups.find(g => g.getName == groupName && (g.getTypeDefinition.getName == "KloudPaaSNanoGroup" || KloudHelper.isASubType(g.getTypeDefinition, "KloudPaaSNanoGroup")) /*&&g.getSubNodes.find(n => n.getName == nodeName).isDefined*/).isDefined
+  def isKloudGroup /*ForNode */ (kloudModel: ContainerRoot, groupName: String /*, nodeName: String*/): Boolean = {
+    kloudModel.getGroups.find(g => g.getName == groupName &&
+      (g.getTypeDefinition.getName == "KloudPaaSNanoGroup" || KloudHelper.isASubType(g.getTypeDefinition, "KloudPaaSNanoGroup")) /*&&g.getSubNodes.find(n => n.getName == nodeName).isDefined*/)
+      .isDefined
   }
 
   def isASubType (nodeType: TypeDefinition, typeName: String): Boolean = {

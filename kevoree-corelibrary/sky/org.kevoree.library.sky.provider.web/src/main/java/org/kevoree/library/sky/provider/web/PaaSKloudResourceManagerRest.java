@@ -1,4 +1,4 @@
-package org.kevoree.library.sky.provider;
+package org.kevoree.library.sky.provider.web;
 
 import org.kevoree.ContainerRoot;
 import org.kevoree.KevoreeFactory;
@@ -12,6 +12,8 @@ import org.kevoree.library.javase.webserver.KevoreeHttpRequest;
 import org.kevoree.library.javase.webserver.KevoreeHttpResponse;
 import org.kevoree.library.javase.webserver.ParentAbstractPage;
 import org.kevoree.library.sky.api.helper.KloudHelper;
+import org.kevoree.library.sky.provider.HostService;
+import org.kevoree.library.sky.provider.SubmissionException;
 import org.kevoree.library.sky.provider.checker.RootKloudChecker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,9 +46,10 @@ import java.util.List;
 		@RequiredPort(name = "authentication", type = PortType.SERVICE, className = Authentication.class, optional = true)
 })
 @DictionaryType({
-		@DictionaryAttribute(name = "checkModel", defaultValue = "true", vals = {"true", "false"})
+		@DictionaryAttribute(name = "checkModel", defaultValue = "true", vals = {"true", "false"}),
+		@DictionaryAttribute(name = "urlpattern", optional = true, defaultValue = "/kloud/{login}/{action}")
 })
-public class PaaSKloudResourceManagerPage extends ParentAbstractPage implements HostService {
+public class PaaSKloudResourceManagerRest extends ParentAbstractPage implements HostService {
 
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 	private RootKloudChecker rootKloudChecker = new RootKloudChecker();
