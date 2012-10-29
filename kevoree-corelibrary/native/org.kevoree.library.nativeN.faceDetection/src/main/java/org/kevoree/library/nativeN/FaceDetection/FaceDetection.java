@@ -86,7 +86,7 @@ public class FaceDetection extends AbstractComponentType {
                         String file =    System.getProperty("java.io.tmpdir")+entry.getName();
                         File d = new File(file);
                         d.mkdirs();
-                        FileManager.copyFileFromStream(input,System.getProperty("java.io.tmpdir"),entry.getName(),true);
+                        FileManager.copyFileFromStream(input,System.getProperty("java.io.tmpdir")+"/FaceDetection/",entry.getName(),true);
                     }
                 }
 

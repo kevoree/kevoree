@@ -22,8 +22,8 @@ size_t cascadeOptLen = cascadeOpt.length();
 const String nestedCascadeOpt = "--nested-cascade";
 size_t nestedCascadeOptLen = nestedCascadeOpt.length();
 String inputName;
-string cascadeName =  "/tmp/haarcascades/haarcascade_frontalface_alt.xml";
-string nestedCascadeName = "/tmp/haarcascades/haarcascade_eye_tree_eyeglasses.xml";
+string cascadeName = "";
+string nestedCascadeName ="";
 
 
 
@@ -39,6 +39,12 @@ int start()
  // get Ressources
   const char *cascadeName_c =  getRessource("haarcascades/haarcascade_frontalface_alt.xml");
   const char * nestedCascadeName_c = getRessource("haarcascades/haarcascade_eye_tree_eyeglasses.xml");
+
+   cascadeName  = string(cascadeName_c);
+   nestedCascadeName  = string(nestedCascadeName_c);
+
+      cout <<  cascadeName << endl;
+      cout <<  nestedCascadeName << endl;
 
 	 CascadeClassifier cascade, nestedCascade;
         double scale = 1;

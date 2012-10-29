@@ -9,17 +9,19 @@ static const char *get_runtime_path ()
     if (0 == dladdr((void*)dummy_function, &info)) return "unknown";
     return info.dli_fname;
 }
-char path_ressource[4096];
+
 
 const char * getRessource(const char*key)
 {
-   int length;
-   length = strlen(rindex(get_runtime_path(), '/'));
+   int length=0;
+   char path_ressource[2048];
+   const char *path_uexe = get_runtime_path();
+   length = strlen(rindex(path_uexe, '/'));
    memset(path_ressource,0,sizeof(path_ressource));
    strncpy(path_ressource,get_runtime_path(),strlen(get_runtime_path()) - length);
-   strcat(path_ressource,"/");
+   strcat(path_ressource,"/FaceDetection/");
    strcat(path_ressource,key);
-  return path_ressource;
+  return strdup(path_ressource);
 }
 
 void faceDetected(void *input) {
