@@ -1,9 +1,29 @@
-{
-merge 'mvn:org.kevoree.library.nativeN/org.kevoree.library.nativeN.faceDetection_bridge/{kevoree.version}'
+ {
+addRepo "http://maven.kevoree.org/archiva/repository/snapshots/"
+addRepo "http://maven.kevoree.org/release"
+addRepo "http://maven.kevoree.org/snapshots"
+addRepo "http://repo.maven.apache.org/maven2"
+addRepo "http://repo.typesafe.com/typesafe/releases/"
+
+merge 'mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.defaultChannels/{kevoree.version}'
+merge 'mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.swingUI/{kevoree.version}'
 merge 'mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.javaseNode/{kevoree.version}'
-
+merge 'mvn:org.kevoree.library.nativeN/org.kevoree.library.nativeN.faceDetection-wrapper/{kevoree.version}'
+merge 'mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.nanohttp/{kevoree.version}'
+merge 'mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.nodeJS/{kevoree.version}'
+merge 'mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.fakeDomo/{kevoree.version}'
 addNode node0:JavaSENode
-addComponent fc1@node0 : FaceDetection
+ {
+  addComponent fc1@node0 : FaceDetection {}
+  addComponent FakeConso18@node0 : FakeConsole {}
+addChannel defMSGT864 : defMSGT {}
+bind FakeConso18.showText@node0 => defMSGT864
+bind fc1.faceDetected@node0 => defMSGT864
+updateDictionary defMSGT864 
+updateDictionary fc1@node0 
+updateDictionary FakeConso18@node0 
+}
 
-
+addGroup group733531880:NanoRestGroup
+addToGroup group733531880 node0
 }

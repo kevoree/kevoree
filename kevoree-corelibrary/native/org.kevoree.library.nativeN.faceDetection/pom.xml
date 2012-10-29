@@ -57,8 +57,62 @@
         </pluginRepository>
     </pluginRepositories>
 
+
+
     <modules>
-        <module>org.kevoree.library.nativeN.faceDetection_native</module>
-        <module>org.kevoree.library.nativeN.faceDetection_bridge</module>
+        <module>modules/wrapper</module>
     </modules>
-</project>
+<profiles>
+        <profile>
+            <id>nix32</id>
+            <activation>
+                <os>
+                    <family>unix</family>
+                    <name>Linux</name>
+                    <arch>i386</arch>
+                </os>
+            </activation>
+            <modules>
+                <module>modules/nix32</module>
+            </modules>
+        </profile>
+
+        <profile>
+            <id>nix64</id>
+            <activation>
+                <os>
+                    <family>unix</family>
+                    <name>Linux</name>
+                    <arch>x64</arch>
+                </os>
+            </activation>
+            <modules>
+                <module>modules/nix64</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>osx</id>
+            <activation>
+                <os>
+                    <family>mac</family>
+                </os>
+            </activation>
+
+            <modules>
+                <module>modules/osx</module>
+            </modules>
+        </profile>
+            <profile>
+                       <id>arm</id>
+                       <activation>
+                           <os>
+                               <family>unix</family>
+                               <name>Linux</name>
+                               <arch>arm</arch>
+                           </os>
+                       </activation>
+                       <modules>
+                           <module>modules/arm</module>
+                       </modules>
+                   </profile>
+    </profiles></project>

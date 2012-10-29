@@ -6,7 +6,7 @@
     <packaging>pom</packaging>
     <name>Kevoree :: Root</name>
     <url>https://github.com/dukeboard/kevoree</url>
-    <version>1.8.3-SNAPSHOT</version>
+    <version>1.8.9-SNAPSHOT</version>
 
 <organization>
     <name>Kevoree Project</name>
@@ -16,6 +16,9 @@
 
     <modules>
         <module>kevoree-core/org.kevoree.root</module>
+		<module>kevoree-tools/org.kevoree.tools.root</module>
+		<module>kevoree-corelibrary</module>
+		<module>kevoree-platform/org.kevoree.platform.root</module>
     </modules>
 
 
@@ -73,6 +76,26 @@
             </plugin>
         </plugins>
     </build>
+
+
+	<profiles>
+		<profile>
+			<id>doc</id>
+            <build>
+                <plugins>      
+					<plugin>
+					        <groupId>com.googlecode.maven-overview-plugin</groupId>
+					        <artifactId>maven-overview-plugin</artifactId>
+							<configuration>
+							                    <width>2000</width>
+							                    <height>3000</height>
+							                    <suppressedScopes/>
+							</configuration>
+					</plugin>
+				</plugins>
+			</build>		
+		</profile>
+	</profiles>
 
 
 </project>
