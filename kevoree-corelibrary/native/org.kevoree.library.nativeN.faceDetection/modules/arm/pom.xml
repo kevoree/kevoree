@@ -1,0 +1,48 @@
+<project>
+        <modelVersion>4.0.0</modelVersion>
+       <groupId>org.kevoree.library.nativeN</groupId>
+      <artifactId>org.kevoree.library.nativeN.faceDetection-wrapper-arm</artifactId>
+      <name>Kevoree :: Native :: faceDetection Root :: NativeCode -ARM</name>
+      <packaging>uexe</packaging>
+
+     <parent>
+               <groupId>org.kevoree.library.nativeN</groupId>
+               <artifactId>org.kevoree.library.nativeN.faceDetection</artifactId>
+               <version>1.8.9-SNAPSHOT</version>
+               <relativePath>../../pom.xml</relativePath>
+           </parent>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>native-maven-plugin</artifactId>
+                <extensions>true</extensions>
+                <version>1.0-alpha-8</version>
+                <configuration>
+                    <compilerProvider>generic-classic</compilerProvider>
+                    <compilerExecutable>arm-linux-gnueabi-cpp</compilerExecutable>
+                    <linkerExecutable>arm-linux-gnueabi-cpp</linkerExecutable>
+
+                    <compilerStartOptions>
+                        <compilerStartOption>-I.</compilerStartOption>
+                    </compilerStartOptions>
+
+                    <sources>
+                        <source>
+                    <directory>../../src/main/c</directory>
+                            <includes>
+                                <include>**/*.c</include>
+                                 <include>**/*.cpp</include>
+                            </includes>
+                        </source>
+                    </sources>
+                    <linkerEndOptions>
+                        <linkerEndOption> -lpthread</linkerEndOption>
+                    </linkerEndOptions>
+                </configuration>
+            </plugin>
+
+        </plugins>
+    </build>
+
+</project>
