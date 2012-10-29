@@ -193,7 +193,7 @@ JNIEXPORT jint JNICALL Java_org_kevoree_tools_nativeN_NativeJNI_init (JNIEnv * e
   ctxN->alive = 0;
   ctxN->pid_jvm = getpid ();
 
-  char fifo_name[SIZE_FIFO];
+  char fifo_name[SIZE_FIFO_NAME];
   sprintf(fifo_name,"%d.fifo",key);
   strcpy (ctxN->p_event_fifo.name_pipe,fifo_name);
 
@@ -209,8 +209,10 @@ Java_org_kevoree_tools_nativeN_NativeJNI_start (JNIEnv * env, jobject obj,
 {
 
   const char *n_path_binary = (*env)->GetStringUTFChars (env, path_binary, 0);
-  char cipckey[25];
-    char port[25];
+  char cipckey[64];
+  #ifdef DEBUG
+   fprintf (stderr,"Starting binary path=%s \n",n_path_binary);
+  #endif
   int pid;
   switch (pid = fork ())
     {
