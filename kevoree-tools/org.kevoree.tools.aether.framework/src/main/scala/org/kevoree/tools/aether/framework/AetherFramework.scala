@@ -105,16 +105,23 @@ trait AetherFramework extends TempFileCacheManager with AetherRepositoryHandler 
     val artifactRequest = new ArtifactRequest
     artifactRequest.setArtifact(artifact)
     val repositories: java.util.List[RemoteRepository] = new java.util.ArrayList()
-    (repositoriesUrl++ getDefaultURLS).foreach {
-      repository =>
-        val repo = new RemoteRepository
-        val purl = repository.trim.replace(':', '_').replace('/', '_').replace('\\', '_')
-        repo.setId(purl)
-        repo.setUrl(repository)
-        repo.setContentType("default")
-        repositories.add(repo)
-        logger.debug("Add URL for Request {}",repository)
+
+    populate(repositoriesUrl)
+    populate(getDefaultURLS)
+
+    def populate(rurl: java.util.List[String]){
+      rurl.foreach {
+        repository =>
+          val repo = new RemoteRepository
+          val purl = repository.trim.replace(':', '_').replace('/', '_').replace('\\', '_')
+          repo.setId(purl)
+          repo.setUrl(repository)
+          repo.setContentType("default")
+          repositories.add(repo)
+          logger.debug("Add URL for Request {}",repository)
+      }
     }
+
     artifactRequest.setRepositories(repositories)
     var artefactResult = getRepositorySystem.resolveArtifact(getRepositorySystemSession, artifactRequest)
 
