@@ -141,7 +141,7 @@ object JailsConstraintsConfiguration {
             case e: NumberFormatException => logger.warn("Unable to take into account WALLCLOCKTIME limitation because the value {} is not well defined for {}", property, nodeName)
           }
         }
-        property = KevoreePropertyHelper.getPropertyForNode(model, nodeName, "DATA_SIZE").getOrElse("N/A").toString
+        property = KevoreePropertyHelper.getPropertyForNode(model, nodeName, "DISK_SIZE").getOrElse("N/A").toString
         if (execResult && property != "N/A") {
           //          var limit = 5 * 1024 * 1024
           /*if (property.toLowerCase.endsWith("gb") || property.toLowerCase.endsWith("g")) {
