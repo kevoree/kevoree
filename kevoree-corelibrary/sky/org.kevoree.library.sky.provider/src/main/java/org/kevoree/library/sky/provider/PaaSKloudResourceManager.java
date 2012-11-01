@@ -4,7 +4,7 @@ import org.kevoree.ContainerRoot;
 import org.kevoree.annotation.*;
 import org.kevoree.api.service.core.script.KevScriptEngine;
 import org.kevoree.framework.AbstractComponentType;
-import org.kevoree.library.sky.api.helper.KloudHelper;
+import org.kevoree.library.sky.api.helper.KloudModelHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import scala.Option;
@@ -55,11 +55,7 @@ public class PaaSKloudResourceManager extends AbstractComponentType implements H
 //					sshKey = (String) stdMessage.getValue("sshKey").get();
 //				}
 		// check if a previous deploy has already done for this login
-		if (!KloudHelper.lookForAGroup(login, this.getModelService().getLastModel())) {
-			return processNew(login, model, sshKey);
-		} else {
-			return false;
-		}
+		return KloudModelHelper.getGroup(login, this.getModelService().getLastModel()).isEmpty() && processNew(login, model, sshKey);
 //			}
 //		}
 	}

@@ -1,10 +1,14 @@
 package org.kevoree.library.sky.provider
 
 import org.slf4j.{LoggerFactory, Logger}
-import org.kevoree.{ContainerNode, KevoreeFactory, ContainerRoot}
-import org.kevoree.framework.{Constants, KevoreePropertyHelper}
+import org.kevoree._
+import framework.{KevoreeXmiHelper, Constants, KevoreePropertyHelper}
 import org.kevoree.api.service.core.script.{KevScriptEngine, KevScriptEngineFactory}
-import org.kevoree.library.sky.api.helper.KloudHelper
+import library.sky.api.helper.{KloudNetworkHelper, KloudModelHelper}
+import org.kevoree.cloner.ModelCloner
+import java.net._
+import java.io._
+import scala.Some
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -24,7 +28,7 @@ object KloudReasoner {
       case Some(userGroup) => {
         userGroup.getSubNodes.foreach {
           sub =>
-            if (KloudHelper.isPaaSNode(currentIaaSModel /*, userGroup.getName*/ , sub.getName)) {
+            if (KloudModelHelper.isPaaSNode(currentIaaSModel /*, userGroup.getName*/ , sub.getName)) {
               kengine.append("removeNode " + sub.getName)
             }
         }
@@ -63,14 +67,14 @@ object KloudReasoner {
     //find Web Server
     kloudModel.getNodes.find(n => n.getName == nodeName) match {
       case None => logger.debug("Any proxy can be added because there is no webserver to use"); None
-      case Some(node) => node.getComponents.find(c => c.getTypeDefinition.getName == "WebServer" || KloudHelper.isASubType(c.getTypeDefinition, "WebServer")) match {
+      case Some(node) => node.getComponents.find(c => c.getTypeDefinition.getName == "WebServer" || KloudTypeHelper.isASubType(c.getTypeDefinition, "WebServer")) match {
         case None => logger.debug("Any proxy can be added because there is no webserver to use"); None
         case Some(component) => {
           val ipOption = KevoreePropertyHelper.getStringNetworkProperty(kloudModel, nodeName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP)
           val portOption = KevoreePropertyHelper.getIntPropertyForGroup(kloudModel, groupName, "port", true, nodeName)
           if (ipOption.isDefined && portOption.isDefined) {
-            val requestChannelNameOption = KloudHelper.findChannel(component.getName, "handler", node.getName, kloudModel)
-            val responseChannelNameOption = KloudHelper.findChannel(component.getName, "response", node.getName, kloudModel)
+            val requestChannelNameOption = KloudTypeHelper.findChannel(component.getName, "handler", node.getName, kloudModel)
+            val responseChannelNameOption = KloudTypeHelper.findChannel(component.getName, "response", node.getName, kloudModel)
             if (requestChannelNameOption.isDefined && responseChannelNameOption.isDefined) {
 
 
@@ -115,8 +119,8 @@ object KloudReasoner {
     val scriptBuilder = new StringBuilder()
     val uuidModel = modelHandlerService.getLastUUIDModel
 
-    val requestChannelNameOption = KloudHelper.findChannel(groupName + "_proxy", "request", nodeName, uuidModel.getModel)
-    val responseChannelNameOption = KloudHelper.findChannel(groupName + "_proxy", "content", nodeName, uuidModel.getModel)
+    val requestChannelNameOption = KloudTypeHelper.findChannel(groupName + "_proxy", "request", nodeName, uuidModel.getModel)
+    val responseChannelNameOption = KloudTypeHelper.findChannel(groupName + "_proxy", "content", nodeName, uuidModel.getModel)
 
     // bind Web Server with this proxy
     scriptBuilder append "unbind " + groupName + "_proxy" + ".request@" + nodeName + " => " + requestChannelNameOption.get + "\n"
@@ -141,35 +145,6 @@ object KloudReasoner {
       }
     }
   }*/
-
-  def appendCreateGroupScript (kloudModel: ContainerRoot, login: String, nodeName: String, kevScriptEngine: KevScriptEngine, sshKey: String = "", storage: Boolean = false) {
-    val ipOption = KevoreePropertyHelper.getStringNetworkProperty(kloudModel, nodeName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP)
-    var ip = "127.0.0.1"
-    if (ipOption.isDefined) {
-      ip = ipOption.get
-    }
-    /* Warning This method try severals Socket to determine available port */
-    val portNumber = KloudHelper.selectPortNumber(ip, Array[Int]())
-    kevScriptEngine.addVariable("groupName", login)
-    kevScriptEngine.addVariable("nodeName", nodeName)
-    kevScriptEngine.addVariable("port", portNumber.toString)
-    kevScriptEngine.addVariable("ip", ip)
-    if (storage) {
-      kevScriptEngine.addVariable("groupType", "KloudPaaSNanoGroupStateFull")
-    } else {
-      kevScriptEngine.addVariable("groupType", "KloudPaaSNanoGroup")
-    }
-
-    kevScriptEngine append "addGroup {groupName} : KloudPaaSNanoGroup {masterNode='{nodeName}={ip}:{port}'}"
-    if (sshKey != null && sshKey != "") {
-      kevScriptEngine.addVariable("sshKey", sshKey)
-      kevScriptEngine append "updateDictionary {groupName} {SSH_Public_Key='{sshKey}'}"
-    }
-    kevScriptEngine append "addToGroup {groupName} {nodeName}"
-    kevScriptEngine append "updateDictionary {groupName} {port='{port}', ip='{ip}'}@{nodeName}"
-
-
-  }
 
   /*def appendRemoveGroupScript (groupName: String, modelHandlerService: KevoreeModelHandlerService, kevScriptEngineFactory: KevScriptEngineFactory, nbTry: Int)/*: Boolean = */{
     //    val scriptBuilder = new StringBuilder()
@@ -217,9 +192,9 @@ object KloudReasoner {
   def getAddAndRemove (newModel: ContainerRoot, userModel: ContainerRoot): (List[ContainerNode], List[ContainerNode]) = {
     var addedNodes = List[ContainerNode]()
     var removedNodes = List[ContainerNode]()
-    userModel.getNodes.filter(n => KloudHelper.isPaaSNode(userModel, n.getName)).foreach {
+    userModel.getNodes.filter(n => KloudModelHelper.isPaaSNode(userModel, n.getName)).foreach {
       userNode =>
-        newModel.getNodes.filter(n => KloudHelper.isPaaSNode(newModel, n.getName)).find(node => node.getName == userNode.getName) match {
+        newModel.getNodes.filter(n => KloudModelHelper.isPaaSNode(newModel, n.getName)).find(node => node.getName == userNode.getName) match {
           case None => {
             logger.debug("{} must be removed from the kloud.", userNode.getName)
             removedNodes = removedNodes ++ List[ContainerNode](userNode)
@@ -227,10 +202,10 @@ object KloudReasoner {
           case Some(newUserNode) =>
         }
     }
-    newModel.getNodes.filter(n => KloudHelper.isPaaSNode(newModel, n.getName)).foreach {
+    newModel.getNodes.filter(n => KloudModelHelper.isPaaSNode(newModel, n.getName)).foreach {
       newUserNode =>
       // the kloud platform must use PJavaSeNode or a subtype of it so JavaSeNode will not be instanciated on the Kloud
-        userModel.getNodes.filter(n => KloudHelper.isPaaSNode(userModel, n.getName)).find(node => node.getName == newUserNode.getName) match {
+        userModel.getNodes.filter(n => KloudModelHelper.isPaaSNode(userModel, n.getName)).find(node => node.getName == newUserNode.getName) match {
           case None => {
             logger.debug("{} must be added on the kloud.", newUserNode.getName)
             addedNodes = addedNodes ++ List[ContainerNode](newUserNode)
@@ -289,7 +264,7 @@ object KloudReasoner {
           // set dictionary attributes of node
           if (node.getDictionary.isDefined) {
             //            scriptBuilder append "{"
-            val defaultAttributes = KloudHelper.getDefaultNodeAttributes(kloudModel, node.getTypeDefinition.getName)
+            val defaultAttributes = getDefaultNodeAttributes(kloudModel, node.getTypeDefinition.getName)
             node.getDictionary.get.getValues
               .filter(value => defaultAttributes.find(a => a.getName == value.getAttribute.getName) match {
               case Some(attribute) => true
@@ -310,13 +285,13 @@ object KloudReasoner {
 
   def configureChildNodes (kloudModel: ContainerRoot, kengine: KevScriptEngine): Boolean = {
     // count current child for each Parent nodes
-    val parents = KloudHelper.countChilds(kloudModel)
+    val parents = countChilds(kloudModel)
 
     var min = Int.MaxValue
     var potentialParents = List[String]()
 
     // filter nodes that are not IaaSNode and are not child of IaaSNode
-    kloudModel.getNodes.filter(n => KloudHelper.isPaaSNode(kloudModel, n.getName)
+    kloudModel.getNodes.filter(n => KloudModelHelper.isPaaSNode(kloudModel, n.getName)
       && kloudModel.getNodes.forall(parent => !parent.getHosts.contains(n))).foreach {
       node => {
         logger.debug("try to select a parent for {}", node.getName)
@@ -345,13 +320,13 @@ object KloudReasoner {
         kengine append "addChild {nodeName}@{parentName}"
 
         // define IP using selecting node to know what it the network used in this machine
-        val ipOption = KloudHelper.selectIP(potentialParents(index), kloudModel)
+        val ipOption = KloudNetworkHelper.selectIP(potentialParents(index), kloudModel)
         if (ipOption.isDefined) {
           kengine.addVariable("ipKey", Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP)
           kengine.addVariable("ip", ipOption.get)
           kengine append "network {nodeName} {'{ipKey}' = '{ip}' }\n"
           // find corresponding Kloud group to update the user group configuration on the kloud
-          kloudModel.getGroups.filter(g => KloudHelper.isKloudGroup(kloudModel, g.getName) && g.getSubNodes.find(n => n.getName == node.getName).isDefined).foreach {
+          kloudModel.getGroups.filter(g => KloudModelHelper.isPaaSKloudGroup(kloudModel, g.getName) && g.getSubNodes.find(n => n.getName == node.getName).isDefined).foreach {
             group =>
               kengine.addVariable("groupName", group.getName)
               kengine append "updateDictionary {groupName} {ip='{ip}'}@{nodeName}"
@@ -375,15 +350,13 @@ object KloudReasoner {
   def configureGroup (userModel: ContainerRoot, kloudModel: ContainerRoot, groupName: String, kengine: KevScriptEngine): Boolean = {
     logger.debug("Try to add the user nodes on default group {} into the Kloud", groupName)
 
-    val kloudUserNodes = userModel.getNodes.filter(n => KloudHelper.isPaaSNode(userModel, n.getName))
+    val kloudUserNodes = userModel.getNodes.filter(n => KloudModelHelper.isPaaSNode(userModel, n.getName))
 
     kloudModel.getGroups.find(g => g.getName == groupName) match {
       case None => logger.error("Unable to find the group {}", groupName); false //must never appear
       case Some(group) =>
         if (group.getSubNodes.size - 1 /*due to master node*/ == kloudUserNodes.size &&
-          KloudHelper.isKloudGroup(kloudModel, group.getName) /*group.getTypeDefinition.getName == "KloudPaaSNanoGroup" || KloudHelper.isASubType(group.getTypeDefinition, "KloudPaaSNanoGroup")*/ ) {
-
-          //          KloudHelper.isKloudGroupForNode(kloudModel, group.getName,
+          KloudModelHelper.isPaaSKloudGroup(kloudModel, group.getName)) {
           true
         } else {
           // build kevscript to add user nodes into the kloud model
@@ -405,7 +378,7 @@ object KloudReasoner {
                     address = addressOption.get
                   }
                   /* Warning This method try severals Socket to determine available port */
-                  val port = KloudHelper.selectPortNumber(address, ports)
+                  val port = KloudNetworkHelper.selectPortNumber(address, ports)
                   ports = ports ++ Array[Int](port)
 
                   kengine append "addToGroup " + groupName + " " + node.getName
@@ -464,7 +437,7 @@ object KloudReasoner {
     }
     kengine.append("addGroup {groupName} : {groupType}")
 
-    val kloudUserNodes = userModel.getNodes.filter(n => KloudHelper.isPaaSNode(userModel, n.getName))
+    val kloudUserNodes = userModel.getNodes.filter(n => KloudModelHelper.isPaaSNode(userModel, n.getName))
     //FOUND IAAS GROUP
     iaasModel.getGroups.find(g => g.getName == login) match {
       case Some(iaasPreviousGroup) => {
@@ -498,6 +471,91 @@ object KloudReasoner {
 
       }
       case None => None
+    }
+  }
+
+  /**
+   * get clean model with only nodes and without components, channels and groups
+   */
+  def cleanUserModel (model: ContainerRoot): Option[ContainerRoot] = {
+    val cloner = new ModelCloner
+    val cleanModel = cloner.clone(model)
+
+    cleanModel.removeAllGroups()
+    cleanModel.removeAllHubs()
+    cleanModel.removeAllMBindings()
+    cleanModel.getNodes.foreach {
+      node =>
+        node.removeAllComponents()
+    }
+    cleanModel.getNodes.filter(node =>
+      model.getNodes.find(parent => parent.getHosts.contains(node)) match {
+        case None => false
+        case Some(n) => true
+      }).foreach {
+      node =>
+        cleanModel.removeNodes(node)
+    }
+
+    Some(cleanModel)
+  }
+
+  def countChilds (kloudModel: ContainerRoot): List[(String, Int)] = {
+    var counts = List[(String, Int)]()
+    kloudModel.getNodes.filter {
+      node =>
+        val nodeType: NodeType = node.getTypeDefinition.asInstanceOf[NodeType]
+        nodeType.getManagedPrimitiveTypes.filter(primitive => primitive.getName.toLowerCase == "addnode"
+          || primitive.getName.toLowerCase == "removenode").size == 2
+    }.foreach {
+      node =>
+        counts = counts ++ List[(String, Int)]((node.getName, node.getHosts.size))
+    }
+    counts
+  }
+
+  def findChannel (componentName: String, portName: String, nodeName: String, currentModel: ContainerRoot): Option[String] = {
+    currentModel.getMBindings.find(b => b.getPort.getPortTypeRef.getName == portName && b.getPort.eContainer.asInstanceOf[ComponentInstance].getName == componentName &&
+      b.getPort.eContainer.eContainer.asInstanceOf[ContainerNode].getName == nodeName) match {
+      case None => None
+      case Some(binding) => {
+        Some(binding.getHub.getName)
+      }
+    }
+  }
+
+  /*def appendCreateGroupScript (kloudModel: ContainerRoot, login: String, nodeName: String, kevScriptEngine: KevScriptEngine, sshKey: String = "", storage: Boolean = false) {
+    val ipOption = KevoreePropertyHelper.getStringNetworkProperty(kloudModel, nodeName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP)
+    var ip = "127.0.0.1"
+    if (ipOption.isDefined) {
+      ip = ipOption.get
+    }
+    /* Warning This method try severals Socket to determine available port */
+    val portNumber = selectPortNumber(ip, Array[Int]())
+    kevScriptEngine.addVariable("groupName", login)
+    kevScriptEngine.addVariable("nodeName", nodeName)
+    kevScriptEngine.addVariable("port", portNumber.toString)
+    kevScriptEngine.addVariable("ip", ip)
+    if (storage) {
+      kevScriptEngine.addVariable("groupType", "KloudPaaSNanoGroupStateFull")
+    } else {
+      kevScriptEngine.addVariable("groupType", "KloudPaaSNanoGroup")
+    }
+
+    kevScriptEngine append "addGroup {groupName} : KloudPaaSNanoGroup {masterNode='{nodeName}={ip}:{port}'}"
+    if (sshKey != null && sshKey != "") {
+      kevScriptEngine.addVariable("sshKey", sshKey)
+      kevScriptEngine append "updateDictionary {groupName} {SSH_Public_Key='{sshKey}'}"
+    }
+    kevScriptEngine append "addToGroup {groupName} {nodeName}"
+    kevScriptEngine append "updateDictionary {groupName} {port='{port}', ip='{ip}'}@{nodeName}"
+  }*/
+
+  def getDefaultNodeAttributes (kloudModel: ContainerRoot, typeDefName: String): List[DictionaryAttribute] = {
+    kloudModel.getTypeDefinitions.find(td => td.getName == typeDefName) match {
+      case None => List[DictionaryAttribute]()
+      case Some(td) =>
+        td.getDictionaryType.get.getAttributes
     }
   }
 }

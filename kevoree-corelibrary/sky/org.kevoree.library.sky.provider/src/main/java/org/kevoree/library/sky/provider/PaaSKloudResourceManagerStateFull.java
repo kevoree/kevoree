@@ -6,7 +6,7 @@ import org.kevoree.api.service.core.handler.ModelListener;
 import org.kevoree.api.service.core.script.KevScriptEngine;
 import org.kevoree.framework.KevoreeXmiHelper;
 import org.kevoree.framework.message.StdKevoreeMessage;
-import org.kevoree.library.sky.api.helper.KloudHelper;
+import org.kevoree.library.sky.api.helper.KloudModelHelper;
 import scala.Option;
 
 import java.io.File;
@@ -106,9 +106,9 @@ public class PaaSKloudResourceManagerStateFull extends PaaSKloudResourceManager 
 	public boolean preUpdate (ContainerRoot currentModel, ContainerRoot proposedModel) {
 		logger.debug("Trigger pre update");
 
-		if (KloudHelper.isIaaSNode(currentModel, getName(), getNodeName()) && KloudHelper.isUserModel(proposedModel)) {
+		if (KloudModelHelper.isIaaSNode(currentModel, getName(), getNodeName()) && KloudModelHelper.isPaaSModel(proposedModel)) {
 			logger.debug("A new user model is received, storing it.");
-			Option<String> groupOption = KloudHelper.getKloudUserGroup(proposedModel);
+			Option<String> groupOption = KloudModelHelper.getPaaSKloudGroup(proposedModel);
 			if (groupOption.isDefined()) {
 				storeModel(proposedModel, groupOption.get());
 			}
