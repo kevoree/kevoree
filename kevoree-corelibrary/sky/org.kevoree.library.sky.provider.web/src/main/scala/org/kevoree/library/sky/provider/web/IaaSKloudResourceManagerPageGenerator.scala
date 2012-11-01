@@ -1,7 +1,7 @@
 package org.kevoree.library.sky.provider.web
 
 import org.kevoree.library.javase.webserver.{KevoreeHttpResponse, KevoreeHttpRequest}
-import org.kevoree.library.sky.api.helper.KloudHelper
+import org.kevoree.library.sky.api.helper.{KloudNetworkHelper, KloudModelHelper}
 import org.json.JSONStringer
 import org.kevoree.api.service.core.script.{KevScriptEngineException, KevScriptEngine}
 import org.slf4j.LoggerFactory
@@ -19,7 +19,7 @@ import org.kevoree.framework.Constants
 class IaaSKloudResourceManagerPageGenerator (instance: KloudResourceManagerPage, pattern: String, parentNodeName: String) extends KloudResourceManagerPageGenerator(instance, pattern) {
   logger = LoggerFactory.getLogger(this.getClass)
 
-  val rootRequest = new Regex(pattern)
+  val rootRequest = new Regex(pattern.substring(0, pattern.length - 1))
   val addChildRequest = new Regex(pattern + "AddChild")
   val removeChildRequest = new Regex(pattern + "RemoveChild")
   val NodeSubRequest = new Regex(pattern + "nodes/(.+)/(.+)") // TODO maybe remove nodes on regex
@@ -34,14 +34,14 @@ class IaaSKloudResourceManagerPageGenerator (instance: KloudResourceManagerPage,
   }
 
   private def getNodeLogPage (request: KevoreeHttpRequest, response: KevoreeHttpResponse, fluxName: String, nodeName: String): KevoreeHttpResponse = {
-    val htmlContent = /*VirtualNodeHTMLHelper.*/ HTMLPageBuilder.getNodeLogPage(pattern, parentNodeName, nodeName, fluxName, instance.getModelService.getLastModel)
+    val htmlContent = HTMLPageBuilder.getNodeLogPage(pattern, parentNodeName, nodeName, fluxName, instance.getModelService.getLastModel)
     response.setStatus(200)
     response.setContent(htmlContent)
     response
   }
 
   private def getNodePage (request: KevoreeHttpRequest, response: KevoreeHttpResponse, nodeName: String): KevoreeHttpResponse = {
-    val htmlContent = /*VirtualNodeHTMLHelper.*/ HTMLPageBuilder.getNodePage(pattern, parentNodeName, nodeName, instance.getModelService.getLastModel)
+    val htmlContent = HTMLPageBuilder.getNodePage(pattern, parentNodeName, nodeName, instance.getModelService.getLastModel)
     response.setStatus(200)
     response.setContent(htmlContent)
     response
@@ -49,7 +49,7 @@ class IaaSKloudResourceManagerPageGenerator (instance: KloudResourceManagerPage,
 
 
   private def getIaasPage (request: KevoreeHttpRequest, response: KevoreeHttpResponse): KevoreeHttpResponse = {
-    val htmlContent = /*VirtualNodeHTMLHelper.*/ HTMLPageBuilder.getIaasPage(pattern, parentNodeName, instance.getModelService.getLastModel)
+    val htmlContent = HTMLPageBuilder.getIaasPage(pattern, parentNodeName, instance.getModelService.getLastModel)
     response.setStatus(200)
     response.setContent(htmlContent)
     response
@@ -64,10 +64,10 @@ class IaaSKloudResourceManagerPageGenerator (instance: KloudResourceManagerPage,
           response.setContent("Unable to find the IaaS node: " + parentNodeName)
         }
         case Some(parent) => {
-          val paasNodeTypes = model.getTypeDefinitions.filter(nt => KloudHelper.isPaaSNodeType(model, nt.getName) &&
-            nt.getDeployUnits.find(dp => dp.getTargetNodeType.find(targetNodeType => KloudHelper.isASubType(parent.getTypeDefinition, targetNodeType.getName)).isDefined).isDefined)
+          val paasNodeTypes = model.getTypeDefinitions.filter(nt => KloudModelHelper.isPaaSNodeType(model, nt.getName) &&
+            nt.getDeployUnits.find(dp => dp.getTargetNodeType.find(targetNodeType => KloudModelHelper.isASubType(parent.getTypeDefinition, targetNodeType.getName)).isDefined).isDefined)
 
-          val htmlContent = /*VirtualNodeHTMLHelper.*/ HTMLPageBuilder.addNodePage(pattern, paasNodeTypes)
+          val htmlContent = HTMLPageBuilder.addNodePage(pattern, paasNodeTypes)
           response.setStatus(200)
           response.setContent(htmlContent)
         }
@@ -106,7 +106,7 @@ class IaaSKloudResourceManagerPageGenerator (instance: KloudResourceManagerPage,
             kengine.addVariable("parentNodeName", parentNodeName)
             kengine append "addNode {nodeName} : {nodeTypeName}"
             kengine append "addChild {nodeName} @ {parentNodeName}"
-            val ipOption = KloudHelper.selectIP(parentNodeName, instance.getModelService.getLastModel)
+            val ipOption = KloudNetworkHelper.selectIP(parentNodeName, instance.getModelService.getLastModel)
             if (ipOption.isDefined) {
               kengine.addVariable("ipKey", Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP)
               kengine.addVariable("ip", ipOption.get)
@@ -160,8 +160,8 @@ class IaaSKloudResourceManagerPageGenerator (instance: KloudResourceManagerPage,
         null
       }
       case Some(parent) => {
-        val paasNodeTypes = model.getTypeDefinitions.filter(nt => KloudHelper.isPaaSNodeType(model, nt.getName) &&
-          nt.getDeployUnits.find(dp => dp.getTargetNodeType.find(targetNodeType => KloudHelper.isASubType(parent.getTypeDefinition, targetNodeType.getName)).isDefined).isDefined)
+        val paasNodeTypes = model.getTypeDefinitions.filter(nt => KloudModelHelper.isPaaSNodeType(model, nt.getName) &&
+          nt.getDeployUnits.find(dp => dp.getTargetNodeType.find(targetNodeType => KloudModelHelper.isASubType(parent.getTypeDefinition, targetNodeType.getName)).isDefined).isDefined)
 
         var types = List[String]()
         jsonresponse.key("request").value("list")

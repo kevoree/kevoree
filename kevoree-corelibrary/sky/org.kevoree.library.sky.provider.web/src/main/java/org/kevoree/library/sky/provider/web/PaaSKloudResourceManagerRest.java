@@ -11,7 +11,7 @@ import org.kevoree.library.javase.authentication.Authentication;
 import org.kevoree.library.javase.webserver.KevoreeHttpRequest;
 import org.kevoree.library.javase.webserver.KevoreeHttpResponse;
 import org.kevoree.library.javase.webserver.ParentAbstractPage;
-import org.kevoree.library.sky.api.helper.KloudHelper;
+import org.kevoree.library.sky.helper.KloudProviderHelper;
 import org.kevoree.library.sky.provider.HostService;
 import org.kevoree.library.sky.provider.SubmissionException;
 import org.kevoree.library.sky.provider.checker.RootKloudChecker;
@@ -135,11 +135,11 @@ public class PaaSKloudResourceManagerRest extends ParentAbstractPage implements 
 	}
 
 	private KevoreeHttpResponse forwardModelToUserGroup (KevoreeHttpRequest request, KevoreeHttpResponse response, String masterNode, ContainerRoot model) {
-		List<String> accessPoints = KloudHelper.getMasterIP_PORT(masterNode);
+		List<String> accessPoints = KloudProviderHelper.getMasterIP_PORT(masterNode);
 		if (accessPoints.size() > 0) {
 			for (String ipPort : accessPoints) {
-				if (KloudHelper.sendModel(model, "http://" + ipPort + "/model/current")) {
-					ContainerRoot newModel = KloudHelper.pullModel("http://" + ipPort + "/model/current");
+				if (KloudProviderHelper.sendModel(model, "http://" + ipPort + "/model/current")) {
+					ContainerRoot newModel = KloudProviderHelper.pullModel("http://" + ipPort + "/model/current");
 					if (newModel != null) {
 						response.setContent(KevoreeXmiHelper.saveToString(newModel, false));
 					}
@@ -178,10 +178,10 @@ public class PaaSKloudResourceManagerRest extends ParentAbstractPage implements 
 		logger.info("Try to find model for {}", login);
 		Option<String> masterNodeOption = KevoreePropertyHelper.getStringPropertyForGroup(getModelService().getLastModel(), login, "masterNode", false, "");
 		if (masterNodeOption.isDefined()) {
-			List<String> accessPoints = KloudHelper.getMasterIP_PORT(masterNodeOption.get());
+			List<String> accessPoints = KloudProviderHelper.getMasterIP_PORT(masterNodeOption.get());
 			if (accessPoints.size() > 0) {
 				for (String ipPort : accessPoints) {
-					ContainerRoot model = KloudHelper.pullModel("http://" + ipPort + "/model/current");
+					ContainerRoot model = KloudProviderHelper.pullModel("http://" + ipPort + "/model/current");
 					if (model != null) {
 						response.setContent(KevoreeXmiHelper.saveToString(model, false));
 						return response;

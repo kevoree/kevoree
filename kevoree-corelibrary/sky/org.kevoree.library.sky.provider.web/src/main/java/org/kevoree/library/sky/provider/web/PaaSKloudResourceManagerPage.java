@@ -1,8 +1,6 @@
 package org.kevoree.library.sky.provider.web;
 
 import org.kevoree.annotation.ComponentType;
-import org.kevoree.annotation.DictionaryAttribute;
-import org.kevoree.annotation.DictionaryType;
 import org.kevoree.annotation.Library;
 
 /**
@@ -15,9 +13,6 @@ import org.kevoree.annotation.Library;
  */
 @Library(name = "SKY")
 @ComponentType
-@DictionaryType({
-		@DictionaryAttribute(name = "urlpattern", optional = true, defaultValue = "/{login}/")
-})
 public class PaaSKloudResourceManagerPage  extends KloudResourceManagerPage {
 
 	@Override
