@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>org.kevoree.library.sky.root</artifactId>
+        <groupId>org.kevoree.corelibrary.sky</groupId>
+        <version>1.8.9-SNAPSHOT</version>
+        <relativePath>../org.kevoree.library.sky.root/pom.xml</relativePath>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>org.kevoree.library.sky.libvirt</artifactId>
+    <name>Kevoree :: CoreLibrary :: Sky :: LibVirt</name>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.kevoree.corelibrary.sky</groupId>
+            <artifactId>org.kevoree.library.sky.api</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.libvirt</groupId>
+            <artifactId>libvirt</artifactId>
+            <version>0.4.9</version>
+        </dependency>
+        <dependency>
+          <groupId>net.java.dev.jna</groupId>
+          <artifactId>jna</artifactId>
+          <version>3.0.9</version>
+        </dependency>
+    </dependencies>
+
+    <repositories>
+        <repository>
+            <id>libvirt</id>
+            <url>http://www.libvirt.org/maven2/</url>
+        </repository>
+    </repositories>
+</project>
