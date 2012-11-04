@@ -21,4 +21,6 @@ public interface PaaSManagerService {
 	public void merge(String id, ContainerRoot model) throws SubmissionException;
 
 	public void release (String id) throws SubmissionException;
+
+	public ContainerRoot getModel(String id) throws SubmissionException;
 }
