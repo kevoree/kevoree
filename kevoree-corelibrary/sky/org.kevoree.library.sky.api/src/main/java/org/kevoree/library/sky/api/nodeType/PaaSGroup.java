@@ -15,7 +15,7 @@ import org.kevoree.annotation.Library;
 @Library(name = "SKY")
 //@GroupFragment // TODO use it when nature will be defined and managed on the model
 @DictionaryType({
-		@DictionaryAttribute(name = "masterNode", optional = false),
+//		@DictionaryAttribute(name = "masterNode", optional = false),
 		@DictionaryAttribute(name = "port", optional = true, fragmentDependant = true),
 		@DictionaryAttribute(name = "ip", defaultValue = "0.0.0.0", optional = true, fragmentDependant = true)
 })

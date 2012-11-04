@@ -29,7 +29,7 @@ object KloudModelHelper {
     getPaaSKloudGroup(potentialUserModel).isDefined
   }
 
-  def getPaaSKloudGroups (model: ContainerRoot): List[Group] = {
+  def getPaaSKloudGroups (model: ContainerRoot): java.util.List[Group] = {
     val potentialKloudUserNodes = model.getNodes.filter(n => isPaaSNode(model, n.getName))
     logger.debug(potentialKloudUserNodes.mkString(", "))
     // FIXME replace when nature will be added and managed
@@ -50,7 +50,7 @@ object KloudModelHelper {
     }
   }
 
-  def isIaaSNode (currentModel: ContainerRoot, groupName: String, nodeName: String): Boolean = {
+  def isIaaSNode (currentModel: ContainerRoot/*, groupName: String*/, nodeName: String): Boolean = {
     currentModel.getNodes.find(n => n.getName == nodeName) match {
       case None => logger.debug("There is no node named {}", nodeName); false
       case Some(node) =>
@@ -82,10 +82,10 @@ object KloudModelHelper {
       .isDefined
   }
 
-  def isASubType (nodeType: TypeDefinition, typeName: String): Boolean = {
-    nodeType.getSuperTypes.find(td => td.getName == typeName || isASubType(td, typeName)) match {
+  def isASubType (typeDefinition: TypeDefinition, typeName: String): Boolean = {
+    typeDefinition.getSuperTypes.find(td => td.getName == typeName || isASubType(td, typeName)) match {
       case None => false
-      case Some(typeDefinition) => true
+      case Some(typeDef) => true
     }
   }
 
