@@ -6,7 +6,7 @@ import java.net.{URLConnection, URL}
 import java.io._
 import org.slf4j.{LoggerFactory, Logger}
 import org.kevoree.api.service.core.script.KevScriptEngine
-import org.kevoree.library.sky.api.helper.KloudNetworkHelper
+import org.kevoree.library.sky.api.helper.{KloudModelHelper, KloudNetworkHelper}
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -101,6 +101,11 @@ object KloudProviderHelper {
     }
     kevScriptEngine append "addToGroup {groupName} {nodeName}"
     kevScriptEngine append "updateDictionary {groupName} {port='{port}', ip='{ip}'}@{nodeName}"
+  }
+
+  def selectIaaSNodeAsAMaster(model : ContainerRoot) {
+    val iaasNodes = model.getNodes.filter(n => KloudModelHelper.isIaaSNode(model, n.getName))
+
   }
 
 }
