@@ -5,6 +5,7 @@ import org.kevoree.library.javase.webserver.{KevoreeHttpResponse, KevoreeHttpReq
 import util.matching.Regex
 import org.kevoree.library.sky.api.helper.KloudModelHelper
 import org.json.JSONStringer
+import org.kevoree.library.sky.helper.KloudProviderHelper
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -14,7 +15,7 @@ import org.json.JSONStringer
  * @author Erwan Daubert
  * @version 1.0
  */
-class PaaSKloudResourceManagerPageGenerator (instance: KloudResourceManagerPage, pattern: String) extends KloudResourceManagerPageGenerator(instance, pattern) {
+class PaaSKloudResourceManagerPageGenerator (instance: PaaSKloudResourceManagerPage, pattern: String) extends KloudResourceManagerPageGenerator(instance, pattern) {
   logger = LoggerFactory.getLogger(this.getClass)
 
 
@@ -58,6 +59,10 @@ class PaaSKloudResourceManagerPageGenerator (instance: KloudResourceManagerPage,
   private def initializeUserConfiguration (request: KevoreeHttpRequest, response: KevoreeHttpResponse): KevoreeHttpResponse = {
     val jsonresponse = new JSONStringer().`object`()
     val login = request.getResolvedParams.get("login")
+    var sshKey : String = request.getResolvedParams.get("sshKey")
+    if (sshKey == null) {
+      sshKey = ""
+    }
     if (login != null) {
       /*if (request.getResolvedParams.get("password") != null) {
         // FIXME check authentication
@@ -68,9 +73,10 @@ class PaaSKloudResourceManagerPageGenerator (instance: KloudResourceManagerPage,
         jsonresponse.key("code").value("1")
       } else {
         // if no then we try to initialize it
-        val kengine = instance.getKevScriptEngineFactory.createKevScriptEngine()
-        kengine addVariable ("login", login)
-        kengine append "addGroup {login} : "
+        // TODO create a user model and submit it to the PaasKloudManager which will be able to deploy it
+//        val kengine = instance.getKevScriptEngineFactory.createKevScriptEngine()
+//
+//        KloudProviderHelper.appendCreateGroupScript(instance.getModelService.getLastModel, login, nodeName, kengine, sshKey, false)
         jsonresponse.key("code").value("-1")
       }
     }

@@ -19,14 +19,16 @@ import org.kevoree.framework.Constants
 class IaaSKloudResourceManagerPageGenerator (instance: KloudResourceManagerPage, pattern: String, parentNodeName: String) extends KloudResourceManagerPageGenerator(instance, pattern) {
   logger = LoggerFactory.getLogger(this.getClass)
 
-  val rootRequest = new Regex(pattern.substring(0, pattern.length - 1))
+  val rootRequest1 = new Regex(pattern.substring(0, pattern.length - 1))
+  val rootRequest2 = new Regex(pattern)
   val addChildRequest = new Regex(pattern + "AddChild")
   val removeChildRequest = new Regex(pattern + "RemoveChild")
   val NodeSubRequest = new Regex(pattern + "nodes/(.+)/(.+)") // TODO maybe remove nodes on regex
   val NodeHomeRequest = new Regex(pattern + "nodes/(.+)") // TODO maybe remove nodes on regex
 
   def internalProcess (request: KevoreeHttpRequest, response: KevoreeHttpResponse): PartialFunction[String, KevoreeHttpResponse] = {
-    case rootRequest() => getIaasPage(request, response)
+    case rootRequest1() => getIaasPage(request, response)
+    case rootRequest2() => getIaasPage(request, response)
     case addChildRequest() => addChild(request, response)
     case removeChildRequest() => removeChild(instance, request, response)
     case NodeSubRequest(nodeName, fluxName) => getNodeLogPage(request, response, fluxName, nodeName)

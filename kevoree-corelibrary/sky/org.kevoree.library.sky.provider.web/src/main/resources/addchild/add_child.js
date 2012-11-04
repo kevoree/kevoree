@@ -311,7 +311,7 @@ jQuery(document).ready(function () {
                     if (response.code != "0") {
                         alert(response.message);
                     } else {
-                        window.location = "/";
+                        window.location = "{pattern}";
                     }
                 }
             });

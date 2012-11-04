@@ -14,10 +14,10 @@ import org.kevoree.annotation.Library;
  * @version 1.0
  */
 @Library(name = "SKY")
-@ComponentType
 @DictionaryType({
-		@DictionaryAttribute(name = "urlpattern", optional = true, defaultValue = "/nodes")
+		@DictionaryAttribute(name = "urlpattern", optional = true, defaultValue = "/iaas")
 })
+@ComponentType
 public class IaaSKloudResourceManagerPage extends KloudResourceManagerPage {
 
 	@Override
