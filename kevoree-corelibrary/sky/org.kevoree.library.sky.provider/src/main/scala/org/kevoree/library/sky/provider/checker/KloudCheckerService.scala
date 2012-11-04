@@ -13,14 +13,14 @@ import org.kevoree.api.service.core.checker.CheckerService
 
 trait KloudCheckerService extends CheckerService{
 
-  private var login: String = ""
+  private var id: String = ""
 
-    def setLogin (login: String) {
-      this.login = login
+    def setId (id: String) {
+      this.id = id
     }
 
-  def getLogin: String = {
-    login
+  def getId: String = {
+    id
   }
 
 }

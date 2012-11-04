@@ -25,7 +25,7 @@ class RootKloudChecker extends KloudCheckerService {
     val beginTime = System.currentTimeMillis()
     subcheckers.foreach({
       sub =>
-        sub.setLogin(getLogin)
+        sub.setId(getId)
         result.addAll(sub.check(model))
     })
     logger.debug("Model checked in " + (System.currentTimeMillis() - beginTime))

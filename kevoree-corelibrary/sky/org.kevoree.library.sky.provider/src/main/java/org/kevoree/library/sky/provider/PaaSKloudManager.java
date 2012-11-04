@@ -90,7 +90,7 @@ public class PaaSKloudManager extends AbstractComponentType implements PaaSManag
 			}
 		}
 		if (paasExists) {
-			getPortByName("submit", PaaSService.class).add(model);
+			getPortByName("submit", PaaSService.class).add(id, model);
 		}
 	}
 
@@ -110,7 +110,7 @@ public class PaaSKloudManager extends AbstractComponentType implements PaaSManag
 			}
 		}
 		if (paasExists) {
-			getPortByName("submit", PaaSService.class).remove(model);
+			getPortByName("submit", PaaSService.class).remove(id, model);
 		}
 	}
 
@@ -130,14 +130,14 @@ public class PaaSKloudManager extends AbstractComponentType implements PaaSManag
 			}
 		}
 		if (paasExists) {
-			getPortByName("submit", PaaSService.class).merge(model);
+			getPortByName("submit", PaaSService.class).merge(id, model);
 		}
 	}
 
 	@Override
 	@Port(name = "submit", method = "release")
 	public void release (String id) throws SubmissionException {
-		//FIXME
+		//FIXME (remove PaaSManager)
 		KevScriptEngine kengine = getKevScriptEngineFactory().createKevScriptEngine();
 		KloudReasoner.appendScriptToCleanupIaaSModelFromUser(kengine, id, getModelService().getLastModel());
 		Boolean releaseDone = false;
@@ -152,5 +152,22 @@ public class PaaSKloudManager extends AbstractComponentType implements PaaSManag
 		if (!releaseDone) {
 			throw new SubmissionException("Unable to release the resources of the PaaS " + id);
 		}
+	}
+
+	@Override
+	public ContainerRoot getModel (String id) throws SubmissionException {
+		// check if the model contains a PaaS Group
+		List<Group> groups = KloudModelHelper.getPaaSKloudGroups(getModelService().getLastModel());
+		Boolean paasExists = false;
+		for (Group group : groups) {
+			if (id.equals(group.getName())) {
+				paasExists = true;
+				break;
+			}
+		}
+		if (paasExists) {
+			return getPortByName("submit", PaaSService.class).getModel(id);
+		}
+		return null;
 	}
 }
