@@ -1,3 +1,4 @@
+/*
 package org.kevoree.library.sky.provider;
 
 import org.kevoree.ContainerRoot;
@@ -5,10 +6,12 @@ import org.kevoree.annotation.*;
 import org.kevoree.api.service.core.script.KevScriptEngine;
 import org.kevoree.framework.AbstractComponentType;
 import org.kevoree.library.sky.api.helper.KloudModelHelper;
+import org.kevoree.library.sky.helper.KloudProviderHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import scala.Option;
 
+*/
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
  * Date: 03/01/12
@@ -16,7 +19,8 @@ import scala.Option;
  *
  * @author Erwan Daubert
  * @version 1.0
- */
+ *//*
+
 @Library(name = "SKY")
 @ComponentType
 @MessageTypes({
@@ -44,7 +48,9 @@ public class PaaSKloudResourceManager extends AbstractComponentType implements H
 	}
 
 	@Port(name = "submit", method = "deploy") // TODO add exception to return error message (need to check if service port is able to return an exception
-	public boolean deploy (/*Object message*/String login, ContainerRoot model, String sshKey) {
+	public boolean deploy (*/
+/*Object message*//*
+String login, ContainerRoot model, String sshKey) {
 //		if (message instanceof StdKevoreeMessage) {
 //			StdKevoreeMessage stdMessage = (StdKevoreeMessage) message;
 //			if (stdMessage.getValue("login").isDefined() && stdMessage.getValue("model").isDefined()) {
@@ -78,7 +84,7 @@ public class PaaSKloudResourceManager extends AbstractComponentType implements H
 	protected boolean processNew (String login, ContainerRoot userModel, String sshKey) {
 		logger.debug("starting processNew");
 		KevScriptEngine kengine = getKevScriptEngineFactory().createKevScriptEngine();
-		KloudReasoner.appendCreateGroupScript(getModelService().getLastModel(), login, this.getNodeName(), kengine, sshKey, false);
+		KloudProviderHelper.appendCreateGroupScript(getModelService().getLastModel(), login, this.getNodeName(), kengine, sshKey, false);
 		for (int i = 0; i < 5; i++) {
 			try {
 				kengine.atomicInterpretDeploy();
@@ -91,7 +97,9 @@ public class PaaSKloudResourceManager extends AbstractComponentType implements H
 		logger.debug("update user configuration when user model must be forwarded");
 		Option<ContainerRoot> userModelUpdated = KloudReasoner.updateUserConfiguration(login, userModel, getModelService().getLastModel(), getKevScriptEngineFactory());
 		if (userModelUpdated.isDefined()) {
-			/* Send blindly the model to the core , PaaS Group are in charge to trigger this request , reply false and forward to Master interested node  */
+			*/
+/* Send blindly the model to the core , PaaS Group are in charge to trigger this request , reply false and forward to Master interested node  *//*
+
 			getModelService().checkModel(userModelUpdated.get());
 			return true;
 		} else {
@@ -100,4 +108,4 @@ public class PaaSKloudResourceManager extends AbstractComponentType implements H
 
 		}
 	}
-}
+}*/

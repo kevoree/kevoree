@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
  */
 @Library(name = "SKY")
 @ComponentType
-public class IaaSKloudResourceManager extends AbstractComponentType implements ModelListener {
+public class IaaSKloudManager extends AbstractComponentType implements ModelListener {
 
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -57,9 +57,9 @@ public class IaaSKloudResourceManager extends AbstractComponentType implements M
 	@Override
 	public void modelUpdated () {
 		KevScriptEngine kengine = getKevScriptEngineFactory().createKevScriptEngine();
-		if (KloudReasoner.configureChildNodes(getModelService().getLastModel(), kengine)) {
+		if (IaaSKloudReasoner.configureChildNodes(getModelService().getLastModel(), kengine)) {
 			this.getModelService().unregisterModelListener(this);
-			updateKloudConfiguration(kengine);
+			updateIaaSConfiguration(kengine);
 			this.getModelService().registerModelListener(this);
 		}
 	}
@@ -72,16 +72,19 @@ public class IaaSKloudResourceManager extends AbstractComponentType implements M
 	public void postRollback (ContainerRoot containerRoot, ContainerRoot containerRoot1) {
 	}
 
-	private void updateKloudConfiguration (KevScriptEngine kengine) {
-		try {
-			kengine.atomicInterpretDeploy();
-		} catch (Exception e) {
-			logger.error("Unable to apply script", e);
+	private void updateIaaSConfiguration (KevScriptEngine kengine) {
+		Boolean created = false;
+		for (int i = 0; i < 20; i++) {
 			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException ignored) {
+				kengine.atomicInterpretDeploy();
+				created = true;
+				break;
+			} catch (Exception e) {
+				logger.warn("Error while try to update the iaas configuration, try number {}", i);
 			}
-			updateKloudConfiguration(kengine);
+		}
+		if (!created) {
+			logger.error("After 20 attempt, it was not able to update the IaaS configuration");
 		}
 	}
 }

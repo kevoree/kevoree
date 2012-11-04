@@ -80,7 +80,7 @@ public class KloudPaaSNanoGroup extends AbstractGroupType implements PaaSGroup{
 					ContainerRoot model = KevoreeXmiHelper.loadStream(body);
 					//CHECK
 					if (KloudModelHelper.check(model).isEmpty()) {
-						if (KloudModelHelper.isIaaSNode(getModelService().getLastModel(), getName(), getNodeName())) {
+						if (KloudModelHelper.isIaaSNode(getModelService().getLastModel(), getNodeName())) {
 							//ADD TO STACK
 							logger.debug("A new user model is received, adding a task to process a deployment");
 							rootKloudChecker.setLogin(getName());
@@ -118,7 +118,7 @@ public class KloudPaaSNanoGroup extends AbstractGroupType implements PaaSGroup{
 				} else if (method.equals("GET")) {
 					if (uri.endsWith("/model/current")) {
 						String msg;
-						if (KloudModelHelper.isIaaSNode(getModelService().getLastModel(), getName(), getNodeName())) {
+						if (KloudModelHelper.isIaaSNode(getModelService().getLastModel(), getNodeName())) {
 							logger.debug("GET request about user model");
 							Option<ContainerRoot> userModelOption = KloudReasoner.updateUserConfiguration(getName(), userModel, getModelService().getLastModel(), getKevScriptEngineFactory());
 							if (userModelOption.isDefined()) {
@@ -136,7 +136,7 @@ public class KloudPaaSNanoGroup extends AbstractGroupType implements PaaSGroup{
 						}
 						return new NanoHTTPD.Response(HTTP_OK, MIME_HTML, msg);
 					} else if (uri.endsWith("/release")) {
-						if (KloudModelHelper.isIaaSNode(getModelService().getLastModel(), getName(), getNodeName())) {
+						if (KloudModelHelper.isIaaSNode(getModelService().getLastModel(), getNodeName())) {
 							IaaSUpdate jobUpdate = new IaaSUpdate(userModel, KevoreeFactory.createContainerRoot());
 							userModel = KevoreeFactory.createContainerRoot();
 							poolUpdate.submit(jobUpdate);
@@ -189,7 +189,7 @@ public class KloudPaaSNanoGroup extends AbstractGroupType implements PaaSGroup{
 	public boolean triggerPreUpdate (ContainerRoot currentModel, ContainerRoot proposedModel) {
 		logger.debug("Trigger pre update");
 
-		if (KloudModelHelper.isIaaSNode(currentModel, getName(), getNodeName()) && KloudModelHelper.isPaaSModel(proposedModel, getName(), getNodeName())) {
+		if (KloudModelHelper.isIaaSNode(currentModel, getNodeName()) && KloudModelHelper.isPaaSModel(proposedModel, getName(), getNodeName())) {
 			logger.debug("A new user model is received (sent by the core), adding a task to process a deployment");
 			submitJob(proposedModel);
 			return false;
