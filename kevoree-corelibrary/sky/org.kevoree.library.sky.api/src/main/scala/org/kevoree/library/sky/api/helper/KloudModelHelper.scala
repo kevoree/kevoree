@@ -3,6 +3,7 @@ package org.kevoree.library.sky.api.helper
 import org.slf4j.{LoggerFactory, Logger}
 import org.kevoree._
 import core.basechecker.RootChecker
+import library.sky.provider.checker.{NodeNameKloudChecker, RootKloudChecker}
 import scala.collection.JavaConversions._
 
 
@@ -100,8 +101,9 @@ object KloudModelHelper {
   /**
    * check if the model is valid
    */
-  def check (model: ContainerRoot): Option[String] = {
-    val checker: RootChecker = new RootChecker
+  def check (id: String, model: ContainerRoot): Option[String] = {
+    val checker: RootChecker = new RootChecker with NodeNameKloudChecker
+    checker.set
     val violations = checker.check(model)
     if (violations.isEmpty) {
       None
