@@ -130,7 +130,7 @@ public class NanoRestGroup extends AbstractGroupType {
 						ByteArrayInputStream resultStream = new ByteArrayInputStream(st.toByteArray());
 						return new NanoHTTPD.Response(HTTP_OK, MIME_HTML, resultStream);
 					}*/
-					processOnModelRequested(uri);
+					return processOnModelRequested(uri);
 				}
 				return new NanoHTTPD.Response(HTTP_BADREQUEST, MIME_XML, "ONLY GET OR POST METHOD SUPPORTED");
 			}
