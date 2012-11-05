@@ -33,7 +33,7 @@
             <artifactId>org.kevoree.library.sky.provider.api</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
-       <!-- <dependency>
+        <!-- <dependency>
             <groupId>org.kevoree.corelibrary.javase</groupId>
             <artifactId>org.kevoree.library.javase.authentication</artifactId>
             <version>${kevoree.version}</version>

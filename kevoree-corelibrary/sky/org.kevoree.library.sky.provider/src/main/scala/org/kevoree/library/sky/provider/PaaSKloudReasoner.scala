@@ -15,37 +15,16 @@ import scala.collection.JavaConversions._
  * @author Erwan Daubert
  * @version 1.0
  */
-object PaaSKloudReasoner {
+object PaaSKloudReasoner extends KloudReasoner {
   private val logger: Logger = LoggerFactory.getLogger(this.getClass)
 
   def appendCreatePaaSManagerScript (iaasModel: ContainerRoot, id: String, nodeName: String, kloudManagerName: String, kloudManagerNodeName: String, portName: String, kengine: KevScriptEngine) {
-    kengine.addVariable("componentName", id + "Manager")
+    // FIXME add parameters for channelType and componentPortName and ComponentTypeName
+    val componentName = id + "Manager"
+    kengine.addVariable("componentName", componentName)
     kengine.addVariable("nodeName", nodeName)
-    kengine append "addComponent {componentName}@{nodeName} : PaaSManager"
-    val channelOption = findChannel(kloudManagerName, portName, kloudManagerNodeName, iaasModel)
-    if (channelOption.isEmpty) {
-      kengine.addVariable("channelName", "channel" + System.currentTimeMillis())
-      kengine.addVariable("channelType", "SocketChannel")
-      kengine.addVariable("kloudManagerName", kloudManagerName)
-      kengine.addVariable("portName", portName)
-      kengine.addVariable("kloudManagerNodeName", kloudManagerNodeName)
-
-      kengine append "addChannel {channelName} : {channelType}" // FIXME channel type and dictionary
-      kengine append "bind {kloudManagerName}.{portName}@{kloudManagerNodeName} => {channelName}"
-    } else {
-      kengine.addVariable("channelName", channelOption.get)
-    }
-    kengine append "bind {componentName}.submit@{nodeName} => {channelName}"
-  }
-
-  def findChannel (componentName: String, portName: String, nodeName: String, model: ContainerRoot): Option[String] = {
-    model.getMBindings.find(b => b.getPort.getPortTypeRef.getName == portName && b.getPort.eContainer.asInstanceOf[ComponentInstance].getName == componentName &&
-      b.getPort.eContainer.eContainer.asInstanceOf[ContainerNode].getName == nodeName) match {
-      case None => None
-      case Some(binding) => {
-        Some(binding.getHub.getName)
-      }
-    }
+    kengine append "addComponent {componentName}@{nodeName} : PaaSManagerMaster"
+    bindComponents(iaasModel, kengine, kloudManagerName, kloudManagerNodeName, portName, componentName, nodeName, "submit")
   }
 
   def appendCreateGroupScript (iaasModel: ContainerRoot, id: String, nodeName: String, paasModel: ContainerRoot, kengine: KevScriptEngine) {
@@ -86,7 +65,7 @@ object PaaSKloudReasoner {
         kengine append "addToGroup {groupName} {nodeName}"
         kengine append "updateDictionary {groupName} {port='{port}', ip='{ip}'}@{nodeName}"
 
-        /*if (group.getDictionary.isDefined) {
+        if (group.getDictionary.isDefined) {
           //            scriptBuilder append "{"
           val defaultAttributes = getDefaultNodeAttributes(iaasModel, group.getTypeDefinition.getName)
           group.getDictionary.get.getValues
@@ -96,12 +75,11 @@ object PaaSKloudReasoner {
               kengine.addVariable("attributeValue", value.getValue)
               kengine append "updateDictionary {groupName} {{attributeName} = '{attributeValue}'}"
           }
-        }*/
+        }
       }
     }
 
   }
-
 
   def selectIaaSNodeAsMaster (model: ContainerRoot): String = {
     val iaasNodes = model.getNodes.filter(n => KloudModelHelper.isIaaSNode(model, n.getName))
@@ -120,7 +98,7 @@ object PaaSKloudReasoner {
     iaasNode.getName
   }
 
-  def countSlaves (nodeName: String, iaasModel: ContainerRoot): Int = {
+  private def countSlaves (nodeName: String, iaasModel: ContainerRoot): Int = {
     iaasModel.getNodes.find(n => n.getName == nodeName) match {
       case None => logger.warn("The node {} doesn't exist !", nodeName); Int.MaxValue
       case Some(node) => {
@@ -131,12 +109,8 @@ object PaaSKloudReasoner {
     }
   }
 
-
-  /**
-   * all node are disseminate on parent node
-   * A parent node is defined by two adaptation primitives <b>addNode</b> and <b>removeNode</b>
-   */
-  def addNodes (addedNodes: java.util.List[ContainerNode], iaasModel: ContainerRoot, kengine: KevScriptEngine): Boolean = {
+  def addNodes (addedNodes: java.util.List[ContainerNode], iaasModel: ContainerRoot, kengine: KevScriptEngine, masterComponentName: String, masterComponentTypeName: String, masterNodeName: String,
+    masterPortName: String, slaveComponentTypeName: String, slavePortName: String): Boolean = {
     if (!addedNodes.isEmpty) {
       logger.debug("Try to add all user nodes into the Kloud")
 
@@ -164,6 +138,17 @@ object PaaSKloudReasoner {
                 kengine append "updateDictionary {nodeName} {{attributeName} = '{attributeValue}'}"
             }
           }
+          val slaveComponentName = node.getName + "Slave"
+          val slaveNodeName = node.getName
+          /*kengine addVariable("masterComponentName", masterComponentName)
+          kengine addVariable("masterComponentTypeName", masterComponentTypeName)
+          kengine addVariable("masterNodeName", masterNodeName)
+          kengine addVariable("masterPortName", masterPortName)*/
+          kengine addVariable("slaveComponentName", slaveComponentName)
+          kengine addVariable("slaveComponentTypeName", slaveComponentTypeName)
+          kengine addVariable("slaveNodeName", slaveNodeName)
+          kengine append "addComponent {slaveComponentName}@{slaveNodeName} : {slaveComponentTypeName}"
+          bindComponents(iaasModel, kengine, masterComponentName, masterNodeName, masterPortName, slaveComponentName, slaveNodeName, slavePortName)
       }
       true
     } else {
@@ -171,71 +156,52 @@ object PaaSKloudReasoner {
     }
   }
 
-  def removeNodes (removedNodes: java.util.List[ContainerNode], iaasModel: ContainerRoot, kengine: KevScriptEngine): Boolean = {
-    if (!removedNodes.isEmpty) {
-      logger.debug("Try to remove useless PaaS nodes into the Kloud")
-
-      // build kevscript to remove useless nodes into the kloud model
-      removedNodes.foreach {
-        node =>
-          iaasModel.getNodes.find(n => n.getHosts.find(host => host.getName == node.getName) match {
-            case None => false
-            case Some(host) => true
-          }) match {
-            case None => logger
-              .debug("Unable to find the parent of {}. Houston, maybe we have a problem!", node.getName)
-            case Some(parent) =>
-              kengine.addVariable("nodeName", node.getName)
-              //              kengine.addVariable("parentNodeName", parent.getName)
-              //              kengine append "removeChild {nodeName}@{parentNodeName}"
-              //              kengine append "removeFromGroup * {nodeName}"
-              kengine append "removeNode {nodeName}"
-          }
-
+  def releasePlatform(id : String, iaasModel: ContainerRoot, kengine : KevScriptEngine) : Boolean = {
+    iaasModel.getGroups.find(g => g.getName == id) match {
+      case None =>
+      case Some(group) => {
+        group.getSubNodes.foreach{
+          node =>
+            kengine addVariable("nodeName", node.getName)
+            kengine append "removeNode {nodeName}"
+        }
+        kengine addVariable("groupName", group.getName)
+        kengine append "removeGroup {groupName}"
       }
-      true
+    }
+    true
+  }
+
+  private def bindComponents (model: ContainerRoot, kengine: KevScriptEngine, masterComponentName: String, masterNodeName: String, masterPortName: String, slaveComponentName: String,
+    slaveNodeName: String, slavePortName: String) {
+    kengine addVariable("masterComponentName", masterComponentName)
+    kengine addVariable("masterNodeName", masterNodeName)
+    kengine addVariable("masterPortName", masterPortName)
+    kengine addVariable("slaveComponentName", slaveComponentName)
+    kengine addVariable("slaveNodeName", slaveNodeName)
+    kengine addVariable("slavePortName", slavePortName)
+
+
+    val channelOption = findChannel(masterComponentName, masterPortName, masterNodeName, model)
+    if (channelOption.isEmpty) {
+      kengine.addVariable("channelName", "channel" + System.currentTimeMillis())
+      kengine.addVariable("channelType", "SocketChannel")
+
+      kengine append "addChannel {channelName} : {channelType}" // FIXME channel type and dictionary
+      kengine append "bind {masterComponentName}.{masterPortName}@{masterNodeName} => {channelName}"
     } else {
-      true
+      kengine.addVariable("channelName", channelOption.get)
     }
+    kengine append "bind {slaveComponentName}.{slavePortName}@{slaveNodeName} => {channelName}"
   }
 
-  def getNodesToRemove (iaasModel: ContainerRoot, paasModel: ContainerRoot): java.util.List[ContainerNode] = {
-    var removedNodes = List[ContainerNode]()
-    iaasModel.getNodes.filter(n => KloudModelHelper.isPaaSNode(iaasModel, n.getName)).foreach {
-      paasNode =>
-        paasModel.getNodes.filter(n => KloudModelHelper.isPaaSNode(paasModel, n.getName)).find(node => node.getName == paasNode.getName) match {
-          case None => {
-            logger.debug("{} must be removed from the kloud.", paasNode.getName)
-            removedNodes = removedNodes ++ List[ContainerNode](paasNode)
-          }
-          case Some(newUserNode) =>
-        }
-    }
-    removedNodes
-  }
-
-  def getNodesToAdd (iaasModel: ContainerRoot, paasModel: ContainerRoot): java.util.List[ContainerNode] = {
-    var nodesToAdd = List[ContainerNode]()
-    paasModel.getNodes.filter(n => KloudModelHelper.isPaaSNode(paasModel, n.getName)).foreach {
-      paasNode =>
-      // the kloud platform must use PJavaSeNode or a subtype of it so JavaSeNode will not be instanciated on the Kloud
-        iaasModel.getNodes.filter(n => KloudModelHelper.isPaaSNode(iaasModel, n.getName)).find(node => node.getName == paasNode.getName) match {
-          case None => {
-            logger.debug("{} must be added on the kloud.", paasNode.getName)
-            nodesToAdd = nodesToAdd ++ List[ContainerNode](paasNode)
-          }
-          case Some(userNode) =>
-        }
-    }
-    nodesToAdd
-  }
-
-
-  def getDefaultNodeAttributes (iaasModel: ContainerRoot, typeDefName: String): List[DictionaryAttribute] = {
-    iaasModel.getTypeDefinitions.find(td => td.getName == typeDefName) match {
-      case None => List[DictionaryAttribute]()
-      case Some(td) =>
-        td.getDictionaryType.get.getAttributes
+  private def findChannel (componentName: String, portName: String, nodeName: String, model: ContainerRoot): Option[String] = {
+    model.getMBindings.find(b => b.getPort.getPortTypeRef.getName == portName && b.getPort.eContainer.asInstanceOf[ComponentInstance].getName == componentName &&
+      b.getPort.eContainer.eContainer.asInstanceOf[ContainerNode].getName == nodeName) match {
+      case None => None
+      case Some(binding) => {
+        Some(binding.getHub.getName)
+      }
     }
   }
 

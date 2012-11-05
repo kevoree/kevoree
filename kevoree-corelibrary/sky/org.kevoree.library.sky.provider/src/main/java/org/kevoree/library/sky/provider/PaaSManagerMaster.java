@@ -8,6 +8,7 @@ import org.kevoree.api.service.core.script.KevScriptEngine;
 import org.kevoree.framework.AbstractComponentType;
 import org.kevoree.library.sky.api.helper.KloudModelHelper;
 import org.kevoree.library.sky.provider.api.PaaSService;
+import org.kevoree.library.sky.provider.api.PaaSSlaveService;
 import org.kevoree.library.sky.provider.api.SubmissionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,10 +27,11 @@ import java.util.concurrent.Executors;
  */
 @Library(name = "SKY")
 @Provides({
-		@ProvidedPort(name = "submit", type = PortType.SERVICE, className = PaaSService.class)
+		@ProvidedPort(name = "submit", type = PortType.SERVICE, className = PaaSService.class),
+		@ProvidedPort(name = "slave", type = PortType.SERVICE, className = PaaSSlaveService.class)
 })
 @ComponentType
-public class PaaSManager extends AbstractComponentType implements PaaSService, ModelListener {
+public class PaaSManagerMaster extends AbstractComponentType implements PaaSService, PaaSSlaveService, ModelListener {
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	private ContainerRoot paasModel;
@@ -56,7 +58,7 @@ public class PaaSManager extends AbstractComponentType implements PaaSService, M
 		// FIXME this must be removed when we will be able to use filter service channel
 		if (getName().contains(id)) {
 			KevScriptEngine kengine = getKevScriptEngineFactory().createKevScriptEngine();
-			PaaSKloudReasoner.addNodes(model.getNodesForJ(), getModelService().getLastModel(), kengine);
+			PaaSKloudReasoner.addNodes(model.getNodesForJ(), getModelService().getLastModel(), kengine, getName(), "PaaSManagerMaster", getNodeName(), "slave", "PaaSManagerSlave", "slave");
 			Boolean created = false;
 			for (int i = 0; i < 5; i++) {
 				try {
@@ -110,7 +112,7 @@ public class PaaSManager extends AbstractComponentType implements PaaSService, M
 		List<ContainerNode> nodesToRemove = PaaSKloudReasoner.getNodesToRemove(currentPaaSModel, newPaaSModel);
 		KevScriptEngine kengine = getKevScriptEngineFactory().createKevScriptEngine();
 		PaaSKloudReasoner.removeNodes(nodesToRemove, getModelService().getLastModel(), kengine);
-		PaaSKloudReasoner.addNodes(nodesToAdd, getModelService().getLastModel(), kengine);
+		PaaSKloudReasoner.addNodes(nodesToAdd, getModelService().getLastModel(), kengine, getName(), "PaaSManagerMaster", getNodeName(), "slave", "PaaSManagerSlave", "slave");
 		for (int i = 0; i < 5; i++) {
 			try {
 				kengine.atomicInterpretDeploy();
@@ -141,8 +143,19 @@ public class PaaSManager extends AbstractComponentType implements PaaSService, M
 		// if the id is contains by the name of the instance of PaaSManager then this instance will used it
 		// FIXME this must be removed when we will be able to use filter service channel
 		if (getName().contains(id)) {
+			// TODO remove from the user model the PaaSManagerSlave Component (and the other stuff the infrastructure have defined)
+			// maybe there is nothing to do but it's better to check
+			// maybe this is not needed
 			return paasModel;
 		}
+		return null;
+	}
+
+	@Override
+	@Port(name = "slave", method = "getModel")
+	public ContainerRoot getModel () throws SubmissionException {
+		// TODO merge the user model with the PaaSManagerSlave Component (and the other stuff the infrastructure have defined)
+		// maybe this is not needed
 		return null;
 	}
 
@@ -202,7 +215,7 @@ public class PaaSManager extends AbstractComponentType implements PaaSService, M
 		@Override
 		public void run () {
 			merge(currentModel, proposedModel);
-			// FIXME maybe we store the new model as the current to earlier because the merge can fail
+			// FIXME maybe we store the new model as the current one to earlier because the merge can fail
 
 		}
 	}

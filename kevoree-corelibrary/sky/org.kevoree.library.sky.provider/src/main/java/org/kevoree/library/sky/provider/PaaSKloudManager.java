@@ -139,7 +139,8 @@ public class PaaSKloudManager extends AbstractComponentType implements PaaSManag
 	public void release (String id) throws SubmissionException {
 		//FIXME (remove PaaSManager)
 		KevScriptEngine kengine = getKevScriptEngineFactory().createKevScriptEngine();
-		KloudReasoner.appendScriptToCleanupIaaSModelFromUser(kengine, id, getModelService().getLastModel());
+//		KloudReasoner.appendScriptToCleanupIaaSModelFromUser(kengine, id, getModelService().getLastModel());
+		PaaSKloudReasoner.releasePlatform(id, getModelService().getLastModel(), kengine);
 		Boolean releaseDone = false;
 		for (int i = 0; i < 5; i++) {
 			try {
@@ -155,6 +156,7 @@ public class PaaSKloudManager extends AbstractComponentType implements PaaSManag
 	}
 
 	@Override
+	@Port(name = "submit", method = "getModel")
 	public ContainerRoot getModel (String id) throws SubmissionException {
 		// check if the model contains a PaaS Group
 		List<Group> groups = KloudModelHelper.getPaaSKloudGroups(getModelService().getLastModel());

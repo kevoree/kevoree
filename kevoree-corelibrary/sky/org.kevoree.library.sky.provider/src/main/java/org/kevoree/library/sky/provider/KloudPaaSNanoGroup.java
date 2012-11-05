@@ -32,9 +32,8 @@ import java.io.IOException;
 @DictionaryType({
 		@DictionaryAttribute(name = "SSH_Public_Key", optional = true)
 })
-public class KloudPaaSNanoGroup extends NanoRestGroup {//AbstractGroupType implements PaaSGroup{
+public class KloudPaaSNanoGroup extends NanoRestGroup {
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
-//	ContainerRoot userModel = KevoreeFactory.createContainerRoot();
 
 	@Start
 	public void startRestGroup () throws IOException {
@@ -55,7 +54,8 @@ public class KloudPaaSNanoGroup extends NanoRestGroup {//AbstractGroupType imple
 
 	@Stop
 	public void stopRestGroup () {
-
+		super.stopRestGroup();
+		// TODO remove the SSH key
 	}
 
 	@Override
@@ -116,8 +116,7 @@ public class KloudPaaSNanoGroup extends NanoRestGroup {//AbstractGroupType imple
 				} catch (Exception ignored) {
 				}
 			}
-		} else*/
-		if (KloudModelHelper.isPaaSNode(getModelService().getLastModel(), getNodeName())) {
+		} else*/ if (KloudModelHelper.isPaaSNode(getModelService().getLastModel(), getNodeName())) {
 			// send to all the nodes
 			Group group = getModelElement();
 			for (ContainerNode subNode : group.getSubNodesForJ()) {
@@ -130,6 +129,6 @@ public class KloudPaaSNanoGroup extends NanoRestGroup {//AbstractGroupType imple
 				}
 			}
 		}
-		// FIXME maybe when a node start he doesn't have the good model so we need to ask this model to someone
+		// FIXME (OK ?) maybe when a node start he doesn't have the good model so we need to ask this model to someone
 	}
 }
