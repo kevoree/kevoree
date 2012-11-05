@@ -3,7 +3,7 @@ package org.kevoree.library.sky.api.helper
 import org.slf4j.{LoggerFactory, Logger}
 import org.kevoree._
 import core.basechecker.RootChecker
-import library.sky.provider.checker.{NodeNameKloudChecker, RootKloudChecker}
+import library.sky.api.checker.NodeNameKloudChecker
 import scala.collection.JavaConversions._
 
 
@@ -34,8 +34,8 @@ object KloudModelHelper {
     val potentialKloudUserNodes = model.getNodes.filter(n => isPaaSNode(model, n.getName))
     logger.debug(potentialKloudUserNodes.mkString(", "))
     // FIXME replace when nature will be added and managed
-//    model.getGroups.filter(g => (g.getTypeDefinition.getName == "PaaSGroup" || KloudTypeHelper.isASubType(g.getTypeDefinition, "PaaSGroup")) &&
-      model.getGroups.filter(g => (g.getTypeDefinition.getName == "KloudPaaSNanoGroup" || isASubType(g.getTypeDefinition, "KloudPaaSNanoGroup")) &&
+    //    model.getGroups.filter(g => (g.getTypeDefinition.getName == "PaaSGroup" || KloudTypeHelper.isASubType(g.getTypeDefinition, "PaaSGroup")) &&
+    model.getGroups.filter(g => (g.getTypeDefinition.getName == "KloudPaaSNanoGroup" || isASubType(g.getTypeDefinition, "KloudPaaSNanoGroup")) &&
       g.getSubNodes.forall(n => potentialKloudUserNodes.contains(n)))
   }
 
@@ -43,15 +43,15 @@ object KloudModelHelper {
     val potentialKloudUserNodes = userModel.getNodes.filter(n => isPaaSNode(userModel, n.getName))
     val potentialKloudUserGroups = userModel.getGroups.find(g => g.getSubNodes.size >= potentialKloudUserNodes.size)
     // FIXME replace when nature will be added and managed
-//    potentialKloudUserGroups.find(g => (g.getTypeDefinition.getName == "PaaSGroup" || KloudTypeHelper.isASubType(g.getTypeDefinition, "PaaSGroup")) &&
-      potentialKloudUserGroups.find(g => (g.getTypeDefinition.getName == "KloudPaaSNanoGroup" || isASubType(g.getTypeDefinition, "KloudPaaSNanoGroup")) &&
+    //    potentialKloudUserGroups.find(g => (g.getTypeDefinition.getName == "PaaSGroup" || KloudTypeHelper.isASubType(g.getTypeDefinition, "PaaSGroup")) &&
+    potentialKloudUserGroups.find(g => (g.getTypeDefinition.getName == "KloudPaaSNanoGroup" || isASubType(g.getTypeDefinition, "KloudPaaSNanoGroup")) &&
       g.getSubNodes.forall(n => potentialKloudUserNodes.contains(n))) match {
       case None => None
       case Some(group) => Some(group.getName)
     }
   }
 
-  def isIaaSNode (currentModel: ContainerRoot/*, groupName: String*/, nodeName: String): Boolean = {
+  def isIaaSNode (currentModel: ContainerRoot /*, groupName: String*/ , nodeName: String): Boolean = {
     currentModel.getNodes.find(n => n.getName == nodeName) match {
       case None => logger.debug("There is no node named {}", nodeName); false
       case Some(node) =>
@@ -94,17 +94,18 @@ object KloudModelHelper {
     currentModel.getGroups.find(g => g.getName == groupName)
   }
 
-/*  def lookForAGroup (groupName: String, currentModel: ContainerRoot): Boolean = {
+  /*  def lookForAGroup (groupName: String, currentModel: ContainerRoot): Boolean = {
     currentModel.getGroups.find(g => g.getName == groupName).isDefined
   }*/
-  
+
   /**
    * check if the model is valid
    */
   def check (id: String, model: ContainerRoot): Option[String] = {
-    val checker: RootChecker = new RootChecker with NodeNameKloudChecker
-    checker.set
-    val violations = checker.check(model)
+    val checker = new RootChecker
+    val kloudChecker = new NodeNameKloudChecker
+    kloudChecker.setId(id)
+    val violations = checker.check(model) ++ kloudChecker.check(model)
     if (violations.isEmpty) {
       None
     } else {
