@@ -58,6 +58,7 @@ public class Tester {
 //			builder.replace(builder.indexOf("{macAddress}"), "{macAddress}".length(), "toto");
 
 			Domain domain = conn.domainDefineXML(builder.toString());
+
 //			System.out.println("conn.domainDefineXML:" + domain);
 //
 //			int status = domain.create();
