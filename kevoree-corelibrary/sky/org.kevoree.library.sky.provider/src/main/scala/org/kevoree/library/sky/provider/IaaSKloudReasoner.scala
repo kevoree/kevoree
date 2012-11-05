@@ -129,12 +129,12 @@ object IaaSKloudReasoner extends KloudReasoner {
             val index = (java.lang.Math.random() * potentialParents.size).asInstanceOf[Int]
             parentName = potentialParents(index)
             kengine.addVariable("nodeName", node.getName)
-
-            kengine.addVariable("parentName", parentName)
-            kengine append "addChild {nodeName}@{parentName}"
           } else {
             parentName = parentNodeNameOption.get
           }
+
+          kengine.addVariable("parentName", parentName)
+          kengine append "addChild {nodeName}@{parentName}"
 
           val ipOption = defineIP(node.getName, parentName, iaasModel, kengine)
           var ip = "127.0.0.1"
