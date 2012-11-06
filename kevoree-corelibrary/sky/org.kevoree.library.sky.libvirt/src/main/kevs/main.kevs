@@ -12,7 +12,7 @@ merge "mvn:org.kevoree.corelibrary.sky/org.kevoree.library.sky.provider/{kevoree
 merge "mvn:org.kevoree.corelibrary.sky/org.kevoree.library.sky.provider.web/{kevoree.version}"
 
 
-addNode node0 : LibVirtNode  { coreLogLevel="WARN",logLevel="DEBUG", default_disk = "/home/edaubert/Public/vms/debian_base.toto.qcow2"}
+addNode node0 : LibVirtKvmNode  { coreLogLevel="WARN",logLevel="DEBUG", default_DISK = "/home/edaubert/Public/vms/debian_base.qcow2", default_COPY_MODE="base"}
 addGroup sync : NanoRestGroup
 addToGroup sync node0
 
@@ -36,13 +36,3 @@ bind iaasPage.content@node0 => responseChannel
 
 bind iaasManager.submit@node0 => iaasDelegateChannel
 bind iaasPage.delegate@node0 => iaasDelegateChannel
-
-//addNode edaubert_worker1 : PJavaSENode
-//addChild edaubert_worker1@node0
-
-//addGroup edaubert : KloudPaaSNanoGroup
-
-//addToGroup edaubert node0
-//addToGroup edaubert edaubert_worker1
-
-//updateDictionary edaubert { masterNode = "node0=127.0.0.1:10000"}, {port = "10000"}@node0,{port = "10001"}@edaubert_worker1
