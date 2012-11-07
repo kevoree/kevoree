@@ -1,5 +1,6 @@
 package org.kevoree.library.sky.libvirt;
 
+import nu.xom.*;
 import org.libvirt.Connect;
 import org.libvirt.Domain;
 import org.libvirt.LibvirtException;
@@ -23,7 +24,79 @@ public class Tester {
 	public static String FIXME = "\n<=====================================>\n<============== FIXME ================> ";
 
 	public static void main (String[] args) {
-		testAuthentication();
+		// Create the connection
+		Connect conn = null;
+
+		try {
+			conn = new Connect("qemu:///system", false);
+			Domain domain = conn.domainLookupByName("debian_base");
+			//      XML.loadString(domain.getXMLDesc(0))
+
+			/* Change attributes */
+			Builder parser = new Builder();
+			Document doc = parser.build(domain.getXMLDesc(0), null);
+
+			/*Element nameElement = (Element) doc.query("/domain/name").get(0);
+			nameElement.removeChildren();
+			nameElement.appendChild("Toto");
+
+			Element uuidElement = (Element) doc.query("/domain/uuid").get(0);
+			uuidElement.removeChildren();
+			uuidElement.appendChild(UUID.randomUUID().toString());
+
+			Element memoryElement = (Element) doc.query("/domain/memory").get(0);
+			memoryElement.removeChildren();
+			memoryElement.appendChild("1024000");
+
+			Element currentMemoryElement = (Element) doc.query("/domain/currentMemory").get(0);
+			currentMemoryElement.removeChildren();
+			currentMemoryElement.appendChild("1024000");
+
+			Element vCPUElement = (Element) doc.query("/domain/vcpu").get(0);
+			vCPUElement.removeChildren();
+			vCPUElement.appendChild("1");
+
+			Element typeElement = (Element) doc.query("/domain/os/type").get(0);
+			typeElement.removeAttribute(typeElement.getAttribute("arch"));
+			Attribute archAttribute = new Attribute("arch", "i686");
+			typeElement.addAttribute(archAttribute);
+
+			Element sourceElement = (Element) doc.query("/domain/devices/disk/source").get(0);
+			System.out.println(sourceElement.toXML());
+			sourceElement.removeAttribute(sourceElement.getAttribute("file"));
+			Attribute fileAttribute = new Attribute("file", "/home/edaubert/Public/vms/debian_base.toto.qcow2");
+			sourceElement.addAttribute(fileAttribute);
+
+			Nodes interfaceElements = doc.query("/domain/devices/interface");
+			for (int i = 0; i < interfaceElements.size(); i++) {
+				Element macElement = (Element) ((Element) interfaceElements.get(i)).query("./mac").get(0);
+				((Element) interfaceElements.get(i)).removeChild(macElement);
+			}
+
+			System.out.println(doc.toXML());*/
+			Nodes interfaceElements = doc.query("/domain/devices/interface");
+			for (int i = 0; i < interfaceElements.size(); i++) {
+				Element macElement = (Element) ((Element) interfaceElements.get(i)).query("./mac").get(0);
+				((Element) interfaceElements.get(i)).removeChild(macElement);
+			}
+
+			StringBuilder builder = new StringBuilder();
+			BufferedReader reader = new BufferedReader(new FileReader("/home/edaubert/toto.xml"));
+			String line;
+			while ((line = reader.readLine()) != null) {
+				builder.append(line);
+			}
+			domain = conn.domainDefineXML(builder.toString());
+		} catch (LibvirtException e) {
+			e.printStackTrace();
+		} catch (ValidityException e) {
+			e.printStackTrace();
+		} catch (ParsingException e) {
+			e.printStackTrace();
+		}  catch (IOException e) {
+			e.printStackTrace();
+		}
+
 	}
 
 	public static boolean testAuthentication () {
