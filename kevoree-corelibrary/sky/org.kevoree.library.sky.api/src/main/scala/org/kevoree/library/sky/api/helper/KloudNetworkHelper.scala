@@ -16,7 +16,7 @@ import org.slf4j.{LoggerFactory, Logger}
 object KloudNetworkHelper {
   private val logger: Logger = LoggerFactory.getLogger(this.getClass)
 
-  def selectIP (parentNodeName: String, kloudModel: ContainerRoot): Option[String] = {
+  def selectIP (parentNodeName: String, kloudModel: ContainerRoot, alreadyUsedIps: Array[String]): Option[String] = {
     logger.debug("try to select an IP for a child of {}", parentNodeName)
     kloudModel.getNodes.find(n => n.getName == parentNodeName) match {
       case None => None
@@ -24,7 +24,7 @@ object KloudNetworkHelper {
         val subnetOption = KevoreePropertyHelper.getStringPropertyForNode(kloudModel, parentNodeName, "subnet")
         val maskOption = KevoreePropertyHelper.getStringPropertyForNode(kloudModel, parentNodeName, "mask")
         if (subnetOption.isDefined && maskOption.isDefined) {
-          Some(lookingForNewIp(/*List(),*/ subnetOption.get, maskOption.get))
+          Some(lookingForNewIp(alreadyUsedIps, subnetOption.get, maskOption.get))
         } else {
           Some("127.0.0.1")
         }
@@ -32,7 +32,7 @@ object KloudNetworkHelper {
     }
   }
 
-  private def lookingForNewIp (/*ips: List[String],*/ subnet: String, mask: String): String = {
+  private def lookingForNewIp (ips: Array[String], subnet: String, mask: String): String = {
     var newIp = subnet
     val ipBlock = subnet.split("\\.")
     var i = Integer.parseInt(ipBlock(0))
@@ -46,17 +46,12 @@ object KloudNetworkHelper {
         while (k < 255 && checkMask(i, j, k, l, subnet, mask) && !found) {
           while (l < 255 && checkMask(i, j, k, l, subnet, mask) && !found) {
             val tmpIp = i + "." + j + "." + k + "." + l
-            //            if (!ips.contains(tmpIp)) {
-            if (!NetworkHelper.isAccessible(tmpIp)) {
-              /*
-                                            val inet = InetAddress.getByName(tmpIp)
-                                            if (!inet.isReachable(1000)) {*/
-              newIp = tmpIp
-              found = true
-            } /* else {
-                  ips = ips ++ List[String](tmpIp)
-                }*/
-            //            }
+            if (!ips.contains(tmpIp)) {
+              if (!NetworkHelper.isAccessible(tmpIp)) {
+                newIp = tmpIp
+                found = true
+              }
+            }
             l += 1
           }
           l = 1

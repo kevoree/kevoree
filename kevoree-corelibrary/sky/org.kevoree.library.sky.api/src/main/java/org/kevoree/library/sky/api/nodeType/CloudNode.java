@@ -16,10 +16,10 @@ import org.kevoree.annotation.NodeFragment;
 		@DictionaryAttribute(name = "ARCH", defaultValue = "N/A", vals = {"x86", "x86_64"}, optional = true),
 		@DictionaryAttribute(name = "RAM", defaultValue = "N/A", optional = true),
 		// GB, MB, KB is allowed, N/A means undefined
-		@DictionaryAttribute(name = "CPU_FREQUENCY", defaultValue = "N/A", optional = true),
-		// in MHz, N/A means undefined
 		@DictionaryAttribute(name = "CPU_CORE", defaultValue = "N/A", optional = true),
 		// number of allowed cores, N/A means undefined
+		@DictionaryAttribute(name = "CPU_FREQUENCY", defaultValue = "N/A", optional = true),
+		// in MHz, N/A means undefined
 		@DictionaryAttribute(name = "OS", defaultValue = "N/A", optional = true),
 		// number of allowed cores, N/A means undefined
 		@DictionaryAttribute(name = "DISK_SIZE", defaultValue = "N/A", optional = true)
