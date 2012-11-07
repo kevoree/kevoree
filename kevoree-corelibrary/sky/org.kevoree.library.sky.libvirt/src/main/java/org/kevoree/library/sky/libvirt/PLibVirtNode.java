@@ -18,7 +18,8 @@ import org.kevoree.library.sky.api.nodeType.PJavaSENode;
 @Library(name = "SKY")
 @NodeType
 @DictionaryType({
-		@DictionaryAttribute(name = "disk", optional = false)
+		@DictionaryAttribute(name = "DISK", optional = false),
+		@DictionaryAttribute(name = "COPY_MODE", defaultValue = "base", vals={"base", "clone", "as_is"}, optional = false)
 })
 public class PLibVirtNode extends PJavaSENode{
 }
