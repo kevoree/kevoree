@@ -1,10 +1,38 @@
-
 merge "mvn:org.kevoree.corelibrary.sky/org.kevoree.library.sky.libvirt/{kevoree.version}"
 merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.nanohttp/{kevoree.version}"
 
-addNode node0 : LibVirtNode { coreLogLevel="WARN",logLevel="DEBUG" }
+merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.defaultChannels/{kevoree.version}"
+merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.socketChannels/{kevoree.version}"
+merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.nioChannels/{kevoree.version}"
+
+merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.webserver.api/{kevoree.version}"
+merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.webserver.tjws/{kevoree.version}"
+
+merge "mvn:org.kevoree.corelibrary.sky/org.kevoree.library.sky.provider/{kevoree.version}"
+merge "mvn:org.kevoree.corelibrary.sky/org.kevoree.library.sky.provider.web/{kevoree.version}"
+
+
+addNode node0 : LibVirtKvmNode  { coreLogLevel="WARN",logLevel="DEBUG", default_DISK = "/home/edaubert/Public/vms/debian_base.qcow2", default_COPY_MODE="base"}
 addGroup sync : NanoRestGroup
 addToGroup sync node0
 
-//addNode worker1 : JavaSENode
-//addChild worker1@node0
+addComponent webServer@node0 : KTinyWebServer {port = "8080", timeout = "5000"}
+addComponent iaasPage@node0 : IaaSKloudResourceManagerPage { urlpattern="/iaas"}
+addComponent iaasManager@node0 : IaaSKloudManager
+//addComponent paasPage@node0 : PaaSKloudResourceManagerPage { urlpattern="/paas"}
+
+
+addChannel iaasDelegateChannel : defSERVICE
+addChannel requestChannel : defMSG
+addChannel responseChannel : defMSG
+
+bind webServer.handler@node0 => requestChannel
+bind iaasPage.request@node0 => requestChannel
+//bind paasPage.request@node0 => requestChannel
+
+bind webServer.response@node0 => responseChannel
+bind iaasPage.content@node0 => responseChannel
+//bind paasPage.content@node0 => responseChannel
+
+bind iaasManager.submit@node0 => iaasDelegateChannel
+bind iaasPage.delegate@node0 => iaasDelegateChannel
