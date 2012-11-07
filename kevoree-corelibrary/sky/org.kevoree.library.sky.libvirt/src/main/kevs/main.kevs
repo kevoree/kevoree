@@ -12,7 +12,7 @@ merge "mvn:org.kevoree.corelibrary.sky/org.kevoree.library.sky.provider/{kevoree
 merge "mvn:org.kevoree.corelibrary.sky/org.kevoree.library.sky.provider.web/{kevoree.version}"
 
 
-addNode node0 : LibVirtKvmNode  { coreLogLevel="WARN",logLevel="DEBUG", default_DISK = "/home/edaubert/Public/vms/debian_base.qcow2", default_COPY_MODE="base"}
+addNode node0 : LibVirtKvmNode  { coreLogLevel="WARN",logLevel="DEBUG", default_DISK = "/home/edaubert/Public/vms/debian_base.qcow2", default_COPY_MODE="base", inet="default"}
 addGroup sync : NanoRestGroup
 addToGroup sync node0
 

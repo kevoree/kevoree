@@ -2,12 +2,14 @@ package org.kevoree.library.sky.libvirt
 
 import org.kevoree.library.sky.api.KevoreeNodeRunner
 import org.kevoree.ContainerRoot
-import org.libvirt.{Connect, LibvirtException, Domain}
+import org.libvirt.{Network, Connect, LibvirtException, Domain}
 import nu.xom._
 import java.util.UUID
-import org.kevoree.framework.KevoreePropertyHelper
+import org.kevoree.framework.{Constants, KevoreePropertyHelper}
 import org.kevoree.library.sky.api.nodeType.AbstractHostNode
 import org.slf4j.LoggerFactory
+import java.io.IOException
+import org.kevoree.library.sky.api.helper.KloudNetworkHelper
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -136,6 +138,7 @@ abstract class LibVirtKevoreeNodeRunner (nodeName: String, iaasNode: AbstractHos
             sourceElement.addAttribute(fileAttribute)
 
             nodeDomain = conn.domainDefineXML(doc.toXML)
+            createIP(conn, domain, iaasModel)
             nodeDomain.create()
             true
           } else {
@@ -161,6 +164,56 @@ abstract class LibVirtKevoreeNodeRunner (nodeName: String, iaasNode: AbstractHos
     } else {
       true
     }
+  }
+
+  private def createIP (conn: Connect, domain: Domain, model: ContainerRoot) {
+    try {
+      val parser: Builder = new Builder
+      val domainDoc: Document = parser.build(domain.getXMLDesc(0), null)
+      val net: Network = conn.networkLookupByName("default")
+      val doc: Document = parser.build(net.getXMLDesc(0), null)
+
+      // we create a new IP alias according to the existing ones
+      /*val ipOption = KloudNetworkHelper.selectIP(iaasNode.getName, model, listAllIp(doc, model))
+      var ip = "127.0.0.1"
+      if (ipOption.isDefined) {
+        ip = ipOption.get
+        // FIXME maybe we need to add the IP on the model ?
+      }*/
+      val ipOption = KevoreePropertyHelper.getStringNetworkProperty(model, domain.getName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP) //iaasNode.getName, model, listAllIp(doc, model))
+      var ip = "127.0.0.1"
+      if (ipOption.isDefined) {
+        ip = ipOption.get
+      }
+
+
+      val networks: Nodes = doc.query("/network")
+      for (i <- 0 to networks.size - 1) {
+        val name: Element = networks.get(i).query("./name").get(0).asInstanceOf[Element]
+        if (name.getValue == "default") {
+          val dhcp: Element = networks.get(i).query("./ip/dhcp").get(0).asInstanceOf[Element]
+          val host: Element = new Element("host")
+          val ipAttribute: Attribute = new Attribute("ip", ip)
+          val nameAttribute: Attribute = new Attribute("name", domain.getName)
+          val mac: Element = domainDoc.query("/domain/devices/interface/mac").get(0).asInstanceOf[Element]
+          val address: Attribute = mac.getAttribute("address")
+          val macAttribute: Attribute = new Attribute("mac", address.getValue)
+          host.addAttribute(ipAttribute)
+          host.addAttribute(nameAttribute)
+          host.addAttribute(macAttribute)
+          dhcp.appendChild(host)
+        }
+      }
+      net.destroy()
+      val network: Network = conn.networkDefineXML(doc.toXML)
+      network.create()
+    } catch {
+      case e: Throwable => {
+        logger.error("Unable to reconfigure network for VM {}", domain.getName, e)
+        throw e
+      }
+    }
+
   }
 
 }
