@@ -76,7 +76,7 @@ class NodeTypeBootStrapUI(private var pkernel: ContainerRoot) extends JPanel {
 
     kernel.getTypeDefinitions.
       filter(td => td.isInstanceOf[org.kevoree.NodeType] && td.getDeployUnits.exists(du => du.getTargetNodeType != null ))
-     // .sortWith( (td,td2) => if(td2.getName=="JavaSENode"){true}else{td.getName < td2.getName } )
+      .sortWith( (td,td2) => {println(td.getName); if(td2.getName.toLowerCase=="javasenode"){true}else{td.getName < td2.getName }} )
       .reverse
       .foreach {
       td =>

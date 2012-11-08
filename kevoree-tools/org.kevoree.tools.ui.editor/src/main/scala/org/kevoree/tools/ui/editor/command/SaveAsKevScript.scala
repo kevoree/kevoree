@@ -90,6 +90,11 @@ class SaveAsKevScript extends Command {
 
     currentModel.getNodes.foreach(n => {
       scriptBuffer.append("addNode " + n.getName + ":" + n.getTypeDefinition.getName + "\n")
+      n.getDictionary.map{ dico =>
+        scriptBuffer.append("updateDictionary "+n.getName+"{")
+        scriptBuffer.append(dico.getValues.map(v => v.getAttribute.getName+"=\""+v.getValue+"\"").mkString(","))
+        scriptBuffer.append("}\n")
+      }
     })
 
     currentModel.getNodes.foreach(n => {
