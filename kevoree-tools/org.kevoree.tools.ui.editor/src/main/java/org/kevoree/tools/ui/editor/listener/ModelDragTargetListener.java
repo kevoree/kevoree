@@ -45,6 +45,7 @@ import org.kevoree.tools.ui.framework.elements.*;
 import java.awt.dnd.*;
 
 import org.slf4j.*;
+import scala.io.Source;
 
 /**
  * implementation of the target listener
@@ -176,15 +177,15 @@ public class ModelDragTargetListener extends DropTarget {
                 URI uri = new URI(url.toString().trim());
                 logger.debug("UriPath: " + uri.getPath());
 
-                if(uri.getPath().endsWith(".kev")){
+                if(uri.getPath().endsWith(".kev") || uri.getPath().endsWith(".jar")){
                     LoadNewLibCommand loadLib = new LoadNewLibCommand();
                     loadLib.setKernel(kernel);
                     loadLib.execute(uri.getPath());
                 }
                 if(uri.getPath().endsWith(".kevs")){
-                    LoadKevScriptCommandUI loadLib = new LoadKevScriptCommandUI();
-                    loadLib.setKernel(kernel);
-                    loadLib.execute(uri.getPath());
+                    KevScriptCommand lcommand = new KevScriptCommand();
+                    lcommand.setKernel(kernel);
+                    lcommand.execute(Source.fromFile(uri.getPath(), "UTF-8").getLines().mkString("\n"));
                 }
 
                 arg0.dropComplete(true);
