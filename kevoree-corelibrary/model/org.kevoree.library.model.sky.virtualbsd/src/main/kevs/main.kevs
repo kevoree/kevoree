@@ -1,36 +1,76 @@
 // nodes configuration
-merge "mvn:org.kevoree.corelibrary.model/org.kevoree.library.model.sky/{kevoree.version}"
+merge "mvn:org.kevoree.corelibrary.sky/org.kevoree.library.sky.jails/{kevoree.version}"
+merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.gossiperNetty/{kevoree.version}"
 
-addNode virtualbsd : JailNode {role="host/container", port="7000", inet="em1", subnet="172.16.78.0", mask="24", flavor="base-openjdk6-inria", jailCreationTimeout="100000", jailStartTimeout="200000",logLevel="DEBUG"}
+merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.defaultChannels/{kevoree.version}"
+merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.socketChannels/{kevoree.version}"
+merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.nioChannels/{kevoree.version}"
+
+merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.webserver.api/{kevoree.version}"
+merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.webserver.tjws/{kevoree.version}"
+
+merge "mvn:org.kevoree.corelibrary.sky/org.kevoree.library.sky.provider/{kevoree.version}"
+merge "mvn:org.kevoree.corelibrary.sky/org.kevoree.library.sky.provider.web/{kevoree.version}"
+
+addNode virtualbsd : JailNode {role="host/container", inet="em1", subnet="172.16.78.0", mask="24", flavor="base-openjdk6-inria", jailCreationTimeout="100000", jailStartTimeout="200000", logLevel="INFO"}
+
 
 network virtualbsd => virtualbsd { "KEVOREE.remote.node.ip"= "172.16.78.101"}
+
+
 // group configuration
-addGroup sync : NanoRestGroup
+addGroup sync : NettyGossiperGroup
 
 addToGroup sync virtualbsd
-updateDictionary sync {port="8000", ip="172.16.78.101"}@virtualbsd
+updateDictionary sync {port="8000", gossip_port="8001"}@virtualbsd
 
 // Kloud manager configuration
-addComponent webServer@virtualbsd : KTinyWebServer {port = "8080", timeout = "5000"}
-addComponent paaSKloudResourceManagerRest@virtualbsd : PaaSKloudResourceManagerRest {urlpattern = "/kloud/{login}/{action}"}
-addComponent paaSKloudResourceManager@virtualbsd : PaaSKloudResourceManager
-//addComponent paaSKloudResourceManager@virtualbsd : PaaSKloudResourceManagerStateFull {storage = "/root/kevoree-state"}
-addComponent iaaSKloudResourceManager@virtualbsd : IaaSKloudResourceManager
-//addComponent ldapAuthentication@cumulus : LDAPAuthentication {host = "ldap://ildap1-ren.irisa.fr:389", context = "com.sun.jndi.ldap.LdapCtxFactory", base = "ou=people,dc=inria,dc=fr", filter = "(&(objectclass=inriaperson)(inriaentrystatus=valid)(ou=UR-Rennes))", loginKey = "inriaLogin"}
 
+addComponent webServer@virtualbsd : KTinyWebServer {port = "8080", timeout = "5000"}
+addComponent iaasPage@virtualbsd : IaaSKloudResourceManagerPage { urlpattern="/iaas"}
+addComponent iaasManager@virtualbsd : IaaSKloudManager
+//addComponent paasPage@virtualbsd : PaaSKloudResourceManagerPage { urlpattern="/paas"}
+
+
+addChannel iaasDelegateChannel : defSERVICE
 addChannel requestChannel : defMSG
 addChannel responseChannel : defMSG
-addChannel submitChannel : defSERVICE
-addChannel releaseChannel : defMSG
-//addChannel authenticationChannel : defSERVICE
 
 bind webServer.handler@virtualbsd => requestChannel
-bind paaSKloudResourceManagerRest.request@virtualbsd => requestChannel
-bind webServer.response@virtualbsd => responseChannel
-bind paaSKloudResourceManagerRest.content@virtualbsd => responseChannel
+bind iaasPage.request@virtualbsd => requestChannel
+//bind paasPage.request@virtualbsd => requestChannel
 
-bind paaSKloudResourceManagerRest.submit@virtualbsd => submitChannel
-bind paaSKloudResourceManager.submit@virtualbsd => submitChannel
+bind webServer.response@virtualbsd => responseChannel
+bind iaasPage.content@virtualbsd => responseChannel
+//bind paasPage.content@virtualbsd => responseChannel
+
+bind iaasManager.submit@virtualbsd => iaasDelegateChannel
+bind iaasPage.delegate@virtualbsd => iaasDelegateChannel
+
+// TODO add authentication component and paas manager
+
+//addComponent webServer@virtualbsd : KTinyWebServer {port = "8080", timeout = "5000"}
+//addComponent iaasPage@node0 : IaaSKloudResourceManagerPage { urlpattern="/iaas"}
+//addComponent iaasManager@node0 : IaaSKloudManager
+//addComponent paaSKloudResourceManagerRest@virtualbsd : PaaSKloudResourceManagerRest {urlpattern = "/kloud/{login}/{action}"}
+//addComponent paaSKloudResourceManager@virtualbsd : PaaSKloudResourceManager
+//addComponent paaSKloudResourceManager@virtualbsd : PaaSKloudResourceManagerStateFull {storage = "/root/kevoree-state"}
+//addComponent iaaSKloudResourceManager@virtualbsd : IaaSKloudResourceManager
+//addComponent ldapAuthentication@cumulus : LDAPAuthentication {host = "ldap://ildap1-ren.irisa.fr:389", context = "com.sun.jndi.ldap.LdapCtxFactory", base = "ou=people,dc=inria,dc=fr", filter = "(&(objectclass=inriaperson)(inriaentrystatus=valid)(ou=UR-Rennes))", loginKey = "inriaLogin"}
+
+//addChannel requestChannel : defMSG
+//addChannel responseChannel : defMSG
+//addChannel submitChannel : defSERVICE
+//addChannel releaseChannel : defMSG
+//addChannel authenticationChannel : defSERVICE
+
+//bind webServer.handler@virtualbsd => requestChannel
+//bind paaSKloudResourceManagerRest.request@virtualbsd => requestChannel
+//bind webServer.response@virtualbsd => responseChannel
+//bind paaSKloudResourceManagerRest.content@virtualbsd => responseChannel
+
+//bind paaSKloudResourceManagerRest.submit@virtualbsd => submitChannel
+//bind paaSKloudResourceManager.submit@virtualbsd => submitChannel
 
 //bind ldapAuthentication.authenticate@cumulus => authenticationChannel
 //bind paaSKloudResourceManagerRest.authentication@cumulus => authenticationChannel
