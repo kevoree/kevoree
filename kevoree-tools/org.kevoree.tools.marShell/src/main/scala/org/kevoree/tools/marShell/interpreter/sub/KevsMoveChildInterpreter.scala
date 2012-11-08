@@ -30,15 +30,6 @@ import org.kevoree.tools.marShell.interpreter.{KevsInterpreterContext, KevsAbstr
 import org.kevoree.tools.marShell.ast.MoveChildStatment
 import org.slf4j.LoggerFactory
 
-/**
- * User: Erwan Daubert - erwan.daubert@gmail.com
- * Date: 21/11/11
- * Time: 16:12
- *
- * @author Erwan Daubert
- * @version 1.0
- */
-
 case class KevsMoveChildInterpreter (moveChild: MoveChildStatment) extends KevsAbstractInterpreter {
   val logger = LoggerFactory.getLogger(this.getClass)
 
@@ -56,16 +47,20 @@ case class KevsMoveChildInterpreter (moveChild: MoveChildStatment) extends KevsA
             false
           }
           case Some(oldFather) => {
+
+            println(child.getName+"=>"+oldFather.getName)
+
             if (!oldFather.getHosts.contains(child)) {
               logger.warn("The child node is not already contained by a father. Please prefer the addChild command!")
             }
-            context.model.getNodes.find(node => node.getName == moveChild.oldFatherNodeName) match {
+            context.model.getNodes.find(node => node.getName == moveChild.fatherNodeName) match {
               case None => {
                 logger.error("Unknown father node:" + moveChild.fatherNodeName +
                   "\nThe node must already exist. Please check !")
                 false
               }
               case Some(father) => {
+                oldFather.removeHosts(child)
                 father.addHosts(child)
                 true
               }
