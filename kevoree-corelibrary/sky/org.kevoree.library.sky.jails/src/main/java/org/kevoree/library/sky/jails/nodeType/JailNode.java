@@ -1,9 +1,11 @@
 package org.kevoree.library.sky.jails.nodeType;
 
 import org.kevoree.annotation.*;
+import org.kevoree.api.service.core.script.KevScriptEngine;
 import org.kevoree.library.sky.api.KevoreeNodeRunner;
 import org.kevoree.library.sky.api.nodeType.AbstractIaaSNode;
 import org.kevoree.library.sky.jails.JailKevoreeNodeRunner;
+import org.kevoree.library.sky.jails.JailsReasoner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,6 +35,7 @@ public class JailNode extends AbstractIaaSNode {
 	private String inet;
 	private String subnet;
 	private String mask;
+	boolean initialization;
 
 	@Start
 	public void startNode () {
@@ -40,6 +43,7 @@ public class JailNode extends AbstractIaaSNode {
 		subnet = this.getDictionary().get("subnet").toString();
 		mask = this.getDictionary().get("mask").toString();
 		super.startNode();
+		initialization = true;
 	}
 
 	@Update
@@ -56,6 +60,17 @@ public class JailNode extends AbstractIaaSNode {
 	protected boolean isDaemon () {
 		return true;
 	}
+
+	public void modelUpdated () {
+		if (initialization) {
+			KevScriptEngine kengine = getKevScriptEngineFactory().createKevScriptEngine();
+			// look at all the vms that are already defined and add them on the model
+			JailsReasoner.createNodes(kengine, this);
+			updateModel(kengine);
+			initialization = false;
+		}
+	}
+
 
 	@Override
 	public KevoreeNodeRunner createKevoreeNodeRunner (String nodeName) {
