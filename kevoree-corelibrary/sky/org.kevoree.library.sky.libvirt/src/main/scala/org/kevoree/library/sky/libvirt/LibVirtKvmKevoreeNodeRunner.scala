@@ -19,6 +19,9 @@ class LibVirtKvmKevoreeNodeRunner (nodeName: String, iaasNode: AbstractHostNode,
 
   // maybe this must be defined before to be sent to the node (by the manager)
   def cloneDisk (diskPath: String, newDiskPath: String, copyMode: String): Boolean = {
+    if (new File(newDiskPath).exists()) {
+      new File(newDiskPath).delete()
+    }
     if (copyMode == "base") {
       val process = Runtime.getRuntime.exec(Array[String]("qemu-img", "create", "-f", "qcow2", "-b", diskPath, newDiskPath))
       // FIXME maybe we need to have a better thread management

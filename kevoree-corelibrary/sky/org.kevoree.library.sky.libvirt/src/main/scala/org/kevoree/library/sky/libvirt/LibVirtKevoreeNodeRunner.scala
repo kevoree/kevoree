@@ -10,6 +10,7 @@ import org.kevoree.library.sky.api.nodeType.AbstractHostNode
 import org.slf4j.LoggerFactory
 import java.io.IOException
 import org.kevoree.library.sky.api.helper.KloudNetworkHelper
+import org.kevoree.library.sky.api.property.PropertyConversionHelper
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -35,6 +36,9 @@ abstract class LibVirtKevoreeNodeRunner (nodeName: String, iaasNode: AbstractHos
       if (domain.isActive == 0) {
         domain.create()
         true
+      } else if (domain.isActive == 1) {
+        logger.debug("The VM '{}' is already defined and is running ", nodeName)
+        true
       } else {
         logger.error("A VM is already defined with the same name ({}) and is running or not available (libvirt isActive code = {})", nodeName, domain.isActive)
         false
@@ -56,19 +60,22 @@ abstract class LibVirtKevoreeNodeRunner (nodeName: String, iaasNode: AbstractHos
           uuidElement.appendChild(UUID.randomUUID.toString)
 
 
-          //look for the amount of memory // TODO get the code in jails that help to use GB, etc
+          //look for the amount of memory
           val memoryOption = KevoreePropertyHelper.getStringPropertyForNode(iaasModel, nodeName, "RAM")
           val defaultMemory = iaasNode.getDictionary.get("default_RAM")
-          var memory = "1024"
+          var memory = "1024000"
           if (defaultMemory != null) {
-            memory = defaultMemory.toString
+            memory = PropertyConversionHelper.getRAM(defaultMemory.toString).toString
           }
           if (memoryOption.isDefined) {
-            memory = memoryOption.get
+            memory = PropertyConversionHelper.getRAM(memoryOption.get).toString
           }
           val memoryElement: Element = doc.query("/domain/memory").get(0).asInstanceOf[Element]
           memoryElement.removeChildren()
           memoryElement.appendChild(memory)
+          memoryElement.removeAttribute(memoryElement.getAttribute("unit"))
+          val unit = new Attribute("unit", "b")
+          memoryElement.addAttribute(unit)
 
           val currentMemoryElement: Element = doc.query("/domain/currentMemory").get(0).asInstanceOf[Element]
           currentMemoryElement.removeChildren()
@@ -173,40 +180,31 @@ abstract class LibVirtKevoreeNodeRunner (nodeName: String, iaasNode: AbstractHos
       val net: Network = conn.networkLookupByName("default")
       val doc: Document = parser.build(net.getXMLDesc(0), null)
 
-      // we create a new IP alias according to the existing ones
-      /*val ipOption = KloudNetworkHelper.selectIP(iaasNode.getName, model, listAllIp(doc, model))
-      var ip = "127.0.0.1"
-      if (ipOption.isDefined) {
-        ip = ipOption.get
-        // FIXME maybe we need to add the IP on the model ?
-      }*/
-      val ipOption = KevoreePropertyHelper.getStringNetworkProperty(model, domain.getName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP) //iaasNode.getName, model, listAllIp(doc, model))
-      var ip = "127.0.0.1"
-      if (ipOption.isDefined) {
-        ip = ipOption.get
-      }
+      val ipOption = KevoreePropertyHelper.getStringNetworkProperty(model, domain.getName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP)
 
-
-      val networks: Nodes = doc.query("/network")
-      for (i <- 0 to networks.size - 1) {
-        val name: Element = networks.get(i).query("./name").get(0).asInstanceOf[Element]
-        if (name.getValue == "default") {
-          val dhcp: Element = networks.get(i).query("./ip/dhcp").get(0).asInstanceOf[Element]
-          val host: Element = new Element("host")
-          val ipAttribute: Attribute = new Attribute("ip", ip)
-          val nameAttribute: Attribute = new Attribute("name", domain.getName)
-          val mac: Element = domainDoc.query("/domain/devices/interface/mac").get(0).asInstanceOf[Element]
-          val address: Attribute = mac.getAttribute("address")
-          val macAttribute: Attribute = new Attribute("mac", address.getValue)
-          host.addAttribute(ipAttribute)
-          host.addAttribute(nameAttribute)
-          host.addAttribute(macAttribute)
-          dhcp.appendChild(host)
+      if (ipOption.isDefined && ipOption.get != "127.0.0.1") {
+        val ip = ipOption.get
+        val networks: Nodes = doc.query("/network")
+        for (i <- 0 to networks.size - 1) {
+          val name: Element = networks.get(i).query("./name").get(0).asInstanceOf[Element]
+          if (name.getValue == "default") {
+            val dhcp: Element = networks.get(i).query("./ip/dhcp").get(0).asInstanceOf[Element]
+            val host: Element = new Element("host")
+            val ipAttribute: Attribute = new Attribute("ip", ip)
+            val nameAttribute: Attribute = new Attribute("name", domain.getName)
+            val mac: Element = domainDoc.query("/domain/devices/interface/mac").get(0).asInstanceOf[Element]
+            val address: Attribute = mac.getAttribute("address")
+            val macAttribute: Attribute = new Attribute("mac", address.getValue)
+            host.addAttribute(ipAttribute)
+            host.addAttribute(nameAttribute)
+            host.addAttribute(macAttribute)
+            dhcp.appendChild(host)
+          }
         }
+        net.destroy()
+        val network: Network = conn.networkDefineXML(doc.toXML)
+        network.create()
       }
-      net.destroy()
-      val network: Network = conn.networkDefineXML(doc.toXML)
-      network.create()
     } catch {
       case e: Throwable => {
         logger.error("Unable to reconfigure network for VM {}", domain.getName, e)
