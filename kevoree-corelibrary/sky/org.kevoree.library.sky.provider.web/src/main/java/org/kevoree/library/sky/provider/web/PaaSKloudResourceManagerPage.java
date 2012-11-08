@@ -15,7 +15,7 @@ import org.kevoree.library.sky.provider.api.SubmissionException;
  */
 @Library(name = "SKY")
 @Requires({
-		@RequiredPort(name = "delegate", type = PortType.SERVICE, className = PaaSManagerService.class)
+		@RequiredPort(name = "delegate", type = PortType.SERVICE, className = PaaSManagerService.class, optional = false)
 })
 @ComponentType
 public class PaaSKloudResourceManagerPage extends KloudResourceManagerPage implements PaaSManagerService {
@@ -55,5 +55,10 @@ public class PaaSKloudResourceManagerPage extends KloudResourceManagerPage imple
 	@Override
 	public void release (String id) throws SubmissionException {
 		getPortByName("delegate", PaaSManagerService.class).release(id);
+	}
+
+	@Override
+	public ContainerRoot getModel (String id) throws SubmissionException {
+		return getPortByName("delegate", PaaSManagerService.class).getModel(id);
 	}
 }

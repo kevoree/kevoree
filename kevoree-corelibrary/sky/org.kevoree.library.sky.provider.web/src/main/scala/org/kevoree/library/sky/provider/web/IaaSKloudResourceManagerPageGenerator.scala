@@ -1,14 +1,12 @@
 package org.kevoree.library.sky.provider.web
 
 import org.kevoree.library.javase.webserver.{KevoreeHttpResponse, KevoreeHttpRequest}
-import org.kevoree.library.sky.api.helper.{KloudNetworkHelper, KloudModelHelper}
+import org.kevoree.library.sky.api.helper.KloudModelHelper
 import org.json.JSONStringer
-import org.kevoree.api.service.core.script.{KevScriptEngineException, KevScriptEngine}
+import org.kevoree.api.service.core.script.KevScriptEngine
 import org.slf4j.LoggerFactory
 import util.matching.Regex
-import org.kevoree.framework.Constants
-import org.kevoree.{ContainerRoot, TypeDefinition, KevoreeFactory}
-import org.kevoree.library.sky.provider.api.SubmissionException
+import org.kevoree.ContainerRoot
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -228,6 +226,7 @@ class IaaSKloudResourceManagerPageGenerator (instance: IaaSKloudResourceManagerP
     } catch {
       case e: Throwable => logger.warn("Unable to remove the child", e)
     }
+    request.setUrl(pattern)
     getIaasPage(request, response)
   }
 

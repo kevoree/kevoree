@@ -1,6 +1,6 @@
 
 merge "mvn:org.kevoree.corelibrary.sky/org.kevoree.library.sky.minicloud/{kevoree.version}"
-merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.nanohttp/{kevoree.version}"
+merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.gossiperNetty/{kevoree.version}"
 
 merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.defaultChannels/{kevoree.version}"
 merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.socketChannels/{kevoree.version}"
@@ -14,7 +14,7 @@ merge "mvn:org.kevoree.corelibrary.sky/org.kevoree.library.sky.provider.web/{kev
 
 
 addNode node0 : MiniCloudNode { coreLogLevel="WARN",logLevel="DEBUG"}
-addGroup sync : NanoRestGroup
+addGroup sync : NettyGossiperGroup { mergeModel = "true"}
 addToGroup sync node0
 
 addComponent webServer@node0 : KTinyWebServer {port = "8080", timeout = "5000"}

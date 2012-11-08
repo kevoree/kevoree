@@ -307,12 +307,16 @@ jQuery(document).ready(function () {
                 type:"post",
                 data:jsonRequest,
                 dataType:'json',
+                timeout: 5000,
                 success:function (response) {
                     if (response.code != "0") {
                         alert(response.message);
                     } else {
                         window.location = "{pattern}";
                     }
+                },
+                error:function (response) {
+                    alert("Unable to Add the node" + response);
                 }
             });
         }

@@ -131,9 +131,7 @@ object HTMLPageBuilder {
                                            </a>
                                          </td>
                                          <td>
-                                           <button type="button" class="btn btn-warning">
-                                             <a href={pattern + group.getName + "/release"}>release</a>
-                                           </button>
+                                             <a class="btn btn-warning" href={pattern + group.getName + "/release"}>release</a>
                                          </td>
                                        </tr>
                                      )
@@ -305,9 +303,7 @@ object HTMLPageBuilder {
       <thead>
         <tr>
           <td>#
-            <button type="button" class="btn btn-success">
-              <a href={pattern + "AddChild"}>add child</a>
-            </button>
+            <a class="btn btn-success" href={pattern + "AddChild"}>add child</a>
           </td> <td>virtual node</td> <td>ip</td> <td>action(s)</td>
         </tr>
       </thead>
@@ -336,9 +332,7 @@ object HTMLPageBuilder {
                                        {ipString}
                                      </td>
                                      <td>
-                                       <button type="button" class="btn btn-warning">
-                                         <a href={pattern + "RemoveChild?name=" + child.getName}>delete</a>
-                                       </button>
+                                         <a class="btn btn-warning" href={pattern + "RemoveChild?name=" + child.getName}>delete</a>
                                      </td>
                                    </tr>
                                  )
