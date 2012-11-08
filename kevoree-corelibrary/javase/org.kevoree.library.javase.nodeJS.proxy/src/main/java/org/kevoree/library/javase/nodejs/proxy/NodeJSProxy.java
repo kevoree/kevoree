@@ -15,7 +15,8 @@ import org.kevoree.library.javase.nodejs.AbstractNodeJSComponentType;
 @DictionaryType({
         @DictionaryAttribute(name = "ip", defaultValue = "127.0.0.1", optional = true),
         @DictionaryAttribute(name = "port", defaultValue = "8666", optional = true),
-        @DictionaryAttribute(name = "remotePort", defaultValue = "80", optional = true)
+        @DictionaryAttribute(name = "remotePort", defaultValue = "80", optional = true),
+        @DictionaryAttribute(name = "timeout", defaultValue = "-1", optional = true)
 })
 public class NodeJSProxy extends AbstractNodeJSComponentType {
     @Override

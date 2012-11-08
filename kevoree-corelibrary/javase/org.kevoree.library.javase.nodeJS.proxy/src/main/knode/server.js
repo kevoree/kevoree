@@ -17,4 +17,12 @@ var port = parseInt(vars["port"]);
 var remotePort = parseInt(vars["remotePort"]);
 
 console.log("Proxy "+port+"->http://"+ip+":"+remotePort);
-httpProxy.createServer(remotePort, ip).listen(port);
+var server = httpProxy.createServer(remotePort, ip)
+server.listen(port);
+
+if(vars["timeout"] > 0) {
+    setTimeout(function() {
+    	            console.log('Closing the proxy (after programed timeout).');
+    	            server.close();
+    	        }, vars["timeout"]);
+}
