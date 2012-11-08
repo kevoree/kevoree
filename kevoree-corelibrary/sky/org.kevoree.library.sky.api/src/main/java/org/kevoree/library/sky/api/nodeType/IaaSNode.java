@@ -13,7 +13,7 @@ import org.kevoree.annotation.NodeFragment;
  * @version 1.0
  */
 @DictionaryType({
-		@DictionaryAttribute(name = "inet", optional = true),
+		@DictionaryAttribute(name = "inet", optional = false),
 		@DictionaryAttribute(name = "subnet", optional = true),
 		@DictionaryAttribute(name = "mask", optional = true),
 		@DictionaryAttribute(name = "role", defaultValue = "host/container", vals = {"host", "container", "host/container"}, optional = true)

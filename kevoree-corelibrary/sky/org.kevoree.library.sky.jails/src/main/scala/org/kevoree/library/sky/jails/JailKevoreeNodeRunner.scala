@@ -22,6 +22,7 @@ import org.kevoree.library.sky.api.KevoreeNodeRunner
 import java.io._
 import org.kevoree.{KevoreeFactory, ContainerRoot}
 import org.kevoree.framework.{KevoreeXmiHelper, Constants, KevoreePropertyHelper}
+import org.kevoree.library.sky.api.helper.{PropertyHelper, KloudNetworkHelper}
 
 
 /**
@@ -52,7 +53,11 @@ class JailKevoreeNodeRunner (nodeName: String, iaasNode: JailNode) extends Kevor
         newIp = ipOption.get
       } else {
         // we create a new IP alias according to the existing ones
-        newIp = PropertyHelper.lookingForNewIp(result._2, iaasNode.getNetwork, iaasNode.getMask)
+        val ipOption = KloudNetworkHelper.selectIP(iaasNode.getName, iaasModel, result._2.toArray[String])
+        if (ipOption.isDefined) {
+          newIp = ipOption.get
+          // FIXME maybe we need to add the IP on the model ?
+        }
       }
       if (processExecutor.addNetworkAlias(iaasNode.getNetworkInterface, newIp)) {
         // looking for the flavors

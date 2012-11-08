@@ -22,16 +22,14 @@ import org.slf4j.LoggerFactory;
 public class LibVirtKvmNode extends LibVirtNode /*implements IaaSNodeWithDefaultValue*/ {
 	private static final Logger logger = LoggerFactory.getLogger(LibVirtKvmNode.class);
 
-	private Connect connection;
-
 	@Override
 	public void startNode () {
-		super.startNode();
 		try {
 			connection = new Connect("qemu:///system", false);
 		} catch (LibvirtException e) {
 			logger.error("Unable to find the hypervisor!", e);
 		}
+		super.startNode();
 	}
 
 	@Start

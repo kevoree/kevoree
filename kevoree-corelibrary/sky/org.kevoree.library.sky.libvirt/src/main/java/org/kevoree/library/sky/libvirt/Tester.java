@@ -23,20 +23,80 @@ import java.util.UUID;
 public class Tester {
 	public static String FIXME = "\n<=====================================>\n<============== FIXME ================> ";
 
-	public static void main (String[] args) {
-		// Create the connection
-		Connect conn = null;
 
+	public static void main (String[] args) throws LibvirtException {
+		Connect conn = new Connect("qemu:///system", false);
+//		createIP();
+		Domain domain = createDomain(conn);
+//		Domain domain = conn.domainLookupByName("Toto");
+		if (domain != null) {
+			Network network = createIP(conn, domain);
+			if (network != null) {
+				System.out.println(domain.getXMLDesc(0));
+				System.out.println(network.getXMLDesc(0));
+//				domain.create();
+			}
+		}
+
+	}
+
+	private static Network createIP (Connect conn, Domain domain) {
 		try {
-			conn = new Connect("qemu:///system", false);
+			Builder parser = new Builder();
+
+			Document domainDoc = parser.build(domain.getXMLDesc(0), null);
+			System.out.println(domainDoc.toXML());
+
+
+			Network net = conn.networkLookupByName("default");
+
+			Document doc = parser.build(net.getXMLDesc(0), null);
+
+			Nodes networks = doc.query("/network");
+			for (int i = 0; i < networks.size(); i++) {
+				Element name = (Element) networks.get(i).query("./name").get(0);
+				if (name.getValue().equals("default")) {
+					Element dhcp = (Element) networks.get(i).query("./ip/dhcp").get(0);
+					Element host = new Element("host");
+					Attribute ipAttribute = new Attribute("ip", "192.168.122.19");
+					Attribute nameAttribute = new Attribute("name", domain.getName());
+					// looking for the macaddress of the domain
+					Element mac = (Element) domainDoc.query("/domain/devices/interface/mac").get(0);
+					Attribute address = mac.getAttribute("address");
+					Attribute macAttribute = new Attribute("mac", address.getValue());
+
+					host.addAttribute(ipAttribute);
+					host.addAttribute(nameAttribute);
+					host.addAttribute(macAttribute);
+					dhcp.appendChild(host);
+				}
+			}
+			net.destroy();
+			Network network = conn.networkDefineXML(doc.toXML());
+			network.create();
+			return network;
+		} catch (LibvirtException e) {
+			e.printStackTrace();
+		} catch (ValidityException e) {
+			e.printStackTrace();
+		} catch (ParsingException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+
+	private static Domain createDomain (Connect conn) {
+		try {
 			Domain domain = conn.domainLookupByName("debian_base");
-			//      XML.loadString(domain.getXMLDesc(0))
 
 			/* Change attributes */
 			Builder parser = new Builder();
 			Document doc = parser.build(domain.getXMLDesc(0), null);
 
-			/*Element nameElement = (Element) doc.query("/domain/name").get(0);
+			Element nameElement = (Element) doc.query("/domain/name").get(0);
 			nameElement.removeChildren();
 			nameElement.appendChild("Toto");
 
@@ -62,7 +122,6 @@ public class Tester {
 			typeElement.addAttribute(archAttribute);
 
 			Element sourceElement = (Element) doc.query("/domain/devices/disk/source").get(0);
-			System.out.println(sourceElement.toXML());
 			sourceElement.removeAttribute(sourceElement.getAttribute("file"));
 			Attribute fileAttribute = new Attribute("file", "/home/edaubert/Public/vms/debian_base.toto.qcow2");
 			sourceElement.addAttribute(fileAttribute);
@@ -72,31 +131,25 @@ public class Tester {
 				Element macElement = (Element) ((Element) interfaceElements.get(i)).query("./mac").get(0);
 				((Element) interfaceElements.get(i)).removeChild(macElement);
 			}
+			return conn.domainDefineXML(doc.toXML());
 
-			System.out.println(doc.toXML());*/
-			Nodes interfaceElements = doc.query("/domain/devices/interface");
-			for (int i = 0; i < interfaceElements.size(); i++) {
-				Element macElement = (Element) ((Element) interfaceElements.get(i)).query("./mac").get(0);
-				((Element) interfaceElements.get(i)).removeChild(macElement);
-			}
-
-			StringBuilder builder = new StringBuilder();
-			BufferedReader reader = new BufferedReader(new FileReader("/home/edaubert/toto.xml"));
-			String line;
-			while ((line = reader.readLine()) != null) {
-				builder.append(line);
-			}
-			domain = conn.domainDefineXML(builder.toString());
+			/*StringBuilder builder = new StringBuilder();
+								BufferedReader reader = new BufferedReader(new FileReader("/home/edaubert/toto.xml"));
+								String line;
+								while ((line = reader.readLine()) != null) {
+									builder.append(line);
+								}
+								domain = conn.domainDefineXML(builder.toString());*/
 		} catch (LibvirtException e) {
 			e.printStackTrace();
 		} catch (ValidityException e) {
 			e.printStackTrace();
 		} catch (ParsingException e) {
 			e.printStackTrace();
-		}  catch (IOException e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
+		return null;
 	}
 
 	public static boolean testAuthentication () {

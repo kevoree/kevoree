@@ -6,7 +6,9 @@ import jexxus.common.ConnectionListener;
 import jexxus.common.Delivery;
 import jexxus.server.Server;
 import jexxus.server.ServerConnection;
+import org.kevoree.ContainerNode;
 import org.kevoree.ContainerRoot;
+import org.kevoree.Group;
 import org.kevoree.annotation.*;
 import org.kevoree.framework.AbstractGroupType;
 import org.kevoree.framework.KevoreePropertyHelper;
@@ -42,6 +44,8 @@ public class BasicGroup extends AbstractGroupType implements ConnectionListener 
     private final byte pushModel = 1;
 
     private Server server = null;
+    private boolean starting;
+
 
     @Start
     public void startRestGroup() throws IOException {
@@ -50,6 +54,7 @@ public class BasicGroup extends AbstractGroupType implements ConnectionListener 
         server = new Server(this, port, ssl);
         logger.info("BasicGroup listen on " + port + "-SSL=" + ssl);
         server.startServer();
+        starting = true;
     }
 
     @Stop
@@ -58,8 +63,7 @@ public class BasicGroup extends AbstractGroupType implements ConnectionListener 
     }
 
     @Override
-    public void triggerModelUpdate() {
-        //To change body of implemented methods use File | Settings | File Templates.
+    public void triggerModelUpdate () {
     }
 
     @Override
@@ -153,7 +157,6 @@ public class BasicGroup extends AbstractGroupType implements ConnectionListener 
                 logger.error("Null rec");
                 return;
             } else {
-
                 switch (data[0]){
                     case getModel : {
                         ByteArrayOutputStream output = new ByteArrayOutputStream();
