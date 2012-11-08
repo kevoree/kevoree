@@ -41,7 +41,6 @@ import org.kevoree.tools.ui.framework.elements.PortPanel.PortType;
 
 import java.awt.*;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -50,7 +49,7 @@ import java.util.HashSet;
 /**
  * @author ffouquet
  */
-public class LoadModelCommand implements Command {
+public class MergeModelCommand implements Command {
 
 
     ReloadTypePalette subCommand = new ReloadTypePalette();
@@ -66,26 +65,23 @@ public class LoadModelCommand implements Command {
     @Override
     public void execute(Object p) {
 
-        ContainerRoot modelToLoad;
+        ContainerRoot modelToMerge;
 
         if (p instanceof ContainerRoot) {
-            modelToLoad = (ContainerRoot) p;
+            modelToMerge = (ContainerRoot) p;
         } else {
             if (p instanceof InputStream) {
-                modelToLoad = KevoreeXmiHelper.loadStream((InputStream) p);
+                modelToMerge = KevoreeXmiHelper.loadStream((InputStream) p);
             } else {
-                modelToLoad = KevoreeXmiHelper.load(p.toString());
+                modelToMerge = KevoreeXmiHelper.load(p.toString());
             }
         }
 
-        ClearModelCommand clearModelCommand = new ClearModelCommand();
-        clearModelCommand.setKernel(kernel);
-        clearModelCommand.execute(null);
-
-        kernel.getModelHandler().setActualModel(modelToLoad);
+      kernel.getModelHandler().merge(modelToMerge);
+        kernel.getModelPanel().clear();
 
         //HACK :-) TODO REMOVE
-        kernel.getUifactory().getMapping().bind(kernel.getModelPanel(), modelToLoad);
+        kernel.getUifactory().getMapping().bind(kernel.getModelPanel(), kernel.getModelHandler().getActualModel());
 
 
         /* Synch every UI Component */
