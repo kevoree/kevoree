@@ -49,6 +49,12 @@ import javax.swing.JOptionPane
 import org.kevoree.framework.KevoreeXmiHelper
 import org.kevoree.tools.ui.editor.{PositionedEMFHelper, KevoreeUIKernel}
 import org.slf4j.LoggerFactory
+import java.util.concurrent.Exchanger
+import org.kevoree.ContainerRoot
+import jexxus.client.ClientConnection
+import jexxus.common.{Delivery, Connection, ConnectionListener}
+import java.io.ByteArrayInputStream
+import jexxus.server.ServerConnection
 
 object LoadRemoteModelUICommand {
   var lastRemoteNodeAddress: String = "localhost:8000"
@@ -94,6 +100,43 @@ class LoadRemoteModelUICommand extends Command {
     }
   }
 
+
+  def tryRemoteJexxus(ip: String, port: String){
+    try {
+    val exchanger = new Exchanger[ContainerRoot]();
+    var conns :Tuple1[ClientConnection] = null
+    conns = Tuple1(new ClientConnection(new ConnectionListener() {
+      def connectionBroken(broken: Connection, forced: Boolean) {}
+      def receive(data: Array[Byte], from: Connection) {
+        val inputStream = new ByteArrayInputStream(data)
+        val root = KevoreeXmiHelper.loadCompressedStream(inputStream)
+        try {
+          exchanger.exchange(root);
+        } catch {
+          case _ @ e => logger.error("",e)
+        } finally {
+          conns._1.close()
+        }
+      }
+      def clientConnected(conn: ServerConnection) {}
+    }, ip, Integer.parseInt(port), true))
+    conns._1.connect()
+    conns._1.send(Array(Byte.box(0)),Delivery.RELIABLE)
+    val root = exchanger.exchange(null)
+    kernel.getModelHandler.merge(root)
+    PositionedEMFHelper.updateModelUIMetaData(kernel)
+    lcommand.setKernel(kernel)
+    lcommand.execute(kernel.getModelHandler.getActualModel)
+    true
+    } catch {
+      case _@e => {
+        logger.debug("Pull failed to "+ip+":"+port)
+        false
+      }
+    }
+  }
+
+
   def execute(p: Object) = {
 
     try {
@@ -105,7 +148,9 @@ class LoadRemoteModelUICommand extends Command {
           val ip = results(0)
           val port = results(1)
           if (!tryRemoteLoad(ip, port, true)) {
-            tryRemoteLoad(ip, port, false)
+            if(!tryRemoteLoad(ip, port, false)){
+              tryRemoteJexxus(ip,port)
+            }
           }
         }
         true
@@ -116,6 +161,8 @@ class LoadRemoteModelUICommand extends Command {
         false
       }
     }
+
+
   }
 
 }

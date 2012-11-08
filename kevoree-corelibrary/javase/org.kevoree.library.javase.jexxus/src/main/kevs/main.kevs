@@ -1,0 +1,7 @@
+
+merge 'mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.javaseNode/{kevoree.version}'
+merge 'mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.jexxus/{kevoree.version}'
+
+addNode node0:JavaSENode {logLevel = "INFO"}
+addGroup sync: BasicGroup
+addToGroup sync node0

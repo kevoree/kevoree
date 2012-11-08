@@ -22,6 +22,8 @@
 
     <modules>
         <module>../org.kevoree.library.javase.swingUI</module>
+        <module>../org.kevoree.library.javase.jexxus</module>
+
         <module>../org.kevoree.library.javase.kotlin</module>
         <module>../org.kevoree.library.javase.fileSystem</module>
         <module>../org.kevoree.library.javase.fileSystem.git</module>
