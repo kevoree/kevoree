@@ -13,7 +13,7 @@ import org.kevoree.annotation.NodeFragment;
  * @version 1.0
  */
 @DictionaryType({
-		@DictionaryAttribute(name = "ARCH", defaultValue = "N/A", vals = {"x86", "x86_64"}, optional = true),
+		@DictionaryAttribute(name = "ARCH", defaultValue = "N/A"/*, vals = {"x86", "x86_64"}*/, optional = true),
 		@DictionaryAttribute(name = "RAM", defaultValue = "N/A", optional = true),
 		// GB, MB, KB is allowed, N/A means undefined
 		@DictionaryAttribute(name = "CPU_CORE", defaultValue = "N/A", optional = true),
