@@ -76,8 +76,7 @@ class NodeTypeBootStrapUI(private var pkernel: ContainerRoot) extends JPanel {
 
     kernel.getTypeDefinitions.
       filter(td => td.isInstanceOf[org.kevoree.NodeType] && td.getDeployUnits.exists(du => du.getTargetNodeType != null ))
-      .sortWith( (td,td2) => {println(td.getName); if(td2.getName.toLowerCase=="javasenode"){true}else{td.getName < td2.getName }} )
-      .reverse
+      .sortWith( (td,td2) => {if(td.getName=="JavaSENode".toLowerCase()){true}else{td.getName < td2.getName }} )
       .foreach {
       td =>
         nodeTypeModel.addElement(td.getName)
@@ -88,8 +87,7 @@ class NodeTypeBootStrapUI(private var pkernel: ContainerRoot) extends JPanel {
     val groupTypeModel = new DefaultComboBoxModel
     kernel.getTypeDefinitions.
       filter(td => td.isInstanceOf[org.kevoree.GroupType] && td.getDeployUnits.exists(du => du.getTargetNodeType != null ))
-      .sortWith( (td,td2) => if(td2.getName.toLowerCase=="nanohttprestgroup"){true}else{td.getName < td2.getName } )
-      .reverse
+      .sortWith( (td,td2) => {if(td.getName=="BasicGroup".toLowerCase()){true}else{td.getName < td2.getName }} )
       .foreach {
           td =>
             groupTypeModel.addElement(td.getName)

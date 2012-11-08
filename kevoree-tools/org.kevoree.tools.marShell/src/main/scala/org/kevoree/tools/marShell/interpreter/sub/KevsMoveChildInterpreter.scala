@@ -47,9 +47,6 @@ case class KevsMoveChildInterpreter (moveChild: MoveChildStatment) extends KevsA
             false
           }
           case Some(oldFather) => {
-
-            println(child.getName+"=>"+oldFather.getName)
-
             if (!oldFather.getHosts.contains(child)) {
               logger.warn("The child node is not already contained by a father. Please prefer the addChild command!")
             }
