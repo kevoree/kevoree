@@ -80,6 +80,9 @@ abstract class LibVirtKevoreeNodeRunner (nodeName: String, iaasNode: AbstractHos
           val currentMemoryElement: Element = doc.query("/domain/currentMemory").get(0).asInstanceOf[Element]
           currentMemoryElement.removeChildren()
           currentMemoryElement.appendChild(memory)
+          currentMemoryElement.removeAttribute(currentMemoryElement.getAttribute("unit"))
+          val unit2 = new Attribute("unit", "b")
+          currentMemoryElement.addAttribute(unit2)
 
           // look for the number of CPU
           val cpuOption = KevoreePropertyHelper.getStringPropertyForNode(iaasModel, nodeName, "CPU_CORE")
