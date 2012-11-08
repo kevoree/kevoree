@@ -35,6 +35,7 @@ import org.kevoree.KevoreeFactory
 import org.kevoree.merger.RootMerger
 import org.kevoree.extra.kserial.Utils.KHelpers
 import org.kevoree.extra.kserial.KevoreeSharedCom
+import java.io.File
 
 /**
  * Created with IntelliJ IDEA.
@@ -44,6 +45,8 @@ import org.kevoree.extra.kserial.KevoreeSharedCom
  */
 
 class OpenArduinoNode extends Command {
+
+  var logger = LoggerFactory.getLogger(this.getClass)
 
   val loadModelCMD = new LoadModelCommand()
   val clearCMD = new ClearModelCommand()
@@ -63,24 +66,28 @@ class OpenArduinoNode extends Command {
     du.setGroupName("org.kevoree.corelibrary.model")
     du.setVersion(KevoreeFactory.getVersion)
     val file = AetherUtil.resolveDeployUnit(du)
-    val jar = new JarFile(file)
-    val entry: JarEntry = jar.getJarEntry("KEV-INF/lib.kev")
-    val newmodel = KevoreeXmiHelper.loadStream(jar.getInputStream(entry))
-    if (newmodel != null) {
-      val merger = new RootMerger
-      import scala.collection.JavaConversions._
-      KHelpers.getPortIdentifiers.foreach{ pi =>
-        try {
-         merger.merge(newmodel,ArduinoModelGetHelper.getCurrentModel(newmodel,pi))
-        } catch {
-          case _ @ e=>
+
+    file match {
+      case file : File => {
+        val jar = new JarFile(file)
+        val entry: JarEntry = jar.getJarEntry("KEV-INF/lib.kev")
+        val newmodel = KevoreeXmiHelper.loadStream(jar.getInputStream(entry))
+        if (newmodel != null) {
+          val merger = new RootMerger
+          import scala.collection.JavaConversions._
+          KHelpers.getPortIdentifiers.foreach{ pi =>
+            try {
+              merger.merge(newmodel,ArduinoModelGetHelper.getCurrentModel(newmodel,pi))
+            } catch {
+              case _ @ e=>
+            }
+          }
+          KevoreeSharedCom.killAll()
+          clearCMD.execute(null)
+          loadModelCMD.execute(newmodel)
         }
-
-
       }
-      KevoreeSharedCom.killAll()
-      clearCMD.execute(null)
-      loadModelCMD.execute(newmodel)
+      case _ => logger.warn("Could not get the deploy unit from Aether.")
     }
 
   }
