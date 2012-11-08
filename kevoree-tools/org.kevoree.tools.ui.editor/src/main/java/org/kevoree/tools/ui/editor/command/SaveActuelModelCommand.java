@@ -40,6 +40,8 @@ import org.kevoree.tools.ui.framework.elements.NodePanel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
+
 /**
  * @author ffouquet
  */
@@ -54,6 +56,7 @@ public class SaveActuelModelCommand implements Command {
     private KevoreeUIKernel kernel;
     private JFileChooser filechooser = new JFileChooser();
     private static String defaultLocation = null;
+    private static String previousLocation = null;
 
     public static String getDefaultLocation() {
         return defaultLocation;
@@ -68,20 +71,30 @@ public class SaveActuelModelCommand implements Command {
 
         PositionedEMFHelper.updateModelUIMetaData(kernel);
 
-        String location = "";
         if (defaultLocation == null) {
-            filechooser.showSaveDialog(kernel.getModelPanel());
-            if (filechooser.getSelectedFile() != null) {
-                location = filechooser.getSelectedFile().getPath();
+            if(previousLocation != null) {
+                filechooser.setSelectedFile(new File(previousLocation));
+            }
+            int result = filechooser.showSaveDialog(kernel.getModelPanel());
+            if (filechooser.getSelectedFile() != null && result == JFileChooser.APPROVE_OPTION) {
+                doSave(filechooser.getSelectedFile().getPath());
             }
         } else {
-            location = defaultLocation;
-        }
-        try {
-            KevoreeXmiHelper.save(location.toString(), kernel.getModelHandler().getActualModel());
-        } catch (Exception e) {
-            logger.error("Can't save model !", e);
+            doSave(defaultLocation);
+
         }
 
     }
+
+    private void doSave(String location) {
+        try {
+            KevoreeXmiHelper.save(location, kernel.getModelHandler().getActualModel());
+            previousLocation = location;
+        } catch (Exception e) {
+            logger.error("Can't save model to default location !", e);
+        }
+    }
+
+
+
 }
