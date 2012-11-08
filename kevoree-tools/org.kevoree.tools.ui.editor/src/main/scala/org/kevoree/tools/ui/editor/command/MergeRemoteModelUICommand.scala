@@ -56,17 +56,17 @@ import jexxus.common.{Delivery, Connection, ConnectionListener}
 import java.io.ByteArrayInputStream
 import jexxus.server.ServerConnection
 
-object LoadRemoteModelUICommand {
+object MergeRemoteModelUICommand {
   var lastRemoteNodeAddress: String = "localhost:8000"
 }
 
-class LoadRemoteModelUICommand extends Command {
+class MergeRemoteModelUICommand extends Command {
 
   var kernel: KevoreeUIKernel = null
 
   def setKernel(k: KevoreeUIKernel) = kernel = k
 
-  private val lcommand = new LoadModelCommand();
+  private val lcommand = new MergeModelCommand();
 
   var logger = LoggerFactory.getLogger(this.getClass)
 
@@ -141,9 +141,9 @@ class LoadRemoteModelUICommand extends Command {
   def execute(p: Object) = {
 
     try {
-      val result = JOptionPane.showInputDialog("Remote target node <ip:port>", LoadRemoteModelUICommand.lastRemoteNodeAddress)
+      val result = JOptionPane.showInputDialog("Remote target node <ip:port>", MergeRemoteModelUICommand.lastRemoteNodeAddress)
       if (result != null && result != "") {
-        LoadRemoteModelUICommand.lastRemoteNodeAddress = result
+        MergeRemoteModelUICommand.lastRemoteNodeAddress = result
         val results = result.split(":").toList
         if (results.size >= 2) {
           val ip = results(0)

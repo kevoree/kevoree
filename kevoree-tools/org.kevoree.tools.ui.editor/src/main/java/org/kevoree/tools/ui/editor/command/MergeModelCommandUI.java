@@ -24,24 +24,44 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kevoree.tools.ui.editor;
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package org.kevoree.tools.ui.editor.command;
 
-import org.kevoree.tools.ui.editor.menus.FileMenu;
-import org.kevoree.tools.ui.editor.menus.KevsMenu;
-import org.kevoree.tools.ui.editor.menus.ModelMenu;
-import org.kevoree.tools.ui.editor.menus.ToolsMenu;
+import org.kevoree.tools.ui.editor.KevoreeUIKernel;
 
 import javax.swing.*;
 
-public class KevoreeMenuBar extends JMenuBar {
+/**
+ *
+ * @author ffouquet
+ */
+public class MergeModelCommandUI implements Command {
 
+    private JFileChooser filechooser = new JFileChooser();
+    private MergeModelCommand lcommand = new MergeModelCommand();
 
-    public KevoreeMenuBar(KevoreeUIKernel kernel) {
+    private static String lastLoadedModel = null;
 
-        add(new FileMenu(kernel));
-        add(new ModelMenu(kernel));
-        add(new KevsMenu(kernel));
-        add(new ToolsMenu(kernel));
+    public static String getLastLoadedModel() {
+        return lastLoadedModel;
+    }
 
+    public void setKernel(KevoreeUIKernel kernel) {
+        this.kernel = kernel;
+        lcommand.setKernel(kernel);
+    }
+    private KevoreeUIKernel kernel;
+
+    /* Input expected : Model URI */
+    @Override
+    public void execute(Object p) {
+        int returnVal = filechooser.showOpenDialog(kernel.getModelPanel());
+        if (filechooser.getSelectedFile() != null  && returnVal == JFileChooser.APPROVE_OPTION) {
+            lastLoadedModel = filechooser.getSelectedFile().getAbsolutePath();
+            lcommand.execute(lastLoadedModel);
+        }
     }
 }
