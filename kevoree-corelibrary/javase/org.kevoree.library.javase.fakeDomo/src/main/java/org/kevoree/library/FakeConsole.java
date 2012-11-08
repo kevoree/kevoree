@@ -60,7 +60,7 @@ public class FakeConsole extends AbstractFakeStuffComponent {
         frame = new MyFrame();
        // frame.setTitle(getName() + "@@@" + getNodeName());
       //  frame.setVisible(true);
-        frame.appendSystem("/***** CONSOLE INITIALIZED (dvk) ********/ ");
+        frame.appendSystem("/***** CONSOLE INITIALIZED  ********/ ");
         if(Boolean.valueOf((String)getDictionary().get("singleFrame"))) {
             KevoreeLayout.getInstance().displayTab((JPanel)frame,getName());
         } else {
@@ -181,13 +181,12 @@ public class FakeConsole extends AbstractFakeStuffComponent {
 
                 @Override
                 public void keyReleased(KeyEvent e) {
-                    logger.info("keycode = "+e.getKeyCode() + " "+KeyEvent.VK_ENTER);
                     if (e.getKeyCode() == KeyEvent.VK_ENTER ) {
                         if (e.isControlDown()) {
                             inputTextField.append("\n");
                         } else {
                             if (inputTextField.getText().length() > 1) {
-                                appendOutgoing(inputTextField.getText());
+                                FakeConsole.this.appendOutgoing(inputTextField.getText());
                             }
                             inputTextField.setText("");
                         }
