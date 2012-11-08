@@ -108,7 +108,7 @@ class MiniKloudForm (editor: KevoreeEditor, button: AbstractButton) {
                 button.setIcon(previousIcon)
                 button.setDisabledIcon(previousIcon)
                 UIEventHandler.info("MiniKloud node Started !")
-
+                 /*
                 for (i <- 0 until 10) {
                   try {
                     new URL("http://localhost:7000/").openConnection().connect()
@@ -117,11 +117,9 @@ class MiniKloudForm (editor: KevoreeEditor, button: AbstractButton) {
                   }
                 }
 
-
-
                 if (Desktop.isDesktopSupported) {
                   Desktop.getDesktop.browse(new URI("http://localhost:7000/"))
-                }
+                } */
 
               }
             }
