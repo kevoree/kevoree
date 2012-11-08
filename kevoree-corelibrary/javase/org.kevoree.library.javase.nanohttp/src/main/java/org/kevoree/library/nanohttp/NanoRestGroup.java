@@ -40,24 +40,27 @@ import java.util.concurrent.Executors;
 public class NanoRestGroup extends AbstractGroupType {
 
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
-	private NanoHTTPD server = null;
+	protected NanoHTTPD server = null;
 	//	private ModelSerializer modelSaver = new ModelSerializer();
 	private KevoreeModelHandlerService handler = null;
 	private boolean starting;
 
+	private int port;
+
 	ExecutorService poolUpdate = Executors.newSingleThreadExecutor();
+	final NanoRestGroup self = this;
 
 	@Start
 	public void startRestGroup () throws IOException {
 		poolUpdate = Executors.newSingleThreadExecutor();
 		handler = this.getModelService();
-		int port = Integer.parseInt(this.getDictionary().get("port").toString());
+		port = Integer.parseInt(this.getDictionary().get("port").toString());
 		Object addressObject = this.getDictionary().get("ip");
 		String address = "0.0.0.0";
 		if (addressObject != null) {
 			address = addressObject.toString();
 		}
-		final NanoRestGroup self = this;
+//		final NanoRestGroup self = this;
 		server = new NanoHTTPD(new InetSocketAddress(InetAddress.getByName(address), port)) {
 			//        server = new NanoHTTPD(port) {
 			@Override
@@ -92,7 +95,7 @@ public class NanoRestGroup extends AbstractGroupType {
 								}
 							}
 
-							//DO NOT NOTIFY ALL WHEN REC FROM THIS GROUP
+							/*//DO NOT NOTIFY ALL WHEN REC FROM THIS GROUP
 							final Boolean finalexternalSender = externalSender;
 							final ContainerRoot finalModel = model;
 							Runnable t = new Runnable() {
@@ -107,7 +110,8 @@ public class NanoRestGroup extends AbstractGroupType {
 									}
 								}
 							};
-							poolUpdate.submit(t);
+							poolUpdate.submit(t);*/
+							processOnModelReceived(externalSender, model);
 
 							return new NanoHTTPD.Response(HTTP_OK, MIME_HTML, "<ack nodeName=\"" + getNodeName() + "\" />");
 						} catch (Exception e) {
@@ -116,7 +120,7 @@ public class NanoRestGroup extends AbstractGroupType {
 						}
 					}
 				} else if ("GET".equals(method)) {
-					if (uri.endsWith("/model/current")) {
+					/*if (uri.endsWith("/model/current")) {
 						String msg = KevoreeXmiHelper.saveToString(handler.getLastModel(), false);
 						return new NanoHTTPD.Response(HTTP_OK, MIME_HTML, msg);
 					}
@@ -125,7 +129,8 @@ public class NanoRestGroup extends AbstractGroupType {
 						KevoreeXmiHelper.saveCompressedStream(st, handler.getLastModel());
 						ByteArrayInputStream resultStream = new ByteArrayInputStream(st.toByteArray());
 						return new NanoHTTPD.Response(HTTP_OK, MIME_HTML, resultStream);
-					}
+					}*/
+					return processOnModelRequested(uri);
 				}
 				return new NanoHTTPD.Response(HTTP_BADREQUEST, MIME_XML, "ONLY GET OR POST METHOD SUPPORTED");
 			}
@@ -136,10 +141,51 @@ public class NanoRestGroup extends AbstractGroupType {
 
 	}
 
+	protected void processOnModelReceived (boolean externalSender, ContainerRoot model) {
+		//DO NOT NOTIFY ALL WHEN REC FROM THIS GROUP
+		final Boolean finalexternalSender = externalSender;
+		final ContainerRoot finalModel = model;
+		Runnable t = new Runnable() {
+			@Override
+			public void run () {
+				if (!finalexternalSender) {
+					getModelService().unregisterModelListener(self);
+				}
+				handler.atomicUpdateModel(finalModel);
+				if (!finalexternalSender) {
+					getModelService().registerModelListener(self);
+				}
+			}
+		};
+		poolUpdate.submit(t);
+	}
+
+	protected NanoHTTPD.Response processOnModelRequested (String uri) {
+		if (uri.endsWith("/model/current")) {
+			String msg = KevoreeXmiHelper.saveToString(handler.getLastModel(), false);
+			return server.new Response(NanoHTTPD.HTTP_OK, NanoHTTPD.MIME_HTML, msg);
+		} else if (uri.endsWith("/model/current/zip")) {
+			ByteArrayOutputStream st = new ByteArrayOutputStream();
+			KevoreeXmiHelper.saveCompressedStream(st, handler.getLastModel());
+			ByteArrayInputStream resultStream = new ByteArrayInputStream(st.toByteArray());
+			return server.new Response(NanoHTTPD.HTTP_OK, NanoHTTPD.MIME_HTML, resultStream);
+		} else {
+			return server.new Response(NanoHTTPD.HTTP_BADREQUEST, null, "");
+		}
+	}
+
 	@Stop
 	public void stopRestGroup () {
 		poolUpdate.shutdownNow();
 		server.stop();
+	}
+
+	@Update
+	public void update () throws IOException {
+		if (!this.getDictionary().get("port").toString().equals("" + port)) {
+			stopRestGroup();
+			startRestGroup();
+		}
 	}
 
 	@Override
@@ -153,7 +199,7 @@ public class NanoRestGroup extends AbstractGroupType {
 						getModelService().unregisterModelListener(self);
 						getModelService().atomicUpdateModel(modelOption.get());
 						getModelService().registerModelListener(self);
-                    }
+					}
 				}.start();
 			}
 			starting = false;
@@ -198,8 +244,7 @@ public class NanoRestGroup extends AbstractGroupType {
 		}
 	}
 
-
-	private void internalPush (ContainerRoot model, String targetNodeName, String sender) throws Exception {
+	protected void internalPush (ContainerRoot model, String targetNodeName, String sender) throws Exception {
 		String ip = "127.0.0.1";
 		Option<String> ipOption = NetworkHelper.getAccessibleIP(KevoreePropertyHelper
 				.getStringNetworkProperties(this.getModelService().getLastModel(), targetNodeName, org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP()));
@@ -256,7 +301,6 @@ public class NanoRestGroup extends AbstractGroupType {
 		}
 		rd.close();
 	}
-
 
 	@Override
 	public ContainerRoot pull (String targetNodeName) throws Exception {

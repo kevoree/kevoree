@@ -1,0 +1,62 @@
+<html>
+<head>
+    <link rel="stylesheet" href="/home/edaubert/workspace/kevoree/kevoree-corelibrary/sky/org.kevoree.library.sky.provider.web/src/main/resources/form.css">
+    <link rel="stylesheet" href="/home/edaubert/workspace/kevoree/kevoree-corelibrary/sky/org.kevoree.library.sky.provider.web/src/main/resources/fileuploader/fileuploader.css"/>
+    <link rel="stylesheet" href="/home/edaubert/workspace/kevoree/kevoree-corelibrary/sky/org.kevoree.library.sky.provider.web/src/main/resources/bootstrap/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="/home/edaubert/workspace/kevoree/kevoree-corelibrary/sky/org.kevoree.library.sky.provider.web/src/main/resources/bootstrap/css/bootstrap-responsive.min.css">
+    <script type="text/javascript" src="/home/edaubert/workspace/kevoree/kevoree-corelibrary/sky/org.kevoree.library.sky.provider.web/src/main/resources/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="/home/edaubert/workspace/kevoree/kevoree-corelibrary/sky/org.kevoree.library.sky.provider.web/src/main/resources/jquery/jquery.form.js"></script>
+    <script type="text/javascript" src="/home/edaubert/workspace/kevoree/kevoree-corelibrary/sky/org.kevoree.library.sky.provider.web/src/main/resources/bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/home/edaubert/workspace/kevoree/kevoree-corelibrary/sky/org.kevoree.library.sky.provider.web/src/main/resources/initializeuserconfiguration/initialize_user_config.js"></script>
+</head>
+<body>
+<ul class="breadcrumb">
+    <li class="active">
+        <a href="">Home</a>
+    </li>
+</ul>
+
+<ul class="breadcrumb">
+    <li class="active">
+        <span>Initialize user configuration</span>
+    </li>
+</ul>
+<form method=" " class="bs-docs-example form-horizontal" action=" " id="formNodeType">
+    <div class="control-group" id="loginControlGroup"><label class="control-label mandatory" id="loginLabel" for="loginInput">login</label>
+
+        <div class="controls" id="loginControls"><input id="loginInput"></div>
+    </div>
+    <div class="control-group" id="passwordControlGroup"><label class="control-label" id="passwordLabel" for="passwordInput">password</label>
+
+        <div class="controls" id="passwordControls"><input type="password" id="passwordInput"></div>
+    </div>
+    <div class="control-group" id="sshControlGroup"><label class="control-label" id="sshLabel" for="sshInput">SSH public key</label>
+
+        <div class="controls" id="sshControls"><textarea id="sshInput" rows="3" cols="60"></textarea></div>
+    </div>
+
+    <div class="control-group"><label class="control-label"></label>
+
+        <div class="controls"><input id="submit" class="btn" type="submit" value="Initialize"></div>
+    </div>
+</form>
+
+<ul class="breadcrumb">
+    <li class="active">
+        <span>Already existing user configuration</span>
+    </li>
+</ul>
+<table class="table table-bordered">
+    <thead>
+    <tr>
+        <td>User name
+        </td>
+        <td>number of nodes</td>
+        <td>action(s)</td>
+    </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+</body>
+</html>

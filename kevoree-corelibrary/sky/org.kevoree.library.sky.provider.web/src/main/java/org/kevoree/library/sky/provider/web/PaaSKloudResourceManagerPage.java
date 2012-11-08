@@ -1,9 +1,9 @@
 package org.kevoree.library.sky.provider.web;
 
-import org.kevoree.annotation.ComponentType;
-import org.kevoree.annotation.DictionaryAttribute;
-import org.kevoree.annotation.DictionaryType;
-import org.kevoree.annotation.Library;
+import org.kevoree.ContainerRoot;
+import org.kevoree.annotation.*;
+import org.kevoree.library.sky.provider.api.PaaSManagerService;
+import org.kevoree.library.sky.provider.api.SubmissionException;
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -14,11 +14,11 @@ import org.kevoree.annotation.Library;
  * @version 1.0
  */
 @Library(name = "SKY")
-@ComponentType
-@DictionaryType({
-		@DictionaryAttribute(name = "urlpattern", optional = true, defaultValue = "/{login}/")
+@Requires({
+		@RequiredPort(name = "delegate", type = PortType.SERVICE, className = PaaSManagerService.class)
 })
-public class PaaSKloudResourceManagerPage  extends KloudResourceManagerPage {
+@ComponentType
+public class PaaSKloudResourceManagerPage extends KloudResourceManagerPage implements PaaSManagerService {
 
 	@Override
 	public void startPage () {
@@ -30,5 +30,30 @@ public class PaaSKloudResourceManagerPage  extends KloudResourceManagerPage {
 	public void updatePage () {
 		super.updatePage();
 		generator = new PaaSKloudResourceManagerPageGenerator(this, getPattern());
+	}
+
+	@Override
+	public void initialize (String id, ContainerRoot model) throws SubmissionException {
+		getPortByName("delegate", PaaSManagerService.class).initialize(id, model);
+	}
+
+	@Override
+	public void add (String id, ContainerRoot model) throws SubmissionException {
+		getPortByName("delegate", PaaSManagerService.class).add(id, model);
+	}
+
+	@Override
+	public void remove (String id, ContainerRoot model) throws SubmissionException {
+		getPortByName("delegate", PaaSManagerService.class).remove(id, model);
+	}
+
+	@Override
+	public void merge (String id, ContainerRoot model) throws SubmissionException {
+		getPortByName("delegate", PaaSManagerService.class).merge(id, model);
+	}
+
+	@Override
+	public void release (String id) throws SubmissionException {
+		getPortByName("delegate", PaaSManagerService.class).release(id);
 	}
 }

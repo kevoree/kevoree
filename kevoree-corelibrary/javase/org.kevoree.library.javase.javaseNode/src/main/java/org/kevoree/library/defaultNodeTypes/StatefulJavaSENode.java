@@ -24,6 +24,11 @@ public class StatefulJavaSENode extends JavaSENode {
     private StatefulModelListener listener = null;
     private final String property = "java.io.tmpdir";
     private static final org.slf4j.Logger logger = LoggerFactory.getLogger(JavaSENode.class);
+    private States state = States.bootstrap;
+    private enum States {
+        bootstrap,networkLink,ready,loading
+    }
+
 
     class StatefulModelListener implements ModelListener {
         public boolean preUpdate(ContainerRoot containerRoot, ContainerRoot containerRoot1) {
@@ -35,32 +40,55 @@ public class StatefulJavaSENode extends JavaSENode {
         }
 
         public boolean afterLocalUpdate(ContainerRoot containerRoot, ContainerRoot containerRoot1) {
-            try{
-                File lastSaved = getLastPersistedModel();
-                if(lastSaved.exists()) {
-                    KevoreeXmiHelper.save(lastSaved.getAbsolutePath() + ".bk",KevoreeXmiHelper.load(lastSaved.getAbsolutePath()));
-                }
-                logger.debug("Stateful node started storage of new model at " + lastSaved.getAbsolutePath());
-                KevoreeXmiHelper.save(lastSaved.getAbsolutePath(),containerRoot1);
-                logger.info("Stateful node stored new model at " + lastSaved.getAbsolutePath());
-                return true;
-            } catch(Exception e) {
-                logger.error("Error while saving state",e);
-                return false;
-            }
-
+           return true;
         }
 
         public void modelUpdated() {
-
+            logger.debug("ModelUpdated("+StatefulJavaSENode.this.toString()+")");
+            switch (state) {
+                case bootstrap: {
+                    state=States.networkLink;
+                    logger.debug("State Bootstrap -> Links");
+                }break;
+                case networkLink: {
+                    File inputModel  = getLastPersistedModel();
+                    if(inputModel.exists()){
+                        logger.info("Stateful node ready. Loading last config from " + inputModel.getAbsolutePath());
+                        logger.debug("State NetworkLink => Loading");
+                        state=States.loading;
+                        getModelService().updateModel(KevoreeXmiHelper.load(inputModel.getAbsolutePath()));
+                    } else {
+                        state=States.ready;
+                        logger.debug("State NetworkLink => Ready");
+                        logger.info("Stateful node ready. No stored model found at " + inputModel.getAbsolutePath());
+                    }
+                }break;
+                case loading: {
+                    state=States.ready;
+                    logger.debug("State Loading => Ready");
+                }break;
+                case ready: {
+                    try{
+                        File lastSaved = getLastPersistedModel();
+                        if(lastSaved.exists()) {
+                            KevoreeXmiHelper.save(lastSaved.getAbsolutePath() + "." +System.currentTimeMillis()+".kev" ,KevoreeXmiHelper.load(lastSaved.getAbsolutePath()));
+                        }
+                       // logger.debug("Stateful node started storage of new model at " + lastSaved.getAbsolutePath());
+                        KevoreeXmiHelper.save(lastSaved.getAbsolutePath(),getModelService().getLastModel());
+                        logger.info("Stateful node stored new model at " + lastSaved.getAbsolutePath());
+                    } catch(Exception e) {
+                        logger.error("Error while saving state",e);
+                    }
+                }break;
+            }
         }
 
         public void preRollback(ContainerRoot containerRoot, ContainerRoot containerRoot1) {
-
+            logger.debug("PreRollback");
         }
 
         public void postRollback(ContainerRoot containerRoot, ContainerRoot containerRoot1) {
-
+            logger.debug("POSTRollback");
         }
     }
 
@@ -72,13 +100,6 @@ public class StatefulJavaSENode extends JavaSENode {
         listener = new StatefulModelListener();
         getModelService().registerModelListener(listener);
 
-        File inputModel  = getLastPersistedModel();
-        if(inputModel.exists()){
-            getModelService().updateModel(KevoreeXmiHelper.load(inputModel.getAbsolutePath()));
-            logger.info("Stateful node started with stored model: " + inputModel.getAbsolutePath());
-        } else {
-            logger.info("Stateful node ready. No stored model found at " + inputModel.getAbsolutePath());
-        }
     }
 
     private File getLastPersistedModel() {

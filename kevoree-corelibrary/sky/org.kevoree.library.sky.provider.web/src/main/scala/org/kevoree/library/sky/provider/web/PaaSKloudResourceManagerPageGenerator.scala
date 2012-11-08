@@ -3,9 +3,9 @@ package org.kevoree.library.sky.provider.web
 import org.slf4j.LoggerFactory
 import org.kevoree.library.javase.webserver.{KevoreeHttpResponse, KevoreeHttpRequest}
 import util.matching.Regex
-import org.kevoree.library.sky.api.helper.KloudHelper
-import org.kevoree.api.service.core.script.{KevScriptEngineException, KevScriptEngine}
+import org.kevoree.library.sky.api.helper.KloudModelHelper
 import org.json.JSONStringer
+import org.kevoree.library.sky.helper.KloudProviderHelper
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -15,43 +15,81 @@ import org.json.JSONStringer
  * @author Erwan Daubert
  * @version 1.0
  */
-class PaaSKloudResourceManagerPageGenerator (instance: KloudResourceManagerPage, pattern: String) extends KloudResourceManagerPageGenerator(instance, pattern) {
+class PaaSKloudResourceManagerPageGenerator (instance: PaaSKloudResourceManagerPage, pattern: String) extends KloudResourceManagerPageGenerator(instance, pattern) {
   logger = LoggerFactory.getLogger(this.getClass)
 
 
-  val PushModelRequest = new Regex(pattern + "PushModel")
-  val AddChildRequest = new Regex(pattern + "AddChild")
-  val RemoveChildRequest = new Regex(pattern + "ReomveChild")
+  val initializeUserConfiguRequest = new Regex(pattern + "InitializeUser")
   val rootUserRequest = new Regex(pattern + "(.+)")
-  val rootRequest = new Regex(pattern)
+  val rootRequest = new Regex(pattern.substring(0, pattern.length - 1))
 
   def internalProcess (request: KevoreeHttpRequest, response: KevoreeHttpResponse): PartialFunction[String, KevoreeHttpResponse] = {
-    case AddChildRequest(login) => addChild(request, response)
-    case RemoveChildRequest(login) => removeChild(login, request, response)
-    case PushModelRequest(login) => pushModel(request, response)
+    case initializeUserConfiguRequest() => initializeUserConfiguration(request, response)
+    //    case AddChildRequest(login) => addChild(request, response)
+    //    case RemoveChildRequest(login) => removeChild(login, request, response)
+    //    case PushModelRequest(login) => pushModel(request, response)
     case rootRequest() => getPaasPage(request, response)
     case rootUserRequest(login) => getPaasUserPage(login, request, response)
   }
 
-  def getPaasPage(request: KevoreeHttpRequest, response: KevoreeHttpResponse): KevoreeHttpResponse = {
-    val htmlContent = /*VirtualNodeHTMLHelper.*/ HTMLPageBuilder.getPaasPage(pattern, instance.getModelService.getLastModel)
-        response.setStatus(200)
-        response.setContent(htmlContent)
-        response
+  def getPaasPage (request: KevoreeHttpRequest, response: KevoreeHttpResponse): KevoreeHttpResponse = {
+    val htmlContent = HTMLPageBuilder.getPaasPage(pattern, instance.getModelService.getLastModel)
+    response.setStatus(200)
+    response.setContent(htmlContent)
+    response
   }
 
   def getPaasUserPage (login: String, request: KevoreeHttpRequest, response: KevoreeHttpResponse): KevoreeHttpResponse = {
+    // looking for the corresponding group
+    instance.getModelService.getLastModel.getGroups.find(g => g.getName == login) match {
+      case Some(group) =>
+      case None => {
+        // if it doesn't exist, we create it
+        val kengine = instance.getKevScriptEngineFactory.createKevScriptEngine()
+      }
+    }
+    // FIXME no security at all here
+
     val htmlContent = /*VirtualNodeHTMLHelper.*/ HTMLPageBuilder.getPaasUserPage(login, pattern, instance.getModelService.getLastModel)
     response.setStatus(200)
     response.setContent(htmlContent)
     response
   }
 
-  private def addChild (request: KevoreeHttpRequest, response: KevoreeHttpResponse): KevoreeHttpResponse = {
+  private def initializeUserConfiguration (request: KevoreeHttpRequest, response: KevoreeHttpResponse): KevoreeHttpResponse = {
+    val jsonresponse = new JSONStringer().`object`()
+    val login = request.getResolvedParams.get("login")
+    var sshKey : String = request.getResolvedParams.get("sshKey")
+    if (sshKey == null) {
+      sshKey = ""
+    }
+    if (login != null) {
+      /*if (request.getResolvedParams.get("password") != null) {
+        // FIXME check authentication
+      }*/
+      // look for a group corresponding to this login
+      if (KloudModelHelper.isPaaSKloudGroup(instance.getModelService.getLastModel, login)) {
+        // if yes then we cannot initialize the user configuration because it is already done
+        jsonresponse.key("code").value("1")
+      } else {
+        // if no then we try to initialize it
+        // TODO create a user model and submit it to the PaasKloudManager which will be able to deploy it
+//        val kengine = instance.getKevScriptEngineFactory.createKevScriptEngine()
+//
+//        KloudProviderHelper.appendCreateGroupScript(instance.getModelService.getLastModel, login, nodeName, kengine, sshKey, false)
+        jsonresponse.key("code").value("-1")
+      }
+    }
+    response.setStatus(200)
+    response.setContent(jsonresponse.endObject().toString)
+    response
+  }
+
+  /*private def addChild (request: KevoreeHttpRequest, response: KevoreeHttpResponse): KevoreeHttpResponse = {
     if (request.getMethod.equalsIgnoreCase("GET")) {
       val model = instance.getModelService.getLastModel
 
-      val paasNodeTypes = model.getTypeDefinitions.filter(nt => KloudHelper.isPaaSNodeType(model, nt.getName))
+      val paasNodeTypes = model.getTypeDefinitions.filter(nt => KloudTypeHelper.isPaaSNodeType(model, nt.getName))
 
       val htmlContent = HTMLPageBuilder.addNodePage(pattern, paasNodeTypes)
       response.setStatus(200)
@@ -72,9 +110,9 @@ class PaaSKloudResourceManagerPageGenerator (instance: KloudResourceManagerPage,
       }
     }
     response
-  }
+  }*/
 
-  private def addChildNode (request: KevoreeHttpRequest): String = {
+  /*private def addChildNode (request: KevoreeHttpRequest): String = {
     val kengine = instance.getKevScriptEngineFactory.createKevScriptEngine()
     val jsonresponse = new JSONStringer().`object`()
     if (request.getResolvedParams.get("type") != null) {
@@ -126,9 +164,9 @@ class PaaSKloudResourceManagerPageGenerator (instance: KloudResourceManagerPage,
       }
     }
     jsonresponse.endObject().toString
-  }
+  }*/
 
-  private def removeChild (login: String, request: KevoreeHttpRequest, response: KevoreeHttpResponse): KevoreeHttpResponse = {
+  /*private def removeChild (login: String, request: KevoreeHttpRequest, response: KevoreeHttpResponse): KevoreeHttpResponse = {
     val nodeName = request.getResolvedParams.get("name")
     // check if the node is a sub node of the group of the user
     instance.getModelService.getLastModel.getGroups.find(g => g.getName == login) match {
@@ -158,7 +196,7 @@ class PaaSKloudResourceManagerPageGenerator (instance: KloudResourceManagerPage,
   private def getNodeTypeList: String = {
     val jsonresponse = new JSONStringer().`object`()
     val model = instance.getModelService.getLastModel
-    val paasNodeTypes = model.getTypeDefinitions.filter(nt => KloudHelper.isPaaSNodeType(model, nt.getName))
+    val paasNodeTypes = model.getTypeDefinitions.filter(nt => KloudTypeHelper.isPaaSNodeType(model, nt.getName))
 
     var types = List[String]()
     jsonresponse.key("request").value("list")
@@ -193,6 +231,6 @@ class PaaSKloudResourceManagerPageGenerator (instance: KloudResourceManagerPage,
     jsonresponse.key("types").value(types.toArray).endObject()
     logger.debug(types.mkString(", "))
     jsonresponse.toString
-  }
+  }*/
 
 }

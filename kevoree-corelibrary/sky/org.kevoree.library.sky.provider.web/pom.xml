@@ -13,11 +13,6 @@
     <artifactId>org.kevoree.library.sky.provider.web</artifactId>
     <name>Kevoree :: CoreLibrary :: Sky :: Provider :: Web</name>
 
-
-    <properties>
-        <!--<scala.version>2.10.0-RC1</scala.version>-->
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>org.kevoree.corelibrary.javase</groupId>
@@ -27,6 +22,11 @@
         <dependency>
             <groupId>org.kevoree.corelibrary.sky</groupId>
             <artifactId>org.kevoree.library.sky.api</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.kevoree.corelibrary.sky</groupId>
+            <artifactId>org.kevoree.library.sky.provider.api</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
         <dependency>

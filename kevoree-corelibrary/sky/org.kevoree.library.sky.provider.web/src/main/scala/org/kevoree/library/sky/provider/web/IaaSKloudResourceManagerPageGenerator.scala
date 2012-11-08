@@ -1,12 +1,14 @@
 package org.kevoree.library.sky.provider.web
 
 import org.kevoree.library.javase.webserver.{KevoreeHttpResponse, KevoreeHttpRequest}
-import org.kevoree.library.sky.api.helper.KloudHelper
+import org.kevoree.library.sky.api.helper.{KloudNetworkHelper, KloudModelHelper}
 import org.json.JSONStringer
 import org.kevoree.api.service.core.script.{KevScriptEngineException, KevScriptEngine}
 import org.slf4j.LoggerFactory
 import util.matching.Regex
 import org.kevoree.framework.Constants
+import org.kevoree.{ContainerRoot, TypeDefinition, KevoreeFactory}
+import org.kevoree.library.sky.provider.api.SubmissionException
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -16,32 +18,35 @@ import org.kevoree.framework.Constants
  * @author Erwan Daubert
  * @version 1.0
  */
-class IaaSKloudResourceManagerPageGenerator (instance: KloudResourceManagerPage, pattern: String, parentNodeName: String) extends KloudResourceManagerPageGenerator(instance, pattern) {
+class IaaSKloudResourceManagerPageGenerator (instance: IaaSKloudResourceManagerPage, pattern: String, parentNodeName: String) extends KloudResourceManagerPageGenerator(instance, pattern) {
   logger = LoggerFactory.getLogger(this.getClass)
 
-  val rootRequest = new Regex(pattern)
+  val rootRequest1 = new Regex(pattern.substring(0, pattern.length - 1))
+  val rootRequest2 = new Regex(pattern)
   val addChildRequest = new Regex(pattern + "AddChild")
   val removeChildRequest = new Regex(pattern + "RemoveChild")
-  val NodeSubRequest = new Regex(pattern + "nodes/(.+)/(.+)") // TODO maybe remove nodes on regex
+  val NodeSubRequest = new Regex(pattern + "nodes/(.+)/(.+)")
+  // TODO maybe remove nodes on regex
   val NodeHomeRequest = new Regex(pattern + "nodes/(.+)") // TODO maybe remove nodes on regex
 
   def internalProcess (request: KevoreeHttpRequest, response: KevoreeHttpResponse): PartialFunction[String, KevoreeHttpResponse] = {
-    case rootRequest() => getIaasPage(request, response)
+    case rootRequest1() => getIaasPage(request, response)
+    case rootRequest2() => getIaasPage(request, response)
     case addChildRequest() => addChild(request, response)
-    case removeChildRequest() => removeChild(instance, request, response)
+    case removeChildRequest() => removeChild(request, response)
     case NodeSubRequest(nodeName, fluxName) => getNodeLogPage(request, response, fluxName, nodeName)
     case NodeHomeRequest(nodeName) => getNodePage(request, response, nodeName)
   }
 
   private def getNodeLogPage (request: KevoreeHttpRequest, response: KevoreeHttpResponse, fluxName: String, nodeName: String): KevoreeHttpResponse = {
-    val htmlContent = /*VirtualNodeHTMLHelper.*/ HTMLPageBuilder.getNodeLogPage(pattern, parentNodeName, nodeName, fluxName, instance.getModelService.getLastModel)
+    val htmlContent = HTMLPageBuilder.getNodeLogPage(pattern, parentNodeName, nodeName, fluxName, instance.getModelService.getLastModel)
     response.setStatus(200)
     response.setContent(htmlContent)
     response
   }
 
   private def getNodePage (request: KevoreeHttpRequest, response: KevoreeHttpResponse, nodeName: String): KevoreeHttpResponse = {
-    val htmlContent = /*VirtualNodeHTMLHelper.*/ HTMLPageBuilder.getNodePage(pattern, parentNodeName, nodeName, instance.getModelService.getLastModel)
+    val htmlContent = HTMLPageBuilder.getNodePage(pattern, parentNodeName, nodeName, instance.getModelService.getLastModel)
     response.setStatus(200)
     response.setContent(htmlContent)
     response
@@ -49,7 +54,7 @@ class IaaSKloudResourceManagerPageGenerator (instance: KloudResourceManagerPage,
 
 
   private def getIaasPage (request: KevoreeHttpRequest, response: KevoreeHttpResponse): KevoreeHttpResponse = {
-    val htmlContent = /*VirtualNodeHTMLHelper.*/ HTMLPageBuilder.getIaasPage(pattern, parentNodeName, instance.getModelService.getLastModel)
+    val htmlContent = HTMLPageBuilder.getIaasPage(pattern, parentNodeName, instance.getModelService.getLastModel)
     response.setStatus(200)
     response.setContent(htmlContent)
     response
@@ -64,10 +69,10 @@ class IaaSKloudResourceManagerPageGenerator (instance: KloudResourceManagerPage,
           response.setContent("Unable to find the IaaS node: " + parentNodeName)
         }
         case Some(parent) => {
-          val paasNodeTypes = model.getTypeDefinitions.filter(nt => KloudHelper.isPaaSNodeType(model, nt.getName) &&
-            nt.getDeployUnits.find(dp => dp.getTargetNodeType.find(targetNodeType => KloudHelper.isASubType(parent.getTypeDefinition, targetNodeType.getName)).isDefined).isDefined)
+          val paasNodeTypes = model.getTypeDefinitions.filter(nt => KloudModelHelper.isPaaSNodeType(model, nt.getName) &&
+            nt.getDeployUnits.find(dp => dp.getTargetNodeType.find(targetNodeType => KloudModelHelper.isASubType(parent.getTypeDefinition, targetNodeType.getName)).isDefined).isDefined)
 
-          val htmlContent = /*VirtualNodeHTMLHelper.*/ HTMLPageBuilder.addNodePage(pattern, paasNodeTypes)
+          val htmlContent = HTMLPageBuilder.addNodePage(pattern, paasNodeTypes)
           response.setStatus(200)
           response.setContent(htmlContent)
         }
@@ -91,7 +96,7 @@ class IaaSKloudResourceManagerPageGenerator (instance: KloudResourceManagerPage,
   }
 
   private def addChildNode (request: KevoreeHttpRequest): String = {
-    val kengine = instance.getKevScriptEngineFactory.createKevScriptEngine()
+    val kengine = instance.getKevScriptEngineFactory.createKevScriptEngine(initializeModel(instance.getModelService.getLastModel))
     val jsonresponse = new JSONStringer().`object`()
     if (request.getResolvedParams.get("type") != null) {
       // find the corresponding node type
@@ -105,13 +110,13 @@ class IaaSKloudResourceManagerPageGenerator (instance: KloudResourceManagerPage,
             kengine.addVariable("nodeTypeName", typeName)
             kengine.addVariable("parentNodeName", parentNodeName)
             kengine append "addNode {nodeName} : {nodeTypeName}"
-            kengine append "addChild {nodeName} @ {parentNodeName}"
-            val ipOption = KloudHelper.selectIP(parentNodeName, instance.getModelService.getLastModel)
-            if (ipOption.isDefined) {
-              kengine.addVariable("ipKey", Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP)
-              kengine.addVariable("ip", ipOption.get)
-              kengine append "network {nodeName} {'{ipKey}' = '{ip}' }\n"
-            }
+            //            kengine append "addChild {nodeName} @ {parentNodeName}"
+            //            val ipOption = KloudNetworkHelper.selectIP(parentNodeName, instance.getModelService.getLastModel)
+            //            if (ipOption.isDefined) {
+            //              kengine.addVariable("ipKey", Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP)
+            //              kengine.addVariable("ip", ipOption.get)
+            //              kengine append "network {nodeName} {'{ipKey}' = '{ip}' }\n"
+            //            }
             // check attributes
             if (nodeType.getDictionaryType.isDefined) {
               nodeType.getDictionaryType.get.getAttributes.foreach {
@@ -134,18 +139,24 @@ class IaaSKloudResourceManagerPageGenerator (instance: KloudResourceManagerPage,
                 }
               }
             }
+            try {
+              instance.addToNode(kengine.interpret(), parentNodeName)
+              jsonresponse.key("code").value("0")
+            } catch {
+              case e: Throwable => logger.warn("Unable to add the child", e); jsonresponse.key("code").value("-2").key("message").value(e.getMessage)
+            }
           } else {
             jsonresponse.key("code").value("-2").key("message").value("The name of the node must be defined")
             mustBeAdded = false
           }
-          if (mustBeAdded) {
+          /*if (mustBeAdded) {
             try {
               kengine.atomicInterpretDeploy()
               jsonresponse.key("code").value("0")
             } catch {
               case e: Exception => logger.debug("Unable to add a new node", e); jsonresponse.key("code").value("-3").key("message").value("Unable to add a ne node: " + e.getMessage)
             }
-          }
+          }*/
         }
       }
     }
@@ -160,8 +171,8 @@ class IaaSKloudResourceManagerPageGenerator (instance: KloudResourceManagerPage,
         null
       }
       case Some(parent) => {
-        val paasNodeTypes = model.getTypeDefinitions.filter(nt => KloudHelper.isPaaSNodeType(model, nt.getName) &&
-          nt.getDeployUnits.find(dp => dp.getTargetNodeType.find(targetNodeType => KloudHelper.isASubType(parent.getTypeDefinition, targetNodeType.getName)).isDefined).isDefined)
+        val paasNodeTypes = model.getTypeDefinitions.filter(nt => KloudModelHelper.isPaaSNodeType(model, nt.getName) &&
+          nt.getDeployUnits.find(dp => dp.getTargetNodeType.find(targetNodeType => KloudModelHelper.isASubType(parent.getTypeDefinition, targetNodeType.getName)).isDefined).isDefined)
 
         var types = List[String]()
         jsonresponse.key("request").value("list")
@@ -200,15 +211,44 @@ class IaaSKloudResourceManagerPageGenerator (instance: KloudResourceManagerPage,
     }
   }
 
-  private def removeChild (instance: KloudResourceManagerPage, request: KevoreeHttpRequest, response: KevoreeHttpResponse): KevoreeHttpResponse = {
+  private def removeChild (request: KevoreeHttpRequest, response: KevoreeHttpResponse): KevoreeHttpResponse = {
     val nodeName = request.getResolvedParams.get("name")
-    val kengine: KevScriptEngine = instance.getKevScriptEngineFactory.createKevScriptEngine
-    kengine append "removeNode " + nodeName
+    val kengine: KevScriptEngine = instance.getKevScriptEngineFactory.createKevScriptEngine(initializeModel(instance.getModelService.getLastModel))
+
+    kengine addVariable("nodeName", nodeName)
+    kengine append "addNode {nodeName} : JavaSENode"
+    /*kengine append "removeNode " + nodeName
     try {
       kengine.atomicInterpretDeploy()
     } catch {
       case e: KevScriptEngineException => logger.warn("Unable to remove {}", nodeName, e)
+    }*/
+    try {
+      instance.remove(kengine.interpret())
+    } catch {
+      case e: Throwable => logger.warn("Unable to remove the child", e)
     }
     getIaasPage(request, response)
+  }
+
+  private def initializeModel (currentModel: ContainerRoot): ContainerRoot = {
+    val kengine: KevScriptEngine = instance.getKevScriptEngineFactory.createKevScriptEngine(currentModel)
+    currentModel.getNodes.foreach {
+      node =>
+        kengine addVariable("nodeName", node.getName)
+        kengine append "removeNode {nodeName}"
+    }
+    currentModel.getHubs.foreach {
+      channel =>
+        kengine addVariable("channelName", channel.getName)
+        kengine append "removeChannel {channelName}"
+    }
+    currentModel.getGroups.foreach {
+      group =>
+        kengine addVariable("groupName", group.getName)
+        kengine append "removeGroup {groupName}"
+    }
+
+    kengine.interpret()
   }
 }

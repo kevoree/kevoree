@@ -1,25 +1,16 @@
 package org.kevoree.library.sky.provider.web;
 
 import org.kevoree.ContainerRoot;
-import org.kevoree.KevoreeFactory;
 import org.kevoree.annotation.*;
-import org.kevoree.api.service.core.checker.CheckerViolation;
-import org.kevoree.framework.KevoreePropertyHelper;
-import org.kevoree.framework.KevoreeXmiHelper;
-import org.kevoree.framework.message.StdKevoreeMessage;
 import org.kevoree.library.javase.authentication.Authentication;
 import org.kevoree.library.javase.webserver.KevoreeHttpRequest;
 import org.kevoree.library.javase.webserver.KevoreeHttpResponse;
 import org.kevoree.library.javase.webserver.ParentAbstractPage;
-import org.kevoree.library.sky.api.helper.KloudHelper;
-import org.kevoree.library.sky.provider.HostService;
-import org.kevoree.library.sky.provider.SubmissionException;
+import org.kevoree.library.sky.provider.api.PaaSManagerService;
+import org.kevoree.library.sky.provider.api.SubmissionException;
 import org.kevoree.library.sky.provider.checker.RootKloudChecker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import scala.Option;
-
-import java.util.List;
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -41,7 +32,7 @@ import java.util.List;
 		)
 })
 @Requires({
-		@RequiredPort(name = "submit", type = PortType.SERVICE, optional = false, className = HostService.class),
+		@RequiredPort(name = "delegate", type = PortType.SERVICE, optional = false, className = PaaSManagerService.class),
 //		@RequiredPort(name = "release", type = PortType.MESSAGE, optional = false, messageType = "kloud_request"),
 		@RequiredPort(name = "authentication", type = PortType.SERVICE, className = Authentication.class, optional = true)
 })
@@ -49,12 +40,12 @@ import java.util.List;
 		@DictionaryAttribute(name = "checkModel", defaultValue = "true", vals = {"true", "false"}),
 		@DictionaryAttribute(name = "urlpattern", optional = true, defaultValue = "/kloud/{login}/{action}")
 })
-public class PaaSKloudResourceManagerRest extends ParentAbstractPage implements HostService {
+public class PaaSKloudResourceManagerRest extends ParentAbstractPage implements PaaSManagerService {
 
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 	private RootKloudChecker rootKloudChecker = new RootKloudChecker();
 
-	public KevoreeHttpResponse process (KevoreeHttpRequest request, KevoreeHttpResponse response) {
+	/*public KevoreeHttpResponse process (KevoreeHttpRequest request, KevoreeHttpResponse response) {
 		if (request != null) {
 			if (request.getResolvedParams().get("login") != null) {
 				if (checkAuthentication(request)) {
@@ -123,7 +114,7 @@ public class PaaSKloudResourceManagerRest extends ParentAbstractPage implements 
 					response = forwardModelToUserGroup(request, response, masterNodeOption.get(), model);
 				} else {
 					logger.debug("Unable to get a existing configuration for the user {}. We try to create a new configuration for this user.", request.getResolvedParams().get("login"));
-					response = deploy(request, response, /*request.getResolvedParams().get("login"), request.getResolvedParams().get("ssh_key"), */model);
+					response = deploy(request, response, *//*request.getResolvedParams().get("login"), request.getResolvedParams().get("ssh_key"), *//*model);
 //					response.setContent(deploy(request.getResolvedParams().get("login"), request.getResolvedParams().get("ssh_key"), model));
 				}
 			}
@@ -135,11 +126,11 @@ public class PaaSKloudResourceManagerRest extends ParentAbstractPage implements 
 	}
 
 	private KevoreeHttpResponse forwardModelToUserGroup (KevoreeHttpRequest request, KevoreeHttpResponse response, String masterNode, ContainerRoot model) {
-		List<String> accessPoints = KloudHelper.getMasterIP_PORT(masterNode);
+		List<String> accessPoints = KloudProviderHelper.getMasterIP_PORT(masterNode);
 		if (accessPoints.size() > 0) {
 			for (String ipPort : accessPoints) {
-				if (KloudHelper.sendModel(model, "http://" + ipPort + "/model/current")) {
-					ContainerRoot newModel = KloudHelper.pullModel("http://" + ipPort + "/model/current");
+				if (KloudProviderHelper.sendModel(model, "http://" + ipPort + "/model/current")) {
+					ContainerRoot newModel = KloudProviderHelper.pullModel("http://" + ipPort + "/model/current");
 					if (newModel != null) {
 						response.setContent(KevoreeXmiHelper.saveToString(newModel, false));
 					}
@@ -178,10 +169,10 @@ public class PaaSKloudResourceManagerRest extends ParentAbstractPage implements 
 		logger.info("Try to find model for {}", login);
 		Option<String> masterNodeOption = KevoreePropertyHelper.getStringPropertyForGroup(getModelService().getLastModel(), login, "masterNode", false, "");
 		if (masterNodeOption.isDefined()) {
-			List<String> accessPoints = KloudHelper.getMasterIP_PORT(masterNodeOption.get());
+			List<String> accessPoints = KloudProviderHelper.getMasterIP_PORT(masterNodeOption.get());
 			if (accessPoints.size() > 0) {
 				for (String ipPort : accessPoints) {
-					ContainerRoot model = KloudHelper.pullModel("http://" + ipPort + "/model/current");
+					ContainerRoot model = KloudProviderHelper.pullModel("http://" + ipPort + "/model/current");
 					if (model != null) {
 						response.setContent(KevoreeXmiHelper.saveToString(model, false));
 						return response;
@@ -190,15 +181,15 @@ public class PaaSKloudResourceManagerRest extends ParentAbstractPage implements 
 				response.setContent("<nack login=\"" + login + "\" error=\"No model found\"");
 				return response;
 			} else {
-				return deploy(request, response/*login, sshKey*/, KevoreeFactory.createContainerRoot());
+				return deploy(request, response*//*login, sshKey*//*, KevoreeFactory.createContainerRoot());
 			}
 		} else {
-			return deploy(request, response/*login, sshKey*/, KevoreeFactory.createContainerRoot());
+			return deploy(request, response*//*login, sshKey*//*, KevoreeFactory.createContainerRoot());
 //			return "<nack login=\"" + login + "\" error=\"Unable to send model to the group\"";
 		}
 	}
 
-	private KevoreeHttpResponse deploy (KevoreeHttpRequest request, KevoreeHttpResponse response, /*String login, String sshKey,*/ ContainerRoot model) {
+	private KevoreeHttpResponse deploy (KevoreeHttpRequest request, KevoreeHttpResponse response, *//*String login, String sshKey,*//* ContainerRoot model) {
 //		StdKevoreeMessage message = new StdKevoreeMessage();
 		String login = request.getResolvedParams().get("login");
 		String sshKey = request.getResolvedParams().get("ssh_key");
@@ -223,7 +214,7 @@ public class PaaSKloudResourceManagerRest extends ParentAbstractPage implements 
 		return response;
 	}
 
-	/*private boolean createProxy (String login, int nbTry) {
+	*//*private boolean createProxy (String login, int nbTry) {
 						 UUIDModel uuidModel = this.getModelService().getLastUUIDModel();
 						 Option<ContainerRoot> kloudModelOption = KloudReasoner.createProxy(login, this.getNodeName(), "/" + login, uuidModel.getModel(), getKevScriptEngineFactory());
 						 if (kloudModelOption.isDefined()) {
@@ -234,7 +225,7 @@ public class PaaSKloudResourceManagerRest extends ParentAbstractPage implements 
 						 } catch (Exception ignored) {
 						 }
 						 return nbTry > 0 && createProxy(login, nbTry - 1);
-					 }*/
+					 }*//*
 
 	@Override
 	public boolean deploy (String login, ContainerRoot model, String sshKey) throws SubmissionException {
@@ -244,5 +235,35 @@ public class PaaSKloudResourceManagerRest extends ParentAbstractPage implements 
 	@Override
 	public boolean release (String login) throws SubmissionException {
 		return getPortByName("submit", HostService.class).release(login);
+	}*/
+
+	@Override
+	public KevoreeHttpResponse process (KevoreeHttpRequest request, KevoreeHttpResponse response) {
+		return null;
+	}
+
+	@Override
+	public boolean initialize (String id, ContainerRoot model) throws SubmissionException {
+		return false;
+	}
+
+	@Override
+	public boolean add (String id, ContainerRoot model) throws SubmissionException {
+		return false;
+	}
+
+	@Override
+	public boolean remove (String id, ContainerRoot model) throws SubmissionException {
+		return false;
+	}
+
+	@Override
+	public boolean merge (String id, ContainerRoot model) throws SubmissionException {
+		return false;
+	}
+
+	@Override
+	public boolean release (String id) throws SubmissionException {
+		return false;
 	}
 }

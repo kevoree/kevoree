@@ -1,4 +1,4 @@
-package org.kevoree.library.sky.provider;
+package org.kevoree.library.sky.provider.api;
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -9,6 +9,10 @@ package org.kevoree.library.sky.provider;
  * @version 1.0
  */
 public class SubmissionException extends Exception {
+	public SubmissionException (String message) {
+		super(message);
+	}
+
 	public SubmissionException (String message, Throwable cause) {
 		super(message, cause);
 	}

@@ -1,3 +1,4 @@
+/*
 package org.kevoree.library.sky.provider;
 
 import org.kevoree.ContainerRoot;
@@ -6,11 +7,13 @@ import org.kevoree.api.service.core.handler.ModelListener;
 import org.kevoree.api.service.core.script.KevScriptEngine;
 import org.kevoree.framework.KevoreeXmiHelper;
 import org.kevoree.framework.message.StdKevoreeMessage;
-import org.kevoree.library.sky.api.helper.KloudHelper;
+import org.kevoree.library.sky.api.helper.KloudModelHelper;
+import org.kevoree.library.sky.helper.KloudProviderHelper;
 import scala.Option;
 
 import java.io.File;
 
+*/
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
  * Date: 22/06/12
@@ -18,7 +21,8 @@ import java.io.File;
  *
  * @author Erwan Daubert
  * @version 1.0
- */
+ *//*
+
 @Library(name = "SKY")
 @ComponentType
 @DictionaryType({
@@ -75,7 +79,7 @@ public class PaaSKloudResourceManagerStateFull extends PaaSKloudResourceManager 
 	protected void processNew (ContainerRoot userModel, String login, String sshKey) {
 		logger.debug("starting processNew");
 		KevScriptEngine kengine = getKevScriptEngineFactory().createKevScriptEngine();
-		KloudReasoner.appendCreateGroupScript(getModelService().getLastModel(), login, this.getNodeName(), kengine, sshKey, true);
+		KloudProviderHelper.appendCreateGroupScript(getModelService().getLastModel(), login, this.getNodeName(), kengine, sshKey, true);
 		for (int i = 0; i < 5; i++) {
 			try {
 				getModelService().unregisterModelListener(this);
@@ -91,7 +95,9 @@ public class PaaSKloudResourceManagerStateFull extends PaaSKloudResourceManager 
 		Option<ContainerRoot> userModelUpdated = KloudReasoner.updateUserConfiguration(login, userModel, getModelService().getLastModel(), getKevScriptEngineFactory());
 		if (userModelUpdated.isDefined()) {
 			logger.debug("Send blindly the model to the core , PaaS Group are in charge to trigger this request , reply false and forward to Master interested node");
-			/* Send blindly the model to the core , PaaS Group are in charge to trigger this request , reply false and forward to Master interested node  */
+			*/
+/* Send blindly the model to the core , PaaS Group are in charge to trigger this request , reply false and forward to Master interested node  *//*
+
 			getModelService().unregisterModelListener(this);
 			getModelService().checkModel(userModelUpdated.get());
 			getModelService().registerModelListener(this);
@@ -106,9 +112,9 @@ public class PaaSKloudResourceManagerStateFull extends PaaSKloudResourceManager 
 	public boolean preUpdate (ContainerRoot currentModel, ContainerRoot proposedModel) {
 		logger.debug("Trigger pre update");
 
-		if (KloudHelper.isIaaSNode(currentModel, getName(), getNodeName()) && KloudHelper.isUserModel(proposedModel)) {
+		if (KloudModelHelper.isIaaSNode(currentModel, getNodeName()) && KloudModelHelper.isPaaSModel(proposedModel)) {
 			logger.debug("A new user model is received, storing it.");
-			Option<String> groupOption = KloudHelper.getKloudUserGroup(proposedModel);
+			Option<String> groupOption = KloudModelHelper.getPaaSKloudGroup(proposedModel);
 			if (groupOption.isDefined()) {
 				storeModel(proposedModel, groupOption.get());
 			}
@@ -193,3 +199,4 @@ public class PaaSKloudResourceManagerStateFull extends PaaSKloudResourceManager 
 	public void postRollback (ContainerRoot containerRoot, ContainerRoot containerRoot1) {
 	}
 }
+*/

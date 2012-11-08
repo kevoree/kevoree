@@ -1,3 +1,4 @@
+/*
 package org.kevoree.library.sky.provider;
 
 import org.kevoree.annotation.*;
@@ -8,6 +9,7 @@ import org.kevoree.framework.message.StdKevoreeMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+*/
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
  * Date: 14/03/12
@@ -15,7 +17,8 @@ import org.slf4j.LoggerFactory;
  *
  * @author Erwan Daubert
  * @version 1.0
- */
+ *//*
+
 @ComponentType
 @DictionaryType({
 		@DictionaryAttribute(name = "login", optional = false),
@@ -51,3 +54,4 @@ public class PaaSKloudRessourceManagerTester extends AbstractComponentType {
 	}
 
 }
+*/

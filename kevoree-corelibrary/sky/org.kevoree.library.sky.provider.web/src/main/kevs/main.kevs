@@ -19,26 +19,31 @@ addToGroup sync node0
 
 addComponent webServer@node0 : KTinyWebServer {port = "8080", timeout = "5000"}
 addComponent iaasPage@node0 : IaaSKloudResourceManagerPage { urlpattern="/iaas"}
-addComponent paasPage@node0 : PaaSKloudResourceManagerPage { urlpattern="/paas"}
+addComponent iaasManager@node0 : IaaSKloudManager
+//addComponent paasPage@node0 : PaaSKloudResourceManagerPage { urlpattern="/paas"}
 
+
+addChannel iaasDelegateChannel : defSERVICE
 addChannel requestChannel : defMSG
 addChannel responseChannel : defMSG
 
 bind webServer.handler@node0 => requestChannel
 bind iaasPage.request@node0 => requestChannel
-bind paasPage.request@node0 => requestChannel
+//bind paasPage.request@node0 => requestChannel
 
 bind webServer.response@node0 => responseChannel
 bind iaasPage.content@node0 => responseChannel
-bind paasPage.content@node0 => responseChannel
+//bind paasPage.content@node0 => responseChannel
 
+bind iaasManager.submit@node0 => iaasDelegateChannel
+bind iaasPage.delegate@node0 => iaasDelegateChannel
 
-addNode edaubert_worker1 : PJavaSENode
-addChild edaubert_worker1@node0
+//addNode edaubert_worker1 : PJavaSENode
+//addChild edaubert_worker1@node0
 
-addGroup edaubert : KloudPaaSNanoGroup
+//addGroup edaubert : KloudPaaSNanoGroup
 
-addToGroup edaubert edaubert_worker1
+//addToGroup edaubert node0
+//addToGroup edaubert edaubert_worker1
 
-updateDictionary edaubert { masterNode = "node0=127.0.0.1:8000"}
-updateDictionary edaubert { port = "8888"}@edaubert_worker1
+//updateDictionary edaubert { masterNode = "node0=127.0.0.1:10000"}, {port = "10000"}@node0,{port = "10001"}@edaubert_worker1

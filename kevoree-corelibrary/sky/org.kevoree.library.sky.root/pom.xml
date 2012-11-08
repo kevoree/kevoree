@@ -29,6 +29,8 @@
         <module>../org.kevoree.library.sky.forkcloud</module>
         <!--<module>../org.kevoree.library.sky.ec2</module>-->
         <module>../org.kevoree.library.sky.provider.web</module>
+        <module>../org.kevoree.library.sky.libvirt</module>
+        <module>../org.kevoree.library.sky.provider.api</module>
         <!--  <module>../org.kevoree.library.sky.logging</module>  -->
     </modules>
 

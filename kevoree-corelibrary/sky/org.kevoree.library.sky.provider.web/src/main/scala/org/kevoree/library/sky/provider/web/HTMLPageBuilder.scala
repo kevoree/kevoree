@@ -6,7 +6,7 @@ import java.io.File
 import io.Source
 import xml.Node
 import scala.collection.JavaConversions._
-import org.kevoree.library.sky.api.helper.KloudHelper
+import org.kevoree.library.sky.api.helper.KloudModelHelper
 import org.slf4j.LoggerFactory
 
 /**
@@ -23,7 +23,7 @@ object HTMLPageBuilder {
   def getIaasPage (pattern: String, nodeName: String, model: ContainerRoot): String = {
     (<html>
       <head>
-        <link rel="stylesheet" href={pattern + "bootstrap/bootstrap.min.css"}/>
+        <link rel="stylesheet" href={pattern + "bootstrap/css/bootstrap.min.css"}/>
       </head>
       <body>
         <img height="200px" src={pattern + "scaled500.png"} alt="Kevoree"/>
@@ -44,24 +44,78 @@ object HTMLPageBuilder {
   def getPaasPage (pattern: String, model: ContainerRoot): String = {
     (<html>
       <head>
-        <link rel="stylesheet" href={pattern + "bootstrap/bootstrap.min.css"}/>
+        <link rel="stylesheet" href={pattern + "form.css"}/>
+        <link rel="stylesheet" href={pattern + "bootstrap/css/bootstrap.min.css"}/>
+        <link rel="stylesheet" href={pattern + "fileuploader/fileuploader.css"}/>
+        <link rel="stylesheet" href={pattern + "bootstrap/css/bootstrap.min.css"}/>
+        <link rel="stylesheet" href={pattern + "bootstrap/css/bootstrap-responsive.min.css"}/>
+        <script type="text/javascript" src={pattern + "jquery/jquery.min.js"}></script>
+        <script type="text/javascript" src={pattern + "jquery/jquery.form.js"}></script>
+        <script type="text/javascript" src={pattern + "bootstrap/js/bootstrap.min.js"}></script>
+        <script type="text/javascript" src={pattern + "initializeuserconfiguration/initialize_user_config.js"}></script>
       </head>
       <body>
         <ul class="breadcrumb">
           <li class="active">
-            <a href={pattern}>Home</a> <span class="divider">/</span>
+            <a href=" ">Home</a>
+          </li>
+        </ul>
+
+        <ul class="breadcrumb">
+          <li class="active">
+            <span>Initialize user configuration</span>
+          </li>
+        </ul>
+        <form method=" " class="bs-docs-example form-horizontal" action=" " id="formNodeType">
+          <div class="control-group" id="loginControlGroup">
+            <label class="control-label mandatory" id="loginLabel" for="loginInput">login</label>
+
+            <div class="controls" id="loginControls">
+              <input id="loginInput"/>
+            </div>
+          </div>
+          <div class="control-group" id="passwordControlGroup">
+            <label class="control-label" id="passwordLabel" for="passwordInput">password</label>
+
+            <div class="controls" id="passwordControls">
+              <input type="password" id="passwordInput"/>
+            </div>
+          </div>
+          <div class="control-group" id="sshControlGroup">
+            <label class="control-label" id="sshLabel" for="sshInput">SSH public key</label>
+
+            <div class="controls" id="sshControls">
+              <textarea id="sshInput" rows="3" cols="60"></textarea>
+            </div>
+          </div>
+
+          <div class="control-group">
+            <label class="control-label"></label>
+
+            <div class="controls">
+              <input id="submit" class="btn" type="submit" value="Initialize"/>
+            </div>
+          </div>
+        </form>
+
+        <ul class="breadcrumb">
+          <li class="active">
+            <span>Already existing user configuration</span>
           </li>
         </ul>
         <table class="table table-bordered">
           <thead>
             <tr>
               <td>User name
-              </td> <td>number of nodes</td> <td>action(s)</td>
+              </td>
+              <td>number of nodes</td>
+              <td>action(s)</td>
             </tr>
           </thead>
           <tbody>
+
             {var result: List[scala.xml.Elem] = List()
-          KloudHelper.getKloudUserGroups(model).foreach {
+          KloudModelHelper.getPaaSKloudGroups(model).foreach {
             group => {
               logger.debug("{} is a user and he/she has {} nodes", group.getName, group.getSubNodes)
               result = result ++ List(
@@ -95,7 +149,6 @@ object HTMLPageBuilder {
   def getPaasUserPage (login: String, pattern: String, model: ContainerRoot): String = {
     (<html>
       <head>
-        <link rel="stylesheet" href={pattern + "bootstrap/bootstrap.min.css"}/>
         <link rel="stylesheet" href={pattern + "fileuploader/fileuploader.css"}/>
         <link rel="stylesheet" href={pattern + "bootstrap/css/bootstrap.min.css"}/>
         <link rel="stylesheet" href={pattern + "bootstrap/css/bootstrap-responsive.min.css"}/>
@@ -125,7 +178,7 @@ object HTMLPageBuilder {
   def getNodeLogPage (pattern: String, parentNodeName: String, nodeName: String, streamName: String, model: ContainerRoot): String = {
     (<html>
       <head>
-        <link rel="stylesheet" href={pattern + "bootstrap/bootstrap.min.css"}/>
+        <link rel="stylesheet" href={pattern + "bootstrap/css/bootstrap.min.css"}/>
       </head>
       <body>
         <ul class="breadcrumb">
@@ -205,7 +258,7 @@ object HTMLPageBuilder {
   def getNodePage (pattern: String, parentNodeName: String, nodeName: String, model: ContainerRoot): String = {
     (<html>
       <head>
-        <link rel="stylesheet" href={pattern + "bootstrap/bootstrap.min.css"}/>
+        <link rel="stylesheet" href={pattern + "bootstrap/css/bootstrap.min.css"}/>
       </head>
       <body>
         <ul class="breadcrumb">
@@ -301,12 +354,12 @@ object HTMLPageBuilder {
   def addNodePage (pattern: String, paasNodeList: List[TypeDefinition]): String = {
     (<html>
       <head>
-        <link rel="stylesheet" href={pattern + "bootstrap/bootstrap.min.css"}/>
-        <link rel="stylesheet" href={pattern + "add_child.css"}/>
+        <link rel="stylesheet" href={pattern + "bootstrap/css/bootstrap.min.css"}/>
+        <link rel="stylesheet" href={pattern + "form.css"}/>
         <script type="text/javascript" src={pattern + "jquery/jquery.min.js"}/>
         <script type="text/javascript" src={pattern + "jquery/jquery.form.js"}/>
-        <script type="text/javascript" src={pattern + "bootstrap/bootstrap.min.js"}/>
-        <script type="text/javascript" src={pattern + "add_child.js"}/>
+        <script type="text/javascript" src={pattern + "bootstrap/js/bootstrap.min.js"}/>
+        <script type="text/javascript" src={pattern + "addchild/add_child.js"}/>
 
       </head>
       <body>

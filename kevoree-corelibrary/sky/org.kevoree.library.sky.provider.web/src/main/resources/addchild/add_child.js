@@ -79,11 +79,11 @@ function createControlGroup (id) {
     return controlgroup;
 }
 
-function createControlLabel (id, optional) {
+function createControlLabel (id, mandatory) {
     var label = document.createElement('label');
 
-    if (optional) {
-        label.className = "control-label optional";
+    if (mandatory) {
+        label.className = "control-label mandatory";
     } else {
         label.className = "control-label";
     }
@@ -146,12 +146,12 @@ function buildForm (value) {
         var controlGroup = createControlGroup(attribute.name);
         form.appendChild(controlGroup);
 
-        var optional = attribute.optional;
-        if (optional == undefined) {
-            optional = true;
+        var mandatory = !attribute.optional;
+        if (mandatory == undefined) {
+            mandatory = true;
         }
 
-        var label = createControlLabel(attribute.name, !optional);
+        var label = createControlLabel(attribute.name, mandatory);
         controlGroup.appendChild(label);
 
         var controls = createControls(attribute.name);
@@ -209,7 +209,7 @@ function JavaSENode () {
 
 function addError (controls) {
     var error = document.createElement("span");
-    error.className = "optional";
+    error.className = "mandatory";
     error.innerHTML = "Please set this attribute";
     controls.appendChild(error);
 }
@@ -223,7 +223,7 @@ function cleanError (controls) {
 
 function checker (id) {
     var label = jQuery("#" + id + "Label").get(0);
-    if (label.className.indexOf("optional") != -1) {
+    if (label.className.indexOf("mandatory") != -1) {
         var controls = jQuery("#" + id + "Controls").get(0);
         var value = jQuery("#" + id + "Input").get(0).value;
         cleanError(controls);
@@ -278,7 +278,7 @@ function getAttributes () {
 jQuery(document).ready(function () {
     updateForm();
     jQuery.ajax({
-        url:"/AddChild",
+        url:"{pattern}AddChild",
         type:"post",
         data:{"request":"list"},
         dataType:'json',
@@ -303,7 +303,7 @@ jQuery(document).ready(function () {
         if (checkForm()) {
             var jsonRequest = getAttributes();
             jQuery.ajax({
-                url:"/AddChild",
+                url:"{pattern}AddChild",
                 type:"post",
                 data:jsonRequest,
                 dataType:'json',
@@ -311,7 +311,7 @@ jQuery(document).ready(function () {
                     if (response.code != "0") {
                         alert(response.message);
                     } else {
-                        window.location = "/";
+                        window.location = "{pattern}";
                     }
                 }
             });

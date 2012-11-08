@@ -18,9 +18,6 @@ import org.slf4j.LoggerFactory;
 
 @Library(name = "SKY")
 @DictionaryType({
-//		@DictionaryAttribute(name = "inet", defaultValue = "alc0", optional = false),
-//		@DictionaryAttribute(name = "subnet", defaultValue = "10.0.0.0", optional = true),
-//		@DictionaryAttribute(name = "mask", defaultValue = "24", vals = {"8", "16", "24"}, optional = false),
 		@DictionaryAttribute(name = "flavor", optional = true),
 		@DictionaryAttribute(name = "jailCreationTimeout", defaultValue = "240000", optional = true), // TODO check with Timeout on adaptation primitive
 		@DictionaryAttribute(name = "jailStartTimeout", defaultValue = "10000", optional = true),/*

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>org.kevoree.library.sky.root</artifactId>
+        <groupId>org.kevoree.corelibrary.sky</groupId>
+        <version>1.8.9-SNAPSHOT</version>
+        <relativePath>../org.kevoree.library.sky.root/pom.xml</relativePath>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>org.kevoree.library.sky.provider.api</artifactId>
+    <name>Kevoree :: CoreLibrary :: Sky :: Provdier :: API</name>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.kevoree</groupId>
+            <artifactId>org.kevoree.framework</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.kevoree.corelibrary.sky</groupId>
+            <artifactId>org.kevoree.library.sky.api</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
+    </dependencies>
+</project>
