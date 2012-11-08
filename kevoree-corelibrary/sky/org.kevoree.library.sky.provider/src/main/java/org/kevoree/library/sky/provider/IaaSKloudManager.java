@@ -68,7 +68,11 @@ public class IaaSKloudManager extends AbstractComponentType implements ModelList
 		KevScriptEngine kengine = getKevScriptEngineFactory().createKevScriptEngine();
 		if (IaaSKloudReasoner.configureChildNodes(getModelService().getLastModel(), kengine) || IaaSKloudReasoner.configureIsolatedNodes(getModelService().getLastModel(), kengine)) {
 			this.getModelService().unregisterModelListener(this);
-			updateIaaSConfiguration(kengine);
+			try {
+				updateIaaSConfiguration(kengine);
+			} catch (SubmissionException ignored) {
+
+			}
 			this.getModelService().registerModelListener(this);
 		}
 	}
@@ -81,7 +85,7 @@ public class IaaSKloudManager extends AbstractComponentType implements ModelList
 	public void postRollback (ContainerRoot containerRoot, ContainerRoot containerRoot1) {
 	}
 
-	private void updateIaaSConfiguration (KevScriptEngine kengine) {
+	private void updateIaaSConfiguration (KevScriptEngine kengine) throws SubmissionException {
 		Boolean created = false;
 		for (int i = 0; i < 20; i++) {
 			try {
@@ -94,6 +98,7 @@ public class IaaSKloudManager extends AbstractComponentType implements ModelList
 		}
 		if (!created) {
 			logger.error("After 20 attempt, it was not able to update the IaaS configuration");
+			throw new SubmissionException("Unable to apply the request");
 		}
 	}
 
