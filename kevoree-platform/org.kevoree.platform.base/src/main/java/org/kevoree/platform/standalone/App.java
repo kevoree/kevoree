@@ -42,7 +42,7 @@ public class App {
 
         //TO REMOVE
         if(System.getProperty("node.groupType") == null){
-            System.setProperty("node.groupType","NanoRestGroup");
+            System.setProperty("node.groupType","BasicGroup");
         }
         
 
