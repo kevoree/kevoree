@@ -108,18 +108,23 @@ class MiniKloudForm (editor: KevoreeEditor, button: AbstractButton) {
                 button.setIcon(previousIcon)
                 button.setDisabledIcon(previousIcon)
                 UIEventHandler.info("MiniKloud node Started !")
-                 /*
+
+                val port = KevoreePropertyHelper.getStringPropertyForComponent(skyModel, "webServer", "port")
                 for (i <- 0 until 10) {
                   try {
-                    new URL("http://localhost:7000/").openConnection().connect()
+                    logger.debug("checking: http://localhost:{}/", port.get)
+                    new URL("http://localhost:" + port.get + "/").openConnection().connect()
                   } catch {
-                    case _ => Thread.sleep(1000)
+                    case _: Throwable => Thread.sleep(5000)
                   }
                 }
 
                 if (Desktop.isDesktopSupported) {
-                  Desktop.getDesktop.browse(new URI("http://localhost:7000/"))
-                } */
+                  logger.info("starting miniKloud web page: http://localhost:{}/", port.get)
+                  Desktop.getDesktop.browse(new URI("http://localhost:" + port.get + "/"))
+                } else {
+                  logger.info("Our desktop is not support so we are not able to open the web page: http://localhost:{}/", port.get)
+                }
 
               }
             }
@@ -198,10 +203,14 @@ class MiniKloudForm (editor: KevoreeEditor, button: AbstractButton) {
         val kevEngine = new KevScriptOfflineEngine(skyModel, new FakeBootstraperService().getBootstrap)
         kevEngine.addVariable("kevoree.version", KevoreeFactory.getVersion)
         kevEngine.addVariable("minicloudNodeName", minicloudName)
-        kevEngine.append("merge 'mvn:org.kevoree.corelibrary.sky/org.kevoree.library.sky.minicloud/{kevoree.version}'")
-        kevEngine.append("merge 'mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.nanohttp/{kevoree.version}'")
 
-        kevEngine.append("addNode {minicloudNodeName}: MiniCloudNode {}")
+        kevEngine.append("merge 'mvn:org.kevoree.corelibrary.sky/org.kevoree.library.sky.minicloud/{kevoree.version}'")
+        kevEngine.append("merge 'mvn:org.kevoree.corelibrary.sky/org.kevoree.library.sky.provider/{kevoree.version}'")
+        kevEngine.append("merge 'mvn:org.kevoree.corelibrary.sky/org.kevoree.library.sky.provider.web/{kevoree.version}'")
+        kevEngine.append("merge 'mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.nanohttp/{kevoree.version}'")
+        kevEngine.append("merge 'mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.defaultChannels/{kevoree.version}'")
+
+        kevEngine.append("addNode {minicloudNodeName}: MiniCloudNode {logLevel = 'DEBUG'}")
 
         // add all JavaSE (or inherited) user nodes as child of the minicloud node
         nodes.foreach {
@@ -233,6 +242,23 @@ class MiniKloudForm (editor: KevoreeEditor, button: AbstractButton) {
         kevEngine.addVariable("groupName", groupName)
         kevEngine.append("addToGroup {groupName} {minicloudNodeName}")
         kevEngine.append("updateDictionary {groupName} {port='6002'}@{minicloudNodeName}")
+
+        val port = selectPort(blackListedPorts)
+        blackListedPorts = blackListedPorts ++ Array[Int](port)
+        kevEngine.addVariable("portValue", port.toString)
+
+        // add the web page to manage the miniKloud
+        kevEngine.append("addComponent webServer@{minicloudNodeName} : KTinyWebServer {port = '{portValue}', timeout = '10000'}")
+        kevEngine.append("addComponent iaasPage@{minicloudNodeName} : IaaSKloudResourceManagerPage { urlpattern='/'}")
+
+        kevEngine.append("addChannel requestChannel : defMSG")
+        kevEngine.append("addChannel responseChannel : defMSG")
+
+        kevEngine.append("bind webServer.handler@{minicloudNodeName} => requestChannel")
+        kevEngine.append("bind iaasPage.request@{minicloudNodeName} => requestChannel")
+
+        kevEngine.append("bind webServer.response@{minicloudNodeName} => responseChannel")
+        kevEngine.append("bind iaasPage.content@{minicloudNodeName} => responseChannel")
 
         try {
           kevEngine.interpret()
