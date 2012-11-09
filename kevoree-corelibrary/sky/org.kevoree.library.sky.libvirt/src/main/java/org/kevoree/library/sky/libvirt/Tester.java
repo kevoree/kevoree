@@ -27,8 +27,8 @@ public class Tester {
 	public static void main (String[] args) throws LibvirtException {
 		Connect conn = new Connect("qemu:///system", false);
 //		createIP();
-		Domain domain = createDomain(conn);
-//		Domain domain = conn.domainLookupByName("Toto");
+//		Domain domain = createDomain(conn);
+		Domain domain = conn.domainLookupByName("debian_base");
 		if (domain != null) {
 			Network network = createIP(conn, domain);
 			if (network != null) {
