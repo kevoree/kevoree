@@ -367,13 +367,6 @@ object HTMLPageBuilder {
             </a>
           </li>
         </ul>
-        <!--<img height="200px" src="/scaled500.png" alt="Kevoree"/>-->
-        <ul class="breadcrumb">
-          <li class="active">
-            <a href={pattern}>Add PaaS Node</a> <span class="divider">/</span>
-          </li>
-        </ul>
-
         <form id="formNodeType" class="bs-docs-example form-horizontal" action=" " method=" ">
           <div class="control-group" id="nodeTypeList">
             <label class="control-label" for="nodeType">NodeType</label>

@@ -6,6 +6,8 @@ import util.matching.Regex
 import org.kevoree.library.sky.api.helper.KloudModelHelper
 import org.json.JSONStringer
 import org.kevoree.library.sky.helper.KloudProviderHelper
+import org.kevoree.KevoreeFactory
+import org.kevoree.library.sky.provider.api.SubmissionException
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -59,7 +61,7 @@ class PaaSKloudResourceManagerPageGenerator (instance: PaaSKloudResourceManagerP
   private def initializeUserConfiguration (request: KevoreeHttpRequest, response: KevoreeHttpResponse): KevoreeHttpResponse = {
     val jsonresponse = new JSONStringer().`object`()
     val login = request.getResolvedParams.get("login")
-    var sshKey : String = request.getResolvedParams.get("sshKey")
+    var sshKey: String = request.getResolvedParams.get("sshKey")
     if (sshKey == null) {
       sshKey = ""
     }
@@ -73,11 +75,13 @@ class PaaSKloudResourceManagerPageGenerator (instance: PaaSKloudResourceManagerP
         jsonresponse.key("code").value("1")
       } else {
         // if no then we try to initialize it
-        // TODO create a user model and submit it to the PaasKloudManager which will be able to deploy it
-//        val kengine = instance.getKevScriptEngineFactory.createKevScriptEngine()
-//
-//        KloudProviderHelper.appendCreateGroupScript(instance.getModelService.getLastModel, login, nodeName, kengine, sshKey, false)
-        jsonresponse.key("code").value("-1")
+        try {
+          instance.initialize(login, KevoreeFactory.createContainerRoot)
+          jsonresponse.key("code").value("0")
+        } catch {
+          case e: SubmissionException => logger.error("Unable to initialize the user PaaS: {}", login, e); jsonresponse.key("code").value("-1").key("message")
+            .value("Unable to initialize the user PaaS: " + login + "\nerror: " + e.getMessage)
+        }
       }
     }
     response.setStatus(200)
