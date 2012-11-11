@@ -20,23 +20,29 @@ addToGroup sync node0
 addComponent webServer@node0 : KTinyWebServer {port = "8080", timeout = "5000"}
 addComponent iaasPage@node0 : IaaSKloudResourceManagerPage { urlpattern="/iaas"}
 addComponent iaasManager@node0 : IaaSKloudManager
-//addComponent paasPage@node0 : PaaSKloudResourceManagerPage { urlpattern="/paas"}
-
+addComponent paasPage@node0 : PaaSKloudResourceManagerPage { urlpattern="/paas"}
+addComponent paasManager@node0 : PaaSKloudManager
 
 addChannel iaasDelegateChannel : defSERVICE
+addChannel paasDelegateChannel : defSERVICE
 addChannel requestChannel : defMSG
 addChannel responseChannel : defMSG
 
 bind webServer.handler@node0 => requestChannel
 bind iaasPage.request@node0 => requestChannel
-//bind paasPage.request@node0 => requestChannel
+bind paasPage.request@node0 => requestChannel
 
 bind webServer.response@node0 => responseChannel
 bind iaasPage.content@node0 => responseChannel
-//bind paasPage.content@node0 => responseChannel
+bind paasPage.content@node0 => responseChannel
 
 bind iaasManager.submit@node0 => iaasDelegateChannel
 bind iaasPage.delegate@node0 => iaasDelegateChannel
+
+
+bind paasManager.submit@node0 => paasDelegateChannel
+bind paasPage.delegate@node0 => paasDelegateChannel
+
 
 //addNode edaubert_worker1 : PJavaSENode
 //addChild edaubert_worker1@node0
