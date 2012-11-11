@@ -18,9 +18,9 @@ import scala.collection.JavaConversions._
 object IaaSKloudReasoner extends KloudReasoner {
   private val logger: Logger = LoggerFactory.getLogger(this.getClass)
 
-  def configureIsolatedNodes (iaasModel: ContainerRoot, kengine: KevScriptEngine): Boolean = {
+  def configureIsolatedNodes(iaasModel: ContainerRoot, kengine: KevScriptEngine): Boolean = {
     var doSomething = false
-//    var usedIps = Array[String]()
+    //    var usedIps = Array[String]()
     iaasModel.getNodes.filter(n => KloudModelHelper.isPaaSNode(iaasModel, n.getName) && iaasModel.getGroups.forall(g => !g.getSubNodes.contains(n))).foreach {
       node =>
         val parentNodeOption = iaasModel.getNodes.find(n => n.getHosts.contains(node))
@@ -44,7 +44,7 @@ object IaaSKloudReasoner extends KloudReasoner {
 
   }
 
-  def configureChildNodes (iaasModel: ContainerRoot, kengine: KevScriptEngine): Boolean = {
+  def configureChildNodes(iaasModel: ContainerRoot, kengine: KevScriptEngine): Boolean = {
     // count current child for each Parent nodes
     val parents = countChilds(iaasModel)
     var potentialParents = List[String]()
@@ -89,7 +89,7 @@ object IaaSKloudReasoner extends KloudReasoner {
     doSomething
   }
 
-  def countChilds (kloudModel: ContainerRoot): List[(String, Int)] = {
+  def countChilds(kloudModel: ContainerRoot): List[(String, Int)] = {
     var counts = List[(String, Int)]()
     kloudModel.getNodes.filter {
       node =>
@@ -103,7 +103,7 @@ object IaaSKloudReasoner extends KloudReasoner {
     counts
   }
 
-  def addNodes (addedNodes: java.util.List[ContainerNode], parentNodeNameOption: Option[String], iaasModel: ContainerRoot, kengine: KevScriptEngine): Boolean = {
+  def addNodes(addedNodes: java.util.List[ContainerNode], parentNodeNameOption: Option[String], iaasModel: ContainerRoot, kengine: KevScriptEngine): Boolean = {
     if (!addedNodes.isEmpty) {
       logger.debug("Try to add all user nodes into the Kloud")
 
@@ -163,7 +163,7 @@ object IaaSKloudReasoner extends KloudReasoner {
     }
   }
 
-  private def configureIsolatedNode (node: ContainerNode, parentNodeName: String, ip: String, model: ContainerRoot, kengine: KevScriptEngine): Boolean = {
+  private def configureIsolatedNode(node: ContainerNode, parentNodeName: String, ip: String, model: ContainerRoot, kengine: KevScriptEngine): Boolean = {
     // add the new node on one of the group used by the host
     val groupOption = model.getGroups.find(g => g.getSubNodes.find(n => n.getName == parentNodeName).isDefined)
     if (groupOption.isDefined) {
@@ -174,13 +174,14 @@ object IaaSKloudReasoner extends KloudReasoner {
       var usedPort = Array[Int]()
       if (groupOption.get.getTypeDefinition.getDictionaryType.isDefined) {
         groupOption.get.getTypeDefinition.getDictionaryType.get.getAttributes.filter(a => a.getFragmentDependant && (a.getName.startsWith("port") || a.getName.endsWith("port"))).foreach {
-          attribute =>
+          attribute => {
             kengine addVariable("attributeName", attribute.getName)
             /* Warning This method try severals Socket to determine available port */
             val portNumber = KloudNetworkHelper.selectPortNumber(ip, usedPort)
             usedPort = usedPort ++ Array[Int](portNumber)
             kengine.addVariable("port", portNumber.toString)
             kengine append "updateDictionary {groupName} { {attributeName} = '{port}' }@{nodeName}"
+          }
         }
       }
       true
@@ -189,7 +190,7 @@ object IaaSKloudReasoner extends KloudReasoner {
     }
   }
 
-  private def listAllIp (model: ContainerRoot): Array[String] = {
+  private def listAllIp(model: ContainerRoot): Array[String] = {
     var ips = Array[String]()
     model.getNodes.foreach {
       node =>
@@ -200,7 +201,7 @@ object IaaSKloudReasoner extends KloudReasoner {
   }
 
 
-  private def defineIP (nodeName: String, parentName: String, model: ContainerRoot, kengine: KevScriptEngine): Option[String] = {
+  private def defineIP(nodeName: String, parentName: String, model: ContainerRoot, kengine: KevScriptEngine): Option[String] = {
     kengine.addVariable("nodeName", nodeName)
     kengine.addVariable("parentName", parentName)
     // define IP using selecting node to know what is the network used in this machine
@@ -217,7 +218,7 @@ object IaaSKloudReasoner extends KloudReasoner {
     ipOption
   }
 
-  def lookAtPotentialParents (parents: List[(String, Int)]): List[String] = {
+  def lookAtPotentialParents(parents: List[(String, Int)]): List[String] = {
     var potentialParents = List[String]()
     var min = Int.MaxValue
 

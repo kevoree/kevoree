@@ -15,10 +15,10 @@ import org.kevoree.library.sky.provider.api.SubmissionException;
  */
 @Library(name = "SKY")
 @DictionaryType({
-		@DictionaryAttribute(name = "urlpattern", optional = true, defaultValue = "/iaas")
+		@DictionaryAttribute(name = "urlpattern", optional = true, defaultValue = "/")
 })
 @Requires({
-		@RequiredPort(name = "delegate", type = PortType.SERVICE, className = IaaSManagerService.class, optional = false)
+		@RequiredPort(name = "delegate", type = PortType.SERVICE, className = IaaSManagerService.class, optional = true)
 })
 @ComponentType
 public class IaaSKloudResourceManagerPage extends KloudResourceManagerPage implements IaaSManagerService {
@@ -37,26 +37,36 @@ public class IaaSKloudResourceManagerPage extends KloudResourceManagerPage imple
 
 	@Override
 	public void add (ContainerRoot model) throws SubmissionException {
-		getPortByName("delegate", IaaSManagerService.class).add(model);
+        if(isPortBinded("delegate")){
+            getPortByName("delegate", IaaSManagerService.class).add(model);
+        }
 	}
 
 	@Override
 	public void addToNode (ContainerRoot model, String nodeName) throws SubmissionException {
-		getPortByName("delegate", IaaSManagerService.class).addToNode(model, nodeName);
+        if(isPortBinded("delegate")){
+            getPortByName("delegate", IaaSManagerService.class).addToNode(model, nodeName);
+        }
 	}
 
 	@Override
 	public void remove (ContainerRoot model) throws SubmissionException {
-		getPortByName("delegate", IaaSManagerService.class).remove(model);
+        if(isPortBinded("delegate")){
+            getPortByName("delegate", IaaSManagerService.class).remove(model);
+        }
 	}
 
 	@Override
 	public void merge (ContainerRoot model) throws SubmissionException {
-		getPortByName("delegate", IaaSManagerService.class).merge(model);
+        if(isPortBinded("delegate")){
+            getPortByName("delegate", IaaSManagerService.class).merge(model);
+        }
 	}
 
 	@Override
 	public void mergeToNode (ContainerRoot model, String nodeName) throws SubmissionException {
-		getPortByName("delegate", IaaSManagerService.class).mergeToNode(model, nodeName);
+        if(isPortBinded("delegate")){
+            getPortByName("delegate", IaaSManagerService.class).mergeToNode(model, nodeName);
+        }
 	}
 }
