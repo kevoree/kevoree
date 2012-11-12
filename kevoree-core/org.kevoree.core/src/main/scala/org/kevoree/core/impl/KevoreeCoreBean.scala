@@ -229,7 +229,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService {
             //listenerActor.afterUpdate(model, stopModel.get)
           }
           val rootNode = model.getNodes.find(n => n.getName == getNodeName).get
-          val ignoredDeployResult = PrimitiveCommandExecutionHelper.execute(rootNode,adaptationModel, nodeInstance, afterUpdateTest,afterUpdateTest,afterUpdateTest)
+          val ignoredDeployResult = PrimitiveCommandExecutionHelper.execute(rootNode, adaptationModel, nodeInstance, afterUpdateTest, afterUpdateTest, afterUpdateTest)
         } else {
           logger.error("Unable to use the stopModel !")
         }
@@ -318,7 +318,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService {
                   //listenerActor.afterUpdate(model, newmodel)
                 }
                 val rootNode = newmodel.getNodes.find(n => n.getName == getNodeName).get
-                PrimitiveCommandExecutionHelper.execute(rootNode,adaptationModel, nodeInstance,afterUpdateTest,afterUpdateTest,afterUpdateTest)
+                PrimitiveCommandExecutionHelper.execute(rootNode, adaptationModel, nodeInstance, afterUpdateTest, afterUpdateTest, afterUpdateTest)
                 nodeInstance.stopNode()
                 //end of harakiri
                 nodeInstance = null
@@ -352,10 +352,11 @@ class KevoreeCoreBean extends KevoreeModelHandlerService {
                 listenerActor.afterUpdate(model, newmodel)
               }
 
-              class PreCommand(){
+              class PreCommand() {
                 var alreadyCall = false
+
                 def preRollbackTest(): Boolean = {
-                  if(!alreadyCall){
+                  if (!alreadyCall) {
                     listenerActor.preRollback(model, newmodel)
                     alreadyCall = true
                   }
@@ -371,7 +372,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService {
                 true
               }
               val rootNode = newmodel.getNodes.find(n => n.getName == getNodeName).get
-              deployResult = PrimitiveCommandExecutionHelper.execute(rootNode,adaptationModel, nodeInstance,afterUpdateTest,preCmd.preRollbackTest,postRollbackTest)
+              deployResult = PrimitiveCommandExecutionHelper.execute(rootNode, adaptationModel, nodeInstance, afterUpdateTest, preCmd.preRollbackTest, postRollbackTest)
             } catch {
               case _@e => {
                 logger.error("Error while update ", e)
@@ -441,19 +442,41 @@ class KevoreeCoreBean extends KevoreeModelHandlerService {
    */
   @Deprecated
   override def updateModel(model: ContainerRoot) {
-    scheduler.submit(UpdateModelCallable(model))
+    scheduler.submit(UpdateModelCallable(model, null))
   }
 
-  case class UpdateModelCallable(model: ContainerRoot) extends Callable[Boolean] {
+  case class UpdateModelCallable(model: ContainerRoot, callback: ModelUpdateCallback) extends Callable[Boolean] {
     def call(): Boolean = {
       val res = if (currentLock == null) {
-        internal_update_model(model)
+        val internalRes = internal_update_model(model)
+        callCallBack(callback, internalRes, null)
+        internalRes
       } else {
         logger.debug("Core Locked , UUID mandatory")
+        callCallBack(callback, false, ModelUpdateCallBackReturn.CAS_ERROR)
         false
       }
-      System.gc()
+      //System.gc()
       res
+    }
+  }
+
+
+  def callCallBack(callback: ModelUpdateCallback, sucess: Boolean, res: ModelUpdateCallBackReturn) {
+    if (callback != null) {
+      new Thread() {
+        override def run() {
+          if (res == null) {
+            callback.modelProcessed(if (sucess) {
+              ModelUpdateCallBackReturn.UPDATED
+            } else {
+              ModelUpdateCallBackReturn.DEPLOY_ERROR
+            })
+          } else {
+            callback.modelProcessed(res)
+          }
+        }
+      }.start()
     }
   }
 
@@ -465,29 +488,35 @@ class KevoreeCoreBean extends KevoreeModelHandlerService {
    */
   @Deprecated
   override def atomicUpdateModel(model: ContainerRoot) = {
-    scheduler.submit(UpdateModelCallable(model)).get()
+    scheduler.submit(UpdateModelCallable(model, null)).get()
     lastDate
   }
 
-  case class CompareAndSwapCallable(previousModel: UUIDModel, targetModel: ContainerRoot) extends Callable[Boolean] {
+  case class CompareAndSwapCallable(previousModel: UUIDModel, targetModel: ContainerRoot, callback: ModelUpdateCallback) extends Callable[Boolean] {
     def call(): Boolean = {
       val res = if (currentLock != null) {
         if (previousModel.getUUID.compareTo(currentLock._1) == 0) {
-          internal_update_model(targetModel)
+          val internalRes = internal_update_model(targetModel)
+          callCallBack(callback, internalRes, null)
+          internalRes
         } else {
           logger.debug("Core Locked , bad UUID " + previousModel.getUUID)
+          callCallBack(callback, false, ModelUpdateCallBackReturn.CAS_ERROR)
           false //LOCK REFUSED !
         }
       } else {
         //COMMON CHECK
         if (previousModel.getUUID.compareTo(currentModelUUID) == 0) {
           //TODO CHECK WITH MODEL SHA-1 HASHCODE
-          internal_update_model(targetModel)
+          val internalRes = internal_update_model(targetModel)
+          callCallBack(callback, internalRes, null)
+          internalRes
         } else {
+          callCallBack(callback, false, ModelUpdateCallBackReturn.CAS_ERROR)
           false
         }
       }
-      System.gc()
+      //System.gc()
       res
     }
   }
@@ -497,7 +526,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService {
    * If OK, updates the system and switches to the new model, asynchronously
    */
   override def compareAndSwapModel(previousModel: UUIDModel, targetModel: ContainerRoot) {
-    scheduler.submit(CompareAndSwapCallable(previousModel, targetModel))
+    scheduler.submit(CompareAndSwapCallable(previousModel, targetModel, null))
   }
 
   /**
@@ -506,7 +535,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService {
    */
   @throws(classOf[KevoreeModelUpdateException])
   override def atomicCompareAndSwapModel(previousModel: UUIDModel, targetModel: ContainerRoot): Date = {
-    val result = scheduler.submit(CompareAndSwapCallable(previousModel, targetModel)).get()
+    val result = scheduler.submit(CompareAndSwapCallable(previousModel, targetModel, null)).get()
     if (!result) {
       throw new KevoreeModelUpdateException //SEND AND EXCEPTION - Compare&Swap fail !
     }
@@ -616,4 +645,12 @@ class KevoreeCoreBean extends KevoreeModelHandlerService {
     }
   }
 
+  def updateModel(model: ContainerRoot, callback: ModelUpdateCallback) {
+    scheduler.submit(UpdateModelCallable(model, callback))
+  }
+
+  def compareAndSwapModel(previousModel: UUIDModel, targetModel: ContainerRoot, callback: ModelUpdateCallback) {
+    scheduler.submit(UpdateModelCallable(model, callback)).get()
+    lastDate
+  }
 }
