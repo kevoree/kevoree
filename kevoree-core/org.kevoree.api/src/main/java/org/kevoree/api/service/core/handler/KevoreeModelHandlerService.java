@@ -50,9 +50,13 @@ public interface KevoreeModelHandlerService {
 
     public void updateModel(ContainerRoot model);
 
+    public void updateModel(ContainerRoot model, ModelUpdateCallback callback);
+
     public Date atomicUpdateModel(ContainerRoot model);
 
     public void compareAndSwapModel(UUIDModel previousModel, ContainerRoot targetModel);
+
+    public void compareAndSwapModel(UUIDModel previousModel, ContainerRoot targetModel, ModelUpdateCallback callback);
 
     public Date atomicCompareAndSwapModel(UUIDModel previousModel, ContainerRoot targetModel) throws KevoreeModelUpdateException;
 

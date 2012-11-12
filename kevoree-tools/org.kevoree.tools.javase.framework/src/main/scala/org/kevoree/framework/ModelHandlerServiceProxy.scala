@@ -198,4 +198,16 @@ class ModelHandlerServiceProxy extends KevoreeModelHandlerService with DaemonAct
   def checkModel(targetModel: ContainerRoot): Boolean = {
     proxy.checkModel(targetModel)
   }
+
+  def updateModel(model: ContainerRoot, callback: ModelUpdateCallback) {
+    proxy.updateModel(model,callback)
+  }
+
+  def compareAndSwapModel(previousModel: UUIDModel, targetModel: ContainerRoot, callback: ModelUpdateCallback) {
+    if (proxyModel != null) {
+      logger.error("compareAndSwapModel not available during update")
+    } else {
+      proxy.compareAndSwapModel(previousModel, targetModel,callback)
+    }
+  }
 }
