@@ -66,11 +66,9 @@ class GroupScorePeerSelector (timeout: Long, modelHandlerService: KevoreeModelHa
         //Found minima score node name
         var foundNodeName = List[String]()
         var minScore = Long.MaxValue
-
-
-        group.getSubNodes.filter(node => !node.getName.equals(nodeName)).filter(node => model.getNodeNetworks
+        group.getSubNodes.filter(node => !node.getName.equals(nodeName))/*.filter(node => model.getNodeNetworks
           .exists(nn => nn.getInitBy.get.getName == nodeName && nn.getTarget.getName == node.getName
-          || nn.getInitBy.get.getName == node.getName && nn.getTarget.getName == node.getName))
+          || nn.getInitBy.get.getName == node.getName && nn.getTarget.getName == node.getName))  */
           .foreach {
           subNode => {
             if (getScore(subNode.getName) <= minScore) {
@@ -78,7 +76,7 @@ class GroupScorePeerSelector (timeout: Long, modelHandlerService: KevoreeModelHa
             }
           }
         }
-        group.getSubNodes.filter(node => !node.getName.equals(nodeName))
+        group.getSubNodes.filter(node => node.getName!=nodeName)
           /*.filter(node => model.getNodeNetworks
           .exists(nn => nn.getInitBy.getName == nodeName && nn.getTarget.getName == node.getName))*/
           .foreach {
@@ -91,11 +89,9 @@ class GroupScorePeerSelector (timeout: Long, modelHandlerService: KevoreeModelHa
         if (foundNodeName.size > 0) {
           // select randomly a peer between all potential available nodes which have a good score
           val nodeName1 = foundNodeName.get((Math.random() * foundNodeName.size).asInstanceOf[Int])
-
           //Init node score
           //initNodeScore(nodeName)
           modifyNodeScore(nodeName1, failure = false)
-
 
           logger.debug("return a peer between connected nodes: " + nodeName1)
           nodeName1
