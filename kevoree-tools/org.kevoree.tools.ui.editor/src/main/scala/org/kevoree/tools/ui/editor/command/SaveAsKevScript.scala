@@ -16,7 +16,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * 	http://www.gnu.org/licenses/lgpl-3.0.txt
+ * http://www.gnu.org/licenses/lgpl-3.0.txt
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -79,21 +79,27 @@ class SaveAsKevScript extends Command {
         }
     }
 
-    currentModel.getRepositories.foreach{ repo =>
-         scriptBuffer.append("addRepo \""+repo.getUrl+"\"\n")
+    currentModel.getRepositories.foreach {
+      repo =>
+        scriptBuffer.append("addRepo \"" + repo.getUrl + "\"\n")
     }
 
     duS.foreach {
 
-      du => scriptBuffer.append("merge 'mvn:" + du.getGroupName + "/" + du.getUnitName + "/" + (if(du.getVersion==KevoreeFactory.getVersion){"{kevoree.version}"}else {du.getVersion})  + "'\n")
+      du => scriptBuffer.append("merge 'mvn:" + du.getGroupName + "/" + du.getUnitName + "/" + (if (du.getVersion == KevoreeFactory.getVersion) {
+        "{kevoree.version}"
+      } else {
+        du.getVersion
+      }) + "'\n")
     }
 
     currentModel.getNodes.foreach(n => {
       scriptBuffer.append("addNode " + n.getName + ":" + n.getTypeDefinition.getName + "\n")
-      n.getDictionary.map{ dico =>
-        scriptBuffer.append("updateDictionary "+n.getName+"{")
-        scriptBuffer.append(dico.getValues.map(v => v.getAttribute.getName+"=\""+v.getValue+"\"").mkString(","))
-        scriptBuffer.append("}\n")
+      n.getDictionary.map {
+        dico =>
+          scriptBuffer.append("updateDictionary " + n.getName + "{")
+          scriptBuffer.append(dico.getValues.map(v => v.getAttribute.getName + "=\"" + v.getValue + "\"").mkString(","))
+          scriptBuffer.append("}\n")
       }
     })
 
@@ -109,11 +115,37 @@ class SaveAsKevScript extends Command {
       }
     })
 
-    currentModel.getGroups.foreach{ g =>
-      scriptBuffer.append("addGroup " + g.getName + ":" + g.getTypeDefinition.getName + "\n")
-      g.getSubNodes.foreach{ subN =>
-        scriptBuffer.append("addToGroup " + g.getName + " " + subN.getName + "\n")
-      }
+    currentModel.getGroups.foreach {
+      g =>
+        scriptBuffer.append("addGroup " + g.getName + ":" + g.getTypeDefinition.getName + "\n")
+        g.getDictionary.map {
+          dico => {
+            val localVals = dico.getValues.filter(v => v.getTargetNode.isEmpty)
+            if(localVals.size > 0){
+              scriptBuffer.append("updateDictionary " + g.getName + "{")
+              scriptBuffer.append(localVals.map(v => v.getAttribute.getName + "=\"" + v.getValue + "\"").mkString(","))
+              scriptBuffer.append("}@\n")
+            }
+          }
+        }
+        g.getSubNodes.foreach {
+          subN =>
+            scriptBuffer.append("addToGroup " + g.getName + " " + subN.getName + "\n")
+            g.getDictionary.map {
+              dico => {
+                val localVals = dico.getValues.filter(v => v.getTargetNode.isDefined && v.getTargetNode.get == subN)
+                if(localVals.size > 0){
+                  scriptBuffer.append("updateDictionary " + g.getName + "{")
+                  scriptBuffer.append(localVals.map(v => v.getAttribute.getName + "=\"" + v.getValue + "\"").mkString(","))
+                  scriptBuffer.append("}@"+subN.getName+"\n")
+                }
+              }
+            }
+
+
+          //updateDictionary mysockChannel { port="10000"}@node1,{ port="10001"}@node2
+
+        }
     }
 
 
@@ -121,9 +153,9 @@ class SaveAsKevScript extends Command {
 
     scriptBuffer.append("}\n")
 
-    if(p.isInstanceOf[String]){
+    if (p.isInstanceOf[String]) {
       val f = new File(p.asInstanceOf[String]);
-      if(f.exists()){
+      if (f.exists()) {
         f.delete()
       }
       val fw = new FileWriter(f)
@@ -133,7 +165,7 @@ class SaveAsKevScript extends Command {
         fw.close()
       }
     }
-    if(p.isInstanceOf[StringBuffer]){
+    if (p.isInstanceOf[StringBuffer]) {
       p.asInstanceOf[StringBuffer].append(scriptBuffer.toString)
     }
 

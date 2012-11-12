@@ -31,7 +31,7 @@ import org.kevoree._
 import framework.KevoreeXmiHelper
 import com.explodingpixels.macwidgets.{IAppWidgetFactory, HudWidgetFactory}
 import com.explodingpixels.macwidgets.plaf.{HudButtonUI, HudLabelUI, HudTextFieldUI, HudComboBoxUI}
-import java.awt.{FlowLayout, Dimension, BorderLayout}
+import java.awt.{ItemSelectable, FlowLayout, Dimension, BorderLayout}
 import javax.swing._
 
 /**
@@ -42,8 +42,8 @@ import javax.swing._
 
 class NodeTypeBootStrapUI(private var pkernel: ContainerRoot) extends JPanel {
 
-  var nodeTypeComboBox: JComboBox = _
-  var groupTypeComboBox: JComboBox = _
+  var nodeTypeComboBox: JComponent = _
+  var groupTypeComboBox: JComponent = _
   var nodeInstancePanel : InstanceParamPanel = _
   var groupInstancePanel : InstanceParamPanel = _
 
@@ -54,11 +54,11 @@ class NodeTypeBootStrapUI(private var pkernel: ContainerRoot) extends JPanel {
     groupInstancePanel.getInstanceName
   }
   def getKevTypeName = {
-    nodeTypeComboBox.getSelectedItem
+    nodeTypeComboBox.asInstanceOf[{def getSelectedItem : Object}].getSelectedItem
   }
 
   def getKevGroupTypeName = {
-    groupTypeComboBox.getSelectedItem
+    groupTypeComboBox.asInstanceOf[{def getSelectedItem : Object}].getSelectedItem
   }
 
 //  private var model = pkernel
@@ -79,10 +79,9 @@ class NodeTypeBootStrapUI(private var pkernel: ContainerRoot) extends JPanel {
       .sortWith( (td,td2) => {if(td.getName=="JavaSENode".toLowerCase()){true}else{td.getName < td2.getName }} )
       .foreach {
       td =>
-        nodeTypeModel.addElement(td.getName)
+        UIHelper.addItem(nodeTypeModel,td.getName)
     }
-    nodeTypeComboBox = new JComboBox(nodeTypeModel)
-    nodeTypeComboBox.setUI(new HudComboBoxUI())
+    nodeTypeComboBox = UIHelper.createJComboBox(nodeTypeModel)
 
     val groupTypeModel = new DefaultComboBoxModel
     kernel.getTypeDefinitions.
@@ -90,10 +89,9 @@ class NodeTypeBootStrapUI(private var pkernel: ContainerRoot) extends JPanel {
       .sortWith( (td,td2) => {if(td.getName=="BasicGroup".toLowerCase()){true}else{td.getName < td2.getName }} )
       .foreach {
           td =>
-            groupTypeModel.addElement(td.getName)
+            UIHelper.addItem(groupTypeModel,td.getName)
         }
-    groupTypeComboBox = new JComboBox(groupTypeModel)
-    groupTypeComboBox.setUI(new HudComboBoxUI())
+    groupTypeComboBox = UIHelper.createJComboBox(groupTypeModel)
 
     nodeInstancePanel = new InstanceParamPanel(getTypeDefinition(nodeTypeComboBox),"node0")
     groupInstancePanel = new InstanceParamPanel(getTypeDefinition(groupTypeComboBox),"sync")
@@ -158,7 +156,7 @@ class NodeTypeBootStrapUI(private var pkernel: ContainerRoot) extends JPanel {
     add(groupLayout)
     add(groupInstancePanel)
 
-    nodeTypeComboBox.addActionListener(new ActionListener() {
+    nodeTypeComboBox.asInstanceOf[{def addActionListener(l:ActionListener)}].addActionListener(new ActionListener() {
       override def actionPerformed(actionEvent: ActionEvent) {
         nodeInstancePanel.setNodeTypeDefinition(getTypeDefinition(nodeTypeComboBox))
         nodeInstancePanel.reload()
@@ -167,7 +165,7 @@ class NodeTypeBootStrapUI(private var pkernel: ContainerRoot) extends JPanel {
       }
     })
 
-    groupTypeComboBox.addActionListener(new ActionListener() {
+    groupTypeComboBox.asInstanceOf[{def addActionListener(l:ActionListener)}].addActionListener(new ActionListener() {
       override def actionPerformed(actionEvent: ActionEvent) {
         groupInstancePanel.setNodeTypeDefinition(getTypeDefinition(groupTypeComboBox))
         groupInstancePanel.reload()
@@ -178,8 +176,8 @@ class NodeTypeBootStrapUI(private var pkernel: ContainerRoot) extends JPanel {
     //SpringUtilities.makeCompactGrid(this, 5, 1, 1, 1, 1, 1)
   }
 
-  def getTypeDefinition(box : JComboBox) : TypeDefinition = {
-    pkernel.getTypeDefinitions.find(td => td.getName == box.getSelectedItem).get
+  def getTypeDefinition(box : Object) : TypeDefinition = {
+    pkernel.getTypeDefinitions.find(td => td.getName == box.asInstanceOf[{def getSelectedItem : Object}].getSelectedItem).get
   }
 
 }
