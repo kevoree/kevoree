@@ -32,7 +32,8 @@ import java.util.TimerTask;
 @NodeFragment
 @DictionaryType({
 		@DictionaryAttribute(name = "default_DISK", optional = false),
-		@DictionaryAttribute(name = "default_COPY_MODE", vals = {"base", "clone", "as_is"}, optional = false)
+		@DictionaryAttribute(name = "default_COPY_MODE", vals = {"base", "clone", "as_is"}, optional = false),
+		@DictionaryAttribute(name = "defaultdomain", defaultValue = "debian", optional = false)
 })
 public abstract class LibVirtNode extends AbstractIaaSNode {
 	private static final Logger logger = LoggerFactory.getLogger(LibVirtNode.class);

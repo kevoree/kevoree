@@ -114,7 +114,7 @@ case class KevsMergerInterpreter (mergeStatement: MergeStatement) extends KevsAb
             mergerComponent.merge(context.model, newModel)
             true
           } catch {
-            case _@e => logger.error("Unable to load library from {}. Maybe it's not a Kevoree model nor a Kevoree DeployUnit", mergeStatement.url); false
+            case _@e => logger.warn("Unable to load library from {}. Maybe it's not a Kevoree model nor a Kevoree DeployUnit", mergeStatement.url); true
           }
         }
       } else {

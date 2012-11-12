@@ -8,8 +8,6 @@ import java.util.UUID
 import org.kevoree.framework.{Constants, KevoreePropertyHelper}
 import org.kevoree.library.sky.api.nodeType.AbstractHostNode
 import org.slf4j.LoggerFactory
-import java.io.IOException
-import org.kevoree.library.sky.api.helper.KloudNetworkHelper
 import org.kevoree.library.sky.api.property.PropertyConversionHelper
 
 /**
@@ -46,7 +44,7 @@ abstract class LibVirtKevoreeNodeRunner (nodeName: String, iaasNode: AbstractHos
     } catch {
       case e: LibvirtException => {
         try {
-          val domain = conn.domainLookupByName("debian_base")
+          val domain = conn.domainLookupByName(iaasNode.getDictionary.get("defaultdomain").toString)
 
           val parser: Builder = new Builder
           val doc: Document = parser.build(domain.getXMLDesc(0), null)

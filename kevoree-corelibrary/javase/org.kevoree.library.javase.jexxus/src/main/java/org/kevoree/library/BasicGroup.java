@@ -64,6 +64,30 @@ public class BasicGroup extends AbstractGroupType implements ConnectionListener 
 
     @Override
     public void triggerModelUpdate () {
+        if (starting) {
+            final ContainerRoot modelOption = NodeNetworkHelper.updateModelWithNetworkProperty(this);
+            if (modelOption != null) {
+                new Thread() {
+                    public void run () {
+                        getModelService().unregisterModelListener(BasicGroup.this);
+                        getModelService().atomicUpdateModel(modelOption);
+                        getModelService().registerModelListener(BasicGroup.this);
+                    }
+                }.start();
+            }
+            starting = false;
+        } else {
+            Group group = getModelElement();
+            for (ContainerNode subNode : group.getSubNodesForJ()) {
+                if (!subNode.getName().equals(this.getNodeName())) {
+                    try {
+                        push(getModelService().getLastModel(), subNode.getName());
+                    } catch (Exception e) {
+                        logger.warn("Unable to notify other members of {} group", group.getName());
+                    }
+                }
+            }
+        }
     }
 
     @Override

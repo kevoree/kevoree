@@ -52,12 +52,7 @@ class JailKevoreeNodeRunner (nodeName: String, iaasNode: JailNode) extends Kevor
       if (ipOption.isDefined) {
         newIp = ipOption.get
       } else {
-        // we create a new IP alias according to the existing ones
-        val ipOption = KloudNetworkHelper.selectIP(iaasNode.getName, iaasModel, result._2.toArray[String])
-        if (ipOption.isDefined) {
-          newIp = ipOption.get
-          // FIXME maybe we need to add the IP on the model ?
-        }
+        logger.warn("Unable to get the IP for the new jail, the creation may fail")
       }
       if (processExecutor.addNetworkAlias(iaasNode.getNetworkInterface, newIp)) {
         // looking for the flavors
