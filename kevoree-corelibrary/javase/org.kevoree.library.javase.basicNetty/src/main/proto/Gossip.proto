@@ -1,0 +1,37 @@
+package org.kevoree.library.basicGossiper.version;
+
+option java_package = "org.kevoree.library.basicGossiper.protocol.gossip";
+option java_outer_classname = "Gossip";
+
+option optimize_for = LITE_RUNTIME;
+
+import "Version.proto";
+
+message UpdatedValueNotification {}
+
+message VectorClockUUIDsRequest {}
+
+
+message UUIDVectorClockRequest {
+	required string uuid = 1;
+}
+
+message UUIDDataRequest {
+	required string uuid = 1;
+}
+
+
+message VectorClockUUIDs {
+	repeated VectorClockUUID vectorClockUUIDs = 1;
+}
+
+message VectorClockUUID {
+    required string uuid = 1;
+	required VectorClock vector = 2;
+}
+
+message VersionedModel {
+	required string uuid = 1;
+    required VectorClock vector = 2;
+    required bytes model = 3;
+}

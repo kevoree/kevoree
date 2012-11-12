@@ -1,0 +1,15 @@
+package org.kevoree.library.basicGossiper.version;
+
+option java_package = "org.kevoree.library.basicGossiper.protocol.version";
+option java_outer_classname = "Version";
+
+option optimize_for = LITE_RUNTIME;
+message VectorClock {
+    repeated ClockEntry enties = 1;
+    required int64 timestamp = 2;
+}
+message ClockEntry {
+    required string nodeID = 1;
+    required int32 version = 2;
+    //required int64 timestamp = 3;
+}

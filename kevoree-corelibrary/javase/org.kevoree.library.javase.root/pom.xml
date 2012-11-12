@@ -44,29 +44,20 @@
         <module>../org.kevoree.library.javase.webserver.sample</module>
         <module>../org.kevoree.library.javase.webserver.spray</module>
         <module>../org.kevoree.library.javase.webserver.servlet</module>
-
-
         <module>../org.kevoree.library.javase.nanohttp</module>
         <module>../org.kevoree.library.javase.nanohttpAutoDiscovery</module>
         <module>../org.kevoree.library.javase.camel</module>
         <module>../org.kevoree.library.javase.camel.atom</module>
         <module>../org.kevoree.library.javase.authentication</module>
         <module>../org.kevoree.library.javase.gossiperNettyAutoDiscovery</module>
-        <!--
-        <module>../org.kevoree.library.javase.vertx</module>
-        -->
-
         <module>../org.kevoree.library.javase.mongoDB</module>
         <module>../org.kevoree.library.javase.nodeJS</module>
         <module>../org.kevoree.library.javase.nodeJS.visu</module>
         <module>../org.kevoree.library.javase.nodeJS.proxy</module>
-
-
         <module>../org.kevoree.library.javase.etherpad</module>
         <module>../org.kevoree.library.javase.scimark</module>
         <module>../org.kevoree.library.javase.hazelcast</module>
-
-        <module>../org.kevoree.library.javase.</module>
+        <module>../org.kevoree.library.javase.adaptationSuperviser</module>
 
     </modules>
 

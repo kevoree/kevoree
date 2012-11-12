@@ -1,0 +1,13 @@
+package org.kevoree.library.basicGossiper.api.msg;
+
+option java_package = "org.kevoree.library.basicGossiper.protocol.message";
+option java_outer_classname = "KevoreeMessage";
+
+option optimize_for = LITE_RUNTIME;
+
+message Message {
+    required string destName =1;
+    required bytes content = 2;
+	required string contentClass = 3;
+	required string destNodeName = 4;
+}

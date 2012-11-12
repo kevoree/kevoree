@@ -1,0 +1,29 @@
+merge "mvn:org.kevoree.corelibrary.sky/org.kevoree.library.sky.minicloud/{kevoree.version}"
+merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.javaseNode/{kevoree.version}"
+merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.basicNetty/{kevoree.version}"
+merge "mvn:org.kevoree.corelibrary.sky/org.kevoree.library.sky.provider.web/{kevoree.version}"
+merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.defaultChannels/{kevoree.version}"
+
+addNode minicloud : MiniCloudNode {logLevel = "DEBUG"}
+
+addNode node0 : PJavaSENode {logLevel = "DEBUG"}
+addNode node1 : PJavaSENode {logLevel = "DEBUG"}
+
+addChild node0@minicloud
+addChild node1@minicloud
+
+addGroup sync : BasicGossiperGroup
+addToGroup sync minicloud
+addToGroup sync node0
+addToGroup sync node1
+
+addComponent webServer@minicloud : KTinyWebServer {port = "8080", timeout = "5000"}
+addComponent iaasPage@minicloud : IaaSKloudResourceManagerPage { urlpattern="/"}
+addChannel requestChannel : defMSG
+addChannel responseChannel : defMSG
+bind webServer.handler@minicloud => requestChannel
+bind iaasPage.request@minicloud => requestChannel
+bind webServer.response@minicloud => responseChannel
+bind iaasPage.content@minicloud => responseChannel
+
+updateDictionary sync {gossip_port = "9010", port = "8000"}@minicloud, {gossip_port = "9011", port = "8001"}@node0, {gossip_port = "9012", port = "8002"}@node1
