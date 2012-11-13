@@ -60,7 +60,7 @@ public class ServerConnection extends Connection {
 						}
 						break;
 					} catch (Exception e) {
-                        logger.debug("Error while processing connecting ",e);
+                        logger.debug("Error while read TCP ",e);
 						break;
 					}
 					if (ret == null) {
@@ -76,7 +76,7 @@ public class ServerConnection extends Connection {
 					try {
 						listener.receive(ret, ServerConnection.this);
 					} catch (Exception e) {
-						e.printStackTrace();
+                        logger.debug("Error while read TCP ",e);
 					}
 				}
 			}

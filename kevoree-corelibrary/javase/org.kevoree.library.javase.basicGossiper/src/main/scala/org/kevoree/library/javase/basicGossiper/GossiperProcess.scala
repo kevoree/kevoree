@@ -12,21 +12,19 @@ import actors.{Actor, DaemonActor}
 import com.google.protobuf.ByteString
 import org.kevoree.library.javase.NetworkSender
 
-class ProcessValue(instance: GossiperComponent, alwaysAskData: Boolean, sender: NetworkSender,
+class GossiperProcess(instance: GossiperComponent, alwaysAskData: Boolean, sender: NetworkSender,
                    dataManager: DataManager, serializer: Serializer, doGarbage: Boolean) extends Actor {
 
   implicit def vectorDebug(vc: VectorClock) = VectorClockAspect(vc)
 
-  private val logger = LoggerFactory.getLogger(classOf[ProcessValue])
+  private val logger = LoggerFactory.getLogger(classOf[GossiperProcess])
 
   case class STOP()
 
   case class NOTIFY_PEERS()
 
   case class INIT_GOSSIP(peer: String)
-
-
-  case class RECEIVE_REQUEST(message: Message, channel: GossiperGossiperConnection /*, address: InetSocketAddress*/)
+  case class RECEIVE_REQUEST(message: Message)
 
   def stop() {
     this ! STOP()
@@ -40,8 +38,8 @@ class ProcessValue(instance: GossiperComponent, alwaysAskData: Boolean, sender: 
     this ! INIT_GOSSIP(peer)
   }
 
-  def receiveRequest(message: Message, channel: GossiperGossiperConnection /*, address: InetSocketAddress*/) {
-    this ! RECEIVE_REQUEST(message, channel /*, address*/)
+  def receiveRequest(message: Message) {
+    this ! RECEIVE_REQUEST(message)
   }
 
   def act() {
@@ -50,10 +48,12 @@ class ProcessValue(instance: GossiperComponent, alwaysAskData: Boolean, sender: 
         case STOP() => stopInternal()
         case NOTIFY_PEERS() => notifyPeersInternal()
         case INIT_GOSSIP(peer) => initGossipInternal(peer)
-        case RECEIVE_REQUEST(message, channel /*, address*/) => {
+        case RECEIVE_REQUEST(message) => {
           val messageToReply = buildResponse(message)
           if (messageToReply != null) {
-            channel.write(messageToReply.toByteArray)
+            val ip = instance.getAddress(message.getDestNodeName)
+            val addr = new InetSocketAddress(ip, instance.parsePortNumber(message.getDestNodeName))
+            sender.sendMessage(messageToReply,addr);
           }
         }
       }

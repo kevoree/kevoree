@@ -1,6 +1,6 @@
 package org.kevoree.library.javase.basicGossiper.group;
 
-import jexxus.server.Server;
+import jexxus.common.Connection;
 import org.kevoree.ContainerNode;
 import org.kevoree.ContainerRoot;
 import org.kevoree.Group;
@@ -8,6 +8,7 @@ import org.kevoree.annotation.*;
 import org.kevoree.framework.KevoreePropertyHelper;
 import org.kevoree.framework.NetworkHelper;
 import org.kevoree.library.BasicGroup;
+import org.kevoree.library.basicGossiper.protocol.message.KevoreeMessage;
 import org.kevoree.library.javase.NetworkSender;
 import org.kevoree.library.javase.basicGossiper.*;
 import org.kevoree.library.javase.network.NodeNetworkHelper;
@@ -15,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import scala.Option;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,8 +28,6 @@ import java.util.List;
 @GroupType
 @DictionaryType({
         @DictionaryAttribute(name = "interval", defaultValue = "3000", optional = true),
-        @DictionaryAttribute(name = "gossip_port", defaultValue = "9010", optional = true, fragmentDependant = true),
-        @DictionaryAttribute(name = "port", defaultValue = "8000", optional = true, fragmentDependant = true),
         @DictionaryAttribute(name = "alwaysAskModel", defaultValue = "false", optional = true, vals = {"true", "false"}),
         @DictionaryAttribute(name = "mergeModel", defaultValue = "false", optional = true, vals = {"true", "false"})
 })
@@ -36,12 +36,9 @@ public class BasicGossiperGroup extends BasicGroup implements GossiperComponent 
     protected DataManagerForGroup dataManager;
     protected GossiperActor actor;
     protected GroupScorePeerSelector selector;
-    private ProcessValue processValue;
+    private GossiperProcess processValue;
     protected Logger logger = LoggerFactory.getLogger(BasicGossiperGroup.class);
     private boolean starting;
-
-    private Server srv = null;
-    private ProtocConnectionListener listener = null;
 
     @Start
     public void startGossiperGroup() throws IOException {
@@ -53,7 +50,7 @@ public class BasicGossiperGroup extends BasicGroup implements GossiperComponent 
 
         Serializer serializer = new GroupSerializer(this.getModelService());
         dataManager = new DataManagerForGroup(this.getName(), this.getNodeName(), this.getModelService(), merge);
-        processValue = new ProcessValue(this, parseBooleanProperty("alwaysAskModel"), sender, dataManager,
+        processValue = new GossiperProcess(this, parseBooleanProperty("alwaysAskModel"), sender, dataManager,
                 serializer, false);
 
         selector = new GroupScorePeerSelector(timeoutLong, this.getModelService(), this.getNodeName());
@@ -65,22 +62,24 @@ public class BasicGossiperGroup extends BasicGroup implements GossiperComponent 
         selector.start();
         actor.start();
         starting = true;
+    }
 
-        listener = new ProtocConnectionListener(processValue);
-        Integer portGossiper = parsePortNumber();
-        logger.debug("Start GossiperHandler on {}", portGossiper);
-        srv = new Server(listener, portGossiper);
-        srv.startServer();
+    protected void externalProcess(byte[] data, Connection from){
+        try {
+            ByteArrayInputStream stin = new ByteArrayInputStream(data);
+            stin.read();
+            KevoreeMessage.Message msg = KevoreeMessage.Message.parseFrom(stin);
+            processValue.receiveRequest(msg);
+        } catch (Exception e) {
+            logger.error("",e);
+        } finally {
+            from.close();
+        }
     }
 
     @Stop
     public void stopGossiperGroup() {
         super.stopRestGroup();
-
-        srv.shutdown();
-        srv = null;
-        listener = null;
-
         if (actor != null) {
             actor.stop();
             actor = null;

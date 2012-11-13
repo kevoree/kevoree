@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 
@@ -41,11 +42,17 @@ public class NetworkSender {
         }, addr.getAddress().getHostAddress(), addr.getPort(), true);
         try {
             conns[0].connect();
-        } catch (IOException e) {
+            logger.debug("Try to connect to "+addr.getAddress().getHostAddress()+":"+addr.getPort());
+
+            ByteArrayOutputStream output = new ByteArrayOutputStream();
+            output.write(2);
+            m.writeTo(output);
+            conns[0].send(output.toByteArray(), Delivery.RELIABLE);
+            output.close();
+        } catch (Exception e) {
            logger.error("",e);
         }
-        logger.debug("Try to connect to "+addr.getAddress().getHostAddress()+":"+addr.getPort());
-        conns[0].send(m.toByteArray(), Delivery.RELIABLE);
+
     }
 
 }

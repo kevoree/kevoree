@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory
  * Time: 10:24
  */
 
-class GossiperActor (instance: GossiperComponent, timeout: Long, selector: PeerSelector, process: ProcessValue) extends Actor {
+class GossiperActor (instance: GossiperComponent, timeout: Long, selector: PeerSelector, process: GossiperProcess) extends Actor {
 
   private val logger = LoggerFactory.getLogger(this.getClass.getName)
 

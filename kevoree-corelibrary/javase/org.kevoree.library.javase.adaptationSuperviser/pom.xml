@@ -2,9 +2,9 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>org.kevoree.library.javase.adaptationsuperviser</artifactId>
+    <artifactId>org.kevoree.library.javase.adaptationSuperviser</artifactId>
     <version>1.8.9-SNAPSHOT</version>
-    <name>Kevoree :: CoreLibrary :: JavaSE :: Adaptation superviser</name>
+    <name>Kevoree :: CoreLibrary :: JavaSE :: Adaptation Superviser</name>
 
     <parent>
         <artifactId>org.kevoree.library.javase.root</artifactId>

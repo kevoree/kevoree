@@ -200,7 +200,7 @@ public class BasicGroup extends AbstractGroupType implements ConnectionListener 
                         }.start();
                         from.close();
                     } break;
-                    default : from.close();
+                    default : externalProcess(data,from);
                 }
             }
         } catch (Exception e) {
@@ -208,6 +208,11 @@ public class BasicGroup extends AbstractGroupType implements ConnectionListener 
         }
 
     }
+
+    protected void externalProcess(byte[] data, Connection from){
+        from.close();
+    }
+
 
     @Override
     public void clientConnected(ServerConnection conn) {
