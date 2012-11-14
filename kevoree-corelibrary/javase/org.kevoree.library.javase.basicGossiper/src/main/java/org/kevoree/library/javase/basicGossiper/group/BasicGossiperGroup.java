@@ -42,12 +42,12 @@ public class BasicGossiperGroup extends BasicGroup implements GossiperComponent 
 
     @Start
     public void startGossiperGroup() throws IOException {
+        udp = true;
         super.startRestGroup();
 
         Long timeoutLong = Long.parseLong((String) this.getDictionary().get("interval"));
         boolean merge = "true".equalsIgnoreCase(this.getDictionary().get("mergeModel").toString());
         NetworkSender sender = new NetworkSender();
-
         Serializer serializer = new GroupSerializer(this.getModelService());
         dataManager = new DataManagerForGroup(this.getName(), this.getNodeName(), this.getModelService(), merge);
         processValue = new GossiperProcess(this, parseBooleanProperty("alwaysAskModel"), sender, dataManager,
@@ -55,7 +55,6 @@ public class BasicGossiperGroup extends BasicGroup implements GossiperComponent 
 
         selector = new GroupScorePeerSelector(timeoutLong, this.getModelService(), this.getNodeName());
         logger.debug("{}: initialize GossiperActor", this.getName());
-
         actor = new GossiperActor(this, timeoutLong, selector, processValue);
         dataManager.start();
         processValue.start();
@@ -73,7 +72,7 @@ public class BasicGossiperGroup extends BasicGroup implements GossiperComponent 
         } catch (Exception e) {
             logger.error("",e);
         } finally {
-            from.close();
+           // from.close();
         }
     }
 

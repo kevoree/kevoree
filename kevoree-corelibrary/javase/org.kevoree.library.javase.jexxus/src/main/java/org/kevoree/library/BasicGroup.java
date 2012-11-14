@@ -45,13 +45,18 @@ public class BasicGroup extends AbstractGroupType implements ConnectionListener 
 
     private Server server = null;
     private boolean starting;
+    protected boolean udp = false;
 
 
     @Start
     public void startRestGroup() throws IOException {
         int port = Integer.parseInt(this.getDictionary().get("port").toString());
         boolean ssl = Boolean.parseBoolean(this.getDictionary().get("ssl").toString());
-        server = new Server(this, port, ssl);
+        if(udp){
+            server = new Server(this, port,port, ssl);
+        } else {
+            server = new Server(this, port, ssl);
+        }
         logger.info("BasicGroup listen on " + port + "-SSL=" + ssl);
         server.startServer();
         starting = true;

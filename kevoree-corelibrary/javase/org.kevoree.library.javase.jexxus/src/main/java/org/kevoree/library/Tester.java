@@ -37,7 +37,11 @@ public class Tester {
 
             @Override
             public void receive(byte[] data, Connection from) {
-                System.out.println("recData="+new String(data));
+
+                //if(!from.isConnected()){
+                    System.out.println("recData="+new String(data));
+                //}
+
                 ByteArrayInputStream inputStream = new ByteArrayInputStream(data);
                 ContainerRoot root = KevoreeXmiHelper.loadCompressedStream(inputStream);
                 System.out.println(root);
@@ -48,7 +52,7 @@ public class Tester {
                 System.out.println("Connected");
             }
 
-        }, 15652,true);
+        }, 15652,15652,true);
         server.startServer();
 
         ClientConnection conn = new ClientConnection(new ConnectionListener(){
@@ -69,14 +73,19 @@ public class Tester {
             }
 
 
-        }, "localhost", 15652,true);
-        conn.connect();
+        }, "localhost", 15652,15652,true);
+        //conn.connect();
         //send with the TCP Protocol
 
         ContainerRoot root = KevoreeFactory.createContainerRoot();
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         KevoreeXmiHelper.saveCompressedStream(output,root);
+
         conn.send(output.toByteArray(), Delivery.RELIABLE);
+
+        conn.send("HelloUDP".getBytes(),Delivery.UNRELIABLE);
+
+
     }
 
 }

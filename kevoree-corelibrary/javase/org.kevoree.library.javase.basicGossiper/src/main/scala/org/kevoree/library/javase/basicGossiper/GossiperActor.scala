@@ -58,7 +58,7 @@ class GossiperActor (instance: GossiperComponent, timeout: Long, selector: PeerS
 
   private def pull () {
     val peer = selector.selectPeer(instance.getName)
-    if (!peer.equals("")) {
+    if (peer != null && !peer.equals("")) {
       logger.debug("start pulling")
       process.initGossip(peer)
     }

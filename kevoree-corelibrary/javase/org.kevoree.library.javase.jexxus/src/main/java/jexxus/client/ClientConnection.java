@@ -185,7 +185,7 @@ public class ClientConnection extends Connection {
 
     @Override
     public synchronized void send(byte[] data, Delivery deliveryType) {
-        if (connected == false) {
+        if (connected == false && deliveryType.equals(Delivery.RELIABLE)) {
             System.err.println("Cannot send message when not connected!");
             return;
         }
