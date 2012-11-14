@@ -29,7 +29,7 @@ package org.kevoree.tools.modelsync
 import org.kevoree.ContainerRoot
 import java.util.UUID
 import java.lang.Long
-import org.kevoree.api.service.core.handler.{UUIDModel, ModelListener, ModelHandlerLockCallBack}
+import org.kevoree.api.service.core.handler.{ModelUpdateCallback, UUIDModel, ModelListener, ModelHandlerLockCallBack}
 
 /**
  * Created with IntelliJ IDEA.
@@ -70,4 +70,8 @@ case class ModelHandlerServiceNoKernel(model : ContainerRoot) extends org.kevore
   def releaseLock(uuid: UUID) {}
 
   def checkModel(targetModel: ContainerRoot) = false
+
+  def updateModel(model: ContainerRoot, callback: ModelUpdateCallback) {}
+
+  def compareAndSwapModel(previousModel: UUIDModel, targetModel: ContainerRoot, callback: ModelUpdateCallback) {}
 }
