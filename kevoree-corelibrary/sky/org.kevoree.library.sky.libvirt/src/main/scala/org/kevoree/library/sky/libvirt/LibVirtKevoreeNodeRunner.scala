@@ -57,10 +57,6 @@ abstract class LibVirtKevoreeNodeRunner(nodeName: String, iaasNode: AbstractHost
           nameElement.removeChildren()
           nameElement.appendChild(nodeName)
 
-          val uuidElement: Element = doc.query("/domain/uuid").get(0).asInstanceOf[Element]
-          uuidElement.removeChildren()
-          uuidElement.appendChild(UUID.randomUUID.toString)
-
           //look for the amount of memory
           val memoryOption = KevoreePropertyHelper.getStringPropertyForNode(iaasModel, nodeName, "RAM")
           val defaultMemory = iaasNode.getDictionary.get("default_RAM")
@@ -72,18 +68,25 @@ abstract class LibVirtKevoreeNodeRunner(nodeName: String, iaasNode: AbstractHost
             memory = PropertyConversionHelper.getRAM(memoryOption.get).toString
           }
           val memoryElement: Element = doc.query("/domain/memory").get(0).asInstanceOf[Element]
-          memoryElement.removeChildren()
-          memoryElement.appendChild(memory)
-          memoryElement.removeAttribute(memoryElement.getAttribute("unit"))
-          val unit = new Attribute("unit", "b")
-          memoryElement.addAttribute(unit)
+          if(memoryElement != null){
+            memoryElement.removeChildren()
+            memoryElement.appendChild(memory)
+            if(memoryElement.getAttribute("unit") != null){
+              memoryElement.removeAttribute(memoryElement.getAttribute("unit"))
+            }
+            val unit = new Attribute("unit", "b")
+            memoryElement.addAttribute(unit)
+          }
+              /*
+          val currentMemoryElements = doc.query("/domain/currentMemory");
+          if(currentMemoryElements.size() > 0){
+            currentMemoryElement.removeChildren()
+            currentMemoryElement.appendChild(memory)
+            currentMemoryElement.removeAttribute(currentMemoryElement.getAttribute("unit"))
+            val unit2 = new Attribute("unit", "b")
+            currentMemoryElement.addAttribute(unit2)
+          }    */
 
-          val currentMemoryElement: Element = doc.query("/domain/currentMemory").get(0).asInstanceOf[Element]
-          currentMemoryElement.removeChildren()
-          currentMemoryElement.appendChild(memory)
-          currentMemoryElement.removeAttribute(currentMemoryElement.getAttribute("unit"))
-          val unit2 = new Attribute("unit", "b")
-          currentMemoryElement.addAttribute(unit2)
 
           // look for the number of CPU
           val cpuOption = KevoreePropertyHelper.getStringPropertyForNode(iaasModel, nodeName, "CPU_CORE")
@@ -103,8 +106,9 @@ abstract class LibVirtKevoreeNodeRunner(nodeName: String, iaasNode: AbstractHost
           val interfaceElements: Nodes = doc.query("/domain/devices/interface")
           val nbInterfaces = interfaceElements.size()
           for (i <- 0 to nbInterfaces - 1) {
-            val macElement: Element = interfaceElements.get(i).asInstanceOf[Element].query("./mac").get(0).asInstanceOf[Element]
-            interfaceElements.get(i).asInstanceOf[Element].removeChild(macElement)
+
+            val macElement = interfaceElements.get(i).asInstanceOf[Element].query("./mac")//
+
           }
 
           // TODO look for the type of the architecture

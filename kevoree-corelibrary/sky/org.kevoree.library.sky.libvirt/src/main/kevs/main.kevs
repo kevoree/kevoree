@@ -21,3 +21,6 @@ bind webServer.response@node0 => responseChannel
 bind iaasPage.content@node0 => responseChannel
 bind iaasManager.submit@node0 => iaasDelegateChannel
 bind iaasPage.delegate@node0 => iaasDelegateChannel
+
+addNode worker1 : JavaSENode
+addChild worker1@node0
