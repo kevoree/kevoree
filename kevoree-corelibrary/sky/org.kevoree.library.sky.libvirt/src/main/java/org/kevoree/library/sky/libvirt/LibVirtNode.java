@@ -38,13 +38,14 @@ public abstract class LibVirtNode extends AbstractIaaSNode {
 	@Override
 	public void startNode () {
 		super.startNode();
+        /*
 		timer = new Timer();
 		timer.schedule(new TimerTask() {
 			@Override
 			public void run () {
 				synchronizeWithLibVirt();
 			}
-		}, 60000);
+		}, 60000); */
 		initialization = true;
 	}
 
@@ -81,12 +82,11 @@ public abstract class LibVirtNode extends AbstractIaaSNode {
 			} catch (Throwable e) {
 				logger.debug("Unable to get the domain's configuration or the network configuration of the libvirt node {}", getName(), e);
 			}
-			synchronizeWithLibVirt();
 			initialization = false;
 		}
 	}
 
-
+       /*
 	public void synchronizeWithLibVirt () {
 		try {
 			if (connection != null) {
@@ -107,5 +107,5 @@ public abstract class LibVirtNode extends AbstractIaaSNode {
 		} catch (Throwable e) {
 			logger.debug("Unable to get the domain's configuration or the network configuration of the libvirt node {}", getName(), e);
 		}
-	}
+	}   */
 }
