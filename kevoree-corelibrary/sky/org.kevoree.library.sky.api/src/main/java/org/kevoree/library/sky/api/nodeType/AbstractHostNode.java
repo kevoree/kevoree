@@ -22,19 +22,13 @@ import org.slf4j.LoggerFactory;
  */
 
 @DictionaryType({
-//		@DictionaryAttribute(name = "port", defaultValue = "7000", optional = false)      ,
         @DictionaryAttribute(name = "role", defaultValue = "host/container", vals = {"host", "container", "host/container"}, optional = true),
 		@DictionaryAttribute(name = "log_folder", defaultValue = "/tmp", optional = true)
 })
 @NodeFragment
 public abstract class AbstractHostNode extends JavaSENode implements HostNode {
 	private static final Logger logger = LoggerFactory.getLogger(AbstractHostNode.class);
-
-
-//	private IaaSHTTPServer server;
-
 	private KevoreeNodeManager nodeManager;
-
 	public abstract KevoreeNodeRunner createKevoreeNodeRunner (String nodeName);
 
 	public KevoreeNodeManager getNodeManager () {
@@ -46,23 +40,14 @@ public abstract class AbstractHostNode extends JavaSENode implements HostNode {
 	public void startNode () {
 		super.startNode();
 		nodeManager = new KevoreeNodeManager(this);
-//		nodeManager.start();
-		// start HTTP Server
-//		server = new IaaSHTTPServer(this);
-//		String port = (String) this.getDictionary().get("port");
-//		int portInt = Integer.parseInt(port);
-//		server.startServer(portInt);
-//		logger.info("IaaS node started , web console : http://localhost:{}", portInt);
 	}
 
 	@Stop
 	@Override
 	public void stopNode () {
 		logger.debug("stopping node type of " + this.getNodeName());
-//		server.stopServer();
 		nodeManager.stop();
 		super.stopNode();
-//        server.close(Duration.apply(300, TimeUnit.MILLISECONDS));
 	}
 
 	public boolean isHost () {
