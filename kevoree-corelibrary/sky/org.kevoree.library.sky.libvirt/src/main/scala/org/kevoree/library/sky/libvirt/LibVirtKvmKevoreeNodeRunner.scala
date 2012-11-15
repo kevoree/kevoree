@@ -5,6 +5,9 @@ import org.libvirt.Connect
 import org.slf4j.LoggerFactory
 import org.kevoree.library.sky.api.ProcessStreamFileLogger
 import java.io.File
+import nu.xom.{Document, Attribute, Element, Builder}
+import org.kevoree.framework.KevoreePropertyHelper
+import org.kevoree.ContainerRoot
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -16,6 +19,52 @@ import java.io.File
  */
 class LibVirtKvmKevoreeNodeRunner (nodeName: String, iaasNode: AbstractHostNode, conn: Connect) extends LibVirtKevoreeNodeRunner(nodeName, iaasNode, conn) {
   private val logger = LoggerFactory.getLogger(this.getClass)
+
+  def createXMLDomain(iaasModel: ContainerRoot, childBootStrapModel: ContainerRoot) : Document = {
+
+    val domain = conn.domainLookupByName(iaasNode.getDictionary.get("defaultdomain").toString)
+    val parser: Builder = new Builder
+    val doc = parser.build(domain.getXMLDesc(0), null)
+
+    // look for the hard drive disk, check if it is already in use and clone it if needed
+    val diskOption = KevoreePropertyHelper.getStringPropertyForNode(iaasModel, nodeName, "DISK")
+    val defaultDisk = iaasNode.getDictionary.get("default_DISK")
+    var disk = ""
+    if (defaultDisk != null) {
+      disk = defaultDisk.toString
+    }
+    if (diskOption.isDefined) {
+      disk = diskOption.get
+    }
+    val sourceElement: Element = doc.query("/domain/devices/disk/source").get(0).asInstanceOf[Element]
+    // clone the disk if needed
+    val copyModeOption = KevoreePropertyHelper.getStringPropertyForNode(iaasModel, nodeName, "COPY_MODE")
+    val defaultCopyMode = iaasNode.getDictionary.get("default_COPY_MODE")
+    var copyMode = ""
+    if (defaultCopyMode != null) {
+      copyMode = defaultCopyMode.toString
+    }
+    if (copyModeOption.isDefined) {
+      copyMode = copyModeOption.get
+    }
+    var pursue = true
+    if (copyMode != "as_is") {
+      val newDiskPath = disk.substring(0, disk.lastIndexOf(".")) + nodeName + disk.substring(disk.lastIndexOf("."))
+      pursue = cloneDisk(disk, newDiskPath, copyMode)
+      disk = newDiskPath
+    }
+
+    if (pursue) {
+      sourceElement.removeAttribute(sourceElement.getAttribute("file"))
+      val fileAttribute: Attribute = new Attribute("file", disk)
+      sourceElement.addAttribute(fileAttribute)
+      true
+    } else {
+      logger.error("Unable to start the VM because the disk cannot be defined correctly")
+      false
+    }
+    doc
+  }
 
   // maybe this must be defined before to be sent to the node (by the manager)
   def cloneDisk (diskPath: String, newDiskPath: String, copyMode: String): Boolean = {

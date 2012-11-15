@@ -4,8 +4,6 @@ import nu.xom.Builder;
 import nu.xom.Document;
 import nu.xom.Element;
 import nu.xom.Nodes;
-import org.kevoree.annotation.DictionaryAttribute;
-import org.kevoree.annotation.DictionaryType;
 import org.kevoree.annotation.Library;
 import org.kevoree.annotation.NodeFragment;
 import org.kevoree.api.service.core.script.KevScriptEngine;
@@ -30,11 +28,6 @@ import java.util.TimerTask;
  */
 @Library(name = "SKY")
 @NodeFragment
-@DictionaryType({
-		@DictionaryAttribute(name = "default_DISK", optional = false),
-		@DictionaryAttribute(name = "default_COPY_MODE", vals = {"base", "clone", "as_is"}, optional = false),
-		@DictionaryAttribute(name = "defaultdomain", defaultValue = "debian", optional = false)
-})
 public abstract class LibVirtNode extends AbstractIaaSNode {
 	private static final Logger logger = LoggerFactory.getLogger(LibVirtNode.class);
 	Connect connection;

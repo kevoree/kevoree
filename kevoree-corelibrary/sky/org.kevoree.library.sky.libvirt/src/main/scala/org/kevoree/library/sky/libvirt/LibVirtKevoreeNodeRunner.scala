@@ -18,15 +18,22 @@ import org.kevoree.library.sky.api.property.PropertyConversionHelper
  * @author Erwan Daubert
  * @version 1.0
  */
-abstract class LibVirtKevoreeNodeRunner (nodeName: String, iaasNode: AbstractHostNode, conn: Connect) extends KevoreeNodeRunner(nodeName) {
+abstract class LibVirtKevoreeNodeRunner(nodeName: String, iaasNode: AbstractHostNode, conn: Connect) extends KevoreeNodeRunner(nodeName) {
   private val logger = LoggerFactory.getLogger(this.getClass)
 
   private var nodeDomain: Domain = null
 
 
-  def cloneDisk (distPath: String, newDiskPath: String, copy_mode: String): Boolean
+  def createXMLDomain(iaasModel: ContainerRoot, childBootStrapModel: ContainerRoot): Document
 
-  def startNode (iaasModel: ContainerRoot, childBootStrapModel: ContainerRoot) = {
+  /*
+  def createXMLDomain(): Document = {
+    val domain = conn.domainLookupByName(iaasNode.getDictionary.get("defaultdomain").toString)
+    val parser: Builder = new Builder
+    parser.build(domain.getXMLDesc(0), null)
+  } */
+
+  def startNode(iaasModel: ContainerRoot, childBootStrapModel: ContainerRoot) = {
     logger.debug("Starting " + nodeName)
     // look at the already defined domain to see if the domain is already defined but not started
     try {
@@ -35,8 +42,8 @@ abstract class LibVirtKevoreeNodeRunner (nodeName: String, iaasNode: AbstractHos
         domain.create()
         true
       } else if (domain.isActive == 1) {
-        logger.debug("The VM '{}' is already defined and is running ", nodeName)
-        true
+        logger.error("The VM '{}' is already defined and is running ", nodeName)
+        false
       } else {
         logger.error("A VM is already defined with the same name ({}) and is running or not available (libvirt isActive code = {})", nodeName, domain.isActive)
         false
@@ -44,11 +51,8 @@ abstract class LibVirtKevoreeNodeRunner (nodeName: String, iaasNode: AbstractHos
     } catch {
       case e: LibvirtException => {
         try {
-          val domain = conn.domainLookupByName(iaasNode.getDictionary.get("defaultdomain").toString)
 
-          val parser: Builder = new Builder
-          val doc: Document = parser.build(domain.getXMLDesc(0), null)
-
+          val doc: Document = createXMLDomain(iaasModel,childBootStrapModel)
           val nameElement: Element = doc.query("/domain/name").get(0).asInstanceOf[Element]
           nameElement.removeChildren()
           nameElement.appendChild(nodeName)
@@ -56,7 +60,6 @@ abstract class LibVirtKevoreeNodeRunner (nodeName: String, iaasNode: AbstractHos
           val uuidElement: Element = doc.query("/domain/uuid").get(0).asInstanceOf[Element]
           uuidElement.removeChildren()
           uuidElement.appendChild(UUID.randomUUID.toString)
-
 
           //look for the amount of memory
           val memoryOption = KevoreePropertyHelper.getStringPropertyForNode(iaasModel, nodeName, "RAM")
@@ -104,7 +107,6 @@ abstract class LibVirtKevoreeNodeRunner (nodeName: String, iaasNode: AbstractHos
             interfaceElements.get(i).asInstanceOf[Element].removeChild(macElement)
           }
 
-
           // TODO look for the type of the architecture
           /*val arch = "i686"
                       val typeElement: Element = doc.query("/domain/os/type").get(0).asInstanceOf[Element]
@@ -112,48 +114,11 @@ abstract class LibVirtKevoreeNodeRunner (nodeName: String, iaasNode: AbstractHos
                       val archAttribute: Attribute = new Attribute("arch", arch)
                       typeElement.addAttribute(archAttribute)*/
 
-          // look for the hard drive disk, check if it is already in use and clone it if needed
-          val diskOption = KevoreePropertyHelper.getStringPropertyForNode(iaasModel, nodeName, "DISK")
-          val defaultDisk = iaasNode.getDictionary.get("default_DISK")
-          var disk = ""
-          if (defaultDisk != null) {
-            disk = defaultDisk.toString
-          }
-          if (diskOption.isDefined) {
-            disk = diskOption.get
-          }
-          val sourceElement: Element = doc.query("/domain/devices/disk/source").get(0).asInstanceOf[Element]
-          // clone the disk if needed
-          val copyModeOption = KevoreePropertyHelper.getStringPropertyForNode(iaasModel, nodeName, "COPY_MODE")
-          val defaultCopyMode = iaasNode.getDictionary.get("default_COPY_MODE")
-          var copyMode = ""
-          if (defaultCopyMode != null) {
-            copyMode = defaultCopyMode.toString
-          }
-          if (copyModeOption.isDefined) {
-            copyMode = copyModeOption.get
-          }
-          var pursue = true
-          if (copyMode != "as_is") {
-            val newDiskPath = disk.substring(0, disk.lastIndexOf(".")) + nodeName + disk.substring(disk.lastIndexOf("."))
-            pursue = cloneDisk(disk, newDiskPath, copyMode)
-            disk = newDiskPath
-          }
-
-          if (pursue) {
-            sourceElement.removeAttribute(sourceElement.getAttribute("file"))
-            val fileAttribute: Attribute = new Attribute("file", disk)
-            sourceElement.addAttribute(fileAttribute)
-
-            nodeDomain = conn.domainDefineXML(doc.toXML)
-            createIP(conn, domain, iaasModel)
-            nodeDomain.create()
-            true
-          } else {
-            logger.error("Unable to start the VM because the disk cannot be defined correctly")
-            false
-          }
-
+          //Aplly and get modify version by libvirtd
+          nodeDomain = conn.domainDefineXML(doc.toXML)
+          createIP(conn, nodeDomain, iaasModel)
+          nodeDomain.create()
+          true
         } catch {
           case e: Throwable => logger.error("Unable to create or start the VM {}", nodeName, e); false
         }
@@ -161,7 +126,7 @@ abstract class LibVirtKevoreeNodeRunner (nodeName: String, iaasNode: AbstractHos
     }
   }
 
-  def stopNode () = {
+  def stopNode() = {
     if (nodeDomain != null && nodeDomain.isActive == 1) {
       try {
         nodeDomain.destroy()
@@ -174,7 +139,7 @@ abstract class LibVirtKevoreeNodeRunner (nodeName: String, iaasNode: AbstractHos
     }
   }
 
-  private def createIP (conn: Connect, domain: Domain, model: ContainerRoot) {
+  private def createIP(conn: Connect, domain: Domain, model: ContainerRoot) {
     try {
       val parser: Builder = new Builder
       val domainDoc: Document = parser.build(domain.getXMLDesc(0), null)

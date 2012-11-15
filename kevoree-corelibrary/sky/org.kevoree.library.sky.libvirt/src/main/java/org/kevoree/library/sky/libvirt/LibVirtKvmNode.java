@@ -1,8 +1,6 @@
 package org.kevoree.library.sky.libvirt;
 
-import org.kevoree.annotation.Library;
-import org.kevoree.annotation.NodeType;
-import org.kevoree.annotation.Start;
+import org.kevoree.annotation.*;
 import org.kevoree.library.sky.api.KevoreeNodeRunner;
 import org.libvirt.Connect;
 import org.libvirt.LibvirtException;
@@ -19,6 +17,11 @@ import org.slf4j.LoggerFactory;
  */
 @Library(name = "SKY")
 @NodeType
+@DictionaryType({
+        @DictionaryAttribute(name = "default_DISK", optional = false),
+        @DictionaryAttribute(name = "default_COPY_MODE", vals = {"base", "clone", "as_is"}, optional = false),
+        @DictionaryAttribute(name = "defaultdomain", defaultValue = "debian", optional = false)
+})
 public class LibVirtKvmNode extends LibVirtNode /*implements IaaSNodeWithDefaultValue*/ {
 	private static final Logger logger = LoggerFactory.getLogger(LibVirtKvmNode.class);
 
