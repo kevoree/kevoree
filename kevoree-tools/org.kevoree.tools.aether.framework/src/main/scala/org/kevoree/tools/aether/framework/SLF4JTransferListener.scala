@@ -35,7 +35,11 @@ class SLF4JTransferListener extends AbstractTransferListener{
 
   override def transferInitiated( event :TransferEvent ){
     val message = if(event.getRequestType() == TransferEvent.RequestType.PUT){ "Uploading" } else { "Downloading" }
-    logger.info(message + ": " + event.getResource().getRepositoryUrl() + event.getResource().getResourceName() )
+    if(event.getResource.getResourceName.endsWith("maven-metadata.xml")){
+      logger.debug(message + ": " + event.getResource().getRepositoryUrl() + event.getResource().getResourceName() )
+    } else {
+      logger.info(message + ": " + event.getResource().getRepositoryUrl() + event.getResource().getResourceName() )
+    }
   }
 
   override def transferProgressed( event : TransferEvent  )
@@ -110,8 +114,12 @@ class SLF4JTransferListener extends AbstractTransferListener{
         val kbPerSec = ( contentLength / 1024.0 ) / ( duration / 1000.0 );
         throughput = " at " + format.format( kbPerSec ) + " KB/sec";
       }
+      if(event.getResource.getResourceName.endsWith("maven-metadata.xml")){
+        logger.debug( `type` + ": " + resource.getRepositoryUrl() + resource.getResourceName() + " (" + len+ throughput + ")" );
+      } else {
+        logger.info( `type` + ": " + resource.getRepositoryUrl() + resource.getResourceName() + " (" + len+ throughput + ")" );
+      }
 
-      logger.info( `type` + ": " + resource.getRepositoryUrl() + resource.getResourceName() + " (" + len+ throughput + ")" );
     }
   }
 
