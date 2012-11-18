@@ -70,9 +70,6 @@ object AetherRepositoryStandalone {
     locator.setService(classOf[RepositoryCache], classOf[NoopCache])
     // locator.setService(classOf[LocalRepositoryManagerFactory], classOf[EnhancedLocalRepositoryManagerFactory])
     locator.setService(classOf[LocalRepositoryManagerFactory], classOf[SimpleLocalRepositoryManagerFactory])
-
-
-
     locator.setService(classOf[RepositoryConnectorFactory], classOf[FileRepositoryConnectorFactory])
     locator.setService(classOf[RepositoryConnectorFactory], classOf[AsyncRepositoryConnectorFactory])
     locator.getService(classOf[RepositorySystem])
@@ -107,6 +104,7 @@ object AetherRepositoryStandalone {
 
   def newRepositorySystemSession = {
     val session = new MavenRepositorySystemSession()
+    /*
     session.setTransferListener(new TransferListener() {
       def transferInitiated(p1: TransferEvent) {
         logger.debug("Transfert init for Artifact " + p1.getResource.getResourceName)
@@ -131,7 +129,8 @@ object AetherRepositoryStandalone {
       def transferFailed(p1: TransferEvent) {
         logger.debug("TransferFailed : " + p1.getResource.getResourceName)
       }
-    })
+    })  */
+    session.setTransferListener(new SLF4JTransferListener)
     session.setUpdatePolicy(RepositoryPolicy.UPDATE_POLICY_ALWAYS)
     session.setChecksumPolicy(RepositoryPolicy.CHECKSUM_POLICY_WARN)
     //session.setConfigProperty("aether.connector.ahc.provider", "jdk")

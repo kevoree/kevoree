@@ -69,9 +69,16 @@ object Tester extends App {
     nodes.foreach{ url =>
       println(url.text)
     }
-
-
   }
 
 
+
+  val handler = new JCLContextHandler
+ /* val du = KevoreeFactory.createDeployUnit
+  du.setGroupName("org.kevoree.corelibrary.javase")
+  du.setUnitName("org.kevoree.library.javase.grapher")
+  du.setVersion("1.8.9-SNPASHOT")            */
+  val kcl = AetherUtil.resolveKevoreeArtifact("org.kevoree.library.javase.grapher","org.kevoree.corelibrary.javase","1.8.9-SNAPSHOT")
+  println(kcl)
+ System.exit(0)
 }
