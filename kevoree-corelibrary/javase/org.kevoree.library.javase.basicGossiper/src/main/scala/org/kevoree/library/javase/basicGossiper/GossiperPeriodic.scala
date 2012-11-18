@@ -7,12 +7,6 @@ import org.kevoree.library.basicGossiper.protocol.gossip.Gossip.UpdatedValueNoti
 import java.net.InetSocketAddress
 
 
-/**
- * User: Erwan Daubert - erwan.daubert@gmail.com
- * Date: 12/09/11
- * Time: 10:24
- */
-
 class GossiperPeriodic(instance: GossiperComponent, timeout: Long, selector: PeerSelector, process: GossiperProcess) extends Actor {
 
   private val logger = LoggerFactory.getLogger(this.getClass.getName)

@@ -7,12 +7,6 @@ import org.slf4j.LoggerFactory
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService
 import org.kevoree.library.javase.basicGossiper.Serializer
 
-/**
- * User: Erwan Daubert
- * Date: 05/04/11
- * Time: 14:40
- */
-
 class GroupSerializer (modelService: KevoreeModelHandlerService) extends Serializer {
 
   private val logger = LoggerFactory.getLogger (classOf[GroupSerializer])

@@ -97,6 +97,14 @@ public class BasicGossiperGroup extends BasicGroup implements GossiperComponent 
         startGossiperGroup();
     }
 
+    protected AtomicReference<ContainerRoot> currentCacheModel = new AtomicReference<ContainerRoot>(KevoreeFactory.createContainerRoot());
+
+    @Override
+    public boolean afterLocalUpdate(ContainerRoot currentModel, ContainerRoot proposedModel) {
+        currentCacheModel.set(proposedModel);
+        return super.afterLocalUpdate(currentModel, proposedModel);
+    }
+
     @Override
     public String getAddress(String remoteNodeName) {
         Option<String> ipOption = NetworkHelper.getAccessibleIP(KevoreePropertyHelper
@@ -118,33 +126,12 @@ public class BasicGossiperGroup extends BasicGroup implements GossiperComponent 
         }
     }
 
-    private int parsePortNumber() {
-        String portProperty = this.getDictionary().get("gossip_port").toString();
-        try {
-            return Integer.parseInt(portProperty);
-        } catch (NumberFormatException e) {
-            logger.warn("Invalid value for port parameter for {} on {}", this.getName(), this.getNodeName());
-            return 0;
-        }
-    }
-
-    @Override
-    public Boolean parseBooleanProperty(String name) {
-        return this.getDictionary().get(name) != null && "true".equals(this.getDictionary().get(name).toString());
-    }
 
     @Override
     public void localNotification(Object data) {
         // NO OP
     }
 
-    private AtomicReference<ContainerRoot> currentCacheModel = new AtomicReference<ContainerRoot>(KevoreeFactory.createContainerRoot());
-
-    @Override
-    public boolean afterLocalUpdate(ContainerRoot currentModel, ContainerRoot proposedModel) {
-        currentCacheModel.set(proposedModel);
-        return super.afterLocalUpdate(currentModel, proposedModel);
-    }
 
     private void notifyPeersInternal(List<String> l) {
         KevoreeMessage.Message.Builder messageBuilder = KevoreeMessage.Message.newBuilder().setDestName(getName()).setDestNodeName(getNodeName());

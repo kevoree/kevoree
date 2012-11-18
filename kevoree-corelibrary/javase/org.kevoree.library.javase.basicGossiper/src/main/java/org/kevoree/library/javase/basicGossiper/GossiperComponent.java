@@ -8,8 +8,6 @@ public interface GossiperComponent {
 
 	public int parsePortNumber(String nodeName);
 
-	public Boolean parseBooleanProperty(String name);
-
 	public String getName();
 
 	public String getNodeName();

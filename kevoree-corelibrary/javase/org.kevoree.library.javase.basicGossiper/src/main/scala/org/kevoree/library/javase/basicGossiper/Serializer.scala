@@ -1,10 +1,5 @@
 package org.kevoree.library.javase.basicGossiper
 
-/**
- * User: Erwan Daubert
- * Date: 05/04/11
- * Time: 14:31
- */
 
 trait Serializer {
 
