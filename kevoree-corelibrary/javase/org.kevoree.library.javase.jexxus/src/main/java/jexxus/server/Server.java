@@ -201,7 +201,7 @@ public class Server {
 							conn = clients.get(senderIP);
 						}
 						if (conn == null) {
-							System.err.println("Received UDP Packet from unknown source: " + senderIP);
+							//System.err.println("Received UDP Packet from unknown source: " + senderIP);
                             listener.receive(ret, conn);
 						} else {
 							if (ret.length == 0) {

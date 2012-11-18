@@ -1,6 +1,7 @@
 package org.kevoree.library;
 
 import jexxus.client.ClientConnection;
+import jexxus.client.UniClientConnection;
 import jexxus.common.Connection;
 import jexxus.common.ConnectionListener;
 import jexxus.common.Delivery;
@@ -18,44 +19,53 @@ import java.util.concurrent.Exchanger;
  * Date: 07/11/12
  * Time: 18:01
  */
-public class TesterGet {
+public class TesterGet implements Runnable {
+
+    int i = 0;
+
+    public TesterGet setI(int _i){
+       i = _i;
+        return this;
+    }
 
     public static void main(String[] args) throws IOException, InterruptedException {
 
-        final Exchanger<ContainerRoot> exchanger = new Exchanger<ContainerRoot>();
-
-        final ClientConnection[] conns = new ClientConnection[1];
-        conns[0] = new ClientConnection(new ConnectionListener() {
-            @Override
-            public void connectionBroken(Connection broken, boolean forced) {
-                System.out.println("ConnectionBroken");
-            }
-
-            @Override
-            public void receive(byte[] data, Connection from) {
-                ByteArrayInputStream inputStream = new ByteArrayInputStream(data);
-                final ContainerRoot root = KevoreeXmiHelper.loadCompressedStream(inputStream);
-                try {
-                    exchanger.exchange(root);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                System.out.println(KevoreeXmiHelper.saveToString(root, true));
-                conns[0].close();
-            }
-
-            @Override
-            public void clientConnected(ServerConnection conn) {
-                System.out.println("Connected");
-            }
-
-        }, "localhost", 8000, true);
-        conns[0].connect();
-        byte[] data = new byte[1];
-        data[0] = 0;
-        conns[0].send(data, Delivery.RELIABLE);
-        ContainerRoot rec = exchanger.exchange(null);
-        System.out.println(KevoreeXmiHelper.saveToString(rec, true));
+        for (int i = 0; i < 10; i++) {
+             new Thread(new TesterGet().setI(i)){}.start();
+        }
     }
 
+    @Override
+    public void run() {
+        try {
+            final Exchanger<ContainerRoot> exchanger = new Exchanger<ContainerRoot>();
+
+            final UniClientConnection[] conns = new UniClientConnection[1];
+            conns[0] = new UniClientConnection(new ConnectionListener() {
+                @Override
+                public void connectionBroken(Connection broken, boolean forced) {
+                    System.out.println("ConnectionBroken");
+                }
+
+                @Override
+                public void receive(byte[] data, Connection from) {
+                }
+
+                @Override
+                public void clientConnected(ServerConnection conn) {
+                    System.out.println("Connected");
+                }
+
+            }, "localhost", 15652, true);
+            conns[0].connect();
+            byte[] data = new byte[10];
+            data = ("HelloFrom="+i).getBytes();
+            conns[0].send(data, Delivery.RELIABLE);
+            //   ContainerRoot rec = exchanger.exchange(null);
+            //  System.out.println(KevoreeXmiHelper.saveToString(rec, true));
+            conns[0].close();
+
+        }catch(Exception e){
+            e.printStackTrace();
+        }    }
 }

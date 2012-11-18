@@ -14,8 +14,8 @@ import org.kevoree.framework.{KevoreeXmiHelper, FileNIOHelper}
 import java.io.{File, ByteArrayOutputStream, ByteArrayInputStream}
 import org.kevoree.library.basicGossiper.protocol.version.Version.{ClockEntry, VectorClock}
 
-class DataManagerForGroup (nameInstance: String, selfNodeName: String, modelService: KevoreeModelHandlerService, merge: Boolean)
-  extends DataManager with actors.Actor {
+class DataManagerForGroup(nameInstance: String, selfNodeName: String, modelService: KevoreeModelHandlerService, merge: Boolean)
+  extends DataManager {
 
   private val mergerComponent = new KevoreeMergerComponent();
   private var lastCheckedTimeStamp = new Date(0l)
@@ -28,139 +28,64 @@ class DataManagerForGroup (nameInstance: String, selfNodeName: String, modelServ
     .build
   private val logger = LoggerFactory.getLogger(classOf[DataManagerForGroup])
 
-  case class GetData (uuid: UUID)
-
-  case class SetData (uuid: UUID, tuple: (VectorClock, Any), source: String)
-
-  case class RemoveData (uuid: UUID, tuple: (VectorClock, Any))
-
-  case class GetUUIDVectorClock (uuid: UUID)
-
-  case class GetUUIDVectorClocks ()
-
-  case class Stop ()
-
-  def stop () {
-    this ! Stop()
-  }
-
-  def getData (uuid: UUID): (VectorClock, Any) = {
+  def getData(uuid: UUID): (VectorClock, Any) = {
     logger.debug("getData")
-    val result = (this !? GetData(uuid)).asInstanceOf[(VectorClock, Any)]
+    val result = if (uuid.equals(this.uuid)) {
+      if ((vectorClock.getEntiesCount == 0) || modelService.getLastModification.after(lastCheckedTimeStamp)) {
+        setVectorClock(increment())
+      }
+      new Tuple2[VectorClock, ContainerRoot](vectorClock, modelService.getLastModel)
+    } else {
+      null
+    }
     logger.debug("getData end")
     result
   }
 
-  def setData (uuid: UUID, tuple: (VectorClock, Any), source: String): Boolean = {
-    (this !? SetData(uuid, tuple, source)).asInstanceOf[Boolean]
+  def setData(uuid: UUID, tuple: (VectorClock, Any), source: String): Boolean = {
+    if (uuid.equals(this.uuid) && tuple._2 != null && tuple._2.isInstanceOf[ContainerRoot]) {
+      updateOrResolve(tuple.asInstanceOf[(VectorClock, ContainerRoot)], source)
+      true
+    } else {
+      false
+    }
   }
 
-  def checkForGarbage (uuids: List[UUID], source: String) {}
+  def checkForGarbage(uuids: List[UUID], source: String) {}
 
-  def removeData (uuid: UUID, tuple: (VectorClock, Any)) {}
+  def removeData(uuid: UUID, tuple: (VectorClock, Any)) {}
 
-  def getUUIDVectorClock (uuid: UUID): VectorClock = {
+  def getUUIDVectorClock(uuid: UUID): VectorClock = {
     logger.debug("getUUIDVectorClock")
-    val result = (this !? GetUUIDVectorClock(uuid)).asInstanceOf[VectorClock]
+    val result = {
+      if ((vectorClock.getEntiesCount == 0) || modelService.getLastModification.after(lastCheckedTimeStamp)) {
+        setVectorClock(increment())
+      }
+      getUUIDVectorClockFromUUID(uuid)
+    }
     logger.debug("getUUIDVectorClock end")
     result
   }
 
   def getUUIDVectorClocks: java.util.Map[UUID, VectorClock] = {
     logger.debug("getUUIDVectorClocks")
-    val result = (this !? GetUUIDVectorClocks()).asInstanceOf[java.util.Map[UUID, VectorClock]]
+    val result = {if ((vectorClock.getEntiesCount == 0) || modelService.getLastModification.after(lastCheckedTimeStamp)) {
+      setVectorClock(increment())
+    }
+    getAllUUIDVectorClocks }
     logger.debug("getUUIDVectorClocks end")
     result
   }
 
   protected var lastNodeSynchronization: String = selfNodeName
-  /*def mergeClock (uid: UUID, v: VectorClock, source : String): VectorClock = {
-    logger.debug ("mergeClock")
-    val result = (this !? MergeClock (uid, v, source)).asInstanceOf[VectorClock]
-    logger.debug ("mergeClock end")
-    result
-  }*/
 
-  protected def setVectorClock (vc: VectorClock) {
+  protected def setVectorClock(vc: VectorClock) {
     vectorClock = vc
   }
 
-  def act () {
-    loop {
-      react {
-        case Stop() => this.exit()
-        case GetData(uuid) => {
-          if (uuid.equals(this.uuid)) {
-            if ((vectorClock.getEntiesCount == 0) || modelService.getLastModification.after(lastCheckedTimeStamp)) {
-              setVectorClock(increment())
-            }
-            val tuple = new Tuple2[VectorClock, ContainerRoot](vectorClock, modelService.getLastModel)
-            reply(tuple)
-          } else {
-            reply(null)
-          }
-        }
-        case SetData(uuid, tuple, source) => {
-          if (uuid.equals(this.uuid) && tuple._2 != null && tuple._2.isInstanceOf[ContainerRoot]) {
-            updateOrResolve(tuple.asInstanceOf[(VectorClock, ContainerRoot)], source)
-            reply(true)
-          } else {
-            reply(false)
-          }
-        }
-        case GetUUIDVectorClock(uuid) => {
-          if ((vectorClock.getEntiesCount == 0) || modelService.getLastModification.after(lastCheckedTimeStamp)) {
-            setVectorClock(increment())
-          }
-          //setVectorClock(increment())
-          reply(getUUIDVectorClockFromUUID(uuid))
-        }
-        case GetUUIDVectorClocks() => {
-          if ((vectorClock.getEntiesCount == 0) || modelService.getLastModification.after(lastCheckedTimeStamp)) {
-            setVectorClock(increment())
-          }
-          //setVectorClock(increment())
-          reply(getAllUUIDVectorClocks)
-        }
-        /*case MergeClock (uuid, newClock, source) => {
-          /*println("localClock")
-          vectorClock.getEntiesList.foreach {
-            v => println(v.getNodeID + "\t" + v.getVersion + "\t" + v.getTimestamp)
-          }
-          println("newClock")
-          newClock.getEntiesList.foreach {
-            v => println(v.getNodeID + "\t" + v.getVersion + "\t" + v.getTimestamp)
-          }*/
-          lastNodeSynchronization = source
-          val mergedVC = localMerge (newClock)
-          /*println("merged clock")
-          mergedVC.getEntiesList.foreach {
-            v => println(v.getNodeID + "\t" + v.getVersion + "\t" + v.getTimestamp)
-          }*/
-          setVectorClock (mergedVC)
-          reply (mergedVC)
-        }*/
-        //        case RemoveData (uuid) => // We do nothing because the model cannot be deleted
-      }
-    }
-  }
+  implicit def vectorDebug(vc: VectorClock) = VectorClockAspect(vc)
 
-  /*private def stringFromModel(): Array[Byte] = {
-   val out = new ByteArrayOutputStream
-   KevoreeXmiHelper.saveStream(out, modelService.getLastModel)
-   out.flush
-   val bytes = out.toByteArray
-   out.close
-   bytes
- }
-
- private def modelFromString(model: Array[Byte]): ContainerRoot = {
-   val stream = new ByteArrayInputStream(model)
-   KevoreeXmiHelper.loadStream(stream)
- }*/
-  implicit def vectorDebug (vc: VectorClock) = VectorClockAspect(vc)
-
-  private def updateOrResolve (tuple: (VectorClock, ContainerRoot), source: String) {
+  private def updateOrResolve(tuple: (VectorClock, ContainerRoot), source: String) {
     vectorClock.printDebug()
     tuple._1.printDebug()
     val occured = VersionUtils.compare(vectorClock, tuple._1)
@@ -178,7 +103,8 @@ class DataManagerForGroup (nameInstance: String, selfNodeName: String, modelServ
         logger.debug("VectorClocks comparison into DataManager give us: CONCURRENTLY")
         val localDate = new Date(vectorClock.getTimestamp)
         val remoteDate = new Date(tuple._1.getTimestamp)
-        if (merge) { // TODO need to be tested
+        if (merge) {
+          // TODO need to be tested
           logger.debug("merge local and remote model due to concurrency")
           updateModelOrHaraKiri(mergerComponent.merge(modelService.getLastModel, tuple._2))
           lastNodeSynchronization = source
@@ -203,7 +129,7 @@ class DataManagerForGroup (nameInstance: String, selfNodeName: String, modelServ
     }
   }
 
-  private def updateModelOrHaraKiri (newmodel: ContainerRoot) {
+  private def updateModelOrHaraKiri(newmodel: ContainerRoot) {
     if (GroupUtils.detectHaraKiri(newmodel, modelService.getLastModel, nameInstance, selfNodeName)) {
       modelService.updateModel(newmodel)
       lastCheckedTimeStamp = modelService.getLastModification
@@ -212,7 +138,7 @@ class DataManagerForGroup (nameInstance: String, selfNodeName: String, modelServ
     }
   }
 
-  private def increment (): VectorClock = {
+  private def increment(): VectorClock = {
     logger.debug("Increment")
     val currentTimeStamp = System.currentTimeMillis
     val incrementedEntries = new java.util.ArrayList[ClockEntry]
@@ -243,7 +169,7 @@ class DataManagerForGroup (nameInstance: String, selfNodeName: String, modelServ
     VectorClock.newBuilder().addAllEnties(incrementedEntries).setTimestamp(currentTimeStamp).build()
   }
 
-  private def getUUIDVectorClockFromUUID (uuid: UUID): VectorClock = {
+  private def getUUIDVectorClockFromUUID(uuid: UUID): VectorClock = {
     if (uuid.equals(this.uuid)) {
       vectorClock
     } else {
@@ -257,7 +183,7 @@ class DataManagerForGroup (nameInstance: String, selfNodeName: String, modelServ
     uuidVectorClocks
   }
 
-  private def localMerge (clock2: VectorClock): VectorClock = {
+  private def localMerge(clock2: VectorClock): VectorClock = {
 
     val newClockBuilder = VectorClock.newBuilder();
     val clock = vectorClock
@@ -329,8 +255,8 @@ class DataManagerForGroup (nameInstance: String, selfNodeName: String, modelServ
     newClockBuilder.setTimestamp(currentTimeMillis).build();
   }
 
-  private def addOrUpdate (orderedNodeID: java.util.ArrayList[String], values: java.util.HashMap[String, Int],
-    /*timestamps: java.util.HashMap[String, Long],*/ clockEntry: ClockEntry, currentTimeMillis: Long) {
+  private def addOrUpdate(orderedNodeID: java.util.ArrayList[String], values: java.util.HashMap[String, Int],
+                          /*timestamps: java.util.HashMap[String, Long],*/ clockEntry: ClockEntry, currentTimeMillis: Long) {
     if (!orderedNodeID.contains(clockEntry.getNodeID)) {
       orderedNodeID.add(clockEntry.getNodeID);
       values.put(clockEntry.getNodeID, clockEntry.getVersion);

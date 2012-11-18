@@ -14,16 +14,18 @@ import org.kevoree.library.javase.NetworkSender
 import scala.Some
 import scala.Tuple2
 
-class GossiperProcess(instance: GossiperComponent, alwaysAskData: Boolean, sender: NetworkSender,
+class GossiperProcess(instance: GossiperComponent,
                       dataManager: DataManager, serializer: Serializer, doGarbage: Boolean) extends Actor {
 
   implicit def vectorDebug(vc: VectorClock) = VectorClockAspect(vc)
 
+  val netSender = new NetworkSender(this)
+
+
+
   private val logger = LoggerFactory.getLogger(classOf[GossiperProcess])
 
   case class STOP()
-
-  case class NOTIFY_PEERS()
 
   case class INIT_GOSSIP(peer: String)
 
@@ -31,10 +33,6 @@ class GossiperProcess(instance: GossiperComponent, alwaysAskData: Boolean, sende
 
   def stop() {
     this ! STOP()
-  }
-
-  def notifyPeers() {
-    this ! NOTIFY_PEERS()
   }
 
   def initGossip(peer: String) {
@@ -60,10 +58,9 @@ class GossiperProcess(instance: GossiperComponent, alwaysAskData: Boolean, sende
     loop {
       react {
         case STOP() => stopInternal()
-        case NOTIFY_PEERS() => notifyPeersInternal()
         case INIT_GOSSIP(peer) => {
           val inetAddress = new InetSocketAddress(instance.getAddress(peer), instance.parsePortNumber(peer))
-          sender.sendMessageUnreliable(createVectorClockUUIDsRequest(), inetAddress)
+          netSender.sendMessage(createVectorClockUUIDsRequest(), inetAddress)
         }
         case RECEIVE_REQUEST(message) => {
           message.getContentClass match {
@@ -71,7 +68,7 @@ class GossiperProcess(instance: GossiperComponent, alwaysAskData: Boolean, sende
               endGossipInternal(message)
             }
             case VectorClockUUIDsClazz => {
-              processMetadataInternal(VectorClockUUIDs.parseFrom(message.getContent),message)
+              processMetadataInternal(VectorClockUUIDs.parseFrom(message.getContent), message)
             }
             case UpdatedValueNotificationClazz => {
               logger.debug("notification received from " + message.getDestNodeName)
@@ -79,10 +76,10 @@ class GossiperProcess(instance: GossiperComponent, alwaysAskData: Boolean, sende
             }
             case UUIDDataRequestClazz => {
               logger.debug("UUIDDataRequest received")
-              sender.sendMessage(buildData(message), buildAddr(message))
+              netSender.sendMessage(buildData(message), buildAddr(message))
             }
             case VectorClockUUIDsRequestClazz => {
-              sender.sendMessage(buildVectorClockUUIDs(message), buildAddr(message))
+              netSender.sendMessage(buildVectorClockUUIDs(message), buildAddr(message))
             }
           }
         }
@@ -94,25 +91,12 @@ class GossiperProcess(instance: GossiperComponent, alwaysAskData: Boolean, sende
     this.exit()
   }
 
-  private def notifyPeersInternal() {
-    instance.getAllPeers.foreach {
-      peer =>
-        if (!peer.equals(instance.getNodeName)) {
-          logger.debug("send notification to " + peer)
-          val messageBuilder: Message.Builder = Message.newBuilder.setDestName(instance.getName).setDestNodeName(instance.getNodeName)
-          messageBuilder.setContentClass(classOf[UpdatedValueNotification].getName).setContent(UpdatedValueNotification.newBuilder.build.toByteString)
-          val address = instance.getAddress(peer)
-          sender.sendMessageUnreliable(messageBuilder.build, new InetSocketAddress(address, instance.parsePortNumber(peer)))
-        }
-    }
-  }
-
   private def createVectorClockUUIDsRequest(): Message = {
     val messageBuilder: Message.Builder = Message.newBuilder.setDestName(instance.getName).setDestNodeName(instance.getNodeName)
     messageBuilder.setContentClass(classOf[VectorClockUUIDsRequest].getName).setContent(VectorClockUUIDsRequest.newBuilder.build.toByteString).build()
   }
 
-  private def processMetadataInternal(remoteVectorClockUUIDs: VectorClockUUIDs,message:Message) {
+  private def processMetadataInternal(remoteVectorClockUUIDs: VectorClockUUIDs, message: Message) {
     if (remoteVectorClockUUIDs != null) {
       /* check for new uuid values*/
       remoteVectorClockUUIDs.getVectorClockUUIDsList.foreach {
@@ -194,7 +178,7 @@ class GossiperProcess(instance: GossiperComponent, alwaysAskData: Boolean, sende
       .setDestName(instance.getName).setDestNodeName(instance.getNodeName)
       .setContentClass(classOf[UUIDDataRequest].getName)
       .setContent(UUIDDataRequest.newBuilder.setUuid(uuid.toString).build.toByteString)
-    sender.sendMessageUnreliable(messageBuilder.build, address)
+    netSender.sendMessage(messageBuilder.build, address)
   }
 
   private def buildData(message: Message): Message = {

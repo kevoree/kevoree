@@ -43,7 +43,7 @@ public class BasicGroup extends AbstractGroupType implements ConnectionListener 
     private final byte getModel = 0;
     private final byte pushModel = 1;
 
-    private Server server = null;
+    protected Server server = null;
     private boolean starting;
     protected boolean udp = false;
 
@@ -65,6 +65,17 @@ public class BasicGroup extends AbstractGroupType implements ConnectionListener 
     @Stop
     public void stopRestGroup() {
         server.shutdown();
+    }
+
+
+    protected void locaUpdateModel(final ContainerRoot modelOption){
+        new Thread() {
+            public void run() {
+                getModelService().unregisterModelListener(BasicGroup.this);
+                getModelService().atomicUpdateModel(modelOption);
+                getModelService().registerModelListener(BasicGroup.this);
+            }
+        }.start();
     }
 
     @Override
@@ -196,14 +207,8 @@ public class BasicGroup extends AbstractGroupType implements ConnectionListener 
                         ByteArrayInputStream inputStream = new ByteArrayInputStream(data);
                         inputStream.read();
                         final ContainerRoot root = KevoreeXmiHelper.loadCompressedStream(inputStream);
-                        new Thread() {
-                            public void run() {
-                                getModelService().unregisterModelListener(BasicGroup.this);
-                                getModelService().atomicUpdateModel(root);
-                                getModelService().registerModelListener(BasicGroup.this);
-                            }
-                        }.start();
-                        from.close();
+                        locaUpdateModel(root);
+                        //from.close();
                     } break;
                     default : externalProcess(data,from);
                 }
@@ -215,7 +220,7 @@ public class BasicGroup extends AbstractGroupType implements ConnectionListener 
     }
 
     protected void externalProcess(byte[] data, Connection from){
-        from.close();
+        //from.close();
     }
 
 

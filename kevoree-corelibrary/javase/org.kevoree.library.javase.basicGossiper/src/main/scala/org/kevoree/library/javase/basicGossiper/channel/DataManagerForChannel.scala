@@ -103,8 +103,10 @@ class DataManagerForChannel (instance: GossiperComponent, nodeName: String)
 
   private def garbage (uuid: UUID, tuple: (VectorClock, Message)): Boolean = {
     //CHECK FOR GARBAGE
+    /*
     if (tuple._1.getEnties(0).getNodeID.equals(instance.getNodeName)) {
-      val allPresent = instance.getAllPeers.forall(peer => {
+
+      val allPresent = instance.cacheModel.forall(peer => {
         tuple._1.getEntiesList.exists(e => e.getNodeID.equals(peer) && e.getVersion > 0)
       })
       if (allPresent) {
@@ -122,7 +124,8 @@ class DataManagerForChannel (instance: GossiperComponent, nodeName: String)
       }
     } else {
       false
-    }
+    }*/
+    true
   }
 
   private def checkForGarbageInternal (uuids: List[UUID], source: String) {
