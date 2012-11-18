@@ -15,7 +15,7 @@ import java.io.{File, ByteArrayOutputStream, ByteArrayInputStream}
 import org.kevoree.library.basicGossiper.protocol.version.Version.{ClockEntry, VectorClock}
 import org.kevoree.library.javase.conflictSolver.ConflictSolver
 
-class DataManagerForGroup(nameInstance: String, selfNodeName: String, modelService: KevoreeModelHandlerService, merge: Boolean, solver : ConflictSolver)
+class DataManagerForGroup(nameInstance: String, selfNodeName: String, modelService: KevoreeModelHandlerService, solver : ConflictSolver)
   extends DataManager {
 
   private var lastCheckedTimeStamp = new Date(0l)
