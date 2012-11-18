@@ -105,10 +105,8 @@ trait AetherFramework extends TempFileCacheManager with AetherRepositoryHandler 
     val artifactRequest = new ArtifactRequest
     artifactRequest.setArtifact(artifact)
     val repositories: java.util.List[RemoteRepository] = new java.util.ArrayList()
-
     populate(repositoriesUrl)
     populate(getDefaultURLS)
-
     def populate(rurl: java.util.List[String]){
       rurl.foreach {
         repository =>
@@ -157,9 +155,6 @@ trait AetherFramework extends TempFileCacheManager with AetherRepositoryHandler 
     } else {
       urls = buildPotentialMavenURL(du.eContainer.asInstanceOf[ContainerRoot])
     }
-    // urls = urls ++ getDefaultURLS
-
-    //  val urls = buildPotentialMavenURL(du.eContainer.asInstanceOf[ContainerRoot])
 
     val repositories: java.util.List[RemoteRepository] = new java.util.ArrayList()
     urls.foreach {

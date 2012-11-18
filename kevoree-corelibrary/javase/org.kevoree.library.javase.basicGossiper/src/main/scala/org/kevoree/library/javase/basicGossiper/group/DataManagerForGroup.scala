@@ -13,11 +13,11 @@ import org.kevoree.merger.KevoreeMergerComponent
 import org.kevoree.framework.{KevoreeXmiHelper, FileNIOHelper}
 import java.io.{File, ByteArrayOutputStream, ByteArrayInputStream}
 import org.kevoree.library.basicGossiper.protocol.version.Version.{ClockEntry, VectorClock}
+import org.kevoree.library.javase.conflictSolver.ConflictSolver
 
-class DataManagerForGroup(nameInstance: String, selfNodeName: String, modelService: KevoreeModelHandlerService, merge: Boolean)
+class DataManagerForGroup(nameInstance: String, selfNodeName: String, modelService: KevoreeModelHandlerService, merge: Boolean, solver : ConflictSolver)
   extends DataManager {
 
-  private val mergerComponent = new KevoreeMergerComponent();
   private var lastCheckedTimeStamp = new Date(0l)
   private val uuid: UUID = UUID.nameUUIDFromBytes(nameInstance.getBytes)
   private var vectorClock: VectorClock = VectorClock.newBuilder
@@ -101,6 +101,19 @@ class DataManagerForGroup(nameInstance: String, selfNodeName: String, modelServi
       }
       case Occured.CONCURRENTLY => {
         logger.debug("VectorClocks comparison into DataManager give us: CONCURRENTLY")
+        logger.debug("merge local and remote model due to concurrency")
+        val solvedModel = solver.resolve((vectorClock,modelService.getLastModel),(tuple),source,selfNodeName)
+        updateModelOrHaraKiri(solvedModel)
+        lastNodeSynchronization = source
+        // update local vectorclock according to both local and remote vectorclocks
+        logger.debug("BEFORE MERGE CONCURENCY")
+        vectorClock.printDebug()
+        setVectorClock(localMerge(tuple._1))
+        logger.debug("AFTER MERGE CONCURENCY")
+        increment()
+        logger.debug("AFTER INCREMENT CONCURENCY")
+
+        /*
         val localDate = new Date(vectorClock.getTimestamp)
         val remoteDate = new Date(tuple._1.getTimestamp)
         if (merge) {
@@ -121,7 +134,7 @@ class DataManagerForGroup(nameInstance: String, selfNodeName: String, modelServi
             lastNodeSynchronization = source
             setVectorClock(localMerge(tuple._1))
           }
-        }
+        } */
 
         logger.debug("Local date is after, do nothing")
       }

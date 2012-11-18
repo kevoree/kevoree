@@ -1,11 +1,9 @@
 package org.kevoree.library.sky.minicloud.nodeType;
 
-import org.kevoree.annotation.DictionaryAttribute;
-import org.kevoree.annotation.DictionaryType;
-import org.kevoree.annotation.Library;
-import org.kevoree.annotation.NodeType;
+import org.kevoree.annotation.*;
 import org.kevoree.library.sky.api.KevoreeNodeRunner;
 import org.kevoree.library.sky.api.nodeType.AbstractHostNode;
+import org.kevoree.library.sky.api.nodeType.HostNode;
 import org.kevoree.library.sky.minicloud.MiniCloudKevoreeNodeRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,14 +18,18 @@ import org.slf4j.LoggerFactory;
  */
 @Library(name = "SKY")
 @DictionaryType({
-		@DictionaryAttribute(name = "VMARGS", optional = true)
+        @DictionaryAttribute(name = "VMARGS", optional = true)
 })
 @NodeType
+@PrimitiveCommands(value = {
+        @PrimitiveCommand(name = HostNode.ADD_NODE, maxTime = 120000)
+}, values = {HostNode.REMOVE_NODE})
+
 public class MiniCloudNode extends AbstractHostNode {
-	private static final Logger logger = LoggerFactory.getLogger(MiniCloudNode.class);
+    private static final Logger logger = LoggerFactory.getLogger(MiniCloudNode.class);
 
     @Override
     public KevoreeNodeRunner createKevoreeNodeRunner(String nodeName) {
-        return new MiniCloudKevoreeNodeRunner(nodeName,this);
+        return new MiniCloudKevoreeNodeRunner(nodeName, this);
     }
 }

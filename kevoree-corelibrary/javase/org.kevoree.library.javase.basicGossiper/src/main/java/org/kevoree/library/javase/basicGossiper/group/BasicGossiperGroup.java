@@ -13,6 +13,7 @@ import org.kevoree.library.BasicGroup;
 import org.kevoree.library.basicGossiper.protocol.gossip.Gossip;
 import org.kevoree.library.basicGossiper.protocol.message.KevoreeMessage;
 import org.kevoree.library.javase.basicGossiper.*;
+import org.kevoree.library.javase.conflictSolver.AlreadyPassedPrioritySolver;
 import org.kevoree.library.javase.network.NodeNetworkHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,8 +32,7 @@ import java.util.concurrent.atomic.AtomicReference;
 @Library(name = "JavaSE")
 @GroupType
 @DictionaryType({
-        @DictionaryAttribute(name = "interval", defaultValue = "30000", optional = true),
-        @DictionaryAttribute(name = "mergeModel", defaultValue = "true", optional = true, vals = {"true", "false"})
+        @DictionaryAttribute(name = "interval", defaultValue = "30000", optional = true)
 })
 public class BasicGossiperGroup extends BasicGroup implements GossiperComponent {
 
@@ -49,7 +49,7 @@ public class BasicGossiperGroup extends BasicGroup implements GossiperComponent 
         Long timeoutLong = Long.parseLong((String) this.getDictionary().get("interval"));
         boolean merge = "true".equalsIgnoreCase(this.getDictionary().get("mergeModel").toString());
         Serializer serializer = new GroupSerializer(this.getModelService());
-        dataManager = new DataManagerForGroup(this.getName(), this.getNodeName(), this.getModelService(), merge);
+        dataManager = new DataManagerForGroup(this.getName(), this.getNodeName(), this.getModelService(), merge, new AlreadyPassedPrioritySolver(getKevScriptEngineFactory()));
         processValue = new GossiperProcess(this, dataManager, serializer, false);
         selector = new GroupScorePeerSelector(timeoutLong, this.currentCacheModel, this.getNodeName());
         logger.debug("{}: initialize GossiperActor", this.getName());
