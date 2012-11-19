@@ -161,7 +161,6 @@ class KevoreeAndroidBootStrap {
 
       coreBean.registerModelListener(new ProgressDialogModelListener(act))
 
-
       val file = bootstraper.asInstanceOf[Bootstraper].resolveKevoreeArtifact("org.kevoree.library.model.bootstrap.android", "org.kevoree.corelibrary.model", KevoreeFactory.getVersion)
       val jar = new JarFile(file)
       val entry = jar.getJarEntry("KEV-INF/lib.kev")
@@ -172,7 +171,7 @@ class KevoreeAndroidBootStrap {
           logger.info("Bootstrap step will init " + coreBean.getNodeName())
           logger.debug("Bootstrap step !")
           val bsh = new BootstrapHelper
-          bsh.initModelInstance(bootstrapModel, "AndroidNode", "NanoRestGroup", nodeName)
+          bsh.initModelInstance(bootstrapModel, "AndroidNode", "BasicGroup", nodeName)
           coreBean.updateModel(bootstrapModel)
         } catch {
           case _@e => logger.error("Bootstrap failed", e)
