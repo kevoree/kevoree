@@ -38,6 +38,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.*;
 
+import org.kevoree.ContainerRoot;
 import org.kevoree.framework.KevoreeXmiHelper;
 import org.kevoree.tools.ui.editor.command.LoadModelCommand;
 import org.kevoree.tools.ui.editor.command.SaveActuelModelCommand;
@@ -69,6 +70,12 @@ public class KevoreeEditor {
         LoadModelCommand command = new LoadModelCommand();
         command.setKernel(panel.getKernel());
         command.execute(uri);
+    }
+
+    public void loadModelFromObject(ContainerRoot obj){
+        LoadModelCommand command = new LoadModelCommand();
+        command.setKernel(panel.getKernel());
+        command.execute(obj);
     }
 
     public void loadLib(){

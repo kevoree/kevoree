@@ -2,6 +2,7 @@ package org.kevoree.library.arduinoNodeType;
 
 
 import org.kevoree.*;
+import org.kevoree.KevoreeFactory;
 import org.kevoree.api.service.core.checker.CheckerViolation;
 import org.kevoree.cloner.ModelCloner;
 import org.kevoree.extra.kserial.KevoreeSharedCom;

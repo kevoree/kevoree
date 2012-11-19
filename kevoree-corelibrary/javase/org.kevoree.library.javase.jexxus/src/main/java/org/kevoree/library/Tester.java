@@ -52,7 +52,7 @@ public class Tester {
                 System.out.println("Connected");
             }
 
-        }, 15652,true);
+        }, 15652,false);
         server.startServer();
 
         ClientConnection conn = new ClientConnection(new ConnectionListener(){

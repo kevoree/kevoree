@@ -1,6 +1,7 @@
 package org.kevoree.library;
 
 import jexxus.client.ClientConnection;
+import jexxus.client.UniClientConnection;
 import jexxus.common.Connection;
 import jexxus.common.ConnectionListener;
 import jexxus.common.Delivery;
@@ -32,7 +33,7 @@ import java.util.concurrent.Exchanger;
 @DictionaryType({
         @DictionaryAttribute(name = "port", defaultValue = "8000", optional = true, fragmentDependant = true),
         @DictionaryAttribute(name = "ip", defaultValue = "0.0.0.0", optional = true, fragmentDependant = true),
-        @DictionaryAttribute(name = "ssl", defaultValue = "true", vals = {"true", "false"})
+        @DictionaryAttribute(name = "ssl", defaultValue = "false", vals = {"true", "false"})
 })
 @GroupType
 @Library(name = "JavaSE", names = "Android")
@@ -46,12 +47,13 @@ public class BasicGroup extends AbstractGroupType implements ConnectionListener 
     protected Server server = null;
     private boolean starting;
     protected boolean udp = false;
+    boolean ssl = false;
 
 
     @Start
     public void startRestGroup() throws IOException {
         int port = Integer.parseInt(this.getDictionary().get("port").toString());
-        boolean ssl = Boolean.parseBoolean(this.getDictionary().get("ssl").toString());
+        ssl = Boolean.parseBoolean(this.getDictionary().get("ssl").toString());
         if(udp){
             server = new Server(this, port,port, ssl);
         } else {
@@ -122,8 +124,8 @@ public class BasicGroup extends AbstractGroupType implements ConnectionListener 
         if (portOption.isDefined()) {
             PORT = portOption.get();
         }
-        final ClientConnection[] conns = new ClientConnection[1];
-        conns[0] = new ClientConnection(new ConnectionListener() {
+        final UniClientConnection[] conns = new UniClientConnection[1];
+        conns[0] = new UniClientConnection(new ConnectionListener() {
             @Override
             public void connectionBroken(Connection broken, boolean forced) {
             }
@@ -135,7 +137,7 @@ public class BasicGroup extends AbstractGroupType implements ConnectionListener 
             @Override
             public void clientConnected(ServerConnection conn) {
             }
-        }, ip, PORT, true);
+        }, ip, PORT, ssl);
         conns[0].connect();
         conns[0].send(output.toByteArray(), Delivery.RELIABLE);
     }
@@ -159,6 +161,11 @@ public class BasicGroup extends AbstractGroupType implements ConnectionListener 
             @Override
             public void connectionBroken(Connection broken, boolean forced) {
                 conns[0].close();
+                try {
+                    exchanger.exchange(null);
+                } catch (InterruptedException e) {
+                    logger.error("",e);
+                }
             }
 
             @Override
@@ -178,7 +185,7 @@ public class BasicGroup extends AbstractGroupType implements ConnectionListener 
             public void clientConnected(ServerConnection conn) {
             }
 
-        }, ip, PORT, true);
+        }, ip, PORT, ssl);
         conns[0].connect();
         byte[] data = new byte[1];
         data[0] = getModel;
@@ -220,7 +227,7 @@ public class BasicGroup extends AbstractGroupType implements ConnectionListener 
     }
 
     protected void externalProcess(byte[] data, Connection from){
-        //from.close();
+        from.close();
     }
 
 

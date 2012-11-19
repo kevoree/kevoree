@@ -16,7 +16,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * 	http://www.gnu.org/licenses/lgpl-3.0.txt
+ * http://www.gnu.org/licenses/lgpl-3.0.txt
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -51,7 +51,7 @@ import org.kevoree.tools.ui.editor.{PositionedEMFHelper, KevoreeUIKernel}
 import org.slf4j.LoggerFactory
 import java.util.concurrent.Exchanger
 import org.kevoree.ContainerRoot
-import jexxus.client.ClientConnection
+import jexxus.client.{ClientConnection}
 import jexxus.common.{Delivery, Connection, ConnectionListener}
 import java.io.ByteArrayInputStream
 import jexxus.server.ServerConnection
@@ -73,7 +73,7 @@ class LoadRemoteModelUICommand extends Command {
   def tryRemoteLoad(ip: String, port: String, zip: Boolean): Boolean = {
     try {
       //CALL POST REMOTE URL
-      var loadedModel : ContainerRoot = null
+      var loadedModel: ContainerRoot = null
       if (zip) {
         val url = new URL("http://" + ip + ":" + port + "/model/current/zip");
         val conn = url.openConnection()
@@ -95,43 +95,47 @@ class LoadRemoteModelUICommand extends Command {
       true
     } catch {
       case _@e => {
-        logger.debug("Pull failed to "+ip+":"+port+" , zip activated="+zip)
+        logger.debug("Pull failed to " + ip + ":" + port + " , zip activated=" + zip)
         false
       }
     }
   }
 
 
-  def tryRemoteJexxus(ip: String, port: String){
+  def tryRemoteJexxus(ip: String, port: String) : Boolean = {
     try {
-    val exchanger = new Exchanger[ContainerRoot]();
-    var conns :Tuple1[ClientConnection] = null
-    conns = Tuple1(new ClientConnection(new ConnectionListener() {
-      def connectionBroken(broken: Connection, forced: Boolean) {}
-      def receive(data: Array[Byte], from: Connection) {
-        val inputStream = new ByteArrayInputStream(data)
-        val root = KevoreeXmiHelper.loadCompressedStream(inputStream)
-        try {
-          exchanger.exchange(root);
-        } catch {
-          case _ @ e => logger.error("",e)
-        } finally {
-          conns._1.close()
+      val exchanger = new Exchanger[ContainerRoot]();
+      var conns: Tuple1[ClientConnection] = null
+      conns = Tuple1(new ClientConnection(new ConnectionListener() {
+        def connectionBroken(broken: Connection, forced: Boolean) {
+          exchanger.exchange(null);
         }
-      }
-      def clientConnected(conn: ServerConnection) {}
-    }, ip, Integer.parseInt(port), true))
-    conns._1.connect()
-    conns._1.send(Array(Byte.box(0)),Delivery.RELIABLE)
-    val root = exchanger.exchange(null)
-    //kernel.getModelHandler.merge(root)
-    PositionedEMFHelper.updateModelUIMetaData(kernel)
-    lcommand.setKernel(kernel)
-    lcommand.execute(root)
-    true
+
+        def receive(data: Array[Byte], from: Connection) {
+          val inputStream = new ByteArrayInputStream(data)
+          val root = KevoreeXmiHelper.loadCompressedStream(inputStream)
+          try {
+            exchanger.exchange(root);
+          } catch {
+            case _@e => logger.error("", e)
+          } finally {
+            conns._1.close()
+          }
+        }
+
+        def clientConnected(conn: ServerConnection) {}
+      }, ip, Integer.parseInt(port), false))
+      conns._1.connect()
+      conns._1.send(Array(Byte.box(0)), Delivery.RELIABLE)
+      val root = exchanger.exchange(null)
+      //kernel.getModelHandler.merge(root)
+      PositionedEMFHelper.updateModelUIMetaData(kernel)
+      lcommand.setKernel(kernel)
+      lcommand.execute(root)
+      true
     } catch {
       case _@e => {
-        logger.debug("Pull failed to "+ip+":"+port)
+        logger.debug("Pull failed to " + ip + ":" + port)
         false
       }
     }
@@ -148,9 +152,12 @@ class LoadRemoteModelUICommand extends Command {
         if (results.size >= 2) {
           val ip = results(0)
           val port = results(1)
-          if (!tryRemoteLoad(ip, port, true)) {
-            if(!tryRemoteLoad(ip, port, false)){
-              tryRemoteJexxus(ip,port)
+
+          if(!tryRemoteJexxus(ip, port)){
+            if (!tryRemoteLoad(ip, port, true)) {
+              if (!tryRemoteLoad(ip, port, false)) {
+                logger.error("Can't load model from node")
+              }
             }
           }
         }
