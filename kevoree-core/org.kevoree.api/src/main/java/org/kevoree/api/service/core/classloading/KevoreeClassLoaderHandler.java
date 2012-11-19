@@ -36,7 +36,6 @@ import java.io.File;
  * User: duke
  * Date: 04/02/12
  * Time: 18:24
- * To change this template use File | Settings | File Templates.
  */
 public interface KevoreeClassLoaderHandler {
 

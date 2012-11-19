@@ -5,11 +5,6 @@ import org.kevoree.extra.marshalling.JacksonSerializer
 import org.kevoree.framework.message.Message
 import org.kevoree.library.javase.basicGossiper.Serializer
 
-/**
- * User: Erwan Daubert
- * Date: 05/04/11
- * Time: 14:40
- */
 
 class ChannelSerializer extends Serializer {
 
@@ -37,14 +32,13 @@ class ChannelSerializer extends Serializer {
 		}
 	}
 
+  /* Need to add resolver capability */
+
 	private def messageFromString(model: Array[Byte]): Message = {
     JacksonSerializer.convFromJSON(new String(model, "UTF8")).fromJSON(classOf[Message])
-//		RichString(new String(model, "UTF8")).fromJSON(classOf[Message])
 	}
 
 	private def stringFromMessage(model: Message): Array[Byte] = {
     JacksonSerializer.convToJSON(model).toJSON.getBytes("UTF8")
-//		val localObjJSON = new RichJSONObject(model)
-//		localObjJSON.toJSON.getBytes("UTF8")
 	}
 }

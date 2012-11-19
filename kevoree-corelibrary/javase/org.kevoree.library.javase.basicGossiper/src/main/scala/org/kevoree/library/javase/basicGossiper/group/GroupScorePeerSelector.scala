@@ -7,59 +7,33 @@ import org.slf4j.LoggerFactory
 import actors.Actor
 import collection.mutable
 import org.kevoree.library.javase.basicGossiper.PeerSelector
+import java.util.concurrent.atomic.AtomicReference
+import org.kevoree.ContainerRoot
 
-class GroupScorePeerSelector (timeout: Long, modelHandlerService: KevoreeModelHandlerService, nodeName: String) extends PeerSelector with Actor {
+class GroupScorePeerSelector (timeout: Long, modelRef : AtomicReference[ContainerRoot], nodeName: String) extends PeerSelector {
 
   private val logger = LoggerFactory.getLogger(classOf[GroupScorePeerSelector])
   private val peerCheckMap = new mutable.HashMap[String, (Long, Int)]
   private val peerNbFailure = new mutable.HashMap[String, Int]
 
-  case class STOP ()
-
-  case class MODIFY_NODE_SCORE (nodeName1: String, failure: Boolean)
-
-  case class RESET_NODE_FAILURE (nodeName1: String)
-
-  case class SELECT_PEER (groupName: String)
-
-  case class RESET_ALL ()
-
-  def stop () {
-    this ! STOP()
-  }
-
   def updateNodeScore (nodeName1: String, failure: Boolean) {
-    this ! MODIFY_NODE_SCORE(nodeName1, failure)
+    this.modifyNodeScore(nodeName1, failure)
   }
 
   def resetAll () {
-    this !? RESET_ALL()
+    reset();
   }
 
   def resetNodeFailureManagement (nodeName1: String) {
-    this ! RESET_NODE_FAILURE(nodeName1)
+    this.resetNodeFailure(nodeName1)
   }
 
   def selectPeer (groupName: String): String = {
-    (this !? SELECT_PEER(groupName)).asInstanceOf[String]
+    this.selectPeerInternal(groupName)
   }
-
-  /* PRIVATE PROCESS PART */
-  def act () {
-    loop {
-      react {
-        case STOP() => this.exit()
-        case MODIFY_NODE_SCORE(nodeName1, failure) => this.modifyNodeScore(nodeName1, failure)
-        case SELECT_PEER(groupName) => reply(this.selectPeerInternal(groupName))
-        case RESET_ALL() => reset(); reply("")
-        case RESET_NODE_FAILURE(nodeName1) => this.resetNodeFailure(nodeName1)
-      }
-    }
-  }
-
 
   private def selectPeerInternal (groupName: String): String = {
-    val model = modelHandlerService.getLastModel
+    val model = modelRef.get()
 
     model.getGroups.find(group => group.getName == groupName) match {
       case Some(group) => {

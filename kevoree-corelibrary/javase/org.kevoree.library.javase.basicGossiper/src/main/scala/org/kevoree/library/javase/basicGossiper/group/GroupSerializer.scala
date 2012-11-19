@@ -7,12 +7,6 @@ import org.slf4j.LoggerFactory
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService
 import org.kevoree.library.javase.basicGossiper.Serializer
 
-/**
- * User: Erwan Daubert
- * Date: 05/04/11
- * Time: 14:40
- */
-
 class GroupSerializer (modelService: KevoreeModelHandlerService) extends Serializer {
 
   private val logger = LoggerFactory.getLogger (classOf[GroupSerializer])
@@ -41,12 +35,12 @@ class GroupSerializer (modelService: KevoreeModelHandlerService) extends Seriali
 
   private def modelFromString (model: Array[Byte]): ContainerRoot = {
     val stream = new ByteArrayInputStream (model)
-    KevoreeXmiHelper.loadStream (stream)
+    KevoreeXmiHelper.loadCompressedStream(stream)
   }
 
   private def stringFromModel (model: ContainerRoot) : Array[Byte] = {
     val out = new ByteArrayOutputStream
-    KevoreeXmiHelper.saveStream (out, model)
+    KevoreeXmiHelper.saveCompressedStream(out, model)
     out.flush ()
     val bytes  = out.toByteArray
     out.close ()

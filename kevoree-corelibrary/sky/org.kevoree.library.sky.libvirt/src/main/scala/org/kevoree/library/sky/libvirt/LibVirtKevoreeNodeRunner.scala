@@ -23,15 +23,7 @@ abstract class LibVirtKevoreeNodeRunner(nodeName: String, iaasNode: AbstractHost
 
   private var nodeDomain: Domain = null
 
-
   def createXMLDomain(iaasModel: ContainerRoot, childBootStrapModel: ContainerRoot): Document
-
-  /*
-  def createXMLDomain(): Document = {
-    val domain = conn.domainLookupByName(iaasNode.getDictionary.get("defaultdomain").toString)
-    val parser: Builder = new Builder
-    parser.build(domain.getXMLDesc(0), null)
-  } */
 
   def startNode(iaasModel: ContainerRoot, childBootStrapModel: ContainerRoot) = {
     logger.debug("Starting " + nodeName)
@@ -51,13 +43,15 @@ abstract class LibVirtKevoreeNodeRunner(nodeName: String, iaasNode: AbstractHost
     } catch {
       case e: LibvirtException => {
         try {
-
           val doc: Document = createXMLDomain(iaasModel,childBootStrapModel)
-          val nameElement: Element = doc.query("/domain/name").get(0).asInstanceOf[Element]
-          nameElement.removeChildren()
-          nameElement.appendChild(nodeName)
+          val nameElements = doc.query("/domain/name")
+          if(nameElements.size() > 0){
+            nameElements.get(0).asInstanceOf[Element].removeChildren()
+            nameElements.get(0).asInstanceOf[Element].appendChild(nodeName)
+          }
 
           //look for the amount of memory
+          /*
           val memoryOption = KevoreePropertyHelper.getStringPropertyForNode(iaasModel, nodeName, "RAM")
           val defaultMemory = iaasNode.getDictionary.get("default_RAM")
           var memory = "1024000"
@@ -76,8 +70,8 @@ abstract class LibVirtKevoreeNodeRunner(nodeName: String, iaasNode: AbstractHost
             }
             val unit = new Attribute("unit", "b")
             memoryElement.addAttribute(unit)
-          }
-              /*
+          }  */
+          /*
           val currentMemoryElements = doc.query("/domain/currentMemory");
           if(currentMemoryElements.size() > 0){
             currentMemoryElement.removeChildren()
@@ -86,9 +80,8 @@ abstract class LibVirtKevoreeNodeRunner(nodeName: String, iaasNode: AbstractHost
             val unit2 = new Attribute("unit", "b")
             currentMemoryElement.addAttribute(unit2)
           }    */
-
-
           // look for the number of CPU
+          /*
           val cpuOption = KevoreePropertyHelper.getStringPropertyForNode(iaasModel, nodeName, "CPU_CORE")
           val defaultnbCPU = iaasNode.getDictionary.get("default_CPU_CORE")
           var nbCPU = "1"
@@ -101,22 +94,7 @@ abstract class LibVirtKevoreeNodeRunner(nodeName: String, iaasNode: AbstractHost
           val vCPUElement: Element = doc.query("/domain/vcpu").get(0).asInstanceOf[Element]
           vCPUElement.removeChildren()
           vCPUElement.appendChild(nbCPU)
-
-          // look at the network interface to remove the mac address element allowing the libvirt to dynamically generate a new one
-          val interfaceElements: Nodes = doc.query("/domain/devices/interface")
-          val nbInterfaces = interfaceElements.size()
-          for (i <- 0 to nbInterfaces - 1) {
-
-            val macElement = interfaceElements.get(i).asInstanceOf[Element].query("./mac")//
-
-          }
-
-          // TODO look for the type of the architecture
-          /*val arch = "i686"
-                      val typeElement: Element = doc.query("/domain/os/type").get(0).asInstanceOf[Element]
-                      typeElement.removeAttribute(typeElement.getAttribute("arch"))
-                      val archAttribute: Attribute = new Attribute("arch", arch)
-                      typeElement.addAttribute(archAttribute)*/
+          */
 
           //Aplly and get modify version by libvirtd
           nodeDomain = conn.domainDefineXML(doc.toXML)

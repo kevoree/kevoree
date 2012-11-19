@@ -10,13 +10,12 @@ import collection.mutable
 import org.kevoree.library.javase.basicGossiper.PeerSelector
 
 class ChannelScorePeerSelector (timeout: Long, modelHandlerService: KevoreeModelHandlerService, nodeName: String)
-  extends PeerSelector with Actor {
+  extends PeerSelector {
 
   private val logger = LoggerFactory.getLogger(classOf[ChannelScorePeerSelector])
   private val peerCheckMap = new mutable.HashMap[String, (Long, Int)]
   private val peerNbFailure = new mutable.HashMap[String, Int]
 
-  case class STOP ()
 
   case class MODIFY_NODE_SCORE (nodeName1: String, failure: Boolean)
 
@@ -26,41 +25,21 @@ class ChannelScorePeerSelector (timeout: Long, modelHandlerService: KevoreeModel
 
   case class RESET_ALL ()
 
-  def stop () {
-    this ! STOP()
-  }
-
   def updateNodeScore (nodeName1: String, failure: Boolean) {
-    this ! MODIFY_NODE_SCORE(nodeName1, failure)
+    modifyNodeScore(nodeName1, failure)
   }
 
   def resetAll () {
-    this !? RESET_ALL()
+    reset();
   }
 
   def resetNodeFailureManagement (nodeName1: String) {
-    this ! RESET_NODE_FAILURE(nodeName1)
+    resetNodeFailure(nodeName1)
   }
 
   def selectPeer (groupName: String): String = {
-    (this !? SELECT_PEER(groupName)).asInstanceOf[String]
+    selectPeerInternal(groupName)
   }
-
-  /* PRIVATE PROCESS PART */
-  def act () {
-    loop {
-      react {
-        case STOP() => {
-          this.exit()
-        }
-        case MODIFY_NODE_SCORE(nodeName1, failure) => this.modifyNodeScore(nodeName1, failure)
-        case SELECT_PEER(groupName) => reply(this.selectPeerInternal(groupName))
-        case RESET_ALL() => reset(); reply("")
-        case RESET_NODE_FAILURE(nodeName1) => this.resetNodeFailure(nodeName1)
-      }
-    }
-  }
-
 
   private def selectPeerInternal (name: String): String = {
     val model = modelHandlerService.getLastModel

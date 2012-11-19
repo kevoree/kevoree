@@ -7,15 +7,6 @@ import org.slf4j.LoggerFactory
 import org.kevoree.api.service.core.script.KevScriptEngineFactory
 import org.kevoree.framework.{KevoreePlatformHelper, AbstractGroupType}
 
-/**
- * User: Erwan Daubert - erwan.daubert@gmail.com
- * Date: 01/03/12
- * Time: 14:46
- *
- * @author Erwan Daubert
- * @version 1.0
- */
-
 object NodeNetworkHelper {
   private val logger = LoggerFactory.getLogger(getClass)
 

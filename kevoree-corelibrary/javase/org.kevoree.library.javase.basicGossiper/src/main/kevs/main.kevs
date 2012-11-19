@@ -4,9 +4,9 @@ merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.basicGossip
 merge "mvn:org.kevoree.corelibrary.sky/org.kevoree.library.sky.provider.web/{kevoree.version}"
 merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.defaultChannels/{kevoree.version}"
 
-addNode minicloud : MiniCloudNode {logLevel = "DEBUG"}
-addNode node0 : PJavaSENode {logLevel = "DEBUG"}
-addNode node1 : PJavaSENode {logLevel = "DEBUG"}
+addNode minicloud : MiniCloudNode {logLevel = "INFO"}
+addNode node0 : PJavaSENode {logLevel = "INFO"}
+addNode node1 : PJavaSENode {logLevel = "INFO"}
 
 addChild node0@minicloud
 addChild node1@minicloud

@@ -1,10 +1,5 @@
 package org.kevoree.library.javase.basicGossiper
 
-/**
- * User: Erwan Daubert - erwan.daubert@gmail.com
- * Date: 12/09/11
- * Time: 10:28
- */
 
 trait PeerSelector {
 

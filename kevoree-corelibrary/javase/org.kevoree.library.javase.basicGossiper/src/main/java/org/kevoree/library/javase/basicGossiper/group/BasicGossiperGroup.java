@@ -1,16 +1,19 @@
 package org.kevoree.library.javase.basicGossiper.group;
 
 import jexxus.common.Connection;
+import jexxus.common.Delivery;
 import org.kevoree.ContainerNode;
 import org.kevoree.ContainerRoot;
 import org.kevoree.Group;
+import org.kevoree.KevoreeFactory;
 import org.kevoree.annotation.*;
 import org.kevoree.framework.KevoreePropertyHelper;
 import org.kevoree.framework.NetworkHelper;
 import org.kevoree.library.BasicGroup;
+import org.kevoree.library.basicGossiper.protocol.gossip.Gossip;
 import org.kevoree.library.basicGossiper.protocol.message.KevoreeMessage;
-import org.kevoree.library.javase.NetworkSender;
 import org.kevoree.library.javase.basicGossiper.*;
+import org.kevoree.library.javase.conflictSolver.AlreadyPassedPrioritySolver;
 import org.kevoree.library.javase.network.NodeNetworkHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,8 +21,10 @@ import scala.Option;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * @author Erwan Daubert
@@ -27,14 +32,12 @@ import java.util.List;
 @Library(name = "JavaSE")
 @GroupType
 @DictionaryType({
-        @DictionaryAttribute(name = "interval", defaultValue = "3000", optional = true),
-        @DictionaryAttribute(name = "alwaysAskModel", defaultValue = "false", optional = true, vals = {"true", "false"}),
-        @DictionaryAttribute(name = "mergeModel", defaultValue = "false", optional = true, vals = {"true", "false"})
+        @DictionaryAttribute(name = "interval", defaultValue = "30000", optional = true)
 })
 public class BasicGossiperGroup extends BasicGroup implements GossiperComponent {
 
     protected DataManagerForGroup dataManager;
-    protected GossiperActor actor;
+    protected GossiperPeriodic actor;
     protected GroupScorePeerSelector selector;
     private GossiperProcess processValue;
     protected Logger logger = LoggerFactory.getLogger(BasicGossiperGroup.class);
@@ -43,36 +46,28 @@ public class BasicGossiperGroup extends BasicGroup implements GossiperComponent 
     @Start
     public void startGossiperGroup() throws IOException {
         udp = true;
-        super.startRestGroup();
-
         Long timeoutLong = Long.parseLong((String) this.getDictionary().get("interval"));
-        boolean merge = "true".equalsIgnoreCase(this.getDictionary().get("mergeModel").toString());
-        NetworkSender sender = new NetworkSender();
         Serializer serializer = new GroupSerializer(this.getModelService());
-        dataManager = new DataManagerForGroup(this.getName(), this.getNodeName(), this.getModelService(), merge);
-        processValue = new GossiperProcess(this, parseBooleanProperty("alwaysAskModel"), sender, dataManager,
-                serializer, false);
-
-        selector = new GroupScorePeerSelector(timeoutLong, this.getModelService(), this.getNodeName());
+        dataManager = new DataManagerForGroup(this.getName(), this.getNodeName(), this.getModelService(), new AlreadyPassedPrioritySolver(getKevScriptEngineFactory()));
+        processValue = new GossiperProcess(this, dataManager, serializer, false);
+        selector = new GroupScorePeerSelector(timeoutLong, this.currentCacheModel, this.getNodeName());
         logger.debug("{}: initialize GossiperActor", this.getName());
-        actor = new GossiperActor(this, timeoutLong, selector, processValue);
-        dataManager.start();
+        actor = new GossiperPeriodic(this, timeoutLong, selector, processValue);
         processValue.start();
-        selector.start();
         actor.start();
         starting = true;
+        super.startRestGroup();
     }
 
-    protected void externalProcess(byte[] data, Connection from){
+    protected void externalProcess(byte[] data, Connection from) {
         try {
             ByteArrayInputStream stin = new ByteArrayInputStream(data);
             stin.read();
             KevoreeMessage.Message msg = KevoreeMessage.Message.parseFrom(stin);
+            logger.debug("Rec Some MSG {}" + msg.getContentClass() + "->" + msg.getDestName() + "->" + msg.getDestNodeName());
             processValue.receiveRequest(msg);
         } catch (Exception e) {
-            logger.error("",e);
-        } finally {
-           // from.close();
+            logger.error("", e);
         }
     }
 
@@ -84,7 +79,6 @@ public class BasicGossiperGroup extends BasicGroup implements GossiperComponent 
             actor = null;
         }
         if (selector != null) {
-            selector.stop();
             selector = null;
         }
         if (processValue != null) {
@@ -92,7 +86,6 @@ public class BasicGossiperGroup extends BasicGroup implements GossiperComponent 
             processValue = null;
         }
         if (dataManager != null) {
-            dataManager.stop();
             dataManager = null;
         }
     }
@@ -104,26 +97,18 @@ public class BasicGossiperGroup extends BasicGroup implements GossiperComponent 
         startGossiperGroup();
     }
 
+    protected AtomicReference<ContainerRoot> currentCacheModel = new AtomicReference<ContainerRoot>(KevoreeFactory.createContainerRoot());
+
     @Override
-    public List<String> getAllPeers() {
-        ContainerRoot model = this.getModelService().getLastModel();
-        for (Object o : model.getGroupsForJ()) {
-            Group g = (Group) o;
-            if (g.getName().equals(this.getName())) {
-                List<String> peers = new ArrayList<String>(g.getSubNodes().size());
-                for (ContainerNode node : g.getSubNodesForJ()) {
-                    peers.add(node.getName());
-                }
-                return peers;
-            }
-        }
-        return new ArrayList<String>();
+    public boolean afterLocalUpdate(ContainerRoot currentModel, ContainerRoot proposedModel) {
+        currentCacheModel.set(proposedModel);
+        return super.afterLocalUpdate(currentModel, proposedModel);
     }
 
     @Override
     public String getAddress(String remoteNodeName) {
         Option<String> ipOption = NetworkHelper.getAccessibleIP(KevoreePropertyHelper
-                .getStringNetworkProperties(this.getModelService().getLastModel(), remoteNodeName, org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP()));
+                .getStringNetworkProperties(currentCacheModel.get(), remoteNodeName, org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP()));
         if (ipOption.isDefined()) {
             return ipOption.get();
         } else {
@@ -133,7 +118,7 @@ public class BasicGossiperGroup extends BasicGroup implements GossiperComponent 
 
     @Override
     public int parsePortNumber(String nodeName) {
-        Option<Integer> portOption = KevoreePropertyHelper.getIntPropertyForGroup(this.getModelService().getLastModel(), this.getName(), "port", true, nodeName);
+        Option<Integer> portOption = KevoreePropertyHelper.getIntPropertyForGroup(currentCacheModel.get(), this.getName(), "port", true, nodeName);
         if (portOption.isDefined()) {
             return portOption.get();
         } else {
@@ -141,24 +126,31 @@ public class BasicGossiperGroup extends BasicGroup implements GossiperComponent 
         }
     }
 
-    private int parsePortNumber() {
-        String portProperty = this.getDictionary().get("gossip_port").toString();
-        try {
-            return Integer.parseInt(portProperty);
-        } catch (NumberFormatException e) {
-            logger.warn("Invalid value for port parameter for {} on {}", this.getName(), this.getNodeName());
-            return 0;
-        }
-    }
-
-    @Override
-    public Boolean parseBooleanProperty(String name) {
-        return this.getDictionary().get(name) != null && "true".equals(this.getDictionary().get(name).toString());
-    }
 
     @Override
     public void localNotification(Object data) {
         // NO OP
+    }
+
+
+    private void notifyPeersInternal(List<String> l) {
+        KevoreeMessage.Message.Builder messageBuilder = KevoreeMessage.Message.newBuilder().setDestName(getName()).setDestNodeName(getNodeName());
+        messageBuilder.setContentClass(Gossip.UpdatedValueNotification.class.getName()).setContent(Gossip.UpdatedValueNotification.newBuilder().build().toByteString());
+        for (String peer : l) {
+            if (!peer.equals(getNodeName())) {
+                String address = getAddress(peer);
+                processValue.netSender().sendMessageUnreliable(messageBuilder.build(), new InetSocketAddress(address, parsePortNumber(peer)));
+            }
+        }
+    }
+
+    @Override
+    protected void locaUpdateModel(final ContainerRoot modelOption) {
+        new Thread() {
+            public void run() {
+                getModelService().atomicUpdateModel(modelOption);
+            }
+        }.start();
     }
 
     @Override
@@ -171,10 +163,17 @@ public class BasicGossiperGroup extends BasicGroup implements GossiperComponent 
                 getModelService().registerModelListener(this);
             }
             starting = false;
-        } else {
-            actor.notifyPeers();
         }
-
+        for (Object o : currentCacheModel.get().getGroupsForJ()) {
+            Group g = (Group) o;
+            if (g.getName().equals(this.getName())) {
+                List<String> peers = new ArrayList<String>(g.getSubNodes().size());
+                for (ContainerNode node : g.getSubNodesForJ()) {
+                    peers.add(node.getName());
+                }
+                notifyPeersInternal(peers);
+            }
+        }
     }
 
 
