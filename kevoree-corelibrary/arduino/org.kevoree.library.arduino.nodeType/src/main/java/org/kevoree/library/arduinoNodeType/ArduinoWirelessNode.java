@@ -69,7 +69,15 @@ public class ArduinoWirelessNode extends ArduinoNode
         {
             if(checker() == false){ return false;}
 
+
             KevoreeSharedCom.killAll();
+			// TODO kill synchrone
+            try
+            {
+                Thread.sleep(4000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            }
 
             // compile
             compile(tempRoot, nodeName, boardPortName);
@@ -80,12 +88,6 @@ public class ArduinoWirelessNode extends ArduinoNode
 
             try
             {
-
-                /*
-                KevoreeJarClassLoader kcl = (KevoreeJarClassLoader) this.getClass().getClassLoader();
-                kcl.addNativeMapping("libnative.so",Nativelib.configureCL());
-
-                System.loadLibrary("libnative.so");  */
 
 
                 fota = new Fota(boardPortName, Board.ATMEGA328);
