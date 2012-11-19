@@ -68,7 +68,7 @@ class KevoreeAndroidBootStrap {
   var started = false
   var coreBean: KevoreeCoreBean = null
 
-  def start(act: Activity, ctx: android.content.Context, clusterCL: ClassLoader, kui: org.kevoree.platform.android.ui.KevoreeAndroidUIScreen, nodeName: String) {
+  def start(act: Activity, ctx: android.content.Context, clusterCL: ClassLoader, kui: org.kevoree.platform.android.ui.KevoreeAndroidUIScreen, nodeName: String,groupName : String) {
     if (started) {
       return
     }
@@ -171,7 +171,7 @@ class KevoreeAndroidBootStrap {
           logger.info("Bootstrap step will init " + coreBean.getNodeName())
           logger.debug("Bootstrap step !")
           val bsh = new BootstrapHelper
-          bsh.initModelInstance(bootstrapModel, "AndroidNode", "BasicGroup", nodeName)
+          bsh.initModelInstance(bootstrapModel, "AndroidNode", groupName, nodeName)
           coreBean.updateModel(bootstrapModel)
         } catch {
           case _@e => logger.error("Bootstrap failed", e)

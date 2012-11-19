@@ -49,6 +49,8 @@ public class KevoreeService extends Service {
 
     private String nodeName;
 
+    private String groupName;
+
     private KevoreeAndroidBootStrap bootObj = null;
 
     @Override
@@ -63,7 +65,9 @@ public class KevoreeService extends Service {
         super.onStart(intent, startId);
 
         nodeName =  intent.getExtras().getString("nodeName");
-        Log.i("KevoreeService onStartCommand",""+nodeName);
+        groupName = intent.getExtras().getString("groupName");
+
+        Log.i("KevoreeService onStartCommand",""+nodeName+"-"+groupName);
         System.setProperty("java.net.preferIPv6Addresses", "false");
         System.setProperty("java.net.preferIPv4Addresses", "true");
         System.setProperty("java.net.preferIPv4Stack", "true");
@@ -78,7 +82,7 @@ public class KevoreeService extends Service {
                     //bootObj = bootClazz.newInstance();
                     bootObj = new KevoreeAndroidBootStrap();
                     //Method startM = bootClazz.getMethod("start",Activity.class, android.content.Context.class, ClassLoader.class, KevoreeAndroidUIScreen.class, String.class);
-                    bootObj.start(KevoreeActivity.controller.getViewManager().getCtx(),getBaseContext(), this.getClass().getClassLoader(),KevoreeActivity.controller,nodeName);
+                    bootObj.start(KevoreeActivity.controller.getViewManager().getCtx(),getBaseContext(), this.getClass().getClassLoader(),KevoreeActivity.controller,nodeName,groupName);
 
                    // startM.invoke(bootObj,KevoreeActivity.controller.getViewManager().getCtx(),getBaseContext(), bootClazz.getClassLoader(),KevoreeActivity.controller,nodeName);
                 } catch (Exception e) {
