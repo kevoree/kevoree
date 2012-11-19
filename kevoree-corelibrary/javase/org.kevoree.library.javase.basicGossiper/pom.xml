@@ -28,11 +28,13 @@
             <artifactId>org.kevoree.merger</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
+        <!--
         <dependency>
             <groupId>org.kevoree.extra</groupId>
             <artifactId>org.kevoree.extra.marshalling</artifactId>
             <version>1.1</version>
         </dependency>
+        -->
         <dependency>
             <groupId>org.kevoree.corelibrary.javase</groupId>
             <artifactId>org.kevoree.library.javase.jexxus</artifactId>
