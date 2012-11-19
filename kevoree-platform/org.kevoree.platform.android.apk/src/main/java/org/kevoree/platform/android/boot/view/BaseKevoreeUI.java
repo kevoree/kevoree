@@ -39,6 +39,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * Created by jed
@@ -53,6 +55,9 @@ public class BaseKevoreeUI extends LinearLayout {
     // UI
     private  Button btstart=null;
     private  Button btstop=null;
+
+    private Spinner spinner = null;
+
     private  EditText nodeNameView=null;
 //    private OnClickListener checkbox_list;
     /*private  CheckBox checkbox_info=null;
@@ -81,6 +86,8 @@ public class BaseKevoreeUI extends LinearLayout {
         btstart = new Button(ctx);
         btstop = new Button(ctx);
         nodeNameView = new EditText(ctx);
+        spinner = new Spinner(ctx);
+
         /*checkbox_info = new CheckBox(ctx);
         checkbox_debug = new CheckBox(ctx);
         checkbox_warn = new CheckBox(ctx);*/
@@ -98,6 +105,14 @@ public class BaseKevoreeUI extends LinearLayout {
         btstop.setText("Stop");
         nodeNameView.setText("node0");
         nodeNameView.setWidth(150);
+
+        ArrayList<String> spinnerArray = new ArrayList<String>();
+        //TODO Read from model
+        spinnerArray.add("BasicGroup");
+        spinnerArray.add("BasicGossiperGroup");
+        ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(ctx, android.R.layout.simple_spinner_dropdown_item, spinnerArray);
+        spinner.setAdapter(spinnerArrayAdapter);
+
         /*checkbox_info.setText("INFO");
         checkbox_info.setChecked(true);
         checkbox_debug.setText("DEBUG");
@@ -109,9 +124,12 @@ public class BaseKevoreeUI extends LinearLayout {
         messages.setText("");
 
 
+
+
         layout.addView(nodeNameView);
         layout.addView(btstart);
         layout.addView(btstop);
+        layout.addView(spinner);
         /*layout.addView(checkbox_info);
         layout.addView(checkbox_debug);
         layout.addView(checkbox_warn);*/
@@ -131,11 +149,12 @@ public class BaseKevoreeUI extends LinearLayout {
         btstart.setOnClickListener(new Button.OnClickListener() {
 
             public void onClick(View v) {
-                kController.handleMessage(Request.KEVOREE_START,nodeNameView.getText().toString());
+                kController.handleMessage(Request.KEVOREE_START, Arrays.asList(nodeNameView.getText().toString(),spinner.getSelectedItem().toString()));
 				Log.i("Kevoree", "Bootstrapping Kevoree");
 				System.out.println("Bootstrapping Kevoree");
                 btstart.setEnabled(false);
                 nodeNameView.setEnabled(false);
+                spinner.setEnabled(false);
             }
         });
 
@@ -146,6 +165,7 @@ public class BaseKevoreeUI extends LinearLayout {
                 kController.handleMessage(Request.KEVOREE_STOP);
                 btstart.setEnabled(true);
                 nodeNameView.setEnabled(true);
+                spinner.setEnabled(true);
             }
         });
 
