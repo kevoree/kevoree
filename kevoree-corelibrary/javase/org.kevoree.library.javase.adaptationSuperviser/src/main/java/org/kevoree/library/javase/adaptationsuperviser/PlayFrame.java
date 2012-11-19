@@ -19,11 +19,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 /**
-* Created with IntelliJ IDEA.
-* User: dvojtise
-* Date: 09/11/12
-* Time: 11:29
-* To change this template use File | Settings | File Templates.
+* Frame that is in charge of showing the play/pause buttons,
+* Also in charge of waiting until the step or run button is clicked.
 */
 class PlayFrame extends JPanel {
 

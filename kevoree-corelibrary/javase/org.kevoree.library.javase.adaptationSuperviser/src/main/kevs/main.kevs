@@ -1,0 +1,16 @@
+{
+    merge 'mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.defaultChannels/{kevoree.version}'
+    merge 'mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.jexxus/{kevoree.version}'
+    merge 'mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.fakeDomo/{kevoree.version}'
+    merge 'mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.nanohttpAutoDiscovery/{kevoree.version}'
+    merge 'mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.javaseNode/{kevoree.version}'
+    merge 'mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.adaptationSuperviser/{kevoree.version}'
+
+    addNode node0:JavaSENode{
+      addComponent Adaptatio739@node0 : AdaptationSuperviser {allowStepByStep='true'}
+      updateDictionary Adaptatio739@node0
+    }
+
+    addGroup sync:BasicGroup
+    addToGroup sync node0
+}

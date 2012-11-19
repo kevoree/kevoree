@@ -22,11 +22,7 @@ import java.text.DateFormat;
 import java.util.Date;
 
 /**
-* Created with IntelliJ IDEA.
-* User: dvojtise
-* Date: 09/11/12
-* Time: 11:29
-* To change this template use File | Settings | File Templates.
+* Frame that displays the adaptation event in textual format
 */
 class ModelHistoryTextLogFrame extends JPanel {
 
@@ -67,6 +63,10 @@ class ModelHistoryTextLogFrame extends JPanel {
         setVisible(true);
     }
 
+    /**
+     * prints the text as a system/debug event
+     * @param text to show
+     */
     public void appendSystem(String text) {
         try {
             StyledDocument doc = screenTP.getStyledDocument();
@@ -77,6 +77,10 @@ class ModelHistoryTextLogFrame extends JPanel {
         }
     }
 
+    /**
+     * prints the text as a ModelAdaptation event
+     * @param text to show
+     */
     public void appendModelEvent(String text) {
         try {
             DateFormat dateFormat = new java.text.SimpleDateFormat("yyyy/MM/dd HH:mm:ss");

@@ -26,6 +26,7 @@ import org.kevoree.ContainerNode;
 import org.kevoree.ContainerRoot;
 import org.kevoree.api.service.core.handler.ModelListener;
 import org.kevoree.framework.AbstractComponentType;
+import org.kevoree.library.javase.adaptationsuperviser.modelview.KevoreeModelViewerPanel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,6 +36,8 @@ import java.util.HashMap;
 
 
 /**
+ * A Kevoree component that implements a graphical model adaptation superviser.
+ * It allows to see, model adaptation and play/pause incoming adaptation request
  * @author dvojtise
  */
 @Provides({
@@ -55,6 +58,7 @@ public class AdaptationSuperviser extends AbstractComponentType implements Model
     public static final int FRAME_WIDTH = 500;
     public static final int FRAME_HEIGHT = 600;
     private ModelHistoryTextLogFrame textLogFrame = null;
+    private KevoreeModelViewerPanel currentModelViewPanel = null;
     private JFrame rootFrame = null;
     private JChromeTabbedPane tabbedPane = null;
     private HashMap<String, Tab> tabs = new HashMap<String, Tab>();
@@ -111,12 +115,15 @@ public class AdaptationSuperviser extends AbstractComponentType implements Model
     @Override
     public boolean afterLocalUpdate(ContainerRoot currentModel, ContainerRoot proposedModel) {
         textLogFrame.appendModelEvent("afterLocalUpdate");
+        currentModelViewPanel.updateModel(proposedModel);
         return true;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
     public void modelUpdated() {
         textLogFrame.appendModelEvent("modelUpdated");
+
+
     }
 
     @Override
@@ -132,54 +139,51 @@ public class AdaptationSuperviser extends AbstractComponentType implements Model
 
 
     private void initGUI(){
-        guiThread = new Thread(new Runnable(){
-            @Override
-            public void run() {
-                // initialize GUI
-                rootFrame = new JFrame("AdaptationSuperviser @@@" + getNodeName());
-                rootFrame.setPreferredSize(new Dimension(AdaptationSuperviser.FRAME_WIDTH, AdaptationSuperviser.FRAME_HEIGHT));
-                // Tab content
-                tabContent = new JPanel();
-                tabContent.setLayout(new BorderLayout());
-                rootFrame.add(tabContent, BorderLayout.CENTER);
 
-                // TAB
-                tabbedPane = new JChromeTabbedPane("osx",tabContent);
-                tabbedPane.setPreferredSize(new Dimension(50, 40));
-                tabbedPane.getSize(tabbedPane.getPreferredSize());
-                if (System.getProperty("os.name").toUpperCase().startsWith("MAC")) {
-                    tabbedPane.setPaintBackground(false);
-                }
-                rootFrame.add(tabbedPane, BorderLayout.NORTH);
+        // initialize GUI
+        rootFrame = new JFrame("AdaptationSuperviser @@@" + getNodeName());
+        rootFrame.setPreferredSize(new Dimension(AdaptationSuperviser.FRAME_WIDTH, AdaptationSuperviser.FRAME_HEIGHT));
+        // Tab content
+        tabContent = new JPanel();
+        tabContent.setLayout(new BorderLayout());
+        rootFrame.add(tabContent, BorderLayout.CENTER);
 
-                //
-                textLogFrame = new ModelHistoryTextLogFrame();
-                textLogFrame.appendSystem("/***** CONSOLE INITIALIZED  ********/ ");
-                Tab t = tabbedPane.addTab("textLogFrame");
-                t.setInternPanel(textLogFrame);
-                t.setSelected(true);
-                tabs.put("textLogFrame", t);
+        // TAB
+        tabbedPane = new JChromeTabbedPane("osx",tabContent);
+        tabbedPane.setPreferredSize(new Dimension(50, 40));
+        tabbedPane.getSize(tabbedPane.getPreferredSize());
+        if (System.getProperty("os.name").toUpperCase().startsWith("MAC")) {
+            tabbedPane.setPaintBackground(false);
+        }
+        rootFrame.add(tabbedPane, BorderLayout.NORTH);
+
+        // TextLog Tab
+        textLogFrame = new ModelHistoryTextLogFrame();
+        textLogFrame.appendSystem("/***** CONSOLE INITIALIZED  ********/ ");
+        Tab textLogTab = tabbedPane.addTab("Event log view");
+        textLogTab.setInternPanel(textLogFrame);
+        textLogTab.setSelected(true);
+        tabs.put("textLogTab", textLogTab);
 
 
-                //rootFrame.setContentPane(textLogFrame);
+        // CurrentModel Tab
+        currentModelViewPanel =  new KevoreeModelViewerPanel();
+        Tab currentModelViewTab = tabbedPane.addTab("Current model view");
+        currentModelViewTab.setInternPanel(currentModelViewPanel);
+        currentModelViewTab.setSelected(true);
+        tabs.put("currentModelViewTab", currentModelViewTab);
 
-                rootFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-                rootFrame.pack();
-                rootFrame.setVisible(true);
+        //rootFrame.setContentPane(textLogFrame);
 
-                //KevoreeLayout.getInstance().displayTab((JPanel)textLogFrame,getName());
-                if(Boolean.valueOf((String)getDictionary().get("allowStepByStep"))) {
-                    // add stepByStep, play and pause buttons
-                    playFrame = new PlayFrame();
-                    rootFrame.add(playFrame, BorderLayout.SOUTH);
-                }
-            }
-        }) ;
-        guiThread.start();
-        try {
-            Thread.sleep(1000);  //TODO wait initialization of GUI
-        } catch (Exception e) {
-            e.printStackTrace();
+        rootFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        rootFrame.pack();
+        rootFrame.setVisible(true);
+
+        //KevoreeLayout.getInstance().displayTab((JPanel)textLogFrame,getName());
+        if(Boolean.valueOf((String)getDictionary().get("allowStepByStep"))) {
+            // add stepByStep, play and pause buttons
+            playFrame = new PlayFrame();
+            rootFrame.add(playFrame, BorderLayout.SOUTH);
         }
     }
     private void releaseGUI(){
