@@ -71,7 +71,7 @@ public class NetworkSender {
                 @Override
                 public void clientConnected(ServerConnection conn) {
                 }
-            }, addr.getAddress().getHostAddress(), addr.getPort(), true);
+            }, addr.getAddress().getHostAddress(), addr.getPort(), false);
             conn.connect();
             ByteArrayOutputStream output = new ByteArrayOutputStream();
             output.write(2);

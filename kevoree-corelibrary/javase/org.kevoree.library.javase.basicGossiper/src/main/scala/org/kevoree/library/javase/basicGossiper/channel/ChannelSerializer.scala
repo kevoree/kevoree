@@ -1,7 +1,6 @@
 package org.kevoree.library.javase.basicGossiper.channel
 
 import org.slf4j.LoggerFactory
-import org.kevoree.extra.marshalling.JacksonSerializer
 import org.kevoree.framework.message.Message
 import org.kevoree.library.javase.basicGossiper.Serializer
 
@@ -35,10 +34,12 @@ class ChannelSerializer extends Serializer {
   /* Need to add resolver capability */
 
 	private def messageFromString(model: Array[Byte]): Message = {
-    JacksonSerializer.convFromJSON(new String(model, "UTF8")).fromJSON(classOf[Message])
+    null
+    //JacksonSerializer.convFromJSON(new String(model, "UTF8")).fromJSON(classOf[Message])
 	}
 
 	private def stringFromMessage(model: Message): Array[Byte] = {
-    JacksonSerializer.convToJSON(model).toJSON.getBytes("UTF8")
+    null
+    //JacksonSerializer.convToJSON(model).toJSON.getBytes("UTF8")
 	}
 }

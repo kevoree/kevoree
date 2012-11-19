@@ -36,6 +36,7 @@ import org.kevoree.platform.android.boot.KevoreeService;
 import org.kevoree.platform.android.boot.view.ManagerUI;
 
 import java.io.File;
+import java.util.List;
 
 /**
  * Created by jed
@@ -81,8 +82,12 @@ public class ControllerImpl implements IController {
                 case KEVOREE_START:
                     Log.i(TAG, "KEVOREE_START");
                     Intent intent_start = new Intent(ctx, KevoreeService.class);
-                    String nodeName = (String) data;
+
+                    List<String> datas = (List<String>) data;
+                    String nodeName = datas.get(0);
+                    String groupName = datas.get(1);
                     intent_start.putExtra("nodeName", nodeName);
+                    intent_start.putExtra("groupName", groupName);
                     ctx.startService(intent_start);
                     break;
 

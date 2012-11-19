@@ -29,7 +29,7 @@ import java.util.concurrent.atomic.AtomicReference;
 /**
  * @author Erwan Daubert
  */
-@Library(name = "JavaSE")
+@Library(name = "JavaSE", names = "Android")
 @GroupType
 @DictionaryType({
         @DictionaryAttribute(name = "interval", defaultValue = "30000", optional = true)
