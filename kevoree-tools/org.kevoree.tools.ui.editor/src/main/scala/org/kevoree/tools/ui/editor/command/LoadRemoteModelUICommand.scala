@@ -152,7 +152,6 @@ class LoadRemoteModelUICommand extends Command {
         if (results.size >= 2) {
           val ip = results(0)
           val port = results(1)
-
           if(!tryRemoteJexxus(ip, port)){
             if (!tryRemoteLoad(ip, port, true)) {
               if (!tryRemoteLoad(ip, port, false)) {
