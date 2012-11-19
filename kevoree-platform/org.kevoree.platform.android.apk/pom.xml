@@ -26,7 +26,6 @@
             <version>${kevoree.version}</version>
         </dependency>
 
-
         <dependency>
             <groupId>com.google.android</groupId>
             <artifactId>android</artifactId>

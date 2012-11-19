@@ -33,6 +33,7 @@
         <module>../org.kevoree.library.android.socketChannels</module>
         <module>../org.kevoree.library.android.nioChannels</module>
         <module>../org.kevoree.library.android.agrapher</module>
+		<module>../org.kevoree.library.android.jexxus</module>
     </modules>
 
     <dependencies>
