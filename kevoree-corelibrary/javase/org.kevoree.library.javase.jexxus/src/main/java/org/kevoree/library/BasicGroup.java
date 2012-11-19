@@ -112,7 +112,6 @@ public class BasicGroup extends AbstractGroupType implements ConnectionListener 
     public void push(ContainerRoot model, String targetNodeName) throws Exception {
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         output.write(pushModel);
-        System.out.println(KevoreeXmiHelper.saveToString(model,true));
         KevoreeXmiHelper.saveCompressedStream(output, model);
         String ip = "127.0.0.1";
         Option<String> ipOption = NetworkHelper.getAccessibleIP(KevoreePropertyHelper.getStringNetworkProperties(model, targetNodeName, org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP()));
@@ -140,7 +139,6 @@ public class BasicGroup extends AbstractGroupType implements ConnectionListener 
             public void clientConnected(ServerConnection conn) {
             }
         }, ip, PORT, ssl);
-         System.out.println("I connect to "+ip+"->"+PORT+",ssl="+ssl);
         conns[0].connect();
         conns[0].send(output.toByteArray(), Delivery.RELIABLE);
     }
