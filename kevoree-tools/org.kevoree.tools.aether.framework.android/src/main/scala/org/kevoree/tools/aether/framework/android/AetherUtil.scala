@@ -45,7 +45,7 @@ import util.matching.Regex
 import org.sonatype.aether.repository.{Authentication, RepositoryPolicy, RemoteRepository, LocalRepository}
 import scala.collection.JavaConversions._
 import org.sonatype.aether.{RepositoryCache, ConfigurationProperties, RepositorySystem}
-import org.kevoree.tools.aether.framework.{NoopCache, AetherFramework}
+import org.kevoree.tools.aether.framework.{SLF4JTransferListener, NoopCache, AetherFramework}
 
 //import org.sonatype.aether.connector.wagon.WagonProvider
 
@@ -74,6 +74,7 @@ object AetherUtil extends AetherFramework {
     val session = new MavenRepositorySystemSession()
     session.setUpdatePolicy(RepositoryPolicy.UPDATE_POLICY_ALWAYS)
     session.setConfigProperty("aether.connector.ahc.provider", "jdk")
+    session.setTransferListener(new SLF4JTransferListener)
     session.setLocalRepositoryManager(getRepositorySystem.newLocalRepositoryManager(new LocalRepository(System.getProperty("user.home").toString + "/.m2/repository")))
     session.getConfigProperties.put(ConfigurationProperties.REQUEST_TIMEOUT, 2000.asInstanceOf[java.lang.Integer])
     session.getConfigProperties.put(ConfigurationProperties.CONNECT_TIMEOUT, 2000.asInstanceOf[java.lang.Integer])

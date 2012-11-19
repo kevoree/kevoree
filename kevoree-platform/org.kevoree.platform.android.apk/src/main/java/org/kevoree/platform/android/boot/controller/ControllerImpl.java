@@ -62,6 +62,8 @@ public class ControllerImpl implements IController {
                 Log.i(TAG, "KEVOREE_STOP");
                 Intent intent_stop = new Intent(ctx, KevoreeService.class);
                 ctx.stopService(intent_stop);
+
+
                 System.exit(0);
                 break;
 

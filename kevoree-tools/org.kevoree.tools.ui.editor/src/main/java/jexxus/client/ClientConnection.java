@@ -191,7 +191,7 @@ public class ClientConnection extends Connection {
         connected = true;
         if (udpPort != UDP_PORT_VALUE_FOR_NOT_USING_UDP) {
             startUDPListener();
-            send(new byte[0], Delivery.UNRELIABLE);
+            //send(new byte[0], Delivery.UNRELIABLE);
         }
 
     }

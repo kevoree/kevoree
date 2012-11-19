@@ -22,6 +22,11 @@ public class NodeNetworkHelper {
 
     private static Logger logger = LoggerFactory.getLogger(NodeNetworkHelper.class);
 
+    public static void main(String[] args){
+        getAddresses();
+
+    }
+
     public static java.util.HashMap<String,String> getAddresses() {
         java.util.HashMap<String,String> addresses = new java.util.HashMap<String,String>();
         try {
@@ -30,7 +35,10 @@ public class NodeNetworkHelper {
                 NetworkInterface networkInterface = networkInterfaces.nextElement();
                 if (!networkInterface.isLoopback()) {
                       for(InterfaceAddress interfaceAddress : networkInterface.getInterfaceAddresses()){
-                           addresses.put(interfaceAddress.getAddress().getHostAddress(),networkInterface.getDisplayName());
+                          if(interfaceAddress.getAddress().getHostAddress().length() == 13){
+                              addresses.put(interfaceAddress.getAddress().getHostAddress(),networkInterface.getDisplayName());
+                              //System.out.println(">"+networkInterface.getDisplayName()+"->"+interfaceAddress.getAddress());
+                          }
                       }
                 }
             }

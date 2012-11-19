@@ -46,7 +46,7 @@ object NetworkHelper {
   def isAccessible (ip: String): Boolean = {
     try {
       val inet = InetAddress.getByName(ip)
-      inet.isReachable(1000)
+      inet.isReachable(3000)
     } catch {
       case _ @ e => {
         logger.debug("Error in network helper ",e)

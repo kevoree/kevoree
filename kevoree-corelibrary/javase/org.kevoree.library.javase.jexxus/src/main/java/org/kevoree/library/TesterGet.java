@@ -30,7 +30,7 @@ public class TesterGet implements Runnable {
 
     public static void main(String[] args) throws IOException, InterruptedException {
 
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 1; i++) {
              new Thread(new TesterGet().setI(i)){}.start();
         }
     }
@@ -39,7 +39,6 @@ public class TesterGet implements Runnable {
     public void run() {
         try {
             final Exchanger<ContainerRoot> exchanger = new Exchanger<ContainerRoot>();
-
             final UniClientConnection[] conns = new UniClientConnection[1];
             conns[0] = new UniClientConnection(new ConnectionListener() {
                 @Override
@@ -56,13 +55,13 @@ public class TesterGet implements Runnable {
                     System.out.println("Connected");
                 }
 
-            }, "localhost", 15652, true);
-            conns[0].connect();
+            }, "192.168.1.121", 8000, false);
+            conns[0].connect(3000);
             byte[] data = new byte[10];
             data = ("HelloFrom="+i).getBytes();
             conns[0].send(data, Delivery.RELIABLE);
-            //   ContainerRoot rec = exchanger.exchange(null);
-            //  System.out.println(KevoreeXmiHelper.saveToString(rec, true));
+            //ContainerRoot rec = exchanger.exchange(null);
+           // System.out.println(KevoreeXmiHelper.saveToString(rec, true));
             conns[0].close();
 
         }catch(Exception e){
