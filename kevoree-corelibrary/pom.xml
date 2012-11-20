@@ -23,6 +23,10 @@
         <module>./model/org.kevoree.library.model.root</module>
         <module>./sample/org.kevoree.library.sample.root</module>
         <module>./native/org.kevoree.library.nativeN.root</module>
+		
+		<module>./daum/org.daum.library.javase.root</module>
+		<module>./daum/org.daum.library.android.root</module>
+		
     </modules>
 
     <distributionManagement>

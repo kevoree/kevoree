@@ -138,7 +138,7 @@ public class BasicGossiperGroup extends BasicGroup implements GossiperComponent 
         for (String peer : l) {
             if (!peer.equals(getNodeName())) {
                 String address = getAddress(peer);
-                processValue.netSender().sendMessageUnreliable(messageBuilder.build(), new InetSocketAddress(address, parsePortNumber(peer)));
+                processValue.netSender().sendMessage/*Unreliable*/(messageBuilder.build(), new InetSocketAddress(address, parsePortNumber(peer)));
             }
         }
     }

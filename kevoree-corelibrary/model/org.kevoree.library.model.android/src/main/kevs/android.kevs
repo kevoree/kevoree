@@ -6,3 +6,7 @@ merge "mvn:org.kevoree.corelibrary.android/org.kevoree.library.android.nanohttp/
 merge "mvn:org.kevoree.corelibrary.android/org.kevoree.library.android.socketChannels/{kevoree.version}"
 merge "mvn:org.kevoree.corelibrary.android/org.kevoree.library.android.nioChannels/{kevoree.version}"
 merge "mvn:org.kevoree.corelibrary.android/org.kevoree.library.android.agrapher/{kevoree.version}"
+
+merge "mvn:org.kevoree.corelibrary.android/org.kevoree.library.android.jexxus/{kevoree.version}"
+merge "mvn:org.kevoree.corelibrary.android/org.kevoree.library.android.basicGossiper/{kevoree.version}"
+merge "mvn:org.kevoree.corelibrary.android/org.kevoree.library.android.mavenCache/{kevoree.version}"

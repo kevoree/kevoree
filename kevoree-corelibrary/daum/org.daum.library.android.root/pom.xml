@@ -2,11 +2,11 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.kevoree.corelibrary.android</groupId>
-    <artifactId>org.kevoree.library.android.root</artifactId>
+    <groupId>org.daum.library.android</groupId>
+    <artifactId>org.daum.library.android.root</artifactId>
     <packaging>pom</packaging>
-    <name>Kevoree :: CoreLibrary :: Android :: Root</name>
-    <version>1.8.9-SNAPSHOT</version>
+    <name>DAUM :: Library :: Android :: Root</name>
+	<version>1.8.9-SNAPSHOT</version>
 
     <parent>
         <artifactId>org.kevoree.library</artifactId>
@@ -16,27 +16,34 @@
     </parent>
 
     <properties>
-        <kevoree.version>${project.version}</kevoree.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <android.tools.aapt>${android.home}/platform-tools/aapt</android.tools.aapt>
         <android.tools.dx>${android.home}/platform-tools/dx</android.tools.dx>
-        <kevoree.exclude>com.google.android:*,commons-*:*,org.apache.httpcomponents:*,org.khronos:*,xerces:*,xpp3:*,org.json:*,cglib:*,org.objenesis:*</kevoree.exclude>
     </properties>
 
     <modules>
-        <module>../org.kevoree.library.android.nodeType</module>
-        <module>../org.kevoree.library.android.authentication</module>
-        <module>../org.kevoree.library.android.logger</module>
-        <module>../org.kevoree.library.android.fakeDomo</module>
-        <module>../org.kevoree.library.android.nanohttp</module>
-        <module>../org.kevoree.library.android.defaultChannels</module>
-        <module>../org.kevoree.library.android.socketChannels</module>
-        <module>../org.kevoree.library.android.nioChannels</module>
-        <module>../org.kevoree.library.android.agrapher</module>
-		<module>../org.kevoree.library.android.jexxus</module>
-        <module>../org.kevoree.library.android.basicGossiper</module>
-		<module>../org.kevoree.library.android.mavenCache</module>
+        <module>../org.daum.library.android.p2pSock</module>
+        <module>../org.daum.library.android.sensors</module>
     </modules>
+	
+    <repositories>
+        <repository>
+            <id>kevoree-libs-release-local</id>
+            <url>http://maven.kevoree.org/release</url>
+        </repository>
+        <repository>
+            <id>kevoree-snapshots</id>
+            <url>http://maven.kevoree.org/snapshots</url>
+        </repository>
+        <repository>
+            <id>kevoree-libs-release-local-daum</id>
+            <url>http://maven.kevoree.org/daum/release</url>
+        </repository>
+        <repository>
+            <id>kevoree-libs-snapshots-local-daum</id>
+            <url>http://maven.kevoree.org/daum/snapshots</url>
+        </repository>
+    </repositories>
 
     <dependencies>
         <dependency>
@@ -47,7 +54,7 @@
         <dependency>
             <groupId>com.google.android</groupId>
             <artifactId>android</artifactId>
-            <version>4.0.1.2</version>
+            <version>2.3.3</version>
         </dependency>
         <dependency>
             <groupId>org.kevoree.tools</groupId>
@@ -79,7 +86,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.3.2</version>
                 <configuration>
                     <source>1.6</source>
                     <target>1.6</target>
@@ -88,28 +94,6 @@
             </plugin>
         </plugins>
     </build>
-
-    <repositories>
-        <repository>
-            <id>kevoree-libs-release-local</id>
-            <url>http://maven.kevoree.org/release</url>
-        </repository>
-        <repository>
-            <id>kevoree-snapshots</id>
-            <url>http://maven.kevoree.org/snapshots</url>
-        </repository>
-    </repositories>
-
-    <pluginRepositories>
-        <pluginRepository>
-            <id>plugin.kevoree-github</id>
-            <url>http://maven.kevoree.org/release</url>
-        </pluginRepository>
-        <pluginRepository>
-            <id>plugin.kevoree-snapshots</id>
-            <url>http://maven.kevoree.org/snapshots</url>
-        </pluginRepository>
-    </pluginRepositories>
 
 
 </project>
