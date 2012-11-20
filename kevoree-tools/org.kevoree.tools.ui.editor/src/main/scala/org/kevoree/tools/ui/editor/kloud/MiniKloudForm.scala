@@ -210,7 +210,7 @@ class MiniKloudForm (editor: KevoreeEditor, button: AbstractButton) {
         kevEngine.append("merge 'mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.nanohttp/{kevoree.version}'")
         kevEngine.append("merge 'mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.defaultChannels/{kevoree.version}'")
 
-        kevEngine.append("addNode {minicloudNodeName}: MiniCloudNode {logLevel = 'DEBUG'}")
+        kevEngine.append("addNode {minicloudNodeName}: MiniCloudNode {logLevel = 'INFO'}")
 
         // add all JavaSE (or inherited) user nodes as child of the minicloud node
         nodes.foreach {
