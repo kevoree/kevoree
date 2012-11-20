@@ -19,6 +19,11 @@
             <artifactId>org.kevoree.library.javase.swingUI</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
+        <dependency>
+            <artifactId>org.kevoree.tools.ui.editor</artifactId>
+            <groupId>org.kevoree.tools</groupId>
+            <version>${kevoree.version}</version>
+        </dependency>
     </dependencies>
 
 </project>

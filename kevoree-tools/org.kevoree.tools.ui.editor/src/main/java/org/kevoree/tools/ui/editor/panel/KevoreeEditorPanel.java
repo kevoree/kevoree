@@ -95,6 +95,10 @@ public class KevoreeEditorPanel extends JPanel {
 
     private EditableModelPanel editableModelPanel = null;
     private JSplitPane splitPane = null;
+    public   JSplitPane getSplitPane(){
+        return splitPane;
+    }
+
 
     public TypeDefinitionSourceList getPalette() {
         return palette;
