@@ -19,59 +19,29 @@ package org.kevoree.library.defaultNodeTypes.jcl.deploy.command
  */
 
 import org.kevoree._
-import framework.message.{StopMessage, StartMessage}
 import framework.osgi.KevoreeInstanceActivator
 import library.defaultNodeTypes.jcl.deploy.context.{KevoreeMapping, KevoreeDeployManager}
 
 case class StartStopInstance(c: Instance, nodeName: String,start : Boolean) extends LifeCycleCommand(c, nodeName) {
 
   def execute(): Boolean = {
-
-
+    val root = c.getTypeDefinition.eContainer.asInstanceOf[ContainerRoot]
     KevoreeDeployManager.bundleMapping.find(map => map.objClassName == c.getClass.getName && map.name == c.getName) match {
       case None => false
       case Some(mapfound) => {
-
-        val msg = if(start){
-          StartMessage(c.getTypeDefinition.eContainer.asInstanceOf[ContainerRoot])
-        } else {
-          StopMessage(c.getTypeDefinition.eContainer.asInstanceOf[ContainerRoot])
-        }
-
         mapfound.asInstanceOf[KevoreeMapping].ref match {
           case iact: KevoreeInstanceActivator => {
             Thread.currentThread().setContextClassLoader(iact.getKInstance.getClass.getClassLoader)
             if(start){
               Thread.currentThread().setName("KevoreeStartInstance"+c.getName)
-              iact.getKInstance.kInstanceStart(c.getTypeDefinition.eContainer.asInstanceOf[ContainerRoot])
+              iact.getKInstance.kInstanceStart(root)
             } else {
               Thread.currentThread().setName("KevoreeStopInstance"+c.getName)
-              val res = iact.getKInstance.kInstanceStop(c.getTypeDefinition.eContainer.asInstanceOf[ContainerRoot])
+              val res = iact.getKInstance.kInstanceStop(root)
               Thread.currentThread().setContextClassLoader(null)
               res
             }
-
-
-
           }
-            /*
-          case c_act: KevoreeChannelFragmentActivator => {
-            val startResult = (c_act.channelActor !? msg).asInstanceOf[Boolean]
-            startResult
-          }
-          case g_act: KevoreeGroupActivator => {
-
-            Thread.currentThread().setContextClassLoader(g_act.groupActor.getClass.getClassLoader)
-            if(start){
-              g_act.groupActor.kInstanceStart(c.getTypeDefinition.eContainer.asInstanceOf[ContainerRoot])
-            } else {
-              g_act.groupActor.kInstanceStop(c.getTypeDefinition.eContainer.asInstanceOf[ContainerRoot])
-            }
-
-           // val startResult = (g_act.groupActor !? msg).asInstanceOf[Boolean]
-           // startResult
-          }    */
-
           case _ => false
         }
       }

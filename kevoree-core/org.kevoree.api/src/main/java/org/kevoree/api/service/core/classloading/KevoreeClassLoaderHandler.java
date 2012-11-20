@@ -53,4 +53,7 @@ public interface KevoreeClassLoaderHandler {
 
     public void attachKCL(DeployUnit du, KevoreeJarClassLoader kcl);
 
+    public void registerDeployUnitResolver(DeployUnitResolver dur);
+    public void unregisterDeployUnitResolver(DeployUnitResolver dur);
+
 }

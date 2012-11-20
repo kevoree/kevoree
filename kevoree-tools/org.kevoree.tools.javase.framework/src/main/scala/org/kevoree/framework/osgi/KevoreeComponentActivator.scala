@@ -49,20 +49,7 @@ abstract class KevoreeComponentActivator extends KevoreeInstanceActivator {
   var componentActor: KevoreeComponent = null
 
   override def start() {
-    /* SEARCH HEADERS VALUE */
-    //nodeName = bc.getBundle.getHeaders.find(dic => dic._1 == Constants.KEVOREE_NODE_NAME_HEADER).get._2.toString
-    //componentName = bc.getBundle.getHeaders.find(dic => dic._1 == Constants.KEVOREE_INSTANCE_NAME_HEADER).get._2.toString
-    /* Create component actor */
     componentActor = callFactory()
-
-
-    /* PUT INITIAL PROPERTIES */
-    /*
-    if (bundleContext != null) {
-      componentActor.getKevoreeComponentType.getDictionary.put(Constants.KEVOREE_PROPERTY_OSGI_BUNDLE, bundleContext.getBundle)
-    }*/
-
-
     componentActor.getKevoreeComponentType.asInstanceOf[AbstractComponentType].setName(componentName)
     componentActor.getKevoreeComponentType.asInstanceOf[AbstractComponentType].setNodeName(nodeName)
     componentActor.getKevoreeComponentType.asInstanceOf[AbstractComponentType].setModelService(modelHandlerService)

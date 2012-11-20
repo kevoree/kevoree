@@ -10,6 +10,7 @@ import org.kevoree.annotation.*;
 import org.kevoree.api.service.core.handler.ModelListener;
 import org.kevoree.api.service.core.logging.KevoreeLogLevel;
 import org.kevoree.framework.AbstractNodeType;
+import org.kevoree.framework.ModelHandlerServiceProxy;
 import org.kevoree.kompare.KevoreeKompareBean;
 import org.kevoree.library.defaultNodeTypes.jcl.deploy.CommandMapper;
 import org.kevoree.library.defaultNodeTypes.jcl.deploy.context.KevoreeDeployManager;
@@ -68,7 +69,6 @@ public class JavaSENode extends AbstractNodeType implements ModelListener {
             shutdownThread.start();
         }
         KevoreeDeployManager.startPool();
-
     }
 
 
