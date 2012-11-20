@@ -37,10 +37,10 @@ public class AbstractTypeDefinition {
         dictionary = dic;
     }
 
-    private ModelHandlerServiceProxy modelServiceProxy = new ModelHandlerServiceProxy();
+    private ModelHandlerServiceProxy modelServiceProxy;
 
     public void setModelService(KevoreeModelHandlerService ms) {
-        modelServiceProxy.setProxy(ms);
+        modelServiceProxy = new ModelHandlerServiceProxy(ms);
     }
 
     public KevoreeModelHandlerService getModelService() {

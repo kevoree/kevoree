@@ -33,7 +33,6 @@ package org.kevoree.framework.osgi
 
 import java.util.Hashtable
 import org.kevoree.framework._
-import message.StopMessage
 
 abstract class KevoreeChannelFragmentActivator extends KevoreeInstanceActivator {
 
@@ -76,7 +75,7 @@ abstract class KevoreeChannelFragmentActivator extends KevoreeInstanceActivator 
     }
 
     if (channelActor.asInstanceOf[ChannelTypeFragment].isStarted) {
-      channelActor !? StopMessage(null)
+      channelActor.kInstanceStop(null)
     }
     if (channelActor.asInstanceOf[AbstractChannelFragment].isInstanceOf[ModelHandlerServiceProxy]) {
       channelActor.asInstanceOf[AbstractChannelFragment].asInstanceOf[ModelHandlerServiceProxy].stopProxy()

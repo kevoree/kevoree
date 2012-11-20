@@ -216,7 +216,6 @@ class KevoreeCoreBean extends KevoreeModelHandlerService {
   def stop() {
     logger.warn("Kevoree Core will be stopped !")
     listenerActor.stop()
-    //super[KevoreeThreadActor].forceStop
     scheduler.shutdownNow()
     scheduler = null
     if (nodeInstance != null) {
@@ -278,18 +277,24 @@ class KevoreeCoreBean extends KevoreeModelHandlerService {
           }
           false
         } else {
+
+          val protectedModel = cloner.clone(model)
+          val clonedNewModel = cloner.clone(pnewmodel)
+          val protectedNewModel = cloner.clone(pnewmodel)
+
+
           //Model check is OK.
           logger.debug("Before listeners PreCheck !")
-          val preCheckResult = listenerActor.preUpdate(cloner.clone(model), cloner.clone(pnewmodel))
+          val preCheckResult = listenerActor.preUpdate(protectedModel, clonedNewModel)
           logger.debug("PreCheck result = " + preCheckResult)
 
           logger.debug("Before listeners InitUpdate !")
-          val initUpdateResult = listenerActor.initUpdate(cloner.clone(model), cloner.clone(pnewmodel))
+          val initUpdateResult = listenerActor.initUpdate(protectedModel, clonedNewModel)
           logger.debug("InitUpdate result = " + initUpdateResult)
 
           if (preCheckResult && initUpdateResult) {
 
-            var newmodel = cloner.clone(pnewmodel)
+            var newmodel = clonedNewModel//cloner.clone(pnewmodel)
             //CHECK FOR HARA KIRI
 
             var previousHaraKiriModel: ContainerRoot = null
@@ -380,7 +385,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService {
               }
             }
             if (deployResult) {
-              switchToNewModel(newmodel)
+              switchToNewModel(protectedNewModel)
               logger.info("Update sucessfully completed.")
             } else {
               //KEEP FAIL MODEL, TODO

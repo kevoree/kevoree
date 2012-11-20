@@ -49,7 +49,7 @@ import javax.swing.JOptionPane
 import org.kevoree.framework.KevoreeXmiHelper
 import org.kevoree.tools.ui.editor.{PositionedEMFHelper, KevoreeUIKernel}
 import org.slf4j.LoggerFactory
-import java.util.concurrent.Exchanger
+import java.util.concurrent.{TimeUnit, Exchanger}
 import org.kevoree.ContainerRoot
 import jexxus.client.ClientConnection
 import jexxus.common.{Delivery, Connection, ConnectionListener}
@@ -114,7 +114,7 @@ class MergeRemoteModelUICommand extends Command {
         try {
           exchanger.exchange(root);
         } catch {
-          case _ @ e => logger.error("",e)
+          case _ @ e => //logger.error("",e)
         } finally {
           conns._1.close()
         }
@@ -123,7 +123,7 @@ class MergeRemoteModelUICommand extends Command {
     }, ip, Integer.parseInt(port), true))
     conns._1.connect()
     conns._1.send(Array(Byte.box(0)),Delivery.RELIABLE)
-    val root = exchanger.exchange(null)
+    val root = exchanger.exchange(null,5000,TimeUnit.MILLISECONDS)
     //kernel.getModelHandler.merge(root)
     PositionedEMFHelper.updateModelUIMetaData(kernel)
     lcommand.setKernel(kernel)
