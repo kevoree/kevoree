@@ -113,7 +113,7 @@ public class BaseKevoreeUI extends LinearLayout {
         String nodeName="";
         try {
             WifiManager wm = (WifiManager)ctx.getSystemService(Context.WIFI_SERVICE);
-            nodeName = wm.getConnectionInfo().getMacAddress().replace(":","");
+            nodeName = "k"+wm.getConnectionInfo().getMacAddress().replace(":","");
             if(nodeName.length() == 0)
             {
                 nodeName = "node0";
