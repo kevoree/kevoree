@@ -317,7 +317,7 @@ object KevoreePropertyHelper {
     properties
   }
 
-  private def getProperty (model: ContainerRoot, instance: Instance, name: String, key: String, isFragment: Boolean = false, nodeNameForFragment: String = ""): Option[Object] = {
+  def getProperty (model: ContainerRoot, instance: Instance, name: String, key: String, isFragment: Boolean = false, nodeNameForFragment: String = ""): Option[Object] = {
     instance.getDictionary match {
       case None => {
         getDefaultValue(instance.getTypeDefinition, key)
