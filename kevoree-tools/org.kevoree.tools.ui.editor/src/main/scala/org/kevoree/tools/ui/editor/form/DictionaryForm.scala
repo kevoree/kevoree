@@ -26,7 +26,7 @@
  */
 package org.kevoree.tools.ui.editor.form
 
-import org.kevoree.tools.ui.editor.KevoreeUIKernel
+import org.kevoree.tools.ui.editor.{UIHelper, KevoreeUIKernel}
 import com.explodingpixels.macwidgets.plaf.{HudButtonUI, HudCheckBoxUI, HudTextFieldUI, HudLabelUI}
 import org.kevoree.tools.ui.editor.property.SpringUtilities
 import scala.collection.JavaConversions._
@@ -256,22 +256,21 @@ trait DictionaryForm {
 
       val defaultValueComboxBoxModel = new DefaultComboBoxModel
       updateValuesToModel(defaultValueComboxBoxModel)
-      val defaultValueComboxBox = new JComboBox(defaultValueComboxBoxModel)
-      defaultValueComboxBox.setUI(new KevoreeHudComboBoxUI())
+      val defaultValueComboxBox = UIHelper.createJComboBox(defaultValueComboxBoxModel,new KevoreeHudComboBoxUI())
 
       val defaultValueComboxBoxLabel = new JLabel("Default value:", SwingConstants.TRAILING);
       defaultValueComboxBoxLabel.setUI(new HudLabelUI());
       defaultValueComboxBoxLabel.setOpaque(false);
       defaultValueComboxBoxLabel.setLabelFor(defaultValueComboxBox);
-      defaultValueComboxBox.getModel.addListDataListener(new ListDataListener() {
+      UIHelper.addListenerToModel(defaultValueComboxBox,(new ListDataListener() {
         def intervalAdded (e: ListDataEvent) {}
 
         def intervalRemoved (e: ListDataEvent) {}
 
         def contentsChanged (e: ListDataEvent) {
-          defaultValue = e.getSource.asInstanceOf[ComboBoxModel].getSelectedItem.toString
+          defaultValue = UIHelper.getSelectedItemfromModel(e.getSource).toString
         }
-      })
+      }) )
 
       panel.add(defaultValueComboxBoxLabel)
       panel.add(table)
@@ -299,10 +298,10 @@ trait DictionaryForm {
     panel.repaint()
   }
 
-  private def updateValuesToModel (model: DefaultComboBoxModel) {
-    model.removeAllElements()
+  private def updateValuesToModel (model: Any) {
+    model.asInstanceOf[{def removeAllElements()}]
     values.foreach {
-      value => model.addElement(value)
+      value => UIHelper.addItem(model,value)
     }
   }
 

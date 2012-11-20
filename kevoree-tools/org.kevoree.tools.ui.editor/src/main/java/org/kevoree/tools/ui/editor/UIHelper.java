@@ -11,11 +11,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kevoree.platform.standalone.gui;
+package org.kevoree.tools.ui.editor;
 
 import com.explodingpixels.macwidgets.plaf.HudComboBoxUI;
 
 import javax.swing.*;
+import javax.swing.event.ListDataListener;
 
 /**
  * Created with IntelliJ IDEA.
@@ -30,17 +31,40 @@ public class UIHelper {
         cb.setUI(new HudComboBoxUI()) ;
         return cb;
     }
+    public static JComponent createJComboBox(DefaultComboBoxModel model,HudComboBoxUI hui){
+        JComboBox cb = new JComboBox(model) ;
+        cb.setUI(hui) ;
+        return cb;
+    }
+
+
+    public static void addItemToBox(JComboBox box,Object o){
+        box.addItem(o);
+    }
+
+    public static void addListenerToModel(Object box, ListDataListener list){
+        ((JComboBox)box).getModel().addListDataListener(list);
+    }
+
 
     public static void addItem(DefaultComboBoxModel model,String elem){
         model.addElement(elem);
     }
 
+    public static void addItem(Object model,String elem){
+        ((DefaultComboBoxModel)model).addElement(elem);
+    }
     public static void setSelectedItem(Object obj,Object value){
         ((JComboBox)obj).setSelectedItem(value);
     }
 
     public static Object getSelectedItem(Object combo){
         return ((JComboBox)combo).getSelectedItem();
+    }
+
+
+    public static Object getSelectedItemfromModel(Object combo){
+        return ((ComboBoxModel)combo).getSelectedItem();
     }
 
 }

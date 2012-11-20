@@ -29,7 +29,7 @@ package org.kevoree.tools.ui.editor.form
 import com.explodingpixels.macwidgets.HudWindow
 import com.explodingpixels.macwidgets.plaf.{HudButtonUI, HudLabelUI, HudTextFieldUI}
 import org.kevoree.tools.ui.editor.property.SpringUtilities
-import org.kevoree.tools.ui.editor.KevoreeUIKernel
+import org.kevoree.tools.ui.editor.{UIHelper, KevoreeUIKernel}
 import org.kevoree.tools.ui.editor.command.{ReloadTypePalette}
 import org.kevoree.{DeployUnit, TypeLibrary, KevoreeFactory}
 import org.kevoree.tools.ui.framework.data.{KevoreeHudComboBoxUI}
@@ -104,13 +104,12 @@ trait ComponentTypeForm {
 
     //MENU LIBRARY
     val libraryModel = new DefaultComboBoxModel
-    libraryModel.addElement("no library")
+    UIHelper.addItem(libraryModel,"no library")
     kernel.getModelHandler.getActualModel.getLibraries.foreach {
-      lib => libraryModel.addElement(lib)
+      lib =>  UIHelper.addItem(libraryModel,lib.toString)
     }
-    val comboLibrary = new JComboBox(libraryModel)
-    comboLibrary.setUI(new KevoreeHudComboBoxUI())
-    comboLibrary.addPopupMenuListener(new PopupMenuListener {
+    val comboLibrary = UIHelper.createJComboBox(libraryModel,new KevoreeHudComboBoxUI())
+    comboLibrary.asInstanceOf[{def addPopupMenuListener(l:PopupMenuListener)}].addPopupMenuListener(new PopupMenuListener {
       def popupMenuWillBecomeVisible(p1: PopupMenuEvent) {
         libraryCompoLabel.setForeground(Color.WHITE)
       }
@@ -126,13 +125,12 @@ trait ComponentTypeForm {
 
     //MENU DeployUnit
     val deployUnitModel = new DefaultComboBoxModel
-    deployUnitModel.addElement("no deploy unit")
+    UIHelper.addItem(deployUnitModel,"no deploy unit")
     kernel.getModelHandler.getActualModel.getDeployUnits.foreach {
-      du => deployUnitModel.addElement(du)
+      du =>  UIHelper.addItem(deployUnitModel,du.toString)
     }
-    val comboDeployUnit = new JComboBox(deployUnitModel)
-    comboDeployUnit.setUI(new KevoreeHudComboBoxUI())
-    comboDeployUnit.addPopupMenuListener(new PopupMenuListener() {
+    val comboDeployUnit = UIHelper.createJComboBox(deployUnitModel,new KevoreeHudComboBoxUI())
+    comboDeployUnit.asInstanceOf[{def addPopupMenuListener(l : PopupMenuListener)}].addPopupMenuListener(new PopupMenuListener() {
       def popupMenuWillBecomeVisible(p1: PopupMenuEvent) {
         deployUnitComboLabel.setForeground(Color.WHITE)
       }
@@ -164,12 +162,12 @@ trait ComponentTypeForm {
           componentTypeNameLabel.setForeground(Color.RED)
         }
 
-        if (!comboLibrary.getSelectedItem.isInstanceOf[TypeLibrary]) {
+        if (!UIHelper.getSelectedItem(comboLibrary).isInstanceOf[TypeLibrary]) {
           proceed = false
           libraryCompoLabel.setForeground(Color.RED)
         }
 
-        if (!comboDeployUnit.getSelectedItem.isInstanceOf[DeployUnit]) {
+        if (!UIHelper.getSelectedItem(comboDeployUnit).isInstanceOf[DeployUnit]) {
           proceed = false
           deployUnitComboLabel.setForeground(Color.RED)
         }
@@ -185,14 +183,14 @@ trait ComponentTypeForm {
           }
           newCt.setBean(packName + newCt.getName)
 
-          comboLibrary.getSelectedItem match {
+          UIHelper.getSelectedItem(comboLibrary) match {
             case lib: TypeLibrary => {
               lib.addSubTypes(newCt)
             }
             case _@e => System.out.println("Not a library. " + e.getClass)
           }
 
-          comboDeployUnit.getSelectedItem match {
+          UIHelper.getSelectedItem(comboDeployUnit) match {
             case du: DeployUnit => {
               newCt.addDeployUnits(du)
             }
