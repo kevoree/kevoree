@@ -16,13 +16,25 @@
     <properties>
         <kevoree.version>${project.version}</kevoree.version>
         <android.sdk.path>${android.home}</android.sdk.path>
+        <android.extractDuplicates>true</android.extractDuplicates>
     </properties>
 
     <dependencies>
 
+
         <dependency>
             <groupId>org.kevoree.corelibrary.android</groupId>
             <artifactId>org.kevoree.library.android.nodeType</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.kevoree.corelibrary.android</groupId>
+            <artifactId>org.kevoree.library.android.jexxus</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.kevoree.corelibrary.android</groupId>
+            <artifactId>org.kevoree.library.android.basicGossiper</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
 
@@ -165,7 +177,7 @@
             <plugin>
                 <groupId>com.jayway.maven.plugins.android.generation2</groupId>
                 <artifactId>android-maven-plugin</artifactId>
-                <version>3.2.0</version>
+                <version>3.4.0</version>
                 <configuration>
                     <sdk>
                         <platform>15</platform>
@@ -177,6 +189,7 @@
                     <sign>
                         <debug>auto</debug>
                     </sign>
+                    <extractDuplicates>true</extractDuplicates>
                 </configuration>
                 <extensions>true</extensions>
             </plugin>

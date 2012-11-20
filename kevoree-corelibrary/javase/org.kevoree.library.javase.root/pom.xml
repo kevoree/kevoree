@@ -60,6 +60,9 @@
         <module>../org.kevoree.library.javase.adaptationSuperviser</module>
         <module>../org.kevoree.library.javase.basicGossiper</module>
 
+
+        <module>../org.kevoree.library.javase.mavenCache</module>
+
     </modules>
 
     <dependencies>

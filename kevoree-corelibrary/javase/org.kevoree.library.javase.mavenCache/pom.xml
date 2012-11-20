@@ -13,7 +13,4 @@
         <relativePath>../org.kevoree.library.javase.root/pom.xml</relativePath>
     </parent>
 
-    <dependencies>
-    </dependencies>
-
 </project>

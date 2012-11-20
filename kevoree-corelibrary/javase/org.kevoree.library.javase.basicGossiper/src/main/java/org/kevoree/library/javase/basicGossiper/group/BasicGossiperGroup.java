@@ -14,7 +14,6 @@ import org.kevoree.library.basicGossiper.protocol.gossip.Gossip;
 import org.kevoree.library.basicGossiper.protocol.message.KevoreeMessage;
 import org.kevoree.library.javase.basicGossiper.*;
 import org.kevoree.library.javase.conflictSolver.AlreadyPassedPrioritySolver;
-import org.kevoree.library.javase.network.NodeNetworkHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import scala.Option;
@@ -156,10 +155,10 @@ public class BasicGossiperGroup extends BasicGroup implements GossiperComponent 
     @Override
     public void triggerModelUpdate() {
         if (starting) {
-            final Option<ContainerRoot> modelOption = NodeNetworkHelper.updateModelWithNetworkProperty(this);
-            if (modelOption.isDefined()) {
+            final ContainerRoot modelOption = org.kevoree.library.NodeNetworkHelper.updateModelWithNetworkProperty(this);
+            if (modelOption != null) {
                 getModelService().unregisterModelListener(this);
-                getModelService().atomicUpdateModel(modelOption.get());
+                getModelService().atomicUpdateModel(modelOption);
                 getModelService().registerModelListener(this);
             }
             starting = false;

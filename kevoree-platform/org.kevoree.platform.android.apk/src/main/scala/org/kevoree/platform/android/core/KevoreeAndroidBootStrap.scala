@@ -157,6 +157,11 @@ class KevoreeAndroidBootStrap {
       bootstraper.registerManuallyDeployUnit("org.kevoree.tools.aether.framework.android", "org.kevoree.tools", KevoreeFactory.getVersion, dummyKCL)
       bootstraper.registerManuallyDeployUnit("org.kevoree.library.android.nodeType", "org.kevoree.corelibrary.android", KevoreeFactory.getVersion, dummyKCL)
 
+      bootstraper.registerManuallyDeployUnit("org.kevoree.library.android.jexxus", "org.kevoree.corelibrary.android", KevoreeFactory.getVersion, dummyKCL)
+      bootstraper.registerManuallyDeployUnit("org.kevoree.library.android.basicGossiper", "org.kevoree.corelibrary.android", KevoreeFactory.getVersion, dummyKCL)
+      bootstraper.registerManuallyDeployUnit("protobuf-java", "com.google.protobuf", "2.4.1", dummyKCL)
+
+
       coreBean.start()
 
       coreBean.registerModelListener(new ProgressDialogModelListener(act))
