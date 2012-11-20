@@ -73,12 +73,13 @@ class KevoreeAndroidBootStrap {
       return
     }
 
-  /*
     act.runOnUiThread(new Runnable {
       def run() {
-        UIServiceHandler.getUIService().getRootActivity().setRequestedOrientation ( ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-      }
-    })     */
+        if(  UIServiceHandler.getUIService() != null &&   UIServiceHandler.getUIService().getRootActivity != null){
+          UIServiceHandler.getUIService().getRootActivity().setRequestedOrientation ( ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        }
+        }
+    })
 
 
     //Build UI PROXY
