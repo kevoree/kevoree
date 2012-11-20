@@ -53,7 +53,6 @@ public class ControllerImpl implements IController {
     public ControllerImpl(FragmentActivity act) {
         viewmanager = new ManagerUI(act);
         this.ctx = viewmanager.getCtx();
-
     }
 
     @Override
@@ -62,10 +61,12 @@ public class ControllerImpl implements IController {
             case KEVOREE_STOP:
                 Log.i(TAG, "KEVOREE_STOP");
                 Intent intent_stop = new Intent(ctx, KevoreeService.class);
-                ctx.stopService(intent_stop);
-
-
-                System.exit(0);
+                if(ctx.stopService(intent_stop)){
+                    Log.i(TAG, "Kevoree is stopping");
+                } else {
+                    Log.e(TAG, "Error while stopping");
+                    android.os.Process.killProcess(android.os.Process.myPid());
+                }
                 break;
 
             default:
