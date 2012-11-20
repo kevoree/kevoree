@@ -125,7 +125,7 @@ class LoadRemoteModelUICommand extends Command {
 
         def clientConnected(conn: ServerConnection) {}
       }, ip, Integer.parseInt(port), false))
-      conns._1.connect()
+      conns._1.connect(5000)
       conns._1.send(Array(Byte.box(0)), Delivery.RELIABLE)
       val root = exchanger.exchange(null,5000,TimeUnit.MILLISECONDS)
       if (root == null){

@@ -31,7 +31,7 @@ import java.util.concurrent.atomic.AtomicReference;
 @Library(name = "JavaSE", names = "Android")
 @GroupType
 @DictionaryType({
-        @DictionaryAttribute(name = "interval", defaultValue = "30000", optional = true)
+        @DictionaryAttribute(name = "interval", defaultValue = "20000", optional = true)
 })
 public class BasicGossiperGroup extends BasicGroup implements GossiperComponent {
 

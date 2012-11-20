@@ -2,4 +2,4 @@ merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.javaseNode/
 merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.nanohttp/{kevoree.version}"
 merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.nanohttpAutoDiscovery/{kevoree.version}"
 merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.jexxus/{kevoree.version}"
-
+merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.basicGossiper/{kevoree.version}"
