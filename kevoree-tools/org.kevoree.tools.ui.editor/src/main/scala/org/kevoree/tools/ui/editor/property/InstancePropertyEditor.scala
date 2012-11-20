@@ -26,7 +26,6 @@
  */
 package org.kevoree.tools.ui.editor.property
 
-import org.kevoree.tools.ui.editor.KevoreeUIKernel
 import org.kevoree._
 import com.explodingpixels.macwidgets.plaf.{HudTextFieldUI, HudLabelUI}
 import javax.swing._
@@ -36,6 +35,7 @@ import java.awt.event.{ActionListener, ActionEvent}
 import text.BadLocationException
 import org.slf4j.LoggerFactory
 import com.explodingpixels.macwidgets.{IAppWidgetFactory, HudWidgetFactory}
+import tools.ui.editor.{KevoreeUIKernel, UIHelper}
 
 /**
  * Created by IntelliJ IDEA.
@@ -195,15 +195,15 @@ class InstancePropertyEditor(elem: org.kevoree.Instance, kernel: KevoreeUIKernel
     val values: String = att.getDatatype.replaceFirst("enum=", "")
     val model = new DefaultComboBoxModel
     values.split(",").foreach {
-      value => model.addElement(value)
+      value => UIHelper.addItem(model,value)
     }
-    val comboBox: JComboBox = HudWidgetFactory.createHudComboBox(model)
+    val comboBox = UIHelper.createJComboBox(model)
     label.setLabelFor(comboBox)
     p.add(comboBox)
-    comboBox.setSelectedItem(getValue(elem, att, targetNode))
-    comboBox.addActionListener(new ActionListener {
+    UIHelper.setSelectedItem(comboBox,(getValue(elem, att, targetNode)))
+    comboBox.asInstanceOf[{def addActionListener(l:ActionListener)}].addActionListener(new ActionListener {
       def actionPerformed(actionEvent: ActionEvent): Unit = {
-        setValue(comboBox.getSelectedItem.toString, elem, att, targetNode)
+        setValue(UIHelper.getSelectedItem(comboBox).toString, elem, att, targetNode)
       }
     })
     comboBox

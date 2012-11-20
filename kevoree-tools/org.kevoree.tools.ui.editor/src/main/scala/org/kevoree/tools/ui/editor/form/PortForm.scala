@@ -30,12 +30,12 @@ package org.kevoree.tools.ui.editor.form
 import com.explodingpixels.macwidgets.HudWindow
 import java.awt.event.{ActionEvent, ActionListener}
 import org.kevoree.tools.ui.editor.property.SpringUtilities
-import org.kevoree.tools.ui.editor.KevoreeUIKernel
 import org.kevoree.tools.ui.editor.command.ReloadTypePalette
 import org.kevoree.tools.ui.framework.data.KevoreeHudComboBoxUI
 import javax.swing._
 import com.explodingpixels.macwidgets.plaf.{HudCheckBoxUI, HudButtonUI, HudLabelUI, HudTextFieldUI}
 import org.kevoree._
+import tools.ui.editor.{KevoreeUIKernel, UIHelper}
 
 /**
  * Created by IntelliJ IDEA.
@@ -57,10 +57,9 @@ trait PortForm {
 
     //Port kind
     val portKindComboBoxModel = new DefaultComboBoxModel
-    portKindComboBoxModel.addElement(providedLabel)
-    portKindComboBoxModel.addElement(requiredLabel)
-    val portKindComboBox = new JComboBox(portKindComboBoxModel)
-    portKindComboBox.setUI(new KevoreeHudComboBoxUI())
+    UIHelper.addItem(portKindComboBoxModel,providedLabel)
+    UIHelper.addItem(portKindComboBoxModel,requiredLabel)
+    val portKindComboBox = UIHelper.createJComboBox(portKindComboBoxModel,new KevoreeHudComboBoxUI())
     val portKindComboBoxLabel = new JLabel("Type: ", SwingConstants.TRAILING)
     portKindComboBoxLabel.setUI(new HudLabelUI)
     portKindComboBoxLabel.setLabelFor(portKindComboBox)
@@ -74,13 +73,12 @@ trait PortForm {
     val portTypeList = kernel.getModelHandler.getActualModel.getTypeDefinitions.filter(td => td.isInstanceOf[PortType])
     if (portTypeList.size > 0) {
       portTypeList.foreach {
-        portType => portTypeComboBoxModel.addElement(portType)
+        portType =>  UIHelper.addItem(portTypeComboBoxModel,portType.toString)
       }
     } else {
-      portTypeComboBoxModel.addElement(noPortTypeAvailableLabel)
+      UIHelper.addItem(portTypeComboBoxModel,noPortTypeAvailableLabel)
     }
-    val portTypeComboBox = new JComboBox(portTypeComboBoxModel)
-    portTypeComboBox.setUI(new KevoreeHudComboBoxUI())
+    val portTypeComboBox = UIHelper.createJComboBox(portTypeComboBoxModel,new KevoreeHudComboBoxUI())
     val portTypeComboBoxLabel = new JLabel("Nature: ", SwingConstants.TRAILING)
     portTypeComboBoxLabel.setUI(new HudLabelUI)
     portTypeComboBoxLabel.setLabelFor(portTypeComboBox)

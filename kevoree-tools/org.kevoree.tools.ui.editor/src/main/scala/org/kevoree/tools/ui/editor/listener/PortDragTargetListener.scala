@@ -36,7 +36,7 @@ import org.kevoree.tools.marShell.parser.KevsParser
 import util.Random
 import org.kevoree.{ComponentInstance, ContainerNode, Port, ChannelType}
 import org.kevoree.tools.marShell.interpreter.KevsInterpreterContext
-import org.kevoree.tools.ui.editor.{PositionedEMFHelper, KevoreeUIKernel}
+import org.kevoree.tools.ui.editor.{UIHelper, PositionedEMFHelper, KevoreeUIKernel}
 import org.kevoree.framework.KevoreeXmiHelper
 import java.io.File
 import org.kevoree.tools.ui.editor.command.LoadModelCommand
@@ -112,7 +112,7 @@ class PortDragTargetListener(target: PortPanel, kernel: KevoreeUIKernel) extends
       val model = new DefaultComboBoxModel()
       kernel.getModelHandler.getActualModel.getTypeDefinitions.filter(td => td.isInstanceOf[ChannelType]).foreach {
         c =>
-          model.addElement(c.getName)
+          UIHelper.addItem(model,c.getName)
       }
       val comboBox = HudWidgetFactory.createHudComboBox(model)
       hud.getContentPane.add(comboBox)

@@ -5,12 +5,12 @@
     <groupId>org.daum.library.android</groupId>
     <artifactId>org.daum.library.android.p2pSock</artifactId>
     <name>DAUM :: Library :: Android :: p2p Sock</name>
-     <version>1.8.9-SNAPSHOT</version>
+     <version>1.8.9</version>
 
     <parent>
         <artifactId>org.daum.library.android.root</artifactId>
         <groupId>org.daum.library.android</groupId>
-        <version>1.8.9-SNAPSHOT</version>
+        <version>1.8.9</version>
         <relativePath>../org.daum.library.android.root/pom.xml</relativePath>
     </parent>
 

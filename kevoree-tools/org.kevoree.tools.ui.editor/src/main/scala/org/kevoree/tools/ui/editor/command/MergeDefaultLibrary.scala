@@ -43,6 +43,7 @@ class MergeDefaultLibrary(lib : Int) extends Command {
   val ARDUINO = 3
   val SKY = 4
   val ANDROID = 5
+  val DAUM = 6
 
   var logger = LoggerFactory.getLogger(this.getClass)
 
@@ -64,6 +65,7 @@ class MergeDefaultLibrary(lib : Int) extends Command {
         case ARDUINO =>AetherUtil.resolveMavenArtifact("org.kevoree.library.model.arduino","org.kevoree.corelibrary.model",KevoreeFactory.getVersion,repos)
         case SKY =>AetherUtil.resolveMavenArtifact("org.kevoree.library.model.sky","org.kevoree.corelibrary.model",KevoreeFactory.getVersion,repos)
         case ANDROID =>AetherUtil.resolveMavenArtifact("org.kevoree.library.model.android","org.kevoree.corelibrary.model",KevoreeFactory.getVersion,repos)
+        case DAUM =>AetherUtil.resolveMavenArtifact("org.kevoree.library.model.daum","org.kevoree.corelibrary.model",KevoreeFactory.getVersion,repos)
       }
 //       val file = AetherUtil.resolveMavenArtifact("org.kevoree.library.model.all","org.kevoree.library.model",KevoreeFactory.getVersion,List("http://maven.kevoree.org/release","http://maven.kevoree.org/snapshots"))
        val jar = new JarFile(file)
