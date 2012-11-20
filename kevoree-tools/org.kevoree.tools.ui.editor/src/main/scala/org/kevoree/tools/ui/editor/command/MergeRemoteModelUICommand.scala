@@ -102,12 +102,14 @@ class MergeRemoteModelUICommand extends Command {
   }
 
 
-  def tryRemoteJexxus(ip: String, port: String){
+  def tryRemoteJexxus(ip: String, port: String) : Boolean = {
     try {
     val exchanger = new Exchanger[ContainerRoot]();
     var conns :Tuple1[ClientConnection] = null
     conns = Tuple1(new ClientConnection(new ConnectionListener() {
-      def connectionBroken(broken: Connection, forced: Boolean) {}
+      def connectionBroken(broken: Connection, forced: Boolean) {
+        exchanger.exchange(null)
+      }
       def receive(data: Array[Byte], from: Connection) {
         val inputStream = new ByteArrayInputStream(data)
         val root = KevoreeXmiHelper.loadCompressedStream(inputStream)
@@ -120,8 +122,8 @@ class MergeRemoteModelUICommand extends Command {
         }
       }
       def clientConnected(conn: ServerConnection) {}
-    }, ip, Integer.parseInt(port), true))
-    conns._1.connect()
+    }, ip, Integer.parseInt(port), false))
+    conns._1.connect(5000)
     conns._1.send(Array(Byte.box(0)),Delivery.RELIABLE)
     val root = exchanger.exchange(null,5000,TimeUnit.MILLISECONDS)
     //kernel.getModelHandler.merge(root)
@@ -148,9 +150,11 @@ class MergeRemoteModelUICommand extends Command {
         if (results.size >= 2) {
           val ip = results(0)
           val port = results(1)
-          if (!tryRemoteLoad(ip, port, true)) {
-            if(!tryRemoteLoad(ip, port, false)){
-              tryRemoteJexxus(ip,port)
+          if(!tryRemoteJexxus(ip, port)){
+            if (!tryRemoteLoad(ip, port, true)) {
+              if (!tryRemoteLoad(ip, port, false)) {
+                logger.error("Can't load model from node")
+              }
             }
           }
         }
