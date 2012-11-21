@@ -32,7 +32,7 @@ class ProgressDialogModelListener(ctx : Activity) extends ModelListener {
   def preUpdate(currentModel: ContainerRoot, proposedModel: ContainerRoot) = {
     ctx.runOnUiThread(new Runnable {
       def run() {
-        dialog = ProgressDialog.show(ctx, "Kevoree","Performing adaptation, please wait...");
+        dialog = ProgressDialog.show(ctx, "Kevoree","Performing adaptation, please wait...",true,true);
         dialog.setProgress(0)
       }
     })

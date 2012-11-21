@@ -49,7 +49,7 @@ import javax.swing.JOptionPane
 import org.kevoree.framework.KevoreeXmiHelper
 import org.kevoree.tools.ui.editor.{PositionedEMFHelper, KevoreeUIKernel}
 import org.slf4j.LoggerFactory
-import java.util.concurrent.Exchanger
+import java.util.concurrent.{TimeUnit, Exchanger}
 import org.kevoree.ContainerRoot
 import jexxus.client.{ClientConnection}
 import jexxus.common.{Delivery, Connection, ConnectionListener}
@@ -117,7 +117,7 @@ class LoadRemoteModelUICommand extends Command {
           try {
             exchanger.exchange(root);
           } catch {
-            case _@e => logger.error("", e)
+            case _@e => //logger.error("", e)
           } finally {
             conns._1.close()
           }
@@ -125,14 +125,17 @@ class LoadRemoteModelUICommand extends Command {
 
         def clientConnected(conn: ServerConnection) {}
       }, ip, Integer.parseInt(port), false))
-      conns._1.connect()
+      conns._1.connect(5000)
       conns._1.send(Array(Byte.box(0)), Delivery.RELIABLE)
-      val root = exchanger.exchange(null)
-      //kernel.getModelHandler.merge(root)
-      PositionedEMFHelper.updateModelUIMetaData(kernel)
-      lcommand.setKernel(kernel)
-      lcommand.execute(root)
-      true
+      val root = exchanger.exchange(null,5000,TimeUnit.MILLISECONDS)
+      if (root == null){
+        false
+      } else {
+        PositionedEMFHelper.updateModelUIMetaData(kernel)
+        lcommand.setKernel(kernel)
+        lcommand.execute(root)
+        true
+      }
     } catch {
       case _@e => {
         logger.debug("Pull failed to " + ip + ":" + port)
@@ -143,7 +146,6 @@ class LoadRemoteModelUICommand extends Command {
 
 
   def execute(p: Object) = {
-
     try {
       val result = JOptionPane.showInputDialog("Remote target node <ip:port>", LoadRemoteModelUICommand.lastRemoteNodeAddress)
       if (result != null && result != "") {

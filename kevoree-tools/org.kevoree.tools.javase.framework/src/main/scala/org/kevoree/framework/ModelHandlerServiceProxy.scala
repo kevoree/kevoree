@@ -29,10 +29,10 @@ package org.kevoree.framework
 import org.kevoree.ContainerRoot
 import org.kevoree.cloner.ModelCloner
 import org.slf4j.LoggerFactory
-import actors.DaemonActor
 import java.util.{Date, UUID}
 import org.kevoree.api.service.core.handler._
 import java.lang.Long
+import java.util.concurrent.atomic.AtomicReference
 
 
 /**
@@ -42,91 +42,45 @@ import java.lang.Long
  * Time: 16:14
  */
 
-class ModelHandlerServiceProxy extends KevoreeModelHandlerService with DaemonActor {
-
-  val modelCloner = new ModelCloner
+class ModelHandlerServiceProxy(proxy: KevoreeModelHandlerService) extends KevoreeModelHandlerService {
+  //val modelCloner = new ModelCloner
   val logger = LoggerFactory.getLogger(this.getClass)
+  var proxyModel: AtomicReference[ContainerRoot] = new AtomicReference[ContainerRoot]
 
-  var proxy: KevoreeModelHandlerService = null
-  var proxyModel: ContainerRoot = null
-
-  start()
-
-  case class GET_LAST_MODEL()
-
-  case class GET_UUID_LAST_MODEL()
-
-  case class LOCAL_STOP()
-
-  //case class SET_PROXY(proxy: KevoreeModelHandlerService)
-
-  case class SET_TEMP_MODEL(tempModel: ContainerRoot)
-
-  case class UNSET_TEMP_MODEL()
-
-  def stopProxy() {
-    this ! LOCAL_STOP()
-  }
-
-  def setProxy(pproxy: KevoreeModelHandlerService) {
-    proxy = pproxy
-    //this ! SET_PROXY(pproxy)
-  }
+  def stopProxy(){ }
 
   def setTempModel(tempModel: ContainerRoot) {
-    this ! SET_TEMP_MODEL(tempModel)
+    //proxyModel.set(modelCloner.clone(tempModel))
+    proxyModel.set(tempModel)
   }
 
   def unsetTempModel() {
-    this ! UNSET_TEMP_MODEL()
+    proxyModel.set(null)
   }
 
   def getLastModel: ContainerRoot = {
-    (this !? GET_LAST_MODEL()).asInstanceOf[ContainerRoot]
+    val model = proxyModel.get();
+    if (model != null) {
+      model
+    } else {
+      proxy.getLastModel
+    }
   }
 
   def getLastUUIDModel: UUIDModel = {
-    (this !? GET_UUID_LAST_MODEL()).asInstanceOf[UUIDModel]
-  }
-
-  def act() {
-    loop {
-      react {
-        case LOCAL_STOP() => exit()
-        case GET_UUID_LAST_MODEL() => {
-          if (proxyModel != null) {
-            reply(new UUIDModel() {
-              def getUUID: UUID = UUID.randomUUID()
-
-              def getModel: ContainerRoot = proxyModel
-            })
-          } else {
-            reply(proxy.getLastUUIDModel)
-          }
-        }
-        case GET_LAST_MODEL() => {
-          if (proxyModel != null) {
-            reply(proxyModel)
-          } else {
-            reply(proxy.getLastModel)
-          }
-        }
-       /* case SET_PROXY(new_proxy) => {
-          proxy = new_proxy
-        }  */
-        case SET_TEMP_MODEL(new_tempModel) => {
-          proxyModel = modelCloner.clone(new_tempModel)
-        }
-        case UNSET_TEMP_MODEL() => {
-          proxyModel = null
-
-        }
+    val model = proxyModel.get();
+    if (model != null) {
+      new UUIDModel() {
+        def getUUID: UUID = UUID.randomUUID()
+        def getModel: ContainerRoot = model
       }
+    } else {
+      proxy.getLastUUIDModel
     }
   }
 
   def getLastModification: Date = {
-    if (proxyModel != null) {
+    if (proxyModel.get() != null) {
       logger.error("Last Modification not available during update")
       null
     } else {
@@ -139,7 +93,7 @@ class ModelHandlerServiceProxy extends KevoreeModelHandlerService with DaemonAct
   }
 
   def atomicUpdateModel(model: ContainerRoot): Date = {
-    if (proxyModel != null) {
+    if (proxyModel.get() != null) {
       logger.error("atomicUpdateModel not available during update")
       null
     } else {
@@ -148,7 +102,7 @@ class ModelHandlerServiceProxy extends KevoreeModelHandlerService with DaemonAct
   }
 
   def compareAndSwapModel(previousModel: UUIDModel, targetModel: ContainerRoot) {
-    if (proxyModel != null) {
+    if (proxyModel.get() != null) {
       logger.error("compareAndSwapModel not available during update")
     } else {
       proxy.compareAndSwapModel(previousModel, targetModel)
@@ -156,7 +110,7 @@ class ModelHandlerServiceProxy extends KevoreeModelHandlerService with DaemonAct
   }
 
   def atomicCompareAndSwapModel(previousModel: UUIDModel, targetModel: ContainerRoot): Date = {
-    if (proxyModel != null) {
+    if (proxyModel.get() != null) {
       logger.error("atomicUpdateModel not available during update")
       null
     } else {
@@ -165,7 +119,7 @@ class ModelHandlerServiceProxy extends KevoreeModelHandlerService with DaemonAct
   }
 
   def getPreviousModel: java.util.List[ContainerRoot] = {
-    if (proxyModel != null) {
+    if (proxyModel.get() != null) {
       logger.error("getPreviousModel not available during update")
       null
     } else {
@@ -204,7 +158,7 @@ class ModelHandlerServiceProxy extends KevoreeModelHandlerService with DaemonAct
   }
 
   def compareAndSwapModel(previousModel: UUIDModel, targetModel: ContainerRoot, callback: ModelUpdateCallback) {
-    if (proxyModel != null) {
+    if (proxyModel.get() != null) {
       logger.error("compareAndSwapModel not available during update")
     } else {
       proxy.compareAndSwapModel(previousModel, targetModel,callback)

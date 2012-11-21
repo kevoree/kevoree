@@ -27,7 +27,7 @@ package org.kevoree.tools.ui.editor.command
  * limitations under the License.
  */
 
-import org.kevoree.tools.ui.editor.KevoreeUIKernel
+import org.kevoree.tools.ui.editor.{UIHelper, KevoreeUIKernel}
 import com.explodingpixels.macwidgets.HudWindow
 import java.awt.BorderLayout
 import java.awt.event.{ActionEvent, ActionListener}
@@ -69,15 +69,14 @@ class AddComponentTypeElementUICommand extends Command with PortForm with Dictio
     layoutPopup.setLayout(new BorderLayout())
 
     val newElementsModel = new DefaultComboBoxModel
-    newElementsModel.addElement(portLabel)
-    newElementsModel.addElement(dictionaryLabel)
+    UIHelper.addItem(newElementsModel,portLabel)
+    UIHelper.addItem(newElementsModel,dictionaryLabel)
 
 
     if (p != null) {
       newElementsModel.setSelectedItem(p)
     }
-    val newElements = new JComboBox(newElementsModel)
-    newElements.setUI(new HudComboBoxUI())
+    val newElements = UIHelper.createJComboBox(newElementsModel,new HudComboBoxUI())
     val newElementsLabel = new JLabel("Add new : ", SwingConstants.TRAILING)
     newElementsLabel.setUI(new HudLabelUI)
     newElementsLabel.setLabelFor(newElements)
@@ -87,9 +86,9 @@ class AddComponentTypeElementUICommand extends Command with PortForm with Dictio
     layoutPopupTop.add(newElements)
 
     //LISTENER
-    newElements.addActionListener(new ActionListener() {
+    newElements.asInstanceOf[{def addActionListener(l:ActionListener)}].addActionListener(new ActionListener() {
       override def actionPerformed (actionEvent: ActionEvent) {
-        val uiElems = newElements.getSelectedItem match {
+        val uiElems = UIHelper.getSelectedItem(newElements) match {
           case label if (label == portLabel) => {
             createPortPanel(newPopup, kernel, componentType)
           }

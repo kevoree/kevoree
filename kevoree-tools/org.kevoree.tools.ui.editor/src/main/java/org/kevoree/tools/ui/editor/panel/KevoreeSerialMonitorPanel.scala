@@ -26,7 +26,7 @@
  */
 package org.kevoree.tools.ui.editor.panel
 
-import org.kevoree.tools.ui.editor.KevoreeUIKernel
+import org.kevoree.tools.ui.editor.{UIHelper, KevoreeUIKernel}
 import org.slf4j.{LoggerFactory, Logger}
 import javax.swing._
 import text._
@@ -61,7 +61,7 @@ class KevoreeSerialMonitorPanel(kernel: KevoreeUIKernel)  extends JPanel  {
   KevoreeSharedCom.killAll()
 
   KHelpers.getbaudrates().foreach(b =>    {
-    device_baudrates.addItem(b.toString)
+    UIHelper.addItemToBox(device_baudrates,b.toString)
   }
   )
   device_baudrates.setSelectedItem(speed.toString)

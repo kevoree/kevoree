@@ -75,8 +75,10 @@ class KevoreeAndroidBootStrap {
 
     act.runOnUiThread(new Runnable {
       def run() {
-        UIServiceHandler.getUIService().getRootActivity().setRequestedOrientation ( ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-      }
+        if(  UIServiceHandler.getUIService() != null &&   UIServiceHandler.getUIService().getRootActivity != null){
+          UIServiceHandler.getUIService().getRootActivity().setRequestedOrientation ( ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        }
+        }
     })
 
 
@@ -156,6 +158,11 @@ class KevoreeAndroidBootStrap {
       bootstraper.registerManuallyDeployUnit("org.kevoree.tools.aether.framework", "org.kevoree.tools", KevoreeFactory.getVersion, dummyKCL)
       bootstraper.registerManuallyDeployUnit("org.kevoree.tools.aether.framework.android", "org.kevoree.tools", KevoreeFactory.getVersion, dummyKCL)
       bootstraper.registerManuallyDeployUnit("org.kevoree.library.android.nodeType", "org.kevoree.corelibrary.android", KevoreeFactory.getVersion, dummyKCL)
+
+      bootstraper.registerManuallyDeployUnit("org.kevoree.library.android.jexxus", "org.kevoree.corelibrary.android", KevoreeFactory.getVersion, dummyKCL)
+      bootstraper.registerManuallyDeployUnit("org.kevoree.library.android.basicGossiper", "org.kevoree.corelibrary.android", KevoreeFactory.getVersion, dummyKCL)
+      bootstraper.registerManuallyDeployUnit("protobuf-java", "com.google.protobuf", "2.4.1", dummyKCL)
+
 
       coreBean.start()
 

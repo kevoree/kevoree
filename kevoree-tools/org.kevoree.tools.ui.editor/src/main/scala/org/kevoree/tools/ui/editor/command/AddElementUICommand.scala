@@ -26,7 +26,7 @@
  */
 package org.kevoree.tools.ui.editor.command
 
-import org.kevoree.tools.ui.editor.KevoreeUIKernel
+import org.kevoree.tools.ui.editor.{UIHelper, KevoreeUIKernel}
 import com.explodingpixels.macwidgets.HudWindow
 import java.awt.BorderLayout
 import java.awt.event.{ActionEvent, ActionListener}
@@ -64,16 +64,15 @@ class   AddElementUICommand extends Command with ComponentTypeForm with DeployUn
     popupLayout.setLayout(new BorderLayout())
 
     val elemComboBoxModel = new DefaultComboBoxModel
-    elemComboBoxModel.addElement(LibraryLabel)
-    elemComboBoxModel.addElement(DeployUnit)
-    elemComboBoxModel.addElement(ComponentType)
+    UIHelper.addItem(elemComboBoxModel,LibraryLabel)
+    UIHelper.addItem(elemComboBoxModel,DeployUnit)
+    UIHelper.addItem(elemComboBoxModel,ComponentType)
     //newElementsModel.addElement(ChannelType)
     //newElementsModel.addElement(GroupType)
     if (p != null) {
       elemComboBoxModel.setSelectedItem(p)
     }
-    val elemComboBox = new JComboBox(elemComboBoxModel)
-    elemComboBox.setUI(new HudComboBoxUI())
+    val elemComboBox = UIHelper.createJComboBox(elemComboBoxModel,new HudComboBoxUI())
     val elemLabel = new JLabel("Add new : ", SwingConstants.TRAILING)
     elemLabel.setUI(new HudLabelUI)
     elemLabel.setLabelFor(elemComboBox)
@@ -83,10 +82,10 @@ class   AddElementUICommand extends Command with ComponentTypeForm with DeployUn
     popupTopLayout.add(elemComboBox)
 
     //LISTENER
-    elemComboBox.addActionListener(new ActionListener() {
+    elemComboBox.asInstanceOf[{def addActionListener(l:ActionListener)}].addActionListener(new ActionListener() {
       override def actionPerformed(actionEvent: ActionEvent) {
         popupLayout.removeAll()
-        elemComboBox.getSelectedItem match {
+        UIHelper.getSelectedItem(elemComboBox) match {
           case LibraryLabel => {
             val uiElems = createNewLibraryPanel(popupWindow, kernel)
             popupLayout.add(uiElems._1, BorderLayout.CENTER)

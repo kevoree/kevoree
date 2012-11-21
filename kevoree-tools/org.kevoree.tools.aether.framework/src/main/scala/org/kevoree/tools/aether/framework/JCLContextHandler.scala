@@ -84,10 +84,11 @@ import org.slf4j.LoggerFactory
 import org.kevoree.DeployUnit
 import actors.DaemonActor
 import scala.collection.JavaConversions._
-import org.kevoree.api.service.core.classloading.KevoreeClassLoaderHandler
+import org.kevoree.api.service.core.classloading.{DeployUnitResolver, KevoreeClassLoaderHandler}
 import org.kevoree.kcl.KevoreeJarClassLoader
 import scala.Predef._
 import java.util.concurrent.{ThreadFactory, Executors, Callable}
+import java.util
 
 /**
  * Created by IntelliJ IDEA.
@@ -133,10 +134,28 @@ class JCLContextHandler extends KevoreeClassLoaderHandler {
     }
   }
 
-
   case class CLEAR() extends Runnable {
     def run() {
       clearInternals()
+    }
+  }
+
+  protected val resolvers = new util.ArrayList[DeployUnitResolver]
+
+  def registerDeployUnitResolver(dur: DeployUnitResolver) {
+     pool.submit(Add_Resolver(dur))
+  }
+  case class Add_Resolver(dur: DeployUnitResolver) extends Runnable {
+    def run() {
+      resolvers.add(dur)
+    }
+  }
+  def unregisterDeployUnitResolver(dur: DeployUnitResolver) {
+    pool.submit(Remove_Resolver(dur))
+  }
+  case class Remove_Resolver(dur: DeployUnitResolver) extends Runnable {
+    def run() {
+      resolvers.remove(dur)
     }
   }
 
@@ -145,7 +164,7 @@ class JCLContextHandler extends KevoreeClassLoaderHandler {
   def stop() {
     //TODO REMOVE ALL BEFORE
     pool.shutdownNow()
-    //this ! KILLActor()
+    resolvers.clear()
   }
 
   val pool = Executors.newSingleThreadExecutor(new ThreadFactory() {
@@ -427,7 +446,19 @@ loop {
 
 
   def installDeployUnitNoFileInternals(du: DeployUnit): KevoreeJarClassLoader = {
-    val resolvedFile = AetherUtil.resolveDeployUnit(du)
+
+    var resolvedFile : File = null
+    resolvers.exists{ res =>
+        try {
+          resolvedFile = res.resolve(du)
+          true
+        } catch {
+          case _ @ e => false
+        }
+    }
+    if (resolvedFile == null) {
+      resolvedFile = AetherUtil.resolveDeployUnit(du)
+    }
     if (resolvedFile != null) {
       installDeployUnitInternals(du, resolvedFile)
     } else {
@@ -450,6 +481,5 @@ loop {
 
     buffer.toString
   }
-
 
 }

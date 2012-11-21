@@ -28,7 +28,6 @@ package org.kevoree.framework.osgi
  */
 
 import java.util.Hashtable
-import org.kevoree.framework.message.StopMessage
 import org.kevoree.framework._
 
 abstract class KevoreeGroupActivator extends KevoreeInstanceActivator {
