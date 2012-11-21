@@ -40,7 +40,7 @@ import org.slf4j.LoggerFactory
  */
 
 case class KevsRemoveChildInterpreter (removeChild: RemoveChildStatment) extends KevsAbstractInterpreter {
-  val logger = LoggerFactory.getLogger(this.getClass);
+  val logger = LoggerFactory.getLogger(this.getClass)
 
   def interpret (context: KevsInterpreterContext): Boolean = {
       context.model.getNodes.find(node => node.getName == removeChild.childNodeName) match {
