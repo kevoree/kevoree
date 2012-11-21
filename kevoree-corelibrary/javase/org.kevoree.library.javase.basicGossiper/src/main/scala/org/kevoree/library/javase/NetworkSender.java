@@ -72,7 +72,7 @@ public class NetworkSender {
                 public void clientConnected(ServerConnection conn) {
                 }
             }, addr.getAddress().getHostAddress(), addr.getPort(), false);
-            conn.connect();
+            conn.connect(5000);
             ByteArrayOutputStream output = new ByteArrayOutputStream();
             output.write(2);
             m.writeTo(output);

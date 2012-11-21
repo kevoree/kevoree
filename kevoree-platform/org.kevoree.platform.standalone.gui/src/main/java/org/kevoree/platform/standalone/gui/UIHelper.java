@@ -35,4 +35,12 @@ public class UIHelper {
         model.addElement(elem);
     }
 
+    public static void setSelectedItem(Object obj,Object value){
+        ((JComboBox)obj).setSelectedItem(value);
+    }
+
+    public static Object getSelectedItem(Object combo){
+        return ((JComboBox)combo).getSelectedItem();
+    }
+
 }

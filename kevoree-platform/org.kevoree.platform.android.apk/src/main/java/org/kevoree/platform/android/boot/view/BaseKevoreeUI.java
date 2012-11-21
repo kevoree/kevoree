@@ -28,6 +28,9 @@ package org.kevoree.platform.android.boot.view;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.net.wifi.WifiManager;
+import android.os.Build;
+import android.telephony.TelephonyManager;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.View;
@@ -39,6 +42,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.PrintStream;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -59,7 +63,7 @@ public class BaseKevoreeUI extends LinearLayout {
     private Spinner spinner = null;
 
     private  EditText nodeNameView=null;
-//    private OnClickListener checkbox_list;
+    //    private OnClickListener checkbox_list;
     /*private  CheckBox checkbox_info=null;
     private  CheckBox checkbox_debug=null;
     private  CheckBox checkbox_warn=null;*/
@@ -103,7 +107,23 @@ public class BaseKevoreeUI extends LinearLayout {
 
         btstart.setText("Start");
         btstop.setText("Stop");
-        nodeNameView.setText("node0");
+
+        // node name base on wifi mac addd
+
+        String nodeName="";
+        try {
+            WifiManager wm = (WifiManager)ctx.getSystemService(Context.WIFI_SERVICE);
+            nodeName = "k"+wm.getConnectionInfo().getMacAddress().replace(":","");
+            if(nodeName.length() == 0)
+            {
+                nodeName = "node0";
+            }
+        } catch (Exception e) {
+            nodeName = "node0";
+            e.printStackTrace();
+        }
+
+        nodeNameView.setText(nodeName);
         nodeNameView.setWidth(150);
 
         ArrayList<String> spinnerArray = new ArrayList<String>();
@@ -122,7 +142,6 @@ public class BaseKevoreeUI extends LinearLayout {
         messages.setScroller(scroller);
         messages.setMovementMethod(new ScrollingMovementMethod());
         messages.setText("");
-
 
 
 
@@ -150,8 +169,8 @@ public class BaseKevoreeUI extends LinearLayout {
 
             public void onClick(View v) {
                 kController.handleMessage(Request.KEVOREE_START, Arrays.asList(nodeNameView.getText().toString(),spinner.getSelectedItem().toString()));
-				Log.i("Kevoree", "Bootstrapping Kevoree");
-				System.out.println("Bootstrapping Kevoree");
+                Log.i("Kevoree", "Bootstrapping Kevoree");
+                System.out.println("Bootstrapping Kevoree");
                 btstart.setEnabled(false);
                 nodeNameView.setEnabled(false);
                 spinner.setEnabled(false);

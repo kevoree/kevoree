@@ -13,11 +13,11 @@ function updateForm () {
 
     cleanForm();
 
-    if (value == "JavaSENode") {
+    /*if (value == "JavaSENode") {
         JavaSENode();
-    } else {
+    } else {*/
         buildForm(value);
-    }
+//    }
     submitButton();
 }
 
@@ -26,9 +26,9 @@ function cleanOption () {
     var childNodes = jQuery("#nodeType > *");
 
     childNodes.each(function (index, c) {
-        if (c != undefined && c.value != "JavaSENode") {
+//        if (c != undefined && c.value != "JavaSENode") {
             nodeType.removeChild(c);
-        }
+//        }
     });
 }
 
@@ -167,7 +167,7 @@ function buildForm (value) {
     }
 }
 
-function JavaSENode () {
+/*function JavaSENode () {
     var form = jQuery("#formNodeType").get(0);
 
     var nameControlGroup = createControlGroup("name");
@@ -205,7 +205,7 @@ function JavaSENode () {
 
     var coreLogLevelSelect = createSelectElement("coreLogLevel", ["WARN", "INFO", "DEBUG", "ERROR", "ALL"], "WARN");
     coreLogLevelControls.appendChild(coreLogLevelSelect);
-}
+}*/
 
 function addError (controls) {
     var error = document.createElement("span");
@@ -276,7 +276,7 @@ function getAttributes () {
 }
 
 jQuery(document).ready(function () {
-    updateForm();
+//    updateForm();
     jQuery.ajax({
         url:"{pattern}AddChild",
         type:"post",
@@ -289,15 +289,16 @@ jQuery(document).ready(function () {
                     addOption(response.types[i]);
                 }
                 json = response;
+				updateForm();
             } else {
                 alert("Unable to use this message " + response);
             }
         }
     });
 
-    jQuery('#nodeType').change(function () {
+    /*jQuery('#nodeType').change(function () {
         updateForm();
-    });
+    });*/
 
     jQuery('#formNodeType').submit(function () {
         if (checkForm()) {
@@ -307,7 +308,7 @@ jQuery(document).ready(function () {
                 type:"post",
                 data:jsonRequest,
                 dataType:'json',
-                timeout: 5000,
+//                timeout: 5000,
                 success:function (response) {
                     if (response.code != "0") {
                         alert(response.message);

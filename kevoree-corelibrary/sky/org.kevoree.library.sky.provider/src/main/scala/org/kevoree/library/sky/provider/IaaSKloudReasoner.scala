@@ -119,7 +119,6 @@ object IaaSKloudReasoner extends KloudReasoner {
           kengine append "addNode {nodeName} : {nodeType}"
           // set dictionary attributes of node
           if (node.getDictionary.isDefined) {
-            //            scriptBuilder append "{"
             val defaultAttributes = getDefaultNodeAttributes(iaasModel, node.getTypeDefinition.getName)
             node.getDictionary.get.getValues
               .filter(value => defaultAttributes.find(a => a.getName == value.getAttribute.getName) match {
@@ -132,6 +131,7 @@ object IaaSKloudReasoner extends KloudReasoner {
                 kengine append "updateDictionary {nodeName} {{attributeName} = '{attributeValue}'}"
             }
           }
+					logger.debug("{}", parentNodeNameOption)
           var parentName = ""
           if (parentNodeNameOption.isEmpty) {
             val parents = countChilds(iaasModel)
@@ -141,7 +141,7 @@ object IaaSKloudReasoner extends KloudReasoner {
             }
             val index = (java.lang.Math.random() * potentialParents.size).asInstanceOf[Int]
             parentName = potentialParents(index)
-            kengine.addVariable("nodeName", node.getName)
+//            kengine.addVariable("nodeName", node.getName)
           } else {
             parentName = parentNodeNameOption.get
           }

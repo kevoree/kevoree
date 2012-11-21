@@ -89,6 +89,7 @@ public class IaaSKloudManager extends AbstractComponentType implements ModelList
 		Boolean created = false;
 		for (int i = 0; i < 20; i++) {
 			try {
+				logger.debug("try to update IaaS node...");
 				kengine.atomicInterpretDeploy();
 				created = true;
 				break;

@@ -23,6 +23,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.concurrent.Exchanger;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created with IntelliJ IDEA.
@@ -139,7 +140,7 @@ public class BasicGroup extends AbstractGroupType implements ConnectionListener 
             public void clientConnected(ServerConnection conn) {
             }
         }, ip, PORT, ssl);
-        conns[0].connect();
+        conns[0].connect(5000);
         conns[0].send(output.toByteArray(), Delivery.RELIABLE);
     }
 
@@ -187,11 +188,11 @@ public class BasicGroup extends AbstractGroupType implements ConnectionListener 
             }
 
         }, ip, PORT, ssl);
-        conns[0].connect();
+        conns[0].connect(5000);
         byte[] data = new byte[1];
         data[0] = getModel;
         conns[0].send(data, Delivery.RELIABLE);
-        return exchanger.exchange(null);
+        return exchanger.exchange(null,5000, TimeUnit.MILLISECONDS);
     }
 
     @Override

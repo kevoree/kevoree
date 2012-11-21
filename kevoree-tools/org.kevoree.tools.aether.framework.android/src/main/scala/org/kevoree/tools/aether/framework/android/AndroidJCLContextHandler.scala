@@ -43,7 +43,7 @@ import org.kevoree.DeployUnit
 import java.io.File
 import org.kevoree.kcl.KevoreeJarClassLoader
 import scala.collection.JavaConversions._
-import org.kevoree.tools.aether.framework.JCLContextHandler
+import org.kevoree.tools.aether.framework.{AetherUtil, JCLContextHandler}
 
 /**
  * Created by IntelliJ IDEA.
@@ -55,7 +55,19 @@ import org.kevoree.tools.aether.framework.JCLContextHandler
 class AndroidJCLContextHandler(ctx: android.content.Context, parent: ClassLoader) extends JCLContextHandler {
 
   override def installDeployUnitNoFileInternals(du: DeployUnit): KevoreeJarClassLoader = {
-    val resolvedFile = org.kevoree.tools.aether.framework.android.AetherUtil.resolveDeployUnit(du)
+    var resolvedFile : File = null
+    resolvers.exists{ res =>
+      try {
+        resolvedFile = res.resolve(du)
+        true
+      } catch {
+        case _ @ e => false
+      }
+    }
+    if (resolvedFile == null) {
+      resolvedFile = org.kevoree.tools.aether.framework.android.AetherUtil.resolveDeployUnit(du)
+    }
+
     if (resolvedFile != null) {
       installDeployUnitInternals(du, resolvedFile)
     } else {

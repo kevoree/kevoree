@@ -1,6 +1,6 @@
 
 merge "mvn:org.kevoree.corelibrary.sky/org.kevoree.library.sky.minicloud/{kevoree.version}"
-merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.gossiperNetty/{kevoree.version}"
+merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.basicGossiper/{kevoree.version}"
 
 merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.defaultChannels/{kevoree.version}"
 merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.socketChannels/{kevoree.version}"
@@ -14,14 +14,14 @@ merge "mvn:org.kevoree.corelibrary.sky/org.kevoree.library.sky.provider.web/{kev
 
 
 addNode node0 : MiniCloudNode { coreLogLevel="WARN",logLevel="DEBUG"}
-addGroup sync : NettyGossiperGroup { mergeModel = "true"}
+addGroup sync : BasicGossiperGroup
 addToGroup sync node0
 
 addComponent webServer@node0 : KTinyWebServer {port = "8080", timeout = "5000"}
 addComponent iaasPage@node0 : IaaSKloudResourceManagerPage { urlpattern="/iaas"}
 addComponent iaasManager@node0 : IaaSKloudManager
-addComponent paasPage@node0 : PaaSKloudResourceManagerPage { urlpattern="/paas"}
-addComponent paasManager@node0 : PaaSKloudManager
+//addComponent paasPage@node0 : PaaSKloudResourceManagerPage { urlpattern="/paas"}
+//addComponent paasManager@node0 : PaaSKloudManager
 
 addChannel iaasDelegateChannel : defSERVICE
 addChannel paasDelegateChannel : defSERVICE
@@ -30,18 +30,18 @@ addChannel responseChannel : defMSG
 
 bind webServer.handler@node0 => requestChannel
 bind iaasPage.request@node0 => requestChannel
-bind paasPage.request@node0 => requestChannel
+//bind paasPage.request@node0 => requestChannel
 
 bind webServer.response@node0 => responseChannel
 bind iaasPage.content@node0 => responseChannel
-bind paasPage.content@node0 => responseChannel
+//bind paasPage.content@node0 => responseChannel
 
 bind iaasManager.submit@node0 => iaasDelegateChannel
 bind iaasPage.delegate@node0 => iaasDelegateChannel
 
 
-bind paasManager.submit@node0 => paasDelegateChannel
-bind paasPage.delegate@node0 => paasDelegateChannel
+//bind paasManager.submit@node0 => paasDelegateChannel
+//bind paasPage.delegate@node0 => paasDelegateChannel
 
 
 //addNode edaubert_worker1 : PJavaSENode

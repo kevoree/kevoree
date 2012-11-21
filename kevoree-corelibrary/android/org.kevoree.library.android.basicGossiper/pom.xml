@@ -4,12 +4,12 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>org.kevoree.library.android.basicGossiper</artifactId>
     <name>Kevoree :: CoreLibrary :: Android :: BasicGossiper</name>
-    <version>1.8.9-SNAPSHOT</version>
+    <version>1.8.9</version>
 
     <parent>
         <artifactId>org.kevoree.library.android.root</artifactId>
         <groupId>org.kevoree.corelibrary.android</groupId>
-        <version>1.8.9-SNAPSHOT</version>
+        <version>1.8.9</version>
         <relativePath>../org.kevoree.library.android.root/pom.xml</relativePath>
     </parent>
 
@@ -21,8 +21,8 @@
             <version>${kevoree.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.kevoree.extra</groupId>
-            <artifactId>org.kevoree.extra.protobuf</artifactId>
+            <groupId>com.google.protobuf</groupId>
+            <artifactId>protobuf-java</artifactId>
             <version>2.4.1</version>
         </dependency>
         <dependency>
@@ -49,7 +49,8 @@
                 <version>0.1.10</version>
                 <configuration>
                     <protocExecutable>${protoc.path}</protocExecutable>
-                    <protoSourceRoot>../../javase/org.kevoree.library.javase.basicGossiper/src/main/proto</protoSourceRoot>
+                    <protoSourceRoot>../../javase/org.kevoree.library.javase.basicGossiper/src/main/proto
+                    </protoSourceRoot>
                 </configuration>
                 <executions>
                     <execution>
@@ -89,6 +90,7 @@
             </plugin>
 
             <!-- android dex phase -->
+            <!--
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
@@ -103,9 +105,9 @@
                         <configuration>
                             <executable>${android.tools.dx}</executable>
                             <arguments>
-                                <argument>--dex</argument>
-                                <argument>--core-library</argument>
-                                <argument>--output=${project.build.directory}/classes.dex</argument>
+                                <argument>-dex</argument>
+                                <argument>-core-library</argument>
+                                <argument>-output=${project.build.directory}/classes.dex</argument>
                                 <argument>${project.build.directory}/${project.build.finalName}.jar</argument>
                             </arguments>
                         </configuration>
@@ -128,6 +130,8 @@
                     </execution>
                 </executions>
             </plugin>
+            -->
+
         </plugins>
     </build>
 

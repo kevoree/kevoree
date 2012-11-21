@@ -168,7 +168,7 @@ class KevoreeAnnotationProcessor() extends javax.annotation.processing.AbstractP
     typeDecl.getModifiers.find(mod => mod.equals(javax.lang.model.element.Modifier.ABSTRACT)) match {
       case Some(s) => {
         isAbstract = true;
-        env.getMessager.printMessage(Kind.WARNING, "NodeType bean ignored  " + typeDecl.getQualifiedName + ", reason=Declared as @NodeType but is actually ABSTRACT. Should be either concrete or @ComponentFragment.")
+        env.getMessager.printMessage(Kind.WARNING, "NodeType bean ignored  " + typeDecl.getQualifiedName + ", reason=Declared as @NodeType but is actually ABSTRACT. Should be either concrete or @NodeFragment.")
       }
       case None =>
     }
@@ -206,7 +206,7 @@ class KevoreeAnnotationProcessor() extends javax.annotation.processing.AbstractP
     typeDecl.getModifiers.find(mod => mod.equals(javax.lang.model.element.Modifier.ABSTRACT)) match {
       case Some(s) => {
         isAbstract = true;
-        env.getMessager.printMessage(Kind.WARNING, "ComponentType ignored " + typeDecl.getQualifiedName + ", reason=Declared as @ComponentType but is actually ABSTRACT. Should be either concrete or @ComponentFragment.")
+        env.getMessager.printMessage(Kind.WARNING, "GroupType ignored " + typeDecl.getQualifiedName + ", reason=Declared as @GroupType but is actually ABSTRACT. Should be either concrete or @GroupFragment.")
       }
       case None =>
     }
@@ -240,7 +240,7 @@ class KevoreeAnnotationProcessor() extends javax.annotation.processing.AbstractP
     typeDecl.getModifiers.find(mod => mod.equals(javax.lang.model.element.Modifier.ABSTRACT)) match {
       case Some(s) => {
         isAbstract = true;
-        env.getMessager.printMessage(Kind.WARNING, "ComponentType ignored " + typeDecl.getQualifiedName + ", reason=Declared as @ComponentType but is actually ABSTRACT. Should be either concrete or @ComponentFragment.")
+        env.getMessager.printMessage(Kind.WARNING, "ChannelType ignored " + typeDecl.getQualifiedName + ", reason=Declared as @ChannelFragment but is actually ABSTRACT")
       }
       case None =>
     }

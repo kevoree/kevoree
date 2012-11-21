@@ -4,10 +4,10 @@
     <parent>
         <artifactId>org.kevoree.tools.root</artifactId>
         <groupId>org.kevoree.tools</groupId>
-        <version>1.8.9-SNAPSHOT</version>
+        <version>1.8.9</version>
         <relativePath>../org.kevoree.tools.root/pom.xml</relativePath>
     </parent>
-    <version>1.8.9-SNAPSHOT</version>
+    <version>1.8.9</version>
     <groupId>org.kevoree.tools.nativeN</groupId>
     <artifactId>org.kevoree.tools.nativeN.core</artifactId>
     <packaging>jar</packaging>

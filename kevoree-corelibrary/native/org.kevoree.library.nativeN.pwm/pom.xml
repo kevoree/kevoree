@@ -3,14 +3,14 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.kevoree.library.nativeN</groupId>
     <artifactId>org.kevoree.library.nativeN.pwm</artifactId>
-    <version>1.8.9-SNAPSHOT</version>
+    <version>1.8.9</version>
     <name>Kevoree :: Native :: Example PWM Root</name>
     <packaging>pom</packaging>
 
     <parent>
         <groupId>org.kevoree.corelibrary.nativeN</groupId>
         <artifactId>org.kevoree.library.nativeN.root</artifactId>
-        <version>1.8.9-SNAPSHOT</version>
+        <version>1.8.9</version>
         <relativePath>../org.kevoree.library.nativeN.root/pom.xml</relativePath>
     </parent>
 

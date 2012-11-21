@@ -131,18 +131,18 @@ class InstanceParamPanel(pnodeTypeDefinition: TypeDefinition, defaultName: Strin
               val values: String = att.getDatatype.replaceFirst("enum=", "")
               val valuesModel = new DefaultComboBoxModel
               values.split(",").foreach {
-                v => valuesModel.addElement(v)
+                v => UIHelper.addItem(valuesModel,v)
               }
-              val comboBox: JComboBox = HudWidgetFactory.createHudComboBox(valuesModel)
+              val comboBox = UIHelper.createJComboBox(valuesModel)
               l.setLabelFor(comboBox)
               p.add(comboBox)
 
               if (props.get(att.getName) != null) {
-                comboBox.setSelectedItem(currentProperties.get(att.getName))
+                UIHelper.setSelectedItem(comboBox,(currentProperties.get(att.getName)))
               }
-              comboBox.addActionListener(new ActionListener {
+              comboBox.asInstanceOf[{def addActionListener(l:ActionListener)}].addActionListener(new ActionListener {
                 def actionPerformed(actionEvent: ActionEvent) {
-                  currentProperties.put(att.getName, comboBox.getSelectedItem.toString)
+                  currentProperties.put(att.getName, UIHelper.getSelectedItem(comboBox).toString)
                 }
               })
             }

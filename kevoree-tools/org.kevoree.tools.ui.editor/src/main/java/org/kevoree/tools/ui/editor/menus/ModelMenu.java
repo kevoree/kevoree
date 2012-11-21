@@ -79,6 +79,7 @@ public class ModelMenu extends JMenu {
         mergelibraries.add(createLoadCoreLibaryArduinoItem());
         mergelibraries.add(createLoadCoreLibarySkyItem());
         mergelibraries.add(createLoadCoreLibaryAndroidItem());
+        mergelibraries.add(createLoadCoreLibaryDaumItem());
 
         return mergelibraries;
     }
@@ -123,6 +124,13 @@ public class ModelMenu extends JMenu {
         cmdLDEFL5.setKernel(kernel);
         mergeDefLib5.addActionListener(new CommandActionListener(cmdLDEFL5));
         return mergeDefLib5;
+    }
+    private JMenuItem createLoadCoreLibaryDaumItem() {
+        JMenuItem mergeDefLib6 = new JMenuItem("DAUM");
+        MergeDefaultLibrary cmdLDEFL6 = new MergeDefaultLibrary(6);
+        cmdLDEFL6.setKernel(kernel);
+        mergeDefLib6.addActionListener(new CommandActionListener(cmdLDEFL6));
+        return mergeDefLib6;
     }
 
     private JMenuItem createCheckModelItem() {

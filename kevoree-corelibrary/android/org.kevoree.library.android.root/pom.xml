@@ -6,12 +6,12 @@
     <artifactId>org.kevoree.library.android.root</artifactId>
     <packaging>pom</packaging>
     <name>Kevoree :: CoreLibrary :: Android :: Root</name>
-    <version>1.8.9-SNAPSHOT</version>
+    <version>1.8.9</version>
 
     <parent>
         <artifactId>org.kevoree.library</artifactId>
         <groupId>org.kevoree.corelibrary</groupId>
-        <version>1.8.9-SNAPSHOT</version>
+        <version>1.8.9</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
@@ -35,6 +35,7 @@
         <module>../org.kevoree.library.android.agrapher</module>
 		<module>../org.kevoree.library.android.jexxus</module>
         <module>../org.kevoree.library.android.basicGossiper</module>
+		<module>../org.kevoree.library.android.mavenCache</module>
     </modules>
 
     <dependencies>

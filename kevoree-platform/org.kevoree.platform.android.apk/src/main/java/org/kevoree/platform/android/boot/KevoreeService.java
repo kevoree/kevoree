@@ -37,7 +37,6 @@ import android.os.IBinder;
 import android.util.Log;
 import org.kevoree.platform.android.boot.controller.ControllerImpl;
 import org.kevoree.platform.android.core.KevoreeAndroidBootStrap;
-import org.kevoree.platform.android.ui.KevoreeAndroidUIScreen;
 
 import java.lang.reflect.Method;
 
@@ -101,22 +100,23 @@ public class KevoreeService extends Service {
     /* STOP & DESTROY SERVICE */
     @Override
     public void onDestroy() {
-        super.onDestroy();
         Log.i("kevoree.service.logger", "Stopping the Kevoree framework...");
-
-        try {
+        try
+        {
             bootObj.getClass().getMethod("stop").invoke(bootObj);
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        //multicastLock.release();
-        //Unset the service as foreground
         unsetServiceAsForeground();
+        super.onDestroy();
         android.os.Process.killProcess(android.os.Process.myPid());
     }
 
-    private static final int ART2SERVICE_NOTIFICATION_ID = 1;
+
+
+
+
+    private static final int KSERVICE_NOTIFICATION_ID = 1;
 
     /**
      * This is a wrapper around the new startForeground method from Android 2.0+,
@@ -133,10 +133,10 @@ public class KevoreeService extends Service {
             Notification notification = new Notification(R.drawable.kicon, getString(R.string.app_name), System.currentTimeMillis());
             PendingIntent contentIntent = PendingIntent.getActivity(getApplicationContext(), 0, new Intent(), 0);
             notification.setLatestEventInfo(getApplicationContext(), getString(R.string.app_name), getString(R.string.notification_description), contentIntent);
-            Object[] startForegroundMethodArgs = new Object[]{ART2SERVICE_NOTIFICATION_ID, notification};
+            Object[] startForegroundMethodArgs = new Object[]{KSERVICE_NOTIFICATION_ID, notification};
             try {
                 startForegroundMethod.invoke(this, startForegroundMethodArgs);
-                notificationManager.notify(ART2SERVICE_NOTIFICATION_ID, notification);
+                notificationManager.notify(KSERVICE_NOTIFICATION_ID, notification);
             } catch (Exception e) {
                 // Should not happen.
                 Log.e("kevoree.service.logger", "Unable to invoke startForeground", e);
@@ -166,7 +166,7 @@ public class KevoreeService extends Service {
                 // Should not happen.
                 Log.e("kevoree.service.logger", "Unable to invoke stopForeground", e);
             }
-            notificationManager.cancel(ART2SERVICE_NOTIFICATION_ID);
+            notificationManager.cancel(KSERVICE_NOTIFICATION_ID);
         } catch (NoSuchMethodException e) {
             // Running on an older platform -> Fall back on the old API.
             //setForeground(false);

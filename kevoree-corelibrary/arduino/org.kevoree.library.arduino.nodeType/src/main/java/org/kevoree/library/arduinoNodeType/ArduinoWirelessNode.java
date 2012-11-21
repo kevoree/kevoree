@@ -24,7 +24,7 @@ import java.io.IOException;
  * To change this template use File | Settings | File Templates.
  */
 @org.kevoree.annotation.DictionaryType({
-        @org.kevoree.annotation.DictionaryAttribute(name = "boardTypeName", defaultValue = "uno", optional = true, vals = {"uno"}),
+        @org.kevoree.annotation.DictionaryAttribute(name = "boardTypeName", defaultValue = "atmega328", optional = true, vals = {"atmega328"}),
         @org.kevoree.annotation.DictionaryAttribute(name = "timeout", defaultValue = "60", optional = false)
 })
 @org.kevoree.annotation.NodeType

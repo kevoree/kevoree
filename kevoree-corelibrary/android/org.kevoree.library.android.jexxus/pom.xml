@@ -4,12 +4,12 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>org.kevoree.library.android.jexxus</artifactId>
     <name>Kevoree :: CoreLibrary :: Android :: Jexxus</name>
-    <version>1.8.9-SNAPSHOT</version>
+    <version>1.8.9</version>
 
     <parent>
         <artifactId>org.kevoree.library.android.root</artifactId>
         <groupId>org.kevoree.corelibrary.android</groupId>
-        <version>1.8.9-SNAPSHOT</version>
+        <version>1.8.9</version>
         <relativePath>../org.kevoree.library.android.root/pom.xml</relativePath>
     </parent>
 
@@ -17,6 +17,7 @@
         <sourceDirectory>../../javase/org.kevoree.library.javase.jexxus/src</sourceDirectory>
         <plugins>
             <!-- android dex phase -->
+            <!--
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
@@ -31,9 +32,9 @@
                         <configuration>
                             <executable>${android.tools.dx}</executable>
                             <arguments>
-                                <argument>--dex</argument>
-                                <argument>--core-library</argument>
-                                <argument>--output=${project.build.directory}/classes.dex</argument>
+                                <argument>-dex</argument>
+                                <argument>-core-library</argument>
+                                <argument>-output=${project.build.directory}/classes.dex</argument>
                                 <argument>${project.build.directory}/${project.build.finalName}.jar</argument>
                             </arguments>
                         </configuration>
@@ -56,7 +57,7 @@
                     </execution>
                 </executions>
             </plugin>
-
+                 -->
         </plugins>
     </build>
 
