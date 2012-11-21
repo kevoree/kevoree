@@ -40,15 +40,15 @@ import org.slf4j.LoggerFactory
  */
 
 case class KevsAddChildInterpreter (addChild: AddChildStatment) extends KevsAbstractInterpreter {
-  val logger = LoggerFactory.getLogger(this.getClass);
+  val logger = LoggerFactory.getLogger(this.getClass)
 
   def interpret (context: KevsInterpreterContext): Boolean = {
     context.model.getNodes.find(node => node.getName == addChild.childNodeName) match {
-      case None => logger.error("Unknown child name:" + addChild.childNodeName + "\nThe node must already exist. Please check !"); false
+      case None => logger.error("child node:" + addChild.childNodeName + "\nThe node already exist. Please check !"); false
       case Some(child) => {
         context.model.getNodes.find(node => node.getName == addChild.fatherNodeName) match {
           case None => {
-            logger.error("Unknown father name:" + addChild.childNodeName + "\nThe node must already exist. Please check !");
+            logger.error("Unknown father name:" + addChild.fatherNodeName + "\nThe node must already exist. Please check !")
             false
           }
           case Some(father) => {
