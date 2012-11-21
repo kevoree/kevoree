@@ -215,7 +215,7 @@ class IaaSKloudResourceManagerPageGenerator (instance: IaaSKloudResourceManagerP
     val kengine: KevScriptEngine = instance.getKevScriptEngineFactory.createKevScriptEngine(initializeModel(instance.getModelService.getLastModel))
 
     kengine addVariable("nodeName", nodeName)
-    kengine append "addNode {nodeName} : JavaSENode"
+    kengine append "removeNode {nodeName}"
     /*kengine append "removeNode " + nodeName
     try {
       kengine.atomicInterpretDeploy()
