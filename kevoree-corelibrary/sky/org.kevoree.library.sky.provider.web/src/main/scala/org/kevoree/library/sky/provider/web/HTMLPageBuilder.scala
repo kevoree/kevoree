@@ -328,9 +328,6 @@ object HTMLPageBuilder {
       </thead>
       <tbody>
         {var result: List[scala.xml.Elem] = List()
-      /*model.getNodes.find(n => n.getName == nodeName) match {
-                case None =>
-                case Some(node) => {*/
       nodeList.foreach {
         child => {
           val ips = KevoreePropertyHelper.getStringNetworkProperties(model, child.getName, org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP)
@@ -356,8 +353,6 @@ object HTMLPageBuilder {
             </tr>
           )
         }
-        /* }
-                  }*/
       }
       result}
       </tbody>
@@ -391,7 +386,6 @@ object HTMLPageBuilder {
             <label class="control-label" for="nodeType">NodeType</label>
             <div class="controls">
               <select id="nodeType">
-                <option value="JavaSENode">JavaSENode</option>
               </select>
             </div>
           </div>

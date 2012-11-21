@@ -1,141 +1,141 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-    <modelVersion>4.0.0</modelVersion>
-    <groupId>org.kevoree.corelibrary.sky</groupId>
-    <artifactId>org.kevoree.library.sky.root</artifactId>
-    <packaging>pom</packaging>
-    <name>Kevoree :: CoreLibrary :: Sky :: Root</name>
-    <version>1.8.9</version>
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.kevoree.corelibrary.sky</groupId>
+	<artifactId>org.kevoree.library.sky.root</artifactId>
+	<packaging>pom</packaging>
+	<name>Kevoree :: CoreLibrary :: Sky :: Root</name>
+	<version>1.8.9</version>
 
-    <parent>
-        <artifactId>org.kevoree.library</artifactId>
-        <groupId>org.kevoree.corelibrary</groupId>
-        <version>1.8.9</version>
-        <relativePath>../../pom.xml</relativePath>
-    </parent>
+	<parent>
+		<artifactId>org.kevoree.library</artifactId>
+		<groupId>org.kevoree.corelibrary</groupId>
+		<version>1.8.9</version>
+		<relativePath>../../pom.xml</relativePath>
+	</parent>
 
-    <properties>
-        <kevoree.version>${project.version}</kevoree.version>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
+	<properties>
+		<kevoree.version>${project.version}</kevoree.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
 
-    <modules>
-        <module>../org.kevoree.library.sky.api</module>
-        <module>../org.kevoree.library.sky.minicloud</module>
-        <module>../org.kevoree.library.sky.jails</module>
-        <module>../org.kevoree.library.sky.provider</module>
+	<modules>
+		<module>../org.kevoree.library.sky.api</module>
+		<module>../org.kevoree.library.sky.minicloud</module>
+		<module>../org.kevoree.library.sky.jails</module>
+		<module>../org.kevoree.library.sky.provider</module>
 
-        <module>../org.kevoree.library.sky.forkcloud</module>
-        <!--<module>../org.kevoree.library.sky.ec2</module>-->
-        <module>../org.kevoree.library.sky.provider.web</module>
-        <module>../org.kevoree.library.sky.libvirt</module>
-        <module>../org.kevoree.library.sky.provider.api</module>
-        <!--  <module>../org.kevoree.library.sky.logging</module>  -->
-    </modules>
+		<module>../org.kevoree.library.sky.forkcloud</module>
+		<!--<module>../org.kevoree.library.sky.ec2</module>-->
+		<module>../org.kevoree.library.sky.provider.web</module>
+		<module>../org.kevoree.library.sky.libvirt</module>
+		<module>../org.kevoree.library.sky.provider.api</module>
+		<!--  <module>../org.kevoree.library.sky.logging</module>  -->
+	</modules>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.kevoree.tools</groupId>
-            <artifactId>org.kevoree.tools.javase.framework</artifactId>
-            <version>${kevoree.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.kevoree.tools</groupId>
-            <artifactId>org.kevoree.tools.annotation.api</artifactId>
-            <version>${kevoree.version}</version>
-        </dependency>
-    </dependencies>
+	<dependencies>
+		<dependency>
+			<groupId>org.kevoree.tools</groupId>
+			<artifactId>org.kevoree.tools.javase.framework</artifactId>
+			<version>${kevoree.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.kevoree.tools</groupId>
+			<artifactId>org.kevoree.tools.annotation.api</artifactId>
+			<version>${kevoree.version}</version>
+		</dependency>
+	</dependencies>
 
-    <build>
-        <plugins>
-            <plugin>
-            <groupId>net.alchim31.maven</groupId>
-            <artifactId>scala-maven-plugin</artifactId>
-            <version>3.1.0</version>
-            <executions>
-                <execution>
-                    <id>scala-compile-first</id>
-                    <phase>process-resources</phase>
-                    <goals>
-                        <goal>add-source</goal>
-                        <goal>compile</goal>
-                    </goals>
-                </execution>
-                <execution>
-                    <id>scala-test-compile</id>
-                    <phase>process-test-resources</phase>
-                    <goals>
-                        <goal>testCompile</goal>
-                    </goals>
-                </execution>
-            </executions>
-            <configuration>
-                <jvmArgs>
-                    <jvmArg>-Xms64m</jvmArg>
-                    <jvmArg>-Xmx1024m</jvmArg>
-                </jvmArgs>
-            </configuration>
-        </plugin>
-        <plugin>
-            <groupId>org.kevoree.tools</groupId>
-            <artifactId>org.kevoree.tools.annotation.mavenplugin</artifactId>
-            <version>${kevoree.version}</version>
-            <extensions>true</extensions>
-            <configuration>
-                <nodeTypeNames>JavaSENode</nodeTypeNames>
-                <!-- TODO: Replace by HostNode -->
-            </configuration>
-            <executions>
-                <execution>
-                    <goals>
-                        <goal>generate</goal>
-                        <goal>compile</goal>
-                    </goals>
-                </execution>
-            </executions>
-        </plugin>
-        <!-- Java compiler plugin -->
-        <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-compiler-plugin</artifactId>
-            <version>2.3.2</version>
-            <configuration>
-                <source>1.6</source>
-                <target>1.6</target>
-                <encoding>${project.build.sourceEncoding}</encoding>
-            </configuration>
-        </plugin>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>net.alchim31.maven</groupId>
+				<artifactId>scala-maven-plugin</artifactId>
+				<version>3.1.0</version>
+				<executions>
+					<execution>
+						<id>scala-compile-first</id>
+						<phase>process-resources</phase>
+						<goals>
+							<goal>add-source</goal>
+							<goal>compile</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>scala-test-compile</id>
+						<phase>process-test-resources</phase>
+						<goals>
+							<goal>testCompile</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<jvmArgs>
+						<jvmArg>-Xms64m</jvmArg>
+						<jvmArg>-Xmx1024m</jvmArg>
+					</jvmArgs>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.kevoree.tools</groupId>
+				<artifactId>org.kevoree.tools.annotation.mavenplugin</artifactId>
+				<version>${kevoree.version}</version>
+				<extensions>true</extensions>
+				<configuration>
+					<nodeTypeNames>JavaSENode</nodeTypeNames>
+					<!-- TODO: Replace by HostNode -->
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>generate</goal>
+							<goal>compile</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<!-- Java compiler plugin -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.3.2</version>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+					<encoding>${project.build.sourceEncoding}</encoding>
+				</configuration>
+			</plugin>
 
-        <plugin>
-            <groupId>org.kevoree.platform</groupId>
-            <artifactId>org.kevoree.platform.mavenrunner</artifactId>
-            <version>${kevoree.version}</version>
-        </plugin>
-    </plugins>
-</build>
+			<plugin>
+				<groupId>org.kevoree.platform</groupId>
+				<artifactId>org.kevoree.platform.mavenrunner</artifactId>
+				<version>${kevoree.version}</version>
+			</plugin>
+		</plugins>
+	</build>
 
-<repositories>
-<repository>
-    <id>kevoree-release</id>
-    <url>http://maven.kevoree.org/release</url>
-</repository>
-<repository>
-    <id>kevoree-snapshots</id>
-    <url>http://maven.kevoree.org/snapshots</url>
-</repository>
-</repositories>
+	<repositories>
+		<repository>
+			<id>kevoree-release</id>
+			<url>http://maven.kevoree.org/release</url>
+		</repository>
+		<repository>
+			<id>kevoree-snapshots</id>
+			<url>http://maven.kevoree.org/snapshots</url>
+		</repository>
+	</repositories>
 
-<pluginRepositories>
-<pluginRepository>
-    <id>plugin.kevoree-github</id>
-    <url>http://maven.kevoree.org/release</url>
-</pluginRepository>
-<pluginRepository>
-    <id>plugin.kevoree-snapshots</id>
-    <url>http://maven.kevoree.org/snapshots</url>
-</pluginRepository>
-</pluginRepositories>
+	<pluginRepositories>
+		<pluginRepository>
+			<id>plugin.kevoree-github</id>
+			<url>http://maven.kevoree.org/release</url>
+		</pluginRepository>
+		<pluginRepository>
+			<id>plugin.kevoree-snapshots</id>
+			<url>http://maven.kevoree.org/snapshots</url>
+		</pluginRepository>
+	</pluginRepositories>
 
 
-        </project>
+</project>
