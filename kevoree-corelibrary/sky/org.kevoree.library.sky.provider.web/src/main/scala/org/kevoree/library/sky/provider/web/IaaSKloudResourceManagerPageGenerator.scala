@@ -51,6 +51,7 @@ class IaaSKloudResourceManagerPageGenerator (instance: IaaSKloudResourceManagerP
   }
 
 
+
   private def getIaasPage (request: KevoreeHttpRequest, response: KevoreeHttpResponse): KevoreeHttpResponse = {
     val htmlContent = HTMLPageBuilder.getIaasPage(pattern, parentNodeName, instance.getModelService.getLastModel)
     response.setStatus(200)
@@ -108,7 +109,7 @@ class IaaSKloudResourceManagerPageGenerator (instance: IaaSKloudResourceManagerP
             kengine.addVariable("nodeTypeName", typeName)
             kengine.addVariable("parentNodeName", parentNodeName)
             kengine append "addNode {nodeName} : {nodeTypeName}"
-            //            kengine append "addChild {nodeName} @ {parentNodeName}"
+            kengine append "addChild {nodeName} @ {parentNodeName}"
             //            val ipOption = KloudNetworkHelper.selectIP(parentNodeName, instance.getModelService.getLastModel)
             //            if (ipOption.isDefined) {
             //              kengine.addVariable("ipKey", Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP)
