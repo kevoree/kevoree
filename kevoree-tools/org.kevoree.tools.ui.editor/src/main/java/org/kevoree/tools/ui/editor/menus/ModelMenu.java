@@ -32,6 +32,7 @@ public class ModelMenu extends JMenu {
         this.kernel = kernel;
 
         add(createShowStatsItem());
+        add(createArrangeAllItem());
         add(createClearItem());
         add(createLoadLibraryItem());
         add(createLoadCoreLibraryItem());
@@ -45,6 +46,15 @@ public class ModelMenu extends JMenu {
         statItem.addActionListener(new CommandActionListener(statCMD));
         return statItem;
     }
+
+    private JMenuItem createArrangeAllItem() {
+        JMenuItem arrangeItem = new JMenuItem("Arrange model");
+        ArrangeAllLayoutCommand arrangeCMD = new ArrangeAllLayoutCommand();
+        arrangeCMD.setKernel(kernel);
+        arrangeItem.addActionListener(new CommandActionListener(arrangeCMD));
+        return arrangeItem;
+    }
+
     private JMenuItem createClearItem() {
         JMenuItem clearModel = new JMenuItem("Clear");
         ClearModelCommand cmdCM = new ClearModelCommand();
