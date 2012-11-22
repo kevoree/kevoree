@@ -59,4 +59,12 @@
         </plugins>
     </build>
 
+    <dependencies>
+        <dependency>
+            <groupId>org.kevoree.corelibrary.android</groupId>
+            <artifactId>org.kevoree.library.android.jexxus</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
+    </dependencies>
+
 </project>
