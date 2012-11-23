@@ -1,0 +1,3 @@
+merge "mvn:org.daum.library.android/org.daum.library.android.p2pSock/{kevoree.version}"
+merge "mvn:org.daum.library.javase/org.daum.library.javase.p2pSock/{kevoree.version}"
+merge "mvn:org.daum.library.android/org.daum.library.android.sensors/{kevoree.version}"
