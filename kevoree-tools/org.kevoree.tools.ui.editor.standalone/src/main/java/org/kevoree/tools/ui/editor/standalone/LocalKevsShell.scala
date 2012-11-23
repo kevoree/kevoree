@@ -39,7 +39,6 @@ import java.awt.BorderLayout
 import javax.swing._
 import com.explodingpixels.macwidgets.MacButtonFactory
 import java.net.URL
-import org.kevoree.cloner.ModelCloner
 import org.kevoree.tools.ui.editor.command.{KevScriptCommand, Command, LoadModelCommand}
 
 

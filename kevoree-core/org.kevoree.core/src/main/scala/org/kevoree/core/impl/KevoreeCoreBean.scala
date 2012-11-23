@@ -37,7 +37,7 @@ import scala.Tuple2
 
 class KevoreeCoreBean extends KevoreeModelHandlerService {
 
-  val listenerActor = new KevoreeListeners
+  val modelListeners = new KevoreeListeners
 
   @BeanProperty var configService: ConfigurationService = null
   var kevsEngineFactory: KevScriptEngineFactory = null
@@ -69,8 +69,9 @@ class KevoreeCoreBean extends KevoreeModelHandlerService {
   def getLastModification = lastDate
 
   var logger = LoggerFactory.getLogger(this.getClass)
-  val modelClone = new ModelCloner
-
+  val modelCloner = new ModelCloner
+  val modelChecker = new RootChecker
+  private var scheduler: ExecutorService = _
   var selfActorPointer = this
 
   private def checkBootstrapNode(currentModel: ContainerRoot): Unit = {
@@ -83,7 +84,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService {
                 nodeInstance = ist
                 nodeInstance.startNode()
                 //SET CURRENT MODEL
-                model = modelClone.clone(currentModel)
+                model = modelCloner.clone(currentModel)
                 model.removeAllGroups()
                 model.removeAllHubs()
                 model.removeAllMBindings()
@@ -122,7 +123,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService {
       if (nodeInstance != null) {
         currentModel.getNodes.find(n => n.getName == nodeName) match {
           case Some(foundNode) => {
-            val modelTmp = modelClone.clone(currentModel)
+            val modelTmp = modelCloner.clone(currentModel)
             modelTmp.removeAllGroups()
             modelTmp.removeAllHubs()
             modelTmp.removeAllMBindings()
@@ -148,35 +149,25 @@ class KevoreeCoreBean extends KevoreeModelHandlerService {
   private def switchToNewModel(c: ContainerRoot) = {
     //current model is backed-up
     models.append(model)
-
-    // MAGIC NUMBER ;-) , ONLY KEEP 10 PREVIOUS MODEL
+    // TODO : MAGIC NUMBER ;-) , ONLY KEEP 10 PREVIOUS MODEL
     if (models.size > 15) {
       models = models.drop(5)
       logger.debug("Garbage old previous model")
     }
-
     //Changes the current model by the new model
     model = c
     currentModelUUID = UUID.randomUUID()
     lastDate = new Date(System.currentTimeMillis)
     //Fires the update to listeners
-    //new Actor {
-    //  def act() {
-    listenerActor.notifyAllListener()
-    //  }
-    //}.start()
+    modelListeners.notifyAllListener()
   }
 
-  private var scheduler: ExecutorService = _
-
-  def start() /*: Actor*/ = {
-
+  def start() = {
     if (getNodeName == "") {
       setNodeName(configService.getProperty(ConfigConstants.KEVOREE_NODE_NAME))
     }
-    listenerActor.start(getNodeName())
+    modelListeners.start(getNodeName())
     logger.info("Kevoree Start event : node name = " + getNodeName)
-
     scheduler = java.util.concurrent.Executors.newSingleThreadExecutor(new ThreadFactory() {
       val s = System.getSecurityManager
       val group = if (s != null) {
@@ -184,7 +175,6 @@ class KevoreeCoreBean extends KevoreeModelHandlerService {
       } else {
         Thread.currentThread().getThreadGroup
       }
-
       def newThread(p1: Runnable) = {
         val t = new Thread(group, p1, "Kevoree_Core_Scheduler_" + getNodeName)
         if (t.isDaemon) {
@@ -196,26 +186,13 @@ class KevoreeCoreBean extends KevoreeModelHandlerService {
         t
       }
     })
-
-
-    // super.start()
-
-    //State recovery phase
-    /*
-    val lastModelssaved = bundleContext.getDataFile("lastModel.xmi");
-    if (lastModelssaved.length() != 0) {
-      /* Load previous state */
-      val model = KevoreeXmiHelper.load(lastModelssaved.getAbsolutePath());
-      switchToNewModel(model)
-    }  */
-
     this
   }
 
 
   def stop() {
     logger.warn("Kevoree Core will be stopped !")
-    listenerActor.stop()
+    modelListeners.stop()
     scheduler.shutdownNow()
     scheduler = null
     if (nodeInstance != null) {
@@ -252,22 +229,21 @@ class KevoreeCoreBean extends KevoreeModelHandlerService {
     logger.debug("Kevoree core stopped ")
   }
 
-  val cloner = new ModelCloner
-  val modelChecker = new RootChecker
 
   // treatment of incoming messages
 
 
-  private def internal_update_model(pnewmodel: ContainerRoot): Boolean = {
-    if (pnewmodel == null || !pnewmodel.getNodes.exists(p => p.getName == getNodeName())) {
+  private def internal_update_model(proposedNewModel: ContainerRoot): Boolean = {
+    if (proposedNewModel == null || !proposedNewModel.getNodes.exists(p => p.getName == getNodeName())) {
       logger.error("Asking for update with a NULL model or node name was not found in target model !")
       false
     } else {
       try {
 
+        val readOnlyNewModel = modelCloner.clone(proposedNewModel,true)
         //Model checking
-        val checkResult = modelChecker.check(pnewmodel)
-        val versionCheckResult = modelVersionChecker.check(pnewmodel)
+        val checkResult = modelChecker.check(readOnlyNewModel)
+        val versionCheckResult = modelVersionChecker.check(readOnlyNewModel)
         if ((!checkResult.isEmpty) || (!versionCheckResult.isEmpty)) {
           logger.error("There is check failure on update model, update refused !")
           import _root_.scala.collection.JavaConversions._
@@ -278,32 +254,23 @@ class KevoreeCoreBean extends KevoreeModelHandlerService {
           false
         } else {
 
-          val protectedModel = cloner.clone(model)
-          val clonedNewModel = cloner.clone(pnewmodel)
-          val protectedNewModel = cloner.clone(pnewmodel)
-
-
           //Model check is OK.
           logger.debug("Before listeners PreCheck !")
-          val preCheckResult = listenerActor.preUpdate(protectedModel, clonedNewModel)
+          val preCheckResult = modelListeners.preUpdate(model, readOnlyNewModel)
           logger.debug("PreCheck result = " + preCheckResult)
 
           logger.debug("Before listeners InitUpdate !")
-          val initUpdateResult = listenerActor.initUpdate(protectedModel, clonedNewModel)
+          val initUpdateResult = modelListeners.initUpdate(model, readOnlyNewModel)
           logger.debug("InitUpdate result = " + initUpdateResult)
 
           if (preCheckResult && initUpdateResult) {
 
-            var newmodel = clonedNewModel//cloner.clone(pnewmodel)
+            var newmodel = readOnlyNewModel
             //CHECK FOR HARA KIRI
-
             var previousHaraKiriModel: ContainerRoot = null
-
-            if (HaraKiriHelper.detectNodeHaraKiri(model, newmodel, getNodeName())) {
+            if (HaraKiriHelper.detectNodeHaraKiri(model, readOnlyNewModel, getNodeName())) {
               logger.warn("HaraKiri detected , flush platform")
-
               previousHaraKiriModel = model
-
               // Creates an empty model, removes the current node (harakiri)
               newmodel = checkUnbootstrapNode(model).get
               try {
@@ -332,7 +299,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService {
                 switchToNewModel(KevoreeFactory.createContainerRoot)
 
                 //prepares for deployment of the new system
-                newmodel = cloner.clone(pnewmodel) //OVERRIDE NEW MODEL WITH NEW VALUE
+                newmodel = readOnlyNewModel
               } catch {
                 case _@e => {
                   logger.error("Error while update ", e)
@@ -354,7 +321,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService {
               //Execution of the adaptation
               logger.info("Launching adaptation of the system.")
               def afterUpdateTest(): Boolean = {
-                listenerActor.afterUpdate(model, newmodel)
+                modelListeners.afterUpdate(model, newmodel)
               }
 
               class PreCommand() {
@@ -362,7 +329,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService {
 
                 def preRollbackTest(): Boolean = {
                   if (!alreadyCall) {
-                    listenerActor.preRollback(model, newmodel)
+                    modelListeners.preRollback(model, newmodel)
                     alreadyCall = true
                   }
                   true
@@ -373,7 +340,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService {
 
 
               def postRollbackTest(): Boolean = {
-                listenerActor.postRollback(model, newmodel)
+                modelListeners.postRollback(model, newmodel)
                 true
               }
               val rootNode = newmodel.getNodes.find(n => n.getName == getNodeName).get
@@ -385,7 +352,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService {
               }
             }
             if (deployResult) {
-              switchToNewModel(protectedNewModel)
+              switchToNewModel(newmodel)
               logger.info("Update sucessfully completed.")
             } else {
               //KEEP FAIL MODEL, TODO
@@ -423,7 +390,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService {
 
   private case class LastModelCallable() extends Callable[ContainerRoot] {
     def call(): ContainerRoot = {
-      cloner.clone(model)
+      model
     }
   }
 
@@ -436,7 +403,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService {
 
   private case class LastUUIDModelCallable() extends Callable[UUIDModel] {
     def call(): UUIDModel = {
-      UUIDModelImpl(currentModelUUID, cloner.clone(model))
+      UUIDModelImpl(currentModelUUID, model)
     }
   }
 
@@ -563,11 +530,11 @@ class KevoreeCoreBean extends KevoreeModelHandlerService {
 
 
   override def registerModelListener(listener: ModelListener) {
-    listenerActor.addListener(listener)
+    modelListeners.addListener(listener)
   }
 
   override def unregisterModelListener(listener: ModelListener) {
-    listenerActor.removeListener(listener)
+    modelListeners.removeListener(listener)
   }
 
   def getContextModel: ContextModel = {
@@ -644,7 +611,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService {
   def checkModel(tModel: ContainerRoot): Boolean = {
     val checkResult = modelChecker.check(model)
     if (checkResult.isEmpty) {
-      listenerActor.preUpdate(cloner.clone(model), cloner.clone(tModel))
+      modelListeners.preUpdate(model, modelCloner.clone(tModel,true))
     } else {
       false
     }

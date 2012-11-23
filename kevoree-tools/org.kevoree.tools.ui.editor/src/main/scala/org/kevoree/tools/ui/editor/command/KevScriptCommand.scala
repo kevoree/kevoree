@@ -105,11 +105,8 @@ class KevScriptCommand extends Command {
       def act() {
         p match {
           case s: String => {
-
-            val cloner = new ModelCloner
-            val clonedModel = cloner.clone(kernel.getModelHandler.getActualModel)
             val bootstraper = new FakeBootstraperService
-            val kevOfflineEngine = new KevScriptOfflineEngine(clonedModel,bootstraper.getBootstrap)
+            val kevOfflineEngine = new KevScriptOfflineEngine(kernel.getModelHandler.getActualModel,bootstraper.getBootstrap)
             kevOfflineEngine.addVariable("kevoree.version",KevoreeFactory.getVersion)
             import scala.collection.JavaConversions._
             System.getProperties.foreach{ prop =>

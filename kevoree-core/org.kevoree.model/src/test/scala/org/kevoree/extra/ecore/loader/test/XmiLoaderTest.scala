@@ -16,7 +16,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * 	http://www.gnu.org/licenses/lgpl-3.0.txt
+ * http://www.gnu.org/licenses/lgpl-3.0.txt
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -30,8 +30,9 @@ import org.junit.Assert._
 import org.kevoree.loader.ContainerRootLoader
 import org.junit.{Test, BeforeClass}
 import org.kevoree.serializer.ModelSerializer
-import org.kevoree.{NodeType, ContainerRoot}
+import org.kevoree.{KevoreeFactory, NodeType, ContainerRoot}
 import java.io.{PrintWriter, File}
+import org.kevoree.cloner.ModelCloner
 
 /**
  * Created by IntelliJ IDEA.
@@ -60,7 +61,7 @@ class XmiLoaderTest {
   @Test
   def testSaveAndLoad() {
     System.out.println("Saving model from memory to tempFile")
-    val tempFile = File.createTempFile("kmfTest_" + System.currentTimeMillis(),"kev")
+    val tempFile = File.createTempFile("kmfTest_" + System.currentTimeMillis(), "kev")
     val pr = new PrintWriter(tempFile)
     val ms = new ModelSerializer()
     pr.println(ms.serialize(XmiLoaderTest.model))
@@ -76,47 +77,92 @@ class XmiLoaderTest {
 
   @Test
   def loadBootstrapModel() {
-     val localModel = ContainerRootLoader.loadModel(new File(getClass.getResource("/bootstrapModel0.kev").toURI));
+    val localModel = ContainerRootLoader.loadModel(new File(getClass.getResource("/bootstrapModel0.kev").toURI));
     localModel match {
       case Some(m) =>
       case None => fail("Model not loaded!")
     }
   }
 
+  @Test
+  def loadAndCloneToReadWrite() {
+    val localModel = ContainerRootLoader.loadModel(new File(getClass.getResource("/bootstrapModel0.kev").toURI));
+    localModel match {
+      case Some(m) => {
+        m.addNodes(KevoreeFactory.createContainerNode)
+        val modelCloner = new ModelCloner
+        val readOModel = modelCloner.clone(m, true)
+        var errorDetected = false
+        try {
+          readOModel.addNodes(KevoreeFactory.createContainerNode)
+          fail("Model must be not modifiable!")
+        } catch {
+          case _ => {
+            errorDetected = true
+          }
+        }
+        assert(errorDetected)
+        errorDetected = false
+        try {
+          readOModel.getNodes(0).setName("SayHelloNode")
+          fail("Model must be not modifiable!")
+        } catch {
+          case _ => {
+            errorDetected = true
+          }
+        }
+        assert(errorDetected)
+
+
+        m.addNodes(KevoreeFactory.createContainerNode)
+
+
+        val writeModel = modelCloner.clone(readOModel, false)
+        writeModel.addNodes(KevoreeFactory.createContainerNode)
+        val writeModel2 = modelCloner.clone(readOModel)
+        writeModel2.addNodes(KevoreeFactory.createContainerNode)
+
+
+      }
+      case None => fail("Model not loaded!")
+    }
+  }
 
   @Test
   def deepCheck() {
-      XmiLoaderTest.model.getTypeDefinitions.find(td=>td.getName.equals("ArduinoNode")) match {
-        case Some(typeDef) => {
+    XmiLoaderTest.model.getTypeDefinitions.find(td => td.getName.equals("ArduinoNode")) match {
+      case Some(typeDef) => {
 
-          XmiLoaderTest.model.getDeployUnits.find(du => du.getGroupName.equals("org.kevoree.library.arduino")) match {
-            case Some(du) => {
-              assertTrue("TypeDefinition does not contain its deploy unit.", typeDef.getDeployUnits.contains(du))
-            }
-            case None => fail("DeployUnit org.kevoree.library.arduino not found")
+        XmiLoaderTest.model.getDeployUnits.find(du => du.getGroupName.equals("org.kevoree.library.arduino")) match {
+          case Some(du) => {
+            assertTrue("TypeDefinition does not contain its deploy unit.", typeDef.getDeployUnits.contains(du))
           }
-
-          typeDef.asInstanceOf[NodeType].getDictionaryType match {
-            case Some(dico) =>{
-              dico.getAttributes.find{att => att.getName.equals("boardTypeName")} match {
-                case Some(att) => {
-                  assertTrue(att.getOptional)
-                  assertTrue(att.getDatatype.equals("enum=uno,atmega328,mega2560"))
-                  dico.getDefaultValues.find(defVal => defVal.getAttribute.equals(att))match{
-                    case Some(default) => {
-                      assertTrue(default.getValue.equals("uno"))
-                    }
-                    case None => fail("No default value for att:" + att.getName)
-                  }
-                }
-                case None => fail("No attribute named boardTypeName found in ArduinoNode type dictionary")
-              }
-            }
-            case None => fail("No dictionaryType loaded for ArduinoNode")
-          }
+          case None => fail("DeployUnit org.kevoree.library.arduino not found")
         }
-        case None => fail("Arduino Node Type not found !")
+
+        typeDef.asInstanceOf[NodeType].getDictionaryType match {
+          case Some(dico) => {
+            dico.getAttributes.find {
+              att => att.getName.equals("boardTypeName")
+            } match {
+              case Some(att) => {
+                assertTrue(att.getOptional)
+                assertTrue(att.getDatatype.equals("enum=uno,atmega328,mega2560"))
+                dico.getDefaultValues.find(defVal => defVal.getAttribute.equals(att)) match {
+                  case Some(default) => {
+                    assertTrue(default.getValue.equals("uno"))
+                  }
+                  case None => fail("No default value for att:" + att.getName)
+                }
+              }
+              case None => fail("No attribute named boardTypeName found in ArduinoNode type dictionary")
+            }
+          }
+          case None => fail("No dictionaryType loaded for ArduinoNode")
+        }
       }
+      case None => fail("Arduino Node Type not found !")
+    }
   }
 
   //@Test
