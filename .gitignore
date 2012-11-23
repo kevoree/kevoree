@@ -15,12 +15,7 @@ keystore
 **.externalToolBuilders
 **seed.txt
 **nbactions.xml
-**.log
-**log*.txt
 **maven-eclipse.xml
-**/model/
 **/.scala_dependencies
 **~
 **.hprof
-**dependency-reduced-pom.xml
-
