@@ -27,7 +27,6 @@
 package org.kevoree.framework
 
 import org.kevoree.ContainerRoot
-import org.kevoree.cloner.ModelCloner
 import org.slf4j.LoggerFactory
 import java.util.{Date, UUID}
 import org.kevoree.api.service.core.handler._
@@ -43,14 +42,12 @@ import java.util.concurrent.atomic.AtomicReference
  */
 
 class ModelHandlerServiceProxy(proxy: KevoreeModelHandlerService) extends KevoreeModelHandlerService {
-  //val modelCloner = new ModelCloner
   val logger = LoggerFactory.getLogger(this.getClass)
   var proxyModel: AtomicReference[ContainerRoot] = new AtomicReference[ContainerRoot]
 
   def stopProxy(){ }
 
   def setTempModel(tempModel: ContainerRoot) {
-    //proxyModel.set(modelCloner.clone(tempModel))
     proxyModel.set(tempModel)
   }
 
