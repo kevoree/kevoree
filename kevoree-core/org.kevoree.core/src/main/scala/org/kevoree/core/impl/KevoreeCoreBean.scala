@@ -147,6 +147,13 @@ class KevoreeCoreBean extends KevoreeModelHandlerService {
   }
 
   private def switchToNewModel(c: ContainerRoot) = {
+
+    var cc = c
+    if(!c.isReadOnly()){
+       logger.error("It is not safe to store ReadWrite model")
+       cc = modelCloner.clone(c,true)
+    }
+
     //current model is backed-up
     models.append(model)
     // TODO : MAGIC NUMBER ;-) , ONLY KEEP 10 PREVIOUS MODEL
@@ -155,7 +162,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService {
       logger.debug("Garbage old previous model")
     }
     //Changes the current model by the new model
-    model = c
+    model = cc
     currentModelUUID = UUID.randomUUID()
     lastDate = new Date(System.currentTimeMillis)
     //Fires the update to listeners
