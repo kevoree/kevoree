@@ -16,7 +16,7 @@
     <properties>
         <platform>osx</platform>
         <!--<platform.jdk.include.dir>${java.home}/include</platform.jdk.include.dir>      -->
-        <platform.jdk.include.dir>/System/Library/Frameworks/JavaVM.framework/Headers</platform.jdk.include.dir>
+        <platform.jdk.include.dir>/Developer-3.2.6/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/JavaVM.framework/Headers</platform.jdk.include.dir>
 
         <platform.javahOS>macosx</platform.javahOS>
         <platform.define>__DARWIN__</platform.define>

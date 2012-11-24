@@ -3,6 +3,7 @@ package org.kevoree.library;
 import org.kevoree.ContainerRoot;
 import org.kevoree.DictionaryAttribute;
 import org.kevoree.api.service.core.script.KevScriptEngineFactory;
+import org.kevoree.cloner.ModelCloner;
 import org.kevoree.framework.AbstractGroupType;
 import org.kevoree.framework.KevoreePlatformHelper;
 import org.slf4j.Logger;
@@ -59,18 +60,20 @@ public class NodeNetworkHelper {
         return model;
     }
 
+    private static ModelCloner cloner = new ModelCloner();
 
     public static ContainerRoot updateModelWithNetworkProperty (AbstractGroupType group) {
         Object ipObject = group.getDictionary().get("ip");
+        ContainerRoot readWriteModel = cloner.clone(group.getModelService().getLastModel());
         if (ipObject != null && !ipObject.toString().equals("") && !ipObject.toString().equals("0.0.0.0")) {
             java.util.HashMap<String,String> addresses = new java.util.HashMap<String,String>();
             addresses.put(ipObject.toString(),"unknown");
 
-            return addNetworkProperty(group.getModelService().getLastModel(), group.getNodeName(),addresses, group.getKevScriptEngineFactory());
+            return addNetworkProperty(readWriteModel, group.getNodeName(),addresses, group.getKevScriptEngineFactory());
         } else {
             java.util.HashMap<String,String> addresses = getAddresses();
             if (!addresses.isEmpty()) {
-                return addNetworkProperty(group.getModelService().getLastModel(), group.getNodeName(), addresses, group.getKevScriptEngineFactory());
+                return addNetworkProperty(readWriteModel, group.getNodeName(), addresses, group.getKevScriptEngineFactory());
             } else {
                 return null;
             }

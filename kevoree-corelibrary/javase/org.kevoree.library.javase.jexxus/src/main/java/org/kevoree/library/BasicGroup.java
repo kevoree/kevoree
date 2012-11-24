@@ -10,6 +10,7 @@ import jexxus.server.ServerConnection;
 import org.kevoree.ContainerNode;
 import org.kevoree.ContainerRoot;
 import org.kevoree.Group;
+import org.kevoree.KevoreeFactory;
 import org.kevoree.annotation.*;
 import org.kevoree.framework.AbstractGroupType;
 import org.kevoree.framework.KevoreePropertyHelper;
@@ -84,23 +85,29 @@ public class BasicGroup extends AbstractGroupType implements ConnectionListener 
     @Override
     public void triggerModelUpdate () {
         if (starting) {
+
             final ContainerRoot modelOption = NodeNetworkHelper.updateModelWithNetworkProperty(this);
             if (modelOption != null) {
                 new Thread() {
                     public void run () {
-                        getModelService().unregisterModelListener(BasicGroup.this);
-                        getModelService().atomicUpdateModel(modelOption);
-                        getModelService().registerModelListener(BasicGroup.this);
+                        try {
+                            getModelService().unregisterModelListener(BasicGroup.this);
+                            getModelService().atomicUpdateModel(modelOption);
+                            getModelService().registerModelListener(BasicGroup.this);
+                        } catch (Exception e){
+                            logger.error("",e);
+                        }
                     }
                 }.start();
             }
             starting = false;
         } else {
             Group group = getModelElement();
+            ContainerRoot currentModel = (ContainerRoot) group.eContainer();
             for (ContainerNode subNode : group.getSubNodesForJ()) {
                 if (!subNode.getName().equals(this.getNodeName())) {
                     try {
-                        push(getModelService().getLastModel(), subNode.getName());
+                        push(currentModel, subNode.getName());
                     } catch (Exception e) {
                         logger.warn("Unable to notify other members of {} group", group.getName());
                     }

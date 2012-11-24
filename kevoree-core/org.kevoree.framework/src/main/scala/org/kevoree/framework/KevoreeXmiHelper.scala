@@ -56,28 +56,26 @@ object KevoreeXmiHelper {
     val folder = new File(folderUri)
     if (!folder.exists) folder.mkdirs
     val serializer = new ModelSerializer
-    val pp = new PrettyPrinter(3000,1)
     if(logger.isDebugEnabled) logger.debug("XmiHelper::Save::Serializing in :" + uri)
     val outputFile = new File(uri);
     if(!outputFile.exists) {
       outputFile.createNewFile
       if(logger.isDebugEnabled) logger.debug("XmiHelper::Save::Creating new file.")
     }
-    val fileWrite = new FileWriter(outputFile)
-    fileWrite.append(pp.format(serializer.serialize(root)))
-    fileWrite.flush()
-    fileWrite.close()
+    val fop = new FileOutputStream(outputFile)
+    serializer.serialize(root,fop)
+    fop.flush()
+    fop.close()
   }
 
   def saveToString(root:ContainerRoot, prettyPrint : Boolean) : String = {
     val serializer = new ModelSerializer
-    val res = serializer.serialize(root)
-    if(prettyPrint) {
-    val pp = new PrettyPrinter(3000,1)
-      pp.format(res)
-    } else {
-      res.toString()
-    }
+    val ba = new ByteArrayOutputStream()
+    val res = serializer.serialize(root,ba)
+    ba.flush()
+    val result = new String(ba.toByteArray)
+    ba.close()
+    result
   }
 
   def loadString(model : String) : ContainerRoot = {
@@ -110,10 +108,7 @@ object KevoreeXmiHelper {
 
   def saveStream(output: OutputStream, root: ContainerRoot) : Unit = {
     val serializer = new ModelSerializer
-    val result = serializer.serialize(root)
-    val pr = new PrintWriter(output)
-    pr.print(result)
-    pr.flush()
+    val result = serializer.serialize(root,output)
   }
 
   def saveCompressedStream(output: OutputStream, root: ContainerRoot) : Unit = {
