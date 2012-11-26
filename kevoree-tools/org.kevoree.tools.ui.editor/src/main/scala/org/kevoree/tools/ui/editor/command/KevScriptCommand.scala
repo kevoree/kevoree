@@ -95,7 +95,7 @@ class KevScriptCommand extends Command {
     hud.getJDialog.getContentPane.add(layoutPopupTop)
     hud.getJDialog.setVisible(true)
 
-    println("Display MSG "+msg)
+    println("Display MSG : "+msg)
 
   }
 
