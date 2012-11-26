@@ -43,7 +43,7 @@ import org.kevoree.DeployUnit
 import java.io.File
 import org.kevoree.kcl.KevoreeJarClassLoader
 import scala.collection.JavaConversions._
-import org.kevoree.tools.aether.framework.{AetherUtil, JCLContextHandler}
+import org.kevoree.tools.aether.framework.{JCLContextHandler}
 
 /**
  * Created by IntelliJ IDEA.
