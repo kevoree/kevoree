@@ -31,7 +31,7 @@ import org.kevoree.loader.ContainerRootLoader
 import org.junit.{Test, BeforeClass}
 import org.kevoree.serializer.ModelSerializer
 import org.kevoree.{KevoreeFactory, NodeType, ContainerRoot}
-import java.io.{ByteArrayOutputStream, PrintWriter, File}
+import java.io.{FileOutputStream, ByteArrayOutputStream, PrintWriter, File}
 import org.kevoree.cloner.ModelCloner
 
 /**
@@ -62,16 +62,10 @@ class XmiLoaderTest {
   def testSaveAndLoad() {
     System.out.println("Saving model from memory to tempFile")
     val tempFile = File.createTempFile("kmfTest_" + System.currentTimeMillis(), "kev")
-    val pr = new PrintWriter(tempFile)
+    val pr = new FileOutputStream(tempFile)
     val ms = new ModelSerializer()
 
-    val outS = new ByteArrayOutputStream()
-    ms.serialize(XmiLoaderTest.model,outS)
-
-    pr.println(new String(outS.toByteArray))
-
-  //  System.out.println(new String(outS.toByteArray));
-
+    ms.serialize(XmiLoaderTest.model,pr)
     pr.close()
     System.out.println("Loading saved model")
     val localModel = ContainerRootLoader.loadModel(tempFile);
