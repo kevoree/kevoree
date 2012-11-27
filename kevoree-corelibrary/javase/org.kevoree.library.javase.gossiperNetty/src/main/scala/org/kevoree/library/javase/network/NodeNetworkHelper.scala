@@ -6,6 +6,7 @@ import java.net.{SocketException, NetworkInterface}
 import org.slf4j.LoggerFactory
 import org.kevoree.api.service.core.script.KevScriptEngineFactory
 import org.kevoree.framework.{KevoreePlatformHelper, AbstractGroupType}
+import org.kevoree.cloner.ModelCloner
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -19,15 +20,17 @@ import org.kevoree.framework.{KevoreePlatformHelper, AbstractGroupType}
 object NodeNetworkHelper {
   private val logger = LoggerFactory.getLogger(getClass)
 
+  val cloner = new ModelCloner
 
-  def updateModelWithNetworkProperty (group: AbstractGroupType): Option[ContainerRoot] = {
+  def updateModelWithNetworkProperty (group: AbstractGroupType) : Option[ContainerRoot] = {
+    val readWriteModel = cloner.clone(group.getModelService.getLastModel)
     val ipObject = group.getDictionary.get("ip")
     if (ipObject != null && ipObject.toString != "" && ipObject.toString != "0.0.0.0") {
-      addNetworkProperty(group.getModelService.getLastModel, group.getNodeName, Array[(String, String)]((ipObject.toString, "unknown")), group.getKevScriptEngineFactory)
+      addNetworkProperty(readWriteModel, group.getNodeName, Array[(String, String)]((ipObject.toString, "unknown")), group.getKevScriptEngineFactory)
     } else {
       val addresses = getAddresses
       if (addresses.length > 0) {
-        /*val modelOption = */ addNetworkProperty(group.getModelService.getLastModel, group.getNodeName, addresses, group.getKevScriptEngineFactory)
+        /*val modelOption = */addNetworkProperty(readWriteModel, group.getNodeName, addresses, group.getKevScriptEngineFactory)
         /*if (modelOption.isDefined) {
           group.getModelService.updateModel(modelOption.get)
         }*/
