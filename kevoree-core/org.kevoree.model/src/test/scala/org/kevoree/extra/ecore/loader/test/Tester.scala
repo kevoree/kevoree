@@ -27,7 +27,7 @@
 package org.kevoree
 
 import cloner.ModelCloner
-import java.io.File
+import java.io.{ByteArrayOutputStream, File}
 import loader.ContainerRootLoader
 import org.kevoree.serializer.ModelSerializer
 import xml.PrettyPrinter
@@ -43,27 +43,43 @@ import xml.PrettyPrinter
 object Tester extends App {
 
   val current = System.currentTimeMillis()
-  
+    /*
   for(i <- 0 until 30){
     ContainerRootLoader.loadModel(new File(("/Users/duke/Documents/dev/dukeboard/kevoree-experiment/org.kevoree.experiment.smartForest/duke.irisa.fr-duke.irisa.fr-generated/kevoreeIndividualModel.kev")));
-  }
+  }*/
   
-  val localModel = ContainerRootLoader.loadModel(new File(("/Users/duke/Documents/dev/dukeboard/kevoree-experiment/org.kevoree.experiment.smartForest/duke.irisa.fr-duke.irisa.fr-generated/kevoreeIndividualModel.kev")));
+  val localModel = ContainerRootLoader.loadModel(new File(getClass.getResource("/unomas.kev").toURI));
 
   localModel match {
     case Some(m) => {
+            /*
+      val node = m.getNodes.find(n => n.getName == "node0").get
+      val console = node.getComponents.find(c => c.getName == "FakeConso75").get
+      val port = console.getProvided.find(p=> p.getPortTypeRef.getName == "showText").get
+      val channel = m.getHubs.find(h => h.getName == "defMSG122").get
+
+      val b = KevoreeFactory.createMBinding
+      b.setHub(channel)
+       b.setPort(port)
+      m.addMBindings(b)
+            */
+
+      m.getMBindings.foreach{
+        mb => {
+          println(mb.getPort+"-"+mb.getPort.getBindings.size+"-"+mb.getPort.getBindings.contains(mb))
+        }
+      }
+
 
       val cloner = new ModelCloner
       cloner.clone(m)
 
 
-      /*
      val serializer = new ModelSerializer
-
-     val result = serializer.serialize(m)
+      val oo = new ByteArrayOutputStream
+     serializer.serialize(m,oo)
       println(System.currentTimeMillis() - current)
-     val pp = new PrettyPrinter(3000,1)
-     println(pp.format(result)) */
+     println(new String(oo.toByteArray))
     }
     case None =>
   }

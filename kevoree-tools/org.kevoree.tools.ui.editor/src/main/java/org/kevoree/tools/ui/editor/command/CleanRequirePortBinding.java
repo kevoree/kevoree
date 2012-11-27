@@ -72,6 +72,7 @@ public class CleanRequirePortBinding implements Command {
                 Binding bp = (Binding) kernel.getUifactory().getMapping().get(b);
                 kernel.getModelPanel().removeBinding(bp);
                 kernel.getModelHandler().getActualModel().removeMBindings(b);
+                b.setPort(null);
             }
         }
     }

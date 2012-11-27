@@ -56,6 +56,7 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="synchrone" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Port">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="bindings" lowerBound="0" upperBound="-1" eType="#//MBinding" eOpposite="#//MBinding/port"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="portTypeRef" lowerBound="1"
         eType="#//PortTypeRef"/>
   </eClassifiers>
@@ -164,7 +165,7 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Channel" eSuperTypes="#//NamedElement #//Instance"/>
   <eClassifiers xsi:type="ecore:EClass" name="MBinding">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="port" lowerBound="1" eType="#//Port"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="port" lowerBound="1" upperBound="1" eType="#//Port" eOpposite="#//Port/bindings" />
     <eStructuralFeatures xsi:type="ecore:EReference" name="hub" lowerBound="1" eType="#//Channel"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="NodeNetwork">
