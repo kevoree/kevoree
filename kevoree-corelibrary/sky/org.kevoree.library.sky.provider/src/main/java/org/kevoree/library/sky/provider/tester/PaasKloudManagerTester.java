@@ -10,10 +10,10 @@ import org.kevoree.annotation.*;
  * @author Erwan Daubert
  * @version 1.0
  */
-@Library(name = "Test")
+/*@Library(name = "Test")
 @Requires({
 		@RequiredPort(name = "deploy", type = PortType.MESSAGE, needCheckDependency = true),
-})
+})*/
 @ComponentType
 public class PaasKloudManagerTester {
 }
