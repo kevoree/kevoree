@@ -51,6 +51,7 @@ case class KevsRemoveChannelInterpreter(removeChannel: RemoveChannelInstanceStat
         val root = target.eContainer.asInstanceOf[ContainerRoot]
         getRelatedBindings(target).foreach(rb => {
           root.removeMBindings(rb)
+          rb.setPort(null)
         })
         context.model.removeHubs(target)
 

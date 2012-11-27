@@ -30,6 +30,7 @@ import org.kevoree.framework.aspects.KevoreeAspects._
 import org.kevoree.api.service.core.checker.{CheckerViolation, CheckerService}
 import collection.JavaConversions._
 import org.kevoree.{ComponentInstance, ContainerRoot}
+import java.util
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -44,6 +45,7 @@ class PortChecker extends CheckerService {
   }
 
   def portCheckOnInstance(model: ContainerRoot): java.util.List[CheckerViolation] = {
+
     var violations: List[CheckerViolation] = List()
     model.getNodes.foreach {
       node =>
