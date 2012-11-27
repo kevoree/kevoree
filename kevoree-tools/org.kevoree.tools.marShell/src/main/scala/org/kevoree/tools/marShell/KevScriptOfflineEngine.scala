@@ -61,7 +61,7 @@ class KevScriptOfflineEngine(srcModel: ContainerRoot, bootstraper: Bootstraper) 
 
   @throws(classOf[KevScriptEngineException])
   def interpret(): ContainerRoot = {
-    val resolvedScript = resolveVariables
+    val resolvedScript = getScript
     logger.debug("KevScriptEngine before execution with script = {}", resolvedScript)
     parser.parseScript(resolvedScript) match {
       case Some(s) => {

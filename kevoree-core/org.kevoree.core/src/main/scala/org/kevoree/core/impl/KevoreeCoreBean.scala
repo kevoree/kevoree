@@ -207,6 +207,8 @@ class KevoreeCoreBean extends KevoreeModelHandlerService {
         val stopModel = checkUnbootstrapNode(model)
         if (stopModel.isDefined) {
           val adaptationModel = nodeInstance.kompare(model, stopModel.get)
+          adaptationModel.setInternalReadOnly()
+
           def afterUpdateTest(): Boolean = {
             true
             //listenerActor.afterUpdate(model, stopModel.get)
@@ -283,6 +285,8 @@ class KevoreeCoreBean extends KevoreeModelHandlerService {
               try {
                 // Compare the two models and plan the adaptation
                 val adaptationModel = nodeInstance.kompare(model, newmodel)
+                adaptationModel.setInternalReadOnly()
+
                 if (logger.isDebugEnabled) {
                   //Avoid the loop if the debug is not activated
                   logger.debug("Adaptation model size " + adaptationModel.getAdaptations.size)
@@ -324,6 +328,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService {
               // Compare the two models and plan the adaptation
               logger.info("Comparing models and planning adaptation.")
               val adaptationModel = nodeInstance.kompare(model, newmodel)
+              adaptationModel.setInternalReadOnly()
 
               //Execution of the adaptation
               logger.info("Launching adaptation of the system.")
