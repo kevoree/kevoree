@@ -77,7 +77,7 @@ class KevScriptCoreEngine(core: KevoreeModelHandlerService, bootstraper: Bootstr
 
   @throws(classOf[KevScriptEngineException])
   def interpret(): ContainerRoot = {
-    val resolvedScript = resolveVariables
+    val resolvedScript = getScript
     logger.debug("KevScriptEngine before execution with script = {}", resolvedScript)
     parser.parseScript(resolvedScript) match {
       case Some(s) => {
@@ -108,7 +108,7 @@ class KevScriptCoreEngine(core: KevoreeModelHandlerService, bootstraper: Bootstr
   @throws(classOf[KevScriptEngineException])
   private def internal_interpret_deploy(atomic: Boolean) = {
     try {
-      val resolvedScript = resolveVariables
+      val resolvedScript = getScript
       logger.debug("KevScriptEngine before execution with script = {}", resolvedScript)
       parser.parseScript(resolvedScript) match {
         case Some(s) => {

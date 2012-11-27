@@ -50,15 +50,15 @@ trait KevScriptAbstractEngine extends KevScriptEngine {
   protected val logger = LoggerFactory.getLogger(this.getClass)
 
   def addVariable(name: String, value: String): KevScriptEngine = {
-    if(varMap.containsKey(name)){
+    /*if(varMap.containsKey(name)){
       replaceVariable(name,varMap.get(name))
-    }
+    }*/
     varMap.put(name, value)
     this
   }
 
   def append(scriptStatement: String): KevScriptEngine = {
-    scriptBuilder.append(scriptStatement)
+    scriptBuilder.append(resolveVariables(scriptStatement))
     scriptBuilder.append("\n")
     this
   }
@@ -66,21 +66,25 @@ trait KevScriptAbstractEngine extends KevScriptEngine {
   def clearScript() {
     scriptBuilder.clear()
   }
-
+  /*
   protected def replaceVariable(name: String, value: String) = {
     val unresolveScript = scriptBuilder.toString().replace("{" + name + "}", value)
     scriptBuilder.clear()
     scriptBuilder.append(unresolveScript)
-  }
+  } */
 
-  protected def resolveVariables: String = {
-    var unresolveScript = scriptBuilder.toString()
+  protected def resolveVariables(stm:String): String = {
+    var unresolveScript = stm
     varMap.foreach {
       varR =>
         unresolveScript = unresolveScript.replace("{" + varR._1 + "}", varR._2)
     }
     unresolveScript = unresolveScript.replace("'", "\"")
-    "tblock{\n" + unresolveScript + "\n}"
+    unresolveScript
+  }
+
+  protected def getScript : String = {
+    "{"+scriptBuilder.toString()+"}"
   }
 
 }
