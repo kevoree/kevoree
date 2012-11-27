@@ -26,11 +26,11 @@ object NodeNetworkHelper {
     val readWriteModel = cloner.clone(group.getModelService().getLastModel());
     val ipObject = group.getDictionary.get("ip")
     if (ipObject != null && ipObject.toString != "" && ipObject.toString != "0.0.0.0") {
-      addNetworkProperty(group.getModelService.getLastModel, group.getNodeName, Array[(String, String)]((ipObject.toString, "unknown")), group.getKevScriptEngineFactory)
+      addNetworkProperty(readWriteModel, group.getNodeName, Array[(String, String)]((ipObject.toString, "unknown")), group.getKevScriptEngineFactory)
     } else {
       val addresses = getAddresses
       if (addresses.length > 0) {
-        /*val modelOption = */addNetworkProperty(group.getModelService.getLastModel, group.getNodeName, addresses, group.getKevScriptEngineFactory)
+        /*val modelOption = */addNetworkProperty(readWriteModel, group.getNodeName, addresses, group.getKevScriptEngineFactory)
         /*if (modelOption.isDefined) {
           group.getModelService.updateModel(modelOption.get)
         }*/
