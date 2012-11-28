@@ -50,14 +50,14 @@ class BindingChecker extends CheckerService {
     var violations: List[CheckerViolation] = List()
     model.getHubs.foreach {
       hub =>
-        var synchBindings: List[MBinding] = List()
-        var asynchBindings: List[MBinding] = List()
+        val synchBindings: scala.collection.mutable.ArrayBuffer[MBinding] = new scala.collection.mutable.ArrayBuffer[MBinding]()
+        val asynchBindings: scala.collection.mutable.ArrayBuffer[MBinding] = new scala.collection.mutable.ArrayBuffer[MBinding]()
         hub.getBindings.foreach {
           binding =>
             if (binding.getPort.getPortTypeRef.getRef.isInstanceOf[ServicePortType]) {
-              synchBindings = synchBindings ++ List(binding)
+              /*synchBindings = */synchBindings.add(binding)
             } else {
-              asynchBindings = asynchBindings ++ List(binding)
+              /*asynchBindings = */asynchBindings.add(binding)
             }
         }
         if (!synchBindings.isEmpty && !asynchBindings.isEmpty) {
