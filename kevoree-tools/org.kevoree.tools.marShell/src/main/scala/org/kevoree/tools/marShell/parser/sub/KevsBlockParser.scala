@@ -52,19 +52,19 @@ trait KevsBlockParser extends KevsAbstractParser {
   def parseBlockType : Parser[String] = "tblock"
   
   def parseStatmentList : Parser[List[Statment]] = rep(kevStatement) ^^{ case l =>
-      var res : List[Statment] = List()
+      var res = new scala.collection.mutable.ArrayBuffer[Statment]()
       l.foreach{newl=>
-        res = res ++ newl
+        res.appendAll(newl)
       }
-      res
+      res.toList
   }
 
   def parseBlockList : Parser[List[Statment]] = "{" ~ rep(kevStatement) ~ "}" ^^{ case _ ~ l ~ _ =>
-    var res : List[Statment] = List()
+    var res = new scala.collection.mutable.ArrayBuffer[Statment]()
     l.foreach{newl=>
-      res = res ++ newl
+      res.appendAll(newl)
     }
-    res
+    res.toList
   }
 
 
