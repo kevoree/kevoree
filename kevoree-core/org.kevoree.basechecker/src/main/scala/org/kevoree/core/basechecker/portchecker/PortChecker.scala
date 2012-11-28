@@ -60,16 +60,18 @@ class PortChecker extends CheckerService {
                   violations = violations ++ List(concreteViolation)
                 }
 
-                val mb = model.getMBindings.filter({
-                  mb => mb.getPort == port
-                })
-                if (mb.size > 1) {
+                if(port.getBindings.size > 1){
+
+               // val mb = model.getMBindings.filter({
+               //   mb => mb.getPort == port
+               // })
+               // if (mb.size > 1) {
                   //TWICE BINDING !!!
                   val concreteViolation: CheckerViolation = new CheckerViolation()
                   concreteViolation.setMessage("Required port (" + port.eContainer.asInstanceOf[ComponentInstance].getName + "." +port.getPortTypeRef.getName + ") is bound multiple times !")
                   concreteViolation.setTargetObjects(List(port.eContainer))
                   concreteViolation.setTargetObjects(List(port))
-                  concreteViolation.setTargetObjects(List(mb))
+                  concreteViolation.setTargetObjects(List(port.getBindings))
                   violations = violations ++ List(concreteViolation)
                 }
             }
