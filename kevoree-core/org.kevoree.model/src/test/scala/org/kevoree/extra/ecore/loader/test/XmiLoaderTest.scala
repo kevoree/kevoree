@@ -58,6 +58,44 @@ object XmiLoaderTest {
 }
 
 class XmiLoaderTest {
+
+
+  @Test
+  def testOpposite1(){
+    val m = ContainerRootLoader.loadModel(new File(getClass.getResource("/unomas.kev").toURI)).get;
+    m.getMBindings.foreach{
+      mb => {
+        println("---------->")
+        val p = mb.getPort
+        assert(mb.getPort == p)
+        assert(mb.getPort.getBindings.size == 1)
+        assert(mb.getPort.getBindings.contains(mb))
+
+        mb.setPort(null)
+        assert(mb.getPort == null)
+        assert(p.getBindings.size == 0)
+        assert(!p.getBindings.contains(mb))
+
+        mb.setPort(p)
+        assert(mb.getPort == p)
+        assert(mb.getPort.getBindings.size == 1)
+        assert(mb.getPort.getBindings.contains(mb))
+
+        p.removeBindings(mb)
+        assert(mb.getPort == null)
+        assert(p.getBindings.size == 0)
+        assert(!p.getBindings.contains(mb))
+
+        p.addBindings(mb)
+        assert(mb.getPort == p)
+        assert(mb.getPort.getBindings.size == 1)
+        assert(mb.getPort.getBindings.contains(mb))
+
+      }
+    }
+  }
+
+
   @Test
   def testSaveAndLoad() {
     System.out.println("Saving model from memory to tempFile")
