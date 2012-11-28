@@ -83,7 +83,7 @@ trait KevScriptAbstractEngine extends KevScriptEngine {
     unresolveScript
   }
 
-  protected def getScript : String = {
+  def getScript : String = {
     "{"+scriptBuilder.toString()+"}"
   }
 
