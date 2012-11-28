@@ -44,7 +44,7 @@ class RootChecker extends CheckerService {
 
   private val logger = LoggerFactory.getLogger(this.getClass)
   
-  var subcheckers: List[CheckerService] = List(new KevoreeVersionChecker, new ComponentCycleChecker, new NodeCycleChecker, new NameChecker,
+  var subcheckers: List[CheckerService] = List(new KevoreeVersionChecker, new ComponentCycleChecker, /*new NodeCycleChecker,*/ new NameChecker,
                                                 new PortChecker, new NodeChecker, new BindingChecker, new BoundsChecker, new IdChecker, new DictionaryOptionalChecker, new NodeContainerChecker, new DictionaryNetworkPortChecker)
 
   def check (model: ContainerRoot): java.util.List[CheckerViolation] = {

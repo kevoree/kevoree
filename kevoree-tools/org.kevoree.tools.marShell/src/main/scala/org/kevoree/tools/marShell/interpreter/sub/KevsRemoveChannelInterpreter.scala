@@ -52,6 +52,7 @@ case class KevsRemoveChannelInterpreter(removeChannel: RemoveChannelInstanceStat
         getRelatedBindings(target).foreach(rb => {
           root.removeMBindings(rb)
           rb.setPort(null)
+          rb.setHub(null)
         })
         context.model.removeHubs(target)
 
