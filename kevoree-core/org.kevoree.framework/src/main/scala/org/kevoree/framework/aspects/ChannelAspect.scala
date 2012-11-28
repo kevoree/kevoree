@@ -40,7 +40,7 @@ case class ChannelAspect(cself : Channel) {
    * Returns true if the node in parameter hosts a component bound to this channel.
    */
   def usedByNode(nodeName:String) : Boolean = {
-    getRelatedBindings.find(mb => mb.getPort.eContainer.asInstanceOf[KevoreeContainer].eContainer.asInstanceOf[ContainerNode].getName == nodeName  ) match {
+    getRelatedBindings.find(mb => mb.getPort.eContainer.eContainer.asInstanceOf[ContainerNode].getName == nodeName  ) match {
       case None => false
       case Some(b)=> true
     }
@@ -51,10 +51,10 @@ case class ChannelAspect(cself : Channel) {
    */
   def getOtherFragment(nodeName : String) : List[String] = {
     var result : List[String] = List()
-    getRelatedBindings.filter(mb=> mb.getPort.eContainer.asInstanceOf[KevoreeContainer].eContainer.asInstanceOf[ContainerNode].getName != nodeName  ).foreach{
+    getRelatedBindings.filter(mb=> mb.getPort.eContainer.eContainer.asInstanceOf[ContainerNode].getName != nodeName  ).foreach{
       mb=>
-        if(!result.contains(mb.getPort.eContainer.asInstanceOf[KevoreeContainer].eContainer.asInstanceOf[ContainerNode].getName)){
-          result = result ++ List(mb.getPort.eContainer.asInstanceOf[KevoreeContainer].eContainer.asInstanceOf[ContainerNode].getName)
+        if(!result.contains(mb.getPort.eContainer.eContainer.asInstanceOf[ContainerNode].getName)){
+          result = result ++ List(mb.getPort.eContainer.eContainer.asInstanceOf[ContainerNode].getName)
         }
     }
     result
@@ -65,10 +65,10 @@ case class ChannelAspect(cself : Channel) {
    */
   def getConnectedNode(nodeName : String) : List[ContainerNode] = {
     var result : List[ContainerNode] = List()
-    getRelatedBindings.filter(mb=> mb.getPort.eContainer.asInstanceOf[KevoreeContainer].eContainer.asInstanceOf[ContainerNode].getName != nodeName).foreach{
+    getRelatedBindings.filter(mb=> mb.getPort.eContainer.eContainer.asInstanceOf[ContainerNode].getName != nodeName).foreach{
       mb=>
-        if(!result.contains(mb.getPort.eContainer.asInstanceOf[KevoreeContainer].eContainer.asInstanceOf[ContainerNode])){
-          result = result ++ List(mb.getPort.eContainer.asInstanceOf[KevoreeContainer].eContainer.asInstanceOf[ContainerNode])
+        if(!result.contains(mb.getPort.eContainer.eContainer.asInstanceOf[ContainerNode])){
+          result = result ++ List(mb.getPort.eContainer.eContainer.asInstanceOf[ContainerNode])
         }
     }
     result
@@ -78,7 +78,8 @@ case class ChannelAspect(cself : Channel) {
    * Returns the list of all bindings belonging to this channel
    */
   def getRelatedBindings : List[MBinding] = {
-    cself.eContainer.asInstanceOf[ContainerRoot].getMBindings.filter(b => b.getHub == cself)
+    //cself.eContainer.asInstanceOf[ContainerRoot].getMBindings.filter(b => b.getHub == cself)
+    cself.getBindings
   }
 
   /**
@@ -86,8 +87,8 @@ case class ChannelAspect(cself : Channel) {
    */
   def getRelatedBindings(node : ContainerNode) : List[MBinding] = {
     val res = new java.util.ArrayList[MBinding]();
-    cself.eContainer.asInstanceOf[ContainerRoot].getMBindings.filter{b=>
-      b.getHub == cself && b.getPort.eContainer.asInstanceOf[KevoreeContainer].eContainer.asInstanceOf[ContainerNode].getName == node.getName
+    cself.getBindings.filter{b=>
+      b.getPort.eContainer.asInstanceOf[KevoreeContainer].eContainer.asInstanceOf[ContainerNode].getName == node.getName
     }
   }
 
@@ -97,8 +98,8 @@ case class ChannelAspect(cself : Channel) {
   def getRelatedNodes : List[ContainerNode] = {
     var result : List[ContainerNode] = List()
     getRelatedBindings.foreach{binding =>
-      if(!result.contains(binding.getPort.eContainer.asInstanceOf[KevoreeContainer].eContainer.asInstanceOf[ContainerNode])){
-          result = result ++ List(binding.getPort.eContainer.asInstanceOf[KevoreeContainer].eContainer.asInstanceOf[ContainerNode])
+      if(!result.contains(binding.getPort.eContainer.eContainer.asInstanceOf[ContainerNode])){
+          result = result ++ List(binding.getPort.eContainer.eContainer.asInstanceOf[ContainerNode])
         }
     }
     result

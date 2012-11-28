@@ -142,9 +142,19 @@ case class ComponentInstanceAspect(cself : ComponentInstance) {
 
 
   def getRelatedBindings : List[MBinding] = {
-    cself.eContainer.asInstanceOf[KevoreeContainer].eContainer.asInstanceOf[ContainerRoot].getMBindings.filter({b =>
+
+    var l : List[MBinding] = List()
+    cself.getProvided.foreach{ m=>
+       l = l ++ m.getBindings
+    }
+    cself.getRequired.foreach{ m=>
+      l = l ++ m.getBindings
+    }
+    l
+     /*
+    cself.eContainer.eContainer.asInstanceOf[ContainerRoot].getMBindings.filter({b =>
         cself.getProvided.exists({p=> b.getPort == p}) || cself.getRequired.exists({p=> b.getPort == p})
-    })
+    }) */
   }
 
 

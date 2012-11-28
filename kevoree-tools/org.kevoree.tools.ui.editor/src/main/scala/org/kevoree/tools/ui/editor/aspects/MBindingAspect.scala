@@ -51,6 +51,7 @@ case class MBindingAspect(self : MBinding) {
     //REMOVE INSTANCE
     root.removeMBindings(self)
     self.setPort(null)
+    self.setHub(null)
 
     //UNBIND UI
     kernel.getUifactory().getMapping().unbind(panel, self);

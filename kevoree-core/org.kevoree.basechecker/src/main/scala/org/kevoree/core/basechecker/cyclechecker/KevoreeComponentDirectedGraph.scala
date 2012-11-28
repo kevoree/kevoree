@@ -42,15 +42,13 @@ case class KevoreeComponentDirectedGraph(model: ContainerRoot, nodeName: String)
 
 	model.getNodes.find(node => node.getName == nodeName) match {
 		case Some(node) =>
-			node.getInstances.filter(p => p.isInstanceOf[ComponentInstance]).foreach {
-				instance =>
-					val componentInstance = instance.asInstanceOf[ComponentInstance]
+			node.getComponents.foreach {
+        componentInstance =>
 					componentInstance.getRelatedBindings.foreach {
 						binding =>
 							if (binding.getPort.getPortTypeRef.getNoDependency == null || binding.getPort.getPortTypeRef.getNoDependency == false) {
 								addVertex(binding.getHub)
 								addVertex(componentInstance)
-
 								if (componentInstance.getProvided.contains(binding.getPort)) {
 									addEdge(binding.getHub, componentInstance, binding)
 								} else {

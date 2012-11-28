@@ -48,13 +48,11 @@ class BindingChecker extends CheckerService {
 
   private def checkHubBindingsHomogeneity(model: ContainerRoot): java.util.List[CheckerViolation] = {
     var violations: List[CheckerViolation] = List()
-
     model.getHubs.foreach {
       hub =>
-        val bindingsOnHub = model.getMBindings.filter(mb => mb.getHub.equals(hub))
         var synchBindings: List[MBinding] = List()
         var asynchBindings: List[MBinding] = List()
-        bindingsOnHub.foreach {
+        hub.getBindings.foreach {
           binding =>
             if (binding.getPort.getPortTypeRef.getRef.isInstanceOf[ServicePortType]) {
               synchBindings = synchBindings ++ List(binding)
