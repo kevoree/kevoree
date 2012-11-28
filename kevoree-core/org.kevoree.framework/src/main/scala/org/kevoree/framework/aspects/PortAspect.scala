@@ -39,7 +39,7 @@ case class PortAspect(p : Port) {
 
   def removeAndUnbind()={
     //REMOVE ALL BINDING BINDED TO
-    val root = p.eContainer.asInstanceOf[KevoreeContainer].eContainer.asInstanceOf[KevoreeContainer].eContainer.asInstanceOf[ContainerRoot]
+    val root = p.eContainer.eContainer.eContainer.asInstanceOf[ContainerRoot]
     val mbindings = root.getMBindings.filter(b=>b.getPort == p) ++ List()
     mbindings.foreach{mb=> root.removeMBindings(mb)}
 
