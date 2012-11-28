@@ -68,14 +68,15 @@ addChannel responseChannel : defMSG
 
 bind webServer.handler@atmosphere => requestChannel
 bind iaasPage.request@atmosphere => requestChannel
-//bind paasPage.request@atmosphere => requestChannel
-
 bind webServer.response@atmosphere => responseChannel
 bind iaasPage.content@atmosphere => responseChannel
-//bind paasPage.content@atmosphere => responseChannel
-
 bind iaasManager.submit@atmosphere => iaasDelegateChannel
 bind iaasPage.delegate@atmosphere => iaasDelegateChannel
+
+
+//bind paasPage.request@atmosphere => requestChannel
+//bind paasPage.content@atmosphere => responseChannel
+
 
 // TODO add authentication component and paas manager
 
