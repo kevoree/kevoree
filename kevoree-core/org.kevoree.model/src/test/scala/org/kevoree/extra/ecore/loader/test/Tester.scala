@@ -66,7 +66,20 @@ object Tester extends App {
 
       m.getMBindings.foreach{
         mb => {
+          println("---------->")
+          val p = mb.getPort
           println(mb.getPort+"-"+mb.getPort.getBindings.size+"-"+mb.getPort.getBindings.contains(mb))
+          mb.setPort(null)
+          println(mb.getPort+"-"+p.getBindings.size+"-"+p.getBindings.contains(mb))
+          mb.setPort(p)
+          println(mb.getPort+"-"+mb.getPort.getBindings.size+"-"+mb.getPort.getBindings.contains(mb))
+
+          p.removeBindings(mb)
+          println(mb.getPort+"-"+p.getBindings.size+"-"+p.getBindings.contains(mb))
+          p.addBindings(mb)
+          println(mb.getPort+"-"+p.getBindings.size+"-"+p.getBindings.contains(mb))
+
+
         }
       }
 

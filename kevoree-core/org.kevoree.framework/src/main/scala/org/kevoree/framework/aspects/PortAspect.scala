@@ -70,14 +70,13 @@ case class PortAspect(p : Port) {
   }
 
   def isBind : Boolean ={
-    val container = p.eContainer.asInstanceOf[KevoreeContainer].eContainer.asInstanceOf[KevoreeContainer].eContainer.asInstanceOf[ContainerRoot]
-    //var mb = p.getPortTypeRef.getRef
-    container.getMBindings.exists({mb => mb.getPort == p})
+
+    !p.getBindings.isEmpty
+
     /*
-     p.getPortTypeRef.getRef match {
-     case mpt : MessagePortType => container.getMBindings.exists({mb => mb.getPort == p})
-     case spt : ServicePortType => container.getBindings.exists({b => b.isUsingPort(p)})
-     }*/
+    val container = p.eContainer.eContainer.eContainer.asInstanceOf[ContainerRoot]
+    container.getMBindings.exists({mb => mb.getPort == p})
+    */
   }
 
   def getProxyURI : String = {
