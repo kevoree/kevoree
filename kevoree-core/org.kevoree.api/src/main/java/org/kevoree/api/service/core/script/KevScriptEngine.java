@@ -43,5 +43,6 @@ public interface KevScriptEngine {
     public ContainerRoot interpret() throws KevScriptEngineException;
     public void interpretDeploy() throws KevScriptEngineException;
     public void atomicInterpretDeploy() throws KevScriptEngineException;
+	public String getScript();
     
 }
