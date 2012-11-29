@@ -217,7 +217,10 @@ class MiniKloudForm (editor: KevoreeEditor, button: AbstractButton) {
 
 				var groupName = "editor_group"
 				var blackListedPorts = Array[Int](6001, 6002)
-				// looking for a group that manage all the user nodes that can be hosted on a minicloud node
+        kevEngine.addVariable("groupName", groupName)
+
+
+        // looking for a group that manage all the user nodes that can be hosted on a minicloud node
 				editor.getPanel.getKernel.getModelHandler.getActualModel.getGroups.find(g => g.getSubNodes.size == nodes.size && g.getSubNodes.forall(n => nodes.contains(n))) match {
 					case Some(group) => groupName = group.getName
 					case None =>
@@ -235,7 +238,6 @@ class MiniKloudForm (editor: KevoreeEditor, button: AbstractButton) {
 								kevEngine.append("updateDictionary {groupName} {port='{portValue}'}@{nodeName}")
 						}
 				}
-				kevEngine.addVariable("groupName", groupName)
 				kevEngine.append("addToGroup {groupName} {minicloudNodeName}")
 				kevEngine.append("updateDictionary {groupName} {port='6002'}@{minicloudNodeName}")
 
