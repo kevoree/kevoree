@@ -14,7 +14,7 @@ import org.kevoree.annotation.NodeFragment;
  */
 @NodeFragment
 @DictionaryType({
-		@DictionaryAttribute(name = "WALLCLOCKTIME", defaultValue = "N/A", optional = false)
+		@DictionaryAttribute(name = "WALLCLOCKTIME", defaultValue = "N/A", optional = true)
 		// the wall time for the PaaS node (see wikipedia for more details: http://en.wikipedia.org/wiki/Wall_clock_time), N/A means infinite
 })
 
