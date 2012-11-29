@@ -68,7 +68,7 @@ case class KevsRemoveComponentInstanceInterpreter(removeComponent: RemoveCompone
             }
           }
           case None => {
-            logger.error("Node not found " + nodeID);
+            logger.error("Node not found " + nodeID)
             false
           }
         }
@@ -80,7 +80,9 @@ case class KevsRemoveComponentInstanceInterpreter(removeComponent: RemoveCompone
 
   def getRelatedBindings(cself: ComponentInstance): List[MBinding] = {
     var res = List[MBinding]()
-    cself.eContainer.eContainer.asInstanceOf[ContainerRoot].getMBindings.foreach {
+		cself.getProvided.foreach(p => res = res ++ p.getBindings)
+		cself.getRequired.foreach(p => res = res ++ p.getBindings)
+    /*cself.eContainer.eContainer.asInstanceOf[ContainerRoot].getMBindings.foreach {
       b =>
         cself.getProvided.find({
           p => b.getPort == p
@@ -88,7 +90,7 @@ case class KevsRemoveComponentInstanceInterpreter(removeComponent: RemoveCompone
         cself.getRequired.find({
           p => b.getPort == p
         }).map(e => {res = res ++ List(b)})
-    }
+    }*/
     res.toList
   }
 

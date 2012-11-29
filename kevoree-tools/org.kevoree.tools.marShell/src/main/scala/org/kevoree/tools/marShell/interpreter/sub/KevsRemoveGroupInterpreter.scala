@@ -49,7 +49,7 @@ case class KevsRemoveGroupInterpreter(removeGroup: RemoveGroupStatment) extends 
         true
       }
       case None => {
-        logger.error("Group not exist " + removeGroup.groupName);
+        logger.error("Group not exist " + removeGroup.groupName)
         false
       }
     }

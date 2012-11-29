@@ -16,7 +16,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * 	http://www.gnu.org/licenses/lgpl-3.0.txt
+ * http://www.gnu.org/licenses/lgpl-3.0.txt
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -66,71 +66,50 @@ import org.kevoree.{ComponentInstance, ContainerNode, KevoreeFactory}
 
 case class KevsAddBindingInterpreter (addBinding: AddBindingStatment) extends KevsAbstractInterpreter {
 
-  var logger = LoggerFactory.getLogger(this.getClass);
+	var logger = LoggerFactory.getLogger(this.getClass)
 
-  def interpret (context: KevsInterpreterContext): Boolean = {
-
-
-    addBinding.cid.nodeName match {
-      case Some(searchNodeName) => {
-        context.model.getMBindings.find(
-          mb =>
-            mb.getPort.getPortTypeRef.getName == addBinding.portName
-            && mb.getPort.eContainer.eContainer.asInstanceOf[ContainerNode].getName == addBinding.cid.nodeName.get
-            && mb.getPort.eContainer.asInstanceOf[ComponentInstance].getName == addBinding.cid.componentInstanceName
-            && mb.getHub.getName == addBinding.bindingInstanceName
-          ) match {
-          case None => {
-            context.model.getNodes.find(node => node.getName == searchNodeName) match {
-              case Some(targetNode) => {
-                targetNode.getComponents.find(component => component.getName == addBinding.cid.componentInstanceName) match {
-                  case Some(targetComponent) => {
-                    context.model.getHubs.find(hub => hub.getName == addBinding.bindingInstanceName) match {
-                      case Some(targetHub) => {
-
-
-                        val newbinding = KevoreeFactory.eINSTANCE.createMBinding
-                        newbinding.setHub(targetHub)
-                        //SEARCH TARGET PORT
-                        targetComponent.getProvided.find(port => port.getPortTypeRef.getName == addBinding.portName) match {
-                          case Some(targetPort) => newbinding.setPort(targetPort)
-                          case None =>
-                        }
-                        targetComponent.getRequired.find(port => port.getPortTypeRef.getName == addBinding.portName) match {
-                          case Some(targetPort) => newbinding.setPort(targetPort)
-                          case None =>
-                        }
-                        if (newbinding.getPort != null) {
-                          context.model.addMBindings(newbinding)
-                          true
-                        } else {
-                          logger.error("Port not found => " + addBinding.portName)
-                          false
-                        }
-
-                      }
-                      case None => logger.error("Hub not found => " + addBinding.bindingInstanceName); false
-                    }
-
-                  }
-                  case None => logger.error("Component not found => " + addBinding.cid.componentInstanceName); false
-                }
-
-
-              }
-              case None => logger.error("Node not found => " + addBinding.cid.nodeName); false
-            }
-          }
-          case Some(binding) => {
-            logger.warn("Binding {}.{}@{} => {} already exists",
-                         Array[AnyRef](addBinding.cid.componentInstanceName, addBinding.portName, addBinding.cid.nodeName.get, addBinding.bindingInstanceName))
-            true
-          }
-        }
-      }
-      case None => logger.error("NodeName is mandatory !"); false
-    }
-
-  }
+	def interpret (context: KevsInterpreterContext): Boolean = {
+		addBinding.cid.nodeName match {
+			case Some(searchNodeName) => {
+				context.model.getNodes.find(n => n.getName == addBinding.cid.nodeName.get) match {
+					case Some(node) =>
+						node.getComponents.find(c => c.getName == addBinding.cid.componentInstanceName) match {
+							case Some(component) =>
+								(component.getProvided ++ component.getRequired).find(p => p.getPortTypeRef.getName == addBinding.portName) match {
+									case Some(port) => {
+										port.getBindings.find(mb => mb.getPort.getPortTypeRef.getName == addBinding.portName
+											&& mb.getPort.eContainer.eContainer.asInstanceOf[ContainerNode].getName == addBinding.cid.nodeName.get
+											&& mb.getPort.eContainer.asInstanceOf[ComponentInstance].getName == addBinding.cid.componentInstanceName
+											&& mb.getHub.getName == addBinding.bindingInstanceName) match {
+											case Some(binding) => {
+												logger
+													.warn("Binding {}.{}@{} => {} already exists",
+																 Array[AnyRef](addBinding.cid.componentInstanceName, addBinding.portName, addBinding.cid.nodeName.get, addBinding.bindingInstanceName))
+												true
+											}
+											case None => {
+												context.model.getHubs.find(c => c.getName == addBinding.bindingInstanceName) match {
+													case Some(channel) => {
+														val newbinding = KevoreeFactory.eINSTANCE.createMBinding
+														newbinding.setHub(channel)
+														newbinding.setPort(port)
+														context.model.addMBindings(newbinding)
+														true
+													}
+													case None => logger.error("Hub not found => " + addBinding.bindingInstanceName); false
+												}
+											}
+										}
+									}
+									case None => logger.error("Port not found => " + addBinding.portName); false
+								}
+							case None => logger.error("Component not found => " + addBinding.cid.componentInstanceName); false
+						}
+					case None => logger.error("Node not found => " + addBinding.cid.nodeName); false
+				}
+			}
+			case None => logger.error("NodeName is mandatory !"); false
+		}
+	}
 
 }

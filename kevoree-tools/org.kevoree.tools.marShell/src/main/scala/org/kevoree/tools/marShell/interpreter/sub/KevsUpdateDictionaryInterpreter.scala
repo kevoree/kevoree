@@ -87,7 +87,7 @@ case class KevsUpdateDictionaryInterpreter (statement: UpdateDictionaryStatement
       }
     }
 
-    var errorDetected = false
+    val errorDetected = false
 
     targetInstance.foreach {
       instance =>

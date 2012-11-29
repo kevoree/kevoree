@@ -1,0 +1,6 @@
+
+tblock {
+
+ moveComponent fk1@node0 => node1
+
+ }
