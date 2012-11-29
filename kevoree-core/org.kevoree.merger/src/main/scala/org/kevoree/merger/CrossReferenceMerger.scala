@@ -27,7 +27,7 @@
 package org.kevoree.merger
 
 import resolver._
-import org.kevoree.{TypeDefinition, ComponentInstance, ContainerRoot}
+import org.kevoree.{Channel, TypeDefinition, ComponentInstance, ContainerRoot}
 
 /**
  * Created by IntelliJ IDEA.
@@ -84,12 +84,28 @@ trait CrossReferenceMerger {
         if (instance.isInstanceOf[ComponentInstance]) {
           val componentInstance: ComponentInstance = instance.asInstanceOf[ComponentInstance]
           componentInstance.getProvided.foreach {
-            pport =>
+            pport => {
               pport.setPortTypeRef(UnresolvedPortTypeRef(pport.getPortTypeRef.getName))
+              pport.getBindings.foreach { mbref =>
+                pport.noOpposite_removeBindings(mbref)
+              }
+            }
+
           }
           componentInstance.getRequired.foreach {
-            rport =>
+            rport => {
               rport.setPortTypeRef(UnresolvedPortTypeRef(rport.getPortTypeRef.getName))
+              rport.getBindings.foreach { mbref =>
+                rport.noOpposite_removeBindings(mbref)
+              }
+            }
+          }
+
+        }
+        if(instance.isInstanceOf[Channel]){
+          val ch = instance.asInstanceOf[Channel]
+          ch.getBindings.foreach { mbref =>
+            ch.noOpposite_removeBindings(mbref)
           }
         }
 
