@@ -51,11 +51,14 @@ case class KevsRemoveBindingInterpreter(removeBinding: RemoveBindingStatment) ex
               case Some(targetComponent) => {
                 context.model.getHubs.find(hub => hub.getName == removeBinding.bindingInstanceName) match {
                   case Some(targetHub) => {
+
+
                     val cports = targetComponent.getProvided.toList ++ targetComponent.getRequired.toList
                     cports.find(port => port.getPortTypeRef.getName == removeBinding.portName) match {
                       case Some(port) => {
                         //LOOK for previous binding
-                        context.model.getMBindings.find(mb => mb.getHub == targetHub && mb.getPort == port) match {
+												port.getBindings.find(mb => mb.getHub == targetHub) match {
+//                        context.model.getMBindings.find(mb => mb.getHub == targetHub && mb.getPort == port) match {
                           case Some(previousMB) => context.model.removeMBindings(previousMB);previousMB.setPort(null);previousMB.setHub(null); true
                           case None => logger.error("Previous binding not found => " + removeBinding.bindingInstanceName); false
                         }

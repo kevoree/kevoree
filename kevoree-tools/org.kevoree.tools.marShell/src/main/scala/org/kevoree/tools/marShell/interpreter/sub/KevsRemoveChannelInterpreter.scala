@@ -66,14 +66,15 @@ case class KevsRemoveChannelInterpreter(removeChannel: RemoveChannelInstanceStat
   }
 
   def getRelatedBindings(cself: Channel): List[MBinding] = {
-    var res = List[MBinding]();
-    cself.eContainer.asInstanceOf[ContainerRoot].getMBindings.foreach {
-      b =>
-        if (b.getHub == cself) {
-           res = res ++ List(b)
-        }
-    }
-    res.toList
+//    var res = List[MBinding]()
+		cself.getBindings
+//    cself.eContainer.asInstanceOf[ContainerRoot].getMBindings.foreach {
+//      b =>
+//        if (b.getHub == cself) {
+//           res = res ++ List(b)
+//        }
+//    }
+//    res.toList
   }
 
 

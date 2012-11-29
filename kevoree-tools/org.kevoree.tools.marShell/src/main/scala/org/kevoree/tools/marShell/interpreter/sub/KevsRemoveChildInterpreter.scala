@@ -44,12 +44,10 @@ case class KevsRemoveChildInterpreter (removeChild: RemoveChildStatment) extends
 
   def interpret (context: KevsInterpreterContext): Boolean = {
       context.model.getNodes.find(node => node.getName == removeChild.childNodeName) match {
-        case None => logger.error("Unknown child name:" + removeChild.childNodeName +
-          "\nThe node must already exist. Please check !"); false
+        case None => logger.error("Unknown child name: " + removeChild.childNodeName + "\nThe node must already exist. Please check !"); false
         case Some(child) => {
           context.model.getNodes.find(node => node.getName == removeChild.fatherNodeName) match {
-            case None => logger.error("Unknown father name:" + removeChild.childNodeName +
-              "\nThe node must already exist. Please check !"); false
+            case None => logger.error("Unknown father name: " + removeChild.childNodeName + "\nThe node must already exist. Please check !"); false
             case Some(father) => father.removeHosts(child); true
           }
         }
