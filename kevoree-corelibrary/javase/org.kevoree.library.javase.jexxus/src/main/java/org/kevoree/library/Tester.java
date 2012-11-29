@@ -52,9 +52,9 @@ public class Tester {
                 System.out.println("Connected");
             }
 
-        }, 15652,false);
+        }, 15652,15652,false);
         server.startServer();
-
+        /*
         ClientConnection conn = new ClientConnection(new ConnectionListener(){
 
             @Override
@@ -74,6 +74,7 @@ public class Tester {
 
 
         }, "localhost", 15652,true);
+       */
         //conn.connect();
         //send with the TCP Protocol
               /*
