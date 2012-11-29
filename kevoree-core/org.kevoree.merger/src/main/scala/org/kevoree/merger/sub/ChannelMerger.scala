@@ -27,8 +27,6 @@
 package org.kevoree.merger.sub
 
 import org.kevoree.merger.Merger
-import org.kevoree.merger.resolver.UnresolvedTypeDefinition._
-import org.kevoree.merger.resolver.UnresolvedTypeDefinition
 import org.slf4j.LoggerFactory
 import org.kevoree.{KevoreeFactory, ComponentInstance, ContainerNode, ContainerRoot}
 
