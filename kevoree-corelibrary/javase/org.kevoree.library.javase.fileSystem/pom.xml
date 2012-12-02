@@ -31,6 +31,7 @@
         </plugins>
 
     </build>
+
     <dependencies>
         <dependency>
             <groupId>com.google.gwt</groupId>
@@ -38,4 +39,5 @@
             <version>2.5.0-rc1</version>
         </dependency>
     </dependencies>
+
 </project>
