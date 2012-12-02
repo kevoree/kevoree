@@ -59,6 +59,12 @@ object XmiLoaderTest {
 
 class XmiLoaderTest {
 
+  @Test
+  def testLoadParameters() {
+    val m = ContainerRootLoader.loadModel(new File(getClass.getResource("/PrarametersBug.kev").toURI)).get;
+  }
+
+
 
   @Test
   def testOpposite1(){
