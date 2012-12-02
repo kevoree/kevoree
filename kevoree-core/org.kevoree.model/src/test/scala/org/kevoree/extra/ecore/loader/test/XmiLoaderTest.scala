@@ -98,10 +98,12 @@ class XmiLoaderTest {
 
   @Test
   def testSaveAndLoad() {
-    System.out.println("Saving model from memory to tempFile")
+    //System.out.print("Saving model from memory to tempFile =>")
     val tempFile = File.createTempFile("kmfTest_" + System.currentTimeMillis(), "kev")
+    //System.out.println(tempFile.getAbsolutePath)
     val pr = new FileOutputStream(tempFile)
     val ms = new ModelSerializer()
+    tempFile.deleteOnExit()
 
     ms.serialize(XmiLoaderTest.model,pr)
     pr.close()
