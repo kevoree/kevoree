@@ -9,7 +9,7 @@ package org.kevoree.library;
 public class TesterBroadCastAsk {
 
     public static void main(String[] args){
-        BroadCastSender.send(15652,"HelloUDP".getBytes());
+        BroadCastSender.send(8000,"8HelloUDP".getBytes());
     }
 
 }

@@ -25,6 +25,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.concurrent.Exchanger;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 /**
  * Created with IntelliJ IDEA.
@@ -154,7 +155,6 @@ public class BasicGroup extends AbstractGroupType implements ConnectionListener 
 
     @Override
     public ContainerRoot pull(final String targetNodeName) throws Exception {
-        final Exchanger<ContainerRoot> exchanger = new Exchanger<ContainerRoot>();
         String ip = "127.0.0.1";
         Option<String> ipOption = NetworkHelper.getAccessibleIP(KevoreePropertyHelper
                 .getStringNetworkProperties(this.getModelService().getLastModel(), targetNodeName, org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP()));
@@ -166,6 +166,11 @@ public class BasicGroup extends AbstractGroupType implements ConnectionListener 
         if (portOption.isDefined()) {
             PORT = portOption.get();
         }
+        return requestModel(ip,PORT,targetNodeName);
+    }
+
+    protected ContainerRoot requestModel(String ip, int port,final String targetNodeName) throws IOException, TimeoutException, InterruptedException {
+        final Exchanger<ContainerRoot> exchanger = new Exchanger<ContainerRoot>();
         final ClientConnection[] conns = new ClientConnection[1];
         conns[0] = new ClientConnection(new ConnectionListener() {
             @Override
@@ -195,7 +200,7 @@ public class BasicGroup extends AbstractGroupType implements ConnectionListener 
             public void clientConnected(ServerConnection conn) {
             }
 
-        }, ip, PORT, ssl);
+        }, ip, port, ssl);
         conns[0].connect(5000);
         byte[] data = new byte[1];
         data[0] = getModel;

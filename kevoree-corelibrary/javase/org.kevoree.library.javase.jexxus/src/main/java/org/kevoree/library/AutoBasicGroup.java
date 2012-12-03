@@ -1,15 +1,16 @@
 package org.kevoree.library;
 
 import jexxus.common.Connection;
-import org.kevoree.ContainerNode;
 import org.kevoree.ContainerRoot;
-import org.kevoree.Group;
 import org.kevoree.annotation.GroupType;
 import org.kevoree.annotation.Start;
+import org.kevoree.api.service.core.handler.UUIDModel;
 import org.kevoree.cloner.ModelCloner;
 import org.kevoree.framework.KevoreePlatformHelper;
-import org.kevoree.framework.KevoreePropertyHelper;
+import org.kevoree.merger.KevoreeMergerComponent;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 /**
@@ -30,35 +31,56 @@ public class AutoBasicGroup extends BasicGroup {
         switch (data[0]) {
             case discoveryRequest: {
                 //BROADCAST MY INFO
-                broadCastMyInfo();
-            }
-            break;
+                try {
+                    broadCastMyInfo();
+                } catch (IOException e) {
+                    logger.error("Error while broadcasting node informations ", e);
+                }
+            } break;
             case discoveryResponse: {
                 //BROADCAST MY INFO
                 processRemoteInfo(data,from.getIP());
-            }
-            break;
+            } break;
             default:
                 from.close();
         }
     }
 
-    protected void broadCastMyInfo() {
-        String infos = getName() + ";" + getNodeName() + ";" + getClass().getSimpleName() + ";" + port;
-        BroadCastSender.send(port, infos.getBytes());
+    protected void broadCastMyInfo() throws IOException {
+        String infos = getName() + ";" + getNodeName() + ";AutoBasicGroup;" + port;
+        ByteArrayOutputStream outs = new ByteArrayOutputStream();
+        outs.write(discoveryResponse);
+        outs.write(infos.getBytes());
+        outs.flush();
+        BroadCastSender.send(port, outs.toByteArray());
+        outs.close();
     }
 
     private static ModelCloner cloner = new ModelCloner();
+    private static KevoreeMergerComponent merger = new KevoreeMergerComponent();
+
+
     protected void processRemoteInfo(byte[] rawData, final String ip) {
-        final String[] data = new String(rawData).split(";");
-        if (data.length == 4 && getName().equals(data[0]) && getClass().getSimpleName().equals(data[2])) {
+        final String[] data = new String(rawData,1,rawData.length-1).split(";");
+        for(int i=0;i<data.length;i++){
+            System.out.println("-"+data[i]+"-");
+        }
+        if (data.length == 4 && getName().equals(data[0]) && "AutoBasicGroup".equals(data[2]) && !getName().equals(data[1])) {
             new Thread() {
                 @Override
                 public void run() {
-                    if(KevoreePlatformHelper.getProperty(getModelService().getLastModel(),data[1],org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP()).equals(ip)){
+                    UUIDModel model = getModelService().getLastUUIDModel();
+                    if(KevoreePlatformHelper.getProperty(model.getModel(),data[1],org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP()).equals(ip)){
                         logger.info("New IP found for node "+data[1]+"->"+ip);
-                         //ContainerRoot modelRW = cloner.clone(getModelService().getLastModel());
-
+                        try {
+                            ContainerRoot modelRW = cloner.clone(model.getModel());
+                            ContainerRoot newModel = merger.merge(modelRW,requestModel(ip,Integer.parseInt(data[3]),data[0]));
+                            getModelService().compareAndSwapModel(model,newModel);
+                        } catch(Exception e){
+                            logger.error("Error while merging remote model");
+                        }
+                    } else {
+                        logger.info("Already ok "+data[1]+"->"+ip);
                     }
                 }
             }.start();
@@ -67,8 +89,11 @@ public class AutoBasicGroup extends BasicGroup {
 
     @Start
     public void startRestGroup() throws IOException {
+        byte[] request = new byte[1];
+        request[0] = discoveryRequest;
+        udp = true;
         super.startRestGroup();
-        BroadCastSender.send(port, (discoveryRequest + "").getBytes());
+        BroadCastSender.send(port, request);
     }
 
 }
