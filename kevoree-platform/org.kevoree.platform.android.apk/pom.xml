@@ -17,6 +17,7 @@
         <kevoree.version>${project.version}</kevoree.version>
         <android.sdk.path>${android.home}</android.sdk.path>
         <android.extractDuplicates>true</android.extractDuplicates>
+        <android.dex.coreLibrary>true</android.dex.coreLibrary>
     </properties>
 
     <dependencies>
@@ -168,6 +169,12 @@
              </exclusions>
          </dependency>
 
+        <dependency>
+            <groupId>woodstox</groupId>
+            <artifactId>wstx-asl</artifactId>
+            <version>3.2.0</version>
+        </dependency>
+
 
     </dependencies>
 
@@ -177,7 +184,7 @@
             <plugin>
                 <groupId>com.jayway.maven.plugins.android.generation2</groupId>
                 <artifactId>android-maven-plugin</artifactId>
-                <version>3.4.0</version>
+                <version>3.4.1</version>
                 <configuration>
                     <sdk>
                         <platform>15</platform>

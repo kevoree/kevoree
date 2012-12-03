@@ -59,6 +59,14 @@ public class KevoreeActivity extends FragmentActivity implements  OnChangeListen
         System.setProperty("actors.enableForkJoin", "false");
         System.setProperty("actors.maxPoolSize", "256");
 
+        System.setProperty("javax.xml.stream.XMLInputFactory",
+                "com.ctc.wstx.stax.WstxInputFactory");
+        System.setProperty("javax.xml.stream.XMLOutputFactory",
+                "com.ctc.wstx.stax.WstxOutputFactory");
+        System.setProperty("javax.xml.stream.XMLEventFactory",
+                "com.ctc.wstx.stax.WstxEventFactory");
+
+
         super.onCreate(savedInstanceState);
 
         if(controller == null)
