@@ -1,4 +1,4 @@
-<kevoree:ContainerRoot xmlns:kevoree="http://kevoree/1.0" xmlns:xsi="http://wwww.w3.org/2001/XMLSchema-instance" xmi:version="2.0" xmlns:xml="http://www.omg.org/XMI" xsi:type="kevoree:ContainerRoot">
+<kevoree:ContainerRoot xmlns:kevoree="http://kevoree/1.0" xmlns:xsi="http://wwww.w3.org/2001/XMLSchema-instance" xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xsi:type="kevoree:ContainerRoot">
 <nodes xsi:type="kevoree:ContainerNode" name="atmosphere" metaData="x=50,y=50" typeDefinition="//@typeDefinitions.0">
 <dictionary>
 <values xsi:type="kevoree:DictionaryValue" value="INFO" attribute="//@typeDefinitions.0/@dictionaryType/@attributes.0">

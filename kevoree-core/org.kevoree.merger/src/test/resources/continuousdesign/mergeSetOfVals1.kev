@@ -1,4 +1,4 @@
-<kevoree:ContainerRoot xmlns:xml="http://www.omg.org/XMI" xmlns:xsi="http://wwww.w3.org/2001/XMLSchema-instance" xmlns:kevoree="http://kevoree/1.0" xmi:version="2.0" xsi:type="kevoree:ContainerRoot">
+<kevoree:ContainerRoot xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://wwww.w3.org/2001/XMLSchema-instance" xmlns:kevoree="http://kevoree/1.0" xmi:version="2.0" xsi:type="kevoree:ContainerRoot">
  <typeDefinitions updateMethod="updateGossiperGroup" startMethod="startGossiperGroup" factoryBean="org.kevoree.library.javase.gossiperNetty.group.NettyGossiperGroupFactory" xsi:type="kevoree:GroupType" name="NettyGossiperGroup" bean="org.kevoree.library.javase.gossiperNetty.group.NettyGossiperGroup" stopMethod="stopGossiperGroup" deployUnits="//@deployUnits.0">
   <dictionaryType>
    <attributes state="false" name="interval" xsi:type="kevoree:DictionaryAttribute" optional="true" fragmentDependant="false"></attributes>
