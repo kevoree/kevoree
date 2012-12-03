@@ -60,5 +60,14 @@
                  -->
         </plugins>
     </build>
+	
+    <dependencies>
+        <dependency>
+            <groupId>org.kevoree</groupId>
+            <artifactId>org.kevoree.merger</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
+    </dependencies>
+
 
 </project>
