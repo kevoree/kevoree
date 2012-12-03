@@ -55,7 +55,11 @@ public class AutoBasicGroup extends BasicGroup {
             new Thread() {
                 @Override
                 public void run() {
+                    if(KevoreePlatformHelper.getProperty(getModelService().getLastModel(),data[1],org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP()).equals(ip)){
+                        logger.info("New IP found for node "+data[1]+"->"+ip);
+                         //ContainerRoot modelRW = cloner.clone(getModelService().getLastModel());
 
+                    }
                 }
             }.start();
         }
