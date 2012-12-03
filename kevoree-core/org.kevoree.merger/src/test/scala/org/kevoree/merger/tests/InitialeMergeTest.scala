@@ -44,11 +44,6 @@ class InitialeMergeTest extends MergerTestSuiteHelper {
   @Before def initialize() {
     component = new KevoreeMergerComponent
   }
-
-  @Test def verifyRelativePathDetected() {
-    var mergedModel = model("corrupted/MergedWithRelativeReferences.art2")
-    assert( !hasNoRelativeReference("corrupted","MergedWithRelativeReferences.art2") )
-  }
   
   @Test def verifySimpleMerge1() {
     var mergedModel = component.merge(emptyModel, model("simple/simpleEntimidLib.art2"))
