@@ -62,9 +62,6 @@ public class AutoBasicGroup extends BasicGroup {
 
     protected void processRemoteInfo(byte[] rawData, final String ip) {
         final String[] data = new String(rawData,1,rawData.length-1).split(";");
-        for(int i=0;i<data.length;i++){
-            System.out.println("-"+data[i]+"-");
-        }
         if (data.length == 4 && getName().equals(data[0]) && "AutoBasicGroup".equals(data[2]) && !getName().equals(data[1])) {
             new Thread() {
                 @Override
