@@ -41,7 +41,7 @@ import java.util.concurrent.TimeUnit;
 @Library(name = "JavaSE", names = "Android")
 public class BasicGroup extends AbstractGroupType implements ConnectionListener {
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    protected Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final byte getModel = 0;
     private final byte pushModel = 1;
@@ -50,11 +50,12 @@ public class BasicGroup extends AbstractGroupType implements ConnectionListener 
     private boolean starting;
     protected boolean udp = false;
     boolean ssl = false;
+    int port = -1;
 
 
     @Start
     public void startRestGroup() throws IOException {
-        int port = Integer.parseInt(this.getDictionary().get("port").toString());
+        port = Integer.parseInt(this.getDictionary().get("port").toString());
         ssl = Boolean.parseBoolean(this.getDictionary().get("ssl").toString());
         if(udp){
             server = new Server(this, port,port, ssl);

@@ -39,7 +39,7 @@ public class Tester {
             public void receive(byte[] data, Connection from) {
 
                 //if(!from.isConnected()){
-                    System.out.println("recData="+new String(data));
+                    System.out.println("recData="+new String(data)+"@"+from.getIP());
                 //}
 
                 //ByteArrayInputStream inputStream = new ByteArrayInputStream(data);

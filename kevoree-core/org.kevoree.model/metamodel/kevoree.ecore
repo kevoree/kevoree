@@ -23,8 +23,8 @@
     <eClassifiers xsi:type="ecore:EClass" name="ContainerNode" eSuperTypes="#//NamedElement #//Instance">
         <eStructuralFeatures xsi:type="ecore:EReference" name="components" upperBound="-1"
                              eType="#//ComponentInstance" containment="true"/>
-        <eStructuralFeatures xsi:type="ecore:EReference" name="hosts" upperBound="-1"
-                             eType="#//ContainerNode"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="hosts" upperBound="-1" eType="#//ContainerNode" eOpposite="#//ContainerNode/host"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="host" upperBound="1" lowerBound="0" eType="#//ContainerNode" eOpposite="#//ContainerNode/hosts"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="ContainerRoot">
         <eStructuralFeatures xsi:type="ecore:EReference" name="nodes" upperBound="-1"

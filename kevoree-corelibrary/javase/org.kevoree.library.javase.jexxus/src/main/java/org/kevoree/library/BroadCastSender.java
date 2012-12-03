@@ -11,12 +11,11 @@ import java.util.Enumeration;
  */
 public class BroadCastSender {
 
-    public static void send(int port) {
+    public static void send(int port, byte[] sendData) {
         DatagramSocket c = null;
         try {
             c = new DatagramSocket();
             c.setBroadcast(true);
-            byte[] sendData = "DISCOVER_FUIFSERVER_REQUEST".getBytes();
             //Try the 255.255.255.255 first
             try {
                 DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, InetAddress.getByName("255.255.255.255"), port);

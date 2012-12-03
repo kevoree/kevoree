@@ -19,6 +19,7 @@ import javax.net.ssl.SSLServerSocketFactory;
 
 import jexxus.common.Connection;
 import jexxus.common.ConnectionListener;
+import jexxus.common.FakeConnection;
 
 /**
  * Acts as a server for incoming client connections. The server can send and receive data from all clients who connect to this server.
@@ -201,8 +202,8 @@ public class Server {
 							conn = clients.get(senderIP);
 						}
 						if (conn == null) {
-							//System.err.println("Received UDP Packet from unknown source: " + senderIP);
-                            listener.receive(ret, conn);
+							//System.err.println("Received UDP Packet from unknown source: " + senderIP)
+                            listener.receive(ret, new FakeConnection(inputPacket.getAddress().getHostAddress()));
 						} else {
 							if (ret.length == 0) {
 								System.out.println("Set UDP Port: " + inputPacket.getPort());
