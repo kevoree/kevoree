@@ -1,4 +1,4 @@
-<kevoree:ContainerRoot xmlns:xml="http://www.omg.org/XMI" xmlns:xsi="http://wwww.w3.org/2001/XMLSchema-instance" xmlns:kevoree="http://kevoree/1.0" xmi:version="2.0" xsi:type="kevoree:ContainerRoot">
+<kevoree:ContainerRoot xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://wwww.w3.org/2001/XMLSchema-instance" xmlns:kevoree="http://kevoree/1.0" xmi:version="2.0" xsi:type="kevoree:ContainerRoot">
  <nodes metaData="x=131,y=163" xsi:type="kevoree:ContainerNode" name="node0" typeDefinition="//@typeDefinitions.3">
   <components name="Webcam281" xsi:type="kevoree:ComponentInstance" typeDefinition="//@typeDefinitions.18">
    <required xsi:type="kevoree:Port" portTypeRef="//@typeDefinitions.18/@required.0"></required>

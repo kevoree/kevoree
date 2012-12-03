@@ -1,4 +1,4 @@
-<kevoree:ContainerRoot xsi:type="kevoree:ContainerRoot" xmlns:xml="http://www.omg.org/XMI" xmi:version="2.0" xmlns:xsi="http://wwww.w3.org/2001/XMLSchema-instance" xmlns:kevoree="http://kevoree/1.0">
+<kevoree:ContainerRoot xsi:type="kevoree:ContainerRoot" xmlns:xmi="http://www.omg.org/XMI" xmi:version="2.0" xmlns:xsi="http://wwww.w3.org/2001/XMLSchema-instance" xmlns:kevoree="http://kevoree/1.0">
  <nodes typeDefinition="//@typeDefinitions.13" metaData="x=66,y=44" name="node0" xsi:type="kevoree:ContainerNode">
   <components typeDefinition="//@typeDefinitions.3" name="PaaSKloud853" xsi:type="kevoree:ComponentInstance">
    <provided portTypeRef="//@typeDefinitions.3/@provided.0" xsi:type="kevoree:Port"></provided>
