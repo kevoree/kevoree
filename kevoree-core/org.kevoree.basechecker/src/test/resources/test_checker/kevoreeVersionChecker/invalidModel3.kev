@@ -1,4 +1,4 @@
-<kevoree:ContainerRoot xsi:type="kevoree:ContainerRoot" xmlns:xml="http://www.omg.org/XMI" xmi:version="2.0" xmlns:xsi="http://wwww.w3.org/2001/XMLSchema-instance" xmlns:kevoree="http://kevoree/1.0">
+<kevoree:ContainerRoot xsi:type="kevoree:ContainerRoot" xmlns:xmi="http://www.omg.org/XMI" xmi:version="2.0" xmlns:xsi="http://wwww.w3.org/2001/XMLSchema-instance" xmlns:kevoree="http://kevoree/1.0">
  <nodes typeDefinition="//@typeDefinitions.13" metaData="x=186,y=49" name="node0" xsi:type="kevoree:ContainerNode"></nodes>
  <typeDefinitions deployUnits="//@deployUnits.0" updateMethod="update" stopMethod="stop" startMethod="start" bean="org.kevoree.library.sky.provider.IaaSKloudResourceManager" factoryBean="org.kevoree.library.sky.provider.IaaSKloudResourceManagerFactory" name="IaaSKloudResourceManager" xsi:type="kevoree:ComponentType"></typeDefinitions>
  <typeDefinitions deployUnits="//@deployUnits.0" stopMethod="dummy" startMethod="dummy" bean="org.kevoree.library.sky.provider.PaaSKloudResourceManager" factoryBean="org.kevoree.library.sky.provider.PaaSKloudResourceManagerFactory" name="PaaSKloudResourceManager" xsi:type="kevoree:ComponentType">
