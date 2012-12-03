@@ -24,10 +24,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 
 package org.kevoree.framework
 
@@ -38,7 +34,7 @@ object KevoreePlatformHelper {
 
   val logger = LoggerFactory.getLogger(this.getClass)
 
-  def updateNodeLinkProp(actualModel : ContainerRoot,currentNodeName : String,targetNodeName:String,key:String,value:String,networkType : String,weight:Int) = {
+  def updateNodeLinkProp(actualModel : ContainerRoot,currentNodeName : String,targetNodeName:String,key:String,value:String,networkType : String,weight:Int) : ContainerNode = {
 
     /* SEARCH THE NODE NETWORK */
     val nodenetwork = actualModel.getNodeNetworks.find({nn =>
@@ -89,7 +85,6 @@ object KevoreePlatformHelper {
 
   }
 
-  @Deprecated
   def getProperty(model:ContainerRoot,targetNodeName : String,key:String) : String = {
     val filteredNodeNetwork = model.getNodeNetworks.filter(lNN=> lNN.getTarget.getName == targetNodeName)
     var bestResultProp = ""
