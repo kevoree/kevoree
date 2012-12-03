@@ -36,12 +36,14 @@ object KevoreePlatformHelper {
 
   def updateNodeLinkProp(actualModel : ContainerRoot,currentNodeName : String,targetNodeName:String,key:String,value:String,networkType : String,weight:Int) : ContainerNode = {
 
+    var thisNodeFound : ContainerNode = null
+
     /* SEARCH THE NODE NETWORK */
     val nodenetwork = actualModel.getNodeNetworks.find({nn =>
         nn.getInitBy.get.getName == currentNodeName && nn.getTarget.getName == targetNodeName }) getOrElse {
       val newNodeNetwork = KevoreeFactory.eINSTANCE.createNodeNetwork
       val thisNode = actualModel.getNodes.find({loopNode => loopNode.getName == currentNodeName })
-      val thisNodeFound = thisNode.getOrElse{
+      thisNodeFound = thisNode.getOrElse{
         val newnode = KevoreeFactory.eINSTANCE.createContainerNode
         newnode.setName(currentNodeName)
         actualModel.addNodes(newnode)
@@ -82,7 +84,7 @@ object KevoreePlatformHelper {
     prop.setLastCheck(new java.util.Date().getTime.toString)
 
     logger.debug("New node link prop registred = "+targetNodeName+","+key+","+value)
-
+    thisNodeFound
   }
 
   def getProperty(model:ContainerRoot,targetNodeName : String,key:String) : String = {
