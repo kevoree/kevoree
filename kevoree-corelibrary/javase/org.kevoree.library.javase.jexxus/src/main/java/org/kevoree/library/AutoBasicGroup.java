@@ -67,7 +67,7 @@ public class AutoBasicGroup extends BasicGroup {
                 @Override
                 public void run() {
                     UUIDModel model = getModelService().getLastUUIDModel();
-                    if(KevoreePlatformHelper.getProperty(model.getModel(),data[1],org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP()).equals(ip)){
+                    if(!KevoreePlatformHelper.getProperty(model.getModel(),data[1],org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP()).equals(ip)){
                         logger.info("New IP found for node "+data[1]+"->"+ip);
                         try {
                             ContainerRoot modelRW = cloner.clone(model.getModel());

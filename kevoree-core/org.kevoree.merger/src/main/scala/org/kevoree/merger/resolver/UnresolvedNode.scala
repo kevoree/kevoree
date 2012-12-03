@@ -33,7 +33,6 @@ import org.kevoree.ContainerNode
  * User: duke
  * Date: 20/10/11
  * Time: 08:40
- * To change this template use File | Settings | File Templates.
  */
 
 case class UnresolvedNode(nodeName : String) extends ContainerNode {
