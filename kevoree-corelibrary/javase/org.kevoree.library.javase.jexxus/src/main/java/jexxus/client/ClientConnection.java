@@ -281,9 +281,9 @@ public class ClientConnection extends Connection {
 
     @Override
     public void close() {
-        if (!connected) {
-            System.err.println("Cannot close the connection when it is not connected.");
-        } else {
+        //if (!connected) {
+        //    System.err.println("Cannot close the connection when it is not connected.");
+        //} else {
             try {
                 tcpSocket.close();
                 tcpInput.close();
@@ -292,7 +292,7 @@ public class ClientConnection extends Connection {
                 e.printStackTrace();
             }
             connected = false;
-        }
+        //}
     }
 
     @Override
