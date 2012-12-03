@@ -1,4 +1,4 @@
-<kevoree:ContainerRoot xmlns:kevoree="http://kevoree/1.0" xmlns:xsi="http://wwww.w3.org/2001/XMLSchema-instance" xmi:version="2.0" xmlns:xml="http://www.omg.org/XMI" xsi:type="kevoree:ContainerRoot">
+<kevoree:ContainerRoot xmlns:kevoree="http://kevoree/1.0" xmlns:xsi="http://wwww.w3.org/2001/XMLSchema-instance" xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xsi:type="kevoree:ContainerRoot">
 <nodes xsi:type="kevoree:ContainerNode" name="node0" metaData="x=24,y=40" typeDefinition="//@typeDefinitions.0">
 <components xsi:type="kevoree:ComponentInstance" name="fk1" typeDefinition="//@typeDefinitions.18">
 <dictionary>
