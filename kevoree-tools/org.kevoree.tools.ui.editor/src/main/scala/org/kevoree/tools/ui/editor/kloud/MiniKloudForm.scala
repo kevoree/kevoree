@@ -203,7 +203,7 @@ class MiniKloudForm (editor: KevoreeEditor, button: AbstractButton) {
 				kevEngine.append("merge 'mvn:org.kevoree.corelibrary.sky/org.kevoree.library.sky.minicloud/{kevoree.version}'")
 				kevEngine.append("merge 'mvn:org.kevoree.corelibrary.sky/org.kevoree.library.sky.provider/{kevoree.version}'")
 				kevEngine.append("merge 'mvn:org.kevoree.corelibrary.sky/org.kevoree.library.sky.provider.web/{kevoree.version}'")
-				kevEngine.append("merge 'mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.nanohttp/{kevoree.version}'")
+				kevEngine.append("merge 'mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.basicGossiper/{kevoree.version}'")
 				kevEngine.append("merge 'mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.defaultChannels/{kevoree.version}'")
 
 				kevEngine.append("addNode {minicloudNodeName}: MiniCloudNode {logLevel = 'INFO'}")
@@ -225,7 +225,7 @@ class MiniKloudForm (editor: KevoreeEditor, button: AbstractButton) {
 					case Some(group) => groupName = group.getName
 					case None =>
 						// add a new group
-						kevEngine.append("addGroup editor_group : NanoRestGroup")
+						kevEngine.append("addGroup editor_group : BasicGossiperGroup")
 						// add all node on the same group
 						nodes.foreach {
 							node =>
