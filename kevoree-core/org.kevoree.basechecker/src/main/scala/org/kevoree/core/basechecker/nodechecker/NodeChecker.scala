@@ -16,7 +16,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * 	http://www.gnu.org/licenses/lgpl-3.0.txt
+ * http://www.gnu.org/licenses/lgpl-3.0.txt
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -28,8 +28,9 @@ package org.kevoree.core.basechecker.nodechecker
 
 import org.kevoree.api.service.core.checker.{CheckerViolation, CheckerService}
 import org.kevoree.framework.aspects.KevoreeAspects._
-import org.kevoree.{ContainerNode, ContainerRoot}
+import org.kevoree.{Channel, ContainerNode, ContainerRoot}
 import scala.collection.JavaConversions._
+import collection.mutable.ListBuffer
 
 /**
  * Created by IntelliJ IDEA.
@@ -42,10 +43,11 @@ class NodeChecker extends CheckerService {
 
 
   def check(model: ContainerRoot): java.util.List[CheckerViolation] = {
-    var violations: List[CheckerViolation] = List()
+    var violations: ListBuffer[CheckerViolation] = ListBuffer()
     model.getNodes.foreach {
       node => //For each Node
-        violations = violations ++ checkRelatedChannel(model, node)
+      //        violations = violations ++ checkRelatedChannel(model, node)
+        val alreadyCheckedChannels: ListBuffer[Channel] = ListBuffer[Channel]()
         node.getComponents.foreach {
           component => //For each component of each node
             component.getTypeDefinition.foundRelevantDeployUnit(node)
@@ -55,20 +57,69 @@ class NodeChecker extends CheckerService {
                 violation.setMessage(component.getTypeDefinition.getName + " has no deploy unit for node type " +
                   node.getTypeDefinition.getName)
                 violation.setTargetObjects(List(node) ++ List(component))
-                violations = violations ++ List(violation)
+                violations += violation
+              }
+              case _ =>
+            }
+            // check channel fragment
+            (component.getProvided ++ component.getRequired).foreach {
+              port => port.getBindings.foreach {
+                mbinding => {
+                  if (!alreadyCheckedChannels.contains(mbinding.getHub)) {
+                    mbinding.getHub.getTypeDefinition.foundRelevantDeployUnit(node)
+                    match {
+                      case null => {
+                        val violation: CheckerViolation = new CheckerViolation
+                        violation.setMessage(mbinding.getHub.getTypeDefinition.getName + " has no deploy unit for node type " + node.getTypeDefinition.getName)
+                        violation.setTargetObjects(List(mbinding.getHub))
+                        violations += violation
+                      }
+                      case _ =>
+                    }
+                  }
+                }
+              }
+            }
+        }
+        // check groups
+        node.getGroups.foreach {
+          group =>
+            group.getTypeDefinition.foundRelevantDeployUnit(node)
+            match {
+              case null => {
+                val violation: CheckerViolation = new CheckerViolation
+                violation.setMessage(group.getTypeDefinition.getName + " has no deploy unit for node type " + node.getTypeDefinition.getName)
+                violation.setTargetObjects(List(group))
+                violations += violation
               }
               case _ =>
             }
         }
+        // check child nodes
+        node.getHosts.foreach {
+          child =>
+            child.getTypeDefinition.foundRelevantDeployUnit(node) match {
+              case null => {
+                val violation: CheckerViolation = new CheckerViolation
+                violation.setMessage(child.getTypeDefinition.getName + " has no deploy unit for node type " +
+                  node.getTypeDefinition.getName)
+                violation.setTargetObjects(List(child))
+                violations += violation
+
+              }
+              case _ =>
+            }
+        }
+        // check node
         node.getTypeDefinition.foundRelevantDeployUnit(node) match {
           case null => {
             val violation: CheckerViolation = new CheckerViolation
             violation.setMessage(node.getTypeDefinition.getName + " has no deploy unit for node type " +
               node.getTypeDefinition.getName)
             violation.setTargetObjects(List(node))
-            violations = violations ++ List(violation)
+            violations += violation
             //println("fuck "+node.getTypeDefinition.getName)
-            
+
           }
           case _ =>
         }
@@ -77,9 +128,22 @@ class NodeChecker extends CheckerService {
   }
 
 
-  def checkRelatedChannel(model: ContainerRoot, node: ContainerNode): java.util.List[CheckerViolation] = {
-    var violations: List[CheckerViolation] = List()
-    model.getMBindings.filter(mb => mb.getPort.eContainer.eContainer == node).foreach {
+  /*def checkRelatedChannel(model: ContainerRoot, node: ContainerNode): java.util.List[CheckerViolation] = {
+    var violations: ListBuffer[CheckerViolation] = ListBuffer[CheckerViolation]()
+    node.getChannelFragment.foreach {
+      channel =>
+        channel.getTypeDefinition.foundRelevantDeployUnit(node)
+        match {
+          case null => {
+            val violation: CheckerViolation = new CheckerViolation
+            violation.setMessage(channel.getTypeDefinition.getName + " has no deploy unit for node type " + node.getTypeDefinition.getName)
+            violation.setTargetObjects(List(channel))
+            violations += violation
+          }
+          case _ =>
+        }
+    }
+    /*model.getMBindings.filter(mb => mb.getPort.eContainer.eContainer == node).foreach {
       mbinding =>
         mbinding.getHub.getTypeDefinition.foundRelevantDeployUnit(node)
         match {
@@ -88,13 +152,13 @@ class NodeChecker extends CheckerService {
             violation.setMessage(mbinding.getHub.getTypeDefinition.getName + " has no deploy unit for node type " +
               node.getTypeDefinition.getName)
             violation.setTargetObjects(List(mbinding) ++ List(mbinding.getHub))
-            violations = violations ++ List(violation)
+            violations += violation
           }
           case _ =>
         }
-    }
+    }*/
     violations
-  }
+  }*/
 
 
 }

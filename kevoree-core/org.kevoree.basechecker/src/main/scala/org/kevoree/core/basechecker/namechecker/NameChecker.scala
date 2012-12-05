@@ -16,7 +16,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * 	http://www.gnu.org/licenses/lgpl-3.0.txt
+ * http://www.gnu.org/licenses/lgpl-3.0.txt
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -47,7 +47,7 @@ class NameChecker extends CheckerService {
   val acceptedRegex = "[A-Za-z0-9_]*"
   var message = "The name doesn't fit the defined format.\nA name only contains lower or upper letters, numbers and \"_\"."
 
-  def check (model: ContainerRoot): java.util.List[CheckerViolation] = {
+  def check(model: ContainerRoot): java.util.List[CheckerViolation] = {
     var violations: List[CheckerViolation] = List()
     model.getNodes.foreach {
       node =>
@@ -59,7 +59,7 @@ class NameChecker extends CheckerService {
           component: ComponentInstance =>
             violation = check(component)
             if (violation != null) {
-              violation.setTargetObjects(List(component))
+              //              violation.setTargetObjects(List(component))
               violations = violations ++ List(violation)
             }
             if (component.getDictionary.isDefined) {
@@ -94,7 +94,7 @@ class NameChecker extends CheckerService {
       channel =>
         var violation = check(channel)
         if (violation != null) {
-          violation.setTargetObjects(List(channel))
+          //          violation.setTargetObjects(List(channel))
           violations = violations ++ List(violation)
         }
         if (channel.getDictionary.isDefined) {
@@ -113,7 +113,7 @@ class NameChecker extends CheckerService {
       group =>
         var violation = check(group)
         if (violation != null) {
-          violation.setTargetObjects(List(group))
+          //          violation.setTargetObjects(List(group))
           violations = violations ++ List(violation)
         }
         if (group.getDictionary.isDefined) {
@@ -131,7 +131,7 @@ class NameChecker extends CheckerService {
     violations
   }
 
-  private def check (name: String): Boolean = {
+  private def check(name: String): Boolean = {
     if (name == "") {
       return false
     }
@@ -140,7 +140,7 @@ class NameChecker extends CheckerService {
     m.matches
   }
 
-  private def check (obj: NamedElement): CheckerViolation = {
+  private def check(obj: NamedElement): CheckerViolation = {
     var violation: CheckerViolation = null
     if (check(obj.getName) == false) {
       violation = new CheckerViolation

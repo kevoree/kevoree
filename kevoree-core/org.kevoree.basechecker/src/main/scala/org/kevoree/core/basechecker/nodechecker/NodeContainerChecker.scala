@@ -44,11 +44,10 @@ class NodeContainerChecker extends CheckerService {
                 hostedCapable = true;
               }
           } */
-          val hostedCapable = NodeTypeAspect(ntype).defineAdaptationPrimitiveType("addnode") && NodeTypeAspect(ntype).defineAdaptationPrimitiveType("addnode")
+          val hostedCapable = NodeTypeAspect(ntype).defineAdaptationPrimitiveType("addnode") && NodeTypeAspect(ntype).defineAdaptationPrimitiveType("removenode")
           if (!hostedCapable) {
             val violation: CheckerViolation = new CheckerViolation
-            violation.setMessage(ntype.getName + " hos not Node hosting capability " +
-              node.getTypeDefinition.getName)
+            violation.setMessage(ntype.getName + " has no Node hosting capability " + node.getTypeDefinition.getName)
             violation.setTargetObjects(util.Arrays.asList(node))
             violations.add(violation)
           }

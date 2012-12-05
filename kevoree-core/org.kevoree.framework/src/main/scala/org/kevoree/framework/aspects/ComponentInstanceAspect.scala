@@ -33,6 +33,7 @@ package org.kevoree.framework.aspects
 
 import org.kevoree._
  import KevoreeAspects._
+import collection.mutable.ListBuffer
 
 case class ComponentInstanceAspect(cself : ComponentInstance) {
 
@@ -143,14 +144,14 @@ case class ComponentInstanceAspect(cself : ComponentInstance) {
 
   def getRelatedBindings : List[MBinding] = {
 
-    var l : List[MBinding] = List()
+    var l : ListBuffer[MBinding] = ListBuffer()
     cself.getProvided.foreach{ m=>
        l = l ++ m.getBindings
     }
     cself.getRequired.foreach{ m=>
       l = l ++ m.getBindings
     }
-    l
+    l.toList
      /*
     cself.eContainer.eContainer.asInstanceOf[ContainerRoot].getMBindings.filter({b =>
         cself.getProvided.exists({p=> b.getPort == p}) || cself.getRequired.exists({p=> b.getPort == p})

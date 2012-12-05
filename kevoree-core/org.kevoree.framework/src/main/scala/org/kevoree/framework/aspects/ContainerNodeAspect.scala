@@ -97,20 +97,21 @@ case class ContainerNodeAspect(node: ContainerNode) {
   }
 
   def getChannelFragment: List[Channel] = {
-    val usedChannel: ListBuffer[Channel] = ListBuffer[Channel]()
     /* add channel fragment on node */
+    val usedChannel: ListBuffer[Channel] = ListBuffer[Channel]()
     node.getComponents.foreach {
       component =>
         (component.getProvided ++ component.getRequired).foreach {
           port => port.getBindings.foreach {
-            mbinding => if (!usedChannel.contains(mbinding.getHub)) {
+            mbinding => if (!usedChannel.exists(c => c.getName == mbinding.getHub.getName)) {
               usedChannel += mbinding.getHub
             }
           }
         }
     }
     usedChannel.toList
-    /*node.eContainer.asInstanceOf[ContainerRoot].getMBindings.foreach {
+    /*var usedChannel: List[Channel] = List[Channel]()
+    node.eContainer.asInstanceOf[ContainerRoot].getMBindings.foreach {
       mb =>
         if (mb.getPort.eContainer.eContainer == node) {
           if (!usedChannel.exists({
