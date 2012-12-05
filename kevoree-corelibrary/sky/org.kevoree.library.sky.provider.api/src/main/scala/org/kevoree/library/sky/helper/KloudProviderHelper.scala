@@ -104,7 +104,7 @@ object KloudProviderHelper {
   }
 
   def selectIaaSNodeAsAMaster(model : ContainerRoot) {
-    val iaasNodes = model.getNodes.filter(n => KloudModelHelper.isIaaSNode(model, n.getName))
+    val iaasNodes = model.getNodes.filter(n => KloudModelHelper.isIaaSNode(model, n))
 
   }
 
