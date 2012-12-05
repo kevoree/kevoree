@@ -21,9 +21,9 @@ class KloudReasoner {
 
   def getNodesToRemove (currentModel: ContainerRoot, newModel: ContainerRoot): java.util.List[ContainerNode] = {
     var removedNodes = List[ContainerNode]()
-    currentModel.getNodes.filter(n => KloudModelHelper.isPaaSNode(currentModel, n.getName)).foreach {
+    currentModel.getNodes.filter(n => KloudModelHelper.isPaaSNode(currentModel, n)).foreach {
       paasNode =>
-        newModel.getNodes.filter(n => KloudModelHelper.isPaaSNode(newModel, n.getName)).find(node => node.getName == paasNode.getName) match {
+        newModel.getNodes.filter(n => KloudModelHelper.isPaaSNode(newModel, n)).find(node => node.getName == paasNode.getName) match {
           case None => {
             logger.debug("{} must be removed from the kloud.", paasNode.getName)
             removedNodes = removedNodes ++ List[ContainerNode](paasNode)
@@ -36,10 +36,10 @@ class KloudReasoner {
 
   def getNodesToAdd (currentModel: ContainerRoot, newModel: ContainerRoot): java.util.List[ContainerNode] = {
     var nodesToAdd = List[ContainerNode]()
-    newModel.getNodes.filter(n => KloudModelHelper.isPaaSNode(newModel, n.getName)).foreach {
+    newModel.getNodes.filter(n => KloudModelHelper.isPaaSNode(newModel, n)).foreach {
       paasNode =>
       // the kloud platform must use PJavaSeNode or a subtype of it so JavaSeNode will not be instanciated on the Kloud
-        currentModel.getNodes.filter(n => KloudModelHelper.isPaaSNode(currentModel, n.getName)).find(node => node.getName == paasNode.getName) match {
+        currentModel.getNodes.filter(n => KloudModelHelper.isPaaSNode(currentModel, n)).find(node => node.getName == paasNode.getName) match {
           case None => {
             logger.debug("{} must be added on the kloud.", paasNode.getName)
             nodesToAdd = nodesToAdd ++ List[ContainerNode](paasNode)

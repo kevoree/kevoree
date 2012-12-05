@@ -81,7 +81,7 @@ object PaaSKloudReasoner extends KloudReasoner {
 	}
 
 	def selectIaaSNodeAsMaster (model: ContainerRoot): String = {
-		val iaasNodes = model.getNodes.filter(n => KloudModelHelper.isIaaSNode(model, n.getName))
+		val iaasNodes = model.getNodes.filter(n => KloudModelHelper.isIaaSNode(model, n))
 
 		var minNbSlaves = Int.MaxValue
 		var iaasNode: ContainerNode = null
