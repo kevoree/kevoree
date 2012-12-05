@@ -41,9 +41,9 @@ import org.kevoree.{MBinding, DeployUnit, NamedElement}
 object Tester extends App {
 
   val bean = new KevoreeKompareBean
-  val model1 = KevoreeXmiHelper.load("/Users/duke/Desktop/model_test0.kev")
-  val model2 = KevoreeXmiHelper.load("/Users/duke/Desktop/model_test1.kev")
-  val adapModel = bean.kompare(model1, model2, "node0")
+  val model1 = KevoreeXmiHelper.load("/Users/duke/Desktop/test0.kev")
+  val model2 = KevoreeXmiHelper.load("/Users/duke/Desktop/thesis_validationTest.kev")
+  val adapModel = bean.kompare(model1, model2, "atmosphere")
 
 
   /*adapModel.getAdaptations.foreach {
