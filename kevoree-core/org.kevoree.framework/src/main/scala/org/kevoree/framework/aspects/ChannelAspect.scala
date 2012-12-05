@@ -86,9 +86,9 @@ case class ChannelAspect(cself : Channel) {
    * Returns the list of bindings belonging to this channel on the given node
    */
   def getRelatedBindings(node : ContainerNode) : List[MBinding] = {
-    val res = new java.util.ArrayList[MBinding]();
+//    val res = new java.util.ArrayList[MBinding]();
     cself.getBindings.filter{b=>
-      b.getPort.eContainer.asInstanceOf[KevoreeContainer].eContainer.asInstanceOf[ContainerNode].getName == node.getName
+      b.getPort.eContainer.eContainer.asInstanceOf[ContainerNode].getName == node.getName
     }
   }
 
