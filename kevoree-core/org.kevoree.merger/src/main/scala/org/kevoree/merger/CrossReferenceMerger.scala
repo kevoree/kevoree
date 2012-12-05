@@ -77,6 +77,36 @@ trait CrossReferenceMerger {
         }
     }
     import org.kevoree.framework.aspects.KevoreeAspects._
+    /*
+
+    modelToMerge.getAllInstances.foreach { instance =>
+      if (instance.isInstanceOf[ComponentInstance]) {
+        val componentInstance: ComponentInstance = instance.asInstanceOf[ComponentInstance]
+        componentInstance.getProvided.foreach {
+          pport => {
+            pport.getBindings.foreach { mbref =>
+              pport.noOpposite_removeBindings(mbref)
+            }
+          }
+
+        }
+        componentInstance.getRequired.foreach {
+          rport => {
+            rport.getBindings.foreach { mbref =>
+              rport.noOpposite_removeBindings(mbref)
+            }
+          }
+        }
+      }
+      if(instance.isInstanceOf[Channel]){
+        val ch = instance.asInstanceOf[Channel]
+        ch.getBindings.foreach { mbref =>
+          ch.noOpposite_removeBindings(mbref)
+        }
+      }
+    }  */
+
+
     (actualModel.getAllInstances ++ modelToMerge.getAllInstances).foreach {
       instance =>
         instance.setTypeDefinition(UnresolvedTypeDefinition(instance.getTypeDefinition.getName))
@@ -86,28 +116,17 @@ trait CrossReferenceMerger {
           componentInstance.getProvided.foreach {
             pport => {
               pport.setPortTypeRef(UnresolvedPortTypeRef(pport.getPortTypeRef.getName))
-              pport.getBindings.foreach { mbref =>
-                pport.noOpposite_removeBindings(mbref)
-              }
             }
 
           }
           componentInstance.getRequired.foreach {
             rport => {
               rport.setPortTypeRef(UnresolvedPortTypeRef(rport.getPortTypeRef.getName))
-              rport.getBindings.foreach { mbref =>
-                rport.noOpposite_removeBindings(mbref)
-              }
             }
           }
 
         }
-        if(instance.isInstanceOf[Channel]){
-          val ch = instance.asInstanceOf[Channel]
-          ch.getBindings.foreach { mbref =>
-            ch.noOpposite_removeBindings(mbref)
-          }
-        }
+
 
         //BREAK DICTIONARY
         instance.getDictionary.map {

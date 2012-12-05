@@ -69,9 +69,13 @@ trait ChannelMerger extends Merger with DictionaryMerger {
                       case Some(foundPort) => {
                         val newbinding = KevoreeFactory.eINSTANCE.createMBinding
                         newbinding.setHub(foundHub)
+                        foundHub.removeBindings(mb)
                         newbinding.setPort(foundPort)
+                        foundPort.removeBindings(mb)
                         if (!actualModel.getMBindings.exists(mb => mb.getHub == foundHub && mb.getPort == foundPort)) {
                           actualModel.addMBindings(newbinding)
+                        } else {
+                          logger.error("Duplicated !!!")
                         }
                       }
                       case None => logger.error("Error while merging binding, can't found port for name " + mb.getPort.getPortTypeRef.getName)
