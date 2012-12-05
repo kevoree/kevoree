@@ -72,10 +72,17 @@ trait ChannelMerger extends Merger with DictionaryMerger {
                         foundHub.removeBindings(mb)
                         newbinding.setPort(foundPort)
                         foundPort.removeBindings(mb)
-                        if (!actualModel.getMBindings.exists(mb => mb.getHub == foundHub && mb.getPort == foundPort)) {
-                          actualModel.addMBindings(newbinding)
-                        } else {
-                          logger.error("Duplicated !!!")
+
+                        actualModel.getMBindings.find(mb => mb.getHub == foundHub && mb.getPort == foundPort) match {
+                          case Some(pMB)=> {
+                            foundHub.removeBindings(pMB)
+                            foundPort.removeBindings(pMB)
+                            actualModel.removeMBindings(pMB)
+                            actualModel.addMBindings(newbinding)
+                          }
+                          case None => {
+                            actualModel.addMBindings(newbinding)
+                          }
                         }
                       }
                       case None => logger.error("Error while merging binding, can't found port for name " + mb.getPort.getPortTypeRef.getName)
