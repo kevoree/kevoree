@@ -22,7 +22,7 @@
             <plugin>
                 <groupId>org.kevoree.modeling</groupId>
                 <artifactId>org.kevoree.modeling.emf.scala.gencode.mavenplugin</artifactId>
-                <version>1.2.6-SNAPSHOT</version>
+                <version>1.2.7</version>
                 <extensions>true</extensions>
                 <executions>
                     <execution>
