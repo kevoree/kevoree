@@ -11,60 +11,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * 	http://www.gnu.org/licenses/lgpl-3.0.txt
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-/**
- * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.gnu.org/licenses/lgpl-3.0.txt
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-/**
- * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.gnu.org/licenses/lgpl-3.0.txt
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 
 package org.kevoree.framework.aspects
 
 import org.kevoree._
 import KevoreeAspects._
 import org.slf4j.LoggerFactory
+import collection.mutable.ListBuffer
+import scala.Some
 
-case class ContainerNodeAspect (node: ContainerNode) {
+case class ContainerNodeAspect(node: ContainerNode) {
   private val logger = LoggerFactory.getLogger(this.getClass)
 
-  def isModelEquals (ct: ContainerNode): Boolean = {
+  def isModelEquals(ct: ContainerNode): Boolean = {
     ct.getName == node.getName
     /* TODO deep compare */
   }
@@ -112,7 +71,7 @@ case class ContainerNodeAspect (node: ContainerNode) {
     /* add channel fragment on node */
     node.eContainer.asInstanceOf[ContainerRoot].getMBindings.foreach {
       mb =>
-        if (mb.getPort.eContainer.asInstanceOf[KevoreeContainer].eContainer == node) {
+        if (mb.getPort.eContainer.eContainer == node) {
           if (!usedType.exists({
             e => e.getName == mb.getHub.getTypeDefinition.getName
           })) {
@@ -138,11 +97,22 @@ case class ContainerNodeAspect (node: ContainerNode) {
   }
 
   def getChannelFragment: List[Channel] = {
-    var usedChannel: List[Channel] = List()
+    val usedChannel: ListBuffer[Channel] = ListBuffer[Channel]()
     /* add channel fragment on node */
-    node.eContainer.asInstanceOf[ContainerRoot].getMBindings.foreach {
+    node.getComponents.foreach {
+      component =>
+        (component.getProvided ++ component.getRequired).foreach {
+          port => port.getBindings.foreach {
+            mbinding => if (!usedChannel.contains(mbinding.getHub)) {
+              usedChannel += mbinding.getHub
+            }
+          }
+        }
+    }
+    usedChannel.toList
+    /*node.eContainer.asInstanceOf[ContainerRoot].getMBindings.foreach {
       mb =>
-        if (mb.getPort.eContainer.asInstanceOf[KevoreeContainer].eContainer == node) {
+        if (mb.getPort.eContainer.eContainer == node) {
           if (!usedChannel.exists({
             e => e.getName == mb.getHub.getName
           })) {
@@ -150,7 +120,7 @@ case class ContainerNodeAspect (node: ContainerNode) {
           }
         }
     }
-    usedChannel
+    usedChannel*/
   }
 
   def getGroups: List[Group] = {
@@ -166,7 +136,7 @@ case class ContainerNodeAspect (node: ContainerNode) {
 
   def getInstances: List[Instance] = getGroups ++ getChannelFragment ++ node.getComponents
 
-  private def getTypeAndInherited (t: TypeDefinition): List[TypeDefinition] = {
+  private def getTypeAndInherited(t: TypeDefinition): List[TypeDefinition] = {
     var types = List[TypeDefinition]()
     if (t.getSuperTypes != null) {
       t.getSuperTypes.foreach {
@@ -178,7 +148,7 @@ case class ContainerNodeAspect (node: ContainerNode) {
     types
   }
 
-  def isDeployUnitUsed (du: DeployUnit): Boolean = {
+  def isDeployUnitUsed(du: DeployUnit): Boolean = {
     node.getUsedTypeDefinition.exists(usedTypeDef => {
       val usedDU = usedTypeDef.foundRelevantDeployUnit(node)
       usedDU.isDeployUnitUsed(du)
@@ -191,14 +161,14 @@ case class ContainerNodeAspect (node: ContainerNode) {
       if (node.getTypeDefinition.foundRelevantDeployUnit(node) != null) {
         node.getTypeDefinition.foundRelevantDeployUnit(node).getRequiredLibs.find(du => du.getGroupName == "org.kevoree" && du.getUnitName == "org.kevoree.api") match {
           case None => {
-            logger.error("Error found api deploy unit for "+node.getName)
+            logger.error("Error found api deploy unit for " + node.getName)
             ""
           } // must never appear
           case Some(du) => du.getVersion
         }
 
       } else {
-        logger.error("Error found relevant deploy unit for "+node.getName)
+        logger.error("Error found relevant deploy unit for " + node.getName)
         ""
       }
     } catch {
