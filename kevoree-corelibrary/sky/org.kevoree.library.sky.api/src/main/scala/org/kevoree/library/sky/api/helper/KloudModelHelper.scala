@@ -19,19 +19,19 @@ import scala.collection.JavaConversions._
 object KloudModelHelper {
   private val logger: Logger = LoggerFactory.getLogger(this.getClass)
 
-  def isPaaSModel (potentialPaaSModel: ContainerRoot, groupName: String, fragmentHostName: String): Boolean = {
+  def isPaaSModel(potentialPaaSModel: ContainerRoot, groupName: String, fragmentHostName: String): Boolean = {
     val foundGroupSelf = potentialPaaSModel.getGroups.find(g => g.getName == groupName).isDefined
     val foundHost = potentialPaaSModel.getNodes.find(n => n.getName == fragmentHostName).isDefined
 
     (foundGroupSelf && !foundHost)
   }
 
-  def isPaaSModel (potentialUserModel: ContainerRoot): Boolean = {
+  def isPaaSModel(potentialUserModel: ContainerRoot): Boolean = {
     getPaaSKloudGroup(potentialUserModel).isDefined
   }
 
-  def getPaaSKloudGroups (model: ContainerRoot): java.util.List[Group] = {
-    val potentialKloudUserNodes = model.getNodes.filter(n => isPaaSNode(model, n.getName))
+  def getPaaSKloudGroups(model: ContainerRoot): java.util.List[Group] = {
+    val potentialKloudUserNodes = model.getNodes.filter(n => isPaaSNode(model, n))
     logger.debug(potentialKloudUserNodes.mkString(", "))
     // FIXME replace when nature will be added and managed
     //    model.getGroups.filter(g => (g.getTypeDefinition.getName == "PaaSGroup" || KloudTypeHelper.isASubType(g.getTypeDefinition, "PaaSGroup")) &&
@@ -39,8 +39,8 @@ object KloudModelHelper {
       g.getSubNodes.forall(n => potentialKloudUserNodes.contains(n)))
   }
 
-  def getPaaSKloudGroup (userModel: ContainerRoot): Option[String] = {
-    val potentialKloudUserNodes = userModel.getNodes.filter(n => isPaaSNode(userModel, n.getName))
+  def getPaaSKloudGroup(userModel: ContainerRoot): Option[String] = {
+    val potentialKloudUserNodes = userModel.getNodes.filter(n => isPaaSNode(userModel, n))
     val potentialKloudUserGroups = userModel.getGroups.find(g => g.getSubNodes.size >= potentialKloudUserNodes.size)
     // FIXME replace when nature will be added and managed
     //    potentialKloudUserGroups.find(g => (g.getTypeDefinition.getName == "PaaSGroup" || KloudTypeHelper.isASubType(g.getTypeDefinition, "PaaSGroup")) &&
@@ -51,7 +51,13 @@ object KloudModelHelper {
     }
   }
 
-  def isIaaSNode (currentModel: ContainerRoot /*, groupName: String*/ , nodeName: String): Boolean = {
+  def isIaaSNode(currentModel: ContainerRoot, node: ContainerNode): Boolean = {
+    // FIXME replace when nature will be added and managed
+    node.getTypeDefinition.asInstanceOf[NodeType].getManagedPrimitiveTypes.filter(p => p.getName == "RemoveNode" || p.getName == "AddNode").size == 2
+  }
+
+  def isIaaSNode(currentModel: ContainerRoot, nodeName: String): Boolean = {
+    // FIXME replace when nature will be added and managed
     currentModel.getNodes.find(n => n.getName == nodeName) match {
       case None => logger.debug("There is no node named {}", nodeName); false
       case Some(node) =>
@@ -59,49 +65,47 @@ object KloudModelHelper {
     }
   }
 
-  def isPaaSNode (currentModel: ContainerRoot /*, groupName: String*/ , nodeName: String): Boolean = {
+  def isPaaSNode(currentModel: ContainerRoot, node: ContainerNode): Boolean = {
+    // FIXME replace when nature will be added and managed
+    node.getTypeDefinition.getName == "PJavaSENode" || isASubType(node.getTypeDefinition, "PJavaSENode")
+  }
+
+  def isPaaSNode(currentModel: ContainerRoot, nodeName: String): Boolean = {
+    // FIXME replace when nature will be added and managed
     currentModel.getNodes.find(n => n.getName == nodeName) match {
-      case None => false
+      case None => logger.debug("There is no node named {}", nodeName); false
       case Some(node) =>
-        node.getTypeDefinition.getName == "PJavaSENode" ||
-          isASubType(node.getTypeDefinition, "PJavaSENode")
+        node.getTypeDefinition.getName == "PJavaSENode" || isASubType(node.getTypeDefinition, "PJavaSENode")
     }
   }
 
-  def isPaaSNodeType (currentModel: ContainerRoot, nodeTypeName: String): Boolean = {
-    currentModel.getTypeDefinitions.find(n => n.getName == nodeTypeName) match {
-      case None => false
-      case Some(nodeType) =>
-        nodeType.getName == "PJavaSENode" ||
-          isASubType(nodeType, "PJavaSENode")
-    }
+  def isPaaSNodeType(currentModel: ContainerRoot, nodeType: TypeDefinition): Boolean = {
+    // FIXME replace when nature will be added and managed
+    nodeType.getName == "PJavaSENode" || isASubType(nodeType, "PJavaSENode")
   }
 
-  def isPaaSKloudGroup (kloudModel: ContainerRoot, groupName: String): Boolean = {
-    kloudModel.getGroups.find(g => g.getName == groupName &&
-      (g.getTypeDefinition.getName == "KloudPaaSNanoGroup" || isASubType(g.getTypeDefinition, "KloudPaaSNanoGroup")))
-      .isDefined
+  def isPaaSKloudGroup(kloudModel: ContainerRoot, group: Group): Boolean = {
+    // FIXME replace when nature will be added and managed
+    group.getTypeDefinition.getName == "KloudPaaSNanoGroup" || isASubType(group.getTypeDefinition, "KloudPaaSNanoGroup")
   }
 
-  def isASubType (typeDefinition: TypeDefinition, typeName: String): Boolean = {
-    typeDefinition.getSuperTypes.find(td => td.getName == typeName || isASubType(td, typeName)) match {
-      case None => false
-      case Some(typeDef) => true
-    }
+  def isPaaSKloudGroup(kloudModel: ContainerRoot, groupName: String): Boolean = {
+    // FIXME replace when nature will be added and managed
+    kloudModel.getGroups.find(group => group.getTypeDefinition.getName == "KloudPaaSNanoGroup" || isASubType(group.getTypeDefinition, "KloudPaaSNanoGroup")).isDefined
   }
 
-  def getGroup (groupName: String, currentModel: ContainerRoot): Option[Group] = {
+  def isASubType(typeDefinition: TypeDefinition, typeName: String): Boolean = {
+    typeDefinition.getSuperTypes.find(td => td.getName == typeName || isASubType(td, typeName)).isDefined
+  }
+
+  def getGroup(groupName: String, currentModel: ContainerRoot): Option[Group] = {
     currentModel.getGroups.find(g => g.getName == groupName)
   }
-
-  /*  def lookForAGroup (groupName: String, currentModel: ContainerRoot): Boolean = {
-    currentModel.getGroups.find(g => g.getName == groupName).isDefined
-  }*/
 
   /**
    * check if the model is valid
    */
-  def check (id: String, model: ContainerRoot): Option[String] = {
+  def check(id: String, model: ContainerRoot): Option[String] = {
     val checker = new RootChecker
     val kloudChecker = new NodeNameKloudChecker
     kloudChecker.setId(id)
