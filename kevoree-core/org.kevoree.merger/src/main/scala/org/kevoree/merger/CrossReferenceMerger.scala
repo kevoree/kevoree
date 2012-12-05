@@ -77,6 +77,8 @@ trait CrossReferenceMerger {
         }
     }
     import org.kevoree.framework.aspects.KevoreeAspects._
+    /*
+
     modelToMerge.getAllInstances.foreach { instance =>
       if (instance.isInstanceOf[ComponentInstance]) {
         val componentInstance: ComponentInstance = instance.asInstanceOf[ComponentInstance]
@@ -102,7 +104,7 @@ trait CrossReferenceMerger {
           ch.noOpposite_removeBindings(mbref)
         }
       }
-    }
+    }  */
 
 
     (actualModel.getAllInstances ++ modelToMerge.getAllInstances).foreach {

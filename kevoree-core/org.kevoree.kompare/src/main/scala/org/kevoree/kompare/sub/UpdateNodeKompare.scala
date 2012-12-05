@@ -88,6 +88,8 @@ trait UpdateNodeKompare extends AbstractKompare with UpdateChannelKompare {
                     ctcmd.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.UpdateDeployUnit,
                       actualNode.eContainer.asInstanceOf[ContainerRoot]))
 
+                   // logger.debug("UpdateDeployUnit "+uctDeployUnit.getUnitName)
+
                     ctcmd.setRef(uctDeployUnit)
                     adaptationModel.addAdaptations(ctcmd)
                   }
