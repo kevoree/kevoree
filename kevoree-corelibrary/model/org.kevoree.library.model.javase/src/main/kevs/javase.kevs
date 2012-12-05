@@ -19,3 +19,4 @@ merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.webserver.s
 merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.nodeJS/{kevoree.version}"
 merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.etherpad/{kevoree.version}"
 merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.mavenCache/{kevoree.version}"
+merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.hazelcast/{kevoree.version}"
