@@ -14,7 +14,7 @@
 package org.kevoree.core.basechecker.dictionaryChecker
 
 import org.kevoree.api.service.core.checker.{CheckerViolation, CheckerService}
-import org.kevoree.{ContainerNode, Instance, ContainerRoot}
+import org.kevoree.{ComponentInstance, ContainerNode, Instance, ContainerRoot}
 import java.util
 import org.kevoree.framework.{Constants, KevoreePropertyHelper, KevoreePlatformHelper}
 
@@ -26,6 +26,7 @@ import org.kevoree.framework.{Constants, KevoreePropertyHelper, KevoreePlatformH
  */
 class DictionaryNetworkPortChecker extends CheckerService {
   def check (model: ContainerRoot) = {
+
     val violations: java.util.List[CheckerViolation] = new util.ArrayList[CheckerViolation]()
     val collectedPort = new util.HashMap[String, util.HashMap[String, util.HashMap[String, Object]]]()
 
@@ -55,7 +56,11 @@ class DictionaryNetworkPortChecker extends CheckerService {
           portP =>
             val violation: CheckerViolation = new CheckerViolation
             violation.setMessage("Duplicated collected port usage " + portP._1 + "-" + portP._2.toList)
-            violation.setTargetObjects(portP._2.toList)
+            var objs = List[Object]()
+            portP._2.foreach{ pObj =>
+                objs = objs ++ List(pObj._2)
+            }
+            violation.setTargetObjects(objs)
             violations.add(violation)
         }
     }
@@ -90,14 +95,14 @@ class DictionaryNetworkPortChecker extends CheckerService {
     var portFound: String = null
     ist.getTypeDefinition.getDictionaryType.map {
       dicType =>
-        dicType.getDefaultValues.filter(dv => dv.getAttribute.getName.endsWith("_port") || dv.getAttribute.getName.startsWith("port_")).foreach {
+        dicType.getDefaultValues.filter(dv => dv.getAttribute.getName.equals("port") || dv.getAttribute.getName.endsWith("_port") || dv.getAttribute.getName.startsWith("port_")).foreach {
           dv =>
             portFound = dv.getValue
         }
     }
     ist.getDictionary.map {
       dic => {
-        dic.getValues.filter(dv => (dv.getAttribute.getName.endsWith("_port") || dv.getAttribute.getName.startsWith("port_")) && (dv.getTargetNode.isEmpty || dv.getTargetNode.get.getName == nodeName))
+        dic.getValues.filter(dv => (dv.getAttribute.getName.equals("port") || dv.getAttribute.getName.endsWith("_port") || dv.getAttribute.getName.startsWith("port_")) && (dv.getTargetNode.isEmpty || dv.getTargetNode.get.getName == nodeName))
           .foreach {
           dv =>
             portFound = dv.getValue
@@ -106,8 +111,7 @@ class DictionaryNetworkPortChecker extends CheckerService {
     }
 
     if (portFound != null) {
-      val ipFound = KevoreePropertyHelper.getNetworkProperty(ist.getTypeDefinition.eContainer.asInstanceOf[ContainerRoot], nodeName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP).getOrElse("localhost").toString
-      val nodeIDMethod = ipFound
+      val nodeIDMethod = KevoreePropertyHelper.getNetworkProperty(ist.getTypeDefinition.eContainer.asInstanceOf[ContainerRoot], nodeName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP).getOrElse("localhost").toString
 
       var nodeCollector = collector.get(nodeIDMethod)
       if (nodeCollector == null) {
@@ -119,7 +123,12 @@ class DictionaryNetworkPortChecker extends CheckerService {
         nodePortCollector = new util.HashMap[String, Object]
         nodeCollector.put(portFound, nodePortCollector)
       }
-      nodePortCollector.put(nodeName, ist)
+      if (ist.isInstanceOf[ComponentInstance]){
+        nodePortCollector.put(nodeName+"."+ist.getName, ist)
+      } else {
+        nodePortCollector.put(nodeName, ist)
+      }
+
     }
   }
 
