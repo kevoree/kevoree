@@ -67,7 +67,7 @@ class IaaSKloudResourceManagerPageGenerator (instance: IaaSKloudResourceManagerP
 					response.setContent("Unable to find the IaaS node: " + parentNodeName)
 				}
 				case Some(parent) => {
-					val paasNodeTypes = model.getTypeDefinitions.filter(nt => KloudModelHelper.isPaaSNodeType(model, nt.getName) &&
+					val paasNodeTypes = model.getTypeDefinitions.filter(nt => KloudModelHelper.isPaaSNodeType(model, nt) &&
 						nt.getDeployUnits.find(dp => dp.getTargetNodeType.find(targetNodeType => KloudModelHelper.isASubType(parent.getTypeDefinition, targetNodeType.getName)).isDefined).isDefined)
 
 					val htmlContent = HTMLPageBuilder.addNodePage(pattern, paasNodeTypes)
@@ -153,7 +153,7 @@ class IaaSKloudResourceManagerPageGenerator (instance: IaaSKloudResourceManagerP
 				null
 			}
 			case Some(parent) => {
-				val paasNodeTypes = model.getTypeDefinitions.filter(nt => KloudModelHelper.isPaaSNodeType(model, nt.getName) &&
+				val paasNodeTypes = model.getTypeDefinitions.filter(nt => KloudModelHelper.isPaaSNodeType(model, nt) &&
 					nt.getDeployUnits.find(dp => dp.getTargetNodeType.find(targetNodeType => KloudModelHelper.isASubType(parent.getTypeDefinition, targetNodeType.getName)).isDefined).isDefined)
 
 				var types = List[String]()

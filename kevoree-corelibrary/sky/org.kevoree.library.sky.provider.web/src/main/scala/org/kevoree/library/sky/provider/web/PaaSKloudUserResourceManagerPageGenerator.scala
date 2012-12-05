@@ -60,7 +60,7 @@ class PaaSKloudUserResourceManagerPageGenerator (instance: KloudResourceManagerP
     if (request.getMethod.equalsIgnoreCase("GET")) {
       val model = instance.getModelService.getLastModel
 
-      val paasNodeTypes = model.getTypeDefinitions.filter(nt => KloudModelHelper.isPaaSNodeType(model, nt.getName))
+      val paasNodeTypes = model.getTypeDefinitions.filter(nt => KloudModelHelper.isPaaSNodeType(model, nt))
 
       val htmlContent = HTMLPageBuilder.addNodePage(pattern, paasNodeTypes)
       response.setStatus(200)
@@ -167,7 +167,7 @@ class PaaSKloudUserResourceManagerPageGenerator (instance: KloudResourceManagerP
   private def getNodeTypeList: String = {
     val jsonresponse = new JSONStringer().`object`()
     val model = instance.getModelService.getLastModel
-    val paasNodeTypes = model.getTypeDefinitions.filter(nt => KloudModelHelper.isPaaSNodeType(model, nt.getName))
+    val paasNodeTypes = model.getTypeDefinitions.filter(nt => KloudModelHelper.isPaaSNodeType(model, nt))
 
     var types = List[String]()
     jsonresponse.key("request").value("list")
