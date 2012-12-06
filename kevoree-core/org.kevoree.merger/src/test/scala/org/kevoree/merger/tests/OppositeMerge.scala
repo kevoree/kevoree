@@ -33,12 +33,12 @@ class OppositeMerge extends MergerTestSuiteHelper {
   }
 
   @Test def verifySimpleMerge1() {
-    var mergedModel = component.merge(emptyModel, model("kloud/k1.kev"))
+    val mergedModel = component.merge(emptyModel, model("kloud/k1.kev"))
     mergedModel testSave ("kloud","k1m.kev")
   }
 
   @Test def verifySimpleMerge2() {
-    var mergedModel = component.merge(model("kloud/m1.kev"), model("kloud/m1.kev"))
+    val mergedModel = component.merge(model("kloud/m1.kev"), model("kloud/m1.kev"))
     mergedModel testSave ("kloud","m1res.kev")
   }
 
