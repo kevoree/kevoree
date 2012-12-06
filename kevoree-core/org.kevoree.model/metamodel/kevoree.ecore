@@ -141,7 +141,9 @@
         <eStructuralFeatures xsi:type="ecore:EAttribute" name="url"
                              eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="DeployUnit" eSuperTypes="#//NamedElement">
+    <eClassifiers xsi:type="ecore:EClass" name="DeployUnit">
+        <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" lowerBound="1"
+                             eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
         <eStructuralFeatures xsi:type="ecore:EAttribute" name="groupName"
                              eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
         <eStructuralFeatures xsi:type="ecore:EAttribute" name="unitName"
@@ -164,7 +166,7 @@
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="NamedElement">
         <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" lowerBound="1"
-                             eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+                             eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString" iD="true"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="IntegrationPattern" eSuperTypes="#//NamedElement">
         <eStructuralFeatures xsi:type="ecore:EReference" name="extraFonctionalProperties"
