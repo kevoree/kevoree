@@ -271,9 +271,7 @@ class MiniKloudForm(editor: KevoreeEditor, button: AbstractButton) {
         kevEngine.append("addChild {nodeName}@editor_node")
     }
     try {
-      val newSkyModel = kevEngine.interpret()
-      KevoreeXmiHelper.save("/home/edaubert/newSkyModel.kev", newSkyModel)
-      newSkyModel
+      kevEngine.interpret()
     } catch {
       case _@e => {
         logger.error("Unable to compute model to deploy on minicloud.", e)
