@@ -31,7 +31,7 @@ class OppositeMergeTest extends MergerTestSuiteHelper {
     component = new KevoreeMergerComponent
   }
 
-      /*
+
   @Test def verifySimpleMerge1() {
     val mergedModel = component.merge(emptyModel, model("kloud/k1.kev"))
     mergedModel testSave ("kloud","k1m.kev")
@@ -40,8 +40,8 @@ class OppositeMergeTest extends MergerTestSuiteHelper {
   @Test def verifySimpleMerge2() {
     val mergedModel = component.merge(model("kloud/m1.kev"), model("kloud/m1.kev"))
     mergedModel testSave ("kloud","m1res.kev")
-  }*/
-              /*
+  }
+
   @Test def verifySimpleMerge3() {
 
     val mbase = model("kloud/m2.kev")
@@ -60,7 +60,7 @@ class OppositeMergeTest extends MergerTestSuiteHelper {
       }
     }
     mergedModel testSave ("kloud","m2res.kev")
-  }        */
+  }
 
   @Test def verifySimpleMerge4() {
     val mergedModel = component.merge(emptyModel, model("kloud/m2.kev"))
