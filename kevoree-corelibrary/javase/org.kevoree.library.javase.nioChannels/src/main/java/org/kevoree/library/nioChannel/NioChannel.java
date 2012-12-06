@@ -12,9 +12,11 @@ import org.jboss.netty.channel.socket.oio.OioClientSocketChannelFactory;
 import org.jboss.netty.channel.socket.oio.OioServerSocketChannelFactory;
 import org.jboss.netty.handler.codec.serialization.ObjectDecoder;
 import org.jboss.netty.handler.codec.serialization.ObjectEncoder;
-import org.kevoree.annotation.ChannelTypeFragment;
 import org.kevoree.annotation.*;
-import org.kevoree.framework.*;
+import org.kevoree.framework.AbstractChannelFragment;
+import org.kevoree.framework.ChannelFragmentSender;
+import org.kevoree.framework.KevoreeChannelFragment;
+import org.kevoree.framework.NetworkHelper;
 import org.kevoree.framework.message.Message;
 import org.slf4j.LoggerFactory;
 import scala.Option;
@@ -44,6 +46,8 @@ public class NioChannel extends AbstractChannelFragment {
 	private ServerBootstrap bootstrap;
 	private ClientBootstrap clientBootStrap;
 	private Channel serverChannel;
+    private int port;
+    private String type;
 
 	public MessageQueue getMsgQueue () {
 		return msgQueue;
@@ -59,8 +63,9 @@ public class NioChannel extends AbstractChannelFragment {
 		serverConnectedChannel = Collections.synchronizedSet(new HashSet<Channel>());
 
 		final NioChannel selfPointer = this;
+        type = this.getDictionary().get("type").toString();
 
-		if ("nio".equals(this.getDictionary().get("type"))) {
+		if ("nio".equals(type)) {
 			bootstrap = new ServerBootstrap(
 					new NioServerSocketChannelFactory(
 							Executors.newCachedThreadPool(),
@@ -80,7 +85,7 @@ public class NioChannel extends AbstractChannelFragment {
 			}
 		});
 
-		if ("nio".equals(this.getDictionary().get("type"))) {
+		if ("nio".equals(type)) {
 			clientBootStrap = new ClientBootstrap(new NioClientSocketChannelFactory(Executors.newCachedThreadPool(), Executors.newCachedThreadPool()));
 		} else {
 			clientBootStrap = new ClientBootstrap(new OioClientSocketChannelFactory(Executors.newCachedThreadPool()));
@@ -99,7 +104,8 @@ public class NioChannel extends AbstractChannelFragment {
 		msgQueue.start();
 
 		// Bind and start to accept incoming connections.
-		serverChannel = bootstrap.bind(new InetSocketAddress(Integer.parseInt(getDictionary().get("port").toString())));
+        port = Integer.parseInt(getDictionary().get("port").toString());
+		serverChannel = bootstrap.bind(new InetSocketAddress(port));
 
 	}
 
@@ -126,8 +132,10 @@ public class NioChannel extends AbstractChannelFragment {
 
 	@Update
 	public void update () {
-		stopNio();
-		startNio();
+        if (!getDictionary().get("port").toString().equals(port + "") || !getDictionary().get("type").toString().equals(type)) {
+		    stopNio();
+		    startNio();
+        }
 	}
 
 
@@ -166,8 +174,8 @@ public class NioChannel extends AbstractChannelFragment {
 
 	public String getAddress (String remoteNodeName) {
 		String ip = "127.0.0.1";
-		Option<String> ipOption = NetworkHelper.getAccessibleIP(KevoreePropertyHelper
-				.getStringNetworkProperties(this.getModelService().getLastModel(), remoteNodeName, org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP()));
+		Option<String> ipOption = NetworkHelper.getAccessibleIP(org.kevoree.framework.KevoreePropertyHelper
+                .getStringNetworkProperties(this.getModelService().getLastModel(), remoteNodeName, org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP()));
 		if (ipOption.isDefined()) {
 			ip = ipOption.get();
 		}
@@ -193,7 +201,7 @@ public class NioChannel extends AbstractChannelFragment {
 	public int parsePortNumber (String nodeName) throws IOException {
 		try {
 			//logger.debug("look for port on " + nodeName);
-			Option<Integer> portOption = KevoreePropertyHelper.getIntPropertyForChannel(this.getModelService().getLastModel(), this.getName(), "port", true, nodeName);
+			Option<Integer> portOption = org.kevoree.framework.KevoreePropertyHelper.getIntPropertyForChannel(this.getModelService().getLastModel(), this.getName(), "port", true, nodeName);
 			if (portOption.isDefined()) {
 				return portOption.get();
 			} else {

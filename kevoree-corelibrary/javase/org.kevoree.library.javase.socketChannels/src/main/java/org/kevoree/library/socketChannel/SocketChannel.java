@@ -8,15 +8,17 @@ package org.kevoree.library.socketChannel;
  * To change this template use File | Settings | File Templates.
  */
 
-import org.kevoree.annotation.ChannelTypeFragment;
 import org.kevoree.annotation.*;
-import org.kevoree.framework.*;
+import org.kevoree.framework.AbstractChannelFragment;
+import org.kevoree.framework.ChannelFragmentSender;
+import org.kevoree.framework.KevoreeChannelFragment;
+import org.kevoree.framework.KevoreePlatformHelper;
 import org.kevoree.framework.message.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import scala.Option;
 
 import java.io.*;
-import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -89,9 +91,12 @@ public class SocketChannel extends AbstractChannelFragment implements Runnable {
     public int parsePortNumber(String nodeName) throws IOException {
         try {
             //logger.debug("look for port on " + nodeName);
-            return KevoreeFragmentPropertyHelper
-                    .getIntPropertyFromFragmentChannel(this.getModelService().getLastModel(), this.getName(), "port",
-                            nodeName);
+            Option<Integer> portOption = org.kevoree.framework.KevoreePropertyHelper.getIntPropertyForChannel(this.getModelService().getLastModel(), this.getName(), "port", true, nodeName);
+            int port = 0;
+            if (portOption.isDefined()) {
+                port = portOption.get();
+            }
+            return port;
         } catch (NumberFormatException e) {
             throw new IOException(e.getMessage());
         }
@@ -146,7 +151,8 @@ public class SocketChannel extends AbstractChannelFragment implements Runnable {
 
     @Update
     public void updateChannel() throws IOException {
-        if (portServer != parsePortNumber(getNodeName())) {
+        if (!this.getDictionary().get("port").toString().equals(portServer + "")) {
+//        if (portServer != parsePortNumber(getNodeName())) {
             stopChannel();
             startChannel(); // TODO CHECK MSG IN QUEUE
         }
