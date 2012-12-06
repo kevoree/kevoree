@@ -16,7 +16,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * 	http://www.gnu.org/licenses/lgpl-3.0.txt
+ * http://www.gnu.org/licenses/lgpl-3.0.txt
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -27,7 +27,13 @@
 package org.kevoree.merger
 
 import resolver._
-import org.kevoree.{Channel, TypeDefinition, ComponentInstance, ContainerRoot}
+import org.kevoree._
+import resolver.UnresolvedDictionaryAttribute
+import resolver.UnresolvedNode
+import resolver.UnresolvedNodeType
+import resolver.UnresolvedPortTypeRef
+import resolver.UnresolvedTypeDefinition
+import scala.Some
 
 /**
  * Created by IntelliJ IDEA.
@@ -126,7 +132,14 @@ trait CrossReferenceMerger {
           }
 
         }
-
+        if (instance.isInstanceOf[ContainerNode]) {
+          val n = instance.asInstanceOf[ContainerNode]
+          n.getHosts.foreach {
+            h =>
+              n.removeHosts(h)
+              n.addHosts(UnresolvedChildNode(h.getName))
+          }
+        }
 
         //BREAK DICTIONARY
         instance.getDictionary.map {
