@@ -22,15 +22,15 @@ import org.kevoree.api.service.core.merger.MergerService
  * User: duke
  * Date: 29/11/12
  * Time: 07:29
- * To change this template use File | Settings | File Templates.
  */
-class OppositeMerge extends MergerTestSuiteHelper {
+class OppositeMergeTest extends MergerTestSuiteHelper {
 
   var component: MergerService = null
 
   @Before def initialize() {
     component = new KevoreeMergerComponent
   }
+
 
   @Test def verifySimpleMerge1() {
     val mergedModel = component.merge(emptyModel, model("kloud/k1.kev"))
@@ -62,12 +62,18 @@ class OppositeMerge extends MergerTestSuiteHelper {
 
   @Test def verifySimpleMerge4() {
     val mergedModel = component.merge(emptyModel, model("kloud/m2.kev"))
-    mergedModel.getNodes.foreach{ n =>
-      if(n.getName == "editor_node"){
-        assert(n.getHosts.size == 1,"Duplucate detected in editor_node children")
-      }
+
+    println(mergedModel.findNodesByID("editor_node").getHostsForJ)
+    println(mergedModel.findNodesByID("node0").getName)
+
+    mergedModel.getNodes.foreach {
+      n =>
+        if (n.getName == "editor_node") {
+          println(n.getHosts.size)
+          assert(n.getHosts.size == 1, "Duplucate detected in editor_node children")
+        }
     }
-    mergedModel testSave ("kloud","m22res.kev")
+    mergedModel testSave("kloud", "m22res.kev")
   }
 
 }
