@@ -56,7 +56,11 @@ trait ChildNodeResolver {
                   }
                 }
               }
-              case _ =>
+              case _ @ e => {
+                logger.error("Already resolved child !!! "+e.getName)
+              }
+
+
             }
         }
     }

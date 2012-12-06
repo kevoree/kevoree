@@ -16,7 +16,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * 	http://www.gnu.org/licenses/lgpl-3.0.txt
+ * http://www.gnu.org/licenses/lgpl-3.0.txt
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -39,18 +39,17 @@ import org.kevoree.merger.resolver.{UnresolvedChildNode, UnresolvedTypeDefinitio
 
 trait NodeMerger extends ComponentInstanceMerger with DictionaryMerger {
 
-  def mergeAllNode (actualModel: ContainerRoot, modelToMerge: ContainerRoot) {
+  def mergeAllNode(actualModel: ContainerRoot, modelToMerge: ContainerRoot) {
     //BREAK CROSS REFERENCE NODE TYPE
     modelToMerge.getNodes.foreach {
       toMergeNode => mergeNode(actualModel, toMergeNode)
     }
   }
 
-  private def mergeNode (actualModel: ContainerRoot, nodeToMerge: ContainerNode) {
+  private def mergeNode(actualModel: ContainerRoot, nodeToMerge: ContainerNode) {
     actualModel.getNodes.find(loopNode => loopNode.getName == nodeToMerge.getName) match {
       case None => {
-        nodeToMerge.setTypeDefinition(UnresolvedTypeDefinition(nodeToMerge.getTypeDefinition.getName))
-        actualModel.addNodes(nodeToMerge);
+        actualModel.addNodes(nodeToMerge)
         mergeAllInstances(actualModel, nodeToMerge, nodeToMerge)
         mergeChilds(actualModel, nodeToMerge)
       }
@@ -62,7 +61,7 @@ trait NodeMerger extends ComponentInstanceMerger with DictionaryMerger {
     }
   }
 
-  private def mergeAllInstances (actualModel: ContainerRoot, targetInstance: ContainerNode, instanceToMerge: ContainerNode) {
+  private def mergeAllInstances(actualModel: ContainerRoot, targetInstance: ContainerNode, instanceToMerge: ContainerNode) {
     instanceToMerge.getComponents.foreach {
       c =>
         targetInstance.getComponents.find(eC => eC.isModelEquals(c)) match {
@@ -76,38 +75,50 @@ trait NodeMerger extends ComponentInstanceMerger with DictionaryMerger {
     }
   }
 
-  private def mergeChilds (actualModel: ContainerRoot, instance: ContainerNode) {
-      instance.getHosts.foreach {
-        child =>
-          actualModel.getNodes.find(c => c.getName == child.getName) match {
-            case None => // the child is not already added on the model so it will be added later
-            case Some(c) =>
-              if (c != child) {
-                // the child already exist on the model before the merge so we need to update the hosts
-                instance.removeHosts(child)
-                instance.addHosts(c)
+  private def mergeChilds(actualModel: ContainerRoot, instance: ContainerNode) {
+    instance.getHosts.foreach {
+      child =>
+        actualModel.getNodes.find(c => c.getName == child.getName) match {
+          case None => // the child is not already added on the model so it will be added later
+          case Some(c) =>
+            if (c != child) {
+              // the child already exist on the model before the merge so we need to update the hosts
+              instance.removeHosts(child)
+              if (!instance.getHosts.exists(i => i.getName == child.getName)) {
+                instance.addHosts(UnresolvedChildNode(child.getName))
               }
-          }
-      }
+            }
+        }
     }
+  }
 
-  private def mergeChilds (actualModel: ContainerRoot, targetInstance: ContainerNode, instanceToMerge: ContainerNode) {
+  private def mergeChilds(actualModel: ContainerRoot, targetInstance: ContainerNode, instanceToMerge: ContainerNode) {
     instanceToMerge.getHosts.foreach {
       child =>
         targetInstance.getHosts.find(n => n.getName == child.getName) match {
           case None => {
+
+            targetInstance.addHosts(UnresolvedChildNode(child.getName))
+
+            /*
             actualModel.getNodes.find(n => n.getName == child.getName) match {
               case None => {
                 // the child node is not already added on the actualModel so it will be added later
-                targetInstance.addHosts(UnresolvedChildNode(child.getName))
+                if (!targetInstance.getHosts.exists(i => i.getName == child.getName)) {
+                  targetInstance.addHosts(UnresolvedChildNode(child.getName))
+                }
               }
               case Some(node) => {
                 actualModel.getNodes.find(p => p.getHosts.contains(node)) match {
-                  case None => targetInstance.addHosts(node)
+                  case None => {
+                    if (!targetInstance.getHosts.exists(i => i.getName == node.getName)) {
+                      targetInstance.addHosts(UnresolvedChildNode(node.getName))
+                    }
+                  }
                   case Some(parent) => // if the child has already a parent, we do not modify it
                 }
               }
-            }
+            } */
           }
           case Some(n) => // the host node is already contained by the targetInstance node
         }

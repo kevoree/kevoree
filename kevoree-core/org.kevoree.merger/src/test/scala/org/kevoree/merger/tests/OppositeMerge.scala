@@ -34,14 +34,30 @@ class OppositeMerge extends MergerTestSuiteHelper {
 
   @Test def verifySimpleMerge1() {
     var mergedModel = component.merge(emptyModel, model("kloud/k1.kev"))
-    //mergedModel testSave
     mergedModel testSave ("kloud","k1m.kev")
   }
 
   @Test def verifySimpleMerge2() {
     var mergedModel = component.merge(model("kloud/m1.kev"), model("kloud/m1.kev"))
-    //mergedModel testSave
     mergedModel testSave ("kloud","m1res.kev")
+  }
+
+  @Test def verifySimpleMerge3() {
+
+    val mbase = model("kloud/m2.kev")
+    mbase.getNodes.foreach{ n =>
+      if(n.getName == "editor_node"){
+         assert(n.getHosts.size == 1,"Duplucate detected in editor_node children")
+      }
+    }
+
+    val mergedModel = component.merge(model("kloud/m2.kev"), model("kloud/m2.kev"))
+    mergedModel.getNodes.foreach{ n =>
+      if(n.getName == "editor_node"){
+        assert(n.getHosts.size == 1,"Duplucate detected in editor_node children")
+      }
+    }
+    mergedModel testSave ("kloud","m2res.kev")
   }
 
 }
