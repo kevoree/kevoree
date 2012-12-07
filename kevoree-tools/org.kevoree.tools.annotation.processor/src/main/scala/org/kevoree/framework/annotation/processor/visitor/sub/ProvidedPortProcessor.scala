@@ -111,6 +111,8 @@ trait ProvidedPortProcessor {
                           elem =>
                             val dicAtt = KevoreeFactory.eINSTANCE.createDictionaryAttribute
                             dicAtt.setName(elem.name())
+                            messagePortType.setName(messagePortType.getName+elem.name()) //WORKAROUND
+
                             try {
                               elem.className()
                             } catch {

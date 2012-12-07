@@ -13,10 +13,6 @@ package org.kevoree.library.defaultNodeTypes.jcl.deploy.command
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 
 import org.kevoree.DeployUnit
 

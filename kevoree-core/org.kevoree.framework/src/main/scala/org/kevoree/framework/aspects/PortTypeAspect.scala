@@ -40,8 +40,6 @@ import org.kevoree._
 case class PortTypeAspect(pt : PortType) {
 
   def isModelEquals(targetPT : PortType) : Boolean = {
-   pt.getName == targetPT.getName
-   /*
     if(pt.getClass.getName == targetPT.getClass.getName){
       pt match {
         case mpt : MessagePortType => {
@@ -65,7 +63,7 @@ case class PortTypeAspect(pt : PortType) {
       }
     } else {
       false
-    }*/
+    }
 
   }
   
