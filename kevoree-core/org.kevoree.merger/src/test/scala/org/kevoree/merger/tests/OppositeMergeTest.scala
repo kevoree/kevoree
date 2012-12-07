@@ -65,8 +65,8 @@ class OppositeMergeTest extends MergerTestSuiteHelper {
   @Test def verifySimpleMerge4() {
     val mergedModel = component.merge(emptyModel, model("kloud/m2.kev"))
 
-    println(mergedModel.findNodesByID("editor_node").getHostsForJ)
-    println(mergedModel.findNodesByID("node0").getName)
+   // println(mergedModel.findNodesByID("editor_node").getHostsForJ)
+   // println(mergedModel.findNodesByID("node0").getName)
 
     mergedModel.getNodes.foreach {
       n =>
