@@ -103,6 +103,11 @@ trait RequiredPortProcessor {
               case org.kevoree.annotation.PortType.MESSAGE => {
                 val mpt = KevoreeFactory.eINSTANCE.createMessagePortType
                 mpt.setName("org.kevoree.framework.MessagePort")
+
+                if (requiredPort.messageType() != "untyped" ) {
+                  mpt.setName(mpt.getName+System.currentTimeMillis()) //ensure uniqueness
+                }
+
                 if (requiredPort.messageType() != "untyped") {
                   if (classdef.getAnnotation(classOf[MessageTypes]) != null) {
                     classdef.getAnnotation(classOf[MessageTypes]).value().find(msgType => msgType.name() == requiredPort.messageType()) match {

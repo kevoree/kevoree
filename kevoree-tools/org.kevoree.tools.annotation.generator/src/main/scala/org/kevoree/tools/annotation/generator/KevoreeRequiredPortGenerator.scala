@@ -52,18 +52,23 @@ object KevoreeRequiredPortGenerator {
     writer.append("import " + KevoreeGeneratorHelper.getTypeDefinitionBasePackage(ct) + "._\n")
 
 
+    var baseName = ref.getRef.getName
+    if(ref.getRef.isInstanceOf[MessagePortType]){
+      baseName = "org.kevoree.framework.MessagePort"
+    }
+
     ThreadingMapping.getMappings.get(Tuple2(ct.getName, ref.getName)) match {
       case ThreadStrategy.THREAD_QUEUE => {
-        writer.append("class " + portName + "(component : " + ct.getName + ") extends " + ref.getRef.getName + " with KevoreeRequiredThreadPort {\n")
+        writer.append("class " + portName + "(component : " + ct.getName + ") extends " + baseName + " with KevoreeRequiredThreadPort {\n")
       }
       case ThreadStrategy.SHARED_THREAD => {
-        writer.append("class " + portName + "(component : " + ct.getName + ") extends " + ref.getRef.getName + " with KevoreeRequiredExecutorPort {\n")
+        writer.append("class " + portName + "(component : " + ct.getName + ") extends " + baseName + " with KevoreeRequiredExecutorPort {\n")
       }
       case ThreadStrategy.NONE => {
-        writer.append("class " + portName + "(component : " + ct.getName + ") extends " + ref.getRef.getName + " with KevoreeRequiredNonePort {\n")
+        writer.append("class " + portName + "(component : " + ct.getName + ") extends " + baseName + " with KevoreeRequiredNonePort {\n")
       }
       case _ => {
-        writer.append("class " + portName + "(component : " + ct.getName + ") extends " + ref.getRef.getName + " with KevoreeRequiredPort {\n")
+        writer.append("class " + portName + "(component : " + ct.getName + ") extends " + baseName + " with KevoreeRequiredPort {\n")
       }
     }
 
