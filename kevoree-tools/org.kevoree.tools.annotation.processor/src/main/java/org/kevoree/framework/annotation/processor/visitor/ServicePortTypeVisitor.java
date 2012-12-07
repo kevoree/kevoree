@@ -31,6 +31,7 @@
 package org.kevoree.framework.annotation.processor.visitor;
 
 import org.kevoree.*;
+import org.kevoree.KevoreeFactory;
 import org.kevoree.framework.annotation.processor.LocalUtility;
 import scala.Some;
 
@@ -73,13 +74,17 @@ public class ServicePortTypeVisitor extends SimpleTypeVisitor6<Object, Object> {
                     ee.getReturnType().accept(rtv, ee.getReturnType());
                     newo.setReturnType(new Some<TypedElement>(LocalUtility.getOraddDataType(rtv.getDataType())));
                     //BUILD PARAMETER
+                    Integer i = 0;
                     for (VariableElement ve : ee.getParameters()) {
                         Parameter newp = KevoreeFactory.createParameter();
                         newp.setName(ve.toString());
+                        newp.setOrder(i);
                         newo.addParameters(newp);
                         DataTypeVisitor ptv = new DataTypeVisitor();
                         ve.asType().accept(ptv,ve);
                         newp.setType(new Some<TypedElement>(LocalUtility.getOraddDataType(ptv.getDataType())));
+                        i = i + 1;
+
                     }
                 }
             }

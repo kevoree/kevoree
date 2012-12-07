@@ -101,12 +101,14 @@ object KevoreeRequiredPortGenerator {
           op =>
           /* GENERATE METHOD SIGNATURE */
             writer.append("def " + op.getName + "(")
-            op.getParameters.foreach {
+            var i = 0
+            op.getParameters.sortWith((p1,p2)=>p2.getOrder > p1.getOrder).foreach {
               param =>
-                writer.append(param.getName + ":" + param.getType.get.print('[', ']'))
-                if (op.getParameters.indexOf(param) != (op.getParameters.size - 1)) {
+                if (i != 0) {
                   writer.append(",")
                 }
+                writer.append(param.getName + ":" + param.getType.get.print('[', ']'))
+                i = i +1
             }
 
             var rt = op.getReturnType.get.getName
@@ -121,7 +123,7 @@ object KevoreeRequiredPortGenerator {
             /* CREATE MSG OP CALL */
             writer.append("val msgcall = new org.kevoree.framework.MethodCallMessage\n")
             writer.append("msgcall.setMethodName(\"" + op.getName + "\")\n")
-            op.getParameters.foreach {
+            op.getParameters.sortWith((p1,p2)=>p2.getOrder > p1.getOrder).foreach {
               param =>
                 writer.append("msgcall.getParams.put(\"" + param.getName + "\"," + param.getName + ".asInstanceOf[AnyRef])\n")
             }

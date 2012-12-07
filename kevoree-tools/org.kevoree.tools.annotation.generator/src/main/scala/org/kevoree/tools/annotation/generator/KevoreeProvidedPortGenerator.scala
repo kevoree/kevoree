@@ -129,12 +129,14 @@ object KevoreeProvidedPortGenerator {
           op =>
           /* GENERATE METHOD SIGNATURE */
             writer.append("def " + op.getName + "(")
-            op.getParameters.foreach {
+            var i = 0
+            op.getParameters.sortWith((p1,p2)=>p2.getOrder > p1.getOrder).foreach {
               param =>
-                writer.append(param.getName + ":" + param.getType.get.print('[', ']'))
-                if (op.getParameters.indexOf(param) != (op.getParameters.size - 1)) {
+                if (i != 0) {
                   writer.append(",")
                 }
+                writer.append(param.getName + ":" + param.getType.get.print('[', ']'))
+                i = i + 1
             }
             /* GENERATES RETURN TYPE in rt */
             var rt = op.getReturnType.get.getName
@@ -150,7 +152,7 @@ object KevoreeProvidedPortGenerator {
             /* CREATE MSG OP CALL */
             writer.append("val msgcall = new org.kevoree.framework.MethodCallMessage\n")
             writer.append("msgcall.setMethodName(\"" + op.getName + "\")\n")
-            op.getParameters.foreach {
+            op.getParameters.sortWith((p1,p2)=>p2.getOrder > p1.getOrder).foreach {
               param =>
                 writer.append("msgcall.getParams.put(\"" + param.getName + "\"," + param.getName + ".asInstanceOf[AnyRef])\n")
             }
@@ -169,17 +171,16 @@ object KevoreeProvidedPortGenerator {
               case Some(mapping) => {
                 writer.append("case \"" + op.getName + "\"=> try { component." + mapping.getBeanMethodName + "(")
                 var i = 0
-                op.getParameters.foreach {
+                op.getParameters.sortWith((p1,p2)=>p2.getOrder > p1.getOrder).foreach {
                   param =>
+                    if (i != 0) {
+                      writer.append(",")
+                    }
                     writer.append("if(opcall.getParams.containsKey(\"" + param.getName + "\")){")
                     writer.append("opcall.getParams.get(\"" + param.getName + "\").asInstanceOf[" + param.getType.get.print('[', ']') + "]")
                     writer.append("}else{")
                     writer.append("opcall.getParams.get(\"arg" + i + "\").asInstanceOf[" + param.getType.get.print('[', ']') + "]")
                     writer.append("}")
-
-                    if (op.getParameters.indexOf(param) != (op.getParameters.size - 1)) {
-                      writer.append(",")
-                    }
                     i = i + 1
                 }
                 writer.append(")} catch {case _ @ e => e.printStackTrace();println(\"Uncatched exception while processing Kevoree message\");null }\n")

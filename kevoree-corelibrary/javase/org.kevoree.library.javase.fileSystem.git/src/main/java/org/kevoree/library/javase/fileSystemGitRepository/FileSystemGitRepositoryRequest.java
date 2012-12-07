@@ -46,7 +46,6 @@ public class FileSystemGitRepositoryRequest extends AbstractComponentType {
 
 		public MyFrame () {
 
-
 			login = "AccountTest";
 			password = "AccountTest1";
 			nameRepository = "createRepositoryTest" + System.currentTimeMillis();
