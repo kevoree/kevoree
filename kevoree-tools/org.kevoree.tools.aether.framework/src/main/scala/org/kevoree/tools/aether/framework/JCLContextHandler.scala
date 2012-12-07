@@ -82,7 +82,6 @@ package org.kevoree.tools.aether.framework
 import java.io.File
 import org.slf4j.LoggerFactory
 import org.kevoree.DeployUnit
-import actors.DaemonActor
 import scala.collection.JavaConversions._
 import org.kevoree.api.service.core.classloading.{DeployUnitResolver, KevoreeClassLoaderHandler}
 import org.kevoree.kcl.KevoreeJarClassLoader

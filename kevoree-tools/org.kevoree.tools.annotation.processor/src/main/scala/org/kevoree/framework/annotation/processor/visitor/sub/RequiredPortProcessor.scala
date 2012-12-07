@@ -112,6 +112,7 @@ trait RequiredPortProcessor {
                           elem =>
                             val dicAtt = KevoreeFactory.eINSTANCE.createDictionaryAttribute
                             dicAtt.setName(elem.name())
+                            mpt.setName(mpt.getName+elem.name()) //WORKAROUND
                             try {
                               elem.className()
                             } catch {
