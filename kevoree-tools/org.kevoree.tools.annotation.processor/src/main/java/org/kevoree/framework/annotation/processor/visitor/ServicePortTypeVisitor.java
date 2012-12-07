@@ -66,8 +66,8 @@ public class ServicePortTypeVisitor extends SimpleTypeVisitor6<Object, Object> {
                 ExecutableElement ee = (ExecutableElement) e;
                 if (e.getKind().compareTo(ElementKind.METHOD) == 0) {
                     Operation newo = KevoreeFactory.createOperation();
-                    dataType.addOperations(newo);
                     newo.setName(e.getSimpleName().toString());
+                    dataType.addOperations(newo);
                     //BUILD RETURN TYPE
                     DataTypeVisitor rtv = new DataTypeVisitor();
                     ee.getReturnType().accept(rtv, ee.getReturnType());
@@ -75,8 +75,8 @@ public class ServicePortTypeVisitor extends SimpleTypeVisitor6<Object, Object> {
                     //BUILD PARAMETER
                     for (VariableElement ve : ee.getParameters()) {
                         Parameter newp = KevoreeFactory.createParameter();
-                        newo.addParameters(newp);
                         newp.setName(ve.toString());
+                        newo.addParameters(newp);
                         DataTypeVisitor ptv = new DataTypeVisitor();
                         ve.asType().accept(ptv,ve);
                         newp.setType(new Some<TypedElement>(LocalUtility.getOraddDataType(ptv.getDataType())));

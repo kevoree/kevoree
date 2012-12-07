@@ -28,13 +28,13 @@ class KMFQueryTest {
 
   @Test
   def testOppositeQuery(){
-    /*
+
     val model = ContainerRootLoader.loadModel(new File(getClass.getResource("/unomas.kev").toURI)).get
     assert(model.findNodesByID("node0").getName == "node0")
     assert(model.findById("nodes[node0]").asInstanceOf[ContainerNode].getName == "node0")
     assert(model.findById("nodes[node0]/components[FakeConso145]").asInstanceOf[ComponentInstance].getName == "FakeConso145")
     assert(model.findById("adaptationPrimitiveTypes[UpdateDeployUnit]").asInstanceOf[org.kevoree.AdaptationPrimitiveType].getName == "UpdateDeployUnit")
-    */
+
   }
 
 }
