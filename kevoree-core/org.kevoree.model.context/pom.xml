@@ -14,10 +14,9 @@
     </parent>
 
     <properties>
-        <metamodel.ecore>metamodel/kevoree-context.ecore</metamodel.ecore>
+        <metamodel.ecore>metamodel/kevoree.context.ecore</metamodel.ecore>
     </properties>
 
-	<!--
     <build>
         <plugins>
             <plugin>
@@ -33,12 +32,12 @@
                         </goals>
                         <configuration>
                             <ecore>${metamodel.ecore}</ecore>
-                            <packagePrefix>org</packagePrefix>
+                            <packagePrefix>org.kevoree</packagePrefix>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
         </plugins>
-    </build>-->
+    </build>
 
 </project>

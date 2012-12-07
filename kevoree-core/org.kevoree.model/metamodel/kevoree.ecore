@@ -126,6 +126,8 @@
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="Parameter" eSuperTypes="#//NamedElement">
         <eStructuralFeatures xsi:type="ecore:EReference" name="type" eType="#//TypedElement"/>
+        <eStructuralFeatures xsi:type="ecore:EAttribute" name="order"
+                             eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EIntegerObject" upperBound="1" lowerBound="0" />
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="TypedElement" eSuperTypes="#//NamedElement">
         <eStructuralFeatures xsi:type="ecore:EReference" name="genericTypes" upperBound="-1"
