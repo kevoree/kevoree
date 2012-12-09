@@ -16,7 +16,7 @@ package org.kevoree.extra.ecore.loader.test
 import org.junit.Test
 import org.kevoree.loader.ContainerRootLoader
 import java.io.File
-import org.kevoree.{ComponentInstance, ContainerNode}
+import org.kevoree.{Group, ComponentInstance, ContainerNode}
 
 /**
  * Created with IntelliJ IDEA.
@@ -34,6 +34,22 @@ class KMFQueryTest {
     assert(model.findById("nodes[node0]").asInstanceOf[ContainerNode].getName == "node0")
     assert(model.findById("nodes[node0]/components[FakeConso145]").asInstanceOf[ComponentInstance].getName == "FakeConso145")
     assert(model.findById("adaptationPrimitiveTypes[UpdateDeployUnit]").asInstanceOf[org.kevoree.AdaptationPrimitiveType].getName == "UpdateDeployUnit")
+
+    assert(model.findNodesByID("node0").getName == "node0")
+    assert(model.findById("nodes[{node0}]").asInstanceOf[ContainerNode].getName == "node0")
+    assert(model.findById("nodes[{node0}]/components[{FakeConso145}]").asInstanceOf[ComponentInstance].getName == "FakeConso145")
+    assert(model.findById("adaptationPrimitiveTypes[{UpdateDeployUnit}]").asInstanceOf[org.kevoree.AdaptationPrimitiveType].getName == "UpdateDeployUnit")
+
+    val model2 = ContainerRootLoader.loadModel(new File(getClass.getResource("/unomas2.kev").toURI)).get
+    assert(model2.findGroupsByID("editor_group").getName == "editor_group")
+    assert(model2.findById("groups[editor_group]").asInstanceOf[Group].getName == "editor_group")
+    assert(model2.findById("groups[editor_group]/subNodes[editor_node]").asInstanceOf[ContainerNode].getName == "editor_node")
+    assert(model2.findById("groups[editor_group]/{editor_node}").asInstanceOf[ContainerNode].getName == "editor_node")
+    assert(model2.findById("groups[editor_group]/editor_node").asInstanceOf[ContainerNode].getName == "editor_node")
+
+    assert(model2.findById("groups[editor_group]/editor_node/components[iaasPage]").asInstanceOf[ComponentInstance].getName == "iaasPage")
+    assert(model2.findById("groups[editor_group]/{editor_node}/components[iaasPage]").asInstanceOf[ComponentInstance].getName == "iaasPage")
+
 
   }
 
