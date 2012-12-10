@@ -151,6 +151,8 @@ class KevoreeAndroidBootStrap {
       bootstraper.registerManuallyDeployUnit("org.kevoree.kompare", "org.kevoree", KevoreeFactory.getVersion, dummyKCL)
       bootstraper.registerManuallyDeployUnit("org.kevoree.merger", "org.kevoree", KevoreeFactory.getVersion, dummyKCL)
       bootstraper.registerManuallyDeployUnit("org.kevoree.model", "org.kevoree", KevoreeFactory.getVersion, dummyKCL)
+      bootstraper.registerManuallyDeployUnit("org.kevoree.model.context", "org.kevoree", KevoreeFactory.getVersion, dummyKCL)
+
       bootstraper.registerManuallyDeployUnit("org.kevoree.tools.annotation.api", "org.kevoree.tools", KevoreeFactory.getVersion, dummyKCL)
       bootstraper.registerManuallyDeployUnit("org.kevoree.tools.android.framework", "org.kevoree.tools", KevoreeFactory.getVersion, dummyKCL)
       bootstraper.registerManuallyDeployUnit("org.kevoree.tools.javase.framework", "org.kevoree.tools", KevoreeFactory.getVersion, dummyKCL)
