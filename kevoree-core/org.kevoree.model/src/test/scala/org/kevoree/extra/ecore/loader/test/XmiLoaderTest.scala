@@ -218,7 +218,7 @@ class XmiLoaderTest {
     assertTrue("Wrong number of repositories in model." + repList.size, repList.size == 6);
     repList.foreach {
       elem =>
-        assertNotNull("eContainer not set for Repository:" + elem.getName, elem.eContainer)
+        assertNotNull("eContainer not set for Repository:" , elem.eContainer)
     }
 
   }
