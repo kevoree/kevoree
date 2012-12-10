@@ -137,10 +137,10 @@
         <eStructuralFeatures xsi:type="ecore:EReference" name="filters" upperBound="-1"
                              eType="#//TypedElement"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="Repository" eSuperTypes="#//NamedElement">
+    <eClassifiers xsi:type="ecore:EClass" name="Repository">
         <eStructuralFeatures xsi:type="ecore:EReference" name="units" upperBound="-1"
                              eType="#//DeployUnit"/>
-        <eStructuralFeatures xsi:type="ecore:EAttribute" name="url"
+        <eStructuralFeatures xsi:type="ecore:EAttribute" name="url" iD="true"
                              eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="DeployUnit">

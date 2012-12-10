@@ -5,6 +5,7 @@ merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.fakeDomo/{k
 merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.defaultChannels/{kevoree.version}"
 
 addNode node0 : MonitoredJavaSENode
+addComponent probes@node0 : FakeConsole
 
 /*
 addComponent input@node0 : CamelTimer { period='500' }

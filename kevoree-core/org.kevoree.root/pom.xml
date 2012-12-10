@@ -169,7 +169,6 @@
     <distributionManagement>
         <repository>
             <id>maven2.kevoree.release</id>
-            <url>http://maven.kevoree.org/archiva/repository/release/</url>
         </repository>
         <snapshotRepository>
             <id>maven2.kevoree.snapshots</id>

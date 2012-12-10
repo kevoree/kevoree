@@ -25,7 +25,7 @@
         </dependency>
         <dependency>
             <groupId>org.kevoree</groupId>
-            <artifactId>org.kevoree.kompare</artifactId>
+            <artifactId>org.kevoree.model.context</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
         <dependency>
