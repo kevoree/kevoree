@@ -61,9 +61,10 @@ public class PutHelper {
         return new GetParams();
     }
 
-    private static String cleanName(String name){
+    private static String cleanName(String name2){
+        String name = name2.trim();
         if(name.startsWith("{") && name.endsWith("}") ){
-          return name.substring(1,name.length()-1);
+          name = name.substring(1,name.length()-1);
         }
         return name;
     }
@@ -71,19 +72,19 @@ public class PutHelper {
     public static Metric getMetric(ContextRoot ctx, String path, GetParams params) {
         String[] paths = path.split("/");
         if (paths.length == 3) {
-            ContextModel mod = ctx.findContextByID(paths[0]);
+            ContextModel mod = ctx.findContextByID(cleanName(paths[0]));
             if (mod == null) {
                 mod = ContextFactory.createContextModel();
                 mod.setName(cleanName(paths[0]));
                 ctx.addContext(mod);
             }
-            MetricType mt = mod.findTypesByID(paths[1]);
+            MetricType mt = mod.findTypesByID(cleanName(paths[1]));
             if (mt == null) {
                 mt = ContextFactory.createMetricType();
                 mt.setName(cleanName(paths[1]));
                 mod.addTypes(mt);
             }
-            Metric metric = mt.findMetricsByID(paths[2]);
+            Metric metric = mt.findMetricsByID(cleanName(paths[2]));
             if (metric == null) {
                 if (DurationHistoryMetric.class.getName().equals(params.metricTypeClazzName)) {
                     metric = ContextFactory.createDurationHistoryMetric();
@@ -112,7 +113,7 @@ public class PutHelper {
     public static void addValue(Metric m, String value){
         MetricValue valueMod = ContextFactory.createMetricValue();
         valueMod.setValue(value);
-        valueMod.setTimestamp(System.currentTimeMillis()+"");
+        valueMod.setTimestamp(System.nanoTime()+"");
         m.addValues(valueMod);
     }
 
