@@ -32,6 +32,7 @@ import java.util.{Date, UUID}
 import org.kevoree.api.service.core.handler._
 import java.lang.Long
 import java.util.concurrent.atomic.AtomicReference
+import org.kevoree.context.{ContextRoot, ContextModel}
 
 
 /**
@@ -134,7 +135,7 @@ class ModelHandlerServiceProxy(proxy: KevoreeModelHandlerService) extends Kevore
     proxy.unregisterModelListener(listener)
   }
 
-  def getContextModel: ContextModel = {
+  def getContextModel: ContextRoot = {
     proxy.getContextModel
   }
 
@@ -161,4 +162,5 @@ class ModelHandlerServiceProxy(proxy: KevoreeModelHandlerService) extends Kevore
       proxy.compareAndSwapModel(previousModel, targetModel,callback)
     }
   }
+
 }
