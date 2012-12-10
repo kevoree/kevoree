@@ -1,10 +1,9 @@
 package org.kevoree.library.monitored;
 
-import org.kevoree.annotation.ComponentType;
-import org.kevoree.annotation.Library;
-import org.kevoree.annotation.Start;
-import org.kevoree.annotation.Stop;
+import org.kevoree.annotation.*;
 import org.kevoree.context.CounterHistoryMetric;
+import org.kevoree.context.Metric;
+import org.kevoree.context.PutHelper;
 import org.kevoree.framework.AbstractComponentType;
 
 import javax.management.MBeanServer;
@@ -25,6 +24,9 @@ import java.util.concurrent.TimeUnit;
  */
 @Library(name = "JavaSE")
 @ComponentType
+@DictionaryType({
+        @DictionaryAttribute(name = "period", defaultValue = "5000", optional = true)
+})
 public class BasicProbes extends AbstractComponentType implements Runnable {
 
     private ScheduledExecutorService t = null;
@@ -32,6 +34,7 @@ public class BasicProbes extends AbstractComponentType implements Runnable {
     private OperatingSystemMXBean osBean = null;
     private MemoryMXBean mBean = null;
     private MBeanServer mbserv = null;
+    private Metric cpuMetric = null;
 
     @Start
     public void start() throws IOException {
@@ -40,7 +43,8 @@ public class BasicProbes extends AbstractComponentType implements Runnable {
         osBean = ManagementFactory.newPlatformMXBeanProxy(mbsc, ManagementFactory.OPERATING_SYSTEM_MXBEAN_NAME, OperatingSystemMXBean.class);
         mBean = ManagementFactory.getMemoryMXBean();
         t = Executors.newScheduledThreadPool(1);
-        t.scheduleAtFixedRate(this,0,10000, TimeUnit.MILLISECONDS);
+        cpuMetric = PutHelper.getMetric(getModelService().getContextModel(), "perf/cpu/{" + getNodeName() + "}", PutHelper.getParam().setMetricTypeClazzName(CounterHistoryMetric.class.getName()).setNumber(100));
+        t.scheduleAtFixedRate(this,0,Integer.parseInt(getDictionary().get("period").toString()), TimeUnit.MILLISECONDS);
     }
 
     @Stop
@@ -55,26 +59,26 @@ public class BasicProbes extends AbstractComponentType implements Runnable {
 
     @Override
     public void run() {
+        try {
+            double cpuUsage = osBean.getSystemLoadAverage() / osBean.getAvailableProcessors();
+            PutHelper.addValue(cpuMetric,cpuUsage+"");
+            System.out.println("getV="+getModelService().getContextModel().findById("perf/cpu/{" + getNodeName() + "}/last[]"));
 
-        double cpuUsage = osBean.getSystemLoadAverage() / osBean.getAvailableProcessors();
-        System.out.println("cpu.usage="+cpuUsage);
 
-        org.kevoree.context.PutHelper.getMetric(getModelService().getContextModel(),"perf/cpu/{"+getNodeName()+"}", CounterHistoryMetric.class); 
+            Metric m = (Metric) getModelService().getContextModel().findById("perf/cpu/{" + getNodeName() + "}");
+            System.out.println(m.getValues().size());
+            System.out.println(m.getLast().get().getTimestamp()+"-"+m.getLast().get().getValue());
 
+
+
+        } catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     public static void main(String[] args) throws IOException, InterruptedException {
         BasicProbes p = new BasicProbes();
         p.start();
-
-
-        for(int i=0;i < 10000000000d;i++){
-            Thread.sleep(1);
-        }
-
-
-
-
     }
 
 }
