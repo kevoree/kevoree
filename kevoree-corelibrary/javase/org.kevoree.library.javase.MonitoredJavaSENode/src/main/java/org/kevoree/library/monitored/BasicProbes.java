@@ -4,14 +4,15 @@ import org.kevoree.annotation.ComponentType;
 import org.kevoree.annotation.Library;
 import org.kevoree.annotation.Start;
 import org.kevoree.annotation.Stop;
+import org.kevoree.context.CounterHistoryMetric;
 import org.kevoree.framework.AbstractComponentType;
 
+import javax.management.MBeanServer;
 import javax.management.MBeanServerConnection;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
 import java.lang.management.OperatingSystemMXBean;
-import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -30,9 +31,11 @@ public class BasicProbes extends AbstractComponentType implements Runnable {
     private MBeanServerConnection mbsc = null;
     private OperatingSystemMXBean osBean = null;
     private MemoryMXBean mBean = null;
+    private MBeanServer mbserv = null;
 
     @Start
     public void start() throws IOException {
+        mbserv = ManagementFactory.getPlatformMBeanServer();
         mbsc = ManagementFactory.getPlatformMBeanServer();
         osBean = ManagementFactory.newPlatformMXBeanProxy(mbsc, ManagementFactory.OPERATING_SYSTEM_MXBEAN_NAME, OperatingSystemMXBean.class);
         mBean = ManagementFactory.getMemoryMXBean();
@@ -47,18 +50,31 @@ public class BasicProbes extends AbstractComponentType implements Runnable {
         mBean = null;
         mbsc = null;
         osBean = null;
+        mbserv = null;
     }
 
     @Override
     public void run() {
-        System.out.println(osBean.getSystemLoadAverage());
-        System.out.println(osBean.getAvailableProcessors());
-        System.out.println(mBean.getHeapMemoryUsage().getUsed());
+
+        double cpuUsage = osBean.getSystemLoadAverage() / osBean.getAvailableProcessors();
+        System.out.println("cpu.usage="+cpuUsage);
+
+        org.kevoree.context.PutHelper.getMetric(getModelService().getContextModel(),"perf/cpu/{"+getNodeName()+"}", CounterHistoryMetric.class); 
+
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, InterruptedException {
         BasicProbes p = new BasicProbes();
         p.start();
+
+
+        for(int i=0;i < 10000000000d;i++){
+            Thread.sleep(1);
+        }
+
+
+
+
     }
 
 }
