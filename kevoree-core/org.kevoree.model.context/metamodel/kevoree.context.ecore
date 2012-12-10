@@ -27,7 +27,6 @@
         iD="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="min" eType="#//MetricValue"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="max" eType="#//MetricValue"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="EReference0" eType="#//MetricValue"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="first" eType="#//MetricValue"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="last" eType="#//MetricValue"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="syncConstraints" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
