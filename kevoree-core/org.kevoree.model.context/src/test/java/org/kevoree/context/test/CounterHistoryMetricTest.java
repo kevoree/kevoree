@@ -31,7 +31,7 @@ public class CounterHistoryMetricTest {
         ContextRoot model = ContextFactory.createContextRoot();
         Random rand = new Random();
 
-        for (int i = 0; i < 1000; i++) {
+        for (int i = 0; i < 1000 ; i++) {
             Metric cpuMetric = PutHelper.getMetric(model, "perf/cpu/{node42}", PutHelper.getParam().setMetricTypeClazzName(CounterHistoryMetric.class.getName()).setNumber(100));
             PutHelper.addValue(cpuMetric, rand.nextLong() + "");
         }
@@ -41,7 +41,6 @@ public class CounterHistoryMetricTest {
 
         MetricValue mv = (MetricValue) model.findById("perf/cpu/{node42}/last[]");
         assert (mv != null);
-
     }
 
 
