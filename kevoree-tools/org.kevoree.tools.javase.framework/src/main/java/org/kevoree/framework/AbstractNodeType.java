@@ -28,13 +28,9 @@ package org.kevoree.framework;
 
 import org.kevoree.ContainerNode;
 import org.kevoree.ContainerRoot;
-import org.kevoree.api.Bootstraper;
 import org.kevoree.api.NodeType;
 import org.kevoree.api.PrimitiveCommand;
-import org.kevoree.api.service.core.handler.ContextModel;
-import org.kevoree.api.service.core.handler.KevoreeModelHandlerService;
-import org.kevoree.api.service.core.script.KevScriptEngineFactory;
-import org.kevoree.framework.context.HashMapContextModel;
+import org.kevoree.context.ContextRoot;
 import org.kevoreeAdaptation.AdaptationModel;
 import org.kevoreeAdaptation.AdaptationPrimitive;
 
@@ -68,10 +64,10 @@ public abstract class
 
 	public abstract PrimitiveCommand getPrimitive (AdaptationPrimitive primitive);
 
-	private HashMapContextModel contextModel = new HashMapContextModel();
+	private ContextRoot contextModel = org.kevoree.context.ContextFactory.createContextRoot();
 
 	@Override
-	public ContextModel getContextModel () {
+	public ContextRoot getContextModel () {
 		return contextModel;
 	}
 
@@ -81,7 +77,7 @@ public abstract class
 	 * @return the node corresponding to this
 	 */
 	public ContainerNode getModelElement () {
-		return KevoreeElementHelper.getNodeElement(this.getNodeName(), this.getModelService().getLastModel()).get();
+		return org.kevoree.framework.KevoreeElementHelper.getNodeElement(this.getNodeName(), this.getModelService().getLastModel()).get();
 	}
 
 }

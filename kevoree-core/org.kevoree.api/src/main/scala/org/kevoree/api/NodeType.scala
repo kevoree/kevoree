@@ -29,7 +29,7 @@ package org.kevoree.api
 
 import org.kevoree.ContainerRoot
 import org.kevoreeAdaptation.{AdaptationModel, AdaptationPrimitive}
-import org.kevoree.api.service.core.handler.ContextModel
+import org.kevoree.context.{ContextRoot}
 
 /**
  * Created by IntelliJ IDEA.
@@ -50,6 +50,6 @@ trait NodeType {
 
   def getPrimitive(primitive: AdaptationPrimitive): PrimitiveCommand
 
-  def getContextModel: ContextModel
+  def getContextModel: ContextRoot
 
 }

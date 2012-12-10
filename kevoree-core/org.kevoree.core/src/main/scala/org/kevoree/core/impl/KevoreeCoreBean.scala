@@ -33,6 +33,7 @@ import reflect.BeanProperty
 import java.util.concurrent._
 import scala.Some
 import scala.Tuple2
+import org.kevoree.context.{ContextRoot, ContextModel}
 
 
 class KevoreeCoreBean extends KevoreeModelHandlerService {
@@ -549,7 +550,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService {
     modelListeners.removeListener(listener)
   }
 
-  def getContextModel: ContextModel = {
+  def getContextModel: ContextRoot = {
     nodeInstance.getContextModel
   }
 

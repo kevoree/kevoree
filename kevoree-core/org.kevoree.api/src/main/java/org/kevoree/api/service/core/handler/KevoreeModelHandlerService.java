@@ -32,6 +32,7 @@ package org.kevoree.api.service.core.handler;
  */
 
 import org.kevoree.ContainerRoot;
+import org.kevoree.context.ContextRoot;
 
 import java.util.Date;
 import java.util.List;
@@ -68,7 +69,7 @@ public interface KevoreeModelHandlerService {
 
     public void unregisterModelListener(ModelListener listener);
 
-    public ContextModel getContextModel();
+    public ContextRoot getContextModel();
 
     public void acquireLock(ModelHandlerLockCallBack callBack, Long timeout);
 
