@@ -16,7 +16,9 @@ package org.kevoree.context;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -70,21 +72,43 @@ public class PutHelper {
     }
 
     public static Metric getMetric(ContextRoot ctx, String path, GetParams params) {
-        String[] paths = path.split("/");
-        if (paths.length == 3) {
-            ContextModel mod = ctx.findContextByID(cleanName(paths[0]));
+
+        List<String> paths = new ArrayList<String>();
+        String pathR = path;
+        while(pathR.indexOf('/') != -1){
+            if(pathR.indexOf("{") == 0){
+                paths.add(pathR.substring(1,pathR.indexOf("}")));
+                pathR = pathR.substring(pathR.indexOf("}")+1);
+                pathR = pathR.substring(pathR.indexOf("/")+1);
+            } else {
+                paths.add(pathR.substring(0,pathR.indexOf('/')));
+                pathR = pathR.substring(pathR.indexOf('/')+1);
+            }
+        }
+        if(!pathR.equals("")){
+            if(pathR.indexOf("{") == 0){
+                paths.add(pathR.substring(1,pathR.indexOf("}")));
+            } else {
+                paths.add(pathR);
+            }
+        }
+
+
+        //String[] paths = path.split("/");
+        if (paths.size() == 3) {
+            ContextModel mod = ctx.findContextByID(cleanName(paths.get(0)));
             if (mod == null) {
                 mod = ContextFactory.createContextModel();
-                mod.setName(cleanName(paths[0]));
+                mod.setName(cleanName(paths.get(0)));
                 ctx.addContext(mod);
             }
-            MetricType mt = mod.findTypesByID(cleanName(paths[1]));
+            MetricType mt = mod.findTypesByID(cleanName(paths.get(1)));
             if (mt == null) {
                 mt = ContextFactory.createMetricType();
-                mt.setName(cleanName(paths[1]));
+                mt.setName(cleanName(paths.get(1)));
                 mod.addTypes(mt);
             }
-            Metric metric = mt.findMetricsByID(cleanName(paths[2]));
+            Metric metric = mt.findMetricsByID(cleanName(paths.get(2)));
             if (metric == null) {
                 if (DurationHistoryMetric.class.getName().equals(params.metricTypeClazzName)) {
                     metric = ContextFactory.createDurationHistoryMetric();
@@ -100,12 +124,12 @@ public class PutHelper {
                         ((CounterHistoryMetric)metric).setNumber(params.number);
                     }
                 }
-                metric.setName(cleanName(paths[2]));
+                metric.setName(cleanName(paths.get(2)));
                 mt.addMetrics(metric);
             }
             return metric;
         } else {
-            logger.error("Can't parse parameter path "+paths.length+"- path length "+paths+" must be 3");
+            logger.error("Can't parse parameter path "+paths.size()+"- path length "+paths+" must be 3");
             return null;
         }
     }
