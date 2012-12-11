@@ -61,7 +61,7 @@ class ProcessExecutor(creationTimeout: Int, startTimeout: Int) {
     (result._1 && notFound, ips)
   }
 
-  def addNetworkAlias(networkInterface: String, newIp: String, mask: String = 24): Boolean = {
+  def addNetworkAlias(networkInterface: String, newIp: String, mask: String = "24"): Boolean = {
     val fromCidrNotation = SubnetUtils.fromCidrNotation(newIp + "/" + mask)
     logger.debug("running {} {} alias {} netmask {}", Array[AnyRef](ifconfig, networkInterface, fromCidrNotation(0), fromCidrNotation(1)))
     val resultActor = new ResultManagementActor()
