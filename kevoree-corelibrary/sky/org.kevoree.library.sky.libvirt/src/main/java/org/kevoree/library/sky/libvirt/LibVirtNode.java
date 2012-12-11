@@ -10,13 +10,11 @@ import org.kevoree.api.service.core.script.KevScriptEngine;
 import org.kevoree.library.sky.api.nodeType.AbstractIaaSNode;
 import org.kevoree.library.sky.api.nodeType.helper.SubnetUtils;
 import org.libvirt.Connect;
-import org.libvirt.Domain;
 import org.libvirt.Network;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Timer;
-import java.util.TimerTask;
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -70,8 +68,7 @@ public abstract class LibVirtNode extends AbstractIaaSNode {
 				for (int i = 0; i < ips.size(); i++) {
 					String subnet = ((Element) ips.get(i)).getAttribute("address").getValue();
 					String mask = ((Element) ips.get(i)).getAttribute("netmask").getValue();
-					SubnetUtils utils = new SubnetUtils();
-					String[] net = utils.toCidrNotation(subnet, mask).split("/");
+					String[] net = SubnetUtils.toCidrNotation(subnet, mask).split("/");
 
 					kengine.addVariable("subnet", net[0]);
 					kengine.addVariable("mask", net[1]);
