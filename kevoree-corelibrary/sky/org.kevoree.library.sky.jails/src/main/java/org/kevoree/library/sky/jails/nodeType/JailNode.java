@@ -25,8 +25,9 @@ import org.slf4j.LoggerFactory;
 		@DictionaryAttribute(name = "jailStartTimeout", defaultValue = "10000", optional = true),/*
 		@DictionaryAttribute(name = "useArchive", defaultValue = "false", vals= {"true", "false"}, optional = true),
 		@DictionaryAttribute(name = "archives", defaultValue = "http://localhost:8080/archives/", optional = true)*/
-		@DictionaryAttribute(name = "MODE", defaultValue = "RELAX", vals = {"STRICT", "RELAX", "AVOID"}, optional = true)
+		@DictionaryAttribute(name = "MODE", defaultValue = "RELAX", vals = {"STRICT", "RELAX", "AVOID"}, optional = true),
 		// how the restrictions are manage : STRICT = the jail is stopped, RELAX = the jail continue to execute, AVOID means to refused to execute something that break the limitation
+        @DictionaryAttribute(name = "alias_mask", defaultValue = "24", optional = true)
 })
 @NodeType
 public class JailNode extends AbstractIaaSNode {
@@ -35,6 +36,7 @@ public class JailNode extends AbstractIaaSNode {
 	private String inet;
 	private String subnet;
 	private String mask;
+    private String aliasMask;
 	boolean initialization;
 
 	@Start
@@ -42,6 +44,7 @@ public class JailNode extends AbstractIaaSNode {
 		inet = this.getDictionary().get("inet").toString();
 		subnet = this.getDictionary().get("subnet").toString();
 		mask = this.getDictionary().get("mask").toString();
+        aliasMask = this.getDictionary().get("alias_mask").toString();
 		super.startNode();
 		initialization = true;
 	}
@@ -88,6 +91,10 @@ public class JailNode extends AbstractIaaSNode {
 	public String getMask () {
 		return mask;
 	}
+
+    public String getAliasMask () {
+        return aliasMask;
+    }
 
 	public String getFlavor () {
 		if (this.getDictionary().get("flavor") != null) {

@@ -54,7 +54,7 @@ class JailKevoreeNodeRunner (nodeName: String, iaasNode: JailNode) extends Kevor
       } else {
         logger.warn("Unable to get the IP for the new jail, the creation may fail")
       }
-      if (processExecutor.addNetworkAlias(iaasNode.getNetworkInterface, newIp)) {
+      if (processExecutor.addNetworkAlias(iaasNode.getNetworkInterface, newIp, iaasNode.getAliasMask)) {
         // looking for the flavors
         var flavor = lookingForFlavors(iaasModel, nodeName)
         if (flavor == null) {
