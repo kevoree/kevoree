@@ -1,0 +1,5 @@
+merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.JavaSENode/{kevoree.version}"
+merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.webserver.webbit/{kevoree.version}"
+
+addNode node0 : JavaSENode
+addComponent srv@node0 : WebbitServer { period_check='500', port='8080' }

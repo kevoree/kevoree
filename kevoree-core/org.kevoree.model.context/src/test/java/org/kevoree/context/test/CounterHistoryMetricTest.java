@@ -41,6 +41,10 @@ public class CounterHistoryMetricTest {
 
         MetricValue mv = (MetricValue) model.findById("perf/cpu/{node42}/last[]");
         assert (mv != null);
+
+
+        PutHelper.getMetric(model,"perf/latency/{nodes[node0]/components[srv]}",PutHelper.getParam().setMetricTypeClazzName(CounterHistoryMetric.class.getName()).setNumber(100));
+
     }
 
 

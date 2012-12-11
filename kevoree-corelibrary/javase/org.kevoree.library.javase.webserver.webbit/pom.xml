@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>org.kevoree.library.javase.root</artifactId>
+        <groupId>org.kevoree.corelibrary.javase</groupId>
+        <version>1.9.0-SNAPSHOT</version>
+        <relativePath>../org.kevoree.library.javase.root/pom.xml</relativePath>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>org.kevoree.library.javase.webserver.webbit</artifactId>
+    <name>Kevoree :: CoreLibrary :: JavaSE :: WebServer :: Webbit</name>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.webbitserver</groupId>
+            <artifactId>webbit</artifactId>
+            <version>0.4.14</version>
+        </dependency>
+    </dependencies>
+
+</project>
