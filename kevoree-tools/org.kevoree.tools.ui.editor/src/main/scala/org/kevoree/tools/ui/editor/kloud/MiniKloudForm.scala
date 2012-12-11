@@ -246,7 +246,7 @@ class MiniKloudForm(editor: KevoreeEditor, button: AbstractButton) {
           case None => // add a new group
             kevEngine.append("addGroup editor_group : BasicGossiperGroup")
         }
-
+        groupName = "editor_group"
         kevEngine.addVariable("groupName", groupName)
 
         // add all node on the same group
