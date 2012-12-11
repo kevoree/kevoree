@@ -32,108 +32,10 @@ public class SubnetUtils {
     private static final Pattern cidrPattern = Pattern.compile(SLASH_FORMAT);
     private static final int NBITS = 32;
 
-    private int netmask = 0;
-    private int address = 0;
-    private int network = 0;
-    private int broadcast = 0;
-
-	public SubnetUtils(){}
-
-    /**
-     * Constructor that takes a CIDR-notation string, e.g. "192.168.0.1/16"
-     * @param cidrNotation A CIDR-notation string, e.g. "192.168.0.1/16"
-     */
-    public SubnetUtils(String cidrNotation) {
-        calculate(cidrNotation);
-    }
-
-    /**
-     * Constructor that takes two dotted decimal addresses. 
-     * @param address An IP address, e.g. "192.168.0.1"
-     * @param mask A dotted decimal netmask e.g. "255.255.0.0"
-     */
-    public SubnetUtils(String address, String mask) {
-        calculate(toCidrNotation(address, mask));
-    }
-
-    /**
-     * Convenience container for subnet summary information.
-     *
-     */
-    public final class SubnetInfo {
-        private SubnetInfo() {}
-
-        private int netmask()       { return netmask; }
-        private int network()       { return network; }
-        private int address()       { return address; }
-        private int broadcast()     { return broadcast; }
-        private int low()           { return network() + 1; }
-        private int high()          { return broadcast() - 1; }
-
-        public boolean isInRange(String address)    { return isInRange(toInteger(address)); }
-        private boolean isInRange(int address)      { return ((address-low()) <= (high()-low())); }
-
-        public String getBroadcastAddress()         { return format(toArray(broadcast())); }
-        public String getNetworkAddress()           { return format(toArray(network())); }
-        public String getNetmask()                  { return format(toArray(netmask())); }
-        public String getAddress()                  { return format(toArray(address())); }
-        public String getLowAddress()               { return format(toArray(low())); }
-        public String getHighAddress()              { return format(toArray(high())); }
-        public int getAddressCount()                { return (broadcast() - low()); }
-
-        public int asInteger(String address)        { return toInteger(address); }
-        
-        public String getCidrSignature() { 
-            return toCidrNotation(
-                    format(toArray(address())), 
-                    format(toArray(netmask()))
-            );
-        }
-        
-        public String[] getAllAddresses() { 
-            String[] addresses = new String[getAddressCount()];
-            for (int add = low(), j=0; add <= high(); ++add, ++j) {
-                addresses[j] = format(toArray(add));
-            }
-            return addresses;
-        }
-    }
-
-    /**
-     * Return a {@link SubnetUtils.SubnetInfo} instance that contains subnet-specific statistics
-     * @return
-     */
-    public final SubnetInfo getInfo() { return new SubnetInfo(); }
-
-    /*
-     * Initialize the internal fields from the supplied CIDR mask
-     */
-    private void calculate(String mask) {
-        Matcher matcher = cidrPattern.matcher(mask);
-
-        if (matcher.matches()) {
-            address = matchAddress(matcher);
-
-            /* Create a binary netmask from the number of bits specification /x */
-            int cidrPart = rangeCheck(Integer.parseInt(matcher.group(5)), 0, NBITS-1);
-            for (int j = 0; j < cidrPart; ++j) {
-                netmask |= (1 << 31-j);
-            }
-
-            /* Calculate base network address */
-            network = (address & netmask);
-
-            /* Calculate broadcast address */
-            broadcast = network | ~(netmask);
-        }
-        else 
-            throw new IllegalArgumentException("Could not parse [" + mask + "]");
-    }
-
     /*
      * Convert a dotted decimal format address to a packed integer format
      */
-    private int toInteger(String address) {
+    private static int toInteger(String address) {
         Matcher matcher = addressPattern.matcher(address);
         if (matcher.matches()) {
             return matchAddress(matcher);
@@ -146,7 +48,7 @@ public class SubnetUtils {
      * Convenience method to extract the components of a dotted decimal address and 
      * pack into an integer using a regex match
      */
-    private int matchAddress(Matcher matcher) {
+    private static int matchAddress(Matcher matcher) {
         int addr = 0;
         for (int i = 1; i <= 4; ++i) { 
             int n = (rangeCheck(Integer.parseInt(matcher.group(i)), 0, 255));
@@ -158,7 +60,7 @@ public class SubnetUtils {
     /*
      * Convert a packed integer address into a 4-element array
      */
-    private int[] toArray(int val) {
+    private static int[] toArray(int val) {
         int ret[] = new int[4];
         for (int j = 3; j >= 0; --j)
             ret[j] |= ((val >>> 8*(3-j)) & (0xff));
@@ -166,23 +68,9 @@ public class SubnetUtils {
     }
 
     /*
-     * Convert a 4-element array into dotted decimal format
-     */
-    private String format(int[] octets) {
-        StringBuilder str = new StringBuilder();
-        for (int i =0; i < octets.length; ++i){
-            str.append(octets[i]);
-            if (i != octets.length - 1) {
-                str.append("."); 
-            }
-        }
-        return str.toString();
-    }
-
-    /*
      * Convenience function to check integer boundaries
      */
-    private int rangeCheck(int value, int begin, int end) {
+    private static int rangeCheck(int value, int begin, int end) {
         if (value >= begin && value <= end)
             return value;
 
@@ -193,7 +81,7 @@ public class SubnetUtils {
      * Count the number of 1-bits in a 32-bit integer using a divide-and-conquer strategy
      * see Hacker's Delight section 5.1 
      */
-    int pop(int x) {
+    private static int pop(int x) {
         x = x - ((x >>> 1) & 0x55555555); 
         x = (x & 0x33333333) + ((x >>> 2) & 0x33333333); 
         x = (x + (x >>> 4)) & 0x0F0F0F0F; 
@@ -202,11 +90,26 @@ public class SubnetUtils {
         return x & 0x0000003F; 
     } 
 
-    /* Convert two dotted decimal addresses to a single xxx.xxx.xxx.xxx/yy format
+    /** Convert two dotted decimal addresses to a single xxx.xxx.xxx.xxx/yy format
      * by counting the 1-bit population in the mask address. (It may be better to count 
      * NBITS-#trailing zeroes for this case)
+     * @return a CIDR address
      */
-    public String toCidrNotation(String addr, String mask) {
+    public static String toCidrNotation(String addr, String mask) {
         return addr + "/" + pop(toInteger(mask));
+    }
+
+    /**
+     * Convert a CIDR notation (xxx.xxx.xxx.xxx/yy) format to two dotted decimal addresses
+     * @return an array of two dotted deciman addresses
+     */
+    public static String[] fromCidrNotation(String cidrNotation) {
+        String[] element = cidrNotation.split("/");
+        if (element.length > 1) {
+            int[] mask = toArray(Integer.parseInt(element[1]));
+            return new String[] {element[0], mask[0] + "." + mask[1]+"." + mask[2] + "." + mask[3]};
+        } else {
+            return new String[]{element[0], "255.255.255.0"};
+        }
     }
 }
