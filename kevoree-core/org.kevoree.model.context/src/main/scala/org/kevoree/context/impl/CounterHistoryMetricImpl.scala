@@ -32,11 +32,19 @@ class CounterHistoryMetricImpl() extends CounterHistoryMetric {
       ll.removeFirst()
     }
     ll.addLast(v)
+    v.setEContainer(this, Some(() => { this.removeValues(v) }))
     try {
       val sumE = java.lang.Double.parseDouble(v.getValue)
       setSum(getSum + sumE)
     } catch {
       case ignored: Throwable =>
+    }
+  }
+
+  override def removeValues(values: MetricValue) {
+    if (ll.size != 0 && ll.contains(values.getTimestamp)) {
+      ll.remove(values.getTimestamp)
+      values.setEContainer(null, None)
     }
   }
 
