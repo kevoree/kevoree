@@ -57,8 +57,8 @@ trait TopologyResolver {
 
   private def resolveNodeInstance(model: ContainerRoot, node: ContainerNode): Option[ContainerNode] = {
     node match {
-      case UnresolvedNode(targetNodeName) => {
-        model.getNodes.find(n => n.getName == targetNodeName) match {
+      case UnresolvedNode(targetNodeName,query) => {
+        model.findByQuery(query,classOf[ContainerNode]) match {
           case Some(foundNode) => Some(foundNode)
           case None => logger.error("Unconsitent model , node not found for name " + targetNodeName); None
         }
