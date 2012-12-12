@@ -11,32 +11,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * 	http://www.gnu.org/licenses/lgpl-3.0.txt
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-/**
- * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.gnu.org/licenses/lgpl-3.0.txt
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 /*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
@@ -52,11 +26,11 @@ import org.kevoree.tools.marShell.interpreter.utils.Merger
 import org.kevoree._
 import org.slf4j.LoggerFactory
 
-case class KevsUpdateDictionaryInterpreter (statement: UpdateDictionaryStatement) extends KevsAbstractInterpreter {
+case class KevsUpdateDictionaryInterpreter(statement: UpdateDictionaryStatement) extends KevsAbstractInterpreter {
 
   var logger = LoggerFactory.getLogger(this.getClass)
 
-  def interpret (context: KevsInterpreterContext): Boolean = {
+  def interpret(context: KevsInterpreterContext): Boolean = {
 
     var targetInstance: List[Instance] = List()
     statement.nodeName match {
@@ -66,14 +40,23 @@ case class KevsUpdateDictionaryInterpreter (statement: UpdateDictionaryStatement
         if (nodeID == "*") {
           nodes = context.model.getNodes.toList
         } else {
-          nodes = context.model.getNodes.filter(n => n.getName == nodeID).toList
+          val option = context.model.findByQuery("nodes[" + nodeID + "]", classOf[ContainerNode])
+          if (option.isEmpty) {
+            nodes = List()
+          } else {
+            nodes = List(option.get)
+          }
+
         }
         nodes.foreach {
           targetNode =>
             if (statement.instanceName == "*") {
               targetInstance = targetInstance ++ targetNode.getComponents.toList
             } else {
-              targetInstance = targetInstance ++ targetNode.getComponents.filter(n => n.getName == statement.instanceName).toList
+              val option = context.model.findByQuery("nodes[" + nodeID + "]/components[" + statement.instanceName + "]", classOf[ComponentInstance])
+              if (option.isDefined) {
+                targetInstance = targetInstance ++ List(option.get)
+              }
             }
         }
       }
@@ -81,8 +64,18 @@ case class KevsUpdateDictionaryInterpreter (statement: UpdateDictionaryStatement
         if (statement.instanceName == "*") {
           targetInstance = targetInstance ++ context.model.getHubs.toList ++ context.model.getGroups.toList ++ context.model.getNodes
         } else {
-          targetInstance = targetInstance ++ context.model.getHubs.filter(n => n.getName == statement.instanceName).toList ++
-            context.model.getGroups.filter(n => n.getName == statement.instanceName).toList ++ context.model.getNodes.filter(n => n.getName == statement.instanceName).toList
+          var option : Option[Instance] = context.model.findByQuery("hubs[" + statement.instanceName + "]", classOf[Channel])
+          if (option.isDefined) {
+            targetInstance = targetInstance ++ List(option.get)
+          }
+          option = context.model.findByQuery("groups[" + statement.instanceName + "]", classOf[Group])
+          if (option.isDefined) {
+            targetInstance = targetInstance ++ List(option.get)
+          }
+          option = context.model.findByQuery("nodes[" + statement.instanceName + "]", classOf[ContainerNode])
+          if (option.isDefined) {
+            targetInstance = targetInstance ++ List(option.get)
+          }
         }
       }
     }
@@ -91,7 +84,6 @@ case class KevsUpdateDictionaryInterpreter (statement: UpdateDictionaryStatement
 
     targetInstance.foreach {
       instance =>
-
         Merger.mergeFragmentDictionary(instance, statement.fraProperties)
     }
 
@@ -103,6 +95,4 @@ case class KevsUpdateDictionaryInterpreter (statement: UpdateDictionaryStatement
     //TODO BETTER ERROR OR AMBIGUITY MANAGEMENT
 
   }
-
-
 }

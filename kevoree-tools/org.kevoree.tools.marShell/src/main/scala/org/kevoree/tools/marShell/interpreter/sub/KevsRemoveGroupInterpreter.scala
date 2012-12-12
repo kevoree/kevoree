@@ -34,7 +34,7 @@ package org.kevoree.tools.marShell.interpreter.sub
 import org.kevoree.tools.marShell.interpreter.KevsAbstractInterpreter
 import org.kevoree.tools.marShell.interpreter.KevsInterpreterContext
 
-import org.kevoree.{MBinding, ContainerRoot, Channel}
+import org.kevoree.{Group, MBinding, ContainerRoot, Channel}
 import org.kevoree.tools.marShell.ast.{RemoveGroupStatment, RemoveChannelInstanceStatment}
 import org.slf4j.LoggerFactory
 
@@ -43,7 +43,7 @@ case class KevsRemoveGroupInterpreter(removeGroup: RemoveGroupStatment) extends 
   var logger = LoggerFactory.getLogger(this.getClass)
 
   def interpret(context: KevsInterpreterContext): Boolean = {
-    context.model.getGroups.find(n => n.getName == removeGroup.groupName) match {
+    context.model.findByQuery("groups[" + removeGroup.groupName + "]", classOf[Group]) match {
       case Some(target) => {
         context.model.removeGroups(target)
         true

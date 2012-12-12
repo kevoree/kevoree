@@ -34,13 +34,7 @@ class KevsTypesTest extends KevSTestSuiteHelper {
 
   @Test def typesTest() {
     val baseModel = model("baseModel/defaultLibrary.kev")
-     /*
-    println(baseModel.eResource())
-    val baseModelCopy = EcoreUtil.copy(baseModel)
-    println("copyRes="+baseModelCopy.eResource())
-      */
-
-    val oscript = getScript("scripts/kevsTypeDefinition.kevs");
+    val oscript = getScript("scripts/kevsTypeDefinition.kevs")
 
     assert(oscript.interpret(KevsInterpreterContext(baseModel)))
     baseModel.testSave("results", "kevsTypeDefinition.kev")

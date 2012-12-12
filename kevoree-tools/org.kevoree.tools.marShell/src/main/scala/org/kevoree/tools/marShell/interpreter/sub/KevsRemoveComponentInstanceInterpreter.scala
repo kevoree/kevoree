@@ -16,7 +16,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * 	http://www.gnu.org/licenses/lgpl-3.0.txt
+ * http://www.gnu.org/licenses/lgpl-3.0.txt
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -34,9 +34,10 @@ package org.kevoree.tools.marShell.interpreter.sub
 import org.kevoree.tools.marShell.interpreter.KevsAbstractInterpreter
 import org.kevoree.tools.marShell.interpreter.KevsInterpreterContext
 
-import org.kevoree.tools.marShell.ast.{RemoveComponentInstanceStatment}
+import org.kevoree.tools.marShell.ast.RemoveComponentInstanceStatment
 import org.kevoree.{ContainerNode, ContainerRoot, ComponentInstance, MBinding}
 import org.slf4j.LoggerFactory
+import collection.mutable.ListBuffer
 
 case class KevsRemoveComponentInstanceInterpreter(removeComponent: RemoveComponentInstanceStatment) extends KevsAbstractInterpreter {
 
@@ -56,13 +57,13 @@ case class KevsRemoveComponentInstanceInterpreter(removeComponent: RemoveCompone
     //SEARCH NODE
     removeComponent.cid.nodeName match {
       case Some(nodeID) => {
-        context.model.getNodes.find(n => n.getName == nodeID) match {
+        context.model.findByQuery("nodes[" + nodeID + "]", classOf[ContainerNode]) match {
           case Some(targetNode) => {
             //SEARCH COMPONENT
-            targetNode.getComponents.find(c => c.getName == removeComponent.cid.componentInstanceName) match {
-              case Some(targetComponent) => deleteComponent(targetNode,targetComponent)
+            targetNode.findByQuery("components[" + removeComponent.cid.componentInstanceName + "]/", classOf[ComponentInstance]) match {
+              case Some(targetComponent) => deleteComponent(targetNode, targetComponent)
               case None => {
-                logger.error("Component not found " + removeComponent.cid.componentInstanceName);
+                logger.error("Component not found " + removeComponent.cid.componentInstanceName)
                 false
               }
             }
@@ -79,18 +80,9 @@ case class KevsRemoveComponentInstanceInterpreter(removeComponent: RemoveCompone
 
 
   def getRelatedBindings(cself: ComponentInstance): List[MBinding] = {
-    var res = List[MBinding]()
-		cself.getProvided.foreach(p => res = res ++ p.getBindings)
-		cself.getRequired.foreach(p => res = res ++ p.getBindings)
-    /*cself.eContainer.eContainer.asInstanceOf[ContainerRoot].getMBindings.foreach {
-      b =>
-        cself.getProvided.find({
-          p => b.getPort == p
-        }).map(e => {res = res ++ List(b)})
-        cself.getRequired.find({
-          p => b.getPort == p
-        }).map(e => {res = res ++ List(b)})
-    }*/
+    var res = ListBuffer[MBinding]()
+    cself.getProvided.foreach(p => res = res ++ p.getBindings)
+    cself.getRequired.foreach(p => res = res ++ p.getBindings)
     res.toList
   }
 

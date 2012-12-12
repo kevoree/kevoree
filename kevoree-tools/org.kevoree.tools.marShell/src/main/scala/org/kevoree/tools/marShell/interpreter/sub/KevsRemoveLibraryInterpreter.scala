@@ -16,7 +16,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * 	http://www.gnu.org/licenses/lgpl-3.0.txt
+ * http://www.gnu.org/licenses/lgpl-3.0.txt
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -33,19 +33,20 @@ package org.kevoree.tools.marShell.interpreter.sub
 
 import org.kevoree.tools.marShell.interpreter.KevsAbstractInterpreter
 import org.kevoree.tools.marShell.interpreter.KevsInterpreterContext
-import org.kevoree.tools.marShell.ast.{RemoveLibraryStatment}
+import org.kevoree.tools.marShell.ast.RemoveLibraryStatment
 
 import org.slf4j.LoggerFactory
+import org.kevoree.TypeLibrary
 
-case class KevsRemoveLibraryInterpreter(statment : RemoveLibraryStatment) extends KevsAbstractInterpreter {
+case class KevsRemoveLibraryInterpreter(statment: RemoveLibraryStatment) extends KevsAbstractInterpreter {
 
   var logger = LoggerFactory.getLogger(this.getClass)
 
-  def interpret(context : KevsInterpreterContext):Boolean={
-    context.model.getLibraries.find(lib=> lib.getName == statment.libraryName) match {
-      case Some(library) =>  context.model.removeLibraries(library);true
+  def interpret(context: KevsInterpreterContext): Boolean = {
+    context.model.findByQuery("libraries[" + statment.libraryName + "]", classOf[TypeLibrary]) match {
+      case Some(library) => context.model.removeLibraries(library); true
       case None => {
-        logger.error("Error : Library not found with name "+statment.libraryName)
+        logger.error("Error : Library not found with name " + statment.libraryName)
         false
       }
     }
