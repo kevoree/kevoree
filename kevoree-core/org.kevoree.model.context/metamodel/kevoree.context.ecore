@@ -24,7 +24,7 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="values" upperBound="-1"
         eType="#//MetricValue" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="query" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
-        iD="true"/>
+        iD="false"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="min" eType="#//MetricValue"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="max" eType="#//MetricValue"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="first" eType="#//MetricValue"/>
