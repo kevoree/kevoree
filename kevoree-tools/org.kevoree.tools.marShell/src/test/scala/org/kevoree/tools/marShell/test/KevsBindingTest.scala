@@ -38,7 +38,7 @@ class KevsBindingTest extends KevSTestSuiteHelper {
 
   @Test def bindingTest() {
     val baseModel = model("baseModel/defaultLibrary.kev")
-    val oscript = getScript("scripts/kevsBindings.kevs");
+    val oscript = getScript("scripts/kevsBindings.kevs")
 
     assert(oscript.interpret(KevsInterpreterContext(baseModel)))
     baseModel.testSave("results", "kevsBindingsResult.kev")

@@ -16,7 +16,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * 	http://www.gnu.org/licenses/lgpl-3.0.txt
+ * http://www.gnu.org/licenses/lgpl-3.0.txt
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -29,7 +29,7 @@ package org.kevoree.tools.marShell.interpreter.sub
 import org.kevoree.tools.marShell.interpreter.{KevsInterpreterContext, KevsAbstractInterpreter}
 
 import org.kevoree.tools.marShell.ast.NetworkPropertyStatement
-import org.kevoree.{KevoreeFactory, ContainerRoot}
+import org.kevoree.{ContainerNode, KevoreeFactory, ContainerRoot}
 import org.slf4j.LoggerFactory
 
 case class KevsNetworkInterpreter(networkStatement: NetworkPropertyStatement) extends KevsAbstractInterpreter {
@@ -37,11 +37,11 @@ case class KevsNetworkInterpreter(networkStatement: NetworkPropertyStatement) ex
   var logger = LoggerFactory.getLogger(this.getClass)
 
   def interpret(context: KevsInterpreterContext): Boolean = {
-     import scala.collection.JavaConversions._
+    import scala.collection.JavaConversions._
     networkStatement.props.foreach {
       prop =>
         networkStatement.srcNodeName match {
-          case Some(srcNode)=> updateNodeLinkProp(context.model, srcNode, networkStatement.targetNodeName, prop._1, prop._2, "", 100)
+          case Some(srcNode) => updateNodeLinkProp(context.model, srcNode, networkStatement.targetNodeName, prop._1, prop._2, "", 100)
           case None => updateNodeLinkProp(context.model, networkStatement.targetNodeName, networkStatement.targetNodeName, prop._1, prop._2, "", 100)
         }
     }
@@ -56,18 +56,14 @@ case class KevsNetworkInterpreter(networkStatement: NetworkPropertyStatement) ex
         nn.getInitBy.get.getName == currentNodeName && nn.getTarget.getName == targetNodeName
     }) getOrElse {
       val newNodeNetwork = KevoreeFactory.eINSTANCE.createNodeNetwork
-      val thisNode = actualModel.getNodes.find({
-        loopNode => loopNode.getName == currentNodeName
-      })
-      val targetNode = actualModel.getNodes.find({
-        loopNode => loopNode.getName == targetNodeName
-      })
+      val thisNode = actualModel.findByQuery("nodes[" + currentNodeName + "]", classOf[ContainerNode])
+      val targetNode = actualModel.findByQuery("nodes[" + targetNodeName + "]", classOf[ContainerNode])
       val thisNodeFound = thisNode.getOrElse {
-        val newnode = KevoreeFactory.eINSTANCE.createContainerNode
-        newnode.setName(currentNodeName)
-        actualModel.addNodes(newnode)
-        newnode
-      }
+          val newnode = KevoreeFactory.eINSTANCE.createContainerNode
+          newnode.setName(currentNodeName)
+          actualModel.addNodes(newnode)
+          newnode
+        }
       newNodeNetwork.setTarget(targetNode.getOrElse {
         val newnode = KevoreeFactory.eINSTANCE.createContainerNode
         newnode.setName(targetNodeName)

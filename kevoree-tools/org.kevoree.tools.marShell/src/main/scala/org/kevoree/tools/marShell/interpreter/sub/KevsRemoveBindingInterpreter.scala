@@ -16,7 +16,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * 	http://www.gnu.org/licenses/lgpl-3.0.txt
+ * http://www.gnu.org/licenses/lgpl-3.0.txt
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -31,11 +31,11 @@
 
 package org.kevoree.tools.marShell.interpreter.sub
 
-import org.kevoree.KevoreeFactory
+import org.kevoree.{Channel, ComponentInstance, ContainerNode}
 import org.kevoree.tools.marShell.interpreter.KevsAbstractInterpreter
 import org.kevoree.tools.marShell.interpreter.KevsInterpreterContext
 
-import org.kevoree.tools.marShell.ast.{RemoveBindingStatment, AddBindingStatment}
+import org.kevoree.tools.marShell.ast.RemoveBindingStatment
 import org.slf4j.LoggerFactory
 
 case class KevsRemoveBindingInterpreter(removeBinding: RemoveBindingStatment) extends KevsAbstractInterpreter {
@@ -45,40 +45,35 @@ case class KevsRemoveBindingInterpreter(removeBinding: RemoveBindingStatment) ex
   def interpret(context: KevsInterpreterContext): Boolean = {
     removeBinding.cid.nodeName match {
       case Some(searchNodeName) => {
-        context.model.getNodes.find(node => node.getName == searchNodeName) match {
+        context.model.findByQuery("nodes[" + searchNodeName + "]", classOf[ContainerNode]) match {
           case Some(targetNode) => {
-            targetNode.getComponents.find(component => component.getName == removeBinding.cid.componentInstanceName) match {
+            targetNode.findByQuery("components[" + removeBinding.cid.componentInstanceName + "]", classOf[ComponentInstance]) match {
               case Some(targetComponent) => {
-                context.model.getHubs.find(hub => hub.getName == removeBinding.bindingInstanceName) match {
+                context.model.findByQuery("hubs[" + removeBinding.bindingInstanceName + "]", classOf[Channel]) match {
                   case Some(targetHub) => {
-
-
                     val cports = targetComponent.getProvided.toList ++ targetComponent.getRequired.toList
                     cports.find(port => port.getPortTypeRef.getName == removeBinding.portName) match {
                       case Some(port) => {
                         //LOOK for previous binding
-												port.getBindings.find(mb => mb.getHub == targetHub) match {
-//                        context.model.getMBindings.find(mb => mb.getHub == targetHub && mb.getPort == port) match {
-                          case Some(previousMB) => context.model.removeMBindings(previousMB);previousMB.setPort(null);previousMB.setHub(null); true
-                          case None => logger.error("Previous binding not found => " + removeBinding.bindingInstanceName); false
+                        port.getBindings.find(mb => mb.getHub == targetHub) match {
+                          case Some(previousMB) => context.model.removeMBindings(previousMB); previousMB.setPort(null); previousMB.setHub(null); true
+                          case None => logger.error("Previous binding not found => {}", removeBinding.bindingInstanceName); false
                         }
                       }
-                      case None => logger.error("Port not found => " + removeBinding.portName); false
+                      case None => logger.error("Port not found => {}", removeBinding.portName); false
                     }
                   }
-                  case None => logger.error("Hub not found => " + removeBinding.bindingInstanceName); false
+                  case None => logger.error("Hub not found => {}",removeBinding.bindingInstanceName); false
                 }
               }
-              case None => logger.error("Component not found => " + removeBinding.cid.componentInstanceName); false
+              case None => logger.error("Component not found => {}", removeBinding.cid.componentInstanceName); false
             }
           }
-          case None => logger.error("Node not found => " + removeBinding.cid.nodeName); false
+          case None => logger.error("Node not found => {}", removeBinding.cid.nodeName); false
         }
       }
       case None => logger.error("NodeName is mandatory !"); false
     }
-
-
   }
 
 }
