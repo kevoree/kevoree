@@ -32,18 +32,6 @@ class NodeContainerChecker extends CheckerService {
       node => //For each Node
         if (node.getHosts.size > 0) {
           val ntype = node.getTypeDefinition.asInstanceOf[NodeType]
-
-          /*
-          var hostedCapable = false
-          ntype.getManagedPrimitiveTypes.foreach {
-            ptype =>
-              if (ptype.getName.toLowerCase.equals("addnode")) {
-                hostedCapable = true;
-              }
-              if (ptype.getName.toLowerCase.equals("removenode")) {
-                hostedCapable = true;
-              }
-          } */
           val hostedCapable = NodeTypeAspect(ntype).defineAdaptationPrimitiveType("addnode") && NodeTypeAspect(ntype).defineAdaptationPrimitiveType("removenode")
           if (!hostedCapable) {
             val violation: CheckerViolation = new CheckerViolation
