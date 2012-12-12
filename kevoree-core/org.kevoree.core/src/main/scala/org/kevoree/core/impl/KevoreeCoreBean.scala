@@ -307,7 +307,10 @@ class KevoreeCoreBean extends KevoreeModelHandlerService {
                 nodeInstance = null
                 bootstraper.clear //CLEAR
                 //place the current model as an empty model (for backup)
-                switchToNewModel(KevoreeFactory.createContainerRoot)
+
+                val backupEmptyModel = KevoreeFactory.createContainerRoot
+                backupEmptyModel.setInternalReadOnly()
+                switchToNewModel(backupEmptyModel)
 
                 //prepares for deployment of the new system
                 newmodel = readOnlyNewModel

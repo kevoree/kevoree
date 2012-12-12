@@ -37,14 +37,13 @@ import org.slf4j.LoggerFactory
  * User: duke
  * Date: 07/10/11
  * Time: 14:52
- * To change this template use File | Settings | File Templates.
  */
 
 trait GroupMerger extends Merger with DictionaryMerger{
 
   private val logger = LoggerFactory.getLogger(this.getClass)
 
-  def mergeAllGroups(actualModel: ContainerRoot, modelToMerge: ContainerRoot) = {
+  def mergeAllGroups(actualModel: ContainerRoot, modelToMerge: ContainerRoot) {
     modelToMerge.getGroups.foreach {
       group =>
       val currentGroup = actualModel.getGroups.find(pgroup => pgroup.getName == group.getName) match {
