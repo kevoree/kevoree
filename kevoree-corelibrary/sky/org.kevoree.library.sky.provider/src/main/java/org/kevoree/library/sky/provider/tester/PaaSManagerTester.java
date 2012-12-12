@@ -14,6 +14,6 @@ import org.kevoree.annotation.*;
 /*@Requires({
 		@RequiredPort(name = "deploy", type = PortType.MESSAGE, needCheckDependency = true),
 })*/
-@ComponentType
+//@ComponentType
 public class PaaSManagerTester {
 }

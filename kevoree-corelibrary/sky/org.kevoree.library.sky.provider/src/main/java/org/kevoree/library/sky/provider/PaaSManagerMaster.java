@@ -101,7 +101,7 @@ public class PaaSManagerMaster extends AbstractComponentType implements PaaSServ
 	public void merge (String id, ContainerRoot model) throws SubmissionException {
 		// looking for the group on the model that precise the PaaS id
 		// if the id is contains by the name of the instance of PaaSManager then this instance will used it
-		// FIXME this must be removed when we will be able to use filter service channel
+		// FIXME this must be removed when we will be able to use filtered service channel
 		if (getName().contains(id)) {
 			notifyPaaS(id, merge(paasModel, model), model);
 		}

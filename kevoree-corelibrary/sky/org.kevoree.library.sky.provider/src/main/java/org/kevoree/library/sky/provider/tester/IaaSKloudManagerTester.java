@@ -1,6 +1,10 @@
 package org.kevoree.library.sky.provider.tester;
 
-import org.kevoree.annotation.*;
+import org.kevoree.annotation.ComponentType;
+import org.kevoree.annotation.Library;
+import org.kevoree.annotation.Start;
+import org.kevoree.annotation.Stop;
+import org.kevoree.api.service.core.script.KevScriptEngineException;
 import org.kevoree.framework.AbstractComponentType;
 
 /**
@@ -12,11 +16,12 @@ import org.kevoree.framework.AbstractComponentType;
  * @version 1.0
  */
 @Library(name = "Test")
-@ComponentType
+//@ComponentType
 public class IaaSKloudManagerTester extends AbstractComponentType {
 
 	@Start
-	public void start () {
+	public void start () throws KevScriptEngineException {
+
 	}
 
 	@Stop
