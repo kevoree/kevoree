@@ -47,25 +47,8 @@ case class ContainerNodeAspect(node: ContainerNode) {
 
     /* ADD NODE TYPE DEFINITION */
     usedType = usedType ++ getTypeAndInherited(node.getTypeDefinition)
-
-    /* ADD SUPER TYPE USED BY NODE TYPE DEFINITION */
-    //  if (node.getTypeDefinition.getSuperTypes != null) {
-    //   usedType = usedType ++ getTypeAndInherited(node.getTypeDefinition)
-    //  }
-
     /* ADD COMPONENT TYPE USED */
     node.getComponents.foreach(c => usedType = usedType ++ getTypeAndInherited(c.getTypeDefinition))
-    /*
-        node.getComponents.foreach { c =>
-            if (!usedType.exists({
-              e => e.getName == c.getTypeDefinition.getName
-            })) {
-              //usedType = usedType ++ List(c.getTypeDefinition)
-              //if (c.getTypeDefinition.getSuperTypes != null) {
-              usedType = usedType ++ getTypeAndInherited(c.getTypeDefinition)
-              //}
-            }
-        }   */
 
     /* ADD CHANNEL TYPE USED */
     /* add channel fragment on node */
@@ -75,10 +58,7 @@ case class ContainerNodeAspect(node: ContainerNode) {
           if (!usedType.exists({
             e => e.getName == mb.getHub.getTypeDefinition.getName
           })) {
-            // usedType = usedType ++ List(mb.getHub.getTypeDefinition)
-            // if (mb.getHub.getTypeDefinition.getSuperTypes != null) {
             usedType = usedType ++ getTypeAndInherited(mb.getHub.getTypeDefinition)
-            // }
           }
         }
     }
@@ -87,10 +67,8 @@ case class ContainerNodeAspect(node: ContainerNode) {
     /* add group */
     node.eContainer.asInstanceOf[ContainerRoot].getGroups.filter(group => group.getSubNodes.contains(node)).foreach({
       c =>
-      //usedType = usedType ++ List(c.getTypeDefinition)
-      //if (node.getTypeDefinition.getSuperTypes != null) {
         usedType = usedType ++ getTypeAndInherited(c.getTypeDefinition)
-      //}
+
     })
 
     usedType.toList
@@ -110,18 +88,6 @@ case class ContainerNodeAspect(node: ContainerNode) {
         }
     }
     usedChannel.toList
-    /*var usedChannel: List[Channel] = List[Channel]()
-    node.eContainer.asInstanceOf[ContainerRoot].getMBindings.foreach {
-      mb =>
-        if (mb.getPort.eContainer.eContainer == node) {
-          if (!usedChannel.exists({
-            e => e.getName == mb.getHub.getName
-          })) {
-            usedChannel = usedChannel ++ List(mb.getHub)
-          }
-        }
-    }
-    usedChannel*/
   }
 
   def getGroups: List[Group] = {
