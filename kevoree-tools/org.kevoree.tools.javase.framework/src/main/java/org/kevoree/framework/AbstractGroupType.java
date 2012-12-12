@@ -29,12 +29,7 @@ package org.kevoree.framework;
 
 import org.kevoree.ContainerRoot;
 import org.kevoree.Group;
-import org.kevoree.api.Bootstraper;
-import org.kevoree.api.service.core.handler.KevoreeModelHandlerService;
 import org.kevoree.api.service.core.handler.ModelListener;
-import org.kevoree.api.service.core.script.KevScriptEngineFactory;
-
-import java.util.HashMap;
 
 public abstract class AbstractGroupType extends AbstractTypeDefinition implements ModelListener {
 
@@ -60,7 +55,7 @@ public abstract class AbstractGroupType extends AbstractTypeDefinition implement
      * @return the group corresponding to this
      */
     public Group getModelElement() {
-        return KevoreeElementHelper.getGroupElement(this.getName(), this.getModelService().getLastModel()).get();
+        return getModelService().getLastModel().findByQuery("groups[" + getName() + "]", Group.class).get();
     }
 
     @Override
