@@ -88,7 +88,7 @@ class KevsInstanceTest extends KevSTestSuiteHelper {
 
   @Test def verifyRemoveInstance() {
     val baseModel = model("baseModel/defaultLibrary.kev")
-    val oscript = getScript("scripts/kevsInstanceRemove.kevs");
+    val oscript = getScript("scripts/kevsInstanceRemove.kevs")
 
     assert(oscript.interpret(KevsInterpreterContext(baseModel)))
     baseModel.testSave("results", "kevsInstanceRemoveResult.kev")

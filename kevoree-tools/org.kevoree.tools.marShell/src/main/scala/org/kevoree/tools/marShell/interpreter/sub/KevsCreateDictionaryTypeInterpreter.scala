@@ -16,7 +16,7 @@ package org.kevoree.tools.marShell.interpreter.sub
 import org.kevoree.tools.marShell.ast.CreateDictionaryTypeStatment
 import org.kevoree.tools.marShell.interpreter.{KevsInterpreterContext, KevsAbstractInterpreter}
 import org.slf4j.LoggerFactory
-import org.kevoree.KevoreeFactory
+import org.kevoree.{TypeDefinition, KevoreeFactory}
 
 /**
  * Created with IntelliJ IDEA.
@@ -29,8 +29,7 @@ case class KevsCreateDictionaryTypeInterpreter(stmt: CreateDictionaryTypeStatmen
   val logger = LoggerFactory.getLogger(this.getClass)
 
   def interpret(context: KevsInterpreterContext) = {
-
-    context.model.getTypeDefinitions.find(td => td.getName == stmt.typeName) match {
+    context.model.findByQuery("typeDefinitions[" +stmt.typeName +"]", classOf[TypeDefinition])match {
       case Some(td) => {
         if (td.getDictionaryType.isEmpty) {
           val newdictionary = KevoreeFactory.eINSTANCE.createDictionaryType
@@ -64,5 +63,4 @@ case class KevsCreateDictionaryTypeInterpreter(stmt: CreateDictionaryTypeStatmen
       }
     }
   }
-
 }

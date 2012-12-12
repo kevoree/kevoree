@@ -16,7 +16,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * 	http://www.gnu.org/licenses/lgpl-3.0.txt
+ * http://www.gnu.org/licenses/lgpl-3.0.txt
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -43,11 +43,9 @@ case class KevsRemoveChannelInterpreter(removeChannel: RemoveChannelInstanceStat
   var logger = LoggerFactory.getLogger(this.getClass)
 
   def interpret(context: KevsInterpreterContext): Boolean = {
-    context.model.getHubs.find{n =>
-      n.getName.equals(removeChannel.channelName)
-    } match {
+    /*context.model.getHubs.find(n => n.getName.equals(removeChannel.channelName))*/
+    context.model.findByQuery("hubs[" + removeChannel.channelName + "]", classOf[Channel]) match {
       case Some(target) => {
-
         val root = target.eContainer.asInstanceOf[ContainerRoot]
         getRelatedBindings(target).foreach(rb => {
           root.removeMBindings(rb)
@@ -59,22 +57,14 @@ case class KevsRemoveChannelInterpreter(removeChannel: RemoveChannelInstanceStat
         true
       }
       case None => {
-        logger.error("Channel "+removeChannel.channelName+" does not exist in the model. The removeChannel command has been ignored." );
+        logger.error("Channel {} does not exist in the model. The removeChannel command has been ignored.", removeChannel.channelName)
         true
       }
     }
   }
 
   def getRelatedBindings(cself: Channel): List[MBinding] = {
-//    var res = List[MBinding]()
-		cself.getBindings
-//    cself.eContainer.asInstanceOf[ContainerRoot].getMBindings.foreach {
-//      b =>
-//        if (b.getHub == cself) {
-//           res = res ++ List(b)
-//        }
-//    }
-//    res.toList
+    cself.getBindings
   }
 
 
