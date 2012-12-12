@@ -38,7 +38,7 @@ class KevoreeNodeManager (node: AbstractHostNode) /*extends Actor*/ {
   }
 
   def addNode (iaasModel: ContainerRoot, targetChildName: String, targetChildModel: ContainerRoot): Boolean = {
-    logger.debug("try to add a node: " + targetChildName)
+    logger.debug("try to add a node: {}", targetChildName)
     val newRunner = node.createKevoreeNodeRunner(targetChildName)
     runners.append(newRunner)
 
@@ -50,7 +50,7 @@ class KevoreeNodeManager (node: AbstractHostNode) /*extends Actor*/ {
   }
 
   def removeNode (iaasModel: ContainerRoot, targetChildName: String): Boolean = {
-    logger.debug("try to remove " + targetChildName)
+    logger.debug("try to remove {}", targetChildName)
     runners.find(runner => runner.nodeName == targetChildName) match {
       case None => true// we do nothing because there is no node with this name
       case Some(runner) => {

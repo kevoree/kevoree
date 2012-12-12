@@ -1,7 +1,7 @@
 package org.kevoree.library.sky.api
 
 import command.{AddNodeCommand, RemoveNodeCommand}
-import nodeType.{HostNode, AbstractHostNode, AbstractIaaSNode, IaaSNode}
+import nodeType.{HostNode, AbstractHostNode}
 import org.kevoreeAdaptation.{AdaptationPrimitive, ParallelStep, KevoreeAdaptationFactory, AdaptationModel}
 import org.slf4j.{LoggerFactory, Logger}
 import org.kevoree._
@@ -51,22 +51,20 @@ object PlanningManager {
         }
       }
       if (removeNodeType == null) {
-        logger.warn("there is no adaptation primitive for " + HostNode.REMOVE_NODE)
+        logger.warn("there is no adaptation primitive for {}", HostNode.REMOVE_NODE)
       }
       if (addNodeType == null) {
-        logger.warn("there is no adaptation primitive for " + HostNode.ADD_NODE)
+        logger.warn("there is no adaptation primitive for {}", HostNode.ADD_NODE)
       }
-      //        for (node <- current.getNodesForJ) {
-      current.getNodes.find(node => node.getName == skyNode.getNodeName) match {
+      current.findByQuery("nodes[" + skyNode.getNodeName + "]", classOf[ContainerNode]) match {
         case Some(node) => {
-          target.getNodes.find(node1 => node1.getName == skyNode.getNodeName) match {
+          target.findByQuery("nodes[" + skyNode.getNodeName + "]", classOf[ContainerNode]) match {
             case Some(node1) => {
               node.getHosts.foreach {
                 subNode =>
-                  node1.getHosts.find(subNode1 => subNode.getName == subNode1.getName) match {
+                  node1.findByQuery("hosts[" + subNode.getName + "]", classOf[ContainerNode]) match {
                     case None => {
-                      logger.debug("add a " + HostNode.REMOVE_NODE + " adaptation primitive with " + subNode.getName +
-                        " as parameter")
+                      logger.debug("add a {} adaptation primitive with {} as parameter", HostNode.REMOVE_NODE, subNode.getName)
                       val command: AdaptationPrimitive = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive
                       command.setPrimitiveType(removeNodeType)
                       command.setRef(subNode)
@@ -86,16 +84,15 @@ object PlanningManager {
         case None =>
       }
 
-      target.getNodes.find(node => node.getName == skyNode.getNodeName) match {
+      target.findByQuery("nodes[" + skyNode.getNodeName + "]", classOf[ContainerNode]) match {
         case Some(node) => {
-          current.getNodes.find(node1 => node1.getName == skyNode.getNodeName) match {
+          current.findByQuery("nodes[" + skyNode.getNodeName + "]", classOf[ContainerNode]) match {
             case Some(node1) => {
               node.getHosts.foreach {
                 subNode =>
-                  node1.getHosts.find(subNode1 => subNode.getName == subNode1.getName) match {
+                  node1.findByQuery("hosts[" + subNode.getName + "]", classOf[ContainerNode]) match {
                     case None => {
-                      logger.debug("add a " + HostNode.ADD_NODE + " adaptation primitive with " + subNode.getName +
-                        " as parameter")
+                      logger.debug("add a {} adaptation primitive with {} as parameter", HostNode.ADD_NODE, subNode.getName)
                       val command: AdaptationPrimitive = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive
                       command.setPrimitiveType(addNodeType)
                       command.setRef(subNode)
@@ -121,7 +118,7 @@ object PlanningManager {
     }
     adaptationModel.addAllAdaptations(superModel.getAdaptations)
     step.setNextStep(superModel.getOrderedPrimitiveSet)
-    logger.debug("Kompare model contain " + adaptationModel.getAdaptations.size + " primitives")
+    logger.debug("Kompare model contain {} primitives", adaptationModel.getAdaptations.size)
 
     adaptationModel
   }
@@ -142,21 +139,21 @@ object PlanningManager {
   }
 
   def getPrimitive(adaptationPrimitive: AdaptationPrimitive, skyNode: AbstractHostNode): PrimitiveCommand = {
-    logger.debug("ask for primitiveCommand corresponding to " + adaptationPrimitive.getPrimitiveType.getName)
+    logger.debug("ask for primitiveCommand corresponding to {}", adaptationPrimitive.getPrimitiveType.getName)
     var command: PrimitiveCommand = null
     if (adaptationPrimitive.getPrimitiveType.getName == HostNode.REMOVE_NODE) {
-      logger.debug("add REMOVE_NODE command on " + (adaptationPrimitive.getRef.asInstanceOf[ContainerNode]).getName)
+      logger.debug("add REMOVE_NODE command on {}", (adaptationPrimitive.getRef.asInstanceOf[ContainerNode]).getName)
 
       val targetNode = adaptationPrimitive.getRef.asInstanceOf[ContainerNode]
       val targetNodeRoot = adaptationPrimitive.getRef.asInstanceOf[ContainerNode].eContainer.asInstanceOf[ContainerRoot]
-      command = new RemoveNodeCommand(targetNodeRoot,targetNode.getName,skyNode)
+      command = new RemoveNodeCommand(targetNodeRoot, targetNode.getName, skyNode)
     }
     else if (adaptationPrimitive.getPrimitiveType.getName == HostNode.ADD_NODE) {
-      logger.debug("add ADD_NODE command on " + (adaptationPrimitive.getRef.asInstanceOf[ContainerNode]).getName)
+      logger.debug("add ADD_NODE command on {}", (adaptationPrimitive.getRef.asInstanceOf[ContainerNode]).getName)
 
       val targetNode = adaptationPrimitive.getRef.asInstanceOf[ContainerNode]
       val targetNodeRoot = adaptationPrimitive.getRef.asInstanceOf[ContainerNode].eContainer.asInstanceOf[ContainerRoot]
-      command = new AddNodeCommand(targetNodeRoot,targetNode.getName,skyNode)
+      command = new AddNodeCommand(targetNodeRoot, targetNode.getName, skyNode)
     }
     if (command == null) {
       command = skyNode.superGetPrimitive(adaptationPrimitive)

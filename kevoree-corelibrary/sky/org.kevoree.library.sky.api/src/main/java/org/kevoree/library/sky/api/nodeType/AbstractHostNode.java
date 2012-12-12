@@ -45,7 +45,7 @@ public abstract class AbstractHostNode extends JavaSENode implements HostNode {
 	@Stop
 	@Override
 	public void stopNode () {
-		logger.debug("stopping node type of " + this.getNodeName());
+		logger.debug("stopping node type of {}", this.getNodeName());
 		nodeManager.stop();
 		super.stopNode();
 	}

@@ -1,7 +1,7 @@
 package org.kevoree.library.sky.api.helper
 
-import org.kevoree.{DictionaryAttribute, ContainerRoot}
-import org.kevoree.framework.{NetworkHelper, KevoreePropertyHelper}
+import org.kevoree.ContainerRoot
+import org.kevoree.framework.KevoreePropertyHelper
 import java.net.{ServerSocket, InetSocketAddress, Socket, InetAddress}
 import org.slf4j.{LoggerFactory, Logger}
 
@@ -16,7 +16,7 @@ import org.slf4j.{LoggerFactory, Logger}
 object KloudNetworkHelper {
   private val logger: Logger = LoggerFactory.getLogger(this.getClass)
 
-  def selectIP (parentNodeName: String, kloudModel: ContainerRoot, alreadyUsedIps: Array[String]): Option[String] = {
+  def selectIP(parentNodeName: String, kloudModel: ContainerRoot, alreadyUsedIps: Array[String]): Option[String] = {
     logger.debug("try to select an IP for a child of {}", parentNodeName)
     kloudModel.getNodes.find(n => n.getName == parentNodeName) match {
       case None => None
@@ -32,7 +32,7 @@ object KloudNetworkHelper {
     }
   }
 
-  private def lookingForNewIp (ips: Array[String], subnet: String, mask: String): String = {
+  private def lookingForNewIp(ips: Array[String], subnet: String, mask: String): String = {
     var newIp = subnet
     val ipBlock = subnet.split("\\.")
     var i = Integer.parseInt(ipBlock(0))
@@ -47,10 +47,11 @@ object KloudNetworkHelper {
           while (l < 255 && checkMask(i, j, k, l, subnet, mask) && !found) {
             val tmpIp = i + "." + j + "." + k + "." + l
             if (!ips.contains(tmpIp)) {
-              if (!NetworkHelper.isAccessible(tmpIp)) {
-                newIp = tmpIp
-                found = true
-              }
+              //              if (!NetworkHelper.isAccessible(tmpIp)) {
+              // TODO must be uncommented
+              newIp = tmpIp
+              found = true
+              //              }
             }
             l += 1
           }
@@ -66,7 +67,7 @@ object KloudNetworkHelper {
     newIp
   }
 
-  private def checkMask (i: Int, j: Int, k: Int, l: Int, subnet: String, mask: String): Boolean = {
+  private def checkMask(i: Int, j: Int, k: Int, l: Int, subnet: String, mask: String): Boolean = {
     val maskInt = ~((1 << (32 - Integer.parseInt(mask))) - 1)
     val ipBytes = InetAddress.getByName(i + "." + j + "." + k + "." + l).getAddress
     val subnetBytes = InetAddress.getByName(subnet).getAddress
@@ -75,7 +76,7 @@ object KloudNetworkHelper {
     (subnetInt & maskInt) == (ipInt & maskInt)
   }
 
-  def selectPortNumber (address: String, ports: Array[Int]): Int = {
+  def selectPortNumber(address: String, ports: Array[Int]): Int = {
     var i = 8000
     if (address != "") {
       var found = false
