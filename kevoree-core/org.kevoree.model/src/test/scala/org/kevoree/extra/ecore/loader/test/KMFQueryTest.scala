@@ -31,19 +31,19 @@ class KMFQueryTest {
 
     val model = ContainerRootLoader.loadModel(new File(getClass.getResource("/unomas.kev").toURI)).get
     assert(model.findNodesByID("node0").getName == "node0")
-    assert(model.findById("nodes[node0]").asInstanceOf[ContainerNode].getName == "node0")
-    assert(model.findById("nodes[node0]/components[FakeConso145]").asInstanceOf[ComponentInstance].getName == "FakeConso145")
-    assert(model.findById("adaptationPrimitiveTypes[UpdateDeployUnit]").asInstanceOf[org.kevoree.AdaptationPrimitiveType].getName == "UpdateDeployUnit")
+    assert(model.findByQuery("nodes[node0]").asInstanceOf[ContainerNode].getName == "node0")
+    assert(model.findByQuery("nodes[node0]/components[FakeConso145]").asInstanceOf[ComponentInstance].getName == "FakeConso145")
+    assert(model.findByQuery("adaptationPrimitiveTypes[UpdateDeployUnit]").asInstanceOf[org.kevoree.AdaptationPrimitiveType].getName == "UpdateDeployUnit")
 
     assert(model.findNodesByID("node0").getName == "node0")
-    assert(model.findById("nodes[{node0}]").asInstanceOf[ContainerNode].getName == "node0")
-    assert(model.findById("nodes[{node0}]/components[{FakeConso145}]").asInstanceOf[ComponentInstance].getName == "FakeConso145")
-    assert(model.findById("adaptationPrimitiveTypes[{UpdateDeployUnit}]").asInstanceOf[org.kevoree.AdaptationPrimitiveType].getName == "UpdateDeployUnit")
+    assert(model.findByQuery("nodes[{node0}]").asInstanceOf[ContainerNode].getName == "node0")
+    assert(model.findByQuery("nodes[{node0}]/components[{FakeConso145}]").asInstanceOf[ComponentInstance].getName == "FakeConso145")
+    assert(model.findByQuery("adaptationPrimitiveTypes[{UpdateDeployUnit}]").asInstanceOf[org.kevoree.AdaptationPrimitiveType].getName == "UpdateDeployUnit")
 
     val model2 = ContainerRootLoader.loadModel(new File(getClass.getResource("/unomas2.kev").toURI)).get
     assert(model2.findGroupsByID("editor_group").getName == "editor_group")
-    assert(model2.findById("groups[editor_group]").asInstanceOf[Group].getName == "editor_group")
-    assert(model2.findById("groups[editor_group]/subNodes[editor_node]").asInstanceOf[ContainerNode].getName == "editor_node")
+    assert(model2.findByQuery("groups[editor_group]").asInstanceOf[Group].getName == "editor_group")
+    assert(model2.findByQuery("groups[editor_group]/subNodes[editor_node]").asInstanceOf[ContainerNode].getName == "editor_node")
     //assert(model2.findById("groups[editor_group]/{editor_node}").asInstanceOf[ContainerNode].getName == "editor_node")
     //assert(model2.findById("groups[editor_group]/editor_node").asInstanceOf[ContainerNode].getName == "editor_node")
 

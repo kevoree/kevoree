@@ -36,10 +36,10 @@ public class CounterHistoryMetricTest {
             PutHelper.addValue(cpuMetric, rand.nextLong() + "");
         }
 
-        Metric m = (Metric) model.findById("perf/cpu/{node42}");
+        Metric m = (Metric) model.findByQuery("perf/cpu/{node42}");
         assert (m.getValuesForJ().size() == 100);
 
-        MetricValue mv = (MetricValue) model.findById("perf/cpu/{node42}/last[]");
+        MetricValue mv = (MetricValue) model.findByQuery("perf/cpu/{node42}/last[]");
         assert (mv != null);
 
 
