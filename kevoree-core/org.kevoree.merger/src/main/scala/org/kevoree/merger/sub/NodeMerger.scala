@@ -47,7 +47,8 @@ trait NodeMerger extends ComponentInstanceMerger with DictionaryMerger {
   }
 
   private def mergeNode(actualModel: ContainerRoot, nodeToMerge: ContainerNode) {
-    actualModel.getNodes.find(loopNode => loopNode.getName == nodeToMerge.getName) match {
+    //actualModel.getNodes.find(loopNode => loopNode.getName == nodeToMerge.getName) match {
+      actualModel.findByQuery(nodeToMerge.buildQuery(),classOf[ContainerNode]) match {
       case None => {
         actualModel.addNodes(nodeToMerge)
         mergeAllInstances(actualModel, nodeToMerge, nodeToMerge)
@@ -97,28 +98,7 @@ trait NodeMerger extends ComponentInstanceMerger with DictionaryMerger {
       child =>
         targetInstance.getHosts.find(n => n.getName == child.getName) match {
           case None => {
-
             targetInstance.addHosts(UnresolvedChildNode(child.getName))
-
-            /*
-            actualModel.getNodes.find(n => n.getName == child.getName) match {
-              case None => {
-                // the child node is not already added on the actualModel so it will be added later
-                if (!targetInstance.getHosts.exists(i => i.getName == child.getName)) {
-                  targetInstance.addHosts(UnresolvedChildNode(child.getName))
-                }
-              }
-              case Some(node) => {
-                actualModel.getNodes.find(p => p.getHosts.contains(node)) match {
-                  case None => {
-                    if (!targetInstance.getHosts.exists(i => i.getName == node.getName)) {
-                      targetInstance.addHosts(UnresolvedChildNode(node.getName))
-                    }
-                  }
-                  case Some(parent) => // if the child has already a parent, we do not modify it
-                }
-              }
-            } */
           }
           case Some(n) => // the host node is already contained by the targetInstance node
         }

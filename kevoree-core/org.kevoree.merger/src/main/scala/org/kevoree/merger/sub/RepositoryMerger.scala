@@ -42,7 +42,7 @@ trait RepositoryMerger {
   private val logger = LoggerFactory.getLogger(this.getClass)
 
   //EXPECT TYPE DEFINITION TO BE MERGE BEFORE THIS STEP
-  def mergeRepositories(actualModel: ContainerRoot, modelToMerge: ContainerRoot) = {
+  def mergeRepositories(actualModel: ContainerRoot, modelToMerge: ContainerRoot) {
     val ctRepo: List[Repository] = modelToMerge.getRepositories
     ctRepo.foreach {
       toMergeRepo =>

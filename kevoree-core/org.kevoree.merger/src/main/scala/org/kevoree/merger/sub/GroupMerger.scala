@@ -27,7 +27,7 @@
 package org.kevoree.merger.sub
 
 import org.kevoree.merger.Merger
-import org.kevoree.ContainerRoot
+import org.kevoree.{ContainerNode, Group, ContainerRoot}
 import org.kevoree.merger.resolver.UnresolvedTypeDefinition._
 import org.kevoree.merger.resolver.UnresolvedTypeDefinition
 import org.slf4j.LoggerFactory
@@ -37,17 +37,16 @@ import org.slf4j.LoggerFactory
  * User: duke
  * Date: 07/10/11
  * Time: 14:52
- * To change this template use File | Settings | File Templates.
  */
 
 trait GroupMerger extends Merger with DictionaryMerger{
 
   private val logger = LoggerFactory.getLogger(this.getClass)
 
-  def mergeAllGroups(actualModel: ContainerRoot, modelToMerge: ContainerRoot) = {
+  def mergeAllGroups(actualModel: ContainerRoot, modelToMerge: ContainerRoot) {
     modelToMerge.getGroups.foreach {
       group =>
-      val currentGroup = actualModel.getGroups.find(pgroup => pgroup.getName == group.getName) match {
+      val currentGroup = actualModel.findByQuery(group.buildQuery(),classOf[Group]) match {
         case Some(e) => {
           mergeDictionaryInstance(e,group)
           e
@@ -58,10 +57,11 @@ trait GroupMerger extends Merger with DictionaryMerger{
         }
       }
 
-      val subNodeName =  (currentGroup.getSubNodes.map{sub => sub.getName} ++ group.getSubNodes.map{sub => sub.getName}).toSet
+      val subNodeName =  (currentGroup.getSubNodes ++ group.getSubNodes).toSet
       currentGroup.removeAllSubNodes()
       subNodeName.foreach{ subNode =>
-         actualModel.getNodes.find(pnode => pnode.getName == subNode) match {
+        actualModel.findByQuery(subNode.buildQuery(),classOf[ContainerNode]) match {
+       // actualModel.getNodes.find(pnode => pnode.getName == subNode) match {
            case Some(currentNode)=> currentGroup.addSubNodes(currentNode)
            case None => logger.error("Unresolved node "+subNode+" in links for group => "+currentGroup.getName)
          }

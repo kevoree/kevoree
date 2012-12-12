@@ -35,8 +35,10 @@ import org.kevoree.ContainerNode
  * Time: 08:40
  */
 
-case class UnresolvedNode(nodeName : String) extends ContainerNode {
+case class UnresolvedNode(nodeName : String,query : String) extends ContainerNode {
 
   override def getName = nodeName
+
+  override def buildQuery() : String = query
 
 }
