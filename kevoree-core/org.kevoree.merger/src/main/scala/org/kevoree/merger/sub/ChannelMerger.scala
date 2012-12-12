@@ -16,7 +16,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * 	http://www.gnu.org/licenses/lgpl-3.0.txt
+ * http://www.gnu.org/licenses/lgpl-3.0.txt
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -28,26 +28,26 @@ package org.kevoree.merger.sub
 
 import org.kevoree.merger.Merger
 import org.slf4j.LoggerFactory
-import org.kevoree.{KevoreeFactory, ComponentInstance, ContainerNode, ContainerRoot}
+import org.kevoree._
+import scala.Some
 
 /**
  * Created by IntelliJ IDEA.
  * User: duke
  * Date: 07/10/11
  * Time: 14:52
- * To change this template use File | Settings | File Templates.
  */
 
 trait ChannelMerger extends Merger with DictionaryMerger {
 
   private val logger = LoggerFactory.getLogger(this.getClass)
 
-  def mergeAllChannels(actualModel: ContainerRoot, modelToMerge: ContainerRoot) = {
+  def mergeAllChannels(actualModel: ContainerRoot, modelToMerge: ContainerRoot) {
     //MERGE CHANNEL
-    modelToMerge.getHubs.foreach { hub =>
-      val currentHub = actualModel.getHubs.find(phub => phub.getName == hub.getName) match {
+    modelToMerge.getHubs.foreach(hub => {
+      val currentHub = actualModel.findByQuery(hub.buildQuery(), classOf[Channel]) match {
         case Some(e) => {
-          mergeDictionaryInstance(e,hub)
+          mergeDictionaryInstance(e, hub)
           e
         }
         case None => {
@@ -55,13 +55,13 @@ trait ChannelMerger extends Merger with DictionaryMerger {
           hub
         }
       }
-    }
+    })
     //MERGE NEW BINDING
     modelToMerge.getMBindings.foreach {
       mb =>
-        actualModel.getHubs.find(hub => hub.getName == mb.getHub.getName) match {
+        actualModel.findByQuery(mb.getHub.buildQuery(), classOf[Channel]) match {
           case Some(foundHub) => {
-            actualModel.getNodes.find(node => node.getName == mb.getPort.eContainer.eContainer.asInstanceOf[ContainerNode].getName) match {
+            actualModel.findByQuery(mb.getPort.eContainer.eContainer.asInstanceOf[ContainerNode].buildQuery(), classOf[ContainerNode]) match {
               case Some(foundNode) => {
                 foundNode.getComponents.find(component => component.getName == mb.getPort.eContainer.asInstanceOf[ComponentInstance].getName) match {
                   case Some(foundComponent) => {
@@ -72,9 +72,8 @@ trait ChannelMerger extends Merger with DictionaryMerger {
                         foundHub.removeBindings(mb)
                         newbinding.setPort(foundPort)
                         foundPort.removeBindings(mb)
-
                         actualModel.getMBindings.find(mb => mb.getHub == foundHub && mb.getPort == foundPort) match {
-                          case Some(pMB)=> {
+                          case Some(pMB) => {
                             foundHub.removeBindings(pMB)
                             foundPort.removeBindings(pMB)
                             actualModel.removeMBindings(pMB)

@@ -14,8 +14,7 @@
 
 package org.kevoree.core.impl
 
-import _root_.org.kevoree.KevoreeFactory
-import _root_.org.kevoree.ContainerRoot
+import org.kevoree.{ContainerNode, KevoreeFactory, ContainerRoot}
 import _root_.org.kevoree.api.configuration.ConfigurationService
 import _root_.org.slf4j.LoggerFactory
 import _root_.org.kevoree.api.configuration.ConfigConstants
@@ -78,7 +77,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService {
   private def checkBootstrapNode(currentModel: ContainerRoot): Unit = {
     try {
       if (nodeInstance == null) {
-        currentModel.getNodes.find(n => n.getName == nodeName) match {
+        currentModel.findByQuery("nodes["+nodeName+"]",classOf[ContainerNode]) match {
           case Some(foundNode) => {
             bootstraper.bootstrapNodeType(currentModel, nodeName, this, kevsEngineFactory) match {
               case Some(ist: org.kevoree.api.NodeType) => {
@@ -122,7 +121,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService {
   private def checkUnbootstrapNode(currentModel: ContainerRoot): Option[ContainerRoot] = {
     try {
       if (nodeInstance != null) {
-        currentModel.getNodes.find(n => n.getName == nodeName) match {
+        currentModel.findByQuery("nodes["+nodeName+"]",classOf[ContainerNode]) match {
           case Some(foundNode) => {
             val modelTmp = modelCloner.clone(currentModel)
             modelTmp.removeAllGroups()
@@ -214,7 +213,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService {
             true
             //listenerActor.afterUpdate(model, stopModel.get)
           }
-          val rootNode = model.getNodes.find(n => n.getName == getNodeName).get
+          val rootNode = model.findByQuery("nodes["+getNodeName+"]",classOf[ContainerNode]).get
           val ignoredDeployResult = PrimitiveCommandExecutionHelper.execute(rootNode, adaptationModel, nodeInstance, afterUpdateTest, afterUpdateTest, afterUpdateTest)
         } else {
           logger.error("Unable to use the stopModel !")
@@ -301,7 +300,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService {
                   true
                   //listenerActor.afterUpdate(model, newmodel)
                 }
-                val rootNode = newmodel.getNodes.find(n => n.getName == getNodeName).get
+                val rootNode = newmodel.findByQuery("nodes["+getNodeName+"]",classOf[ContainerNode]).get
                 PrimitiveCommandExecutionHelper.execute(rootNode, adaptationModel, nodeInstance, afterUpdateTest, afterUpdateTest, afterUpdateTest)
                 nodeInstance.stopNode()
                 //end of harakiri
@@ -356,7 +355,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService {
                 modelListeners.postRollback(model, newmodel)
                 true
               }
-              val rootNode = newmodel.getNodes.find(n => n.getName == getNodeName).get
+              val rootNode = newmodel.findByQuery("nodes["+getNodeName+"]",classOf[ContainerNode]).get
               deployResult = PrimitiveCommandExecutionHelper.execute(rootNode, adaptationModel, nodeInstance, afterUpdateTest, preCmd.preRollbackTest, postRollbackTest)
             } catch {
               case _@e => {

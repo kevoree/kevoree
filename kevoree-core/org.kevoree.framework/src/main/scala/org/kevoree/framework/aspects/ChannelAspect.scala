@@ -24,10 +24,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 
 package org.kevoree.framework.aspects
 
@@ -78,7 +74,6 @@ case class ChannelAspect(cself : Channel) {
    * Returns the list of all bindings belonging to this channel
    */
   def getRelatedBindings : List[MBinding] = {
-    //cself.eContainer.asInstanceOf[ContainerRoot].getMBindings.filter(b => b.getHub == cself)
     cself.getBindings
   }
 
@@ -86,7 +81,6 @@ case class ChannelAspect(cself : Channel) {
    * Returns the list of bindings belonging to this channel on the given node
    */
   def getRelatedBindings(node : ContainerNode) : List[MBinding] = {
-//    val res = new java.util.ArrayList[MBinding]();
     cself.getBindings.filter{b=>
       b.getPort.eContainer.eContainer.asInstanceOf[ContainerNode].getName == node.getName
     }
