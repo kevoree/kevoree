@@ -42,6 +42,10 @@
                         <year>${project.inceptionYear}</year>
                         <email>fouquet.f@gmail.com</email>
                     </properties>
+                    <includes>
+                        <include>src/**</include>
+                        <include>**/test/**</include>
+                    </includes>
                 </configuration>
                 <executions>
                     <execution>
