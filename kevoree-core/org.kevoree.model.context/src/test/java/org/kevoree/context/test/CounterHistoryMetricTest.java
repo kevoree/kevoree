@@ -27,7 +27,7 @@ import java.util.Random;
 public class CounterHistoryMetricTest {
 
     @Test
-    public void CounterTest() {
+    public void CounterTest() throws InterruptedException {
         ContextRoot model = ContextFactory.createContextRoot();
         Random rand = new Random();
 
@@ -37,11 +37,16 @@ public class CounterHistoryMetricTest {
         }
 
         Metric m = (Metric) model.findByQuery("perf/cpu/{node42}");
-        assert (m.getValuesForJ().size() == 100);
+        assert((m.getValuesForJ().size() == 100));
+
+        boolean comp = m.buildQuery().equals("context[perf]/types[cpu]/metrics[node42]");
+        assert(comp);
 
         MetricValue mv = (MetricValue) model.findByQuery("perf/cpu/{node42}/last[]");
         assert (mv != null);
 
+        boolean comp2 = mv.buildQuery().toString().equals("context[perf]/types[cpu]/metrics[node42]/last["+mv.getTimestamp()+"]");
+        assert(comp2);
 
         PutHelper.getMetric(model,"perf/latency/{nodes[node0]/components[srv]}",PutHelper.getParam().setMetricTypeClazzName(CounterHistoryMetric.class.getName()).setNumber(100));
 
