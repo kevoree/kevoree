@@ -32,12 +32,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import org.xeustechnologies.jcl.exception.JclException;
-import org.xeustechnologies.jcl.exception.ResourceNotFoundException;
-import org.xeustechnologies.jcl.utils.Utils;
 
 /**
  * Abstract class loader that can load classes from different resources
@@ -325,103 +320,6 @@ public abstract class AbstractClassLoader extends ClassLoader {
 
     }
 
-    /**
-     * Osgi boot loader
-     * 
-     */
-    public final class OsgiBootLoader extends ProxyClassLoader {
-        private final Logger logger = Logger.getLogger( OsgiBootLoader.class.getName() );
-        private boolean strictLoading;
-        private String[] bootDelagation;
-
-        private static final String JAVA_PACKAGE = "java.";
-
-        public OsgiBootLoader() {
-            enabled = Configuration.isOsgiBootDelegationEnabled();
-            strictLoading = Configuration.isOsgiBootDelegationStrict();
-            bootDelagation = Configuration.getOsgiBootDelegation();
-            order = 0;
-        }
-
-        @Override
-        public Class loadClass(String className, boolean resolveIt) {
-            Class clazz = null;
-
-            if (enabled && isPartOfOsgiBootDelegation( className )) {
-                clazz = getParentLoader().loadClass( className, resolveIt );
-
-                if (clazz == null && strictLoading) {
-                    throw new JclException( new ClassNotFoundException( "JCL OSGi Boot Delegation: Class " + className
-                            + " not found." ) );
-                }
-
-                if (logger.isLoggable( Level.FINEST ))
-                    logger.finest( "Class " + className + " loaded via OSGi boot delegation." );
-            }
-
-            return clazz;
-        }
-
-        @Override
-        public InputStream loadResource(String name) {
-            InputStream is = null;
-
-            if (enabled && isPartOfOsgiBootDelegation( name )) {
-                is = getParentLoader().loadResource( name );
-
-                if (is == null && strictLoading) {
-                    throw new ResourceNotFoundException( "JCL OSGi Boot Delegation: Resource " + name + " not found." );
-                }
-
-                if (logger.isLoggable( Level.FINEST ))
-                    logger.finest( "Resource " + name + " loaded via OSGi boot delegation." );
-            }
-
-            return is;
-        }
-
-        /**
-         * Check if the class/resource is part of OSGi boot delegation
-         * 
-         * @param resourceName
-         * @return
-         */
-        private boolean isPartOfOsgiBootDelegation(String resourceName) {
-            if (resourceName.startsWith( JAVA_PACKAGE ))
-                return true;
-
-            String[] bootPkgs = bootDelagation;
-
-            if (bootPkgs != null) {
-                for (String bc : bootPkgs) {
-                    Pattern pat = Pattern.compile( Utils.wildcardToRegex( bc ), Pattern.CASE_INSENSITIVE );
-
-                    Matcher matcher = pat.matcher( resourceName );
-                    if (matcher.find()) {
-                        return true;
-                    }
-                }
-            }
-
-            return false;
-        }
-
-        public boolean isStrictLoading() {
-            return strictLoading;
-        }
-
-        public void setStrictLoading(boolean strictLoading) {
-            this.strictLoading = strictLoading;
-        }
-
-        public String[] getBootDelagation() {
-            return bootDelagation;
-        }
-
-        public void setBootDelagation(String[] bootDelagation) {
-            this.bootDelagation = bootDelagation;
-        }
-    }
 
     public ProxyClassLoader getSystemLoader() {
         return systemLoader;
