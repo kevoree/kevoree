@@ -16,7 +16,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * 	http://www.gnu.org/licenses/lgpl-3.0.txt
+ * http://www.gnu.org/licenses/lgpl-3.0.txt
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -29,31 +29,30 @@ package org.kevoree.tools.marShell.interpreter.sub
 import org.kevoree.tools.marShell.interpreter.{KevsInterpreterContext, KevsAbstractInterpreter}
 import org.kevoree.tools.marShell.ast.MoveChildStatment
 import org.slf4j.LoggerFactory
+import org.kevoree.ContainerNode
 
-case class KevsMoveChildInterpreter (moveChild: MoveChildStatment) extends KevsAbstractInterpreter {
+case class KevsMoveChildInterpreter(moveChild: MoveChildStatment) extends KevsAbstractInterpreter {
   val logger = LoggerFactory.getLogger(this.getClass)
 
-  def interpret (context: KevsInterpreterContext): Boolean = {
-    context.model.getNodes.find(node => node.getName == moveChild.childNodeName) match {
+  def interpret(context: KevsInterpreterContext): Boolean = {
+    context.model.findByQuery("nodes[" + moveChild.childNodeName + "]", classOf[ContainerNode]) match {
       case None => {
-        logger.error("Unknown child name:" + moveChild.childNodeName + "\nThe node must already exist. Please check !")
+        logger.error("Unknown child name: {}\nThe node must already exist. Please check !", moveChild.childNodeName)
         false
       }
       case Some(child) => {
-        context.model.getNodes.find(node => node.getName == moveChild.oldFatherNodeName) match {
+        context.model.findByQuery("nodes[" + moveChild.oldFatherNodeName + "]", classOf[ContainerNode]) match {
           case None => {
-            logger.error("Unknown old father node:" + moveChild.oldFatherNodeName +
-              "\nThe node must already exist. Please check !")
+            logger.error("Unknown old father node: {}\nThe node must already exist. Please check !", moveChild.oldFatherNodeName)
             false
           }
           case Some(oldFather) => {
             if (!oldFather.getHosts.contains(child)) {
               logger.warn("The child node is not already contained by a father. Please prefer the addChild command!")
             }
-            context.model.getNodes.find(node => node.getName == moveChild.fatherNodeName) match {
+            context.model.findByQuery("nodes[" + moveChild.fatherNodeName + "]", classOf[ContainerNode]) match {
               case None => {
-                logger.error("Unknown father node:" + moveChild.fatherNodeName +
-                  "\nThe node must already exist. Please check !")
+                logger.error("Unknown father node: {}\nThe node must already exist. Please check !", moveChild.fatherNodeName)
                 false
               }
               case Some(father) => {
@@ -67,5 +66,4 @@ case class KevsMoveChildInterpreter (moveChild: MoveChildStatment) extends KevsA
       }
     }
   }
-
 }

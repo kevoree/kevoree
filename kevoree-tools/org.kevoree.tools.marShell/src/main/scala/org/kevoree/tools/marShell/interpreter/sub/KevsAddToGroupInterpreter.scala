@@ -47,7 +47,7 @@ case class KevsAddToGroupInterpreter(addToGroup : AddToGroupStatement) extends K
     if(addToGroup.groupName == "*"){
       groups = context.model.getGroups.toList
     } else {
-       context.model.getGroups.find(g=> g.getName == addToGroup.groupName ) match {
+      context.model.findByQuery("groups[" + addToGroup.groupName + "]", classOf[Group])match {
          case Some(g)=> groups = List(g)
          case None => logger.debug("There is no group named {}", addToGroup.groupName);return false
        }
@@ -57,7 +57,7 @@ case class KevsAddToGroupInterpreter(addToGroup : AddToGroupStatement) extends K
     if(addToGroup.nodeName == "*"){
       nodes = context.model.getNodes.toList
     } else {
-       context.model.getNodes.find(g=> g.getName == addToGroup.nodeName ) match {
+      context.model.findByQuery("nodes[" + addToGroup.nodeName + "]", classOf[ContainerNode])match {
          case Some(g)=> nodes = List(g)
          case None => logger.debug("There is no node named {}", addToGroup.nodeName);return false
        }
@@ -69,12 +69,7 @@ case class KevsAddToGroupInterpreter(addToGroup : AddToGroupStatement) extends K
               group.addSubNodes(node)
           }
       }
-
-
     }
-
     true
-
   }
-
 }

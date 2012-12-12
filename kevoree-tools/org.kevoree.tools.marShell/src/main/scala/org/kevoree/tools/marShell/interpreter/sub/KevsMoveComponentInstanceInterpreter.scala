@@ -29,14 +29,13 @@ case class KevsMoveComponentInstanceInterpreter (moveComponent: MoveComponentIns
 
 		moveComponent.cid.nodeName match {
 			case Some(nodeID) => {
-				context.model.getNodes.find(node => node.getName == nodeID) match {
+        context.model.findByQuery("nodes[" + nodeID + "]", classOf[ContainerNode]) match {
 					case Some(sourceNode) => {
 						//SEARCH COMPONENT
-						sourceNode.getComponents.find(c => c.getName == moveComponent.cid.componentInstanceName) match {
+            sourceNode.findByQuery("components[" + moveComponent.cid.componentInstanceName + "]", classOf[ComponentInstance]) match {
 							case Some(targetComponent) => {
-								context.model.getNodes.find(node => node.getName == moveComponent.targetNodeName) match {
+                context.model.findByQuery("nodes[" + moveComponent.targetNodeName + "]", classOf[ContainerNode])match {
 									case Some(targetNode) => {
-
 										// look at all ports to get all channels and check attributes that are fragment dependent:
 										// look at the fragment for sourceNode
 										// if another component is bound to the channel we do nothing
