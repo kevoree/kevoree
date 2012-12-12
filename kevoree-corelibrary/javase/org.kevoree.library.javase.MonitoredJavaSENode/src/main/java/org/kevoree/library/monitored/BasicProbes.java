@@ -43,7 +43,7 @@ public class BasicProbes extends AbstractComponentType implements Runnable {
         osBean = ManagementFactory.newPlatformMXBeanProxy(mbsc, ManagementFactory.OPERATING_SYSTEM_MXBEAN_NAME, OperatingSystemMXBean.class);
         mBean = ManagementFactory.getMemoryMXBean();
         t = Executors.newScheduledThreadPool(1);
-        cpuMetric = PutHelper.getMetric(getModelService().getContextModel(), "perf/cpu/{" + getNodeName() + "}", PutHelper.getParam().setMetricTypeClazzName(CounterHistoryMetric.class.getName()).setNumber(100));
+        cpuMetric = PutHelper.getMetric(getModelService().getContextModel(), "perf/cpu/{nodes[" + getNodeName() + "]}", PutHelper.getParam().setMetricTypeClazzName(CounterHistoryMetric.class.getName()).setNumber(100));
         t.scheduleAtFixedRate(this,0,Integer.parseInt(getDictionary().get("period").toString()), TimeUnit.MILLISECONDS);
     }
 
@@ -62,15 +62,7 @@ public class BasicProbes extends AbstractComponentType implements Runnable {
         try {
             double cpuUsage = osBean.getSystemLoadAverage() / osBean.getAvailableProcessors();
             PutHelper.addValue(cpuMetric,cpuUsage+"");
-            System.out.println("getV="+getModelService().getContextModel().findById("perf/cpu/{" + getNodeName() + "}/last[]"));
-
-
-            Metric m = (Metric) getModelService().getContextModel().findById("perf/cpu/{" + getNodeName() + "}");
-            System.out.println(m.getValues().size());
-            System.out.println(m.getLast().get().getTimestamp()+"-"+m.getLast().get().getValue());
-
-
-
+            Metric m = (Metric) getModelService().getContextModel().findByQuery("perf/cpu/{nodes[" + getNodeName() + "]}");
         } catch (Exception e){
             e.printStackTrace();
         }
