@@ -49,7 +49,7 @@ trait DictionaryAttributeResolver {
           dictionaryInstance.getValues.foreach{ value =>
             value.getTargetNode.map { targetNode =>
               targetNode match {
-                case UnresolvedNode(targetNodeName)=> {
+                case UnresolvedNode(targetNodeName,_)=> {
                   model.getNodes.find(n => n.getName == targetNodeName) match {
                     case Some(node)=> value.setTargetNode(Some(node))
                     case None => logger.error("Unconsitent model , node not found for name "+targetNodeName)
