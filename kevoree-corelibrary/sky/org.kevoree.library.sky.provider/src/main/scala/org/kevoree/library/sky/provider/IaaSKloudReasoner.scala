@@ -44,7 +44,7 @@ object IaaSKloudReasoner extends KloudReasoner {
     var doSomething = false
     var usedIps = List[String]()
     // filter nodes that are not IaaSNode and are not child of IaaSNode
-    iaasModel.getNodes.filter(n => KloudModelHelper.isPaaSNode(iaasModel, n) && n.getHost.isEmpty).foreach {
+    iaasModel.getNodes.filter(n => n.getHost.isEmpty && KloudModelHelper.isPaaSNode(iaasModel, n)).foreach {
       // select a host for each user node
       node => {
         logger.debug("try to select a parent for {}", node.getName)
@@ -59,7 +59,7 @@ object IaaSKloudReasoner extends KloudReasoner {
         kengine.addVariable("parentName", parentName)
         kengine append "addChild {nodeName}@{parentName}"
 
-        // define IP using selecting node to know what is the network used in this machine
+        // define IP using selected node to know what is the network used in this machine
         val ipOption = defineIP(node.getName, parentName, iaasModel, kengine, usedIps)
         if (ipOption.isDefined) {
           usedIps = usedIps ++ List[String](ipOption.get)
@@ -192,7 +192,7 @@ object IaaSKloudReasoner extends KloudReasoner {
   }
 
 
-  private def defineIP(nodeName: String, parentName: String, model: ContainerRoot, kengine: KevScriptEngine, usedIps : List[String]): Option[String] = {
+  private def defineIP(nodeName: String, parentName: String, model: ContainerRoot, kengine: KevScriptEngine, usedIps: List[String]): Option[String] = {
     kengine.addVariable("nodeName", nodeName)
     kengine.addVariable("parentName", parentName)
     // define IP using selecting node to know what is the network used in this machine

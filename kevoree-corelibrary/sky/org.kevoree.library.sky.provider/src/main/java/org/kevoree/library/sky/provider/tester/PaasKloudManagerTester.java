@@ -1,7 +1,5 @@
 package org.kevoree.library.sky.provider.tester;
 
-import org.kevoree.annotation.*;
-
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
  * Date: 03/11/12
@@ -12,8 +10,8 @@ import org.kevoree.annotation.*;
  */
 /*@Library(name = "Test")
 @Requires({
-		@RequiredPort(name = "deploy", type = PortType.MESSAGE, needCheckDependency = true),
+		@RequiredPort(name = "deploy", type = PortType.MESSAGE, needCheckDependency = true)
 })*/
-@ComponentType
+//@ComponentType
 public class PaasKloudManagerTester {
 }

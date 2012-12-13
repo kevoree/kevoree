@@ -11,6 +11,7 @@ import org.kevoree.library.sky.provider.api.PaaSService;
 import org.kevoree.library.sky.provider.api.SubmissionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import scala.Option;
 
 import java.util.List;
 
@@ -45,12 +46,19 @@ public class PaaSKloudManager extends AbstractComponentType implements PaaSManag
 	@Override
 	@Port(name = "submit", method = "initialize")
 	public void initialize (String id, ContainerRoot model) throws SubmissionException {
+		// TODO measure time
+		logger.warn("[TIME] PaaSKloudManager receive model: {}", System.currentTimeMillis());
 		// fails if the id already exist for a group on the IaaS model
-		for (Group g : getModelService().getLastModel().getGroupsForJ()) {
+
+        Option<Group> nodeOption = getModelService().getLastModel().findByQuery("groups[" + id + "]", Group.class);
+		/*for (Group g : getModelService().getLastModel().getGroupsForJ()) {
 			if (id.equals(g.getName())) {
 				throw new SubmissionException("Platform already exist");
 			}
-		}
+		}*/
+        if (nodeOption.isDefined()) {
+            throw new SubmissionException("Platform already exist");
+        }
 
 		// select an IaaS that will be the entry point for the PaaS Group
 		String nodeName = PaaSKloudReasoner.selectIaaSNodeAsMaster(getModelService().getLastModel());
@@ -61,6 +69,8 @@ public class PaaSKloudManager extends AbstractComponentType implements PaaSManag
 		Boolean created = false;
 		for (int i = 0; i < 5; i++) {
 			try {
+				// TODO measure time
+				logger.warn("[TIME] PaaSKloudManager submit new model: {}", System.currentTimeMillis());
 				kengine.atomicInterpretDeploy();
 				created = true;
 				break;
@@ -139,7 +149,6 @@ public class PaaSKloudManager extends AbstractComponentType implements PaaSManag
 	public void release (String id) throws SubmissionException {
 		//FIXME (remove PaaSManager)
 		KevScriptEngine kengine = getKevScriptEngineFactory().createKevScriptEngine();
-//		KloudReasoner.appendScriptToCleanupIaaSModelFromUser(kengine, id, getModelService().getLastModel());
 		PaaSKloudReasoner.releasePlatform(id, getModelService().getLastModel(), kengine);
 		Boolean releaseDone = false;
 		for (int i = 0; i < 5; i++) {
