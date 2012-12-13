@@ -34,8 +34,6 @@ import org.kevoree.context.ContextRoot;
 import org.kevoreeAdaptation.AdaptationModel;
 import org.kevoreeAdaptation.AdaptationPrimitive;
 
-import java.util.HashMap;
-
 public abstract class
 		AbstractNodeType extends AbstractTypeDefinition implements NodeType {
 
@@ -77,7 +75,7 @@ public abstract class
 	 * @return the node corresponding to this
 	 */
 	public ContainerNode getModelElement () {
-		return org.kevoree.framework.KevoreeElementHelper.getNodeElement(this.getNodeName(), this.getModelService().getLastModel()).get();
+		return getModelService().getLastModel().findByQuery("nodes[" + getName() + "]", ContainerNode.class).get();
 	}
 
 }

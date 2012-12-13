@@ -31,10 +31,6 @@
 package org.kevoree.framework;
 
 import org.kevoree.ComponentInstance;
-import org.kevoree.api.Bootstraper;
-import org.kevoree.api.service.core.handler.KevoreeModelHandlerService;
-import org.kevoree.api.service.core.script.KevScriptEngineFactory;
-import org.kevoree.framework.port.KevoreeRequiredPort;
 
 import java.util.HashMap;
 
@@ -110,11 +106,6 @@ public class AbstractComponentType extends AbstractTypeDefinition implements Com
      * @return the component instance corresponding to this
      */
     public ComponentInstance getModelElement() {
-        return KevoreeElementHelper.getComponentElement(this.getName(), this.getNodeName(), this.getModelService().getLastModel()).get();
+        return getModelService().getLastModel().findByQuery("nodes[" + getNodeName() + "]/components[" + getName() + "]", ComponentInstance.class).get();
     }
-
-
-
-
-
 }
