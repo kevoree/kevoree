@@ -32,7 +32,6 @@
 package org.kevoree.kompare
 
 import org.kevoree._
-import framework.KevoreeElementHelper
 import org.kevoree.kompare.sub.AbstractKompare
 import org.kevoree.kompare.sub.InitNodeKompare
 import org.kevoree.kompare.sub.StopNodeKompare
