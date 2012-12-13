@@ -1,0 +1,8 @@
+addRepo 'http://maven.jenkins-ci.org/content/repositories/releases'
+
+merge 'mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.nanohttp/{kevoree.version}'
+merge 'mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.javaseNode/{kevoree.version}'
+merge 'mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.jenkins-slave/{kevoree.version}'
+
+addNode node0:JavaSENode {logLevel = "DEBUG"}
+addComponent jenkins_master@node0 : JenkinsMaster
