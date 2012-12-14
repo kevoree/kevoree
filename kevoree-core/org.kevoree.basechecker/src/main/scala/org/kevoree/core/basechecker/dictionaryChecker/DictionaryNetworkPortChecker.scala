@@ -111,12 +111,15 @@ class DictionaryNetworkPortChecker extends CheckerService {
     }
 
     if (portFound != null) {
-      val nodeIDMethod = KevoreePropertyHelper.getNetworkProperty(ist.getTypeDefinition.eContainer.asInstanceOf[ContainerRoot], nodeName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP).getOrElse("localhost").toString
+      var nodeIP = KevoreePlatformHelper.getProperty(ist.getTypeDefinition.eContainer.asInstanceOf[ContainerRoot], nodeName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP)
+      if (nodeIP == "") {
+        nodeIP = "localhost"
+      }
 
-      var nodeCollector = collector.get(nodeIDMethod)
+      var nodeCollector = collector.get(nodeIP)
       if (nodeCollector == null) {
         nodeCollector = new util.HashMap[String, util.HashMap[String, Object]]
-        collector.put(nodeIDMethod, nodeCollector)
+        collector.put(nodeIP, nodeCollector)
       }
       var nodePortCollector = nodeCollector.get(portFound)
       if (nodePortCollector == null) {
@@ -128,7 +131,6 @@ class DictionaryNetworkPortChecker extends CheckerService {
       } else {
         nodePortCollector.put(nodeName, ist)
       }
-
     }
   }
 
