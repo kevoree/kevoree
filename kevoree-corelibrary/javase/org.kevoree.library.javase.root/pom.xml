@@ -33,7 +33,6 @@
 
         <module>../org.kevoree.library.javase.socketChannels</module>
         <module>../org.kevoree.library.javase.nioChannels</module>
-        <module>../org.kevoree.library.javase.gossiperNetty</module>
         <module>../org.kevoree.library.javase.fakeDomo</module>
         <module>../org.kevoree.library.javase.defaultChannels</module>
         <module>../org.kevoree.library.javase.serialCT</module>
@@ -49,7 +48,6 @@
         <module>../org.kevoree.library.javase.camel</module>
         <module>../org.kevoree.library.javase.camel.atom</module>
         <module>../org.kevoree.library.javase.authentication</module>
-        <module>../org.kevoree.library.javase.gossiperNettyAutoDiscovery</module>
         <module>../org.kevoree.library.javase.mongoDB</module>
         <module>../org.kevoree.library.javase.nodeJS</module>
         <module>../org.kevoree.library.javase.nodeJS.visu</module>
