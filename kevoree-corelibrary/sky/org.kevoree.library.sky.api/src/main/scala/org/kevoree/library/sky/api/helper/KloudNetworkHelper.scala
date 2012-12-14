@@ -1,7 +1,7 @@
 package org.kevoree.library.sky.api.helper
 
 import org.kevoree.ContainerRoot
-import org.kevoree.framework.KevoreePropertyHelper
+import org.kevoree.framework.{NetworkHelper, KevoreePropertyHelper}
 import java.net.{ServerSocket, InetSocketAddress, Socket, InetAddress}
 import org.slf4j.{LoggerFactory, Logger}
 
@@ -47,11 +47,10 @@ object KloudNetworkHelper {
           while (l < 255 && checkMask(i, j, k, l, subnet, mask) && !found) {
             val tmpIp = i + "." + j + "." + k + "." + l
             if (!ips.contains(tmpIp)) {
-              //              if (!NetworkHelper.isAccessible(tmpIp)) {
-              // TODO must be uncommented
-              newIp = tmpIp
-              found = true
-              //              }
+              if (!NetworkHelper.isAccessible(tmpIp)) {
+                newIp = tmpIp
+                found = true
+              }
             }
             l += 1
           }
