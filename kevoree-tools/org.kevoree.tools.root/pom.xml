@@ -108,6 +108,12 @@
                         <jvmArg>-Xms64m</jvmArg>
                         <jvmArg>-Xmx1024m</jvmArg>
                     </jvmArgs>
+                    <args>
+                        <arg>-optimize</arg>
+                        <arg>-Yinline</arg>
+                        <arg>-Ydead-code</arg>
+                        <arg>-Yclosure-elim</arg>
+                    </args>
                 </configuration>
             </plugin>
 
