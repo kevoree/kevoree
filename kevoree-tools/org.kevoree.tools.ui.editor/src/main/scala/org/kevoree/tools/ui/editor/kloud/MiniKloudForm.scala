@@ -21,12 +21,13 @@ import org.kevoree.tools.ui.editor.{UIEventHandler, PositionedEMFHelper, Kevoree
 import org.kevoree.tools.marShell.KevScriptOfflineEngine
 import java.net._
 import org.kevoree.framework.{KevoreePropertyHelper, KevoreeXmiHelper}
-import org.kevoree.{TypeDefinition, ContainerNode, ContainerRoot, KevoreeFactory}
+import org.kevoree._
 import org.kevoree.tools.modelsync.FakeBootstraperService
 import javax.swing.{JOptionPane, ImageIcon, AbstractButton}
 import java.awt.Desktop
 import scala.Some
 import org.kevoree.core.basechecker.RootChecker
+import scala.Some
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -105,23 +106,28 @@ class MiniKloudForm(editor: KevoreeEditor, button: AbstractButton) {
                 button.setDisabledIcon(previousIcon)
                 UIEventHandler.info("MiniKloud node Started !")
 
-                val port = KevoreePropertyHelper.getStringPropertyForComponent(skyModel, "webServer", "port")
-                for (i <- 0 until 10) {
-                  try {
-                    logger.debug("checking: http://localhost:{}/", port.get)
-                    new URL("http://localhost:" + port.get + "/").openConnection().connect()
-                  } catch {
-                    case _: Throwable => Thread.sleep(5000)
+                skyModel.findByQuery("nodes[" + minicloudName + "]/components[" + "webServer" + "]", classOf[ComponentInstance]) match {
+                  case None =>
+                  case Some(component) => {
+                    val portOption = KevoreePropertyHelper.getProperty(component, "port")
+                    for (i <- 0 until 10) {
+                      try {
+                        logger.debug("checking: http://localhost:{}/", portOption.get)
+                        new URL("http://localhost:" + portOption.get + "/").openConnection().connect()
+                      } catch {
+                        case _: Throwable => Thread.sleep(5000)
+                      }
+                    }
+
+                    if (Desktop.isDesktopSupported) {
+                      logger.info("starting miniKloud web page: http://localhost:{}/", portOption.get)
+                      Desktop.getDesktop.browse(new URI("http://localhost:" + portOption.get + "/"))
+                    } else {
+                      logger.warn("Our desktop is not support so we are not able to open the web page: http://localhost:{}/", portOption.get)
+                    }
+                  }
                   }
                 }
-
-                if (Desktop.isDesktopSupported) {
-                  logger.info("starting miniKloud web page: http://localhost:{}/", port.get)
-                  Desktop.getDesktop.browse(new URI("http://localhost:" + port.get + "/"))
-                } else {
-                  logger.warn("Our desktop is not support so we are not able to open the web page: http://localhost:{}/", port.get)
-                }
-              }
             }
 
           }
@@ -241,12 +247,12 @@ class MiniKloudForm(editor: KevoreeEditor, button: AbstractButton) {
     editor.getPanel.getKernel.getModelHandler.getActualModel.getGroups.find(g => g.getSubNodes.size == nodes.size && g.getSubNodes.forall(n => nodes.contains(n))) match {
       case Some(group) => groupName = group.getName
       case None =>
-        editor.getPanel.getKernel.getModelHandler.getActualModel.getGroups.find(g => g.getName == "editor_group") match {
+        groupName = "editor_group"
+        editor.getPanel.getKernel.getModelHandler.getActualModel.findByQuery("groups[" + groupName + "]", classOf[Group]) match {
           case Some(group) =>
           case None => // add a new group
             kevEngine.append("addGroup editor_group : BasicGossiperGroup")
         }
-        groupName = "editor_group"
         kevEngine.addVariable("groupName", groupName)
 
         // add all node on the same group
@@ -306,9 +312,10 @@ class MiniKloudForm(editor: KevoreeEditor, button: AbstractButton) {
         model.getNodes.foreach {
           node =>
             logger.debug("Looking for property 'port' on group {} with node {}", group.getName, node.getName)
-            val portOption = KevoreePropertyHelper.getIntPropertyForGroup(model, group.getName, "port", isFragment = true, nodeNameForFragment = node.getName)
+
+            val portOption = KevoreePropertyHelper.getProperty(group, "port", isFragment = true, nodeNameForFragment = node.getName)
             if (portOption.isDefined) {
-              ports = ports ++ Array[Int](portOption.get)
+              ports = ports ++ Array[Int](Integer.parseInt(portOption.get))
             }
         }
 
@@ -317,10 +324,9 @@ class MiniKloudForm(editor: KevoreeEditor, button: AbstractButton) {
     model.getMBindings.foreach {
       binding =>
         logger.debug("Looking for property 'port' on channel {} with node {}", binding.getHub.getName, binding.getPort.eContainer.eContainer.asInstanceOf[ContainerNode].getName)
-        val portOption = KevoreePropertyHelper.getIntPropertyForChannel(model, binding.getHub.getName, "port", isFragment = true, nodeNameForFragment = binding.getPort.eContainer.eContainer
-          .asInstanceOf[ContainerNode].getName)
+        val portOption = KevoreePropertyHelper.getProperty(binding.getHub, "port", isFragment = true, nodeNameForFragment = binding.getPort.eContainer.eContainer.asInstanceOf[ContainerNode].getName)
         if (portOption.isDefined) {
-          ports = ports ++ Array[Int](portOption.get)
+          ports = ports ++ Array[Int](Integer.parseInt(portOption.get))
         }
 
     }
@@ -330,9 +336,9 @@ class MiniKloudForm(editor: KevoreeEditor, button: AbstractButton) {
         node.getComponents.foreach {
           component =>
             logger.debug("Looking for property 'port' on component {}", component.getName)
-            val portOption = KevoreePropertyHelper.getIntPropertyForComponent(model, component.getName, "port")
+            val portOption = KevoreePropertyHelper.getProperty(component, "port")
             if (portOption.isDefined) {
-              ports = ports ++ Array[Int](portOption.get)
+              ports = ports ++ Array[Int](Integer.parseInt(portOption.get))
             }
         }
 
