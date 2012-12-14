@@ -69,7 +69,7 @@ class ArduinoDelegationPush (handler: KevoreeModelHandlerService, groupName: Str
                 newdic
               })
 
-              val serialPortOption = org.kevoree.framework.KevoreePropertyHelper.getStringPropertyForGroup(group.eContainer.asInstanceOf[ContainerRoot], group.getName, "serialport", isFragment = true, nodeNameForFragment = targetNodeName)
+              val serialPortOption = org.kevoree.framework.KevoreePropertyHelper.getProperty(group, "serialport", isFragment = true, nodeNameForFragment = targetNodeName)
               var serialPort = "*"
               if ((serialPortOption.isDefined && serialPortOption.get == "*") || serialPortOption.isEmpty) {
                 val ports = KHelpers.getPortIdentifiers

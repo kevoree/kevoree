@@ -125,14 +125,15 @@ object PlanningManager {
 
   private def isContaining(step: Option[ParallelStep]): Boolean = {
     if (step.isDefined) {
-      step.get.getAdaptations.forall(adaptation => adaptation.getPrimitiveType.getName == "UpdateType" || adaptation.getPrimitiveType.getName == "UpdateDeployUnit" ||
-        adaptation.getPrimitiveType.getName == "AddType" || adaptation.getPrimitiveType.getName == "AddDeployUnit" || adaptation.getPrimitiveType.getName == "AddThirdParty" ||
-        adaptation.getPrimitiveType.getName == "RemoveType" || adaptation.getPrimitiveType.getName == "RemoveDeployUnit" || adaptation.getPrimitiveType.getName == "UpdateDictionaryInstance" ||
-        adaptation.getPrimitiveType.getName == "StartThirdParty" || (adaptation.getPrimitiveType.getName == "AddInstance" && adaptation.getRef.isInstanceOf[Group]) ||
-        (adaptation.getPrimitiveType.getName == "UpdateInstance" && adaptation.getRef.isInstanceOf[Group]) ||
-        (adaptation.getPrimitiveType.getName == "RemoveInstance" && adaptation.getRef.isInstanceOf[Group]) ||
-        (adaptation.getPrimitiveType.getName == "StartInstance" && adaptation.getRef.isInstanceOf[Group]) ||
-        (adaptation.getPrimitiveType.getName == "StopInstance" && adaptation.getRef.isInstanceOf[Group])) && isContaining(step.get.getNextStep)
+      // TODO must be tested
+      (step.get.getAdaptations.exists(adaptation =>
+        (adaptation.getPrimitiveType.getName == "UpdateDictionaryInstance" && !adaptation.getRef.isInstanceOf[Group])
+          || (adaptation.getPrimitiveType.getName == "AddInstance" && !adaptation.getRef.isInstanceOf[Group])
+          || (adaptation.getPrimitiveType.getName == "UpdateInstance" && !adaptation.getRef.isInstanceOf[Group])
+          || (adaptation.getPrimitiveType.getName == "RemoveInstance" && !adaptation.getRef.isInstanceOf[Group])
+          || (adaptation.getPrimitiveType.getName == "StartInstance" && !adaptation.getRef.isInstanceOf[Group])
+          || (adaptation.getPrimitiveType.getName == "StopInstance" && !adaptation.getRef.isInstanceOf[Group]))
+        || isContaining(step.get.getNextStep))
     } else {
       false
     }

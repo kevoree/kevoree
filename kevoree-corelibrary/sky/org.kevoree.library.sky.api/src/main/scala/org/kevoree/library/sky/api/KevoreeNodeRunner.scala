@@ -87,6 +87,35 @@ abstract class KevoreeNodeRunner (var nodeName: String) {
     }
   }
 
+  def copyFile(inputFile: String, outputFile: String): Boolean = {
+    if (new File(inputFile).exists()) {
+      try {
+        if (new File(outputFile).exists()) {
+          new File(outputFile).delete()
+        }
+        val reader = new DataInputStream(new FileInputStream(new File(inputFile)))
+        val writer = new DataOutputStream(new FileOutputStream(new File(outputFile)))
+
+        val bytes = new Array[Byte](2048)
+        var length = reader.read(bytes)
+        while (length != -1) {
+          writer.write(bytes, 0, length)
+          length = reader.read(bytes)
+
+        }
+        writer.flush()
+        writer.close()
+        reader.close()
+        true
+      } catch {
+        case _@e => logger.error("Unable to copy {} on {}", Array[AnyRef](inputFile, outputFile), e); false
+      }
+    } else {
+      logger.debug("Unable to find {}", inputFile)
+      false
+    }
+  }
+
   @throws(classOf[java.lang.StringIndexOutOfBoundsException])
   private def replaceStringIntoFile (dataToReplace: String, newData: String, file: String) {
     if (dataToReplace != null && dataToReplace != "" && newData != null && newData != "") {

@@ -3,7 +3,7 @@ package org.kevoree.library.sky.provider
 import org.kevoree.{ContainerNode, NodeType, ContainerRoot}
 import org.kevoree.api.service.core.script.KevScriptEngine
 import org.kevoree.library.sky.api.helper.{KloudNetworkHelper, KloudModelHelper}
-import org.kevoree.framework.{KevoreePropertyHelper, Constants}
+import org.kevoree.framework.{NetworkHelper, KevoreePropertyHelper, Constants}
 import org.slf4j.{LoggerFactory, Logger}
 import scala.collection.JavaConversions._
 import collection.mutable.ListBuffer
@@ -25,7 +25,7 @@ object IaaSKloudReasoner extends KloudReasoner {
       node =>
         val parentNodeOption = node.getHost
         if (parentNodeOption.isDefined) {
-          val ipOption = KevoreePropertyHelper.getStringNetworkProperty(iaasModel, node.getName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP)
+          val ipOption = NetworkHelper.getAccessibleIP(KevoreePropertyHelper.getNetworkProperties(iaasModel, node.getName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP))
           if (ipOption.isDefined) {
             doSomething = doSomething && configureIsolatedNode(node, parentNodeOption.get.getName, ipOption.get, iaasModel, kengine)
           }
@@ -185,7 +185,7 @@ object IaaSKloudReasoner extends KloudReasoner {
     var ips = Array[String]()
     model.getNodes.foreach {
       node =>
-        val nodeIps = KevoreePropertyHelper.getStringNetworkProperties(model, node.getName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP)
+        val nodeIps = KevoreePropertyHelper.getNetworkProperties(model, node.getName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP)
         ips = ips ++ nodeIps.toArray(new Array[String](nodeIps.size()))
     }
     ips

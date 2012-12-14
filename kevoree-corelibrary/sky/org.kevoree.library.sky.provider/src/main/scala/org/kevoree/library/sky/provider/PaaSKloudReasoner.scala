@@ -2,7 +2,7 @@ package org.kevoree.library.sky.provider
 
 import org.kevoree._
 import org.kevoree.api.service.core.script.KevScriptEngine
-import org.kevoree.framework.{Constants, KevoreePropertyHelper}
+import framework.{NetworkHelper, Constants, KevoreePropertyHelper}
 import org.kevoree.library.sky.api.helper.{KloudModelHelper, KloudNetworkHelper}
 import org.slf4j.{LoggerFactory, Logger}
 import scala.collection.JavaConversions._
@@ -33,7 +33,7 @@ object PaaSKloudReasoner extends KloudReasoner {
     paasModel.findByQuery("groups[" + id + "]", classOf[Group]) match {
       case None => {
         // if the paasModel doesn't contain a Kloud group, then we add a default one
-        val ipOption = KevoreePropertyHelper.getStringNetworkProperty(iaasModel, nodeName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP)
+        val ipOption = NetworkHelper.getAccessibleIP(KevoreePropertyHelper.getNetworkProperties(iaasModel, nodeName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP))
         var ip = "127.0.0.1"
         if (ipOption.isDefined) {
           ip = ipOption.get
@@ -50,7 +50,7 @@ object PaaSKloudReasoner extends KloudReasoner {
         kengine append "updateDictionary {groupName} {port='{port}', ip='{ip}'}@{nodeName}"
       }
       case Some(group) => {
-        val ipOption = KevoreePropertyHelper.getStringNetworkProperty(iaasModel, nodeName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP)
+        val ipOption = NetworkHelper.getAccessibleIP(KevoreePropertyHelper.getNetworkProperties(iaasModel, nodeName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP))
         var ip = "127.0.0.1"
         if (ipOption.isDefined) {
           ip = ipOption.get

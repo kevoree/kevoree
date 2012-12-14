@@ -1,7 +1,6 @@
 package org.kevoree.library.javase.basicGossiper.group;
 
 import jexxus.common.Connection;
-import jexxus.common.Delivery;
 import org.kevoree.ContainerNode;
 import org.kevoree.ContainerRoot;
 import org.kevoree.Group;
@@ -12,7 +11,10 @@ import org.kevoree.framework.NetworkHelper;
 import org.kevoree.library.BasicGroup;
 import org.kevoree.library.basicGossiper.protocol.gossip.Gossip;
 import org.kevoree.library.basicGossiper.protocol.message.KevoreeMessage;
-import org.kevoree.library.javase.basicGossiper.*;
+import org.kevoree.library.javase.basicGossiper.GossiperComponent;
+import org.kevoree.library.javase.basicGossiper.GossiperPeriodic;
+import org.kevoree.library.javase.basicGossiper.GossiperProcess;
+import org.kevoree.library.javase.basicGossiper.Serializer;
 import org.kevoree.library.javase.conflictSolver.AlreadyPassedPrioritySolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -107,7 +109,7 @@ public class BasicGossiperGroup extends BasicGroup implements GossiperComponent 
     @Override
     public String getAddress(String remoteNodeName) {
         Option<String> ipOption = NetworkHelper.getAccessibleIP(KevoreePropertyHelper
-                .getStringNetworkProperties(currentCacheModel.get(), remoteNodeName, org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP()));
+                .getNetworkProperties(currentCacheModel.get(), remoteNodeName, org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP()));
         if (ipOption.isDefined()) {
             return ipOption.get();
         } else {
@@ -117,12 +119,21 @@ public class BasicGossiperGroup extends BasicGroup implements GossiperComponent 
 
     @Override
     public int parsePortNumber(String nodeName) {
-        Option<Integer> portOption = KevoreePropertyHelper.getIntPropertyForGroup(currentCacheModel.get(), this.getName(), "port", true, nodeName);
-        if (portOption.isDefined()) {
-            return portOption.get();
+        Option<Group> groupOption = currentCacheModel.get().findByQuery("groups[" + getName() + "]", Group.class);
+        int port = 8000;
+        if (groupOption.isDefined()) {
+            Option<String> portOption = KevoreePropertyHelper.getProperty(groupOption.get(), "port", true, nodeName);
+            if (portOption.isDefined()) {
+                try {
+                    port = Integer.parseInt(portOption.get());
+                } catch (NumberFormatException e) {
+                    logger.warn("Attribute \"port\" of {} is not an Integer, default value ({}) is used.", getName(), port);
+                }
+            }
         } else {
-            return 8000;
+            logger.warn("There is no group named {}, default value ({}) is used.", getName(), port);
         }
+        return port;
     }
 
 

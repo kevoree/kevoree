@@ -1,7 +1,7 @@
 package org.kevoree.library.sky.helper
 
 import org.kevoree.ContainerRoot
-import org.kevoree.framework.{Constants, KevoreePropertyHelper, KevoreeXmiHelper}
+import org.kevoree.framework.{NetworkHelper, Constants, KevoreePropertyHelper, KevoreeXmiHelper}
 import java.net.{URLConnection, URL}
 import java.io._
 import org.slf4j.{LoggerFactory, Logger}
@@ -77,7 +77,7 @@ object KloudProviderHelper {
 
 
   def appendCreateGroupScript (kloudModel: ContainerRoot, login: String, nodeName: String, kevScriptEngine: KevScriptEngine, sshKey: String = "", storage: Boolean = false) {
-    val ipOption = KevoreePropertyHelper.getStringNetworkProperty(kloudModel, nodeName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP)
+    val ipOption = NetworkHelper.getAccessibleIP(KevoreePropertyHelper.getNetworkProperties(kloudModel, nodeName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP))
     var ip = "127.0.0.1"
     if (ipOption.isDefined) {
       ip = ipOption.get

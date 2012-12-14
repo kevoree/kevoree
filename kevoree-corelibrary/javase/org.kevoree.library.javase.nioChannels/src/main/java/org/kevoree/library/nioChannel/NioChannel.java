@@ -175,7 +175,7 @@ public class NioChannel extends AbstractChannelFragment {
 	public String getAddress (String remoteNodeName) {
 		String ip = "127.0.0.1";
 		Option<String> ipOption = NetworkHelper.getAccessibleIP(org.kevoree.framework.KevoreePropertyHelper
-                .getStringNetworkProperties(this.getModelService().getLastModel(), remoteNodeName, org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP()));
+                .getNetworkProperties(this.getModelService().getLastModel(), remoteNodeName, org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP()));
 		if (ipOption.isDefined()) {
 			ip = ipOption.get();
 		}
@@ -201,9 +201,14 @@ public class NioChannel extends AbstractChannelFragment {
 	public int parsePortNumber (String nodeName) throws IOException {
 		try {
 			//logger.debug("look for port on " + nodeName);
-			Option<Integer> portOption = org.kevoree.framework.KevoreePropertyHelper.getIntPropertyForChannel(this.getModelService().getLastModel(), this.getName(), "port", true, nodeName);
+			Option<String> portOption = org.kevoree.framework.KevoreePropertyHelper.getProperty(getModelElement(), "port", true, nodeName);
 			if (portOption.isDefined()) {
-				return portOption.get();
+                try {
+				return Integer.parseInt(portOption.get());
+                } catch (NumberFormatException e) {
+                    logger.warn("Attribute \"port\" of {} is not an Integer", getName());
+                    return 0;
+                }
 			} else {
 				return 9000;
 			}

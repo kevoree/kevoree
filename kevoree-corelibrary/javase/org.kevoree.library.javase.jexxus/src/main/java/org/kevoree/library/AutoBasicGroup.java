@@ -6,11 +6,9 @@ import org.kevoree.annotation.GroupType;
 import org.kevoree.annotation.Start;
 import org.kevoree.api.service.core.handler.UUIDModel;
 import org.kevoree.cloner.ModelCloner;
-import org.kevoree.framework.KevoreePlatformHelper;
 import org.kevoree.framework.KevoreePropertyHelper;
 import org.kevoree.merger.KevoreeMergerComponent;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.concurrent.ExecutorService;
@@ -39,14 +37,17 @@ public class AutoBasicGroup extends BasicGroup {
                 } catch (IOException e) {
                     logger.error("Error while broadcasting node informations ", e);
                 }
-            } break;
+            }
+            break;
             case discoveryResponse: {
                 //BROADCAST MY INFO
-                processRemoteInfo(data,from.getIP());
-            } break;
-            default:{
+                processRemoteInfo(data, from.getIP());
+            }
+            break;
+            default: {
                 from.close();
-            } break;
+            }
+            break;
 
         }
     }
@@ -66,15 +67,14 @@ public class AutoBasicGroup extends BasicGroup {
 
 
     protected void processRemoteInfo(byte[] rawData, final String ip) {
-        final String[] data = new String(rawData,1,rawData.length-1).split(";");
+        final String[] data = new String(rawData, 1, rawData.length - 1).split(";");
         if (data.length == 4 && getName().equals(data[0]) && "AutoBasicGroup".equals(data[2]) && !getName().equals(data[1])) {
             pool.submit(
                     new Runnable() {
                         @Override
                         public void run() {
                             UUIDModel model = getModelService().getLastUUIDModel();
-                            if (!KevoreePropertyHelper
-                                    .getStringNetworkProperties(model.getModel(), data[1], org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP()).contains(ip)) {
+                            if (!KevoreePropertyHelper.getNetworkProperties(model.getModel(), data[1], org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP()).contains(ip)) {
                                 logger.info("New IP found for node " + data[1] + "->" + ip);
                                 try {
                                     ContainerRoot modelRW = cloner.clone(model.getModel());

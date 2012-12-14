@@ -34,158 +34,164 @@ import java.util.concurrent.Callable
  * @version 1.0
  */
 class MiniCloudKevoreeNodeRunner (nodeName: String, iaasNode: AbstractHostNode) extends KevoreeNodeRunner(nodeName) {
-  private val logger: Logger = LoggerFactory.getLogger(classOf[MiniCloudKevoreeNodeRunner])
-  private var nodePlatformProcess: Process = null
+	private val logger: Logger = LoggerFactory.getLogger(classOf[MiniCloudKevoreeNodeRunner])
+	private var nodePlatformProcess: Process = null
 
-  val backupRegex = new Regex(".*<saveRes(.*)/>.*")
-  val deployRegex = new Regex(".*<deployRes(.*)/>.*")
-  val errorRegex = new Regex(".*Error while update.*")
-  val starting = true
+	val backupRegex = new Regex(".*<saveRes(.*)/>.*")
+	val deployRegex = new Regex(".*<deployRes(.*)/>.*")
+	val errorRegex = new Regex(".*Error while update.*")
+	val starting = true
 
-  case class DeployResult (uuid: String)
+	case class DeployResult (uuid: String)
 
-  case class BackupResult (uuid: String)
+	case class BackupResult (uuid: String)
 
-  case class ErrorResult ()
+	case class ErrorResult ()
 
-  def startNode (iaasModel: ContainerRoot, childBootstrapModel: ContainerRoot): Boolean = {
-    try {
-      logger.debug("Start " + nodeName)
-      val version = findVersionForChildNode(nodeName, childBootstrapModel, iaasModel.getNodes.find(n => n.getName == iaasNode.getNodeName).get)
+	def startNode (iaasModel: ContainerRoot, childBootstrapModel: ContainerRoot): Boolean = {
+		try {
+			// TODO measure time
+			logger.warn("[TIME] MiniCloudKevoreeNodeRunner start child node: {}", System.currentTimeMillis)
+			logger.debug("Start " + nodeName)
+			val version = findVersionForChildNode(nodeName, childBootstrapModel, iaasModel.getNodes.find(n => n.getName == iaasNode.getNodeName).get)
 
-      if (version == KevoreeFactory.getVersion) {
-        logger.debug("try to start child node with the same Kevoree version")
-        // find the classpath of the current node
-        // if classpath is null then we download the jar with aether
-        // else we start the child node with the same classpath as its parent.
-        // main class  = org.kevoree.platform.standalone.app.Main
-        logger.debug(System.getProperty("java.class.path"))
-        if (System.getProperty("java.class.path") != null) {
-          logger.debug("trying to start child node with parent's classpath")
-          if (!startWithClassPath(childBootstrapModel)) {
-            logger.debug("Unable to start child node with parent's classpath, try to use aether bootstrap")
-            startWithAether(childBootstrapModel, version)
-          } else {
-            true
-          }
-        } else {
-          logger.debug("trying to start child node with aether bootstrap")
-          startWithAether(childBootstrapModel, version)
-        }
-      } else {
-        logger.debug("try to start child node with {} as Kevoree version", version)
-        startWithAether(childBootstrapModel, version)
-      }
-    } catch {
-      case e: IOException => {
-        logger.error("Unexpected error while trying to start " + nodeName, e)
-        false
-      }
-    }
-  }
+			if (version == KevoreeFactory.getVersion) {
+				logger.debug("try to start child node with the same Kevoree version")
+				// find the classpath of the current node
+				// if classpath is null then we download the jar with aether
+				// else we start the child node with the same classpath as its parent.
+				// main class  = org.kevoree.platform.standalone.app.Main
+				logger.debug(System.getProperty("java.class.path"))
+				if (System.getProperty("java.class.path") != null) {
+					logger.debug("trying to start child node with parent's classpath")
+					if (!startWithClassPath(childBootstrapModel)) {
+						logger.debug("Unable to start child node with parent's classpath, try to use aether bootstrap")
+						startWithAether(childBootstrapModel, version)
+					} else {
+						true
+					}
+				} else {
+					logger.debug("trying to start child node with aether bootstrap")
+					startWithAether(childBootstrapModel, version)
+				}
+			} else {
+				logger.debug("try to start child node with {} as Kevoree version", version)
+				startWithAether(childBootstrapModel, version)
+			}
+		} catch {
+			case e: IOException => {
+				logger.error("Unexpected error while trying to start " + nodeName, e)
+				false
+			}
+		}
+	}
 
-  def stopNode (): Boolean = {
-    logger.debug("Kill " + nodeName)
-    try {
-      if (nodePlatformProcess != null) {
-        nodePlatformProcess.destroy()
-      }
-      true
-    }
-    catch {
-      case _@e => {
-        logger.debug(nodeName + " cannot be killed. Try to force kill...")
-        if (nodePlatformProcess != null) {
-          nodePlatformProcess.destroy()
-        }
-        logger.debug(nodeName + " has been forcibly killed")
-        true
-      }
-    }
-  }
+	def stopNode (): Boolean = {
+		logger.debug("Kill " + nodeName)
+		try {
+			if (nodePlatformProcess != null) {
+				nodePlatformProcess.destroy()
+			}
+			true
+		}
+		catch {
+			case _@e => {
+				logger.debug(nodeName + " cannot be killed. Try to force kill...")
+				if (nodePlatformProcess != null) {
+					nodePlatformProcess.destroy()
+				}
+				logger.debug(nodeName + " has been forcibly killed")
+				true
+			}
+		}
+	}
 
-  private def getJava: String = {
-    val java_home: String = System.getProperty("java.home")
-    java_home + File.separator + "bin" + File.separator + "java"
-  }
+	private def getJava: String = {
+		val java_home: String = System.getProperty("java.home")
+		java_home + File.separator + "bin" + File.separator + "java"
+	}
 
-  private def startWithClassPath (childBootStrapModel: ContainerRoot): Boolean = {
-    try {
-      val java: String = getJava
-      val tempFile = File.createTempFile("bootModel" + nodeName, ".kev")
-      KevoreeXmiHelper.save(tempFile.getAbsolutePath, childBootStrapModel)
-
-
-      if (System.getProperty("java.class.path").contains("plexus-classworlds")) {
-        return false //maven use case
-      }
-
-      //TRY THE CURRENT CLASSLOADER
-      try {
-        Thread.currentThread().getContextClassLoader.loadClass("org.kevoree.platform.standalone.App")
-      } catch {
-        case e: Throwable => {
-          logger.info("Can't find bootstrap class {}", "org.kevoree.platform.standalone.App")
-          return false
-        }
-      }
-
-      val vmargsObject = iaasNode.getDictionary.get("VMARGS")
-      var exec = Array[String](java)
-      if (vmargsObject != null) {
-        exec = Array[String](java, vmargsObject.toString)
-      }
-      exec = exec ++ List[String]("-Dnode.headless=true", "-Dnode.bootstrap=" + tempFile.getAbsolutePath, "-Dnode.name=" + nodeName, "-classpath", System.getProperty("java.class.path"),
-                                   "org.kevoree.platform.standalone.App")
-      logger.debug("Start node with command: {}", exec.mkString(" "))
-      nodePlatformProcess = Runtime.getRuntime.exec(exec)
-
-      configureLogFile(iaasNode, nodePlatformProcess)
-
-      nodePlatformProcess.exitValue
-      false
-    } catch {
-      case e: IllegalThreadStateException => {
-        logger.debug("platform " + nodeName + " is started")
-        true
-      }
-    }
-  }
-
-  private def startWithAether (childBootStrapModel: ContainerRoot, kevoreeVersion: String): Boolean = {
-    try {
-      val platformFile = iaasNode.getBootStrapperService.resolveKevoreeArtifact("org.kevoree.platform.standalone", "org.kevoree.platform", kevoreeVersion)
-      val java: String = getJava
-      if (platformFile != null) {
-
-        val tempFile = File.createTempFile("bootModel" + nodeName, ".kev")
-        KevoreeXmiHelper.save(tempFile.getAbsolutePath, childBootStrapModel)
-
-        val vmargsObject = iaasNode.getDictionary.get("VMARGS")
-        var exec = Array[String](java)
-        if (vmargsObject != null) {
-          exec = Array[String](java, vmargsObject.toString)
-        }
-        exec = exec ++ List[String]("-Dnode.headless=true", "-Dnode.bootstrap=" + tempFile.getAbsolutePath, "-Dnode.name=" + nodeName, "-jar", platformFile.getAbsolutePath)
+	private def startWithClassPath (childBootStrapModel: ContainerRoot): Boolean = {
+		try {
+			val java: String = getJava
+			val tempFile = File.createTempFile("bootModel" + nodeName, ".kev")
+			KevoreeXmiHelper.save(tempFile.getAbsolutePath, childBootStrapModel)
 
 
-        logger.debug("Start node with command: {}", exec.mkString(" "))
-        nodePlatformProcess = Runtime.getRuntime.exec(exec)
+			if (System.getProperty("java.class.path").contains("plexus-classworlds")) {
+				return false //maven use case
+			}
 
-        configureLogFile(iaasNode, nodePlatformProcess)
+			//TRY THE CURRENT CLASSLOADER
+			try {
+				Thread.currentThread().getContextClassLoader.loadClass("org.kevoree.platform.standalone.App")
+			} catch {
+				case e: Throwable => {
+					logger.info("Can't find bootstrap class {}", "org.kevoree.platform.standalone.App")
+					return false
+				}
+			}
 
-        nodePlatformProcess.exitValue
-        false
-      } else {
-        logger.error("Unable to start node because the platform jar file is not available")
-        false
-      }
-    } catch {
-      case e: IllegalThreadStateException => {
-        logger.debug("platform " + nodeName + " is started")
-        true
-      }
-    }
-  }
+			val vmargsObject = iaasNode.getDictionary.get("VMARGS")
+			var exec = Array[String](java)
+			if (vmargsObject != null) {
+				exec = Array[String](java, vmargsObject.toString)
+			}
+			exec = exec ++ List[String]("-Dnode.headless=true", "-Dnode.bootstrap=" + tempFile.getAbsolutePath, "-Dnode.name=" + nodeName, "-classpath", System.getProperty("java.class.path"),
+																	 "org.kevoree.platform.standalone.App")
+			logger.debug("Start node with command: {}", exec.mkString(" "))
+			nodePlatformProcess = Runtime.getRuntime.exec(exec)
+
+			configureLogFile(iaasNode, nodePlatformProcess)
+
+			nodePlatformProcess.exitValue
+			false
+		} catch {
+			case e: IllegalThreadStateException => {
+				logger.debug("platform " + nodeName + " is started")
+			// TODO measure time
+			logger.warn("[TIME] MiniCloudKevoreeNodeRunner child node started: {}", System.currentTimeMillis)
+				true
+			}
+		}
+	}
+
+	private def startWithAether (childBootStrapModel: ContainerRoot, kevoreeVersion: String): Boolean = {
+		try {
+			val platformFile = iaasNode.getBootStrapperService.resolveKevoreeArtifact("org.kevoree.platform.standalone", "org.kevoree.platform", kevoreeVersion)
+			val java: String = getJava
+			if (platformFile != null) {
+
+				val tempFile = File.createTempFile("bootModel" + nodeName, ".kev")
+				KevoreeXmiHelper.save(tempFile.getAbsolutePath, childBootStrapModel)
+
+				val vmargsObject = iaasNode.getDictionary.get("VMARGS")
+				var exec = Array[String](java)
+				if (vmargsObject != null) {
+					exec = Array[String](java, vmargsObject.toString)
+				}
+				exec = exec ++ List[String]("-Dnode.headless=true", "-Dnode.bootstrap=" + tempFile.getAbsolutePath, "-Dnode.name=" + nodeName, "-jar", platformFile.getAbsolutePath)
+
+
+				logger.debug("Start node with command: {}", exec.mkString(" "))
+				nodePlatformProcess = Runtime.getRuntime.exec(exec)
+
+				configureLogFile(iaasNode, nodePlatformProcess)
+
+				nodePlatformProcess.exitValue
+				false
+			} else {
+				logger.error("Unable to start node because the platform jar file is not available")
+				false
+			}
+		} catch {
+			case e: IllegalThreadStateException => {
+				logger.debug("platform " + nodeName + " is started")
+			// TODO measure time
+			logger.warn("[TIME] MiniCloudKevoreeNodeRunner child node started: {}", System.currentTimeMillis)
+				true
+			}
+		}
+	}
 }
 

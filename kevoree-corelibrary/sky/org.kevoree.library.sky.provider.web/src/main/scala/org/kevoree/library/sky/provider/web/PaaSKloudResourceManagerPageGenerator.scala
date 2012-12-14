@@ -27,9 +27,6 @@ class PaaSKloudResourceManagerPageGenerator (instance: PaaSKloudResourceManagerP
 
   def internalProcess (request: KevoreeHttpRequest, response: KevoreeHttpResponse): PartialFunction[String, KevoreeHttpResponse] = {
     case initializeUserConfiguRequest() => initializeUserConfiguration(request, response)
-    //    case AddChildRequest(login) => addChild(request, response)
-    //    case RemoveChildRequest(login) => removeChild(login, request, response)
-    //    case PushModelRequest(login) => pushModel(request, response)
     case rootRequest() => getPaasPage(request, response)
     case rootUserRequest(login) => getPaasUserPage(login, request, response)
   }
@@ -52,7 +49,7 @@ class PaaSKloudResourceManagerPageGenerator (instance: PaaSKloudResourceManagerP
     }
     // FIXME no security at all here
 
-    val htmlContent = /*VirtualNodeHTMLHelper.*/ HTMLPageBuilder.getPaasUserPage(login, pattern, instance.getModelService.getLastModel)
+    val htmlContent = HTMLPageBuilder.getPaasUserPage(login, pattern, instance.getModelService.getLastModel)
     response.setStatus(200)
     response.setContent(htmlContent)
     response

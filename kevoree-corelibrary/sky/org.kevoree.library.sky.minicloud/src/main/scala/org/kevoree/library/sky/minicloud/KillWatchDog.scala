@@ -1,3 +1,4 @@
+/*
 package org.kevoree.library.sky.minicloud
 
 import actors.{Actor, TIMEOUT}
@@ -25,4 +26,4 @@ class KillWatchDog(process : Process, timout : Int)  extends Actor {
       case STOP() => this.exit()
     }
   }
-}
+}*/

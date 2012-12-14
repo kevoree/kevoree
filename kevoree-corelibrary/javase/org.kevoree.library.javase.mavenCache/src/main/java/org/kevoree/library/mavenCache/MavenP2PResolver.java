@@ -12,10 +12,8 @@ import org.kevoree.api.service.core.classloading.DeployUnitResolver;
 import org.kevoree.api.service.core.handler.ModelListener;
 import org.kevoree.framework.AbstractComponentType;
 import org.kevoree.framework.KevoreePropertyHelper;
-import org.kevoree.framework.NetworkHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import scala.Option;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -81,9 +79,9 @@ public class MavenP2PResolver extends AbstractComponentType implements DeployUni
         for(ContainerNode node : model.getNodesForJ()){
             for(ComponentInstance inst : node.getComponentsForJ()){
                 if(inst.getTypeDefinition().getName().equals("MavenCacheServer")){
-                    List<String> ips = KevoreePropertyHelper.getStringNetworkProperties(model, node.getName(), org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP());
+                    List<String> ips = KevoreePropertyHelper.getNetworkProperties(model, node.getName(), org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP());
                     logger.info("Cache Found on node "+node.getName());
-                    Object port = KevoreePropertyHelper.getProperty(model,inst,null,"port",false,null);
+                    Object port = KevoreePropertyHelper.getProperty(inst,"port",false,null);
                     for(String remoteIP : ips){
                        String url = "http://"+remoteIP+":"+port;
                         logger.info("Add URL "+url);

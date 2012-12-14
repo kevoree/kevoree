@@ -1,28 +1,13 @@
 package org.kevoree.library.sky.jails
 
-/**
- * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.gnu.org/licenses/lgpl-3.0.txt
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 import nodeType.JailNode
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import process.ProcessExecutor
 import org.kevoree.library.sky.api.KevoreeNodeRunner
 import java.io._
-import org.kevoree.{KevoreeFactory, ContainerRoot}
-import org.kevoree.framework.{KevoreeXmiHelper, Constants, KevoreePropertyHelper}
-import org.kevoree.library.sky.api.helper.{PropertyHelper, KloudNetworkHelper}
+import org.kevoree.{ContainerNode, ContainerRoot}
+import org.kevoree.framework.{KevoreePlatformHelper, KevoreeXmiHelper, Constants, KevoreePropertyHelper}
 
 
 /**
@@ -33,7 +18,7 @@ import org.kevoree.library.sky.api.helper.{PropertyHelper, KloudNetworkHelper}
  * @author Erwan Daubert
  * @version 1.0
  */
-class JailKevoreeNodeRunner (nodeName: String, iaasNode: JailNode) extends KevoreeNodeRunner(nodeName) {
+class JailKevoreeNodeRunner(nodeName: String, iaasNode: JailNode) extends KevoreeNodeRunner(nodeName) {
 
   private val logger: Logger = LoggerFactory.getLogger(this.getClass)
 
@@ -41,83 +26,89 @@ class JailKevoreeNodeRunner (nodeName: String, iaasNode: JailNode) extends Kevor
 
   //  var nodeProcess: Process = null
 
-  def startNode (iaasModel: ContainerRoot, childBootstrapModel: ContainerRoot): Boolean = {
+  def startNode(iaasModel: ContainerRoot, childBootstrapModel: ContainerRoot): Boolean = {
     logger.debug("Starting " + nodeName)
-    // looking for currently launched jail
-    val result = processExecutor.listIpJails(nodeName)
-    if (result._1) {
-      var newIp = "127.0.0.1"
-      // check if the node have a inet address
-      val ipOption = KevoreePropertyHelper.getStringNetworkProperty(iaasModel, nodeName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP)
-      if (ipOption.isDefined) {
-        newIp = ipOption.get
-      } else {
-        logger.warn("Unable to get the IP for the new jail, the creation may fail")
-      }
-      if (processExecutor.addNetworkAlias(iaasNode.getNetworkInterface, newIp, iaasNode.getAliasMask)) {
-        // looking for the flavors
-        var flavor = lookingForFlavors(iaasModel, nodeName)
-        if (flavor == null) {
-          flavor = iaasNode.getFlavor
-        }
-        // create the new jail
-        if (processExecutor.createJail(flavor, nodeName, newIp, findArchive(nodeName))) {
-          var jailPath = processExecutor.findPathForJail(nodeName)
-          // find the needed version of Kevoree for the child node
-          val version = findVersionForChildNode(nodeName, childBootstrapModel, iaasModel.getNodes.find(n => n.getName == iaasNode.getNodeName).get)
-          // install the model on the jail
-          val platformFile = iaasNode.getBootStrapperService.resolveKevoreeArtifact("org.kevoree.platform.standalone", "org.kevoree.platform", version)
-          KevoreeXmiHelper.save(jailPath + File.separator + "root" + File.separator + "bootstrapmodel.kev", childBootstrapModel)
-          if (PropertyHelper.copyFile(platformFile.getAbsolutePath, jailPath + File.separator + "root" + File.separator + "kevoree-runtime.jar")) {
-            // specify limitation on jail such as CPU, RAM
-            if (JailsConstraintsConfiguration.applyJailConstraints(iaasModel, nodeName)) {
-              // configure ssh access
-              configureSSHServer(jailPath, newIp)
-              // launch the jail
-              if (processExecutor.startJail(nodeName)) {
-                logger.debug("{} started", nodeName)
-                val jailData = processExecutor.findJail(nodeName)
-                jailPath = jailData._1
-                val jailId = jailData._2
-                if (jailId != "-1") {
-                  logger.debug("Jail {} is correctly configure, now we try to start the Kevoree Node", nodeName)
-                  val logFile = System.getProperty("java.io.tmpdir") + File.separator + nodeName + ".log"
-                  outFile = new File(logFile + ".out")
-                  errFile = new File(logFile + ".err")
-                  processExecutor.startKevoreeOnJail(jailId, KevoreePropertyHelper.getStringPropertyForNode(iaasModel, nodeName, "RAM").getOrElse("N/A"), nodeName/*, outFile, errFile*/, this, iaasNode)
+    iaasModel.findByQuery("nodes[" + iaasNode.getName + "]/hosts[" + nodeName + "]", classOf[ContainerNode]) match {
+      case Some(node) => {
+        // looking for currently launched jail
+        val result = processExecutor.listIpJails(nodeName)
+        if (result._1) {
+          var newIp = "127.0.0.1"
+          // check if the node have a inet address
+          val ipOption = KevoreePlatformHelper.getProperty(iaasModel, nodeName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP)
+          if (ipOption != "") {
+            newIp = ipOption
+          } else {
+            logger.warn("Unable to get the IP for the new jail, the creation may fail")
+          }
+          if (processExecutor.addNetworkAlias(iaasNode.getNetworkInterface, newIp, iaasNode.getAliasMask)) {
+            // looking for the flavors
+            var flavor = lookingForFlavors(iaasModel, node)
+            if (flavor == null) {
+              flavor = iaasNode.getFlavor
+            }
+            // create the new jail
+            if (processExecutor.createJail(flavor, nodeName, newIp, findArchive(nodeName))) {
+              var jailPath = processExecutor.findPathForJail(nodeName)
+              // find the needed version of Kevoree for the child node
+              val version = findVersionForChildNode(nodeName, childBootstrapModel, iaasModel.getNodes.find(n => n.getName == iaasNode.getNodeName).get)
+              // install the model on the jail
+              val platformFile = iaasNode.getBootStrapperService.resolveKevoreeArtifact("org.kevoree.platform.standalone", "org.kevoree.platform", version)
+              KevoreeXmiHelper.save(jailPath + File.separator + "root" + File.separator + "bootstrapmodel.kev", childBootstrapModel)
+              if (copyFile(platformFile.getAbsolutePath, jailPath + File.separator + "root" + File.separator + "kevoree-runtime.jar")) {
+                // specify limitation on jail such as CPU, RAM
+                if (JailsConstraintsConfiguration.applyJailConstraints(iaasModel, node)) {
+                  // configure ssh access
+                  configureSSHServer(jailPath, newIp)
+                  // launch the jail
+                  if (processExecutor.startJail(nodeName)) {
+                    logger.debug("{} started", nodeName)
+                    val jailData = processExecutor.findJail(nodeName)
+                    jailPath = jailData._1
+                    val jailId = jailData._2
+                    if (jailId != "-1") {
+                      logger.debug("Jail {} is correctly configure, now we try to start the Kevoree Node", nodeName)
+                      val logFile = System.getProperty("java.io.tmpdir") + File.separator + nodeName + ".log"
+                      outFile = new File(logFile + ".out")
+                      errFile = new File(logFile + ".err")
+                      processExecutor.startKevoreeOnJail(jailId, KevoreePropertyHelper.getProperty(node, "RAM").getOrElse("N/A"), nodeName /*, outFile, errFile*/ , this, iaasNode)
+                    } else {
+                      logger.error("Unable to find the jail {}", nodeName)
+                      false
+                    }
+                  } else {
+                    logger.error("Unable to start the jail {}", nodeName)
+                    false
+                  }
                 } else {
-                  logger.error("Unable to find the jail {}", nodeName)
+                  logger.error("Unable to specify jail limitations on {}", nodeName)
                   false
                 }
               } else {
-                logger.error("Unable to start the jail {}", nodeName)
+                logger.error("Unable to set the model the new jail {}", nodeName)
                 false
               }
             } else {
-              logger.error("Unable to specify jail limitations on {}", nodeName)
+              logger.error("Unable to create a new Jail {}", nodeName)
               false
             }
           } else {
-            logger.error("Unable to set the model the new jail {}", nodeName)
+            logger.error("Unable to define a new alias {} with {}", nodeName, newIp)
             false
           }
         } else {
-          logger.error("Unable to create a new Jail {}", nodeName)
+          // if an existing one have the same name, then it is not possible to launch this new one (return false)
+          logger.error("There already exists a jail with the same name or it is not possible to check this:\n {}", result._2)
           false
         }
-      } else {
-        logger.error("Unable to define a new alias {} with {}", nodeName, newIp)
-        false
       }
-    } else {
-      // if an existing one have the same name, then it is not possible to launch this new one (return false)
-      logger.error("There already exists a jail with the same name or it is not possible to check this:\n {}", result._2)
-      false
+      case none => logger.error("the model that must be applied doesn't contain the node {}", nodeName); false
     }
+
 
   }
 
-  def stopNode (): Boolean = {
+  def stopNode(): Boolean = {
     logger.info("stop " + nodeName)
     // looking for the jail that must be at least created
     val oldIP = processExecutor.findJail(nodeName)._3
@@ -150,9 +141,9 @@ class JailKevoreeNodeRunner (nodeName: String, iaasNode: JailNode) extends Kevor
     }
   }
 
-  private def lookingForFlavors (iaasModel: ContainerRoot, nodeName: String): String = {
+  private def lookingForFlavors(iaasModel: ContainerRoot, node: ContainerNode): String = {
     logger.debug("looking for specific flavor")
-    val flavorsOption = KevoreePropertyHelper.getStringPropertyForNode(iaasModel, nodeName, "flavor")
+    val flavorsOption = KevoreePropertyHelper.getProperty(node, "flavor")
     if (flavorsOption.isDefined) {
       flavorsOption.get
     } else {
@@ -160,7 +151,7 @@ class JailKevoreeNodeRunner (nodeName: String, iaasNode: JailNode) extends Kevor
     }
   }
 
-  private def findArchive (nodName: String): Option[String] = {
+  private def findArchive(nodName: String): Option[String] = {
     // TODO
     //val archivesURL = iaasNode.getArchives
 

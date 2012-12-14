@@ -50,21 +50,29 @@ public class KTinyWebServer extends AbstractWebServer implements Runnable {
 			protected void service (HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 				KevoreeHttpResponse res = handler.sendAndWait((KevoreeHttpRequest) req);
 
-				if (res.getHeaders().get("Content-Type") != null) {
-					resp.setContentType(res.getHeaders().get("Content-Type"));
-				}
-				try {
-					if (res.getHeaders().get("Content-Length") != null) {
-						resp.setContentLength(Integer.parseInt(res.getHeaders().get("Content-Length")));
+				if (res.getStatus() == 200) {
+					if (res.getHeaders().get("Content-Type") != null) {
+						resp.setContentType(res.getHeaders().get("Content-Type"));
 					}
-				} catch (NumberFormatException e) {
-					logger.warn("{} is not an Integer", res.getHeaders().get("Content-Length"));
-				}
-
-				if (res.getRawContent() != null) {
-					resp.getOutputStream().write(res.getRawContent());
+					try {
+						if (res.getHeaders().get("Content-Length") != null) {
+							resp.setContentLength(Integer.parseInt(res.getHeaders().get("Content-Length")));
+						}
+					} catch (NumberFormatException e) {
+						logger.warn("{} is not an Integer", res.getHeaders().get("Content-Length"));
+					}
+					if (res.getRawContent() != null) {
+						resp.getOutputStream().write(res.getRawContent());
+					} else {
+						resp.getOutputStream().write(res.getContent().getBytes("UTF-8"));
+					}
 				} else {
-					resp.getOutputStream().write(res.getContent().getBytes());
+					resp.setStatus(res.getStatus());
+					if (res.getRawContent() != null) {
+						resp.getOutputStream().write(res.getRawContent());
+					} else {
+						resp.getOutputStream().write(res.getContent().getBytes("UTF-8"));
+					}
 				}
 
 			}

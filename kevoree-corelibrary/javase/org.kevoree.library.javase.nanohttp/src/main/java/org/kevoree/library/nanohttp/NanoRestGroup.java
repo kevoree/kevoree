@@ -32,71 +32,71 @@ import java.util.concurrent.Executors;
  */
 
 @DictionaryType({
-		@DictionaryAttribute(name = "port", defaultValue = "8000", optional = true, fragmentDependant = true),
-		@DictionaryAttribute(name = "ip", defaultValue = "0.0.0.0", optional = true, fragmentDependant = true)
+        @DictionaryAttribute(name = "port", defaultValue = "8000", optional = true, fragmentDependant = true),
+        @DictionaryAttribute(name = "ip", defaultValue = "0.0.0.0", optional = true, fragmentDependant = true)
 })
 @GroupType
 @Library(name = "JavaSE", names = "Android")
 public class NanoRestGroup extends AbstractGroupType {
 
-	private Logger logger = LoggerFactory.getLogger(this.getClass());
-	protected NanoHTTPD server = null;
-	//	private ModelSerializer modelSaver = new ModelSerializer();
-	private KevoreeModelHandlerService handler = null;
-	private boolean starting;
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    protected NanoHTTPD server = null;
+    //	private ModelSerializer modelSaver = new ModelSerializer();
+    private KevoreeModelHandlerService handler = null;
+    private boolean starting;
 
-	private int port;
+    private int port;
 
-	ExecutorService poolUpdate = Executors.newSingleThreadExecutor();
-	final NanoRestGroup self = this;
+    ExecutorService poolUpdate = Executors.newSingleThreadExecutor();
+    final NanoRestGroup self = this;
 
-	@Start
-	public void startRestGroup () throws IOException {
-		poolUpdate = Executors.newSingleThreadExecutor();
-		handler = this.getModelService();
-		port = Integer.parseInt(this.getDictionary().get("port").toString());
-		Object addressObject = this.getDictionary().get("ip");
-		String address = "0.0.0.0";
-		if (addressObject != null) {
-			address = addressObject.toString();
-		}
+    @Start
+    public void startRestGroup() throws IOException {
+        poolUpdate = Executors.newSingleThreadExecutor();
+        handler = this.getModelService();
+        port = Integer.parseInt(this.getDictionary().get("port").toString());
+        Object addressObject = this.getDictionary().get("ip");
+        String address = "0.0.0.0";
+        if (addressObject != null) {
+            address = addressObject.toString();
+        }
 //		final NanoRestGroup self = this;
-		server = new NanoHTTPD(new InetSocketAddress(InetAddress.getByName(address), port)) {
-			//        server = new NanoHTTPD(port) {
-			@Override
-			public Response serve (String uri, String method, Properties header, Properties parms, Properties files, InputStream body) {
-				if ("POST".equals(method)) {
-					if (uri.endsWith("/model/current") || uri.endsWith("/model/current/zip")) {
-						try {
-							logger.debug("Model receive, process to load");
-							ContainerRoot model = null;
-							if (uri.endsWith("zip")) {
-								model = KevoreeXmiHelper.loadCompressedStream(body);
-								logger.debug("Load  model From ZIP Stream");
-							} else {
-								model = KevoreeXmiHelper.loadStream(body);
-								logger.debug("Load  model From XMI Stream");
-							}
-							body.close();
-							logger.debug("Model loaded,send to core");
-							String srcNodeName = "";
-							Boolean externalSender = true;
-							Enumeration e = parms.propertyNames();
-							while (e.hasMoreElements()) {
-								String value = (String) e.nextElement();
-								if (value.endsWith("nodesrc")) {
-									srcNodeName = parms.getProperty(value);
-								}
-							}
-							for (ContainerNode subNode : getModelElement().getSubNodesForJ()) {
-								if (subNode.getName().trim().equals(srcNodeName.trim())) {
-									logger.debug("model received from another node: forward is not needed");
-									externalSender = false;
-								}
-							}
+        server = new NanoHTTPD(new InetSocketAddress(InetAddress.getByName(address), port)) {
+            //        server = new NanoHTTPD(port) {
+            @Override
+            public Response serve(String uri, String method, Properties header, Properties parms, Properties files, InputStream body) {
+                if ("POST".equals(method)) {
+                    if (uri.endsWith("/model/current") || uri.endsWith("/model/current/zip")) {
+                        try {
+                            logger.debug("Model receive, process to load");
+                            ContainerRoot model = null;
+                            if (uri.endsWith("zip")) {
+                                model = KevoreeXmiHelper.loadCompressedStream(body);
+                                logger.debug("Load  model From ZIP Stream");
+                            } else {
+                                model = KevoreeXmiHelper.loadStream(body);
+                                logger.debug("Load  model From XMI Stream");
+                            }
+                            body.close();
+                            logger.debug("Model loaded,send to core");
+                            String srcNodeName = "";
+                            Boolean externalSender = true;
+                            Enumeration e = parms.propertyNames();
+                            while (e.hasMoreElements()) {
+                                String value = (String) e.nextElement();
+                                if (value.endsWith("nodesrc")) {
+                                    srcNodeName = parms.getProperty(value);
+                                }
+                            }
+                            for (ContainerNode subNode : getModelElement().getSubNodesForJ()) {
+                                if (subNode.getName().trim().equals(srcNodeName.trim())) {
+                                    logger.debug("model received from another node: forward is not needed");
+                                    externalSender = false;
+                                }
+                            }
 
 							/*//DO NOT NOTIFY ALL WHEN REC FROM THIS GROUP
-							final Boolean finalexternalSender = externalSender;
+                            final Boolean finalexternalSender = externalSender;
 							final ContainerRoot finalModel = model;
 							Runnable t = new Runnable() {
 								@Override
@@ -111,17 +111,16 @@ public class NanoRestGroup extends AbstractGroupType {
 								}
 							};
 							poolUpdate.submit(t);*/
-							processOnModelReceived(externalSender, model);
+                            processOnModelReceived(externalSender, model);
 
-							return new NanoHTTPD.Response(HTTP_OK, MIME_HTML, "<ack nodeName=\"" + getNodeName() + "\" />");
-						} catch (Exception e) {
-							logger.error("Error while loading model ", e);
-							return new NanoHTTPD.Response(HTTP_BADREQUEST, MIME_HTML, "Error while uploading model");
-						}
-					}
-				} else if ("GET".equals(method)) {
-					/*if (uri.endsWith("/model/current")) {
-						String msg = KevoreeXmiHelper.saveToString(handler.getLastModel(), false);
+                            return new NanoHTTPD.Response(HTTP_OK, MIME_HTML, "<ack nodeName=\"" + getNodeName() + "\" />");
+                        } catch (Exception e) {
+                            logger.error("Error while loading model ", e);
+                            return new NanoHTTPD.Response(HTTP_BADREQUEST, MIME_HTML, "Error while uploading model");
+                        }
+                    }
+                } else if ("GET".equals(method)) {                    /*if (uri.endsWith("/model/current")) {
+                        String msg = KevoreeXmiHelper.saveToString(handler.getLastModel(), false);
 						return new NanoHTTPD.Response(HTTP_OK, MIME_HTML, msg);
 					}
 					if (uri.endsWith("/model/current/zip")) {
@@ -130,200 +129,214 @@ public class NanoRestGroup extends AbstractGroupType {
 						ByteArrayInputStream resultStream = new ByteArrayInputStream(st.toByteArray());
 						return new NanoHTTPD.Response(HTTP_OK, MIME_HTML, resultStream);
 					}*/
-					return processOnModelRequested(uri);
-				}
-				return new NanoHTTPD.Response(HTTP_BADREQUEST, MIME_XML, "ONLY GET OR POST METHOD SUPPORTED");
-			}
-		};
+                    return processOnModelRequested(uri);
+                }
+                return new NanoHTTPD.Response(HTTP_BADREQUEST, MIME_XML, "ONLY GET OR POST METHOD SUPPORTED");
+            }
+        };
 
-		//logger.info("Rest service start on port ->" + port);
-		starting = true;
+        //logger.info("Rest service start on port ->" + port);
+        starting = true;
 
-	}
+    }
 
-	protected void processOnModelReceived (boolean externalSender, ContainerRoot model) {
-		//DO NOT NOTIFY ALL WHEN REC FROM THIS GROUP
-		final Boolean finalexternalSender = externalSender;
-		final ContainerRoot finalModel = model;
-		Runnable t = new Runnable() {
-			@Override
-			public void run () {
-				if (!finalexternalSender) {
-					getModelService().unregisterModelListener(self);
-				}
-				handler.atomicUpdateModel(finalModel);
-				if (!finalexternalSender) {
-					getModelService().registerModelListener(self);
-				}
-			}
-		};
-		poolUpdate.submit(t);
-	}
+    protected void processOnModelReceived(boolean externalSender, ContainerRoot model) {
+        //DO NOT NOTIFY ALL WHEN REC FROM THIS GROUP
+        final Boolean finalexternalSender = externalSender;
+        final ContainerRoot finalModel = model;
+        Runnable t = new Runnable() {
+            @Override
+            public void run() {
+                if (!finalexternalSender) {
+                    getModelService().unregisterModelListener(self);
+                }
+                handler.atomicUpdateModel(finalModel);
+                if (!finalexternalSender) {
+                    getModelService().registerModelListener(self);
+                }
+            }
+        };
+        poolUpdate.submit(t);
+    }
 
-	protected NanoHTTPD.Response processOnModelRequested (String uri) {
-		if (uri.endsWith("/model/current")) {
-			String msg = KevoreeXmiHelper.saveToString(handler.getLastModel(), false);
-			return server.new Response(NanoHTTPD.HTTP_OK, NanoHTTPD.MIME_HTML, msg);
-		} else if (uri.endsWith("/model/current/zip")) {
-			ByteArrayOutputStream st = new ByteArrayOutputStream();
-			KevoreeXmiHelper.saveCompressedStream(st, handler.getLastModel());
-			ByteArrayInputStream resultStream = new ByteArrayInputStream(st.toByteArray());
-			return server.new Response(NanoHTTPD.HTTP_OK, NanoHTTPD.MIME_HTML, resultStream);
-		} else {
-			return server.new Response(NanoHTTPD.HTTP_BADREQUEST, null, "");
-		}
-	}
+    protected NanoHTTPD.Response processOnModelRequested(String uri) {
+        if (uri.endsWith("/model/current")) {
+            String msg = KevoreeXmiHelper.saveToString(handler.getLastModel(), false);
+            return server.new Response(NanoHTTPD.HTTP_OK, NanoHTTPD.MIME_HTML, msg);
+        } else if (uri.endsWith("/model/current/zip")) {
+            ByteArrayOutputStream st = new ByteArrayOutputStream();
+            KevoreeXmiHelper.saveCompressedStream(st, handler.getLastModel());
+            ByteArrayInputStream resultStream = new ByteArrayInputStream(st.toByteArray());
+            return server.new Response(NanoHTTPD.HTTP_OK, NanoHTTPD.MIME_HTML, resultStream);
+        } else {
+            return server.new Response(NanoHTTPD.HTTP_BADREQUEST, null, "");
+        }
+    }
 
-	@Stop
-	public void stopRestGroup () {
-		poolUpdate.shutdownNow();
-		server.stop();
-	}
+    @Stop
+    public void stopRestGroup() {
+        poolUpdate.shutdownNow();
+        server.stop();
+    }
 
-	@Update
-	public void update () throws IOException {
-		if (!this.getDictionary().get("port").toString().equals("" + port)) {
-			stopRestGroup();
-			startRestGroup();
-		}
-	}
+    @Update
+    public void update() throws IOException {
+        if (!this.getDictionary().get("port").toString().equals("" + port)) {
+            stopRestGroup();
+            startRestGroup();
+        }
+    }
 
-	@Override
-	public void triggerModelUpdate () {
-		if (starting) {
-			final Option<ContainerRoot> modelOption = NodeNetworkHelper.updateModelWithNetworkProperty(this);
-			if (modelOption.isDefined()) {
-				final NanoRestGroup self = this;
-				new Thread() {
-					public void run () {
-						getModelService().unregisterModelListener(self);
-						getModelService().atomicUpdateModel(modelOption.get());
-						getModelService().registerModelListener(self);
-					}
-				}.start();
-			}
-			starting = false;
-		} else {
-			Group group = getModelElement();
-			for (ContainerNode subNode : group.getSubNodesForJ()) {
-				if (!subNode.getName().equals(this.getNodeName())) {
-					try {
-						internalPush(getModelService().getLastModel(), subNode.getName(), this.getNodeName());
-					} catch (Exception e) {
-						logger.warn("Unable to notify other members of {} group", group.getName());
-					}
-				}
-			}
-		}
-	}
+    @Override
+    public void triggerModelUpdate() {
+        if (starting) {
+            final Option<ContainerRoot> modelOption = NodeNetworkHelper.updateModelWithNetworkProperty(this);
+            if (modelOption.isDefined()) {
+                final NanoRestGroup self = this;
+                new Thread() {
+                    public void run() {
+                        getModelService().unregisterModelListener(self);
+                        getModelService().atomicUpdateModel(modelOption.get());
+                        getModelService().registerModelListener(self);
+                    }
+                }.start();
+            }
+            starting = false;
+        } else {
+            Group group = getModelElement();
+            for (ContainerNode subNode : group.getSubNodesForJ()) {
+                if (!subNode.getName().equals(this.getNodeName())) {
+                    try {
+                        internalPush(getModelService().getLastModel(), subNode.getName(), this.getNodeName());
+                    } catch (Exception e) {
+                        logger.warn("Unable to notify other members of {} group", group.getName());
+                    }
+                }
+            }
+        }
+    }
 
-	@Override
-	public void push (ContainerRoot model, String targetNodeName) throws Exception {
-		String ip = "127.0.0.1";
-		Option<String> ipOption = NetworkHelper.getAccessibleIP(KevoreePropertyHelper
-				.getStringNetworkProperties(this.getModelService().getLastModel(), targetNodeName, org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP()));
-		if (ipOption.isDefined()) {
-			ip = ipOption.get();
-		}
+    @Override
+    public void push(ContainerRoot model, String targetNodeName) throws Exception {
+        String ip = "127.0.0.1";
+        Option<String> ipOption = NetworkHelper.getAccessibleIP(KevoreePropertyHelper.getNetworkProperties(this.getModelService().getLastModel(), targetNodeName, org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP()));
+        if (ipOption.isDefined()) {
+            ip = ipOption.get();
+        }
 
 
+        Option<Group> groupOption = model.findByQuery("groups[" + getName() + "]", Group.class);
+        if (groupOption.isDefined()) {
 //		List<String> ips = KevoreePropertyHelper.getStringNetworkProperties(model, targetNodeName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP());
-		Option<Integer> portOption = KevoreePropertyHelper.getIntPropertyForGroup(model, this.getName(), "port", true, targetNodeName);
-		int PORT = 8000;
-		if (portOption.isDefined()) {
-			PORT = portOption.get();
-		}
+            Option<String> portOption = KevoreePropertyHelper.getProperty(groupOption.get(), "port", true, targetNodeName);
+            int PORT = 8000;
+            if (portOption.isDefined()) {
+                try {
+                    PORT = Integer.parseInt(portOption.get());
+                } catch (NumberFormatException e) {
+                    logger.warn("Attribute \"port\" of {} is not an Integer. Default value ({}) is used", getName(), PORT);
+                }
+            }
 //		boolean sent = false;
 //		for (String ip : ips) {
-		logger.debug("try to send model on url=>" + "http://" + ip + ":" + PORT + "/model/current");
-		try {
-			sendModel(model, "http://" + ip + ":" + PORT + "/model/current");
-		} catch (Exception e) {
-			logger.debug("try to send model on url=>" + "http://127.0.0.1:" + PORT + "/model/current");
-			sendModel(model, "http://127.0.0.1:" + PORT + "/model/current");
-		}
-	}
+            logger.debug("try to send model on url=>" + "http://" + ip + ":" + PORT + "/model/current");
+            try {
+                sendModel(model, "http://" + ip + ":" + PORT + "/model/current");
+            } catch (Exception e) {
+                logger.debug("try to send model on url=>" + "http://127.0.0.1:" + PORT + "/model/current");
+                sendModel(model, "http://127.0.0.1:" + PORT + "/model/current");
+            }
+        } else {
 
-	protected void internalPush (ContainerRoot model, String targetNodeName, String sender) throws Exception {
-		String ip = "127.0.0.1";
-		Option<String> ipOption = NetworkHelper.getAccessibleIP(KevoreePropertyHelper
-				.getStringNetworkProperties(this.getModelService().getLastModel(), targetNodeName, org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP()));
-		if (ipOption.isDefined()) {
-			ip = ipOption.get();
-		}
+        }
+    }
 
-		Option<Integer> portOption = KevoreePropertyHelper.getIntPropertyForGroup(model, this.getName(), "port", true, targetNodeName);
-		int PORT = 8000;
-		if (portOption.isDefined()) {
-			PORT = portOption.get();
-		}
-		logger.debug("try to send model on url=>" + "http://" + ip + ":" + PORT + "/model/current?nodesrc=" + sender);
-		sendModel(model, "http://" + ip + ":" + PORT + "/model/current?nodesrc=" + sender);
-	}
+    protected void internalPush(ContainerRoot model, String targetNodeName, String sender) throws Exception {
+        String ip = "127.0.0.1";
+        Option<String> ipOption = NetworkHelper.getAccessibleIP(KevoreePropertyHelper.getNetworkProperties(this.getModelService().getLastModel(), targetNodeName, org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP()));
+        if (ipOption.isDefined()) {
+            ip = ipOption.get();
+        }
+        Option<Group> groupOption = model.findByQuery("groups[" + getName() + "]", Group.class);
+        if (groupOption.isDefined()) {
+            Option<String> portOption = KevoreePropertyHelper.getProperty(groupOption.get(), "port", true, targetNodeName);
+            int PORT = 8000;
+            if (portOption.isDefined()) {
+                try {
+                    PORT = Integer.parseInt(portOption.get());
+                } catch (NumberFormatException e) {
+                    logger.warn("Attribute \"port\" of {} is not an Integer. Default value ({}) is used", getName(), PORT);
+                }
+            }
+            logger.debug("try to send model on url=>" + "http://" + ip + ":" + PORT + "/model/current?nodesrc=" + sender);
+            sendModel(model, "http://" + ip + ":" + PORT + "/model/current?nodesrc=" + sender);
+        }
+    }
 
-	private void sendModel (ContainerRoot model, String urlPath) throws Exception {
+    private void sendModel(ContainerRoot model, String urlPath) throws Exception {
 
-		String urlPath2 = urlPath;
-		if (urlPath2.contains("?")) {
-			urlPath2 = urlPath2.replace("?", "/zip?");
-		} else {
-			urlPath2 = urlPath2 + "/zip";
-		}
-		try {
-			sendModel(model, urlPath2, true);
-		} catch (Exception e) {
-			logger.debug("Unable to push a model on {}", urlPath);
-			sendModel(model, urlPath, false);
-		}
+        String urlPath2 = urlPath;
+        if (urlPath2.contains("?")) {
+            urlPath2 = urlPath2.replace("?", "/zip?");
+        } else {
+            urlPath2 = urlPath2 + "/zip";
+        }
+        try {
+            sendModel(model, urlPath2, true);
+        } catch (Exception e) {
+            logger.debug("Unable to push a model on {}", urlPath);
+            sendModel(model, urlPath, false);
+        }
 
-	}
+    }
 
-	private void sendModel (ContainerRoot model, String urlPath, Boolean zip) throws Exception {
-		ByteArrayOutputStream outStream = new ByteArrayOutputStream();
-		if (zip) {
-			KevoreeXmiHelper.saveCompressedStream(outStream, model);
-		} else {
-			KevoreeXmiHelper.saveStream(outStream, model);
-		}
-		outStream.flush();
-		logger.debug("Try URL PATH " + urlPath);
-		URL url = new URL(urlPath);
-		URLConnection conn = url.openConnection();
-		conn.setConnectTimeout(3000);
-		conn.setDoOutput(true);
-		conn.getOutputStream().write(outStream.toByteArray());
-		conn.getOutputStream().close();
-		// Get the response
-		BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-		String line = rd.readLine();
-		while (line != null) {
-			line = rd.readLine();
-		}
-		rd.close();
-	}
+    private void sendModel(ContainerRoot model, String urlPath, Boolean zip) throws Exception {
+        ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+        if (zip) {
+            KevoreeXmiHelper.saveCompressedStream(outStream, model);
+        } else {
+            KevoreeXmiHelper.saveStream(outStream, model);
+        }
+        outStream.flush();
+        logger.debug("Try URL PATH " + urlPath);
+        URL url = new URL(urlPath);
+        URLConnection conn = url.openConnection();
+        conn.setConnectTimeout(3000);
+        conn.setDoOutput(true);
+        conn.getOutputStream().write(outStream.toByteArray());
+        conn.getOutputStream().close();
+        // Get the response
+        BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+        String line = rd.readLine();
+        while (line != null) {
+            line = rd.readLine();
+        }
+        rd.close();
+    }
 
-	@Override
-	public ContainerRoot pull (String targetNodeName) throws Exception {
-		String ip = "127.0.0.1";
-		Option<String> ipOption = NetworkHelper.getAccessibleIP(KevoreePropertyHelper
-				.getStringNetworkProperties(this.getModelService().getLastModel(), targetNodeName, org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP()));
-		if (ipOption.isDefined()) {
-			ip = ipOption.get();
-		}
+    @Override
+    public ContainerRoot pull(String targetNodeName) throws Exception {
+        String ip = "127.0.0.1";
+        Option<String> ipOption = NetworkHelper.getAccessibleIP(KevoreePropertyHelper.getNetworkProperties(this.getModelService().getLastModel(), targetNodeName, org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP()));
+        if (ipOption.isDefined()) {
+            ip = ipOption.get();
+        }
 
-
-//		List<String> ips = KevoreePropertyHelper.getStringNetworkProperties(this.getModelService().getLastModel(), targetNodeName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP());
-		Option<Integer> portOption = KevoreePropertyHelper.getIntPropertyForGroup(this.getModelService().getLastModel(), this.getName(), "port", true, targetNodeName);
-		int PORT = 8000;
-		if (portOption.isDefined()) {
-			PORT = portOption.get();
-		}
+        Option<String> portOption = KevoreePropertyHelper.getProperty(getModelElement(), "port", true, targetNodeName);
+        int PORT = 8000;
+        if (portOption.isDefined()) {
+            try {
+                PORT = Integer.parseInt(portOption.get());
+            } catch (NumberFormatException e) {
+                logger.warn("Attribute \"port\" of {} is not an Integer. Default value ({}) is used", getName(), PORT);
+            }
+        }
 //		for (String ip : ips) {
-		logger.debug("try to pull model on url=>" + "http://" + ip + ":" + PORT + "/model/current");
-		ContainerRoot model = pullModel("http://" + ip + ":" + PORT + "/model/current");
-		if (model == null) {
-			model = pullModel("http://127.0.0.1:" + PORT + "/model/current");
-		}
+        logger.debug("try to pull model on url=>" + "http://" + ip + ":" + PORT + "/model/current");
+        ContainerRoot model = pullModel("http://" + ip + ":" + PORT + "/model/current");
+        if (model == null) {
+            model = pullModel("http://127.0.0.1:" + PORT + "/model/current");
+        }
 //		}
 
 //		if (model == null) {
@@ -332,38 +345,38 @@ public class NanoRestGroup extends AbstractGroupType {
 //		} else {
 //			return model;
 //		}
-		return model;
-	}
+        return model;
+    }
 
-	private ContainerRoot pullModel (String urlPath) throws Exception {
-		ContainerRoot model = null;
-		model = pullModel(urlPath + "/zip", true);
-		if (model == null) {
-			model = pullModel(urlPath, false);
-		}
-		if (model == null) {
-			throw new Exception("Unable to pull model");
-		}
-		return model;
-	}
+    private ContainerRoot pullModel(String urlPath) throws Exception {
+        ContainerRoot model = null;
+        model = pullModel(urlPath + "/zip", true);
+        if (model == null) {
+            model = pullModel(urlPath, false);
+        }
+        if (model == null) {
+            throw new Exception("Unable to pull model");
+        }
+        return model;
+    }
 
-	private ContainerRoot pullModel (String urlPath, Boolean zip) throws Exception {
-		URL url = new URL(urlPath);
-		URLConnection conn = url.openConnection();
-		conn.setConnectTimeout(2000);
-		InputStream inputStream = conn.getInputStream();
-		if (zip) {
-			return KevoreeXmiHelper.loadCompressedStream(inputStream);
-		} else {
-			return KevoreeXmiHelper.loadStream(inputStream);
-		}
-	}
+    private ContainerRoot pullModel(String urlPath, Boolean zip) throws Exception {
+        URL url = new URL(urlPath);
+        URLConnection conn = url.openConnection();
+        conn.setConnectTimeout(2000);
+        InputStream inputStream = conn.getInputStream();
+        if (zip) {
+            return KevoreeXmiHelper.loadCompressedStream(inputStream);
+        } else {
+            return KevoreeXmiHelper.loadStream(inputStream);
+        }
+    }
 
-	@Override
-	public void preRollback (ContainerRoot containerRoot, ContainerRoot containerRoot1) {
-	}
+    @Override
+    public void preRollback(ContainerRoot containerRoot, ContainerRoot containerRoot1) {
+    }
 
-	@Override
-	public void postRollback (ContainerRoot containerRoot, ContainerRoot containerRoot1) {
-	}
+    @Override
+    public void postRollback(ContainerRoot containerRoot, ContainerRoot containerRoot1) {
+    }
 }

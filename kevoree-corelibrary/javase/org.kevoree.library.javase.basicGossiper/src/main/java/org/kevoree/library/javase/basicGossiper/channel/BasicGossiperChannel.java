@@ -1,5 +1,6 @@
 package org.kevoree.library.javase.basicGossiper.channel;
 
+import org.kevoree.Channel;
 import org.kevoree.ContainerRoot;
 import org.kevoree.KevoreeFactory;
 import org.kevoree.annotation.ChannelTypeFragment;
@@ -141,8 +142,7 @@ public class BasicGossiperChannel extends AbstractChannelFragment implements Mod
 
     @Override
     public String getAddress(String remoteNodeName) {
-        Option<String> ipOption = NetworkHelper.getAccessibleIP(KevoreePropertyHelper
-                .getStringNetworkProperties(currentCacheModel.get(), remoteNodeName, org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP()));
+        Option<String> ipOption = NetworkHelper.getAccessibleIP(KevoreePropertyHelper.getNetworkProperties(currentCacheModel.get(), remoteNodeName, org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP()));
         if (ipOption.isDefined()) {
             return ipOption.get();
         } else {
@@ -152,11 +152,21 @@ public class BasicGossiperChannel extends AbstractChannelFragment implements Mod
 
 	@Override
 	public int parsePortNumber (String nodeName) {
-		Option<Integer> portOption = KevoreePropertyHelper.getIntPropertyForChannel(this.getModelService().getLastModel(), this.getName(), "port", true, nodeName);
-		if (portOption.isDefined()) {
-			return portOption.get();
-		}
-		return 9000;
+        Option<Channel> channelOption = currentCacheModel.get().findByQuery("hubs[" + getName() + "]", Channel.class);
+        int port = 8000;
+        if (channelOption.isDefined()) {
+            Option<String> portOption = KevoreePropertyHelper.getProperty(channelOption.get(), "port", true, nodeName);
+            if (portOption.isDefined()) {
+                try {
+                    port = Integer.parseInt(portOption.get());
+                } catch (NumberFormatException e) {
+                    logger.warn("Attribute \"port\" of {} is not an Integer, default value ({}) is used.", getName(), port);
+                }
+            }
+        } else {
+            logger.warn("There is no channel named {}, default value ({}) is used.", getName(), port);
+        }
+        return port;
 	}
 
     @Override

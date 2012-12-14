@@ -1,6 +1,6 @@
 package org.kevoree.library.sky.provider.web
 
-import org.kevoree.{ContainerNode, ContainerRoot, TypeDefinition}
+import org.kevoree.{Group, ContainerNode, ContainerRoot, TypeDefinition}
 import org.kevoree.framework.KevoreePropertyHelper
 import java.io.File
 import io.Source
@@ -33,7 +33,7 @@ object HTMLPageBuilder {
           <li class="active">
             <a href={pattern}>Home</a> <span class="divider">/</span>
           </li>
-        </ul>{val nodesList = model.getNodes.find(n => n.getName == nodeName) match {
+        </ul>{val nodesList = model.findByQuery("nodes[" + nodeName + "]", classOf[ContainerNode]) match {
         case None => List[ContainerNode]()
         case Some(node) => node.getHosts.toList
       }
@@ -172,7 +172,7 @@ object HTMLPageBuilder {
                 {login}
               </a> <span class="divider">/</span>
               </li>
-            </ul>{val nodesList = model.getGroups.find(g => g.getName == login) match {
+            </ul>{val nodesList = model.findByQuery("groups[" + login + "]", classOf[Group]) match {
             case None => List[ContainerNode]()
             case Some(group) => group.getSubNodes
           }
@@ -206,10 +206,11 @@ object HTMLPageBuilder {
                 </a>
               </li>
             </ul>{var result: List[scala.xml.Elem] = List()
-          model.getNodes.find(n => n.getName == parentNodeName) match {
+          /*model.getNodes.find(n => n.getName == parentNodeName)*/
+          model.findByQuery("nodes[" + parentNodeName + "]", classOf[ContainerNode]) match {
             case None =>
             case Some(node) => {
-              node.getHosts.find(n => n.getName == nodeName) match {
+              node.findByQuery("hosts[" + nodeName + "]", classOf[ContainerNode])match {
                 case None =>
                   result = result ++ List(
                     <div class="alert-message block-message error">
@@ -222,7 +223,7 @@ object HTMLPageBuilder {
                       {streamName match {
                       case "out" => {
                         var subresult: List[scala.xml.Elem] = List()
-                        val logFolderOption = KevoreePropertyHelper.getStringPropertyForNode(model, parentNodeName, "log_folder")
+                        val logFolderOption = KevoreePropertyHelper.getProperty(node, "log_folder")
                         val file = new File(logFolderOption.getOrElse(System.getProperty("java.io.tmpdir")) + File.separator + nodeName + ".log.out")
                         if (file.exists()) {
                           Source.fromFile(file).getLines().toList /*.reverse*/ .foreach {
@@ -239,7 +240,7 @@ object HTMLPageBuilder {
                       }
                       case "err" => {
                         var subresult: List[scala.xml.Elem] = List()
-                        val logFolderOption = KevoreePropertyHelper.getStringPropertyForNode(model, parentNodeName, "log_folder")
+                        val logFolderOption = KevoreePropertyHelper.getProperty(node, "log_folder")
                         val file = new File(logFolderOption.getOrElse(System.getProperty("java.io.tmpdir")) + File.separator + nodeName + ".log.err")
                         if (file.exists()) {
                           Source.fromFile(file).getLines().toList /*.reverse*/ .foreach {
@@ -285,10 +286,12 @@ object HTMLPageBuilder {
                 </a>
               </li>
             </ul>{var result: List[scala.xml.Elem] = List()
-          model.getNodes.find(n => n.getName == parentNodeName) match {
+          /*model.getNodes.find(n => n.getName == parentNodeName)*/
+          model.findByQuery("nodes[" + parentNodeName + "]", classOf[ContainerNode])match {
             case None =>
             case Some(node) => {
-              node.getHosts.find(n => n.getName == nodeName) match {
+              /*node.getHosts.find(n => n.getName == nodeName)*/
+              node.findByQuery("hosts[" + nodeName + "]", classOf[ContainerNode]) match {
                 case None =>
                   result = result ++ List(
                     <div class="alert-message block-message error">
@@ -330,7 +333,7 @@ object HTMLPageBuilder {
         {var result: List[scala.xml.Elem] = List()
       nodeList.foreach {
         child => {
-          val ips = KevoreePropertyHelper.getStringNetworkProperties(model, child.getName, org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP)
+          val ips = KevoreePropertyHelper.getNetworkProperties(model, child.getName, org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP)
           val ipString = ips.mkString(", ")
           result = result ++ List(
             <tr>

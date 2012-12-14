@@ -4,11 +4,9 @@ import org.kevoree.library.sky.api.KevoreeNodeRunner
 import org.kevoree.ContainerRoot
 import org.libvirt.{Network, Connect, LibvirtException, Domain}
 import nu.xom._
-import java.util.UUID
 import org.kevoree.framework.{Constants, KevoreePropertyHelper}
 import org.kevoree.library.sky.api.nodeType.AbstractHostNode
 import org.slf4j.LoggerFactory
-import org.kevoree.library.sky.api.property.PropertyConversionHelper
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -43,9 +41,9 @@ abstract class LibVirtKevoreeNodeRunner(nodeName: String, iaasNode: AbstractHost
     } catch {
       case e: LibvirtException => {
         try {
-          val doc: Document = createXMLDomain(iaasModel,childBootStrapModel)
+          val doc: Document = createXMLDomain(iaasModel, childBootStrapModel)
           val nameElements = doc.query("/domain/name")
-          if(nameElements.size() > 0){
+          if (nameElements.size() > 0) {
             nameElements.get(0).asInstanceOf[Element].removeChildren()
             nameElements.get(0).asInstanceOf[Element].appendChild(nodeName)
           }
@@ -128,31 +126,33 @@ abstract class LibVirtKevoreeNodeRunner(nodeName: String, iaasNode: AbstractHost
       val net: Network = conn.networkLookupByName("default")
       val doc: Document = parser.build(net.getXMLDesc(0), null)
 
-      val ipOption = KevoreePropertyHelper.getStringNetworkProperty(model, domain.getName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP)
+      val ipList = KevoreePropertyHelper.getNetworkProperties(model, domain.getName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP)
 
-      if (ipOption.isDefined && ipOption.get != "127.0.0.1") {
-        val ip = ipOption.get
-        val networks: Nodes = doc.query("/network")
-        for (i <- 0 to networks.size - 1) {
-          val name: Element = networks.get(i).query("./name").get(0).asInstanceOf[Element]
-          if (name.getValue == "default") {
-            val dhcp: Element = networks.get(i).query("./ip/dhcp").get(0).asInstanceOf[Element]
-            val host: Element = new Element("host")
-            val ipAttribute: Attribute = new Attribute("ip", ip)
-            val nameAttribute: Attribute = new Attribute("name", domain.getName)
-            val mac: Element = domainDoc.query("/domain/devices/interface/mac").get(0).asInstanceOf[Element]
-            val address: Attribute = mac.getAttribute("address")
-            val macAttribute: Attribute = new Attribute("mac", address.getValue)
-            host.addAttribute(ipAttribute)
-            host.addAttribute(nameAttribute)
-            host.addAttribute(macAttribute)
-            dhcp.appendChild(host)
+      for (i <- 0 until ipList.size()) {
+        val ip = ipList.get(i)
+        if (ip != "127.0.0.1") {
+          val networks: Nodes = doc.query("/network")
+          for (i <- 0 to networks.size - 1) {
+            val name: Element = networks.get(i).query("./name").get(0).asInstanceOf[Element]
+            if (name.getValue == "default") {
+              val dhcp: Element = networks.get(i).query("./ip/dhcp").get(0).asInstanceOf[Element]
+              val host: Element = new Element("host")
+              val ipAttribute: Attribute = new Attribute("ip", ip)
+              val nameAttribute: Attribute = new Attribute("name", domain.getName)
+              val mac: Element = domainDoc.query("/domain/devices/interface/mac").get(0).asInstanceOf[Element]
+              val address: Attribute = mac.getAttribute("address")
+              val macAttribute: Attribute = new Attribute("mac", address.getValue)
+              host.addAttribute(ipAttribute)
+              host.addAttribute(nameAttribute)
+              host.addAttribute(macAttribute)
+              dhcp.appendChild(host)
+            }
           }
         }
-        net.destroy()
-        val network: Network = conn.networkDefineXML(doc.toXML)
-        network.create()
       }
+      net.destroy()
+      val network: Network = conn.networkDefineXML(doc.toXML)
+      network.create()
     } catch {
       case e: Throwable => {
         logger.error("Unable to reconfigure network for VM {}", domain.getName, e)

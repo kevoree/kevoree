@@ -23,8 +23,7 @@ class NodeNameKloudChecker extends KloudCheckerService {
       instance =>
         if (!instance.getName.startsWith(getId)) {
           val concreteViolation: CheckerViolation = new CheckerViolation()
-          concreteViolation
-            .setMessage(instance.getName + " is not a valid name. It must start with your login.")
+          concreteViolation.setMessage(instance.getName + " is not a valid name. It must start with your login.")
           val targets = new util.ArrayList[AnyRef]()
           targets.add(instance.asInstanceOf[AnyRef])
           concreteViolation.setTargetObjects(targets)

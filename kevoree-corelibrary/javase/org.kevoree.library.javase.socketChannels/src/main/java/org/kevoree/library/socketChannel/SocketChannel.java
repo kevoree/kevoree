@@ -91,10 +91,14 @@ public class SocketChannel extends AbstractChannelFragment implements Runnable {
     public int parsePortNumber(String nodeName) throws IOException {
         try {
             //logger.debug("look for port on " + nodeName);
-            Option<Integer> portOption = org.kevoree.framework.KevoreePropertyHelper.getIntPropertyForChannel(this.getModelService().getLastModel(), this.getName(), "port", true, nodeName);
+            Option<String> portOption = org.kevoree.framework.KevoreePropertyHelper.getProperty(getModelElement(), "port", true, nodeName);
             int port = 0;
             if (portOption.isDefined()) {
-                port = portOption.get();
+                try {
+                port = Integer.parseInt(portOption.get());
+                }catch (NumberFormatException e) {
+                    logger.warn("Attribute \"port\" of {} is not an Integer", getName());
+                }
             }
             return port;
         } catch (NumberFormatException e) {
