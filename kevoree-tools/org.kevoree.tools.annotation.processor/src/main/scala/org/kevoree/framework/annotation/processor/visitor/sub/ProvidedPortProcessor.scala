@@ -102,7 +102,7 @@ trait ProvidedPortProcessor {
                 val messagePortType = KevoreeFactory.eINSTANCE.createMessagePortType
                 messagePortType.setName("org.kevoree.framework.MessagePort")
 
-                if (providedPort.messageType() != "untyped" || !providedPort.async() ) {
+                if (providedPort.messageType() != "untyped" ) {
                   messagePortType.setName(messagePortType.getName+System.currentTimeMillis()) //ensure uniqueness
                 }
 
