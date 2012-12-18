@@ -1,20 +1,13 @@
-package org.kevoree.library.socketChannel
-
-/**
- * Created by IntelliJ IDEA.
- * User: duke
- * Date: 09/02/12
- * Time: 12:53
- */
+package org.daum.library.p2pSock
 
 import java.lang.Class
 import org.kevoree.framework.AbstractChannelFragment
 import scala.collection.JavaConversions._
 import org.kevoree.framework.aspects.KevoreeAspects._
 
-class ChannelClassResolver (nioChannel: AbstractChannelFragment) {
-  def resolve (className: String): Class[_] = {
-    val model = nioChannel.getModelService.getLastModel
+class ChannelClassResolver(nioChannel: AbstractChannelFragment) {
+  def resolve(className: String): Class[_] = {
+    val model = nioChannel.asInstanceOf[P2pSock].getModel
     val currentNode = model.getNodes.find(n => n.getName == nioChannel.getNodeName).get
     var resolvedClass: Class[_] = null
     nioChannel.getBindedPorts.foreach {
