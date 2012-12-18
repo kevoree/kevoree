@@ -59,7 +59,6 @@ class NameChecker extends CheckerService {
           component: ComponentInstance =>
             violation = check(component)
             if (violation != null) {
-              //              violation.setTargetObjects(List(component))
               violations = violations ++ List(violation)
             }
             if (component.getDictionary.isDefined) {
@@ -94,7 +93,6 @@ class NameChecker extends CheckerService {
       channel =>
         var violation = check(channel)
         if (violation != null) {
-          //          violation.setTargetObjects(List(channel))
           violations = violations ++ List(violation)
         }
         if (channel.getDictionary.isDefined) {
@@ -113,7 +111,6 @@ class NameChecker extends CheckerService {
       group =>
         var violation = check(group)
         if (violation != null) {
-          //          violation.setTargetObjects(List(group))
           violations = violations ++ List(violation)
         }
         if (group.getDictionary.isDefined) {

@@ -31,6 +31,7 @@ import java.util.ArrayList
 import org.kevoree.{KevoreeFactory, ContainerRoot}
 import org.kevoree.framework.aspects.KevoreeAspects._
 import collection.JavaConversions._
+import java.util
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -43,7 +44,7 @@ import collection.JavaConversions._
 
 class KevoreeNodeVersionChecker (nodeName: String) extends CheckerService {
   def check (model: ContainerRoot): java.util.List[CheckerViolation] = {
-    val violations: java.util.List[CheckerViolation] = new ArrayList[CheckerViolation]()
+    val violations: java.util.List[CheckerViolation] = new util.ArrayList[CheckerViolation]()
     model.getNodes.find(node => node.getName == nodeName) match {
       case None =>
       case Some(node) => if (node.getKevoreeVersion != KevoreeFactory.getVersion) {
