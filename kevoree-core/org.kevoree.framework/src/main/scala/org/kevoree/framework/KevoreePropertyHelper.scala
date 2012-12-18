@@ -29,6 +29,13 @@ import java.util
 
 object KevoreePropertyHelper {
 
+  /**
+   * look for a specific network property define by a key and specified with a specific target
+   * @param model the model which contains the property
+   * @param targetNodeName the name of the target
+   * @param key the key
+   * @return a list of the existing values
+   */
   def getNetworkProperties (model: ContainerRoot, targetNodeName: String, key: String): java.util.List[String] = {
     val properties = new util.ArrayList[String]()
     val filteredNodeNetwork = model.getNodeNetworks.filter(lNN => lNN.getTarget.getName == targetNodeName)
@@ -45,6 +52,14 @@ object KevoreePropertyHelper {
     properties
   }
 
+  /**
+   * look for a specific property for an Instance element
+   * @param instance the instance which may contains the property you are looking for
+   * @param key the key identifier of the property
+   * @param isFragment true if you are looking for property on channel or group and the property is fragment dependent, false else
+   * @param nodeNameForFragment the name of the fragment, null else
+   * @return an Option corresponding to the value of the property
+   */
   def getProperty (instance: Instance, key: String, isFragment: Boolean = false, nodeNameForFragment: String = ""): Option[String] = {
     instance.getDictionary match {
       case None => {

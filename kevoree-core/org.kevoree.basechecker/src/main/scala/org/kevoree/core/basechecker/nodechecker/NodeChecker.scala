@@ -46,7 +46,6 @@ class NodeChecker extends CheckerService {
     var violations: ListBuffer[CheckerViolation] = ListBuffer()
     model.getNodes.foreach {
       node => //For each Node
-      //        violations = violations ++ checkRelatedChannel(model, node)
         val alreadyCheckedChannels: ListBuffer[Channel] = ListBuffer[Channel]()
         node.getComponents.foreach {
           component => //For each component of each node
@@ -126,39 +125,4 @@ class NodeChecker extends CheckerService {
     }
     violations
   }
-
-
-  /*def checkRelatedChannel(model: ContainerRoot, node: ContainerNode): java.util.List[CheckerViolation] = {
-    var violations: ListBuffer[CheckerViolation] = ListBuffer[CheckerViolation]()
-    node.getChannelFragment.foreach {
-      channel =>
-        channel.getTypeDefinition.foundRelevantDeployUnit(node)
-        match {
-          case null => {
-            val violation: CheckerViolation = new CheckerViolation
-            violation.setMessage(channel.getTypeDefinition.getName + " has no deploy unit for node type " + node.getTypeDefinition.getName)
-            violation.setTargetObjects(List(channel))
-            violations += violation
-          }
-          case _ =>
-        }
-    }
-    /*model.getMBindings.filter(mb => mb.getPort.eContainer.eContainer == node).foreach {
-      mbinding =>
-        mbinding.getHub.getTypeDefinition.foundRelevantDeployUnit(node)
-        match {
-          case null => {
-            val violation: CheckerViolation = new CheckerViolation
-            violation.setMessage(mbinding.getHub.getTypeDefinition.getName + " has no deploy unit for node type " +
-              node.getTypeDefinition.getName)
-            violation.setTargetObjects(List(mbinding) ++ List(mbinding.getHub))
-            violations += violation
-          }
-          case _ =>
-        }
-    }*/
-    violations
-  }*/
-
-
 }

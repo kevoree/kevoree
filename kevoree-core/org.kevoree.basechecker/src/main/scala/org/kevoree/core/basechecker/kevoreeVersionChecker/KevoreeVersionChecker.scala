@@ -62,13 +62,6 @@ class KevoreeVersionChecker extends CheckerService {
               violations.addAll(check(group.getName, du, node))
             }
         }
-      /*node.getChannelFragment.foreach {
-        channel =>
-          val du = channel.getTypeDefinition.foundRelevantDeployUnit(node)
-          if (du != null) {
-            violations.addAll(check(channel.getName, du, node))
-          }
-      }*/
     }
     violations
   }

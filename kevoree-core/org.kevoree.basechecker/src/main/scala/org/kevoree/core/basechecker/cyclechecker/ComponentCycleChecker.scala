@@ -24,10 +24,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 
 package org.kevoree.core.basechecker.cyclechecker
 
@@ -52,7 +48,6 @@ class ComponentCycleChecker extends CheckerService {
 				CheckCycle(graph).check().foreach {
 					violation =>
 						val concreteViolation: CheckerViolation = new CheckerViolation()
-						//var targetObjects : List[Object] = new List()
 						concreteViolation.setMessage(violation.getMessage)
 						var bindings: List[MBinding] = List()
 						violation.getTargetObjects.filter(obj => obj.isInstanceOf[ComponentInstance]).foreach {
