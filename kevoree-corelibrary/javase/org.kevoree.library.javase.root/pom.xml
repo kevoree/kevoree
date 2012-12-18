@@ -31,7 +31,7 @@
         <module>../org.kevoree.library.javase.javaseNode</module>
         <module>../org.kevoree.library.javase.MonitoredJavaSENode</module>
 
-        <module>../org.kevoree.library.javase.socketChannels</module>
+        <module>../org.kevoree.library.javase.p2pSock</module>
         <module>../org.kevoree.library.javase.nioChannels</module>
         <module>../org.kevoree.library.javase.fakeDomo</module>
         <module>../org.kevoree.library.javase.defaultChannels</module>
