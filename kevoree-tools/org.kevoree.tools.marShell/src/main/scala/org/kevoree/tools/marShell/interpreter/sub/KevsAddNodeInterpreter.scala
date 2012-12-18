@@ -30,45 +30,37 @@ case class KevsAddNodeInterpreter(addN: AddNodeStatment) extends KevsAbstractInt
     context.model.findByQuery("typeDefinitions[" + addN.nodeTypeName + "]", classOf[TypeDefinition]) match {
       case None => logger.error("Node Type not found for name " + addN.nodeTypeName); false
       case Some(nodeType) =>
-      if (!nodeType.isInstanceOf[NodeType]) {
-        logger.error("The type with name {} is not a NodeType", addN.nodeTypeName)
-        false
-      } else {
-        context.model.findByQuery("nodes[" + addN.nodeName + "]", classOf[ContainerNode]) match {
-          case Some(e) => {
-            logger.warn("Node Already exist with name {}", e.getName)
-            if (e.getTypeDefinition == null) {
-              context.model.findByQuery("typeDefinitions[" + addN.nodeTypeName + "]", classOf[TypeDefinition]) match {
-                case Some(td) => {
-                  e.setTypeDefinition(td)
-                  Merger.mergeDictionary(e, addN.props, None)
-                  true
-                }
-                case None => {
-                  logger.error("Type definition not found " + addN.nodeTypeName)
-                  false
-                }
-              }
-            } else {
-              if (e.getTypeDefinition.getName == addN.nodeTypeName) {
+        if (!nodeType.isInstanceOf[NodeType]) {
+          logger.error("The type with name {} is not a NodeType", addN.nodeTypeName)
+          false
+        } else {
+          context.model.findByQuery("nodes[" + addN.nodeName + "]", classOf[ContainerNode]) match {
+            case Some(e) => {
+              logger.warn("Node Already exist with name {}", e.getName)
+              if (e.getTypeDefinition == null) {
+                e.setTypeDefinition(nodeType)
                 Merger.mergeDictionary(e, addN.props, None)
                 true
               } else {
-                logger.error("Type != from previous created node")
-                false
+                if (e.getTypeDefinition.getName == addN.nodeTypeName) {
+                  Merger.mergeDictionary(e, addN.props, None)
+                  true
+                } else {
+                  logger.error("Type != from previous created node")
+                  false
+                }
               }
             }
-          }
-          case None => {
-            val newnode = KevoreeFactory.eINSTANCE.createContainerNode
-            newnode.setName(addN.nodeName)
-            newnode.setTypeDefinition(nodeType)
-            Merger.mergeDictionary(newnode, addN.props, None)
-            context.model.addNodes(newnode)
-            true
+            case None => {
+              val newnode = KevoreeFactory.eINSTANCE.createContainerNode
+              newnode.setName(addN.nodeName)
+              newnode.setTypeDefinition(nodeType)
+              Merger.mergeDictionary(newnode, addN.props, None)
+              context.model.addNodes(newnode)
+              true
+            }
           }
         }
-      }
     }
   }
 }
