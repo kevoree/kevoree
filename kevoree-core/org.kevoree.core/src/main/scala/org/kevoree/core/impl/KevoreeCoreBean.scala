@@ -243,7 +243,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService {
 
 
   private def internal_update_model(proposedNewModel: ContainerRoot): Boolean = {
-    if (proposedNewModel == null || !proposedNewModel.getNodes.exists(p => p.getName == getNodeName())) {
+    if (proposedNewModel == null || proposedNewModel.findByQuery("nodes["+getNodeName+"]",classOf[ContainerNode]).isEmpty) {
       logger.error("Asking for update with a NULL model or node name was not found in target model !")
       false
     } else {
