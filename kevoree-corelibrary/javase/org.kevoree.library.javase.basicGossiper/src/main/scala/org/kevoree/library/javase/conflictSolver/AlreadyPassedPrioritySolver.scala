@@ -5,6 +5,7 @@ import org.kevoree.ContainerRoot
 import org.kevoree.merger.KevoreeMergerComponent
 import java.util
 import org.kevoree.api.service.core.script.KevScriptEngineFactory
+import org.slf4j.{LoggerFactory, Logger}
 
 /**
  * Created with IntelliJ IDEA.
@@ -14,19 +15,20 @@ import org.kevoree.api.service.core.script.KevScriptEngineFactory
  */
 class AlreadyPassedPrioritySolver(kevsFactory : KevScriptEngineFactory) extends ConflictSolver {
 
-  private val mergerComponent = new KevoreeMergerComponent();
+  private val mergerComponent = new KevoreeMergerComponent()
+  protected var logger: Logger = LoggerFactory.getLogger(this.getClass)
 
   def resolve(current: (VectorClock, ContainerRoot), proposed: (VectorClock, ContainerRoot), sourceNodeName : String, currentNodeName : String): ContainerRoot = {
 
     //found current version
-    var currentNodeVersion = new util.HashMap[String,Int]()
+    val currentNodeVersion = new util.HashMap[String,Int]()
     for (i <- 0 until current._1.getEntiesCount()-1){
       currentNodeVersion.put(current._1.getEnties(i).getNodeID,current._1.getEnties(i).getVersion)
     }
     //collect of before Node
     val beforeNodeNames = new util.ArrayList[String]()
     for (i <- 0 until proposed._1.getEntiesCount()-1){
-       if(currentNodeVersion.containsKey(proposed._1.getEnties(i).getNodeID)){
+       if(proposed._1.getEnties(i).getNodeID != currentNodeName && currentNodeVersion.containsKey(proposed._1.getEnties(i).getNodeID)){
          if(proposed._1.getEnties(i).getVersion > currentNodeVersion.get(proposed._1.getEnties(i).getNodeID)){
            beforeNodeNames.add(proposed._1.getEnties(i).getNodeID)
          }
@@ -37,6 +39,7 @@ class AlreadyPassedPrioritySolver(kevsFactory : KevScriptEngineFactory) extends 
     for(i <- 0 until beforeNodeNames.size()-1){
       kevengine.addVariable("nodeName",beforeNodeNames.get(i))
       kevengine.append("removeNode {nodeName}")
+      logger.debug("remove {} to allow the merge of this node from the new model", beforeNodeNames.get(i))
     }
     val cleanedModel = kevengine.interpret()
     mergerComponent.merge(cleanedModel,proposed._2)
