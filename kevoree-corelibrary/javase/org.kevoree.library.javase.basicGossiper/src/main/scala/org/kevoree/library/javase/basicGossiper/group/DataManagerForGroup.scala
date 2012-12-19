@@ -144,6 +144,7 @@ class DataManagerForGroup(nameInstance: String, selfNodeName: String, modelServi
 
   private def updateModelOrHaraKiri(newmodel: ContainerRoot) {
     if (GroupUtils.detectHaraKiri(newmodel, modelService.getLastModel, nameInstance, selfNodeName)) {
+      //CHANGE IT // TODO
       modelService.updateModel(newmodel)
       lastCheckedTimeStamp = modelService.getLastModification
     } else {
