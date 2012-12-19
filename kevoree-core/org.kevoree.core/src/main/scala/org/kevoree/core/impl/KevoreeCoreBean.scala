@@ -249,7 +249,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService {
     } else {
       try {
 
-        val readOnlyNewModel = modelCloner.clone(proposedNewModel,true)
+        val readOnlyNewModel = proposedNewModel //modelCloner.clone(proposedNewModel,true)
         //Model checking
         val checkResult = modelChecker.check(readOnlyNewModel)
         val versionCheckResult = modelVersionChecker.check(readOnlyNewModel)
@@ -429,7 +429,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService {
    */
   @Deprecated
   override def updateModel(model: ContainerRoot) {
-    scheduler.submit(UpdateModelCallable(model, null))
+    scheduler.submit(UpdateModelCallable(modelCloner.clone(model,true), null))
   }
 
   case class UpdateModelCallable(model: ContainerRoot, callback: ModelUpdateCallback) extends Callable[Boolean] {
@@ -475,7 +475,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService {
    */
   @Deprecated
   override def atomicUpdateModel(model: ContainerRoot) = {
-    scheduler.submit(UpdateModelCallable(model, null)).get()
+    scheduler.submit(UpdateModelCallable(modelCloner.clone(model,true), null)).get()
     lastDate
   }
 
@@ -513,7 +513,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService {
    * If OK, updates the system and switches to the new model, asynchronously
    */
   override def compareAndSwapModel(previousModel: UUIDModel, targetModel: ContainerRoot) {
-    scheduler.submit(CompareAndSwapCallable(previousModel, targetModel, null))
+    scheduler.submit(CompareAndSwapCallable(previousModel, modelCloner.clone(targetModel,true), null))
   }
 
   /**
@@ -522,7 +522,7 @@ class KevoreeCoreBean extends KevoreeModelHandlerService {
    */
   @throws(classOf[KevoreeModelUpdateException])
   override def atomicCompareAndSwapModel(previousModel: UUIDModel, targetModel: ContainerRoot): Date = {
-    val result = scheduler.submit(CompareAndSwapCallable(previousModel, targetModel, null)).get()
+    val result = scheduler.submit(CompareAndSwapCallable(previousModel, modelCloner.clone(targetModel,true), null)).get()
     if (!result) {
       throw new KevoreeModelUpdateException //SEND AND EXCEPTION - Compare&Swap fail !
     }
@@ -633,11 +633,11 @@ class KevoreeCoreBean extends KevoreeModelHandlerService {
   }
 
   def updateModel(model: ContainerRoot, callback: ModelUpdateCallback) {
-    scheduler.submit(UpdateModelCallable(model, callback))
+    scheduler.submit(UpdateModelCallable(modelCloner.clone(model,true), callback))
   }
 
+
   def compareAndSwapModel(previousModel: UUIDModel, targetModel: ContainerRoot, callback: ModelUpdateCallback) {
-    scheduler.submit(UpdateModelCallable(model, callback)).get()
-    lastDate
+    scheduler.submit(CompareAndSwapCallable(previousModel, modelCloner.clone(targetModel,true), callback))
   }
 }
