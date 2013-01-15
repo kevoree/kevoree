@@ -27,12 +27,14 @@
 package org.kevoree.extra.ecore.loader.test
 
 import org.junit.Assert._
-import org.kevoree.loader.ContainerRootLoader
 import org.junit.{Test, BeforeClass}
+import org.kevoree.loader.ModelLoader
 import org.kevoree.serializer.ModelSerializer
-import org.kevoree.{KevoreeFactory, NodeType, ContainerRoot}
+import org.kevoree._
 import java.io.{FileOutputStream, ByteArrayOutputStream, PrintWriter, File}
 import org.kevoree.cloner.ModelCloner
+import scala.collection.JavaConversions._
+import scala.Some
 
 /**
  * Created by IntelliJ IDEA.
@@ -46,14 +48,9 @@ object XmiLoaderTest {
 
   @BeforeClass
   def loadXmi() {
+    val loader = new ModelLoader()
+    model = loader.loadModelFromPath(new File(getClass.getResource("/defaultlibs.kev").toURI));
 
-    val localModel = ContainerRootLoader.loadModel(new File(getClass.getResource("/defaultlibs.kev").toURI));
-    localModel match {
-      case Some(m) => {
-        model = m
-      }
-      case None => fail("Model not loaded!")
-    }
   }
 }
 
@@ -61,43 +58,43 @@ class XmiLoaderTest {
 
   @Test
   def testLoadParameters() {
-    val m = ContainerRootLoader.loadModel(new File(getClass.getResource("/PrarametersBug.kev").toURI)).get;
+    val loader = new ModelLoader()
+    loader.loadModelFromPath(new File(getClass.getResource("/PrarametersBug.kev").toURI));
   }
 
 
 
   @Test
   def testOpposite1(){
-    val m = ContainerRootLoader.loadModel(new File(getClass.getResource("/unomas.kev").toURI)).get;
-    m.getMBindings.foreach{
-      mb => {
-        println("---------->")
-        val p = mb.getPort
-        assert(mb.getPort == p)
-        assert(mb.getPort.getBindings.size == 1)
-        assert(mb.getPort.getBindings.contains(mb))
+    val loader = new ModelLoader()
+    val m = loader.loadModelFromPath(new File(getClass.getResource("/unomas.kev").toURI));
+    m.getMBindings.foreach { mb =>
+      println("---------->")
+      val p = mb.getPort
+      assert(mb.getPort == p)
+      assert(mb.getPort.getBindings.size == 1)
+      assert(mb.getPort.getBindings.contains(mb))
 
-        mb.setPort(null)
-        assert(mb.getPort == null)
-        assert(p.getBindings.size == 0)
-        assert(!p.getBindings.contains(mb))
+      mb.setPort(null)
+      assert(mb.getPort == null)
+      assert(p.getBindings.size == 0)
+      assert(!p.getBindings.contains(mb))
 
-        mb.setPort(p)
-        assert(mb.getPort == p)
-        assert(mb.getPort.getBindings.size == 1)
-        assert(mb.getPort.getBindings.contains(mb))
+      mb.setPort(p)
+      assert(mb.getPort == p)
+      assert(mb.getPort.getBindings.size == 1)
+      assert(mb.getPort.getBindings.contains(mb))
 
-        p.removeBindings(mb)
-        assert(mb.getPort == null)
-        assert(p.getBindings.size == 0)
-        assert(!p.getBindings.contains(mb))
+      p.removeBindings(mb)
+      assert(mb.getPort == null)
+      assert(p.getBindings.size == 0)
+      assert(!p.getBindings.contains(mb))
 
-        p.addBindings(mb)
-        assert(mb.getPort == p)
-        assert(mb.getPort.getBindings.size == 1)
-        assert(mb.getPort.getBindings.contains(mb))
+      p.addBindings(mb)
+      assert(mb.getPort == p)
+      assert(mb.getPort.getBindings.size == 1)
+      assert(mb.getPort.getBindings.contains(mb))
 
-      }
     }
   }
 
@@ -114,66 +111,61 @@ class XmiLoaderTest {
     ms.serialize(XmiLoaderTest.model,pr)
     pr.close()
     System.out.println("Loading saved model")
-    val localModel = ContainerRootLoader.loadModel(tempFile);
-    localModel match {
-      case Some(m) =>
-      case None => fail("Model not loaded!")
+    val loader = new ModelLoader()
+    val localModel = loader.loadModelFromPath(tempFile);
+    if(localModel == null) {
+      fail("Model not loaded!")
     }
     System.out.println("Loding OK.")
   }
 
   @Test
   def loadBootstrapModel() {
-    val localModel = ContainerRootLoader.loadModel(new File(getClass.getResource("/bootstrapModel0.kev").toURI));
-    localModel match {
-      case Some(m) =>
-      case None => fail("Model not loaded!")
+    val loader = new ModelLoader()
+    val localModel = loader.loadModelFromPath(new File(getClass.getResource("/bootstrapModel0.kev").toURI));
+    if(localModel == null){
+      fail("Model not loaded!")
     }
   }
 
   @Test
   def loadAndCloneToReadWrite() {
-    val localModel = ContainerRootLoader.loadModel(new File(getClass.getResource("/bootstrapModel0.kev").toURI));
-    localModel match {
-      case Some(m) => {
-        m.addNodes(KevoreeFactory.createContainerNode)
-        val modelCloner = new ModelCloner
-        val readOModel = modelCloner.clone(m, true)
-        var errorDetected = false
-        try {
-          readOModel.addNodes(KevoreeFactory.createContainerNode)
-          fail("Model must be not modifiable!")
-        } catch {
-          case _ => {
-            errorDetected = true
-          }
-        }
-        assert(errorDetected)
-        errorDetected = false
-        try {
-          readOModel.getNodes(0).setName("SayHelloNode")
-          fail("Model must be not modifiable!")
-        } catch {
-          case _ => {
-            errorDetected = true
-          }
-        }
-        assert(errorDetected)
-
-
-        m.addNodes(KevoreeFactory.createContainerNode)
-
-
-        val writeModel = modelCloner.clone(readOModel, false)
-        writeModel.addNodes(KevoreeFactory.createContainerNode)
-        val writeModel2 = modelCloner.clone(readOModel)
-        writeModel2.addNodes(KevoreeFactory.createContainerNode)
-
-
+    val loader = new ModelLoader()
+    val m = loader.loadModelFromPath(new File(getClass.getResource("/bootstrapModel0.kev").toURI));
+    m.addNodes(KevoreeFactory.$instance.createContainerNode)
+    val modelCloner = new ModelCloner
+    val readOModel = modelCloner.clone(m, true)
+    var errorDetected = false
+    try {
+      readOModel.addNodes(KevoreeFactory.$instance.createContainerNode)
+      fail("Model must be not modifiable!")
+    } catch {
+      case _ => {
+        errorDetected = true
       }
-      case None => fail("Model not loaded!")
     }
+    assert(errorDetected)
+    errorDetected = false
+    try {
+      readOModel.getNodes().get(0).setName("SayHelloNode")
+      fail("Model must be not modifiable!")
+    } catch {
+      case _ => {
+        errorDetected = true
+      }
+    }
+    assert(errorDetected)
+
+
+    m.addNodes(KevoreeFactory.$instance.createContainerNode)
+
+
+    val writeModel = modelCloner.clone(readOModel, false)
+    writeModel.addNodes(KevoreeFactory.$instance.createContainerNode)
+    val writeModel2 = modelCloner.clone(readOModel)
+    writeModel2.addNodes(KevoreeFactory.$instance.createContainerNode)
   }
+
 
   @Test
   def deepCheck() {
@@ -187,25 +179,25 @@ class XmiLoaderTest {
           case None => fail("DeployUnit org.kevoree.library.arduino not found")
         }
 
-        typeDef.asInstanceOf[NodeType].getDictionaryType match {
-          case Some(dico) => {
+       typeDef.asInstanceOf[NodeType].getDictionaryType match {
+          case dico:DictionaryType => {
             dico.getAttributes.find {
               att => att.getName.equals("boardTypeName")
             } match {
-              case Some(att) => {
+              case att: DictionaryAttribute => {
                 assertTrue(att.getOptional)
                 assertTrue(att.getDatatype.equals("enum=uno,atmega328,mega2560"))
                 dico.getDefaultValues.find(defVal => defVal.getAttribute.equals(att)) match {
-                  case Some(default) => {
+                  case default:DictionaryValue => {
                     assertTrue(default.getValue.equals("uno"))
                   }
-                  case None => fail("No default value for att:" + att.getName)
+                  case _ => fail("No default value for att:" + att.getName)
                 }
               }
-              case None => fail("No attribute named boardTypeName found in ArduinoNode type dictionary")
+              case _ => fail("No attribute named boardTypeName found in ArduinoNode type dictionary")
             }
           }
-          case None => fail("No dictionaryType loaded for ArduinoNode")
+          case _ => fail("No dictionaryType loaded for ArduinoNode")
         }
       }
       case None => fail("Arduino Node Type not found !")
