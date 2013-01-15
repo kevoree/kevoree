@@ -11,23 +11,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * 	http://www.gnu.org/licenses/lgpl-3.0.txt
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 
 package org.kevoree.tools.marShell.interpreter.sub
 
@@ -41,21 +24,19 @@ import org.slf4j.LoggerFactory
 
 case class KevsAddComponentInstanceInterpreter(addCompo: AddComponentInstanceStatment) extends KevsAbstractInterpreter {
 
-  var logger = LoggerFactory.getLogger(this.getClass);
+  var logger = LoggerFactory.getLogger(this.getClass)
 
   def interpret(context: KevsInterpreterContext): Boolean = {
     addCompo.cid.nodeName match {
       case Some(nodeID) => {
         //SEARCH NODE
-        context.model.getNodes.find(n => n.getName == nodeID) match {
+        context.model.findByQuery("nodes[" + nodeID + "]", classOf[ContainerNode]) match {
           case Some(targetNode) => {
-
-            targetNode.getComponents.find(component => component.getName == addCompo.cid.componentInstanceName) match {
-
+            targetNode.findByQuery("components[" + addCompo.cid.componentInstanceName + "]", classOf[ComponentInstance]) match {
               case Some(previousComponent) => {
-                logger.warn("Component already exist with name " + previousComponent.getName);
+                logger.warn("Component already exist with name " + previousComponent.getName)
                 if (previousComponent.getTypeDefinition.getName == addCompo.typeDefinitionName) {
-                  Merger.mergeDictionary(previousComponent, addCompo.props,None)
+                  Merger.mergeDictionary(previousComponent, addCompo.props, None)
                   true
                 } else {
                   logger.error("Type != from previous created component")
@@ -64,7 +45,7 @@ case class KevsAddComponentInstanceInterpreter(addCompo: AddComponentInstanceSta
               }
               case None => {
                 //SEARCH TYPE
-                context.model.getTypeDefinitions.find(td => td.getName == addCompo.typeDefinitionName) match {
+                context.model.findByQuery("typeDefinitions[" + addCompo.typeDefinitionName + "]", classOf[TypeDefinition]) match {
                   case Some(typeDef) if (typeDef.isInstanceOf[ComponentType]) => {
                     val componentDefinition = typeDef.asInstanceOf[ComponentType]
                     val newcomponent = KevoreeFactory.eINSTANCE.createComponentInstance
@@ -84,16 +65,16 @@ case class KevsAddComponentInstanceInterpreter(addCompo: AddComponentInstanceSta
                     }
 
                     //MERGE DICTIONARY
-                    Merger.mergeDictionary(newcomponent, addCompo.props,None)
+                    Merger.mergeDictionary(newcomponent, addCompo.props, None)
                     targetNode.addComponents(newcomponent)
                     true
                   }
                   case Some(typeDef) if (!typeDef.isInstanceOf[ComponentType]) => {
-                    logger.error("Type definition is not a componentType " + addCompo.typeDefinitionName);
+                    logger.error("Type definition is not a componentType " + addCompo.typeDefinitionName)
                     false
                   }
                   case _ => {
-                    logger.error("Type definition not found " + addCompo.typeDefinitionName);
+                    logger.error("Type definition not found " + addCompo.typeDefinitionName)
                     false
                   }
                 }
