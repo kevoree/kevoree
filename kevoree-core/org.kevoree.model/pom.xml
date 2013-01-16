@@ -27,6 +27,7 @@
     </dependencies>
 
     <build>
+        <sourceDirectory>${basedir}/target/generated-sources/kmf</sourceDirectory>
         <plugins>
             <plugin>
                 <groupId>org.kevoree.modeling</groupId>
@@ -39,6 +40,7 @@
                         <goals>
                             <goal>generate</goal>
                         </goals>
+                        <phase>generate-sources</phase>
                         <configuration>
                             <ecore>${metamodel.ecore}</ecore>
                             <packagePrefix>org</packagePrefix>
