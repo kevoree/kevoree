@@ -72,6 +72,10 @@ class XmiLoaderTest {
       println("---------->")
       val p = mb.getPort
       assert(mb.getPort == p)
+
+
+      println(">>"+mb.getPort)
+
       assert(mb.getPort.getBindings.size == 1)
       assert(mb.getPort.getBindings.contains(mb))
 
