@@ -71,6 +71,7 @@ class XmiLoaderTest {
     m.getMBindings.foreach { mb =>
       println("---------->")
       val p = mb.getPort
+      assert(mb.getPort != null)
       assert(mb.getPort == p)
       assert(mb.getPort.getBindings.size == 1)
       assert(mb.getPort.getBindings.contains(mb))
@@ -184,17 +185,17 @@ class XmiLoaderTest {
             dico.getAttributes.find {
               att => att.getName.equals("boardTypeName")
             } match {
-              case att: DictionaryAttribute => {
+              case Some(att) => {
                 assertTrue(att.getOptional)
                 assertTrue(att.getDatatype.equals("enum=uno,atmega328,mega2560"))
                 dico.getDefaultValues.find(defVal => defVal.getAttribute.equals(att)) match {
-                  case default:DictionaryValue => {
+                  case Some(default) => {
                     assertTrue(default.getValue.equals("uno"))
                   }
-                  case _ => fail("No default value for att:" + att.getName)
+                  case None => fail("No default value for att:" + att.getName)
                 }
               }
-              case _ => fail("No attribute named boardTypeName found in ArduinoNode type dictionary")
+              case None => fail("No attribute named boardTypeName found in ArduinoNode type dictionary")
             }
           }
           case _ => fail("No dictionaryType loaded for ArduinoNode")
