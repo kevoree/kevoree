@@ -31,7 +31,8 @@
 
 package org.kevoree.tools.marShell.interpreter.utils
 
-import org.kevoree.{ContainerRoot, ContainerNode, Instance, KevoreeFactory}
+import org.kevoree._
+import scala.Some
 
 
 object Merger {
@@ -79,7 +80,7 @@ object Merger {
           //MERGE NEW Dictionary Attribute
           case None => {
             //CHECK IF ATTRIBUTE ALREADY EXISTE WITHOUT VALUE
-            val att = inst.getTypeDefinition.getDictionaryType.get.getAttributes.find(att => att.getName == key) match {
+            val att = inst.getTypeDefinition.getDictionaryType.get.findByQuery("attributes[" + key + "]", classOf[DictionaryAttribute]) match {
               case None => {
                /* if(allowTypeUpdate){
                   val newDictionaryValue = KevoreeFactory.eINSTANCE.createDictionaryAttribute
