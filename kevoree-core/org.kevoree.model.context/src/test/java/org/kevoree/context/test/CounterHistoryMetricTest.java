@@ -28,7 +28,7 @@ public class CounterHistoryMetricTest {
 
     @Test
     public void CounterTest() throws InterruptedException {
-        ContextRoot model = ContextFactory.createContextRoot();
+        ContextRoot model = ContextFactory.$instance.createContextRoot();
         Random rand = new Random();
 
         for (int i = 0; i < 1000 ; i++) {
@@ -37,7 +37,7 @@ public class CounterHistoryMetricTest {
         }
 
         Metric m = (Metric) model.findByQuery("perf/cpu/{node42}");
-        assert((m.getValuesForJ().size() == 100));
+        assert((m.getValues().size() == 100));
 
         boolean comp = m.buildQuery().equals("context[perf]/types[cpu]/metrics[node42]");
         assert(comp);

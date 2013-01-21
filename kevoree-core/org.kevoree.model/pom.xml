@@ -5,7 +5,7 @@
     <packaging>jar</packaging>
     <name>Kevoree :: Model</name>
 
-    <version>2.0.0-SNAPSHOT</version>
+    <version>1.9.0-SNAPSHOT</version>
     <parent>
         <artifactId>org.kevoree.root</artifactId>
         <groupId>org.kevoree</groupId>
@@ -27,7 +27,7 @@
     </dependencies>
 
     <build>
-        <sourceDirectory>${basedir}/target/generated-sources/kmf</sourceDirectory>
+    <!--    <sourceDirectory>${basedir}/target/generated-sources/kmf</sourceDirectory>   -->
         <plugins>
             <plugin>
                 <groupId>org.kevoree.modeling</groupId>
@@ -40,7 +40,7 @@
                         <goals>
                             <goal>generate</goal>
                         </goals>
-                        <phase>generate-sources</phase>
+                        <phase>process-sources</phase>
                         <configuration>
                             <ecore>${metamodel.ecore}</ecore>
                             <packagePrefix>org</packagePrefix>
@@ -66,10 +66,11 @@
             </plugin>
         </plugins>
     </build>
+
     <repositories>
         <repository>
             <id>jetbrains-release</id>
-            <url>http://repository.jetbrains.com/releases</url>
+            <url>http://repository.jetbrains.com/all</url>
             <releases>
                 <enabled>true</enabled>
             </releases>
@@ -79,7 +80,7 @@
         </repository>
         <repository>
             <id>jetbrains-snapshots</id>
-            <url>http://repository.jetbrains.com/snapshots</url>
+            <url>http://repository.jetbrains.com/all</url>
             <releases>
                 <enabled>false</enabled>
             </releases>

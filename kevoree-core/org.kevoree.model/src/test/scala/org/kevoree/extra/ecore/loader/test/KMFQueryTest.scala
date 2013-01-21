@@ -39,6 +39,10 @@ class KMFQueryTest {
     assert(model.findNodesByID("node0").getName == "node0")
     assert(model.findByQuery("nodes[{node0}]").asInstanceOf[ContainerNode].getName == "node0")
     assert(model.findByQuery("nodes[{node0}]/components[{FakeConso145}]").asInstanceOf[ComponentInstance].getName == "FakeConso145")
+
+    //println(model.findByQuery("nodes[{node0}]/components[{FakeConso145}]/dictionary[]"))
+
+
     assert(model.findByQuery("adaptationPrimitiveTypes[{UpdateDeployUnit}]").asInstanceOf[org.kevoree.AdaptationPrimitiveType].getName == "UpdateDeployUnit")
 
     val model2 = loader.loadModelFromPath(new File(getClass.getResource("/unomas2.kev").toURI))

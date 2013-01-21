@@ -41,10 +41,10 @@ object KevoreePlatformHelper {
     /* SEARCH THE NODE NETWORK */
     val nodenetwork = actualModel.getNodeNetworks.find({nn =>
         nn.getInitBy.get.getName == currentNodeName && nn.getTarget.getName == targetNodeName }) getOrElse {
-      val newNodeNetwork = KevoreeFactory.eINSTANCE.createNodeNetwork
+      val newNodeNetwork = KevoreeFactory.$instance.createNodeNetwork
       val thisNode = actualModel.getNodes.find({loopNode => loopNode.getName == currentNodeName })
       thisNodeFound = thisNode.getOrElse{
-        val newnode = KevoreeFactory.eINSTANCE.createContainerNode
+        val newnode = KevoreeFactory.$instance.createContainerNode
         newnode.setName(currentNodeName)
         actualModel.addNodes(newnode)
         newnode
@@ -52,7 +52,7 @@ object KevoreePlatformHelper {
       val targetNode = actualModel.getNodes.find({loopNode => loopNode.getName == targetNodeName })
       newNodeNetwork.setTarget(targetNode.getOrElse{
           logger.debug("Unknow node "+targetNodeName+" add to model")
-          val newnode =KevoreeFactory.eINSTANCE.createContainerNode
+          val newnode =KevoreeFactory.$instance.createContainerNode
           newnode.setName(targetNodeName)
           actualModel.addNodes(newnode)
           newnode
@@ -64,7 +64,7 @@ object KevoreePlatformHelper {
 
     /* Found node link */
     val nodelink = nodenetwork.getLink.find(loopLink => loopLink.getNetworkType == networkType).getOrElse{
-      val newlink = KevoreeFactory.eINSTANCE.createNodeLink
+      val newlink = KevoreeFactory.$instance.createNodeLink
       newlink.setNetworkType(networkType)
       nodenetwork.addLink(newlink)
       newlink
@@ -75,7 +75,7 @@ object KevoreePlatformHelper {
 
     /* Found Property and SET remote IP */
     val prop = nodelink.getNetworkProperties.find({networkProp => networkProp.getName == key }).getOrElse{
-      val newprop = KevoreeFactory.eINSTANCE.createNetworkProperty
+      val newprop = KevoreeFactory.$instance.createNetworkProperty
       newprop.setName(key)
       nodelink.addNetworkProperties(newprop)
       newprop

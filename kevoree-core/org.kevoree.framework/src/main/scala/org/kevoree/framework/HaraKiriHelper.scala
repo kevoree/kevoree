@@ -35,7 +35,6 @@ import org.kevoreeAdaptation.AdaptationModel
  * User: duke
  * Date: 27/10/11
  * Time: 13:21
- * To change this template use File | Settings | File Templates.
  */
 
 object HaraKiriHelper {
