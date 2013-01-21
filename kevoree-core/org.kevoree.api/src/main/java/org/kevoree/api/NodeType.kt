@@ -11,6 +11,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.kevoree.api
+
 /**
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
  * you may not use this file except in compliance with the License.
@@ -24,15 +26,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+
+import org.kevoree.ContainerRoot
+import org.kevoreeAdaptation.AdaptationModel
+import org.kevoreeAdaptation.AdaptationPrimitive
+import org.kevoree.context.ContextRoot
+
+/**
+ * Created by IntelliJ IDEA.
+ * User: duke
+ * Date: 31/12/11
+ * Time: 09:50
  */
 
-package org.kevoree.api.configuration
+trait NodeType {
 
-trait ConfigurationService {
+    fun startNode(): Unit
 
-  def getProperty(contant : ConfigConstants.ConfigConstant) : String
+    fun stopNode(): Unit
+
+    fun updateNode(): Unit
+
+    fun kompare(actualModel: ContainerRoot, targetModel: ContainerRoot): AdaptationModel
+
+    fun getPrimitive(primitive: AdaptationPrimitive): PrimitiveCommand
+
+    fun getContextModel(): ContextRoot
 
 }

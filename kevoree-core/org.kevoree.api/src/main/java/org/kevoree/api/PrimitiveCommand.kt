@@ -11,6 +11,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.kevoree.api
+
 /**
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
  * you may not use this file except in compliance with the License.
@@ -24,20 +26,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kevoree.core.impl
-
-import org.kevoree.api.service.core.handler.UUIDModel
-import org.kevoree.ContainerRoot
-import java.util.UUID
-
-/**
- * Created by IntelliJ IDEA.
- * User: duke
- * Date: 13/12/11
- * Time: 11:03
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
  */
 
-case class UUIDModelImpl(uuid: UUID, model: ContainerRoot) extends UUIDModel {
-  def getUUID: UUID = uuid
-  def getModel: ContainerRoot = model
+trait PrimitiveCommand {
+
+  fun execute(): Boolean
+
+  fun undo(): Unit
+
 }

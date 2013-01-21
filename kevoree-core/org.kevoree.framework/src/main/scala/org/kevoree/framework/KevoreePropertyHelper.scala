@@ -14,7 +14,6 @@
 package org.kevoree.framework
 
 import org.kevoree.{TypeDefinition, Instance, ContainerRoot}
-import java.util.ArrayList
 import java.util
 
 

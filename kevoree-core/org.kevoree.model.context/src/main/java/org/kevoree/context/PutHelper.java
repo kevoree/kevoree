@@ -98,20 +98,20 @@ public class PutHelper {
         if (paths.size() == 3) {
             ContextModel mod = ctx.findContextByID(cleanName(paths.get(0)));
             if (mod == null) {
-                mod = ContextFactory.createContextModel();
+                mod = ContextFactory.$instance.createContextModel();
                 mod.setName(cleanName(paths.get(0)));
                 ctx.addContext(mod);
             }
             MetricType mt = mod.findTypesByID(cleanName(paths.get(1)));
             if (mt == null) {
-                mt = ContextFactory.createMetricType();
+                mt = ContextFactory.$instance.createMetricType();
                 mt.setName(cleanName(paths.get(1)));
                 mod.addTypes(mt);
             }
             Metric metric = mt.findMetricsByID(cleanName(paths.get(2)));
             if (metric == null) {
                 if (DurationHistoryMetric.class.getName().equals(params.metricTypeClazzName)) {
-                    metric = ContextFactory.createDurationHistoryMetric();
+                    metric = ContextFactory.$instance.createDurationHistoryMetric();
                     if(params.duration != null){
                         ((DurationHistoryMetric)metric).setDuration(params.duration);
                     }
@@ -119,7 +119,7 @@ public class PutHelper {
                         ((DurationHistoryMetric)metric).setDurationUnit(params.durationUnit);
                     }
                 } else {
-                    metric = ContextFactory.createCounterHistoryMetric();
+                    metric = ContextFactory.$instance.createCounterHistoryMetric();
                     if(params.number != null){
                         ((CounterHistoryMetric)metric).setNumber(params.number);
                     }
@@ -135,7 +135,7 @@ public class PutHelper {
     }
 
     public static void addValue(Metric m, String value){
-        MetricValue valueMod = ContextFactory.createMetricValue();
+        MetricValue valueMod = ContextFactory.$instance.createMetricValue();
         valueMod.setValue(value);
         valueMod.setTimestamp(System.nanoTime()+"");
         m.addValues(valueMod);

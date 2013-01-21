@@ -27,29 +27,32 @@ package org.kevoree.api
  * limitations under the License.
  */
 
+import org.kevoree.api.service.core.handler.KevoreeModelHandlerService
+import org.kevoree.api.service.core.script.KevScriptEngineFactory
+import java.io.File
+import org.kevoree.api.service.core.classloading.KevoreeClassLoaderHandler
+import org.kevoree.api.service.core.logging.KevoreeLogService
+import org.kevoree.DeployUnit
 import org.kevoree.ContainerRoot
-import org.kevoreeAdaptation.{AdaptationModel, AdaptationPrimitive}
-import org.kevoree.context.{ContextRoot}
 
 /**
  * Created by IntelliJ IDEA.
  * User: duke
  * Date: 31/12/11
- * Time: 09:50
+ * Time: 13:10
  */
 
-trait NodeType {
+trait Bootstraper {
 
-  def startNode(): Unit
-
-  def stopNode(): Unit
-
-  def updateNode(): Unit
-
-  def kompare(actualModel: ContainerRoot, targetModel: ContainerRoot): AdaptationModel
-
-  def getPrimitive(primitive: AdaptationPrimitive): PrimitiveCommand
-
-  def getContextModel: ContextRoot
+  fun getKevoreeClassLoaderHandler() : KevoreeClassLoaderHandler
+  fun bootstrapNodeType(currentModel: ContainerRoot, nodeName: String, mservice: KevoreeModelHandlerService, kevsEngineFactory: KevScriptEngineFactory): org.kevoree.api.NodeType?
+  fun resolveArtifact(artId: String, groupId: String, version: String, repos: List<String>): File
+  fun resolveArtifact(artId: String, groupId: String, version: String, extension : String, repos: List<String>): File
+  fun resolveKevoreeArtifact(artId: String, groupId: String, version: String): File
+  fun resolveDeployUnit(du: DeployUnit): File
+  fun close() : Unit
+  fun clear() : Unit
+  fun getKevoreeLogService() : KevoreeLogService
+  fun setKevoreeLogService(kl : KevoreeLogService)
 
 }
