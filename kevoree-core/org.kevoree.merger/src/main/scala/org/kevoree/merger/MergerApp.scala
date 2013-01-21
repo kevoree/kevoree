@@ -24,17 +24,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 
 package org.kevoree.merger
 
 import org.kevoree.framework.KevoreeXmiHelper
 import org.kevoree.KevoreeFactory
 import org.slf4j.LoggerFactory
-//import ch.qos.logback.classic.{Level, Logger}
 
 object MergerApp {
 
@@ -53,8 +48,8 @@ object MergerApp {
     val merger = new RootMerger
     val emtpyModel = KevoreeFactory.eINSTANCE.createContainerRoot
 
-    val model2 = KevoreeXmiHelper.load("/Users/duke/Downloads/models/javaModelError.kev")
-    val model1 = KevoreeXmiHelper.load("/Users/duke/Downloads/models/alib.kev")
+    val model1 = KevoreeXmiHelper.load("/Users/duke/Downloads/model")
+    val model2 = KevoreeXmiHelper.load("/Users/duke/Downloads/model2")
 //    val model3 = KevoreeXmiHelper.load("/home/edaubert/workspace/kevoree/kevoree-corelibrary/android/org.kevoree.library.android.nanohttp/target/generated-sources/kevoree/KEV-INF/lib.kev.debug")
 
 
