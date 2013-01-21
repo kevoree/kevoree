@@ -24,14 +24,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 
 package org.kevoree.tools.marShell.interpreter.sub
 
-import org.kevoree.KevoreeFactory
+import org.kevoree.{TypeLibrary, KevoreeFactory}
 import org.kevoree.tools.marShell.interpreter.KevsAbstractInterpreter
 import org.kevoree.tools.marShell.interpreter.KevsInterpreterContext
 
@@ -40,11 +36,11 @@ import org.slf4j.LoggerFactory
 
 case class KevsAddLibraryInterpreter(statment : AddLibraryStatment) extends KevsAbstractInterpreter {
 
-  var logger = LoggerFactory.getLogger(this.getClass);
+  var logger = LoggerFactory.getLogger(this.getClass)
 
   def interpret(context : KevsInterpreterContext):Boolean={
 
-    context.model.getLibraries.find(lib=> lib.getName == statment.libraryName) match {
+    context.model.findByQuery("libraries[" + statment.libraryName + "]", classOf[TypeLibrary]) match {
       case Some(library) =>  logger.warn("Library already exist");true
       case None => {
         val newLibrary = KevoreeFactory.eINSTANCE.createTypeLibrary
