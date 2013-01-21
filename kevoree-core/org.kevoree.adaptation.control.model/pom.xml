@@ -40,12 +40,5 @@
         </plugins>
     </build>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.kevoree</groupId>
-            <artifactId>org.kevoree.adaptation.control.model</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-    </dependencies>
 
 </project>
