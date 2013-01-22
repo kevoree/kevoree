@@ -24,7 +24,6 @@ import java.util.List;
  */
 public class CreateRulesCommand implements Command {
 
-
     private IAccessControl accessControl=null;
     private PublicKey publicKey;
     private HashMap<String,KControlRule> authorized_rules = new HashMap<String,KControlRule>();
@@ -40,13 +39,7 @@ public class CreateRulesCommand implements Command {
         this.accessControl = accessControl;
     }
 
-
-
-
-
-    public KControlRule addAuthorizedMatcher(String _kElementQuery) throws ControlException
-    {
-
+    public KControlRule addAuthorizedMatcher(String _kElementQuery) throws ControlException {
         KControlRule rule=null;
         if(!authorized_rules.containsKey(_kElementQuery))
         {
@@ -57,7 +50,6 @@ public class CreateRulesCommand implements Command {
         {
             rule = authorized_rules.get(_kElementQuery);
         }
-
         return rule;
     }
 
@@ -78,9 +70,7 @@ public class CreateRulesCommand implements Command {
         {
             //  no exist add
 
-
             RSAPublicKey rsaPublicKey = (RSAPublicKey) publicKey;
-
             currentPublicKey = KControlModelFactory.$instance.createKPublicKey();
             // todo we can do better
             currentPublicKey.set_key(rsaPublicKey.getPublicExponent()+":"+rsaPublicKey.getModulus());
@@ -96,6 +86,18 @@ public class CreateRulesCommand implements Command {
             currentPublicKey.addAuthorized(authorized_rules.get(kElementQuery));
         }
 
+    }
 
+
+    public String toString(){
+        StringBuilder  builder =new StringBuilder();
+        for(String kElementQuery : authorized_rules.keySet()){
+            builder.append("\n"+kElementQuery+" \n---->");
+            for(RuleMatcher r :       authorized_rules.get(kElementQuery).get_matcher()){
+                builder.append(r.getPTypeQuery()+",");
+            }
+        }
+
+        return builder.toString();
     }
 }

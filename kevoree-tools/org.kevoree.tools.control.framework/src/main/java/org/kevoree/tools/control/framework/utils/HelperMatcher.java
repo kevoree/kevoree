@@ -18,7 +18,7 @@ public class HelperMatcher {
     public static RuleMatcher createMatcher(String pTypeQuery)
     {
         RuleMatcher m1 = KControlModelFactory.$instance.createRuleMatcher();
-        m1.setPTypeQuery(JavaSePrimitive.StartInstance());
+        m1.setPTypeQuery(pTypeQuery);
         return  m1;
 
     }

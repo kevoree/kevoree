@@ -88,11 +88,10 @@ public class AccessControlImpl implements IAccessControl
                     // check signature of the model
                     if(HelperSignature.verifySignature(tuple_key_sign.get(pk).getSignature(), key, signedModel.getSerialiedModel()))
                     {
-                        if(kPublicKey.get_key().getBytes().equals(pk))
-                        {
-                            authorize_rules.addAll(kPublicKey.get_authorized());
-                            forbidden_rules.addAll(kPublicKey.get_forbidden());
-                        }
+
+                        authorize_rules.addAll(kPublicKey.get_authorized());
+                        forbidden_rules.addAll(kPublicKey.get_forbidden());
+
 
                     }
                 } catch (Exception e)
@@ -106,6 +105,7 @@ public class AccessControlImpl implements IAccessControl
 
         for(AdaptationPrimitive p : adaptationModel.getAdaptationsForJ())
         {
+
             if(p.getRef() instanceof Instance)
             {
                 Instance instance =(Instance) p.getRef();
@@ -114,10 +114,10 @@ public class AccessControlImpl implements IAccessControl
                 boolean  found_in_authorize_rules = false;
 
                 // check in refused rules
-                for(KControlRule rule :authorize_rules)
+                for(KControlRule rule :forbidden_rules)
                 {
                     Object ptr =   target_model.findByQuery( rule.getKElementQuery());
-
+                    System.out.println("getKElementQuery "+rule.getKElementQuery());
 
                     if( ptr instanceof TypeDefinition)
                     {
@@ -129,9 +129,8 @@ public class AccessControlImpl implements IAccessControl
                             {
                                 if(m.getPTypeQuery().equals(p.getPrimitiveType().getName())){
                                     found_in_refused_rules = true;
-                                    break;
-                                }
 
+                                }
                             }
                         }
                     }
@@ -163,7 +162,7 @@ public class AccessControlImpl implements IAccessControl
                                 {
                                     if(m.getPTypeQuery().equals(p.getPrimitiveType().getName())){
                                         found_in_authorize_rules = true;
-                                        break;
+
                                     }
 
                                 }
