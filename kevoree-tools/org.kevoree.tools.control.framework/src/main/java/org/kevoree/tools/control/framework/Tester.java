@@ -29,25 +29,14 @@ public class Tester {
     public static void main(String argv[]) throws Exception
     {
 
+        KeyPair key1 =  HelperSignature.generateKeys(1024);
+
         ContainerRoot current_model = KevoreeXmiHelper.loadStream(Tester.class.getClassLoader().getResourceAsStream("empty_node.kev"));
         ContainerRoot target_model = KevoreeXmiHelper.loadStream(Tester.class.getClassLoader().getResourceAsStream("random_nio_grapher_group.kev"));
 
 
-        KeyPair key1 =  HelperSignature.generateKeys(1024);
-
-        SignedModel signedmodel = new SignedModelImpl(target_model);
-
-
-        // create a signature
-        CreateSignatureCommand   c = new CreateSignatureCommand();
-        c.setSignedModel(signedmodel);
-        c.setKey(key1);
-        c.execute();
-
-
 
         IAccessControl accessControl = ControlFactory.createAccessControl();
-
 
 
         CreateRulesCommand rules = new CreateRulesCommand(key1.getPublic());
@@ -55,9 +44,7 @@ public class Tester {
 
         KControlRule r1 = rules.addAuthorizedMatcher("typeDefinitions[FakeConsole]");
         r1.addMatcher(HelperMatcher.createMatcher(JavaSePrimitive.AddInstance()));
-        r1.addMatcher(HelperMatcher.createMatcher(JavaSePrimitive.StopInstance()));
         r1.addMatcher(HelperMatcher.createMatcher(JavaSePrimitive.StartInstance()));
-        r1.addMatcher(HelperMatcher.createMatcher(JavaSePrimitive.AddFragmentBinding()));
         r1.addMatcher(HelperMatcher.createMatcher(JavaSePrimitive.UpdateDictionaryInstance()));
 
         KControlRule r2 = rules.addAuthorizedMatcher("typeDefinitions[BasicGroup]");
@@ -68,9 +55,37 @@ public class Tester {
         r2.addMatcher(HelperMatcher.createMatcher(JavaSePrimitive.UpdateDictionaryInstance()));
 
 
+        KControlRule r3 = rules.addAuthorizedMatcher("typeDefinitions[Grapher]");
+        r3.addMatcher(HelperMatcher.createMatcher(JavaSePrimitive.AddInstance()));
+        r3.addMatcher(HelperMatcher.createMatcher(JavaSePrimitive.StopInstance()));
+        r3.addMatcher(HelperMatcher.createMatcher(JavaSePrimitive.StartInstance()));
+        r3.addMatcher(HelperMatcher.createMatcher(JavaSePrimitive.AddFragmentBinding()));
+        r3.addMatcher(HelperMatcher.createMatcher(JavaSePrimitive.UpdateDictionaryInstance()));
+
+        KControlRule r4 = rules.addAuthorizedMatcher( "typeDefinitions[NioChannel]");
+        r4.addMatcher(HelperMatcher.createMatcher(JavaSePrimitive.AddInstance()));
+        r4.addMatcher(HelperMatcher.createMatcher(JavaSePrimitive.StopInstance()));
+        r4.addMatcher(HelperMatcher.createMatcher(JavaSePrimitive.StartInstance()));
+        r4.addMatcher(HelperMatcher.createMatcher(JavaSePrimitive.AddFragmentBinding()));
+        r4.addMatcher(HelperMatcher.createMatcher(JavaSePrimitive.UpdateDictionaryInstance()));
+
+
+       // System.out.println(rules);
+
         rules.execute();
 
 
+
+
+
+
+        SignedModel signedmodel = new SignedModelImpl(target_model);
+
+        // create a signature
+        CreateSignatureCommand   c = new CreateSignatureCommand();
+        c.setSignedModel(signedmodel);
+        c.setKey(key1);
+        c.execute();
 
         List<AdaptationPrimitive> result =     accessControl.approval("node0", current_model, signedmodel);
 
