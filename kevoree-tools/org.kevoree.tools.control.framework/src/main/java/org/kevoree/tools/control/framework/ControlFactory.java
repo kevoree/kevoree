@@ -13,8 +13,8 @@
  */
 package org.kevoree.tools.control.framework;
 
-import org.kevoree.tools.control.framework.api.IAccessControl;
-import org.kevoree.tools.control.framework.impl.AccessControlImpl;
+import org.kevoree.tools.control.framework.api.IAccessControlChecker;
+import org.kevoree.tools.control.framework.impl.AccessControlCheckerImpl;
 
 /**
  * Created with IntelliJ IDEA.
@@ -24,7 +24,7 @@ import org.kevoree.tools.control.framework.impl.AccessControlImpl;
  * To change this template use File | Settings | File Templates.
  */
 public class ControlFactory {
-    public static IAccessControl createAccessControl(){
-        return  new AccessControlImpl();
+    public static IAccessControlChecker createAccessControlChecker(){
+        return  new AccessControlCheckerImpl();
     }
 }
