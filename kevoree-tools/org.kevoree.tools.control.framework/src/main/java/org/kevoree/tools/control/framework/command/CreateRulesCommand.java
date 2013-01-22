@@ -19,7 +19,8 @@ import org.kevoree.KControlModel.KPublicKey;
 import org.kevoree.KControlModel.RuleMatcher;
 import org.kevoree.adaptation.control.api.ControlException;
 import org.kevoree.tools.control.framework.api.Command;
-import org.kevoree.tools.control.framework.api.IAccessControl;
+import org.kevoree.tools.control.framework.api.IAccessControlChecker;
+
 import java.security.PublicKey;
 import java.security.interfaces.RSAPublicKey;
 import java.util.HashMap;
@@ -34,7 +35,7 @@ import java.util.HashMap;
  */
 public class CreateRulesCommand implements Command {
 
-    private IAccessControl accessControl=null;
+    private IAccessControlChecker accessControl=null;
     private PublicKey publicKey;
     private HashMap<String,KControlRule> authorized_rules = new HashMap<String,KControlRule>();
     private HashMap<String,KControlRule> forbidden_rules = new HashMap<String,KControlRule>();
@@ -44,7 +45,7 @@ public class CreateRulesCommand implements Command {
         this.publicKey = publicKey;
     }
 
-    public void setAccessControl(IAccessControl accessControl)
+    public void setAccessControl(IAccessControlChecker accessControl)
     {
         this.accessControl = accessControl;
     }
@@ -102,7 +103,7 @@ public class CreateRulesCommand implements Command {
     public String toString(){
         StringBuilder  builder =new StringBuilder();
         for(String kElementQuery : authorized_rules.keySet()){
-            builder.append("\n"+kElementQuery+" \n---->");
+            builder.append("\n" + kElementQuery + " \n---->");
             for(RuleMatcher r :       authorized_rules.get(kElementQuery).get_matcher()){
                 builder.append(r.getPTypeQuery()+",");
             }

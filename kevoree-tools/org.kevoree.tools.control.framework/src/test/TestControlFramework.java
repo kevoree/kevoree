@@ -13,11 +13,8 @@
  */
 import org.junit.Before;
 import org.junit.Test;
-import org.kevoree.ComponentType;
 import org.kevoree.ContainerRoot;
-import org.kevoree.Instance;
 import org.kevoree.KControlModel.KControlRule;
-import org.kevoree.TypeDefinition;
 import org.kevoree.adaptation.control.api.ControlException;
 import org.kevoree.adaptation.control.api.SignedModel;
 import org.kevoree.framework.KevoreeXmiHelper;
@@ -25,7 +22,7 @@ import org.kevoree.impl.ChannelImpl;
 import org.kevoree.impl.ComponentInstanceImpl;
 import org.kevoree.kompare.JavaSePrimitive;
 import org.kevoree.tools.control.framework.ControlFactory;
-import org.kevoree.tools.control.framework.api.IAccessControl;
+import org.kevoree.tools.control.framework.api.IAccessControlChecker;
 import org.kevoree.tools.control.framework.command.CreateRulesCommand;
 import org.kevoree.tools.control.framework.command.CreateSignatureCommand;
 import org.kevoree.tools.control.framework.impl.SignedModelImpl;
@@ -59,10 +56,19 @@ public class TestControlFramework
         target_model = KevoreeXmiHelper.loadStream(TestControlFramework.class.getClassLoader().getResourceAsStream("random_nio_grapher_group.kev"));
     }
 
+
+
+    @Test
+    public  void test_two_keys() throws ControlException
+    {
+      // todo
+
+
+    }
     @Test
     public void test_empty_rules() throws ControlException
     {
-        IAccessControl accessControl = ControlFactory.createAccessControl();
+        IAccessControlChecker accessControl = ControlFactory.createAccessControlChecker();
         CreateRulesCommand rules = new CreateRulesCommand(key1.getPublic());
         rules.setAccessControl(accessControl);
         SignedModel signedmodel = new SignedModelImpl(target_model);
@@ -81,7 +87,7 @@ public class TestControlFramework
     @Test
     public void test_rules() throws ControlException
     {
-        IAccessControl accessControl = ControlFactory.createAccessControl();
+        IAccessControlChecker accessControl = ControlFactory.createAccessControlChecker();
 
 
         CreateRulesCommand rules = new CreateRulesCommand(key1.getPublic());
@@ -134,7 +140,7 @@ public class TestControlFramework
     @Test
     public void test_Grapher615() throws ControlException
     {
-        IAccessControl accessControl = ControlFactory.createAccessControl();
+        IAccessControlChecker accessControl = ControlFactory.createAccessControlChecker();
 
         CreateRulesCommand rules = new CreateRulesCommand(key1.getPublic());
         rules.setAccessControl(accessControl);
@@ -183,7 +189,7 @@ public class TestControlFramework
     @Test
     public void test_NioChanne995() throws ControlException
     {
-        IAccessControl accessControl = ControlFactory.createAccessControl();
+        IAccessControlChecker accessControl = ControlFactory.createAccessControlChecker();
 
         CreateRulesCommand rules = new CreateRulesCommand(key1.getPublic());
         rules.setAccessControl(accessControl);

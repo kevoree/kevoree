@@ -23,11 +23,18 @@ import org.kevoree.adaptation.control.api.ModelSignature;import java.lang.Overri
  */
 public class ModelSignatureImpl implements ModelSignature {
 
+    String _key;
     byte[] _signature = null;
 
-    public ModelSignatureImpl(byte[] s)
+    public ModelSignatureImpl(byte[] s,String key)
     {
         _signature = s;
+        this._key = key;
+    }
+
+    @Override
+    public String getKey() {
+        return _key;
     }
 
     @Override

@@ -30,7 +30,7 @@ import java.util.List;
  * Time: 17:24
  * To change this template use File | Settings | File Templates.
  */
-public interface IAccessControl
+public interface IAccessControlChecker
 {
 
     public KControlRoot getControlRoot();
