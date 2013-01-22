@@ -34,6 +34,7 @@ package org.kevoree.framework.aspects
 import org.kevoree._
  import KevoreeAspects._
 import org.slf4j.LoggerFactory
+import scala.collection.JavaConversions._
 
 case class TypedElementAspect(e : TypedElement) {
 

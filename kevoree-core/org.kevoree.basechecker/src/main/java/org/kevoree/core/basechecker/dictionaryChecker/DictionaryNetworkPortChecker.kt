@@ -27,7 +27,7 @@ import org.kevoree.framework.{Constants, KevoreePropertyHelper, KevoreePlatformH
 class DictionaryNetworkPortChecker extends CheckerService {
   def check (model: ContainerRoot) = {
 
-    val violations: java.util.List[CheckerViolation] = new util.ArrayList[CheckerViolation]()
+var violations = ArrayList<CheckerViolation>()
     val collectedPort = new util.HashMap[String, util.HashMap[String, util.HashMap[String, Object]]]()
 
     model.getNodes.foreach {

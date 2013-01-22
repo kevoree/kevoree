@@ -34,6 +34,8 @@ package org.kevoree.framework.aspects
 import org.kevoree._
  import KevoreeAspects._
 import collection.mutable.ListBuffer
+import scala.collection.JavaConversions._
+
 
 case class ComponentInstanceAspect(cself : ComponentInstance) {
 

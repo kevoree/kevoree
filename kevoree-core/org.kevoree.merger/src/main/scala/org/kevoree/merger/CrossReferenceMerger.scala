@@ -40,10 +40,10 @@ import scala.Some
  * User: duke
  * Date: 09/10/11
  * Time: 22:18
- * To change this template use File | Settings | File Templates.
  */
 
 trait CrossReferenceMerger {
+
   def breakCrossRef(actualModel: ContainerRoot, modelToMerge: ContainerRoot) {
 
     //BREAK TOPOLOGY MODEL
@@ -146,7 +146,6 @@ trait CrossReferenceMerger {
           instanceDictionary =>
             instanceDictionary.getValues.foreach {
               dictionaryValue =>
-
                 dictionaryValue.setAttribute(UnresolvedDictionaryAttribute(dictionaryValue.getAttribute.getName))
                 dictionaryValue.getTargetNode.map {
                   targetNode =>

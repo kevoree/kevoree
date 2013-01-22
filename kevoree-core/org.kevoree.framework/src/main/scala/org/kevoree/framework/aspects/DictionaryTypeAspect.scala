@@ -33,6 +33,7 @@ package org.kevoree.framework.aspects
 
 import org.kevoree._
 import KevoreeAspects._
+import scala.collection.JavaConversions._
 
 case class DictionaryTypeAspect (selfDT: DictionaryType) {
 

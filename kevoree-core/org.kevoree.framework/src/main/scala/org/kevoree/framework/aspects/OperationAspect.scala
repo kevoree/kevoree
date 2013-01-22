@@ -27,8 +27,11 @@
 package org.kevoree.framework.aspects
 
 import org.kevoree.Operation
+import org.kevoree.Parameter
+
  import KevoreeAspects._
 import org.slf4j.LoggerFactory
+import scala.collection.JavaConversions._
 
 case class OperationAspect(selfOperation: Operation) {
   private val logger = LoggerFactory.getLogger(this.getClass)
@@ -40,7 +43,7 @@ case class OperationAspect(selfOperation: Operation) {
         var parameterChanged = otherOperation.getParameters.size != 0 && otherOperation.getParameters.forall(otherParam => {
           selfOperation.getParameters.find(selfParam => selfParam.getName == otherParam.getName) match {
             case Some(selfParam) =>  {
-              !selfParam.getType.get.isModelEquals(otherParam.getType.get)
+              !selfParam.getType.isModelEquals(otherParam.getType)
             }
             case None => logger.debug("Parameters are not found in previous operation {}",otherParam.getName);true
           }
@@ -54,7 +57,7 @@ case class OperationAspect(selfOperation: Operation) {
             val otherArr = otherOperation.getParameters.toArray
             var consistencyImpact = false
             for(i <- 0 until selfArr.length){
-                 if (!selfArr(i).getType.get.isModelEquals(otherArr(i).getType.get)){
+                 if (!selfArr(i).asInstanceOf[Parameter].getType.isModelEquals(otherArr(i).asInstanceOf[Parameter].getType)){
                    consistencyImpact = true
                  }
             }
@@ -70,14 +73,14 @@ case class OperationAspect(selfOperation: Operation) {
             val otherArr = otherOperation.getParameters.toArray
             var consistencyImpact = false
             for(i <- 0 until selfArr.length){
-              if (!selfArr(i).getType.get.isModelEquals(otherArr(i).getType.get)){
+              if (!selfArr(i).asInstanceOf[Parameter].getType.isModelEquals(otherArr(i).asInstanceOf[Parameter].getType)){
                 consistencyImpact = true
               }
             }
             if(!consistencyImpact){
               parameterChanged = false
               for(i <- 0 until selfArr.length){
-                selfArr(i).setName(otherArr(i).getName)
+                selfArr(i).asInstanceOf[Parameter].setName(otherArr(i).asInstanceOf[Parameter].getName)
               }
               logger.debug("Conflict resolved")
             } else {
@@ -87,8 +90,7 @@ case class OperationAspect(selfOperation: Operation) {
 
 
         }
-
-        val returnType = !selfOperation.getReturnType.get.isModelEquals(otherOperation.getReturnType.get)
+        val returnType = !selfOperation.getReturnType.isModelEquals(otherOperation.getReturnType)
         if (returnType){
           logger.debug("Return type changed {}=>{}",selfOperation.getName,Array(selfOperation.getReturnType,otherOperation.getReturnType))
         }

@@ -32,6 +32,7 @@
 package org.kevoree.framework
 
 import org.kevoree._
+import scala.collection.JavaConversions._
 
 object KevoreeUtility {
 

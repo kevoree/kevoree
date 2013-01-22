@@ -48,8 +48,8 @@ class NameChecker extends CheckerService {
   var message = "The name doesn't fit the defined format.\nA name only contains lower or upper letters, numbers and \"_\"."
 
   def check(model: ContainerRoot): java.util.List[CheckerViolation] = {
-    var violations: List[CheckerViolation] = List()
-    model.getNodes.foreach {
+var violations = ArrayList<CheckerViolation>()
+model.getNodes.foreach {
       node =>
         var violation = check(node)
         if (violation != null) {

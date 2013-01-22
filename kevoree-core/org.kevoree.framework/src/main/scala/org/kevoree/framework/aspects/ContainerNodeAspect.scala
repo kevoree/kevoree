@@ -19,6 +19,7 @@ import KevoreeAspects._
 import org.slf4j.LoggerFactory
 import collection.mutable.ListBuffer
 import scala.Some
+import scala.collection.JavaConversions._
 
 case class ContainerNodeAspect(node: ContainerNode) {
   private val logger = LoggerFactory.getLogger(this.getClass)
@@ -79,7 +80,7 @@ case class ContainerNodeAspect(node: ContainerNode) {
     val usedChannel: ListBuffer[Channel] = ListBuffer[Channel]()
     node.getComponents.foreach {
       component =>
-        (component.getProvided ++ component.getRequired).foreach {
+        (component.getProvided.toList ++ component.getRequired.toList).foreach {
           port => port.getBindings.foreach {
             mbinding => if (!usedChannel.exists(c => c.getName == mbinding.getHub.getName)) {
               usedChannel += mbinding.getHub

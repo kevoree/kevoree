@@ -43,6 +43,7 @@ import scheduling.SchedulingWithTopologicalOrderAlgo
 import org.kevoreeAdaptation.{ParallelStep, KevoreeAdaptationFactory, AdaptationModel}
 import org.kevoree.{NamedElement, DeployUnit}
 import org.slf4j.LoggerFactory
+import scala.collection.JavaConversions._
 
 /**
  * Created by IntelliJ IDEA.
@@ -58,17 +59,17 @@ trait KevoreeScheduler {
     if (!adaptionModel.getAdaptations.isEmpty) {
 
       val scheduling = new SchedulingWithTopologicalOrderAlgo
-      var step = KevoreeAdaptationFactory.eINSTANCE.createParallelStep
+      var step = KevoreeAdaptationFactory.$instance.createParallelStep
       var currentStep = step
-      adaptionModel.setOrderedPrimitiveSet(Some(currentStep))
+      adaptionModel.setOrderedPrimitiveSet(currentStep)
       //PROCESS STOP
 
       scheduling.schedule(adaptionModel.getAdaptations
         .filter(adapt => adapt.getPrimitiveType.getName == JavaSePrimitive.StopInstance).toList, false).foreach {
         p =>
           step.addAdaptations(p)
-          step = KevoreeAdaptationFactory.eINSTANCE.createParallelStep
-          currentStep.setNextStep(Some(step))
+          step = KevoreeAdaptationFactory.$instance.createParallelStep
+          currentStep.setNextStep(step)
           currentStep = step
       }
       // REMOVE BINDINGS
@@ -76,8 +77,8 @@ trait KevoreeScheduler {
         .filter(adapt => (adapt.getPrimitiveType.getName == JavaSePrimitive.RemoveBinding ||
         adapt.getPrimitiveType.getName == JavaSePrimitive.RemoveFragmentBinding)))
       if (!step.getAdaptations.isEmpty) {
-        step = KevoreeAdaptationFactory.eINSTANCE.createParallelStep
-        currentStep.setNextStep(Some(step))
+        step = KevoreeAdaptationFactory.$instance.createParallelStep
+        currentStep.setNextStep(step)
         currentStep = step
       }
 
@@ -85,8 +86,8 @@ trait KevoreeScheduler {
       step.addAllAdaptations(adaptionModel.getAdaptations
         .filter(adapt => adapt.getPrimitiveType.getName == JavaSePrimitive.RemoveInstance))
       if (!step.getAdaptations.isEmpty) {
-        step = KevoreeAdaptationFactory.eINSTANCE.createParallelStep
-        currentStep.setNextStep(Some(step))
+        step = KevoreeAdaptationFactory.$instance.createParallelStep
+        currentStep.setNextStep(step)
         currentStep = step
       }
 
@@ -94,8 +95,8 @@ trait KevoreeScheduler {
       step.addAllAdaptations(adaptionModel.getAdaptations
         .filter(adapt => adapt.getPrimitiveType.getName == JavaSePrimitive.RemoveType))
       if (!step.getAdaptations.isEmpty) {
-        step = KevoreeAdaptationFactory.eINSTANCE.createParallelStep
-        currentStep.setNextStep(Some(step))
+        step = KevoreeAdaptationFactory.$instance.createParallelStep
+        currentStep.setNextStep(step)
         currentStep = step
       }
 
@@ -103,8 +104,8 @@ trait KevoreeScheduler {
       step.addAllAdaptations(adaptionModel.getAdaptations
         .filter(adapt => adapt.getPrimitiveType.getName == JavaSePrimitive.RemoveDeployUnit))
       if (!step.getAdaptations.isEmpty) {
-        step = KevoreeAdaptationFactory.eINSTANCE.createParallelStep
-        currentStep.setNextStep(Some(step))
+        step = KevoreeAdaptationFactory.$instance.createParallelStep
+        currentStep.setNextStep(step)
         currentStep = step
       }
 
@@ -112,7 +113,7 @@ trait KevoreeScheduler {
       /*adaptionModel.getAdaptations.filter(adapt => adapt.getPrimitiveType.getName == JavaSePrimitive.AddThirdParty)
         .foreach {
         p =>
-          step = KevoreeAdaptationFactory.eINSTANCE.createParallelStep
+          step = KevoreeAdaptationFactory.$instance.createParallelStep
           step.addAdaptations(p)
           currentStep.setNextStep(Some(step))
           currentStep = step
@@ -120,8 +121,8 @@ trait KevoreeScheduler {
       step.addAllAdaptations(adaptionModel.getAdaptations
         .filter(adapt => adapt.getPrimitiveType.getName == JavaSePrimitive.AddThirdParty))
       if (!step.getAdaptations.isEmpty) {
-        step = KevoreeAdaptationFactory.eINSTANCE.createParallelStep
-        currentStep.setNextStep(Some(step))
+        step = KevoreeAdaptationFactory.$instance.createParallelStep
+        currentStep.setNextStep(step)
         currentStep = step
       }
 
@@ -129,15 +130,15 @@ trait KevoreeScheduler {
       adaptionModel.getAdaptations.filter(adapt => adapt.getPrimitiveType.getName == JavaSePrimitive.StartThirdParty)
         .foreach {
         p =>
-          step = KevoreeAdaptationFactory.eINSTANCE.createParallelStep
+          step = KevoreeAdaptationFactory.$instance.createParallelStep
           step.addAdaptations(p)
-          currentStep.setNextStep(Some(step))
+          currentStep.setNextStep(step)
           currentStep = step
       }
       /*step.addAllAdaptations(adaptionModel.getAdaptations
         .filter(adapt => adapt.getPrimitiveType.getName == JavaSePrimitive.StartThirdParty))
       if (!step.getAdaptations.isEmpty) {
-        step = KevoreeAdaptationFactory.eINSTANCE.createParallelStep
+        step = KevoreeAdaptationFactory.$instance.createParallelStep
         currentStep.setNextStep(Some(step))
         currentStep = step
       }*/
@@ -146,8 +147,8 @@ trait KevoreeScheduler {
       step.addAllAdaptations(adaptionModel.getAdaptations
         .filter(adapt => adapt.getPrimitiveType.getName == JavaSePrimitive.UpdateDeployUnit))
       if (!step.getAdaptations.isEmpty) {
-        step = KevoreeAdaptationFactory.eINSTANCE.createParallelStep
-        currentStep.setNextStep(Some(step))
+        step = KevoreeAdaptationFactory.$instance.createParallelStep
+        currentStep.setNextStep(step)
         currentStep = step
       }
 
@@ -155,8 +156,8 @@ trait KevoreeScheduler {
       step.addAllAdaptations(adaptionModel.getAdaptations
         .filter(adapt => adapt.getPrimitiveType.getName == JavaSePrimitive.AddDeployUnit))
       if (!step.getAdaptations.isEmpty) {
-        step = KevoreeAdaptationFactory.eINSTANCE.createParallelStep
-        currentStep.setNextStep(Some(step))
+        step = KevoreeAdaptationFactory.$instance.createParallelStep
+        currentStep.setNextStep(step)
         currentStep = step
       }
 
@@ -164,8 +165,8 @@ trait KevoreeScheduler {
       step.addAllAdaptations(adaptionModel.getAdaptations
         .filter(adapt => adapt.getPrimitiveType.getName == JavaSePrimitive.AddType))
       if (!step.getAdaptations.isEmpty) {
-        step = KevoreeAdaptationFactory.eINSTANCE.createParallelStep
-        currentStep.setNextStep(Some(step))
+        step = KevoreeAdaptationFactory.$instance.createParallelStep
+        currentStep.setNextStep(step)
         currentStep = step
       }
 
@@ -173,8 +174,8 @@ trait KevoreeScheduler {
       step.addAllAdaptations(adaptionModel.getAdaptations
         .filter(adapt => adapt.getPrimitiveType.getName == JavaSePrimitive.AddInstance))
       if (!step.getAdaptations.isEmpty) {
-        step = KevoreeAdaptationFactory.eINSTANCE.createParallelStep
-        currentStep.setNextStep(Some(step))
+        step = KevoreeAdaptationFactory.$instance.createParallelStep
+        currentStep.setNextStep(step)
         currentStep = step
       }
 
@@ -183,8 +184,8 @@ trait KevoreeScheduler {
         .filter(adapt => (adapt.getPrimitiveType.getName == JavaSePrimitive.AddBinding ||
         adapt.getPrimitiveType.getName == JavaSePrimitive.AddFragmentBinding)))
       if (!step.getAdaptations.isEmpty) {
-        step = KevoreeAdaptationFactory.eINSTANCE.createParallelStep
-        currentStep.setNextStep(Some(step))
+        step = KevoreeAdaptationFactory.$instance.createParallelStep
+        currentStep.setNextStep(step)
         currentStep = step
       }
 
@@ -192,8 +193,8 @@ trait KevoreeScheduler {
       step.addAllAdaptations(adaptionModel.getAdaptations
         .filter(adapt => adapt.getPrimitiveType.getName == JavaSePrimitive.UpdateDictionaryInstance))
       if (!step.getAdaptations.isEmpty) {
-        step = KevoreeAdaptationFactory.eINSTANCE.createParallelStep
-        currentStep.setNextStep(Some(step))
+        step = KevoreeAdaptationFactory.$instance.createParallelStep
+        currentStep.setNextStep(step)
         currentStep = step
       }
 
@@ -204,17 +205,17 @@ trait KevoreeScheduler {
         .filter(adapt => adapt.getPrimitiveType.getName == JavaSePrimitive.StartInstance).toList, true).foreach {
         p =>
           step.addAdaptations(p)
-          step = KevoreeAdaptationFactory.eINSTANCE.createParallelStep
-          currentStep.setNextStep(Some(step))
+          step = KevoreeAdaptationFactory.$instance.createParallelStep
+          currentStep.setNextStep(step)
           oldStep = currentStep
           currentStep = step
       }
 
       if (step.getAdaptations.isEmpty) {
-        oldStep.setNextStep(None)
+        oldStep.setNextStep(null)
       }
     } else {
-      adaptionModel.setOrderedPrimitiveSet(None)
+      adaptionModel.setOrderedPrimitiveSet(null)
     }
     adaptionModel
   }
