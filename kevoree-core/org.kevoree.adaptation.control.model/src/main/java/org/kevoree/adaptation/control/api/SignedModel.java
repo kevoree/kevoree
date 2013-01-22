@@ -13,7 +13,7 @@
  */
 package org.kevoree.adaptation.control.api;
 
-import java.util.List;
+import java.util.HashMap;
 
 /**
  * Created with IntelliJ IDEA.
@@ -23,10 +23,18 @@ import java.util.List;
  */
 public interface SignedModel {
 
-    public String getSerialiedModel();
+    /**
+     * This method returns the model
+     * @return
+     */
+    public byte[] getSerialiedModel();
 
+    /**
+     * This method indicates the format storage
+     * @return   format
+     */
     public String getModelFormat();
 
-    public List<ModelSignature> getSignatures();
+    public HashMap<byte[],ModelSignature> getSignatures();
 
 }

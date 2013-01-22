@@ -11,34 +11,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kevoree.adaptation.control.impl;
+package org.kevoree.adaptation.control.api;
 
-import org.kevoree.adaptation.control.api.ModelSignature;
-
+import java.lang.Exception;import java.lang.String;
 /**
  * Created with IntelliJ IDEA.
- * User: duke
- * Date: 1/21/13
- * Time: 4:10 PM
+ * User: jed
+ * Date: 21/01/13
+ * Time: 17:30
+ * To change this template use File | Settings | File Templates.
  */
-public class ModelSignatureImpl implements ModelSignature {
-
-    byte[] _key = null;
-    byte[] _signature = null;
-
-    public ModelSignatureImpl(byte[] k ,byte[] s){
-        _key =k;
-        _signature = s;
+public class ControlException extends Exception
+{
+    public ControlException(String msg){
+        super(msg);
     }
-
-    @Override
-    public byte[] getKey() {
-        return _key;
+    public ControlException(Exception e){
+        super(e);
     }
-
-    @Override
-    public byte[] getSignature() {
-        return _signature;
-    }
-
 }

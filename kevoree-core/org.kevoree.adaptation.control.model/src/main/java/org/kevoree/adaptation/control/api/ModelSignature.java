@@ -20,9 +20,5 @@ package org.kevoree.adaptation.control.api;
  * Time: 4:02 PM
  */
 public interface ModelSignature {
-
-    public byte[] getKey();
-
     public byte[] getSignature();
-
 }
