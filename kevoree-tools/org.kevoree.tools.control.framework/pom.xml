@@ -18,7 +18,24 @@
      	    <artifactId>org.kevoree.adaptation.control.model</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
-     
+        <dependency>
+            <groupId>org.kevoree</groupId>
+            <artifactId>org.kevoree.model</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
+        <!--
+<dependency>
+    <groupId>org.kevoree.extra</groupId>
+    <artifactId>org.kevoree.extra.marshalling</artifactId>
+    <version>1.1</version>
+</dependency>         -->
+        <dependency>
+            <groupId>org.kevoree</groupId>
+            <artifactId>org.kevoree.kompare</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
+
+
     </dependencies>
 
 </project>
