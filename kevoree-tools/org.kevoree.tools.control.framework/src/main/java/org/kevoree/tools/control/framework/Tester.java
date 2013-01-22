@@ -1,0 +1,96 @@
+package org.kevoree.tools.control.framework;
+
+import org.kevoree.ContainerRoot;
+import org.kevoree.Instance;
+import org.kevoree.KControlModel.KControlRule;
+import org.kevoree.adaptation.control.api.SignedModel;
+import org.kevoree.framework.KevoreeXmiHelper;
+import org.kevoree.kompare.JavaSePrimitive;
+import org.kevoree.tools.control.framework.api.IAccessControl;
+import org.kevoree.tools.control.framework.command.CreateRulesCommand;
+import org.kevoree.tools.control.framework.command.CreateSignatureCommand;
+import org.kevoree.tools.control.framework.impl.SignedModelImpl;
+import org.kevoree.tools.control.framework.utils.HelperSignature;
+import org.kevoree.tools.control.framework.utils.HelperMatcher;
+import org.kevoreeAdaptation.AdaptationPrimitive;
+
+import java.security.KeyPair;
+import java.util.List;
+
+/**
+ * Created with IntelliJ IDEA.
+ * User: jed
+ * Date: 21/01/13
+ * Time: 17:23
+ * To change this template use File | Settings | File Templates.
+ */
+public class Tester {
+
+    public static void main(String argv[]) throws Exception
+    {
+
+        ContainerRoot current_model = KevoreeXmiHelper.loadStream(Tester.class.getClassLoader().getResourceAsStream("empty_node.kev"));
+        ContainerRoot target_model = KevoreeXmiHelper.loadStream(Tester.class.getClassLoader().getResourceAsStream("random_nio_grapher_group.kev"));
+
+
+        KeyPair key1 =  HelperSignature.generateKeys(1024);
+
+        SignedModel signedmodel = new SignedModelImpl(target_model);
+
+
+        // create a signature
+        CreateSignatureCommand   c = new CreateSignatureCommand();
+        c.setSignedModel(signedmodel);
+        c.setKey(key1);
+        c.execute();
+
+
+
+        IAccessControl accessControl = ControlFactory.createAccessControl();
+
+
+
+        CreateRulesCommand rules = new CreateRulesCommand(key1.getPublic());
+        rules.setAccessControl(accessControl);
+
+        KControlRule r1 = rules.addAuthorizedMatcher("typeDefinitions[FakeConsole]");
+        r1.addMatcher(HelperMatcher.createMatcher(JavaSePrimitive.AddInstance()));
+        r1.addMatcher(HelperMatcher.createMatcher(JavaSePrimitive.StopInstance()));
+        r1.addMatcher(HelperMatcher.createMatcher(JavaSePrimitive.StartInstance()));
+        r1.addMatcher(HelperMatcher.createMatcher(JavaSePrimitive.AddFragmentBinding()));
+        r1.addMatcher(HelperMatcher.createMatcher(JavaSePrimitive.UpdateDictionaryInstance()));
+
+        KControlRule r2 = rules.addAuthorizedMatcher("typeDefinitions[BasicGroup]");
+        r2.addMatcher(HelperMatcher.createMatcher(JavaSePrimitive.AddInstance()));
+        r2.addMatcher(HelperMatcher.createMatcher(JavaSePrimitive.StopInstance()));
+        r2.addMatcher(HelperMatcher.createMatcher(JavaSePrimitive.StartInstance()));
+        r2.addMatcher(HelperMatcher.createMatcher(JavaSePrimitive.AddFragmentBinding()));
+        r2.addMatcher(HelperMatcher.createMatcher(JavaSePrimitive.UpdateDictionaryInstance()));
+
+
+        rules.execute();
+
+
+
+        List<AdaptationPrimitive> result =     accessControl.approval("node0", current_model, signedmodel);
+
+        if(result.size() == 0)
+        {
+            System.out.println("accepted");
+        }else
+        {
+            for(AdaptationPrimitive p : result)
+            {
+                System.err.println("ERROR "+p.getPrimitiveType().getName()+" "+((Instance)p.getRef()).getName());
+            }
+        }
+
+
+
+
+
+
+
+    }
+
+}
