@@ -30,8 +30,7 @@ import collection.mutable.ListBuffer
 
 class KevoreeVersionChecker extends CheckerService {
   def check(model: ContainerRoot): java.util.List[CheckerViolation] = {
-    val violations: java.util.List[CheckerViolation] = new java.util.ArrayList[CheckerViolation]()
-
+var violations = ArrayList<CheckerViolation>()
     val alreadyCheckedChannels: ListBuffer[Channel] = ListBuffer[Channel]()
     model.getNodes.foreach {
       node =>

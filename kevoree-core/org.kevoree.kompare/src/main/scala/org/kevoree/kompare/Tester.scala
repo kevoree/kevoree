@@ -30,6 +30,7 @@ import org.kevoree.framework.KevoreeXmiHelper
 import scheduling.SchedulingWithTopologicalOrderAlgo
 import org.kevoreeAdaptation.ParallelStep
 import org.kevoree.{MBinding, DeployUnit, NamedElement}
+import scala.collection.JavaConversions._
 
 /**
  * Created by IntelliJ IDEA.
@@ -41,8 +42,8 @@ import org.kevoree.{MBinding, DeployUnit, NamedElement}
 object Tester extends App {
 
   val bean = new KevoreeKompareBean
-  val model1 = KevoreeXmiHelper.load("/Users/duke/Desktop/test0.kev")
-  val model2 = KevoreeXmiHelper.load("/Users/duke/Desktop/thesis_validationTest.kev")
+  val model1 = KevoreeXmiHelper.$instance.load("/Users/duke/Desktop/test0.kev")
+  val model2 = KevoreeXmiHelper.$instance.load("/Users/duke/Desktop/thesis_validationTest.kev")
   val adapModel = bean.kompare(model1, model2, "atmosphere")
 
 
@@ -63,8 +64,8 @@ object Tester extends App {
       }
   }*/
 
-  if (adapModel.getOrderedPrimitiveSet.isDefined) {
-    printStep(adapModel.getOrderedPrimitiveSet.get)
+  if (adapModel.getOrderedPrimitiveSet != null) {
+    printStep(adapModel.getOrderedPrimitiveSet)
   }
 
   private def printStep (step: ParallelStep) {
@@ -80,8 +81,8 @@ object Tester extends App {
           println(action.getPrimitiveType.getName + " : " + action.getRef.asInstanceOf[NamedElement].getName)
         }
     }
-    if (step.getNextStep.isDefined) {
-      printStep(step.getNextStep.get)
+    if (step.getNextStep != null) {
+      printStep(step.getNextStep)
     }
   }
 

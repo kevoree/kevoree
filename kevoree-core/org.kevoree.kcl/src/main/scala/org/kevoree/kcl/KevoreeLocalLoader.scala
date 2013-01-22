@@ -79,7 +79,7 @@ import org.slf4j.LoggerFactory
  * Time: 14:53
  */
 
-class KevoreeLocalLoader(classpathResources: KevoreeLazyJarResources, kcl: KevoreeJarClassLoader) extends ProxyClassLoader /*with DaemonActor*/ {
+class KevoreeLocalLoader(classpathResources: KevoreeLazyJarResources, kcl: KevoreeJarClassLoader) extends ProxyClassLoader {
 
   order = 1
 

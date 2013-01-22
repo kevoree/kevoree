@@ -44,7 +44,6 @@ trait Merger {
     postProcess = List()
   }
 
-
   def merge(actualModel : ContainerRoot,modelToMerge : ContainerRoot) : Unit
 
 }

@@ -16,6 +16,7 @@ package org.kevoree.framework
 import org.kevoree.{TypeDefinition, Instance, ContainerRoot}
 import java.util
 
+import scala.collection.JavaConversions._
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -61,13 +62,13 @@ object KevoreePropertyHelper {
    */
   def getProperty (instance: Instance, key: String, isFragment: Boolean = false, nodeNameForFragment: String = ""): Option[String] = {
     instance.getDictionary match {
-      case None => {
+      case null => {
         getDefaultValue(instance.getTypeDefinition, key)
       }
-      case Some(dictionary) => {
+      case _ @ dictionary => {
         dictionary.getValues.find(dictionaryAttribute =>
           dictionaryAttribute.getAttribute.getName == key &&
-            ((isFragment && dictionaryAttribute.getTargetNode.isDefined && dictionaryAttribute.getTargetNode.get.getName == nodeNameForFragment) || !isFragment)) match {
+            ((isFragment && dictionaryAttribute.getTargetNode != null && dictionaryAttribute.getTargetNode.getName == nodeNameForFragment) || !isFragment)) match {
           case None => getDefaultValue(instance.getTypeDefinition, key)
           case Some(dictionaryAttribute) => Some(dictionaryAttribute.getValue)
         }
@@ -76,8 +77,8 @@ object KevoreePropertyHelper {
   }
 
   private def getDefaultValue (typeDefinition: TypeDefinition, key: String): Option[String] = {
-    if (typeDefinition.getDictionaryType.isDefined) {
-      typeDefinition.getDictionaryType.get.getDefaultValues.find(defaultValue => defaultValue.getAttribute.getName == key) match {
+    if (typeDefinition.getDictionaryType != null) {
+      typeDefinition.getDictionaryType.getDefaultValues.find(defaultValue => defaultValue.getAttribute.getName == key) match {
         case None => None
         case Some(defaultValue) => Some(defaultValue.getValue)
       }

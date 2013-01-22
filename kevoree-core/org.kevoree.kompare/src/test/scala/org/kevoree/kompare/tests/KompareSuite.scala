@@ -36,6 +36,7 @@ import org.kevoreeAdaptation.AdaptationModel
 import org.kevoreeAdaptation._
 import org.scalatest.junit.JUnitSuite
  import org.kevoree._
+import scala.collection.JavaConversions._
 
 trait KompareSuite extends JUnitSuite {
 
@@ -44,21 +45,21 @@ trait KompareSuite extends JUnitSuite {
     if (this.getClass.getClassLoader.getResource(url) == null) {
       println("Warning File not found for test !!!")
     }
-    KevoreeXmiHelper.load(this.getClass.getClassLoader.getResource(url).getPath)
+    KevoreeXmiHelper.$instance.load(this.getClass.getClassLoader.getResource(url).getPath)
   }
 
   implicit def utilityKompareModel(self: AdaptationModel) = RichAdaptationModel(self)
 
   implicit def richRoot(self: ContainerRoot) = RichContainerRoot(self)
 
-  def emptyModel = KevoreeFactory.eINSTANCE.createContainerRoot
+  def emptyModel = KevoreeFactory.$instance.createContainerRoot
 
 }
 
 case class RichAdaptationModel(self: AdaptationModel) {
 
   def verifySize(size: Int) = {
-    assert(self.getAdaptations.size == size)
+    assert(self.getAdaptations.size == size,"Size not equals found="+self.getAdaptations.size+", must be ="+size)
   }
 
   def shouldContain[A](c: String, refName: String) = {

@@ -29,6 +29,8 @@ package org.kevoree.framework
 
 import org.kevoree._
  import org.slf4j.LoggerFactory
+import scala.collection.JavaConversions._
+
 
 object KevoreePlatformHelper {
 
@@ -40,7 +42,7 @@ object KevoreePlatformHelper {
 
     /* SEARCH THE NODE NETWORK */
     val nodenetwork = actualModel.getNodeNetworks.find({nn =>
-        nn.getInitBy.get.getName == currentNodeName && nn.getTarget.getName == targetNodeName }) getOrElse {
+        nn.getInitBy().getName == currentNodeName && nn.getTarget.getName == targetNodeName }) getOrElse {
       val newNodeNetwork = KevoreeFactory.$instance.createNodeNetwork
       val thisNode = actualModel.getNodes.find({loopNode => loopNode.getName == currentNodeName })
       thisNodeFound = thisNode.getOrElse{
@@ -57,7 +59,7 @@ object KevoreePlatformHelper {
           actualModel.addNodes(newnode)
           newnode
         })
-      newNodeNetwork.setInitBy(Some(thisNodeFound))
+      newNodeNetwork.setInitBy(thisNodeFound)
       actualModel.addNodeNetworks(newNodeNetwork)
       newNodeNetwork
     }

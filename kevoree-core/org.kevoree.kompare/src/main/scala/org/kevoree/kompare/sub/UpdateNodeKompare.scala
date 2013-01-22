@@ -48,11 +48,12 @@ import org.kevoree._
 import kompare.JavaSePrimitive
 import org.kevoreeAdaptation._
 import org.kevoree.framework.aspects.KevoreeAspects._
+import scala.collection.JavaConversions._
 
 trait UpdateNodeKompare extends AbstractKompare with UpdateChannelKompare {
 
   def getUpdateNodeAdaptationModel(actualNode: ContainerNode, updateNode: ContainerNode): AdaptationModel = {
-    val adaptationModel = org.kevoreeAdaptation.KevoreeAdaptationFactory.eINSTANCE.createAdaptationModel
+    val adaptationModel = org.kevoreeAdaptation.KevoreeAdaptationFactory.$instance.createAdaptationModel
     logger.debug("UPDATE NODE " + actualNode.getName)
 
     val actualRoot = actualNode.eContainer.asInstanceOf[ContainerRoot]
@@ -67,7 +68,7 @@ trait UpdateNodeKompare extends AbstractKompare with UpdateChannelKompare {
           case Some(ct) => {
             //CHECK IF TYPE IS UPDATE
             if (ct.isUpdated(uct)) {
-              val adaptcmd = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive
+              val adaptcmd = KevoreeAdaptationFactory.$instance.createAdaptationPrimitive
 
               adaptcmd.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.UpdateType,
                 actualNode.eContainer.asInstanceOf[ContainerRoot]))
@@ -83,7 +84,7 @@ trait UpdateNodeKompare extends AbstractKompare with UpdateChannelKompare {
                   .filter(adaptation => adaptation.getPrimitiveType.getName == JavaSePrimitive.UpdateDeployUnit)
                   .find(adaptation => adaptation.getRef.asInstanceOf[DeployUnit].isModelEquals(uctDeployUnit)) match {
                   case None => {
-                    val ctcmd = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive
+                    val ctcmd = KevoreeAdaptationFactory.$instance.createAdaptationPrimitive
 
                     ctcmd.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.UpdateDeployUnit,
                       actualNode.eContainer.asInstanceOf[ContainerRoot]))
@@ -103,7 +104,7 @@ trait UpdateNodeKompare extends AbstractKompare with UpdateChannelKompare {
           }
           case None => {
             //ADD TYPE
-            val ctcmd = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive
+            val ctcmd = KevoreeAdaptationFactory.$instance.createAdaptationPrimitive
 
             ctcmd.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.AddType,
               actualNode.eContainer.asInstanceOf[ContainerRoot]))
@@ -124,7 +125,7 @@ trait UpdateNodeKompare extends AbstractKompare with UpdateChannelKompare {
                   || adaptation.getPrimitiveType.getName == JavaSePrimitive.AddThirdParty)
                   .find(adaptation => adaptation.getRef.asInstanceOf[DeployUnit].isModelEquals(uctDeployUnit)) match {
                   case None => {
-                    val ctcmd = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive
+                    val ctcmd = KevoreeAdaptationFactory.$instance.createAdaptationPrimitive
                     ctcmd.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.AddDeployUnit,
                       actualNode.eContainer.asInstanceOf[ContainerRoot]))
                     ctcmd.setRef(uctDeployUnit)
@@ -146,7 +147,7 @@ trait UpdateNodeKompare extends AbstractKompare with UpdateChannelKompare {
                   || adaptation.getPrimitiveType.getName == JavaSePrimitive.AddDeployUnit)
                   .find(adaptation => adaptation.getRef.asInstanceOf[DeployUnit].isModelEquals(tp)) match {
                   case None => {
-                    val adaptcmd = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive
+                    val adaptcmd = KevoreeAdaptationFactory.$instance.createAdaptationPrimitive
                     adaptcmd.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.AddThirdParty,
                       actualNode.eContainer
                         .asInstanceOf[ContainerRoot]))
@@ -177,7 +178,7 @@ trait UpdateNodeKompare extends AbstractKompare with UpdateChannelKompare {
           case None => {
 
             //Remove TYPE
-            val ctcmd = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive
+            val ctcmd = KevoreeAdaptationFactory.$instance.createAdaptationPrimitive
 
             ctcmd.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.RemoveType,
               actualNode.eContainer.asInstanceOf[ContainerRoot]))
@@ -196,7 +197,7 @@ trait UpdateNodeKompare extends AbstractKompare with UpdateChannelKompare {
                   .filter(adaptation => adaptation.getPrimitiveType.getName == JavaSePrimitive.RemoveDeployUnit)
                   .find(adaptation => adaptation.getRef.asInstanceOf[DeployUnit].isModelEquals(actualDeployU)) match {
                   case None => {
-                    val ctcmd = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive
+                    val ctcmd = KevoreeAdaptationFactory.$instance.createAdaptationPrimitive
                     ctcmd.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.RemoveDeployUnit,
                       actualNode.eContainer.asInstanceOf[ContainerRoot]))
                     ctcmd.setRef(actualDeployU)
@@ -209,7 +210,7 @@ trait UpdateNodeKompare extends AbstractKompare with UpdateChannelKompare {
                           .filter(adaptation => adaptation.getPrimitiveType.getName == JavaSePrimitive.RemoveDeployUnit)
                           .find(adaptation => adaptation.getRef.asInstanceOf[DeployUnit].isModelEquals(du)) match {
                           case None => {
-                            val ctcmd = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive
+                            val ctcmd = KevoreeAdaptationFactory.$instance.createAdaptationPrimitive
                             ctcmd.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.RemoveDeployUnit,
                               actualNode.eContainer.asInstanceOf[ContainerRoot]))
                             ctcmd.setRef(du)
@@ -240,9 +241,9 @@ trait UpdateNodeKompare extends AbstractKompare with UpdateChannelKompare {
     }
 
     //SELF DICTIONARY CHECK
-    if (updateNode.getDictionary.getOrElse(KevoreeFactory.createDictionary)
-      .isUpdated(actualNode.getDictionary.getOrElse(KevoreeFactory.createDictionary))) {
-      val adaptcmd = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive
+    if (   (if(updateNode.getDictionary!=null){updateNode.getDictionary} else { KevoreeFactory.$instance.createDictionary} )
+      .isUpdated((if(actualNode.getDictionary != null){actualNode.getDictionary}else {KevoreeFactory.$instance.createDictionary}))) {
+      val adaptcmd = KevoreeAdaptationFactory.$instance.createAdaptationPrimitive
       adaptcmd.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.UpdateDictionaryInstance,
         actualNode.eContainer.asInstanceOf[ContainerRoot]))
       adaptcmd.setRef(updateNode)
@@ -260,7 +261,7 @@ trait UpdateNodeKompare extends AbstractKompare with UpdateChannelKompare {
             // println("check instance "+c)
             //CHECK IF INSTANCE TYPE DEFINITION IS NOT UPDATED
             if (c.getTypeDefinition.isUpdated(uc.getTypeDefinition)) {
-              val adaptcmd = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive
+              val adaptcmd = KevoreeAdaptationFactory.$instance.createAdaptationPrimitive
               adaptcmd.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.UpdateInstance,
                 actualNode.eContainer.asInstanceOf[ContainerRoot]))
               adaptcmd.setRef((c, uc))
@@ -278,7 +279,7 @@ trait UpdateNodeKompare extends AbstractKompare with UpdateChannelKompare {
 
                         c.asInstanceOf[ComponentInstance].getRelatedBindings.find(oldComp => oldComp.isModelEquals(b)) match {
                           case Some(_) => {
-                            val adaptcmd = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive
+                            val adaptcmd = KevoreeAdaptationFactory.$instance.createAdaptationPrimitive
                             adaptcmd.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.UpdateBinding,
                               actualNode.eContainer
                                 .asInstanceOf[ContainerRoot]))
@@ -296,16 +297,16 @@ trait UpdateNodeKompare extends AbstractKompare with UpdateChannelKompare {
                   })
                 }
                 case i: Channel => {
-                  i.getRelatedBindings.foreach {
+                  i.getBindings.foreach {
                     b =>
                       if (b.getPort.eContainer.eContainer.asInstanceOf[ContainerNode].getName == updateNode.getName) {
                         adaptationModel.getAdaptations
                           .filter(p => p.getPrimitiveType.getName == JavaSePrimitive.UpdateBinding || p.getPrimitiveType.getName == JavaSePrimitive.AddBinding)
                           .find(adaptation => adaptation.getRef.asInstanceOf[MBinding].isModelEquals(b)) match {
                           case None => {
-                            c.asInstanceOf[Channel].getRelatedBindings.find(oldBinding => oldBinding.isModelEquals(b)) match {
+                            c.asInstanceOf[Channel].getBindings.find(oldBinding => oldBinding.isModelEquals(b)) match {
                               case Some(_) => {
-                                val adaptcmd = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive
+                                val adaptcmd = KevoreeAdaptationFactory.$instance.createAdaptationPrimitive
                                 adaptcmd.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.UpdateBinding,
                                   actualNode.eContainer
                                     .asInstanceOf[ContainerRoot]))
@@ -323,7 +324,7 @@ trait UpdateNodeKompare extends AbstractKompare with UpdateChannelKompare {
                           .filter(p => p.getPrimitiveType.getName == JavaSePrimitive.UpdateFragmentBinding)
                           .find(adaptation => adaptation.getRef.asInstanceOf[Channel].isModelEquals(b.getHub)) match {
                           case None => {
-                            val adaptcmd = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive
+                            val adaptcmd = KevoreeAdaptationFactory.$instance.createAdaptationPrimitive
 
                             adaptcmd.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.UpdateFragmentBinding,
                               actualNode.eContainer
@@ -347,9 +348,9 @@ trait UpdateNodeKompare extends AbstractKompare with UpdateChannelKompare {
 
             } else {
               //CHECK IS DICTIONARY IS UPDATED
-              if (uc.getDictionary.getOrElse(KevoreeFactory.createDictionary)
-                .isUpdated(c.getDictionary.getOrElse(KevoreeFactory.createDictionary))) {
-                val adaptcmd = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive
+              if ( (if(uc.getDictionary != null){uc.getDictionary}else {KevoreeFactory.$instance.createDictionary})
+                .isUpdated((if(c.getDictionary != null){c.getDictionary}else {KevoreeFactory.$instance.createDictionary}))) {
+                val adaptcmd = KevoreeAdaptationFactory.$instance.createAdaptationPrimitive
                 adaptcmd.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.UpdateDictionaryInstance,
                   actualNode.eContainer.asInstanceOf[ContainerRoot]))
                 adaptcmd.setRef(uc)
@@ -377,7 +378,7 @@ trait UpdateNodeKompare extends AbstractKompare with UpdateChannelKompare {
                   }
 
                   if (modified) {
-                    val adaptcmd = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive
+                    val adaptcmd = KevoreeAdaptationFactory.$instance.createAdaptationPrimitive
 
                     adaptcmd.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.UpdateDictionaryInstance,
                       actualNode.eContainer
@@ -394,19 +395,19 @@ trait UpdateNodeKompare extends AbstractKompare with UpdateChannelKompare {
             }
           }
           case None => {
-            val ccmd = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive
+            val ccmd = KevoreeAdaptationFactory.$instance.createAdaptationPrimitive
             ccmd.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.AddInstance,
               actualNode.eContainer.asInstanceOf[ContainerRoot]))
             ccmd.setRef(uc)
             adaptationModel.addAdaptations(ccmd)
 
-            val ccmd2 = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive
+            val ccmd2 = KevoreeAdaptationFactory.$instance.createAdaptationPrimitive
             ccmd2.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.StartInstance,
               actualNode.eContainer.asInstanceOf[ContainerRoot]))
             ccmd2.setRef(uc)
             adaptationModel.addAdaptations(ccmd2)
 
-            val ccmd3 = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive
+            val ccmd3 = KevoreeAdaptationFactory.$instance.createAdaptationPrimitive
             ccmd3.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.UpdateDictionaryInstance,
               actualNode.eContainer.asInstanceOf[ContainerRoot]))
             ccmd3.setRef(uc)
@@ -421,13 +422,13 @@ trait UpdateNodeKompare extends AbstractKompare with UpdateChannelKompare {
         }) match {
           case Some(c) => //OK , CASE ALREADY PROCESS BY PREVIOUS STEP
           case None => {
-            val ccmd = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive
+            val ccmd = KevoreeAdaptationFactory.$instance.createAdaptationPrimitive
             ccmd.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.RemoveInstance,
               actualNode.eContainer.asInstanceOf[ContainerRoot]))
             ccmd.setRef(ac)
             adaptationModel.addAdaptations(ccmd)
 
-            val ccmd2 = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive
+            val ccmd2 = KevoreeAdaptationFactory.$instance.createAdaptationPrimitive
             ccmd2.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.StopInstance,
               actualNode.eContainer.asInstanceOf[ContainerRoot]))
             ccmd2.setRef(ac)
@@ -453,7 +454,7 @@ trait UpdateNodeKompare extends AbstractKompare with UpdateChannelKompare {
         }) match {
           case Some(ct) => //OK
           case None => {
-            val ctcmd = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive
+            val ctcmd = KevoreeAdaptationFactory.$instance.createAdaptationPrimitive
             ctcmd.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.AddBinding,
               actualNode.eContainer.asInstanceOf[ContainerRoot]))
             ctcmd.setRef(uct)
@@ -477,7 +478,7 @@ trait UpdateNodeKompare extends AbstractKompare with UpdateChannelKompare {
         }) match {
           case Some(ct) => //OK
           case None => {
-            val ctcmd = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive
+            val ctcmd = KevoreeAdaptationFactory.$instance.createAdaptationPrimitive
             ctcmd.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.RemoveBinding,
               actualNode.eContainer.asInstanceOf[ContainerRoot]))
             ctcmd.setRef(act)
@@ -499,7 +500,7 @@ trait UpdateNodeKompare extends AbstractKompare with UpdateChannelKompare {
             //NEW HUB INIT BINDING
             newhub.getOtherFragment(updateNode.getName).foreach {
               remoteName =>
-                val addccmd = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive
+                val addccmd = KevoreeAdaptationFactory.$instance.createAdaptationPrimitive
                 addccmd.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.AddFragmentBinding,
                   actualNode.eContainer.asInstanceOf[ContainerRoot]))
                 addccmd.setRef(newhub)
@@ -534,7 +535,7 @@ trait UpdateNodeKompare extends AbstractKompare with UpdateChannelKompare {
            actualRoot.getGroups.filter(group => group.getSubNodes.exists(node => node.getName == updateNode.getName)).find(group => newgroup.getName == group.getName) match {
            case None => {
            //NEW GROUP INIT BINDING
-           val addgroup = KevoreeAdaptationFactory.eINSTANCE.createAddInstance
+           val addgroup = KevoreeAdaptationFactory.$instance.createAddInstance
            addgroup.setRef(newgroup)
            adaptationModel.getAdaptations.add(addgroup)
            }

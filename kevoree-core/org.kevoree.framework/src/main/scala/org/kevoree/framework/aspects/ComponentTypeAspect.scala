@@ -18,7 +18,7 @@ package org.kevoree.framework.aspects
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * 	http://www.gnu.org/licenses/lgpl-3.0.txt
+ * http://www.gnu.org/licenses/lgpl-3.0.txt
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -26,20 +26,17 @@ package org.kevoree.framework.aspects
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 
 import org.kevoree._
- import KevoreeAspects._
+import KevoreeAspects._
+import scala.collection.JavaConversions._
 
-case class ComponentTypeAspect(cself : ComponentType) {
+case class ComponentTypeAspect(cself: ComponentType) {
 
   /**
    * Returns a list containing all required and provided ports
    */
-  def getAllPorts : List[PortTypeRef] = {
+  def getAllPorts: List[PortTypeRef] = {
     cself.getProvided.toList ++ cself.getRequired.toList
   }
 

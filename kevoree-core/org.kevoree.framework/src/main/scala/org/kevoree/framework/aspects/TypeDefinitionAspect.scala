@@ -63,10 +63,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 
 package org.kevoree.framework.aspects
 
@@ -74,6 +70,7 @@ import org.kevoree._
 import KevoreeAspects._
 import org.slf4j.LoggerFactory
 import collection.mutable.HashMap
+import scala.collection.JavaConversions._
 
 case class TypeDefinitionAspect(selfTD: TypeDefinition) {
 
@@ -122,21 +119,21 @@ case class TypeDefinitionAspect(selfTD: TypeDefinition) {
 
 
     pTD.getDictionaryType match {
-      case Some(dico) => {
+      case dico :DictionaryType => {
 
         selfTD.getDictionaryType match {
-          case Some(seflDico) => {
-            if (!dico.isModelEquals(selfTD.getDictionaryType.get)) {
+          case seflDico : DictionaryType => {
+            if (!dico.isModelEquals(selfTD.getDictionaryType)) {
               logger.debug("!dico.isModelEquals(selfTD.getDictionaryType.get) is true")
               return true
             }
           }
-          case None => logger.debug("selfTD.getDictionaryType is None"); return true
+          case null => logger.debug("selfTD.getDictionaryType is None"); return true
         }
       }
-      case None => {
-        if (selfTD.getDictionaryType.isDefined) {
-          logger.debug("selfTD.getDictionaryType.isDefined is true")
+      case null => {
+        if (selfTD.getDictionaryType != null) {
+          logger.debug("selfTD.getDictionaryType != null is true")
           return true
         }
       }
@@ -270,7 +267,7 @@ case class TypeDefinitionAspect(selfTD: TypeDefinition) {
   //CHECKED
   def foundRelevantHostNodeType(nodeType: NodeType, targetTypeDef: TypeDefinition): Option[NodeType] = {
     if (targetTypeDef.getDeployUnits
-      .exists(du => du.getTargetNodeType.isDefined && du.getTargetNodeType.get == nodeType)) {
+      .exists(du => du.getTargetNodeType != null && du.getTargetNodeType == nodeType)) {
       Some(nodeType)
     } else {
       nodeType.getSuperTypes.foreach {
@@ -288,7 +285,7 @@ case class TypeDefinitionAspect(selfTD: TypeDefinition) {
 
     /* add all reLib from found deploy Unit*/
     var deployUnitfound: DeployUnit = null
-    selfTD.getDeployUnits.find(du => du.getTargetNodeType.isDefined && du.getTargetNodeType.get.getName == node.getTypeDefinition.getName) match {
+    selfTD.getDeployUnits.find(du => du.getTargetNodeType != null && du.getTargetNodeType.getName == node.getTypeDefinition.getName) match {
       case Some(e) => {
         //logger.debug("found deploy unit => {} for type {}", e.getUnitName, selfTD.getName)
         deployUnitfound = e
@@ -306,29 +303,17 @@ case class TypeDefinitionAspect(selfTD: TypeDefinition) {
   private def foundRelevantDeployUnitOnNodeSuperTypes(nodeType: NodeType, t: TypeDefinition): DeployUnit = {
     var deployUnitfound: DeployUnit = null
     // looking for relevant deployunits on super types
-
-    //println("t=>" + t.getName + "=" + t.getDeployUnits.size)
     t.getDeployUnits.foreach {
       td =>
-        td.getTargetNodeType.map {
-          tNode =>
-            if (tNode.getName == nodeType.getName) {
-              /*tNode.getDeployUnits.foreach {
-                chooseDP =>
-                  logger.debug("candidate deploy unit => {}", chooseDP.getUnitName)
-              }*/
-              deployUnitfound = td //tNode.getDeployUnits(0)
-
-              //              logger.debug("found & exit={}", deployUnitfound.getUnitName)
+        if(td.getTargetNodeType != null){
+            if (td.getTargetNodeType.getName == nodeType.getName) {
+              deployUnitfound = td
               return deployUnitfound
             }
         }
     }
-
     if (deployUnitfound == null) {
       nodeType.getSuperTypes.foreach(superNode => {
-        // call recursively for super types and test if something has been found {
-        //        logger.debug("Search on super type => {}", superNode.getName)
         deployUnitfound = foundRelevantDeployUnitOnNodeSuperTypes(superNode.asInstanceOf[NodeType], t)
         if (deployUnitfound != null) {
           return deployUnitfound

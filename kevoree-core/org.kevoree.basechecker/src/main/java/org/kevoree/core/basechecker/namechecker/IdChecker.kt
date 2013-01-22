@@ -32,7 +32,7 @@ import scala.collection.JavaConversions._
 
 class IdChecker extends CheckerService {
   def check(model: ContainerRoot): java.util.List[CheckerViolation] = {
-    var violations: List[CheckerViolation] = List()
+var violations = ArrayList<CheckerViolation>()
     //CHANNEL STEP
     model.getHubs.foreach {
       loophub =>

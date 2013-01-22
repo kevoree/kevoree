@@ -27,6 +27,7 @@
 package org.kevoree.framework.aspects
 
 import org.kevoree.{Instance, ContainerRoot}
+import scala.collection.JavaConversions._
 
 /**
  * Created by IntelliJ IDEA.

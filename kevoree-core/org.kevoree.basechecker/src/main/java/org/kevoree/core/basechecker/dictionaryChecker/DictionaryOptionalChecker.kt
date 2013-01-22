@@ -41,8 +41,7 @@ import org.kevoree._
 
 class DictionaryOptionalChecker extends CheckerService {
   def check (model: ContainerRoot): java.util.List[CheckerViolation] = {
-    var violations: List[CheckerViolation] = List()
-
+var violations = ArrayList<CheckerViolation>()
     model.getAllInstances.foreach {
       instance =>
         instance.getTypeDefinition.getDictionaryType.map {

@@ -18,7 +18,7 @@ package org.kevoree.kompare.scheduling
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * 	http://www.gnu.org/licenses/lgpl-3.0.txt
+ * http://www.gnu.org/licenses/lgpl-3.0.txt
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -38,7 +38,7 @@ class SchedulingWithTopologicalOrderAlgo {
 
   private val logger: Logger = LoggerFactory.getLogger(classOf[SchedulingWithTopologicalOrderAlgo])
 
-  def schedule (commands: List[AdaptationPrimitive], start: Boolean): List[AdaptationPrimitive] = {
+  def schedule(commands: List[AdaptationPrimitive], start: Boolean): List[AdaptationPrimitive] = {
     if (commands.size > 1) {
       val graph = buildGraph(commands, start)
       val topologicAlgorithm = new TopologicalOrderIterator(graph)
@@ -57,8 +57,8 @@ class SchedulingWithTopologicalOrderAlgo {
   /**
    * each command is a vertex and edges represent dependency order between commands
    */
-  private def buildGraph (commands: List[AdaptationPrimitive],
-    start: Boolean): DefaultDirectedGraph[AdaptationPrimitive, (AdaptationPrimitive, AdaptationPrimitive)] = {
+  private def buildGraph(commands: List[AdaptationPrimitive],
+                         start: Boolean): DefaultDirectedGraph[AdaptationPrimitive, (AdaptationPrimitive, AdaptationPrimitive)] = {
     val graph = new
         DefaultDirectedGraph[AdaptationPrimitive, (AdaptationPrimitive, AdaptationPrimitive)](classOf[(AdaptationPrimitive, AdaptationPrimitive)])
 
@@ -98,8 +98,8 @@ class SchedulingWithTopologicalOrderAlgo {
      *
      *
      * */
-  private def lookForPotentialConstraints (
-    commands: List[AdaptationPrimitive]): scala.collection.mutable.Map[Instance, java.util.List[Instance]] = {
+  private def lookForPotentialConstraints(
+                                           commands: List[AdaptationPrimitive]): scala.collection.mutable.Map[Instance, java.util.List[Instance]] = {
     val instanceDependencies: scala.collection.mutable.Map[Instance, java.util.List[Instance]] = scala.collection
       .mutable.Map[Instance, java.util.List[Instance]]()
 

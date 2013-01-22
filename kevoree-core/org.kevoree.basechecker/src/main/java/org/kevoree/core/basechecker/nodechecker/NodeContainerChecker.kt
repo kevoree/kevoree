@@ -25,9 +25,9 @@ import org.kevoree.framework.aspects.NodeTypeAspect
  * Date: 21/09/12
  * Time: 07:07
  */
-class NodeContainerChecker extends CheckerService {
-  def check(model: ContainerRoot): java.util.List[CheckerViolation] = {
-    val violations: java.util.List[CheckerViolation] = new util.ArrayList[CheckerViolation]()
+class NodeContainerChecker : CheckerService {
+fun check(model: ContainerRoot): List<CheckerViolation> {
+    var violations = ArrayList<CheckerViolation>()
     model.getNodes.foreach {
       node => //For each Node
         if (node.getHosts.size > 0) {

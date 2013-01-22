@@ -32,6 +32,7 @@
 package org.kevoree.framework.merger
 
 import org.kevoree._
+import scala.collection.JavaConversions._
 
 object KevoreePlatformMerger {
 
@@ -39,11 +40,11 @@ object KevoreePlatformMerger {
 
   def merge(actualModel : ContainerRoot,modelToMerge : ContainerRoot) : Unit = {
 
-    val listNN = List() ++ modelToMerge.getNodeNetworks
+    val listNN = List() ++ modelToMerge.getNodeNetworks().toList
     listNN.foreach{nn=>
       //MERGE NODE NETWORK
 
-      actualModel.getNodeNetworks.find(ann=> ann.getInitBy.get.getName == nn.getInitBy.get.getName && ann.getTarget.getName == nn.getTarget.getName  ) match {
+      actualModel.getNodeNetworks.find(ann=> ann.getInitBy.getName == nn.getInitBy.getName && ann.getTarget.getName == nn.getTarget.getName  ) match {
         case None => actualModel.addNodeNetworks(nn)
         case Some(nnfound:NodeNetwork) => {
 

@@ -26,26 +26,18 @@
  */
 package org.kevoree.core.basechecker.nodechecker
 
-import org.kevoree.api.service.core.checker.{CheckerViolation, CheckerService}
-import org.kevoree.framework.aspects.KevoreeAspects._
-import org.kevoree.{Channel, ContainerNode, ContainerRoot}
-import scala.collection.JavaConversions._
-import collection.mutable.ListBuffer
+import org.kevoree.api.service.core.checker.CheckerService
+import org.kevoree.api.service.core.checker.CheckerViolation
+import org.kevoree.*
+import java.util.ArrayList
 
-/**
- * Created by IntelliJ IDEA.
- * User: Gregory NAIN
- * Date: 30/08/11
- * Time: 16:46
- */
-
-class NodeChecker extends CheckerService {
+class NodeChecker : CheckerService {
 
 
-  def check(model: ContainerRoot): java.util.List[CheckerViolation] = {
-    var violations: ListBuffer[CheckerViolation] = ListBuffer()
-    model.getNodes.foreach {
-      node => //For each Node
+  fun check(model: ContainerRoot): List<CheckerViolation> {
+      var violations = ArrayList<CheckerViolation>()
+      model.getNodes.forEach {
+      node -> //For each Node
         val alreadyCheckedChannels: ListBuffer[Channel] = ListBuffer[Channel]()
         node.getComponents.foreach {
           component => //For each component of each node
@@ -123,6 +115,6 @@ class NodeChecker extends CheckerService {
           case _ =>
         }
     }
-    violations
+    return violations
   }
 }

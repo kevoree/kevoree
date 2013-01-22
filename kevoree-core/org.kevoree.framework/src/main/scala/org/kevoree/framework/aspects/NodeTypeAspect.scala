@@ -15,6 +15,7 @@ package org.kevoree.framework.aspects
 
 import org.kevoree.{NodeType}
 import org.slf4j.LoggerFactory
+import scala.collection.JavaConversions._
 
 /**
  * Created with IntelliJ IDEA.

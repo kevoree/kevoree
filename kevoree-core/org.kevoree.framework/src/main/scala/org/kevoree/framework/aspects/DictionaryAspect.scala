@@ -33,6 +33,8 @@ package org.kevoree.framework.aspects
 
 import org.kevoree._
 import KevoreeAspects._
+import scala.collection.JavaConversions._
+
 
 case class DictionaryAspect(self: Dictionary) {
 
@@ -53,18 +55,18 @@ case class DictionaryAspect(self: Dictionary) {
     }
   }
 
-  def compareTargetNode(selfTN: Option[ContainerNode], otherTN: Option[ContainerNode]): Boolean = {
-    if (selfTN.isEmpty) {
-      if (otherTN.isEmpty) {
+  def compareTargetNode(selfTN: ContainerNode, otherTN: ContainerNode): Boolean = {
+    return if (selfTN == null) {
+      if (otherTN == null) {
         true
       } else {
         false
       }
     } else {
-      if (otherTN.isEmpty) {
+      if (otherTN == null) {
         false
       } else {
-        otherTN.get.getName == selfTN.get.getName
+        otherTN.getName == selfTN.getName
       }
     }
   }

@@ -29,6 +29,7 @@ package org.kevoree.framework
 import org.kevoree._
 import org.slf4j.LoggerFactory
 import org.kevoreeAdaptation.AdaptationModel
+import scala.collection.JavaConversions._
 
 /**
  * Created by IntelliJ IDEA.
@@ -37,7 +38,7 @@ import org.kevoreeAdaptation.AdaptationModel
  * Time: 13:21
  */
 
-object HaraKiriHelper {
+class HaraKiriHelper {
 
   private val logger = LoggerFactory.getLogger(this.getClass)
 

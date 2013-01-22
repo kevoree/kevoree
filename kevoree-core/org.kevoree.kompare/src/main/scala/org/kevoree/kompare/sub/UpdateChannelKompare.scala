@@ -39,14 +39,14 @@ import org.kevoreeAdaptation._
 trait UpdateChannelKompare extends AbstractKompare {
 
   def getUpdateChannelAdaptationModel (actualChannel: Channel, updateChannel: Channel,nodeName: String): AdaptationModel = {
-    val adaptationModel = org.kevoreeAdaptation.KevoreeAdaptationFactory.eINSTANCE.createAdaptationModel
+    val adaptationModel = org.kevoreeAdaptation.KevoreeAdaptationFactory.$instance.createAdaptationModel
 
     updateChannel.getOtherFragment(nodeName).foreach {
       newhubBindingNodeName =>
         actualChannel.getOtherFragment(nodeName).find(b => b == newhubBindingNodeName) match {
           case None => {
             //NEW BINDING
-            val addccmd = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive
+            val addccmd = KevoreeAdaptationFactory.$instance.createAdaptationPrimitive
             addccmd.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.AddFragmentBinding,actualChannel.eContainer.asInstanceOf[ContainerRoot]))
 
 
@@ -62,7 +62,7 @@ trait UpdateChannelKompare extends AbstractKompare {
         updateChannel.getOtherFragment(nodeName).find(b => b == previousHubBindingNodeName) match {
           case None => {
             //REMOVE BINDING
-            val addccmd = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive
+            val addccmd = KevoreeAdaptationFactory.$instance.createAdaptationPrimitive
             addccmd.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.RemoveFragmentBinding,actualChannel.eContainer.asInstanceOf[ContainerRoot]))
             addccmd.setRef(updateChannel)
             addccmd.setTargetNodeName(previousHubBindingNodeName)

@@ -61,33 +61,32 @@ import org.kevoree._
 import KevoreeAspects._
 import scala.Array
 import org.slf4j.LoggerFactory
+import scala.collection.JavaConversions._
 
 case class DeployUnitAspect(self: DeployUnit) {
 
   val logger = LoggerFactory.getLogger(this.getClass)
 
   def isModelEquals(other: DeployUnit): Boolean = {
-
     if(other == null){
       if(self == null){
           return true
       } else {
          return false
       }
-
     }
-
     if (other.getUnitName != self.getUnitName || other.getGroupName != self.getGroupName || other.getVersion != self.getVersion) {
       return false
     }
-    if (other.getTargetNodeType.isDefined && self.getTargetNodeType.isEmpty) {
+    if (other.getTargetNodeType != null && self.getTargetNodeType == null) {
       return false
     }
-    if (other.getTargetNodeType.isEmpty && self.getTargetNodeType.isDefined) {
+
+    if (other.getTargetNodeType == null && self.getTargetNodeType != null) {
       return false
     }
-    if (other.getTargetNodeType.isDefined && self.getTargetNodeType.isDefined) {
-      other.getTargetNodeType.get.getName == self.getTargetNodeType.get.getName
+    if (other.getTargetNodeType != null && self.getTargetNodeType != null) {
+      other.getTargetNodeType.getName == self.getTargetNodeType.getName
     } else {
       true
     }
