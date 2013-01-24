@@ -14,6 +14,7 @@
 package org.kevoree.adaptation.control.api;
 
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -35,6 +36,6 @@ public interface SignedModel {
      */
     public String getModelFormat();
 
-    public HashMap<byte[],ModelSignature> getSignatures();
+    public List<ModelSignature> getSignatures();
 
 }

@@ -19,7 +19,7 @@ import org.kevoree.KControlModel.KControlRule;
 import org.kevoree.adaptation.control.api.SignedModel;
 import org.kevoree.framework.KevoreeXmiHelper;
 import org.kevoree.kompare.JavaSePrimitive;
-import org.kevoree.tools.control.framework.api.IAccessControl;
+import org.kevoree.tools.control.framework.api.IAccessControlChecker;
 import org.kevoree.tools.control.framework.command.CreateRulesCommand;
 import org.kevoree.tools.control.framework.command.CreateSignatureCommand;
 import org.kevoree.tools.control.framework.impl.SignedModelImpl;
@@ -49,7 +49,7 @@ public class Tester {
 
 
 
-        IAccessControl accessControl = ControlFactory.createAccessControl();
+        IAccessControlChecker accessControl = ControlFactory.createAccessControlChecker();
 
 
         CreateRulesCommand rules = new CreateRulesCommand(key1.getPublic());
@@ -83,13 +83,9 @@ public class Tester {
         r4.addMatcher(HelperMatcher.createMatcher(JavaSePrimitive.UpdateDictionaryInstance()));
 
 
-       // System.out.println(rules);
+   //     System.out.println(rules);
 
         rules.execute();
-
-
-
-
 
 
         SignedModel signedmodel = new SignedModelImpl(target_model);

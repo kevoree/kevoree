@@ -21,7 +21,7 @@ import org.kevoree.adaptation.control.api.ModelSignature;
 import org.kevoree.adaptation.control.api.SignedModel;
 import org.kevoree.framework.KevoreeXmiHelper;
 import org.kevoree.kompare.KevoreeKompareBean;
-import org.kevoree.tools.control.framework.api.IAccessControl;
+import org.kevoree.tools.control.framework.api.IAccessControlChecker;
 import org.kevoree.tools.control.framework.utils.HelperSignature;
 import org.kevoreeAdaptation.AdaptationModel;
 import org.kevoreeAdaptation.AdaptationPrimitive;
@@ -40,7 +40,7 @@ import java.util.List;
  * Time: 18:20
  * To change this template use File | Settings | File Templates.
  */
-public class AccessControlImpl implements IAccessControl
+public class AccessControlCheckerImpl implements IAccessControlChecker
 {
     private KControlRoot controlRoot=null;
 
@@ -52,7 +52,7 @@ public class AccessControlImpl implements IAccessControl
         this.controlRoot = controlRoot;
     }
 
-    public AccessControlImpl()
+    public AccessControlCheckerImpl()
     {
         this.controlRoot = KControlModelFactory.$instance.createKControlRoot();
     }
@@ -85,34 +85,31 @@ public class AccessControlImpl implements IAccessControl
         ContainerRoot target_model = KevoreeXmiHelper.loadString(new String(signedModel.getSerialiedModel()));
 
         // <public key> <sign model>
-        HashMap<byte[],ModelSignature> tuple_key_sign =  signedModel.getSignatures();
+        List<ModelSignature> tuple_key_sign =  signedModel.getSignatures();
 
         //get the Kcontrol with our publickey
-        for( byte[] pk: tuple_key_sign.keySet())
+        for( ModelSignature modelsign: tuple_key_sign)
         {
-            for(KPublicKey kPublicKey : controlRoot.getKeys())
+            KPublicKey kPublicKey  = controlRoot.findByQuery("keys["+modelsign.getKey()+"]",KPublicKey.class);
+            try
             {
-                try
+                // todo we can do better
+                BigInteger exponent = new BigInteger(kPublicKey.get_key().split(":")[0]);
+                BigInteger modulus = new BigInteger(kPublicKey.get_key().split(":")[1]);
+                RSAPublicKey key = new RSAPublicKeyImpl(modulus,exponent);
+
+                // check signature of the model
+                if(HelperSignature.verifySignature(modelsign.getSignature(), key, signedModel.getSerialiedModel()))
                 {
-                    // todo we can do better
-                    BigInteger exponent = new BigInteger(kPublicKey.get_key().split(":")[0]);
-                    BigInteger modulus = new BigInteger(kPublicKey.get_key().split(":")[1]);
-                    RSAPublicKey key = new RSAPublicKeyImpl(modulus,exponent);
-                    // check signature of the model
-                    if(HelperSignature.verifySignature(tuple_key_sign.get(pk).getSignature(), key, signedModel.getSerialiedModel()))
-                    {
-
-                        authorize_rules.addAll(kPublicKey.get_authorized());
-                        forbidden_rules.addAll(kPublicKey.get_forbidden());
-
-
-                    }
-                } catch (Exception e)
-                {
-                    // this kPublicKey is ignore
-                    e.printStackTrace();
+                    authorize_rules.addAll(kPublicKey.get_authorized());
+                    forbidden_rules.addAll(kPublicKey.get_forbidden());
                 }
+            } catch (Exception e)
+            {
+                // this kPublicKey is ignore
+                e.printStackTrace();
             }
+
         }
 
 
