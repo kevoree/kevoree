@@ -19,7 +19,9 @@ import org.kevoree.adaptation.control.api.SignedModel;
 import org.kevoree.framework.KevoreeXmiHelper;
 import org.kevoree.tools.control.framework.utils.ModelFormat;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -30,14 +32,14 @@ import java.util.HashMap;
  */
 public class SignedModelImpl implements SignedModel {
 
-    private HashMap<byte[],ModelSignature> signatures;
+    private List<ModelSignature> signatures;
     private ModelFormat currentFormat = ModelFormat.XMI;
     private  byte []  rawmodel=null;
 
 
     public SignedModelImpl(ContainerRoot model)
     {
-        signatures =  new HashMap<byte[], ModelSignature>();
+        signatures =  new ArrayList<ModelSignature>();
         rawmodel = KevoreeXmiHelper.saveToString(model,false).getBytes();
     }
 
@@ -52,9 +54,8 @@ public class SignedModelImpl implements SignedModel {
     }
 
     @Override
-    public HashMap<byte[], ModelSignature> getSignatures() {
+    public List<ModelSignature> getSignatures() {
         return signatures;
     }
-
 
 }

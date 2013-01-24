@@ -13,6 +13,7 @@
  */
 package org.kevoree.tools.control.framework.command;
 
+import org.kevoree.KControlModel.KControlModelFactory;
 import org.kevoree.adaptation.control.api.ControlException;
 import org.kevoree.adaptation.control.api.ModelSignature;
 import org.kevoree.adaptation.control.api.SignedModel;
@@ -24,6 +25,7 @@ import java.security.InvalidKeyException;
 import java.security.KeyPair;
 import java.security.NoSuchAlgorithmException;
 import java.security.SignatureException;
+import java.security.interfaces.RSAPublicKey;
 
 /**
  * Created with IntelliJ IDEA.
@@ -51,8 +53,9 @@ public class CreateSignatureCommand implements Command {
     public void execute() throws ControlException {
         ModelSignature signature = null;
         try {
-            signature = new ModelSignatureImpl(HelperSignature.getSignature(key.getPrivate(), signedModel.getSerialiedModel()));
-            signedModel.getSignatures().put(key.getPublic().getEncoded(), signature);
+            RSAPublicKey rsaPublicKey = (RSAPublicKey) key.getPublic();
+            signature = new ModelSignatureImpl(HelperSignature.getSignature(key.getPrivate(), signedModel.getSerialiedModel()),rsaPublicKey.getPublicExponent()+":"+rsaPublicKey.getModulus());
+            signedModel.getSignatures().add(signature);
         } catch (Exception e)
         {
           throw new ControlException(e);
