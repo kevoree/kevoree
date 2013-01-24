@@ -40,32 +40,28 @@ import java.util.jar.JarInputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.xeustechnologies.jcl.exception.JclException;
+import org.kevoree.kcl.exception.KclException;
 
 /**
  * JarResources reads jar files and loads the class content/bytes in a HashMap
- * 
+ *
  * @author Kamran Zafar
- * 
  */
 public class JarResources {
 
     protected Map<String, byte[]> jarEntryContents;
 
-    protected byte[] getJarEntryContents(String name){
+    protected byte[] getJarEntryContents(String name) {
         return jarEntryContents.get(name);
     }
 
-    protected boolean collisionAllowed;
-
-    private static Logger logger = Logger.getLogger( JarResources.class.getName() );
+    private static Logger logger = Logger.getLogger(JarResources.class.getName());
 
     /**
      * Default constructor
      */
     public JarResources() {
         jarEntryContents = new HashMap<String, byte[]>();
-        collisionAllowed = Configuration.suppressCollisionException();
     }
 
     /**
@@ -74,71 +70,70 @@ public class JarResources {
      */
     public byte[] getResource(String name) {
         return getJarEntryContents(name);
-     //   return jarEntryContents.get( name );
+        //   return jarEntryContents.get( name );
     }
 
     /**
      * Returns an immutable Map of all jar resources
-     * 
+     *
      * @return Map
      */
     public Map<String, byte[]> getResources() {
-        return Collections.unmodifiableMap( jarEntryContents );
+        return Collections.unmodifiableMap(jarEntryContents);
     }
 
     /**
      * Reads the specified jar file
-     * 
+     *
      * @param jarFile
      */
     public void loadJar(String jarFile) {
-        if (logger.isLoggable( Level.FINEST ))
-            logger.finest( "Loading jar: " + jarFile );
+        if (logger.isLoggable(Level.FINEST))
+            logger.finest("Loading jar: " + jarFile);
 
         FileInputStream fis = null;
         try {
-            fis = new FileInputStream( jarFile );
-            loadJar( fis );
+            fis = new FileInputStream(jarFile);
+            loadJar(fis);
         } catch (IOException e) {
-            throw new JclException( e );
+            throw new KclException(e);
         } finally {
             if (fis != null)
                 try {
                     fis.close();
                 } catch (IOException e) {
-                    throw new JclException( e );
+                    throw new KclException(e);
                 }
         }
     }
 
     /**
      * Reads the jar file from a specified URL
-     * 
+     *
      * @param url
      */
     public void loadJar(URL url) {
-        if (logger.isLoggable( Level.FINEST ))
-            logger.finest( "Loading jar: " + url.toString() );
+        if (logger.isLoggable(Level.FINEST))
+            logger.finest("Loading jar: " + url.toString());
 
         InputStream in = null;
         try {
             in = url.openStream();
-            loadJar( in );
+            loadJar(in);
         } catch (IOException e) {
-            throw new JclException( e );
+            throw new KclException(e);
         } finally {
             if (in != null)
                 try {
                     in.close();
                 } catch (IOException e) {
-                    throw new JclException( e );
+                    throw new KclException(e);
                 }
         }
     }
 
     /**
      * Load the jar contents from InputStream
-     * 
      */
     public void loadJar(InputStream jarStream) {
 
@@ -146,98 +141,92 @@ public class JarResources {
         JarInputStream jis = null;
 
         try {
-            bis = new BufferedInputStream( jarStream );
-            jis = new JarInputStream( bis );
+            bis = new BufferedInputStream(jarStream);
+            jis = new JarInputStream(bis);
 
             JarEntry jarEntry = null;
-            while (( jarEntry = jis.getNextJarEntry() ) != null) {
-                if (logger.isLoggable( Level.FINEST ))
-                    logger.finest( dump( jarEntry ) );
+            while ((jarEntry = jis.getNextJarEntry()) != null) {
+                if (logger.isLoggable(Level.FINEST))
+                    logger.finest(dump(jarEntry));
 
                 if (jarEntry.isDirectory()) {
                     continue;
                 }
 
-                if (jarEntryContents.containsKey( jarEntry.getName() )) {
-                    if (!collisionAllowed)
-                        throw new JclException( "Class/Resource " + jarEntry.getName() + " already loaded" );
-                    else {
-                        if (logger.isLoggable( Level.FINEST ))
-                            logger.finest( "Class/Resource " + jarEntry.getName()
-                                    + " already loaded; ignoring entry..." );
-                        continue;
-                    }
+                if (jarEntryContents.containsKey(jarEntry.getName())) {
+                    continue;
+
                 }
 
-                if (logger.isLoggable( Level.FINEST ))
-                    logger.finest( "Entry Name: " + jarEntry.getName() + ", " + "Entry Size: " + jarEntry.getSize() );
+                if (logger.isLoggable(Level.FINEST))
+                    logger.finest("Entry Name: " + jarEntry.getName() + ", " + "Entry Size: " + jarEntry.getSize());
 
                 byte[] b = new byte[2048];
                 ByteArrayOutputStream out = new ByteArrayOutputStream();
 
                 int len = 0;
-                while (( len = jis.read( b ) ) > 0) {
-                    out.write( b, 0, len );
+                while ((len = jis.read(b)) > 0) {
+                    out.write(b, 0, len);
                 }
 
                 // add to internal resource HashMap
-                jarEntryContents.put( jarEntry.getName(), out.toByteArray() );
+                jarEntryContents.put(jarEntry.getName(), out.toByteArray());
 
-                if (logger.isLoggable( Level.FINEST ))
-                    logger.finest( jarEntry.getName() + ": size=" + out.size() + " ,csize="
-                            + jarEntry.getCompressedSize() );
+                if (logger.isLoggable(Level.FINEST))
+                    logger.finest(jarEntry.getName() + ": size=" + out.size() + " ,csize="
+                            + jarEntry.getCompressedSize());
 
                 out.close();
             }
         } catch (IOException e) {
-            throw new JclException( e );
+            throw new KclException(e);
         } catch (NullPointerException e) {
-            if (logger.isLoggable( Level.FINEST ))
-                logger.finest( "Done loading." );
+            if (logger.isLoggable(Level.FINEST))
+                logger.finest("Done loading.");
         } finally {
             if (jis != null)
                 try {
                     jis.close();
                 } catch (IOException e) {
-                    throw new JclException( e );
+                    throw new KclException(e);
                 }
 
             if (bis != null)
                 try {
                     bis.close();
                 } catch (IOException e) {
-                    throw new JclException( e );
+                    throw new KclException(e);
                 }
         }
     }
 
     /**
      * For debugging
-     * 
+     *
      * @param je
      * @return String
      */
     private String dump(JarEntry je) {
         StringBuffer sb = new StringBuffer();
         if (je.isDirectory()) {
-            sb.append( "d " );
+            sb.append("d ");
         } else {
-            sb.append( "f " );
+            sb.append("f ");
         }
 
         if (je.getMethod() == JarEntry.STORED) {
-            sb.append( "stored   " );
+            sb.append("stored   ");
         } else {
-            sb.append( "defalted " );
+            sb.append("defalted ");
         }
 
-        sb.append( je.getName() );
-        sb.append( "\t" );
-        sb.append( "" + je.getSize() );
+        sb.append(je.getName());
+        sb.append("\t");
+        sb.append("" + je.getSize());
         if (je.getMethod() == JarEntry.DEFLATED) {
-            sb.append( "/" + je.getCompressedSize() );
+            sb.append("/" + je.getCompressedSize());
         }
 
-        return ( sb.toString() );
+        return (sb.toString());
     }
 }

@@ -11,7 +11,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kevoree.kcl;
+package org.kevoree.kcl.loader;
 
 import java.io.InputStream;
 
@@ -35,6 +35,5 @@ public abstract class KevoreeResourcesLoader {
     }
 
     public abstract void doLoad(String key,InputStream stream);
-
 
 }

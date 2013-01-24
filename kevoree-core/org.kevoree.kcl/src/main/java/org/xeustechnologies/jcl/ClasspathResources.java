@@ -36,41 +36,38 @@ import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.xeustechnologies.jcl.exception.JclException;
-import org.xeustechnologies.jcl.exception.ResourceNotFoundException;
+import org.kevoree.kcl.exception.KclException;
+import org.kevoree.kcl.exception.ResourceNotFoundException;
 
 /**
  * Class that builds a local classpath by loading resources from different
  * files/paths
- * 
+ *
  * @author Kamran Zafar
- * 
  */
 public class ClasspathResources extends JarResources {
 
-    private static Logger logger = Logger.getLogger( ClasspathResources.class.getName() );
-    private boolean ignoreMissingResources;
+    private static Logger logger = Logger.getLogger(ClasspathResources.class.getName());
 
     public ClasspathResources() {
         super();
-        ignoreMissingResources = Configuration.suppressMissingResourceException();
     }
 
     /**
      * Reads the resource content
-     * 
+     *
      * @param resource
      */
     private void loadResourceContent(String resource, String pack) {
-        File resourceFile = new File( resource );
+        File resourceFile = new File(resource);
         String entryName = "";
         FileInputStream fis = null;
         byte[] content = null;
         try {
-            fis = new FileInputStream( resourceFile );
+            fis = new FileInputStream(resourceFile);
             content = new byte[(int) resourceFile.length()];
 
-            if (fis.read( content ) != -1) {
+            if (fis.read(content) != -1) {
 
                 if (pack.length() > 0) {
                     entryName = pack + "/";
@@ -78,43 +75,37 @@ public class ClasspathResources extends JarResources {
 
                 entryName += resourceFile.getName();
 
-                if (jarEntryContents.containsKey( entryName )) {
-                    if (!collisionAllowed)
-                        throw new JclException( "Resource " + entryName + " already loaded" );
-                    else {
-                        if (logger.isLoggable( Level.FINEST ))
-                            logger.finest( "Resource " + entryName + " already loaded; ignoring entry..." );
-                        return;
-                    }
+                if (jarEntryContents.containsKey(entryName)) {
+                    return;
                 }
 
-                if (logger.isLoggable( Level.FINEST ))
-                    logger.finest( "Loading resource: " + entryName );
+                if (logger.isLoggable(Level.FINEST))
+                    logger.finest("Loading resource: " + entryName);
 
-                jarEntryContents.put( entryName, content );
+                jarEntryContents.put(entryName, content);
             }
         } catch (IOException e) {
-            throw new JclException( e );
+            throw new KclException(e);
         } finally {
             try {
                 fis.close();
             } catch (IOException e) {
-                throw new JclException( e );
+                throw new KclException(e);
             }
         }
     }
 
     /**
      * Attempts to load a remote resource (jars, properties files, etc)
-     * 
+     *
      * @param url
      */
     private void loadRemoteResource(URL url) {
-        if (logger.isLoggable( Level.FINEST ))
-            logger.finest( "Attempting to load a remote resource." );
+        if (logger.isLoggable(Level.FINEST))
+            logger.finest("Attempting to load a remote resource.");
 
-        if (url.toString().toLowerCase().endsWith( ".jar" )) {
-            loadJar( url );
+        if (url.toString().toLowerCase().endsWith(".jar")) {
+            loadJar(url);
             return;
         }
 
@@ -125,86 +116,74 @@ public class ClasspathResources extends JarResources {
             out = new ByteArrayOutputStream();
 
             int byt;
-            while (( ( byt = stream.read() ) != -1 )) {
-                out.write( byt );
+            while (((byt = stream.read()) != -1)) {
+                out.write(byt);
             }
 
             byte[] content = out.toByteArray();
 
-            if (jarEntryContents.containsKey( url.toString() )) {
-                if (!collisionAllowed)
-                    throw new JclException( "Resource " + url.toString() + " already loaded" );
-                else {
-                    if (logger.isLoggable( Level.FINEST ))
-                        logger.finest( "Resource " + url.toString() + " already loaded; ignoring entry..." );
-                    return;
-                }
+            if (jarEntryContents.containsKey(url.toString())) {
+                return;
             }
 
-            if (logger.isLoggable( Level.FINEST ))
-                logger.finest( "Loading remote resource." );
+            if (logger.isLoggable(Level.FINEST))
+                logger.finest("Loading remote resource.");
 
-            jarEntryContents.put( url.toString(), content );
+            jarEntryContents.put(url.toString(), content);
         } catch (IOException e) {
-            throw new JclException( e );
+            throw new KclException(e);
         } finally {
             if (out != null)
                 try {
                     out.close();
                 } catch (IOException e) {
-                    throw new JclException( e );
+                    throw new KclException(e);
                 }
             if (stream != null)
                 try {
                     stream.close();
                 } catch (IOException e) {
-                    throw new JclException( e );
+                    throw new KclException(e);
                 }
         }
     }
 
     /**
      * Reads the class content
-     * 
+     *
      * @param clazz
      * @param pack
      */
     private void loadClassContent(String clazz, String pack) {
-        File cf = new File( clazz );
+        File cf = new File(clazz);
         FileInputStream fis = null;
         String entryName = "";
         byte[] content = null;
 
         try {
-            fis = new FileInputStream( cf );
+            fis = new FileInputStream(cf);
             content = new byte[(int) cf.length()];
 
-            if (fis.read( content ) != -1) {
+            if (fis.read(content) != -1) {
                 entryName = pack + "/" + cf.getName();
 
-                if (jarEntryContents.containsKey( entryName )) {
-                    if (!collisionAllowed)
-                        throw new JclException( "Class " + entryName + " already loaded" );
-                    else {
-                        if (logger.isLoggable( Level.FINEST ))
-                            logger.finest( "Class " + entryName + " already loaded; ignoring entry..." );
-                        return;
-                    }
+                if (jarEntryContents.containsKey(entryName)) {
+                    return;
                 }
 
-                if (logger.isLoggable( Level.FINEST ))
-                    logger.finest( "Loading class: " + entryName );
+                if (logger.isLoggable(Level.FINEST))
+                    logger.finest("Loading class: " + entryName);
 
-                jarEntryContents.put( entryName, content );
+                jarEntryContents.put(entryName, content);
             }
         } catch (IOException e) {
-            throw new JclException( e );
+            throw new KclException(e);
         } finally {
             if (fis != null)
                 try {
                     fis.close();
                 } catch (IOException e) {
-                    throw new JclException( e );
+                    throw new KclException(e);
                 }
         }
 
@@ -212,56 +191,51 @@ public class ClasspathResources extends JarResources {
 
     /**
      * Reads local and remote resources
-     * 
+     *
      * @param url
      */
     public void loadResource(URL url) {
         try {
             // Is Local
-            loadResource( new File( url.toURI() ), "" );
+            loadResource(new File(url.toURI()), "");
         } catch (IllegalArgumentException iae) {
             // Is Remote
-            loadRemoteResource( url );
+            loadRemoteResource(url);
         } catch (URISyntaxException e) {
-            throw new JclException( "URISyntaxException", e );
+            throw new KclException("URISyntaxException", e);
         }
     }
 
     /**
      * Reads local resources from - Jar files - Class folders - Jar Library
      * folders
-     * 
+     *
      * @param path
      */
     public void loadResource(String path) {
-        if (logger.isLoggable( Level.FINEST ))
-            logger.finest( "Resource: " + path );
+        if (logger.isLoggable(Level.FINEST))
+            logger.finest("Resource: " + path);
 
-        File fp = new File( path );
-
-        if (!fp.exists() && !ignoreMissingResources) {
-            throw new JclException( "File/Path does not exist" );
-        }
-
-        loadResource( fp, "" );
+        File fp = new File(path);
+        loadResource(fp, "");
     }
 
     /**
      * Reads local resources from - Jar files - Class folders - Jar Library
      * folders
-     * 
+     *
      * @param fol
      * @param packName
      */
     private void loadResource(File fol, String packName) {
         if (fol.isFile()) {
-            if (fol.getName().toLowerCase().endsWith( ".class" )) {
-                loadClassContent( fol.getAbsolutePath(), packName );
+            if (fol.getName().toLowerCase().endsWith(".class")) {
+                loadClassContent(fol.getAbsolutePath(), packName);
             } else {
-                if (fol.getName().toLowerCase().endsWith( ".jar" )) {
-                    loadJar( fol.getAbsolutePath() );
+                if (fol.getName().toLowerCase().endsWith(".jar")) {
+                    loadJar(fol.getAbsolutePath());
                 } else {
-                    loadResourceContent( fol.getAbsolutePath(), packName );
+                    loadResourceContent(fol.getAbsolutePath(), packName);
                 }
             }
 
@@ -270,51 +244,36 @@ public class ClasspathResources extends JarResources {
 
         if (fol.list() != null) {
             for (String f : fol.list()) {
-                File fl = new File( fol.getAbsolutePath() + "/" + f );
+                File fl = new File(fol.getAbsolutePath() + "/" + f);
 
                 String pn = packName;
 
                 if (fl.isDirectory()) {
 
-                    if (!pn.equals( "" ))
+                    if (!pn.equals(""))
                         pn = pn + "/";
 
                     pn = pn + fl.getName();
                 }
 
-                loadResource( fl, pn );
+                loadResource(fl, pn);
             }
         }
     }
 
     /**
      * Removes the loaded resource
-     * 
+     *
      * @param resource
      */
     public void unload(String resource) {
-        if (jarEntryContents.containsKey( resource )) {
-            if (logger.isLoggable( Level.FINEST ))
-                logger.finest( "Removing resource " + resource );
-            jarEntryContents.remove( resource );
+        if (jarEntryContents.containsKey(resource)) {
+            if (logger.isLoggable(Level.FINEST))
+                logger.finest("Removing resource " + resource);
+            jarEntryContents.remove(resource);
         } else {
-            throw new ResourceNotFoundException( resource, "Resource not found in local ClasspathResources" );
+            throw new ResourceNotFoundException(resource, "Resource not found in local ClasspathResources");
         }
     }
 
-    public boolean isCollisionAllowed() {
-        return collisionAllowed;
-    }
-
-    public void setCollisionAllowed(boolean collisionAllowed) {
-        this.collisionAllowed = collisionAllowed;
-    }
-
-    public boolean isIgnoreMissingResources() {
-        return ignoreMissingResources;
-    }
-
-    public void setIgnoreMissingResources(boolean ignoreMissingResources) {
-        this.ignoreMissingResources = ignoreMissingResources;
-    }
 }
