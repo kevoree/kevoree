@@ -14,7 +14,7 @@
     </parent>
 
     <properties>
-        <metamodel.ecore>metamodel/ksecurity.ecore</metamodel.ecore>
+        <metamodel.ecore>metamodel/kevoree.ecore</metamodel.ecore>
     </properties>
 
     <build>
