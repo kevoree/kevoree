@@ -17,7 +17,6 @@ package org.kevoree.kcl
 import java.io.*
 import java.util.jar.JarInputStream
 import java.net.URL
-import org.xeustechnologies.jcl.ClasspathResources
 import org.slf4j.LoggerFactory
 import java.util.ArrayList
 import java.lang.ref.WeakReference
@@ -32,7 +31,14 @@ import org.kevoree.kcl.exception.KclException
  * Time: 19:13
  */
 
-class KevoreeLazyJarResources: ClasspathResources() {
+class KevoreeLazyJarResources {
+
+    public fun getResource(name:String): ByteArray? {
+        return getJarEntryContents(name);
+    }
+
+
+    val jarEntryContents = HashMap<String, ByteArray>()
 
     val jarContentURL = HashMap<String, URL>()
     private val logger = LoggerFactory.getLogger(this.javaClass)!!
@@ -62,11 +68,11 @@ class KevoreeLazyJarResources: ClasspathResources() {
         }
     }
 
-    override fun loadJar(jarStream: InputStream?) {
+    fun loadJar(jarStream: InputStream?) {
         loadJar(jarStream, null)
     }
 
-    override fun loadJar(url: URL?) {
+    fun loadJar(url: URL?) {
         var inS: InputStream? = null;
         try {
             inS = url!!.openStream()
@@ -84,7 +90,7 @@ class KevoreeLazyJarResources: ClasspathResources() {
         }
     }
 
-    override fun loadJar(val jarFile: String?) {
+    fun loadJar(val jarFile: String?) {
         var fis: FileInputStream? = null
         try {
             val f = File(jarFile!!)
@@ -249,7 +255,7 @@ class KevoreeLazyJarResources: ClasspathResources() {
     }
 
 
-    protected override fun getJarEntryContents(name: String?): ByteArray? {
+    protected fun getJarEntryContents(name: String?): ByteArray? {
         return if (jarContentURL.containsKey(name)) {
             if (jarEntryContents!!.containsKey(name)) {
                 jarEntryContents?.get(name)!!
