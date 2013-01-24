@@ -26,9 +26,11 @@ class KevoreeLocalLoader(val classpathResources: KevoreeLazyJarResources, val kc
     private val logger = LoggerFactory.getLogger(this.javaClass)!!
 
     public override fun loadResource(name: String?): InputStream? {
-        val arr = classpathResources.getResource(name)
-        if (arr != null) {
-            return ByteArrayInputStream(arr)
+        if(name != null){
+            val arr = classpathResources.getResource(name)
+            if (arr != null) {
+                return ByteArrayInputStream(arr)
+            }
         }
         return null
     }

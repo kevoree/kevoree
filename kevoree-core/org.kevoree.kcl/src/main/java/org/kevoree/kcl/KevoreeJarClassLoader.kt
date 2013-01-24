@@ -306,7 +306,7 @@ class KevoreeJarClassLoader(): ClassLoader() {
 
     fun internal_getResourceAsStream(name: String?): InputStream? {
         if (name?.endsWith(".class")!!) {
-            val res = this.classpathResources!!.getResource(name)
+            val res = if(name != null){this.classpathResources!!.getResource(name) } else {null}
             if (res != null) {
                 return ByteArrayInputStream(res)
             }
@@ -491,13 +491,9 @@ class KevoreeJarClassLoader(): ClassLoader() {
         return cleanJarURL((classpathResources as KevoreeLazyJarResources).getLastLoadedJar()).toString() + hashCode()
     }
 
-    /**
-    * Loads local/remote resource
-    *
-    * @param resourceName
-    */
+
     public fun add(resourceName: String) {
-        classpathResources?.loadResource(resourceName);
+        classpathResources?.loadJar(resourceName);
     }
 
     /**
@@ -509,13 +505,9 @@ class KevoreeJarClassLoader(): ClassLoader() {
         classpathResources?.loadJar(jarStream);
     }
 
-    /**
-     * Loads local/remote resource
-     *
-     * @param url
-     */
+
     public fun add(url: URL): Unit {
-        classpathResources?.loadResource(url);
+        classpathResources?.loadJar(url);
     }
 
     /**
