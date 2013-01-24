@@ -24,46 +24,61 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.xeustechnologies.jcl.exception;
+package org.kevoree.kcl.exception;
 
 /**
- * General custom exception
- * 
  * @author Kamran Zafar
  * 
  */
-public class JclException extends RuntimeException {
+public class ResourceNotFoundException extends KclException {
     /**
      * Default serial id
      */
     private static final long serialVersionUID = 1L;
 
+    private String resourceName;
+
     /**
      * Default constructor
      */
-    public JclException() {
+    public ResourceNotFoundException() {
         super();
     }
 
     /**
      * @param message
      */
-    public JclException(String message) {
+    public ResourceNotFoundException(String message) {
         super( message );
     }
 
     /**
-     * @param cause
+     * @param resource
+     * @param message
      */
-    public JclException(Throwable cause) {
-        super( cause );
+    public ResourceNotFoundException(String resource, String message) {
+        super( message );
+        resourceName = resource;
     }
 
     /**
+     * @param e
+     * @param resource
      * @param message
-     * @param cause
      */
-    public JclException(String message, Throwable cause) {
-        super( message, cause );
+    public ResourceNotFoundException(Throwable e, String resource, String message) {
+        super( message, e );
+        resourceName = resource;
+    }
+
+    public String getResourceName() {
+        return resourceName;
+    }
+
+    /**
+     * @param resourceName
+     */
+    public void setResourceName(String resourceName) {
+        this.resourceName = resourceName;
     }
 }
