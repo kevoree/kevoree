@@ -41,17 +41,17 @@ case class KevsNetworkInterpreter(networkStatement: NetworkPropertyStatement) ex
       nn =>
         nn.getInitBy.get.getName == currentNodeName && nn.getTarget.getName == targetNodeName
     }) getOrElse {
-      val newNodeNetwork = KevoreeFactory.eINSTANCE.createNodeNetwork
+      val newNodeNetwork = KevoreeFactory.$instance.createNodeNetwork
       val thisNode = actualModel.findByQuery("nodes[" + currentNodeName + "]", classOf[ContainerNode])
       val targetNode = actualModel.findByQuery("nodes[" + targetNodeName + "]", classOf[ContainerNode])
       val thisNodeFound = thisNode.getOrElse {
-        val newnode = KevoreeFactory.eINSTANCE.createContainerNode
+        val newnode = KevoreeFactory.$instance.createContainerNode
         newnode.setName(currentNodeName)
         actualModel.addNodes(newnode)
         newnode
       }
       newNodeNetwork.setTarget(targetNode.getOrElse {
-        val newnode = KevoreeFactory.eINSTANCE.createContainerNode
+        val newnode = KevoreeFactory.$instance.createContainerNode
         newnode.setName(targetNodeName)
         actualModel.addNodes(newnode)
         newnode
@@ -63,7 +63,7 @@ case class KevsNetworkInterpreter(networkStatement: NetworkPropertyStatement) ex
 
     /* Found node link */
     val nodelink = nodenetwork.getLink.find(loopLink => loopLink.getNetworkType == networkType).getOrElse {
-      val newlink = KevoreeFactory.eINSTANCE.createNodeLink
+      val newlink = KevoreeFactory.$instance.createNodeLink
       newlink.setNetworkType(networkType)
       nodenetwork.addLink(newlink)
       newlink
@@ -77,7 +77,7 @@ case class KevsNetworkInterpreter(networkStatement: NetworkPropertyStatement) ex
     val prop = nodelink.getNetworkProperties.find({
       networkProp => networkProp.getName == key
     }).getOrElse {
-      val newprop = KevoreeFactory.eINSTANCE.createNetworkProperty
+      val newprop = KevoreeFactory.$instance.createNetworkProperty
       newprop.setName(key)
       nodelink.addNetworkProperties(newprop)
       newprop

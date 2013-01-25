@@ -84,7 +84,7 @@ class KevoreeAnnotationProcessor() extends javax.annotation.processing.AbstractP
       return true
     }
 
-    val root = KevoreeFactory.eINSTANCE.createContainerRoot
+    val root = KevoreeFactory.$instance.createContainerRoot
     LocalUtility.root = (root)
     /* Look for reserved thread protection */
     roundEnv.getElementsAnnotatedWith(classOf[org.kevoree.annotation.ReservedThread]).foreach {
@@ -120,7 +120,7 @@ class KevoreeAnnotationProcessor() extends javax.annotation.processing.AbstractP
     //POST APT PROCESS CHECKER
     val checker: PostAptChecker = new PostAptChecker(root, env)
     val errorsInChecker = !checker.check
-    KevoreeXmiHelper.save(LocalUtility.generateLibURI(options) + ".debug", root);
+    KevoreeXmiHelper.$instance.save(LocalUtility.generateLibURI(options) + ".debug", root);
 
     if (!errorsInChecker) {
       //TODO SEPARATE MAVEN PLUGIN
@@ -133,7 +133,7 @@ class KevoreeAnnotationProcessor() extends javax.annotation.processing.AbstractP
           KevoreeActivatorGenerator.generateActivator(root, env.getFiler, targetNodeName)
       }
       env.getMessager.printMessage(Kind.OTHER, "Save Kevoree library")
-      KevoreeXmiHelper.save(LocalUtility.generateLibURI(options), root);
+      KevoreeXmiHelper.$instance.save(LocalUtility.generateLibURI(options), root);
       true
     } else {
       false
@@ -159,9 +159,9 @@ class KevoreeAnnotationProcessor() extends javax.annotation.processing.AbstractP
     if (superTypeChecker.result) {
       val nodeTypeName = typeDecl.getSimpleName
       val nodeType: org.kevoree.NodeType = root.findByQuery("typeDefinitions[" + nodeTypeName + "]", classOf[org.kevoree.NodeType]) match {
-        case Some(found) => found
-        case None => {
-          val nodeType = KevoreeFactory.eINSTANCE.createNodeType
+        case found : org.kevoree.NodeType => found
+        case null => {
+          val nodeType = KevoreeFactory.$instance.createNodeType
           nodeType.setName(nodeTypeName.toString)
           root.addTypeDefinitions(nodeType)
           nodeType
@@ -199,13 +199,13 @@ class KevoreeAnnotationProcessor() extends javax.annotation.processing.AbstractP
     if (superTypeChecker.result && !isAbstract) {
       val groupName = typeDecl.getSimpleName
       val groupType: org.kevoree.GroupType = root.findByQuery("typeDefinitions[" + groupName + "]", classOf[org.kevoree.GroupType]) match {
-        case None => {
-          val groupType = KevoreeFactory.eINSTANCE.createGroupType
+        case null => {
+          val groupType = KevoreeFactory.$instance.createGroupType
           groupType.setName(groupName.toString)
           root.addTypeDefinitions(groupType)
           groupType
         }
-        case Some(td) => {
+        case td : org.kevoree.GroupType => {
           td
         }
       }
@@ -241,13 +241,13 @@ class KevoreeAnnotationProcessor() extends javax.annotation.processing.AbstractP
     if (superTypeChecker.result && !isAbstract) {
       val channelName = typeDecl.getSimpleName
       val channelType: org.kevoree.ChannelType = root.findByQuery("typeDefinitions[" + channelName + "]", classOf[org.kevoree.ChannelType]) match {
-        case None => {
-          val channelType = KevoreeFactory.eINSTANCE.createChannelType
+        case null => {
+          val channelType = KevoreeFactory.$instance.createChannelType
           channelType.setName(channelName.toString)
           root.addTypeDefinitions(channelType)
           channelType
         }
-        case Some(td) => {
+        case td : org.kevoree.ChannelType => {
           td
         }
       }
@@ -286,13 +286,13 @@ class KevoreeAnnotationProcessor() extends javax.annotation.processing.AbstractP
     if (superTypeChecker.result && !isAbstract) {
       val componentName = typeDecl.getSimpleName
       val componentType: org.kevoree.ComponentType = root.findByQuery("typeDefinitions[" + componentName + "]", classOf[org.kevoree.ComponentType]) match {
-        case None => {
-          val componentType = KevoreeFactory.eINSTANCE.createComponentType
+        case null => {
+          val componentType = KevoreeFactory.$instance.createComponentType
           componentType.setName(componentName.toString)
           root.addTypeDefinitions(componentType)
           componentType
         }
-        case Some(td) => {
+        case td : org.kevoree.ComponentType => {
           td
         }
       }

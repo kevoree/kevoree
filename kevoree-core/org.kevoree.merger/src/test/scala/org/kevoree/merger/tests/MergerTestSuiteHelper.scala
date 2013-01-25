@@ -16,7 +16,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * 	http://www.gnu.org/licenses/lgpl-3.0.txt
+ * http://www.gnu.org/licenses/lgpl-3.0.txt
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -39,25 +39,26 @@ import org.kevoree.ContainerRoot
 import org.kevoree.framework.KevoreeXmiHelper
 import org.kevoreeAdaptation._
 import org.scalatest.junit.JUnitSuite
- import org.junit.Assert._
+import org.junit.Assert._
+import scala.collection.JavaConversions._
 
 trait MergerTestSuiteHelper extends JUnitSuite {
 
   /* UTILITY METHOD */
-  def model(url:String):ContainerRoot={
+  def model(url: String): ContainerRoot = {
     val modelPath = this.getClass.getClassLoader.getResource(url).getPath
-    KevoreeXmiHelper.load(modelPath)
+    KevoreeXmiHelper.$instance.load(modelPath)
   }
 
-  def emptyModel = KevoreeFactory.eINSTANCE.createContainerRoot
+  def emptyModel = KevoreeFactory.$instance.createContainerRoot
 
-  def hasNoRelativeReference(path:String, file:String) = {
-    val modelPath = this.getClass.getClassLoader.getResource(path).getPath+"/"+file
+  def hasNoRelativeReference(path: String, file: String) = {
+    val modelPath = this.getClass.getClassLoader.getResource(path).getPath + "/" + file
     val bufferedReader = new BufferedReader(new FileReader(new File(modelPath)))
 
     val stringBuffer = new StringBuffer
-    var line : String = bufferedReader.readLine
-    while( line != null) {
+    var line: String = bufferedReader.readLine
+    while (line != null) {
       stringBuffer.append(line)
       line = bufferedReader.readLine
     }
@@ -65,12 +66,12 @@ trait MergerTestSuiteHelper extends JUnitSuite {
     !stringBuffer.toString.contains("#")
   }
 
-  implicit def utilityMerger(self : ContainerRoot) = RichContainerRoot(self)
+  implicit def utilityMerger(self: ContainerRoot) = RichContainerRoot(self)
 
 }
 
 
-case class RichContainerRoot(self : ContainerRoot) extends MergerTestSuiteHelper {
+case class RichContainerRoot(self: ContainerRoot) extends MergerTestSuiteHelper {
   /*
   def testSave = {
     try{
@@ -81,20 +82,19 @@ case class RichContainerRoot(self : ContainerRoot) extends MergerTestSuiteHelper
     }
   }*/
 
-  def testSave(path : String,file:String) {
-    try{
-      KevoreeXmiHelper.save(this.getClass.getClassLoader.getResource(path).getPath+"/"+file, self)
-      assertTrue("At least one relative reference have been detected in model " + path + "/" + file, hasNoRelativeReference(path,file) )
+  def testSave(path: String, file: String) {
+    try {
+      KevoreeXmiHelper.$instance.save(this.getClass.getClassLoader.getResource(path).getPath + "/" + file, self)
+      assertTrue("At least one relative reference have been detected in model " + path + "/" + file, hasNoRelativeReference(path, file))
     } catch {
-      case _ @ e => e.printStackTrace(); fail()
+      case _@e => e.printStackTrace(); fail()
     }
   }
 
-  def setLowerHashCode : ContainerRoot = {
-       self.getDeployUnits.foreach(du=> du.setHashcode(0+""))
-      self
+  def setLowerHashCode: ContainerRoot = {
+    self.getDeployUnits.foreach(du => du.setHashcode(0 + ""))
+    self
   }
 
-  
 
 }

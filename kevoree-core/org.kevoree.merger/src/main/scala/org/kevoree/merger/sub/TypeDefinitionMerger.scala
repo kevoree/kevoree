@@ -36,6 +36,7 @@ import org.kevoree.framework.aspects.KevoreeAspects._
 import org.kevoree._
 import merger.resolver.{UnresolvedTypeDefinition}
 import org.slf4j.LoggerFactory
+import scala.collection.JavaConversions._
 
 trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMerger with DeployUnitMerger {
 
@@ -68,7 +69,7 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
 
   /*
   def cleanCrossReference(actuelTypeDefinition: TypeDefinition, toMergeTypeDef: TypeDefinition) {
-     (toMergeTypeDef.getDeployUnits ++ actuelTypeDefinition.getDeployUnits).foreach{ dp =>
+     (toMergeTypeDef.getDeployUnits.toList ++ actuelTypeDefinition.getDeployUnits).foreach{ dp =>
        dp.getTargetNodeType.map { targetNodeType =>
          dp.setTargetNodeType(Some(UnresolvedNodeType(targetNodeType.getName)))
        }
@@ -81,7 +82,7 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
 
     //UPDATE & MERGE DEPLOYS UNIT
     //CONCAT & MERGE BOTH TYPE DEF DEPLOY UNIT
-    val allDeployUnits = newTypeDefinition.getDeployUnits ++ actuelTypeDefinition.getDeployUnits
+    val allDeployUnits = newTypeDefinition.getDeployUnits.toList ++ actuelTypeDefinition.getDeployUnits
     actuelTypeDefinition.removeAllDeployUnits()
     allDeployUnits.foreach {
       ldu =>
@@ -131,12 +132,12 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
         val kevoreeInstance = instance.asInstanceOf[Instance]
 
         //MERGE DICTIONARY
-        if (kevoreeInstance.getDictionary.isDefined) {
-          if (newTypeDefinition.getDictionaryType.isDefined) {
-            mergeDictionary(kevoreeInstance.getDictionary.get, newTypeDefinition.getDictionaryType.get)
+        if (kevoreeInstance.getDictionary()!=null) {
+          if (newTypeDefinition.getDictionaryType()!=null) {
+            mergeDictionary(kevoreeInstance.getDictionary(), newTypeDefinition.getDictionaryType())
           } else {
             // set to None the dictionary of the art2instance
-            kevoreeInstance.setDictionary(None)
+            kevoreeInstance.setDictionary(null)
             logger.debug("There is no dictionary type on the new type definition " + newTypeDefinition.getName)
           }
         } else {
@@ -149,7 +150,7 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
             val ct = newTypeDefinition.asInstanceOf[ComponentType]
 
             //MERGE PORT
-            val providedPort = c.getProvided.toList ++ List()
+            val providedPort = c.getProvided.toList.toList ++ List()
             providedPort.foreach {
               pport =>
                 ct.getProvided.find(p => p.getName == pport.getPortTypeRef.getName) match {
@@ -157,7 +158,7 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
                   case Some(ptref) => pport.setPortTypeRef(ptref)
                 }
             }
-            val requiredPort = c.getRequired.toList ++ List()
+            val requiredPort = c.getRequired.toList.toList ++ List()
             requiredPort.foreach {
               rport =>
                 ct.getRequired.find(p => p.getName == rport.getPortTypeRef.getName) match {
@@ -171,7 +172,7 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
               newpt =>
                 c.getProvided.find(p => p.getPortTypeRef == newpt) match {
                   case None => {
-                    val newport = KevoreeFactory.eINSTANCE.createPort
+                    val newport = KevoreeFactory.$instance.createPort
                     newport.setPortTypeRef(newpt)
                     c.addProvided(newport)
                   }
@@ -184,7 +185,7 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
                   p.getPortTypeRef == newpt
                 }) match {
                   case None => {
-                    val newport = KevoreeFactory.eINSTANCE.createPort
+                    val newport = KevoreeFactory.$instance.createPort
                     newport.setPortTypeRef(newpt)
                     c.addRequired(newport)
                   }
@@ -225,7 +226,7 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
       }
       case nt: NodeType => {
         actualModel.addTypeDefinitions(nt)
-        val pl = (nt.getManagedPrimitiveTypes.toList ++ List())
+        val pl = (nt.getManagedPrimitiveTypes.toList.toList ++ List())
         nt.removeAllManagedPrimitiveTypes()
         pl.foreach {
           pll =>
@@ -252,7 +253,7 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
     model.getAdaptationPrimitiveTypes.find(p => p.getName == adaptation.getName) match {
       case Some(p) => p
       case None => {
-        val newT = KevoreeFactory.eINSTANCE.createAdaptationPrimitiveType
+        val newT = KevoreeFactory.$instance.createAdaptationPrimitiveType
         newT.setName(adaptation.getName)
         model.addAdaptationPrimitiveTypes(newT)
         newT

@@ -34,6 +34,9 @@ package org.kevoree.merger.sub
 import org.kevoree.framework.aspects.KevoreeAspects._
 import org.slf4j.LoggerFactory
 import org.kevoree._
+import scala.collection.JavaConversions._
+
+
 
 trait PortTypeMerger {
 
@@ -53,18 +56,18 @@ trait PortTypeMerger {
 
             if (portType.isInstanceOf[ServicePortType]) {
               //CLEAR OLD METHOD , NEW DEFINITION WILL REPLACE OTHER
-              val remoteOps = portType.asInstanceOf[ServicePortType].getOperations
+              val remoteOps = portType.asInstanceOf[ServicePortType].getOperations()
              // spt.removeAllOperations()
               remoteOps.foreach {
                 op =>
                  // val newOperation = KevoreeFactory.createOperation
                   //newOperation.setName(op.getName)
-                  op.setReturnType(Some(mergeDataType(actualModel, op.getReturnType.get)))
+                  op.setReturnType(mergeDataType(actualModel, op.getReturnType()))
                   op.getParameters.foreach {
                     para =>
                      // val newparam = KevoreeFactory.createParameter
                     //  newparam.setName(para.getName)
-                      para.setType(Some(mergeDataType(actualModel, para.getType.get)))
+                      para.setType(mergeDataType(actualModel, para.getType()))
                     //  newOperation.addParameters(newparam)
                   }
                 //  spt.addOperations(newOperation)
@@ -88,10 +91,10 @@ trait PortTypeMerger {
             val operations = spt.getOperations
             spt.getOperations.foreach {
               op =>
-                op.setReturnType(Some(mergeDataType(actualModel, op.getReturnType.get)))
+                op.setReturnType(mergeDataType(actualModel, op.getReturnType()))
                 op.getParameters.foreach {
                   para =>
-                    para.setType(Some(mergeDataType(actualModel, para.getType.get)))
+                    para.setType(mergeDataType(actualModel, para.getType()))
                 }
             }
           }

@@ -29,7 +29,7 @@ case class KevsAddDeployUnitInterpreter(statment : AddDeployUnitStatment) extend
     context.model.getDeployUnits.find(du=> du.getUnitName == statment.unitName && du.getGroupName == statment.groupName && du.getVersion == statment.version) match {
       case Some(du) =>  logger.warn("DeployUnit already exist");true
       case None => {
-        val newDeployUnit = KevoreeFactory.eINSTANCE.createDeployUnit
+        val newDeployUnit = KevoreeFactory.$instance.createDeployUnit
         newDeployUnit.setUnitName(statment.unitName)
         newDeployUnit.setGroupName(statment.groupName)
         newDeployUnit.setVersion(statment.version)

@@ -27,6 +27,12 @@
 package org.kevoree.merger.resolver
 
 import org.kevoree.ContainerNode
+import java.util.HashMap
+import org.kevoree.KevoreeContainer
+import org.kevoree.ComponentInstance
+import java.util.ArrayList
+import org.kevoree.TypeDefinition
+import org.kevoree.Dictionary
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -37,6 +43,21 @@ import org.kevoree.ContainerNode
  * @version 1.0
  */
 
-case class UnresolvedChildNode(childName : String) extends ContainerNode {
-  override def getName = childName
+class UnresolvedChildNode(val childName: String): ContainerNode {
+    override var _components_java_cache: List<ComponentInstance>? = null
+    override val _components: HashMap<Any, ComponentInstance> = HashMap<Any, ComponentInstance>()
+    override var _hosts_java_cache: List<ContainerNode>? = ArrayList<ContainerNode>()
+    override val _hosts: HashMap<Any, ContainerNode> = HashMap<Any, ContainerNode>()
+    override var _host: ContainerNode? = null
+    override var internal_eContainer: KevoreeContainer? = null
+    override var internal_unsetCmd: (() -> Unit)? = null
+    override var internal_readOnlyElem: Boolean = false
+    override var _metaData: String = ""
+    override var _typeDefinition: TypeDefinition? = null
+    override var _dictionary: Dictionary? = null
+    override var _name: String = ""
+
+    override fun getName(): String {
+        return childName
+    }
 }

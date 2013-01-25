@@ -40,6 +40,7 @@ import javax.annotation.processing.ProcessingEnvironment
 import javax.tools.Diagnostic.Kind
 import org.kevoree.annotation.MessageTypes
 import org.kevoree.tools.annotation.generator.ThreadingMapping
+import scala.collection.JavaConversions._
 
 trait RequiredPortProcessor {
   def processRequiredPort(componentType: ComponentType, classdef: TypeElement, env: ProcessingEnvironment) = {
@@ -67,7 +68,7 @@ trait RequiredPortProcessor {
         portAll.find(existingPort => existingPort.getName == requiredPort.name) match {
 
           case None => {
-            val portTypeRef = KevoreeFactory.eINSTANCE.createPortTypeRef
+            val portTypeRef = KevoreeFactory.$instance.createPortTypeRef
             portTypeRef.setName(requiredPort.name)
             portTypeRef.setOptional(requiredPort.optional)
             /*
@@ -101,7 +102,7 @@ trait RequiredPortProcessor {
                 visitor.getDataType
               }
               case org.kevoree.annotation.PortType.MESSAGE => {
-                val mpt = KevoreeFactory.eINSTANCE.createMessagePortType
+                val mpt = KevoreeFactory.$instance.createMessagePortType
                 mpt.setName("org.kevoree.framework.MessagePort")
 
                 if (requiredPort.messageType() != "untyped" ) {
@@ -112,10 +113,10 @@ trait RequiredPortProcessor {
                   if (classdef.getAnnotation(classOf[MessageTypes]) != null) {
                     classdef.getAnnotation(classOf[MessageTypes]).value().find(msgType => msgType.name() == requiredPort.messageType()) match {
                       case Some(foundMessageType) => {
-                        val dicoType = KevoreeFactory.eINSTANCE.createDictionaryType
+                        val dicoType = KevoreeFactory.$instance.createDictionaryType
                         foundMessageType.elems().foreach {
                           elem =>
-                            val dicAtt = KevoreeFactory.eINSTANCE.createDictionaryAttribute
+                            val dicAtt = KevoreeFactory.$instance.createDictionaryAttribute
                             dicAtt.setName(elem.name())
                           //  mpt.setName(mpt.getName+elem.name()) //WORKAROUND
                             try {
@@ -127,7 +128,7 @@ trait RequiredPortProcessor {
                             dicAtt.setOptional(elem.optional())
                             dicoType.addAttributes(dicAtt)
                         }
-                        mpt.setDictionaryType(Some(dicoType))
+                        mpt.setDictionaryType(dicoType)
                       }
                       case None => env.getMessager.printMessage(Kind.ERROR, "Can't find message type for name " + requiredPort.messageType() + " for port " + requiredPort.name())
                     }

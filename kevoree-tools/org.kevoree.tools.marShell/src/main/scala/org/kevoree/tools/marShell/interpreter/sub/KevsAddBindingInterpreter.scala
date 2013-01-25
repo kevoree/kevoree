@@ -17,6 +17,7 @@ package org.kevoree.tools.marShell.interpreter.sub
 import org.kevoree.tools.marShell.ast.AddBindingStatment
 import org.kevoree.tools.marShell.interpreter.KevsAbstractInterpreter
 import org.kevoree.tools.marShell.interpreter.KevsInterpreterContext
+import scala.collection.JavaConversions._
 
 import org.slf4j.LoggerFactory
 import org.kevoree.{Channel, ComponentInstance, ContainerNode, KevoreeFactory}
@@ -30,12 +31,12 @@ case class KevsAddBindingInterpreter(addBinding: AddBindingStatment) extends Kev
       case Some(searchNodeName) => {
         context.model.findByQuery("nodes[" + addBinding.cid.nodeName.get + "]", classOf[ContainerNode]) match {
           //.getNodes.find(n => n.getName == addBinding.cid.nodeName.get) match {
-          case Some(node) =>
+          case node: ContainerNode =>
             node.findByQuery("components[" + addBinding.cid.componentInstanceName + "]", classOf[ComponentInstance]) match {
               //getComponents.find(c => c.getName == addBinding.cid.componentInstanceName) match {
-              case Some(component) =>
+              case component: ComponentInstance =>
                 context.model.findByQuery("hubs[" + addBinding.bindingInstanceName + "]", classOf[Channel]) match {
-                  case Some(channel) => {
+                  case channel:Channel => {
                     (component.getProvided ++ component.getRequired).find(p => p.getPortTypeRef.getName == addBinding.portName) match {
                       case Some(port) => {
                         port.getBindings.find(mb => mb.getPort.getPortTypeRef.getName == addBinding.portName
@@ -48,7 +49,7 @@ case class KevsAddBindingInterpreter(addBinding: AddBindingStatment) extends Kev
                             true
                           }
                           case None => {
-                            val newbinding = KevoreeFactory.eINSTANCE.createMBinding
+                            val newbinding = KevoreeFactory.$instance.createMBinding
                             newbinding.setHub(channel)
                             newbinding.setPort(port)
                             context.model.addMBindings(newbinding)
@@ -59,11 +60,11 @@ case class KevsAddBindingInterpreter(addBinding: AddBindingStatment) extends Kev
                       case None => logger.error("Port not found => " + addBinding.portName); false
                     }
                   }
-                  case None => logger.error("Hub not found => " + addBinding.bindingInstanceName); false
+                  case null => logger.error("Hub not found => " + addBinding.bindingInstanceName); false
                 }
-              case None => logger.error("Component not found => " + addBinding.cid.componentInstanceName); false
+              case null => logger.error("Component not found => " + addBinding.cid.componentInstanceName); false
             }
-          case None => logger.error("Node not found => " + addBinding.cid.nodeName); false
+          case null => logger.error("Node not found => " + addBinding.cid.nodeName); false
         }
       }
       case None => logger.error("NodeName is mandatory !"); false

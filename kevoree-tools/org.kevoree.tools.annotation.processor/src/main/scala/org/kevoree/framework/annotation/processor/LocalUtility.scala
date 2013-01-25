@@ -34,6 +34,7 @@ package org.kevoree.framework.annotation.processor
 import javax.annotation.processing.ProcessingEnvironment
 import org.kevoree.{MessagePortType, ContainerRoot, PortType, TypedElement}
  import org.kevoree.framework.aspects.KevoreeAspects._
+import scala.collection.JavaConversions._
 
 object LocalUtility {
   var root: ContainerRoot = _

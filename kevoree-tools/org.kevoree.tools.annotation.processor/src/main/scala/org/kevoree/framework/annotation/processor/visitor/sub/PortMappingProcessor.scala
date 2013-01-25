@@ -53,7 +53,7 @@ trait PortMappingProcessor {
       componentType.getProvided.foreach {
         pref =>
           if (pref.getMappings.size == 0 && pref.getRef.isInstanceOf[MessagePortType]) {
-            val ptREFmapping = KevoreeFactory.eINSTANCE.createPortTypeMapping
+            val ptREFmapping = KevoreeFactory.$instance.createPortTypeMapping
             ptREFmapping.setBeanMethodName(starMethod)
             ptREFmapping.setServiceMethodName("process")
             ptREFmapping.setParamTypes(starParameters.map(tb => tb.getName).mkString(","))
@@ -110,7 +110,7 @@ trait PortMappingProcessor {
             if (!foundProvidedPorts.isEmpty) {
               foundProvidedPorts.foreach {
                 ptref => {
-                  val ptREFmapping = KevoreeFactory.eINSTANCE.createPortTypeMapping
+                  val ptREFmapping = KevoreeFactory.$instance.createPortTypeMapping
                   ptREFmapping.setBeanMethodName(methoddef.getSimpleName.toString)
                   ptref.getRef match {
                     case mpt: MessagePortType => {
@@ -145,7 +145,7 @@ trait PortMappingProcessor {
         if (!foundProvidedPorts.isEmpty) {
           foundProvidedPorts.foreach {
             ptref => {
-              val ptREFmapping = KevoreeFactory.eINSTANCE.createPortTypeMapping
+              val ptREFmapping = KevoreeFactory.$instance.createPortTypeMapping
               ptREFmapping.setBeanMethodName(methoddef.getSimpleName.toString)
 
               ptref.getRef match {

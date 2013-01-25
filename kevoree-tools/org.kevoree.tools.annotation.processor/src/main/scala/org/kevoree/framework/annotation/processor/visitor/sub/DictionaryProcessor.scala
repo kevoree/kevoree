@@ -34,7 +34,7 @@ package org.kevoree.framework.annotation.processor.visitor.sub
 import org.kevoree.KevoreeFactory
 import org.kevoree.TypeDefinition
 import javax.lang.model.element.TypeElement
-
+import scala.collection.JavaConversions._
 
 trait DictionaryProcessor {
 
@@ -46,17 +46,17 @@ trait DictionaryProcessor {
         dictionaryAtt =>
 
         //CASE NO DICTIONARY
-          if (typeDef.getDictionaryType.isEmpty) {
-            val newdictionary = KevoreeFactory.eINSTANCE.createDictionaryType
-            typeDef.setDictionaryType(Some(newdictionary))
+          if (typeDef.getDictionaryType() == null) {
+            val newdictionary = KevoreeFactory.$instance.createDictionaryType
+            typeDef.setDictionaryType(newdictionary)
           }
 
           //CASE NO ATT ALREADY CREATED WITH NAME
-          val processDictionaryAtt = typeDef.getDictionaryType.get.getAttributes.find(eAtt => eAtt.getName == dictionaryAtt.name) match {
+          val processDictionaryAtt = typeDef.getDictionaryType.getAttributes.find(eAtt => eAtt.getName() == dictionaryAtt.name) match {
             case None => {
-              val newAtt = KevoreeFactory.eINSTANCE.createDictionaryAttribute
+              val newAtt = KevoreeFactory.$instance.createDictionaryAttribute
               newAtt.setName(dictionaryAtt.name)
-              typeDef.getDictionaryType.get.addAttributes(newAtt)
+              typeDef.getDictionaryType.addAttributes(newAtt)
               newAtt.setFragmentDependant(dictionaryAtt.fragmentDependant());
               newAtt
             }
@@ -69,12 +69,12 @@ trait DictionaryProcessor {
           //INIT DEF VALUE
           //TODO ALLOW MORE TYPE THAN STRING
           if (dictionaryAtt.defaultValue != "defaultKevoreeNonSetValue") {
-            typeDef.getDictionaryType.get.getDefaultValues.find(defV => defV.getAttribute == processDictionaryAtt) match {
+            typeDef.getDictionaryType.getDefaultValues.find(defV => defV.getAttribute == processDictionaryAtt) match {
               case None => {
-                val newVal = KevoreeFactory.eINSTANCE.createDictionaryValue
+                val newVal = KevoreeFactory.$instance.createDictionaryValue
                 newVal.setAttribute(processDictionaryAtt)
                 newVal.setValue(dictionaryAtt.defaultValue)
-                typeDef.getDictionaryType.get.addDefaultValues(newVal)
+                typeDef.getDictionaryType.addDefaultValues(newVal)
               }
               case Some(edefV) => edefV.setValue(dictionaryAtt.defaultValue.toString)
             }

@@ -26,16 +26,41 @@
  */
 package org.kevoree.merger.resolver
 
+import org.kevoree.ContainerNode
+import org.kevoree.ComponentInstance
+import java.util.HashMap
+import org.kevoree.KevoreeContainer
 import org.kevoree.TypeDefinition
+import java.util.ArrayList
+import org.kevoree.Dictionary
 
 /**
  * Created by IntelliJ IDEA.
  * User: duke
- * Date: 07/10/11
- * Time: 11:29
- * To change this template use File | Settings | File Templates.
+ * Date: 20/10/11
+ * Time: 08:40
  */
 
-case class UnresolvedTypeDefinition(typeDefinitionName : String) extends TypeDefinition {
-  override def getName = typeDefinitionName
+class UnresolvedNode(val nodeName: String, val query: String): ContainerNode {
+    override var _components_java_cache: List<ComponentInstance>? = null
+    override val _components: HashMap<Any, ComponentInstance> = HashMap<Any, ComponentInstance>()
+    override var _hosts_java_cache: List<ContainerNode>? = ArrayList<ContainerNode>()
+    override val _hosts: HashMap<Any, ContainerNode> = HashMap<Any, ContainerNode>()
+    override var _host: ContainerNode? = null
+    override var internal_eContainer: KevoreeContainer? = null
+    override var internal_unsetCmd: (() -> Unit)? = null
+    override var internal_readOnlyElem: Boolean = false
+    override var _metaData: String = ""
+    override var _typeDefinition: TypeDefinition? = null
+    override var _dictionary: Dictionary? = null
+    override var _name: String = ""
+
+    override fun getName(): String {
+        return nodeName
+    }
+
+    override fun buildQuery(): String {
+        return query
+    }
+
 }

@@ -40,6 +40,8 @@ import javax.annotation.processing.ProcessingEnvironment
 import javax.tools.Diagnostic.Kind
 import org.kevoree.annotation.MessageTypes
 import org.kevoree.tools.annotation.generator.ThreadingMapping
+import scala.collection.JavaConversions._
+
 
 
 trait ProvidedPortProcessor {
@@ -70,7 +72,7 @@ trait ProvidedPortProcessor {
           //Port is unique and can be created
           case None => {
 
-            val portTypeRef = KevoreeFactory.eINSTANCE.createPortTypeRef
+            val portTypeRef = KevoreeFactory.$instance.createPortTypeRef
             portTypeRef.setName(providedPort.name)
 
             //sets the reference to the type of the port
@@ -99,7 +101,7 @@ trait ProvidedPortProcessor {
 
               case org.kevoree.annotation.PortType.MESSAGE => {
                 //Message port
-                val messagePortType = KevoreeFactory.eINSTANCE.createMessagePortType
+                val messagePortType = KevoreeFactory.$instance.createMessagePortType
                 messagePortType.setName("org.kevoree.framework.MessagePort")
 
                 if (providedPort.messageType() != "untyped" ) {
@@ -110,10 +112,10 @@ trait ProvidedPortProcessor {
                   if (classdef.getAnnotation(classOf[MessageTypes]) != null) {
                     classdef.getAnnotation(classOf[MessageTypes]).value().find(msgType => msgType.name() == providedPort.messageType()) match {
                       case Some(foundMessageType) => {
-                        val dicoType = KevoreeFactory.eINSTANCE.createDictionaryType
+                        val dicoType = KevoreeFactory.$instance.createDictionaryType
                         foundMessageType.elems().foreach {
                           elem =>
-                            val dicAtt = KevoreeFactory.eINSTANCE.createDictionaryAttribute
+                            val dicAtt = KevoreeFactory.$instance.createDictionaryAttribute
                             dicAtt.setName(elem.name())
                            // messagePortType.setName(messagePortType.getName+elem.name()) //WORKAROUND
 
@@ -126,7 +128,7 @@ trait ProvidedPortProcessor {
                             dicAtt.setOptional(elem.optional())
                             dicoType.addAttributes(dicAtt)
                         }
-                        messagePortType.setDictionaryType(Some(dicoType))
+                        messagePortType.setDictionaryType(dicoType)
                       }
                       case None => env.getMessager.printMessage(Kind.ERROR, "Can't find message type for name " + providedPort.messageType() + " for port " + providedPort.name())
                     }
@@ -138,7 +140,7 @@ trait ProvidedPortProcessor {
                 /*
                providedPort.filter.foreach {
                  ndts =>
-                   val newTypedElement = KevoreeFactory.eINSTANCE.createTypedElement
+                   val newTypedElement = KevoreeFactory.$instance.createTypedElement
                    newTypedElement.setName(ndts)
                    messagePortType.addFilters(LocalUtility.getOraddDataType(newTypedElement))
                } */

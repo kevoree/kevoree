@@ -48,18 +48,18 @@ case class KevsAddComponentInstanceInterpreter(addCompo: AddComponentInstanceSta
                 context.model.findByQuery("typeDefinitions[" + addCompo.typeDefinitionName + "]", classOf[TypeDefinition]) match {
                   case Some(typeDef) if (typeDef.isInstanceOf[ComponentType]) => {
                     val componentDefinition = typeDef.asInstanceOf[ComponentType]
-                    val newcomponent = KevoreeFactory.eINSTANCE.createComponentInstance
+                    val newcomponent = KevoreeFactory.$instance.createComponentInstance
                     newcomponent.setTypeDefinition(typeDef)
                     newcomponent.setName(addCompo.cid.componentInstanceName)
 
                     //ADD PORTS
                     for (ref <- componentDefinition.getProvided) {
-                      val port: Port = KevoreeFactory.eINSTANCE.createPort
+                      val port: Port = KevoreeFactory.$instance.createPort
                       newcomponent.addProvided(port)
                       port.setPortTypeRef(ref)
                     }
                     for (ref <- componentDefinition.getRequired) {
-                      val port: Port = KevoreeFactory.eINSTANCE.createPort
+                      val port: Port = KevoreeFactory.$instance.createPort
                       newcomponent.addRequired(port)
                       port.setPortTypeRef(ref)
                     }

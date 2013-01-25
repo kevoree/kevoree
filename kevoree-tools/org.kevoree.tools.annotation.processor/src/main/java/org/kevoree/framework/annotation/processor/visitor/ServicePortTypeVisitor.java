@@ -47,7 +47,7 @@ import javax.lang.model.util.SimpleTypeVisitor6;
  */
 public class ServicePortTypeVisitor extends SimpleTypeVisitor6<Object, Object> {
 
-    ServicePortType dataType = KevoreeFactory.createServicePortType();
+    ServicePortType dataType = KevoreeFactory.$instance.createServicePortType();
 
     public ServicePortType getDataType() {
         return dataType;
@@ -66,23 +66,23 @@ public class ServicePortTypeVisitor extends SimpleTypeVisitor6<Object, Object> {
             for (Element e : dt.asElement().getEnclosedElements()) {
                 ExecutableElement ee = (ExecutableElement) e;
                 if (e.getKind().compareTo(ElementKind.METHOD) == 0) {
-                    Operation newo = KevoreeFactory.createOperation();
+                    Operation newo = KevoreeFactory.$instance.createOperation();
                     newo.setName(e.getSimpleName().toString());
                     dataType.addOperations(newo);
                     //BUILD RETURN TYPE
                     DataTypeVisitor rtv = new DataTypeVisitor();
                     ee.getReturnType().accept(rtv, ee.getReturnType());
-                    newo.setReturnType(new Some<TypedElement>(LocalUtility.getOraddDataType(rtv.getDataType())));
+                    newo.setReturnType(LocalUtility.getOraddDataType(rtv.getDataType()));
                     //BUILD PARAMETER
                     Integer i = 0;
                     for (VariableElement ve : ee.getParameters()) {
-                        Parameter newp = KevoreeFactory.createParameter();
+                        Parameter newp = KevoreeFactory.$instance.createParameter();
                         newp.setName(ve.toString());
                         newp.setOrder(i);
                         newo.addParameters(newp);
                         DataTypeVisitor ptv = new DataTypeVisitor();
                         ve.asType().accept(ptv,ve);
-                        newp.setType(new Some<TypedElement>(LocalUtility.getOraddDataType(ptv.getDataType())));
+                        newp.setType(LocalUtility.getOraddDataType(ptv.getDataType()));
                         i = i + 1;
 
                     }

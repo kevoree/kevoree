@@ -28,6 +28,8 @@ package org.kevoree.merger.resolver
 
 import org.slf4j.LoggerFactory
 import org.kevoree.{ComponentType, ComponentInstance, ContainerRoot}
+import scala.collection.JavaConversions._
+
 
 /**
  * Created by IntelliJ IDEA.

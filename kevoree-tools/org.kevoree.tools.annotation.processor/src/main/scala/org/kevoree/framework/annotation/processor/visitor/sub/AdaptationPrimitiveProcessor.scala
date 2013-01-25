@@ -31,6 +31,7 @@ import org.kevoree._
 import javax.lang.model.element.TypeElement
 import javax.annotation.processing.ProcessingEnvironment
 import javax.tools.Diagnostic.Kind
+import scala.collection.JavaConversions._
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -84,7 +85,7 @@ trait AdaptationPrimitiveProcessor {
     typeDef.getManagedPrimitiveTypeRefs.find(p => p.getRef.getName == name) match {
       case Some(p) => p
       case None => {
-        val primitiveTypeRef: AdaptationPrimitiveTypeRef = KevoreeFactory.eINSTANCE.createAdaptationPrimitiveTypeRef
+        val primitiveTypeRef: AdaptationPrimitiveTypeRef = KevoreeFactory.$instance.createAdaptationPrimitiveTypeRef
         val primitiveType = getOrCreate(typeDef,name)
         if(!typeDef.getManagedPrimitiveTypes.exists(p=>p.getName == name)){
           typeDef.addManagedPrimitiveTypes(primitiveType)
@@ -101,7 +102,7 @@ trait AdaptationPrimitiveProcessor {
     root.getAdaptationPrimitiveTypes.find(p => p.getName == name) match {
       case Some(p) => p
       case None => {
-        val primitiveType: AdaptationPrimitiveType = KevoreeFactory.eINSTANCE.createAdaptationPrimitiveType
+        val primitiveType: AdaptationPrimitiveType = KevoreeFactory.$instance.createAdaptationPrimitiveType
         primitiveType.setName(name)
         root.addAdaptationPrimitiveTypes(primitiveType)
         primitiveType

@@ -17,6 +17,8 @@ import org.kevoree.{TypeDefinition, TypeLibrary, KevoreeFactory}
 import org.kevoree.tools.marShell.ast.CreateChannelTypeStatment
 import org.kevoree.tools.marShell.interpreter.KevsAbstractInterpreter
 import org.kevoree.tools.marShell.interpreter.KevsInterpreterContext
+import scala.collection.JavaConversions._
+
 
 import org.slf4j.LoggerFactory
 
@@ -29,14 +31,14 @@ case class KevsCreateChannelTypeInterpreter(self: CreateChannelTypeStatment) ext
     context.model.findByQuery("typeDefinitions[" + self.newTypeName + "]", classOf[TypeDefinition]) match {
       case Some(e) => logger.error("TypeDefinition already exist with name => " + self.newTypeName); false
       case None => {
-        val newComponentTypeDef = KevoreeFactory.eINSTANCE.createChannelType
+        val newComponentTypeDef = KevoreeFactory.$instance.createChannelType
         newComponentTypeDef.setName(self.newTypeName)
         context.model.addTypeDefinitions(newComponentTypeDef)
 
         self.libName.map {
           libName =>
           context.model.findByQuery("libraries[" + libName + "]", classOf[TypeLibrary]).getOrElse({
-              val newLib = KevoreeFactory.createTypeLibrary
+              val newLib = KevoreeFactory.$instance.createTypeLibrary
               newLib.setName(libName)
               newLib
             }).addSubTypes(newComponentTypeDef)

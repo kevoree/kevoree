@@ -68,7 +68,7 @@ class JmDnsLookup extends Command {
             kernel.getModelHandler.getActualModel.getTypeDefinitions.find(td => td.getName == typeNamesArray(0)) match {
               case Some(groupTypeDef) => {
                 if (!kernel.getModelHandler.getActualModel.getGroups.exists(group => group.getName == groupName)) {
-                  val newgroup = KevoreeFactory.eINSTANCE.createGroup
+                  val newgroup = KevoreeFactory.$instance.createGroup
                   newgroup.setName(groupName)
                   newgroup.setTypeDefinition(groupTypeDef)
                   kernel.getModelHandler.getActualModel.addGroups(newgroup)
@@ -76,7 +76,7 @@ class JmDnsLookup extends Command {
 
                 val remoteNode = kernel.getModelHandler.getActualModel.getNodes.find(n => n.getName == nodeName)
                   .getOrElse {
-                  val newnode = KevoreeFactory.eINSTANCE.createContainerNode
+                  val newnode = KevoreeFactory.$instance.createContainerNode
                   newnode.setName(nodeName)
                   kernel.getModelHandler.getActualModel.getTypeDefinitions.find(td => td.getName == typeNamesArray(1))
                     .map {

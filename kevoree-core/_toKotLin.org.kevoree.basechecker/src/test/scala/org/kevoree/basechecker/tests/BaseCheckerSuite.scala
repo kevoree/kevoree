@@ -24,17 +24,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kevoree.merger.resolver
 
-import org.kevoree.PortTypeRef
+package org.kevoree.basechecker.tests
 
-/**
- * Created by IntelliJ IDEA.
- * User: duke
- * Date: 06/03/12
- * Time: 09:38
- */
+import org.kevoree.ContainerRoot
+import org.kevoree.framework.KevoreeXmiHelper
+import org.scalatest.junit.JUnitSuite
 
-case class  UnresolvedPortTypeRef(unresolvedPortName : String) extends PortTypeRef {
-  override def getName = unresolvedPortName
+trait BaseCheckerSuite extends JUnitSuite {
+
+    /* UTILITY METHOD */
+  def model(url:String):ContainerRoot={
+    if(this.getClass.getClassLoader.getResource(url) == null){
+      println("Warning File not found for test !!!")
+    }
+    KevoreeXmiHelper.load(this.getClass.getClassLoader.getResource(url).getPath)
+  }
+
 }

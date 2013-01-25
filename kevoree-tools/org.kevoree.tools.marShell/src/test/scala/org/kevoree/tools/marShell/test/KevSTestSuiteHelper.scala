@@ -51,7 +51,7 @@ trait KevSTestSuiteHelper extends JUnitSuite {
     KevoreeXmiHelper.load(modelPath)
   }
 
-  def emptyModel = KevoreeFactory.eINSTANCE.createContainerRoot
+  def emptyModel = KevoreeFactory.$instance.createContainerRoot
 
 
   def getScript(url:String) : Script = {

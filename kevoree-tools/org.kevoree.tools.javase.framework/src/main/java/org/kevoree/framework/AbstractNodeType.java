@@ -30,6 +30,7 @@ import org.kevoree.ContainerNode;
 import org.kevoree.ContainerRoot;
 import org.kevoree.api.NodeType;
 import org.kevoree.api.PrimitiveCommand;
+import org.kevoree.context.ContextFactory;
 import org.kevoree.context.ContextRoot;
 import org.kevoreeAdaptation.AdaptationModel;
 import org.kevoreeAdaptation.AdaptationPrimitive;
@@ -62,7 +63,7 @@ public abstract class
 
 	public abstract PrimitiveCommand getPrimitive (AdaptationPrimitive primitive);
 
-	private ContextRoot contextModel = org.kevoree.context.ContextFactory.createContextRoot();
+	private ContextRoot contextModel = ContextFactory.$instance.createContextRoot();
 
 	@Override
 	public ContextRoot getContextModel () {
@@ -75,7 +76,7 @@ public abstract class
 	 * @return the node corresponding to this
 	 */
 	public ContainerNode getModelElement () {
-		return getModelService().getLastModel().findByQuery("nodes[" + getName() + "]", ContainerNode.class).get();
+		return getModelService().getLastModel().findByQuery("nodes[" + getName() + "]", ContainerNode.class);
 	}
 
 }

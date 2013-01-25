@@ -16,6 +16,8 @@ package org.kevoree.tools.marShell.interpreter.sub
 import org.kevoree.tools.marShell.interpreter.{KevsInterpreterContext, KevsAbstractInterpreter}
 import org.kevoree.tools.marShell.ast.MoveComponentInstanceStatment
 
+import scala.collection.JavaConversions._
+
 import org.slf4j.LoggerFactory
 import org.kevoree._
 import tools.marShell.ast.MoveComponentInstanceStatment
@@ -30,12 +32,12 @@ case class KevsMoveComponentInstanceInterpreter (moveComponent: MoveComponentIns
 		moveComponent.cid.nodeName match {
 			case Some(nodeID) => {
         context.model.findByQuery("nodes[" + nodeID + "]", classOf[ContainerNode]) match {
-					case Some(sourceNode) => {
+					case sourceNode:ContainerNode => {
 						//SEARCH COMPONENT
             sourceNode.findByQuery("components[" + moveComponent.cid.componentInstanceName + "]", classOf[ComponentInstance]) match {
-							case Some(targetComponent) => {
+							case targetComponent:ComponentInstance => {
                 context.model.findByQuery("nodes[" + moveComponent.targetNodeName + "]", classOf[ContainerNode])match {
-									case Some(targetNode) => {
+									case targetNode:ContainerNode => {
 										// look at all ports to get all channels and check attributes that are fragment dependent:
 										// look at the fragment for sourceNode
 										// if another component is bound to the channel we do nothing
@@ -45,9 +47,9 @@ case class KevsMoveComponentInstanceInterpreter (moveComponent: MoveComponentIns
 										// else we need to copy the previous fragment
 										var fragments = List[(Channel, Port, DictionaryValue)]()
 										(targetComponent.getProvided ++ targetComponent.getRequired).foreach(p => p.getBindings.foreach(mb => {
-											if (mb.getHub.getDictionary.isDefined) {
-												mb.getHub.getDictionary.get.getValues.foreach(dv => {
-													if (dv.getAttribute.getFragmentDependant && dv.getTargetNode.isDefined && dv.getTargetNode.get.getName == nodeID) {
+											if (mb.getHub.getDictionary()!=null) {
+												mb.getHub.getDictionary.getValues.foreach(dv => {
+													if (dv.getAttribute.getFragmentDependant && dv.getTargetNode!=null && dv.getTargetNode.getName == nodeID) {
 														fragments = fragments ++ List[(Channel, Port, DictionaryValue)]((mb.getHub, mb.getPort, dv))
 													}
 												})
@@ -60,20 +62,20 @@ case class KevsMoveComponentInstanceInterpreter (moveComponent: MoveComponentIns
 														mb.getPort.eContainer.eContainer.asInstanceOf[ContainerNode].getName == tuple._2.eContainer.eContainer.asInstanceOf[ContainerNode].getName &&
 																mb.getPort.eContainer.asInstanceOf[ComponentInstance].getName != tuple._2.eContainer.asInstanceOf[ComponentInstance].getName)
 
-													val targetFragmentMustBeAdded = !tuple._1.getDictionary.get.getValues
-														.exists(odv => odv.getTargetNode.isDefined && odv.getTargetNode.get.getName == moveComponent.targetNodeName && odv.getAttribute.getName == tuple._3.getAttribute.getName)
+													val targetFragmentMustBeAdded = !tuple._1.getDictionary.getValues
+														.exists(odv => odv.getTargetNode!=null && odv.getTargetNode.getName == moveComponent.targetNodeName && odv.getAttribute.getName == tuple._3.getAttribute.getName)
 
 //													println("sourceFragmentMustBeRemoved && targetFragmentMustBeAdded: " + sourceFragmentMustBeRemoved + "&&" + targetFragmentMustBeAdded)
 													if (sourceFragmentMustBeRemoved && targetFragmentMustBeAdded) {
-														tuple._3.setTargetNode(Some(targetNode))
+														tuple._3.setTargetNode(targetNode)
 													} else if (targetFragmentMustBeAdded) {
-														val value = KevoreeFactory.createDictionaryValue
+														val value = KevoreeFactory.$instance.createDictionaryValue
 														value.setAttribute(tuple._3.getAttribute)
-														value.setTargetNode(Some(targetNode))
+														value.setTargetNode(targetNode)
 														value.setValue(tuple._3.getValue)
-														tuple._1.getDictionary.get.addValues(value)
+														tuple._1.getDictionary.addValues(value)
 													} else if (sourceFragmentMustBeRemoved) {
-														tuple._1.getDictionary.get.removeValues(tuple._3)
+														tuple._1.getDictionary.removeValues(tuple._3)
 													}
 											}
 										}
@@ -81,19 +83,19 @@ case class KevsMoveComponentInstanceInterpreter (moveComponent: MoveComponentIns
 										targetNode.addComponents(targetComponent)
 										true
 									}
-									case None => {
+									case null => {
 										logger.error("Target node not found " + moveComponent.cid.componentInstanceName)
 										false
 									}
 								}
 							}
-							case None => {
+							case null => {
 								logger.error("Component not found " + moveComponent.cid.componentInstanceName)
 								false
 							}
 						}
 					}
-					case None => {
+					case null => {
 						logger.error("Source Node not found " + nodeID)
 						false
 					}

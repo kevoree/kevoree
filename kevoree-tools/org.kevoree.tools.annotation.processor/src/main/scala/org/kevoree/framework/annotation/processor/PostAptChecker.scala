@@ -35,6 +35,7 @@ import org.kevoree._
 import core.basechecker.RootChecker
 import javax.annotation.processing.ProcessingEnvironment
 import javax.tools.Diagnostic.Kind
+import scala.collection.JavaConversions._
 
 class PostAptChecker(root: ContainerRoot, env: ProcessingEnvironment) {
 

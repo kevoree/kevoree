@@ -73,14 +73,14 @@ trait ThirdPartyProcessor {
     thirdPartyAnnotations.foreach{tp=>
       root.getDeployUnits.find({etp => etp. == tp.name}) match {
         case Some(e) => {
-            componentType.getDeployUnits(0).addRequiredLibs(e)
+            componentType.getDeployUnits().get(0).addRequiredLibs(e)
           }
         case None => {
-            val newThirdParty = KevoreeFactory.eINSTANCE.createDeployUnit
+            val newThirdParty = KevoreeFactory.$instance.createDeployUnit
             newThirdParty.setName(tp.name)
             newThirdParty.setUrl(tp.url)
             root.addDeployUnits(newThirdParty)
-            componentType.getDeployUnits(0).addRequiredLibs(newThirdParty)
+            componentType.getDeployUnits().get(0).addRequiredLibs(newThirdParty)
           }
       }
     }    */
@@ -97,24 +97,24 @@ trait ThirdPartyProcessor {
           etp => etp.getUnitName == unitName && etp.getGroupName == groupName && etp.getVersion == version
         }) match {
           case Some(e) => {
-            if (!componentType.getDeployUnits(0).getRequiredLibs.exists(etp =>  etp.getUnitName == unitName && etp.getGroupName == groupName && etp.getVersion == version)) {
-              componentType.getDeployUnits(0).addRequiredLibs(e)
+            if (!componentType.getDeployUnits().get(0).getRequiredLibs.exists(etp =>  etp.getUnitName == unitName && etp.getGroupName == groupName && etp.getVersion == version)) {
+              componentType.getDeployUnits().get(0).addRequiredLibs(e)
             }
           }
           case None => {
-            val newThirdParty = KevoreeFactory.eINSTANCE.createDeployUnit
+            val newThirdParty = KevoreeFactory.$instance.createDeployUnit
             newThirdParty.setUnitName(unitName)
             newThirdParty.setGroupName(groupName)
             newThirdParty.setVersion(version)
             newThirdParty.setType(dutype)
             root.addDeployUnits(newThirdParty)
-            componentType.getDeployUnits(0).addRequiredLibs(newThirdParty)
+            componentType.getDeployUnits().get(0).addRequiredLibs(newThirdParty)
           }
         }
     }
 
     /* POST PROCESS ADD NODE TYPE TO ALL THIRDPARTY */
-    componentType.getDeployUnits(0).getRequiredLibs.foreach {
+    componentType.getDeployUnits().get(0).getRequiredLibs.foreach {
       tp =>
         nodeTypeNameList.foreach {
           nodeTypeName =>
@@ -122,12 +122,12 @@ trait ThirdPartyProcessor {
             nodeTypeNameList.foreach {
               nodeTypeName =>
                 componentType.eContainer.asInstanceOf[ContainerRoot].getTypeDefinitions.filter(p => p.isInstanceOf[NodeType]).find(nt => nt.getName == nodeTypeName) match {
-                  case Some(existingNodeType) => tp.setTargetNodeType(Some(existingNodeType.asInstanceOf[NodeType]))
+                  case Some(existingNodeType) => tp.setTargetNodeType(existingNodeType.asInstanceOf[NodeType])
                   case None => {
-                    val nodeType = KevoreeFactory.eINSTANCE.createNodeType
+                    val nodeType = KevoreeFactory.$instance.createNodeType
                     nodeType.setName(nodeTypeName)
                     root.addTypeDefinitions(nodeType)
-                    tp.setTargetNodeType(Some(nodeType))
+                    tp.setTargetNodeType(nodeType)
                   }
                 }
             }

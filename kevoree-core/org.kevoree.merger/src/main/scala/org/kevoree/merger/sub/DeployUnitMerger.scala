@@ -35,6 +35,8 @@ import org.kevoree._
 import org.kevoree.merger.Merger
 import org.kevoree.framework.aspects.KevoreeAspects._
 import org.slf4j.LoggerFactory
+import scala.collection.JavaConversions._
+
 
 trait DeployUnitMerger extends Merger {
 
@@ -101,7 +103,7 @@ trait DeployUnitMerger extends Merger {
   }
 
   def mergeRequiredLibs (actualModel: ContainerRoot, tp: DeployUnit) {
-    val requireds: List[DeployUnit] = tp.getRequiredLibs
+    val requireds: List[DeployUnit] = tp.getRequiredLibs.toList
     tp.removeAllRequiredLibs()
     requireds.foreach {
       rLib =>

@@ -35,6 +35,7 @@ import org.kevoree.KevoreeFactory
 import org.kevoree.ContainerRoot
 import org.kevoree.TypeDefinition
 import javax.lang.model.element.TypeElement
+import scala.collection.JavaConversions._
 
 
 trait LibraryProcessor {
@@ -54,7 +55,7 @@ trait LibraryProcessor {
           }) match {
             case Some(lib) => lib.addSubTypes(typeDef)
             case None => {
-              val newlib = KevoreeFactory.eINSTANCE.createTypeLibrary
+              val newlib = KevoreeFactory.$instance.createTypeLibrary
               newlib.setName(libName)
               newlib.addSubTypes(typeDef)
               root.addLibraries(newlib)

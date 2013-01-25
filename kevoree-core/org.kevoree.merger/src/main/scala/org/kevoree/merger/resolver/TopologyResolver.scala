@@ -28,6 +28,8 @@ package org.kevoree.merger.resolver
 
 import org.slf4j.LoggerFactory
 import org.kevoree.{ContainerNode, ContainerRoot}
+import scala.collection.JavaConversions._
+
 
 /**
  * Created by IntelliJ IDEA.
@@ -44,26 +46,26 @@ trait TopologyResolver {
   def resolveTopologyNodes(model: ContainerRoot) {
     model.getNodeNetworks.foreach {
       nn =>
-        nn.getInitBy.map {
-          iBy =>
-            nn.setInitBy(resolveNodeInstance(model, iBy))
+        val iBy = nn.getInitBy()
+        if (iBy != null){
+          nn.setInitBy(resolveNodeInstance(model, iBy))
         }
-        resolveNodeInstance(model, nn.getTarget).map {
-          rTNode =>
-            nn.setTarget(rTNode)
+        val rTNode = resolveNodeInstance(model, nn.getTarget)
+        if (rTNode != null){
+          nn.setTarget(rTNode)
         }
     }
   }
 
-  private def resolveNodeInstance(model: ContainerRoot, node: ContainerNode): Option[ContainerNode] = {
+  private def resolveNodeInstance(model: ContainerRoot, node: ContainerNode): ContainerNode = {
     node match {
-      case UnresolvedNode(targetNodeName,query) => {
-        model.findByQuery(query,classOf[ContainerNode]) match {
-          case Some(foundNode) => Some(foundNode)
-          case None => logger.error("Unconsitent model , node not found for name " + targetNodeName); None
+      case targetNodeName : UnresolvedNode => {
+        model.findByQuery(targetNodeName.getQuery(),classOf[ContainerNode]) match {
+          case foundNode : ContainerNode => foundNode
+          case null => logger.error("Unconsitent model , node not found for name " + targetNodeName.getName()); null
         }
       }
-      case _ => logger.error("Already Dictionary Value targetNodeName for value " + node); Some(node)
+      case _ => logger.error("Already Dictionary Value targetNodeName for value " + node); node
     }
   }
 
