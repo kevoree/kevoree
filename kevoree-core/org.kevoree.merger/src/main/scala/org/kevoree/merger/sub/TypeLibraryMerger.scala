@@ -35,6 +35,8 @@ import org.kevoree._
 import merger.resolver.UnresolvedTypeDefinition
 import org.kevoree.merger.Merger
 import org.slf4j.LoggerFactory
+import scala.collection.JavaConversions._
+
 
 trait TypeLibraryMerger extends Merger {
 
@@ -48,7 +50,7 @@ trait TypeLibraryMerger extends Merger {
         val currentLibrary = actualModel.getLibraries.find(plib => plib.getName == library.getName) match {
           case Some(plib) => plib
           case None => {
-            val newLib = KevoreeFactory.eINSTANCE.createTypeLibrary
+            val newLib = KevoreeFactory.$instance.createTypeLibrary
             newLib.setName(library.getName)
             actualModel.addLibraries(newLib)
             newLib
@@ -57,9 +59,9 @@ trait TypeLibraryMerger extends Merger {
         library.getSubTypes.foreach {
           libSubType =>
             libSubType match {
-              case UnresolvedTypeDefinition(unresolveTypeName) => {
-                if (!currentLibrary.getSubTypes.exists(sub => sub.isInstanceOf[UnresolvedTypeDefinition] && sub.asInstanceOf[UnresolvedTypeDefinition].typeDefinitionName == unresolveTypeName)) {
-                  currentLibrary.addSubTypes(UnresolvedTypeDefinition(unresolveTypeName))
+              case unresolveTypeName : UnresolvedTypeDefinition => {
+                if (!currentLibrary.getSubTypes.exists(sub => sub.isInstanceOf[UnresolvedTypeDefinition] && sub.asInstanceOf[UnresolvedTypeDefinition].getName() == unresolveTypeName)) {
+                  currentLibrary.addSubTypes(new UnresolvedTypeDefinition(unresolveTypeName.getName()))
                 }
               }
               case _ @ e => logger.error("resolved type definition present with name "+e)

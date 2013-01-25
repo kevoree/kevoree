@@ -36,26 +36,26 @@ case class KevsMoveChildInterpreter(moveChild: MoveChildStatment) extends KevsAb
 
   def interpret(context: KevsInterpreterContext): Boolean = {
     context.model.findByQuery("nodes[" + moveChild.childNodeName + "]", classOf[ContainerNode]) match {
-      case None => {
+      case null => {
         logger.error("Unknown child name: {}\nThe node must already exist. Please check !", moveChild.childNodeName)
         false
       }
-      case Some(child) => {
+      case child:ContainerNode => {
         context.model.findByQuery("nodes[" + moveChild.oldFatherNodeName + "]", classOf[ContainerNode]) match {
-          case None => {
+          case null => {
             logger.error("Unknown old father node: {}\nThe node must already exist. Please check !", moveChild.oldFatherNodeName)
             false
           }
-          case Some(oldFather) => {
+          case oldFather:ContainerNode => {
             if (!oldFather.getHosts.contains(child)) {
               logger.warn("The child node is not already contained by a father. Please prefer the addChild command!")
             }
             context.model.findByQuery("nodes[" + moveChild.fatherNodeName + "]", classOf[ContainerNode]) match {
-              case None => {
+              case null => {
                 logger.error("Unknown father node: {}\nThe node must already exist. Please check !", moveChild.fatherNodeName)
                 false
               }
-              case Some(father) => {
+              case father:ContainerNode => {
                 oldFather.removeHosts(child)
                 father.addHosts(child)
                 true

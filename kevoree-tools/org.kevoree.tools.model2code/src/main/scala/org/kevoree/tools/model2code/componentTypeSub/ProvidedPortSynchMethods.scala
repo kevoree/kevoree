@@ -130,7 +130,7 @@ trait ProvidedPortSynchMethods
                   methodName += providedPort.getName.substring(1) + "PortActivated";
 
                   //Add Mapping
-                  val newMapping = org.kevoree.KevoreeFactory.eINSTANCE.createPortTypeMapping
+                  val newMapping = org.kevoree.KevoreeFactory.$instance.createPortTypeMapping
                   newMapping.setServiceMethodName(operation.getName)
                   newMapping.setBeanMethodName(methodName)
                   providedPort.addMappings(newMapping)
@@ -168,7 +168,7 @@ trait ProvidedPortSynchMethods
                 methodName += providedPort.getName.substring(1);
 
                 //Add Mapping
-                val newMapping = org.kevoree.KevoreeFactory.eINSTANCE.createPortTypeMapping
+                val newMapping = org.kevoree.KevoreeFactory.$instance.createPortTypeMapping
                 newMapping.setServiceMethodName("process")
                 newMapping.setBeanMethodName(methodName)
                 providedPort.addMappings(newMapping)

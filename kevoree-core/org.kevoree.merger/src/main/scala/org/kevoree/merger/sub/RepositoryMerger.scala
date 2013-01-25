@@ -37,19 +37,21 @@ import org.kevoree.DeployUnit
 import org.kevoree.Repository
 import org.kevoree.framework.aspects.KevoreeAspects._
 import org.slf4j.LoggerFactory
+import scala.collection.JavaConversions._
+
 
 trait RepositoryMerger {
   private val logger = LoggerFactory.getLogger(this.getClass)
 
   //EXPECT TYPE DEFINITION TO BE MERGE BEFORE THIS STEP
   def mergeRepositories(actualModel: ContainerRoot, modelToMerge: ContainerRoot) {
-    val ctRepo: List[Repository] = modelToMerge.getRepositories
+    val ctRepo: List[Repository] = modelToMerge.getRepositories.toList
     ctRepo.foreach {
       toMergeRepo =>
         actualModel.getRepositories.find(lr => lr.getUrl == toMergeRepo.getUrl) match {
           case Some(found_repo) => mergeRepository(actualModel, found_repo, toMergeRepo)
           case None => {
-            val newrepo = KevoreeFactory.eINSTANCE.createRepository
+            val newrepo = KevoreeFactory.$instance.createRepository
             newrepo.setUrl(toMergeRepo.getUrl)
             actualModel.addRepositories(newrepo)
             mergeRepository(actualModel, newrepo, toMergeRepo)
@@ -59,10 +61,9 @@ trait RepositoryMerger {
   }
 
   def mergeRepository(actualRoot: ContainerRoot, actualRepository: Repository, toMergeRepository: Repository): Unit = {
-    val toMergeUnits: List[DeployUnit] = toMergeRepository.getUnits
+    val toMergeUnits: List[DeployUnit] = toMergeRepository.getUnits.toList
     toMergeUnits.foreach {
       unit =>
-
       //ACTUAL UNIT
         val found_unit = actualRoot.getDeployUnits.find(du => du.isModelEquals(unit) /*&& du.getHashcode == unit.getHashcode*/)
         found_unit match {

@@ -37,6 +37,8 @@ import org.kevoree.ComponentType
 import org.kevoree.framework.aspects.KevoreeAspects._
 import org.kevoree.framework.KevoreeGeneratorHelper
 import javax.annotation.processing.Filer
+import scala.collection.JavaConversions._
+
 
 object KevoreeGenerator {
 
@@ -60,16 +62,16 @@ object KevoreeGenerator {
           ref.getRef match {
             case sPT: ServicePortType => sPT.getOperations.foreach {
               op =>
-                writer.append("public " + op.getReturnType.get.getName + " " + op.getName + "(")
+                writer.append("public " + op.getReturnType.getName + " " + op.getName + "(")
                 op.getParameters.foreach {
                   param =>
-                    writer.append(param.getType.get.print('<', '>') + " " + param.getName)
+                    writer.append(param.getType.print('<', '>') + " " + param.getName)
                     if (op.getParameters.indexOf(param) != (op.getParameters.size - 1)) {
                       writer.append(",")
                     }
                 }
                 writer.append("){\n");
-                if (!op.getReturnType.get.getName.equals("void")) {
+                if (!op.getReturnType.getName.equals("void")) {
                   writer.append("return ")
                 }
                 writer.append("((" + ct.getFactoryBean.substring(0, ct.getFactoryBean.indexOf("Factory")) + ")getComponent()).")

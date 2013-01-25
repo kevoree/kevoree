@@ -28,7 +28,9 @@ package org.kevoree.merger.resolver
 
 import org.kevoree.framework.aspects.KevoreeAspects._
 import org.slf4j.LoggerFactory
-import org.kevoree.ContainerRoot
+import org.kevoree.{DictionaryType, ContainerRoot}
+
+import scala.collection.JavaConversions._
 
 
 /**
@@ -45,14 +47,18 @@ trait DictionaryAttributeResolver {
 
   def resolveDictionaryAttribute(model : ContainerRoot){
     model.getAllInstances.foreach{ instance =>
-        instance.getDictionary.map{ dictionaryInstance =>
+
+         val dictionaryInstance = instance.getDictionary()
+         if (dictionaryInstance != null){
           dictionaryInstance.getValues.foreach{ value =>
-            value.getTargetNode.map { targetNode =>
+
+            val targetNode = value.getTargetNode()
+            if (targetNode != null){
               targetNode match {
-                case UnresolvedNode(targetNodeName,_)=> {
-                  model.getNodes.find(n => n.getName == targetNodeName) match {
-                    case Some(node)=> value.setTargetNode(Some(node))
-                    case None => logger.error("Unconsitent model , node not found for name "+targetNodeName)
+                case targetNodeName : UnresolvedNode => {
+                  model.getNodes.find(n => n.getName == targetNodeName.getName()) match {
+                    case Some(node)=> value.setTargetNode(node)
+                    case None => logger.error("Unconsitent model , node not found for name "+targetNodeName.getName())
                   }
                 }
                 case _ => logger.error("Already Dictionary Value targetNodeName for value "+value)
@@ -61,18 +67,18 @@ trait DictionaryAttributeResolver {
             
             
             value.getAttribute match {
-              case UnresolvedDictionaryAttribute(attName)=> {
-                instance.getTypeDefinition.getDictionaryType match {
-                  case Some(dictionaryType)=> {
-                    dictionaryType.getAttributes.find(att => att.getName == attName) match {
+              case attName:UnresolvedDictionaryAttribute=> {
+                instance.getTypeDefinition.getDictionaryType() match {
+                  case dictionaryType: DictionaryType=> {
+                    dictionaryType.getAttributes.find(att => att.getName() == attName.getName()) match {
                       case Some(attFound)=> value.setAttribute(attFound)
                       case None => {
                         dictionaryInstance.removeValues(value)
-                        logger.error("Unconsitent dictionary type , att not found for name "+attName)
+                        logger.error("Unconsitent dictionary type , att not found for name "+attName.getName())
                       }
                     }
                   }
-                  case None => logger.error("Unconsistent dictionary")
+                  case null => logger.error("Unconsistent dictionary")
                 }
               }
               case _ @ e => {

@@ -33,7 +33,8 @@ import resolver.UnresolvedNode
 import resolver.UnresolvedNodeType
 import resolver.UnresolvedPortTypeRef
 import resolver.UnresolvedTypeDefinition
-import scala.Some
+import scala.collection.JavaConversions._
+import java.util
 
 /**
  * Created by IntelliJ IDEA.
@@ -47,87 +48,61 @@ trait CrossReferenceMerger {
   def breakCrossRef(actualModel: ContainerRoot, modelToMerge: ContainerRoot) {
 
     //BREAK TOPOLOGY MODEL
-    (actualModel.getNodeNetworks ++ modelToMerge.getNodeNetworks).foreach {
+    (actualModel.getNodeNetworks.toList ++ modelToMerge.getNodeNetworks).foreach {
       nn =>
-        nn.getInitBy.map {
-          initByNode =>
-            nn.setInitBy(Some(UnresolvedNode(initByNode.getName,initByNode.buildQuery())))
+        val initByNode = nn.getInitBy()
+        if(initByNode != null) {
+            nn.setInitBy(new UnresolvedNode(initByNode.getName(),initByNode.buildQuery()))
         }
-        nn.setTarget(UnresolvedNode(nn.getTarget.getName,nn.getTarget.buildQuery()))
+        nn.setTarget(new UnresolvedNode(nn.getTarget.getName,nn.getTarget.buildQuery()))
     }
 
     //BREAK DEPLOY TARGET NODE TYPE
-    (actualModel.getDeployUnits ++ modelToMerge.getDeployUnits).foreach {
+    (actualModel.getDeployUnits.toList ++ modelToMerge.getDeployUnits).foreach {
       dp =>
-        dp.getTargetNodeType.map {
-          targetNodeType =>
-            dp.setTargetNodeType(Some(UnresolvedNodeType(targetNodeType.getName)))
+        val targetNodeType = dp.getTargetNodeType()
+        if (targetNodeType!=null){
+            dp.setTargetNodeType(new UnresolvedNodeType(targetNodeType.getName()))
         }
     }
     //BREAK EVERY CROSS REFERENCE
-    (actualModel.getLibraries ++ modelToMerge.getLibraries).foreach {
+    (actualModel.getLibraries.toList ++ modelToMerge.getLibraries).foreach {
       library =>
         val subTypes = library.getSubTypes
         library.removeAllSubTypes()
         subTypes.foreach {
           libSubType =>
-            library.addSubTypes(UnresolvedTypeDefinition(libSubType.getName))
+            library.addSubTypes(new UnresolvedTypeDefinition(libSubType.getName))
         }
     }
-    (actualModel.getTypeDefinitions ++ modelToMerge.getTypeDefinitions).foreach {
+    (actualModel.getTypeDefinitions.toList ++ modelToMerge.getTypeDefinitions).foreach {
       typeDef =>
         typeDef.getSuperTypes.foreach {
           superType =>
             typeDef.removeSuperTypes(superType)
-            typeDef.addSuperTypes(UnresolvedTypeDefinition(superType.getName))
+            typeDef.addSuperTypes(new UnresolvedTypeDefinition(superType.getName))
         }
     }
     import org.kevoree.framework.aspects.KevoreeAspects._
-    /*
-
-    modelToMerge.getAllInstances.foreach { instance =>
-      if (instance.isInstanceOf[ComponentInstance]) {
-        val componentInstance: ComponentInstance = instance.asInstanceOf[ComponentInstance]
-        componentInstance.getProvided.foreach {
-          pport => {
-            pport.getBindings.foreach { mbref =>
-              pport.noOpposite_removeBindings(mbref)
-            }
-          }
-
-        }
-        componentInstance.getRequired.foreach {
-          rport => {
-            rport.getBindings.foreach { mbref =>
-              rport.noOpposite_removeBindings(mbref)
-            }
-          }
-        }
-      }
-      if(instance.isInstanceOf[Channel]){
-        val ch = instance.asInstanceOf[Channel]
-        ch.getBindings.foreach { mbref =>
-          ch.noOpposite_removeBindings(mbref)
-        }
-      }
-    }  */
 
 
-    (actualModel.getAllInstances ++ modelToMerge.getAllInstances).foreach {
+
+
+    (actualModel.getAllInstances.toList.toList ++ modelToMerge.getAllInstances).foreach {
       instance =>
-        instance.setTypeDefinition(UnresolvedTypeDefinition(instance.getTypeDefinition.getName))
+        instance.setTypeDefinition(new UnresolvedTypeDefinition(instance.getTypeDefinition.getName))
         //BREAK PORT TYPE REF
         if (instance.isInstanceOf[ComponentInstance]) {
           val componentInstance: ComponentInstance = instance.asInstanceOf[ComponentInstance]
           componentInstance.getProvided.foreach {
             pport => {
-              pport.setPortTypeRef(UnresolvedPortTypeRef(pport.getPortTypeRef.getName))
+              pport.setPortTypeRef(new UnresolvedPortTypeRef(pport.getPortTypeRef.getName))
             }
 
           }
           componentInstance.getRequired.foreach {
             rport => {
-              rport.setPortTypeRef(UnresolvedPortTypeRef(rport.getPortTypeRef.getName))
+              rport.setPortTypeRef(new UnresolvedPortTypeRef(rport.getPortTypeRef.getName))
             }
           }
 
@@ -137,19 +112,20 @@ trait CrossReferenceMerger {
           n.getHosts.foreach {
             h =>
               n.removeHosts(h)
-              n.addHosts(UnresolvedChildNode(h.getName))
+              n.addHosts(new UnresolvedChildNode(h.getName))
           }
         }
 
         //BREAK DICTIONARY
-        instance.getDictionary.map {
-          instanceDictionary =>
-            instanceDictionary.getValues.foreach {
+
+        val instanceDictionary = instance.getDictionary()
+        if (instanceDictionary != null) {
+            instanceDictionary.getValues().foreach {
               dictionaryValue =>
-                dictionaryValue.setAttribute(UnresolvedDictionaryAttribute(dictionaryValue.getAttribute.getName))
-                dictionaryValue.getTargetNode.map {
-                  targetNode =>
-                    dictionaryValue.setTargetNode(Some(UnresolvedNode(targetNode.getName,targetNode.buildQuery())))
+                dictionaryValue.setAttribute(new UnresolvedDictionaryAttribute(dictionaryValue.getAttribute.getName))
+                val targetNode = dictionaryValue.getTargetNode()
+                if (targetNode != null){
+                    dictionaryValue.setTargetNode(new UnresolvedNode(targetNode.getName(),targetNode.buildQuery()))
                 }
             }
         }

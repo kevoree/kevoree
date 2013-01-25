@@ -35,6 +35,8 @@ import org.kevoree.ContainerNode
 import org.kevoree.ContainerRoot
 import org.kevoree.framework.aspects.KevoreeAspects._
 import org.kevoree.merger.resolver.{UnresolvedChildNode, UnresolvedTypeDefinition}
+import scala.collection.JavaConversions._
+
 
 
 trait NodeMerger extends ComponentInstanceMerger with DictionaryMerger {
@@ -49,12 +51,12 @@ trait NodeMerger extends ComponentInstanceMerger with DictionaryMerger {
   private def mergeNode(actualModel: ContainerRoot, nodeToMerge: ContainerNode) {
     //actualModel.getNodes.find(loopNode => loopNode.getName == nodeToMerge.getName) match {
       actualModel.findByQuery(nodeToMerge.buildQuery(),classOf[ContainerNode]) match {
-      case None => {
+      case null => {
         actualModel.addNodes(nodeToMerge)
         mergeAllInstances(actualModel, nodeToMerge, nodeToMerge)
         mergeChilds(actualModel, nodeToMerge)
       }
-      case Some(eNode) => {
+      case eNode : Any => {
         mergeDictionaryInstance(eNode, nodeToMerge)
         mergeAllInstances(actualModel, eNode, nodeToMerge)
         mergeChilds(actualModel, eNode, nodeToMerge)
@@ -67,7 +69,7 @@ trait NodeMerger extends ComponentInstanceMerger with DictionaryMerger {
       c =>
         targetInstance.getComponents.find(eC => eC.isModelEquals(c)) match {
           case None => {
-            targetInstance.setTypeDefinition(UnresolvedTypeDefinition(targetInstance.getTypeDefinition.getName))
+            targetInstance.setTypeDefinition(new UnresolvedTypeDefinition(targetInstance.getTypeDefinition.getName))
             targetInstance.addComponents(c)
             mergeComponentInstance(actualModel, c, null)
           }
@@ -86,7 +88,7 @@ trait NodeMerger extends ComponentInstanceMerger with DictionaryMerger {
               // the child already exist on the model before the merge so we need to update the hosts
               instance.removeHosts(child)
               if (!instance.getHosts.exists(i => i.getName == child.getName)) {
-                instance.addHosts(UnresolvedChildNode(child.getName))
+                instance.addHosts(new UnresolvedChildNode(child.getName))
               }
             }
         }
@@ -98,7 +100,7 @@ trait NodeMerger extends ComponentInstanceMerger with DictionaryMerger {
       child =>
         targetInstance.getHosts.find(n => n.getName == child.getName) match {
           case None => {
-            targetInstance.addHosts(UnresolvedChildNode(child.getName))
+            targetInstance.addHosts(new UnresolvedChildNode(child.getName))
           }
           case Some(n) => // the host node is already contained by the targetInstance node
         }

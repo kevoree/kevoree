@@ -52,7 +52,7 @@ case class KevsAddNodeInterpreter(addN: AddNodeStatment) extends KevsAbstractInt
               }
             }
             case None => {
-              val newnode = KevoreeFactory.eINSTANCE.createContainerNode
+              val newnode = KevoreeFactory.$instance.createContainerNode
               newnode.setName(addN.nodeName)
               newnode.setTypeDefinition(nodeType)
               Merger.mergeDictionary(newnode, addN.props, None)

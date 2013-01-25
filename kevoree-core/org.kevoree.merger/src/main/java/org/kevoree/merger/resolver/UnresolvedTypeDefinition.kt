@@ -26,18 +26,32 @@
  */
 package org.kevoree.merger.resolver
 
-import org.kevoree.DictionaryAttribute
+import org.kevoree.TypeDefinition
+import org.kevoree.KevoreeContainer
+import java.util.HashMap
+import org.kevoree.DictionaryType
+import org.kevoree.DeployUnit
+import java.util.ArrayList
 
 /**
  * Created by IntelliJ IDEA.
  * User: duke
- * Date: 19/10/11
- * Time: 10:40
- * To change this template use File | Settings | File Templates.
+ * Date: 07/10/11
+ * Time: 11:29
  */
 
-case class UnresolvedDictionaryAttribute(attributeName : String) extends DictionaryAttribute {
-
-  override def getName = attributeName
-
+class UnresolvedTypeDefinition(val typeDefinitionName : String) : TypeDefinition {
+    override var _name: String = ""
+    override var internal_readOnlyElem: Boolean = false
+    override var internal_unsetCmd: (() -> Unit)? = null
+    override var internal_eContainer: KevoreeContainer? = null
+    override val _superTypes: HashMap<Any, TypeDefinition> = HashMap<Any, TypeDefinition>()
+    override var _superTypes_java_cache: List<TypeDefinition>? = null
+    override var _dictionaryType: DictionaryType? = null
+    override val _deployUnits: MutableList<DeployUnit> = ArrayList<DeployUnit>()
+    override var _nature: String = ""
+    override var _bean: String = ""
+    override var _factoryBean: String = ""
+    override var _deployUnits_java_cache: List<DeployUnit>? = null
+    override fun getName() : String { return typeDefinitionName }
 }

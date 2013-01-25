@@ -6,7 +6,7 @@
     <packaging>pom</packaging>
     <name>Kevoree :: Tools :: Root</name>
     <url>https://github.com/dukeboard/kevoree</url>
-    <version>1.9.0-SNAPSHOT</version>
+    <version>2.0.0-SNAPSHOT</version>
 
     <dependencies>
         <dependency>
@@ -183,7 +183,7 @@
         <!--  <module>../org.kevoree.tools.jar.wrapperplugin</module>-->
         <module>../org.kevoree.tools.ui.editor.standalone</module>
         <module>../org.kevoree.tools.marshell.mavenplugin</module>
-        <module>../org.kevoree.tools.annotation.scalaprocessor</module>
+      <!--  <module>../org.kevoree.tools.annotation.scalaprocessor</module>      -->
     </modules>
 
     <properties>
@@ -206,46 +206,6 @@
             <url>http://maven.kevoree.org/archiva/repository/snapshots/</url>
         </snapshotRepository>
     </distributionManagement>
-
-    <profiles>
-        <profile>
-            <id>eclipse</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-eclipse-plugin</artifactId>
-                        <version>2.8</version>
-                        <!-- see http://maven.apache.org/plugins/maven-eclipse-plugin/eclipse-mojo.html for more information -->
-                        <configuration>
-                            <downloadSources>true</downloadSources>
-                            <downloadJavadocs>true</downloadJavadocs>
-                            <projectnatures>
-                                <projectnature>org.scala-ide.sdt.core.scalanature</projectnature>
-                                <projectnature>org.eclipse.jdt.core.javanature</projectnature>
-                            </projectnatures>
-                            <buildcommands>
-                                <buildcommand>org.scala-ide.sdt.core.scalabuilder</buildcommand>
-                            </buildcommands>
-                            <classpathContainers>
-                                <classpathContainer>org.scala-ide.sdt.launching.SCALA_CONTAINER</classpathContainer>
-                                <classpathContainer>org.eclipse.jdt.launching.JRE_CONTAINER</classpathContainer>
-                            </classpathContainers>
-                            <excludes>
-                                <exclude>org.scala-lang:scala-library</exclude>
-                                <!-- <exclude>org.scala-lang:scala-compiler</exclude> -->
-                            </excludes>
-                            <sourceIncludes>
-                                <sourceInclude>**/*.scala</sourceInclude>
-                                <sourceInclude>**/*.java</sourceInclude>
-                            </sourceIncludes>
-                            <useProjectReferences>false</useProjectReferences>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
 
 
 </project>

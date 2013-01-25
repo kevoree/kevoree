@@ -33,6 +33,8 @@ package org.kevoree.tools.annotation.generator
 
 import java.io.File
 import org.kevoree.framework.aspects.KevoreeAspects._
+import scala.collection.JavaConversions._
+
 
 import org.kevoree.framework.{KevoreeGeneratorHelper, Constants}
 import javax.tools.StandardLocation
@@ -135,13 +137,13 @@ object KevoreeProvidedPortGenerator {
                 if (i != 0) {
                   writer.append(",")
                 }
-                writer.append(param.getName + ":" + param.getType.get.print('[', ']'))
+                writer.append(param.getName + ":" + param.getType.print('[', ']'))
                 i = i + 1
             }
             /* GENERATES RETURN TYPE in rt */
-            var rt = op.getReturnType.get.getName
-            if (op.getReturnType.get.getGenericTypes.size > 0) {
-              rt += op.getReturnType.get.getGenericTypes.collect {
+            var rt = op.getReturnType.getName
+            if (op.getReturnType.getGenericTypes.size > 0) {
+              rt += op.getReturnType.getGenericTypes.collect {
                 case s: TypedElement => s.getName
               }.mkString("[", ",", "]")
             }
@@ -177,9 +179,9 @@ object KevoreeProvidedPortGenerator {
                       writer.append(",")
                     }
                     writer.append("if(opcall.getParams.containsKey(\"" + param.getName + "\")){")
-                    writer.append("opcall.getParams.get(\"" + param.getName + "\").asInstanceOf[" + param.getType.get.print('[', ']') + "]")
+                    writer.append("opcall.getParams.get(\"" + param.getName + "\").asInstanceOf[" + param.getType.print('[', ']') + "]")
                     writer.append("}else{")
-                    writer.append("opcall.getParams.get(\"arg" + i + "\").asInstanceOf[" + param.getType.get.print('[', ']') + "]")
+                    writer.append("opcall.getParams.get(\"arg" + i + "\").asInstanceOf[" + param.getType.print('[', ']') + "]")
                     writer.append("}")
                     i = i + 1
                 }

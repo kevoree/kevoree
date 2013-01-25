@@ -30,6 +30,8 @@ import org.kevoree.merger.Merger
 import org.slf4j.LoggerFactory
 import org.kevoree._
 import scala.Some
+import scala.collection.JavaConversions._
+
 
 /**
  * Created by IntelliJ IDEA.
@@ -46,11 +48,11 @@ trait ChannelMerger extends Merger with DictionaryMerger {
     //MERGE CHANNEL
     modelToMerge.getHubs.foreach(hub => {
       val currentHub = actualModel.findByQuery(hub.buildQuery(), classOf[Channel]) match {
-        case Some(e) => {
+        case e: Channel => {
           mergeDictionaryInstance(e, hub)
           e
         }
-        case None => {
+        case null => {
           actualModel.addHubs(hub)
           hub
         }
@@ -58,43 +60,44 @@ trait ChannelMerger extends Merger with DictionaryMerger {
     })
     //MERGE NEW BINDING
     modelToMerge.getMBindings.foreach {
-      mb =>
-        actualModel.findByQuery(mb.getHub.buildQuery(), classOf[Channel]) match {
-          case Some(foundHub) => {
-            actualModel.findByQuery(mb.getPort.eContainer.eContainer.asInstanceOf[ContainerNode].buildQuery(), classOf[ContainerNode]) match {
-              case Some(foundNode) => {
-                foundNode.getComponents.find(component => component.getName == mb.getPort.eContainer.asInstanceOf[ComponentInstance].getName) match {
-                  case Some(foundComponent) => {
-                    (foundComponent.getRequired ++ foundComponent.getProvided).find(port => port.getPortTypeRef.getName == mb.getPort.getPortTypeRef.getName) match {
-                      case Some(foundPort) => {
-                        val newbinding = KevoreeFactory.eINSTANCE.createMBinding
-                        newbinding.setHub(foundHub)
-                        foundHub.removeBindings(mb)
-                        newbinding.setPort(foundPort)
-                        foundPort.removeBindings(mb)
-                        actualModel.getMBindings.find(mb => mb.getHub == foundHub && mb.getPort == foundPort) match {
-                          case Some(pMB) => {
-                            foundHub.removeBindings(pMB)
-                            foundPort.removeBindings(pMB)
-                            actualModel.removeMBindings(pMB)
-                            actualModel.addMBindings(newbinding)
-                          }
-                          case None => {
-                            actualModel.addMBindings(newbinding)
-                          }
+      mb => {
+        val foundHub: Channel = actualModel.findByQuery(mb.getHub.buildQuery(), classOf[Channel])
+        if (foundHub != null) {
+          actualModel.findByQuery(mb.getPort.eContainer.eContainer.asInstanceOf[ContainerNode].buildQuery(), classOf[ContainerNode]) match {
+            case foundNode: ContainerNode => {
+              foundNode.getComponents.find(component => component.getName == mb.getPort.eContainer.asInstanceOf[ComponentInstance].getName) match {
+                case Some(foundComponent) => {
+                  (foundComponent.getRequired.toList ++ foundComponent.getProvided).find(port => port.getPortTypeRef.getName == mb.getPort.getPortTypeRef.getName) match {
+                    case Some(foundPort) => {
+                      val newbinding = KevoreeFactory.$instance.createMBinding
+                      newbinding.setHub(foundHub)
+                      foundHub.removeBindings(mb)
+                      newbinding.setPort(foundPort)
+                      foundPort.removeBindings(mb)
+                      actualModel.getMBindings.find(mb => mb.getHub == foundHub && mb.getPort == foundPort) match {
+                        case Some(pMB) => {
+                          foundHub.removeBindings(pMB)
+                          foundPort.removeBindings(pMB)
+                          actualModel.removeMBindings(pMB)
+                          actualModel.addMBindings(newbinding)
+                        }
+                        case None => {
+                          actualModel.addMBindings(newbinding)
                         }
                       }
-                      case None => logger.error("Error while merging binding, can't found port for name " + mb.getPort.getPortTypeRef.getName)
                     }
+                    case None => logger.error("Error while merging binding, can't found port for name " + mb.getPort.getPortTypeRef.getName)
                   }
-                  case None => logger.error("Error while merging binding, can't found component for name " + mb.getPort.eContainer.asInstanceOf[ComponentInstance].getName)
                 }
+                case None => logger.error("Error while merging binding, can't found component for name " + mb.getPort.eContainer.asInstanceOf[ComponentInstance].getName)
               }
-              case None => logger.error("Error while merging binding, can't found node for name " + mb.getPort.eContainer.eContainer.asInstanceOf[ContainerNode].getName)
             }
+            case null => logger.error("Error while merging binding, can't found node for name " + mb.getPort.eContainer.eContainer.asInstanceOf[ContainerNode].getName)
           }
-          case None => logger.error("Error while merging binding, can't found channel for name " + mb.getHub.getName)
+        } else {
+          logger.error("Error while merging binding, can't found channel for name " + mb.getHub.getName)
         }
+      }
     }
 
 

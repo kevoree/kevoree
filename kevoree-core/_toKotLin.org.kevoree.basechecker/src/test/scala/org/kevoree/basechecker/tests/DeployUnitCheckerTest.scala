@@ -24,21 +24,49 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kevoree.merger.resolver
+package org.kevoree.basechecker.tests
 
-import org.kevoree.ContainerNode
+import org.scalatest.junit.AssertionsForJUnit
+import org.junit.Test
+import org.kevoree.core.basechecker.cyclechecker.ComponentCycleChecker
+import org.kevoree.core.basechecker.nodechecker.NodeChecker
+import org.scalatest.Assertions._
+import org.kevoree.framework.KevoreeXmiHelper
 
 /**
  * Created by IntelliJ IDEA.
  * User: duke
- * Date: 20/10/11
- * Time: 08:40
+ * Date: 09/11/11
+ * Time: 14:59
+ * To change this template use File | Settings | File Templates.
  */
 
-case class UnresolvedNode(nodeName : String,query : String) extends ContainerNode {
+class DeployUnitCheckerTest extends AssertionsForJUnit with BaseCheckerSuite {
 
-  override def getName = nodeName
+  @Test def verifyCycleDetectionOK() {
 
-  override def buildQuery() : String = query
 
+ 		val m = model("test_checker/nodeployunit/nodeployNode.kev")
+    val nodeChecker = new NodeChecker
+    val violations = nodeChecker.check(m)
+    assert(violations.size().equals(1))
+
+
+    val m2 = model("test_checker/nodeployunit/nodeployNodeOk.kev")
+    val violations2 = nodeChecker.check(m2)
+    assert(violations2.size().equals(0))
+    
+    /*
+    val m3 = KevoreeXmiHelper.load("/Users/duke/Desktop/drop.kev")
+    val violations3 = nodeChecker.check(m3)
+    
+    import scala.collection.JavaConversions._
+    violations3.foreach{
+      v => println(v.getMessage)
+    }
+
+    println(violations3.size())
+    */
+  }
+  
 }

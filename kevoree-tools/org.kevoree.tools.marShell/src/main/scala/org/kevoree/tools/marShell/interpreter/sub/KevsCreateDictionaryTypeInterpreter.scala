@@ -17,6 +17,8 @@ import org.kevoree.tools.marShell.ast.CreateDictionaryTypeStatment
 import org.kevoree.tools.marShell.interpreter.{KevsInterpreterContext, KevsAbstractInterpreter}
 import org.slf4j.LoggerFactory
 import org.kevoree.{TypeDefinition, KevoreeFactory}
+import scala.collection.JavaConversions._
+
 
 /**
  * Created with IntelliJ IDEA.
@@ -30,19 +32,19 @@ case class KevsCreateDictionaryTypeInterpreter(stmt: CreateDictionaryTypeStatmen
 
   def interpret(context: KevsInterpreterContext) = {
     context.model.findByQuery("typeDefinitions[" +stmt.typeName +"]", classOf[TypeDefinition])match {
-      case Some(td) => {
-        if (td.getDictionaryType.isEmpty) {
-          val newdictionary = KevoreeFactory.eINSTANCE.createDictionaryType
-          td.setDictionaryType(Some(newdictionary))
+      case td : TypeDefinition => {
+        if (td.getDictionaryType() == null) {
+          val newdictionary = KevoreeFactory.$instance.createDictionaryType
+          td.setDictionaryType(newdictionary)
         }
 
         stmt.elems.foreach {
           tdElem => {
-            val processDictionaryAtt = td.getDictionaryType.get.getAttributes.find(eAtt => eAtt.getName == tdElem.id) match {
+            val processDictionaryAtt = td.getDictionaryType().getAttributes.find(eAtt => eAtt.getName == tdElem.id) match {
               case None => {
-                val newAtt = KevoreeFactory.eINSTANCE.createDictionaryAttribute
+                val newAtt = KevoreeFactory.$instance.createDictionaryAttribute
                 newAtt.setName(tdElem.id)
-                td.getDictionaryType.get.addAttributes(newAtt)
+                td.getDictionaryType.addAttributes(newAtt)
                 newAtt.setFragmentDependant(tdElem.fragDep)
                 newAtt
               }
@@ -57,7 +59,7 @@ case class KevsCreateDictionaryTypeInterpreter(stmt: CreateDictionaryTypeStatmen
         }
         true
       }
-      case None => {
+      case null => {
         logger.error("Type definition not found {}", stmt.typeName)
         false
       }

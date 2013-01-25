@@ -43,13 +43,13 @@ trait TypeDefinitionProcessor {
   def defineAsSuperType[A<:TypeDefinition](child: TypeDefinition, parentName: String, parentType : Class[A]) {
     val model = LocalUtility.root
     val parent = model.findByQuery("typeDefinitions[" + parentName + "]",parentType) match {
-      case Some(foundTD) => foundTD
-      case None => {
+      case foundTD : Any => foundTD
+      case null => {
         val newTypeDef = parentType.getSimpleName match {
-          case "NodeType" => KevoreeFactory.eINSTANCE.createNodeType
-          case "ComponentType" => KevoreeFactory.eINSTANCE.createComponentType
-          case "ChannelType" => KevoreeFactory.eINSTANCE.createChannelType
-          case "GroupType" => KevoreeFactory.eINSTANCE.createGroupType
+          case "NodeType" => KevoreeFactory.$instance.createNodeType
+          case "ComponentType" => KevoreeFactory.$instance.createComponentType
+          case "ChannelType" => KevoreeFactory.$instance.createChannelType
+          case "GroupType" => KevoreeFactory.$instance.createGroupType
           case _ @ notFound => println("error => "+parentName+"-"+notFound) ;null
         }
         newTypeDef.setName(parentName)

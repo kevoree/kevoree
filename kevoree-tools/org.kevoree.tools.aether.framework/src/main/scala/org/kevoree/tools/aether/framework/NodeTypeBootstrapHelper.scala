@@ -16,7 +16,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * 	http://www.gnu.org/licenses/lgpl-3.0.txt
+ * http://www.gnu.org/licenses/lgpl-3.0.txt
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -49,6 +49,7 @@ import java.io.File
 import org.kevoree.{DeployUnit, KevoreeFactory, GroupType, ContainerRoot}
 import org.kevoree.kcl.KevoreeJarClassLoader
 import scala.collection.JavaConversions._
+import java.util
 
 /**
  * User: ffouquet
@@ -60,15 +61,15 @@ class NodeTypeBootstrapHelper extends Bootstraper with KCLBootstrap {
 
   var kevoreeLogService: org.kevoree.api.service.core.logging.KevoreeLogService = null
 
-  def getKevoreeLogService : org.kevoree.api.service.core.logging.KevoreeLogService = kevoreeLogService
+  def getKevoreeLogService: org.kevoree.api.service.core.logging.KevoreeLogService = kevoreeLogService
 
-  def setKevoreeLogService(ls : org.kevoree.api.service.core.logging.KevoreeLogService) {
+  def setKevoreeLogService(ls: org.kevoree.api.service.core.logging.KevoreeLogService) {
     kevoreeLogService = ls
   }
 
   var classLoaderHandler = new JCLContextHandler
 
-  def bootstrapNodeType(model: ContainerRoot, destNodeName: String, mservice: KevoreeModelHandlerService, kevsEngineFactory: KevScriptEngineFactory): Option[org.kevoree.api.NodeType] = {
+  def bootstrapNodeType(model: ContainerRoot, destNodeName: String, mservice: KevoreeModelHandlerService, kevsEngineFactory: KevScriptEngineFactory): org.kevoree.api.NodeType = {
     //LOCATE NODE
     val nodeOption = model.getNodes.find(node => node.getName == destNodeName)
     nodeOption match {
@@ -81,19 +82,21 @@ class NodeTypeBootstrapHelper extends Bootstraper with KCLBootstrap {
             val nodeType = clazz.newInstance.asInstanceOf[AbstractNodeType]
             //ADD INSTANCE DICTIONARY
             val dictionary: java.util.HashMap[String, AnyRef] = new java.util.HashMap[String, AnyRef]
-            node.getTypeDefinition.getDictionaryType.map {
-              dictionaryType =>
-                dictionaryType.getDefaultValues.foreach {
-                  dv =>
-                    dictionary.put(dv.getAttribute.getName, dv.getValue)
-                }
+            val dictionaryType = node.getTypeDefinition.getDictionaryType
+            if (dictionaryType != null) {
+              dictionaryType.getDefaultValues.foreach {
+                dv =>
+                  dictionary.put(dv.getAttribute.getName, dv.getValue)
+              }
             }
-            node.getDictionary.map {
-              dictionaryModel =>
-                dictionaryModel.getValues.foreach {
-                  v =>
-                    dictionary.put(v.getAttribute.getName, v.getValue)
-                }
+
+            val dictionaryModel = node.getDictionary
+
+            if (dictionaryModel != null) {
+              dictionaryModel.getValues.foreach {
+                v =>
+                  dictionary.put(v.getAttribute.getName, v.getValue)
+              }
             }
             //   dictionary.put(Constants.KEVOREE_PROPERTY_OSGI_BUNDLE, bundleContext.getBundle)
             nodeType.setDictionary(dictionary)
@@ -107,17 +110,17 @@ class NodeTypeBootstrapHelper extends Bootstraper with KCLBootstrap {
             nodeType.setBootStrapperService(this)
             // }
             //nodeType.push(destNodeName, model, bundle.getBundleContext)
-            Some(nodeType)
+            nodeType
           } else {
-            None
+            null
           }
           //KevoreeDeployManager.addMapping(KevoreeOSGiBundle(node.getTypeDefinition.getName, node.getTypeDefinition.getClass.getName, lastBundleID))
         } else {
           logger.error("NodeType deploy unit not found , have you forgotten to merge nodetype library ?")
-          None
+          null
         }
       }
-      case None => logger.error("Node not found using name " + destNodeName); None
+      case None => logger.error("Node not found using name " + destNodeName); null
     }
   }
 
@@ -186,19 +189,20 @@ class NodeTypeBootstrapHelper extends Bootstraper with KCLBootstrap {
             //ADD INSTANCE DICTIONARY
             val dictionary: java.util.HashMap[String, AnyRef] = new java.util.HashMap[String, AnyRef]
 
-            group.getTypeDefinition.getDictionaryType.map {
-              dictionaryType =>
-                dictionaryType.getDefaultValues.foreach {
-                  dv =>
-                    dictionary.put(dv.getAttribute.getName, dv.getValue)
-                }
+            val dictionaryType = group.getTypeDefinition.getDictionaryType
+
+            if (dictionaryType != null) {
+              dictionaryType.getDefaultValues.foreach {
+                dv =>
+                  dictionary.put(dv.getAttribute.getName, dv.getValue)
+              }
             }
-            group.getDictionary.map {
-              dictionaryModel =>
-                dictionaryModel.getValues.foreach {
-                  v =>
-                    dictionary.put(v.getAttribute.getName, v.getValue)
-                }
+            val dictionaryModel = group.getDictionary()
+            if (dictionaryModel != null) {
+              dictionaryModel.getValues.foreach {
+                v =>
+                  dictionary.put(v.getAttribute.getName, v.getValue)
+              }
             }
             //    dictionary.put(Constants.KEVOREE_PROPERTY_OSGI_BUNDLE, bundleContext.getBundle)
             groupType.getDictionary().putAll(dictionary)
@@ -231,7 +235,7 @@ class NodeTypeBootstrapHelper extends Bootstraper with KCLBootstrap {
     val superTypeBootStrap = groupType.getSuperTypes.forall(superType => installGroupTyp(superType.asInstanceOf[GroupType]).isDefined)
     if (superTypeBootStrap) {
       //FAKE NODE TODO
-      val fakeNode = KevoreeFactory.createContainerNode
+      val fakeNode = KevoreeFactory.$instance.createContainerNode
       groupType.eContainer.asInstanceOf[ContainerRoot].getTypeDefinitions.find(td => td.getName == "JavaSENode").map {
         javaseTD =>
           fakeNode.setTypeDefinition(javaseTD)
@@ -273,10 +277,8 @@ class NodeTypeBootstrapHelper extends Bootstraper with KCLBootstrap {
     }
   }
 
-  def resolveArtifact(artId: String, groupId: String, version: String, repos: java.util.List[String]): File = AetherUtil.resolveMavenArtifact(artId, groupId, version, repos)
 
 
-  def resolveArtifact(artId: String, groupId: String, version: String, extension : String, repos: java.util.List[String]): File = AetherUtil.resolveMavenArtifact(artId, groupId, version, extension, repos)
 
   def resolveKevoreeArtifact(artId: String, groupId: String, version: String): File = AetherUtil.resolveKevoreeArtifact(artId, groupId, version)
 
@@ -292,12 +294,15 @@ class NodeTypeBootstrapHelper extends Bootstraper with KCLBootstrap {
   }
 
   def registerManuallyDeployUnit(artefactID: String, groupID: String, version: String, kcl: KevoreeJarClassLoader) {
-    val du = KevoreeFactory.createDeployUnit
+    val du = KevoreeFactory.$instance.createDeployUnit
     du.setUnitName(artefactID)
     du.setGroupName(groupID)
     du.setVersion(version)
     classLoaderHandler.manuallyAddToCache(du, kcl)
   }
-
+  def resolveArtifact(artId: String, groupId: String, version: String, extension: String, repos: util.List[_ <: String]): File = AetherUtil.resolveMavenArtifact(artId, groupId, version, extension, repos)
+  def resolveArtifact(artId: String, groupId: String, version: String, repos: util.List[_ <: String]): File = {
+    AetherUtil.resolveMavenArtifact(artId, groupId, version, repos)
+  }
 
 }

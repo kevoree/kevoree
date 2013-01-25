@@ -64,7 +64,7 @@ case class KevsAddPortTypeInterpreter(self: AddPortTypeStatment) extends KevsAbs
               success = true
             case None =>
               logger.debug("The port service can't be associated with the interface => {} is not found", self.className)
-              val messagePortType = KevoreeFactory.eINSTANCE.createMessagePortType
+              val messagePortType = KevoreeFactory.$instance.createMessagePortType
               messagePortType.setName(self.className.toString)
               context.model.addTypeDefinitions(messagePortType)
 

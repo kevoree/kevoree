@@ -37,6 +37,8 @@ package org.kevoree.framework.annotation.processor.visitor.sub
 import org.kevoree._
 import javax.lang.model.element.TypeElement
 import javax.annotation.processing.ProcessingEnvironment
+import scala.collection.JavaConversions._
+
 
 trait DeployUnitProcessor {
 
@@ -63,10 +65,10 @@ trait DeployUnitProcessor {
     nodeTypeNamesS.foreach {
       nodeTypeName =>
         val ctdeployunit = root.getDeployUnits.find({
-          du => du.getUnitName == unitName && du.getGroupName == groupName && du.getVersion == version && du.getTargetNodeType.get.getName == nodeTypeName
+          du => du.getUnitName == unitName && du.getGroupName == groupName && du.getVersion == version && du.getTargetNodeType.getName == nodeTypeName
         }) match {
           case None => {
-            val newdeploy = KevoreeFactory.eINSTANCE.createDeployUnit
+            val newdeploy = KevoreeFactory.$instance.createDeployUnit
             newdeploy.setUnitName(unitName)
             newdeploy.setGroupName(groupName)
             newdeploy.setVersion(version)
@@ -77,15 +79,15 @@ trait DeployUnitProcessor {
             //nodeTypeNameList.foreach {
             //nodeTypeName =>
             root.getTypeDefinitions.filter(p => p.isInstanceOf[NodeType]).find(nt => nt.getName == nodeTypeName) match {
-              case Some(existingNodeType) => newdeploy.setTargetNodeType(Some(existingNodeType.asInstanceOf[NodeType]))
+              case Some(existingNodeType) => newdeploy.setTargetNodeType(existingNodeType.asInstanceOf[NodeType])
               case None => {
                 if (typeDef.getName == nodeTypeName) {
-                  newdeploy.setTargetNodeType(Some(typeDef.asInstanceOf[NodeType]))
+                  newdeploy.setTargetNodeType(typeDef.asInstanceOf[NodeType])
                 } else {
-                  val nodeType = KevoreeFactory.eINSTANCE.createNodeType
+                  val nodeType = KevoreeFactory.$instance.createNodeType
                   nodeType.setName(nodeTypeName)
                   root.addTypeDefinitions(nodeType)
-                  newdeploy.setTargetNodeType(Some(nodeType))
+                  newdeploy.setTargetNodeType(nodeType)
                 }
               }
             }
@@ -112,7 +114,7 @@ trait DeployUnitProcessor {
         if (repoUrl != "") {
           val repo = root.getRepositories.find(r => r.getUrl == repoUrl) match {
             case None => {
-              val newrepo = KevoreeFactory.eINSTANCE.createRepository
+              val newrepo = KevoreeFactory.$instance.createRepository
               newrepo.setUrl(repoUrl)
               root.addRepositories(newrepo)
               newrepo
@@ -128,7 +130,7 @@ trait DeployUnitProcessor {
         if (rRepoUrl != "") {
           root.getRepositories.find(r => r.getUrl == rRepoUrl) match {
             case None => {
-              val newrepo = KevoreeFactory.eINSTANCE.createRepository
+              val newrepo = KevoreeFactory.$instance.createRepository
               newrepo.setUrl(rRepoUrl)
               root.addRepositories(newrepo)
               newrepo

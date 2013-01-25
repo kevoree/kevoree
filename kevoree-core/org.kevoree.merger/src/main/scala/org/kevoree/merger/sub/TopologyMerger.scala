@@ -29,6 +29,8 @@ package org.kevoree.merger.sub
 import org.kevoree.merger.Merger
 import org.slf4j.LoggerFactory
 import org.kevoree.{NetworkProperty, NodeLink, NodeNetwork, ContainerRoot}
+import scala.collection.JavaConversions._
+
 
 /**
  * Created by IntelliJ IDEA.
@@ -44,9 +46,9 @@ trait TopologyMerger extends Merger {
 
   def mergeTopology(actualModel: ContainerRoot, modelToMerge: ContainerRoot): Unit = {
 
-    modelToMerge.getNodeNetworks.foreach {
+    modelToMerge.getNodeNetworks.toList.foreach {
       nn =>
-        actualModel.getNodeNetworks.find(ann => ann.getInitBy.get.getName == nn.getInitBy.get.getName && ann.getTarget.getName == nn.getTarget.getName) match {
+        actualModel.getNodeNetworks.find(ann => ann.getInitBy().getName() == nn.getInitBy.getName() && ann.getTarget.getName == nn.getTarget().getName()) match {
           case None => actualModel.addNodeNetworks(nn)
           case Some(nnfound: NodeNetwork) => {
             nn.getLink.foreach {

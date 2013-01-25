@@ -43,7 +43,7 @@ case class KevsAddGroupInterpreter(addGroup: AddGroupStatment) extends KevsAbstr
         context.model.findByQuery("typeDefinitions[" + addGroup.groupTypeName + "]", classOf[TypeDefinition]) match {
           case Some(targetGroupType) if (targetGroupType.isInstanceOf[GroupType]) => {
 
-            val newGroup = KevoreeFactory.eINSTANCE.createGroup
+            val newGroup = KevoreeFactory.$instance.createGroup
             newGroup.setTypeDefinition(targetGroupType)
             newGroup.setName(addGroup.groupName)
             Merger.mergeDictionary(newGroup, addGroup.props, None)

@@ -48,6 +48,7 @@ import java.util.jar.{JarEntry, JarFile}
 import java.io.File
 import java.net.URL
 import java.util
+import scala.collection.JavaConversions._
 
 /**
  * Created by IntelliJ IDEA.
@@ -105,12 +106,12 @@ case class KevsMergerInterpreter (mergeStatement: MergeStatement) extends KevsAb
         jar = new JarFile(new File(file.getAbsolutePath))
         val entry: JarEntry = jar.getJarEntry("KEV-INF/lib.kev")
         if (entry != null) {
-          val newModel = KevoreeXmiHelper.loadStream(jar.getInputStream(entry))
+          val newModel = KevoreeXmiHelper.$instance.loadStream(jar.getInputStream(entry))
           mergerComponent.merge(context.model, newModel)
           true
         } else {
           try {
-            val newModel = KevoreeXmiHelper.load(mergeStatement.url)
+            val newModel = KevoreeXmiHelper.$instance.load(mergeStatement.url)
             mergerComponent.merge(context.model, newModel)
             true
           } catch {
@@ -121,12 +122,12 @@ case class KevsMergerInterpreter (mergeStatement: MergeStatement) extends KevsAb
         false
       }
     } else if (mergeStatement.url.startsWith("http://")) {
-      val newModel = KevoreeXmiHelper.loadStream(new URL(mergeStatement.url).openStream)
+      val newModel = KevoreeXmiHelper.$instance.loadStream(new URL(mergeStatement.url).openStream)
       mergerComponent.merge(context.model, newModel)
       true
     } else {
       try {
-        val newModel = KevoreeXmiHelper.load(mergeStatement.url)
+        val newModel = KevoreeXmiHelper.$instance.load(mergeStatement.url)
         mergerComponent.merge(context.model, newModel)
         true
       } catch {

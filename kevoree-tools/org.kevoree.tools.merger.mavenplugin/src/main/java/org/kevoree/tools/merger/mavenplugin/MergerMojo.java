@@ -125,7 +125,7 @@ public class MergerMojo extends AbstractMojo {
           //  root = KevoreeXmiHelper.load(modelInput.getAbsolutePath());
        // } else {
        //     this.getLog().warn("Model File Empty, creating one !");
-            root = KevoreeFactory.eINSTANCE().createContainerRoot();
+            root = KevoreeFactory.$instance().createContainerRoot();
         //}
 
         //MERGE TWO BY TWO

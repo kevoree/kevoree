@@ -67,7 +67,7 @@ object Merger {
 
         var dictionary = inst.getDictionary
         if (dictionary.isEmpty) {
-          dictionary = Some(KevoreeFactory.eINSTANCE.createDictionary)
+          dictionary = Some(KevoreeFactory.$instance.createDictionary)
           inst.setDictionary(dictionary)
         }
 
@@ -82,7 +82,7 @@ object Merger {
             val att = inst.getTypeDefinition.getDictionaryType.get.getAttributes.find(att => att.getName == key) match {
               case None => {
                /* if(allowTypeUpdate){
-                  val newDictionaryValue = KevoreeFactory.eINSTANCE.createDictionaryAttribute
+                  val newDictionaryValue = KevoreeFactory.$instance.createDictionaryAttribute
                   newDictionaryValue.setName(key.toString)
                   inst.getTypeDefinition.getDictionaryType.get.addAttributes(newDictionaryValue)
                   newDictionaryValue
@@ -92,7 +92,7 @@ object Merger {
               }
               case Some(previousAtt) => previousAtt
             }
-            val newDictionaryValue = KevoreeFactory.eINSTANCE.createDictionaryValue
+            val newDictionaryValue = KevoreeFactory.$instance.createDictionaryValue
             newDictionaryValue.setValue(newValue.toString)
             newDictionaryValue.setAttribute(att)
             newDictionaryValue.setTargetNode(targetNode)

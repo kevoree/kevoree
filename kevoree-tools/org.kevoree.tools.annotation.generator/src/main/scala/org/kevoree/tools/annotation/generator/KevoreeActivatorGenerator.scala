@@ -38,6 +38,7 @@ import org.kevoree.{GroupType, ContainerRoot, ChannelType, ComponentType}
 import org.kevoree.framework.KevoreeGeneratorHelper
 import javax.annotation.processing.Filer
 import javax.tools.StandardLocation
+import scala.collection.JavaConversions._
 
 object KevoreeActivatorGenerator {
   def generateActivator(root: ContainerRoot, filer: Filer, targetNodeType : String) {

@@ -35,6 +35,8 @@ import javax.annotation.processing.Filer
 import javax.tools.{StandardLocation}
 import org.kevoree.{TypedElement, ContainerRoot, MessagePortType, PortTypeRef, ComponentType => KevoreeComponentType, ServicePortType}
 import org.kevoree.annotation.ThreadStrategy
+import scala.collection.JavaConversions._
+
 
 object KevoreeRequiredPortGenerator {
 
@@ -107,13 +109,13 @@ object KevoreeRequiredPortGenerator {
                 if (i != 0) {
                   writer.append(",")
                 }
-                writer.append(param.getName + ":" + param.getType.get.print('[', ']'))
+                writer.append(param.getName + ":" + param.getType.print('[', ']'))
                 i = i +1
             }
 
-            var rt = op.getReturnType.get.getName
-            if (op.getReturnType.get.getGenericTypes.size > 0) {
-              rt += op.getReturnType.get.getGenericTypes.collect {
+            var rt = op.getReturnType.getName
+            if (op.getReturnType.getGenericTypes.size > 0) {
+              rt += op.getReturnType.getGenericTypes.collect {
                 case s: TypedElement => s.getName
               }.mkString("[", ",", "]")
             }

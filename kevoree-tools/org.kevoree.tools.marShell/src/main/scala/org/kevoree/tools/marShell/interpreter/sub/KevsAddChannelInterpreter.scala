@@ -42,7 +42,7 @@ case class KevsAddChannelInterpreter(addChannel: AddChannelInstanceStatment) ext
         //SEARCH TYPE DEF
         context.model.findByQuery("typeDefinitions[" + addChannel.channelType + "]", classOf[TypeDefinition]) match {
           case Some(targetChannelType) if (targetChannelType.isInstanceOf[ChannelType]) => {
-            val newchannel = KevoreeFactory.eINSTANCE.createChannel
+            val newchannel = KevoreeFactory.$instance.createChannel
             newchannel.setTypeDefinition(targetChannelType)
             newchannel.setName(addChannel.channelName)
             Merger.mergeDictionary(newchannel, addChannel.props, None)

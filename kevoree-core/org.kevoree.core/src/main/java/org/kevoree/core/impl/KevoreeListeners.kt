@@ -36,8 +36,8 @@ class KevoreeListeners {
             Thread.currentThread().getThreadGroup()
         }
 
-        override fun newThread(p1: Runnable) : Thread {
-            val t = Thread(group, p1, internalName)
+        override fun newThread(pRun: Runnable) : Thread {
+            val t = Thread(group, pRun, internalName)
             if (t.isDaemon()) {
                 t.setDaemon(false)
             }
@@ -57,8 +57,8 @@ class KevoreeListeners {
             Thread.currentThread().getThreadGroup()
         }
 
-        override fun newThread(p1: Runnable) : Thread {
-            val t = Thread(group, p1, "Kevoree_Core_ListenerSchedulerAsync_" + internalNodeName + "_" + numCreated.getAndIncrement())
+        override fun newThread(pRun: Runnable) : Thread {
+            val t = Thread(group, pRun, "Kevoree_Core_ListenerSchedulerAsync_" + internalNodeName + "_" + numCreated.getAndIncrement())
             if (t.isDaemon()) {
                 t.setDaemon(false)
             }
@@ -105,8 +105,7 @@ class KevoreeListeners {
 
     class NotifyAll() : Runnable {
         override fun run() {
-            registeredListeners.forEach {
-                value ->
+            for(value in registeredListeners) {
                 schedulerAsync?.submit(AsyncModelUpdateRunner(value))
             }
         }
@@ -155,7 +154,9 @@ class KevoreeListeners {
     //ROLLBACK STEP
     class PREROLLBACK(val currentModel: ContainerRoot, val proposedModel: ContainerRoot): Callable<Boolean> {
         override fun call(): Boolean {
-            registeredListeners.forEach{ l -> l.preRollback(currentModel, proposedModel) }
+            for (l in registeredListeners) {
+                l.preRollback(currentModel, proposedModel)
+            }
             return true
         }
     }
@@ -165,7 +166,9 @@ class KevoreeListeners {
 
     class POSTROLLBACK(val currentModel: ContainerRoot, val proposedModel: ContainerRoot): Callable<Boolean> {
         override fun call(): Boolean {
-            registeredListeners.forEach{ l -> l.postRollback(currentModel, proposedModel) }
+            for (l in registeredListeners) {
+                l.postRollback(currentModel, proposedModel)
+            }
             return true
         }
     }

@@ -16,6 +16,7 @@ package org.kevoree.merger.tests
 import org.junit.{Test, Before}
 import org.kevoree.merger.KevoreeMergerComponent
 import org.kevoree.api.service.core.merger.MergerService
+import scala.collection.JavaConversions._
 
 /**
  * Created with IntelliJ IDEA.

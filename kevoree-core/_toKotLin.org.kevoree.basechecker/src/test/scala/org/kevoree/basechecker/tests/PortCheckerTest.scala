@@ -24,18 +24,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kevoree.merger.resolver
+package org.kevoree.basechecker.tests
 
-import org.kevoree.NodeType
+import org.junit.Test
+import org.kevoree.core.basechecker.portchecker.PortChecker
 
 /**
- * Created by IntelliJ IDEA.
- * User: duke
- * Date: 07/10/11
- * Time: 10:28
- * To change this template use File | Settings | File Templates.
+ * User: Erwan Daubert - erwan.daubert@gmail.com
+ * Date: 14/10/11
+ * Time: 17:51
+ *
+ * @author Erwan Daubert
+ * @version 1.0
  */
 
-case class UnresolvedNodeType(unresolvedNodeTypeName : String) extends NodeType {
-  override def getName = unresolvedNodeTypeName
+class PortCheckerTest extends BaseCheckerSuite {
+
+  @Test def checkRequiredPort () {
+    val modelPort = model("test_checker/requiredPort/testPortChecker3.kev")
+    val portChecker = new PortChecker
+    assert(portChecker.check(modelPort).size().equals(2))
+  }
+
 }

@@ -39,6 +39,8 @@ import org.kevoree._
 import annotation.ThreadStrategy
 import javax.annotation.processing.Filer
 import javax.tools.StandardLocation
+import scala.collection.JavaConversions._
+
 
 object KevoreeFactoryGenerator {
 

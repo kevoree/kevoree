@@ -16,7 +16,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * 	http://www.gnu.org/licenses/lgpl-3.0.txt
+ * http://www.gnu.org/licenses/lgpl-3.0.txt
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -56,7 +56,7 @@ import org.slf4j.LoggerFactory
 import java.io.File
 import org.sonatype.aether.artifact.Artifact
 import org.sonatype.aether.util.artifact.DefaultArtifact
-import org.kevoree.{ContainerRoot, DeployUnit}
+import org.kevoree.{Dictionary, ContainerRoot, DeployUnit}
 import util.matching.Regex
 import org.sonatype.aether.repository.{Authentication, RemoteRepository}
 import org.kevoree.framework.KevoreePlatformHelper
@@ -85,19 +85,19 @@ trait AetherFramework extends TempFileCacheManager with AetherRepositoryHandler 
     }
   }
 
-  def resolveMavenArtifact4J(unitName: String, groupName: String, version: String, repositoriesUrl: java.util.List[String]): File =
+  def resolveMavenArtifact4J(unitName: String, groupName: String, version: String, repositoriesUrl: util.List[_ <: String]): File =
     resolveMavenArtifact(unitName, groupName, version, repositoriesUrl.toList)
 
-  def resolveMavenArtifact4J(unitName: String, groupName: String, version: String, extension: String, repositoriesUrl: java.util.List[String]): File =
-    resolveMavenArtifact(unitName, groupName, version,extension, repositoriesUrl.toList)
+  def resolveMavenArtifact4J(unitName: String, groupName: String, version: String, extension: String, repositoriesUrl: util.List[_ <: String]): File =
+    resolveMavenArtifact(unitName, groupName, version, extension, repositoriesUrl.toList)
 
 
-  def resolveMavenArtifact(unitName: String, groupName: String, version: String, repositoriesUrl: java.util.List[String]): File = {
-    resolveMavenArtifact(unitName,groupName,version,null,repositoriesUrl)
+  def resolveMavenArtifact(unitName: String, groupName: String, version: String, repositoriesUrl: util.List[_ <: String]): File = {
+    resolveMavenArtifact(unitName, groupName, version, null, repositoriesUrl)
   }
 
-  def resolveMavenArtifact(unitName: String, groupName: String, version: String, extension: String, repositoriesUrl: java.util.List[String]): File = {
-    val artifact: Artifact = if(extension == null){
+  def resolveMavenArtifact(unitName: String, groupName: String, version: String, extension: String, repositoriesUrl: util.List[_ <: String]): File = {
+    val artifact: Artifact = if (extension == null) {
       new DefaultArtifact(List(groupName.trim(), unitName.trim(), version.trim()).mkString(":"))
     } else {
       new DefaultArtifact(groupName.trim(), unitName.trim(), extension.trim(), version.trim())
@@ -107,7 +107,7 @@ trait AetherFramework extends TempFileCacheManager with AetherRepositoryHandler 
     val repositories: java.util.List[RemoteRepository] = new java.util.ArrayList()
     populate(repositoriesUrl)
     populate(getDefaultURLS)
-    def populate(rurl: java.util.List[String]){
+    def populate(rurl: util.List[_ <: String]) {
       rurl.foreach {
         repository =>
           val repo = new RemoteRepository
@@ -116,7 +116,7 @@ trait AetherFramework extends TempFileCacheManager with AetherRepositoryHandler 
           repo.setUrl(repository)
           repo.setContentType("default")
           repositories.add(repo)
-          logger.debug("Add URL for Request {}",repository)
+          logger.debug("Add URL for Request {}", repository)
       }
     }
 
@@ -249,7 +249,7 @@ trait AetherFramework extends TempFileCacheManager with AetherRepositoryHandler 
     root.getNodes.find(n => n.getName == nodeName) match {
       case Some(node) => {
         node.getDictionary match {
-          case Some(dic) => {
+          case dic: Dictionary => {
             dic.getValues.find(v => v.getAttribute.getName == "port") match {
               case Some(att) => {
                 Some("http://" + ip + ":" + att.getValue + "/provisioning/")
@@ -257,7 +257,7 @@ trait AetherFramework extends TempFileCacheManager with AetherRepositoryHandler 
               case None => None
             }
           }
-          case None => None
+          case null => None
         }
       }
       case None => None

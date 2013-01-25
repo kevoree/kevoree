@@ -29,6 +29,8 @@ package org.kevoree.merger.resolver
 import org.kevoree.{NodeType, ContainerRoot}
 import org.slf4j.LoggerFactory
 import org.kevoree.framework.aspects.KevoreeAspects._
+import scala.collection.JavaConversions._
+
 
 /**
  * Created by IntelliJ IDEA.
@@ -44,17 +46,17 @@ trait TypeDefinitionResolver {
   def resolveNodeTypeDefinition(model: ContainerRoot) {
     model.getDeployUnits.foreach {
       du =>
-        du.getTargetNodeType match {
+        du.getTargetNodeType() match {
           //PATTERN MATCHING TO UNRESOLVED NODE TYPE NAME
-          case Some(UnresolvedNodeType(nodeTypeName)) => {
-            model.getTypeDefinitions.filter(td => td.isInstanceOf[NodeType]).find(td => td.getName == nodeTypeName) match {
+          case nodeTypeName : UnresolvedNodeType => {
+            model.getTypeDefinitions.filter(td => td.isInstanceOf[NodeType]).find(td => td.getName == nodeTypeName.getName()) match {
               case Some(targetNodeType) => {
-                du.setTargetNodeType(Some(targetNodeType.asInstanceOf[NodeType]))
+                du.setTargetNodeType(targetNodeType.asInstanceOf[NodeType])
               }
-              case None => logger.error("Error while resolving NodeType for name " + nodeTypeName)
+              case None => logger.error("Error while resolving NodeType for name " + nodeTypeName.getName())
             }
           }
-          case None => //NOOP
+          case null => //NOOP
           case _ @ e => logger.warn("Strange already resolved target node type for name "+e+" - "+du.getUnitName)
         }
     }
@@ -66,13 +68,13 @@ trait TypeDefinitionResolver {
         typeDef.getSuperTypes.foreach {
           superType => {
             superType match {
-              case UnresolvedTypeDefinition(unresolvedTypeName) => {
-                model.getTypeDefinitions.find(td => td.getName == unresolvedTypeName) match {
+              case unresolvedTypeName : UnresolvedTypeDefinition => {
+                model.getTypeDefinitions.find(td => td.getName == unresolvedTypeName.getName()) match {
                   case Some(resolvedTypeDef) => {
                     typeDef.removeSuperTypes(superType)
                     typeDef.addSuperTypes(resolvedTypeDef)
                   }
-                  case None => logger.error("Error while resolving SuperType for name " + unresolvedTypeName)
+                  case None => logger.error("Error while resolving SuperType for name " + unresolvedTypeName.getName())
                 }
               }
               case _ =>
@@ -88,13 +90,13 @@ trait TypeDefinitionResolver {
         library.getSubTypes.foreach {
           subType => {
             subType match {
-              case UnresolvedTypeDefinition(unresolvedTypeName) => {
-                model.getTypeDefinitions.find(td => td.getName == unresolvedTypeName) match {
+              case unresolvedTypeName : UnresolvedTypeDefinition => {
+                model.getTypeDefinitions.find(td => td.getName == unresolvedTypeName.getName()) match {
                   case Some(resolvedTypeDef) => {
                     library.removeSubTypes(subType)
                     library.addSubTypes(resolvedTypeDef)
                   }
-                  case None => logger.error("Error while resolving library SubType for name " + unresolvedTypeName)
+                  case None => logger.error("Error while resolving library SubType for name " + unresolvedTypeName.getName())
                 }
               }
               case _ =>
@@ -108,12 +110,12 @@ trait TypeDefinitionResolver {
     model.getAllInstances.foreach {
       instance =>
         instance.getTypeDefinition match {
-          case UnresolvedTypeDefinition(unresolvedTypeName) => {
-            model.getTypeDefinitions.find(td => td.getName == unresolvedTypeName) match {
+          case unresolvedTypeName : UnresolvedTypeDefinition => {
+            model.getTypeDefinitions.find(td => td.getName == unresolvedTypeName.getName()) match {
               case Some(resolvedTypeDef) => {
                 instance.setTypeDefinition(resolvedTypeDef)
               }
-              case None => logger.error("Error while resolving library SubType for name " + unresolvedTypeName)
+              case None => logger.error("Error while resolving library SubType for name " + unresolvedTypeName.getName())
             }
           }
           case _ =>

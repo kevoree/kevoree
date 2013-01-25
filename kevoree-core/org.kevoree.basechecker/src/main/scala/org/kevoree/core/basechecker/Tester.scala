@@ -11,18 +11,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kevoree.merger.resolver
+package org.kevoree.core.basechecker
 
-import org.kevoree.PortType
+import org.kevoree.framework.KevoreeXmiHelper
 
 /**
  * Created with IntelliJ IDEA.
  * User: duke
- * Date: 06/12/12
- * Time: 23:38
+ * Date: 10/10/12
+ * Time: 15:04
  */
-case class UnresolvedPortType(name : String) extends PortType {
+object Tester extends App {
 
-  override def getName = name
+  val check = new RootChecker
+  val res =check.check(KevoreeXmiHelper.$instance.load("/Users/duke/Downloads/FRANCOIS"))
+
+  import scala.collection.JavaConversions._
+  res.foreach{
+    e => {
+      println(e.getMessage)
+    }
+  }
+
 
 }
