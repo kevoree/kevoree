@@ -45,7 +45,7 @@ object Merger {
       propKey match {
         case "*"=> mergeDictionary(inst,fragmentProps.get(propKey),None)
         case _ @ searchNodeName => {
-          inst.getTypeDefinition.eContainer.asInstanceOf[ContainerRoot].getNodes.find(n => n.getName == searchNodeName) match {
+          inst.getTypeDefinition.eContainer.asInstanceOf[ContainerRoot].findByQuery("nodes[" + searchNodeName + "]", classOf[ContainerNode]) match {
             case Some(nodeFound)=> {
               mergeDictionary(inst,fragmentProps.get(propKey),Some(nodeFound))
             }
