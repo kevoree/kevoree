@@ -13,7 +13,10 @@
  */
 package org.kevoree.tools.control.framework.impl;
 
-import org.kevoree.adaptation.control.api.ModelSignature;import java.lang.Override;
+import org.kevoree.adaptation.control.api.ModelSignature;
+
+import java.io.Serializable;
+import java.lang.Override;
 
 /**
  * Created with IntelliJ IDEA.
@@ -21,7 +24,7 @@ import org.kevoree.adaptation.control.api.ModelSignature;import java.lang.Overri
  * Date: 1/21/13
  * Time: 4:10 PM
  */
-public class ModelSignatureImpl implements ModelSignature {
+public class ModelSignatureImpl implements ModelSignature,Serializable {
 
     String _key;
     byte[] _signature = null;

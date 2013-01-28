@@ -43,7 +43,8 @@ public class Tester {
     {
 
         KeyPair key1 =  HelperSignature.generateKeys(1024);
-
+                     System.out.println(key1.getPublic());
+        System.out.println(key1.getPrivate());
         ContainerRoot current_model = KevoreeXmiHelper.loadStream(Tester.class.getClassLoader().getResourceAsStream("empty_node.kev"));
         ContainerRoot target_model = KevoreeXmiHelper.loadStream(Tester.class.getClassLoader().getResourceAsStream("random_nio_grapher_group.kev"));
 
@@ -56,17 +57,17 @@ public class Tester {
         rules.setAccessControl(accessControl);
 
         KControlRule r1 = rules.addAuthorizedMatcher("typeDefinitions[FakeConsole]");
-        r1.addMatcher(HelperMatcher.createMatcher(JavaSePrimitive.AddInstance()));
+       // r1.addMatcher(HelperMatcher.createMatcher(JavaSePrimitive.AddInstance()));
         r1.addMatcher(HelperMatcher.createMatcher(JavaSePrimitive.StartInstance()));
         r1.addMatcher(HelperMatcher.createMatcher(JavaSePrimitive.UpdateDictionaryInstance()));
-
+         /*
         KControlRule r2 = rules.addAuthorizedMatcher("typeDefinitions[BasicGroup]");
         r2.addMatcher(HelperMatcher.createMatcher(JavaSePrimitive.AddInstance()));
         r2.addMatcher(HelperMatcher.createMatcher(JavaSePrimitive.StopInstance()));
         r2.addMatcher(HelperMatcher.createMatcher(JavaSePrimitive.StartInstance()));
         r2.addMatcher(HelperMatcher.createMatcher(JavaSePrimitive.AddFragmentBinding()));
         r2.addMatcher(HelperMatcher.createMatcher(JavaSePrimitive.UpdateDictionaryInstance()));
-
+           */
 
         KControlRule r3 = rules.addAuthorizedMatcher("typeDefinitions[Grapher]");
         r3.addMatcher(HelperMatcher.createMatcher(JavaSePrimitive.AddInstance()));
@@ -75,7 +76,7 @@ public class Tester {
         r3.addMatcher(HelperMatcher.createMatcher(JavaSePrimitive.AddFragmentBinding()));
         r3.addMatcher(HelperMatcher.createMatcher(JavaSePrimitive.UpdateDictionaryInstance()));
 
-        KControlRule r4 = rules.addAuthorizedMatcher( "typeDefinitions[NioChannel]");
+        KControlRule r4 = rules.addAuthorizedMatcher("typeDefinitions[NioChannel]");
         r4.addMatcher(HelperMatcher.createMatcher(JavaSePrimitive.AddInstance()));
         r4.addMatcher(HelperMatcher.createMatcher(JavaSePrimitive.StopInstance()));
         r4.addMatcher(HelperMatcher.createMatcher(JavaSePrimitive.StartInstance()));
@@ -83,7 +84,7 @@ public class Tester {
         r4.addMatcher(HelperMatcher.createMatcher(JavaSePrimitive.UpdateDictionaryInstance()));
 
 
-   //     System.out.println(rules);
+        System.out.println(rules);
 
         rules.execute();
 
