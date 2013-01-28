@@ -48,7 +48,6 @@ class KevoreeKompareBean
 
     val adaptationModel = org.kevoreeAdaptation.KevoreeAdaptationFactory.$instance.createAdaptationModel
     //STEP 0 - FOUND LOCAL NODE
-
     val actualLocalNode = actualModel.findByQuery("nodes["+nodeName+"]",classOf[ContainerNode])
     val updateLocalNode = targetModel.findByQuery("nodes["+nodeName+"]",classOf[ContainerNode])
     val currentAdaptModel = updateLocalNode match {
@@ -210,10 +209,9 @@ class KevoreeKompareBean
     }
         */
 
-
     //logger.debug("after Hara Kiri detect")
-
-    plan(currentAdaptModel, nodeName)
+    val afterPlan = plan(currentAdaptModel, nodeName)
+    return afterPlan
   }
 
 

@@ -35,6 +35,7 @@ import event.{DocumentEvent, DocumentListener}
 import java.awt.BorderLayout
 import org.kevoree.framework.aspects.KevoreeAspects._
 import org.kevoree.{GroupType, ContainerRoot, TypeDefinition}
+import scala.collection.JavaConversions._
 
 
 /**
@@ -120,8 +121,8 @@ class InstanceParamPanel(pnodeTypeDefinition: TypeDefinition, defaultName: Strin
     p.add(instanceNameLabel)
     p.add(instanceTextField)
     
-    if (nodeTypeDefinition.getDictionaryType.isDefined) {
-      nodeTypeDefinition.getDictionaryType.get.getAttributes.foreach {
+    if (nodeTypeDefinition.getDictionaryType() != null) {
+      nodeTypeDefinition.getDictionaryType.getAttributes.foreach {
         att =>
           val l = new JLabel(att.getName, SwingConstants.TRAILING)
           l.setUI(new HudLabelUI)
@@ -168,7 +169,7 @@ class InstanceParamPanel(pnodeTypeDefinition: TypeDefinition, defaultName: Strin
 
           }
       }
-      SpringUtilities.makeCompactGrid(p, nodeTypeDefinition.getDictionaryType.get.getAttributes.size+1, 2, 6, 6, 6, 6)
+      SpringUtilities.makeCompactGrid(p, nodeTypeDefinition.getDictionaryType.getAttributes.size+1, 2, 6, 6, 6, 6)
       //p.revalidate()
       //p.repaint()
     } else {
@@ -179,8 +180,8 @@ class InstanceParamPanel(pnodeTypeDefinition: TypeDefinition, defaultName: Strin
   private def getDefValue(instanceName: String, model: ContainerRoot, typeDef: TypeDefinition): Properties = {
     val props = new Properties
     model.getTypeDefinitions.find(td => td.getName == typeDef.getName).map(td => {
-      if (td.getDictionaryType.isDefined && td.getDictionaryType.get.getDefaultValues != null) {
-        td.getDictionaryType.get.getDefaultValues.foreach {
+      if (td.getDictionaryType()!=null && td.getDictionaryType.getDefaultValues != null) {
+        td.getDictionaryType.getDefaultValues.foreach {
           defVal =>
             props.put(defVal.getAttribute.getName, defVal.getValue)
         }
@@ -188,8 +189,8 @@ class InstanceParamPanel(pnodeTypeDefinition: TypeDefinition, defaultName: Strin
     })
     model.getAllInstances.find(ist => ist.getName == instanceName).map {
       istFound =>
-        if (istFound.getDictionary.isDefined) {
-          istFound.getDictionary.get.getValues.foreach {
+        if (istFound.getDictionary()!=null) {
+          istFound.getDictionary.getValues.foreach {
             dicVal =>
               props.put(dicVal.getAttribute.getName, dicVal.getValue)
           }

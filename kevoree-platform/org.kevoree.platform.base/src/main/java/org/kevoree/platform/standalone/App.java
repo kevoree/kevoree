@@ -88,10 +88,8 @@ public class App {
     public static void main(String[] args) throws Exception {
 
         Long startTime = System.currentTimeMillis();
-
         App app = new App();
         app.start();
-
         logger.info("Kevoree runtime boot time {} ms",(System.currentTimeMillis()-startTime));
 
     }

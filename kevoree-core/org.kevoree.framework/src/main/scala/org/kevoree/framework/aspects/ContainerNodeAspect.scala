@@ -126,8 +126,18 @@ case class ContainerNodeAspect(node: ContainerNode) {
 
   def getKevoreeVersion: String = {
     try {
-      if (node.getTypeDefinition.foundRelevantDeployUnit(node) != null) {
-        node.getTypeDefinition.foundRelevantDeployUnit(node).getRequiredLibs.find(du => du.getGroupName == "org.kevoree" && du.getUnitName == "org.kevoree.api") match {
+
+      val rDU = node.getTypeDefinition.foundRelevantDeployUnit(node)
+
+      /*
+      println("rDU="+rDU.getUnitName+"->"+rDU.getRequiredLibs.size())
+      rDU.getRequiredLibs.foreach{ rdu =>
+          println(rdu.getUnitName)
+      }
+      */
+
+      if (rDU != null) {
+        rDU.getRequiredLibs.find(du => du.getGroupName == "org.kevoree" && du.getUnitName == "org.kevoree.api") match {
           case None => {
             logger.error("Error found api deploy unit for " + node.getName)
             ""

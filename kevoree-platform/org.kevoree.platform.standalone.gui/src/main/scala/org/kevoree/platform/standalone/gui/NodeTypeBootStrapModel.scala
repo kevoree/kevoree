@@ -29,6 +29,7 @@ package org.kevoree.platform.standalone.gui
 import org.slf4j.LoggerFactory
 import java.util.Properties
 import org.kevoree._
+import scala.collection.JavaConversions._
 
 /**
  * User: ffouquet
@@ -70,19 +71,19 @@ object NodeTypeBootStrapModel {
   private def createGroup(node : ContainerNode,model: ContainerRoot, groupName: String, groupTypeName: String, props: Properties): Group = {
     model.getTypeDefinitions.filter(td => td.isInstanceOf[GroupType]).find(td => td.getName == groupTypeName) match {
       case Some(groupTypeDef) => {
-        val group = KevoreeFactory.eINSTANCE.createGroup
+        val group = KevoreeFactory.$instance.createGroup
         group.setName(groupName)
         group.setTypeDefinition(groupTypeDef)
-        val propsmodel = KevoreeFactory.eINSTANCE.createDictionary
+        val propsmodel = KevoreeFactory.$instance.createDictionary
         import scala.collection.JavaConversions._
         props.keySet().foreach {
           key =>
-            if (groupTypeDef.getDictionaryType.isDefined) {
-              groupTypeDef.getDictionaryType.get.getAttributes.find(att => att.getName == key) match {
+            if (groupTypeDef.getDictionaryType()!=null) {
+              groupTypeDef.getDictionaryType.getAttributes.find(att => att.getName == key) match {
                 case Some(att) => {
-                  val newValue = KevoreeFactory.eINSTANCE.createDictionaryValue
+                  val newValue = KevoreeFactory.$instance.createDictionaryValue
                   newValue.setAttribute(att)
-                  newValue.setTargetNode(Some(node))
+                  newValue.setTargetNode(node)
                   newValue.setValue(props.get(key).toString)
                   propsmodel.addValues(newValue)
 
@@ -93,7 +94,7 @@ object NodeTypeBootStrapModel {
               logger.warn("Node bootstrap property lost " + key)
             }
         }
-        group.setDictionary(Some(propsmodel))
+        group.setDictionary(propsmodel)
         model.addGroups(group)
         group.addSubNodes(node)
         group
@@ -106,19 +107,19 @@ object NodeTypeBootStrapModel {
 
     model.getTypeDefinitions.filter(td => td.isInstanceOf[NodeType]).find(td => td.getName == nodeTypeName) match {
       case Some(nodeTypeDef) => {
-        val node = KevoreeFactory.eINSTANCE.createContainerNode
+        val node = KevoreeFactory.$instance.createContainerNode
         node.setName(nodeName)
         node.setTypeDefinition(nodeTypeDef)
         model.addNodes(node)
 
-        val propsmodel = KevoreeFactory.eINSTANCE.createDictionary
+        val propsmodel = KevoreeFactory.$instance.createDictionary
         import scala.collection.JavaConversions._
         props.keySet().foreach {
           key =>
-            if (nodeTypeDef.getDictionaryType.isDefined) {
-              nodeTypeDef.getDictionaryType.get.getAttributes.find(att => att.getName == key) match {
+            if (nodeTypeDef.getDictionaryType()!=null) {
+              nodeTypeDef.getDictionaryType.getAttributes.find(att => att.getName == key) match {
                 case Some(att) => {
-                  val newValue = KevoreeFactory.eINSTANCE.createDictionaryValue
+                  val newValue = KevoreeFactory.$instance.createDictionaryValue
                   newValue.setAttribute(att)
                   newValue.setValue(props.get(key).toString)
                   propsmodel.addValues(newValue)
@@ -129,7 +130,7 @@ object NodeTypeBootStrapModel {
               logger.warn("Node bootstrap property lost " + key)
             }
         }
-        node.setDictionary(Some(propsmodel))
+        node.setDictionary(propsmodel)
         node
       }
       case None => logger.error("NodeType definition not found"); null

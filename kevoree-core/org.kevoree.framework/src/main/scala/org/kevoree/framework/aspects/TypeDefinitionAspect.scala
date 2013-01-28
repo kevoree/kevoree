@@ -16,7 +16,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * 	http://www.gnu.org/licenses/lgpl-3.0.txt
+ * http://www.gnu.org/licenses/lgpl-3.0.txt
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -119,10 +119,10 @@ case class TypeDefinitionAspect(selfTD: TypeDefinition) {
 
 
     pTD.getDictionaryType match {
-      case dico :DictionaryType => {
+      case dico: DictionaryType => {
 
         selfTD.getDictionaryType match {
-          case seflDico : DictionaryType => {
+          case seflDico: DictionaryType => {
             if (!dico.isModelEquals(selfTD.getDictionaryType)) {
               logger.debug("!dico.isModelEquals(selfTD.getDictionaryType.get) is true")
               return true
@@ -170,8 +170,8 @@ case class TypeDefinitionAspect(selfTD: TypeDefinition) {
                       case None => logger.debug("There is no equivalent operation for {}", selfOperation.getName); true
                     }
                   )
-                  if(interfaceChanged || operationsChanged){
-                    logger.debug("interface or operation change {} {}",selfTD.getName,Array(interfaceChanged,operationsChanged))
+                  if (interfaceChanged || operationsChanged) {
+                    logger.debug("interface or operation change {} {}", selfTD.getName, Array(interfaceChanged, operationsChanged))
                   }
                   interfaceChanged || operationsChanged
                 }
@@ -221,10 +221,10 @@ case class TypeDefinitionAspect(selfTD: TypeDefinition) {
         val selfNT = selfTD.asInstanceOf[NodeType]
 
         val atypeDefSize = selfNT.getManagedPrimitiveTypes.size == nodeType.getManagedPrimitiveTypes.size
-        val atypeDef = selfNT.getManagedPrimitiveTypes.forall(mpt => nodeType.getManagedPrimitiveTypes.exists(lmpt=>lmpt.getName == mpt.getName))
+        val atypeDef = selfNT.getManagedPrimitiveTypes.forall(mpt => nodeType.getManagedPrimitiveTypes.exists(lmpt => lmpt.getName == mpt.getName))
 
         val atypeDefRefSize = selfNT.getManagedPrimitiveTypeRefs.size == nodeType.getManagedPrimitiveTypeRefs.size
-        val atypeDefRef = selfNT.getManagedPrimitiveTypeRefs.forall(mpt => nodeType.getManagedPrimitiveTypeRefs.exists(lmpt=>lmpt.getMaxTime == mpt.getMaxTime && lmpt.getRef.getName == mpt.getRef.getName))
+        val atypeDefRef = selfNT.getManagedPrimitiveTypeRefs.forall(mpt => nodeType.getManagedPrimitiveTypeRefs.exists(lmpt => lmpt.getMaxTime == mpt.getMaxTime && lmpt.getRef.getName == mpt.getRef.getName))
         !(atypeDefSize && atypeDef && atypeDefRefSize && atypeDefRef)
       }
       case g: GroupType => {
@@ -281,10 +281,11 @@ case class TypeDefinitionAspect(selfTD: TypeDefinition) {
     }
   }
 
-  def foundRelevantDeployUnit(node: ContainerNode) = {
+  def foundRelevantDeployUnit(node: ContainerNode) : DeployUnit = {
 
     /* add all reLib from found deploy Unit*/
     var deployUnitfound: DeployUnit = null
+
     selfTD.getDeployUnits.find(du => du.getTargetNodeType != null && du.getTargetNodeType.getName == node.getTypeDefinition.getName) match {
       case Some(e) => {
         //logger.debug("found deploy unit => {} for type {}", e.getUnitName, selfTD.getName)
@@ -305,11 +306,11 @@ case class TypeDefinitionAspect(selfTD: TypeDefinition) {
     // looking for relevant deployunits on super types
     t.getDeployUnits.foreach {
       td =>
-        if(td.getTargetNodeType != null){
-            if (td.getTargetNodeType.getName == nodeType.getName) {
-              deployUnitfound = td
-              return deployUnitfound
-            }
+        if (td.getTargetNodeType() != null) {
+          if (td.getTargetNodeType.getName == nodeType.getName) {
+            deployUnitfound = td
+            return deployUnitfound
+          }
         }
     }
     if (deployUnitfound == null) {
@@ -320,6 +321,6 @@ case class TypeDefinitionAspect(selfTD: TypeDefinition) {
         }
       })
     }
-    deployUnitfound
+    return deployUnitfound
   }
 }

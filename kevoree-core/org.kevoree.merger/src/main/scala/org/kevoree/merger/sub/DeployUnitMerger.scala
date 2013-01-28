@@ -50,6 +50,7 @@ trait DeployUnitMerger extends Merger {
     }) match {
       case Some(ftp) => {
         //CHECK CONSISTENCY, IF NOT JUST ADD
+
         if (tp.getUrl != ftp.getUrl || tp.getUnitName != ftp.getUnitName || tp.getGroupName != ftp.getGroupName || tp.getVersion != ftp.getVersion /*|| tp.getType != ftp.getType*/ ) {
           actualModel.addDeployUnits(tp)
           mergeRequiredLibs(actualModel, tp)
@@ -62,7 +63,6 @@ trait DeployUnitMerger extends Merger {
             ftp.addAllRequiredLibs(reLibs)
 
           }
-
           val ftpTimeStamp = if (ftp.getHashcode != "") {
             java.lang.Long.parseLong(ftp.getHashcode)
           } else {
