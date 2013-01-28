@@ -63,7 +63,7 @@ public class AddMBindingCommand implements Command {
                 Channel targetHub = (Channel) kernel.getUifactory().getMapping().get(target);
 
                 //TODO CHECK CONSISTENCY
-                MBinding newb = KevoreeFactory.createMBinding();
+                MBinding newb = KevoreeFactory.$instance.createMBinding();
                 newb.setPort(fromPort);
                 newb.setHub(targetHub);
                 org.kevoree.tools.ui.framework.elements.Binding uib = kernel.getUifactory().createMBinding(newb);

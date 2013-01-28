@@ -61,17 +61,17 @@ class OpenArduinoNode extends Command {
 
   def execute(p: Any) {
 
-    val du  = KevoreeFactory.createDeployUnit
+    val du  = KevoreeFactory.$instance.createDeployUnit
     du.setUnitName("org.kevoree.library.model.arduino")
     du.setGroupName("org.kevoree.corelibrary.model")
-    du.setVersion(KevoreeFactory.getVersion)
+    du.setVersion(KevoreeFactory.$instance.getVersion)
     val file = AetherUtil.resolveDeployUnit(du)
 
     file match {
       case file : File => {
         val jar = new JarFile(file)
         val entry: JarEntry = jar.getJarEntry("KEV-INF/lib.kev")
-        val newmodel = KevoreeXmiHelper.loadStream(jar.getInputStream(entry))
+        val newmodel = KevoreeXmiHelper.$instance.loadStream(jar.getInputStream(entry))
         if (newmodel != null) {
           val merger = new RootMerger
           import scala.collection.JavaConversions._

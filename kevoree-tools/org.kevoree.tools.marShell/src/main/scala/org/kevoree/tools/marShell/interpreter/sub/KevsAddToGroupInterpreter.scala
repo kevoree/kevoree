@@ -20,6 +20,7 @@ import org.kevoree.tools.marShell.interpreter.KevsInterpreterContext
 import org.kevoree.tools.marShell.ast.AddToGroupStatement
 import org.kevoree.{ContainerNode, Group}
 import org.slf4j.LoggerFactory
+import scala.collection.JavaConversions._
 
 case class KevsAddToGroupInterpreter(addToGroup: AddToGroupStatement) extends KevsAbstractInterpreter {
   private val logger = LoggerFactory.getLogger(this.getClass)
@@ -31,8 +32,8 @@ case class KevsAddToGroupInterpreter(addToGroup: AddToGroupStatement) extends Ke
       groups = context.model.getGroups.toList
     } else {
       context.model.findByQuery("groups[" + addToGroup.groupName + "]", classOf[Group]) match {
-        case Some(g) => groups = List(g)
-        case None => logger.debug("There is no group named {}", addToGroup.groupName); return false
+        case g:Group => groups = List(g)
+        case null => logger.debug("There is no group named {}", addToGroup.groupName); return false
       }
     }
 
@@ -41,8 +42,8 @@ case class KevsAddToGroupInterpreter(addToGroup: AddToGroupStatement) extends Ke
       nodes = context.model.getNodes.toList
     } else {
       context.model.findByQuery("nodes[" + addToGroup.nodeName + "]", classOf[ContainerNode]) match {
-        case Some(g) => nodes = List(g)
-        case None => logger.debug("There is no node named {}", addToGroup.nodeName); return false
+        case g:ContainerNode => nodes = List(g)
+        case null => logger.debug("There is no node named {}", addToGroup.nodeName); return false
       }
     }
 

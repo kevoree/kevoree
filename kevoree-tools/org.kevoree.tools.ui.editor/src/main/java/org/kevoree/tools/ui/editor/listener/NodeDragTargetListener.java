@@ -144,8 +144,8 @@ public class NodeDragTargetListener extends DropTarget {
                         target.add((NodePanel) o);
                         NodeDragSourceListener lis = new NodeDragSourceListener((NodePanel) o,kernel);
 
-                        for(ContainerNode node : kernel.getModelHandler().getActualModel().getNodesForJ()){
-                            if(node.getHostsForJ().contains((ContainerNode) kernel.getUifactory().getMapping().get(o))){
+                        for(ContainerNode node : kernel.getModelHandler().getActualModel().getNodes()){
+                            if(node.getHosts().contains((ContainerNode) kernel.getUifactory().getMapping().get(o))){
                                 node.removeHosts((ContainerNode) kernel.getUifactory().getMapping().get(o));
                             }
                         }

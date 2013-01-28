@@ -33,6 +33,9 @@ import java.util.jar.{JarEntry, JarFile}
 import org.kevoree.framework.KevoreeXmiHelper
 import org.slf4j.LoggerFactory
 
+import scala.collection.JavaConversions._
+
+
 /**
  * Created with IntelliJ IDEA.
  * User: duke
@@ -59,7 +62,7 @@ class AutoUpdateCommand extends Command {
                   var file = AetherUtil.resolveDeployUnit(du)
                   val jar = new JarFile(file)
                   val entry: JarEntry = jar.getJarEntry("KEV-INF/lib.kev")
-                  val newmodel = KevoreeXmiHelper.loadStream(jar.getInputStream(entry))
+                  val newmodel = KevoreeXmiHelper.$instance.loadStream(jar.getInputStream(entry))
                   if (newmodel != null) {
                     kernel.getModelHandler.merge(newmodel);
                     LoggerFactory.getLogger(this.getClass).info("AutoMerge => " + du.getUnitName)

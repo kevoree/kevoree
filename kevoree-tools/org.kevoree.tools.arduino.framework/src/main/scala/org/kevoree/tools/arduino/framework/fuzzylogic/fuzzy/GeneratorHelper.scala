@@ -29,6 +29,7 @@ package org.kevoree.tools.arduino.framework.fuzzylogic.fuzzy
 import org.kevoree.tools.arduino.framework.ArduinoGenerator
 import org.kevoree.tools.arduino.framework.fuzzylogic.gen.utils.ArduinoException
 import org.kevoree.ComponentType
+import scala.collection.JavaConversions._
 
 
 
@@ -44,7 +45,7 @@ object GeneratorHelper {
   def generateUpdateDictonnary(gen: ArduinoGenerator): Unit = {
 
 
-    gen.getTypeModel.getDictionaryType.get.getAttributes.foreach {
+    gen.getTypeModel.getDictionaryType.getAttributes.foreach {
       p =>
         val chaine = p.getName.split("_")
         gen.getTypeModel.asInstanceOf[ComponentType].getProvided.exists(d => d.getName == chaine(0)) match {
@@ -86,7 +87,7 @@ object GeneratorHelper {
 
   def getPositionTerm(gen: ArduinoGenerator, domain: String, term: String): Int = {
     var count = 0
-    gen.getTypeModel.getDictionaryType.get.getAttributes.foreach(p =>
+    gen.getTypeModel.getDictionaryType.getAttributes.foreach(p =>
       if (p.getName == (domain + "_" + term)) {
         return count
       }
@@ -96,7 +97,7 @@ object GeneratorHelper {
         }
       }
     )
-    throw new ArduinoException("The term " + domain + "_" + term + " is not found  : " + gen.getTypeModel.getDictionaryType.get.getAttributes)
+    throw new ArduinoException("The term " + domain + "_" + term + " is not found  : " + gen.getTypeModel.getDictionaryType.getAttributes)
   }
 
   def generateMemberShipVariables(gen: ArduinoGenerator){
@@ -104,7 +105,7 @@ object GeneratorHelper {
     var countTerm = 0
     gen.getTypeModel.asInstanceOf[ComponentType].getProvided.foreach{ g =>
       countTerm = 0
-      gen.getTypeModel.getDictionaryType.get.getAttributes.foreach{a =>
+      gen.getTypeModel.getDictionaryType.getAttributes.foreach{a =>
         if(a.getName.split("_")(0) == g.getName)
         {
           countTerm = countTerm +1
@@ -117,7 +118,7 @@ object GeneratorHelper {
     countTerm = 0
     gen.getTypeModel.asInstanceOf[ComponentType].getRequired.foreach{ g =>
       countTerm = 0
-      gen.getTypeModel.getDictionaryType.get.getAttributes.foreach{a =>
+      gen.getTypeModel.getDictionaryType.getAttributes.foreach{a =>
         if(a.getName.split("_")(0) == g.getName)
         {
           countTerm = countTerm +1

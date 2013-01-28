@@ -28,27 +28,27 @@ case class KevsAddChannelInterpreter(addChannel: AddChannelInstanceStatment) ext
 
   def interpret(context: KevsInterpreterContext): Boolean = {
     context.model.findByQuery("hubs[" + addChannel.channelName + "]", classOf[Channel]) match {
-      case Some(target) => {
+      case target : Channel => {
         logger.warn("Channel already exist with name " + addChannel.channelName)
         if (target.getTypeDefinition.getName == addChannel.channelType) {
-          Merger.mergeDictionary(target, addChannel.props, None)
+          Merger.mergeDictionary(target, addChannel.props, null)
           true
         } else {
           logger.error("Type != from previous created channel")
           false
         }
       }
-      case None => {
+      case null => {
         //SEARCH TYPE DEF
         context.model.findByQuery("typeDefinitions[" + addChannel.channelType + "]", classOf[TypeDefinition]) match {
-          case Some(targetChannelType) if (targetChannelType.isInstanceOf[ChannelType]) => {
+          case targetChannelType : ChannelType if (targetChannelType.isInstanceOf[ChannelType]) => {
             val newchannel = KevoreeFactory.$instance.createChannel
             newchannel.setTypeDefinition(targetChannelType)
             newchannel.setName(addChannel.channelName)
-            Merger.mergeDictionary(newchannel, addChannel.props, None)
+            Merger.mergeDictionary(newchannel, addChannel.props, null)
             context.model.addHubs(newchannel)
           }
-          case Some(targetChannelType) if (!targetChannelType.isInstanceOf[ChannelType]) => {
+          case targetChannelType : ChannelType if (!targetChannelType.isInstanceOf[ChannelType]) => {
             logger.error("Type definition is not a channelType " + addChannel.channelType);
             false
           }

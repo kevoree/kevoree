@@ -18,6 +18,7 @@ import org.junit._
 import org.kevoree.tools.marShell.interpreter.KevsInterpreterAspects._
 import org.kevoree.tools.marShell.interpreter.KevsInterpreterContext
 import org.kevoree.ComponentInstance
+import scala.collection.JavaConversions._
 
 class KevsGroupTest extends KevSTestSuiteHelper {
 

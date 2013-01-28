@@ -49,7 +49,7 @@ public class ClearModelCommand implements Command {
     @Override
     public void execute(Object p) {
 
-        ContainerRoot blancModel = KevoreeFactory.createContainerRoot();
+        ContainerRoot blancModel = KevoreeFactory.$instance.createContainerRoot();
         kernel.getModelHandler().setActualModel(blancModel);
         kernel.getModelPanel().clear();
         kernel.getEditorPanel().getPalette().clear();

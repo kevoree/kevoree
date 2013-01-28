@@ -71,9 +71,9 @@ public class MergeModelCommand implements Command {
             modelToMerge = (ContainerRoot) p;
         } else {
             if (p instanceof InputStream) {
-                modelToMerge = KevoreeXmiHelper.loadStream((InputStream) p);
+                modelToMerge = KevoreeXmiHelper.$instance.loadStream((InputStream) p);
             } else {
-                modelToMerge = KevoreeXmiHelper.load(p.toString());
+                modelToMerge = KevoreeXmiHelper.$instance.load(p.toString());
             }
         }
 
@@ -91,18 +91,18 @@ public class MergeModelCommand implements Command {
 
         //FIND TOP LEVEL NODE
         HashSet<ContainerNode> childNodes = new HashSet<ContainerNode>();
-        for (ContainerNode newnode : kernel.getModelHandler().getActualModel().getNodesForJ()) {
-            childNodes.addAll(newnode.getHostsForJ());
+        for (ContainerNode newnode : kernel.getModelHandler().getActualModel().getNodes()) {
+            childNodes.addAll(newnode.getHosts());
         }
 
         //LOAD NODE
-        for (ContainerNode newnode : kernel.getModelHandler().getActualModel().getNodesForJ()) {
+        for (ContainerNode newnode : kernel.getModelHandler().getActualModel().getNodes()) {
             if(!childNodes.contains(newnode)){
                loadNodes(null,newnode);
             }
         }
         //LOAD HUB
-        for (Channel hub : kernel.getModelHandler().getActualModel().getHubsForJ()) {
+        for (Channel hub : kernel.getModelHandler().getActualModel().getHubs()) {
             ChannelPanel newhubpanel = kernel.getUifactory().createHub(hub);
             kernel.getModelPanel().addHub(newhubpanel);
             HashMap<String, String> metaData = MetaDataHelper.getMetaDataFromInstance(hub);
@@ -113,11 +113,11 @@ public class MergeModelCommand implements Command {
         }
 
         //LOAD GROUP
-        for (Group group : kernel.getModelHandler().getActualModel().getGroupsForJ()) {
+        for (Group group : kernel.getModelHandler().getActualModel().getGroups()) {
             GroupPanel newgrouppanel = kernel.getUifactory().createGroup(group);
             kernel.getModelPanel().addGroup(newgrouppanel);
             //LOAD GROUP BINDINGS
-            for (ContainerNode subNode : group.getSubNodesForJ()) {
+            for (ContainerNode subNode : group.getSubNodes()) {
                 NodePanel nodePanel = (NodePanel) kernel.getUifactory().getMapping().get(subNode);
                 TempGroupBinding groupB = new TempGroupBinding();
                 groupB.setOriginGroup(group);
@@ -144,7 +144,7 @@ public class MergeModelCommand implements Command {
                   }*/
 
         //LOAD MBINDING
-        for (MBinding binding : kernel.getModelHandler().getActualModel().getMBindingsForJ()) {
+        for (MBinding binding : kernel.getModelHandler().getActualModel().getMBindings()) {
             Binding uib = kernel.getUifactory().createMBinding(binding);
             kernel.getModelPanel().addBinding(uib);
         }
@@ -176,15 +176,15 @@ public class MergeModelCommand implements Command {
                     Integer.parseInt(metaData.get("y").toString())));
         }
 
-        for (ComponentInstance ci : newnode.getComponentsForJ()) {
+        for (ComponentInstance ci : newnode.getComponents()) {
             ComponentPanel insPanel = kernel.getUifactory().createComponentInstance(ci);
-            for (Port portP : ci.getProvidedForJ()) {
+            for (Port portP : ci.getProvided()) {
                 //ADDING NEW PORT TO UI
                 PortPanel portPanel = kernel.getUifactory().createPort(portP);
                 portPanel.setType(PortType.PROVIDED);
                 insPanel.addLeft(portPanel);
             }
-            for (Port portR : ci.getRequiredForJ()) {
+            for (Port portR : ci.getRequired()) {
                 //ADDING NEW PORT TO UI
                 PortPanel portPanel = kernel.getUifactory().createPort(portR);
                 portPanel.setType(PortType.REQUIRED);
@@ -195,7 +195,7 @@ public class MergeModelCommand implements Command {
         }
 
         //load child nodes
-        for (ContainerNode childNode : newnode.getHostsForJ()) {
+        for (ContainerNode childNode : newnode.getHosts()) {
               loadNodes(newnodepanel,childNode);
         }
     }

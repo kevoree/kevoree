@@ -45,6 +45,7 @@ import java.awt.{FlowLayout, BorderLayout}
 import org.kevoree.tools.ui.editor.property.SpringUtilities
 import javax.swing._
 import com.explodingpixels.macwidgets.plaf.HudLabelUI
+import scala.collection.JavaConversions._
 
 /**
  * User: ffouquet
@@ -139,7 +140,7 @@ class PortDragTargetListener(target: PortPanel, kernel: KevoreeUIKernel) extends
               PositionedEMFHelper.updateModelUIMetaData(kernel)
               script.interpret(KevsInterpreterContext(kernel.getModelHandler.getActualModel))
               val file = File.createTempFile("kev", new Random().nextInt + "")
-              KevoreeXmiHelper.save(file.getAbsolutePath, kernel.getModelHandler.getActualModel);
+              KevoreeXmiHelper.$instance.save(file.getAbsolutePath, kernel.getModelHandler.getActualModel);
               val loadCMD = new LoadModelCommand
               loadCMD.setKernel(kernel)
               loadCMD.execute( file.getAbsolutePath)

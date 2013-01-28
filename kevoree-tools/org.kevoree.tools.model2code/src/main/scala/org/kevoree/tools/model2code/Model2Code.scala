@@ -37,6 +37,7 @@ import java.io.PrintWriter
 import java.net.URI
 
 import org.kevoree._
+import scala.collection.JavaConversions._
 
 /**
  * @author Gregory NAIN
@@ -177,13 +178,13 @@ class Model2Code extends CompilationUnitHelpers {
     pr.println("    <dependency>")
     pr.println("      <groupId>org.kevoree.tools</groupId>")
     pr.println("      <artifactId>org.kevoree.tools.annotation.api</artifactId>")
-    pr.println("      <version>"+ KevoreeFactory.getVersion+"</version>")
+    pr.println("      <version>"+ KevoreeFactory.$instance.getVersion+"</version>")
     pr.println("      <scope>compile</scope>")
     pr.println("    </dependency>")
     pr.println("    <dependency>")
     pr.println("      <groupId>org.kevoree</groupId>")
     pr.println("      <artifactId>org.kevoree.framework</artifactId>")
-    pr.println("      <version>"+ KevoreeFactory.getVersion+"</version>")
+    pr.println("      <version>"+ KevoreeFactory.$instance.getVersion+"</version>")
     pr.println("      <scope>compile</scope>")
     pr.println("    </dependency>")
     model.getDeployUnits.filter({
@@ -237,7 +238,7 @@ class Model2Code extends CompilationUnitHelpers {
     pr.println("      <plugin>")
     pr.println("        <groupId>org.kevoree.tools</groupId>")
     pr.println("        <artifactId>org.kevoree.tools.annotation.mavenplugin</artifactId>")
-    pr.println("        <version>"+ KevoreeFactory.getVersion+"</version>")
+    pr.println("        <version>"+ KevoreeFactory.$instance.getVersion+"</version>")
     pr.println("        <extensions>true</extensions>")
     pr.println("        <configuration>")
     pr.println("          <nodeTypeNames>JavaSENode</nodeTypeNames>")

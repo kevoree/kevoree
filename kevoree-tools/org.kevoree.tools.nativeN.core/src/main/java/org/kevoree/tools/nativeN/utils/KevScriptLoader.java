@@ -38,7 +38,7 @@ public class KevScriptLoader  {
      */
     public static ContainerRoot getModel(String path_file) throws KevScriptEngineException {
 
-        ContainerRoot basemodel = KevoreeFactory.createContainerRoot();
+        ContainerRoot basemodel = KevoreeFactory.$instance.createContainerRoot();
         byte [] file = FileManager.load(path_file);
         String kevScript = new String(file);
         FakeBootstraperService bootstraper = new FakeBootstraperService();
@@ -47,7 +47,7 @@ public class KevScriptLoader  {
         {
             kevOfflineEngine.addVariable(pro,System.getProperty(pro));
         }
-        kevOfflineEngine.addVariable("kevoree.version", KevoreeFactory.getVersion());
+        kevOfflineEngine.addVariable("kevoree.version", KevoreeFactory.$instance.getVersion());
 
 
         // add MessagePort

@@ -36,8 +36,8 @@ case class KevsAddRepoInterpreter(addRepo: AddRepoStatment) extends KevsAbstract
       false
     } else {
       context.model.findByQuery("repositories[" + addRepo.url + "]", classOf[Repository]) match {
-        case Some(_) =>
-        case None => {
+        case r:Repository =>
+        case null => {
           val repo = KevoreeFactory.$instance.createRepository
           repo.setUrl(addRepo.url)
           context.model.addRepositories(repo)

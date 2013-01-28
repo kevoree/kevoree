@@ -44,8 +44,8 @@ case class KevsRemoveLibraryInterpreter(statment: RemoveLibraryStatment) extends
 
   def interpret(context: KevsInterpreterContext): Boolean = {
     context.model.findByQuery("libraries[" + statment.libraryName + "]", classOf[TypeLibrary]) match {
-      case Some(library) => context.model.removeLibraries(library); true
-      case None => {
+      case library: TypeLibrary => context.model.removeLibraries(library); true
+      case null => {
         logger.error("Error : Library not found with name " + statment.libraryName)
         false
       }

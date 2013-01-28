@@ -48,7 +48,7 @@ trait KevSTestSuiteHelper extends JUnitSuite {
   /* UTILITY METHOD */
   def model(url: String): ContainerRoot = {
     val modelPath = this.getClass.getClassLoader.getResource(url).getPath
-    KevoreeXmiHelper.load(modelPath)
+    KevoreeXmiHelper.$instance.load(modelPath)
   }
 
   def emptyModel = KevoreeFactory.$instance.createContainerRoot
@@ -84,7 +84,7 @@ case class RichContainerRoot(self: ContainerRoot) extends KevSTestSuiteHelper {
 
   def testSave(path: String, file: String) {
     try {
-      KevoreeXmiHelper.save(this.getClass.getClassLoader.getResource(path).getPath + "/" + file, self)
+      KevoreeXmiHelper.$instance.save(this.getClass.getClassLoader.getResource(path).getPath + "/" + file, self)
       assertTrue("At least one relative reference have been detected in model " + path + "/" + file, hasNoRelativeReference(path, file))
     } catch {
       case _@e => e.printStackTrace(); fail()
@@ -92,6 +92,7 @@ case class RichContainerRoot(self: ContainerRoot) extends KevSTestSuiteHelper {
   }
 
   def setLowerHashCode(): ContainerRoot = {
+    import scala.collection.JavaConversions._
     self.getDeployUnits.foreach(du => du.setHashcode(0 + ""))
     self
   }

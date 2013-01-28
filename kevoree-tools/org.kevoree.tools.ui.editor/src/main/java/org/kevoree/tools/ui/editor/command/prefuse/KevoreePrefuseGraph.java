@@ -76,7 +76,7 @@ public class KevoreePrefuseGraph {
         kernel.getUifactory().getMapping();
 
         //FIND TOP LEVEL NODE
-        for (ContainerNode newnode : model.getNodesForJ()) {
+        for (ContainerNode newnode : model.getNodes()) {
             Node n = graph.addNode();
             n.setString(KevoreePrefuseGraph.LABEL, newnode.getName());
 
@@ -85,7 +85,7 @@ public class KevoreePrefuseGraph {
 
 
         //LOAD HUB
-        for (Channel hub : kernel.getModelHandler().getActualModel().getHubsForJ()) {
+        for (Channel hub : kernel.getModelHandler().getActualModel().getHubs()) {
             Node n = graph.addNode();
             n.setString(KevoreePrefuseGraph.LABEL, hub.getName());
 
@@ -93,18 +93,18 @@ public class KevoreePrefuseGraph {
         }
 
         //LOAD GROUP
-        for (Group group : kernel.getModelHandler().getActualModel().getGroupsForJ()) {
+        for (Group group : kernel.getModelHandler().getActualModel().getGroups()) {
             Node n = graph.addNode();
             n.setString(KevoreePrefuseGraph.LABEL, group.getName());
             model2GraphMap.put(group, n);
 
             //LOAD GROUP BINDINGS
-            for (ContainerNode subNode : group.getSubNodesForJ()) {
+            for (ContainerNode subNode : group.getSubNodes()) {
                 graph.addEdge(n, model2GraphMap.get(subNode));
             }
         }
         //LOAD MBINDING
-        for (MBinding binding : kernel.getModelHandler().getActualModel().getMBindingsForJ()) {
+        for (MBinding binding : kernel.getModelHandler().getActualModel().getMBindings()) {
 
             graph.addEdge(model2GraphMap.get(findTopLevelNode(binding.getPort())), model2GraphMap.get(binding.getHub()));
         }

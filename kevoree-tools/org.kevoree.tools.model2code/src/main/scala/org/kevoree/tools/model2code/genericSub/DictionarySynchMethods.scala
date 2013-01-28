@@ -46,7 +46,7 @@ trait DictionarySynchMethods extends ImportSynchMethods {
 
   def synchronizeDictionary(td: TypeDeclaration, typeDef: TypeDefinition) {
 
-    if (typeDef.getDictionaryType.isDefined) {
+    if (typeDef.getDictionaryType != null) {
       val dic: SingleMemberAnnotationExpr = td.getAnnotations.find({
         annot => annot.getName.toString.equals(classOf[DictionaryType].getSimpleName)
       }) match {
@@ -63,8 +63,9 @@ trait DictionarySynchMethods extends ImportSynchMethods {
 
   def checkOrUpdateDictionary(td: TypeDeclaration, typeDef: TypeDefinition, dicAnnot: SingleMemberAnnotationExpr) {
     //for each attribute in the model
-    typeDef.getDictionaryType.map {
-      dico => dico.getAttributes.foreach {
+    val dico = typeDef.getDictionaryType
+    if (dico != null) {
+      dico.getAttributes.foreach {
         dicAtt =>
         //retreive or create the attribute annotation
           dicAnnot.getMemberValue.asInstanceOf[ArrayInitializerExpr].getValues.find({
@@ -80,7 +81,7 @@ trait DictionarySynchMethods extends ImportSynchMethods {
 
             case Some(ann) => updateDictionaryAtribute(ann.asInstanceOf[NormalAnnotationExpr], dicAtt)
             case None => dicAnnot.getMemberValue.asInstanceOf[ArrayInitializerExpr].getValues.add(
-              createDictionaryAttributeAnnotation(typeDef.getDictionaryType.get, dicAtt))
+              createDictionaryAttributeAnnotation(typeDef.getDictionaryType, dicAtt))
           }
       }
     }

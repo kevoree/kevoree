@@ -51,8 +51,8 @@ public class AddGroupCommand implements Command {
 
 
     protected Boolean isArduinoManaged(TypeDefinition td){
-        for(DeployUnit du : td.getDeployUnitsForJ()){
-            if(du.getTargetNodeType().isDefined() && du.getTargetNodeType().get().getName().toLowerCase().contains("arduino")){
+        for(DeployUnit du : td.getDeployUnits()){
+            if(du.getTargetNodeType()!=null && du.getTargetNodeType().getName().toLowerCase().contains("arduino")){
                 return true;
             }
         }
@@ -61,7 +61,7 @@ public class AddGroupCommand implements Command {
 
     @Override
     public void execute(Object p) {
-        Group newgroup = KevoreeFactory.createGroup();
+        Group newgroup = KevoreeFactory.$instance.createGroup();
         GroupType type = (GroupType) kernel.getUifactory().getMapping().get(p);
         newgroup.setTypeDefinition(type);
 

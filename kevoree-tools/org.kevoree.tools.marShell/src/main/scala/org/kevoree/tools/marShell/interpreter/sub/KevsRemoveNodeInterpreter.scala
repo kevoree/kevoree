@@ -20,6 +20,7 @@ import org.kevoree.tools.marShell.interpreter.KevsInterpreterContext
 
 import org.kevoree.tools.marShell.ast.RemoveNodeStatment
 import org.slf4j.LoggerFactory
+import scala.collection.JavaConversions._
 
 case class KevsRemoveNodeInterpreter(addN: RemoveNodeStatment) extends KevsAbstractInterpreter {
 
@@ -45,8 +46,8 @@ case class KevsRemoveNodeInterpreter(addN: RemoveNodeStatment) extends KevsAbstr
         if (nn.getTarget.getName == addN.nodeName) {
           context.model.removeNodeNetworks(nn)
         } else {
-          nn.getInitBy.map {
-            initNode =>
+          val initNode = nn.getInitBy
+          if(initNode != null) {
               if (initNode.getName == addN.nodeName) {
                 context.model.removeNodeNetworks(nn)
               }
@@ -55,30 +56,30 @@ case class KevsRemoveNodeInterpreter(addN: RemoveNodeStatment) extends KevsAbstr
     }
 
     //CLEANUP HOST NODE
-    if (targetNode.getHost.isDefined) {
-      targetNode.getHost.get.removeHosts(targetNode)
+    if (targetNode.getHost() != null) {
+      targetNode.getHost.removeHosts(targetNode)
     }
 
 
     //CLEANUP DICTIONARY
     context.model.getHubs.foreach {
       inst =>
-        inst.getDictionary.map {
-          dico =>
-            dico.getValues.filter(v => v.getTargetNode.isDefined && v.getTargetNode.get.getName == addN.nodeName).foreach {
-              value =>
-                dico.removeValues(value)
-            }
+        val dico = inst.getDictionary
+        if (dico != null) {
+          dico.getValues.filter(v => v.getTargetNode != null && v.getTargetNode.getName == addN.nodeName).foreach {
+            value =>
+              dico.removeValues(value)
+          }
         }
     }
     context.model.getGroups.foreach {
       inst =>
-        inst.getDictionary.map {
-          dico =>
-            dico.getValues.filter(v => v.getTargetNode.isDefined && v.getTargetNode.get.getName == addN.nodeName).foreach {
-              value =>
-                dico.removeValues(value)
-            }
+        val dico = inst.getDictionary
+        if (dico != null) {
+          dico.getValues.filter(v => v.getTargetNode != null && v.getTargetNode.getName == addN.nodeName).foreach {
+            value =>
+              dico.removeValues(value)
+          }
         }
     }
 
@@ -96,10 +97,10 @@ case class KevsRemoveNodeInterpreter(addN: RemoveNodeStatment) extends KevsAbstr
   def interpret(context: KevsInterpreterContext): Boolean = {
 
     context.model.findByQuery("nodes[" + addN.nodeName + "]", classOf[ContainerNode]) match {
-      case Some(targetNode) => {
+      case targetNode: ContainerNode => {
         removeNode(targetNode, context)
       }
-      case None => {
+      case null => {
         logger.error("Node Already existe")
         false
       }

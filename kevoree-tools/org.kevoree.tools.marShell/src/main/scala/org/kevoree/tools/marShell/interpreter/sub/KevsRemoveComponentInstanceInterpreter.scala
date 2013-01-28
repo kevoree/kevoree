@@ -41,17 +41,17 @@ case class KevsRemoveComponentInstanceInterpreter(removeComponent: RemoveCompone
     removeComponent.cid.nodeName match {
       case Some(nodeID) => {
         context.model.findByQuery("nodes[" + nodeID + "]", classOf[ContainerNode]) match {
-          case Some(targetNode) => {
+          case targetNode : ContainerNode => {
             //SEARCH COMPONENT
             targetNode.findByQuery("components[" + removeComponent.cid.componentInstanceName + "]/", classOf[ComponentInstance]) match {
-              case Some(targetComponent) => deleteComponent(targetNode, targetComponent)
-              case None => {
+              case targetComponent : ComponentInstance => deleteComponent(targetNode, targetComponent)
+              case null => {
                 logger.error("Component not found " + removeComponent.cid.componentInstanceName)
                 false
               }
             }
           }
-          case None => {
+          case null => {
             logger.error("Node not found " + nodeID)
             false
           }
@@ -64,6 +64,7 @@ case class KevsRemoveComponentInstanceInterpreter(removeComponent: RemoveCompone
 
   def getRelatedBindings(cself: ComponentInstance): List[MBinding] = {
     var res = ListBuffer[MBinding]()
+    import scala.collection.JavaConversions._
     cself.getProvided.foreach(p => res = res ++ p.getBindings)
     cself.getRequired.foreach(p => res = res ++ p.getBindings)
     res.toList

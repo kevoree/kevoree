@@ -36,6 +36,8 @@ import text.BadLocationException
 import org.slf4j.LoggerFactory
 import com.explodingpixels.macwidgets.{IAppWidgetFactory, HudWidgetFactory}
 import tools.ui.editor.{KevoreeUIKernel, UIHelper}
+import scala.collection.JavaConversions._
+
 
 /**
  * Created by IntelliJ IDEA.
@@ -51,11 +53,12 @@ class InstancePropertyEditor(elem: org.kevoree.Instance, kernel: KevoreeUIKernel
 
   def getValue(instance: Instance, att: DictionaryAttribute, targetNode: Option[String]): String = {
     var value: DictionaryValue = null
-    for (v <- instance.getDictionary.get.getValues) {
+    for (v <- instance.getDictionary.getValues) {
       targetNode match {
         case Some(targetNodeSearch) => {
-          v.getTargetNode.map {
-            tn =>
+
+          val tn = v.getTargetNode
+          if(tn != null) {
               if (v.getAttribute == att && tn.getName == targetNodeSearch) {
                 return v.getValue
               }
@@ -68,7 +71,7 @@ class InstancePropertyEditor(elem: org.kevoree.Instance, kernel: KevoreeUIKernel
         }
       }
     }
-    for (v <- instance.getTypeDefinition.getDictionaryType.get.getDefaultValues) {
+    for (v <- instance.getTypeDefinition.getDictionaryType.getDefaultValues) {
       if (v.getAttribute == att) {
         return v.getValue
       }
@@ -78,11 +81,13 @@ class InstancePropertyEditor(elem: org.kevoree.Instance, kernel: KevoreeUIKernel
 
   def setValue(aValue: AnyRef, instance: Instance, att: DictionaryAttribute, targetNode: Option[String]): Unit = {
     var value: DictionaryValue = null
-    for (v <- instance.getDictionary.get.getValues) {
+    for (v <- instance.getDictionary.getValues) {
       targetNode match {
         case Some(targetNodeSearch) => {
-          v.getTargetNode.map {
-            tn =>
+
+          val tn = v.getTargetNode
+
+          if(tn != null) {
               if (v.getAttribute.getName == att.getName && tn.getName == targetNodeSearch) {
                 value = v
               }
@@ -96,32 +101,32 @@ class InstancePropertyEditor(elem: org.kevoree.Instance, kernel: KevoreeUIKernel
       }
     }
     if (value == null) {
-      value = KevoreeFactory.createDictionaryValue
+      value = KevoreeFactory.$instance.createDictionaryValue
       value.setAttribute(att)
       targetNode.map{t =>
         val root = att.eContainer.eContainer.eContainer.asInstanceOf[ContainerRoot]
         root.getNodes.find(n => n.getName == t) match {
-          case Some(n)=> value.setTargetNode(Some(n))
+          case Some(n)=> value.setTargetNode(n)
           case None => logger.error("Node instance not found for name "+t)
         }
 
       }
-      instance.getDictionary.get.addValues(value)
+      instance.getDictionary.addValues(value)
     }
     value.setValue(aValue.toString)
     kernel.getModelHandler.notifyChanged()
   }
 
   //CONSTRUCTOR CODE
-  if (elem.getDictionary.isEmpty) {
-    elem.setDictionary(new Some[Dictionary](KevoreeFactory.createDictionary))
+  if (elem.getDictionary == null) {
+    elem.setDictionary(KevoreeFactory.$instance.createDictionary)
   }
   var p: JPanel = new JPanel(new SpringLayout)
   p.setBorder(null)
 
   var nbLigne = 0
-  if (elem.getTypeDefinition.getDictionaryType.isDefined) {
-    for (att <- elem.getTypeDefinition.getDictionaryType.get.getAttributes) {
+  if (elem.getTypeDefinition.getDictionaryType != null) {
+    for (att <- elem.getTypeDefinition.getDictionaryType.getAttributes) {
 
       att.getDatatype match {
         case _ if (att.getDatatype != "" && att.getDatatype.startsWith("enum=") && !att.getFragmentDependant) => {
@@ -180,7 +185,7 @@ class InstancePropertyEditor(elem: org.kevoree.Instance, kernel: KevoreeUIKernel
   def getNodesLinked(i: Instance): List[String] = {
     i match {
       case g: Group => {
-        g.getSubNodes.map(s => s.getName)
+        g.getSubNodes.map(s => s.getName).toList
       }
       case c: Channel => {
         import org.kevoree.framework.aspects.KevoreeAspects._

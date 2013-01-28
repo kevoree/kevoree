@@ -104,7 +104,7 @@ public class MarShellMavenMojo extends AbstractMojo {
 
 		mergerComponent = new KevoreeMergerComponent();
 
-		ContainerRoot model = KevoreeFactory.createContainerRoot();
+		ContainerRoot model = KevoreeFactory.$instance.createContainerRoot();
 
         if(sourceMarShellDirectory != null){
             ContainerRoot model2 = executeOnDirectory(sourceMarShellDirectory);
@@ -121,7 +121,7 @@ public class MarShellMavenMojo extends AbstractMojo {
 			throw new MojoExecutionException("Unable to build target packages " + sourceOutputDirectory.getAbsolutePath());
 		}
 
-		KevoreeXmiHelper.save(sourceOutputDirectory.getAbsolutePath() + File.separator + "lib.kev", model);
+		KevoreeXmiHelper.$instance.save(sourceOutputDirectory.getAbsolutePath() + File.separator + "lib.kev", model);
 
 		Resource resource = new Resource();
 		resource.setTargetPath("KEV-INF");
@@ -131,7 +131,7 @@ public class MarShellMavenMojo extends AbstractMojo {
 	}
 
 	private ContainerRoot executeOnDirectory (File dir) throws MojoExecutionException {
-		ContainerRoot mergedModel = KevoreeFactory.createContainerRoot();
+		ContainerRoot mergedModel = KevoreeFactory.$instance.createContainerRoot();
         if(dir.listFiles() != null){
             for (File f : dir.listFiles()) {
                 if (f.isDirectory()) {

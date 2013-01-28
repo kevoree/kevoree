@@ -29,19 +29,22 @@ case class KevsCreateChannelTypeInterpreter(self: CreateChannelTypeStatment) ext
   def interpret(context: KevsInterpreterContext): Boolean = {
     //LOOK FOR PREVIOUSLY EXSITING COMPONENT TYPE
     context.model.findByQuery("typeDefinitions[" + self.newTypeName + "]", classOf[TypeDefinition]) match {
-      case Some(e) => logger.error("TypeDefinition already exist with name => " + self.newTypeName); false
-      case None => {
+      case e:TypeDefinition => logger.error("TypeDefinition already exist with name => " + self.newTypeName); false
+      case null => {
         val newComponentTypeDef = KevoreeFactory.$instance.createChannelType
         newComponentTypeDef.setName(self.newTypeName)
         context.model.addTypeDefinitions(newComponentTypeDef)
 
         self.libName.map {
           libName =>
-          context.model.findByQuery("libraries[" + libName + "]", classOf[TypeLibrary]).getOrElse({
-              val newLib = KevoreeFactory.$instance.createTypeLibrary
-              newLib.setName(libName)
-              newLib
-            }).addSubTypes(newComponentTypeDef)
+
+            var newLic = context.model.findByQuery("libraries[" + libName + "]", classOf[TypeLibrary])
+            if (newLic == null) {
+              newLic = KevoreeFactory.$instance.createTypeLibrary
+              newLic.setName(libName)
+            }
+
+            newLic.addSubTypes(newComponentTypeDef)
         }
 
 

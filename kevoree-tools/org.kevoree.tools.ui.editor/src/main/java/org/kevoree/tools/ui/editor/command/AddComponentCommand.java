@@ -64,7 +64,7 @@ public class AddComponentCommand implements Command {
     @Override
     public void execute(Object p) {
         if(p instanceof ComponentTypePanel){
-            ComponentInstance instance = KevoreeFactory.createComponentInstance();
+            ComponentInstance instance = KevoreeFactory.$instance.createComponentInstance();
             
             ContainerNode node = (ContainerNode) kernel.getUifactory().getMapping().get(nodepanel);
             ComponentType type = (ComponentType) kernel.getUifactory().getMapping().get(p);
@@ -78,9 +78,9 @@ public class AddComponentCommand implements Command {
 
             ComponentPanel insPanel = kernel.getUifactory().createComponentInstance(instance);
 
-            for(PortTypeRef ref : type.getProvidedForJ()){
+            for(PortTypeRef ref : type.getProvided()){
                 //INSTANCIATE MODEL ELEMENTS
-                Port port = KevoreeFactory.createPort();
+                Port port = KevoreeFactory.$instance.createPort();
                 instance.addProvided(port);
                 //port.setName(ref.getName());
                 port.setPortTypeRef(ref);
@@ -90,9 +90,9 @@ public class AddComponentCommand implements Command {
                 portPanel.setType(PortType.PROVIDED);
                 insPanel.addLeft(portPanel);
             }
-            for(PortTypeRef ref : type.getRequiredForJ()){
+            for(PortTypeRef ref : type.getRequired()){
                 //INSTANCIATE MODEL ELEMENTS
-                Port port = KevoreeFactory.createPort();
+                Port port = KevoreeFactory.$instance.createPort();
                 instance.addRequired(port);
                 //port.setName(ref.getName());
                 port.setPortTypeRef(ref);

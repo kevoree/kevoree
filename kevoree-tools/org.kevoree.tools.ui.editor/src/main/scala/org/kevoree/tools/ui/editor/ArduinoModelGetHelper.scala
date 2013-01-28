@@ -116,6 +116,7 @@ object ArduinoModelGetHelper {
       current.removeAllGroups()
       // current.removeAllHubs()
       current.removeAllMBindings()
+      import scala.collection.JavaConversions._
       current.getNodes.foreach {
         node =>
           current.removeNodes(node)

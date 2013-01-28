@@ -45,6 +45,8 @@ import org.kevoree.tools.marShellTransform.{KevScriptWrapper, AdaptationModelWra
 import org.kevoree.{DeployUnit, KevoreeFactory}
 import io.Source
 import java.io.{FileWriter, File}
+import scala.collection.JavaConversions._
+
 
 /**
  * Created by IntelliJ IDEA.
@@ -64,7 +66,7 @@ class SaveAsKevScript extends Command {
   val kompareBean = new org.kevoree.kompare.KevoreeKompareBean()
 
   def execute(p: AnyRef) {
-    val emptyModel = KevoreeFactory.createContainerRoot
+    val emptyModel = KevoreeFactory.$instance.createContainerRoot
     val currentModel = kernel.getModelHandler.getActualModel
 
     val scriptBuffer = new StringBuffer()
@@ -86,7 +88,7 @@ class SaveAsKevScript extends Command {
 
     duS.foreach {
 
-      du => scriptBuffer.append("merge 'mvn:" + du.getGroupName + "/" + du.getUnitName + "/" + (if (du.getVersion == KevoreeFactory.getVersion) {
+      du => scriptBuffer.append("merge 'mvn:" + du.getGroupName + "/" + du.getUnitName + "/" + (if (du.getVersion == KevoreeFactory.$instance.getVersion) {
         "{kevoree.version}"
       } else {
         du.getVersion
@@ -95,11 +97,11 @@ class SaveAsKevScript extends Command {
 
     currentModel.getNodes.foreach(n => {
       scriptBuffer.append("addNode " + n.getName + ":" + n.getTypeDefinition.getName + "\n")
-      n.getDictionary.map {
-        dico =>
-          scriptBuffer.append("updateDictionary " + n.getName + "{")
-          scriptBuffer.append(dico.getValues.map(v => v.getAttribute.getName + "=\"" + v.getValue + "\"").mkString(","))
-          scriptBuffer.append("}\n")
+      val dico = n.getDictionary
+      if (dico != null) {
+        scriptBuffer.append("updateDictionary " + n.getName + "{")
+        scriptBuffer.append(dico.getValues.map(v => v.getAttribute.getName + "=\"" + v.getValue + "\"").mkString(","))
+        scriptBuffer.append("}\n")
       }
     })
 
@@ -118,28 +120,28 @@ class SaveAsKevScript extends Command {
     currentModel.getGroups.foreach {
       g =>
         scriptBuffer.append("addGroup " + g.getName + ":" + g.getTypeDefinition.getName + "\n")
-        g.getDictionary.map {
-          dico => {
-            val localVals = dico.getValues.filter(v => v.getTargetNode.isEmpty)
-            if(localVals.size > 0){
-              scriptBuffer.append("updateDictionary " + g.getName + "{")
-              scriptBuffer.append(localVals.map(v => v.getAttribute.getName + "=\"" + v.getValue + "\"").mkString(","))
-              scriptBuffer.append("}@\n")
-            }
+        val dico = g.getDictionary
+        if (dico != null) {
+          val localVals = dico.getValues.filter(v => v.getTargetNode == null)
+          if (localVals.size > 0) {
+            scriptBuffer.append("updateDictionary " + g.getName + "{")
+            scriptBuffer.append(localVals.map(v => v.getAttribute.getName + "=\"" + v.getValue + "\"").mkString(","))
+            scriptBuffer.append("}@\n")
           }
         }
+
         g.getSubNodes.foreach {
           subN =>
             scriptBuffer.append("addToGroup " + g.getName + " " + subN.getName + "\n")
-            g.getDictionary.map {
-              dico => {
-                val localVals = dico.getValues.filter(v => v.getTargetNode.isDefined && v.getTargetNode.get == subN)
-                if(localVals.size > 0){
-                  scriptBuffer.append("updateDictionary " + g.getName + "{")
-                  scriptBuffer.append(localVals.map(v => v.getAttribute.getName + "=\"" + v.getValue + "\"").mkString(","))
-                  scriptBuffer.append("}@"+subN.getName+"\n")
-                }
+            val dico = g.getDictionary
+            if (dico != null) {
+              val localVals = dico.getValues.filter(v => v.getTargetNode != null && v.getTargetNode == subN)
+              if (localVals.size > 0) {
+                scriptBuffer.append("updateDictionary " + g.getName + "{")
+                scriptBuffer.append(localVals.map(v => v.getAttribute.getName + "=\"" + v.getValue + "\"").mkString(","))
+                scriptBuffer.append("}@" + subN.getName + "\n")
               }
+
             }
 
 

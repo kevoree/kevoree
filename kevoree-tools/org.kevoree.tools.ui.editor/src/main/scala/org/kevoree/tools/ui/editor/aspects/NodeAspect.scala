@@ -35,6 +35,7 @@ import org.kevoree._
 import org.kevoree.tools.ui.editor.KevoreeUIKernel
 import org.kevoree.tools.ui.framework.elements.ModelPanel
 import org.kevoree.tools.ui.framework.elements.NodePanel
+import scala.collection.JavaConversions._
 
 import Art2UIAspects._
 
@@ -69,8 +70,8 @@ case class NodeAspect(self: ContainerNode) {
         if (nn.getTarget == self) {
           root.removeNodeNetworks(nn)
         } else {
-          nn.getInitBy.map {
-            initNode =>
+          val initNode = nn.getInitBy
+          if(initNode != null) {
               if (initNode == self) {
                 root.removeNodeNetworks(nn)
               }
@@ -112,8 +113,9 @@ case class NodeAspect(self: ContainerNode) {
     //CLEANUP DICTIONARY
     import org.kevoree.framework.aspects.KevoreeAspects._
     kernel.getModelHandler.getActualModel.getAllInstances.foreach{ inst =>
-      inst.getDictionary.map{ dico =>
-        dico.getValues.filter(v => v.getTargetNode.isDefined && v.getTargetNode.get.getName == self.getName).foreach{ value =>
+      val dico = inst.getDictionary
+      if (dico != null){
+        dico.getValues.filter(v => v.getTargetNode != null && v.getTargetNode.getName == self.getName).foreach{ value =>
           dico.removeValues(value)
         }
       }

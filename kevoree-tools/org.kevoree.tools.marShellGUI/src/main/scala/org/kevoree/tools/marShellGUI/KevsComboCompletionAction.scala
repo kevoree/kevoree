@@ -39,6 +39,7 @@ import org.kevoree.tools.marShell.lexer.KevsLexical
 import jsyntaxpane.actions.gui.ComboCompletionDialog
 import org.kevoree._
 import jsyntaxpane.{TokenTypes, Token, TokenType, SyntaxDocument}
+import scala.collection.JavaConversions._
 
 class KevsComboCompletionAction extends ComboCompletionAction {
 

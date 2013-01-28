@@ -21,6 +21,7 @@ import org.kevoree.tools.marShell.interpreter.utils.Merger
 
 import org.kevoree._
 import org.slf4j.LoggerFactory
+import scala.collection.JavaConversions._
 
 case class KevsAddComponentInstanceInterpreter(addCompo: AddComponentInstanceStatment) extends KevsAbstractInterpreter {
 
@@ -31,23 +32,23 @@ case class KevsAddComponentInstanceInterpreter(addCompo: AddComponentInstanceSta
       case Some(nodeID) => {
         //SEARCH NODE
         context.model.findByQuery("nodes[" + nodeID + "]", classOf[ContainerNode]) match {
-          case Some(targetNode) => {
+          case targetNode:ContainerNode => {
             targetNode.findByQuery("components[" + addCompo.cid.componentInstanceName + "]", classOf[ComponentInstance]) match {
-              case Some(previousComponent) => {
+              case previousComponent:ComponentInstance => {
                 logger.warn("Component already exist with name " + previousComponent.getName)
                 if (previousComponent.getTypeDefinition.getName == addCompo.typeDefinitionName) {
-                  Merger.mergeDictionary(previousComponent, addCompo.props, None)
+                  Merger.mergeDictionary(previousComponent, addCompo.props, null)
                   true
                 } else {
                   logger.error("Type != from previous created component")
                   false
                 }
               }
-              case None => {
+              case null => {
                 //SEARCH TYPE
                 context.model.findByQuery("typeDefinitions[" + addCompo.typeDefinitionName + "]", classOf[TypeDefinition]) match {
-                  case Some(typeDef) if (typeDef.isInstanceOf[ComponentType]) => {
-                    val componentDefinition = typeDef.asInstanceOf[ComponentType]
+                  case typeDef:ComponentType => {
+                    val componentDefinition = typeDef
                     val newcomponent = KevoreeFactory.$instance.createComponentInstance
                     newcomponent.setTypeDefinition(typeDef)
                     newcomponent.setName(addCompo.cid.componentInstanceName)
@@ -65,11 +66,11 @@ case class KevsAddComponentInstanceInterpreter(addCompo: AddComponentInstanceSta
                     }
 
                     //MERGE DICTIONARY
-                    Merger.mergeDictionary(newcomponent, addCompo.props, None)
+                    Merger.mergeDictionary(newcomponent, addCompo.props, null)
                     targetNode.addComponents(newcomponent)
                     true
                   }
-                  case Some(typeDef) if (!typeDef.isInstanceOf[ComponentType]) => {
+                  case typeDef:TypeDefinition if (!typeDef.isInstanceOf[ComponentType]) => {
                     logger.error("Type definition is not a componentType " + addCompo.typeDefinitionName)
                     false
                   }
@@ -81,7 +82,7 @@ case class KevsAddComponentInstanceInterpreter(addCompo: AddComponentInstanceSta
               }
             }
           }
-          case None => {
+          case null => {
             logger.error("Node not found " + nodeID);
             false
           }

@@ -65,7 +65,7 @@ public abstract class AbstractFuzzyLogicArduinoComponent extends AbstractArduino
     @Override
     public void generateClassHeader(ArduinoGenerator gen) {
         //GENERATE TEMP BUFFFER
-        for(PortTypeRef rp : ((ComponentType) gen.getTypeModel()).getRequiredForJ()){
+        for(PortTypeRef rp : ((ComponentType) gen.getTypeModel()).getRequired()){
             gen.appendNativeStatement("char buf_"+rp.getName()+"[5];");
         }
 

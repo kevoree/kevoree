@@ -40,6 +40,7 @@ import java.util.regex.Pattern
 import java.awt.{Color, FlowLayout, Dimension}
 import org.slf4j.LoggerFactory
 import com.explodingpixels.macwidgets.{IAppWidgetFactory, HudWindow}
+import scala.collection.JavaConversions._
 
 trait DictionaryForm {
 
@@ -142,13 +143,13 @@ trait DictionaryForm {
     btAdd.addActionListener(new ActionListener {
       def actionPerformed (p1: ActionEvent) {
 
-        if (componentType.getDictionaryType.isDefined &&
-          componentType.getDictionaryType.get.getAttributes.find(a => a.getName == portNameTxt.getText).isDefined) {
+        if (componentType.getDictionaryType != null &&
+          componentType.getDictionaryType.getAttributes.find(a => a.getName == portNameTxt.getText).isDefined) {
           portNameLbl.setForeground(Color.RED)
           ok_lbl.setText("KO")
           ok_lbl.setForeground(Color.RED)
         } else {
-          val dictionaryAttribute = KevoreeFactory.createDictionaryAttribute
+          val dictionaryAttribute = KevoreeFactory.$instance.createDictionaryAttribute
           dictionaryAttribute.setName(portNameTxt.getText)
           dictionaryAttribute.setFragmentDependant(fragmentDependantCheckBox.isSelected)
           dictionaryAttribute.setOptional(optionalCheckBox.isSelected)
@@ -169,17 +170,17 @@ trait DictionaryForm {
             }
 
             dictionaryAttribute.setDatatype(stringBuilder.toString())
-            if (componentType.getDictionaryType.isEmpty) {
-              componentType.setDictionaryType(Some(KevoreeFactory.createDictionaryType))
+            if (componentType.getDictionaryType == null) {
+              componentType.setDictionaryType(KevoreeFactory.$instance.createDictionaryType)
             }
 
-            componentType.getDictionaryType.get.addAttributes(dictionaryAttribute)
+            componentType.getDictionaryType.addAttributes(dictionaryAttribute)
 
             if (defaultValueTxt.getText != null && defaultValueTxt.getText != "") {
-              val defaultDictionaryValue = KevoreeFactory.createDictionaryValue
+              val defaultDictionaryValue = KevoreeFactory.$instance.createDictionaryValue
               defaultDictionaryValue.setAttribute(dictionaryAttribute)
               defaultDictionaryValue.setValue(defaultValueTxt.getText)
-              componentType.getDictionaryType.get.addDefaultValues(defaultDictionaryValue)
+              componentType.getDictionaryType.addDefaultValues(defaultDictionaryValue)
             }
 
             ok_lbl.setText("OK")

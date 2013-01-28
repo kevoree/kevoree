@@ -43,14 +43,14 @@ public abstract  class AbstractCodeGenerator implements ICodeGenerator
     public  AbstractCodeGenerator(ContainerRoot model)
     {
         this.model = model;
-        for(TypeDefinition type :  model.getTypeDefinitionsForJ()) {
+        for(TypeDefinition type :  model.getTypeDefinitions()) {
             if(type instanceof ComponentType) {
                 ComponentType c = (ComponentType)type;
-                for(PortTypeRef portP :  c.getProvidedForJ() )    {  create_input(portP.getName()); }
-                for(PortTypeRef portR :  c.getRequiredForJ()) { create_output(portR.getName()); }
-                if( c.getDictionaryType().isDefined())
+                for(PortTypeRef portP :  c.getProvided() )    {  create_input(portP.getName()); }
+                for(PortTypeRef portR :  c.getRequired()) { create_output(portR.getName()); }
+                if( c.getDictionaryType()!=null)
                 {
-                    for(DictionaryAttribute entry:  c.getDictionaryType().get().getAttributesForJ()){
+                    for(DictionaryAttribute entry:  c.getDictionaryType().getAttributes()){
                         dicos.put(entry.getName(),"default");
                     }
                     current = c;

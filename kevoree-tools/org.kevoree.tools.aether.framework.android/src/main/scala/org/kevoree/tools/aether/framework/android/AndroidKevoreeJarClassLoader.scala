@@ -28,10 +28,11 @@ package org.kevoree.tools.aether.framework.android
 
 import android.content.Context
 import java.io.{BufferedOutputStream, FileOutputStream, File, InputStream}
-import org.kevoree.kcl.{KevoreeResourcesLoader, KevoreeJarClassLoader}
+import org.kevoree.kcl.{KevoreeJarClassLoader}
 import org.slf4j.LoggerFactory
 import java.lang.Class
 import dalvik.system.{DexFile, DexClassLoader}
+import org.kevoree.kcl.loader.KevoreeResourcesLoader
 
 /**
  * Created by IntelliJ IDEA.

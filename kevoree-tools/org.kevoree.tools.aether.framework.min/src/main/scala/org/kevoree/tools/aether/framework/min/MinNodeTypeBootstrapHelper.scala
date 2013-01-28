@@ -43,10 +43,9 @@ class MinNodeTypeBootstrapHelper extends NodeTypeBootstrapHelper {
 
   classLoaderHandler = new MinJCLContextHandler
 
-  override def resolveArtifact(artId: String, groupId: String, version: String, repos: java.util.List[String]): File = AetherUtil.resolveMavenArtifact(artId, groupId, version, repos)
+  override def resolveArtifact(artId: String, groupId: String, version: String, repos: java.util.List[_ <: String]): File = AetherUtil.resolveMavenArtifact(artId, groupId, version, repos)
 
-
-  override def resolveArtifact(artId: String, groupId: String, version: String, extension : String, repos: java.util.List[String]): File = AetherUtil.resolveMavenArtifact(artId, groupId, version, extension, repos)
+  override def resolveArtifact(artId: String, groupId: String, version: String, extension : String, repos: java.util.List[_ <:String]): File = AetherUtil.resolveMavenArtifact(artId, groupId, version, extension, repos)
 
   override def resolveKevoreeArtifact(artId: String, groupId: String, version: String): File = AetherUtil.resolveKevoreeArtifact(artId, groupId, version)
 

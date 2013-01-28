@@ -17,6 +17,7 @@ import org.kevoree.tools.marShell.ast.AddChildStatment
 import org.kevoree.tools.marShell.interpreter.{KevsInterpreterContext, KevsAbstractInterpreter}
 import org.slf4j.LoggerFactory
 import org.kevoree.ContainerNode
+import scala.collection.JavaConversions._
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -32,22 +33,22 @@ case class KevsAddChildInterpreter(addChild: AddChildStatment) extends KevsAbstr
 
   def interpret(context: KevsInterpreterContext): Boolean = {
     context.model.findByQuery("nodes[" + addChild.childNodeName + "]", classOf[ContainerNode]) match {
-      case None => logger.error("child node:" + addChild.childNodeName + "\nThe node already exist. Please check !"); false
-      case Some(child) => {
+      case null => logger.error("child node:" + addChild.childNodeName + "\nThe node already exist. Please check !"); false
+      case child => {
         context.model.findByQuery("nodes[" + addChild.fatherNodeName + "]", classOf[ContainerNode]) match {
-          case None => {
+          case null => {
             logger.error("Unknown father name:" + addChild.fatherNodeName + "\nThe node must already exist. Please check !")
             false
           }
-          case Some(father) => {
+          case father => {
             father.findByQuery("hosts[" + child.getName + "]", classOf[ContainerNode]) match {
-              case None => {
-                context.model.getNodes.find(n => n.findByQuery("hosts[" + child.getName + "]", classOf[ContainerNode]).isDefined) match {
+              case null => {
+                context.model.getNodes.find(n => n.findByQuery("hosts[" + child.getName + "]", classOf[ContainerNode]) != null) match {
                   case None => father.addHosts(child); true
                   case Some(f) => logger.error("The child {} has already a parent: {}", child.getName, f.getName); false
                 }
               }
-              case Some(c) => logger.warn("The node {} is already a child of {}", child.getName, father.getName); true
+              case c => logger.warn("The node {} is already a child of {}", child.getName, father.getName); true
             }
           }
         }

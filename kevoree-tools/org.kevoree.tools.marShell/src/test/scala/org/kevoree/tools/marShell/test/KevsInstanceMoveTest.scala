@@ -32,6 +32,8 @@ import org.kevoree.tools.marShell.parser.KevsParser
 import org.kevoree.tools.marShell.interpreter.KevsInterpreterAspects._
 import org.kevoree.tools.marShell.interpreter.KevsInterpreterContext
 import org.scalatest.AbstractSuite
+import scala.collection.JavaConversions._
+
 
 class KevsInstanceMoveTest extends KevSTestSuiteHelper {
 
@@ -64,9 +66,9 @@ class KevsInstanceMoveTest extends KevSTestSuiteHelper {
 
 		assume(!srcNode.getComponents.exists(component => component.getName == "fk1"), "component not moved")
 		assume(targetNode.getComponents.exists(component => component.getName == "fk1"), "component not moved")
-		assume(!channel.getDictionary.get.getValues.exists(dv => dv.getAttribute.getName == "port" && dv.getTargetNode.isDefined && dv.getTargetNode.get.getName == "node0"),
+		assume(!channel.getDictionary.getValues.exists(dv => dv.getAttribute.getName == "port" && dv.getTargetNode != null && dv.getTargetNode.getName == "node0"),
 						"fragment for node0 is not removed")
-		assume(channel.getDictionary.get.getValues.exists(dv => dv.getAttribute.getName == "port" && dv.getTargetNode.isDefined && dv.getTargetNode.get.getName == "node1" && dv.getValue == "9001"),
+		assume(channel.getDictionary.getValues.exists(dv => dv.getAttribute.getName == "port" && dv.getTargetNode != null && dv.getTargetNode.getName == "node1" && dv.getValue == "9001"),
 						"fragment for node1 is not kept")
 	}
 
@@ -84,9 +86,9 @@ class KevsInstanceMoveTest extends KevSTestSuiteHelper {
 
 		assume(!srcNode.getComponents.exists(component => component.getName == "fk1"), "component not moved")
 		assume(targetNode.getComponents.exists(component => component.getName == "fk1"), "component not moved")
-		assume(channel.getDictionary.get.getValues.exists(dv => dv.getAttribute.getName == "port" && dv.getTargetNode.isDefined && dv.getTargetNode.get.getName == "node0" && dv.getValue == "9000"),
+		assume(channel.getDictionary.getValues.exists(dv => dv.getAttribute.getName == "port" && dv.getTargetNode != null && dv.getTargetNode.getName == "node0" && dv.getValue == "9000"),
 						"fragment for node0 is not kept")
-		assume(channel.getDictionary.get.getValues.exists(dv => dv.getAttribute.getName == "port" && dv.getTargetNode.isDefined && dv.getTargetNode.get.getName == "node1" && dv.getValue == "9001"),
+		assume(channel.getDictionary.getValues.exists(dv => dv.getAttribute.getName == "port" && dv.getTargetNode != null && dv.getTargetNode.getName == "node1" && dv.getValue == "9001"),
 						"fragment for node1 is not kept")
 	}
 
@@ -104,9 +106,9 @@ class KevsInstanceMoveTest extends KevSTestSuiteHelper {
 
 		assume(!srcNode.getComponents.exists(component => component.getName == "fk1"), "component not moved")
 		assume(targetNode.getComponents.exists(component => component.getName == "fk1"), "component not moved")
-		assume(channel.getDictionary.get.getValues.exists(dv => dv.getAttribute.getName == "port" && dv.getTargetNode.isDefined && dv.getTargetNode.get.getName == "node0" && dv.getValue == "9000"),
+		assume(channel.getDictionary.getValues.exists(dv => dv.getAttribute.getName == "port" && dv.getTargetNode != null && dv.getTargetNode.getName == "node0" && dv.getValue == "9000"),
 						"fragment for node0 is not kept")
-		assume(channel.getDictionary.get.getValues.exists(dv => dv.getAttribute.getName == "port" && dv.getTargetNode.isDefined && dv.getTargetNode.get.getName == "node1" && dv.getValue == "9000"),
+		assume(channel.getDictionary.getValues.exists(dv => dv.getAttribute.getName == "port" && dv.getTargetNode != null && dv.getTargetNode.getName == "node1" && dv.getValue == "9000"),
 						"fragment for node1 is not added")
 	}
 

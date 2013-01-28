@@ -107,7 +107,7 @@ class KevScriptCommand extends Command {
           case s: String => {
             val bootstraper = new FakeBootstraperService
             val kevOfflineEngine = new KevScriptOfflineEngine(kernel.getModelHandler.getActualModel,bootstraper.getBootstrap)
-            kevOfflineEngine.addVariable("kevoree.version",KevoreeFactory.getVersion)
+            kevOfflineEngine.addVariable("kevoree.version",KevoreeFactory.$instance.getVersion)
             import scala.collection.JavaConversions._
             System.getProperties.foreach{ prop =>
               kevOfflineEngine.addVariable(prop._1,prop._2)

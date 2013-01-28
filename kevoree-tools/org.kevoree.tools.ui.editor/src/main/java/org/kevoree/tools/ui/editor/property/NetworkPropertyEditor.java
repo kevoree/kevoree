@@ -70,10 +70,10 @@ public class NetworkPropertyEditor extends JPanel {
     public void refresh() {
         DefaultListModel listModel = new DefaultListModel();
         ContainerRoot root = (ContainerRoot) _node.eContainer();
-        for (NodeNetwork nn : root.getNodeNetworksForJ()) {
+        for (NodeNetwork nn : root.getNodeNetworks()) {
             if (nn.getTarget().equals(_node)) {
-                for (NodeLink nl : nn.getLinkForJ()) {
-                    for(NetworkProperty np : nl.getNetworkPropertiesForJ()){
+                for (NodeLink nl : nn.getLink()) {
+                    for(NetworkProperty np : nl.getNetworkProperties()){
                         listModel.addElement(np.getName()+"="+np.getValue());
                     }
                 }

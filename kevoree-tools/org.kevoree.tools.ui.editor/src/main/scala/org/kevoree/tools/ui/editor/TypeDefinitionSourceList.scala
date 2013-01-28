@@ -36,6 +36,7 @@ import javax.imageio.ImageIO
 import java.awt.event.{ActionEvent, ActionListener, InputEvent}
 import org.kevoree.TypeDefinition
 import com.explodingpixels.widgets.PopupMenuCustomizer
+import scala.collection.JavaConversions._
 ;
 
 /**
