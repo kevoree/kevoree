@@ -340,7 +340,7 @@ trait ProvidedPortSynchMethods
 
   def createProvidedServicePortMethod(operation : Operation, methodName : String, td : TypeDeclaration) : MethodDeclaration = {
     val newMethod = new MethodDeclaration(ModifierSet.PUBLIC, ASTHelper.VOID_TYPE, methodName);
-    newMethod.setType(new ClassOrInterfaceType(operation.getReturnType.get.getName))
+    newMethod.setType(new ClassOrInterfaceType(operation.getReturnType.getName))
 
     //Method body block
     val block = new BlockStmt();

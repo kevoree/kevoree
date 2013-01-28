@@ -23,6 +23,7 @@ import org.kevoree.library.defaultNodeTypes.jcl.deploy.context.{KevoreeDeployMan
 import org.kevoree.api.PrimitiveCommand
 import org.kevoree.framework.osgi._
 import org.kevoree.framework._
+import scala.collection.JavaConversions._
 
 /**
  * Created by IntelliJ IDEA.

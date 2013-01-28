@@ -31,6 +31,8 @@ import org.kevoree.tools.ui.framework.elements.{GroupTypePanel, NodeTypePanel, C
 import org.kevoree._
 import javax.swing.JPanel
 import tools.ui.editor._
+import scala.collection.JavaConversions._
+
 
 /**
  * User: ffouquet
@@ -57,7 +59,7 @@ class ReloadTypePalette extends Command {
         model.getLibraries.foreach {
           library =>
             palette.getCategoryOrAdd(library.getName)
-            library.getSubTypes.toList.sortWith((x, y) => x.getName(0).toLower < y.getName(0).toLower).foreach {
+            library.getSubTypes.toList.sortWith((x, y) => x.getName().charAt(0).toLower < y.getName().charAt(0).toLower).foreach {
               subTypeDef =>
                 loadedLib = loadedLib ++ List(subTypeDef)
                 typeDefPanelFactory(subTypeDef).map {
@@ -68,7 +70,7 @@ class ReloadTypePalette extends Command {
             }
 
         }
-        model.getTypeDefinitions.filter(typeDef => !loadedLib.contains(typeDef)).sortWith((x, y) => x.getName(0).toLower < y.getName(0).toLower).foreach {
+        model.getTypeDefinitions.filter(typeDef => !loadedLib.contains(typeDef)).sortWith((x, y) => x.getName().charAt(0).toLower < y.getName().charAt(0).toLower).foreach {
           typeDef =>
             typeDefPanelFactory(typeDef).map {
               typeDefPanel =>
@@ -83,7 +85,7 @@ class ReloadTypePalette extends Command {
         model.getDeployUnits.foreach {
           deployUnit =>
             palette.getCategoryOrAdd(deployUnit.getUnitName)
-            model.getTypeDefinitions.filter(t => t.getDeployUnits.exists(du => du == deployUnit)).sortWith((x, y) => x.getName(0).toLower < y.getName(0).toLower).foreach {
+            model.getTypeDefinitions.filter(t => t.getDeployUnits.exists(du => du == deployUnit)).sortWith((x, y) => x.getName().charAt(0).toLower < y.getName().charAt(0).toLower).foreach {
               typeDef =>
                 typeDefPanelFactory(typeDef).map {
                   typeDefPanel =>

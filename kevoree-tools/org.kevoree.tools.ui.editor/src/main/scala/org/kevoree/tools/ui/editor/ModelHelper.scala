@@ -29,6 +29,7 @@ package org.kevoree.tools.ui.editor
 
 import org.kevoree._
 import org.kevoree.framework.aspects.KevoreeAspects._
+import scala.collection.JavaConversions._
 
 /**
  * User: ffouquet

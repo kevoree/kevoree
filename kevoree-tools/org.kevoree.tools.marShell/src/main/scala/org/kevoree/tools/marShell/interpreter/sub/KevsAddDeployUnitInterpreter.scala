@@ -19,6 +19,7 @@ import org.kevoree.tools.marShell.interpreter.KevsInterpreterContext
 
 import org.slf4j.LoggerFactory
 import org.kevoree.tools.marShell.ast.{AddDeployUnitStatment, AddLibraryStatment}
+import scala.collection.JavaConversions._
 
 case class KevsAddDeployUnitInterpreter(statment : AddDeployUnitStatment) extends KevsAbstractInterpreter {
 

@@ -22,6 +22,7 @@ import org.kevoree.tools.marShell.interpreter.KevsAbstractInterpreter
 import org.kevoree.tools.marShell.interpreter.KevsInterpreterContext
 import org.kevoree.tools.marShell.ast.RemoveFromGroupStatement
 import org.kevoree.{ContainerNode, Group}
+import scala.collection.JavaConversions._
 
 
 case class KevsRemoveFromGroupInterpreter(removeFromGroup: RemoveFromGroupStatement) extends KevsAbstractInterpreter {
@@ -33,8 +34,8 @@ case class KevsRemoveFromGroupInterpreter(removeFromGroup: RemoveFromGroupStatem
       groups = context.model.getGroups.toList
     } else {
       context.model.findByQuery("groups[" + removeFromGroup.groupName + " ]", classOf[Group]) match {
-        case Some(g) => groups = List(g)
-        case None => return false
+        case g : Group => groups = List(g)
+        case null => return false
       }
     }
 
@@ -43,8 +44,8 @@ case class KevsRemoveFromGroupInterpreter(removeFromGroup: RemoveFromGroupStatem
       nodes = context.model.getNodes.toList
     } else {
       context.model.findByQuery("nodes[" + removeFromGroup.nodeName + "]", classOf[ContainerNode]) match {
-        case Some(g) => nodes = List(g)
-        case None => return false
+        case g : ContainerNode => nodes = List(g)
+        case null => return false
       }
     }
 

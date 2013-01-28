@@ -33,6 +33,7 @@ import org.kevoree.tools.marShell.interpreter.KevsInterpreterAspects._
 import org.kevoree.tools.marShell.interpreter.KevsInterpreterContext
 import org.scalatest.AbstractSuite
 import org.kevoree.{ComponentInstance, ContainerNode}
+import scala.collection.JavaConversions._
 
 class KevsBindingTest extends KevSTestSuiteHelper {
 

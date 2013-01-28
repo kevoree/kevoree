@@ -5,6 +5,7 @@ import org.kevoree.Instance
 import org.kevoree.framework.AbstractNodeType
 import org.slf4j.LoggerFactory
 import java.util.HashMap
+import scala.collection.JavaConversions._
 
 /**
  * Created by IntelliJ IDEA.
@@ -22,17 +23,17 @@ case class SelfDictionaryUpdate(c: Instance, node: AbstractNodeType) extends Pri
     //BUILD MAP
     //SET DEFAULT VAL
     val dictionary: java.util.HashMap[String, AnyRef] = new java.util.HashMap[String, AnyRef]
-    if (c.getTypeDefinition.getDictionaryType.isDefined) {
-      if (c.getTypeDefinition.getDictionaryType.get.getDefaultValues != null) {
-        c.getTypeDefinition.getDictionaryType.get.getDefaultValues.foreach {
+    if (c.getTypeDefinition.getDictionaryType() != null) {
+      if (c.getTypeDefinition.getDictionaryType.getDefaultValues != null) {
+        c.getTypeDefinition.getDictionaryType.getDefaultValues.foreach {
           dv =>
             dictionary.put(dv.getAttribute.getName, dv.getValue)
         }
       }
     }
     //SET DIC VAL
-    if (c.getDictionary.isDefined) {
-      c.getDictionary.get.getValues.foreach {
+    if (c.getDictionary() != null) {
+      c.getDictionary.getValues.foreach {
         v =>
           dictionary.put(v.getAttribute.getName, v.getValue)
       }

@@ -69,7 +69,7 @@ public class App {
 
                 final KevoreeEditor artpanel = new KevoreeEditor();
                 kevsPanel.setKernel(artpanel.getPanel().getKernel());
-                String frameName = "Kevoree Editor - " + KevoreeFactory.getVersion();
+                String frameName = "Kevoree Editor - " + KevoreeFactory.$instance.getVersion();
 
                 JFrame jframe = new JFrame(frameName);
                 MacUtils.makeWindowLeopardStyle(jframe.getRootPane());

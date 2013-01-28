@@ -33,6 +33,7 @@ import org.slf4j.LoggerFactory
 import org.kevoree.kompare.JavaSePrimitive
 import org.kevoree._
 import java.util.HashMap
+import scala.collection.JavaConversions._
 
 object AdaptationModelWrapper {
 
@@ -45,13 +46,13 @@ object AdaptationModelWrapper {
       adapt.getPrimitiveType.getName match {
         case JavaSePrimitive.UpdateDictionaryInstance => {
           val dicMap = new java.util.HashMap[String,java.util.Properties]()
-            if(adapt.getRef.asInstanceOf[Instance].getDictionary.isDefined){
-              adapt.getRef.asInstanceOf[Instance].getDictionary.get.getValues.foreach{value =>
-                if(value.getTargetNode.isDefined){
-                  var previousDic = dicMap.get(value.getTargetNode.get.getName)
+            if(adapt.getRef.asInstanceOf[Instance].getDictionary != null){
+              adapt.getRef.asInstanceOf[Instance].getDictionary.getValues.foreach{value =>
+                if(value.getTargetNode != null){
+                  var previousDic = dicMap.get(value.getTargetNode.getName)
                   if(previousDic == null){previousDic =  new java.util.Properties }
                   previousDic.put(value.getAttribute.getName, value.getValue)
-                  dicMap.put(value.getTargetNode.get.getName,previousDic)
+                  dicMap.put(value.getTargetNode.getName,previousDic)
                 } else {
                   var previousDic = dicMap.get("*")
                   if(previousDic == null){previousDic =  new java.util.Properties }
@@ -71,8 +72,8 @@ object AdaptationModelWrapper {
         case JavaSePrimitive.AddInstance => {
 
             val props = new java.util.Properties
-            if (adapt.getRef.asInstanceOf[Instance].getDictionary.isDefined) {
-              adapt.getRef.asInstanceOf[Instance].getDictionary.get.getValues.foreach {
+            if (adapt.getRef.asInstanceOf[Instance].getDictionary != null) {
+              adapt.getRef.asInstanceOf[Instance].getDictionary.getValues.foreach {
                 value =>
                 props.put(value.getAttribute.getName, value.getValue)
               }

@@ -152,10 +152,10 @@ public class BasicGossiperChannel extends AbstractChannelFragment implements Mod
 
 	@Override
 	public int parsePortNumber (String nodeName) {
-        Option<Channel> channelOption = currentCacheModel.get().findByQuery("hubs[" + getName() + "]", Channel.class);
+        Channel channelOption = currentCacheModel.get().findByQuery("hubs[" + getName() + "]", Channel.class);
         int port = 8000;
-        if (channelOption.isDefined()) {
-            Option<String> portOption = KevoreePropertyHelper.getProperty(channelOption.get(), "port", true, nodeName);
+        if (channelOption!=null) {
+            Option<String> portOption = KevoreePropertyHelper.getProperty(channelOption, "port", true, nodeName);
             if (portOption.isDefined()) {
                 try {
                     port = Integer.parseInt(portOption.get());
@@ -179,7 +179,7 @@ public class BasicGossiperChannel extends AbstractChannelFragment implements Mod
         return true;
     }
 
-    protected AtomicReference<ContainerRoot> currentCacheModel = new AtomicReference<ContainerRoot>(KevoreeFactory.createContainerRoot());
+    protected AtomicReference<ContainerRoot> currentCacheModel = new AtomicReference<ContainerRoot>(KevoreeFactory.$instance.createContainerRoot());
     protected AtomicReference<List<String>> peers = new AtomicReference<List<String>>();
 
     @Override

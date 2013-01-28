@@ -94,9 +94,9 @@ public class ModelDragTargetListener extends DropTarget {
         }
         if (o instanceof NodePanel) {
             //Only if accepted if node was previously in another node
-            for (ContainerNode node : kernel.getModelHandler().getActualModel().getNodesForJ()) {
+            for (ContainerNode node : kernel.getModelHandler().getActualModel().getNodes()) {
                 ContainerNode flightNode =(ContainerNode) kernel.getUifactory().getMapping().get(o);
-                if (node.getHostsForJ().contains(flightNode)) {
+                if (node.getHosts().contains(flightNode)) {
                     return true;
                 }
             }
@@ -132,8 +132,8 @@ public class ModelDragTargetListener extends DropTarget {
                         if ((o instanceof NodePanel)) {
                             NodePanel newnodepanel = (NodePanel) o;
                             kernel.getModelPanel().addNode(newnodepanel);
-                            for (ContainerNode node : kernel.getModelHandler().getActualModel().getNodesForJ()) {
-                                if (node.getHostsForJ().contains((ContainerNode) kernel.getUifactory().getMapping().get(newnodepanel))) {
+                            for (ContainerNode node : kernel.getModelHandler().getActualModel().getNodes()) {
+                                if (node.getHosts().contains((ContainerNode) kernel.getUifactory().getMapping().get(newnodepanel))) {
                                     node.removeHosts((ContainerNode) kernel.getUifactory().getMapping().get(newnodepanel));
                                 }
                             }

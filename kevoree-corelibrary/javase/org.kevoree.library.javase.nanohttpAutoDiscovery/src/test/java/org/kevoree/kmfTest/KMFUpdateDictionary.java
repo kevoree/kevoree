@@ -17,12 +17,12 @@ import scala.Some;
 public class KMFUpdateDictionary {
 
 	public static void main(String[] args) {
-		ContainerRoot model = KevoreeXmiHelper.load("/home/edaubert/model_user_kloud.kev");
-		for (Group g : model.getGroupsForJ()) {
+		ContainerRoot model = KevoreeXmiHelper.$instance.load("/home/edaubert/model_user_kloud.kev");
+		for (Group g : model.getGroups()) {
 			if (g.getName().equals("sync")) {
 				System.out.println(g.getDictionary());
-				Dictionary d = g.getDictionary().get();
-				g.setDictionary(new Some(d));
+				Dictionary d = g.getDictionary();
+				g.setDictionary(d);
 				System.out.println(g.getDictionary());
 			}
 		}

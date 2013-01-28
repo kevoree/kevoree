@@ -5,15 +5,12 @@ import org.kevoree.ContainerRoot;
 import org.kevoree.annotation.*;
 import org.kevoree.api.service.core.handler.ModelListener;
 import org.kevoree.framework.*;
+import org.kevoree.framework.KevoreePlatformHelper;
 import org.kevoree.framework.message.Message;
 import org.slf4j.LoggerFactory;
-import scala.Option;
-
 import java.io.*;
-import java.net.Socket;
 import java.util.HashMap;
 import java.util.concurrent.Semaphore;
-import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Created with IntelliJ IDEA.
@@ -207,10 +204,10 @@ public class P2pSock extends AbstractChannelFragment implements ModelListener{
 
 
     public int parsePortNumber (String nodeName) {
-        Option<Channel> channelOption = getModelService().getLastModel().findByQuery("hubs[" + getName() + "]", Channel.class);
+        Channel channelOption = getModelService().getLastModel().findByQuery("hubs[" + getName() + "]", Channel.class);
         int port = 8000;
-        if (channelOption.isDefined()) {
-            Option<String> portOption = KevoreePropertyHelper.getProperty(channelOption.get(), "port", true, nodeName);
+        if (channelOption!=null) {
+            scala.Option<String> portOption = KevoreePropertyHelper.getProperty(channelOption, "port", true, nodeName);
             if (portOption.isDefined()) {
                 try {
                     port = Integer.parseInt(portOption.get());

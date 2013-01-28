@@ -59,25 +59,25 @@ class MergeDefaultLibrary(lib : Int) extends Command {
       repos.add("http://maven.kevoree.org/snapshots")
 
       val file : File = lib match {
-        case ALL =>AetherUtil.resolveMavenArtifact("org.kevoree.library.model.all","org.kevoree.corelibrary.model",KevoreeFactory.getVersion,repos)
-        case JAVASE =>AetherUtil.resolveMavenArtifact("org.kevoree.library.model.javase","org.kevoree.corelibrary.model",KevoreeFactory.getVersion,repos)
-        case WEBSERVER =>AetherUtil.resolveMavenArtifact("org.kevoree.library.model.javase.webserver","org.kevoree.corelibrary.model",KevoreeFactory.getVersion,repos)
-        case ARDUINO =>AetherUtil.resolveMavenArtifact("org.kevoree.library.model.arduino","org.kevoree.corelibrary.model",KevoreeFactory.getVersion,repos)
-        case SKY =>AetherUtil.resolveMavenArtifact("org.kevoree.library.model.sky","org.kevoree.corelibrary.model",KevoreeFactory.getVersion,repos)
-        case ANDROID =>AetherUtil.resolveMavenArtifact("org.kevoree.library.model.android","org.kevoree.corelibrary.model",KevoreeFactory.getVersion,repos)
-        case DAUM =>AetherUtil.resolveMavenArtifact("org.kevoree.library.model.daum","org.kevoree.corelibrary.model",KevoreeFactory.getVersion,repos)
+        case ALL =>AetherUtil.resolveMavenArtifact("org.kevoree.library.model.all","org.kevoree.corelibrary.model",KevoreeFactory.$instance.getVersion,repos)
+        case JAVASE =>AetherUtil.resolveMavenArtifact("org.kevoree.library.model.javase","org.kevoree.corelibrary.model",KevoreeFactory.$instance.getVersion,repos)
+        case WEBSERVER =>AetherUtil.resolveMavenArtifact("org.kevoree.library.model.javase.webserver","org.kevoree.corelibrary.model",KevoreeFactory.$instance.getVersion,repos)
+        case ARDUINO =>AetherUtil.resolveMavenArtifact("org.kevoree.library.model.arduino","org.kevoree.corelibrary.model",KevoreeFactory.$instance.getVersion,repos)
+        case SKY =>AetherUtil.resolveMavenArtifact("org.kevoree.library.model.sky","org.kevoree.corelibrary.model",KevoreeFactory.$instance.getVersion,repos)
+        case ANDROID =>AetherUtil.resolveMavenArtifact("org.kevoree.library.model.android","org.kevoree.corelibrary.model",KevoreeFactory.$instance.getVersion,repos)
+        case DAUM =>AetherUtil.resolveMavenArtifact("org.kevoree.library.model.daum","org.kevoree.corelibrary.model",KevoreeFactory.$instance.getVersion,repos)
       }
 //       val file = AetherUtil.resolveMavenArtifact("org.kevoree.library.model.all","org.kevoree.library.model",KevoreeFactory.getVersion,List("http://maven.kevoree.org/release","http://maven.kevoree.org/snapshots"))
        val jar = new JarFile(file)
        val entry: JarEntry = jar.getJarEntry("KEV-INF/lib.kev")
-       val newmodel = KevoreeXmiHelper.loadStream(jar.getInputStream(entry))
+       val newmodel = KevoreeXmiHelper.$instance.loadStream(jar.getInputStream(entry))
       if (newmodel != null) {
         kernel.getModelHandler.merge(newmodel);
 
         //CREATE TEMP FILE FROM ACTUAL MODEL
         val tempFile = File.createTempFile("kevoreeEditorTemp", ".kev");
         PositionedEMFHelper.updateModelUIMetaData(kernel);
-        KevoreeXmiHelper.save(tempFile.getAbsolutePath, kernel.getModelHandler.getActualModel);
+        KevoreeXmiHelper.$instance.save(tempFile.getAbsolutePath, kernel.getModelHandler.getActualModel);
 
         //LOAD MODEL
         val loadCmd = new LoadModelCommand();

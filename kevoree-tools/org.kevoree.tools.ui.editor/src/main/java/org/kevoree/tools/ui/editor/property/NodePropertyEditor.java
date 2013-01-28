@@ -75,8 +75,8 @@ public class NodePropertyEditor extends InstancePropertyEditor {
 		sendNodeType.setDestNodeName(node.getName());
 
 		DefaultComboBoxModel groupModel = new DefaultComboBoxModel();
-		for (Group g : _kernel.getModelHandler().getActualModel().getGroupsForJ()) {
-			if (g.getSubNodesForJ().contains(node)) {
+		for (Group g : _kernel.getModelHandler().getActualModel().getGroups()) {
+			if (g.getSubNodes().contains(node)) {
 				groupModel.addElement(g.getName());
 			}
 		}

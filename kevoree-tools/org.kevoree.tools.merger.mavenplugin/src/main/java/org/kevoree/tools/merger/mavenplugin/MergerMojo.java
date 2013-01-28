@@ -125,7 +125,7 @@ public class MergerMojo extends AbstractMojo {
           //  root = KevoreeXmiHelper.load(modelInput.getAbsolutePath());
        // } else {
        //     this.getLog().warn("Model File Empty, creating one !");
-            root = KevoreeFactory.$instance().createContainerRoot();
+            root = KevoreeFactory.$instance.createContainerRoot();
         //}
 
         //MERGE TWO BY TWO
@@ -141,7 +141,7 @@ public class MergerMojo extends AbstractMojo {
                 if (entry != null) {
                     String path = convertStreamToFile(jar.getInputStream(entry));
                     //Load
-                    ContainerRoot nroot = KevoreeXmiHelper.load(path);
+                    ContainerRoot nroot = KevoreeXmiHelper.$instance.load(path);
                     //Merge
                     this.getLog().info("Kevoree Merge from => " + artefactPath);
                     merger.merge(root, nroot);
@@ -157,7 +157,7 @@ public class MergerMojo extends AbstractMojo {
 
                     //    Art2XmiHelper.save(java.net.URLStreamHandler.toExternalForm(modelInput.getAbsoluteFile().g), root);
 
-                    KevoreeXmiHelper.save(modelInput.getAbsolutePath(), root);
+                    KevoreeXmiHelper.$instance.save(modelInput.getAbsolutePath(), root);
                 }
             } catch (IOException ex) {
                 this.getLog().error(ex);

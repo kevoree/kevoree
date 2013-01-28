@@ -71,10 +71,10 @@ public class NanoRestGroup extends AbstractGroupType {
                             logger.debug("Model receive, process to load");
                             ContainerRoot model = null;
                             if (uri.endsWith("zip")) {
-                                model = KevoreeXmiHelper.loadCompressedStream(body);
+                                model = KevoreeXmiHelper.$instance.loadCompressedStream(body);
                                 logger.debug("Load  model From ZIP Stream");
                             } else {
-                                model = KevoreeXmiHelper.loadStream(body);
+                                model = KevoreeXmiHelper.$instance.loadStream(body);
                                 logger.debug("Load  model From XMI Stream");
                             }
                             body.close();
@@ -88,7 +88,7 @@ public class NanoRestGroup extends AbstractGroupType {
                                     srcNodeName = parms.getProperty(value);
                                 }
                             }
-                            for (ContainerNode subNode : getModelElement().getSubNodesForJ()) {
+                            for (ContainerNode subNode : getModelElement().getSubNodes()) {
                                 if (subNode.getName().trim().equals(srcNodeName.trim())) {
                                     logger.debug("model received from another node: forward is not needed");
                                     externalSender = false;
@@ -161,11 +161,11 @@ public class NanoRestGroup extends AbstractGroupType {
 
     protected NanoHTTPD.Response processOnModelRequested(String uri) {
         if (uri.endsWith("/model/current")) {
-            String msg = KevoreeXmiHelper.saveToString(handler.getLastModel(), false);
+            String msg = KevoreeXmiHelper.$instance.saveToString(handler.getLastModel(), false);
             return server.new Response(NanoHTTPD.HTTP_OK, NanoHTTPD.MIME_HTML, msg);
         } else if (uri.endsWith("/model/current/zip")) {
             ByteArrayOutputStream st = new ByteArrayOutputStream();
-            KevoreeXmiHelper.saveCompressedStream(st, handler.getLastModel());
+            KevoreeXmiHelper.$instance.saveCompressedStream(st, handler.getLastModel());
             ByteArrayInputStream resultStream = new ByteArrayInputStream(st.toByteArray());
             return server.new Response(NanoHTTPD.HTTP_OK, NanoHTTPD.MIME_HTML, resultStream);
         } else {
@@ -204,7 +204,7 @@ public class NanoRestGroup extends AbstractGroupType {
             starting = false;
         } else {
             Group group = getModelElement();
-            for (ContainerNode subNode : group.getSubNodesForJ()) {
+            for (ContainerNode subNode : group.getSubNodes()) {
                 if (!subNode.getName().equals(this.getNodeName())) {
                     try {
                         internalPush(getModelService().getLastModel(), subNode.getName(), this.getNodeName());
@@ -225,10 +225,10 @@ public class NanoRestGroup extends AbstractGroupType {
         }
 
 
-        Option<Group> groupOption = model.findByQuery("groups[" + getName() + "]", Group.class);
-        if (groupOption.isDefined()) {
+        Group groupOption = model.findByQuery("groups[" + getName() + "]", Group.class);
+        if (groupOption!=null) {
 //		List<String> ips = KevoreePropertyHelper.getStringNetworkProperties(model, targetNodeName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP());
-            Option<String> portOption = KevoreePropertyHelper.getProperty(groupOption.get(), "port", true, targetNodeName);
+            Option<String> portOption = KevoreePropertyHelper.getProperty(groupOption, "port", true, targetNodeName);
             int PORT = 8000;
             if (portOption.isDefined()) {
                 try {
@@ -257,9 +257,9 @@ public class NanoRestGroup extends AbstractGroupType {
         if (ipOption.isDefined()) {
             ip = ipOption.get();
         }
-        Option<Group> groupOption = model.findByQuery("groups[" + getName() + "]", Group.class);
-        if (groupOption.isDefined()) {
-            Option<String> portOption = KevoreePropertyHelper.getProperty(groupOption.get(), "port", true, targetNodeName);
+        Group groupOption = model.findByQuery("groups[" + getName() + "]", Group.class);
+        if (groupOption!=null) {
+            Option<String> portOption = KevoreePropertyHelper.getProperty(groupOption, "port", true, targetNodeName);
             int PORT = 8000;
             if (portOption.isDefined()) {
                 try {
@@ -293,9 +293,9 @@ public class NanoRestGroup extends AbstractGroupType {
     private void sendModel(ContainerRoot model, String urlPath, Boolean zip) throws Exception {
         ByteArrayOutputStream outStream = new ByteArrayOutputStream();
         if (zip) {
-            KevoreeXmiHelper.saveCompressedStream(outStream, model);
+            KevoreeXmiHelper.$instance.saveCompressedStream(outStream, model);
         } else {
-            KevoreeXmiHelper.saveStream(outStream, model);
+            KevoreeXmiHelper.$instance.saveStream(outStream, model);
         }
         outStream.flush();
         logger.debug("Try URL PATH " + urlPath);
@@ -366,9 +366,9 @@ public class NanoRestGroup extends AbstractGroupType {
         conn.setConnectTimeout(2000);
         InputStream inputStream = conn.getInputStream();
         if (zip) {
-            return KevoreeXmiHelper.loadCompressedStream(inputStream);
+            return KevoreeXmiHelper.$instance.loadCompressedStream(inputStream);
         } else {
-            return KevoreeXmiHelper.loadStream(inputStream);
+            return KevoreeXmiHelper.$instance.loadStream(inputStream);
         }
     }
 

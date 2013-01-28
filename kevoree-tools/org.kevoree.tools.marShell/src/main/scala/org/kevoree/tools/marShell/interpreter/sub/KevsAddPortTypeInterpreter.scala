@@ -33,12 +33,12 @@ case class KevsAddPortTypeInterpreter(self: AddPortTypeStatment) extends KevsAbs
   def interpret(context: KevsInterpreterContext): Boolean = {
     var success: Boolean = false
     context.model.findByQuery("typeDefinitions[" + self.componentTypeName + "]", classOf[TypeDefinition]) match {
-      case Some(e) => {
+      case e:TypeDefinition => {
         if (!e.isInstanceOf[ComponentType]) {
           logger.error("The type with name {} is not a ComponentType", self.componentTypeName)
           success = false
         } else {
-          val portTypeRef = KevoreeFactory.createPortTypeRef
+          val portTypeRef = KevoreeFactory.$instance.createPortTypeRef
           portTypeRef.setName(self.portTypeName)
 
           if (self.optional.isDefined) {
@@ -59,10 +59,10 @@ case class KevsAddPortTypeInterpreter(self: AddPortTypeStatment) extends KevsAbs
           }
           // find Class in model
           context.model.findByQuery("typeDefinitions[" + self.className.get + "]", classOf[TypeDefinition]) match {
-            case Some(p) =>
+            case p:TypeDefinition =>
               portTypeRef.setRef(p.asInstanceOf[PortType])
               success = true
-            case None =>
+            case null =>
               logger.debug("The port service can't be associated with the interface => {} is not found", self.className)
               val messagePortType = KevoreeFactory.$instance.createMessagePortType
               messagePortType.setName(self.className.toString)
@@ -72,7 +72,7 @@ case class KevsAddPortTypeInterpreter(self: AddPortTypeStatment) extends KevsAbs
           }
         }
       }
-      case None => {
+      case null => {
         logger.error("The componentTypeName does not exist with name => " + self.componentTypeName)
         success = false
       }

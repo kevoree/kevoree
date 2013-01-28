@@ -15,25 +15,10 @@ import java.util
  */
 
 class CommandMapper {
-/*
-  var modelHandlerService: KevoreeModelHandlerService = null
-
-  def setModelHandlerService(m: KevoreeModelHandlerService) {
-    modelHandlerService = m
-  }
-
-  var kscripEngineFactory: KevScriptEngineFactory = _
-
-  def setKscripEngineFactory(k: KevScriptEngineFactory) {
-    kscripEngineFactory = k
-  }*/
 
   var nodeType : AbstractNodeType = null
   def setNodeType(n : AbstractNodeType) { nodeType = n }
   def getNodeType : AbstractNodeType = nodeType
-
-
-
   val toClean = new util.ArrayList[EndAwareCommand]
 
   def doEnd(){

@@ -36,6 +36,7 @@ import javax.swing._
 import com.explodingpixels.macwidgets.plaf.{HudCheckBoxUI, HudButtonUI, HudLabelUI, HudTextFieldUI}
 import org.kevoree._
 import tools.ui.editor.{KevoreeUIKernel, UIHelper}
+import scala.collection.JavaConversions._
 
 /**
  * Created by IntelliJ IDEA.
@@ -114,7 +115,7 @@ trait PortForm {
 
           val portType = portTypeComboBoxModel.getSelectedItem.asInstanceOf[PortType]
 
-          val portTypeRef = KevoreeFactory.createPortTypeRef
+          val portTypeRef = KevoreeFactory.$instance.createPortTypeRef
           portTypeRef.setRef(portType)
           portTypeRef.setName(portNameTxt.getText)
           portTypeRef.setOptional(optionalCheckBox.isSelected)

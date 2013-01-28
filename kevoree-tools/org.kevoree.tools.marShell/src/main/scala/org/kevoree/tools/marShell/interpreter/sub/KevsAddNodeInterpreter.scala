@@ -28,22 +28,22 @@ case class KevsAddNodeInterpreter(addN: AddNodeStatment) extends KevsAbstractInt
 
   def interpret(context: KevsInterpreterContext): Boolean = {
     context.model.findByQuery("typeDefinitions[" + addN.nodeTypeName + "]", classOf[TypeDefinition]) match {
-      case None => logger.error("Node Type not found for name " + addN.nodeTypeName); false
-      case Some(nodeType) =>
+      case null => logger.error("Node Type not found for name " + addN.nodeTypeName); false
+      case nodeType =>
         if (!nodeType.isInstanceOf[NodeType]) {
           logger.error("The type with name {} is not a NodeType", addN.nodeTypeName)
           false
         } else {
           context.model.findByQuery("nodes[" + addN.nodeName + "]", classOf[ContainerNode]) match {
-            case Some(e) => {
+            case e:ContainerNode => {
               logger.warn("Node Already exist with name {}", e.getName)
               if (e.getTypeDefinition == null) {
                 e.setTypeDefinition(nodeType)
-                Merger.mergeDictionary(e, addN.props, None)
+                Merger.mergeDictionary(e, addN.props, null)
                 true
               } else {
                 if (e.getTypeDefinition.getName == addN.nodeTypeName) {
-                  Merger.mergeDictionary(e, addN.props, None)
+                  Merger.mergeDictionary(e, addN.props, null)
                   true
                 } else {
                   logger.error("Type != from previous created node")
@@ -51,11 +51,11 @@ case class KevsAddNodeInterpreter(addN: AddNodeStatment) extends KevsAbstractInt
                 }
               }
             }
-            case None => {
+            case null => {
               val newnode = KevoreeFactory.$instance.createContainerNode
               newnode.setName(addN.nodeName)
               newnode.setTypeDefinition(nodeType)
-              Merger.mergeDictionary(newnode, addN.props, None)
+              Merger.mergeDictionary(newnode, addN.props, null)
               context.model.addNodes(newnode)
               true
             }

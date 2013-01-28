@@ -50,6 +50,7 @@ import org.slf4j.LoggerFactory
 import java.util.{Properties, Dictionary}
 import collection.immutable.HashSet
 import org.kevoree.{ContainerRoot}
+import scala.collection.JavaConversions._
 
 object KevScriptWrapper {
   var logger = LoggerFactory.getLogger(this.getClass);

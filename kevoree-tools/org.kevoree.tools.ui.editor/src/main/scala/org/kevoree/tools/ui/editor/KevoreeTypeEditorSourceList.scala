@@ -109,7 +109,7 @@ class KevoreeTypeEditorSourceList(pane: JSplitPane, kernel: KevoreeUIKernel, typ
             logger.debug("KevoreeObject:" + kevObject)
             kevObject match {
               case ptRef : PortTypeRef => {
-                ptRef.setEContainer(null,None)
+                ptRef.setEContainer(null,null)
                 kernel.getEditorPanel.getTypeEditorPanel.refresh()
               }
               case _@e => logger.warn("KevoreeObject matches no entry")
@@ -169,8 +169,8 @@ class KevoreeTypeEditorSourceList(pane: JSplitPane, kernel: KevoreeUIKernel, typ
         while(categoryDic.getItems.size>0) {
           model.removeItemFromCategoryAtIndex(categoryDic,0)
         }
-        typeDef.getDictionaryType.map {
-          dic =>
+        val dic = typeDef.getDictionaryType
+        if(dic != null) {
             dic.getAttributes.foreach {
               dicAtt =>
                 if (!categoryDic.getItems.toList.exists(cat => cat.getText.equals(dicAtt.getName))) {

@@ -52,7 +52,7 @@ public class CurrentModelReport extends AbstractPage implements ModelListener {
     @Override
     public void modelUpdated() {
         ContainerRoot currentModel = getModelService().getLastModel();
-        Document doc = Jsoup.parse(KevoreeXmiHelper.saveToString(currentModel, true), "ContainerRoot", Parser.xmlParser());
+        Document doc = Jsoup.parse(KevoreeXmiHelper.$instance.saveToString(currentModel, true), "ContainerRoot", Parser.xmlParser());
         Elements elems = doc.select("ContainerRoot > ContainerNode");
         System.out.println("Node:" + elems.size());
         for (Element e : elems) {

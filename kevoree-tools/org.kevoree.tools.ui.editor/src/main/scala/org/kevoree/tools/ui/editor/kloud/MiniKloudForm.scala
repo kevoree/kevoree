@@ -25,9 +25,9 @@ import org.kevoree._
 import org.kevoree.tools.modelsync.FakeBootstraperService
 import javax.swing.{JOptionPane, ImageIcon, AbstractButton}
 import java.awt.Desktop
-import scala.Some
 import org.kevoree.core.basechecker.RootChecker
 import scala.Some
+import scala.collection.JavaConversions._
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -80,7 +80,7 @@ class MiniKloudForm(editor: KevoreeEditor, button: AbstractButton) {
 
             // build default model of the minicloud
             UIEventHandler.info("Download org.kevoree.platform.standalone.gui")
-            platformJAR = AetherUtil.resolveKevoreeArtifact("org.kevoree.platform.standalone.gui", "org.kevoree.platform", KevoreeFactory.getVersion)
+            platformJAR = AetherUtil.resolveKevoreeArtifact("org.kevoree.platform.standalone.gui", "org.kevoree.platform", KevoreeFactory.$instance.getVersion)
             UIEventHandler.info("org.kevoree.platform.standalone.gui resolved")
             if (platformJAR != null) {
               PositionedEMFHelper.updateModelUIMetaData(editor.getPanel.getKernel)
@@ -89,7 +89,7 @@ class MiniKloudForm(editor: KevoreeEditor, button: AbstractButton) {
                 val file = File.createTempFile("editorBootstrapModel", "kev")
                 file.deleteOnExit()
 
-                KevoreeXmiHelper.save(file.getAbsolutePath, skyModel)
+                KevoreeXmiHelper.$instance.save(file.getAbsolutePath, skyModel)
                 logger.debug("trying to start the minicloud")
                 minicloud = Runtime.getRuntime
                   .exec(Array[String](java, "-Dnode.gui.config=false", "-Dnode.bootstrap=" + file.getAbsolutePath, "-Dnode.name=" + minicloudName, "-Dkevoree.log.level=INFO", "-jar",
@@ -107,8 +107,8 @@ class MiniKloudForm(editor: KevoreeEditor, button: AbstractButton) {
                 UIEventHandler.info("MiniKloud node Started !")
 
                 skyModel.findByQuery("nodes[" + minicloudName + "]/components[" + "webServer" + "]", classOf[ComponentInstance]) match {
-                  case None =>
-                  case Some(component) => {
+                  case null =>
+                  case component: ComponentInstance => {
                     val portOption = KevoreePropertyHelper.getProperty(component, "port")
                     for (i <- 0 until 10) {
                       try {
@@ -205,7 +205,7 @@ class MiniKloudForm(editor: KevoreeEditor, button: AbstractButton) {
         logger.debug("starting a minicloud with an editor node")
         minicloudName = "editor_node"
         kevEngine.addVariable("minicloudNodeName", minicloudName)
-        kevEngine.addVariable("kevoree.version", KevoreeFactory.getVersion)
+        kevEngine.addVariable("kevoree.version", KevoreeFactory.$instance.getVersion)
 
         kevEngine.append("merge 'mvn:org.kevoree.corelibrary.sky/org.kevoree.library.sky.minicloud/{kevoree.version}'")
         kevEngine.append("merge 'mvn:org.kevoree.corelibrary.sky/org.kevoree.library.sky.provider/{kevoree.version}'")
@@ -249,8 +249,8 @@ class MiniKloudForm(editor: KevoreeEditor, button: AbstractButton) {
       case None =>
         groupName = "editor_group"
         editor.getPanel.getKernel.getModelHandler.getActualModel.findByQuery("groups[" + groupName + "]", classOf[Group]) match {
-          case Some(group) =>
-          case None => // add a new group
+          case group : Group =>
+          case null => // add a new group
             kevEngine.append("addGroup editor_group : BasicGossiperGroup")
         }
         kevEngine.addVariable("groupName", groupName)

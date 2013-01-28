@@ -31,9 +31,9 @@ import org.kevoree.framework.HaraKiriHelper
 class KevoreeCoreBean(): KevoreeModelHandlerService {
 
     val modelListeners = KevoreeListeners()
-    var kevsEngineFactory: KevScriptEngineFactory? = null
+    var _kevsEngineFactory: KevScriptEngineFactory? = null
     private var modelVersionChecker: KevoreeNodeVersionChecker? = null
-    var bootstraper: Bootstraper? = null
+    var _bootstraper: Bootstraper? = null
     var _nodeName: String = ""
     var nodeInstance: org.kevoree.api.NodeType? = null
     var models: MutableList<ContainerRoot> = ArrayList<ContainerRoot>()
@@ -47,7 +47,6 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
     private var scheduler: ExecutorService? = null
     private var lockWatchDog: ScheduledExecutorService? = null
     private var futurWatchDog: ScheduledFuture<out Any?>? = null
-
     private var currentLock: Tuple2<UUID, ModelHandlerLockCallBack>? = null
 
 
@@ -65,7 +64,11 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
     }
 
     fun setKevsEngineFactory(k: KevScriptEngineFactory) {
-        kevsEngineFactory = k
+        _kevsEngineFactory = k
+    }
+
+    fun setBootstraper(b : Bootstraper){
+        _bootstraper = b
     }
 
     private fun switchToNewModel(c: ContainerRoot) = {
@@ -208,7 +211,7 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
                 logger.debug("Call instance stop")
                 nodeInstance?.stopNode()
                 nodeInstance == null
-                bootstraper?.clear()
+                _bootstraper?.clear()
             } catch(e: Exception) {
                 logger.error("Error while stopping node instance ", e)
             }
@@ -399,7 +402,7 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
             if (nodeInstance == null) {
                 val foundNode = currentModel.findByQuery("nodes[" + getNodeName() + "]", javaClass<ContainerNode>())
                 if(foundNode != null){
-                    val nodeInstance = bootstraper?.bootstrapNodeType(currentModel, getNodeName(), this, kevsEngineFactory.sure())
+                    val nodeInstance = _bootstraper?.bootstrapNodeType(currentModel, getNodeName(), this, _kevsEngineFactory.sure())
                     if(nodeInstance != null){
                         nodeInstance.startNode()
                         //SET CURRENT MODEL
@@ -424,12 +427,12 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
             }
         } catch(e: Exception) {
             logger.error("Error while bootstraping node instance ", e)
-            logger.debug(bootstraper?.getKevoreeClassLoaderHandler()?.getKCLDump())
+            logger.debug(_bootstraper?.getKevoreeClassLoaderHandler()?.getKCLDump())
             try {
                 nodeInstance?.stopNode()
             } catch(e: Exception) {
             } finally {
-                bootstraper?.clear()
+                _bootstraper?.clear()
             }
             nodeInstance = null
         }
@@ -503,7 +506,7 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
                                nodeInstance?.stopNode()
                                //end of harakiri
                                nodeInstance = null
-                               bootstraper?.clear() //CLEAR
+                               _bootstraper?.clear() //CLEAR
                                //place the current model as an empty model (for backup)
 
                                val backupEmptyModel = org.kevoree.KevoreeFactory.createContainerRoot()

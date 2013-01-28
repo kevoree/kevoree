@@ -33,6 +33,7 @@ import java.awt.BorderLayout
 import org.kevoree.{ComponentType, TypeDefinition}
 import com.explodingpixels.macwidgets.plaf.ITunesTableUI
 import javax.swing.{JTable, BorderFactory, JScrollPane, JPanel}
+import scala.collection.JavaConversions._
 
 /**
  * User: ffouquet
@@ -79,10 +80,10 @@ class KevoreeTypeEditorList(typeDefinition: TypeDefinition, uikernel: KevoreeUIK
       model.removeRow(model.getRowCount-1)
     }
     if (typeDefinition != null) {
-      if (typeDefinition.getDictionaryType.isDefined) {
-        typeDefinition.getDictionaryType.get.getAttributes.foreach {
+      if (typeDefinition.getDictionaryType != null) {
+        typeDefinition.getDictionaryType.getAttributes.foreach {
           at =>
-            val defValue: String = typeDefinition.getDictionaryType.get.getDefaultValues.find(dv => dv.getAttribute == at).map(dv => dv.getValue).getOrElse("")
+            val defValue: String = typeDefinition.getDictionaryType.getDefaultValues.find(dv => dv.getAttribute == at).map(dv => dv.getValue).getOrElse("")
             model.addRow(Array[AnyRef](at.getName, "Property", at.getDatatype, defValue))
         }
       }

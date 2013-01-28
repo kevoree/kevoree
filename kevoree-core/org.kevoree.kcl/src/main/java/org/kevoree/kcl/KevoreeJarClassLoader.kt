@@ -20,7 +20,7 @@ import org.kevoree.kcl.loader.ProxyClassLoader
  * Time: 18:57
  */
 
-class KevoreeJarClassLoader(): ClassLoader() {
+open class KevoreeJarClassLoader(): ClassLoader() {
 
     protected var classpathResources: KevoreeLazyJarResources? = null
     protected var local_loader: KevoreeLocalLoader? = null
@@ -106,7 +106,7 @@ class KevoreeJarClassLoader(): ClassLoader() {
 
     protected var subWeakClassLoaders: ArrayList<WeakReference<ClassLoader>> = ArrayList<WeakReference<ClassLoader>>()
 
-    fun setLazyLoad(lazyload: Boolean) {
+    open fun setLazyLoad(lazyload: Boolean) {
         (classpathResources as KevoreeLazyJarResources).setLazyLoad(lazyload)
     }
 
@@ -257,7 +257,7 @@ class KevoreeJarClassLoader(): ClassLoader() {
         return findLoadedClass(className)
     }
 
-    fun internal_defineClass(className: String, bytes: ByteArray): Class<out Any?>? {
+    open fun internal_defineClass(className: String, bytes: ByteArray): Class<out Any?>? {
         if (className.contains(".")) {
             val packageName = className.substring(0, className.lastIndexOf('.'))
             if (getPackage(packageName) == null) {
@@ -353,7 +353,7 @@ class KevoreeJarClassLoader(): ClassLoader() {
         }
     }
 
-    fun unload() {
+    open fun unload() {
     }
 
     override fun findResource(s: String?): URL? {
@@ -517,7 +517,7 @@ class KevoreeJarClassLoader(): ClassLoader() {
      * @param className
      * @return byte[]
      */
-    public fun loadClassBytes(className: String): ByteArray? {
+    public open fun loadClassBytes(className: String): ByteArray? {
         val className2 = formatClassName(className);
         return classpathResources?.getResource(className2);
     }

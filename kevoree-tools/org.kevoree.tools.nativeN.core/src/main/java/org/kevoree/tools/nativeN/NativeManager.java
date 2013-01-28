@@ -56,12 +56,12 @@ public class NativeManager implements INativeManager {
             throw new NativeHandlerException();
         }
 
-        for(TypeDefinition type :  model.getTypeDefinitionsForJ())
+        for(TypeDefinition type :  model.getTypeDefinitions())
         {
             if(type instanceof ComponentType)
             {
                 ComponentType c = (ComponentType)type;
-                for(PortTypeRef portP :  c.getProvidedForJ())
+                for(PortTypeRef portP :  c.getProvided())
                 {
                     int id =  nativeJNI.create_input(key, portP.getName());
                     if(id < 0){
@@ -69,7 +69,7 @@ public class NativeManager implements INativeManager {
                     }
                     inputs_ports.put(portP.getName(),id);
                 }
-                for(PortTypeRef portR :  c.getRequiredForJ())
+                for(PortTypeRef portR :  c.getRequired())
                 {
                     int id =    nativeJNI.create_output(key, portR.getName());
                     if(id < 0){

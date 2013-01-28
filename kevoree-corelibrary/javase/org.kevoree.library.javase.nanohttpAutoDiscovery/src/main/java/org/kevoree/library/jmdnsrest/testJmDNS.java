@@ -74,11 +74,11 @@ public class testJmDNS {
         KevoreePlatformHelper.updateNodeLinkProp(model, "node0", "node0", org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP(), "192.168.1.1", "LAN", 100);
         KevoreePlatformHelper.updateNodeLinkProp(model, "node0", "node0", org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP(), "192.168.1.2", "LAN2", 100);
 
-        for( NodeNetwork node : model.getNodeNetworksForJ())
+        for( NodeNetwork node : model.getNodeNetworks())
         {
 
-            for( NodeLink lins : node.getLinkForJ())  {
-                for( NetworkProperty prop : lins.getNetworkPropertiesForJ())  {
+            for( NodeLink lins : node.getLink())  {
+                for( NetworkProperty prop : lins.getNetworkProperties())  {
                     System.out.println(prop.getValue()+" "+prop.getName()+" "+prop.getLastCheck());
                 }
             }

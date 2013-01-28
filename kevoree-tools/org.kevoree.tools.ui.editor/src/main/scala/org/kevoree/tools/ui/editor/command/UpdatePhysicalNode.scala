@@ -29,6 +29,8 @@ package org.kevoree.tools.ui.editor.command
 import org.kevoree.tools.ui.editor.KevoreeUIKernel
 
 import org.kevoree.{KevoreeFactory, ContainerNode}
+import scala.collection.JavaConversions._
+
 
 /**
  * User: ffouquet

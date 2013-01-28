@@ -18,6 +18,8 @@ import org.kevoree.{GroupType, NodeType, ChannelType, ComponentType}
 import javax.swing.{JDialog, SwingConstants, JLabel, JFrame}
 import org.jdesktop.swingx.JXDialog
 import java.awt.Dimension
+import scala.collection.JavaConversions._
+
 
 /**
  * Created with IntelliJ IDEA.

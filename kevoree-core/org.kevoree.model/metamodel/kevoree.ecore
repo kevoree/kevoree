@@ -47,8 +47,6 @@
                              eType="#//NodeNetwork" containment="true"/>
         <eStructuralFeatures xsi:type="ecore:EReference" name="groups" upperBound="-1"
                              eType="#//Group" containment="true"/>
-        <eStructuralFeatures xsi:type="ecore:EReference" name="groupTypes" upperBound="-1"
-                             eType="#//GroupType" containment="true"/>
         <eStructuralFeatures xsi:type="ecore:EReference" name="adaptationPrimitiveTypes"
                              upperBound="-1" eType="#//AdaptationPrimitiveType" containment="true"/>
     </eClassifiers>

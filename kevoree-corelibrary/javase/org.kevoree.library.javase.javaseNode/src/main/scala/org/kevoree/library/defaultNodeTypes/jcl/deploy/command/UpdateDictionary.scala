@@ -20,12 +20,12 @@ package org.kevoree.library.defaultNodeTypes.jcl.deploy.command
 
 import org.kevoree._
 import api.PrimitiveCommand
-import framework.osgi.{KevoreeInstanceActivator, KevoreeGroupActivator, KevoreeChannelFragmentActivator, KevoreeComponentActivator}
-import library.defaultNodeTypes.jcl.deploy.context.{KevoreeMapping, KevoreeDeployManager}
-import org.kevoree.framework.message.UpdateDictionaryMessage
+import framework.osgi.KevoreeInstanceActivator
+import library.defaultNodeTypes.jcl.deploy.context.KevoreeDeployManager
 import org.slf4j.LoggerFactory
 import java.util.HashMap
 import java.lang.String
+import scala.collection.JavaConversions._
 
 case class UpdateDictionary(c: Instance, nodeName: String) extends PrimitiveCommand {
 
@@ -37,24 +37,24 @@ case class UpdateDictionary(c: Instance, nodeName: String) extends PrimitiveComm
   def execute(): Boolean = {
     //BUILD MAP
     val dictionary: java.util.HashMap[String, AnyRef] = new java.util.HashMap[String, AnyRef]
-    if (c.getTypeDefinition.getDictionaryType.isDefined) {
-      if (c.getTypeDefinition.getDictionaryType.get.getDefaultValues != null) {
-        c.getTypeDefinition.getDictionaryType.get.getDefaultValues.foreach {
+    if (c.getTypeDefinition.getDictionaryType() != null) {
+      if (c.getTypeDefinition.getDictionaryType.getDefaultValues != null) {
+        c.getTypeDefinition.getDictionaryType.getDefaultValues.foreach {
           dv =>
             dictionary.put(dv.getAttribute.getName, dv.getValue)
         }
       }
     }
 
-    if (c.getDictionary.isDefined) {
-      c.getDictionary.get.getValues.foreach {
+    if (c.getDictionary() != null) {
+      c.getDictionary.getValues.foreach {
         v =>
           if (v.getAttribute.getFragmentDependant) {
-            v.getTargetNode.map {
-              tn =>
-                if (tn.getName == nodeName) {
-                  dictionary.put(v.getAttribute.getName, v.getValue)
-                }
+            val tn = v.getTargetNode
+            if (tn != null) {
+              if (tn.getName == nodeName) {
+                dictionary.put(v.getAttribute.getName, v.getValue)
+              }
             }
           } else {
             dictionary.put(v.getAttribute.getName, v.getValue)
@@ -65,27 +65,16 @@ case class UpdateDictionary(c: Instance, nodeName: String) extends PrimitiveComm
     KevoreeDeployManager.bundleMapping.find(map => map.objClassName == c.getClass.getName && map.name == c.getName) match {
       case None => false
       case Some(mapfound) => {
-        mapfound.asInstanceOf[KevoreeMapping].ref match {
+        mapfound.ref match {
           case iact: KevoreeInstanceActivator => {
             Thread.currentThread().setContextClassLoader(iact.getKInstance.getClass.getClassLoader)
             lastDictioanry = iact.getKInstance.kUpdateDictionary(dictionary, c.getTypeDefinition.eContainer.asInstanceOf[ContainerRoot])
-            // lastDictioanry = (c_act.componentActor !? UpdateDictionaryMessage(dictionary, c.getTypeDefinition.eContainer.asInstanceOf[ContainerRoot])).asInstanceOf[HashMap[String, AnyRef]]
             lastDictioanry != null
           }
-            /*
-          case c_act: KevoreeChannelFragmentActivator => {
-            lastDictioanry = (c_act.channelActor !? UpdateDictionaryMessage(dictionary, c.getTypeDefinition.eContainer.asInstanceOf[ContainerRoot])).asInstanceOf[HashMap[String, AnyRef]]
-            true
-          }
-          case g_act: KevoreeGroupActivator => {
-            lastDictioanry = (g_act.groupActor !? UpdateDictionaryMessage(dictionary, c.getTypeDefinition.eContainer.asInstanceOf[ContainerRoot])).asInstanceOf[HashMap[String, AnyRef]]
-            true
-          }   */
           case _ => false
         }
       }
     }
-
   }
 
   def undo() {
@@ -102,26 +91,11 @@ case class UpdateDictionary(c: Instance, nodeName: String) extends PrimitiveComm
           KevoreeDeployManager.bundleMapping.find(map => map.objClassName == c.getClass.getName && map.name == c.getName) match {
             case None =>
             case Some(mapfound) => {
-
-              mapfound.asInstanceOf[KevoreeMapping].ref match {
+              mapfound.ref match {
                 case iact: KevoreeInstanceActivator => {
                   Thread.currentThread().setContextClassLoader(iact.getKInstance.getClass.getClassLoader)
                   lastDictioanry = iact.getKInstance.kUpdateDictionary(tempHash, c.getTypeDefinition.eContainer.asInstanceOf[ContainerRoot])
-
-
-                  //lastDictioanry = (c_act.componentActor !? UpdateDictionaryMessage(tempHash, c.getTypeDefinition.eContainer.asInstanceOf[ContainerRoot])).asInstanceOf[HashMap[String, AnyRef]]
-                  //true
                 }
-                  /*
-                case c_act: KevoreeChannelFragmentActivator => {
-                  lastDictioanry = (c_act.channelActor !? UpdateDictionaryMessage(tempHash, c.getTypeDefinition.eContainer.asInstanceOf[ContainerRoot])).asInstanceOf[HashMap[String, AnyRef]]
-                  //true
-                }
-                case g_act: KevoreeGroupActivator => {
-                  lastDictioanry = (g_act.groupActor !? UpdateDictionaryMessage(tempHash, c.getTypeDefinition.eContainer.asInstanceOf[ContainerRoot])).asInstanceOf[HashMap[String, AnyRef]]
-                  //true
-                }*/
-
                 case _ =>
               }
             }

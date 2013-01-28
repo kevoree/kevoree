@@ -42,11 +42,11 @@ object Merger {
     
     fragmentProps.keySet().foreach { propKey =>
       propKey match {
-        case "*"=> mergeDictionary(inst,fragmentProps.get(propKey),None)
+        case "*"=> mergeDictionary(inst,fragmentProps.get(propKey),null)
         case _ @ searchNodeName => {
           inst.getTypeDefinition.eContainer.asInstanceOf[ContainerRoot].getNodes.find(n => n.getName == searchNodeName) match {
             case Some(nodeFound)=> {
-              mergeDictionary(inst,fragmentProps.get(propKey),Some(nodeFound))
+              mergeDictionary(inst,fragmentProps.get(propKey),nodeFound)
             }
             case None => {
               throw new Exception("Unknown nodeName for name "+searchNodeName)
@@ -59,19 +59,19 @@ object Merger {
   
   
   /* Goal of this method is to merge dictionary definition with already exist instance defintion */
-  def mergeDictionary(inst: Instance, props: java.util.Properties, targetNode : Option[ContainerNode]) = {
+  def mergeDictionary(inst: Instance, props: java.util.Properties, targetNode :ContainerNode) = {
     import scala.collection.JavaConversions._
     props.keySet.foreach {
       key =>
         val newValue = props.get(key)
 
         var dictionary = inst.getDictionary
-        if (dictionary.isEmpty) {
-          dictionary = Some(KevoreeFactory.$instance.createDictionary)
+        if (dictionary == null) {
+          dictionary = KevoreeFactory.$instance.createDictionary
           inst.setDictionary(dictionary)
         }
 
-        inst.getDictionary.get.getValues.find(value => { (value.getAttribute.getName == key) && (if(targetNode.isDefined){ value.getTargetNode.isDefined && value.getTargetNode.get.getName == targetNode.get.getName } else { value.getTargetNode.isEmpty })}) match {
+        inst.getDictionary.getValues.find(value => { (value.getAttribute.getName == key) && (if(targetNode != null){ value.getTargetNode != null && value.getTargetNode.getName == targetNode.getName } else { value.getTargetNode == null })}) match {
           //UPDATE VALUE CASE
           case Some(previousValue) => {
             previousValue.setValue(newValue.toString)
@@ -79,7 +79,7 @@ object Merger {
           //MERGE NEW Dictionary Attribute
           case None => {
             //CHECK IF ATTRIBUTE ALREADY EXISTE WITHOUT VALUE
-            val att = inst.getTypeDefinition.getDictionaryType.get.getAttributes.find(att => att.getName == key) match {
+            val att = inst.getTypeDefinition.getDictionaryType.getAttributes.find(att => att.getName == key) match {
               case None => {
                /* if(allowTypeUpdate){
                   val newDictionaryValue = KevoreeFactory.$instance.createDictionaryAttribute
@@ -96,7 +96,7 @@ object Merger {
             newDictionaryValue.setValue(newValue.toString)
             newDictionaryValue.setAttribute(att)
             newDictionaryValue.setTargetNode(targetNode)
-            inst.getDictionary.get.addValues(newDictionaryValue)
+            inst.getDictionary.addValues(newDictionaryValue)
           }
         }
 

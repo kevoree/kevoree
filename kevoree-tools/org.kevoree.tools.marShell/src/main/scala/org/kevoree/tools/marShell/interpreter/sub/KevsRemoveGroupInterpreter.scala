@@ -44,11 +44,11 @@ case class KevsRemoveGroupInterpreter(removeGroup: RemoveGroupStatment) extends 
 
   def interpret(context: KevsInterpreterContext): Boolean = {
     context.model.findByQuery("groups[" + removeGroup.groupName + "]", classOf[Group]) match {
-      case Some(target) => {
+      case target:Group => {
         context.model.removeGroups(target)
         true
       }
-      case None => {
+      case null => {
         logger.error("Group not exist " + removeGroup.groupName)
         false
       }

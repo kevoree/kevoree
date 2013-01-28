@@ -70,7 +70,7 @@ public class FakeReasoner extends AbstractComponentType implements ModelListener
             ContainerRoot root = getModelService().getLastModel();
             KevScriptEngine engine = getKevScriptEngineFactory().createKevScriptEngine();
             Boolean globalExecute = false;
-            for (ContainerNode node : root.getNodesForJ()) {
+            for (ContainerNode node : root.getNodes()) {
                     engine.addVariable("nodeName", node.getName());
                     engine.append("addComponent {nodeName}Console@{nodeName} : FakeConsole");
             }

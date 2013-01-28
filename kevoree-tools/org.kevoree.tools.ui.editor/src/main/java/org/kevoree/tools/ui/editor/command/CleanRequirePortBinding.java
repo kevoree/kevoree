@@ -61,9 +61,9 @@ public class CleanRequirePortBinding implements Command {
     public void execute(Object p) {
         Port port = (Port) kernel.getUifactory().getMapping().get(portpanel);
         ComponentInstance component = (ComponentInstance) port.eContainer();
-        if(component.getRequiredForJ().contains(port)){
+        if(component.getRequired().contains(port)){
             List<MBinding> portBindings = new ArrayList<MBinding>();
-            for(MBinding b : kernel.getModelHandler().getActualModel().getMBindingsForJ()){
+            for(MBinding b : kernel.getModelHandler().getActualModel().getMBindings()){
                 if(b.getPort().equals(port)){
                     portBindings.add(b);
                 }

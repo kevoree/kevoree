@@ -37,22 +37,13 @@ case class UpdateDeployUnit(du : DeployUnit,bs : org.kevoree.api.Bootstraper) ex
 
   def undo() {
     if(lastKCL != null){
-
-
       bs.getKevoreeClassLoaderHandler.removeDeployUnitClassLoader(du)
       bs.getKevoreeClassLoaderHandler.attachKCL(du,lastKCL)
-     // bs.getKevoreeClassLoaderHandler.installDeployUnit(du,lastTempFile)
     }
   }
 
   def execute(): Boolean = {
     try {
-      /*
-      lastTempFile = File.createTempFile(random.nextInt() + "", ".jar")
-      val jarStream = new FileInputStream(bs.getKevoreeClassLoaderHandler.getCacheFile(du));
-      FileNIOHelper.copyFile(jarStream, lastTempFile)
-      jarStream.close()
-      */
       lastKCL = bs.getKevoreeClassLoaderHandler.getKevoreeClassLoader(du)
       bs.getKevoreeClassLoaderHandler.removeDeployUnitClassLoader(du)
       bs.getKevoreeClassLoaderHandler.installDeployUnit(du)

@@ -25,6 +25,7 @@ import org.kevoree.tools.marShell.interpreter.utils.Merger
 
 import org.kevoree._
 import org.slf4j.LoggerFactory
+import scala.collection.JavaConversions._
 
 case class KevsUpdateDictionaryInterpreter(statement: UpdateDictionaryStatement) extends KevsAbstractInterpreter {
 
@@ -41,10 +42,10 @@ case class KevsUpdateDictionaryInterpreter(statement: UpdateDictionaryStatement)
           nodes = context.model.getNodes.toList
         } else {
           val option = context.model.findByQuery("nodes[" + nodeID + "]", classOf[ContainerNode])
-          if (option.isEmpty) {
+          if (option == null) {
             nodes = List()
           } else {
-            nodes = List(option.get)
+            nodes = List(option)
           }
 
         }
@@ -54,8 +55,8 @@ case class KevsUpdateDictionaryInterpreter(statement: UpdateDictionaryStatement)
               targetInstance = targetInstance ++ targetNode.getComponents.toList
             } else {
               val option = context.model.findByQuery("nodes[" + nodeID + "]/components[" + statement.instanceName + "]", classOf[ComponentInstance])
-              if (option.isDefined) {
-                targetInstance = targetInstance ++ List(option.get)
+              if (option != null) {
+                targetInstance = targetInstance ++ List(option)
               }
             }
         }
@@ -64,17 +65,17 @@ case class KevsUpdateDictionaryInterpreter(statement: UpdateDictionaryStatement)
         if (statement.instanceName == "*") {
           targetInstance = targetInstance ++ context.model.getHubs.toList ++ context.model.getGroups.toList ++ context.model.getNodes
         } else {
-          var option : Option[Instance] = context.model.findByQuery("hubs[" + statement.instanceName + "]", classOf[Channel])
-          if (option.isDefined) {
-            targetInstance = targetInstance ++ List(option.get)
+          var option : Instance = context.model.findByQuery("hubs[" + statement.instanceName + "]", classOf[Channel])
+          if (option != null) {
+            targetInstance = targetInstance ++ List(option)
           }
           option = context.model.findByQuery("groups[" + statement.instanceName + "]", classOf[Group])
-          if (option.isDefined) {
-            targetInstance = targetInstance ++ List(option.get)
+          if (option != null) {
+            targetInstance = targetInstance ++ List(option)
           }
           option = context.model.findByQuery("nodes[" + statement.instanceName + "]", classOf[ContainerNode])
-          if (option.isDefined) {
-            targetInstance = targetInstance ++ List(option.get)
+          if (option != null) {
+            targetInstance = targetInstance ++ List(option)
           }
         }
       }

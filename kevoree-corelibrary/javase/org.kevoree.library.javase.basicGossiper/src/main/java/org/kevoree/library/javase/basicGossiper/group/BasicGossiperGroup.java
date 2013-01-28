@@ -98,7 +98,7 @@ public class BasicGossiperGroup extends BasicGroup implements GossiperComponent 
         startGossiperGroup();
     }
 
-    protected AtomicReference<ContainerRoot> currentCacheModel = new AtomicReference<ContainerRoot>(KevoreeFactory.createContainerRoot());
+    protected AtomicReference<ContainerRoot> currentCacheModel = new AtomicReference<ContainerRoot>(KevoreeFactory.$instance.createContainerRoot());
 
     @Override
     public boolean afterLocalUpdate(ContainerRoot currentModel, ContainerRoot proposedModel) {
@@ -119,10 +119,10 @@ public class BasicGossiperGroup extends BasicGroup implements GossiperComponent 
 
     @Override
     public int parsePortNumber(String nodeName) {
-        Option<Group> groupOption = currentCacheModel.get().findByQuery("groups[" + getName() + "]", Group.class);
+        Group groupOption = currentCacheModel.get().findByQuery("groups[" + getName() + "]", Group.class);
         int port = 8000;
-        if (groupOption.isDefined()) {
-            Option<String> portOption = KevoreePropertyHelper.getProperty(groupOption.get(), "port", true, nodeName);
+        if (groupOption!=null) {
+            Option<String> portOption = KevoreePropertyHelper.getProperty(groupOption, "port", true, nodeName);
             if (portOption.isDefined()) {
                 try {
                     port = Integer.parseInt(portOption.get());
@@ -174,11 +174,11 @@ public class BasicGossiperGroup extends BasicGroup implements GossiperComponent 
             }
             starting = false;
         }
-        for (Object o : currentCacheModel.get().getGroupsForJ()) {
+        for (Object o : currentCacheModel.get().getGroups()) {
             Group g = (Group) o;
             if (g.getName().equals(this.getName())) {
                 List<String> peers = new ArrayList<String>(g.getSubNodes().size());
-                for (ContainerNode node : g.getSubNodesForJ()) {
+                for (ContainerNode node : g.getSubNodes()) {
                     peers.add(node.getName());
                 }
                 notifyPeersInternal(peers);

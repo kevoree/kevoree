@@ -42,7 +42,6 @@ case class RemoveDeployUnit(du: DeployUnit, bootstrap: org.kevoree.api.Bootstrap
   def undo() {
     if (lastKCL != null) {
       bootstrap.getKevoreeClassLoaderHandler.attachKCL(du,lastKCL)
-      //bootstrap.getKevoreeClassLoaderHandler.installDeployUnit(du, lastTempFile)
       KevoreeDeployManager.bundleMapping.filter(bm => bm.ref.isInstanceOf[DeployUnit]).find(bm => CommandHelper.buildKEY(bm.ref.asInstanceOf[DeployUnit]) == CommandHelper.buildKEY(du)) match {
         case Some(bm) =>
         case None => KevoreeDeployManager.addMapping(KevoreeMapping(CommandHelper.buildKEY(du), du.getClass.getName, du))
@@ -55,19 +54,6 @@ case class RemoveDeployUnit(du: DeployUnit, bootstrap: org.kevoree.api.Bootstrap
   def execute(): Boolean = {
     try {
       lastKCL = bootstrap.getKevoreeClassLoaderHandler.getKevoreeClassLoader(du)
-
-      /*
-      val cachedFile = bootstrap.getKevoreeClassLoaderHandler.getCacheFile(du)
-      if (cachedFile != null) {
-        lastTempFile = File.createTempFile(random.nextInt() + "", ".jar")
-        lastTempFile.deleteOnExit()
-        val jarStream = new FileInputStream(cachedFile)
-        FileNIOHelper.copyFile(jarStream, lastTempFile)
-        jarStream.close()
-      }   */
-
-
-
       bootstrap.getKevoreeClassLoaderHandler.removeDeployUnitClassLoader(du)
       KevoreeDeployManager.bundleMapping.filter(bm => bm.ref.isInstanceOf[DeployUnit]).foreach(bm => {
         if (CommandHelper.buildKEY(bm.ref.asInstanceOf[DeployUnit]) == CommandHelper.buildKEY(du)) {

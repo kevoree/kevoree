@@ -21,6 +21,7 @@ import java.net.InetAddress
 import org.kevoree.{ContainerRoot, KevoreeFactory}
 import java.util.{ArrayList, HashMap}
 import org.kevoree.framework.KevoreePlatformHelper
+import scala.collection.JavaConversions._
 
 /**
  * User: ffouquet
@@ -28,14 +29,14 @@ import org.kevoree.framework.KevoreePlatformHelper
  * Time: 17:42
  */
 
-class JmDnsComponent (nodeName: String, groupName: String, modelPort: Int, modelHandler: KevoreeModelHandlerService, groupTypeName: String, interface: InetAddress /*, group : AbstractGroupType*/) {
+class JmDnsComponent(nodeName: String, groupName: String, modelPort: Int, modelHandler: KevoreeModelHandlerService, groupTypeName: String, interface: InetAddress /*, group : AbstractGroupType*/) {
   val logger = LoggerFactory.getLogger(this.getClass)
   var servicelistener: ServiceListener = null
   final val REMOTE_TYPE: String = "_kevoree-remote._tcp.local."
   val nodeAlreadydiscovery = new HashMap[String, ArrayList[String]]
 
 
-  def updateGroupProperty (currentModel: ContainerRoot, nodeName: String, nodeType: String, groupName: String, groupType: String, groupPort: String): Option[ContainerRoot] = {
+  def updateGroupProperty(currentModel: ContainerRoot, nodeName: String, nodeType: String, groupName: String, groupType: String, groupPort: String): Option[ContainerRoot] = {
     val groupTypeDef = currentModel.getTypeDefinitions.find(td => td.getName == groupType)
     val nodeTypeDef = currentModel.getTypeDefinitions.find(td => td.getName == nodeType)
     if (groupTypeDef.isEmpty || nodeTypeDef.isEmpty) {
@@ -43,14 +44,14 @@ class JmDnsComponent (nodeName: String, groupName: String, modelPort: Int, model
     }
     //CREATE GROUP IF NOT EXIST
     val currentGroup = currentModel.getGroups.find(group => group.getName == groupName).getOrElse {
-      val newgroup = KevoreeFactory.eINSTANCE.createGroup
+      val newgroup = KevoreeFactory.$instance.createGroup
       newgroup.setName(groupName)
       newgroup.setTypeDefinition(groupTypeDef.get)
       currentModel.addGroups(newgroup)
       newgroup
     }
     val remoteNode = currentModel.getNodes.find(n => n.getName == nodeName).getOrElse {
-      val newnode = KevoreeFactory.eINSTANCE.createContainerNode
+      val newnode = KevoreeFactory.$instance.createContainerNode
       newnode.setName(nodeName)
       currentModel.getTypeDefinitions.find(td => td.getName == nodeType).map {
         nodeType => newnode.setTypeDefinition(nodeType)
@@ -58,27 +59,28 @@ class JmDnsComponent (nodeName: String, groupName: String, modelPort: Int, model
       currentModel.addNodes(newnode)
       newnode
     }
-    currentGroup.getTypeDefinition.getDictionaryType.map {
-      dicTypeDef =>
-        dicTypeDef.getAttributes.find(att => att.getName == "port").map {
-          attPort =>
-            val dic = currentGroup.getDictionary match {
-              case None => {
-                val dic =KevoreeFactory.createDictionary
-                currentGroup.setDictionary(Some(dic))
-                dic
-              }
-              case Some(d) => d
+
+    val dicTypeDef = currentGroup.getTypeDefinition().getDictionaryType
+    if (dicTypeDef != null) {
+      dicTypeDef.getAttributes.find(att => att.getName == "port").map {
+        attPort =>
+          val dic = currentGroup.getDictionary match {
+            case null => {
+              val dic = KevoreeFactory.$instance.createDictionary
+              currentGroup.setDictionary(dic)
+              dic
             }
-            val dicValue = dic.getValues.find(dicVal => dicVal.getAttribute == attPort && dicVal.getTargetNode.isDefined && dicVal.getTargetNode.get.getName == nodeName).getOrElse {
-              val newDicVal = KevoreeFactory.createDictionaryValue
-              newDicVal.setAttribute(attPort)
-              newDicVal.setTargetNode(Some(remoteNode))
-              dic.addValues(newDicVal)
-              newDicVal
-            }
-            dicValue.setValue(groupPort)
-        }
+            case d:org.kevoree.Dictionary => d
+          }
+          val dicValue = dic.getValues.find(dicVal => dicVal.getAttribute == attPort && dicVal.getTargetNode()!=null && dicVal.getTargetNode.getName == nodeName).getOrElse {
+            val newDicVal = KevoreeFactory.$instance.createDictionaryValue
+            newDicVal.setAttribute(attPort)
+            newDicVal.setTargetNode(remoteNode)
+            dic.addValues(newDicVal)
+            newDicVal
+          }
+          dicValue.setValue(groupPort)
+      }
     }
     if (currentGroup.getSubNodes.find(subNode => subNode.getName == nodeName).isEmpty) {
       currentGroup.addSubNodes(remoteNode)
@@ -90,7 +92,7 @@ class JmDnsComponent (nodeName: String, groupName: String, modelPort: Int, model
   /**
    * add a node found in the model and request an update
    */
-  def addNodeDiscovered (p1: ServiceInfo) {
+  def addNodeDiscovered(p1: ServiceInfo) {
     if (p1.getInet4Addresses.length != 0 && p1.getPort != 0) {
 
       if (nodeAlreadydiscovery.containsKey(groupName) == false) {
@@ -112,7 +114,7 @@ class JmDnsComponent (nodeName: String, groupName: String, modelPort: Int, model
 
             if (p1.getName != nodeName) {
               KevoreePlatformHelper.updateNodeLinkProp(model, nodeName, p1.getName.trim(), org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP, p1.getInet4Addresses()(0).getHostAddress,
-                                                        "LAN-" + p1.getInet4Addresses()(0).getHostAddress, 100)
+                "LAN-" + p1.getInet4Addresses()(0).getHostAddress, 100)
             }
             modelHandler.compareAndSwapModel(uuidModel, model)
             logger.debug("add node <" + p1.getName.trim() + "> on " + interface.getHostAddress)
@@ -126,7 +128,7 @@ class JmDnsComponent (nodeName: String, groupName: String, modelPort: Int, model
   /*
   Request from the user to scan the network
   */
-  def requestUpdateList (time: Int) {
+  def requestUpdateList(time: Int) {
     for (ser <- jmdns.list(REMOTE_TYPE, time)) {
       addNodeDiscovered(ser)
     }
@@ -138,18 +140,18 @@ class JmDnsComponent (nodeName: String, groupName: String, modelPort: Int, model
 
   servicelistener = new ServiceListener() {
 
-    def serviceAdded (p1: ServiceEvent) {
+    def serviceAdded(p1: ServiceEvent) {
       jmdns.requestServiceInfo(p1.getType, p1.getName, 1)
       addNodeDiscovered(p1.getInfo)
     }
 
-    def serviceResolved (p1: ServiceEvent) {
+    def serviceResolved(p1: ServiceEvent) {
 
       logger.debug("Service resolved: " + p1.getInfo.getQualifiedName + " port:" + p1.getInfo.getPort)
       addNodeDiscovered(p1.getInfo)
     }
 
-    def serviceRemoved (p1: ServiceEvent) {
+    def serviceRemoved(p1: ServiceEvent) {
       logger.debug("Service removed " + p1.getName)
       // REMOVE NODE FROM JMDNS GROUP INSTANCES SUBNODES
       if (nodeAlreadydiscovery.containsKey(groupName) == true) {
@@ -162,7 +164,7 @@ class JmDnsComponent (nodeName: String, groupName: String, modelPort: Int, model
 
 
   new Thread() {
-    override def run () {
+    override def run() {
       val nodeType = modelHandler.getLastModel.getNodes.find(n => n.getName == nodeName).get.getTypeDefinition.getName
       val pairservice: ServiceInfo = ServiceInfo.create(REMOTE_TYPE, nodeName, groupName, modelPort, "")
       pairservice.setText((groupTypeName + "/" + nodeType).getBytes("UTF-8"))
@@ -170,9 +172,9 @@ class JmDnsComponent (nodeName: String, groupName: String, modelPort: Int, model
     }
   }.start()
 
-  def close () {
+  def close() {
     new Thread() {
-      override def run () {
+      override def run() {
         if (servicelistener != null) {
           jmdns.removeServiceListener(REMOTE_TYPE, servicelistener)
         }

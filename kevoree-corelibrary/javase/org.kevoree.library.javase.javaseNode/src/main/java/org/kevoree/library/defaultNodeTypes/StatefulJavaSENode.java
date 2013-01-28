@@ -56,7 +56,7 @@ public class StatefulJavaSENode extends JavaSENode {
                         logger.info("Stateful node ready. Loading last config from " + inputModel.getAbsolutePath());
                         logger.debug("State NetworkLink => Loading");
                         state=States.loading;
-                        getModelService().updateModel(KevoreeXmiHelper.load(inputModel.getAbsolutePath()));
+                        getModelService().updateModel(KevoreeXmiHelper.$instance.load(inputModel.getAbsolutePath()));
                     } else {
                         state=States.ready;
                         logger.debug("State NetworkLink => Ready");
@@ -71,10 +71,10 @@ public class StatefulJavaSENode extends JavaSENode {
                     try{
                         File lastSaved = getLastPersistedModel();
                         if(lastSaved.exists()) {
-                            KevoreeXmiHelper.save(lastSaved.getAbsolutePath() + "." +System.currentTimeMillis()+".kev" ,KevoreeXmiHelper.load(lastSaved.getAbsolutePath()));
+                            KevoreeXmiHelper.$instance.save(lastSaved.getAbsolutePath() + "." +System.currentTimeMillis()+".kev" ,KevoreeXmiHelper.$instance.load(lastSaved.getAbsolutePath()));
                         }
                        // logger.debug("Stateful node started storage of new model at " + lastSaved.getAbsolutePath());
-                        KevoreeXmiHelper.save(lastSaved.getAbsolutePath(),getModelService().getLastModel());
+                        KevoreeXmiHelper.$instance.save(lastSaved.getAbsolutePath(),getModelService().getLastModel());
                         logger.info("Stateful node stored new model at " + lastSaved.getAbsolutePath());
                     } catch(Exception e) {
                         logger.error("Error while saving state",e);

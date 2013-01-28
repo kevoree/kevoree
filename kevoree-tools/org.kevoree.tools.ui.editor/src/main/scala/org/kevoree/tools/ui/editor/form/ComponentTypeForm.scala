@@ -37,6 +37,7 @@ import javax.swing._
 import event.{PopupMenuEvent, PopupMenuListener}
 import java.awt.{Color, FlowLayout}
 import java.awt.event.{FocusEvent, FocusListener, ActionEvent, ActionListener}
+import scala.collection.JavaConversions._
 
 /**
  * Created by IntelliJ IDEA.
@@ -174,7 +175,7 @@ trait ComponentTypeForm {
 
         if (proceed) {
 
-          val newCt = KevoreeFactory.createComponentType
+          val newCt = KevoreeFactory.$instance.createComponentType
           newCt.setName(nameTextField.getText)
 
           var packName = packageTextField.getText

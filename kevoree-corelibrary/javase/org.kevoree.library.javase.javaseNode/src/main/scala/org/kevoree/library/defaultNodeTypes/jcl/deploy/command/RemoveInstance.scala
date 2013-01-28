@@ -27,6 +27,7 @@ import org.kevoree.api.service.core.handler.KevoreeModelHandlerService
 import org.kevoree.api.service.core.script.KevScriptEngineFactory
 import org.kevoree.library.defaultNodeTypes.jcl.deploy.context.KevoreeDeployManager
 import org.kevoree.api.PrimitiveCommand
+import scala.collection.JavaConversions._
 
 case class RemoveInstance(c: Instance, nodeName: String, modelservice: KevoreeModelHandlerService, kscript: KevScriptEngineFactory, bs: org.kevoree.api.Bootstraper) extends PrimitiveCommand {
 

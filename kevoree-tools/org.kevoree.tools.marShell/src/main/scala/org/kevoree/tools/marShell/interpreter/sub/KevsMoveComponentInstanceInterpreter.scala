@@ -23,6 +23,7 @@ import org.kevoree._
 import tools.marShell.ast.MoveComponentInstanceStatment
 import tools.marShell.interpreter.KevsInterpreterContext
 import scala.Some
+import java.util
 
 case class KevsMoveComponentInstanceInterpreter (moveComponent: MoveComponentInstanceStatment) extends KevsAbstractInterpreter {
 	var logger = LoggerFactory.getLogger(this.getClass)
@@ -46,7 +47,11 @@ case class KevsMoveComponentInstanceInterpreter (moveComponent: MoveComponentIns
 										// if another component is already bound to the channel we do nothing
 										// else we need to copy the previous fragment
 										var fragments = List[(Channel, Port, DictionaryValue)]()
-										(targetComponent.getProvided ++ targetComponent.getRequired).foreach(p => p.getBindings.foreach(mb => {
+
+                    val tempPortInstance = new util.ArrayList[Port]()
+                    tempPortInstance.addAll(targetComponent.getProvided)
+                    tempPortInstance.addAll(targetComponent.getRequired)
+                    tempPortInstance.foreach(p => p.getBindings.foreach(mb => {
 											if (mb.getHub.getDictionary()!=null) {
 												mb.getHub.getDictionary.getValues.foreach(dv => {
 													if (dv.getAttribute.getFragmentDependant && dv.getTargetNode!=null && dv.getTargetNode.getName == nodeID) {

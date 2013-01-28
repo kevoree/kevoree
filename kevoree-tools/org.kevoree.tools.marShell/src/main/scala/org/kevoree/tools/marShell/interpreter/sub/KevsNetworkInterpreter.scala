@@ -18,6 +18,7 @@ import org.kevoree.tools.marShell.interpreter.{KevsInterpreterContext, KevsAbstr
 import org.kevoree.tools.marShell.ast.NetworkPropertyStatement
 import org.kevoree.{ContainerNode, KevoreeFactory, ContainerRoot}
 import org.slf4j.LoggerFactory
+import scala.collection.JavaConversions._
 
 case class KevsNetworkInterpreter(networkStatement: NetworkPropertyStatement) extends KevsAbstractInterpreter {
 
@@ -39,24 +40,28 @@ case class KevsNetworkInterpreter(networkStatement: NetworkPropertyStatement) ex
     /* SEARCH THE NODE NETWORK */
     val nodenetwork = actualModel.getNodeNetworks.find({
       nn =>
-        nn.getInitBy.get.getName == currentNodeName && nn.getTarget.getName == targetNodeName
+        nn.getInitBy.getName == currentNodeName && nn.getTarget.getName == targetNodeName
     }) getOrElse {
       val newNodeNetwork = KevoreeFactory.$instance.createNodeNetwork
-      val thisNode = actualModel.findByQuery("nodes[" + currentNodeName + "]", classOf[ContainerNode])
-      val targetNode = actualModel.findByQuery("nodes[" + targetNodeName + "]", classOf[ContainerNode])
-      val thisNodeFound = thisNode.getOrElse {
+      var thisNode = actualModel.findByQuery("nodes[" + currentNodeName + "]", classOf[ContainerNode])
+      var targetNode = actualModel.findByQuery("nodes[" + targetNodeName + "]", classOf[ContainerNode])
+
+      if (thisNode == null){
         val newnode = KevoreeFactory.$instance.createContainerNode
         newnode.setName(currentNodeName)
         actualModel.addNodes(newnode)
-        newnode
+        thisNode= newnode
       }
-      newNodeNetwork.setTarget(targetNode.getOrElse {
+      val thisNodeFound = thisNode
+      if (targetNode == null){
         val newnode = KevoreeFactory.$instance.createContainerNode
         newnode.setName(targetNodeName)
         actualModel.addNodes(newnode)
-        newnode
-      })
-      newNodeNetwork.setInitBy(Some(thisNodeFound))
+        targetNode=newnode
+      }
+
+      newNodeNetwork.setTarget(targetNode)
+      newNodeNetwork.setInitBy(thisNodeFound)
       actualModel.addNodeNetworks(newNodeNetwork)
       newNodeNetwork
     }

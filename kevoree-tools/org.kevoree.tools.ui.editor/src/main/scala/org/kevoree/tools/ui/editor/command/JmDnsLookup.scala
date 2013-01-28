@@ -35,6 +35,8 @@ import org.kevoree.framework.{KevoreeXmiHelper, KevoreePlatformHelper}
 import org.slf4j.LoggerFactory
 import org.kevoree.tools.ui.editor.{ModelHandlerServiceWrapper, PositionedEMFHelper, KevoreeUIKernel}
 import org.kevoree.tools.aether.framework.NodeTypeBootstrapHelper
+import scala.collection.JavaConversions._
+
 
 /**
  * User: ffouquet
@@ -89,22 +91,26 @@ class JmDnsLookup extends Command {
 
                 kernel.getModelHandler.getActualModel.getGroups.find(group => group.getName == groupName).map {
                   group =>
-                    group.getTypeDefinition.getDictionaryType.map {
-                      dicTypeDef =>
+                    val dicTypeDef = group.getTypeDefinition.getDictionaryType
+                    if (dicTypeDef != null){
                         dicTypeDef.getAttributes.find(att => att.getName == "port").map {
                           attPort =>
-                            val dic = group.getDictionary.getOrElse(KevoreeFactory.createDictionary)
+
+                            var dic = group.getDictionary
+                            if (dic == null){
+                               dic = KevoreeFactory.$instance.createDictionary
+                            }
                             val dicValue = dic.getValues
-                              .find(dicVal => dicVal.getAttribute == attPort && dicVal.getTargetNode.isDefined &&
-                              dicVal.getTargetNode.get.getName == nodeName).getOrElse {
-                              val newDicVal = KevoreeFactory.createDictionaryValue
+                              .find(dicVal => dicVal.getAttribute == attPort && dicVal.getTargetNode != null &&
+                              dicVal.getTargetNode.getName == nodeName).getOrElse {
+                              val newDicVal = KevoreeFactory.$instance.createDictionaryValue
                               newDicVal.setAttribute(attPort)
-                              newDicVal.setTargetNode(Some(remoteNode))
+                              newDicVal.setTargetNode(remoteNode)
                               dic.addValues(newDicVal)
                               newDicVal
                             }
                             dicValue.setValue(port)
-                            group.setDictionary(Some(dic))
+                            group.setDictionary(dic)
                         }
                     }
                     if (group.getSubNodes.find(subNode => subNode.getName == groupName).isEmpty) {
@@ -121,7 +127,7 @@ class JmDnsLookup extends Command {
                     kernel.getModelHandler.merge(model)
                     PositionedEMFHelper.updateModelUIMetaData(kernel)
                     val file = File.createTempFile("kev", new Random().nextInt + "")
-                    KevoreeXmiHelper.save(file.getAbsolutePath, kernel.getModelHandler.getActualModel);
+                    KevoreeXmiHelper.$instance.save(file.getAbsolutePath, kernel.getModelHandler.getActualModel);
                     val loadCMD = new LoadModelCommand
                     loadCMD.setKernel(kernel)
                     loadCMD.execute(file.getAbsolutePath)

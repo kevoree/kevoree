@@ -7,6 +7,7 @@ package org.kevoree.library.javase.basicGossiper.group
 
 import org.kevoree.ContainerRoot
 import org.kevoree.framework.aspects.KevoreeAspects._
+import scala.collection.JavaConversions._
 
 object GroupUtils {
 

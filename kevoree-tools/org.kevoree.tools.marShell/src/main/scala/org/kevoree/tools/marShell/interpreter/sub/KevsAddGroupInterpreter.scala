@@ -28,29 +28,29 @@ case class KevsAddGroupInterpreter(addGroup: AddGroupStatment) extends KevsAbstr
 
   def interpret(context: KevsInterpreterContext): Boolean = {
     context.model.findByQuery("groups[" + addGroup.groupName + "]", classOf[Group]) match {
-      case Some(target) => {
+      case target:Group => {
         logger.warn("Group already exist with name " + addGroup.groupName)
         if (target.getTypeDefinition.getName == addGroup.groupTypeName) {
-          Merger.mergeDictionary(target, addGroup.props, None)
+          Merger.mergeDictionary(target, addGroup.props, null)
           true
         } else {
           logger.error("Type != from previous created group")
           false
         }
       }
-      case None => {
+      case null => {
         //SEARCH TYPE DEF
         context.model.findByQuery("typeDefinitions[" + addGroup.groupTypeName + "]", classOf[TypeDefinition]) match {
-          case Some(targetGroupType) if (targetGroupType.isInstanceOf[GroupType]) => {
+          case targetGroupType:TypeDefinition if (targetGroupType.isInstanceOf[GroupType]) => {
 
             val newGroup = KevoreeFactory.$instance.createGroup
             newGroup.setTypeDefinition(targetGroupType)
             newGroup.setName(addGroup.groupName)
-            Merger.mergeDictionary(newGroup, addGroup.props, None)
+            Merger.mergeDictionary(newGroup, addGroup.props, null)
             context.model.addGroups(newGroup)
 
           }
-          case Some(targetGroupType) if (!targetGroupType.isInstanceOf[GroupType]) => {
+          case targetGroupType:TypeDefinition if (!targetGroupType.isInstanceOf[GroupType]) => {
             logger.error("Type definition is not a groupType " + addGroup.groupTypeName);
             false
           }

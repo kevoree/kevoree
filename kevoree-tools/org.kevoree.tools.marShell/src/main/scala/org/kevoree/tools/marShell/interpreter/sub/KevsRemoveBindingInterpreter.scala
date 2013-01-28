@@ -37,6 +37,7 @@ import org.kevoree.tools.marShell.interpreter.KevsInterpreterContext
 
 import org.kevoree.tools.marShell.ast.RemoveBindingStatment
 import org.slf4j.LoggerFactory
+import scala.collection.JavaConversions._
 
 case class KevsRemoveBindingInterpreter(removeBinding: RemoveBindingStatment) extends KevsAbstractInterpreter {
 
@@ -46,11 +47,11 @@ case class KevsRemoveBindingInterpreter(removeBinding: RemoveBindingStatment) ex
     removeBinding.cid.nodeName match {
       case Some(searchNodeName) => {
         context.model.findByQuery("nodes[" + searchNodeName + "]", classOf[ContainerNode]) match {
-          case Some(targetNode) => {
+          case targetNode:ContainerNode => {
             targetNode.findByQuery("components[" + removeBinding.cid.componentInstanceName + "]", classOf[ComponentInstance]) match {
-              case Some(targetComponent) => {
+              case targetComponent:ComponentInstance => {
                 context.model.findByQuery("hubs[" + removeBinding.bindingInstanceName + "]", classOf[Channel]) match {
-                  case Some(targetHub) => {
+                  case targetHub:Channel => {
                     val cports = targetComponent.getProvided.toList ++ targetComponent.getRequired.toList
                     cports.find(port => port.getPortTypeRef.getName == removeBinding.portName) match {
                       case Some(port) => {
@@ -63,13 +64,13 @@ case class KevsRemoveBindingInterpreter(removeBinding: RemoveBindingStatment) ex
                       case None => logger.error("Port not found => {}", removeBinding.portName); false
                     }
                   }
-                  case None => logger.error("Hub not found => {}",removeBinding.bindingInstanceName); false
+                  case null => logger.error("Hub not found => {}",removeBinding.bindingInstanceName); false
                 }
               }
-              case None => logger.error("Component not found => {}", removeBinding.cid.componentInstanceName); false
+              case null => logger.error("Component not found => {}", removeBinding.cid.componentInstanceName); false
             }
           }
-          case None => logger.error("Node not found => {}", removeBinding.cid.nodeName); false
+          case null => logger.error("Node not found => {}", removeBinding.cid.nodeName); false
         }
       }
       case None => logger.error("NodeName is mandatory !"); false

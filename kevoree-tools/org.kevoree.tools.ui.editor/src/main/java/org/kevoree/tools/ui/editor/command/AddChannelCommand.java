@@ -56,8 +56,8 @@ public class AddChannelCommand implements Command {
 
 
     protected Boolean isArduinoManaged(TypeDefinition td){
-        for(DeployUnit du : td.getDeployUnitsForJ()){
-            if(du.getTargetNodeType().isDefined() && du.getTargetNodeType().get().getName().toLowerCase().contains("arduino")){
+        for(DeployUnit du : td.getDeployUnits()){
+            if(du.getTargetNodeType()!=null && du.getTargetNodeType().getName().toLowerCase().contains("arduino")){
                 return true;
             }
         }
@@ -66,7 +66,7 @@ public class AddChannelCommand implements Command {
 
     @Override
     public void execute(Object p) {
-        Channel newhub = KevoreeFactory.createChannel();
+        Channel newhub = KevoreeFactory.$instance.createChannel();
         ChannelType type = (ChannelType) kernel.getUifactory().getMapping().get(p);
         newhub.setTypeDefinition(type);
 
