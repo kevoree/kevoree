@@ -122,7 +122,7 @@ public class KevoreeGUIFrame extends JFrame {
                     String response = nodeUI.getKevName();
                     final String nodeName = response;
                     System.setProperty("node.name", response);
-                    setTitle(nodeName + " : " + nodeUI.getKevTypeName() + " / Kevoree-" + KevoreeFactory.getVersion());
+                    setTitle(nodeName + " : " + nodeUI.getKevTypeName() + " / Kevoree-" + KevoreeFactory.$instance.getVersion());
                     new Thread() {
                         @Override
                         public void run() {
@@ -209,7 +209,7 @@ public class KevoreeGUIFrame extends JFrame {
 
                 @Override
                 public void modelUpdated() {
-                    for (ContainerNode node : btA.getCore().getLastModel().getNodesForJ()) {
+                    for (ContainerNode node : btA.getCore().getLastModel().getNodes()) {
                         if (node.getName().equals(System.getProperty("node.name"))) {
                             left.reload(node);
                         }

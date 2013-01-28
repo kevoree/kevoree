@@ -76,8 +76,8 @@ public class MavenP2PResolver extends AbstractComponentType implements DeployUni
     public void modelUpdated() {
         List<String> urls = new ArrayList<String>();
         ContainerRoot model = getModelService().getLastModel();
-        for(ContainerNode node : model.getNodesForJ()){
-            for(ComponentInstance inst : node.getComponentsForJ()){
+        for(ContainerNode node : model.getNodes()){
+            for(ComponentInstance inst : node.getComponents()){
                 if(inst.getTypeDefinition().getName().equals("MavenCacheServer")){
                     List<String> ips = KevoreePropertyHelper.getNetworkProperties(model, node.getName(), org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP());
                     logger.info("Cache Found on node "+node.getName());

@@ -134,27 +134,6 @@ object PrimitiveCommandExecutionHelper {
             }
         }
 
-        class WorkerThreadFactory(val id: String) : ThreadFactory {
-            val threadNumber = AtomicInteger(1)
-            override fun newThread(p1: Runnable) : Thread {
-                val s = System.getSecurityManager()
-                val group = if (s != null) {
-                    s.getThreadGroup()
-                } else {
-                    Thread.currentThread().getThreadGroup()
-                }
-                val t = Thread(group, p1, "Kevoree_Deploy_" + id + "_Worker_" + threadNumber.getAndIncrement())
-                if (t.isDaemon()) {
-                    t.setDaemon(false)
-                }
-                if (t.getPriority() != Thread.NORM_PRIORITY) {
-                    t.setPriority(Thread.NORM_PRIORITY)
-                }
-                return t
-            }
-        }
-
-
         fun executeAllWorker(ps: List<PrimitiveCommand>, timeout: Long): Boolean {
             return if (ps.isEmpty()) {
                 true

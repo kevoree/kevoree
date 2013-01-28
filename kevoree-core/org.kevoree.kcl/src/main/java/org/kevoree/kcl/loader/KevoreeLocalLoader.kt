@@ -55,11 +55,12 @@ class KevoreeLocalLoader(val classpathResources: KevoreeLazyJarResources, val kc
         override fun call(): Semaphore? {
             return if (locked.containsKey(className)) {
                 val tuple = locked.get(className)!!
-                locked.put(className, Tuple2(tuple._1, (tuple._2 + 1)))
-                tuple._1
+                tuple.inc()
+                //locked.put(className, SemaCounter(tuple._1, (tuple._2 + 1)))
+                tuple.sema
             } else {
                 val obj = Semaphore(0)
-                locked.put(className, Tuple2(obj, 1))
+                locked.put(className, SemaCounter(obj, 1))
                 null //don't block first thread
             }
         }
@@ -84,10 +85,10 @@ class KevoreeLocalLoader(val classpathResources: KevoreeLazyJarResources, val kc
         override fun run() {
             if (locked.containsKey(className)) {
                 val lobj = locked.get(className)!!
-                if(lobj._2 == 1){
+                if(lobj.counter == 1){
                     locked.remove(className)
                 } else {
-                    lobj._1.release()
+                    lobj.sema.release()
                 }
             }
         }
@@ -104,6 +105,13 @@ class KevoreeLocalLoader(val classpathResources: KevoreeLazyJarResources, val kc
         }
     }
 
-    private val locked = java.util.HashMap<String, Tuple2<Semaphore, Int>>()
+    private val locked = java.util.HashMap<String, SemaCounter>()
+
+    data class SemaCounter(val sema : Semaphore, var counter : Int) {
+        fun inc(){
+            counter = counter +1
+        }
+
+    }
 
 }

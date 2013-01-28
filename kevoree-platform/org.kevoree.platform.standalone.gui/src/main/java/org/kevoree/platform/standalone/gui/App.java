@@ -72,13 +72,13 @@ public class App {
 
         Object param = System.getProperty("node.bootstrap");
         if (param != null) {
-            model = KevoreeXmiHelper.load(param.toString());
+            model = KevoreeXmiHelper.$instance.load(param.toString());
         } else {
             try {
                 System.setSecurityManager(null);
 
                 KevoreeJarClassLoader temp_cl = new KevoreeJarClassLoader();
-                temp_cl.add(KevoreeBootStrap.class.getClassLoader().getResourceAsStream("org.kevoree.tools.aether.framework-" + KevoreeFactory.getVersion() + ".pack.jar"));
+                temp_cl.add(KevoreeBootStrap.class.getClassLoader().getResourceAsStream("org.kevoree.tools.aether.framework-" + KevoreeFactory.$instance.getVersion() + ".pack.jar"));
                 //JclObjectFactory factory = JclObjectFactory.getInstance();
 
                 //  System.out.println("org.kevoree.tools.aether.framework-" + KevoreeFactory.getVersion() + ".pack.jar");
@@ -87,10 +87,10 @@ public class App {
 
                 Class clazz = temp_cl.loadClass("org.kevoree.tools.aether.framework.NodeTypeBootstrapHelper");
                 org.kevoree.api.Bootstraper bootstraper = (Bootstraper) clazz.newInstance();
-                File fileMarShell = bootstraper.resolveKevoreeArtifact("org.kevoree.library.model.bootstrap", "org.kevoree.corelibrary.model", KevoreeFactory.getVersion());
+                File fileMarShell = bootstraper.resolveKevoreeArtifact("org.kevoree.library.model.bootstrap", "org.kevoree.corelibrary.model", KevoreeFactory.$instance.getVersion());
                 JarFile jar = new JarFile(fileMarShell);
                 JarEntry entry = jar.getJarEntry("KEV-INF/lib.kev");
-                model = KevoreeXmiHelper.loadStream(jar.getInputStream(entry));
+                model = KevoreeXmiHelper.$instance.loadStream(jar.getInputStream(entry));
 
                 bootstraper.close();
                 bootstraper = null;

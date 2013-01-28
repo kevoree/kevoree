@@ -75,9 +75,9 @@ public class BasicMavenGroup extends BasicGroup implements Runnable, DeployUnitR
         } else {
             List<String> urls = new ArrayList<String>();
             ContainerRoot model = getModelService().getLastModel();
-            for (Group group : model.getGroupsForJ()) {
+            for (Group group : model.getGroups()) {
                 if (group.getTypeDefinition().getName().equals(BasicMavenGroup.class.getSimpleName())) {
-                    for (ContainerNode child : group.getSubNodesForJ()) {
+                    for (ContainerNode child : group.getSubNodes()) {
                         Object server = KevoreePropertyHelper.getProperty(group, "server", true, child.getName());
                         if (server != null) {
                             logger.info("Cache Found on node " + child.getName());
@@ -101,7 +101,7 @@ public class BasicMavenGroup extends BasicGroup implements Runnable, DeployUnitR
     public void run() {
         ContainerRoot model = cachedModel.get();
         if (model != null) {
-            for (DeployUnit du : model.getDeployUnitsForJ()) {
+            for (DeployUnit du : model.getDeployUnits()) {
                 logger.debug("CacheFile for DU : " + du.getUnitName() + ":" + du.getGroupName() + ":" + du.getVersion());
                 File cachedFile = getBootStrapperService().resolveDeployUnit(du);
             }

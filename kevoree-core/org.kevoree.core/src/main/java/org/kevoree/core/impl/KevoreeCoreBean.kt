@@ -26,6 +26,7 @@ import org.kevoree.api.service.core.handler.KevoreeModelUpdateException
 import org.kevoree.api.service.core.handler.ModelListener
 import org.kevoree.context.ContextRoot
 import org.kevoree.framework.HaraKiriHelper
+import org.kevoree.framework.KevoreeXmiHelper
 
 
 class KevoreeCoreBean(): KevoreeModelHandlerService {
@@ -47,7 +48,9 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
     private var scheduler: ExecutorService? = null
     private var lockWatchDog: ScheduledExecutorService? = null
     private var futurWatchDog: ScheduledFuture<out Any?>? = null
-    private var currentLock: Tuple2<UUID, ModelHandlerLockCallBack>? = null
+    private var currentLock: LockCallBack? = null
+
+    data class LockCallBack(val uuid: UUID, val callback: ModelHandlerLockCallBack)
 
 
     override fun getNodeName(): String {
@@ -87,7 +90,7 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
         }
         //Changes the current model by the new model
         if(cc != null){
-            model = cc.sure()
+            model = cc!!
             currentModelUUID = UUID.randomUUID()
             lastDate = Date(System.currentTimeMillis())
             //Fires the update to listeners
@@ -95,15 +98,8 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
         }
     }
 
-    inline fun <T: Any> T?.sure(): T =
-            if (this == null){
-                throw NullPointerException()
-            } else {
-                this
-            }
-
     override fun getLastModel(): ContainerRoot {
-        return scheduler?.submit(LastModelCallable())?.get().sure()
+        return scheduler?.submit(LastModelCallable())?.get()!!
     }
 
     private class LastModelCallable(): Callable<ContainerRoot> {
@@ -113,7 +109,7 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
     }
 
     override fun getLastUUIDModel(): UUIDModel {
-        return scheduler?.submit(LastUUIDModelCallable())?.get().sure()
+        return scheduler?.submit(LastUUIDModelCallable())?.get()!!
     }
 
     private class LastUUIDModelCallable(): Callable<UUIDModel> {
@@ -122,8 +118,12 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
         }
     }
 
-    override fun updateModel(model: ContainerRoot?): Unit {
-        scheduler?.submit(UpdateModelCallable(modelCloner.clone(model, true).sure(), null))
+    inline fun cloneCurrentModel(pmodel: ContainerRoot?) : ContainerRoot {
+        return modelCloner.clone(pmodel!!, true)!!
+    }
+
+    override fun updateModel(pmodel: ContainerRoot?): Unit {
+        scheduler?.submit(UpdateModelCallable(cloneCurrentModel(pmodel), null))
     }
 
     class UpdateModelCallable(val model: ContainerRoot, val callback: ModelUpdateCallback?): Callable<Boolean> {
@@ -195,11 +195,11 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
             try {
                 val stopModel = checkUnbootstrapNode(model)
                 if (stopModel != null) {
-                    val adaptationModel = nodeInstance.sure().kompare(model, stopModel)
+                    val adaptationModel = nodeInstance!!.kompare(model, stopModel)
                     adaptationModel?.setInternalReadOnly()
                     val afterUpdateTest: () -> Boolean = {() -> true }
-                    val rootNode = model.findByQuery("nodes[" + getNodeName() + "]", javaClass<ContainerNode>()).sure()
-                    org.kevoree.framework.deploy.PrimitiveCommandExecutionHelper.execute(rootNode, adaptationModel, nodeInstance.sure(), afterUpdateTest, afterUpdateTest, afterUpdateTest)
+                    val rootNode = model.findByQuery("nodes[" + getNodeName() + "]", javaClass<ContainerNode>())!!
+                    org.kevoree.framework.deploy.PrimitiveCommandExecutionHelper.execute(rootNode, adaptationModel, nodeInstance!!, afterUpdateTest, afterUpdateTest, afterUpdateTest)
                 } else {
                     logger.error("Unable to use the stopModel !")
                 }
@@ -226,7 +226,7 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
     class LockTimeoutCallable(): Runnable {
         override fun run() {
             if (currentLock != null) {
-                currentLock?._2?.lockTimeout()
+                currentLock!!.callback.lockTimeout()
                 currentLock = null
                 lockWatchDog?.shutdownNow()
                 lockWatchDog = null
@@ -237,19 +237,19 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
 
     override fun checkModel(tModel: ContainerRoot?): Boolean {
         val checkResult = modelChecker.check(model)
-        return if (checkResult?.isEmpty().sure()) {
-            modelListeners.preUpdate(model, modelCloner.clone(tModel, true).sure())
+        return if (checkResult!= null && checkResult.isEmpty()!!) {
+            modelListeners.preUpdate(model, cloneCurrentModel(tModel))
         } else {
             false
         }
     }
 
-    override fun updateModel(model: ContainerRoot?, callback: ModelUpdateCallback?) {
-        scheduler?.submit(UpdateModelCallable(modelCloner.clone(model, true).sure(), callback))
+    override fun updateModel(tmodel: ContainerRoot?, callback: ModelUpdateCallback?) {
+        scheduler?.submit(UpdateModelCallable(cloneCurrentModel(tmodel), callback))
     }
 
     override fun compareAndSwapModel(previousModel: UUIDModel?, targetModel: ContainerRoot?, callback: ModelUpdateCallback?) {
-        scheduler?.submit(CompareAndSwapCallable(previousModel!!, modelCloner.clone(targetModel, true).sure(), callback))
+        scheduler?.submit(CompareAndSwapCallable(previousModel!!, cloneCurrentModel(targetModel), callback))
     }
 
     class AcquireLock(val callBack: ModelHandlerLockCallBack, val timeout: Long): Runnable {
@@ -258,7 +258,7 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
                 callBack.lockRejected()
             } else {
                 val lockUUID = UUID.randomUUID()
-                currentLock = Tuple2(lockUUID, callBack)
+                currentLock = LockCallBack(lockUUID, callBack)
                 lockWatchDog = java.util.concurrent.Executors.newSingleThreadScheduledExecutor()
                 futurWatchDog = lockWatchDog?.schedule(WatchDogCallable(), timeout, TimeUnit.MILLISECONDS)
                 callBack.lockAcquired(lockUUID)
@@ -279,7 +279,7 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
     class ReleaseLockCallable(val uuid: UUID): Runnable {
         override fun run() {
             if (currentLock != null) {
-                if (currentLock?._1?.compareTo(uuid) == 0) {
+                if (currentLock!!.uuid.compareTo(uuid) == 0) {
                     currentLock = null
                     futurWatchDog?.cancel(true)
                     futurWatchDog = null
@@ -293,7 +293,7 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
     class CompareAndSwapCallable(val previousModel: UUIDModel, val targetModel: ContainerRoot, val callback: ModelUpdateCallback?): Callable<Boolean> {
         override fun call(): Boolean {
             val res: Boolean = if (currentLock != null) {
-                if (previousModel?.getUUID()?.compareTo(currentLock?._1.sure()) == 0) {
+                if (previousModel?.getUUID()?.compareTo(currentLock!!.uuid) == 0) {
                     val internalRes = internal_update_model(targetModel)
                     callCallBack(callback, internalRes, null)
                     internalRes
@@ -320,11 +320,11 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
     }
 
     override fun compareAndSwapModel(previousModel: UUIDModel?, targetModel: ContainerRoot?): Unit {
-        scheduler?.submit(CompareAndSwapCallable(previousModel!!, modelCloner.clone(targetModel, true).sure(), null))
+        scheduler?.submit(CompareAndSwapCallable(previousModel!!,cloneCurrentModel(targetModel), null))
     }
 
-    override fun atomicUpdateModel(model: ContainerRoot?): Date? {
-        scheduler?.submit(UpdateModelCallable(modelCloner.clone(model, true).sure(), null))?.get()
+    override fun atomicUpdateModel(tmodel: ContainerRoot?): Date? {
+        scheduler?.submit(UpdateModelCallable(cloneCurrentModel(tmodel), null))?.get()
         return lastDate
     }
 
@@ -339,7 +339,7 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
     }
 
     override fun atomicCompareAndSwapModel(previousModel: UUIDModel?, targetModel: ContainerRoot?): Date? {
-        val result = scheduler?.submit(CompareAndSwapCallable(previousModel!!, modelCloner.clone(targetModel, true).sure(), null))?.get().sure()
+        val result = scheduler?.submit(CompareAndSwapCallable(previousModel!!, cloneCurrentModel(targetModel), null))?.get()!!
         if (!result) {
             throw KevoreeModelUpdateException() //SEND AND EXCEPTION - Compare&Swap fail !
         }
@@ -355,7 +355,7 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
     }
 
     override fun getContextModel(): ContextRoot {
-        return nodeInstance?.getContextModel().sure()
+        return nodeInstance?.getContextModel()!!
     }
 
 
@@ -368,10 +368,10 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
 
     private fun checkUnbootstrapNode(currentModel: ContainerRoot): ContainerRoot? {
         try {
-            return if (nodeInstance != null) {
+            if (nodeInstance != null) {
                 val foundNode = currentModel.findByQuery("nodes[" + getNodeName() + "]", javaClass<ContainerNode>())
                 if(foundNode != null){
-                    val modelTmp = modelCloner.clone(currentModel).sure()
+                    val modelTmp = modelCloner.clone(currentModel)!!
                     modelTmp.removeAllGroups()
                     modelTmp.removeAllHubs()
                     modelTmp.removeAllMBindings()
@@ -382,14 +382,14 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
                     }
                     modelTmp.getNodes().get(0).removeAllComponents()
                     modelTmp.getNodes().get(0).removeAllHosts()
-                    modelTmp
+                    return modelTmp
                 } else {
                     logger.error("TypeDef installation fail !")
-                    null
+                    return null
                 }
             } else {
                 logger.error("node instance is not available on current model !")
-                null
+                return null
             }
         } catch (e: Exception) {
             logger.error("Error while unbootstraping node instance ", e)
@@ -402,11 +402,11 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
             if (nodeInstance == null) {
                 val foundNode = currentModel.findByQuery("nodes[" + getNodeName() + "]", javaClass<ContainerNode>())
                 if(foundNode != null){
-                    val nodeInstance = _bootstraper?.bootstrapNodeType(currentModel, getNodeName(), this, _kevsEngineFactory.sure())
-                    if(nodeInstance != null){
-                        nodeInstance.startNode()
+                    nodeInstance = _bootstraper?.bootstrapNodeType(currentModel, getNodeName(), this, _kevsEngineFactory!!)
+                    if(nodeInstance!=null){
+                        nodeInstance?.startNode()
                         //SET CURRENT MODEL
-                        model = modelCloner.clone(currentModel).sure()
+                        model = modelCloner.clone(currentModel)!!
                         model.removeAllGroups()
                         model.removeAllHubs()
                         model.removeAllMBindings()
@@ -451,8 +451,8 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
 
     fun internal_update_model(proposedNewModel: ContainerRoot): Boolean {
 
-        if (proposedNewModel.findByQuery("nodes[" + getNodeName() + "]", javaClass<ContainerNode>()) != null) {
-            logger.error("Asking for update with a NULL model or node name was not found in target model !")
+        if (proposedNewModel.findByQuery("nodes[" + getNodeName() + "]", javaClass<ContainerNode>()) == null) {
+            logger.error("Asking for update with a NULL model or node name ("+getNodeName()+") was not found in target model !")
             return false
         }
         try {
@@ -487,7 +487,7 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
                            logger.warn("HaraKiri detected , flush platform")
                            previousHaraKiriModel = model
                            // Creates an empty model, removes the current node (harakiri)
-                           newmodel = checkUnbootstrapNode(model).sure()
+                           newmodel = checkUnbootstrapNode(model)!!
                            try {
                                // Compare the two models and plan the adaptation
                                val adaptationModel = nodeInstance!!.kompare(model, newmodel)
@@ -501,8 +501,8 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
                                }
                                //Executes the adaptation
                                val afterUpdateTest: ()->Boolean = {()-> true }
-                               val rootNode = newmodel.findByQuery("nodes[" + getNodeName() + "]", javaClass<ContainerNode>()).sure()
-                               org.kevoree.framework.deploy.PrimitiveCommandExecutionHelper.execute(rootNode, adaptationModel, nodeInstance.sure(), afterUpdateTest, afterUpdateTest, afterUpdateTest)
+                               val rootNode = newmodel.findByQuery("nodes[" + getNodeName() + "]", javaClass<ContainerNode>())
+                               org.kevoree.framework.deploy.PrimitiveCommandExecutionHelper.execute(rootNode!!, adaptationModel, nodeInstance!!, afterUpdateTest, afterUpdateTest, afterUpdateTest)
                                nodeInstance?.stopNode()
                                //end of harakiri
                                nodeInstance = null
@@ -530,7 +530,7 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
                        try {
                            // Compare the two models and plan the adaptation
                            logger.info("Comparing models and planning adaptation.")
-                           val adaptationModel = nodeInstance.sure().kompare(model, newmodel)
+                           val adaptationModel = nodeInstance!!.kompare(model, newmodel)
                            adaptationModel.setInternalReadOnly()
 
                            //Execution of the adaptation
@@ -541,8 +541,8 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
                                modelListeners.postRollback(model, newmodel)
                                true
                            }
-                           val rootNode = newmodel.findByQuery("nodes[" + getNodeName() + "]", javaClass<ContainerNode>()).sure()
-                           deployResult = org.kevoree.framework.deploy.PrimitiveCommandExecutionHelper.execute(rootNode, adaptationModel, nodeInstance.sure(), afterUpdateTest, preCmd.preRollbackTest, postRollbackTest)
+                           val rootNode = newmodel.findByQuery("nodes[" + getNodeName() + "]", javaClass<ContainerNode>())!!
+                           deployResult = org.kevoree.framework.deploy.PrimitiveCommandExecutionHelper.execute(rootNode, adaptationModel, nodeInstance!!, afterUpdateTest, preCmd.preRollbackTest, postRollbackTest)
                        } catch(e: Exception) {
                            logger.error("Error while update ", e)
                            deployResult = false
@@ -555,7 +555,7 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
                            logger.warn("Update failed")
                            //IF HARAKIRI
                            if (previousHaraKiriModel != null) {
-                               internal_update_model(previousHaraKiriModel.sure())
+                               internal_update_model(previousHaraKiriModel!!)
                                previousHaraKiriModel = null //CLEAR
                            }
                        }

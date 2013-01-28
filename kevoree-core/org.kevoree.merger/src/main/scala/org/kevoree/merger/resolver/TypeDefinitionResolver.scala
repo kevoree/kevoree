@@ -16,7 +16,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * 	http://www.gnu.org/licenses/lgpl-3.0.txt
+ * http://www.gnu.org/licenses/lgpl-3.0.txt
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -48,7 +48,7 @@ trait TypeDefinitionResolver {
       du =>
         du.getTargetNodeType() match {
           //PATTERN MATCHING TO UNRESOLVED NODE TYPE NAME
-          case nodeTypeName : UnresolvedNodeType => {
+          case nodeTypeName: UnresolvedNodeType => {
             model.getTypeDefinitions.filter(td => td.isInstanceOf[NodeType]).find(td => td.getName == nodeTypeName.getName()) match {
               case Some(targetNodeType) => {
                 du.setTargetNodeType(targetNodeType.asInstanceOf[NodeType])
@@ -57,7 +57,7 @@ trait TypeDefinitionResolver {
             }
           }
           case null => //NOOP
-          case _ @ e => logger.warn("Strange already resolved target node type for name "+e+" - "+du.getUnitName)
+          case _@e => logger.warn("Strange already resolved target node type for name " + e + " - " + du.getUnitName)
         }
     }
   }
@@ -68,7 +68,7 @@ trait TypeDefinitionResolver {
         typeDef.getSuperTypes.foreach {
           superType => {
             superType match {
-              case unresolvedTypeName : UnresolvedTypeDefinition => {
+              case unresolvedTypeName: UnresolvedTypeDefinition => {
                 model.getTypeDefinitions.find(td => td.getName == unresolvedTypeName.getName()) match {
                   case Some(resolvedTypeDef) => {
                     typeDef.removeSuperTypes(superType)
@@ -89,17 +89,14 @@ trait TypeDefinitionResolver {
       library =>
         library.getSubTypes.foreach {
           subType => {
-            subType match {
-              case unresolvedTypeName : UnresolvedTypeDefinition => {
-                model.getTypeDefinitions.find(td => td.getName == unresolvedTypeName.getName()) match {
-                  case Some(resolvedTypeDef) => {
-                    library.removeSubTypes(subType)
-                    library.addSubTypes(resolvedTypeDef)
-                  }
-                  case None => logger.error("Error while resolving library SubType for name " + unresolvedTypeName.getName())
-                }
+            if (subType.isInstanceOf[UnresolvedTypeDefinition]) {
+              val resolvedTypeDef = model.findTypeDefinitionsByID(subType.getName())
+              if (resolvedTypeDef != null) {
+                library.removeSubTypes(subType)
+                library.addSubTypes(resolvedTypeDef)
+              } else {
+                logger.error("Error while resolving library SubType for name " + subType.getName())
               }
-              case _ =>
             }
           }
         }
@@ -110,7 +107,7 @@ trait TypeDefinitionResolver {
     model.getAllInstances.foreach {
       instance =>
         instance.getTypeDefinition match {
-          case unresolvedTypeName : UnresolvedTypeDefinition => {
+          case unresolvedTypeName: UnresolvedTypeDefinition => {
             model.getTypeDefinitions.find(td => td.getName == unresolvedTypeName.getName()) match {
               case Some(resolvedTypeDef) => {
                 instance.setTypeDefinition(resolvedTypeDef)

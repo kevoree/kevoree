@@ -51,7 +51,7 @@ trait ChildNodeResolver {
           child =>
             child match {
               case nodeName : UnresolvedChildNode => {
-                actualModel.getNodes.find(c => c.getName == nodeName.getName()) match {
+                actualModel.getNodes.find(c => c.getName() == nodeName.getName()) match {
                   case None => logger.error("Unable to find the corresponding child on model. The model will be unvalid!")
                   case Some(c) => {
                     node.removeHosts(child)
@@ -60,7 +60,7 @@ trait ChildNodeResolver {
                 }
               }
               case _ @ e => {
-                logger.error("Already resolved child !!! "+e.getName)
+                logger.error("Already resolved child !!! "+e.getName())
               }
 
 

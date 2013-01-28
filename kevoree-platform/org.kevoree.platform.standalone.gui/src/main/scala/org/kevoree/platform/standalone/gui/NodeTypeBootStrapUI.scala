@@ -33,6 +33,7 @@ import com.explodingpixels.macwidgets.{IAppWidgetFactory, HudWidgetFactory}
 import com.explodingpixels.macwidgets.plaf.{HudButtonUI, HudLabelUI, HudTextFieldUI, HudComboBoxUI}
 import java.awt.{ItemSelectable, FlowLayout, Dimension, BorderLayout}
 import javax.swing._
+import scala.collection.JavaConversions._
 
 /**
  * User: ffouquet
@@ -116,7 +117,7 @@ class NodeTypeBootStrapUI(private var pkernel: ContainerRoot) extends JPanel {
         if (filechooser.getSelectedFile != null && returnVal == JFileChooser.APPROVE_OPTION) {
           try {
             val lastLoadedModel = filechooser.getSelectedFile.getAbsolutePath.toString
-            val newModel = KevoreeXmiHelper.load(lastLoadedModel)
+            val newModel = KevoreeXmiHelper.$instance.load(lastLoadedModel)
             init(newModel)
             repaint()
             revalidate()

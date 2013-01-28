@@ -53,8 +53,8 @@ object MergerApp {
     val merger = new RootMerger
     val emtpyModel = KevoreeFactory.$instance.createContainerRoot
 
-    val model2 = KevoreeXmiHelper.$instance.load("/Users/duke/Downloads/models/javaModelError.kev")
-    val model1 = KevoreeXmiHelper.$instance.load("/Users/duke/Downloads/models/alib.kev")
+    //val model2 = KevoreeXmiHelper.$instance.load("/Users/duke/Downloads/models/javaModelError.kev")
+    val model1 = KevoreeXmiHelper.$instance.load("/Users/duke/Documents/dev/dukeboard/kevoree-kotlin/kevoree-corelibrary/javase/org.kevoree.library.javase.javaseNode/target/classes/KEV-INF/lib.kev")
 //    val model3 = KevoreeXmiHelper.load("/home/edaubert/workspace/kevoree/kevoree-corelibrary/android/org.kevoree.library.android.nanohttp/target/generated-sources/kevoree/KEV-INF/lib.kev.debug")
 
 
@@ -67,21 +67,24 @@ object MergerApp {
     val model4 = KevoreeXmiHelper.load("/Users/duke/Documents/dev/dukeboard/kevoree/kevoree-library/javase/org.kevoree.library.javase.fakeDomo/target/generated-sources/kevoree/KEV-INF/lib2.kev")
      */
 
+
+  //   println(KevoreeXmiHelper.$instance.saveToString(model1,true))
+
     println("%%%%%%%%%%%%%%%%%%%%%%%%%% 1")
-//    merger.merge(emtpyModel, model1)
+    merger.merge(emtpyModel, model1)
 //    merger.merge(emtpyModel, model2)
 //        merger.merge(emtpyModel, model3)
     println("%%%%%%%%%%%%%%%%%%%%%%%%%% 2")
     //merger.merge(model1, model3)
     println("%%%%%%%%%%%%%%%%%%%%%%%%%% 3")
-    merger.merge(model1, model2)
+   // merger.merge(model1, model2)
     println("%%%%%%%%%%%%%%%%%%%%%%%%%% 4")
   //  merger.merge(model1, model4)
     println("!!!!!!!!!!!!!!!!!!!!!!!!!! end")
 
 
 
-    println(KevoreeXmiHelper.$instance.saveToString(model1,true))
+    println(KevoreeXmiHelper.$instance.saveToString(emtpyModel,true))
 //    println(KevoreeXmiHelper.saveToString(model2,true))
 //    println(KevoreeXmiHelper.saveToString(model3,true))
 //    println(KevoreeXmiHelper.saveToString(emtpyModel,true))
