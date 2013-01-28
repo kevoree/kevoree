@@ -15,7 +15,7 @@
     <dependencies>
         <dependency>
             <groupId>org.kevoree</groupId>
-     	    <artifactId>org.kevoree.adaptation.control.model</artifactId>
+            <artifactId>org.kevoree.adaptation.control.model</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
         <dependency>
@@ -23,6 +23,8 @@
             <artifactId>org.kevoree.model</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
+
+
         <!--
 <dependency>
     <groupId>org.kevoree.extra</groupId>
@@ -42,7 +44,6 @@
             <version>4.8.2</version>
             <scope>test</scope>
         </dependency>
-
 
 
     </dependencies>
