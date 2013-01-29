@@ -21,13 +21,21 @@ object IaaSKloudReasoner extends KloudReasoner {
 
   def configureIsolatedNodes(iaasModel: ContainerRoot, kengine: KevScriptEngine): Boolean = {
     var doSomething = false
+    var usedPorts = KloudNetworkHelper.lisAllPorts(iaasModel)
     iaasModel.getNodes.filter(n => KloudModelHelper.isPaaSNode(iaasModel, n) && iaasModel.getGroups.forall(g => !g.getSubNodes.contains(n))).foreach {
       node =>
         val parentNodeOption = node.getHost
         if (parentNodeOption.isDefined) {
           val ipOption = NetworkHelper.getAccessibleIP(KevoreePropertyHelper.getNetworkProperties(iaasModel, node.getName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP))
           if (ipOption.isDefined) {
-            doSomething = doSomething && configureIsolatedNode(node, parentNodeOption.get.getName, ipOption.get, iaasModel, kengine)
+            val portNumber = configureIsolatedNode(node, parentNodeOption.get.getName, ipOption.get, iaasModel, kengine, usedPorts)
+            if (portNumber != 0) {
+              doSomething = doSomething && true
+              usedPorts = usedPorts + portNumber
+            } else {
+              doSomething = doSomething && false
+            }
+
           }
         }
     }
@@ -42,7 +50,8 @@ object IaaSKloudReasoner extends KloudReasoner {
     var potentialParents = ListBuffer[String]()
 
     var doSomething = false
-    var usedIps = List[String]()
+    var usedIps = KloudNetworkHelper.listAllIp(iaasModel)
+    var usedPorts = KloudNetworkHelper.lisAllPorts(iaasModel)
     // filter nodes that are not IaaSNode and are not child of IaaSNode
     iaasModel.getNodes.filter(n => n.getHost.isEmpty && KloudModelHelper.isPaaSNode(iaasModel, n)).foreach {
       // select a host for each user node
@@ -62,11 +71,15 @@ object IaaSKloudReasoner extends KloudReasoner {
         // define IP using selected node to know what is the network used in this machine
         val ipOption = defineIP(node.getName, parentName, iaasModel, kengine, usedIps)
         if (ipOption.isDefined) {
-          usedIps = usedIps ++ List[String](ipOption.get)
+          usedIps = usedIps + ipOption.get
+        }
+        val portNumber = configureIsolatedNode(node, parentName, ipOption.get, iaasModel, kengine, usedPorts)
+        if (portNumber != 0) {
+          usedPorts = usedPorts + portNumber
         }
 
         // find corresponding Kloud group to update the user group configuration on the kloud
-        iaasModel.getGroups.filter(g => KloudModelHelper.isPaaSKloudGroup(iaasModel, g) && g.getSubNodes.find(n => n.getName == node.getName).isDefined).foreach {
+        iaasModel.getGroups.filter(g => KloudModelHelper.isPaaSKloudGroup(iaasModel, g) && g.findByQuery("subNodes[" + node.getName + "]", classOf[ContainerNode]).isDefined).foreach {
           group =>
             kengine.addVariable("groupName", group.getName)
             kengine append "updateDictionary {groupName} {ip='{ip}'}@{nodeName}"
@@ -99,7 +112,8 @@ object IaaSKloudReasoner extends KloudReasoner {
       logger.debug("Try to add all user nodes into the Kloud")
 
       // create new node using PJavaSENode as type for each user node
-      var usedIps = List[String]()
+      var usedIps = KloudNetworkHelper.listAllIp(iaasModel)
+      var usedPorts = KloudNetworkHelper.lisAllPorts(iaasModel)
       addedNodes.foreach {
         node =>
           kengine.addVariable("nodeName", node.getName)
@@ -125,10 +139,12 @@ object IaaSKloudReasoner extends KloudReasoner {
           logger.debug("{}", parentNodeNameOption)
           var parentName = ""
           if (parentNodeNameOption.isEmpty) {
-            val parents = countChilds(iaasModel)
             var potentialParents = ListBuffer[String]()
             if (potentialParents.isEmpty) {
+              val parents = countChilds(iaasModel)
+              logger.debug("parents: {}", parents.mkString(", "))
               potentialParents = lookAtPotentialParents(parents)
+              logger.debug("Potential parents: {}", potentialParents.mkString(", "))
             }
             val index = (java.lang.Math.random() * potentialParents.size).asInstanceOf[Int]
             parentName = potentialParents(index)
@@ -143,10 +159,13 @@ object IaaSKloudReasoner extends KloudReasoner {
           val ipOption = defineIP(node.getName, parentName, iaasModel, kengine, usedIps)
           var ip = "127.0.0.1"
           if (ipOption.isDefined) {
-            usedIps = usedIps ++ List[String](ipOption.get)
+            usedIps = usedIps + ipOption.get
             ip = ipOption.get
           }
-          configureIsolatedNode(node, parentName, ip, iaasModel, kengine)
+          val portNumber = configureIsolatedNode(node, parentName, ip, iaasModel, kengine, usedPorts)
+          if (portNumber != 0) {
+            usedPorts = usedPorts + portNumber
+          }
       }
       true
     } else {
@@ -154,49 +173,53 @@ object IaaSKloudReasoner extends KloudReasoner {
     }
   }
 
-  private def configureIsolatedNode(node: ContainerNode, parentNodeName: String, ip: String, model: ContainerRoot, kengine: KevScriptEngine): Boolean = {
-    // add the new node on one of the group used by the host
-    val groupOption = model.getGroups.find(g => g.getSubNodes.find(n => n.getName == parentNodeName).isDefined)
-    if (groupOption.isDefined) {
-      kengine addVariable("groupName", groupOption.get.getName)
-      kengine append "addToGroup {groupName} {nodeName}"
-
+  private def configureIsolatedNode(node: ContainerNode, parentNodeName: String, ip: String, model: ContainerRoot, kengine: KevScriptEngine, usedPorts: ListBuffer[Int]): Int = {
+    // find all groups that are linked to the parent node
+    val groups = model.getGroups.filter(g => g.findByQuery("subNodes[" + parentNodeName + "]", classOf[ContainerNode]).isDefined)
+    // look for a group that is linked to the node
+    val groupOption = groups.find(g => g.findByQuery("subNodes[" + node.getName + "]", classOf[ContainerNode]).isDefined)
+    if (groupOption.isEmpty) {
+      var portAttributeName = "port"
+      var portNumber = 8000
       // get all fragment properties that exist for the group and that start or end with 'port', we try to specify a port for the node
-      var usedPort = Array[Int]()
-      if (groupOption.get.getTypeDefinition.getDictionaryType.isDefined) {
-        groupOption.get.getTypeDefinition.getDictionaryType.get.getAttributes.filter(a => a.getFragmentDependant && (a.getName.startsWith("port") || a.getName.endsWith("port"))).foreach {
+      if (groups(0).getTypeDefinition.getDictionaryType.isDefined) {
+        groups(0).getTypeDefinition.getDictionaryType.get.getAttributes.filter(a => a.getFragmentDependant && (a.getName == "port" || a.getName.startsWith("port") || a.getName.endsWith("port"))).foreach {
           attribute => {
-            kengine addVariable("attributeName", attribute.getName)
+            var dv = 8000
+            val dvOption = groups(0).getTypeDefinition.getDictionaryType.get.getDefaultValues.find(dv => dv.getAttribute.getName == attribute.getName)
+            if (dvOption.isDefined) {
+              try {
+                dv = Integer.parseInt(dvOption.get.toString)
+              } catch {
+                case e: NumberFormatException =>
+              }
+            }
             /* Warning This method try severals Socket to determine available port */
-            val portNumber = KloudNetworkHelper.selectPortNumber(ip, usedPort)
-            usedPort = usedPort ++ Array[Int](portNumber)
-            kengine.addVariable("port", portNumber.toString)
-            kengine append "updateDictionary {groupName} { {attributeName} = '{port}' }@{nodeName}"
+            portNumber = KloudNetworkHelper.selectPortNumber(dv, ip, usedPorts)
+            portAttributeName = attribute.getName
           }
         }
       }
-      true
+
+      // add the new node on one of the group used by the host
+      kengine addVariable("groupName", groups(0).getName)
+      kengine append "addToGroup {groupName} {nodeName}"
+
+      kengine addVariable("attributeName", portAttributeName)
+      kengine.addVariable("port", portNumber.toString)
+      kengine append "updateDictionary {groupName} { {attributeName} = '{port}' }@{nodeName}"
+      portNumber
     } else {
-      false
+      0
     }
   }
 
-  private def listAllIp(model: ContainerRoot): Array[String] = {
-    var ips = Array[String]()
-    model.getNodes.foreach {
-      node =>
-        val nodeIps = KevoreePropertyHelper.getNetworkProperties(model, node.getName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP)
-        ips = ips ++ nodeIps.toArray(new Array[String](nodeIps.size()))
-    }
-    ips
-  }
 
-
-  private def defineIP(nodeName: String, parentName: String, model: ContainerRoot, kengine: KevScriptEngine, usedIps: List[String]): Option[String] = {
+  private def defineIP(nodeName: String, parentName: String, model: ContainerRoot, kengine: KevScriptEngine, usedIps: ListBuffer[String]): Option[String] = {
     kengine.addVariable("nodeName", nodeName)
     kengine.addVariable("parentName", parentName)
     // define IP using selecting node to know what is the network used in this machine
-    val ipOption = KloudNetworkHelper.selectIP(parentName, model, listAllIp(model) ++ usedIps)
+    val ipOption = KloudNetworkHelper.selectIP(parentName, model, usedIps)
     if (ipOption.isDefined) {
       kengine.addVariable("ipKey", Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP)
       kengine.addVariable("ip", ipOption.get)
@@ -218,6 +241,7 @@ object IaaSKloudReasoner extends KloudReasoner {
         if (parent._2 < min) {
           min = parent._2
           potentialParents.clear()
+          potentialParents.add(parent._1)
         } else if (parent._2 == min) {
           potentialParents.add(parent._1)
         }

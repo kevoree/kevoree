@@ -20,7 +20,7 @@ import org.slf4j.LoggerFactory
 object HTMLPageBuilder {
   val logger = LoggerFactory.getLogger(this.getClass)
 
-  def getIaasPage(pattern: String, nodeName: String, model: ContainerRoot): String = {
+  def getIaasPage(pattern: String, nodeName: String, model: ContainerRoot, allowManagement : Boolean): String = {
     (<html>
       <head>
         <link rel="stylesheet" href={pattern + "bootstrap/css/bootstrap.min.css"}/>
@@ -37,7 +37,7 @@ object HTMLPageBuilder {
         case None => List[ContainerNode]()
         case Some(node) => node.getHosts.toList
       }
-      nodeList(pattern, model, nodesList)}
+      nodeList(pattern, model, nodesList, allowManagement)}
          </div></div>
       </body>
     </html>).toString()
@@ -150,7 +150,7 @@ object HTMLPageBuilder {
     </html>).toString()
   }
 
-  def getPaasUserPage(login: String, pattern: String, model: ContainerRoot): String = {
+  def getPaasUserPage(login: String, pattern: String, model: ContainerRoot, allowManagement : Boolean): String = {
     (<html>
       <head>
         <link rel="stylesheet" href={pattern + "fileuploader/fileuploader.css"}/>
@@ -176,7 +176,7 @@ object HTMLPageBuilder {
             case None => List[ContainerNode]()
             case Some(group) => group.getSubNodes
           }
-          nodeList(pattern, model, nodesList)}
+          nodeList(pattern, model, nodesList, allowManagement)}
           </div>
         </div>
       </body>
@@ -320,12 +320,11 @@ object HTMLPageBuilder {
     </html>).toString()
   }
 
-  private def nodeList(pattern: String, model: ContainerRoot, nodeList: List[ContainerNode]): Seq[Node] = {
+  private def nodeList(pattern: String, model: ContainerRoot, nodeList: List[ContainerNode], allowManagement : Boolean): Seq[Node] = {
     (<table class="table table-bordered">
       <thead>
         <tr>
-          <td>#
-            <a class="btn btn-success" href={pattern + "AddChild"}>add child</a>
+          <td>{if (allowManagement) {<a class="btn btn-success" href={pattern + "AddChild"}>add child</a>}}
           </td> <td>virtual node</td> <td>ip</td> <td>action(s)</td>
         </tr>
       </thead>
@@ -351,7 +350,7 @@ object HTMLPageBuilder {
                 {ipString}
               </td>
               <td>
-                <a class="btn btn-warning" href={pattern + "RemoveChild?name=" + child.getName}>delete</a>
+                {if (allowManagement) {<a class="btn btn-warning" href={pattern + "RemoveChild?name=" + child.getName}>delete</a>}}
               </td>
             </tr>
           )

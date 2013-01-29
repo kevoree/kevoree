@@ -52,7 +52,7 @@ class IaaSKloudResourceManagerPageGenerator (instance: IaaSKloudResourceManagerP
 
 
 	private def getIaasPage (request: KevoreeHttpRequest, response: KevoreeHttpResponse): KevoreeHttpResponse = {
-		val htmlContent = HTMLPageBuilder.getIaasPage(pattern, parentNodeName, instance.getModelService.getLastModel)
+		val htmlContent = HTMLPageBuilder.getIaasPage(pattern, parentNodeName, instance.getModelService.getLastModel, instance.isPortBinded("delegate"))
 		response.setStatus(200)
 		response.setContent(htmlContent)
 		response

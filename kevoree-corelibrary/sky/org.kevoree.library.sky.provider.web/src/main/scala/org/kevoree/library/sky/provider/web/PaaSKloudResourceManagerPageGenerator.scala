@@ -49,7 +49,7 @@ class PaaSKloudResourceManagerPageGenerator (instance: PaaSKloudResourceManagerP
     }
     // FIXME no security at all here
 
-    val htmlContent = HTMLPageBuilder.getPaasUserPage(login, pattern, instance.getModelService.getLastModel)
+    val htmlContent = HTMLPageBuilder.getPaasUserPage(login, pattern, instance.getModelService.getLastModel, instance.isPortBinded("delegate"))
     response.setStatus(200)
     response.setContent(htmlContent)
     response

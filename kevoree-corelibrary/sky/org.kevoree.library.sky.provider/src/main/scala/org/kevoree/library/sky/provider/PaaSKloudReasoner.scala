@@ -29,7 +29,7 @@ object PaaSKloudReasoner extends KloudReasoner {
   }
 
   def appendCreateGroupScript(iaasModel: ContainerRoot, id: String, nodeName: String, paasModel: ContainerRoot, kengine: KevScriptEngine) {
-    /*paasModel.getGroups.find(g => g.getName == id)*/
+
     paasModel.findByQuery("groups[" + id + "]", classOf[Group]) match {
       case None => {
         // if the paasModel doesn't contain a Kloud group, then we add a default one
@@ -39,15 +39,17 @@ object PaaSKloudReasoner extends KloudReasoner {
           ip = ipOption.get
         }
         /* Warning This method try severals Socket to determine available port */
-        val portNumber = KloudNetworkHelper.selectPortNumber(ip, Array[Int]())
+        // FIXME
+        /*val portNumber = KloudNetworkHelper.selectPortNumber(ip, Array[Int]())
         kengine.addVariable("groupName", id)
         kengine.addVariable("nodeName", nodeName)
         kengine.addVariable("port", portNumber.toString)
         kengine.addVariable("ip", ip)
         kengine.addVariable("groupType", "KloudPaaSNanoGroup")
+
         kengine append "addGroup {groupName} : KloudPaaSNanoGroup {masterNode='{nodeName}={ip}:{port}'}"
         kengine append "addToGroup {groupName} {nodeName}"
-        kengine append "updateDictionary {groupName} {port='{port}', ip='{ip}'}@{nodeName}"
+        kengine append "updateDictionary {groupName} {port='{port}', ip='{ip}'}@{nodeName}"*/
       }
       case Some(group) => {
         val ipOption = NetworkHelper.getAccessibleIP(KevoreePropertyHelper.getNetworkProperties(iaasModel, nodeName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP))
@@ -56,7 +58,8 @@ object PaaSKloudReasoner extends KloudReasoner {
           ip = ipOption.get
         }
         /* Warning This method try severals Socket to determine available port */
-        val portNumber = KloudNetworkHelper.selectPortNumber(ip, Array[Int]())
+        // FIXME
+        /*val portNumber = KloudNetworkHelper.selectPortNumber(ip, Array[Int]())
         kengine.addVariable("groupName", id)
         kengine.addVariable("nodeName", nodeName)
         kengine.addVariable("port", portNumber.toString)
@@ -65,10 +68,9 @@ object PaaSKloudReasoner extends KloudReasoner {
 
         kengine append "addGroup {groupName} : {groupType}"
         kengine append "addToGroup {groupName} {nodeName}"
-        kengine append "updateDictionary {groupName} {port='{port}', ip='{ip}'}@{nodeName}"
+        kengine append "updateDictionary {groupName} {port='{port}', ip='{ip}'}@{nodeName}"*/
 
         if (group.getDictionary.isDefined) {
-          //            scriptBuilder append "{"
           val defaultAttributes = getDefaultNodeAttributes(iaasModel, group.getTypeDefinition.getName)
           group.getDictionary.get.getValues
             .filter(value => value.getAttribute.getName != "ip" && value.getAttribute.getName != "port" && defaultAttributes.find(a => a.getName == value.getAttribute.getName).isDefined).foreach {

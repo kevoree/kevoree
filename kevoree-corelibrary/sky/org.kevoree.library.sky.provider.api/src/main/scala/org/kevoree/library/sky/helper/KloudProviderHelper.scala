@@ -7,6 +7,7 @@ import java.io._
 import org.slf4j.{LoggerFactory, Logger}
 import org.kevoree.api.service.core.script.KevScriptEngine
 import org.kevoree.library.sky.api.helper.{KloudModelHelper, KloudNetworkHelper}
+import collection.mutable.ListBuffer
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -76,14 +77,14 @@ object KloudProviderHelper {
   }
 
 
-  def appendCreateGroupScript (kloudModel: ContainerRoot, login: String, nodeName: String, kevScriptEngine: KevScriptEngine, sshKey: String = "", storage: Boolean = false) {
+  /*def appendCreateGroupScript (kloudModel: ContainerRoot, login: String, nodeName: String, kevScriptEngine: KevScriptEngine, sshKey: String = "", storage: Boolean = false) {
     val ipOption = NetworkHelper.getAccessibleIP(KevoreePropertyHelper.getNetworkProperties(kloudModel, nodeName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP))
     var ip = "127.0.0.1"
     if (ipOption.isDefined) {
       ip = ipOption.get
     }
     /* Warning This method try severals Socket to determine available port */
-    val portNumber = KloudNetworkHelper.selectPortNumber(ip, Array[Int]())
+    val portNumber = KloudNetworkHelper.selectPortNumber(6000, ip, ListBuffer[Int]())
     kevScriptEngine.addVariable("groupName", login)
     kevScriptEngine.addVariable("nodeName", nodeName)
     kevScriptEngine.addVariable("port", portNumber.toString)
@@ -101,7 +102,7 @@ object KloudProviderHelper {
     }
     kevScriptEngine append "addToGroup {groupName} {nodeName}"
     kevScriptEngine append "updateDictionary {groupName} {port='{port}', ip='{ip}'}@{nodeName}"
-  }
+  }*/
 
   def selectIaaSNodeAsAMaster(model : ContainerRoot) {
     val iaasNodes = model.getNodes.filter(n => KloudModelHelper.isIaaSNode(model, n))
