@@ -41,7 +41,7 @@ import java.io.{Writer}
 object KevoreeAdaptationPrimitiveTypeGenerator {
 
   def generate (root: ContainerRoot, filer: Filer, nt: NodeType, targetNodeType: String) {
-    val nodeTypePackage = KevoreeGeneratorHelper.getTypeDefinitionGeneratedPackage(nt, targetNodeType)
+    val nodeTypePackage = new KevoreeGeneratorHelper().getTypeDefinitionGeneratedPackage(nt, targetNodeType)
 
     val wrapper = filer.createResource(StandardLocation.SOURCE_OUTPUT, "", new String(nodeTypePackage.replace(".", "/") + "/" + nt.getName + "_aspect.scala"));
     val writer = wrapper.openWriter()

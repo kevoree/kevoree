@@ -45,7 +45,7 @@ object KevoreeActivatorGenerator {
     root.getTypeDefinitions.filter(td => td.getBean != "").filter(td => td.getBean != "").filter(p => p.isInstanceOf[ComponentType]).foreach {
       ctt =>
         val ct = ctt.asInstanceOf[ComponentType]
-        val activatorPackage = KevoreeGeneratorHelper.getTypeDefinitionGeneratedPackage(ct,targetNodeType)
+        val activatorPackage = new KevoreeGeneratorHelper().getTypeDefinitionGeneratedPackage(ct,targetNodeType)
         val activatorName = ct.getName + "Activator"
         val wrapper =  filer.createResource(StandardLocation.SOURCE_OUTPUT, "", new String(activatorPackage.replace(".", "/") + "/" + activatorName + ".scala"))
         /* GENERATE CONTENT */
@@ -58,7 +58,7 @@ object KevoreeActivatorGenerator {
         writer.append("import org.kevoree.framework.KevoreeActor\n")
         writer.append("import org.kevoree.framework.KevoreeComponent\n")
         writer.append("import org.kevoree.framework._\n")
-        writer.append("import "+KevoreeGeneratorHelper.getTypeDefinitionBasePackage(ct)+"._\n")
+        writer.append("import "+new KevoreeGeneratorHelper().getTypeDefinitionBasePackage(ct)+"._\n")
         writer.append("class " + activatorName + " extends org.kevoree.framework.osgi.KevoreeComponentActivator {\n")
         val factoryName = ct.getFactoryBean.substring(ct.getFactoryBean.lastIndexOf(".") + 1)
         writer.append("def callFactory() : KevoreeComponent = { " + factoryName + ".createComponentActor() } ")
@@ -72,7 +72,7 @@ object KevoreeActivatorGenerator {
     root.getTypeDefinitions.filter(td => td.getBean != "").filter(td => td.getBean != "").filter(p => p.isInstanceOf[ChannelType]).foreach {
       ctt =>
         val ct = ctt.asInstanceOf[ChannelType]
-        val activatorPackage = KevoreeGeneratorHelper.getTypeDefinitionGeneratedPackage(ct,targetNodeType)
+        val activatorPackage = new KevoreeGeneratorHelper().getTypeDefinitionGeneratedPackage(ct,targetNodeType)
         val activatorName = ct.getName + "Activator"
         val wrapper = filer.createResource(StandardLocation.SOURCE_OUTPUT, "", new String(activatorPackage.replace(".", "/") + "/" + activatorName + ".scala"))
         /* GENERATE CONTENT */
@@ -96,7 +96,7 @@ object KevoreeActivatorGenerator {
     root.getTypeDefinitions.filter(td => td.getBean != "").filter(td => td.getBean != "").filter(p => p.isInstanceOf[GroupType]).foreach {
       gt =>
         val groupType = gt.asInstanceOf[GroupType]
-        val activatorPackage = KevoreeGeneratorHelper.getTypeDefinitionGeneratedPackage(gt,targetNodeType)
+        val activatorPackage = new KevoreeGeneratorHelper().getTypeDefinitionGeneratedPackage(gt,targetNodeType)
         val activatorName = groupType.getName + "Activator"
         val wrapper = filer.createResource(StandardLocation.SOURCE_OUTPUT, "", new String(activatorPackage.replace(".", "/") + "/" + activatorName + ".scala"))
         /* GENERATE CONTENT */

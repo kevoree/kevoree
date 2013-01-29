@@ -44,14 +44,14 @@ import org.kevoree.annotation.ThreadStrategy
 object KevoreeProvidedPortGenerator {
 
   def generate(root: ContainerRoot, filer: javax.annotation.processing.Filer, ct: KevoreeComponentType, ref: PortTypeRef, targetNodeType: String) {
-    val portPackage = KevoreeGeneratorHelper.getTypeDefinitionGeneratedPackage(ct, targetNodeType)
+    val portPackage = new KevoreeGeneratorHelper().getTypeDefinitionGeneratedPackage(ct, targetNodeType)
     // var portPackage = ct.getFactoryBean().substring(0, ct.getFactoryBean().lastIndexOf("."));
     val portName = ct.getName + "PORT" + ref.getName
     val wrapper = filer.createResource(StandardLocation.SOURCE_OUTPUT, "", new String(portPackage.replace(".", "/") + "/" + portName + ".scala"))
     val writer = wrapper.openWriter()
     writer.append("package " + portPackage + "\n")
     writer.append("import org.kevoree.framework.port._\n")
-    writer.append("import " + KevoreeGeneratorHelper.getTypeDefinitionBasePackage(ct) + "._\n")
+    writer.append("import " + new KevoreeGeneratorHelper().getTypeDefinitionBasePackage(ct) + "._\n")
     writer.append("import scala.{Unit=>void}\n")
 
 

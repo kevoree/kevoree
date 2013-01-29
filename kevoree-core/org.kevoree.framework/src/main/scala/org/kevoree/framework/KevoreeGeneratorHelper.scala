@@ -21,7 +21,7 @@ import org.kevoree.TypeDefinition
  * Time: 14:00
  */
 
-object KevoreeGeneratorHelper {
+class KevoreeGeneratorHelper {
 
   def getTypeDefinitionGeneratedPackage(td : TypeDefinition,targetNodeType : String) : String = {
     val basePackage = td.getBean.substring(0, td.getBean.lastIndexOf("."))

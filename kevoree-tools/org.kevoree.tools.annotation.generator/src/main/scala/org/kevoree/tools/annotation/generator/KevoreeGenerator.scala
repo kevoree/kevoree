@@ -49,13 +49,13 @@ object KevoreeGenerator {
       ct.getProvided.foreach {
         ref =>
 
-          val portPackage = KevoreeGeneratorHelper.getTypeDefinitionGeneratedPackage(ct, targetNodeType)
+          val portPackage = new KevoreeGeneratorHelper().getTypeDefinitionGeneratedPackage(ct, targetNodeType)
           val portName = ct.getName + "PORT" + ref.getName;
           val wrapper = filer.createSourceFile(portPackage + "." + portName)
           val writer = wrapper.openWriter
           writer.append("package " + portPackage + ";\n");
           writer.append("import org.kevoree.framework.AbstractPort;\n");
-          writer.append("import " + KevoreeGeneratorHelper.getTypeDefinitionBasePackage(ct) + "._\n")
+          writer.append("import " + new KevoreeGeneratorHelper().getTypeDefinitionBasePackage(ct) + "._\n")
           writer.append("import " + ref.getRef.getName + ";\n");
           writer.append("public class " + portName + " extends AbstractPort implements " + ref.getRef.getName + " {\n");
           //wrapper.append("public "+portName+"(Object c){setComponent(c);}\n") /* AVOID CIRCULAR REFERENCE */

@@ -105,12 +105,9 @@ case class TypeDefinitionAspect(selfTD: TypeDefinition) {
         }
     }
     if (pTD.getName != selfTD.getName) {
-      logger.debug("{} != {} is true", pTD.getName, selfTD.getName)
       return true
     }
     if (pTD.getFactoryBean != selfTD.getFactoryBean) {
-      //      logger.debug("{} => {}", pTD.getFactoryBean, selfTD.getFactoryBean)
-      logger.debug("{} != {} is true", pTD.getFactoryBean, selfTD.getFactoryBean)
       return true
     }
     //DICTIONARY TYPE CHECK
@@ -170,9 +167,10 @@ case class TypeDefinitionAspect(selfTD: TypeDefinition) {
                       case None => logger.debug("There is no equivalent operation for {}", selfOperation.getName); true
                     }
                   )
+                  /*
                   if (interfaceChanged || operationsChanged) {
                     logger.debug("interface or operation change {} {}", selfTD.getName, Array(interfaceChanged, operationsChanged))
-                  }
+                  }   */
                   interfaceChanged || operationsChanged
                 }
               }

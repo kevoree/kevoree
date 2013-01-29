@@ -35,32 +35,10 @@ object Constants {
 
   def KEVOREE_NODE_NAME = "kevoree.node.name"
   def KEVOREE_MODEL_PORT = "kevoree.modelsynch.port"
-
-
   def KEVOREE_INSTANCE_NAME = "kevoree.component.name"
   def KEVOREE_PORT_NAME = "kevoree.port.name"
-
   def KEVOREE_MESSAGEPORT_DEFAULTMETHOD = "process"
-
-  def KEVOREE_NODE_NAME_HEADER = "KEVOREE-Nodename"
-  def KEVOREE_INSTANCE_NAME_HEADER = "KEVOREE-Componentname"
-
-
-
-  def KEVOREE_SERVICE = "_KEVOREE._tcp.local."
-  //def KEVOREE_SERVICE_DISPATCHER = "_KEVOREEdispatcher._tcp.local."
   def KEVOREE_PLATFORM_REMOTE_NODE_IP = "KEVOREE.remote.node.ip"
- // def KEVOREE_PLATFORM_REMOTE_NODE_DISPATCHER_PORT = "KEVOREE.remote.node.dispatcher.port"
- // def KEVOREE_PLATFORM_REMOTE_NODE_MODELSYNCH_PORT = "KEVOREE.remote.node.modelsynch.port"
- // def KEVOREE_PLATFORM_REMOTE_MTU = "KEVOREE.remote.node.mtu"
   def KEVOREE_PLATFORM_REMOTE_NETWORK_TYPE = "KEVOREE.remote.network.type"
-
-  def KEVOREE_PROPERTY_OSGI_BUNDLE = "osgi.bundle"
-
-
-  def KEVOREE_PORT_AUTO = "auto"
-
-
-  //KEVOREE PARAM
 
 }

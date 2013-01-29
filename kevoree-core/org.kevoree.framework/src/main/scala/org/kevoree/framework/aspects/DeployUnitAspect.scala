@@ -90,7 +90,6 @@ case class DeployUnitAspect(self: DeployUnit) {
     } else {
       true
     }
-
   }
 
   def isDeployUnitUsed(targetDU: DeployUnit): Boolean = {
@@ -115,12 +114,10 @@ case class DeployUnitAspect(self: DeployUnit) {
           val pDUInteger = java.lang.Long.parseLong(targetDU.getHashcode)
           val selfDUInteger = java.lang.Long.parseLong(self.getHashcode)
           alreadyCheck.put(buildKey, (selfDUInteger < pDUInteger))
-          //println("IsUpdated "+targetDU.getUnitName + "-> "+( ( selfDUInteger < pDUInteger) | checkTransitiveUpdate(targetDU,alreadyCheck) ))
           ((selfDUInteger < pDUInteger) | checkTransitiveUpdate(targetDU, alreadyCheck))
         }
       } catch {
         case _@e => {
-          logger.debug("Default HashCode - equiality verification - {} != {}", Array(targetDU.getHashcode, self.getHashcode), e)
           targetDU.getHashcode != self.getHashcode
         }
       }
