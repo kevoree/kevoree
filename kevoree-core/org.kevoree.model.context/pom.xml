@@ -73,57 +73,7 @@
                     </execution>
                 </executions>
             </plugin>
-
-
         </plugins>
     </build>
-
-
-    <repositories>
-        <repository>
-            <id>jetbrains-release</id>
-            <url>http://repository.jetbrains.com/all</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-        <repository>
-            <id>jetbrains-snapshots</id>
-            <url>http://repository.jetbrains.com/all</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
-
-    <pluginRepositories>
-        <pluginRepository>
-            <id>jetbrains-release</id>
-            <url>http://repository.jetbrains.com/all</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </pluginRepository>
-        <pluginRepository>
-            <id>jetbrains-snapshots</id>
-            <url>http://repository.jetbrains.com/all</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </pluginRepository>
-    </pluginRepositories>
-
 
 </project>
