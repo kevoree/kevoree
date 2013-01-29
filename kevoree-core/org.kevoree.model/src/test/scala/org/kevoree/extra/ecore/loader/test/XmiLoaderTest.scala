@@ -59,7 +59,7 @@ class XmiLoaderTest {
   @Test
   def testLoadParameters() {
     val loader = new ModelLoader()
-    loader.loadModelFromPath(new File(getClass.getResource("/PrarametersBug.kev").toURI)).get(0);
+    loader.loadModelFromPath(new File(getClass.getResource("/ParametersBug.kev").toURI)).get(0);
   }
 
 
