@@ -1,4 +1,4 @@
-package org.kevoree.library.defaultNodeTypes.jcl.deploy.command
+package org.kevoree.library.defaultNodeTypes.command
 
 import org.kevoree.api.PrimitiveCommand
 
@@ -23,8 +23,12 @@ import org.kevoree.api.PrimitiveCommand
  * Time: 17:15
  */
 
-case class NoopCommand() extends PrimitiveCommand {
-  def execute(): Boolean = true
+class NoopCommand(): PrimitiveCommand {
+    override fun execute(): Boolean {
+        return true
+    }
 
-  def undo() {}
+    override fun undo() {
+
+    }
 }

@@ -10,10 +10,8 @@ import org.kevoree.annotation.*;
 import org.kevoree.api.service.core.handler.ModelListener;
 import org.kevoree.api.service.core.logging.KevoreeLogLevel;
 import org.kevoree.framework.AbstractNodeType;
-import org.kevoree.framework.ModelHandlerServiceProxy;
 import org.kevoree.kompare.KevoreeKompareBean;
-import org.kevoree.library.defaultNodeTypes.jcl.deploy.CommandMapper;
-import org.kevoree.library.defaultNodeTypes.jcl.deploy.context.KevoreeDeployManager;
+import org.kevoree.library.defaultNodeTypes.context.KevoreeDeployManager;
 import org.kevoreeAdaptation.AdaptationModel;
 import org.kevoreeAdaptation.AdaptationPrimitive;
 import org.slf4j.LoggerFactory;
@@ -68,7 +66,6 @@ public class JavaSENode extends AbstractNodeType implements ModelListener {
             };
             shutdownThread.start();
         }
-        KevoreeDeployManager.startPool();
     }
 
 
@@ -83,8 +80,7 @@ public class JavaSENode extends AbstractNodeType implements ModelListener {
             shutdownThread.stop();
         }
         //Cleanup the local runtime
-        KevoreeDeployManager.clearAll(this);
-        KevoreeDeployManager.stopPool();
+        KevoreeDeployManager.$instance.clearAll(this);
     }
 
     @Update
@@ -182,7 +178,7 @@ public class JavaSENode extends AbstractNodeType implements ModelListener {
     @Override
     public boolean afterLocalUpdate(ContainerRoot currentModel, ContainerRoot proposedModel) {
         mapper.doEnd();
-        logger.info("JavaSENode Update completed in {} ms",(System.currentTimeMillis() - preTime));
+        logger.info("JavaSENode V2 Update completed in {} ms",(System.currentTimeMillis() - preTime));
         return true;
     }
 

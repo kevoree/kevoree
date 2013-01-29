@@ -43,7 +43,7 @@ object KevoreeRequiredPortGenerator {
   def generate(root: ContainerRoot, filer: Filer, ct: KevoreeComponentType, ref: PortTypeRef, targetNodeType: String) {
     // var portPackage = ct.getFactoryBean().substring(0, ct.getFactoryBean().lastIndexOf("."));
 
-    val portPackage = KevoreeGeneratorHelper.getTypeDefinitionGeneratedPackage(ct, targetNodeType)
+    val portPackage = new KevoreeGeneratorHelper().getTypeDefinitionGeneratedPackage(ct, targetNodeType)
     val portName = ct.getName + "PORT" + ref.getName
     val wrapper = filer.createResource(StandardLocation.SOURCE_OUTPUT, "", new String(portPackage.replace(".", "/") + "/" + portName + ".scala"))
     val writer = wrapper.openWriter()
@@ -51,7 +51,7 @@ object KevoreeRequiredPortGenerator {
     writer.append("package " + portPackage + "\n")
     writer.append("import org.kevoree.framework.port._\n")
     writer.append("import scala.{Unit=>void}\n")
-    writer.append("import " + KevoreeGeneratorHelper.getTypeDefinitionBasePackage(ct) + "._\n")
+    writer.append("import " + new KevoreeGeneratorHelper().getTypeDefinitionBasePackage(ct) + "._\n")
 
 
     var baseName = ref.getRef.getName

@@ -11,37 +11,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kevoree.framework.deploy;
+package org.kevoree.core.impl;
 
 import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Created with IntelliJ IDEA.
  * User: duke
  * Date: 1/28/13
- * Time: 10:24 AM
+ * Time: 3:13 PM                       ;
  */
-public class WorkerThreadFactory implements ThreadFactory {
+public class KevoreeCoreThreadFactory implements ThreadFactory {
 
-    AtomicInteger threadNumber = new AtomicInteger(1);
+    ThreadGroup group = null;
+    String nodeName = "";
 
-    private String id = "";
-
-    public WorkerThreadFactory(String _id){
-        id = _id;
-    }
-
-    @Override
-    public Thread newThread(Runnable runnable) {
+    public KevoreeCoreThreadFactory(String _nname) {
         SecurityManager s = System.getSecurityManager();
-        ThreadGroup group = null;
         if (s != null) {
             group = s.getThreadGroup();
         } else {
             group = Thread.currentThread().getThreadGroup();
         }
-        Thread t = new Thread(group, runnable, "Kevoree_Deploy_" + id + "_Worker_" + threadNumber.getAndIncrement());
+        nodeName = _nname;
+    }
+
+    @Override
+    public Thread newThread(Runnable runnable) {
+        Thread t = new Thread(group, runnable, "Kevoree_Core_Scheduler_" + nodeName);
         if (t.isDaemon()) {
             t.setDaemon(false);
         }

@@ -12,7 +12,7 @@
     <properties>
         <scala.version>2.9.2</scala.version>
         <bundle.vendor>IRISA/INRIA</bundle.vendor>
-        <slf4j.version>1.6.4</slf4j.version>
+        <slf4j.version>1.7.2</slf4j.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <kevoree.version>${project.version}</kevoree.version>
         <kotlin.version>0.4.297</kotlin.version>
@@ -24,11 +24,6 @@
             <artifactId>junit</artifactId>
             <version>4.8.1</version>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.scala-lang</groupId>
-            <artifactId>scala-library</artifactId>
-            <version>${scala.version}</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -142,7 +137,7 @@
                     <encoding>${project.build.sourceEncoding}</encoding>
                 </configuration>
             </plugin>
-						
+
         </plugins>
     </build>
 
@@ -155,6 +150,10 @@
             <id>kevoree-snapshots</id>
             <url>http://maven.kevoree.org/snapshots</url>
         </repository>
+        <repository>
+            <id>jetbrains-release</id>
+            <url>http://repository.jetbrains.com/all</url>
+        </repository>
     </repositories>
 
     <pluginRepositories>
@@ -165,6 +164,10 @@
         <pluginRepository>
             <id>plugin.kevoree-snapshots</id>
             <url>http://maven.kevoree.org/snapshots</url>
+        </pluginRepository>
+        <pluginRepository>
+            <id>jetbrains-release</id>
+            <url>http://repository.jetbrains.com/all</url>
         </pluginRepository>
     </pluginRepositories>
 
@@ -177,7 +180,7 @@
         <module>../org.kevoree.framework</module>
         <module>../org.kevoree.kompare</module>
         <module>../org.kevoree.merger</module>
-       <!-- <module>../org.kevoree.pruner</module>-->
+        <!-- <module>../org.kevoree.pruner</module>-->
         <module>../org.kevoree.basechecker</module>
         <module>../org.kevoree.core</module>
     </modules>

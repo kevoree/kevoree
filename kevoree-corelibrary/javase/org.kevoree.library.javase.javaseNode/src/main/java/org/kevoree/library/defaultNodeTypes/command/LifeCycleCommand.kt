@@ -1,4 +1,4 @@
-package org.kevoree.library.defaultNodeTypes.jcl.deploy.context
+package org.kevoree.library.defaultNodeTypes.command
 
 /**
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
@@ -13,5 +13,18 @@ package org.kevoree.library.defaultNodeTypes.jcl.deploy.context
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
 
-case class KevoreeMapping(name : String,objClassName : String,ref : Any)
+import org.kevoree.Instance
+import org.kevoree.api.PrimitiveCommand
+
+abstract class LifeCycleCommand(val c: Instance, val nodeName: String): PrimitiveCommand {
+
+    fun getInstance(): Instance {
+        return c
+    }
+
+}

@@ -56,7 +56,7 @@ public class BootstrapHelper {
                 if (grouptypeDefFound != null) {
                     Group g = KevoreeFactory.$instance.createGroup();
                     g.setName("sync");
-                    g.setTypeDefinition(typeDefFound);
+                    g.setTypeDefinition(grouptypeDefFound);
                     g.addSubNodes(node);
                     model.addGroups(g);
                 } else {

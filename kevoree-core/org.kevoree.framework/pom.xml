@@ -30,7 +30,11 @@
             <artifactId>logback-classic</artifactId>
             <version>1.0.0</version>
         </dependency>
-
+        <dependency>
+            <artifactId>scala-library</artifactId>
+            <groupId>org.scala-lang</groupId>
+            <version>${scala.version}</version>
+        </dependency>
 
     </dependencies>
 

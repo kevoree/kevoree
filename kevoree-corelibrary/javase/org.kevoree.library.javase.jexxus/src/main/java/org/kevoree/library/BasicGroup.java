@@ -235,6 +235,9 @@ public class BasicGroup extends AbstractGroupType implements ConnectionListener 
                 switch (data[0]) {
                     case getModel: {
                         ByteArrayOutputStream output = new ByteArrayOutputStream();
+
+                        //System.err.println(KevoreeXmiHelper.$instance.saveToString(getModelService().getLastModel(),true));
+
                         KevoreeXmiHelper.$instance.saveCompressedStream(output, getModelService().getLastModel());
                         from.send(output.toByteArray(), Delivery.RELIABLE);
                     }

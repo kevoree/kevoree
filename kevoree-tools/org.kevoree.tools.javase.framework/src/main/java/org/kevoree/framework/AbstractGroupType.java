@@ -55,7 +55,7 @@ public abstract class AbstractGroupType extends AbstractTypeDefinition implement
      * @return the group corresponding to this
      */
     public Group getModelElement() {
-        return getModelService().getLastModel().findByQuery("groups[" + getName() + "]", Group.class);
+        return getModelService().getLastModel().findGroupsByID(getName());
     }
 
     @Override

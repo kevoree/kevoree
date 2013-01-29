@@ -29,6 +29,17 @@ import org.kevoree.framework.HaraKiriHelper
 import org.kevoree.framework.KevoreeXmiHelper
 
 
+class PreCommand(newmodel : ContainerRoot,modelListeners: KevoreeListeners, oldModel : ContainerRoot){
+    var alreadyCall = false
+    val preRollbackTest: ()->Boolean = {()->
+        if (!alreadyCall) {
+            modelListeners.preRollback(oldModel, newmodel)
+            alreadyCall = true
+        }
+        true
+    }
+}
+
 class KevoreeCoreBean(): KevoreeModelHandlerService {
 
     val modelListeners = KevoreeListeners()
@@ -74,13 +85,15 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
         _bootstraper = b
     }
 
-    private fun switchToNewModel(c: ContainerRoot) = {
-
+    private fun switchToNewModel(c: ContainerRoot) {
         var cc: ContainerRoot? = c
         if(!c.isReadOnly()){
             logger.error("It is not safe to store ReadWrite model")
             cc = modelCloner.clone(c, true)
+        } else {
+            cc = c
         }
+
         //current model is backed-up
         models.add(model)
         // TODO : MAGIC NUMBER ;-) , ONLY KEEP 10 PREVIOUS MODEL
@@ -123,19 +136,20 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
     }
 
     override fun updateModel(pmodel: ContainerRoot?): Unit {
-        scheduler?.submit(UpdateModelCallable(cloneCurrentModel(pmodel), null))
+        scheduler!!.submit(UpdateModelCallable(cloneCurrentModel(pmodel), null))
     }
 
     class UpdateModelCallable(val model: ContainerRoot, val callback: ModelUpdateCallback?): Callable<Boolean> {
         override fun call(): Boolean {
-            val res: Boolean = if (currentLock == null) {
+            var res: Boolean = false
+             if (currentLock == null) {
                 val internalRes = internal_update_model(model)
                 callCallBack(callback, internalRes, null)
-                internalRes
+                res = internalRes
             } else {
                 logger.debug("Core Locked , UUID mandatory")
                 callCallBack(callback, false, ModelUpdateCallBackReturn.CAS_ERROR)
-                false
+                res = false
             }
             return res
         }
@@ -165,25 +179,7 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
         }
         modelListeners.start(getNodeName())
         logger.info("Kevoree Start event : node name = " + getNodeName())
-        scheduler = java.util.concurrent.Executors.newSingleThreadExecutor(object : ThreadFactory{
-            val s = System.getSecurityManager()
-            val group = if (s != null) {
-                s.getThreadGroup()
-            } else {
-                Thread.currentThread().getThreadGroup()
-            }
-            override fun newThread(pRun: Runnable): Thread {
-                val t = Thread(group, pRun, "Kevoree_Core_Scheduler_" + getNodeName())
-                if (t.isDaemon()) {
-                    t.setDaemon(false)
-                }
-                if (t.getPriority() != Thread.NORM_PRIORITY) {
-                    t.setPriority(Thread.NORM_PRIORITY)
-                }
-                return t
-            }
-        })
-        this
+        scheduler = java.util.concurrent.Executors.newSingleThreadExecutor(KevoreeCoreThreadFactory(getNodeName()))
     }
 
     fun stop() {
@@ -196,7 +192,7 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
                 val stopModel = checkUnbootstrapNode(model)
                 if (stopModel != null) {
                     val adaptationModel = nodeInstance!!.kompare(model, stopModel)
-                    adaptationModel?.setInternalReadOnly()
+                    adaptationModel.setInternalReadOnly()
                     val afterUpdateTest: () -> Boolean = {() -> true }
                     val rootNode = model.findByQuery("nodes[" + getNodeName() + "]", javaClass<ContainerNode>())!!
                     org.kevoree.framework.deploy.PrimitiveCommandExecutionHelper.execute(rootNode, adaptationModel, nodeInstance!!, afterUpdateTest, afterUpdateTest, afterUpdateTest)
@@ -245,7 +241,7 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
     }
 
     override fun updateModel(tmodel: ContainerRoot?, callback: ModelUpdateCallback?) {
-        scheduler?.submit(UpdateModelCallable(cloneCurrentModel(tmodel), callback))
+        scheduler!!.submit(UpdateModelCallable(cloneCurrentModel(tmodel), callback))
     }
 
     override fun compareAndSwapModel(previousModel: UUIDModel?, targetModel: ContainerRoot?, callback: ModelUpdateCallback?) {
@@ -438,17 +434,6 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
         }
     }
 
-    class PreCommand(newmodel : ContainerRoot){
-        var alreadyCall = false
-        val preRollbackTest: ()->Boolean = {()->
-            if (!alreadyCall) {
-                modelListeners.preRollback(model, newmodel)
-                alreadyCall = true
-            }
-            true
-        }
-    }
-
     fun internal_update_model(proposedNewModel: ContainerRoot): Boolean {
 
         if (proposedNewModel.findByQuery("nodes[" + getNodeName() + "]", javaClass<ContainerNode>()) == null) {
@@ -476,8 +461,6 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
                 logger.debug("Before listeners InitUpdate !")
                 val initUpdateResult = modelListeners.initUpdate(model, readOnlyNewModel)
                 logger.debug("InitUpdate result = " + initUpdateResult)
-
-
                    if (preCheckResult && initUpdateResult) {
                        var newmodel = readOnlyNewModel
                        //CHECK FOR HARA KIRI
@@ -530,17 +513,15 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
                        try {
                            // Compare the two models and plan the adaptation
                            logger.info("Comparing models and planning adaptation.")
+
                            val adaptationModel = nodeInstance!!.kompare(model, newmodel)
                            adaptationModel.setInternalReadOnly()
-
                            //Execution of the adaptation
                            logger.info("Launching adaptation of the system.")
                            val  afterUpdateTest: ()-> Boolean = {()-> modelListeners.afterUpdate(model, newmodel) }
-                           val preCmd = PreCommand(newmodel)
-                           val postRollbackTest: ()->Boolean = {() ->
-                               modelListeners.postRollback(model, newmodel)
-                               true
-                           }
+
+                           val preCmd = PreCommand(newmodel,modelListeners,model)
+                           val postRollbackTest: ()->Boolean = {() -> modelListeners.postRollback(model, newmodel);true }
                            val rootNode = newmodel.findByQuery("nodes[" + getNodeName() + "]", javaClass<ContainerNode>())!!
                            deployResult = org.kevoree.framework.deploy.PrimitiveCommandExecutionHelper.execute(rootNode, adaptationModel, nodeInstance!!, afterUpdateTest, preCmd.preRollbackTest, postRollbackTest)
                        } catch(e: Exception) {

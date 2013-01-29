@@ -176,7 +176,7 @@ class NodeTypeBootstrapHelper extends Bootstraper with KCLBootstrap {
 
           val kcl = installGroupTyp(group.getTypeDefinition.asInstanceOf[GroupType])
           if (kcl.isDefined) {
-            val activatorPackage = KevoreeGeneratorHelper.getTypeDefinitionGeneratedPackage(group.getTypeDefinition, "JavaSENode")
+            val activatorPackage = new KevoreeGeneratorHelper().getTypeDefinitionGeneratedPackage(group.getTypeDefinition, "JavaSENode")
             val activatorName = group.getTypeDefinition.getName + "Activator"
 
 

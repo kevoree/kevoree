@@ -91,12 +91,12 @@ case class OperationAspect(selfOperation: Operation) {
 
         }
         val returnType = !selfOperation.getReturnType.isModelEquals(otherOperation.getReturnType)
-        if (returnType){
+      /*  if (returnType){
           logger.debug("Return type changed {}=>{}",selfOperation.getName,Array(selfOperation.getReturnType,otherOperation.getReturnType))
         }
         if (parameterChanged){
           logger.debug("Parameters changed {}=>{}",selfOperation.getName,Array(otherOperation.getParameters.size,selfOperation.getParameters.size))
-        }
+        } */
         parameterChanged || returnType
       }
     }

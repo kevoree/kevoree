@@ -1,4 +1,4 @@
-package org.kevoree.library.defaultNodeTypes.jcl.deploy.command
+package org.kevoree.library.defaultNodeTypes.command
 
 import org.kevoree.api.PrimitiveCommand
 
@@ -9,8 +9,8 @@ import org.kevoree.api.PrimitiveCommand
  * Time: 16:25
  */
 
-trait EndAwareCommand extends PrimitiveCommand {
+trait EndAwareCommand : PrimitiveCommand {
 
-  def doEnd
+  fun doEnd()
 
 }
