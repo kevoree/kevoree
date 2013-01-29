@@ -83,7 +83,7 @@ trait DeployUnitMerger extends Merger {
               () => {
                 ftp.setHashcode(tpTimeStamp + "")
                 if (tp.getType != ftp.getType) {
-                  logger.warn("Chosen newest type for deploy unit : {} : {}", ftp.getUnitName, tp.getType)
+                  //logger.warn("Chosen newest type for deploy unit : {} : {}", ftp.getUnitName, tp.getType)
                   ftp.setType(tp.getType)
                 }
               }
