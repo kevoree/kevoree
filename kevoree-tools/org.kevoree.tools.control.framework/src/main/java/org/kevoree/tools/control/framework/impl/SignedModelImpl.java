@@ -19,6 +19,7 @@ import org.kevoree.adaptation.control.api.SignedModel;
 import org.kevoree.framework.KevoreeXmiHelper;
 import org.kevoree.tools.control.framework.utils.ModelFormat;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -30,12 +31,11 @@ import java.util.List;
  * Time: 09:46
  * To change this template use File | Settings | File Templates.
  */
-public class SignedModelImpl implements SignedModel {
+public class SignedModelImpl implements SignedModel, Serializable {
 
     private List<ModelSignature> signatures;
     private ModelFormat currentFormat = ModelFormat.XMI;
     private  byte []  rawmodel=null;
-
 
     public SignedModelImpl(ContainerRoot model)
     {
