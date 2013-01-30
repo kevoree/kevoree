@@ -61,6 +61,7 @@
 
         <module>../org.kevoree.library.javase.mavenCache</module>
         <module>../org.kevoree.library.javase.webserver.webbit</module>
+        <module>../org.kevoree.library.javase.camel.http</module>
 
 
     </modules>
