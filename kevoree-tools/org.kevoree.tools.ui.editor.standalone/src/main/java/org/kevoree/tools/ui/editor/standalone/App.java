@@ -28,6 +28,7 @@ package org.kevoree.tools.ui.editor.standalone;
 
 import com.explodingpixels.macwidgets.*;
 import org.kevoree.KevoreeFactory;
+import org.kevoree.impl.DefaultKevoreeFactory;
 import org.kevoree.tools.ui.editor.KevoreeEditor;
 import org.kevoree.tools.ui.editor.UIEventHandler;
 import org.kevoree.tools.ui.editor.command.Command;
@@ -66,10 +67,10 @@ public class App {
             @Override
             public void run() {
                 System.setProperty("apple.laf.useScreenMenuBar", "true");
-
+                KevoreeFactory kevoreeFactory = new DefaultKevoreeFactory();
                 final KevoreeEditor artpanel = new KevoreeEditor();
                 kevsPanel.setKernel(artpanel.getPanel().getKernel());
-                String frameName = "Kevoree Editor - " + KevoreeFactory.$instance.getVersion();
+                String frameName = "Kevoree Editor - " + kevoreeFactory.getVersion();
 
                 JFrame jframe = new JFrame(frameName);
                 MacUtils.makeWindowLeopardStyle(jframe.getRootPane());

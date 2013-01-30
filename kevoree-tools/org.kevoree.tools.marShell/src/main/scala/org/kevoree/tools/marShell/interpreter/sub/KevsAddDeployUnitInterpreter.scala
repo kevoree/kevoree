@@ -13,12 +13,11 @@
  */
 package org.kevoree.tools.marShell.interpreter.sub
 
-import org.kevoree.KevoreeFactory
 import org.kevoree.tools.marShell.interpreter.KevsAbstractInterpreter
 import org.kevoree.tools.marShell.interpreter.KevsInterpreterContext
 
 import org.slf4j.LoggerFactory
-import org.kevoree.tools.marShell.ast.{AddDeployUnitStatment, AddLibraryStatment}
+import org.kevoree.tools.marShell.ast.AddDeployUnitStatment
 import scala.collection.JavaConversions._
 
 case class KevsAddDeployUnitInterpreter(statment : AddDeployUnitStatment) extends KevsAbstractInterpreter {
@@ -30,7 +29,7 @@ case class KevsAddDeployUnitInterpreter(statment : AddDeployUnitStatment) extend
     context.model.getDeployUnits.find(du=> du.getUnitName == statment.unitName && du.getGroupName == statment.groupName && du.getVersion == statment.version) match {
       case Some(du) =>  logger.warn("DeployUnit already exist");true
       case None => {
-        val newDeployUnit = KevoreeFactory.$instance.createDeployUnit
+        val newDeployUnit = context.kevoreeFactory.createDeployUnit
         newDeployUnit.setUnitName(statment.unitName)
         newDeployUnit.setGroupName(statment.groupName)
         newDeployUnit.setVersion(statment.version)

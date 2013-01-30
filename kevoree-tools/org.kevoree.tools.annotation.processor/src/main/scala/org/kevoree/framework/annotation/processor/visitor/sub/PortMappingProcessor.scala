@@ -40,6 +40,7 @@ import javax.annotation.processing.ProcessingEnvironment
 import javax.lang.model.element.ExecutableElement
 import javax.tools.Diagnostic.Kind
 import org.kevoree.framework.annotation.processor.visitor.{ DataTypeVisitor}
+import org.kevoree.framework.annotation.processor.LocalUtility
 
 
 trait PortMappingProcessor {
@@ -53,7 +54,7 @@ trait PortMappingProcessor {
       componentType.getProvided.foreach {
         pref =>
           if (pref.getMappings.size == 0 && pref.getRef.isInstanceOf[MessagePortType]) {
-            val ptREFmapping = KevoreeFactory.$instance.createPortTypeMapping
+            val ptREFmapping = LocalUtility.kevoreeFactory.createPortTypeMapping
             ptREFmapping.setBeanMethodName(starMethod)
             ptREFmapping.setServiceMethodName("process")
             ptREFmapping.setParamTypes(starParameters.map(tb => tb.getName).mkString(","))
@@ -110,7 +111,7 @@ trait PortMappingProcessor {
             if (!foundProvidedPorts.isEmpty) {
               foundProvidedPorts.foreach {
                 ptref => {
-                  val ptREFmapping = KevoreeFactory.$instance.createPortTypeMapping
+                  val ptREFmapping = LocalUtility.kevoreeFactory.createPortTypeMapping
                   ptREFmapping.setBeanMethodName(methoddef.getSimpleName.toString)
                   ptref.getRef match {
                     case mpt: MessagePortType => {
@@ -145,7 +146,7 @@ trait PortMappingProcessor {
         if (!foundProvidedPorts.isEmpty) {
           foundProvidedPorts.foreach {
             ptref => {
-              val ptREFmapping = KevoreeFactory.$instance.createPortTypeMapping
+              val ptREFmapping = LocalUtility.kevoreeFactory.createPortTypeMapping
               ptREFmapping.setBeanMethodName(methoddef.getSimpleName.toString)
 
               ptref.getRef match {

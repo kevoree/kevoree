@@ -17,7 +17,7 @@ import java.io._
 import org.kevoree.tools.aether.framework.AetherUtil
 import org.slf4j.LoggerFactory
 import org.kevoree.tools.ui.editor.command.LoadModelCommand
-import org.kevoree.tools.ui.editor.{UIEventHandler, PositionedEMFHelper, KevoreeEditor}
+import org.kevoree.tools.ui.editor.{ModelHelper, UIEventHandler, PositionedEMFHelper, KevoreeEditor}
 import org.kevoree.tools.marShell.KevScriptOfflineEngine
 import java.net._
 import org.kevoree.framework.{KevoreePropertyHelper, KevoreeXmiHelper}
@@ -28,6 +28,7 @@ import java.awt.Desktop
 import org.kevoree.core.basechecker.RootChecker
 import scala.Some
 import scala.collection.JavaConversions._
+import tools.ui.editor.{KevoreeEditor, ModelHelper}
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -80,7 +81,7 @@ class MiniKloudForm(editor: KevoreeEditor, button: AbstractButton) {
 
             // build default model of the minicloud
             UIEventHandler.info("Download org.kevoree.platform.standalone.gui")
-            platformJAR = AetherUtil.resolveKevoreeArtifact("org.kevoree.platform.standalone.gui", "org.kevoree.platform", KevoreeFactory.$instance.getVersion)
+            platformJAR = AetherUtil.resolveKevoreeArtifact("org.kevoree.platform.standalone.gui", "org.kevoree.platform", ModelHelper.kevoreeFactory.getVersion)
             UIEventHandler.info("org.kevoree.platform.standalone.gui resolved")
             if (platformJAR != null) {
               PositionedEMFHelper.updateModelUIMetaData(editor.getPanel.getKernel)
@@ -205,7 +206,7 @@ class MiniKloudForm(editor: KevoreeEditor, button: AbstractButton) {
         logger.debug("starting a minicloud with an editor node")
         minicloudName = "editor_node"
         kevEngine.addVariable("minicloudNodeName", minicloudName)
-        kevEngine.addVariable("kevoree.version", KevoreeFactory.$instance.getVersion)
+        kevEngine.addVariable("kevoree.version", ModelHelper.kevoreeFactory.getVersion)
 
         kevEngine.append("merge 'mvn:org.kevoree.corelibrary.sky/org.kevoree.library.sky.minicloud/{kevoree.version}'")
         kevEngine.append("merge 'mvn:org.kevoree.corelibrary.sky/org.kevoree.library.sky.provider/{kevoree.version}'")

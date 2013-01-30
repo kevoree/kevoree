@@ -33,6 +33,7 @@ package org.kevoree.tools.ui.editor.command;
 import org.kevoree.ContainerRoot;
 import org.kevoree.KevoreeFactory;
 import org.kevoree.tools.ui.editor.KevoreeUIKernel;
+import org.kevoree.tools.ui.editor.ModelHelper;
 
 /**
  *
@@ -49,7 +50,7 @@ public class ClearModelCommand implements Command {
     @Override
     public void execute(Object p) {
 
-        ContainerRoot blancModel = KevoreeFactory.$instance.createContainerRoot();
+        ContainerRoot blancModel = ModelHelper.kevoreeFactory().createContainerRoot();
         kernel.getModelHandler().setActualModel(blancModel);
         kernel.getModelPanel().clear();
         kernel.getEditorPanel().getPalette().clear();

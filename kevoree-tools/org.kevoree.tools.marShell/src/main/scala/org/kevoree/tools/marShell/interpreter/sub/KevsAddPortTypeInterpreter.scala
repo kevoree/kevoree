@@ -13,7 +13,7 @@
  */
 package org.kevoree.tools.marShell.interpreter.sub
 
-import org.kevoree.{TypeDefinition, PortType, ComponentType, KevoreeFactory}
+import org.kevoree.{TypeDefinition, PortType, ComponentType}
 import org.kevoree.tools.marShell.ast.AddPortTypeStatment
 import org.kevoree.tools.marShell.interpreter.KevsAbstractInterpreter
 import org.kevoree.tools.marShell.interpreter.KevsInterpreterContext
@@ -30,6 +30,7 @@ case class KevsAddPortTypeInterpreter(self: AddPortTypeStatment) extends KevsAbs
 
   var logger = LoggerFactory.getLogger(this.getClass)
 
+
   def interpret(context: KevsInterpreterContext): Boolean = {
     var success: Boolean = false
     context.model.findByQuery("typeDefinitions[" + self.componentTypeName + "]", classOf[TypeDefinition]) match {
@@ -38,7 +39,7 @@ case class KevsAddPortTypeInterpreter(self: AddPortTypeStatment) extends KevsAbs
           logger.error("The type with name {} is not a ComponentType", self.componentTypeName)
           success = false
         } else {
-          val portTypeRef = KevoreeFactory.$instance.createPortTypeRef
+          val portTypeRef = context.kevoreeFactory.createPortTypeRef
           portTypeRef.setName(self.portTypeName)
 
           if (self.optional.isDefined) {
@@ -64,7 +65,7 @@ case class KevsAddPortTypeInterpreter(self: AddPortTypeStatment) extends KevsAbs
               success = true
             case null =>
               logger.debug("The port service can't be associated with the interface => {} is not found", self.className)
-              val messagePortType = KevoreeFactory.$instance.createMessagePortType
+              val messagePortType = context.kevoreeFactory.createMessagePortType
               messagePortType.setName(self.className.toString)
               context.model.addTypeDefinitions(messagePortType)
 

@@ -34,6 +34,7 @@ import org.kevoree.KevoreeFactory;
 import org.kevoree.MBinding;
 import org.kevoree.Port;
 import org.kevoree.tools.ui.editor.KevoreeUIKernel;
+import org.kevoree.tools.ui.editor.ModelHelper;
 import org.kevoree.tools.ui.framework.elements.ChannelPanel;
 import org.kevoree.tools.ui.framework.elements.PortPanel;
 
@@ -63,7 +64,7 @@ public class AddMBindingCommand implements Command {
                 Channel targetHub = (Channel) kernel.getUifactory().getMapping().get(target);
 
                 //TODO CHECK CONSISTENCY
-                MBinding newb = KevoreeFactory.$instance.createMBinding();
+                MBinding newb = ModelHelper.kevoreeFactory().createMBinding();
                 newb.setPort(fromPort);
                 newb.setHub(targetHub);
                 org.kevoree.tools.ui.framework.elements.Binding uib = kernel.getUifactory().createMBinding(newb);

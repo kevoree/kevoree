@@ -14,7 +14,6 @@
 package org.kevoree.tools.marShell.interpreter.sub
 
 import org.kevoree.tools.marShell.interpreter.{KevsInterpreterContext, KevsAbstractInterpreter}
-import org.kevoree.tools.marShell.ast.MoveComponentInstanceStatment
 
 import scala.collection.JavaConversions._
 
@@ -27,6 +26,7 @@ import java.util
 
 case class KevsMoveComponentInstanceInterpreter (moveComponent: MoveComponentInstanceStatment) extends KevsAbstractInterpreter {
 	var logger = LoggerFactory.getLogger(this.getClass)
+
 
 	def interpret (context: KevsInterpreterContext): Boolean = {
 
@@ -74,7 +74,7 @@ case class KevsMoveComponentInstanceInterpreter (moveComponent: MoveComponentIns
 													if (sourceFragmentMustBeRemoved && targetFragmentMustBeAdded) {
 														tuple._3.setTargetNode(targetNode)
 													} else if (targetFragmentMustBeAdded) {
-														val value = KevoreeFactory.$instance.createDictionaryValue
+														val value = context.kevoreeFactory.createDictionaryValue
 														value.setAttribute(tuple._3.getAttribute)
 														value.setTargetNode(targetNode)
 														value.setValue(tuple._3.getValue)

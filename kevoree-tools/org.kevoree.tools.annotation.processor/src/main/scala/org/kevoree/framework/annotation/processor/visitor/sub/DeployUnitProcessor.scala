@@ -35,6 +35,7 @@ package org.kevoree.framework.annotation.processor.visitor.sub
 //import scala.collection.JavaConversions._
 
 import org.kevoree._
+import framework.annotation.processor.LocalUtility
 import javax.lang.model.element.TypeElement
 import javax.annotation.processing.ProcessingEnvironment
 import scala.collection.JavaConversions._
@@ -68,7 +69,7 @@ trait DeployUnitProcessor {
           du => du.getUnitName == unitName && du.getGroupName == groupName && du.getVersion == version && du.getTargetNodeType.getName == nodeTypeName
         }) match {
           case None => {
-            val newdeploy = KevoreeFactory.$instance.createDeployUnit
+            val newdeploy = LocalUtility.kevoreeFactory.createDeployUnit
             newdeploy.setUnitName(unitName)
             newdeploy.setGroupName(groupName)
             newdeploy.setVersion(version)
@@ -84,7 +85,7 @@ trait DeployUnitProcessor {
                 if (typeDef.getName == nodeTypeName) {
                   newdeploy.setTargetNodeType(typeDef.asInstanceOf[NodeType])
                 } else {
-                  val nodeType = KevoreeFactory.$instance.createNodeType
+                  val nodeType = LocalUtility.kevoreeFactory.createNodeType
                   nodeType.setName(nodeTypeName)
                   root.addTypeDefinitions(nodeType)
                   newdeploy.setTargetNodeType(nodeType)
@@ -114,7 +115,7 @@ trait DeployUnitProcessor {
         if (repoUrl != "") {
           val repo = root.getRepositories.find(r => r.getUrl == repoUrl) match {
             case None => {
-              val newrepo = KevoreeFactory.$instance.createRepository
+              val newrepo = LocalUtility.kevoreeFactory.createRepository
               newrepo.setUrl(repoUrl)
               root.addRepositories(newrepo)
               newrepo
@@ -130,7 +131,7 @@ trait DeployUnitProcessor {
         if (rRepoUrl != "") {
           root.getRepositories.find(r => r.getUrl == rRepoUrl) match {
             case None => {
-              val newrepo = KevoreeFactory.$instance.createRepository
+              val newrepo = LocalUtility.kevoreeFactory.createRepository
               newrepo.setUrl(rRepoUrl)
               root.addRepositories(newrepo)
               newrepo

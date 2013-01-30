@@ -35,6 +35,7 @@ import org.kevoree.KevoreeFactory
 import org.kevoree.TypeDefinition
 import javax.lang.model.element.TypeElement
 import scala.collection.JavaConversions._
+import org.kevoree.framework.annotation.processor.LocalUtility
 
 trait DictionaryProcessor {
 
@@ -47,14 +48,14 @@ trait DictionaryProcessor {
 
         //CASE NO DICTIONARY
           if (typeDef.getDictionaryType() == null) {
-            val newdictionary = KevoreeFactory.$instance.createDictionaryType
+            val newdictionary = LocalUtility.kevoreeFactory.createDictionaryType
             typeDef.setDictionaryType(newdictionary)
           }
 
           //CASE NO ATT ALREADY CREATED WITH NAME
           val processDictionaryAtt = typeDef.getDictionaryType.getAttributes.find(eAtt => eAtt.getName() == dictionaryAtt.name) match {
             case None => {
-              val newAtt = KevoreeFactory.$instance.createDictionaryAttribute
+              val newAtt = LocalUtility.kevoreeFactory.createDictionaryAttribute
               newAtt.setName(dictionaryAtt.name)
               typeDef.getDictionaryType.addAttributes(newAtt)
               newAtt.setFragmentDependant(dictionaryAtt.fragmentDependant());
@@ -71,7 +72,7 @@ trait DictionaryProcessor {
           if (dictionaryAtt.defaultValue != "defaultKevoreeNonSetValue") {
             typeDef.getDictionaryType.getDefaultValues.find(defV => defV.getAttribute == processDictionaryAtt) match {
               case None => {
-                val newVal = KevoreeFactory.$instance.createDictionaryValue
+                val newVal = LocalUtility.kevoreeFactory.createDictionaryValue
                 newVal.setAttribute(processDictionaryAtt)
                 newVal.setValue(dictionaryAtt.defaultValue)
                 typeDef.getDictionaryType.addDefaultValues(newVal)

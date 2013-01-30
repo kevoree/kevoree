@@ -29,7 +29,7 @@ package org.kevoree.tools.ui.editor.form
 import com.explodingpixels.macwidgets.HudWindow
 import com.explodingpixels.macwidgets.plaf.{HudButtonUI, HudLabelUI, HudTextFieldUI}
 import org.kevoree.tools.ui.editor.property.SpringUtilities
-import org.kevoree.tools.ui.editor.{UIHelper, KevoreeUIKernel}
+import org.kevoree.tools.ui.editor.{ModelHelper, UIHelper, KevoreeUIKernel}
 import org.kevoree.tools.ui.editor.command.{ReloadTypePalette}
 import org.kevoree.{DeployUnit, TypeLibrary, KevoreeFactory}
 import org.kevoree.tools.ui.framework.data.{KevoreeHudComboBoxUI}
@@ -175,7 +175,7 @@ trait ComponentTypeForm {
 
         if (proceed) {
 
-          val newCt = KevoreeFactory.$instance.createComponentType
+          val newCt = ModelHelper.kevoreeFactory.createComponentType
           newCt.setName(nameTextField.getText)
 
           var packName = packageTextField.getText

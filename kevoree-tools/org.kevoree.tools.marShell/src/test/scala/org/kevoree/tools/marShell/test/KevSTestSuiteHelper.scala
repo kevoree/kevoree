@@ -42,6 +42,7 @@ import java.util.HashMap
 import org.kevoree.tools.marShell.parser.{ParserUtil, KevsParser}
 import org.kevoree.tools.marShell.ast.Script
 import org.kevoree.framework.KevoreeXmiHelper
+import org.kevoree.impl.DefaultKevoreeFactory
 
 trait KevSTestSuiteHelper extends JUnitSuite {
 
@@ -51,7 +52,9 @@ trait KevSTestSuiteHelper extends JUnitSuite {
     KevoreeXmiHelper.$instance.load(modelPath)
   }
 
-  def emptyModel = KevoreeFactory.$instance.createContainerRoot
+  val kevoreeFactory : KevoreeFactory = new DefaultKevoreeFactory
+
+  def emptyModel = kevoreeFactory.createContainerRoot
 
 
   def getScript(url:String) : Script = {

@@ -28,6 +28,7 @@ package org.kevoree.tools.ui.editor
 
 
 import org.kevoree._
+import impl.DefaultKevoreeFactory
 import org.kevoree.framework.aspects.KevoreeAspects._
 import scala.collection.JavaConversions._
 
@@ -50,6 +51,8 @@ object ModelHelper {
     while(model.getNodes.exists(n => n.getName == ("node"+i))){i = i +1}
     "node"+i
   }
+
+  val kevoreeFactory = new DefaultKevoreeFactory
 
 
 

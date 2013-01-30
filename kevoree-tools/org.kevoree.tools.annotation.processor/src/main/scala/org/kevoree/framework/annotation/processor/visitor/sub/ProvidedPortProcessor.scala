@@ -72,7 +72,7 @@ trait ProvidedPortProcessor {
           //Port is unique and can be created
           case None => {
 
-            val portTypeRef = KevoreeFactory.$instance.createPortTypeRef
+            val portTypeRef = LocalUtility.kevoreeFactory.createPortTypeRef
             portTypeRef.setName(providedPort.name)
 
             //sets the reference to the type of the port
@@ -101,7 +101,7 @@ trait ProvidedPortProcessor {
 
               case org.kevoree.annotation.PortType.MESSAGE => {
                 //Message port
-                val messagePortType = KevoreeFactory.$instance.createMessagePortType
+                val messagePortType = LocalUtility.kevoreeFactory.createMessagePortType
                 messagePortType.setName("org.kevoree.framework.MessagePort")
 
                 if (providedPort.messageType() != "untyped" ) {
@@ -112,10 +112,10 @@ trait ProvidedPortProcessor {
                   if (classdef.getAnnotation(classOf[MessageTypes]) != null) {
                     classdef.getAnnotation(classOf[MessageTypes]).value().find(msgType => msgType.name() == providedPort.messageType()) match {
                       case Some(foundMessageType) => {
-                        val dicoType = KevoreeFactory.$instance.createDictionaryType
+                        val dicoType = LocalUtility.kevoreeFactory.createDictionaryType
                         foundMessageType.elems().foreach {
                           elem =>
-                            val dicAtt = KevoreeFactory.$instance.createDictionaryAttribute
+                            val dicAtt = LocalUtility.kevoreeFactory.createDictionaryAttribute
                             dicAtt.setName(elem.name())
                            // messagePortType.setName(messagePortType.getName+elem.name()) //WORKAROUND
 
@@ -140,7 +140,7 @@ trait ProvidedPortProcessor {
                 /*
                providedPort.filter.foreach {
                  ndts =>
-                   val newTypedElement = KevoreeFactory.$instance.createTypedElement
+                   val newTypedElement = kevoreeFactory.createTypedElement
                    newTypedElement.setName(ndts)
                    messagePortType.addFilters(LocalUtility.getOraddDataType(newTypedElement))
                } */

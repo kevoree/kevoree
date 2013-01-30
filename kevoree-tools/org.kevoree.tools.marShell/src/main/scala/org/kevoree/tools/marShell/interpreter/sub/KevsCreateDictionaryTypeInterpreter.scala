@@ -16,7 +16,7 @@ package org.kevoree.tools.marShell.interpreter.sub
 import org.kevoree.tools.marShell.ast.CreateDictionaryTypeStatment
 import org.kevoree.tools.marShell.interpreter.{KevsInterpreterContext, KevsAbstractInterpreter}
 import org.slf4j.LoggerFactory
-import org.kevoree.{TypeDefinition, KevoreeFactory}
+import org.kevoree.TypeDefinition
 import scala.collection.JavaConversions._
 
 
@@ -30,11 +30,12 @@ case class KevsCreateDictionaryTypeInterpreter(stmt: CreateDictionaryTypeStatmen
 
   val logger = LoggerFactory.getLogger(this.getClass)
 
+
   def interpret(context: KevsInterpreterContext) = {
     context.model.findByQuery("typeDefinitions[" +stmt.typeName +"]", classOf[TypeDefinition])match {
       case td : TypeDefinition => {
         if (td.getDictionaryType() == null) {
-          val newdictionary = KevoreeFactory.$instance.createDictionaryType
+          val newdictionary = context.kevoreeFactory.createDictionaryType
           td.setDictionaryType(newdictionary)
         }
 
@@ -42,7 +43,7 @@ case class KevsCreateDictionaryTypeInterpreter(stmt: CreateDictionaryTypeStatmen
           tdElem => {
             val processDictionaryAtt = td.getDictionaryType().getAttributes.find(eAtt => eAtt.getName == tdElem.id) match {
               case None => {
-                val newAtt = KevoreeFactory.$instance.createDictionaryAttribute
+                val newAtt = context.kevoreeFactory.createDictionaryAttribute
                 newAtt.setName(tdElem.id)
                 td.getDictionaryType.addAttributes(newAtt)
                 newAtt.setFragmentDependant(tdElem.fragDep)

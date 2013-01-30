@@ -35,7 +35,7 @@ import java.awt.event.{ActionListener, ActionEvent}
 import text.BadLocationException
 import org.slf4j.LoggerFactory
 import com.explodingpixels.macwidgets.{IAppWidgetFactory, HudWidgetFactory}
-import tools.ui.editor.{KevoreeUIKernel, UIHelper}
+import tools.ui.editor.{ModelHelper, KevoreeUIKernel, UIHelper}
 import scala.collection.JavaConversions._
 
 
@@ -101,7 +101,7 @@ class InstancePropertyEditor(elem: org.kevoree.Instance, kernel: KevoreeUIKernel
       }
     }
     if (value == null) {
-      value = KevoreeFactory.$instance.createDictionaryValue
+      value = ModelHelper.kevoreeFactory.createDictionaryValue
       value.setAttribute(att)
       targetNode.map{t =>
         val root = att.eContainer.eContainer.eContainer.asInstanceOf[ContainerRoot]
@@ -119,7 +119,7 @@ class InstancePropertyEditor(elem: org.kevoree.Instance, kernel: KevoreeUIKernel
 
   //CONSTRUCTOR CODE
   if (elem.getDictionary == null) {
-    elem.setDictionary(KevoreeFactory.$instance.createDictionary)
+    elem.setDictionary(ModelHelper.kevoreeFactory.createDictionary)
   }
   var p: JPanel = new JPanel(new SpringLayout)
   p.setBorder(null)

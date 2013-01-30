@@ -33,7 +33,7 @@ import java.io.File
 import util.Random
 import org.kevoree.framework.{KevoreeXmiHelper, KevoreePlatformHelper}
 import org.slf4j.LoggerFactory
-import org.kevoree.tools.ui.editor.{ModelHandlerServiceWrapper, PositionedEMFHelper, KevoreeUIKernel}
+import org.kevoree.tools.ui.editor.{ModelHelper, ModelHandlerServiceWrapper, PositionedEMFHelper, KevoreeUIKernel}
 import org.kevoree.tools.aether.framework.NodeTypeBootstrapHelper
 import scala.collection.JavaConversions._
 
@@ -70,7 +70,7 @@ class JmDnsLookup extends Command {
             kernel.getModelHandler.getActualModel.getTypeDefinitions.find(td => td.getName == typeNamesArray(0)) match {
               case Some(groupTypeDef) => {
                 if (!kernel.getModelHandler.getActualModel.getGroups.exists(group => group.getName == groupName)) {
-                  val newgroup = KevoreeFactory.$instance.createGroup
+                  val newgroup = ModelHelper.kevoreeFactory.createGroup
                   newgroup.setName(groupName)
                   newgroup.setTypeDefinition(groupTypeDef)
                   kernel.getModelHandler.getActualModel.addGroups(newgroup)
@@ -78,7 +78,7 @@ class JmDnsLookup extends Command {
 
                 val remoteNode = kernel.getModelHandler.getActualModel.getNodes.find(n => n.getName == nodeName)
                   .getOrElse {
-                  val newnode = KevoreeFactory.$instance.createContainerNode
+                  val newnode = ModelHelper.kevoreeFactory.createContainerNode
                   newnode.setName(nodeName)
                   kernel.getModelHandler.getActualModel.getTypeDefinitions.find(td => td.getName == typeNamesArray(1))
                     .map {
@@ -98,12 +98,12 @@ class JmDnsLookup extends Command {
 
                             var dic = group.getDictionary
                             if (dic == null){
-                               dic = KevoreeFactory.$instance.createDictionary
+                               dic = ModelHelper.kevoreeFactory.createDictionary
                             }
                             val dicValue = dic.getValues
                               .find(dicVal => dicVal.getAttribute == attPort && dicVal.getTargetNode != null &&
                               dicVal.getTargetNode.getName == nodeName).getOrElse {
-                              val newDicVal = KevoreeFactory.$instance.createDictionaryValue
+                              val newDicVal = ModelHelper.kevoreeFactory.createDictionaryValue
                               newDicVal.setAttribute(attPort)
                               newDicVal.setTargetNode(remoteNode)
                               dic.addValues(newDicVal)

@@ -27,7 +27,7 @@
 
 package org.kevoree.tools.marShell.interpreter.sub
 
-import org.kevoree.{TypeLibrary, KevoreeFactory}
+import org.kevoree.TypeLibrary
 import org.kevoree.tools.marShell.interpreter.KevsAbstractInterpreter
 import org.kevoree.tools.marShell.interpreter.KevsInterpreterContext
 
@@ -43,7 +43,7 @@ case class KevsAddLibraryInterpreter(statment : AddLibraryStatment) extends Kevs
     context.model.findByQuery("libraries[" + statment.libraryName + "]", classOf[TypeLibrary]) match {
       case library:TypeLibrary =>  logger.warn("Library already exist");true
       case null => {
-        val newLibrary = KevoreeFactory.$instance.createTypeLibrary
+        val newLibrary = context.kevoreeFactory.createTypeLibrary
         newLibrary.setName(statment.libraryName)
         context.model.addLibraries(newLibrary)
         true

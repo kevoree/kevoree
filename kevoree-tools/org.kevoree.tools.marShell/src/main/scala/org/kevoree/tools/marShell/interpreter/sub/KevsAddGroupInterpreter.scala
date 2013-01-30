@@ -18,7 +18,7 @@ import org.kevoree.tools.marShell.interpreter.KevsAbstractInterpreter
 import org.kevoree.tools.marShell.interpreter.KevsInterpreterContext
 
 import org.kevoree.tools.marShell.ast.AddGroupStatment
-import org.kevoree.{TypeDefinition, Group, GroupType, KevoreeFactory}
+import org.kevoree.{TypeDefinition, Group, GroupType}
 import org.kevoree.tools.marShell.interpreter.utils.Merger
 import org.slf4j.LoggerFactory
 
@@ -43,7 +43,7 @@ case class KevsAddGroupInterpreter(addGroup: AddGroupStatment) extends KevsAbstr
         context.model.findByQuery("typeDefinitions[" + addGroup.groupTypeName + "]", classOf[TypeDefinition]) match {
           case targetGroupType:TypeDefinition if (targetGroupType.isInstanceOf[GroupType]) => {
 
-            val newGroup = KevoreeFactory.$instance.createGroup
+            val newGroup = context.kevoreeFactory.createGroup
             newGroup.setTypeDefinition(targetGroupType)
             newGroup.setName(addGroup.groupName)
             Merger.mergeDictionary(newGroup, addGroup.props, null)

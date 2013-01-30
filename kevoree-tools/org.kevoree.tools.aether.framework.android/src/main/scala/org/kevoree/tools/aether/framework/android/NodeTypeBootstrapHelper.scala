@@ -38,6 +38,7 @@ import org.kevoree.{DeployUnit, KevoreeFactory, GroupType, ContainerRoot}
 import org.kevoree.kcl.KevoreeJarClassLoader
 import org.slf4j.LoggerFactory
 import scala.collection.JavaConversions._
+import org.kevoree.impl.DefaultKevoreeFactory
 
 /**
  * User: ffouquet
@@ -46,6 +47,8 @@ import scala.collection.JavaConversions._
  */
 
 class NodeTypeBootstrapHelper(ctx: android.content.Context, parent: ClassLoader) extends Bootstraper {
+
+  val kevoreeFactory : KevoreeFactory = new DefaultKevoreeFactory
 
   var kevoreeLogService: org.kevoree.api.service.core.logging.KevoreeLogService = null
 
@@ -223,7 +226,7 @@ class NodeTypeBootstrapHelper(ctx: android.content.Context, parent: ClassLoader)
     val superTypeBootStrap = groupType.getSuperTypes.forall(superType => installGroupTyp(superType.asInstanceOf[GroupType]).isDefined)
     if (superTypeBootStrap) {
       //FAKE NODE TODO
-      val fakeNode = KevoreeFactory.$instance.createContainerNode
+      val fakeNode = kevoreeFactory.createContainerNode
       groupType.eContainer.asInstanceOf[ContainerRoot].getTypeDefinitions.find(td => td.getName == "JavaSENode").map {
         javaseTD =>
           fakeNode.setTypeDefinition(javaseTD)
@@ -276,7 +279,7 @@ class NodeTypeBootstrapHelper(ctx: android.content.Context, parent: ClassLoader)
   }
 
   def registerManuallyDeployUnit(artefactID: String, groupID: String, version: String, kcl: KevoreeJarClassLoader) {
-    val du = KevoreeFactory.$instance.createDeployUnit
+    val du = kevoreeFactory.createDeployUnit
     du.setUnitName(artefactID)
     du.setGroupName(groupID)
     du.setVersion(version)

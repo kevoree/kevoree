@@ -32,11 +32,13 @@
 package org.kevoree.tools.marShell.interpreter.utils
 
 import org.kevoree.{ContainerRoot, ContainerNode, Instance, KevoreeFactory}
+import org.kevoree.impl.DefaultKevoreeFactory
 
 
 object Merger {
 
-  
+  private val kevoreeFactory : KevoreeFactory = new DefaultKevoreeFactory
+
   def mergeFragmentDictionary(inst: Instance, fragmentProps: java.util.HashMap[String,java.util.Properties]) = {
     import scala.collection.JavaConversions._
     
@@ -67,7 +69,7 @@ object Merger {
 
         var dictionary = inst.getDictionary
         if (dictionary == null) {
-          dictionary = KevoreeFactory.$instance.createDictionary
+          dictionary = kevoreeFactory.createDictionary
           inst.setDictionary(dictionary)
         }
 
@@ -82,7 +84,7 @@ object Merger {
             val att = inst.getTypeDefinition.getDictionaryType.getAttributes.find(att => att.getName == key) match {
               case None => {
                /* if(allowTypeUpdate){
-                  val newDictionaryValue = KevoreeFactory.$instance.createDictionaryAttribute
+                  val newDictionaryValue = kevoreeFactory.createDictionaryAttribute
                   newDictionaryValue.setName(key.toString)
                   inst.getTypeDefinition.getDictionaryType.get.addAttributes(newDictionaryValue)
                   newDictionaryValue
@@ -92,7 +94,7 @@ object Merger {
               }
               case Some(previousAtt) => previousAtt
             }
-            val newDictionaryValue = KevoreeFactory.$instance.createDictionaryValue
+            val newDictionaryValue = kevoreeFactory.createDictionaryValue
             newDictionaryValue.setValue(newValue.toString)
             newDictionaryValue.setAttribute(att)
             newDictionaryValue.setTargetNode(targetNode)

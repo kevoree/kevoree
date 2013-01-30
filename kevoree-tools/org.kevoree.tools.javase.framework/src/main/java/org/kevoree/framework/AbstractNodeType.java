@@ -32,6 +32,7 @@ import org.kevoree.api.NodeType;
 import org.kevoree.api.PrimitiveCommand;
 import org.kevoree.context.ContextFactory;
 import org.kevoree.context.ContextRoot;
+import org.kevoree.context.impl.DefaultContextFactory;
 import org.kevoreeAdaptation.AdaptationModel;
 import org.kevoreeAdaptation.AdaptationPrimitive;
 
@@ -63,7 +64,9 @@ public abstract class
 
 	public abstract PrimitiveCommand getPrimitive (AdaptationPrimitive primitive);
 
-	private ContextRoot contextModel = ContextFactory.$instance.createContextRoot();
+    private ContextFactory contextFactory = new DefaultContextFactory();
+
+	private ContextRoot contextModel = contextFactory.createContextRoot();
 
 	@Override
 	public ContextRoot getContextModel () {

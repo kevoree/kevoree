@@ -31,9 +31,10 @@
 
 package org.kevoree.tools.marShell.interpreter
 
-import org.kevoree.ContainerRoot
+import org.kevoree.{KevoreeFactory, ContainerRoot}
 import java.util.HashMap
 import org.kevoree.api.Bootstraper
+import org.kevoree.impl.DefaultKevoreeFactory
 
 case class KevsInterpreterContext(model : ContainerRoot) {
 
@@ -50,5 +51,7 @@ case class KevsInterpreterContext(model : ContainerRoot) {
   def setBootstraper(b : Bootstraper) {
     bootstraper = b
   }
+
+  val kevoreeFactory : KevoreeFactory = new DefaultKevoreeFactory
 
 }

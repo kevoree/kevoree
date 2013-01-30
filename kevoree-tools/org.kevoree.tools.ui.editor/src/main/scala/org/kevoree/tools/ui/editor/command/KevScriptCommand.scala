@@ -40,7 +40,7 @@
 package org.kevoree.tools.ui.editor.command
 
 import org.kevoree.tools.marShell.parser.KevsParser
-import org.kevoree.tools.ui.editor.{PositionedEMFHelper, KevoreeUIKernel}
+import org.kevoree.tools.ui.editor.{ModelHelper, PositionedEMFHelper, KevoreeUIKernel}
 import org.slf4j.LoggerFactory
 import org.kevoree.framework.KevoreeXmiHelper
 import org.kevoree.tools.marShell.interpreter.KevsInterpreterContext
@@ -107,7 +107,7 @@ class KevScriptCommand extends Command {
           case s: String => {
             val bootstraper = new FakeBootstraperService
             val kevOfflineEngine = new KevScriptOfflineEngine(kernel.getModelHandler.getActualModel,bootstraper.getBootstrap)
-            kevOfflineEngine.addVariable("kevoree.version",KevoreeFactory.$instance.getVersion)
+            kevOfflineEngine.addVariable("kevoree.version",ModelHelper.kevoreeFactory.getVersion)
             import scala.collection.JavaConversions._
             System.getProperties.foreach{ prop =>
               kevOfflineEngine.addVariable(prop._1,prop._2)

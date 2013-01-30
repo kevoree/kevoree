@@ -33,6 +33,7 @@ package org.kevoree.framework.annotation.processor.visitor;
 import org.kevoree.*;
 import org.kevoree.KevoreeFactory;
 import org.kevoree.framework.annotation.processor.LocalUtility;
+import org.kevoree.impl.DefaultKevoreeFactory;
 import scala.Some;
 
 import javax.lang.model.element.Element;
@@ -47,7 +48,8 @@ import javax.lang.model.util.SimpleTypeVisitor6;
  */
 public class ServicePortTypeVisitor extends SimpleTypeVisitor6<Object, Object> {
 
-    ServicePortType dataType = KevoreeFactory.$instance.createServicePortType();
+    protected KevoreeFactory kevoreeFactory = new DefaultKevoreeFactory();
+    ServicePortType dataType = kevoreeFactory.createServicePortType();
 
     public ServicePortType getDataType() {
         return dataType;
@@ -66,7 +68,7 @@ public class ServicePortTypeVisitor extends SimpleTypeVisitor6<Object, Object> {
             for (Element e : dt.asElement().getEnclosedElements()) {
                 ExecutableElement ee = (ExecutableElement) e;
                 if (e.getKind().compareTo(ElementKind.METHOD) == 0) {
-                    Operation newo = KevoreeFactory.$instance.createOperation();
+                    Operation newo = kevoreeFactory.createOperation();
                     newo.setName(e.getSimpleName().toString());
                     dataType.addOperations(newo);
                     //BUILD RETURN TYPE
@@ -76,7 +78,7 @@ public class ServicePortTypeVisitor extends SimpleTypeVisitor6<Object, Object> {
                     //BUILD PARAMETER
                     Integer i = 0;
                     for (VariableElement ve : ee.getParameters()) {
-                        Parameter newp = KevoreeFactory.$instance.createParameter();
+                        Parameter newp = kevoreeFactory.createParameter();
                         newp.setName(ve.toString());
                         newp.setOrder(i);
                         newo.addParameters(newp);

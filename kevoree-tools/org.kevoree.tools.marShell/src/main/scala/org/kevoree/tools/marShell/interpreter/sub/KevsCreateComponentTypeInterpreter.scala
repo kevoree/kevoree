@@ -31,7 +31,7 @@
 
 package org.kevoree.tools.marShell.interpreter.sub
 
-import org.kevoree.{TypeDefinition, TypeLibrary, KevoreeFactory}
+import org.kevoree.{TypeDefinition, TypeLibrary}
 import org.kevoree.tools.marShell.ast.CreateComponentTypeStatment
 import org.kevoree.tools.marShell.interpreter.KevsAbstractInterpreter
 import org.kevoree.tools.marShell.interpreter.KevsInterpreterContext
@@ -42,12 +42,13 @@ case class KevsCreateComponentTypeInterpreter(self : CreateComponentTypeStatment
 
   var logger = LoggerFactory.getLogger(this.getClass)
 
+
   def interpret(context: KevsInterpreterContext): Boolean = {
     //LOOK FOR PREVIOUSLY EXSITING COMPONENT TYPE
     context.model.findByQuery("typeDefinitions[" + self.newTypeName + "]", classOf[TypeDefinition])match {
       case e:TypeDefinition=> logger.error("TypeDefinition already exist with name => "+self.newTypeName);false
       case null => {
-          val newComponentTypeDef = KevoreeFactory.$instance.createComponentType
+          val newComponentTypeDef = context.kevoreeFactory.createComponentType
           newComponentTypeDef.setName(self.newTypeName)
           context.model.addTypeDefinitions(newComponentTypeDef)
 
@@ -55,7 +56,7 @@ case class KevsCreateComponentTypeInterpreter(self : CreateComponentTypeStatment
 
             var internal = context.model.findByQuery("libraries[" + libName + "]", classOf[TypeLibrary])
             if (internal == null){
-              val newLib = KevoreeFactory.$instance.createTypeLibrary
+              val newLib = context.kevoreeFactory.createTypeLibrary
               newLib.setName(libName)
               internal = newLib
             }

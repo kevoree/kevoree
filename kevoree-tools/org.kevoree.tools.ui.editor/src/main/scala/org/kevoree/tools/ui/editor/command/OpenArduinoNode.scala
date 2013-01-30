@@ -26,7 +26,7 @@
  */
 package org.kevoree.tools.ui.editor.command
 
-import org.kevoree.tools.ui.editor.{ArduinoModelGetHelper, KevoreeUIKernel}
+import org.kevoree.tools.ui.editor.{ModelHelper, ArduinoModelGetHelper, KevoreeUIKernel}
 import org.kevoree.tools.aether.framework.AetherUtil
 import java.util.jar.{JarEntry, JarFile}
 import org.kevoree.framework.KevoreeXmiHelper
@@ -61,10 +61,10 @@ class OpenArduinoNode extends Command {
 
   def execute(p: Any) {
 
-    val du  = KevoreeFactory.$instance.createDeployUnit
+    val du  = ModelHelper.kevoreeFactory.createDeployUnit
     du.setUnitName("org.kevoree.library.model.arduino")
     du.setGroupName("org.kevoree.corelibrary.model")
-    du.setVersion(KevoreeFactory.$instance.getVersion)
+    du.setVersion(ModelHelper.kevoreeFactory.getVersion)
     val file = AetherUtil.resolveDeployUnit(du)
 
     file match {

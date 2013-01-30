@@ -64,7 +64,7 @@ public class AddComponentCommand implements Command {
     @Override
     public void execute(Object p) {
         if(p instanceof ComponentTypePanel){
-            ComponentInstance instance = KevoreeFactory.$instance.createComponentInstance();
+            ComponentInstance instance = ModelHelper.kevoreeFactory().createComponentInstance();
             
             ContainerNode node = (ContainerNode) kernel.getUifactory().getMapping().get(nodepanel);
             ComponentType type = (ComponentType) kernel.getUifactory().getMapping().get(p);
@@ -80,7 +80,7 @@ public class AddComponentCommand implements Command {
 
             for(PortTypeRef ref : type.getProvided()){
                 //INSTANCIATE MODEL ELEMENTS
-                Port port = KevoreeFactory.$instance.createPort();
+                Port port = ModelHelper.kevoreeFactory().createPort();
                 instance.addProvided(port);
                 //port.setName(ref.getName());
                 port.setPortTypeRef(ref);
@@ -92,7 +92,7 @@ public class AddComponentCommand implements Command {
             }
             for(PortTypeRef ref : type.getRequired()){
                 //INSTANCIATE MODEL ELEMENTS
-                Port port = KevoreeFactory.$instance.createPort();
+                Port port = ModelHelper.kevoreeFactory().createPort();
                 instance.addRequired(port);
                 //port.setName(ref.getName());
                 port.setPortTypeRef(ref);

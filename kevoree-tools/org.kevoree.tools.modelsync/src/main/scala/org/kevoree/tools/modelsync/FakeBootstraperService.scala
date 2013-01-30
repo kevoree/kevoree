@@ -30,6 +30,7 @@ import org.kevoree.tools.aether.framework.NodeTypeBootstrapHelper
 import org.kevoree.kcl.KevoreeJarClassLoader
 import org.kevoree.KevoreeFactory
 import org.kevoree.api.Bootstraper
+import org.kevoree.impl.DefaultKevoreeFactory
 
 /**
  * Created with IntelliJ IDEA.
@@ -40,28 +41,29 @@ import org.kevoree.api.Bootstraper
 
 class FakeBootstraperService {
 
+  val kevoreeFactory : KevoreeFactory = new DefaultKevoreeFactory
   val bootstrap = new NodeTypeBootstrapHelper
   val dummyKCL = new KevoreeJarClassLoader()
 
   /* Manually register */
   bootstrap.registerManuallyDeployUnit( "scala-library", "org.scala-lang", "2.9.2", dummyKCL);
-  bootstrap.registerManuallyDeployUnit(  "org.kevoree.tools.aether.framework", "org.kevoree.tools", KevoreeFactory.$instance.getVersion, dummyKCL);
-  bootstrap.registerManuallyDeployUnit(  "org.kevoree.tools.marShell", "org.kevoree.tools", KevoreeFactory.$instance.getVersion, dummyKCL);
+  bootstrap.registerManuallyDeployUnit(  "org.kevoree.tools.aether.framework", "org.kevoree.tools", kevoreeFactory.getVersion, dummyKCL);
+  bootstrap.registerManuallyDeployUnit(  "org.kevoree.tools.marShell", "org.kevoree.tools", kevoreeFactory.getVersion, dummyKCL);
   bootstrap.registerManuallyDeployUnit(  "cglib-nodep", "cglib", "2.2.2", dummyKCL);
   bootstrap.registerManuallyDeployUnit(  "slf4j-api", "org.slf4j", "1.6.4", dummyKCL);
   bootstrap.registerManuallyDeployUnit(  "slf4j-api", "org.slf4j", "1.6.2", dummyKCL);
   bootstrap.registerManuallyDeployUnit(  "objenesis", "org.objenesis", "1.2", dummyKCL);
-  bootstrap.registerManuallyDeployUnit(  "org.kevoree.adaptation.model", "org.kevoree", KevoreeFactory.$instance.getVersion, dummyKCL)
-  bootstrap.registerManuallyDeployUnit(  "org.kevoree.api", "org.kevoree", KevoreeFactory.$instance.getVersion, dummyKCL)
-  bootstrap.registerManuallyDeployUnit(  "org.kevoree.basechecker", "org.kevoree", KevoreeFactory.$instance.getVersion, dummyKCL)
-  bootstrap.registerManuallyDeployUnit(  "org.kevoree.core", "org.kevoree", KevoreeFactory.$instance.getVersion, dummyKCL)
-  bootstrap.registerManuallyDeployUnit(  "org.kevoree.framework", "org.kevoree", KevoreeFactory.$instance.getVersion, dummyKCL)
-  bootstrap.registerManuallyDeployUnit(  "org.kevoree.kcl", "org.kevoree", KevoreeFactory.$instance.getVersion, dummyKCL)
-  bootstrap.registerManuallyDeployUnit(  "org.kevoree.kompare", "org.kevoree", KevoreeFactory.$instance.getVersion, dummyKCL)
-  bootstrap.registerManuallyDeployUnit(  "org.kevoree.merger", "org.kevoree", KevoreeFactory.$instance.getVersion, dummyKCL)
-  bootstrap.registerManuallyDeployUnit(  "org.kevoree.model", "org.kevoree", KevoreeFactory.$instance.getVersion, dummyKCL)
-  bootstrap.registerManuallyDeployUnit(  "org.kevoree.tools.annotation.api", "org.kevoree.tools", KevoreeFactory.$instance.getVersion, dummyKCL);
-  bootstrap.registerManuallyDeployUnit(  "org.kevoree.tools.javase.framework", "org.kevoree.tools", KevoreeFactory.$instance.getVersion, dummyKCL);
+  bootstrap.registerManuallyDeployUnit(  "org.kevoree.adaptation.model", "org.kevoree", kevoreeFactory.getVersion, dummyKCL)
+  bootstrap.registerManuallyDeployUnit(  "org.kevoree.api", "org.kevoree", kevoreeFactory.getVersion, dummyKCL)
+  bootstrap.registerManuallyDeployUnit(  "org.kevoree.basechecker", "org.kevoree", kevoreeFactory.getVersion, dummyKCL)
+  bootstrap.registerManuallyDeployUnit(  "org.kevoree.core", "org.kevoree", kevoreeFactory.getVersion, dummyKCL)
+  bootstrap.registerManuallyDeployUnit(  "org.kevoree.framework", "org.kevoree", kevoreeFactory.getVersion, dummyKCL)
+  bootstrap.registerManuallyDeployUnit(  "org.kevoree.kcl", "org.kevoree", kevoreeFactory.getVersion, dummyKCL)
+  bootstrap.registerManuallyDeployUnit(  "org.kevoree.kompare", "org.kevoree", kevoreeFactory.getVersion, dummyKCL)
+  bootstrap.registerManuallyDeployUnit(  "org.kevoree.merger", "org.kevoree", kevoreeFactory.getVersion, dummyKCL)
+  bootstrap.registerManuallyDeployUnit(  "org.kevoree.model", "org.kevoree", kevoreeFactory.getVersion, dummyKCL)
+  bootstrap.registerManuallyDeployUnit(  "org.kevoree.tools.annotation.api", "org.kevoree.tools", kevoreeFactory.getVersion, dummyKCL);
+  bootstrap.registerManuallyDeployUnit(  "org.kevoree.tools.javase.framework", "org.kevoree.tools", kevoreeFactory.getVersion, dummyKCL);
   bootstrap.registerManuallyDeployUnit(  "org.kevoree.extra.kserial", "org.kevoree.extra", "1.2", dummyKCL)
   bootstrap.registerManuallyDeployUnit(  "jna", "net.java.dev.jna", "3.3.0", dummyKCL)
   bootstrap.registerManuallyDeployUnit(  "jgrapht-jdk1.5", "org.jgrapht", "0.7.3", dummyKCL)

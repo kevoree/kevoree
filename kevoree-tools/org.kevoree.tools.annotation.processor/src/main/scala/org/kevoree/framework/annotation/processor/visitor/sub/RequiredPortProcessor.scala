@@ -68,7 +68,7 @@ trait RequiredPortProcessor {
         portAll.find(existingPort => existingPort.getName == requiredPort.name) match {
 
           case None => {
-            val portTypeRef = KevoreeFactory.$instance.createPortTypeRef
+            val portTypeRef = LocalUtility.kevoreeFactory.createPortTypeRef
             portTypeRef.setName(requiredPort.name)
             portTypeRef.setOptional(requiredPort.optional)
             /*
@@ -102,7 +102,7 @@ trait RequiredPortProcessor {
                 visitor.getDataType
               }
               case org.kevoree.annotation.PortType.MESSAGE => {
-                val mpt = KevoreeFactory.$instance.createMessagePortType
+                val mpt = LocalUtility.kevoreeFactory.createMessagePortType
                 mpt.setName("org.kevoree.framework.MessagePort")
 
                 if (requiredPort.messageType() != "untyped" ) {
@@ -113,10 +113,10 @@ trait RequiredPortProcessor {
                   if (classdef.getAnnotation(classOf[MessageTypes]) != null) {
                     classdef.getAnnotation(classOf[MessageTypes]).value().find(msgType => msgType.name() == requiredPort.messageType()) match {
                       case Some(foundMessageType) => {
-                        val dicoType = KevoreeFactory.$instance.createDictionaryType
+                        val dicoType = LocalUtility.kevoreeFactory.createDictionaryType
                         foundMessageType.elems().foreach {
                           elem =>
-                            val dicAtt = KevoreeFactory.$instance.createDictionaryAttribute
+                            val dicAtt = LocalUtility.kevoreeFactory.createDictionaryAttribute
                             dicAtt.setName(elem.name())
                           //  mpt.setName(mpt.getName+elem.name()) //WORKAROUND
                             try {

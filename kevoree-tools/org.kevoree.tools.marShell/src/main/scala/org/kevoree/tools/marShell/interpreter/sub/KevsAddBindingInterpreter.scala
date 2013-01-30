@@ -20,7 +20,7 @@ import org.kevoree.tools.marShell.interpreter.KevsInterpreterContext
 import scala.collection.JavaConversions._
 
 import org.slf4j.LoggerFactory
-import org.kevoree.{Channel, ComponentInstance, ContainerNode, KevoreeFactory}
+import org.kevoree.{Channel, ComponentInstance, ContainerNode}
 
 case class KevsAddBindingInterpreter(addBinding: AddBindingStatment) extends KevsAbstractInterpreter {
 
@@ -49,7 +49,7 @@ case class KevsAddBindingInterpreter(addBinding: AddBindingStatment) extends Kev
                             true
                           }
                           case None => {
-                            val newbinding = KevoreeFactory.$instance.createMBinding
+                            val newbinding = context.kevoreeFactory.createMBinding
                             newbinding.setHub(channel)
                             newbinding.setPort(port)
                             context.model.addMBindings(newbinding)

@@ -26,7 +26,7 @@
  */
 package org.kevoree.tools.ui.editor.form
 
-import org.kevoree.tools.ui.editor.{UIHelper, KevoreeUIKernel}
+import org.kevoree.tools.ui.editor.{ModelHelper, UIHelper, KevoreeUIKernel}
 import com.explodingpixels.macwidgets.plaf.{HudButtonUI, HudCheckBoxUI, HudTextFieldUI, HudLabelUI}
 import org.kevoree.tools.ui.editor.property.SpringUtilities
 import scala.collection.JavaConversions._
@@ -149,7 +149,7 @@ trait DictionaryForm {
           ok_lbl.setText("KO")
           ok_lbl.setForeground(Color.RED)
         } else {
-          val dictionaryAttribute = KevoreeFactory.$instance.createDictionaryAttribute
+          val dictionaryAttribute = ModelHelper.kevoreeFactory.createDictionaryAttribute
           dictionaryAttribute.setName(portNameTxt.getText)
           dictionaryAttribute.setFragmentDependant(fragmentDependantCheckBox.isSelected)
           dictionaryAttribute.setOptional(optionalCheckBox.isSelected)
@@ -171,13 +171,13 @@ trait DictionaryForm {
 
             dictionaryAttribute.setDatatype(stringBuilder.toString())
             if (componentType.getDictionaryType == null) {
-              componentType.setDictionaryType(KevoreeFactory.$instance.createDictionaryType)
+              componentType.setDictionaryType(ModelHelper.kevoreeFactory.createDictionaryType)
             }
 
             componentType.getDictionaryType.addAttributes(dictionaryAttribute)
 
             if (defaultValueTxt.getText != null && defaultValueTxt.getText != "") {
-              val defaultDictionaryValue = KevoreeFactory.$instance.createDictionaryValue
+              val defaultDictionaryValue = ModelHelper.kevoreeFactory.createDictionaryValue
               defaultDictionaryValue.setAttribute(dictionaryAttribute)
               defaultDictionaryValue.setValue(defaultValueTxt.getText)
               componentType.getDictionaryType.addDefaultValues(defaultDictionaryValue)
