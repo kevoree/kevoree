@@ -43,6 +43,7 @@ import scala.collection.JavaConversions._
 trait ChannelMerger extends Merger with DictionaryMerger {
 
   private val logger = LoggerFactory.getLogger(this.getClass)
+  private val kevoreeFactory = new org.kevoree.impl.DefaultKevoreeFactory
 
   def mergeAllChannels(actualModel: ContainerRoot, modelToMerge: ContainerRoot) {
     //MERGE CHANNEL
@@ -69,7 +70,7 @@ trait ChannelMerger extends Merger with DictionaryMerger {
                 case Some(foundComponent) => {
                   (foundComponent.getRequired.toList ++ foundComponent.getProvided).find(port => port.getPortTypeRef.getName == mb.getPort.getPortTypeRef.getName) match {
                     case Some(foundPort) => {
-                      val newbinding = KevoreeFactory.$instance.createMBinding
+                      val newbinding = kevoreeFactory.createMBinding
                       newbinding.setHub(foundHub)
                       foundHub.removeBindings(mb)
                       newbinding.setPort(foundPort)

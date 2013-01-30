@@ -49,7 +49,7 @@ for(i <- 0 until 30){
 }*/
 
   val loader = new ModelLoader()
-  val m = loader.loadModelFromPath(new File(getClass.getResource("/unomas.kev").toURI()))
+  val m = loader.loadModelFromPath(new File(getClass.getResource("/unomas.kev").toURI())).get(0)
 
 
 

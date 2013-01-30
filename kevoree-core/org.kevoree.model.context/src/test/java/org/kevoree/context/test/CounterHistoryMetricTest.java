@@ -15,6 +15,7 @@ package org.kevoree.context.test;
 
 import org.junit.Test;
 import org.kevoree.context.*;
+import org.kevoree.context.impl.DefaultContextFactory;
 
 import java.util.Random;
 
@@ -28,7 +29,8 @@ public class CounterHistoryMetricTest {
 
     @Test
     public void CounterTest() throws InterruptedException {
-        ContextRoot model = ContextFactory.$instance.createContextRoot();
+        ContextFactory factory = new DefaultContextFactory();
+        ContextRoot model = factory.createContextRoot();
         Random rand = new Random();
 
         for (int i = 0; i < 1000 ; i++) {

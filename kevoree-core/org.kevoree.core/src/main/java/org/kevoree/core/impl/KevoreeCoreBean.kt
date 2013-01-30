@@ -27,6 +27,7 @@ import org.kevoree.api.service.core.handler.ModelListener
 import org.kevoree.context.ContextRoot
 import org.kevoree.framework.HaraKiriHelper
 import org.kevoree.framework.KevoreeXmiHelper
+import org.kevoree.impl.DefaultKevoreeFactory
 
 
 class PreCommand(newmodel : ContainerRoot,modelListeners: KevoreeListeners, oldModel : ContainerRoot){
@@ -49,7 +50,8 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
     var _nodeName: String = ""
     var nodeInstance: org.kevoree.api.NodeType? = null
     var models: MutableList<ContainerRoot> = ArrayList<ContainerRoot>()
-    var model: ContainerRoot = org.kevoree.KevoreeFactory.createContainerRoot()
+    val kevoreeFactory = org.kevoree.impl.DefaultKevoreeFactory()
+    var model: ContainerRoot = kevoreeFactory.createContainerRoot()
     var lastDate: Date = Date(System.currentTimeMillis())
     var currentModelUUID: UUID = UUID.randomUUID()
     var logger = LoggerFactory.getLogger(this.javaClass)!!
@@ -492,7 +494,7 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
                                _bootstraper?.clear() //CLEAR
                                //place the current model as an empty model (for backup)
 
-                               val backupEmptyModel = org.kevoree.KevoreeFactory.createContainerRoot()
+                               val backupEmptyModel = kevoreeFactory.createContainerRoot()
                                backupEmptyModel.setInternalReadOnly()
                                switchToNewModel(backupEmptyModel)
 

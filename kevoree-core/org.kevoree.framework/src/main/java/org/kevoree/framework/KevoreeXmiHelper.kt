@@ -78,17 +78,32 @@ object KevoreeXmiHelper {
 
     fun loadString(model: String): ContainerRoot? {
         val loader = ModelLoader()
-        return loader.loadModelFromString(model)
+        val loadedElements = loader.loadModelFromString(model)
+        if(loadedElements != null && loadedElements.size() > 0) {
+            return loadedElements.get(0);
+        } else {
+            return null;
+        }
     }
 
     fun load(uri: String): ContainerRoot? {
         val loader = ModelLoader()
-        return loader.loadModelFromPath(File(uri))
+        val loadedElements = loader.loadModelFromPath(File(uri))
+        if(loadedElements != null && loadedElements.size() > 0) {
+            return loadedElements.get(0);
+        } else {
+            return null;
+        }
     }
 
     fun loadStream(input: InputStream): ContainerRoot? {
         val loader = ModelLoader()
-        return loader.loadModelFromStream(input)
+        val loadedElements = loader.loadModelFromStream(input)
+        if(loadedElements != null && loadedElements.size() > 0) {
+            return loadedElements.get(0);
+        } else {
+            return null;
+        }
 
     }
 

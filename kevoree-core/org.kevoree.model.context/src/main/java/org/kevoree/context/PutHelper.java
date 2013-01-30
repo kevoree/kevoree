@@ -13,6 +13,7 @@
  */
 package org.kevoree.context;
 
+import org.kevoree.context.impl.DefaultContextFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -96,22 +97,23 @@ public class PutHelper {
 
         //String[] paths = path.split("/");
         if (paths.size() == 3) {
+            ContextFactory factory = new DefaultContextFactory();
             ContextModel mod = ctx.findContextByID(cleanName(paths.get(0)));
             if (mod == null) {
-                mod = ContextFactory.$instance.createContextModel();
+                mod = factory.createContextModel();
                 mod.setName(cleanName(paths.get(0)));
                 ctx.addContext(mod);
             }
             MetricType mt = mod.findTypesByID(cleanName(paths.get(1)));
             if (mt == null) {
-                mt = ContextFactory.$instance.createMetricType();
+                mt = factory.createMetricType();
                 mt.setName(cleanName(paths.get(1)));
                 mod.addTypes(mt);
             }
             Metric metric = mt.findMetricsByID(cleanName(paths.get(2)));
             if (metric == null) {
                 if (DurationHistoryMetric.class.getName().equals(params.metricTypeClazzName)) {
-                    metric = ContextFactory.$instance.createDurationHistoryMetric();
+                    metric = factory.createDurationHistoryMetric();
                     if(params.duration != null){
                         ((DurationHistoryMetric)metric).setDuration(params.duration);
                     }
@@ -119,7 +121,7 @@ public class PutHelper {
                         ((DurationHistoryMetric)metric).setDurationUnit(params.durationUnit);
                     }
                 } else {
-                    metric = ContextFactory.$instance.createCounterHistoryMetric();
+                    metric = factory.createCounterHistoryMetric();
                     if(params.number != null){
                         ((CounterHistoryMetric)metric).setNumber(params.number);
                     }
@@ -135,7 +137,8 @@ public class PutHelper {
     }
 
     public static void addValue(Metric m, String value){
-        MetricValue valueMod = ContextFactory.$instance.createMetricValue();
+        ContextFactory factory = new DefaultContextFactory();
+        MetricValue valueMod = factory.createMetricValue();
         valueMod.setValue(value);
         valueMod.setTimestamp(System.nanoTime()+"");
         m.addValues(valueMod);

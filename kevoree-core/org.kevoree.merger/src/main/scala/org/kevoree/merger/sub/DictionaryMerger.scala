@@ -39,6 +39,7 @@ import scala.collection.JavaConversions._
 
 trait DictionaryMerger {
   private val logger = LoggerFactory.getLogger(this.getClass);
+  private val kevoreeFactory = new org.kevoree.impl.DefaultKevoreeFactory
 
   def mergeDictionary(dictionary: Dictionary, newtype: DictionaryType): Unit = {
     if (dictionary != null) {
@@ -66,7 +67,7 @@ trait DictionaryMerger {
     val targetDictionary = target.getDictionary()
     if (targetDictionary != null) {
       if (current.getDictionary() == null) {
-        current.setDictionary(KevoreeFactory.$instance.createDictionary)
+        current.setDictionary(kevoreeFactory.createDictionary)
       }
       targetDictionary.getValues.foreach {
         targetValue =>
@@ -81,7 +82,7 @@ trait DictionaryMerger {
               previousValue.setValue(targetValue.getValue)
             }
             case None => {
-              val newDictionaryValue = KevoreeFactory.$instance.createDictionaryValue
+              val newDictionaryValue = kevoreeFactory.createDictionaryValue
               newDictionaryValue.setValue(targetValue.getValue)
               newDictionaryValue.setAttribute(targetValue.getAttribute)
               newDictionaryValue.setTargetNode(targetValue.getTargetNode)
