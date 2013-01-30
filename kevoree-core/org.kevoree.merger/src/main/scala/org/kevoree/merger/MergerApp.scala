@@ -50,8 +50,9 @@ object MergerApp {
 
     logger.debug("Hello Merger")
 
+    val kevoreeFactory = new org.kevoree.impl.DefaultKevoreeFactory
     val merger = new RootMerger
-    val emtpyModel = KevoreeFactory.$instance.createContainerRoot
+    val emtpyModel = kevoreeFactory.createContainerRoot
 
     //val model2 = KevoreeXmiHelper.$instance.load("/Users/duke/Downloads/models/javaModelError.kev")
     val model1 = KevoreeXmiHelper.$instance.load("/Users/duke/Documents/dev/dukeboard/kevoree-kotlin/kevoree-corelibrary/javase/org.kevoree.library.javase.javaseNode/target/classes/KEV-INF/lib.kev")

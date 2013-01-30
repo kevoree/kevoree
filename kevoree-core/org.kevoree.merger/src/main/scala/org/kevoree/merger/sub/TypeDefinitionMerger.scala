@@ -41,6 +41,7 @@ import scala.collection.JavaConversions._
 trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMerger with DeployUnitMerger {
 
   private val logger = LoggerFactory.getLogger(this.getClass)
+  private val kevoreeFactory = new org.kevoree.impl.DefaultKevoreeFactory
 
   //TYPE DEFINITION MERGER ENTRYPOINT
   def mergeTypeDefinition(actualModel: ContainerRoot, modelToMerge: ContainerRoot): Unit = {
@@ -97,6 +98,7 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
   private def consistencyImpacted(root: ContainerRoot, actuelTypeDefinition: TypeDefinition,
                                   newTypeDefinition: TypeDefinition) = {
     logger.debug("consistency Impacted=" + actuelTypeDefinition.getName)
+    val kevoreeFactory = new org.kevoree.impl.DefaultKevoreeFactory
     //REMOVE OLD AND ADD NEW TYPE
 
     root.removeTypeDefinitions(actuelTypeDefinition)
@@ -172,7 +174,7 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
               newpt =>
                 c.getProvided.find(p => p.getPortTypeRef == newpt) match {
                   case None => {
-                    val newport = KevoreeFactory.$instance.createPort
+                    val newport = kevoreeFactory.createPort
                     newport.setPortTypeRef(newpt)
                     c.addProvided(newport)
                   }
@@ -185,7 +187,7 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
                   p.getPortTypeRef == newpt
                 }) match {
                   case None => {
-                    val newport = KevoreeFactory.$instance.createPort
+                    val newport = kevoreeFactory.createPort
                     newport.setPortTypeRef(newpt)
                     c.addRequired(newport)
                   }
@@ -253,7 +255,7 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
     model.getAdaptationPrimitiveTypes.find(p => p.getName == adaptation.getName) match {
       case Some(p) => p
       case None => {
-        val newT = KevoreeFactory.$instance.createAdaptationPrimitiveType
+        val newT = kevoreeFactory.createAdaptationPrimitiveType
         newT.setName(adaptation.getName)
         model.addAdaptationPrimitiveTypes(newT)
         newT

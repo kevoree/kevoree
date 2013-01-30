@@ -40,7 +40,9 @@ import scala.collection.JavaConversions._
 trait InitNodeKompare extends AbstractKompare {
 
   def getInitNodeAdaptationModel (node: ContainerNode): AdaptationModel = {
-    val adaptationModel = org.kevoreeAdaptation.KevoreeAdaptationFactory.$instance.createAdaptationModel
+
+    val adaptationModelFactory = new org.kevoreeAdaptation.impl.DefaultKevoreeAdaptationFactory
+    val adaptationModel = adaptationModelFactory.createAdaptationModel
     logger.info("INIT NODE v2 " + node.getName)
     //UPDATE ALL COMPONENT TYPE
 
@@ -49,7 +51,7 @@ trait InitNodeKompare extends AbstractKompare {
     /* add type */
     node.getUsedTypeDefinition.foreach {
       ct =>
-        val typecmd = KevoreeAdaptationFactory.$instance.createAdaptationPrimitive
+        val typecmd = adaptationModelFactory.createAdaptationPrimitive
         typecmd.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.AddType, root))
         typecmd.setRef(ct)
         adaptationModel.addAdaptations(typecmd)
@@ -62,7 +64,7 @@ trait InitNodeKompare extends AbstractKompare {
 
           deployUnitfound.getRequiredLibs.foreach {
             rLib =>
-              val addcttp = KevoreeAdaptationFactory.$instance.createAdaptationPrimitive
+              val addcttp = adaptationModelFactory.createAdaptationPrimitive
               addcttp.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.AddThirdParty, root))
               addcttp.setRef(rLib)
               adaptationModel.addAdaptations(addcttp)
@@ -74,7 +76,7 @@ trait InitNodeKompare extends AbstractKompare {
             || adaptation.getPrimitiveType.getName == JavaSePrimitive.AddThirdParty)
             .find(adaptation => adaptation.getRef.asInstanceOf[DeployUnit].isModelEquals(deployUnitfound)) match {
             case None => {
-              val ctcmd = KevoreeAdaptationFactory.$instance.createAdaptationPrimitive
+              val ctcmd = adaptationModelFactory.createAdaptationPrimitive
               ctcmd.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.AddDeployUnit, root))
               ctcmd.setRef(deployUnitfound)
               adaptationModel.addAdaptations(ctcmd)
@@ -90,17 +92,17 @@ trait InitNodeKompare extends AbstractKompare {
     /* add component */
     node.getInstances.foreach({
       c =>
-        val addccmd = KevoreeAdaptationFactory.$instance.createAdaptationPrimitive
+        val addccmd = adaptationModelFactory.createAdaptationPrimitive
         addccmd.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.AddInstance, root))
         addccmd.setRef(c)
         adaptationModel.addAdaptations(addccmd)
 
-        val addccmd2 = KevoreeAdaptationFactory.$instance.createAdaptationPrimitive
+        val addccmd2 = adaptationModelFactory.createAdaptationPrimitive
         addccmd2.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.StartInstance, root))
         addccmd2.setRef(c)
         adaptationModel.addAdaptations(addccmd2)
 
-        val addccmd3 = KevoreeAdaptationFactory.$instance.createAdaptationPrimitive
+        val addccmd3 = adaptationModelFactory.createAdaptationPrimitive
         addccmd3.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.UpdateDictionaryInstance, root))
         addccmd3.setRef(c)
         adaptationModel.addAdaptations(addccmd3)
@@ -113,7 +115,7 @@ trait InitNodeKompare extends AbstractKompare {
       channel =>
         channel.getOtherFragment(node.getName).foreach {
           remoteName =>
-            val addccmd = KevoreeAdaptationFactory.$instance.createAdaptationPrimitive
+            val addccmd = adaptationModelFactory.createAdaptationPrimitive
 
             addccmd.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.AddFragmentBinding, root))
             addccmd.setRef(channel)
@@ -126,7 +128,7 @@ trait InitNodeKompare extends AbstractKompare {
     root.getMBindings.foreach {
       b =>
         if (b.getPort.eContainer.asInstanceOf[KevoreeContainer].eContainer == node) {
-          val addcmd = KevoreeAdaptationFactory.$instance.createAdaptationPrimitive
+          val addcmd = adaptationModelFactory.createAdaptationPrimitive
           addcmd.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.AddBinding, root))
           addcmd.setRef(b)
           adaptationModel.addAdaptations(addcmd)

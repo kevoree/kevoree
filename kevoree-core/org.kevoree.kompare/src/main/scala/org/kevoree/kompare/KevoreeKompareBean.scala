@@ -46,7 +46,8 @@ class KevoreeKompareBean
 
   def kompare (actualModel: ContainerRoot, targetModel: ContainerRoot, nodeName: String): AdaptationModel = {
 
-    val adaptationModel = org.kevoreeAdaptation.KevoreeAdaptationFactory.$instance.createAdaptationModel
+    val adaptationModelFactory = new org.kevoreeAdaptation.impl.DefaultKevoreeAdaptationFactory
+    val adaptationModel = adaptationModelFactory.createAdaptationModel
     //STEP 0 - FOUND LOCAL NODE
     val actualLocalNode = actualModel.findByQuery("nodes["+nodeName+"]",classOf[ContainerNode])
     val updateLocalNode = targetModel.findByQuery("nodes["+nodeName+"]",classOf[ContainerNode])
@@ -74,13 +75,13 @@ class KevoreeKompareBean
       adaptation =>
         adaptation.getPrimitiveType.getName match {
           case JavaSePrimitive.UpdateType => {
-            val rcmd = KevoreeAdaptationFactory.$instance.createAdaptationPrimitive
+            val rcmd = adaptationModelFactory.createAdaptationPrimitive
             rcmd.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.RemoveType,
                                                           actualModel.asInstanceOf[ContainerRoot]))
             rcmd.setRef(adaptation.getRef)
             currentAdaptModel.removeAdaptations(adaptation)
             currentAdaptModel.addAdaptations(rcmd)
-            val acmd = KevoreeAdaptationFactory.$instance.createAdaptationPrimitive
+            val acmd = adaptationModelFactory.createAdaptationPrimitive
             acmd.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.AddType,
                                                           actualModel.asInstanceOf[ContainerRoot]))
             acmd.setRef(adaptation.getRef)
@@ -102,27 +103,27 @@ class KevoreeKompareBean
                       currentAdaptModel.addAdaptations(acmd)
                     }  */
           case JavaSePrimitive.UpdateBinding => {
-            val rcmd = KevoreeAdaptationFactory.$instance.createAdaptationPrimitive
+            val rcmd = adaptationModelFactory.createAdaptationPrimitive
             rcmd.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.RemoveBinding,actualModel))
             rcmd.setRef(adaptation.getRef)
             currentAdaptModel.removeAdaptations(adaptation)
             currentAdaptModel.addAdaptations(rcmd)
 
-            val acmd = KevoreeAdaptationFactory.$instance.createAdaptationPrimitive
+            val acmd = adaptationModelFactory.createAdaptationPrimitive
             acmd.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.AddBinding,actualModel))
             acmd.setRef(adaptation.getRef)
             currentAdaptModel.addAdaptations(acmd)
           }
 
           case JavaSePrimitive.UpdateFragmentBinding => {
-            val rcmd = KevoreeAdaptationFactory.$instance.createAdaptationPrimitive
+            val rcmd = adaptationModelFactory.createAdaptationPrimitive
             rcmd.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.RemoveFragmentBinding,actualModel))
             rcmd.setRef(adaptation.getRef)
             rcmd.setTargetNodeName(adaptation.getTargetNodeName)
             currentAdaptModel.removeAdaptations(adaptation)
             currentAdaptModel.addAdaptations(rcmd)
 
-            val acmd = KevoreeAdaptationFactory.$instance.createAdaptationPrimitive
+            val acmd = adaptationModelFactory.createAdaptationPrimitive
             acmd.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.AddFragmentBinding,actualModel))
             acmd.setRef(adaptation.getRef)
             acmd.setTargetNodeName(adaptation.getTargetNodeName)
@@ -131,32 +132,32 @@ class KevoreeKompareBean
 
 
           case JavaSePrimitive.UpdateInstance => {
-            val stopcmd = KevoreeAdaptationFactory.$instance.createAdaptationPrimitive
+            val stopcmd = adaptationModelFactory.createAdaptationPrimitive
             stopcmd.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.StopInstance,actualModel))
             stopcmd.setRef(adaptation.getRef.asInstanceOf[(Object, Object)]._1)
             currentAdaptModel.removeAdaptations(adaptation)
             currentAdaptModel.addAdaptations(stopcmd)
 
-            val rcmd = KevoreeAdaptationFactory.$instance.createAdaptationPrimitive
+            val rcmd = adaptationModelFactory.createAdaptationPrimitive
             rcmd.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.RemoveInstance,
                                                           actualModel.asInstanceOf[ContainerRoot]))
             rcmd.setRef(adaptation.getRef.asInstanceOf[(Object, Object)]._1)
             currentAdaptModel.removeAdaptations(adaptation)
             currentAdaptModel.addAdaptations(rcmd)
 
-            val acmd = KevoreeAdaptationFactory.$instance.createAdaptationPrimitive
+            val acmd = adaptationModelFactory.createAdaptationPrimitive
             acmd.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.AddInstance,
                                                           actualModel.asInstanceOf[ContainerRoot]))
             acmd.setRef(adaptation.getRef.asInstanceOf[(Object, Object)]._2)
             currentAdaptModel.addAdaptations(acmd)
 
-            val uDiccmd = KevoreeAdaptationFactory.$instance.createAdaptationPrimitive
+            val uDiccmd = adaptationModelFactory.createAdaptationPrimitive
             uDiccmd.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.UpdateDictionaryInstance,
                                                              actualModel.asInstanceOf[ContainerRoot]))
             uDiccmd.setRef(adaptation.getRef.asInstanceOf[(Object, Object)]._2)
             currentAdaptModel.addAdaptations(uDiccmd)
 
-            val startcmd = KevoreeAdaptationFactory.$instance.createAdaptationPrimitive
+            val startcmd = adaptationModelFactory.createAdaptationPrimitive
             startcmd.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.StartInstance,
                                                               actualModel.asInstanceOf[ContainerRoot]))
             startcmd.setRef(adaptation.getRef.asInstanceOf[(Object, Object)]._2)
@@ -165,7 +166,7 @@ class KevoreeKompareBean
           }
 
           case JavaSePrimitive.AddThirdParty => {
-            val startCmd = KevoreeAdaptationFactory.$instance.createAdaptationPrimitive
+            val startCmd = adaptationModelFactory.createAdaptationPrimitive
             startCmd.setPrimitiveType(getAdaptationPrimitive(JavaSePrimitive.StartThirdParty,
                                                               actualModel.asInstanceOf[ContainerRoot]))
             startCmd.setRef(adaptation.getRef)
