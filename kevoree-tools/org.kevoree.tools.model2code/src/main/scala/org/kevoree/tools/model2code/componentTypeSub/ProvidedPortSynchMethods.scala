@@ -38,6 +38,8 @@ import japa.parser.ast.stmt.BlockStmt
 import japa.parser.ast.body._
 import org.kevoree.tools.model2code.genericSub.ImportSynchMethods
 import scala.collection.JavaConversions._
+import org.kevoree.impl.DefaultKevoreeFactory
+
 /**
  * Created by IntelliJ IDEA.
  * User: Gregory NAIN
@@ -50,6 +52,7 @@ trait ProvidedPortSynchMethods
 
   def compilationUnit : CompilationUnit
   def componentType : org.kevoree.ComponentType
+  val kevoreeFactory = new DefaultKevoreeFactory
 
   def checkOrAddProvidedPortAnnotation(annotList : java.util.List[AnnotationExpr], providedPort : PortTypeRef, td : TypeDeclaration) {
     val annotation : NormalAnnotationExpr = annotList.filter({annot =>
@@ -130,7 +133,7 @@ trait ProvidedPortSynchMethods
                   methodName += providedPort.getName.substring(1) + "PortActivated";
 
                   //Add Mapping
-                  val newMapping = org.kevoree.KevoreeFactory.$instance.createPortTypeMapping
+                  val newMapping = kevoreeFactory.createPortTypeMapping
                   newMapping.setServiceMethodName(operation.getName)
                   newMapping.setBeanMethodName(methodName)
                   providedPort.addMappings(newMapping)
@@ -168,7 +171,7 @@ trait ProvidedPortSynchMethods
                 methodName += providedPort.getName.substring(1);
 
                 //Add Mapping
-                val newMapping = org.kevoree.KevoreeFactory.$instance.createPortTypeMapping
+                val newMapping = kevoreeFactory.createPortTypeMapping
                 newMapping.setServiceMethodName("process")
                 newMapping.setBeanMethodName(methodName)
                 providedPort.addMappings(newMapping)

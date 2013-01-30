@@ -40,7 +40,7 @@ class KevoreeHandler(kernel: KevoreeUIKernel) {
 
   private var listenerCommand: List[Command] = List[Command]()
   private val merger = new KevoreeMergerComponent
-  private var actualModel: ContainerRoot = KevoreeFactory.$instance.createContainerRoot
+  private var actualModel: ContainerRoot = ModelHelper.kevoreeFactory.createContainerRoot
 
   //actualModel.eAdapters.add(EMFListener)
 

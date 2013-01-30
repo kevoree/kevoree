@@ -30,6 +30,7 @@ import org.kevoree.{KevoreeFactory, ContainerRoot}
 import java.net.URI
 import java.io.{PrintWriter, File}
 import scala.collection.JavaConversions._
+import org.kevoree.impl.DefaultKevoreeFactory
 
 /**
  * Created by IntelliJ IDEA.
@@ -41,10 +42,12 @@ import scala.collection.JavaConversions._
 
 object GenerationTest extends App {
 
+  private val kevoreeFactory = new DefaultKevoreeFactory
+
   private def generateModel(nbDu: Int, nbCtInDu: Int, typesName: String, model:ContainerRoot): ContainerRoot = {
     for (i <- 0 to nbDu-1) {
 
-      val du = KevoreeFactory.$instance.createDeployUnit
+      val du = kevoreeFactory.createDeployUnit
       du.setGroupName("org.entimid.genlib")
       du.setUnitName("org.entimid.genlib." + typesName + i)
       du.setVersion("1.0.0-SNAPSHOT")
@@ -52,7 +55,7 @@ object GenerationTest extends App {
 
       for (j <- 0 to nbCtInDu-1) {
 
-        val ct = KevoreeFactory.$instance.createComponentType
+        val ct = kevoreeFactory.createComponentType
         ct.setBean("org.entimid.genlib.lib"+i+"." + typesName + i + "" + j)
         ct.setName(typesName + i + "" + j)
         ct.addDeployUnits(du)
@@ -64,7 +67,7 @@ object GenerationTest extends App {
   }
 
   private def generateModel(nbDu: Int, nbCtInDu: Int, typesName: String): ContainerRoot = {
-    val model = KevoreeFactory.$instance.createContainerRoot
+    val model = kevoreeFactory.createContainerRoot
 
     generateModel(nbDu, nbCtInDu, typesName, model)
   }
@@ -75,7 +78,7 @@ object GenerationTest extends App {
     if (!masterPomFolder.exists())
       masterPomFolder.mkdirs()
 
-    val deployUnit = KevoreeFactory.$instance.createDeployUnit
+    val deployUnit = kevoreeFactory.createDeployUnit
     deployUnit.setGroupName("org.entimid.genlib")
     deployUnit.setUnitName("org.entimid.genlib.root")
     deployUnit.setVersion("1.0.0-SNAPSHOT")

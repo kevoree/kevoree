@@ -13,7 +13,7 @@
  */
 package org.kevoree.tools.marShell.interpreter.sub
 
-import org.kevoree.{TypeDefinition, TypeLibrary, KevoreeFactory}
+import org.kevoree.{TypeDefinition, TypeLibrary}
 import org.kevoree.tools.marShell.ast.CreateChannelTypeStatment
 import org.kevoree.tools.marShell.interpreter.KevsAbstractInterpreter
 import org.kevoree.tools.marShell.interpreter.KevsInterpreterContext
@@ -26,12 +26,13 @@ case class KevsCreateChannelTypeInterpreter(self: CreateChannelTypeStatment) ext
 
   var logger = LoggerFactory.getLogger(this.getClass)
 
+
   def interpret(context: KevsInterpreterContext): Boolean = {
     //LOOK FOR PREVIOUSLY EXSITING COMPONENT TYPE
     context.model.findByQuery("typeDefinitions[" + self.newTypeName + "]", classOf[TypeDefinition]) match {
       case e:TypeDefinition => logger.error("TypeDefinition already exist with name => " + self.newTypeName); false
       case null => {
-        val newComponentTypeDef = KevoreeFactory.$instance.createChannelType
+        val newComponentTypeDef = context.kevoreeFactory.createChannelType
         newComponentTypeDef.setName(self.newTypeName)
         context.model.addTypeDefinitions(newComponentTypeDef)
 
@@ -40,7 +41,7 @@ case class KevsCreateChannelTypeInterpreter(self: CreateChannelTypeStatment) ext
 
             var newLic = context.model.findByQuery("libraries[" + libName + "]", classOf[TypeLibrary])
             if (newLic == null) {
-              newLic = KevoreeFactory.$instance.createTypeLibrary
+              newLic = context.kevoreeFactory.createTypeLibrary
               newLic.setName(libName)
             }
 

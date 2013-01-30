@@ -31,13 +31,15 @@
 
 package org.kevoree.framework.annotation.processor
 
-import javax.annotation.processing.ProcessingEnvironment
-import org.kevoree.{MessagePortType, ContainerRoot, PortType, TypedElement}
+import org.kevoree.{ContainerRoot, PortType, TypedElement}
  import org.kevoree.framework.aspects.KevoreeAspects._
 import scala.collection.JavaConversions._
+import org.kevoree.impl.DefaultKevoreeFactory
 
 object LocalUtility {
   var root: ContainerRoot = _
+
+  val kevoreeFactory = new DefaultKevoreeFactory
 
   def generateLibURI(options: java.util.Map[String, String]) = {
     import scala.collection.JavaConversions._

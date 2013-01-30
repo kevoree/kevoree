@@ -104,7 +104,7 @@ public class MarShellMavenMojo extends AbstractMojo {
 
 		mergerComponent = new KevoreeMergerComponent();
 
-		ContainerRoot model = KevoreeFactory.$instance.createContainerRoot();
+		ContainerRoot model = kevoreeFactory.createContainerRoot();
 
         if(sourceMarShellDirectory != null){
             ContainerRoot model2 = executeOnDirectory(sourceMarShellDirectory);
@@ -131,7 +131,7 @@ public class MarShellMavenMojo extends AbstractMojo {
 	}
 
 	private ContainerRoot executeOnDirectory (File dir) throws MojoExecutionException {
-		ContainerRoot mergedModel = KevoreeFactory.$instance.createContainerRoot();
+		ContainerRoot mergedModel = kevoreeFactory.createContainerRoot();
         if(dir.listFiles() != null){
             for (File f : dir.listFiles()) {
                 if (f.isDirectory()) {

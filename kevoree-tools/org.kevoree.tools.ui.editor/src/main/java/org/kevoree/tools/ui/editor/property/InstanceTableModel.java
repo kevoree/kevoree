@@ -30,10 +30,9 @@
  */
 package org.kevoree.tools.ui.editor.property;
 
-import org.kevoree.Dictionary;
 import org.kevoree.DictionaryValue;
 import org.kevoree.Instance;
-import org.kevoree.KevoreeFactory;
+import org.kevoree.tools.ui.editor.ModelHelper;
 import scala.Some;
 
 import javax.swing.event.TableModelListener;
@@ -95,7 +94,7 @@ public class InstanceTableModel implements TableModel {
             case 1:
                 DictionaryValue value = null;
                 if (instance.getDictionary() == null) {
-                    instance.setDictionary(KevoreeFactory.$instance.createDictionary());
+                    instance.setDictionary(ModelHelper.kevoreeFactory().createDictionary());
                 }
                 for (DictionaryValue v : instance.getDictionary().getValues()) {
                     if (v.getAttribute().equals(att)) {
@@ -123,7 +122,7 @@ public class InstanceTableModel implements TableModel {
                 }
             }
             if (value == null) {
-                value = KevoreeFactory.$instance.createDictionaryValue();
+                value = ModelHelper.kevoreeFactory().createDictionaryValue();
                 value.setAttribute(att);
                 instance.getDictionary().addValues(value);
             }

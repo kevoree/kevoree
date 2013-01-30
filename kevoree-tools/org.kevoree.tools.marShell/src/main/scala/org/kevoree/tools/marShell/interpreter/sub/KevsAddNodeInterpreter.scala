@@ -14,7 +14,7 @@
 
 package org.kevoree.tools.marShell.interpreter.sub
 
-import org.kevoree.{ContainerNode, NodeType, TypeDefinition, KevoreeFactory}
+import org.kevoree.{ContainerNode, NodeType, TypeDefinition}
 import org.kevoree.tools.marShell.ast.AddNodeStatment
 import org.kevoree.tools.marShell.interpreter.KevsAbstractInterpreter
 import org.kevoree.tools.marShell.interpreter.KevsInterpreterContext
@@ -25,6 +25,7 @@ import org.slf4j.LoggerFactory
 case class KevsAddNodeInterpreter(addN: AddNodeStatment) extends KevsAbstractInterpreter {
 
   private val logger = LoggerFactory.getLogger(this.getClass)
+
 
   def interpret(context: KevsInterpreterContext): Boolean = {
     context.model.findByQuery("typeDefinitions[" + addN.nodeTypeName + "]", classOf[TypeDefinition]) match {
@@ -52,7 +53,7 @@ case class KevsAddNodeInterpreter(addN: AddNodeStatment) extends KevsAbstractInt
               }
             }
             case null => {
-              val newnode = KevoreeFactory.$instance.createContainerNode
+              val newnode = context.kevoreeFactory.createContainerNode
               newnode.setName(addN.nodeName)
               newnode.setTypeDefinition(nodeType)
               Merger.mergeDictionary(newnode, addN.props, null)

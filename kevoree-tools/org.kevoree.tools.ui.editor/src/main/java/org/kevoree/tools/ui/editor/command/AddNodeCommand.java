@@ -69,7 +69,7 @@ public class AddNodeCommand implements Command {
     @Override
     public void execute(Object p) {
 
-        ContainerNode newnode = KevoreeFactory.$instance.createContainerNode();
+        ContainerNode newnode = ModelHelper.kevoreeFactory().createContainerNode();
             newnode.setName(ModelHelper.getNextAvailableNodeName(kernel.getModelHandler().getActualModel()));
         //} else {
         //    newnode.setName("node1");

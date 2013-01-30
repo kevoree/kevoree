@@ -84,7 +84,7 @@ class KevoreeAnnotationProcessor() extends javax.annotation.processing.AbstractP
       return true
     }
 
-    val root = KevoreeFactory.$instance.createContainerRoot
+    val root = LocalUtility.kevoreeFactory.createContainerRoot
     LocalUtility.root = (root)
     /* Look for reserved thread protection */
     roundEnv.getElementsAnnotatedWith(classOf[org.kevoree.annotation.ReservedThread]).foreach {
@@ -161,7 +161,7 @@ class KevoreeAnnotationProcessor() extends javax.annotation.processing.AbstractP
       val nodeType: org.kevoree.NodeType = root.findByQuery("typeDefinitions[" + nodeTypeName + "]", classOf[org.kevoree.NodeType]) match {
         case found : org.kevoree.NodeType => found
         case null => {
-          val nodeType = KevoreeFactory.$instance.createNodeType
+          val nodeType = LocalUtility.kevoreeFactory.createNodeType
           nodeType.setName(nodeTypeName.toString)
           root.addTypeDefinitions(nodeType)
           nodeType
@@ -200,7 +200,7 @@ class KevoreeAnnotationProcessor() extends javax.annotation.processing.AbstractP
       val groupName = typeDecl.getSimpleName
       val groupType: org.kevoree.GroupType = root.findByQuery("typeDefinitions[" + groupName + "]", classOf[org.kevoree.GroupType]) match {
         case null => {
-          val groupType = KevoreeFactory.$instance.createGroupType
+          val groupType = LocalUtility.kevoreeFactory.createGroupType
           groupType.setName(groupName.toString)
           root.addTypeDefinitions(groupType)
           groupType
@@ -242,7 +242,7 @@ class KevoreeAnnotationProcessor() extends javax.annotation.processing.AbstractP
       val channelName = typeDecl.getSimpleName
       val channelType: org.kevoree.ChannelType = root.findByQuery("typeDefinitions[" + channelName + "]", classOf[org.kevoree.ChannelType]) match {
         case null => {
-          val channelType = KevoreeFactory.$instance.createChannelType
+          val channelType = LocalUtility.kevoreeFactory.createChannelType
           channelType.setName(channelName.toString)
           root.addTypeDefinitions(channelType)
           channelType
@@ -287,7 +287,7 @@ class KevoreeAnnotationProcessor() extends javax.annotation.processing.AbstractP
       val componentName = typeDecl.getSimpleName
       val componentType: org.kevoree.ComponentType = root.findByQuery("typeDefinitions[" + componentName + "]", classOf[org.kevoree.ComponentType]) match {
         case null => {
-          val componentType = KevoreeFactory.$instance.createComponentType
+          val componentType = LocalUtility.kevoreeFactory.createComponentType
           componentType.setName(componentName.toString)
           root.addTypeDefinitions(componentType)
           componentType

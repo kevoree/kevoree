@@ -38,6 +38,7 @@ import org.apache.maven.project.MavenProject;
 import org.kevoree.ContainerRoot;
 import org.kevoree.KevoreeFactory;
 import org.kevoree.framework.KevoreeXmiHelper;
+import org.kevoree.impl.DefaultKevoreeFactory;
 import org.kevoree.merger.KevoreeMergerComponent;
 import java.io.*;
 import java.util.ArrayList;
@@ -118,6 +119,7 @@ public class MergerMojo extends AbstractMojo {
 
         //CREATE NEW MERGER INSTANCE
         KevoreeMergerComponent merger = new KevoreeMergerComponent();
+        KevoreeFactory kevoreeFactory = new DefaultKevoreeFactory();
 
         //LOAD PREVIOUS MODEL OR CREATE ONE
         ContainerRoot root = null;
@@ -125,7 +127,7 @@ public class MergerMojo extends AbstractMojo {
           //  root = KevoreeXmiHelper.load(modelInput.getAbsolutePath());
        // } else {
        //     this.getLog().warn("Model File Empty, creating one !");
-            root = KevoreeFactory.$instance.createContainerRoot();
+            root = kevoreeFactory.createContainerRoot();
         //}
 
         //MERGE TWO BY TWO

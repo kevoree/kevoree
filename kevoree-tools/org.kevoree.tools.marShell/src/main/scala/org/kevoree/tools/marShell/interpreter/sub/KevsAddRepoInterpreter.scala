@@ -16,7 +16,8 @@ package org.kevoree.tools.marShell.interpreter.sub
 import org.kevoree.tools.marShell.ast.AddRepoStatment
 import org.kevoree.tools.marShell.interpreter.{KevsInterpreterContext, KevsAbstractInterpreter}
 import org.slf4j.LoggerFactory
-import org.kevoree.{Repository, KevoreeFactory}
+import org.kevoree.Repository
+
 
 /**
  * Created by IntelliJ IDEA.
@@ -30,6 +31,7 @@ case class KevsAddRepoInterpreter(addRepo: AddRepoStatment) extends KevsAbstract
 
   private val logger = LoggerFactory.getLogger(this.getClass)
 
+
   def interpret(context: KevsInterpreterContext): Boolean = {
     if (addRepo.url == "") {
       logger.error("Empty Repository URL not allowed")
@@ -38,7 +40,7 @@ case class KevsAddRepoInterpreter(addRepo: AddRepoStatment) extends KevsAbstract
       context.model.findByQuery("repositories[" + addRepo.url + "]", classOf[Repository]) match {
         case r:Repository =>
         case null => {
-          val repo = KevoreeFactory.$instance.createRepository
+          val repo = context.kevoreeFactory.createRepository
           repo.setUrl(addRepo.url)
           context.model.addRepositories(repo)
         }

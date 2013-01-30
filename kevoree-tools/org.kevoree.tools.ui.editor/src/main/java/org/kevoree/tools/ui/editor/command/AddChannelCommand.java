@@ -66,7 +66,7 @@ public class AddChannelCommand implements Command {
 
     @Override
     public void execute(Object p) {
-        Channel newhub = KevoreeFactory.$instance.createChannel();
+        Channel newhub = ModelHelper.kevoreeFactory().createChannel();
         ChannelType type = (ChannelType) kernel.getUifactory().getMapping().get(p);
         newhub.setTypeDefinition(type);
 

@@ -18,7 +18,7 @@ import org.kevoree.tools.marShell.ast.AddChannelInstanceStatment
 import org.kevoree.tools.marShell.interpreter.KevsAbstractInterpreter
 import org.kevoree.tools.marShell.interpreter.KevsInterpreterContext
 
-import org.kevoree.{TypeDefinition, Channel, ChannelType, KevoreeFactory}
+import org.kevoree.{TypeDefinition, Channel, ChannelType}
 import org.kevoree.tools.marShell.interpreter.utils.Merger
 import org.slf4j.LoggerFactory
 
@@ -42,7 +42,7 @@ case class KevsAddChannelInterpreter(addChannel: AddChannelInstanceStatment) ext
         //SEARCH TYPE DEF
         context.model.findByQuery("typeDefinitions[" + addChannel.channelType + "]", classOf[TypeDefinition]) match {
           case targetChannelType : ChannelType if (targetChannelType.isInstanceOf[ChannelType]) => {
-            val newchannel = KevoreeFactory.$instance.createChannel
+            val newchannel = context.kevoreeFactory.createChannel
             newchannel.setTypeDefinition(targetChannelType)
             newchannel.setName(addChannel.channelName)
             Merger.mergeDictionary(newchannel, addChannel.props, null)

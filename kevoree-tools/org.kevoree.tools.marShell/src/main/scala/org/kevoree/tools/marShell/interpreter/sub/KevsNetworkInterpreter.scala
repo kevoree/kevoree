@@ -16,7 +16,7 @@ package org.kevoree.tools.marShell.interpreter.sub
 import org.kevoree.tools.marShell.interpreter.{KevsInterpreterContext, KevsAbstractInterpreter}
 
 import org.kevoree.tools.marShell.ast.NetworkPropertyStatement
-import org.kevoree.{ContainerNode, KevoreeFactory, ContainerRoot}
+import org.kevoree.{ContainerNode, ContainerRoot}
 import org.slf4j.LoggerFactory
 import scala.collection.JavaConversions._
 
@@ -29,32 +29,33 @@ case class KevsNetworkInterpreter(networkStatement: NetworkPropertyStatement) ex
     networkStatement.props.foreach {
       prop =>
         networkStatement.srcNodeName match {
-          case Some(srcNode) => updateNodeLinkProp(context.model, srcNode, networkStatement.targetNodeName, prop._1, prop._2, "", 100)
-          case None => updateNodeLinkProp(context.model, networkStatement.targetNodeName, networkStatement.targetNodeName, prop._1, prop._2, "", 100)
+          case Some(srcNode) => updateNodeLinkProp(context, srcNode, networkStatement.targetNodeName, prop._1, prop._2, "", 100)
+          case None => updateNodeLinkProp(context, networkStatement.targetNodeName, networkStatement.targetNodeName, prop._1, prop._2, "", 100)
         }
     }
     true
   }
 
-  def updateNodeLinkProp(actualModel: ContainerRoot, currentNodeName: String, targetNodeName: String, key: String, value: String, networkType: String, weight: Int) {
+  def updateNodeLinkProp(context: KevsInterpreterContext, currentNodeName: String, targetNodeName: String, key: String, value: String, networkType: String, weight: Int) {
     /* SEARCH THE NODE NETWORK */
+    val actualModel = context.model
     val nodenetwork = actualModel.getNodeNetworks.find({
       nn =>
         nn.getInitBy.getName == currentNodeName && nn.getTarget.getName == targetNodeName
     }) getOrElse {
-      val newNodeNetwork = KevoreeFactory.$instance.createNodeNetwork
+      val newNodeNetwork = context.kevoreeFactory.createNodeNetwork
       var thisNode = actualModel.findByQuery("nodes[" + currentNodeName + "]", classOf[ContainerNode])
       var targetNode = actualModel.findByQuery("nodes[" + targetNodeName + "]", classOf[ContainerNode])
 
       if (thisNode == null){
-        val newnode = KevoreeFactory.$instance.createContainerNode
+        val newnode = context.kevoreeFactory.createContainerNode
         newnode.setName(currentNodeName)
         actualModel.addNodes(newnode)
         thisNode= newnode
       }
       val thisNodeFound = thisNode
       if (targetNode == null){
-        val newnode = KevoreeFactory.$instance.createContainerNode
+        val newnode = context.kevoreeFactory.createContainerNode
         newnode.setName(targetNodeName)
         actualModel.addNodes(newnode)
         targetNode=newnode
@@ -68,7 +69,7 @@ case class KevsNetworkInterpreter(networkStatement: NetworkPropertyStatement) ex
 
     /* Found node link */
     val nodelink = nodenetwork.getLink.find(loopLink => loopLink.getNetworkType == networkType).getOrElse {
-      val newlink = KevoreeFactory.$instance.createNodeLink
+      val newlink = context.kevoreeFactory.createNodeLink
       newlink.setNetworkType(networkType)
       nodenetwork.addLink(newlink)
       newlink
@@ -82,7 +83,7 @@ case class KevsNetworkInterpreter(networkStatement: NetworkPropertyStatement) ex
     val prop = nodelink.getNetworkProperties.find({
       networkProp => networkProp.getName == key
     }).getOrElse {
-      val newprop = KevoreeFactory.$instance.createNetworkProperty
+      val newprop = context.kevoreeFactory.createNetworkProperty
       newprop.setName(key)
       nodelink.addNetworkProperties(newprop)
       newprop

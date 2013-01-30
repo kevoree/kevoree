@@ -42,7 +42,7 @@ import java.util.StringTokenizer
 
 class DataTypeVisitor extends SimpleTypeVisitor6[Any, Any] {
 
-  var dataType = KevoreeFactory.$instance.createTypedElement
+  var dataType = LocalUtility.kevoreeFactory.createTypedElement
 
   def getDataType(): TypedElement = {
     dataType

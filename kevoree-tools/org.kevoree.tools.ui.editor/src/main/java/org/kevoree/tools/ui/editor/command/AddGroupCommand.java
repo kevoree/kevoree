@@ -61,7 +61,7 @@ public class AddGroupCommand implements Command {
 
     @Override
     public void execute(Object p) {
-        Group newgroup = KevoreeFactory.$instance.createGroup();
+        Group newgroup = ModelHelper.kevoreeFactory().createGroup();
         GroupType type = (GroupType) kernel.getUifactory().getMapping().get(p);
         newgroup.setTypeDefinition(type);
 

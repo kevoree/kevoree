@@ -46,10 +46,10 @@ trait TypeDefinitionProcessor {
       case foundTD : Any => foundTD
       case null => {
         val newTypeDef = parentType.getSimpleName match {
-          case "NodeType" => KevoreeFactory.$instance.createNodeType
-          case "ComponentType" => KevoreeFactory.$instance.createComponentType
-          case "ChannelType" => KevoreeFactory.$instance.createChannelType
-          case "GroupType" => KevoreeFactory.$instance.createGroupType
+          case "NodeType" => LocalUtility.kevoreeFactory.createNodeType
+          case "ComponentType" => LocalUtility.kevoreeFactory.createComponentType
+          case "ChannelType" => LocalUtility.kevoreeFactory.createChannelType
+          case "GroupType" => LocalUtility.kevoreeFactory.createGroupType
           case _ @ notFound => println("error => "+parentName+"-"+notFound) ;null
         }
         newTypeDef.setName(parentName)

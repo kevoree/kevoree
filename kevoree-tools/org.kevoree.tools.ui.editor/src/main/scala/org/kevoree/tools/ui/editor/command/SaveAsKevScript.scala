@@ -39,7 +39,7 @@
  */
 package org.kevoree.tools.ui.editor.command
 
-import org.kevoree.tools.ui.editor.KevoreeUIKernel
+import org.kevoree.tools.ui.editor.{ModelHelper, KevoreeUIKernel}
 import org.slf4j.LoggerFactory
 import org.kevoree.tools.marShellTransform.{KevScriptWrapper, AdaptationModelWrapper}
 import org.kevoree.{DeployUnit, KevoreeFactory}
@@ -66,7 +66,7 @@ class SaveAsKevScript extends Command {
   val kompareBean = new org.kevoree.kompare.KevoreeKompareBean()
 
   def execute(p: AnyRef) {
-    val emptyModel = KevoreeFactory.$instance.createContainerRoot
+    val emptyModel = ModelHelper.kevoreeFactory.createContainerRoot
     val currentModel = kernel.getModelHandler.getActualModel
 
     val scriptBuffer = new StringBuffer()
@@ -88,7 +88,7 @@ class SaveAsKevScript extends Command {
 
     duS.foreach {
 
-      du => scriptBuffer.append("merge 'mvn:" + du.getGroupName + "/" + du.getUnitName + "/" + (if (du.getVersion == KevoreeFactory.$instance.getVersion) {
+      du => scriptBuffer.append("merge 'mvn:" + du.getGroupName + "/" + du.getUnitName + "/" + (if (du.getVersion == ModelHelper.kevoreeFactory.getVersion) {
         "{kevoree.version}"
       } else {
         du.getVersion

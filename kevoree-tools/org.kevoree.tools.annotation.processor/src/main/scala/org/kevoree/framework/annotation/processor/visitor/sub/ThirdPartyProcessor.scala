@@ -39,6 +39,7 @@ import org.kevoree.framework.aspects.KevoreeAspects._
 import javax.annotation.processing.ProcessingEnvironment
 import javax.lang.model.element.TypeElement
 import org.kevoree.framework.annotation.processor.visitor.KevoreeAnnotationProcessor
+import org.kevoree.framework.annotation.processor.LocalUtility
 
 
 /* Common Sub process to deal with ThirdParty definition */
@@ -76,7 +77,7 @@ trait ThirdPartyProcessor {
             componentType.getDeployUnits().get(0).addRequiredLibs(e)
           }
         case None => {
-            val newThirdParty = KevoreeFactory.$instance.createDeployUnit
+            val newThirdParty = kevoreeFactory.createDeployUnit
             newThirdParty.setName(tp.name)
             newThirdParty.setUrl(tp.url)
             root.addDeployUnits(newThirdParty)
@@ -102,7 +103,7 @@ trait ThirdPartyProcessor {
             }
           }
           case None => {
-            val newThirdParty = KevoreeFactory.$instance.createDeployUnit
+            val newThirdParty = LocalUtility.kevoreeFactory.createDeployUnit
             newThirdParty.setUnitName(unitName)
             newThirdParty.setGroupName(groupName)
             newThirdParty.setVersion(version)
@@ -124,7 +125,7 @@ trait ThirdPartyProcessor {
                 componentType.eContainer.asInstanceOf[ContainerRoot].getTypeDefinitions.filter(p => p.isInstanceOf[NodeType]).find(nt => nt.getName == nodeTypeName) match {
                   case Some(existingNodeType) => tp.setTargetNodeType(existingNodeType.asInstanceOf[NodeType])
                   case None => {
-                    val nodeType = KevoreeFactory.$instance.createNodeType
+                    val nodeType = LocalUtility.kevoreeFactory.createNodeType
                     nodeType.setName(nodeTypeName)
                     root.addTypeDefinitions(nodeType)
                     tp.setTargetNodeType(nodeType)
