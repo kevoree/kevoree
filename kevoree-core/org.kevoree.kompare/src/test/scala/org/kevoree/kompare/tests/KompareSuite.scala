@@ -52,7 +52,9 @@ trait KompareSuite extends JUnitSuite {
 
   implicit def richRoot(self: ContainerRoot) = RichContainerRoot(self)
 
-  def emptyModel = KevoreeFactory.$instance.createContainerRoot
+  val kevoreeFactory = new org.kevoree.impl.DefaultKevoreeFactory
+
+  def emptyModel = kevoreeFactory.createContainerRoot
 
 }
 

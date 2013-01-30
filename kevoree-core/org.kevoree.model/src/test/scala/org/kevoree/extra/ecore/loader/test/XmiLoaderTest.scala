@@ -135,14 +135,15 @@ class XmiLoaderTest {
 
   @Test
   def loadAndCloneToReadWrite() {
+    val factory = new org.kevoree.impl.DefaultKevoreeFactory()
     val loader = new ModelLoader()
     val m = loader.loadModelFromPath(new File(getClass.getResource("/bootstrapModel0.kev").toURI)).get(0);
-    m.addNodes(KevoreeFactory.$instance.createContainerNode)
+    m.addNodes(factory.createContainerNode)
     val modelCloner = new ModelCloner
     val readOModel = modelCloner.clone(m, true)
     var errorDetected = false
     try {
-      readOModel.addNodes(KevoreeFactory.$instance.createContainerNode)
+      readOModel.addNodes(factory.createContainerNode)
       fail("Model must be not modifiable!")
     } catch {
       case _ => {
@@ -162,13 +163,13 @@ class XmiLoaderTest {
     assert(errorDetected)
 
 
-    m.addNodes(KevoreeFactory.$instance.createContainerNode)
+    m.addNodes(factory.createContainerNode)
 
 
     val writeModel = modelCloner.clone(readOModel, false)
-    writeModel.addNodes(KevoreeFactory.$instance.createContainerNode)
+    writeModel.addNodes(factory.createContainerNode)
     val writeModel2 = modelCloner.clone(readOModel)
-    writeModel2.addNodes(KevoreeFactory.$instance.createContainerNode)
+    writeModel2.addNodes(factory.createContainerNode)
   }
 
 

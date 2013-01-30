@@ -28,7 +28,8 @@
 package org.kevoree.framework
 
 import org.kevoree._
- import org.slf4j.LoggerFactory
+import org.kevoree.impl.DefaultKevoreeFactory
+import org.slf4j.LoggerFactory
 import scala.collection.JavaConversions._
 
 
@@ -39,14 +40,15 @@ object KevoreePlatformHelper {
   def updateNodeLinkProp(actualModel : ContainerRoot,currentNodeName : String,targetNodeName:String,key:String,value:String,networkType : String,weight:Int) : ContainerNode = {
 
     var thisNodeFound : ContainerNode = null
+    val factory = new DefaultKevoreeFactory()
 
     /* SEARCH THE NODE NETWORK */
     val nodenetwork = actualModel.getNodeNetworks.find({nn =>
         nn.getInitBy().getName == currentNodeName && nn.getTarget.getName == targetNodeName }) getOrElse {
-      val newNodeNetwork = KevoreeFactory.$instance.createNodeNetwork
+      val newNodeNetwork = factory.createNodeNetwork
       val thisNode = actualModel.getNodes.find({loopNode => loopNode.getName == currentNodeName })
       thisNodeFound = thisNode.getOrElse{
-        val newnode = KevoreeFactory.$instance.createContainerNode
+        val newnode = factory.createContainerNode
         newnode.setName(currentNodeName)
         actualModel.addNodes(newnode)
         newnode
@@ -54,7 +56,7 @@ object KevoreePlatformHelper {
       val targetNode = actualModel.getNodes.find({loopNode => loopNode.getName == targetNodeName })
       newNodeNetwork.setTarget(targetNode.getOrElse{
           logger.debug("Unknow node "+targetNodeName+" add to model")
-          val newnode =KevoreeFactory.$instance.createContainerNode
+          val newnode = factory.createContainerNode
           newnode.setName(targetNodeName)
           actualModel.addNodes(newnode)
           newnode
@@ -66,7 +68,7 @@ object KevoreePlatformHelper {
 
     /* Found node link */
     val nodelink = nodenetwork.getLink.find(loopLink => loopLink.getNetworkType == networkType).getOrElse{
-      val newlink = KevoreeFactory.$instance.createNodeLink
+      val newlink = factory.createNodeLink
       newlink.setNetworkType(networkType)
       nodenetwork.addLink(newlink)
       newlink
@@ -77,7 +79,7 @@ object KevoreePlatformHelper {
 
     /* Found Property and SET remote IP */
     val prop = nodelink.getNetworkProperties.find({networkProp => networkProp.getName == key }).getOrElse{
-      val newprop = KevoreeFactory.$instance.createNetworkProperty
+      val newprop = factory.createNetworkProperty
       newprop.setName(key)
       nodelink.addNetworkProperties(newprop)
       newprop
