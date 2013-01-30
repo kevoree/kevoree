@@ -49,7 +49,7 @@ object XmiLoaderTest {
   @BeforeClass
   def loadXmi() {
     val loader = new ModelLoader()
-    model = loader.loadModelFromPath(new File(getClass.getResource("/defaultlibs.kev").toURI));
+    model = loader.loadModelFromPath(new File(getClass.getResource("/defaultlibs.kev").toURI)).get(0);
 
   }
 }
@@ -59,7 +59,7 @@ class XmiLoaderTest {
   @Test
   def testLoadParameters() {
     val loader = new ModelLoader()
-    loader.loadModelFromPath(new File(getClass.getResource("/PrarametersBug.kev").toURI));
+    loader.loadModelFromPath(new File(getClass.getResource("/ParametersBug.kev").toURI)).get(0);
   }
 
 
@@ -67,7 +67,7 @@ class XmiLoaderTest {
   @Test
   def testOpposite1(){
     val loader = new ModelLoader()
-    val m = loader.loadModelFromPath(new File(getClass.getResource("/unomas.kev").toURI));
+    val m = loader.loadModelFromPath(new File(getClass.getResource("/unomas.kev").toURI)).get(0);
     m.getMBindings.foreach { mb =>
       println("---------->")
       val p = mb.getPort
@@ -127,7 +127,7 @@ class XmiLoaderTest {
   @Test
   def loadBootstrapModel() {
     val loader = new ModelLoader()
-    val localModel = loader.loadModelFromPath(new File(getClass.getResource("/bootstrapModel0.kev").toURI));
+    val localModel = loader.loadModelFromPath(new File(getClass.getResource("/bootstrapModel0.kev").toURI)).get(0);
     if(localModel == null){
       fail("Model not loaded!")
     }
@@ -135,14 +135,15 @@ class XmiLoaderTest {
 
   @Test
   def loadAndCloneToReadWrite() {
+    val factory = new org.kevoree.impl.DefaultKevoreeFactory()
     val loader = new ModelLoader()
-    val m = loader.loadModelFromPath(new File(getClass.getResource("/bootstrapModel0.kev").toURI));
-    m.addNodes(KevoreeFactory.$instance.createContainerNode)
+    val m = loader.loadModelFromPath(new File(getClass.getResource("/bootstrapModel0.kev").toURI)).get(0);
+    m.addNodes(factory.createContainerNode)
     val modelCloner = new ModelCloner
     val readOModel = modelCloner.clone(m, true)
     var errorDetected = false
     try {
-      readOModel.addNodes(KevoreeFactory.$instance.createContainerNode)
+      readOModel.addNodes(factory.createContainerNode)
       fail("Model must be not modifiable!")
     } catch {
       case _ => {
@@ -162,13 +163,13 @@ class XmiLoaderTest {
     assert(errorDetected)
 
 
-    m.addNodes(KevoreeFactory.$instance.createContainerNode)
+    m.addNodes(factory.createContainerNode)
 
 
     val writeModel = modelCloner.clone(readOModel, false)
-    writeModel.addNodes(KevoreeFactory.$instance.createContainerNode)
+    writeModel.addNodes(factory.createContainerNode)
     val writeModel2 = modelCloner.clone(readOModel)
-    writeModel2.addNodes(KevoreeFactory.$instance.createContainerNode)
+    writeModel2.addNodes(factory.createContainerNode)
   }
 
 

@@ -41,16 +41,20 @@ import scala.collection.JavaConversions._
 trait TypeLibraryMerger extends Merger {
 
   private val logger = LoggerFactory.getLogger(this.getClass)
+private val kevoreeFactory = new org.kevoree.impl.DefaultKevoreeFactory
+
 
   def mergeLibrary(actualModel: ContainerRoot, modelToMerge: ContainerRoot): Unit = {
     //MERGE OR CREATE LIBRARY
     //MERGE OR ADD UNRESOLVE TYPE DEF
+
+
     modelToMerge.getLibraries.foreach {
       library =>
         val currentLibrary = actualModel.getLibraries.find(plib => plib.getName == library.getName) match {
           case Some(plib) => plib
           case None => {
-            val newLib = KevoreeFactory.$instance.createTypeLibrary
+            val newLib = kevoreeFactory.createTypeLibrary
             newLib.setName(library.getName)
             actualModel.addLibraries(newLib)
             newLib

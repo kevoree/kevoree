@@ -45,13 +45,14 @@ trait RepositoryMerger {
 
   //EXPECT TYPE DEFINITION TO BE MERGE BEFORE THIS STEP
   def mergeRepositories(actualModel: ContainerRoot, modelToMerge: ContainerRoot) {
+    val kevoreeFactory = new org.kevoree.impl.DefaultKevoreeFactory
     val ctRepo: List[Repository] = modelToMerge.getRepositories.toList
     ctRepo.foreach {
       toMergeRepo =>
         actualModel.getRepositories.find(lr => lr.getUrl == toMergeRepo.getUrl) match {
           case Some(found_repo) => mergeRepository(actualModel, found_repo, toMergeRepo)
           case None => {
-            val newrepo = KevoreeFactory.$instance.createRepository
+            val newrepo = kevoreeFactory.createRepository
             newrepo.setUrl(toMergeRepo.getUrl)
             actualModel.addRepositories(newrepo)
             mergeRepository(actualModel, newrepo, toMergeRepo)

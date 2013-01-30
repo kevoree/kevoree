@@ -50,7 +50,8 @@ trait MergerTestSuiteHelper extends JUnitSuite {
     KevoreeXmiHelper.$instance.load(modelPath)
   }
 
-  def emptyModel = KevoreeFactory.$instance.createContainerRoot
+  protected val kevoreeFactory = new org.kevoree.impl.DefaultKevoreeFactory
+  def emptyModel = kevoreeFactory.createContainerRoot
 
   def hasNoRelativeReference(path: String, file: String) = {
     val modelPath = this.getClass.getClassLoader.getResource(path).getPath + "/" + file
