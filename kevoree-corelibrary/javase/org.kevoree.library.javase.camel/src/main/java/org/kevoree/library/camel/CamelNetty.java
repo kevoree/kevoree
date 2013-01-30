@@ -69,7 +69,6 @@ public class CamelNetty extends AbstractKevoreeCamelChannelType {
                     }
                 }
                 );
-
         try {
             routeBuilder.from("netty:tcp://0.0.0.0:" + parsePortNumber(getNodeName()) + "?sync=true").
                     process(new Processor() {
@@ -80,7 +79,6 @@ public class CamelNetty extends AbstractKevoreeCamelChannelType {
                                     forward(p, (Message) exchange.getIn().getBody());
                                 }
                             }
-
                         }
                     });
         } catch (Exception e) {
