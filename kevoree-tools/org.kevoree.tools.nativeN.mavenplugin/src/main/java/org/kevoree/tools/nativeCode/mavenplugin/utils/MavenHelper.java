@@ -19,6 +19,7 @@ import org.apache.maven.model.io.xpp3.MavenXpp3Writer;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.IOUtil;
 import org.kevoree.KevoreeFactory;
+import org.kevoree.impl.DefaultKevoreeFactory;
 import org.kevoree.tools.nativeCode.mavenplugin.GenerateFilesMojo;
 import org.kevoree.tools.nativeN.utils.FileManager;
 
@@ -62,13 +63,13 @@ public class MavenHelper {
 
     public static  void createPom(String path_template,String path_ouput,Model model,MavenProject project) throws IOException {
 
+        KevoreeFactory factory = new DefaultKevoreeFactory();
         String pom_component = new String(FileManager.load(GenerateFilesMojo.class.getClassLoader().getResourceAsStream(path_template)));
-
         pom_component= pom_component.replace("$groupId$", model.getGroupId());
         pom_component= pom_component.replace("$artifactId$",model.getArtifactId());
         pom_component= pom_component.replace("$version$", model.getArtifactId());
         pom_component= pom_component.replace("$NAME$",model.getName());
-        pom_component = pom_component.replace("$VERSION_K$", KevoreeFactory.getVersion());
+        pom_component = pom_component.replace("$VERSION_K$", factory.getVersion());
 
         pom_component = pom_component.replace("$artifactId_parent$",project.getArtifactId());
         pom_component = pom_component.replace("$version_parent$",project.getVersion());
