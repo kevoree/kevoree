@@ -4,6 +4,7 @@ import org.kevoree.api.service.core.checker.{CheckerViolation, CheckerService}
 import org.kevoree.{Instance, ContainerRoot}
 import org.kevoree.framework.aspects.KevoreeAspects._
 import java.util.ArrayList
+import scala.collection.JavaConversions._
 
 
 /**

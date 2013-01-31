@@ -6,7 +6,10 @@ import java.lang.String
 import org.kevoree.api.service.core.handler.{KevoreeModelHandlerService}
 import org.kevoree.api.service.core.script.KevScriptEngineFactory
 import org.kevoree.extra.kserial.Utils.KHelpers
-import org.kevoree.{Instance, KevoreeFactory, ContainerRoot}
+import org.kevoree.{Dictionary, Instance, KevoreeFactory, ContainerRoot}
+import scala.collection.JavaConversions._
+import org.kevoree.api.NodeType
+import org.kevoree.impl.DefaultKevoreeFactory
 
 /**
  * User: ffouquet
@@ -38,13 +41,13 @@ class ArduinoDelegationPush (handler: KevoreeModelHandlerService, groupName: Str
 
   private def setProperty (model: ContainerRoot, instance: Instance, name: String, key: String, isFragment: Boolean = false, nodeNameForFragment: String = "", value: Object) = {
     instance.getDictionary match {
-      case None => {
+      case null => {
         None
       }
-      case Some(dictionary) => {
+      case dictionary:Dictionary => {
         dictionary.getValues.find(dictionaryAttribute =>
           dictionaryAttribute.getAttribute.getName == key &&
-            ((isFragment && dictionaryAttribute.getTargetNode.isDefined && dictionaryAttribute.getTargetNode.get.getName == nodeNameForFragment) || !isFragment)) match {
+            ((isFragment && dictionaryAttribute.getTargetNode!=null && dictionaryAttribute.getTargetNode.getName == nodeNameForFragment) || !isFragment)) match {
           case None => // todo
           case Some(dictionaryAttribute) => dictionaryAttribute.setValue(value.toString)
         }
@@ -60,14 +63,17 @@ class ArduinoDelegationPush (handler: KevoreeModelHandlerService, groupName: Str
     try {
       val nodeType = bs.bootstrapNodeType(model, targetNodeName, handler, kevSFact)
       nodeType match {
-        case Some(gNodeType) => {
+        case gNodeType:NodeType => {
           model.getGroups.find(g => g.getName == groupName) match {
             case Some(group) => {
-              val dictionary = group.getDictionary.getOrElse({
-                val newdic = KevoreeFactory.createDictionary
-                group.setDictionary(Some(newdic))
-                newdic
-              })
+
+
+              if (group.getDictionary== null){
+                val newdic = new DefaultKevoreeFactory().createDictionary
+                group.setDictionary(newdic)
+              }
+
+              val dictionary = group.getDictionary
 
               val serialPortOption = org.kevoree.framework.KevoreePropertyHelper.getProperty(group, "serialport", isFragment = true, nodeNameForFragment = targetNodeName)
               var serialPort = "*"
@@ -104,7 +110,7 @@ class ArduinoDelegationPush (handler: KevoreeModelHandlerService, groupName: Str
             case None => logger.error("Group not found for name {}", groupName); throw new Exception("Group not found for name " + groupName)
           }
         }
-        case None => logger.warn("Can't bootstrap NodeType"); throw new Exception("Can't bootstrap NodeType")
+        case null => logger.warn("Can't bootstrap NodeType"); throw new Exception("Can't bootstrap NodeType")
       }
     } catch {
       case _@e => logger.error("Can deploy model to node " + targetNodeName, e); throw e

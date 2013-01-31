@@ -9,6 +9,7 @@ import org.kevoreeAdaptation.AdaptationModel
 import org.kevoree.DeployUnit
 import org.kevoree.kompare.JavaSePrimitive
 import org.kevoree.framework.AbstractNodeType
+import scala.collection.JavaConversions._
 
 object TypeBundleBootstrap {
 

@@ -21,7 +21,9 @@ import org.kevoree.library.arduinoNodeType.ArduinoBoardType
 import org.kevoree.tools.arduino.framework.RawTypeHelper
 import org.kevoree.library.arduinoNodeType.ArduinoNode
 import org.kevoree.library.arduinoNodeType.utils.ArduinoHelper
-;
+import scala.collection.JavaConversions._
+
+
 trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
 
   def generateMaxSize(boardType: ArduinoBoardType): String = {
@@ -117,8 +119,8 @@ trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
     var propertiesGenerated: List[String] = List()
     types.foreach {
       ktype =>
-        if (ktype.getDictionaryType.isDefined) {
-          ktype.getDictionaryType.get.getAttributes.foreach {
+        if (ktype.getDictionaryType!=null) {
+          ktype.getDictionaryType.getAttributes.foreach {
             att =>
               val propName = att.getName
               val propNamePrefix = ("prop_" + propName).toLowerCase
@@ -169,8 +171,8 @@ trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
     var propertiesGenerated: List[String] = List()
     types.foreach {
       ktype =>
-        if (ktype.getDictionaryType.isDefined) {
-          ktype.getDictionaryType.get.getAttributes.foreach {
+        if (ktype.getDictionaryType!=null) {
+          ktype.getDictionaryType.getAttributes.foreach {
             att =>  {
               val propName = att.getName
               checksum_properties +=ArduinoHelper.checksumArduino(propName.toLowerCase)
@@ -199,8 +201,8 @@ trait KevoreeCFrameworkGenerator extends KevoreeCAbstractGenerator {
     var propertiesGenerated: List[String] = List()
     types.foreach {
       ktype =>
-        if (ktype.getDictionaryType.isDefined) {
-          ktype.getDictionaryType.get.getAttributes.foreach {
+        if (ktype.getDictionaryType!=null) {
+          ktype.getDictionaryType.getAttributes.foreach {
             att =>
               propertiesGenerated = propertiesGenerated ++ List(att.getName)
           }
@@ -275,9 +277,9 @@ context b "}"
       ktype =>
         context b "case " + typeCodeMap.get(ktype.getName).get + ":{"
         context b ktype.getName + " * instance = (" + ktype.getName + "*) instances[index];"
-        if (ktype.getDictionaryType.isDefined) {
+        if (ktype.getDictionaryType!=null) {
           context b " switch(keyCode){"
-          ktype.getDictionaryType.get.getAttributes.foreach {
+          ktype.getDictionaryType.getAttributes.foreach {
             attribute =>
               context b "case " + propsCodeMap.get(attribute.getName).get + ":{"
 
@@ -513,15 +515,15 @@ context b "}"
       instance =>
       //GENERATE INIT DICTIONARY
         val dictionary: java.util.HashMap[String, String] = new java.util.HashMap[String, String]
-        if (instance.getTypeDefinition.getDictionaryType.isDefined) {
-          if (instance.getTypeDefinition.getDictionaryType.get.getDefaultValues != null) {
-            instance.getTypeDefinition.getDictionaryType.get.getDefaultValues.foreach {
+        if (instance.getTypeDefinition.getDictionaryType!=null) {
+          if (instance.getTypeDefinition.getDictionaryType.getDefaultValues != null) {
+            instance.getTypeDefinition.getDictionaryType.getDefaultValues.foreach {
               dv =>
                 dictionary.put(dv.getAttribute.getName, dv.getValue)
             }
           }
-          if (instance.getDictionary.isDefined) {
-            instance.getDictionary.get.getValues.foreach {
+          if (instance.getDictionary!=null) {
+            instance.getDictionary.getValues.foreach {
               value =>
                 dictionary.put(value.getAttribute.getName, value.getValue)
             }
@@ -608,8 +610,8 @@ context b "}"
     context b " switch(instances[index]->subTypeCode){"
     types.foreach {
       ktype =>
-        if (ktype.getDictionaryType.isDefined) {
-          if (ktype.getDictionaryType.get.getAttributes.exists(att => att.getName == "period")) {
+        if (ktype.getDictionaryType!=null) {
+          if (ktype.getDictionaryType.getAttributes.exists(att => att.getName == "period")) {
             context b "case " + typeCodeMap.get(ktype.getName).get + ":{"
             context b "return millis() > (((" + ktype.getName + " *) instances[index] )->nextExecution);"
             context b "}"

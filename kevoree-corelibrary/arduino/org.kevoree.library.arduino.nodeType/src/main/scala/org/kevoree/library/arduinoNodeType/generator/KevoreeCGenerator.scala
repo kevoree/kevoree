@@ -10,6 +10,7 @@ import org.kevoree.library.arduinoNodeType.{PMemory, ArduinoBoardType}
 import org.kevoree._
 import framework.AbstractNodeType
 import kompare.JavaSePrimitive
+import scala.collection.JavaConversions._
 
 class KevoreeCGenerator
   extends KevoreeComponentTypeClassGenerator

@@ -9,6 +9,7 @@ import org.kevoree.extra.kserial.KevoreeSharedCom;
 import org.kevoree.extra.kserial.Utils.KHelpers;
 import org.kevoree.framework.AbstractNodeType;
 import org.kevoree.framework.KevoreeXmiHelper;
+import org.kevoree.impl.DefaultKevoreeFactory;
 import org.kevoree.kompare.JavaSePrimitive;
 import org.kevoree.kompare.KevoreeKompareBean;
 import org.kevoree.library.arduinoNodeType.generator.KevoreeCGenerator;
@@ -101,7 +102,9 @@ public class ArduinoNode extends AbstractNodeType {
             newdir.delete();
             newdir.mkdirs();
 
-            ContainerRoot lastVersionModel = KevoreeFactory.eINSTANCE().createContainerRoot();
+            KevoreeFactory factory = new DefaultKevoreeFactory();
+
+            ContainerRoot lastVersionModel = factory.createContainerRoot();
 
             int lastVersion = 0;
             //Try to find previous version
@@ -127,7 +130,7 @@ public class ArduinoNode extends AbstractNodeType {
                 logger.info("No Previous Model , Init one from targetModel");
                 ModelCloner cloner = new ModelCloner();
                 lastVersionModel = cloner.clone(root);
-                for (ContainerNode node : lastVersionModel.getNodesForJ()) {
+                for (ContainerNode node : lastVersionModel.getNodes()) {
                     node.removeAllComponents();
                     node.removeAllHosts();
                 }
@@ -144,7 +147,7 @@ public class ArduinoNode extends AbstractNodeType {
             AdaptationModel kompareModel = kompare.kompare(lastVersionModel, cloned, targetNodeName);
 
 
-            if (kompareModel.getAdaptationsForJ().size() > 0) {
+            if (kompareModel.getAdaptations().size() > 0) {
 
                 File newdirTarget = new File(newdir.getAbsolutePath() + File.separator + "target");
                 org.kevoree.library.arduinoNodeType.FileHelper.createAndCleanDirectory(newdirTarget);
@@ -165,7 +168,7 @@ public class ArduinoNode extends AbstractNodeType {
                     logger.error("Error appears when we compute the firmware update", e);
                 }
 
-                KevoreeXmiHelper.save(newdir.getAbsolutePath() + File.separator + targetNodeName + "_" + (lastVersion + 1) + ".kev", root);
+                KevoreeXmiHelper.$instance.save(newdir.getAbsolutePath() + File.separator + targetNodeName + "_" + (lastVersion + 1) + ".kev", root);
             }
 
         }catch (Exception e)
@@ -204,7 +207,7 @@ public class ArduinoNode extends AbstractNodeType {
 
         ModelCloner cloner = new ModelCloner();
         ContainerRoot lastVersionModel = cloner.clone(rootModel);
-        for (ContainerNode node : lastVersionModel.getNodesForJ()) {
+        for (ContainerNode node : lastVersionModel.getNodes()) {
             node.removeAllComponents();
             node.removeAllHosts();
         }
@@ -292,7 +295,7 @@ public class ArduinoNode extends AbstractNodeType {
 
     public  boolean needAdaptation(AdaptationModel modelIn){
         boolean typeAdaptationFound = false;
-        for (AdaptationPrimitive p : modelIn.getAdaptationsForJ()) {
+        for (AdaptationPrimitive p : modelIn.getAdaptations()) {
             Boolean addType = p.getPrimitiveType().getName().equals(JavaSePrimitive.AddType());
             Boolean removeType = p.getPrimitiveType().getName().equals(JavaSePrimitive.RemoveType());
             Boolean updateType = p.getPrimitiveType().getName().equals(JavaSePrimitive.UpdateType());

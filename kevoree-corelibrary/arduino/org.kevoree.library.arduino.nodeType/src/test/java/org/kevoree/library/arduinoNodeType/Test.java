@@ -23,7 +23,7 @@ public class Test {
 
 
         
-        ContainerRoot model = KevoreeXmiHelper.loadStream(FileHelper.class.getClassLoader().getResourceAsStream("test.kev"));
+        ContainerRoot model = KevoreeXmiHelper.$instance.loadStream(FileHelper.class.getClassLoader().getResourceAsStream("test.kev"));
 
       //  ContainerRoot model = KevoreeXmiHelper.load("/Users/duke/Desktop/kev.kev");
 

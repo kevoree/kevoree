@@ -17,7 +17,7 @@ public class Tester2 {
 
         try
         {
-            ContainerRoot   model = KevoreeXmiHelper.load("/home/jed/testFOTA") ;
+            ContainerRoot   model = KevoreeXmiHelper.$instance.load("/home/jed/testFOTA") ;
 
 
             ArduinoWirelessNode node = new ArduinoWirelessNode();

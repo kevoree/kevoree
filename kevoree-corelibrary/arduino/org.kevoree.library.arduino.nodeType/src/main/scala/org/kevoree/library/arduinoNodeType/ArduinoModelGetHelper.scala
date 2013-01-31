@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory
 import org.kevoree.cloner.ModelCloner
 import org.kevoree.extra.kserial.Utils.KHelpers
 import org.kevoree.extra.kserial.SerialPort._
+import scala.collection.JavaConversions._
 
 
 /**

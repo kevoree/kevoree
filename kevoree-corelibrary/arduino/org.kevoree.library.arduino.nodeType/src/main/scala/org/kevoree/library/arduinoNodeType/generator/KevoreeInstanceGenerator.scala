@@ -2,6 +2,7 @@ package org.kevoree.library.arduinoNodeType.generator
 
 import org.kevoree.TypeDefinition
 import org.kevoree.tools.arduino.framework.RawTypeHelper
+import scala.collection.JavaConversions._
 
 /**
  * Created by IntelliJ IDEA.
@@ -16,8 +17,8 @@ trait KevoreeInstanceGenerator extends KevoreeCAbstractGenerator {
 
   def generateDic(td : TypeDefinition){
     //GENERATE DICTIONARY VALUES POINTERS
-    if (td.getDictionaryType.isDefined) {
-      td.getDictionaryType.get.getAttributes.foreach {
+    if (td.getDictionaryType()!=null) {
+      td.getDictionaryType.getAttributes.foreach {
         attribute =>
 
           this match {

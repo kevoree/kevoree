@@ -60,7 +60,7 @@ trait KevoreeReflectiveHelper {
     val  du = ct.foundRelevantDeployUnit(nodeHost)
 
     val resolvedNodeType = ct.foundRelevantHostNodeType(nodeTypeName.asInstanceOf[NodeType],ct)
-    val genPackage = KevoreeGeneratorHelper.getTypeDefinitionGeneratedPackage(ct, resolvedNodeType.get.getName)
+    val genPackage = new KevoreeGeneratorHelper().getTypeDefinitionGeneratedPackage(ct, resolvedNodeType.get.getName)
     val activatorName = ct.getName + "Activator"
     val activatorClassName = genPackage + "." + activatorName
 

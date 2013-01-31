@@ -11,6 +11,7 @@ import org.kevoree.annotation.{Generate => KGenerate}
 import org.slf4j.{LoggerFactory, Logger}
 import org.kevoree.tools.arduino.framework.AbstractArduinoComponent
 import org.kevoree.framework.AbstractNodeType
+import scala.collection.JavaConversions._
 
 trait KevoreeComponentTypeClassGenerator extends KevoreeCAbstractGenerator with KevoreeReflectiveHelper with KevoreeInstanceGenerator {
   private val logger: Logger = LoggerFactory.getLogger(this.getClass)
@@ -29,8 +30,8 @@ trait KevoreeComponentTypeClassGenerator extends KevoreeCAbstractGenerator with 
     context b " public : "
 
     var nextExecutionMustBeInit = false
-    if (ct.getDictionaryType.isDefined) {
-      if (ct.getDictionaryType.get.getAttributes.exists(att => att.getName == "period")) {
+    if (ct.getDictionaryType!=null) {
+      if (ct.getDictionaryType.getAttributes.exists(att => att.getName == "period")) {
         context b "unsigned long nextExecution;"
         nextExecutionMustBeInit = true;
       }

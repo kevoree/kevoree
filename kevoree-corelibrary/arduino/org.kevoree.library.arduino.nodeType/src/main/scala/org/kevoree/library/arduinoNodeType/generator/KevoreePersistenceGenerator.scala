@@ -4,6 +4,7 @@ import org.kevoree.TypeDefinition
 import org.kevoree.library.arduinoNodeType.PMemory
 import templates.SimpleCopyTemplate
 import org.kevoree.tools.arduino.framework.RawTypeHelper
+import scala.collection.JavaConversions._
 
 /**
  * User: ffouquet
@@ -59,10 +60,10 @@ trait KevoreePersistenceGenerator extends KevoreeCAbstractGenerator {
     context b " switch(instances[instanceIndex]->subTypeCode){"
     types.foreach {
       ktype =>
-        if (ktype.getDictionaryType.isDefined) {
+        if (ktype.getDictionaryType!=null) {
           context b "case " + typeCodeMap.get(ktype.getName).get + ":{"
           var isFirst = true
-          ktype.getDictionaryType.get.getAttributes.foreach {
+          ktype.getDictionaryType.getAttributes.foreach {
             att =>
               if (!isFirst) {
                 context b "save2Memory(',');"
