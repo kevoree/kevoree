@@ -9,7 +9,7 @@ import org.kevoreeAdaptation.AdaptationModel;
 import org.kevoreeAdaptation.AdaptationPrimitive;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.kevoree.library.defaultNodeType.CommandMapper;
+import org.kevoree.library.defaultNodeTypes.CommandMapper;
 import org.kevoree.library.defaultNodeTypes.context.KevoreeDeployManager;
 
 
