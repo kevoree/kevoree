@@ -71,7 +71,8 @@ import org.kevoree.tools.aether.framework.NodeTypeBootstrapHelper
 
 object ModelGenerator extends App {
 
-  def generate (scriptPath: String, mavenSource: MavenProject): ContainerRoot = {
+  def generate (scriptPath: String, mavenSource: MavenProject,kevoreeFactory : KevoreeFactory): ContainerRoot = {
+
     val kevEngine = new KevScriptOfflineEngine(kevoreeFactory.createContainerRoot,new NodeTypeBootstrapHelper())
     mavenSource.getProperties.keySet().foreach {
       key => kevEngine.addVariable(key.toString, mavenSource.getProperties.get(key.toString).toString)

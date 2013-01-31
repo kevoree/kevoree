@@ -33,6 +33,7 @@ import org.apache.maven.project.MavenProject;
 import org.kevoree.ContainerRoot;
 import org.kevoree.KevoreeFactory;
 import org.kevoree.framework.KevoreeXmiHelper;
+import org.kevoree.impl.DefaultKevoreeFactory;
 import org.kevoree.merger.KevoreeMergerComponent;
 import org.kevoree.tools.aether.framework.AetherUtil;
 import org.sonatype.aether.RepositorySystem;
@@ -104,15 +105,19 @@ public class MarShellMavenMojo extends AbstractMojo {
 
 		mergerComponent = new KevoreeMergerComponent();
 
+        KevoreeFactory kevoreeFactory = new DefaultKevoreeFactory();
+
+
+
 		ContainerRoot model = kevoreeFactory.createContainerRoot();
 
         if(sourceMarShellDirectory != null){
-            ContainerRoot model2 = executeOnDirectory(sourceMarShellDirectory);
+            ContainerRoot model2 = executeOnDirectory(sourceMarShellDirectory,kevoreeFactory);
             mergerComponent.merge(model,model2);
         }
 
         if(sourceMarShellDirectory2 != null){
-            ContainerRoot model2 = executeOnDirectory(sourceMarShellDirectory2);
+            ContainerRoot model2 = executeOnDirectory(sourceMarShellDirectory2,kevoreeFactory);
             mergerComponent.merge(model,model2);
         }
 
@@ -130,16 +135,16 @@ public class MarShellMavenMojo extends AbstractMojo {
 		project.addResource(resource);
 	}
 
-	private ContainerRoot executeOnDirectory (File dir) throws MojoExecutionException {
+	private ContainerRoot executeOnDirectory (File dir,KevoreeFactory kevoreeFactory) throws MojoExecutionException {
 		ContainerRoot mergedModel = kevoreeFactory.createContainerRoot();
         if(dir.listFiles() != null){
             for (File f : dir.listFiles()) {
                 if (f.isDirectory()) {
-                    ContainerRoot model = executeOnDirectory(f);
+                    ContainerRoot model = executeOnDirectory(f,kevoreeFactory);
                     mergedModel = mergerComponent.merge(mergedModel, model);
                 } else {
 //				try {
-                    ContainerRoot model = ModelGenerator.generate(f.getAbsolutePath(),project);
+                    ContainerRoot model = ModelGenerator.generate(f.getAbsolutePath(),project,kevoreeFactory);
                     mergedModel = mergerComponent.merge(mergedModel, model);
                     /*} catch (Exception e) {
                          getLog().error("Unable to parse the source file", e);
