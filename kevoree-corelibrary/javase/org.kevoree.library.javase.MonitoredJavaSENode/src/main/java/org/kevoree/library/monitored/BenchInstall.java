@@ -8,6 +8,7 @@ import org.kevoree.annotation.Stop;
 import org.kevoree.api.service.core.script.KevScriptEngine;
 import org.kevoree.api.service.core.script.KevScriptEngineException;
 import org.kevoree.framework.AbstractComponentType;
+import org.kevoree.impl.DefaultKevoreeFactory;
 
 import java.util.Random;
 
@@ -42,7 +43,7 @@ public class BenchInstall extends AbstractComponentType implements Runnable {
     public void run() {
 
         KevScriptEngine engine = getKevScriptEngineFactory().createKevScriptEngine();
-        engine.append("merge 'mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.fakeDomo/" + KevoreeFactory.$instance.getVersion() + "'");
+        engine.append("merge 'mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.fakeDomo/" + new DefaultKevoreeFactory().getVersion() + "'");
         String name = "benchConsole" + Math.abs(r.nextInt());
         engine.addVariable("benchName", name);
         engine.addVariable("nodeName", getNodeName());
