@@ -29,6 +29,11 @@
             <artifactId>org.kevoree.kompare</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-stdlib</artifactId>
+            <version>${kotlin.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -52,6 +57,36 @@
             </plugin>
         </plugins>
     </build>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>plugin.kevoree-release</id>
+            <url>http://maven.kevoree.org/release</url>
+        </pluginRepository>
+        <pluginRepository>
+            <id>plugin.kevoree-snapshots</id>
+            <url>http://maven.kevoree.org/snapshots</url>
+        </pluginRepository>
+        <pluginRepository>
+            <id>jetbrains-release</id>
+            <url>http://repository.jetbrains.com/all</url>
+        </pluginRepository>
+    </pluginRepositories>
+
+    <repositories>
+        <repository>
+            <id>kevoree-libs-release-local</id>
+            <url>http://maven.kevoree.org/release</url>
+        </repository>
+        <repository>
+            <id>kevoree-snapshots</id>
+            <url>http://maven.kevoree.org/snapshots</url>
+        </repository>
+        <repository>
+            <id>jetbrains-release</id>
+            <url>http://repository.jetbrains.com/all</url>
+        </repository>
+    </repositories>
 
 
 </project>
