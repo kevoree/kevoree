@@ -29,6 +29,7 @@ package org.kevoree.platform.standalone.gui
 import org.slf4j.LoggerFactory
 import java.util.Properties
 import org.kevoree._
+import impl.DefaultKevoreeFactory
 import scala.collection.JavaConversions._
 
 /**
@@ -40,6 +41,7 @@ import scala.collection.JavaConversions._
 object NodeTypeBootStrapModel {
 
   val logger = LoggerFactory.getLogger(this.getClass)
+  val factory = new DefaultKevoreeFactory
 
   def checkAndCreate(model: ContainerRoot, nodeName: String, nodeTypeName: String, groupTypeName: String, groupName: String, propsNode: Properties, propsGroup: Properties) {
     val node: ContainerNode = model.getNodes.find {
@@ -71,17 +73,17 @@ object NodeTypeBootStrapModel {
   private def createGroup(node : ContainerNode,model: ContainerRoot, groupName: String, groupTypeName: String, props: Properties): Group = {
     model.getTypeDefinitions.filter(td => td.isInstanceOf[GroupType]).find(td => td.getName == groupTypeName) match {
       case Some(groupTypeDef) => {
-        val group = KevoreeFactory.$instance.createGroup
+        val group = factory.createGroup
         group.setName(groupName)
         group.setTypeDefinition(groupTypeDef)
-        val propsmodel = KevoreeFactory.$instance.createDictionary
+        val propsmodel = factory.createDictionary
         import scala.collection.JavaConversions._
         props.keySet().foreach {
           key =>
             if (groupTypeDef.getDictionaryType()!=null) {
               groupTypeDef.getDictionaryType.getAttributes.find(att => att.getName == key) match {
                 case Some(att) => {
-                  val newValue = KevoreeFactory.$instance.createDictionaryValue
+                  val newValue = factory.createDictionaryValue
                   newValue.setAttribute(att)
                   newValue.setTargetNode(node)
                   newValue.setValue(props.get(key).toString)
@@ -107,19 +109,19 @@ object NodeTypeBootStrapModel {
 
     model.getTypeDefinitions.filter(td => td.isInstanceOf[NodeType]).find(td => td.getName == nodeTypeName) match {
       case Some(nodeTypeDef) => {
-        val node = KevoreeFactory.$instance.createContainerNode
+        val node = factory.createContainerNode
         node.setName(nodeName)
         node.setTypeDefinition(nodeTypeDef)
         model.addNodes(node)
 
-        val propsmodel = KevoreeFactory.$instance.createDictionary
+        val propsmodel = factory.createDictionary
         import scala.collection.JavaConversions._
         props.keySet().foreach {
           key =>
             if (nodeTypeDef.getDictionaryType()!=null) {
               nodeTypeDef.getDictionaryType.getAttributes.find(att => att.getName == key) match {
                 case Some(att) => {
-                  val newValue = KevoreeFactory.$instance.createDictionaryValue
+                  val newValue = factory.createDictionaryValue
                   newValue.setAttribute(att)
                   newValue.setValue(props.get(key).toString)
                   propsmodel.addValues(newValue)
