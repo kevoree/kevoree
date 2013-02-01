@@ -6,7 +6,7 @@ import org.json.JSONStringer
 import org.kevoree.api.service.core.script.KevScriptEngine
 import org.slf4j.LoggerFactory
 import util.matching.Regex
-import org.kevoree.{ContainerNode, ContainerRoot}
+import org.kevoree.ContainerRoot
 import scala.collection.JavaConversions._
 
 /**
@@ -69,9 +69,10 @@ class IaaSKloudResourceManagerPageGenerator(instance: IaaSKloudResourceManagerPa
         }
         case Some(parent) => {
           val paasNodeTypes = model.getTypeDefinitions.filter(nt => KloudModelHelper.isPaaSNodeType(model, nt) &&
-            nt.getDeployUnits.find(dp => dp.getTargetNodeType.find(targetNodeType => KloudModelHelper.isASubType(parent.getTypeDefinition, targetNodeType.getName)).isDefined).isDefined)
+            nt.getDeployUnits.find(dp => KloudModelHelper.isASubType(parent.getTypeDefinition, dp.getTargetNodeType.getName)).isDefined)
+          //dp.getTargetNodeType.find(targetNodeType => KloudModelHelper.isASubType(parent.getTypeDefinition, targetNodeType.getName)).isDefined).isDefined)
 
-          val htmlContent = HTMLPageBuilder.addNodePage(pattern, paasNodeTypes)
+          val htmlContent = HTMLPageBuilder.addNodePage(pattern, paasNodeTypes.toList)
           response.setStatus(200)
           response.setContent(htmlContent)
         }
@@ -154,7 +155,8 @@ class IaaSKloudResourceManagerPageGenerator(instance: IaaSKloudResourceManagerPa
         null
       }
       case Some(parent) => {
-        val paasNodeTypes = model.getTypeDefinitions.filter(nt => KloudModelHelper.isPaaSNodeType(model, nt) && nt.getDeployUnits.find(dp => dp.getTargetNodeType.find(targetNodeType => KloudModelHelper.isASubType(parent.getTypeDefinition, targetNodeType.getName)).isDefined).isDefined)
+        val paasNodeTypes = model.getTypeDefinitions.filter(nt => KloudModelHelper.isPaaSNodeType(model, nt) && nt.getDeployUnits.find(dp => KloudModelHelper.isASubType(parent.getTypeDefinition, dp.getTargetNodeType.getName)).isDefined)
+        //dp.getTargetNodeType.find(targetNodeType => KloudModelHelper.isASubType(parent.getTypeDefinition, targetNodeType.getName)).isDefined).isDefined)
         var types = List[String]()
         jsonresponse.key("request").value("list")
 
