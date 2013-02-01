@@ -78,7 +78,7 @@ class PaaSKloudResourceManagerPageGenerator (instance: PaaSKloudResourceManagerP
           instance.initialize(login, new DefaultKevoreeFactory().createContainerRoot())
           jsonresponse.key("code").value("0")
         } catch {
-          case e: SubmissionException => logger.error("Unable to initialize the user PaaS: {}", login, e); jsonresponse.key("code").value("-1").key("message")
+          case e: SubmissionException => /*logger.error("Unable to initialize the user PaaS: {}", login, e);*/ jsonresponse.key("code").value("-1").key("message")
             .value("Unable to initialize the user PaaS: " + login + "\nerror: " + e.getMessage)
         }
       }

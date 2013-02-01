@@ -154,8 +154,7 @@ class IaaSKloudResourceManagerPageGenerator(instance: IaaSKloudResourceManagerPa
         null
       }
       case Some(parent) => {
-        val paasNodeTypes = model.getTypeDefinitions.filter(nt => KloudModelHelper.isPaaSNodeType(model, nt) &&
-          nt.getDeployUnits.find(dp => dp.getTargetNodeType.find(targetNodeType => KloudModelHelper.isASubType(parent.getTypeDefinition, targetNodeType.getName)).isDefined).isDefined)
+        val paasNodeTypes = model.getTypeDefinitions.filter(nt => KloudModelHelper.isPaaSNodeType(model, nt) && nt.getDeployUnits.find(dp => dp.getTargetNodeType.find(targetNodeType => KloudModelHelper.isASubType(parent.getTypeDefinition, targetNodeType.getName)).isDefined).isDefined)
         var types = List[String]()
         jsonresponse.key("request").value("list")
 
@@ -199,7 +198,7 @@ class IaaSKloudResourceManagerPageGenerator(instance: IaaSKloudResourceManagerPa
     try {
       instance.remove(cleanModel(instance.getModelService.getLastModel, List[String](nodeName)))
     } catch {
-      case e: Throwable => logger.warn("Unable to clean the current model to remove the child {}", nodeName, e)
+      case e: Throwable => //logger.warn("Unable to clean the current model to remove the child {}", nodeName, e)
     }
     request.setUrl(pattern)
     getIaasPage(request, response)

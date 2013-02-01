@@ -152,7 +152,7 @@ class PaaSKloudUserResourceManagerPageGenerator (instance: KloudResourceManagerP
             try {
               kengine.atomicInterpretDeploy()
             } catch {
-              case e: KevScriptEngineException => logger.warn("Unable to remove {}", nodeName, e)
+              case e: KevScriptEngineException => //logger.warn("Unable to remove {}", nodeName, e)
             }
           }
         }

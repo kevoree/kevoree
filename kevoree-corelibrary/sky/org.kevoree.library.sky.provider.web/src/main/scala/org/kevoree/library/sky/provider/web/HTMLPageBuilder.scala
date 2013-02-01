@@ -34,8 +34,8 @@ object HTMLPageBuilder {
             <a href={pattern}>Home</a> <span class="divider">/</span>
           </li>
         </ul>{val nodesList = model.findByQuery("nodes[" + nodeName + "]", classOf[ContainerNode]) match {
-        case None => List[ContainerNode]()
-        case Some(node) => node.getHosts.toList
+        case null => List[ContainerNode]()
+        case node :ContainerNode => node.getHosts.toList
       }
       nodeList(pattern, model, nodesList)}
          </div></div>
@@ -121,7 +121,7 @@ object HTMLPageBuilder {
                 {var result: List[scala.xml.Elem] = List()
               KloudModelHelper.getPaaSKloudGroups(model).foreach {
                 group => {
-                  logger.debug("{} is a user and he/she has {} nodes", group.getName, group.getSubNodes)
+                  //logger.debug("{} is a user and he/she has {} nodes", group.getName, group.getSubNodes)
                   result = result ++ List(
                     <tr>
                       <td>
@@ -173,10 +173,10 @@ object HTMLPageBuilder {
               </a> <span class="divider">/</span>
               </li>
             </ul>{val nodesList = model.findByQuery("groups[" + login + "]", classOf[Group]) match {
-            case None => List[ContainerNode]()
-            case Some(group) => group.getSubNodes
+            case null => new java.util.ArrayList[ContainerNode]()
+            case group:Group => group.getSubNodes
           }
-          nodeList(pattern, model, nodesList)}
+          nodeList(pattern, model, nodesList.toList)}
           </div>
         </div>
       </body>
@@ -208,16 +208,16 @@ object HTMLPageBuilder {
             </ul>{var result: List[scala.xml.Elem] = List()
           /*model.getNodes.find(n => n.getName == parentNodeName)*/
           model.findByQuery("nodes[" + parentNodeName + "]", classOf[ContainerNode]) match {
-            case None =>
-            case Some(node) => {
+            case null =>
+            case node:ContainerNode => {
               node.findByQuery("hosts[" + nodeName + "]", classOf[ContainerNode])match {
-                case None =>
+                case null =>
                   result = result ++ List(
                     <div class="alert-message block-message error">
                       <p>Node instance not hosted on this platform</p>
                     </div>
                   )
-                case Some(child) =>
+                case child:ContainerNode =>
                   result = result ++ List(
                     <div class="alert-message block-message info">
                       {streamName match {
@@ -288,17 +288,17 @@ object HTMLPageBuilder {
             </ul>{var result: List[scala.xml.Elem] = List()
           /*model.getNodes.find(n => n.getName == parentNodeName)*/
           model.findByQuery("nodes[" + parentNodeName + "]", classOf[ContainerNode])match {
-            case None =>
-            case Some(node) => {
+            case null =>
+            case node:ContainerNode => {
               /*node.getHosts.find(n => n.getName == nodeName)*/
               node.findByQuery("hosts[" + nodeName + "]", classOf[ContainerNode]) match {
-                case None =>
+                case null =>
                   result = result ++ List(
                     <div class="alert-message block-message error">
                       <p>Node instance not hosted on this platform</p>
                     </div>
                   )
-                case Some(child) =>
+                case child:ContainerNode =>
                   result = result ++ List(
                     <div class="alert-message block-message info">
                       <p>
