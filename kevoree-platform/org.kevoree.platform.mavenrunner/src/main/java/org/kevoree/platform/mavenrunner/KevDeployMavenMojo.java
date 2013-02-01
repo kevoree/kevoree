@@ -31,6 +31,7 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
 import org.kevoree.ContainerRoot;
+import org.kevoree.framework.KevoreeXmiHelper;
 import org.kevoree.platform.standalone.KevoreeBootStrap;
 import org.kevoree.tools.modelsync.ModelSyncBean;
 import org.sonatype.aether.RepositorySystem;
@@ -114,7 +115,7 @@ public class KevDeployMavenMojo extends AbstractMojo {
 			ContainerRoot modelLoad = null;
 			if (model.getName().endsWith(".kev")) {
 				FileInputStream ins = new FileInputStream(model);
-				modelLoad = org.kevoree.framework.KevoreeXmiHelper.loadStream(ins);
+				modelLoad = KevoreeXmiHelper.$instance.loadStream(ins);
 				ins.close();
 			} else if (model.getName().endsWith(".kevs")) {
 				modelLoad = KevScriptHelper.generate(model, project);

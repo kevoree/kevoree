@@ -45,6 +45,7 @@ import org.kevoree.{ContainerRoot, KevoreeFactory}
 import org.apache.maven.project.MavenProject
 import org.kevoree.tools.modelsync.FakeBootstraperService
 import io.Source
+import org.kevoree.impl.DefaultKevoreeFactory
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -57,9 +58,11 @@ import io.Source
 
 object KevScriptHelper extends App {
 
+  val factory = new DefaultKevoreeFactory()
+
   def generate (scriptFile: File, mavenSource: MavenProject): ContainerRoot = {
-    val kevEngine = new KevScriptOfflineEngine(KevoreeFactory.createContainerRoot, new FakeBootstraperService().getBootstrap)
-    kevEngine.addVariable("kevoree.version", KevoreeFactory.getVersion)
+    val kevEngine = new KevScriptOfflineEngine(factory.createContainerRoot, new FakeBootstraperService().getBootstrap)
+    kevEngine.addVariable("kevoree.version", factory.getVersion)
 
     val propEnum = mavenSource.getProperties.propertyNames()
     val propName = "project.version"

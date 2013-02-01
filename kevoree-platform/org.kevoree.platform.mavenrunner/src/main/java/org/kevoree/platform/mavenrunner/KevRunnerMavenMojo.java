@@ -30,6 +30,7 @@ import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
 import org.kevoree.ContainerRoot;
+import org.kevoree.framework.KevoreeXmiHelper;
 import org.kevoree.platform.standalone.App;
 import org.kevoree.platform.standalone.KevoreeBootStrap;
 import org.sonatype.aether.RepositorySystem;
@@ -94,7 +95,7 @@ public class KevRunnerMavenMojo extends AbstractMojo {
 			ContainerRoot modelRoot = null;
 			if (model.getName().endsWith(".kev")) {
 				FileInputStream ins = new FileInputStream(model);
-				modelRoot = org.kevoree.framework.KevoreeXmiHelper.loadStream(ins);
+				modelRoot = KevoreeXmiHelper.$instance.loadStream(ins);
 				ins.close();
 			} else if (model.getName().endsWith(".kevs")) {
 				modelRoot = KevScriptHelper.generate(model, project);
@@ -103,7 +104,7 @@ public class KevRunnerMavenMojo extends AbstractMojo {
 			}
 
 			File tFile = new File(project.getBuild().getOutputDirectory(), "runner.kev");
-			org.kevoree.framework.KevoreeXmiHelper.save(tFile.getAbsolutePath(), modelRoot);
+			KevoreeXmiHelper.$instance.save(tFile.getAbsolutePath(), modelRoot);
 
 //			System.setProperties(project.getProperties());
 			for (Object key : project.getProperties().keySet()) {

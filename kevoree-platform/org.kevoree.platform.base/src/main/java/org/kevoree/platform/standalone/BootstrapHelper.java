@@ -16,6 +16,7 @@ package org.kevoree.platform.standalone;
 import org.kevoree.*;
 import org.kevoree.api.service.core.script.KevScriptEngine;
 import org.kevoree.api.service.core.script.KevScriptEngineException;
+import org.kevoree.impl.DefaultKevoreeFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.io.File;
@@ -33,6 +34,8 @@ public class BootstrapHelper {
 
     private static final Logger logger = LoggerFactory.getLogger(BootstrapHelper.class);
 
+    private KevoreeFactory factory = new DefaultKevoreeFactory();
+    
     public void initModelInstance(ContainerRoot model, String defType, String groupType) {
 
         String nodeName = System.getProperty("node.name");
@@ -44,7 +47,7 @@ public class BootstrapHelper {
             TypeDefinition typeDefFound = model.findTypeDefinitionsByID(defType);
             if (typeDefFound != null) {
                 logger.warn("Init default node instance for name " + nodeName);
-                node = KevoreeFactory.$instance.createContainerNode();
+                node = factory.createContainerNode();
                 node.setName(nodeName);
                 node.setTypeDefinition(typeDefFound);
                 model.addNodes(node);
@@ -54,7 +57,7 @@ public class BootstrapHelper {
             if (groupType != null) {
                 TypeDefinition grouptypeDefFound = model.findTypeDefinitionsByID(groupType);
                 if (grouptypeDefFound != null) {
-                    Group g = KevoreeFactory.$instance.createGroup();
+                    Group g = factory.createGroup();
                     g.setName("sync");
                     g.setTypeDefinition(grouptypeDefFound);
                     g.addSubNodes(node);
@@ -68,7 +71,7 @@ public class BootstrapHelper {
 
 
     public ContainerRoot generateFromKevS(File scriptFile, KevScriptEngine kevEngine) throws IOException, KevScriptEngineException {
-        kevEngine.addVariable("kevoree.version", KevoreeFactory.$instance.getVersion());
+        kevEngine.addVariable("kevoree.version", factory.getVersion());
         Enumeration props = System.getProperties().propertyNames();
         while (props.hasMoreElements()) {
             String p = props.nextElement().toString();
