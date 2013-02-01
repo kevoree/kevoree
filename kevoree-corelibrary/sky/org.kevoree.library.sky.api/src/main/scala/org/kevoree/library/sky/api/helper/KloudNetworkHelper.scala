@@ -20,8 +20,8 @@ object KloudNetworkHelper {
     logger.debug("try to select an IP for a child of {}", parentNodeName)
     /*kloudModel.getNodes.find(n => n.getName == parentNodeName)*/
     kloudModel.findByQuery("nodes[" + parentNodeName + "]", classOf[ContainerNode]) match {
-      case None => None
-      case Some(node) => {
+      case null => None
+      case node => {
         val subnetOption = KevoreePropertyHelper.getProperty(node, "subnet")
         val maskOption = KevoreePropertyHelper.getProperty(node, "mask")
         if (subnetOption.isDefined && maskOption.isDefined) {

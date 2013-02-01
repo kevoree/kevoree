@@ -6,6 +6,8 @@ import org.kevoreeAdaptation.{AdaptationPrimitive, ParallelStep, KevoreeAdaptati
 import org.slf4j.{LoggerFactory, Logger}
 import org.kevoree._
 import api.PrimitiveCommand
+import org.kevoreeAdaptation.impl.DefaultKevoreeAdaptationFactory
+import scala.collection.JavaConversions._
 
 
 /**
@@ -22,9 +24,12 @@ object PlanningManager {
 
   def kompare(current: ContainerRoot, target: ContainerRoot, skyNode: AbstractHostNode): AdaptationModel = {
     logger.debug("starting kompare...")
-    val adaptationModel: AdaptationModel = KevoreeAdaptationFactory.eINSTANCE.createAdaptationModel
-    var step: ParallelStep = KevoreeAdaptationFactory.eINSTANCE.createParallelStep
-    adaptationModel.setOrderedPrimitiveSet(new Some[ParallelStep](step))
+
+    val factory = new DefaultKevoreeAdaptationFactory
+
+    val adaptationModel: AdaptationModel = factory.createAdaptationModel
+    var step: ParallelStep = factory.createParallelStep
+    adaptationModel.setOrderedPrimitiveSet(step)
     if (skyNode.isHost) {
       var removeNodeType: AdaptationPrimitiveType = null
       var addNodeType: AdaptationPrimitiveType = null
@@ -57,59 +62,57 @@ object PlanningManager {
         logger.warn("there is no adaptation primitive for {}", HostNode.ADD_NODE)
       }
       current.findByQuery("nodes[" + skyNode.getNodeName + "]", classOf[ContainerNode]) match {
-        case Some(node) => {
+        case node : ContainerNode => {
           target.findByQuery("nodes[" + skyNode.getNodeName + "]", classOf[ContainerNode]) match {
-            case Some(node1) => {
+            case node1 : ContainerNode => {
               node.getHosts.foreach {
-                subNode =>
+                subNode  =>
                   node1.findByQuery("hosts[" + subNode.getName + "]", classOf[ContainerNode]) match {
-                    case None => {
-                      logger.debug("add a {} adaptation primitive with {} as parameter", HostNode.REMOVE_NODE, subNode.getName)
-                      val command: AdaptationPrimitive = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive
+                    case null => {
+                      val command: AdaptationPrimitive = factory.createAdaptationPrimitive
                       command.setPrimitiveType(removeNodeType)
                       command.setRef(subNode)
-                      val subStep: ParallelStep = KevoreeAdaptationFactory.eINSTANCE.createParallelStep
+                      val subStep: ParallelStep = factory.createParallelStep
                       subStep.addAdaptations(command)
                       adaptationModel.addAdaptations(command)
-                      step.setNextStep(new Some[ParallelStep](subStep))
+                      step.setNextStep(subStep)
                       step = subStep
                     }
-                    case Some(subNode1) =>
+                    case subNode1 : ContainerNode =>
                   }
               }
             }
-            case None =>
+            case null =>
           }
         }
-        case None =>
+        case null =>
       }
 
       target.findByQuery("nodes[" + skyNode.getNodeName + "]", classOf[ContainerNode]) match {
-        case Some(node) => {
+        case node :ContainerNode => {
           current.findByQuery("nodes[" + skyNode.getNodeName + "]", classOf[ContainerNode]) match {
-            case Some(node1) => {
+            case node1 : ContainerNode => {
               node.getHosts.foreach {
                 subNode =>
                   node1.findByQuery("hosts[" + subNode.getName + "]", classOf[ContainerNode]) match {
-                    case None => {
-                      logger.debug("add a {} adaptation primitive with {} as parameter", HostNode.ADD_NODE, subNode.getName)
-                      val command: AdaptationPrimitive = KevoreeAdaptationFactory.eINSTANCE.createAdaptationPrimitive
+                    case null => {
+                      val command: AdaptationPrimitive = factory.createAdaptationPrimitive
                       command.setPrimitiveType(addNodeType)
                       command.setRef(subNode)
-                      val subStep: ParallelStep = KevoreeAdaptationFactory.eINSTANCE.createParallelStep
+                      val subStep: ParallelStep = factory.createParallelStep
                       subStep.addAdaptations(command)
                       adaptationModel.addAdaptations(command)
-                      step.setNextStep(new Some[ParallelStep](subStep))
+                      step.setNextStep(subStep)
                       step = subStep
                     }
-                    case Some(subNode1) =>
+                    case subNode1 : ContainerNode =>
                   }
               }
             }
-            case None =>
+            case null =>
           }
         }
-        case None =>
+        case null =>
       }
     }
     val superModel: AdaptationModel = skyNode.superKompare(current, target)
@@ -123,17 +126,17 @@ object PlanningManager {
     adaptationModel
   }
 
-  private def isContaining(step: Option[ParallelStep]): Boolean = {
-    if (step.isDefined) {
+  private def isContaining(step: ParallelStep): Boolean = {
+    if (step!=null) {
       // TODO must be tested
-      (step.get.getAdaptations.exists(adaptation =>
+      (step.getAdaptations.exists(adaptation =>
         (adaptation.getPrimitiveType.getName == "UpdateDictionaryInstance" && !adaptation.getRef.isInstanceOf[Group])
           || (adaptation.getPrimitiveType.getName == "AddInstance" && !adaptation.getRef.isInstanceOf[Group])
           || (adaptation.getPrimitiveType.getName == "UpdateInstance" && !adaptation.getRef.isInstanceOf[Group])
           || (adaptation.getPrimitiveType.getName == "RemoveInstance" && !adaptation.getRef.isInstanceOf[Group])
           || (adaptation.getPrimitiveType.getName == "StartInstance" && !adaptation.getRef.isInstanceOf[Group])
           || (adaptation.getPrimitiveType.getName == "StopInstance" && !adaptation.getRef.isInstanceOf[Group]))
-        || isContaining(step.get.getNextStep))
+        || isContaining(step.getNextStep))
     } else {
       false
     }

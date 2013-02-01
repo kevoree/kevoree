@@ -20,8 +20,8 @@ object KloudModelHelper {
   private val logger: Logger = LoggerFactory.getLogger(this.getClass)
 
   def isPaaSModel(potentialPaaSModel: ContainerRoot, groupName: String, fragmentHostName: String): Boolean = {
-    val foundGroupSelf = potentialPaaSModel.findByQuery("groups[" + groupName + "]", classOf[Group]).isDefined
-    val foundHost = potentialPaaSModel.findByQuery("nodes[" + fragmentHostName + "]", classOf[ContainerNode]).isDefined
+    val foundGroupSelf = potentialPaaSModel.findByQuery("groups[" + groupName + "]", classOf[Group]) != null
+    val foundHost = potentialPaaSModel.findByQuery("nodes[" + fragmentHostName + "]", classOf[ContainerNode]) != null
 
     (foundGroupSelf && !foundHost)
   }
@@ -59,8 +59,8 @@ object KloudModelHelper {
   def isIaaSNode(currentModel: ContainerRoot, nodeName: String): Boolean = {
     // FIXME replace when nature will be added and managed
     currentModel.findByQuery("nodes[" + nodeName + "]", classOf[ContainerNode]) match {
-      case None => logger.debug("There is no node named {}", nodeName); false
-      case Some(node) =>
+      case null => logger.debug("There is no node named {}", nodeName); false
+      case node =>
         node.getTypeDefinition.asInstanceOf[NodeType].getManagedPrimitiveTypes.filter(p => p.getName == "RemoveNode" || p.getName == "AddNode").size == 2
     }
   }
@@ -73,8 +73,8 @@ object KloudModelHelper {
   def isPaaSNode(currentModel: ContainerRoot, nodeName: String): Boolean = {
     // FIXME replace when nature will be added and managed
     currentModel.findByQuery("nodes[" + nodeName + "]", classOf[ContainerNode]) match {
-      case None => logger.debug("There is no node named {}", nodeName); false
-      case Some(node) =>
+      case null => logger.debug("There is no node named {}", nodeName); false
+      case node =>
         node.getTypeDefinition.getName == "PJavaSENode" || isASubType(node.getTypeDefinition, "PJavaSENode")
     }
   }
@@ -98,7 +98,7 @@ object KloudModelHelper {
     typeDefinition.getSuperTypes.find(td => td.getName == typeName || isASubType(td, typeName)).isDefined
   }
 
-  def getGroup(groupName: String, currentModel: ContainerRoot): Option[Group] = {
+  def getGroup(groupName: String, currentModel: ContainerRoot): Group = {
     currentModel.findByQuery("groups[" + groupName + "]", classOf[Group])
   }
 

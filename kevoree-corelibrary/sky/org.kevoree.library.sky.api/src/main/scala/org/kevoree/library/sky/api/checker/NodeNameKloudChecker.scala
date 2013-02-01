@@ -4,6 +4,7 @@ import org.kevoree.api.service.core.checker.CheckerViolation
 import org.kevoree.ContainerRoot
 import java.util
 import org.kevoree.library.sky.api.helper.KloudModelHelper
+import scala.collection.JavaConversions._
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com

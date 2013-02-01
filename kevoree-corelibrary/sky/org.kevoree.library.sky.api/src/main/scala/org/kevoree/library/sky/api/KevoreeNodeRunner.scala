@@ -6,6 +6,8 @@ import org.kevoree.{ContainerNode, KevoreeFactory, TypeDefinition, ContainerRoot
 import java.io._
 import util.matching.Regex
 import java.util.concurrent.Callable
+import scala.collection.JavaConversions._
+import org.kevoree.impl.DefaultKevoreeFactory
 
 /**
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
@@ -108,7 +110,7 @@ abstract class KevoreeNodeRunner (var nodeName: String) {
         reader.close()
         true
       } catch {
-        case _@e => logger.error("Unable to copy {} on {}", Array[AnyRef](inputFile, outputFile), e); false
+        case _@e => false//logger.error("Unable to copy {} on {}", Array[AnyRef](inputFile, outputFile), e); false
       }
     } else {
       logger.debug("Unable to find {}", inputFile)
@@ -136,7 +138,6 @@ abstract class KevoreeNodeRunner (var nodeName: String) {
         reader.close()
         stringBuilder append new String(writer.toByteArray)
         if (stringBuilder.indexOf(dataToReplace) == -1) {
-          logger.debug("Unable to find {} on file {} so replacement cannot be done", dataToReplace, file)
         } else {
           stringBuilder.replace(stringBuilder.indexOf(dataToReplace), stringBuilder.indexOf(dataToReplace) + dataToReplace.length(), newData)
 
@@ -150,18 +151,19 @@ abstract class KevoreeNodeRunner (var nodeName: String) {
 
 
   def findVersionForChildNode (nodeName: String, model: ContainerRoot, iaasNode: ContainerNode): String = {
+    val factory = new DefaultKevoreeFactory
     logger.debug("looking for Kevoree version for node {}", nodeName)
     model.getNodes.find(n => n.getName == nodeName) match {
-      case None => KevoreeFactory.getVersion
+      case None => factory.getVersion
       case Some(node) => {
         logger.debug("looking for deploy unit")
-        node.getTypeDefinition.getDeployUnits.find(d => d.getTargetNodeType.get.getName == iaasNode.getTypeDefinition.getName ||
-          isASubType(iaasNode.getTypeDefinition, d.getTargetNodeType.get.getName)) match {
-          case None => KevoreeFactory.getVersion
+        node.getTypeDefinition.getDeployUnits.find(d => d.getTargetNodeType.getName == iaasNode.getTypeDefinition.getName ||
+          isASubType(iaasNode.getTypeDefinition, d.getTargetNodeType.getName)) match {
+          case None => factory.getVersion
           case Some(d) => {
             logger.debug("looking for version of kevoree framework for the found deploy unit")
             d.getRequiredLibs.find(rd => rd.getUnitName == "org.kevoree" && rd.getGroupName == "org.kevoree.framework") match {
-              case None => KevoreeFactory.getVersion
+              case None => factory.getVersion
               case Some(rd) => rd.getVersion
             }
           }
@@ -179,10 +181,8 @@ abstract class KevoreeNodeRunner (var nodeName: String) {
     }
     val logFile = logFolder + File.separator + nodeName + ".log"
     outFile = new File(logFile + ".out")
-    logger.debug("writing logs about {} on {}", nodeName, outFile.getAbsolutePath)
     new Thread(new ProcessStreamFileLogger(process.getInputStream, outFile)).start()
     errFile = new File(logFile + ".err")
-    logger.debug("writing logs about {} on {}", nodeName, errFile.getAbsolutePath)
     new Thread(new ProcessStreamFileLogger(process.getErrorStream, errFile)).start()
   }
 }
