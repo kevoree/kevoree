@@ -28,6 +28,8 @@ package org.kevoree.platform.android.core
 
 import org.slf4j.LoggerFactory
 import org.kevoree.{KevoreeFactory, ContainerRoot}
+import scala.collection.JavaConversions._
+import org.kevoree.impl.DefaultKevoreeFactory
 
 /**
  * Created with IntelliJ IDEA.
@@ -40,6 +42,8 @@ class BootstrapHelper {
 
   val logger = LoggerFactory.getLogger(this.getClass)
 
+  val factory = new DefaultKevoreeFactory
+
   def initModelInstance(model: ContainerRoot, defType: String, defGroupType: String,nodeName : String) {
 
        if (!model.getNodes.exists(n => n.getName == nodeName)) {
@@ -47,14 +51,14 @@ class BootstrapHelper {
          model.getTypeDefinitions.find(td => td.getName == defType) match {
            case Some(typeDefFound) => {
              logger.warn("Init default node instance for name " + nodeName)
-             val node = KevoreeFactory.createContainerNode
+             val node = factory.createContainerNode
              node.setName(nodeName)
              node.setTypeDefinition(typeDefFound)
              model.addNodes(node)
 
              model.getTypeDefinitions.find(td => td.getName == defGroupType) match {
                case Some(groupDef)=> {
-                 val group = KevoreeFactory.createGroup
+                 val group = factory.createGroup
                  group.setTypeDefinition(groupDef)
                  group.setName("sync")
                  group.setSubNodes(List(node))
