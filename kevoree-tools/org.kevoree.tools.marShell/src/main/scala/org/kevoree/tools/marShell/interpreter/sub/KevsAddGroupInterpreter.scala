@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory
 
 case class KevsAddGroupInterpreter(addGroup: AddGroupStatment) extends KevsAbstractInterpreter {
 
-  var logger = LoggerFactory.getLogger(this.getClass);
+  var logger = LoggerFactory.getLogger(this.getClass)
 
   def interpret(context: KevsInterpreterContext): Boolean = {
     context.model.findByQuery("groups[" + addGroup.groupName + "]", classOf[Group]) match {

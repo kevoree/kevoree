@@ -52,7 +52,7 @@ case class KevsMoveComponentInstanceInterpreter (moveComponent: MoveComponentIns
                     tempPortInstance.addAll(targetComponent.getProvided)
                     tempPortInstance.addAll(targetComponent.getRequired)
                     tempPortInstance.foreach(p => p.getBindings.foreach(mb => {
-											if (mb.getHub.getDictionary()!=null) {
+											if (mb.getHub.getDictionary!=null) {
 												mb.getHub.getDictionary.getValues.foreach(dv => {
 													if (dv.getAttribute.getFragmentDependant && dv.getTargetNode!=null && dv.getTargetNode.getName == nodeID) {
 														fragments = fragments ++ List[(Channel, Port, DictionaryValue)]((mb.getHub, mb.getPort, dv))

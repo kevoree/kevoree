@@ -36,8 +36,42 @@ case class KevsAddBindingInterpreter(addBinding: AddBindingStatment) extends Kev
               //getComponents.find(c => c.getName == addBinding.cid.componentInstanceName) match {
               case component: ComponentInstance =>
                 context.model.findByQuery("hubs[" + addBinding.bindingInstanceName + "]", classOf[Channel]) match {
-                  case channel:Channel => {
-                    (component.getProvided ++ component.getRequired).find(p => p.getPortTypeRef.getName == addBinding.portName) match {
+                  case channel: Channel => {
+                    val port = component.getProvided.find(p => p.getPortTypeRef.getName == addBinding.portName) match {
+                      case Some(p) => p
+                      case None => {
+                        component.getRequired.find(p => p.getPortTypeRef.getName == addBinding.portName) match {
+                          case Some(p) => p
+                          case None => null
+                        }
+                      }
+                    }
+                    if (port != null) {
+                      port.getBindings.find(mb => mb.getPort.getPortTypeRef.getName == addBinding.portName
+                        && mb.getPort.eContainer.eContainer.asInstanceOf[ContainerNode].getName == addBinding.cid.nodeName.get
+                        && mb.getPort.eContainer.asInstanceOf[ComponentInstance].getName == addBinding.cid.componentInstanceName
+                        && mb.getHub.getName == addBinding.bindingInstanceName) match {
+                        case Some(binding) => {
+                          logger.warn("Binding {}.{}@{} => {} already exists",
+                            Array[AnyRef](addBinding.cid.componentInstanceName, addBinding.portName, addBinding.cid.nodeName.get, addBinding.bindingInstanceName))
+                          true
+                        }
+                        case None => {
+                          val newbinding = context.kevoreeFactory.createMBinding
+                          newbinding.setHub(channel)
+                          newbinding.setPort(port)
+                          context.model.addMBindings(newbinding)
+                          true
+                        }
+                      }
+                    } else {
+                      logger.error("Port not found => " + addBinding.portName)
+                      false
+                    }
+                    /*val ports = new util.ArrayList[Port](component.getProvided.size() + component.getRequired.size())
+                    ports.addAll(component.getProvided)
+                    ports.addAll(component.getRequired)
+                    ports.find(p => p.getPortTypeRef.getName == addBinding.portName) match {
                       case Some(port) => {
                         port.getBindings.find(mb => mb.getPort.getPortTypeRef.getName == addBinding.portName
                           && mb.getPort.eContainer.eContainer.asInstanceOf[ContainerNode].getName == addBinding.cid.nodeName.get
@@ -58,7 +92,7 @@ case class KevsAddBindingInterpreter(addBinding: AddBindingStatment) extends Kev
                         }
                       }
                       case None => logger.error("Port not found => " + addBinding.portName); false
-                    }
+                    }*/
                   }
                   case null => logger.error("Hub not found => " + addBinding.bindingInstanceName); false
                 }
