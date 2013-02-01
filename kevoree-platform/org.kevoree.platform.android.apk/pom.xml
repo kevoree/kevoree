@@ -186,9 +186,9 @@
                 <artifactId>android-maven-plugin</artifactId>
                 <version>3.4.1</version>
                 <configuration>
-                    <sdk>
-                        <platform>15</platform>
-                    </sdk>
+                   <!-- <sdk>
+                        <platform>21.1</platform>
+                    </sdk> -->
                     <undeployBeforeDeploy>true</undeployBeforeDeploy>
                     <proguard>
                         <skip>false</skip>
