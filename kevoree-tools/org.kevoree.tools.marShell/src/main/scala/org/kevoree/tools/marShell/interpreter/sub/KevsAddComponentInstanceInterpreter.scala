@@ -83,7 +83,7 @@ case class KevsAddComponentInstanceInterpreter(addCompo: AddComponentInstanceSta
             }
           }
           case null => {
-            logger.error("Node not found " + nodeID);
+            logger.error("Node not found " + nodeID)
             false
           }
         }

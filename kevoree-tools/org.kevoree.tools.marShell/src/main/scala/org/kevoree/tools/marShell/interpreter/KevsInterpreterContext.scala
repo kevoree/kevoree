@@ -24,10 +24,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 
 package org.kevoree.tools.marShell.interpreter
 
@@ -35,12 +31,13 @@ import org.kevoree.{KevoreeFactory, ContainerRoot}
 import java.util.HashMap
 import org.kevoree.api.Bootstraper
 import org.kevoree.impl.DefaultKevoreeFactory
+import java.util
 
 case class KevsInterpreterContext(model : ContainerRoot) {
 
-  protected var varMap = new HashMap[String, String]()
+  protected var varMap = new util.HashMap[String, String]()
 
-  def setVarMap( v : HashMap[String, String]) : KevsInterpreterContext = { varMap = v ; this }
+  def setVarMap( v : util.HashMap[String, String]) : KevsInterpreterContext = { varMap = v ; this }
 
   def getVarMap = varMap
 

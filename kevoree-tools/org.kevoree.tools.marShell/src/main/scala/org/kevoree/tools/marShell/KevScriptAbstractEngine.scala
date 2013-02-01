@@ -32,6 +32,7 @@ import org.kevoree.cloner.ModelCloner
 import parser.KevsParser
 import org.slf4j.LoggerFactory
 import scala.collection.JavaConversions._
+import java.util
 
 
 /**
@@ -44,7 +45,7 @@ import scala.collection.JavaConversions._
 trait KevScriptAbstractEngine extends KevScriptEngine {
 
   protected var scriptBuilder = new StringBuilder
-  protected var varMap = new HashMap[String, String]()
+  protected var varMap = new util.HashMap[String, String]()
   protected val modelCloner = new ModelCloner
   protected val parser = new KevsParser
   protected val logger = LoggerFactory.getLogger(this.getClass)
