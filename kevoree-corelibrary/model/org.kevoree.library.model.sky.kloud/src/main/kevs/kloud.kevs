@@ -1,10 +1,10 @@
 // nodes configuration
 merge "mvn:org.kevoree.corelibrary.sky/org.kevoree.library.sky.jails/{kevoree.version}"
-merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.gossiperNetty/{kevoree.version}"
+merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.basicGossiper/{kevoree.version}"
 
 merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.defaultChannels/{kevoree.version}"
-merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.socketChannels/{kevoree.version}"
-merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.nioChannels/{kevoree.version}"
+merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.camel/{kevoree.version}"
+//merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.nioChannels/{kevoree.version}"
 
 merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.webserver.api/{kevoree.version}"
 merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.webserver.tjws/{kevoree.version}"
@@ -37,7 +37,7 @@ network fog9 => fog9 { "KEVOREE.remote.node.ip"= "10.0.9.1"}
 //network fog10 => fog10 { "KEVOREE.remote.node.ip"= "10.0.10.1"}
 
 // group configuration
-addGroup sync : NettyGossiperGroup
+addGroup sync : BasicGossiperGroup
 
 addToGroup sync atmosphere
 addToGroup sync fog1
@@ -51,7 +51,7 @@ addToGroup sync fog8
 addToGroup sync fog9
 //addToGroup sync fog10
 
-updateDictionary sync {port="8000", gossip_port="8001"}@atmosphere,{port="8000", gossip_port="8001"}@fog1,{port="8000", gossip_port="8001"}@fog2,{port="8000", gossip_port="8001"}@fog3,{port="8000", gossip_port="8001"}@fog4,{port="8000", gossip_port="8001"}@fog5,{port="8000", gossip_port="8001"}@fog6,{port="8000", gossip_port="8001"}@fog7,{port="8000", gossip_port="8001"}@fog8,{port="8000", gossip_port="8001"}@fog9
+updateDictionary sync {port="8000"}@atmosphere,{port="8000"}@fog1,{port="8000"}@fog2,{port="8000"}@fog3,{port="8000"}@fog4,{port="8000"}@fog5,{port="8000"}@fog6,{port="8000"}@fog7,{port="8000"}@fog8,{port="8000"}@fog9
 //,{ip="10.0.10.1", port="8000"}@fog10
 
 // Kloud manager configuration
