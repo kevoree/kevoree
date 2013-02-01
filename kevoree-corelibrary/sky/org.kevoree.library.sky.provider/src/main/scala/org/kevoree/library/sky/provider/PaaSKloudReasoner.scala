@@ -31,7 +31,7 @@ object PaaSKloudReasoner extends KloudReasoner {
   def appendCreateGroupScript(iaasModel: ContainerRoot, id: String, nodeName: String, paasModel: ContainerRoot, kengine: KevScriptEngine) {
     /*paasModel.getGroups.find(g => g.getName == id)*/
     paasModel.findByQuery("groups[" + id + "]", classOf[Group]) match {
-      case None => {
+      case null => {
         // if the paasModel doesn't contain a Kloud group, then we add a default one
         val ipOption = NetworkHelper.getAccessibleIP(KevoreePropertyHelper.getNetworkProperties(iaasModel, nodeName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP))
         var ip = "127.0.0.1"
@@ -49,7 +49,7 @@ object PaaSKloudReasoner extends KloudReasoner {
         kengine append "addToGroup {groupName} {nodeName}"
         kengine append "updateDictionary {groupName} {port='{port}', ip='{ip}'}@{nodeName}"
       }
-      case Some(group) => {
+      case group:Group => {
         val ipOption = NetworkHelper.getAccessibleIP(KevoreePropertyHelper.getNetworkProperties(iaasModel, nodeName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP))
         var ip = "127.0.0.1"
         if (ipOption.isDefined) {
@@ -67,10 +67,10 @@ object PaaSKloudReasoner extends KloudReasoner {
         kengine append "addToGroup {groupName} {nodeName}"
         kengine append "updateDictionary {groupName} {port='{port}', ip='{ip}'}@{nodeName}"
 
-        if (group.getDictionary.isDefined) {
+        if (group.getDictionary!=null) {
           //            scriptBuilder append "{"
           val defaultAttributes = getDefaultNodeAttributes(iaasModel, group.getTypeDefinition.getName)
-          group.getDictionary.get.getValues
+          group.getDictionary.getValues
             .filter(value => value.getAttribute.getName != "ip" && value.getAttribute.getName != "port" && defaultAttributes.find(a => a.getName == value.getAttribute.getName).isDefined).foreach {
             value =>
               kengine.addVariable("attributeName", value.getAttribute.getName)
@@ -102,8 +102,8 @@ object PaaSKloudReasoner extends KloudReasoner {
   private def countSlaves(nodeName: String, iaasModel: ContainerRoot): Int = {
     /*iaasModel.getNodes.find(n => n.getName == nodeName)*/
     iaasModel.findByQuery("nodes[" + nodeName + "]", classOf[ContainerNode]) match {
-      case None => logger.warn("The node {} doesn't exist !", nodeName); Int.MaxValue
-      case Some(node) => {
+      case null => logger.warn("The node {} doesn't exist !", nodeName); Int.MaxValue
+      case node : ContainerNode => {
         // TODO replace when the nature will be added and managed on the model
         //        node.getComponents.filter(c => KloudModelHelper.isASubType(c.getTypeDefinition, "")).size
         node.getComponents.filter(c => KloudModelHelper.isASubType(c.getTypeDefinition, "PaaSManager")).size
@@ -123,13 +123,13 @@ object PaaSKloudReasoner extends KloudReasoner {
           kengine.addVariable("nodeType", node.getTypeDefinition.getName)
           // TODO maybe we need to merge the deploy unit that offer this type if it is not one of our types
           // add node
-          logger.debug("addNode {} : {}", node.getName, node.getTypeDefinition.getName)
+          //logger.debug("addNode {} : {}", node.getName, node.getTypeDefinition.getName)
           kengine append "addNode {nodeName} : {nodeType}"
           // set dictionary attributes of node
-          if (node.getDictionary.isDefined) {
+          if (node.getDictionary!=null) {
             //            scriptBuilder append "{"
             val defaultAttributes = getDefaultNodeAttributes(iaasModel, node.getTypeDefinition.getName)
-            node.getDictionary.get.getValues
+            node.getDictionary.getValues
               .filter(value => defaultAttributes.find(a => a.getName == value.getAttribute.getName) match {
               case Some(attribute) => true
               case None => false
@@ -161,8 +161,8 @@ object PaaSKloudReasoner extends KloudReasoner {
   def releasePlatform(id: String, iaasModel: ContainerRoot, kengine: KevScriptEngine): Boolean = {
     /*iaasModel.getGroups.find(g => g.getName == id)*/
     iaasModel.findByQuery("groups[" + id + "]", classOf[Group]) match {
-      case None =>
-      case Some(group) => {
+      case null =>
+      case group:Group => {
         group.getSubNodes.foreach {
           node =>
             kengine addVariable("nodeName", node.getName)
@@ -200,8 +200,8 @@ object PaaSKloudReasoner extends KloudReasoner {
 
   private def findChannel(componentName: String, portName: String, nodeName: String, model: ContainerRoot): Option[String] = {
     model.findByQuery("nodes[" + nodeName + "]/components[" + componentName + "]", classOf[ComponentInstance]) match {
-      case None => None
-      case Some(component) =>
+      case null => None
+      case component:ComponentInstance =>
         component.getProvided.find(p => p.getPortTypeRef.getName == portName) match {
           case None =>
             component.getRequired.find(p => p.getPortTypeRef.getName == portName) match {

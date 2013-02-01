@@ -8,6 +8,8 @@ import org.json.JSONStringer
 import org.kevoree.library.sky.helper.KloudProviderHelper
 import org.kevoree.KevoreeFactory
 import org.kevoree.library.sky.provider.api.SubmissionException
+import scala.collection.JavaConversions._
+import org.kevoree.impl.DefaultKevoreeFactory
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -73,7 +75,7 @@ class PaaSKloudResourceManagerPageGenerator (instance: PaaSKloudResourceManagerP
       } else {
         // if no then we try to initialize it
         try {
-          instance.initialize(login, KevoreeFactory.createContainerRoot)
+          instance.initialize(login, new DefaultKevoreeFactory().createContainerRoot())
           jsonresponse.key("code").value("0")
         } catch {
           case e: SubmissionException => logger.error("Unable to initialize the user PaaS: {}", login, e); jsonresponse.key("code").value("-1").key("message")

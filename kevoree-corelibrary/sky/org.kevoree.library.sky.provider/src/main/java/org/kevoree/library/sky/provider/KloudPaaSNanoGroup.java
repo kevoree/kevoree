@@ -66,7 +66,7 @@ public class KloudPaaSNanoGroup extends NanoRestGroup {
 			logger.debug("A new user model is received (sent by the core and coming from the IaaS), notify all the PaaS nodes");
 			// send to all the nodes except the one which is an IaaS node
 			Group group = getModelElement();
-			for (ContainerNode subNode : group.getSubNodesForJ()) {
+			for (ContainerNode subNode : group.getSubNodes()) {
 				if (!subNode.getName().equals(this.getNodeName()) && !KloudModelHelper.isIaaSNode(currentModel, subNode.getName())) {
 					try {
 						internalPush(getModelService().getLastModel(), subNode.getName(), this.getNodeName());
@@ -87,11 +87,11 @@ public class KloudPaaSNanoGroup extends NanoRestGroup {
 	public NanoHTTPD.Response processOnModelRequested (String uri) {
 		if (!KloudModelHelper.isIaaSNode(getModelService().getLastModel(), getNodeName())) {
 			if (uri.endsWith("/model/current")) {
-				String msg = KevoreeXmiHelper.saveToString(getModelService().getLastModel(), false);
+				String msg = KevoreeXmiHelper.$instance.saveToString(getModelService().getLastModel(), false);
 				return server.new Response(NanoHTTPD.HTTP_OK, NanoHTTPD.MIME_HTML, msg);
 			} else if (uri.endsWith("/model/current/zip")) {
 				ByteArrayOutputStream st = new ByteArrayOutputStream();
-				KevoreeXmiHelper.saveCompressedStream(st, getModelService().getLastModel());
+				KevoreeXmiHelper.$instance.saveCompressedStream(st, getModelService().getLastModel());
 				ByteArrayInputStream resultStream = new ByteArrayInputStream(st.toByteArray());
 				return server.new Response(NanoHTTPD.HTTP_OK, NanoHTTPD.MIME_HTML, resultStream);
 			} else {
@@ -119,7 +119,7 @@ public class KloudPaaSNanoGroup extends NanoRestGroup {
 		} else*/ if (KloudModelHelper.isPaaSNode(getModelService().getLastModel(), getNodeName())) {
 			// send to all the nodes
 			Group group = getModelElement();
-			for (ContainerNode subNode : group.getSubNodesForJ()) {
+			for (ContainerNode subNode : group.getSubNodes()) {
 				if (!subNode.getName().equals(this.getNodeName())) {
 					try {
 						internalPush(getModelService().getLastModel(), subNode.getName(), this.getNodeName());

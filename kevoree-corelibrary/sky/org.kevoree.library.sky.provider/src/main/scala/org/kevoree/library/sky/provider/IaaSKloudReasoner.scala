@@ -24,10 +24,10 @@ object IaaSKloudReasoner extends KloudReasoner {
     iaasModel.getNodes.filter(n => KloudModelHelper.isPaaSNode(iaasModel, n) && iaasModel.getGroups.forall(g => !g.getSubNodes.contains(n))).foreach {
       node =>
         val parentNodeOption = node.getHost
-        if (parentNodeOption.isDefined) {
+        if (parentNodeOption!=null) {
           val ipOption = NetworkHelper.getAccessibleIP(KevoreePropertyHelper.getNetworkProperties(iaasModel, node.getName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP))
           if (ipOption.isDefined) {
-            doSomething = doSomething && configureIsolatedNode(node, parentNodeOption.get.getName, ipOption.get, iaasModel, kengine)
+            doSomething = doSomething && configureIsolatedNode(node, parentNodeOption.getName, ipOption.get, iaasModel, kengine)
           }
         }
     }
@@ -44,7 +44,7 @@ object IaaSKloudReasoner extends KloudReasoner {
     var doSomething = false
     var usedIps = List[String]()
     // filter nodes that are not IaaSNode and are not child of IaaSNode
-    iaasModel.getNodes.filter(n => n.getHost.isEmpty && KloudModelHelper.isPaaSNode(iaasModel, n)).foreach {
+    iaasModel.getNodes.filter(n => n.getHost!=null && KloudModelHelper.isPaaSNode(iaasModel, n)).foreach {
       // select a host for each user node
       node => {
         logger.debug("try to select a parent for {}", node.getName)
@@ -72,7 +72,7 @@ object IaaSKloudReasoner extends KloudReasoner {
             kengine append "updateDictionary {groupName} {ip='{ip}'}@{nodeName}"
         }
 
-        logger.debug("Add {} as child of {}", node.getName, parentName)
+        //logger.debug("Add {} as child of {}", node.getName, parentName)
         doSomething = true
       }
     }
@@ -106,12 +106,12 @@ object IaaSKloudReasoner extends KloudReasoner {
           kengine.addVariable("nodeType", node.getTypeDefinition.getName)
           // TODO maybe we need to merge the deploy unit that offer this type if it is not one of our types
           // add node
-          logger.debug("addNode {} : {}", node.getName, node.getTypeDefinition.getName)
+          //logger.debug("addNode {} : {}", node.getName, node.getTypeDefinition.getName)
           kengine append "addNode {nodeName} : {nodeType}"
           // set dictionary attributes of node
-          if (node.getDictionary.isDefined) {
+          if (node.getDictionary!=null) {
             val defaultAttributes = getDefaultNodeAttributes(iaasModel, node.getTypeDefinition.getName)
-            node.getDictionary.get.getValues
+            node.getDictionary.getValues
               .filter(value => defaultAttributes.find(a => a.getName == value.getAttribute.getName) match {
               case Some(attribute) => true
               case None => false
@@ -163,8 +163,8 @@ object IaaSKloudReasoner extends KloudReasoner {
 
       // get all fragment properties that exist for the group and that start or end with 'port', we try to specify a port for the node
       var usedPort = Array[Int]()
-      if (groupOption.get.getTypeDefinition.getDictionaryType.isDefined) {
-        groupOption.get.getTypeDefinition.getDictionaryType.get.getAttributes.filter(a => a.getFragmentDependant && (a.getName.startsWith("port") || a.getName.endsWith("port"))).foreach {
+      if (groupOption.get.getTypeDefinition.getDictionaryType!=null) {
+        groupOption.get.getTypeDefinition.getDictionaryType.getAttributes.filter(a => a.getFragmentDependant && (a.getName.startsWith("port") || a.getName.endsWith("port"))).foreach {
           attribute => {
             kengine addVariable("attributeName", attribute.getName)
             /* Warning This method try severals Socket to determine available port */

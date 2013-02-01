@@ -113,7 +113,7 @@ public class IaaSKloudManager extends AbstractComponentType implements ModelList
     public void add(ContainerRoot model) throws SubmissionException {
         KevScriptEngine kengine = getKevScriptEngineFactory().createKevScriptEngine();
         Option<String> none = Option.apply(null);
-        if (IaaSKloudReasoner.addNodes(model.getNodesForJ(), none, getModelService().getLastModel(), kengine)) {
+        if (IaaSKloudReasoner.addNodes(model.getNodes(), none, getModelService().getLastModel(), kengine)) {
             updateIaaSConfiguration(kengine);
         }
     }
@@ -123,7 +123,7 @@ public class IaaSKloudManager extends AbstractComponentType implements ModelList
     public void addToNode(ContainerRoot model, String nodeName) throws SubmissionException {
         KevScriptEngine kengine = getKevScriptEngineFactory().createKevScriptEngine();
         Option<String> some = Option.apply(nodeName);
-        if (IaaSKloudReasoner.addNodes(model.getNodesForJ(), some, getModelService().getLastModel(), kengine)) {
+        if (IaaSKloudReasoner.addNodes(model.getNodes(), some, getModelService().getLastModel(), kengine)) {
             updateIaaSConfiguration(kengine);
         }
     }
@@ -132,7 +132,7 @@ public class IaaSKloudManager extends AbstractComponentType implements ModelList
     @Port(name = "submit", method = "remove")
     public void remove(ContainerRoot model) throws SubmissionException {
         KevScriptEngine kengine = getKevScriptEngineFactory().createKevScriptEngine();
-        if (IaaSKloudReasoner.removeNodes(model.getNodesForJ(), getModelService().getLastModel(), kengine)) {
+        if (IaaSKloudReasoner.removeNodes(model.getNodes(), getModelService().getLastModel(), kengine)) {
             updateIaaSConfiguration(kengine);
         }
     }

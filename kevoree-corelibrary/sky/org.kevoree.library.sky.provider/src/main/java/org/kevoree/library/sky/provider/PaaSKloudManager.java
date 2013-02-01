@@ -50,13 +50,13 @@ public class PaaSKloudManager extends AbstractComponentType implements PaaSManag
 		logger.warn("[TIME] PaaSKloudManager receive model: {}", System.currentTimeMillis());
 		// fails if the id already exist for a group on the IaaS model
 
-        Option<Group> nodeOption = getModelService().getLastModel().findByQuery("groups[" + id + "]", Group.class);
+        Group nodeOption = getModelService().getLastModel().findByQuery("groups[" + id + "]", Group.class);
 		/*for (Group g : getModelService().getLastModel().getGroupsForJ()) {
 			if (id.equals(g.getName())) {
 				throw new SubmissionException("Platform already exist");
 			}
 		}*/
-        if (nodeOption.isDefined()) {
+        if (nodeOption!=null) {
             throw new SubmissionException("Platform already exist");
         }
 
@@ -92,7 +92,7 @@ public class PaaSKloudManager extends AbstractComponentType implements PaaSManag
 		Boolean paasExists = false;
 		entireloop:
 		for (Group group : groups) {
-			for (Group g : getModelService().getLastModel().getGroupsForJ()) {
+			for (Group g : getModelService().getLastModel().getGroups()) {
 				if (g.getName().equals(group.getName())) {
 					paasExists = true;
 					break entireloop;
@@ -112,7 +112,7 @@ public class PaaSKloudManager extends AbstractComponentType implements PaaSManag
 		Boolean paasExists = false;
 		entireloop:
 		for (Group group : groups) {
-			for (Group g : getModelService().getLastModel().getGroupsForJ()) {
+			for (Group g : getModelService().getLastModel().getGroups()) {
 				if (g.getName().equals(group.getName())) {
 					paasExists = true;
 					break entireloop;
@@ -132,7 +132,7 @@ public class PaaSKloudManager extends AbstractComponentType implements PaaSManag
 		Boolean paasExists = false;
 		entireloop:
 		for (Group group : groups) {
-			for (Group g : getModelService().getLastModel().getGroupsForJ()) {
+			for (Group g : getModelService().getLastModel().getGroups()) {
 				if (g.getName().equals(group.getName())) {
 					paasExists = true;
 					break entireloop;

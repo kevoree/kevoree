@@ -24,6 +24,8 @@ import org.kevoree.{ContainerRoot, KevoreeFactory}
 import org.kevoree.framework.KevoreeXmiHelper
 import org.kevoree.library.sky.api.{ProcessStreamFileLogger, KevoreeNodeRunner}
 import java.util.concurrent.Callable
+import scala.collection.JavaConversions._
+import org.kevoree.impl.DefaultKevoreeFactory
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -42,6 +44,8 @@ class MiniCloudKevoreeNodeRunner (nodeName: String, iaasNode: AbstractHostNode) 
 	val errorRegex = new Regex(".*Error while update.*")
 	val starting = true
 
+  val factory = new DefaultKevoreeFactory
+
 	case class DeployResult (uuid: String)
 
 	case class BackupResult (uuid: String)
@@ -55,7 +59,7 @@ class MiniCloudKevoreeNodeRunner (nodeName: String, iaasNode: AbstractHostNode) 
 			logger.debug("Start " + nodeName)
 			val version = findVersionForChildNode(nodeName, childBootstrapModel, iaasModel.getNodes.find(n => n.getName == iaasNode.getNodeName).get)
 
-			if (version == KevoreeFactory.getVersion) {
+			if (version == factory.getVersion) {
 				logger.debug("try to start child node with the same Kevoree version")
 				// find the classpath of the current node
 				// if classpath is null then we download the jar with aether
@@ -115,7 +119,7 @@ class MiniCloudKevoreeNodeRunner (nodeName: String, iaasNode: AbstractHostNode) 
 		try {
 			val java: String = getJava
 			val tempFile = File.createTempFile("bootModel" + nodeName, ".kev")
-			KevoreeXmiHelper.save(tempFile.getAbsolutePath, childBootStrapModel)
+			KevoreeXmiHelper.$instance.save(tempFile.getAbsolutePath, childBootStrapModel)
 
 
 			if (System.getProperty("java.class.path").contains("plexus-classworlds")) {
@@ -163,7 +167,7 @@ class MiniCloudKevoreeNodeRunner (nodeName: String, iaasNode: AbstractHostNode) 
 			if (platformFile != null) {
 
 				val tempFile = File.createTempFile("bootModel" + nodeName, ".kev")
-				KevoreeXmiHelper.save(tempFile.getAbsolutePath, childBootStrapModel)
+				KevoreeXmiHelper.$instance.save(tempFile.getAbsolutePath, childBootStrapModel)
 
 				val vmargsObject = iaasNode.getDictionary.get("VMARGS")
 				var exec = Array[String](java)

@@ -58,7 +58,7 @@ public class PaaSManagerMaster extends AbstractComponentType implements PaaSServ
 		// FIXME this must be removed when we will be able to use filter service channel
 		if (getName().contains(id)) {
 			KevScriptEngine kengine = getKevScriptEngineFactory().createKevScriptEngine();
-			PaaSKloudReasoner.addNodes(model.getNodesForJ(), getModelService().getLastModel(), kengine, getName(), "PaaSManagerMaster", getNodeName(), "slave", "PaaSManagerSlave", "slave");
+			PaaSKloudReasoner.addNodes(model.getNodes(), getModelService().getLastModel(), kengine, getName(), "PaaSManagerMaster", getNodeName(), "slave", "PaaSManagerSlave", "slave");
 			Boolean created = false;
 			for (int i = 0; i < 5; i++) {
 				try {
@@ -81,7 +81,7 @@ public class PaaSManagerMaster extends AbstractComponentType implements PaaSServ
 		// FIXME this must be removed when we will be able to use filter service channel
 		if (getName().contains(id)) {
 			KevScriptEngine kengine = getKevScriptEngineFactory().createKevScriptEngine();
-			PaaSKloudReasoner.removeNodes(model.getNodesForJ(), getModelService().getLastModel(), kengine);
+			PaaSKloudReasoner.removeNodes(model.getNodes(), getModelService().getLastModel(), kengine);
 			Boolean created = false;
 			for (int i = 0; i < 5; i++) {
 				try {

@@ -50,11 +50,11 @@ class KloudReasoner {
     nodesToAdd
   }
 
-  def getDefaultNodeAttributes (iaasModel: ContainerRoot, typeDefName: String): List[DictionaryAttribute] = {
+  def getDefaultNodeAttributes (iaasModel: ContainerRoot, typeDefName: String): java.util.List[DictionaryAttribute] = {
     iaasModel.getTypeDefinitions.find(td => td.getName == typeDefName) match {
       case None => List[DictionaryAttribute]()
       case Some(td) =>
-        td.getDictionaryType.get.getAttributes
+        td.getDictionaryType.getAttributes
     }
   }
 

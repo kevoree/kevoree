@@ -6,6 +6,7 @@ import util.matching.Regex
 import org.kevoree.library.sky.api.helper.KloudModelHelper
 import org.kevoree.api.service.core.script.{KevScriptEngineException, KevScriptEngine}
 import org.json.JSONStringer
+import scala.collection.JavaConversions._
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -62,7 +63,7 @@ class PaaSKloudUserResourceManagerPageGenerator (instance: KloudResourceManagerP
 
       val paasNodeTypes = model.getTypeDefinitions.filter(nt => KloudModelHelper.isPaaSNodeType(model, nt))
 
-      val htmlContent = HTMLPageBuilder.addNodePage(pattern, paasNodeTypes)
+      val htmlContent = HTMLPageBuilder.addNodePage(pattern, paasNodeTypes.toList)
       response.setStatus(200)
       response.setContent(htmlContent)
     } else {
@@ -98,12 +99,12 @@ class PaaSKloudUserResourceManagerPageGenerator (instance: KloudResourceManagerP
             kengine.addVariable("nodeTypeName", typeName)
             kengine append "addNode {nodeName} : {nodeTypeName}"
             // check attributes
-            if (nodeType.getDictionaryType.isDefined) {
-              nodeType.getDictionaryType.get.getAttributes.foreach {
+            if (nodeType.getDictionaryType!=null) {
+              nodeType.getDictionaryType.getAttributes.foreach {
                 attribute => {
                   val value = request.getResolvedParams.get(attribute.getName)
                   if (value == null && !attribute.getOptional) {
-                    nodeType.getDictionaryType.get.getDefaultValues.find(defaulValue => defaulValue.getAttribute.getName == attribute.getName) match {
+                    nodeType.getDictionaryType.getDefaultValues.find(defaulValue => defaulValue.getAttribute.getName == attribute.getName) match {
                       case None => jsonresponse.key("code").value("-1").key("message").value("The attribute " + attribute.getName + " must be defined")
                       case Some(defaultValue) => {
                         kengine addVariable("attributeName", attribute.getName)
@@ -176,8 +177,8 @@ class PaaSKloudUserResourceManagerPageGenerator (instance: KloudResourceManagerP
       nodeType =>
         var msg = new JSONStringer().`object`().key("name").value("name").key("optional").value(false).endObject()
         var attributes = List[String](msg.toString)
-        if (nodeType.getDictionaryType.isDefined) {
-          nodeType.getDictionaryType.get.getAttributes.foreach {
+        if (nodeType.getDictionaryType!=null) {
+          nodeType.getDictionaryType.getAttributes.foreach {
             attribute => {
               msg = new JSONStringer().`object`().key("name").value(attribute.getName).key("optional").value(attribute.getOptional)
               if (attribute.getDatatype.startsWith("enum")) {
@@ -185,7 +186,7 @@ class PaaSKloudUserResourceManagerPageGenerator (instance: KloudResourceManagerP
                 msg.key("values").value(vals)
               }
 
-              val defaultValue = nodeType.getDictionaryType.get.getDefaultValues.find(v => v.getAttribute.getName == attribute.getName) match {
+              val defaultValue = nodeType.getDictionaryType.getDefaultValues.find(v => v.getAttribute.getName == attribute.getName) match {
                 case None => ""
                 case Some(v) => v.getValue
               }
