@@ -7,6 +7,8 @@ import org.kevoree.PortTypeRef
 import org.kevoree.ComponentType
 import org.kevoree.framework.KevoreeXmiHelper
 import org.kevoree.ServicePortType
+import scala.collection.JavaConversions._
+import org.kevoree.impl.DefaultKevoreeFactory
 
 /**
  * Created by IntelliJ IDEA.
@@ -18,7 +20,8 @@ import org.kevoree.ServicePortType
 
 object CompositeParser {
 
-  
+  val factory = new DefaultKevoreeFactory
+
   
   def parseCompositeFile(root : ContainerRoot,file: File, version: String, groupId: String, artefactId: String,compositeFileName:String): ContainerRoot = {
 
@@ -27,7 +30,7 @@ object CompositeParser {
     xmlnode.child.foreach { cNode =>
       cNode.label match {
         case "component" => {
-          val newkev = KevoreeFactory.createComponentType
+          val newkev = factory.createComponentType
           cNode.attribute("name").map { nameAtt =>
             newkev.setName(nameAtt.text.replace("-","_"))
           }
@@ -41,7 +44,7 @@ object CompositeParser {
 
           
           
-          val dico = KevoreeFactory.createDictionaryType
+          val dico = factory.createDictionaryType
 
           cNode.child.foreach(node => node.label match {
             case "service" => {
@@ -51,7 +54,7 @@ object CompositeParser {
               newkev.addRequired(this.createPortRef(root, node))
             }
             case "property" => {
-              val attr = KevoreeFactory.createDictionaryAttribute
+              val attr = factory.createDictionaryAttribute
               attr.setOptional(false)
               attr.setFragmentDependant(false)
               attr.setState(false)
@@ -67,7 +70,7 @@ object CompositeParser {
 
           })
           if (dico.getAttributes.size > 0)
-            newkev.setDictionaryType(Option(dico))
+            newkev.setDictionaryType(dico)
           root.addTypeDefinitions(newkev)
 
         }
@@ -78,7 +81,7 @@ object CompositeParser {
 
     xmlnode.label match {
         case "composite" => {
-          val newkev = KevoreeFactory.createComponentType
+          val newkev = factory.createComponentType
           newkev.setBean(compositeFileName)
           xmlnode.attribute("name").map { nameAtt =>
             newkev.setName(nameAtt.text.replace("-","_"))
@@ -109,7 +112,7 @@ object CompositeParser {
   }
 
   def createPortRefComposite(root: ContainerRoot, node: Node): PortTypeRef = {
-    val portRef = KevoreeFactory.createPortTypeRef
+    val portRef = factory.createPortTypeRef
     var promoteComponent: String = ""
     var promotePort: String = ""
 
@@ -136,13 +139,13 @@ object CompositeParser {
   }
 
   def createPortRef(root: ContainerRoot, node: Node): PortTypeRef = {
-    val portRef = KevoreeFactory.createPortTypeRef
+    val portRef = factory.createPortTypeRef
     portRef.setOptional(true)
     portRef.setNoDependency(false)
     node.attribute("name").map { nameAtt =>
       portRef.setName(nameAtt.text)
     }
-    val service = KevoreeFactory.createServicePortType
+    val service = factory.createServicePortType
     node.child.foreach(serv => serv.label match {
       case "interface.java" => {
         serv.attribute("interface").map { nameAtt =>
@@ -159,19 +162,19 @@ object CompositeParser {
   }
 
   def createRepo(root: ContainerRoot): ContainerRoot = {
-    var rep = KevoreeFactory.createRepository
+    var rep = factory.createRepository
     rep.setUrl("http://maven.kevoree.org/archiva/repository/snapshots/")
     root.addRepositories(rep)
-    rep = KevoreeFactory.createRepository
+    rep = factory.createRepository
     rep.setUrl("http://scala-tools.org/repo-releases")
     root.addRepositories(rep)
-    rep = KevoreeFactory.createRepository
+    rep = factory.createRepository
     rep.setUrl("http://maven.kevoree.org/release")
     root.addRepositories(rep)
-    rep = KevoreeFactory.createRepository
+    rep = factory.createRepository
     rep.setUrl("http://maven.kevoree.org/snapshots")
     root.addRepositories(rep)
-    rep = KevoreeFactory.createRepository
+    rep = factory.createRepository
     rep.setUrl("http://repo1.maven.org/maven2")
     root.addRepositories(rep)
     root
@@ -184,15 +187,15 @@ object CompositeParser {
  */
 
   def addCurrentDeployUnit(model: ContainerRoot, version: String, groupId: String, artefactId: String): ContainerRoot = {
-    val nodeType = KevoreeFactory.createNodeType
+    val nodeType = factory.createNodeType
     nodeType.setName("FrascatiNode")
-    val dep = KevoreeFactory.createDeployUnit
+    val dep = factory.createDeployUnit
     dep.setType("bundle")
     dep.setVersion(version)
     dep.setGroupName(groupId)
     dep.setUnitName(artefactId)
     dep.setHashcode("" + System.currentTimeMillis())
-    dep.setTargetNodeType(Option(nodeType))
+    dep.setTargetNodeType(nodeType)
     model.addTypeDefinitions(nodeType)
     model.addDeployUnits(dep)
     model.getTypeDefinitions.filter(e=> e.isInstanceOf[ComponentType]).foreach(e=> e.asInstanceOf[ComponentType].addDeployUnits(dep))

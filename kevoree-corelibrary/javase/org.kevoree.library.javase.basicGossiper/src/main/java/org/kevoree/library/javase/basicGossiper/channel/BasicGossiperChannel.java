@@ -10,6 +10,7 @@ import org.kevoree.framework.*;
 import org.kevoree.framework.KevoreePropertyHelper;
 import org.kevoree.framework.NetworkHelper;
 import org.kevoree.framework.message.Message;
+import org.kevoree.impl.DefaultKevoreeFactory;
 import org.kevoree.library.basicGossiper.protocol.gossip.Gossip;
 import org.kevoree.library.basicGossiper.protocol.version.Version;
 import org.kevoree.library.javase.basicGossiper.GossiperComponent;
@@ -179,7 +180,8 @@ public class BasicGossiperChannel extends AbstractChannelFragment implements Mod
         return true;
     }
 
-    protected AtomicReference<ContainerRoot> currentCacheModel = new AtomicReference<ContainerRoot>(KevoreeFactory.$instance.createContainerRoot());
+    private KevoreeFactory factory = new DefaultKevoreeFactory();
+    protected AtomicReference<ContainerRoot> currentCacheModel = new AtomicReference<ContainerRoot>(factory.createContainerRoot());
     protected AtomicReference<List<String>> peers = new AtomicReference<List<String>>();
 
     @Override

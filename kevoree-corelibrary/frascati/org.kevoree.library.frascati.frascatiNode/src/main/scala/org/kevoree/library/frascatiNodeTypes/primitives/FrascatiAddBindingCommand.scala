@@ -10,6 +10,8 @@ import org.kevoree.framework.aspects.KevoreeAspects._
 import org.kevoree.library.frascatiNodeTypes.KevoreeReflexiveProvidedPort
 import org.kevoree.framework.message.PortBindMessage
 import org.kevoree.framework.KevoreeChannelFragment
+import scala.collection.JavaConversions._
+
 
 /**
  * Created by IntelliJ IDEA.

@@ -13,6 +13,7 @@ import org.apache.maven.project.MavenProject;
 import org.kevoree.ContainerRoot;
 import org.kevoree.KevoreeFactory;
 import org.kevoree.framework.KevoreeXmiHelper;
+import org.kevoree.impl.DefaultKevoreeFactory;
 
 /**
  * Created by IntelliJ IDEA.
@@ -64,14 +65,14 @@ public class KevoreeFrascatiMojo extends AbstractMojo {
 
     	List<File> res = new ArrayList<File>();
     	listFile(resources,res);
-  	    ContainerRoot root = KevoreeFactory.createContainerRoot();
+  	    ContainerRoot root = new DefaultKevoreeFactory().createContainerRoot();
   	    for (File f : res){
   	    	org.kevoree.library.frascati.mavenplugin.CompositeParser.parseCompositeFile(root,f,project.getVersion(),project.getGroupId(),project.getArtifactId(),f.getName());
     	}
   	    File resdir = new File(targetresources.getAbsolutePath() + File.separatorChar + "KEV-INF");
   	    resdir.mkdir();
   	    File resFile = new File(targetresources.getAbsolutePath() + File.separatorChar + "KEV-INF" + File.separatorChar + "lib.kev" );
-    	KevoreeXmiHelper.save(resFile.getAbsolutePath(),root);
+    	KevoreeXmiHelper.$instance.save(resFile.getAbsolutePath(), root);
     	System.err.println(resFile.getAbsolutePath());
     	
     	

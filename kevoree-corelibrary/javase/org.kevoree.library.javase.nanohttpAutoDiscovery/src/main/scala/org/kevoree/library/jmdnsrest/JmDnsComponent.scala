@@ -16,6 +16,7 @@ package org.kevoree.library.jmdnsrest
 
 import javax.jmdns.{ServiceEvent, ServiceListener, ServiceInfo, JmDNS}
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService
+import org.kevoree.impl.DefaultKevoreeFactory
 import org.slf4j.LoggerFactory
 import java.net.InetAddress
 import org.kevoree.{ContainerRoot, KevoreeFactory}
@@ -35,6 +36,8 @@ class JmDnsComponent(nodeName: String, groupName: String, modelPort: Int, modelH
   final val REMOTE_TYPE: String = "_kevoree-remote._tcp.local."
   val nodeAlreadydiscovery = new HashMap[String, ArrayList[String]]
 
+  val factory = new DefaultKevoreeFactory
+
 
   def updateGroupProperty(currentModel: ContainerRoot, nodeName: String, nodeType: String, groupName: String, groupType: String, groupPort: String): Option[ContainerRoot] = {
     val groupTypeDef = currentModel.getTypeDefinitions.find(td => td.getName == groupType)
@@ -44,14 +47,14 @@ class JmDnsComponent(nodeName: String, groupName: String, modelPort: Int, modelH
     }
     //CREATE GROUP IF NOT EXIST
     val currentGroup = currentModel.getGroups.find(group => group.getName == groupName).getOrElse {
-      val newgroup = KevoreeFactory.$instance.createGroup
+      val newgroup = factory.createGroup
       newgroup.setName(groupName)
       newgroup.setTypeDefinition(groupTypeDef.get)
       currentModel.addGroups(newgroup)
       newgroup
     }
     val remoteNode = currentModel.getNodes.find(n => n.getName == nodeName).getOrElse {
-      val newnode = KevoreeFactory.$instance.createContainerNode
+      val newnode = factory.createContainerNode
       newnode.setName(nodeName)
       currentModel.getTypeDefinitions.find(td => td.getName == nodeType).map {
         nodeType => newnode.setTypeDefinition(nodeType)
@@ -66,14 +69,14 @@ class JmDnsComponent(nodeName: String, groupName: String, modelPort: Int, modelH
         attPort =>
           val dic = currentGroup.getDictionary match {
             case null => {
-              val dic = KevoreeFactory.$instance.createDictionary
+              val dic = factory.createDictionary
               currentGroup.setDictionary(dic)
               dic
             }
             case d:org.kevoree.Dictionary => d
           }
           val dicValue = dic.getValues.find(dicVal => dicVal.getAttribute == attPort && dicVal.getTargetNode()!=null && dicVal.getTargetNode.getName == nodeName).getOrElse {
-            val newDicVal = KevoreeFactory.$instance.createDictionaryValue
+            val newDicVal = factory.createDictionaryValue
             newDicVal.setAttribute(attPort)
             newDicVal.setTargetNode(remoteNode)
             dic.addValues(newDicVal)

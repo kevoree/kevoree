@@ -11,6 +11,7 @@ import org.kevoree.kompare.JavaSePrimitive
 import org.ow2.frascati.FraSCAti
 import actors.Actor
 import org.kevoree.{MBinding, ComponentInstance, DeployUnit}
+import scala.collection.JavaConversions._
 
 
 class AdaptatationPrimitiveFactory(frascati: FraSCAti, node: FrascatiNode, topKCL: KevoreeJarClassLoader, targetRuntime: Actor) {
@@ -85,10 +86,10 @@ class AdaptatationPrimitiveFactory(frascati: FraSCAti, node: FrascatiNode, topKC
   def isFrascatiManeged(obj: Any): Boolean = {
     obj match {
       case binding: org.kevoree.MBinding => {
-        binding.getPort.eContainer.asInstanceOf[ComponentInstance].getTypeDefinition.getDeployUnits.forall(e => e.getTargetNodeType.get.getName.equals(classOf[FrascatiNode].getSimpleName))
+        binding.getPort.eContainer.asInstanceOf[ComponentInstance].getTypeDefinition.getDeployUnits.forall(e => e.getTargetNodeType.getName.equals(classOf[FrascatiNode].getSimpleName))
       }
       case instance: org.kevoree.Instance => {
-        instance.getTypeDefinition.getDeployUnits.forall(e => e.getTargetNodeType.get.getName.equals(classOf[FrascatiNode].getSimpleName))
+        instance.getTypeDefinition.getDeployUnits.forall(e => e.getTargetNodeType.getName.equals(classOf[FrascatiNode].getSimpleName))
       }
       case _ => false
     }

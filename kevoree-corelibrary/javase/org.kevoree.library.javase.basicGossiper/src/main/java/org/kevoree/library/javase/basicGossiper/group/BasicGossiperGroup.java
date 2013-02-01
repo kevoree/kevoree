@@ -8,6 +8,7 @@ import org.kevoree.KevoreeFactory;
 import org.kevoree.annotation.*;
 import org.kevoree.framework.KevoreePropertyHelper;
 import org.kevoree.framework.NetworkHelper;
+import org.kevoree.impl.DefaultKevoreeFactory;
 import org.kevoree.library.BasicGroup;
 import org.kevoree.library.basicGossiper.protocol.gossip.Gossip;
 import org.kevoree.library.basicGossiper.protocol.message.KevoreeMessage;
@@ -98,7 +99,8 @@ public class BasicGossiperGroup extends BasicGroup implements GossiperComponent 
         startGossiperGroup();
     }
 
-    protected AtomicReference<ContainerRoot> currentCacheModel = new AtomicReference<ContainerRoot>(KevoreeFactory.$instance.createContainerRoot());
+    private KevoreeFactory factory = new DefaultKevoreeFactory();
+    protected AtomicReference<ContainerRoot> currentCacheModel = new AtomicReference<ContainerRoot>(factory.createContainerRoot());
 
     @Override
     public boolean afterLocalUpdate(ContainerRoot currentModel, ContainerRoot proposedModel) {
