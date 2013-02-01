@@ -6,11 +6,13 @@ import com.yammer.metrics.core.Meter;
 import com.yammer.metrics.core.VirtualMachineMetrics;
 import com.yammer.metrics.reporting.ConsoleReporter;
 import javolution.util.FastMap;
+import org.kevoree.Instance;
 import org.kevoree.annotation.Library;
 import org.kevoree.annotation.NodeType;
 import org.kevoree.api.PrimitiveCommand;
 import org.kevoree.framework.event.MonitorEvent;
 import org.kevoree.framework.event.MonitorEventHandler;
+import org.kevoree.kompare.JavaSePrimitive;
 import org.kevoree.library.defaultNodeTypes.JavaSENode;
 import org.kevoreeAdaptation.AdaptationPrimitive;
 
@@ -28,12 +30,10 @@ import java.util.concurrent.TimeUnit;
 @Library(name = "JavaSE")
 public class MonitoredJavaSENode extends JavaSENode implements MonitorEventHandler {
 
-    private CommandMapper mapper = null;
     private Map<String,Meter> gauges = null;
 
     @Override
     public void startNode() {
-        mapper = new CommandMapper(this,this);
         gauges = new FastMap<String,Meter>().shared();
         super.startNode();
     }
@@ -45,7 +45,6 @@ public class MonitoredJavaSENode extends JavaSENode implements MonitorEventHandl
             Metrics.shutdown();
         } catch(Exception ignore){
         }
-        mapper = null;
         gauges = null;
     }
 
@@ -55,7 +54,12 @@ public class MonitoredJavaSENode extends JavaSENode implements MonitorEventHandl
 
     @Override
     public PrimitiveCommand getPrimitive(AdaptationPrimitive adaptationPrimitive) {
-        return mapper.buildPrimitiveCommand(adaptationPrimitive);
+
+        if(adaptationPrimitive.get_primitiveType().getName().equals(JavaSePrimitive.AddInstance())){
+               return new MonitoredAddInstance(this, (Instance)adaptationPrimitive.getRef(), getNodeName(), getModelService(), getKevScriptEngineFactory(), getBootStrapperService());
+        } else {
+            return super.getPrimitive(adaptationPrimitive);
+        }
     }
 
     @Override
