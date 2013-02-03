@@ -17,6 +17,7 @@ import org.kevoree.KControlModel.KControlModelFactory;
 import org.kevoree.KControlModel.KControlRule;
 import org.kevoree.KControlModel.KPublicKey;
 import org.kevoree.KControlModel.RuleMatcher;
+import org.kevoree.KControlModel.impl.DefaultKControlModelFactory;
 import org.kevoree.adaptation.control.api.ControlException;
 import org.kevoree.tools.control.framework.api.Command;
 import org.kevoree.tools.control.framework.api.IAccessControlChecker;
@@ -40,6 +41,8 @@ public class CreateRulesCommand implements Command {
     private HashMap<String,KControlRule> authorized_rules = new HashMap<String,KControlRule>();
     private HashMap<String,KControlRule> forbidden_rules = new HashMap<String,KControlRule>();
 
+    private DefaultKControlModelFactory factory = new DefaultKControlModelFactory();
+
     public CreateRulesCommand(PublicKey publicKey)
     {
         this.publicKey = publicKey;
@@ -54,7 +57,7 @@ public class CreateRulesCommand implements Command {
         KControlRule rule=null;
         if(!authorized_rules.containsKey(_kElementQuery))
         {
-            rule = KControlModelFactory.$instance.createKControlRule();
+            rule = factory.createKControlRule();
             rule.set_kElementQuery(_kElementQuery);
             authorized_rules.put(_kElementQuery,rule);
         }  else
@@ -82,7 +85,7 @@ public class CreateRulesCommand implements Command {
             //  no exist add
 
             RSAPublicKey rsaPublicKey = (RSAPublicKey) publicKey;
-            currentPublicKey = KControlModelFactory.$instance.createKPublicKey();
+            currentPublicKey = factory.createKPublicKey();
             // todo we can do better
             currentPublicKey.set_key(rsaPublicKey.getPublicExponent()+":"+rsaPublicKey.getModulus());
             accessControl.getControlRoot().addKeys(currentPublicKey);
