@@ -32,6 +32,7 @@ import org.kevoree.ContainerNode;
 import org.kevoree.ContainerRoot;
 import org.kevoree.KevoreeFactory;
 import org.kevoree.api.service.core.handler.ModelListener;
+import org.kevoree.impl.DefaultKevoreeFactory;
 import org.kevoree.platform.standalone.KevoreeBootStrap;
 
 import javax.swing.*;
@@ -122,7 +123,7 @@ public class KevoreeGUIFrame extends JFrame {
                     String response = nodeUI.getKevName();
                     final String nodeName = response;
                     System.setProperty("node.name", response);
-                    setTitle(nodeName + " : " + nodeUI.getKevTypeName() + " / Kevoree-" + KevoreeFactory.$instance.getVersion());
+                    setTitle(nodeName + " : " + nodeUI.getKevTypeName() + " / Kevoree-" + new DefaultKevoreeFactory().getVersion());
                     new Thread() {
                         @Override
                         public void run() {
