@@ -5,12 +5,13 @@
     <parent>
         <artifactId>org.kevoree.library.model.root</artifactId>
         <groupId>org.kevoree.corelibrary.model</groupId>
-        <version>1.9.0-SNAPSHOT</version>
+        <version>1.9.0</version>
         <relativePath>../org.kevoree.library.model.root/pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>org.kevoree.library.model.sky.virtualbsd</artifactId>
     <name>Kevoree :: CoreLibrary :: Model :: Sky :: VirtualBSD</name>
+    <version>1.9.0</version>
 
     <properties>
         <node.update.timeout>500000</node.update.timeout>
