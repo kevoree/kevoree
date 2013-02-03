@@ -170,7 +170,8 @@ open class KevoreeJarClassLoader(): ClassLoader() {
     }
 
     fun incScore(kcl: ClassLoader): Int {
-        return scoreMap.put(kcl.hashCode(), getScore(kcl) + 1)!!
+        scoreMap.put(kcl.hashCode(), getScore(kcl) + 1)
+        return scoreMap.get(kcl.hashCode())!!
     }
 
     fun internal_loadClass(className: String, resolveIt: Boolean): Class<out Any ?>? {
