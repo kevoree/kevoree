@@ -11,7 +11,7 @@
     <parent>
         <artifactId>org.kevoree.library</artifactId>
         <groupId>org.kevoree.corelibrary</groupId>
-        <version>1.9.0-SNAPSHOT</version>
+        <version>1.9.0</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
