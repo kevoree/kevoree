@@ -1,9 +1,9 @@
 // nodes configuration
 merge "mvn:org.kevoree.corelibrary.sky/org.kevoree.library.sky.jails/{kevoree.version}"
-merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.gossiperNetty/{kevoree.version}"
+merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.basicGossiper/{kevoree.version}"
 
 merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.defaultChannels/{kevoree.version}"
-merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.socketChannels/{kevoree.version}"
+merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.p2pSock/{kevoree.version}"
 merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.nioChannels/{kevoree.version}"
 
 merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.webserver.api/{kevoree.version}"
@@ -19,10 +19,10 @@ network virtualbsd => virtualbsd { "KEVOREE.remote.node.ip"= "172.16.78.101"}
 
 
 // group configuration
-addGroup sync : NettyGossiperGroup
+addGroup sync : BasicGossiperGroup
 
 addToGroup sync virtualbsd
-updateDictionary sync {port="8000", gossip_port="8001"}@virtualbsd
+updateDictionary sync {port="8000"}@virtualbsd
 
 // Kloud manager configuration
 
