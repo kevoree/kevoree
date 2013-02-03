@@ -15,6 +15,7 @@ package org.kevoree.tools.control.framework.utils;
 
 import org.kevoree.KControlModel.KControlModelFactory;
 import org.kevoree.KControlModel.RuleMatcher;
+import org.kevoree.KControlModel.impl.DefaultKControlModelFactory;
 import org.kevoree.kompare.JavaSePrimitive;
 
 /**
@@ -26,11 +27,12 @@ import org.kevoree.kompare.JavaSePrimitive;
  */
 public class HelperMatcher {
 
+    private static  DefaultKControlModelFactory factory = new DefaultKControlModelFactory();
 
 
     public static RuleMatcher createMatcher(String pTypeQuery)
     {
-        RuleMatcher m1 = KControlModelFactory.$instance.createRuleMatcher();
+        RuleMatcher m1 = factory.createRuleMatcher();
         m1.setPTypeQuery(pTypeQuery);
         return  m1;
 

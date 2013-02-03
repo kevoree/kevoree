@@ -16,6 +16,7 @@ package org.kevoree.tools.control.framework.impl;
 
 import org.kevoree.*;
 import org.kevoree.KControlModel.*;
+import org.kevoree.KControlModel.impl.DefaultKControlModelFactory;
 import org.kevoree.adaptation.control.api.ControlException;
 import org.kevoree.adaptation.control.api.ModelSignature;
 import org.kevoree.adaptation.control.api.SignedModel;
@@ -52,9 +53,12 @@ public class AccessControlCheckerImpl implements IAccessControlChecker
         this.controlRoot = controlRoot;
     }
 
+    private DefaultKControlModelFactory factory = new DefaultKControlModelFactory();
+
+
     public AccessControlCheckerImpl()
     {
-        this.controlRoot = KControlModelFactory.$instance.createKControlRoot();
+        this.controlRoot = factory.createKControlRoot();
     }
 
     @Override
