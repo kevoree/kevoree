@@ -49,7 +49,7 @@ class RemoveBindingCommand(val c : MBinding,val nodeName:String) : PrimitiveComm
                 val foundNeedPort = casted.getKevoreeComponentType()!!.getNeededPorts()!!.get(c.getPort()!!.getPortTypeRef()!!.getName())
                 val foundHostedPort = casted.getKevoreeComponentType()!!.getHostedPorts()!!.get(c.getPort()!!.getPortTypeRef()!!.getName())
 
-                if(foundNeedPort == null && foundNeedPort == null){
+                if(foundNeedPort == null && foundHostedPort == null){
                     logger.info("Port instance not found in component")
                     logger.info("Look for "+c.getPort()!!.getPortTypeRef()!!.getName());
                     logger.info(casted.getKevoreeComponentType()!!.getNeededPorts()!!.values().toString());

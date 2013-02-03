@@ -47,13 +47,16 @@ class AddBindingCommand(val c: MBinding, val nodeName: String): PrimitiveCommand
             if(kevoreeChannelFound != null && kevoreeComponentFound != null && kevoreeComponentFound is KevoreeComponentActivator){
                 val casted = kevoreeComponentFound.getKInstance() as KevoreeComponent
                 val channelCasted = kevoreeChannelFound as KevoreeInstanceActivator
-                val foundNeedPort = casted.getKevoreeComponentType()!!.getNeededPorts()!!.get(c.getPort()!!.getPortTypeRef()!!.getName())
-                val foundHostedPort = casted.getKevoreeComponentType()!!.getHostedPorts()!!.get(c.getPort()!!.getPortTypeRef()!!.getName())
+                val portName = c.getPort()!!.getPortTypeRef()!!.getName()
 
-                if(foundNeedPort == null && foundNeedPort == null){
+                val foundNeedPort = casted.getKevoreeComponentType()!!.getNeededPorts()!!.get(portName)
+                val foundHostedPort = casted.getKevoreeComponentType()!!.getHostedPorts()!!.get(portName)
+
+                if(foundNeedPort == null && foundHostedPort == null){
                     logger.info("Port instance not found in component")
-                    logger.info("Look for "+c.getPort()!!.getPortTypeRef()!!.getName());
-                    logger.info(casted.getKevoreeComponentType()!!.getNeededPorts()!!.values().toString());
+                    logger.info("Look for "+portName);
+                    logger.info(""+casted.getKevoreeComponentType()!!.getNeededPorts()!!.containsKey(portName));
+                    logger.info(""+casted.getKevoreeComponentType()!!.getHostedPorts()!!.containsKey(portName));
                     return false
                 }
 
