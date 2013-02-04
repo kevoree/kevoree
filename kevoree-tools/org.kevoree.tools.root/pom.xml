@@ -194,7 +194,7 @@
         <scala.version>2.9.2</scala.version>
         <bundle.vendor>IRISA/INRIA</bundle.vendor>
         <releaseUrl>http://maven.kevoree.org/libs-release-local</releaseUrl>
-        <slf4j.version>1.6.4</slf4j.version>
+        <slf4j.version>1.7.2</slf4j.version>
         <kevoree.version>${project.version}</kevoree.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
