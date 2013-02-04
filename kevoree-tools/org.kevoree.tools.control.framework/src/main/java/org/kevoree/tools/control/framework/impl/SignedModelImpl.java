@@ -35,12 +35,11 @@ public class SignedModelImpl implements SignedModel, Serializable {
 
     private List<ModelSignature> signatures;
     private ModelFormat currentFormat = ModelFormat.XMI;
-    private  byte []  rawmodel=null;
+    private byte[] rawmodel = null;
 
-    public SignedModelImpl(ContainerRoot model)
-    {
-        signatures =  new ArrayList<ModelSignature>();
-        rawmodel = KevoreeXmiHelper.$instance.saveToString(model,false).getBytes();
+    public SignedModelImpl(ContainerRoot model) {
+        signatures = new ArrayList<ModelSignature>();
+        rawmodel = KevoreeXmiHelper.$instance.saveToString(model, false).getBytes();
     }
 
     @Override
