@@ -64,7 +64,7 @@ public class AccessControlCheckerImpl implements IAccessControlChecker
     @Override
     public List<AdaptationPrimitive> approval(String nodeName, ContainerRoot current_model, SignedModel target_modelSigned) throws ControlException {
         KevoreeKompareBean kompareBean = new KevoreeKompareBean();
-        AdaptationModel adaptationModel = kompareBean.kompare(current_model,KevoreeXmiHelper.loadString(new String(target_modelSigned.getSerialiedModel())), nodeName);
+        AdaptationModel adaptationModel = kompareBean.kompare(current_model,KevoreeXmiHelper.$instance.loadString(new String(target_modelSigned.getSerialiedModel())), nodeName);
         return docontrol(adaptationModel, target_modelSigned);
     }
 
@@ -86,7 +86,7 @@ public class AccessControlCheckerImpl implements IAccessControlChecker
 
 
         // todo          target_signed.getModelFormat()
-        ContainerRoot target_model = KevoreeXmiHelper.loadString(new String(signedModel.getSerialiedModel()));
+        ContainerRoot target_model = KevoreeXmiHelper.$instance.loadString(new String(signedModel.getSerialiedModel()));
 
         // <public key> <sign model>
         List<ModelSignature> tuple_key_sign =  signedModel.getSignatures();
@@ -117,7 +117,7 @@ public class AccessControlCheckerImpl implements IAccessControlChecker
         }
 
 
-        for(AdaptationPrimitive p : adaptationModel.getAdaptationsForJ())
+        for(AdaptationPrimitive p : adaptationModel.getAdaptations())
         {
 
             if(p.getRef() instanceof Instance)
