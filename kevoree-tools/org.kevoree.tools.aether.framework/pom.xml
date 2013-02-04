@@ -12,6 +12,10 @@
         <relativePath>../org.kevoree.tools.root/pom.xml</relativePath>
     </parent>
 
+    <properties>
+        <kotlin.version>0.4.297</kotlin.version>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.kevoree</groupId>
@@ -95,5 +99,27 @@
 -->
 
     </dependencies>
+
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>kotlin-maven-plugin</artifactId>
+                <groupId>org.jetbrains.kotlin</groupId>
+                <version>${kotlin.version}</version>
+                <configuration/>
+                <executions>
+                    <execution>
+                        <id>compile</id>
+                        <phase>process-sources</phase>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
 
 </project>
