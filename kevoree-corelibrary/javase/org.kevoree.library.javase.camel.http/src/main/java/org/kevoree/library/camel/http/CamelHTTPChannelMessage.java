@@ -1,4 +1,4 @@
-package org.kevoree.library.camel;
+package org.kevoree.library.camel.http;
 
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
@@ -25,11 +25,10 @@ import scala.Option;
 @DictionaryType({
         @DictionaryAttribute(name = "port", defaultValue = "10000", optional = true, fragmentDependant = true)
 })
-public class CamelNetty extends AbstractKevoreeCamelChannelType {
+public class CamelHTTPChannelMessage extends AbstractKevoreeCamelChannelType {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    /* found a solution to remobe */
     @Start
     @Override
     public void startCamelChannel() throws Exception {
@@ -63,17 +62,17 @@ public class CamelNetty extends AbstractKevoreeCamelChannelType {
                                 }
                             }
                             for (KevoreeChannelFragment cf : getOtherFragments()) {
-                                getContext().createProducerTemplate().sendBody("netty:tcp://" + getAddress(cf.getNodeName()) + ":" + parsePortNumber(cf.getNodeName()), exchange.getIn().getBody());
+                                getContext().createProducerTemplate().sendBody("http://" + getAddress(cf.getNodeName()) + ":" + parsePortNumber(cf.getNodeName()), exchange.getIn().getBody());
                             }
                         }
                     }
                 }
                 );
         try {
-            routeBuilder.from("netty:tcp://0.0.0.0:" + parsePortNumber(getNodeName()) + "?sync=true").
+            routeBuilder.from("http://0.0.0.0:" + parsePortNumber(getNodeName())).
                     process(new Processor() {
                         public void process(Exchange exchange) throws Exception {
-                            exchange.getOut().setBody("result Async TODO");
+                            exchange.getOut().setBody("No result is waiting");
                             for (org.kevoree.framework.KevoreePort p : getBindedPorts()) {
                                 if (exchange.getIn().getBody() instanceof Message) {
                                     forward(p, (Message) exchange.getIn().getBody());

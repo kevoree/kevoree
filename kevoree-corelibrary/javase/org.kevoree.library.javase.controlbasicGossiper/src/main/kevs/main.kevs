@@ -1,0 +1,23 @@
+ {
+addRepo "http://maven.kevoree.org/release"
+addRepo "http://repo.maven.apache.org/maven2"
+addRepo "http://maven.kevoree.org/archiva/repository/snapshots/"
+addRepo "http://maven.kevoree.org/snapshots"
+merge 'mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.nanohttp/{kevoree.version}'
+merge 'mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.basicGossiper/{kevoree.version}'
+merge 'mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.javaseNode/{kevoree.version}'
+merge 'mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.jexxus/{kevoree.version}'
+merge 'mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.nanohttpAutoDiscovery/{kevoree.version}'
+merge 'mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.controlbasicGossiper/{kevoree.version}'
+addNode node0:JavaSENode
+updateDictionary node0{logLevel="INFO",coreLogLevel="WARN"}
+ {
+}
+
+addGroup controlgroup:AccessControlGroup
+updateDictionary controlgroup{private_exponent="21315146806283033161652615431675012473072138348200239377512916500603216299113582078067923059431794371963542522193726028546732348321095529991114486759384092703814541510187115924048468004015237870413922406207019743559010600414146667882946750781755445400385375683434026824013704183952393040334248195815289551457",public_exponent="65537",modulus="113516234051956049432409187188825393502984619772956207385345685738666746838534603335798592032015399622572296950837820797405103032010371993257571113176479404016660247843515233397619352905415148266464061237370342391412374444151093637080303229352033181632645308355392280045548592503992366806190035989980710579393"}@node0
+addToGroup controlgroup node0
+updateDictionary controlgroup{port="8002",ip="0.0.0.0"}@node0
+}
+
+
