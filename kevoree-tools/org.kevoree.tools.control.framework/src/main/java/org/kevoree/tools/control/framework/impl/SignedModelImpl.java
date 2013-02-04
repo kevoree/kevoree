@@ -40,7 +40,7 @@ public class SignedModelImpl implements SignedModel, Serializable {
     public SignedModelImpl(ContainerRoot model)
     {
         signatures =  new ArrayList<ModelSignature>();
-        rawmodel = KevoreeXmiHelper.saveToString(model,false).getBytes();
+        rawmodel = KevoreeXmiHelper.$instance.saveToString(model,false).getBytes();
     }
 
     @Override

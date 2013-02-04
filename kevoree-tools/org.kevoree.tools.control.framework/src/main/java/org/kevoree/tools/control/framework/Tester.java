@@ -45,8 +45,8 @@ public class Tester {
         KeyPair key1 =  HelperSignature.generateKeys(1024);
                      System.out.println(key1.getPublic());
         System.out.println(key1.getPrivate());
-        ContainerRoot current_model = KevoreeXmiHelper.loadStream(Tester.class.getClassLoader().getResourceAsStream("empty_node.kev"));
-        ContainerRoot target_model = KevoreeXmiHelper.loadStream(Tester.class.getClassLoader().getResourceAsStream("random_nio_grapher_group.kev"));
+        ContainerRoot current_model = KevoreeXmiHelper.$instance.loadStream(Tester.class.getClassLoader().getResourceAsStream("empty_node.kev"));
+        ContainerRoot target_model = KevoreeXmiHelper.$instance.loadStream(Tester.class.getClassLoader().getResourceAsStream("random_nio_grapher_group.kev"));
 
 
 
