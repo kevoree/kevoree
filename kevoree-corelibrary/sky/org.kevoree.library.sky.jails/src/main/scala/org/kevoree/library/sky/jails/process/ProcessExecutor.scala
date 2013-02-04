@@ -170,7 +170,7 @@ class ProcessExecutor(creationTimeout: Int, startTimeout: Int) {
         limit = PropertyConversionHelper.getRAM(ram)
         exec = exec ++ Array[String](/*"-Xms512m", */ "-Xmx" + limit + "m")
       } catch {
-        case e: NumberFormatException => logger.warn("Unable to take into account RAM limitation because the value {} is not well defined for {}. Default value used.", ram, nodeName)
+        case e: NumberFormatException => logger.warn("Unable to take into account RAM limitation because the value {} is not well defined for {}. Default value used.", Array[AnyRef](ram, nodeName))
       }
 
     }

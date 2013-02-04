@@ -4,7 +4,6 @@ import nodeType.AbstractHostNode
 import org.kevoree.ContainerRoot
 
 import org.slf4j.{LoggerFactory, Logger}
-import actors.Actor
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -14,22 +13,22 @@ import actors.Actor
  * @author Erwan Daubert
  * @version 1.0
  */
-class KevoreeNodeManager (node: AbstractHostNode) /*extends Actor*/ {
+class KevoreeNodeManager(node: AbstractHostNode) /*extends Actor*/ {
 
   private val logger: Logger = LoggerFactory.getLogger(this.getClass)
 
   var runners = new scala.collection.mutable.ArrayBuffer[KevoreeNodeRunner] with scala.collection.mutable.SynchronizedBuffer[KevoreeNodeRunner]
 
 
-  case class STOP ()
+  case class STOP()
 
-  case class ADD_NODE (iaasModel: ContainerRoot, targetChildName: String, targetChildModel: ContainerRoot)
+  case class ADD_NODE(iaasModel: ContainerRoot, targetChildName: String, targetChildModel: ContainerRoot)
 
-  case class REMOVE_NODE (iaasModel: ContainerRoot, targetChildName: String)
+  case class REMOVE_NODE(iaasModel: ContainerRoot, targetChildName: String)
 
   // case class UPDATE_NODE(containerNode: ContainerNode, model: ContainerRoot)
 
-  def stop () {
+  def stop() {
     logger.debug("try to stop all nodes")
     runners.foreach {
       runner => runner.stopNode()
@@ -37,7 +36,7 @@ class KevoreeNodeManager (node: AbstractHostNode) /*extends Actor*/ {
     runners = new scala.collection.mutable.ArrayBuffer[KevoreeNodeRunner] with scala.collection.mutable.SynchronizedBuffer[KevoreeNodeRunner]
   }
 
-  def addNode (iaasModel: ContainerRoot, targetChildName: String, targetChildModel: ContainerRoot): Boolean = {
+  def addNode(iaasModel: ContainerRoot, targetChildName: String, targetChildModel: ContainerRoot): Boolean = {
     logger.debug("try to add a node: {}", targetChildName)
     val newRunner = node.createKevoreeNodeRunner(targetChildName)
     runners.append(newRunner)
@@ -49,10 +48,10 @@ class KevoreeNodeManager (node: AbstractHostNode) /*extends Actor*/ {
     result
   }
 
-  def removeNode (iaasModel: ContainerRoot, targetChildName: String): Boolean = {
+  def removeNode(iaasModel: ContainerRoot, targetChildName: String): Boolean = {
     logger.debug("try to remove {}", targetChildName)
     runners.find(runner => runner.nodeName == targetChildName) match {
-      case None => true// we do nothing because there is no node with this name
+      case None => true // we do nothing because there is no node with this name
       case Some(runner) => {
         runners.remove(runners.indexOf(runner))
         runner.stopNode()

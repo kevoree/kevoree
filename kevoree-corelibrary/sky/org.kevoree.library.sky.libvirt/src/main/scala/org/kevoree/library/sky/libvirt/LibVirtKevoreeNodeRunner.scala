@@ -24,7 +24,6 @@ abstract class LibVirtKevoreeNodeRunner(nodeName: String, iaasNode: AbstractHost
   def createXMLDomain(iaasModel: ContainerRoot, childBootStrapModel: ContainerRoot): Document
 
   def startNode(iaasModel: ContainerRoot, childBootStrapModel: ContainerRoot) = {
-    logger.debug("Starting " + nodeName)
     // look at the already defined domain to see if the domain is already defined but not started
     try {
       val domain: Domain = conn.domainLookupByName(nodeName)
@@ -100,7 +99,7 @@ abstract class LibVirtKevoreeNodeRunner(nodeName: String, iaasNode: AbstractHost
           nodeDomain.create()
           true
         } catch {
-          case e: Throwable => logger.error("Unable to create or start the VM {}", nodeName, e); false
+          case e: Throwable => logger.error("Unable to create or start the VM " + nodeName, e); false
         }
       }
     }
@@ -112,7 +111,7 @@ abstract class LibVirtKevoreeNodeRunner(nodeName: String, iaasNode: AbstractHost
         nodeDomain.destroy()
         true
       } catch {
-        case e: LibvirtException => logger.error("Unable to stop the VM {}", nodeName, e); false
+        case e: LibvirtException => logger.error("Unable to stop the VM " + nodeName, e); false
       }
     } else {
       true
@@ -155,7 +154,7 @@ abstract class LibVirtKevoreeNodeRunner(nodeName: String, iaasNode: AbstractHost
       network.create()
     } catch {
       case e: Throwable => {
-        logger.error("Unable to reconfigure network for VM {}", domain.getName, e)
+        logger.error("Unable to reconfigure network for VM " + domain.getName, e)
         throw e
       }
     }

@@ -35,7 +35,7 @@ object JailsConstraintsConfiguration {
     var exec = Array[String]()
     logger.debug("asking to node property {}...", "RAM")
     property = KevoreePropertyHelper.getProperty(node, "RAM").getOrElse("N/A")
-    logger.debug("{} = {}", "RAM", property)
+    logger.debug("RAM = {}", property)
     if (property != "N/A") {
       try {
         //            var limit = 0
@@ -71,7 +71,7 @@ object JailsConstraintsConfiguration {
           }
         }
       } catch {
-        case e: NumberFormatException => logger.warn("Unable to take into account RAM limitation because the value {} is not well defined for {}", property, node.getName)
+        case e: NumberFormatException => logger.warn("Unable to take into account RAM limitation because the value {} is not well defined for {}", Array[AnyRef](property, node.getName))
       }
     }
     /*property = getComputedSystemCPUFrequency(KevoreePropertyHelper.getPropertyForNode(model, nodeName, "CPU_FREQUENCY") // TODO seems to be not implemented
@@ -138,7 +138,7 @@ object JailsConstraintsConfiguration {
           execResult = false
         }
       } catch {
-        case e: NumberFormatException => logger.warn("Unable to take into account WALLCLOCKTIME limitation because the value {} is not well defined for {}", property, node.getName)
+        case e: NumberFormatException => logger.warn("Unable to take into account WALLCLOCKTIME limitation because the value {} is not well defined for {}", Array[AnyRef](property, node.getName))
       }
     }
     property = KevoreePropertyHelper.getProperty(node, "DISK_SIZE").getOrElse("N/A")
@@ -173,7 +173,7 @@ object JailsConstraintsConfiguration {
           execResult = false
         }
       } catch {
-        case e: NumberFormatException => logger.warn("Unable to take into account DATA_SIZE limitation because the value {} is not well defined for {}. Default value used.", property, node.getName)
+        case e: NumberFormatException => logger.warn("Unable to take into account DATA_SIZE limitation because the value {} is not well defined for {}. Default value used.", Array[AnyRef](property, node.getName))
       }
     }
     logger.debug("specify constraints is done: {}", execResult)
@@ -193,7 +193,7 @@ object JailsConstraintsConfiguration {
           .start()
         val result = resultActor.waitingFor(500)
         if (result._1) {
-//          val frequency = result._2.trim()
+          //          val frequency = result._2.trim()
           val valueFrequency = PropertyConversionHelper.getCPUFrequency(property)
           val valueFrequency4Jail = PropertyConversionHelper.getCPUFrequency(property)
           //          valueFrequency4Jail = valueFrequency4Jail.longValue()

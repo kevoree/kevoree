@@ -60,7 +60,7 @@ object KloudModelHelper {
     // FIXME replace when nature will be added and managed
     currentModel.findByQuery("nodes[" + nodeName + "]", classOf[ContainerNode]) match {
       case null => logger.debug("There is no node named {}", nodeName); false
-      case node =>
+      case node: ContainerNode =>
         node.getTypeDefinition.asInstanceOf[NodeType].getManagedPrimitiveTypes.filter(p => p.getName == "RemoveNode" || p.getName == "AddNode").size == 2
     }
   }
@@ -74,7 +74,7 @@ object KloudModelHelper {
     // FIXME replace when nature will be added and managed
     currentModel.findByQuery("nodes[" + nodeName + "]", classOf[ContainerNode]) match {
       case null => logger.debug("There is no node named {}", nodeName); false
-      case node =>
+      case node: ContainerNode =>
         node.getTypeDefinition.getName == "PJavaSENode" || isASubType(node.getTypeDefinition, "PJavaSENode")
     }
   }

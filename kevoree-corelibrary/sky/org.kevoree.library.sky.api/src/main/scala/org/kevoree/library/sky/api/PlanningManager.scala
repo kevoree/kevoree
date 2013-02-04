@@ -2,7 +2,7 @@ package org.kevoree.library.sky.api
 
 import command.{AddNodeCommand, RemoveNodeCommand}
 import nodeType.{HostNode, AbstractHostNode}
-import org.kevoreeAdaptation.{AdaptationPrimitive, ParallelStep, KevoreeAdaptationFactory, AdaptationModel}
+import org.kevoreeAdaptation.{AdaptationPrimitive, ParallelStep, AdaptationModel}
 import org.slf4j.{LoggerFactory, Logger}
 import org.kevoree._
 import api.PrimitiveCommand
@@ -23,10 +23,7 @@ object PlanningManager {
   private val logger: Logger = LoggerFactory.getLogger(PlanningManager.getClass)
 
   def kompare(current: ContainerRoot, target: ContainerRoot, skyNode: AbstractHostNode): AdaptationModel = {
-    logger.debug("starting kompare...")
-
     val factory = new DefaultKevoreeAdaptationFactory
-
     val adaptationModel: AdaptationModel = factory.createAdaptationModel
     var step: ParallelStep = factory.createParallelStep
     adaptationModel.setOrderedPrimitiveSet(step)
@@ -62,13 +59,14 @@ object PlanningManager {
         logger.warn("there is no adaptation primitive for {}", HostNode.ADD_NODE)
       }
       current.findByQuery("nodes[" + skyNode.getNodeName + "]", classOf[ContainerNode]) match {
-        case node : ContainerNode => {
+        case node: ContainerNode => {
           target.findByQuery("nodes[" + skyNode.getNodeName + "]", classOf[ContainerNode]) match {
-            case node1 : ContainerNode => {
+            case node1: ContainerNode => {
               node.getHosts.foreach {
-                subNode  =>
+                subNode =>
                   node1.findByQuery("hosts[" + subNode.getName + "]", classOf[ContainerNode]) match {
                     case null => {
+                      logger.debug("add a {} adaptation primitive with {} as parameter", Array[AnyRef](HostNode.REMOVE_NODE, subNode.getName))
                       val command: AdaptationPrimitive = factory.createAdaptationPrimitive
                       command.setPrimitiveType(removeNodeType)
                       command.setRef(subNode)
@@ -78,7 +76,7 @@ object PlanningManager {
                       step.setNextStep(subStep)
                       step = subStep
                     }
-                    case subNode1 : ContainerNode =>
+                    case subNode1: ContainerNode =>
                   }
               }
             }
@@ -89,13 +87,14 @@ object PlanningManager {
       }
 
       target.findByQuery("nodes[" + skyNode.getNodeName + "]", classOf[ContainerNode]) match {
-        case node :ContainerNode => {
+        case node: ContainerNode => {
           current.findByQuery("nodes[" + skyNode.getNodeName + "]", classOf[ContainerNode]) match {
-            case node1 : ContainerNode => {
+            case node1: ContainerNode => {
               node.getHosts.foreach {
                 subNode =>
                   node1.findByQuery("hosts[" + subNode.getName + "]", classOf[ContainerNode]) match {
                     case null => {
+                      logger.debug("add a {} adaptation primitive with {} as parameter", Array[AnyRef](HostNode.ADD_NODE, subNode.getName))
                       val command: AdaptationPrimitive = factory.createAdaptationPrimitive
                       command.setPrimitiveType(addNodeType)
                       command.setRef(subNode)
@@ -105,7 +104,7 @@ object PlanningManager {
                       step.setNextStep(subStep)
                       step = subStep
                     }
-                    case subNode1 : ContainerNode =>
+                    case subNode1: ContainerNode =>
                   }
               }
             }
@@ -127,7 +126,7 @@ object PlanningManager {
   }
 
   private def isContaining(step: ParallelStep): Boolean = {
-    if (step!=null) {
+    if (step != null) {
       // TODO must be tested
       (step.getAdaptations.exists(adaptation =>
         (adaptation.getPrimitiveType.getName == "UpdateDictionaryInstance" && !adaptation.getRef.isInstanceOf[Group])

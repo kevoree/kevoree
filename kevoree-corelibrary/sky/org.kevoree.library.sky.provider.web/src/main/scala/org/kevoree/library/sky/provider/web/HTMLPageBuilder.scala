@@ -20,7 +20,7 @@ import org.slf4j.LoggerFactory
 object HTMLPageBuilder {
   val logger = LoggerFactory.getLogger(this.getClass)
 
-  def getIaasPage(pattern: String, nodeName: String, model: ContainerRoot): String = {
+  def getIaasPage(pattern: String, nodeName: String, model: ContainerRoot, allowManagement: Boolean): String = {
     (<html>
       <head>
         <link rel="stylesheet" href={pattern + "bootstrap/css/bootstrap.min.css"}/>
@@ -28,17 +28,18 @@ object HTMLPageBuilder {
       <body>
         <div class="container-fluid">
           <div class="row-fluid">
-        <img height="200px" src={pattern + "scaled500.png"} alt="Kevoree"/>
-        <ul class="breadcrumb">
-          <li class="active">
-            <a href={pattern}>Home</a> <span class="divider">/</span>
-          </li>
-        </ul>{val nodesList = model.findByQuery("nodes[" + nodeName + "]", classOf[ContainerNode]) match {
-        case null => List[ContainerNode]()
-        case node :ContainerNode => node.getHosts.toList
-      }
-      nodeList(pattern, model, nodesList)}
-         </div></div>
+            <img height="200px" src={pattern + "scaled500.png"} alt="Kevoree"/>
+            <ul class="breadcrumb">
+              <li class="active">
+                <a href={pattern}>Home</a> <span class="divider">/</span>
+              </li>
+            </ul>{val nodesList = model.findByQuery("nodes[" + nodeName + "]", classOf[ContainerNode]) match {
+            case null => List[ContainerNode]()
+            case node: ContainerNode => node.getHosts.toList
+          }
+          nodeList(pattern, model, nodesList, allowManagement)}
+          </div>
+        </div>
       </body>
     </html>).toString()
   }
@@ -121,7 +122,7 @@ object HTMLPageBuilder {
                 {var result: List[scala.xml.Elem] = List()
               KloudModelHelper.getPaaSKloudGroups(model).foreach {
                 group => {
-                  //logger.debug("{} is a user and he/she has {} nodes", group.getName, group.getSubNodes)
+                  logger.debug("{} is a user and he/she has {} nodes", group.getName, group.getSubNodes.length)
                   result = result ++ List(
                     <tr>
                       <td>
@@ -150,7 +151,7 @@ object HTMLPageBuilder {
     </html>).toString()
   }
 
-  def getPaasUserPage(login: String, pattern: String, model: ContainerRoot): String = {
+  def getPaasUserPage(login: String, pattern: String, model: ContainerRoot, allowManagement: Boolean): String = {
     (<html>
       <head>
         <link rel="stylesheet" href={pattern + "fileuploader/fileuploader.css"}/>
@@ -172,11 +173,11 @@ object HTMLPageBuilder {
                 {login}
               </a> <span class="divider">/</span>
               </li>
-            </ul>{val nodesList = model.findByQuery("groups[" + login + "]", classOf[Group]) match {
-            case null => new java.util.ArrayList[ContainerNode]()
-            case group:Group => group.getSubNodes
+            </ul>{val nodesList: List[ContainerNode] = model.findByQuery("groups[" + login + "]", classOf[Group]) match {
+            case null => List[ContainerNode]()
+            case group: Group => group.getSubNodes.toList
           }
-          nodeList(pattern, model, nodesList.toList)}
+          nodeList(pattern, model, nodesList, allowManagement)}
           </div>
         </div>
       </body>
@@ -206,18 +207,17 @@ object HTMLPageBuilder {
                 </a>
               </li>
             </ul>{var result: List[scala.xml.Elem] = List()
-          /*model.getNodes.find(n => n.getName == parentNodeName)*/
           model.findByQuery("nodes[" + parentNodeName + "]", classOf[ContainerNode]) match {
             case null =>
-            case node:ContainerNode => {
-              node.findByQuery("hosts[" + nodeName + "]", classOf[ContainerNode])match {
+            case node: ContainerNode => {
+              node.findByQuery("hosts[" + nodeName + "]", classOf[ContainerNode]) match {
                 case null =>
                   result = result ++ List(
                     <div class="alert-message block-message error">
                       <p>Node instance not hosted on this platform</p>
                     </div>
                   )
-                case child:ContainerNode =>
+                case child: ContainerNode =>
                   result = result ++ List(
                     <div class="alert-message block-message info">
                       {streamName match {
@@ -287,9 +287,9 @@ object HTMLPageBuilder {
               </li>
             </ul>{var result: List[scala.xml.Elem] = List()
           /*model.getNodes.find(n => n.getName == parentNodeName)*/
-          model.findByQuery("nodes[" + parentNodeName + "]", classOf[ContainerNode])match {
+          model.findByQuery("nodes[" + parentNodeName + "]", classOf[ContainerNode]) match {
             case null =>
-            case node:ContainerNode => {
+            case node: ContainerNode => {
               /*node.getHosts.find(n => n.getName == nodeName)*/
               node.findByQuery("hosts[" + nodeName + "]", classOf[ContainerNode]) match {
                 case null =>
@@ -298,7 +298,7 @@ object HTMLPageBuilder {
                       <p>Node instance not hosted on this platform</p>
                     </div>
                   )
-                case child:ContainerNode =>
+                case child: ContainerNode =>
                   result = result ++ List(
                     <div class="alert-message block-message info">
                       <p>
@@ -320,12 +320,14 @@ object HTMLPageBuilder {
     </html>).toString()
   }
 
-  private def nodeList(pattern: String, model: ContainerRoot, nodeList: List[ContainerNode]): Seq[Node] = {
+  private def nodeList(pattern: String, model: ContainerRoot, nodeList: List[ContainerNode], allowManagement: Boolean): Seq[Node] = {
     (<table class="table table-bordered">
       <thead>
         <tr>
-          <td>#
+          <td>
+            {if (allowManagement) {
             <a class="btn btn-success" href={pattern + "AddChild"}>add child</a>
+          }}
           </td> <td>virtual node</td> <td>ip</td> <td>action(s)</td>
         </tr>
       </thead>
@@ -351,7 +353,9 @@ object HTMLPageBuilder {
                 {ipString}
               </td>
               <td>
+                {if (allowManagement) {
                 <a class="btn btn-warning" href={pattern + "RemoveChild?name=" + child.getName}>delete</a>
+              }}
               </td>
             </tr>
           )

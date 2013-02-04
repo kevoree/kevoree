@@ -3,7 +3,7 @@ package org.kevoree.library.sky.provider
 import org.kevoree._
 import org.kevoree.api.service.core.script.KevScriptEngine
 import framework.{NetworkHelper, Constants, KevoreePropertyHelper}
-import org.kevoree.library.sky.api.helper.{KloudModelHelper, KloudNetworkHelper}
+import org.kevoree.library.sky.api.helper.KloudModelHelper
 import org.slf4j.{LoggerFactory, Logger}
 import scala.collection.JavaConversions._
 import scala.Some
@@ -29,7 +29,7 @@ object PaaSKloudReasoner extends KloudReasoner {
   }
 
   def appendCreateGroupScript(iaasModel: ContainerRoot, id: String, nodeName: String, paasModel: ContainerRoot, kengine: KevScriptEngine) {
-    /*paasModel.getGroups.find(g => g.getName == id)*/
+
     paasModel.findByQuery("groups[" + id + "]", classOf[Group]) match {
       case null => {
         // if the paasModel doesn't contain a Kloud group, then we add a default one
@@ -39,24 +39,27 @@ object PaaSKloudReasoner extends KloudReasoner {
           ip = ipOption.get
         }
         /* Warning This method try severals Socket to determine available port */
-        val portNumber = KloudNetworkHelper.selectPortNumber(ip, Array[Int]())
+        // FIXME
+        /*val portNumber = KloudNetworkHelper.selectPortNumber(ip, Array[Int]())
         kengine.addVariable("groupName", id)
         kengine.addVariable("nodeName", nodeName)
         kengine.addVariable("port", portNumber.toString)
         kengine.addVariable("ip", ip)
         kengine.addVariable("groupType", "KloudPaaSNanoGroup")
+
         kengine append "addGroup {groupName} : KloudPaaSNanoGroup {masterNode='{nodeName}={ip}:{port}'}"
         kengine append "addToGroup {groupName} {nodeName}"
-        kengine append "updateDictionary {groupName} {port='{port}', ip='{ip}'}@{nodeName}"
+        kengine append "updateDictionary {groupName} {port='{port}', ip='{ip}'}@{nodeName}"*/
       }
-      case group:Group => {
+      case group: Group => {
         val ipOption = NetworkHelper.getAccessibleIP(KevoreePropertyHelper.getNetworkProperties(iaasModel, nodeName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP))
         var ip = "127.0.0.1"
         if (ipOption.isDefined) {
           ip = ipOption.get
         }
         /* Warning This method try severals Socket to determine available port */
-        val portNumber = KloudNetworkHelper.selectPortNumber(ip, Array[Int]())
+        // FIXME
+        /*val portNumber = KloudNetworkHelper.selectPortNumber(ip, Array[Int]())
         kengine.addVariable("groupName", id)
         kengine.addVariable("nodeName", nodeName)
         kengine.addVariable("port", portNumber.toString)
@@ -65,10 +68,9 @@ object PaaSKloudReasoner extends KloudReasoner {
 
         kengine append "addGroup {groupName} : {groupType}"
         kengine append "addToGroup {groupName} {nodeName}"
-        kengine append "updateDictionary {groupName} {port='{port}', ip='{ip}'}@{nodeName}"
+        kengine append "updateDictionary {groupName} {port='{port}', ip='{ip}'}@{nodeName}"*/
 
-        if (group.getDictionary!=null) {
-          //            scriptBuilder append "{"
+        if (group.getDictionary != null) {
           val defaultAttributes = getDefaultNodeAttributes(iaasModel, group.getTypeDefinition.getName)
           group.getDictionary.getValues
             .filter(value => value.getAttribute.getName != "ip" && value.getAttribute.getName != "port" && defaultAttributes.find(a => a.getName == value.getAttribute.getName).isDefined).foreach {
@@ -103,7 +105,7 @@ object PaaSKloudReasoner extends KloudReasoner {
     /*iaasModel.getNodes.find(n => n.getName == nodeName)*/
     iaasModel.findByQuery("nodes[" + nodeName + "]", classOf[ContainerNode]) match {
       case null => logger.warn("The node {} doesn't exist !", nodeName); Int.MaxValue
-      case node : ContainerNode => {
+      case node: ContainerNode => {
         // TODO replace when the nature will be added and managed on the model
         //        node.getComponents.filter(c => KloudModelHelper.isASubType(c.getTypeDefinition, "")).size
         node.getComponents.filter(c => KloudModelHelper.isASubType(c.getTypeDefinition, "PaaSManager")).size
@@ -123,10 +125,10 @@ object PaaSKloudReasoner extends KloudReasoner {
           kengine.addVariable("nodeType", node.getTypeDefinition.getName)
           // TODO maybe we need to merge the deploy unit that offer this type if it is not one of our types
           // add node
-          //logger.debug("addNode {} : {}", node.getName, node.getTypeDefinition.getName)
+          logger.debug("addNode {} : {}", Array[AnyRef](node.getName, node.getTypeDefinition.getName))
           kengine append "addNode {nodeName} : {nodeType}"
           // set dictionary attributes of node
-          if (node.getDictionary!=null) {
+          if (node.getDictionary != null) {
             //            scriptBuilder append "{"
             val defaultAttributes = getDefaultNodeAttributes(iaasModel, node.getTypeDefinition.getName)
             node.getDictionary.getValues
@@ -162,7 +164,7 @@ object PaaSKloudReasoner extends KloudReasoner {
     /*iaasModel.getGroups.find(g => g.getName == id)*/
     iaasModel.findByQuery("groups[" + id + "]", classOf[Group]) match {
       case null =>
-      case group:Group => {
+      case group: Group => {
         group.getSubNodes.foreach {
           node =>
             kengine addVariable("nodeName", node.getName)
@@ -192,16 +194,20 @@ object PaaSKloudReasoner extends KloudReasoner {
 
       kengine append "addChannel {channelName} : {channelType}" // FIXME channel type and dictionary
       kengine append "bind {masterComponentName}.{masterPortName}@{masterNodeName} => {channelName}"
+
     } else {
       kengine.addVariable("channelName", channelOption.get)
     }
     kengine append "bind {slaveComponentName}.{slavePortName}@{slaveNodeName} => {channelName}"
+
+    // TODO set dictionary attribute specific for each nodes which hosts a fragment
+    kengine append "updateDictionary {channelName} {{attributeName} = '{attributeValue}'}"
   }
 
   private def findChannel(componentName: String, portName: String, nodeName: String, model: ContainerRoot): Option[String] = {
     model.findByQuery("nodes[" + nodeName + "]/components[" + componentName + "]", classOf[ComponentInstance]) match {
       case null => None
-      case component:ComponentInstance =>
+      case component: ComponentInstance =>
         component.getProvided.find(p => p.getPortTypeRef.getName == portName) match {
           case None =>
             component.getRequired.find(p => p.getPortTypeRef.getName == portName) match {
@@ -228,5 +234,25 @@ object PaaSKloudReasoner extends KloudReasoner {
         Some(binding.getHub.getName)
       }
     }*/
+  }
+
+  // this method is specific to the type of the channel we use to link PaaS components
+  private def updateSocketChannelDictionary(model: ContainerRoot, channelName: String, nodeName: String, kengine: KevScriptEngine) {
+
+    kengine addVariable("channelName", channelName)
+    kengine addVariable("nodeName", nodeName)
+    model.findByQuery("hubs[" + channelName + "]", classOf[Channel]) match {
+      case null => logger.warn("Unable to find channel '{}', unable to update its properties", channelName)
+      case channel: Channel => {
+        if (channel.getTypeDefinition.getName == "SocketChannel") {
+          // looking for node specific dictionary values which correspond to the node define by nodeName
+
+          // if the dictionary attributes don't exist, we try to add them
+          kengine append "updateDictionary {channelName} {port = '{attributeValue}'}@{nodeName}"
+        } else {
+          logger.warn("Unable to fix channel parameters for the type '{}'", channel.getTypeDefinition.getName)
+        }
+      }
+    }
   }
 }

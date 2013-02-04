@@ -1,11 +1,9 @@
 package org.kevoree.library.sky.api
 
-import nodeType.{AbstractHostNode, AbstractIaaSNode}
+import nodeType.AbstractHostNode
 import org.slf4j.{LoggerFactory, Logger}
-import org.kevoree.{ContainerNode, KevoreeFactory, TypeDefinition, ContainerRoot}
+import org.kevoree.{ContainerNode, TypeDefinition, ContainerRoot}
 import java.io._
-import util.matching.Regex
-import java.util.concurrent.Callable
 import scala.collection.JavaConversions._
 import org.kevoree.impl.DefaultKevoreeFactory
 
@@ -32,13 +30,13 @@ import org.kevoree.impl.DefaultKevoreeFactory
  * @author Erwan Daubert
  * @version 1.0
  */
-abstract class KevoreeNodeRunner (var nodeName: String) {
+abstract class KevoreeNodeRunner(var nodeName: String) {
 
   private val logger: Logger = LoggerFactory.getLogger(classOf[KevoreeNodeRunner])
 
-  def startNode (iaasModel: ContainerRoot, childBootStrapModel: ContainerRoot): Boolean
+  def startNode(iaasModel: ContainerRoot, childBootStrapModel: ContainerRoot): Boolean
 
-  def stopNode (): Boolean
+  def stopNode(): Boolean
 
   //def updateNode (modelPath: String): Boolean
 
@@ -56,7 +54,7 @@ abstract class KevoreeNodeRunner (var nodeName: String) {
    * @param path
    * @param ip
    */
-  def configureSSHServer (path: String, ip: String) {
+  def configureSSHServer(path: String, ip: String) {
     if (ip != null && ip != "") {
       logger.debug("configure ssh server ip")
       try {
@@ -68,7 +66,7 @@ abstract class KevoreeNodeRunner (var nodeName: String) {
     }
   }
 
-  private def isASubType (nodeType: TypeDefinition, typeName: String): Boolean = {
+  private def isASubType(nodeType: TypeDefinition, typeName: String): Boolean = {
     nodeType.getSuperTypes.find(td => td.getName == typeName || isASubType(td, typeName)) match {
       case None => false
       case Some(typeDefinition) => true
@@ -76,7 +74,7 @@ abstract class KevoreeNodeRunner (var nodeName: String) {
   }
 
   @throws(classOf[Exception])
-  private def copyStringToFile (data: String, outputFile: String) {
+  private def copyStringToFile(data: String, outputFile: String) {
     if (data != null && data != "") {
       if (new File(outputFile).exists()) {
         new File(outputFile).delete()
@@ -110,7 +108,7 @@ abstract class KevoreeNodeRunner (var nodeName: String) {
         reader.close()
         true
       } catch {
-        case _@e => false//logger.error("Unable to copy {} on {}", Array[AnyRef](inputFile, outputFile), e); false
+        case _@e => logger.error("Unable to copy " + inputFile + " on " + outputFile, e); false
       }
     } else {
       logger.debug("Unable to find {}", inputFile)
@@ -119,7 +117,7 @@ abstract class KevoreeNodeRunner (var nodeName: String) {
   }
 
   @throws(classOf[java.lang.StringIndexOutOfBoundsException])
-  private def replaceStringIntoFile (dataToReplace: String, newData: String, file: String) {
+  private def replaceStringIntoFile(dataToReplace: String, newData: String, file: String) {
     if (dataToReplace != null && dataToReplace != "" && newData != null && newData != "") {
       if (new File(file).exists()) {
         val stringBuilder = new StringBuilder
@@ -138,6 +136,7 @@ abstract class KevoreeNodeRunner (var nodeName: String) {
         reader.close()
         stringBuilder append new String(writer.toByteArray)
         if (stringBuilder.indexOf(dataToReplace) == -1) {
+          logger.debug("Unable to find {} on file {} so replacement cannot be done", Array[AnyRef](dataToReplace, file))
         } else {
           stringBuilder.replace(stringBuilder.indexOf(dataToReplace), stringBuilder.indexOf(dataToReplace) + dataToReplace.length(), newData)
 
@@ -150,7 +149,7 @@ abstract class KevoreeNodeRunner (var nodeName: String) {
   }
 
 
-  def findVersionForChildNode (nodeName: String, model: ContainerRoot, iaasNode: ContainerNode): String = {
+  def findVersionForChildNode(nodeName: String, model: ContainerRoot, iaasNode: ContainerNode): String = {
     val factory = new DefaultKevoreeFactory
     logger.debug("looking for Kevoree version for node {}", nodeName)
     model.getNodes.find(n => n.getName == nodeName) match {
@@ -173,16 +172,17 @@ abstract class KevoreeNodeRunner (var nodeName: String) {
     }
   }
 
-
-  def configureLogFile (iaasNode: AbstractHostNode, process : Process) {
+  def configureLogFile(iaasNode: AbstractHostNode, process: Process) {
     var logFolder = System.getProperty("java.io.tmpdir")
     if (iaasNode.getDictionary.get("log_folder") != null && new File(iaasNode.getDictionary.get("log_folder").toString).exists()) {
       logFolder = iaasNode.getDictionary.get("log_folder").toString
     }
     val logFile = logFolder + File.separator + nodeName + ".log"
     outFile = new File(logFile + ".out")
+    logger.debug("writing logs about {} on {}", Array[AnyRef](nodeName, outFile.getAbsolutePath))
     new Thread(new ProcessStreamFileLogger(process.getInputStream, outFile)).start()
     errFile = new File(logFile + ".err")
+    logger.debug("writing logs about {} on {}", Array[AnyRef](nodeName, errFile.getAbsolutePath))
     new Thread(new ProcessStreamFileLogger(process.getErrorStream, errFile)).start()
   }
 }

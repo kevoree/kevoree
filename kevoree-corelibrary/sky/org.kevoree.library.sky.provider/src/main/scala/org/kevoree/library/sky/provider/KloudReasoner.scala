@@ -19,7 +19,7 @@ import org.kevoree.api.service.core.script.KevScriptEngine
 class KloudReasoner {
   private val logger: Logger = LoggerFactory.getLogger(this.getClass)
 
-  def getNodesToRemove (currentModel: ContainerRoot, newModel: ContainerRoot): java.util.List[ContainerNode] = {
+  def getNodesToRemove(currentModel: ContainerRoot, newModel: ContainerRoot): java.util.List[ContainerNode] = {
     var removedNodes = List[ContainerNode]()
     currentModel.getNodes.filter(n => KloudModelHelper.isPaaSNode(currentModel, n)).foreach {
       paasNode =>
@@ -34,7 +34,7 @@ class KloudReasoner {
     removedNodes
   }
 
-  def getNodesToAdd (currentModel: ContainerRoot, newModel: ContainerRoot): java.util.List[ContainerNode] = {
+  def getNodesToAdd(currentModel: ContainerRoot, newModel: ContainerRoot): java.util.List[ContainerNode] = {
     var nodesToAdd = List[ContainerNode]()
     newModel.getNodes.filter(n => KloudModelHelper.isPaaSNode(newModel, n)).foreach {
       paasNode =>
@@ -50,15 +50,15 @@ class KloudReasoner {
     nodesToAdd
   }
 
-  def getDefaultNodeAttributes (iaasModel: ContainerRoot, typeDefName: String): java.util.List[DictionaryAttribute] = {
+  def getDefaultNodeAttributes(iaasModel: ContainerRoot, typeDefName: String): List[DictionaryAttribute] = {
     iaasModel.getTypeDefinitions.find(td => td.getName == typeDefName) match {
       case None => List[DictionaryAttribute]()
       case Some(td) =>
-        td.getDictionaryType.getAttributes
+        td.getDictionaryType.getAttributes.toList
     }
   }
 
-  def removeNodes (removedNodes: java.util.List[ContainerNode], iaasModel: ContainerRoot, kengine: KevScriptEngine): Boolean = {
+  def removeNodes(removedNodes: java.util.List[ContainerNode], iaasModel: ContainerRoot, kengine: KevScriptEngine): Boolean = {
     if (!removedNodes.isEmpty) {
       logger.debug("Try to remove useless PaaS nodes into the Kloud")
 

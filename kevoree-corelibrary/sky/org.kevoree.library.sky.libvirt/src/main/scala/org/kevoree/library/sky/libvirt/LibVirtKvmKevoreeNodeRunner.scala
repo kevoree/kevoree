@@ -26,7 +26,7 @@ class LibVirtKvmKevoreeNodeRunner(nodeName: String, iaasNode: AbstractHostNode, 
     val parser: Builder = new Builder
     val doc = parser.build(domain.getXMLDesc(0), null)
     iaasModel.findByQuery("nodes[" + iaasNode.getName + "]/hosts[" + nodeName + "]", classOf[ContainerNode]) match {
-      case node:ContainerNode => {
+      case node: ContainerNode => {
         // look for the hard drive disk, check if it is already in use and clone it if needed
         val diskOption = KevoreePropertyHelper.getProperty(node, "DISK")
         val defaultDisk = iaasNode.getDictionary.get("default_DISK")
@@ -85,7 +85,7 @@ class LibVirtKvmKevoreeNodeRunner(nodeName: String, iaasNode: AbstractHostNode, 
       new Thread(new ProcessStreamFileLogger(process.getInputStream, outFile)).start()
       new Thread(new ProcessStreamFileLogger(process.getErrorStream, errFile)).start()
       if (process.waitFor() != 0) {
-        logger.error("Unable to create a disk at '{}' based on '{}'", newDiskPath, diskPath)
+        logger.error("Unable to create a disk at '{}' based on '{}'", Array[AnyRef](newDiskPath, diskPath))
         false
       } else {
         true
@@ -99,7 +99,7 @@ class LibVirtKvmKevoreeNodeRunner(nodeName: String, iaasNode: AbstractHostNode, 
       new Thread(new ProcessStreamFileLogger(process.getInputStream, outFile)).start()
       new Thread(new ProcessStreamFileLogger(process.getErrorStream, errFile)).start()
       if (process.waitFor() != 0) {
-        logger.error("Unable to create a disk at '{}' as a clone of '{}'", newDiskPath, diskPath)
+        logger.error("Unable to create a disk at '{}' as a clone of '{}'", Array[AnyRef](newDiskPath, diskPath))
         false
       } else {
         true
