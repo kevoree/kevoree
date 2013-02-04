@@ -1,0 +1,61 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>org.kevoree.adaptation.control.model</artifactId>
+    <name>Kevoree :: Adaptation :: Control Model</name>
+
+    <version>2.0.0-SNAPSHOT</version>
+    <parent>
+        <artifactId>org.kevoree.root</artifactId>
+        <groupId>org.kevoree</groupId>
+        <version>2.0.0-SNAPSHOT</version>
+        <relativePath>../org.kevoree.root/pom.xml</relativePath>
+    </parent>
+
+    <properties>
+        <metamodel.ecore>metamodel/control.ecore</metamodel.ecore>
+    </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.kevoree.modeling</groupId>
+                <artifactId>org.kevoree.modeling.emf.kotlin.gencode.mavenplugin</artifactId>
+                <version>1.3.0-SNAPSHOT</version>
+                <extensions>true</extensions>
+                <executions>
+                    <execution>
+                        <id>ModelGen</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <ecore>${metamodel.ecore}</ecore>
+                            <packagePrefix>org.kevoree</packagePrefix>
+                          <!--  <modelOnly>true</modelOnly>  -->
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>kotlin-maven-plugin</artifactId>
+                <groupId>org.jetbrains.kotlin</groupId>
+                <version>${kotlin.version}</version>
+                <executions>
+                    <execution>
+                        <id>compile</id>
+                        <phase>process-sources</phase>
+                        <goals> <goal>compile</goal> </goals>
+                    </execution>
+                    <execution>
+                        <id>test-compile</id>
+                        <phase>process-test-sources</phase>
+                        <goals> <goal>test-compile</goal> </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+        </plugins>
+    </build>
+
+</project>
