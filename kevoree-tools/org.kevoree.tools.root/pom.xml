@@ -184,6 +184,10 @@
         <module>../org.kevoree.tools.ui.editor.standalone</module>
         <module>../org.kevoree.tools.marshell.mavenplugin</module>
       <!--  <module>../org.kevoree.tools.annotation.scalaprocessor</module>      -->
+	  
+	  
+	  <module>../org.kevoree.tools.control.framework</module
+	  
     </modules>
 
     <properties>
