@@ -289,7 +289,7 @@ loop {
       logger.debug("Take already installed {}", buildKEY(du))
       previousKCL
     } else {
-      logger.debug("Install {} , file {}", buildKEY(du), file)
+      logger.debug("Install {} , file {}", Array[AnyRef](buildKEY(du), file))
       val newcl = new KevoreeJarClassLoader
 
       //if (du.getVersion.contains("SNAPSHOT")) {
@@ -305,7 +305,7 @@ loop {
       newcl.add(file.getAbsolutePath)
       kcl_cache.put(buildKEY(du), newcl)
       kcl_cache_file.put(buildKEY(du), file)
-      logger.debug("Add KCL for {}->{}", du.getUnitName, buildKEY(du))
+      logger.debug("Add KCL for {}->{}", Array[AnyRef](du.getUnitName, buildKEY(du)))
 
       //TRY TO RECOVER FAILED LINK
       if (failedLinks.containsKey(buildKEY(du))) {
@@ -319,7 +319,7 @@ loop {
         rLib =>
           val kcl = getKCLInternals(rLib)
           if (kcl != null) {
-            logger.debug("Link KCL for {}->{}", du.getUnitName, rLib.getUnitName)
+            logger.debug("Link KCL for {}->{}", Array[AnyRef](du.getUnitName, rLib.getUnitName))
             newcl.addSubClassLoader(kcl)
             kcl.addWeakClassLoader(newcl)
 
@@ -358,16 +358,16 @@ loop {
       }
       if (!lockedDu.contains(key)) {
         if (kcl_cache.containsKey(key)) {
-          logger.debug("Try to remove KCL for {}->{}", du.getUnitName, buildKEY(du))
+          logger.debug("Try to remove KCL for {}->{}", Array[AnyRef](du.getUnitName, buildKEY(du)))
           logger.debug("Cache To cleanuip size" + kcl_cache.values().size() + "-" + kcl_cache.size() + "-" + kcl_cache.keySet().size())
           kcl_cache.values().foreach {
             vals => {
-              if (vals.getSubClassLoaders().contains(kcl_to_remove)) {
+              if (vals.getSubClassLoaders.contains(kcl_to_remove)) {
                 failedLinks.put(key, vals)
                 logger.debug("Pending Fail link " + key)
               }
               vals.cleanupLinks(kcl_to_remove)
-              logger.debug("Cleanup {} from {}", vals.toString(), du.getUnitName)
+              logger.debug("Cleanup {} from {}", Array[AnyRef](vals.toString, du.getUnitName))
             }
           }
 

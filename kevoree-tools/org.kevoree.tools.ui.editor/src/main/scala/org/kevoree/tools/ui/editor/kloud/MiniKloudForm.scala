@@ -312,7 +312,7 @@ class MiniKloudForm(editor: KevoreeEditor, button: AbstractButton) {
       group =>
         model.getNodes.foreach {
           node =>
-            logger.debug("Looking for property 'port' on group {} with node {}", group.getName, node.getName)
+            logger.debug("Looking for property 'port' on group {} with node {}", Array[AnyRef](group.getName, node.getName))
 
             val portOption = KevoreePropertyHelper.getProperty(group, "port", isFragment = true, nodeNameForFragment = node.getName)
             if (portOption.isDefined) {
@@ -324,7 +324,7 @@ class MiniKloudForm(editor: KevoreeEditor, button: AbstractButton) {
     // looking for port on channel
     model.getMBindings.foreach {
       binding =>
-        logger.debug("Looking for property 'port' on channel {} with node {}", binding.getHub.getName, binding.getPort.eContainer.eContainer.asInstanceOf[ContainerNode].getName)
+        logger.debug("Looking for property 'port' on channel {} with node {}", Array[AnyRef](binding.getHub.getName, binding.getPort.eContainer.eContainer.asInstanceOf[ContainerNode].getName))
         val portOption = KevoreePropertyHelper.getProperty(binding.getHub, "port", isFragment = true, nodeNameForFragment = binding.getPort.eContainer.eContainer.asInstanceOf[ContainerNode].getName)
         if (portOption.isDefined) {
           ports = ports ++ Array[Int](Integer.parseInt(portOption.get))

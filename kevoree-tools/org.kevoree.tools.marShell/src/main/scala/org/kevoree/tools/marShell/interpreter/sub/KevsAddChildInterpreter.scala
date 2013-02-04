@@ -33,11 +33,11 @@ case class KevsAddChildInterpreter(addChild: AddChildStatment) extends KevsAbstr
 
   def interpret(context: KevsInterpreterContext): Boolean = {
     context.model.findByQuery("nodes[" + addChild.childNodeName + "]", classOf[ContainerNode]) match {
-      case null => logger.error("child node:" + addChild.childNodeName + "\nThe node already exist. Please check !"); false
+      case null => logger.error("child node: {}\nThe node must already exist. Please check !", addChild.childNodeName); false
       case child => {
         context.model.findByQuery("nodes[" + addChild.fatherNodeName + "]", classOf[ContainerNode]) match {
           case null => {
-            logger.error("Unknown father name:" + addChild.fatherNodeName + "\nThe node must already exist. Please check !")
+            logger.error("Unknown father name: {}\nThe node must already exist. Please check !", addChild.fatherNodeName)
             false
           }
           case father => {
@@ -45,10 +45,10 @@ case class KevsAddChildInterpreter(addChild: AddChildStatment) extends KevsAbstr
               case null => {
                 context.model.getNodes.find(n => n.findByQuery("hosts[" + child.getName + "]", classOf[ContainerNode]) != null) match {
                   case None => father.addHosts(child); true
-                  case Some(f) => logger.error("The child {} has already a parent: {}", child.getName, f.getName); false
+                  case Some(f) => logger.error("The child {} has already a parent: {}", Array[AnyRef](child.getName, f.getName)); false
                 }
               }
-              case c => logger.warn("The node {} is already a child of {}", child.getName, father.getName); true
+              case c => logger.warn("The node {} is already a child of {}", Array[AnyRef](child.getName, father.getName)); true
             }
           }
         }
