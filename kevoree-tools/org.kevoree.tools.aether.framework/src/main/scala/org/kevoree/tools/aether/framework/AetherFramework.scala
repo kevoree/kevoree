@@ -192,7 +192,7 @@ trait AetherFramework extends TempFileCacheManager with AetherRepositoryHandler 
     } catch {
       case _@e => {
         try {
-          logger.debug("Error while resolving {} -> second try", du.getUnitName.trim(), e)
+          logger.debug("Error while resolving " + du.getUnitName.trim + " -> second try", e)
           clearRepoCacheFile(getRepositorySystemSession, artifactRequest.getArtifact)
           val artefactResult = getRepositorySystem.resolveArtifact(getRepositorySystemSession, artifactRequest)
           if (checkFile(artefactResult.getArtifact.getFile)) {
@@ -203,7 +203,7 @@ trait AetherFramework extends TempFileCacheManager with AetherRepositoryHandler 
           }
         } catch {
           case _ => {
-            logger.debug("Error while resolving {}", du.getUnitName.trim(), e)
+            logger.debug("Error while resolving " + du.getUnitName.trim(), e)
             null
           }
         }
