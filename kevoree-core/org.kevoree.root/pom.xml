@@ -131,8 +131,10 @@
     <modules>
         <module>../org.kevoree.model</module>
         <module>../org.kevoree.model.context</module>
-        <module>../org.kevoree.kcl</module>
         <module>../org.kevoree.adaptation.model</module>
+		<module>../org.kevoree.adaptation.control.model</module>
+		
+        <module>../org.kevoree.kcl</module>
         <module>../org.kevoree.api</module>
         <module>../org.kevoree.framework</module>
         <module>../org.kevoree.kompare</module>
