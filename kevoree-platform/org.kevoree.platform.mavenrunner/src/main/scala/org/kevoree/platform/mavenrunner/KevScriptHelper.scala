@@ -56,11 +56,15 @@ import org.kevoree.impl.DefaultKevoreeFactory
  * @version 1.0
  */
 
-object KevScriptHelper extends App {
+object KevScriptHelper /*extends App*/ {
 
   val factory = new DefaultKevoreeFactory()
 
   def generate (scriptFile: File, mavenSource: MavenProject): ContainerRoot = {
+    System.out.println(factory)
+    System.out.println(factory.createContainerRoot())
+    System.out.println(new FakeBootstraperService())
+    System.out.println(new FakeBootstraperService().getBootstrap)
     val kevEngine = new KevScriptOfflineEngine(factory.createContainerRoot, new FakeBootstraperService().getBootstrap)
     kevEngine.addVariable("kevoree.version", factory.getVersion)
 
