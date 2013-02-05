@@ -16,7 +16,7 @@ package org.kevoree.tools.ui.editor.kloud
 import java.io._
 import org.kevoree.tools.aether.framework.AetherUtil
 import org.slf4j.LoggerFactory
-import org.kevoree.tools.ui.editor.command.LoadModelCommand
+import org.kevoree.tools.ui.editor.command.{AetherResolver, LoadModelCommand}
 import org.kevoree.tools.ui.editor.{ModelHelper, UIEventHandler, PositionedEMFHelper, KevoreeEditor}
 import org.kevoree.tools.marShell.KevScriptOfflineEngine
 import java.net._
@@ -81,7 +81,7 @@ class MiniKloudForm(editor: KevoreeEditor, button: AbstractButton) {
 
             // build default model of the minicloud
             UIEventHandler.info("Download org.kevoree.platform.standalone.gui")
-            platformJAR = AetherUtil.$instance.resolveKevoreeArtifact("org.kevoree.platform.standalone.gui", "org.kevoree.platform", ModelHelper.kevoreeFactory.getVersion)
+            platformJAR = AetherResolver.resolveKev("org.kevoree.platform.standalone.gui", "org.kevoree.platform", ModelHelper.kevoreeFactory.getVersion)
             UIEventHandler.info("org.kevoree.platform.standalone.gui resolved")
             if (platformJAR != null) {
               PositionedEMFHelper.updateModelUIMetaData(editor.getPanel.getKernel)
