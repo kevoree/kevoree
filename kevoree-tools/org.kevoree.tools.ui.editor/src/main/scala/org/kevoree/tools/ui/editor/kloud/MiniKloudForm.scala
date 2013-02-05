@@ -81,7 +81,7 @@ class MiniKloudForm(editor: KevoreeEditor, button: AbstractButton) {
 
             // build default model of the minicloud
             UIEventHandler.info("Download org.kevoree.platform.standalone.gui")
-            platformJAR = AetherUtil.resolveKevoreeArtifact("org.kevoree.platform.standalone.gui", "org.kevoree.platform", ModelHelper.kevoreeFactory.getVersion)
+            platformJAR = AetherUtil.$instance.resolveKevoreeArtifact("org.kevoree.platform.standalone.gui", "org.kevoree.platform", ModelHelper.kevoreeFactory.getVersion)
             UIEventHandler.info("org.kevoree.platform.standalone.gui resolved")
             if (platformJAR != null) {
               PositionedEMFHelper.updateModelUIMetaData(editor.getPanel.getKernel)
