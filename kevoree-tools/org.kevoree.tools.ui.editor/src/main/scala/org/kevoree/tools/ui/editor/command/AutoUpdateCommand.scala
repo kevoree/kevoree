@@ -59,7 +59,7 @@ class AutoUpdateCommand extends Command {
             typeDef.getDeployUnits.foreach {
               du => {
                 try {
-                  var file = AetherUtil.resolveDeployUnit(du)
+                  val file = AetherUtil.$instance.resolveDeployUnit(du)
                   val jar = new JarFile(file)
                   val entry: JarEntry = jar.getJarEntry("KEV-INF/lib.kev")
                   val newmodel = KevoreeXmiHelper.$instance.loadStream(jar.getInputStream(entry))

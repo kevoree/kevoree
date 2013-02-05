@@ -31,7 +31,7 @@ import javax.jmdns.{ServiceInfo, JmDNS}
 import org.kevoree.KevoreeFactory
 import java.io.File
 import util.Random
-import org.kevoree.framework.{KevoreeXmiHelper, KevoreePlatformHelper}
+import org.kevoree.framework.{AbstractGroupType, KevoreeXmiHelper, KevoreePlatformHelper}
 import org.slf4j.LoggerFactory
 import org.kevoree.tools.ui.editor.{ModelHelper, ModelHandlerServiceWrapper, PositionedEMFHelper, KevoreeUIKernel}
 import org.kevoree.tools.aether.framework.NodeTypeBootstrapHelper
@@ -122,7 +122,7 @@ class JmDnsLookup extends Command {
                 val bootHelper = new NodeTypeBootstrapHelper
                 bootHelper.bootstrapGroupType(kernel.getModelHandler.getActualModel, groupName,
                                                new ModelHandlerServiceWrapper(kernel)) match {
-                  case Some(groupTypeInstance) => {
+                  case groupTypeInstance:AbstractGroupType => {
                     val model = groupTypeInstance.pull(nodeName)
                     kernel.getModelHandler.merge(model)
                     PositionedEMFHelper.updateModelUIMetaData(kernel)
@@ -141,7 +141,7 @@ class JmDnsLookup extends Command {
 
 
                   }
-                  case None => logger.error("Error while bootstraping group type")
+                  case null => logger.error("Error while bootstraping group type")
                 }
               }
               case None => println(info.getNiceTextString + " type definition not found")

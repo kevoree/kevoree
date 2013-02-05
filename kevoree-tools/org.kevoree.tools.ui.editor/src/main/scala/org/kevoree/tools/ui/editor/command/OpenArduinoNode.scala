@@ -65,7 +65,7 @@ class OpenArduinoNode extends Command {
     du.setUnitName("org.kevoree.library.model.arduino")
     du.setGroupName("org.kevoree.corelibrary.model")
     du.setVersion(ModelHelper.kevoreeFactory.getVersion)
-    val file = AetherUtil.resolveDeployUnit(du)
+    val file = AetherUtil.$instance.resolveDeployUnit(du)
 
     file match {
       case file : File => {
