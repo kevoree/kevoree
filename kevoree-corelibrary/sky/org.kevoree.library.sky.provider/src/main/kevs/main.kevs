@@ -1,43 +1,34 @@
-// nodes configuration
-merge "mvn:org.kevoree.corelibrary.sky/org.kevoree.library.sky.provider/{kevoree.version}"
+
 merge "mvn:org.kevoree.corelibrary.sky/org.kevoree.library.sky.minicloud/{kevoree.version}"
+merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.basicGossiper/{kevoree.version}"
+
 merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.defaultChannels/{kevoree.version}"
-merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.socketChannels/{kevoree.version}"
+merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.p2pSock/{kevoree.version}"
 merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.nioChannels/{kevoree.version}"
+
 merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.webserver.api/{kevoree.version}"
 merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.webserver.tjws/{kevoree.version}"
 
-addNode node0 : MiniCloudNode {role="host/container", port="7000", logLevel="DEBUG"}
+merge "mvn:org.kevoree.corelibrary.sky/org.kevoree.library.sky.provider/{kevoree.version}"
+merge "mvn:org.kevoree.corelibrary.sky/org.kevoree.library.sky.provider.web/{kevoree.version}"
 
-network node0 => node0 { "KEVOREE.remote.node.ip"= "127.0.0.1"}
 
-// group configuration
-addGroup sync : NanoRestGroup
-
+addNode node0 : MiniCloudNode { coreLogLevel="WARN",logLevel="DEBUG"}
+addGroup sync : BasicGossiperGroup
 addToGroup sync node0
 
-updateDictionary sync {ip="127.0.0.1", port="8000"}@node0
+addComponent iaasManager@node0 : IaaSKloudManager
+addComponent paasManager@node0 : PaaSKloudManager
 
-// Kloud manager configuration
-addComponent webServer@node0 : KTinyWebServer {port = "8080", timeout = "5000"}
-addComponent paaSKloudResourceManagerRest@node0 : PaaSKloudResourceManagerRest {urlpattern = "/kloud/{login}/{action}"}
-addComponent paaSKloudResourceManager@node0 : PaaSKloudResourceManager
-//addComponent paaSKloudResourceManager@node0 : PaaSKloudResourceManagerStateFull {storage = "/home/edaubert/kevoree/kevoree-state"}
-addComponent iaaSKloudResourceManager@node0 : IaaSKloudResourceManager
-//addComponent ldapAuthentication@node0 : LDAPAuthentication {host = "ldap://ildap1-ren.irisa.fr:389", context = "com.sun.jndi.ldap.LdapCtxFactory", base = "ou=people,dc=inria,dc=fr", filter = "(&(objectclass=inriaperson)(inriaentrystatus=valid)(ou=UR-Rennes))", loginKey = "inriaLogin"}
-
+addChannel iaasDelegateChannel : defSERVICE
+addChannel paasDelegateChannel : defSERVICE
 addChannel requestChannel : defMSG
 addChannel responseChannel : defMSG
-addChannel submitChannel : defSERVICE
-//addChannel authenticationChannel : defSERVICE
 
-bind webServer.handler@node0 => requestChannel
-bind paaSKloudResourceManagerRest.request@node0 => requestChannel
-bind webServer.response@node0 => responseChannel
-bind paaSKloudResourceManagerRest.content@node0 => responseChannel
 
-bind paaSKloudResourceManagerPage.submit@node0 => submitChannel
-bind paaSKloudResourceManager.submit@node0 => submitChannel
+bind iaasManager.submit@node0 => iaasDelegateChannel
+bind iaasPage.delegate@node0 => iaasDelegateChannel
 
-//bind ldapAuthentication.authenticate@node0 => authenticationChannel
-//bind paaSKloudResourceManagerRest.authentication@node0 => authenticationChannel
+
+bind paasManager.submit@node0 => paasDelegateChannel
+bind paasPage.delegate@node0 => paasDelegateChannel

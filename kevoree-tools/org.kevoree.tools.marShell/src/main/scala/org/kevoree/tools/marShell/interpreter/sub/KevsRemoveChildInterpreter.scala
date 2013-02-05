@@ -52,7 +52,7 @@ case class KevsRemoveChildInterpreter(removeChild: RemoveChildStatment) extends 
           child.getHost.removeHosts(child)
           true
         } else {
-          logger.error("node {} is not a child of the node {}", removeChild.childNodeName, removeChild.fatherNodeName)
+          logger.error("node {} is not a child of the node {}", Array[AnyRef](removeChild.childNodeName, removeChild.fatherNodeName))
           false
         }
       }

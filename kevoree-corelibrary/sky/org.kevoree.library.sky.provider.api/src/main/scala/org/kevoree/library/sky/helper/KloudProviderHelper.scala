@@ -1,12 +1,12 @@
 package org.kevoree.library.sky.helper
 
 import org.kevoree.ContainerRoot
-import org.kevoree.framework.{NetworkHelper, Constants, KevoreePropertyHelper, KevoreeXmiHelper}
+import org.kevoree.framework.KevoreeXmiHelper
 import java.net.{URLConnection, URL}
 import java.io._
 import org.slf4j.{LoggerFactory, Logger}
-import org.kevoree.api.service.core.script.KevScriptEngine
-import org.kevoree.library.sky.api.helper.{KloudModelHelper, KloudNetworkHelper}
+import org.kevoree.library.sky.api.helper.KloudModelHelper
+import scala.collection.JavaConversions._
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -20,7 +20,7 @@ object KloudProviderHelper {
   private val logger: Logger = LoggerFactory.getLogger(this.getClass)
 
 
-  def pullModel (urlPath: String): ContainerRoot = {
+  def pullModel(urlPath: String): ContainerRoot = {
     try {
       val url: URL = new URL(urlPath)
       val conn: URLConnection = url.openConnection
@@ -35,7 +35,7 @@ object KloudProviderHelper {
     }
   }
 
-  def sendModel (model: ContainerRoot, urlPath: String): Boolean = {
+  def sendModel(model: ContainerRoot, urlPath: String): Boolean = {
     logger.debug("send model on {}", urlPath)
     try {
       val outStream: ByteArrayOutputStream = new ByteArrayOutputStream
@@ -64,7 +64,7 @@ object KloudProviderHelper {
     }
   }
 
-  def getMasterIP_PORT (masterProp: String): java.util.List[String] = {
+  def getMasterIP_PORT(masterProp: String): java.util.List[String] = {
     val result = new java.util.ArrayList[String]()
     masterProp.split(",").foreach(ips => {
       val vals = ips.split("=")
@@ -76,14 +76,14 @@ object KloudProviderHelper {
   }
 
 
-  def appendCreateGroupScript (kloudModel: ContainerRoot, login: String, nodeName: String, kevScriptEngine: KevScriptEngine, sshKey: String = "", storage: Boolean = false) {
+  /*def appendCreateGroupScript (kloudModel: ContainerRoot, login: String, nodeName: String, kevScriptEngine: KevScriptEngine, sshKey: String = "", storage: Boolean = false) {
     val ipOption = NetworkHelper.getAccessibleIP(KevoreePropertyHelper.getNetworkProperties(kloudModel, nodeName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP))
     var ip = "127.0.0.1"
     if (ipOption.isDefined) {
       ip = ipOption.get
     }
     /* Warning This method try severals Socket to determine available port */
-    val portNumber = KloudNetworkHelper.selectPortNumber(ip, Array[Int]())
+    val portNumber = KloudNetworkHelper.selectPortNumber(6000, ip, ListBuffer[Int]())
     kevScriptEngine.addVariable("groupName", login)
     kevScriptEngine.addVariable("nodeName", nodeName)
     kevScriptEngine.addVariable("port", portNumber.toString)
@@ -101,10 +101,9 @@ object KloudProviderHelper {
     }
     kevScriptEngine append "addToGroup {groupName} {nodeName}"
     kevScriptEngine append "updateDictionary {groupName} {port='{port}', ip='{ip}'}@{nodeName}"
-  }
+  }*/
 
-  def selectIaaSNodeAsAMaster(model : ContainerRoot) {
-    import scala.collection.JavaConversions._
+  def selectIaaSNodeAsAMaster(model: ContainerRoot) {
     val iaasNodes = model.getNodes.filter(n => KloudModelHelper.isIaaSNode(model, n))
 
   }

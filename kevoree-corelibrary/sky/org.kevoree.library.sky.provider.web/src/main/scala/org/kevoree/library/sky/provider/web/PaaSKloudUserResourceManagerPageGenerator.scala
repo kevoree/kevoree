@@ -6,6 +6,7 @@ import util.matching.Regex
 import org.kevoree.library.sky.api.helper.KloudModelHelper
 import org.kevoree.api.service.core.script.{KevScriptEngineException, KevScriptEngine}
 import org.json.JSONStringer
+import org.kevoree.{TypeDefinition, Group}
 import scala.collection.JavaConversions._
 
 /**
@@ -16,54 +17,57 @@ import scala.collection.JavaConversions._
  * @author Erwan Daubert
  * @version 1.0
  */
-class PaaSKloudUserResourceManagerPageGenerator (instance: KloudResourceManagerPage, pattern: String) extends KloudResourceManagerPageGenerator(instance, pattern) {
+class PaaSKloudUserResourceManagerPageGenerator(instance: KloudResourceManagerPage, pattern: String) extends KloudResourceManagerPageGenerator(instance, pattern) {
   logger = LoggerFactory.getLogger(this.getClass)
-  val PushModelRequest = new Regex(pattern+ "PushModel") // TODO add user login
-  val AddChildRequest = new Regex(pattern + "AddChild") // TODO add user login
-  val RemoveChildRequest = new Regex(pattern + "ReomveChild") // TODO add user login
+  val PushModelRequest = new Regex(pattern + "PushModel")
+  // TODO add user login
+  val AddChildRequest = new Regex(pattern + "AddChild")
+  // TODO add user login
+  val RemoveChildRequest = new Regex(pattern + "ReomveChild")
+  // TODO add user login
   val rootUserRequest = new Regex(pattern + "(.+)")
-//  val rootRequest = new Regex(pattern.substring(0, pattern.length - 1))
+  //  val rootRequest = new Regex(pattern.substring(0, pattern.length - 1))
 
-  def internalProcess (request: KevoreeHttpRequest, response: KevoreeHttpResponse): PartialFunction[String, KevoreeHttpResponse] = {
-//    case initializeUserConfiguRequest() => addChild(request, response)
+  def internalProcess(request: KevoreeHttpRequest, response: KevoreeHttpResponse): PartialFunction[String, KevoreeHttpResponse] = {
+    //    case initializeUserConfiguRequest() => addChild(request, response)
     case AddChildRequest(login) => addChild(request, response)
     case RemoveChildRequest(login) => removeChild(login, request, response)
     case PushModelRequest(login) => pushModel(request, response)
-//    case rootRequest() => getPaasPage(request, response)
+    //    case rootRequest() => getPaasPage(request, response)
     case rootUserRequest(login) => getPaasUserPage(login, request, response)
   }
 
-  def getPaasPage (request: KevoreeHttpRequest, response: KevoreeHttpResponse): KevoreeHttpResponse = {
+  def getPaasPage(request: KevoreeHttpRequest, response: KevoreeHttpResponse): KevoreeHttpResponse = {
     val htmlContent = /*VirtualNodeHTMLHelper.*/ HTMLPageBuilder.getPaasPage(pattern, instance.getModelService.getLastModel)
     response.setStatus(200)
     response.setContent(htmlContent)
     response
   }
 
-  def getPaasUserPage (login: String, request: KevoreeHttpRequest, response: KevoreeHttpResponse): KevoreeHttpResponse = {
+  def getPaasUserPage(login: String, request: KevoreeHttpRequest, response: KevoreeHttpResponse): KevoreeHttpResponse = {
     // looking for the corresponding group
-    instance.getModelService.getLastModel.getGroups.find(g => g.getName == login) match {
-      case Some(group) =>
-      case None => {
+    instance.getModelService.getLastModel.findByQuery("groups[" + login + "]", classOf[Group]) match {
+      case group: Group =>
+      case null => {
         // if it doesn't exist, we create it
         val kengine = instance.getKevScriptEngineFactory.createKevScriptEngine()
       }
     }
     // FIXME no security at all here
 
-    val htmlContent = HTMLPageBuilder.getPaasUserPage(login, pattern, instance.getModelService.getLastModel)
+    val htmlContent = HTMLPageBuilder.getPaasUserPage(login, pattern, instance.getModelService.getLastModel, instance.isPortBinded("delegate"))
     response.setStatus(200)
     response.setContent(htmlContent)
     response
   }
 
-  private def addChild (request: KevoreeHttpRequest, response: KevoreeHttpResponse): KevoreeHttpResponse = {
+  private def addChild(request: KevoreeHttpRequest, response: KevoreeHttpResponse): KevoreeHttpResponse = {
     if (request.getMethod.equalsIgnoreCase("GET")) {
       val model = instance.getModelService.getLastModel
 
-      val paasNodeTypes = model.getTypeDefinitions.filter(nt => KloudModelHelper.isPaaSNodeType(model, nt))
+      val paasNodeTypes = model.getTypeDefinitions.filter(nt => KloudModelHelper.isPaaSNodeType(model, nt)).toList
 
-      val htmlContent = HTMLPageBuilder.addNodePage(pattern, paasNodeTypes.toList)
+      val htmlContent = HTMLPageBuilder.addNodePage(pattern, paasNodeTypes)
       response.setStatus(200)
       response.setContent(htmlContent)
     } else {
@@ -84,22 +88,22 @@ class PaaSKloudUserResourceManagerPageGenerator (instance: KloudResourceManagerP
     response
   }
 
-  private def addChildNode (request: KevoreeHttpRequest): String = {
+  private def addChildNode(request: KevoreeHttpRequest): String = {
     val kengine = instance.getKevScriptEngineFactory.createKevScriptEngine()
     val jsonresponse = new JSONStringer().`object`()
     if (request.getResolvedParams.get("type") != null) {
       // find the corresponding node type
       val typeName = request.getResolvedParams.get("type")
-      instance.getModelService.getLastModel.getTypeDefinitions.find(td => td.getName == typeName) match {
-        case None => jsonresponse.key("code").value("-1").key("message").value("There is no type named " + typeName)
-        case Some(nodeType) => {
+      instance.getModelService.getLastModel.findByQuery("typeDefinitions[" + typeName + "]", classOf[TypeDefinition]) match {
+        case null => jsonresponse.key("code").value("-1").key("message").value("There is no type named " + typeName)
+        case nodeType: TypeDefinition => {
           var mustBeAdded = true
           if (request.getResolvedParams.get("name") != null) {
             kengine.addVariable("nodeName", request.getResolvedParams.get("name"))
             kengine.addVariable("nodeTypeName", typeName)
             kengine append "addNode {nodeName} : {nodeTypeName}"
             // check attributes
-            if (nodeType.getDictionaryType!=null) {
+            if (nodeType.getDictionaryType != null) {
               nodeType.getDictionaryType.getAttributes.foreach {
                 attribute => {
                   val value = request.getResolvedParams.get(attribute.getName)
@@ -138,7 +142,7 @@ class PaaSKloudUserResourceManagerPageGenerator (instance: KloudResourceManagerP
     jsonresponse.endObject().toString
   }
 
-  private def removeChild (login: String, request: KevoreeHttpRequest, response: KevoreeHttpResponse): KevoreeHttpResponse = {
+  private def removeChild(login: String, request: KevoreeHttpRequest, response: KevoreeHttpResponse): KevoreeHttpResponse = {
     val nodeName = request.getResolvedParams.get("name")
     // check if the node is a sub node of the group of the user
     instance.getModelService.getLastModel.getGroups.find(g => g.getName == login) match {
@@ -152,7 +156,7 @@ class PaaSKloudUserResourceManagerPageGenerator (instance: KloudResourceManagerP
             try {
               kengine.atomicInterpretDeploy()
             } catch {
-              case e: KevScriptEngineException => //logger.warn("Unable to remove {}", nodeName, e)
+              case e: KevScriptEngineException => logger.warn("Unable to remove " + nodeName, e)
             }
           }
         }
@@ -161,7 +165,7 @@ class PaaSKloudUserResourceManagerPageGenerator (instance: KloudResourceManagerP
     getPaasUserPage(login, request, response)
   }
 
-  private def pushModel (request: KevoreeHttpRequest, response: KevoreeHttpResponse): KevoreeHttpResponse = {
+  private def pushModel(request: KevoreeHttpRequest, response: KevoreeHttpResponse): KevoreeHttpResponse = {
     response
   }
 
@@ -177,7 +181,7 @@ class PaaSKloudUserResourceManagerPageGenerator (instance: KloudResourceManagerP
       nodeType =>
         var msg = new JSONStringer().`object`().key("name").value("name").key("optional").value(false).endObject()
         var attributes = List[String](msg.toString)
-        if (nodeType.getDictionaryType!=null) {
+        if (nodeType.getDictionaryType != null) {
           nodeType.getDictionaryType.getAttributes.foreach {
             attribute => {
               msg = new JSONStringer().`object`().key("name").value(attribute.getName).key("optional").value(attribute.getOptional)

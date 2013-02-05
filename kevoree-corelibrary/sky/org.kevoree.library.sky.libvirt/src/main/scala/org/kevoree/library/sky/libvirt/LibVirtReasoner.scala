@@ -16,7 +16,7 @@ import org.slf4j.{LoggerFactory, Logger}
 object LibVirtReasoner {
   private val logger: Logger = LoggerFactory.getLogger(this.getClass)
 
-  def createNode (domain: Domain, kengine: KevScriptEngine, iaasNode: LibVirtNode) {
+  def createNode(domain: Domain, kengine: KevScriptEngine, iaasNode: LibVirtNode) {
     if (domain.isActive == 1) {
       val parser: Builder = new Builder
       val doc: Document = parser.build(domain.getXMLDesc(0), null)
@@ -35,7 +35,7 @@ object LibVirtReasoner {
     }
   }
 
-  def updateNetwork (network: Network, kengine: KevScriptEngine, iaasNode: LibVirtNode) {
+  def updateNetwork(network: Network, kengine: KevScriptEngine, iaasNode: LibVirtNode) {
     logger.debug("Try to update the network configuration according to the network properties of libvirt")
     val parser: Builder = new Builder
     val doc: Document = parser.build(network.getXMLDesc(0), null)
@@ -44,7 +44,7 @@ object LibVirtReasoner {
       kengine addVariable("nodeName", hosts.get(i).asInstanceOf[Element].getAttributeValue("name"))
       kengine addVariable("ip", hosts.get(i).asInstanceOf[Element].getAttributeValue("ip"))
       kengine append "network {nodeName} => {nodeName} { 'KEVOREE.remote.node.ip' = '{ip}' }"
-      logger.debug("try to add IP '{}'for node '{}'", hosts.get(i).asInstanceOf[Element].getAttributeValue("ip"), hosts.get(i).asInstanceOf[Element].getAttributeValue("name"))
+      logger.debug("try to add IP '{}'for node '{}'", Array[AnyRef](hosts.get(i).asInstanceOf[Element].getAttributeValue("ip"), hosts.get(i).asInstanceOf[Element].getAttributeValue("name")))
     }
   }
 

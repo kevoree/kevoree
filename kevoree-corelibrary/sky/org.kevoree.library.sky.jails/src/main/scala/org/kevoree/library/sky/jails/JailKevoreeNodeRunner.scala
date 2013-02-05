@@ -8,6 +8,7 @@ import org.kevoree.library.sky.api.KevoreeNodeRunner
 import java.io._
 import org.kevoree.{ContainerNode, ContainerRoot}
 import org.kevoree.framework.{KevoreePlatformHelper, KevoreeXmiHelper, Constants, KevoreePropertyHelper}
+import scala.collection.JavaConversions._
 
 
 /**
@@ -29,7 +30,7 @@ class JailKevoreeNodeRunner(nodeName: String, iaasNode: JailNode) extends Kevore
   def startNode(iaasModel: ContainerRoot, childBootstrapModel: ContainerRoot): Boolean = {
     logger.debug("Starting " + nodeName)
     iaasModel.findByQuery("nodes[" + iaasNode.getName + "]/hosts[" + nodeName + "]", classOf[ContainerNode]) match {
-      case node : ContainerRoot => {
+      case node: ContainerNode => {
         // looking for currently launched jail
         val result = processExecutor.listIpJails(nodeName)
         if (result._1) {
@@ -51,7 +52,6 @@ class JailKevoreeNodeRunner(nodeName: String, iaasNode: JailNode) extends Kevore
             if (processExecutor.createJail(flavor, nodeName, newIp, findArchive(nodeName))) {
               var jailPath = processExecutor.findPathForJail(nodeName)
               // find the needed version of Kevoree for the child node
-              import scala.collection.JavaConversions._
               val version = findVersionForChildNode(nodeName, childBootstrapModel, iaasModel.getNodes.find(n => n.getName == iaasNode.getNodeName).get)
               // install the model on the jail
               val platformFile = iaasNode.getBootStrapperService.resolveKevoreeArtifact("org.kevoree.platform.standalone", "org.kevoree.platform", version)
@@ -94,7 +94,7 @@ class JailKevoreeNodeRunner(nodeName: String, iaasNode: JailNode) extends Kevore
               false
             }
           } else {
-            logger.error("Unable to define a new alias {} with {}", nodeName, newIp)
+            logger.error("Unable to define a new alias {} with {}", Array[AnyRef](nodeName, newIp))
             false
           }
         } else {
@@ -120,7 +120,7 @@ class JailKevoreeNodeRunner(nodeName: String, iaasNode: JailNode) extends Kevore
         if (processExecutor.deleteJail(nodeName)) {
           // release IP alias to allow next IP select to use this one
           if (!processExecutor.deleteNetworkAlias(iaasNode.getNetworkInterface, oldIP)) {
-            logger.warn("unable to release ip alias {} for the network interface {}", oldIP, iaasNode.getNetworkInterface)
+            logger.warn("unable to release ip alias {} for the network interface {}", Array[AnyRef](oldIP, iaasNode.getNetworkInterface))
           }
           // remove rctl constraint using rctl -r jail:<jailNode>
           if (!JailsConstraintsConfiguration.removeJailConstraints(nodeName)) {

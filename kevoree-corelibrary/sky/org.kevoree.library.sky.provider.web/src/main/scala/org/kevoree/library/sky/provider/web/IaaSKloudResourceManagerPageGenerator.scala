@@ -6,7 +6,7 @@ import org.json.JSONStringer
 import org.kevoree.api.service.core.script.KevScriptEngine
 import org.slf4j.LoggerFactory
 import util.matching.Regex
-import org.kevoree.ContainerRoot
+import org.kevoree.{TypeDefinition, ContainerNode, ContainerRoot}
 import scala.collection.JavaConversions._
 
 /**
@@ -53,7 +53,7 @@ class IaaSKloudResourceManagerPageGenerator(instance: IaaSKloudResourceManagerPa
 
 
   private def getIaasPage(request: KevoreeHttpRequest, response: KevoreeHttpResponse): KevoreeHttpResponse = {
-    val htmlContent = HTMLPageBuilder.getIaasPage(pattern, parentNodeName, instance.getModelService.getLastModel)
+    val htmlContent = HTMLPageBuilder.getIaasPage(pattern, parentNodeName, instance.getModelService.getLastModel, instance.isPortBinded("delegate"))
     response.setStatus(200)
     response.setContent(htmlContent)
     response
@@ -62,17 +62,15 @@ class IaaSKloudResourceManagerPageGenerator(instance: IaaSKloudResourceManagerPa
   private def addChild(request: KevoreeHttpRequest, response: KevoreeHttpResponse): KevoreeHttpResponse = {
     if (request.getMethod.equalsIgnoreCase("GET")) {
       val model = instance.getModelService.getLastModel
-      model.getNodes.find(n => n.getName == parentNodeName) match {
-        case None => {
+      model.findByQuery("nodes[" + parentNodeName + "]", classOf[ContainerNode]) match {
+        case null => {
           response.setStatus(500)
           response.setContent("Unable to find the IaaS node: " + parentNodeName)
         }
-        case Some(parent) => {
+        case parent: ContainerNode => {
           val paasNodeTypes = model.getTypeDefinitions.filter(nt => KloudModelHelper.isPaaSNodeType(model, nt) &&
-            nt.getDeployUnits.find(dp => KloudModelHelper.isASubType(parent.getTypeDefinition, dp.getTargetNodeType.getName)).isDefined)
-          //dp.getTargetNodeType.find(targetNodeType => KloudModelHelper.isASubType(parent.getTypeDefinition, targetNodeType.getName)).isDefined).isDefined)
-
-          val htmlContent = HTMLPageBuilder.addNodePage(pattern, paasNodeTypes.toList)
+            nt.getDeployUnits.find(dp => KloudModelHelper.isASubType(parent.getTypeDefinition, dp.getTargetNodeType.getName)).isDefined).toList
+          val htmlContent = HTMLPageBuilder.addNodePage(pattern, paasNodeTypes)
           response.setStatus(200)
           response.setContent(htmlContent)
         }
@@ -101,9 +99,9 @@ class IaaSKloudResourceManagerPageGenerator(instance: IaaSKloudResourceManagerPa
     if (request.getResolvedParams.get("type") != null) {
       // find the corresponding node type
       val typeName = request.getResolvedParams.get("type")
-      instance.getModelService.getLastModel.getTypeDefinitions.find(td => td.getName == typeName) match {
-        case None => jsonresponse.key("code").value("-1").key("message").value("There is no type named " + typeName)
-        case Some(nodeType) => {
+      instance.getModelService.getLastModel.findByQuery("typeDefinitions[" + typeName + "]", classOf[TypeDefinition]) match {
+        case null => jsonresponse.key("code").value("-1").key("message").value("There is no type named " + typeName)
+        case nodeType: TypeDefinition => {
           var mustBeAdded = true
           if (request.getResolvedParams.get("name") != null) {
             kengine.addVariable("nodeName", request.getResolvedParams.get("name"))
@@ -155,8 +153,8 @@ class IaaSKloudResourceManagerPageGenerator(instance: IaaSKloudResourceManagerPa
         null
       }
       case Some(parent) => {
-        val paasNodeTypes = model.getTypeDefinitions.filter(nt => KloudModelHelper.isPaaSNodeType(model, nt) && nt.getDeployUnits.find(dp => KloudModelHelper.isASubType(parent.getTypeDefinition, dp.getTargetNodeType.getName)).isDefined)
-        //dp.getTargetNodeType.find(targetNodeType => KloudModelHelper.isASubType(parent.getTypeDefinition, targetNodeType.getName)).isDefined).isDefined)
+        val paasNodeTypes = model.getTypeDefinitions.filter(nt => KloudModelHelper.isPaaSNodeType(model, nt) &&
+          nt.getDeployUnits.find(dp => KloudModelHelper.isASubType(parent.getTypeDefinition, dp.getTargetNodeType.getName)).isDefined)
         var types = List[String]()
         jsonresponse.key("request").value("list")
 
@@ -200,7 +198,7 @@ class IaaSKloudResourceManagerPageGenerator(instance: IaaSKloudResourceManagerPa
     try {
       instance.remove(cleanModel(instance.getModelService.getLastModel, List[String](nodeName)))
     } catch {
-      case e: Throwable => //logger.warn("Unable to clean the current model to remove the child {}", nodeName, e)
+      case e: Throwable => logger.warn("Unable to clean the current model to remove the child " + nodeName, e)
     }
     request.setUrl(pattern)
     getIaasPage(request, response)

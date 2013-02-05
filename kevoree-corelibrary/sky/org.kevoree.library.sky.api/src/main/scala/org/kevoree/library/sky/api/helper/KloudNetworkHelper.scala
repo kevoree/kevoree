@@ -1,9 +1,11 @@
 package org.kevoree.library.sky.api.helper
 
 import org.kevoree.{ContainerNode, ContainerRoot}
-import org.kevoree.framework.{NetworkHelper, KevoreePropertyHelper}
+import org.kevoree.framework.{Constants, NetworkHelper, KevoreePropertyHelper}
 import java.net.{ServerSocket, InetSocketAddress, Socket, InetAddress}
 import org.slf4j.{LoggerFactory, Logger}
+import collection.mutable.ListBuffer
+import scala.collection.JavaConversions._
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -16,12 +18,11 @@ import org.slf4j.{LoggerFactory, Logger}
 object KloudNetworkHelper {
   private val logger: Logger = LoggerFactory.getLogger(this.getClass)
 
-  def selectIP(parentNodeName: String, kloudModel: ContainerRoot, alreadyUsedIps: Array[String]): Option[String] = {
+  def selectIP(parentNodeName: String, kloudModel: ContainerRoot, alreadyUsedIps: ListBuffer[String]): Option[String] = {
     logger.debug("try to select an IP for a child of {}", parentNodeName)
-    /*kloudModel.getNodes.find(n => n.getName == parentNodeName)*/
     kloudModel.findByQuery("nodes[" + parentNodeName + "]", classOf[ContainerNode]) match {
       case null => None
-      case node => {
+      case node: ContainerNode => {
         val subnetOption = KevoreePropertyHelper.getProperty(node, "subnet")
         val maskOption = KevoreePropertyHelper.getProperty(node, "mask")
         if (subnetOption.isDefined && maskOption.isDefined) {
@@ -33,7 +34,7 @@ object KloudNetworkHelper {
     }
   }
 
-  private def lookingForNewIp(ips: Array[String], subnet: String, mask: String): String = {
+  private def lookingForNewIp(ips: ListBuffer[String], subnet: String, mask: String): String = {
     var newIp = subnet
     val ipBlock = subnet.split("\\.")
     var i = Integer.parseInt(ipBlock(0))
@@ -76,8 +77,8 @@ object KloudNetworkHelper {
     (subnetInt & maskInt) == (ipInt & maskInt)
   }
 
-  def selectPortNumber(address: String, ports: Array[Int]): Int = {
-    var i = 8000
+  def selectPortNumber(startingNumber: Int, address: String, ports: ListBuffer[Int]): Int = {
+    var i = startingNumber
     if (address != "") {
       var found = false
       while (!found) {
@@ -113,6 +114,54 @@ object KloudNetworkHelper {
       }
     }
     i
+  }
+
+
+  def listAllIp(model: ContainerRoot): ListBuffer[String] = {
+    var ips = ListBuffer[String]()
+    model.getNodes.foreach {
+      node =>
+        val nodeIps = KevoreePropertyHelper.getNetworkProperties(model, node.getName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP)
+        ips = ips ++ nodeIps.toArray(new Array[String](nodeIps.size()))
+    }
+    ips
+  }
+
+  def lisAllPorts(model: ContainerRoot): ListBuffer[Int] = {
+    var ports = ListBuffer[Int]()
+    model.getNodes.foreach {
+      node =>
+        if (node.getDictionary != null) {
+          node.getDictionary.getValues.filter(value => value.getAttribute.getFragmentDependant && (value.getAttribute.getName == "port" || value.getAttribute.getName.startsWith("port") || value.getAttribute.getName.endsWith("port"))).foreach(
+            value => ports = ports + Integer.parseInt(value.getValue)
+          )
+        }
+        node.getComponents.foreach {
+          component =>
+            if (component.getDictionary != null) {
+              component.getDictionary.getValues.filter(value => value.getAttribute.getFragmentDependant && (value.getAttribute.getName == "port" || value.getAttribute.getName.startsWith("port") || value.getAttribute.getName.endsWith("port"))).foreach(
+                value => ports = ports + Integer.parseInt(value.getValue)
+              )
+            }
+        }
+    }
+    model.getGroups.foreach {
+      group =>
+        if (group.getDictionary != null) {
+          group.getDictionary.getValues.filter(value => value.getAttribute.getFragmentDependant && (value.getAttribute.getName == "port" || value.getAttribute.getName.startsWith("port") || value.getAttribute.getName.endsWith("port"))).foreach(
+            value => ports = ports + Integer.parseInt(value.getValue)
+          )
+        }
+    }
+    model.getHubs.foreach {
+      channel =>
+        if (channel.getDictionary != null) {
+          channel.getDictionary.getValues.filter(value => value.getAttribute.getFragmentDependant && (value.getAttribute.getName == "port" || value.getAttribute.getName.startsWith("port") || value.getAttribute.getName.endsWith("port"))).foreach(
+            value => ports = ports + Integer.parseInt(value.getValue)
+          )
+        }
+    }
+    ports
   }
 
 }

@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory
  * @author Erwan Daubert
  * @version 1.0
  */
-abstract class KloudResourceManagerPageGenerator (instance: KloudResourceManagerPage, pattern: String) {
+abstract class KloudResourceManagerPageGenerator(instance: KloudResourceManagerPage, pattern: String) {
   var logger = LoggerFactory.getLogger(this.getClass)
 
   val bootstrapCSSRequest = new Regex(pattern + "bootstrap/css/bootstrap.min.css")
@@ -30,52 +30,52 @@ abstract class KloudResourceManagerPageGenerator (instance: KloudResourceManager
   val fileUploaderJSRequest = new Regex(pattern + "fileuploader/fileuploader.js")
   val initializeUserConfigurationJSRequest = new Regex(pattern + "initializeuserconfiguration/initialize_user_config.js")
 
-  def process (request: KevoreeHttpRequest, response: KevoreeHttpResponse): KevoreeHttpResponse = {
+  def process(request: KevoreeHttpRequest, response: KevoreeHttpResponse): KevoreeHttpResponse = {
     val processor = processBootstrapResources(request, response) orElse processJQueryResources(request, response) orElse processInternalResources(request, response) orElse
       internalProcess(request, response) orElse processError(request, response)
-    //logger.debug("{} vs {}", request.getUrl, pattern)
+    logger.debug("{} vs {}", Array[AnyRef](request.getUrl, pattern))
     processor(request.getUrl)
   }
 
-  protected def sendError (request: KevoreeHttpRequest, response: KevoreeHttpResponse): KevoreeHttpResponse = {
+  protected def sendError(request: KevoreeHttpRequest, response: KevoreeHttpResponse): KevoreeHttpResponse = {
     response.setStatus(400)
     response.setContent("Unknown Request!")
     response
   }
 
-  private def processError (request: KevoreeHttpRequest, response: KevoreeHttpResponse): PartialFunction[String, KevoreeHttpResponse] = {
+  private def processError(request: KevoreeHttpRequest, response: KevoreeHttpResponse): PartialFunction[String, KevoreeHttpResponse] = {
     case _ => sendError(request, response)
   }
 
-  protected def processBootstrapResources (request: KevoreeHttpRequest, response: KevoreeHttpResponse): PartialFunction[String, KevoreeHttpResponse] = {
+  protected def processBootstrapResources(request: KevoreeHttpRequest, response: KevoreeHttpResponse): PartialFunction[String, KevoreeHttpResponse] = {
     case bootstrapCSSRequest() => sendFile(request, response, getBytesFromStream(this.getClass.getClassLoader.getResourceAsStream("bootstrap/css/bootstrap.min.css")), "text/css")
     case bootstrapResponsiveCSSRequest() => sendFile(request, response, getBytesFromStream(this.getClass.getClassLoader.getResourceAsStream("bootstrap/css/bootstrap-responsive.min.css")), "text/css")
     case bootstrapGlyphiconsRequest() => sendFile(request, response, getBytesFromStream(this.getClass.getClassLoader.getResourceAsStream("bootstrap/img/glyphicons-halflings-white.png")),
-                                                   "\"image/png\"")
+      "\"image/png\"")
     case bootstrapGlyphiconsWhiteRequest() => sendFile(request, response, getBytesFromStream(this.getClass.getClassLoader.getResourceAsStream("bootstrap/img/glyphicons-halflings.png")),
-                                                        "\"image/png\"")
+      "\"image/png\"")
     case bootstrapJSRequest() => sendFile(request, response, getBytesFromStream(this.getClass.getClassLoader.getResourceAsStream("bootstrap/js/bootstrap.min.js")), "text/javascript")
   }
 
-  protected def processJQueryResources (request: KevoreeHttpRequest, response: KevoreeHttpResponse): PartialFunction[String, KevoreeHttpResponse] = {
+  protected def processJQueryResources(request: KevoreeHttpRequest, response: KevoreeHttpResponse): PartialFunction[String, KevoreeHttpResponse] = {
     case jqueryRequest() => sendFile(request, response, getBytesFromStream(this.getClass.getClassLoader.getResourceAsStream("jquery/jquery.min.js")), "text/javascript")
     case jqueryFormRequest() => sendFile(request, response, getBytesFromStream(this.getClass.getClassLoader.getResourceAsStream("jquery/jquery.form.js")), "text/javascript")
   }
 
-  protected def processInternalResources (request: KevoreeHttpRequest, response: KevoreeHttpResponse): PartialFunction[String, KevoreeHttpResponse] = {
+  protected def processInternalResources(request: KevoreeHttpRequest, response: KevoreeHttpResponse): PartialFunction[String, KevoreeHttpResponse] = {
     case addChildJSRequest() => sendFile(request, response, getBytesFromStream(this.getClass.getClassLoader.getResourceAsStream("addchild/add_child.js")), "text/javascript")
     case formCSSRequest() => sendFile(request, response, getBytesFromStream(this.getClass.getClassLoader.getResourceAsStream("form.css")), "text/css")
     case fileUploaderCSSRequest() => sendFile(request, response, getBytesFromStream(this.getClass.getClassLoader.getResourceAsStream("fileuploader/fileuploader.css")), "text/css")
-    case fileUploaderJSRequest() => sendFile(request, response, getBytesFromStream(this.getClass.getClassLoader.getResourceAsStream("fileuploader/fileuploade.js")), "text/javascript")
+    case fileUploaderJSRequest() => sendFile(request, response, getBytesFromStream(this.getClass.getClassLoader.getResourceAsStream("fileuploader/fileuploader.js")), "text/javascript")
     case kevoreePictureRequest() => sendFile(request, response, getBytesFromStream(this.getClass.getClassLoader.getResourceAsStream("scaled500.png")), "image/png")
     case initializeUserConfigurationJSRequest() => sendFile(request, response,
-                                                             getBytesFromStream(this.getClass.getClassLoader.getResourceAsStream("initializeuserconfiguration/initialize_user_config.js")),
-                                                             "text/javascript")
+      getBytesFromStream(this.getClass.getClassLoader.getResourceAsStream("initializeuserconfiguration/initialize_user_config.js")),
+      "text/javascript")
   }
 
-  def internalProcess (request: KevoreeHttpRequest, response: KevoreeHttpResponse): PartialFunction[String, KevoreeHttpResponse]
+  def internalProcess(request: KevoreeHttpRequest, response: KevoreeHttpResponse): PartialFunction[String, KevoreeHttpResponse]
 
-  private def getBytesFromStream (stream: InputStream): Array[Byte] = {
+  private def getBytesFromStream(stream: InputStream): Array[Byte] = {
     try {
       val writer: ByteArrayOutputStream = new ByteArrayOutputStream
       val bytes: Array[Byte] = new Array[Byte](2048)
@@ -99,7 +99,7 @@ abstract class KloudResourceManagerPageGenerator (instance: KloudResourceManager
     new Array[Byte](0)
   }
 
-  private def sendFile (request: KevoreeHttpRequest, response: KevoreeHttpResponse, bytes: Array[Byte], contentType: String): KevoreeHttpResponse = {
+  private def sendFile(request: KevoreeHttpRequest, response: KevoreeHttpResponse, bytes: Array[Byte], contentType: String): KevoreeHttpResponse = {
     response.setStatus(200)
     response.getHeaders.put("Content-Type", contentType)
     if (contentType.contains("html") || contentType.contains("css") || contentType.contains("javascript")) {

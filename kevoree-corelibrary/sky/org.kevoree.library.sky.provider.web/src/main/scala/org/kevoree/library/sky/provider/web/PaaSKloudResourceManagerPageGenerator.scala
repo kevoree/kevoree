@@ -5,10 +5,8 @@ import org.kevoree.library.javase.webserver.{KevoreeHttpResponse, KevoreeHttpReq
 import util.matching.Regex
 import org.kevoree.library.sky.api.helper.KloudModelHelper
 import org.json.JSONStringer
-import org.kevoree.library.sky.helper.KloudProviderHelper
-import org.kevoree.KevoreeFactory
+import org.kevoree.Group
 import org.kevoree.library.sky.provider.api.SubmissionException
-import scala.collection.JavaConversions._
 import org.kevoree.impl.DefaultKevoreeFactory
 
 /**
@@ -19,45 +17,47 @@ import org.kevoree.impl.DefaultKevoreeFactory
  * @author Erwan Daubert
  * @version 1.0
  */
-class PaaSKloudResourceManagerPageGenerator (instance: PaaSKloudResourceManagerPage, pattern: String) extends KloudResourceManagerPageGenerator(instance, pattern) {
+class PaaSKloudResourceManagerPageGenerator(instance: PaaSKloudResourceManagerPage, pattern: String) extends KloudResourceManagerPageGenerator(instance, pattern) {
   logger = LoggerFactory.getLogger(this.getClass)
+  val factory = new DefaultKevoreeFactory
 
 
   val initializeUserConfiguRequest = new Regex(pattern + "InitializeUser")
   val rootUserRequest = new Regex(pattern + "(.+)")
   val rootRequest = new Regex(pattern.substring(0, pattern.length - 1))
 
-  def internalProcess (request: KevoreeHttpRequest, response: KevoreeHttpResponse): PartialFunction[String, KevoreeHttpResponse] = {
+  def internalProcess(request: KevoreeHttpRequest, response: KevoreeHttpResponse): PartialFunction[String, KevoreeHttpResponse] = {
     case initializeUserConfiguRequest() => initializeUserConfiguration(request, response)
     case rootRequest() => getPaasPage(request, response)
     case rootUserRequest(login) => getPaasUserPage(login, request, response)
   }
 
-  def getPaasPage (request: KevoreeHttpRequest, response: KevoreeHttpResponse): KevoreeHttpResponse = {
+  def getPaasPage(request: KevoreeHttpRequest, response: KevoreeHttpResponse): KevoreeHttpResponse = {
     val htmlContent = HTMLPageBuilder.getPaasPage(pattern, instance.getModelService.getLastModel)
     response.setStatus(200)
     response.setContent(htmlContent)
     response
   }
 
-  def getPaasUserPage (login: String, request: KevoreeHttpRequest, response: KevoreeHttpResponse): KevoreeHttpResponse = {
+  def getPaasUserPage(login: String, request: KevoreeHttpRequest, response: KevoreeHttpResponse): KevoreeHttpResponse = {
     // looking for the corresponding group
-    instance.getModelService.getLastModel.getGroups.find(g => g.getName == login) match {
-      case Some(group) =>
-      case None => {
+    instance.getModelService.getLastModel.findByQuery("groups[" + login + "]", classOf[Group]) match {
+      case group: Group =>
+      case null => {
         // if it doesn't exist, we create it
         val kengine = instance.getKevScriptEngineFactory.createKevScriptEngine()
+        // TODO ?
       }
     }
     // FIXME no security at all here
 
-    val htmlContent = HTMLPageBuilder.getPaasUserPage(login, pattern, instance.getModelService.getLastModel)
+    val htmlContent = HTMLPageBuilder.getPaasUserPage(login, pattern, instance.getModelService.getLastModel, instance.isPortBinded("delegate"))
     response.setStatus(200)
     response.setContent(htmlContent)
     response
   }
 
-  private def initializeUserConfiguration (request: KevoreeHttpRequest, response: KevoreeHttpResponse): KevoreeHttpResponse = {
+  private def initializeUserConfiguration(request: KevoreeHttpRequest, response: KevoreeHttpResponse): KevoreeHttpResponse = {
     val jsonresponse = new JSONStringer().`object`()
     val login = request.getResolvedParams.get("login")
     var sshKey: String = request.getResolvedParams.get("sshKey")
@@ -75,10 +75,11 @@ class PaaSKloudResourceManagerPageGenerator (instance: PaaSKloudResourceManagerP
       } else {
         // if no then we try to initialize it
         try {
-          instance.initialize(login, new DefaultKevoreeFactory().createContainerRoot())
+          instance.initialize(login, factory.createContainerRoot)
           jsonresponse.key("code").value("0")
         } catch {
-          case e: SubmissionException => /*logger.error("Unable to initialize the user PaaS: {}", login, e);*/ jsonresponse.key("code").value("-1").key("message")
+          case e: SubmissionException => logger.error("Unable to initialize the user PaaS: " + login, e);
+          jsonresponse.key("code").value("-1").key("message")
             .value("Unable to initialize the user PaaS: " + login + "\nerror: " + e.getMessage)
         }
       }
