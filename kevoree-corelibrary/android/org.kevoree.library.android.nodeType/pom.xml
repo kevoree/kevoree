@@ -15,7 +15,7 @@
 
     <properties>
         <kevoree.include>org.kevoree:*,org.kevoree.tools:*</kevoree.include>
-        <kotlin.version>0.4.297</kotlin.version>
+        <kotlin.version>0.5.1</kotlin.version>
     </properties>
 
     <dependencies>

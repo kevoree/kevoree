@@ -15,7 +15,6 @@
 
     <properties>
         <metamodel.ecore>metamodel/kevoree.ecore</metamodel.ecore>
-        <kotlin.version>0.4.297</kotlin.version>
     </properties>
 
     <dependencies>
