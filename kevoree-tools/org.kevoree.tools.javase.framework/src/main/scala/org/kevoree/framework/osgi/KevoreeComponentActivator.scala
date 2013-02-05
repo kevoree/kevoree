@@ -26,13 +26,8 @@ package org.kevoree.framework.osgi
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 
 import org.kevoree.framework._
-
 
 /* ABSTRACT COMPONENT */
 abstract class KevoreeComponentActivator extends KevoreeInstanceActivator {
@@ -54,42 +49,28 @@ abstract class KevoreeComponentActivator extends KevoreeInstanceActivator {
     componentActor.getKevoreeComponentType.asInstanceOf[AbstractComponentType].setNodeName(nodeName)
     componentActor.getKevoreeComponentType.asInstanceOf[AbstractComponentType].setModelService(modelHandlerService)
     componentActor.getKevoreeComponentType.asInstanceOf[AbstractComponentType].setKevScriptEngineFactory(kevScriptEngine)
-
-
     import scala.collection.JavaConversions._
-    /* START NEEDPORT ACTOR */
     componentActor.getKevoreeComponentType.getNeededPorts.foreach {
       np => np._2.asInstanceOf[Port].startPort()
     }
-
-    /* START HOSTED ACTOR */
     componentActor.getKevoreeComponentType.getHostedPorts.foreach {
       hp =>
         hp._2.asInstanceOf[Port].startPort()
-      //hp._2.asInstanceOf[KevoreePort].pause
     }
-
-
   }
 
   override def stop() {
-    
     if(componentActor == null){
       return
     }
-
     if (componentActor.isStarted) {
       componentActor.kInstanceStop(null)// !? StopMessage(null)
       println("Stopping => " + componentName)
     }
-
     //STOP PROXY MODEL
     if (componentActor.getKevoreeComponentType.getModelService.isInstanceOf[ModelHandlerServiceProxy]) {
       componentActor.getKevoreeComponentType.getModelService.asInstanceOf[ModelHandlerServiceProxy].stopProxy()
     }
-
-
-
     /* STOP NEEDED PORT */
     import scala.collection.JavaConversions._
     componentActor.getKevoreeComponentType.getNeededPorts.foreach {
@@ -99,14 +80,7 @@ abstract class KevoreeComponentActivator extends KevoreeInstanceActivator {
     componentActor.getKevoreeComponentType.getHostedPorts.foreach {
       hp => hp._2.asInstanceOf[Port].stop()
     }
-    //componentActor.stop
     componentActor = null
-/*
-    services.foreach {
-      service =>
-        service.unregister()
-    }*/
-
   }
 
   def getKInstance : KInstance = componentActor
