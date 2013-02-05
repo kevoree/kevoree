@@ -51,7 +51,7 @@ class KevoreeLocalLoader(val classpathResources: KevoreeLazyJarResources, val kc
         return result
     }
 
-    class AcquireLockCallable(val className: String): Callable<Semaphore> {
+    inner class AcquireLockCallable(val className: String): Callable<Semaphore> {
         override fun call(): Semaphore? {
             return if (locked.containsKey(className)) {
                 val tuple = locked.get(className)!!
@@ -81,7 +81,7 @@ class KevoreeLocalLoader(val classpathResources: KevoreeLazyJarResources, val kc
         }
     }
 
-    class ReleaseLockCallable(val className: String): Runnable {
+    inner class ReleaseLockCallable(val className: String): Runnable {
         override fun run() {
             if (locked.containsKey(className)) {
                 val lobj = locked.get(className)!!
