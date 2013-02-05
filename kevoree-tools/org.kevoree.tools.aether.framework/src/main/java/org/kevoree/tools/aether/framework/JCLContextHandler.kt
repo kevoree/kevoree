@@ -29,43 +29,43 @@ open class JCLContextHandler: KevoreeClassLoaderHandler {
     val resolvers = ArrayList<DeployUnitResolver>()
     protected val failedLinks: HashMap<String, KevoreeJarClassLoader> = HashMap<String, KevoreeJarClassLoader>()
 
-    class DUMP(): Runnable {
+    inner class DUMP(): Runnable {
         override fun run() {
             printDumpInternals()
         }
     }
 
-    class INSTALL_DEPLOYUNIT_FILE(val du: DeployUnit, val file: File): Callable<KevoreeJarClassLoader> {
+    inner class INSTALL_DEPLOYUNIT_FILE(val du: DeployUnit, val file: File): Callable<KevoreeJarClassLoader> {
         override fun call(): KevoreeJarClassLoader {
             return installDeployUnitInternals(du, file)
         }
     }
 
-    class INSTALL_DEPLOYUNIT(val du: DeployUnit): Callable<KevoreeJarClassLoader> {
+    inner class INSTALL_DEPLOYUNIT(val du: DeployUnit): Callable<KevoreeJarClassLoader> {
         override fun call(): KevoreeJarClassLoader {
             return installDeployUnitNoFileInternals(du)!!
         }
     }
 
-    class REMOVE_DEPLOYUNIT(val du: DeployUnit): Runnable {
+    inner class REMOVE_DEPLOYUNIT(val du: DeployUnit): Runnable {
         override fun run() {
             removeDeployUnitInternals(du)
         }
     }
 
-    class GET_KCL(val du: DeployUnit): Callable<KevoreeJarClassLoader?> {
+    inner class GET_KCL(val du: DeployUnit): Callable<KevoreeJarClassLoader?> {
         override fun call(): KevoreeJarClassLoader? {
             return getKCLInternals(du)
         }
     }
 
-    class MANUALLY_ADD_TO_CACHE(val du: DeployUnit, val kcl: KevoreeJarClassLoader, val toLock: Boolean): Runnable {
+    inner class MANUALLY_ADD_TO_CACHE(val du: DeployUnit, val kcl: KevoreeJarClassLoader, val toLock: Boolean): Runnable {
         override fun run() {
             manuallyAddToCacheInternals(du, kcl, toLock)
         }
     }
 
-    class CLEAR(): Runnable {
+    inner class CLEAR(): Runnable {
         override fun run() {
             clearInternals()
         }
@@ -74,7 +74,7 @@ open class JCLContextHandler: KevoreeClassLoaderHandler {
     override fun registerDeployUnitResolver(val dur: DeployUnitResolver?) {
         pool.submit(Add_Resolver(dur!!))
     }
-    class Add_Resolver(val dur: DeployUnitResolver): Runnable {
+    inner class Add_Resolver(val dur: DeployUnitResolver): Runnable {
         override fun run() {
             resolvers.add(dur)
         }
@@ -82,7 +82,7 @@ open class JCLContextHandler: KevoreeClassLoaderHandler {
     override fun unregisterDeployUnitResolver(dur: DeployUnitResolver?) {
         pool.submit(Remove_Resolver(dur!!))
     }
-    class Remove_Resolver(val dur: DeployUnitResolver): Runnable {
+    inner class Remove_Resolver(val dur: DeployUnitResolver): Runnable {
         override fun run() {
             resolvers.remove(dur)
         }
@@ -98,7 +98,7 @@ open class JCLContextHandler: KevoreeClassLoaderHandler {
 
     val pool = Executors.newSingleThreadExecutor(KCLHandlerThreadFactory())
 
-    class GET_CACHE_FILE(val du: DeployUnit): Callable<File> {
+    inner class GET_CACHE_FILE(val du: DeployUnit): Callable<File> {
         override fun call(): File {
             return getCacheFileInternals(du)
         }

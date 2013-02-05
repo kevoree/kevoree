@@ -53,7 +53,7 @@ open class NodeTypeBootstrapHelper: Bootstraper, KCLBootstrap {
                     val clazz = classLoader.loadClass(nodeOption.getTypeDefinition()!!.getBean())
                     val nodeType = clazz!!.newInstance() as AbstractNodeType
                     //ADD INSTANCE DICTIONARY
-                    val dictionary = java.util.HashMap<String?, Any?>()
+                    val dictionary = java.util.HashMap<String, Any>()
                     val dictionaryType = nodeOption.getTypeDefinition()!!.getDictionaryType()
                     if (dictionaryType != null) {
                         for(dv in dictionaryType.getDefaultValues()) {
@@ -159,7 +159,7 @@ open class NodeTypeBootstrapHelper: Bootstraper, KCLBootstrap {
                     val groupType = groupActivator.callFactory()!! as AbstractGroupType
 
                     //ADD INSTANCE DICTIONARY
-                    val dictionary: java.util.HashMap<String?, Any?> = java.util.HashMap<String?, Any?>()
+                    val dictionary: java.util.HashMap<String, Any> = java.util.HashMap<String, Any>()
 
                     val dictionaryType = optgroup.getTypeDefinition()!!.getDictionaryType()
 

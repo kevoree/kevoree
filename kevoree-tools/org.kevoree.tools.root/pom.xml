@@ -133,6 +133,10 @@
             <id>kevoree-snapshots</id>
             <url>http://maven.kevoree.org/snapshots</url>
         </repository>
+        <repository>
+            <id>kt</id>
+            <url>http://repository.jetbrains.com/all/</url>
+        </repository>
     </repositories>
 
     <pluginRepositories>
@@ -143,6 +147,10 @@
         <pluginRepository>
             <id>plugin.kevoree-snapshots</id>
             <url>http://maven.kevoree.org/snapshots</url>
+        </pluginRepository>
+        <pluginRepository>
+            <id>kotm</id>
+            <url>http://repository.jetbrains.com/all/</url>
         </pluginRepository>
     </pluginRepositories>
 
