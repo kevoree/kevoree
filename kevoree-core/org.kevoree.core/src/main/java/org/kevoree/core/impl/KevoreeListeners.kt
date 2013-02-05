@@ -79,7 +79,7 @@ class KevoreeListeners {
 
     fun addListener(val l: ModelListener) = scheduler?.submit(AddListener(l))
 
-    class AddListener(val l: ModelListener) : Runnable {
+    inner class AddListener(val l: ModelListener) : Runnable {
         override fun run() {
             if (!registeredListeners.contains(l)) {
                 registeredListeners.add(l)
@@ -93,7 +93,7 @@ class KevoreeListeners {
         }
     }
 
-    class RemoveListener(val l: ModelListener) : Runnable {
+    inner class RemoveListener(val l: ModelListener) : Runnable {
         override fun run() {
             if (registeredListeners.contains(l)) {
                 registeredListeners.remove(l)
@@ -103,7 +103,7 @@ class KevoreeListeners {
 
     fun notifyAllListener() = scheduler?.submit(NotifyAll())
 
-    class NotifyAll() : Runnable {
+    inner class NotifyAll() : Runnable {
         override fun run() {
             for(value in registeredListeners) {
                 schedulerAsync?.submit(AsyncModelUpdateRunner(value))
@@ -121,13 +121,13 @@ class KevoreeListeners {
 
     class STOP_ACTOR()
 
-    class PREUPDATE(val currentModel: ContainerRoot, val proposedModel: ContainerRoot) : Callable<Boolean> {
+    inner class PREUPDATE(val currentModel: ContainerRoot, val proposedModel: ContainerRoot) : Callable<Boolean> {
         override fun call(): Boolean {
             return registeredListeners.all{ l -> l.preUpdate(currentModel, proposedModel) }
         }
     }
 
-    class INITUPDATE(val currentModel: ContainerRoot, val proposedModel: ContainerRoot): Callable<Boolean> {
+    inner class INITUPDATE(val currentModel: ContainerRoot, val proposedModel: ContainerRoot): Callable<Boolean> {
         override fun call(): Boolean {
             return registeredListeners.all{ l -> l.initUpdate(currentModel, proposedModel) }
         }
@@ -141,7 +141,7 @@ class KevoreeListeners {
         return scheduler?.submit(PREUPDATE(currentModel, pmodel))?.get().sure()
     }
 
-    class AFTERUPDATE(val currentModel: ContainerRoot, val proposedModel: ContainerRoot) : Callable<Boolean> {
+    inner class AFTERUPDATE(val currentModel: ContainerRoot, val proposedModel: ContainerRoot) : Callable<Boolean> {
         override fun call(): Boolean {
             return registeredListeners.all{ l -> l.afterLocalUpdate(currentModel, proposedModel) }
         }
@@ -152,7 +152,7 @@ class KevoreeListeners {
     }
 
     //ROLLBACK STEP
-    class PREROLLBACK(val currentModel: ContainerRoot, val proposedModel: ContainerRoot): Callable<Boolean> {
+    inner class PREROLLBACK(val currentModel: ContainerRoot, val proposedModel: ContainerRoot): Callable<Boolean> {
         override fun call(): Boolean {
             for (l in registeredListeners) {
                 l.preRollback(currentModel, proposedModel)
@@ -164,7 +164,7 @@ class KevoreeListeners {
         return scheduler?.submit(PREROLLBACK(currentModel, pmodel))?.get().sure()
     }
 
-    class POSTROLLBACK(val currentModel: ContainerRoot, val proposedModel: ContainerRoot): Callable<Boolean> {
+    inner class POSTROLLBACK(val currentModel: ContainerRoot, val proposedModel: ContainerRoot): Callable<Boolean> {
         override fun call(): Boolean {
             for (l in registeredListeners) {
                 l.postRollback(currentModel, proposedModel)
@@ -184,7 +184,7 @@ class KevoreeListeners {
 
     private val logger: Logger = LoggerFactory.getLogger(this.javaClass).sure()
 
-    class AsyncModelUpdateRunner(val listener: ModelListener): Runnable {
+    inner class AsyncModelUpdateRunner(val listener: ModelListener): Runnable {
         override fun run() {
             try {
                 listener.modelUpdated()

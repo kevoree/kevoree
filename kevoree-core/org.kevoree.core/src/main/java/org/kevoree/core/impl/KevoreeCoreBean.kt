@@ -117,7 +117,7 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
         return scheduler?.submit(LastModelCallable())?.get()!!
     }
 
-    private class LastModelCallable(): Callable<ContainerRoot> {
+    private inner class LastModelCallable(): Callable<ContainerRoot> {
         override fun call(): ContainerRoot {
             return model
         }
@@ -127,7 +127,7 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
         return scheduler?.submit(LastUUIDModelCallable())?.get()!!
     }
 
-    private class LastUUIDModelCallable(): Callable<UUIDModel> {
+    private inner class LastUUIDModelCallable(): Callable<UUIDModel> {
         override fun call(): UUIDModel {
             return UUIDModelImpl(currentModelUUID, model)
         }
@@ -141,7 +141,7 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
         scheduler!!.submit(UpdateModelCallable(cloneCurrentModel(pmodel), null))
     }
 
-    class UpdateModelCallable(val model: ContainerRoot, val callback: ModelUpdateCallback?): Callable<Boolean> {
+    inner class UpdateModelCallable(val model: ContainerRoot, val callback: ModelUpdateCallback?): Callable<Boolean> {
         override fun call(): Boolean {
             var res: Boolean = false
              if (currentLock == null) {
@@ -221,7 +221,7 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
         scheduler?.submit(LockTimeoutCallable())
     }
 
-    class LockTimeoutCallable(): Runnable {
+    inner class LockTimeoutCallable(): Runnable {
         override fun run() {
             if (currentLock != null) {
                 currentLock!!.callback.lockTimeout()
@@ -250,7 +250,7 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
         scheduler?.submit(CompareAndSwapCallable(previousModel!!, cloneCurrentModel(targetModel), callback))
     }
 
-    class AcquireLock(val callBack: ModelHandlerLockCallBack, val timeout: Long): Runnable {
+    inner class AcquireLock(val callBack: ModelHandlerLockCallBack, val timeout: Long): Runnable {
         override fun run() {
             if (currentLock != null) {
                 callBack.lockRejected()
@@ -264,7 +264,7 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
         }
     }
 
-    class WatchDogCallable(): Runnable {
+    inner class WatchDogCallable(): Runnable {
         override fun run() {
             lockTimeout()
         }
@@ -274,7 +274,7 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
         scheduler?.submit(ReleaseLockCallable(uuid!!))
     }
 
-    class ReleaseLockCallable(val uuid: UUID): Runnable {
+    inner class ReleaseLockCallable(val uuid: UUID): Runnable {
         override fun run() {
             if (currentLock != null) {
                 if (currentLock!!.uuid.compareTo(uuid) == 0) {
@@ -288,7 +288,7 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
         }
     }
 
-    class CompareAndSwapCallable(val previousModel: UUIDModel, val targetModel: ContainerRoot, val callback: ModelUpdateCallback?): Callable<Boolean> {
+    inner class CompareAndSwapCallable(val previousModel: UUIDModel, val targetModel: ContainerRoot, val callback: ModelUpdateCallback?): Callable<Boolean> {
         override fun call(): Boolean {
             val res: Boolean = if (currentLock != null) {
                 if (previousModel?.getUUID()?.compareTo(currentLock!!.uuid) == 0) {
@@ -326,11 +326,11 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
         return lastDate
     }
 
-    override fun getPreviousModel(): MutableList<ContainerRoot?> {
-        return scheduler?.submit(GetPreviousModelCallable())?.get() as MutableList<ContainerRoot?>
+    override fun getPreviousModel(): MutableList<ContainerRoot> {
+        return scheduler?.submit(GetPreviousModelCallable())?.get() as MutableList<ContainerRoot>
     }
 
-    private class GetPreviousModelCallable(): Callable<List<ContainerRoot>> {
+    private inner class GetPreviousModelCallable(): Callable<List<ContainerRoot>> {
         override fun call(): List<ContainerRoot> {
             return models
         }
