@@ -417,7 +417,7 @@ open class KevoreeJarClassLoader(): ClassLoader() {
         }
     }
 
-    override fun findResources(p1: String?): java.util.Enumeration<URL?> {
+    override fun findResources(p1: String?): java.util.Enumeration<URL> {
         val selfRes: MutableList<URL> = internal_findResources(p1!!)
         //Then call on all
         for( sub in subClassLoaders) {
@@ -530,7 +530,7 @@ open class KevoreeJarClassLoader(): ClassLoader() {
         return className;
     }
 
-    class CurrentLoader: ProxyClassLoader() {
+    inner class CurrentLoader: ProxyClassLoader() {
         CurrentLoader() {
             order = 2;
         }
@@ -584,7 +584,7 @@ open class KevoreeJarClassLoader(): ClassLoader() {
     }
 
 
-    class SystemLoader: ProxyClassLoader() {
+    inner class SystemLoader: ProxyClassLoader() {
         SystemLoader() {
             order = 5;
         }
@@ -608,7 +608,7 @@ open class KevoreeJarClassLoader(): ClassLoader() {
         }
     }
 
-    class ParentLoader: ProxyClassLoader() {
+    inner class ParentLoader: ProxyClassLoader() {
 
         public ParentLoader() {
             order = 3;
