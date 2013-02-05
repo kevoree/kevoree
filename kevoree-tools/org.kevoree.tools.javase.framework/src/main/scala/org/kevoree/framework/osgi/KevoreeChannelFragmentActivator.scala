@@ -26,12 +26,7 @@ package org.kevoree.framework.osgi
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 
-import java.util.Hashtable
 import org.kevoree.framework._
 
 abstract class KevoreeChannelFragmentActivator extends KevoreeInstanceActivator {
@@ -53,16 +48,6 @@ abstract class KevoreeChannelFragmentActivator extends KevoreeInstanceActivator 
   def start() {
     channelActor = callFactory()
     channelActor.startC
-    /* Expose component in OSGI */
-    val props = new Hashtable[String, String]()
-    props.put(Constants.KEVOREE_NODE_NAME, nodeName)
-    props.put(Constants.KEVOREE_INSTANCE_NAME, instanceName)
-
-    /* PUT INITIAL PROPERTIES */
-    /*
-    if (bundleContext != null) {
-      channelActor.getDictionary.put(Constants.KEVOREE_PROPERTY_OSGI_BUNDLE, bundleContext.getBundle)
-    }*/
     channelActor.asInstanceOf[AbstractTypeDefinition].setName(instanceName)
     channelActor.asInstanceOf[AbstractTypeDefinition].setNodeName(nodeName)
     channelActor.asInstanceOf[AbstractTypeDefinition].setModelService(modelHandlerService)

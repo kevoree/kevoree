@@ -27,7 +27,6 @@ package org.kevoree.framework.osgi
  * limitations under the License.
  */
 
-import java.util.Hashtable
 import org.kevoree.framework._
 
 abstract class KevoreeGroupActivator extends KevoreeInstanceActivator {
@@ -45,64 +44,26 @@ abstract class KevoreeGroupActivator extends KevoreeInstanceActivator {
     instanceName = in
   }
 
-
   override def start() {
-    /* SEARCH HEADERS VALUE */
-    // nodeName = bc.getBundle.getHeaders.find(dic => dic._1 == Constants.KEVOREE_NODE_NAME_HEADER).get._2.toString
-   // instanceName = bc.getBundle.getHeaders.find(dic => dic._1 == Constants.KEVOREE_INSTANCE_NAME_HEADER).get._2.toString
-    /* Create component actor */
     groupActor = callFactory()
-
-
-    /* Start actor */
-    //groupActor.start
-    /* Expose component in OSGI */
-    val props = new Hashtable[String, String]()
-    props.put(Constants.KEVOREE_NODE_NAME, nodeName)
-    props.put(Constants.KEVOREE_INSTANCE_NAME, instanceName)
-    /*
-    if(bundleContext != null){
-      mainService = bundleContext.registerService(classOf[KevoreeGroup].getName, groupActor, props);
-    }*/
-
-    /* PUT INITIAL PROPERTIES */
-    /*
-    if(bundleContext != null){
-      groupActor.getDictionary.put(Constants.KEVOREE_PROPERTY_OSGI_BUNDLE, bundleContext.getBundle)
-    }*/
-
     groupActor.asInstanceOf[AbstractTypeDefinition].setName(instanceName)
     groupActor.asInstanceOf[AbstractTypeDefinition].setNodeName(nodeName)
     groupActor.asInstanceOf[AbstractTypeDefinition].setModelService(modelHandlerService)
     groupActor.asInstanceOf[AbstractTypeDefinition].setKevScriptEngineFactory(kevScriptEngine)
-    //channelActor.startChannelFragment //DEPRECATED DONE BY DEPLOY
   }
 
   override def stop() {
-
     if(groupActor == null){
       return
     }
-
-    if (groupActor.asInstanceOf[KevoreeGroup].getIsStarted) {
+    if (groupActor.getIsStarted) {
       groupActor.kInstanceStop(null)
       println("Stopping => " + instanceName)
     }
-
-    //STOP PROXY MODEL
     if(groupActor.getModelService.isInstanceOf[ModelHandlerServiceProxy]){
       groupActor.getModelService.asInstanceOf[ModelHandlerServiceProxy].stopProxy()
     }
-
-
-    //groupActor.stop
     groupActor = null
-/*
-    if(mainService != null){
-      mainService.unregister()
-    }*/
-
-
   }
 
   def getKInstance : KInstance = groupActor
