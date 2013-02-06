@@ -108,7 +108,7 @@ object KevoreeServiceUpdate extends App {
       case _@e => e.printStackTrace(); println("Unable to get model")
     }
 
-    val jarFile: File = AetherUtil.resolveMavenArtifact("org.kevoree.platform.standalone", "org.kevoree.platform", version, repos)
+    val jarFile: File = AetherUtil.$instance.resolveMavenArtifact("org.kevoree.platform.standalone", "org.kevoree.platform", version, repos)
 
     if (jarFile.exists) {
       val p = Runtime.getRuntime.exec(Array[String]("cp", jarFile.getAbsolutePath, defaultLocation))
