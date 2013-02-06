@@ -100,8 +100,8 @@ public class MarShellMavenMojo extends AbstractMojo {
 
 	public void execute () throws MojoExecutionException {
 
-		AetherUtil.setRepositorySystemSession(repoSession);
-		AetherUtil.setRepositorySystem(repoSystem);
+		AetherUtil.$instance.setRepositorySystemSession(repoSession);
+		AetherUtil.$instance.setRepositorySystem(repoSystem);
 
 		mergerComponent = new KevoreeMergerComponent();
 
