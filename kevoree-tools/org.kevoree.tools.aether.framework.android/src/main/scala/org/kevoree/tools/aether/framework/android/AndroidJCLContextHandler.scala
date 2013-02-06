@@ -42,6 +42,7 @@ package org.kevoree.tools.aether.framework.android
 import org.kevoree.DeployUnit
 import java.io.File
 import org.kevoree.kcl.KevoreeJarClassLoader
+import org.slf4j.LoggerFactory
 import scala.collection.JavaConversions._
 import org.kevoree.tools.aether.framework.{JCLContextHandler}
 
@@ -53,6 +54,9 @@ import org.kevoree.tools.aether.framework.{JCLContextHandler}
  */
 
 class AndroidJCLContextHandler(ctx: android.content.Context, parent: ClassLoader) extends JCLContextHandler {
+
+  val logger = LoggerFactory.getLogger(this.getClass)
+
 
   override def installDeployUnitNoFileInternals(du: DeployUnit): KevoreeJarClassLoader = {
     var resolvedFile : File = null
@@ -86,16 +90,11 @@ class AndroidJCLContextHandler(ctx: android.content.Context, parent: ClassLoader
 
       val cleankey = buildKEY(du).replace(File.separator, "_")
       val newcl = new AndroidKevoreeJarClassLoader(cleankey, ctx, parent)
-
-      //if (du.getVersion.contains("SNAPSHOT")) {
       newcl.setLazyLoad(false)
-      // }
-
       newcl.add(file.getAbsolutePath)
       kcl_cache.put(buildKEY(du), newcl)
       kcl_cache_file.put(buildKEY(du), file)
       logger.debug("Add KCL for {}->{}", Array[AnyRef](du.getUnitName, buildKEY(du)))
-
       //TRY TO RECOVER FAILED LINK
       if (failedLinks.containsKey(buildKEY(du))) {
         failedLinks.get(buildKEY(du)).addSubClassLoader(newcl)
@@ -103,7 +102,6 @@ class AndroidJCLContextHandler(ctx: android.content.Context, parent: ClassLoader
         failedLinks.remove(buildKEY(du))
         logger.debug("Failed Link {} remain size : {}", du.getUnitName, failedLinks.size())
       }
-
       du.getRequiredLibs.foreach {
         rLib =>
           val kcl = getKCLInternals(rLib)
@@ -111,12 +109,10 @@ class AndroidJCLContextHandler(ctx: android.content.Context, parent: ClassLoader
             logger.debug("Link KCL for {}->{}", Array[AnyRef](du.getUnitName, rLib.getUnitName))
             newcl.addSubClassLoader(kcl)
             kcl.addWeakClassLoader(newcl)
-
             du.getRequiredLibs.filter(rLibIn => rLib != rLibIn).foreach(rLibIn => {
               val kcl2 = getKCLInternals(rLibIn)
               if (kcl2 != null) {
                 kcl.addWeakClassLoader(kcl2)
-                // logger.debug("Link Weak for {}->{}", rLib.getUnitName, rLibIn.getUnitName)
               }
             })
           } else {
@@ -124,71 +120,9 @@ class AndroidJCLContextHandler(ctx: android.content.Context, parent: ClassLoader
             failedLinks.put(buildKEY(du), newcl)
           }
       }
-
-
       newcl
     }
-    /*
-    if (logger.isDebugEnabled) {
-      printDumpInternals()
-    }*/
     res
   }
-
-
-      /*
-
-  def installDeployUnitInternals(du: DeployUnit, file: File): KevoreeJarClassLoader = {
-    val previousKCL = getKCLInternals(du)
-    val res = if (previousKCL != null) {
-      logger.debug("Take already installed {}", buildKEY(du))
-      previousKCL
-    } else {
-      logger.debug("Install {} , file {}", buildKEY(du), file)
-      val cleankey = buildKEY(du).replace(File.separator, "_")
-      val newcl = new AndroidKevoreeJarClassLoader(cleankey, ctx, parent)
-      if (du.getVersion.contains("SNAPSHOT")) {
-        newcl.setLazyLoad(false)
-      }
-      logger.debug("Before add the jar {} to classloader",file.getAbsolutePath)
-      try {
-        newcl.add(file.getAbsolutePath)
-      } catch {
-        case _ @ e => {
-          logger.error("Can't add Jar to class path",e)
-          return null
-        }
-      }
-      logger.debug("After Adding the jar ")
-      kcl_cache.put(buildKEY(du), newcl)
-      kcl_cache_file.put(buildKEY(du), file)
-      logger.debug("Add KCL for {}->{}", du.getUnitName, buildKEY(du))
-
-      du.getRequiredLibs.foreach {
-        rLib =>
-          val kcl = getKCLInternals(rLib)
-          if (kcl != null) {
-            logger.debug("Link KCL for {}->{}", du.getUnitName, rLib.getUnitName)
-            newcl.addSubClassLoader(kcl)
-
-            du.getRequiredLibs.filter(rLibIn => rLib != rLibIn).foreach(rLibIn => {
-              val kcl2 = getKCLInternals(rLibIn)
-              if (kcl2 != null) {
-                kcl.addWeakClassLoader(kcl2)
-                logger.debug("Link Weak for {}->{}", rLib.getUnitName, rLibIn.getUnitName)
-              }
-            })
-
-
-          }
-      }
-      newcl
-    }
-    if (logger.isDebugEnabled) {
-      printDumpInternals()
-    }
-    res
-  }   */
-
 
 }
