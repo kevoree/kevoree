@@ -91,7 +91,7 @@ class MiniKloudForm(editor: KevoreeEditor, button: AbstractButton) {
                 file.deleteOnExit()
 
                 KevoreeXmiHelper.$instance.save(file.getAbsolutePath, skyModel)
-                logger.debug("trying to start the minicloud")
+                logger.debug("trying to start the minicloud: {}", minicloudName)
                 minicloud = Runtime.getRuntime
                   .exec(Array[String](java, "-Dnode.gui.config=false", "-Dnode.bootstrap=" + file.getAbsolutePath, "-Dnode.name=" + minicloudName, "-Dkevoree.log.level=INFO", "-jar",
                   platformJAR.getAbsolutePath))
@@ -260,7 +260,7 @@ class MiniKloudForm(editor: KevoreeEditor, button: AbstractButton) {
         nodes.foreach {
           node =>
             kevEngine.addVariable("nodeName", node.getName)
-            kevEngine.append("addToGroup editor_group {nodeName}")
+            kevEngine.append("addToGroup {groupName} {nodeName}")
             // add specific port for each node
             val port = selectPort(blackListedPorts)
             blackListedPorts = blackListedPorts ++ Array[Int](port)
