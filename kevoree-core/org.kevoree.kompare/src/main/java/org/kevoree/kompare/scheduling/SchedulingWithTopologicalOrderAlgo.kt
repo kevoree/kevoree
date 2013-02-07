@@ -127,7 +127,7 @@ class SchedulingWithTopologicalOrderAlgo {
         while (bindingIterator.hasNext()) {
             val binding = bindingIterator.next()
             for (command in commands) {
-                if(command.getRef() is Instance) {
+                if(command.getRef() is ComponentInstance) {
                     // test if instance is the container of the port of the binding
                     if ((command.getRef() as ComponentInstance).equals(binding.getPort()!!.eContainer())) {
                         // test all provided port
