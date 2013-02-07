@@ -17,17 +17,14 @@ package org.kevoree.core.basechecker.cyclechecker
 import org.kevoree.framework.aspects.KevoreeAspects._
 
 import org.jgrapht.graph.DefaultDirectedGraph
-import org.kevoree.ComponentInstance
-import org.kevoree.ContainerRoot
-import org.kevoree.Instance
-import org.kevoree.MBinding
+import org.kevoree.{ComponentInstance, ContainerNode, ContainerRoot, Instance, MBinding}
 import scala.collection.JavaConversions._
 
 
 case class KevoreeComponentDirectedGraph(model: ContainerRoot, nodeName: String) extends DefaultDirectedGraph[Instance, MBinding](new KevoreeMBindingEdgeFactory(model)) {
 
-  model.findByQuery("nodes[" + nodeName + "]", classOf[ContainerNode])/*.getNodes.find(node => node.getName == nodeName)*/ match {
-    case Some(node) =>
+  model.findByQuery("nodes[" + nodeName + "]") match {
+    case node : ContainerNode =>
       node.getComponents.foreach {
         componentInstance =>
           componentInstance.getRelatedBindings.foreach {
@@ -43,7 +40,7 @@ case class KevoreeComponentDirectedGraph(model: ContainerRoot, nodeName: String)
               }
           }
       }
-    case None =>
+    case null =>
   }
 
 }
