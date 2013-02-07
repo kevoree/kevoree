@@ -79,7 +79,7 @@ open class KevoreeJarClassLoader(): ClassLoader() {
 
     var specialloaders = ArrayList<KevoreeResourcesLoader>()
 
-    fun addSpecialLoaders(l: KevoreeResourcesLoader) {
+    protected fun addSpecialLoaders(l: KevoreeResourcesLoader) {
         specialloaders.add(l)
     }
 

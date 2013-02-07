@@ -15,7 +15,8 @@ package org.kevoree.platform.android.core
 
 import org.kevoree.api.service.core.handler.ModelListener
 import org.kevoree.ContainerRoot
-import android.app.{Activity, ProgressDialog}
+import android.app.Activity
+import android.app.ProgressDialog
 import android.widget.Toast
 import android.util.Log
 
@@ -25,59 +26,58 @@ import android.util.Log
  * Date: 10/10/12
  * Time: 13:59
  */
-class ProgressDialogModelListener(ctx : Activity) extends ModelListener {
+class ProgressDialogModelListener(val ctx : Activity) : ModelListener {
 
-  private var dialog : ProgressDialog = null
+  private var dialog : ProgressDialog? = null
 
-  def preUpdate(currentModel: ContainerRoot, proposedModel: ContainerRoot) = {
-    ctx.runOnUiThread(new Runnable {
-      def run() {
+  override fun preUpdate(currentModel: ContainerRoot?, proposedModel: ContainerRoot?) : Boolean {
+    ctx.runOnUiThread(object : Runnable {
+      override fun run() {
         dialog = ProgressDialog.show(ctx, "Kevoree","Performing adaptation, please wait...",true,true);
-        dialog.setProgress(0)
+        dialog!!.setProgress(0)
       }
     })
-
-    true
+    return true
   }
 
-  def initUpdate(currentModel: ContainerRoot, proposedModel: ContainerRoot) = {
-    ctx.runOnUiThread(new Runnable {
-      def run() {
-        dialog.setProgress(10)
+    override fun initUpdate(currentModel: ContainerRoot?, proposedModel: ContainerRoot?) :Boolean {
+    ctx.runOnUiThread(object : Runnable {
+      override fun run() {
+        dialog!!.setProgress(10)
       }
     })
-    true
+    return true
   }
 
-  def afterLocalUpdate(currentModel: ContainerRoot, proposedModel: ContainerRoot) = {
-   ctx.runOnUiThread(new Runnable {
-      def run() {
-        dialog.setProgress(100)
-        dialog.dismiss()
+  override fun afterLocalUpdate(currentModel: ContainerRoot?, proposedModel: ContainerRoot?):Boolean {
+   ctx.runOnUiThread(object : Runnable {
+      override fun run() {
+        dialog!!.setProgress(100)
+        dialog!!.dismiss()
       }
     })
-    true
+    return true
   }
 
-  def modelUpdated() {
-    ctx.runOnUiThread(new Runnable {
-      def run() {
+  override fun modelUpdated() {
+    ctx.runOnUiThread(object : Runnable {
+      override fun run() {
         Toast.makeText(ctx, "Platform updated!", Toast.LENGTH_SHORT);
       }
     })
   }
 
-  def postRollback(currentModel: ContainerRoot, proposedModel: ContainerRoot) {
-    ctx.runOnUiThread(new Runnable {
-      def run() {
-        dialog.dismiss()
+  override fun postRollback(currentModel: ContainerRoot?, proposedModel: ContainerRoot?) {
+    ctx.runOnUiThread(object : Runnable {
+      override fun run() {
+        dialog!!.dismiss()
         Toast.makeText(ctx, "Error detected, rollback performed!", Toast.LENGTH_SHORT);
       }
     })
     Log.e("Kevoree GUI","PostRollBack")
   }
 
-  def preRollback(currentModel: ContainerRoot, proposedModel: ContainerRoot) {
+  override fun preRollback(currentModel: ContainerRoot?, proposedModel: ContainerRoot?) {
     Log.e("Kevoree GUI","PreRollBack")
 
   }

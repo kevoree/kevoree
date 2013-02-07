@@ -11,6 +11,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.kevoree.tools.aether.framework.android
+
 /**
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
  * you may not use this file except in compliance with the License.
@@ -24,20 +26,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kevoree.platform.android.core
 
-import android.widget.TabHost.TabContentFactory
-import android.view.View
+import org.sonatype.aether.connector.wagon.WagonRepositoryConnectorFactory
+import org.sonatype.aether.spi.locator.ServiceLocator
+import org.sonatype.aether.RepositorySystemSession
+import org.sonatype.aether.repository.RemoteRepository
+import org.sonatype.aether.spi.connector.RepositoryConnector
 
 /**
- * Created with IntelliJ IDEA.
- * User: duke
- * Date: 29/02/12
- * Time: 17:55
+ * User: ffouquet
+ * Date: 04/08/11
+ * Time: 21:43
  */
 
-class PreExistingViewFactory(view: View) extends TabContentFactory {
-  def createTabContent(p1: String) = {
-    view
+class WagonRepositoryConnectorFactoryFork : WagonRepositoryConnectorFactory() {
+
+  override fun initService(locator: ServiceLocator?) {
+    super.initService(locator)
+    setWagonProvider(ManualWagonProvider())
+
+
+  }
+
+  override public fun newInstance(session: RepositorySystemSession?, repository: RemoteRepository?) : RepositoryConnector? {
+    return super.newInstance(session, repository)
   }
 }

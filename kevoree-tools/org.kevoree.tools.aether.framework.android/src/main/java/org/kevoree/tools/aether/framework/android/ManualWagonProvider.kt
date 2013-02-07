@@ -27,26 +27,27 @@ package org.kevoree.tools.aether.framework.android
  * limitations under the License.
  */
 
-import org.sonatype.aether.connector.wagon.WagonRepositoryConnectorFactory
-import org.sonatype.aether.spi.locator.ServiceLocator
-import org.sonatype.aether.RepositorySystemSession
-import org.sonatype.aether.repository.RemoteRepository
+import org.sonatype.aether.connector.wagon.WagonProvider
+import org.apache.maven.wagon.Wagon
+import org.apache.maven.wagon.providers.http.LightweightHttpWagon
 
 /**
  * User: ffouquet
  * Date: 04/08/11
- * Time: 21:43
+ * Time: 21:25
  */
 
-class WagonRepositoryConnectorFactoryFork extends WagonRepositoryConnectorFactory {
+class ManualWagonProvider : WagonProvider {
 
-  override def initService(locator: ServiceLocator) {
-    super.initService(locator)
-    setWagonProvider(new ManualWagonProvider)
-
+  override fun lookup(roleHint: String?): Wagon? {
+    if ("http".equals(roleHint)) {
+      val httpC = LightweightHttpWagon()
+      return httpC
+    }
+    return null
   }
 
-  override def newInstance(session: RepositorySystemSession, repository: RemoteRepository) = {
-    super.newInstance(session, repository)
-  }
+  override fun release(p1: Wagon?){}
+
+
 }
