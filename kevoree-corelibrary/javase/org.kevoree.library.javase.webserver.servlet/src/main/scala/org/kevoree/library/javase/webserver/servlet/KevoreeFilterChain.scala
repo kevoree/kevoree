@@ -55,7 +55,7 @@ class KevoreeFilterChain (filterPage: AbstractFilterPage) extends Actor with Fil
   @throws(classOf[ServletException])*/
   def doFilter (request: ServletRequest, response: ServletResponse) {
     logger.debug("doFilter")
-    logger.debug("{} - {}", request, response)
+    logger.debug(request+" - "+response)
     (request, response) match {
       case t: (KevoreeServletRequest, KevoreeServletResponse) => {
         logger.debug("execute doFilter with KevoreeServletRequest and KevoreeServletResponse")

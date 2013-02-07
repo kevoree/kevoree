@@ -32,12 +32,12 @@ class UpdateDictionary(val c: Instance, val nodeName: String): PrimitiveCommand 
 
     var logger = LoggerFactory.getLogger(this.javaClass)!!
 
-    private var lastDictioanry: HashMap<String?, Any?>? = null
+    private var lastDictioanry: HashMap<String, Any>? = null
 
 
     override fun execute(): Boolean {
         //BUILD MAP
-        val dictionary = HashMap<String?, Any?>()
+        val dictionary = HashMap<String, Any>()
         if (c.getTypeDefinition()!!.getDictionaryType() != null) {
             if (c.getTypeDefinition()!!.getDictionaryType()!!.getDefaultValues() != null) {
                 for(dv in c.getTypeDefinition()!!.getDictionaryType()!!.getDefaultValues()) {
@@ -77,7 +77,7 @@ class UpdateDictionary(val c: Instance, val nodeName: String): PrimitiveCommand 
 
     override fun undo() {
         val mapFound = KevoreeDeployManager.getRef(c.javaClass.getName(), c.getName())
-        val tempHash = HashMap<String?, Any?>()
+        val tempHash = HashMap<String, Any>()
         if (lastDictioanry != null) {
             tempHash.putAll(lastDictioanry!!);
         }

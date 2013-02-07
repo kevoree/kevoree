@@ -18,12 +18,12 @@ class SelfDictionaryUpdate(val c: Instance, val node: AbstractNodeType): Primiti
 
     var logger = LoggerFactory.getLogger(this.javaClass)!!
 
-    private var lastDictioanry: HashMap<String?, Any?>? = null
+    private var lastDictioanry: HashMap<String, Any>? = null
 
     override fun execute(): Boolean {
         //BUILD MAP
         //SET DEFAULT VAL
-        val dictionary: HashMap<String?, Any?> = HashMap<String?, Any?>()
+        val dictionary: HashMap<String, Any> = HashMap<String, Any>()
         if (c.getTypeDefinition()!!.getDictionaryType() != null) {
             if (c.getTypeDefinition()!!.getDictionaryType()!!.getDefaultValues() != null) {
                 for(dv in c.getTypeDefinition()!!.getDictionaryType()!!.getDefaultValues()) {

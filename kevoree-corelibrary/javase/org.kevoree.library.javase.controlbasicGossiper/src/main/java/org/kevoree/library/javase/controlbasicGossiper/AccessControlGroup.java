@@ -178,7 +178,7 @@ public class AccessControlGroup extends AbstractGroupType implements ConnectionL
         } else {
             Group group = getModelElement();
             ContainerRoot currentModel = (ContainerRoot) group.eContainer();
-            for (ContainerNode subNode : group.getSubNodesForJ()) {
+            for (ContainerNode subNode : group.getSubNodes()) {
                 if (!subNode.getName().equals(this.getNodeName())) {
                     try {
                         push(currentModel, subNode.getName());
@@ -204,9 +204,9 @@ public class AccessControlGroup extends AbstractGroupType implements ConnectionL
         }
 
         int PORT = 8000;
-        Option<Group> groupOption = model.findByQuery("groups[" + getName() + "]", Group.class);
-        if (groupOption.isDefined()) {
-            Option<String> portOption = KevoreePropertyHelper.getProperty(groupOption.get(), "port", true, targetNodeName);
+        Group groupOption = model.findByQuery("groups[" + getName() + "]", Group.class);
+        if (groupOption!=null) {
+            Option<String> portOption = KevoreePropertyHelper.getProperty(groupOption, "port", true, targetNodeName);
             if (portOption.isDefined()) {
                 try {
                     PORT = Integer.parseInt(portOption.get());
@@ -279,9 +279,9 @@ public class AccessControlGroup extends AbstractGroupType implements ConnectionL
             ip = ipOption.get();
         }
         int PORT = 8000;
-        Option<Group> groupOption = model.findByQuery("groups[" + getName() + "]", Group.class);
-        if (groupOption.isDefined()) {
-            Option<String> portOption = KevoreePropertyHelper.getProperty(groupOption.get(), "port", true, targetNodeName);
+        Group groupOption = model.findByQuery("groups[" + getName() + "]", Group.class);
+        if (groupOption!=null) {
+            Option<String> portOption = KevoreePropertyHelper.getProperty(groupOption, "port", true, targetNodeName);
             if (portOption.isDefined()) {
                 try {
                     PORT = Integer.parseInt(portOption.get());
@@ -310,7 +310,7 @@ public class AccessControlGroup extends AbstractGroupType implements ConnectionL
             @Override
             public void receive(byte[] data, Connection from) {
                 ByteArrayInputStream inputStream = new ByteArrayInputStream(data);
-                final ContainerRoot root = KevoreeXmiHelper.loadCompressedStream(inputStream);
+                final ContainerRoot root = KevoreeXmiHelper.$instance.loadCompressedStream(inputStream);
                 try {
                     exchanger.exchange(root);
                 } catch (InterruptedException e) {
@@ -345,7 +345,7 @@ public class AccessControlGroup extends AbstractGroupType implements ConnectionL
                 switch (data[0]) {
                     case getModel: {
                         ByteArrayOutputStream output = new ByteArrayOutputStream();
-                        KevoreeXmiHelper.saveCompressedStream(output, getModelService().getLastModel());
+                        KevoreeXmiHelper.$instance.saveCompressedStream(output, getModelService().getLastModel());
                         from.send(output.toByteArray(), Delivery.RELIABLE);
                     }
                     break;
@@ -360,7 +360,7 @@ public class AccessControlGroup extends AbstractGroupType implements ConnectionL
                         try
                         {
                             SignedModelImpl       signedModel = (SignedModelImpl) ois.readObject();
-                            ContainerRoot target_model = KevoreeXmiHelper.loadString(new String(signedModel.getSerialiedModel()));
+                            ContainerRoot target_model = KevoreeXmiHelper.$instance.loadString(new String(signedModel.getSerialiedModel()));
 
                             List<AdaptationPrimitive> result =     accessControl.approval(getNodeName(), getModelService().getLastModel(), signedModel);
 
