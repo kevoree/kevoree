@@ -85,9 +85,16 @@ class NodeTypeBootStrapUI(private var pkernel: ContainerRoot) extends JPanel {
     nodeTypeComboBox = UIHelper.createJComboBox(nodeTypeModel)
 
     val groupTypeModel = new DefaultComboBoxModel
+
+
+    if(kernel.getTypeDefinitions.exists(td => td.getName == "BasicGroup")){
+      UIHelper.addItem(groupTypeModel,"BasicGroup")
+    }
+
     kernel.getTypeDefinitions.
       filter(td => td.isInstanceOf[org.kevoree.GroupType] && td.getDeployUnits.exists(du => du.getTargetNodeType != null ))
-      .sortWith( (td,td2) => {if({td.getName=="BasicGroup"}){true}else{td.getName < td2.getName }} )
+      .filter(td => td.getName != "BasicGroup")
+      //.sortWith( (td,td2) => {if({td.getName=="BasicGroup"}){true}else{td.getName < td2.getName }} )
       .foreach {
           td =>{
             UIHelper.addItem(groupTypeModel,td.getName)
