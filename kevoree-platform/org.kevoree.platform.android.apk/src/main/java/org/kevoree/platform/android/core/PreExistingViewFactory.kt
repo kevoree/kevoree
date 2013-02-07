@@ -26,26 +26,18 @@
  */
 package org.kevoree.platform.android.core
 
-import org.kevoree.android.framework.service.KevoreeAndroidService
-import android.app.Activity
+import android.widget.TabHost.TabContentFactory
 import android.view.View
 
 /**
  * Created with IntelliJ IDEA.
  * User: duke
  * Date: 29/02/12
- * Time: 17:52
+ * Time: 17:55
  */
 
-class KevoreeActivityAndroidService(act: Activity, kui: org.kevoree.platform.android.ui.KevoreeAndroidUIScreen) extends KevoreeAndroidService {
-
-  def getRootActivity = act
-
-  def addToGroup(groupKey: String, view: View) {
-    kui.addToGroup(groupKey, view)
-  }
-
-  def remove(p1: View) {
-    kui.removeView(p1)
+class PreExistingViewFactory(val view: View) : TabContentFactory {
+  override fun createTabContent(p1: String?):View {
+    return view
   }
 }

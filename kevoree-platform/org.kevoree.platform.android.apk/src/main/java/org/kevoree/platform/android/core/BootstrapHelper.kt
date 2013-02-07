@@ -27,9 +27,8 @@
 package org.kevoree.platform.android.core
 
 import org.slf4j.LoggerFactory
-import org.kevoree.{KevoreeFactory, ContainerRoot}
-import scala.collection.JavaConversions._
 import org.kevoree.impl.DefaultKevoreeFactory
+import org.kevoree.ContainerRoot
 
 /**
  * Created with IntelliJ IDEA.
@@ -40,40 +39,39 @@ import org.kevoree.impl.DefaultKevoreeFactory
 
 class BootstrapHelper {
 
-  val logger = LoggerFactory.getLogger(this.getClass)
+    val logger = LoggerFactory.getLogger(this.javaClass)!!
 
-  val factory = new DefaultKevoreeFactory
+    val factory = DefaultKevoreeFactory()
 
-  def initModelInstance(model: ContainerRoot, defType: String, defGroupType: String,nodeName : String) {
-
-       if (!model.getNodes.exists(n => n.getName == nodeName)) {
-         //CREATE DEFAULT
-         model.getTypeDefinitions.find(td => td.getName == defType) match {
-           case Some(typeDefFound) => {
-             logger.warn("Init default node instance for name " + nodeName)
-             val node = factory.createContainerNode
-             node.setName(nodeName)
-             node.setTypeDefinition(typeDefFound)
-             model.addNodes(node)
-
-             model.getTypeDefinitions.find(td => td.getName == defGroupType) match {
-               case Some(groupDef)=> {
-                 val group = factory.createGroup
-                 group.setTypeDefinition(groupDef)
-                 group.setName("sync")
-                 group.setSubNodes(List(node))
-                 model.addGroups(group)
-               }
-               case None => logger.error("Default group type not found for name " + defGroupType)
-             }
+    fun initModelInstance(model: ContainerRoot, defType: String, defGroupType: String, nodeName: String) {
 
 
-           }
-           case None => logger.error("Default node type not found for name " + defType)
-         }
+        val nodeFound = model.findNodesByID(nodeName)
+        if(nodeFound != null){
+            val td = model.findTypeDefinitionsByID(defType)
+            if(td != null){
+                logger.warn("Init default node instance for name " + nodeName)
+                val node = factory.createContainerNode()
+                node.setName(nodeName)
+                node.setTypeDefinition(td)
+                model.addNodes(node)
 
+                val gtd = model.findTypeDefinitionsByID(defGroupType)
+                if(gtd != null){
+                    val group = factory.createGroup()
+                    group.setTypeDefinition(gtd)
+                    group.setName("sync")
+                    group.addSubNodes(node)
+                    model.addGroups(group)
+                } else {
+                    logger.error("Default group type not found for name " + defGroupType)
+                }
 
-       }
-     }
-
+            } else {
+                logger.error("Default node type not found for name " + defType)
+            }
+        } else {
+            logger.error("Default node type not found for name " + defType)
+        }
+    }
 }

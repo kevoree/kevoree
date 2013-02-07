@@ -168,7 +168,7 @@ open class JCLContextHandler: KevoreeClassLoaderHandler {
         failedLinks.clear()
     }
 
-    protected fun installDeployUnitInternals(du: DeployUnit, file: File): KevoreeJarClassLoader {
+    open fun installDeployUnitInternals(du: DeployUnit, file: File): KevoreeJarClassLoader {
         val previousKCL = getKCLInternals(du)
         val res = if (previousKCL != null) {
             logger.debug("Take already installed {}", buildKEY(du))
