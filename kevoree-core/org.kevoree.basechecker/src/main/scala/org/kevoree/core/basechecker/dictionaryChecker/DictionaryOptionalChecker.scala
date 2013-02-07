@@ -17,7 +17,7 @@ import org.kevoree.api.service.core.checker.{CheckerViolation, CheckerService}
 import org.kevoree.framework.aspects.KevoreeAspects._
 import scala.collection.JavaConversions._
 import org.kevoree._
-import java.util
+
 
 /**
  * Created by IntelliJ IDEA.
@@ -27,87 +27,88 @@ import java.util
  */
 
 class DictionaryOptionalChecker extends CheckerService {
-  def check (model: ContainerRoot): java.util.List[CheckerViolation] = {
-    val violations: util.List[CheckerViolation] = new util.ArrayList[CheckerViolation]()
+  def check(model: ContainerRoot): java.util.List[CheckerViolation] = {
+    val violations: java.util.List[CheckerViolation] = new java.util.ArrayList[CheckerViolation]()
 
     model.getHubs.foreach {
       channel => checkInstance(channel, violations)
     }
+
     model.getGroups.foreach {
-      group =>checkInstance(group, violations)
+      group => checkInstance(group, violations)
     }
+
     model.getNodes.foreach {
-      node => {
+      node =>
         checkInstance(node, violations)
         node.getComponents.foreach {
-          component =>checkInstance(component, violations)
+          component => checkInstance(node, violations)
         }
-      }
     }
     violations
   }
 
-  def checkInstance(instance : Instance, violations : java.util.List[CheckerViolation]) {
-    instance.getTypeDefinition.getDictionaryType.map {
-      instDicType =>
-        var invalideErrorThrowed = false
-        instDicType.getAttributes.foreach {
-          dicAtt =>
-            if (!dicAtt.getOptional) {
-              val defaultValuePresent = instDicType.getDefaultValues.exists(dv => dv.getAttribute.getName == dicAtt.getName)
-              if (!defaultValuePresent) {
-                instance.getDictionary match {
-                  case Some(instDic) => {
-                    instDic.getValues.find(v => v.getAttribute.getName == dicAtt.getName) match {
-                      case None => {
-                        if (dicAtt.getFragmentDependant) {
-                          var nodeNames = List[String]()
-                          if (instance.isInstanceOf[Group]) {
-                            nodeNames = getChild(instance.asInstanceOf[Group])
-                          } else if (instance.isInstanceOf[Channel]) {
-                            nodeNames = getBounds(instance.asInstanceOf[Channel])
-                          }
-                          if (!nodeNames.isEmpty) {
-                            violations.add(throwsError(instance, Some(dicAtt), Some(dicAtt.getName)))
-                          }
-                        } else {
-                          violations.add(throwsError(instance, Some(dicAtt)))
+  def checkInstance(instance: Instance, violations: java.util.List[CheckerViolation]) {
+    if (instance.getTypeDefinition.getDictionaryType() != null) {
+      val instDicType = instance.getTypeDefinition.getDictionaryType()
+      var invalideErrorThrowed = false
+      instDicType.getAttributes.foreach {
+        dicAtt =>
+          if (!dicAtt.getOptional) {
+            val defaultValuePresent = instDicType.getDefaultValues.exists(dv => dv.getAttribute.getName == dicAtt.getName)
+            if (!defaultValuePresent) {
+              instance.getDictionary match {
+                case instDic: Dictionary => {
+                  instDic.getValues.find(v => v.getAttribute.getName == dicAtt.getName) match {
+                    case None => {
+                      if (dicAtt.getFragmentDependant) {
+                        var nodeNames = List[String]()
+                        if (instance.isInstanceOf[Group]) {
+                          nodeNames = getChild(instance.asInstanceOf[Group])
+                        } else if (instance.isInstanceOf[Channel]) {
+                          nodeNames = getBounds(instance.asInstanceOf[Channel])
                         }
+                        if (!nodeNames.isEmpty) {
+                          throwError(instance, Some(dicAtt), Some(dicAtt.getName), violations)
+                        }
+                      } else {
+                        throwError(instance, Some(dicAtt), None, violations)
                       }
-                      case Some(value) => {
-                        if (dicAtt.getFragmentDependant) {
-                          var nodeNames = List[String]()
-                          if (instance.isInstanceOf[Group]) {
-                            nodeNames = getChild(instance.asInstanceOf[Group])
-                          } else if (instance.isInstanceOf[Channel]) {
-                            nodeNames = getBounds(instance.asInstanceOf[Channel])
-                          }
+                    }
+                    case Some(value) => {
+                      if (dicAtt.getFragmentDependant) {
+                        var nodeNames = List[String]()
+                        if (instance.isInstanceOf[Group]) {
+                          nodeNames = getChild(instance.asInstanceOf[Group])
+                        } else if (instance.isInstanceOf[Channel]) {
+                          nodeNames = getBounds(instance.asInstanceOf[Channel])
+                        }
 
-                          nodeNames.foreach {
-                            name =>
-                              instDic.getValues.find(v => v.getAttribute.getName == dicAtt.getName && v.getTargetNode.isDefined && name == v.getTargetNode.get.getName && v.getValue != "") match {
-                                case None => violations.add(throwsError(instance, Some(dicAtt), Some(name)))
-                                case Some(v) =>
-                              }
-                          }
+                        nodeNames.foreach {
+                          name =>
+                            instDic.getValues.find(v => v.getAttribute.getName == dicAtt.getName && v.getTargetNode() != null && name == v.getTargetNode.getName() && v.getValue() != "") match {
+                              case None => throwError(instance, Some(dicAtt), Some(name), violations)
+                              case Some(v) =>
+                            }
                         }
                       }
                     }
                   }
-                  case None => {
-                    if (!invalideErrorThrowed) {
-                      violations.add(throwsError(instance, None))
-                      invalideErrorThrowed = true
-                    }
+                }
+                case null => {
+                  if (!invalideErrorThrowed) {
+                    throwError(instance, None, None, violations)
+                    invalideErrorThrowed = true
                   }
                 }
               }
             }
-        }
+          }
+      }
     }
   }
 
-  def throwsError (instance: Instance, odicAtt: Option[DictionaryAttribute], fragment: Option[String] = None): CheckerViolation = {
+  def throwError(instance: Instance, odicAtt: Option[DictionaryAttribute], fragment: Option[String] = None, violations: java.util.List[CheckerViolation]) {
     val checkViolation = new CheckerViolation
     odicAtt match {
       case Some(dicAtt) => {
@@ -123,11 +124,10 @@ class DictionaryOptionalChecker extends CheckerService {
     }
 
     checkViolation.setTargetObjects(List(instance))
-//    violations = violations ++ List(checkViolation)
-    checkViolation
+    violations.add(checkViolation)
   }
 
-  def getChild (instance: Group): List[String] = {
+  def getChild(instance: Group): List[String] = {
     var nodeNames = List[String]()
     instance.getSubNodes.foreach {
       node => nodeNames = nodeNames ++ List[String](node.getName)
@@ -135,11 +135,12 @@ class DictionaryOptionalChecker extends CheckerService {
     nodeNames
   }
 
-  def getBounds (instance: Channel): List[String] = {
+  def getBounds(instance: Channel): List[String] = {
     var nodeNames = List[String]()
     instance.getConnectedNode("").foreach {
       node => nodeNames = nodeNames ++ List[String](node.getName)
     }
     nodeNames
   }
+
 }
