@@ -87,6 +87,7 @@ public class KevoreeBootStrap {
 		}
 		try {
 			coreBean = new KevoreeCoreBean();
+            coreBean.setNodeName(System.getProperty("node.name"));
 
 			KevoreeJarClassLoader jcl = new KevoreeJarClassLoader();
            // jcl.setLazyLoad(true);
