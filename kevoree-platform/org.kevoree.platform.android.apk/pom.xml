@@ -230,7 +230,7 @@
                 <version>3.4.1</version>
                 <configuration>
                    <sdk>
-                        <platform>17</platform>
+                        <platform>15</platform>
                     </sdk>
                     <undeployBeforeDeploy>true</undeployBeforeDeploy>
                     <proguard>
