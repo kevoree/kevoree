@@ -39,7 +39,6 @@
  */
 package org.kevoree.platform.service
 
-import org.kevoree.tools.aether.framework.AetherUtil
 import java.util.jar.{JarEntry, JarFile}
 import java.util.Random
 import java.io._
@@ -86,10 +85,7 @@ object KevoreeServiceUpdate extends App {
           splittedUrl(2) = "LATEST"
         }
 
-
-
-
-        val modelJarFile = AetherUtil.resolveMavenArtifact(splittedUrl(1), splittedUrl(0), splittedUrl(2), repos)
+        val modelJarFile = AetherResolver.resolve(splittedUrl(1), splittedUrl(0), splittedUrl(2), repos)
         val jar: JarFile = new JarFile(modelJarFile)
         val entry: JarEntry = jar.getJarEntry("KEV-INF/lib.kev")
         if (entry != null) {
@@ -108,7 +104,7 @@ object KevoreeServiceUpdate extends App {
       case _@e => e.printStackTrace(); println("Unable to get model")
     }
 
-    val jarFile: File = AetherUtil.$instance.resolveMavenArtifact("org.kevoree.platform.standalone", "org.kevoree.platform", version, repos)
+    val jarFile: File = AetherResolver.resolve("org.kevoree.platform.standalone", "org.kevoree.platform", version, repos)
 
     if (jarFile.exists) {
       val p = Runtime.getRuntime.exec(Array[String]("cp", jarFile.getAbsolutePath, defaultLocation))
