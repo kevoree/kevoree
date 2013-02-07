@@ -12,9 +12,9 @@ import java.io.{InputStream}
  */
 object HelperModelSigned {
 
-  def loadSignedModelStream(input: InputStream): Array[Byte]= {
+  def loadSignedModelStream(input: InputStream): Array[Byte] = {
     val inputData: Array[Byte] = Stream.continually(input.read).takeWhile(-1 !=).map(_.toByte).toArray
-  inputData
+    inputData
   }
 
 }
