@@ -28,10 +28,12 @@ import scala.Option;
 public class CamelHTTPChannelMessage extends AbstractKevoreeCamelChannelType {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
+    protected int port;
 
     @Start
     @Override
     public void startCamelChannel() throws Exception {
+        port = parsePortNumber(getNodeName());
         super.startCamelChannel();
     }
 
@@ -44,7 +46,9 @@ public class CamelHTTPChannelMessage extends AbstractKevoreeCamelChannelType {
     @Update
     @Override
     public void updateCamelChannel() throws Exception {
-        super.updateCamelChannel();
+        if (!getDictionary().get("port").toString().equals(port + "")) {
+            super.updateCamelChannel();
+        }
     }
 
     @Override
@@ -69,7 +73,7 @@ public class CamelHTTPChannelMessage extends AbstractKevoreeCamelChannelType {
                 }
                 );
         try {
-            routeBuilder.from("http://0.0.0.0:" + parsePortNumber(getNodeName())).
+            routeBuilder.from("http://0.0.0.0:" + /*parsePortNumber(getNodeName())*/port).
                     process(new Processor() {
                         public void process(Exchange exchange) throws Exception {
                             exchange.getOut().setBody("No result is waiting");
@@ -107,7 +111,7 @@ public class CamelHTTPChannelMessage extends AbstractKevoreeCamelChannelType {
                 logger.warn("Attribute \"port\" of {} is not an Integer, Default value ({}) is returned", getName(), port);
             }
         } else {
-            logger.info("Attribute \"port\" of {} is not set for {}, Default value ({}) is returned", new String[] {getName(), nodeName, port + ""});
+            logger.info("Attribute \"port\" of {} is not set for {}, Default value ({}) is returned", new String[]{getName(), nodeName, port + ""});
         }
         return port;
     }

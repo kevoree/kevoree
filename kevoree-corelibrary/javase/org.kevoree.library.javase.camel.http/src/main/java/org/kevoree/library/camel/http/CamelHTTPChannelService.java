@@ -66,7 +66,7 @@ public class CamelHTTPChannelService extends CamelHTTPChannelMessage {
                 );
 
         try {
-            routeBuilder.from("http://0.0.0.0:" + parsePortNumber(getNodeName())).
+            routeBuilder.from("http://0.0.0.0:" + /*parsePortNumber(getNodeName())*/port).
                     process(new Processor() {
                         public void process(Exchange exchange) throws Exception {
                             // default behavior is round robin

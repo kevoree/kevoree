@@ -28,11 +28,13 @@ import scala.Option;
 public class CamelNetty extends AbstractKevoreeCamelChannelType {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
+    protected int port;
 
     /* found a solution to remobe */
     @Start
     @Override
     public void startCamelChannel() throws Exception {
+        port = parsePortNumber(getNodeName());
         super.startCamelChannel();
     }
 
@@ -45,7 +47,9 @@ public class CamelNetty extends AbstractKevoreeCamelChannelType {
     @Update
     @Override
     public void updateCamelChannel() throws Exception {
-        super.updateCamelChannel();
+        if (!getDictionary().get("port").toString().equals(port + "")) {
+            super.updateCamelChannel();
+        }
     }
 
     @Override
@@ -70,7 +74,7 @@ public class CamelNetty extends AbstractKevoreeCamelChannelType {
                 }
                 );
         try {
-            routeBuilder.from("netty:tcp://0.0.0.0:" + parsePortNumber(getNodeName()) + "?sync=true").
+            routeBuilder.from("netty:tcp://0.0.0.0:" + /*parsePortNumber(getNodeName())*/port + "?sync=true").
                     process(new Processor() {
                         public void process(Exchange exchange) throws Exception {
                             exchange.getOut().setBody("result Async TODO");
@@ -108,7 +112,7 @@ public class CamelNetty extends AbstractKevoreeCamelChannelType {
                 logger.warn("Attribute \"port\" of {} is not an Integer, Default value ({}) is returned", getName(), port);
             }
         } else {
-            logger.info("Attribute \"port\" of {} is not set for {}, Default value ({}) is returned", new String[] {getName(), nodeName, port + ""});
+            logger.info("Attribute \"port\" of {} is not set for {}, Default value ({}) is returned", new String[]{getName(), nodeName, port + ""});
         }
         return port;
     }

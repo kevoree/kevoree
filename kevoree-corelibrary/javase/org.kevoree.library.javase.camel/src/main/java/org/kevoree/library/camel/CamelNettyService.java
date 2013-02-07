@@ -55,7 +55,7 @@ public class CamelNettyService extends CamelNetty {
                 }
                 );
         try {
-            routeBuilder.from("netty:tcp://0.0.0.0:" + parsePortNumber(getNodeName()) + "?sync=true").
+            routeBuilder.from("netty:tcp://0.0.0.0:" + /*parsePortNumber(getNodeName())*/port + "?sync=true").
                     process(new Processor() {
                         public void process(Exchange exchange) throws Exception {
                             // default behavior is round robin
