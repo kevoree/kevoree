@@ -18,7 +18,7 @@ import channelchecker.BoundsChecker
 import cyclechecker.ComponentCycleChecker
 import dictionaryChecker.{DictionaryNetworkPortChecker, DictionaryOptionalChecker}
 import kevoreeVersionChecker.KevoreeVersionChecker
-import namechecker.{IdChecker, NameChecker}
+import namechecker.NameChecker
 import nodechecker.{NodeContainerChecker, NodeChecker}
 import org.kevoree.ContainerRoot
 import org.kevoree.api.service.core.checker.{CheckerViolation, CheckerService}
