@@ -37,7 +37,7 @@ import java.util.UUID
  * Time: 11:03
  */
 
-class UUIDModelImpl(val uuid: UUID, val model: ContainerRoot) : UUIDModel {
-  override fun getUUID(): UUID { return uuid }
-  override fun getModel(): ContainerRoot { return model }
+class UUIDModelImpl(val _uuid: UUID, val _model: ContainerRoot) : UUIDModel {
+  override fun getUUID(): UUID { return _uuid }
+  override fun getModel(): ContainerRoot { return _model }
 }
