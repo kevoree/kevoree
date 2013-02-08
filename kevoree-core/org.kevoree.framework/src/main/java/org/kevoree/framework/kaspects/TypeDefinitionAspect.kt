@@ -24,9 +24,9 @@ class TypeDefinitionAspect {
         }
 
         val updated = selfTD.getSuperTypes().any{ std ->
-            val superUpdate = pTD.getSuperTypes().find{ ostd -> std.getName() == ostd.getName() }
+            val superUpdate = pTD.findSuperTypesByID(std.getName())
             if(superUpdate != null){
-                isUpdated(superUpdate, pTD)
+                isUpdated(superUpdate, std)
             } else {
                 true
             }
