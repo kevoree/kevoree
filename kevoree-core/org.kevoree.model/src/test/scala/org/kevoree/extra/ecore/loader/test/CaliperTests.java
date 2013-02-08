@@ -86,7 +86,7 @@ public class CaliperTests extends SimpleBenchmark {
     @Test
     public void caliperTest() {
         Runner.main(CaliperTests.class,new String[0]);
-        Runner.MeasurementResults
+        //Runner.MeasurementResults
     }
 
 }

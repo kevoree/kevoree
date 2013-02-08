@@ -29,45 +29,49 @@ import java.util.List;
  */
 public class PutHelper {
 
-       private static Logger logger = LoggerFactory.getLogger(PutHelper.class);
+    private static Logger logger = LoggerFactory.getLogger(PutHelper.class);
 
-    public static class GetParams{
+    public static class GetParams {
         public String unitParam = null;
         public Double duration = null;
         public String durationUnit = null;
         public Integer number = null;
         public String metricTypeClazzName = null;
 
-        public GetParams setMetricTypeClazzName(String p){
+        public GetParams setMetricTypeClazzName(String p) {
             metricTypeClazzName = p;
             return this;
         }
-        public GetParams setNumber(Integer p){
+
+        public GetParams setNumber(Integer p) {
             number = p;
             return this;
         }
-        public GetParams setdurationUnit(String p){
+
+        public GetParams setdurationUnit(String p) {
             durationUnit = p;
             return this;
         }
-        public GetParams setDuration(Double p){
+
+        public GetParams setDuration(Double p) {
             duration = p;
             return this;
         }
-        public GetParams setMetricTypeUnit(String p){
+
+        public GetParams setMetricTypeUnit(String p) {
             unitParam = p;
             return this;
         }
     }
 
-    public static GetParams getParam(){
+    public static GetParams getParam() {
         return new GetParams();
     }
 
-    private static String cleanName(String name2){
+    private static String cleanName(String name2) {
         String name = name2.trim();
-        if(name.startsWith("{") && name.endsWith("}") ){
-          name = name.substring(1,name.length()-1);
+        if (name.startsWith("{") && name.endsWith("}")) {
+            name = name.substring(1, name.length() - 1);
         }
         return name;
     }
@@ -76,19 +80,19 @@ public class PutHelper {
 
         List<String> paths = new ArrayList<String>();
         String pathR = path;
-        while(pathR.indexOf('/') != -1){
-            if(pathR.indexOf("{") == 0){
-                paths.add(pathR.substring(1,pathR.indexOf("}")));
-                pathR = pathR.substring(pathR.indexOf("}")+1);
-                pathR = pathR.substring(pathR.indexOf("/")+1);
+        while (pathR.indexOf('/') != -1) {
+            if (pathR.indexOf("{") == 0) {
+                paths.add(pathR.substring(1, pathR.indexOf("}")));
+                pathR = pathR.substring(pathR.indexOf("}") + 1);
+                pathR = pathR.substring(pathR.indexOf("/") + 1);
             } else {
-                paths.add(pathR.substring(0,pathR.indexOf('/')));
-                pathR = pathR.substring(pathR.indexOf('/')+1);
+                paths.add(pathR.substring(0, pathR.indexOf('/')));
+                pathR = pathR.substring(pathR.indexOf('/') + 1);
             }
         }
-        if(!pathR.equals("")){
-            if(pathR.indexOf("{") == 0){
-                paths.add(pathR.substring(1,pathR.indexOf("}")));
+        if (!pathR.equals("")) {
+            if (pathR.indexOf("{") == 0) {
+                paths.add(pathR.substring(1, pathR.indexOf("}")));
             } else {
                 paths.add(pathR);
             }
@@ -114,16 +118,16 @@ public class PutHelper {
             if (metric == null) {
                 if (DurationHistoryMetric.class.getName().equals(params.metricTypeClazzName)) {
                     metric = factory.createDurationHistoryMetric();
-                    if(params.duration != null){
-                        ((DurationHistoryMetric)metric).setDuration(params.duration);
+                    if (params.duration != null) {
+                        ((DurationHistoryMetric) metric).setDuration(params.duration);
                     }
-                    if(params.durationUnit != null){
-                        ((DurationHistoryMetric)metric).setDurationUnit(params.durationUnit);
+                    if (params.durationUnit != null) {
+                        ((DurationHistoryMetric) metric).setDurationUnit(params.durationUnit);
                     }
                 } else {
                     metric = factory.createCounterHistoryMetric();
-                    if(params.number != null){
-                        ((CounterHistoryMetric)metric).setNumber(params.number);
+                    if (params.number != null) {
+                        ((CounterHistoryMetric) metric).setNumber(params.number);
                     }
                 }
                 metric.setName(cleanName(paths.get(2)));
@@ -131,17 +135,27 @@ public class PutHelper {
             }
             return metric;
         } else {
-            logger.error("Can't parse parameter path "+paths.size()+"- path length "+paths+" must be 3");
+            logger.error("Can't parse parameter path " + paths.size() + "- path length " + paths + " must be 3");
             return null;
         }
     }
 
-    public static void addValue(Metric m, String value){
+    public static void addValue(Metric m, String value) {
         ContextFactory factory = new DefaultContextFactory();
         MetricValue valueMod = factory.createMetricValue();
         valueMod.setValue(value);
-        valueMod.setTimestamp(System.nanoTime()+"");
+        valueMod.setTimestamp(System.nanoTime() + "");
         m.addValues(valueMod);
+    }
+
+    public static void addValue(ContextRoot ctx, String path, String value) {
+        Metric m = (Metric) ctx.findByQuery(path);
+        ContextFactory factory = new DefaultContextFactory();
+        MetricValue valueMod = factory.createMetricValue();
+        valueMod.setValue(value);
+        valueMod.setTimestamp(System.nanoTime() + "");
+        m.addValues(valueMod);
+
     }
 
 

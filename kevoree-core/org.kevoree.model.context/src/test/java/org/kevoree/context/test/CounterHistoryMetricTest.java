@@ -47,10 +47,17 @@ public class CounterHistoryMetricTest {
         MetricValue mv = (MetricValue) model.findByQuery("perf/cpu/{node42}/last[]");
         assert (mv != null);
 
-        boolean comp2 = mv.buildQuery().toString().equals("context[perf]/types[cpu]/metrics[node42]/last["+mv.getTimestamp()+"]");
+        boolean comp2 = mv.buildQuery().equals("context[perf]/types[cpu]/metrics[node42]/last["+mv.getTimestamp()+"]");
         assert(comp2);
 
         PutHelper.getMetric(model,"perf/latency/{nodes[node0]/components[srv]}",PutHelper.getParam().setMetricTypeClazzName(CounterHistoryMetric.class.getName()).setNumber(100));
+
+
+        PutHelper.addValue(model,"perf/cpu/{node42}","1000");
+        MetricValue mv2 = (MetricValue) model.findByQuery("perf/cpu/{node42}/last[]");
+        assert (mv2.getValue().equals("1000"));
+
+
 
     }
 

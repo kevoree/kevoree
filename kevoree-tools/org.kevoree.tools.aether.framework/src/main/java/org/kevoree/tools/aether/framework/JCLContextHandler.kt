@@ -126,7 +126,7 @@ open class JCLContextHandler: KevoreeClassLoaderHandler {
 
     protected fun clearInternals() {
         logger.debug("Clear Internal")
-        for(key in kcl_cache.keySet()) {
+        for(key in ArrayList(kcl_cache.keySet())) {
             if (!lockedDu.contains(key)) {
                 if (kcl_cache.containsKey(key)) {
                     logger.debug("Remove KCL for {}", key)
