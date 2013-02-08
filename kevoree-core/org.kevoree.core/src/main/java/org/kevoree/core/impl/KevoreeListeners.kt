@@ -87,9 +87,9 @@ class KevoreeListeners {
         }
     }
 
-    fun removeListener(l: ModelListener) = {
+    fun removeListener(l: ModelListener) {
         if (scheduler != null) {
-            scheduler?.submit(RemoveListener(l))
+            scheduler!!.submit(RemoveListener(l))
         }
     }
 
@@ -111,7 +111,7 @@ class KevoreeListeners {
         }
     }
 
-    fun stop() = {
+    fun stop() {
         registeredListeners.clear()
         schedulerAsync?.shutdownNow()
         schedulerAsync = null
