@@ -398,7 +398,7 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
     private fun checkBootstrapNode(currentModel: ContainerRoot): Unit {
         try {
             if (nodeInstance == null) {
-                val foundNode = currentModel.findByQuery("nodes[" + getNodeName() + "]", javaClass<ContainerNode>())
+                val foundNode = currentModel.findNodesByID(getNodeName())
                 if(foundNode != null){
                     nodeInstance = _bootstraper?.bootstrapNodeType(currentModel, getNodeName(), this, _kevsEngineFactory!!)
                     if(nodeInstance!=null){
@@ -438,7 +438,7 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
 
     fun internal_update_model(proposedNewModel: ContainerRoot): Boolean {
 
-        if (proposedNewModel.findByQuery("nodes[" + getNodeName() + "]", javaClass<ContainerNode>()) == null) {
+        if (proposedNewModel.findNodesByID(getNodeName()) == null) {
             logger.error("Asking for update with a NULL model or node name ("+getNodeName()+") was not found in target model !")
             return false
         }
@@ -486,7 +486,7 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
                                }
                                //Executes the adaptation
                                val afterUpdateTest: ()->Boolean = {()-> true }
-                               val rootNode = newmodel.findByQuery("nodes[" + getNodeName() + "]", javaClass<ContainerNode>())
+                               val rootNode = newmodel.findNodesByID(getNodeName())
                                org.kevoree.framework.deploy.PrimitiveCommandExecutionHelper.execute(rootNode!!, adaptationModel, nodeInstance!!, afterUpdateTest, afterUpdateTest, afterUpdateTest)
                                nodeInstance?.stopNode()
                                //end of harakiri
@@ -524,7 +524,7 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
 
                            val preCmd = PreCommand(newmodel,modelListeners,model)
                            val postRollbackTest: ()->Boolean = {() -> modelListeners.postRollback(model, newmodel);true }
-                           val rootNode = newmodel.findByQuery("nodes[" + getNodeName() + "]", javaClass<ContainerNode>())!!
+                           val rootNode = newmodel.findNodesByID(getNodeName())!!
                            deployResult = org.kevoree.framework.deploy.PrimitiveCommandExecutionHelper.execute(rootNode, adaptationModel, nodeInstance!!, afterUpdateTest, preCmd.preRollbackTest, postRollbackTest)
                        } catch(e: Exception) {
                            logger.error("Error while update ", e)
