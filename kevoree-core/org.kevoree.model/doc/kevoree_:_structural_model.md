@@ -21,6 +21,14 @@ Select node DukeNode
 
 	nodes[DukeNode]
 	
+Select node DukeNode hosted on node IaaS ia3 
+
+	nodes[ia3]/subNodes[DukeNode]
+	
+Select component logger hosted on DukeNode, himself hosted on node IaaS ia3 
+
+	nodes[ia3]/subNodes[DukeNode]/components[logger]
+	
 Select any node beginning by Duke
 
 	nodes[{ name = Duke*}]
