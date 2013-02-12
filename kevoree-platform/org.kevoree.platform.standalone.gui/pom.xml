@@ -187,6 +187,7 @@
                         <option>-keep class org.slf4j.** { *; }</option>
                         <option>-keep class jet.** { *; }</option>
                         <option>-keep class kotlin.** { *; }</option>
+                        <option>-keep class fr.inria.** { *; }</option>
 
 
                         <option>-keep class org.logback.** { *; }</option> <!-- TODO check with François -->

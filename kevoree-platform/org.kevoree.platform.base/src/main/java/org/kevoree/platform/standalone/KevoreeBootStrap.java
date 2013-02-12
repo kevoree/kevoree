@@ -125,6 +125,7 @@ public class KevoreeBootStrap {
 					m.invoke(bootstraper, "scala-library", "org.scala-lang", "2.9.2", dummyKCL);
                     m.invoke(bootstraper, "kotlin-runtime", "org.jetbrains.kotlin", "0.4.297", dummyKCL);
                     m.invoke(bootstraper, "kotlin-stdlib", "org.jetbrains.kotlin", "0.4.297", dummyKCL);
+                    m.invoke(bootstraper, "fr.inria.jfilter", "jfilter-library", "1.3-SNAPSHOT", dummyKCL);
 
 					logger.debug("Manual Init Aether KCL");
 					m.invoke(bootstraper, "org.kevoree.tools.aether.framework", "org.kevoree.tools", factory.getVersion(), jcl);
