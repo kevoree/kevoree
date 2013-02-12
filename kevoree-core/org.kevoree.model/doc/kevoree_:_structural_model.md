@@ -4,9 +4,7 @@
 
 ## Overview
 
-This short documentation illustrate elements of Kevoree modelling layer.
-
-
+This short documentation illustrate elements of Kevoree modeling layer.
 
 
 ##Kevoree KMFQL
