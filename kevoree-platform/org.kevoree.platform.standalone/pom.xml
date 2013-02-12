@@ -53,6 +53,7 @@
                             <filters>
                                 <filter>
                                     <includes>
+                                        <include>fr.inria.jfilter:*</include>
                                         <include>org.slf4j:*</include>
                                         <include>ch.qos.logback:*</include>
                                         <include>org.kevoree</include>
