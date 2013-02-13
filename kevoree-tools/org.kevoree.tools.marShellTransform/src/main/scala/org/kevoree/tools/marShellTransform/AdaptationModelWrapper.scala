@@ -41,6 +41,17 @@ object AdaptationModelWrapper {
 
   def generateScriptFromAdaptModel(model: AdaptationModel): Script = {
     var statments = List[Statment]()
+
+    model.getAdaptations.foreach {
+      adapt =>
+        adapt.getPrimitiveType.getName match {
+          case JavaSePrimitive.AddDeployUnit => {
+            val du = adapt.getRef.asInstanceOf[DeployUnit]
+            statments = statments ++ List(MergeStatement("mvn:"+du.getGroupName+"/"+du.getUnitName+"/"+du.getVersion))
+          }
+          case _ =>
+        }
+    }
     model.getAdaptations.foreach {
       adapt =>
       adapt.getPrimitiveType.getName match {
@@ -103,6 +114,9 @@ object AdaptationModelWrapper {
               case _@uncatchInstance => logger.warn("uncatched=" + uncatchInstance)
             }
           }
+        case JavaSePrimitive.AddDeployUnit => {
+          //already catched
+        }
         case _@unCatched => logger.warn("uncatched=" + unCatched)
       }
 
