@@ -16,7 +16,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * 	http://www.gnu.org/licenses/lgpl-3.0.txt
+ * http://www.gnu.org/licenses/lgpl-3.0.txt
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -40,11 +40,10 @@
 package org.kevoree.platform.service
 
 import java.util.jar.{JarEntry, JarFile}
-import java.util.Random
 import java.io._
-import util.matching.Regex
 import java.net.URL
 import java.util
+import org.kevoree.framework.KevoreeXmiHelper
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -76,6 +75,8 @@ object KevoreeServiceUpdate extends App {
 
 
   if (getFromModel) {
+    var jar: JarFile = null
+    var entry: JarEntry = null
     try {
       // look if its a file, a http url or a mvn url
       if (model.startsWith("mvn:")) {
@@ -89,16 +90,45 @@ object KevoreeServiceUpdate extends App {
         val jar: JarFile = new JarFile(modelJarFile)
         val entry: JarEntry = jar.getJarEntry("KEV-INF/lib.kev")
         if (entry != null) {
-          model = convertStreamToString(jar.getInputStream(entry))
-          version = findVersionFromModel(model)
+          version = findVersionFromModel(jar.getInputStream(entry))
         }
       } else if (model.startsWith("http:")) {
         val url = new URL(model)
-        model = convertStreamToString(url.openConnection().getInputStream)
-        version = findVersionFromModel(model)
+        val in = new DataInputStream(url.openStream())
+        val file = File.createTempFile("modelFile", "")
+        val out = new FileOutputStream(file)
+
+        val bytes = new Array[Byte](2048)
+        var length = in.read(bytes)
+        while (length != -1) {
+          out.write(bytes, 0, length)
+          length = in.read(bytes)
+        }
+        in.close()
+        out.flush()
+        out.close()
+        try {
+          jar = new JarFile(file)
+          entry = jar.getJarEntry("KEV-INF/lib.kev")
+          version = findVersionFromModel(jar.getInputStream(entry))
+        } catch {
+          case _@e => {
+            // the file is not a JAR but a Kevoree model or a Kevoree script
+            version = findVersionFromModel(new FileInputStream(file))
+          }
+        }
+
       } else {
-         model = convertStreamToString(new FileInputStream(model))
-        version = findVersionFromModel(model)
+        try {
+          jar = new JarFile(new File(model))
+          entry = jar.getJarEntry("KEV-INF/lib.kev")
+          version = findVersionFromModel(jar.getInputStream(entry))
+        } catch {
+          case _@e => {
+            // the file is not a JAR but a Kevoree model or a Kevoree script
+            version = findVersionFromModel(new FileInputStream(new File(model)))
+          }
+        }
       }
     } catch {
       case _@e => e.printStackTrace(); println("Unable to get model")
@@ -112,39 +142,13 @@ object KevoreeServiceUpdate extends App {
     }
   }
 
-  private def convertStreamToString (inputStream: InputStream): String = {
-    val rand: Random = new Random
-    val temp: File = File.createTempFile("kevoreeloaderLib" + rand.nextInt, ".xmi")
-    temp.deleteOnExit()
-    val out = new ByteArrayOutputStream()
-    var read: Int = 0
-    val bytes: Array[Byte] = new Array[Byte](1024)
-    while ((({
-      read = inputStream.read(bytes);
-      read
-    })) != -1) {
-      out.write(bytes, 0, read)
-    }
-    inputStream.close()
-    new String(out.toByteArray, "UTF-8")
-  }
+  private def findVersionFromModel(stream: InputStream): String = {
+    val model = KevoreeXmiHelper.$instance.loadStream(stream)
 
-  private def findVersionFromModel (path: String): String = {
-    //<deployUnits type="jar" unitName="org.kevoree.framework" xsi:type="kevoree:DeployUnit" groupName="org.kevoree" version="1.7.1-SNAPSHOT" targetNodeType="//@typeDefinitions.17"></deployUnits>
-    val frameworkRegex = new
-        //Regex("<deployUnits targetNodeType=\"//@typeDefinitions.[0-9][0-9]*\" type=\".*\" version=\"(.*)\" unitName=\"org.kevoree.framework\" groupName=\"org.kevoree\" xsi:type=\"kevoree:DeployUnit\"></deployUnits>")
-        Regex("<deployUnits\\s(?:(?:(?:version=\"([^\\s]*)\")|(?:targetNodeType=\"//@typeDefinitions.[0-9][0-9]*\")|(?:type=\"[^\\s]*\")|(?:unitName=\"org.kevoree.framework\")|(?:groupName=\"org.kevoree\")|(?:xsi:type=\"kevoree:DeployUnit\"))(\\s)*){6}></deployUnits>")
-    var frameworkVersion = "LATEST"
-    path.lines.forall(l => {
-      val m = frameworkRegex.pattern.matcher(l)
-      if (m.find()) {
-        frameworkVersion = m.group(1)
-        false
-      } else {
-        true
-      }
-    })
-    println(frameworkVersion)
-    frameworkVersion
+    import scala.collection.JavaConversions._
+    model.getDeployUnits.find(dp => dp.getGroupName == "org.kevoree" && dp.getUnitName == "org.kevoree.framework") match {
+      case None => println("LATEST"); "LATEST"
+      case Some(deployUnit) => println(deployUnit.getVersion);deployUnit.getVersion
+    }
   }
 }

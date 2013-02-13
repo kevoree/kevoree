@@ -91,35 +91,11 @@
                     <maxMemory>1024m</maxMemory>
                     <proguardVersion>4.4</proguardVersion>
                     <options>
-
-                        <!-- <option>-keepattributes **</option>
-                    <option>
-                        -keep class * implements org.xml.sax.EntityResolver
-                        -keepclassmembers class * {
-                        ** MODULE$;
-                        }
-                        -keepclassmembernames class scala.concurrent.forkjoin.ForkJoinPool {
-                        long eventCount;
-                        int workerCounts;
-                        int runControl;
-                        scala.concurrent.forkjoin.ForkJoinPool$WaitQueueNode syncStack;
-                        scala.concurrent.forkjoin.ForkJoinPool$WaitQueueNode spareStack;
-                        }
-                        -keepclassmembernames class scala.concurrent.forkjoin.ForkJoinWorkerThread {
-                        int base;
-                        int sp;
-                        int runState;
-                        }
-                        -keepclassmembernames class scala.concurrent.forkjoin.ForkJoinTask {
-                        int status;
-                        }
-                        -keepclassmembernames class scala.concurrent.forkjoin.LinkedTransferQueue {
-                        scala.concurrent.forkjoin.LinkedTransferQueue$PaddedAtomicReference head;
-                        scala.concurrent.forkjoin.LinkedTransferQueue$PaddedAtomicReference tail;
-                        scala.concurrent.forkjoin.LinkedTransferQueue$PaddedAtomicReference cleanMe;
-                        }
-                    </option>
-                    <option>-keepnames class * implements java.io.Serializable</option>-->
+                        <option>-keep class jet.** { *; }</option>
+                        <option>-keep class kotlin.** { *; }</option>
+                        <option>-keep class org.kevoree.framework.** { *; }</option>
+                        <option>-keep class org.kevoree.** { *; }</option>
+                        <option>-keep public class org.kevoree.platform.service.KevoreeServiceUpdate { *; }</option>
                         <option>-dontnote</option>
                         <option>-dontskipnonpubliclibraryclasses</option>
                         <option>-dontskipnonpubliclibraryclassmembers</option>
@@ -129,13 +105,9 @@
                             Exceptions,InnerClasses,Signature,Deprecated,SourceFile,LineNumberTable,*Annotation*,EnclosingMethod
                         </option>
                         <option>-ignorewarnings</option>
-                        <option>-keep public class org.kevoree.platform.service.KevoreeServiceUpdate { *; }</option>
-                        <!-- <option>
-                            -keepclassmembers class *{
-                            static final % *;
-                            static final java.lang.String *;
-                            }
-                        </option>-->
+                        <option>
+                            -keepclassmembers class org.kevoree.framework.**
+                        </option>
                     </options>
                     <assembly>
                         <inclusions>
@@ -143,19 +115,14 @@
                                 <groupId>org.scala-lang</groupId>
                                 <artifactId>scala-library</artifactId>
                             </inclusion>
-                            <!--<inclusion>
-                                <groupId>org.kevoree</groupId>
-                                <artifactId>org.kevoree.model</artifactId>
-                                <filter>!metamodel/**</filter>
+                            <inclusion>
+                                <groupId>org.jetbrains.kotlin</groupId>
+                                <artifactId>kotlin-runtime</artifactId>
                             </inclusion>
                             <inclusion>
-                                <groupId>org.kevoree</groupId>
-                                <artifactId>org.kevoree.framework</artifactId>
+                                <groupId>org.jetbrains.kotlin</groupId>
+                                <artifactId>kotlin-stdlib</artifactId>
                             </inclusion>
-                            <inclusion>
-                                <groupId>org.kevoree</groupId>
-                                <artifactId>org.kevoree.api</artifactId>
-                            </inclusion>-->
                             <inclusion>
                                 <groupId>org.slf4j</groupId>
                                 <artifactId>slf4j-api</artifactId>
@@ -165,6 +132,18 @@
                                 <artifactId>slf4j-nop</artifactId>
                             </inclusion>
                             <inclusion>
+                                <groupId>fr.inria.jfilter</groupId>
+                                <artifactId>jfilter-library</artifactId>
+                            </inclusion>
+                            <inclusion>
+                                <groupId>org.kevoree</groupId>
+                                <artifactId>org.kevoree.framework</artifactId>
+                            </inclusion>
+                            <inclusion>
+                                <groupId>org.kevoree.tools</groupId>
+                                <artifactId>org.kevoree.tools.javase.framework</artifactId>
+                            </inclusion>
+                            <inclusion>
                                 <groupId>org.kevoree.tools</groupId>
                                 <artifactId>org.kevoree.tools.aether.framework.pack</artifactId>
                                 <filter>
@@ -172,6 +151,10 @@
                                     !org/apache/codec/**,
                                     !META-INF/**
                                 </filter>
+                            </inclusion>
+                            <inclusion>
+                                <groupId>org.kevoree</groupId>
+                                <artifactId>org.kevoree.model</artifactId>
                             </inclusion>
                         </inclusions>
                     </assembly>
