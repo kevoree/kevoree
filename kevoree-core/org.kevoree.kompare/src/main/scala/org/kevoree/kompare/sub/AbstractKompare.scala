@@ -16,7 +16,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * 	http://www.gnu.org/licenses/lgpl-3.0.txt
+ * http://www.gnu.org/licenses/lgpl-3.0.txt
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -38,19 +38,13 @@ import scala.collection.JavaConversions._
 trait AbstractKompare {
 
   var logger = LoggerFactory.getLogger(this.getClass)
-   /*
-  object UnreasolvedPrimitiveType extends org.kevoree.AdaptationPrimitiveType {
-      override def getName = "unresolvedPrimitiveType"
-  } */
 
   def getAdaptationPrimitive(typeName: String, model: ContainerRoot): AdaptationPrimitiveType = {
-    model.getAdaptationPrimitiveTypes.find(p => p.getName == typeName) match {
-      case Some(p) => p
-      case None => {
-        logger.debug("Error while searching for adaptation primitive type for name = {}", typeName)
-        null
-      }
+    val t = model.findAdaptationPrimitiveTypesByID(typeName)
+    if (t == null) {
+      logger.error("Warning Null Adaptation Primitive Type "+typeName)
     }
+    return t
   }
 
 }
