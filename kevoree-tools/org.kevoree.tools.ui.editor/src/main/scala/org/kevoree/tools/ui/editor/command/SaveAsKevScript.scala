@@ -39,6 +39,8 @@
  */
 package org.kevoree.tools.ui.editor.command
 
+import org.kevoree.cloner.ModelCloner
+import org.kevoree.tools.marShell.ast.MergeStatement
 import org.kevoree.tools.ui.editor.{ModelHelper, KevoreeUIKernel}
 import org.slf4j.LoggerFactory
 import org.kevoree.tools.marShellTransform.{KevScriptWrapper, AdaptationModelWrapper}
@@ -46,6 +48,7 @@ import org.kevoree.{DeployUnit, KevoreeFactory}
 import io.Source
 import java.io.{FileWriter, File}
 import scala.collection.JavaConversions._
+import collection.mutable
 
 
 /**
@@ -66,12 +69,24 @@ class SaveAsKevScript extends Command {
   val kompareBean = new org.kevoree.kompare.KevoreeKompareBean()
 
   def execute(p: AnyRef) {
-    val emptyModel = ModelHelper.kevoreeFactory.createContainerRoot
+
+    var alreadyGeneratedMergeStmt = List[String]()
+
+    val modelCloner = new ModelCloner()
+
+    val emptyModel = modelCloner.clone(kernel.getModelHandler.getActualModel)
+    emptyModel.removeAllHubs()
+    emptyModel.removeAllGroups()
+    emptyModel.removeAllNodes()
+    emptyModel.removeAllMBindings()
+    emptyModel.removeAllNodeNetworks()
+
     val currentModel = kernel.getModelHandler.getActualModel
 
     val scriptBuffer = new StringBuffer()
     scriptBuffer.append(" {\n")
 
+    /*
     val duS: scala.collection.mutable.HashSet[DeployUnit] = scala.collection.mutable.HashSet()
     currentModel.getTypeDefinitions.foreach {
       td =>
@@ -79,23 +94,41 @@ class SaveAsKevScript extends Command {
           du =>
             duS.add(du)
         }
-    }
+    }  */
 
     currentModel.getRepositories.foreach {
       repo =>
         scriptBuffer.append("addRepo \"" + repo.getUrl + "\"\n")
     }
 
+    /*
     duS.foreach {
-
       du => scriptBuffer.append("merge 'mvn:" + du.getGroupName + "/" + du.getUnitName + "/" + (if (du.getVersion == ModelHelper.kevoreeFactory.getVersion) {
         "{kevoree.version}"
       } else {
         du.getVersion
       }) + "'\n")
-    }
+    }*/
+
+
+
 
     currentModel.getNodes.foreach(n => {
+      val adapModel = kompareBean.kompare(emptyModel, currentModel, n.getName)
+      val script = AdaptationModelWrapper.generateScriptFromAdaptModel(adapModel)
+      //val planScript = KevScriptWrapper.miniPlanKevScript(script)
+      script.blocks.foreach {
+        b =>
+          b.l.filter(s => s.isInstanceOf[MergeStatement]).foreach {
+            s =>
+              if (!alreadyGeneratedMergeStmt.contains(s.getTextualForm)) {
+                alreadyGeneratedMergeStmt = alreadyGeneratedMergeStmt ++ List(s.getTextualForm)
+                scriptBuffer.append(s.getTextualForm + "\n")
+              }
+          }
+      }
+
+
       scriptBuffer.append("addNode " + n.getName + ":" + n.getTypeDefinition.getName + "\n")
       val dico = n.getDictionary
       if (dico != null) {
