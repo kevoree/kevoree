@@ -288,7 +288,7 @@ class MiniKloudForm(editor: KevoreeEditor, button: AbstractButton) {
     // add all JavaSE (or inherited) user nodes as child of the minicloud node
     nodes.foreach {
       node =>
-        if (minicloudNode.findHostsByID(node.getName) == null) {
+        if (minicloudNode == null || minicloudNode.findHostsByID(node.getName) == null) {
           kevEngine.addVariable("nodeName", node.getName)
           kevEngine.append("addChild {nodeName}@editor_node")
         }
