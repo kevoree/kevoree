@@ -42,7 +42,7 @@ trait TypeDefinitionProcessor {
 
   def defineAsSuperType[A<:TypeDefinition](child: TypeDefinition, parentName: String, parentType : Class[A]) {
     val model = LocalUtility.root
-    val parent = model.findByQuery("typeDefinitions[" + parentName + "]",parentType) match {
+    val parent = model.findByPath("typeDefinitions[" + parentName + "]",parentType) match {
       case foundTD : Any => foundTD
       case null => {
         val newTypeDef = parentType.getSimpleName match {
