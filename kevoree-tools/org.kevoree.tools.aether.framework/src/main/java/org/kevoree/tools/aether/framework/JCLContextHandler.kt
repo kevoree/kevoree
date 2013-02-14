@@ -252,7 +252,7 @@ open class JCLContextHandler: KevoreeClassLoaderHandler {
                     }
                 }
                 val toRemoveKCL = kcl_cache.get(key)
-                toRemoveKCL!!.unload()
+                toRemoveKCL?.unload()
                 kcl_cache.remove(key)
             }
             if (kcl_cache_file.containsKey(key)) {
@@ -294,7 +294,9 @@ open class JCLContextHandler: KevoreeClassLoaderHandler {
     }
 
     override fun removeDeployUnitClassLoader(du: DeployUnit?) {
-        pool.submit(REMOVE_DEPLOYUNIT(du!!)).get()
+        if(du != null){
+            pool.submit(REMOVE_DEPLOYUNIT(du)).get()
+        }
     }
 
 
@@ -305,7 +307,7 @@ open class JCLContextHandler: KevoreeClassLoaderHandler {
             try {
                 resolvedFile = res.resolve(du)
                 true
-            } catch(e:Exception) {
+            } catch(e: Exception) {
                 false
             }
         }
