@@ -45,7 +45,7 @@ case class KevsRemoveChildInterpreter(removeChild: RemoveChildStatment) extends 
 
   def interpret(context: KevsInterpreterContext): Boolean = {
     /*context.model.getNodes.find(node => node.getName == removeChild.childNodeName)*/
-    context.model.findByQuery("nodes[" + removeChild.childNodeName + "]", classOf[ContainerNode]) match {
+    context.model.findByPath("nodes[" + removeChild.childNodeName + "]", classOf[ContainerNode]) match {
       case null => logger.error("Unknown child name: {}\nThe node must already exist. Please check !", removeChild.childNodeName); false
       case child => {
         if (child.getHost != null && child.getHost.getName == removeChild.fatherNodeName) {

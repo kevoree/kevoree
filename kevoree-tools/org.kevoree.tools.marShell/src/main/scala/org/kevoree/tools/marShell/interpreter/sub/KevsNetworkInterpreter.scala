@@ -44,8 +44,8 @@ case class KevsNetworkInterpreter(networkStatement: NetworkPropertyStatement) ex
         nn.getInitBy.getName == currentNodeName && nn.getTarget.getName == targetNodeName
     }) getOrElse {
       val newNodeNetwork = context.kevoreeFactory.createNodeNetwork
-      var thisNode = actualModel.findByQuery("nodes[" + currentNodeName + "]", classOf[ContainerNode])
-      var targetNode = actualModel.findByQuery("nodes[" + targetNodeName + "]", classOf[ContainerNode])
+      var thisNode = actualModel.findByPath("nodes[" + currentNodeName + "]", classOf[ContainerNode])
+      var targetNode = actualModel.findByPath("nodes[" + targetNodeName + "]", classOf[ContainerNode])
 
       if (thisNode == null){
         val newnode = context.kevoreeFactory.createContainerNode

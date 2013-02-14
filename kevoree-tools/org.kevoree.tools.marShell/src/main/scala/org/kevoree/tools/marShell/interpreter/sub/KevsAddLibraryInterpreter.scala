@@ -40,7 +40,7 @@ case class KevsAddLibraryInterpreter(statment : AddLibraryStatment) extends Kevs
 
   def interpret(context : KevsInterpreterContext):Boolean={
 
-    context.model.findByQuery("libraries[" + statment.libraryName + "]", classOf[TypeLibrary]) match {
+    context.model.findByPath("libraries[" + statment.libraryName + "]", classOf[TypeLibrary]) match {
       case library:TypeLibrary =>  logger.warn("Library already exist");true
       case null => {
         val newLibrary = context.kevoreeFactory.createTypeLibrary

@@ -40,10 +40,10 @@ case class KevsRemoveComponentInstanceInterpreter(removeComponent: RemoveCompone
     //SEARCH NODE
     removeComponent.cid.nodeName match {
       case Some(nodeID) => {
-        context.model.findByQuery("nodes[" + nodeID + "]", classOf[ContainerNode]) match {
+        context.model.findByPath("nodes[" + nodeID + "]", classOf[ContainerNode]) match {
           case targetNode : ContainerNode => {
             //SEARCH COMPONENT
-            targetNode.findByQuery("components[" + removeComponent.cid.componentInstanceName + "]/", classOf[ComponentInstance]) match {
+            targetNode.findByPath("components[" + removeComponent.cid.componentInstanceName + "]/", classOf[ComponentInstance]) match {
               case targetComponent : ComponentInstance => deleteComponent(targetNode, targetComponent)
               case null => {
                 logger.error("Component not found " + removeComponent.cid.componentInstanceName)
