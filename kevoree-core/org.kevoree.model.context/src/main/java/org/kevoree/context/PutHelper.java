@@ -149,7 +149,7 @@ public class PutHelper {
     }
 
     public static void addValue(ContextRoot ctx, String path, String value) {
-        Metric m = (Metric) ctx.findByQuery(path);
+        Metric m = (Metric) ctx.findByPath(path);
         ContextFactory factory = new DefaultContextFactory();
         MetricValue valueMod = factory.createMetricValue();
         valueMod.setValue(value);
