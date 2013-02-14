@@ -48,7 +48,7 @@ trait GroupMerger extends Merger with DictionaryMerger{
   def mergeAllGroups(actualModel: ContainerRoot, modelToMerge: ContainerRoot) {
     modelToMerge.getGroups.foreach {
       group =>
-      val currentGroup = actualModel.findByQuery(group.buildQuery(),classOf[Group]) match {
+      val currentGroup = actualModel.findByPath(group.path(),classOf[Group]) match {
         case e: Group => {
           mergeDictionaryInstance(e,group)
           e
@@ -62,7 +62,7 @@ trait GroupMerger extends Merger with DictionaryMerger{
       val subNodeName =  (currentGroup.getSubNodes.toList ++ group.getSubNodes).toSet
       currentGroup.removeAllSubNodes()
       subNodeName.foreach{ subNode =>
-        actualModel.findByQuery(subNode.buildQuery(),classOf[ContainerNode]) match {
+        actualModel.findByPath(subNode.path(),classOf[ContainerNode]) match {
        // actualModel.getNodes.find(pnode => pnode.getName == subNode) match {
            case currentNode : ContainerNode => currentGroup.addSubNodes(currentNode)
            case null => logger.error("Unresolved node "+subNode+" in links for group => "+currentGroup.getName)
