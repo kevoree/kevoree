@@ -31,9 +31,9 @@ case class KevsAddComponentInstanceInterpreter(addCompo: AddComponentInstanceSta
     addCompo.cid.nodeName match {
       case Some(nodeID) => {
         //SEARCH NODE
-        context.model.findByQuery("nodes[" + nodeID + "]", classOf[ContainerNode]) match {
+        context.model.findByPath("nodes[" + nodeID + "]", classOf[ContainerNode]) match {
           case targetNode:ContainerNode => {
-            targetNode.findByQuery("components[" + addCompo.cid.componentInstanceName + "]", classOf[ComponentInstance]) match {
+            targetNode.findByPath("components[" + addCompo.cid.componentInstanceName + "]", classOf[ComponentInstance]) match {
               case previousComponent:ComponentInstance => {
                 logger.warn("Component already exist with name " + previousComponent.getName)
                 if (previousComponent.getTypeDefinition.getName == addCompo.typeDefinitionName) {
@@ -46,7 +46,7 @@ case class KevsAddComponentInstanceInterpreter(addCompo: AddComponentInstanceSta
               }
               case null => {
                 //SEARCH TYPE
-                context.model.findByQuery("typeDefinitions[" + addCompo.typeDefinitionName + "]", classOf[TypeDefinition]) match {
+                context.model.findByPath("typeDefinitions[" + addCompo.typeDefinitionName + "]", classOf[TypeDefinition]) match {
                   case typeDef:ComponentType => {
                     val componentDefinition = typeDef
                     val newcomponent = context.kevoreeFactory.createComponentInstance

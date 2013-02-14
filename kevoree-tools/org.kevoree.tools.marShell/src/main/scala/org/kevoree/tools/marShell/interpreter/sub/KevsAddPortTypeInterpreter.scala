@@ -33,7 +33,7 @@ case class KevsAddPortTypeInterpreter(self: AddPortTypeStatment) extends KevsAbs
 
   def interpret(context: KevsInterpreterContext): Boolean = {
     var success: Boolean = false
-    context.model.findByQuery("typeDefinitions[" + self.componentTypeName + "]", classOf[TypeDefinition]) match {
+    context.model.findByPath("typeDefinitions[" + self.componentTypeName + "]", classOf[TypeDefinition]) match {
       case e:TypeDefinition => {
         if (!e.isInstanceOf[ComponentType]) {
           logger.error("The type with name {} is not a ComponentType", self.componentTypeName)
@@ -59,7 +59,7 @@ case class KevsAddPortTypeInterpreter(self: AddPortTypeStatment) extends KevsAbs
             self.className = Some("org.kevoree.framework.MessagePort")
           }
           // find Class in model
-          context.model.findByQuery("typeDefinitions[" + self.className.get + "]", classOf[TypeDefinition]) match {
+          context.model.findByPath("typeDefinitions[" + self.className.get + "]", classOf[TypeDefinition]) match {
             case p:TypeDefinition =>
               portTypeRef.setRef(p.asInstanceOf[PortType])
               success = true

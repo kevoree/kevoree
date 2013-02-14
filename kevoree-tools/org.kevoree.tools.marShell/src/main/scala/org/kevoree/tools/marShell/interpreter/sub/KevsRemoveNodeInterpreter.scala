@@ -96,7 +96,7 @@ case class KevsRemoveNodeInterpreter(addN: RemoveNodeStatment) extends KevsAbstr
 
   def interpret(context: KevsInterpreterContext): Boolean = {
 
-    context.model.findByQuery("nodes[" + addN.nodeName + "]", classOf[ContainerNode]) match {
+    context.model.findByPath("nodes[" + addN.nodeName + "]", classOf[ContainerNode]) match {
       case targetNode: ContainerNode => {
         removeNode(targetNode, context)
       }

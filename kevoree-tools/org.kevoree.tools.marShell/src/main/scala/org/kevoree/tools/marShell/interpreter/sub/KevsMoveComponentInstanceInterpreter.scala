@@ -32,12 +32,12 @@ case class KevsMoveComponentInstanceInterpreter (moveComponent: MoveComponentIns
 
 		moveComponent.cid.nodeName match {
 			case Some(nodeID) => {
-        context.model.findByQuery("nodes[" + nodeID + "]", classOf[ContainerNode]) match {
+        context.model.findByPath("nodes[" + nodeID + "]", classOf[ContainerNode]) match {
 					case sourceNode:ContainerNode => {
 						//SEARCH COMPONENT
-            sourceNode.findByQuery("components[" + moveComponent.cid.componentInstanceName + "]", classOf[ComponentInstance]) match {
+            sourceNode.findByPath("components[" + moveComponent.cid.componentInstanceName + "]", classOf[ComponentInstance]) match {
 							case targetComponent:ComponentInstance => {
-                context.model.findByQuery("nodes[" + moveComponent.targetNodeName + "]", classOf[ContainerNode])match {
+                context.model.findByPath("nodes[" + moveComponent.targetNodeName + "]", classOf[ContainerNode])match {
 									case targetNode:ContainerNode => {
 										// look at all ports to get all channels and check attributes that are fragment dependent:
 										// look at the fragment for sourceNode

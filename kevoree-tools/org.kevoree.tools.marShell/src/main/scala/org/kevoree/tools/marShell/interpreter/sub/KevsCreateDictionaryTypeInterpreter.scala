@@ -32,7 +32,7 @@ case class KevsCreateDictionaryTypeInterpreter(stmt: CreateDictionaryTypeStatmen
 
 
   def interpret(context: KevsInterpreterContext) = {
-    context.model.findByQuery("typeDefinitions[" +stmt.typeName +"]", classOf[TypeDefinition])match {
+    context.model.findByPath("typeDefinitions[" +stmt.typeName +"]", classOf[TypeDefinition])match {
       case td : TypeDefinition => {
         if (td.getDictionaryType() == null) {
           val newdictionary = context.kevoreeFactory.createDictionaryType

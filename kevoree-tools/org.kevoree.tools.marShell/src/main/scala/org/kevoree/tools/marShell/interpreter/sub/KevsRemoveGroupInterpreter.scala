@@ -43,7 +43,7 @@ case class KevsRemoveGroupInterpreter(removeGroup: RemoveGroupStatment) extends 
   var logger = LoggerFactory.getLogger(this.getClass)
 
   def interpret(context: KevsInterpreterContext): Boolean = {
-    context.model.findByQuery("groups[" + removeGroup.groupName + "]", classOf[Group]) match {
+    context.model.findByPath("groups[" + removeGroup.groupName + "]", classOf[Group]) match {
       case target:Group => {
         context.model.removeGroups(target)
         true

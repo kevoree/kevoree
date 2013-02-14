@@ -41,7 +41,7 @@ case class KevsUpdateDictionaryInterpreter(statement: UpdateDictionaryStatement)
         if (nodeID == "*") {
           nodes = context.model.getNodes.toList
         } else {
-          val option = context.model.findByQuery("nodes[" + nodeID + "]", classOf[ContainerNode])
+          val option = context.model.findByPath("nodes[" + nodeID + "]", classOf[ContainerNode])
           if (option == null) {
             nodes = List()
           } else {
@@ -54,7 +54,7 @@ case class KevsUpdateDictionaryInterpreter(statement: UpdateDictionaryStatement)
             if (statement.instanceName == "*") {
               targetInstance = targetInstance ++ targetNode.getComponents.toList
             } else {
-              val option = context.model.findByQuery("nodes[" + nodeID + "]/components[" + statement.instanceName + "]", classOf[ComponentInstance])
+              val option = context.model.findByPath("nodes[" + nodeID + "]/components[" + statement.instanceName + "]", classOf[ComponentInstance])
               if (option != null) {
                 targetInstance = targetInstance ++ List(option)
               }
@@ -65,15 +65,15 @@ case class KevsUpdateDictionaryInterpreter(statement: UpdateDictionaryStatement)
         if (statement.instanceName == "*") {
           targetInstance = targetInstance ++ context.model.getHubs.toList ++ context.model.getGroups.toList ++ context.model.getNodes
         } else {
-          var option : Instance = context.model.findByQuery("hubs[" + statement.instanceName + "]", classOf[Channel])
+          var option : Instance = context.model.findByPath("hubs[" + statement.instanceName + "]", classOf[Channel])
           if (option != null) {
             targetInstance = targetInstance ++ List(option)
           }
-          option = context.model.findByQuery("groups[" + statement.instanceName + "]", classOf[Group])
+          option = context.model.findByPath("groups[" + statement.instanceName + "]", classOf[Group])
           if (option != null) {
             targetInstance = targetInstance ++ List(option)
           }
-          option = context.model.findByQuery("nodes[" + statement.instanceName + "]", classOf[ContainerNode])
+          option = context.model.findByPath("nodes[" + statement.instanceName + "]", classOf[ContainerNode])
           if (option != null) {
             targetInstance = targetInstance ++ List(option)
           }
