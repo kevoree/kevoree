@@ -31,6 +31,7 @@ import com.explodingpixels.widgets.PopupMenuCustomizer
 import command.{AddComponentTypeElementUICommand}
 import javax.swing.{JMenuItem, JPopupMenu, JSplitPane}
 import java.awt.event.{ActionEvent, ActionListener}
+import org.kevoree.impl.PortTypeRefInternal
 import org.slf4j.{LoggerFactory, Logger}
 import org.kevoree.tools.ui.framework.data.KevoreeSourceListItem
 import org.kevoree.{PortTypeRef, ComponentType, TypeDefinition}
@@ -108,7 +109,7 @@ class KevoreeTypeEditorSourceList(pane: JSplitPane, kernel: KevoreeUIKernel, typ
           if(kevObject != null) {
             logger.debug("KevoreeObject:" + kevObject)
             kevObject match {
-              case ptRef : PortTypeRef => {
+              case ptRef : PortTypeRefInternal => {
                 ptRef.setEContainer(null,null)
                 kernel.getEditorPanel.getTypeEditorPanel.refresh()
               }
