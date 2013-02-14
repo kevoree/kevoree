@@ -20,7 +20,7 @@ object KloudNetworkHelper {
 
   def selectIP(parentNodeName: String, kloudModel: ContainerRoot, alreadyUsedIps: ListBuffer[String]): Option[String] = {
     logger.debug("try to select an IP for a child of {}", parentNodeName)
-    kloudModel.findByQuery("nodes[" + parentNodeName + "]", classOf[ContainerNode]) match {
+    kloudModel.findByPath("nodes[" + parentNodeName + "]", classOf[ContainerNode]) match {
       case null => None
       case node: ContainerNode => {
         val subnetOption = KevoreePropertyHelper.getProperty(node, "subnet")

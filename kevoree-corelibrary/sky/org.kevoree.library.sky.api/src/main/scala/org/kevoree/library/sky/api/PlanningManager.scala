@@ -58,13 +58,13 @@ object PlanningManager {
       if (addNodeType == null) {
         logger.warn("there is no adaptation primitive for {}", HostNode.ADD_NODE)
       }
-      current.findByQuery("nodes[" + skyNode.getNodeName + "]", classOf[ContainerNode]) match {
+      current.findByPath("nodes[" + skyNode.getNodeName + "]", classOf[ContainerNode]) match {
         case node: ContainerNode => {
-          target.findByQuery("nodes[" + skyNode.getNodeName + "]", classOf[ContainerNode]) match {
+          target.findByPath("nodes[" + skyNode.getNodeName + "]", classOf[ContainerNode]) match {
             case node1: ContainerNode => {
               node.getHosts.foreach {
                 subNode =>
-                  node1.findByQuery("hosts[" + subNode.getName + "]", classOf[ContainerNode]) match {
+                  node1.findByPath("hosts[" + subNode.getName + "]", classOf[ContainerNode]) match {
                     case null => {
                       logger.debug("add a {} adaptation primitive with {} as parameter", Array[AnyRef](HostNode.REMOVE_NODE, subNode.getName))
                       val command: AdaptationPrimitive = factory.createAdaptationPrimitive
@@ -86,13 +86,13 @@ object PlanningManager {
         case null =>
       }
 
-      target.findByQuery("nodes[" + skyNode.getNodeName + "]", classOf[ContainerNode]) match {
+      target.findByPath("nodes[" + skyNode.getNodeName + "]", classOf[ContainerNode]) match {
         case node: ContainerNode => {
-          current.findByQuery("nodes[" + skyNode.getNodeName + "]", classOf[ContainerNode]) match {
+          current.findByPath("nodes[" + skyNode.getNodeName + "]", classOf[ContainerNode]) match {
             case node1: ContainerNode => {
               node.getHosts.foreach {
                 subNode =>
-                  node1.findByQuery("hosts[" + subNode.getName + "]", classOf[ContainerNode]) match {
+                  node1.findByPath("hosts[" + subNode.getName + "]", classOf[ContainerNode]) match {
                     case null => {
                       logger.debug("add a {} adaptation primitive with {} as parameter", Array[AnyRef](HostNode.ADD_NODE, subNode.getName))
                       val command: AdaptationPrimitive = factory.createAdaptationPrimitive

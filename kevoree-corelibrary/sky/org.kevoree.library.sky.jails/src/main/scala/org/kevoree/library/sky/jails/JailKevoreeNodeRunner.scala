@@ -29,7 +29,7 @@ class JailKevoreeNodeRunner(nodeName: String, iaasNode: JailNode) extends Kevore
 
   def startNode(iaasModel: ContainerRoot, childBootstrapModel: ContainerRoot): Boolean = {
     logger.debug("Starting " + nodeName)
-    iaasModel.findByQuery("nodes[" + iaasNode.getName + "]/hosts[" + nodeName + "]", classOf[ContainerNode]) match {
+    iaasModel.findByPath("nodes[" + iaasNode.getName + "]/hosts[" + nodeName + "]", classOf[ContainerNode]) match {
       case node: ContainerNode => {
         // looking for currently launched jail
         val result = processExecutor.listIpJails(nodeName)

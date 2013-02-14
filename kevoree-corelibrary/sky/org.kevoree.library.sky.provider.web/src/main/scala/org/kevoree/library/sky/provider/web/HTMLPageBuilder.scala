@@ -33,7 +33,7 @@ object HTMLPageBuilder {
               <li class="active">
                 <a href={pattern}>Home</a> <span class="divider">/</span>
               </li>
-            </ul>{val nodesList = model.findByQuery("nodes[" + nodeName + "]", classOf[ContainerNode]) match {
+            </ul>{val nodesList = model.findByPath("nodes[" + nodeName + "]", classOf[ContainerNode]) match {
             case null => List[ContainerNode]()
             case node: ContainerNode => node.getHosts.toList
           }
@@ -173,7 +173,7 @@ object HTMLPageBuilder {
                 {login}
               </a> <span class="divider">/</span>
               </li>
-            </ul>{val nodesList: List[ContainerNode] = model.findByQuery("groups[" + login + "]", classOf[Group]) match {
+            </ul>{val nodesList: List[ContainerNode] = model.findByPath("groups[" + login + "]", classOf[Group]) match {
             case null => List[ContainerNode]()
             case group: Group => group.getSubNodes.toList
           }
@@ -207,10 +207,10 @@ object HTMLPageBuilder {
                 </a>
               </li>
             </ul>{var result: List[scala.xml.Elem] = List()
-          model.findByQuery("nodes[" + parentNodeName + "]", classOf[ContainerNode]) match {
+          model.findByPath("nodes[" + parentNodeName + "]", classOf[ContainerNode]) match {
             case null =>
             case node: ContainerNode => {
-              node.findByQuery("hosts[" + nodeName + "]", classOf[ContainerNode]) match {
+              node.findByPath("hosts[" + nodeName + "]", classOf[ContainerNode]) match {
                 case null =>
                   result = result ++ List(
                     <div class="alert-message block-message error">
@@ -287,11 +287,11 @@ object HTMLPageBuilder {
               </li>
             </ul>{var result: List[scala.xml.Elem] = List()
           /*model.getNodes.find(n => n.getName == parentNodeName)*/
-          model.findByQuery("nodes[" + parentNodeName + "]", classOf[ContainerNode]) match {
+          model.findByPath("nodes[" + parentNodeName + "]", classOf[ContainerNode]) match {
             case null =>
             case node: ContainerNode => {
               /*node.getHosts.find(n => n.getName == nodeName)*/
-              node.findByQuery("hosts[" + nodeName + "]", classOf[ContainerNode]) match {
+              node.findByPath("hosts[" + nodeName + "]", classOf[ContainerNode]) match {
                 case null =>
                   result = result ++ List(
                     <div class="alert-message block-message error">

@@ -121,7 +121,7 @@ public class BasicGossiperGroup extends BasicGroup implements GossiperComponent 
 
     @Override
     public int parsePortNumber(String nodeName) {
-        Group groupOption = currentCacheModel.get().findByQuery("groups[" + getName() + "]", Group.class);
+        Group groupOption = currentCacheModel.get().findByPath("groups[" + getName() + "]", Group.class);
         int port = 8000;
         if (groupOption!=null) {
             Option<String> portOption = KevoreePropertyHelper.getProperty(groupOption, "port", true, nodeName);

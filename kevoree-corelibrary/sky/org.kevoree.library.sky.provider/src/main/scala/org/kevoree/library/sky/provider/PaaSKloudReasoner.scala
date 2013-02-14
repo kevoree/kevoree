@@ -30,7 +30,7 @@ object PaaSKloudReasoner extends KloudReasoner {
 
   def appendCreateGroupScript(iaasModel: ContainerRoot, id: String, nodeName: String, paasModel: ContainerRoot, kengine: KevScriptEngine) {
 
-    paasModel.findByQuery("groups[" + id + "]", classOf[Group]) match {
+    paasModel.findByPath("groups[" + id + "]", classOf[Group]) match {
       case null => {
         // if the paasModel doesn't contain a Kloud group, then we add a default one
         val ipOption = NetworkHelper.getAccessibleIP(KevoreePropertyHelper.getNetworkProperties(iaasModel, nodeName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP))
@@ -103,7 +103,7 @@ object PaaSKloudReasoner extends KloudReasoner {
 
   private def countSlaves(nodeName: String, iaasModel: ContainerRoot): Int = {
     /*iaasModel.getNodes.find(n => n.getName == nodeName)*/
-    iaasModel.findByQuery("nodes[" + nodeName + "]", classOf[ContainerNode]) match {
+    iaasModel.findByPath("nodes[" + nodeName + "]", classOf[ContainerNode]) match {
       case null => logger.warn("The node {} doesn't exist !", nodeName); Int.MaxValue
       case node: ContainerNode => {
         // TODO replace when the nature will be added and managed on the model
@@ -162,7 +162,7 @@ object PaaSKloudReasoner extends KloudReasoner {
 
   def releasePlatform(id: String, iaasModel: ContainerRoot, kengine: KevScriptEngine): Boolean = {
     /*iaasModel.getGroups.find(g => g.getName == id)*/
-    iaasModel.findByQuery("groups[" + id + "]", classOf[Group]) match {
+    iaasModel.findByPath("groups[" + id + "]", classOf[Group]) match {
       case null =>
       case group: Group => {
         group.getSubNodes.foreach {
@@ -205,7 +205,7 @@ object PaaSKloudReasoner extends KloudReasoner {
   }
 
   private def findChannel(componentName: String, portName: String, nodeName: String, model: ContainerRoot): Option[String] = {
-    model.findByQuery("nodes[" + nodeName + "]/components[" + componentName + "]", classOf[ComponentInstance]) match {
+    model.findByPath("nodes[" + nodeName + "]/components[" + componentName + "]", classOf[ComponentInstance]) match {
       case null => None
       case component: ComponentInstance =>
         component.getProvided.find(p => p.getPortTypeRef.getName == portName) match {
@@ -241,7 +241,7 @@ object PaaSKloudReasoner extends KloudReasoner {
 
     kengine addVariable("channelName", channelName)
     kengine addVariable("nodeName", nodeName)
-    model.findByQuery("hubs[" + channelName + "]", classOf[Channel]) match {
+    model.findByPath("hubs[" + channelName + "]", classOf[Channel]) match {
       case null => logger.warn("Unable to find channel '{}', unable to update its properties", channelName)
       case channel: Channel => {
         if (channel.getTypeDefinition.getName == "SocketChannel") {

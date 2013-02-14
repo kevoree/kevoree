@@ -102,7 +102,7 @@ public class IaaSKloudManagerTester extends AbstractComponentType implements Iaa
 
         kengine.append("merge 'mvn:org.kevoree.corelibrary.sky/org.kevoree.library.sky.api/1.9.0-SNAPSHOT'");
 
-        ContainerNode currentNode = getModelService().getLastModel().findByQuery("nodes[" + getNodeName() + "]", ContainerNode.class);
+        ContainerNode currentNode = getModelService().getLastModel().findByPath("nodes[" + getNodeName() + "]", ContainerNode.class);
         kengine.addVariable("logLevel", prefix + KevoreePropertyHelper.getProperty(currentNode, "logLevel", false, null).get());
 
         int nbNode = Integer.parseInt(getDictionary().get("nbNodes").toString());
@@ -126,7 +126,7 @@ public class IaaSKloudManagerTester extends AbstractComponentType implements Iaa
                 // check all nodes are available
                 ContainerRoot currentModel = getModelService().getLastModel();
                 for (ContainerNode node : model.getNodes()) {
-                    ContainerNode addedNode = currentModel.findByQuery(node.buildQuery(), ContainerNode.class);
+                    ContainerNode addedNode = currentModel.findByPath(node.path(), ContainerNode.class);
                     if (addedNode == null) {
                         logger.error("Node {} has not been added on the current model", node.getName());
                         check = false;
@@ -155,7 +155,7 @@ public class IaaSKloudManagerTester extends AbstractComponentType implements Iaa
                 // check all nodes are available on the local host node
                 ContainerRoot currentModel = getModelService().getLastModel();
                 for (ContainerNode node : model.getNodes()) {
-                    ContainerNode addedNode = currentModel.findByQuery(node.buildQuery(), ContainerNode.class);
+                    ContainerNode addedNode = currentModel.findByPath(node.path(), ContainerNode.class);
                     if (addedNode == null || (addedNode.getHost() != null && addedNode.getHost().getName().equals(getNodeName()))) {
                         logger.error("Node {} has not been added on the current model or on the local node {}", node.getName(), getNodeName());
                         check = false;
@@ -184,7 +184,7 @@ public class IaaSKloudManagerTester extends AbstractComponentType implements Iaa
                 // check all nodes are unavailable
                 ContainerRoot currentModel = getModelService().getLastModel();
                 for (ContainerNode node : model.getNodes()) {
-                    ContainerNode removedNode = currentModel.findByQuery(node.buildQuery(), ContainerNode.class);
+                    ContainerNode removedNode = currentModel.findByPath(node.path(), ContainerNode.class);
                     if (removedNode != null) {
                         logger.error("Node {} has not been removed on the current model", node.getName());
                         check = false;

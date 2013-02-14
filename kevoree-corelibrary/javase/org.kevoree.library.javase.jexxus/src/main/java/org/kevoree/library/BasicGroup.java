@@ -131,7 +131,7 @@ public class BasicGroup extends AbstractGroupType implements ConnectionListener 
         }
 
         int PORT = 8000;
-        Group groupOption = model.findByQuery("groups[" + getName() + "]", Group.class);
+        Group groupOption = model.findByPath("groups[" + getName() + "]", Group.class);
         if (groupOption!=null) {
             Option<String> portOption = KevoreePropertyHelper.getProperty(groupOption, "port", true, targetNodeName);
             if (portOption.isDefined()) {
@@ -169,7 +169,7 @@ public class BasicGroup extends AbstractGroupType implements ConnectionListener 
             ip = ipOption.get();
         }
         int PORT = 8000;
-        Group groupOption = model.findByQuery("groups[" + getName() + "]", Group.class);
+        Group groupOption = model.findByPath("groups[" + getName() + "]", Group.class);
         if (groupOption!=null) {
             Option<String> portOption = KevoreePropertyHelper.getProperty(groupOption, "port", true, targetNodeName);
             if (portOption.isDefined()) {
