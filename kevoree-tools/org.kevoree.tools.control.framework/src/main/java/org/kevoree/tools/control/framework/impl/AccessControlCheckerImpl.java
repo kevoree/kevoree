@@ -94,19 +94,19 @@ public class AccessControlCheckerImpl implements IAccessControlChecker
         //get the Kcontrol with our publickey
         for( ModelSignature modelsign: tuple_key_sign)
         {
-            KPublicKey kPublicKey  = controlRoot.findByQuery("keys["+modelsign.getKey()+"]",KPublicKey.class);
+            KPublicKey kPublicKey  = controlRoot.findByPath("keys["+modelsign.getKey()+"]",KPublicKey.class);
             try
             {
                 // todo we can do better
-                BigInteger exponent = new BigInteger(kPublicKey.get_key().split(":")[0]);
-                BigInteger modulus = new BigInteger(kPublicKey.get_key().split(":")[1]);
+                BigInteger exponent = new BigInteger(kPublicKey.getKey().split(":")[0]);
+                BigInteger modulus = new BigInteger(kPublicKey.getKey().split(":")[1]);
                 RSAPublicKey key = new RSAPublicKeyImpl(modulus,exponent);
 
                 // check signature of the model
                 if(HelperSignature.verifySignature(modelsign.getSignature(), key, signedModel.getSerialiedModel()))
                 {
-                    authorize_rules.addAll(kPublicKey.get_authorized());
-                    forbidden_rules.addAll(kPublicKey.get_forbidden());
+                    authorize_rules.addAll(kPublicKey.getAuthorized());
+                    forbidden_rules.addAll(kPublicKey.getForbidden());
                 }
             } catch (Exception e)
             {
@@ -130,7 +130,7 @@ public class AccessControlCheckerImpl implements IAccessControlChecker
                 // check in refused rules
                 for(KControlRule rule :forbidden_rules)
                 {
-                    Object ptr =   target_model.findByQuery( rule.getKElementQuery());
+                    Object ptr =   target_model.findByPath( rule.getKElementQuery());
                     System.out.println("getKElementQuery "+rule.getKElementQuery());
 
                     if( ptr instanceof TypeDefinition)
@@ -139,7 +139,7 @@ public class AccessControlCheckerImpl implements IAccessControlChecker
                         if(instance.getTypeDefinition().getName().equals(componentType.getName()))
                         {
                             /// check Matchers
-                            for(RuleMatcher m : rule.get_matcher())
+                            for(RuleMatcher m : rule.getMatcher())
                             {
                                 if(m.getPTypeQuery().equals(p.getPrimitiveType().getName())){
                                     found_in_refused_rules = true;
@@ -162,7 +162,7 @@ public class AccessControlCheckerImpl implements IAccessControlChecker
                     for(KControlRule rule :authorize_rules)
                     {
 
-                        Object ptr =   target_model.findByQuery(rule.getKElementQuery());
+                        Object ptr =   target_model.findByPath(rule.getKElementQuery());
 
                         if( ptr instanceof TypeDefinition)
                         {
@@ -172,7 +172,7 @@ public class AccessControlCheckerImpl implements IAccessControlChecker
                             if(instance.getTypeDefinition().getName().equals(componentType.getName())){
 
                                 /// check Matchers
-                                for(RuleMatcher m : rule.get_matcher())
+                                for(RuleMatcher m : rule.getMatcher())
                                 {
                                     if(m.getPTypeQuery().equals(p.getPrimitiveType().getName())){
                                         found_in_authorize_rules = true;
