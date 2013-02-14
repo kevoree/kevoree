@@ -107,7 +107,7 @@ class MiniKloudForm(editor: KevoreeEditor, button: AbstractButton) {
                 button.setDisabledIcon(previousIcon)
                 UIEventHandler.info("MiniKloud node Started !")
 
-                skyModel.findByQuery("nodes[" + minicloudName + "]/components[" + "webServer" + "]", classOf[ComponentInstance]) match {
+                skyModel.findByPath("nodes[" + minicloudName + "]/components[" + "webServer" + "]", classOf[ComponentInstance]) match {
                   case null =>
                   case component: ComponentInstance => {
                     val portOption = KevoreePropertyHelper.getProperty(component, "port")
