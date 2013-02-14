@@ -38,23 +38,25 @@ public class CounterHistoryMetricTest {
             PutHelper.addValue(cpuMetric, rand.nextLong() + "");
         }
 
-        Metric m = (Metric) model.findByQuery("perf/cpu/{node42}");
+        Metric m = (Metric) model.findByPath("perf/cpu/{node42}");
         assert((m.getValues().size() == 100));
 
-        boolean comp = m.buildQuery().equals("context[perf]/types[cpu]/metrics[node42]");
+        boolean comp = m.path().equals("context[perf]/types[cpu]/metrics[node42]");
         assert(comp);
 
-        MetricValue mv = (MetricValue) model.findByQuery("perf/cpu/{node42}/last[]");
+        MetricValue mv = (MetricValue) model.findByPath("perf/cpu/{node42}/last[]");
         assert (mv != null);
 
-        boolean comp2 = mv.buildQuery().equals("context[perf]/types[cpu]/metrics[node42]/last["+mv.getTimestamp()+"]");
+        System.out.println("path"+mv.path());
+
+        boolean comp2 = mv.path().equals("context[perf]/types[cpu]/metrics[node42]/last["+mv.getTimestamp()+"]");
         assert(comp2);
 
         PutHelper.getMetric(model,"perf/latency/{nodes[node0]/components[srv]}",PutHelper.getParam().setMetricTypeClazzName(CounterHistoryMetric.class.getName()).setNumber(100));
 
 
         PutHelper.addValue(model,"perf/cpu/{node42}","1000");
-        MetricValue mv2 = (MetricValue) model.findByQuery("perf/cpu/{node42}/last[]");
+        MetricValue mv2 = (MetricValue) model.findByPath("perf/cpu/{node42}/last[]");
         assert (mv2.getValue().equals("1000"));
 
 

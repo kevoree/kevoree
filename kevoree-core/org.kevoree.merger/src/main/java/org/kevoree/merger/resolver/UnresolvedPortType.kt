@@ -20,6 +20,7 @@ import org.kevoree.DictionaryType
 import org.kevoree.TypeDefinition
 import java.util.HashMap
 import org.kevoree.KevoreeContainer
+import org.kevoree.impl.PortTypeInternal
 
 /**
  * Created with IntelliJ IDEA.
@@ -27,7 +28,7 @@ import org.kevoree.KevoreeContainer
  * Date: 06/12/12
  * Time: 23:38
  */
-class UnresolvedPortType(val unresolvedPortName: String): PortType {
+class UnresolvedPortType(val unresolvedPortName: String): PortTypeInternal {
 
     override var _factoryBean: String = ""
     override var _bean: String = ""
