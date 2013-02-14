@@ -179,22 +179,6 @@ public class NioChannel extends AbstractChannelFragment {
 		if (ipOption.isDefined()) {
 			ip = ipOption.get();
 		}
-//		List<String> ips = KevoreePropertyHelper.getStringNetworkProperties(this.getModelService().getLastModel(), remoteNodeName,
-//				org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP());
-//
-//		String ip = "";
-//		for (String loopIP : ips) {
-//			if (loopIP.split(".").length == 4) {
-//				ip = loopIP;
-//			}
-//		}
-//
-//
-//		//String ip = KevoreePlatformHelper.getProperty(this.getModelService().getLastModel(), remoteNodeName,
-//		//        org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP());
-//		if ("".equals(ip)) {
-//			ip = "127.0.0.1";
-//		}
 		return ip;
 	}
 

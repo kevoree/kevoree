@@ -10,7 +10,6 @@ import org.slf4j.LoggerFactory;
  * User: duke
  * Date: 16/11/11
  * Time: 16:36
- * To change this template use File | Settings | File Templates.
  */
 public class NioServerHandler extends SimpleChannelUpstreamHandler {
 
@@ -24,6 +23,8 @@ public class NioServerHandler extends SimpleChannelUpstreamHandler {
 
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) {
+
+        //System.out.println("Remote Message Arrive !!!!");
 
         if (parentChannel.serverConnectedChannel.contains(e.getChannel())) {
             parentChannel.serverConnectedChannel.add(e.getChannel());
@@ -39,6 +40,9 @@ public class NioServerHandler extends SimpleChannelUpstreamHandler {
         if (!msg.getPassedNodes().contains(parentChannel.getNodeName())) {
             msg.getPassedNodes().add(parentChannel.getNodeName());
         }
+
+        //System.out.println("Remote Message Arrive "+msg);
+
         parentChannel.remoteDispatch(msg);
     }
 

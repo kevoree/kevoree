@@ -179,10 +179,10 @@ abstract class KevoreeNodeRunner(var nodeName: String) {
     }
     val logFile = logFolder + File.separator + nodeName + ".log"
     outFile = new File(logFile + ".out")
-    logger.debug("writing logs about {} on {}", Array[AnyRef](nodeName, outFile.getAbsolutePath))
+    logger.info("writing logs about {} on {}", Array[AnyRef](nodeName, outFile.getAbsolutePath))
     new Thread(new ProcessStreamFileLogger(process.getInputStream, outFile)).start()
     errFile = new File(logFile + ".err")
-    logger.debug("writing logs about {} on {}", Array[AnyRef](nodeName, errFile.getAbsolutePath))
+    logger.info("writing logs about {} on {}", Array[AnyRef](nodeName, errFile.getAbsolutePath))
     new Thread(new ProcessStreamFileLogger(process.getErrorStream, errFile)).start()
   }
 }
