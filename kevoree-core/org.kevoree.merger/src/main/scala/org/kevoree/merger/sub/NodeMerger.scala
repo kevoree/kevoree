@@ -50,7 +50,7 @@ trait NodeMerger extends ComponentInstanceMerger with DictionaryMerger {
 
   private def mergeNode(actualModel: ContainerRoot, nodeToMerge: ContainerNode) {
     //actualModel.getNodes.find(loopNode => loopNode.getName == nodeToMerge.getName) match {
-      actualModel.findByQuery(nodeToMerge.buildQuery(),classOf[ContainerNode]) match {
+      actualModel.findByPath(nodeToMerge.path(),classOf[ContainerNode]) match {
       case null => {
         actualModel.addNodes(nodeToMerge)
         mergeAllInstances(actualModel, nodeToMerge, nodeToMerge)
