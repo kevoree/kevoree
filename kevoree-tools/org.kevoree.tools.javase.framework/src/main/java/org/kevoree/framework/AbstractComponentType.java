@@ -106,6 +106,6 @@ public class AbstractComponentType extends AbstractTypeDefinition implements Com
      * @return the component instance corresponding to this
      */
     public ComponentInstance getModelElement() {
-        return getModelService().getLastModel().findByQuery("nodes[" + getNodeName() + "]/components[" + getName() + "]", ComponentInstance.class);
+        return getModelService().getLastModel().findByPath("nodes[" + getNodeName() + "]/components[" + getName() + "]", ComponentInstance.class);
     }
 }
