@@ -55,7 +55,7 @@ public class MonitoredJavaSENode extends JavaSENode implements MonitorEventHandl
     @Override
     public PrimitiveCommand getPrimitive(AdaptationPrimitive adaptationPrimitive) {
 
-        if(adaptationPrimitive.get_primitiveType().getName().equals(JavaSePrimitive.AddInstance())){
+        if(adaptationPrimitive.getPrimitiveType().getName().equals(JavaSePrimitive.AddInstance())){
                return new MonitoredAddInstance(this, (Instance)adaptationPrimitive.getRef(), getNodeName(), getModelService(), getKevScriptEngineFactory(), getBootStrapperService());
         } else {
             return super.getPrimitive(adaptationPrimitive);
