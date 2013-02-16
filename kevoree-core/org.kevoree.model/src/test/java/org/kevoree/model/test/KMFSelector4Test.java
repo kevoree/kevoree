@@ -39,16 +39,12 @@ public class KMFSelector4Test {
 
         System.out.println(model.getNodes().size());
 
-        for(ContainerNode n : model.getNodes()){
-           System.out.println(n.getComponents().size());
-        }
-
-
         //List<Object> result = model.selectByQuery("nodes[{components.name = *}]");
         List<Object> result = model.selectByQuery("nodes[{components.size=0}]");
         System.out.println("resultSize:"+result.size());
 
-
+        List<Object> result2 = model.selectByQuery("nodes[{components.name= Fake* }]");
+        System.out.println("resultSize:"+result2.size());
 
     }
 
