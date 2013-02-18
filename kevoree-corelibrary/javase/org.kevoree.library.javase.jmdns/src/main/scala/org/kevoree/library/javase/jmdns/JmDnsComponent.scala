@@ -29,18 +29,19 @@ import javax.jmdns.{ServiceInfo, ServiceEvent, JmDNS, ServiceListener}
  * Time: 17:42
  */
 
-class JmDnsComponent(group: AbstractGroupType, jmDNSListener : JmDNSListener, modelPort: Int, interface: InetAddress, val ipv4Only: Boolean = false) {
+class JmDnsComponent(group: AbstractGroupType, jmDNSListener: JmDNSListener, modelPort: Int, interface: InetAddress, val ipv4Only: Boolean = false) {
   val logger = LoggerFactory.getLogger(this.getClass)
   var serviceListener: ServiceListener = null
-  var jmdns : JmDNS = null
+  var jmdns: JmDNS = null
   final val REMOTE_TYPE: String = "_kevoree-remote._tcp.local."
   val nodeAlreadyDiscovered = new util.ArrayList[String]
 
   val factory = new DefaultKevoreeFactory
 
   def start() {
-    jmdns = JmDNS.create(interface, group.getNodeName + "." + interface.getAddress.toString)
-    logger.info("JmDNS listen on {}",interface.getAddress.toString)
+    //    initializeJmDNS()
+    jmdns = JmDNS.create(interface, group.getNodeName + "." + interface.getHostAddress)
+    logger.info("JmDNS listen on {}", interface.getHostAddress)
 
     serviceListener = new ServiceListener() {
 
@@ -53,7 +54,7 @@ class JmDnsComponent(group: AbstractGroupType, jmDNSListener : JmDNSListener, mo
 
       def serviceResolved(p1: ServiceEvent) {
         if (p1.getInfo.getSubtype == group.getName) {
-          logger.info("Node discovered: {} port: {}", Array[Object](p1.getInfo.getName, new Integer(p1.getInfo.getPort)))
+          logger.info("Node discovered: {} port: {}", Array[String](p1.getInfo.getName, new Integer(p1.getInfo.getPort).toString))
           addNodeDiscovered(p1.getInfo)
         }
       }
@@ -74,13 +75,12 @@ class JmDnsComponent(group: AbstractGroupType, jmDNSListener : JmDNSListener, mo
 
     new Thread() {
       override def run() {
-        val model = group.getModelService.getLastModel
         // register the local group fragment on jmdns
         val localServiceInfo: ServiceInfo = ServiceInfo.create(REMOTE_TYPE, group.getNodeName, group.getName, modelPort, "")
 
         val props = new util.HashMap[String, String](3)
         props.put("groupType", group.getModelElement.getTypeDefinition.getName)
-        props.put("nodeType", model.findNodesByID(group.getNodeName).getTypeDefinition.getName)
+        props.put("nodeType", group.getModelService.getLastModel.findNodesByID(group.getNodeName).getTypeDefinition.getName)
         localServiceInfo.setText(props)
 
         jmdns.registerService(localServiceInfo)
@@ -180,11 +180,11 @@ class JmDnsComponent(group: AbstractGroupType, jmDNSListener : JmDNSListener, mo
         logger.debug("List of discovered nodes <{}>", nodeAlreadyDiscovered.mkString(", "))
       }
     } else {
-      logger.error("Unable to get address or port from {} and {}", Array[Object](p1.getInetAddresses.mkString(","), new Integer(p1.getPort)))
+      logger.error("Unable to get address or port from {} and {}", Array[String](p1.getInetAddresses.mkString(","), new Integer(p1.getPort).toString))
     }
   }
 
-  private def updateModel(model: ContainerRoot) : Boolean = {
+  private def updateModel(model: ContainerRoot): Boolean = {
     var created: Boolean = false
     var i = 1
     while (!created) {
@@ -195,7 +195,7 @@ class JmDnsComponent(group: AbstractGroupType, jmDNSListener : JmDNSListener, mo
         created = true
       } catch {
         case e: Exception => {
-          logger.warn("Error while trying to update model due to {}, try number {}", Array[Object](e.getMessage, new Integer(i)))
+          logger.warn("Error while trying to update model due to {}, try number {}", Array[String](e.getMessage, new Integer(i).toString))
         }
       }
       if (i == 20) {
@@ -214,4 +214,22 @@ class JmDnsComponent(group: AbstractGroupType, jmDNSListener : JmDNSListener, mo
       addNodeDiscovered(ser)
     }
   }
+
+  /*private def initializeJmDNS() {
+    if (interface == "0.0.0.0") {
+      val interfaces: util.Enumeration[NetworkInterface] = NetworkInterface.getNetworkInterfaces
+      while (interfaces.hasMoreElements) {
+        val networkInterface: NetworkInterface = interfaces.nextElement
+        if (networkInterface.isUp) {
+          for (inetAddress <- networkInterface.getInetAddresses) {
+            jmdns = JmDNS.create(inetAddress, group.getNodeName + "." + inetAddress.getHostAddress)
+            logger.info("JmDNS listen on {}", inetAddress.getHostAddress)
+          }
+        }
+      }
+    } else {
+      jmdns = JmDNS.create(interface, group.getNodeName + "." + interface.getHostAddress)
+      logger.info("JmDNS listen on {}", interface.getHostAddress)
+    }
+  }*/
 }
