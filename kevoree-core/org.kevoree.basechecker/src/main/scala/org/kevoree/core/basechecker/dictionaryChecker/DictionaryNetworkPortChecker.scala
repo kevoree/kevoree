@@ -43,6 +43,7 @@ class DictionaryNetworkPortChecker extends CheckerService {
       hub =>
         instanceDCollect(model, hub, collectedPort)
     }
+
     model.getGroups.foreach {
       g =>
         instanceDCollect(model, g, collectedPort)
@@ -127,11 +128,11 @@ class DictionaryNetworkPortChecker extends CheckerService {
         nodePortCollector = new util.HashMap[String, Object]
         nodeCollector.put(portFound, nodePortCollector)
       }
-      if (ist.isInstanceOf[ComponentInstance]){
+      //if (ist.isInstanceOf[ComponentInstance]){
         nodePortCollector.put(nodeName+"."+ist.getName, ist)
-      } else {
-        nodePortCollector.put(nodeName, ist)
-      }
+      //} else {
+      //  nodePortCollector.put(nodeName, ist)
+     // }
     }
   }
 
