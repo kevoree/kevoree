@@ -1,29 +1,5 @@
-/**
- * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.gnu.org/licenses/lgpl-3.0.txt
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-/**
- * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.gnu.org/licenses/lgpl-3.0.txt
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+/*
+
 /**
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
  * you may not use this file except in compliance with the License.
@@ -70,8 +46,6 @@ object KevoreeServiceUpdate extends App {
   }
 
   var repos = new util.ArrayList[String]()
-  repos.add("http://maven.kevoree.org/snapshots/")
-  repos.add("http://maven.kevoree.org/release/")
 
 
   if (getFromModel) {
@@ -83,7 +57,11 @@ object KevoreeServiceUpdate extends App {
         val splittedUrl = model.substring("mvn:".length).split("/")
         if (splittedUrl(2) == "RELEASE") {
           //repos = List[String]("http://maven.kevoree.org/release/")
+          repos.add("http://maven.kevoree.org/release/")
           splittedUrl(2) = "LATEST"
+        } else {
+          repos.add("http://maven.kevoree.org/snapshots/")
+          repos.add("http://maven.kevoree.org/release/")
         }
 
         val modelJarFile = AetherResolver.resolve(splittedUrl(1), splittedUrl(0), splittedUrl(2), repos)
@@ -148,7 +126,7 @@ object KevoreeServiceUpdate extends App {
     import scala.collection.JavaConversions._
     model.getDeployUnits.find(dp => dp.getGroupName == "org.kevoree" && dp.getUnitName == "org.kevoree.framework") match {
       case None => println("LATEST"); "LATEST"
-      case Some(deployUnit) => println(deployUnit.getVersion);deployUnit.getVersion
+      case Some(deployUnit) => println(deployUnit.getVersion); deployUnit.getVersion
     }
   }
-}
+}*/
