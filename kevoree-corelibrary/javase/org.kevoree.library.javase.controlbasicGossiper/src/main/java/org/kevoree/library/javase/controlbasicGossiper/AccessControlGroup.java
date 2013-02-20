@@ -8,13 +8,16 @@ import jexxus.common.ConnectionListener;
 import jexxus.common.Delivery;
 import jexxus.server.Server;
 import jexxus.server.ServerConnection;
+import org.kevoree.AccessControl.*;
+import org.kevoree.AccessControl.impl.DefaultAccessControlFactory;
 import org.kevoree.ContainerNode;
 import org.kevoree.ContainerRoot;
 import org.kevoree.Group;
 import org.kevoree.Instance;
-import org.kevoree.KControlModel.KControlRule;
-import org.kevoree.adaptation.control.api.ControlException;
-import org.kevoree.adaptation.control.api.SignedModel;
+
+import org.kevoree.adaptation.accesscontrol.api.ControlException;
+
+import org.kevoree.adaptation.accesscontrol.api.SignedModel;
 import org.kevoree.annotation.*;
 import org.kevoree.framework.AbstractGroupType;
 import org.kevoree.framework.KevoreePropertyHelper;
@@ -22,12 +25,11 @@ import org.kevoree.framework.KevoreeXmiHelper;
 import org.kevoree.framework.NetworkHelper;
 import org.kevoree.kompare.JavaSePrimitive;
 import org.kevoree.library.NodeNetworkHelper;
-import org.kevoree.tools.control.framework.ControlFactory;
-import org.kevoree.tools.control.framework.api.IAccessControlChecker;
-import org.kevoree.tools.control.framework.command.CreateRulesCommand;
-import org.kevoree.tools.control.framework.command.CreateSignatureCommand;
-import org.kevoree.tools.control.framework.impl.SignedModelImpl;
-import org.kevoree.tools.control.framework.utils.HelperMatcher;
+
+import org.kevoree.tools.accesscontrol.framework.api.ICompareAccessControl;
+import org.kevoree.tools.accesscontrol.framework.impl.CompareAccessControlImpl;
+import org.kevoree.tools.accesscontrol.framework.impl.SignedModelImpl;
+import org.kevoree.tools.accesscontrol.framework.utils.HelperSignature;
 import org.kevoreeAdaptation.AdaptationPrimitive;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -81,8 +83,8 @@ public class AccessControlGroup extends AbstractGroupType implements ConnectionL
     protected boolean udp = false;
     boolean ssl = false;
     int port = -1;
+    private  AccessControlRoot root;
 
-    private  IAccessControlChecker accessControl;
 
 
     @Start
@@ -98,45 +100,76 @@ public class AccessControlGroup extends AbstractGroupType implements ConnectionL
         server.startServer();
         starting = true;
 
-           // todo
-        accessControl = ControlFactory.createAccessControlChecker();
 
-        BigInteger exponent = new BigInteger(getDictionary().get("public_exponent").toString());
-        BigInteger modulus = new BigInteger(getDictionary().get("modulus").toString());
-        RSAPublicKey default_key = new RSAPublicKeyImpl(modulus,exponent);
+        KeyPair key1 =  HelperSignature.generateKeys(1024);
+        DefaultAccessControlFactory factory = new DefaultAccessControlFactory();
+        root =  factory.createAccessControlRoot();
 
-        CreateRulesCommand rules = new CreateRulesCommand(default_key);
-        rules.setAccessControl(accessControl);
+        Role role1 = factory.createRole();
 
-
-        KControlRule r1 = rules.addAuthorizedMatcher("typeDefinitions[FakeConsole]");
-        r1.addMatcher(HelperMatcher.createMatcher(JavaSePrimitive.AddInstance()));
-        r1.addMatcher(HelperMatcher.createMatcher(JavaSePrimitive.StartInstance()));
-        r1.addMatcher(HelperMatcher.createMatcher(JavaSePrimitive.UpdateDictionaryInstance()));
-
-        KControlRule r2 = rules.addAuthorizedMatcher("typeDefinitions[BasicGroup]");
-        r2.addMatcher(HelperMatcher.createMatcher(JavaSePrimitive.AddInstance()));
-        r2.addMatcher(HelperMatcher.createMatcher(JavaSePrimitive.StopInstance()));
-        r2.addMatcher(HelperMatcher.createMatcher(JavaSePrimitive.StartInstance()));
-        r2.addMatcher(HelperMatcher.createMatcher(JavaSePrimitive.AddFragmentBinding()));
-        r2.addMatcher(HelperMatcher.createMatcher(JavaSePrimitive.UpdateDictionaryInstance()));
+        User user1 = factory.createUser();
+        user1.setModulus(((RSAPublicKey)key1.getPublic()).getModulus().toString());   //id
+        user1.setPublicExponent(((RSAPublicKey) key1.getPublic()).getPublicExponent().toString());
 
 
-        KControlRule r3 = rules.addAuthorizedMatcher("typeDefinitions[Grapher]");
-        r3.addMatcher(HelperMatcher.createMatcher(JavaSePrimitive.AddInstance()));
-        r3.addMatcher(HelperMatcher.createMatcher(JavaSePrimitive.StopInstance()));
-        r3.addMatcher(HelperMatcher.createMatcher(JavaSePrimitive.StartInstance()));
-        r3.addMatcher(HelperMatcher.createMatcher(JavaSePrimitive.AddFragmentBinding()));
-        r3.addMatcher(HelperMatcher.createMatcher(JavaSePrimitive.UpdateDictionaryInstance()));
 
-        KControlRule r4 = rules.addAuthorizedMatcher("typeDefinitions[NioChannel]");
-        r4.addMatcher(HelperMatcher.createMatcher(JavaSePrimitive.AddInstance()));
-        r4.addMatcher(HelperMatcher.createMatcher(JavaSePrimitive.StopInstance()));
-        r4.addMatcher(HelperMatcher.createMatcher(JavaSePrimitive.StartInstance()));
-        r4.addMatcher(HelperMatcher.createMatcher(JavaSePrimitive.AddFragmentBinding()));
-        r4.addMatcher(HelperMatcher.createMatcher(JavaSePrimitive.UpdateDictionaryInstance()));
+        root.addUsers(user1);
 
-        rules.execute();
+
+        Element element1 = factory.createElement();
+        element1.setElementQuery("typeDefinitions[FakeConsole]");
+
+        Permission p1 = factory.createPermission();
+        p1.setPrimitiveQuery(JavaSePrimitive.AddInstance());
+        Permission p2 = factory.createPermission();
+        p2.setPrimitiveQuery(JavaSePrimitive.StartInstance());
+        Permission p3 = factory.createPermission();
+        p3.setPrimitiveQuery(JavaSePrimitive.UpdateInstance());
+        Permission p4 = factory.createPermission();
+        p4.setPrimitiveQuery(JavaSePrimitive.StopInstance());
+        Permission p5 = factory.createPermission();
+        p5.setPrimitiveQuery(JavaSePrimitive.UpdateDictionaryInstance());
+        Permission p6 = factory.createPermission();
+        p6.setPrimitiveQuery(JavaSePrimitive.AddFragmentBinding());
+
+        element1.addPermissions(p1);
+        element1.addPermissions(p2);
+        element1.addPermissions(p3);
+        element1.addPermissions(p4);
+        element1.addPermissions(p5);
+
+        Element element2 = factory.createElement();
+        element2.setElementQuery("typeDefinitions[NioChannel]");
+
+
+        //element2.addPermissions(p1);
+        element2.addPermissions(p2);
+        element2.addPermissions(p3);
+        element2.addPermissions(p4);
+        element2.addPermissions(p5);
+        element2.addPermissions(p6);
+
+
+
+        Element element3 = factory.createElement();
+        element3.setElementQuery("typeDefinitions[Grapher]");
+        element3.addAllPermissions(HelperSignature.getGenericsPermissions());
+
+
+        Element element4 = factory.createElement();
+        element4.setElementQuery("typeDefinitions[BasicGroup]");
+        element4.addAllPermissions(HelperSignature.getGenericsPermissions());
+
+
+
+        role1.addElements(element1);
+        role1.addElements(element2);
+        role1.addElements(element3);
+        role1.addElements(element4);
+
+
+
+        user1.addRoles(role1);
 
     }
 
@@ -231,11 +264,6 @@ public class AccessControlGroup extends AbstractGroupType implements ConnectionL
             }
         }, ip, PORT, ssl);
 
-        SignedModel signedmodel = new SignedModelImpl(getModelService().getLastModel());
-        // create a signature
-        CreateSignatureCommand c = new CreateSignatureCommand();
-        c.setSignedModel(signedmodel);
-
         BigInteger exponent = new BigInteger(getDictionary().get("public_exponent").toString());
         BigInteger modulus = new BigInteger(getDictionary().get("modulus").toString());
         RSAPublicKey publicKey_default = new RSAPublicKeyImpl(modulus,exponent);
@@ -244,10 +272,7 @@ public class AccessControlGroup extends AbstractGroupType implements ConnectionL
         KeySpec spec =	  new RSAPrivateKeySpec(modulus, new BigInteger(getDictionary().get("private_exponent").toString()));
         RSAPrivateKey privateKey_default = (RSAPrivateKey) KeyFactory.getInstance("RSA").generatePrivate(spec);
 
-
-        KeyPair keypair =  new KeyPair(publicKey_default,privateKey_default);
-        c.setKey(keypair);
-        c.execute();
+        SignedModel signedmodel = new SignedModelImpl(getModelService().getLastModel(),privateKey_default);
 
 
         ObjectOutputStream oos= new ObjectOutputStream(output);
@@ -362,6 +387,7 @@ public class AccessControlGroup extends AbstractGroupType implements ConnectionL
                             SignedModelImpl       signedModel = (SignedModelImpl) ois.readObject();
                             ContainerRoot target_model = KevoreeXmiHelper.$instance.loadString(new String(signedModel.getSerialiedModel()));
 
+                            ICompareAccessControl accessControl =    new CompareAccessControlImpl(root);
                             List<AdaptationPrimitive> result =     accessControl.approval(getNodeName(), getModelService().getLastModel(), signedModel);
 
                             if(result.size() == 0)

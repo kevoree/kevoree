@@ -33,7 +33,7 @@
 
         <dependency>
             <groupId>org.kevoree.tools</groupId>
-            <artifactId>org.kevoree.tools.control.framework</artifactId>
+            <artifactId>org.kevoree.tools.accesscontrol.framework</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
 
