@@ -49,8 +49,8 @@ class KevoreeKompareBean
     val adaptationModelFactory = new org.kevoreeAdaptation.impl.DefaultKevoreeAdaptationFactory
     val adaptationModel = adaptationModelFactory.createAdaptationModel
     //STEP 0 - FOUND LOCAL NODE
-    val actualLocalNode = actualModel.findByQuery("nodes[" + nodeName + "]", classOf[ContainerNode])
-    val updateLocalNode = targetModel.findByQuery("nodes[" + nodeName + "]", classOf[ContainerNode])
+    val actualLocalNode = actualModel.findByPath("nodes[" + nodeName + "]", classOf[ContainerNode])
+    val updateLocalNode = targetModel.findByPath("nodes[" + nodeName + "]", classOf[ContainerNode])
     val currentAdaptModel = updateLocalNode match {
       case uln: ContainerNode => {
         actualLocalNode match {

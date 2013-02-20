@@ -32,18 +32,18 @@ case class KevsAddChildInterpreter(addChild: AddChildStatment) extends KevsAbstr
   val logger = LoggerFactory.getLogger(this.getClass)
 
   def interpret(context: KevsInterpreterContext): Boolean = {
-    context.model.findByQuery("nodes[" + addChild.childNodeName + "]", classOf[ContainerNode]) match {
+    context.model.findByPath("nodes[" + addChild.childNodeName + "]", classOf[ContainerNode]) match {
       case null => logger.error("child node: {}\nThe node must already exist. Please check !", addChild.childNodeName); false
       case child => {
-        context.model.findByQuery("nodes[" + addChild.fatherNodeName + "]", classOf[ContainerNode]) match {
+        context.model.findByPath("nodes[" + addChild.fatherNodeName + "]", classOf[ContainerNode]) match {
           case null => {
             logger.error("Unknown father name: {}\nThe node must already exist. Please check !", addChild.fatherNodeName)
             false
           }
           case father => {
-            father.findByQuery("hosts[" + child.getName + "]", classOf[ContainerNode]) match {
+            father.findByPath("hosts[" + child.getName + "]", classOf[ContainerNode]) match {
               case null => {
-                context.model.getNodes.find(n => n.findByQuery("hosts[" + child.getName + "]", classOf[ContainerNode]) != null) match {
+                context.model.getNodes.find(n => n.findByPath("hosts[" + child.getName + "]", classOf[ContainerNode]) != null) match {
                   case None => father.addHosts(child); true
                   case Some(f) => logger.error("The child {} has already a parent: {}", Array[AnyRef](child.getName, f.getName)); false
                 }

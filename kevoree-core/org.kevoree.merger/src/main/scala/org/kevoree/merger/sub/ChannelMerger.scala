@@ -48,7 +48,7 @@ trait ChannelMerger extends Merger with DictionaryMerger {
   def mergeAllChannels(actualModel: ContainerRoot, modelToMerge: ContainerRoot) {
     //MERGE CHANNEL
     modelToMerge.getHubs.foreach(hub => {
-      val currentHub = actualModel.findByQuery(hub.buildQuery(), classOf[Channel]) match {
+      val currentHub = actualModel.findByPath(hub.path(), classOf[Channel]) match {
         case e: Channel => {
           mergeDictionaryInstance(e, hub)
           e
@@ -62,9 +62,9 @@ trait ChannelMerger extends Merger with DictionaryMerger {
     //MERGE NEW BINDING
     modelToMerge.getMBindings.foreach {
       mb => {
-        val foundHub: Channel = actualModel.findByQuery(mb.getHub.buildQuery(), classOf[Channel])
+        val foundHub: Channel = actualModel.findByPath(mb.getHub.path(), classOf[Channel])
         if (foundHub != null) {
-          actualModel.findByQuery(mb.getPort.eContainer.eContainer.asInstanceOf[ContainerNode].buildQuery(), classOf[ContainerNode]) match {
+          actualModel.findByPath(mb.getPort.eContainer.eContainer.asInstanceOf[ContainerNode].path(), classOf[ContainerNode]) match {
             case foundNode: ContainerNode => {
               foundNode.getComponents.find(component => component.getName == mb.getPort.eContainer.asInstanceOf[ComponentInstance].getName) match {
                 case Some(foundComponent) => {

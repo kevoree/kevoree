@@ -81,4 +81,11 @@ class DictionaryTest extends BaseCheckerSuite {
     assert(res.isEmpty)
   }
 
+  @Test def checkChannelGroupPortNoConflictDetection () {
+    val modelPort = model("test_checker/dictionary/groupChannelConflict9000.kev")
+    val dChecker = new DictionaryNetworkPortChecker
+    val res = dChecker.check(modelPort)
+    assert(res.size().equals(1))
+  }
+
 }

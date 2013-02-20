@@ -24,7 +24,7 @@ import org.kevoree.framework.KevoreeXmiHelper
 object Tester extends App {
 
   val check = new RootChecker
-  val res =check.check(KevoreeXmiHelper.$instance.load("/Users/duke/Downloads/FRANCOIS"))
+  val res =check.check(KevoreeXmiHelper.$instance.load("/Users/duke/Documents/dev/dukeboard/kevoree/kevoree-core/org.kevoree.basechecker/src/test/resources/test_checker/networkChecker/groupChannelConflict9000.kev"))
 
   import scala.collection.JavaConversions._
   res.foreach{

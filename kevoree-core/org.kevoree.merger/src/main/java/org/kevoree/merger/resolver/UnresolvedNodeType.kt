@@ -35,6 +35,7 @@ import org.kevoree.DictionaryType
 import org.kevoree.TypeDefinition
 import java.util.ArrayList
 import org.kevoree.KevoreeContainer
+import org.kevoree.impl.NodeTypeInternal
 
 /**
  * Created by IntelliJ IDEA.
@@ -43,7 +44,7 @@ import org.kevoree.KevoreeContainer
  * Time: 10:28
  */
 
-class UnresolvedNodeType(val unresolvedNodeTypeName: String): NodeType {
+class UnresolvedNodeType(val unresolvedNodeTypeName: String): NodeTypeInternal {
     override var _managedPrimitiveTypes_java_cache: List<AdaptationPrimitiveType>? = null
     override val _managedPrimitiveTypes: HashMap<Any, AdaptationPrimitiveType> = HashMap<Any, AdaptationPrimitiveType>()
     override var _managedPrimitiveTypeRefs_java_cache: List<AdaptationPrimitiveTypeRef>? = null

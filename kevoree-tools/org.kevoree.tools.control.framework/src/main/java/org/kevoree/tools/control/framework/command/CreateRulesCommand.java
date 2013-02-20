@@ -58,7 +58,7 @@ public class CreateRulesCommand implements Command {
         if(!authorized_rules.containsKey(_kElementQuery))
         {
             rule = factory.createKControlRule();
-            rule.set_kElementQuery(_kElementQuery);
+            rule.setKElementQuery(_kElementQuery);
             authorized_rules.put(_kElementQuery,rule);
         }  else
         {
@@ -76,10 +76,10 @@ public class CreateRulesCommand implements Command {
         }
 
         KPublicKey currentPublicKey;
-        if( accessControl.getControlRoot().get_keys().keySet().contains(publicKey.getEncoded().toString()))
+        if( accessControl.getControlRoot().getKeys().contains(publicKey.getEncoded().toString()))
         {
             // already in model
-            currentPublicKey =  accessControl.getControlRoot().get_keys().get(publicKey.getEncoded().toString());
+            currentPublicKey =  accessControl.getControlRoot().findKeysByID(publicKey.getEncoded().toString());
         }else
         {
             //  no exist add
@@ -87,7 +87,7 @@ public class CreateRulesCommand implements Command {
             RSAPublicKey rsaPublicKey = (RSAPublicKey) publicKey;
             currentPublicKey = factory.createKPublicKey();
             // todo we can do better
-            currentPublicKey.set_key(rsaPublicKey.getPublicExponent()+":"+rsaPublicKey.getModulus());
+            currentPublicKey.setKey(rsaPublicKey.getPublicExponent()+":"+rsaPublicKey.getModulus());
             accessControl.getControlRoot().addKeys(currentPublicKey);
         }
 
@@ -107,7 +107,7 @@ public class CreateRulesCommand implements Command {
         StringBuilder  builder =new StringBuilder();
         for(String kElementQuery : authorized_rules.keySet()){
             builder.append("\n" + kElementQuery + " \n---->");
-            for(RuleMatcher r :       authorized_rules.get(kElementQuery).get_matcher()){
+            for(RuleMatcher r :       authorized_rules.get(kElementQuery).getMatcher()){
                 builder.append(r.getPTypeQuery()+",");
             }
         }

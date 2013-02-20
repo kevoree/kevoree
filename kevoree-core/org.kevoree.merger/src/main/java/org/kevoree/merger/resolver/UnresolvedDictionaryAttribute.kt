@@ -30,6 +30,7 @@ import org.kevoree.DictionaryAttribute
 import org.kevoree.KevoreeContainer
 import org.kevoree.TypedElement
 import java.util.HashMap
+import org.kevoree.impl.DictionaryAttributeInternal
 
 /**
  * Created by IntelliJ IDEA.
@@ -38,7 +39,7 @@ import java.util.HashMap
  * Time: 10:40
  */
 
-class UnresolvedDictionaryAttribute(val attributeName: String): DictionaryAttribute {
+class UnresolvedDictionaryAttribute(val attributeName: String): DictionaryAttributeInternal {
     override var internal_eContainer: KevoreeContainer? = null
     override var internal_readOnlyElem: Boolean = false
     override var internal_unsetCmd: (() -> Unit)? = null

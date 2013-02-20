@@ -65,23 +65,23 @@ public class KMFSelector3Test {
         }
         System.out.println((System.nanoTime() - beganS) / 1000);
         System.out.println(fConsole.getName());
-        System.out.println(model.findByQuery("nodes[node6]/hosts[node7]"));
+        System.out.println(model.findByPath("nodes[node6]/hosts[node7]"));
 
 
         assert (fConsole.getName().equals("FakeConso380"));
-        assert (fConsole.buildQuery().equals("nodes[node4]/components[FakeConso380]"));
+        assert (fConsole.path().equals("nodes[node4]/components[FakeConso380]"));
 
 
         long beganKMFQL = System.nanoTime();
-        ComponentInstance fConsole2 = (ComponentInstance) model.findByQuery("nodes[node6]/hosts[node7]/hosts[node8]/hosts[node4]/components[FakeConso380]");
+        ComponentInstance fConsole2 = (ComponentInstance) model.findByPath("nodes[node6]/hosts[node7]/hosts[node8]/hosts[node4]/components[FakeConso380]");
         System.out.println((System.nanoTime() - beganKMFQL) / 1000);
         System.out.println(fConsole2.getName());
 
         assert (fConsole2.getName().equals("FakeConso380"));
-        assert (fConsole2.buildQuery().equals("nodes[node4]/components[FakeConso380]"));
+        assert (fConsole2.path().equals("nodes[node4]/components[FakeConso380]"));
 
 
-        System.out.println(fConsole2.buildQuery());
+        System.out.println(fConsole2.path());
 
         List<Object> result = model.selectByQuery("typeDefinitions[{ &(name = *Node)(name = R*) }]");
         System.out.println("Result Size = " + result.size());

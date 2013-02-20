@@ -10,7 +10,9 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *//*
+
+
 package org.kevoree.platform.service;
 
 import org.kevoree.tools.aether.framework.AetherUtil;
@@ -18,12 +20,15 @@ import org.kevoree.tools.aether.framework.AetherUtil;
 import java.io.File;
 import java.util.List;
 
+*/
 /**
  * Created with IntelliJ IDEA.
  * User: duke
  * Date: 07/02/13
  * Time: 09:53
- */
+ *//*
+
+
 public class AetherResolver {
 
 
@@ -32,3 +37,4 @@ public class AetherResolver {
     }
 
 }
+*/

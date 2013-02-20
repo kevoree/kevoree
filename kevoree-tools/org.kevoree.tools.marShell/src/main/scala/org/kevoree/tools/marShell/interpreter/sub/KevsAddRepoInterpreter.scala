@@ -37,7 +37,7 @@ case class KevsAddRepoInterpreter(addRepo: AddRepoStatment) extends KevsAbstract
       logger.error("Empty Repository URL not allowed")
       false
     } else {
-      context.model.findByQuery("repositories[" + addRepo.url + "]", classOf[Repository]) match {
+      context.model.findByPath("repositories[" + addRepo.url + "]", classOf[Repository]) match {
         case r:Repository =>
         case null => {
           val repo = context.kevoreeFactory.createRepository

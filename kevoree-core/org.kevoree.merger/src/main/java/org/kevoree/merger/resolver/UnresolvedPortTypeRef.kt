@@ -31,6 +31,7 @@ import org.kevoree.KevoreeContainer
 import org.kevoree.PortType
 import org.kevoree.PortTypeMapping
 import java.util.ArrayList
+import org.kevoree.impl.PortTypeRefInternal
 
 /**
  * Created by IntelliJ IDEA.
@@ -39,7 +40,7 @@ import java.util.ArrayList
  * Time: 09:38
  */
 
-class UnresolvedPortTypeRef(val unresolvedPortName : String) : PortTypeRef {
+class UnresolvedPortTypeRef(val unresolvedPortName : String) : PortTypeRefInternal {
     override var internal_eContainer: KevoreeContainer? = null
     override var internal_unsetCmd: (() -> Unit)? = null
     override var internal_readOnlyElem: Boolean = false

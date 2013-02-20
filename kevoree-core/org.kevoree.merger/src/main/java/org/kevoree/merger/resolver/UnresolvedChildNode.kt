@@ -33,17 +33,10 @@ import org.kevoree.ComponentInstance
 import java.util.ArrayList
 import org.kevoree.TypeDefinition
 import org.kevoree.Dictionary
+import org.kevoree.impl.ContainerNodeInternal
 
-/**
- * User: Erwan Daubert - erwan.daubert@gmail.com
- * Date: 26/02/12
- * Time: 12:42
- *
- * @author Erwan Daubert
- * @version 1.0
- */
 
-class UnresolvedChildNode(val childName: String): ContainerNode {
+class UnresolvedChildNode(val childName: String): ContainerNodeInternal {
     override var _components_java_cache: List<ComponentInstance>? = null
     override val _components: HashMap<Any, ComponentInstance> = HashMap<Any, ComponentInstance>()
     override var _hosts_java_cache: List<ContainerNode>? = ArrayList<ContainerNode>()

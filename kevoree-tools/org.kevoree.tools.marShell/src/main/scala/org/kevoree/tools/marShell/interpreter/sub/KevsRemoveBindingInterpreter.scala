@@ -46,11 +46,11 @@ case class KevsRemoveBindingInterpreter(removeBinding: RemoveBindingStatment) ex
   def interpret(context: KevsInterpreterContext): Boolean = {
     removeBinding.cid.nodeName match {
       case Some(searchNodeName) => {
-        context.model.findByQuery("nodes[" + searchNodeName + "]", classOf[ContainerNode]) match {
+        context.model.findByPath("nodes[" + searchNodeName + "]", classOf[ContainerNode]) match {
           case targetNode:ContainerNode => {
-            targetNode.findByQuery("components[" + removeBinding.cid.componentInstanceName + "]", classOf[ComponentInstance]) match {
+            targetNode.findByPath("components[" + removeBinding.cid.componentInstanceName + "]", classOf[ComponentInstance]) match {
               case targetComponent:ComponentInstance => {
-                context.model.findByQuery("hubs[" + removeBinding.bindingInstanceName + "]", classOf[Channel]) match {
+                context.model.findByPath("hubs[" + removeBinding.bindingInstanceName + "]", classOf[Channel]) match {
                   case targetHub:Channel => {
                     val cports = targetComponent.getProvided.toList ++ targetComponent.getRequired.toList
                     cports.find(port => port.getPortTypeRef.getName == removeBinding.portName) match {

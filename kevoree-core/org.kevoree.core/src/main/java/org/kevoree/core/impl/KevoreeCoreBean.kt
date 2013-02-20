@@ -196,7 +196,7 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
                     val adaptationModel = nodeInstance!!.kompare(model, stopModel)
                     adaptationModel.setInternalReadOnly()
                     val afterUpdateTest: () -> Boolean = {() -> true }
-                    val rootNode = model.findByQuery("nodes[" + getNodeName() + "]", javaClass<ContainerNode>())!!
+                    val rootNode = model.findByPath("nodes[" + getNodeName() + "]", javaClass<ContainerNode>())!!
                     org.kevoree.framework.deploy.PrimitiveCommandExecutionHelper.execute(rootNode, adaptationModel, nodeInstance!!, afterUpdateTest, afterUpdateTest, afterUpdateTest)
                 } else {
                     logger.error("Unable to use the stopModel !")
@@ -367,7 +367,7 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
     private fun checkUnbootstrapNode(currentModel: ContainerRoot): ContainerRoot? {
         try {
             if (nodeInstance != null) {
-                val foundNode = currentModel.findByQuery("nodes[" + getNodeName() + "]", javaClass<ContainerNode>())
+                val foundNode = currentModel.findByPath("nodes[" + getNodeName() + "]", javaClass<ContainerNode>())
                 if(foundNode != null){
                     val modelTmp = modelCloner.clone(currentModel)!!
                     modelTmp.removeAllGroups()
