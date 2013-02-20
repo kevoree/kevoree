@@ -153,7 +153,7 @@ public class BasicGossiperChannel extends AbstractChannelFragment implements Mod
 
 	@Override
 	public int parsePortNumber (String nodeName) {
-        Channel channelOption = currentCacheModel.get().findByQuery("hubs[" + getName() + "]", Channel.class);
+        Channel channelOption = currentCacheModel.get().findByPath("hubs[" + getName() + "]", Channel.class);
         int port = 8000;
         if (channelOption!=null) {
             Option<String> portOption = KevoreePropertyHelper.getProperty(channelOption, "port", true, nodeName);

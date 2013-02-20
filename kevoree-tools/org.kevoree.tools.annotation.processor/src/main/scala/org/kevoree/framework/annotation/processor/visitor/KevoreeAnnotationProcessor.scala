@@ -158,7 +158,7 @@ class KevoreeAnnotationProcessor() extends javax.annotation.processing.AbstractP
 
     if (superTypeChecker.result) {
       val nodeTypeName = typeDecl.getSimpleName
-      val nodeType: org.kevoree.NodeType = root.findByQuery("typeDefinitions[" + nodeTypeName + "]", classOf[org.kevoree.NodeType]) match {
+      val nodeType: org.kevoree.NodeType = root.findByPath("typeDefinitions[" + nodeTypeName + "]", classOf[org.kevoree.NodeType]) match {
         case found : org.kevoree.NodeType => found
         case null => {
           val nodeType = LocalUtility.kevoreeFactory.createNodeType
@@ -198,7 +198,7 @@ class KevoreeAnnotationProcessor() extends javax.annotation.processing.AbstractP
 
     if (superTypeChecker.result && !isAbstract) {
       val groupName = typeDecl.getSimpleName
-      val groupType: org.kevoree.GroupType = root.findByQuery("typeDefinitions[" + groupName + "]", classOf[org.kevoree.GroupType]) match {
+      val groupType: org.kevoree.GroupType = root.findByPath("typeDefinitions[" + groupName + "]", classOf[org.kevoree.GroupType]) match {
         case null => {
           val groupType = LocalUtility.kevoreeFactory.createGroupType
           groupType.setName(groupName.toString)
@@ -240,7 +240,7 @@ class KevoreeAnnotationProcessor() extends javax.annotation.processing.AbstractP
 
     if (superTypeChecker.result && !isAbstract) {
       val channelName = typeDecl.getSimpleName
-      val channelType: org.kevoree.ChannelType = root.findByQuery("typeDefinitions[" + channelName + "]", classOf[org.kevoree.ChannelType]) match {
+      val channelType: org.kevoree.ChannelType = root.findByPath("typeDefinitions[" + channelName + "]", classOf[org.kevoree.ChannelType]) match {
         case null => {
           val channelType = LocalUtility.kevoreeFactory.createChannelType
           channelType.setName(channelName.toString)
@@ -285,7 +285,7 @@ class KevoreeAnnotationProcessor() extends javax.annotation.processing.AbstractP
 
     if (superTypeChecker.result && !isAbstract) {
       val componentName = typeDecl.getSimpleName
-      val componentType: org.kevoree.ComponentType = root.findByQuery("typeDefinitions[" + componentName + "]", classOf[org.kevoree.ComponentType]) match {
+      val componentType: org.kevoree.ComponentType = root.findByPath("typeDefinitions[" + componentName + "]", classOf[org.kevoree.ComponentType]) match {
         case null => {
           val componentType = LocalUtility.kevoreeFactory.createComponentType
           componentType.setName(componentName.toString)

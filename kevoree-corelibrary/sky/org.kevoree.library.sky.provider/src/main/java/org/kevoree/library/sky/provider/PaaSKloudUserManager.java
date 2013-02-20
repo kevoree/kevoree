@@ -49,7 +49,7 @@ public class PaaSKloudUserManager extends AbstractComponentType implements PaaSM
         logger.warn("[TIME] PaaSKloudManager receive model: {}", System.currentTimeMillis());
         // fails if the id already exist for a group on the IaaS model
 
-        Group nodeOption = getModelService().getLastModel().findByQuery("groups[" + id + "]", Group.class);
+        Group nodeOption = getModelService().getLastModel().findByPath("groups[" + id + "]", Group.class);
         /*for (Group g : getModelService().getLastModel().getGroupsForJ()) {
 			if (id.equals(g.getName())) {
 				throw new SubmissionException("Platform already exist");

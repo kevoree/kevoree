@@ -62,7 +62,7 @@ class IaaSKloudResourceManagerPageGenerator(instance: IaaSKloudResourceManagerPa
   private def addChild(request: KevoreeHttpRequest, response: KevoreeHttpResponse): KevoreeHttpResponse = {
     if (request.getMethod.equalsIgnoreCase("GET")) {
       val model = instance.getModelService.getLastModel
-      model.findByQuery("nodes[" + parentNodeName + "]", classOf[ContainerNode]) match {
+      model.findByPath("nodes[" + parentNodeName + "]", classOf[ContainerNode]) match {
         case null => {
           response.setStatus(500)
           response.setContent("Unable to find the IaaS node: " + parentNodeName)
@@ -99,7 +99,7 @@ class IaaSKloudResourceManagerPageGenerator(instance: IaaSKloudResourceManagerPa
     if (request.getResolvedParams.get("type") != null) {
       // find the corresponding node type
       val typeName = request.getResolvedParams.get("type")
-      instance.getModelService.getLastModel.findByQuery("typeDefinitions[" + typeName + "]", classOf[TypeDefinition]) match {
+      instance.getModelService.getLastModel.findByPath("typeDefinitions[" + typeName + "]", classOf[TypeDefinition]) match {
         case null => jsonresponse.key("code").value("-1").key("message").value("There is no type named " + typeName)
         case nodeType: TypeDefinition => {
           var mustBeAdded = true

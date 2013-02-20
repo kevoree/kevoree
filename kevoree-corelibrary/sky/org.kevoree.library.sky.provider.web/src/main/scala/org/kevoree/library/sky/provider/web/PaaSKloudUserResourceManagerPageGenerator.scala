@@ -46,7 +46,7 @@ class PaaSKloudUserResourceManagerPageGenerator(instance: KloudResourceManagerPa
 
   def getPaasUserPage(login: String, request: KevoreeHttpRequest, response: KevoreeHttpResponse): KevoreeHttpResponse = {
     // looking for the corresponding group
-    instance.getModelService.getLastModel.findByQuery("groups[" + login + "]", classOf[Group]) match {
+    instance.getModelService.getLastModel.findByPath("groups[" + login + "]", classOf[Group]) match {
       case group: Group =>
       case null => {
         // if it doesn't exist, we create it
@@ -94,7 +94,7 @@ class PaaSKloudUserResourceManagerPageGenerator(instance: KloudResourceManagerPa
     if (request.getResolvedParams.get("type") != null) {
       // find the corresponding node type
       val typeName = request.getResolvedParams.get("type")
-      instance.getModelService.getLastModel.findByQuery("typeDefinitions[" + typeName + "]", classOf[TypeDefinition]) match {
+      instance.getModelService.getLastModel.findByPath("typeDefinitions[" + typeName + "]", classOf[TypeDefinition]) match {
         case null => jsonresponse.key("code").value("-1").key("message").value("There is no type named " + typeName)
         case nodeType: TypeDefinition => {
           var mustBeAdded = true

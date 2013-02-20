@@ -62,7 +62,7 @@ public class BasicProbes extends AbstractComponentType implements Runnable {
         try {
             double cpuUsage = osBean.getSystemLoadAverage() / osBean.getAvailableProcessors();
             PutHelper.addValue(cpuMetric,cpuUsage+"");
-            Metric m = (Metric) getModelService().getContextModel().findByQuery("perf/cpu/{nodes[" + getNodeName() + "]}");
+            Metric m = (Metric) getModelService().getContextModel().findByPath("perf/cpu/{nodes[" + getNodeName() + "]}");
         } catch (Exception e){
             e.printStackTrace();
         }

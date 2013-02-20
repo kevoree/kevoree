@@ -27,7 +27,7 @@ case class KevsAddChannelInterpreter(addChannel: AddChannelInstanceStatment) ext
   var logger = LoggerFactory.getLogger(this.getClass);
 
   def interpret(context: KevsInterpreterContext): Boolean = {
-    context.model.findByQuery("hubs[" + addChannel.channelName + "]", classOf[Channel]) match {
+    context.model.findByPath("hubs[" + addChannel.channelName + "]", classOf[Channel]) match {
       case target : Channel => {
         logger.warn("Channel already exist with name " + addChannel.channelName)
         if (target.getTypeDefinition.getName == addChannel.channelType) {
@@ -40,7 +40,7 @@ case class KevsAddChannelInterpreter(addChannel: AddChannelInstanceStatment) ext
       }
       case null => {
         //SEARCH TYPE DEF
-        context.model.findByQuery("typeDefinitions[" + addChannel.channelType + "]", classOf[TypeDefinition]) match {
+        context.model.findByPath("typeDefinitions[" + addChannel.channelType + "]", classOf[TypeDefinition]) match {
           case targetChannelType : ChannelType if (targetChannelType.isInstanceOf[ChannelType]) => {
             val newchannel = context.kevoreeFactory.createChannel
             newchannel.setTypeDefinition(targetChannelType)

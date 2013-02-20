@@ -41,7 +41,7 @@ class PaaSKloudResourceManagerPageGenerator(instance: PaaSKloudResourceManagerPa
 
   def getPaasUserPage(login: String, request: KevoreeHttpRequest, response: KevoreeHttpResponse): KevoreeHttpResponse = {
     // looking for the corresponding group
-    instance.getModelService.getLastModel.findByQuery("groups[" + login + "]", classOf[Group]) match {
+    instance.getModelService.getLastModel.findByPath("groups[" + login + "]", classOf[Group]) match {
       case group: Group =>
       case null => {
         // if it doesn't exist, we create it

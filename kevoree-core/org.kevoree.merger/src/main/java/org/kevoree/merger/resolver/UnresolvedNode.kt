@@ -33,6 +33,7 @@ import org.kevoree.KevoreeContainer
 import org.kevoree.TypeDefinition
 import java.util.ArrayList
 import org.kevoree.Dictionary
+import org.kevoree.impl.ContainerNodeInternal
 
 /**
  * Created by IntelliJ IDEA.
@@ -41,7 +42,7 @@ import org.kevoree.Dictionary
  * Time: 08:40
  */
 
-class UnresolvedNode(val nodeName: String, val query: String): ContainerNode {
+class UnresolvedNode(val nodeName: String, val query: String): ContainerNodeInternal {
     override var _components_java_cache: List<ComponentInstance>? = null
     override val _components: HashMap<Any, ComponentInstance> = HashMap<Any, ComponentInstance>()
     override var _hosts_java_cache: List<ContainerNode>? = ArrayList<ContainerNode>()
@@ -59,7 +60,7 @@ class UnresolvedNode(val nodeName: String, val query: String): ContainerNode {
         return nodeName
     }
 
-    override fun buildQuery(): String {
+    override fun path(): String {
         return query
     }
 

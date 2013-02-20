@@ -45,7 +45,7 @@ case class KevsRemoveChannelInterpreter(removeChannel: RemoveChannelInstanceStat
 
   def interpret(context: KevsInterpreterContext): Boolean = {
     /*context.model.getHubs.find(n => n.getName.equals(removeChannel.channelName))*/
-    context.model.findByQuery("hubs[" + removeChannel.channelName + "]", classOf[Channel]) match {
+    context.model.findByPath("hubs[" + removeChannel.channelName + "]", classOf[Channel]) match {
       case target:Channel => {
         val root = target.eContainer.asInstanceOf[ContainerRoot]
         target.getBindings.foreach(rb => {

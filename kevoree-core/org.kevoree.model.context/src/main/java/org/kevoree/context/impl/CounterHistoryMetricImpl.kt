@@ -25,7 +25,7 @@ import java.util.Collections
  * Date: 10/12/12
  * Time: 21:16
  */
-class CounterHistoryMetricImpl: CounterHistoryMetric {
+class CounterHistoryMetricImpl: CounterHistoryMetric, CounterHistoryMetricInternal {
 
     override var internal_eContainer: ContextContainer? = null
     override var internal_unsetCmd: (()->Unit)? = null
@@ -50,7 +50,7 @@ class CounterHistoryMetricImpl: CounterHistoryMetric {
             ll.removeFirst()
         }
         ll.addLast(v)
-        v.setEContainer(this, {() -> { this.removeValues(v) } })
+        (v as MetricValueInternal).setEContainer(this, {() -> { this.removeValues(v) } })
         try {
             val sumE = java.lang.Double.parseDouble(v.getValue())
             setSum(getSum() + sumE)
@@ -61,7 +61,7 @@ class CounterHistoryMetricImpl: CounterHistoryMetric {
     override fun removeValues(values: MetricValue) {
         if (ll.size != 0 && ll.contains(values.getTimestamp())) {
             ll.remove(values.getTimestamp())
-            values.setEContainer(null, null)
+            (values as MetricValueInternal).setEContainer(null, null)
         }
     }
 
@@ -78,6 +78,8 @@ class CounterHistoryMetricImpl: CounterHistoryMetric {
     }
 
     override fun getLast(): MetricValue? {
+        println("Last !!")
+
         if (ll.isEmpty()) {
             return null
         } else {

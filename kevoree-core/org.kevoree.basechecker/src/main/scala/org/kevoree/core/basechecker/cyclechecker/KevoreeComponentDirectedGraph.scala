@@ -23,7 +23,7 @@ import scala.collection.JavaConversions._
 
 case class KevoreeComponentDirectedGraph(model: ContainerRoot, nodeName: String) extends DefaultDirectedGraph[Instance, MBinding](new KevoreeMBindingEdgeFactory(model)) {
 
-  model.findByQuery("nodes[" + nodeName + "]") match {
+  model.findByPath("nodes[" + nodeName + "]") match {
     case node : ContainerNode =>
       node.getComponents.foreach {
         componentInstance =>

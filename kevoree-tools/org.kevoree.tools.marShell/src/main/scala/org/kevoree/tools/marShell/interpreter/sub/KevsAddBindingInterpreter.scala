@@ -29,13 +29,13 @@ case class KevsAddBindingInterpreter(addBinding: AddBindingStatment) extends Kev
   def interpret(context: KevsInterpreterContext): Boolean = {
     addBinding.cid.nodeName match {
       case Some(searchNodeName) => {
-        context.model.findByQuery("nodes[" + addBinding.cid.nodeName.get + "]", classOf[ContainerNode]) match {
+        context.model.findByPath("nodes[" + addBinding.cid.nodeName.get + "]", classOf[ContainerNode]) match {
           //.getNodes.find(n => n.getName == addBinding.cid.nodeName.get) match {
           case node: ContainerNode =>
-            node.findByQuery("components[" + addBinding.cid.componentInstanceName + "]", classOf[ComponentInstance]) match {
+            node.findByPath("components[" + addBinding.cid.componentInstanceName + "]", classOf[ComponentInstance]) match {
               //getComponents.find(c => c.getName == addBinding.cid.componentInstanceName) match {
               case component: ComponentInstance =>
-                context.model.findByQuery("hubs[" + addBinding.bindingInstanceName + "]", classOf[Channel]) match {
+                context.model.findByPath("hubs[" + addBinding.bindingInstanceName + "]", classOf[Channel]) match {
                   case channel: Channel => {
                     val port = component.getProvided.find(p => p.getPortTypeRef.getName == addBinding.portName) match {
                       case Some(p) => p

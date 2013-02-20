@@ -37,7 +37,7 @@ public class WebbitServer extends AbstractComponentType {
     @Start
     public void start() throws ExecutionException, InterruptedException, MalformedURLException {
         server = WebServers.createWebServer(Integer.parseInt(getDictionary().get("port").toString())).add(new HelloWorldHttpHandler()).start().get();
-        latencyMetric = PutHelper.getMetric(getModelService().getContextModel(), "perf/latency/{"+getModelElement().buildQuery()+"}", PutHelper.getParam().setMetricTypeClazzName(CounterHistoryMetric.class.getName()).setNumber(1000));
+        latencyMetric = PutHelper.getMetric(getModelService().getContextModel(), "perf/latency/{"+getModelElement().path()+"}", PutHelper.getParam().setMetricTypeClazzName(CounterHistoryMetric.class.getName()).setNumber(1000));
         monitor = new SelfMonitor(new URL("http://localhost:"+getDictionary().get("port")),latencyMetric);
         t = Executors.newScheduledThreadPool(1);
         t.scheduleAtFixedRate(monitor,100,Integer.parseInt(getDictionary().get("period_check").toString()), TimeUnit.MILLISECONDS);

@@ -32,6 +32,7 @@ import java.util.HashMap
 import org.kevoree.DictionaryType
 import org.kevoree.DeployUnit
 import java.util.ArrayList
+import org.kevoree.impl.TypeDefinitionInternal
 
 /**
  * Created by IntelliJ IDEA.
@@ -40,7 +41,7 @@ import java.util.ArrayList
  * Time: 11:29
  */
 
-class UnresolvedTypeDefinition(val typeDefinitionName : String) : TypeDefinition {
+class UnresolvedTypeDefinition(val typeDefinitionName : String) : TypeDefinitionInternal {
     override var _name: String = ""
     override var internal_readOnlyElem: Boolean = false
     override var internal_unsetCmd: (() -> Unit)? = null

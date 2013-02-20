@@ -25,7 +25,7 @@ class LibVirtKvmKevoreeNodeRunner(nodeName: String, iaasNode: AbstractHostNode, 
     val domain = conn.domainLookupByName(iaasNode.getDictionary.get("defaultdomain").toString)
     val parser: Builder = new Builder
     val doc = parser.build(domain.getXMLDesc(0), null)
-    iaasModel.findByQuery("nodes[" + iaasNode.getName + "]/hosts[" + nodeName + "]", classOf[ContainerNode]) match {
+    iaasModel.findByPath("nodes[" + iaasNode.getName + "]/hosts[" + nodeName + "]", classOf[ContainerNode]) match {
       case node: ContainerNode => {
         // look for the hard drive disk, check if it is already in use and clone it if needed
         val diskOption = KevoreePropertyHelper.getProperty(node, "DISK")

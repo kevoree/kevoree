@@ -159,7 +159,6 @@ class SaveAsKevScript extends Command {
           if (localVals.size > 0) {
             scriptBuffer.append("updateDictionary " + g.getName + "{")
             scriptBuffer.append(localVals.map(v => v.getAttribute.getName + "=\"" + v.getValue + "\"").mkString(","))
-            scriptBuffer.append("}@\n")
           }
         }
 

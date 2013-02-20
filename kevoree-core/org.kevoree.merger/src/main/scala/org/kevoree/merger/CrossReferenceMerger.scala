@@ -52,9 +52,9 @@ trait CrossReferenceMerger {
       nn =>
         val initByNode = nn.getInitBy()
         if(initByNode != null) {
-            nn.setInitBy(new UnresolvedNode(initByNode.getName(),initByNode.buildQuery()))
+            nn.setInitBy(new UnresolvedNode(initByNode.getName(),initByNode.path()))
         }
-        nn.setTarget(new UnresolvedNode(nn.getTarget.getName,nn.getTarget.buildQuery()))
+        nn.setTarget(new UnresolvedNode(nn.getTarget.getName,nn.getTarget.path()))
     }
 
     //BREAK DEPLOY TARGET NODE TYPE
@@ -125,7 +125,7 @@ trait CrossReferenceMerger {
                 dictionaryValue.setAttribute(new UnresolvedDictionaryAttribute(dictionaryValue.getAttribute.getName))
                 val targetNode = dictionaryValue.getTargetNode()
                 if (targetNode != null){
-                    dictionaryValue.setTargetNode(new UnresolvedNode(targetNode.getName(),targetNode.buildQuery()))
+                    dictionaryValue.setTargetNode(new UnresolvedNode(targetNode.getName(),targetNode.path()))
                 }
             }
         }

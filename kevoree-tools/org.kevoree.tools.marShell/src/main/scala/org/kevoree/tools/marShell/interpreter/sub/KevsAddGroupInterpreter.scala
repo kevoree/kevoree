@@ -27,7 +27,7 @@ case class KevsAddGroupInterpreter(addGroup: AddGroupStatment) extends KevsAbstr
   var logger = LoggerFactory.getLogger(this.getClass)
 
   def interpret(context: KevsInterpreterContext): Boolean = {
-    context.model.findByQuery("groups[" + addGroup.groupName + "]", classOf[Group]) match {
+    context.model.findByPath("groups[" + addGroup.groupName + "]", classOf[Group]) match {
       case target:Group => {
         logger.warn("Group already exist with name " + addGroup.groupName)
         if (target.getTypeDefinition.getName == addGroup.groupTypeName) {
@@ -40,7 +40,7 @@ case class KevsAddGroupInterpreter(addGroup: AddGroupStatment) extends KevsAbstr
       }
       case null => {
         //SEARCH TYPE DEF
-        context.model.findByQuery("typeDefinitions[" + addGroup.groupTypeName + "]", classOf[TypeDefinition]) match {
+        context.model.findByPath("typeDefinitions[" + addGroup.groupTypeName + "]", classOf[TypeDefinition]) match {
           case targetGroupType:TypeDefinition if (targetGroupType.isInstanceOf[GroupType]) => {
 
             val newGroup = context.kevoreeFactory.createGroup

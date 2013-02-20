@@ -225,7 +225,7 @@ public class NanoRestGroup extends AbstractGroupType {
         }
 
 
-        Group groupOption = model.findByQuery("groups[" + getName() + "]", Group.class);
+        Group groupOption = model.findByPath("groups[" + getName() + "]", Group.class);
         if (groupOption!=null) {
 //		List<String> ips = KevoreePropertyHelper.getStringNetworkProperties(model, targetNodeName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP());
             Option<String> portOption = KevoreePropertyHelper.getProperty(groupOption, "port", true, targetNodeName);
@@ -257,7 +257,7 @@ public class NanoRestGroup extends AbstractGroupType {
         if (ipOption.isDefined()) {
             ip = ipOption.get();
         }
-        Group groupOption = model.findByQuery("groups[" + getName() + "]", Group.class);
+        Group groupOption = model.findByPath("groups[" + getName() + "]", Group.class);
         if (groupOption!=null) {
             Option<String> portOption = KevoreePropertyHelper.getProperty(groupOption, "port", true, targetNodeName);
             int PORT = 8000;

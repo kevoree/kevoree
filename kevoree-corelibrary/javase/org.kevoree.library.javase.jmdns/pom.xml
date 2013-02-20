@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>org.kevoree.library.javase.root</artifactId>
+        <groupId>org.kevoree.corelibrary.javase</groupId>
+        <version>2.0.0-SNAPSHOT</version>
+        <relativePath>../org.kevoree.library.javase.root/pom.xml</relativePath>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>org.kevoree.library.javase.jmdns</artifactId>
+    <name>Kevoree :: CoreLibrary :: JavaSE :: JmDNS API</name>
+
+
+    <dependencies>
+        <dependency>
+            <!--<groupId>javax.jmdns</groupId>
+            <artifactId>jmdns</artifactId>
+            <version>3.4.1</version>-->
+            <groupId>org.kevoree.extra</groupId>
+            <artifactId>org.kevoree.extra.osgi.jmdns</artifactId>
+            <version>3.4.1-hack</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>net.alchim31.maven</groupId>
+                <artifactId>scala-maven-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <id>scala-compile-first</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                            <goal>compile</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>scala-test-compile</id>
+                        <phase>process-test-resources</phase>
+                        <goals>
+                            <goal>testCompile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <jvmArgs>
+                        <jvmArg>-Xms64m</jvmArg>
+                        <jvmArg>-Xmx1024m</jvmArg>
+                    </jvmArgs>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

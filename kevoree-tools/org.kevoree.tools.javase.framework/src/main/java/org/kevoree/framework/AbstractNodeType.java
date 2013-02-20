@@ -79,7 +79,7 @@ public abstract class
 	 * @return the node corresponding to this
 	 */
 	public ContainerNode getModelElement () {
-		return getModelService().getLastModel().findByQuery("nodes[" + getName() + "]", ContainerNode.class);
+		return getModelService().getLastModel().findByPath("nodes[" + getName() + "]", ContainerNode.class);
 	}
 
 }

@@ -35,13 +35,13 @@ case class KevsMoveChildInterpreter(moveChild: MoveChildStatment) extends KevsAb
   val logger = LoggerFactory.getLogger(this.getClass)
 
   def interpret(context: KevsInterpreterContext): Boolean = {
-    context.model.findByQuery("nodes[" + moveChild.childNodeName + "]", classOf[ContainerNode]) match {
+    context.model.findByPath("nodes[" + moveChild.childNodeName + "]", classOf[ContainerNode]) match {
       case null => {
         logger.error("Unknown child name: {}\nThe node must already exist. Please check !", moveChild.childNodeName)
         false
       }
       case child:ContainerNode => {
-        context.model.findByQuery("nodes[" + moveChild.oldFatherNodeName + "]", classOf[ContainerNode]) match {
+        context.model.findByPath("nodes[" + moveChild.oldFatherNodeName + "]", classOf[ContainerNode]) match {
           case null => {
             logger.error("Unknown old father node: {}\nThe node must already exist. Please check !", moveChild.oldFatherNodeName)
             false
@@ -50,7 +50,7 @@ case class KevsMoveChildInterpreter(moveChild: MoveChildStatment) extends KevsAb
             if (!oldFather.getHosts.contains(child)) {
               logger.warn("The child node is not already contained by a father. Please prefer the addChild command!")
             }
-            context.model.findByQuery("nodes[" + moveChild.fatherNodeName + "]", classOf[ContainerNode]) match {
+            context.model.findByPath("nodes[" + moveChild.fatherNodeName + "]", classOf[ContainerNode]) match {
               case null => {
                 logger.error("Unknown father node: {}\nThe node must already exist. Please check !", moveChild.fatherNodeName)
                 false

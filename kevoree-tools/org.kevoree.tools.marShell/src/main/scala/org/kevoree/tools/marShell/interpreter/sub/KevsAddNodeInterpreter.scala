@@ -28,14 +28,14 @@ case class KevsAddNodeInterpreter(addN: AddNodeStatment) extends KevsAbstractInt
 
 
   def interpret(context: KevsInterpreterContext): Boolean = {
-    context.model.findByQuery("typeDefinitions[" + addN.nodeTypeName + "]", classOf[TypeDefinition]) match {
+    context.model.findByPath("typeDefinitions[" + addN.nodeTypeName + "]", classOf[TypeDefinition]) match {
       case null => logger.error("Node Type not found for name " + addN.nodeTypeName); false
       case nodeType =>
         if (!nodeType.isInstanceOf[NodeType]) {
           logger.error("The type with name {} is not a NodeType", addN.nodeTypeName)
           false
         } else {
-          context.model.findByQuery("nodes[" + addN.nodeName + "]", classOf[ContainerNode]) match {
+          context.model.findByPath("nodes[" + addN.nodeName + "]", classOf[ContainerNode]) match {
             case e:ContainerNode => {
               logger.warn("Node Already exist with name {}", e.getName)
               if (e.getTypeDefinition == null) {

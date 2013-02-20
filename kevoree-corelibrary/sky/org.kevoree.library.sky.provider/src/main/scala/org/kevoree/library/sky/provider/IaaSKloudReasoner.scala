@@ -79,7 +79,7 @@ object IaaSKloudReasoner extends KloudReasoner {
         }
 
         // find corresponding Kloud group to update the user group configuration on the kloud
-        iaasModel.getGroups.filter(g => KloudModelHelper.isPaaSKloudGroup(iaasModel, g) && g.findByQuery("subNodes[" + node.getName + "]", classOf[ContainerNode]) != null).foreach {
+        iaasModel.getGroups.filter(g => KloudModelHelper.isPaaSKloudGroup(iaasModel, g) && g.findByPath("subNodes[" + node.getName + "]", classOf[ContainerNode]) != null).foreach {
           group =>
             kengine.addVariable("groupName", group.getName)
             kengine append "updateDictionary {groupName} {ip='{ip}'}@{nodeName}"
@@ -175,9 +175,9 @@ object IaaSKloudReasoner extends KloudReasoner {
 
   private def configureIsolatedNode(node: ContainerNode, parentNodeName: String, ip: String, model: ContainerRoot, kengine: KevScriptEngine, usedPorts: ListBuffer[Int]): Int = {
     // find all groups that are linked to the parent node
-    val groups = model.getGroups.filter(g => g.findByQuery("subNodes[" + parentNodeName + "]", classOf[ContainerNode]) != null)
+    val groups = model.getGroups.filter(g => g.findByPath("subNodes[" + parentNodeName + "]", classOf[ContainerNode]) != null)
     // look for a group that is linked to the node
-    val groupOption = groups.find(g => g.findByQuery("subNodes[" + node.getName + "]", classOf[ContainerNode]) != null)
+    val groupOption = groups.find(g => g.findByPath("subNodes[" + node.getName + "]", classOf[ContainerNode]) != null)
     if (groupOption.isEmpty) {
       var portAttributeName = "port"
       var portNumber = 8000

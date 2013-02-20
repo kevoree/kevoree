@@ -14,10 +14,9 @@
 package org.kevoree.tools.ui.editor.kloud
 
 import java.io._
-import org.kevoree.tools.aether.framework.AetherUtil
 import org.slf4j.LoggerFactory
 import org.kevoree.tools.ui.editor.command.{AetherResolver, LoadModelCommand}
-import org.kevoree.tools.ui.editor.{ModelHelper, UIEventHandler, PositionedEMFHelper, KevoreeEditor}
+import org.kevoree.tools.ui.editor.{UIEventHandler, PositionedEMFHelper}
 import org.kevoree.tools.marShell.KevScriptOfflineEngine
 import java.net._
 import org.kevoree.framework.{KevoreePropertyHelper, KevoreeXmiHelper}
@@ -45,6 +44,7 @@ class MiniKloudForm(editor: KevoreeEditor, button: AbstractButton) {
   private var platformJAR: File = null
   private var thread: Thread = null
   private var minicloudName: String = null
+  private val firstPortToUse = 8000
 
   val url: URL = this.getClass.getClassLoader.getResource("ajax-loader.gif")
   val iconLoading: ImageIcon = new ImageIcon(url)
@@ -107,7 +107,7 @@ class MiniKloudForm(editor: KevoreeEditor, button: AbstractButton) {
                 button.setDisabledIcon(previousIcon)
                 UIEventHandler.info("MiniKloud node Started !")
 
-                skyModel.findByQuery("nodes[" + minicloudName + "]/components[" + "webServer" + "]", classOf[ComponentInstance]) match {
+                skyModel.findByPath("nodes[" + minicloudName + "]/components[" + "webServer" + "]", classOf[ComponentInstance]) match {
                   case null =>
                   case component: ComponentInstance => {
                     val portOption = KevoreePropertyHelper.getProperty(component, "port")
@@ -127,8 +127,8 @@ class MiniKloudForm(editor: KevoreeEditor, button: AbstractButton) {
                       logger.warn("Our desktop is not support so we are not able to open the web page: http://localhost:{}/", portOption.get)
                     }
                   }
-                  }
                 }
+              }
             }
 
           }
@@ -216,7 +216,7 @@ class MiniKloudForm(editor: KevoreeEditor, button: AbstractButton) {
 
         kevEngine.append("addNode {minicloudNodeName}: MiniCloudNode {logLevel = 'INFO'}")
 
-        val port = selectPort(blackListedPorts)
+        val port = selectPort(firstPortToUse, blackListedPorts)
         blackListedPorts = blackListedPorts ++ Array[Int](port)
         kevEngine.addVariable("portValue", port.toString)
 
@@ -245,37 +245,53 @@ class MiniKloudForm(editor: KevoreeEditor, button: AbstractButton) {
     var groupName = "editor_group"
 
     // looking for a group that manage all the user nodes that can be hosted on a minicloud node
-    editor.getPanel.getKernel.getModelHandler.getActualModel.getGroups.find(g => g.getSubNodes.size == nodes.size && g.getSubNodes.forall(n => nodes.contains(n))) match {
-      case Some(group) => groupName = group.getName
-      case None =>
+    editor.getPanel.getKernel.getModelHandler.getActualModel.getGroups.find(g =>
+      (g.getSubNodes.size == nodes.size || (g.getSubNodes.size() == nodes.size + 1 && g.findSubNodesByID(minicloudName) != null))
+        && g.getSubNodes.forall(n => n.getName == minicloudName || nodes.contains(n))) match {
+      case Some(group) => groupName = group.getName; kevEngine.addVariable("groupName", groupName)
+      case None => {
         groupName = "editor_group"
-        editor.getPanel.getKernel.getModelHandler.getActualModel.findByQuery("groups[" + groupName + "]", classOf[Group]) match {
-          case group : Group =>
-          case null => // add a new group
+        val groupAlreadyExist = editor.getPanel.getKernel.getModelHandler.getActualModel.findGroupsByID(groupName) match {
+          case group: Group => true
+          case null => {
+            // add a new group
             kevEngine.append("addGroup editor_group : BasicGossiperGroup")
+            false
+          }
         }
         kevEngine.addVariable("groupName", groupName)
-
         // add all node on the same group
         nodes.foreach {
           node =>
-            kevEngine.addVariable("nodeName", node.getName)
-            kevEngine.append("addToGroup {groupName} {nodeName}")
-            // add specific port for each node
-            val port = selectPort(blackListedPorts)
-            blackListedPorts = blackListedPorts ++ Array[Int](port)
-            kevEngine.addVariable("portValue", port.toString)
-            kevEngine.append("updateDictionary {groupName} {port='{portValue}'}@{nodeName}")
+            if (!groupAlreadyExist || editor.getPanel.getKernel.getModelHandler.getActualModel.findGroupsByID(groupName).findSubNodesByID(node.getName) == null) {
+              kevEngine.addVariable("nodeName", node.getName)
+              kevEngine.append("addToGroup {groupName} {nodeName}")
+              // add specific port for each node
+              val port = selectPort(firstPortToUse, blackListedPorts)
+              blackListedPorts = blackListedPorts ++ Array[Int](port)
+              kevEngine.addVariable("portValue", port.toString)
+              kevEngine.append("updateDictionary {groupName} {port='{portValue}'}@{nodeName}")
+            }
         }
+      }
     }
-    kevEngine.append("addToGroup {groupName} {minicloudNodeName}")
-    kevEngine.append("updateDictionary {groupName} {port='8000'}@{minicloudNodeName}")
 
+    if (editor.getPanel.getKernel.getModelHandler.getActualModel.findGroupsByID(groupName).findSubNodesByID(minicloudName) == null) {
+      kevEngine.addVariable("portValue", selectPort(firstPortToUse, blackListedPorts) + "")
+      kevEngine.append("addToGroup {groupName} {minicloudNodeName}")
+      kevEngine.append("updateDictionary {groupName} {port='{portValue}'}@{minicloudNodeName}")
+
+    }
+
+
+    val minicloudNode = editor.getPanel.getKernel.getModelHandler.getActualModel.findNodesByID(minicloudName)
     // add all JavaSE (or inherited) user nodes as child of the minicloud node
     nodes.foreach {
       node =>
-        kevEngine.addVariable("nodeName", node.getName)
-        kevEngine.append("addChild {nodeName}@editor_node")
+        if (minicloudNode == null || minicloudNode.findHostsByID(node.getName) == null) {
+          kevEngine.addVariable("nodeName", node.getName)
+          kevEngine.append("addChild {nodeName}@editor_node")
+        }
     }
     try {
       kevEngine.interpret()
@@ -294,12 +310,12 @@ class MiniKloudForm(editor: KevoreeEditor, button: AbstractButton) {
     }
   }
 
-  private def selectPort(blackListedPorts: Array[Int]): Int = {
+  private def selectPort(firstPort: Int, blackListedPorts: Array[Int]): Int = {
     // get all port defined on the model
     // concatenate the ports of the model with the blacklisted ones
     val ports = blackListedPorts ++ getAllUsedPorts
     // start to find a port that are not into the previous list and tat are not current in use.
-    selectPortNumber("127.0.0.1", ports)
+    selectPortNumber(firstPort, "127.0.0.1", ports)
   }
 
 
@@ -312,7 +328,7 @@ class MiniKloudForm(editor: KevoreeEditor, button: AbstractButton) {
       group =>
         model.getNodes.foreach {
           node =>
-            logger.debug("Looking for property 'port' on group {} with node {}", Array[AnyRef](group.getName, node.getName))
+            logger.debug("Looking for property 'port' on group {} with node {}", Array[String](group.getName, node.getName))
 
             val portOption = KevoreePropertyHelper.getProperty(group, "port", isFragment = true, nodeNameForFragment = node.getName)
             if (portOption.isDefined) {
@@ -324,7 +340,7 @@ class MiniKloudForm(editor: KevoreeEditor, button: AbstractButton) {
     // looking for port on channel
     model.getMBindings.foreach {
       binding =>
-        logger.debug("Looking for property 'port' on channel {} with node {}", Array[AnyRef](binding.getHub.getName, binding.getPort.eContainer.eContainer.asInstanceOf[ContainerNode].getName))
+        logger.debug("Looking for property 'port' on channel {} with node {}", Array[String](binding.getHub.getName, binding.getPort.eContainer.eContainer.asInstanceOf[ContainerNode].getName))
         val portOption = KevoreePropertyHelper.getProperty(binding.getHub, "port", isFragment = true, nodeNameForFragment = binding.getPort.eContainer.eContainer.asInstanceOf[ContainerNode].getName)
         if (portOption.isDefined) {
           ports = ports ++ Array[Int](Integer.parseInt(portOption.get))
@@ -348,8 +364,8 @@ class MiniKloudForm(editor: KevoreeEditor, button: AbstractButton) {
     ports
   }
 
-  private def selectPortNumber(address: String, ports: Array[Int]): Int = {
-    var i = 6003
+  private def selectPortNumber(firstPort: Int, address: String, ports: Array[Int]): Int = {
+    var i = firstPort
     if (address != "") {
       var found = false
       while (!found) {
