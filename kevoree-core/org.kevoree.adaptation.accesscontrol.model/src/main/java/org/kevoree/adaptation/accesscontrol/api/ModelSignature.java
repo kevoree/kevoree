@@ -11,10 +11,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kevoree.adaptation.control.api;
-
-import java.util.HashMap;
-import java.util.List;
+package org.kevoree.adaptation.accesscontrol.api;
 
 /**
  * Created with IntelliJ IDEA.
@@ -22,20 +19,7 @@ import java.util.List;
  * Date: 1/21/13
  * Time: 4:02 PM
  */
-public interface SignedModel {
-
-    /**
-     * This method returns the model
-     * @return
-     */
-    public byte[] getSerialiedModel();
-
-    /**
-     * This method indicates the format storage
-     * @return   format
-     */
-    public String getModelFormat();
-
-    public List<ModelSignature> getSignatures();
-
+public interface ModelSignature {
+    public String getKey();
+    public byte[] getSignature();
 }
