@@ -194,7 +194,7 @@
       <!--  <module>../org.kevoree.tools.annotation.scalaprocessor</module>      -->
 	  
 	  
-	  <module>../org.kevoree.tools.control.framework</module>
+	  <module>../org.kevoree.tools.accesscontrol.framework</module>
 	  
     </modules>
 
