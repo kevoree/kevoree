@@ -1,0 +1,546 @@
+#
+# A fatal error has been detected by the Java Runtime Environment:
+#
+#  SIGSEGV (0xb) at pc=0xb770fa06, pid=31625, tid=3063434048
+#
+# JRE version: 6.0_30-b12
+# Java VM: Java HotSpot(TM) Server VM (20.5-b03 mixed mode linux-x86 )
+# Problematic frame:
+# C  [libc.so.6+0x139a06]  __float128+0x9556
+#
+# If you would like to submit a bug report, please visit:
+#   http://java.sun.com/webapps/bugreport/crash.jsp
+# The crash happened outside the Java Virtual Machine in native code.
+# See problematic frame for where to report the bug.
+#
+
+---------------  T H R E A D  ---------------
+
+Current thread (0xb6806800):  JavaThread "main" [_thread_in_native, id=31626, stack(0xb6934000,0xb6985000)]
+
+siginfo:si_signo=SIGSEGV: si_errno=0, si_code=2 (SEGV_ACCERR), si_addr=0x72905000
+
+Registers:
+EAX=0x729039b0, EBX=0xb7740730, ECX=0x00006b44, EDX=0x717c9db0
+ESP=0xb69829b4, EBP=0xb69829e8, ESI=0x72903978, EDI=0x00001640
+EIP=0xb770fa06, EFLAGS=0x00010206, CR2=0x72905000
+
+Top of Stack: (sp=0xb69829b4)
+0xb69829b4:   7179d730 b67f7abc b67f30bc 717c9da0
+0xb69829c4:   729039a6 000081b4 b6806eac 000081b4
+0xb69829d4:   00000000 00000000 b67f7abc b68e139c
+0xb69829e4:   00000000 b6982a18 b67f330b b68e0f20
+0xb69829f4:   b68e139c 00000000 00000000 72dbf5c0
+0xb6982a04:   00000000 a10c885e b67f7abc b6982a60
+0xb6982a14:   b6806920 b6982e88 b67ea109 b68e0f20
+0xb6982a24:   b6982a60 00000040 00000040 b6982a60 
+
+Instructions: (pc=0xb770fa06)
+0xb770f9e6:   e3 89 f6 8d bc 27 00 00 00 00 81 c3 40 0d 03 00
+0xb770f9f6:   83 e8 06 0f 28 08 31 ff 83 e9 20 f3 0f 7f 06 5e
+0xb770fa06:   66 0f 6f 54 38 10 83 e9 20 66 0f 6f 5c 38 20 66
+0xb770fa16:   0f 6f e3 66 0f 3a 0f da 06 66 0f 3a 0f d1 06 8d 
+
+Register to memory mapping:
+
+EAX=0x729039b0 is an unknown value
+EBX=0xb7740730: <offset 0x16a730> in /lib/i386-linux-gnu/libc.so.6 at 0xb75d6000
+ECX=0x00006b44 is an unknown value
+EDX=0x717c9db0 is an unknown value
+ESP=0xb69829b4 is pointing into the stack for thread: 0xb6806800
+EBP=0xb69829e8 is pointing into the stack for thread: 0xb6806800
+ESI=0x72903978 is an unknown value
+EDI=0x00001640 is an unknown value
+
+
+Stack: [0xb6934000,0xb6985000],  sp=0xb69829b4,  free space=314k
+Native frames: (J=compiled Java code, j=interpreted, Vv=VM code, C=native code)
+C  [libc.so.6+0x139a06]  __float128+0x9556
+C  [libzip.so+0xc30b]  ZIP_GetEntry+0x10b
+C  [libzip.so+0x3109]  Java_java_util_zip_ZipFile_getEntry+0xc9
+j  java.util.zip.ZipFile.getEntry(JLjava/lang/String;Z)J+0
+j  java.util.zip.ZipFile.getEntry(Ljava/lang/String;)Ljava/util/zip/ZipEntry;+31
+j  java.util.jar.JarFile.getEntry(Ljava/lang/String;)Ljava/util/zip/ZipEntry;+2
+j  java.util.jar.JarFile.getJarEntry(Ljava/lang/String;)Ljava/util/jar/JarEntry;+2
+j  sun.misc.URLClassPath$JarLoader.getResource(Ljava/lang/String;Z)Lsun/misc/Resource;+48
+j  sun.misc.URLClassPath.getResource(Ljava/lang/String;Z)Lsun/misc/Resource;+53
+j  java.net.URLClassLoader$1.run()Ljava/lang/Object;+26
+v  ~StubRoutines::call_stub
+V  [libjvm.so+0x3dfd11]  JavaCalls::call_helper(JavaValue*, methodHandle*, JavaCallArguments*, Thread*)+0x1c1
+V  [libjvm.so+0x5e12d8]  os::os_exception_wrapper(void (*)(JavaValue*, methodHandle*, JavaCallArguments*, Thread*), JavaValue*, methodHandle*, JavaCallArguments*, Thread*)+0x18
+V  [libjvm.so+0x3dfb3f]  JavaCalls::call(JavaValue*, methodHandle, JavaCallArguments*, Thread*)+0x2f
+V  [libjvm.so+0x4459ae]  JVM_DoPrivileged+0x40e
+C  [libjava.so+0xaa4c]  Java_java_security_AccessController_doPrivileged__Ljava_security_PrivilegedExceptionAction_2Ljava_security_AccessControlContext_2+0x3c
+j  java.security.AccessController.doPrivileged(Ljava/security/PrivilegedExceptionAction;Ljava/security/AccessControlContext;)Ljava/lang/Object;+0
+j  java.net.URLClassLoader.findClass(Ljava/lang/String;)Ljava/lang/Class;+13
+j  java.lang.ClassLoader.loadClass(Ljava/lang/String;Z)Ljava/lang/Class;+47
+j  sun.misc.Launcher$AppClassLoader.loadClass(Ljava/lang/String;Z)Ljava/lang/Class;+41
+j  java.lang.ClassLoader.loadClass(Ljava/lang/String;)Ljava/lang/Class;+3
+v  ~StubRoutines::call_stub
+V  [libjvm.so+0x3dfd11]  JavaCalls::call_helper(JavaValue*, methodHandle*, JavaCallArguments*, Thread*)+0x1c1
+V  [libjvm.so+0x5e12d8]  os::os_exception_wrapper(void (*)(JavaValue*, methodHandle*, JavaCallArguments*, Thread*), JavaValue*, methodHandle*, JavaCallArguments*, Thread*)+0x18
+V  [libjvm.so+0x3df585]  JavaCalls::call_virtual(JavaValue*, KlassHandle, symbolHandle, symbolHandle, JavaCallArguments*, Thread*)+0xc5
+V  [libjvm.so+0x3df6c2]  JavaCalls::call_virtual(JavaValue*, Handle, KlassHandle, symbolHandle, symbolHandle, Handle, Thread*)+0x62
+V  [libjvm.so+0x6b4039]  SystemDictionary::load_instance_class(symbolHandle, Handle, Thread*)+0x389
+V  [libjvm.so+0x6b1e3e]  SystemDictionary::resolve_instance_class_or_null(symbolHandle, Handle, Handle, Thread*)+0x55e
+V  [libjvm.so+0x6b0c06]  SystemDictionary::resolve_or_null(symbolHandle, Handle, Handle, Thread*)+0x66
+V  [libjvm.so+0x6b0870]  SystemDictionary::resolve_or_fail(symbolHandle, Handle, Handle, bool, Thread*)+0x30
+V  [libjvm.so+0x2f0e4b]  constantPoolOopDesc::klass_at_impl(constantPoolHandle, int, Thread*)+0x1ab
+V  [libjvm.so+0x3d4b72]  InterpreterRuntime::_new(JavaThread*, constantPoolOopDesc*, int)+0x52
+j  org.kevoree.tools.accesscontrol.framework.Tester.main([Ljava/lang/String;)V+91
+v  ~StubRoutines::call_stub
+V  [libjvm.so+0x3dfd11]  JavaCalls::call_helper(JavaValue*, methodHandle*, JavaCallArguments*, Thread*)+0x1c1
+V  [libjvm.so+0x5e12d8]  os::os_exception_wrapper(void (*)(JavaValue*, methodHandle*, JavaCallArguments*, Thread*), JavaValue*, methodHandle*, JavaCallArguments*, Thread*)+0x18
+V  [libjvm.so+0x3dfb3f]  JavaCalls::call(JavaValue*, methodHandle, JavaCallArguments*, Thread*)+0x2f
+V  [libjvm.so+0x6383f5]  Reflection::invoke(instanceKlassHandle, methodHandle, Handle, bool, objArrayHandle, BasicType, objArrayHandle, bool, Thread*)+0x445
+V  [libjvm.so+0x63b7b7]  Reflection::invoke_method(oopDesc*, Handle, objArrayHandle, Thread*)+0x127
+V  [libjvm.so+0x45f60f]  JVM_InvokeMethod+0x1ff
+C  [libjava.so+0x15264]  Java_sun_reflect_NativeMethodAccessorImpl_invoke0+0x34
+j  sun.reflect.NativeMethodAccessorImpl.invoke0(Ljava/lang/reflect/Method;Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;+0
+j  sun.reflect.NativeMethodAccessorImpl.invoke(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;+87
+j  sun.reflect.DelegatingMethodAccessorImpl.invoke(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;+6
+j  java.lang.reflect.Method.invoke(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;+161
+j  com.intellij.rt.execution.application.AppMain.main([Ljava/lang/String;)V+140
+v  ~StubRoutines::call_stub
+V  [libjvm.so+0x3dfd11]  JavaCalls::call_helper(JavaValue*, methodHandle*, JavaCallArguments*, Thread*)+0x1c1
+V  [libjvm.so+0x5e12d8]  os::os_exception_wrapper(void (*)(JavaValue*, methodHandle*, JavaCallArguments*, Thread*), JavaValue*, methodHandle*, JavaCallArguments*, Thread*)+0x18
+V  [libjvm.so+0x3dfb3f]  JavaCalls::call(JavaValue*, methodHandle, JavaCallArguments*, Thread*)+0x2f
+V  [libjvm.so+0x414084]  jni_invoke_static(JNIEnv_*, JavaValue*, _jobject*, JNICallType, _jmethodID*, JNI_ArgumentPusher*, Thread*)+0x124
+V  [libjvm.so+0x4036ac]  unsigned+0x14c
+C  [java+0x1b98]  JavaMain+0x2c8
+C  [libpthread.so.0+0x6d4c]  short+0xcc
+
+Java frames: (J=compiled Java code, j=interpreted, Vv=VM code)
+j  java.util.zip.ZipFile.getEntry(JLjava/lang/String;Z)J+0
+j  java.util.zip.ZipFile.getEntry(Ljava/lang/String;)Ljava/util/zip/ZipEntry;+31
+j  java.util.jar.JarFile.getEntry(Ljava/lang/String;)Ljava/util/zip/ZipEntry;+2
+j  java.util.jar.JarFile.getJarEntry(Ljava/lang/String;)Ljava/util/jar/JarEntry;+2
+j  sun.misc.URLClassPath$JarLoader.getResource(Ljava/lang/String;Z)Lsun/misc/Resource;+48
+j  sun.misc.URLClassPath.getResource(Ljava/lang/String;Z)Lsun/misc/Resource;+53
+j  java.net.URLClassLoader$1.run()Ljava/lang/Object;+26
+v  ~StubRoutines::call_stub
+j  java.security.AccessController.doPrivileged(Ljava/security/PrivilegedExceptionAction;Ljava/security/AccessControlContext;)Ljava/lang/Object;+0
+j  java.net.URLClassLoader.findClass(Ljava/lang/String;)Ljava/lang/Class;+13
+j  java.lang.ClassLoader.loadClass(Ljava/lang/String;Z)Ljava/lang/Class;+47
+j  sun.misc.Launcher$AppClassLoader.loadClass(Ljava/lang/String;Z)Ljava/lang/Class;+41
+j  java.lang.ClassLoader.loadClass(Ljava/lang/String;)Ljava/lang/Class;+3
+v  ~StubRoutines::call_stub
+j  org.kevoree.tools.accesscontrol.framework.Tester.main([Ljava/lang/String;)V+91
+v  ~StubRoutines::call_stub
+j  sun.reflect.NativeMethodAccessorImpl.invoke0(Ljava/lang/reflect/Method;Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;+0
+j  sun.reflect.NativeMethodAccessorImpl.invoke(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;+87
+j  sun.reflect.DelegatingMethodAccessorImpl.invoke(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;+6
+j  java.lang.reflect.Method.invoke(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;+161
+j  com.intellij.rt.execution.application.AppMain.main([Ljava/lang/String;)V+140
+v  ~StubRoutines::call_stub
+
+---------------  P R O C E S S  ---------------
+
+Java Threads: ( => current thread )
+  0x717a1000 JavaThread "Monitor Ctrl-Break" daemon [_thread_in_native, id=31639, stack(0x71f0c000,0x71f5d000)]
+  0xb68be000 JavaThread "Low Memory Detector" daemon [_thread_blocked, id=31637, stack(0x7232e000,0x7237f000)]
+  0xb68bc400 JavaThread "C2 CompilerThread1" daemon [_thread_in_native, id=31636, stack(0x7197f000,0x71a00000)]
+  0xb68ba400 JavaThread "C2 CompilerThread0" daemon [_thread_blocked, id=31635, stack(0x71d7f000,0x71e00000)]
+  0xb68b8c00 JavaThread "Signal Dispatcher" daemon [_thread_blocked, id=31634, stack(0x7252e000,0x7257f000)]
+  0xb68aa400 JavaThread "Finalizer" daemon [_thread_blocked, id=31633, stack(0x7272e000,0x7277f000)]
+  0xb68a9000 JavaThread "Reference Handler" daemon [_thread_blocked, id=31632, stack(0x71f5d000,0x71fae000)]
+=>0xb6806800 JavaThread "main" [_thread_in_native, id=31626, stack(0xb6934000,0xb6985000)]
+
+Other Threads:
+  0xb68a5400 VMThread [stack: 0x71fae000,0x7202f000] [id=31631]
+  0xb68bfc00 WatcherThread [stack: 0x718fe000,0x7197f000] [id=31638]
+
+VM state:not at safepoint (normal execution)
+
+VM Mutex/Monitor currently owned by a thread: None
+
+Heap
+ PSYoungGen      total 18112K, used 9581K [0x9f3a0000, 0xa07d0000, 0xb36f0000)
+  eden space 15552K, 58% used [0x9f3a0000,0x9fc8b730,0xa02d0000)
+  from space 2560K, 17% used [0xa02d0000,0xa0340070,0xa0550000)
+  to   space 2560K, 0% used [0xa0550000,0xa0550000,0xa07d0000)
+ PSOldGen        total 41408K, used 0K [0x76cf0000, 0x79560000, 0x9f3a0000)
+  object space 41408K, 0% used [0x76cf0000,0x76cf0000,0x79560000)
+ PSPermGen       total 16384K, used 4907K [0x72cf0000, 0x73cf0000, 0x76cf0000)
+  object space 16384K, 29% used [0x72cf0000,0x731baeb8,0x73cf0000)
+
+Code Cache  [0xb37b6000, 0xb39f6000, 0xb67b6000)
+ total_blobs=235 nmethods=123 adapters=66 free_code_cache=49757248 largest_free_block=15936
+
+Dynamic libraries:
+08048000-08052000 r-xp 00000000 08:05 3280749    /usr/lib/jvm/java-6-sun-1.6.0.30/jre/bin/java
+08052000-08053000 rwxp 00009000 08:05 3280749    /usr/lib/jvm/java-6-sun-1.6.0.30/jre/bin/java
+09b2d000-09b4e000 rwxp 00000000 00:00 0          [heap]
+70f00000-70ff4000 rwxp 00000000 00:00 0 
+70ff4000-71000000 ---p 00000000 00:00 0 
+71100000-711f8000 rwxp 00000000 00:00 0 
+711f8000-71200000 ---p 00000000 00:00 0 
+71300000-71400000 rwxp 00000000 00:00 0 
+71400000-714fc000 rwxp 00000000 00:00 0 
+714fc000-71500000 ---p 00000000 00:00 0 
+71500000-715dd000 rwxp 00000000 00:00 0 
+715dd000-71600000 ---p 00000000 00:00 0 
+71600000-716ff000 rwxp 00000000 00:00 0 
+716ff000-71700000 ---p 00000000 00:00 0 
+71700000-71800000 rwxp 00000000 00:00 0 
+718fe000-718ff000 ---p 00000000 00:00 0 
+718ff000-7197f000 rwxp 00000000 00:00 0 
+7197f000-71982000 ---p 00000000 00:00 0 
+71982000-71a00000 rwxp 00000000 00:00 0 
+71a00000-71c00000 r-xp 00000000 08:05 23075884   /usr/lib/locale/locale-archive
+71c00000-71c21000 rwxp 00000000 00:00 0 
+71c21000-71d00000 ---p 00000000 00:00 0 
+71d01000-71d7f000 r-xs 007f5000 08:05 10488167   /home/jed/.m2/repository/org/scala-lang/scala-library/2.9.2/scala-library-2.9.2.jar
+71d7f000-71d82000 ---p 00000000 00:00 0 
+71d82000-71e00000 rwxp 00000000 00:00 0 
+71e00000-71efa000 rwxp 00000000 00:00 0 
+71efa000-71f00000 ---p 00000000 00:00 0 
+71f0c000-71f0f000 ---p 00000000 00:00 0 
+71f0f000-71f5d000 rwxp 00000000 00:00 0 
+71f5d000-71f60000 ---p 00000000 00:00 0 
+71f60000-71fae000 rwxp 00000000 00:00 0 
+71fae000-71faf000 ---p 00000000 00:00 0 
+71faf000-72063000 rwxp 00000000 00:00 0 
+72063000-72200000 r-xs 030b8000 08:05 3017014    /usr/lib/jvm/java-6-sun-1.6.0.30/jre/lib/rt.jar
+72200000-722e2000 rwxp 00000000 00:00 0 
+722e2000-72300000 ---p 00000000 00:00 0 
+72300000-72314000 r-xp 00000000 08:05 3280872    /usr/lib/jvm/java-6-sun-1.6.0.30/jre/lib/i386/libnet.so
+72314000-72315000 rwxp 00013000 08:05 3280872    /usr/lib/jvm/java-6-sun-1.6.0.30/jre/lib/i386/libnet.so
+72315000-72316000 r-xp 00000000 08:05 4074973    /opt/idea-IU-123.72/bin/libbreakgen.so
+72316000-72317000 rwxp 00000000 08:05 4074973    /opt/idea-IU-123.72/bin/libbreakgen.so
+72317000-72319000 r-xs 00013000 08:05 4075062    /opt/idea-IU-123.72/lib/idea_rt.jar
+72319000-72320000 r-xs 00028000 08:05 10488169   /home/jed/.m2/repository/org/jgrapht/jgrapht-jdk1.5/0.7.3/jgrapht-jdk1.5-0.7.3.jar
+72320000-72326000 r-xs 00037000 08:05 16137233   /home/jed/.m2/repository/org/kevoree/org.kevoree.framework/2.0.0-SNAPSHOT/org.kevoree.framework-2.0.0-SNAPSHOT.jar
+72326000-72328000 r-xs 00009000 08:05 16137253   /home/jed/.m2/repository/org/kevoree/org.kevoree.kcl/2.0.0-SNAPSHOT/org.kevoree.kcl-2.0.0-SNAPSHOT.jar
+72328000-7232a000 r-xs 00006000 08:05 16137249   /home/jed/.m2/repository/org/kevoree/org.kevoree.adaptation.model/2.0.0-SNAPSHOT/org.kevoree.adaptation.model-2.0.0-SNAPSHOT.jar
+7232a000-7232e000 r-xs 0001c000 08:05 16137245   /home/jed/.m2/repository/org/kevoree/org.kevoree.model.context/2.0.0-SNAPSHOT/org.kevoree.model.context-2.0.0-SNAPSHOT.jar
+7232e000-72331000 ---p 00000000 00:00 0 
+72331000-7237f000 rwxp 00000000 00:00 0 
+7237f000-72380000 ---p 00000000 00:00 0 
+72380000-72400000 rwxp 00000000 00:00 0 
+72400000-72421000 rwxp 00000000 00:00 0 
+72421000-72500000 ---p 00000000 00:00 0 
+72503000-72508000 r-xs 00021000 08:05 16137773   /home/jed/.m2/repository/org/kevoree/org.kevoree.kompare/2.0.0-SNAPSHOT/org.kevoree.kompare-2.0.0-SNAPSHOT.jar
+72508000-7250a000 r-xs 00007000 08:05 11276461   /home/jed/.m2/repository/fr/inria/jfilter/jfilter-library/1.3-SNAPSHOT/jfilter-library-1.3-SNAPSHOT.jar
+7250a000-72515000 r-xs 0008a000 08:05 16137241   /home/jed/.m2/repository/org/kevoree/org.kevoree.model/2.0.0-SNAPSHOT/org.kevoree.model-2.0.0-SNAPSHOT.jar
+72515000-72519000 r-xs 00015000 08:05 10617752   /home/jed/.m2/repository/org/jetbrains/kotlin/kotlin-runtime/0.5.1/kotlin-runtime-0.5.1.jar
+72519000-7251f000 r-xs 0004b000 08:05 10617702   /home/jed/.m2/repository/org/jetbrains/kotlin/kotlin-stdlib/0.5.1/kotlin-stdlib-0.5.1.jar
+7251f000-7252e000 r-xs 00667000 08:05 3016972    /usr/lib/jvm/java-6-sun-1.6.0.30/jre/lib/charsets.jar
+7252e000-72531000 ---p 00000000 00:00 0 
+72531000-7257f000 rwxp 00000000 00:00 0 
+7257f000-72580000 ---p 00000000 00:00 0 
+72580000-72600000 rwxp 00000000 00:00 0 
+72600000-72621000 rwxp 00000000 00:00 0 
+72621000-72700000 ---p 00000000 00:00 0 
+72702000-7270c000 r-xs 000d7000 08:05 3016976    /usr/lib/jvm/java-6-sun-1.6.0.30/jre/lib/javaws.jar
+7270c000-7271d000 r-xs 001b1000 08:05 3016975    /usr/lib/jvm/java-6-sun-1.6.0.30/jre/lib/plugin.jar
+7271d000-7272e000 r-xs 0034e000 08:05 3016984    /usr/lib/jvm/java-6-sun-1.6.0.30/jre/lib/deploy.jar
+7272e000-72731000 ---p 00000000 00:00 0 
+72731000-7277f000 rwxp 00000000 00:00 0 
+7277f000-72780000 ---p 00000000 00:00 0 
+72780000-72800000 rwxp 00000000 00:00 0 
+72800000-72822000 rwxp 00000000 00:00 0 
+72822000-72900000 ---p 00000000 00:00 0 
+72900000-72902000 r-xs 00002000 08:05 16137237   /home/jed/.m2/repository/org/kevoree/org.kevoree.api/2.0.0-SNAPSHOT/org.kevoree.api-2.0.0-SNAPSHOT.jar
+72902000-72905000 r-xs 00010000 08:05 10762838   /home/jed/.m2/repository/org/kevoree/org.kevoree.adaptation.accesscontrol.model/2.0.0-SNAPSHOT/org.kevoree.adaptation.accesscontrol.model-2.0.0-SNAPSHOT.jar
+72905000-72906000 ---p 00000000 00:00 0 
+72906000-7298e000 rwxp 00000000 00:00 0 
+7298e000-729a6000 rwxp 00000000 00:00 0 
+729a6000-729bb000 rwxp 00000000 00:00 0 
+729bb000-72aea000 rwxp 00000000 00:00 0 
+72aea000-72af2000 rwxp 00000000 00:00 0 
+72af2000-72b0a000 rwxp 00000000 00:00 0 
+72b0a000-72b1f000 rwxp 00000000 00:00 0 
+72b1f000-72c4d000 rwxp 00000000 00:00 0 
+72c4d000-72c58000 rwxp 00000000 00:00 0 
+72c58000-72cef000 rwxp 00000000 00:00 0 
+72cef000-73cf0000 rwxp 00000000 00:00 0 
+73cf0000-76cf0000 rwxp 00000000 00:00 0 
+76cf0000-79560000 rwxp 00000000 00:00 0 
+79560000-9f3a0000 rwxp 00000000 00:00 0 
+9f3a0000-a07d0000 rwxp 00000000 00:00 0 
+a07d0000-b36f0000 rwxp 00000000 00:00 0 
+b36f0000-b36f6000 r-xs 00095000 08:05 3016977    /usr/lib/jvm/java-6-sun-1.6.0.30/jre/lib/jsse.jar
+b36f6000-b36ff000 rwxp 00000000 00:00 0 
+b36ff000-b37b6000 rwxp 00000000 00:00 0 
+b37b6000-b39f6000 rwxp 00000000 00:00 0 
+b39f6000-b67b6000 rwxp 00000000 00:00 0 
+b67b6000-b67c1000 r-xp 00000000 08:05 23331901   /lib/i386-linux-gnu/libnss_files-2.15.so
+b67c1000-b67c2000 r-xp 0000a000 08:05 23331901   /lib/i386-linux-gnu/libnss_files-2.15.so
+b67c2000-b67c3000 rwxp 0000b000 08:05 23331901   /lib/i386-linux-gnu/libnss_files-2.15.so
+b67c3000-b67d9000 r-xp 00000000 08:05 23344695   /lib/i386-linux-gnu/libnsl-2.15.so
+b67d9000-b67da000 r-xp 00015000 08:05 23344695   /lib/i386-linux-gnu/libnsl-2.15.so
+b67da000-b67db000 rwxp 00016000 08:05 23344695   /lib/i386-linux-gnu/libnsl-2.15.so
+b67db000-b67dd000 rwxp 00000000 00:00 0 
+b67dd000-b67df000 r-xs 00005000 08:05 10890513   /home/jed/.m2/repository/org/slf4j/slf4j-api/1.7.2/slf4j-api-1.7.2.jar
+b67df000-b67e7000 r-xs 00115000 08:05 3016974    /usr/lib/jvm/java-6-sun-1.6.0.30/jre/lib/resources.jar
+b67e7000-b67f6000 r-xp 00000000 08:05 3280868    /usr/lib/jvm/java-6-sun-1.6.0.30/jre/lib/i386/libzip.so
+b67f6000-b67f8000 rwxp 0000e000 08:05 3280868    /usr/lib/jvm/java-6-sun-1.6.0.30/jre/lib/i386/libzip.so
+b67f8000-b6800000 rwxs 00000000 08:05 6692464    /tmp/hsperfdata_jed/31625
+b6800000-b68fc000 rwxp 00000000 00:00 0 
+b68fc000-b6900000 ---p 00000000 00:00 0 
+b6901000-b6904000 r-xs 00013000 08:05 3016983    /usr/lib/jvm/java-6-sun-1.6.0.30/jre/lib/jce.jar
+b6904000-b6905000 r-xs 00000000 08:05 3016986    /usr/lib/jvm/java-6-sun-1.6.0.30/jre/lib/management-agent.jar
+b6905000-b6906000 r-xp 0085b000 08:05 23075884   /usr/lib/locale/locale-archive
+b6906000-b6929000 r-xp 00000000 08:05 3280843    /usr/lib/jvm/java-6-sun-1.6.0.30/jre/lib/i386/libjava.so
+b6929000-b692b000 rwxp 00023000 08:05 3280843    /usr/lib/jvm/java-6-sun-1.6.0.30/jre/lib/i386/libjava.so
+b692b000-b6932000 r-xp 00000000 08:05 23334626   /lib/i386-linux-gnu/librt-2.15.so
+b6932000-b6933000 r-xp 00006000 08:05 23334626   /lib/i386-linux-gnu/librt-2.15.so
+b6933000-b6934000 rwxp 00007000 08:05 23334626   /lib/i386-linux-gnu/librt-2.15.so
+b6934000-b6937000 ---p 00000000 00:00 0 
+b6937000-b6985000 rwxp 00000000 00:00 0 
+b6985000-b69af000 r-xp 00000000 08:05 23344686   /lib/i386-linux-gnu/libm-2.15.so
+b69af000-b69b0000 r-xp 00029000 08:05 23344686   /lib/i386-linux-gnu/libm-2.15.so
+b69b0000-b69b1000 rwxp 0002a000 08:05 23344686   /lib/i386-linux-gnu/libm-2.15.so
+b69b1000-b7163000 r-xp 00000000 08:05 3280864    /usr/lib/jvm/java-6-sun-1.6.0.30/jre/lib/i386/server/libjvm.so
+b7163000-b71b7000 rwxp 007b1000 08:05 3280864    /usr/lib/jvm/java-6-sun-1.6.0.30/jre/lib/i386/server/libjvm.so
+b71b7000-b75d6000 rwxp 00000000 00:00 0 
+b75d6000-b7779000 r-xp 00000000 08:05 23330881   /lib/i386-linux-gnu/libc-2.15.so
+b7779000-b777a000 ---p 001a3000 08:05 23330881   /lib/i386-linux-gnu/libc-2.15.so
+b777a000-b777c000 r-xp 001a3000 08:05 23330881   /lib/i386-linux-gnu/libc-2.15.so
+b777c000-b777d000 rwxp 001a5000 08:05 23330881   /lib/i386-linux-gnu/libc-2.15.so
+b777d000-b7780000 rwxp 00000000 00:00 0 
+b7780000-b7783000 r-xp 00000000 08:05 23344690   /lib/i386-linux-gnu/libdl-2.15.so
+b7783000-b7784000 r-xp 00002000 08:05 23344690   /lib/i386-linux-gnu/libdl-2.15.so
+b7784000-b7785000 rwxp 00003000 08:05 23344690   /lib/i386-linux-gnu/libdl-2.15.so
+b7785000-b778c000 r-xp 00000000 08:05 3280887    /usr/lib/jvm/java-6-sun-1.6.0.30/jre/lib/i386/jli/libjli.so
+b778c000-b778e000 rwxp 00006000 08:05 3280887    /usr/lib/jvm/java-6-sun-1.6.0.30/jre/lib/i386/jli/libjli.so
+b778e000-b778f000 rwxp 00000000 00:00 0 
+b778f000-b77a6000 r-xp 00000000 08:05 23344683   /lib/i386-linux-gnu/libpthread-2.15.so
+b77a6000-b77a7000 r-xp 00016000 08:05 23344683   /lib/i386-linux-gnu/libpthread-2.15.so
+b77a7000-b77a8000 rwxp 00017000 08:05 23344683   /lib/i386-linux-gnu/libpthread-2.15.so
+b77a8000-b77aa000 rwxp 00000000 00:00 0 
+b77aa000-b77b4000 r-xp 00000000 08:05 23344681   /lib/i386-linux-gnu/libnss_nis-2.15.so
+b77b4000-b77b5000 r-xp 00009000 08:05 23344681   /lib/i386-linux-gnu/libnss_nis-2.15.so
+b77b5000-b77b6000 rwxp 0000a000 08:05 23344681   /lib/i386-linux-gnu/libnss_nis-2.15.so
+b77b6000-b77bd000 r-xp 00000000 08:05 23331899   /lib/i386-linux-gnu/libnss_compat-2.15.so
+b77bd000-b77be000 r-xp 00006000 08:05 23331899   /lib/i386-linux-gnu/libnss_compat-2.15.so
+b77be000-b77bf000 rwxp 00007000 08:05 23331899   /lib/i386-linux-gnu/libnss_compat-2.15.so
+b77bf000-b77c0000 rwxp 00000000 00:00 0 
+b77c0000-b77c1000 r-xp 00000000 00:00 0 
+b77c1000-b77cc000 r-xp 00000000 08:05 3280888    /usr/lib/jvm/java-6-sun-1.6.0.30/jre/lib/i386/libverify.so
+b77cc000-b77cd000 rwxp 0000b000 08:05 3280888    /usr/lib/jvm/java-6-sun-1.6.0.30/jre/lib/i386/libverify.so
+b77cd000-b77cf000 rwxp 00000000 00:00 0 
+b77cf000-b77d0000 r-xp 00000000 00:00 0          [vdso]
+b77d0000-b77f0000 r-xp 00000000 08:05 23344687   /lib/i386-linux-gnu/ld-2.15.so
+b77f0000-b77f1000 r-xp 0001f000 08:05 23344687   /lib/i386-linux-gnu/ld-2.15.so
+b77f1000-b77f2000 rwxp 00020000 08:05 23344687   /lib/i386-linux-gnu/ld-2.15.so
+bf9bc000-bf9de000 rwxp 00000000 00:00 0          [stack]
+
+VM Arguments:
+jvm_args: -Didea.launcher.port=7539 -Didea.launcher.bin.path=/opt/idea-IU-123.72/bin -Dfile.encoding=UTF-8 
+java_command: com.intellij.rt.execution.application.AppMain org.kevoree.tools.accesscontrol.framework.Tester
+Launcher Type: SUN_STANDARD
+
+Environment Variables:
+CLASSPATH=/opt/idea-IU-123.72/bin/../lib/bootstrap.jar:/opt/idea-IU-123.72/bin/../lib/extensions.jar:/opt/idea-IU-123.72/bin/../lib/util.jar:/opt/idea-IU-123.72/bin/../lib/jdom.jar:/opt/idea-IU-123.72/bin/../lib/log4j.jar:/opt/idea-IU-123.72/bin/../lib/trove4j.jar:/opt/idea-IU-123.72/bin/../lib/jna.jar:/usr/lib/jvm/java-6-sun-1.6.0.30/lib/tools.jar
+PATH=/usr/lib/lightdm/lightdm:$M2:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games
+LD_LIBRARY_PATH=/usr/lib/jvm/java-6-sun-1.6.0.30/jre/lib/i386/server:/usr/lib/jvm/java-6-sun-1.6.0.30/jre/lib/i386:/usr/lib/jvm/java-6-sun-1.6.0.30/jre/../lib/i386:/opt/idea-IU-123.72/bin:
+SHELL=/bin/bash
+DISPLAY=:0.0
+
+Signal Handlers:
+SIGSEGV: [libjvm.so+0x725400], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+SIGBUS: [libjvm.so+0x725400], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+SIGFPE: [libjvm.so+0x5dff40], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+SIGPIPE: [libjvm.so+0x5dff40], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+SIGXFSZ: [libjvm.so+0x5dff40], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+SIGILL: [libjvm.so+0x5dff40], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+SIGUSR1: SIG_DFL, sa_mask[0]=0x00000000, sa_flags=0x00000000
+SIGUSR2: [libjvm.so+0x5e31a0], sa_mask[0]=0x00000004, sa_flags=0x10000004
+SIGHUP: [libjvm.so+0x5e2d80], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+SIGINT: [libjvm.so+0x5e2d80], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+SIGTERM: [libjvm.so+0x5e2d80], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+SIGQUIT: [libjvm.so+0x5e2d80], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+
+
+---------------  S Y S T E M  ---------------
+
+OS:wheezy/sid
+
+uname:Linux 3.2.0-24-generic-pae #39-Ubuntu SMP Mon May 21 18:54:21 UTC 2012 i686
+libc:glibc 2.15 NPTL 2.15 
+rlimit: STACK 8192k, CORE 0k, NPROC 30918, NOFILE 4096, AS infinity
+load average:2.79 2.06 1.84
+
+/proc/meminfo:
+MemTotal:        3972148 kB
+MemFree:          275396 kB
+Buffers:          336944 kB
+Cached:          1069796 kB
+SwapCached:       120440 kB
+Active:          2376988 kB
+Inactive:        1070888 kB
+Active(anon):    1658388 kB
+Inactive(anon):   401284 kB
+Active(file):     718600 kB
+Inactive(file):   669604 kB
+Unevictable:           0 kB
+Mlocked:               0 kB
+HighTotal:       3140052 kB
+HighFree:          38720 kB
+LowTotal:         832096 kB
+LowFree:          236676 kB
+SwapTotal:       4053624 kB
+SwapFree:        3913820 kB
+Dirty:             10496 kB
+Writeback:             0 kB
+AnonPages:       1924840 kB
+Mapped:           152008 kB
+Shmem:             18360 kB
+Slab:             189844 kB
+SReclaimable:     164900 kB
+SUnreclaim:        24944 kB
+KernelStack:        5080 kB
+PageTables:        11612 kB
+NFS_Unstable:          0 kB
+Bounce:                0 kB
+WritebackTmp:          0 kB
+CommitLimit:     6039696 kB
+Committed_AS:    4435020 kB
+VmallocTotal:     122880 kB
+VmallocUsed:       65180 kB
+VmallocChunk:      21780 kB
+HardwareCorrupted:     0 kB
+AnonHugePages:         0 kB
+HugePages_Total:       0
+HugePages_Free:        0
+HugePages_Rsvd:        0
+HugePages_Surp:        0
+Hugepagesize:       2048 kB
+DirectMap4k:      176120 kB
+DirectMap2M:      737280 kB
+
+
+CPU:total 4 (2 cores per cpu, 2 threads per core) family 6 model 37 stepping 5, cmov, cx8, fxsr, mmx, sse, sse2, sse3, ssse3, sse4.1, sse4.2, popcnt, ht
+
+/proc/cpuinfo:
+processor	: 0
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 37
+model name	: Intel(R) Core(TM) i7 CPU       M 620  @ 2.67GHz
+stepping	: 5
+microcode	: 0x2
+cpu MHz		: 2661.000
+cache size	: 4096 KB
+physical id	: 0
+siblings	: 4
+core id		: 0
+cpu cores	: 2
+apicid		: 0
+initial apicid	: 0
+fdiv_bug	: no
+hlt_bug		: no
+f00f_bug	: no
+coma_bug	: no
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 11
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe nx rdtscp lm constant_tsc arch_perfmon pebs bts xtopology nonstop_tsc aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 cx16 xtpr pdcm pcid sse4_1 sse4_2 popcnt aes lahf_lm ida arat dts tpr_shadow vnmi flexpriority ept vpid
+bogomips	: 5319.85
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 36 bits physical, 48 bits virtual
+power management:
+
+processor	: 1
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 37
+model name	: Intel(R) Core(TM) i7 CPU       M 620  @ 2.67GHz
+stepping	: 5
+microcode	: 0x2
+cpu MHz		: 2661.000
+cache size	: 4096 KB
+physical id	: 0
+siblings	: 4
+core id		: 0
+cpu cores	: 2
+apicid		: 1
+initial apicid	: 1
+fdiv_bug	: no
+hlt_bug		: no
+f00f_bug	: no
+coma_bug	: no
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 11
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe nx rdtscp lm constant_tsc arch_perfmon pebs bts xtopology nonstop_tsc aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 cx16 xtpr pdcm pcid sse4_1 sse4_2 popcnt aes lahf_lm ida arat dts tpr_shadow vnmi flexpriority ept vpid
+bogomips	: 5320.18
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 36 bits physical, 48 bits virtual
+power management:
+
+processor	: 2
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 37
+model name	: Intel(R) Core(TM) i7 CPU       M 620  @ 2.67GHz
+stepping	: 5
+microcode	: 0x2
+cpu MHz		: 2661.000
+cache size	: 4096 KB
+physical id	: 0
+siblings	: 4
+core id		: 2
+cpu cores	: 2
+apicid		: 4
+initial apicid	: 4
+fdiv_bug	: no
+hlt_bug		: no
+f00f_bug	: no
+coma_bug	: no
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 11
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe nx rdtscp lm constant_tsc arch_perfmon pebs bts xtopology nonstop_tsc aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 cx16 xtpr pdcm pcid sse4_1 sse4_2 popcnt aes lahf_lm ida arat dts tpr_shadow vnmi flexpriority ept vpid
+bogomips	: 5320.20
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 36 bits physical, 48 bits virtual
+power management:
+
+processor	: 3
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 37
+model name	: Intel(R) Core(TM) i7 CPU       M 620  @ 2.67GHz
+stepping	: 5
+microcode	: 0x2
+cpu MHz		: 2527.000
+cache size	: 4096 KB
+physical id	: 0
+siblings	: 4
+core id		: 2
+cpu cores	: 2
+apicid		: 5
+initial apicid	: 5
+fdiv_bug	: no
+hlt_bug		: no
+f00f_bug	: no
+coma_bug	: no
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 11
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe nx rdtscp lm constant_tsc arch_perfmon pebs bts xtopology nonstop_tsc aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 cx16 xtpr pdcm pcid sse4_1 sse4_2 popcnt aes lahf_lm ida arat dts tpr_shadow vnmi flexpriority ept vpid
+bogomips	: 5320.19
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 36 bits physical, 48 bits virtual
+power management:
+
+
+
+Memory: 4k page, physical 3972148k(275396k free), swap 4053624k(3913820k free)
+
+vm_info: Java HotSpot(TM) Server VM (20.5-b03) for linux-x86 JRE (1.6.0_30-b12), built on Nov 10 2011 01:04:19 by "java_re" with gcc 3.2.1-7a (J2SE release)
+
+time: Wed Feb 20 15:33:05 2013
+elapsed time: 1 seconds
+
