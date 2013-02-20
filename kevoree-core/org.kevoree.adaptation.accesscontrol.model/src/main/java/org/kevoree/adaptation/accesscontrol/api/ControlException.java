@@ -11,15 +11,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kevoree.adaptation.control.api;
+package org.kevoree.adaptation.accesscontrol.api;
 
+import java.lang.Exception;import java.lang.String;
 /**
  * Created with IntelliJ IDEA.
- * User: duke
- * Date: 1/21/13
- * Time: 4:02 PM
+ * User: jed
+ * Date: 21/01/13
+ * Time: 17:30
+ * To change this template use File | Settings | File Templates.
  */
-public interface ModelSignature {
-    public String getKey();
-    public byte[] getSignature();
+public class ControlException extends Exception
+{
+    public ControlException(String msg){
+        super(msg);
+    }
+    public ControlException(Exception e){
+        super(e);
+    }
 }
