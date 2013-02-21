@@ -23,7 +23,6 @@ import org.kevoree.framework.AbstractGroupType;
 import org.kevoree.framework.KevoreePropertyHelper;
 import org.kevoree.framework.KevoreeXmiHelper;
 import org.kevoree.framework.NetworkHelper;
-import org.kevoree.kompare.JavaSePrimitive;
 import org.kevoree.library.NodeNetworkHelper;
 
 import org.kevoree.tools.accesscontrol.framework.api.ICompareAccessControl;
@@ -71,21 +70,15 @@ import java.util.concurrent.TimeoutException;
 @Library(name = "JavaSE", names = "Android")
 public class AccessControlGroup extends AbstractGroupType implements ConnectionListener {
 
-
-
     protected Logger logger = LoggerFactory.getLogger(this.getClass());
-
     private final byte getModel = 0;
     private final byte pushModel = 1;
-
     protected Server server = null;
     private boolean starting;
     protected boolean udp = false;
     boolean ssl = false;
     int port = -1;
     private  AccessControlRoot root;
-
-
 
     @Start
     public void startRestGroup() throws IOException, NoSuchAlgorithmException, ControlException, InvalidKeyException {
@@ -101,55 +94,26 @@ public class AccessControlGroup extends AbstractGroupType implements ConnectionL
         starting = true;
 
 
-        KeyPair key1 =  HelperSignature.generateKeys(1024);
+
         DefaultAccessControlFactory factory = new DefaultAccessControlFactory();
         root =  factory.createAccessControlRoot();
 
         Role role1 = factory.createRole();
 
         User user1 = factory.createUser();
-        user1.setModulus(((RSAPublicKey)key1.getPublic()).getModulus().toString());   //id
-        user1.setPublicExponent(((RSAPublicKey) key1.getPublic()).getPublicExponent().toString());
+        user1.setModulus(getDictionary().get("modulus").toString());
+        user1.setPublicExponent(getDictionary().get("public_exponent").toString());
 
-
-
-        root.addUsers(user1);
 
 
         Element element1 = factory.createElement();
         element1.setElementQuery("typeDefinitions[FakeConsole]");
-
-        Permission p1 = factory.createPermission();
-        p1.setPrimitiveQuery(JavaSePrimitive.AddInstance());
-        Permission p2 = factory.createPermission();
-        p2.setPrimitiveQuery(JavaSePrimitive.StartInstance());
-        Permission p3 = factory.createPermission();
-        p3.setPrimitiveQuery(JavaSePrimitive.UpdateInstance());
-        Permission p4 = factory.createPermission();
-        p4.setPrimitiveQuery(JavaSePrimitive.StopInstance());
-        Permission p5 = factory.createPermission();
-        p5.setPrimitiveQuery(JavaSePrimitive.UpdateDictionaryInstance());
-        Permission p6 = factory.createPermission();
-        p6.setPrimitiveQuery(JavaSePrimitive.AddFragmentBinding());
-
-        element1.addPermissions(p1);
-        element1.addPermissions(p2);
-        element1.addPermissions(p3);
-        element1.addPermissions(p4);
-        element1.addPermissions(p5);
+        element1.addAllPermissions(HelperSignature.getGenericsPermissions());
 
         Element element2 = factory.createElement();
         element2.setElementQuery("typeDefinitions[NioChannel]");
 
-
-        //element2.addPermissions(p1);
-        element2.addPermissions(p2);
-        element2.addPermissions(p3);
-        element2.addPermissions(p4);
-        element2.addPermissions(p5);
-        element2.addPermissions(p6);
-
-
+        element2.addAllPermissions(HelperSignature.getGenericsPermissions());
 
         Element element3 = factory.createElement();
         element3.setElementQuery("typeDefinitions[Grapher]");
@@ -168,7 +132,7 @@ public class AccessControlGroup extends AbstractGroupType implements ConnectionL
         role1.addElements(element4);
 
 
-
+        root.addUsers(user1);
         user1.addRoles(role1);
 
     }
@@ -385,21 +349,27 @@ public class AccessControlGroup extends AbstractGroupType implements ConnectionL
                         try
                         {
                             SignedModelImpl       signedModel = (SignedModelImpl) ois.readObject();
-                            ContainerRoot target_model = KevoreeXmiHelper.$instance.loadString(new String(signedModel.getSerialiedModel()));
 
                             ICompareAccessControl accessControl =    new CompareAccessControlImpl(root);
+
                             List<AdaptationPrimitive> result =     accessControl.approval(getNodeName(), getModelService().getLastModel(), signedModel);
 
-                            if(result.size() == 0)
+                            if(result != null && result.size() == 0)
                             {
                                 logger.info("model accepted according to access control");
+                                ContainerRoot target_model = KevoreeXmiHelper.$instance.loadString(new String(signedModel.getSerialiedModel()));
                                 locaUpdateModel(target_model);
                             }else
                             {
-                                for(AdaptationPrimitive p : result)
-                                {
-                                    logger.error("Refused Adapation Primitive " + p.getPrimitiveType().getName() + " " + ((Instance) p.getRef()).getName());
+                                if(result != null){
+                                    for(AdaptationPrimitive p : result)
+                                    {
+                                        logger.error("Refused Adapation Primitive " + p.getPrimitiveType().getName() + " " + p.getRef());
+                                    }
+                                }  else {
+                                    logger.error(" no result ");
                                 }
+
                             }
                         } finally {
                             // on ferme les flux
