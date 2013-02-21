@@ -18,6 +18,7 @@ import org.kevoree.ContainerRoot;
 
 import org.kevoree.adaptation.accesscontrol.api.ControlException;
 import org.kevoree.adaptation.accesscontrol.api.SignedModel;
+import org.kevoree.adaptation.accesscontrol.api.SignedPDP;
 import org.kevoreeAdaptation.AdaptationModel;
 import org.kevoreeAdaptation.AdaptationPrimitive;
 
@@ -51,6 +52,8 @@ public interface ICompareAccessControl
      * @throws ControlException
      */
     public List<AdaptationPrimitive> approval(AdaptationModel adaptationModel,SignedModel target_model) throws ControlException;
+
+    public boolean accessPDP(SignedPDP p);
 
 
 }

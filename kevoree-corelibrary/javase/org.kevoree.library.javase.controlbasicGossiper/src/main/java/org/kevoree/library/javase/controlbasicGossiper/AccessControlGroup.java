@@ -17,6 +17,7 @@ import org.kevoree.Instance;
 
 import org.kevoree.adaptation.accesscontrol.api.ControlException;
 
+import org.kevoree.adaptation.accesscontrol.api.PDPSignature;
 import org.kevoree.adaptation.accesscontrol.api.SignedModel;
 import org.kevoree.annotation.*;
 import org.kevoree.framework.AbstractGroupType;
@@ -28,12 +29,16 @@ import org.kevoree.library.NodeNetworkHelper;
 import org.kevoree.tools.accesscontrol.framework.api.ICompareAccessControl;
 import org.kevoree.tools.accesscontrol.framework.impl.CompareAccessControlImpl;
 import org.kevoree.tools.accesscontrol.framework.impl.SignedModelImpl;
+import org.kevoree.tools.accesscontrol.framework.impl.SignedPDPImpl;
+import org.kevoree.tools.accesscontrol.framework.utils.AccessControlXmiHelper;
 import org.kevoree.tools.accesscontrol.framework.utils.HelperSignature;
 import org.kevoreeAdaptation.AdaptationPrimitive;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import scala.Option;
 import sun.security.rsa.RSAPublicKeyImpl;
+
+import javax.swing.*;
 import java.io.*;
 import java.math.BigInteger;
 import java.security.InvalidKeyException;
@@ -44,6 +49,7 @@ import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.security.spec.KeySpec;
 import java.security.spec.RSAPrivateKeySpec;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Exchanger;
 import java.util.concurrent.TimeUnit;
@@ -60,11 +66,9 @@ import java.util.concurrent.TimeoutException;
 @DictionaryType({
         @DictionaryAttribute(name = "port", defaultValue = "8000", optional = true, fragmentDependant = true),
         @DictionaryAttribute(name = "ip", defaultValue = "0.0.0.0", optional = true, fragmentDependant = true),
-        @DictionaryAttribute(name = "modulus", defaultValue = "113516234051956049432409187188825393502984619772956207385345685738666746838534603335798592032015399622572296950837820797405103032010371993257571113176479404016660247843515233397619352905415148266464061237370342391412374444151093637080303229352033181632645308355392280045548592503992366806190035989980710579393", optional = false),
-        @DictionaryAttribute(name = "public_exponent", defaultValue = "65537", optional = true),
-        @DictionaryAttribute(name = "private_exponent", defaultValue = "21315146806283033161652615431675012473072138348200239377512916500603216299113582078067923059431794371963542522193726028546732348321095529991114486759384092703814541510187115924048468004015237870413922406207019743559010600414146667882946750781755445400385375683434026824013704183952393040334248195815289551457", optional = true),
-        @DictionaryAttribute(name = "port", defaultValue = "8000", optional = true, fragmentDependant = true),
-        @DictionaryAttribute(name = "ssl", defaultValue = "false", vals = {"true", "false"})
+        @DictionaryAttribute(name = "ssl", defaultValue = "false", vals = {"true", "false"}) ,
+        @DictionaryAttribute(name = "pdp", defaultValue = "false", vals = {"true", "false"}),
+        @DictionaryAttribute(name = "gui", defaultValue = "false", vals = {"true", "false"})
 })
 @GroupType
 @Library(name = "JavaSE", names = "Android")
@@ -78,12 +82,30 @@ public class AccessControlGroup extends AbstractGroupType implements ConnectionL
     protected boolean udp = false;
     boolean ssl = false;
     int port = -1;
-    private  AccessControlRoot root;
+    private  AccessControlRoot root=null;
 
     @Start
     public void startRestGroup() throws IOException, NoSuchAlgorithmException, ControlException, InvalidKeyException {
         port = Integer.parseInt(this.getDictionary().get("port").toString());
         ssl = Boolean.parseBoolean(this.getDictionary().get("ssl").toString());
+
+        // root = AccessControlXmiHelper.$instance.loadStream(Tester.class.getClassLoader().getResourceAsStream("model.ac"));
+
+        if(Boolean.parseBoolean(getDictionary().get("gui").toString()))
+        {
+            JFileChooser dialogue = new JFileChooser(new File("."));
+            PrintWriter sortie;
+            File fichier=null;
+            if (dialogue.showOpenDialog(null)==
+                    JFileChooser.APPROVE_OPTION) {
+                fichier = dialogue.getSelectedFile();
+                sortie = new PrintWriter
+                        (new FileWriter(fichier.getPath(), true));
+
+                sortie.close();
+            }
+            root =  AccessControlXmiHelper.$instance.loadStream(new FileInputStream(fichier));
+        }
         if (udp) {
             server = new Server(this, port, port, ssl);
         } else {
@@ -92,49 +114,6 @@ public class AccessControlGroup extends AbstractGroupType implements ConnectionL
         logger.info("BasicGroup listen on " + port + "-SSL=" + ssl);
         server.startServer();
         starting = true;
-
-
-
-        DefaultAccessControlFactory factory = new DefaultAccessControlFactory();
-        root =  factory.createAccessControlRoot();
-
-        Role role1 = factory.createRole();
-
-        User user1 = factory.createUser();
-        user1.setModulus(getDictionary().get("modulus").toString());
-        user1.setPublicExponent(getDictionary().get("public_exponent").toString());
-
-
-
-        Element element1 = factory.createElement();
-        element1.setElementQuery("typeDefinitions[FakeConsole]");
-        element1.addAllPermissions(HelperSignature.getGenericsPermissions());
-
-        Element element2 = factory.createElement();
-        element2.setElementQuery("typeDefinitions[NioChannel]");
-
-        element2.addAllPermissions(HelperSignature.getGenericsPermissions());
-
-        Element element3 = factory.createElement();
-        element3.setElementQuery("typeDefinitions[Grapher]");
-        element3.addAllPermissions(HelperSignature.getGenericsPermissions());
-
-
-        Element element4 = factory.createElement();
-        element4.setElementQuery("typeDefinitions[BasicGroup]");
-        element4.addAllPermissions(HelperSignature.getGenericsPermissions());
-
-
-
-        role1.addElements(element1);
-        role1.addElements(element2);
-        role1.addElements(element3);
-        role1.addElements(element4);
-
-
-        root.addUsers(user1);
-        user1.addRoles(role1);
-
     }
 
     @Stop
@@ -187,6 +166,10 @@ public class AccessControlGroup extends AbstractGroupType implements ConnectionL
         }
     }
 
+    public void pushPDP(PDPSignature p){
+
+    }
+
     @Override
     public void push(ContainerRoot model, String targetNodeName) throws Exception
     {
@@ -228,15 +211,48 @@ public class AccessControlGroup extends AbstractGroupType implements ConnectionL
             }
         }, ip, PORT, ssl);
 
-        BigInteger exponent = new BigInteger(getDictionary().get("public_exponent").toString());
-        BigInteger modulus = new BigInteger(getDictionary().get("modulus").toString());
-        RSAPublicKey publicKey_default = new RSAPublicKeyImpl(modulus,exponent);
+        String private_exponent="";
+        String modulus="";
+        if(Boolean.parseBoolean(getDictionary().get("gui").toString()))
+        {
+            JFileChooser dialogue = new JFileChooser(new File("."));
+            PrintWriter sortie;
+            File fichier=null;
+            if (dialogue.showOpenDialog(null)==
+                    JFileChooser.APPROVE_OPTION) {
+                fichier = dialogue.getSelectedFile();
+                sortie = new PrintWriter
+                        (new FileWriter(fichier.getPath(), true));
+
+                sortie.close();
+            }
+            FileReader fr = new FileReader (fichier);
+            BufferedReader br = new BufferedReader (fr);
+            StringBuilder stringkey = new StringBuilder();
+            try
+            {
+                String line = br.readLine();
+
+                while (line != null)
+                {
+                    stringkey.append(line);
+                    line = br.readLine();
+                }
+
+                br.close();
+                fr.close();
+                private_exponent = stringkey.toString().split(":")[0];
+                modulus = stringkey.toString().split(":")[1];
+            }      catch (EOFException e ){
+
+            }
 
 
-        KeySpec spec =	  new RSAPrivateKeySpec(modulus, new BigInteger(getDictionary().get("private_exponent").toString()));
-        RSAPrivateKey privateKey_default = (RSAPrivateKey) KeyFactory.getInstance("RSA").generatePrivate(spec);
+        }
 
-        SignedModel signedmodel = new SignedModelImpl(getModelService().getLastModel(),privateKey_default);
+
+
+        SignedModel signedmodel = new SignedModelImpl(getModelService().getLastModel(),HelperSignature.getPrivateKey(modulus,private_exponent));
 
 
         ObjectOutputStream oos= new ObjectOutputStream(output);
@@ -348,26 +364,59 @@ public class AccessControlGroup extends AbstractGroupType implements ConnectionL
 
                         try
                         {
-                            SignedModelImpl       signedModel = (SignedModelImpl) ois.readObject();
 
-                            ICompareAccessControl accessControl =    new CompareAccessControlImpl(root);
+                            Object signed =    ois.readObject();
 
-                            List<AdaptationPrimitive> result =     accessControl.approval(getNodeName(), getModelService().getLastModel(), signedModel);
+                            if(signed instanceof SignedModelImpl) {
 
-                            if(result != null && result.size() == 0)
-                            {
-                                logger.info("model accepted according to access control");
-                                ContainerRoot target_model = KevoreeXmiHelper.$instance.loadString(new String(signedModel.getSerialiedModel()));
-                                locaUpdateModel(target_model);
-                            }else
-                            {
-                                if(result != null){
-                                    for(AdaptationPrimitive p : result)
+                                SignedModel signedModel = (SignedModelImpl)signed;
+                                if(root != null)
+                                {
+                                    ICompareAccessControl accessControl =    new CompareAccessControlImpl(root);
+
+                                    List<AdaptationPrimitive> result =     accessControl.approval(getNodeName(), getModelService().getLastModel(), signedModel);
+
+                                    if(result != null && result.size() == 0)
                                     {
-                                        logger.error("Refused Adapation Primitive " + p.getPrimitiveType().getName() + " " + p.getRef());
+                                        logger.info("model accepted according to access control");
+                                        ContainerRoot target_model = KevoreeXmiHelper.$instance.loadString(new String(signedModel.getSerialiedModel()));
+                                        locaUpdateModel(target_model);
+                                    }else
+                                    {
+                                        if(result != null){
+                                            for(AdaptationPrimitive p : result)
+                                            {
+                                                logger.error("Refused Adapation Primitive " + p.getPrimitiveType().getName() + " " + p.getRef());
+                                            }
+                                        }  else {
+                                            logger.error(" no result ");
+                                        }
+
                                     }
-                                }  else {
-                                    logger.error(" no result ");
+                                }else
+                                {
+                                    logger.error("There is no access control defined");
+                                }
+
+                            } else if( signed instanceof SignedPDPImpl)
+                            {
+                                SignedPDPImpl pdp = (SignedPDPImpl)signed;
+
+                                if(root == null)
+                                {
+                                    root = AccessControlXmiHelper.$instance.loadString(new String(pdp.getSerialiedModel()));
+                                }  else
+                                {
+
+                                    ICompareAccessControl accessControl =    new CompareAccessControlImpl(root);
+                                    if(accessControl.accessPDP(pdp))
+                                    {
+                                        root = AccessControlXmiHelper.$instance.loadString(new String(pdp.getSerialiedModel()));
+                                    }else {
+                                        logger.error("There is no acess to PDP");
+
+                                    }
+
                                 }
 
                             }
