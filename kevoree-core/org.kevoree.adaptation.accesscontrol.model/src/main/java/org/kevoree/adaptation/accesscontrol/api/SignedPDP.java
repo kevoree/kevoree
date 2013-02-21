@@ -17,10 +17,10 @@ package org.kevoree.adaptation.accesscontrol.api;
  * Created with IntelliJ IDEA.
  * User: jed
  * Date: 21/02/13
- * Time: 9:12
+ * Time: 11:05
+ * To change this template use File | Settings | File Templates.
  */
-public interface SignedModel {
-
+public interface SignedPDP {
     /**
      * This method returns the model
      * @return
@@ -33,6 +33,5 @@ public interface SignedModel {
      */
     public String getModelFormat();
 
-    public ModelSignature getSignature();
-
+    public PDPSignature getSignature();
 }

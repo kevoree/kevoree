@@ -15,9 +15,9 @@ package org.kevoree.adaptation.accesscontrol.api;
 
 /**
  * Created with IntelliJ IDEA.
- * User: duke
- * Date: 1/21/13
- * Time: 4:02 PM
+ * User: jed
+ * Date: 21/02/13
+ * Time: 8:58
  */
 public interface ModelSignature {
     public String getKey();
