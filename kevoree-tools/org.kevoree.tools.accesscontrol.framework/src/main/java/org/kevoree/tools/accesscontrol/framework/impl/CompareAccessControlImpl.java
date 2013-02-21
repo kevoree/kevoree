@@ -16,9 +16,7 @@ package org.kevoree.tools.accesscontrol.framework.impl;
 
 import org.kevoree.*;
 import org.kevoree.AccessControl.*;
-import org.kevoree.adaptation.accesscontrol.api.ControlException;
-import org.kevoree.adaptation.accesscontrol.api.ModelSignature;
-import org.kevoree.adaptation.accesscontrol.api.SignedModel;
+import org.kevoree.adaptation.accesscontrol.api.*;
 import org.kevoree.framework.KevoreeXmiHelper;
 import org.kevoree.kompare.KevoreeKompareBean;
 import org.kevoree.tools.accesscontrol.framework.api.ICompareAccessControl;
@@ -45,21 +43,39 @@ public class CompareAccessControlImpl implements ICompareAccessControl
 {
     private AccessControlRoot root;
     private Logger logger = LoggerFactory.getLogger(CompareAccessControlImpl.class);
-
+    private  long start;
+    private  long duree;
     public CompareAccessControlImpl(AccessControlRoot root){
         this.root = root;
     }
 
     @Override
     public List<AdaptationPrimitive> approval(String nodeName, ContainerRoot current_model, SignedModel target_modelSigned) throws ControlException {
+
         KevoreeKompareBean kompareBean = new KevoreeKompareBean();
         AdaptationModel adaptationModel = kompareBean.kompare(current_model,KevoreeXmiHelper.$instance.loadString(new String(target_modelSigned.getSerialiedModel())), nodeName);
-        return checker(adaptationModel, target_modelSigned);
+        start= System.currentTimeMillis();
+        List<AdaptationPrimitive>  result = checker(adaptationModel, target_modelSigned);
+        duree =  (System.currentTimeMillis() - start) ;
+        System.out.println("Duree  "+duree+ " ms");
+        return result;
     }
 
     @Override
     public List<AdaptationPrimitive> approval(AdaptationModel adaptationModel, SignedModel target_model) throws ControlException {
         return checker(adaptationModel, target_model);
+    }
+
+    @Override
+    public boolean accessPDP(SignedPDP p)
+    {
+        PDPSignature signature =  p.getSignature();
+        User user = root.findUsersByID(signature.getKey());
+        if(user == null){
+            return false;
+        }else {
+            return user.getPdpadmin();
+        }
     }
 
 
@@ -78,11 +94,19 @@ public class CompareAccessControlImpl implements ICompareAccessControl
             ContainerRoot target_model = KevoreeXmiHelper.$instance.loadString(new String(signedModel.getSerialiedModel()));
 
             ModelSignature signature =  signedModel.getSignature();
-            logger.debug("Signature get key "+signature.getKey());
+            logger.debug("Signature get key " + signature.getKey());
             logger.debug("Users = "+root.getUsers().size());
+
             User user = root.findUsersByID(signature.getKey());
             if(user == null){
-                logger.error("No user associated with the key");
+                logger.warn("No user associated with the key");
+                result_forbidden.addAll(adaptationModel.getAdaptations());
+                return  result_forbidden;
+            }
+
+            if(user.getRoles().size() == 0)
+            {
+                logger.warn("No Role associated to this User");
                 result_forbidden.addAll(adaptationModel.getAdaptations());
                 return  result_forbidden;
             }

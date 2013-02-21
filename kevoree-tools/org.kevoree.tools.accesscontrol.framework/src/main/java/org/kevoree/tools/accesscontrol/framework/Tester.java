@@ -34,6 +34,10 @@ import org.kevoree.tools.accesscontrol.framework.utils.HelperSignature;
 
 import org.kevoreeAdaptation.AdaptationPrimitive;
 
+import javax.swing.*;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.PrintWriter;
 import java.math.BigInteger;
 import java.security.KeyFactory;
 import java.security.KeyPair;
@@ -56,6 +60,22 @@ public class Tester {
     {
 
 
+        JFileChooser dialogue = new JFileChooser(new File("."));
+        PrintWriter sortie;
+        File fichier=null;
+
+        if (dialogue.showOpenDialog(null)==
+                JFileChooser.APPROVE_OPTION) {
+            fichier = dialogue.getSelectedFile();
+            sortie = new PrintWriter
+                    (new FileWriter(fichier.getPath(), true));
+
+            sortie.close();
+        }
+
+                System.out.println( fichier.getPath());
+        System.exit(0);
+
         ContainerRoot current_model = KevoreeXmiHelper.$instance.loadStream(Tester.class.getClassLoader().getResourceAsStream("empty_node.kev"));
         ContainerRoot target_model = KevoreeXmiHelper.$instance.loadStream(Tester.class.getClassLoader().getResourceAsStream("random_nio_grapher_group.kev"));
         AccessControlRoot root = AccessControlXmiHelper.$instance.loadStream(Tester.class.getClassLoader().getResourceAsStream("model.ac"));
@@ -63,16 +83,13 @@ public class Tester {
 
         ICompareAccessControl accessControl =    new CompareAccessControlImpl(root);
 
-
         String modulus = ("144020407584804763735781397875483509259162896393675259140832504723667556298258224080835620462080899939316115674945584086752254208548119246078919563808881551818193159408718845506936985497165354139428760891323751580371321471610817626346638768300361018500421805148485036897404239717699245568771580543630086019231");
         String private_exponent = ("4109406322895233351937244823949130450198126497340017617427663515773659616365455834584473049790061841196898489588297331922833138074446236327075996525971717609987352411769231643214939977856590128556711125769670219934822712525295744744260700314730439781770858314592005380741217371388959032631896022121650706113");
 
 
-        SignedModel signedmodel = new SignedModelImpl(target_model,  HelperSignature.getPrivateKey(modulus,private_exponent));
+        SignedModel signedmodel = new SignedModelImpl(target_model,  HelperSignature.getPrivateKey(modulus, private_exponent));
 
-
-
-        List<AdaptationPrimitive> result =     accessControl.approval("node0", current_model, signedmodel);
+        List<AdaptationPrimitive> result =  accessControl.approval("node0", current_model, signedmodel);
 
         if(result.size() == 0)
         {
