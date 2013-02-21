@@ -25,6 +25,8 @@ import org.kevoree.tools.accesscontrol.framework.api.ICompareAccessControl;
 import org.kevoree.tools.accesscontrol.framework.utils.HelperSignature;
 import org.kevoreeAdaptation.AdaptationModel;
 import org.kevoreeAdaptation.AdaptationPrimitive;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import sun.security.rsa.RSAPublicKeyImpl;
 
 import java.math.BigInteger;
@@ -41,13 +43,13 @@ import java.util.List;
  */
 public class CompareAccessControlImpl implements ICompareAccessControl
 {
-
     private AccessControlRoot root;
+    private Logger logger = LoggerFactory.getLogger(CompareAccessControlImpl.class);
 
     public CompareAccessControlImpl(AccessControlRoot root){
-
         this.root = root;
     }
+
     @Override
     public List<AdaptationPrimitive> approval(String nodeName, ContainerRoot current_model, SignedModel target_modelSigned) throws ControlException {
         KevoreeKompareBean kompareBean = new KevoreeKompareBean();
@@ -63,21 +65,28 @@ public class CompareAccessControlImpl implements ICompareAccessControl
 
     public  List<AdaptationPrimitive> checker(AdaptationModel adaptationModel, SignedModel signedModel) throws ControlException
     {
-        if(root == null)
-        {
-            throw new ControlException("Access Control Model is not available");
-        }
 
         List<AdaptationPrimitive> result_forbidden = new ArrayList<AdaptationPrimitive>();
-
-        // todo          target_signed.getModelFormat()
-        ContainerRoot target_model = KevoreeXmiHelper.$instance.loadString(new String(signedModel.getSerialiedModel()));
-
-        ModelSignature signature =  signedModel.getSignature();
-
+        if(root == null)
+        {
+            logger.error("No access control policy is defined.");
+            throw new ControlException("No access control policy is defined.");
+        }
         try
         {
+            // todo          target_signed.getModelFormat()
+            ContainerRoot target_model = KevoreeXmiHelper.$instance.loadString(new String(signedModel.getSerialiedModel()));
+
+            ModelSignature signature =  signedModel.getSignature();
+            logger.debug("Signature get key "+signature.getKey());
+            logger.debug("Users = "+root.getUsers().size());
             User user = root.findUsersByID(signature.getKey());
+            if(user == null){
+                logger.error("No user associated with the key");
+                result_forbidden.addAll(adaptationModel.getAdaptations());
+                return  result_forbidden;
+            }
+
             BigInteger exponent = new BigInteger(user.getPublicExponent());
             BigInteger modulus =  new BigInteger(user.getModulus());
             RSAPublicKey key = new RSAPublicKeyImpl(modulus,exponent);
@@ -135,6 +144,7 @@ public class CompareAccessControlImpl implements ICompareAccessControl
         {
             // this kPublicKey is ignore
             e.printStackTrace();
+            return null;
         }
 
         return result_forbidden;
