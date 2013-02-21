@@ -23,5 +23,5 @@ package org.kevoree.tools.accesscontrol.framework.api;
 public enum ModelFormat {
     JSON,
     BIN,
-    XMI
+    XMI,
 }

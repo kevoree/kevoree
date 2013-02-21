@@ -13,13 +13,18 @@
  */
 package org.kevoree.tools.accesscontrol.framework.utils;
 
-import org.kevoree.AccessControl.*;
+
 import org.kevoree.AccessControl.impl.DefaultAccessControlFactory;
 import org.kevoree.kompare.JavaSePrimitive;
 
+import java.math.BigInteger;
 import java.security.*;
 import java.security.Permission;
+import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.KeySpec;
+import java.security.spec.RSAPrivateKeySpec;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -85,6 +90,14 @@ public class HelperSignature {
         return kp;
     }
 
+
+    public static RSAPrivateKey getPrivateKey(String _modulus,String _private_exponent) throws NoSuchAlgorithmException, InvalidKeySpecException {
+        BigInteger modulus = new BigInteger(_modulus);
+        BigInteger private_exponent =new BigInteger(_private_exponent);
+        KeySpec spec =	  new RSAPrivateKeySpec(modulus,private_exponent);
+        RSAPrivateKey key = (RSAPrivateKey) KeyFactory.getInstance("RSA").generatePrivate(spec);
+        return  key;
+    }
 
     public static String serializePublicKey(PublicKey key){
         return "{"+((RSAPublicKey)key).getPublicExponent()+":"+((RSAPublicKey)key).getModulus()+"}";

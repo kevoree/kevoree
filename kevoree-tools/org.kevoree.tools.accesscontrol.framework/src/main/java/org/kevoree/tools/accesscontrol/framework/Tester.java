@@ -18,8 +18,9 @@ import org.kevoree.AccessControl.impl.DefaultAccessControlFactory;
 import org.kevoree.ContainerRoot;
 import org.kevoree.Instance;
 
-import org.kevoree.KevoreeFactory;
+
 import org.kevoree.adaptation.accesscontrol.api.SignedModel;
+
 
 import org.kevoree.framework.KevoreeXmiHelper;
 import org.kevoree.kompare.JavaSePrimitive;
@@ -28,12 +29,18 @@ import org.kevoree.tools.accesscontrol.framework.api.ICompareAccessControl;
 import org.kevoree.tools.accesscontrol.framework.impl.CompareAccessControlImpl;
 
 import org.kevoree.tools.accesscontrol.framework.impl.SignedModelImpl;
+import org.kevoree.tools.accesscontrol.framework.utils.AccessControlXmiHelper;
 import org.kevoree.tools.accesscontrol.framework.utils.HelperSignature;
 
 import org.kevoreeAdaptation.AdaptationPrimitive;
 
+import java.math.BigInteger;
+import java.security.KeyFactory;
 import java.security.KeyPair;
+import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
+import java.security.spec.KeySpec;
+import java.security.spec.RSAPrivateKeySpec;
 import java.util.List;
 
 /**
@@ -48,89 +55,20 @@ public class Tester {
     public static void main(String argv[]) throws Exception
     {
 
-        KeyPair key1 =  HelperSignature.generateKeys(1024);
 
         ContainerRoot current_model = KevoreeXmiHelper.$instance.loadStream(Tester.class.getClassLoader().getResourceAsStream("empty_node.kev"));
         ContainerRoot target_model = KevoreeXmiHelper.$instance.loadStream(Tester.class.getClassLoader().getResourceAsStream("random_nio_grapher_group.kev"));
+        AccessControlRoot root = AccessControlXmiHelper.$instance.loadStream(Tester.class.getClassLoader().getResourceAsStream("model.ac"));
 
-
-        DefaultAccessControlFactory factory = new DefaultAccessControlFactory();
-
-        AccessControlRoot root =  factory.createAccessControlRoot();
-
-        Role role1 = factory.createRole();
-
-        User user1 = factory.createUser();
-        user1.setModulus(((RSAPublicKey)key1.getPublic()).getModulus().toString());   //id
-        user1.setPublicExponent(((RSAPublicKey) key1.getPublic()).getPublicExponent().toString());
-
-
-
-        root.addUsers(user1);
-
-
-        Element element1 = factory.createElement();
-        element1.setElementQuery("typeDefinitions[FakeConsole]");
-
-        Permission p1 = factory.createPermission();
-        p1.setPrimitiveQuery(JavaSePrimitive.AddInstance());
-        Permission p2 = factory.createPermission();
-        p2.setPrimitiveQuery(JavaSePrimitive.StartInstance());
-        Permission p3 = factory.createPermission();
-        p3.setPrimitiveQuery(JavaSePrimitive.UpdateInstance());
-        Permission p4 = factory.createPermission();
-        p4.setPrimitiveQuery(JavaSePrimitive.StopInstance());
-        Permission p5 = factory.createPermission();
-        p5.setPrimitiveQuery(JavaSePrimitive.UpdateDictionaryInstance());
-        Permission p6 = factory.createPermission();
-        p6.setPrimitiveQuery(JavaSePrimitive.AddFragmentBinding());
-
-        element1.addPermissions(p1);
-        element1.addPermissions(p2);
-        element1.addPermissions(p3);
-        element1.addPermissions(p4);
-        element1.addPermissions(p5);
-
-        Element element2 = factory.createElement();
-        element2.setElementQuery("typeDefinitions[NioChannel]");
-
-
-        //element2.addPermissions(p1);
-        element2.addPermissions(p2);
-        element2.addPermissions(p3);
-        element2.addPermissions(p4);
-        element2.addPermissions(p5);
-        element2.addPermissions(p6);
-
-
-
-        Element element3 = factory.createElement();
-        element3.setElementQuery("typeDefinitions[Grapher]");
-        element3.addAllPermissions(HelperSignature.getGenericsPermissions());
-
-
-        Element element4 = factory.createElement();
-        element4.setElementQuery("typeDefinitions[BasicGroup]");
-        element4.addAllPermissions(HelperSignature.getGenericsPermissions());
-
-
-
-        role1.addElements(element1);
-        role1.addElements(element2);
-        role1.addElements(element3);
-        role1.addElements(element4);
-
-
-
-        user1.addRoles(role1);
 
         ICompareAccessControl accessControl =    new CompareAccessControlImpl(root);
 
 
+        String modulus = ("144020407584804763735781397875483509259162896393675259140832504723667556298258224080835620462080899939316115674945584086752254208548119246078919563808881551818193159408718845506936985497165354139428760891323751580371321471610817626346638768300361018500421805148485036897404239717699245568771580543630086019231");
+        String private_exponent = ("4109406322895233351937244823949130450198126497340017617427663515773659616365455834584473049790061841196898489588297331922833138074446236327075996525971717609987352411769231643214939977856590128556711125769670219934822712525295744744260700314730439781770858314592005380741217371388959032631896022121650706113");
 
 
-
-        SignedModel signedmodel = new SignedModelImpl(target_model,key1.getPrivate());
+        SignedModel signedmodel = new SignedModelImpl(target_model,  HelperSignature.getPrivateKey(modulus,private_exponent));
 
 
 
@@ -143,7 +81,7 @@ public class Tester {
         {
             for(AdaptationPrimitive p : result)
             {
-                System.err.println("ERROR "+p.getPrimitiveType().getName()+" "+((Instance)p.getRef()).getName());
+                System.err.println("ERROR "+p.getPrimitiveType().getName()+" "+p.getRef());
             }
         }
 
