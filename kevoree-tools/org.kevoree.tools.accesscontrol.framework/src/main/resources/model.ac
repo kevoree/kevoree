@@ -30,20 +30,6 @@
 <permissions xsi:type="AccessControl:Permission" PrimitiveQuery="AddInstance">
 </permissions>
 </elements>
-<elements xsi:type="AccessControl:Element" elementQuery="typeDefinitions[FakeConsole]">
-<permissions xsi:type="AccessControl:Permission" PrimitiveQuery="AddFragmentBinding">
-</permissions>
-<permissions xsi:type="AccessControl:Permission" PrimitiveQuery="StopInstance">
-</permissions>
-<permissions xsi:type="AccessControl:Permission" PrimitiveQuery="UpdateDictionaryInstance">
-</permissions>
-<permissions xsi:type="AccessControl:Permission" PrimitiveQuery="UpdateInstance">
-</permissions>
-<permissions xsi:type="AccessControl:Permission" PrimitiveQuery="StartInstance">
-</permissions>
-<permissions xsi:type="AccessControl:Permission" PrimitiveQuery="AddInstance">
-</permissions>
-</elements>
 <elements xsi:type="AccessControl:Element" elementQuery="typeDefinitions[Grapher]">
 <permissions xsi:type="AccessControl:Permission" PrimitiveQuery="AddFragmentBinding">
 </permissions>
@@ -58,6 +44,21 @@
 <permissions xsi:type="AccessControl:Permission" PrimitiveQuery="AddInstance">
 </permissions>
 </elements>
+<elements xsi:type="AccessControl:Element" elementQuery="typeDefinitions[FakeConsole]">
+<permissions xsi:type="AccessControl:Permission" PrimitiveQuery="AddFragmentBinding">
+</permissions>
+<permissions xsi:type="AccessControl:Permission" PrimitiveQuery="StopInstance">
+</permissions>
+<permissions xsi:type="AccessControl:Permission" PrimitiveQuery="UpdateDictionaryInstance">
+</permissions>
+<permissions xsi:type="AccessControl:Permission" PrimitiveQuery="UpdateInstance">
+</permissions>
+<permissions xsi:type="AccessControl:Permission" PrimitiveQuery="StartInstance">
+</permissions>
+<permissions xsi:type="AccessControl:Permission" PrimitiveQuery="AddInstance">
+</permissions>
+</elements>
+
 </roles>
 </users>
 </AccessControl:AccessControlRoot>
