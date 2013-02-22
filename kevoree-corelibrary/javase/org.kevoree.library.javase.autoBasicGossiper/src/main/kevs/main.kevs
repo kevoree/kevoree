@@ -1,0 +1,15 @@
+addRepo "http://maven.kevoree.org/release"
+addRepo "http://repo.maven.apache.org/maven2"
+addRepo "http://repository.jetbrains.com/all"
+addRepo "http://maven.kevoree.org/archiva/repository/snapshots/"
+addRepo "http://maven.kevoree.org/snapshots"
+addRepo "http://repo.typesafe.com/typesafe/releases/"
+addRepo "http://www.libvirt.org/maven2/"
+merge 'mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.autoBasicGossiper/2.0.0-SNAPSHOT'
+merge 'mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.javaseNode/2.0.0-SNAPSHOT'
+merge 'mvn:org.kevoree.corelibrary.sky/org.kevoree.library.sky.minicloud/2.0.0-SNAPSHOT'
+addNode node0:MiniCloudNode { coreLogLevel = "INFO" }
+addGroup sync:AutoBasicGossiperGroup
+updateDictionary sync{interval="20000"}
+addToGroup sync node0
+updateDictionary sync{port="8000",ip="0.0.0.0"}@node0
