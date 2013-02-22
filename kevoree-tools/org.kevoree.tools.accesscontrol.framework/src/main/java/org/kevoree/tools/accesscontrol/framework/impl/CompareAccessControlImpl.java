@@ -45,6 +45,7 @@ public class CompareAccessControlImpl implements ICompareAccessControl
     private Logger logger = LoggerFactory.getLogger(CompareAccessControlImpl.class);
     private  long start;
     private  long duree;
+
     public CompareAccessControlImpl(AccessControlRoot root){
         this.root = root;
     }
@@ -55,15 +56,25 @@ public class CompareAccessControlImpl implements ICompareAccessControl
         KevoreeKompareBean kompareBean = new KevoreeKompareBean();
         AdaptationModel adaptationModel = kompareBean.kompare(current_model,KevoreeXmiHelper.$instance.loadString(new String(target_modelSigned.getSerialiedModel())), nodeName);
         start= System.currentTimeMillis();
-        List<AdaptationPrimitive>  result = checker(adaptationModel, target_modelSigned);
+        List<AdaptationPrimitive>  result = checker(adaptationModel,current_model, target_modelSigned);
+
+        // HACK BENTCH
         duree =  (System.currentTimeMillis() - start) ;
-        System.out.println("Duree  "+duree+ " ms");
+        int size_rules = -1;
+        User user = root.findUsersByID(target_modelSigned.getSignature().getKey());
+         if(user != null){
+             for(Role r :user.getRoles()){
+                 size_rules += r.getElements().size();
+             }
+         }
+        System.out.println(duree+ ";"+adaptationModel.getAdaptations().size()+";"+ size_rules);
         return result;
     }
 
     @Override
-    public List<AdaptationPrimitive> approval(AdaptationModel adaptationModel, SignedModel target_model) throws ControlException {
-        return checker(adaptationModel, target_model);
+    public List<AdaptationPrimitive> approval(AdaptationModel adaptationModel,ContainerRoot current_model, SignedModel target_model) throws ControlException {
+        /// todo current model
+        return checker(adaptationModel, current_model,target_model);
     }
 
     @Override
@@ -79,7 +90,7 @@ public class CompareAccessControlImpl implements ICompareAccessControl
     }
 
 
-    public  List<AdaptationPrimitive> checker(AdaptationModel adaptationModel, SignedModel signedModel) throws ControlException
+    public  List<AdaptationPrimitive> checker(AdaptationModel adaptationModel,ContainerRoot currentmodel, SignedModel signedModel) throws ControlException
     {
 
         List<AdaptationPrimitive> result_forbidden = new ArrayList<AdaptationPrimitive>();
@@ -129,18 +140,26 @@ public class CompareAccessControlImpl implements ICompareAccessControl
                     Instance instance =(Instance) p.getRef();
                     boolean  found = false;
                     // this rules is not denied we check if is authorized
-
                     for(Role role : user.getRoles())
                     {
                         for(Element element :role.getElements())
                         {
                             Object ptr =   target_model.findByPath(element.getElementQuery());
+                            if(ptr == null)
+                            {
+                                // look in previous model maybe the component do no exist in the new
+                                ptr = currentmodel.findByPath(element.getElementQuery());
+                            }
 
-                            if( ptr instanceof TypeDefinition)
+                            logger.debug("Query -->"+element.getElementQuery());
+
+                            if( ptr != null && ptr instanceof TypeDefinition)
                             {
                                 TypeDefinition componentType= (TypeDefinition) ptr;
+
                                 if(instance.getTypeDefinition().getName().equals(componentType.getName()))
                                 {
+
                                     if(element.findPermissionsByID(p.getPrimitiveType().getName()) != null)
                                     {
                                         found = true;

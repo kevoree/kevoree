@@ -51,7 +51,7 @@ public interface ICompareAccessControl
      * @return
      * @throws ControlException
      */
-    public List<AdaptationPrimitive> approval(AdaptationModel adaptationModel,SignedModel target_model) throws ControlException;
+    public List<AdaptationPrimitive> approval(AdaptationModel adaptationModel,ContainerRoot currentmodel,SignedModel target_model) throws ControlException;
 
     public boolean accessPDP(SignedPDP p);
 
