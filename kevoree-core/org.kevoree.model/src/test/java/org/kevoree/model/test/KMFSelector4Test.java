@@ -43,8 +43,15 @@ public class KMFSelector4Test {
         List<Object> result = model.selectByQuery("nodes[{components.size=0}]");
         System.out.println("resultSize:"+result.size());
 
+        assert(result.size() == 11);
+
+
         List<Object> result2 = model.selectByQuery("nodes[{components.name= Fake* }]");
         System.out.println("resultSize:"+result2.size());
+
+        assert(result2.size() == 1);
+
+
 
     }
 
