@@ -42,7 +42,7 @@
 
             <plugin>
                 <groupId>org.kevoree.modeling</groupId>
-                <artifactId>org.kevoree.modeling.emf.kotlin.gencode.mavenplugin</artifactId>
+                <artifactId>org.kevoree.modeling.kotlin.generator.mavenplugin</artifactId>
                 <version>1.3.0-SNAPSHOT</version>
                 <extensions>true</extensions>
                 <executions>
