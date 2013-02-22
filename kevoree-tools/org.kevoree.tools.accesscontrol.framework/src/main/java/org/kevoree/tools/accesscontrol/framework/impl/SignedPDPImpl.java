@@ -13,12 +13,21 @@
  */
 package org.kevoree.tools.accesscontrol.framework.impl;
 
+import org.kevoree.AccessControl.AccessControlRoot;
 import org.kevoree.adaptation.accesscontrol.api.ModelSignature;
 import org.kevoree.adaptation.accesscontrol.api.PDPSignature;
 import org.kevoree.adaptation.accesscontrol.api.SignedModel;
 import org.kevoree.adaptation.accesscontrol.api.SignedPDP;
+import org.kevoree.tools.accesscontrol.framework.api.ModelFormat;
+import org.kevoree.tools.accesscontrol.framework.utils.AccessControlXmiHelper;
+import org.kevoree.tools.accesscontrol.framework.utils.HelperSignature;
 
 import java.io.Serializable;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
+import java.security.SignatureException;
+import java.security.interfaces.RSAPrivateKey;
 
 /**
  * Created with IntelliJ IDEA.
@@ -30,18 +39,28 @@ import java.io.Serializable;
 public class SignedPDPImpl implements SignedPDP, Serializable {
 
 
+    private PDPSignatureImpl signature;
+    private ModelFormat currentFormat = ModelFormat.XMI;
+    private byte[] rawmodel = null;
+
+    public  SignedPDPImpl(AccessControlRoot root,PrivateKey key) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException {
+        rawmodel = AccessControlXmiHelper.$instance.saveToString(root, false).getBytes();
+        signature = new PDPSignatureImpl(HelperSignature.getSignature(key, getSerialiedModel()), ((RSAPrivateKey)key).getModulus().toString());
+    }
+
     @Override
     public byte[] getSerialiedModel() {
-        return new byte[0];  //To change body of implemented methods use File | Settings | File Templates.
+        return rawmodel;
     }
 
     @Override
     public String getModelFormat() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return currentFormat.name();
     }
 
     @Override
     public PDPSignature getSignature() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return signature;
     }
+
 }

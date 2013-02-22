@@ -13,6 +13,10 @@
  */
 package org.kevoree.tools.accesscontrol.framework.impl;
 
+import org.kevoree.adaptation.accesscontrol.api.PDPSignature;
+
+import java.io.Serializable;
+
 /**
  * Created with IntelliJ IDEA.
  * User: jed
@@ -20,8 +24,24 @@ package org.kevoree.tools.accesscontrol.framework.impl;
  * Time: 11:15
  * To change this template use File | Settings | File Templates.
  */
-public class PDPSignatureImpl extends ModelSignatureImpl {
-    public PDPSignatureImpl(byte[] s, String key) {
-        super(s, key);
+public class PDPSignatureImpl implements PDPSignature ,Serializable {
+
+    String _key;
+    byte[] _signature = null;
+
+    public PDPSignatureImpl(byte[] s,String key)
+    {
+        _signature = s;
+        this._key = key;
+    }
+
+    @Override
+    public String getKey() {
+        return _key;
+    }
+
+    @Override
+    public byte[] getSignature() {
+        return _signature;
     }
 }
