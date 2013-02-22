@@ -2,7 +2,7 @@
 
 ![Kevoree icon](http://kevoree.org/img/kevoree-logo.png)
 
-##Please visite [Kevoree main web site](http://kevoree.org/)
+##Please visit [Kevoree main web site](http://kevoree.org/)
 
 
 ## 1. Models documentation

@@ -11,33 +11,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kevoree.model.test;
-
 import org.junit.Test;
 import org.kevoree.ContainerRoot;
-import org.kevoree.cloner.ModelCloner;
-import org.kevoree.loader.ModelLoader;
-
-import java.io.File;
-import java.net.URISyntaxException;
+import org.kevoree.framework.KevoreePlatformHelper;
+import org.kevoree.framework.KevoreeXmiHelper;
 
 /**
- * Created with IntelliJ IDEA.
- * User: duke
- * Date: 18/02/13
- * Time: 11:37
+ * User: Erwan Daubert - erwan.daubert@gmail.com
+ * Date: 22/02/13
+ * Time: 11:13
+ *
+ * @author Erwan Daubert
+ * @version 1.0
  */
-public class ClonerTest {
+public class KevoreePlatformHelperTester {
 
     @Test
-    public void testSelector() throws URISyntaxException {
-        ModelLoader loader = new ModelLoader();
-        ContainerRoot model = loader.loadModelFromPath(new File(ClonerTest.class.getResource("/node0.kev").toURI())).get(0);
-
-        ModelCloner cloner = new ModelCloner();
-        cloner.clone(model);
-
+    public void testUpdateNodeLinkProp() {
+        ContainerRoot model = KevoreeXmiHelper.$instance.loadStream(KevoreePlatformHelperTester.class.getResourceAsStream("/node0.kev"));
+        KevoreePlatformHelper.updateNodeLinkProp(model, "sync", "node0", org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP(), "192.168.1.1", "LAN", 100);
 
     }
-
 }
