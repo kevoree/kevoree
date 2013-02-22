@@ -19,11 +19,14 @@ import org.kevoree.adaptation.accesscontrol.api.ControlException;
 
 import org.kevoree.adaptation.accesscontrol.api.PDPSignature;
 import org.kevoree.adaptation.accesscontrol.api.SignedModel;
+import org.kevoree.adaptation.accesscontrol.api.SignedPDP;
 import org.kevoree.annotation.*;
 import org.kevoree.framework.AbstractGroupType;
 import org.kevoree.framework.KevoreePropertyHelper;
 import org.kevoree.framework.KevoreeXmiHelper;
 import org.kevoree.framework.NetworkHelper;
+import org.kevoree.impl.ChannelImpl;
+import org.kevoree.impl.ComponentInstanceImpl;
 import org.kevoree.library.NodeNetworkHelper;
 
 import org.kevoree.tools.accesscontrol.framework.api.ICompareAccessControl;
@@ -41,10 +44,7 @@ import sun.security.rsa.RSAPublicKeyImpl;
 import javax.swing.*;
 import java.io.*;
 import java.math.BigInteger;
-import java.security.InvalidKeyException;
-import java.security.KeyFactory;
-import java.security.KeyPair;
-import java.security.NoSuchAlgorithmException;
+import java.security.*;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.security.spec.KeySpec;
@@ -166,51 +166,23 @@ public class AccessControlGroup extends AbstractGroupType implements ConnectionL
         }
     }
 
-    public void pushPDP(PDPSignature p){
-
+    public void pushPDP(AccessControlRoot root,PrivateKey key,ContainerRoot model,String targetNodeName) throws IOException, NoSuchAlgorithmException, InvalidKeyException, SignatureException {
+        SignedPDP pdp = new SignedPDPImpl(root,key);
+        write(model,targetNodeName,pdp);
     }
+
+
+    public void pushSignedModel(PrivateKey key,ContainerRoot model, String targetNodeName)  throws Exception
+    {
+        SignedModel signedmodel = new SignedModelImpl(model,key);
+        write(model,targetNodeName,signedmodel);
+    }
+
+
 
     @Override
     public void push(ContainerRoot model, String targetNodeName) throws Exception
     {
-        ByteArrayOutputStream output = new ByteArrayOutputStream();
-        output.write(pushModel);
-        String ip = "127.0.0.1";
-        Option<String> ipOption = NetworkHelper.getAccessibleIP(KevoreePropertyHelper.getNetworkProperties(model, targetNodeName, org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP()));
-        if (ipOption.isDefined()) {
-            ip = ipOption.get();
-        } else {
-            logger.warn("No addr, found default local");
-        }
-
-        int PORT = 8000;
-        Group groupOption = model.findByPath("groups[" + getName() + "]", Group.class);
-        if (groupOption!=null) {
-            Option<String> portOption = KevoreePropertyHelper.getProperty(groupOption, "port", true, targetNodeName);
-            if (portOption.isDefined()) {
-                try {
-                    PORT = Integer.parseInt(portOption.get());
-                } catch (NumberFormatException e){
-                    logger.warn("Attribute \"port\" of {} must be an Integer. Default value ({}) is used", getName(), PORT);
-                }
-            }
-        }
-
-        final UniClientConnection[] conns = new UniClientConnection[1];
-        conns[0] = new UniClientConnection(new ConnectionListener() {
-            @Override
-            public void connectionBroken(Connection broken, boolean forced) {
-            }
-
-            @Override
-            public void receive(byte[] data, Connection from) {
-            }
-
-            @Override
-            public void clientConnected(ServerConnection conn) {
-            }
-        }, ip, PORT, ssl);
-
         String private_exponent="";
         String modulus="";
         if(Boolean.parseBoolean(getDictionary().get("gui").toString()))
@@ -246,32 +218,10 @@ public class AccessControlGroup extends AbstractGroupType implements ConnectionL
             }      catch (EOFException e ){
 
             }
-
-
         }
 
-
-
-        SignedModel signedmodel = new SignedModelImpl(getModelService().getLastModel(),HelperSignature.getPrivateKey(modulus,private_exponent));
-
-
-        ObjectOutputStream oos= new ObjectOutputStream(output);
-
-        try
-        {
-            oos.writeObject(signedmodel);
-            oos.flush();
-            conns[0].connect(5000);
-            conns[0].send(output.toByteArray(), Delivery.RELIABLE);
-        } finally
-        {
-
-            try {
-                oos.close();
-            } finally {
-                output.close();
-            }
-        }
+        SignedModel signedmodel = new SignedModelImpl(model,HelperSignature.getPrivateKey(modulus,private_exponent));
+        write(model,targetNodeName,signedmodel);
 
     }
 
@@ -386,7 +336,18 @@ public class AccessControlGroup extends AbstractGroupType implements ConnectionL
                                         if(result != null){
                                             for(AdaptationPrimitive p : result)
                                             {
-                                                logger.error("Refused Adapation Primitive " + p.getPrimitiveType().getName() + " " + p.getRef());
+
+                                                String ref="";
+
+                                                if(p.getRef() instanceof Instance){
+                                                    ref = ((Instance)p.getRef()).getTypeDefinition().getName();
+                                                }   else
+                                                {
+                                                    ref =  p.getRef().toString();
+                                                }
+                                                logger.error("Refused Adapation Primitive " + p.getPrimitiveType().getName() + " " + ref);
+
+
                                             }
                                         }  else {
                                             logger.error(" no result ");
@@ -449,4 +410,68 @@ public class AccessControlGroup extends AbstractGroupType implements ConnectionL
     public void clientConnected(ServerConnection conn) {
 
     }
+
+
+
+    public void write(ContainerRoot model,String targetNodeName,Object data) throws IOException {
+
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        output.write(pushModel);
+        String ip = "127.0.0.1";
+        Option<String> ipOption = NetworkHelper.getAccessibleIP(KevoreePropertyHelper.getNetworkProperties(model, targetNodeName, org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP()));
+        if (ipOption.isDefined()) {
+            ip = ipOption.get();
+        } else {
+            logger.warn("No addr, found default local");
+        }
+
+        int PORT = 8000;
+        Group groupOption = model.findByPath("groups[" + getName() + "]", Group.class);
+        if (groupOption!=null) {
+            Option<String> portOption = KevoreePropertyHelper.getProperty(groupOption, "port", true, targetNodeName);
+            if (portOption.isDefined()) {
+                try {
+                    PORT = Integer.parseInt(portOption.get());
+                } catch (NumberFormatException e){
+                    logger.warn("Attribute \"port\" of {} must be an Integer. Default value ({}) is used", getName(), PORT);
+                }
+            }
+        }
+
+        final UniClientConnection[] conns = new UniClientConnection[1];
+        conns[0] = new UniClientConnection(new ConnectionListener() {
+            @Override
+            public void connectionBroken(Connection broken, boolean forced) {
+            }
+
+            @Override
+            public void receive(byte[] data, Connection from) {
+            }
+
+            @Override
+            public void clientConnected(ServerConnection conn) {
+            }
+        }, ip, PORT, ssl);
+
+
+
+        ObjectOutputStream oos= new ObjectOutputStream(output);
+
+        try
+        {
+            oos.writeObject(data);
+            oos.flush();
+            conns[0].connect(5000);
+            conns[0].send(output.toByteArray(), Delivery.RELIABLE);
+        } finally
+        {
+
+            try {
+                oos.close();
+            } finally {
+                output.close();
+            }
+        }
+    }
+
 }
