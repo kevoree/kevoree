@@ -170,7 +170,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>org.kevoree.platform.service.KevoreeServiceUpdate</mainClass>
+                            <mainClass>org.kevoree.platform.service.PlatformRunner</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

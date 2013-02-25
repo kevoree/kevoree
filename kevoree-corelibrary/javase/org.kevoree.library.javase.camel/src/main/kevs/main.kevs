@@ -1,12 +1,62 @@
-merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.camel/{kevoree.version}"
-merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.javaseNode/{kevoree.version}"
-merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.fakeDomo/{kevoree.version}"
-merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.defaultChannels/{kevoree.version}"
+// use to test camel netty (service + message) using multiple node
+addRepo "http://maven.kevoree.org/release"
+addRepo "http://repo.maven.apache.org/maven2"
+addRepo "http://repository.jetbrains.com/all"
+addRepo "http://maven.kevoree.org/archiva/repository/snapshots/"
+addRepo "http://maven.kevoree.org/snapshots"
+addRepo "http://www.libvirt.org/maven2/"
+merge 'mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.javaseNode/2.0.0-SNAPSHOT'
+merge 'mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.fakeDomo/2.0.0-SNAPSHOT'
+merge 'mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.camel/2.0.0-SNAPSHOT'
+addNode node1:JavaSENode
+merge 'mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.webserver.tjws/2.0.0-SNAPSHOT'
+merge 'mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.jexxus/2.0.0-SNAPSHOT'
+merge 'mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.basicGossiper/2.0.0-SNAPSHOT'
+merge 'mvn:org.kevoree.corelibrary.sky/org.kevoree.library.sky.provider.web/2.0.0-SNAPSHOT'
+merge 'mvn:org.kevoree.corelibrary.sky/org.kevoree.library.sky.minicloud/2.0.0-SNAPSHOT'
+merge 'mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.defaultChannels/2.0.0-SNAPSHOT'
+addNode node0:MiniCloudNode
+addNode node2:JavaSENode
 
-addNode node0 : JavaSENode
-addComponent input@node0 : CamelTimer { period='2000' }
-addChannel logQueue : CamelNetty
-bind input.tick@node0 => logQueue
+addComponent FakeSimpl269@node1 : FakeSimpleSwitch {}
+addChannel CamelNett280 : CamelNettyService {port='10000'}
+addChannel CamelNett433 : CamelNetty {port='10010'}
+addChannel CamelNett833 : CamelNetty {port='10020'}
+bind FakeSimpl269.toggle@node1 => CamelNett280
+bind FakeSimpl269.off@node1 => CamelNett433
+bind FakeSimpl269.on@node1 => CamelNett833
+updateDictionary CamelNett280 {port='10000'}@node1,{port='10001'}@node2
+updateDictionary CamelNett433 {port='10010'}@node1,{port='10011'}@node2
+updateDictionary CamelNett833 {port='10020'}@node1,{port='10021'}@node2
+updateDictionary FakeSimpl269@node1 
 
-addComponent console@node0 : FakeConsole
-bind console.showText@node0 => logQueue
+addComponent IaaSKloud432@node0 : IaaSKloudResourceManagerPage {urlpattern='/'}
+addComponent KTinyWebS133@node0 : KTinyWebServer {}
+addChannel defMSG900 : defMSG {}
+addChannel defMSG908 : defMSG {}
+bind KTinyWebS133.response@node0 => defMSG908
+bind IaaSKloud432.content@node0 => defMSG908
+bind KTinyWebS133.handler@node0 => defMSG900
+bind IaaSKloud432.request@node0 => defMSG900
+updateDictionary defMSG900 
+updateDictionary defMSG908 
+updateDictionary IaaSKloud432@node0 
+updateDictionary KTinyWebS133@node0 
+
+addChild node1@node0
+addChild node2@node0
+
+addComponent FakeSimpl65@node2 : FakeSimpleLight {}
+addChannel CamelNett280 : CamelNettyService {port='10000'}
+addChannel CamelNett433 : CamelNetty {port='10010'}
+addChannel CamelNett833 : CamelNetty {port='10020'}
+bind FakeSimpl65.toggle@node2 => CamelNett280
+bind FakeSimpl65.off@node2 => CamelNett433
+bind FakeSimpl65.on@node2 => CamelNett833
+updateDictionary CamelNett280 {port='10000'}@node1,{port='10001'}@node2
+updateDictionary CamelNett433 {port='10010'}@node1,{port='10011'}@node2
+updateDictionary CamelNett833 {port='10020'}@node1,{port='10021'}@node2
+updateDictionary FakeSimpl65@node2 
+
+addGroup sync:BasicGossiperGroup
+addToGroup sync node0

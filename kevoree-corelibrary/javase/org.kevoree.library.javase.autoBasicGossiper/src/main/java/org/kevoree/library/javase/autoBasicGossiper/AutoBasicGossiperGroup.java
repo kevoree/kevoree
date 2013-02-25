@@ -1,12 +1,13 @@
 package org.kevoree.library.javase.autoBasicGossiper;
 
+import org.kevoree.annotation.DictionaryAttribute;
+import org.kevoree.annotation.DictionaryType;
 import org.kevoree.annotation.GroupType;
 import org.kevoree.library.javase.basicGossiper.group.BasicGossiperGroup;
 import org.kevoree.library.javase.jmdns.JmDNSListener;
-import org.kevoree.library.javase.jmdns.JmDnsComponent;
+import org.kevoree.library.javase.jmdns.JmDNSComponent;
 
 import java.io.IOException;
-import java.net.InetAddress;
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -17,14 +18,17 @@ import java.net.InetAddress;
  * @version 1.0
  */
 @GroupType
+@DictionaryType(
+        @DictionaryAttribute(name = "ipv4Only", vals = {"true", "false"}, defaultValue = "true")
+)
 public class AutoBasicGossiperGroup extends BasicGossiperGroup implements JmDNSListener {
 
-    private JmDnsComponent jmDnsComponent;
+    private JmDNSComponent jmDnsComponent;
 
     @Override
     public void startGossiperGroup() throws IOException {
         super.startGossiperGroup();
-        jmDnsComponent = new JmDnsComponent(this, this, Integer.parseInt(this.getDictionary().get("port").toString()), InetAddress.getByName(this.getDictionary().get("ip").toString()), true);
+        jmDnsComponent = new JmDNSComponent(this, this, this.getDictionary().get("ip").toString(), Integer.parseInt(this.getDictionary().get("port").toString()), getDictionary().get("ipv4Only").toString().equalsIgnoreCase("true"));
         jmDnsComponent.start();
     }
 
@@ -36,7 +40,7 @@ public class AutoBasicGossiperGroup extends BasicGossiperGroup implements JmDNSL
 
     @Override
     public void notifyNewSubNode(String remoteNodeName) {
-        logger.info("new remote node discovered, try to pull the model from this node");
+        logger.debug("new remote node discovered, try to pull the model from this node");
         super.actor.doGossip(remoteNodeName);
     }
 }

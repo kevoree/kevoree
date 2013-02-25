@@ -13,8 +13,8 @@ import org.kevoree.api.service.core.script.KevScriptEngine
  */
 object JailsReasoner {
 
-  def createNodes(kengine : KevScriptEngine, iaasNode : JailNode) {
-
+  def createNodes(kengine : KevScriptEngine, iaasNode : JailNode): Boolean = {
+    false
   }
 
   def createNode (kengine: KevScriptEngine, iaasNode: JailNode) {
