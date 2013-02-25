@@ -28,6 +28,7 @@ public class AutoBasicGossiperGroup extends BasicGossiperGroup implements JmDNSL
     @Override
     public void startGossiperGroup() throws IOException {
         super.startGossiperGroup();
+        logger.debug("Starting JmDNS component for {}", getName());
         jmDnsComponent = new JmDNSComponent(this, this, this.getDictionary().get("ip").toString(), Integer.parseInt(this.getDictionary().get("port").toString()), getDictionary().get("ipv4Only").toString().equalsIgnoreCase("true"));
         jmDnsComponent.start();
     }

@@ -30,7 +30,7 @@ public abstract class AbstractIaaSNode extends AbstractHostNode implements IaaSN
 				created = true;
 				break;
 			} catch (Exception e) {
-				logger.warn("Error while try to update the configuration of node {}, try number {}", new String[]{getName(), i + ""}, e);
+				logger.warn("Error while try to update the configuration of node " + getName() + ", try number " + i, e);
 			}
 		}
 		if (!created) {
