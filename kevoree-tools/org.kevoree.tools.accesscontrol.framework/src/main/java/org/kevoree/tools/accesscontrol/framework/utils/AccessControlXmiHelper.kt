@@ -3,10 +3,7 @@ package org.kevoree.tools.accesscontrol.framework.utils
 
 import java.util.zip.Deflater
 import java.util.zip.Inflater
-
-import org.slf4j.LoggerFactory
 import java.io.*
-
 import org.kevoree.AccessControl.AccessControlRoot
 import org.kevoree.AccessControl.serializer.ModelSerializer
 import org.kevoree.framework.ZipUtil
@@ -14,7 +11,6 @@ import org.kevoree.AccessControl.loader.ModelLoader
 
 object AccessControlXmiHelper {
 
-    val logger = LoggerFactory.getLogger(this.javaClass)
 
     fun save(val uri: String, root: AccessControlRoot) {
         //CHECK DIRECTORY CREATION
