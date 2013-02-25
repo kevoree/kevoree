@@ -27,6 +27,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sun.security.rsa.RSAPublicKeyImpl;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.math.BigInteger;
 import java.security.interfaces.RSAPublicKey;
 import java.util.ArrayList;
@@ -45,6 +48,7 @@ public class CompareAccessControlImpl implements ICompareAccessControl
     private Logger logger = LoggerFactory.getLogger(CompareAccessControlImpl.class);
     private  long start;
     private  long duree;
+    private boolean benchmark =false;
 
     public CompareAccessControlImpl(AccessControlRoot root){
         this.root = root;
@@ -55,19 +59,36 @@ public class CompareAccessControlImpl implements ICompareAccessControl
 
         KevoreeKompareBean kompareBean = new KevoreeKompareBean();
         AdaptationModel adaptationModel = kompareBean.kompare(current_model,KevoreeXmiHelper.$instance.loadString(new String(target_modelSigned.getSerialiedModel())), nodeName);
-        start= System.currentTimeMillis();
+        if(benchmark)
+        {
+            start= System.currentTimeMillis();
+        }
         List<AdaptationPrimitive>  result = checker(adaptationModel,current_model, target_modelSigned);
+        if(benchmark)
+        {
+            // HACK BENTCH
+            duree =  (System.currentTimeMillis() - start) ;
+            int size_rules = -1;
+            User user = root.findUsersByID(target_modelSigned.getSignature().getKey());
+            if(user != null){
+                for(Role r :user.getRoles()){
+                    size_rules += r.getElements().size();
+                }
+            }
 
-        // HACK BENTCH
-        duree =  (System.currentTimeMillis() - start) ;
-        int size_rules = -1;
-        User user = root.findUsersByID(target_modelSigned.getSignature().getKey());
-         if(user != null){
-             for(Role r :user.getRoles()){
-                 size_rules += r.getElements().size();
-             }
-         }
-        System.out.println(duree+ ";"+adaptationModel.getAdaptations().size()+";"+ size_rules);
+            try
+            {
+                String filename= System.getProperty("java.io.tmpdir")+ File.separator+ "accesscontrol.benchmark";
+                FileWriter fw = new FileWriter(filename,true); //the true will append the new data
+                fw.write(duree+ ";"+adaptationModel.getAdaptations().size()+";"+ size_rules+"\n");
+                fw.close();
+                logger.debug("UPDATE BENCHMARK FILE "+filename);
+            }
+            catch(IOException ioe)
+            {
+                 System.err.println("IOException: " + ioe.getMessage());
+            }
+        }
         return result;
     }
 
@@ -89,6 +110,9 @@ public class CompareAccessControlImpl implements ICompareAccessControl
         }
     }
 
+    public void setBenchmark(boolean benchmark) {
+        this.benchmark = benchmark;
+    }
 
     public  List<AdaptationPrimitive> checker(AdaptationModel adaptationModel,ContainerRoot currentmodel, SignedModel signedModel) throws ControlException
     {
