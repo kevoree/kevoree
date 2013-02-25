@@ -175,7 +175,7 @@ public class CompareAccessControlImpl implements ICompareAccessControl
                                 ptr = currentmodel.findByPath(element.getElementQuery());
                             }
 
-                            logger.debug("Query -->"+element.getElementQuery());
+                      //      logger.debug("Query -->"+element.getElementQuery());
 
                             if( ptr != null && ptr instanceof TypeDefinition)
                             {

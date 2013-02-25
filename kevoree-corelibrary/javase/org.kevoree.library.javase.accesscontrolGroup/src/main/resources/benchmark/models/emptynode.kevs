@@ -8,10 +8,7 @@ addRepo "http://maven.kevoree.org/archiva/repository/snapshots/"
 addRepo "http://repo.typesafe.com/typesafe/releases/"
 addRepo "http://maven.kevoree.org/snapshots"
 addRepo "http://maven.kevoree.org/daum/snapshots"
-merge 'mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.grapher/2.0.0-SNAPSHOT'
-merge 'mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.mavenCache/2.0.0-SNAPSHOT'
 merge 'mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.accesscontrolGroup/2.0.0-SNAPSHOT'
-merge 'mvn:org.daum.library.javase/org.daum.library.javase.jtouchDB/2.0.0-SNAPSHOT'
 merge 'mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.javaseNode/2.0.0-SNAPSHOT'
 addNode node0:JavaSENode
 updateDictionary node0{logLevel="WARN",coreLogLevel="WARN"}
