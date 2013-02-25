@@ -81,7 +81,7 @@ public class MavenP2PResolver extends AbstractComponentType implements DeployUni
                 if(inst.getTypeDefinition().getName().equals("MavenCacheServer")){
                     List<String> ips = KevoreePropertyHelper.getNetworkProperties(model, node.getName(), org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP());
                     logger.info("Cache Found on node "+node.getName());
-                    Object port = KevoreePropertyHelper.getProperty(inst,"port",false,null);
+                    Object port = KevoreePropertyHelper.getProperty(inst,"port",false,null).get();
                     for(String remoteIP : ips){
                        String url = "http://"+remoteIP+":"+port;
                         logger.info("Add URL "+url);
