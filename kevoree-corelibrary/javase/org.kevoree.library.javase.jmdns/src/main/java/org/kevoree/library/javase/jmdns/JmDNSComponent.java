@@ -57,6 +57,7 @@ public class JmDNSComponent {
     }
 
     public void start() throws IOException {
+        logger.debug("Starting JmDNS component for {}", group.getName());
         initializeJmDNS();
 
         serviceListener = new ServiceListener() {
@@ -94,17 +95,17 @@ public class JmDNSComponent {
         new Thread() {
             public void run() {
                 for (JmDNS jmdnsElement : jmdns) {
-                    // register the local group fragment on jmdns instances
-                    ServiceInfo localServiceInfo = ServiceInfo.create(REMOTE_TYPE, group.getNodeName(), group.getName(), localPort, "");
-
-                    Map<String, String> props = new HashMap<String, String>(3);
-                    props.put("groupType", group.getModelElement().getTypeDefinition().getName());
-                    props.put("nodeType", group.getModelService().getLastModel().findNodesByID(group.getNodeName()).getTypeDefinition().getName());
-                    localServiceInfo.setText(props);
                     try {
-                        jmdnsElement.registerService(localServiceInfo);
-                    } catch (IOException ignored) {
+                        // register the local group fragment on jmdns instances
+                        ServiceInfo localServiceInfo = ServiceInfo.create(REMOTE_TYPE, group.getNodeName(), group.getName(), localPort, "");
 
+                        Map<String, String> props = new HashMap<String, String>(3);
+                        props.put("groupType", group.getModelElement().getTypeDefinition().getName());
+                        props.put("nodeType", group.getModelService().getLastModel().findNodesByID(group.getNodeName()).getTypeDefinition().getName());
+                        localServiceInfo.setText(props);
+                        jmdnsElement.registerService(localServiceInfo);
+                    } catch (IOException e) {
+                        logger.debug("Unable to register local service on jmDNS", e);
                     }
                 }
             }
@@ -143,14 +144,12 @@ public class JmDNSComponent {
                             jmdns.add(JmDNS.create(inetAddress, group.getNodeName() + "." + inetAddress.getHostAddress()));
                             logger.debug("JmDNS listen on {}", inetAddress.getHostAddress());
                         }
-
                     }
                 }
             }
         } else {
             jmdns.add(JmDNS.create(InetAddress.getByName(inet), group.getNodeName() + "." + inet));
             logger.debug("JmDNS listen on {}", inet);
-
         }
     }
 
@@ -207,7 +206,7 @@ public class JmDNSComponent {
             }
         } else {
             StringBuilder builder = new StringBuilder();
-            for (InetAddress address: p1.getInetAddresses()) {
+            for (InetAddress address : p1.getInetAddresses()) {
                 builder.append(address.toString()).append(", ");
             }
             logger.warn("Unable to get address or port from {} and {}", builder.substring(0, builder.length() - 1), Integer.toString(p1.getPort()));
