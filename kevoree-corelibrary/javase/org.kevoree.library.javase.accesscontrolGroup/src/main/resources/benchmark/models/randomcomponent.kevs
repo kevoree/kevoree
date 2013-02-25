@@ -1,0 +1,22 @@
+ {
+addRepo "http://maven.kevoree.org/release"
+addRepo "http://repo.maven.apache.org/maven2"
+addRepo "http://repository.jetbrains.com/all"
+addRepo "http://maven.kevoree.org/archiva/repository/snapshots/"
+addRepo "http://maven.kevoree.org/snapshots"
+addRepo "http://repo.typesafe.com/typesafe/releases/"
+merge 'mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.javaseNode/2.0.0-SNAPSHOT'
+merge 'mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.fakeDomo/2.0.0-SNAPSHOT'
+merge 'mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.accesscontrolGroup/2.0.0-SNAPSHOT'
+addNode node0:JavaSENode
+updateDictionary node0{coreLogLevel="WARN",logLevel="WARN"}
+ {
+  addComponent Random559@node0 : Random {}
+updateDictionary Random559@node0
+}
+
+addGroup controlgroup:AccessControlGroup
+updateDictionary controlgroup{benchmark="true"}@node0
+addToGroup controlgroup node0
+updateDictionary controlgroup{port="8000",gui="false",ip="0.0.0.0"}@node0
+}
