@@ -13,21 +13,25 @@
     </parent>
 
     <dependencies>
+
         <dependency>
             <groupId>org.kevoree</groupId>
             <artifactId>org.kevoree.adaptation.accesscontrol.model</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
+
         <dependency>
             <groupId>org.kevoree</groupId>
             <artifactId>org.kevoree.model</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
+
         <dependency>
             <groupId>org.kevoree</groupId>
             <artifactId>org.kevoree.kompare</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
+
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -37,5 +41,30 @@
 
 
     </dependencies>
+    <build>
+    <plugins>
+
+        <plugin>
+            <artifactId>kotlin-maven-plugin</artifactId>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <version>0.5.1</version>
+
+            <executions>
+                <execution>
+                    <id>compile</id>
+                    <phase>process-sources</phase>
+                    <goals> <goal>compile</goal> </goals>
+                </execution>
+
+                <execution>
+                    <id>test-compile</id>
+                    <phase>process-test-sources</phase>
+                    <goals> <goal>test-compile</goal> </goals>
+                </execution>
+            </executions>
+        </plugin>
+    </plugins>
+    </build>
+
 
 </project>

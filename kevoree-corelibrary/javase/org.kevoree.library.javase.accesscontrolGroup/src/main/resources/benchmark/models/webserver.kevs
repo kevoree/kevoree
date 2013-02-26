@@ -1,0 +1,33 @@
+ {
+addRepo "http://maven.kevoree.org/release"
+addRepo "http://repo.maven.apache.org/maven2"
+addRepo "http://repository.jetbrains.com/all"
+addRepo "http://maven.kevoree.org/archiva/repository/snapshots/"
+addRepo "http://repo.typesafe.com/typesafe/releases/"
+addRepo "http://maven.kevoree.org/snapshots"
+merge 'mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.acesscontrolGroup/2.0.0-SNAPSHOT'
+merge 'mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.javaseNode/2.0.0-SNAPSHOT'
+merge 'mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.webserver.api/2.0.0-SNAPSHOT'
+merge 'mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.webserver.spray/2.0.0-SNAPSHOT'
+merge 'mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.defaultChannels/2.0.0-SNAPSHOT'
+addNode node0:JavaSENode
+updateDictionary node0{logLevel="WARN",coreLogLevel="WARN"}
+ {
+  addComponent HelloWorl487@node0 : HelloWorldPage {}
+  addComponent SprayWebS42@node0 : SprayWebServer {}
+addChannel defMSG826 : defMSG {}
+addChannel defMSG378 : defMSG {}
+bind HelloWorl487.request@node0 => defMSG826
+bind SprayWebS42.handler@node0 => defMSG826
+bind SprayWebS42.response@node0 => defMSG378
+bind HelloWorl487.content@node0 => defMSG378
+updateDictionary defMSG826 
+updateDictionary defMSG378 
+updateDictionary HelloWorl487@node0 
+updateDictionary SprayWebS42@node0 
+}
+
+addGroup controlgroup:AccessControlGroup
+addToGroup controlgroup node0
+updateDictionary controlgroup{gui="false",port="8000",ip="0.0.0.0"}@node0
+}
