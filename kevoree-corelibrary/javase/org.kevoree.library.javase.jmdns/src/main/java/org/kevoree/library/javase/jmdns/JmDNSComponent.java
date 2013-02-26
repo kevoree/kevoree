@@ -71,9 +71,12 @@ public class JmDNSComponent {
             }
 
             public void serviceResolved(ServiceEvent p1) {
-                if (p1.getInfo().getSubtype().equals(group.getName())) {
+                if (p1.getInfo().getSubtype().equals(group.getName()) && !p1.getInfo().getName().equals(group.getNodeName())) {
                     logger.debug("Node discovered: {} port: {}", new String[]{p1.getInfo().getName(), Integer.toString(p1.getInfo().getPort())});
                     addNodeDiscovered(p1.getInfo());
+                } else {
+                    logger.debug("Local service resolved");
+                    nodeAlreadyDiscovered.remove(p1.getInfo().getName());
                 }
             }
 
@@ -165,7 +168,7 @@ public class JmDNSComponent {
             } catch (Exception e) {
                 logger.warn("Error while trying to update model due to {}, try number {}", new String[]{e.getMessage(), Integer.toString(i)});
             }
-            if (i == 20) {
+            if (i == 20 && !created) {
                 logger.warn("Unable to update model after {} tries. Update aborted !", i);
             }
             i = i + 1;
@@ -188,7 +191,6 @@ public class JmDNSComponent {
                     logger.debug("{} discovers a node using a group which is not the same as the local one:{}.", new String[]{group.getName(), p1.toString()});
                 }
                 if (updateModel(model)) {
-                    logger.debug("model is updated");
                     nodeAlreadyDiscovered.add(p1.getName());
                     if (!group.getNodeName().equals(p1.getName())) {
                         listener.notifyNewSubNode(p1.getName());
@@ -209,7 +211,7 @@ public class JmDNSComponent {
             for (InetAddress address : p1.getInetAddresses()) {
                 builder.append(address.toString()).append(", ");
             }
-            logger.warn("Unable to get address or port from {} and {}", builder.substring(0, builder.length() - 1), Integer.toString(p1.getPort()));
+            logger.warn("Unable to get address or port from {} and {}", builder.substring(0, builder.length() - 2), Integer.toString(p1.getPort()));
         }
     }
 
