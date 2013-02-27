@@ -35,7 +35,7 @@ class KevoreeLocalLoader(val classpathResources: KevoreeLazyJarResources, val kc
         return null
     }
 
-    public override fun loadClass(val className: String?, resolveIt: Boolean): Class<out Any?>? {
+    public override fun loadClass(className: String?, resolveIt: Boolean): Class<out Any?>? {
         var result = kcl.getLoadedClass(className!!)
         if (result == null) {
             val bytes = kcl.loadClassBytes(className)

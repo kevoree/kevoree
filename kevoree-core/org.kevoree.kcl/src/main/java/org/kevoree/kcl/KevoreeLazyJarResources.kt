@@ -56,7 +56,7 @@ class KevoreeLazyJarResources {
 
     var lazyload = true
 
-    fun setLazyLoad(val _lazyload: Boolean) {
+    fun setLazyLoad(_lazyload: Boolean) {
         lazyload = _lazyload
     }
 
@@ -90,7 +90,7 @@ class KevoreeLazyJarResources {
         }
     }
 
-    fun loadJar(val jarFile: String?) {
+    fun loadJar(jarFile: String?) {
         var fis: FileInputStream? = null
         try {
             val f = File(jarFile!!)

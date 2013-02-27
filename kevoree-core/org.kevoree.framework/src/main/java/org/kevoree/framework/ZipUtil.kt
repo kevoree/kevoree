@@ -22,7 +22,7 @@ import java.util.zip.Deflater
 
 object ZipUtil {
 
-    fun compressByteArray(val input: ByteArray): ByteArray {
+    fun compressByteArray(input: ByteArray): ByteArray {
         val compressor = Deflater()
         compressor.setLevel(Deflater.BEST_COMPRESSION)
         compressor.setInput(input)
@@ -43,7 +43,7 @@ object ZipUtil {
         return bos.toByteArray()
     }
 
-    fun uncompressByteArray(val compressedData: ByteArray): ByteArray {
+    fun uncompressByteArray(compressedData: ByteArray): ByteArray {
         val decompressor = Inflater()
         decompressor.setInput(compressedData)
         val bos = ByteArrayOutputStream(compressedData.size)

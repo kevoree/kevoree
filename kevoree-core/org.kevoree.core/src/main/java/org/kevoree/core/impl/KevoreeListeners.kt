@@ -77,7 +77,7 @@ class KevoreeListeners {
 
     private val registeredListeners = ArrayList<ModelListener>()
 
-    fun addListener(val l: ModelListener) = scheduler?.submit(AddListener(l))
+    fun addListener(l: ModelListener) = scheduler?.submit(AddListener(l))
 
     inner class AddListener(val l: ModelListener) : Runnable {
         override fun run() {
