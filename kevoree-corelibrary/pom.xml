@@ -12,6 +12,7 @@
         <kevoree.version>${project.version}</kevoree.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <scala.version>2.9.2</scala.version>
+        <kotlin.version>0.5.162</kotlin.version>
     </properties>
 
     <modules>
