@@ -254,7 +254,7 @@ open class KevoreeJarClassLoader(): ClassLoader() {
         return result
     }
 
-    fun getLoadedClass(val className: String): Class<out Any?>? {
+    fun getLoadedClass(className: String): Class<out Any?>? {
         return findLoadedClass(className)
     }
 
@@ -273,7 +273,7 @@ open class KevoreeJarClassLoader(): ClassLoader() {
     }
 
 
-    override fun getResourceAsStream(val name: String?): InputStream? {
+    override fun getResourceAsStream(name: String?): InputStream? {
         var resolved = internal_getResourceAsStream(name)
         if (resolved != null) {
             return resolved
@@ -523,11 +523,11 @@ open class KevoreeJarClassLoader(): ClassLoader() {
         return classpathResources?.getResource(className2);
     }
 
-    fun formatClassName(var className: String): String {
-        className = className.replace('/', '~');
-        className = className.replace('.', '/') + ".class";
-        className = className.replace('~', '/');
-        return className;
+    fun formatClassName(className: String): String {
+        var classNameT = className.replace('/', '~');
+        classNameT = classNameT.replace('.', '/') + ".class";
+        classNameT = classNameT.replace('~', '/');
+        return classNameT;
     }
 
     inner class CurrentLoader: ProxyClassLoader() {

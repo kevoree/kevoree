@@ -43,7 +43,7 @@ object KevoreeXmiHelper {
 
     val logger = LoggerFactory.getLogger(this.javaClass)
 
-    fun save(val uri: String, root: ContainerRoot) {
+    fun save(uri: String, root: ContainerRoot) {
         //CHECK DIRECTORY CREATION
         val folderUri = if(uri.contains(File.separator)){
             uri.substring(0, uri.lastIndexOf(File.separator))
@@ -120,7 +120,7 @@ object KevoreeXmiHelper {
 
     }
 
-    fun loadCompressedStream(val input: InputStream): ContainerRoot? {
+    fun loadCompressedStream( input: InputStream): ContainerRoot? {
         val inputS = ByteArrayInputStream(ZipUtil.uncompressByteArray(input.readBytes(input.available())))
         return loadStream(inputS)
     }
