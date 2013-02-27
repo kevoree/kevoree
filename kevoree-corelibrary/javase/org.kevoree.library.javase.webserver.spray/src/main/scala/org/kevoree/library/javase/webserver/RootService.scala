@@ -99,6 +99,7 @@ class RootService (id: String, request: MessagePort, bootstrap: ServerBootstrap,
       actorRef ! RequestResponderTuple(responder, kevMsg.getTokenID, System.currentTimeMillis())
       val paramsRes = GetParamsParser.getParams(url)
       kevMsg.setUrl(paramsRes._1)
+      kevMsg.setCompleteUrl("http://" + headers.find(header => header._1 == "Host" || header._1 == "host").getOrElse(("", ""))._2 + paramsRes._1)
       kevMsg.setRawParams(defineRawParams(paramsRes._2))
       kevMsg.setResolvedParams(paramsRes._2)
       headers.foreach {
