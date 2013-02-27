@@ -47,7 +47,7 @@
         <plugin>
             <artifactId>kotlin-maven-plugin</artifactId>
             <groupId>org.jetbrains.kotlin</groupId>
-            <version>0.5.1</version>
+            <version>${kotlin.version}</version>
 
             <executions>
                 <execution>
