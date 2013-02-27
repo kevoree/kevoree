@@ -18,7 +18,6 @@
         <android.sdk.path>${android.home}</android.sdk.path>
         <android.extractDuplicates>true</android.extractDuplicates>
         <android.dex.coreLibrary>true</android.dex.coreLibrary>
-        <kotlin.version>0.5.1</kotlin.version>
     </properties>
 
     <dependencies>
