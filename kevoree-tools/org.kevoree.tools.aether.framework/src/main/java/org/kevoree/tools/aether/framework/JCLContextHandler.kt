@@ -71,7 +71,7 @@ open class JCLContextHandler: KevoreeClassLoaderHandler {
         }
     }
 
-    override fun registerDeployUnitResolver(val dur: DeployUnitResolver?) {
+    override fun registerDeployUnitResolver(dur: DeployUnitResolver?) {
         pool.submit(Add_Resolver(dur!!))
     }
     inner class Add_Resolver(val dur: DeployUnitResolver): Runnable {

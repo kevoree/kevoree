@@ -169,7 +169,7 @@ class NodeTypeBootstrapHelper(val ctx: android.content.Context, val parent: Clas
         classLoaderHandler.manuallyAddToCache(du, kcl)
     }
 
-    fun installDeployUnit(val du: DeployUnit): KevoreeJarClassLoader? {
+    fun installDeployUnit(du: DeployUnit): KevoreeJarClassLoader? {
         try {
             val arteFile = AetherUtil.resolveDeployUnit(du)
             if (arteFile != null) {

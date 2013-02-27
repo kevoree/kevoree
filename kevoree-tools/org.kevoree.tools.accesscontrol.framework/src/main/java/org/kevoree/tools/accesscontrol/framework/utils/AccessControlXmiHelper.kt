@@ -12,7 +12,7 @@ import org.kevoree.AccessControl.loader.ModelLoader
 object AccessControlXmiHelper {
 
 
-    fun save(val uri: String, root: AccessControlRoot) {
+    fun save(uri: String, root: AccessControlRoot) {
         //CHECK DIRECTORY CREATION
         val folderUri = if(uri.contains(File.separator)){
             uri.substring(0, uri.lastIndexOf(File.separator))
@@ -89,7 +89,7 @@ object AccessControlXmiHelper {
 
     }
 
-    fun loadCompressedStream(val input: InputStream): AccessControlRoot? {
+    fun loadCompressedStream(input: InputStream): AccessControlRoot? {
         val inputS = ByteArrayInputStream(ZipUtil.uncompressByteArray(input.readBytes(input.available())))
         return loadStream(inputS)
     }

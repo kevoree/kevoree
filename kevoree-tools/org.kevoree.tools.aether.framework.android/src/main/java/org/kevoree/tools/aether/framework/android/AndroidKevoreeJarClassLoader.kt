@@ -85,7 +85,7 @@ class AndroidKevoreeJarClassLoader(gkey: String, val ctx: android.content.Contex
             }
         })
         addSpecialLoaders(object : KevoreeResourcesLoader(".dex") {
-            override fun doLoad(key: String?, val stream: InputStream?) {
+            override fun doLoad(key: String?, stream: InputStream?) {
                 //logger.debug("Found DEX file => "+key)
                 declareLocalDexClassLoader(stream, gkey + "_" + key)
             }
