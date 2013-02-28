@@ -28,6 +28,8 @@ package org.kevoree.framework.osgi
  */
 
 import org.slf4j.LoggerFactory
+import java.util
+import util.concurrent.Semaphore
 
 /**
  * Created by IntelliJ IDEA.
@@ -40,27 +42,43 @@ trait KevoreeInstanceFactory {
 
   private val logger = LoggerFactory.getLogger(this.getClass)
 
-  private val instancesCache = new java.util.HashMap[String, org.kevoree.framework.osgi.KevoreeInstanceActivator]()
+  private val instancesCache = new util.HashMap[String, org.kevoree.framework.osgi.KevoreeInstanceActivator]()
+  private val sem = new Semaphore(1)
 
   def registerInstance(instanceName: String, nodeName: String): org.kevoree.framework.osgi.KevoreeInstanceActivator = {
-    val newInstance = createInstanceActivator
-    newInstance.setInstanceName(instanceName)
-    newInstance.setNodeName(nodeName)
-
-
-
-    instancesCache.put(instanceName, newInstance)
-    logger.debug("TypeCache " + this.getClass.getName + " has " + instancesCache.keySet().size() + " instances")
+    var newInstance: org.kevoree.framework.osgi.KevoreeInstanceActivator =     null
+    try{
+      sem.acquire()
+      logger.debug("RegisterInstance -->TypeCache " + this.getClass.getName + " has " + instancesCache.keySet().size() + " instances")
+      newInstance = createInstanceActivator
+      newInstance.setInstanceName(instanceName)
+      newInstance.setNodeName(nodeName)
+      instancesCache.put(instanceName, newInstance)
+    }catch {
+      case e: Exception => logger.error("RegisterInstance ",e)
+    }finally {
+      sem.release()
+    }
     newInstance
   }
 
   def remove(instanceName: String): org.kevoree.framework.osgi.KevoreeInstanceActivator = {
     var removed: org.kevoree.framework.osgi.KevoreeInstanceActivator = null
-    if (instancesCache.containsKey(instanceName)) {
-      removed = instancesCache.get(instanceName)
-      instancesCache.remove(instanceName)
+    try
+    {
+      sem.acquire()
+      logger.debug("Remove -->TypeCache " + this.getClass.getName + " has " + instancesCache.keySet().size() + " instances")
+      if (instancesCache.containsKey(instanceName)) {
+        removed = instancesCache.get(instanceName)
+        instancesCache.remove(instanceName)
+      } else {
+        removed = null
+      }
+    }catch {
+      case e: Exception => logger.error("Remove -->TypeCache  ",e)
+    } finally {
+      sem.release()
     }
-    logger.debug("TypeCache " + this.getClass.getName + " has " + instancesCache.keySet().size() + " instances")
     removed
   }
 
