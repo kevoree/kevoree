@@ -104,7 +104,6 @@ class RootService (id: String, request: MessagePort, bootstrap: ServerBootstrap,
       kevMsg.setResolvedParams(paramsRes._2)
       headers.foreach {
         header =>
-          log.info(header._1 + "=" + header._2)
           kevMsg.getHeaders.put(header._1, header._2)
       }
       request.process(kevMsg)
