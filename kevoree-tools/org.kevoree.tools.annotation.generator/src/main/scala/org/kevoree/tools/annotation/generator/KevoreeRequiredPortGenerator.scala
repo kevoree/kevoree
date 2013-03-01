@@ -109,7 +109,7 @@ object KevoreeRequiredPortGenerator {
                 if (i != 0) {
                   writer.append(",")
                 }
-                writer.append(param.getName + ":" + param.getType.print('[', ']'))
+                writer.append(GeneratorHelper.protectReservedWord(param.getName) + ":" + param.getType.print('[', ']'))
                 i = i +1
             }
 
@@ -127,7 +127,7 @@ object KevoreeRequiredPortGenerator {
             writer.append("msgcall.setMethodName(\"" + op.getName + "\")\n")
             op.getParameters.sortWith((p1,p2)=>p2.getOrder > p1.getOrder).foreach {
               param =>
-                writer.append("msgcall.getParams.put(\"" + param.getName + "\"," + param.getName + ".asInstanceOf[AnyRef])\n")
+                writer.append("msgcall.getParams.put(\"" + param.getName + "\"," + GeneratorHelper.protectReservedWord(param.getName) + ".asInstanceOf[AnyRef])\n")
             }
 
             writer.append("(this !? msgcall).asInstanceOf[" + rt + "]")
