@@ -1,19 +1,14 @@
 package org.kevoree.library.javase.webserver;
 
-import org.kevoree.annotation.ComponentType;
 import org.kevoree.annotation.*;
 import org.kevoree.framework.AbstractComponentType;
 import org.kevoree.framework.MessagePort;
-import org.slf4j.LoggerFactory;
-
-import java.net.InetSocketAddress;
 
 /**
  * Created by IntelliJ IDEA.
  * User: duke
  * Date: 12/10/11
  * Time: 17:58
- * To change this template use File | Settings | File Templates.
  */
 @Library(name = "JavaSE")
 @ComponentType
