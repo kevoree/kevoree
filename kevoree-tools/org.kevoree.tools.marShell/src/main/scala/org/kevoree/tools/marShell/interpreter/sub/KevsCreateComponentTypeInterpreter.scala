@@ -46,7 +46,11 @@ case class KevsCreateComponentTypeInterpreter(self : CreateComponentTypeStatment
   def interpret(context: KevsInterpreterContext): Boolean = {
     //LOOK FOR PREVIOUSLY EXSITING COMPONENT TYPE
     context.model.findByPath("typeDefinitions[" + self.newTypeName + "]", classOf[TypeDefinition])match {
-      case e:TypeDefinition=> logger.error("TypeDefinition already exist with name => "+self.newTypeName);false
+      case e:TypeDefinition=> {
+        context.appendInterpretationError("Could not create ComponentType named '"+self.newTypeName+"'. Type already exists.", logger)
+        //logger.error("TypeDefinition already exist with name => "+self.newTypeName)
+        false
+      }
       case null => {
           val newComponentTypeDef = context.kevoreeFactory.createComponentType
           newComponentTypeDef.setName(self.newTypeName)

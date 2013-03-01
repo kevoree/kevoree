@@ -89,19 +89,22 @@ case class KevsMoveComponentInstanceInterpreter (moveComponent: MoveComponentIns
 										true
 									}
 									case null => {
-										logger.error("Target node not found " + moveComponent.cid.componentInstanceName)
+                    context.appendInterpretationError("Could not move ComponentInstance '"+moveComponent.cid.componentInstanceName+"' from '"+moveComponent.cid.nodeName+"' to '"+moveComponent.targetNodeName+"'. Target node not found.", logger)
+                    //logger.error("Target node not found " + moveComponent.cid.componentInstanceName)
 										false
 									}
 								}
 							}
 							case null => {
-								logger.error("Component not found " + moveComponent.cid.componentInstanceName)
+                context.appendInterpretationError("Could not move ComponentInstance '"+moveComponent.cid.componentInstanceName+"' from '"+moveComponent.cid.nodeName+"' to '"+moveComponent.targetNodeName+"'. Component instance not found.", logger)
+                //logger.error("Component not found " + moveComponent.cid.componentInstanceName)
 								false
 							}
 						}
 					}
 					case null => {
-						logger.error("Source Node not found " + nodeID)
+            context.appendInterpretationError("Could not move ComponentInstance '"+moveComponent.cid.componentInstanceName+"' from '"+moveComponent.cid.nodeName+"' to '"+moveComponent.targetNodeName+"'. Source node not found.", logger)
+            //logger.error("Source Node not found " + nodeID)
 						false
 					}
 				}

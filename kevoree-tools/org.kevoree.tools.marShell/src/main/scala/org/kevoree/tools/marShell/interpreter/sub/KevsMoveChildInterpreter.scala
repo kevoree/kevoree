@@ -37,13 +37,15 @@ case class KevsMoveChildInterpreter(moveChild: MoveChildStatment) extends KevsAb
   def interpret(context: KevsInterpreterContext): Boolean = {
     context.model.findByPath("nodes[" + moveChild.childNodeName + "]", classOf[ContainerNode]) match {
       case null => {
-        logger.error("Unknown child name: {}\nThe node must already exist. Please check !", moveChild.childNodeName)
+        context.appendInterpretationError("Could not move Child node '"+moveChild.childNodeName+"' from '"+moveChild.oldFatherNodeName+"' to '"+moveChild.fatherNodeName+"'. Child node not found.", logger)
+        //logger.error("Unknown child name: {}\nThe node must already exist. Please check !", moveChild.childNodeName)
         false
       }
       case child:ContainerNode => {
         context.model.findByPath("nodes[" + moveChild.oldFatherNodeName + "]", classOf[ContainerNode]) match {
           case null => {
-            logger.error("Unknown old father node: {}\nThe node must already exist. Please check !", moveChild.oldFatherNodeName)
+            context.appendInterpretationError("Could not move Child node '"+moveChild.childNodeName+"' from '"+moveChild.oldFatherNodeName+"' to '"+moveChild.fatherNodeName+"'. Source parent not found.", logger)
+            //logger.error("Unknown old father node: {}\nThe node must already exist. Please check !", moveChild.oldFatherNodeName)
             false
           }
           case oldFather:ContainerNode => {
@@ -52,7 +54,8 @@ case class KevsMoveChildInterpreter(moveChild: MoveChildStatment) extends KevsAb
             }
             context.model.findByPath("nodes[" + moveChild.fatherNodeName + "]", classOf[ContainerNode]) match {
               case null => {
-                logger.error("Unknown father node: {}\nThe node must already exist. Please check !", moveChild.fatherNodeName)
+                context.appendInterpretationError("Could not move Child node '"+moveChild.childNodeName+"' from '"+moveChild.oldFatherNodeName+"' to '"+moveChild.fatherNodeName+"'. Target parent node not found.", logger)
+                //logger.error("Unknown father node: {}\nThe node must already exist. Please check !", moveChild.fatherNodeName)
                 false
               }
               case father:ContainerNode => {

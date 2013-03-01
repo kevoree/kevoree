@@ -87,7 +87,8 @@ class KevScriptCoreEngine(core: KevoreeModelHandlerService, bootstraper: Bootstr
         if (s.interpret(ctx.setVarMap(varMap))) {
           inputModel
         } else {
-          throw new KevScriptEngineException("Interpreter Error : ")
+          import scala.collection.JavaConversions._
+          throw new KevScriptEngineException("Interpreter Error :\n" + ctx.interpretationErrors.mkString("\n"))
         }
       }
       case None => throw new KevScriptEngineParseErrorException("Parser Error : " + parser.lastNoSuccess.toString)
@@ -129,7 +130,8 @@ class KevScriptCoreEngine(core: KevoreeModelHandlerService, bootstraper: Bootstr
               core.compareAndSwapModel(inputModel, targetModel)
             }
           } else {
-            throw new KevScriptEngineException("Interpreter Error : ")
+            import scala.collection.JavaConversions._
+            throw new KevScriptEngineException("Interpreter Error :\n" + ctx.interpretationErrors.mkString("\n"))
           }
         }
         case None => throw new KevScriptEngineParseErrorException("Parser Error : " + parser.lastNoSuccess.toString)

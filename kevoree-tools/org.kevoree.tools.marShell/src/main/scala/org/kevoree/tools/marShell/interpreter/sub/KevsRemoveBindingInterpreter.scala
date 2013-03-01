@@ -58,22 +58,46 @@ case class KevsRemoveBindingInterpreter(removeBinding: RemoveBindingStatment) ex
                         //LOOK for previous binding
                         port.getBindings.find(mb => mb.getHub == targetHub) match {
                           case Some(previousMB) => context.model.removeMBindings(previousMB); previousMB.setPort(null); previousMB.setHub(null); true
-                          case None => logger.error("Previous binding not found => {}", removeBinding.bindingInstanceName); false
+                          case None => {
+                            context.appendInterpretationError("Could not remove binding from port '"+removeBinding.portName+"' of component '"+removeBinding.cid.componentInstanceName+"' on node '"+removeBinding.cid.nodeName+"' to channel '"+removeBinding.bindingInstanceName+"'. Binding not found.", logger)
+                            //logger.error("Previous binding not found => {}", removeBinding.bindingInstanceName)
+                            false
+                          }
                         }
                       }
-                      case None => logger.error("Port not found => {}", removeBinding.portName); false
+                      case None => {
+                        context.appendInterpretationError("Could not remove binding from port '"+removeBinding.portName+"' of component '"+removeBinding.cid.componentInstanceName+"' on node '"+removeBinding.cid.nodeName+"' to channel '"+removeBinding.bindingInstanceName+"'. Port not found.", logger)
+                        //logger.error("Port not found => {}", removeBinding.portName)
+                        false
+                      }
                     }
                   }
-                  case null => logger.error("Hub not found => {}",removeBinding.bindingInstanceName); false
+                  case null => {
+                    context.appendInterpretationError("Could not remove binding from port '"+removeBinding.portName+"' of component '"+removeBinding.cid.componentInstanceName+"' on node '"+removeBinding.cid.nodeName+"' to channel '"+removeBinding.bindingInstanceName+"'. Channel not found.", logger)
+                    //logger.error("Hub not found => {}",removeBinding.bindingInstanceName)
+                    false
+                  }
                 }
               }
-              case null => logger.error("Component not found => {}", removeBinding.cid.componentInstanceName); false
+              case null => {
+                context.appendInterpretationError("Could not remove binding from port '"+removeBinding.portName+"' of component '"+removeBinding.cid.componentInstanceName+"' on node '"+removeBinding.cid.nodeName+"' to channel '"+removeBinding.bindingInstanceName+"'. Component not found.", logger)
+                //logger.error("Component not found => {}", removeBinding.cid.componentInstanceName)
+                false
+              }
             }
           }
-          case null => logger.error("Node not found => {}", removeBinding.cid.nodeName); false
+          case null => {
+            context.appendInterpretationError("Could not remove binding from port '"+removeBinding.portName+"' of component '"+removeBinding.cid.componentInstanceName+"' on node '"+removeBinding.cid.nodeName+"' to channel '"+removeBinding.bindingInstanceName+"'. Node not found.", logger)
+            //logger.error("Node not found => {}", removeBinding.cid.nodeName)
+            false
+          }
         }
       }
-      case None => logger.error("NodeName is mandatory !"); false
+      case None => {
+        context.appendInterpretationError("Could not remove binding from port '"+removeBinding.portName+"' of component '"+removeBinding.cid.componentInstanceName+"' on node '"+removeBinding.cid.nodeName+"' to channel '"+removeBinding.bindingInstanceName+"'. Node name not specified, but mandatory.", logger)
+        //logger.error("NodeName is mandatory !")
+        false
+      }
     }
   }
 

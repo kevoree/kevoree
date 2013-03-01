@@ -101,7 +101,7 @@ case class KevsRemoveNodeInterpreter(addN: RemoveNodeStatment) extends KevsAbstr
         removeNode(targetNode, context)
       }
       case null => {
-        logger.error("Node Already existe")
+        context.appendInterpretationError("Could not remove node '"+addN.nodeName+"'. Node does not exist.", logger)
         false
       }
     }

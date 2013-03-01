@@ -50,10 +50,16 @@ case class KevsIncludeInterpreter(includeStatement: IncludeStatement) extends Ke
       includeScript = "tblock{\n" + includeScript + "\n}"
 
      // println("-----"+includeScript+"---------")
-      parser.parseScript(includeScript.trim).get.interpret(context)
+      if(!parser.parseScript(includeScript.trim).get.interpret(context)) {
+        context.appendInterpretationError("KevScript interpretation failed while trying to include script from '"+includeStatement.url+"'. ", logger)
+        false
+      } else {
+        true
+      }
     } catch {
       case _@e => {
-        logger.error("Error interpret include statement : " + includeStatement.getTextualForm + "\n" + parser.lastNoSuccess)
+        context.appendInterpretationError("Could not include model from '"+includeStatement.url+"'. " + e.toString, logger)
+        //logger.error("Error interpret include statement : " + includeStatement.getTextualForm + "\n" + parser.lastNoSuccess)
         false
       }
     }

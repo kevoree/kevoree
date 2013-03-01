@@ -71,7 +71,8 @@ class KevScriptOfflineEngine(srcModel: ContainerRoot, bootstraper: Bootstraper) 
         if (s.interpret(ctx.setVarMap(varMap))) {
           inputModel
         } else {
-          throw new KevScriptEngineException("Interpreter Error : ")
+          import scala.collection.JavaConversions._
+          throw new KevScriptEngineException("Interpreter Error :\n" + ctx.interpretationErrors.mkString("\n"))
         }
       }
       case None => throw new KevScriptEngineParseErrorException("Parser Error : " + parser.lastNoSuccess.toString)

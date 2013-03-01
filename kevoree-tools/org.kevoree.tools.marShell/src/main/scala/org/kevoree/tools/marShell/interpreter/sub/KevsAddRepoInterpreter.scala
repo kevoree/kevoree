@@ -34,7 +34,7 @@ case class KevsAddRepoInterpreter(addRepo: AddRepoStatment) extends KevsAbstract
 
   def interpret(context: KevsInterpreterContext): Boolean = {
     if (addRepo.url == "") {
-      logger.error("Empty Repository URL not allowed")
+      context.appendInterpretationError("Could add repository. URL is empty.",logger)
       false
     } else {
       context.model.findByPath("repositories[" + addRepo.url + "]", classOf[Repository]) match {

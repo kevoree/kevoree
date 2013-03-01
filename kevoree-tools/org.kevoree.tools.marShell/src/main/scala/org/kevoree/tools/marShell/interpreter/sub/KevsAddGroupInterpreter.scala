@@ -34,7 +34,7 @@ case class KevsAddGroupInterpreter(addGroup: AddGroupStatment) extends KevsAbstr
           Merger.mergeDictionary(target, addGroup.props, null)
           true
         } else {
-          logger.error("Type != from previous created group")
+          context.appendInterpretationError("Could add group '"+addGroup.groupName+"' of type '"+addGroup.groupTypeName+"'. A group instance already exists with the same name, but with a different type: '"+target.getTypeDefinition.getName+"'.",logger)
           false
         }
       }
@@ -51,11 +51,11 @@ case class KevsAddGroupInterpreter(addGroup: AddGroupStatment) extends KevsAbstr
 
           }
           case targetGroupType:TypeDefinition if (!targetGroupType.isInstanceOf[GroupType]) => {
-            logger.error("Type definition is not a groupType " + addGroup.groupTypeName);
+            context.appendInterpretationError("Could add group '"+addGroup.groupName+"' of type '"+addGroup.groupTypeName+"'. Type of the new group is not a GroupType: '"+targetGroupType.getClass.getName+"'.",logger)
             false
           }
           case _ => {
-            logger.error("Type definition not found " + addGroup.groupTypeName);
+            context.appendInterpretationError("Could add group '"+addGroup.groupName+"' of type '"+addGroup.groupTypeName+"'. TypeDefinition not found.",logger)
             false
           }
         }
