@@ -57,7 +57,8 @@ case class KevsRemoveChannelInterpreter(removeChannel: RemoveChannelInstanceStat
         true
       }
       case null => {
-        logger.error("Channel {} does not exist in the model. The removeChannel command has been ignored.", removeChannel.channelName)
+        context.appendInterpretationError("Could not remove channel node '"+removeChannel.channelName+"'. Channel not found.", logger)
+        //TODO: Why is this error considered as not blocking, compared to other remove commands ?
         true
       }
     }

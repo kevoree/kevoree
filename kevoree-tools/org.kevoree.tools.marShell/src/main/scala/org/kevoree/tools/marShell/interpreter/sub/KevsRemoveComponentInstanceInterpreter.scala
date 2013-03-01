@@ -46,18 +46,22 @@ case class KevsRemoveComponentInstanceInterpreter(removeComponent: RemoveCompone
             targetNode.findByPath("components[" + removeComponent.cid.componentInstanceName + "]/", classOf[ComponentInstance]) match {
               case targetComponent : ComponentInstance => deleteComponent(targetNode, targetComponent)
               case null => {
-                logger.error("Component not found " + removeComponent.cid.componentInstanceName)
+                context.appendInterpretationError("Could not remove instance '"+removeComponent.cid.componentInstanceName+"' from node '"+removeComponent.cid.nodeName+"' : ComponentInstance not found.", logger)
                 false
               }
             }
           }
           case null => {
-            logger.error("Node not found " + nodeID)
+            context.appendInterpretationError("Could not remove instance '"+removeComponent.cid.componentInstanceName+"' from node '"+removeComponent.cid.nodeName+"' : Node not found.", logger)
             false
           }
         }
       }
-      case None => false //TODO solve ambiguity
+      case None => {
+        //TODO solve ambiguity
+        context.appendInterpretationError("Could not remove instance '"+removeComponent.cid.componentInstanceName+"' from node '"+removeComponent.cid.nodeName+"' : NodeName not specified.", logger)
+        false
+      }
     }
   }
 

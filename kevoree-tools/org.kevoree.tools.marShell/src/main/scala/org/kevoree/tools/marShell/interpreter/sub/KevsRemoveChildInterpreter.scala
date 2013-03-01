@@ -46,13 +46,16 @@ case class KevsRemoveChildInterpreter(removeChild: RemoveChildStatment) extends 
   def interpret(context: KevsInterpreterContext): Boolean = {
     /*context.model.getNodes.find(node => node.getName == removeChild.childNodeName)*/
     context.model.findByPath("nodes[" + removeChild.childNodeName + "]", classOf[ContainerNode]) match {
-      case null => logger.error("Unknown child name: {}\nThe node must already exist. Please check !", removeChild.childNodeName); false
+      case null => {
+        context.appendInterpretationError("Could not remove child node '"+removeChild.childNodeName+"' from node '"+ removeChild.fatherNodeName+"'. Child node not found.", logger)
+        false
+      }
       case child => {
         if (child.getHost != null && child.getHost.getName == removeChild.fatherNodeName) {
           child.getHost.removeHosts(child)
           true
         } else {
-          logger.error("node {} is not a child of the node {}", Array[AnyRef](removeChild.childNodeName, removeChild.fatherNodeName))
+          context.appendInterpretationError("Could not remove child node '"+removeChild.childNodeName+"' from node '"+ removeChild.fatherNodeName+"'. No parenting relation found.", logger)
           false
         }
       }

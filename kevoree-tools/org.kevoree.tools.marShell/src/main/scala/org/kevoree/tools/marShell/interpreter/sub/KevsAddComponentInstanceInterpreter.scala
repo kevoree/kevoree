@@ -40,7 +40,7 @@ case class KevsAddComponentInstanceInterpreter(addCompo: AddComponentInstanceSta
                   Merger.mergeDictionary(previousComponent, addCompo.props, null)
                   true
                 } else {
-                  logger.error("Type != from previous created component")
+                  context.appendInterpretationError("Could add component instance '"+addCompo.cid.componentInstanceName+"' of type '"+addCompo.typeDefinitionName +"' on node '"+nodeID+"'. A component instance already exists with the same name, but with a different type: '"+previousComponent.getTypeDefinition.getName+"'.",logger)
                   false
                 }
               }
@@ -71,11 +71,11 @@ case class KevsAddComponentInstanceInterpreter(addCompo: AddComponentInstanceSta
                     true
                   }
                   case typeDef:TypeDefinition if (!typeDef.isInstanceOf[ComponentType]) => {
-                    logger.error("Type definition is not a componentType " + addCompo.typeDefinitionName)
+                    context.appendInterpretationError("Could add component instance '"+addCompo.cid.componentInstanceName+"' of type '"+addCompo.typeDefinitionName +"' on node '"+nodeID++"'. Type of the new channel is not a ChannelType: '"+typeDef.getClass.getName+"'.",logger)
                     false
                   }
                   case _ => {
-                    logger.error("Type definition not found " + addCompo.typeDefinitionName)
+                    context.appendInterpretationError("Could add component instance '"+addCompo.cid.componentInstanceName+"' of type '"+addCompo.typeDefinitionName +"' on node '"+nodeID+"'. Type of the new instance not found.",logger)
                     false
                   }
                 }
@@ -83,13 +83,14 @@ case class KevsAddComponentInstanceInterpreter(addCompo: AddComponentInstanceSta
             }
           }
           case null => {
-            logger.error("Node not found " + nodeID)
+            context.appendInterpretationError("Could add component instance '"+addCompo.cid.componentInstanceName+"' of type '"+addCompo.typeDefinitionName+"' on node '"+nodeID+"'. Node not found.",logger)
             false
           }
         }
       }
       case None => {
         //TODO search to solve ambiguity
+        context.appendInterpretationError("Could add component instance '"+addCompo.cid.componentInstanceName+"' of type '"+addCompo.typeDefinitionName+"' on node '"+addCompo.cid.nodeName+"'. Node not found.",logger)
         false
       }
     }
