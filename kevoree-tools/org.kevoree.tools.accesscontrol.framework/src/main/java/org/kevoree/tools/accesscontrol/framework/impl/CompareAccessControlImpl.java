@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.security.interfaces.RSAPublicKey;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -46,9 +47,10 @@ public class CompareAccessControlImpl implements ICompareAccessControl
 {
     private AccessControlRoot root;
     private Logger logger = LoggerFactory.getLogger(CompareAccessControlImpl.class);
-    private  long start;
-    private  long duree;
+    private long start;
+    private long duree;
     private boolean benchmark =false;
+    private HashMap<String,Boolean> cache = new HashMap<String, Boolean>();
 
     public CompareAccessControlImpl(AccessControlRoot root){
         this.root = root;
@@ -59,6 +61,7 @@ public class CompareAccessControlImpl implements ICompareAccessControl
 
         KevoreeKompareBean kompareBean = new KevoreeKompareBean();
         AdaptationModel adaptationModel = kompareBean.kompare(current_model,KevoreeXmiHelper.$instance.loadString(new String(target_modelSigned.getSerialiedModel())), nodeName);
+
         if(benchmark)
         {
             start= System.currentTimeMillis();
@@ -86,7 +89,7 @@ public class CompareAccessControlImpl implements ICompareAccessControl
             }
             catch(IOException ioe)
             {
-                 System.err.println("IOException: " + ioe.getMessage());
+                System.err.println("IOException: " + ioe.getMessage());
             }
         }
         return result;
@@ -163,46 +166,57 @@ public class CompareAccessControlImpl implements ICompareAccessControl
                 {
                     Instance instance =(Instance) p.getRef();
                     boolean  found = false;
-                    // this rules is not denied we check if is authorized
-                    for(Role role : user.getRoles())
+                    boolean allowed_cache = false;
+
+                    if(cache.get(instance.getTypeDefinition().getName()) != null){
+                        if(cache.get(instance.getTypeDefinition().getName()) == true){
+                            allowed_cache =true;
+                        }
+                    }
+                    if(!allowed_cache)
                     {
-                        for(Element element :role.getElements())
+                        // this rules is not denied we check if is authorized
+                        for(Role role : user.getRoles())
                         {
-                            Object ptr =   target_model.findByPath(element.getElementQuery());
-                            if(ptr == null)
+                            for(Element element :role.getElements())
                             {
-                                // look in previous model maybe the component do no exist in the new
-                                ptr = currentmodel.findByPath(element.getElementQuery());
-                            }
-
-                      //      logger.debug("Query -->"+element.getElementQuery());
-
-                            if( ptr != null && ptr instanceof TypeDefinition)
-                            {
-                                TypeDefinition componentType= (TypeDefinition) ptr;
-
-                                if(instance.getTypeDefinition().getName().equals(componentType.getName()))
+                                Object ptr =   target_model.findByPath(element.getElementQuery());
+                                if(ptr == null)
                                 {
+                                    // look in previous model maybe the component do no exist in the new
+                                    ptr = currentmodel.findByPath(element.getElementQuery());
+                                }
 
-                                    if(element.findPermissionsByID(p.getPrimitiveType().getName()) != null)
+                                //      logger.debug("Query -->"+element.getElementQuery());
+
+                                if( ptr != null && ptr instanceof TypeDefinition)
+                                {
+                                    TypeDefinition componentType= (TypeDefinition) ptr;
+
+                                    if(instance.getTypeDefinition().getName().equals(componentType.getName()))
                                     {
-                                        found = true;
+
+                                        if(element.findPermissionsByID(p.getPrimitiveType().getName()) != null)
+                                        {
+                                            found = true;
+                                        }
                                     }
                                 }
                             }
-                        }
-                        if(!found)
-                        {
-                            if(!result_forbidden.contains(p)){
-                                result_forbidden.add(p);
+                         //   cache.put(((Instance) p.getRef()).getName(),found);
+                            if(!found)
+                            {
+                                if(!result_forbidden.contains(p)){
+                                    result_forbidden.add(p);
+                                }
+                            } else
+                            {
+                                if(result_forbidden.contains(p)){
+                                    result_forbidden.remove(p);
+                                }
                             }
-                        } else
-                        {
-                            if(result_forbidden.contains(p)){
-                                result_forbidden.remove(p);
-                            }
-                        }
 
+                        }
                     }
                 }
             }

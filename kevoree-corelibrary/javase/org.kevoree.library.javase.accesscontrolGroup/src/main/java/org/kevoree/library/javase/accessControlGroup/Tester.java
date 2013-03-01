@@ -1,12 +1,10 @@
 package org.kevoree.library.javase.accessControlGroup;
 
 import org.kevoree.AccessControl.AccessControlRoot;
+import org.kevoree.ContainerRoot;
 import org.kevoree.tools.accesscontrol.framework.utils.AccessControlXmiHelper;
 import org.kevoree.tools.accesscontrol.framework.utils.HelperSignature;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.security.KeyPair;
 import java.security.interfaces.RSAPrivateKey;
 import java.util.HashMap;
 
@@ -71,24 +69,28 @@ public class Tester {
         String modulus = "144020407584804763735781397875483509259162896393675259140832504723667556298258224080835620462080899939316115674945584086752254208548119246078919563808881551818193159408718845506936985497165354139428760891323751580371321471610817626346638768300361018500421805148485036897404239717699245568771580543630086019231";
 
         RSAPrivateKey rsaPrivateKey = HelperSignature.getPrivateKey(modulus, private_exponent);
+        //  System.out.println(Tester2.class.getClassLoader().getResourceAsStream("benchmark/pdp/model3.ac"));
 
-        // INSTALL PDP (MODEL ACCESS CONTROL)
-        AccessControlRoot root = AccessControlXmiHelper.$instance.loadStream(Tester.class.getClassLoader().getResourceAsStream("benchmark/pdp/model3.ac"));
+
+        /*PUSH SIGNED MODEL
+                // INSTALL PDP (MODEL ACCESS CONTROL)
+        AccessControlRoot root = AccessControlXmiHelper.$instance.loadStream(Tester.class.getClassLoader().getResourceAsStream("benchmark/pdp/model4.ac"));
         System.out.println("PUSH PDP "+root.getUsers().size());
 
-        // PUSH SIGNED MODEL
-        group.pushPDP(root,rsaPrivateKey,KevScriptLoader.getModel(Tester.class.getClassLoader().getResource("benchmark/models/emptynode.kevs").getPath()),"node0");
+      group.pushPDP(root,rsaPrivateKey,KevScriptLoader.getModel(Tester.class.getClassLoader().getResource("benchmark/models2/emptynode.kevs").getPath()),"node0");
 
-        Thread.sleep(1000);
-
-
-        for(int i=0;i<100;i++)
+        Thread.sleep(5000); */
+      ContainerRoot modeltarget = KevScriptLoader.getModel(Tester.class.getClassLoader().getResource("benchmark/models2/randomcomponent500.kevs").getPath());
+        ContainerRoot modelempty = KevScriptLoader.getModel(Tester.class.getClassLoader().getResource("benchmark/models2/emptynode.kevs").getPath());
+        for(int i=0;i<500;i++)
         {
             System.out.println("PUSH SIGNED MODEL "+i);
-            group.pushSignedModel(rsaPrivateKey, KevScriptLoader.getModel(Tester.class.getClassLoader().getResource("benchmark/models/randomcomponent500.kevs").getPath()), "node0");
+            group.pushSignedModel(rsaPrivateKey, modeltarget, "node0");
+                    Thread.sleep(6000);
             System.out.println("PUSH SIGNED EMPTY MODEL "+i);
-            group.pushSignedModel(rsaPrivateKey, KevScriptLoader.getModel(Tester.class.getClassLoader().getResource("benchmark/models/emptynode.kevs").getPath()), "node0");
+            group.pushSignedModel(rsaPrivateKey, modelempty, "node0");
         }
+
 
         System.exit(0);
 

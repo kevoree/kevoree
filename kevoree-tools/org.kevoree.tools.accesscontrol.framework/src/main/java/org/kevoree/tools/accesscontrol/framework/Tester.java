@@ -60,21 +60,6 @@ public class Tester {
     {
 
 
-        JFileChooser dialogue = new JFileChooser(new File("."));
-        PrintWriter sortie;
-        File fichier=null;
-
-        if (dialogue.showOpenDialog(null)==
-                JFileChooser.APPROVE_OPTION) {
-            fichier = dialogue.getSelectedFile();
-            sortie = new PrintWriter
-                    (new FileWriter(fichier.getPath(), true));
-
-            sortie.close();
-        }
-
-                System.out.println( fichier.getPath());
-        System.exit(0);
 
         ContainerRoot current_model = KevoreeXmiHelper.$instance.loadStream(Tester.class.getClassLoader().getResourceAsStream("empty_node.kev"));
         ContainerRoot target_model = KevoreeXmiHelper.$instance.loadStream(Tester.class.getClassLoader().getResourceAsStream("random_nio_grapher_group.kev"));

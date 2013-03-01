@@ -11,7 +11,7 @@ addRepo "http://maven.kevoree.org/daum/snapshots"
 merge 'mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.accesscontrolGroup/2.0.0-SNAPSHOT'
 merge 'mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.javaseNode/2.0.0-SNAPSHOT'
 addNode node0:JavaSENode
-updateDictionary node0{logLevel="WARN",coreLogLevel="WARN"}
+updateDictionary node0{logLevel="INFO",coreLogLevel="WARN"}
  {
 }
 

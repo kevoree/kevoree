@@ -74,6 +74,7 @@ public class AccessControlGroup extends AbstractGroupType implements ConnectionL
     int port = -1;
     private  AccessControlRoot root=null;
 
+
     @Start
     public void startRestGroup() throws IOException, NoSuchAlgorithmException, ControlException, InvalidKeyException {
         port = Integer.parseInt(this.getDictionary().get("port").toString());
@@ -115,9 +116,30 @@ public class AccessControlGroup extends AbstractGroupType implements ConnectionL
     protected void locaUpdateModel(final ContainerRoot modelOption) {
         new Thread() {
             public void run() {
-                getModelService().unregisterModelListener(AccessControlGroup.this);
-                getModelService().atomicUpdateModel(modelOption);
-                getModelService().registerModelListener(AccessControlGroup.this);
+                try {
+                    long duree,start;
+                    getModelService().unregisterModelListener(AccessControlGroup.this);
+                    start = System.currentTimeMillis();
+                    getModelService().atomicUpdateModel(modelOption);
+                    duree =  (System.currentTimeMillis() - start) ;
+                    getModelService().registerModelListener(AccessControlGroup.this);
+                    /*
+                    try
+                    {
+                        String filename= System.getProperty("java.io.tmpdir")+ File.separator+ "accesscontrol2.benchmark";
+                        FileWriter fw = new FileWriter(filename,true); //the true will append the new data
+                        fw.write(""+duree+"\n");
+                        fw.close();
+                        logger.info("total="+filename);
+                    }
+                    catch(IOException ioe)
+                    {
+                        System.err.println("IOException: " + ioe.getMessage());
+                    }
+                    */
+                } catch (Exception e) {
+                    logger.error("", e);
+                }
             }
         }.start();
     }
