@@ -46,7 +46,7 @@ case class KevsRemoveLibraryInterpreter(statment: RemoveLibraryStatment) extends
     context.model.findByPath("libraries[" + statment.libraryName + "]", classOf[TypeLibrary]) match {
       case library: TypeLibrary => context.model.removeLibraries(library); true
       case null => {
-        logger.error("Error : Library not found with name " + statment.libraryName)
+        context.appendInterpretationError("Could not remove library '"+statment.libraryName+"'. Library does not exist.", logger)
         false
       }
     }

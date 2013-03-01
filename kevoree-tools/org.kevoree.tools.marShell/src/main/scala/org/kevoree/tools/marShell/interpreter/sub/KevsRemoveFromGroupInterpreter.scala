@@ -23,9 +23,12 @@ import org.kevoree.tools.marShell.interpreter.KevsInterpreterContext
 import org.kevoree.tools.marShell.ast.RemoveFromGroupStatement
 import org.kevoree.{ContainerNode, Group}
 import scala.collection.JavaConversions._
+import org.slf4j.LoggerFactory
 
 
 case class KevsRemoveFromGroupInterpreter(removeFromGroup: RemoveFromGroupStatement) extends KevsAbstractInterpreter {
+
+  val logger = LoggerFactory.getLogger(this.getClass)
 
   def interpret(context: KevsInterpreterContext): Boolean = {
 
@@ -35,7 +38,10 @@ case class KevsRemoveFromGroupInterpreter(removeFromGroup: RemoveFromGroupStatem
     } else {
       context.model.findByPath("groups[" + removeFromGroup.groupName + " ]", classOf[Group]) match {
         case g : Group => groups = List(g)
-        case null => return false
+        case null => {
+          context.appendInterpretationError("Could not remove node '"+removeFromGroup.nodeName+"' from group '"+removeFromGroup.groupName+"' : Group not found.", logger)
+          return false
+        }
       }
     }
 
@@ -45,7 +51,10 @@ case class KevsRemoveFromGroupInterpreter(removeFromGroup: RemoveFromGroupStatem
     } else {
       context.model.findByPath("nodes[" + removeFromGroup.nodeName + "]", classOf[ContainerNode]) match {
         case g : ContainerNode => nodes = List(g)
-        case null => return false
+        case null => {
+          context.appendInterpretationError("Could not remove node '"+removeFromGroup.nodeName+"' from group '"+removeFromGroup.groupName+"' : Node not found.", logger)
+          return false
+        }
       }
     }
 

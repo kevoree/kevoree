@@ -33,7 +33,11 @@ case class KevsAddToGroupInterpreter(addToGroup: AddToGroupStatement) extends Ke
     } else {
       context.model.findByPath("groups[" + addToGroup.groupName + "]", classOf[Group]) match {
         case g:Group => groups = List(g)
-        case null => logger.debug("There is no group named {}", addToGroup.groupName); return false
+        case null => {
+          context.appendInterpretationError("Could not add node '"+addToGroup.nodeName+"' to group '"+addToGroup.groupName+"'. Group not found.",logger)
+          //logger.debug("There is no group named {}", addToGroup.groupName)
+          false
+        }
       }
     }
 
@@ -43,7 +47,11 @@ case class KevsAddToGroupInterpreter(addToGroup: AddToGroupStatement) extends Ke
     } else {
       context.model.findByPath("nodes[" + addToGroup.nodeName + "]", classOf[ContainerNode]) match {
         case g:ContainerNode => nodes = List(g)
-        case null => logger.debug("There is no node named {}", addToGroup.nodeName); return false
+        case null => {
+          context.appendInterpretationError("Could not add node '"+addToGroup.nodeName+"' to group '"+addToGroup.groupName+"'. Node not found.",logger)
+          //logger.debug("There is no node named {}", addToGroup.nodeName)
+          false
+        }
       }
     }
 

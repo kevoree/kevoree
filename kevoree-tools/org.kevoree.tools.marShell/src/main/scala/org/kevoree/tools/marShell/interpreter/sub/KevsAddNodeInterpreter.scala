@@ -29,10 +29,13 @@ case class KevsAddNodeInterpreter(addN: AddNodeStatment) extends KevsAbstractInt
 
   def interpret(context: KevsInterpreterContext): Boolean = {
     context.model.findByPath("typeDefinitions[" + addN.nodeTypeName + "]", classOf[TypeDefinition]) match {
-      case null => logger.error("Node Type not found for name " + addN.nodeTypeName); false
+      case null => {
+        context.appendInterpretationError("Could add node '"+addN.nodeTypeName+"' of type '"+addN.nodeTypeName+"'. NodeType not found.",logger)
+        false
+      }
       case nodeType =>
         if (!nodeType.isInstanceOf[NodeType]) {
-          logger.error("The type with name {} is not a NodeType", addN.nodeTypeName)
+          context.appendInterpretationError("Could add node '"+addN.nodeTypeName+"' of type '"+addN.nodeTypeName+"'. Type of the new node is not a NodeType: '"+nodeType.getClass.getName+"'.",logger)
           false
         } else {
           context.model.findByPath("nodes[" + addN.nodeName + "]", classOf[ContainerNode]) match {
@@ -47,7 +50,7 @@ case class KevsAddNodeInterpreter(addN: AddNodeStatment) extends KevsAbstractInt
                   Merger.mergeDictionary(e, addN.props, null)
                   true
                 } else {
-                  logger.error("Type != from previous created node")
+                  context.appendInterpretationError("Could add node '"+addN.nodeName+"' of type '"+addN.nodeTypeName+"'. A node already exists with the same name, but with a different type: '"+e.getTypeDefinition.getName+"'.",logger)
                   false
                 }
               }

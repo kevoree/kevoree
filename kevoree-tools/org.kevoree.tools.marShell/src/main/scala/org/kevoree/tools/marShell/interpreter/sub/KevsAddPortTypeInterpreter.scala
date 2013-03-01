@@ -36,7 +36,9 @@ case class KevsAddPortTypeInterpreter(self: AddPortTypeStatment) extends KevsAbs
     context.model.findByPath("typeDefinitions[" + self.componentTypeName + "]", classOf[TypeDefinition]) match {
       case e:TypeDefinition => {
         if (!e.isInstanceOf[ComponentType]) {
-          logger.error("The type with name {} is not a ComponentType", self.componentTypeName)
+          //logger.error("The type with name {} is not a ComponentType", self.componentTypeName)
+          context.appendInterpretationError("Could add port '"+self.portTypeName+"' to ComponentType '"+self.componentTypeName+"'. TypeDefinition exists but is a ComponentType: '"+e.getClass.getName+"'.",logger)
+
           success = false
         } else {
           val portTypeRef = context.kevoreeFactory.createPortTypeRef
@@ -74,7 +76,8 @@ case class KevsAddPortTypeInterpreter(self: AddPortTypeStatment) extends KevsAbs
         }
       }
       case null => {
-        logger.error("The componentTypeName does not exist with name => " + self.componentTypeName)
+        context.appendInterpretationError("Could add port '"+self.portTypeName+"' to ComponentType '"+self.componentTypeName+"'. ComponentType not found.",logger)
+
         success = false
       }
     }
