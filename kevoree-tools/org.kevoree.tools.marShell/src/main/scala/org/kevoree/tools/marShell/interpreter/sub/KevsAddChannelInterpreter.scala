@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory
 
 case class KevsAddChannelInterpreter(addChannel: AddChannelInstanceStatment) extends KevsAbstractInterpreter {
 
-  var logger = LoggerFactory.getLogger(this.getClass);
+  var logger = LoggerFactory.getLogger(this.getClass)
 
   def interpret(context: KevsInterpreterContext): Boolean = {
     context.model.findByPath("hubs[" + addChannel.channelName + "]", classOf[Channel]) match {
@@ -34,7 +34,8 @@ case class KevsAddChannelInterpreter(addChannel: AddChannelInstanceStatment) ext
           Merger.mergeDictionary(target, addChannel.props, null)
           true
         } else {
-          logger.error("Type != from previous created channel")
+          context.appendInterpretationError("Could add channel '"+addChannel.channelName+"' of type '"+addChannel.channelType+"'. A channel instance already exists with the same name, but with a different type: '"+target.getTypeDefinition.getName+"'.",logger)
+          //logger.error("Type != from previous created channel")
           false
         }
       }
@@ -48,12 +49,12 @@ case class KevsAddChannelInterpreter(addChannel: AddChannelInstanceStatment) ext
             Merger.mergeDictionary(newchannel, addChannel.props, null)
             context.model.addHubs(newchannel)
           }
-          case targetChannelType : ChannelType if (!targetChannelType.isInstanceOf[ChannelType]) => {
-            logger.error("Type definition is not a channelType " + addChannel.channelType);
+          case targetChannelType : TypeDefinition if (!targetChannelType.isInstanceOf[ChannelType]) => {
+            context.appendInterpretationError("Could add channel '"+addChannel.channelName+"' of type '"+addChannel.channelType+"'. Type of the new channel is not a ChannelType: '"+targetChannelType.getClass.getName+"'.",logger)
             false
           }
           case _ => {
-            logger.error("Type definition not found " + addChannel.channelType);
+            context.appendInterpretationError("Could add channel '"+addChannel.channelName+"' of type '"+addChannel.channelType+"'. Type of the new channel not found.",logger)
             false
           }
         }

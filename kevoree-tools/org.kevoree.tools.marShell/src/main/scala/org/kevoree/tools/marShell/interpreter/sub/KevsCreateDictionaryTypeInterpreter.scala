@@ -61,7 +61,8 @@ case class KevsCreateDictionaryTypeInterpreter(stmt: CreateDictionaryTypeStatmen
         true
       }
       case null => {
-        logger.error("Type definition not found {}", stmt.typeName)
+        context.appendInterpretationError("Could not create dictionary for '"+stmt.typeName+"'. Type not found.", logger)
+        //logger.error("Type definition not found {}", stmt.typeName)
         false
       }
     }

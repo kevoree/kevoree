@@ -30,7 +30,11 @@ case class KevsCreateChannelTypeInterpreter(self: CreateChannelTypeStatment) ext
   def interpret(context: KevsInterpreterContext): Boolean = {
     //LOOK FOR PREVIOUSLY EXSITING COMPONENT TYPE
     context.model.findByPath("typeDefinitions[" + self.newTypeName + "]", classOf[TypeDefinition]) match {
-      case e:TypeDefinition => logger.error("TypeDefinition already exist with name => " + self.newTypeName); false
+      case e:TypeDefinition => {
+        context.appendInterpretationError("Could not create ChannelType '"+self.newTypeName+"'. ChannelType already exists.",logger)
+        //logger.error("TypeDefinition already exist with name => " + self.newTypeName)
+        false
+      }
       case null => {
         val newComponentTypeDef = context.kevoreeFactory.createChannelType
         newComponentTypeDef.setName(self.newTypeName)

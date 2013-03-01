@@ -33,11 +33,14 @@ case class KevsAddChildInterpreter(addChild: AddChildStatment) extends KevsAbstr
 
   def interpret(context: KevsInterpreterContext): Boolean = {
     context.model.findByPath("nodes[" + addChild.childNodeName + "]", classOf[ContainerNode]) match {
-      case null => logger.error("child node: {}\nThe node must already exist. Please check !", addChild.childNodeName); false
+      case null => {
+        context.appendInterpretationError("Could not add child node '"+addChild.childNodeName+"' to parent '"+addChild.fatherNodeName+"'. Child Node not found.", logger)
+        false
+      }
       case child => {
         context.model.findByPath("nodes[" + addChild.fatherNodeName + "]", classOf[ContainerNode]) match {
           case null => {
-            logger.error("Unknown father name: {}\nThe node must already exist. Please check !", addChild.fatherNodeName)
+            context.appendInterpretationError("Could not add child node '"+addChild.childNodeName+"' to parent '"+addChild.fatherNodeName+"'. Parent Node not found.", logger)
             false
           }
           case father => {
@@ -45,7 +48,11 @@ case class KevsAddChildInterpreter(addChild: AddChildStatment) extends KevsAbstr
               case null => {
                 context.model.getNodes.find(n => n.findByPath("hosts[" + child.getName + "]", classOf[ContainerNode]) != null) match {
                   case None => father.addHosts(child); true
-                  case Some(f) => logger.error("The child {} has already a parent: {}", Array[AnyRef](child.getName, f.getName)); false
+                  case Some(f) => {
+                    context.appendInterpretationError("Could not add child node '"+addChild.childNodeName+"' to parent '"+addChild.fatherNodeName+"'. Child Node already has a parent. Consider using MoveComponentInstance instead.", logger)
+                    //logger.error("The child {} has already a parent: {}", Array[AnyRef](child.getName, f.getName))
+                    false
+                  }
                 }
               }
               case c => logger.warn("The node {} is already a child of {}", Array[AnyRef](child.getName, father.getName)); true
