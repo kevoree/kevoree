@@ -59,7 +59,7 @@ abstract class KevoreeChannelFragmentActivator extends KevoreeInstanceActivator 
       return
     }
 
-    if (channelActor.asInstanceOf[ChannelTypeFragment].isStarted) {
+    if (channelActor.isInstanceOf[KevoreeInstanceFactory]) {
       channelActor.kInstanceStop(null)
     }
     if (channelActor.asInstanceOf[AbstractChannelFragment].isInstanceOf[ModelHandlerServiceProxy]) {
