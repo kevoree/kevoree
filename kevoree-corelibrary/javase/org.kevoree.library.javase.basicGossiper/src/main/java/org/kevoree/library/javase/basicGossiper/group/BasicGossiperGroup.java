@@ -94,9 +94,11 @@ public class BasicGossiperGroup extends BasicGroup implements GossiperComponent 
 
     @Update
     public void updateGossiperGroup() throws IOException {
-        logger.info("try to update configuration of {}", this.getName());
-        stopGossiperGroup();
-        startGossiperGroup();
+        if (port != Integer.parseInt(this.getDictionary().get("port").toString())) {
+            logger.info("try to update configuration of {}", this.getName());
+            stopGossiperGroup();
+            startGossiperGroup();
+        }
     }
 
     private KevoreeFactory factory = new DefaultKevoreeFactory();
@@ -123,7 +125,7 @@ public class BasicGossiperGroup extends BasicGroup implements GossiperComponent 
     public int parsePortNumber(String nodeName) {
         Group groupOption = currentCacheModel.get().findByPath("groups[" + getName() + "]", Group.class);
         int port = 8000;
-        if (groupOption!=null) {
+        if (groupOption != null) {
             Option<String> portOption = KevoreePropertyHelper.getProperty(groupOption, "port", true, nodeName);
             if (portOption.isDefined()) {
                 try {
