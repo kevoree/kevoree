@@ -50,7 +50,7 @@ public class BasicGroup extends AbstractGroupType implements ConnectionListener 
     private boolean starting;
     protected boolean udp = false;
     boolean ssl = false;
-    int port = -1;
+    protected int port = -1;
 
 
     @Start
@@ -69,7 +69,17 @@ public class BasicGroup extends AbstractGroupType implements ConnectionListener 
 
     @Stop
     public void stopRestGroup() {
-        server.shutdown();
+        if (server != null) {
+            server.shutdown();
+        }
+    }
+
+    @Update
+    public void updateRestGroup() throws IOException {
+        if (port != Integer.parseInt(this.getDictionary().get("port").toString())) {
+            stopRestGroup();
+            startRestGroup();
+        }
     }
 
 

@@ -47,7 +47,7 @@
     <logger name="com.ning.http.client.providers.jdk.JDKAsyncHttpProvider" level="INFO"/>
     <logger name="com.ning.http.client.providers.netty.NettyAsyncHttpProvider" level="WARN"/>
 
-    <root level="${node.log.level:-DEBUG}">
+    <root level="${node.log.level:-INFO}">
         <appender-ref ref="CONSOLE"/>
         <appender-ref ref="FILE"/>
     </root>
