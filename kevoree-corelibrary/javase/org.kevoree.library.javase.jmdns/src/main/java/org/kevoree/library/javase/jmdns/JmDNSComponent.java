@@ -76,7 +76,7 @@ public class JmDNSComponent {
                     addNodeDiscovered(p1.getInfo());
                 } else {
                     logger.debug("Local service resolved");
-                    nodeAlreadyDiscovered.remove(p1.getInfo().getName());
+                    nodeAlreadyDiscovered.add(p1.getInfo().getName());
                 }
             }
 
@@ -156,26 +156,6 @@ public class JmDNSComponent {
         }
     }
 
-    private boolean updateModel(ContainerRoot model) {
-        boolean created = false;
-        int i = 1;
-        while (!created) {
-            try {
-                group.getModelService().unregisterModelListener(group);
-                group.getModelService().atomicUpdateModel(model);
-                group.getModelService().registerModelListener(group);
-                created = true;
-            } catch (Exception e) {
-                logger.warn("Error while trying to update model due to {}, try number {}", new String[]{e.getMessage(), Integer.toString(i)});
-            }
-            if (i == 20 && !created) {
-                logger.warn("Unable to update model after {} tries. Update aborted !", i);
-            }
-            i = i + 1;
-        }
-        return created;
-    }
-
     private void addNodeDiscovered(ServiceInfo p1) {
         if (p1.getInetAddresses().length > 0 && p1.getPort() != 0) {
             if (!nodeAlreadyDiscovered.contains(p1.getName())) {
@@ -190,7 +170,7 @@ public class JmDNSComponent {
                 } else {
                     logger.debug("{} discovers a node using a group which is not the same as the local one:{}.", new String[]{group.getName(), p1.toString()});
                 }
-                if (updateModel(model)) {
+                if (listener.updateModel(model)) {
                     nodeAlreadyDiscovered.add(p1.getName());
                     if (!group.getNodeName().equals(p1.getName())) {
                         listener.notifyNewSubNode(p1.getName());
@@ -202,7 +182,7 @@ public class JmDNSComponent {
                 for (String nodeName : nodeAlreadyDiscovered) {
                     builder.append(nodeName).append(", ");
                 }
-                logger.debug("List of discovered nodes <{}>", builder.substring(0, builder.length() - 1));
+                logger.debug("List of discovered nodes <{}>", builder.substring(0, builder.length() - 2));
             } else {
                 logger.debug("node already known");
             }

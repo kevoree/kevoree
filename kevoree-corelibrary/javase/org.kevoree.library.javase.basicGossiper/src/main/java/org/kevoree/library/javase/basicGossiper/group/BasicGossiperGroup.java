@@ -66,7 +66,7 @@ public class BasicGossiperGroup extends BasicGroup implements GossiperComponent 
             ByteArrayInputStream stin = new ByteArrayInputStream(data);
             stin.read();
             KevoreeMessage.Message msg = KevoreeMessage.Message.parseFrom(stin);
-            logger.debug("Rec Some MSG {}" + msg.getContentClass() + "->" + msg.getDestName() + "->" + msg.getDestNodeName());
+            logger.debug("Rec Some MSG {}->{}->{}", new String[]{msg.getContentClass(), msg.getDestName(), msg.getDestNodeName()});
             processValue.receiveRequest(msg);
         } catch (Exception e) {
             logger.error("", e);

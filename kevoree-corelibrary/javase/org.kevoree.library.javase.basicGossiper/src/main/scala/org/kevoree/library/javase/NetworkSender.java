@@ -1,25 +1,19 @@
 package org.kevoree.library.javase;
 
-import jexxus.client.ClientConnection;
 import jexxus.client.UniClientConnection;
 import jexxus.common.Connection;
 import jexxus.common.ConnectionListener;
 import jexxus.common.Delivery;
 import jexxus.server.ServerConnection;
-import org.kevoree.ContainerRoot;
-import org.kevoree.framework.KevoreeXmiHelper;
 import org.kevoree.library.basicGossiper.protocol.message.KevoreeMessage;
 import org.kevoree.library.javase.basicGossiper.GossiperProcess;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetSocketAddress;
-import java.util.HashMap;
 
 /**
  * Created with IntelliJ IDEA.
@@ -78,6 +72,7 @@ public class NetworkSender {
             m.writeTo(output);
             conn.send(output.toByteArray(), Delivery.RELIABLE);
             output.close();
+            logger.debug("message sent to {}", addr.toString());
         } catch (Exception e) {
             logger.debug("", e);
         } finally {
