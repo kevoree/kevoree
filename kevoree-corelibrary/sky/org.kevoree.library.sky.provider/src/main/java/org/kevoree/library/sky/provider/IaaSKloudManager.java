@@ -65,8 +65,6 @@ public class IaaSKloudManager extends AbstractComponentType implements ModelList
 
     @Override
     public void modelUpdated() {
-        // TODO measure time
-        logger.warn("[TIME] IaaSKloudManager receive model: {}", System.currentTimeMillis());
         KevScriptEngine kengine = getKevScriptEngineFactory().createKevScriptEngine();
         if (IaaSKloudReasoner.configureChildNodes(getModelService().getLastModel(), kengine) || IaaSKloudReasoner.configureIsolatedNodes(getModelService().getLastModel(), kengine)) {
             this.getModelService().unregisterModelListener(this);
@@ -93,8 +91,6 @@ public class IaaSKloudManager extends AbstractComponentType implements ModelList
         for (int i = 0; i < 20; i++) {
             try {
                 logger.debug("try to update IaaS node...");
-                // TODO measure time
-                logger.warn("[TIME] IaaSKloudManager submit new model: {}", System.currentTimeMillis());
                 kengine.atomicInterpretDeploy();
                 created = true;
                 break;

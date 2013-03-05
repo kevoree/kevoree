@@ -45,8 +45,6 @@ public class PaaSKloudUserManager extends AbstractComponentType implements PaaSM
     @Override
     @Port(name = "submit", method = "initialize")
     public void initialize(String id, ContainerRoot model) throws SubmissionException {
-        // TODO measure time
-        logger.warn("[TIME] PaaSKloudManager receive model: {}", System.currentTimeMillis());
         // fails if the id already exist for a group on the IaaS model
 
         Group nodeOption = getModelService().getLastModel().findByPath("groups[" + id + "]", Group.class);
@@ -68,8 +66,6 @@ public class PaaSKloudUserManager extends AbstractComponentType implements PaaSM
         Boolean created = false;
         for (int i = 0; i < 5; i++) {
             try {
-                // TODO measure time
-                logger.warn("[TIME] PaaSKloudManager submit new model: {}", System.currentTimeMillis());
                 kengine.atomicInterpretDeploy();
                 created = true;
                 break;

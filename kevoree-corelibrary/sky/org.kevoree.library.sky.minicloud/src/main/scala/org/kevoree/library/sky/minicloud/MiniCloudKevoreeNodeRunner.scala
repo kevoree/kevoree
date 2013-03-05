@@ -53,8 +53,6 @@ class MiniCloudKevoreeNodeRunner(nodeName: String, iaasNode: AbstractHostNode) e
 
   def startNode(iaasModel: ContainerRoot, childBootstrapModel: ContainerRoot): Boolean = {
     try {
-      // TODO measure time
-      logger.warn("[TIME] MiniCloudKevoreeNodeRunner start child node: {}", System.currentTimeMillis)
       logger.debug("Start " + nodeName)
       val version = findVersionForChildNode(nodeName, childBootstrapModel, iaasModel.getNodes.find(n => n.getName == iaasNode.getNodeName).get)
 
@@ -152,8 +150,6 @@ class MiniCloudKevoreeNodeRunner(nodeName: String, iaasNode: AbstractHostNode) e
     } catch {
       case e: IllegalThreadStateException => {
         logger.debug("platform " + nodeName + " is started")
-        // TODO measure time
-        logger.warn("[TIME] MiniCloudKevoreeNodeRunner child node started: {}", System.currentTimeMillis)
         true
       }
     }
@@ -190,8 +186,6 @@ class MiniCloudKevoreeNodeRunner(nodeName: String, iaasNode: AbstractHostNode) e
     } catch {
       case e: IllegalThreadStateException => {
         logger.debug("platform " + nodeName + " is started")
-        // TODO measure time
-        logger.warn("[TIME] MiniCloudKevoreeNodeRunner child node started: {}", System.currentTimeMillis)
         true
       }
     }
