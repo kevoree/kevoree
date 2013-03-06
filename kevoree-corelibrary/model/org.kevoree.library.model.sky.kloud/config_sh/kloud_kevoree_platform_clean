@@ -1,0 +1,13 @@
+#!/bin/sh
+
+if [[ -z "$1" ]] ; then
+	basedir=$(dirname "$0")
+	filename=$(basename "./listIPs")
+	listIPs="$basedir/$filename"
+else
+	listIPs="$1"
+fi
+
+for ip in `cat $listIPs` ; do
+	ssh root@$ip "rm -rf /root/kevoree-service/kevoree-runtime.jar"
+done

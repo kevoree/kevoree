@@ -1,0 +1,19 @@
+#!/bin/sh
+
+if [[ -z "$1" ]] ; then
+	basedir=$(dirname "$0")
+	filename=$(basename "./listIPs")
+	listIPs="$basedir/$filename"
+else
+	listIPs="$1"
+fi
+
+first="1"
+
+for ip in `cat $listIPs` ; do
+	ssh root@$ip reboot
+	if [[ first -eq "1" ]] ; then
+		sleep 120s
+		first="0"	
+	fi
+done
