@@ -122,13 +122,27 @@ public class WebSocketGroup extends AbstractGroupType {
             }
         }
         
-        return requestModel(ip, PORT, targetNodeName);
+        logger.debug("Trying to pull model to "+"ws://"+ip+":"+PORT+"/current/model");
+        WebSocketClient client = new WebSocketClient(URI.create("ws://"+ip+":"+PORT+"/current/model")) {			
+			@Override
+			public void onMessage(String msg) {
+				logger.debug("onMessage receive client");
+				
+			}
+        	@Override
+			public void onOpen(ServerHandshake arg0) {}
+			@Override
+			public void onError(Exception arg0) {}
+			@Override
+			public void onClose(int arg0, String arg1, boolean arg2) {}
+		};
+		client.connectBlocking();
+		String stringifiedModel = KevoreeXmiHelper.$instance.saveToString(getModelService().getLastModel(), false);
+		client.send(stringifiedModel);
+		client.close();
+		
+		return model;
 	}
-	
-    protected ContainerRoot requestModel(String ip, int port, final String targetNodeName) throws Exception {
-    	
-    	return null;
-    }
 	
 	@Override
 	public void triggerModelUpdate() {
