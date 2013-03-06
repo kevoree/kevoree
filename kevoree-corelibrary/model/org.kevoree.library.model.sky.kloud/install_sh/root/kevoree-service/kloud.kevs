@@ -1,0 +1,39 @@
+merge "mvn:org.kevoree.corelibrary.sky/org.kevoree.library.sky.jails/{kevoree.version}"
+merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.autoBasicGossiper/{kevoree.version}"
+
+merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.defaultChannels/{kevoree.version}"
+merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.camel/{kevoree.version}"
+
+merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.webserver.api/{kevoree.version}"
+merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.webserver.spray/{kevoree.version}"
+
+merge "mvn:org.kevoree.corelibrary.sky/org.kevoree.library.sky.provider/{kevoree.version}"
+merge "mvn:org.kevoree.corelibrary.sky/org.kevoree.library.sky.provider.web/{kevoree.version}"
+
+addNode {node.name} : JailNode {role="host/container", inet="{node.inet}", subnet="{node.subnet}", mask="{node.mask}", defaultFlavor="{node.defaultFlavour}", availableFlavors = "{node.availableFlavors}", logLevel="{node.loglevel}", coreLogLevel = "{node.coreloglevel}"}
+
+network {node.name} => {node.name} { "KEVOREE.remote.node.ip"= "{node.ip}"}
+
+// group configuration
+addGroup sync : AutoBasicGossiperGroup { ssl = "{group.ssl}", ipv4Only = "{group.ipv4only}"}
+addToGroup sync {node.name}
+updateDictionary sync {port="8000", ip = "{node.ip}"}@{node.name}
+
+// kloud iaas admin configuration
+addComponent webServer@{node.name} : SprayWebServer {port = "8080", timeout = "5000"}
+addComponent iaasPage@{node.name} : IaaSKloudResourceManagerPage { urlpattern="/iaas"}
+addComponent iaasManager@{node.name} : IaaSKloudManager
+
+addChannel iaasDelegateChannel : defSERVICE
+addChannel requestChannel : defMSG
+addChannel responseChannel : defMSG
+
+
+bind webServer.handler@{node.name} => requestChannel
+bind iaasPage.request@{node.name} => requestChannel
+
+bind webServer.response@{node.name} => responseChannel
+bind iaasPage.content@{node.name} => responseChannel
+
+bind iaasManager.submit@{node.name} => iaasDelegateChannel
+bind iaasPage.delegate@{node.name} => iaasDelegateChannel

@@ -1,0 +1,70 @@
+#!/bin/sh
+
+#cvsup-without-gui, portsnap, portmanager, nano, bash, ezjail, nano
+echo "try to install needed softwares on Kloud"
+
+# java installation will fail if the needed files are not put on the /usr/ports/distfiles
+local_java_install="echo \"Where is the distfiles folder, we need to copy to build the required software: \" ; read distfiles ; if [[ -z \$distfiles ]] ; then echo \"the build of the software may fail without the distfiles\" ; fi ; scp -r \$distfiles/* root@\$ip:/usr/ports/distfiles"
+
+local_pre_install="$local_java_install"
+#	echo "Where is the distfiles folder, we need to copy to build the required software: "
+#	read distfiles
+#	if [[ -z $distfiles ]] ; then
+#		echo "the build of the software may fail without the distfiles!"
+#	else
+#		echo "ssh root@$ip \"mkdir -p /usr/ports/distfiles\""
+#		ssh root@$ip "mkdir -p /usr/ports/distfiles"
+#		echo "scp -r $distfiles/* root@$ip:/usr/ports/distfiles/"
+#		scp -r $distfiles/* root@$ip:/usr/ports/distfiles/
+#	fi
+#	ssh root@$ip "$java_installation_command"
+
+#TODO check if the config is ok with -DBATCH or if it is better to find all the needed parameters
+nano="cd /usr/ports/editors/nano ; make -DBATCH install clean"
+bash="cd /usr/ports/shells/bash  ; make -DBATCH install clean ; chsh -s /usr/local/bin/bash root"
+cvsup="cd /usr/ports/editors/nano ; make -DBATCH install clean"
+portupgrade="cd /usr/ports/editors/nano ; make -DBATCH install clean"
+wget="cd /usr/ports/editors/nano ; make -DBATCH install clean"
+ezjail="cd /usr/ports/editors/nano ; make -DBATCH install clean ; ezjail-admin update -b"
+linux="cd /usr/ports/emulators/linux_base-f10  ; make -DBATCH install clean"
+java="cd /usr/ports/java/openjdk6 ; make -DBATCH install clean"
+
+command="$nano ; $bash ; $wget ; $cvsup ; $portupgrade ; $linux ; $ezjail ; $java"
+
+rc_conf_update="scp \$RC_CONF root@\$ip:/root/rc_conf"
+ssh_rc_conf_update="cat /root/rc_conf >> /etc/rc.conf"
+linux_fstab_update="echo \"linprocfs /compat/linux/proc linprocfs rw 0 0\" >> /etc/fstab"
+
+local_post_install="$rc_conf_update"
+ssh_post_install="$ssh_rc_conf_update ; $linux_fstab_update"
+
+
+if [[ -z "$1" ]] ; then
+	basedir=$(dirname "$0")
+	filename=$(basename "./listIPs")
+	listIPs="$basedir/$filename"
+else
+	listIPs="$1"
+fi
+
+if [ -z $RC_CONF ]; then
+	echo "User kernel configuration file = [./rc_conf]"
+	read RC_CONF
+
+	if [ -z $RC_CONF ]; then
+		RC_CONF="./rc_conf"
+	fi
+fi
+
+for ip in `cat $listIPs` ; do
+#	echo $local_pre_install
+	eval "$local_pre_install"
+#	echo "ssh root@$ip \"$command\""
+	ssh root@$ip "$command"
+#	echo $local_post_install
+	eval "$local_post_install"
+#	echo $ssh_post_install
+	ssh root@$ip "$ssh_post_install"
+	# clean ports
+	ssh root@$ip "cd /usr/ports; make distclean"
+done

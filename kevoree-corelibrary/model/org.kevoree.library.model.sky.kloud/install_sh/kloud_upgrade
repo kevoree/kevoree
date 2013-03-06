@@ -1,0 +1,39 @@
+#!/bin/sh
+
+# TODO upgrade all ports
+
+if [[ -z "$1" ]] ; then
+	basedir=$(dirname "$0")
+	filename=$(basename "./listIPs")
+	listIPs="$basedir/$filename"
+else
+	listIPs="$1"
+fi
+
+if [ -z $VERSION ]; then
+	echo "VERSION ? [9.0-RELEASE]"
+	read VERSION
+
+	if [ -z $VERSION ]; then
+		VERSION="9.0-RELEASE"
+	fi
+fi
+echo "version: $VERSION"
+if  [[ $VERSION != "" ]] ; then
+	#cat $listIPs
+	for ip in `cat $listIPs` ; do
+#		echo "ssh root@$ip \"freebsd-update upgrade -r $VERSION ; freebsd-update install ; reboot\""
+		ssh root@$ip "freebsd-update upgrade -r $VERSION ; freebsd-update install ; reboot"
+	done
+	# if there is only one ip into the file then we wait to be sure that the host has been rebooted
+	if [ `cat $listIPs | grep -c "[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*"` == "1" ] ; then
+#		echo "waiting some times to ensure the host has been rebooted"
+		sleep 120
+	fi
+	for ip in `cat $listIPs` ; do
+#		echo "ssh root@$ip \"freebsd-update install ; portsnap cron update ; portupgrade -arR --batch\""
+		ssh root@$ip "freebsd-update install ; portsnap cron update ; portupgrade -arR --batch"
+	done
+else
+	echo "you need to specify the version you want to upgrade"
+fi

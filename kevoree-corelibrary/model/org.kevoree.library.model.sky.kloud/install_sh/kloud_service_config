@@ -1,0 +1,21 @@
+#!/bin/sh
+
+if [[ -z "$1" ]] ; then
+	basedir=$(dirname "$0")
+	filename=$(basename "./listIPs")
+	listIPs="$basedir/$filename"
+else
+	listIPs="$1"
+fi
+
+if [[ -z "$2" ]] ; then
+	basedir=$(dirname "$0")
+	filename=$(basename "./root/kevoree-service")
+	service_folder="$basedir/root/kevoree-service"
+else
+	service_folder="$2"
+fi
+
+for ip in `cat $listIPs` ; do
+	scp -r $service_folder root@$ip:/root/
+done

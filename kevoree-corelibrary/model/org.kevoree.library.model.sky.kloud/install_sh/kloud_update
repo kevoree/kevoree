@@ -1,0 +1,14 @@
+#!/bin/sh
+
+if [[ -z "$1" ]] ; then
+	basedir=$(dirname "$0")
+	filename=$(basename "./listIPs")
+	listIPs="$basedir/$filename"
+else
+	listIPs="$1"
+fi
+
+for ip in `cat $listIPs` ; do
+#	echo "ssh root@$ip \"freebsd-update cron ; freebsd-update install ; portsnap cron ; portsnap update ; ezjail-admin update -P\""
+	ssh root@$ip "freebsd-update cron ; freebsd-update install ; portsnap cron update"
+done

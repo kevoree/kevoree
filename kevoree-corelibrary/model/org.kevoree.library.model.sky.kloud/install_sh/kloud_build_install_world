@@ -1,0 +1,47 @@
+#!/bin/sh
+
+if [[ -z "$1" ]] ; then
+	basedir=$(dirname "$0")
+	filename=$(basename "./listIPs")
+	listIPs="$basedir/$filename"
+else
+	listIPs="$1"
+fi
+if [ -z $KERNEL ]; then
+	echo "KERNCONF = [GENERIC]"
+	read KERNEL
+
+	if [ -z $KERNEL ]; then
+		KERNEL="GENERIC"
+	fi
+fi
+
+if [ -z $USER_CONFIG ]; then
+	echo "User kernel configuration file = [./KERNEL_CONFIG]"
+	read USER_CONFIG
+
+	if [ -z $USER_CONFIG ]; then
+		USER_CONFIG="./KERNEL_CONFIG"
+	fi
+fi
+
+# replace cvsup1 by a variable that the user defines
+cvsup="cd ~;cat /usr/share/examples/cvsup/standard-supfile | sed \"s/CHANGE_THIS/cvsup1/g\" > supfile;cvsup supfile"
+#buildworld="echo \"You need to enter CTRL-D on the terminal to pursue the configuration\";cd /usr/src;make buildworld"
+buildkernel="cd /usr/src;make buildkernel KERNCONF=$KERNEL"
+installkernel="cd /usr/src;make installkernel KERNCONF=$KERNEL"
+#installworld="cd /usr/src;make installworld"
+
+for ip in `cat $listIPs` ; do
+#	echo "ssh root@$ip \"$cvsup\""
+	ssh root@$ip "$cvsup"
+	arch=`ssh root@$ip "uname -m"`
+#	echo "scp $USER_CONFIG root@$ip:./USER_CONFIG ; ssh root@$ip \"cat /root/USER_CONFIG >> /usr/src/sys/$arch/conf/$KERNEL\"" 
+	scp $USER_CONFIG root@$ip:./USER_CONFIG ; ssh root@$ip "cat /root/USER_CONFIG >> /usr/src/sys/$arch/conf/$KERNEL"
+#	echo "ssh root@$ip \"$buildkernel ; $installkernel ; reboot\""
+	ssh root@$ip "$buildkernel ; $installkernel ; reboot"
+done
+
+# we wait to be sure that the hosts have been rebooted
+echo "Some machines are rebooting please wait ..."
+sleep 120

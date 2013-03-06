@@ -1,0 +1,16 @@
+#!/bin/sh
+
+# TODO upgrade all ports
+
+if [[ -z "$1" ]] ; then
+	basedir=$(dirname "$0")
+	filename=$(basename "./listIPs")
+	listIPs="$basedir/$filename"
+else
+	listIPs="$1"
+fi
+
+for ip in `cat $listIPs` ; do
+	echo "ssh root@$ip \"pkg_delete pkg-config* ; cd /usr/ports/devel/pkgconf ; make install clean\""
+	ssh root@$ip "pkg_delete pkg-config* ; cd /usr/ports/devel/pkgconf ; make install clean"
+done

@@ -1,0 +1,172 @@
+#!/bin/sh
+
+
+function askIP() {
+	echo "Please indicate the ip of the build jail on $ip: [10.0.10.10]"
+	read ipJail
+	if [[ -z $ipJail ]] ; then
+		ipJail="10.0.10.10"
+	fi
+
+	echo "Please indicate the network interface of the build jail on $ip: [alc0]"
+	read inet
+	if [[ -z $inet ]] ; then
+		inet="alc0"
+	fi
+}
+
+function defineAnAlias() {
+	echo "ssh root@$ip \"ifconfig $inet alias $ipJail\""
+	ssh root@$ip "ifconfig $inet alias $ipJail"
+}
+
+function defineIPs() {
+	defineNew="yes"
+	while [[ $defineNew == "yes" ]]; do
+		askIP
+		defineAnAlias
+		
+		echo "Is the listen address of the ssh server ?: (yes|no) [yes]"
+		read isListenAddress
+		if [[ -z $isListenAddress ]] ; then
+			listenAddress="ListenAddress $ipJail"
+		elif [[ $isListenAddress == "yes" ]] ; then
+			listenAddress="ListenAddress $ipJail"
+		fi
+		
+		if [[ -z $jailIPs ]] ; then
+			jailIPs="$ipJail"
+		else
+			jailIPs="$jailIPs,$ipJail"
+		fi
+
+		echo "Do you want to define other ip ?: (yes|no) [no]"
+		read defineNew
+		if [[ -z $defineNew ]] ; then
+			defineNew="no"
+		fi
+	done
+}
+
+if [[ -z "$1" ]] ; then
+	basedir=$(dirname "$0")
+	filename=$(basename "./listIPs")
+	listIPs="$basedir/$filename"
+else
+	listIPs="$1"
+fi
+
+for ip in `cat $listIPs` ; do
+	# configure basejail
+	echo "ssh root@$ip \"echo \"You need to enter CTRL-D on the terminal to pursue the configuration\";ezjail-admin update -i ; chflags -R noschg /usr/jails/\""
+	ssh root@$ip "echo \"You need to enter CTRL-D on the terminal to pursue the configuration\";ezjail-admin update -p -b ; chflags -R noschg /usr/jails/"
+	
+	#update or create the jail port tree
+	echo "ssh root@$ip \"ezjail-admin update -p\""
+	ssh root@$ip "ezjail-admin create update -p"
+	
+	# create a jail as build jail
+	defineIPs
+	echo "ssh root@$ip \"ezjail-admin create build $jailIPs\""
+	ssh root@$ip "ezjail-admin create build $jailIPs"
+	
+	# configure resolv.conf
+	echo "ssh root@$ip \"cp /etc/resolv.conf /usr/jails/build/etc\""
+	ssh root@$ip "cp /etc/resolv.conf /usr/jails/build/etc"
+
+	# starting jail
+	echo "ssh root@$ip \"ezjail-admin onestart build\""
+	ssh root@$ip "ezjail-admin onestart build"
+
+	# copy distfiles to allow to build packages for flavours
+	echo "Where is the distfiles folder, we need to copy to build the required software: "
+	read distfiles
+	if [[ -z $distfiles ]] ; then
+		echo "the build of the software needed to build flavours may fail without the distfiles!"
+	else
+		echo "ssh root@$ip \"mkdir -p /usr/jails/build/var/ports/distfiles\""
+		ssh root@$ip "mkdir -p /usr/jails/build/var/ports/distfiles"
+		echo "scp -r $distfiles/* root@$ip:/usr/jails/build/var/ports/distfiles/"
+		scp -r $distfiles/* root@$ip:/usr/jails/build/var/ports/distfiles/
+	fi
+	
+	# exec the following onto the jail to build all software needed on flavours
+	echo "ssh root@$ip \"echo \\\"mkdir -p /root/packages/base ; mkdir -p /root/packages/linux-mode ; mkdir -p /root/packages/openjdk6 ; mkdir -p /root/packages/maven3 ; cd /usr/ports/editors/nano ; make -DBATCH install clean ; cd /usr/ports/shells/bash ; make -DBATCH install clean bash ; cd /usr/ports/ftp/wget ; make -DBATCH install clean ; cd /usr/ports/emulators/linux_base-f10 ; make -DBATCH install clean ; cd /usr/ports/java/openjdk6 ; make -DBATCH install clean ; cd /usr/ports/devel/maven3 ; make -DBATCH install clean ; cd  /root/packages/base ; pkg_create -Rb nano* ; pkg_create -Rb wget* ; pkg_create -Rb bash* ; cd  /root/packages/linux-mode ; pkg_create -Rb linux_base-f10* ; cd  /root/packages/openjdk6 ; pkg_create -Rb openjdk6* ; cd  /root/packages/maven3 ; pkg_create -Rb maven3*\\\" > /usr/jails/build/root/build_packages ; chmod a+x /usr/jails/build/root/build_packages\""
+	ssh root@$ip "echo \"mkdir -p /root/packages/base ; mkdir -p /root/packages/linux-mode ; mkdir -p /root/packages/openjdk6 ; mkdir -p /root/packages/maven3 ; cd /usr/ports/editors/nano ; make -DBATCH install clean ; cd /usr/ports/shells/bash ; make -DBATCH install clean bash ; cd /usr/ports/ftp/wget ; make -DBATCH install clean ; cd /usr/ports/emulators/linux_base-f10 ; make -DBATCH install clean ; cd /usr/ports/java/openjdk6 ; make -DBATCH install clean ; cd /usr/ports/devel/maven3 ; make -DBATCH install clean ; cd  /root/packages/base ; pkg_create -Rb nano* ; pkg_create -Rb wget* ; pkg_create -Rb bash* ; cd  /root/packages/linux-mode ; pkg_create -Rb linux_base-f10* ; cd  /root/packages/openjdk6 ; pkg_create -Rb openjdk6* ; cd  /root/packages/maven3 ; pkg_create -Rb maven3*\" > /usr/jails/build/root/build_packages ; chmod a+x /usr/jails/build/root/build_packages"
+	
+	echo "ssh root@$ip \"ezjail-admin console -e /root/build_packages build\""
+	ssh root@$ip "ezjail-admin console -e /root/build_packages build"
+
+	######## build flavours
+	
+	# define the basic resolv.conf
+	echo "Please indicate the DNS address:"
+	read ipDNS
+	if [[ -z $ipDNS ]] ; then
+		echo "No DNS will be directly available on the jail flavours, maybe the Internet will not be available"
+	else
+		echo "ssh root@$ip \"echo \\\"nameserver $ipDNS\\\" > /usr/jails/example/etc/resolv.conf\""
+		ssh root@$ip "echo \"nameserver $ipDNS\" > /usr/jails/example/etc/resolv.conf"
+	fi
+
+	#  fix the /usr/jails/flavours/example/etc/rc.d/ezjail.flavour.example to switch bash and to install pkg
+	echo "ssh root@$ip \"cat /usr/jails/flavours/example/etc/rc.d/ezjail.flavour.example | sed \\"s/\[ -d \/pkg \] \&\& PACKAGESITE=file:\/\/ pkg_add -r \/pkg\/\*/\[ -d \/pkg \] \&\& cd \/pkg ;pkg_add \*/g\\" > /usr/jails/flavours/example/etc/rc.d/ezjail.flavour.example.new ; rm -rf /usr/jails/flavours/example/etc/rc.d/ezjail.flavour.example ; mv /usr/jails/flavours/example/etc/rc.d/ezjail.flavour.example.new /usr/jails/flavours/example/etc/rc.d/ezjail.flavour.example\""
+	ssh root@$ip "cat /usr/jails/flavours/example/etc/rc.d/ezjail.flavour.example | sed \"s/\[ -d \/pkg \] \&\& PACKAGESITE=file:\/\/ pkg_add -r \/pkg\/\*/\[ -d \/pkg \] \&\& cd \/pkg ;pkg_add \*/g\" > /usr/jails/flavours/example/etc/rc.d/ezjail.flavour.example.new ; rm -rf /usr/jails/flavours/example/etc/rc.d/ezjail.flavour.example ; mv /usr/jails/flavours/example/etc/rc.d/ezjail.flavour.example.new /usr/jails/flavours/example/etc/rc.d/ezjail.flavour.example"
+	echo "ssh root@$ip \"cat /usr/jails/flavours/example/etc/rc.d/ezjail.flavour.example | sed \\"s/\[ -d \/pkg \] \&\& PACKAGESITE=file:\/\/ pkg_add -r \/pkg\/\*/\[ -d \/pkg \] \&\& cd \/pkg ;pkg_add \*/g\\" > /usr/jails/flavours/example/etc/rc.d/ezjail.flavour.example\""
+	ssh root@$ip "cat /usr/jails/flavours/example/etc/rc.d/ezjail.flavour.example | sed \"s/# chpass -s \/usr\/local\/bin\/bash admin/chpass -s \/usr\/local\/bin\/bash root/g\" > /usr/jails/flavours/example/etc/rc.d/ezjail.flavour.example.new ; rm -rf /usr/jails/flavours/example/etc/rc.d/ezjail.flavour.example ; mv /usr/jails/flavours/example/etc/rc.d/ezjail.flavour.example.new /usr/jails/flavours/example/etc/rc.d/ezjail.flavour.example"
+	
+	# fix rc.conf to enable ssh
+	echo "ssh root@$ip \"cat /usr/jails/flavours/example/etc/rc.conf | sed \\"s/# sshd_enable/sshd_enable/g\\" > /usr/jails/flavours/example/etc/rc.conf\""
+	ssh root@$ip "cat /usr/jails/flavours/example/etc/rc.conf | sed \"s/# sshd_enable/sshd_enable/g\" > /usr/jails/flavours/example/etc/rc.conf"
+	
+	echo "ssh root@$ip \"cp -R /usr/jails/flavours/example /usr/jails/flavours/base ; mkdir -p /usr/jails/flavours/base/pkg ; cp /usr/jails/build/root/packages/base/* /usr/jails/flavours/base/pkg\""
+	ssh root@$ip "cp -R /usr/jails/flavours/example /usr/jails/flavours/base ; mkdir -p /usr/jails/flavours/base/pkg ; cp /usr/jails/build/root/packages/base/* /usr/jails/flavours/base/pkg"
+	
+	echo "ssh root@$ip \"cp /etc/resolv.conf /usr/jails/flavours/base/etc/\""
+	ssh root@$ip "cp /etc/resolv.conf /usr/jails/flavours/base/etc/"
+	
+	echo "ssh root@$ip \"mkdir -p /usr/jails/flavours/base/pkg ; cp /usr/jails/build/root/packages/base/* /usr/jails/flavours/base/pkg\""
+	ssh root@$ip "mkdir -p /usr/jails/flavours/base/pkg ; cp /usr/jails/build/root/packages/base/* /usr/jails/flavours/base/pkg"
+	
+	echo "ssh root@$ip \"cp -R /usr/jails/flavours/base /usr/jails/flavours/base-linux ; cp /usr/jails/build/root/packages/linux-mode/* /usr/jails/flavours/base-linux/pkg\""
+	ssh root@$ip "cp -R /usr/jails/flavours/base /usr/jails/flavours/base-linux ; cp /usr/jails/build/root/packages/linux-mode/* /usr/jails/flavours/base-linux/pkg"
+	
+	echo "ssh root@$ip \"cp -R /usr/jails/flavours/base /usr/jails/flavours/base-openjdk6 ; cp /usr/jails/build/root/packages/openjdk6/* /usr/jails/flavours/base-openjdk6/pkg\""
+	ssh root@$ip "cp -R /usr/jails/flavours/base /usr/jails/flavours/base-openjdk6 ; cp /usr/jails/build/root/packages/openjdk6/* /usr/jails/flavours/base-openjdk6/pkg"
+	
+	echo "ssh root@$ip \"cp -R /usr/jails/flavours/base-linux /usr/jails/flavours/base-linux-openjdk6 ; cp /usr/jails/build/root/packages/openjdk6/* /usr/jails/flavours/base-linux-openjdk6/pkg\""
+	ssh root@$ip "cp -R /usr/jails/flavours/base-linux /usr/jails/flavours/base-linux-openjdk6 ; cp /usr/jails/build/root/packages/openjdk6/* /usr/jails/flavours/base-linux-openjdk6/pkg"
+	
+	echo "ssh root@$ip \"cp -R /usr/jails/flavours/base-openjdk6 /usr/jails/flavours/base-openjdk6-maven3 ; cp /usr/jails/build/root/packages/maven3/* /usr/jails/flavours/base-openjdk6-maven3/pkg\""
+	ssh root@$ip "cp -R /usr/jails/flavours/base-openjdk6 /usr/jails/flavours/base-openjdk6-maven3 ; cp /usr/jails/build/root/packages/maven3/* /usr/jails/flavours/base-openjdk6-maven3/pkg"
+	
+	echo "ssh root@$ip \"cp -R /usr/jails/flavours/base-linux-openjdk6 /usr/jails/flavours/base-linux-openjdk6-maven3-android ; cp /usr/jails/build/root/packages/maven3/* /usr/jails/flavours/base-linux-openjdk6-maven3-android/pkg ; mkdir -p /usr/jails/flavours/base-linux-openjdk6-maven3-android/root\""
+	ssh root@$ip "cp -R /usr/jails/flavours/base-linux-openjdk6 /usr/jails/flavours/base-linux-openjdk6-maven3-android ; cp /usr/jails/build/root/packages/maven3/* /usr/jails/flavours/base-linux-openjdk6-maven3-android/pkg ; mkdir -p /usr/jails/flavours/base-linux-openjdk6-maven3-android/root"
+
+	echo "Where is the android sdk, we need to copy on a flavour: [./android-sdk]"
+	read androidSDK
+	if [[ -z $androidSDK ]] ; then
+		androidSDK="./android-sdk"
+	fi
+	echo "scp -r \"$androidSDK\" root@$ip:\"/usr/jails/flavours/base-linux-openjdk6-maven3-android/root/\""
+	scp -r "$androidSDK" root@$ip:"/usr/jails/flavours/base-linux-openjdk6-maven3-android/root/"
+	
+	echo "ssh root@$ip \"ezjail-admin onestop build\""
+	ssh root@$ip "ezjail-admin onestop build"
+	
+	echo "delete the build jail ? [no]"
+	read delete
+	if [[ $delete == "yes" ]] ; then
+		echo "ssh root@$ip \"ezjail-admin delete -w build\""
+		ssh root@$ip "ezjail-admin delete -w build"
+	fi
+	
+	# fix rc.conf to enable linux if needed
+	echo "ssh root@$ip \"echo 'linux_enable=\\"YES\\"' >> /usr/jails/flavours/base-linux-openjdk6-maven3-android/etc/rc.conf\""
+	ssh root@$ip "echo 'linux_enable=\"YES\"' >> /usr/jails/flavours/base-linux-openjdk6-maven3-android/etc/rc.conf"
+	echo "ssh root@$ip \"echo 'linux_enable=\\"YES\\"' >> /usr/jails/flavours/base-linux-openjdk6/etc/rc.conf\""
+	ssh root@$ip "echo 'linux_enable=\"YES\"' >> /usr/jails/flavours/base-linux-openjdk6/etc/rc.conf"
+	echo "ssh root@$ip \"echo 'linux_enable=\\"YES\\"' >> /usr/jails/flavours/base-linux/etc/rc.conf\""
+	ssh root@$ip "echo 'linux_enable=\"YES\"' >> /usr/jails/flavours/base-linux/etc/rc.conf"
+	
+done

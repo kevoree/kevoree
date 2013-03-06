@@ -1,0 +1,10 @@
+#!/bin/sh
+
+basedir=$(dirname "$0")
+
+$basedir/kloud_software_install
+$basedir/kloud_upgrade
+$basedir/kloud_update
+$basedir/kloud_build_install_world
+$basedir/kloud_configure_ezjail
+$basedir/kloud_service_config
