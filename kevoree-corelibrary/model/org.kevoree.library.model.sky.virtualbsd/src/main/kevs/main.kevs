@@ -12,7 +12,7 @@ merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.webserver.t
 merge "mvn:org.kevoree.corelibrary.sky/org.kevoree.library.sky.provider/{kevoree.version}"
 merge "mvn:org.kevoree.corelibrary.sky/org.kevoree.library.sky.provider.web/{kevoree.version}"
 
-addNode virtualbsd : JailNode {role="host/container", inet="em1", subnet="172.16.78.0", mask="24", flavor="base-openjdk6-inria", jailCreationTimeout="100000", jailStartTimeout="200000", logLevel="INFO"}
+addNode virtualbsd : JailNode {role="host/container", inet="em1", subnet="172.16.78.0", mask="24", defaultFlavor="base-openjdk6-inria", availableFlavors="base,base-linux,base-linux-openjdk6,base-openjdk6,base-openjdk6-maven3,base-linux-openjdk6-maven3-android-git", jailCreationTimeout="100000", jailStartTimeout="200000", logLevel="INFO"}
 
 
 network virtualbsd => virtualbsd { "KEVOREE.remote.node.ip"= "172.16.78.101"}
