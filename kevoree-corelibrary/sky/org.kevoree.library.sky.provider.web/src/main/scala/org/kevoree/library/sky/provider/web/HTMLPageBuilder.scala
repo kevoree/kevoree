@@ -20,6 +20,20 @@ import org.slf4j.LoggerFactory
 object HTMLPageBuilder {
   val logger = LoggerFactory.getLogger(this.getClass)
 
+  def getRedirectionPage(completeURL : String): String = {
+    <html>
+      <head>
+        <title>Your Page Title</title>
+        <meta http-equiv="REFRESH" content={"5;url=" + completeURL}/>
+      </head>
+      <body>
+        You will be redirect to
+        <a href={completeURL}>{completeURL}</a>
+        .
+      </body>
+    </html>.toString()
+  }
+
   def getIaasPage(pattern: String, nodeName: String, model: ContainerRoot, allowManagement: Boolean): String = {
     (<html>
       <head>

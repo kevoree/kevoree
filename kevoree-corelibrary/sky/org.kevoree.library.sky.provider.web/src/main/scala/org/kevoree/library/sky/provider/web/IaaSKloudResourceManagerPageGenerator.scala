@@ -59,6 +59,13 @@ class IaaSKloudResourceManagerPageGenerator(instance: IaaSKloudResourceManagerPa
     response
   }
 
+  private def getRedirectionPage(request: KevoreeHttpRequest, response: KevoreeHttpResponse, page : String): KevoreeHttpResponse = {
+    val htmlContent = HTMLPageBuilder.getRedirectionPage(request.getCompleteUrl.substring(0, request.getCompleteUrl.indexOf(request.getUrl))+ page)
+    response.setStatus(200)
+    response.setContent(htmlContent)
+    response
+  }
+
   private def addChild(request: KevoreeHttpRequest, response: KevoreeHttpResponse): KevoreeHttpResponse = {
     if (request.getMethod.equalsIgnoreCase("GET")) {
       val model = instance.getModelService.getLastModel
@@ -200,8 +207,7 @@ class IaaSKloudResourceManagerPageGenerator(instance: IaaSKloudResourceManagerPa
     } catch {
       case e: Throwable => logger.warn("Unable to clean the current model to remove the child " + nodeName, e)
     }
-    request.setUrl(pattern)
-    getIaasPage(request, response)
+    getRedirectionPage(request, response, pattern)
   }
 
   private def initializeModel(currentModel: ContainerRoot): ContainerRoot = {
