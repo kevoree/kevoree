@@ -60,7 +60,7 @@ object GetParamsParser {
         }
         params
       }
-      case Some(header) if (header.value.toLowerCase == "application/x-www-form-urlencoded".toLowerCase) => {
+      case Some(header) if (header.value.toLowerCase contains("application/x-www-form-urlencoded".toLowerCase)) => {
         getParams("?" + new String(body, "UTF-8"))._2
       }
       case Some(header) => {
