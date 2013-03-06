@@ -8,6 +8,7 @@ import org.slf4j.{LoggerFactory, Logger}
 import org.kevoree.library.sky.api.property.PropertyConversionHelper
 import org.kevoree.library.sky.api.nodeType.AbstractHostNode
 import org.kevoree.library.sky.api.nodeType.helper.SubnetUtils
+import scala.Array
 
 
 /**
@@ -76,9 +77,17 @@ class ProcessExecutor(creationTimeout: Int, startTimeout: Int) {
   }
 
   def createJail(flavor: String, nodeName: String, newIp: String, archive: Option[String]): Boolean = {
-    // TODO add archive attribute and use it to save the jail => the archive must be available from all nodes of the network
-    logger.debug("running {} create -f {} {} {}", Array[AnyRef](ezjailAdmin, flavor, nodeName, newIp))
-    val exec = Array[String](ezjailAdmin, "create", "-f") ++ Array[String](flavor) ++ Array[String](nodeName, newIp)
+    var exec = Array[String]()
+    if (flavor == null) {
+      // TODO add archive attribute and use it to save the jail => the archive must be available from all nodes of the network
+      logger.debug("running {} create {} {}", Array[AnyRef](ezjailAdmin, nodeName, newIp))
+      exec = Array[String](ezjailAdmin, "create") ++ Array[String](nodeName, newIp)
+    } else {
+      // TODO add archive attribute and use it to save the jail => the archive must be available from all nodes of the network
+      logger.debug("running {} create -f {} {} {}", Array[AnyRef](ezjailAdmin, flavor, nodeName, newIp))
+      exec = Array[String](ezjailAdmin, "create", "-f") ++ Array[String](flavor) ++ Array[String](nodeName, newIp)
+    }
+
     val resultActor = new ResultManagementActor()
     resultActor.starting()
     val p = Runtime.getRuntime.exec(exec)

@@ -20,14 +20,15 @@ import org.slf4j.LoggerFactory;
 
 @Library(name = "SKY")
 @DictionaryType({
-        @DictionaryAttribute(name = "flavor", optional = true),
+        @DictionaryAttribute(name = "defaultFlavor", optional = true),
         @DictionaryAttribute(name = "jailCreationTimeout", defaultValue = "240000", optional = true), // TODO check with Timeout on adaptation primitive
         @DictionaryAttribute(name = "jailStartTimeout", defaultValue = "10000", optional = true),/*
         @DictionaryAttribute(name = "useArchive", defaultValue = "false", vals= {"true", "false"}, optional = true),
 		@DictionaryAttribute(name = "archives", defaultValue = "http://localhost:8080/archives/", optional = true)*/
         @DictionaryAttribute(name = "MODE", defaultValue = "RELAX", vals = {"STRICT", "RELAX", "AVOID"}, optional = true),
         // how the restrictions are manage : STRICT = the jail is stopped, RELAX = the jail continue to execute, AVOID means to refused to execute something that break the limitation
-        @DictionaryAttribute(name = "alias_mask", defaultValue = "24", optional = true)
+        @DictionaryAttribute(name = "alias_mask", defaultValue = "24", optional = true),
+        @DictionaryAttribute(name = "availableFlavors", optional = true, defaultValue = "example")
 })
 @NodeType
 public class JailNode extends AbstractIaaSNode {
@@ -97,9 +98,16 @@ public class JailNode extends AbstractIaaSNode {
         return aliasMask;
     }
 
-    public String getFlavor() {
+    public String getDefaultFlavor() {
         if (this.getDictionary().get("flavor") != null) {
             return this.getDictionary().get("flavor").toString();
+        }
+        return null;
+    }
+
+    public String[] getAvailableFlavors() {
+        if (this.getDictionary().get("availableFlavors") != null) {
+            return this.getDictionary().get("availableFlavors").toString().split(",");
         }
         return null;
     }

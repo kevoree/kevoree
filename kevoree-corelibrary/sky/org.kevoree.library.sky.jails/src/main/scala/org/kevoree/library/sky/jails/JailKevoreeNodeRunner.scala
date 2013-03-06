@@ -46,7 +46,7 @@ class JailKevoreeNodeRunner(nodeName: String, iaasNode: JailNode) extends Kevore
             // looking for the flavors
             var flavor = lookingForFlavors(iaasModel, node)
             if (flavor == null) {
-              flavor = iaasNode.getFlavor
+              flavor = iaasNode.getDefaultFlavor
             }
             // create the new jail
             if (processExecutor.createJail(flavor, nodeName, newIp, findArchive(nodeName))) {
@@ -145,8 +145,11 @@ class JailKevoreeNodeRunner(nodeName: String, iaasNode: JailNode) extends Kevore
   private def lookingForFlavors(iaasModel: ContainerRoot, node: ContainerNode): String = {
     logger.debug("looking for specific flavor")
     val flavorsOption = KevoreePropertyHelper.getProperty(node, "flavor")
-    if (flavorsOption.isDefined) {
+    if (flavorsOption.isDefined && iaasNode.getAvailableFlavors.contains(flavorsOption.get)) {
       flavorsOption.get
+    } else if (!iaasNode.getAvailableFlavors.contains(flavorsOption.get)) {
+      logger.warn("Unknown flavor or unavailable flavor on {}", iaasNode.getName)
+      null
     } else {
       null
     }
