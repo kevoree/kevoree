@@ -7,17 +7,17 @@ merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.p2pSock/{ke
 merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.nioChannels/{kevoree.version}"
 
 merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.webserver.api/{kevoree.version}"
-merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.webserver.tjws/{kevoree.version}"
+merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.webserver.spray/{kevoree.version}"
 
 merge "mvn:org.kevoree.corelibrary.sky/org.kevoree.library.sky.provider/{kevoree.version}"
 merge "mvn:org.kevoree.corelibrary.sky/org.kevoree.library.sky.provider.web/{kevoree.version}"
 
 
 addNode node0 : MiniCloudNode { coreLogLevel="WARN",logLevel="DEBUG"}
-addGroup sync : BasicGossiperGroup
+addGroup sync : BasicGroup
 addToGroup sync node0
 
-addComponent webServer@node0 : KTinyWebServer {port = "8080", timeout = "5000"}
+addComponent webServer@node0 : SprayWebServer {port = "8080", timeout = "5000"}
 addComponent iaasPage@node0 : IaaSKloudResourceManagerPage { urlpattern="/iaas"}
 addComponent iaasManager@node0 : IaaSKloudManager
 //addComponent paasPage@node0 : PaaSKloudResourceManagerPage { urlpattern="/paas"}

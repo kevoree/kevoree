@@ -296,9 +296,9 @@ jQuery(document).ready(function () {
         }
     });
 
-    /*jQuery('#nodeType').change(function () {
+    jQuery('#nodeType').change(function () {
         updateForm();
-    });*/
+    });
 
     jQuery('#formNodeType').submit(function () {
         if (checkForm()) {

@@ -230,6 +230,12 @@ class IaaSKloudResourceManagerPageGenerator(instance: IaaSKloudResourceManagerPa
     currentModel.getNodes.filter(n => !nodesToKeep.contains(n.getName)).foreach {
       node =>
         kengine addVariable("nodeName", node.getName)
+        // extract child node to avoid their deletion
+        node.getHosts.foreach{
+          child =>
+            kengine addVariable("childName", child.getName)
+            kengine append("removeChild {childName}@{nodeName}")
+        }
         kengine append "removeNode {nodeName}"
     }
     currentModel.getHubs.foreach {
