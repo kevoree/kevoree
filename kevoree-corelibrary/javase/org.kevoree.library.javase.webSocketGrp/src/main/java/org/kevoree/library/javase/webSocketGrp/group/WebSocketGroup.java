@@ -161,7 +161,11 @@ public class WebSocketGroup extends AbstractGroupType {
 		if (isStarted) {
             final ContainerRoot modelOption = NodeNetworkHelper.updateModelWithNetworkProperty(this);
             if (modelOption != null) {
-            	updateLocalModel(modelOption);
+            	try {
+            		updateLocalModel(modelOption);
+            	} catch (Exception e) {
+            		logger.error("", e);
+            	}
             }
             isStarted = false;
         } else {
