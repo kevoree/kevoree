@@ -147,11 +147,8 @@ public class WebSocketGroup extends AbstractGroupType {
 			@Override
 			public void onClose(int code, String reason, boolean flag) {}
 		};
-		logger.debug("Client has been created, connecting to host...");
 		client.connectBlocking();
-		logger.debug("Client is connected");
 		client.send("gimme model"); // freaking useless message, it's just to make the server respond
-		logger.debug("dumb message sent to get an anwser with the proper model");
 		return exchanger.exchange(null, 5000, TimeUnit.MILLISECONDS);
 	}
 	
