@@ -1,18 +1,16 @@
 package org.kevoree.library.javase.webSocketGrp.group;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.net.InetSocketAddress;
+import java.io.InputStreamReader;
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
+import java.nio.ByteBuffer;
+import java.util.concurrent.Exchanger;
+import java.util.concurrent.TimeUnit;
 
-import org.java_websocket.WebSocket;
 import org.java_websocket.client.WebSocketClient;
-import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.handshake.ServerHandshake;
-import org.java_websocket.server.WebSocketServer;
 import org.kevoree.ContainerNode;
 import org.kevoree.ContainerRoot;
 import org.kevoree.Group;
@@ -30,6 +28,10 @@ import org.kevoree.framework.NetworkHelper;
 import org.kevoree.library.NodeNetworkHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.webbitserver.BaseWebSocketHandler;
+import org.webbitserver.WebServer;
+import org.webbitserver.WebServers;
+import org.webbitserver.WebSocketConnection;
 
 import scala.Option;
 
@@ -40,49 +42,28 @@ import scala.Option;
 @Library(name = "JavaSE", names = "Android")
 public class WebSocketGroup extends AbstractGroupType {
 
+	private static final String PUSH_RES = "/push";
+	private static final String PULL_RES = "/pull";
+	private static final String _ZIP = "/zip";
+	
 	protected Logger logger = LoggerFactory.getLogger(WebSocketGroup.class);
 	
-	private List<WebSocket> activeConnections = new ArrayList<WebSocket>();
-	private WebSocketServer server;
+	private WebServer server;
 	private int port;
 	private boolean isStarted = false;
 
 	@Start
 	public void startWebSocketGroup() {
 		port = Integer.parseInt(getDictionary().get("port").toString());
+
+		server = WebServers.createWebServer(port);
+		server.add(PUSH_RES, pushHandler);
+		server.add(PUSH_RES+_ZIP, pushCompressedHandler);
+		server.add(PUSH_RES, pullHandler);
+		server.add(PULL_RES+_ZIP, pullCompressedHandler);
 		
-		server = new WebSocketServer(new InetSocketAddress(port)) {
-			
-			@Override
-			public void onOpen(WebSocket socket, ClientHandshake hshk) {
-				// keep a pointer on the new connection
-				activeConnections.add(socket);
-			}
-			
-			@Override
-			public void onMessage(WebSocket socket, String msg) {
-				// TODO faudrait peut-être threader ça, parce que si tu rends pas la main vite à
-				// la réception d'un message je pense que le serveur va plus trop répondre
-				logger.debug("XXXXXXXXXXXXXXXXXXXXXXXXX Model received from "+socket.getLocalSocketAddress()+": loading...");
-				ContainerRoot model = KevoreeXmiHelper.$instance.loadString(msg);
-				updateLocalModel(model);
-				logger.debug("XXXXXXXXXXXXXXXXXXXXXXXXX Model loaded from XMI String");
-			}
-			
-			@Override
-			public void onError(WebSocket arg0, Exception arg1) {
-				// TODO Auto-generated method stub
-				
-			}
-			
-			@Override
-			public void onClose(WebSocket socket, int arg1, String arg2, boolean arg3) {
-				// remove pointer from active connections on close
-				activeConnections.remove(socket);
-			}
-		};
 		startServer();
-		logger.debug("XXXXXXXXXXXXXX WebSocket server started on port "+port);
+		logger.debug("WebSocket server started on port "+port);
 	}
 
 	@Stop
@@ -92,7 +73,7 @@ public class WebSocketGroup extends AbstractGroupType {
 	
     @Update
     public void updateRestGroup() throws IOException {
-    	logger.debug("XXXXXXXXXXX updateRestGroup");
+    	logger.debug("updateRestGroup");
         if (port != Integer.parseInt(this.getDictionary().get("port").toString())) {
             stopWebSocketGroup();
             startWebSocketGroup();
@@ -100,7 +81,7 @@ public class WebSocketGroup extends AbstractGroupType {
     }
 
 	@Override
-	public ContainerRoot pull(String targetNodeName) throws Exception {
+	public ContainerRoot pull(final String targetNodeName) throws Exception {
 		logger.debug("pull("+targetNodeName+")");
 		
         ContainerRoot model = getModelService().getLastModel();
@@ -111,7 +92,7 @@ public class WebSocketGroup extends AbstractGroupType {
         }
         int PORT = 8000;
         Group groupOption = model.findByPath("groups[" + getName() + "]", Group.class);
-        if (groupOption!=null) {
+        if (groupOption != null) {
             Option<String> portOption = KevoreePropertyHelper.getProperty(groupOption, "port", true, targetNodeName);
             if (portOption.isDefined()) {
                 try {
@@ -122,31 +103,61 @@ public class WebSocketGroup extends AbstractGroupType {
             }
         }
         
-        logger.debug("Trying to pull model to "+"ws://"+ip+":"+PORT+"/current/model");
-        WebSocketClient client = new WebSocketClient(URI.create("ws://"+ip+":"+PORT+"/current/model")) {			
+        logger.debug("Trying to pull model from "+"ws://"+ip+":"+PORT+PULL_RES+_ZIP);
+        final Exchanger<ContainerRoot> exchanger = new Exchanger<ContainerRoot>();
+        WebSocketClient client = new WebSocketClient(URI.create("ws://"+ip+":"+PORT+PULL_RES+_ZIP)) {			
+			@Override
+			public void onMessage(ByteBuffer bytes) {
+				logger.debug("Receiving compressed model...");
+				ByteArrayInputStream bais = new ByteArrayInputStream(bytes.array());
+				final ContainerRoot root = KevoreeXmiHelper.$instance.loadCompressedStream(bais);
+				try {
+					exchanger.exchange(root);
+				} catch (InterruptedException e) {
+					logger.error("error while waiting model from " + targetNodeName, e);
+				} finally {
+					close();
+				}
+			}
+			
 			@Override
 			public void onMessage(String msg) {
-				logger.debug("onMessage receive client");
-				
+				logger.debug("Receiving model...");
+				final ContainerRoot root = KevoreeXmiHelper.$instance.loadString(msg);
+				try {
+					exchanger.exchange(root);
+				} catch (InterruptedException e) {
+					logger.error("error while waiting model from " + targetNodeName, e);
+				} finally {
+					close();
+				}
 			}
+			
         	@Override
-			public void onOpen(ServerHandshake arg0) {}
+			public void onOpen(ServerHandshake sh) {}
 			@Override
-			public void onError(Exception arg0) {}
+			public void onError(Exception e) {
+				close();
+				try {
+					exchanger.exchange(null);
+				} catch (InterruptedException ex) {
+					logger.error("", ex);
+				}
+			}
 			@Override
-			public void onClose(int arg0, String arg1, boolean arg2) {}
+			public void onClose(int code, String reason, boolean flag) {}
 		};
+		logger.debug("Client has been created, connecting to host...");
 		client.connectBlocking();
-		String stringifiedModel = KevoreeXmiHelper.$instance.saveToString(getModelService().getLastModel(), false);
-		client.send(stringifiedModel);
-		client.close();
-		
-		return model;
+		logger.debug("Client is connected");
+		client.send("gimme model"); // freaking useless message, it's just to make the server respond
+		logger.debug("dumb message sent to get an anwser with the proper model");
+		return exchanger.exchange(null, 5000, TimeUnit.MILLISECONDS);
 	}
 	
 	@Override
 	public void triggerModelUpdate() {
-		logger.debug("XXXXXXXXXXX trigger model update");
+		logger.debug("trigger model update");
 		if (isStarted) {
             final ContainerRoot modelOption = NodeNetworkHelper.updateModelWithNetworkProperty(this);
             if (modelOption != null) {
@@ -159,6 +170,7 @@ public class WebSocketGroup extends AbstractGroupType {
             for (ContainerNode subNode : group.getSubNodes()) {
                 if (!subNode.getName().equals(this.getNodeName())) {
                     try {
+                    	logger.debug("trigger model update by pushing to "+subNode.getName());
                         push(currentModel, subNode.getName());
                     } catch (Exception e) {
                         logger.warn("Unable to notify other members of {} group", group.getName());
@@ -170,10 +182,10 @@ public class WebSocketGroup extends AbstractGroupType {
 
 	@Override
 	public void push(ContainerRoot model, String targetNodeName) throws Exception {
-		logger.debug("XXXXXXXXXXX trying to push");
+		logger.debug("trying to push");
 		
         ByteArrayOutputStream output = new ByteArrayOutputStream();
-        KevoreeXmiHelper.$instance.saveStream(output, model);
+        KevoreeXmiHelper.$instance.saveCompressedStream(output, model);
         output.flush();
         String ip = "127.0.0.1";
         Option<String> ipOption = NetworkHelper.getAccessibleIP(KevoreePropertyHelper.getNetworkProperties(model, targetNodeName, org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP()));
@@ -195,13 +207,10 @@ public class WebSocketGroup extends AbstractGroupType {
                 }
             }
         }
-        logger.debug("Trying to give model to "+"ws://"+ip+":"+PORT+"/current/model");
-        WebSocketClient client = new WebSocketClient(URI.create("ws://"+ip+":"+PORT+"/current/model")) {			
+        logger.debug("Trying to push model to "+"ws://"+ip+":"+PORT+PUSH_RES+_ZIP);
+        WebSocketClient client = new WebSocketClient(URI.create("ws://"+ip+":"+PORT+PUSH_RES+_ZIP)) {			
 			@Override
-			public void onMessage(String msg) {
-				logger.debug("onMessage receive client");
-			}
-        	
+			public void onMessage(String msg) {}
         	@Override
 			public void onOpen(ServerHandshake arg0) {}
 			@Override
@@ -210,12 +219,12 @@ public class WebSocketGroup extends AbstractGroupType {
 			public void onClose(int arg0, String arg1, boolean arg2) {}
 		};
 		client.connectBlocking();
-		client.send(output.toString());
+		client.send(output.toByteArray());
 		client.close();
 	}
 
     protected void updateLocalModel(final ContainerRoot model) {
-    	logger.debug("XXXXXXXXXXXXXXXXXXXXXXXXXXX local update model");
+    	logger.debug("local update model");
         new Thread() {
             public void run() {
                 getModelService().unregisterModelListener(WebSocketGroup.this);
@@ -226,23 +235,55 @@ public class WebSocketGroup extends AbstractGroupType {
     }
     
     private void startServer() {
-    	if (server != null) {
-    		server.start();
-    		logger.debug("WebSocketServer started on "+server.getAddress().getHostName()+":"+server.getAddress().getPort());
-    	}
+    	if (server != null) server.start();
     	isStarted = true;
     }
     
     private void stopServer() {
-    	if (server != null) {
-			try {
-				server.stop();
-			} catch (IOException e) {
-				logger.error(e.getMessage());
-			} catch (InterruptedException e) {
-				logger.error(e.getMessage());
-			}
-    	}
+    	if (server != null) server.stop();
     	isStarted = false;
     }
+    
+    private BaseWebSocketHandler pushHandler = new BaseWebSocketHandler() {
+    	public void onMessage(WebSocketConnection connection, byte[] msg) throws Throwable {
+			logger.debug("Model received from "+connection.httpRequest().header("Host")+": loading...");
+			ByteArrayInputStream bais = new ByteArrayInputStream(msg);
+			ContainerRoot model = KevoreeXmiHelper.$instance.loadStream(bais);
+			updateLocalModel(model);
+			logger.debug("Model loaded from XMI String");
+    	}
+    };
+    
+    private BaseWebSocketHandler pullHandler = new BaseWebSocketHandler() {
+    	public void onMessage(WebSocketConnection connection, byte[] msg) throws Throwable {
+			logger.debug("Pull request received from "+connection.httpRequest().header("Host")+": loading...");
+			String stringifiedModel = KevoreeXmiHelper.$instance.saveToString(getModelService().getLastModel(), false);
+			connection.send(stringifiedModel);
+			logger.debug("Model pulled back to "+connection.httpRequest().header("Host"));
+    	}
+    };
+    
+    private BaseWebSocketHandler pushCompressedHandler = new BaseWebSocketHandler() {
+    	public void onMessage(WebSocketConnection connection, byte[] msg) throws Throwable {
+			logger.debug("Compressed model received from "+connection.httpRequest().header("Host")+": loading...");
+			ByteArrayInputStream bais = new ByteArrayInputStream(msg);
+			ContainerRoot model = KevoreeXmiHelper.$instance.loadCompressedStream(bais);
+			updateLocalModel(model);
+			logger.debug("Model loaded from XMI String");
+    	}
+    };
+    
+    private BaseWebSocketHandler pullCompressedHandler = new BaseWebSocketHandler() {
+    	public void onMessage(WebSocketConnection connection, byte[] msg) throws Throwable {
+			logger.debug("Pull request received from "+connection.httpRequest().header("Host")+": loading...");
+			ByteArrayOutputStream output = new ByteArrayOutputStream();
+            KevoreeXmiHelper.$instance.saveCompressedStream(output, getModelService().getLastModel());
+			connection.send(output.toByteArray());
+			logger.debug("Compressed model pulled back to "+connection.httpRequest().header("Host"));
+    	}
+    	
+    	public void onMessage(WebSocketConnection connection, String msg) throws Throwable {
+			onMessage(connection, new byte[] {});
+    	}
+    };
 }
