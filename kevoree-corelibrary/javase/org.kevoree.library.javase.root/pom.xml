@@ -58,6 +58,7 @@
         <module>../org.kevoree.library.javase.hazelcast</module>
         <module>../org.kevoree.library.javase.adaptationSuperviser</module>
         <module>../org.kevoree.library.javase.basicGossiper</module>
+        <module>../org.kevoree.library.javase.webSocketGrp</module>
 		<module>../org.kevoree.library.javase.accesscontrolGroup</module>
 
 

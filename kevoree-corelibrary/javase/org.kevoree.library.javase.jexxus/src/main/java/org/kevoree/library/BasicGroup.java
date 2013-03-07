@@ -96,7 +96,6 @@ public class BasicGroup extends AbstractGroupType implements ConnectionListener 
     @Override
     public void triggerModelUpdate() {
         if (starting) {
-
             final ContainerRoot modelOption = NodeNetworkHelper.updateModelWithNetworkProperty(this);
             if (modelOption != null) {
                 new Thread() {

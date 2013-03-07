@@ -1,0 +1,11 @@
+merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.javaseNode/{kevoree.version}"
+merge 'mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.webSocketGrp/{kevoree.version}'
+
+addNode node0:JavaSENode {logLevel = "DEBUG"}
+addNode node1:JavaSENode {logLevel = "DEBUG"}
+
+addGroup sync : WebSocketGroup
+addToGroup sync node0
+addToGroup sync node1
+
+updateDictionary sync {port="8001"}@node0,{port="8002"}@node1

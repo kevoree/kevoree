@@ -1,0 +1,33 @@
+merge "mvn:org.kevoree.corelibrary.sky/org.kevoree.library.sky.minicloud/{kevoree.version}"
+merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.javaseNode/{kevoree.version}"
+merge 'mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.webSocketGrp/{kevoree.version}'
+merge 'mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.jexxus/{kevoree.version}'
+merge "mvn:org.kevoree.corelibrary.sky/org.kevoree.library.sky.provider.web/{kevoree.version}"
+merge "mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.defaultChannels/{kevoree.version}"
+merge 'mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.fakeDomo/{kevoree.version}'
+
+addNode minicloud : MiniCloudNode {logLevel = "DEBUG"}
+addNode node0 : JavaSENode {logLevel = "DEBUG"}
+addNode node1 : JavaSENode {logLevel = "DEBUG"}
+
+addChild node0@minicloud
+addChild node1@minicloud
+
+addGroup webSocketGrp : WebSocketGroup
+addGroup sync : BasicGroup
+addToGroup sync minicloud
+addToGroup webSocketGrp minicloud
+addToGroup webSocketGrp node0
+addToGroup webSocketGrp node1
+
+addComponent webServer@minicloud : KTinyWebServer {port = "8080", timeout = "5000"}
+addComponent iaasPage@minicloud : IaaSKloudResourceManagerPage { urlpattern="/"}
+addChannel requestChannel : defMSG
+addChannel responseChannel : defMSG
+bind webServer.handler@minicloud => requestChannel
+bind iaasPage.request@minicloud => requestChannel
+bind webServer.response@minicloud => responseChannel
+bind iaasPage.content@minicloud => responseChannel
+
+updateDictionary sync {port="8000"}@minicloud
+updateDictionary webSocketGrp {port="8010"}@node0,{port="8011"}@node1,{port="8012"}@minicloud
