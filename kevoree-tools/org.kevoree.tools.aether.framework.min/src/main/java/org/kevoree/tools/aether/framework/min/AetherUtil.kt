@@ -35,7 +35,7 @@ import java.io.File
 import org.sonatype.aether.artifact.Artifact
 import org.sonatype.aether.spi.localrepo.LocalRepositoryManagerFactory
 import org.sonatype.aether.connector.wagon.WagonProvider
-import org.slf4j.LoggerFactory
+
 import org.kevoree.tools.aether.framework.AetherFramework
 import org.sonatype.aether.RepositorySystem
 import org.sonatype.aether.RepositoryCache
@@ -45,6 +45,7 @@ import org.sonatype.aether.RepositorySystemSession
 import org.sonatype.aether.repository.RepositoryPolicy
 import org.sonatype.aether.ConfigurationProperties
 import org.sonatype.aether.repository.LocalRepository
+import org.slf4j.LoggerFactory
 
 
 //import org.sonatype.aether.connector.wagon.WagonProvider
@@ -58,7 +59,7 @@ import org.sonatype.aether.repository.LocalRepository
 object AetherUtil : AetherFramework {
     override var _repositorySystem: RepositorySystem? = null
     override var _repositorySession: RepositorySystemSession? = null
-    override var logger = LoggerFactory.getLogger(this.javaClass)
+    override var logger :  org.slf4j.Logger= LoggerFactory.getLogger(this.javaClass)!!
 
     override fun getRepositorySystem(): RepositorySystem {
         val locator = DefaultServiceLocator()
@@ -75,7 +76,7 @@ object AetherUtil : AetherFramework {
         session.setUpdatePolicy(RepositoryPolicy.UPDATE_POLICY_ALWAYS)
         session.setLocalRepositoryManager(getRepositorySystem().newLocalRepositoryManager(LocalRepository(System.getProperty("user.home").toString() + "/.m2/repository")))
         session.getConfigProperties()!!.put(ConfigurationProperties.REQUEST_TIMEOUT, 2000 as Int)
-        session.getConfigProperties()!!.put(ConfigurationProperties.CONNECT_TIMEOUT, 2000as Int)
+        session.getConfigProperties()!!.put(ConfigurationProperties.CONNECT_TIMEOUT, 2000 as Int)
         return session
     }
 
