@@ -4,7 +4,7 @@
 
 ## Overview
 
-This is a short introduction the Kevoreee **context** model.
+This is a short introduction of the Kevoree **context** model.
 While structural Model@runtime aims at capturing architectural view of the system, this model capture extra functional properties which decorates the structural view with dynamic values.
 
 In short this model store informations from monitoring like power context, cpu consumption of each components,… In short, everything which help to build an autonomous system aware of is state. The context model is hosted by each Kevoree node, so any Kevoree instance can manage their own probes to fill this model and any instances can query the models to get feedback on metrics.
