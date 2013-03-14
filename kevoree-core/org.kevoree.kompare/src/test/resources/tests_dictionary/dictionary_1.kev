@@ -87,7 +87,7 @@
   <dataTypes name="void"/>
   <libraries name="EnTiMid-FakeStuff" subTypes="//@typeDefinitions.0 //@typeDefinitions.2 //@typeDefinitions.4 //@typeDefinitions.6 //@typeDefinitions.7"/>
   <deployUnits name="org.entimid.framework" url="mvn:org.entimid/framework"/>
-  <deployUnits groupName="org.entimid" unitName="entimid.fakeStuff" version="3.0.0-SNAPSHOT" hashcode="201010251655616" requiredLibs="//@deployUnits.0"/>
+  <deployUnits groupName="org.entimid" unitName="entimid.fakeStuff" version="3.0.0-SNAPSHOT" hashcode="201010251655616" requiredLibs="//@deployUnits.0" targetNodeType="//@typeDefinitions.8" />
   <deployUnits groupName="org.kevoree.library.javase" unitName="org.kevoree.library.javase.javaseNode" version="1.3.0-SNAPSHOT" hashcode="201109211932325" targetNodeType="//@typeDefinitions.8"/>
   <adaptationPrimitiveTypes name="UpdateType"/>
   <adaptationPrimitiveTypes name="UpdateDeployUnit"/>

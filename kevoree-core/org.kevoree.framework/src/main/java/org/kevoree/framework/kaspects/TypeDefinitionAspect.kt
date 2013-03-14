@@ -2,6 +2,8 @@ package org.kevoree.framework.kaspects
 
 import org.kevoree.TypeDefinition
 import org.kevoree.DeployUnit
+import org.kevoree.ContainerNode
+import org.kevoree.NodeType
 
 /**
  * Created with IntelliJ IDEA.
@@ -43,5 +45,36 @@ class TypeDefinitionAspect {
         }
         return oneUpdated || updated
     }
+
+    fun foundRelevantDeployUnit(selfTD: TypeDefinition, node: ContainerNode): DeployUnit? {
+        var deployUnitfound: DeployUnit? = selfTD.getDeployUnits().find{ du -> du.getTargetNodeType() != null && du.getTargetNodeType()!!.getName() == node.getTypeDefinition()!!.getName() }
+        if (deployUnitfound == null) {
+            deployUnitfound = foundRelevantDeployUnitOnNodeSuperTypes(node.getTypeDefinition() as NodeType, selfTD)
+        }
+        return deployUnitfound
+    }
+
+    private fun foundRelevantDeployUnitOnNodeSuperTypes(nodeType: NodeType, t: TypeDefinition): DeployUnit? {
+        var deployUnitfound: DeployUnit? = null
+        // looking for relevant deployunits on super types
+        for(td in t.getDeployUnits()) {
+            if (td.getTargetNodeType() != null) {
+                if (td.getTargetNodeType()!!.getName() == nodeType.getName()) {
+                    deployUnitfound = td
+                    return deployUnitfound
+                }
+            }
+        }
+        if (deployUnitfound == null) {
+            for(superNode in  nodeType.getSuperTypes()) {
+                deployUnitfound = foundRelevantDeployUnitOnNodeSuperTypes(superNode as NodeType, t)
+                if (deployUnitfound != null) {
+                    return deployUnitfound
+                }
+            }
+        }
+        return deployUnitfound
+    }
+
 
 }

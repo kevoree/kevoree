@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kevoree:ContainerRoot xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:kevoree="http://kevoree/1.0">
+  <nodes name="duke" typeDefinition="//@typeDefinitions.12">
+    <components name="ComponentDemoContinuousIntegration272504482" typeDefinition="//@typeDefinitions.2">
+      <provided portTypeRef="//@typeDefinitions.2/@provided.0"/>
+      <required portTypeRef="//@typeDefinitions.2/@required.0"/>
+    </components>
+  </nodes>
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="ComponentPrimitiveTypeService" deployUnits="//@deployUnits.0" factoryBean="org.kevoree.library.sample.ComponentPrimitiveTypeServiceFactory" bean="org.kevoree.library.sample.ComponentPrimitiveTypeService" startMethod="start" stopMethod="stop">
+    <provided name="portPrimitiveTypes" ref="//@typeDefinitions.1">
+      <mappings beanMethodName="methodShort" serviceMethodName="methodShort"/>
+      <mappings beanMethodName="methodInt" serviceMethodName="methodInt"/>
+      <mappings beanMethodName="methodLong" serviceMethodName="methodLong"/>
+      <mappings beanMethodName="methodDouble" serviceMethodName="methodDouble"/>
+      <mappings beanMethodName="methodFloat" serviceMethodName="methodFloat"/>
+      <mappings beanMethodName="methodChar" serviceMethodName="methodChar"/>
+      <mappings beanMethodName="methodVoid" serviceMethodName="methodVoid"/>
+      <mappings beanMethodName="methodByte" serviceMethodName="methodByte"/>
+      <mappings beanMethodName="methodBoolean" serviceMethodName="methodBoolean"/>
+    </provided>
+  </typeDefinitions>
+  <typeDefinitions xsi:type="kevoree:ServicePortType" name="org.kevoree.library.sample.service.ServicePrimitifReturnTypes">
+    <operations name="methodShort" returnType="//@dataTypes.0">
+      <parameters name="s" type="//@dataTypes.0"/>
+    </operations>
+    <operations name="methodInt" returnType="//@dataTypes.1">
+      <parameters name="i" type="//@dataTypes.1"/>
+    </operations>
+    <operations name="methodLong" returnType="//@dataTypes.2">
+      <parameters name="l" type="//@dataTypes.2"/>
+    </operations>
+    <operations name="methodDouble" returnType="//@dataTypes.3">
+      <parameters name="d" type="//@dataTypes.3"/>
+    </operations>
+    <operations name="methodFloat" returnType="//@dataTypes.4">
+      <parameters name="f" type="//@dataTypes.4"/>
+    </operations>
+    <operations name="methodChar" returnType="//@dataTypes.5">
+      <parameters name="c" type="//@dataTypes.5"/>
+    </operations>
+    <operations name="methodVoid" returnType="//@dataTypes.6"/>
+    <operations name="methodByte" returnType="//@dataTypes.7">
+      <parameters name="b" type="//@dataTypes.7"/>
+    </operations>
+    <operations name="methodBoolean" returnType="//@dataTypes.8">
+      <parameters name="b" type="//@dataTypes.8"/>
+    </operations>
+  </typeDefinitions>
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="ComponentDemoContinuousIntegration" deployUnits="//@deployUnits.0" factoryBean="org.kevoree.library.sample.ComponentDemoContinuousIntegrationFactory" bean="org.kevoree.library.sample.ComponentDemoContinuousIntegration" startMethod="start" stopMethod="stop" updateMethod="update">
+    <dictionaryType>
+      <attributes name="chaine"/>
+    </dictionaryType>
+    <required name="Out" ref="//@typeDefinitions.3" optional="false" noDependency="false"/>
+    <provided name="In" ref="//@typeDefinitions.3">
+      <mappings beanMethodName="prov1Processor" serviceMethodName="process"/>
+    </provided>
+  </typeDefinitions>
+  <typeDefinitions xsi:type="kevoree:MessagePortType" name="org.kevoree.framework.MessagePort"/>
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="ComponentB" deployUnits="//@deployUnits.0" factoryBean="org.kevoree.library.sample.ComponentBFactory" bean="org.kevoree.library.sample.ComponentB" startMethod="start" stopMethod="stop">
+    <required name="req2" ref="//@typeDefinitions.3" optional="false" noDependency="false"/>
+    <required name="req3" ref="//@typeDefinitions.3" optional="false" noDependency="false"/>
+    <provided name="prov1" ref="//@typeDefinitions.5">
+      <mappings beanMethodName="methodBA" serviceMethodName="methodBA"/>
+      <mappings beanMethodName="methodBB" serviceMethodName="methodBB"/>
+    </provided>
+  </typeDefinitions>
+  <typeDefinitions xsi:type="kevoree:ServicePortType" name="org.kevoree.library.sample.service.ServiceB"/>
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="PlanNightmarePipe" deployUnits="//@deployUnits.0" factoryBean="org.kevoree.library.sample.PlanNightmarePipeFactory" bean="org.kevoree.library.sample.PlanNightmarePipe" startMethod="startMethod" stopMethod="stopMethod">
+    <required name="r1" ref="//@typeDefinitions.3" optional="false" noDependency="false"/>
+    <required name="r2" ref="//@typeDefinitions.3" optional="false" noDependency="false"/>
+    <provided name="p1" ref="//@typeDefinitions.3">
+      <mappings beanMethodName="p1trigger" serviceMethodName="process"/>
+    </provided>
+    <provided name="p2" ref="//@typeDefinitions.3">
+      <mappings beanMethodName="p2trigger" serviceMethodName="process"/>
+    </provided>
+  </typeDefinitions>
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="ComponentA" deployUnits="//@deployUnits.0" factoryBean="org.kevoree.library.sample.ComponentAFactory" bean="org.kevoree.library.sample.ComponentA" startMethod="start" stopMethod="stop">
+    <dictionaryType>
+      <attributes name="mandatory1"/>
+      <attributes name="mandatory2"/>
+      <attributes name="optional1" optional="true"/>
+      <attributes name="optional2" optional="true"/>
+      <defaultValues attribute="//@typeDefinitions.7/@dictionaryType/@attributes.1" value="DF"/>
+      <defaultValues attribute="//@typeDefinitions.7/@dictionaryType/@attributes.3" value="DF"/>
+    </dictionaryType>
+    <required name="req1" ref="//@typeDefinitions.3" optional="false" noDependency="false"/>
+    <required name="req2" ref="//@typeDefinitions.5" optional="false" noDependency="false"/>
+    <provided name="prov1" ref="//@typeDefinitions.3">
+      <mappings beanMethodName="prov1Processor" serviceMethodName="process"/>
+    </provided>
+    <provided name="prov2" ref="//@typeDefinitions.8">
+      <mappings beanMethodName="methodAA" serviceMethodName="methodAA"/>
+      <mappings beanMethodName="methodAB" serviceMethodName="methodAB"/>
+    </provided>
+    <provided name="req3" ref="//@typeDefinitions.9">
+      <mappings beanMethodName="getMyList" serviceMethodName="getMyList"/>
+    </provided>
+  </typeDefinitions>
+  <typeDefinitions xsi:type="kevoree:ServicePortType" name="org.kevoree.library.sample.service.ServiceA">
+    <operations name="methodAA" returnType="//@dataTypes.9"/>
+    <operations name="methodAB" returnType="//@dataTypes.3"/>
+  </typeDefinitions>
+  <typeDefinitions xsi:type="kevoree:ServicePortType" name="org.kevoree.library.sample.service.ServiceGenerics">
+    <operations name="getMyList" returnType="//@dataTypes.10"/>
+  </typeDefinitions>
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="PlanNightmareFL" deployUnits="//@deployUnits.0" factoryBean="org.kevoree.library.sample.PlanNightmareFLFactory" bean="org.kevoree.library.sample.PlanNightmareFL" startMethod="startMethod" stopMethod="stopMethod">
+    <provided name="p1" ref="//@typeDefinitions.3">
+      <mappings beanMethodName="p1trigger" serviceMethodName="process"/>
+    </provided>
+    <provided name="p2" ref="//@typeDefinitions.3">
+      <mappings beanMethodName="p2trigger" serviceMethodName="process"/>
+    </provided>
+  </typeDefinitions>
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="PlanNightmareFS" deployUnits="//@deployUnits.0" factoryBean="org.kevoree.library.sample.PlanNightmareFSFactory" bean="org.kevoree.library.sample.PlanNightmareFS" startMethod="startMethod" stopMethod="stopMethod">
+    <required name="r1" ref="//@typeDefinitions.3" optional="false" noDependency="false"/>
+    <required name="r2" ref="//@typeDefinitions.3" optional="false" noDependency="false"/>
+  </typeDefinitions>
+  <typeDefinitions xsi:type="kevoree:NodeType" name="JavaSENode" deployUnits="//@deployUnits.1" factoryBean="org.kevoree.library.defaultNodeTypes.JavaSENodeFactory" bean="org.kevoree.library.defaultNodeTypes.JavaSENode" startMethod="startNode" stopMethod="stopNode" managedPrimitiveTypes="//@adaptationPrimitiveTypes.0 //@adaptationPrimitiveTypes.1 //@adaptationPrimitiveTypes.2 //@adaptationPrimitiveTypes.3 //@adaptationPrimitiveTypes.4 //@adaptationPrimitiveTypes.5 //@adaptationPrimitiveTypes.6 //@adaptationPrimitiveTypes.7 //@adaptationPrimitiveTypes.8 //@adaptationPrimitiveTypes.9 //@adaptationPrimitiveTypes.10 //@adaptationPrimitiveTypes.11 //@adaptationPrimitiveTypes.12 //@adaptationPrimitiveTypes.13 //@adaptationPrimitiveTypes.14 //@adaptationPrimitiveTypes.15 //@adaptationPrimitiveTypes.16 //@adaptationPrimitiveTypes.17">
+    <dictionaryType>
+      <attributes name="autodiscovery" optional="true" datatype="enum=true,false"/>
+      <defaultValues attribute="//@typeDefinitions.12/@dictionaryType/@attributes.0" value="true"/>
+    </dictionaryType>
+  </typeDefinitions>
+  <repositories units="//@deployUnits.0" url="http://maven.kevoree.org/libs-release-local"/>
+  <repositories url="http://scala-tools.org/repo-releases"/>
+  <repositories url="http://maven.kevoree.org/release"/>
+  <repositories url="http://repo1.maven.org/maven2"/>
+  <repositories units="//@deployUnits.1" url="http://maven.kevoree.org/archiva/repository/snapshots/"/>
+  <repositories url="http://maven.kevoree.org/snapshots"/>
+  <dataTypes name="scala.Short"/>
+  <dataTypes name="scala.Int"/>
+  <dataTypes name="scala.Long"/>
+  <dataTypes name="scala.Double"/>
+  <dataTypes name="scala.Float"/>
+  <dataTypes name="scala.Char"/>
+  <dataTypes name="void"/>
+  <dataTypes name="scala.Byte"/>
+  <dataTypes name="scala.Boolean"/>
+  <dataTypes name="java.lang.String"/>
+  <dataTypes name="java.util.List" genericTypes="//@dataTypes.9"/>
+  <libraries name="Kevoree-Samples" subTypes="//@typeDefinitions.0 //@typeDefinitions.2 //@typeDefinitions.4 //@typeDefinitions.6 //@typeDefinitions.7 //@typeDefinitions.10 //@typeDefinitions.11"/>
+  <deployUnits groupName="org.kevoree.library" unitName="org.kevoree.library.sample" version="1.1.0-BETA1" hashcode="201104111336295" targetNodeType="//@typeDefinitions.12"/>
+  <deployUnits groupName="org.kevoree.library.javase" unitName="org.kevoree.library.javase.javaseNode" version="1.3.0-SNAPSHOT" hashcode="201109211932325" targetNodeType="//@typeDefinitions.12"/>
+  <adaptationPrimitiveTypes name="UpdateType"/>
+  <adaptationPrimitiveTypes name="UpdateDeployUnit"/>
+  <adaptationPrimitiveTypes name="AddType"/>
+  <adaptationPrimitiveTypes name="AddDeployUnit"/>
+  <adaptationPrimitiveTypes name="AddThirdParty"/>
+  <adaptationPrimitiveTypes name="RemoveType"/>
+  <adaptationPrimitiveTypes name="RemoveDeployUnit"/>
+  <adaptationPrimitiveTypes name="UpdateInstance"/>
+  <adaptationPrimitiveTypes name="UpdateBinding"/>
+  <adaptationPrimitiveTypes name="UpdateDictionaryInstance"/>
+  <adaptationPrimitiveTypes name="AddInstance"/>
+  <adaptationPrimitiveTypes name="RemoveInstance"/>
+  <adaptationPrimitiveTypes name="AddBinding"/>
+  <adaptationPrimitiveTypes name="RemoveBinding"/>
+  <adaptationPrimitiveTypes name="AddFragmentBinding"/>
+  <adaptationPrimitiveTypes name="RemoveFragmentBinding"/>
+  <adaptationPrimitiveTypes name="StartInstance"/>
+  <adaptationPrimitiveTypes name="StopInstance"/>
+</kevoree:ContainerRoot>
