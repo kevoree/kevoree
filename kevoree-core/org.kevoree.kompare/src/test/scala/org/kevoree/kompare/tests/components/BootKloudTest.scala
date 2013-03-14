@@ -14,6 +14,7 @@
 package org.kevoree.kompare.tests.components
 
 import org.junit.{Test, Before}
+import org.kevoree.framework.KevoreeXmiHelper
 import org.kevoree.kompare.KevoreeKompareBean
 import org.kevoree.kompare.tests.KompareSuite
 import org.scalatest.junit.AssertionsForJUnit
@@ -41,6 +42,10 @@ class BootKloudTest extends AssertionsForJUnit with KompareSuite {
     var kompareModel = component.kompare(model("test_instance/preThirdParty.kev"), model("test_instance/postThirdParty.kev"), "node0")
     kompareModel.print
   }
-
+    /*
+  @Test def verify() {
+    var kompareModel = component.kompare(emptyModel, KevoreeXmiHelper.$instance.load("/var/folders/dq/_bgn79zj25n9w8jbs3x228l80000gn/T/bootModelnode14793899140134410087.kev"), "node1")
+    kompareModel.print
+  } */
 
 }

@@ -36,9 +36,9 @@ public class App {
 
     public void start() throws Exception {
 
-    //    System.setProperty("kevoree.log.level", "DEBUG");
-       // System.setProperty("node.bootstrap","/Users/duke/Desktop/badRemoveAllModel.kev");
-       // System.setProperty("node.name","editor_node");
+        //System.setProperty("kevoree.log.level", "DEBUG");
+       // System.setProperty("node.bootstrap","/var/folders/dq/_bgn79zj25n9w8jbs3x228l80000gn/T/bootModelnode14793899140134410087.kev");
+       // System.setProperty("node.name","node1");
 
         //TO REMOVE
         if(System.getProperty("node.groupType") == null){
