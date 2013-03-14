@@ -126,7 +126,11 @@ object PrimitiveCommandExecutionHelper {
         class Worker( val primitive: PrimitiveCommand ) : Callable<Boolean> {
             override fun call(): Boolean {
                 try {
-                    return primitive.execute()
+                    var result = primitive.execute()
+                    if(!result){
+                        logger.error("Error while executing primitive command " + primitive)
+                    }
+                    return result
                 } catch(e: Exception) {
                     logger.error("Error while executing primitive command " + primitive, e)
                     return false
