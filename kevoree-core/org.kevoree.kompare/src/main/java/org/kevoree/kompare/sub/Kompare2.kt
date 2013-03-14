@@ -415,10 +415,10 @@ trait Kompare2 {
 
 
     fun processInstanceDictionary(actualInstance: Instance, updateInstance: Instance, adaptationModel: AdaptationModel, actualRoot: ContainerRoot) {
-        if(actualInstance == null && updateInstance != null){
+        if(actualInstance.getDictionary() == null && updateInstance.getDictionary() != null){
             return updateDictionary(actualInstance, updateInstance, adaptationModel, actualRoot)
         }
-        if(actualInstance != null && updateInstance == null){
+        if(actualInstance.getDictionary() != null && updateInstance.getDictionary() == null){
             return updateDictionary(actualInstance, updateInstance, adaptationModel, actualRoot)
         }
         if(actualInstance.getDictionary() == null && updateInstance.getDictionary() == null){
