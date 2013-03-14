@@ -45,6 +45,7 @@ import org.kevoree.impl.NodeTypeInternal
  */
 
 class UnresolvedNodeType(val unresolvedNodeTypeName: String): NodeTypeInternal {
+    override var internal_recursive_readOnlyElem: Boolean = false
     override var _managedPrimitiveTypes_java_cache: List<AdaptationPrimitiveType>? = null
     override val _managedPrimitiveTypes: HashMap<Any, AdaptationPrimitiveType> = HashMap<Any, AdaptationPrimitiveType>()
     override var _managedPrimitiveTypeRefs_java_cache: List<AdaptationPrimitiveTypeRef>? = null
