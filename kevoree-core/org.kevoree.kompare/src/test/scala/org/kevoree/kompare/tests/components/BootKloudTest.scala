@@ -37,5 +37,10 @@ class BootKloudTest extends AssertionsForJUnit with KompareSuite {
     kompareModel.print
   }
 
+  @Test def verifyThirdPartyInstall() {
+    var kompareModel = component.kompare(model("test_instance/preThirdParty.kev"), model("test_instance/postThirdParty.kev"), "node0")
+    kompareModel.print
+  }
+
 
 }

@@ -62,7 +62,7 @@ public abstract class AbstractKevoreeCamelComponentType extends AbstractComponen
 
         final AbstractKevoreeCamelComponentType selfPointer = this;
         context = buildCamelContext();
-        context.setClassResolver(new ClassLoaderClassResolver(selfPointer.getClass().getClassLoader()));
+        //context.setClassResolver(new ClassLoaderClassResolver(selfPointer.getClass().getClassLoader()));
         cc = new KevoreePortComponent(selfPointer);
         context.addComponent("kport", cc);
         RouteBuilder rb = new RouteBuilder() {

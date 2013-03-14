@@ -70,6 +70,15 @@ trait KevoreeScheduler {
             }
 
             // ADD ThirdParty
+            // ADD DeployUnit
+            step.addAllAdaptations(adaptionModel.getAdaptations()
+                    .filter{ adapt -> adapt.getPrimitiveType()!!.getName() == JavaSePrimitive.AddThirdParty })
+            if (!step.getAdaptations().isEmpty()) {
+                step = adaptationModelFactory.createParallelStep()
+                currentStep.setNextStep(step)
+                currentStep = step
+            }
+
             /*adaptionModel.getAdaptations().filter(adapt => adapt.getPrimitiveType().getName == JavaSePrimitive.AddThirdParty)
               .foreach {
               p =>

@@ -135,9 +135,23 @@ trait Kompare2 {
         return adaptationModel
     }
 
+    fun traverseDU(du: DeployUnit, map : HashMap<String, DeployUnit>,tp:Boolean,mapTP : HashMap<String, DeployUnit>){
+        val duAspect = DeployUnitAspect()
+        map.put(duAspect.buildKey(du), du)
+        if(tp){
+            mapTP.put(duAspect.buildKey(du), du)
+        }
+        for(rLib in du.getRequiredLibs()){
+            traverseDU(rLib,map,true,mapTP)
+        }
+    }
+
     fun checkTypes(actualTD: MutableSet<String>, updatedTD: MutableSet<String>, adaptationModel: AdaptationModel, actualRoot: ContainerRoot, updateRoot: ContainerRoot, actualNode: ContainerNode) {
         val usefull_DU = HashMap<String, DeployUnit>()
         val useless_DU = HashMap<String, DeployUnit>()
+
+        val tp_DU = HashMap<String, DeployUnit>()
+
         val potentialAdd = HashMap<String, DeployUnit>()
         val duAspect = DeployUnitAspect()
         val tdAspect = TypeDefinitionAspect()
@@ -151,10 +165,7 @@ trait Kompare2 {
                 adaptationModel.addAdaptations(ccmd)
                 //TAG DU TO BE USELESS
                 val du = tdAspect.foundRelevantDeployUnit(td, actualNode)!!
-                useless_DU.put(duAspect.buildKey(du), du)
-                for(rLib in du.getRequiredLibs()){
-                    useless_DU.put(duAspect.buildKey(du), du)
-                }
+                traverseDU(du,useless_DU,false,tp_DU)
             }
         }
         val duUpdated = HashMap<String, DeployUnit>()
@@ -167,10 +178,7 @@ trait Kompare2 {
                 ccmd.setRef(td)
                 adaptationModel.addAdaptations(ccmd)
                 val du = tdAspect.foundRelevantDeployUnit(td, actualNode)!!
-                potentialAdd.put(duAspect.buildKey(du), du)
-                for(rLib in du.getRequiredLibs()){
-                    potentialAdd.put(duAspect.buildKey(du), du)
-                }
+                traverseDU(du,potentialAdd,false,tp_DU)
             } else {
                 //CHECK IF TYPE IS UPDATED
                 val td2 = actualRoot.findTypeDefinitionsByID(updateType)!!
@@ -184,7 +192,7 @@ trait Kompare2 {
                     duUpdated.put(duAspect.buildKey(du), du)
                     //LOOK FOR UPDATE DEPLOY_UNIT
                 }
-                usefull_DU.put(duAspect.buildKey(du), du)
+                traverseDU(du,usefull_DU,false,tp_DU)
             }
         }
 
@@ -206,7 +214,12 @@ trait Kompare2 {
         for(potentialAddDU in potentialAdd){
             if(usefull_DU.get(potentialAddDU.getKey()) == null){
                 val ccmd2 = adaptationModelFactory.createAdaptationPrimitive()
-                ccmd2.setPrimitiveType(updateRoot.findAdaptationPrimitiveTypesByID(JavaSePrimitive.AddDeployUnit))
+
+                if(tp_DU.containsKey(potentialAddDU.key)){
+                    ccmd2.setPrimitiveType(updateRoot.findAdaptationPrimitiveTypesByID(JavaSePrimitive.AddThirdParty))
+                } else {
+                    ccmd2.setPrimitiveType(updateRoot.findAdaptationPrimitiveTypesByID(JavaSePrimitive.AddDeployUnit))
+                }
                 ccmd2.setRef(potentialAddDU.getValue())
                 adaptationModel.addAdaptations(ccmd2)
             }

@@ -131,7 +131,7 @@ object PrimitiveCommandExecutionHelper {
                         logger.error("Error while executing primitive command " + primitive)
                     }
                     return result
-                } catch(e: Exception) {
+                } catch(e: Throwable) {
                     logger.error("Error while executing primitive command " + primitive, e)
                     return false
                 }

@@ -6,6 +6,7 @@ public object JavaSePrimitive {
     val UpdateDeployUnit = "UpdateDeployUnit"
     val AddType = "AddType"
     val AddDeployUnit = "AddDeployUnit"
+    val AddThirdParty = "AddThirdParty"
     val RemoveThirdParty = "RemoveThirdParty"
     val RemoveType = "RemoveType"
     val RemoveDeployUnit = "RemoveDeployUnit"
