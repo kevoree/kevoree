@@ -50,6 +50,7 @@ class UnresolvedNode(val nodeName: String, val query: String): ContainerNodeInte
     override val _hosts: HashMap<Any, ContainerNode> = HashMap<Any, ContainerNode>()
     override var _host: ContainerNode? = null
     override var internal_eContainer: KevoreeContainer? = null
+    override var internal_containmentRefName: String? = null
     override var internal_unsetCmd: (() -> Unit)? = null
     override var internal_readOnlyElem: Boolean = false
     override var _metaData: String = ""

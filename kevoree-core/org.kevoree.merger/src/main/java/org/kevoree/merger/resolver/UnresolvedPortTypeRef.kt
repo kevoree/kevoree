@@ -44,6 +44,7 @@ class UnresolvedPortTypeRef(val unresolvedPortName : String) : PortTypeRefIntern
 
     override var internal_recursive_readOnlyElem: Boolean = false
     override var internal_eContainer: KevoreeContainer? = null
+    override var internal_containmentRefName: String? = null
     override var internal_unsetCmd: (() -> Unit)? = null
     override var internal_readOnlyElem: Boolean = false
     override var _optional: Boolean = false
