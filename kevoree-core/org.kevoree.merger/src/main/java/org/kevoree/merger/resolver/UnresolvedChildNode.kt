@@ -37,6 +37,7 @@ import org.kevoree.impl.ContainerNodeInternal
 
 
 class UnresolvedChildNode(val childName: String): ContainerNodeInternal {
+    override var internal_recursive_readOnlyElem: Boolean = false
     override var _components_java_cache: List<ComponentInstance>? = null
     override val _components: HashMap<Any, ComponentInstance> = HashMap<Any, ComponentInstance>()
     override var _hosts_java_cache: List<ContainerNode>? = ArrayList<ContainerNode>()

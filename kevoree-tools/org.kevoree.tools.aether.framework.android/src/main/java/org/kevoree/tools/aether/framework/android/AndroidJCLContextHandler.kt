@@ -44,6 +44,7 @@ import java.io.File
 import org.kevoree.kcl.KevoreeJarClassLoader
 import org.slf4j.LoggerFactory
 import org.kevoree.tools.aether.framework.JCLContextHandler
+import java.util.ArrayList
 
 /**
  * Created by IntelliJ IDEA.
@@ -91,9 +92,15 @@ class AndroidJCLContextHandler(val ctx: android.content.Context, val parent: Cla
             kcl_cache.put(buildKEY(du), newcl)
             kcl_cache_file.put(buildKEY(du), file)
             //TRY TO RECOVER FAILED LINK
+            //TRY TO RECOVER FAILED LINK
             if (failedLinks.containsKey(buildKEY(du))) {
-                failedLinks.get(buildKEY(du))!!.addSubClassLoader(newcl)
-                newcl.addWeakClassLoader(failedLinks.get(buildKEY(du))!!)
+                for(toLinkKCL in failedLinks.get(buildKEY(du))!!){
+                    toLinkKCL.addSubClassLoader(newcl)
+                    newcl.addWeakClassLoader(toLinkKCL)
+
+                    logger.debug("UnbreakLink "+du.getUnitName()+"->"+toLinkKCL.getLoadedURLs().get(0))
+
+                }
                 failedLinks.remove(buildKEY(du))
                 logger.debug("Failed Link {} remain size : {}", du.getUnitName(), failedLinks.size())
             }
@@ -113,7 +120,12 @@ class AndroidJCLContextHandler(val ctx: android.content.Context, val parent: Cla
                     }
                 } else {
                     logger.debug("Fail link ! Warning ")
-                    failedLinks.put(buildKEY(du), newcl)
+                    var pendings = failedLinks.get(buildKEY(rLib))
+                    if(pendings == null){
+                        pendings = ArrayList<KevoreeJarClassLoader>()
+                        failedLinks.put(buildKEY(rLib), pendings!!)
+                    }
+                    pendings!!.add(newcl)
                 }
             }
             newcl

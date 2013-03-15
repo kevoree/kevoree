@@ -47,9 +47,10 @@ class ComponentMoveTest extends AssertionsForJUnit with KompareSuite {
   @Test def verifyNoComponentMoved() {
     var kompareModel = component.kompare(model("test_instance/componentMove2.kev"), model("test_instance/componentMove1.kev"), "node1")
 
-       kompareModel.print
+    kompareModel.print
     assert(kompareModel.getAdaptations.size == 0)
     kompareModel = component.kompare(model("test_instance/componentMove2.kev"), model("test_instance/componentMove1.kev"), "node2")
+    kompareModel.print
     assert(kompareModel.getAdaptations.size == 0)
     // error("NOT IMPLEMENTED YET");
   }

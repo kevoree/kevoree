@@ -52,8 +52,8 @@ class DeployUnitAspect {
                 } else {
                     val pDUInteger = java.lang.Long.parseLong(targetDU.getHashcode())
                     val selfDUInteger = java.lang.Long.parseLong(self.getHashcode())
-                    alreadyCheck.put(buildKey(self), (selfDUInteger < pDUInteger))
-                    return ((selfDUInteger < pDUInteger) || checkTransitiveUpdate(self,targetDU, alreadyCheck))
+                    alreadyCheck.put(buildKey(self), (selfDUInteger != pDUInteger))
+                    return ((selfDUInteger != pDUInteger) || checkTransitiveUpdate(self,targetDU, alreadyCheck))
                 }
             } catch(e: Exception) {
                 return  targetDU.getHashcode() != self.getHashcode()

@@ -452,8 +452,8 @@ open class KevoreeJarClassLoader(): ClassLoader() {
         return Collections.enumeration(selfRes)
     }
 
-    fun cleanJarURL(j: String) {
-        if (j.contains(File.separator)) {
+    fun cleanJarURL(j: String) : String {
+        return if (j.contains(File.separator)) {
             j.substring(j.lastIndexOf(File.separator) + 1)
         } else {
             j

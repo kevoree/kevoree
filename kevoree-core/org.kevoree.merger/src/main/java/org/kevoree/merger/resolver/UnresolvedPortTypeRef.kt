@@ -41,6 +41,8 @@ import org.kevoree.impl.PortTypeRefInternal
  */
 
 class UnresolvedPortTypeRef(val unresolvedPortName : String) : PortTypeRefInternal {
+
+    override var internal_recursive_readOnlyElem: Boolean = false
     override var internal_eContainer: KevoreeContainer? = null
     override var internal_unsetCmd: (() -> Unit)? = null
     override var internal_readOnlyElem: Boolean = false
