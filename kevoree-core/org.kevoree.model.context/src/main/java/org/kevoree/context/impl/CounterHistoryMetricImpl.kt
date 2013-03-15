@@ -48,11 +48,12 @@ class CounterHistoryMetricImpl: CounterHistoryMetric, CounterHistoryMetricIntern
     private val ll = java.util.LinkedList<MetricValue>()
 
     override fun addValues(v: MetricValue) {
+        super<CounterHistoryMetricInternal>.addValues(v)
         if (ll.size >= getNumber() && !ll.isEmpty()) {
+            _values.remove(ll.getFirst())
             ll.removeFirst()
         }
         ll.addLast(v)
-        (v as MetricValueInternal).setEContainer(this, {() -> { this.removeValues(v) } })
         try {
             val sumE = java.lang.Double.parseDouble(v.getValue())
             setSum(getSum() + sumE)
@@ -60,11 +61,11 @@ class CounterHistoryMetricImpl: CounterHistoryMetric, CounterHistoryMetricIntern
         }
     }
 
-    override fun removeValues(values: MetricValue) {
-        if (ll.size != 0 && ll.contains(values.getTimestamp())) {
-            ll.remove(values.getTimestamp())
-            (values as MetricValueInternal).setEContainer(null, null)
+    override fun removeValues(value: MetricValue) {
+        if (ll.size != 0 && _values.get(value.getTimestamp())!=null) {
+            ll.remove(value)
         }
+        super<CounterHistoryMetricInternal>.removeValues(value)
     }
 
     override fun getFirst(): MetricValue? {
@@ -76,12 +77,10 @@ class CounterHistoryMetricImpl: CounterHistoryMetric, CounterHistoryMetricIntern
     }
 
     override fun setFirst(first: MetricValue?) {
-        null
+        throw Exception("First attribute is computed on add method")
     }
 
     override fun getLast(): MetricValue? {
-        println("Last !!")
-
         if (ll.isEmpty()) {
             return null
         } else {
@@ -90,7 +89,7 @@ class CounterHistoryMetricImpl: CounterHistoryMetric, CounterHistoryMetricIntern
     }
 
     override fun setLast(last: MetricValue?) {
-        null
+        throw Exception("Last attribute is computed on add method")
     }
 
     override fun getValues(): List<MetricValue> {
