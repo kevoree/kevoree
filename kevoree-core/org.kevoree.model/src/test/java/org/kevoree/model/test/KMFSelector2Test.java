@@ -41,37 +41,32 @@ public class KMFSelector2Test {
 
 
         List<Object> result = model.selectByQuery("typeDefinitions[{ &(name = *Node)(name = R*) }]");
-        System.out.println("Result Size = "+result.size());
-        for(Object o : result){
-            if(o instanceof org.kevoree.NamedElement){
-                System.out.println( ((org.kevoree.NamedElement)o).getName());
+        System.out.println("Result Size = " + result.size());
+        for (Object o : result) {
+            if (o instanceof org.kevoree.NamedElement) {
+                System.out.println(((org.kevoree.NamedElement) o).getName());
             }
         }
 
-        assert(result.size() == 1);
-        assert( ((NodeType)result.get(0)).getName().equals("RestNode")  );
-
-
-
+        assert (result.size() == 1);
+        assert (((NodeType) result.get(0)).getName().equals("RestNode"));
 
 
         ContainerRoot model2 = loader.loadModelFromPath(new File(KMFSelector2Test.class.getResource("/defaultlibs.kev").toURI())).get(0);
-        List<Object> result2 = model2.selectByQuery("typeDefinitions[{ name = * }]/provided[{name = on}]");
-        System.out.println("Result Size = "+result2.size());
-        for(Object o : result2){
-            if(o instanceof org.kevoree.NamedElement){
-                System.out.println( ((org.kevoree.NamedElement)o).getName());
+        List<Object> result2 = model2.selectByQuery("typeDefinitions[*]/provided[{name = on}]");
+        System.out.println("Result Size = " + result2.size());
+        for (Object o : result2) {
+            if (o instanceof org.kevoree.NamedElement) {
+                System.out.println(((org.kevoree.NamedElement) o).getName());
             } else {
-                System.out.println("res="+o);
+                System.out.println("res=" + o);
             }
         }
 
-        assert(result2.size() == 2);
+        assert (result2.size() == 2);
 
 
     }
-
-
 
 
 }
