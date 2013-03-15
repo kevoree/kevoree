@@ -276,7 +276,7 @@ class MiniKloudForm(editor: KevoreeEditor, button: AbstractButton) {
       }
     }
 
-    if (editor.getPanel.getKernel.getModelHandler.getActualModel.findGroupsByID(groupName).findSubNodesByID(minicloudName) == null) {
+    if (editor.getPanel.getKernel.getModelHandler.getActualModel.findGroupsByID(groupName)==null || editor.getPanel.getKernel.getModelHandler.getActualModel.findGroupsByID(groupName).findSubNodesByID(minicloudName) == null) {
       kevEngine.addVariable("portValue", selectPort(firstPortToUse, blackListedPorts) + "")
       kevEngine.append("addToGroup {groupName} {minicloudNodeName}")
       kevEngine.append("updateDictionary {groupName} {port='{portValue}'}@{minicloudNodeName}")
