@@ -27,7 +27,7 @@ open class JCLContextHandler: KevoreeClassLoaderHandler {
     var lockedDu = ArrayList<String>()
     val logger = LoggerFactory.getLogger(this.javaClass)!!
     val resolvers = ArrayList<DeployUnitResolver>()
-    protected val failedLinks: HashMap<String, KevoreeJarClassLoader> = HashMap<String, KevoreeJarClassLoader>()
+    protected val failedLinks: HashMap<String, MutableList<KevoreeJarClassLoader>> = HashMap<String, MutableList<KevoreeJarClassLoader>>()
 
     inner class DUMP(): Runnable {
         override fun run() {
@@ -169,51 +169,61 @@ open class JCLContextHandler: KevoreeClassLoaderHandler {
     }
 
     open fun installDeployUnitInternals(du: DeployUnit, file: File): KevoreeJarClassLoader {
-        val previousKCL = getKCLInternals(du)
-        val res = if (previousKCL != null) {
-            logger.debug("Take already installed {}", buildKEY(du))
-            previousKCL
-        } else {
-            logger.debug("Install {} , file {}", buildKEY(du), file)
-            val newcl = KevoreeJarClassLoader()
-            if (System.getProperty("kcl.lazy") != null && "true".equals(System.getProperty("kcl.lazy"))) {
-                newcl.setLazyLoad(true)
+            val previousKCL = getKCLInternals(du)
+            val res = if (previousKCL != null) {
+                logger.debug("Take already installed {}", buildKEY(du))
+                previousKCL
             } else {
-                newcl.setLazyLoad(false)
-            }
-            newcl.add(file.getAbsolutePath())
-            kcl_cache.put(buildKEY(du), newcl)
-            kcl_cache_file.put(buildKEY(du), file)
-            logger.debug("Add KCL for {}->{}", du.getUnitName(), buildKEY(du))
-
-            //TRY TO RECOVER FAILED LINK
-            if (failedLinks.containsKey(buildKEY(du))) {
-                failedLinks.get(buildKEY(du))!!.addSubClassLoader(newcl)
-                newcl.addWeakClassLoader(failedLinks.get(buildKEY(du))!!)
-                failedLinks.remove(buildKEY(du))
-                logger.debug("Failed Link {} remain size : {}", du.getUnitName(), failedLinks.size())
-            }
-            for(rLib in  du.getRequiredLibs()) {
-                val kcl = getKCLInternals(rLib)
-                if (kcl != null) {
-                    logger.debug("Link KCL for {}->{}", du.getUnitName(), rLib.getUnitName())
-                    newcl.addSubClassLoader(kcl)
-                    kcl.addWeakClassLoader(newcl)
-                    du.getRequiredLibs().filter{ rLibIn -> rLib != rLibIn }.forEach{ rLibIn ->
-                        val kcl2 = getKCLInternals(rLibIn)
-                        if (kcl2 != null) {
-                            kcl.addWeakClassLoader(kcl2)
-                            // logger.debug("Link Weak for {}->{}", rLib.getUnitName(), rLibIn.getUnitName())
-                        }
-                    }
+                logger.debug("Install {} , file {}", buildKEY(du), file)
+                val newcl = KevoreeJarClassLoader()
+                if (System.getProperty("kcl.lazy") != null && "true".equals(System.getProperty("kcl.lazy"))) {
+                    newcl.setLazyLoad(true)
                 } else {
-                    logger.debug("Fail link ! Warning ")
-                    failedLinks.put(buildKEY(du), newcl)
+                    newcl.setLazyLoad(false)
                 }
+                newcl.add(file.getAbsolutePath())
+                kcl_cache.put(buildKEY(du), newcl)
+                kcl_cache_file.put(buildKEY(du), file)
+                logger.debug("Add KCL for {}->{}", du.getUnitName(), buildKEY(du))
+
+                //TRY TO RECOVER FAILED LINK
+                if (failedLinks.containsKey(buildKEY(du))) {
+                    for(toLinkKCL in failedLinks.get(buildKEY(du))!!){
+                        toLinkKCL.addSubClassLoader(newcl)
+                        newcl.addWeakClassLoader(toLinkKCL)
+
+                        logger.debug("UnbreakLink "+du.getUnitName()+"->"+toLinkKCL.getLoadedURLs().get(0))
+
+                    }
+                    failedLinks.remove(buildKEY(du))
+                    logger.debug("Failed Link {} remain size : {}", du.getUnitName(), failedLinks.size())
+                }
+                for(rLib in  du.getRequiredLibs()) {
+                    val kcl = getKCLInternals(rLib)
+                    if (kcl != null) {
+                        logger.debug("Link KCL for {}->{}", du.getUnitName(), rLib.getUnitName())
+                        newcl.addSubClassLoader(kcl)
+                        kcl.addWeakClassLoader(newcl)
+                        du.getRequiredLibs().filter{ rLibIn -> rLib != rLibIn }.forEach{ rLibIn ->
+                            val kcl2 = getKCLInternals(rLibIn)
+                            if (kcl2 != null) {
+                                kcl.addWeakClassLoader(kcl2)
+                                // logger.debug("Link Weak for {}->{}", rLib.getUnitName(), rLibIn.getUnitName())
+                            }
+                        }
+                    } else {
+                        logger.debug("Fail link ! Warning -> " + buildKEY(du) + " -> " + buildKEY(rLib))
+                        var pendings = failedLinks.get(buildKEY(rLib))
+                        if(pendings == null){
+                            pendings = ArrayList<KevoreeJarClassLoader>()
+                            failedLinks.put(buildKEY(rLib), pendings!!)
+                        }
+                        pendings!!.add(newcl)
+                    }
+                }
+                newcl
             }
-            newcl
-        }
-        return res!!
+            return res!!
     }
 
     protected fun getKCLInternals(du: DeployUnit): KevoreeJarClassLoader? {
@@ -244,7 +254,13 @@ open class JCLContextHandler: KevoreeClassLoaderHandler {
                     logger.debug("Cache To cleanuip size" + kcl_cache.values().size() + "-" + kcl_cache.size() + "-" + kcl_cache.keySet().size())
                     for(vals in kcl_cache.values()) {
                         if (vals.getSubClassLoaders().contains(kcl_to_remove)) {
-                            failedLinks.put(key, vals)
+
+                            var pendings = failedLinks.get(key)
+                            if(pendings == null){
+                                pendings = ArrayList<KevoreeJarClassLoader>()
+                                failedLinks.put(key, pendings!!)
+                            }
+                            pendings!!.add(vals)
                             logger.debug("Pending Fail link " + key)
                         }
                         vals.cleanupLinks(kcl_to_remove!!)

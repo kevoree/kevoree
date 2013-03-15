@@ -30,6 +30,8 @@ class CounterHistoryMetricImpl: CounterHistoryMetric, CounterHistoryMetricIntern
     override var internal_eContainer: ContextContainer? = null
     override var internal_unsetCmd: (()->Unit)? = null
     override var internal_readOnlyElem: Boolean = false
+    override var internal_recursive_readOnlyElem = false
+
     override public var _name: String = ""
     override public var _query: String = ""
     override public var _syncConstraints: String = ""

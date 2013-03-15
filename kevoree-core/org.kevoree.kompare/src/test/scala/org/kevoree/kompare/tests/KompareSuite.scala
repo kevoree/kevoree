@@ -91,7 +91,7 @@ case class RichAdaptationModel(self: AdaptationModel) {
 
   def print = {
 
-    println("Adaptations")
+    println("Adaptations "+self.getAdaptations.size())
     self.getAdaptations.toList.foreach {
       adapt =>
         println(adapt.getPrimitiveType.getName)
@@ -102,7 +102,10 @@ case class RichAdaptationModel(self: AdaptationModel) {
           case i: MBinding => {
             println("=>" + i.getHub.getName + "->" + i.getPort.getPortTypeRef.getName + "-" + i.getPort.eContainer.asInstanceOf[NamedElement].getName)
           }
-          case _ =>
+          case _ => {
+            println(">"+adapt.getRef.getClass.getName)
+          }
+
         }
 
     }

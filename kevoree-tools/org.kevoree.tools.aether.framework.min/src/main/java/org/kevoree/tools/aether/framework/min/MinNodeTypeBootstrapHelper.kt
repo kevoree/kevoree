@@ -59,7 +59,7 @@ class MinNodeTypeBootstrapHelper: NodeTypeBootstrapHelper() {
         val l = ArrayList<String>()
         l.add("http://maven.kevoree.org/release")
         l.add("http://maven.kevoree.org/snapshots")
-        return AetherUtil.resolveMavenArtifact(artId, groupId, version,l)
+        return AetherUtil.resolveMavenArtifact(artId, groupId, version,l)!!
     }
 
     override fun resolveDeployUnit(du: DeployUnit): File {

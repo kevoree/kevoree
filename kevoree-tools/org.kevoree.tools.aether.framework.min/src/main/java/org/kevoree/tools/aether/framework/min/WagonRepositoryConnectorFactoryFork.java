@@ -40,7 +40,7 @@ import org.sonatype.aether.transfer.NoRepositoryConnectorException;
  * Time: 21:43
  */
 
-class WagonRepositoryConnectorFactoryFork extends WagonRepositoryConnectorFactory {
+public class WagonRepositoryConnectorFactoryFork extends WagonRepositoryConnectorFactory {
 
     @Override
     public void initService(ServiceLocator locator) {

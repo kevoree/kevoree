@@ -128,14 +128,6 @@ case class ContainerNodeAspect(node: ContainerNode) {
     try {
 
       val rDU = node.getTypeDefinition.foundRelevantDeployUnit(node)
-
-      /*
-      println("rDU="+rDU.getUnitName+"->"+rDU.getRequiredLibs.size())
-      rDU.getRequiredLibs.foreach{ rdu =>
-          println(rdu.getUnitName)
-      }
-      */
-
       if (rDU != null) {
         rDU.getRequiredLibs.find(du => du.getGroupName == "org.kevoree" && du.getUnitName == "org.kevoree.api") match {
           case None => {

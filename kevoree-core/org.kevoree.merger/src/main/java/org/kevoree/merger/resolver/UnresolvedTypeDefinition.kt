@@ -42,6 +42,8 @@ import org.kevoree.impl.TypeDefinitionInternal
  */
 
 class UnresolvedTypeDefinition(val typeDefinitionName : String) : TypeDefinitionInternal {
+
+    override var internal_recursive_readOnlyElem: Boolean = false
     override var _name: String = ""
     override var internal_readOnlyElem: Boolean = false
     override var internal_unsetCmd: (() -> Unit)? = null

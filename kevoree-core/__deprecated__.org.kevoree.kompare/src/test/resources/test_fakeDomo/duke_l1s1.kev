@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kevoree:ContainerRoot xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:kevoree="http://kevoree/1.0">
+  <nodes name="duke" typeDefinition="//@typeDefinitions.13">
+    <components name="FakeSimpleLight2119148294" typeDefinition="//@typeDefinitions.0">
+      <provided portTypeRef="//@typeDefinitions.0/@provided.0"/>
+      <provided portTypeRef="//@typeDefinitions.0/@provided.1"/>
+      <provided portTypeRef="//@typeDefinitions.0/@provided.2"/>
+    </components>
+    <components name="FakeSimpleSwitch337753850" typeDefinition="//@typeDefinitions.3">
+      <required portTypeRef="//@typeDefinitions.3/@required.0"/>
+      <required portTypeRef="//@typeDefinitions.3/@required.1"/>
+      <required portTypeRef="//@typeDefinitions.3/@required.2"/>
+    </components>
+  </nodes>
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="FakeSimpleLight" deployUnits="//@deployUnits.0" factoryBean="org.kevoree.library.fakedomo.FakeSimpleLightFactory" bean="org.kevoree.library.fakedomo.FakeSimpleLight" startMethod="start" stopMethod="stop" updateMethod="update">
+    <dictionaryType>
+      <attributes name="param1"/>
+      <attributes name="param2" optional="true"/>
+      <defaultValues attribute="//@typeDefinitions.0/@dictionaryType/@attributes.1" value="defVal"/>
+    </dictionaryType>
+    <provided name="on" ref="//@typeDefinitions.1">
+      <mappings beanMethodName="lightOn" serviceMethodName="process"/>
+    </provided>
+    <provided name="off" ref="//@typeDefinitions.1">
+      <mappings beanMethodName="lightOff" serviceMethodName="process"/>
+    </provided>
+    <provided name="toggle" ref="//@typeDefinitions.2">
+      <mappings beanMethodName="toogle" serviceMethodName="toggle"/>
+    </provided>
+  </typeDefinitions>
+  <typeDefinitions xsi:type="kevoree:MessagePortType" name="org.kevoree.framework.MessagePort"/>
+  <typeDefinitions xsi:type="kevoree:ServicePortType" name="org.kevoree.library.fakedomo.ToggleLightService"/>
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="FakeSimpleSwitch" deployUnits="//@deployUnits.0" factoryBean="org.kevoree.library.fakedomo.FakeSimpleSwitchFactory" bean="org.kevoree.library.fakedomo.FakeSimpleSwitch" startMethod="start" stopMethod="stop" updateMethod="update">
+    <required name="on" ref="//@typeDefinitions.1" optional="false" noDependency="true"/>
+    <required name="off" ref="//@typeDefinitions.1" optional="false" noDependency="true"/>
+    <required name="toggle" ref="//@typeDefinitions.2" optional="true" noDependency="false"/>
+  </typeDefinitions>
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="FakeConsole" deployUnits="//@deployUnits.0" factoryBean="org.kevoree.library.fakedomo.FakeConsoleFactory" bean="org.kevoree.library.fakedomo.FakeConsole" startMethod="start" stopMethod="stop">
+    <required name="textEntered" ref="//@typeDefinitions.1" optional="false" noDependency="false"/>
+    <provided name="showText" ref="//@typeDefinitions.1">
+      <mappings beanMethodName="appendIncoming" serviceMethodName="process"/>
+    </provided>
+  </typeDefinitions>
+  <typeDefinitions xsi:type="kevoree:ChannelType" name="defSERVICE" deployUnits="//@deployUnits.1" factoryBean="org.kevoree.library.defaultChannels.defSERVICEFactory" bean="org.kevoree.library.defaultChannels.defSERVICE" startMethod="startHello" stopMethod="stopHello"/>
+  <typeDefinitions xsi:type="kevoree:ChannelType" name="defMSG" deployUnits="//@deployUnits.1" factoryBean="org.kevoree.library.defaultChannels.defMSGFactory" bean="org.kevoree.library.defaultChannels.defMSG" startMethod="startHello" stopMethod="stopHello" updateMethod="updateHello"/>
+  <typeDefinitions xsi:type="kevoree:GroupType" name="RestGossipGroup" deployUnits="//@deployUnits.3" factoryBean="org.kevoree.library.gossiper.groupType.RestGossipGroupFactory" bean="org.kevoree.library.gossiper.groupType.RestGossipGroup" startMethod="startMyGroup" stopMethod="stopMyGroup" updateMethod="updateMyGroup">
+    <dictionaryType>
+      <attributes name="interval" optional="true"/>
+      <defaultValues attribute="//@typeDefinitions.7/@dictionaryType/@attributes.0" value="60000"/>
+    </dictionaryType>
+  </typeDefinitions>
+  <typeDefinitions xsi:type="kevoree:ChannelType" name="RestGossiperChannel" deployUnits="//@deployUnits.3" factoryBean="org.kevoree.library.gossiper.channelType.RestGossiperChannelFactory" bean="org.kevoree.library.gossiper.channelType.RestGossiperChannel" startMethod="startGossiperChannel" stopMethod="stopGossiperChannel" updateMethod="updateGossiperChannel">
+    <dictionaryType>
+      <attributes name="interval" optional="true"/>
+      <defaultValues attribute="//@typeDefinitions.8/@dictionaryType/@attributes.0" value="60000"/>
+    </dictionaryType>
+  </typeDefinitions>
+  <typeDefinitions xsi:type="kevoree:ChannelType" name="RestChannel" deployUnits="//@deployUnits.5" factoryBean="org.kevoree.library.restChannels.RestChannelFactory" bean="org.kevoree.library.restChannels.RestChannel" startMethod="startHello" stopMethod="stopHello" updateMethod="updateHello"/>
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="XmppComponent" deployUnits="//@deployUnits.6" factoryBean="org.kevoree.library.xmpp.XmppComponentFactory" bean="org.kevoree.library.xmpp.XmppComponent" startMethod="start" stopMethod="stop">
+    <dictionaryType>
+      <attributes name="login"/>
+      <attributes name="password"/>
+    </dictionaryType>
+    <required name="messageReceived" ref="//@typeDefinitions.1" optional="false" noDependency="false"/>
+    <provided name="send" ref="//@typeDefinitions.1">
+      <mappings beanMethodName="sendMessage" serviceMethodName="process"/>
+    </provided>
+  </typeDefinitions>
+  <typeDefinitions xsi:type="kevoree:ChannelType" name="XmppChannel" deployUnits="//@deployUnits.6" factoryBean="org.kevoree.library.xmpp.XmppChannelFactory" bean="org.kevoree.library.xmpp.XmppChannel" startMethod="start" stopMethod="stop">
+    <dictionaryType>
+      <attributes name="userName"/>
+      <attributes name="password"/>
+    </dictionaryType>
+  </typeDefinitions>
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="AndroidNotification" deployUnits="//@deployUnits.7" factoryBean="org.kevoree.library.logger.android.AndroidNotificationFactory" bean="org.kevoree.library.logger.android.AndroidNotification" startMethod="start" stopMethod="stop">
+    <provided name="log" ref="//@typeDefinitions.1">
+      <mappings beanMethodName="triggerLog" serviceMethodName="process"/>
+    </provided>
+  </typeDefinitions>
+  <typeDefinitions xsi:type="kevoree:NodeType" name="JavaSENode" deployUnits="//@deployUnits.9" factoryBean="org.kevoree.library.defaultNodeTypes.JavaSENodeFactory" bean="org.kevoree.library.defaultNodeTypes.JavaSENode" startMethod="startNode" stopMethod="stopNode" managedPrimitiveTypes="//@adaptationPrimitiveTypes.0 //@adaptationPrimitiveTypes.1 //@adaptationPrimitiveTypes.2 //@adaptationPrimitiveTypes.3 //@adaptationPrimitiveTypes.4 //@adaptationPrimitiveTypes.5 //@adaptationPrimitiveTypes.6 //@adaptationPrimitiveTypes.7 //@adaptationPrimitiveTypes.8 //@adaptationPrimitiveTypes.9 //@adaptationPrimitiveTypes.10 //@adaptationPrimitiveTypes.11 //@adaptationPrimitiveTypes.12 //@adaptationPrimitiveTypes.13 //@adaptationPrimitiveTypes.14 //@adaptationPrimitiveTypes.15 //@adaptationPrimitiveTypes.16 //@adaptationPrimitiveTypes.17">
+    <dictionaryType>
+      <attributes name="autodiscovery" optional="true" datatype="enum=true,false"/>
+      <defaultValues attribute="//@typeDefinitions.13/@dictionaryType/@attributes.0" value="true"/>
+    </dictionaryType>
+  </typeDefinitions>
+  <repositories units="//@deployUnits.0 //@deployUnits.1 //@deployUnits.2 //@deployUnits.3 //@deployUnits.5 //@deployUnits.6 //@deployUnits.7" url="http://maven.kevoree.org/libs-release-local"/>
+  <repositories url="http://scala-tools.org/repo-releases"/>
+  <repositories url="http://maven.kevoree.org/release"/>
+  <repositories url="http://repo1.maven.org/maven2"/>
+  <repositories url="http://mirrors.ibiblio.org/pub/mirrors/maven2"/>
+  <repositories units="//@deployUnits.9" url="http://maven.kevoree.org/archiva/repository/snapshots/"/>
+  <repositories url="http://maven.kevoree.org/snapshots"/>
+  <libraries name="Kevoree-Components" subTypes="//@typeDefinitions.0 //@typeDefinitions.3 //@typeDefinitions.4"/>
+  <libraries name="Kevoree-Android-JavaSE" subTypes="//@typeDefinitions.5 //@typeDefinitions.6 //@typeDefinitions.7 //@typeDefinitions.8 //@typeDefinitions.9 //@typeDefinitions.10 //@typeDefinitions.11 //@typeDefinitions.12"/>
+  <hubs name="hub2062167001" typeDefinition="//@typeDefinitions.6"/>
+  <hubs name="hub568055263" typeDefinition="//@typeDefinitions.6"/>
+  <mBindings port="//@nodes.0/@components.0/@provided.0" hub="//@hubs.0"/>
+  <mBindings port="//@nodes.0/@components.0/@provided.1" hub="//@hubs.1"/>
+  <mBindings port="//@nodes.0/@components.1/@required.0" hub="//@hubs.1"/>
+  <mBindings port="//@nodes.0/@components.1/@required.1" hub="//@hubs.0"/>
+  <deployUnits groupName="org.kevoree.library" unitName="org.kevoree.library.fakeDomo" version="1.1.0-BETA2" hashcode="201104111646987" targetNodeType="//@typeDefinitions.13"/>
+  <deployUnits groupName="org.kevoree.library" unitName="org.kevoree.library.defaultChannels" version="1.1.0-BETA2" hashcode="201104111645048" targetNodeType="//@typeDefinitions.13"/>
+  <deployUnits groupName="org.kevoree.library" unitName="org.kevoree.library.defaultNodeTypes" version="1.1.0-BETA2" hashcode="201104111644375" targetNodeType="//@typeDefinitions.13"/>
+  <deployUnits groupName="org.kevoree.library" unitName="org.kevoree.library.gossiper" version="1.1.0-BETA2" hashcode="201104111645078" requiredLibs="//@deployUnits.4" targetNodeType="//@typeDefinitions.13"/>
+  <deployUnits name="org.kevoree.extra.marshalling" url="mvn:org.kevoree.extra/org.kevoree.extra.marshalling" targetNodeType="//@typeDefinitions.13"/>
+  <deployUnits groupName="org.kevoree.library" unitName="org.kevoree.library.restChannels" version="1.1.0-BETA2" hashcode="201104111646986" requiredLibs="//@deployUnits.4" targetNodeType="//@typeDefinitions.13"/>
+  <deployUnits groupName="org.kevoree.library" unitName="org.kevoree.library.xmpp" version="1.1.0-BETA2" hashcode="201104111646994" requiredLibs="//@deployUnits.4" targetNodeType="//@typeDefinitions.13"/>
+  <deployUnits groupName="org.kevoree.library" unitName="org.kevoree.library.logger.android" version="1.1.0-BETA2" hashcode="201104111647225" requiredLibs="//@deployUnits.8" targetNodeType="//@typeDefinitions.13"/>
+  <deployUnits name="com.google.android.android" url="mvn:com.google.android/android/2.2.1" targetNodeType="//@typeDefinitions.13"/>
+  <deployUnits groupName="org.kevoree.library.javase" unitName="org.kevoree.library.javase.javaseNode" version="1.3.0-SNAPSHOT" hashcode="201109211932325" targetNodeType="//@typeDefinitions.13"/>
+  <adaptationPrimitiveTypes name="UpdateType"/>
+  <adaptationPrimitiveTypes name="UpdateDeployUnit"/>
+  <adaptationPrimitiveTypes name="AddType"/>
+  <adaptationPrimitiveTypes name="AddDeployUnit"/>
+  <adaptationPrimitiveTypes name="AddThirdParty"/>
+  <adaptationPrimitiveTypes name="RemoveType"/>
+  <adaptationPrimitiveTypes name="RemoveDeployUnit"/>
+  <adaptationPrimitiveTypes name="UpdateInstance"/>
+  <adaptationPrimitiveTypes name="UpdateBinding"/>
+  <adaptationPrimitiveTypes name="UpdateDictionaryInstance"/>
+  <adaptationPrimitiveTypes name="AddInstance"/>
+  <adaptationPrimitiveTypes name="RemoveInstance"/>
+  <adaptationPrimitiveTypes name="AddBinding"/>
+  <adaptationPrimitiveTypes name="RemoveBinding"/>
+  <adaptationPrimitiveTypes name="AddFragmentBinding"/>
+  <adaptationPrimitiveTypes name="RemoveFragmentBinding"/>
+  <adaptationPrimitiveTypes name="StartInstance"/>
+  <adaptationPrimitiveTypes name="StopInstance"/>
+</kevoree:ContainerRoot>

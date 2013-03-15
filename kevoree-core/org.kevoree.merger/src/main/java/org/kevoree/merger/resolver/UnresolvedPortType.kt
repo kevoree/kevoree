@@ -30,6 +30,7 @@ import org.kevoree.impl.PortTypeInternal
  */
 class UnresolvedPortType(val unresolvedPortName: String): PortTypeInternal {
 
+    override var internal_recursive_readOnlyElem: Boolean = false
     override var _factoryBean: String = ""
     override var _bean: String = ""
     override var _nature: String = ""
