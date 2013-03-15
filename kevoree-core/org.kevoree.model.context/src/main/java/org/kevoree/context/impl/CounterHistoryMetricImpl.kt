@@ -72,7 +72,7 @@ class CounterHistoryMetricImpl: CounterHistoryMetric, CounterHistoryMetricIntern
 
 
     override fun removeValues(value: MetricValue) {
-        if (ll.size != 0 && _values.get(value.getTimestamp())!=null) {
+        if (ll.size != 0 && _values.get(value.getTimestamp()) != null) {
             ll.remove(value)
         }
 
