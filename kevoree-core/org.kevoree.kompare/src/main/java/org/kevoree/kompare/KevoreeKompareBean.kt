@@ -41,6 +41,10 @@ class KevoreeKompareBean: Kompare2, KevoreeScheduler {
 
         //TRANSFORME UPDATE
         for(adaptation in currentAdaptModel.getAdaptations()){
+
+
+            println(adaptation.getRef().toString()+"->"+adaptation.getPrimitiveType())
+
             when(adaptation.getPrimitiveType()!!.getName()) {
                 JavaSePrimitive.UpdateType -> {
                     val rcmd = adaptationModelFactory.createAdaptationPrimitive()
