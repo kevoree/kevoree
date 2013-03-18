@@ -405,8 +405,8 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
                         nodeInstance?.startNode()
                         //SET CURRENT MODEL
 
-                        //model = DefaultKevoreeFactory().createContainerRoot();
-
+                       model = DefaultKevoreeFactory().createContainerRoot();
+                       /*
                         model = modelCloner.clone(currentModel)!!
                         model.removeAllGroups()
                         model.removeAllHubs()
@@ -418,6 +418,7 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
                         }
                         model.getNodes().get(0).removeAllComponents()
                         model.getNodes().get(0).removeAllHosts()
+                        */
 
                     } else {
                         logger.error("TypeDef installation fail !")
