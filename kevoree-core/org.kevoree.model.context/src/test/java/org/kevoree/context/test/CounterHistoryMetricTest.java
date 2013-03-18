@@ -19,6 +19,9 @@ import org.kevoree.context.impl.DefaultContextFactory;
 
 import java.util.Random;
 
+import static org.junit.Assert.assertTrue;
+
+
 /**
  * Created with IntelliJ IDEA.
  * User: duke
@@ -45,19 +48,25 @@ public class CounterHistoryMetricTest {
         assert(comp);
 
         MetricValue mv = (MetricValue) model.findByPath("perf/cpu/{node42}/last[]");
-        assert (mv != null);
+        System.out.println("MV Path:: "+mv.path());
+        assertTrue("mv is null", mv != null);
 
-        System.out.println("path"+mv.path());
+        MetricValue mv2 = (MetricValue) model.findByPath(mv.path());
+        assertTrue(mv2 != null);
+        //assertTrue("mv not equal to mv2.  MV[ts:"+mv.getTimestamp()+", value:"+mv.getValue()+"] MV2[ts:"+mv2.getTimestamp()+", value:"+mv2.getValue()+"]",mv.equals(mv2));
 
-        boolean comp2 = mv.path().equals("context[perf]/types[cpu]/metrics[node42]/last["+mv.getTimestamp()+"]");
+
+
+
+        boolean comp2 = mv.path().equals("context[perf]/types[cpu]/metrics[node42]/values["+mv.getTimestamp()+"]");
         assert(comp2);
 
         PutHelper.getMetric(model,"perf/latency/{nodes[node0]/components[srv]}",PutHelper.getParam().setMetricTypeClazzName(CounterHistoryMetric.class.getName()).setNumber(100));
 
 
         PutHelper.addValue(model,"perf/cpu/{node42}","1000");
-        MetricValue mv2 = (MetricValue) model.findByPath("perf/cpu/{node42}/last[]");
-        assert (mv2.getValue().equals("1000"));
+        MetricValue mv3 = (MetricValue) model.findByPath("perf/cpu/{node42}/last[]");
+        assert (mv3.getValue().equals("1000"));
 
 
 

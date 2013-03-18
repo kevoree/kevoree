@@ -48,6 +48,7 @@ class UnresolvedTypeDefinition(val typeDefinitionName : String) : TypeDefinition
     override var internal_readOnlyElem: Boolean = false
     override var internal_unsetCmd: (() -> Unit)? = null
     override var internal_eContainer: KevoreeContainer? = null
+    override var internal_containmentRefName: String? = null
     override val _superTypes: HashMap<Any, TypeDefinition> = HashMap<Any, TypeDefinition>()
     override var _superTypes_java_cache: List<TypeDefinition>? = null
     override var _dictionaryType: DictionaryType? = null

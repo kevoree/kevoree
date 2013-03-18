@@ -41,6 +41,7 @@ class UnresolvedPortType(val unresolvedPortName: String): PortTypeInternal {
     override val _superTypes: HashMap<Any, TypeDefinition> = HashMap<Any, TypeDefinition>()
     override var _name: String = ""
     override var internal_eContainer: KevoreeContainer? = null
+    override var internal_containmentRefName: String? = null
     override var internal_unsetCmd: (() -> Unit)? = null
     override var internal_readOnlyElem: Boolean = false
     override var _synchrone: Boolean = false
