@@ -28,6 +28,7 @@ import java.util.Collections
 class CounterHistoryMetricImpl: CounterHistoryMetric, CounterHistoryMetricInternal {
 
     override var internal_eContainer: ContextContainer? = null
+    override var internal_containmentRefName: String? = null
     override var internal_unsetCmd: (()->Unit)? = null
     override var internal_readOnlyElem: Boolean = false
     override var internal_recursive_readOnlyElem = false
@@ -48,11 +49,20 @@ class CounterHistoryMetricImpl: CounterHistoryMetric, CounterHistoryMetricIntern
     private val ll = java.util.LinkedList<MetricValue>()
 
     override fun addValues(v: MetricValue) {
+
+        //IMPORTED FROM SUPER :: Kotlin compiler workaround
+        if(isReadOnly()){throw Exception("This model is ReadOnly. Elements are not modifiable.")}
+        _values_java_cache=null
+        (v as org.kevoree.context.impl.ContextContainerInternal).setEContainer(this,{()->this.removeValues(v)})
+        (v as org.kevoree.context.impl.ContextContainerInternal).setContainmentRefName("values")
+        _values.put(v.getTimestamp(),v)
+        //END IMPORTED FROM SUPER :: Kotlin compiler workaround
+
         if (ll.size >= getNumber() && !ll.isEmpty()) {
+            _values.remove(ll.getFirst())
             ll.removeFirst()
         }
         ll.addLast(v)
-        (v as MetricValueInternal).setEContainer(this, {() -> { this.removeValues(v) } })
         try {
             val sumE = java.lang.Double.parseDouble(v.getValue())
             setSum(getSum() + sumE)
@@ -60,11 +70,22 @@ class CounterHistoryMetricImpl: CounterHistoryMetric, CounterHistoryMetricIntern
         }
     }
 
-    override fun removeValues(values: MetricValue) {
-        if (ll.size != 0 && ll.contains(values.getTimestamp())) {
-            ll.remove(values.getTimestamp())
-            (values as MetricValueInternal).setEContainer(null, null)
+
+    override fun removeValues(value: MetricValue) {
+        if (ll.size != 0 && _values.get(value.getTimestamp()) != null) {
+            ll.remove(value)
         }
+
+        //IMPORTED FROM SUPER :: Kotlin compiler workaround
+        if(isReadOnly()){throw Exception("This model is ReadOnly. Elements are not modifiable.")}
+        _values_java_cache=null
+        if(_values.size() != 0 && _values.containsKey(value.getTimestamp())) {
+            _values.remove(value.getTimestamp())
+            (value!! as org.kevoree.context.impl.ContextContainerInternal).setEContainer(null,null)
+            (value!! as org.kevoree.context.impl.ContextContainerInternal).setContainmentRefName(null)
+        }
+        //END IMPORTED FROM SUPER :: Kotlin compiler workaround
+
     }
 
     override fun getFirst(): MetricValue? {
@@ -76,12 +97,10 @@ class CounterHistoryMetricImpl: CounterHistoryMetric, CounterHistoryMetricIntern
     }
 
     override fun setFirst(first: MetricValue?) {
-        null
+        throw Exception("First attribute is computed on add method")
     }
 
     override fun getLast(): MetricValue? {
-        println("Last !!")
-
         if (ll.isEmpty()) {
             return null
         } else {
@@ -90,7 +109,7 @@ class CounterHistoryMetricImpl: CounterHistoryMetric, CounterHistoryMetricIntern
     }
 
     override fun setLast(last: MetricValue?) {
-        null
+        throw Exception("Last attribute is computed on add method")
     }
 
     override fun getValues(): List<MetricValue> {

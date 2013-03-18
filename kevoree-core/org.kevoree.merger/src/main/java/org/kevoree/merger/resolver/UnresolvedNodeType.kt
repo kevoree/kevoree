@@ -63,6 +63,7 @@ class UnresolvedNodeType(val unresolvedNodeTypeName: String): NodeTypeInternal {
     override var _updateMethod: String = ""
     override var _name: String = ""
     override var internal_eContainer: KevoreeContainer? = null
+    override var internal_containmentRefName: String? = null
     override var internal_unsetCmd: (() -> Unit)? = null
     override var internal_readOnlyElem: Boolean = false
     override fun getName(): String {

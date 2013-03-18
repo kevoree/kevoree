@@ -42,6 +42,7 @@ import org.kevoree.impl.DictionaryAttributeInternal
 class UnresolvedDictionaryAttribute(val attributeName: String): DictionaryAttributeInternal {
     override var internal_recursive_readOnlyElem: Boolean = false
     override var internal_eContainer: KevoreeContainer? = null
+    override var internal_containmentRefName: String? = null
     override var internal_readOnlyElem: Boolean = false
     override var internal_unsetCmd: (() -> Unit)? = null
     override var _name: String = ""
