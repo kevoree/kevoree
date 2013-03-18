@@ -42,10 +42,10 @@ class BootKloudTest extends AssertionsForJUnit with KompareSuite {
     var kompareModel = component.kompare(model("test_instance/preThirdParty.kev"), model("test_instance/postThirdParty.kev"), "node0")
     kompareModel.print
   }
-    /*
+
   @Test def verify() {
-    var kompareModel = component.kompare(emptyModel, KevoreeXmiHelper.$instance.load("/var/folders/dq/_bgn79zj25n9w8jbs3x228l80000gn/T/bootModelnode14793899140134410087.kev"), "node1")
+    var kompareModel = component.kompare(emptyModel, model("test_instance/editor_klout.kev"), "editor_node")
     kompareModel.print
-  } */
+  }
 
 }
