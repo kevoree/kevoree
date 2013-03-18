@@ -369,6 +369,8 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
             if (nodeInstance != null) {
                 val foundNode = currentModel.findByPath("nodes[" + getNodeName() + "]", javaClass<ContainerNode>())
                 if(foundNode != null){
+
+                    /*
                     val modelTmp = modelCloner.clone(currentModel)!!
                     modelTmp.removeAllGroups()
                     modelTmp.removeAllHubs()
@@ -380,7 +382,8 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
                     }
                     modelTmp.getNodes().get(0).removeAllComponents()
                     modelTmp.getNodes().get(0).removeAllHosts()
-                    return modelTmp
+                    return modelTmp */
+                    return DefaultKevoreeFactory().createContainerRoot();
                 } else {
                     logger.error("TypeDef installation fail !")
                     return null
