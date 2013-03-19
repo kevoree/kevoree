@@ -110,6 +110,13 @@ class SaveAsKevScript extends Command {
       }) + "'\n")
     }*/
 
+    currentModel.getNodes.foreach{
+      node =>
+      node.getTypeDefinition.getDeployUnits.foreach {
+        deployUnit =>
+          scriptBuffer.append("merge 'mvn:"+deployUnit.getGroupName+"/"+deployUnit.getUnitName+"/"+deployUnit.getVersion + "'\n")
+      }
+    }
 
 
 
