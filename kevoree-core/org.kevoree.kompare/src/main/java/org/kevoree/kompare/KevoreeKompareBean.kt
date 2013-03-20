@@ -25,27 +25,37 @@ class KevoreeKompareBean: Kompare2, KevoreeScheduler {
             logger.warn("Empty Kompare because "+nodeName+" not found in current nor in target model")
             return adaptationModel
         }
-
+        var dropActualNode = false
+        var dropNewNode = false
 
         //case empty Model
         if(actualLocalNode == null){
             actualLocalNode = factory.createContainerNode()
             actualLocalNode!!.setName(nodeName)
             actualModel.addNodes(actualLocalNode!!)
-
+            dropActualNode = true
             actualLocalNode!!.setTypeDefinition(updateLocalNode!!.getTypeDefinition())
 
         }
         //case empty Model
+
         if(updateLocalNode == null){
             updateLocalNode = factory.createContainerNode()
             updateLocalNode!!.setName(nodeName)
             targetModel.addNodes(updateLocalNode!!)
+            dropNewNode = true
             updateLocalNode!!.setTypeDefinition(actualLocalNode!!.getTypeDefinition())
 
         }
 
         val currentAdaptModel = getUpdateNodeAdaptationModel(actualLocalNode!!, updateLocalNode!!)
+
+        if(dropActualNode){
+            actualModel.removeNodes(actualLocalNode!!)
+        }
+        if(dropNewNode){
+            targetModel.removeNodes(updateLocalNode!!)
+        }
 
         //TRANSFORME UPDATE
         for(adaptation in currentAdaptModel.getAdaptations()){
