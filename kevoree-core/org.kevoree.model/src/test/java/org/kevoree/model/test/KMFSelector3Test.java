@@ -65,7 +65,9 @@ public class KMFSelector3Test {
         }
         System.out.println((System.nanoTime() - beganS) / 1000);
         System.out.println(fConsole.getName());
-        System.out.println(model.findByPath("nodes[node6]/hosts[node7]"));
+        System.out.println("-"+model.findByPath("nodes[node6]/hosts[node7]"));
+
+        System.out.println(">"+model.selectByQuery("nodes[node6]/hosts[node7]"));
 
 
         assert (fConsole.getName().equals("FakeConso380"));

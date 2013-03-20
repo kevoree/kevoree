@@ -4,8 +4,11 @@ import org.kevoree.*
 import org.kevoreeAdaptation.*
 import org.kevoree.kompare.sub.Kompare2
 import org.kevoree.impl.DefaultKevoreeFactory
+import org.slf4j.LoggerFactory
 
 class KevoreeKompareBean: Kompare2, KevoreeScheduler {
+
+    val logger = LoggerFactory.getLogger(this.javaClass)!!
 
     override var adaptationModelFactory: KevoreeAdaptationFactory = org.kevoreeAdaptation.impl.DefaultKevoreeAdaptationFactory()
 
@@ -16,28 +19,43 @@ class KevoreeKompareBean: Kompare2, KevoreeScheduler {
         val adaptationModel = adaptationModelFactory.createAdaptationModel()
         //STEP 0 - FOUND LOCAL NODE
         var actualLocalNode = actualModel.findByPath("nodes[" + nodeName + "]", javaClass<ContainerNode>())
-
         var updateLocalNode = targetModel.findByPath("nodes[" + nodeName + "]", javaClass<ContainerNode>())
+
+        if(actualLocalNode == null && updateLocalNode == null){
+            logger.warn("Empty Kompare because "+nodeName+" not found in current nor in target model")
+            return adaptationModel
+        }
+        var dropActualNode = false
+        var dropNewNode = false
 
         //case empty Model
         if(actualLocalNode == null){
             actualLocalNode = factory.createContainerNode()
             actualLocalNode!!.setName(nodeName)
             actualModel.addNodes(actualLocalNode!!)
-
+            dropActualNode = true
             actualLocalNode!!.setTypeDefinition(updateLocalNode!!.getTypeDefinition())
 
         }
         //case empty Model
+
         if(updateLocalNode == null){
             updateLocalNode = factory.createContainerNode()
             updateLocalNode!!.setName(nodeName)
             targetModel.addNodes(updateLocalNode!!)
+            dropNewNode = true
             updateLocalNode!!.setTypeDefinition(actualLocalNode!!.getTypeDefinition())
 
         }
 
         val currentAdaptModel = getUpdateNodeAdaptationModel(actualLocalNode!!, updateLocalNode!!)
+
+        if(dropActualNode){
+            actualModel.removeNodes(actualLocalNode!!)
+        }
+        if(dropNewNode){
+            targetModel.removeNodes(updateLocalNode!!)
+        }
 
         //TRANSFORME UPDATE
         for(adaptation in currentAdaptModel.getAdaptations()){
