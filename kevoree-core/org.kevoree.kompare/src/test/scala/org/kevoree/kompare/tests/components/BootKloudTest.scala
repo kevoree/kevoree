@@ -48,4 +48,9 @@ class BootKloudTest extends AssertionsForJUnit with KompareSuite {
     kompareModel.print
   }
 
+  @Test def verify2() {
+    var kompareModel = component.kompare(model("test_instance/model0.kev"), model("test_instance/model1.kev"),"minicloud")
+    kompareModel.print
+  }
+
 }

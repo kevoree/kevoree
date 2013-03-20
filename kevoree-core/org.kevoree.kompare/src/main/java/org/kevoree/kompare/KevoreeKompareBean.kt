@@ -4,8 +4,11 @@ import org.kevoree.*
 import org.kevoreeAdaptation.*
 import org.kevoree.kompare.sub.Kompare2
 import org.kevoree.impl.DefaultKevoreeFactory
+import org.slf4j.LoggerFactory
 
 class KevoreeKompareBean: Kompare2, KevoreeScheduler {
+
+    val logger = LoggerFactory.getLogger(this.javaClass)!!
 
     override var adaptationModelFactory: KevoreeAdaptationFactory = org.kevoreeAdaptation.impl.DefaultKevoreeAdaptationFactory()
 
@@ -16,8 +19,13 @@ class KevoreeKompareBean: Kompare2, KevoreeScheduler {
         val adaptationModel = adaptationModelFactory.createAdaptationModel()
         //STEP 0 - FOUND LOCAL NODE
         var actualLocalNode = actualModel.findByPath("nodes[" + nodeName + "]", javaClass<ContainerNode>())
-
         var updateLocalNode = targetModel.findByPath("nodes[" + nodeName + "]", javaClass<ContainerNode>())
+
+        if(actualLocalNode == null && updateLocalNode == null){
+            logger.warn("Empty Kompare because "+nodeName+" not found in current nor in target model")
+            return adaptationModel
+        }
+
 
         //case empty Model
         if(actualLocalNode == null){
