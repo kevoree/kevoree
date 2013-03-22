@@ -1,0 +1,1117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kevoree:ContainerRoot xmlns:kevoree="http://kevoree/1.0" xmlns:xsi="http://wwww.w3.org/2001/XMLSchema-instance" xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xsi:type="kevoree:ContainerRoot">
+<nodes xsi:type="kevoree:ContainerNode" name="minicloud" metaData="x=50,y=50" typeDefinition="//@typeDefinitions.14">
+<dictionary>
+<values xsi:type="kevoree:DictionaryValue" value="DEBUG" attribute="//@typeDefinitions.14/@dictionaryType/@attributes.1">
+</values>
+</dictionary>
+<components xsi:type="kevoree:ComponentInstance" name="iaasPage" typeDefinition="//@typeDefinitions.4">
+<dictionary>
+<values xsi:type="kevoree:DictionaryValue" value="/" attribute="//@typeDefinitions.4/@dictionaryType/@attributes.0">
+</values>
+</dictionary>
+<provided xsi:type="kevoree:Port" bindings="//@mBindings.1" portTypeRef="//@typeDefinitions.4/@provided.0">
+</provided>
+<required xsi:type="kevoree:Port" bindings="//@mBindings.3" portTypeRef="//@typeDefinitions.4/@required.0">
+</required>
+<required xsi:type="kevoree:Port" portTypeRef="//@typeDefinitions.4/@required.1">
+</required>
+<required xsi:type="kevoree:Port" portTypeRef="//@typeDefinitions.4/@required.2">
+</required>
+</components>
+<components xsi:type="kevoree:ComponentInstance" name="webServer" typeDefinition="//@typeDefinitions.54">
+<dictionary>
+<values xsi:type="kevoree:DictionaryValue" value="8080" attribute="//@typeDefinitions.54/@dictionaryType/@attributes.0">
+</values>
+<values xsi:type="kevoree:DictionaryValue" value="5000" attribute="//@typeDefinitions.54/@dictionaryType/@attributes.1">
+</values>
+</dictionary>
+<provided xsi:type="kevoree:Port" bindings="//@mBindings.2" portTypeRef="//@typeDefinitions.54/@provided.0">
+</provided>
+<required xsi:type="kevoree:Port" bindings="//@mBindings.0" portTypeRef="//@typeDefinitions.54/@required.0">
+</required>
+</components>
+</nodes>
+<typeDefinitions xsi:type="kevoree:ComponentType" name="FileExplorer" factoryBean="org.kevoree.library.ui.fileExplorer.FileExplorerFactory" bean="org.kevoree.library.ui.fileExplorer.FileExplorer" startMethod="start" stopMethod="stop" updateMethod="update" deployUnits="//@deployUnits.37">
+<dictionaryType>
+<attributes xsi:type="kevoree:DictionaryAttribute" name="basedir" optional="true" state="false" fragmentDependant="false">
+</attributes>
+</dictionaryType>
+<required xsi:type="kevoree:PortTypeRef" name="fileurl" optional="true" noDependency="true" ref="//@typeDefinitions.19">
+</required>
+</typeDefinitions>
+<typeDefinitions xsi:type="kevoree:ServicePortType" name="org.kevoree.library.sky.provider.api.PaaSService" synchrone="false">
+<operations xsi:type="kevoree:Operation" name="getModel" returnType="//@dataTypes.3">
+<parameters xsi:type="kevoree:Parameter" name="arg0" order="0" type="//@dataTypes.1">
+</parameters>
+</operations>
+<operations xsi:type="kevoree:Operation" name="remove" returnType="//@dataTypes.2">
+<parameters xsi:type="kevoree:Parameter" name="arg1" order="1" type="//@dataTypes.3">
+</parameters>
+<parameters xsi:type="kevoree:Parameter" name="arg0" order="0" type="//@dataTypes.1">
+</parameters>
+</operations>
+<operations xsi:type="kevoree:Operation" name="merge" returnType="//@dataTypes.2">
+<parameters xsi:type="kevoree:Parameter" name="arg1" order="1" type="//@dataTypes.3">
+</parameters>
+<parameters xsi:type="kevoree:Parameter" name="arg0" order="0" type="//@dataTypes.1">
+</parameters>
+</operations>
+<operations xsi:type="kevoree:Operation" name="add" returnType="//@dataTypes.2">
+<parameters xsi:type="kevoree:Parameter" name="arg1" order="1" type="//@dataTypes.3">
+</parameters>
+<parameters xsi:type="kevoree:Parameter" name="arg0" order="0" type="//@dataTypes.1">
+</parameters>
+</operations>
+</typeDefinitions>
+<typeDefinitions xsi:type="kevoree:ComponentType" name="FakeReasoner" factoryBean="org.kevoree.library.FakeReasonerFactory" bean="org.kevoree.library.FakeReasoner" startMethod="start" stopMethod="stop" deployUnits="//@deployUnits.43">
+</typeDefinitions>
+<typeDefinitions xsi:type="kevoree:GroupType" name="BasicGossiperGroup" factoryBean="org.kevoree.library.javase.basicGossiper.group.BasicGossiperGroupFactory" bean="org.kevoree.library.javase.basicGossiper.group.BasicGossiperGroup" startMethod="startGossiperGroup" stopMethod="stopGossiperGroup" updateMethod="updateGossiperGroup" deployUnits="//@deployUnits.25" superTypes="//@typeDefinitions.15">
+<dictionaryType>
+<attributes xsi:type="kevoree:DictionaryAttribute" name="port" optional="true" state="false" fragmentDependant="true">
+</attributes>
+<attributes xsi:type="kevoree:DictionaryAttribute" name="interval" optional="true" state="false" fragmentDependant="false">
+</attributes>
+<attributes xsi:type="kevoree:DictionaryAttribute" name="ssl" optional="false" state="false" datatype="enum=true,false" fragmentDependant="false">
+</attributes>
+<attributes xsi:type="kevoree:DictionaryAttribute" name="ip" optional="true" state="false" fragmentDependant="true">
+</attributes>
+<defaultValues xsi:type="kevoree:DictionaryValue" value="8000" attribute="//@typeDefinitions.3/@dictionaryType/@attributes.0">
+</defaultValues>
+<defaultValues xsi:type="kevoree:DictionaryValue" value="0.0.0.0" attribute="//@typeDefinitions.3/@dictionaryType/@attributes.3">
+</defaultValues>
+<defaultValues xsi:type="kevoree:DictionaryValue" value="false" attribute="//@typeDefinitions.3/@dictionaryType/@attributes.2">
+</defaultValues>
+<defaultValues xsi:type="kevoree:DictionaryValue" value="20000" attribute="//@typeDefinitions.3/@dictionaryType/@attributes.1">
+</defaultValues>
+</dictionaryType>
+</typeDefinitions>
+<typeDefinitions xsi:type="kevoree:ComponentType" name="IaaSKloudResourceManagerPage" factoryBean="org.kevoree.library.sky.provider.web.IaaSKloudResourceManagerPageFactory" bean="org.kevoree.library.sky.provider.web.IaaSKloudResourceManagerPage" startMethod="startPage" stopMethod="stopPage" updateMethod="updatePage" deployUnits="//@deployUnits.31">
+<dictionaryType>
+<attributes xsi:type="kevoree:DictionaryAttribute" name="urlpattern" optional="true" state="false" fragmentDependant="false">
+</attributes>
+<defaultValues xsi:type="kevoree:DictionaryValue" value="/" attribute="//@typeDefinitions.4/@dictionaryType/@attributes.0">
+</defaultValues>
+</dictionaryType>
+<required xsi:type="kevoree:PortTypeRef" name="content" optional="false" noDependency="true" ref="//@typeDefinitions.59">
+</required>
+<required xsi:type="kevoree:PortTypeRef" name="forward" optional="true" noDependency="true" ref="//@typeDefinitions.59">
+</required>
+<required xsi:type="kevoree:PortTypeRef" name="delegate" optional="true" noDependency="true" ref="//@typeDefinitions.35">
+</required>
+<provided xsi:type="kevoree:PortTypeRef" name="request" optional="false" noDependency="false" ref="//@typeDefinitions.59">
+<mappings xsi:type="kevoree:PortTypeMapping" beanMethodName="requestHandler" serviceMethodName="process">
+</mappings>
+<mappings xsi:type="kevoree:PortTypeMapping" beanMethodName="requestHandler" serviceMethodName="process">
+</mappings>
+</provided>
+</typeDefinitions>
+<typeDefinitions xsi:type="kevoree:ChannelType" name="WebSocketChannel" factoryBean="org.kevoree.library.javase.webSocketGrp.channel.WebSocketChannelFactory" bean="org.kevoree.library.javase.webSocketGrp.channel.WebSocketChannel" startMethod="startChannel" stopMethod="stopChannel" updateMethod="updateChannel" lowerBindings="0" upperBindings="0" lowerFragments="0" upperFragments="0" deployUnits="//@deployUnits.27">
+<dictionaryType>
+<attributes xsi:type="kevoree:DictionaryAttribute" name="port" optional="false" state="false" fragmentDependant="true">
+</attributes>
+<defaultValues xsi:type="kevoree:DictionaryValue" value="8000" attribute="//@typeDefinitions.5/@dictionaryType/@attributes.0">
+</defaultValues>
+</dictionaryType>
+</typeDefinitions>
+<typeDefinitions xsi:type="kevoree:ComponentType" name="PaaSKloudResourceManagerPage" factoryBean="org.kevoree.library.sky.provider.web.PaaSKloudResourceManagerPageFactory" bean="org.kevoree.library.sky.provider.web.PaaSKloudResourceManagerPage" startMethod="startPage" stopMethod="stopPage" updateMethod="updatePage" deployUnits="//@deployUnits.31">
+<dictionaryType>
+<attributes xsi:type="kevoree:DictionaryAttribute" name="urlpattern" optional="true" state="false" fragmentDependant="false">
+</attributes>
+<defaultValues xsi:type="kevoree:DictionaryValue" value="/" attribute="//@typeDefinitions.6/@dictionaryType/@attributes.0">
+</defaultValues>
+</dictionaryType>
+<required xsi:type="kevoree:PortTypeRef" name="content" optional="false" noDependency="true" ref="//@typeDefinitions.59">
+</required>
+<required xsi:type="kevoree:PortTypeRef" name="forward" optional="true" noDependency="true" ref="//@typeDefinitions.59">
+</required>
+<required xsi:type="kevoree:PortTypeRef" name="delegate" optional="false" noDependency="true" ref="//@typeDefinitions.50">
+</required>
+<provided xsi:type="kevoree:PortTypeRef" name="request" optional="false" noDependency="false" ref="//@typeDefinitions.59">
+<mappings xsi:type="kevoree:PortTypeMapping" beanMethodName="requestHandler" serviceMethodName="process">
+</mappings>
+<mappings xsi:type="kevoree:PortTypeMapping" beanMethodName="requestHandler" serviceMethodName="process">
+</mappings>
+</provided>
+</typeDefinitions>
+<typeDefinitions xsi:type="kevoree:ComponentType" name="VideoViewerImageRecorder" factoryBean="org.kevoree.library.ui.player.VideoViewerImageRecorderFactory" bean="org.kevoree.library.ui.player.VideoViewerImageRecorder" startMethod="start" stopMethod="stop" updateMethod="update" deployUnits="//@deployUnits.37">
+<dictionaryType>
+<attributes xsi:type="kevoree:DictionaryAttribute" name="image_folder" optional="true" state="false" fragmentDependant="false">
+</attributes>
+<attributes xsi:type="kevoree:DictionaryAttribute" name="FPS" optional="true" state="false" datatype="enum=1,10,15,24,30" fragmentDependant="false">
+</attributes>
+<defaultValues xsi:type="kevoree:DictionaryValue" value="10" attribute="//@typeDefinitions.7/@dictionaryType/@attributes.1">
+</defaultValues>
+</dictionaryType>
+<provided xsi:type="kevoree:PortTypeRef" name="image" optional="false" noDependency="false" ref="//@typeDefinitions.17">
+<mappings xsi:type="kevoree:PortTypeMapping" beanMethodName="onReceiveImage" serviceMethodName="process">
+</mappings>
+<mappings xsi:type="kevoree:PortTypeMapping" beanMethodName="onReceiveImage" serviceMethodName="process">
+</mappings>
+</provided>
+</typeDefinitions>
+<typeDefinitions xsi:type="kevoree:NodeType" name="PMiniCloudNode" factoryBean="org.kevoree.library.sky.minicloud.nodeType.PMiniCloudNodeFactory" bean="org.kevoree.library.sky.minicloud.nodeType.PMiniCloudNode" startMethod="startNode" stopMethod="stopNode" updateMethod="updateNode" deployUnits="//@deployUnits.22" superTypes="//@typeDefinitions.12 //@typeDefinitions.14" managedPrimitiveTypes="//@adaptationPrimitiveTypes.0 //@adaptationPrimitiveTypes.2 //@adaptationPrimitiveTypes.1 //@adaptationPrimitiveTypes.3 //@adaptationPrimitiveTypes.4 //@adaptationPrimitiveTypes.6 //@adaptationPrimitiveTypes.5 //@adaptationPrimitiveTypes.7 //@adaptationPrimitiveTypes.8 //@adaptationPrimitiveTypes.9 //@adaptationPrimitiveTypes.10 //@adaptationPrimitiveTypes.11 //@adaptationPrimitiveTypes.12 //@adaptationPrimitiveTypes.13 //@adaptationPrimitiveTypes.14 //@adaptationPrimitiveTypes.15 //@adaptationPrimitiveTypes.16 //@adaptationPrimitiveTypes.17 //@adaptationPrimitiveTypes.18 //@adaptationPrimitiveTypes.19 //@adaptationPrimitiveTypes.20 //@adaptationPrimitiveTypes.21 //@adaptationPrimitiveTypes.22">
+<dictionaryType>
+<attributes xsi:type="kevoree:DictionaryAttribute" name="DISK_SIZE" optional="true" state="false" fragmentDependant="false">
+</attributes>
+<attributes xsi:type="kevoree:DictionaryAttribute" name="coreLogLevel" optional="true" state="false" datatype="enum=INFO,WARN,DEBUG,ERROR,FINE" fragmentDependant="false">
+</attributes>
+<attributes xsi:type="kevoree:DictionaryAttribute" name="CPU_CORE" optional="true" state="false" fragmentDependant="false">
+</attributes>
+<attributes xsi:type="kevoree:DictionaryAttribute" name="ARCH" optional="true" state="false" fragmentDependant="false">
+</attributes>
+<attributes xsi:type="kevoree:DictionaryAttribute" name="RAM" optional="true" state="false" fragmentDependant="false">
+</attributes>
+<attributes xsi:type="kevoree:DictionaryAttribute" name="VMARGS" optional="true" state="false" fragmentDependant="false">
+</attributes>
+<attributes xsi:type="kevoree:DictionaryAttribute" name="logLevel" optional="true" state="false" datatype="enum=INFO,WARN,DEBUG,ERROR,FINE" fragmentDependant="false">
+</attributes>
+<attributes xsi:type="kevoree:DictionaryAttribute" name="CPU_FREQUENCY" optional="true" state="false" fragmentDependant="false">
+</attributes>
+<attributes xsi:type="kevoree:DictionaryAttribute" name="OS" optional="true" state="false" fragmentDependant="false">
+</attributes>
+<attributes xsi:type="kevoree:DictionaryAttribute" name="role" optional="true" state="false" datatype="enum=host,container,host/container" fragmentDependant="false">
+</attributes>
+<attributes xsi:type="kevoree:DictionaryAttribute" name="log_folder" optional="true" state="false" fragmentDependant="false">
+</attributes>
+<attributes xsi:type="kevoree:DictionaryAttribute" name="WALLCLOCKTIME" optional="true" state="false" fragmentDependant="false">
+</attributes>
+<defaultValues xsi:type="kevoree:DictionaryValue" value="INFO" attribute="//@typeDefinitions.8/@dictionaryType/@attributes.6">
+</defaultValues>
+<defaultValues xsi:type="kevoree:DictionaryValue" value="WARN" attribute="//@typeDefinitions.8/@dictionaryType/@attributes.1">
+</defaultValues>
+<defaultValues xsi:type="kevoree:DictionaryValue" value="host/container" attribute="//@typeDefinitions.8/@dictionaryType/@attributes.9">
+</defaultValues>
+<defaultValues xsi:type="kevoree:DictionaryValue" value="/tmp" attribute="//@typeDefinitions.8/@dictionaryType/@attributes.10">
+</defaultValues>
+<defaultValues xsi:type="kevoree:DictionaryValue" value="N/A" attribute="//@typeDefinitions.8/@dictionaryType/@attributes.3">
+</defaultValues>
+<defaultValues xsi:type="kevoree:DictionaryValue" value="N/A" attribute="//@typeDefinitions.8/@dictionaryType/@attributes.4">
+</defaultValues>
+<defaultValues xsi:type="kevoree:DictionaryValue" value="N/A" attribute="//@typeDefinitions.8/@dictionaryType/@attributes.2">
+</defaultValues>
+<defaultValues xsi:type="kevoree:DictionaryValue" value="N/A" attribute="//@typeDefinitions.8/@dictionaryType/@attributes.7">
+</defaultValues>
+<defaultValues xsi:type="kevoree:DictionaryValue" value="N/A" attribute="//@typeDefinitions.8/@dictionaryType/@attributes.8">
+</defaultValues>
+<defaultValues xsi:type="kevoree:DictionaryValue" value="N/A" attribute="//@typeDefinitions.8/@dictionaryType/@attributes.0">
+</defaultValues>
+<defaultValues xsi:type="kevoree:DictionaryValue" value="N/A" attribute="//@typeDefinitions.8/@dictionaryType/@attributes.11">
+</defaultValues>
+</dictionaryType>
+<managedPrimitiveTypeRefs xsi:type="kevoree:AdaptationPrimitiveTypeRef" maxTime="120000" ref="//@adaptationPrimitiveTypes.19">
+</managedPrimitiveTypeRefs>
+<managedPrimitiveTypeRefs xsi:type="kevoree:AdaptationPrimitiveTypeRef" maxTime="120000" ref="//@adaptationPrimitiveTypes.15">
+</managedPrimitiveTypeRefs>
+<managedPrimitiveTypeRefs xsi:type="kevoree:AdaptationPrimitiveTypeRef" maxTime="120000" ref="//@adaptationPrimitiveTypes.11">
+</managedPrimitiveTypeRefs>
+</typeDefinitions>
+<typeDefinitions xsi:type="kevoree:ComponentType" name="StaticFilesPage" factoryBean="org.kevoree.library.javase.webserver.sample.StaticFilesPageFactory" bean="org.kevoree.library.javase.webserver.sample.StaticFilesPage" startMethod="startPage" stopMethod="stopPage" updateMethod="updatePage" deployUnits="//@deployUnits.16">
+<dictionaryType>
+<attributes xsi:type="kevoree:DictionaryAttribute" name="urlpattern" optional="true" state="false" fragmentDependant="false">
+</attributes>
+<defaultValues xsi:type="kevoree:DictionaryValue" value="/" attribute="//@typeDefinitions.9/@dictionaryType/@attributes.0">
+</defaultValues>
+</dictionaryType>
+<required xsi:type="kevoree:PortTypeRef" name="content" optional="false" noDependency="true" ref="//@typeDefinitions.59">
+</required>
+<required xsi:type="kevoree:PortTypeRef" name="forward" optional="true" noDependency="true" ref="//@typeDefinitions.59">
+</required>
+<provided xsi:type="kevoree:PortTypeRef" name="request" optional="false" noDependency="false" ref="//@typeDefinitions.59">
+<mappings xsi:type="kevoree:PortTypeMapping" beanMethodName="requestHandler" serviceMethodName="process">
+</mappings>
+<mappings xsi:type="kevoree:PortTypeMapping" beanMethodName="requestHandler" serviceMethodName="process">
+</mappings>
+</provided>
+</typeDefinitions>
+<typeDefinitions xsi:type="kevoree:MessagePortType" name="org.kevoree.framework.MessagePort1363908362854" synchrone="false">
+<dictionaryType>
+<attributes xsi:type="kevoree:DictionaryAttribute" name="percent" optional="true" state="false" datatype="java.lang.Integer" fragmentDependant="false">
+</attributes>
+</dictionaryType>
+</typeDefinitions>
+<typeDefinitions xsi:type="kevoree:ComponentType" name="HelloWorldPage" factoryBean="org.kevoree.library.javase.webserver.sample.HelloWorldPageFactory" bean="org.kevoree.library.javase.webserver.sample.HelloWorldPage" startMethod="startPage" stopMethod="stopPage" updateMethod="updatePage" deployUnits="//@deployUnits.16">
+<dictionaryType>
+<attributes xsi:type="kevoree:DictionaryAttribute" name="urlpattern" optional="true" state="false" fragmentDependant="false">
+</attributes>
+<defaultValues xsi:type="kevoree:DictionaryValue" value="/" attribute="//@typeDefinitions.11/@dictionaryType/@attributes.0">
+</defaultValues>
+</dictionaryType>
+<required xsi:type="kevoree:PortTypeRef" name="content" optional="false" noDependency="true" ref="//@typeDefinitions.59">
+</required>
+<required xsi:type="kevoree:PortTypeRef" name="forward" optional="true" noDependency="true" ref="//@typeDefinitions.59">
+</required>
+<provided xsi:type="kevoree:PortTypeRef" name="request" optional="false" noDependency="false" ref="//@typeDefinitions.59">
+<mappings xsi:type="kevoree:PortTypeMapping" beanMethodName="requestHandler" serviceMethodName="process">
+</mappings>
+<mappings xsi:type="kevoree:PortTypeMapping" beanMethodName="requestHandler" serviceMethodName="process">
+</mappings>
+</provided>
+</typeDefinitions>
+<typeDefinitions xsi:type="kevoree:NodeType" name="MiniCloudNode" factoryBean="org.kevoree.library.sky.minicloud.nodeType.MiniCloudNodeFactory" bean="org.kevoree.library.sky.minicloud.nodeType.MiniCloudNode" startMethod="startNode" stopMethod="stopNode" updateMethod="updateNode" deployUnits="//@deployUnits.22" superTypes="//@typeDefinitions.14" managedPrimitiveTypes="//@adaptationPrimitiveTypes.0 //@adaptationPrimitiveTypes.2 //@adaptationPrimitiveTypes.1 //@adaptationPrimitiveTypes.3 //@adaptationPrimitiveTypes.4 //@adaptationPrimitiveTypes.6 //@adaptationPrimitiveTypes.5 //@adaptationPrimitiveTypes.7 //@adaptationPrimitiveTypes.8 //@adaptationPrimitiveTypes.9 //@adaptationPrimitiveTypes.10 //@adaptationPrimitiveTypes.11 //@adaptationPrimitiveTypes.12 //@adaptationPrimitiveTypes.13 //@adaptationPrimitiveTypes.14 //@adaptationPrimitiveTypes.15 //@adaptationPrimitiveTypes.16 //@adaptationPrimitiveTypes.17 //@adaptationPrimitiveTypes.18 //@adaptationPrimitiveTypes.19 //@adaptationPrimitiveTypes.20 //@adaptationPrimitiveTypes.21 //@adaptationPrimitiveTypes.22">
+<dictionaryType>
+<attributes xsi:type="kevoree:DictionaryAttribute" name="coreLogLevel" optional="true" state="false" datatype="enum=INFO,WARN,DEBUG,ERROR,FINE" fragmentDependant="false">
+</attributes>
+<attributes xsi:type="kevoree:DictionaryAttribute" name="VMARGS" optional="true" state="false" fragmentDependant="false">
+</attributes>
+<attributes xsi:type="kevoree:DictionaryAttribute" name="logLevel" optional="true" state="false" datatype="enum=INFO,WARN,DEBUG,ERROR,FINE" fragmentDependant="false">
+</attributes>
+<attributes xsi:type="kevoree:DictionaryAttribute" name="role" optional="true" state="false" datatype="enum=host,container,host/container" fragmentDependant="false">
+</attributes>
+<attributes xsi:type="kevoree:DictionaryAttribute" name="log_folder" optional="true" state="false" fragmentDependant="false">
+</attributes>
+<defaultValues xsi:type="kevoree:DictionaryValue" value="INFO" attribute="//@typeDefinitions.12/@dictionaryType/@attributes.2">
+</defaultValues>
+<defaultValues xsi:type="kevoree:DictionaryValue" value="WARN" attribute="//@typeDefinitions.12/@dictionaryType/@attributes.0">
+</defaultValues>
+<defaultValues xsi:type="kevoree:DictionaryValue" value="host/container" attribute="//@typeDefinitions.12/@dictionaryType/@attributes.3">
+</defaultValues>
+<defaultValues xsi:type="kevoree:DictionaryValue" value="/tmp" attribute="//@typeDefinitions.12/@dictionaryType/@attributes.4">
+</defaultValues>
+</dictionaryType>
+<managedPrimitiveTypeRefs xsi:type="kevoree:AdaptationPrimitiveTypeRef" maxTime="120000" ref="//@adaptationPrimitiveTypes.19">
+</managedPrimitiveTypeRefs>
+<managedPrimitiveTypeRefs xsi:type="kevoree:AdaptationPrimitiveTypeRef" maxTime="120000" ref="//@adaptationPrimitiveTypes.15">
+</managedPrimitiveTypeRefs>
+<managedPrimitiveTypeRefs xsi:type="kevoree:AdaptationPrimitiveTypeRef" maxTime="120000" ref="//@adaptationPrimitiveTypes.11">
+</managedPrimitiveTypeRefs>
+</typeDefinitions>
+<typeDefinitions xsi:type="kevoree:ServicePortType" name="org.kevoree.library.sky.provider.api.PaaSSlaveService" synchrone="false">
+<operations xsi:type="kevoree:Operation" name="getModel" returnType="//@dataTypes.3">
+</operations>
+</typeDefinitions>
+<typeDefinitions xsi:type="kevoree:NodeType" name="JavaSENode" factoryBean="org.kevoree.library.defaultNodeTypes.JavaSENodeFactory" bean="org.kevoree.library.defaultNodeTypes.JavaSENode" startMethod="startNode" stopMethod="stopNode" updateMethod="updateNode" deployUnits="//@deployUnits.0" managedPrimitiveTypes="//@adaptationPrimitiveTypes.0 //@adaptationPrimitiveTypes.2 //@adaptationPrimitiveTypes.1 //@adaptationPrimitiveTypes.3 //@adaptationPrimitiveTypes.6 //@adaptationPrimitiveTypes.5 //@adaptationPrimitiveTypes.7 //@adaptationPrimitiveTypes.8 //@adaptationPrimitiveTypes.9 //@adaptationPrimitiveTypes.10 //@adaptationPrimitiveTypes.12 //@adaptationPrimitiveTypes.13 //@adaptationPrimitiveTypes.14 //@adaptationPrimitiveTypes.15 //@adaptationPrimitiveTypes.16 //@adaptationPrimitiveTypes.17 //@adaptationPrimitiveTypes.18 //@adaptationPrimitiveTypes.19 //@adaptationPrimitiveTypes.20 //@adaptationPrimitiveTypes.21 //@adaptationPrimitiveTypes.22">
+<dictionaryType>
+<attributes xsi:type="kevoree:DictionaryAttribute" name="coreLogLevel" optional="true" state="false" datatype="enum=INFO,WARN,DEBUG,ERROR,FINE" fragmentDependant="false">
+</attributes>
+<attributes xsi:type="kevoree:DictionaryAttribute" name="logLevel" optional="true" state="false" datatype="enum=INFO,WARN,DEBUG,ERROR,FINE" fragmentDependant="false">
+</attributes>
+<defaultValues xsi:type="kevoree:DictionaryValue" value="INFO" attribute="//@typeDefinitions.14/@dictionaryType/@attributes.1">
+</defaultValues>
+<defaultValues xsi:type="kevoree:DictionaryValue" value="WARN" attribute="//@typeDefinitions.14/@dictionaryType/@attributes.0">
+</defaultValues>
+</dictionaryType>
+<managedPrimitiveTypeRefs xsi:type="kevoree:AdaptationPrimitiveTypeRef" maxTime="120000" ref="//@adaptationPrimitiveTypes.19">
+</managedPrimitiveTypeRefs>
+<managedPrimitiveTypeRefs xsi:type="kevoree:AdaptationPrimitiveTypeRef" maxTime="120000" ref="//@adaptationPrimitiveTypes.15">
+</managedPrimitiveTypeRefs>
+</typeDefinitions>
+<typeDefinitions xsi:type="kevoree:GroupType" name="BasicGroup" factoryBean="org.kevoree.library.BasicGroupFactory" bean="org.kevoree.library.BasicGroup" startMethod="startRestGroup" stopMethod="stopRestGroup" updateMethod="updateRestGroup" deployUnits="//@deployUnits.23">
+<dictionaryType>
+<attributes xsi:type="kevoree:DictionaryAttribute" name="port" optional="true" state="false" fragmentDependant="true">
+</attributes>
+<attributes xsi:type="kevoree:DictionaryAttribute" name="ssl" optional="false" state="false" datatype="enum=true,false" fragmentDependant="false">
+</attributes>
+<attributes xsi:type="kevoree:DictionaryAttribute" name="ip" optional="true" state="false" fragmentDependant="true">
+</attributes>
+<defaultValues xsi:type="kevoree:DictionaryValue" value="8000" attribute="//@typeDefinitions.15/@dictionaryType/@attributes.0">
+</defaultValues>
+<defaultValues xsi:type="kevoree:DictionaryValue" value="0.0.0.0" attribute="//@typeDefinitions.15/@dictionaryType/@attributes.2">
+</defaultValues>
+<defaultValues xsi:type="kevoree:DictionaryValue" value="false" attribute="//@typeDefinitions.15/@dictionaryType/@attributes.1">
+</defaultValues>
+</dictionaryType>
+</typeDefinitions>
+<typeDefinitions xsi:type="kevoree:ComponentType" name="IaaSKloudManager" factoryBean="org.kevoree.library.sky.provider.IaaSKloudManagerFactory" bean="org.kevoree.library.sky.provider.IaaSKloudManager" startMethod="start" stopMethod="stop" updateMethod="update" deployUnits="//@deployUnits.33">
+<provided xsi:type="kevoree:PortTypeRef" name="submit" optional="false" noDependency="false" ref="//@typeDefinitions.35">
+<mappings xsi:type="kevoree:PortTypeMapping" beanMethodName="add" serviceMethodName="add">
+</mappings>
+<mappings xsi:type="kevoree:PortTypeMapping" beanMethodName="add" serviceMethodName="add">
+</mappings>
+<mappings xsi:type="kevoree:PortTypeMapping" beanMethodName="addToNode" serviceMethodName="addToNode">
+</mappings>
+<mappings xsi:type="kevoree:PortTypeMapping" beanMethodName="addToNode" serviceMethodName="addToNode">
+</mappings>
+<mappings xsi:type="kevoree:PortTypeMapping" beanMethodName="remove" serviceMethodName="remove">
+</mappings>
+<mappings xsi:type="kevoree:PortTypeMapping" beanMethodName="remove" serviceMethodName="remove">
+</mappings>
+<mappings xsi:type="kevoree:PortTypeMapping" beanMethodName="merge" serviceMethodName="merge">
+</mappings>
+<mappings xsi:type="kevoree:PortTypeMapping" beanMethodName="merge" serviceMethodName="merge">
+</mappings>
+<mappings xsi:type="kevoree:PortTypeMapping" beanMethodName="mergeToNode" serviceMethodName="mergeToNode">
+</mappings>
+<mappings xsi:type="kevoree:PortTypeMapping" beanMethodName="mergeToNode" serviceMethodName="mergeToNode">
+</mappings>
+</provided>
+</typeDefinitions>
+<typeDefinitions xsi:type="kevoree:MessagePortType" name="org.kevoree.framework.MessagePort1363908273752" synchrone="false">
+<dictionaryType>
+<attributes xsi:type="kevoree:DictionaryAttribute" name="image" optional="true" state="false" datatype="java.awt.image.BufferedImage" fragmentDependant="false">
+</attributes>
+</dictionaryType>
+</typeDefinitions>
+<typeDefinitions xsi:type="kevoree:ChannelType" name="defSERVICE" factoryBean="org.kevoree.library.defaultChannels.defSERVICEFactory" bean="org.kevoree.library.defaultChannels.defSERVICE" startMethod="startHello" stopMethod="stopHello" lowerBindings="0" upperBindings="0" lowerFragments="0" upperFragments="0" deployUnits="//@deployUnits.36">
+</typeDefinitions>
+<typeDefinitions xsi:type="kevoree:MessagePortType" name="org.kevoree.framework.MessagePort1363908273708" synchrone="false">
+<dictionaryType>
+<attributes xsi:type="kevoree:DictionaryAttribute" name="url" optional="true" state="false" datatype="java.lang.String" fragmentDependant="false">
+</attributes>
+</dictionaryType>
+</typeDefinitions>
+<typeDefinitions xsi:type="kevoree:ComponentType" name="IaaSKloudManagerTester" factoryBean="org.kevoree.library.sky.provider.tester.IaaSKloudManagerTesterFactory" bean="org.kevoree.library.sky.provider.tester.IaaSKloudManagerTester" startMethod="start" stopMethod="stop" deployUnits="//@deployUnits.33">
+<dictionaryType>
+<attributes xsi:type="kevoree:DictionaryAttribute" name="nbNodes" optional="true" state="false" fragmentDependant="false">
+</attributes>
+<defaultValues xsi:type="kevoree:DictionaryValue" value="1" attribute="//@typeDefinitions.20/@dictionaryType/@attributes.0">
+</defaultValues>
+</dictionaryType>
+<required xsi:type="kevoree:PortTypeRef" name="delegate" optional="true" noDependency="true" ref="//@typeDefinitions.35">
+</required>
+</typeDefinitions>
+<typeDefinitions xsi:type="kevoree:ComponentType" name="FakeConsoleWithStdMessage" factoryBean="org.kevoree.library.FakeConsoleWithStdMessageFactory" bean="org.kevoree.library.FakeConsoleWithStdMessage" startMethod="start" stopMethod="stop" deployUnits="//@deployUnits.43">
+<required xsi:type="kevoree:PortTypeRef" name="textEntered" optional="true" noDependency="true" ref="//@typeDefinitions.59">
+</required>
+<provided xsi:type="kevoree:PortTypeRef" name="showText" optional="false" noDependency="false" ref="//@typeDefinitions.59">
+<mappings xsi:type="kevoree:PortTypeMapping" beanMethodName="appendIncoming" serviceMethodName="process">
+</mappings>
+<mappings xsi:type="kevoree:PortTypeMapping" beanMethodName="appendIncoming" serviceMethodName="process">
+</mappings>
+</provided>
+</typeDefinitions>
+<typeDefinitions xsi:type="kevoree:GroupType" name="WebSocketGroup" factoryBean="org.kevoree.library.javase.webSocketGrp.group.WebSocketGroupFactory" bean="org.kevoree.library.javase.webSocketGrp.group.WebSocketGroup" startMethod="startWebSocketGroup" stopMethod="stopWebSocketGroup" updateMethod="updateRestGroup" deployUnits="//@deployUnits.27">
+<dictionaryType>
+<attributes xsi:type="kevoree:DictionaryAttribute" name="port" optional="true" state="false" fragmentDependant="true">
+</attributes>
+<defaultValues xsi:type="kevoree:DictionaryValue" value="8000" attribute="//@typeDefinitions.22/@dictionaryType/@attributes.0">
+</defaultValues>
+</dictionaryType>
+</typeDefinitions>
+<typeDefinitions xsi:type="kevoree:ComponentType" name="PaaSKloudUserResourceManagerPage" factoryBean="org.kevoree.library.sky.provider.web.PaaSKloudUserResourceManagerPageFactory" bean="org.kevoree.library.sky.provider.web.PaaSKloudUserResourceManagerPage" startMethod="startPage" stopMethod="stopPage" updateMethod="updatePage" deployUnits="//@deployUnits.31">
+<dictionaryType>
+<attributes xsi:type="kevoree:DictionaryAttribute" name="urlpattern" optional="true" state="false" fragmentDependant="false">
+</attributes>
+<defaultValues xsi:type="kevoree:DictionaryValue" value="/{login}/" attribute="//@typeDefinitions.23/@dictionaryType/@attributes.0">
+</defaultValues>
+</dictionaryType>
+<required xsi:type="kevoree:PortTypeRef" name="content" optional="false" noDependency="true" ref="//@typeDefinitions.59">
+</required>
+<required xsi:type="kevoree:PortTypeRef" name="forward" optional="true" noDependency="true" ref="//@typeDefinitions.59">
+</required>
+<provided xsi:type="kevoree:PortTypeRef" name="request" optional="false" noDependency="false" ref="//@typeDefinitions.59">
+<mappings xsi:type="kevoree:PortTypeMapping" beanMethodName="requestHandler" serviceMethodName="process">
+</mappings>
+<mappings xsi:type="kevoree:PortTypeMapping" beanMethodName="requestHandler" serviceMethodName="process">
+</mappings>
+</provided>
+</typeDefinitions>
+<typeDefinitions xsi:type="kevoree:ComponentType" name="FakeSimpleSlider" factoryBean="org.kevoree.library.FakeSimpleSliderFactory" bean="org.kevoree.library.FakeSimpleSlider" startMethod="start" stopMethod="stop" updateMethod="update" deployUnits="//@deployUnits.43">
+<required xsi:type="kevoree:PortTypeRef" name="send" optional="true" noDependency="false" ref="//@typeDefinitions.10">
+</required>
+</typeDefinitions>
+<typeDefinitions xsi:type="kevoree:ComponentType" name="PaaSManagerMaster" factoryBean="org.kevoree.library.sky.provider.PaaSManagerMasterFactory" bean="org.kevoree.library.sky.provider.PaaSManagerMaster" startMethod="start" stopMethod="stop" deployUnits="//@deployUnits.33">
+<provided xsi:type="kevoree:PortTypeRef" name="slave" optional="false" noDependency="false" ref="//@typeDefinitions.13">
+<mappings xsi:type="kevoree:PortTypeMapping" beanMethodName="getModel" serviceMethodName="getModel">
+</mappings>
+<mappings xsi:type="kevoree:PortTypeMapping" beanMethodName="getModel" serviceMethodName="getModel">
+</mappings>
+</provided>
+<provided xsi:type="kevoree:PortTypeRef" name="submit" optional="false" noDependency="false" ref="//@typeDefinitions.1">
+<mappings xsi:type="kevoree:PortTypeMapping" beanMethodName="add" serviceMethodName="add">
+</mappings>
+<mappings xsi:type="kevoree:PortTypeMapping" beanMethodName="add" serviceMethodName="add">
+</mappings>
+<mappings xsi:type="kevoree:PortTypeMapping" beanMethodName="remove" serviceMethodName="remove">
+</mappings>
+<mappings xsi:type="kevoree:PortTypeMapping" beanMethodName="remove" serviceMethodName="remove">
+</mappings>
+<mappings xsi:type="kevoree:PortTypeMapping" beanMethodName="merge" serviceMethodName="merge">
+</mappings>
+<mappings xsi:type="kevoree:PortTypeMapping" beanMethodName="merge" serviceMethodName="merge">
+</mappings>
+<mappings xsi:type="kevoree:PortTypeMapping" beanMethodName="getModel" serviceMethodName="getModel">
+</mappings>
+<mappings xsi:type="kevoree:PortTypeMapping" beanMethodName="getModel" serviceMethodName="getModel">
+</mappings>
+</provided>
+</typeDefinitions>
+<typeDefinitions xsi:type="kevoree:GroupType" name="AutoBasicGroup" factoryBean="org.kevoree.library.AutoBasicGroupFactory" bean="org.kevoree.library.AutoBasicGroup" startMethod="startRestGroup" stopMethod="stopRestGroup" updateMethod="updateRestGroup" deployUnits="//@deployUnits.23" superTypes="//@typeDefinitions.15">
+<dictionaryType>
+<attributes xsi:type="kevoree:DictionaryAttribute" name="port" optional="true" state="false" fragmentDependant="true">
+</attributes>
+<attributes xsi:type="kevoree:DictionaryAttribute" name="ssl" optional="false" state="false" datatype="enum=true,false" fragmentDependant="false">
+</attributes>
+<attributes xsi:type="kevoree:DictionaryAttribute" name="ip" optional="true" state="false" fragmentDependant="true">
+</attributes>
+<defaultValues xsi:type="kevoree:DictionaryValue" value="8000" attribute="//@typeDefinitions.26/@dictionaryType/@attributes.0">
+</defaultValues>
+<defaultValues xsi:type="kevoree:DictionaryValue" value="0.0.0.0" attribute="//@typeDefinitions.26/@dictionaryType/@attributes.2">
+</defaultValues>
+<defaultValues xsi:type="kevoree:DictionaryValue" value="false" attribute="//@typeDefinitions.26/@dictionaryType/@attributes.1">
+</defaultValues>
+</dictionaryType>
+</typeDefinitions>
+<typeDefinitions xsi:type="kevoree:GroupType" name="KloudPaaSNanoGroup" factoryBean="org.kevoree.library.sky.provider.KloudPaaSNanoGroupFactory" bean="org.kevoree.library.sky.provider.KloudPaaSNanoGroup" startMethod="startRestGroup" stopMethod="stopRestGroup" updateMethod="update" deployUnits="//@deployUnits.33" superTypes="//@typeDefinitions.46">
+<dictionaryType>
+<attributes xsi:type="kevoree:DictionaryAttribute" name="port" optional="true" state="false" fragmentDependant="true">
+</attributes>
+<attributes xsi:type="kevoree:DictionaryAttribute" name="SSH_Public_Key" optional="true" state="false" fragmentDependant="false">
+</attributes>
+<attributes xsi:type="kevoree:DictionaryAttribute" name="ip" optional="true" state="false" fragmentDependant="true">
+</attributes>
+<defaultValues xsi:type="kevoree:DictionaryValue" value="8000" attribute="//@typeDefinitions.27/@dictionaryType/@attributes.0">
+</defaultValues>
+<defaultValues xsi:type="kevoree:DictionaryValue" value="0.0.0.0" attribute="//@typeDefinitions.27/@dictionaryType/@attributes.2">
+</defaultValues>
+</dictionaryType>
+</typeDefinitions>
+<typeDefinitions xsi:type="kevoree:ComponentType" name="SampleFormPage" factoryBean="org.kevoree.library.javase.webserver.sample.SampleFormPageFactory" bean="org.kevoree.library.javase.webserver.sample.SampleFormPage" startMethod="startPage" stopMethod="stopPage" updateMethod="updatePage" deployUnits="//@deployUnits.16">
+<dictionaryType>
+<attributes xsi:type="kevoree:DictionaryAttribute" name="urlpattern" optional="true" state="false" fragmentDependant="false">
+</attributes>
+<defaultValues xsi:type="kevoree:DictionaryValue" value="/" attribute="//@typeDefinitions.28/@dictionaryType/@attributes.0">
+</defaultValues>
+</dictionaryType>
+<required xsi:type="kevoree:PortTypeRef" name="content" optional="false" noDependency="true" ref="//@typeDefinitions.59">
+</required>
+<required xsi:type="kevoree:PortTypeRef" name="forward" optional="true" noDependency="true" ref="//@typeDefinitions.59">
+</required>
+<provided xsi:type="kevoree:PortTypeRef" name="request" optional="false" noDependency="false" ref="//@typeDefinitions.59">
+<mappings xsi:type="kevoree:PortTypeMapping" beanMethodName="requestHandler" serviceMethodName="process">
+</mappings>
+<mappings xsi:type="kevoree:PortTypeMapping" beanMethodName="requestHandler" serviceMethodName="process">
+</mappings>
+</provided>
+</typeDefinitions>
+<typeDefinitions xsi:type="kevoree:GroupType" name="WebSocketGroupMasterServer" factoryBean="org.kevoree.library.javase.webSocketGrp.group.WebSocketGroupMasterServerFactory" bean="org.kevoree.library.javase.webSocketGrp.group.WebSocketGroupMasterServer" startMethod="start" stopMethod="stop" updateMethod="update" deployUnits="//@deployUnits.27">
+<dictionaryType>
+<attributes xsi:type="kevoree:DictionaryAttribute" name="port" optional="true" state="false" fragmentDependant="true">
+</attributes>
+<attributes xsi:type="kevoree:DictionaryAttribute" name="gui" optional="false" state="false" datatype="enum=true,false" fragmentDependant="false">
+</attributes>
+<attributes xsi:type="kevoree:DictionaryAttribute" name="key" optional="false" state="false" fragmentDependant="false">
+</attributes>
+<defaultValues xsi:type="kevoree:DictionaryValue" value="false" attribute="//@typeDefinitions.29/@dictionaryType/@attributes.1">
+</defaultValues>
+</dictionaryType>
+</typeDefinitions>
+<typeDefinitions xsi:type="kevoree:ServicePortType" name="org.kevoree.library.javase.authentication.Authentication" synchrone="false">
+<operations xsi:type="kevoree:Operation" name="authenticate" returnType="//@dataTypes.0">
+<parameters xsi:type="kevoree:Parameter" name="login" order="0" type="//@dataTypes.1">
+</parameters>
+<parameters xsi:type="kevoree:Parameter" name="credentials" order="1" type="//@dataTypes.1">
+</parameters>
+</operations>
+</typeDefinitions>
+<typeDefinitions xsi:type="kevoree:GroupType" name="WebSocketGossiperGroup" factoryBean="org.kevoree.library.javase.webSocketGrp.group.WebSocketGossiperGroupFactory" bean="org.kevoree.library.javase.webSocketGrp.group.WebSocketGossiperGroup" startMethod="start" stopMethod="stop" updateMethod="updateGossiperGroup" deployUnits="//@deployUnits.27" superTypes="//@typeDefinitions.3 //@typeDefinitions.15">
+<dictionaryType>
+<attributes xsi:type="kevoree:DictionaryAttribute" name="port" optional="true" state="false" fragmentDependant="true">
+</attributes>
+<attributes xsi:type="kevoree:DictionaryAttribute" name="interval" optional="true" state="false" fragmentDependant="false">
+</attributes>
+<attributes xsi:type="kevoree:DictionaryAttribute" name="ssl" optional="false" state="false" datatype="enum=true,false" fragmentDependant="false">
+</attributes>
+<attributes xsi:type="kevoree:DictionaryAttribute" name="ip" optional="true" state="false" fragmentDependant="true">
+</attributes>
+<defaultValues xsi:type="kevoree:DictionaryValue" value="8000" attribute="//@typeDefinitions.31/@dictionaryType/@attributes.0">
+</defaultValues>
+<defaultValues xsi:type="kevoree:DictionaryValue" value="0.0.0.0" attribute="//@typeDefinitions.31/@dictionaryType/@attributes.3">
+</defaultValues>
+<defaultValues xsi:type="kevoree:DictionaryValue" value="false" attribute="//@typeDefinitions.31/@dictionaryType/@attributes.2">
+</defaultValues>
+<defaultValues xsi:type="kevoree:DictionaryValue" value="20000" attribute="//@typeDefinitions.31/@dictionaryType/@attributes.1">
+</defaultValues>
+</dictionaryType>
+</typeDefinitions>
+<typeDefinitions xsi:type="kevoree:ComponentType" name="PaaSManagerSlave" factoryBean="org.kevoree.library.sky.provider.PaaSManagerSlaveFactory" bean="org.kevoree.library.sky.provider.PaaSManagerSlave" startMethod="start" stopMethod="stop" deployUnits="//@deployUnits.33">
+<required xsi:type="kevoree:PortTypeRef" name="slave" optional="false" noDependency="true" ref="//@typeDefinitions.13">
+</required>
+</typeDefinitions>
+<typeDefinitions xsi:type="kevoree:MessagePortType" name="org.kevoree.framework.MessagePort1363908273740" synchrone="false">
+<dictionaryType>
+<attributes xsi:type="kevoree:DictionaryAttribute" name="bytes" optional="true" state="false" datatype="byte[]" fragmentDependant="false">
+</attributes>
+<attributes xsi:type="kevoree:DictionaryAttribute" name="height" optional="true" state="false" datatype="java.lang.Integer" fragmentDependant="false">
+</attributes>
+<attributes xsi:type="kevoree:DictionaryAttribute" name="width" optional="true" state="false" datatype="java.lang.Integer" fragmentDependant="false">
+</attributes>
+<attributes xsi:type="kevoree:DictionaryAttribute" name="fps" optional="true" state="false" datatype="java.lang.Integer" fragmentDependant="false">
+</attributes>
+<attributes xsi:type="kevoree:DictionaryAttribute" name="chroma" optional="true" state="false" datatype="java.lang.String" fragmentDependant="false">
+</attributes>
+</dictionaryType>
+</typeDefinitions>
+<typeDefinitions xsi:type="kevoree:ComponentType" name="PaaSKloudUserManager" factoryBean="org.kevoree.library.sky.provider.PaaSKloudUserManagerFactory" bean="org.kevoree.library.sky.provider.PaaSKloudUserManager" startMethod="start" stopMethod="stop" deployUnits="//@deployUnits.33">
+<required xsi:type="kevoree:PortTypeRef" name="delegate" optional="true" noDependency="true" ref="//@typeDefinitions.1">
+</required>
+<provided xsi:type="kevoree:PortTypeRef" name="submit" optional="false" noDependency="false" ref="//@typeDefinitions.50">
+<mappings xsi:type="kevoree:PortTypeMapping" beanMethodName="initialize" serviceMethodName="initialize">
+</mappings>
+<mappings xsi:type="kevoree:PortTypeMapping" beanMethodName="initialize" serviceMethodName="initialize">
+</mappings>
+<mappings xsi:type="kevoree:PortTypeMapping" beanMethodName="add" serviceMethodName="add">
+</mappings>
+<mappings xsi:type="kevoree:PortTypeMapping" beanMethodName="add" serviceMethodName="add">
+</mappings>
+<mappings xsi:type="kevoree:PortTypeMapping" beanMethodName="remove" serviceMethodName="remove">
+</mappings>
+<mappings xsi:type="kevoree:PortTypeMapping" beanMethodName="remove" serviceMethodName="remove">
+</mappings>
+<mappings xsi:type="kevoree:PortTypeMapping" beanMethodName="merge" serviceMethodName="merge">
+</mappings>
+<mappings xsi:type="kevoree:PortTypeMapping" beanMethodName="merge" serviceMethodName="merge">
+</mappings>
+<mappings xsi:type="kevoree:PortTypeMapping" beanMethodName="release" serviceMethodName="release">
+</mappings>
+<mappings xsi:type="kevoree:PortTypeMapping" beanMethodName="release" serviceMethodName="release">
+</mappings>
+<mappings xsi:type="kevoree:PortTypeMapping" beanMethodName="getModel" serviceMethodName="getModel">
+</mappings>
+<mappings xsi:type="kevoree:PortTypeMapping" beanMethodName="getModel" serviceMethodName="getModel">
+</mappings>
+</provided>
+</typeDefinitions>
+<typeDefinitions xsi:type="kevoree:ServicePortType" name="org.kevoree.library.sky.provider.api.IaaSManagerService" synchrone="false">
+<operations xsi:type="kevoree:Operation" name="mergeToNode" returnType="//@dataTypes.2">
+<parameters xsi:type="kevoree:Parameter" name="arg1" order="1" type="//@dataTypes.1">
+</parameters>
+<parameters xsi:type="kevoree:Parameter" name="arg0" order="0" type="//@dataTypes.3">
+</parameters>
+</operations>
+<operations xsi:type="kevoree:Operation" name="remove" returnType="//@dataTypes.2">
+<parameters xsi:type="kevoree:Parameter" name="arg0" order="0" type="//@dataTypes.3">
+</parameters>
+</operations>
+<operations xsi:type="kevoree:Operation" name="merge" returnType="//@dataTypes.2">
+<parameters xsi:type="kevoree:Parameter" name="arg0" order="0" type="//@dataTypes.3">
+</parameters>
+</operations>
+<operations xsi:type="kevoree:Operation" name="addToNode" returnType="//@dataTypes.2">
+<parameters xsi:type="kevoree:Parameter" name="arg1" order="1" type="//@dataTypes.1">
+</parameters>
+<parameters xsi:type="kevoree:Parameter" name="arg0" order="0" type="//@dataTypes.3">
+</parameters>
+</operations>
+<operations xsi:type="kevoree:Operation" name="add" returnType="//@dataTypes.2">
+<parameters xsi:type="kevoree:Parameter" name="arg0" order="0" type="//@dataTypes.3">
+</parameters>
+</operations>
+</typeDefinitions>
+<typeDefinitions xsi:type="kevoree:NodeType" name="StatefulJavaSENode" factoryBean="org.kevoree.library.defaultNodeTypes.StatefulJavaSENodeFactory" bean="org.kevoree.library.defaultNodeTypes.StatefulJavaSENode" startMethod="startNode" stopMethod="stopNode" updateMethod="updateNode" deployUnits="//@deployUnits.0" superTypes="//@typeDefinitions.14" managedPrimitiveTypes="//@adaptationPrimitiveTypes.0 //@adaptationPrimitiveTypes.2 //@adaptationPrimitiveTypes.1 //@adaptationPrimitiveTypes.3 //@adaptationPrimitiveTypes.6 //@adaptationPrimitiveTypes.5 //@adaptationPrimitiveTypes.7 //@adaptationPrimitiveTypes.8 //@adaptationPrimitiveTypes.9 //@adaptationPrimitiveTypes.10 //@adaptationPrimitiveTypes.12 //@adaptationPrimitiveTypes.13 //@adaptationPrimitiveTypes.14 //@adaptationPrimitiveTypes.15 //@adaptationPrimitiveTypes.16 //@adaptationPrimitiveTypes.17 //@adaptationPrimitiveTypes.18 //@adaptationPrimitiveTypes.19 //@adaptationPrimitiveTypes.20 //@adaptationPrimitiveTypes.21 //@adaptationPrimitiveTypes.22">
+<dictionaryType>
+<attributes xsi:type="kevoree:DictionaryAttribute" name="coreLogLevel" optional="true" state="false" datatype="enum=INFO,WARN,DEBUG,ERROR,FINE" fragmentDependant="false">
+</attributes>
+<attributes xsi:type="kevoree:DictionaryAttribute" name="logLevel" optional="true" state="false" datatype="enum=INFO,WARN,DEBUG,ERROR,FINE" fragmentDependant="false">
+</attributes>
+<attributes xsi:type="kevoree:DictionaryAttribute" name="storageLocation" optional="true" state="false" fragmentDependant="false">
+</attributes>
+<defaultValues xsi:type="kevoree:DictionaryValue" value="INFO" attribute="//@typeDefinitions.36/@dictionaryType/@attributes.1">
+</defaultValues>
+<defaultValues xsi:type="kevoree:DictionaryValue" value="WARN" attribute="//@typeDefinitions.36/@dictionaryType/@attributes.0">
+</defaultValues>
+<defaultValues xsi:type="kevoree:DictionaryValue" attribute="//@typeDefinitions.36/@dictionaryType/@attributes.2">
+</defaultValues>
+</dictionaryType>
+<managedPrimitiveTypeRefs xsi:type="kevoree:AdaptationPrimitiveTypeRef" maxTime="120000" ref="//@adaptationPrimitiveTypes.19">
+</managedPrimitiveTypeRefs>
+<managedPrimitiveTypeRefs xsi:type="kevoree:AdaptationPrimitiveTypeRef" maxTime="120000" ref="//@adaptationPrimitiveTypes.15">
+</managedPrimitiveTypeRefs>
+</typeDefinitions>
+<typeDefinitions xsi:type="kevoree:ComponentType" name="FakeSimpleLight" factoryBean="org.kevoree.library.FakeSimpleLightFactory" bean="org.kevoree.library.FakeSimpleLight" startMethod="start" stopMethod="stop" updateMethod="update" deployUnits="//@deployUnits.43">
+<provided xsi:type="kevoree:PortTypeRef" name="toggle" optional="false" noDependency="false" ref="//@typeDefinitions.43">
+<mappings xsi:type="kevoree:PortTypeMapping" beanMethodName="toogle" serviceMethodName="toggle">
+</mappings>
+<mappings xsi:type="kevoree:PortTypeMapping" beanMethodName="toogle" serviceMethodName="toggle">
+</mappings>
+</provided>
+<provided xsi:type="kevoree:PortTypeRef" name="off" optional="false" noDependency="false" ref="//@typeDefinitions.59">
+<mappings xsi:type="kevoree:PortTypeMapping" beanMethodName="lightOff" serviceMethodName="process">
+</mappings>
+<mappings xsi:type="kevoree:PortTypeMapping" beanMethodName="lightOff" serviceMethodName="process">
+</mappings>
+</provided>
+<provided xsi:type="kevoree:PortTypeRef" name="on" optional="false" noDependency="false" ref="//@typeDefinitions.59">
+<mappings xsi:type="kevoree:PortTypeMapping" beanMethodName="lightOn" serviceMethodName="process">
+</mappings>
+<mappings xsi:type="kevoree:PortTypeMapping" beanMethodName="lightOn" serviceMethodName="process">
+</mappings>
+</provided>
+</typeDefinitions>
+<typeDefinitions xsi:type="kevoree:ChannelType" name="defMSG" factoryBean="org.kevoree.library.defaultChannels.defMSGFactory" bean="org.kevoree.library.defaultChannels.defMSG" startMethod="startHello" stopMethod="stopHello" updateMethod="updateHello" lowerBindings="0" upperBindings="0" lowerFragments="0" upperFragments="0" deployUnits="//@deployUnits.36">
+</typeDefinitions>
+<typeDefinitions xsi:type="kevoree:ChannelType" name="BasicGossiperChannel" factoryBean="org.kevoree.library.javase.basicGossiper.channel.BasicGossiperChannelFactory" bean="org.kevoree.library.javase.basicGossiper.channel.BasicGossiperChannel" startMethod="startGossiperChannel" stopMethod="stopGossiperChannel" updateMethod="updateGossiperChannel" lowerBindings="0" upperBindings="0" lowerFragments="0" upperFragments="0" deployUnits="//@deployUnits.25">
+<dictionaryType>
+<attributes xsi:type="kevoree:DictionaryAttribute" name="interval" optional="true" state="false" fragmentDependant="false">
+</attributes>
+<defaultValues xsi:type="kevoree:DictionaryValue" value="30000" attribute="//@typeDefinitions.39/@dictionaryType/@attributes.0">
+</defaultValues>
+</dictionaryType>
+</typeDefinitions>
+<typeDefinitions xsi:type="kevoree:GroupType" name="WebSocketGroupQueuer" factoryBean="org.kevoree.library.javase.webSocketGrp.group.WebSocketGroupQueuerFactory" bean="org.kevoree.library.javase.webSocketGrp.group.WebSocketGroupQueuer" startMethod="start" stopMethod="stop" updateMethod="update" deployUnits="//@deployUnits.27" superTypes="//@typeDefinitions.29 //@typeDefinitions.51">
+<dictionaryType>
+<attributes xsi:type="kevoree:DictionaryAttribute" name="port" optional="true" state="false" fragmentDependant="true">
+</attributes>
+<attributes xsi:type="kevoree:DictionaryAttribute" name="gui" optional="false" state="false" datatype="enum=true,false" fragmentDependant="false">
+</attributes>
+<attributes xsi:type="kevoree:DictionaryAttribute" name="max_queued_model" optional="true" state="false" fragmentDependant="false">
+</attributes>
+<attributes xsi:type="kevoree:DictionaryAttribute" name="key" optional="false" state="false" fragmentDependant="false">
+</attributes>
+<defaultValues xsi:type="kevoree:DictionaryValue" value="false" attribute="//@typeDefinitions.40/@dictionaryType/@attributes.1">
+</defaultValues>
+<defaultValues xsi:type="kevoree:DictionaryValue" value="150" attribute="//@typeDefinitions.40/@dictionaryType/@attributes.2">
+</defaultValues>
+</dictionaryType>
+</typeDefinitions>
+<typeDefinitions xsi:type="kevoree:ComponentType" name="FakeConsole" factoryBean="org.kevoree.library.FakeConsoleFactory" bean="org.kevoree.library.FakeConsole" startMethod="start" stopMethod="stop" updateMethod="update" deployUnits="//@deployUnits.43">
+<dictionaryType>
+<attributes xsi:type="kevoree:DictionaryAttribute" name="singleFrame" optional="true" state="false" fragmentDependant="false">
+</attributes>
+<defaultValues xsi:type="kevoree:DictionaryValue" value="true" attribute="//@typeDefinitions.41/@dictionaryType/@attributes.0">
+</defaultValues>
+</dictionaryType>
+<required xsi:type="kevoree:PortTypeRef" name="textEntered" optional="true" noDependency="true" ref="//@typeDefinitions.59">
+</required>
+<provided xsi:type="kevoree:PortTypeRef" name="showText" optional="false" noDependency="false" ref="//@typeDefinitions.59">
+<mappings xsi:type="kevoree:PortTypeMapping" beanMethodName="appendIncoming" serviceMethodName="process">
+</mappings>
+<mappings xsi:type="kevoree:PortTypeMapping" beanMethodName="appendIncoming" serviceMethodName="process">
+</mappings>
+</provided>
+</typeDefinitions>
+<typeDefinitions xsi:type="kevoree:ComponentType" name="LDAPAuthentication" factoryBean="org.kevoree.library.javase.authentication.LDAPAuthenticationFactory" bean="org.kevoree.library.javase.authentication.LDAPAuthentication" startMethod="dummy" stopMethod="dummy" deployUnits="//@deployUnits.35">
+<dictionaryType>
+<attributes xsi:type="kevoree:DictionaryAttribute" name="host" optional="false" state="false" fragmentDependant="false">
+</attributes>
+<attributes xsi:type="kevoree:DictionaryAttribute" name="loginKey" optional="false" state="false" fragmentDependant="false">
+</attributes>
+<attributes xsi:type="kevoree:DictionaryAttribute" name="context" optional="false" state="false" fragmentDependant="false">
+</attributes>
+<attributes xsi:type="kevoree:DictionaryAttribute" name="base" optional="false" state="false" fragmentDependant="false">
+</attributes>
+<attributes xsi:type="kevoree:DictionaryAttribute" name="filter" optional="false" state="false" fragmentDependant="false">
+</attributes>
+</dictionaryType>
+<provided xsi:type="kevoree:PortTypeRef" name="authenticate" optional="false" noDependency="false" ref="//@typeDefinitions.30">
+<mappings xsi:type="kevoree:PortTypeMapping" beanMethodName="authenticate" serviceMethodName="authenticate">
+</mappings>
+<mappings xsi:type="kevoree:PortTypeMapping" beanMethodName="authenticate" serviceMethodName="authenticate">
+</mappings>
+</provided>
+</typeDefinitions>
+<typeDefinitions xsi:type="kevoree:ServicePortType" name="org.kevoree.library.ToggleLightService" synchrone="false">
+<operations xsi:type="kevoree:Operation" name="toggle" returnType="//@dataTypes.1">
+</operations>
+</typeDefinitions>
+<typeDefinitions xsi:type="kevoree:ComponentType" name="BufferPage" factoryBean="org.kevoree.library.javase.webserver.sample.BufferPageFactory" bean="org.kevoree.library.javase.webserver.sample.BufferPage" startMethod="startPage" stopMethod="stopPage" updateMethod="updatePage" deployUnits="//@deployUnits.16">
+<dictionaryType>
+<attributes xsi:type="kevoree:DictionaryAttribute" name="urlpattern" optional="true" state="false" fragmentDependant="false">
+</attributes>
+<defaultValues xsi:type="kevoree:DictionaryValue" value="/" attribute="//@typeDefinitions.44/@dictionaryType/@attributes.0">
+</defaultValues>
+</dictionaryType>
+<required xsi:type="kevoree:PortTypeRef" name="content" optional="false" noDependency="true" ref="//@typeDefinitions.59">
+</required>
+<required xsi:type="kevoree:PortTypeRef" name="forward" optional="true" noDependency="true" ref="//@typeDefinitions.59">
+</required>
+<provided xsi:type="kevoree:PortTypeRef" name="input" optional="false" noDependency="false" ref="//@typeDefinitions.59">
+<mappings xsi:type="kevoree:PortTypeMapping" beanMethodName="onMessage" serviceMethodName="process">
+</mappings>
+<mappings xsi:type="kevoree:PortTypeMapping" beanMethodName="onMessage" serviceMethodName="process">
+</mappings>
+</provided>
+<provided xsi:type="kevoree:PortTypeRef" name="request" optional="false" noDependency="false" ref="//@typeDefinitions.59">
+<mappings xsi:type="kevoree:PortTypeMapping" beanMethodName="requestHandler" serviceMethodName="process">
+</mappings>
+<mappings xsi:type="kevoree:PortTypeMapping" beanMethodName="requestHandler" serviceMethodName="process">
+</mappings>
+</provided>
+</typeDefinitions>
+<typeDefinitions xsi:type="kevoree:NodeType" name="PJavaSENode" factoryBean="org.kevoree.library.sky.api.nodeType.PJavaSENodeFactory" bean="org.kevoree.library.sky.api.nodeType.PJavaSENode" startMethod="startNode" stopMethod="stopNode" updateMethod="updateNode" deployUnits="//@deployUnits.17" superTypes="//@typeDefinitions.14" managedPrimitiveTypes="//@adaptationPrimitiveTypes.0 //@adaptationPrimitiveTypes.1 //@adaptationPrimitiveTypes.2 //@adaptationPrimitiveTypes.3 //@adaptationPrimitiveTypes.5 //@adaptationPrimitiveTypes.6 //@adaptationPrimitiveTypes.7 //@adaptationPrimitiveTypes.8 //@adaptationPrimitiveTypes.9 //@adaptationPrimitiveTypes.10 //@adaptationPrimitiveTypes.12 //@adaptationPrimitiveTypes.13 //@adaptationPrimitiveTypes.14 //@adaptationPrimitiveTypes.15 //@adaptationPrimitiveTypes.16 //@adaptationPrimitiveTypes.17 //@adaptationPrimitiveTypes.18 //@adaptationPrimitiveTypes.19 //@adaptationPrimitiveTypes.20 //@adaptationPrimitiveTypes.21 //@adaptationPrimitiveTypes.22">
+<dictionaryType>
+<attributes xsi:type="kevoree:DictionaryAttribute" name="coreLogLevel" optional="true" state="false" datatype="enum=INFO,WARN,DEBUG,ERROR,FINE" fragmentDependant="false">
+</attributes>
+<attributes xsi:type="kevoree:DictionaryAttribute" name="DISK_SIZE" optional="true" state="false" fragmentDependant="false">
+</attributes>
+<attributes xsi:type="kevoree:DictionaryAttribute" name="CPU_CORE" optional="true" state="false" fragmentDependant="false">
+</attributes>
+<attributes xsi:type="kevoree:DictionaryAttribute" name="ARCH" optional="true" state="false" fragmentDependant="false">
+</attributes>
+<attributes xsi:type="kevoree:DictionaryAttribute" name="RAM" optional="true" state="false" fragmentDependant="false">
+</attributes>
+<attributes xsi:type="kevoree:DictionaryAttribute" name="logLevel" optional="true" state="false" datatype="enum=INFO,WARN,DEBUG,ERROR,FINE" fragmentDependant="false">
+</attributes>
+<attributes xsi:type="kevoree:DictionaryAttribute" name="CPU_FREQUENCY" optional="true" state="false" fragmentDependant="false">
+</attributes>
+<attributes xsi:type="kevoree:DictionaryAttribute" name="OS" optional="true" state="false" fragmentDependant="false">
+</attributes>
+<attributes xsi:type="kevoree:DictionaryAttribute" name="WALLCLOCKTIME" optional="true" state="false" fragmentDependant="false">
+</attributes>
+<defaultValues xsi:type="kevoree:DictionaryValue" value="INFO" attribute="//@typeDefinitions.45/@dictionaryType/@attributes.5">
+</defaultValues>
+<defaultValues xsi:type="kevoree:DictionaryValue" value="WARN" attribute="//@typeDefinitions.45/@dictionaryType/@attributes.0">
+</defaultValues>
+<defaultValues xsi:type="kevoree:DictionaryValue" value="N/A" attribute="//@typeDefinitions.45/@dictionaryType/@attributes.3">
+</defaultValues>
+<defaultValues xsi:type="kevoree:DictionaryValue" value="N/A" attribute="//@typeDefinitions.45/@dictionaryType/@attributes.4">
+</defaultValues>
+<defaultValues xsi:type="kevoree:DictionaryValue" value="N/A" attribute="//@typeDefinitions.45/@dictionaryType/@attributes.2">
+</defaultValues>
+<defaultValues xsi:type="kevoree:DictionaryValue" value="N/A" attribute="//@typeDefinitions.45/@dictionaryType/@attributes.6">
+</defaultValues>
+<defaultValues xsi:type="kevoree:DictionaryValue" value="N/A" attribute="//@typeDefinitions.45/@dictionaryType/@attributes.7">
+</defaultValues>
+<defaultValues xsi:type="kevoree:DictionaryValue" value="N/A" attribute="//@typeDefinitions.45/@dictionaryType/@attributes.1">
+</defaultValues>
+<defaultValues xsi:type="kevoree:DictionaryValue" value="N/A" attribute="//@typeDefinitions.45/@dictionaryType/@attributes.8">
+</defaultValues>
+</dictionaryType>
+<managedPrimitiveTypeRefs xsi:type="kevoree:AdaptationPrimitiveTypeRef" maxTime="120000" ref="//@adaptationPrimitiveTypes.19">
+</managedPrimitiveTypeRefs>
+<managedPrimitiveTypeRefs xsi:type="kevoree:AdaptationPrimitiveTypeRef" maxTime="120000" ref="//@adaptationPrimitiveTypes.15">
+</managedPrimitiveTypeRefs>
+</typeDefinitions>
+<typeDefinitions xsi:type="kevoree:GroupType" name="NanoRestGroup" factoryBean="org.kevoree.library.nanohttp.NanoRestGroupFactory" bean="org.kevoree.library.nanohttp.NanoRestGroup" startMethod="startRestGroup" stopMethod="stopRestGroup" updateMethod="update" deployUnits="//@deployUnits.34">
+<dictionaryType>
+<attributes xsi:type="kevoree:DictionaryAttribute" name="port" optional="true" state="false" fragmentDependant="true">
+</attributes>
+<attributes xsi:type="kevoree:DictionaryAttribute" name="ip" optional="true" state="false" fragmentDependant="true">
+</attributes>
+<defaultValues xsi:type="kevoree:DictionaryValue" value="8000" attribute="//@typeDefinitions.46/@dictionaryType/@attributes.0">
+</defaultValues>
+<defaultValues xsi:type="kevoree:DictionaryValue" value="0.0.0.0" attribute="//@typeDefinitions.46/@dictionaryType/@attributes.1">
+</defaultValues>
+</dictionaryType>
+</typeDefinitions>
+<typeDefinitions xsi:type="kevoree:ComponentType" name="VideoViewer" factoryBean="org.kevoree.library.ui.player.VideoViewerFactory" bean="org.kevoree.library.ui.player.VideoViewer" startMethod="start" stopMethod="stop" updateMethod="update" deployUnits="//@deployUnits.37">
+<provided xsi:type="kevoree:PortTypeRef" name="image" optional="false" noDependency="false" ref="//@typeDefinitions.49">
+<mappings xsi:type="kevoree:PortTypeMapping" beanMethodName="onReceiveImage" serviceMethodName="process">
+</mappings>
+<mappings xsi:type="kevoree:PortTypeMapping" beanMethodName="onReceiveImage" serviceMethodName="process">
+</mappings>
+</provided>
+<provided xsi:type="kevoree:PortTypeRef" name="image_bytes" optional="false" noDependency="false" ref="//@typeDefinitions.33">
+<mappings xsi:type="kevoree:PortTypeMapping" beanMethodName="onReceiveImageBytes" serviceMethodName="process">
+</mappings>
+<mappings xsi:type="kevoree:PortTypeMapping" beanMethodName="onReceiveImageBytes" serviceMethodName="process">
+</mappings>
+</provided>
+</typeDefinitions>
+<typeDefinitions xsi:type="kevoree:ComponentType" name="URLFilter" factoryBean="org.kevoree.library.javase.webserver.URLFilterFactory" bean="org.kevoree.library.javase.webserver.URLFilter" startMethod="startHandler" stopMethod="stopHandler" updateMethod="updateHandler" deployUnits="//@deployUnits.16">
+<dictionaryType>
+<attributes xsi:type="kevoree:DictionaryAttribute" name="urlpattern" optional="true" state="false" fragmentDependant="false">
+</attributes>
+<defaultValues xsi:type="kevoree:DictionaryValue" value="/" attribute="//@typeDefinitions.48/@dictionaryType/@attributes.0">
+</defaultValues>
+</dictionaryType>
+<required xsi:type="kevoree:PortTypeRef" name="filtered" optional="false" noDependency="true" ref="//@typeDefinitions.59">
+</required>
+<provided xsi:type="kevoree:PortTypeRef" name="request" optional="false" noDependency="false" ref="//@typeDefinitions.59">
+<mappings xsi:type="kevoree:PortTypeMapping" beanMethodName="requestHandler" serviceMethodName="process">
+</mappings>
+<mappings xsi:type="kevoree:PortTypeMapping" beanMethodName="requestHandler" serviceMethodName="process">
+</mappings>
+</provided>
+</typeDefinitions>
+<typeDefinitions xsi:type="kevoree:MessagePortType" name="org.kevoree.framework.MessagePort1363908273736" synchrone="false">
+<dictionaryType>
+<attributes xsi:type="kevoree:DictionaryAttribute" name="image" optional="true" state="false" datatype="java.awt.image.BufferedImage" fragmentDependant="false">
+</attributes>
+</dictionaryType>
+</typeDefinitions>
+<typeDefinitions xsi:type="kevoree:ServicePortType" name="org.kevoree.library.sky.provider.api.PaaSManagerService" synchrone="false">
+<operations xsi:type="kevoree:Operation" name="getModel" returnType="//@dataTypes.3">
+<parameters xsi:type="kevoree:Parameter" name="arg0" order="0" type="//@dataTypes.1">
+</parameters>
+</operations>
+<operations xsi:type="kevoree:Operation" name="remove" returnType="//@dataTypes.2">
+<parameters xsi:type="kevoree:Parameter" name="arg1" order="1" type="//@dataTypes.3">
+</parameters>
+<parameters xsi:type="kevoree:Parameter" name="arg0" order="0" type="//@dataTypes.1">
+</parameters>
+</operations>
+<operations xsi:type="kevoree:Operation" name="merge" returnType="//@dataTypes.2">
+<parameters xsi:type="kevoree:Parameter" name="arg1" order="1" type="//@dataTypes.3">
+</parameters>
+<parameters xsi:type="kevoree:Parameter" name="arg0" order="0" type="//@dataTypes.1">
+</parameters>
+</operations>
+<operations xsi:type="kevoree:Operation" name="add" returnType="//@dataTypes.2">
+<parameters xsi:type="kevoree:Parameter" name="arg1" order="1" type="//@dataTypes.3">
+</parameters>
+<parameters xsi:type="kevoree:Parameter" name="arg0" order="0" type="//@dataTypes.1">
+</parameters>
+</operations>
+<operations xsi:type="kevoree:Operation" name="release" returnType="//@dataTypes.2">
+<parameters xsi:type="kevoree:Parameter" name="arg0" order="0" type="//@dataTypes.1">
+</parameters>
+</operations>
+<operations xsi:type="kevoree:Operation" name="initialize" returnType="//@dataTypes.2">
+<parameters xsi:type="kevoree:Parameter" name="arg1" order="1" type="//@dataTypes.3">
+</parameters>
+<parameters xsi:type="kevoree:Parameter" name="arg0" order="0" type="//@dataTypes.1">
+</parameters>
+</operations>
+</typeDefinitions>
+<typeDefinitions xsi:type="kevoree:GroupType" name="WebSocketGroupEchoer" factoryBean="org.kevoree.library.javase.webSocketGrp.group.WebSocketGroupEchoerFactory" bean="org.kevoree.library.javase.webSocketGrp.group.WebSocketGroupEchoer" startMethod="start" stopMethod="stop" updateMethod="update" deployUnits="//@deployUnits.27" superTypes="//@typeDefinitions.29">
+<dictionaryType>
+<attributes xsi:type="kevoree:DictionaryAttribute" name="port" optional="true" state="false" fragmentDependant="true">
+</attributes>
+<attributes xsi:type="kevoree:DictionaryAttribute" name="gui" optional="false" state="false" datatype="enum=true,false" fragmentDependant="false">
+</attributes>
+<attributes xsi:type="kevoree:DictionaryAttribute" name="key" optional="false" state="false" fragmentDependant="false">
+</attributes>
+<defaultValues xsi:type="kevoree:DictionaryValue" value="false" attribute="//@typeDefinitions.51/@dictionaryType/@attributes.1">
+</defaultValues>
+</dictionaryType>
+</typeDefinitions>
+<typeDefinitions xsi:type="kevoree:ComponentType" name="FakeSimpleSwitch" factoryBean="org.kevoree.library.FakeSimpleSwitchFactory" bean="org.kevoree.library.FakeSimpleSwitch" startMethod="start" stopMethod="stop" updateMethod="update" deployUnits="//@deployUnits.43">
+<required xsi:type="kevoree:PortTypeRef" name="toggle" optional="true" noDependency="false" ref="//@typeDefinitions.43">
+</required>
+<required xsi:type="kevoree:PortTypeRef" name="off" optional="true" noDependency="true" ref="//@typeDefinitions.59">
+</required>
+<required xsi:type="kevoree:PortTypeRef" name="on" optional="true" noDependency="true" ref="//@typeDefinitions.59">
+</required>
+</typeDefinitions>
+<typeDefinitions xsi:type="kevoree:ComponentType" name="KevScriptEditor" factoryBean="org.kevoree.library.ui.kevScript.KevScriptEditorFactory" bean="org.kevoree.library.ui.kevScript.KevScriptEditor" startMethod="start" stopMethod="stop" deployUnits="//@deployUnits.37">
+</typeDefinitions>
+<typeDefinitions xsi:type="kevoree:ComponentType" name="KTinyWebServer" factoryBean="org.kevoree.library.webserver.KTinyWebServerFactory" bean="org.kevoree.library.webserver.KTinyWebServer" startMethod="start" stopMethod="stop" updateMethod="update" deployUnits="//@deployUnits.18">
+<dictionaryType>
+<attributes xsi:type="kevoree:DictionaryAttribute" name="port" optional="false" state="false" fragmentDependant="false">
+</attributes>
+<attributes xsi:type="kevoree:DictionaryAttribute" name="timeout" optional="true" state="false" fragmentDependant="false">
+</attributes>
+<defaultValues xsi:type="kevoree:DictionaryValue" value="8080" attribute="//@typeDefinitions.54/@dictionaryType/@attributes.0">
+</defaultValues>
+<defaultValues xsi:type="kevoree:DictionaryValue" value="5000" attribute="//@typeDefinitions.54/@dictionaryType/@attributes.1">
+</defaultValues>
+</dictionaryType>
+<required xsi:type="kevoree:PortTypeRef" name="handler" optional="false" noDependency="true" ref="//@typeDefinitions.59">
+</required>
+<provided xsi:type="kevoree:PortTypeRef" name="response" optional="false" noDependency="false" ref="//@typeDefinitions.59">
+<mappings xsi:type="kevoree:PortTypeMapping" beanMethodName="responseHandler" serviceMethodName="process">
+</mappings>
+<mappings xsi:type="kevoree:PortTypeMapping" beanMethodName="responseHandler" serviceMethodName="process">
+</mappings>
+</provided>
+</typeDefinitions>
+<typeDefinitions xsi:type="kevoree:ComponentType" name="PaaSKloudManager" factoryBean="org.kevoree.library.sky.provider.PaaSKloudManagerFactory" bean="org.kevoree.library.sky.provider.PaaSKloudManager" startMethod="start" stopMethod="stop" deployUnits="//@deployUnits.33">
+<required xsi:type="kevoree:PortTypeRef" name="delegate" optional="false" noDependency="true" ref="//@typeDefinitions.1">
+</required>
+<provided xsi:type="kevoree:PortTypeRef" name="submit" optional="false" noDependency="false" ref="//@typeDefinitions.50">
+<mappings xsi:type="kevoree:PortTypeMapping" beanMethodName="initialize" serviceMethodName="initialize">
+</mappings>
+<mappings xsi:type="kevoree:PortTypeMapping" beanMethodName="initialize" serviceMethodName="initialize">
+</mappings>
+<mappings xsi:type="kevoree:PortTypeMapping" beanMethodName="add" serviceMethodName="add">
+</mappings>
+<mappings xsi:type="kevoree:PortTypeMapping" beanMethodName="add" serviceMethodName="add">
+</mappings>
+<mappings xsi:type="kevoree:PortTypeMapping" beanMethodName="remove" serviceMethodName="remove">
+</mappings>
+<mappings xsi:type="kevoree:PortTypeMapping" beanMethodName="remove" serviceMethodName="remove">
+</mappings>
+<mappings xsi:type="kevoree:PortTypeMapping" beanMethodName="merge" serviceMethodName="merge">
+</mappings>
+<mappings xsi:type="kevoree:PortTypeMapping" beanMethodName="merge" serviceMethodName="merge">
+</mappings>
+<mappings xsi:type="kevoree:PortTypeMapping" beanMethodName="release" serviceMethodName="release">
+</mappings>
+<mappings xsi:type="kevoree:PortTypeMapping" beanMethodName="release" serviceMethodName="release">
+</mappings>
+<mappings xsi:type="kevoree:PortTypeMapping" beanMethodName="getModel" serviceMethodName="getModel">
+</mappings>
+<mappings xsi:type="kevoree:PortTypeMapping" beanMethodName="getModel" serviceMethodName="getModel">
+</mappings>
+</provided>
+</typeDefinitions>
+<typeDefinitions xsi:type="kevoree:ChannelType" name="defMSGT" factoryBean="org.kevoree.library.defaultChannels.defMSGTFactory" bean="org.kevoree.library.defaultChannels.defMSGT" startMethod="startHello" stopMethod="stopHello" updateMethod="updateHello" lowerBindings="0" upperBindings="0" lowerFragments="0" upperFragments="0" deployUnits="//@deployUnits.36" superTypes="//@typeDefinitions.38">
+</typeDefinitions>
+<typeDefinitions xsi:type="kevoree:ComponentType" name="Random" factoryBean="org.kevoree.library.RandomFactory" bean="org.kevoree.library.Random" startMethod="start" stopMethod="stop" updateMethod="update" deployUnits="//@deployUnits.43">
+<dictionaryType>
+<attributes xsi:type="kevoree:DictionaryAttribute" name="range_min" optional="true" state="false" fragmentDependant="false">
+</attributes>
+<attributes xsi:type="kevoree:DictionaryAttribute" name="refresh_speed" optional="true" state="false" fragmentDependant="false">
+</attributes>
+<attributes xsi:type="kevoree:DictionaryAttribute" name="range_max" optional="true" state="false" fragmentDependant="false">
+</attributes>
+<defaultValues xsi:type="kevoree:DictionaryValue" value="2000" attribute="//@typeDefinitions.57/@dictionaryType/@attributes.1">
+</defaultValues>
+<defaultValues xsi:type="kevoree:DictionaryValue" value="0" attribute="//@typeDefinitions.57/@dictionaryType/@attributes.0">
+</defaultValues>
+<defaultValues xsi:type="kevoree:DictionaryValue" value="50" attribute="//@typeDefinitions.57/@dictionaryType/@attributes.2">
+</defaultValues>
+</dictionaryType>
+<required xsi:type="kevoree:PortTypeRef" name="out" optional="true" noDependency="true" ref="//@typeDefinitions.59">
+</required>
+</typeDefinitions>
+<typeDefinitions xsi:type="kevoree:ChannelType" name="defSERVICET" factoryBean="org.kevoree.library.defaultChannels.defSERVICETFactory" bean="org.kevoree.library.defaultChannels.defSERVICET" startMethod="startHello" stopMethod="stopHello" lowerBindings="0" upperBindings="0" lowerFragments="0" upperFragments="0" deployUnits="//@deployUnits.36" superTypes="//@typeDefinitions.18">
+</typeDefinitions>
+<typeDefinitions xsi:type="kevoree:MessagePortType" name="org.kevoree.framework.MessagePort" synchrone="false">
+</typeDefinitions>
+<repositories xsi:type="kevoree:Repository" url="http://maven.kevoree.org/release">
+</repositories>
+<repositories xsi:type="kevoree:Repository" url="http://repo.maven.apache.org/maven2">
+</repositories>
+<repositories xsi:type="kevoree:Repository" url="http://repository.jetbrains.com/all">
+</repositories>
+<repositories xsi:type="kevoree:Repository" url="http://maven.kevoree.org/archiva/repository/snapshots/">
+</repositories>
+<repositories xsi:type="kevoree:Repository" url="http://maven.kevoree.org/snapshots">
+</repositories>
+<dataTypes xsi:type="kevoree:TypedElement" name="scala.Boolean">
+</dataTypes>
+<dataTypes xsi:type="kevoree:TypedElement" name="java.lang.String">
+</dataTypes>
+<dataTypes xsi:type="kevoree:TypedElement" name="void">
+</dataTypes>
+<dataTypes xsi:type="kevoree:TypedElement" name="org.kevoree.ContainerRoot">
+</dataTypes>
+<libraries xsi:type="kevoree:TypeLibrary" name="Test" subTypes="//@typeDefinitions.20">
+</libraries>
+<libraries xsi:type="kevoree:TypeLibrary" name="Android" subTypes="//@typeDefinitions.26 //@typeDefinitions.46 //@typeDefinitions.27 //@typeDefinitions.3 //@typeDefinitions.29 //@typeDefinitions.51 //@typeDefinitions.31 //@typeDefinitions.22 //@typeDefinitions.40 //@typeDefinitions.15">
+</libraries>
+<libraries xsi:type="kevoree:TypeLibrary" name="SKY" subTypes="//@typeDefinitions.45 //@typeDefinitions.27 //@typeDefinitions.12 //@typeDefinitions.4 //@typeDefinitions.32 //@typeDefinitions.6 //@typeDefinitions.23 //@typeDefinitions.16 //@typeDefinitions.34 //@typeDefinitions.55 //@typeDefinitions.25 //@typeDefinitions.8">
+</libraries>
+<libraries xsi:type="kevoree:TypeLibrary" name="JavaSE" subTypes="//@typeDefinitions.36 //@typeDefinitions.0 //@typeDefinitions.2 //@typeDefinitions.3 //@typeDefinitions.37 //@typeDefinitions.4 //@typeDefinitions.6 //@typeDefinitions.38 //@typeDefinitions.39 //@typeDefinitions.40 //@typeDefinitions.8 //@typeDefinitions.7 //@typeDefinitions.42 //@typeDefinitions.41 //@typeDefinitions.44 //@typeDefinitions.9 //@typeDefinitions.45 //@typeDefinitions.46 //@typeDefinitions.11 //@typeDefinitions.12 //@typeDefinitions.47 //@typeDefinitions.14 //@typeDefinitions.48 //@typeDefinitions.15 //@typeDefinitions.18 //@typeDefinitions.51 //@typeDefinitions.52 //@typeDefinitions.21 //@typeDefinitions.22 //@typeDefinitions.23 //@typeDefinitions.54 //@typeDefinitions.24 //@typeDefinitions.53 //@typeDefinitions.26 //@typeDefinitions.27 //@typeDefinitions.28 //@typeDefinitions.29 //@typeDefinitions.31 //@typeDefinitions.56 //@typeDefinitions.57 //@typeDefinitions.58">
+</libraries>
+<hubs xsi:type="kevoree:Channel" name="requestChannel" metaData="x=50,y=50" typeDefinition="//@typeDefinitions.38" bindings="//@mBindings.0 //@mBindings.1">
+</hubs>
+<hubs xsi:type="kevoree:Channel" name="responseChannel" metaData="x=50,y=50" typeDefinition="//@typeDefinitions.38" bindings="//@mBindings.2 //@mBindings.3">
+</hubs>
+<mBindings xsi:type="kevoree:MBinding">
+</mBindings>
+<mBindings xsi:type="kevoree:MBinding">
+</mBindings>
+<mBindings xsi:type="kevoree:MBinding">
+</mBindings>
+<mBindings xsi:type="kevoree:MBinding">
+</mBindings>
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.corelibrary.javase" unitName="org.kevoree.library.javase.javaseNode" version="2.0.0-SNAPSHOT" hashcode="201303220025792" type="jar" requiredLibs="//@deployUnits.1 //@deployUnits.2 //@deployUnits.3 //@deployUnits.4 //@deployUnits.5 //@deployUnits.6 //@deployUnits.7 //@deployUnits.8 //@deployUnits.9 //@deployUnits.10 //@deployUnits.11 //@deployUnits.12 //@deployUnits.13 //@deployUnits.14 //@deployUnits.15" targetNodeType="//@typeDefinitions.14">
+</deployUnits>
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree" unitName="org.kevoree.kcl" version="2.0.0-SNAPSHOT" type="jar" targetNodeType="//@typeDefinitions.14">
+</deployUnits>
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.slf4j" unitName="slf4j-api" version="1.7.2" type="jar" targetNodeType="//@typeDefinitions.14">
+</deployUnits>
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree" unitName="org.kevoree.kompare" version="2.0.0-SNAPSHOT" type="jar" targetNodeType="//@typeDefinitions.14">
+</deployUnits>
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.scala-lang" unitName="scala-library" version="2.9.2" type="jar" targetNodeType="//@typeDefinitions.14">
+</deployUnits>
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree" unitName="org.kevoree.api" version="2.0.0-SNAPSHOT" type="jar" targetNodeType="//@typeDefinitions.14">
+</deployUnits>
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree" unitName="org.kevoree.model" version="2.0.0-SNAPSHOT" type="jar" targetNodeType="//@typeDefinitions.14">
+</deployUnits>
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="fr.inria.jfilter" unitName="jfilter-library" version="1.3-SNAPSHOT" type="jar" targetNodeType="//@typeDefinitions.14">
+</deployUnits>
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree" unitName="org.kevoree.model.context" version="2.0.0-SNAPSHOT" type="jar" targetNodeType="//@typeDefinitions.14">
+</deployUnits>
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree" unitName="org.kevoree.adaptation.model" version="2.0.0-SNAPSHOT" type="jar" targetNodeType="//@typeDefinitions.14">
+</deployUnits>
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree" unitName="org.kevoree.framework" version="2.0.0-SNAPSHOT" type="jar" targetNodeType="//@typeDefinitions.14">
+</deployUnits>
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.jgrapht" unitName="jgrapht-jdk1.5" version="0.7.3" type="jar" targetNodeType="//@typeDefinitions.14">
+</deployUnits>
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.jetbrains.kotlin" unitName="kotlin-stdlib" version="0.5.162" type="jar" targetNodeType="//@typeDefinitions.14">
+</deployUnits>
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.jetbrains.kotlin" unitName="kotlin-runtime" version="0.5.162" type="jar" targetNodeType="//@typeDefinitions.14">
+</deployUnits>
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.tools" unitName="org.kevoree.tools.javase.framework" version="2.0.0-SNAPSHOT" type="jar" targetNodeType="//@typeDefinitions.14">
+</deployUnits>
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.tools" unitName="org.kevoree.tools.annotation.api" version="2.0.0-SNAPSHOT" type="jar" targetNodeType="//@typeDefinitions.14">
+</deployUnits>
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.corelibrary.javase" unitName="org.kevoree.library.javase.webserver.api" version="2.0.0-SNAPSHOT" hashcode="201303220026890" type="jar" requiredLibs="//@deployUnits.1 //@deployUnits.12 //@deployUnits.13 //@deployUnits.14 //@deployUnits.10 //@deployUnits.5 //@deployUnits.6 //@deployUnits.7 //@deployUnits.8 //@deployUnits.9 //@deployUnits.4 //@deployUnits.2 //@deployUnits.15" targetNodeType="//@typeDefinitions.14">
+</deployUnits>
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.corelibrary.sky" unitName="org.kevoree.library.sky.api" version="2.0.0-SNAPSHOT" hashcode="201303220029988" type="jar" requiredLibs="//@deployUnits.0 //@deployUnits.1 //@deployUnits.3 //@deployUnits.12 //@deployUnits.13 //@deployUnits.18 //@deployUnits.19 //@deployUnits.16 //@deployUnits.20 //@deployUnits.5 //@deployUnits.6 //@deployUnits.7 //@deployUnits.8 //@deployUnits.9 //@deployUnits.10 //@deployUnits.11 //@deployUnits.2 //@deployUnits.21 //@deployUnits.14 //@deployUnits.4 //@deployUnits.15" targetNodeType="//@typeDefinitions.14">
+</deployUnits>
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.corelibrary.javase" unitName="org.kevoree.library.javase.webserver.tjws" version="2.0.0-SNAPSHOT" hashcode="201303220026750" type="jar" requiredLibs="//@deployUnits.1 //@deployUnits.12 //@deployUnits.13 //@deployUnits.19 //@deployUnits.16 //@deployUnits.14 //@deployUnits.10 //@deployUnits.5 //@deployUnits.6 //@deployUnits.7 //@deployUnits.8 //@deployUnits.9 //@deployUnits.4 //@deployUnits.2 //@deployUnits.15" targetNodeType="//@typeDefinitions.14">
+</deployUnits>
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="javax.servlet" unitName="servlet-api" version="2.5" type="jar" targetNodeType="//@typeDefinitions.14">
+</deployUnits>
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree" unitName="org.kevoree.basechecker" version="2.0.0-SNAPSHOT" type="jar" targetNodeType="//@typeDefinitions.14">
+</deployUnits>
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.json" unitName="org.json" version="chargebee-1.0" type="jar" targetNodeType="//@typeDefinitions.14">
+</deployUnits>
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.corelibrary.sky" unitName="org.kevoree.library.sky.minicloud" version="2.0.0-SNAPSHOT" hashcode="201303220029549" type="jar" requiredLibs="//@deployUnits.17 //@deployUnits.0 //@deployUnits.1 //@deployUnits.3 //@deployUnits.12 //@deployUnits.13 //@deployUnits.18 //@deployUnits.19 //@deployUnits.16 //@deployUnits.20 //@deployUnits.5 //@deployUnits.6 //@deployUnits.7 //@deployUnits.8 //@deployUnits.9 //@deployUnits.11 //@deployUnits.21 //@deployUnits.14 //@deployUnits.10 //@deployUnits.4 //@deployUnits.2 //@deployUnits.15" targetNodeType="//@typeDefinitions.14">
+</deployUnits>
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.corelibrary.javase" unitName="org.kevoree.library.javase.jexxus" version="2.0.0-SNAPSHOT" hashcode="201303220024720" type="jar" requiredLibs="//@deployUnits.24 //@deployUnits.10 //@deployUnits.5 //@deployUnits.8 //@deployUnits.9 //@deployUnits.1 //@deployUnits.6 //@deployUnits.7 //@deployUnits.4 //@deployUnits.2 //@deployUnits.12 //@deployUnits.13 //@deployUnits.14 //@deployUnits.15" targetNodeType="//@typeDefinitions.14">
+</deployUnits>
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree" unitName="org.kevoree.merger" version="2.0.0-SNAPSHOT" type="jar" targetNodeType="//@typeDefinitions.14">
+</deployUnits>
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.corelibrary.javase" unitName="org.kevoree.library.javase.basicGossiper" version="2.0.0-SNAPSHOT" hashcode="201303220028324" type="jar" requiredLibs="//@deployUnits.24 //@deployUnits.10 //@deployUnits.5 //@deployUnits.8 //@deployUnits.9 //@deployUnits.1 //@deployUnits.6 //@deployUnits.7 //@deployUnits.4 //@deployUnits.2 //@deployUnits.12 //@deployUnits.13 //@deployUnits.23 //@deployUnits.26 //@deployUnits.14 //@deployUnits.15" targetNodeType="//@typeDefinitions.14">
+</deployUnits>
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="com.google.protobuf" unitName="protobuf-java" version="2.4.1" type="jar" targetNodeType="//@typeDefinitions.14">
+</deployUnits>
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.corelibrary.javase" unitName="org.kevoree.library.javase.webSocketGrp" version="2.0.0-SNAPSHOT" hashcode="201303220028856" type="jar" requiredLibs="//@deployUnits.24 //@deployUnits.10 //@deployUnits.5 //@deployUnits.8 //@deployUnits.9 //@deployUnits.1 //@deployUnits.6 //@deployUnits.7 //@deployUnits.4 //@deployUnits.2 //@deployUnits.12 //@deployUnits.13 //@deployUnits.23 //@deployUnits.28 //@deployUnits.29 //@deployUnits.30 //@deployUnits.25 //@deployUnits.26 //@deployUnits.14 //@deployUnits.15" targetNodeType="//@typeDefinitions.14">
+</deployUnits>
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.webbitserver" unitName="webbit" version="0.4.14" type="jar" targetNodeType="//@typeDefinitions.14">
+</deployUnits>
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="io.netty" unitName="netty" version="3.5.2.Final" type="jar" targetNodeType="//@typeDefinitions.14">
+</deployUnits>
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.extra" unitName="org.kevoree.extra.java_websocket" version="1.0.0-SNAPSHOT" type="jar" targetNodeType="//@typeDefinitions.14">
+</deployUnits>
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.corelibrary.sky" unitName="org.kevoree.library.sky.provider.web" version="2.0.0-SNAPSHOT" hashcode="201303220030534" type="jar" requiredLibs="//@deployUnits.16 //@deployUnits.17 //@deployUnits.0 //@deployUnits.1 //@deployUnits.3 //@deployUnits.18 //@deployUnits.19 //@deployUnits.20 //@deployUnits.11 //@deployUnits.21 //@deployUnits.32 //@deployUnits.33 //@deployUnits.34 //@deployUnits.35 //@deployUnits.10 //@deployUnits.5 //@deployUnits.6 //@deployUnits.7 //@deployUnits.8 //@deployUnits.9 //@deployUnits.4 //@deployUnits.2 //@deployUnits.12 //@deployUnits.13 //@deployUnits.14 //@deployUnits.15" targetNodeType="//@typeDefinitions.14">
+</deployUnits>
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.corelibrary.sky" unitName="org.kevoree.library.sky.provider.api" version="2.0.0-SNAPSHOT" type="jar" targetNodeType="//@typeDefinitions.14">
+</deployUnits>
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.corelibrary.sky" unitName="org.kevoree.library.sky.provider" version="2.0.0-SNAPSHOT" hashcode="201303220030130" type="jar" requiredLibs="//@deployUnits.17 //@deployUnits.0 //@deployUnits.1 //@deployUnits.3 //@deployUnits.18 //@deployUnits.19 //@deployUnits.16 //@deployUnits.20 //@deployUnits.11 //@deployUnits.21 //@deployUnits.32 //@deployUnits.34 //@deployUnits.10 //@deployUnits.5 //@deployUnits.6 //@deployUnits.7 //@deployUnits.8 //@deployUnits.9 //@deployUnits.4 //@deployUnits.2 //@deployUnits.12 //@deployUnits.13 //@deployUnits.14 //@deployUnits.15" targetNodeType="//@typeDefinitions.14">
+</deployUnits>
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.corelibrary.javase" unitName="org.kevoree.library.javase.nanohttp" version="2.0.0-SNAPSHOT" hashcode="201303220027888" type="jar" requiredLibs="//@deployUnits.1 //@deployUnits.14 //@deployUnits.10 //@deployUnits.5 //@deployUnits.6 //@deployUnits.7 //@deployUnits.8 //@deployUnits.9 //@deployUnits.12 //@deployUnits.13 //@deployUnits.4 //@deployUnits.2 //@deployUnits.15" targetNodeType="//@typeDefinitions.14">
+</deployUnits>
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.corelibrary.javase" unitName="org.kevoree.library.javase.authentication" version="2.0.0-SNAPSHOT" hashcode="201303220027551" type="jar" requiredLibs="//@deployUnits.1 //@deployUnits.14 //@deployUnits.10 //@deployUnits.5 //@deployUnits.6 //@deployUnits.7 //@deployUnits.8 //@deployUnits.9 //@deployUnits.12 //@deployUnits.13 //@deployUnits.4 //@deployUnits.2 //@deployUnits.15" targetNodeType="//@typeDefinitions.14">
+</deployUnits>
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.corelibrary.javase" unitName="org.kevoree.library.javase.defaultChannels" version="2.0.0-SNAPSHOT" hashcode="201303220026679" type="jar" requiredLibs="//@deployUnits.14 //@deployUnits.10 //@deployUnits.5 //@deployUnits.6 //@deployUnits.7 //@deployUnits.8 //@deployUnits.9 //@deployUnits.1 //@deployUnits.12 //@deployUnits.13 //@deployUnits.4 //@deployUnits.2 //@deployUnits.15" targetNodeType="//@typeDefinitions.14">
+</deployUnits>
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.corelibrary.javase" unitName="org.kevoree.library.javase.swingUI" version="2.0.0-SNAPSHOT" hashcode="201303220024912" type="jar" requiredLibs="//@deployUnits.38 //@deployUnits.39 //@deployUnits.40 //@deployUnits.41 //@deployUnits.42 //@deployUnits.4 //@deployUnits.2 //@deployUnits.14 //@deployUnits.10 //@deployUnits.5 //@deployUnits.6 //@deployUnits.7 //@deployUnits.8 //@deployUnits.9 //@deployUnits.1 //@deployUnits.12 //@deployUnits.13 //@deployUnits.15" targetNodeType="//@typeDefinitions.14">
+</deployUnits>
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.extra" unitName="org.kevoree.extra.macwidgets" version="0.9.6" type="jar" targetNodeType="//@typeDefinitions.14">
+</deployUnits>
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="com.jgoodies" unitName="forms" version="1.2.1" type="jar" targetNodeType="//@typeDefinitions.14">
+</deployUnits>
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.tools" unitName="org.kevoree.tools.marShellGUI" version="2.0.0-SNAPSHOT" type="jar" targetNodeType="//@typeDefinitions.14">
+</deployUnits>
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.tools" unitName="org.kevoree.tools.marShell" version="2.0.0-SNAPSHOT" type="jar" targetNodeType="//@typeDefinitions.14">
+</deployUnits>
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.extra" unitName="org.kevoree.extra.jsyntaxpane" version="0.9.7" type="jar" targetNodeType="//@typeDefinitions.14">
+</deployUnits>
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.corelibrary.javase" unitName="org.kevoree.library.javase.fakeDomo" version="2.0.0-SNAPSHOT" hashcode="201303220026785" type="jar" requiredLibs="//@deployUnits.37 //@deployUnits.38 //@deployUnits.39 //@deployUnits.40 //@deployUnits.41 //@deployUnits.42 //@deployUnits.14 //@deployUnits.10 //@deployUnits.5 //@deployUnits.6 //@deployUnits.7 //@deployUnits.8 //@deployUnits.9 //@deployUnits.1 //@deployUnits.12 //@deployUnits.13 //@deployUnits.4 //@deployUnits.2 //@deployUnits.15" targetNodeType="//@typeDefinitions.14">
+</deployUnits>
+<groups xsi:type="kevoree:Group" name="webSocketGrp" metaData="x=50,y=50" typeDefinition="//@typeDefinitions.22" subNodes="//@nodes.0">
+</groups>
+<adaptationPrimitiveTypes xsi:type="kevoree:AdaptationPrimitiveType" name="UpdateFragmentBinding">
+</adaptationPrimitiveTypes>
+<adaptationPrimitiveTypes xsi:type="kevoree:AdaptationPrimitiveType" name="UpdateBinding">
+</adaptationPrimitiveTypes>
+<adaptationPrimitiveTypes xsi:type="kevoree:AdaptationPrimitiveType" name="UpdateDictionaryInstance">
+</adaptationPrimitiveTypes>
+<adaptationPrimitiveTypes xsi:type="kevoree:AdaptationPrimitiveType" name="RemoveThirdParty">
+</adaptationPrimitiveTypes>
+<adaptationPrimitiveTypes xsi:type="kevoree:AdaptationPrimitiveType" name="RemoveNode">
+</adaptationPrimitiveTypes>
+<adaptationPrimitiveTypes xsi:type="kevoree:AdaptationPrimitiveType" name="RemoveType">
+</adaptationPrimitiveTypes>
+<adaptationPrimitiveTypes xsi:type="kevoree:AdaptationPrimitiveType" name="RemoveInstance">
+</adaptationPrimitiveTypes>
+<adaptationPrimitiveTypes xsi:type="kevoree:AdaptationPrimitiveType" name="StartInstance">
+</adaptationPrimitiveTypes>
+<adaptationPrimitiveTypes xsi:type="kevoree:AdaptationPrimitiveType" name="UpdateType">
+</adaptationPrimitiveTypes>
+<adaptationPrimitiveTypes xsi:type="kevoree:AdaptationPrimitiveType" name="AddFragmentBinding">
+</adaptationPrimitiveTypes>
+<adaptationPrimitiveTypes xsi:type="kevoree:AdaptationPrimitiveType" name="StartThirdParty">
+</adaptationPrimitiveTypes>
+<adaptationPrimitiveTypes xsi:type="kevoree:AdaptationPrimitiveType" name="AddNode">
+</adaptationPrimitiveTypes>
+<adaptationPrimitiveTypes xsi:type="kevoree:AdaptationPrimitiveType" name="AddBinding">
+</adaptationPrimitiveTypes>
+<adaptationPrimitiveTypes xsi:type="kevoree:AdaptationPrimitiveType" name="RemoveBinding">
+</adaptationPrimitiveTypes>
+<adaptationPrimitiveTypes xsi:type="kevoree:AdaptationPrimitiveType" name="StopInstance">
+</adaptationPrimitiveTypes>
+<adaptationPrimitiveTypes xsi:type="kevoree:AdaptationPrimitiveType" name="UpdateDeployUnit">
+</adaptationPrimitiveTypes>
+<adaptationPrimitiveTypes xsi:type="kevoree:AdaptationPrimitiveType" name="UpdateInstance">
+</adaptationPrimitiveTypes>
+<adaptationPrimitiveTypes xsi:type="kevoree:AdaptationPrimitiveType" name="RemoveFragmentBinding">
+</adaptationPrimitiveTypes>
+<adaptationPrimitiveTypes xsi:type="kevoree:AdaptationPrimitiveType" name="RemoveDeployUnit">
+</adaptationPrimitiveTypes>
+<adaptationPrimitiveTypes xsi:type="kevoree:AdaptationPrimitiveType" name="AddDeployUnit">
+</adaptationPrimitiveTypes>
+<adaptationPrimitiveTypes xsi:type="kevoree:AdaptationPrimitiveType" name="AddThirdParty">
+</adaptationPrimitiveTypes>
+<adaptationPrimitiveTypes xsi:type="kevoree:AdaptationPrimitiveType" name="AddInstance">
+</adaptationPrimitiveTypes>
+<adaptationPrimitiveTypes xsi:type="kevoree:AdaptationPrimitiveType" name="AddType">
+</adaptationPrimitiveTypes>
+</kevoree:ContainerRoot>

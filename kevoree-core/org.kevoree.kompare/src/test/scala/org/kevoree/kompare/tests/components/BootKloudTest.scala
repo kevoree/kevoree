@@ -15,7 +15,7 @@ package org.kevoree.kompare.tests.components
 
 import org.junit.{Test, Before}
 import org.kevoree.framework.KevoreeXmiHelper
-import org.kevoree.kompare.KevoreeKompareBean
+import org.kevoree.kompare.{KevoreeScheduler, KevoreeKompareBean}
 import org.kevoree.kompare.tests.KompareSuite
 import org.scalatest.junit.AssertionsForJUnit
 
@@ -34,23 +34,34 @@ class BootKloudTest extends AssertionsForJUnit with KompareSuite {
   }
 
   @Test def verifyNoComponentMoved() {
-    var kompareModel = component.kompare(emptyModel, model("test_instance/bootKloudNode1.kev"), "node1")
+    val kompareModel = component.kompare(emptyModel, model("test_instance/bootKloudNode1.kev"), "node1")
     kompareModel.print
   }
 
   @Test def verifyThirdPartyInstall() {
-    var kompareModel = component.kompare(model("test_instance/preThirdParty.kev"), model("test_instance/postThirdParty.kev"), "node0")
+    val kompareModel = component.kompare(model("test_instance/preThirdParty.kev"), model("test_instance/postThirdParty.kev"), "node0")
     kompareModel.print
   }
 
   @Test def verify() {
-    var kompareModel = component.kompare(emptyModel, model("test_instance/editor_klout.kev"), "editor_node")
+    val kompareModel = component.kompare(emptyModel, model("test_instance/editor_klout.kev"), "editor_node")
     kompareModel.print
   }
 
   @Test def verify2() {
-    var kompareModel = component.kompare(model("test_instance/model0.kev"), model("test_instance/model1.kev"),"minicloud")
+    val kompareModel = component.kompare(model("test_instance/model0.kev"), model("test_instance/model1.kev"),"minicloud")
     kompareModel.print
   }
+
+  @Test def verifyChannel() {
+    val kompareModel = component.kompare(emptyModel, model("test_instance/channelBoot.kev"),"minicloud")
+    kompareModel.print
+  }
+
+  @Test def verifyChannel2() {
+    val kompareModel = component.kompare(emptyModel, model("test_instance/channel2Boot.kev"),"node0")
+    kompareModel.print
+  }
+
 
 }
