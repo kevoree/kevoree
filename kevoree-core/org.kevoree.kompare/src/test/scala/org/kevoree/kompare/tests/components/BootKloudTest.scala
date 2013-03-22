@@ -14,8 +14,7 @@
 package org.kevoree.kompare.tests.components
 
 import org.junit.{Test, Before}
-import org.kevoree.framework.KevoreeXmiHelper
-import org.kevoree.kompare.{KevoreeScheduler, KevoreeKompareBean}
+import org.kevoree.kompare.{KevoreeKompareBean}
 import org.kevoree.kompare.tests.KompareSuite
 import org.scalatest.junit.AssertionsForJUnit
 
@@ -60,6 +59,11 @@ class BootKloudTest extends AssertionsForJUnit with KompareSuite {
 
   @Test def verifyChannel2() {
     val kompareModel = component.kompare(emptyModel, model("test_instance/channel2Boot.kev"),"node0")
+    kompareModel.print
+  }
+
+  @Test def verifyChannel3() {
+    val kompareModel = component.kompare(model("test_instance/channel2Boot.kev"), model("test_instance/channel3Boot.kev"),"node0")
     kompareModel.print
   }
 
