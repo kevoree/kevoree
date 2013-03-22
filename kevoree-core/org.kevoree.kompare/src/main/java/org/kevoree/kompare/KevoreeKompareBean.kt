@@ -8,6 +8,8 @@ import org.slf4j.LoggerFactory
 import org.kevoree.serializer.ModelSerializer
 
 class KevoreeKompareBean: Kompare2, KevoreeScheduler {
+    override var step: ParallelStep? = null
+    override var currentStep: ParallelStep? = null
 
     val logger = LoggerFactory.getLogger(this.javaClass)!!
 
@@ -39,7 +41,6 @@ class KevoreeKompareBean: Kompare2, KevoreeScheduler {
 
         }
         //case empty Model
-
         if(updateLocalNode == null){
             updateLocalNode = factory.createContainerNode()
             updateLocalNode!!.setName(nodeName)
