@@ -151,13 +151,6 @@ trait KevoreeScheduler {
                     .filter{ adapt -> adapt.getPrimitiveType()!!.getName() == JavaSePrimitive.AddInstance })
 
 
-
-            println(adaptionModel.getAdaptations()
-                    .filter{ adapt -> adapt.getPrimitiveType()!!.getName() == JavaSePrimitive.AddInstance }.size)
-
-
-
-
             if (!step.getAdaptations().isEmpty()) {
                 step = adaptationModelFactory.createParallelStep()
                 currentStep.setNextStep(step)

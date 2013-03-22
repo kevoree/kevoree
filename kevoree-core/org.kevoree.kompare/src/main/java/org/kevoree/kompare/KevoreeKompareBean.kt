@@ -15,16 +15,6 @@ class KevoreeKompareBean: Kompare2, KevoreeScheduler {
 
     fun kompare(actualModel: ContainerRoot, targetModel: ContainerRoot, nodeName: String): AdaptationModel {
 
-        /* Temp */
-        /*
-        val se = ModelSerializer()
-        se.serialize(actualModel,System.out)
-        println("----")
-        se.serialize(targetModel,System.out)
-        */
-
-
-
         val factory = DefaultKevoreeFactory()
         val adaptationModelFactory = org.kevoreeAdaptation.impl.DefaultKevoreeAdaptationFactory()
         val adaptationModel = adaptationModelFactory.createAdaptationModel()
