@@ -92,17 +92,9 @@ class KevoreeAndroidBootStrap {
         try {
             coreBean = KevoreeCoreBean()
             coreBean!!.setNodeName(nodeName)
-            //val clazz = //clusterCL.loadClass("org.kevoree.tools.aether.framework.android.NodeTypeBootstrapHelper")
-            //val bootstraper = clazz.getConstructor(classOf[Context], classOf[ClassLoader]).newInstance(ctx, clusterCL).asInstanceOf[org.kevoree.api.Bootstraper]
-            //      val logbackService = new KevoreeLogbackService()
-
             val bootstraper = org.kevoree.tools.aether.framework.android.NodeTypeBootstrapHelper(ctx, clusterCL)
-
             logger.info("Starting Kevoree {}", factory.getVersion())
             bootstraper.setKevoreeLogService(StaticLoggerBinder.getSingleton()!!.getLoggerFactory() as KevoreeLogService)
-
-            // clazz.getMethod("setKevoreeLogService", classOf[KevoreeLogService]).invoke(bootstraper,logbackService);
-
             coreBean!!.setBootstraper(bootstraper as Bootstraper)
             coreBean!!.setKevsEngineFactory(object : KevScriptEngineFactory {
                 override fun createKevScriptEngine(): KevScriptEngine {
