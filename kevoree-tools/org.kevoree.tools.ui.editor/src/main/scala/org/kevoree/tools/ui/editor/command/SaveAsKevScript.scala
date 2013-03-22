@@ -49,6 +49,7 @@ import io.Source
 import java.io.{FileWriter, File}
 import scala.collection.JavaConversions._
 import collection.mutable
+import java.util
 
 
 /**
@@ -110,15 +111,19 @@ class SaveAsKevScript extends Command {
       }) + "'\n")
     }*/
 
+    val alreadyMerged : util.List[String] = new util.ArrayList[String]()
     currentModel.getNodes.foreach{
       node =>
-      node.getTypeDefinition.getDeployUnits.foreach {
-        deployUnit =>
-          scriptBuffer.append("merge 'mvn:"+deployUnit.getGroupName+"/"+deployUnit.getUnitName+"/"+deployUnit.getVersion + "'\n")
-      }
+        node.getTypeDefinition.getDeployUnits.foreach {
+          deployUnit =>  {
+            val deployUnitToMerge : String =  "merge 'mvn:"+deployUnit.getGroupName+"/"+deployUnit.getUnitName+"/"+deployUnit.getVersion + "'\n"
+            if(!alreadyMerged.contains(deployUnitToMerge)){
+              alreadyMerged.add(deployUnitToMerge)
+              scriptBuffer.append(deployUnitToMerge)
+            }
+          }
+        }
     }
-
-
 
     currentModel.getNodes.foreach(n => {
       val adapModel = kompareBean.kompare(emptyModel, currentModel, n.getName)

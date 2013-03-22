@@ -293,9 +293,10 @@ trait Kompare2 {
             val actualChannel = actualRoot.findByPath(updateChannel.path(), javaClass<Channel>())
             if(actualChannel == null){
                 processAddInstance(updateChannel, adaptationModel, updateRoot, updateTD)
+                /*
                 for(binding in updateChannel.getBindings()){
                     processAddMBinding(binding, adaptationModel, actualRoot, updateRoot)
-                }
+                }*/
             }
         }
         alreadyProcessInstance.put(updateChannel!!.path(), updateChannel)

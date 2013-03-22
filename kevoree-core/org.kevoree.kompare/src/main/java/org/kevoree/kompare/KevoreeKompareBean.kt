@@ -5,6 +5,7 @@ import org.kevoreeAdaptation.*
 import org.kevoree.kompare.sub.Kompare2
 import org.kevoree.impl.DefaultKevoreeFactory
 import org.slf4j.LoggerFactory
+import org.kevoree.serializer.ModelSerializer
 
 class KevoreeKompareBean: Kompare2, KevoreeScheduler {
 

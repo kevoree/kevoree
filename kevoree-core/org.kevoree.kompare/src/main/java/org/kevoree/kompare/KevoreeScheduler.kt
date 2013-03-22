@@ -12,6 +12,9 @@ import org.kevoree.kompare.scheduling.SchedulingWithTopologicalOrderAlgo
 
 trait KevoreeScheduler {
 
+
+
+
     fun plan(adaptionModel: AdaptationModel, nodeName: String): AdaptationModel {
         if (!adaptionModel.getAdaptations().isEmpty()) {
 
@@ -126,6 +129,8 @@ trait KevoreeScheduler {
             // ADD DeployUnit
             step.addAllAdaptations(adaptionModel.getAdaptations()
                     .filter{ adapt -> adapt.getPrimitiveType()!!.getName() == JavaSePrimitive.AddDeployUnit })
+
+
             if (!step.getAdaptations().isEmpty()) {
                 step = adaptationModelFactory.createParallelStep()
                 currentStep.setNextStep(step)
@@ -144,6 +149,8 @@ trait KevoreeScheduler {
             // ADD Instances
             step.addAllAdaptations(adaptionModel.getAdaptations()
                     .filter{ adapt -> adapt.getPrimitiveType()!!.getName() == JavaSePrimitive.AddInstance })
+
+
             if (!step.getAdaptations().isEmpty()) {
                 step = adaptationModelFactory.createParallelStep()
                 currentStep.setNextStep(step)
