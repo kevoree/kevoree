@@ -439,7 +439,7 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
                             }
                             //Executes the adaptation
                             val afterUpdateTest: ()->Boolean = {()-> true }
-                            val rootNode = newmodel.findNodesByID(getNodeName())
+                            val rootNode = currentModel.findNodesByID(getNodeName())
                             org.kevoree.framework.deploy.PrimitiveCommandExecutionHelper.execute(rootNode!!, adaptationModel, nodeInstance!!, afterUpdateTest, afterUpdateTest, afterUpdateTest)
                             nodeInstance?.stopNode()
                             //end of harakiri
