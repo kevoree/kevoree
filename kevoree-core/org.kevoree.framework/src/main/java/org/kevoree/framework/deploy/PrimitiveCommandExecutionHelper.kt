@@ -13,21 +13,18 @@
  */
 package org.kevoree.framework.deploy
 
-import org.kevoreeAdaptation.ParallelStep
-import org.kevoreeAdaptation.AdaptationModel
-import org.kevoree.api.NodeType
-import org.kevoree.api.NodeType
-import org.slf4j.LoggerFactory
 import java.util
-import java.util.concurrent.atomic.AtomicInteger
-import java.util.concurrent.Callable
-import java.util.concurrent.ThreadFactory
-import org.kevoree.ContainerNode
-import org.kevoree.api.PrimitiveCommand
-import java.util.concurrent.TimeUnit
 import java.util.ArrayList
-import org.slf4j.Logger
+import java.util.concurrent.Callable
+import java.util.concurrent.TimeUnit
 import org.kevoree.AdaptationPrimitiveTypeRef
+import org.kevoree.ContainerNode
+import org.kevoree.api.NodeType
+import org.kevoree.api.PrimitiveCommand
+import org.kevoreeAdaptation.AdaptationModel
+import org.kevoreeAdaptation.ParallelStep
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 /**
  * Created by IntelliJ IDEA.
@@ -72,7 +69,7 @@ object PrimitiveCommandExecutionHelper {
                 logger.debug("Populate primitive => " + primitive)
                 try {
                     val nodeType = rootNode.getTypeDefinition() as org.kevoree.NodeType
-                    val aTypeRef = nodeType.getManagedPrimitiveTypeRefs().find{ (ref : AdaptationPrimitiveTypeRef) : Boolean -> ref.getRef()?.getName() == adapt.getPrimitiveType()?.getName() }
+                    val aTypeRef = nodeType.getManagedPrimitiveTypeRefs().find{(ref: AdaptationPrimitiveTypeRef) : Boolean -> ref.getRef()?.getName() == adapt.getPrimitiveType()?.getName() }
                     if (aTypeRef != null) {
                         phase.setMaxTime(java.lang.Long.parseLong(aTypeRef.getMaxTime()))
                     }
@@ -123,7 +120,7 @@ object PrimitiveCommandExecutionHelper {
             maxTimeout = Math.max(maxTimeout, mt)
         }
         var sucessor: KevoreeParDeployPhase? = null
-        class Worker( val primitive: PrimitiveCommand ) : Callable<Boolean> {
+        class Worker(val primitive: PrimitiveCommand): Callable<Boolean> {
             override fun call(): Boolean {
                 try {
                     var result = primitive.execute()
@@ -149,6 +146,7 @@ object PrimitiveCommandExecutionHelper {
                     workers.add(Worker(primitive))
                 }
                 try {
+                    logger.debug("Timeout = {}", timeout)
                     val futures = pool.invokeAll(workers, timeout, TimeUnit.MILLISECONDS)
                     futures.all { f ->
                         f.isDone() && ( f.get() as Boolean )
@@ -159,52 +157,52 @@ object PrimitiveCommandExecutionHelper {
                     pool.shutdownNow()
                 }
             }
-    }
-
-    fun populate(cmd: PrimitiveCommand) {
-        primitives.add(cmd)
-        rollbackPerformed = false
-    }
-
-    fun runPhase(): Boolean {
-        if (primitives.size == 0) {
-            logger.debug("Empty phase !!!")
-            return true
         }
-        val watchdogTimeout = System.getProperty("node.update.timeout")
-        var watchDogTimeoutInt = maxTimeout
-        if (watchdogTimeout != null) {
-            try {
-                watchDogTimeoutInt = Integer.parseInt(watchdogTimeout.toString()).toLong()
-            } catch (e: Exception) {
-                logger.warn("Invalid value for node.update.timeout system property (must be an integer)!")
+
+        fun populate(cmd: PrimitiveCommand) {
+            primitives.add(cmd)
+            rollbackPerformed = false
+        }
+
+        fun runPhase(): Boolean {
+            if (primitives.size == 0) {
+                logger.debug("Empty phase !!!")
+                return true
             }
-        }
-        return executeAllWorker(primitives, watchDogTimeoutInt)
-    }
-
-    var rollbackPerformed = false
-
-    fun rollBack() {
-        logger.debug("Rollback phase")
-        if (sucessor != null) {
-            logger.debug("Rollback sucessor first")
-            sucessor?.rollBack()
-        }
-        if(!rollbackPerformed){
-            // SEQUENCIAL ROOLBACK
-            primitives.reverse().forEach{ c ->
+            val watchdogTimeout = System.getProperty("node.update.timeout")
+            var watchDogTimeoutInt = maxTimeout
+            if (watchdogTimeout != null) {
                 try {
-                    logger.debug("Undo adaptation command " + c.javaClass)
-                    c.undo()
+                    watchDogTimeoutInt = Math.max(watchDogTimeoutInt, Integer.parseInt(watchdogTimeout.toString()).toLong())
                 } catch (e: Exception) {
-                    logger.warn("Exception during rollback", e)
+                    logger.warn("Invalid value for node.update.timeout system property (must be an integer)!")
                 }
             }
-            rollbackPerformed = true
+            return executeAllWorker(primitives, watchDogTimeoutInt)
+        }
+
+        var rollbackPerformed = false
+
+        fun rollBack() {
+            logger.debug("Rollback phase")
+            if (sucessor != null) {
+                logger.debug("Rollback sucessor first")
+                sucessor?.rollBack()
+            }
+            if(!rollbackPerformed){
+                // SEQUENCIAL ROOLBACK
+                primitives.reverse().forEach{ c ->
+                    try {
+                        logger.debug("Undo adaptation command " + c.javaClass)
+                        c.undo()
+                    } catch (e: Exception) {
+                        logger.warn("Exception during rollback", e)
+                    }
+                }
+                rollbackPerformed = true
+            }
         }
     }
-}
 
 
 }

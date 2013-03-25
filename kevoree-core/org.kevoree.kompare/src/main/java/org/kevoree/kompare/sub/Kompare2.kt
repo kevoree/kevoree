@@ -35,7 +35,6 @@ trait Kompare2 {
     fun getUpdateNodeAdaptationModel(actualNode: ContainerNode, updateNode: ContainerNode): AdaptationModel {
 
         val alreadyProcessInstance = HashMap<String, Any>()
-        val kevoreeFactory = org.kevoree.impl.DefaultKevoreeFactory()
         val adaptationModel = adaptationModelFactory.createAdaptationModel()
         val actualRoot = actualNode.eContainer() as ContainerRoot
         val updateRoot = updateNode.eContainer() as ContainerRoot
@@ -43,8 +42,16 @@ trait Kompare2 {
         val actualTD: MutableSet<String> = java.util.HashSet<String>()
         val updateTD: MutableSet<String> = java.util.HashSet<String>()
 
+        val updatedTypeDefs: MutableSet<String> = java.util.HashSet<String>()
+
+        val actualChannels = HashSet<String>()
+        val newChannels = HashSet<String>()
+
+
         //Check Node SelfUpdate
         processInstanceDictionary(actualNode, updateNode, adaptationModel, actualRoot, updateRoot)
+
+
 
         //Check Remove
         for(actualComponent in actualNode.getComponents()){
@@ -56,17 +63,20 @@ trait Kompare2 {
                     for(binding in port.getBindings()){
                         processRemoveMBinding(binding, adaptationModel, actualRoot)
                         processCheckRemoveChannel(binding.getHub(), adaptationModel, actualRoot, actualTD, alreadyProcessInstance)
+                        actualChannels.add(binding.getHub()!!.getName())
                     }
                 }
                 for(port in actualComponent.getRequired()){
                     for(binding in port.getBindings()){
                         processRemoveMBinding(binding, adaptationModel, actualRoot)
                         processCheckRemoveChannel(binding.getHub(), adaptationModel, actualRoot, actualTD, alreadyProcessInstance)
+                        actualChannels.add(binding.getHub()!!.getName())
                     }
                 }
                 alreadyProcessInstance.put(actualComponent.path(), actualComponent)
             }
         }
+
         for(updatedComponent in updateNode.getComponents()){
             val updatedComponentPath = updatedComponent.path()!!
             val actualComponent = actualRoot.findByPath(updatedComponentPath, javaClass<ComponentInstance>())
@@ -76,21 +86,25 @@ trait Kompare2 {
                     for(binding in port.getBindings()){
                         processAddMBinding(binding, adaptationModel, actualRoot, updateRoot)
                         processCheckAddChannel(binding.getHub(), adaptationModel, actualRoot, updateRoot, updateTD, alreadyProcessInstance)
+                        newChannels.add(binding.getHub()!!.getName())
                     }
                 }
                 for(port in updatedComponent.getRequired()){
                     for(binding in port.getBindings()){
                         processAddMBinding(binding, adaptationModel, actualRoot, updateRoot)
                         processCheckAddChannel(binding.getHub(), adaptationModel, actualRoot, updateRoot, updateTD, alreadyProcessInstance)
+                        newChannels.add(binding.getHub()!!.getName())
                     }
                 }
                 alreadyProcessInstance.put(updatedComponent.path(), updatedComponent)
             } else {
-                processCheckUpdateInstance(actualComponent, updatedComponent, adaptationModel, actualRoot, actualTD, updateTD, updateRoot)
-                val channelsResults = checkBindings(actualComponent.getProvided(), updatedComponent.getProvided(), adaptationModel, actualRoot, updateRoot)
-                checkChannels(channelsResults.get(0), channelsResults.get(1), adaptationModel, actualRoot, updateRoot, actualNode.getName(), actualTD, updateTD, alreadyProcessInstance)
+                processCheckUpdateInstance(actualComponent, updatedComponent, adaptationModel, actualRoot, actualTD, updateTD, updateRoot, actualNode.getName(),updatedTypeDefs)
+                checkBindings(actualChannels,newChannels,actualComponent.getProvided(), updatedComponent.getProvided(), adaptationModel, actualRoot, updateRoot)
             }
         }
+
+        checkChannels(actualChannels, newChannels, adaptationModel, actualRoot, updateRoot, actualNode.getName(), actualTD, updateTD, alreadyProcessInstance,updatedTypeDefs)
+
 
         //TODO BETTER Group Search with opposite usage
         for(actualGroup in actualRoot.getGroups()){
@@ -108,7 +122,7 @@ trait Kompare2 {
                     processAddInstance(updateGroup, adaptationModel, updateRoot, updateTD)
                 } else {
                     //Check dictionary
-                    processCheckUpdateInstance(actualGroup, updateGroup, adaptationModel, actualRoot, actualTD, updateTD, updateRoot)
+                    processCheckUpdateInstance(actualGroup, updateGroup, adaptationModel, actualRoot, actualTD, updateTD, updateRoot, actualNode.getName(),updatedTypeDefs)
                     if(actualGroup.getSubNodes().size != updateGroup.getSubNodes().size){
                         val ccmd = adaptationModelFactory.createAdaptationPrimitive()
                         ccmd.setPrimitiveType(actualRoot.findAdaptationPrimitiveTypesByID(JavaSePrimitive.UpdateDictionaryInstance))
@@ -228,8 +242,7 @@ trait Kompare2 {
     }
 
 
-    fun checkBindings(actualPorts: List<Port>, updatePorts: List<Port>, adaptationModel: AdaptationModel, actualRoot: ContainerRoot, updateRoot: ContainerRoot): List<List<String>> {
-        val checkedChannels = HashSet<String>()
+    fun checkBindings(actualChannel : HashSet<String>,newChannel : HashSet<String>,actualPorts: List<Port>, updatePorts: List<Port>, adaptationModel: AdaptationModel, actualRoot: ContainerRoot, updateRoot: ContainerRoot) {
         for(aPort in actualPorts){
             for(aBinding in aPort.getBindings()){
                 @beforeFoundSibling for(uPort in updatePorts){
@@ -242,13 +255,13 @@ trait Kompare2 {
                         processRemoveMBinding(aBinding, adaptationModel, actualRoot)
                     }
                 }
-                checkedChannels.add(aBinding.getHub()!!.getName())
+                actualChannel.add(aBinding.getHub()!!.getName())
             }
         }
         val checkedChannels2 = HashSet<String>()
         for(uPort in updatePorts){
             for(uBinding in uPort.getBindings()){
-                if(!checkedChannels.contains(uBinding.getHub()!!.getName())){
+                if(!actualChannel.contains(uBinding.getHub()!!.getName())){
                     @beforeFoundSibling for(aPort in actualPorts){
                         if(aPort.getPortTypeRef()!!.getName() == uPort.getPortTypeRef()!!.getName()){
                             for(aBinding in aPort.getBindings()){
@@ -260,13 +273,9 @@ trait Kompare2 {
                         }
                     }
                 }
-                checkedChannels2.add(uBinding.getHub()!!.getName())
+                newChannel.add(uBinding.getHub()!!.getName())
             }
         }
-        val resultSet = ArrayList<List<String>>()
-        resultSet.add(checkedChannels.toList())
-        resultSet.add(checkedChannels2.toList())
-        return resultSet.toList()
     }
 
     fun processCheckRemoveChannel(actualChannel: Channel?, adaptationModel: AdaptationModel, actualRoot: ContainerRoot, actualTD: MutableSet<String>, alreadyProcessInstance: HashMap<String, Any>) {
@@ -293,10 +302,6 @@ trait Kompare2 {
             val actualChannel = actualRoot.findByPath(updateChannel.path(), javaClass<Channel>())
             if(actualChannel == null){
                 processAddInstance(updateChannel, adaptationModel, updateRoot, updateTD)
-                /*
-                for(binding in updateChannel.getBindings()){
-                    processAddMBinding(binding, adaptationModel, actualRoot, updateRoot)
-                }*/
             }
         }
         alreadyProcessInstance.put(updateChannel!!.path(), updateChannel)
@@ -350,16 +355,18 @@ trait Kompare2 {
         updatedTD.add(updatedInstance.getTypeDefinition()!!.getName())
     }
 
-    fun processCheckUpdateInstance(actualInstance: Instance, updatedInstance: Instance, adaptationModel: AdaptationModel, actualRoot: ContainerRoot, actualUsedTD: MutableSet<String>, updateTD: MutableSet<String>, updateRoot: ContainerRoot) {
+    fun processCheckUpdateInstance(actualInstance: Instance, updatedInstance: Instance, adaptationModel: AdaptationModel, actualRoot: ContainerRoot, actualUsedTD: MutableSet<String>, updateTD: MutableSet<String>, updateRoot: ContainerRoot, nodeName: String, updateInstances : MutableSet<String>) : Boolean {
         processInstanceDictionary(actualInstance, updatedInstance, adaptationModel, actualRoot, updateRoot)
         actualUsedTD.add(actualInstance.getTypeDefinition()!!.getName())
         updateTD.add(updatedInstance.getTypeDefinition()!!.getName())
-
+        var isUpdated = false
         val TDAspect = TypeDefinitionAspect()
         if(TDAspect.isUpdated(actualInstance.getTypeDefinition()!!, updatedInstance.getTypeDefinition()!!)){
+            isUpdated = true
+            updateInstances.add(actualInstance.getName())
             if(actualInstance is Channel){
                 for(binding in (actualInstance as Channel).getBindings()){
-                    checkUpdateOrRemove(binding, (updatedInstance as Channel).getBindings(), adaptationModel, actualRoot)
+                    checkUpdateOrRemove(binding, (updatedInstance as Channel).getBindings(), adaptationModel, actualRoot, nodeName)
                 }
             }
             if(actualInstance is ComponentInstance){
@@ -369,14 +376,14 @@ trait Kompare2 {
                     for(p in newComponentInstance.getProvided()){
                         if(p.getPortTypeRef()!!.getName().equals(port.getPortTypeRef()!!.getName())){
                             for(binding in port.getBindings()){
-                                checkUpdateOrRemove(binding, p.getBindings(), adaptationModel, actualRoot)
+                                checkUpdateOrRemove(binding, p.getBindings(), adaptationModel, actualRoot, nodeName)
                                 foundedPort = true
                             }
                         }
                     }
                     if(!foundedPort){
                         for(binding in port.getBindings()){
-                            checkUpdateOrRemove(binding, ArrayList<MBinding>(), adaptationModel, actualRoot)
+                            checkUpdateOrRemove(binding, ArrayList<MBinding>(), adaptationModel, actualRoot, nodeName)
                         }
                     }
                 }
@@ -386,14 +393,14 @@ trait Kompare2 {
                     for(p in newComponentInstance.getRequired()){
                         if(p.getPortTypeRef()!!.getName().equals(port.getPortTypeRef()!!.getName())){
                             for(binding in port.getBindings()){
-                                checkUpdateOrRemove(binding, p.getBindings(), adaptationModel, actualRoot)
+                                checkUpdateOrRemove(binding, p.getBindings(), adaptationModel, actualRoot, nodeName)
                                 foundedPort = true
                             }
                         }
                     }
                     if(!foundedPort){
                         for(binding in port.getBindings()){
-                            checkUpdateOrRemove(binding, ArrayList<MBinding>(), adaptationModel, actualRoot)
+                            checkUpdateOrRemove(binding, ArrayList<MBinding>(), adaptationModel, actualRoot, nodeName)
                         }
                     }
                 }
@@ -404,9 +411,13 @@ trait Kompare2 {
             ccmd3.setRef(res)
             adaptationModel.addAdaptations(ccmd3)
         }
+        return isUpdated
     }
 
-    fun checkUpdateOrRemove(binding: MBinding, bindings: List<MBinding>, adaptationModel: AdaptationModel, model: ContainerRoot) {
+    fun checkUpdateOrRemove(binding: MBinding, bindings: List<MBinding>, adaptationModel: AdaptationModel, model: ContainerRoot, nodeName: String) {
+        if( (binding.getPort()!!.eContainer()!!.eContainer() as ContainerNode).getName() != nodeName){
+            return
+        }
         val ccmd = adaptationModelFactory.createAdaptationPrimitive()
         var foundInNew = false
         @lookB for(newBinding in bindings){
@@ -476,7 +487,8 @@ trait Kompare2 {
         adaptationModel.addAdaptations(ccmd)
     }
 
-    fun checkChannels(actualChannelName: List<String>, updateChannelName: List<String>, adaptationModel: AdaptationModel, actualRoot: ContainerRoot, updateRoot: ContainerRoot, nodeName: String, actualTD: MutableSet<String>, updateTD: MutableSet<String>, alreadyChecked: HashMap<String, Any>) {
+    fun checkChannels(actualChannelName: Set<String>, updateChannelName: Set<String>, adaptationModel: AdaptationModel, actualRoot: ContainerRoot, updateRoot: ContainerRoot, nodeName: String, actualTD: MutableSet<String>, updateTD: MutableSet<String>, alreadyChecked: HashMap<String, Any>,updatedTypeDefs : MutableSet<String>) {
+
         val channelAspect = ChannelAspect()
         for(ch1 in actualChannelName){
             val ch2 = updateRoot.findHubsByID(ch1)
@@ -499,15 +511,15 @@ trait Kompare2 {
                 processCheckAddChannel(updateRoot.findHubsByID(ch1), adaptationModel, actualRoot, updateRoot, updateTD, alreadyChecked)
                 for(remote in channelAspect.getConnectedNode(channelOrigin, nodeName)){
                     val addccmd = adaptationModelFactory.createAdaptationPrimitive()
-                    addccmd.setPrimitiveType(actualRoot.findAdaptationPrimitiveTypesByID(JavaSePrimitive.AddFragmentBinding))
+                    addccmd.setPrimitiveType(updateRoot.findAdaptationPrimitiveTypesByID(JavaSePrimitive.AddFragmentBinding))
                     addccmd.setRef(channelOrigin)
                     addccmd.setTargetNodeName(remote.getName())
                     adaptationModel.addAdaptations(addccmd)
                 }
             } else {
-                processCheckUpdateInstance(actualRoot.findHubsByID(ch1), ch2, adaptationModel, actualRoot, actualTD, updateTD, updateRoot)
+                processCheckUpdateInstance(actualRoot.findHubsByID(ch1), updateRoot.findHubsByID(ch1), adaptationModel, actualRoot, actualTD, updateTD, updateRoot, nodeName,updatedTypeDefs)
                 val remotesUpdate = channelAspect.getConnectedNode(channelOrigin, nodeName)
-                val remotesActual = channelAspect.getConnectedNode(ch2, nodeName)
+                val remotesActual = channelAspect.getConnectedNode(updateRoot.findHubsByID(ch1), nodeName)
                 for(remoteUpdate in remotesUpdate){
                     var found = false
                     @beforeFound for(remoteActual in remotesActual){
@@ -518,7 +530,7 @@ trait Kompare2 {
                     }
                     if(!found){
                         val addccmd = adaptationModelFactory.createAdaptationPrimitive()
-                        addccmd.setPrimitiveType(actualRoot.findAdaptationPrimitiveTypesByID(JavaSePrimitive.AddFragmentBinding))
+                        addccmd.setPrimitiveType(updateRoot.findAdaptationPrimitiveTypesByID(JavaSePrimitive.AddFragmentBinding))
                         addccmd.setRef(channelOrigin)
                         addccmd.setTargetNodeName(remoteUpdate.getName())
                         adaptationModel.addAdaptations(addccmd)
@@ -538,13 +550,19 @@ trait Kompare2 {
                         addccmd.setRef(channelOrigin)
                         addccmd.setTargetNodeName(remoteActual.getName())
                         adaptationModel.addAdaptations(addccmd)
+                    } else {
+                        //If channel update
+                        if(updatedTypeDefs.contains(channelOrigin.getName())){
+                            val addccmd = adaptationModelFactory.createAdaptationPrimitive()
+                            addccmd.setPrimitiveType(updateRoot.findAdaptationPrimitiveTypesByID(JavaSePrimitive.UpdateFragmentBinding))
+                            addccmd.setRef(channelOrigin)
+                            addccmd.setTargetNodeName(remoteActual.getName())
+                            adaptationModel.addAdaptations(addccmd)
+                        }
                     }
                 }
-
-
             }
         }
 
     }
-
 }

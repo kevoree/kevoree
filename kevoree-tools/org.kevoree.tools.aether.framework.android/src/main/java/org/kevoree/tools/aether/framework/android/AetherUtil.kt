@@ -69,7 +69,6 @@ object AetherUtil : AetherFramework {
     override fun getRepositorySystemSession(): RepositorySystemSession {
         val session = MavenRepositorySystemSession()
         session.setUpdatePolicy(RepositoryPolicy.UPDATE_POLICY_ALWAYS)
-        session.setConfigProperty("aether.connector.ahc.provider", "jdk")
         session.setLocalRepositoryManager(getRepositorySystem()!!.newLocalRepositoryManager(LocalRepository(System.getProperty("user.home").toString() + "/.m2/repository")))
         session.getConfigProperties()!!.put(ConfigurationProperties.REQUEST_TIMEOUT, 20000 as Int)
         session.getConfigProperties()!!.put(ConfigurationProperties.CONNECT_TIMEOUT, 1000 as Int)
@@ -80,7 +79,6 @@ object AetherUtil : AetherFramework {
         locator.setService(javaClass<RepositoryCache>(), javaClass<NoopCache>())
         locator.setService(javaClass<LocalRepositoryManagerFactory>(), javaClass<SimpleLocalRepositoryManagerFactory>())
         locator.setService(javaClass<RepositoryConnectorFactory>(), javaClass<FileRepositoryConnectorFactory>())
-        locator.setService(javaClass<RepositoryConnectorFactory>(), javaClass<AsyncRepositoryConnectorFactory>())
         locator.setServices(javaClass<WagonProvider>(), ManualWagonProvider())
         locator.addService(javaClass<RepositoryConnectorFactory>(), javaClass<WagonRepositoryConnectorFactoryFork>())
         return locator.getService(javaClass<RepositorySystem>())

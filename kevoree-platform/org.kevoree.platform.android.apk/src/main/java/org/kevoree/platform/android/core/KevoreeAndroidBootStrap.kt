@@ -92,17 +92,9 @@ class KevoreeAndroidBootStrap {
         try {
             coreBean = KevoreeCoreBean()
             coreBean!!.setNodeName(nodeName)
-            //val clazz = //clusterCL.loadClass("org.kevoree.tools.aether.framework.android.NodeTypeBootstrapHelper")
-            //val bootstraper = clazz.getConstructor(classOf[Context], classOf[ClassLoader]).newInstance(ctx, clusterCL).asInstanceOf[org.kevoree.api.Bootstraper]
-            //      val logbackService = new KevoreeLogbackService()
-
             val bootstraper = org.kevoree.tools.aether.framework.android.NodeTypeBootstrapHelper(ctx, clusterCL)
-
             logger.info("Starting Kevoree {}", factory.getVersion())
             bootstraper.setKevoreeLogService(StaticLoggerBinder.getSingleton()!!.getLoggerFactory() as KevoreeLogService)
-
-            // clazz.getMethod("setKevoreeLogService", classOf[KevoreeLogService]).invoke(bootstraper,logbackService);
-
             coreBean!!.setBootstraper(bootstraper as Bootstraper)
             coreBean!!.setKevsEngineFactory(object : KevScriptEngineFactory {
                 override fun createKevScriptEngine(): KevScriptEngine {
@@ -138,8 +130,12 @@ class KevoreeAndroidBootStrap {
             bootstraper.registerManuallyDeployUnit("cglib-nodep", "cglib", "2.2.2", dummyKCL)
             bootstraper.registerManuallyDeployUnit("slf4j-api", "org.slf4j", "1.6.4", dummyKCL)
             bootstraper.registerManuallyDeployUnit("slf4j-api", "org.slf4j", "1.6.2", dummyKCL)
+            bootstraper.registerManuallyDeployUnit("slf4j-api", "org.slf4j", "1.7.2", dummyKCL)
             bootstraper.registerManuallyDeployUnit("objenesis", "org.objenesis", "1.2", dummyKCL)
             bootstraper.registerManuallyDeployUnit("jgrapht-jdk1.5", "org.jgrapht", "0.7.3", dummyKCL)
+            bootstraper.registerManuallyDeployUnit("kotlin-runtime", "org.jetbrains.kotlin", "0.5.162", dummyKCL);
+            bootstraper.registerManuallyDeployUnit("kotlin-stdlib", "org.jetbrains.kotlin", "0.5.162", dummyKCL);
+
 
             bootstraper.registerManuallyDeployUnit("org.kevoree.adaptation.model", "org.kevoree", factory.getVersion(), dummyKCL)
             bootstraper.registerManuallyDeployUnit("org.kevoree.api", "org.kevoree", factory.getVersion(), dummyKCL)
