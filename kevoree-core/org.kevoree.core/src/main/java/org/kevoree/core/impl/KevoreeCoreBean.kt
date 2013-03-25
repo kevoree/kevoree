@@ -454,7 +454,7 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
                             //prepares for deployment of the new system
                             newmodel = readOnlyNewModel
                         } catch(e: Exception) {
-                            logger.error("Error while update ", e)
+                            logger.error("Error while update ", e);return false
                         }
                         logger.debug("End HaraKiri")
                     }
