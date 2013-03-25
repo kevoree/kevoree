@@ -59,6 +59,10 @@ trait TempFileCacheManager {
             val jarStream = FileInputStream(jarArtifact.getFile()!!);
             FileNIOHelper.copyFile(jarStream, lastTempFile)
             jarStream.close()
+            lastTempFile.setLastModified(jarArtifact.getFile()!!.lastModified())
+            lastTempFile.setExecutable(jarArtifact.getFile()!!.canExecute())
+            lastTempFile.setReadable(jarArtifact.getFile()!!.canRead())
+            lastTempFile.setWritable(jarArtifact.getFile()!!.canWrite())
             logger.debug("Cache File for " + jarArtifact.getArtifactId() + " - " + lastTempFile.getAbsolutePath())
             return lastTempFile
         } catch(e: Exception) {
