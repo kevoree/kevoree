@@ -68,4 +68,20 @@ class BootKloudTest extends AssertionsForJUnit with KompareSuite {
   }
 
 
+  @Test def verifyChannelStart() {
+    val kompareModel = component.kompare(emptyModel, model("test_instance/conf_ws_chan.kvm"),"node2")
+    kompareModel.print
+  }
+
+  /* */
+  @Test def verifyBinding() {
+    val kompareModel = component.kompare(model("test_kloud/model0.kev"), model("test_kloud/model1.kev"),"node0")
+    kompareModel.print
+  }
+
+
+
+
+
+
 }
