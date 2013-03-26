@@ -21,7 +21,6 @@
     </properties>
 
     <dependencies>
-        <!--
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
             <artifactId>kotlin-runtime</artifactId>
@@ -32,22 +31,50 @@
             <artifactId>kotlin-stdlib</artifactId>
             <version>0.5.162</version>
         </dependency>
-        -->
-
         <dependency>
             <groupId>org.kevoree.corelibrary.android</groupId>
             <artifactId>org.kevoree.library.android.nodeType</artifactId>
             <version>${kevoree.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.jetbrains.kotlin</groupId>
+                    <artifactId>kotlin-runtime</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.jetbrains.kotlin</groupId>
+                    <artifactId>kotlin-stdlib</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.kevoree.corelibrary.android</groupId>
             <artifactId>org.kevoree.library.android.jexxus</artifactId>
             <version>${kevoree.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.jetbrains.kotlin</groupId>
+                    <artifactId>kotlin-runtime</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.jetbrains.kotlin</groupId>
+                    <artifactId>kotlin-stdlib</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.kevoree.corelibrary.android</groupId>
             <artifactId>org.kevoree.library.android.basicGossiper</artifactId>
             <version>${kevoree.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.jetbrains.kotlin</groupId>
+                    <artifactId>kotlin-runtime</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.jetbrains.kotlin</groupId>
+                    <artifactId>kotlin-stdlib</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.google.android</groupId>
@@ -227,7 +254,6 @@
                     </execution>
                 </executions>
             </plugin>
-
             <plugin>
                 <groupId>com.jayway.maven.plugins.android.generation2</groupId>
                 <artifactId>android-maven-plugin</artifactId>

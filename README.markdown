@@ -12,3 +12,7 @@
 ###[> Context model](https://github.com/dukeboard/kevoree/blob/master/kevoree-core/org.kevoree.model.context/doc/kevoree_:_context_model.md)
 
 ###[> Kevoree Modeling Framework Query Langage](https://github.com/dukeboard/kevoree-modeling-framework/blob/master/doc/kmf_path.md)
+
+## 2. Library documentation
+
+###[> Group for synchronisation (WebSocket)](https://github.com/dukeboard/kevoree/blob/master/kevoree-corelibrary/javase/org.kevoree.library.javase.webSocketGrp/README.md)

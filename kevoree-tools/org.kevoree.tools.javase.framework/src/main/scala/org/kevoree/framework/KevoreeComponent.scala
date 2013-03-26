@@ -26,13 +26,7 @@ package org.kevoree.framework
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
-import org.kevoree.framework.message._
- import org.slf4j.LoggerFactory
+import org.slf4j.LoggerFactory
 import org.kevoree.ContainerRoot
 
 abstract class KevoreeComponent(c: AbstractComponentType) /*extends KevoreeActor*/ extends KInstance {
