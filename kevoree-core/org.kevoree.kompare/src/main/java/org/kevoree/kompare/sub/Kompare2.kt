@@ -100,6 +100,7 @@ trait Kompare2 {
             } else {
                 processCheckUpdateInstance(actualComponent, updatedComponent, adaptationModel, actualRoot, actualTD, updateTD, updateRoot, actualNode.getName(),updatedTypeDefs)
                 checkBindings(actualChannels,newChannels,actualComponent.getProvided(), updatedComponent.getProvided(), adaptationModel, actualRoot, updateRoot)
+                checkBindings(actualChannels,newChannels,actualComponent.getRequired(), updatedComponent.getRequired(), adaptationModel, actualRoot, updateRoot)
             }
         }
 
