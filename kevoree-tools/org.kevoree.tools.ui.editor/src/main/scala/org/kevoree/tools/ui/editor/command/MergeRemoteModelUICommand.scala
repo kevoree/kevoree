@@ -44,8 +44,10 @@
 
 package org.kevoree.tools.ui.editor.command
 
-import java.net.URL
+import java.net.{URI, URL}
 import javax.swing.JOptionPane
+import org.java_websocket.client.WebSocketClient
+import org.java_websocket.handshake.ServerHandshake
 import org.kevoree.framework.KevoreeXmiHelper
 import org.kevoree.tools.ui.editor.{PositionedEMFHelper, KevoreeUIKernel}
 import org.slf4j.LoggerFactory
@@ -55,6 +57,7 @@ import jexxus.client.ClientConnection
 import jexxus.common.{Delivery, Connection, ConnectionListener}
 import java.io.ByteArrayInputStream
 import jexxus.server.ServerConnection
+import java.nio.ByteBuffer
 
 object MergeRemoteModelUICommand {
   var lastRemoteNodeAddress: String = "localhost:8000"
@@ -139,6 +142,48 @@ class MergeRemoteModelUICommand extends Command {
     }
   }
 
+  def tryRemoteWebSocket(ip: String, port: String) : Boolean = {
+    try {
+      val exchanger = new Exchanger[ContainerRoot]();
+      val client = new WebSocketClient(URI.create("ws://"+ip+":"+port+"/")) {
+        def onError(p1: Exception) {
+          exchanger.exchange(null);
+        }
+        def onMessage(p1: String) {}
+        def onClose(p1: Int, p2: String, p3: Boolean) {}
+        def onOpen(p1: ServerHandshake) {}
+        override def onMessage(bytes: ByteBuffer) {
+          val inputStream = new ByteArrayInputStream(bytes.array())
+          val root = KevoreeXmiHelper.$instance.loadCompressedStream(inputStream)
+          try {
+            exchanger.exchange(root);
+          } catch {
+            case _@e => //logger.error("", e)
+          } finally {
+            close()
+          }
+        }
+      }
+      if (client.connectBlocking()) {
+        client.send(Array[Byte](2)); // OMG THIS IS UGLY
+      }
+      val root = exchanger.exchange(null, 5000, TimeUnit.MILLISECONDS)
+      if (root == null) {
+        false
+      } else {
+        PositionedEMFHelper.updateModelUIMetaData(kernel)
+        lcommand.setKernel(kernel)
+        lcommand.execute(root)
+        true
+      }
+    } catch {
+      case _@e => {
+        logger.debug("Pull failed to " + ip + ":" + port)
+        false
+      }
+    }
+  }
+
 
   def execute(p: Object) = {
 
@@ -153,7 +198,9 @@ class MergeRemoteModelUICommand extends Command {
           if(!tryRemoteJexxus(ip, port)){
             if (!tryRemoteLoad(ip, port, true)) {
               if (!tryRemoteLoad(ip, port, false)) {
-                logger.error("Can't load model from node")
+                if (!tryRemoteWebSocket(ip, port)) {
+                  logger.error("Can't load model from node")
+                }
               }
             }
           }
