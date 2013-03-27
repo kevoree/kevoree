@@ -30,7 +30,6 @@ import com.explodingpixels.macwidgets.*;
 import com.explodingpixels.macwidgets.plaf.HudButtonUI;
 import org.kevoree.ContainerNode;
 import org.kevoree.ContainerRoot;
-import org.kevoree.KevoreeFactory;
 import org.kevoree.api.service.core.handler.ModelListener;
 import org.kevoree.impl.DefaultKevoreeFactory;
 import org.kevoree.platform.standalone.KevoreeBootStrap;
@@ -83,8 +82,6 @@ public class KevoreeGUIFrame extends JFrame {
         String guiConfig = System.getProperty("node.gui.config");
         if (guiConfig == null || guiConfig.equalsIgnoreCase("true")) {
             final HudWindow bootstrapPopup = new HudWindow("Kevoree runtime : node properties");
-            bootstrapPopup.getJDialog().setSize(400, 210);
-            bootstrapPopup.getJDialog().setLocationRelativeTo(null);
             bootstrapPopup.getJDialog().setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
 
@@ -112,8 +109,11 @@ public class KevoreeGUIFrame extends JFrame {
             layoutPopup.add(btOk, BorderLayout.SOUTH);
 
             bootstrapPopup.setContentPane(layoutPopup);
-            bootstrapPopup.getJDialog().setVisible(true);
             bootstrapPopup.getJDialog().getRootPane().setDefaultButton(btOk);
+            bootstrapPopup.getJDialog().pack();
+            bootstrapPopup.getJDialog().setLocationRelativeTo(null);
+            bootstrapPopup.getJDialog().setVisible(true);
+
 
             btOk.addActionListener(new ActionListener() {
 
