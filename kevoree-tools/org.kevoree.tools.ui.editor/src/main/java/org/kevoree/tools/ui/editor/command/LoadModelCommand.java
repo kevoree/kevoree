@@ -41,7 +41,6 @@ import org.kevoree.tools.ui.framework.elements.PortPanel.PortType;
 
 import java.awt.*;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -51,7 +50,6 @@ import java.util.HashSet;
  * @author ffouquet
  */
 public class LoadModelCommand implements Command {
-
 
     ReloadTypePalette subCommand = new ReloadTypePalette();
 

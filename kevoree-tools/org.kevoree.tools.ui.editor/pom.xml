@@ -119,6 +119,11 @@
             <version>1.6-1</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.kevoree.extra</groupId>
+            <artifactId>org.kevoree.extra.java_websocket</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 
     <repositories>
