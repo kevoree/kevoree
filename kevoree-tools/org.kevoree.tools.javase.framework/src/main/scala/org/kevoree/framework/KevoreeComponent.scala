@@ -26,10 +26,12 @@ package org.kevoree.framework
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+import internal.MethodAnnotationResolver
 import org.slf4j.LoggerFactory
 import org.kevoree.ContainerRoot
 
-abstract class KevoreeComponent(c: AbstractComponentType) /*extends KevoreeActor*/ extends KInstance {
+abstract class KevoreeComponent(c: AbstractComponentType) extends KInstance {
 
   val kevoree_internal_logger = LoggerFactory.getLogger(this.getClass)
 
@@ -39,11 +41,16 @@ abstract class KevoreeComponent(c: AbstractComponentType) /*extends KevoreeActor
 
   def isStarted: Boolean = ct_started
 
+  private val resolver = new MethodAnnotationResolver(c.getClass);
+
   def kInstanceStart(tmodel : ContainerRoot): Boolean = {
     if (!ct_started){
       try {
         getKevoreeComponentType.getModelService.asInstanceOf[ModelHandlerServiceProxy].setTempModel(tmodel)
-        startComponent
+
+        val met = resolver.resolve(classOf[org.kevoree.annotation.Start])
+        met.invoke(c)
+
         getKevoreeComponentType.getModelService.asInstanceOf[ModelHandlerServiceProxy].unsetTempModel()
         import scala.collection.JavaConversions._
         getKevoreeComponentType.getHostedPorts.foreach {
