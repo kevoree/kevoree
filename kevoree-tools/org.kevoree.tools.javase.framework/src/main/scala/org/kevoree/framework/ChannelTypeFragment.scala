@@ -14,16 +14,20 @@
 
 package org.kevoree.framework
 
+import internal.MethodAnnotationResolver
 import java.util.HashMap
 import org.kevoree.framework.message._
 import org.slf4j.LoggerFactory
 import org.kevoree.ContainerRoot
+import org.kevoree.annotation.{RemoteBindingUpdated, LocalBindingUpdated}
 
 trait ChannelTypeFragment extends KevoreeChannelFragment with ChannelFragment with KevoreeActor {
 
   val kevoree_internal_logger = LoggerFactory.getLogger(this.getClass)
 
   var eventHandler: event.MonitorEventHandler = null
+
+  val resolver : MethodAnnotationResolver = new MethodAnnotationResolver(this.getClass);
 
   override def remoteDispatch(msg: Message): Object = {
     if (msg.inOut.booleanValue) {
@@ -129,8 +133,9 @@ trait ChannelTypeFragment extends KevoreeChannelFragment with ChannelFragment wi
     }
   }
 
-  def getDictionary : java.util.HashMap[String,Object]
-  def getName : String
+  def getDictionary: java.util.HashMap[String, Object]
+
+  def getName: String
 
   def kUpdateDictionary(d: java.util.HashMap[String, AnyRef], cmodel: ContainerRoot): java.util.HashMap[String, AnyRef] = {
     try {
@@ -158,6 +163,7 @@ trait ChannelTypeFragment extends KevoreeChannelFragment with ChannelFragment wi
   def startC {
     start()
   }
+
   def stopC {
     stop
   }
@@ -171,7 +177,10 @@ trait ChannelTypeFragment extends KevoreeChannelFragment with ChannelFragment wi
       proxy.setChannelSender(sender)
       fragementBinded += ((createPortKey(msg), proxy))
       proxy.startC
-      local_queue ! CALL_UPDATE()
+      val met = resolver.resolve(classOf[RemoteBindingUpdated])
+      if (met != null) {
+        met.invoke(this)
+      }
       reply(true)
     }
     case msg: FragmentUnbindMessage => {
@@ -180,20 +189,30 @@ trait ChannelTypeFragment extends KevoreeChannelFragment with ChannelFragment wi
       if (actorPort.isDefined) {
         actorPort.get.stopC
         fragementBinded = fragementBinded.filter(p => p._1 != (createPortKey(msg)))
-        local_queue ! CALL_UPDATE()
+        val met = resolver.resolve(classOf[RemoteBindingUpdated])
+        if (met != null) {
+          met.invoke(this)
+        }
         reply(true)
       } else {
         kevoree_internal_logger.debug("Can't unbind Fragment " + createPortKey(msg))
         reply(false)
       }
-
     }
     case msg: PortBindMessage => {
       portsBinded.put(createPortKey(msg), msg.getProxy);
+      val met = resolver.resolve(classOf[LocalBindingUpdated])
+      if (met != null) {
+        met.invoke(this)
+      }
       reply(true)
     }
     case msg: PortUnbindMessage => {
       portsBinded.remove(createPortKey(msg));
+      val met = resolver.resolve(classOf[LocalBindingUpdated])
+      if (met != null) {
+        met.invoke(this)
+      }
       reply(true)
     }
     //USE CASE A MSG REC BY OTHER FRAGMENT
@@ -203,22 +222,12 @@ trait ChannelTypeFragment extends KevoreeChannelFragment with ChannelFragment wi
     case _@msg => local_queue forward msg
   }
 
-  case class CALL_UPDATE()
-
-
   val local_queue = new KevoreeActor {
     override def internal_process(msgg: Any) = {
       if (eventHandler != null) {
         eventHandler.triggerEvent(event.MonitorEvent(classOf[ChannelFragment], getName))
       }
       msgg match {
-
-        case callmsg: CALL_UPDATE => {
-          if (ct_started) {
-            updateChannelFragment
-          }
-        }
-
         case msg: Message => {
           if (msg.inOut.booleanValue) {
             reply(dispatch(msg))
@@ -258,8 +267,8 @@ trait ChannelTypeFragment extends KevoreeChannelFragment with ChannelFragment wi
   def updateChannelFragment: Unit = {}
 
 
-  def processAdminMsg(o : Any) : Boolean = {
-      (this !? o).asInstanceOf[Boolean]
+  def processAdminMsg(o: Any): Boolean = {
+    (this !? o).asInstanceOf[Boolean]
   }
 
 
