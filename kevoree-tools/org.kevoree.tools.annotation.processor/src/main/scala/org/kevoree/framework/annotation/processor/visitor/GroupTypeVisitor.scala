@@ -45,7 +45,6 @@ case class GroupTypeVisitor(groupType: GroupType, env: ProcessingEnvironment, ro
   with DictionaryProcessor
   with LibraryProcessor
   with ThirdPartyProcessor
-  with LifeCycleMethodProcessor
   with TypeDefinitionProcessor {
 
   override def visitType(p1: TypeElement, p2: Element): Any = {
@@ -67,17 +66,6 @@ case class GroupTypeVisitor(groupType: GroupType, env: ProcessingEnvironment, ro
 
     processThirdParty(groupType, p2.asInstanceOf[TypeElement], env, rootVisitor)
 
-    import scala.collection.JavaConversions._
-    p2.getEnclosedElements.foreach {
-      method => {
-        method.getKind match {
-          case ElementKind.METHOD => {
-            processLifeCycleMethod(groupType, method.asInstanceOf[ExecutableElement])
-          }
-          case _ =>
-        }
-      }
-    }
   }
 
 }

@@ -129,8 +129,8 @@ class KevoreeAnnotationProcessor() extends javax.annotation.processing.AbstractP
       nodeTypeNameList.foreach {
         targetNodeName =>
           KevoreeGenerator.generatePort(root, env.getFiler, targetNodeName)
-          KevoreeFactoryGenerator.generateFactory(root, env.getFiler, targetNodeName)
-          KevoreeActivatorGenerator.generateActivator(root, env.getFiler, targetNodeName)
+          //KevoreeFactoryGenerator.generateFactory(root, env.getFiler, targetNodeName)
+          //KevoreeActivatorGenerator.generateActivator(root, env.getFiler, targetNodeName)
       }
       env.getMessager.printMessage(Kind.OTHER, "Save Kevoree library")
       KevoreeXmiHelper.$instance.save(LocalUtility.generateLibURI(options), root);

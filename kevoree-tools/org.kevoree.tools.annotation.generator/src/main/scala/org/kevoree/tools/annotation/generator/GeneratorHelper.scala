@@ -30,4 +30,11 @@ object GeneratorHelper {
     }
   }
 
+  def protectedType(t:String) : String = {
+    t match {
+      case "java.lang.String" => "String"
+    }
+  }
+
+
 }

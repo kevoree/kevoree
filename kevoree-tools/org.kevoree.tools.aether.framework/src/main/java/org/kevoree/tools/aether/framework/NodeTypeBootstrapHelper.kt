@@ -155,8 +155,8 @@ open class NodeTypeBootstrapHelper: Bootstraper, KCLBootstrap {
                     val activatorName = optgroup.getTypeDefinition()!!.getName() + "Activator"
                     val clazz = kcl.loadClass(activatorPackage + "." + activatorName)
 
-                    val groupActivator = clazz!!.newInstance() as org.kevoree.framework.osgi.KevoreeGroupActivator
-                    val groupType = groupActivator.callFactory()!! as AbstractGroupType
+                    val groupActivator = clazz!!.newInstance() as org.kevoree.framework.KevoreeGroup
+                    val groupType = groupActivator as AbstractGroupType
 
                     //ADD INSTANCE DICTIONARY
                     val dictionary: java.util.HashMap<String, Any> = java.util.HashMap<String, Any>()

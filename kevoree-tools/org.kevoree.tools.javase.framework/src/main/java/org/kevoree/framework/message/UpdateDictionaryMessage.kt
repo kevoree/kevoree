@@ -11,6 +11,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.kevoree.framework.message
+
+import org.kevoree.ContainerRoot
+
 /**
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
  * you may not use this file except in compliance with the License.
@@ -25,19 +29,4 @@
  * limitations under the License.
  */
 
-package org.kevoree.annotation;
-
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
-/**
- *
- * @author ffouquet
- */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE})
-public @interface Requires {
-    RequiredPort[] value();
-}
+data class UpdateDictionaryMessage(d : java.util.HashMap<String,String>, cmodel: ContainerRoot)

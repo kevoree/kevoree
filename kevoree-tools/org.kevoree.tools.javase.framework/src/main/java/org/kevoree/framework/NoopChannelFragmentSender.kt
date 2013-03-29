@@ -11,6 +11,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.kevoree.framework
+
 /**
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
  * you may not use this file except in compliance with the License.
@@ -24,20 +26,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import org.kevoree.framework.message.Message
 
-package org.kevoree.annotation;
+class NoopChannelFragmentSender: ChannelFragmentSender {
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+  override fun sendMessageToRemote(msg : Message?):Any?{
+      println("Noop implementation => no fragment to fragment communication allowed => "+msg)
+      return null;
+  }
 
-/**
- *
- * @author ffouquet
- */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE})
-public @interface Requires {
-    RequiredPort[] value();
 }

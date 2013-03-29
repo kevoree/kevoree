@@ -46,7 +46,6 @@ case class ComponentDefinitionVisitor(componentType: ComponentType, env: Process
   with DictionaryProcessor
   with PortMappingProcessor
   with LibraryProcessor
-  with LifeCycleMethodProcessor
   with SlotProcessor
   with TypeDefinitionProcessor {
 
@@ -96,7 +95,6 @@ case class ComponentDefinitionVisitor(componentType: ComponentType, env: Process
         method.getKind match {
           case ElementKind.METHOD => {
             processPortMapping(componentType, method.asInstanceOf[ExecutableElement], env)
-            processLifeCycleMethod(componentType, method.asInstanceOf[ExecutableElement])
           }
           case _ =>
         }

@@ -24,20 +24,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.kevoree.framework;
 
-package org.kevoree.annotation;
-
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import org.kevoree.ContainerRoot;
 
 /**
- *
- * @author ffouquet
+ * Created with IntelliJ IDEA.
+ * User: duke
+ * Date: 23/04/12
+ * Time: 16:40
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE})
-public @interface Requires {
-    RequiredPort[] value();
+
+trait KInstance {
+
+  fun kInstanceStart(tmodel : ContainerRoot) : Boolean
+
+  fun kInstanceStop(tmodel : ContainerRoot) : Boolean
+
+  fun kUpdateDictionary(d : Map<String,Any>, cmodel: ContainerRoot) : Map<String,Any>?
+
 }

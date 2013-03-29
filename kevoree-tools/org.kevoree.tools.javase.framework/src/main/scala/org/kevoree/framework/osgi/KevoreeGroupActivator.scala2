@@ -11,6 +11,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.kevoree.framework.osgi
+
 /**
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
  * you may not use this file except in compliance with the License.
@@ -25,19 +27,42 @@
  * limitations under the License.
  */
 
-package org.kevoree.annotation;
+import org.kevoree.framework._
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+abstract class KevoreeGroupActivator extends KevoreeInstanceActivator {
 
-/**
- *
- * @author ffouquet
- */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE})
-public @interface Requires {
-    RequiredPort[] value();
+  def callFactory(): KevoreeGroup
+
+  var nodeName: String = ""
+  var instanceName: String = ""
+  var groupActor: KevoreeGroup = null
+
+  def setNodeName(n : String) {
+    nodeName = n
+  }
+  def setInstanceName(in : String){
+    instanceName = in
+  }
+
+  override def start() {
+    groupActor = callFactory()
+    groupActor.asInstanceOf[AbstractTypeDefinition].setName(instanceName)
+    groupActor.asInstanceOf[AbstractTypeDefinition].setNodeName(nodeName)
+    groupActor.asInstanceOf[AbstractTypeDefinition].setModelService(modelHandlerService)
+    groupActor.asInstanceOf[AbstractTypeDefinition].setKevScriptEngineFactory(kevScriptEngine)
+  }
+
+  override def stop() {
+    if(groupActor == null){
+      return
+    }
+    if (groupActor.getIsStarted) {
+      groupActor.kInstanceStop(null)
+      println("Stopping => " + instanceName)
+    }
+    groupActor = null
+  }
+
+  def getKInstance : KInstance = groupActor
+
 }

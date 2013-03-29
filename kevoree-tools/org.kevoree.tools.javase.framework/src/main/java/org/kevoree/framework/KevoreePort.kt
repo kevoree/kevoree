@@ -11,6 +11,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.kevoree.framework
+
 /**
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
  * you may not use this file except in compliance with the License.
@@ -25,19 +27,14 @@
  * limitations under the License.
  */
 
-package org.kevoree.annotation;
+trait KevoreePort : Port {
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+  fun send(o : Any?)
+  fun sendWait(o: Any?) : Any?
 
-/**
- *
- * @author ffouquet
- */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE})
-public @interface Requires {
-    RequiredPort[] value();
+  fun processAdminMsg(o : Any) : Boolean
+  fun getIsBound() : Boolean {
+     return false
+  }
+
 }
