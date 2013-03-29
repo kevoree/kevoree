@@ -15,14 +15,14 @@ package org.kevoree.tools.accesscontrol.framework.impl;
 
 
 import org.kevoree.*;
-import org.kevoree.AccessControl.*;
+import org.kevoree.accesscontrol.*;
 import org.kevoree.adaptation.accesscontrol.api.*;
 import org.kevoree.framework.KevoreeXmiHelper;
 import org.kevoree.kompare.KevoreeKompareBean;
 import org.kevoree.tools.accesscontrol.framework.api.ICompareAccessControl;
 import org.kevoree.tools.accesscontrol.framework.utils.HelperSignature;
-import org.kevoreeAdaptation.AdaptationModel;
-import org.kevoreeAdaptation.AdaptationPrimitive;
+import org.kevoreeadaptation.AdaptationModel;
+import org.kevoreeadaptation.AdaptationPrimitive;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sun.security.rsa.RSAPublicKeyImpl;

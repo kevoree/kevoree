@@ -14,7 +14,7 @@
 package org.kevoree.tools.accesscontrol.framework.utils;
 
 
-import org.kevoree.AccessControl.impl.DefaultAccessControlFactory;
+import org.kevoree.accesscontrol.impl.DefaultAccessControlFactory;
 import org.kevoree.kompare.JavaSePrimitive;
 
 import java.math.BigInteger;
@@ -56,20 +56,20 @@ public class HelperSignature {
     }
 
 
-    public static List<  org.kevoree.AccessControl.Permission> getGenericsPermissions(){
+    public static List<  org.kevoree.accesscontrol.Permission> getGenericsPermissions(){
         DefaultAccessControlFactory factory = new DefaultAccessControlFactory();
-        ArrayList<  org.kevoree.AccessControl.Permission> p = new ArrayList<  org.kevoree.AccessControl.Permission>();
-        org.kevoree.AccessControl.Permission p1 = factory.createPermission();
+        ArrayList<  org.kevoree.accesscontrol.Permission> p = new ArrayList<  org.kevoree.accesscontrol.Permission>();
+        org.kevoree.accesscontrol.Permission p1 = factory.createPermission();
         p1.setPrimitiveQuery(JavaSePrimitive.$instance.getAddInstance());
-        org.kevoree.AccessControl.Permission p2 = factory.createPermission();
+        org.kevoree.accesscontrol.Permission p2 = factory.createPermission();
         p2.setPrimitiveQuery(JavaSePrimitive.$instance.getStartInstance());
-        org.kevoree.AccessControl.Permission p3 = factory.createPermission();
+        org.kevoree.accesscontrol.Permission p3 = factory.createPermission();
         p3.setPrimitiveQuery(JavaSePrimitive.$instance.getUpdateInstance());
-        org.kevoree.AccessControl.Permission p4 = factory.createPermission();
+        org.kevoree.accesscontrol.Permission p4 = factory.createPermission();
         p4.setPrimitiveQuery(JavaSePrimitive.$instance.getStopInstance());
-        org.kevoree.AccessControl.Permission p5 = factory.createPermission();
+        org.kevoree.accesscontrol.Permission p5 = factory.createPermission();
         p5.setPrimitiveQuery(JavaSePrimitive.$instance.getUpdateDictionaryInstance());
-        org.kevoree.AccessControl.Permission p6 = factory.createPermission();
+        org.kevoree.accesscontrol.Permission p6 = factory.createPermission();
         p6.setPrimitiveQuery(JavaSePrimitive.$instance.getAddFragmentBinding());
         p.add(p1);
         p.add(p2);

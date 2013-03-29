@@ -19,8 +19,8 @@ import org.kevoree.ContainerRoot;
 import org.kevoree.adaptation.accesscontrol.api.ControlException;
 import org.kevoree.adaptation.accesscontrol.api.SignedModel;
 import org.kevoree.adaptation.accesscontrol.api.SignedPDP;
-import org.kevoreeAdaptation.AdaptationModel;
-import org.kevoreeAdaptation.AdaptationPrimitive;
+import org.kevoreeadaptation.AdaptationModel;
+import org.kevoreeadaptation.AdaptationPrimitive;
 
 import java.util.List;
 

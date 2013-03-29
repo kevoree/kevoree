@@ -14,6 +14,7 @@
 package org.kevoree.tools.ui.editor.command.prefuse;
 
 import org.kevoree.*;
+import org.kevoree.container.KMFContainer;
 import org.kevoree.tools.ui.editor.KevoreeUIKernel;
 import org.kevoree.tools.ui.framework.elements.NodePanel;
 import prefuse.data.Graph;
@@ -115,7 +116,7 @@ public class KevoreePrefuseGraph {
     public NamedElement findTopLevelNode( Port port) {
         return findTopLevelNode(port.eContainer());
     }
-    public NamedElement findTopLevelNode( KevoreeContainer cnode) {
+    public NamedElement findTopLevelNode( KMFContainer cnode) {
         if( cnode.eContainer() instanceof  ContainerRoot) return (NamedElement) cnode;
         else return findTopLevelNode(cnode.eContainer());
     }

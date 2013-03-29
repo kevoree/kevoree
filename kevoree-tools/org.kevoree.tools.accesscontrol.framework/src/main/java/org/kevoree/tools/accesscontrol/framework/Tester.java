@@ -13,8 +13,8 @@
  */
 package org.kevoree.tools.accesscontrol.framework;
 
-import org.kevoree.AccessControl.*;
-import org.kevoree.AccessControl.impl.DefaultAccessControlFactory;
+import org.kevoree.accesscontrol.*;
+import org.kevoree.accesscontrol.impl.DefaultAccessControlFactory;
 import org.kevoree.ContainerRoot;
 import org.kevoree.Instance;
 
@@ -32,7 +32,7 @@ import org.kevoree.tools.accesscontrol.framework.impl.SignedModelImpl;
 import org.kevoree.tools.accesscontrol.framework.utils.AccessControlXmiHelper;
 import org.kevoree.tools.accesscontrol.framework.utils.HelperSignature;
 
-import org.kevoreeAdaptation.AdaptationPrimitive;
+import org.kevoreeadaptation.AdaptationPrimitive;
 
 import javax.swing.*;
 import java.io.File;

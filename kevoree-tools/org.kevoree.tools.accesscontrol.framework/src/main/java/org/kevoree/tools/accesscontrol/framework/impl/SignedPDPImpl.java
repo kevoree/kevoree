@@ -13,7 +13,7 @@
  */
 package org.kevoree.tools.accesscontrol.framework.impl;
 
-import org.kevoree.AccessControl.AccessControlRoot;
+import org.kevoree.accesscontrol.AccessControlRoot;
 import org.kevoree.adaptation.accesscontrol.api.ModelSignature;
 import org.kevoree.adaptation.accesscontrol.api.PDPSignature;
 import org.kevoree.adaptation.accesscontrol.api.SignedModel;
