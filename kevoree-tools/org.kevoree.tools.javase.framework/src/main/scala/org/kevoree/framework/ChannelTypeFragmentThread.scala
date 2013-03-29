@@ -13,12 +13,14 @@
  */
 package org.kevoree.framework
 
+import internal.MethodAnnotationResolver
 import message._
 import org.slf4j.LoggerFactory
 import java.util.HashMap
 import org.kevoree.ContainerRoot
 import port.PausablePortThreadPoolExecutor
 import java.util.concurrent.Callable
+import org.kevoree.annotation.{LocalBindingUpdated, RemoteBindingUpdated}
 
 /**
  * Created with IntelliJ IDEA.
@@ -32,8 +34,8 @@ trait ChannelTypeFragmentThread extends KevoreeChannelFragment with KInstance wi
   val kevoree_internal_logger = LoggerFactory.getLogger(this.getClass)
 
   var eventHandler: event.MonitorEventHandler = null
-
   var pool = PausablePortThreadPoolExecutor.newPausableThreadPool(1)
+  val resolver : MethodAnnotationResolver = new MethodAnnotationResolver(this.getClass);
 
   override def remoteDispatch(msg: Message): Object = {
     if (msg.inOut.booleanValue) {
@@ -233,8 +235,9 @@ trait ChannelTypeFragmentThread extends KevoreeChannelFragment with KInstance wi
         proxy.setChannelSender(sender)
         fragementBinded += ((createPortKey(msg), proxy))
         proxy.startC
-        if (ct_started) {
-          updateChannelFragment
+        val met = resolver.resolve(classOf[RemoteBindingUpdated])
+        if (met != null) {
+          met.invoke(this)
         }
         true
       }
@@ -244,22 +247,30 @@ trait ChannelTypeFragmentThread extends KevoreeChannelFragment with KInstance wi
         if (actorPort.isDefined) {
           actorPort.get.stopC
           fragementBinded = fragementBinded.filter(p => p._1 != (createPortKey(msg)))
-          if (ct_started) {
-            updateChannelFragment
+          val met = resolver.resolve(classOf[RemoteBindingUpdated])
+          if (met != null) {
+            met.invoke(this)
           }
           true
         } else {
           kevoree_internal_logger.debug("Can't unbind Fragment " + createPortKey(msg))
           false
         }
-
       }
       case msg: PortBindMessage => {
-        portsBinded.put(createPortKey(msg), msg.getProxy);
+        portsBinded.put(createPortKey(msg), msg.getProxy)
+        val met = resolver.resolve(classOf[LocalBindingUpdated])
+        if (met != null) {
+          met.invoke(this)
+        }
         true
       }
       case msg: PortUnbindMessage => {
-        portsBinded.remove(createPortKey(msg));
+        portsBinded.remove(createPortKey(msg))
+        val met = resolver.resolve(classOf[LocalBindingUpdated])
+        if (met != null) {
+          met.invoke(this)
+        }
         true
       }
     }
