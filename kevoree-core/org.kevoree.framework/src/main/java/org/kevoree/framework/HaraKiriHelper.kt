@@ -27,7 +27,7 @@
 package org.kevoree.framework
 
 import org.slf4j.LoggerFactory
-import org.kevoreeAdaptation.AdaptationModel
+import org.kevoreeadaptation.AdaptationModel
 import org.kevoree.ContainerRoot
 import org.kevoree.TypeDefinition
 import org.kevoree.DeployUnit

@@ -4,10 +4,10 @@ package org.kevoree.tools.accesscontrol.framework.utils
 import java.util.zip.Deflater
 import java.util.zip.Inflater
 import java.io.*
-import org.kevoree.AccessControl.AccessControlRoot
-import org.kevoree.AccessControl.serializer.ModelSerializer
+import org.kevoree.accesscontrol.AccessControlRoot
+import org.kevoree.accesscontrol.serializer.ModelSerializer
 import org.kevoree.framework.ZipUtil
-import org.kevoree.AccessControl.loader.ModelLoader
+import org.kevoree.accesscontrol.loader.ModelLoader
 
 object AccessControlXmiHelper {
 

@@ -33,7 +33,7 @@ package org.kevoree.kompare.tests.`type`
 
 import org.kevoree.kompare.tests.KompareSuite
 import org.junit._
-import org.kevoreeAdaptation._
+import org.kevoreeadaptation._
 import org.kevoree.kompare.{JavaSePrimitive, KevoreeKompareBean}
 
 class TypeAndInstanceUpdateTest extends KompareSuite {

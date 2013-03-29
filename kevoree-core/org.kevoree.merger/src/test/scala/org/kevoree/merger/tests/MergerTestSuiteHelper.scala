@@ -37,7 +37,7 @@ import java.io.BufferedReader
 import org.kevoree.KevoreeFactory
 import org.kevoree.ContainerRoot
 import org.kevoree.framework.KevoreeXmiHelper
-import org.kevoreeAdaptation._
+import org.kevoreeadaptation._
 import org.scalatest.junit.JUnitSuite
 import org.junit.Assert._
 import scala.collection.JavaConversions._

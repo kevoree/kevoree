@@ -11,6 +11,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+
+
+/*
+package org.kevoree.tools.accesscontrol.framework.test;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.kevoree.ContainerRoot;
@@ -21,14 +27,14 @@ import org.kevoree.framework.KevoreeXmiHelper;
 import org.kevoree.impl.ChannelImpl;
 import org.kevoree.impl.ComponentInstanceImpl;
 import org.kevoree.kompare.JavaSePrimitive;
-import org.kevoree.tools.control.framework.ControlFactory;
-import org.kevoree.tools.control.framework.api.IAccessControlChecker;
-import org.kevoree.tools.control.framework.command.CreateRulesCommand;
-import org.kevoree.tools.control.framework.command.CreateSignatureCommand;
-import org.kevoree.tools.control.framework.impl.SignedModelImpl;
-import org.kevoree.tools.control.framework.utils.HelperMatcher;
-import org.kevoree.tools.control.framework.utils.HelperSignature;
-import org.kevoreeAdaptation.AdaptationPrimitive;
+import org.kevoree.tools.accesscontrol.framework.ControlFactory;
+import org.kevoree.tools.accesscontrol.framework.api.IAccessControlChecker;
+import org.kevoree.tools.accesscontrol.framework.command.CreateRulesCommand;
+import org.kevoree.tools.accesscontrol.framework.command.CreateSignatureCommand;
+import org.kevoree.tools.accesscontrol.framework.impl.SignedModelImpl;
+import org.kevoree.tools.accesscontrol.framework.utils.HelperMatcher;
+import org.kevoree.tools.accesscontrol.framework.utils.HelperSignature;
+import org.kevoreeadaptation.AdaptationPrimitive;
 
 import java.security.KeyPair;
 import java.security.NoSuchAlgorithmException;
@@ -41,6 +47,8 @@ import java.util.List;
  * Time: 16:08
  * To change this template use File | Settings | File Templates.
  */
+
+    /*
 public class TestControlFramework
 {
 
@@ -241,3 +249,4 @@ public class TestControlFramework
 
 
 }
+*/

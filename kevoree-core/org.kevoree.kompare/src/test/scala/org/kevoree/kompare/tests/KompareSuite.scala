@@ -32,8 +32,8 @@
 package org.kevoree.kompare.tests
 
 import org.kevoree.framework.KevoreeXmiHelper
-import org.kevoreeAdaptation.AdaptationModel
-import org.kevoreeAdaptation._
+import org.kevoreeadaptation.AdaptationModel
+import org.kevoreeadaptation._
 import org.scalatest.junit.JUnitSuite
  import org.kevoree._
 import scala.collection.JavaConversions._

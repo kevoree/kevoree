@@ -30,7 +30,7 @@ import org.scalatest.junit.AssertionsForJUnit
 import org.kevoree.kompare.tests.KompareSuite
 import org.scalatest.AbstractSuite
 import org.junit._
-import org.kevoreeAdaptation._
+import org.kevoreeadaptation._
 import org.kevoree.kompare.{JavaSePrimitive, KevoreeKompareBean}
 
 class GroupUpdateTest extends AssertionsForJUnit with KompareSuite {

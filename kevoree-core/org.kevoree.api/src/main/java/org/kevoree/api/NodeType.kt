@@ -28,8 +28,8 @@ package org.kevoree.api
  */
 
 import org.kevoree.ContainerRoot
-import org.kevoreeAdaptation.AdaptationModel
-import org.kevoreeAdaptation.AdaptationPrimitive
+import org.kevoreeadaptation.AdaptationModel
+import org.kevoreeadaptation.AdaptationPrimitive
 import org.kevoree.context.ContextRoot
 
 /**

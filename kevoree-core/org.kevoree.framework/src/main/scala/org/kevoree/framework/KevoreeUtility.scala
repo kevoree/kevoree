@@ -28,6 +28,7 @@
 package org.kevoree.framework
 
 import org.kevoree._
+import org.kevoree.container.KMFContainer
 import scala.collection.JavaConversions._
 
 object KevoreeUtility {
@@ -67,7 +68,7 @@ object KevoreeUtility {
   def getRelatedBinding(inst : Instance) : java.util.List[MBinding] = {
     val res = new java.util.ArrayList[MBinding]()
     inst match {
-      case component : ComponentInstance => res.addAll(getRelatedBinding(component,component.eContainer.asInstanceOf[KevoreeContainer].eContainer.asInstanceOf[ContainerRoot]))
+      case component : ComponentInstance => res.addAll(getRelatedBinding(component,component.eContainer.asInstanceOf[KMFContainer].eContainer.asInstanceOf[ContainerRoot]))
       case channel : Channel => {
           channel.eContainer.asInstanceOf[ContainerRoot].getMBindings.foreach{b=>
             if(b.getHub == channel){

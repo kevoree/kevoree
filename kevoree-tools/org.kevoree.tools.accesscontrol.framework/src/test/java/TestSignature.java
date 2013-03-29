@@ -13,7 +13,7 @@
  */
 import org.junit.Before;
 import org.junit.Test;
-import org.kevoree.tools.control.framework.utils.HelperSignature;
+import org.kevoree.tools.accesscontrol.framework.utils.HelperSignature;
 
 import java.security.InvalidKeyException;
 import java.security.KeyPair;
@@ -21,7 +21,6 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SignatureException;
 
 import static junit.framework.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 /**

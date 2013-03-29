@@ -28,7 +28,7 @@ package org.kevoree.tools.marShellTransform
 
 
 import org.kevoree.tools.marShell.ast._
-import org.kevoreeAdaptation._
+import org.kevoreeadaptation._
 import org.slf4j.LoggerFactory
 import org.kevoree.kompare.JavaSePrimitive
 import org.kevoree._

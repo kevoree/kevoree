@@ -34,6 +34,7 @@ package org.kevoree.framework.aspects
 
 import org.kevoree._
  import KevoreeAspects._
+import org.kevoree.container.KMFContainer
 import scala.collection.JavaConversions._
 
 case class PortAspect(p : Port) {
@@ -81,7 +82,7 @@ case class PortAspect(p : Port) {
   }
 
   def getProxyURI : String = {
-    val container : ContainerRoot = p.eContainer.asInstanceOf[KevoreeContainer].eContainer.asInstanceOf[KevoreeContainer].eContainer.asInstanceOf[ContainerRoot]
+    val container : ContainerRoot = p.eContainer.asInstanceOf[KMFContainer].eContainer.asInstanceOf[KMFContainer].eContainer.asInstanceOf[ContainerRoot]
     if(p.isBind){
       p.getPortTypeRef.getRef match {
         case spt : ServicePortType => p.eContainer.asInstanceOf[ComponentInstance].getName.toString+"."+p.getPortTypeRef.getName

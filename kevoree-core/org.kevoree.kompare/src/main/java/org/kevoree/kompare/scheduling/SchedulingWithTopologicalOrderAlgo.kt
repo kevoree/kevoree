@@ -33,8 +33,9 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.kevoree.*
 import java.util.ArrayList
-import org.kevoreeAdaptation.AdaptationPrimitive
+import org.kevoreeadaptation.AdaptationPrimitive
 import java.util.HashMap
+import org.kevoree.container.KMFContainer
 
 class SchedulingWithTopologicalOrderAlgo {
 
@@ -120,7 +121,7 @@ class SchedulingWithTopologicalOrderAlgo {
             rootContainer = (firstCommand as Channel).eContainer() as ContainerRoot
         }
         if(firstCommand is ComponentInstance){
-            rootContainer = ((firstCommand as ComponentInstance).eContainer() as KevoreeContainer).eContainer() as ContainerRoot
+            rootContainer = ((firstCommand as ComponentInstance).eContainer() as KMFContainer).eContainer() as ContainerRoot
         }
 
         val bindingIterator = rootContainer!!.getMBindings().iterator()
