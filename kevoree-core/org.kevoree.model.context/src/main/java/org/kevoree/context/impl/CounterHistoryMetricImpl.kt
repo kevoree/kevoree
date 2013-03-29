@@ -16,8 +16,8 @@ package org.kevoree.context.impl
 import org.kevoree.context.MetricValue
 import org.kevoree.context.CounterHistoryMetric
 import java.util
-import org.kevoree.context.ContextContainer
 import java.util.Collections
+import org.kevoree.context.container.KMFContainer
 
 /**
  * Created with IntelliJ IDEA.
@@ -27,7 +27,7 @@ import java.util.Collections
  */
 class CounterHistoryMetricImpl: CounterHistoryMetric, CounterHistoryMetricInternal {
 
-    override var internal_eContainer: ContextContainer? = null
+    override var internal_eContainer: KMFContainer? = null
     override var internal_containmentRefName: String? = null
     override var internal_unsetCmd: (()->Unit)? = null
     override var internal_readOnlyElem: Boolean = false
@@ -53,8 +53,8 @@ class CounterHistoryMetricImpl: CounterHistoryMetric, CounterHistoryMetricIntern
         //IMPORTED FROM SUPER :: Kotlin compiler workaround
         if(isReadOnly()){throw Exception("This model is ReadOnly. Elements are not modifiable.")}
         _values_java_cache=null
-        (v as org.kevoree.context.impl.ContextContainerInternal).setEContainer(this,{()->this.removeValues(v)})
-        (v as org.kevoree.context.impl.ContextContainerInternal).setContainmentRefName("values")
+        (v as org.kevoree.context.container.KMFContainerImpl).setEContainer(this,{()->this.removeValues(v)})
+        (v as org.kevoree.context.container.KMFContainerImpl).setContainmentRefName("values")
         _values.put(v.getTimestamp(),v)
         //END IMPORTED FROM SUPER :: Kotlin compiler workaround
 
@@ -81,8 +81,8 @@ class CounterHistoryMetricImpl: CounterHistoryMetric, CounterHistoryMetricIntern
         _values_java_cache=null
         if(_values.size() != 0 && _values.containsKey(value.getTimestamp())) {
             _values.remove(value.getTimestamp())
-            (value!! as org.kevoree.context.impl.ContextContainerInternal).setEContainer(null,null)
-            (value!! as org.kevoree.context.impl.ContextContainerInternal).setContainmentRefName(null)
+            (value!! as org.kevoree.context.container.KMFContainerImpl).setEContainer(null,null)
+            (value!! as org.kevoree.context.container.KMFContainerImpl).setContainmentRefName(null)
         }
         //END IMPORTED FROM SUPER :: Kotlin compiler workaround
 

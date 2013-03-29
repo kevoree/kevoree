@@ -34,8 +34,8 @@ import org.kevoree.DeployUnit
 import org.kevoree.DictionaryType
 import org.kevoree.TypeDefinition
 import java.util.ArrayList
-import org.kevoree.KevoreeContainer
 import org.kevoree.impl.NodeTypeInternal
+import org.kevoree.container.KMFContainer
 
 /**
  * Created by IntelliJ IDEA.
@@ -62,7 +62,7 @@ class UnresolvedNodeType(val unresolvedNodeTypeName: String): NodeTypeInternal {
     override var _stopMethod: String = ""
     override var _updateMethod: String = ""
     override var _name: String = ""
-    override var internal_eContainer: KevoreeContainer? = null
+    override var internal_eContainer: KMFContainer? = null
     override var internal_containmentRefName: String? = null
     override var internal_unsetCmd: (() -> Unit)? = null
     override var internal_readOnlyElem: Boolean = false

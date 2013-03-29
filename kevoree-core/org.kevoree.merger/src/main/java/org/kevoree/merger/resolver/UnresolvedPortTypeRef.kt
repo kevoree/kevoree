@@ -27,11 +27,11 @@
 package org.kevoree.merger.resolver
 
 import org.kevoree.PortTypeRef
-import org.kevoree.KevoreeContainer
 import org.kevoree.PortType
 import org.kevoree.PortTypeMapping
 import java.util.ArrayList
 import org.kevoree.impl.PortTypeRefInternal
+import org.kevoree.container.KMFContainer
 
 /**
  * Created by IntelliJ IDEA.
@@ -43,7 +43,7 @@ import org.kevoree.impl.PortTypeRefInternal
 class UnresolvedPortTypeRef(val unresolvedPortName : String) : PortTypeRefInternal {
 
     override var internal_recursive_readOnlyElem: Boolean = false
-    override var internal_eContainer: KevoreeContainer? = null
+    override var internal_eContainer: KMFContainer? = null
     override var internal_containmentRefName: String? = null
     override var internal_unsetCmd: (() -> Unit)? = null
     override var internal_readOnlyElem: Boolean = false

@@ -19,8 +19,8 @@ import java.util.ArrayList
 import org.kevoree.DictionaryType
 import org.kevoree.TypeDefinition
 import java.util.HashMap
-import org.kevoree.KevoreeContainer
 import org.kevoree.impl.PortTypeInternal
+import org.kevoree.container.KMFContainer
 
 /**
  * Created with IntelliJ IDEA.
@@ -40,7 +40,7 @@ class UnresolvedPortType(val unresolvedPortName: String): PortTypeInternal {
     override var _superTypes_java_cache: List<TypeDefinition>? = null
     override val _superTypes: HashMap<Any, TypeDefinition> = HashMap<Any, TypeDefinition>()
     override var _name: String = ""
-    override var internal_eContainer: KevoreeContainer? = null
+    override var internal_eContainer: KMFContainer? = null
     override var internal_containmentRefName: String? = null
     override var internal_unsetCmd: (() -> Unit)? = null
     override var internal_readOnlyElem: Boolean = false

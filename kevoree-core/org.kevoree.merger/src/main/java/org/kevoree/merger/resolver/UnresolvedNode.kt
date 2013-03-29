@@ -29,11 +29,11 @@ package org.kevoree.merger.resolver
 import org.kevoree.ContainerNode
 import org.kevoree.ComponentInstance
 import java.util.HashMap
-import org.kevoree.KevoreeContainer
 import org.kevoree.TypeDefinition
 import java.util.ArrayList
 import org.kevoree.Dictionary
 import org.kevoree.impl.ContainerNodeInternal
+import org.kevoree.container.KMFContainer
 
 /**
  * Created by IntelliJ IDEA.
@@ -49,7 +49,7 @@ class UnresolvedNode(val nodeName: String, val query: String): ContainerNodeInte
     override var _hosts_java_cache: List<ContainerNode>? = ArrayList<ContainerNode>()
     override val _hosts: HashMap<Any, ContainerNode> = HashMap<Any, ContainerNode>()
     override var _host: ContainerNode? = null
-    override var internal_eContainer: KevoreeContainer? = null
+    override var internal_eContainer: KMFContainer? = null
     override var internal_containmentRefName: String? = null
     override var internal_unsetCmd: (() -> Unit)? = null
     override var internal_readOnlyElem: Boolean = false

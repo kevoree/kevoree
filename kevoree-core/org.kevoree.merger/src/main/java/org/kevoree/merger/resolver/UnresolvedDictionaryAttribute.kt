@@ -27,10 +27,10 @@
 package org.kevoree.merger.resolver
 
 import org.kevoree.DictionaryAttribute
-import org.kevoree.KevoreeContainer
 import org.kevoree.TypedElement
 import java.util.HashMap
 import org.kevoree.impl.DictionaryAttributeInternal
+import org.kevoree.container.KMFContainer
 
 /**
  * Created by IntelliJ IDEA.
@@ -41,7 +41,7 @@ import org.kevoree.impl.DictionaryAttributeInternal
 
 class UnresolvedDictionaryAttribute(val attributeName: String): DictionaryAttributeInternal {
     override var internal_recursive_readOnlyElem: Boolean = false
-    override var internal_eContainer: KevoreeContainer? = null
+    override var internal_eContainer: KMFContainer? = null
     override var internal_containmentRefName: String? = null
     override var internal_readOnlyElem: Boolean = false
     override var internal_unsetCmd: (() -> Unit)? = null
