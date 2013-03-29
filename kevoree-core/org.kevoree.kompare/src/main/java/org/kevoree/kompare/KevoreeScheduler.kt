@@ -1,9 +1,9 @@
 package org.kevoree.kompare
 
-import org.kevoreeAdaptation.AdaptationModel
+import org.kevoreeadaptation.AdaptationModel
 import org.kevoree.kompare.scheduling.SchedulingWithTopologicalOrderAlgo
-import org.kevoreeAdaptation.ParallelStep
-import org.kevoreeAdaptation.KevoreeAdaptationFactory
+import org.kevoreeadaptation.ParallelStep
+import org.kevoreeadaptation.KevoreeAdaptationFactory
 
 /**
  * Created by IntelliJ IDEA.
@@ -41,7 +41,7 @@ trait KevoreeScheduler {
     fun plan(adaptionModel: AdaptationModel, nodeName: String): AdaptationModel {
         if (!adaptionModel.getAdaptations().isEmpty()) {
 
-            adaptationModelFactory = org.kevoreeAdaptation.impl.DefaultKevoreeAdaptationFactory()
+            adaptationModelFactory = org.kevoreeadaptation.impl.DefaultKevoreeAdaptationFactory()
             val scheduling = SchedulingWithTopologicalOrderAlgo()
             nextStep()
             adaptionModel.setOrderedPrimitiveSet(currentStep)

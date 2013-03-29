@@ -1,7 +1,7 @@
 package org.kevoree.kompare
 
 import org.kevoree.*
-import org.kevoreeAdaptation.*
+import org.kevoreeadaptation.*
 import org.kevoree.kompare.sub.Kompare2
 import org.kevoree.impl.DefaultKevoreeFactory
 import org.slf4j.LoggerFactory
@@ -13,12 +13,12 @@ class KevoreeKompareBean: Kompare2, KevoreeScheduler {
 
     val logger = LoggerFactory.getLogger(this.javaClass)!!
 
-    override var adaptationModelFactory: KevoreeAdaptationFactory = org.kevoreeAdaptation.impl.DefaultKevoreeAdaptationFactory()
+    override var adaptationModelFactory: KevoreeAdaptationFactory = org.kevoreeadaptation.impl.DefaultKevoreeAdaptationFactory()
 
     fun kompare(actualModel: ContainerRoot, targetModel: ContainerRoot, nodeName: String): AdaptationModel {
 
         val factory = DefaultKevoreeFactory()
-        val adaptationModelFactory = org.kevoreeAdaptation.impl.DefaultKevoreeAdaptationFactory()
+        val adaptationModelFactory = org.kevoreeadaptation.impl.DefaultKevoreeAdaptationFactory()
         val adaptationModel = adaptationModelFactory.createAdaptationModel()
         //STEP 0 - FOUND LOCAL NODE
         var actualLocalNode = actualModel.findByPath("nodes[" + nodeName + "]", javaClass<ContainerNode>())

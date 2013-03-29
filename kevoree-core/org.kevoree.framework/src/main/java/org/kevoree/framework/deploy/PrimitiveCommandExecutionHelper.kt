@@ -21,8 +21,8 @@ import org.kevoree.AdaptationPrimitiveTypeRef
 import org.kevoree.ContainerNode
 import org.kevoree.api.NodeType
 import org.kevoree.api.PrimitiveCommand
-import org.kevoreeAdaptation.AdaptationModel
-import org.kevoreeAdaptation.ParallelStep
+import org.kevoreeadaptation.AdaptationModel
+import org.kevoreeadaptation.ParallelStep
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 

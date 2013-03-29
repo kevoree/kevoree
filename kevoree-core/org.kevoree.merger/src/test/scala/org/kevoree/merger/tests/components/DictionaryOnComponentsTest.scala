@@ -35,7 +35,7 @@ import org.junit._
 import org.kevoree.api.service.core.merger.MergerService
 import org.kevoree.merger.KevoreeMergerComponent
 import org.kevoree.merger.tests.MergerTestSuiteHelper
-import org.kevoreeAdaptation._
+import org.kevoreeadaptation._
 import org.scalatest.junit.AssertionsForJUnit
 
 class DictionaryOnComponentsTest extends MergerTestSuiteHelper  {

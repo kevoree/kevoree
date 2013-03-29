@@ -34,7 +34,7 @@ package org.kevoree.kompare.tests.`type`
 import org.kevoree.kompare.KevoreeKompareBean
 import org.kevoree.kompare.tests.KompareSuite
 import org.junit._
-import org.kevoreeAdaptation._
+import org.kevoreeadaptation._
 
 class DeployUnitUpdateTest extends KompareSuite {
 

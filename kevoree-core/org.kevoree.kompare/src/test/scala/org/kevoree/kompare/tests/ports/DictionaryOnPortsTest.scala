@@ -33,7 +33,7 @@ package org.kevoree.kompare.tests.components
 
 import org.junit._
 import org.kevoree.kompare.KevoreeKompareBean
-import org.kevoreeAdaptation._
+import org.kevoreeadaptation._
 import org.scalatest.junit.AssertionsForJUnit
 import org.kevoree.kompare.tests._
 

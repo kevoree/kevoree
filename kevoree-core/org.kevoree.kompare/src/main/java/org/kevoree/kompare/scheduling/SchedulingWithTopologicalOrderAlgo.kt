@@ -33,7 +33,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.kevoree.*
 import java.util.ArrayList
-import org.kevoreeAdaptation.AdaptationPrimitive
+import org.kevoreeadaptation.AdaptationPrimitive
 import java.util.HashMap
 import org.kevoree.container.KMFContainer
 

@@ -1,6 +1,6 @@
 package org.kevoree.kompare.sub
 
-import org.kevoreeAdaptation.AdaptationModel
+import org.kevoreeadaptation.AdaptationModel
 import org.kevoree.ContainerNode
 import org.slf4j.LoggerFactory
 import org.slf4j.Logger
@@ -15,7 +15,7 @@ import org.kevoree.Port
 import java.util.HashSet
 import java.util.ArrayList
 import org.kevoree.framework.kaspects.ChannelAspect
-import org.kevoreeAdaptation.KevoreeAdaptationFactory
+import org.kevoreeadaptation.KevoreeAdaptationFactory
 import org.kevoree.framework.kaspects.TypeDefinitionAspect
 import java.util.HashMap
 import org.kevoree.DeployUnit
