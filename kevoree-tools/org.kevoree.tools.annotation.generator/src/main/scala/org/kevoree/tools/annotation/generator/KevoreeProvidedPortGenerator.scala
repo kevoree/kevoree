@@ -202,7 +202,7 @@ object KevoreeProvidedPortGenerator {
         writer.append("else -> { println(\"uncatch message , method not found in service declaration : \");return null}\n")
         writer.append("}")
         writer.append("}")
-        writer.append("else -> { println(\"Bad MSG\");return null }")
+        writer.append("else -> { println(\"Bad MSG\"+o);return null }")
         writer.append("}}\n")
       }
 

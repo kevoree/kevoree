@@ -118,6 +118,9 @@ class ChannelTypeFragmentThread(val target: AbstractChannelFragment, val _nodeNa
     }
 
     override fun sendWait(o: Any?): Any? {
+
+        println("pool="+pool+"->"+getName()+"-"+o)
+
         return pool!!.submit(SyncCall(o)).get()
     }
 
@@ -147,7 +150,7 @@ class ChannelTypeFragmentThread(val target: AbstractChannelFragment, val _nodeNa
                     val msg2 = Message()
                     msg2.setInOut(true)
                     msg2.setContent(o)
-                    return dispatch(msg2)
+                    return target.dispatch(msg2)
                 }
                 else -> {
                     val msg2 = Message()
