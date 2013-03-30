@@ -160,7 +160,7 @@ object KevoreeProvidedPortGenerator {
             writer.append("msgcall.setMethodName(\"" + op.getName + "\")\n")
             op.getParameters.sortWith((p1, p2) => p2.getOrder > p1.getOrder).foreach {
               param =>
-                writer.append("msgcall.getParams.put(\"" + param.getName + "\"," + GeneratorHelper.protectReservedWord(param.getName) + ".asInstanceOf[AnyRef])\n")
+                writer.append("msgcall.getParams()!!.put(\"" + param.getName + "\"," + GeneratorHelper.protectReservedWord(param.getName) + " as Any)\n")
             }
             writer.append("return (this.sendWait(msgcall)) as " + GeneratorHelper.protectedType(rt))
             writer.append("}\n")
@@ -182,10 +182,10 @@ object KevoreeProvidedPortGenerator {
                     if (i != 0) {
                       writer.append(",")
                     }
-                    writer.append("if((o as org.kevoree.framework.MethodCallMessage).getParams.containsKey(\"" + param.getName + "\")){")
-                    writer.append("(o as org.kevoree.framework.MethodCallMessage).getParams.get(\"" + param.getName + "\") as " + param.getType.print('[', ']') + "")
+                    writer.append("if((o as org.kevoree.framework.MethodCallMessage).getParams()!!.containsKey(\"" + param.getName + "\")){")
+                    writer.append("(o as org.kevoree.framework.MethodCallMessage).getParams()!!.get(\"" + param.getName + "\") as " + param.getType.print('<', '>') + "")
                     writer.append("}else{")
-                    writer.append("(o as org.kevoree.framework.MethodCallMessage).getParams.get(\"arg" + i + "\") as " + param.getType.print('<', '>') + "")
+                    writer.append("(o as org.kevoree.framework.MethodCallMessage).getParams()!!.get(\"arg" + i + "\") as " + param.getType.print('<', '>') + "")
                     writer.append("}")
                     i = i + 1
                 }

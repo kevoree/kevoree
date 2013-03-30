@@ -123,7 +123,7 @@ object KevoreeRequiredPortGenerator {
             writer.append("msgcall.setMethodName(\"" + op.getName + "\")\n")
             op.getParameters.sortWith((p1,p2)=>p2.getOrder > p1.getOrder).foreach {
               param =>
-                writer.append("msgcall.getParams.put(\"" + param.getName + "\"," + GeneratorHelper.protectReservedWord(param.getName) + ".asInstanceOf[AnyRef])\n")
+                writer.append("msgcall.getParams().put(\"" + param.getName + "\"," + GeneratorHelper.protectReservedWord(param.getName) + " as Any)\n")
             }
 
             writer.append("return (this.sendWait(msgcall)) as " + GeneratorHelper.protectedType(rt) )

@@ -47,6 +47,10 @@ trait KevoreeRequiredExecutorPort: KevoreePort {
     }
 
     override fun sendWait(o: Any?): Any? {
+
+        println("SendAndWait;-)")
+        println("pool="+pool)
+
         return pool!!.submit(CallMethodCallable(o, this)).get()
     }
 
