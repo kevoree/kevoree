@@ -118,10 +118,9 @@ class ChannelTypeFragmentThread(val target: AbstractChannelFragment, val _nodeNa
     }
 
     override fun sendWait(o: Any?): Any? {
-
-        println("pool="+pool+"->"+getName()+"-"+o)
-
-        return pool!!.submit(SyncCall(o)).get()
+        val result = pool!!.submit(SyncCall(o)).get()
+        println("ChannelSendWait "+result)
+        return result
     }
 
     inner class AsyncCall(val o: Any?): Runnable {
@@ -163,9 +162,6 @@ class ChannelTypeFragmentThread(val target: AbstractChannelFragment, val _nodeNa
     }
 
     public fun forward(delegate: KevoreeChannelFragment?, inmsg: Message?): Any? {
-
-        System.out.println("Forward !!!!")
-
         val msg = inmsg!!.clone()
         msg.setDestChannelName(delegate!!.getName())
         msg.setDestNodeName(delegate!!.getNodeName())
@@ -181,17 +177,14 @@ class ChannelTypeFragmentThread(val target: AbstractChannelFragment, val _nodeNa
         val msg = inmsg!!.clone()
         msg.setDestChannelName(delegate!!.getName())
         if (msg.getInOut()) {
-            return delegate.sendWait(msg)
+            return delegate.sendWait(msg.getContent())
         } else {
-            delegate.send(msg)
+            delegate.send(msg.getContent())
             return null
         }
     }
 
     override fun processAdminMsg(o: Any): Boolean {
-
-        println("AdminMSG Channel")
-
         pool?.pause()
         val res = when(o) {
             is FragmentBindMessage -> {
@@ -224,9 +217,6 @@ class ChannelTypeFragmentThread(val target: AbstractChannelFragment, val _nodeNa
                 }
             }
             is PortBindMessage -> {
-
-                println("Bind !!!"+createPortKey(o))
-
                 portsBinded.put(createPortKey(o), (o as PortBindMessage).proxy)
                 val met = resolver.resolve(javaClass<LocalBindingUpdated>())
                 if (met != null) {

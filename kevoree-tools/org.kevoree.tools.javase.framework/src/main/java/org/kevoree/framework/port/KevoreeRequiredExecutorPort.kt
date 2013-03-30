@@ -36,9 +36,9 @@ trait KevoreeRequiredExecutorPort: KevoreePort {
 
     var pool: PausablePortThreadPoolExecutor?
 
-    class CallMethodCallable(val o: Any?, val target: KevoreeRequiredExecutorPort): Callable<Any> {
-        override fun call() {
-            target.internal_process(o)
+    class CallMethodCallable(val o: Any?, val target: KevoreeRequiredExecutorPort): Callable<Any?> {
+        override fun call() : Any? {
+            return target.internal_process(o)
         }
     }
 
@@ -47,11 +47,8 @@ trait KevoreeRequiredExecutorPort: KevoreePort {
     }
 
     override fun sendWait(o: Any?): Any? {
-
-        println("SendAndWait;-)")
-        println("pool="+pool)
-
-        return pool!!.submit(CallMethodCallable(o, this)).get()
+        val result = pool!!.submit(CallMethodCallable(o, this)).get()
+        return result
     }
 
     fun getInOut(): Boolean

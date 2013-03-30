@@ -109,6 +109,10 @@ class Message: Serializable {
         return clone
     }
 
+    override public fun toString() : String {
+        return "content="+_content+"/"+_contentClass
+    }
+
 
 }
 
