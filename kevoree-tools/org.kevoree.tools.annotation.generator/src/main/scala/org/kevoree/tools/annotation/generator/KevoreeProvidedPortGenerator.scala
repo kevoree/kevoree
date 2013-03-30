@@ -155,7 +155,7 @@ object KevoreeProvidedPortGenerator {
               param =>
                 writer.append("msgcall.getParams()!!.put(\"" + param.getName + "\"," + GeneratorHelper.protectReservedWord(param.getName) + " as Any)\n")
             }
-            writer.append("return (this.sendWait(msgcall)) as " + GeneratorHelper.protectedType(rt))
+            writer.append("return this.sendWait(msgcall) as " + GeneratorHelper.protectedType(rt))
             writer.append("}\n")
         }
         /* CREATE ACTOR LOOP */

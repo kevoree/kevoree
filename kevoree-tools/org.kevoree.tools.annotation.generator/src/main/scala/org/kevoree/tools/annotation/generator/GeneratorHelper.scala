@@ -30,13 +30,20 @@ object GeneratorHelper {
     }
   }
 
+
   def protectedType(t:String) : String = {
     t match {
       case "java.lang.String" => "String"
       case "void" => "Unit"
-      case _ => t
+      case _ => t.replace("[","<")
+        .replace("]",">")
+        .replace("Array<Byte>","ByteArray")
+        .replace("java.lang.","")
+        .replace("java.util.","")
     }
+
   }
+
 
 
 }

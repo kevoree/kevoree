@@ -64,11 +64,11 @@ class DataTypeVisitor extends SimpleTypeVisitor6[Any, Any] {
     var name = p1.toString
     name = name.replace("[]", "")
     val sb = new StringBuffer()
-    sb.append("Array<")
+    sb.append("Array[")
 //    sb.append(name.substring(0, 1).toUpperCase)
 //    sb.append(name.substring(1).toLowerCase)
     sb.append(visitArrayComponentType(p1.getComponentType))
-    sb.append(">")
+    sb.append("]")
     dataType.setName(sb.toString)
   }
 
