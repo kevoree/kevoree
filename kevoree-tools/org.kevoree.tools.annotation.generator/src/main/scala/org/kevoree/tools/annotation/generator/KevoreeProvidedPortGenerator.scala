@@ -104,8 +104,8 @@ object KevoreeProvidedPortGenerator {
               elemsT.foreach {
                 t =>
                   t match {
-                    case "java.lang.String" => writer.append("getName")
-                    case "java.lang.Object" => writer.append("msg")
+                    case "java.lang.String" => writer.append("getName()")
+                    case "java.lang.Object" => writer.append("o")
                     case _ => writer.append("null")
                   }
                   if (elemsT.last != t) {
