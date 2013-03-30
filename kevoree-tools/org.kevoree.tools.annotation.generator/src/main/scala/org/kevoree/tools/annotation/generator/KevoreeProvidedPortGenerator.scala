@@ -71,10 +71,6 @@ object KevoreeProvidedPortGenerator {
         writer.append("class " + portName + "(val component : " + ct.getName + ") : " + baseName + " , KevoreeProvidedExecutorPort {\n")
         writer.append("override var pool: PausablePortThreadPoolExecutor? = null\n")
       }
-      /*
-      case _ => {
-        writer.append("class " + portName + "(component : " + ct.getName + ") extends " + baseName + " with KevoreeProvidedPort {\n")
-      } */
     }
 
     writer.append("override var isPaused : jet.Boolean = true\n")
@@ -137,14 +133,11 @@ object KevoreeProvidedPortGenerator {
                 if (i != 0) {
                   writer.append(",")
                 }
-                writer.append(GeneratorHelper.protectReservedWord(param.getName) + ":" + param.getType.print('<', '>'))
+                writer.append(GeneratorHelper.protectReservedWord(param.getName) + ":" + GeneratorHelper.protectedType(param.getType.print('<', '>'))+"?")
                 i = i + 1
             }
             /* GENERATES RETURN TYPE in rt */
             var rt = op.getReturnType.getName
-
-
-
 
             if (op.getReturnType.getGenericTypes.size > 0) {
               rt += op.getReturnType.getGenericTypes.collect {
@@ -183,9 +176,9 @@ object KevoreeProvidedPortGenerator {
                       writer.append(",")
                     }
                     writer.append("if((o as org.kevoree.framework.MethodCallMessage).getParams()!!.containsKey(\"" + param.getName + "\")){")
-                    writer.append("(o as org.kevoree.framework.MethodCallMessage).getParams()!!.get(\"" + param.getName + "\") as " + param.getType.print('<', '>') + "")
+                    writer.append("(o as org.kevoree.framework.MethodCallMessage).getParams()!!.get(\"" + param.getName + "\") as " + GeneratorHelper.protectedType(param.getType.print('<', '>')) + "")
                     writer.append("}else{")
-                    writer.append("(o as org.kevoree.framework.MethodCallMessage).getParams()!!.get(\"arg" + i + "\") as " + param.getType.print('<', '>') + "")
+                    writer.append("(o as org.kevoree.framework.MethodCallMessage).getParams()!!.get(\"arg" + i + "\") as " + GeneratorHelper.protectedType(param.getType.print('<', '>')) + "")
                     writer.append("}")
                     i = i + 1
                 }
