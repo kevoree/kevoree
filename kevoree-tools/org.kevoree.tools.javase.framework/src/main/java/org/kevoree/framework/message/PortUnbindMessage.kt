@@ -13,5 +13,5 @@
  */
 package org.kevoree.framework.message;
 
-data class PortUnbindMessage(nodeName : String,componentName : String,portName : String)
+data class PortUnbindMessage(var nodeName : String,var componentName : String,var portName : String)
 

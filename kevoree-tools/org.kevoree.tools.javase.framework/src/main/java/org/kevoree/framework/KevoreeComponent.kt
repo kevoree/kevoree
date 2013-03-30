@@ -17,6 +17,7 @@ import org.kevoree.ContainerRoot
 import org.kevoree.framework.internal.MethodAnnotationResolver
 import org.slf4j.LoggerFactory
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService
+import org.kevoree.ComponentInstance
 
 /**
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
@@ -33,6 +34,8 @@ import org.kevoree.api.service.core.handler.KevoreeModelHandlerService
  */
 public class KevoreeComponent(val ct: AbstractComponentType, val nodeName: String, val name: String,val modelService : KevoreeModelHandlerService): KInstance {
 
+
+
     val kevoree_internal_logger = LoggerFactory.getLogger(this.javaClass)!!
 
     fun getKevoreeComponentType(): ComponentType {
@@ -45,6 +48,27 @@ public class KevoreeComponent(val ct: AbstractComponentType, val nodeName: Strin
         return ct_started
     }
 
+    public fun initPorts(nodeTypeName : String, modelElement : ComponentInstance){
+        /* Init Required and Provided Port */
+        val bean = modelElement.getTypeDefinition()!!.getBean()
+        for(providedPort in modelElement.getProvided()){
+            val newPortClazz = ct.javaClass.getClassLoader()!!.loadClass(buildPortBean(bean, nodeTypeName, providedPort.getPortTypeRef()!!.getName()))
+            //TODO inject pure reflexif port, if class not found exception
+            val newPort = newPortClazz!!.getConstructor(ct.getClass()).newInstance(ct) as KevoreePort
+            newPort.startPort()
+            ct.getHostedPorts()!!.put(newPort.getName(), newPort)
+        }
+        for(requiredPort in modelElement.getRequired()){
+            val newPortClazz = ct.javaClass.getClassLoader()!!.loadClass(buildPortBean(bean, nodeTypeName, requiredPort.getPortTypeRef()!!.getName()))
+            //TODO inject pure reflexif port, if class not found exception
+            val newPort = newPortClazz!!.getConstructor(ct.getClass()).newInstance(ct) as KevoreePort
+            newPort.startPort()
+            ct.getNeededPorts()!!.put(newPort.getName(), newPort)
+        }
+        /* End reflexive injection */
+    }
+
+
     private val resolver = MethodAnnotationResolver(ct.javaClass);
 
     private fun buildPortBean(bean: String, nodeTypeName: String, portName: String): String {
@@ -56,24 +80,7 @@ public class KevoreeComponent(val ct: AbstractComponentType, val nodeName: Strin
     override fun kInstanceStart(tmodel: ContainerRoot): Boolean {
         if (!ct_started){
             try {
-                /* Init Required and Provided Port */
-                val componentElement = tmodel.findNodesByID(nodeName)!!.findComponentsByID(name)!!
-                val bean = componentElement.getTypeDefinition()!!.getBean()
-                for(providedPort in componentElement.getProvided()){
-                    val newPortClazz = ct.javaClass.getClassLoader()!!.loadClass(buildPortBean(bean, tmodel.findNodesByID(nodeName)!!.getTypeDefinition()!!.getName(), providedPort.getPortTypeRef()!!.getName()))
-                    //TODO inject pure reflexif port, if class not found exception
-                    val newPort = newPortClazz!!.getConstructor(ct.getClass()).newInstance(ct) as KevoreePort
-                    newPort.startPort()
-                    ct.getHostedPorts()!!.put(newPort.getName(), newPort)
-                }
-                for(requiredPort in componentElement.getRequired()){
-                    val newPortClazz = ct.javaClass.getClassLoader()!!.loadClass(buildPortBean(bean, tmodel.findNodesByID(nodeName)!!.getTypeDefinition()!!.getName(), requiredPort.getPortTypeRef()!!.getName()))
-                    //TODO inject pure reflexif port, if class not found exception
-                    val newPort = newPortClazz!!.getConstructor(ct.getClass()).newInstance(ct) as KevoreePort
-                    newPort.startPort()
-                    ct.getNeededPorts()!!.put(newPort.getName(), newPort)
-                }
-                /* End reflexive injection */
+
                 ct.setModelService(ModelHandlerServiceProxy(modelService))
                 ct.setName(name)
                 ct.setNodeName(nodeName)

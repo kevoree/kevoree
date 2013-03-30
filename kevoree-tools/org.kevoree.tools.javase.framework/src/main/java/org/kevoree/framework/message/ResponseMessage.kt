@@ -14,6 +14,6 @@
 package org.kevoree.framework.message
 
 
-data class ResponseMessage(responseTag:String,content : Any)
+data class ResponseMessage(var responseTag:String,var content : Any)
 
 

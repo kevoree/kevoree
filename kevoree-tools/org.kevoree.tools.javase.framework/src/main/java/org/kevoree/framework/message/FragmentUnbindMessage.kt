@@ -1,5 +1,5 @@
 
 package org.kevoree.framework.message;
 
-data class FragmentUnbindMessage(channelName : String,fragmentNodeName : String?)
+data class FragmentUnbindMessage(var channelName : String,var fragmentNodeName : String?)
 

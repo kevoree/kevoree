@@ -92,12 +92,12 @@ trait KevoreeRequiredNonePort: KevoreePort {
     }
 
 
-    private fun bind(bindmsg: FragmentBindMessage) = {
+    private fun bind(bindmsg: FragmentBindMessage) {
         delegate = bindmsg.proxy
         _isBound = true
     }
 
-    private fun unbind(unbindmsg: FragmentUnbindMessage) = {
+    private fun unbind(unbindmsg: FragmentUnbindMessage) {
         delegate = null
         _isBound = false
     }

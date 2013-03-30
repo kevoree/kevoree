@@ -29,4 +29,4 @@ import org.kevoree.ContainerRoot
  * limitations under the License.
  */
 
-data class UpdateDictionaryMessage(d : java.util.HashMap<String,String>, cmodel: ContainerRoot)
+data class UpdateDictionaryMessage(var d : java.util.HashMap<String,String>, var cmodel: ContainerRoot)

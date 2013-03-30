@@ -5,97 +5,97 @@ import java.util.UUID
 
 class Message: Serializable {
 
-    var destNodeName = "default"
+    var _destNodeName = "default"
 
     fun getDestNodeName(): String {
-        return destNodeName
+        return _destNodeName
     }
 
     fun setDestNodeName(newDestNodeName: String) {
-        destNodeName = newDestNodeName
+        _destNodeName = newDestNodeName
     }
 
-    var destChannelName = "default"
+    var _destChannelName = "default"
 
     fun getDestChannelName(): String {
-        return destChannelName
+        return _destChannelName
     }
 
     fun setDestChannelName (newDestChannelName: String) {
-        destChannelName = newDestChannelName
+        _destChannelName = newDestChannelName
     }
 
-    var content: Any? = null
+    var _content: Any? = null
 
     fun getContent(): Any? {
-        return content
+        return _content
     }
 
     fun setContent (newContent: Any) {
-        content = newContent
+        _content = newContent
     }
 
-    var contentClass: String? = null
+    var _contentClass: String? = null
 
     fun getContentClass(): String? {
-        return contentClass
+        return _contentClass
     }
 
     fun setContentClass (newContentClass: String) {
-        contentClass = newContentClass
+        _contentClass = newContentClass
     }
 
-    var inOut: Boolean = false
+    var _inOut: Boolean = false
 
     fun getInOut(): Boolean {
-        return inOut
+        return _inOut
     }
 
     fun setInOut (newInOut: Boolean) {
-        inOut = newInOut
+        _inOut = newInOut
     }
 
-    var responseTag = ""
+    var _responseTag = ""
 
     fun getResponseTag(): String {
-        return responseTag
+        return _responseTag
     }
 
     fun setResponseTag (newResponseTag: String) {
-        responseTag = newResponseTag
+        _responseTag = newResponseTag
     }
 
-    var timeout: Long = 3000
+    var _timeout: Long = 3000
 
     fun getTimeout(): Long {
-        return timeout
+        return _timeout
     }
 
     fun setTimeout (newTimeout: Long) {
-        timeout = newTimeout
+        _timeout = newTimeout
     }
 
-    var passedNodes: List<String> = java.util.ArrayList<String>()
+    var _passedNodes: List<String> = java.util.ArrayList<String>()
 
     fun getPassedNodes(): List<String> {
-        return passedNodes
+        return _passedNodes
     }
 
     fun setPassedNodes (newPassedNodes: List<String>) {
-        passedNodes = newPassedNodes
+        _passedNodes = newPassedNodes
     }
 
-    var uuid: UUID = UUID.randomUUID()
+    var _uuid: UUID = UUID.randomUUID()
 
     fun getUuid(): UUID {
-        return uuid
+        return _uuid
     }
 
     fun setUuid (newUuid: UUID) {
-        uuid = newUuid
+        _uuid = newUuid
     }
 
-    override fun clone(): Message {
+    override public fun clone(): Message {
         val clone = Message()
         clone.setDestNodeName(this.getDestNodeName())
         clone.setDestChannelName(this.getDestChannelName())

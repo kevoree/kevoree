@@ -13,10 +13,10 @@
  */
 package org.kevoree.framework.port
 
+import org.kevoree.framework.KevoreeChannelFragment
 import org.kevoree.framework.KevoreePort
 import org.kevoree.framework.message.FragmentBindMessage
 import org.kevoree.framework.message.FragmentUnbindMessage
-import org.kevoree.framework.KevoreeChannelFragment
 
 /**
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
@@ -38,9 +38,9 @@ trait KevoreeRequiredThreadPort: KevoreePort, Runnable {
         return _isBound
     }
     var reader: Thread?
-    var isPaused  : Boolean
+    var isPaused: Boolean
     var delegate: KevoreeChannelFragment?
-    val queue : java.util.concurrent.LinkedBlockingDeque<Any?>
+    val queue: java.util.concurrent.LinkedBlockingDeque<Any?>
 
     override fun send(o: Any?) {
         queue.add(o)
@@ -69,7 +69,6 @@ trait KevoreeRequiredThreadPort: KevoreePort, Runnable {
             else -> {
                 throw Exception("Bad MSG")
             }
-
         }
     }
 
@@ -120,12 +119,12 @@ trait KevoreeRequiredThreadPort: KevoreePort, Runnable {
         isPaused = false
     }
 
-    private fun bind(bindmsg: FragmentBindMessage) = {
+    private fun bind(bindmsg: FragmentBindMessage) {
         delegate = bindmsg.proxy
         _isBound = true
     }
 
-    private fun unbind(unbindmsg: FragmentUnbindMessage) = {
+    private fun unbind(unbindmsg: FragmentUnbindMessage) {
         delegate = null
         _isBound = false
     }
@@ -144,10 +143,10 @@ trait KevoreeRequiredThreadPort: KevoreePort, Runnable {
             } else {
                 try {
                     delegate!!.send(msg)
+                    return null
                 } catch (e: Exception){
                     return false
                 }
-                return false
             }
         }
     }

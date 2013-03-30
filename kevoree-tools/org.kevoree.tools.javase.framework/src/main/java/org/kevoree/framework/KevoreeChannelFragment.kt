@@ -30,17 +30,8 @@ package org.kevoree.framework
 trait KevoreeChannelFragment: KInstance {
     fun getName(): String
     fun getNodeName(): String
-
-    fun startChannelFragment()
-    fun stopChannelFragment()
-    fun getDictionary(): java.util.HashMap<String, Any>?
-
     fun send(o: Any?)
     fun sendWait(o: Any?): Any?
-
-    fun startC()
-    fun stopC()
-
     fun processAdminMsg(o: Any): Boolean
 
 }

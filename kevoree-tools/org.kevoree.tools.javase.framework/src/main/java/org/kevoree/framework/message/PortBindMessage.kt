@@ -16,6 +16,6 @@ package org.kevoree.framework.message;
 
 import org.kevoree.framework.KevoreePort
 
-data class PortBindMessage(proxy : KevoreePort,nodeName : String,componentName : String,portName : String)
+data class PortBindMessage(var proxy : KevoreePort,var nodeName : String,var componentName : String,var portName : String)
 
 

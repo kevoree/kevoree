@@ -118,12 +118,12 @@ trait KevoreeRequiredExecutorPort: KevoreePort {
     }
 
 
-    private fun bind(bindmsg: FragmentBindMessage) = {
+    private fun bind(bindmsg: FragmentBindMessage) {
         delegate = bindmsg.proxy
         _isBound = true
     }
 
-    private fun unbind(unbindmsg: FragmentUnbindMessage) = {
+    private fun unbind(unbindmsg: FragmentUnbindMessage) {
         delegate = null
         _isBound = false
     }
@@ -135,17 +135,17 @@ trait KevoreeRequiredExecutorPort: KevoreePort {
         } else {
             if (getInOut()) {
                 try {
-                    return delegate!!.send(msg)
+                    return delegate!!.sendWait(msg)
                 } catch(e: Exception) {
                     return false
                 }
             } else {
                 try {
                     delegate!!.send(msg)
+                    return null
                 } catch (e: Exception){
                     return false
                 }
-                return false
             }
         }
     }

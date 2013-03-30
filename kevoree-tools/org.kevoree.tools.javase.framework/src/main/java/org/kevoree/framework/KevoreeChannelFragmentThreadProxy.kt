@@ -46,18 +46,6 @@ class KevoreeChannelFragmentThreadProxy(val remoteNodeName: String, val remoteCh
     override fun sendWait(o: Any?): Any? {
         return internal_process(o)
     }
-    override fun startC() {
-    }
-    override fun stopC() {
-    }
-
-    override fun startChannelFragment() {
-    }
-    override fun stopChannelFragment() {
-    }
-    override fun getDictionary(): HashMap<String, Any>? {
-        return null
-    }
 
     override fun getNodeName(): String {
         return remoteNodeName
@@ -66,7 +54,6 @@ class KevoreeChannelFragmentThreadProxy(val remoteNodeName: String, val remoteCh
     override fun  getName(): String {
         return remoteChannelName
     }
-
 
     fun internal_process(msg: Any?): Any? {
         return when(msg){
@@ -79,7 +66,7 @@ class KevoreeChannelFragmentThreadProxy(val remoteNodeName: String, val remoteCh
         }
     }
 
-    var channelSender: ChannelFragmentSender? = null
+    public var channelSender: ChannelFragmentSender? = null
 
     override fun processAdminMsg(o: Any): Boolean {
         return false
