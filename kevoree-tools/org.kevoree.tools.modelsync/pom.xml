@@ -21,6 +21,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala-library</artifactId>
+            <version>${scala.version}</version>
+        </dependency>
+        <dependency>
             <artifactId>org.kevoree.tools.aether.framework</artifactId>
             <groupId>org.kevoree.tools</groupId>
             <version>${kevoree.version}</version>
