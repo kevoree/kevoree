@@ -86,39 +86,10 @@ class PostAptChecker(root: ContainerRoot, env: ProcessingEnvironment) {
   def checkComponentTypes() {
     root.getTypeDefinitions.foreach {
       typeDef =>
-        checkLifeCycleMethods(typeDef)
         checkPackage(typeDef)
     }
   }
 
-  private def checkLifeCycleMethods(td: TypeDefinition) {
-    
-    if(td.getBean == ""){
-         return
-    }
-    
-    td match {
-
-      case ntype: NodeType => //IGNORE CHECK FOR NODE TYPE
-
-      case lctd: LifeCycleTypeDefinition => {
-        if (lctd.getStartMethod == "") {
-          env.getMessager.printMessage(Kind.ERROR,"@Start method is mandatory in " + td.getBean + ".")
-          nbErrors += 1
-        }
-        if (lctd.getStopMethod == "") {
-          env.getMessager.printMessage(Kind.ERROR,"@Stop method is mandatory in " + td.getBean + ".")
-          nbErrors += 1
-        }
-        if (lctd.getUpdateMethod == "") {
-          env.getMessager.printMessage(Kind.WARNING,"@Update method is missing in " + td.getBean + ".")
-        }
-
-      }
-
-      case _ =>
-    }
-  }
 
   private def checkPackage(td: TypeDefinition) {
     td match {

@@ -16,7 +16,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * 	http://www.gnu.org/licenses/lgpl-3.0.txt
+ * http://www.gnu.org/licenses/lgpl-3.0.txt
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -33,17 +33,16 @@ package org.kevoree.framework.annotation.processor.visitor
 
 import sub._
 import javax.annotation.processing.ProcessingEnvironment
-import javax.lang.model.util.{SimpleTypeVisitor6, SimpleElementVisitor6}
-import javax.lang.model.element.{ElementKind, Element, ExecutableElement, TypeElement}
-import org.kevoree.{ComponentType, ChannelType}
+import javax.lang.model.util.SimpleElementVisitor6
+import javax.lang.model.element.{Element, TypeElement}
+import org.kevoree.ChannelType
 
-case class ChannelTypeFragmentVisitor(channelType: ChannelType, env: ProcessingEnvironment,rootVisitor : KevoreeAnnotationProcessor) extends SimpleElementVisitor6[Any, Element]
-  with DeployUnitProcessor
-  with DictionaryProcessor
-  with LibraryProcessor
-  with ThirdPartyProcessor
-  with LifeCycleMethodProcessor
-  with TypeDefinitionProcessor {
+case class ChannelTypeFragmentVisitor(channelType: ChannelType, env: ProcessingEnvironment, rootVisitor: KevoreeAnnotationProcessor) extends SimpleElementVisitor6[Any, Element]
+with DeployUnitProcessor
+with DictionaryProcessor
+with LibraryProcessor
+with ThirdPartyProcessor
+with TypeDefinitionProcessor {
 
 
   override def visitType(p1: TypeElement, p2: Element): Any = {
@@ -57,26 +56,14 @@ case class ChannelTypeFragmentVisitor(channelType: ChannelType, env: ProcessingE
       }
       case _ =>
     }
-    commonProcess(p1,p2)
+    commonProcess(p1, p2)
   }
 
   def commonProcess(typeDecl: TypeElement, p2: Element) {
     processDictionary(channelType, typeDecl)
-    processDeployUnit(channelType, typeDecl, env,rootVisitor.getOptions)
+    processDeployUnit(channelType, typeDecl, env, rootVisitor.getOptions)
     processLibrary(channelType, typeDecl)
-    processThirdParty(channelType, typeDecl, env,rootVisitor)
-    import scala.collection.JavaConversions._
-    typeDecl.getEnclosedElements.foreach {
-          method => {
-
-            method.getKind match {
-              case ElementKind.METHOD => {
-                processLifeCycleMethod(channelType, method.asInstanceOf[ExecutableElement])
-              }
-              case _ =>
-            }
-          }
-        }
+    processThirdParty(channelType, typeDecl, env, rootVisitor)
   }
 
 }

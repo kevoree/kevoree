@@ -29,17 +29,11 @@ package org.kevoree.tools.arduino.framework.fuzzylogic;
 import org.kevoree.ComponentType;
 import org.kevoree.PortTypeRef;
 import org.kevoree.annotation.ComponentFragment;
-import org.kevoree.annotation.Generate;
 import org.kevoree.annotation.Port;
-import org.kevoree.annotation.RequiredPort;
-import org.kevoree.framework.template.MicroTemplate;
 import org.kevoree.tools.arduino.framework.AbstractArduinoComponent;
 import org.kevoree.tools.arduino.framework.ArduinoGenerator;
 import org.kevoree.tools.arduino.framework.fuzzylogic.fuzzy.GeneratorHelper;
 import org.kevoree.tools.arduino.framework.fuzzylogic.fuzzy.ast.FuzzyRule;
-import org.kevoree.tools.arduino.framework.fuzzylogic.fuzzy.ast.FuzzyRules;
-
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -56,7 +50,7 @@ public abstract class AbstractFuzzyLogicArduinoComponent extends AbstractArduino
     {
         DefaultFuzzyRulesContext def = new DefaultFuzzyRulesContext();
         declareRules(def);
-        gen.appendNativeStatement(MicroTemplate.fromClassPath("fuzzylogic/ArduinoFuzzyLogic/ArduinoFuzzyLogicHeader.c",AbstractFuzzyLogicArduinoComponent.class));
+        //gen.appendNativeStatement(MicroTemplate.fromClassPath("fuzzylogic/ArduinoFuzzyLogic/ArduinoFuzzyLogicHeader.c",AbstractFuzzyLogicArduinoComponent.class));
 
         // Generate rules
         generateRules(gen,def);
@@ -75,7 +69,10 @@ public abstract class AbstractFuzzyLogicArduinoComponent extends AbstractArduino
         //GENERATE TEMP TAB
         GeneratorHelper.generateClassVariables(gen,def.getNumberOfRules());
         // add framework
-        gen.appendNativeStatement(MicroTemplate.fromClassPath("fuzzylogic/ArduinoFuzzyLogic/ArduinoFuzzyLogicFramework.c",AbstractFuzzyLogicArduinoComponent.class));
+
+
+
+        //gen.appendNativeStatement(MicroTemplate.fromClassPath("fuzzylogic/ArduinoFuzzyLogic/ArduinoFuzzyLogicFramework.c",AbstractFuzzyLogicArduinoComponent.class));
 
 
         GeneratorHelper.generateControlMethod(gen);

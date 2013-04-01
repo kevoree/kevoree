@@ -38,24 +38,26 @@ import org.kevoree.framework.message.Message;
  */
 public abstract class AbstractChannelFragment extends AbstractTypeDefinition implements ChannelFragment {
 
+    public ChannelTypeFragmentThread delegate = null;
+
     public java.util.List<KevoreePort> getBindedPorts() {
-        return null;
-    } //OVERRIDE BY FACTORY
+        return delegate.getBindedPorts();
+    }
 
     public java.util.List<KevoreeChannelFragment> getOtherFragments() {
-        return null;
-    } //OVERRIDE BY FACTORY
+        return delegate.getOtherFragments();
+    }
 
-    public Object forward(KevoreePort delegate, Message msg) {
-        return null;
-    } //OVERRIDE BY FACTORY
+    public Object forward(KevoreePort d, Message msg) {
+        return delegate.forward(d, msg);
+    }
 
-    public Object forward(KevoreeChannelFragment delegate, Message msg) {
-        return null;
-    } //OVERRIDE BY FACTORY
+    public Object forward(KevoreeChannelFragment d, Message msg) {
+        return delegate.forward(d, msg);
+    }
 
     public Object remoteDispatch(Message msg) {
-        return null;
+        return delegate.dispatch(msg);
     }
 
     /**

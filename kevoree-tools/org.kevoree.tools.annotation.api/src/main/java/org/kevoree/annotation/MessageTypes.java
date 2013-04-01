@@ -38,7 +38,7 @@ import java.lang.annotation.Target;
  * Time: 21:06
  * To change this template use File | Settings | File Templates.
  */
-@Retention(RetentionPolicy.CLASS)
+@Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE})
 public @interface MessageTypes {
     MessageType[] value() default {};

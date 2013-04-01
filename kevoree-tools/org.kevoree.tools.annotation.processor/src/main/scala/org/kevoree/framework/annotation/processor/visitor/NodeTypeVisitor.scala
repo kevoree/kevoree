@@ -44,7 +44,6 @@ case class NodeTypeVisitor(nodeType: NodeType, env: ProcessingEnvironment, rootV
   with DictionaryProcessor
   with LibraryProcessor
   with ThirdPartyProcessor
-  with LifeCycleMethodProcessor
   with TypeDefinitionProcessor {
 
 
@@ -67,24 +66,11 @@ case class NodeTypeVisitor(nodeType: NodeType, env: ProcessingEnvironment, rootV
           case _ =>
         }
     }
-
     processDictionary(nodeType, classdef)
     processDeployUnit(nodeType, classdef, env, rootVisitor.getOptions)
     processLibrary(nodeType, classdef)
     processThirdParty(nodeType, classdef, env, rootVisitor)
     processPrimitiveCommand(nodeType, classdef, env)
-    import scala.collection.JavaConversions._
-    classdef.getEnclosedElements.foreach {
-      method => {
-        method.getKind match {
-          case ElementKind.METHOD => {
-            processLifeCycleMethod(nodeType, method.asInstanceOf[ExecutableElement])
-          }
-          case _ =>
-        }
-      }
-    }
-
   }
 
   override def visitType(p1: TypeElement, p2: Element): Any = {

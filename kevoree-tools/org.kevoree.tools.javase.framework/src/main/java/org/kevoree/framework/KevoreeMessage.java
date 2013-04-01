@@ -26,8 +26,6 @@
  */
 package org.kevoree.framework;
 
-import scala.Option;
-
 import java.util.List;
 
 /**
@@ -41,7 +39,7 @@ public interface KevoreeMessage extends java.io.Serializable {
     
     public KevoreeMessage putValue(String key, Object value);
     
-    public Option<Object> getValue(String key);
+    public Object getValue(String key);
 
     public List<String> getKeys();
 

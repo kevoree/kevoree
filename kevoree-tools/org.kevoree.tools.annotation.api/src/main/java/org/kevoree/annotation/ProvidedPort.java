@@ -34,7 +34,7 @@ import java.lang.annotation.RetentionPolicy;
  *
  * @author ffouquet
  */
-@Retention(RetentionPolicy.CLASS)
+@Retention(RetentionPolicy.RUNTIME)
 public @interface ProvidedPort {
 
     PortType type() default PortType.SERVICE;

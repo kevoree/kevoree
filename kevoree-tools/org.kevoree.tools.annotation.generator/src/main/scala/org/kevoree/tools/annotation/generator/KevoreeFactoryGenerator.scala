@@ -22,7 +22,6 @@ import javax.annotation.processing.Filer
 import javax.tools.StandardLocation
 import scala.collection.JavaConversions._
 
-
 object KevoreeFactoryGenerator {
 
   /* GENERATE FACTORY FOR COMPONENT & PORT  */
@@ -32,8 +31,6 @@ object KevoreeFactoryGenerator {
     root.getTypeDefinitions.filter(td => td.getBean != "").filter(p => p.isInstanceOf[ComponentType]).foreach {
       ctt =>
         val ct = ctt.asInstanceOf[ComponentType]
-        //val componentPackage = ct.getFactoryBean().substring(0, ct.getFactoryBean().lastIndexOf("."));
-
         val componentPackage = new KevoreeGeneratorHelper().getTypeDefinitionGeneratedPackage(ct, targetNodeType)
         val factoryName = ct.getFactoryBean.substring(ct.getFactoryBean.lastIndexOf(".") + 1)
         val componentBean = ct.getFactoryBean.substring(0, ct.getFactoryBean.lastIndexOf("Factory"))
@@ -43,37 +40,19 @@ object KevoreeFactoryGenerator {
         writer.append("import org.kevoree.framework._\n")
         writer.append("import " + new KevoreeGeneratorHelper().getTypeDefinitionBasePackage(ct) + "._\n")
 
-        writer.append("class "+factoryName+" extends org.kevoree.framework.osgi.KevoreeInstanceFactory {\n")
-        writer.append("override def registerInstance(instanceName : String, nodeName : String)="+factoryName+".registerInstance(instanceName,nodeName)\n")
-        writer.append("override def remove(instanceName : String)="+factoryName+".remove(instanceName)\n")
-        writer.append("def createInstanceActivator = "+factoryName+".createInstanceActivator\n")
+        writer.append("class " + factoryName + " extends org.kevoree.framework.osgi.KevoreeInstanceFactory {\n")
+        writer.append("override def registerInstance(instanceName : String, nodeName : String)=" + factoryName + ".registerInstance(instanceName,nodeName)\n")
+        writer.append("override def remove(instanceName : String)=" + factoryName + ".remove(instanceName)\n")
+        writer.append("def createInstanceActivator = " + factoryName + ".createInstanceActivator\n")
         writer.append("}\n")
 
         writer.append("\nobject " + factoryName + " extends org.kevoree.framework.osgi.KevoreeInstanceFactory {\n")
-        writer.append("def createInstanceActivator: org.kevoree.framework.osgi.KevoreeInstanceActivator = new "+ct.getName+"Activator\n")
+        writer.append("def createInstanceActivator: org.kevoree.framework.osgi.KevoreeInstanceActivator = new " + ct.getName + "Activator\n")
 
         /* create Component Actor */
         writer.append("def createComponentActor() : KevoreeComponent = {\n")
-        writer.append("\tnew KevoreeComponent(create" + ct.getName + "()){")
-
-        if (ct.getStartMethod == "") {
-          sys.error("Start method is mandatory for component name => " + ct.getName)
-        }
-        if (ct.getStopMethod == "") {
-          sys.error("Stop method is mandatory for component name => " + ct.getName)
-        }
-        writer.append("def startComponent(){getKevoreeComponentType.asInstanceOf[" + componentBean + "]." +
-          ct.getStartMethod + "()}\n")
-        writer.append("def stopComponent(){getKevoreeComponentType.asInstanceOf[" + componentBean + "]." +
-          ct.getStopMethod + "()}\n")
-
-        if (ct.getUpdateMethod != "") {
-          writer.append("override def updateComponent(){getKevoreeComponentType.asInstanceOf[" + componentBean + "]." +
-            ct.getUpdateMethod + "()}\n")
-        }
-
-
-        writer.append("}}\n")
+        writer.append("\tnew KevoreeComponent(create" + ct.getName + "())")
+        writer.append("}\n")
 
         /* create Component */
         writer.append("def " + "create" + ct.getName + "() : " + componentBean + " ={\n")
@@ -134,14 +113,14 @@ object KevoreeFactoryGenerator {
         writer.append("package " + channelTypePackage + "\n");
         writer.append("import org.kevoree.framework._\n")
 
-        writer.append("class "+factoryName+" extends org.kevoree.framework.osgi.KevoreeInstanceFactory {\n")
-        writer.append("override def registerInstance(instanceName : String, nodeName : String)="+factoryName+".registerInstance(instanceName,nodeName)\n")
-        writer.append("override def remove(instanceName : String)="+factoryName+".remove(instanceName)\n")
-        writer.append("def createInstanceActivator = "+factoryName+".createInstanceActivator")
+        writer.append("class " + factoryName + " extends org.kevoree.framework.osgi.KevoreeInstanceFactory {\n")
+        writer.append("override def registerInstance(instanceName : String, nodeName : String)=" + factoryName + ".registerInstance(instanceName,nodeName)\n")
+        writer.append("override def remove(instanceName : String)=" + factoryName + ".remove(instanceName)\n")
+        writer.append("def createInstanceActivator = " + factoryName + ".createInstanceActivator")
         writer.append("}\n")
 
         writer.append("object " + factoryName + " extends org.kevoree.framework.osgi.KevoreeInstanceFactory {\n")
-        writer.append("def createInstanceActivator: org.kevoree.framework.osgi.KevoreeInstanceActivator = new "+ct.getName+"Activator\n")
+        writer.append("def createInstanceActivator: org.kevoree.framework.osgi.KevoreeInstanceActivator = new " + ct.getName + "Activator\n")
 
 
 
@@ -160,7 +139,7 @@ object KevoreeFactoryGenerator {
           }
         }
 
-      //  writer.append("def createChannel()={new " + ct.getBean + " with ChannelTypeFragment {\n")
+        //  writer.append("def createChannel()={new " + ct.getBean + " with ChannelTypeFragment {\n")
 
 
         if (ct.getStartMethod != "") {
@@ -215,14 +194,14 @@ object KevoreeFactoryGenerator {
         writer.append("package " + groupTypePackage + "\n");
         writer.append("import org.kevoree.framework._\n")
 
-        writer.append("class "+factoryName+" extends org.kevoree.framework.osgi.KevoreeInstanceFactory {\n")
-        writer.append("override def registerInstance(instanceName : String, nodeName : String)="+factoryName+".registerInstance(instanceName,nodeName)\n")
-        writer.append("override def remove(instanceName : String)="+factoryName+".remove(instanceName)\n")
-        writer.append("def createInstanceActivator = "+factoryName+".createInstanceActivator")
+        writer.append("class " + factoryName + " extends org.kevoree.framework.osgi.KevoreeInstanceFactory {\n")
+        writer.append("override def registerInstance(instanceName : String, nodeName : String)=" + factoryName + ".registerInstance(instanceName,nodeName)\n")
+        writer.append("override def remove(instanceName : String)=" + factoryName + ".remove(instanceName)\n")
+        writer.append("def createInstanceActivator = " + factoryName + ".createInstanceActivator")
         writer.append("}\n")
-        
+
         writer.append("object " + factoryName + " extends org.kevoree.framework.osgi.KevoreeInstanceFactory {\n")
-        writer.append("def createInstanceActivator: org.kevoree.framework.osgi.KevoreeInstanceActivator = new "+ct.getName+"Activator\n")
+        writer.append("def createInstanceActivator: org.kevoree.framework.osgi.KevoreeInstanceActivator = new " + ct.getName + "Activator\n")
 
         writer.append("def createGroup()={new " + ct.getBean + " with KevoreeGroup {\n")
 

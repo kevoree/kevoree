@@ -16,11 +16,6 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.scala-lang</groupId>
-            <artifactId>scala-library</artifactId>
-            <version>${scala.version}</version>
-        </dependency>
-        <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>${slf4j.version}</version>
@@ -184,10 +179,11 @@
 
        <!-- <module>../org.kevoree.tools.emf.compat</module>  -->
         <!-- Native -->
+        <!--
         <module>../org.kevoree.tools.nativeN.core</module>
         <module>../org.kevoree.tools.nativeN.framework</module>
         <module>../org.kevoree.tools.nativeN.mavenplugin</module>
-
+        -->
         <!--  <module>../org.kevoree.tools.jar.wrapperplugin</module>-->
         <module>../org.kevoree.tools.ui.editor.standalone</module>
         <module>../org.kevoree.tools.marshell.mavenplugin</module>
