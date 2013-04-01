@@ -11,28 +11,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.gnu.org/licenses/lgpl-3.0.txt
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 
 package org.kevoree.merger.sub
 
+import org.kevoree.framework.kaspects.ContainerRootAspect
+import org.kevoree.framework.kaspects.TypeDefinitionAspect
 import org.kevoree.merger.Merger
-import org.kevoree.framework.aspects.KevoreeAspects._
+import org.kevoree.merger.aspects.KevoreeAspects._
 import org.kevoree._
 import merger.resolver.{UnresolvedTypeDefinition}
 import org.slf4j.LoggerFactory
@@ -42,6 +27,8 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
 
   private val logger = LoggerFactory.getLogger(this.getClass)
   private val kevoreeFactory = new org.kevoree.impl.DefaultKevoreeFactory
+  private val containerRootAspect = new ContainerRootAspect()
+  private val typeDefinitionAspect = new TypeDefinitionAspect()
 
   //TYPE DEFINITION MERGER ENTRYPOINT
   def mergeTypeDefinition(actualModel: ContainerRoot, modelToMerge: ContainerRoot): Unit = {
@@ -51,7 +38,7 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
         actualModel.getTypeDefinitions.find(actualTypeDef => actualTypeDef.isModelEquals(toMergeTypeDef)) match {
           case Some(found_type_definition) => {
             val root = found_type_definition.eContainer.asInstanceOf[ContainerRoot]
-            if (found_type_definition.isUpdated(toMergeTypeDef)) {
+            if (typeDefinitionAspect.isUpdated(found_type_definition, toMergeTypeDef)) {
               if (found_type_definition.contractChanged(toMergeTypeDef)) {
                 consistencyImpacted(root, found_type_definition, toMergeTypeDef)
               } else {
@@ -128,7 +115,7 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
     }
 
     //PROCESS INSTANCE
-    val listInstance = root.getAllInstances.filter(instance => instance.getTypeDefinition.isInstanceOf[UnresolvedTypeDefinition] && instance.getTypeDefinition.asInstanceOf[UnresolvedTypeDefinition].getName == newTypeDefinition.getName)
+    val listInstance = containerRootAspect.getAllInstances(root).filter(instance => instance.getTypeDefinition.isInstanceOf[UnresolvedTypeDefinition] && instance.getTypeDefinition.asInstanceOf[UnresolvedTypeDefinition].getName == newTypeDefinition.getName)
     listInstance.foreach {
       instance =>
         val kevoreeInstance = instance.asInstanceOf[Instance]

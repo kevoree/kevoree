@@ -26,6 +26,7 @@
  */
 package org.kevoree.merger
 
+import org.kevoree.framework.kaspects.ContainerRootAspect
 import resolver._
 import org.kevoree._
 import resolver.UnresolvedDictionaryAttribute
@@ -44,6 +45,8 @@ import java.util
  */
 
 trait CrossReferenceMerger {
+
+  private val containerRootAspect = new ContainerRootAspect()
 
   def breakCrossRef(actualModel: ContainerRoot, modelToMerge: ContainerRoot) {
 
@@ -83,12 +86,11 @@ trait CrossReferenceMerger {
             typeDef.addSuperTypes(new UnresolvedTypeDefinition(superType.getName))
         }
     }
-    import org.kevoree.framework.aspects.KevoreeAspects._
 
 
 
 
-    (actualModel.getAllInstances.toList.toList ++ modelToMerge.getAllInstances).foreach {
+    (containerRootAspect.getAllInstances(actualModel) ++ containerRootAspect.getAllInstances(modelToMerge)).foreach {
       instance =>
         instance.setTypeDefinition(new UnresolvedTypeDefinition(instance.getTypeDefinition.getName))
         //BREAK PORT TYPE REF
