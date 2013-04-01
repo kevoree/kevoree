@@ -24,6 +24,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
 
 package org.kevoree.annotation;
 
@@ -34,9 +38,10 @@ import java.lang.annotation.Target;
 
 /**
  *
- * @author ffouquet
+ * @author gnain
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD})
-public @interface ServiceHandler {
+public @interface KevoreeInject {
+
 }

@@ -13,11 +13,16 @@
  */
 package org.kevoree.framework;
 
+import java.lang.reflect.Modifier
+import org.kevoree.ComponentInstance
 import org.kevoree.ContainerRoot
+import org.kevoree.annotation.KevoreeInject
+import org.kevoree.api.service.core.handler.KevoreeModelHandlerService
+import org.kevoree.framework.internal.FieldAnnotationResolver
 import org.kevoree.framework.internal.MethodAnnotationResolver
 import org.slf4j.LoggerFactory
-import org.kevoree.api.service.core.handler.KevoreeModelHandlerService
-import org.kevoree.ComponentInstance
+import org.kevoree.api.Bootstraper
+import org.kevoree.api.service.core.script.KevScriptEngineFactory
 
 /**
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
@@ -32,8 +37,7 @@ import org.kevoree.ComponentInstance
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-public class KevoreeComponent(val ct: AbstractComponentType, val nodeName: String, val name: String,val modelService : KevoreeModelHandlerService): KInstance {
-
+public class KevoreeComponent(val ct: AbstractComponentType, val nodeName: String, val name: String, val modelService: KevoreeModelHandlerService,val bootService:Bootstraper,val kevsEngine : KevScriptEngineFactory): KInstance {
 
 
     val kevoree_internal_logger = LoggerFactory.getLogger(this.javaClass)!!
@@ -48,7 +52,7 @@ public class KevoreeComponent(val ct: AbstractComponentType, val nodeName: Strin
         return ct_started
     }
 
-    public fun initPorts(nodeTypeName : String, modelElement : ComponentInstance){
+    public fun initPorts(nodeTypeName: String, modelElement: ComponentInstance) {
         /* Init Required and Provided Port */
         val bean = modelElement.getTypeDefinition()!!.getBean()
         for(providedPort in modelElement.getProvided()){
@@ -71,6 +75,8 @@ public class KevoreeComponent(val ct: AbstractComponentType, val nodeName: Strin
 
     private val resolver = MethodAnnotationResolver(ct.javaClass);
 
+    private val fieldResolver = FieldAnnotationResolver(ct.javaClass);
+
     private fun buildPortBean(bean: String, nodeTypeName: String, portName: String): String {
         val packName = bean.subSequence(0, bean.lastIndexOf("."))
         val clazzName = bean.subSequence(bean.lastIndexOf(".") + 1, bean.length())
@@ -81,7 +87,32 @@ public class KevoreeComponent(val ct: AbstractComponentType, val nodeName: Strin
         if (!ct_started){
             try {
 
-                ct.setModelService(ModelHandlerServiceProxy(modelService))
+                val modelServiceFields = fieldResolver.resolve(javaClass<KevoreeInject>(), javaClass<KevoreeModelHandlerService>())!!
+                for(mserv in modelServiceFields){
+                    if(Modifier.isPrivate(mserv.getModifiers())){
+                        mserv.setAccessible(true);
+                    }
+                    mserv.set(ct, modelService)
+                }
+                val bootServiceField = fieldResolver.resolve(javaClass<KevoreeInject>(), javaClass<Bootstraper>())!!
+                for(loopField in bootServiceField){
+                    if(Modifier.isPrivate(loopField.getModifiers())){
+                        loopField.setAccessible(true);
+                    }
+                    loopField.set(ct, bootService)
+                }
+                val kevSField = fieldResolver.resolve(javaClass<KevoreeInject>(), javaClass<KevScriptEngineFactory>())!!
+                for(loopField in kevSField){
+                    if(Modifier.isPrivate(loopField.getModifiers())){
+                        loopField.setAccessible(true);
+                    }
+                    loopField.set(ct, kevsEngine)
+                }
+
+
+
+
+
                 ct.setName(name)
                 ct.setNodeName(nodeName)
 

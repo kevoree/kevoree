@@ -14,8 +14,13 @@ import org.kevoree.framework.message.PortBindMessage
 import org.kevoree.framework.message.PortUnbindMessage
 import org.kevoree.framework.port.PausablePortThreadPoolExecutor
 import org.slf4j.LoggerFactory
+import org.kevoree.framework.internal.FieldAnnotationResolver
+import org.kevoree.annotation.KevoreeInject
+import java.lang.reflect.Modifier
+import org.kevoree.api.Bootstraper
+import org.kevoree.api.service.core.script.KevScriptEngineFactory
 
-class ChannelTypeFragmentThread(val target: AbstractChannelFragment, val _nodeName: String, val _name: String, val modelService: KevoreeModelHandlerService): KevoreeChannelFragment, KInstance, ChannelFragment {
+class ChannelTypeFragmentThread(val target: AbstractChannelFragment, val _nodeName: String, val _name: String, val modelService: KevoreeModelHandlerService,val bootService:Bootstraper,val kevsEngine : KevScriptEngineFactory): KevoreeChannelFragment, KInstance, ChannelFragment {
 
     public fun initChannel(){
         target.delegate = this
@@ -45,12 +50,35 @@ class ChannelTypeFragmentThread(val target: AbstractChannelFragment, val _nodeNa
     val portsBinded: MutableMap<String, KevoreePort> = HashMap<String, KevoreePort>()
     val fragementBinded: MutableMap<String, KevoreeChannelFragment> = HashMap<String, KevoreeChannelFragment>()
     var isStarted: Boolean = false
+    private val fieldResolver = FieldAnnotationResolver(target.javaClass);
+
 
     override fun kInstanceStart(tmodel: ContainerRoot): Boolean {
         if (!isStarted) {
             try {
 
-                target.setModelService(ModelHandlerServiceProxy(modelService))
+                val modelServiceFields = fieldResolver.resolve(javaClass<KevoreeInject>(), javaClass<KevoreeModelHandlerService>())!!
+                for(mserv in modelServiceFields){
+                    if(Modifier.isPrivate(mserv.getModifiers())){
+                        mserv.setAccessible(true);
+                    }
+                    mserv.set(target, modelService)
+                }
+                val bootServiceField = fieldResolver.resolve(javaClass<KevoreeInject>(), javaClass<Bootstraper>())!!
+                for(loopField in bootServiceField){
+                    if(Modifier.isPrivate(loopField.getModifiers())){
+                        loopField.setAccessible(true);
+                    }
+                    loopField.set(target, bootService)
+                }
+                val kevSField = fieldResolver.resolve(javaClass<KevoreeInject>(), javaClass<KevScriptEngineFactory>())!!
+                for(loopField in kevSField){
+                    if(Modifier.isPrivate(loopField.getModifiers())){
+                        loopField.setAccessible(true);
+                    }
+                    loopField.set(target, kevsEngine)
+                }
+
                 target.setName(_name)
                 target.setNodeName(_nodeName)
 
@@ -118,9 +146,7 @@ class ChannelTypeFragmentThread(val target: AbstractChannelFragment, val _nodeNa
     }
 
     override fun sendWait(o: Any?): Any? {
-        val result = pool!!.submit(SyncCall(o)).get()
-        println("ChannelSendWait "+result)
-        return result
+        return pool!!.submit(SyncCall(o)).get()
     }
 
     inner class AsyncCall(val o: Any?): Runnable {

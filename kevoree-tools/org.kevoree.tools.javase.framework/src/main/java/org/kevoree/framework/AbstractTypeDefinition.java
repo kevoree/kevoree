@@ -13,6 +13,7 @@
  */
 package org.kevoree.framework;
 
+import org.kevoree.annotation.KevoreeInject;
 import org.kevoree.api.Bootstraper;
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService;
 import org.kevoree.api.service.core.script.KevScriptEngineFactory;
@@ -37,7 +38,8 @@ public class AbstractTypeDefinition {
         dictionary = dic;
     }
 
-    private ModelHandlerServiceProxy modelServiceProxy;
+    @KevoreeInject
+    public KevoreeModelHandlerService modelServiceProxy;
 
     public void setModelService(KevoreeModelHandlerService ms) {
         modelServiceProxy = new ModelHandlerServiceProxy(ms);
@@ -47,7 +49,8 @@ public class AbstractTypeDefinition {
         return modelServiceProxy;
     }
 
-    private KevScriptEngineFactory kevScriptEngineFactory = null;
+    @KevoreeInject
+    public KevScriptEngineFactory kevScriptEngineFactory = null;
 
     public KevScriptEngineFactory getKevScriptEngineFactory () {
         return kevScriptEngineFactory;
@@ -57,7 +60,8 @@ public class AbstractTypeDefinition {
         kevScriptEngineFactory = kf;
     }
 
-    private Bootstraper bootstrapService = null;
+    @KevoreeInject
+    public Bootstraper bootstrapService = null;
 
     public void setBootStrapperService(Bootstraper brs) {
         bootstrapService = brs;
