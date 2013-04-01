@@ -1,9 +1,9 @@
 package org.kevoree.framework.kaspects
 
-import org.kevoree.TypeDefinition
-import org.kevoree.DeployUnit
 import org.kevoree.ContainerNode
+import org.kevoree.DeployUnit
 import org.kevoree.NodeType
+import org.kevoree.TypeDefinition
 
 /**
  * Created with IntelliJ IDEA.
@@ -76,5 +76,18 @@ class TypeDefinitionAspect {
         return deployUnitfound
     }
 
-
+    fun foundRelevantHostNodeType(nodeType: NodeType, targetTypeDef: TypeDefinition): NodeType? {
+        for (deployUnit in targetTypeDef.getDeployUnits()) {
+            if (deployUnit.getTargetNodeType() != null && deployUnit.getTargetNodeType() == nodeType) {
+                return nodeType
+            }
+        }
+        for (superType in nodeType.getSuperTypes()) {
+            val returnType = foundRelevantHostNodeType(superType as NodeType, targetTypeDef)
+            if (returnType != null) {
+                return returnType
+            }
+        }
+        return null
+    }
 }

@@ -1,8 +1,9 @@
 package org.kevoree.framework.kaspects
 
+import java.util.ArrayList
 import org.kevoree.Channel
 import org.kevoree.ContainerNode
-import java.util.ArrayList
+import org.kevoree.MBinding
 
 /**
  * Created with IntelliJ IDEA.
@@ -40,5 +41,30 @@ class ChannelAspect() {
         return result
     }
 
+    /**
+   * Returns the list of all ContainerNode this binding is connected to.
+   */
+    fun getRelatedNodes(cself: Channel): List<ContainerNode> {
+        var result = ArrayList<ContainerNode>()
+        for(mb in cself.getBindings()){
+            if(!result.contains(mb.getPort()!!.eContainer()!!.eContainer() as ContainerNode)){
+                result.add(mb.getPort()!!.eContainer()!!.eContainer() as ContainerNode)
+            }
+        }
+        return result
+    }
+
+    /**
+  * Returns the list of bindings belonging to this channel on the given node
+  */
+    fun getRelatedBindings(cself: Channel, node: ContainerNode): List<MBinding> {
+        var result = ArrayList<MBinding>()
+        for(mb in cself.getBindings()){
+            if ((mb.getPort()!!.eContainer()!!.eContainer() as  ContainerNode).getName() == node.getName()) {
+                result.add(mb)
+            }
+        }
+        return result
+    }
 
 }

@@ -1,10 +1,12 @@
 package org.kevoree.framework.kaspects
 
-import org.kevoree.TypeDefinition
+import java.util.ArrayList
 import java.util.HashSet
+import org.kevoree.Channel
 import org.kevoree.ContainerNode
 import org.kevoree.ContainerRoot
-import java.util.ArrayList
+import org.kevoree.Group
+import org.kevoree.TypeDefinition
 
 /**
  * Created with IntelliJ IDEA.
@@ -53,5 +55,36 @@ class ContainerNodeAspect {
         return usedType.toList()
     }
 
+    fun getChannelFragment(node: ContainerNode): List<Channel> {
+        /* add channel fragment on node */
+        val usedChannels = ArrayList<Channel>()
+        for (component in node.getComponents()) {
+            for (port in component.getProvided()) {
+                for (mb in port.getBindings()) {
+                    if (!usedChannels.contains(mb.getHub())) {
+                        usedChannels.add(mb.getHub()!!)
+                    }
+                }
+            }
+            for (port in component.getRequired()) {
+                for (mb in port.getBindings()) {
+                    if (!usedChannels.contains(mb.getHub())) {
+                        usedChannels.add(mb.getHub()!!)
+                    }
+                }
+            }
+        }
+        return usedChannels
+    }
+
+    fun getGroups(node: ContainerNode): List<Group> {
+        val usedGroups = ArrayList<Group>()
+        for (group in (node.eContainer() as ContainerRoot).getGroups()) {
+            if (group.getSubNodes().contains(node)) {
+                usedGroups.add(group)
+            }
+        }
+        return usedGroups
+    }
 
 }
