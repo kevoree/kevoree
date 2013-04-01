@@ -16,7 +16,6 @@ package org.kevoree.platform.standalone.gui
 import com.explodingpixels.macwidgets._
 import javax.swing.{SwingUtilities, JPanel}
 import org.kevoree.{ContainerRoot, ContainerNode}
-import org.kevoree.framework.aspects.KevoreeAspects._
 import scala.collection.JavaConversions._
 import org.kevoree.framework.kaspects.ChannelAspect
 

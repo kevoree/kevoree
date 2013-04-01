@@ -20,7 +20,6 @@ import javax.swing._
 import com.explodingpixels.macwidgets.{IAppWidgetFactory, HudWidgetFactory}
 import event.{DocumentEvent, DocumentListener}
 import java.awt.BorderLayout
-import org.kevoree.framework.aspects.KevoreeAspects._
 import org.kevoree.{GroupType, ContainerRoot, TypeDefinition}
 import scala.collection.JavaConversions._
 import org.kevoree.framework.kaspects.ContainerRootAspect
