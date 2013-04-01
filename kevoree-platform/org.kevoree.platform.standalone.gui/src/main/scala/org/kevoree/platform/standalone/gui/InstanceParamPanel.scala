@@ -11,19 +11,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * 	http://www.gnu.org/licenses/lgpl-3.0.txt
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package org.kevoree.platform.standalone.gui
 
 import java.util.Properties
@@ -36,6 +23,7 @@ import java.awt.BorderLayout
 import org.kevoree.framework.aspects.KevoreeAspects._
 import org.kevoree.{GroupType, ContainerRoot, TypeDefinition}
 import scala.collection.JavaConversions._
+import org.kevoree.framework.kaspects.ContainerRootAspect
 
 
 /**
@@ -47,6 +35,8 @@ import scala.collection.JavaConversions._
  */
 
 class InstanceParamPanel(pnodeTypeDefinition: TypeDefinition, defaultName: String) extends JPanel {
+
+  private val containerRootAspect = new ContainerRootAspect()
 
   var nodeTypeDefinition = pnodeTypeDefinition
   def setNodeTypeDefinition(pnodeTypeDefinition: TypeDefinition){
@@ -89,8 +79,7 @@ class InstanceParamPanel(pnodeTypeDefinition: TypeDefinition, defaultName: Strin
     }
 
     def execute() {
-
-      if (nodeTypeDefinition.eContainer.asInstanceOf[ContainerRoot].getAllInstances.exists(n => n.getName == instanceTextField.getText && n.getTypeDefinition == nodeTypeDefinition)) {
+      if (containerRootAspect.getAllInstances(nodeTypeDefinition.eContainer.asInstanceOf[ContainerRoot]).exists(n => n.getName == instanceTextField.getText && n.getTypeDefinition == nodeTypeDefinition)) {
         if (!previousFound) {
           previousFound = true
           reload()
@@ -180,16 +169,16 @@ class InstanceParamPanel(pnodeTypeDefinition: TypeDefinition, defaultName: Strin
   private def getDefValue(instanceName: String, model: ContainerRoot, typeDef: TypeDefinition): Properties = {
     val props = new Properties
     model.getTypeDefinitions.find(td => td.getName == typeDef.getName).map(td => {
-      if (td.getDictionaryType()!=null && td.getDictionaryType.getDefaultValues != null) {
+      if (td.getDictionaryType!=null && td.getDictionaryType.getDefaultValues != null) {
         td.getDictionaryType.getDefaultValues.foreach {
           defVal =>
             props.put(defVal.getAttribute.getName, defVal.getValue)
         }
       }
     })
-    model.getAllInstances.find(ist => ist.getName == instanceName).map {
+    containerRootAspect.getAllInstances(model).find(ist => ist.getName == instanceName).map {
       istFound =>
-        if (istFound.getDictionary()!=null) {
+        if (istFound.getDictionary!=null) {
           istFound.getDictionary.getValues.foreach {
             dicVal =>
               props.put(dicVal.getAttribute.getName, dicVal.getValue)
