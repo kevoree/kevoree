@@ -31,7 +31,6 @@
 
 package org.kevoree.tools.annotation.generator
 
-import org.kevoree.framework.aspects.KevoreeAspects._
 import scala.collection.JavaConversions._
 
 
@@ -133,7 +132,7 @@ object KevoreeProvidedPortGenerator {
                 if (i != 0) {
                   writer.append(",")
                 }
-                writer.append(GeneratorHelper.protectReservedWord(param.getName) + ":" + GeneratorHelper.protectedType(param.getType.print('<', '>'))+"?")
+                writer.append(GeneratorHelper.protectReservedWord(param.getName) + ":" + GeneratorHelper.protectedType(Printer.print(param.getType, '<', '>'))+"?")
                 i = i + 1
             }
             /* GENERATES RETURN TYPE in rt */
@@ -176,9 +175,9 @@ object KevoreeProvidedPortGenerator {
                       writer.append(",")
                     }
                     writer.append("if((o as org.kevoree.framework.MethodCallMessage).getParams()!!.containsKey(\"" + param.getName + "\")){")
-                    writer.append("(o as org.kevoree.framework.MethodCallMessage).getParams()!!.get(\"" + param.getName + "\") as " + GeneratorHelper.protectedType(param.getType.print('<', '>')) + "")
+                    writer.append("(o as org.kevoree.framework.MethodCallMessage).getParams()!!.get(\"" + param.getName + "\") as " + GeneratorHelper.protectedType(Printer.print(param.getType, '<', '>')) + "")
                     writer.append("}else{")
-                    writer.append("(o as org.kevoree.framework.MethodCallMessage).getParams()!!.get(\"arg" + i + "\") as " + GeneratorHelper.protectedType(param.getType.print('<', '>')) + "")
+                    writer.append("(o as org.kevoree.framework.MethodCallMessage).getParams()!!.get(\"arg" + i + "\") as " + GeneratorHelper.protectedType(Printer.print(param.getType, '<', '>')) + "")
                     writer.append("}")
                     i = i + 1
                 }

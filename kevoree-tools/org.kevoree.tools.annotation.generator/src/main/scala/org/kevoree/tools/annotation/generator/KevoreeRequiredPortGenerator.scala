@@ -11,28 +11,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.gnu.org/licenses/lgpl-3.0.txt
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package org.kevoree.tools.annotation.generator
-
-import java.io.File
-import org.kevoree.framework.aspects.KevoreeAspects._
 
 import org.kevoree.framework.KevoreeGeneratorHelper
 import javax.annotation.processing.Filer
-import javax.tools.{StandardLocation}
+import javax.tools.StandardLocation
 import org.kevoree.{TypedElement, ContainerRoot, MessagePortType, PortTypeRef, ComponentType => KevoreeComponentType, ServicePortType}
 import org.kevoree.annotation.ThreadStrategy
 import scala.collection.JavaConversions._
@@ -105,7 +88,7 @@ object KevoreeRequiredPortGenerator {
                 if (i != 0) {
                   writer.append(",")
                 }
-                writer.append(GeneratorHelper.protectReservedWord(param.getName) + ":" + GeneratorHelper.protectedType(param.getType.print('<', '>'))+"?")
+                writer.append(GeneratorHelper.protectReservedWord(param.getName) + ":" + GeneratorHelper.protectedType(Printer.print(param.getType, '<', '>'))+"?")
                 i = i +1
             }
 
