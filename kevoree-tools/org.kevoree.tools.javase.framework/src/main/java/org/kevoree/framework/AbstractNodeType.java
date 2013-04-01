@@ -33,8 +33,8 @@ import org.kevoree.api.PrimitiveCommand;
 import org.kevoree.context.ContextFactory;
 import org.kevoree.context.ContextRoot;
 import org.kevoree.context.impl.DefaultContextFactory;
-import org.kevoreeadaptation.AdaptationModel;
-import org.kevoreeadaptation.AdaptationPrimitive;
+import org.kevoreeAdaptation.AdaptationModel;
+import org.kevoreeAdaptation.AdaptationPrimitive;
 
 public abstract class
 		AbstractNodeType extends AbstractTypeDefinition implements NodeType {

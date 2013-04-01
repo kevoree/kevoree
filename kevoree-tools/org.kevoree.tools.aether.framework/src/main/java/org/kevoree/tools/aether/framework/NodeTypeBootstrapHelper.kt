@@ -11,8 +11,8 @@ import org.kevoree.kcl.KevoreeJarClassLoader
 import java.util
 import org.kevoree.impl.DefaultKevoreeFactory
 import org.slf4j.LoggerFactory
-import org.kevoree.framework.aspects.TypeDefinitionAspect
 import java.util.ArrayList
+import org.kevoree.framework.kaspects.TypeDefinitionAspect
 
 /**
  * User: ffouquet
@@ -202,7 +202,7 @@ open class NodeTypeBootstrapHelper: Bootstraper, KCLBootstrap {
             }
             var ct: DeployUnit? = null
             try {
-                ct = TypeDefinitionAspect(groupType).foundRelevantDeployUnit(fakeNode)
+                ct = TypeDefinitionAspect().foundRelevantDeployUnit(groupType, fakeNode)
             } catch(e: Exception) {
             }
             if (ct != null) {

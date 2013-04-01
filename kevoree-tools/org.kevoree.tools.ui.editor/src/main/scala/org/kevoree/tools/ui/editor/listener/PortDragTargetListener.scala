@@ -26,12 +26,12 @@
  */
 package org.kevoree.tools.ui.editor.listener
 
+import org.kevoree.framework.kaspects.PortAspect
 import org.kevoree.tools.ui.framework.elements.PortPanel
 import java.awt.dnd.{DropTargetDropEvent, DropTarget}
 import java.awt.datatransfer.DataFlavor
 import com.explodingpixels.macwidgets.{HudWidgetFactory, HudWindow}
 
-import org.kevoree.framework.aspects.KevoreeAspects._
 import org.kevoree.tools.marShell.parser.KevsParser
 import util.Random
 import org.kevoree.{ComponentInstance, ContainerNode, Port, ChannelType}
@@ -54,6 +54,8 @@ import scala.collection.JavaConversions._
  */
 
 class PortDragTargetListener(target: PortPanel, kernel: KevoreeUIKernel) extends DropTarget {
+
+  val portAspect = new PortAspect()
 
   def checkChannelAvailability = {
     kernel.getModelHandler.getActualModel.getTypeDefinitions.filter(td => td.isInstanceOf[ChannelType]).size > 0
@@ -102,7 +104,7 @@ class PortDragTargetListener(target: PortPanel, kernel: KevoreeUIKernel) extends
       val draggedPanel = p1.getTransferable.getTransferData(new DataFlavor(DataFlavor.javaJVMLocalObjectMimeType));
       val targetPort: Port = kernel.getUifactory.getMapping.get(target).asInstanceOf[Port]
       val dropPort: Port = kernel.getUifactory.getMapping.get(draggedPanel).asInstanceOf[Port]
-      if (targetPort.isProvidedPort && dropPort.isProvidedPort || targetPort.isRequiredPort && dropPort.isRequiredPort) {
+      if (portAspect.isProvidedPort(targetPort) && portAspect.isProvidedPort(dropPort) || portAspect.isRequiredPort(targetPort) && portAspect.isRequiredPort(dropPort)) {
         throw new Exception("Can't bind Port with same nature (Provided/Required)")
       }
 

@@ -30,8 +30,11 @@
 package org.kevoree.tools.ui.editor;
 
 import org.kevoree.*;
-import org.kevoree.framework.aspects.PortAspect;
-import org.kevoree.tools.ui.editor.command.*;
+import org.kevoree.framework.kaspects.PortAspect;
+import org.kevoree.tools.ui.editor.command.SelectBindingCommand;
+import org.kevoree.tools.ui.editor.command.SelectGroupBindingCommand;
+import org.kevoree.tools.ui.editor.command.SelectInstanceCommand;
+import org.kevoree.tools.ui.editor.command.UnSelectPropertyEditor;
 import org.kevoree.tools.ui.editor.listener.*;
 import org.kevoree.tools.ui.editor.widget.TempGroupBinding;
 import org.kevoree.tools.ui.framework.elements.*;
@@ -45,6 +48,7 @@ import java.awt.*;
 public class KevoreeUIFactory {
 
     private KevoreeUIKernel kernel;
+    private PortAspect portAspect = new PortAspect();
 
     public KevoreeUIFactory(KevoreeUIKernel _kernel) {
         kernel = _kernel;
@@ -194,11 +198,11 @@ public class KevoreeUIFactory {
         if (port.getPortTypeRef().getRef() instanceof org.kevoree.ServicePortType) {
             pui.setNature(PortPanel.PortNature.SERVICE);
         }
-        PortAspect pa = new PortAspect(port);
-        if (pa.isProvidedPort()) {
+//        PortAspect pa = new PortAspect(port);
+        if (portAspect.isProvidedPort(port)) {
             pui.setType(PortType.PROVIDED);
         } else {
-            if (pa.isRequiredPort()) {
+            if (portAspect.isRequiredPort(port)) {
                 pui.setType(PortType.REQUIRED);
             }
         }
@@ -247,11 +251,11 @@ public class KevoreeUIFactory {
 
     public Binding createMBinding(org.kevoree.MBinding mb) {
         Binding bui = null;
-        PortAspect pa = new PortAspect(mb.getPort());
-        if (pa.isProvidedPort()) {
+//        PortAspect pa = new PortAspect(mb.getPort());
+        if (portAspect.isProvidedPort(mb.getPort())) {
             bui = new Binding(Binding.Type.input);
         } else {
-            if (pa.isRequiredPort()) {
+            if (portAspect.isRequiredPort(mb.getPort())) {
                 bui = new Binding(Binding.Type.ouput);
             }
         }

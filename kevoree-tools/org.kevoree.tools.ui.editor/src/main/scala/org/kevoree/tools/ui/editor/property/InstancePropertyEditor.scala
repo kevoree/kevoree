@@ -34,9 +34,10 @@ import java.awt.Dimension
 import java.awt.event.{ActionListener, ActionEvent}
 import text.BadLocationException
 import org.slf4j.LoggerFactory
-import com.explodingpixels.macwidgets.{IAppWidgetFactory, HudWidgetFactory}
+import com.explodingpixels.macwidgets.IAppWidgetFactory
 import tools.ui.editor.{ModelHelper, KevoreeUIKernel, UIHelper}
 import scala.collection.JavaConversions._
+import org.kevoree.framework.kaspects.ChannelAspect
 
 
 /**
@@ -50,6 +51,8 @@ import scala.collection.JavaConversions._
 class InstancePropertyEditor(elem: org.kevoree.Instance, kernel: KevoreeUIKernel) extends NamedElementPropertyEditor(elem, kernel) {
 
   val logger = LoggerFactory.getLogger(this.getClass)
+
+  val channelAspect = new ChannelAspect()
 
   def getValue(instance: Instance, att: DictionaryAttribute, targetNode: Option[String]): String = {
     var value: DictionaryValue = null
@@ -188,8 +191,7 @@ class InstancePropertyEditor(elem: org.kevoree.Instance, kernel: KevoreeUIKernel
         g.getSubNodes.map(s => s.getName).toList
       }
       case c: Channel => {
-        import org.kevoree.framework.aspects.KevoreeAspects._
-        c.getRelatedNodes.map(s => s.getName)
+        channelAspect.getRelatedNodes(c).map(s => s.getName).toList
       }
       case _ => List()
     }

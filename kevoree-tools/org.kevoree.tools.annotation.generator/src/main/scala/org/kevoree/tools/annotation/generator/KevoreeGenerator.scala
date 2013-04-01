@@ -11,33 +11,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * 	http://www.gnu.org/licenses/lgpl-3.0.txt
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 /* $Id: KevoreeGenerator.scala 12438 2010-09-15 15:14:50Z francoisfouquet $
  * License    : EPL 								
  * Copyright  : IRISA / INRIA / Universite de Rennes 1 */
 
 package org.kevoree.tools.annotation.generator
 
-import org.kevoree.ContainerRoot
-import org.kevoree.MessagePortType
-import org.kevoree.ServicePortType
-import org.kevoree.ComponentType
-import org.kevoree.framework.aspects.KevoreeAspects._
+import org.kevoree._
 import org.kevoree.framework.KevoreeGeneratorHelper
 import javax.annotation.processing.Filer
 import scala.collection.JavaConversions._
+import scala.Some
 
 
 object KevoreeGenerator {
@@ -65,7 +49,7 @@ object KevoreeGenerator {
                 writer.append("public " + op.getReturnType.getName + " " + op.getName + "(")
                 op.getParameters.foreach {
                   param =>
-                    writer.append(param.getType.print('<', '>') + " " + param.getName)
+                    writer.append(Printer.print(param.getType, '<', '>') + " " + param.getName)
                     if (op.getParameters.indexOf(param) != (op.getParameters.size - 1)) {
                       writer.append(",")
                     }
@@ -126,6 +110,5 @@ object KevoreeGenerator {
       }
     }
   }
-
 
 }

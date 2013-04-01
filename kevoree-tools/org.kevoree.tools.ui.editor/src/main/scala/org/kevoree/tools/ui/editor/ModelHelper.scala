@@ -28,6 +28,7 @@ package org.kevoree.tools.ui.editor
 
 
 import org.kevoree._
+import framework.kaspects.ContainerRootAspect
 import impl.DefaultKevoreeFactory
 import org.kevoree.framework.aspects.KevoreeAspects._
 import scala.collection.JavaConversions._
@@ -39,10 +40,11 @@ import scala.collection.JavaConversions._
  */
 
 object ModelHelper {
+  val containerRootAspect = new ContainerRootAspect()
 
   def getTypeNbInstance(model: ContainerRoot, td: TypeDefinition) = {
 
-    model.getAllInstances.filter(i => i.getTypeDefinition == td).size
+    containerRootAspect.getAllInstances(model).filter(i => i.getTypeDefinition == td).size
 
   }
   

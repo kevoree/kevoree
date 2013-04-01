@@ -11,28 +11,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.gnu.org/licenses/lgpl-3.0.txt
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 
 package org.kevoree.tools.annotation.generator
 
-import java.io.File
-import org.kevoree.framework.aspects.KevoreeAspects._
 import scala.collection.JavaConversions._
 
 
@@ -137,7 +118,7 @@ object KevoreeProvidedPortGenerator {
                 if (i != 0) {
                   writer.append(",")
                 }
-                writer.append(GeneratorHelper.protectReservedWord(param.getName) + ":" + param.getType.print('[', ']'))
+                writer.append(GeneratorHelper.protectReservedWord(param.getName) + ":" + Printer.print(param.getType, '[', ']'))
                 i = i + 1
             }
             /* GENERATES RETURN TYPE in rt */
@@ -179,9 +160,9 @@ object KevoreeProvidedPortGenerator {
                       writer.append(",")
                     }
                     writer.append("if(opcall.getParams.containsKey(\"" + param.getName + "\")){")
-                    writer.append("opcall.getParams.get(\"" + param.getName + "\").asInstanceOf[" + param.getType.print('[', ']') + "]")
+                    writer.append("opcall.getParams.get(\"" + param.getName + "\").asInstanceOf[" + Printer.print(param.getType, '[', ']') + "]")
                     writer.append("}else{")
-                    writer.append("opcall.getParams.get(\"arg" + i + "\").asInstanceOf[" + param.getType.print('[', ']') + "]")
+                    writer.append("opcall.getParams.get(\"arg" + i + "\").asInstanceOf[" + Printer.print(param.getType, '[', ']') + "]")
                     writer.append("}")
                     i = i + 1
                 }

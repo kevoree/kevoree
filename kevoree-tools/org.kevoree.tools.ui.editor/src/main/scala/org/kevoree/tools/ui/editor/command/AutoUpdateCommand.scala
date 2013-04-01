@@ -26,8 +26,8 @@
  */
 package org.kevoree.tools.ui.editor.command
 
+import org.kevoree.framework.kaspects.ContainerNodeAspect
 import org.kevoree.tools.ui.editor.KevoreeUIKernel
-import org.kevoree.framework.aspects.KevoreeAspects._
 import org.kevoree.tools.aether.framework.AetherUtil
 import java.util.jar.{JarEntry, JarFile}
 import org.kevoree.framework.KevoreeXmiHelper
@@ -46,6 +46,7 @@ import scala.collection.JavaConversions._
 class AutoUpdateCommand extends Command {
 
   var kernel: KevoreeUIKernel = null
+  val containerNodeAspect = new ContainerNodeAspect()
 
   def setKernel(k: KevoreeUIKernel) = kernel = k
 
@@ -54,7 +55,7 @@ class AutoUpdateCommand extends Command {
     val currentModel = kernel.getModelHandler.getActualModel
     currentModel.getNodes.foreach {
       node =>
-        node.getUsedTypeDefinition.foreach {
+        containerNodeAspect.getUsedTypeDefinition(node).foreach {
           typeDef =>
             typeDef.getDeployUnits.foreach {
               du => {
