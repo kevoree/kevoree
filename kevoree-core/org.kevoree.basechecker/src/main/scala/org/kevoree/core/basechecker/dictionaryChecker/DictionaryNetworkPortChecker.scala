@@ -14,9 +14,9 @@
 package org.kevoree.core.basechecker.dictionaryChecker
 
 import org.kevoree.api.service.core.checker.{CheckerViolation, CheckerService}
-import org.kevoree.{ComponentInstance, ContainerNode, Instance, ContainerRoot}
+import org.kevoree.{ContainerNode, Instance, ContainerRoot}
 import java.util
-import org.kevoree.framework.{Constants, KevoreePropertyHelper, KevoreePlatformHelper}
+import org.kevoree.framework.{Constants, KevoreePlatformHelper}
 import scala.collection.JavaConversions._
 
 /**

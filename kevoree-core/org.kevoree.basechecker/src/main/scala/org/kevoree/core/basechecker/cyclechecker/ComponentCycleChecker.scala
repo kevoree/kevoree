@@ -28,15 +28,17 @@
 package org.kevoree.core.basechecker.cyclechecker
 
 import org.kevoree.ContainerRoot
+import org.kevoree.framework.kaspects.ComponentInstanceAspect
 import org.kevoree.MBinding
 import org.kevoree.ComponentInstance
 import org.kevoree.api.service.core.checker.CheckerService
 import org.kevoree.api.service.core.checker.CheckerViolation
-import org.kevoree.framework.aspects.KevoreeAspects._
 import scala.collection.JavaConversions._
 
 
 class ComponentCycleChecker extends CheckerService {
+
+  private val componentInstanceAspect = new ComponentInstanceAspect()
 
 	def check(model: ContainerRoot): java.util.List[CheckerViolation] = {
 		var violations: List[CheckerViolation] = List()
@@ -53,7 +55,7 @@ class ComponentCycleChecker extends CheckerService {
 						violation.getTargetObjects.filter(obj => obj.isInstanceOf[ComponentInstance]).foreach {
 							instance =>
 								val componentInstance: ComponentInstance = instance.asInstanceOf[ComponentInstance]
-								componentInstance.getRelatedBindings.foreach {
+                componentInstanceAspect.getRelatedBindings(componentInstance).foreach {
 									binding =>
 										if (violation.getTargetObjects.contains(binding.getHub)) {
 											bindings = bindings ++ List(binding)

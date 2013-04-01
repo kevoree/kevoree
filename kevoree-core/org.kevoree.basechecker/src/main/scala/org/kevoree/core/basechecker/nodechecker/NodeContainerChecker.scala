@@ -17,7 +17,6 @@ import org.kevoree.ContainerRoot
 import org.kevoree.api.service.core.checker.{CheckerService, CheckerViolation}
 import java.util
 import org.kevoree.NodeType
-import org.kevoree.framework.aspects.NodeTypeAspect
 import scala.collection.JavaConversions._
 
 /**
@@ -27,13 +26,14 @@ import scala.collection.JavaConversions._
  * Time: 07:07
  */
 class NodeContainerChecker extends CheckerService {
+
   def check(model: ContainerRoot): java.util.List[CheckerViolation] = {
     val violations: java.util.List[CheckerViolation] = new util.ArrayList[CheckerViolation]()
     model.getNodes.foreach {
       node => //For each Node
         if (node.getHosts.size > 0) {
           val ntype = node.getTypeDefinition.asInstanceOf[NodeType]
-          val hostedCapable = NodeTypeAspect(ntype).defineAdaptationPrimitiveType("addnode") && NodeTypeAspect(ntype).defineAdaptationPrimitiveType("removenode")
+          val hostedCapable = hasAdaptationPrimitiveType(ntype, "addnode") && hasAdaptationPrimitiveType(ntype, "removenode")
           if (!hostedCapable) {
             val violation: CheckerViolation = new CheckerViolation
             violation.setMessage(ntype.getName + " has no Node hosting capability " + node.getTypeDefinition.getName)
@@ -43,5 +43,19 @@ class NodeContainerChecker extends CheckerService {
         }
     }
     violations
+  }
+
+  def hasAdaptationPrimitiveType(nodeType: NodeType, typeName: String): Boolean = {
+    nodeType.getManagedPrimitiveTypes.foreach {
+      ptype =>
+        if (ptype.getName.toLowerCase.equals(typeName)) {
+          return true
+        }
+    }
+    if (nodeType.getSuperTypes.size == 0) {
+      false
+    } else {
+      nodeType.getSuperTypes.exists(stp => stp.isInstanceOf[NodeType] && hasAdaptationPrimitiveType(stp.asInstanceOf[NodeType], typeName))
+    }
   }
 }

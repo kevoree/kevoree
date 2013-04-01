@@ -24,35 +24,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 
 package org.kevoree.core.basechecker.cyclechecker
 
-import org.kevoree.framework.aspects.KevoreeAspects._
-
 import org.jgrapht.graph.DefaultDirectedGraph
 import org.kevoree._
+import org.kevoree.framework.kaspects.{PortAspect, ComponentInstanceAspect, ContainerNodeAspect, ChannelAspect}
 import scala.collection.JavaConversions._
+import java.util.List
 
 
 
 case class KevoreeNodeDirectedGraph(model: ContainerRoot)
   extends DefaultDirectedGraph[Object, BindingFragment](new KevoreeFragmentBindingEdgeFactory) {
 
+  private val channelAspect = new ChannelAspect()
+  private val containerNodeAspect = new ContainerNodeAspect()
+  private val componentInstanceAspect = new ComponentInstanceAspect()
+  private val portAspect = new PortAspect()
+
   model.getNodes.foreach {
     node =>
-      node.getChannelFragment.foreach {
+      containerNodeAspect.getChannelFragment(node).foreach {
         channel =>
-          val connectedNodes: List[ContainerNode] = channel.getConnectedNode(node.getName)
+          val connectedNodes = channelAspect.getConnectedNode(channel, node.getName)
           if (connectedNodes.size > 0) {
             node.getComponents.foreach {
               component =>
-                component.getRelatedBindings.foreach {
+                componentInstanceAspect.getRelatedBindings(component).foreach {
                   binding =>
-                    if (binding.getPort.isRequiredPort
+                    if (portAspect.isRequiredPort(binding.getPort)
                       && binding.getPort.getPortTypeRef.getNoDependency != null &&
                       binding.getPort.getPortTypeRef.getNoDependency == false) {
                       if (binding.getHub == channel) {
@@ -60,11 +61,11 @@ case class KevoreeNodeDirectedGraph(model: ContainerRoot)
                           node1 =>
                             node1.getComponents.foreach {
                               component1 =>
-                                component1.getRelatedBindings.foreach {
+                                componentInstanceAspect.getRelatedBindings(component1).foreach {
                                   binding1 =>
                                     if (binding1.getHub == channel) {
-                                      if (component.getProvided.contains(binding.getPort) &&
-                                        component1.getRequired.contains(binding1.getPort)) {
+                                      if (portAspect.isProvidedPort(binding.getPort) &&
+                                        portAspect.isRequiredPort(binding1.getPort)) {
                                         val fragment = new ChannelFragment(binding.getHub, binding)
                                         val fragment1 = new ChannelFragment(binding1.getHub, binding1)
                                         addVertex(node)
@@ -74,8 +75,8 @@ case class KevoreeNodeDirectedGraph(model: ContainerRoot)
                                         addEdge(node, fragment, new BindingFragment(binding, null))
                                         addEdge(fragment, fragment1, new BindingFragment(binding, binding1))
                                         addEdge(fragment1, node1, new BindingFragment(binding1, null))
-                                      } else if (component1.getProvided.contains(binding1.getPort) &&
-                                        component.getRequired.contains(binding.getPort)) {
+                                      } else if (portAspect.isProvidedPort(binding1.getPort) &&
+                                        portAspect.isRequiredPort(binding.getPort)) {
                                         val fragment = new ChannelFragment(binding.getHub, binding)
                                         val fragment1 = new ChannelFragment(binding1.getHub, binding1)
                                         addVertex(node)

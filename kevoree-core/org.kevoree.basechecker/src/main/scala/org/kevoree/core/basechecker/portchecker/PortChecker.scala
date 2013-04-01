@@ -26,9 +26,9 @@
  */
 package org.kevoree.core.basechecker.portchecker
 
-import org.kevoree.framework.aspects.KevoreeAspects._
 import org.kevoree.api.service.core.checker.{CheckerViolation, CheckerService}
 import collection.JavaConversions._
+import org.kevoree.framework.kaspects.PortAspect
 import org.kevoree.{ComponentInstance, ContainerRoot}
 import java.util
 
@@ -38,6 +38,9 @@ import java.util
  * Time: 09:23
  */
 class PortChecker extends CheckerService {
+
+  private val portAspect = new PortAspect()
+
   def check(model: ContainerRoot): java.util.List[CheckerViolation] = {
     var violations: List[CheckerViolation] = List()
     violations = violations ++ portCheckOnInstance(model)
@@ -53,7 +56,7 @@ class PortChecker extends CheckerService {
           component =>
             component.getRequired.foreach {
               port =>
-                if (!port.getPortTypeRef.getOptional && !port.isBind) {
+                if (!port.getPortTypeRef.getOptional && !portAspect.isBound(port)) {
                   val concreteViolation: CheckerViolation = new CheckerViolation()
                   concreteViolation.setMessage("Required port (" + port.eContainer.asInstanceOf[ComponentInstance].getName + "." +port.getPortTypeRef.getName + ") is not bound")
                   concreteViolation.setTargetObjects(List(port.eContainer))

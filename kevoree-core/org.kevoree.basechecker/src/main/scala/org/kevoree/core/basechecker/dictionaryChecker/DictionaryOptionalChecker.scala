@@ -14,7 +14,7 @@
 package org.kevoree.core.basechecker.dictionaryChecker
 
 import org.kevoree.api.service.core.checker.{CheckerViolation, CheckerService}
-import org.kevoree.framework.aspects.KevoreeAspects._
+import org.kevoree.framework.kaspects.ChannelAspect
 import scala.collection.JavaConversions._
 import org.kevoree._
 
@@ -27,6 +27,7 @@ import org.kevoree._
  */
 
 class DictionaryOptionalChecker extends CheckerService {
+  private val channelAspect = new ChannelAspect()
   def check(model: ContainerRoot): java.util.List[CheckerViolation] = {
     val violations: java.util.List[CheckerViolation] = new java.util.ArrayList[CheckerViolation]()
 
@@ -49,8 +50,8 @@ class DictionaryOptionalChecker extends CheckerService {
   }
 
   def checkInstance(instance: Instance, violations: java.util.List[CheckerViolation]) {
-    if (instance.getTypeDefinition.getDictionaryType() != null) {
-      val instDicType = instance.getTypeDefinition.getDictionaryType()
+    if (instance.getTypeDefinition.getDictionaryType != null) {
+      val instDicType = instance.getTypeDefinition.getDictionaryType
       var invalideErrorThrowed = false
       instDicType.getAttributes.foreach {
         dicAtt =>
@@ -119,7 +120,7 @@ class DictionaryOptionalChecker extends CheckerService {
         }
       }
       case None => {
-        checkViolation.setMessage("Dictionary invalide in " + instance.getName)
+        checkViolation.setMessage("Iinvalid dictionary in " + instance.getName)
       }
     }
 
@@ -137,7 +138,7 @@ class DictionaryOptionalChecker extends CheckerService {
 
   def getBounds(instance: Channel): List[String] = {
     var nodeNames = List[String]()
-    instance.getConnectedNode("").foreach {
+    channelAspect.getRelatedNodes(instance).foreach {
       node => nodeNames = nodeNames ++ List[String](node.getName)
     }
     nodeNames

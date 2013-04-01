@@ -35,11 +35,13 @@ package org.kevoree.core.basechecker.channelchecker
 
 import collection.JavaConversions._
 import org.kevoree.api.service.core.checker.{CheckerViolation, CheckerService}
+import org.kevoree.framework.kaspects.ChannelAspect
 import org.kevoree.{ChannelType, ContainerRoot}
-import org.kevoree.framework.aspects.KevoreeAspects._
 
 
 class BoundsChecker extends CheckerService {
+
+  private val channelAspect = new ChannelAspect()
 
   def check(model: ContainerRoot): java.util.List[CheckerViolation] = {
     var violations: List[CheckerViolation] = List()
@@ -47,7 +49,7 @@ class BoundsChecker extends CheckerService {
     model.getHubs.foreach {
       channel =>
 
-        val relatedNodes = channel.getRelatedNodes
+        val relatedNodes = channelAspect.getRelatedNodes(channel)
 
         val maxNodes = channel.getTypeDefinition.asInstanceOf[ChannelType].getUpperFragments
 
@@ -65,7 +67,7 @@ class BoundsChecker extends CheckerService {
         if (maxLocalBindings != 0) {
           relatedNodes.foreach {
             node =>
-              if (channel.getRelatedBindings(node).size > maxLocalBindings) {
+              if (channelAspect.getRelatedBindings(channel, node).size > maxLocalBindings) {
                 val violation = new CheckerViolation
                 violation.setMessage("The number of bindings between channel '" + channel.getName + "' and node '" + node.getName + "' is higher than the channel limit(" + maxLocalBindings + ")")
                 violations = violations ++ List(violation)

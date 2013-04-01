@@ -27,7 +27,6 @@
 package org.kevoree.core.basechecker.cyclechecker
 
 import org.jgrapht.EdgeFactory
-import org.kevoree.framework.aspects.KevoreeAspects._
 import org.kevoree._
 import scala.collection.JavaConversions._
 

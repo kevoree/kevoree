@@ -14,10 +14,10 @@
 package org.kevoree.core.basechecker.kevoreeVersionChecker
 
 import org.kevoree.api.service.core.checker.{CheckerViolation, CheckerService}
-import org.kevoree.framework.aspects.KevoreeAspects._
 import org.kevoree._
 import collection.JavaConversions._
 import collection.mutable.ListBuffer
+import org.kevoree.framework.kaspects.{TypeDefinitionAspect, ContainerNodeAspect}
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -28,7 +28,10 @@ import collection.mutable.ListBuffer
  * @version 1.0
  */
 
-class KevoreeVersionChecker extends CheckerService {
+class KevoreeVersionChecker extends CheckerService with KevoreeNodeVersion {
+  val containerNodeAspect = new ContainerNodeAspect()
+  val typeDefinitionAspect = new TypeDefinitionAspect()
+
   def check(model: ContainerRoot): java.util.List[CheckerViolation] = {
     val violations: java.util.List[CheckerViolation] = new java.util.ArrayList[CheckerViolation]()
 
@@ -37,7 +40,7 @@ class KevoreeVersionChecker extends CheckerService {
       node =>
         node.getComponents.foreach {
           component =>
-            val du = component.getTypeDefinition.foundRelevantDeployUnit(node)
+            val du = typeDefinitionAspect.foundRelevantDeployUnit(component.getTypeDefinition, node)
             if (du != null) {
               violations.addAll(check(component.getName, du, node))
             }
@@ -49,7 +52,7 @@ class KevoreeVersionChecker extends CheckerService {
             subTempList.foreach {
               port => port.getBindings.foreach {mbinding => {
                   if (!alreadyCheckedChannels.contains(mbinding.getHub)) {
-                    val du = mbinding.getHub.getTypeDefinition.foundRelevantDeployUnit(node)
+                    val du = typeDefinitionAspect.foundRelevantDeployUnit(mbinding.getHub.getTypeDefinition, node)
                     if (du != null) {
                       violations.addAll(check(mbinding.getHub.getName, du, node))
                       alreadyCheckedChannels += mbinding.getHub
@@ -59,9 +62,9 @@ class KevoreeVersionChecker extends CheckerService {
               }
             }
         }
-        node.getGroups.foreach {
+        containerNodeAspect.getGroups(node).foreach {
           group =>
-            val du = group.getTypeDefinition.foundRelevantDeployUnit(node)
+            val du = typeDefinitionAspect.foundRelevantDeployUnit(group.getTypeDefinition, node)
             if (du != null) {
               violations.addAll(check(group.getName, du, node))
             }
@@ -72,15 +75,16 @@ class KevoreeVersionChecker extends CheckerService {
 
   private def check(instanceName: String, deployUnit: DeployUnit, node: ContainerNode): java.util.List[CheckerViolation] = {
     val violations: java.util.List[CheckerViolation] = new java.util.ArrayList[CheckerViolation]()
+    val kevoreeNodeVersion = getKevoreeVersion(node)
     if (((deployUnit.getGroupName == "org.kevoree" && deployUnit.getUnitName == "org.kevoree.api")
       || (deployUnit.getGroupName == "org.kevoree" && deployUnit.getUnitName == "org.kevoree.core")
       || (deployUnit.getGroupName == "org.kevoree" && deployUnit.getUnitName == "org.kevoree.framework")
       || (deployUnit.getGroupName == "org.kevoree" && deployUnit.getUnitName == "org.kevoree.kcl"))
-      && deployUnit.getVersion != node.getKevoreeVersion) {
+      && deployUnit.getVersion != kevoreeNodeVersion) {
       val concreteViolation: CheckerViolation = new CheckerViolation()
       concreteViolation
         .setMessage("Component " + instanceName + " has a required deployUnit \"" + deployUnit.getGroupName + ":" + deployUnit.getUnitName + "\" which needs different version of Kevoree that the one provided (requiredVersion=" + deployUnit.getVersion +
-        ",providedVersion=" + node.getKevoreeVersion)
+        ",providedVersion=" + kevoreeNodeVersion)
       concreteViolation.setTargetObjects(List(node.asInstanceOf[AnyRef]))
       violations.add(concreteViolation)
       violations

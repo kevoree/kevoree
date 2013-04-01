@@ -27,10 +27,8 @@
 package org.kevoree.core.basechecker.kevoreeVersionChecker
 
 import org.kevoree.api.service.core.checker.{CheckerViolation, CheckerService}
-import java.util.ArrayList
 import org.kevoree.impl.DefaultKevoreeFactory
-import org.kevoree.{KevoreeFactory, ContainerRoot}
-import org.kevoree.framework.aspects.KevoreeAspects._
+import org.kevoree.ContainerRoot
 import collection.JavaConversions._
 import java.util
 
@@ -43,18 +41,19 @@ import java.util
  * @version 1.0
  */
 
-class KevoreeNodeVersionChecker (nodeName: String) extends CheckerService {
+class KevoreeNodeVersionChecker (nodeName: String) extends CheckerService with KevoreeNodeVersion {
   def check (model: ContainerRoot): java.util.List[CheckerViolation] = {
     val violations: java.util.List[CheckerViolation] = new util.ArrayList[CheckerViolation]()
     model.getNodes.find(node => node.getName == nodeName) match {
       case None =>
       case Some(node) => {
         val factory = new DefaultKevoreeFactory()
-        if (node.getKevoreeVersion != factory.getVersion()) {
+        val nodeKevoreeVersion = getKevoreeVersion(node)
+        if (nodeKevoreeVersion != factory.getVersion) {
           val concreteViolation: CheckerViolation = new CheckerViolation()
           concreteViolation
-            .setMessage("Node type " + nodeName + " needs different version of Kevoree that the one provided (requiredVersion=" + node.getKevoreeVersion +
-            ",providedVersion=" + factory.getVersion())
+            .setMessage("Node type " + nodeName + " needs different version of Kevoree that the one provided (requiredVersion=" + nodeKevoreeVersion +
+            ",providedVersion=" + factory.getVersion)
           concreteViolation.setTargetObjects(List(node.asInstanceOf[AnyRef]))
           violations.add(concreteViolation)
         }
@@ -62,5 +61,7 @@ class KevoreeNodeVersionChecker (nodeName: String) extends CheckerService {
     }
     violations
   }
+
+
 
 }

@@ -14,20 +14,20 @@
 
 package org.kevoree.core.basechecker.cyclechecker
 
-import org.kevoree.framework.aspects.KevoreeAspects._
-
 import org.jgrapht.graph.DefaultDirectedGraph
-import org.kevoree.{ComponentInstance, ContainerNode, ContainerRoot, Instance, MBinding}
+import org.kevoree.framework.kaspects.ComponentInstanceAspect
+import org.kevoree.{ContainerNode, ContainerRoot, Instance, MBinding}
 import scala.collection.JavaConversions._
 
 
 case class KevoreeComponentDirectedGraph(model: ContainerRoot, nodeName: String) extends DefaultDirectedGraph[Instance, MBinding](new KevoreeMBindingEdgeFactory(model)) {
+  private val componentInstanceAspect = new ComponentInstanceAspect()
 
   model.findByPath("nodes[" + nodeName + "]") match {
     case node : ContainerNode =>
       node.getComponents.foreach {
         componentInstance =>
-          componentInstance.getRelatedBindings.foreach {
+          componentInstanceAspect.getRelatedBindings(componentInstance).foreach {
             binding =>
               if (binding.getPort.getPortTypeRef.getNoDependency == null || binding.getPort.getPortTypeRef.getNoDependency == false) {
                 addVertex(binding.getHub)

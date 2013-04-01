@@ -27,7 +27,7 @@
 package org.kevoree.core.basechecker.nodechecker
 
 import org.kevoree.api.service.core.checker.{CheckerViolation, CheckerService}
-import org.kevoree.framework.aspects.KevoreeAspects._
+import org.kevoree.framework.kaspects.{TypeDefinitionAspect, ContainerNodeAspect}
 import org.kevoree.{Channel, ContainerNode, ContainerRoot}
 import scala.collection.JavaConversions._
 import collection.mutable.ListBuffer
@@ -40,7 +40,8 @@ import collection.mutable.ListBuffer
  */
 
 class NodeChecker extends CheckerService {
-
+  val containerNodeAspect = new ContainerNodeAspect()
+  val typeDefinitionAspect = new TypeDefinitionAspect()
 
   def check(model: ContainerRoot): java.util.List[CheckerViolation] = {
     var violations: ListBuffer[CheckerViolation] = ListBuffer()
@@ -49,7 +50,7 @@ class NodeChecker extends CheckerService {
         val alreadyCheckedChannels: ListBuffer[Channel] = ListBuffer[Channel]()
         node.getComponents.foreach {
           component => //For each component of each node
-            component.getTypeDefinition.foundRelevantDeployUnit(node)
+            typeDefinitionAspect.foundRelevantDeployUnit(component.getTypeDefinition, node)
             match {
               case null => {
                 val violation: CheckerViolation = new CheckerViolation
@@ -70,7 +71,7 @@ class NodeChecker extends CheckerService {
               port => port.getBindings.foreach {
                 mbinding => {
                   if (!alreadyCheckedChannels.contains(mbinding.getHub)) {
-                    mbinding.getHub.getTypeDefinition.foundRelevantDeployUnit(node)
+                    typeDefinitionAspect.foundRelevantDeployUnit(mbinding.getHub.getTypeDefinition, node)
                     match {
                       case null => {
                         val violation: CheckerViolation = new CheckerViolation
@@ -86,9 +87,9 @@ class NodeChecker extends CheckerService {
             }
         }
         // check groups
-        node.getGroups.foreach {
+        containerNodeAspect.getGroups(node).foreach {
           group =>
-            group.getTypeDefinition.foundRelevantDeployUnit(node)
+            typeDefinitionAspect.foundRelevantDeployUnit(group.getTypeDefinition, node)
             match {
               case null => {
                 val violation: CheckerViolation = new CheckerViolation
@@ -102,7 +103,7 @@ class NodeChecker extends CheckerService {
         // check child nodes
         node.getHosts.foreach {
           child =>
-            child.getTypeDefinition.foundRelevantDeployUnit(node) match {
+            typeDefinitionAspect.foundRelevantDeployUnit(child.getTypeDefinition, node) match {
               case null => {
                 val violation: CheckerViolation = new CheckerViolation
                 violation.setMessage(child.getTypeDefinition.getName + " has no deploy unit for node type " +
@@ -115,7 +116,7 @@ class NodeChecker extends CheckerService {
             }
         }
         // check node
-        node.getTypeDefinition.foundRelevantDeployUnit(node) match {
+        typeDefinitionAspect.foundRelevantDeployUnit(node.getTypeDefinition, node) match {
           case null => {
             val violation: CheckerViolation = new CheckerViolation
             violation.setMessage(node.getTypeDefinition.getName + " has no deploy unit for node type " +
