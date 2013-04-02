@@ -151,12 +151,10 @@ open class NodeTypeBootstrapHelper: Bootstraper, KCLBootstrap {
             if (groupTypeDeployUnitList.size > 0) {
                 val kcl = installGroupTyp(optgroup.getTypeDefinition() as GroupType)
                 if (kcl != null) {
-                    val activatorPackage = KevoreeGeneratorHelper().getTypeDefinitionGeneratedPackage(optgroup.getTypeDefinition(), "JavaSENode")
-                    val activatorName = optgroup.getTypeDefinition()!!.getName() + "Activator"
-                    val clazz = kcl.loadClass(activatorPackage + "." + activatorName)
-
-                    val groupActivator = clazz!!.newInstance() as org.kevoree.framework.KevoreeGroup
-                    val groupType = groupActivator as AbstractGroupType
+                   // val activatorPackage = KevoreeGeneratorHelper().getTypeDefinitionGeneratedPackage(optgroup.getTypeDefinition(), "JavaSENode")
+                  //  val activatorName = optgroup.getTypeDefinition()!!.getName() + "Activator"
+                    val clazz = kcl.loadClass(optgroup.getTypeDefinition()!!.getBean())
+                    val groupType = clazz!!.newInstance() as AbstractGroupType
 
                     //ADD INSTANCE DICTIONARY
                     val dictionary: java.util.HashMap<String, Any> = java.util.HashMap<String, Any>()

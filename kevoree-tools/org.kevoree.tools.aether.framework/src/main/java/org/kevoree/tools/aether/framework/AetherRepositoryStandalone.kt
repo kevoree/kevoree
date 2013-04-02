@@ -29,8 +29,6 @@ import org.sonatype.aether.RepositorySystemSession
 
 object AetherRepositoryStandalone {
 
-  //private val logger = LoggerFactory.getLogger(this.getClass)
-
   fun newRepositorySystem():RepositorySystem? {
     val locator = DefaultServiceLocator()
     locator.setServices(javaClass<Logger>(), AetherLogger()) // Doesn't work to JdkAsyncHttpProvider because this class uses its own logger and not the one provided by plexus and set with this line
