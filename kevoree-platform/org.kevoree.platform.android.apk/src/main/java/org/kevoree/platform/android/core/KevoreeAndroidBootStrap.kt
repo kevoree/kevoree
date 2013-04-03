@@ -171,7 +171,7 @@ class KevoreeAndroidBootStrap {
             val bootstrapModel = KevoreeXmiHelper.loadStream(jar.getInputStream(entry!!)!!)
             if (bootstrapModel != null) {
                 try {
-                    coreBean!!.setNodeName(nodeName)
+
                     logger.info("Bootstrap step will init " + coreBean!!.getNodeName())
                     logger.debug("Bootstrap step !")
                     val bsh = BootstrapHelper()

@@ -11,19 +11,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.gnu.org/licenses/lgpl-3.0.txt
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package org.kevoree.tools.ui.editor.kloud
 
 import com.explodingpixels.macwidgets.HudWindow
@@ -31,11 +18,11 @@ import javax.swing._
 import java.awt.{FlowLayout, Color, BorderLayout}
 import java.awt.event._
 import org.kevoree.tools.ui.editor.property.SpringUtilities
-import org.kevoree.{KevoreeFactory, ContainerRoot}
+import org.kevoree.ContainerRoot
 import org.kevoree.framework.KevoreeXmiHelper
 import org.slf4j.LoggerFactory
 import com.explodingpixels.macwidgets.plaf.{HudPasswordFieldUI, HudButtonUI, HudTextFieldUI, HudLabelUI}
-import java.io.{ByteArrayOutputStream, InputStreamReader, BufferedReader, OutputStreamWriter}
+import java.io.{ByteArrayOutputStream, OutputStreamWriter}
 import org.kevoree.tools.ui.editor.{PositionedEMFHelper, KevoreeEditor}
 import org.kevoree.tools.ui.editor.command.LoadModelCommand
 import java.net.{URLDecoder, URLEncoder, HttpURLConnection, URL}
@@ -49,7 +36,7 @@ import java.net.{URLDecoder, URLEncoder, HttpURLConnection, URL}
  * @version 1.0
  */
 
-class KloudForm (editor: KevoreeEditor, button: AbstractButton) {
+class KloudForm(editor: KevoreeEditor, button: AbstractButton) {
   var logger = LoggerFactory.getLogger(this.getClass)
   private val defaultAddress = "http://10.0.0.2:8080/kloud"
 
@@ -80,11 +67,11 @@ class KloudForm (editor: KevoreeEditor, button: AbstractButton) {
   configLayout.add(loginTxtField)
 
   loginTxtField.addFocusListener(new FocusListener() {
-    def focusGained (p1: FocusEvent) {
+    def focusGained(p1: FocusEvent) {
       loginLbl.setForeground(Color.WHITE)
     }
 
-    def focusLost (p1: FocusEvent) {
+    def focusLost(p1: FocusEvent) {
       if (loginTxtField.getText == "") {
         loginLbl.setForeground(Color.RED)
       }
@@ -135,11 +122,11 @@ class KloudForm (editor: KevoreeEditor, button: AbstractButton) {
   configLayout.add(addressTxtField)
 
   addressTxtField.addFocusListener(new FocusListener() {
-    def focusGained (p1: FocusEvent) {
+    def focusGained(p1: FocusEvent) {
       addressLbl.setForeground(Color.WHITE)
     }
 
-    def focusLost (p1: FocusEvent) {
+    def focusLost(p1: FocusEvent) {
       if (addressTxtField.getText == "") {
         addressLbl.setForeground(Color.RED)
       }
@@ -153,7 +140,7 @@ class KloudForm (editor: KevoreeEditor, button: AbstractButton) {
   val btSubmit = new JButton("Submit model")
   btSubmit.setUI(new HudButtonUI)
   btSubmit.addActionListener(new ActionListener {
-    def actionPerformed (p1: ActionEvent) {
+    def actionPerformed(p1: ActionEvent) {
       ok_lbl.setForeground(Color.WHITE)
       ok_lbl.setText("")
       // check data (login, password, ssh_key must be defined, kloud address must also be set but a default value exists)
@@ -162,7 +149,7 @@ class KloudForm (editor: KevoreeEditor, button: AbstractButton) {
         val model = editor.getPanel.getKernel.getModelHandler.getActualModel
         // send the current model of the editor on Kloud
         new Thread() {
-          override def run () {
+          override def run() {
             if (sendModel(password, sshTxtField.getText, addressTxtField.getText + "/" + loginTxtField.getText + "/model", model)) {
               ok_lbl.setText("OK")
               ok_lbl.setForeground(Color.GREEN)
@@ -191,14 +178,14 @@ class KloudForm (editor: KevoreeEditor, button: AbstractButton) {
   val btRelease = new JButton("Release model")
   btRelease.setUI(new HudButtonUI)
   btRelease.addActionListener(new ActionListener {
-    def actionPerformed (p1: ActionEvent) {
+    def actionPerformed(p1: ActionEvent) {
       ok_lbl.setForeground(Color.WHITE)
       ok_lbl.setText("")
       // check data (login, password, ssh_key must be defined, kloud address must also be set but a default value exist)
       if (loginTxtField.getText != "" /*&& passwordTxtField.getPassword.length > 0*/ && addressTxtField.getText != "") {
         val password = new String(passwordTxtField.getPassword)
         new Thread() {
-          override def run () {
+          override def run() {
             // send a empty model to release all previous nodes already build
             if (release(password, addressTxtField.getText + "/" + loginTxtField.getText + "/release")) {
               ok_lbl.setText("OK")
@@ -241,22 +228,22 @@ class KloudForm (editor: KevoreeEditor, button: AbstractButton) {
   newPopup.getContentPane.add(layoutPopup)
   newPopup.getJDialog.addComponentListener(new ComponentAdapter() {
 
-    override def componentHidden (e: ComponentEvent) {
+    override def componentHidden(e: ComponentEvent) {
       hide()
     }
   })
 
-  def display () {
+  def display() {
     newPopup.getJDialog.setVisible(true)
     button.setEnabled(true)
   }
 
-  def hide () {
+  def hide() {
     newPopup.getJDialog.setVisible(false)
     button.setEnabled(false)
   }
 
-  private def sendModel (password: String, sshKey: String, address: String, model: ContainerRoot): Boolean = {
+  private def sendModel(password: String, sshKey: String, address: String, model: ContainerRoot): Boolean = {
     val bodyBuilder = new StringBuilder
     /*
         bodyBuilder append "login="
@@ -268,7 +255,7 @@ class KloudForm (editor: KevoreeEditor, button: AbstractButton) {
     bodyBuilder append URLEncoder.encode(sshKey, "UTF-8")
     if (model.getGroups.size > 0 && model.getNodes.size > 0) {
       bodyBuilder append "&model="
-      bodyBuilder append URLEncoder.encode(KevoreeXmiHelper.$instance.saveToString(model,false), "UTF-8")
+      bodyBuilder append URLEncoder.encode(KevoreeXmiHelper.$instance.saveToString(model, false), "UTF-8")
     }
 
     logger.debug("url=>" + address)
@@ -362,7 +349,7 @@ class KloudForm (editor: KevoreeEditor, button: AbstractButton) {
     }
   }
 
-  private def release (password: String, address: String): Boolean = {
+  private def release(password: String, address: String): Boolean = {
     val bodyBuilder = new StringBuilder
 
     bodyBuilder append "&password="

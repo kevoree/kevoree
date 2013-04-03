@@ -11,23 +11,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.kevoree.framework
 
-package org.kevoree.tools.ui.editor.aspects
+import org.kevoree.TypeDefinition
 
-import org.kevoree._
+/**
+ * User: ffouquet
+ * Date: 17/08/11
+ * Time: 14:00
+ */
+public class KevoreeGeneratorHelper {
 
-import Art2UIAspects._
-
-object Art2UIAspects{
-  implicit def mbindingAspect(c : org.kevoree.MBinding) = MBindingAspect(c)
-  implicit def channelAspect(c : org.kevoree.Channel) = ChannelAspect(c)
-  implicit def nodeAspect(c : org.kevoree.ContainerNode) = NodeAspect(c)
-  implicit def componentAspect(c : org.kevoree.ComponentInstance) = ComponentAspect(c)
-  implicit def groupAspect(c : org.kevoree.Group) = GroupAspect(c)
+    fun getTypeDefinitionGeneratedPackage(td: TypeDefinition, targetNodeType: String): String {
+        val basePackage = td.getBean().substring(0, td.getBean().lastIndexOf("."))
+        return basePackage + "." + "kevgen" + "." + targetNodeType
+    }
+    fun getTypeDefinitionBasePackage(td: TypeDefinition): String {
+        return td.getBean().substring(0, td.getBean().lastIndexOf("."))
+    }
 }
-
-
-
-
-
-

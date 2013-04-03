@@ -11,23 +11,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.kevoree.core.basechecker
 
-package org.kevoree.tools.ui.editor.aspects
+import org.kevoree.framework.KevoreeXmiHelper
 
-import org.kevoree._
+/**
+ * Created with IntelliJ IDEA.
+ * User: duke
+ * Date: 10/10/12
+ * Time: 15:04
+ */
+fun main(args: Array<String>) {
+    val check = RootChecker()
+    val res =check.check(KevoreeXmiHelper.load("/Users/duke/Documents/dev/dukeboard/kevoree/kevoree-core/org.kevoree.basechecker/src/test/resources/test_checker/networkChecker/groupChannelConflict9000.kev"))
 
-import Art2UIAspects._
-
-object Art2UIAspects{
-  implicit def mbindingAspect(c : org.kevoree.MBinding) = MBindingAspect(c)
-  implicit def channelAspect(c : org.kevoree.Channel) = ChannelAspect(c)
-  implicit def nodeAspect(c : org.kevoree.ContainerNode) = NodeAspect(c)
-  implicit def componentAspect(c : org.kevoree.ComponentInstance) = ComponentAspect(c)
-  implicit def groupAspect(c : org.kevoree.Group) = GroupAspect(c)
+    for (e in res) {
+        println(e.getMessage())
+    }
 }
-
-
-
-
-
-

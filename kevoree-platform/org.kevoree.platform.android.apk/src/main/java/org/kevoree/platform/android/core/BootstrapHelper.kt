@@ -44,10 +44,8 @@ class BootstrapHelper {
     val factory = DefaultKevoreeFactory()
 
     fun initModelInstance(model: ContainerRoot, defType: String, defGroupType: String, nodeName: String) {
-
-
         val nodeFound = model.findNodesByID(nodeName)
-        if(nodeFound != null){
+        if(nodeFound == null){
             val td = model.findTypeDefinitionsByID(defType)
             if(td != null){
                 logger.warn("Init default node instance for name " + nodeName)
@@ -71,7 +69,7 @@ class BootstrapHelper {
                 logger.error("Default node type not found for name " + defType)
             }
         } else {
-            logger.error("Default node type not found for name " + defType)
+            logger.info("the model is already init for nodename " + nodeName)
         }
     }
 }

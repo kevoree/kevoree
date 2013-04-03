@@ -151,8 +151,6 @@ open class NodeTypeBootstrapHelper: Bootstraper, KCLBootstrap {
             if (groupTypeDeployUnitList.size > 0) {
                 val kcl = installGroupTyp(optgroup.getTypeDefinition() as GroupType)
                 if (kcl != null) {
-                   // val activatorPackage = KevoreeGeneratorHelper().getTypeDefinitionGeneratedPackage(optgroup.getTypeDefinition(), "JavaSENode")
-                  //  val activatorName = optgroup.getTypeDefinition()!!.getName() + "Activator"
                     val clazz = kcl.loadClass(optgroup.getTypeDefinition()!!.getBean())
                     val groupType = clazz!!.newInstance() as AbstractGroupType
 

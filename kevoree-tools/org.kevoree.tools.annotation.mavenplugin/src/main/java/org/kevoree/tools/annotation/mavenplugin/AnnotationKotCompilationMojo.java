@@ -82,8 +82,9 @@ public class AnnotationKotCompilationMojo extends AbstractMojo {
             StringBuffer cpath = new StringBuffer();
             boolean firstBUF = true;
             for (String path : project.getCompileClasspathElements()) {
-                if (!firstBUF) ;
-                cpath.append(":");
+                if (!firstBUF){
+                    cpath.append(File.pathSeparator);
+                }
                 cpath.append(path);
                 firstBUF = false;
             }

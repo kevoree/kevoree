@@ -11,23 +11,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.kevoree.core.basechecker.cyclechecker
 
-package org.kevoree.tools.ui.editor.aspects
+import org.kevoree.Channel
+import org.kevoree.MBinding
 
-import org.kevoree._
-
-import Art2UIAspects._
-
-object Art2UIAspects{
-  implicit def mbindingAspect(c : org.kevoree.MBinding) = MBindingAspect(c)
-  implicit def channelAspect(c : org.kevoree.Channel) = ChannelAspect(c)
-  implicit def nodeAspect(c : org.kevoree.ContainerNode) = NodeAspect(c)
-  implicit def componentAspect(c : org.kevoree.ComponentInstance) = ComponentAspect(c)
-  implicit def groupAspect(c : org.kevoree.Group) = GroupAspect(c)
+class ChannelFragment (c: Channel, b: MBinding){
+    public val channel : Channel = c
+    public val binding : MBinding = b
 }
 
-
-
-
-
-
+class BindingFragment (b: MBinding, b1: MBinding?){
+    public val binding : MBinding = b
+    public val binding1 : MBinding? = b1
+}

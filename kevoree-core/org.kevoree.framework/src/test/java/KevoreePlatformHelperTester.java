@@ -13,6 +13,7 @@
  */
 import org.junit.Test;
 import org.kevoree.ContainerRoot;
+import org.kevoree.framework.Constants;
 import org.kevoree.framework.KevoreePlatformHelper;
 import org.kevoree.framework.KevoreeXmiHelper;
 
@@ -29,7 +30,7 @@ public class KevoreePlatformHelperTester {
     @Test
     public void testUpdateNodeLinkProp() {
         ContainerRoot model = KevoreeXmiHelper.$instance.loadStream(KevoreePlatformHelperTester.class.getResourceAsStream("/node0.kev"));
-        KevoreePlatformHelper.updateNodeLinkProp(model, "sync", "node0", org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP(), "192.168.1.1", "LAN", 100);
+        KevoreePlatformHelper.$instance.updateNodeLinkProp(model, "sync", "node0", Constants.$instance.getKEVOREE_PLATFORM_REMOTE_NODE_IP(), "192.168.1.1", "LAN", 100);
 
     }
 }

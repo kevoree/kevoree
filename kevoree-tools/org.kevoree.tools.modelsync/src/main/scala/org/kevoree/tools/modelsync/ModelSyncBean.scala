@@ -40,6 +40,7 @@
 package org.kevoree.tools.modelsync
 
 import org.kevoree.framework.AbstractGroupType
+import org.kevoree.framework.internal.MethodAnnotationResolver
 import org.slf4j.LoggerFactory
 import org.kevoree.ContainerRoot
 
@@ -58,10 +59,14 @@ class ModelSyncBean {
 
   @throws(classOf[Exception])
   def pushTo (model: ContainerRoot, destNodeName: String, viaGroupName: String) {
+
     bootstraper.getBootstrap.clear
     bootstraper.getBootstrap.bootstrapGroupType(model, viaGroupName, ModelHandlerServiceNoKernel(model)) match {
       case groupTypeInstance : AbstractGroupType => {
+        //val resolver = new MethodAnnotationResolver(groupTypeInstance.getClass)
+        //resolver.resolve(classOf[org.kevoree.annotation.Start]).invoke(groupTypeInstance)
         groupTypeInstance.push(model, destNodeName)
+        //resolver.resolve(classOf[org.kevoree.annotation.Stop]).invoke(groupTypeInstance)
       }
       case null => {
         logger.error("Error while bootstraping group type")
@@ -75,7 +80,10 @@ class ModelSyncBean {
     bootstraper.getBootstrap.clear
     bootstraper.getBootstrap.bootstrapGroupType(model, viaGroupName, ModelHandlerServiceNoKernel(model)) match {
       case groupTypeInstance:AbstractGroupType => {
+        //val resolver = new MethodAnnotationResolver(groupTypeInstance.getClass)
+        //resolver.resolve(classOf[org.kevoree.annotation.Start]).invoke(groupTypeInstance)
         groupTypeInstance.pull(destNodeName)
+        //resolver.resolve(classOf[org.kevoree.annotation.Stop]).invoke(groupTypeInstance)
       }
       case null => {
         logger.error("Error while bootstraping group type")
