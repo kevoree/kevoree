@@ -45,7 +45,7 @@ import java.io.BufferedOutputStream
  * Time: 17:57
  */
 
-class AndroidKevoreeJarClassLoader(gkey: String, val ctx: android.content.Context, val parent: ClassLoader): KevoreeJarClassLoader() {
+class AndroidKevoreeJarClassLoader(gkey: String, val ctx: android.content.Context, val _parent: ClassLoader): KevoreeJarClassLoader() {
 
     val logger = LoggerFactory.getLogger(this.javaClass)!!
 
