@@ -20,14 +20,13 @@ import org.kevoree.TypeDefinition
  * Date: 17/08/11
  * Time: 14:00
  */
+public class KevoreeGeneratorHelper {
 
-class KevoreeGeneratorHelper {
-
-  def getTypeDefinitionGeneratedPackage(td : TypeDefinition,targetNodeType : String) : String = {
-    val basePackage = td.getBean.substring(0, td.getBean.lastIndexOf("."))
-    basePackage + "." + "kevgen" +"." + targetNodeType
-  }
-  def getTypeDefinitionBasePackage(td : TypeDefinition) : String = {
-    td.getBean.substring(0, td.getBean.lastIndexOf("."))
-  }
+    fun getTypeDefinitionGeneratedPackage(td: TypeDefinition, targetNodeType: String): String {
+        val basePackage = td.getBean().substring(0, td.getBean().lastIndexOf("."))
+        return basePackage + "." + "kevgen" + "." + targetNodeType
+    }
+    fun getTypeDefinitionBasePackage(td: TypeDefinition): String {
+        return td.getBean().substring(0, td.getBean().lastIndexOf("."))
+    }
 }
