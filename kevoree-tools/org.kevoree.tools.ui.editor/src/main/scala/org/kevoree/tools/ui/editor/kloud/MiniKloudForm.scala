@@ -110,21 +110,23 @@ class MiniKloudForm(editor: KevoreeEditor, button: AbstractButton) {
                 skyModel.findByPath("nodes[" + minicloudName + "]/components[" + "webServer" + "]", classOf[ComponentInstance]) match {
                   case null =>
                   case component: ComponentInstance => {
-                    val portOption = KevoreePropertyHelper.getProperty(component, "port")
-                    for (i <- 0 until 10) {
-                      try {
-                        logger.debug("checking: http://localhost:{}/", portOption.get)
-                        new URL("http://localhost:" + portOption.get + "/").openConnection().connect()
-                      } catch {
-                        case _: Throwable => Thread.sleep(5000)
+                    val portOption = KevoreePropertyHelper.$instance.getProperty(component, "port", false, "")
+                    if (portOption != null) {
+                      for (i <- 0 until 10) {
+                        try {
+                          logger.debug("checking: http://localhost:{}/", portOption)
+                          new URL("http://localhost:" + portOption + "/").openConnection().connect()
+                        } catch {
+                          case _: Throwable => Thread.sleep(5000)
+                        }
                       }
-                    }
 
-                    if (Desktop.isDesktopSupported) {
-                      logger.info("starting miniKloud web page: http://localhost:{}/", portOption.get)
-                      Desktop.getDesktop.browse(new URI("http://localhost:" + portOption.get + "/"))
-                    } else {
-                      logger.warn("Our desktop is not support so we are not able to open the web page: http://localhost:{}/", portOption.get)
+                      if (Desktop.isDesktopSupported) {
+                        logger.info("starting miniKloud web page: http://localhost:{}/", portOption)
+                        Desktop.getDesktop.browse(new URI("http://localhost:" + portOption + "/"))
+                      } else {
+                        logger.warn("Our desktop is not support so we are not able to open the web page: http://localhost:{}/", portOption)
+                      }
                     }
                   }
                 }
@@ -276,7 +278,7 @@ class MiniKloudForm(editor: KevoreeEditor, button: AbstractButton) {
       }
     }
 
-    if (editor.getPanel.getKernel.getModelHandler.getActualModel.findGroupsByID(groupName)==null || editor.getPanel.getKernel.getModelHandler.getActualModel.findGroupsByID(groupName).findSubNodesByID(minicloudName) == null) {
+    if (editor.getPanel.getKernel.getModelHandler.getActualModel.findGroupsByID(groupName) == null || editor.getPanel.getKernel.getModelHandler.getActualModel.findGroupsByID(groupName).findSubNodesByID(minicloudName) == null) {
       kevEngine.addVariable("portValue", selectPort(firstPortToUse, blackListedPorts) + "")
       kevEngine.append("addToGroup {groupName} {minicloudNodeName}")
       kevEngine.append("updateDictionary {groupName} {port='{portValue}'}@{minicloudNodeName}")
@@ -330,9 +332,9 @@ class MiniKloudForm(editor: KevoreeEditor, button: AbstractButton) {
           node =>
             logger.debug("Looking for property 'port' on group {} with node {}", Array[String](group.getName, node.getName))
 
-            val portOption = KevoreePropertyHelper.getProperty(group, "port", isFragment = true, nodeNameForFragment = node.getName)
-            if (portOption.isDefined) {
-              ports = ports ++ Array[Int](Integer.parseInt(portOption.get))
+            val portOption = KevoreePropertyHelper.$instance.getProperty(group, "port", true, node.getName)
+            if (portOption != null) {
+              ports = ports ++ Array[Int](Integer.parseInt(portOption))
             }
         }
 
@@ -341,9 +343,9 @@ class MiniKloudForm(editor: KevoreeEditor, button: AbstractButton) {
     model.getMBindings.foreach {
       binding =>
         logger.debug("Looking for property 'port' on channel {} with node {}", Array[String](binding.getHub.getName, binding.getPort.eContainer.eContainer.asInstanceOf[ContainerNode].getName))
-        val portOption = KevoreePropertyHelper.getProperty(binding.getHub, "port", isFragment = true, nodeNameForFragment = binding.getPort.eContainer.eContainer.asInstanceOf[ContainerNode].getName)
-        if (portOption.isDefined) {
-          ports = ports ++ Array[Int](Integer.parseInt(portOption.get))
+        val portOption = KevoreePropertyHelper.$instance.getProperty(binding.getHub, "port", true, binding.getPort.eContainer.eContainer.asInstanceOf[ContainerNode].getName)
+        if (portOption != null) {
+          ports = ports ++ Array[Int](Integer.parseInt(portOption))
         }
 
     }
@@ -353,9 +355,9 @@ class MiniKloudForm(editor: KevoreeEditor, button: AbstractButton) {
         node.getComponents.foreach {
           component =>
             logger.debug("Looking for property 'port' on component {}", component.getName)
-            val portOption = KevoreePropertyHelper.getProperty(component, "port")
-            if (portOption.isDefined) {
-              ports = ports ++ Array[Int](Integer.parseInt(portOption.get))
+            val portOption = KevoreePropertyHelper.$instance.getProperty(component, "port", false, "")
+            if (portOption != null) {
+              ports = ports ++ Array[Int](Integer.parseInt(portOption))
             }
         }
 
