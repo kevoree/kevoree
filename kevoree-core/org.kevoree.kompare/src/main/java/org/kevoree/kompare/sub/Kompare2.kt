@@ -493,10 +493,7 @@ trait Kompare2 {
         val channelAspect = ChannelAspect()
         for(ch1 in actualChannelName){
             val ch2 = updateRoot.findHubsByID(ch1)
-            if(ch2 == null || !channelAspect.getConnectedNode(ch2!!, "###").contains(nodeName)){
-                if(ch2 != null){
-                    processRemoveInstance(ch2, adaptationModel, updateRoot, updateTD)
-                }
+            if(ch2 == null){
                 val channelOrigin = actualRoot.findHubsByID(ch1)!!
                 processCheckRemoveChannel(channelOrigin, adaptationModel, actualRoot, actualTD, alreadyChecked)
                 for(remote in channelAspect.getConnectedNode(channelOrigin, nodeName)){
@@ -511,11 +508,7 @@ trait Kompare2 {
         for(ch1 in updateChannelName){
             val channelOrigin = updateRoot.findHubsByID(ch1)!!
             val ch2 = actualRoot.findHubsByID(ch1)
-
-            if(ch2 == null || !channelAspect.getConnectedNode(ch2!!, "###").contains(nodeName)){
-                if(ch2 != null){
-                    processAddInstance(channelOrigin, adaptationModel, updateRoot, updateTD)
-                }
+            if(ch2 == null){
                 processCheckAddChannel(updateRoot.findHubsByID(ch1), adaptationModel, actualRoot, updateRoot, updateTD, alreadyChecked)
                 for(remote in channelAspect.getConnectedNode(channelOrigin, nodeName)){
                     val addccmd = adaptationModelFactory.createAdaptationPrimitive()
@@ -525,6 +518,20 @@ trait Kompare2 {
                     adaptationModel.addAdaptations(addccmd)
                 }
             } else {
+                if(channelAspect.usedByNode(channelOrigin,nodeName) && !channelAspect.usedByNode(ch2,nodeName)){
+                    processAddInstance(channelOrigin, adaptationModel, updateRoot, updateTD)
+                    for(remote in channelAspect.getConnectedNode(channelOrigin, nodeName)){
+                        val addccmd = adaptationModelFactory.createAdaptationPrimitive()
+                        addccmd.setPrimitiveType(updateRoot.findAdaptationPrimitiveTypesByID(JavaSePrimitive.AddFragmentBinding))
+                        addccmd.setRef(channelOrigin)
+                        addccmd.setTargetNodeName(remote.getName())
+                        adaptationModel.addAdaptations(addccmd)
+                    }
+                } else {
+
+                }
+
+
                 processCheckUpdateInstance(actualRoot.findHubsByID(ch1), updateRoot.findHubsByID(ch1), adaptationModel, actualRoot, actualTD, updateTD, updateRoot, nodeName, updatedTypeDefs)
                 val remotesUpdate = channelAspect.getConnectedNode(channelOrigin, nodeName)
                 val remotesActual = channelAspect.getConnectedNode(updateRoot.findHubsByID(ch1), nodeName)
