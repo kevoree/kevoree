@@ -2,7 +2,6 @@ package org.kevoree.core.impl
 
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService
 import org.kevoree.api.service.core.script.KevScriptEngineFactory
-import org.kevoree.core.basechecker.kevoreeVersionChecker.KevoreeNodeVersionChecker
 import org.kevoree.ContainerRoot
 import org.kevoree.cloner.ModelCloner
 import java.util.Date
@@ -46,7 +45,6 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
 
     val modelListeners = KevoreeListeners()
     var _kevsEngineFactory: KevScriptEngineFactory? = null
-    private var modelVersionChecker: KevoreeNodeVersionChecker? = null
     var _bootstraper: Bootstraper? = null
     var _nodeName: String = ""
     var nodeInstance: org.kevoree.api.NodeType? = null
@@ -74,7 +72,6 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
 
     fun setNodeName(nn: String) {
         _nodeName = nn
-        modelVersionChecker = KevoreeNodeVersionChecker(_nodeName)
     }
 
     override fun getLastModification(): Date {
@@ -397,13 +394,9 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
         try {
             val readOnlyNewModel = proposedNewModel
             val checkResult = modelChecker.check(readOnlyNewModel)!!
-            val versionCheckResult = modelVersionChecker?.check(readOnlyNewModel)!!
-            if ( checkResult.size > 0 || versionCheckResult.size > 0) {
+            if ( checkResult.size > 0) {
                 logger.error("There is check failure on update model, update refused !")
                 for(cr in checkResult) {
-                    logger.error("error=>" + cr?.getMessage() + ",objects" + cr?.getTargetObjects().toString())
-                }
-                for(cr in versionCheckResult) {
                     logger.error("error=>" + cr?.getMessage() + ",objects" + cr?.getTargetObjects().toString())
                 }
                 return false
