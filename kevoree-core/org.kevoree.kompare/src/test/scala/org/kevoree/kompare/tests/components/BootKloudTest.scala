@@ -79,9 +79,9 @@ class BootKloudTest extends AssertionsForJUnit with KompareSuite {
     kompareModel.print
   }
 
-
-
-
-
+  @Test def verifyDynInstance() {
+    val kompareModel = component.kompare(model("test_dynInstance/initModel.kvm"), model("test_dynInstance/withChanModel.kvm"),"node1")
+    kompareModel.print
+  }
 
 }
