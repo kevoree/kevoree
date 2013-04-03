@@ -20,7 +20,7 @@ public object KevoreePlatformHelper {
     val logger = LoggerFactory.getLogger(this.javaClass)!!
     val factory = DefaultKevoreeFactory()
 
-    fun updateNodeLinkProp(actualModel: ContainerRoot, currentNodeName: String, targetNodeName: String, key: String, value: String, networkType: String, weight: Int): ContainerNode {
+    fun updateNodeLinkProp(actualModel: ContainerRoot, currentNodeName: String, targetNodeName: String, key: String, value: String, networkType: String, weight: Int)/*: ContainerNode*/ {
 
         var thisNodeFound: ContainerNode? = null
         /* SEARCH THE NODE NETWORK */
@@ -83,6 +83,6 @@ public object KevoreePlatformHelper {
         prop!!.setValue(value)
         prop!!.setLastCheck(Date().getTime().toString())
         logger.debug("New node link prop registered = " + targetNodeName + "," + key + "," + value)
-        return thisNodeFound!!
+//        return thisNodeFound!!
     }
 }
