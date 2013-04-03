@@ -46,10 +46,10 @@ class ChannelTypeFragmentThread(val target: AbstractChannelFragment, val _nodeNa
 
     val kevoree_internal_logger = LoggerFactory.getLogger(this.javaClass)!!
     var pool: PausablePortThreadPoolExecutor? = null
-    val resolver: MethodAnnotationResolver = MethodAnnotationResolver(this.javaClass)
     val portsBinded: MutableMap<String, KevoreePort> = HashMap<String, KevoreePort>()
     val fragementBinded: MutableMap<String, KevoreeChannelFragment> = HashMap<String, KevoreeChannelFragment>()
     var isStarted: Boolean = false
+    val resolver: MethodAnnotationResolver = MethodAnnotationResolver(target.javaClass)
     private val fieldResolver = FieldAnnotationResolver(target.javaClass);
 
 
