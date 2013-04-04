@@ -88,25 +88,17 @@ public class KevoreeBootStrap {
 		try {
 			coreBean = new KevoreeCoreBean();
             coreBean.setNodeName(System.getProperty("node.name"));
-
 			KevoreeJarClassLoader jcl = new KevoreeJarClassLoader();
            // jcl.setLazyLoad(true);
             if(!byPassAetherBootstrap){
                 jcl.add(this.getClass().getClassLoader().getResourceAsStream("org.kevoree.tools.aether.framework-" + factory.getVersion() + ".pack.jar"));
             }
-
 			Class clazz = jcl.loadClass(nodeBootClass);
 			final org.kevoree.api.Bootstraper bootstraper = (Bootstraper) clazz.newInstance();
-
-
             if(logService == null){
                 logService = (KevoreeLogService) this.getClass().getClassLoader().loadClass("org.kevoree.platform.standalone.KevoreeLogbackService").newInstance();
             }
-
             bootstraper.setKevoreeLogService(logService);
-
-			//clazz.getMethod("setKevoreeLogService", KevoreeLogService.class).invoke(bootstraper, logbackService);
-
 			Class selfRegisteredClazz = bootstraper.getClass();
 			jcl.lockLinks();
 
@@ -121,24 +113,19 @@ public class KevoreeBootStrap {
 
 			for (Method m : selfRegisteredClazz.getMethods()) {
 				if (m.getName().equals("registerManuallyDeployUnit")) {
-
-					m.invoke(bootstraper, "scala-library", "org.scala-lang", "2.9.2", dummyKCL);
+					//m.invoke(bootstraper, "scala-library", "org.scala-lang", "2.9.2", dummyKCL);
                     m.invoke(bootstraper, "kotlin-runtime", "org.jetbrains.kotlin", "0.5.162", dummyKCL);
                     m.invoke(bootstraper, "kotlin-stdlib", "org.jetbrains.kotlin", "0.5.162", dummyKCL);
                     m.invoke(bootstraper, "jfilter-library" , "fr.inria.jfilter", "1.3-SNAPSHOT", dummyKCL);
-
 					logger.debug("Manual Init Aether KCL");
 					m.invoke(bootstraper, "org.kevoree.tools.aether.framework", "org.kevoree.tools", factory.getVersion(), jcl);
-
 					logger.debug("Manual Init MarShell KCL");
 					m.invoke(bootstraper, "org.kevoree.tools.marShell", "org.kevoree.tools", factory.getVersion(), scriptEngineKCL);
-
-
 					logger.debug("Manual Init AdaptationModel");
-
 					m.invoke(bootstraper, "cglib-nodep", "cglib", "2.2.2", dummyKCL);
 					m.invoke(bootstraper, "slf4j-api", "org.slf4j", "1.6.4", dummyKCL);
 					m.invoke(bootstraper, "slf4j-api", "org.slf4j", "1.6.2", dummyKCL);
+                    m.invoke(bootstraper, "slf4j-api", "org.slf4j", "1.7.2", dummyKCL);
 					m.invoke(bootstraper, "jgrapht-jdk1.5", "org.jgrapht", "0.7.3", dummyKCL);
                     m.invoke(bootstraper, "objenesis", "org.objenesis", "1.2", dummyKCL);
                     m.invoke(bootstraper, "org.kevoree.adaptation.model", "org.kevoree", factory.getVersion(), dummyKCL);
@@ -151,19 +138,16 @@ public class KevoreeBootStrap {
 					m.invoke(bootstraper, "org.kevoree.merger", "org.kevoree", factory.getVersion(), dummyKCL);
 					m.invoke(bootstraper, "org.kevoree.model", "org.kevoree", factory.getVersion(), dummyKCL);
                     m.invoke(bootstraper, "org.kevoree.model.context", "org.kevoree", factory.getVersion(), dummyKCL);
-
-
                     m.invoke(bootstraper, "org.kevoree.tools.annotation.api", "org.kevoree.tools", factory.getVersion(), dummyKCL);
 					m.invoke(bootstraper, "org.kevoree.tools.javase.framework", "org.kevoree.tools", factory.getVersion(), dummyKCL);
-
 				}
 			}
+
 
 			final Class onlineMShellEngineClazz = scriptEngineKCL.loadClass("org.kevoree.tools.marShell.KevScriptCoreEngine");
 			final Class offLineMShellEngineClazz = scriptEngineKCL.loadClass("org.kevoree.tools.marShell.KevScriptOfflineEngine");
 
 			coreBean.setBootstraper(bootstraper);
-
             KevScriptEngineFactory kevsfactory = new KevScriptEngineFactory() {
                 @Override
                 public KevScriptEngine createKevScriptEngine () {
@@ -187,6 +171,8 @@ public class KevoreeBootStrap {
             };
 
 			coreBean.setKevsEngineFactory(kevsfactory);
+
+            //coreBean.setKevsEngineFactory(new EmptyKevScriptFactory());
 			coreBean.start();
 
 
@@ -239,7 +225,7 @@ public class KevoreeBootStrap {
 
                             try {
                                 File filebootmodel = new File(bootstrapModelPath);
-                                bootstrapModel= bootstrapHelper.generateFromKevS(filebootmodel,kevsfactory.createKevScriptEngine(factory.createContainerRoot()));
+                               // bootstrapModel= bootstrapHelper.generateFromKevS(filebootmodel,kevsfactory.createKevScriptEngine(factory.createContainerRoot()));
                             } catch(final Exception e) {
                                 try {
                                     bootstrapModel = KevoreeXmiHelper.$instance.load(bootstrapModelPath);

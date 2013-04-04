@@ -67,6 +67,8 @@
                                         <exclude>META-INF/*.SF</exclude>
                                         <exclude>META-INF/*.DSA</exclude>
                                         <exclude>META-INF/*.RSA</exclude>
+                                        <exclude>META-INF/maven/*.*</exclude>
+                                        <exclude>src/*.*</exclude>
                                     </excludes>
                                 </filter>
                             </filters>
