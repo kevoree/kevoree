@@ -53,6 +53,7 @@ import org.kevoree.impl.DefaultKevoreeFactory
 import org.kevoree.kcl.KevoreeJarClassLoader
 import org.slf4j.LoggerFactory
 import org.slf4j.impl.StaticLoggerBinder
+import org.kevoree.framework.KevoreeXmiHelper
 
 /**
  * Created with IntelliJ IDEA.
