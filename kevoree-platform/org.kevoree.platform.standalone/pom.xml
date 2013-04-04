@@ -68,7 +68,10 @@
                                         <exclude>META-INF/*.DSA</exclude>
                                         <exclude>META-INF/*.RSA</exclude>
                                         <exclude>META-INF/maven/*.*</exclude>
-                                        <exclude>src/*.*</exclude>
+                                        <exclude>**/*.kt</exclude>
+                                        <exclude>**/*.java</exclude>
+                                        <exclude>**/*.md</exclude>
+                                        <exclude>**/pom.xml</exclude>
                                     </excludes>
                                 </filter>
                             </filters>
