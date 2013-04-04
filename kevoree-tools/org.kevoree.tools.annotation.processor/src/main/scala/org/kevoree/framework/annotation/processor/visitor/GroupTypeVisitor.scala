@@ -58,6 +58,7 @@ case class GroupTypeVisitor(groupType: GroupType, env: ProcessingEnvironment, ro
       }
       case _ =>
     }
+
     //SUB PROCESSOR
     processDictionary(groupType, p2.asInstanceOf[TypeElement])
     processDeployUnit(groupType, p2.asInstanceOf[TypeElement], env, rootVisitor.getOptions)

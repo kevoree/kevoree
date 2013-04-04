@@ -176,6 +176,7 @@ open class NodeTypeBootstrapHelper: Bootstraper, KCLBootstrap {
                     groupType.setBootStrapperService(this)
                     return groupType
                 } else {
+                    logger.error("Error KCL pointer null")
                     return null
                 }
             } else {
@@ -200,6 +201,7 @@ open class NodeTypeBootstrapHelper: Bootstraper, KCLBootstrap {
             try {
                 ct = TypeDefinitionAspect().foundRelevantDeployUnit(groupType, fakeNode)
             } catch(e: Exception) {
+                e.printStackTrace()
             }
             if (ct != null) {
                 var kcl: ClassLoader? = null
@@ -215,9 +217,11 @@ open class NodeTypeBootstrapHelper: Bootstraper, KCLBootstrap {
                 kcl_opt != null && dpRes
                 return kcl //TODO
             } else {
+                logger.error("Relevant DU not found for "+groupType.getName())
                 return null
             }
         } else {
+            logger.error("Super installation failed")
             return null
         }
     }
