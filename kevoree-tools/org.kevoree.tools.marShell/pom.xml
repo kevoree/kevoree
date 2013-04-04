@@ -99,6 +99,7 @@
                             -keepclassmembers class * {
                             ** MODULE$;
                             }
+                            -keepclassmembers class org.kevoree.tools.marShell.KevScriptOfflineEngine { *; }
                         </option>
                     </options>
                     <assembly>
