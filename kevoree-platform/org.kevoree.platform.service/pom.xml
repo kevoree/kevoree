@@ -111,10 +111,10 @@
                     </options>
                     <assembly>
                         <inclusions>
-                            <inclusion>
+                            <!--<inclusion>
                                 <groupId>org.scala-lang</groupId>
                                 <artifactId>scala-library</artifactId>
-                            </inclusion>
+                            </inclusion>-->
                             <inclusion>
                                 <groupId>org.jetbrains.kotlin</groupId>
                                 <artifactId>kotlin-runtime</artifactId>
