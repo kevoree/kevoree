@@ -79,18 +79,4 @@ object KevScriptHelper /*extends App*/ {
     }
     kevEngine.interpret()
   }
-       /*
-  private def loadScript (file: File): String = {
-    val fileReader = new BufferedReader(new FileReader(file))
-    val scriptBuilder = new StringBuilder
-    var line = fileReader.readLine()
-
-    while (line != null) {
-      scriptBuilder append line + "\n"
-      line = fileReader.readLine()
-    }
-
-    fileReader.close()
-    scriptBuilder.toString()
-  }    */
 }

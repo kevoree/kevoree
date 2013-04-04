@@ -36,6 +36,7 @@ import org.kevoree.tools.marShell.parser.KevsParser
 import org.kevoree.tools.marShell.parser.ParserUtil
 import org.kevoree.{ContainerRoot, KevoreeFactory}
 import org.kevoree.framework.KevoreeXmiHelper
+import java.net.InetAddress
 
 object MainRunner {
 
@@ -43,6 +44,8 @@ object MainRunner {
    * @param args the command line arguments
    */
   def main(args: Array[String]): Unit = {
+
+    //InetAddress.getLocalHost
 
     val newModel = KevoreeXmiHelper.$instance.load("/Users/duke/Documents/dev/dukeboard/kevoree/kevoree-tools/org.kevoree.tools.marShell/src/test/resources/baseModel/defaultLibrary.kev")
 

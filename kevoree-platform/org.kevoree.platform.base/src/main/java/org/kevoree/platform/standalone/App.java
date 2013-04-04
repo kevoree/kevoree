@@ -37,18 +37,15 @@ public class App {
     public void start() throws Exception {
 
         //System.setProperty("kevoree.log.level", "DEBUG");
-       // System.setProperty("node.bootstrap","/var/folders/dq/_bgn79zj25n9w8jbs3x228l80000gn/T/bootModelnode14793899140134410087.kev");
-       // System.setProperty("node.name","node1");
+        //System.setProperty("node.bootstrap","/var/folders/dq/_bgn79zj25n9w8jbs3x228l80000gn/T/bootModelnode14793899140134410087.kev");
+        //System.setProperty("node.name","node1");
 
         //TO REMOVE
-        if(System.getProperty("node.groupType") == null){
-            System.setProperty("node.groupType","BasicGroup");
+        if (System.getProperty("node.groupType") == null) {
+            System.setProperty("node.groupType", "BasicGroup");
         }
-        
-
-       // System.setProperty("node.update.timeout","100000");
+        //System.setProperty("node.update.timeout","100000");
         //System.setProperty("kevoree.offline","true");
-        //System.setProperty("actors.enableForkJoin", "false");
 
         try {
             ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(ch.qos.logback.classic.Logger.ROOT_LOGGER_NAME);
@@ -57,10 +54,9 @@ public class App {
             } else {
                 root.detachAppender("FILE");
             }
-        } catch (Exception e){
-           //Logback not present
+        } catch (Exception e) {
+            //Logback not present
         }
-
 
         String node_name = System.getProperty("node.name");
         if (node_name == null || node_name.equals("")) {
@@ -68,9 +64,7 @@ public class App {
             System.setProperty("node.name", node_name);
         }
 
-
         final KevoreeBootStrap kb = new KevoreeBootStrap();
-
         Runtime.getRuntime().addShutdownHook(new Thread("Shutdown Hook") {
 
             public void run() {
@@ -81,16 +75,13 @@ public class App {
                 }
             }
         });
-
         kb.start();
     }
 
     public static void main(String[] args) throws Exception {
-
         Long startTime = System.currentTimeMillis();
         App app = new App();
         app.start();
-        logger.info("Kevoree runtime boot time {} ms",(System.currentTimeMillis()-startTime));
-
+        logger.info("Kevoree runtime boot time {} ms", (System.currentTimeMillis() - startTime));
     }
 }

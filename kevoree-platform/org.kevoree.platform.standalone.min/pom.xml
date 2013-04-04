@@ -22,22 +22,6 @@
             <groupId>org.kevoree.platform</groupId>
             <artifactId>org.kevoree.platform.base</artifactId>
             <version>${kevoree.version}</version>
-            <!--
-            <exclusions>
-                <exclusion>
-                    <groupId>org.kevoree.tools</groupId>
-                    <artifactId>org.kevoree.tools.aether.framework</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>ch.qos.logback</groupId>
-                    <artifactId>logback-core</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>ch.qos.logback</groupId>
-                    <artifactId>logback-classic</artifactId>
-                </exclusion>
-            </exclusions>
-            -->
         </dependency>
     </dependencies>
 
