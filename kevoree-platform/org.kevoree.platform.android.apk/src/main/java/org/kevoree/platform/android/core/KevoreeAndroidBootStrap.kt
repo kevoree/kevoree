@@ -39,21 +39,20 @@
  */
 package org.kevoree.platform.android.core
 
-import org.slf4j.LoggerFactory
-import org.kevoree.kcl.KevoreeJarClassLoader
-import java.util.jar.JarFile
-import org.kevoree.framework.KevoreeXmiHelper
 import android.app.Activity
+import android.content.pm.ActivityInfo
+import java.util.jar.JarFile
+import org.kevoree.ContainerRoot
+import org.kevoree.android.framework.helper.UIServiceHandler
 import org.kevoree.api.Bootstraper
 import org.kevoree.api.service.core.logging.KevoreeLogService
-import org.slf4j.impl.StaticLoggerBinder
-import android.content.pm.ActivityInfo
-import org.kevoree.android.framework.helper.UIServiceHandler
-import org.kevoree.impl.DefaultKevoreeFactory
-import org.kevoree.core.impl.KevoreeCoreBean
-import org.kevoree.api.service.core.script.KevScriptEngineFactory
 import org.kevoree.api.service.core.script.KevScriptEngine
-import org.kevoree.ContainerRoot
+import org.kevoree.api.service.core.script.KevScriptEngineFactory
+import org.kevoree.core.impl.KevoreeCoreBean
+import org.kevoree.impl.DefaultKevoreeFactory
+import org.kevoree.kcl.KevoreeJarClassLoader
+import org.slf4j.LoggerFactory
+import org.slf4j.impl.StaticLoggerBinder
 
 /**
  * Created with IntelliJ IDEA.
@@ -126,7 +125,6 @@ class KevoreeAndroidBootStrap {
             dummyKCL.lockLinks()
 
 
-            bootstraper.registerManuallyDeployUnit("scala-library", "org.scala-lang", "2.9.2", dummyKCL)
             bootstraper.registerManuallyDeployUnit("cglib-nodep", "cglib", "2.2.2", dummyKCL)
             bootstraper.registerManuallyDeployUnit("slf4j-api", "org.slf4j", "1.6.4", dummyKCL)
             bootstraper.registerManuallyDeployUnit("slf4j-api", "org.slf4j", "1.6.2", dummyKCL)
@@ -135,7 +133,7 @@ class KevoreeAndroidBootStrap {
             bootstraper.registerManuallyDeployUnit("jgrapht-jdk1.5", "org.jgrapht", "0.7.3", dummyKCL)
             bootstraper.registerManuallyDeployUnit("kotlin-runtime", "org.jetbrains.kotlin", "0.5.162", dummyKCL);
             bootstraper.registerManuallyDeployUnit("kotlin-stdlib", "org.jetbrains.kotlin", "0.5.162", dummyKCL);
-
+            bootstraper.registerManuallyDeployUnit("jfilter-library", "fr.inria.jfilter", "1.3", dummyKCL);
 
             bootstraper.registerManuallyDeployUnit("org.kevoree.adaptation.model", "org.kevoree", factory.getVersion(), dummyKCL)
             bootstraper.registerManuallyDeployUnit("org.kevoree.api", "org.kevoree", factory.getVersion(), dummyKCL)
