@@ -69,13 +69,12 @@
         </plugins>
     </build>
     <dependencies>
-
         <dependency>
             <artifactId>scala-library</artifactId>
             <groupId>org.scala-lang</groupId>
             <version>${scala.version}</version>
+            <scope>test</scope>
         </dependency>
-
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>org.kevoree.api</artifactId>

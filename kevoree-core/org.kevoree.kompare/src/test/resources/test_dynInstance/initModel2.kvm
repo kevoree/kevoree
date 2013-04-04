@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ContainerRoot xmlns:kevoree="http://kevoree/1.0" xmlns:xsi="http://wwww.w3.org/2001/XMLSchema-instance" xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xsi:type="kevoree:ContainerRoot">
-<nodes xsi:type="kevoree:ContainerNode" name="node1" metaData="x=381,y=32" typeDefinition="//@typeDefinitions.15">
+<nodes xsi:type="kevoree:ContainerNode" name="node1" metaData="x=364,y=38" typeDefinition="//@typeDefinitions.15">
 <dictionary>
 <values xsi:type="kevoree:DictionaryValue" value="DEBUG" attribute="//@typeDefinitions.15/@dictionaryType/@attributes.1">
 </values>
@@ -12,17 +12,17 @@
 </required>
 </components>
 </nodes>
-<nodes xsi:type="kevoree:ContainerNode" name="node0" metaData="x=50,y=205" typeDefinition="//@typeDefinitions.15">
+<nodes xsi:type="kevoree:ContainerNode" name="node0" metaData="x=295,y=227" typeDefinition="//@typeDefinitions.15">
 <dictionary>
-<values xsi:type="kevoree:DictionaryValue" value="DEBUG" attribute="//@typeDefinitions.15/@dictionaryType/@attributes.1">
-</values>
 <values xsi:type="kevoree:DictionaryValue" value="DEBUG" attribute="//@typeDefinitions.15/@dictionaryType/@attributes.0">
+</values>
+<values xsi:type="kevoree:DictionaryValue" value="DEBUG" attribute="//@typeDefinitions.15/@dictionaryType/@attributes.1">
 </values>
 </dictionary>
 <components xsi:type="kevoree:ComponentInstance" name="console0" typeDefinition="//@typeDefinitions.13">
 <provided xsi:type="kevoree:Port" portTypeRef="//@typeDefinitions.13/@provided.0">
 </provided>
-<required xsi:type="kevoree:Port" bindings="//@mBindings.1" portTypeRef="//@typeDefinitions.13/@required.0">
+<required xsi:type="kevoree:Port" portTypeRef="//@typeDefinitions.13/@required.0">
 </required>
 </components>
 </nodes>
@@ -414,6 +414,8 @@
 </typeDefinitions>
 <typeDefinitions xsi:type="kevoree:MessagePortType" name="org.kevoree.framework.MessagePort" synchrone="false">
 </typeDefinitions>
+<repositories xsi:type="kevoree:Repository" url="http://repo1.maven.org/maven2">
+</repositories>
 <repositories xsi:type="kevoree:Repository" url="http://maven.kevoree.org/release">
 </repositories>
 <repositories xsi:type="kevoree:Repository" url="http://repo.maven.apache.org/maven2">
@@ -430,21 +432,15 @@
 </libraries>
 <libraries xsi:type="kevoree:TypeLibrary" name="JavaSE" subTypes="//@typeDefinitions.0 //@typeDefinitions.1 //@typeDefinitions.4 //@typeDefinitions.5 //@typeDefinitions.6 //@typeDefinitions.7 //@typeDefinitions.18 //@typeDefinitions.19 //@typeDefinitions.20 //@typeDefinitions.21 //@typeDefinitions.9 //@typeDefinitions.10 //@typeDefinitions.23 //@typeDefinitions.22 //@typeDefinitions.11 //@typeDefinitions.24 //@typeDefinitions.13 //@typeDefinitions.25 //@typeDefinitions.26 //@typeDefinitions.14 //@typeDefinitions.27 //@typeDefinitions.15 //@typeDefinitions.28 //@typeDefinitions.16">
 </libraries>
-<hubs xsi:type="kevoree:Channel" name="WebSocket462" metaData="x=405,y=174" typeDefinition="//@typeDefinitions.25" bindings="//@mBindings.0 //@mBindings.1">
+<hubs xsi:type="kevoree:Channel" name="WebSocket152" metaData="x=629,y=179" typeDefinition="//@typeDefinitions.25" bindings="//@mBindings.0">
 <dictionary>
 <values xsi:type="kevoree:DictionaryValue" value="42" attribute="//@typeDefinitions.25/@dictionaryType/@attributes.2">
-</values>
-<values xsi:type="kevoree:DictionaryValue" value="9004" attribute="//@typeDefinitions.25/@dictionaryType/@attributes.0" targetNode="//@nodes.1">
-</values>
-<values xsi:type="kevoree:DictionaryValue" value="9006" attribute="//@typeDefinitions.25/@dictionaryType/@attributes.0" targetNode="//@nodes.0">
 </values>
 </dictionary>
 </hubs>
 <mBindings xsi:type="kevoree:MBinding">
 </mBindings>
-<mBindings xsi:type="kevoree:MBinding">
-</mBindings>
-<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.corelibrary.javase" unitName="org.kevoree.library.javase.javaseNode" version="2.0.0-SNAPSHOT" hashcode="201304031720415" type="jar" requiredLibs="//@deployUnits.1 //@deployUnits.2 //@deployUnits.3 //@deployUnits.4 //@deployUnits.5 //@deployUnits.6 //@deployUnits.7 //@deployUnits.8 //@deployUnits.9 //@deployUnits.10 //@deployUnits.11 //@deployUnits.12 //@deployUnits.13 //@deployUnits.14 //@deployUnits.15" targetNodeType="//@typeDefinitions.15">
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.corelibrary.javase" unitName="org.kevoree.library.javase.javaseNode" version="2.0.0-SNAPSHOT" hashcode="201304031844345" type="jar" requiredLibs="//@deployUnits.1 //@deployUnits.2 //@deployUnits.3 //@deployUnits.4 //@deployUnits.5 //@deployUnits.6 //@deployUnits.7 //@deployUnits.8 //@deployUnits.9 //@deployUnits.10 //@deployUnits.11 //@deployUnits.12 //@deployUnits.13 //@deployUnits.14 //@deployUnits.15" targetNodeType="//@typeDefinitions.15">
 </deployUnits>
 <deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree" unitName="org.kevoree.kcl" version="2.0.0-SNAPSHOT" type="jar" targetNodeType="//@typeDefinitions.15">
 </deployUnits>
@@ -498,7 +494,7 @@
 </deployUnits>
 <deployUnits xsi:type="kevoree:DeployUnit" groupName="com.google.protobuf" unitName="protobuf-java" version="2.5.0" type="jar" targetNodeType="//@typeDefinitions.15">
 </deployUnits>
-<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.corelibrary.javase" unitName="org.kevoree.library.javase.webSocketGrp" version="2.0.0-SNAPSHOT" hashcode="201304031723318" type="jar" requiredLibs="//@deployUnits.24 //@deployUnits.10 //@deployUnits.5 //@deployUnits.8 //@deployUnits.9 //@deployUnits.1 //@deployUnits.6 //@deployUnits.7 //@deployUnits.4 //@deployUnits.2 //@deployUnits.12 //@deployUnits.13 //@deployUnits.25 //@deployUnits.23 //@deployUnits.26 //@deployUnits.14 //@deployUnits.15 //@deployUnits.28 //@deployUnits.29 //@deployUnits.30 //@deployUnits.31" targetNodeType="//@typeDefinitions.15">
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.corelibrary.javase" unitName="org.kevoree.library.javase.webSocketGrp" version="2.0.0-SNAPSHOT" hashcode="201304031842922" type="jar" requiredLibs="//@deployUnits.24 //@deployUnits.10 //@deployUnits.5 //@deployUnits.8 //@deployUnits.9 //@deployUnits.1 //@deployUnits.6 //@deployUnits.7 //@deployUnits.4 //@deployUnits.2 //@deployUnits.12 //@deployUnits.13 //@deployUnits.25 //@deployUnits.23 //@deployUnits.26 //@deployUnits.14 //@deployUnits.15 //@deployUnits.28 //@deployUnits.29 //@deployUnits.30 //@deployUnits.31" targetNodeType="//@typeDefinitions.15">
 </deployUnits>
 <deployUnits xsi:type="kevoree:DeployUnit" groupName="org.webbitserver" unitName="webbit" version="0.4.14" type="jar" targetNodeType="//@typeDefinitions.15">
 </deployUnits>
@@ -510,11 +506,7 @@
 </deployUnits>
 <nodeNetworks xsi:type="kevoree:NodeNetwork" initBy="//@nodes.1" target="//@nodes.1">
 <link xsi:type="kevoree:NodeLink" networkType="en0" estimatedRate="100">
-<networkProperties xsi:type="kevoree:NetworkProperty" name="KEVOREE.remote.node.ip" value="152.81.64.203" lastCheck="1365003415996">
-</networkProperties>
-</link>
-<link xsi:type="kevoree:NodeLink" networkType="tun0" estimatedRate="100">
-<networkProperties xsi:type="kevoree:NetworkProperty" name="KEVOREE.remote.node.ip" value="10.1.100.6" lastCheck="1365003415997">
+<networkProperties xsi:type="kevoree:NetworkProperty" name="KEVOREE.remote.node.ip" value="10.65.3.19" lastCheck="1365006998622">
 </networkProperties>
 </link>
 </nodeNetworks>
