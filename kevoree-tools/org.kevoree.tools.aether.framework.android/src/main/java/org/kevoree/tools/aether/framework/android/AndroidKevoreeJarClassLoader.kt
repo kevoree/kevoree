@@ -49,25 +49,8 @@ class AndroidKevoreeJarClassLoader(gkey: String, val ctx: android.content.Contex
 
     val logger = LoggerFactory.getLogger(this.javaClass)!!
 
+    private var subDexClassLoader = ArrayList<KevoreeDexClassLoader>()
     private var odexPaths = ArrayList<File>()
-
-    val selfPointer = this
-
-    public override fun loadClassBytes(className: String): ByteArray {
-        return "dummy".getBytes()
-    }
-
-    override fun setLazyLoad(lazyload: Boolean) {
-        super.setLazyLoad(true)
-    }
-
-    private class KevoreeDexClassLoader(c1: String, c2: String, c3: String?, val jarKCL: KevoreeJarClassLoader) {
-
-        val dexFile = DexFile.loadDex(c1, c2, 0)
-        fun tryLoadClass(className: String?): Class<out Any?>? {
-            return dexFile!!.loadClass(className, jarKCL)
-        }
-    }
 
 
     AndroidKevoreeJarClassLoader(){
@@ -93,8 +76,13 @@ class AndroidKevoreeJarClassLoader(gkey: String, val ctx: android.content.Contex
     }
 
 
+    public override fun loadClassBytes(className: String): ByteArray {
+        return "dummy".getBytes()
+    }
 
-    private var subDexClassLoader = ArrayList<KevoreeDexClassLoader>()
+    override fun setLazyLoad(lazyload: Boolean) {
+        super.setLazyLoad(true)
+    }
 
     fun declareLocalDexClassLoader(dexStream: InputStream?, idName: String) {
         logger.debug("Begin declare subClassLoader v2 " + idName)
@@ -103,14 +91,18 @@ class AndroidKevoreeJarClassLoader(gkey: String, val ctx: android.content.Contex
         } else {
             idName.replaceAll(File.separator, "_").replaceAll(":", "_")
         })
+
         val dexOptStoragePath = ctx.getDir("kevCache", Context.MODE_WORLD_WRITEABLE)
-        val outDex = File(dexOptStoragePath, cleanName+".dex")
-        odexPaths.add(dexOptStoragePath!!)
         dexOptStoragePath!!.mkdirs()
+        logger.debug("DEX Storage Path " + dexOptStoragePath)
+
+        val outDex = File(dexOptStoragePath, cleanName+".dex")
+        logger.debug("Adding local DEX  " + outDex)
+        odexPaths.add(dexOptStoragePath!!)
 
         var newDexCL: KevoreeDexClassLoader? = null
         if (idName.contains("classes.dex")) {
-            newDexCL = KevoreeDexClassLoader(getLoadedURLs().get(0).getPath()!!, outDex.getAbsolutePath(), null, this)
+            newDexCL = KevoreeDexClassLoader(getLoadedURLs().get(0).getPath()!!, outDex.getAbsolutePath(), this)
         } else {
             val dexInternalStoragePath = File(ctx.getDir("dex", Context.MODE_WORLD_WRITEABLE), cleanName)
             dexInternalStoragePath.deleteOnExit()
@@ -128,7 +120,7 @@ class AndroidKevoreeJarClassLoader(gkey: String, val ctx: android.content.Contex
                 dexWriter.flush()
                 dexWriter.close()
             }
-            newDexCL = KevoreeDexClassLoader(dexInternalStoragePath.getAbsolutePath(), outDex.getAbsolutePath(), null, this)
+            newDexCL = KevoreeDexClassLoader(dexInternalStoragePath.getAbsolutePath(), outDex.getAbsolutePath(), this)
         }
         subDexClassLoader.add(newDexCL!!)
     }
@@ -136,12 +128,15 @@ class AndroidKevoreeJarClassLoader(gkey: String, val ctx: android.content.Contex
 
     override fun internal_defineClass(className: String, bytes: ByteArray): Class<out Any?>? {
         for(subCL in subDexClassLoader) {
-            try {
+            try
+            {
                 val classLoaded = subCL.tryLoadClass(className)
-                if (classLoaded != null) {
+                if (classLoaded != null)
+                {
                     return classLoaded
                 }
             } catch(nf : ClassNotFoundException) {
+                logger.error("internal_defineClass ",nf)
             }
         }
         return null
@@ -158,7 +153,6 @@ class AndroidKevoreeJarClassLoader(gkey: String, val ctx: android.content.Contex
 
 
     fun clearAll(f: File) {
-
         deleteFile(f)
     }
 
