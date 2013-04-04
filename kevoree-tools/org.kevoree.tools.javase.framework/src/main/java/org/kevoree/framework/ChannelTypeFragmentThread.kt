@@ -222,7 +222,7 @@ class ChannelTypeFragmentThread(val target: AbstractChannelFragment, val _nodeNa
                 //proxy.startC()
                 val met = resolver.resolve(javaClass<RemoteBindingUpdated>())
                 if (met != null) {
-                    met.invoke(this)
+                    met.invoke(target)
                 }
                 true
             }
@@ -234,7 +234,7 @@ class ChannelTypeFragmentThread(val target: AbstractChannelFragment, val _nodeNa
                     fragementBinded.remove(createPortKey(o))
                     val met = resolver.resolve(javaClass<RemoteBindingUpdated>())
                     if (met != null) {
-                        met.invoke(this)
+                        met.invoke(target)
                     }
                     true
                 } else {
@@ -246,7 +246,7 @@ class ChannelTypeFragmentThread(val target: AbstractChannelFragment, val _nodeNa
                 portsBinded.put(createPortKey(o), (o as PortBindMessage).proxy)
                 val met = resolver.resolve(javaClass<LocalBindingUpdated>())
                 if (met != null) {
-                    met.invoke(this)
+                    met.invoke(target)
                 }
                 true
             }
@@ -254,7 +254,7 @@ class ChannelTypeFragmentThread(val target: AbstractChannelFragment, val _nodeNa
                 portsBinded.remove(createPortKey(o))
                 val met = resolver.resolve(javaClass<LocalBindingUpdated>())
                 if (met != null) {
-                    met.invoke(this)
+                    met.invoke(target)
                 }
                 true
             }

@@ -36,7 +36,7 @@ public class MethodAnnotationResolver {
     }
 
     private Method resolve(Class annotationClass, Class baseClazz) {
-        Method met = methods.get(methods);
+        Method met = methods.get(annotationClass);
         if (met == null) {
             for (Method metLoop : baseClazz.getDeclaredMethods()) {
                 if (metLoop.getAnnotation(annotationClass) != null) {
