@@ -1,0 +1,111 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>org.kevoree.tools.marShell.pack</artifactId>
+    <packaging>jar</packaging>
+    <name>Kevoree :: Tools :: M@R Shell :: Pack</name>
+    <version>2.0.0-SNAPSHOT</version>
+
+    <parent>
+        <artifactId>org.kevoree.tools.root</artifactId>
+        <groupId>org.kevoree.tools</groupId>
+        <version>2.0.0-SNAPSHOT</version>
+        <relativePath>../org.kevoree.tools.root/pom.xml</relativePath>
+    </parent>
+
+    <properties>
+        <kevoree.version>${project.version}</kevoree.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.kevoree.tools</groupId>
+            <artifactId>org.kevoree.tools.marShell</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
+    </dependencies>
+
+
+    <profiles>
+        <profile>
+            <id>org.kevoree.tools.marshell.mac</id>
+            <activation>
+                <os>
+                    <family>mac</family>
+                </os>
+            </activation>
+            <properties>
+                <java.lib.location>&lt;java.home&gt;/../Classes/classes.jar</java.lib.location>
+            </properties>
+        </profile>
+        <profile>
+            <id>org.kevoree.tools.marshell.other</id>
+            <activation>
+                <os>
+                    <family>!mac</family>
+                </os>
+            </activation>
+            <properties>
+                <java.lib.location>${java.home}/lib/rt.jar</java.lib.location>
+            </properties>
+        </profile>
+    </profiles>
+
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>com.github.wvengen</groupId>
+                <artifactId>proguard-maven-plugin</artifactId>
+                <version>2.0.6</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>proguard</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <obfuscate>false</obfuscate>
+                    <options>
+                        <option>-dontskipnonpubliclibraryclassmembers</option>
+                        <option>-ignorewarnings</option>
+                        <option>-keep public class * extends org.kevoree.tools.marShell.*</option>
+                        <option>
+                            -dontwarn scala.**
+                            -keepclassmembers class * {
+                            ** MODULE$;
+                            }
+                            -keep class org.kevoree.tools.marShell.** { *; }
+                        </option>
+                    </options>
+                    <assembly>
+                        <inclusions>
+                            <inclusion>
+                                <groupId>org.scala-lang</groupId>
+                                <artifactId>scala-library</artifactId>
+                            </inclusion>
+							<inclusion>
+					            <groupId>org.kevoree.tools</groupId>
+					            <artifactId>org.kevoree.tools.marShell</artifactId>
+							</inclusion>
+                        </inclusions>
+                    </assembly>
+                    <libs>
+                        <lib>${java.lib.location}</lib>
+                    </libs>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>net.sf.proguard</groupId>
+                        <artifactId>proguard-base</artifactId>
+                        <version>4.9</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

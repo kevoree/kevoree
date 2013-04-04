@@ -102,7 +102,7 @@ public class KevoreeBootStrap {
 			Class selfRegisteredClazz = bootstraper.getClass();
 			jcl.lockLinks();
 
-			File fileMarShell = bootstraper.resolveKevoreeArtifact("org.kevoree.tools.marShell", "org.kevoree.tools", factory.getVersion());
+			File fileMarShell = bootstraper.resolveKevoreeArtifact("org.kevoree.tools.marShell.pack", "org.kevoree.tools", factory.getVersion());
 			KevoreeJarClassLoader scriptEngineKCL = new KevoreeJarClassLoader();
 			scriptEngineKCL.addSubClassLoader(jcl);
 			scriptEngineKCL.add(fileMarShell.getAbsolutePath());
@@ -225,7 +225,7 @@ public class KevoreeBootStrap {
 
                             try {
                                 File filebootmodel = new File(bootstrapModelPath);
-                               // bootstrapModel= bootstrapHelper.generateFromKevS(filebootmodel,kevsfactory.createKevScriptEngine(factory.createContainerRoot()));
+                                bootstrapModel= bootstrapHelper.generateFromKevS(filebootmodel,kevsfactory.createKevScriptEngine(factory.createContainerRoot()));
                             } catch(final Exception e) {
                                 try {
                                     bootstrapModel = KevoreeXmiHelper.$instance.load(bootstrapModelPath);
@@ -263,7 +263,7 @@ public class KevoreeBootStrap {
 					logger.error("Bootstrap failed", e);
 				}
 			} else {
-				logger.error("Can't bootstrap nodeType");
+				logger.error("Can't bootstrap nodeType, empty model "+bootstrapModel);
 			}
 
 			KevoreeLogLevel coreLogLevel = KevoreeLogLevel.INFO;
