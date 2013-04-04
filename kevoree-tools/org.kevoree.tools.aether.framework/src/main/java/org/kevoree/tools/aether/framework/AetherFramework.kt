@@ -13,7 +13,6 @@ import org.sonatype.aether.resolution.ArtifactRequest
 import java.util
 import org.slf4j.Logger
 import java.util.ArrayList
-import scala.util.matching.Regex
 import java.util.HashSet
 
 
