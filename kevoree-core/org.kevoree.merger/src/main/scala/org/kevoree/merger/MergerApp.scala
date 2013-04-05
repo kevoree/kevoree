@@ -55,7 +55,7 @@ object MergerApp {
     val emtpyModel = kevoreeFactory.createContainerRoot
 
     //val model2 = KevoreeXmiHelper.$instance.load("/Users/duke/Downloads/models/javaModelError.kev")
-    val model1 = KevoreeXmiHelper.$instance.load("/Users/duke/Documents/dev/dukeboard/kevoree-kotlin/kevoree-corelibrary/javase/org.kevoree.library.javase.javaseNode/target/classes/KEV-INF/lib.kev")
+    val model1 = KevoreeXmiHelper.instance$.load("/Users/duke/Documents/dev/dukeboard/kevoree-kotlin/kevoree-corelibrary/javase/org.kevoree.library.javase.javaseNode/target/classes/KEV-INF/lib.kev")
 //    val model3 = KevoreeXmiHelper.load("/home/edaubert/workspace/kevoree/kevoree-corelibrary/android/org.kevoree.library.android.nanohttp/target/generated-sources/kevoree/KEV-INF/lib.kev.debug")
 
 
@@ -85,7 +85,7 @@ object MergerApp {
 
 
 
-    println(KevoreeXmiHelper.$instance.saveToString(emtpyModel,true))
+    println(KevoreeXmiHelper.instance$.saveToString(emtpyModel,true))
 //    println(KevoreeXmiHelper.saveToString(model2,true))
 //    println(KevoreeXmiHelper.saveToString(model3,true))
 //    println(KevoreeXmiHelper.saveToString(emtpyModel,true))

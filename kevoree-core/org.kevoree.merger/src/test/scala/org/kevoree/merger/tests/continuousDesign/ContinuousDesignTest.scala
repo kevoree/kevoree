@@ -69,7 +69,7 @@ class ContinuousDesignTest extends MergerTestSuiteHelper {
      val mergedModel = component
        .merge(model("continuousdesign/mergeOptionalPort.kev"), model("continuousdesign/mergeOptionalPort1.kev"))
 
-     println(KevoreeXmiHelper.$instance.saveToString(mergedModel, true))
+     println(KevoreeXmiHelper.instance$.saveToString(mergedModel, true))
 
      /*mergedModel.getTypeDefinitions.find(tp => tp.getName == "FakeConsole") match {
        case None => fail("FakeConsole doesn't exist")
