@@ -27,7 +27,6 @@
 package org.kevoree.platform.standalone.gui;
 
 import org.kevoree.ContainerRoot;
-import org.kevoree.KevoreeFactory;
 import org.kevoree.api.Bootstraper;
 import org.kevoree.impl.DefaultKevoreeFactory;
 import org.kevoree.kcl.KevoreeJarClassLoader;
@@ -50,17 +49,7 @@ public class App {
 
     protected void start() {
 
-
-        // System.setProperty("kevoree.log.level", "DEBUG");
-
-        // System.setProperty("actors.enableForkJoin", "false");
-        DefaultSystem.saveSystemFlux();
-
-        // System.setProperty("actors.corePoolSize", "10");
-        //  System.setProperty("actors.maxPoolSize", "256");
-        //   System.setProperty("actors.enableForkJoin", "false");
-
-
+        DefaultSystem.instance$.saveSystemFlux();
         try {
             File cacheFolder = createTempDirectory();
             cacheFolder.deleteOnExit();
@@ -80,11 +69,6 @@ public class App {
 
                 KevoreeJarClassLoader temp_cl = new KevoreeJarClassLoader();
                 temp_cl.add(KevoreeBootStrap.class.getClassLoader().getResourceAsStream("org.kevoree.tools.aether.framework-" + new DefaultKevoreeFactory().getVersion() + ".pack.jar"));
-                //JclObjectFactory factory = JclObjectFactory.getInstance();
-
-                //  System.out.println("org.kevoree.tools.aether.framework-" + KevoreeFactory.getVersion() + ".pack.jar");
-                //  System.out.println(KevoreeBootStrap.class.getClassLoader().getResourceAsStream("org.kevoree.tools.aether.framework-" + KevoreeFactory.getVersion() + ".pack.jar"));
-
 
                 Class clazz = temp_cl.loadClass("org.kevoree.tools.aether.framework.NodeTypeBootstrapHelper");
                 org.kevoree.api.Bootstraper bootstraper = (Bootstraper) clazz.newInstance();
@@ -108,6 +92,13 @@ public class App {
     }
 
     public static void main(String[] args) throws Exception {
+
+        String node_name = System.getProperty("node.name");
+        if (node_name == null || node_name.equals("")) {
+            node_name = "node0";
+            System.setProperty("node.name", node_name);
+        }
+
         if(System.getProperty("node.headless") != null && System.getProperty("node.headless").equals("true")){
             org.kevoree.platform.standalone.App.main(args);
         } else {

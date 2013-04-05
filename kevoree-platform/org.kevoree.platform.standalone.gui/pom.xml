@@ -23,258 +23,95 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.kevoree</groupId>
-            <artifactId>org.kevoree.api</artifactId>
-            <version>${kevoree.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.kevoree</groupId>
-            <artifactId>org.kevoree.framework</artifactId>
-            <version>${kevoree.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.kevoree</groupId>
-            <artifactId>org.kevoree.kompare</artifactId>
-            <version>${kevoree.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.kevoree</groupId>
-            <artifactId>org.kevoree.core</artifactId>
-            <version>${kevoree.version}</version>
-        </dependency>
-        <dependency>
             <groupId>org.kevoree.extra</groupId>
             <artifactId>org.kevoree.extra.macwidgets</artifactId>
             <version>0.9.6</version>
-        </dependency>
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-core</artifactId>
-            <version>1.0.0</version>
-        </dependency>
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-            <version>1.0.0</version>
         </dependency>
         <dependency>
             <groupId>org.kevoree.platform</groupId>
             <artifactId>org.kevoree.platform.standalone</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
-
     </dependencies>
-    <profiles>
-        <profile>
-            <id>org.kevoree.tools.ui.editor.standalone.mac</id>
-            <activation>
-                <os>
-                    <family>mac</family>
-                </os>
-            </activation>
-            <properties>
-                <java.lib.location>&lt;java.home&gt;/../Classes/classes.jar</java.lib.location>
-            </properties>
-        </profile>
-        <profile>
-            <id>org.kevoree.tools.ui.editor.standalone.other</id>
-            <activation>
-                <os>
-                    <family>!mac</family>
-                </os>
-            </activation>
-            <properties>
-                <java.lib.location>${java.home}/lib/rt.jar</java.lib.location>
-            </properties>
-        </profile>
-    </profiles>
 
     <build>
         <plugins>
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>1.1.1</version>
+                <artifactId>kotlin-maven-plugin</artifactId>
+                <groupId>org.jetbrains.kotlin</groupId>
+                <version>${kotlin.version}</version>
+                <configuration/>
                 <executions>
                     <execution>
+                        <id>compile</id>
+                        <phase>process-sources</phase>
                         <goals>
-                            <goal>java</goal>
+                            <goal>compile</goal>
+                        </goals>
+                    </execution>
+
+                    <execution>
+                        <id>test-compile</id>
+                        <phase>process-test-sources</phase>
+                        <goals>
+                            <goal>test-compile</goal>
                         </goals>
                     </execution>
                 </executions>
-                <configuration>
-                    <mainClass>org.kevoree.platform.standalone.gui.App</mainClass>
-                </configuration>
             </plugin>
 
-            <plugin>
-                <groupId>com.pyx4me</groupId>
-                <artifactId>proguard-maven-plugin</artifactId>
-                <version>2.0.4</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>proguard</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <dependencies>
-                    <dependency>
-                        <groupId>net.sf.proguard</groupId>
-                        <artifactId>proguard</artifactId>
-                        <version>4.7-BETA</version>
-                        <scope>runtime</scope>
-                    </dependency>
-                </dependencies>
-                <configuration>
-                    <injar>${project.build.finalName}.jar</injar>
-                    <outjar>${project.build.finalName}-small.jar</outjar>
-                    <obfuscate>false</obfuscate>
-                    <maxMemory>1024m</maxMemory>
-                    <proguardVersion>4.4</proguardVersion>
-                    <options>
 
-                        <!--  <option>-dontwarn **$$anonfun$*</option>
-                       <option>-dontwarn scala.collection.immutable.RedBlack$Empty</option>
-                       <option>-dontwarn scala.tools.**,plugintemplate.**</option>-->
-
-                        <option>-keepattributes **</option>
-                        <option>
-                            -keepclasseswithmembers public class * {
-                            public static void main(java.lang.String[]);
-                            }
-
-                            -keep class * implements org.xml.sax.EntityResolver
-
-                            -keepclassmembers class * {
-                            ** MODULE$;
-                            }
-
-                            -keepclassmembernames class scala.concurrent.forkjoin.ForkJoinPool {
-                            long eventCount;
-                            int workerCounts;
-                            int runControl;
-                            scala.concurrent.forkjoin.ForkJoinPool$WaitQueueNode syncStack;
-                            scala.concurrent.forkjoin.ForkJoinPool$WaitQueueNode spareStack;
-                            }
-
-                            -keepclassmembernames class scala.concurrent.forkjoin.ForkJoinWorkerThread {
-                            int base;
-                            int sp;
-                            int runState;
-                            }
-
-                            -keepclassmembernames class scala.concurrent.forkjoin.ForkJoinTask {
-                            int status;
-                            }
-
-                            -keepclassmembernames class scala.concurrent.forkjoin.LinkedTransferQueue {
-                            scala.concurrent.forkjoin.LinkedTransferQueue$PaddedAtomicReference head;
-                            scala.concurrent.forkjoin.LinkedTransferQueue$PaddedAtomicReference tail;
-                            scala.concurrent.forkjoin.LinkedTransferQueue$PaddedAtomicReference cleanMe;
-                            }
-                        </option>
-
-                        <option>-keepnames class * implements java.io.Serializable</option>
-                        <option>-dontnote</option>
-
-                        <!--  <option>-keepattributes *Annotation*</option>-->
-
-                        <!--
-                        <option>-keep class org.restlet.**</option>
-                        -->
-                        <option>-keep class org.slf4j.** { *; }</option>
-                        <option>-keep class jet.** { *; }</option>
-                        <option>-keep class kotlin.** { *; }</option>
-                        <option>-keep class fr.inria.** { *; }</option>
-                        <option>-keep class org.logback.** { *; }</option> <!-- TODO check with François -->
-                        <option>-keep class scala.runtime.** { *; }</option>
-                        <option>-keep class scala.Tuple2 { *; }</option>
-                        <option>-keep class scala.** { *; }</option>
-                        <option>-keep class scala.collection.immutable.List { *; }</option>
-                        <option>-keep class ch.qos.logback.core.** { * ; }</option>
-                        <option>-keep class org.kevoreeAdaptation.** { *; }</option>
-                        <option>-keep class org.kevoree.annotation.** { *; }</option>
-                        <option>-keep class org.kevoree.api.** { *; }</option>
-                        <option>-keep class org.kevoree.framework.** { *; }</option>
-                        <option>-keep class org.kevoree.** { *; }</option>
-                        <option>-keep class org.kevoree.tools.aether.framework.** { *; }</option>
-                        <option>-keepattributes *Annotation*</option>
-                        <option>-keepattributes **</option>
-                        <option>-keep class org.apache.commons.logging.** { *; }</option>
-                        <option>-dontskipnonpubliclibraryclasses</option>
-                        <option>-dontskipnonpubliclibraryclassmembers</option>
-                        <option>-dontoptimize</option>
-                        <option>-dontobfuscate</option>
-                        <option>-keepattributes
-                        Exceptions,InnerClasses,Signature,Deprecated,SourceFile,LineNumberTable,*Annotation*,EnclosingMethod
-                    </option>
-                        <option>-ignorewarnings</option>
-                        <option>-keep public class org.kevoree.platform.standalone.gui.App { *; }</option>
-                        <option>-keep public class org.kevoree.platform.standalone.App { *; }</option>
-                        <option>-keep class * extends javax.swing.plaf.ComponentUI {
-                            public static javax.swing.plaf.ComponentUI createUI(javax.swing.JComponent);
-                            }
-                        </option>
-
-                        <option>
-                            -keepclassmembers class *{
-                            static final % *;
-                            static final java.lang.String *;
-                            }
-                        </option>
-                        <option>
-                            -keepclassmembers class org.kevoree.framework.**
-                        </option>
-                    </options>
-                    <assembly>
-                        <inclusions>
-                            <inclusion>
-                                <groupId>org.kevoree.platform</groupId>
-                                <artifactId>org.kevoree.platform.standalone</artifactId>
-                                <filter>!META-INF/**,!generated/**</filter>
-                            </inclusion>
-                            <inclusion>
-                                <groupId>org.kevoree.extra</groupId>
-                                <artifactId>org.kevoree.extra.macwidgets</artifactId>
-                            </inclusion>
-                        </inclusions>
-                    </assembly>
-                    <libs>
-                        <lib>${java.lib.location}</lib>
-                    </libs>
-                </configuration>
-            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>2.3.1</version>
-                <configuration>
-                    <archive>
-                        <manifest>
-                            <mainClass>org.kevoree.platform.standalone.gui.App</mainClass>
-                        </manifest>
-                    </archive>
-                </configuration>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>1.4</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
                         <goals>
-                            <goal>sign</goal>
+                            <goal>shade</goal>
                         </goals>
                         <configuration>
-                            <jarPath>${project.build.directory}/${project.build.finalName}-small.jar</jarPath>
-                            <keystore>${project.build.directory}/../../../keystore</keystore>
-                            <alias>kevoree</alias>
-                            <storepass>kevoree</storepass>
-                            <signedjar>${project.build.directory}/${project.build.finalName}.jar</signedjar>
-                            <verify>true</verify>
+                            <filters>
+                                <filter>
+                                    <includes>
+                                        <include>*:*</include>
+                                    </includes>
+                                </filter>
+                                <filter>
+                                    <artifact>*:*</artifact>
+                                    <excludes>
+                                        <exclude>META-INF/*.SF</exclude>
+                                        <exclude>META-INF/*.DSA</exclude>
+                                        <exclude>META-INF/*.RSA</exclude>
+                                        <exclude>META-INF/maven/*.*</exclude>
+                                        <exclude>**/*.kt</exclude>
+                                        <exclude>**/*.java</exclude>
+                                        <exclude>**/*.md</exclude>
+                                        <exclude>**/pom.xml</exclude>
+                                    </excludes>
+                                </filter>
+                            </filters>
+                            <transformers>
+                                <transformer
+                                        implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>org.kevoree.platform.standalone.gui.App</mainClass>
+                                </transformer>
+                            </transformers>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
         </plugins>
     </build>
+
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>jetbrains-release</id>
+            <url>http://repository.jetbrains.com/all</url>
+        </pluginRepository>
+    </pluginRepositories>
+
 
 </project>

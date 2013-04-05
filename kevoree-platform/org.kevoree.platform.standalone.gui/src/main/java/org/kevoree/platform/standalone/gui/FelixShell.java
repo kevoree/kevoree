@@ -28,13 +28,14 @@ package org.kevoree.platform.standalone.gui;
 
 import com.explodingpixels.macwidgets.IAppWidgetFactory;
 import com.explodingpixels.macwidgets.plaf.HudButtonUI;
-import com.explodingpixels.macwidgets.plaf.HudComboBoxUI;
 import com.explodingpixels.macwidgets.plaf.HudTextFieldUI;
-import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.*;
 
 public class FelixShell extends JPanel {
@@ -42,16 +43,11 @@ public class FelixShell extends JPanel {
     private static FelixShell singleton = null;
     public static PrintStream STDwriter = null;
     public static PrintStream ERRwriter = null;
-    //public static PrintStream SSTDwriter = null;
-    // public static PrintStream SSTDwriter = null;
-
     private static String eol = System.getProperty("line.separator");
-
     private JScrollPane scrollShell = null;
-        
 
     public FelixShell() {
-        
+
         final PipedOutputStream pouts = new PipedOutputStream();
         try {
             PipedInputStream pins = new PipedInputStream(pouts);
@@ -59,9 +55,8 @@ public class FelixShell extends JPanel {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        
 
-        
+
         this.setBackground(new Color(57, 57, 57));
         //this.setBackground(Color.BLACK);
 
@@ -69,7 +64,7 @@ public class FelixShell extends JPanel {
         final RichTextArea textArea = new RichTextArea();
         textArea.setBackground(new Color(57, 57, 57));
         textArea.setEditable(false);
-        textArea.setPreferredSize(new Dimension(500, 250));
+        textArea.setPreferredSize(new Dimension(500, 300));
         // textArea.setRows(15);
         // textArea.setColumns(60);
 
@@ -93,9 +88,9 @@ public class FelixShell extends JPanel {
                     try {
                         // textArea.append("==>" + input.getText() + eol);
                         textArea.append(input.getText() + eol, new Color(87, 145, 198), Color.white, true);
-                       // shell.executeCommand(input.getText().trim(), STDwriter, ERRwriter);
-                        pouts.write( (input.getText().trim()+"\n").getBytes());
-                        
+                        // shell.executeCommand(input.getText().trim(), STDwriter, ERRwriter);
+                        pouts.write((input.getText().trim() + "\n").getBytes());
+
                         input.setText("");
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -103,31 +98,11 @@ public class FelixShell extends JPanel {
                 }
             }
         });
-        //  JScrollPane scrollInput = new JScrollPane(input);
-        // IAppWidgetFactory.makeIAppScrollPane(scrollInput);
-        //scrollInput.setOpaque(false);
-        //scrollInput.setBorder(null);
-
-        /*
-        final JComboBox loglevels = new JComboBox(new DefaultComboBoxModel(new String[]{"INFO","WARN", "DEBUG"}));
-        loglevels.setUI(new HudComboBoxUI());
-        loglevels.setFocusable(false);
-        loglevels.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                Logger root = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
-                if(loglevels.getSelectedItem().toString().equals("DEBUG")){root.setLevel(Level.DEBUG);}
-                if(loglevels.getSelectedItem().toString().equals("WARN")){root.setLevel(Level.WARN);}
-                if(loglevels.getSelectedItem().toString().equals("INFO")){root.setLevel(Level.INFO);}
-            }
-        });
-        */
-
         JPanel layoutBOTTOM = new JPanel();
         layoutBOTTOM.setLayout(new BorderLayout());
         layoutBOTTOM.add(input, BorderLayout.CENTER);
         //layoutBOTTOM.add(loglevels, BorderLayout.WEST);
-        JButton clearBt  = new JButton("Clear");
+        JButton clearBt = new JButton("Clear");
         clearBt.setUI(new HudButtonUI());
         layoutBOTTOM.add(clearBt, BorderLayout.WEST);
         clearBt.addMouseListener(new MouseAdapter() {
@@ -138,35 +113,12 @@ public class FelixShell extends JPanel {
                 textArea.revalidate();
             }
         });
-
-
         layoutBOTTOM.setOpaque(false);
         layoutBOTTOM.setBorder(null);
         add(layoutBOTTOM, BorderLayout.SOUTH);
-
-       System.setOut(STDwriter);
-       System.setErr(ERRwriter);
-
-
-
-
+        System.setOut(STDwriter);
+        System.setErr(ERRwriter);
     }
-
-    
-
-/*
-    private class ShellInputStream extends InputStream {
-
-        private
-
-        public void append()
-
-        @Override
-        public int read() throws IOException {
-            return 0;  //To change body of implemented methods use File | Settings | File Templates.
-        }
-    }*/
-    
 
     private class TextOutputStream extends OutputStream {
         private RichTextArea _textArea = null;
@@ -195,8 +147,6 @@ public class FelixShell extends JPanel {
                     }
                 }
             });
-
-
         }
     }
 
