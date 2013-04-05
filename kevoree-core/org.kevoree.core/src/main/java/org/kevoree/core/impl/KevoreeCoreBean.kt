@@ -224,7 +224,7 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
     override fun checkModel(tModel: ContainerRoot?): Boolean {
         val checkResult = modelChecker.check(tModel)
         return if (checkResult != null && checkResult.isEmpty()!!) {
-            modelListeners.preUpdate(model.get(), cloneCurrentModel(tModel))
+            modelListeners.preUpdate(model.get()!!.getModel()!!, cloneCurrentModel(tModel))
         } else {
             false
         }
