@@ -16,9 +16,9 @@ import org.kevoree.TypeDefinition
  */
 class ContainerNodeAspect {
 
-    private fun getTypeAndInherited(t: TypeDefinition): List<TypeDefinition> {
+    private fun getTypeAndInherited(t: TypeDefinition?): List<TypeDefinition> {
         var types = ArrayList<TypeDefinition>()
-        if (t.getSuperTypes() != null) {
+        if (t != null && t.getSuperTypes() != null) {
             for(superT in t.getSuperTypes()){
                 types.addAll(getTypeAndInherited(superT))
             }
@@ -49,7 +49,10 @@ class ContainerNodeAspect {
         /* add group */
         for(group in rootModel.getGroups()){
             if(group.getSubNodes().contains(node)){
-                usedType.addAll(group.getTypeDefinition())
+                val groupTypeDef = group.getTypeDefinition()
+                if(groupTypeDef != null){
+                    usedType.add(groupTypeDef)
+                }
             }
         }
         return usedType.toList()

@@ -29,8 +29,8 @@ public class KevoreePlatformHelperTester {
 
     @Test
     public void testUpdateNodeLinkProp() {
-        ContainerRoot model = KevoreeXmiHelper.$instance.loadStream(KevoreePlatformHelperTester.class.getResourceAsStream("/node0.kev"));
-        KevoreePlatformHelper.$instance.updateNodeLinkProp(model, "sync", "node0", Constants.$instance.getKEVOREE_PLATFORM_REMOTE_NODE_IP(), "192.168.1.1", "LAN", 100);
+        ContainerRoot model = KevoreeXmiHelper.instance$.loadStream(KevoreePlatformHelperTester.class.getResourceAsStream("/node0.kev"));
+        KevoreePlatformHelper.instance$.updateNodeLinkProp(model, "sync", "node0", Constants.instance$.getKEVOREE_PLATFORM_REMOTE_NODE_IP(), "192.168.1.1", "LAN", 100);
 
     }
 }

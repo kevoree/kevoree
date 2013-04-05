@@ -67,8 +67,8 @@ public object KevoreePropertyHelper {
         }
     }
 
-    private fun getDefaultValue (typeDefinition: TypeDefinition, key: String): String? {
-        if (typeDefinition.getDictionaryType() != null) {
+    private fun getDefaultValue (typeDefinition: TypeDefinition?, key: String): String? {
+        if (typeDefinition != null && typeDefinition.getDictionaryType() != null) {
             for (defaultValue in typeDefinition.getDictionaryType()!!.getDefaultValues()) {
                 if (defaultValue.getAttribute()!!.getName() == key) {
                     return defaultValue.getValue()
