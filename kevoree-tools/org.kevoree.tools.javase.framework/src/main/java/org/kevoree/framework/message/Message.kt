@@ -31,7 +31,7 @@ class Message: Serializable {
         return _content
     }
 
-    fun setContent (newContent: Any) {
+    fun setContent (newContent: Any?) {
         _content = newContent
     }
 
@@ -41,7 +41,7 @@ class Message: Serializable {
         return _contentClass
     }
 
-    fun setContentClass (newContentClass: String) {
+    fun setContentClass (newContentClass: String?) {
         _contentClass = newContentClass
     }
 
@@ -51,8 +51,10 @@ class Message: Serializable {
         return _inOut
     }
 
-    fun setInOut (newInOut: Boolean) {
-        _inOut = newInOut
+    fun setInOut (newInOut: Boolean?) {
+        if(newInOut != null){
+            _inOut = newInOut
+        }
     }
 
     var _responseTag = ""
@@ -61,8 +63,10 @@ class Message: Serializable {
         return _responseTag
     }
 
-    fun setResponseTag (newResponseTag: String) {
-        _responseTag = newResponseTag
+    fun setResponseTag (newResponseTag: String?) {
+        if(newResponseTag != null){
+            _responseTag = newResponseTag
+        }
     }
 
     var _timeout: Long = 3000
@@ -71,8 +75,10 @@ class Message: Serializable {
         return _timeout
     }
 
-    fun setTimeout (newTimeout: Long) {
-        _timeout = newTimeout
+    fun setTimeout (newTimeout: Long?) {
+        if(newTimeout != null){
+            _timeout = newTimeout
+        }
     }
 
     var _passedNodes: List<String> = java.util.ArrayList<String>()
@@ -99,8 +105,8 @@ class Message: Serializable {
         val clone = Message()
         clone.setDestNodeName(this.getDestNodeName())
         clone.setDestChannelName(this.getDestChannelName())
-        clone.setContent(this.getContent()!!)
-        clone.setContentClass(this.getContentClass()!!)
+        clone.setContent(this.getContent())
+        clone.setContentClass(this.getContentClass())
         clone.setInOut(this.getInOut())
         clone.setResponseTag(this.getResponseTag())
         clone.setTimeout(this.getTimeout())

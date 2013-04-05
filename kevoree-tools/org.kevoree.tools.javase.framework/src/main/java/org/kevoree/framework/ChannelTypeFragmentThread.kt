@@ -22,6 +22,8 @@ import org.kevoree.api.service.core.script.KevScriptEngineFactory
 
 class ChannelTypeFragmentThread(val target: AbstractChannelFragment, val _nodeName: String, val _name: String, val modelService: KevoreeModelHandlerService,val bootService:Bootstraper,val kevsEngine : KevScriptEngineFactory): KevoreeChannelFragment, KInstance, ChannelFragment {
 
+    val logger = LoggerFactory.getLogger(this.getClass())!!
+
     public fun initChannel(){
         target.delegate = this
     }
@@ -200,12 +202,17 @@ class ChannelTypeFragmentThread(val target: AbstractChannelFragment, val _nodeNa
     }
 
     public fun forward(delegate: KevoreePort?, inmsg: Message?): Any? {
-        val msg = inmsg!!.clone()
-        msg.setDestChannelName(delegate!!.getName()!!)
-        if (msg.getInOut()) {
-            return delegate.sendWait(msg.getContent())
-        } else {
-            delegate.send(msg.getContent())
+        try {
+            val msg = inmsg!!.clone()
+            msg.setDestChannelName(delegate!!.getName()!!)
+            if (msg.getInOut()) {
+                return delegate.sendWait(msg.getContent())
+            } else {
+                delegate.send(msg.getContent())
+                return null
+            }
+        } catch(e:Throwable) {
+            logger.error("Error while sending MSG ",e)
             return null
         }
     }
