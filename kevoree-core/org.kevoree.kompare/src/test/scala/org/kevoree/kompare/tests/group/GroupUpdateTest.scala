@@ -43,26 +43,26 @@ class GroupUpdateTest extends AssertionsForJUnit with KompareSuite {
   @Test def verifyUPDATE_ADDGROUP() {
 
     val kompareModel = component.kompare(model("test_instance/groupNoGroup.kev"), model("test_instance/groupInitAddOneTwoBinding.kev"), "duke")
-    kompareModel.shouldContain(JavaSePrimitive.$instance.getAddType, "GossipGroup")
-    kompareModel.shouldContain(JavaSePrimitive.$instance.getAddInstance, "group1426020324")
+    kompareModel.shouldContain(JavaSePrimitive.instance$.getAddType, "GossipGroup")
+    kompareModel.shouldContain(JavaSePrimitive.instance$.getAddInstance, "group1426020324")
   }
 
   @Test def verifyUPDATE_RemoveGROUP() {
     val kompareModel = component.kompare(model("test_instance/groupInitAddOneTwoBinding.kev"), model("test_instance/groupNoGroup.kev"), "duke")
-    kompareModel.shouldContain(JavaSePrimitive.$instance.getRemoveType, "GossipGroup")
-    kompareModel.shouldContain(JavaSePrimitive.$instance.getRemoveInstance, "group1426020324")
+    kompareModel.shouldContain(JavaSePrimitive.instance$.getRemoveType, "GossipGroup")
+    kompareModel.shouldContain(JavaSePrimitive.instance$.getRemoveInstance, "group1426020324")
   }
 
 
   @Test def verifyUPDATE_UpdateGroupAddBinding() {
     val kompareModel = component.kompare(model("test_instance/groupOneBinding.kev"), model("test_instance/groupInitAddOneTwoBinding.kev"), "duke")
     kompareModel.print
-    kompareModel.shouldContain(JavaSePrimitive.$instance.getUpdateDictionaryInstance, "group1426020324")
+    kompareModel.shouldContain(JavaSePrimitive.instance$.getUpdateDictionaryInstance, "group1426020324")
   }
 
   @Test def verifyUPDATE_UpdateGroupRemoveBinding() {
     val kompareModel = component.kompare(model("test_instance/groupInitAddOneTwoBinding.kev"), model("test_instance/groupOneBinding.kev"), "duke")
-    kompareModel.shouldContain(JavaSePrimitive.$instance.getUpdateDictionaryInstance, "group1426020324")
+    kompareModel.shouldContain(JavaSePrimitive.instance$.getUpdateDictionaryInstance, "group1426020324")
   }
 
 }

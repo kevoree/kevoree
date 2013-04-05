@@ -46,8 +46,8 @@ class GroupInitTest extends AssertionsForJUnit with KompareSuite {
     //var kompareModel = component.kompare(model("tests_dictionary/dictionary_1.kev"), model("tests_dictionary/dictionary_2.kev"), "node-0")
     //error("NOT IMPLEMENTED YET")
 
-    kompareModel.shouldContain(JavaSePrimitive.$instance.getAddType,"GossipGroup")
-    kompareModel.shouldContain(JavaSePrimitive.$instance.getAddInstance,"group1426020324")
+    kompareModel.shouldContain(JavaSePrimitive.instance$.getAddType,"GossipGroup")
+    kompareModel.shouldContain(JavaSePrimitive.instance$.getAddInstance,"group1426020324")
 
 
     //kompareModel.print

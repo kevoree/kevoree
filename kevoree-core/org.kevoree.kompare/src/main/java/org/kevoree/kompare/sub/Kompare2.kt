@@ -71,7 +71,7 @@ trait Kompare2 {
                         actualChannels.add(binding.getHub()!!.getName())
                     }
                 }
-                alreadyProcessInstance.put(actualComponent.path(), actualComponent)
+                alreadyProcessInstance.put(actualComponent.path()!!, actualComponent)
             }
         }
 
@@ -94,7 +94,7 @@ trait Kompare2 {
                         newChannels.add(binding.getHub()!!.getName())
                     }
                 }
-                alreadyProcessInstance.put(updatedComponent.path(), updatedComponent)
+                alreadyProcessInstance.put(updatedComponent.path()!!, updatedComponent)
             } else {
                 processCheckUpdateInstance(actualComponent, updatedComponent, adaptationModel, actualRoot, actualTD, updateTD, updateRoot, actualNode.getName(), updatedTypeDefs)
                 checkBindings(actualChannels, newChannels, actualComponent.getProvided(), updatedComponent.getProvided(), adaptationModel, actualRoot, updateRoot)
@@ -282,7 +282,7 @@ trait Kompare2 {
             return //already checked
         }
         if(actualChannel != null){
-            val updateChannel = actualRoot.findByPath(actualChannel.path(), javaClass<Channel>())
+            val updateChannel = actualRoot.findByPath(actualChannel.path()!!, javaClass<Channel>())
             if(updateChannel == null){
                 processRemoveInstance(actualChannel, adaptationModel, actualRoot, actualTD)
                 for(binding in actualChannel.getBindings()){
@@ -290,7 +290,7 @@ trait Kompare2 {
                 }
             }
         }
-        alreadyProcessInstance.put(actualChannel!!.path(), actualChannel)
+        alreadyProcessInstance.put(actualChannel!!.path()!!, actualChannel)
     }
 
     fun processCheckAddChannel(updateChannel: Channel?, adaptationModel: AdaptationModel, actualRoot: ContainerRoot, updateRoot: ContainerRoot, updateTD: MutableSet<String>, alreadyProcessInstance: HashMap<String, Any>) {
@@ -298,12 +298,12 @@ trait Kompare2 {
             return //already checked
         }
         if(updateChannel != null){
-            val actualChannel = actualRoot.findByPath(updateChannel.path(), javaClass<Channel>())
+            val actualChannel = actualRoot.findByPath(updateChannel.path()!!, javaClass<Channel>())
             if(actualChannel == null){
                 processAddInstance(updateChannel, adaptationModel, updateRoot, updateTD)
             }
         }
-        alreadyProcessInstance.put(updateChannel!!.path(), updateChannel)
+        alreadyProcessInstance.put(updateChannel!!.path()!!, updateChannel)
     }
 
     fun processRemoveMBinding(actualMB: MBinding, adaptationModel: AdaptationModel, root: ContainerRoot) {
@@ -532,9 +532,9 @@ trait Kompare2 {
                 }
 
 
-                processCheckUpdateInstance(actualRoot.findHubsByID(ch1), updateRoot.findHubsByID(ch1), adaptationModel, actualRoot, actualTD, updateTD, updateRoot, nodeName, updatedTypeDefs)
+                processCheckUpdateInstance(actualRoot.findHubsByID(ch1)!!, updateRoot.findHubsByID(ch1)!!, adaptationModel, actualRoot, actualTD, updateTD, updateRoot, nodeName, updatedTypeDefs)
                 val remotesUpdate = channelAspect.getConnectedNode(channelOrigin, nodeName)
-                val remotesActual = channelAspect.getConnectedNode(updateRoot.findHubsByID(ch1), nodeName)
+                val remotesActual = channelAspect.getConnectedNode(updateRoot.findHubsByID(ch1)!!, nodeName)
                 for(remoteUpdate in remotesUpdate){
                     var found = false
                     @beforeFound for(remoteActual in remotesActual){

@@ -65,37 +65,37 @@ class KevoreeKompareBean: Kompare2, KevoreeScheduler {
                 JavaSePrimitive.UpdateType -> {
                     val rcmd = adaptationModelFactory.createAdaptationPrimitive()
                     rcmd.setPrimitiveType(actualModel.findAdaptationPrimitiveTypesByID(JavaSePrimitive.RemoveType))
-                    rcmd.setRef(adaptation.getRef())
+                    rcmd.setRef(adaptation.getRef()!!)
                     currentAdaptModel.removeAdaptations(adaptation)
                     currentAdaptModel.addAdaptations(rcmd)
                     val acmd = adaptationModelFactory.createAdaptationPrimitive()
                     acmd.setPrimitiveType(actualModel.findAdaptationPrimitiveTypesByID(JavaSePrimitive.AddType))
-                    acmd.setRef(adaptation.getRef())
+                    acmd.setRef(adaptation.getRef()!!)
                     currentAdaptModel.addAdaptations(acmd)
                 }
                 JavaSePrimitive.UpdateBinding -> {
                     val rcmd = adaptationModelFactory.createAdaptationPrimitive()
                     rcmd.setPrimitiveType(actualModel.findAdaptationPrimitiveTypesByID(JavaSePrimitive.RemoveBinding))
-                    rcmd.setRef(adaptation.getRef())
+                    rcmd.setRef(adaptation.getRef()!!)
                     currentAdaptModel.removeAdaptations(adaptation)
                     currentAdaptModel.addAdaptations(rcmd)
 
                     val acmd = adaptationModelFactory.createAdaptationPrimitive()
                     acmd.setPrimitiveType(actualModel.findAdaptationPrimitiveTypesByID(JavaSePrimitive.AddBinding))
-                    acmd.setRef(adaptation.getRef())
+                    acmd.setRef(adaptation.getRef()!!)
                     currentAdaptModel.addAdaptations(acmd)
                 }
                 JavaSePrimitive.UpdateFragmentBinding -> {
                     val rcmd = adaptationModelFactory.createAdaptationPrimitive()
                     rcmd.setPrimitiveType(actualModel.findAdaptationPrimitiveTypesByID(JavaSePrimitive.RemoveFragmentBinding))
-                    rcmd.setRef(adaptation.getRef())
+                    rcmd.setRef(adaptation.getRef()!!)
                     rcmd.setTargetNodeName(adaptation.getTargetNodeName())
                     currentAdaptModel.removeAdaptations(adaptation)
                     currentAdaptModel.addAdaptations(rcmd)
 
                     val acmd = adaptationModelFactory.createAdaptationPrimitive()
                     acmd.setPrimitiveType(actualModel.findAdaptationPrimitiveTypesByID(JavaSePrimitive.AddFragmentBinding))
-                    acmd.setRef(adaptation.getRef())
+                    acmd.setRef(adaptation.getRef()!!)
                     acmd.setTargetNodeName(adaptation.getTargetNodeName())
                     currentAdaptModel.addAdaptations(acmd)
                 }

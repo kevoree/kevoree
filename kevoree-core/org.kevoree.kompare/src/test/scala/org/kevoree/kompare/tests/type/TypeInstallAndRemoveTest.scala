@@ -55,16 +55,16 @@ class TypeInstallAndRemoveTest extends KompareSuite {
   @Test def testOnlyOneDeployUnitInstall_INITNODE(){
     val kompareModel = component.kompare(emptyModel, model("test_type/onlyOneDeployUnitInstall.art2"), "duke")
     kompareModel.print
-    kompareModel shouldContainSize(JavaSePrimitive.$instance.getAddDeployUnit(),1) //don't add java node now
+    kompareModel shouldContainSize(JavaSePrimitive.instance$.getAddDeployUnit(),1) //don't add java node now
   }
 
   @Test def testOnlyOneDeployUnitInstall_UPDATENODE(){
     val kompareModel = component.kompare(model("test_type/noTypeInstall.art2"), model("test_type/onlyOneDeployUnitInstall.art2"), "duke")
-    kompareModel shouldContainSize(JavaSePrimitive.$instance.getAddDeployUnit(),1)
-    kompareModel shouldContain(JavaSePrimitive.$instance.getAddType(),"ComponentPrimitiveTypeService")
-    kompareModel shouldContain(JavaSePrimitive.$instance.getAddType(),"ComponentB")
-    kompareModel shouldContain(JavaSePrimitive.$instance.getAddInstance(),"ComponentB--10313997")
-    kompareModel shouldContain(JavaSePrimitive.$instance.getAddInstance(),"ComponentPrimitiveTypeService--791402174")
+    kompareModel shouldContainSize(JavaSePrimitive.instance$.getAddDeployUnit(),1)
+    kompareModel shouldContain(JavaSePrimitive.instance$.getAddType(),"ComponentPrimitiveTypeService")
+    kompareModel shouldContain(JavaSePrimitive.instance$.getAddType(),"ComponentB")
+    kompareModel shouldContain(JavaSePrimitive.instance$.getAddInstance(),"ComponentB--10313997")
+    kompareModel shouldContain(JavaSePrimitive.instance$.getAddInstance(),"ComponentPrimitiveTypeService--791402174")
   }
 
   @Test def testnoTypeInstall_UPDATENODE(){
@@ -74,33 +74,33 @@ class TypeInstallAndRemoveTest extends KompareSuite {
 
   @Test def testnoTypeDeployUnitUninstall_UPDATENODE(){
     val kompareModel = component.kompare(model("test_type/onlyOneDeployUnitInstall.art2"), model("test_type/noTypeDeployUnitUninstall.art2"), "duke")
-    kompareModel shouldContainSize(JavaSePrimitive.$instance.getRemoveDeployUnit(),0)
+    kompareModel shouldContainSize(JavaSePrimitive.instance$.getRemoveDeployUnit(),0)
   }
 
 
   @Test def testOnlyOneDeployUnitUninstall_UPDATENODE(){
     val kompareModel = component.kompare(model("test_type/onlyOneDeployUnitInstall.art2"), model("test_type/onlyOneDeployUnitUninstall.art2"), "duke")
-    kompareModel shouldContainSize(JavaSePrimitive.$instance.getRemoveDeployUnit(),1)
-    kompareModel shouldContain(JavaSePrimitive.$instance.getRemoveType(),"ComponentPrimitiveTypeService")
-    kompareModel shouldContain(JavaSePrimitive.$instance.getRemoveType(),"ComponentB")
-    kompareModel shouldContain(JavaSePrimitive.$instance.getRemoveInstance(),"ComponentB--10313997")
-    kompareModel shouldContain(JavaSePrimitive.$instance.getRemoveInstance(),"ComponentPrimitiveTypeService--791402174")
+    kompareModel shouldContainSize(JavaSePrimitive.instance$.getRemoveDeployUnit(),1)
+    kompareModel shouldContain(JavaSePrimitive.instance$.getRemoveType(),"ComponentPrimitiveTypeService")
+    kompareModel shouldContain(JavaSePrimitive.instance$.getRemoveType(),"ComponentB")
+    kompareModel shouldContain(JavaSePrimitive.instance$.getRemoveInstance(),"ComponentB--10313997")
+    kompareModel shouldContain(JavaSePrimitive.instance$.getRemoveInstance(),"ComponentPrimitiveTypeService--791402174")
   }
 
   @Test def testOnlyOneDeployUnitUninstall_STOPNODE(){
     val kompareModel = component.kompare(model("test_type/onlyOneDeployUnitInstall.art2"),emptyModel, "duke")
     kompareModel.print
-    kompareModel shouldContainSize(JavaSePrimitive.$instance.getRemoveDeployUnit(),1)//don't remove javaNode DU now
+    kompareModel shouldContainSize(JavaSePrimitive.instance$.getRemoveDeployUnit(),1)//don't remove javaNode DU now
   }
 
   @Test def testuninstall_STOPNODE(){
     val kompareModel = component.kompare(model("test_type/onlyOneDeployUnitInstall.art2"),emptyModel, "duke")
     kompareModel.print
-    kompareModel shouldContainSize(JavaSePrimitive.$instance.getRemoveDeployUnit(),1) //don't uninstall node instance
-    kompareModel shouldContain(JavaSePrimitive.$instance.getRemoveType(),"ComponentPrimitiveTypeService")
-    kompareModel shouldContain(JavaSePrimitive.$instance.getRemoveType(),"ComponentB")
-    kompareModel shouldContain(JavaSePrimitive.$instance.getRemoveInstance(),"ComponentB--10313997")
-    kompareModel shouldContain(JavaSePrimitive.$instance.getRemoveInstance(),"ComponentPrimitiveTypeService--791402174")
+    kompareModel shouldContainSize(JavaSePrimitive.instance$.getRemoveDeployUnit(),1) //don't uninstall node instance
+    kompareModel shouldContain(JavaSePrimitive.instance$.getRemoveType(),"ComponentPrimitiveTypeService")
+    kompareModel shouldContain(JavaSePrimitive.instance$.getRemoveType(),"ComponentB")
+    kompareModel shouldContain(JavaSePrimitive.instance$.getRemoveInstance(),"ComponentB--10313997")
+    kompareModel shouldContain(JavaSePrimitive.instance$.getRemoveInstance(),"ComponentPrimitiveTypeService--791402174")
   }
 
 }
