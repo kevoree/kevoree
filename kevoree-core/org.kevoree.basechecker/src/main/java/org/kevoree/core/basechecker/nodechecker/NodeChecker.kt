@@ -40,7 +40,7 @@ class NodeChecker: CheckerService {
             for (node in model.getNodes()) {
                 val alreadyCheckedChannels = ArrayList<Channel>()
                 for (component in node.getComponents()) {
-                    var typeDefinition = typeDefinitionAspect.foundRelevantDeployUnit(component.getTypeDefinition(), node)
+                    var typeDefinition = typeDefinitionAspect.foundRelevantDeployUnit(component.getTypeDefinition()!!, node)
                     if (typeDefinition == null) {
                         val violation: CheckerViolation = CheckerViolation()
                         violation.setMessage(component.getTypeDefinition()!!.getName() + " has no deploy unit for node type " + node.getTypeDefinition()!!.getName())
@@ -58,7 +58,7 @@ class NodeChecker: CheckerService {
                     for(port in subTempPorts) {
                         for (mbinding in port.getBindings()) {
                             if (!alreadyCheckedChannels.contains(mbinding.getHub())) {
-                                typeDefinition = typeDefinitionAspect.foundRelevantDeployUnit(mbinding.getHub()!!.getTypeDefinition(), node)
+                                typeDefinition = typeDefinitionAspect.foundRelevantDeployUnit(mbinding.getHub()!!.getTypeDefinition()!!, node)
                                 if (typeDefinition == null) {
                                     val violation: CheckerViolation = CheckerViolation()
                                     violation.setMessage(mbinding.getHub()!!.getTypeDefinition()!!.getName() + " has no deploy unit for node type " + node.getTypeDefinition()!!.getName())
@@ -73,7 +73,7 @@ class NodeChecker: CheckerService {
                 }
                 // check groups
                 for (group in containerNodeAspect.getGroups(node)) {
-                    val typeDefinition = typeDefinitionAspect.foundRelevantDeployUnit(group.getTypeDefinition(), node)
+                    val typeDefinition = typeDefinitionAspect.foundRelevantDeployUnit(group.getTypeDefinition()!!, node)
                     if (typeDefinition == null) {
                         val violation: CheckerViolation = CheckerViolation()
                         violation.setMessage(group.getTypeDefinition()!!.getName() + " has no deploy unit for node type " + node.getTypeDefinition()!!.getName())
@@ -86,7 +86,7 @@ class NodeChecker: CheckerService {
                 }
                 // check child nodes
                 for (child in node.getHosts()) {
-                    val typeDefinition = typeDefinitionAspect.foundRelevantDeployUnit(child.getTypeDefinition(), node)
+                    val typeDefinition = typeDefinitionAspect.foundRelevantDeployUnit(child.getTypeDefinition()!!, node)
                     if (typeDefinition == null) {
                         val violation: CheckerViolation = CheckerViolation()
                         violation.setMessage(child.getTypeDefinition()!!.getName() + " has no deploy unit for node type " + node.getTypeDefinition()!!.getName())
@@ -97,7 +97,7 @@ class NodeChecker: CheckerService {
                     }
                 }
                 // check node
-                val typeDefinition = typeDefinitionAspect.foundRelevantDeployUnit(node.getTypeDefinition(), node)
+                val typeDefinition = typeDefinitionAspect.foundRelevantDeployUnit(node.getTypeDefinition()!!, node)
                 if (typeDefinition == null) {
                     val violation: CheckerViolation = CheckerViolation()
                     violation.setMessage(node.getTypeDefinition()!!.getName() + " has no deploy unit for node type " + node.getTypeDefinition()!!.getName())

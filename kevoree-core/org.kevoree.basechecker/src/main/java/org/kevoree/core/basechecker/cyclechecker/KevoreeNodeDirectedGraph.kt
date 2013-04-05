@@ -33,17 +33,17 @@ class KevoreeNodeDirectedGraph(model: ContainerRoot): DefaultDirectedGraph<Any, 
                 if (connectedNodes.size > 0) {
                     for (component in node.getComponents()) {
                         for (binding in componentInstanceAspect.getRelatedBindings(component)) {
-                            if (portAspect.isRequiredPort(binding.getPort()) &&
+                            if (portAspect.isRequiredPort(binding.getPort()!!) &&
                             binding.getPort()!!.getPortTypeRef()!!.getNoDependency() == false) {
                                 if (binding.getHub() == channel) {
                                     for (node1 in connectedNodes) {
                                         for (component1 in node1.getComponents()) {
                                             for (binding1 in componentInstanceAspect.getRelatedBindings(component1)) {
                                                 if (binding1.getHub() == channel) {
-                                                    if (portAspect.isProvidedPort(binding.getPort()) &&
-                                                    portAspect.isRequiredPort(binding1.getPort())) {
-                                                        val fragment = ChannelFragment(binding.getHub(), binding)
-                                                        val fragment1 = ChannelFragment(binding1.getHub(), binding1)
+                                                    if (portAspect.isProvidedPort(binding.getPort()!!) &&
+                                                    portAspect.isRequiredPort(binding1.getPort()!!)) {
+                                                        val fragment = ChannelFragment(binding.getHub()!!, binding)
+                                                        val fragment1 = ChannelFragment(binding1.getHub()!!, binding1)
                                                         addVertex(node)
                                                         addVertex(fragment)
                                                         addVertex(fragment1)
@@ -51,10 +51,10 @@ class KevoreeNodeDirectedGraph(model: ContainerRoot): DefaultDirectedGraph<Any, 
                                                         addEdge(node, fragment, BindingFragment(binding, null))
                                                         addEdge(fragment, fragment1, BindingFragment(binding, binding1))
                                                         addEdge(fragment1, node1, BindingFragment(binding1, null))
-                                                    } else if (portAspect.isProvidedPort(binding1.getPort()) &&
-                                                    portAspect.isRequiredPort(binding.getPort())) {
-                                                        val fragment = ChannelFragment(binding.getHub(), binding)
-                                                        val fragment1 = ChannelFragment(binding1.getHub(), binding1)
+                                                    } else if (portAspect.isProvidedPort(binding1.getPort()!!) &&
+                                                    portAspect.isRequiredPort(binding.getPort()!!)) {
+                                                        val fragment = ChannelFragment(binding.getHub()!!, binding)
+                                                        val fragment1 = ChannelFragment(binding1.getHub()!!, binding1)
                                                         addVertex(node)
                                                         addVertex(fragment)
                                                         addVertex(fragment1)

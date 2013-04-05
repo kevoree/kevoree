@@ -38,7 +38,7 @@ trait BaseCheckerSuite extends JUnitSuite {
     if(this.getClass.getClassLoader.getResource(url) == null){
       println("Warning File not found for test !!!")
     }
-    KevoreeXmiHelper.$instance.load(this.getClass.getClassLoader.getResource(url).getPath)
+    KevoreeXmiHelper.instance$.load(this.getClass.getClassLoader.getResource(url).getPath)
   }
 
 }
