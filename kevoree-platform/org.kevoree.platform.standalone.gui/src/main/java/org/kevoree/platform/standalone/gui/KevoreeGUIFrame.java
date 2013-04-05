@@ -26,18 +26,16 @@
  */
 package org.kevoree.platform.standalone.gui;
 
-import com.explodingpixels.macwidgets.*;
-import com.explodingpixels.macwidgets.plaf.HudButtonUI;
+import com.explodingpixels.macwidgets.MacUtils;
+import com.explodingpixels.macwidgets.MacWidgetFactory;
+import com.explodingpixels.macwidgets.UnifiedToolBar;
 import org.kevoree.ContainerNode;
 import org.kevoree.ContainerRoot;
 import org.kevoree.api.service.core.handler.ModelListener;
-import org.kevoree.impl.DefaultKevoreeFactory;
 import org.kevoree.platform.standalone.KevoreeBootStrap;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.net.URL;
@@ -50,7 +48,6 @@ public class KevoreeGUIFrame extends JFrame {
 
     public KevoreeGUIFrame(final ContainerRoot model) {
         singleton = this;
-
         MacUtils.makeWindowLeopardStyle(this.getRootPane());
         UnifiedToolBar toolBar = new UnifiedToolBar();
         add(toolBar.getComponent(), BorderLayout.NORTH);
@@ -66,96 +63,23 @@ public class KevoreeGUIFrame extends JFrame {
         toolBar.addComponentToLeft(topImage);
 
         left = new KevoreeLeftModel();
-     //   this.add(left, BorderLayout.WEST);
+        new Thread() {
+            @Override
+            public void run() {
+                startNode();
+            }
+        }.start();
+        setVisible(true);
 
+        setPreferredSize(new Dimension(1024,768));
+        setSize(getPreferredSize());
 
-
-
-
-        /*
-        File mavenDir = new File(System.getProperty("user.home") + "/.m2/repository");
-        if (mavenDir.exists() && mavenDir.isDirectory()) {
-            System.out.println("use mavenDir=file:///" + mavenDir.getAbsoluteFile().getAbsolutePath());
-            System.setProperty("org.kevoree.remote.provisioning", "file:///" + mavenDir.getAbsolutePath());
-        }*/
-
-        String guiConfig = System.getProperty("node.gui.config");
-        if (guiConfig == null || guiConfig.equalsIgnoreCase("true")) {
-            final HudWindow bootstrapPopup = new HudWindow("Kevoree runtime : node properties");
-            bootstrapPopup.getJDialog().setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-
-
-            JPanel layoutPopup = new JPanel();
-            layoutPopup.setOpaque(false);
-            layoutPopup.setLayout(new BorderLayout());
-
-            JLabel iconLabel = new JLabel(smallIcon);
-            iconLabel.setOpaque(false);
-
-            JButton btOk = new JButton("Ok");
-            btOk.setUI(new HudButtonUI());
-
-            layoutPopup.add(iconLabel, BorderLayout.WEST);
-            final NodeTypeBootStrapUI nodeUI = new NodeTypeBootStrapUI(model);
-
-            nodeUI.setOpaque(false);
-            JScrollPane scrollPane = new JScrollPane(nodeUI);
-            IAppWidgetFactory.makeIAppScrollPane(scrollPane);
-            scrollPane.getViewport().setOpaque(false);
-            scrollPane.setOpaque(false);
-            scrollPane.setBorder(null);
-
-            layoutPopup.add(scrollPane, BorderLayout.CENTER);
-            layoutPopup.add(btOk, BorderLayout.SOUTH);
-
-            bootstrapPopup.setContentPane(layoutPopup);
-            bootstrapPopup.getJDialog().getRootPane().setDefaultButton(btOk);
-            bootstrapPopup.getJDialog().pack();
-            bootstrapPopup.getJDialog().setLocationRelativeTo(null);
-            bootstrapPopup.getJDialog().setVisible(true);
-
-
-            btOk.addActionListener(new ActionListener() {
-
-                @Override
-                public void actionPerformed(ActionEvent actionEvent) {
-                    bootstrapPopup.getJDialog().dispose();
-                    String response = nodeUI.getKevName();
-                    final String nodeName = response;
-                    System.setProperty("node.name", response);
-                    setTitle(nodeName + " : " + nodeUI.getKevTypeName() + " / Kevoree-" + new DefaultKevoreeFactory().getVersion());
-                    new Thread() {
-                        @Override
-                        public void run() {
-                            NodeTypeBootStrapModel
-                                    .checkAndCreate(nodeUI.getCurrentModel(), nodeName, nodeUI.getKevTypeName().toString(), nodeUI.getKevGroupTypeName().toString(), nodeUI.getKevGroupName(),
-                                            nodeUI.nodeInstancePanel().currentProperties(), nodeUI.groupInstancePanel().currentProperties());
-                            startNode(nodeUI.getCurrentModel());
-                        }
-                    }.start();
-
-                    setSize(800, 600);
-                    setPreferredSize(getSize());
-                    setVisible(true);
-                    setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-
-                }
-            });
-        } else {
-            new Thread() {
-                @Override
-                public void run() {
-                    startNode(model);
-                }
-            }.start();
-            setVisible(true);
-            setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-        }
-
+        setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
     }
 
-    private void startNode(ContainerRoot model) {
+    private void startNode() {
         final KevoreeBootStrap btA = new KevoreeBootStrap();
+
         Runtime.getRuntime().addShutdownHook(new Thread("Shutdown Hook") {
 
             public void run() {
@@ -166,7 +90,6 @@ public class KevoreeGUIFrame extends JFrame {
                 }
             }
         });
-        btA.setBootstrapModel(model);
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent windowEvent) {
@@ -175,7 +98,7 @@ public class KevoreeGUIFrame extends JFrame {
                     public void run() {
                         try {
                             btA.stop();
-                            DefaultSystem.resetSystemFlux();
+                            DefaultSystem.instance$.resetSystemFlux();
                             dispose();
                             Runtime.getRuntime().exit(0);
                         } catch (Exception e) {
@@ -198,10 +121,10 @@ public class KevoreeGUIFrame extends JFrame {
                     return true;
                 }
 
-				@Override
-				public boolean initUpdate (ContainerRoot containerRoot, ContainerRoot containerRoot1) {
-					return true;
-				}
+                @Override
+                public boolean initUpdate(ContainerRoot containerRoot, ContainerRoot containerRoot1) {
+                    return true;
+                }
 
                 @Override
                 public boolean afterLocalUpdate(ContainerRoot currentModel, ContainerRoot proposedModel) {
