@@ -60,14 +60,14 @@ public class KevoreeComponent(val ct: AbstractComponentType, val nodeName: Strin
             //TODO inject pure reflexif port, if class not found exception
             val newPort = newPortClazz!!.getConstructor(ct.getClass()).newInstance(ct) as KevoreePort
             newPort.startPort()
-            ct.getHostedPorts()!!.put(newPort.getName(), newPort)
+            ct.getHostedPorts()!!.put(newPort.getName()!!, newPort)
         }
         for(requiredPort in modelElement.getRequired()){
             val newPortClazz = ct.javaClass.getClassLoader()!!.loadClass(buildPortBean(bean, nodeTypeName, requiredPort.getPortTypeRef()!!.getName()))
             //TODO inject pure reflexif port, if class not found exception
             val newPort = newPortClazz!!.getConstructor(ct.getClass()).newInstance(ct) as KevoreePort
             newPort.startPort()
-            ct.getNeededPorts()!!.put(newPort.getName(), newPort)
+            ct.getNeededPorts()!!.put(newPort.getName()!!, newPort)
         }
         /* End reflexive injection */
     }
@@ -168,7 +168,7 @@ public class KevoreeComponent(val ct: AbstractComponentType, val nodeName: Strin
         try {
             val previousDictionary = ct.getDictionary()!!.clone()
             for(v in d.keySet()) {
-                getKevoreeComponentType().getDictionary()!!.put(v, d.get(v))
+                getKevoreeComponentType().getDictionary()!!.put(v, d.get(v)!!)
             }
             if (ct_started) {
                 (getKevoreeComponentType().getModelService() as ModelHandlerServiceProxy).setTempModel(cmodel)

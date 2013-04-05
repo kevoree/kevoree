@@ -99,7 +99,7 @@ public class KevoreeGroup(val target: AbstractGroupType, val nodeName: String, v
         try {
             val previousDictionary = target.getDictionary()!!.clone()
             for(v in d.keySet()) {
-                target.getDictionary()!!.put(v, d.get(v))
+                target.getDictionary()!!.put(v, d.get(v)!!)
             }
             if (isStarted) {
                 (target.getModelService() as ModelHandlerServiceProxy).setTempModel(cmodel)

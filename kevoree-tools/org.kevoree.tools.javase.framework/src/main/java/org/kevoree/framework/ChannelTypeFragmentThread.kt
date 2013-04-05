@@ -126,7 +126,7 @@ class ChannelTypeFragmentThread(val target: AbstractChannelFragment, val _nodeNa
         try {
             val previousDictionary = target.getDictionary()!!.clone()
             for(v in d.keySet()) {
-                target.getDictionary()!!.put(v, d.get(v))
+                target.getDictionary()!!.put(v, d.get(v)!!)
             }
             if (isStarted) {
                 (target.getModelService() as ModelHandlerServiceProxy).setTempModel(cmodel)
@@ -201,7 +201,7 @@ class ChannelTypeFragmentThread(val target: AbstractChannelFragment, val _nodeNa
 
     public fun forward(delegate: KevoreePort?, inmsg: Message?): Any? {
         val msg = inmsg!!.clone()
-        msg.setDestChannelName(delegate!!.getName())
+        msg.setDestChannelName(delegate!!.getName()!!)
         if (msg.getInOut()) {
             return delegate.sendWait(msg.getContent())
         } else {
