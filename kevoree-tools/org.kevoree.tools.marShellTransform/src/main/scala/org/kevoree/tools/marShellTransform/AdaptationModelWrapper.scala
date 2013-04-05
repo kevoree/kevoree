@@ -45,7 +45,7 @@ object AdaptationModelWrapper {
     model.getAdaptations.foreach {
       adapt =>
         adapt.getPrimitiveType.getName match {
-          case s if s == JavaSePrimitive.$instance.getAddDeployUnit => {
+          case s if s == JavaSePrimitive.instance$.getAddDeployUnit => {
             val du = adapt.getRef.asInstanceOf[DeployUnit]
             statments = statments ++ List(MergeStatement("mvn:"+du.getGroupName+"/"+du.getUnitName+"/"+du.getVersion))
           }
@@ -55,7 +55,7 @@ object AdaptationModelWrapper {
     model.getAdaptations.foreach {
       adapt =>
       adapt.getPrimitiveType.getName match {
-        case s if s == JavaSePrimitive.$instance.getUpdateDictionaryInstance => {
+        case s if s == JavaSePrimitive.instance$.getUpdateDictionaryInstance => {
           val dicMap = new java.util.HashMap[String,java.util.Properties]()
             if(adapt.getRef.asInstanceOf[Instance].getDictionary != null){
               adapt.getRef.asInstanceOf[Instance].getDictionary.getValues.foreach{value =>
@@ -79,8 +79,8 @@ object AdaptationModelWrapper {
               case _ => //TODO GROUP
             }
           } //statments.add(UpdateDictionaryStatement(statement.getRef.g))
-        case s if s ==  JavaSePrimitive.$instance.getAddBinding => statments = statments ++ List(AddBindingStatment(ComponentInstanceID(adapt.getRef.asInstanceOf[org.kevoree.MBinding].getPort.eContainer.asInstanceOf[ComponentInstance].getName, Some(adapt.getRef.asInstanceOf[MBinding].getPort.eContainer.eContainer.asInstanceOf[ContainerNode].getName)), adapt.getRef.asInstanceOf[MBinding].getPort.getPortTypeRef.getName, adapt.getRef.asInstanceOf[MBinding].getHub.getName))
-        case s if s ==  JavaSePrimitive.$instance.getAddInstance => {
+        case s if s ==  JavaSePrimitive.instance$.getAddBinding => statments = statments ++ List(AddBindingStatment(ComponentInstanceID(adapt.getRef.asInstanceOf[org.kevoree.MBinding].getPort.eContainer.asInstanceOf[ComponentInstance].getName, Some(adapt.getRef.asInstanceOf[MBinding].getPort.eContainer.eContainer.asInstanceOf[ContainerNode].getName)), adapt.getRef.asInstanceOf[MBinding].getPort.getPortTypeRef.getName, adapt.getRef.asInstanceOf[MBinding].getHub.getName))
+        case s if s ==  JavaSePrimitive.instance$.getAddInstance => {
 
             val props = new java.util.Properties
             if (adapt.getRef.asInstanceOf[Instance].getDictionary != null) {
@@ -101,8 +101,8 @@ object AdaptationModelWrapper {
               case _@uncatchInstance => logger.warn("uncatched=" + uncatchInstance)
             }
           }
-        case s if s ==  JavaSePrimitive.$instance.getRemoveBinding => statments = statments ++ List(RemoveBindingStatment(ComponentInstanceID(adapt.getRef.asInstanceOf[MBinding].getPort.eContainer.asInstanceOf[ComponentInstance].getName, Some(adapt.getRef.asInstanceOf[MBinding].getPort.eContainer.eContainer.asInstanceOf[ContainerNode].getName)), adapt.getRef.asInstanceOf[MBinding].getPort.getPortTypeRef.getName, adapt.getRef.asInstanceOf[MBinding].getHub.getName))
-        case s if s ==  JavaSePrimitive.$instance.getRemoveInstance => {
+        case s if s ==  JavaSePrimitive.instance$.getRemoveBinding => statments = statments ++ List(RemoveBindingStatment(ComponentInstanceID(adapt.getRef.asInstanceOf[MBinding].getPort.eContainer.asInstanceOf[ComponentInstance].getName, Some(adapt.getRef.asInstanceOf[MBinding].getPort.eContainer.eContainer.asInstanceOf[ContainerNode].getName)), adapt.getRef.asInstanceOf[MBinding].getPort.getPortTypeRef.getName, adapt.getRef.asInstanceOf[MBinding].getHub.getName))
+        case s if s ==  JavaSePrimitive.instance$.getRemoveInstance => {
             adapt.getRef match {
               case c: Group => statments = statments ++ List(RemoveGroupStatment(c.getName))
               case c: Channel => statments = statments ++ List(RemoveChannelInstanceStatment(c.getName))
@@ -114,7 +114,7 @@ object AdaptationModelWrapper {
               case _@uncatchInstance => logger.warn("uncatched=" + uncatchInstance)
             }
           }
-        case s if s ==  JavaSePrimitive.$instance.getAddDeployUnit => {
+        case s if s ==  JavaSePrimitive.instance$.getAddDeployUnit => {
           //already catched
         }
         case _@unCatched => logger.warn("uncatched=" + unCatched)

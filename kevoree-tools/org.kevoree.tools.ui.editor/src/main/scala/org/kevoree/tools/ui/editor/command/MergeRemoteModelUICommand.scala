@@ -82,14 +82,14 @@ class MergeRemoteModelUICommand extends Command {
         val conn = url.openConnection()
         conn.setConnectTimeout(2000)
         val inputStream = conn.getInputStream
-        loadedModel = KevoreeXmiHelper.$instance.loadCompressedStream(inputStream)
+        loadedModel = KevoreeXmiHelper.instance$.loadCompressedStream(inputStream)
         logger.debug("Load model from zip stream")
       } else {
         val url = new URL("http://" + ip + ":" + port + "/model/current");
         val conn = url.openConnection()
         conn.setConnectTimeout(2000)
         val inputStream = conn.getInputStream
-        loadedModel = KevoreeXmiHelper.$instance.loadStream(inputStream)
+        loadedModel = KevoreeXmiHelper.instance$.loadStream(inputStream)
         logger.debug("Load model from xml stream")
       }
       PositionedEMFHelper.updateModelUIMetaData(kernel)
@@ -115,7 +115,7 @@ class MergeRemoteModelUICommand extends Command {
       }
       def receive(data: Array[Byte], from: Connection) {
         val inputStream = new ByteArrayInputStream(data)
-        val root = KevoreeXmiHelper.$instance.loadCompressedStream(inputStream)
+        val root = KevoreeXmiHelper.instance$.loadCompressedStream(inputStream)
         try {
           exchanger.exchange(root);
         } catch {
@@ -154,7 +154,7 @@ class MergeRemoteModelUICommand extends Command {
         def onOpen(p1: ServerHandshake) {}
         override def onMessage(bytes: ByteBuffer) {
           val inputStream = new ByteArrayInputStream(bytes.array())
-          val root = KevoreeXmiHelper.$instance.loadCompressedStream(inputStream)
+          val root = KevoreeXmiHelper.instance$.loadCompressedStream(inputStream)
           try {
             exchanger.exchange(root);
           } catch {

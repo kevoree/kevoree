@@ -93,7 +93,7 @@ public class NetworkPropertyEditor extends JPanel {
 
         private ContainerNode _node = null;
         String[] attlistString = {
-            org.kevoree.framework.Constants.$instance.getKEVOREE_PLATFORM_REMOTE_NODE_IP()//,
+            org.kevoree.framework.Constants.instance$.getKEVOREE_PLATFORM_REMOTE_NODE_IP()//,
            // org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_MODELSYNCH_PORT(),
            // org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_DISPATCHER_PORT()
         };
@@ -124,7 +124,7 @@ public class NetworkPropertyEditor extends JPanel {
 
                 @Override
                 public void mouseClicked(MouseEvent me) {
-                    KevoreePlatformHelper.$instance.updateNodeLinkProp((ContainerRoot) _node.eContainer(), _node.getName(), _node.getName(), attlist.getSelectedItem().toString(), value.getText(), "", 100);
+                    KevoreePlatformHelper.instance$.updateNodeLinkProp((ContainerRoot) _node.eContainer(), _node.getName(), _node.getName(), attlist.getSelectedItem().toString(), value.getText(), "", 100);
                     parent.refresh();
                 }
             });

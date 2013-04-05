@@ -61,9 +61,9 @@ public class Tester {
 
 
 
-        ContainerRoot current_model = KevoreeXmiHelper.$instance.loadStream(Tester.class.getClassLoader().getResourceAsStream("empty_node.kev"));
-        ContainerRoot target_model = KevoreeXmiHelper.$instance.loadStream(Tester.class.getClassLoader().getResourceAsStream("random_nio_grapher_group.kev"));
-        AccessControlRoot root = AccessControlXmiHelper.$instance.loadStream(Tester.class.getClassLoader().getResourceAsStream("model.ac"));
+        ContainerRoot current_model = KevoreeXmiHelper.instance$.loadStream(Tester.class.getClassLoader().getResourceAsStream("empty_node.kev"));
+        ContainerRoot target_model = KevoreeXmiHelper.instance$.loadStream(Tester.class.getClassLoader().getResourceAsStream("random_nio_grapher_group.kev"));
+        AccessControlRoot root = AccessControlXmiHelper.instance$.loadStream(Tester.class.getClassLoader().getResourceAsStream("model.ac"));
 
 
         ICompareAccessControl accessControl =    new CompareAccessControlImpl(root);

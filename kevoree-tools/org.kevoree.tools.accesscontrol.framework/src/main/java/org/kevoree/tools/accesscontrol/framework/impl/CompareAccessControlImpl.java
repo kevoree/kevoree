@@ -60,7 +60,7 @@ public class CompareAccessControlImpl implements ICompareAccessControl
     public List<AdaptationPrimitive> approval(String nodeName, ContainerRoot current_model, SignedModel target_modelSigned) throws ControlException {
 
         KevoreeKompareBean kompareBean = new KevoreeKompareBean();
-        AdaptationModel adaptationModel = kompareBean.kompare(current_model,KevoreeXmiHelper.$instance.loadString(new String(target_modelSigned.getSerialiedModel())), nodeName);
+        AdaptationModel adaptationModel = kompareBean.kompare(current_model,KevoreeXmiHelper.instance$.loadString(new String(target_modelSigned.getSerialiedModel())), nodeName);
 
         if(benchmark)
         {
@@ -129,7 +129,7 @@ public class CompareAccessControlImpl implements ICompareAccessControl
         try
         {
             // todo          target_signed.getModelFormat()
-            ContainerRoot target_model = KevoreeXmiHelper.$instance.loadString(new String(signedModel.getSerialiedModel()));
+            ContainerRoot target_model = KevoreeXmiHelper.instance$.loadString(new String(signedModel.getSerialiedModel()));
 
             ModelSignature signature =  signedModel.getSignature();
             logger.debug("Signature get key " + signature.getKey());

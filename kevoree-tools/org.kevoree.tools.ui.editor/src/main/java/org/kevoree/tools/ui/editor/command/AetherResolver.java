@@ -28,11 +28,11 @@ import java.util.List;
 public class AetherResolver {
 
     public static File resolve(String u,String g,String v,List<String> urls){
-        return AetherUtil.$instance.resolveMavenArtifact(u,g,v,urls);
+        return AetherUtil.instance$.resolveMavenArtifact(u,g,v,urls);
     }
 
     public static File resolveKev(String u,String g,String v){
-        return AetherUtil.$instance.resolveMavenArtifact(u,g,v,Arrays.asList("http://maven.kevoree.org/release","http://maven.kevoree.org/snapshots"));
+        return AetherUtil.instance$.resolveMavenArtifact(u,g,v,Arrays.asList("http://maven.kevoree.org/release","http://maven.kevoree.org/snapshots"));
     }
 
 }

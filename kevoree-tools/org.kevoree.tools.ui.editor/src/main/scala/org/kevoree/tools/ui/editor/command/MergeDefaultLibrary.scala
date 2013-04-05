@@ -71,14 +71,14 @@ class MergeDefaultLibrary(lib : Int) extends Command {
 //       val file = AetherUtil.resolveMavenArtifact("org.kevoree.library.model.all","org.kevoree.library.model",ModelHelper.kevoreeFactory.getVersion,List("http://maven.kevoree.org/release","http://maven.kevoree.org/snapshots"))
        val jar = new JarFile(file)
        val entry: JarEntry = jar.getJarEntry("KEV-INF/lib.kev")
-       val newmodel = KevoreeXmiHelper.$instance.loadStream(jar.getInputStream(entry))
+       val newmodel = KevoreeXmiHelper.instance$.loadStream(jar.getInputStream(entry))
       if (newmodel != null) {
         kernel.getModelHandler.merge(newmodel);
 
         //CREATE TEMP FILE FROM ACTUAL MODEL
         val tempFile = File.createTempFile("kevoreeEditorTemp", ".kev");
         PositionedEMFHelper.updateModelUIMetaData(kernel);
-        KevoreeXmiHelper.$instance.save(tempFile.getAbsolutePath, kernel.getModelHandler.getActualModel);
+        KevoreeXmiHelper.instance$.save(tempFile.getAbsolutePath, kernel.getModelHandler.getActualModel);
 
         //LOAD MODEL
         val loadCmd = new LoadModelCommand();

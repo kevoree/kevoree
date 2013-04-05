@@ -42,7 +42,7 @@ public class SignedModelImpl implements SignedModel, Serializable {
     private byte[] rawmodel = null;
 
     public SignedModelImpl(ContainerRoot model, PrivateKey key) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException {
-        rawmodel = KevoreeXmiHelper.$instance.saveToString(model, false).getBytes();
+        rawmodel = KevoreeXmiHelper.instance$.saveToString(model, false).getBytes();
         signature = new ModelSignatureImpl(HelperSignature.getSignature(key, getSerialiedModel()), ((RSAPrivateKey)key).getModulus().toString());
     }
 

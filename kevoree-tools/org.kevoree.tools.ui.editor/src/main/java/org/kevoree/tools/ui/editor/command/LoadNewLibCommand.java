@@ -106,7 +106,7 @@ public class LoadNewLibCommand implements Command {
 			}*/
 
 			if (path != null) {
-				ContainerRoot nroot = KevoreeXmiHelper.$instance.load(path);
+				ContainerRoot nroot = KevoreeXmiHelper.instance$.load(path);
 				//Merge
 				kernel.getModelHandler().merge(nroot);
 				//CREATE TEMP FILE FROM ACTUAL MODEL

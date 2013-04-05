@@ -114,15 +114,15 @@ class JmDnsLookup extends Command {
                     kernel.getModelHandler.merge(model)
                     PositionedEMFHelper.updateModelUIMetaData(kernel)
                     val file = File.createTempFile("kev", new Random().nextInt + "")
-                    KevoreeXmiHelper.$instance.save(file.getAbsolutePath, kernel.getModelHandler.getActualModel);
+                    KevoreeXmiHelper.instance$.save(file.getAbsolutePath, kernel.getModelHandler.getActualModel);
                     val loadCMD = new LoadModelCommand
                     loadCMD.setKernel(kernel)
                     loadCMD.execute(file.getAbsolutePath)
 
                     if (info.getInet4Addresses.size > 0) {
-                      KevoreePlatformHelper.$instance
+                      KevoreePlatformHelper.instance$
                         .updateNodeLinkProp(kernel.getModelHandler.getActualModel, nodeName, nodeName,
-                                             org.kevoree.framework.Constants.$instance.getKEVOREE_PLATFORM_REMOTE_NODE_IP,
+                                             org.kevoree.framework.Constants.instance$.getKEVOREE_PLATFORM_REMOTE_NODE_IP,
                                              info.getInet4Addresses()(0).getHostAddress, "LAN", 100)
                     }
 

@@ -45,7 +45,7 @@ class KevModelTextEditorPanel(kernel: KevoreeUIKernel) extends JPanel {
 
   def reload(){
     PositionedEMFHelper.updateModelUIMetaData(kernel)
-    codeEditor.setText(KevoreeXmiHelper.$instance.saveToString(kernel.getModelHandler.getActualModel,true))
+    codeEditor.setText(KevoreeXmiHelper.instance$.saveToString(kernel.getModelHandler.getActualModel,true))
   }
 
   /*
@@ -84,7 +84,7 @@ class KevModelTextEditorPanel(kernel: KevoreeUIKernel) extends JPanel {
   btApply.addMouseListener(new MouseAdapter() {
     override def mouseClicked(p1: MouseEvent) {
       try {
-        val newModel = KevoreeXmiHelper.$instance.loadString(codeEditor.getText)
+        val newModel = KevoreeXmiHelper.instance$.loadString(codeEditor.getText)
         val loadCMD = new LoadModelCommand
         loadCMD.setKernel(kernel)
         loadCMD.execute(newModel)

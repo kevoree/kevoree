@@ -90,7 +90,7 @@ class MiniKloudForm(editor: KevoreeEditor, button: AbstractButton) {
                 val file = File.createTempFile("editorBootstrapModel", "kev")
                 file.deleteOnExit()
 
-                KevoreeXmiHelper.$instance.save(file.getAbsolutePath, skyModel)
+                KevoreeXmiHelper.instance$.save(file.getAbsolutePath, skyModel)
                 logger.debug("trying to start the minicloud: {}", minicloudName)
                 minicloud = Runtime.getRuntime
                   .exec(Array[String](java, "-Dnode.gui.config=false", "-Dnode.bootstrap=" + file.getAbsolutePath, "-Dnode.name=" + minicloudName, "-Dkevoree.log.level=INFO", "-jar",
@@ -110,7 +110,7 @@ class MiniKloudForm(editor: KevoreeEditor, button: AbstractButton) {
                 skyModel.findByPath("nodes[" + minicloudName + "]/components[" + "webServer" + "]", classOf[ComponentInstance]) match {
                   case null =>
                   case component: ComponentInstance => {
-                    val portOption = KevoreePropertyHelper.$instance.getProperty(component, "port", false, "")
+                    val portOption = KevoreePropertyHelper.instance$.getProperty(component, "port", false, "")
                     if (portOption != null) {
                       for (i <- 0 until 10) {
                         try {
@@ -332,7 +332,7 @@ class MiniKloudForm(editor: KevoreeEditor, button: AbstractButton) {
           node =>
             logger.debug("Looking for property 'port' on group {} with node {}", Array[String](group.getName, node.getName))
 
-            val portOption = KevoreePropertyHelper.$instance.getProperty(group, "port", true, node.getName)
+            val portOption = KevoreePropertyHelper.instance$.getProperty(group, "port", true, node.getName)
             if (portOption != null) {
               ports = ports ++ Array[Int](Integer.parseInt(portOption))
             }
@@ -343,7 +343,7 @@ class MiniKloudForm(editor: KevoreeEditor, button: AbstractButton) {
     model.getMBindings.foreach {
       binding =>
         logger.debug("Looking for property 'port' on channel {} with node {}", Array[String](binding.getHub.getName, binding.getPort.eContainer.eContainer.asInstanceOf[ContainerNode].getName))
-        val portOption = KevoreePropertyHelper.$instance.getProperty(binding.getHub, "port", true, binding.getPort.eContainer.eContainer.asInstanceOf[ContainerNode].getName)
+        val portOption = KevoreePropertyHelper.instance$.getProperty(binding.getHub, "port", true, binding.getPort.eContainer.eContainer.asInstanceOf[ContainerNode].getName)
         if (portOption != null) {
           ports = ports ++ Array[Int](Integer.parseInt(portOption))
         }
@@ -355,7 +355,7 @@ class MiniKloudForm(editor: KevoreeEditor, button: AbstractButton) {
         node.getComponents.foreach {
           component =>
             logger.debug("Looking for property 'port' on component {}", component.getName)
-            val portOption = KevoreePropertyHelper.$instance.getProperty(component, "port", false, "")
+            val portOption = KevoreePropertyHelper.instance$.getProperty(component, "port", false, "")
             if (portOption != null) {
               ports = ports ++ Array[Int](Integer.parseInt(portOption))
             }

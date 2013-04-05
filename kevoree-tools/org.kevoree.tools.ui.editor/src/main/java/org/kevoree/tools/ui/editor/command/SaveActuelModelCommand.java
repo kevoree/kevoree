@@ -88,7 +88,7 @@ public class SaveActuelModelCommand implements Command {
 
     private void doSave(String location) {
         try {
-            KevoreeXmiHelper.$instance.save(location, kernel.getModelHandler().getActualModel());
+            KevoreeXmiHelper.instance$.save(location, kernel.getModelHandler().getActualModel());
             previousLocation = location;
         } catch (Exception e) {
             logger.error("Can't save model to default location !", e);

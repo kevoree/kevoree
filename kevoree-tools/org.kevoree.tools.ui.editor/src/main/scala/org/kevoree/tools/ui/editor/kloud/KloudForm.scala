@@ -255,7 +255,7 @@ class KloudForm(editor: KevoreeEditor, button: AbstractButton) {
     bodyBuilder append URLEncoder.encode(sshKey, "UTF-8")
     if (model.getGroups.size > 0 && model.getNodes.size > 0) {
       bodyBuilder append "&model="
-      bodyBuilder append URLEncoder.encode(KevoreeXmiHelper.$instance.saveToString(model, false), "UTF-8")
+      bodyBuilder append URLEncoder.encode(KevoreeXmiHelper.instance$.saveToString(model, false), "UTF-8")
     }
 
     logger.debug("url=>" + address)
@@ -334,7 +334,7 @@ class KloudForm(editor: KevoreeEditor, button: AbstractButton) {
       } else {
         val lcommand = new LoadModelCommand()
         try {
-          editor.getPanel.getKernel.getModelHandler.merge(KevoreeXmiHelper.$instance.loadString(response))
+          editor.getPanel.getKernel.getModelHandler.merge(KevoreeXmiHelper.instance$.loadString(response))
           PositionedEMFHelper.updateModelUIMetaData(editor.getPanel.getKernel)
           lcommand.setKernel(editor.getPanel.getKernel)
           lcommand.execute(editor.getPanel.getKernel.getModelHandler.getActualModel)

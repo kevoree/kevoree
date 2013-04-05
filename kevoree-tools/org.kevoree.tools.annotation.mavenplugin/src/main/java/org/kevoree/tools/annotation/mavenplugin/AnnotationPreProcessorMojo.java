@@ -687,7 +687,7 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
         try {
             File file = new File(sourceOutputDirectory.getPath() + File.separator + "KEV-INF" + File.separator + "lib.kev");
             if (file.exists()) {
-                ContainerRoot model = KevoreeXmiHelper.$instance.load(sourceOutputDirectory.getPath() + File.separator + "KEV-INF" + File.separator + "lib.kev");
+                ContainerRoot model = KevoreeXmiHelper.instance$.load(sourceOutputDirectory.getPath() + File.separator + "KEV-INF" + File.separator + "lib.kev");
                 KevoreeMergerComponent merger = new KevoreeMergerComponent();
 
                 for (Object dep : this.mavenProject.getCompileArtifacts()) {
@@ -698,13 +698,13 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
                         if (entry != null) {
                             String path = convertStreamToFile(jar.getInputStream(entry));
                             getLog().info("Auto merging dependency => " + path + " from " + defaultArtifact);
-                            merger.merge(model, KevoreeXmiHelper.$instance.load(path));
+                            merger.merge(model, KevoreeXmiHelper.instance$.load(path));
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
-                KevoreeXmiHelper.$instance.save(sourceOutputDirectory.getPath() + File.separator + "KEV-INF" + File.separator + "lib.kev", model);
+                KevoreeXmiHelper.instance$.save(sourceOutputDirectory.getPath() + File.separator + "KEV-INF" + File.separator + "lib.kev", model);
             }
 
 

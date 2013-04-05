@@ -29,7 +29,7 @@ public class Tester {
 
     public static void main(String[] args){
         NodeTypeBootstrapHelper boot = new NodeTypeBootstrapHelper();
-        ContainerRoot model = KevoreeXmiHelper.$instance.load("/Users/duke/Documents/dev/dukeboard/kevoree-kotlin/kevoree-corelibrary/model/org.kevoree.library.model.bootstrap/target/classes/KEV-INF/lib.kev");
+        ContainerRoot model = KevoreeXmiHelper.instance$.load("/Users/duke/Documents/dev/dukeboard/kevoree-kotlin/kevoree-corelibrary/model/org.kevoree.library.model.bootstrap/target/classes/KEV-INF/lib.kev");
 
         ContainerNode node0 = new DefaultKevoreeFactory().createContainerNode();
         node0.setName("node0");

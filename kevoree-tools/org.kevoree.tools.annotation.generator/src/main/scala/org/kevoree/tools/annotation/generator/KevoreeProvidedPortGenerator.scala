@@ -82,7 +82,7 @@ object KevoreeProvidedPortGenerator {
         /* GENERATE METHOD MAPPING */
         writer.append("override fun process(p0 : Any?) {this.send(p0)}\n")
         ref.getMappings.find(map => {
-          map.getServiceMethodName.equals(Constants.$instance.getKEVOREE_MESSAGEPORT_DEFAULTMETHOD)
+          map.getServiceMethodName.equals(Constants.instance$.getKEVOREE_MESSAGEPORT_DEFAULTMETHOD)
         }) match {
           case Some(mapping) => {
             /* GENERATE LOOP */
@@ -114,8 +114,8 @@ object KevoreeProvidedPortGenerator {
             writer.append("}}}\n")
           }
           case None => {
-            error("KevoreeProvidedPortGenerator::No mapping found for method '" + Constants.$instance.getKEVOREE_MESSAGEPORT_DEFAULTMETHOD + "' of MessagePort '" + ref.getName + "' in component '" + ct.getName + "'")
-            error("No mapping found for method '" + Constants.$instance.getKEVOREE_MESSAGEPORT_DEFAULTMETHOD + "' of MessagePort '" + ref.getName + "' in component '" + ct.getName + "'")
+            error("KevoreeProvidedPortGenerator::No mapping found for method '" + Constants.instance$.getKEVOREE_MESSAGEPORT_DEFAULTMETHOD + "' of MessagePort '" + ref.getName + "' in component '" + ct.getName + "'")
+            error("No mapping found for method '" + Constants.instance$.getKEVOREE_MESSAGEPORT_DEFAULTMETHOD + "' of MessagePort '" + ref.getName + "' in component '" + ct.getName + "'")
           }
         }
       }

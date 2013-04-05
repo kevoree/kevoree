@@ -47,7 +47,7 @@ object MainRunner {
 
     //InetAddress.getLocalHost
 
-    val newModel = KevoreeXmiHelper.$instance.load("/Users/duke/Documents/dev/dukeboard/kevoree/kevoree-tools/org.kevoree.tools.marShell/src/test/resources/baseModel/defaultLibrary.kev")
+    val newModel = KevoreeXmiHelper.instance$.load("/Users/duke/Documents/dev/dukeboard/kevoree/kevoree-tools/org.kevoree.tools.marShell/src/test/resources/baseModel/defaultLibrary.kev")
 
     val parser =new KevsParser();
     //val oscript = parser.parseScript(ParserUtil.loadFile("/Users/duke/Documents/dev/dukeboard/kevoree/kevoree-tools/org.kevoree.tools.marShell/src/test/resources/scripts/kevsCloud.kevs"));
@@ -60,7 +60,7 @@ object MainRunner {
           println("Interpreter Result : "+script.interpret(KevsInterpreterContext(newModel)))
       }
     }
-    KevoreeXmiHelper.$instance.save("/Users/duke/Documents/dev/dukeboard/kevoree/kevoree-tools/org.kevoree.tools.marShell/src/test/resources/results/modified.kev", newModel)
+    KevoreeXmiHelper.instance$.save("/Users/duke/Documents/dev/dukeboard/kevoree/kevoree-tools/org.kevoree.tools.marShell/src/test/resources/results/modified.kev", newModel)
   }
 
 

@@ -70,9 +70,9 @@ public class LoadModelCommand implements Command {
             modelToLoad = (ContainerRoot) p;
         } else {
             if (p instanceof InputStream) {
-                modelToLoad = KevoreeXmiHelper.$instance.loadStream((InputStream) p);
+                modelToLoad = KevoreeXmiHelper.instance$.loadStream((InputStream) p);
             } else {
-                modelToLoad = KevoreeXmiHelper.$instance.load(p.toString());
+                modelToLoad = KevoreeXmiHelper.instance$.load(p.toString());
             }
         }
 

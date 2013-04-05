@@ -60,10 +60,10 @@ class AutoUpdateCommand extends Command {
             typeDef.getDeployUnits.foreach {
               du => {
                 try {
-                  val file = AetherUtil.$instance.resolveDeployUnit(du)
+                  val file = AetherUtil.instance$.resolveDeployUnit(du)
                   val jar = new JarFile(file)
                   val entry: JarEntry = jar.getJarEntry("KEV-INF/lib.kev")
-                  val newmodel = KevoreeXmiHelper.$instance.loadStream(jar.getInputStream(entry))
+                  val newmodel = KevoreeXmiHelper.instance$.loadStream(jar.getInputStream(entry))
                   if (newmodel != null) {
                     kernel.getModelHandler.merge(newmodel);
                     LoggerFactory.getLogger(this.getClass).info("AutoMerge => " + du.getUnitName)

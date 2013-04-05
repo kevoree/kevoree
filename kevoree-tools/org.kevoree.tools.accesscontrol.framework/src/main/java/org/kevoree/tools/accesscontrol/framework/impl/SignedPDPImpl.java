@@ -44,7 +44,7 @@ public class SignedPDPImpl implements SignedPDP, Serializable {
     private byte[] rawmodel = null;
 
     public  SignedPDPImpl(AccessControlRoot root,PrivateKey key) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException {
-        rawmodel = AccessControlXmiHelper.$instance.saveToString(root, false).getBytes();
+        rawmodel = AccessControlXmiHelper.instance$.saveToString(root, false).getBytes();
         signature = new PDPSignatureImpl(HelperSignature.getSignature(key, getSerialiedModel()), ((RSAPrivateKey)key).getModulus().toString());
     }
 

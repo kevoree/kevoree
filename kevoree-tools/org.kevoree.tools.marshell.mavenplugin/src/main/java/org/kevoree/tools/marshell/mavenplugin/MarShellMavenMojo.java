@@ -100,8 +100,8 @@ public class MarShellMavenMojo extends AbstractMojo {
 
 	public void execute () throws MojoExecutionException {
 
-		AetherUtil.$instance.setRepositorySystemSession(repoSession);
-		AetherUtil.$instance.setRepositorySystem(repoSystem);
+		AetherUtil.instance$.setRepositorySystemSession(repoSession);
+		AetherUtil.instance$.setRepositorySystem(repoSystem);
 
 		mergerComponent = new KevoreeMergerComponent();
 
@@ -126,7 +126,7 @@ public class MarShellMavenMojo extends AbstractMojo {
 			throw new MojoExecutionException("Unable to build target packages " + sourceOutputDirectory.getAbsolutePath());
 		}
 
-		KevoreeXmiHelper.$instance.save(sourceOutputDirectory.getAbsolutePath() + File.separator + "lib.kev", model);
+		KevoreeXmiHelper.instance$.save(sourceOutputDirectory.getAbsolutePath() + File.separator + "lib.kev", model);
 
 		Resource resource = new Resource();
 		resource.setTargetPath("KEV-INF");

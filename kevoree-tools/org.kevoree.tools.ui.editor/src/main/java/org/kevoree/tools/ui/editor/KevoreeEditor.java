@@ -83,7 +83,7 @@ public class KevoreeEditor {
     }
 
     public void saveModel(String url){
-        KevoreeXmiHelper.$instance.save(url, panel.getKernel().getModelHandler().getActualModel());
+        KevoreeXmiHelper.instance$.save(url, panel.getKernel().getModelHandler().getActualModel());
     }
 
     public void setDefaultSaveLocation(String url){

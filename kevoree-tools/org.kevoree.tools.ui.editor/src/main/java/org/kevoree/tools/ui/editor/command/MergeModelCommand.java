@@ -71,9 +71,9 @@ public class MergeModelCommand implements Command {
             modelToMerge = (ContainerRoot) p;
         } else {
             if (p instanceof InputStream) {
-                modelToMerge = KevoreeXmiHelper.$instance.loadStream((InputStream) p);
+                modelToMerge = KevoreeXmiHelper.instance$.loadStream((InputStream) p);
             } else {
-                modelToMerge = KevoreeXmiHelper.$instance.load(p.toString());
+                modelToMerge = KevoreeXmiHelper.instance$.load(p.toString());
             }
         }
 
