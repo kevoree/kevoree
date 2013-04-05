@@ -207,19 +207,19 @@ public class KevoreeBootStrap {
 									JarFile jar = new JarFile(new File(file.getAbsolutePath()));
 									JarEntry entry = jar.getJarEntry("KEV-INF/lib.kev");
 									if (entry != null) {
-										bootstrapModel = KevoreeXmiHelper.$instance.loadStream(jar.getInputStream(entry));
+										bootstrapModel = KevoreeXmiHelper.instance$.loadStream(jar.getInputStream(entry));
 									}
 								}
 							} catch (Exception e) {
 								logger.error("Bootstrap failed", e);
 							}
 						} else if (bootstrapModelPath.startsWith("http://")) {
-							bootstrapModel = KevoreeXmiHelper.$instance.loadStream(new URL(bootstrapModelPath).openStream());
+							bootstrapModel = KevoreeXmiHelper.instance$.loadStream(new URL(bootstrapModelPath).openStream());
 						} else if (bootstrapModelPath.endsWith(".jar")) {
 							File filebootmodel = new File(bootstrapModelPath);
 							JarFile jar = new JarFile(filebootmodel);
 							JarEntry entry = jar.getJarEntry("KEV-INF/lib.kev");
-							bootstrapModel = KevoreeXmiHelper.$instance.loadStream(jar.getInputStream(entry));
+							bootstrapModel = KevoreeXmiHelper.instance$.loadStream(jar.getInputStream(entry));
 						} else {
 
                             try {
@@ -227,7 +227,7 @@ public class KevoreeBootStrap {
                                 bootstrapModel= bootstrapHelper.generateFromKevS(filebootmodel,kevsfactory.createKevScriptEngine(factory.createContainerRoot()));
                             } catch(final Exception e) {
                                 try {
-                                    bootstrapModel = KevoreeXmiHelper.$instance.load(bootstrapModelPath);
+                                    bootstrapModel = KevoreeXmiHelper.instance$.load(bootstrapModelPath);
                                 } catch(Exception e2){
                                     e.printStackTrace();
                                     e2.printStackTrace();
@@ -244,7 +244,7 @@ public class KevoreeBootStrap {
 						File filebootmodel = bootstraper.resolveKevoreeArtifact("org.kevoree.library.model.bootstrap", "org.kevoree.corelibrary.model", factory.getVersion());
 						JarFile jar = new JarFile(filebootmodel);
 						JarEntry entry = jar.getJarEntry("KEV-INF/lib.kev");
-						bootstrapModel = KevoreeXmiHelper.$instance.loadStream(jar.getInputStream(entry));
+						bootstrapModel = KevoreeXmiHelper.instance$.loadStream(jar.getInputStream(entry));
 					} catch (Exception e) {
 						logger.error("Bootstrap failed", e);
 					}

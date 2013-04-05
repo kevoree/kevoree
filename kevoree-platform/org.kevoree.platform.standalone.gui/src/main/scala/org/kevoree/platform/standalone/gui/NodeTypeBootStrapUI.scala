@@ -116,7 +116,7 @@ class NodeTypeBootStrapUI(private var pkernel: ContainerRoot) extends JPanel {
         if (filechooser.getSelectedFile != null && returnVal == JFileChooser.APPROVE_OPTION) {
           try {
             val lastLoadedModel = filechooser.getSelectedFile.getAbsolutePath.toString
-            val newModel = KevoreeXmiHelper.$instance.load(lastLoadedModel)
+            val newModel = KevoreeXmiHelper.instance$.load(lastLoadedModel)
             init(newModel)
             repaint()
             revalidate()

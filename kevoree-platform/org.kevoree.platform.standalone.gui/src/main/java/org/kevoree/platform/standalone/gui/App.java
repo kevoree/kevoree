@@ -73,7 +73,7 @@ public class App {
 
         Object param = System.getProperty("node.bootstrap");
         if (param != null) {
-            model = KevoreeXmiHelper.$instance.load(param.toString());
+            model = KevoreeXmiHelper.instance$.load(param.toString());
         } else {
             try {
                 System.setSecurityManager(null);
@@ -91,7 +91,7 @@ public class App {
                 File fileMarShell = bootstraper.resolveKevoreeArtifact("org.kevoree.library.model.bootstrap", "org.kevoree.corelibrary.model", new DefaultKevoreeFactory().getVersion());
                 JarFile jar = new JarFile(fileMarShell);
                 JarEntry entry = jar.getJarEntry("KEV-INF/lib.kev");
-                model = KevoreeXmiHelper.$instance.loadStream(jar.getInputStream(entry));
+                model = KevoreeXmiHelper.instance$.loadStream(jar.getInputStream(entry));
 
                 bootstraper.close();
                 bootstraper = null;

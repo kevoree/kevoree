@@ -47,7 +47,7 @@ public class PlatformDownloader {
                 repos.add("http://maven.kevoree.org/release/");
             }
 
-            File modelFile = AetherUtil.$instance.resolveMavenArtifact(splittedUrl[1], splittedUrl[0], splittedUrl[2], repos);
+            File modelFile = AetherUtil.instance$.resolveMavenArtifact(splittedUrl[1], splittedUrl[0], splittedUrl[2], repos);
             try {
                 JarFile jar = new JarFile(modelFile);
                 JarEntry entry = jar.getJarEntry("KEV-INF/lib.kev");
@@ -102,7 +102,7 @@ public class PlatformDownloader {
             repos.add("http://maven.kevoree.org/snapshots/");
             repos.add("http://maven.kevoree.org/release/");
         }
-        File jarFile = AetherUtil.$instance.resolveMavenArtifact("org.kevoree.platform.standalone.gui", "org.kevoree.platform", version, repos);
+        File jarFile = AetherUtil.instance$.resolveMavenArtifact("org.kevoree.platform.standalone.gui", "org.kevoree.platform", version, repos);
 
         if (jarFile.exists()) {
             return jarFile.getAbsolutePath();
@@ -112,7 +112,7 @@ public class PlatformDownloader {
     }
 
     private static String findVersionFromModel(InputStream stream) {
-        ContainerRoot model = KevoreeXmiHelper.$instance.loadStream(stream);
+        ContainerRoot model = KevoreeXmiHelper.instance$.loadStream(stream);
         if (model != null) {
             for (DeployUnit unit : model.getDeployUnits()) {
                 if ("org.kevoree".equals(unit.getGroupName()) && "org.kevoree.framework".equals(unit.getUnitName())) {

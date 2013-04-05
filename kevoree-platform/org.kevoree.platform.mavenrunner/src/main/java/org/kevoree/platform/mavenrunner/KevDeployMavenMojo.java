@@ -111,12 +111,12 @@ public class KevDeployMavenMojo extends AbstractMojo {
 			//Logger root = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
 			//root.setLevel(Level.ALL);
 			KevoreeBootStrap.byPassAetherBootstrap = true;
-			AetherUtil.$instance.setRepositorySystemSession(repoSession);
-			AetherUtil.$instance.setRepositorySystem(repoSystem);
+			AetherUtil.instance$.setRepositorySystemSession(repoSession);
+			AetherUtil.instance$.setRepositorySystem(repoSystem);
 			ContainerRoot modelLoad = null;
 			if (model.getName().endsWith(".kev")) {
 				FileInputStream ins = new FileInputStream(model);
-				modelLoad = KevoreeXmiHelper.$instance.loadStream(ins);
+				modelLoad = KevoreeXmiHelper.instance$.loadStream(ins);
 				ins.close();
 			} else if (model.getName().endsWith(".kevs")) {
 				modelLoad = KevScriptHelper.generate(model, project);

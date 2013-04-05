@@ -91,12 +91,12 @@ public class KevRunnerMavenMojo extends AbstractMojo {
 
 		try {
 			KevoreeBootStrap.byPassAetherBootstrap = true;
-			AetherUtil.$instance.setRepositorySystemSession(repoSession);
-			AetherUtil.$instance.setRepositorySystem(repoSystem);
+			AetherUtil.instance$.setRepositorySystemSession(repoSession);
+			AetherUtil.instance$.setRepositorySystem(repoSystem);
 			ContainerRoot modelRoot = null;
 			if (model.getName().endsWith(".kev")) {
 				FileInputStream ins = new FileInputStream(model);
-				modelRoot = KevoreeXmiHelper.$instance.loadStream(ins);
+				modelRoot = KevoreeXmiHelper.instance$.loadStream(ins);
 				ins.close();
 			} else if (model.getName().endsWith(".kevs")) {
 				modelRoot = KevScriptHelper.generate(model, project);
@@ -105,7 +105,7 @@ public class KevRunnerMavenMojo extends AbstractMojo {
 			}
 
 			File tFile = new File(project.getBuild().getOutputDirectory(), "runner.kev");
-			KevoreeXmiHelper.$instance.save(tFile.getAbsolutePath(), modelRoot);
+			KevoreeXmiHelper.instance$.save(tFile.getAbsolutePath(), modelRoot);
 
 //			System.setProperties(project.getProperties());
 			for (Object key : project.getProperties().keySet()) {
