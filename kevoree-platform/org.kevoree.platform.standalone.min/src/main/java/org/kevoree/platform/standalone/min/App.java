@@ -40,20 +40,12 @@ public class App {
 
     private static final Logger logger = LoggerFactory.getLogger(App.class);
 
-
     public static void main(String[] args) throws Exception {
         Long startTime = System.currentTimeMillis();
-
-
         System.setProperty("kcl.lazy", "true");
-       // System.setProperty("actors.corePoolSize","25");
-      //  System.setProperty("actors.maxPoolSize","50");
-
-       // KevoreeBootStrap.logService = new SimpleLogService();
         KevoreeBootStrap.nodeBootClass = "org.kevoree.tools.aether.framework.min.MinNodeTypeBootstrapHelper";
-
         if (System.getProperty("node.groupType") == null) {
-            System.setProperty("node.groupType", "NanoRestGroup");
+            System.setProperty("node.groupType", "BasicGroup");
         }
         String node_name = System.getProperty("node.name");
         if (node_name == null || node_name.equals("")) {
@@ -63,7 +55,6 @@ public class App {
         final KevoreeBootStrap kb = new KevoreeBootStrap();
 
         Runtime.getRuntime().addShutdownHook(new Thread("Shutdown Hook") {
-
             public void run() {
                 try {
                     kb.stop();
