@@ -30,21 +30,27 @@
  */
 package org.kevoree.framework;
 
-import org.kevoree.api.service.core.handler.KevoreeModelHandlerService;
 import org.kevoree.framework.message.Message;
 
-import java.util.HashMap;
-
 /**
- *
  * @author ffouquet
  */
 public interface ChannelFragment {
 
     public Object dispatch(Message msg);
+
     public ChannelFragmentSender createSender(String remoteNodeName, String remoteChannelName);
+
     public String getNodeName();
+
     public String getName();
 
+    public Object forward(KevoreeChannelFragment delegate, Message inmsg);
+
+    public Object forward(KevoreePort delegate, Message inmsg);
+
+    public java.util.List<KevoreePort> getBindedPorts();
+
+    public java.util.List<KevoreeChannelFragment> getOtherFragments();
 
 }

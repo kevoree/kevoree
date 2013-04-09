@@ -38,7 +38,7 @@ import org.kevoree.framework.message.Message;
  */
 public abstract class AbstractChannelFragment extends AbstractTypeDefinition implements ChannelFragment {
 
-    public ChannelTypeFragmentThread delegate = null;
+    public ChannelFragment delegate = null;
 
     public java.util.List<KevoreePort> getBindedPorts() {
         return delegate.getBindedPorts();

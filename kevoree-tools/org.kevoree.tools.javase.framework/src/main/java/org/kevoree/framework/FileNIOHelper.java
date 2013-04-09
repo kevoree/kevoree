@@ -42,7 +42,6 @@ import java.util.zip.ZipInputStream;
  * User: duke
  * Date: 05/12/11
  * Time: 22:06
- * To change this template use File | Settings | File Templates.
  */
 public class FileNIOHelper {
 
