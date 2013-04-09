@@ -18,7 +18,6 @@ import org.kevoree.ContainerRoot;
 import org.kevoree.Instance;
 import org.kevoree.accesscontrol.AccessControlRoot;
 import org.kevoree.adaptation.accesscontrol.api.ControlException;
-import org.kevoree.adaptation.accesscontrol.api.Signed;
 import org.kevoree.adaptation.accesscontrol.api.SignedModel;
 import org.kevoree.adaptation.accesscontrol.api.SignedPDP;
 import org.kevoree.framework.AbstractGroupType;
