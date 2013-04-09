@@ -16,22 +16,9 @@ package org.kevoree.adaptation.accesscontrol.api;
 /**
  * Created with IntelliJ IDEA.
  * User: jed
- * Date: 21/02/13
- * Time: 11:05
- *
+ * Date: 09/04/13
+ * Time: 16:52
+ * To change this template use File | Settings | File Templates.
  */
-public interface SignedPDP extends Signed {
-    /**
-     * This method returns the model
-     * @return
-     */
-    public byte[] getSerialiedModel();
-
-    /**
-     * This method indicates the format storage
-     * @return   format
-     */
-    public String getModelFormat();
-
-    public PDPSignature getSignature();
+public interface Signed {
 }

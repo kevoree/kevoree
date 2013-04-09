@@ -27,6 +27,12 @@
         </dependency>
 
         <dependency>
+            <groupId>org.kevoree.tools</groupId>
+            <artifactId>org.kevoree.tools.javase.framework</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.kevoree</groupId>
             <artifactId>org.kevoree.kompare</artifactId>
             <version>${kevoree.version}</version>
@@ -43,7 +49,6 @@
     </dependencies>
     <build>
     <plugins>
-
         <plugin>
             <artifactId>kotlin-maven-plugin</artifactId>
             <groupId>org.jetbrains.kotlin</groupId>
@@ -54,14 +59,9 @@
                     <phase>process-sources</phase>
                     <goals> <goal>compile</goal> </goals>
                 </execution>
-
-                <execution>
-                    <id>test-compile</id>
-                    <phase>process-test-sources</phase>
-                    <goals> <goal>test-compile</goal> </goals>
-                </execution>
             </executions>
         </plugin>
+
     </plugins>
     </build>
 

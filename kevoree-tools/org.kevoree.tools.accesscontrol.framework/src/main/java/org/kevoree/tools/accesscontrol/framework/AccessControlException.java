@@ -11,27 +11,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kevoree.adaptation.accesscontrol.api;
+package org.kevoree.tools.accesscontrol.framework;
+
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SignatureException;
 
 /**
  * Created with IntelliJ IDEA.
  * User: jed
- * Date: 21/02/13
- * Time: 11:05
- *
+ * Date: 09/04/13
+ * Time: 15:19
+ * To change this template use File | Settings | File Templates.
  */
-public interface SignedPDP extends Signed {
-    /**
-     * This method returns the model
-     * @return
-     */
-    public byte[] getSerialiedModel();
-
-    /**
-     * This method indicates the format storage
-     * @return   format
-     */
-    public String getModelFormat();
-
-    public PDPSignature getSignature();
+public class AccessControlException extends Throwable {
 }

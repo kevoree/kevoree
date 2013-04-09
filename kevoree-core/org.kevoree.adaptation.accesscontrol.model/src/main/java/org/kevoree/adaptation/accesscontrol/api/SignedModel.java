@@ -19,7 +19,7 @@ package org.kevoree.adaptation.accesscontrol.api;
  * Date: 21/02/13
  * Time: 9:12
  */
-public interface SignedModel {
+public interface SignedModel extends Signed {
 
     /**
      * This method returns the model
