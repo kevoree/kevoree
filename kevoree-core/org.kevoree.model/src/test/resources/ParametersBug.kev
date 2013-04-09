@@ -94,7 +94,7 @@
 </repositories>
 <repositories xsi:type="kevoree:Repository" url="http://repo1.maven.org/maven2">
 </repositories>
-<dataTypes xsi:type="kevoree:TypedElement" name="Array[java.lang.String]">
+<dataTypes xsi:type="kevoree:TypedElement" name="Array&lt;java.lang.String&gt;">
 </dataTypes>
 <dataTypes xsi:type="kevoree:TypedElement" name="java.lang.String">
 </dataTypes>

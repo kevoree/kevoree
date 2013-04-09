@@ -270,4 +270,6 @@
   <deployUnits groupName="org.kevoree.library.android" unitName="org.kevoree.library.android.logger" version="1.2.0-RC3" hashcode="201109191342501" targetNodeType="//@typeDefinitions.31"/>
   <deployUnits groupName="org.kevoree.library.android" unitName="org.kevoree.library.android.nodeType" version="1.2.0-RC3" hashcode="201109191342647" targetNodeType="//@typeDefinitions.31"/>
   <deployUnits groupName="org.kevoree.library.android" unitName="org.kevoree.library.android.text2speech" version="1.2.0-RC3" hashcode="201109191342712" targetNodeType="//@typeDefinitions.31"/>
+  <dataTypes xsi:type="kevoree:TypedElement" name="Array&lt;java.lang.String&gt;">
+  </dataTypes>
 </kevoree:ContainerRoot>
