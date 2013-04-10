@@ -64,11 +64,8 @@ public class App {
                 }
             }
         });
-
         kb.start();
         logger.info("Kevoree runtime boot time {} ms", (System.currentTimeMillis() - startTime));
-
-
     }
 
 }
