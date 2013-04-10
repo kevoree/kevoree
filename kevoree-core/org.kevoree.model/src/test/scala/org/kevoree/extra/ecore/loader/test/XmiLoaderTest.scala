@@ -62,7 +62,11 @@ class XmiLoaderTest {
     loader.loadModelFromPath(new File(getClass.getResource("/ParametersBug.kev").toURI)).get(0);
   }
 
-
+  @Test
+  def testLoadDefaultLibsFqn() {
+    val loader = new ModelLoader()
+    loader.loadModelFromPath(new File(getClass.getResource("/defaultlibsFqn.kev").toURI)).get(0);
+  }
 
   @Test
   def testOpposite1(){
@@ -108,10 +112,11 @@ class XmiLoaderTest {
   def testSaveAndLoad() {
     //System.out.print("Saving model from memory to tempFile =>")
     val tempFile = File.createTempFile("kmfTest_" + System.currentTimeMillis(), "kev")
-    //System.out.println(tempFile.getAbsolutePath)
+    //tempFile.deleteOnExit()
+    System.out.println(tempFile.getAbsolutePath)
     val pr = new FileOutputStream(tempFile)
     val ms = new ModelSerializer()
-    tempFile.deleteOnExit()
+
 
     ms.serialize(XmiLoaderTest.model,pr)
     pr.close()
