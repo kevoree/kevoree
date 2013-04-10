@@ -15,7 +15,6 @@
 package org.kevoree.tools.modelsync
 
 import org.kevoree.framework.AbstractGroupType
-import org.kevoree.framework.internal.MethodAnnotationResolver
 import org.slf4j.LoggerFactory
 import org.kevoree.ContainerRoot
 
