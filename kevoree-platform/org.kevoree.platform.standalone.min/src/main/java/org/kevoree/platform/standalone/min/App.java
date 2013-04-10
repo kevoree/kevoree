@@ -47,6 +47,8 @@ public class App {
         if (System.getProperty("node.groupType") == null) {
             System.setProperty("node.groupType", "BasicGroup");
         }
+        KevoreeBootStrap.logService = new SimpleServiceKevLog();
+
         String node_name = System.getProperty("node.name");
         if (node_name == null || node_name.equals("")) {
             node_name = "node0";
@@ -62,11 +64,8 @@ public class App {
                 }
             }
         });
-
         kb.start();
         logger.info("Kevoree runtime boot time {} ms", (System.currentTimeMillis() - startTime));
-
-
     }
 
 }
