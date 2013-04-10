@@ -59,7 +59,7 @@ import org.slf4j.LoggerFactory
 object AetherUtil : AetherFramework {
     override var _repositorySystem: RepositorySystem? = null
     override var _repositorySession: RepositorySystemSession? = null
-    override var logger :  org.slf4j.Logger= LoggerFactory.getLogger(this.javaClass)!!
+    override var logger : org.slf4j.Logger= LoggerFactory.getLogger(this.javaClass)!!
 
     override fun getRepositorySystem(): RepositorySystem {
         val locator = DefaultServiceLocator()
