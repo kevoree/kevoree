@@ -66,7 +66,7 @@ object PrimitiveCommandExecutionHelper {
             adapt ->
             val primitive = nodeInstance.getPrimitive(adapt)
             if (primitive != null) {
-                logger.debug("Populate primitive => " + primitive)
+                logger.debug("Populate primitive => {} ",primitive)
                 try {
                     val nodeType = rootNode.getTypeDefinition() as org.kevoree.NodeType
                     val aTypeRef = nodeType.getManagedPrimitiveTypeRefs().find{(ref: AdaptationPrimitiveTypeRef) : Boolean -> ref.getRef()?.getName() == adapt.getPrimitiveType()?.getName() }
@@ -79,7 +79,7 @@ object PrimitiveCommandExecutionHelper {
                 phase.populate(primitive)
                 true
             } else {
-                logger.debug("Error while searching primitive => " + adapt)
+                logger.debug("Error while searching primitive => {} ", adapt)
                 false
             }
         }
@@ -125,11 +125,11 @@ object PrimitiveCommandExecutionHelper {
                 try {
                     var result = primitive.execute()
                     if(!result){
-                        logger.error("Error while executing primitive command " + primitive)
+                        logger.error("Error while executing primitive command {} ",primitive)
                     }
                     return result
                 } catch(e: Throwable) {
-                    logger.error("Error while executing primitive command " + primitive, e)
+                    logger.error("Error while executing primitive command {} ", primitive, e)
                     return false
                 }
             }
@@ -193,7 +193,7 @@ object PrimitiveCommandExecutionHelper {
                 // SEQUENCIAL ROOLBACK
                 primitives.reverse().forEach{ c ->
                     try {
-                        logger.debug("Undo adaptation command " + c.javaClass)
+                        logger.debug("Undo adaptation command {} ",c.javaClass)
                         c.undo()
                     } catch (e: Exception) {
                         logger.warn("Exception during rollback", e)

@@ -135,7 +135,7 @@ public class PutHelper {
             }
             return metric;
         } else {
-            logger.error("Can't parse parameter path " + paths.size() + "- path length " + paths + " must be 3");
+            logger.error("Can't parse parameter path {} - path length {}must be 3 ",new Object[]{paths.size() , paths});
             return null;
         }
     }

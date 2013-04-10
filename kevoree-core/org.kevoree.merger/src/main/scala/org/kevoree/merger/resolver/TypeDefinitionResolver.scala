@@ -41,11 +41,12 @@ trait TypeDefinitionResolver {
               case Some(targetNodeType) => {
                 du.setTargetNodeType(targetNodeType.asInstanceOf[NodeType])
               }
-              case None => logger.error("Error while resolving NodeType for name " + nodeTypeName.getName())
+              case None => logger.error("Error while resolving NodeType for name {}", nodeTypeName.getName())
             }
           }
           case null => //NOOP
-          case _@e => logger.warn("Strange already resolved target node type for name " + e + " - " + du.getUnitName)
+          case _@e => logger.warn("Strange already resolved target node type for name {} - {}", Array[AnyRef](e,du.getUnitName))
+
         }
     }
   }
@@ -62,7 +63,7 @@ trait TypeDefinitionResolver {
                     typeDef.removeSuperTypes(superType)
                     typeDef.addSuperTypes(resolvedTypeDef)
                   }
-                  case None => logger.error("Error while resolving SuperType for name " + unresolvedTypeName.getName())
+                  case None => logger.error("Error while resolving SuperType for name {}" , unresolvedTypeName.getName())
                 }
               }
               case _ =>
@@ -83,7 +84,7 @@ trait TypeDefinitionResolver {
                 library.removeSubTypes(subType)
                 library.addSubTypes(resolvedTypeDef)
               } else {
-                logger.error("Error while resolving library SubType for name " + subType.getName())
+                logger.error("Error while resolving library SubType for name {}",subType.getName())
               }
             }
           }
@@ -100,7 +101,7 @@ trait TypeDefinitionResolver {
               case Some(resolvedTypeDef) => {
                 instance.setTypeDefinition(resolvedTypeDef)
               }
-              case None => logger.error("Error while resolving library SubType for name " + unresolvedTypeName.getName())
+              case None => logger.error("Error while resolving library SubType for name {}",unresolvedTypeName.getName())
             }
           }
           case _ =>

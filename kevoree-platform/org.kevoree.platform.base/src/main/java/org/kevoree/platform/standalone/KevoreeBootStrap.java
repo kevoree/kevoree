@@ -262,7 +262,7 @@ public class KevoreeBootStrap {
 					logger.error("Bootstrap failed", e);
 				}
 			} else {
-				logger.error("Can't bootstrap nodeType, empty model "+bootstrapModel);
+				logger.error("Can't bootstrap nodeType, empty model {} ",bootstrapModel);
 			}
 
 			KevoreeLogLevel coreLogLevel = KevoreeLogLevel.INFO;

@@ -65,7 +65,7 @@ trait GroupMerger extends Merger with DictionaryMerger{
         actualModel.findByPath(subNode.path(),classOf[ContainerNode]) match {
        // actualModel.getNodes.find(pnode => pnode.getName == subNode) match {
            case currentNode : ContainerNode => currentGroup.addSubNodes(currentNode)
-           case null => logger.error("Unresolved node "+subNode+" in links for group => "+currentGroup.getName)
+           case null => logger.error("Unresolved node {}  in links for group => {} ",Array[AnyRef](subNode,currentGroup.getName))
          }
       }
 

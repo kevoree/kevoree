@@ -477,13 +477,13 @@ open class KevoreeJarClassLoader(): ClassLoader() {
 
 
     fun printDump() {
-        logger.debug("KCL : " + (classpathResources as KevoreeLazyJarResources).getLastLoadedJar())
+        logger.debug("KCL : {}",(classpathResources as KevoreeLazyJarResources).getLastLoadedJar())
         for(s in subClassLoaders) {
-            logger.debug("    l->" + ((s as KevoreeJarClassLoader).classpathResources as KevoreeLazyJarResources).getLastLoadedJar() + "_" + s.hashCode())
+            logger.debug("    l-> {}", ((s as KevoreeJarClassLoader).classpathResources as KevoreeLazyJarResources).getLastLoadedJar() + "_" + s.hashCode())
         }
         for(s in subWeakClassLoaders) {
             if (s.get() != null){
-                logger.debug("    w~>" + ((s.get() as KevoreeJarClassLoader).classpathResources as KevoreeLazyJarResources).getLastLoadedJar() + "_" + s.get()!!.hashCode())
+                logger.debug("    w~> {}" , ((s.get() as KevoreeJarClassLoader).classpathResources as KevoreeLazyJarResources).getLastLoadedJar() + "_" + s.get()!!.hashCode())
             }
         }
     }

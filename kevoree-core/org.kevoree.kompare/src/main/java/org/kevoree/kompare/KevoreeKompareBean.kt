@@ -25,7 +25,7 @@ class KevoreeKompareBean: Kompare2, KevoreeScheduler {
         var updateLocalNode = targetModel.findByPath("nodes[" + nodeName + "]", javaClass<ContainerNode>())
 
         if(actualLocalNode == null && updateLocalNode == null){
-            logger.warn("Empty Kompare because "+nodeName+" not found in current nor in target model")
+            logger.warn("Empty Kompare because {} not found in current nor in target model ",nodeName)
             return adaptationModel
         }
         var dropActualNode = false

@@ -170,7 +170,7 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
             setNodeName("node0")
         }
         modelListeners.start(getNodeName())
-        logger.info("Kevoree Start event : node name = " + getNodeName())
+        logger.info("Kevoree Start event : node name = {}", getNodeName())
         scheduler = java.util.concurrent.Executors.newSingleThreadExecutor(KevoreeCoreThreadFactory(getNodeName()))
         val uuidModel = UUIDModelImpl(UUID.randomUUID(), factory.createContainerRoot())
         model.set(uuidModel)
@@ -284,7 +284,7 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
                     callCallBack(callback, internalRes, null)
                     internalRes
                 } else {
-                    logger.debug("Core Locked , bad UUID " + previousModel.getUUID())
+                    logger.debug("Core Locked , bad UUID {}", previousModel.getUUID())
                     callCallBack(callback, false, ModelUpdateCallBackReturn.CAS_ERROR)
                     false //LOCK REFUSED !
                 }
@@ -370,7 +370,7 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
                         logger.error("TypeDef installation fail !")
                     }
                 } else {
-                    logger.error("Node instance name " + getNodeName() + " not found in bootstrap model !")
+                    logger.error("Node instance name {} not found in bootstrap model !",getNodeName())
                 }
             }
         } catch(e: Exception) {
@@ -388,7 +388,7 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
 
     fun internal_update_model(proposedNewModel: ContainerRoot): Boolean {
         if (proposedNewModel.findNodesByID(getNodeName()) == null) {
-            logger.error("Asking for update with a NULL model or node name (" + getNodeName() + ") was not found in target model !")
+            logger.error("Asking for update with a NULL model or node name ({}) was not found in target model !",getNodeName)
             return false
         }
         try {
@@ -397,7 +397,7 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
             if ( checkResult.size > 0) {
                 logger.error("There is check failure on update model, update refused !")
                 for(cr in checkResult) {
-                    logger.error("error=>" + cr?.getMessage() + ",objects" + cr?.getTargetObjects().toString())
+                    logger.error("error=> " + cr?.getMessage() + ",objects" + cr?.getTargetObjects().toString())
                 }
                 return false
             } else {
@@ -425,9 +425,9 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
                             adaptationModel.setInternalReadOnly()
                             if (logger.isDebugEnabled()){
                                 //Avoid the loop if the debug is not activated
-                                logger.debug("Adaptation model size " + adaptationModel.getAdaptations().size())
+                                logger.debug("Adaptation model size {}",adaptationModel.getAdaptations().size())
                                 for(adaptation in adaptationModel.getAdaptations()) {
-                                    logger.debug("primitive " + adaptation.getPrimitiveType()?.getName())
+                                    logger.debug("primitive {} ", adaptation.getPrimitiveType()?.getName())
                                 }
                             }
                             //Executes the adaptation
@@ -489,7 +489,7 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
                         }
                     }
                     val milliEnd = System.currentTimeMillis() - milli
-                    logger.debug("End deploy result=" + deployResult + "-" + milliEnd)
+                    logger.debug("End deploy result={}-{}",deployResult,milliEnd)
                     return deployResult
 
                 } else {

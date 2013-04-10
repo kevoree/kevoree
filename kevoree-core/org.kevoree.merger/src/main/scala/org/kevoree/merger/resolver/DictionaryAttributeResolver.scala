@@ -46,10 +46,10 @@ trait DictionaryAttributeResolver {
                 case targetNodeName : UnresolvedNode => {
                   model.getNodes.find(n => n.getName == targetNodeName.getName()) match {
                     case Some(node)=> value.setTargetNode(node)
-                    case None => logger.error("Unconsitent model , node not found for name "+targetNodeName.getName())
+                    case None => logger.error("Unconsitent model , node not found for name {}",targetNodeName.getName())
                   }
                 }
-                case _ => logger.error("Already Dictionary Value targetNodeName for value "+value)
+                case _ => logger.error("Already Dictionary Value targetNodeName for value {}",value)
               } 
             }
             
@@ -62,7 +62,7 @@ trait DictionaryAttributeResolver {
                       case Some(attFound)=> value.setAttribute(attFound)
                       case None => {
                         dictionaryInstance.removeValues(value)
-                        logger.error("Unconsitent dictionary type , att not found for name "+attName.getName())
+                        logger.error("Unconsitent dictionary type , att not found for name {}",attName.getName())
                       }
                     }
                   }
@@ -70,7 +70,7 @@ trait DictionaryAttributeResolver {
                 }
               }
               case _ @ e => {
-                logger.error("Already resolved Dictionary Attribute "+e)
+                logger.error("Already resolved Dictionary Attribute {}",e)
               }
             }
           }

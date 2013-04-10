@@ -87,16 +87,16 @@ trait ChannelMerger extends Merger with DictionaryMerger {
                         }
                       }
                     }
-                    case None => logger.error("Error while merging binding, can't found port for name " + mb.getPort.getPortTypeRef.getName)
+                    case None => logger.error("Error while merging binding, can't found port for name {}",mb.getPort.getPortTypeRef.getName)
                   }
                 }
-                case None => logger.error("Error while merging binding, can't found component for name " + mb.getPort.eContainer.asInstanceOf[ComponentInstance].getName)
+                case None => logger.error("Error while merging binding, can't found component for name {}",mb.getPort.eContainer.asInstanceOf[ComponentInstance].getName)
               }
             }
-            case null => logger.error("Error while merging binding, can't found node for name " + mb.getPort.eContainer.eContainer.asInstanceOf[ContainerNode].getName)
+            case null => logger.error("Error while merging binding, can't found node for name {}", mb.getPort.eContainer.eContainer.asInstanceOf[ContainerNode].getName)
           }
         } else {
-          logger.error("Error while merging binding, can't found channel for name " + mb.getHub.getName)
+          logger.error("Error while merging binding, can't found channel for name {}",mb.getHub.getName)
         }
       }
     }

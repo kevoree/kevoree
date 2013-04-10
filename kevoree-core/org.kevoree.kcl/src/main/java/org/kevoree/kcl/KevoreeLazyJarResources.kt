@@ -212,7 +212,7 @@ class KevoreeLazyJarResources {
                                         }
 
                                         //  println("subParentURL="+baseurl +jarEntry.getName())
-                                        logger.debug("KCL Found sub Jar => " + jarEntry!!.getName())
+                                        logger.debug("KCL Found sub Jar => {}", jarEntry!!.getName())
                                         loadJar(ByteArrayInputStream(out.toByteArray()))
                                     } else {
                                         if (jarEntry!!.getName().endsWith(".class")) {
@@ -313,7 +313,7 @@ class KevoreeLazyJarResources {
                     detectedResources.put(resUrl, out.toByteArray())
                     out.toByteArray()
                 } catch(e: Exception) {
-                    logger.debug("Error while copying " + resUrl, e)
+                    logger.debug("Error while copying {} ",resUrl, e)
                     null
                 } finally {
                     if (stream != null) {

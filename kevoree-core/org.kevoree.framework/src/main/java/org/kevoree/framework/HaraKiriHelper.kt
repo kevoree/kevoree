@@ -53,10 +53,10 @@ class HaraKiriHelper {
                     val currentNode = root.findNodesByID(nodeName)
                     if(nodeName != null){
                         if (detectHaraKiriDeployUnit(currentNode!!.getTypeDefinition()!!, deployUnit)) {
-                            logger.warn("HaraKiri ignore from Kompare for deployUnit => " + deployUnit.getUnitName())
+                            logger.warn("HaraKiri ignore from Kompare for deployUnit => {}",deployUnit.getUnitName())
                             currentAdaptModel.removeAdaptations(ad)
                         } else {
-                            logger.debug("Sucessfully checked " + deployUnit.getUnitName())
+                            logger.debug("Sucessfully checked {}",deployUnit.getUnitName())
                         }
                     }
                 }
@@ -66,7 +66,7 @@ class HaraKiriHelper {
                     val currentNode = root.findNodesByID(nodeName)
                     if(nodeName != null){
                         if (detectHaraKiriTypeDefinition(currentNode!!.getTypeDefinition()!!, typeDef)) {
-                            logger.warn("HaraKiri ignore from Kompare for type => " + typeDef.getName())
+                            logger.warn("HaraKiri ignore from Kompare for type => {}", typeDef.getName())
                             currentAdaptModel.removeAdaptations(ad)
                         }
                     }

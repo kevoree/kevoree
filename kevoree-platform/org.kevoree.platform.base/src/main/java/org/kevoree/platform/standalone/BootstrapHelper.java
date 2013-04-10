@@ -46,13 +46,13 @@ public class BootstrapHelper {
             ContainerNode node = null;
             TypeDefinition typeDefFound = model.findTypeDefinitionsByID(defType);
             if (typeDefFound != null) {
-                logger.warn("Init default node instance for name " + nodeName);
+                logger.warn("Init default node instance for name {}", nodeName);
                 node = factory.createContainerNode();
                 node.setName(nodeName);
                 node.setTypeDefinition(typeDefFound);
                 model.addNodes(node);
             } else {
-                logger.error("Default type not found for name " + defType);
+                logger.error("Default type not found for name {} ", defType);
             }
             if (groupType != null) {
                 TypeDefinition grouptypeDefFound = model.findTypeDefinitionsByID(groupType);
@@ -63,7 +63,7 @@ public class BootstrapHelper {
                     g.addSubNodes(node);
                     model.addGroups(g);
                 } else {
-                    logger.error("Default type not found for name " + defType);
+                    logger.error("Default type not found for name {} ",defType);
                 }
             }
         }

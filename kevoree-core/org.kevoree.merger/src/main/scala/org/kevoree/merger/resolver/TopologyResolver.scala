@@ -49,10 +49,10 @@ trait TopologyResolver {
       case targetNodeName : UnresolvedNode => {
         model.findByPath(targetNodeName.getQuery(),classOf[ContainerNode]) match {
           case foundNode : ContainerNode => foundNode
-          case null => logger.error("Unconsitent model , node not found for name " + targetNodeName.getName()); null
+          case null => logger.error("Unconsitent model , node not found for name {}",targetNodeName.getName()); null
         }
       }
-      case _ => logger.error("Already Dictionary Value targetNodeName for value " + node); node
+      case _ => logger.error("Already Dictionary Value targetNodeName for value {}",node); node
     }
   }
 

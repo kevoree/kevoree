@@ -33,7 +33,7 @@ trait DictionaryMerger {
           val newAttribute = newtype.getAttributes.find(att => att.getName == v.getAttribute.getName)
           newAttribute match {
             case None => {
-              logger.debug("Merger remove unavailable Dictionary Value => " + v.getValue + " for old key => " + v.getAttribute.getName)
+              logger.debug("Merger remove unavailable Dictionary Value => {} for old key => {}",Array[AnyRef](v.getValue,v.getAttribute.getName))
               dictionary.removeValues(v)
             } //REMOVE DICTIONARY INSTANCE , NO AVAILABLE IN NEW TYPE
             case Some(found) => {

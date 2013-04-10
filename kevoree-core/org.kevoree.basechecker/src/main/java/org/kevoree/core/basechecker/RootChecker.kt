@@ -70,7 +70,7 @@ class RootChecker: CheckerService {
             violation.setTargetObjects(ArrayList())
             result.add(violation)
         }
-        logger.debug("Model checked in " + (System.currentTimeMillis() - beginTime))
+        logger.debug("Model checked in {} " , (System.currentTimeMillis() - beginTime))
         return result
     }
 

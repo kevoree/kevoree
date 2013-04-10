@@ -46,7 +46,7 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
               }
             } else {
               //cleanCrossReference(found_type_definition, toMergeTypeDef)
-              logger.debug("No update found for type " + toMergeTypeDef.getName)
+              logger.debug("No update found for type {}",toMergeTypeDef.getName)
             }
           }
           //SIMPLE CASE ? JUST MERGE THE NEW TYPE DEFINITION
@@ -84,7 +84,7 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
 
   private def consistencyImpacted(root: ContainerRoot, actuelTypeDefinition: TypeDefinition,
                                   newTypeDefinition: TypeDefinition) = {
-    logger.debug("consistency Impacted=" + actuelTypeDefinition.getName)
+    logger.debug("consistency Impacted= {}", actuelTypeDefinition.getName)
     val kevoreeFactory = new org.kevoree.impl.DefaultKevoreeFactory
     //REMOVE OLD AND ADD NEW TYPE
 
@@ -127,10 +127,10 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
           } else {
             // set to None the dictionary of the art2instance
             kevoreeInstance.setDictionary(null)
-            logger.debug("There is no dictionary type on the new type definition " + newTypeDefinition.getName)
+            logger.debug("There is no dictionary type on the new type definition {}",newTypeDefinition.getName)
           }
         } else {
-          logger.debug("There is no dictionary type on the current type definition " + kevoreeInstance.getName)
+          logger.debug("There is no dictionary type on the current type definition {}" ,kevoreeInstance.getName)
         }
 
         //SPECIFIC PROCESS
@@ -191,7 +191,7 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
 
   /* MERGE A SIMPLE NEW TYPE DEFINITION */
   private def mergeNewTypeDefinition(actualModel: ContainerRoot, newTypeDefinition: TypeDefinition, force: Boolean = false) = {
-    logger.debug("addNewTypeDef " + newTypeDefinition.getName)
+    logger.debug("addNewTypeDef {}", newTypeDefinition.getName)
     //MERGE TYPE DEPLOY UNITS
     val newTypeDefinitionDeployUnits = newTypeDefinition.getDeployUnits
     newTypeDefinition.removeAllDeployUnits()
