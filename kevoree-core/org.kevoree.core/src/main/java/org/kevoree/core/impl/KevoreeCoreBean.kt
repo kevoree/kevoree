@@ -388,7 +388,7 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
 
     fun internal_update_model(proposedNewModel: ContainerRoot): Boolean {
         if (proposedNewModel.findNodesByID(getNodeName()) == null) {
-            logger.error("Asking for update with a NULL model or node name ({}) was not found in target model !",getNodeName)
+            logger.error("Asking for update with a NULL model or node name ({}) was not found in target model !",getNodeName())
             return false
         }
         try {
