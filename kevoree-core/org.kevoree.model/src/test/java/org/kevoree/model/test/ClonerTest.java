@@ -91,7 +91,6 @@ public class ClonerTest {
         System.out.println("SmartClone = " + (System.nanoTime() - before2) / Math.pow(10, 6) + " ms");
         for (TypeDefinition td : modelCloned2.getTypeDefinitions()) {
             assert (td.eContainer().equals(model));
-            System.out.println(td);
             assert (model.findByPath(td.path()).equals(td));
         }
 
