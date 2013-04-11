@@ -58,6 +58,9 @@ public class KevoreeBootStrap {
 
     public static boolean byPassAetherBootstrap = false;
 
+
+    private final String KOTLIN_VERSION = "0.5.429";
+
     public static KevoreeLogService logService = null;
     public static String nodeBootClass = "org.kevoree.tools.aether.framework.NodeTypeBootstrapHelper";
     private static BootstrapHelper bootstrapHelper = new BootstrapHelper();
@@ -100,33 +103,17 @@ public class KevoreeBootStrap {
             Class selfRegisteredClazz = bootstraper.getClass();
             jcl.lockLinks();
 
-            /*
-            File fileMarShell = bootstraper.resolveKevoreeArtifact("org.kevoree.tools.marShell.pack", "org.kevoree.tools", factory.getVersion());
-			KevoreeJarClassLoader scriptEngineKCL = new KevoreeJarClassLoader();
-			scriptEngineKCL.addSubClassLoader(jcl);
-			scriptEngineKCL.add(fileMarShell.getAbsolutePath());
-			scriptEngineKCL.lockLinks();
-            */
-
             KevoreeJarClassLoader dummyKCL = new KevoreeJarClassLoader();
             dummyKCL.lockLinks();
 
             for (Method m : selfRegisteredClazz.getMethods()) {
                 if (m.getName().equals("registerManuallyDeployUnit")) {
-                    m.invoke(bootstraper, "kotlin-runtime", "org.jetbrains.kotlin", "0.5.429", dummyKCL);
-                    m.invoke(bootstraper, "kotlin-stdlib", "org.jetbrains.kotlin", "0.5.429", dummyKCL);
+                    m.invoke(bootstraper, "kotlin-runtime", "org.jetbrains.kotlin", KOTLIN_VERSION, dummyKCL);
+                    m.invoke(bootstraper, "kotlin-stdlib", "org.jetbrains.kotlin", KOTLIN_VERSION, dummyKCL);
                     m.invoke(bootstraper, "jfilter-library", "fr.inria.jfilter", "1.3", dummyKCL);
-                    logger.debug("Manual Init Aether KCL");
                     m.invoke(bootstraper, "org.kevoree.tools.aether.framework", "org.kevoree.tools", factory.getVersion(), jcl);
-                    //logger.debug("Manual Init MarShell KCL");
-                    //m.invoke(bootstraper, "org.kevoree.tools.marShell", "org.kevoree.tools", factory.getVersion(), scriptEngineKCL);
-                    logger.debug("Manual Init AdaptationModel");
-                    m.invoke(bootstraper, "cglib-nodep", "cglib", "2.2.2", dummyKCL);
-                    m.invoke(bootstraper, "slf4j-api", "org.slf4j", "1.6.4", dummyKCL);
-                    m.invoke(bootstraper, "slf4j-api", "org.slf4j", "1.6.2", dummyKCL);
                     m.invoke(bootstraper, "slf4j-api", "org.slf4j", "1.7.2", dummyKCL);
                     m.invoke(bootstraper, "jgrapht-jdk1.5", "org.jgrapht", "0.7.3", dummyKCL);
-                    m.invoke(bootstraper, "objenesis", "org.objenesis", "1.2", dummyKCL);
                     m.invoke(bootstraper, "org.kevoree.adaptation.model", "org.kevoree", factory.getVersion(), dummyKCL);
                     m.invoke(bootstraper, "org.kevoree.api", "org.kevoree", factory.getVersion(), dummyKCL);
                     m.invoke(bootstraper, "org.kevoree.basechecker", "org.kevoree", factory.getVersion(), dummyKCL);
