@@ -19,6 +19,7 @@ import org.kevoree.api.service.core.script.KevScriptEngineException;
 import org.kevoree.impl.DefaultKevoreeFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -35,7 +36,7 @@ public class BootstrapHelper {
     private static final Logger logger = LoggerFactory.getLogger(BootstrapHelper.class);
 
     private KevoreeFactory factory = new DefaultKevoreeFactory();
-    
+
     public void initModelInstance(ContainerRoot model, String defType, String groupType) {
 
         String nodeName = System.getProperty("node.name");
@@ -55,16 +56,17 @@ public class BootstrapHelper {
                 logger.error("Default type not found for name {} ", defType);
             }
             if (groupType != null) {
-                TypeDefinition grouptypeDefFound = model.findTypeDefinitionsByID(groupType);
-                if (grouptypeDefFound != null) {
-                    Group g = factory.createGroup();
-                    g.setName("sync");
-                    g.setTypeDefinition(grouptypeDefFound);
-                    g.addSubNodes(node);
-                    model.addGroups(g);
-                } else {
-                    logger.error("Default type not found for name {} ",defType);
-                }
+                groupType = "BasicGroup";
+            }
+            TypeDefinition grouptypeDefFound = model.findTypeDefinitionsByID(groupType);
+            if (grouptypeDefFound != null) {
+                Group g = factory.createGroup();
+                g.setName("sync");
+                g.setTypeDefinition(grouptypeDefFound);
+                g.addSubNodes(node);
+                model.addGroups(g);
+            } else {
+                logger.error("Default type not found for name {} ", defType);
             }
         }
     }
