@@ -15,7 +15,7 @@ package org.kevoree.extra.ecore.loader.test
 
 import org.junit.Test
 import java.io.File
-import org.kevoree.loader.ModelLoader
+import org.kevoree.loader.XMIModelLoader
 import org.kevoree.{Group, ComponentInstance, ContainerNode}
 
 /**
@@ -29,7 +29,7 @@ class KMFQueryTest {
   @Test
   def testOppositeQuery(){
 
-    val loader = new ModelLoader()
+    val loader = new XMIModelLoader()
     val model = loader.loadModelFromPath(new File(getClass.getResource("/unomas.kev").toURI)).get(0)
     assert(model.findNodesByID("node0").getName == "node0")
     assert(model.findByPath("nodes[node0]").asInstanceOf[ContainerNode].getName == "node0")

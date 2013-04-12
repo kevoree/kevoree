@@ -18,9 +18,10 @@ import org.kevoree.*;
 import org.kevoree.cloner.ModelCloner;
 import org.kevoree.impl.DefaultKevoreeFactory;
 import org.kevoree.loader.ModelLoader;
+import org.kevoree.loader.XMIModelLoader;
 import org.kevoree.serializer.ModelSerializer;
+import org.kevoree.serializer.XMIModelSerializer;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.net.URISyntaxException;
@@ -35,7 +36,7 @@ public class ClonerTest {
 
     @Test
     public void testSelector() throws URISyntaxException {
-        ModelLoader loader = new ModelLoader();
+        ModelLoader loader = new XMIModelLoader();
         ContainerRoot model = loader.loadModelFromPath(new File(ClonerTest.class.getResource("/node0.kev").toURI())).get(0);
 
         ModelCloner cloner = new ModelCloner();
@@ -49,7 +50,7 @@ public class ClonerTest {
 
         System.out.println("input="+fileName);
 
-        ModelLoader loader = new ModelLoader();
+        ModelLoader loader = new XMIModelLoader();
         KevoreeFactory factory = new DefaultKevoreeFactory();
         ContainerRoot model = loader.loadModelFromPath(new File(ClonerTest.class.getResource("/"+fileName).toURI())).get(0);
         for(int i=0;i<400;i++){
@@ -103,7 +104,7 @@ public class ClonerTest {
 
 
         ByteArrayOutputStream s = new ByteArrayOutputStream();
-        ModelSerializer saver = new ModelSerializer();
+        ModelSerializer saver = new XMIModelSerializer();
         saver.serialize(modelCloned2,s);
 
         ContainerNode newNode = factory.createContainerNode();

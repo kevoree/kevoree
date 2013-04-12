@@ -14,10 +14,9 @@
 package org.kevoree.model.test;
 
 import org.junit.Test;
-import org.kevoree.ContainerNode;
 import org.kevoree.ContainerRoot;
-import org.kevoree.NodeType;
 import org.kevoree.loader.ModelLoader;
+import org.kevoree.loader.XMIModelLoader;
 
 import java.io.File;
 import java.net.URISyntaxException;
@@ -34,7 +33,7 @@ public class KMFSelector4Test {
     @Test
     public void testSelector() throws URISyntaxException {
 
-        ModelLoader loader = new ModelLoader();
+        ModelLoader loader = new XMIModelLoader();
         ContainerRoot model = loader.loadModelFromPath(new File(KMFSelector2Test.class.getResource("/deepModel.kev").toURI())).get(0);
 
         System.out.println(model.getNodes().size());

@@ -38,6 +38,8 @@ import org.kevoree.loader.ModelLoader
 import org.slf4j.LoggerFactory
 import java.io.*
 import org.kevoree.serializer.ModelSerializer
+import org.kevoree.serializer.XMIModelSerializer
+import org.kevoree.loader.XMIModelLoader
 
 object KevoreeXmiHelper {
 
@@ -55,7 +57,7 @@ object KevoreeXmiHelper {
         if (!folder.exists()){
             folder.mkdirs()
         }
-        val serializer = ModelSerializer()
+        val serializer = XMIModelSerializer()
         val outputFile = File(uri);
         if(!outputFile.exists()) {
             outputFile.createNewFile()
@@ -67,7 +69,7 @@ object KevoreeXmiHelper {
     }
 
     fun saveToString(root: ContainerRoot, prettyPrint: Boolean): String {
-        val serializer = ModelSerializer()
+        val serializer = XMIModelSerializer()
         val ba = ByteArrayOutputStream()
         val res = serializer.serialize(root, ba)
         ba.flush()
@@ -77,7 +79,7 @@ object KevoreeXmiHelper {
     }
 
     fun loadString(model: String): ContainerRoot? {
-        val loader = ModelLoader()
+        val loader = XMIModelLoader()
         val loadedElements = loader.loadModelFromString(model)
         if(loadedElements != null && loadedElements.size() > 0) {
             return loadedElements.get(0);
@@ -87,7 +89,7 @@ object KevoreeXmiHelper {
     }
 
     fun load(uri: String): ContainerRoot? {
-        val loader = ModelLoader()
+        val loader = XMIModelLoader()
         val loadedElements = loader.loadModelFromPath(File(uri))
         if(loadedElements != null && loadedElements.size() > 0) {
             return loadedElements.get(0);
@@ -97,7 +99,7 @@ object KevoreeXmiHelper {
     }
 
     fun loadStream(input: InputStream): ContainerRoot? {
-        val loader = ModelLoader()
+        val loader = XMIModelLoader()
         val loadedElements = loader.loadModelFromStream(input)
         if(loadedElements != null && loadedElements.size() > 0) {
             return loadedElements.get(0);
@@ -108,7 +110,7 @@ object KevoreeXmiHelper {
     }
 
     fun saveStream(output: OutputStream, root: ContainerRoot): Unit {
-        val serializer = ModelSerializer()
+        val serializer = XMIModelSerializer()
         val result = serializer.serialize(root, output)
     }
 

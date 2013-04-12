@@ -28,8 +28,8 @@ package org.kevoree
 
 import cloner.ModelCloner
 import java.io.{ByteArrayOutputStream, File}
-import org.kevoree.loader.ModelLoader
-import org.kevoree.serializer.ModelSerializer
+import org.kevoree.loader.{XMIModelLoader, ModelLoader}
+import org.kevoree.serializer.{XMIModelSerializer, ModelSerializer}
 import scala.collection.JavaConversions._
 
 /**
@@ -48,7 +48,7 @@ for(i <- 0 until 30){
   ContainerRootLoader.loadModel(new File(("/Users/duke/Documents/dev/dukeboard/kevoree-experiment/org.kevoree.experiment.smartForest/duke.irisa.fr-duke.irisa.fr-generated/kevoreeIndividualModel.kev")));
 }*/
 
-  val loader = new ModelLoader()
+  val loader = new XMIModelLoader()
   val m = loader.loadModelFromPath(new File(getClass.getResource("/unomas.kev").toURI())).get(0)
 
 
@@ -87,7 +87,7 @@ m.addMBindings(b)
   cloner.clone(m)
 
 
-  val serializer = new ModelSerializer
+  val serializer = new XMIModelSerializer
   val oo = new ByteArrayOutputStream
   serializer.serialize(m,oo)
   println(System.currentTimeMillis() - current)
