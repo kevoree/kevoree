@@ -6,8 +6,10 @@ import java.util.zip.Inflater
 import java.io.*
 import org.kevoree.accesscontrol.AccessControlRoot
 import org.kevoree.accesscontrol.serializer.ModelSerializer
+import org.kevoree.accesscontrol.serializer.XMIModelSerializer
 import org.kevoree.framework.ZipUtil
 import org.kevoree.accesscontrol.loader.ModelLoader
+import org.kevoree.accesscontrol.loader.XMIModelLoader
 
 object AccessControlXmiHelper {
 
@@ -24,7 +26,7 @@ object AccessControlXmiHelper {
         if (!folder.exists()){
             folder.mkdirs()
         }
-        val serializer = ModelSerializer()
+        val serializer = XMIModelSerializer()
         val outputFile = File(uri);
         if(!outputFile.exists()) {
             outputFile.createNewFile()
@@ -36,7 +38,7 @@ object AccessControlXmiHelper {
     }
 
     fun saveToString(root: AccessControlRoot, prettyPrint: Boolean): String {
-        val serializer = ModelSerializer()
+        val serializer = XMIModelSerializer()
         val ba = ByteArrayOutputStream()
         val res = serializer.serialize(root, ba)
         ba.flush()
@@ -46,7 +48,7 @@ object AccessControlXmiHelper {
     }
 
     fun loadString(model: String): AccessControlRoot? {
-        val loader = ModelLoader()
+        val loader = XMIModelLoader()
         val loadedElements = loader.loadModelFromString(model)
         if(loadedElements != null && loadedElements.size() > 0) {
             return loadedElements.get(0);
@@ -56,7 +58,7 @@ object AccessControlXmiHelper {
     }
 
     fun load(uri: String): AccessControlRoot? {
-        val loader = ModelLoader()
+        val loader = XMIModelLoader()
         val loadedElements = loader.loadModelFromPath(File(uri))
         if(loadedElements != null && loadedElements.size() > 0) {
             return loadedElements.get(0);
@@ -66,7 +68,7 @@ object AccessControlXmiHelper {
     }
 
     fun loadStream(input: InputStream): AccessControlRoot? {
-        val loader = ModelLoader()
+        val loader = XMIModelLoader()
         val loadedElements = loader.loadModelFromStream(input)
         if(loadedElements != null && loadedElements.size() > 0) {
             return loadedElements.get(0);
@@ -77,7 +79,7 @@ object AccessControlXmiHelper {
     }
 
     fun saveStream(output: OutputStream, root: AccessControlRoot): Unit {
-        val serializer = ModelSerializer()
+        val serializer = XMIModelSerializer()
         val result = serializer.serialize(root, output)
     }
 
