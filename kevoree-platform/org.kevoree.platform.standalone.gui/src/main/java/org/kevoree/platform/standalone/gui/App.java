@@ -50,13 +50,14 @@ public class App {
     protected void start() {
 
         DefaultSystem.instance$.saveSystemFlux();
+        /*
         try {
             File cacheFolder = createTempDirectory();
             cacheFolder.deleteOnExit();
             System.setProperty("osgi.base", cacheFolder.getAbsolutePath());
         } catch (IOException io) {
             io.printStackTrace();
-        }
+        } */
         ContainerRoot model = null;
 
 

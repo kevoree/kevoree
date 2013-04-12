@@ -126,6 +126,7 @@ public class KevoreeBootStrap {
                     m.invoke(bootstraper, "org.kevoree.model.context", "org.kevoree", factory.getVersion(), dummyKCL);
                     m.invoke(bootstraper, "org.kevoree.tools.annotation.api", "org.kevoree.tools", factory.getVersion(), dummyKCL);
                     m.invoke(bootstraper, "org.kevoree.tools.javase.framework", "org.kevoree.tools", factory.getVersion(), dummyKCL);
+                    m.invoke(bootstraper, "gson", "com.google.code.gson", "2.2.2", dummyKCL);
                 }
             }
 
