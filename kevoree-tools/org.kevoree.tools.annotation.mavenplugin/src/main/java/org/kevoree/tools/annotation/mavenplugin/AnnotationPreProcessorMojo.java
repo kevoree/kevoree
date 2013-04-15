@@ -40,7 +40,6 @@ import org.kevoree.ContainerRoot;
 import org.kevoree.framework.KevoreeXmiHelper;
 import org.kevoree.framework.annotation.processor.visitor.KevoreeAnnotationProcessor;
 import org.kevoree.merger.KevoreeMergerComponent;
-import org.sonatype.aether.repository.RemoteRepository;
 
 import javax.tools.*;
 import java.io.*;
@@ -701,7 +700,7 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
                             merger.merge(model, KevoreeXmiHelper.instance$.load(path));
                         }
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        getLog().info("Unable to get KEV-INF/lib.kev on " + ((DefaultArtifact) dep).getArtifactId() + "(Kevoree lib will not be merged): " + e.getMessage());
                     }
                 }
                 KevoreeXmiHelper.instance$.save(sourceOutputDirectory.getPath() + File.separator + "KEV-INF" + File.separator + "lib.kev", model);
