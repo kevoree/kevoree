@@ -55,7 +55,7 @@ public class BootstrapHelper {
             } else {
                 logger.error("Default type not found for name {} ", defType);
             }
-            if (groupType != null) {
+            if (groupType == null) {
                 groupType = "BasicGroup";
             }
             TypeDefinition grouptypeDefFound = model.findTypeDefinitionsByID(groupType);
@@ -66,7 +66,7 @@ public class BootstrapHelper {
                 g.addSubNodes(node);
                 model.addGroups(g);
             } else {
-                logger.error("Default type not found for name {} ", defType);
+                logger.error("Default type not found for name {} ", groupType);
             }
         }
     }
