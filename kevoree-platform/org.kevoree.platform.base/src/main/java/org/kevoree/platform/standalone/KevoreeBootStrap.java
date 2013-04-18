@@ -35,7 +35,6 @@ import org.kevoree.KevoreeFactory;
 import org.kevoree.api.Bootstraper;
 import org.kevoree.api.service.core.logging.KevoreeLogLevel;
 import org.kevoree.api.service.core.logging.KevoreeLogService;
-import org.kevoree.api.service.core.script.KevScriptEngineFactory;
 import org.kevoree.core.impl.KevoreeCoreBean;
 import org.kevoree.framework.KevoreeXmiHelper;
 import org.kevoree.impl.DefaultKevoreeFactory;
@@ -132,8 +131,6 @@ public class KevoreeBootStrap {
 
             coreBean.setBootstraper(bootstraper);
             coreBean.setKevsEngineFactory(new LazyCreationOfKevScriptEngine(bootstraper,jcl,factory.getVersion()));
-            KevScriptEngineFactory kevScriptEngineFactory = new EmptyKevScriptFactory();
-            coreBean.setKevsEngineFactory(kevScriptEngineFactory);
             coreBean.start();
 
 			/* Boot strap */
@@ -185,7 +182,7 @@ public class KevoreeBootStrap {
 
                             try {
                                 File filebootmodel = new File(bootstrapModelPath);
-                                bootstrapModel = bootstrapHelper.generateFromKevS(filebootmodel, kevScriptEngineFactory.createKevScriptEngine(factory.createContainerRoot()));
+                                bootstrapModel = bootstrapHelper.generateFromKevS(filebootmodel, coreBean.get_kevsEngineFactory().createKevScriptEngine(factory.createContainerRoot()));
                             } catch (final Exception e) {
                                 try {
                                     bootstrapModel = KevoreeXmiHelper.instance$.load(bootstrapModelPath);
