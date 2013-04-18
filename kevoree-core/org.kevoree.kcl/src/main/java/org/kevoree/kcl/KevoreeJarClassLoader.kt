@@ -147,7 +147,6 @@ open class KevoreeJarClassLoader(): ClassLoader() {
             }
         }
         return clazz;
-        //return super<JarClassLoader>.loadClass(className, resolveIt)
     }
 
 
