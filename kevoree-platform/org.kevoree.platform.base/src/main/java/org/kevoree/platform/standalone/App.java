@@ -33,9 +33,7 @@ public class App {
 
     private static final Logger logger = LoggerFactory.getLogger(App.class);
 
-
-    public void start() throws Exception {
-
+    public void initialize() {
         //System.setProperty("kevoree.log.level", "DEBUG");
         //System.setProperty("node.bootstrap","/var/folders/dq/_bgn79zj25n9w8jbs3x228l80000gn/T/bootModelnode14793899140134410087.kev");
         //System.setProperty("node.name","node1");
@@ -63,7 +61,9 @@ public class App {
             node_name = "node0";
             System.setProperty("node.name", node_name);
         }
+    }
 
+    public void start() throws Exception {
         final KevoreeBootStrap kb = new KevoreeBootStrap();
         Runtime.getRuntime().addShutdownHook(new Thread("Shutdown Hook") {
 
@@ -81,6 +81,7 @@ public class App {
     public static void main(String[] args) throws Exception {
         Long startTime = System.currentTimeMillis();
         App app = new App();
+        app.initialize();
         app.start();
         logger.info("Kevoree runtime boot time {} ms", (System.currentTimeMillis() - startTime));
     }

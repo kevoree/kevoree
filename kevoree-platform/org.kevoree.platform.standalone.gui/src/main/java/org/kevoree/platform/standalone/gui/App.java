@@ -27,27 +27,20 @@
 package org.kevoree.platform.standalone.gui;
 
 import org.kevoree.ContainerRoot;
-import org.kevoree.api.Bootstraper;
-import org.kevoree.impl.DefaultKevoreeFactory;
-import org.kevoree.kcl.KevoreeJarClassLoader;
-import org.kevoree.framework.KevoreeXmiHelper;
-import org.kevoree.platform.standalone.KevoreeBootStrap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
 
 /**
  * Hello world!
  */
-public class App {
+public class App extends org.kevoree.platform.standalone.App {
 
     private static Logger logger = LoggerFactory.getLogger(App.class);
 
-    protected void start() {
+    public void start() {
 
         DefaultSystem.instance$.saveSystemFlux();
         /*
@@ -61,7 +54,7 @@ public class App {
         ContainerRoot model = null;
 
 
-        Object param = System.getProperty("node.bootstrap");
+        /*Object param = System.getProperty("node.bootstrap");
         if (param != null) {
             model = KevoreeXmiHelper.instance$.load(param.toString());
         } else {
@@ -87,23 +80,17 @@ public class App {
             } catch (Exception e) {
                 logger.error("Error while bootstrap ", e);
             }
-        }
+        }*/
 
-        final KevoreeGUIFrame frame = new KevoreeGUIFrame(model);
+        final KevoreeGUIFrame frame = new KevoreeGUIFrame(/*model*/);
     }
 
     public static void main(String[] args) throws Exception {
-
-        String node_name = System.getProperty("node.name");
-        if (node_name == null || node_name.equals("")) {
-            node_name = "node0";
-            System.setProperty("node.name", node_name);
-        }
-
         if(System.getProperty("node.headless") != null && System.getProperty("node.headless").equals("true")){
             org.kevoree.platform.standalone.App.main(args);
         } else {
             App app = new App();
+            app.initialize();
             app.start();
         }
     }

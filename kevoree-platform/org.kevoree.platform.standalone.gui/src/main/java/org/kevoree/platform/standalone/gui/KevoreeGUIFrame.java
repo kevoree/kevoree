@@ -46,7 +46,7 @@ public class KevoreeGUIFrame extends JFrame {
 
     private static KevoreeLeftModel left = null;
 
-    public KevoreeGUIFrame(final ContainerRoot model) {
+    public KevoreeGUIFrame(/*final ContainerRoot model*/) {
         singleton = this;
         MacUtils.makeWindowLeopardStyle(this.getRootPane());
         UnifiedToolBar toolBar = new UnifiedToolBar();
