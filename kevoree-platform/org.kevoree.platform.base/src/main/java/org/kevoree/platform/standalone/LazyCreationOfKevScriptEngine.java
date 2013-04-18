@@ -35,18 +35,19 @@ public class LazyCreationOfKevScriptEngine implements KevScriptEngineFactory {
     private Bootstraper bootstraper = null;
     private KevoreeJarClassLoader aetherJCL = null;
     private String version = null;
+    private KevoreeCoreBean coreBean = null;
 
-    public LazyCreationOfKevScriptEngine(Bootstraper _b, KevoreeJarClassLoader _a, String _version) {
+    public LazyCreationOfKevScriptEngine(KevoreeCoreBean _c, Bootstraper _b, KevoreeJarClassLoader _a, String _version) {
         bootstraper = _b;
         aetherJCL = _a;
         version = _version;
+        coreBean = _c;
     }
 
     /* No injection */
     private KevoreeJarClassLoader scriptEngineKCL = null;
     private Class onlineMShellEngineClazz = null;
     private Class offLineMShellEngineClazz = null;
-    private KevoreeCoreBean coreBean = null;
     private Constructor onlineCons = null;
     private Constructor offlineCons = null;
 

@@ -130,7 +130,7 @@ public class KevoreeBootStrap {
             }
 
             coreBean.setBootstraper(bootstraper);
-            coreBean.setKevsEngineFactory(new LazyCreationOfKevScriptEngine(bootstraper,jcl,factory.getVersion()));
+            coreBean.setKevsEngineFactory(new LazyCreationOfKevScriptEngine(coreBean, bootstraper,jcl,factory.getVersion()));
             coreBean.start();
 
 			/* Boot strap */
