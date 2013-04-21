@@ -6,7 +6,7 @@ import org.kevoree.ContainerRoot
 import org.kevoree.NodeLink
 import org.kevoree.NodeNetwork
 import org.kevoree.impl.DefaultKevoreeFactory
-import org.slf4j.LoggerFactory
+import org.kevoree.log.Log
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -17,7 +17,6 @@ import org.slf4j.LoggerFactory
  * @version 1.0
  */
 public object KevoreePlatformHelper {
-    val logger = LoggerFactory.getLogger(this.javaClass)!!
     val factory = DefaultKevoreeFactory()
 
     fun updateNodeLinkProp(actualModel: ContainerRoot, currentNodeName: String, targetNodeName: String, key: String, value: String, networkType: String, weight: Int)/*: ContainerNode*/ {
@@ -43,7 +42,7 @@ public object KevoreePlatformHelper {
 
             var targetNode = actualModel.findNodesByID(targetNodeName)
             if (targetNode == null) {
-                logger.debug("Unknown node {} add to model",targetNodeName)
+                Log.debug("Unknown node {} add to model",targetNodeName)
                 targetNode = factory.createContainerNode()
                 targetNode!!.setName(targetNodeName)
                 actualModel.addNodes(targetNode!!)
@@ -70,7 +69,7 @@ public object KevoreePlatformHelper {
         try {
             nodeLink!!.setEstimatedRate(weight)
         } catch (e: Exception) {
-            logger.debug("Unexpected estimate rate", e)
+            Log.debug("Unexpected estimate rate", e)
         }
 
         /* Found Property and SET remote IP */
@@ -83,7 +82,9 @@ public object KevoreePlatformHelper {
         prop!!.setValue(value)
         prop!!.setLastCheck(Date().getTime().toString())
 
-        logger.debug("New node link prop registered = {}, {} ,{} " ,targetNodeName,key,value)
+        if(Log.DEBUG){
+            Log.debug("New node link prop registered = "+targetNodeName+","+key+","+value)
+        }
 //        return thisNodeFound!!
     }
 }

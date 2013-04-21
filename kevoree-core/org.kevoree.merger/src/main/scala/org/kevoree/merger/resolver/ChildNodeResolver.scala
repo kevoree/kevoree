@@ -14,7 +14,7 @@
 package org.kevoree.merger.resolver
 
 import org.kevoree.ContainerRoot
-import org.slf4j.LoggerFactory
+import org.kevoree.log.Log
 import scala.collection.JavaConversions._
 
 
@@ -28,8 +28,7 @@ import scala.collection.JavaConversions._
  */
 
 trait ChildNodeResolver {
-  private val logger = LoggerFactory.getLogger(this.getClass)
-  
+
   def resolveChildNodes(actualModel : ContainerRoot) {
     actualModel.getNodes.foreach{
       node =>
@@ -38,7 +37,7 @@ trait ChildNodeResolver {
             child match {
               case nodeName : UnresolvedChildNode => {
                 actualModel.getNodes.find(c => c.getName() == nodeName.getName()) match {
-                  case None => logger.error("Unable to find the corresponding child on model. The model will be unvalid!")
+                  case None => org.kevoree.log.Log.error("Unable to find the corresponding child on model. The model will be unvalid!")
                   case Some(c) => {
                     node.removeHosts(child)
                     node.addHosts(c)
@@ -46,7 +45,7 @@ trait ChildNodeResolver {
                 }
               }
               case _ @ e => {
-                logger.error("Already resolved child !!! {}",e.getName())
+                Log.error("Already resolved child !!! {}",e.getName())
               }
 
 

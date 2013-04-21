@@ -20,7 +20,6 @@ import org.kevoree.ServicePortType
 import org.kevoree.api.service.core.checker.CheckerService
 import org.kevoree.api.service.core.checker.CheckerViolation
 import org.kevoree.container.KMFContainer
-import org.slf4j.LoggerFactory
 
 /**
  * Created by IntelliJ IDEA.
@@ -29,7 +28,6 @@ import org.slf4j.LoggerFactory
  * Time: 17:48
  */
 class BindingChecker: CheckerService {
-    private val logger = LoggerFactory.getLogger(this.javaClass)
 
     override fun check(model: ContainerRoot?): MutableList<CheckerViolation> {
         if (model != null) {

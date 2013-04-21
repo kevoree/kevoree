@@ -20,12 +20,10 @@ import org.kevoree.merger.Merger
 import org.kevoree.merger.aspects.KevoreeAspects._
 import org.kevoree._
 import merger.resolver.{UnresolvedTypeDefinition}
-import org.slf4j.LoggerFactory
 import scala.collection.JavaConversions._
 
 trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMerger with DeployUnitMerger {
 
-  private val logger = LoggerFactory.getLogger(this.getClass)
   private val kevoreeFactory = new org.kevoree.impl.DefaultKevoreeFactory
   private val containerRootAspect = new ContainerRootAspect()
   private val typeDefinitionAspect = new TypeDefinitionAspect()
@@ -46,7 +44,7 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
               }
             } else {
               //cleanCrossReference(found_type_definition, toMergeTypeDef)
-              logger.debug("No update found for type {}",toMergeTypeDef.getName)
+              org.kevoree.log.Log.debug("No update found for type {}",toMergeTypeDef.getName)
             }
           }
           //SIMPLE CASE ? JUST MERGE THE NEW TYPE DEFINITION
@@ -84,7 +82,7 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
 
   private def consistencyImpacted(root: ContainerRoot, actuelTypeDefinition: TypeDefinition,
                                   newTypeDefinition: TypeDefinition) = {
-    logger.debug("consistency Impacted= {}", actuelTypeDefinition.getName)
+    org.kevoree.log.Log.debug("consistency Impacted= {}", actuelTypeDefinition.getName)
     val kevoreeFactory = new org.kevoree.impl.DefaultKevoreeFactory
     //REMOVE OLD AND ADD NEW TYPE
 
@@ -127,10 +125,10 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
           } else {
             // set to None the dictionary of the art2instance
             kevoreeInstance.setDictionary(null)
-            logger.debug("There is no dictionary type on the new type definition {}",newTypeDefinition.getName)
+            org.kevoree.log.Log.debug("There is no dictionary type on the new type definition {}",newTypeDefinition.getName)
           }
         } else {
-          logger.debug("There is no dictionary type on the current type definition {}" ,kevoreeInstance.getName)
+          org.kevoree.log.Log.debug("There is no dictionary type on the current type definition {}" ,kevoreeInstance.getName)
         }
 
         //SPECIFIC PROCESS
@@ -191,7 +189,7 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
 
   /* MERGE A SIMPLE NEW TYPE DEFINITION */
   private def mergeNewTypeDefinition(actualModel: ContainerRoot, newTypeDefinition: TypeDefinition, force: Boolean = false) = {
-    logger.debug("addNewTypeDef {}", newTypeDefinition.getName)
+    org.kevoree.log.Log.debug("addNewTypeDef {}", newTypeDefinition.getName)
     //MERGE TYPE DEPLOY UNITS
     val newTypeDefinitionDeployUnits = newTypeDefinition.getDeployUnits
     newTypeDefinition.removeAllDeployUnits()
@@ -234,7 +232,7 @@ trait TypeDefinitionMerger extends Merger with DictionaryMerger with PortTypeMer
       case pt: PortType => {
         /*println("PORTTYPE M ?? "+pt.toString)*//* MERGE BY COMPONENT TYPE */
       }
-      case _@msg => logger.info("Error uncatch type") // NO RECURSIVE FOR OTHER TYPE
+      case _@msg => org.kevoree.log.Log.info("Error uncatch type") // NO RECURSIVE FOR OTHER TYPE
     }
   }
 

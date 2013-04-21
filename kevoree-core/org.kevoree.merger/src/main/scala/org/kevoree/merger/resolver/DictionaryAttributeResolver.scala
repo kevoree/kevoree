@@ -14,7 +14,6 @@
 package org.kevoree.merger.resolver
 
 import org.kevoree.framework.kaspects.ContainerRootAspect
-import org.slf4j.LoggerFactory
 import org.kevoree.{DictionaryType, ContainerRoot}
 
 import scala.collection.JavaConversions._
@@ -30,7 +29,6 @@ import scala.collection.JavaConversions._
 
 trait DictionaryAttributeResolver {
 
-  private val logger = LoggerFactory.getLogger(this.getClass)
   private val containerRootAspect = new ContainerRootAspect()
 
   def resolveDictionaryAttribute(model : ContainerRoot){
@@ -46,10 +44,10 @@ trait DictionaryAttributeResolver {
                 case targetNodeName : UnresolvedNode => {
                   model.getNodes.find(n => n.getName == targetNodeName.getName()) match {
                     case Some(node)=> value.setTargetNode(node)
-                    case None => logger.error("Unconsitent model , node not found for name {}",targetNodeName.getName())
+                    case None => org.kevoree.log.Log.error("Unconsitent model , node not found for name {}",targetNodeName.getName())
                   }
                 }
-                case _ => logger.error("Already Dictionary Value targetNodeName for value {}",value)
+                case _ => org.kevoree.log.Log.error("Already Dictionary Value targetNodeName for value {}",value.toString)
               } 
             }
             
@@ -62,15 +60,15 @@ trait DictionaryAttributeResolver {
                       case Some(attFound)=> value.setAttribute(attFound)
                       case None => {
                         dictionaryInstance.removeValues(value)
-                        logger.error("Unconsitent dictionary type , att not found for name {}",attName.getName())
+                        org.kevoree.log.Log.error("Unconsitent dictionary type , att not found for name {}",attName.getName())
                       }
                     }
                   }
-                  case null => logger.error("Unconsistent dictionary")
+                  case null => org.kevoree.log.Log.error("Unconsistent dictionary")
                 }
               }
               case _ @ e => {
-                logger.error("Already resolved Dictionary Attribute {}",e)
+                org.kevoree.log.Log.error("Already resolved Dictionary Attribute {}",e.toString)
               }
             }
           }

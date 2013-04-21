@@ -28,12 +28,12 @@ open class JCLContextHandler: KevoreeClassLoaderHandler {
     val logger = LoggerFactory.getLogger(this.javaClass)!!
     val resolvers = ArrayList<DeployUnitResolver>()
     protected val failedLinks: HashMap<String, MutableList<KevoreeJarClassLoader>> = HashMap<String, MutableList<KevoreeJarClassLoader>>()
-
+        /*
     inner class DUMP(): Runnable {
         override fun run() {
             printDumpInternals()
         }
-    }
+    } */
 
     inner class INSTALL_DEPLOYUNIT_FILE(val du: DeployUnit, val file: File): Callable<KevoreeJarClassLoader> {
         override fun call(): KevoreeJarClassLoader {
@@ -120,9 +120,10 @@ open class JCLContextHandler: KevoreeClassLoaderHandler {
         pool.submit(MANUALLY_ADD_TO_CACHE(du!!, kcl!!, false)).get()
     }
 
+    /*
     fun printDump() {
         pool.submit(DUMP())
-    }
+    } */
 
     protected fun clearInternals() {
         logger.debug("Clear Internal")
@@ -151,7 +152,7 @@ open class JCLContextHandler: KevoreeClassLoaderHandler {
             lockedDu.add(buildKEY(du))
         }
     }
-
+       /*
     protected fun printDumpInternals() {
         logger.debug("------------------ KCL Dump -----------------------")
         for(k in kcl_cache) {
@@ -159,7 +160,7 @@ open class JCLContextHandler: KevoreeClassLoaderHandler {
             k.component2().printDump()
         }
         logger.debug("================== End KCL Dump ===================")
-    }
+    }  */
 
 
     /* Temp Zone for temporary unresolved KCL links */

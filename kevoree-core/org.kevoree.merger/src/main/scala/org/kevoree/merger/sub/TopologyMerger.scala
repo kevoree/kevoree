@@ -27,7 +27,6 @@
 package org.kevoree.merger.sub
 
 import org.kevoree.merger.Merger
-import org.slf4j.LoggerFactory
 import org.kevoree.{NetworkProperty, NodeLink, NodeNetwork, ContainerRoot}
 import scala.collection.JavaConversions._
 
@@ -37,12 +36,10 @@ import scala.collection.JavaConversions._
  * User: duke
  * Date: 12/12/11
  * Time: 14:24
- * To change this template use File | Settings | File Templates.
  */
 
 trait TopologyMerger extends Merger {
 
-  private val logger = LoggerFactory.getLogger(this.getClass);
 
   def mergeTopology(actualModel: ContainerRoot, modelToMerge: ContainerRoot): Unit = {
 

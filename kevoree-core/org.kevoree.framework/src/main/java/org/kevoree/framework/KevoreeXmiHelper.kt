@@ -24,10 +24,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 
 package org.kevoree.framework
 
@@ -35,15 +31,12 @@ import org.kevoree.ContainerRoot
 import java.util.zip.Deflater
 import java.util.zip.Inflater
 import org.kevoree.loader.ModelLoader
-import org.slf4j.LoggerFactory
 import java.io.*
 import org.kevoree.serializer.ModelSerializer
 import org.kevoree.serializer.XMIModelSerializer
 import org.kevoree.loader.XMIModelLoader
 
 object KevoreeXmiHelper {
-
-    val logger = LoggerFactory.getLogger(this.javaClass)
 
     fun save(uri: String, root: ContainerRoot) {
         //CHECK DIRECTORY CREATION
@@ -52,7 +45,6 @@ object KevoreeXmiHelper {
         } else {
             uri
         }
-        //  val folderUri = uri.substring(0,uri.lastIndexOf(File.separator))
         val folder = File(folderUri)
         if (!folder.exists()){
             folder.mkdirs()

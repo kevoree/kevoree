@@ -23,8 +23,7 @@ import org.kevoree.api.NodeType
 import org.kevoree.api.PrimitiveCommand
 import org.kevoreeadaptation.AdaptationModel
 import org.kevoreeadaptation.ParallelStep
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
+import org.kevoree.log.Log
 
 /**
  * Created by IntelliJ IDEA.
@@ -34,8 +33,6 @@ import org.slf4j.LoggerFactory
  */
 
 object PrimitiveCommandExecutionHelper {
-
-    val logger: Logger = LoggerFactory.getLogger(this.javaClass)!!
 
     fun execute(rootNode: ContainerNode, adaptionModel: AdaptationModel, nodeInstance: NodeType, afterUpdateFunc: ()->Boolean, preRollBack: ()->Boolean, postRollback: ()-> Boolean): Boolean {
         val orderedPrimitiveSet = adaptionModel.getOrderedPrimitiveSet()
@@ -66,7 +63,7 @@ object PrimitiveCommandExecutionHelper {
             adapt ->
             val primitive = nodeInstance.getPrimitive(adapt)
             if (primitive != null) {
-                logger.debug("Populate primitive => {} ",primitive)
+                Log.debug("Populate primitive => {} ",primitive.toString())
                 try {
                     val nodeType = rootNode.getTypeDefinition() as org.kevoree.NodeType
                     val aTypeRef = nodeType.getManagedPrimitiveTypeRefs().find{(ref: AdaptationPrimitiveTypeRef) : Boolean -> ref.getRef()?.getName() == adapt.getPrimitiveType()?.getName() }
@@ -74,12 +71,12 @@ object PrimitiveCommandExecutionHelper {
                         phase.setMaxTime(java.lang.Long.parseLong(aTypeRef.getMaxTime()))
                     }
                 } catch(e: Exception) {
-                    logger.error("Bad value for timeout in model ", e)
+                    Log.error("Bad value for timeout in model ", e)
                 }
                 phase.populate(primitive)
                 true
             } else {
-                logger.debug("Error while searching primitive => {} ", adapt)
+                Log.debug("Error while searching primitive => {} ", adapt.toString())
                 false
             }
         }
@@ -108,7 +105,7 @@ object PrimitiveCommandExecutionHelper {
                 return false
             }
         } else {
-            logger.debug("Primitive mapping error")
+            Log.debug("Primitive mapping error")
             return false
         }
     }
@@ -125,11 +122,11 @@ object PrimitiveCommandExecutionHelper {
                 try {
                     var result = primitive.execute()
                     if(!result){
-                        logger.error("Error while executing primitive command {} ",primitive)
+                        Log.error("Error while executing primitive command {} ",primitive.toString())
                     }
                     return result
                 } catch(e: Throwable) {
-                    logger.error("Error while executing primitive command {} ", primitive, e)
+                    Log.error("Error while executing primitive command {} ", primitive.toString(), e)
                     return false
                 }
             }
@@ -146,7 +143,7 @@ object PrimitiveCommandExecutionHelper {
                     workers.add(Worker(primitive))
                 }
                 try {
-                    logger.debug("Timeout = {}", timeout)
+                    Log.debug("Timeout = {}", timeout.toString())
                     val futures = pool.invokeAll(workers, timeout, TimeUnit.MILLISECONDS)
                     futures.all { f ->
                         f.isDone() && ( f.get() as Boolean )
@@ -166,7 +163,7 @@ object PrimitiveCommandExecutionHelper {
 
         fun runPhase(): Boolean {
             if (primitives.size == 0) {
-                logger.debug("Empty phase !!!")
+                Log.debug("Empty phase !!!")
                 return true
             }
             val watchdogTimeout = System.getProperty("node.update.timeout")
@@ -175,7 +172,7 @@ object PrimitiveCommandExecutionHelper {
                 try {
                     watchDogTimeoutInt = Math.max(watchDogTimeoutInt, Integer.parseInt(watchdogTimeout.toString()).toLong())
                 } catch (e: Exception) {
-                    logger.warn("Invalid value for node.update.timeout system property (must be an integer)!")
+                    Log.warn("Invalid value for node.update.timeout system property (must be an integer)!")
                 }
             }
             return executeAllWorker(primitives, watchDogTimeoutInt)
@@ -184,19 +181,19 @@ object PrimitiveCommandExecutionHelper {
         var rollbackPerformed = false
 
         fun rollBack() {
-            logger.debug("Rollback phase")
+            Log.debug("Rollback phase")
             if (sucessor != null) {
-                logger.debug("Rollback sucessor first")
+                Log.debug("Rollback sucessor first")
                 sucessor?.rollBack()
             }
             if(!rollbackPerformed){
                 // SEQUENCIAL ROOLBACK
                 primitives.reverse().forEach{ c ->
                     try {
-                        logger.debug("Undo adaptation command {} ",c.javaClass)
+                        Log.debug("Undo adaptation command {} ",c.javaClass.getName())
                         c.undo()
                     } catch (e: Exception) {
-                        logger.warn("Exception during rollback", e)
+                        Log.warn("Exception during rollback", e)
                     }
                 }
                 rollbackPerformed = true

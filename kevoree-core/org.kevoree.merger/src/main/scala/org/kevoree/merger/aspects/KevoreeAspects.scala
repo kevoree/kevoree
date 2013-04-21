@@ -17,24 +17,15 @@ package org.kevoree.merger.aspects
 import org.kevoree._
 
 object KevoreeAspects{
-//  implicit def mbindingAspect(c : org.kevoree.MBinding) = MBindingAspect(c)
   implicit def instanceAspect(c : org.kevoree.Instance) = InstanceAspect(c)
   implicit def componentInstanceAspect(c : ComponentInstance) = ComponentInstanceAspect(c)
-//  implicit def componentTypeAspect(c : ComponentType) = ComponentTypeAspect(c)
   implicit def typeAspect(ct : TypeDefinition) = TypeDefinitionAspect(ct)
   implicit def containerNodeAspect(cn : ContainerNode) = ContainerNodeAspect(cn)
   implicit def portAspect(p : Port ) = PortAspect(p)
   implicit def portTypeAspect(p : PortType ) = PortTypeAspect(p)
- // implicit def bindingAspect(b : Binding ) = BindingAspect(b)
   implicit def typedElementAspect(b : TypedElement ) = TypedElementAspect(b)
-//  implicit def channelAspect(c:Channel) = ChannelAspect(c)
-//  implicit def dictionaryAspect(d:Dictionary) = DictionaryAspect(d)
   implicit def dictionaryTypeAspect(d:DictionaryType) = DictionaryTypeAspect(d)
-
-  implicit def deployUnitAspect(d:DeployUnit) = DeployUnitAspect(d)
-
   implicit def operationAspect(d:Operation) = OperationAspect(d)
-//  implicit def containerRootAspect(d:ContainerRoot) = ContainerRootAspect(d)
 
 }
 

@@ -114,6 +114,7 @@ public class KevoreeBootStrap {
                     m.invoke(bootstraper, "slf4j-api", "org.slf4j", "1.7.2", dummyKCL);
                     m.invoke(bootstraper, "jgrapht-jdk1.5", "org.jgrapht", "0.7.3", dummyKCL);
                     m.invoke(bootstraper, "org.kevoree.adaptation.model", "org.kevoree", factory.getVersion(), dummyKCL);
+                    m.invoke(bootstraper, "org.kevoree.log", "org.kevoree", factory.getVersion(), dummyKCL);
                     m.invoke(bootstraper, "org.kevoree.api", "org.kevoree", factory.getVersion(), dummyKCL);
                     m.invoke(bootstraper, "org.kevoree.basechecker", "org.kevoree", factory.getVersion(), dummyKCL);
                     m.invoke(bootstraper, "org.kevoree.core", "org.kevoree", factory.getVersion(), dummyKCL);

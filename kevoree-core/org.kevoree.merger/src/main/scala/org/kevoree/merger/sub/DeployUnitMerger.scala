@@ -18,13 +18,11 @@ import org.kevoree._
 import org.kevoree.framework.kaspects.DeployUnitAspect
 import org.kevoree.merger.Merger
 import org.kevoree.merger.aspects.KevoreeAspects._
-import org.slf4j.LoggerFactory
 import scala.collection.JavaConversions._
 
 
 trait DeployUnitMerger extends Merger {
 
-  private val logger = LoggerFactory.getLogger(this.getClass);
   private val deployUnitAspect = new DeployUnitAspect()
 
   def mergeDeployUnit (actualModel: ContainerRoot, tp: DeployUnit, newForce: Boolean = false): DeployUnit = {
@@ -60,7 +58,7 @@ trait DeployUnitMerger extends Merger {
           }
 
           if (tp.getType != ftp.getType) {
-            logger.warn("Different type for same deploy unit : {}", ftp.getUnitName)
+            org.kevoree.log.Log.warn("Different type for same deploy unit : {}", ftp.getUnitName)
           }
 
           if (tpTimeStamp > ftpTimeStamp) {

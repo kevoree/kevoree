@@ -13,7 +13,6 @@
  */
 package org.kevoree.merger.resolver
 
-import org.slf4j.LoggerFactory
 import org.kevoree.{ContainerNode, ContainerRoot}
 import scala.collection.JavaConversions._
 
@@ -23,12 +22,10 @@ import scala.collection.JavaConversions._
  * User: duke
  * Date: 12/12/11
  * Time: 14:38
- * To change this template use File | Settings | File Templates.
  */
 
 trait TopologyResolver {
 
-  private val logger = LoggerFactory.getLogger(this.getClass)
 
   def resolveTopologyNodes(model: ContainerRoot) {
     model.getNodeNetworks.foreach {
@@ -49,10 +46,10 @@ trait TopologyResolver {
       case targetNodeName : UnresolvedNode => {
         model.findByPath(targetNodeName.getQuery(),classOf[ContainerNode]) match {
           case foundNode : ContainerNode => foundNode
-          case null => logger.error("Unconsitent model , node not found for name {}",targetNodeName.getName()); null
+          case null => org.kevoree.log.Log.error("Unconsitent model , node not found for name {}",targetNodeName.getName()); null
         }
       }
-      case _ => logger.error("Already Dictionary Value targetNodeName for value {}",node); node
+      case _ => org.kevoree.log.Log.error("Already Dictionary Value targetNodeName for value {}",node.toString); node
     }
   }
 

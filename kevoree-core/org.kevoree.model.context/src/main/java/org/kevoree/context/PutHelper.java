@@ -14,12 +14,9 @@
 package org.kevoree.context;
 
 import org.kevoree.context.impl.DefaultContextFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+import static org.kevoree.log.Log.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -28,8 +25,6 @@ import java.util.List;
  * Time: 17:03
  */
 public class PutHelper {
-
-    private static Logger logger = LoggerFactory.getLogger(PutHelper.class);
 
     public static class GetParams {
         public String unitParam = null;
@@ -135,7 +130,7 @@ public class PutHelper {
             }
             return metric;
         } else {
-            logger.error("Can't parse parameter path {} - path length {}must be 3 ",new Object[]{paths.size() , paths});
+            error("Can't parse parameter path {} - path length {} must be 3 ",paths.size()+"", paths.toString());
             return null;
         }
     }

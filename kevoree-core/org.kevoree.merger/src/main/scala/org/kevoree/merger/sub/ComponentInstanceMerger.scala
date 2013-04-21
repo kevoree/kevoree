@@ -33,13 +33,10 @@ package org.kevoree.merger.sub
 
 import org.kevoree.ComponentInstance
 import org.kevoree.ContainerRoot
-import org.slf4j.LoggerFactory
 import scala.collection.JavaConversions._
 
 
 trait ComponentInstanceMerger extends DictionaryMerger {
-
-  private val logger = LoggerFactory.getLogger(this.getClass);
 
   /* Expect TYPE DEFINITION MERGE BEFORE */
 

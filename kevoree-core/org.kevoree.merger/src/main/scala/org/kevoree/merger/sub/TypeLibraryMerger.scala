@@ -34,13 +34,10 @@ package org.kevoree.merger.sub
 import org.kevoree._
 import merger.resolver.UnresolvedTypeDefinition
 import org.kevoree.merger.Merger
-import org.slf4j.LoggerFactory
 import scala.collection.JavaConversions._
-
 
 trait TypeLibraryMerger extends Merger {
 
-  private val logger = LoggerFactory.getLogger(this.getClass)
 private val kevoreeFactory = new org.kevoree.impl.DefaultKevoreeFactory
 
 
@@ -68,7 +65,7 @@ private val kevoreeFactory = new org.kevoree.impl.DefaultKevoreeFactory
                   currentLibrary.addSubTypes(new UnresolvedTypeDefinition(unresolveTypeName.getName()))
                 }
               }
-              case _ @ e => logger.error("resolved type definition present with name "+e)
+              case _ @ e => org.kevoree.log.Log.error("resolved type definition present with name "+e)
             }
         }
     }

@@ -7,7 +7,6 @@ import org.kevoree.cloner.ModelCloner
 import java.util.Date
 import org.kevoree.core.basechecker.RootChecker
 import java.util.concurrent.ExecutorService
-import org.slf4j.LoggerFactory
 import java.util.UUID
 import java.util.ArrayList
 import org.kevoree.api.Bootstraper
@@ -28,6 +27,7 @@ import org.kevoree.framework.HaraKiriHelper
 import org.kevoree.framework.KevoreeXmiHelper
 import org.kevoree.impl.DefaultKevoreeFactory
 import java.util.concurrent.atomic.AtomicReference
+import org.kevoree.log.Log
 
 
 class PreCommand(newmodel: ContainerRoot, modelListeners: KevoreeListeners, oldModel: ContainerRoot){
@@ -52,7 +52,6 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
     val kevoreeFactory = org.kevoree.impl.DefaultKevoreeFactory()
     val model: AtomicReference<UUIDModel> = AtomicReference<UUIDModel>()
     var lastDate: Date = Date(System.currentTimeMillis())
-    var logger = LoggerFactory.getLogger(this.javaClass)!!
     val modelCloner = ModelCloner()
     val modelChecker = RootChecker()
     var selfActorPointer = this
@@ -89,7 +88,7 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
     private fun switchToNewModel(c: ContainerRoot) {
         var cc: ContainerRoot? = c
         if(!c.isReadOnly()){
-            logger.error("It is not safe to store ReadWrite model")
+            Log.error("It is not safe to store ReadWrite model")
             cc = modelCloner.clone(c, true)
         } else {
             cc = c
@@ -103,7 +102,7 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
         // TODO : MAGIC NUMBER ;-) , ONLY KEEP 10 PREVIOUS MODEL
         if (models.size > 15) {
             models = models.drop(5) as MutableList<UUIDModel>
-            logger.debug("Garbage old previous model")
+            Log.debug("Garbage old previous model")
         }
         //Changes the current model by the new model
         if(cc != null){
@@ -139,7 +138,7 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
                 callCallBack(callback, internalRes, null)
                 res = internalRes
             } else {
-                logger.debug("Core Locked , UUID mandatory")
+                Log.debug("Core Locked , UUID mandatory")
                 callCallBack(callback, false, ModelUpdateCallBackReturn.CAS_ERROR)
                 res = false
             }
@@ -170,14 +169,14 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
             setNodeName("node0")
         }
         modelListeners.start(getNodeName())
-        logger.info("Kevoree Start event : node name = {}", getNodeName())
+        Log.info("Kevoree Start event : node name = {}", getNodeName())
         scheduler = java.util.concurrent.Executors.newSingleThreadExecutor(KevoreeCoreThreadFactory(getNodeName()))
         val uuidModel = UUIDModelImpl(UUID.randomUUID(), factory.createContainerRoot())
         model.set(uuidModel)
     }
 
     fun stop() {
-        logger.warn("Kevoree Core will be stopped !")
+        Log.warn("Kevoree Core will be stopped !")
         modelListeners.stop()
         scheduler?.shutdownNow()
         scheduler = null
@@ -191,18 +190,18 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
                 val rootNode = modelCurrent.findByPath("nodes[" + getNodeName() + "]", javaClass<ContainerNode>())!!
                 org.kevoree.framework.deploy.PrimitiveCommandExecutionHelper.execute(rootNode, adaptationModel, nodeInstance!!, afterUpdateTest, afterUpdateTest, afterUpdateTest)
             } catch (e: Exception) {
-                logger.error("Error while unbootstrap ", e)
+                Log.error("Error while unbootstrap ", e)
             }
             try {
-                logger.debug("Call instance stop")
+                Log.debug("Call instance stop")
                 nodeInstance?.stopNode()
                 nodeInstance == null
                 _bootstraper?.clear()
             } catch(e: Exception) {
-                logger.error("Error while stopping node instance ", e)
+                Log.error("Error while stopping node instance ", e)
             }
         }
-        logger.debug("Kevoree core stopped ")
+        Log.debug("Kevoree core stopped ")
     }
 
     private fun lockTimeout() {
@@ -284,7 +283,7 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
                     callCallBack(callback, internalRes, null)
                     internalRes
                 } else {
-                    logger.debug("Core Locked , bad UUID {}", previousModel.getUUID())
+                    Log.debug("Core Locked , bad UUID {}", previousModel.getUUID().toString())
                     callCallBack(callback, false, ModelUpdateCallBackReturn.CAS_ERROR)
                     false //LOCK REFUSED !
                 }
@@ -367,15 +366,15 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
                         val uuidModel = UUIDModelImpl(UUID.randomUUID(), factory.createContainerRoot())
                         model.set(uuidModel)
                     } else {
-                        logger.error("TypeDef installation fail !")
+                        Log.error("TypeDef installation fail !")
                     }
                 } else {
-                    logger.error("Node instance name {} not found in bootstrap model !",getNodeName())
+                    Log.error("Node instance name {} not found in bootstrap model !",getNodeName())
                 }
             }
         } catch(e: Exception) {
-            logger.error("Error while bootstraping node instance ", e)
-            logger.debug(_bootstraper?.getKevoreeClassLoaderHandler()?.getKCLDump())
+            Log.error("Error while bootstraping node instance ", e)
+            Log.debug(_bootstraper?.getKevoreeClassLoaderHandler()?.getKCLDump())
             try {
                 nodeInstance?.stopNode()
             } catch(e: Exception) {
@@ -388,34 +387,34 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
 
     fun internal_update_model(proposedNewModel: ContainerRoot): Boolean {
         if (proposedNewModel.findNodesByID(getNodeName()) == null) {
-            logger.error("Asking for update with a NULL model or node name ({}) was not found in target model !",getNodeName())
+            Log.error("Asking for update with a NULL model or node name ({}) was not found in target model !",getNodeName())
             return false
         }
         try {
             val readOnlyNewModel = proposedNewModel
             val checkResult = modelChecker.check(readOnlyNewModel)!!
             if ( checkResult.size > 0) {
-                logger.error("There is check failure on update model, update refused !")
+                Log.error("There is check failure on update model, update refused !")
                 for(cr in checkResult) {
-                    logger.error("error=> " + cr?.getMessage() + ",objects" + cr?.getTargetObjects().toString())
+                    Log.error("error=> " + cr?.getMessage() + ",objects" + cr?.getTargetObjects().toString())
                 }
                 return false
             } else {
                 //Model check is OK.
                 val currentModel = model.get()!!.getModel()!!
-                logger.debug("Before listeners PreCheck !")
+                Log.debug("Before listeners PreCheck !")
                 val preCheckResult = modelListeners.preUpdate(currentModel, readOnlyNewModel)
-                logger.debug("PreCheck result = " + preCheckResult)
-                logger.debug("Before listeners InitUpdate !")
+                Log.debug("PreCheck result = " + preCheckResult)
+                Log.debug("Before listeners InitUpdate !")
                 val initUpdateResult = modelListeners.initUpdate(currentModel, readOnlyNewModel)
-                logger.debug("InitUpdate result = " + initUpdateResult)
+                Log.debug("InitUpdate result = " + initUpdateResult)
                 if (preCheckResult && initUpdateResult) {
                     var newmodel = readOnlyNewModel
                     //CHECK FOR HARA KIRI
                     var previousHaraKiriModel: ContainerRoot? = null
                     val hkh = HaraKiriHelper()
                     if (hkh.detectNodeHaraKiri(currentModel, readOnlyNewModel, getNodeName())) {
-                        logger.warn("HaraKiri detected , flush platform")
+                        Log.warn("HaraKiri detected , flush platform")
                         previousHaraKiriModel = currentModel
                         // Creates an empty model, removes the current node (harakiri)
                         newmodel = factory.createContainerRoot()
@@ -423,11 +422,11 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
                             // Compare the two models and plan the adaptation
                             val adaptationModel = nodeInstance!!.kompare(currentModel, newmodel)
                             adaptationModel.setInternalReadOnly()
-                            if (logger.isDebugEnabled()){
+                            if (Log.DEBUG){
                                 //Avoid the loop if the debug is not activated
-                                logger.debug("Adaptation model size {}",adaptationModel.getAdaptations().size())
+                                Log.debug("Adaptation model size {}",adaptationModel.getAdaptations().size().toString())
                                 for(adaptation in adaptationModel.getAdaptations()) {
-                                    logger.debug("primitive {} ", adaptation.getPrimitiveType()?.getName())
+                                    Log.debug("primitive {} ",adaptation.getPrimitiveType()?.getName())
                                 }
                             }
                             //Executes the adaptation
@@ -447,25 +446,27 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
                             //prepares for deployment of the new system
                             newmodel = readOnlyNewModel
                         } catch(e: Exception) {
-                            logger.error("Error while update ", e);return false
+                            Log.error("Error while update ", e);return false
                         }
-                        logger.debug("End HaraKiri")
+                        Log.debug("End HaraKiri")
                     }
 
 
                     //Checks and bootstrap the node
                     checkBootstrapNode(newmodel)
                     val milli = System.currentTimeMillis()
-                    logger.debug("Begin update model " + milli)
+                    if(Log.DEBUG){
+                        Log.debug("Begin update model {}",milli.toString())
+                    }
                     var deployResult = true
                     try {
                         // Compare the two models and plan the adaptation
-                        logger.info("Comparing models and planning adaptation.")
+                        Log.info("Comparing models and planning adaptation.")
 
                         val adaptationModel = nodeInstance!!.kompare(currentModel, newmodel)
                         adaptationModel.setInternalReadOnly()
                         //Execution of the adaptation
-                        logger.info("Launching adaptation of the system.")
+                        Log.info("Launching adaptation of the system.")
                         val  afterUpdateTest: ()-> Boolean = {()-> modelListeners.afterUpdate(currentModel, newmodel) }
 
                         val preCmd = PreCommand(newmodel, modelListeners, currentModel)
@@ -473,15 +474,15 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
                         val rootNode = newmodel.findNodesByID(getNodeName())!!
                         deployResult = org.kevoree.framework.deploy.PrimitiveCommandExecutionHelper.execute(rootNode, adaptationModel, nodeInstance!!, afterUpdateTest, preCmd.preRollbackTest, postRollbackTest)
                     } catch(e: Exception) {
-                        logger.error("Error while update ", e)
+                        Log.error("Error while update ", e)
                         deployResult = false
                     }
                     if (deployResult) {
                         switchToNewModel(newmodel)
-                        logger.info("Update sucessfully completed.")
+                        Log.info("Update sucessfully completed.")
                     } else {
                         //KEEP FAIL MODEL, TODO
-                        logger.warn("Update failed")
+                        Log.warn("Update failed")
                         //IF HARAKIRI
                         if (previousHaraKiriModel != null) {
                             internal_update_model(previousHaraKiriModel!!)
@@ -489,17 +490,17 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
                         }
                     }
                     val milliEnd = System.currentTimeMillis() - milli
-                    logger.debug("End deploy result={}-{}",deployResult,milliEnd)
+                    Log.debug("End deploy result={}-{}",deployResult.toString(),milliEnd.toString())
                     return deployResult
 
                 } else {
-                    logger.debug("PreCheck or InitUpdate Step was refused, update aborded !")
+                    Log.debug("PreCheck or InitUpdate Step was refused, update aborded !")
                     return false
                 }
 
             }
         } catch (e: Exception) {
-            logger.error("Error while update", e)
+            Log.error("Error while update", e)
             return false
         }
     }

@@ -15,19 +15,20 @@
 package org.kevoree.merger.aspects
 
 import org.kevoree._
-import org.slf4j.LoggerFactory
 import scala.collection.JavaConversions._
 import org.kevoree.merger.aspects.KevoreeAspects._
 
 case class TypedElementAspect(e : TypedElement) {
 
-  private val logger = LoggerFactory.getLogger(this.getClass)
   def isModelEquals(remote : TypedElement) : Boolean = {
     val nameEquality = e.getName == remote.getName
     val genericEquality = e.getGenericTypes.forall(p=> remote.getGenericTypes.exists(remoteP => remoteP.isModelEquals(p)  )  )
     val sizeEquality = e.getGenericTypes.size == remote.getGenericTypes.size
     if(!(nameEquality && genericEquality && sizeEquality)){
-      logger.debug("{}", Array(e.getName, nameEquality, genericEquality, sizeEquality))
+
+      if(org.kevoree.log.Log.DEBUG){
+        org.kevoree.log.Log.debug(e.getName+" "+nameEquality+" "+genericEquality+" "+sizeEquality)
+      }
     }
     nameEquality && genericEquality && sizeEquality
   }

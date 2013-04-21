@@ -1,6 +1,5 @@
 package org.kevoree.kcl
 
-import org.slf4j.LoggerFactory
 import java.io.*
 import java.util.concurrent.ConcurrentHashMap
 import java.net.URL
@@ -94,9 +93,6 @@ open class KevoreeJarClassLoader(): ClassLoader() {
     }
 
     protected var subClassLoaders: ArrayList<ClassLoader> = ArrayList<ClassLoader>()
-
-
-    private val logger = LoggerFactory.getLogger(this.javaClass)!!
 
     fun cleanupLinks(c: ClassLoader) {
         // CHECK USED
@@ -474,7 +470,7 @@ open class KevoreeJarClassLoader(): ClassLoader() {
         return buffer.toString()
     }
 
-
+    /*
     fun printDump() {
         logger.debug("KCL : {}",(classpathResources as KevoreeLazyJarResources).getLastLoadedJar())
         for(s in subClassLoaders) {
@@ -485,7 +481,7 @@ open class KevoreeJarClassLoader(): ClassLoader() {
                 logger.debug("    w~> {}" , ((s.get() as KevoreeJarClassLoader).classpathResources as KevoreeLazyJarResources).getLastLoadedJar() + "_" + s.get()!!.hashCode())
             }
         }
-    }
+    }*/
 
     override fun toString(): String {
         return cleanJarURL((classpathResources as KevoreeLazyJarResources).getLastLoadedJar()).toString() + hashCode()

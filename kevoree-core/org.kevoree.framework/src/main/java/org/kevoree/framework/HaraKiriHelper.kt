@@ -26,12 +26,12 @@
  */
 package org.kevoree.framework
 
-import org.slf4j.LoggerFactory
 import org.kevoreeadaptation.AdaptationModel
 import org.kevoree.ContainerRoot
 import org.kevoree.TypeDefinition
 import org.kevoree.DeployUnit
 import org.kevoree.framework.kaspects.DeployUnitAspect
+import org.kevoree.log.Log
 
 /**
  * Created by IntelliJ IDEA.
@@ -42,8 +42,6 @@ import org.kevoree.framework.kaspects.DeployUnitAspect
 
 class HaraKiriHelper {
 
-    private val logger = LoggerFactory.getLogger(this.javaClass)!!
-
     fun cleanAdaptationModel(currentAdaptModel: AdaptationModel, nodeName: String) {
         for (ad in currentAdaptModel.getAdaptations()) {
             if (ad.getPrimitiveType()!!.getName() == "AddDeployUnit" || ad.getPrimitiveType()!!.getName() == "RemoveDeployUnit" || ad.getPrimitiveType()!!.getName() == "AddType" || ad.getPrimitiveType()!!.getName() == "RemoveType"){
@@ -53,10 +51,10 @@ class HaraKiriHelper {
                     val currentNode = root.findNodesByID(nodeName)
                     if(nodeName != null){
                         if (detectHaraKiriDeployUnit(currentNode!!.getTypeDefinition()!!, deployUnit)) {
-                            logger.warn("HaraKiri ignore from Kompare for deployUnit => {}",deployUnit.getUnitName())
+                            Log.warn("HaraKiri ignore from Kompare for deployUnit => {}",deployUnit.getUnitName())
                             currentAdaptModel.removeAdaptations(ad)
                         } else {
-                            logger.debug("Sucessfully checked {}",deployUnit.getUnitName())
+                            Log.debug("Sucessfully checked {}",deployUnit.getUnitName())
                         }
                     }
                 }
@@ -66,7 +64,7 @@ class HaraKiriHelper {
                     val currentNode = root.findNodesByID(nodeName)
                     if(nodeName != null){
                         if (detectHaraKiriTypeDefinition(currentNode!!.getTypeDefinition()!!, typeDef)) {
-                            logger.warn("HaraKiri ignore from Kompare for type => {}", typeDef.getName())
+                            Log.warn("HaraKiri ignore from Kompare for type => {}", typeDef.getName())
                             currentAdaptModel.removeAdaptations(ad)
                         }
                     }

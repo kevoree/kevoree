@@ -27,7 +27,6 @@
 package org.kevoree.merger.sub
 
 import org.kevoree.merger.Merger
-import org.slf4j.LoggerFactory
 import org.kevoree._
 import scala.Some
 import scala.collection.JavaConversions._
@@ -42,7 +41,6 @@ import scala.collection.JavaConversions._
 
 trait ChannelMerger extends Merger with DictionaryMerger {
 
-  private val logger = LoggerFactory.getLogger(this.getClass)
   private val kevoreeFactory = new org.kevoree.impl.DefaultKevoreeFactory
 
   def mergeAllChannels(actualModel: ContainerRoot, modelToMerge: ContainerRoot) {
@@ -87,16 +85,16 @@ trait ChannelMerger extends Merger with DictionaryMerger {
                         }
                       }
                     }
-                    case None => logger.error("Error while merging binding, can't found port for name {}",mb.getPort.getPortTypeRef.getName)
+                    case None => org.kevoree.log.Log.error("Error while merging binding, can't found port for name {}",mb.getPort.getPortTypeRef.getName)
                   }
                 }
-                case None => logger.error("Error while merging binding, can't found component for name {}",mb.getPort.eContainer.asInstanceOf[ComponentInstance].getName)
+                case None => org.kevoree.log.Log.error("Error while merging binding, can't found component for name {}",mb.getPort.eContainer.asInstanceOf[ComponentInstance].getName)
               }
             }
-            case null => logger.error("Error while merging binding, can't found node for name {}", mb.getPort.eContainer.eContainer.asInstanceOf[ContainerNode].getName)
+            case null => org.kevoree.log.Log.error("Error while merging binding, can't found node for name {}", mb.getPort.eContainer.eContainer.asInstanceOf[ContainerNode].getName)
           }
         } else {
-          logger.error("Error while merging binding, can't found channel for name {}",mb.getHub.getName)
+          org.kevoree.log.Log.error("Error while merging binding, can't found channel for name {}",mb.getHub.getName)
         }
       }
     }

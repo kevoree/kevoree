@@ -15,13 +15,11 @@
 package org.kevoree.merger.sub
 
 import org.kevoree.merger.aspects.KevoreeAspects._
-import org.slf4j.LoggerFactory
 import org.kevoree.{KevoreeFactory, Dictionary, DictionaryType}
 import scala.collection.JavaConversions._
 
 
 trait DictionaryMerger {
-  private val logger = LoggerFactory.getLogger(this.getClass);
   private val kevoreeFactory = new org.kevoree.impl.DefaultKevoreeFactory
 
   def mergeDictionary(dictionary: Dictionary, newtype: DictionaryType): Unit = {
@@ -33,7 +31,7 @@ trait DictionaryMerger {
           val newAttribute = newtype.getAttributes.find(att => att.getName == v.getAttribute.getName)
           newAttribute match {
             case None => {
-              logger.debug("Merger remove unavailable Dictionary Value => {} for old key => {}",Array[AnyRef](v.getValue,v.getAttribute.getName))
+              org.kevoree.log.Log.debug("Merger remove unavailable Dictionary Value => {} for old key => {}",v.getValue,v.getAttribute.getName)
               dictionary.removeValues(v)
             } //REMOVE DICTIONARY INSTANCE , NO AVAILABLE IN NEW TYPE
             case Some(found) => {

@@ -26,11 +26,10 @@ import org.kevoree.core.basechecker.namechecker.NameChecker
 import org.kevoree.core.basechecker.nodechecker.NodeChecker
 import org.kevoree.core.basechecker.nodechecker.NodeContainerChecker
 import org.kevoree.core.basechecker.portchecker.PortChecker
-import org.slf4j.LoggerFactory
+import org.kevoree.log.Log
 
 class RootChecker: CheckerService {
 
-    private val logger = LoggerFactory.getLogger(getClass())!!
 
     private val subcheckers = ArrayList<CheckerService>();
 
@@ -56,7 +55,7 @@ class RootChecker: CheckerService {
                 try {
                     result.addAll(checker.check(model)!!)
                 } catch (e: Exception) {
-                    logger.error("Exception during checking", e)
+                    Log.error("Exception during checking", e)
                     val violation: CheckerViolation = CheckerViolation()
                     violation.setMessage("Checker fatal exception " + checker.getClass().getSimpleName() + "-" + e.getMessage())
                     violation.setTargetObjects(ArrayList())
@@ -70,7 +69,9 @@ class RootChecker: CheckerService {
             violation.setTargetObjects(ArrayList())
             result.add(violation)
         }
-        logger.debug("Model checked in {} " , (System.currentTimeMillis() - beginTime))
+        if(Log.DEBUG){
+            Log.debug("Model checked in {} " , (System.currentTimeMillis() - beginTime).toString())
+        }
         return result
     }
 

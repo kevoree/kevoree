@@ -1,7 +1,5 @@
 package org.kevoree.kcl.loader
 
-import java.lang.Class
-import org.slf4j.LoggerFactory
 import java.util.concurrent.Semaphore
 import java.io.InputStream
 import java.io.ByteArrayInputStream
@@ -9,6 +7,7 @@ import java.util.concurrent.Callable
 import org.kevoree.kcl.KevoreeLazyJarResources
 import org.kevoree.kcl.KevoreeJarClassLoader
 import org.kevoree.kcl.KCLScheduler
+import org.kevoree.log.Log
 
 /**
  * Created by IntelliJ IDEA.
@@ -23,7 +22,6 @@ class KevoreeLocalLoader(val classpathResources: KevoreeLazyJarResources, val kc
         order = 1
     }
 
-    private val logger = LoggerFactory.getLogger(this.javaClass)!!
 
     public override fun loadResource(name: String?): InputStream? {
         if(name != null){
@@ -71,13 +69,16 @@ class KevoreeLocalLoader(val classpathResources: KevoreeLazyJarResources, val kc
         try {
             val obj: Semaphore? = KCLScheduler.getScheduler().submit(call).get()
             if (obj != null){
-                logger.debug("Lock KCL to avoid concurrency {}", className)
                 obj.acquire()
             }
         } catch(ie: java.lang.InterruptedException) {
         }
         catch(e: Exception){
-            logger.error("Error while sync {} KCL thread : {}",className, Thread.currentThread().getName(), e)
+
+            if(Log.ERROR){
+                Log.error("Error while sync " + className + " KCL thread : " + Thread.currentThread().getName(), e)
+            }
+
         }
     }
 
@@ -101,15 +102,17 @@ class KevoreeLocalLoader(val classpathResources: KevoreeLazyJarResources, val kc
         } catch(ie: java.lang.InterruptedException) {
         }
         catch (e: Exception) {
-            logger.error("Error while sync {} KCL thread : {}", className,Thread.currentThread().getName(), e)
+            if(Log.ERROR){
+                Log.error("Error while sync " + className + " KCL thread : " + Thread.currentThread().getName(), e)
+            }
         }
     }
 
     private val locked = java.util.HashMap<String, SemaCounter>()
 
-    data class SemaCounter(val sema : Semaphore, var counter : Int) {
-        fun inc(){
-            counter = counter +1
+    data class SemaCounter(val sema: Semaphore, var counter: Int) {
+        fun inc() {
+            counter = counter + 1
         }
 
     }

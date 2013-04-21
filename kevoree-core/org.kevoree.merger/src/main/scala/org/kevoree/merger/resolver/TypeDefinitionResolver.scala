@@ -15,7 +15,6 @@ package org.kevoree.merger.resolver
 
 import org.kevoree.{NodeType, ContainerRoot}
 import org.kevoree.framework.kaspects.{ContainerRootAspect, ContainerNodeAspect}
-import org.slf4j.LoggerFactory
 import scala.collection.JavaConversions._
 
 
@@ -28,7 +27,6 @@ import scala.collection.JavaConversions._
 
 trait TypeDefinitionResolver {
 
-  private val logger = LoggerFactory.getLogger(this.getClass)
   private val containerRootAspect = new ContainerRootAspect()
 
   def resolveNodeTypeDefinition(model: ContainerRoot) {
@@ -41,11 +39,11 @@ trait TypeDefinitionResolver {
               case Some(targetNodeType) => {
                 du.setTargetNodeType(targetNodeType.asInstanceOf[NodeType])
               }
-              case None => logger.error("Error while resolving NodeType for name {}", nodeTypeName.getName())
+              case None => org.kevoree.log.Log.error("Error while resolving NodeType for name {}", nodeTypeName.getName())
             }
           }
           case null => //NOOP
-          case _@e => logger.warn("Strange already resolved target node type for name {} - {}", Array[AnyRef](e,du.getUnitName))
+          case _@e => org.kevoree.log.Log.warn("Strange already resolved target node type for name {} - {}", e.toString,du.getUnitName)
 
         }
     }
@@ -63,7 +61,7 @@ trait TypeDefinitionResolver {
                     typeDef.removeSuperTypes(superType)
                     typeDef.addSuperTypes(resolvedTypeDef)
                   }
-                  case None => logger.error("Error while resolving SuperType for name {}" , unresolvedTypeName.getName())
+                  case None => org.kevoree.log.Log.error("Error while resolving SuperType for name {}" , unresolvedTypeName.getName())
                 }
               }
               case _ =>
@@ -84,7 +82,7 @@ trait TypeDefinitionResolver {
                 library.removeSubTypes(subType)
                 library.addSubTypes(resolvedTypeDef)
               } else {
-                logger.error("Error while resolving library SubType for name {}",subType.getName())
+                org.kevoree.log.Log.error("Error while resolving library SubType for name {}",subType.getName())
               }
             }
           }
@@ -101,7 +99,7 @@ trait TypeDefinitionResolver {
               case Some(resolvedTypeDef) => {
                 instance.setTypeDefinition(resolvedTypeDef)
               }
-              case None => logger.error("Error while resolving library SubType for name {}",unresolvedTypeName.getName())
+              case None => org.kevoree.log.Log.error("Error while resolving library SubType for name {}",unresolvedTypeName.getName())
             }
           }
           case _ =>

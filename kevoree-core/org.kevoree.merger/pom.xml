@@ -30,24 +30,10 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-core</artifactId>
-            <version>1.0.0</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-            <version>1.0.0</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
             <artifactId>scala-library</artifactId>
             <groupId>org.scala-lang</groupId>
             <version>${scala.version}</version>
         </dependency>
-
     </dependencies>
 
     <build>

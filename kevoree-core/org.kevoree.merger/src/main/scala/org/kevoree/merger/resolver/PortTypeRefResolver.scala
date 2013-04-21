@@ -14,7 +14,6 @@
 package org.kevoree.merger.resolver
 
 import org.kevoree.framework.kaspects.ContainerRootAspect
-import org.slf4j.LoggerFactory
 import org.kevoree.{ComponentType, ComponentInstance, ContainerRoot}
 import scala.collection.JavaConversions._
 
@@ -27,7 +26,6 @@ import scala.collection.JavaConversions._
  */
 
 trait PortTypeRefResolver {
-  private val logger = LoggerFactory.getLogger(this.getClass)
   private val containerRootAspect = new ContainerRootAspect()
 
   def resolvePortTypeRef(model: ContainerRoot) {

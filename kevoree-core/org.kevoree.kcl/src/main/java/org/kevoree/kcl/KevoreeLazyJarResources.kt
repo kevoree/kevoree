@@ -1,5 +1,14 @@
 package org.kevoree.kcl
 
+import java.io.*
+import java.util.jar.JarInputStream
+import java.net.URL
+import java.util.ArrayList
+import java.lang.ref.WeakReference
+import java.util.HashMap
+import org.kevoree.kcl.exception.KclException
+import org.kevoree.log.Log
+
 /**
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
  * you may not use this file except in compliance with the License.
@@ -13,17 +22,6 @@ package org.kevoree.kcl
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-import java.io.*
-import java.util.jar.JarInputStream
-import java.net.URL
-import org.slf4j.LoggerFactory
-import java.util.ArrayList
-import java.lang.ref.WeakReference
-import java.util.HashMap
-import org.kevoree.kcl.exception.KclException
-
-
 /**
  * Created by IntelliJ IDEA.
  * User: duke
@@ -33,7 +31,7 @@ import org.kevoree.kcl.exception.KclException
 
 class KevoreeLazyJarResources {
 
-    public fun getResource(name:String): ByteArray? {
+    public fun getResource(name: String): ByteArray? {
         return getJarEntryContents(name);
     }
 
@@ -41,7 +39,6 @@ class KevoreeLazyJarResources {
     val jarEntryContents = HashMap<String, ByteArray>()
 
     val jarContentURL = HashMap<String, URL>()
-    private val logger = LoggerFactory.getLogger(this.javaClass)!!
     private var parentKCL: WeakReference<KevoreeJarClassLoader>? = null
 
     fun setParentKCL(kcl: KevoreeJarClassLoader) {
@@ -210,14 +207,12 @@ class KevoreeLazyJarResources {
                                             val subRUL = URL("jar:" + baseurl + "!/" + jarEntry!!.getName())
                                             lastLoadedJars.add(subRUL)
                                         }
-
-                                        //  println("subParentURL="+baseurl +jarEntry.getName())
-                                        logger.debug("KCL Found sub Jar => {}", jarEntry!!.getName())
+                                        Log.debug("KCL Found sub Jar => {}", jarEntry!!.getName())
                                         loadJar(ByteArrayInputStream(out.toByteArray()))
                                     } else {
                                         if (jarEntry!!.getName().endsWith(".class")) {
 
-                                            (jarEntryContents as MutableMap<String?,ByteArray?>).put(jarEntry!!.getName(), out.toByteArray())
+                                            (jarEntryContents as MutableMap<String?, ByteArray?>).put(jarEntry!!.getName(), out.toByteArray())
                                         } else {
                                             detectedResources.put(URL(key_url), out.toByteArray())
                                         }
@@ -275,7 +270,7 @@ class KevoreeLazyJarResources {
                         }
                         out.flush()
                         out.close()
-                        (jarEntryContents as MutableMap<String?,ByteArray?>).put(name, out.toByteArray())
+                        (jarEntryContents as MutableMap<String?, ByteArray?>).put(name, out.toByteArray())
                         out.toByteArray()
                     } finally {
                         if (stream != null) {
@@ -313,7 +308,7 @@ class KevoreeLazyJarResources {
                     detectedResources.put(resUrl, out.toByteArray())
                     out.toByteArray()
                 } catch(e: Exception) {
-                    logger.debug("Error while copying {} ",resUrl, e)
+                    Log.warn("Error while copying " + resUrl, e)
                     null
                 } finally {
                     if (stream != null) {

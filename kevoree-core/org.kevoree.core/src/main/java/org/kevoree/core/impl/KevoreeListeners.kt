@@ -15,13 +15,12 @@ package org.kevoree.core.impl
 
 import org.kevoree.api.service.core.handler.ModelListener
 import org.kevoree.ContainerRoot
-import org.slf4j.LoggerFactory
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.concurrent.ExecutorService
 import java.util.ArrayList
 import java.util.concurrent.Callable
-import org.slf4j.Logger
 import java.util.concurrent.ThreadFactory
+import org.kevoree.log.Log
 
 class KevoreeListeners {
 
@@ -182,14 +181,12 @@ class KevoreeListeners {
     class STOP_LISTENER(){
     }
 
-    private val logger: Logger = LoggerFactory.getLogger(this.javaClass).sure()
-
     inner class AsyncModelUpdateRunner(val listener: ModelListener): Runnable {
         override fun run() {
             try {
                 listener.modelUpdated()
             } catch (e: Exception) {
-                logger.error("Error while trigger model update ", e)
+                Log.error("Error while trigger model update ", e)
             }
         }
     }

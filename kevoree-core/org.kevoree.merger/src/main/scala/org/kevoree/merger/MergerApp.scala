@@ -33,13 +33,11 @@ package org.kevoree.merger
 
 import org.kevoree.framework.KevoreeXmiHelper
 import org.kevoree.KevoreeFactory
-import org.slf4j.LoggerFactory
-//import ch.qos.logback.classic.{Level, Logger}
+import org.kevoree.log.Log
+
 
 object MergerApp {
 
-
-  val logger = LoggerFactory.getLogger(this.getClass)
   /**
    * @param args the command line arguments
    */
@@ -48,7 +46,7 @@ object MergerApp {
 
     root.setLevel(Level.DEBUG)*/
 
-    logger.debug("Hello Merger")
+    Log.debug("Hello Merger")
 
     val kevoreeFactory = new org.kevoree.impl.DefaultKevoreeFactory
     val merger = new RootMerger

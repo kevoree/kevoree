@@ -30,7 +30,6 @@ import org.kevoree.merger.Merger
 import org.kevoree.{ContainerNode, Group, ContainerRoot}
 import org.kevoree.merger.resolver.UnresolvedTypeDefinition._
 import org.kevoree.merger.resolver.UnresolvedTypeDefinition
-import org.slf4j.LoggerFactory
 import scala.collection.JavaConversions._
 
 
@@ -42,8 +41,6 @@ import scala.collection.JavaConversions._
  */
 
 trait GroupMerger extends Merger with DictionaryMerger{
-
-  private val logger = LoggerFactory.getLogger(this.getClass)
 
   def mergeAllGroups(actualModel: ContainerRoot, modelToMerge: ContainerRoot) {
     modelToMerge.getGroups.foreach {
@@ -65,7 +62,7 @@ trait GroupMerger extends Merger with DictionaryMerger{
         actualModel.findByPath(subNode.path(),classOf[ContainerNode]) match {
        // actualModel.getNodes.find(pnode => pnode.getName == subNode) match {
            case currentNode : ContainerNode => currentGroup.addSubNodes(currentNode)
-           case null => logger.error("Unresolved node {}  in links for group => {} ",Array[AnyRef](subNode,currentGroup.getName))
+           case null => org.kevoree.log.Log.error("Unresolved node {}  in links for group => {} ",subNode.toString,currentGroup.getName)
          }
       }
 

@@ -15,23 +15,21 @@ package org.kevoree.merger.aspects
 
 import org.kevoree.Operation
 import org.kevoree.Parameter
-import org.slf4j.LoggerFactory
 import org.kevoree.merger.aspects.KevoreeAspects._
 import scala.collection.JavaConversions._
 
 case class OperationAspect(selfOperation: Operation) {
-  private val logger = LoggerFactory.getLogger(this.getClass)
 
   def contractChanged(otherOperation: Operation): Boolean = {
     "" match {
-      case _ if (otherOperation.getParameters.size != selfOperation.getParameters.size) => logger.debug("otherOperation.getParameters.size != selfOperation.getParameters.size"); true
+      case _ if (otherOperation.getParameters.size != selfOperation.getParameters.size) => org.kevoree.log.Log.debug("otherOperation.getParameters.size != selfOperation.getParameters.size"); true
       case _ => {
         var parameterChanged = otherOperation.getParameters.size != 0 && otherOperation.getParameters.forall(otherParam => {
           selfOperation.getParameters.find(selfParam => selfParam.getName == otherParam.getName) match {
             case Some(selfParam) => {
               !selfParam.getType.isModelEquals(otherParam.getType)
             }
-            case None => logger.debug("Parameters are not found in previous operation {}", otherParam.getName); true
+            case None => org.kevoree.log.Log.debug("Parameters are not found in previous operation {}", otherParam.getName); true
           }
         })
 
@@ -49,9 +47,9 @@ case class OperationAspect(selfOperation: Operation) {
             }
             if (!consistencyImpact) {
               parameterChanged = false
-              logger.debug("Conflict resolved")
+              org.kevoree.log.Log.debug("Conflict resolved")
             } else {
-              logger.debug("Conflict unresolved")
+              org.kevoree.log.Log.debug("Conflict unresolved")
             }
           }
           if (!otherOpeInherit && selfOpeInherit) {
@@ -68,9 +66,9 @@ case class OperationAspect(selfOperation: Operation) {
               for (i <- 0 until selfArr.length) {
                 selfArr(i).asInstanceOf[Parameter].setName(otherArr(i).asInstanceOf[Parameter].getName)
               }
-              logger.debug("Conflict resolved")
+              org.kevoree.log.Log.debug("Conflict resolved")
             } else {
-              logger.debug("Conflict unresolved")
+              org.kevoree.log.Log.debug("Conflict unresolved")
             }
           }
 

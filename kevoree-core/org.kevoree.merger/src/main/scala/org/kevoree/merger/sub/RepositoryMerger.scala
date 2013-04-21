@@ -18,14 +18,13 @@ import org.kevoree.framework.kaspects.DeployUnitAspect
 import org.kevoree.KevoreeFactory
 import org.kevoree.ContainerRoot
 import org.kevoree.DeployUnit
+import org.kevoree.log.Log
 import org.kevoree.Repository
 import org.kevoree.merger.aspects.KevoreeAspects._
-import org.slf4j.LoggerFactory
 import scala.collection.JavaConversions._
 
 
 trait RepositoryMerger {
-  private val logger = LoggerFactory.getLogger(this.getClass)
   private val deployUnitAspect = new DeployUnitAspect()
 
   //EXPECT TYPE DEFINITION TO BE MERGE BEFORE THIS STEP
@@ -54,7 +53,7 @@ trait RepositoryMerger {
         val found_unit = actualRoot.getDeployUnits.find(du => deployUnitAspect.isModelEquals(du, unit) /*&& du.getHashcode == unit.getHashcode*/)
         found_unit match {
           case None => {
-            logger.debug("Merger Error !!!!! Repository Incomplete")
+            Log.debug("Merger Error !!!!! Repository Incomplete")
           }
           case Some(funit) => {
             //CLEAN REPO FROM OLD DEPLOY UNIT

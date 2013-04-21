@@ -15,10 +15,8 @@
 package org.kevoree.framework
 
 import java.io.ByteArrayOutputStream
-import org.slf4j.LoggerFactory
 import java.util.zip.Inflater
 import java.util.zip.Deflater
-
 
 object ZipUtil {
 

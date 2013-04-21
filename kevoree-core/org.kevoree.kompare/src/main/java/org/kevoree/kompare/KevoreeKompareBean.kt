@@ -4,14 +4,12 @@ import org.kevoree.*
 import org.kevoreeadaptation.*
 import org.kevoree.kompare.sub.Kompare2
 import org.kevoree.impl.DefaultKevoreeFactory
-import org.slf4j.LoggerFactory
 import org.kevoree.serializer.ModelSerializer
+import org.kevoree.log.Log
 
 class KevoreeKompareBean: Kompare2, KevoreeScheduler {
     override var step: ParallelStep? = null
     override var currentStep: ParallelStep? = null
-
-    val logger = LoggerFactory.getLogger(this.javaClass)!!
 
     override var adaptationModelFactory: KevoreeAdaptationFactory = org.kevoreeadaptation.impl.DefaultKevoreeAdaptationFactory()
 
@@ -25,7 +23,7 @@ class KevoreeKompareBean: Kompare2, KevoreeScheduler {
         var updateLocalNode = targetModel.findByPath("nodes[" + nodeName + "]", javaClass<ContainerNode>())
 
         if(actualLocalNode == null && updateLocalNode == null){
-            logger.warn("Empty Kompare because {} not found in current nor in target model ",nodeName)
+            Log.warn("Empty Kompare because {} not found in current nor in target model ",nodeName)
             return adaptationModel
         }
         var dropActualNode = false

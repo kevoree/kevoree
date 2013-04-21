@@ -15,10 +15,8 @@
 package org.kevoree.merger.aspects
 
 import org.kevoree._
-import org.slf4j.LoggerFactory
 
 case class ContainerNodeAspect(node: ContainerNode) {
-  private val logger = LoggerFactory.getLogger(this.getClass)
 
   def isModelEquals(ct: ContainerNode): Boolean = {
     ct.getName == node.getName

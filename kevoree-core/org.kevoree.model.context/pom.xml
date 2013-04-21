@@ -19,16 +19,9 @@
 
     <dependencies>
         <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-core</artifactId>
-            <version>1.0.0</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-            <version>1.0.0</version>
-            <scope>test</scope>
+            <groupId>org.kevoree</groupId>
+            <artifactId>org.kevoree.log</artifactId>
+            <version>${kevoree.version}</version>
         </dependency>
     </dependencies>
 
