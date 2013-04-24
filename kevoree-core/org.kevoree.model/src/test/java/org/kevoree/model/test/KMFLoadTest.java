@@ -39,7 +39,7 @@ public class KMFLoadTest {
 
         ModelLoader loader = new XMIModelLoader();
         ModelCloner cloner = new ModelCloner();
-        ContainerRoot model = loader.loadModelFromPath(new File(ClonerTest.class.getResource("/node0.kev").toURI())).get(0);
+        ContainerRoot model = (ContainerRoot)loader.loadModelFromPath(new File(ClonerTest.class.getResource("/node0.kev").toURI())).get(0);
 
         long before = System.currentTimeMillis();
         for(int i=0;i<10000;i++){

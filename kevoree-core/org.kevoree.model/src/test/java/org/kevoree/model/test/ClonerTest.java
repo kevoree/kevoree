@@ -37,7 +37,7 @@ public class ClonerTest {
     @Test
     public void testSelector() throws URISyntaxException {
         ModelLoader loader = new XMIModelLoader();
-        ContainerRoot model = loader.loadModelFromPath(new File(ClonerTest.class.getResource("/node0.kev").toURI())).get(0);
+        ContainerRoot model = (ContainerRoot)loader.loadModelFromPath(new File(ClonerTest.class.getResource("/node0.kev").toURI())).get(0);
 
         ModelCloner cloner = new ModelCloner();
         cloner.clone(model);
@@ -52,7 +52,7 @@ public class ClonerTest {
 
         ModelLoader loader = new XMIModelLoader();
         KevoreeFactory factory = new DefaultKevoreeFactory();
-        ContainerRoot model = loader.loadModelFromPath(new File(ClonerTest.class.getResource("/"+fileName).toURI())).get(0);
+        ContainerRoot model = (ContainerRoot)loader.loadModelFromPath(new File(ClonerTest.class.getResource("/"+fileName).toURI())).get(0);
         for(int i=0;i<400;i++){
             ContainerNode node = factory.createContainerNode();
             node.setName("node_"+i);

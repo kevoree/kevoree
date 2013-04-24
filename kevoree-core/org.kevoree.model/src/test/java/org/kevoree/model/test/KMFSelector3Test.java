@@ -37,7 +37,7 @@ public class KMFSelector3Test {
     public void testSelector3() throws URISyntaxException {
 
         ModelLoader loader = new XMIModelLoader();
-        ContainerRoot model = loader.loadModelFromPath(new File(KMFSelector2Test.class.getResource("/deepModel.kev").toURI())).get(0);
+        ContainerRoot model = (ContainerRoot)loader.loadModelFromPath(new File(KMFSelector2Test.class.getResource("/deepModel.kev").toURI())).get(0);
 
         /* Normal lookup */
 

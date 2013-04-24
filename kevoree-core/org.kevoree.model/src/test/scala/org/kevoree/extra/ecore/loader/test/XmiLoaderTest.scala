@@ -49,7 +49,7 @@ object XmiLoaderTest {
   @BeforeClass
   def loadXmi() {
     val loader = new XMIModelLoader()
-    model = loader.loadModelFromPath(new File(getClass.getResource("/defaultlibs.kev").toURI)).get(0);
+    model = loader.loadModelFromPath(new File(getClass.getResource("/defaultlibs.kev").toURI)).get(0).asInstanceOf[ContainerRoot];
 
   }
 }
@@ -71,7 +71,7 @@ class XmiLoaderTest {
   @Test
   def testOpposite1(){
     val loader = new XMIModelLoader()
-    val m = loader.loadModelFromPath(new File(getClass.getResource("/unomas.kev").toURI)).get(0);
+    val m = loader.loadModelFromPath(new File(getClass.getResource("/unomas.kev").toURI)).get(0).asInstanceOf[ContainerRoot];
     m.getMBindings.foreach { mb =>
       println("---------->")
       val p = mb.getPort
@@ -142,7 +142,7 @@ class XmiLoaderTest {
   def loadAndCloneToReadWrite() {
     val factory = new org.kevoree.impl.DefaultKevoreeFactory()
     val loader = new XMIModelLoader()
-    val m = loader.loadModelFromPath(new File(getClass.getResource("/bootstrapModel0.kev").toURI)).get(0);
+    val m = loader.loadModelFromPath(new File(getClass.getResource("/bootstrapModel0.kev").toURI)).get(0).asInstanceOf[ContainerRoot];
     m.addNodes(factory.createContainerNode)
     val modelCloner = new ModelCloner
     val readOModel = modelCloner.clone(m, true)

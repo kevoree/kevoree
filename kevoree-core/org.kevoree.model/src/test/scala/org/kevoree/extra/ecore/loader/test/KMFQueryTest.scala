@@ -16,7 +16,7 @@ package org.kevoree.extra.ecore.loader.test
 import org.junit.Test
 import java.io.File
 import org.kevoree.loader.XMIModelLoader
-import org.kevoree.{Group, ComponentInstance, ContainerNode}
+import org.kevoree.{Group, ComponentInstance, ContainerNode, ContainerRoot}
 
 /**
  * Created with IntelliJ IDEA.
@@ -30,7 +30,7 @@ class KMFQueryTest {
   def testOppositeQuery(){
 
     val loader = new XMIModelLoader()
-    val model = loader.loadModelFromPath(new File(getClass.getResource("/unomas.kev").toURI)).get(0)
+    val model = loader.loadModelFromPath(new File(getClass.getResource("/unomas.kev").toURI)).get(0).asInstanceOf[ContainerRoot]
     assert(model.findNodesByID("node0").getName == "node0")
     assert(model.findByPath("nodes[node0]").asInstanceOf[ContainerNode].getName == "node0")
     assert(model.findByPath("nodes[node0]/components[FakeConso145]").asInstanceOf[ComponentInstance].getName == "FakeConso145")
@@ -45,7 +45,7 @@ class KMFQueryTest {
 
     assert(model.findByPath("adaptationPrimitiveTypes[{UpdateDeployUnit}]").asInstanceOf[org.kevoree.AdaptationPrimitiveType].getName == "UpdateDeployUnit")
 
-    val model2 = loader.loadModelFromPath(new File(getClass.getResource("/unomas2.kev").toURI)).get(0)
+    val model2 = loader.loadModelFromPath(new File(getClass.getResource("/unomas2.kev").toURI)).get(0).asInstanceOf[ContainerRoot]
     assert(model2.findGroupsByID("editor_group").getName == "editor_group")
     assert(model2.findByPath("groups[editor_group]").asInstanceOf[Group].getName == "editor_group")
     assert(model2.findByPath("groups[editor_group]/subNodes[editor_node]").asInstanceOf[ContainerNode].getName == "editor_node")

@@ -35,7 +35,7 @@ public class KMFSelector2Test {
     public void testSelector() throws URISyntaxException {
 
         ModelLoader loader = new XMIModelLoader();
-        ContainerRoot model = loader.loadModelFromPath(new File(KMFSelector2Test.class.getResource("/bootstrapModel0.kev").toURI())).get(0);
+        ContainerRoot model = (ContainerRoot)loader.loadModelFromPath(new File(KMFSelector2Test.class.getResource("/bootstrapModel0.kev").toURI())).get(0);
 
 
         System.out.println(model.selectByQuery("typeDefinitions[*]"));
@@ -53,7 +53,7 @@ public class KMFSelector2Test {
         assert (((NodeType) result.get(0)).getName().equals("RestNode"));
 
 
-        ContainerRoot model2 = loader.loadModelFromPath(new File(KMFSelector2Test.class.getResource("/defaultlibs.kev").toURI())).get(0);
+        ContainerRoot model2 = (ContainerRoot)loader.loadModelFromPath(new File(KMFSelector2Test.class.getResource("/defaultlibs.kev").toURI())).get(0);
         List<Object> result2 = model2.selectByQuery("typeDefinitions[*]/provided[{name = on}]");
         System.out.println("Result Size = " + result2.size());
         for (Object o : result2) {
