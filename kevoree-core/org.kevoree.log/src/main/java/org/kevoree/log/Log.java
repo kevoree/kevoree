@@ -120,7 +120,7 @@ public class Log {
         String optimizeMessage = message;
         //TODO optimize
         for (Object o : params) {
-            optimizeMessage = optimizeMessage.replaceFirst("{}", o.toString());
+            optimizeMessage = optimizeMessage.replaceFirst("\\{\\}", o.toString());
         }
         return optimizeMessage;
     }
