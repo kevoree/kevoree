@@ -39,7 +39,7 @@ class SchedulingWithTopologicalOrderAlgo {
     private fun buildGraph(commands: List<AdaptationPrimitive>,
                            start: Boolean): DefaultDirectedGraph<AdaptationPrimitive, Assoc2<AdaptationPrimitive, AdaptationPrimitive>> {
 
-        val clazz = Assoc2<AdaptationPrimitive, AdaptationPrimitive>(commands.get(0),commands.get(0))!!.javaClass
+        val clazz = Assoc2<AdaptationPrimitive, AdaptationPrimitive>(commands.get(0),commands.get(0)).javaClass
 
         val graph = DefaultDirectedGraph<AdaptationPrimitive, Assoc2<AdaptationPrimitive, AdaptationPrimitive>>(clazz)
 
@@ -123,12 +123,12 @@ class SchedulingWithTopologicalOrderAlgo {
                             val port = rit.next()
                             // !port.getPortTypeRef.getNoDependency is used to be sure that we need to know if the use of this port on the start or stop method of the component can introduce deadlock or not
                             if (binding.getPort().equals(port) &&
-                            (port.getPortTypeRef()!!.getNoDependency() == null || !port.getPortTypeRef()!!.getNoDependency())) {
+                            (!port.getPortTypeRef()!!.getNoDependency())) {
                                 var newL = instanceDependencies.get(binding.getHub())
                                 if(newL == null){
                                     newL = ArrayList<Instance>()
                                 }
-                                newL!!.add((command.getRef() as ComponentInstance)!!)
+                                newL!!.add((command.getRef() as ComponentInstance))
                                 instanceDependencies.put(binding.getHub()!!, newL!!)
                             }
                         }

@@ -51,7 +51,7 @@ object AccessControlXmiHelper {
         val loader = XMIModelLoader()
         val loadedElements = loader.loadModelFromString(model)
         if(loadedElements != null && loadedElements.size() > 0) {
-            return loadedElements.get(0);
+            return loadedElements.get(0) as AccessControlRoot;
         } else {
             return null;
         }
@@ -61,7 +61,7 @@ object AccessControlXmiHelper {
         val loader = XMIModelLoader()
         val loadedElements = loader.loadModelFromPath(File(uri))
         if(loadedElements != null && loadedElements.size() > 0) {
-            return loadedElements.get(0);
+            return loadedElements.get(0) as AccessControlRoot;
         } else {
             return null;
         }
@@ -71,7 +71,7 @@ object AccessControlXmiHelper {
         val loader = XMIModelLoader()
         val loadedElements = loader.loadModelFromStream(input)
         if(loadedElements != null && loadedElements.size() > 0) {
-            return loadedElements.get(0);
+            return loadedElements.get(0) as AccessControlRoot;
         } else {
             return null;
         }
