@@ -41,9 +41,9 @@ trait KevoreeProvidedExecutorPort: KevoreePort {
         return pool!!.submit(CallMethodCallable(o,this)).get()
     }
 
-    override fun startPort() {
+    override fun startPort(_tg : ThreadGroup?) {
         //PAUSED AT STARTUP
-        pool = PausablePortThreadPoolExecutor.newPausableThreadPool(1)
+        pool = PausablePortThreadPoolExecutor.newPausableThreadPool(1,_tg)
     }
 
     override fun stop() {

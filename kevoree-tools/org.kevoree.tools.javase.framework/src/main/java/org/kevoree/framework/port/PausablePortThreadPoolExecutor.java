@@ -28,15 +28,15 @@ public class PausablePortThreadPoolExecutor extends ThreadPoolExecutor {
     private ReentrantLock pauseLock = new ReentrantLock();
     private Condition unpaused = pauseLock.newCondition();
 
-    public static PausablePortThreadPoolExecutor newPausableThreadPool(int nThreads) {
+    public static PausablePortThreadPoolExecutor newPausableThreadPool(int nThreads, ThreadGroup tg) {
         return new PausablePortThreadPoolExecutor(nThreads, nThreads,
                 0L, TimeUnit.MILLISECONDS,
-                new LinkedBlockingQueue<Runnable>());
+                new LinkedBlockingQueue<Runnable>(), tg);
     }
 
 
-    public PausablePortThreadPoolExecutor(int i, int i1, long l, TimeUnit timeUnit, BlockingQueue<Runnable> runnables) {
-        super(i, i1, l, timeUnit, runnables);
+    public PausablePortThreadPoolExecutor(int i, int i1, long l, TimeUnit timeUnit, BlockingQueue<Runnable> runnables, ThreadGroup _tg) {
+        super(i, i1, l, timeUnit, runnables,new PausablePortThreadPoolFactory(_tg));
     }
 
     protected void beforeExecute(Thread t, Runnable r) {
@@ -71,7 +71,7 @@ public class PausablePortThreadPoolExecutor extends ThreadPoolExecutor {
     }
 
     public Boolean getIsPaused() {
-            return isPaused ;
+        return isPaused;
     }
 
 }

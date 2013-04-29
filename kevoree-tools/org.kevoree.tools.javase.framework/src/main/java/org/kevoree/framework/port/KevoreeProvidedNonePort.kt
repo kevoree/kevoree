@@ -33,7 +33,7 @@ trait KevoreeProvidedNonePort: KevoreePort {
         internal_process(o)
     }
 
-    override fun startPort() {
+    override fun startPort(_tg : ThreadGroup?) {
     }
 
     override fun stop() {

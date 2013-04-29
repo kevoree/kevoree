@@ -88,8 +88,8 @@ trait KevoreeRequiredExecutorPort: KevoreePort {
     }
 
 
-    override fun startPort() {
-        pool = PausablePortThreadPoolExecutor.newPausableThreadPool(1)
+    override fun startPort(tg : ThreadGroup?) {
+        pool = PausablePortThreadPoolExecutor.newPausableThreadPool(1,tg)
         resume();
     }
 

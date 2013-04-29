@@ -138,8 +138,7 @@ object PrimitiveCommandExecutionHelper {
             } else {
                 val pool = java.util.concurrent.Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors(), WorkerThreadFactory(System.currentTimeMillis().toString()))
                 val workers = ArrayList<Worker>()
-                ps.forEach {
-                    primitive ->
+                for(primitive in ps) {
                     workers.add(Worker(primitive))
                 }
                 try {
@@ -188,7 +187,7 @@ object PrimitiveCommandExecutionHelper {
             }
             if(!rollbackPerformed){
                 // SEQUENCIAL ROOLBACK
-                primitives.reverse().forEach{ c ->
+                for(c in primitives.reverse()){
                     try {
                         Log.debug("Undo adaptation command {} ",c.javaClass.getName())
                         c.undo()

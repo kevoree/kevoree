@@ -35,7 +35,10 @@ trait KevoreeProvidedThreadPort: KevoreePort, Runnable {
         throw Exception("Bad Message Port Usages")
     }
 
-    override fun startPort() {
+    var tg : ThreadGroup
+
+    override fun startPort(_tg : ThreadGroup?) {
+        tg = _tg!!
     }
 
     override fun stop() {
@@ -54,7 +57,7 @@ trait KevoreeProvidedThreadPort: KevoreePort, Runnable {
 
     override fun resume() {
         if (reader == null) {
-            reader = Thread(this)
+            reader = Thread(tg,this)
             reader!!.start()
         }
         isPaused = false

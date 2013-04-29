@@ -56,7 +56,7 @@ public interface Port {
 
     public void pause();
 
-    public void startPort();
+    public void startPort(ThreadGroup threadGroup);
 
     public boolean isInPause();
 

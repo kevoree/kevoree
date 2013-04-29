@@ -71,7 +71,7 @@ trait KevoreeRequiredNonePort: KevoreePort {
         }
     }
 
-    override fun startPort() {
+    override fun startPort(tg : ThreadGroup?) {
         isPaused = false
     }
 

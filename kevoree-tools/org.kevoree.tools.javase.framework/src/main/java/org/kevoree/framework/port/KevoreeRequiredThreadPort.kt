@@ -89,9 +89,9 @@ trait KevoreeRequiredThreadPort: KevoreePort, Runnable {
     }
 
 
-    override fun startPort() {
+    override fun startPort(tg : ThreadGroup?) {
         if (reader == null) {
-            reader = Thread(this)
+            reader = Thread(tg,this)
             reader!!.start()
         }
         isPaused = false
