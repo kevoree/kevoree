@@ -121,7 +121,7 @@ public class KevoreeBootStrap {
                     m.invoke(bootstraper, "org.kevoree.framework", "org.kevoree", factory.getVersion(), dummyKCL);
                     m.invoke(bootstraper, "org.kevoree.kcl", "org.kevoree", factory.getVersion(), dummyKCL);
                     m.invoke(bootstraper, "org.kevoree.kompare", "org.kevoree", factory.getVersion(), dummyKCL);
-                    m.invoke(bootstraper, "org.kevoree.merger", "org.kevoree", factory.getVersion(), dummyKCL);
+                 //   m.invoke(bootstraper, "org.kevoree.merger", "org.kevoree", factory.getVersion(), dummyKCL);
                     m.invoke(bootstraper, "org.kevoree.model", "org.kevoree", factory.getVersion(), dummyKCL);
                     m.invoke(bootstraper, "org.kevoree.model.context", "org.kevoree", factory.getVersion(), dummyKCL);
                     m.invoke(bootstraper, "org.kevoree.tools.annotation.api", "org.kevoree.tools", factory.getVersion(), dummyKCL);

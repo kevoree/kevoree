@@ -38,11 +38,13 @@
             <artifactId>org.kevoree.core</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
+        <!--
         <dependency>
             <groupId>org.kevoree</groupId>
             <artifactId>org.kevoree.merger</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
+        -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>log4j-over-slf4j</artifactId>
