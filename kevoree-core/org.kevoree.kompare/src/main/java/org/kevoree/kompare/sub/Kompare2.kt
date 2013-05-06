@@ -167,12 +167,14 @@ trait Kompare2 {
     fun checkTypes(actualTD: MutableSet<String>, updatedTD: MutableSet<String>, adaptationModel: AdaptationModel, actualRoot: ContainerRoot, updateRoot: ContainerRoot, actualNode: ContainerNode) {
         val usefull_DU = HashMap<String, DeployUnit>()
         val useless_DU = HashMap<String, DeployUnit>()
-
         val tp_DU = HashMap<String, DeployUnit>()
-
         val potentialAdd = HashMap<String, DeployUnit>()
         val duAspect = DeployUnitAspect()
         val tdAspect = TypeDefinitionAspect()
+
+
+        traverseDU(tdAspect.foundRelevantDeployUnit(actualNode.getTypeDefinition()!!,actualNode)!!,usefull_DU,true,tp_DU) //keep current node DU installed (no unbootstrap with kompare)
+
         for(actualType in actualTD){
             if(!updatedTD.contains(actualType)){
                 //Remove Type
