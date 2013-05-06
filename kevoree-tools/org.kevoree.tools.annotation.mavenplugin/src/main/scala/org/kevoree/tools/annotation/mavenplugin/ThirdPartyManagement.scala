@@ -72,13 +72,13 @@ object ThirdPartyManagement {
 
     var selectedDeps = List[Dependency]()
 
-    var excludedScope = List[String]("test")
+    val excludedScope = List[String]("test")
 
 
     //FILTER
-    (pomModel.getRuntimeDependencies ++ pomModel.getDependencies).foreach {
+    pomModel.getDependencies.foreach {
       loopDep => {
-        if (loopDep.getScope.equals("provided") || loopDep.getType.equals("bundle") || loopDep.getType.equals("kjar") || loopDep.getType.equals("kbundle")) {
+        if (loopDep.getScope.equals("provided") || loopDep.getType.equals("bundle")) {
           if (!excludedScope.exists(exScope => loopDep.getScope == exScope) && !selectedDeps.exists(preDep => preDep.getGroupId == loopDep.getGroupId && preDep.getArtifactId == loopDep.getArtifactId && preDep.getVersion == loopDep.getVersion)) {
             selectedDeps = selectedDeps ++ List(loopDep)
           }
