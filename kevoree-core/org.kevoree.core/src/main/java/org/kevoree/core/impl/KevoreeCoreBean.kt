@@ -90,9 +90,9 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
         if(!c.isReadOnly()){
             Log.error("It is not safe to store ReadWrite model")
             cc = modelCloner.clone(c, true)
-        } else {
+        } /*else {
             cc = c
-        }
+        }*/
 
         //current model is backed-up
         val previousModel = model.get()
@@ -187,8 +187,12 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
                 val adaptationModel = nodeInstance!!.kompare(modelCurrent, stopModel)
                 adaptationModel.setInternalReadOnly()
                 val afterUpdateTest: () -> Boolean = {() -> true }
-                val rootNode = modelCurrent.findByPath("nodes[" + getNodeName() + "]", javaClass<ContainerNode>())!!
-                org.kevoree.framework.deploy.PrimitiveCommandExecutionHelper.execute(rootNode, adaptationModel, nodeInstance!!, afterUpdateTest, afterUpdateTest, afterUpdateTest)
+                val rootNode = modelCurrent.findByPath("nodes[" + getNodeName() + "]", javaClass<ContainerNode>())
+                if (rootNode != null) {
+                    org.kevoree.framework.deploy.PrimitiveCommandExecutionHelper.execute(rootNode, adaptationModel, nodeInstance!!, afterUpdateTest, afterUpdateTest, afterUpdateTest)
+                } else {
+                    Log.error("Node is not defined into the model so unbootstrap cannot be correctly done")
+                }
             } catch (e: Exception) {
                 Log.error("Error while unbootstrap ", e)
             }
@@ -372,12 +376,12 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
                     Log.error("Node instance name {} not found in bootstrap model !",getNodeName())
                 }
             }
-        } catch(e: Exception) {
+        } catch(e: Throwable) {
             Log.error("Error while bootstraping node instance ", e)
             Log.debug(_bootstraper?.getKevoreeClassLoaderHandler()?.getKCLDump())
             try {
                 nodeInstance?.stopNode()
-            } catch(e: Exception) {
+            } catch(e: Throwable) {
             } finally {
                 _bootstraper?.clear()
             }
@@ -458,8 +462,9 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
                     if(Log.DEBUG){
                         Log.debug("Begin update model {}",milli.toString())
                     }
-                    var deployResult = true
+                    var deployResult : Boolean// = true
                     try {
+                        if (nodeInstance != null) {
                         // Compare the two models and plan the adaptation
                         Log.info("Comparing models and planning adaptation.")
 
@@ -473,6 +478,10 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
                         val postRollbackTest: ()->Boolean = {() -> modelListeners.postRollback(currentModel, newmodel);true }
                         val rootNode = newmodel.findNodesByID(getNodeName())!!
                         deployResult = org.kevoree.framework.deploy.PrimitiveCommandExecutionHelper.execute(rootNode, adaptationModel, nodeInstance!!, afterUpdateTest, preCmd.preRollbackTest, postRollbackTest)
+                        } else {
+                            Log.error("Node is not initialized")
+                            deployResult = false
+                        }
                     } catch(e: Exception) {
                         Log.error("Error while update ", e)
                         deployResult = false
@@ -499,7 +508,7 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
                 }
 
             }
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
             Log.error("Error while update", e)
             return false
         }
