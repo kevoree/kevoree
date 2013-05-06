@@ -11,23 +11,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * 	http://www.gnu.org/licenses/lgpl-3.0.txt
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.kevoree.platform.standalone;
 
 import org.kevoree.ContainerRoot;
@@ -134,95 +117,6 @@ public class KevoreeBootStrap {
             coreBean.setKevsEngineFactory(new LazyCreationOfKevScriptEngine(coreBean, bootstraper,jcl,factory.getVersion()));
             coreBean.start();
 
-			/* Boot strap */
-            //Bootstrap model phase
-            if (bootstrapModel == null) {
-                if (System.getProperty("node.bootstrap") != null) {
-                    try {
-                        logger.info("Try to load bootstrap platform from system parameter");
-                        String bootstrapModelPath = System.getProperty("node.bootstrap");
-                        if (bootstrapModelPath.startsWith("mvn:")) {
-                            try {
-                                String mavenurl = bootstrapModelPath.substring(4);
-                                File file = null;
-                                if (file == null && mavenurl.startsWith("http://")) {
-                                    String repourl = mavenurl.substring(0, mavenurl.indexOf("!"));
-                                    String urlids = mavenurl.substring(mavenurl.indexOf("!") + 1);
-                                    String[] part = urlids.split("/");
-                                    if (part.length == 3) {
-                                        List<String> list = new ArrayList<String>();
-//										file = bootstraper.resolveArtifact(part[1], part[0], part[2], list); // TODO maybe refactor Bootstraper to use a java list instead of a scala immutable list
-                                    }
-                                }
-                                if (file == null) {
-                                    String[] part = mavenurl.split("/");
-                                    if (part.length == 3) {
-                                        file = bootstraper.resolveKevoreeArtifact(part[1], part[0], part[2]);
-                                    } else {
-                                        logger.warn("Kevscript merger : Bad MVN URL <mvn:[repourl!]groupID/artefactID/version>");
-                                    }
-                                }
-                                if (file != null) {
-                                    JarFile jar = new JarFile(new File(file.getAbsolutePath()));
-                                    JarEntry entry = jar.getJarEntry("KEV-INF/lib.kev");
-                                    if (entry != null) {
-                                        bootstrapModel = KevoreeXmiHelper.instance$.loadStream(jar.getInputStream(entry));
-                                    }
-                                }
-                            } catch (Exception e) {
-                                logger.error("Bootstrap failed", e);
-                            }
-                        } else if (bootstrapModelPath.startsWith("http://")) {
-                            bootstrapModel = KevoreeXmiHelper.instance$.loadStream(new URL(bootstrapModelPath).openStream());
-                        } else if (bootstrapModelPath.endsWith(".jar")) {
-                            File filebootmodel = new File(bootstrapModelPath);
-                            JarFile jar = new JarFile(filebootmodel);
-                            JarEntry entry = jar.getJarEntry("KEV-INF/lib.kev");
-                            bootstrapModel = KevoreeXmiHelper.instance$.loadStream(jar.getInputStream(entry));
-                        } else {
-
-                            try {
-                                File filebootmodel = new File(bootstrapModelPath);
-                                bootstrapModel = bootstrapHelper.generateFromKevS(filebootmodel, coreBean.get_kevsEngineFactory().createKevScriptEngine(factory.createContainerRoot()));
-                            } catch (final Exception e) {
-                                try {
-                                    bootstrapModel = KevoreeXmiHelper.instance$.load(bootstrapModelPath);
-                                } catch (Exception e2) {
-                                    e.printStackTrace();
-                                    e2.printStackTrace();
-                                    throw new Exception("Error while bootstrap from " + bootstrapModelPath);
-
-                                }
-                            }
-                        }
-                    } catch (Exception e) {
-                        logger.error("Bootstrap failed from {}", System.getProperty("node.bootstrap"), e);
-                    }
-                } else {
-                    try {
-                        File filebootmodel = bootstraper.resolveKevoreeArtifact("org.kevoree.library.model.bootstrap", "org.kevoree.corelibrary.model", factory.getVersion());
-                        JarFile jar = new JarFile(filebootmodel);
-                        JarEntry entry = jar.getJarEntry("KEV-INF/lib.kev");
-                        bootstrapModel = KevoreeXmiHelper.instance$.loadStream(jar.getInputStream(entry));
-                    } catch (Exception e) {
-                        logger.error("Bootstrap failed", e);
-                    }
-                }
-            }
-
-//            bootstrapModel = KevoreeXmiHelper.load("/Users/duke/Desktop/test.kev");
-
-            if (bootstrapModel != null) {
-                try {
-                    logger.debug("Bootstrap step !");
-                    bootstrapHelper.initModelInstance(bootstrapModel, "JavaSENode", System.getProperty("node.groupType"));
-                    coreBean.updateModel(bootstrapModel);
-                } catch (Exception e) {
-                    logger.error("Bootstrap failed", e);
-                }
-            } else {
-                logger.error("Can't bootstrap nodeType, empty model {} ", bootstrapModel);
-            }
 
             KevoreeLogLevel coreLogLevel = KevoreeLogLevel.INFO;
             if (System.getProperty("kevoree.log.level") != null) {
@@ -240,9 +134,103 @@ public class KevoreeBootStrap {
             }
             logService.setCoreLogLevel(coreLogLevel);
 
+			/* Boot strap */
+            //Bootstrap model phase
+            if (bootstrapModel == null) {
+                if (System.getProperty("node.bootstrap") != null) {
+                    try {
+                        logger.info("Try to load bootstrap platform from system parameter");
+                        String bootstrapModelPath = System.getProperty("node.bootstrap");
+                        if (bootstrapModelPath.startsWith("mvn:")) {
+                            try {
+                                String mavenurl = bootstrapModelPath.substring(4);
+                                File file = null;
+                                if (file == null && mavenurl.startsWith("http://")) {
+                                    String repourl = mavenurl.substring(0, mavenurl.indexOf("!"));
+                                    String urlids = mavenurl.substring(mavenurl.indexOf("!") + 1);
+                                    String[] part = urlids.split("/");
+                                    if (part.length == 3) {
+                                        List<String> list = new ArrayList<String>();
+										file = bootstraper.resolveArtifact(part[1], part[0], part[2], list);
+                                    }
+                                }
+                                if (file == null) {
+                                    String[] part = mavenurl.split("/");
+                                    if (part.length == 3) {
+                                        file = bootstraper.resolveKevoreeArtifact(part[1], part[0], part[2]);
+                                    } else {
+                                        logger.warn("Bootstrap model: Bad MVN URL <mvn:[repourl!]groupID/artefactID/version>");
+                                    }
+                                }
+                                if (file != null) {
+                                    JarFile jar = new JarFile(new File(file.getAbsolutePath()));
+                                    JarEntry entry = jar.getJarEntry("KEV-INF/lib.kev");
+                                    if (entry != null) {
+                                        bootstrapModel = KevoreeXmiHelper.instance$.loadStream(jar.getInputStream(entry));
+                                    }
+                                }
+                            } catch (Throwable e) {
+                                logger.error("Bootstrap failed", e);
+                            }
+                        } else if (bootstrapModelPath.startsWith("http://")) {
+                            bootstrapModel = KevoreeXmiHelper.instance$.loadStream(new URL(bootstrapModelPath).openStream());
+                        } else if (bootstrapModelPath.endsWith(".jar")) {
+                            File filebootmodel = new File(bootstrapModelPath);
+                            JarFile jar = new JarFile(filebootmodel);
+                            JarEntry entry = jar.getJarEntry("KEV-INF/lib.kev");
+                            bootstrapModel = KevoreeXmiHelper.instance$.loadStream(jar.getInputStream(entry));
+                        } else {
+                            try {
+                                File filebootmodel = new File(bootstrapModelPath);
+                                bootstrapModel = bootstrapHelper.generateFromKevS(filebootmodel, coreBean.get_kevsEngineFactory().createKevScriptEngine(factory.createContainerRoot()));
+                            } catch (Throwable e) {
+                                try {
+                                    bootstrapModel = KevoreeXmiHelper.instance$.load(bootstrapModelPath);
+                                } catch (Throwable e2) {
+                                    logger.error("Unable to load boostrap model from file as a KevScript model", e);
+//                                    logger.error("Unable to load boostrap model from file as a KevScript model and as a Kevoree model", e2);
+                                    /*e.printStackTrace();
+                                    e2.printStackTrace();*/
+                                    throw new Exception("Unable to load boostrap model from file as a KevScript model and as a Kevoree model", e2);
+                                }
+                            }
+                        }
+                    } catch (Throwable e) {
+                        logger.info("Bootstrap failed from {}", System.getProperty("node.bootstrap"), e);
+                    }
+                } else {
+                    try {
+                        File filebootmodel = bootstraper.resolveKevoreeArtifact("org.kevoree.library.model.bootstrap", "org.kevoree.corelibrary.model", factory.getVersion());
+                        JarFile jar = new JarFile(filebootmodel);
+                        JarEntry entry = jar.getJarEntry("KEV-INF/lib.kev");
+                        bootstrapModel = KevoreeXmiHelper.instance$.loadStream(jar.getInputStream(entry));
+                    } catch (Throwable e) {
+                        logger.error("Bootstrap failed", e);
+                    }
+                }
+            }
+
+//            bootstrapModel = KevoreeXmiHelper.load("/Users/duke/Desktop/test.kev");
+
+            if (bootstrapModel != null) {
+                try {
+                    logger.debug("Bootstrap step !");
+                    bootstrapHelper.initModelInstance(bootstrapModel, "JavaSENode", System.getProperty("node.groupType"));
+                    coreBean.updateModel(bootstrapModel);
+                } catch (Throwable e) {
+                    logger.error("Bootstrap failed", e);
+                }
+            } else {
+                if (System.getProperty("node.bootstrap") != null) {
+                logger.error("Can't bootstrap node with bootstrap model: {} ", System.getProperty("node.bootstrap"));
+                } else {
+                    logger.error("Can't bootstrap node with default bootstrap");
+                }
+            }
+
             started = true;
 
-        } catch (Exception e) {
+        } catch (Throwable e) {
             e.printStackTrace();
         }
 
@@ -255,7 +243,7 @@ public class KevoreeBootStrap {
         try {
             coreBean.stop();
             started = false;
-        } catch (Exception e) {
+        } catch (Throwable e) {
             logger.error("Error while stopping Core ", e);
         }
 

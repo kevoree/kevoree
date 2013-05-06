@@ -72,7 +72,7 @@ public class LazyCreationOfKevScriptEngine implements KevScriptEngineFactory {
         try {
             checkOrInstall();
             return (KevScriptEngine) onlineCons.newInstance(coreBean, bootstraper);
-        } catch (Exception e) {
+        } catch (Throwable e) {
             e.printStackTrace();
         }
         return null;
@@ -83,7 +83,7 @@ public class LazyCreationOfKevScriptEngine implements KevScriptEngineFactory {
         try {
             checkOrInstall();
             return (KevScriptEngine) offlineCons.newInstance(srcModel, bootstraper);
-        } catch (Exception e) {
+        } catch (Throwable e) {
             e.printStackTrace();
         }
         return null;
