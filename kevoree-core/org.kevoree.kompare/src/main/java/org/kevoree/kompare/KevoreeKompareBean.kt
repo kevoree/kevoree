@@ -3,8 +3,6 @@ package org.kevoree.kompare
 import org.kevoree.*
 import org.kevoreeadaptation.*
 import org.kevoree.kompare.sub.Kompare2
-import org.kevoree.impl.DefaultKevoreeFactory
-import org.kevoree.serializer.ModelSerializer
 import org.kevoree.log.Log
 
 class KevoreeKompareBean: Kompare2, KevoreeScheduler {
@@ -15,47 +13,17 @@ class KevoreeKompareBean: Kompare2, KevoreeScheduler {
 
     fun kompare(actualModel: ContainerRoot, targetModel: ContainerRoot, nodeName: String): AdaptationModel {
 
-        val factory = DefaultKevoreeFactory()
         val adaptationModelFactory = org.kevoreeadaptation.impl.DefaultKevoreeAdaptationFactory()
         val adaptationModel = adaptationModelFactory.createAdaptationModel()
         //STEP 0 - FOUND LOCAL NODE
         var actualLocalNode = actualModel.findByPath("nodes[" + nodeName + "]", javaClass<ContainerNode>())
         var updateLocalNode = targetModel.findByPath("nodes[" + nodeName + "]", javaClass<ContainerNode>())
-
         if(actualLocalNode == null && updateLocalNode == null){
-            Log.warn("Empty Kompare because {} not found in current nor in target model ",nodeName)
+            Log.warn("Empty Kompare because {} not found in current nor in target model ", nodeName)
             return adaptationModel
         }
-        var dropActualNode = false
-        var dropNewNode = false
 
-        //case empty Model
-        if(actualLocalNode == null){
-            actualLocalNode = factory.createContainerNode()
-            actualLocalNode!!.setName(nodeName)
-            actualModel.addNodes(actualLocalNode!!)
-            dropActualNode = true
-            actualLocalNode!!.setTypeDefinition(updateLocalNode!!.getTypeDefinition())
-
-        }
-        //case empty Model
-        if(updateLocalNode == null){
-            updateLocalNode = factory.createContainerNode()
-            updateLocalNode!!.setName(nodeName)
-            targetModel.addNodes(updateLocalNode!!)
-            dropNewNode = true
-            updateLocalNode!!.setTypeDefinition(actualLocalNode!!.getTypeDefinition())
-
-        }
-
-        val currentAdaptModel = getUpdateNodeAdaptationModel(actualLocalNode!!, updateLocalNode!!)
-
-        if(dropActualNode){
-            actualModel.removeNodes(actualLocalNode!!)
-        }
-        if(dropNewNode){
-            targetModel.removeNodes(updateLocalNode!!)
-        }
+        val currentAdaptModel = getUpdateNodeAdaptationModel(actualLocalNode, updateLocalNode, actualModel, targetModel, nodeName)
 
         //TRANSFORME UPDATE
         for(adaptation in currentAdaptModel.getAdaptations()){
@@ -101,31 +69,30 @@ class KevoreeKompareBean: Kompare2, KevoreeScheduler {
                 JavaSePrimitive.UpdateInstance -> {
                     val stopcmd = adaptationModelFactory.createAdaptationPrimitive()
                     stopcmd.setPrimitiveType(actualModel.findAdaptationPrimitiveTypesByID(JavaSePrimitive.StopInstance))
-                    stopcmd.setRef( (adaptation.getRef() as Array<Any>).get(0))
+                    stopcmd.setRef((adaptation.getRef() as Array<Any>).get(0))
                     currentAdaptModel.removeAdaptations(adaptation)
                     currentAdaptModel.addAdaptations(stopcmd)
 
                     val rcmd = adaptationModelFactory.createAdaptationPrimitive()
                     rcmd.setPrimitiveType(actualModel.findAdaptationPrimitiveTypesByID(JavaSePrimitive.RemoveInstance))
-                    rcmd.setRef( (adaptation.getRef() as Array<Any>).get(0))
+                    rcmd.setRef((adaptation.getRef() as Array<Any>).get(0))
                     currentAdaptModel.removeAdaptations(adaptation)
                     currentAdaptModel.addAdaptations(rcmd)
 
                     val acmd = adaptationModelFactory.createAdaptationPrimitive()
                     acmd.setPrimitiveType(actualModel.findAdaptationPrimitiveTypesByID(JavaSePrimitive.AddInstance))
-                    acmd.setRef( (adaptation.getRef() as Array<Any>).get(1))
+                    acmd.setRef((adaptation.getRef() as Array<Any>).get(1))
                     currentAdaptModel.addAdaptations(acmd)
 
                     val uDiccmd = adaptationModelFactory.createAdaptationPrimitive()
                     uDiccmd.setPrimitiveType(actualModel.findAdaptationPrimitiveTypesByID(JavaSePrimitive.UpdateDictionaryInstance))
-                    uDiccmd.setRef( (adaptation.getRef() as Array<Any>).get(1))
+                    uDiccmd.setRef((adaptation.getRef() as Array<Any>).get(1))
                     currentAdaptModel.addAdaptations(uDiccmd)
 
                     val startcmd = adaptationModelFactory.createAdaptationPrimitive()
                     startcmd.setPrimitiveType(actualModel.findAdaptationPrimitiveTypesByID(JavaSePrimitive.StartInstance))
-                    startcmd.setRef( (adaptation.getRef() as Array<Any>).get(1))
+                    startcmd.setRef((adaptation.getRef() as Array<Any>).get(1))
                     currentAdaptModel.addAdaptations(startcmd)
-
                 }
                 else -> {
                 }

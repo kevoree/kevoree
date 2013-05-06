@@ -30,12 +30,10 @@ trait Kompare2 {
 
     var adaptationModelFactory: KevoreeAdaptationFactory
 
-    fun getUpdateNodeAdaptationModel(actualNode: ContainerNode, updateNode: ContainerNode): AdaptationModel {
+    fun getUpdateNodeAdaptationModel(actualNode: ContainerNode?, updateNode: ContainerNode?, actualRoot: ContainerRoot, updateRoot: ContainerRoot, nodeName: String): AdaptationModel {
 
         val alreadyProcessInstance = HashMap<String, Any>()
         val adaptationModel = adaptationModelFactory.createAdaptationModel()
-        val actualRoot = actualNode.eContainer() as ContainerRoot
-        val updateRoot = updateNode.eContainer() as ContainerRoot
 
         val actualTD: MutableSet<String> = java.util.HashSet<String>()
         val updateTD: MutableSet<String> = java.util.HashSet<String>()
@@ -45,83 +43,85 @@ trait Kompare2 {
         val actualChannels = HashSet<String>()
         val newChannels = HashSet<String>()
 
-
         //Check Node SelfUpdate
         processInstanceDictionary(actualNode, updateNode, adaptationModel, actualRoot, updateRoot)
 
-
-
         //Check Remove
-        for(actualComponent in actualNode.getComponents()){
-            val actualComponentPath = actualComponent.path()!!
-            val updatedComponent = updateRoot.findByPath(actualComponentPath, javaClass<ComponentInstance>())
-            if(updatedComponent == null){
-                processRemoveInstance(actualComponent, adaptationModel, actualRoot, actualTD)
-                for(port in actualComponent.getProvided()){
-                    for(binding in port.getBindings()){
-                        processRemoveMBinding(binding, adaptationModel, actualRoot)
-                        processCheckRemoveChannel(binding.getHub(), adaptationModel, actualRoot, actualTD, alreadyProcessInstance)
-                        actualChannels.add(binding.getHub()!!.getName())
+        if(actualNode != null){
+            for(actualComponent in actualNode.getComponents()){
+                val actualComponentPath = actualComponent.path()!!
+                val updatedComponent = updateRoot.findByPath(actualComponentPath, javaClass<ComponentInstance>())
+                if(updatedComponent == null){
+                    processRemoveInstance(actualComponent, adaptationModel, actualRoot, actualTD)
+                    for(port in actualComponent.getProvided()){
+                        for(binding in port.getBindings()){
+                            processRemoveMBinding(binding, adaptationModel, actualRoot)
+                            processCheckRemoveChannel(binding.getHub(), adaptationModel, actualRoot, actualTD, alreadyProcessInstance)
+                            actualChannels.add(binding.getHub()!!.getName())
+                        }
                     }
-                }
-                for(port in actualComponent.getRequired()){
-                    for(binding in port.getBindings()){
-                        processRemoveMBinding(binding, adaptationModel, actualRoot)
-                        processCheckRemoveChannel(binding.getHub(), adaptationModel, actualRoot, actualTD, alreadyProcessInstance)
-                        actualChannels.add(binding.getHub()!!.getName())
+                    for(port in actualComponent.getRequired()){
+                        for(binding in port.getBindings()){
+                            processRemoveMBinding(binding, adaptationModel, actualRoot)
+                            processCheckRemoveChannel(binding.getHub(), adaptationModel, actualRoot, actualTD, alreadyProcessInstance)
+                            actualChannels.add(binding.getHub()!!.getName())
+                        }
                     }
+                    alreadyProcessInstance.put(actualComponent.path()!!, actualComponent)
                 }
-                alreadyProcessInstance.put(actualComponent.path()!!, actualComponent)
             }
         }
 
-        for(updatedComponent in updateNode.getComponents()){
-            val updatedComponentPath = updatedComponent.path()!!
-            val actualComponent = actualRoot.findByPath(updatedComponentPath, javaClass<ComponentInstance>())
-            if(actualComponent == null){
-                processAddInstance(updatedComponent, adaptationModel, updateRoot, updateTD)
-                for(port in updatedComponent.getProvided()){
-                    for(binding in port.getBindings()){
-                        processAddMBinding(binding, adaptationModel, actualRoot, updateRoot)
-                        processCheckAddChannel(binding.getHub(), adaptationModel, actualRoot, updateRoot, updateTD, alreadyProcessInstance)
-                        newChannels.add(binding.getHub()!!.getName())
+
+        if(updateNode != null){
+            for(updatedComponent in updateNode.getComponents()){
+                val updatedComponentPath = updatedComponent.path()!!
+                val actualComponent = actualRoot.findByPath(updatedComponentPath, javaClass<ComponentInstance>())
+                if(actualComponent == null){
+                    processAddInstance(updatedComponent, adaptationModel, updateRoot, updateTD)
+                    for(port in updatedComponent.getProvided()){
+                        for(binding in port.getBindings()){
+                            processAddMBinding(binding, adaptationModel, actualRoot, updateRoot)
+                            processCheckAddChannel(binding.getHub(), adaptationModel, actualRoot, updateRoot, updateTD, alreadyProcessInstance)
+                            newChannels.add(binding.getHub()!!.getName())
+                        }
                     }
-                }
-                for(port in updatedComponent.getRequired()){
-                    for(binding in port.getBindings()){
-                        processAddMBinding(binding, adaptationModel, actualRoot, updateRoot)
-                        processCheckAddChannel(binding.getHub(), adaptationModel, actualRoot, updateRoot, updateTD, alreadyProcessInstance)
-                        newChannels.add(binding.getHub()!!.getName())
+                    for(port in updatedComponent.getRequired()){
+                        for(binding in port.getBindings()){
+                            processAddMBinding(binding, adaptationModel, actualRoot, updateRoot)
+                            processCheckAddChannel(binding.getHub(), adaptationModel, actualRoot, updateRoot, updateTD, alreadyProcessInstance)
+                            newChannels.add(binding.getHub()!!.getName())
+                        }
                     }
+                    alreadyProcessInstance.put(updatedComponent.path()!!, updatedComponent)
+                } else {
+                    processCheckUpdateInstance(actualComponent, updatedComponent, adaptationModel, actualRoot, actualTD, updateTD, updateRoot, nodeName, updatedTypeDefs)
+                    checkBindings(actualChannels, newChannels, actualComponent.getProvided(), updatedComponent.getProvided(), adaptationModel, actualRoot, updateRoot)
+                    checkBindings(actualChannels, newChannels, actualComponent.getRequired(), updatedComponent.getRequired(), adaptationModel, actualRoot, updateRoot)
                 }
-                alreadyProcessInstance.put(updatedComponent.path()!!, updatedComponent)
-            } else {
-                processCheckUpdateInstance(actualComponent, updatedComponent, adaptationModel, actualRoot, actualTD, updateTD, updateRoot, actualNode.getName(), updatedTypeDefs)
-                checkBindings(actualChannels, newChannels, actualComponent.getProvided(), updatedComponent.getProvided(), adaptationModel, actualRoot, updateRoot)
-                checkBindings(actualChannels, newChannels, actualComponent.getRequired(), updatedComponent.getRequired(), adaptationModel, actualRoot, updateRoot)
             }
         }
 
-        checkChannels(actualChannels, newChannels, adaptationModel, actualRoot, updateRoot, actualNode.getName(), actualTD, updateTD, alreadyProcessInstance, updatedTypeDefs)
-
-
+        checkChannels(actualChannels, newChannels, adaptationModel, actualRoot, updateRoot, nodeName, actualTD, updateTD, alreadyProcessInstance, updatedTypeDefs)
         //TODO BETTER Group Search with opposite usage
-        for(actualGroup in actualRoot.getGroups()){
-            if(actualGroup.findSubNodesByID(actualNode.getName()) != null){
-                val updateGroup = updateRoot.findGroupsByID(actualGroup.getName())
-                if(updateGroup == null || updateGroup.findSubNodesByID(actualNode.getName()) == null){
-                    processRemoveInstance(actualGroup, adaptationModel, actualRoot, actualTD)
+        if(actualNode != null){
+            for(actualGroup in actualRoot.getGroups()){
+                if(actualGroup.findSubNodesByID(actualNode.getName()) != null){
+                    val updateGroup = updateRoot.findGroupsByID(actualGroup.getName())
+                    if(updateGroup == null || updateGroup.findSubNodesByID(actualNode.getName()) == null){
+                        processRemoveInstance(actualGroup, adaptationModel, actualRoot, actualTD)
+                    }
                 }
             }
         }
         for(updateGroup in updateRoot.getGroups()){
-            if(updateGroup.findSubNodesByID(actualNode.getName()) != null){
+            if(updateGroup.findSubNodesByID(nodeName) != null){
                 val actualGroup = actualRoot.findGroupsByID(updateGroup.getName())
-                if(actualGroup == null || actualGroup.findSubNodesByID(actualNode.getName()) == null){
+                if(actualGroup == null || actualGroup.findSubNodesByID(nodeName) == null){
                     processAddInstance(updateGroup, adaptationModel, updateRoot, updateTD)
                 } else {
                     //Check dictionary
-                    processCheckUpdateInstance(actualGroup, updateGroup, adaptationModel, actualRoot, actualTD, updateTD, updateRoot, actualNode.getName(), updatedTypeDefs)
+                    processCheckUpdateInstance(actualGroup, updateGroup, adaptationModel, actualRoot, actualTD, updateTD, updateRoot, nodeName, updatedTypeDefs)
                     if(actualGroup.getSubNodes().size != updateGroup.getSubNodes().size){
                         val ccmd = adaptationModelFactory.createAdaptationPrimitive()
                         ccmd.setPrimitiveType(actualRoot.findAdaptationPrimitiveTypesByID(JavaSePrimitive.UpdateDictionaryInstance))
@@ -144,7 +144,12 @@ trait Kompare2 {
                 }
             }
         }
-        checkTypes(actualTD, updateTD, adaptationModel, actualRoot, updateRoot, actualNode)
+
+        var baseLookupNodeForDU = actualNode
+        if(baseLookupNodeForDU == null){
+            baseLookupNodeForDU = updateNode
+        }
+        checkTypes(actualTD, updateTD, adaptationModel, actualRoot, updateRoot, baseLookupNodeForDU!!)
         return adaptationModel
     }
 
@@ -438,24 +443,30 @@ trait Kompare2 {
     }
 
 
-    fun processInstanceDictionary(actualInstance: Instance, updateInstance: Instance, adaptationModel: AdaptationModel, actualRoot: ContainerRoot, updateRoot: ContainerRoot) {
-
+    fun processInstanceDictionary(actualInstance: Instance?, updateInstance: Instance?, adaptationModel: AdaptationModel, actualRoot: ContainerRoot, updateRoot: ContainerRoot) {
+        if(actualInstance == null && updateInstance == null){
+            return
+        }
+        if(actualInstance == null || updateInstance == null){
+            return
+        }
         if(actualInstance.getDictionary() == null && updateInstance.getDictionary() != null){
-            return updateDictionary(actualInstance, updateInstance, adaptationModel, actualRoot, updateRoot)
+            return updateDictionary(updateInstance, adaptationModel, actualRoot, updateRoot)
         }
         if(actualInstance.getDictionary() != null && updateInstance.getDictionary() == null){
-            return updateDictionary(actualInstance, updateInstance, adaptationModel, actualRoot, updateRoot)
+            return updateDictionary(updateInstance, adaptationModel, actualRoot, updateRoot)
         }
         if(actualInstance.getDictionary() == null && updateInstance.getDictionary() == null){
             return
         }
         //TODO CACHE
         if(checkDictionary(actualInstance.getDictionary()!!, updateInstance.getDictionary()!!)){
-            return updateDictionary(actualInstance, updateInstance, adaptationModel, actualRoot, updateRoot)
+            return updateDictionary(updateInstance, adaptationModel, actualRoot, updateRoot)
         }
         if(checkDictionary(updateInstance.getDictionary()!!, actualInstance.getDictionary()!!)){
-            return updateDictionary(actualInstance, updateInstance, adaptationModel, actualRoot, updateRoot)
+            return updateDictionary(updateInstance, adaptationModel, actualRoot, updateRoot)
         }
+
     }
 
     fun checkDictionary(dico1: Dictionary, dico2: Dictionary): Boolean {
@@ -478,7 +489,7 @@ trait Kompare2 {
         return false
     }
 
-    fun updateDictionary(actualInstance: Instance, updateInstance: Instance, adaptationModel: AdaptationModel, actualRoot: ContainerRoot, updateRoot: ContainerRoot) {
+    fun updateDictionary(updateInstance: Instance, adaptationModel: AdaptationModel, actualRoot: ContainerRoot, updateRoot: ContainerRoot) {
         val ccmd = adaptationModelFactory.createAdaptationPrimitive()
         ccmd.setPrimitiveType(updateRoot.findAdaptationPrimitiveTypesByID(JavaSePrimitive.UpdateDictionaryInstance))
         if(ccmd.getPrimitiveType() == null){
@@ -518,7 +529,7 @@ trait Kompare2 {
                     adaptationModel.addAdaptations(addccmd)
                 }
             } else {
-                if(channelAspect.usedByNode(channelOrigin,nodeName) && !channelAspect.usedByNode(ch2,nodeName)){
+                if(channelAspect.usedByNode(channelOrigin, nodeName) && !channelAspect.usedByNode(ch2, nodeName)){
                     processAddInstance(channelOrigin, adaptationModel, updateRoot, updateTD)
                     for(remote in channelAspect.getConnectedNode(channelOrigin, nodeName)){
                         val addccmd = adaptationModelFactory.createAdaptationPrimitive()
