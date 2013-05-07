@@ -28,7 +28,6 @@ package org.kevoree.tools.annotation.mavenplugin;
 
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.DefaultArtifact;
-import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Repository;
 import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.AbstractMojo;
@@ -627,16 +626,14 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
             }
         }
         String otherRepositories = ";";
-      
 
-        Iterator repoIterator = project.getRepositories().iterator();
-        while (repoIterator.hasNext()) {
-            Repository repo = (Repository) repoIterator.next();
+
+        for (Repository repo : project.getRepositories()) {
             otherRepositories += ";" + repo.getUrl();
         }
         
         String thirdParties = ";";
-        for(Dependency dep : ThirdPartyManagement.processKevoreeProperty(project,getLog())){
+        for(Artifact dep : ThirdPartyManagement.processKevoreeProperty(project,getLog())){
             thirdParties += ";" + dep.getGroupId() + "/" + dep.getArtifactId() + "/" + toBaseVersion(dep.getVersion()) +"/"+ dep.getType();
         }
         /*

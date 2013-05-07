@@ -14,6 +14,7 @@
 
 package org.kevoree.tools.annotation.mavenplugin
 
+import org.apache.maven.artifact.Artifact
 import org.apache.maven.project.MavenProject
 import org.kevoree.ContainerRoot
 import scala.collection.JavaConversions._
@@ -36,13 +37,13 @@ object ThirdPartyManagement {
   val groupSepProp = ":"
   val propWildcard = "*"
 
-  def processKevoreeProperty(pomModel: MavenProject, log: Log): java.util.List[Dependency] = {
+  def processKevoreeProperty(pomModel: MavenProject, log: Log): java.util.List[Artifact] = {
 
     if (!pomModel.getPackaging.equals("bundle") && pomModel.getProperties.get(includeProp) == null) {
       pomModel.getProperties.put(includeProp, "*:*")
     }
 
-    var includeRegex = List[Tuple2[Regex, Regex]]()
+    var includeRegex = List[(Regex, Regex)]()
     if (pomModel.getProperties.containsKey(includeProp)) {
       pomModel.getProperties.get(includeProp).toString.split(seperatorProp).foreach {
         loopProp =>
@@ -57,7 +58,7 @@ object ThirdPartyManagement {
       includeRegex = includeRegex ++ List((new Regex("*"), new Regex("*")))
     }*/
 
-    var excludeRegex = List[Tuple2[Regex, Regex]]()
+    var excludeRegex = List[(Regex, Regex)]()
     if (pomModel.getProperties.containsKey(excludeProp)) {
       pomModel.getProperties.get(excludeProp).toString.split(seperatorProp).foreach {
         loopProp =>
@@ -70,13 +71,14 @@ object ThirdPartyManagement {
       }
     }
 
-    var selectedDeps = List[Dependency]()
+    var selectedDeps = List[Artifact]()
 
     val excludedScope = List[String]("test")
 
 
     //FILTER
-    pomModel.getDependencies.foreach {
+    pomModel.getArtifacts
+    /*(pomModel.getRuntimeDependencies ++ pomModel.getDependencies)*/.foreach {
       loopDep => {
         if (loopDep.getScope.equals("provided") || loopDep.getType.equals("bundle")) {
           if (!excludedScope.exists(exScope => loopDep.getScope == exScope) && !selectedDeps.exists(preDep => preDep.getGroupId == loopDep.getGroupId && preDep.getArtifactId == loopDep.getArtifactId && preDep.getVersion == loopDep.getVersion)) {
