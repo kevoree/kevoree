@@ -37,7 +37,7 @@
                         </source>
                     </sources>
                     <linkerEndOptions>
-                        <linkerEndOption> -lpthread</linkerEndOption>
+                        <linkerEndOption> -lpthread -ldl</linkerEndOption>
                     </linkerEndOptions>
                 </configuration>
             </plugin>

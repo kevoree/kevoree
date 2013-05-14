@@ -181,7 +181,9 @@ public class CodeGeneratorC extends  AbstractCodeGenerator {
                 "        ctx->stop = &stop;\n" +
                 "        ctx->update   = &update;\n" +
                 "        ctx->dispatch = &dispatch;\n" +
-                "\t    ctx->start();\n  " +
+                "        // todo fix here we are waiting that dico are sets\n" +
+                "       sleep(2); \n" +
+                "\t    ctx->start();\n " +
                 "  pause();\n" +
                 "     }\n" +
                 "}");

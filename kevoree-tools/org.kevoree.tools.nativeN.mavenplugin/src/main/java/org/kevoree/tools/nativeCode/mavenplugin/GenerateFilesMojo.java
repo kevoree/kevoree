@@ -87,7 +87,7 @@ public class GenerateFilesMojo extends AbstractMojo {
             getLog().warn("InputDir null => ");
         } else {
             List<File> componentFiles = MavenHelper.scanForKevScript(inputCFile);
-            System.out.println(inputCFile + " size = " + componentFiles.size());
+            System.out.println(inputCFile + "There is not kevs finds size = " + componentFiles.size());
             for (File f : componentFiles) {
                 getLog().info("File found =>" + f.getAbsolutePath());
                 try {

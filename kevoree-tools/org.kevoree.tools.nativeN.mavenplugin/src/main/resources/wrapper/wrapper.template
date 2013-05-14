@@ -57,12 +57,12 @@ public class $CLASS$ extends AbstractComponentType {
             // todo check if not used
             ipc_key  = gerRandom();
             ArrayList<String> repos = new ArrayList<String>();
-            for(Repository repo :  getModelService().getLastModel().getRepositoriesForJ())
+            for(Repository repo :  getModelService().getLastModel().getRepositories())
             {
                 repos.add(repo.getUrl());
             }
             // loading model from jar
-            ContainerRoot model = KevoreeXmiHelper.loadStream(getClass().getResourceAsStream("/KEV-INF/lib.kev"));
+             ContainerRoot model = KevoreeXmiHelper.instance$.loadStream(getClass().getResourceAsStream("/KEV-INF/lib.kev"));
             File binary =    getBootStrapperService().resolveArtifact("$artifactId$"+getOs(), "$groupId$", "$version$", "uexe", repos);
             if(binary != null)
             {
