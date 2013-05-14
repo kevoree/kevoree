@@ -22,7 +22,7 @@ import org.kevoree.framework.kaspects.TypeDefinitionAspect
 
 open class NodeTypeBootstrapHelper: Bootstraper, KCLBootstrap {
 
-    override fun resolveKevoreeArtifact(artId: String, groupId: String, version: String): File {
+    override fun resolveKevoreeArtifact(artId: String, groupId: String, version: String): File? {
         val l = ArrayList<String>()
         l.add("http://maven.kevoree.org/release")
         l.add("http://maven.kevoree.org/snapshots")
@@ -117,7 +117,7 @@ open class NodeTypeBootstrapHelper: Bootstraper, KCLBootstrap {
     }
 
 
-    override fun resolveDeployUnit(du: DeployUnit): File = AetherUtil.resolveDeployUnit(du)!!
+    override fun resolveDeployUnit(du: DeployUnit): File? = AetherUtil.resolveDeployUnit(du)
 
     override fun close() {
         classLoaderHandler.clear()
@@ -136,11 +136,11 @@ open class NodeTypeBootstrapHelper: Bootstraper, KCLBootstrap {
         classLoaderHandler.manuallyAddToCache(du, kcl)
     }
 
-    override fun resolveArtifact(artId: String, groupId: String, version: String, extension: String, repos: List<String>): File {
-        return AetherUtil.resolveMavenArtifact(artId, groupId, version, extension, repos)!!
+    override fun resolveArtifact(artId: String, groupId: String, version: String, extension: String, repos: List<String>): File? {
+        return AetherUtil.resolveMavenArtifact(artId, groupId, version, extension, repos)
     }
-    override fun resolveArtifact(artId: String, groupId: String, version: String, repos: List<String>): File {
-        return AetherUtil.resolveMavenArtifact(artId, groupId, version, repos)!!
+    override fun resolveArtifact(artId: String, groupId: String, version: String, repos: List<String>): File? {
+        return AetherUtil.resolveMavenArtifact(artId, groupId, version, repos)
     }
 
     fun bootstrapGroupType(model: ContainerRoot, destGroupName: String, mservice: KevoreeModelHandlerService): AbstractGroupType? {
