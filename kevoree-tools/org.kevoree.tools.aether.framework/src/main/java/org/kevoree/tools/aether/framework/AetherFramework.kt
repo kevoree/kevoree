@@ -49,19 +49,24 @@ trait AetherFramework: TempFileCacheManager, AetherRepositoryHandler, CorruptedF
             repositories.add(repo)
         }
         artifactRequest.setRepositories(repositories)
-        var artefactResult = getRepositorySystem()!!.resolveArtifact(getRepositorySystemSession(), artifactRequest)
+        try {
+            var artefactResult = getRepositorySystem()!!.resolveArtifact(getRepositorySystemSession(), artifactRequest)
 
-        val corruptedFile = artefactResult!!.getArtifact()
-        if (corruptedFile == null || !checkFile(corruptedFile.getFile()!!)) {
-            //OPTIONAL REMOVE : _maven.repositories
-            clearRepoCacheFile(getRepositorySystemSession(), artifactRequest.getArtifact()!!)
-            artefactResult = getRepositorySystem()!!.resolveArtifact(getRepositorySystemSession(), artifactRequest)
-        }
+            val corruptedFile = artefactResult!!.getArtifact()
+            if (corruptedFile == null || !checkFile(corruptedFile.getFile()!!)) {
+                //OPTIONAL REMOVE : _maven.repositories
+                clearRepoCacheFile(getRepositorySystemSession(), artifactRequest.getArtifact()!!)
+                artefactResult = getRepositorySystem()!!.resolveArtifact(getRepositorySystemSession(), artifactRequest)
+            }
 
-        if (checkFile(artefactResult!!.getArtifact()!!.getFile()!!)) {
-            return installInCache(artefactResult!!.getArtifact()!!)
-        } else {
-            logger.warn("Aether return bad Corrupted File after second try , abording")
+            if (checkFile(artefactResult!!.getArtifact()!!.getFile()!!)) {
+                return installInCache(artefactResult!!.getArtifact()!!)
+            } else {
+                logger.warn("Aether return bad Corrupted File after second try , abording")
+                return null
+            }
+        } catch (t: Throwable) {
+            logger.debug("Unable to resolve artifact", t);
             return null
         }
 
@@ -142,7 +147,7 @@ trait AetherFramework: TempFileCacheManager, AetherRepositoryHandler, CorruptedF
 
 
     fun resolveVersion(groupName: String, unitName: String, versionProperty: String, repositoryUrls: List<String>): String {
-        val artifact: Artifact = DefaultArtifact(groupName.trim()+":"+unitName.trim()+":"+versionProperty.trim())
+        val artifact: Artifact = DefaultArtifact(groupName.trim() + ":" + unitName.trim() + ":" + versionProperty.trim())
         val versionRequest = VersionRequest()
         versionRequest.setArtifact(artifact)
 
