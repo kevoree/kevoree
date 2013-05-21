@@ -1,0 +1,25 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>org.kevoree.resolver</artifactId>
+    <packaging>jar</packaging>
+    <name>Kevoree :: Resolver</name>
+
+    <version>2.0.0-SNAPSHOT</version>
+    <parent>
+        <artifactId>org.kevoree.root</artifactId>
+        <groupId>org.kevoree</groupId>
+        <version>2.0.0-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.kevoree</groupId>
+            <artifactId>org.kevoree.log</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
+    </dependencies>
+
+</project>

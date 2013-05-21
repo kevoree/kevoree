@@ -19,6 +19,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-stdlib</artifactId>
+            <version>${kotlin.version}</version>
+        </dependency>
+        <dependency>
             <artifactId>scala-library</artifactId>
             <groupId>org.scala-lang</groupId>
             <version>${scala.version}</version>
