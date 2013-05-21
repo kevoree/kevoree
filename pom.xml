@@ -11,8 +11,7 @@
 <organization>
     <name>Kevoree Project</name>
     <url>http://kevoree.org</url>
-  </organization>
-
+</organization>
 
     <modules>
         <module>kevoree-core/org.kevoree.root</module>
@@ -20,82 +19,5 @@
 		<module>kevoree-corelibrary</module>
 		<module>kevoree-platform/org.kevoree.platform.root</module>
     </modules>
-
-
-<reporting>
-        <plugins>
-                <plugin>
-        <groupId>org.scala-tools</groupId>
-        <artifactId>maven-scala-plugin</artifactId>
-        <version>2.15.2</version>
-      </plugin>
-        </plugins>
-</reporting>
-
-
-
-<build>
-        <plugins>
-
-<plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-site-plugin</artifactId>
-        <version>3.1</version>
-</plugin>
-
-
-
-            <!-- Scala plugin : allow to compile Scala file -->
-            <plugin>
-                <groupId>org.scala-tools</groupId>
-                <artifactId>maven-scala-plugin</artifactId>
-                <version>2.15.2</version>
-                <executions>
-                    <execution>
-                        <id>scala-compile-first</id>
-                        <phase>process-resources</phase>
-                        <goals>
-                            <goal>add-source</goal>
-                            <goal>compile</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>scala-test-compile</id>
-                        <phase>process-test-resources</phase>
-                        <goals>
-                            <goal>testCompile</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <jvmArgs>
-                        <jvmArg>-Xmx1024m</jvmArg>
-                    </jvmArgs>
-                    <forceAggregate>true</forceAggregate>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
-
-
-	<profiles>
-		<profile>
-			<id>doc</id>
-            <build>
-                <plugins>      
-					<plugin>
-					        <groupId>com.googlecode.maven-overview-plugin</groupId>
-					        <artifactId>maven-overview-plugin</artifactId>
-							<configuration>
-							                    <width>2000</width>
-							                    <height>3000</height>
-							                    <suppressedScopes/>
-							</configuration>
-					</plugin>
-				</plugins>
-			</build>		
-		</profile>
-	</profiles>
-
 
 </project>

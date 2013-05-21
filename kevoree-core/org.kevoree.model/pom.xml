@@ -10,7 +10,7 @@
         <artifactId>org.kevoree.root</artifactId>
         <groupId>org.kevoree</groupId>
         <version>2.0.0-SNAPSHOT</version>
-        <relativePath>../org.kevoree.root/pom.xml</relativePath>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <properties>
@@ -41,7 +41,7 @@
             <plugin>
                 <groupId>org.kevoree.modeling</groupId>
                 <artifactId>org.kevoree.modeling.kotlin.generator.mavenplugin</artifactId>
-                <version>1.3.0-SNAPSHOT</version>
+                <version>${kmf.version}</version>
                 <extensions>true</extensions>
                 <executions>
                     <execution>

@@ -114,9 +114,23 @@ public class Log {
         Log.logger = logger;
     }
 
+    private Log() {
+
+    }
+
+    private Log(Logger plogger) {
+        logger = plogger;
+    }
+
+    static public Log getLog(String category) {
+        Logger newLogger = new Logger();
+        newLogger.setCategory(category);
+        return new Log(newLogger);
+    }
+
     static private Logger logger = new Logger();
 
-    private static String processMessage(String message, String... params){
+    private static String processMessage(String message, String... params) {
         String optimizeMessage = message;
         //TODO optimize
         for (Object o : params) {
@@ -127,103 +141,102 @@ public class Log {
 
     static public void error(String message, String... params) {
         if (ERROR) {
-            error(processMessage(message,params));
+            error(processMessage(message, params));
+        }
+    }
+
+    static public void error(String message,Throwable ex, String... params) {
+        if (ERROR) {
+            error(processMessage(message, params),ex);
         }
     }
 
     static public void error(String message, Throwable ex) {
-        if (ERROR) logger.log(LEVEL_ERROR, null, message, ex);
-    }
-
-    static public void error(String category, String message, Throwable ex) {
-        if (ERROR) logger.log(LEVEL_ERROR, category, message, ex);
+        if (ERROR) logger.log(LEVEL_ERROR, message, ex);
     }
 
     static public void error(String message) {
-        if (ERROR) logger.log(LEVEL_ERROR, null, message, null);
-    }
-
-    static public void error(String category, String message) {
-        if (ERROR) logger.log(LEVEL_ERROR, category, message, null);
+        if (ERROR) logger.log(LEVEL_ERROR, message, null);
     }
 
     static public void warn(String message, Throwable ex) {
-        if (WARN) logger.log(LEVEL_WARN, null, message, ex);
-    }
-
-    static public void warn(String category, String message, Throwable ex) {
-        if (WARN) logger.log(LEVEL_WARN, category, message, ex);
+        if (WARN) logger.log(LEVEL_WARN, message, ex);
     }
 
     static public void warn(String message, String... params) {
         if (WARN) {
-            warn(processMessage(message,params));
+            warn(processMessage(message, params));
+        }
+    }
+
+    static public void warn(String message, Throwable ex, String... params) {
+        if (WARN) {
+            warn(processMessage(message, params),ex);
         }
     }
 
     static public void warn(String message) {
-        if (WARN) logger.log(LEVEL_WARN, null, message, null);
-    }
-
-    static public void warn(String category, String message) {
-        if (WARN) logger.log(LEVEL_WARN, category, message, null);
+        if (WARN) logger.log(LEVEL_WARN, message, null);
     }
 
     static public void info(String message, Throwable ex) {
-        if (INFO) logger.log(LEVEL_INFO, null, message, ex);
+        if (INFO) logger.log(LEVEL_INFO, message, ex);
     }
 
-    static public void info(String category, String message, Throwable ex) {
-        if (INFO) logger.log(LEVEL_INFO, category, message, ex);
+    static public void info(String message, String... params) {
+        if (INFO) {
+            info(processMessage(message, params));
+        }
+    }
+
+    static public void info(String message, Throwable ex, String... params) {
+        if (INFO) {
+            info(processMessage(message, params),ex);
+        }
     }
 
     static public void info(String message) {
-        if (INFO) logger.log(LEVEL_INFO, null, message, null);
-    }
-
-    static public void info(String category, String message) {
-        if (INFO) logger.log(LEVEL_INFO, category, message, null);
+        if (INFO) logger.log(LEVEL_INFO, message, null);
     }
 
     static public void debug(String message, Throwable ex) {
-        if (DEBUG) logger.log(LEVEL_DEBUG, null, message, ex);
-    }
-
-    static public void debug(String category, String message, Throwable ex) {
-        if (DEBUG) logger.log(LEVEL_DEBUG, category, message, ex);
+        if (DEBUG) logger.log(LEVEL_DEBUG, message, ex);
     }
 
     static public void debug(String message) {
-        if (DEBUG) logger.log(LEVEL_DEBUG, null, message, null);
-    }
-
-    static public void debug(String category, String message) {
-        if (DEBUG) logger.log(LEVEL_DEBUG, category, message, null);
+        if (DEBUG) logger.log(LEVEL_DEBUG, message, null);
     }
 
     static public void debug(String message, String... params) {
         if (DEBUG) {
-            debug(processMessage(message,params));
+            debug(processMessage(message, params));
+        }
+    }
+
+    static public void debug(String message, Throwable ex, String... params) {
+        if (DEBUG) {
+            debug(processMessage(message, params),ex);
         }
     }
 
     static public void trace(String message, Throwable ex) {
-        if (TRACE) logger.log(LEVEL_TRACE, null, message, ex);
-    }
-
-    static public void trace(String category, String message, Throwable ex) {
-        if (TRACE) logger.log(LEVEL_TRACE, category, message, ex);
+        if (TRACE) logger.log(LEVEL_TRACE, message, ex);
     }
 
     static public void trace(String message) {
-        if (TRACE) logger.log(LEVEL_TRACE, null, message, null);
+        if (TRACE) logger.log(LEVEL_TRACE, message, null);
     }
 
-    static public void trace(String category, String message) {
-        if (TRACE) logger.log(LEVEL_TRACE, category, message, null);
+    static public void trace(String message, String... params) {
+        if (TRACE) {
+            trace(processMessage(message, params));
+        }
     }
 
-    private Log() {
+    static public void trace(String message, Throwable ex, String... params) {
+        if (TRACE) {
+            trace(processMessage(message, params),ex);
+        }
     }
 
     /**
@@ -232,10 +245,20 @@ public class Log {
      */
     static public class Logger {
         private long firstLogTime = new Date().getTime();
+        private static final String error_msg = " ERROR: ";
+        private static final String warn_msg = " WARN: ";
+        private static final String info_msg = " INFO: ";
+        private static final String debug_msg = " DEBUG: ";
+        private static final String trace_msg = " TRACE: ";
 
-        public void log(int level, String category, String message, Throwable ex) {
+        private String category = null;
+
+        public void setCategory(String category) {
+            this.category = category;
+        }
+
+        public void log(int level, String message, Throwable ex) {
             StringBuilder builder = new StringBuilder(256);
-
             long time = new Date().getTime() - firstLogTime;
             long minutes = time / (1000 * 60);
             long seconds = time / (1000) % 60;
@@ -244,45 +267,40 @@ public class Log {
             builder.append(':');
             if (seconds <= 9) builder.append('0');
             builder.append(seconds);
-
             switch (level) {
                 case LEVEL_ERROR:
-                    builder.append(" ERROR: ");
+                    builder.append(error_msg);
                     break;
                 case LEVEL_WARN:
-                    builder.append("  WARN: ");
+                    builder.append(warn_msg);
                     break;
                 case LEVEL_INFO:
-                    builder.append("  INFO: ");
+                    builder.append(info_msg);
                     break;
                 case LEVEL_DEBUG:
-                    builder.append(" DEBUG: ");
+                    builder.append(debug_msg);
                     break;
                 case LEVEL_TRACE:
-                    builder.append(" TRACE: ");
+                    builder.append(trace_msg);
                     break;
             }
-
             if (category != null) {
                 builder.append('[');
                 builder.append(category);
                 builder.append("] ");
             }
-
             builder.append(message);
-
             if (ex != null) {
                 StringWriter writer = new StringWriter(256);
                 ex.printStackTrace(new PrintWriter(writer));
                 builder.append('\n');
                 builder.append(writer.toString().trim());
             }
-
             print(builder.toString());
         }
 
         /**
-         * Prints the message to System.out. Called by the default implementation of {@link #log(int, String, String, Throwable)}.
+         * Prints the message to System.out. Called by the default implementation of {@link #log(int, String, Throwable)}.
          */
         protected void print(String message) {
             System.out.println(message);

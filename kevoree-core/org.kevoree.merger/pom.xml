@@ -9,7 +9,7 @@
         <artifactId>org.kevoree.root</artifactId>
         <groupId>org.kevoree</groupId>
         <version>2.0.0-SNAPSHOT</version>
-        <relativePath>../org.kevoree.root/pom.xml</relativePath>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <dependencies>

@@ -126,7 +126,7 @@ object PrimitiveCommandExecutionHelper {
                     }
                     return result
                 } catch(e: Throwable) {
-                    Log.error("Error while executing primitive command {} ", primitive.toString(), e)
+                    Log.error("Error while executing primitive command {} ",e ,primitive.toString())
                     return false
                 }
             }
