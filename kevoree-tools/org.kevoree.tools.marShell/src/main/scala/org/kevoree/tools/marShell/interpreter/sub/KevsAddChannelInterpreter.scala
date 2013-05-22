@@ -17,24 +17,21 @@ package org.kevoree.tools.marShell.interpreter.sub
 import org.kevoree.tools.marShell.ast.AddChannelInstanceStatment
 import org.kevoree.tools.marShell.interpreter.KevsAbstractInterpreter
 import org.kevoree.tools.marShell.interpreter.KevsInterpreterContext
-
 import org.kevoree.{TypeDefinition, Channel, ChannelType}
 import org.kevoree.tools.marShell.interpreter.utils.Merger
-import org.slf4j.LoggerFactory
+import org.kevoree.log.Log
 
 case class KevsAddChannelInterpreter(addChannel: AddChannelInstanceStatment) extends KevsAbstractInterpreter {
-
-  var logger = LoggerFactory.getLogger(this.getClass)
 
   def interpret(context: KevsInterpreterContext): Boolean = {
     context.model.findByPath("hubs[" + addChannel.channelName + "]", classOf[Channel]) match {
       case target : Channel => {
-        logger.warn("Channel already exist with name " + addChannel.channelName)
+        Log.warn("Channel already exist with name " + addChannel.channelName)
         if (target.getTypeDefinition.getName == addChannel.channelType) {
           Merger.mergeDictionary(target, addChannel.props, null)
           true
         } else {
-          context.appendInterpretationError("Could add channel '"+addChannel.channelName+"' of type '"+addChannel.channelType+"'. A channel instance already exists with the same name, but with a different type: '"+target.getTypeDefinition.getName+"'.",logger)
+          context.appendInterpretationError("Could add channel '"+addChannel.channelName+"' of type '"+addChannel.channelType+"'. A channel instance already exists with the same name, but with a different type: '"+target.getTypeDefinition.getName+"'.")
           //logger.error("Type != from previous created channel")
           false
         }
@@ -50,11 +47,11 @@ case class KevsAddChannelInterpreter(addChannel: AddChannelInstanceStatment) ext
             context.model.addHubs(newchannel)
           }
           case targetChannelType : TypeDefinition if (!targetChannelType.isInstanceOf[ChannelType]) => {
-            context.appendInterpretationError("Could add channel '"+addChannel.channelName+"' of type '"+addChannel.channelType+"'. Type of the new channel is not a ChannelType: '"+targetChannelType.getClass.getName+"'.",logger)
+            context.appendInterpretationError("Could add channel '"+addChannel.channelName+"' of type '"+addChannel.channelType+"'. Type of the new channel is not a ChannelType: '"+targetChannelType.getClass.getName+"'.")
             false
           }
           case _ => {
-            context.appendInterpretationError("Could add channel '"+addChannel.channelName+"' of type '"+addChannel.channelType+"'. Type of the new channel not found.",logger)
+            context.appendInterpretationError("Could add channel '"+addChannel.channelName+"' of type '"+addChannel.channelType+"'. Type of the new channel not found.")
             false
           }
         }

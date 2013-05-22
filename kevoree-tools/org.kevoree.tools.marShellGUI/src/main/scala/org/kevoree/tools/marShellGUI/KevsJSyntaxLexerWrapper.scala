@@ -32,16 +32,11 @@
 package org.kevoree.tools.marShellGUI
 
 import javax.swing.text.Segment
-import jsyntaxpane.components.Markers
 import org.kevoree.tools.marShell.lexer.KevsLexical
-import org.kevoree.tools.marShell.parser.KevsParser
-import org.slf4j.LoggerFactory
 import jsyntaxpane.{TokenTypes, Token => JTOK, TokenType}
-
+import org.kevoree.log.Log
 
 class KevsJSyntaxLexerWrapper extends KevsLexical with jsyntaxpane.Lexer {
-
-  var logger = LoggerFactory.getLogger(this.getClass)
 
   override def parse(sgmnt:Segment , i : Int, list: java.util.List[JTOK] ) = {
 
@@ -49,8 +44,8 @@ class KevsJSyntaxLexerWrapper extends KevsLexical with jsyntaxpane.Lexer {
     var tokens = new Scanner(sgmnt.toString())
 
     while(!tokens.atEnd){
-      var newtype = getType(tokens.first)
-      var newtok = new JTOK(newtype,tokens.first.asInstanceOf[KevsToken].getOffset.intValue,tokens.first.toString().length()  );
+      val newtype = getType(tokens.first)
+      val newtok = new JTOK(newtype,tokens.first.asInstanceOf[KevsToken].getOffset.intValue,tokens.first.toString().length()  );
       list.add(newtok)
       tokens = tokens.rest
     }
@@ -67,7 +62,7 @@ class KevsJSyntaxLexerWrapper extends KevsLexical with jsyntaxpane.Lexer {
       case slit : StringLit => TokenTypes.STRING
       case i : KIncomplet => TokenTypes.ERROR
 
-      case _ => logger.info(tok.getClass.getName);TokenTypes.DEFAULT
+      case _ => Log.info(tok.getClass.getName);TokenTypes.DEFAULT
     }
   }
 

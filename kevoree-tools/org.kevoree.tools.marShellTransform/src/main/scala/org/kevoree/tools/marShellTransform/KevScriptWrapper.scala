@@ -46,14 +46,13 @@ package org.kevoree.tools.marShellTransform
 
 import ast._
 import org.kevoree.tools.marShell.ast._
-import org.slf4j.LoggerFactory
-import java.util.{Properties, Dictionary}
+import java.util.{Properties}
 import collection.immutable.HashSet
 import org.kevoree.{ContainerRoot}
 import scala.collection.JavaConversions._
+import org.kevoree.log.Log
 
 object KevScriptWrapper {
-  var logger = LoggerFactory.getLogger(this.getClass);
 
   val paramSep = ":"
   val instrSep = "/"
@@ -130,7 +129,7 @@ object KevScriptWrapper {
           rt = true
         }else
         {
-          logger.warn("checksum "+checksum+" != "+result.checksum)
+          Log.warn("checksum "+checksum+" != "+result.checksum)
           rt = false
         }
 
@@ -166,7 +165,7 @@ object KevScriptWrapper {
           s match {
             case classOf: UDI => {
               // UpdateDictionaryStatement
-              logger.debug("Detect UpdateDictionaryStatement")
+              Log.debug("Detect UpdateDictionaryStatement")
               val props = new java.util.Properties()
 
               if(s.asInstanceOf[UDI].params != None){
@@ -184,7 +183,7 @@ object KevScriptWrapper {
             }
 
             case classOf: ABI => {
-              logger.debug("Detect AddBindingStatment")
+              Log.debug("Detect AddBindingStatment")
               val cid = new ComponentInstanceID(s.asInstanceOf[ABI].getIDPredicate().getinstanceID, Some(nodeName))
               val idPort = result.definitions.get.getPortdefinitionById(s.asInstanceOf[ABI].getportIDB)
 
@@ -209,11 +208,11 @@ object KevScriptWrapper {
                 case Some(td_found) => {
                   td_found match {
                     case i : org.kevoree.ComponentType => {
-                      logger.debug("Detect AddComponentInstanceStatment " + s.asInstanceOf[AIN].getIDPredicate().getinstanceID)
+                      Log.debug("Detect AddComponentInstanceStatment " + s.asInstanceOf[AIN].getIDPredicate().getinstanceID)
                       statments += AddComponentInstanceStatment(cid, typeIDB, props)
                     }
                     case i : org.kevoree.ChannelType => {
-                      logger.debug("Detect AddChannelInstanceStatment " + s.asInstanceOf[AIN].getIDPredicate().getinstanceID+" "+props)
+                      Log.debug("Detect AddChannelInstanceStatment " + s.asInstanceOf[AIN].getIDPredicate().getinstanceID+" "+props)
                       statments += AddChannelInstanceStatment(s.asInstanceOf[AIN].getIDPredicate().getinstanceID, typeIDB, props)
                     }
                   }
@@ -225,19 +224,19 @@ object KevScriptWrapper {
             }
 
             case classOf: RIN => {
-              logger.debug("Detect RemoveComponentInstanceStatment")
+              Log.debug("Detect RemoveComponentInstanceStatment")
               val cid = new ComponentInstanceID(s.asInstanceOf[RIN].getInsID, Some(nodeName))
 
               statments += RemoveComponentInstanceStatment(cid)
             }
             case classOf: RBI => {
-              logger.debug("Detect RemoveBindingStatment")
+              Log.debug("Detect RemoveBindingStatment")
               val cid = new ComponentInstanceID(s.asInstanceOf[RBI].getIDPredicate().getinstanceID, Some(nodeName))
               val idPort = result.definitions.get.getPortdefinitionById(s.asInstanceOf[RBI].getportIDB)
               statments += RemoveBindingStatment(cid, idPort, s.asInstanceOf[RBI].getchID())
             }
             case _ => {
-              logger.error("This Statment is not managed " + s.getClass.getName)
+              Log.error("This Statment is not managed " + s.getClass.getName)
               None
             }
           }
@@ -245,14 +244,14 @@ object KevScriptWrapper {
         )
       }
       blocks += TransactionalBloc(statments.toList)
-      logger.debug(blocks.toString())
+      Log.debug(blocks.toString())
     } catch {
       case e: IndexOutOfBoundsException => {
-        logger.error("The Arduino globals definitions (properties or typedefinition or portdefinition)  are not compliant to the adaptations")
+        Log.error("The Arduino globals definitions (properties or typedefinition or portdefinition)  are not compliant to the adaptations")
         new Script(blocks.toList)
       }
       case e: java.lang.Exception => {
-        logger.error("Fail to parse the script : "+cscript,e)
+        Log.error("Fail to parse the script : "+cscript,e)
         new Script(blocks.toList)
       }
     }
@@ -353,7 +352,7 @@ object KevScriptWrapper {
                 firstStatment = false
                 content append Op.RBI_C + paramSep + s.cid.componentInstanceName + paramSep + s.bindingInstanceName + paramSep + s.portName
               }
-              case _@s => logger.warn("Uncatch " + s) //DO NOTHING FOR OTHER STATEMENT
+              case _@s => Log.warn("Uncatch " + s) //DO NOTHING FOR OTHER STATEMENT
             }
 
 

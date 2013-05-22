@@ -1,8 +1,8 @@
 package org.kevoree.tools.aether.framework.android
 
 import org.kevoree.kcl.KevoreeJarClassLoader
-import org.slf4j.LoggerFactory
 import dalvik.system.DexFile
+import org.kevoree.log.Log
 
 /**
  * Created with IntelliJ IDEA.
@@ -19,11 +19,10 @@ import dalvik.system.DexFile
  */
 class KevoreeDexClassLoader(sourcePathName: String, outputPathName: String, val jarKCL: KevoreeJarClassLoader)
 {
-    val logger = LoggerFactory.getLogger(this.javaClass)!!
     val dexFile = DexFile.loadDex(sourcePathName, outputPathName, 0)
 
     fun tryLoadClass(className: String?): Class<out Any?>? {
-        logger.debug("tryLoadClass " + className+" in "+dexFile!!.getName())
+        Log.debug("tryLoadClass " + className+" in "+dexFile!!.getName())
         return dexFile!!.loadClass(className, jarKCL)
     }
 }

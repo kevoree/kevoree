@@ -15,19 +15,16 @@ package org.kevoree.tools.marShell.interpreter.sub
 
 import org.kevoree.tools.marShell.interpreter.KevsAbstractInterpreter
 import org.kevoree.tools.marShell.interpreter.KevsInterpreterContext
-
-import org.slf4j.LoggerFactory
 import org.kevoree.tools.marShell.ast.AddDeployUnitStatment
 import scala.collection.JavaConversions._
+import org.kevoree.log.Log
 
 case class KevsAddDeployUnitInterpreter(statment : AddDeployUnitStatment) extends KevsAbstractInterpreter {
-
-  var logger = LoggerFactory.getLogger(this.getClass)
 
   def interpret(context : KevsInterpreterContext):Boolean={
 
     context.model.getDeployUnits.find(du=> du.getUnitName == statment.unitName && du.getGroupName == statment.groupName && du.getVersion == statment.version) match {
-      case Some(du) =>  logger.warn("DeployUnit already exist");true
+      case Some(du) =>  Log.warn("DeployUnit already exist");true
       case None => {
         val newDeployUnit = context.kevoreeFactory.createDeployUnit
         newDeployUnit.setUnitName(statment.unitName)

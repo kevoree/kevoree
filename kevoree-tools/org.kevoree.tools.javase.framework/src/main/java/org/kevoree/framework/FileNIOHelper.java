@@ -26,8 +26,7 @@
  */
 package org.kevoree.framework;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.kevoree.log.Log;
 
 import java.io.*;
 import java.nio.channels.Channels;
@@ -45,170 +44,168 @@ import java.util.zip.ZipInputStream;
  */
 public class FileNIOHelper {
 
-	private static Logger logger = LoggerFactory.getLogger(FileNIOHelper.class);
-
-	public static File resolveBundleJar (Long bundleID, File bundleWorkingDir) {
-		String versionDef = "version0.0";
-		try {
-			File bundleRevisionCounter = new File(bundleWorkingDir.getAbsolutePath() + File.separator + "bundle" + bundleID + File.separator + "refresh.counter");
-			if (bundleRevisionCounter.exists()) {
-				FileReader fr = new FileReader(bundleRevisionCounter);
-				char vers = (char) fr.read();
-				versionDef = "version" + vers + "." + vers;
-				fr.close();
-			} /*else {
+    public static File resolveBundleJar(Long bundleID, File bundleWorkingDir) {
+        String versionDef = "version0.0";
+        try {
+            File bundleRevisionCounter = new File(bundleWorkingDir.getAbsolutePath() + File.separator + "bundle" + bundleID + File.separator + "refresh.counter");
+            if (bundleRevisionCounter.exists()) {
+                FileReader fr = new FileReader(bundleRevisionCounter);
+                char vers = (char) fr.read();
+                versionDef = "version" + vers + "." + vers;
+                fr.close();
+            } /*else {
                 logger.warn("revision file does not exist");
             }  */
-			File jarFile = new File(bundleWorkingDir.getAbsolutePath() + File.separator + "bundle" + bundleID + File.separator + versionDef + File.separator + "bundle.jar");
-			if (jarFile.exists()) {
-				return jarFile;
-			} else {
-				logger.warn("File not found {}", jarFile.getAbsolutePath());
-				return null;
-			}
-		} catch (Exception e) {
-			logger.warn("Error while trying to get jar cache", e);
-			return null;
-		}
-	}
+            File jarFile = new File(bundleWorkingDir.getAbsolutePath() + File.separator + "bundle" + bundleID + File.separator + versionDef + File.separator + "bundle.jar");
+            if (jarFile.exists()) {
+                return jarFile;
+            } else {
+                Log.warn("File not found {}", jarFile.getAbsolutePath());
+                return null;
+            }
+        } catch (Exception e) {
+            Log.warn("Error while trying to get jar cache", e);
+            return null;
+        }
+    }
 
-	public static void copyFile (InputStream sourceFile, File destFile) throws IOException {
-		if (!destFile.exists()) {
-			destFile.createNewFile();
-		}
-		ReadableByteChannel source = null;
-		FileChannel destination = null;
-		try {
-			source = Channels.newChannel(sourceFile);
-			destination = new FileOutputStream(destFile).getChannel();
-			destination.transferFrom(source, 0, sourceFile.available());
-		} finally {
-			if (source != null) {
-				source.close();
-			}
-			if (destination != null) {
-				destination.close();
-			}
-		}
-	}
+    public static void copyFile(InputStream sourceFile, File destFile) throws IOException {
+        if (!destFile.exists()) {
+            destFile.createNewFile();
+        }
+        ReadableByteChannel source = null;
+        FileChannel destination = null;
+        try {
+            source = Channels.newChannel(sourceFile);
+            destination = new FileOutputStream(destFile).getChannel();
+            destination.transferFrom(source, 0, sourceFile.available());
+        } finally {
+            if (source != null) {
+                source.close();
+            }
+            if (destination != null) {
+                destination.close();
+            }
+        }
+    }
 
-	public static void unzipToTempDir (InputStream inputWarST, File outputDir, List<String> inclusions, List<String> exclusions) {
-		try {
-			//FileInputStream inputWarST = new FileInputStream(inputWar);
-			ZipInputStream zis = new ZipInputStream(inputWarST);
-			ZipEntry entry;
-			while ((entry = zis.getNextEntry()) != null) {
-				if (entry.isDirectory()) {
-					new File(outputDir.getAbsolutePath() + File.separator + entry.getName()).mkdirs();
-				} else {
-					File targetFile = new File(outputDir + File.separator + entry.getName());
-					boolean filtered = false;
-					for (String ex : exclusions) {
-						filtered = filtered || targetFile.getName().endsWith(ex.trim());
-					}
-					for (String in : inclusions) {
-						// logger.debug("Check for incluseion => "+targetFile.getName()+"-"+in.trim()+"="+targetFile.getName().trim().equals(in.trim()));
-						if (targetFile.getName().endsWith(in.trim()) || targetFile.getName().equals(in.trim())) {
-							filtered = false;
-						}
-					}
-					if (!filtered) {
-						createParentDirs(targetFile);
-						if (!targetFile.exists()) {
-							targetFile.createNewFile();
-						}
-						BufferedOutputStream outputEntry = new BufferedOutputStream(new FileOutputStream(targetFile));
-						byte[] buffer = new byte[1024];
-						int len = 0;
-						while (zis.available() > 0) {
-							len = zis.read(buffer);
-							if (len > 0) {
-								outputEntry.write(buffer, 0, len);
-							}
-						}
-						outputEntry.flush();
-						outputEntry.close();
-					}
-				}
-			}
-			zis.close();
-			inputWarST.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+    public static void unzipToTempDir(InputStream inputWarST, File outputDir, List<String> inclusions, List<String> exclusions) {
+        try {
+            //FileInputStream inputWarST = new FileInputStream(inputWar);
+            ZipInputStream zis = new ZipInputStream(inputWarST);
+            ZipEntry entry;
+            while ((entry = zis.getNextEntry()) != null) {
+                if (entry.isDirectory()) {
+                    new File(outputDir.getAbsolutePath() + File.separator + entry.getName()).mkdirs();
+                } else {
+                    File targetFile = new File(outputDir + File.separator + entry.getName());
+                    boolean filtered = false;
+                    for (String ex : exclusions) {
+                        filtered = filtered || targetFile.getName().endsWith(ex.trim());
+                    }
+                    for (String in : inclusions) {
+                        // logger.debug("Check for incluseion => "+targetFile.getName()+"-"+in.trim()+"="+targetFile.getName().trim().equals(in.trim()));
+                        if (targetFile.getName().endsWith(in.trim()) || targetFile.getName().equals(in.trim())) {
+                            filtered = false;
+                        }
+                    }
+                    if (!filtered) {
+                        createParentDirs(targetFile);
+                        if (!targetFile.exists()) {
+                            targetFile.createNewFile();
+                        }
+                        BufferedOutputStream outputEntry = new BufferedOutputStream(new FileOutputStream(targetFile));
+                        byte[] buffer = new byte[1024];
+                        int len = 0;
+                        while (zis.available() > 0) {
+                            len = zis.read(buffer);
+                            if (len > 0) {
+                                outputEntry.write(buffer, 0, len);
+                            }
+                        }
+                        outputEntry.flush();
+                        outputEntry.close();
+                    }
+                }
+            }
+            zis.close();
+            inputWarST.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
-	public static void createParentDirs (File file) throws IOException {
-		File parent = file.getCanonicalFile().getParentFile();
-		if (parent == null) {
-			return;
-		}
-		parent.mkdirs();
-		if (!parent.isDirectory()) {
-			throw new IOException("Unable to create parent directories of " + file);
-		}
-	}
+    public static void createParentDirs(File file) throws IOException {
+        File parent = file.getCanonicalFile().getParentFile();
+        if (parent == null) {
+            return;
+        }
+        parent.mkdirs();
+        if (!parent.isDirectory()) {
+            throw new IOException("Unable to create parent directories of " + file);
+        }
+    }
 
 
-	public static void addStringToFile (String data, File outputFile) {
-		try {
-			logger.debug("trying to add \"{}\" into {}", data, outputFile);
-			StringBuilder stringBuilder = new StringBuilder();
-			if (outputFile.exists()) {
-				InputStream reader = new DataInputStream(new FileInputStream(outputFile));
-				ByteArrayOutputStream writer = new ByteArrayOutputStream();
+    public static void addStringToFile(String data, File outputFile) {
+        try {
+            Log.debug("trying to add \"{}\" into {}", data, outputFile.getAbsolutePath());
+            StringBuilder stringBuilder = new StringBuilder();
+            if (outputFile.exists()) {
+                InputStream reader = new DataInputStream(new FileInputStream(outputFile));
+                ByteArrayOutputStream writer = new ByteArrayOutputStream();
 
-				byte[] bytes = new byte[2048];
-				int length = reader.read(bytes);
-				while (length != -1) {
-					writer.write(bytes, 0, length);
-					length = reader.read(bytes);
+                byte[] bytes = new byte[2048];
+                int length = reader.read(bytes);
+                while (length != -1) {
+                    writer.write(bytes, 0, length);
+                    length = reader.read(bytes);
 
-				}
-				writer.flush();
-				writer.close();
-				reader.close();
-				stringBuilder.append(new String(writer.toByteArray(), "UTF-8"));
-			}
-			boolean added = false;
-			if (!stringBuilder.toString().contains(data)) {
-				stringBuilder.append(data).append("\n");
-				added = true;
-			}
+                }
+                writer.flush();
+                writer.close();
+                reader.close();
+                stringBuilder.append(new String(writer.toByteArray(), "UTF-8"));
+            }
+            boolean added = false;
+            if (!stringBuilder.toString().contains(data)) {
+                stringBuilder.append(data).append("\n");
+                added = true;
+            }
 
-			if (added) {
-				copyFile(new ByteArrayInputStream(stringBuilder.toString().getBytes()), outputFile);
-			}
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
+            if (added) {
+                copyFile(new ByteArrayInputStream(stringBuilder.toString().getBytes()), outputFile);
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
-	public static byte[] getBytesFromFile (File inputFile) {
-		try {
-			InputStream reader = new DataInputStream(new FileInputStream(inputFile));
-			ByteArrayOutputStream writer = new ByteArrayOutputStream();
+    public static byte[] getBytesFromFile(File inputFile) {
+        try {
+            InputStream reader = new DataInputStream(new FileInputStream(inputFile));
+            ByteArrayOutputStream writer = new ByteArrayOutputStream();
 
-			byte[] bytes = new byte[2048];
-			int length = reader.read(bytes);
-			while (length != -1) {
-				writer.write(bytes, 0, length);
-				length = reader.read(bytes);
+            byte[] bytes = new byte[2048];
+            int length = reader.read(bytes);
+            while (length != -1) {
+                writer.write(bytes, 0, length);
+                length = reader.read(bytes);
 
-			}
-			writer.flush();
-			writer.close();
-			reader.close();
-			return writer.toByteArray();
-		} catch (FileNotFoundException e) {
-			logger.error("Unable to get Bytes from file {}", inputFile.getAbsolutePath(), e);
-		} catch (IOException e) {
-			logger.error("Unable to get Bytes from file {}", inputFile.getAbsolutePath(), e);
-		}
-		return new byte[0];
-	}
+            }
+            writer.flush();
+            writer.close();
+            reader.close();
+            return writer.toByteArray();
+        } catch (FileNotFoundException e) {
+            Log.error("Unable to get Bytes from file {}", inputFile.getAbsolutePath(), e);
+        } catch (IOException e) {
+            Log.error("Unable to get Bytes from file {}", inputFile.getAbsolutePath(), e);
+        }
+        return new byte[0];
+    }
 }

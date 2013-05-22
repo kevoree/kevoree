@@ -14,10 +14,8 @@
 package org.kevoree.tools.marShell.interpreter.sub
 
 import org.kevoree.tools.marShell.interpreter.{KevsInterpreterContext, KevsAbstractInterpreter}
-import org.slf4j.LoggerFactory
 import org.kevoree.tools.marShell.ast.IncludeStatement
 import java.io.File
-import io.Source
 import org.kevoree.tools.marShell.interpreter
 import interpreter.KevsInterpreterAspects._
 import org.kevoree.tools.marShell.parser.{ParserUtil, KevsParser}
@@ -31,8 +29,6 @@ import org.kevoree.tools.marShell.parser.{ParserUtil, KevsParser}
  */
 
 case class KevsIncludeInterpreter(includeStatement: IncludeStatement) extends KevsAbstractInterpreter {
-
-  private val logger = LoggerFactory.getLogger(this.getClass)
 
   def interpret(context: KevsInterpreterContext): Boolean = {
 
@@ -51,14 +47,14 @@ case class KevsIncludeInterpreter(includeStatement: IncludeStatement) extends Ke
 
      // println("-----"+includeScript+"---------")
       if(!parser.parseScript(includeScript.trim).get.interpret(context)) {
-        context.appendInterpretationError("KevScript interpretation failed while trying to include script from '"+includeStatement.url+"'. ", logger)
+        context.appendInterpretationError("KevScript interpretation failed while trying to include script from '"+includeStatement.url+"'. ")
         false
       } else {
         true
       }
     } catch {
       case _@e => {
-        context.appendInterpretationError("Could not include model from '"+includeStatement.url+"'. " + e.toString, logger)
+        context.appendInterpretationError("Could not include model from '"+includeStatement.url+"'. " + e.toString)
         //logger.error("Error interpret include statement : " + includeStatement.getTextualForm + "\n" + parser.lastNoSuccess)
         false
       }

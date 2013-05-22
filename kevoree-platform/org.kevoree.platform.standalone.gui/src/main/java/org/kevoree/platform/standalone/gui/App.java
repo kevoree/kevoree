@@ -27,18 +27,10 @@
 package org.kevoree.platform.standalone.gui;
 
 import org.kevoree.ContainerRoot;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.File;
 import java.io.IOException;
 
-/**
- * Hello world!
- */
 public class App extends org.kevoree.platform.standalone.App {
-
-    private static Logger logger = LoggerFactory.getLogger(App.class);
 
     public void start() {
 

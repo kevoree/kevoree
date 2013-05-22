@@ -20,21 +20,19 @@ import org.kevoree.tools.marShell.interpreter.KevsInterpreterContext
 import org.kevoree.tools.marShell.ast.AddGroupStatment
 import org.kevoree.{TypeDefinition, Group, GroupType}
 import org.kevoree.tools.marShell.interpreter.utils.Merger
-import org.slf4j.LoggerFactory
+import org.kevoree.log.Log
 
 case class KevsAddGroupInterpreter(addGroup: AddGroupStatment) extends KevsAbstractInterpreter {
-
-  var logger = LoggerFactory.getLogger(this.getClass)
 
   def interpret(context: KevsInterpreterContext): Boolean = {
     context.model.findByPath("groups[" + addGroup.groupName + "]", classOf[Group]) match {
       case target:Group => {
-        logger.warn("Group already exist with name " + addGroup.groupName)
+        Log.warn("Group already exist with name " + addGroup.groupName)
         if (target.getTypeDefinition.getName == addGroup.groupTypeName) {
           Merger.mergeDictionary(target, addGroup.props, null)
           true
         } else {
-          context.appendInterpretationError("Could add group '"+addGroup.groupName+"' of type '"+addGroup.groupTypeName+"'. A group instance already exists with the same name, but with a different type: '"+target.getTypeDefinition.getName+"'.",logger)
+          context.appendInterpretationError("Could add group '"+addGroup.groupName+"' of type '"+addGroup.groupTypeName+"'. A group instance already exists with the same name, but with a different type: '"+target.getTypeDefinition.getName+"'.")
           false
         }
       }
@@ -51,11 +49,11 @@ case class KevsAddGroupInterpreter(addGroup: AddGroupStatment) extends KevsAbstr
 
           }
           case targetGroupType:TypeDefinition if (!targetGroupType.isInstanceOf[GroupType]) => {
-            context.appendInterpretationError("Could add group '"+addGroup.groupName+"' of type '"+addGroup.groupTypeName+"'. Type of the new group is not a GroupType: '"+targetGroupType.getClass.getName+"'.",logger)
+            context.appendInterpretationError("Could add group '"+addGroup.groupName+"' of type '"+addGroup.groupTypeName+"'. Type of the new group is not a GroupType: '"+targetGroupType.getClass.getName+"'.")
             false
           }
           case _ => {
-            context.appendInterpretationError("Could add group '"+addGroup.groupName+"' of type '"+addGroup.groupTypeName+"'. TypeDefinition not found.",logger)
+            context.appendInterpretationError("Could add group '"+addGroup.groupName+"' of type '"+addGroup.groupTypeName+"'. TypeDefinition not found.")
             false
           }
         }

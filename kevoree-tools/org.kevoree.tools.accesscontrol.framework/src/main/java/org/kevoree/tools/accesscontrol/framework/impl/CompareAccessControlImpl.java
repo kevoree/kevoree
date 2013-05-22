@@ -19,12 +19,11 @@ import org.kevoree.accesscontrol.*;
 import org.kevoree.adaptation.accesscontrol.api.*;
 import org.kevoree.framework.KevoreeXmiHelper;
 import org.kevoree.kompare.KevoreeKompareBean;
+import org.kevoree.log.Log;
 import org.kevoree.tools.accesscontrol.framework.api.ICompareAccessControl;
 import org.kevoree.tools.accesscontrol.framework.utils.HelperSignature;
 import org.kevoreeadaptation.AdaptationModel;
 import org.kevoreeadaptation.AdaptationPrimitive;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import sun.security.rsa.RSAPublicKeyImpl;
 
 import java.io.File;
@@ -46,7 +45,6 @@ import java.util.List;
 public class CompareAccessControlImpl implements ICompareAccessControl
 {
     private AccessControlRoot root;
-    private Logger logger = LoggerFactory.getLogger(CompareAccessControlImpl.class);
     private long start;
     private long duree;
     private boolean benchmark =false;
@@ -85,7 +83,7 @@ public class CompareAccessControlImpl implements ICompareAccessControl
                 FileWriter fw = new FileWriter(filename,true); //the true will append the new data
                 fw.write(duree+ ";"+adaptationModel.getAdaptations().size()+";"+ size_rules+"\n");
                 fw.close();
-                logger.debug("UPDATE BENCHMARK FILE "+filename);
+                Log.debug("UPDATE BENCHMARK FILE " + filename);
             }
             catch(IOException ioe)
             {
@@ -123,7 +121,7 @@ public class CompareAccessControlImpl implements ICompareAccessControl
         List<AdaptationPrimitive> result_forbidden = new ArrayList<AdaptationPrimitive>();
         if(root == null)
         {
-            logger.error("No access control policy is defined.");
+            Log.error("No access control policy is defined.");
             throw new ControlException("No access control policy is defined.");
         }
         try
@@ -132,19 +130,19 @@ public class CompareAccessControlImpl implements ICompareAccessControl
             ContainerRoot target_model = KevoreeXmiHelper.instance$.loadString(new String(signedModel.getSerialiedModel()));
 
             ModelSignature signature =  signedModel.getSignature();
-            logger.debug("Signature get key " + signature.getKey());
-            logger.debug("Users = "+root.getUsers().size());
+            Log.debug("Signature get key " + signature.getKey());
+            Log.debug("Users = "+root.getUsers().size());
 
             User user = root.findUsersByID(signature.getKey());
             if(user == null){
-                logger.warn("No user associated with the key");
+                Log.warn("No user associated with the key");
                 result_forbidden.addAll(adaptationModel.getAdaptations());
                 return  result_forbidden;
             }
 
             if(user.getRoles().size() == 0)
             {
-                logger.warn("No Role associated to this User");
+                Log.warn("No Role associated to this User");
                 result_forbidden.addAll(adaptationModel.getAdaptations());
                 return  result_forbidden;
             }

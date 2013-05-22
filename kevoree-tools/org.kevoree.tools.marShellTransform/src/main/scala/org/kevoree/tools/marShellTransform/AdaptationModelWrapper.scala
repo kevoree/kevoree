@@ -29,15 +29,12 @@ package org.kevoree.tools.marShellTransform
 
 import org.kevoree.tools.marShell.ast._
 import org.kevoreeadaptation._
-import org.slf4j.LoggerFactory
 import org.kevoree.kompare.JavaSePrimitive
 import org.kevoree._
-import java.util.HashMap
 import scala.collection.JavaConversions._
+import org.kevoree.log.Log
 
 object AdaptationModelWrapper {
-
-	var logger = LoggerFactory.getLogger(this.getClass);
 
   def generateScriptFromAdaptModel(model: AdaptationModel): Script = {
     var statments = List[Statment]()
@@ -98,7 +95,7 @@ object AdaptationModelWrapper {
                   statments = statments ++ List(AddComponentInstanceStatment(cid, c.getTypeDefinition.getName, props))
                 }
                 //TODO
-              case _@uncatchInstance => logger.warn("uncatched=" + uncatchInstance)
+              case _@uncatchInstance => Log.warn("uncatched=" + uncatchInstance)
             }
           }
         case s if s ==  JavaSePrimitive.instance$.getRemoveBinding => statments = statments ++ List(RemoveBindingStatment(ComponentInstanceID(adapt.getRef.asInstanceOf[MBinding].getPort.eContainer.asInstanceOf[ComponentInstance].getName, Some(adapt.getRef.asInstanceOf[MBinding].getPort.eContainer.eContainer.asInstanceOf[ContainerNode].getName)), adapt.getRef.asInstanceOf[MBinding].getPort.getPortTypeRef.getName, adapt.getRef.asInstanceOf[MBinding].getHub.getName))
@@ -111,13 +108,13 @@ object AdaptationModelWrapper {
                   statments = statments ++ List(RemoveComponentInstanceStatment(cid))
                 }
 
-              case _@uncatchInstance => logger.warn("uncatched=" + uncatchInstance)
+              case _@uncatchInstance => Log.warn("uncatched=" + uncatchInstance)
             }
           }
         case s if s ==  JavaSePrimitive.instance$.getAddDeployUnit => {
           //already catched
         }
-        case _@unCatched => logger.warn("uncatched=" + unCatched)
+        case _@unCatched => Log.warn("uncatched=" + unCatched)
       }
 
     }

@@ -15,9 +15,9 @@ package org.kevoree.tools.marShell.interpreter.sub
 
 import org.kevoree.tools.marShell.ast.AddChildStatment
 import org.kevoree.tools.marShell.interpreter.{KevsInterpreterContext, KevsAbstractInterpreter}
-import org.slf4j.LoggerFactory
 import org.kevoree.ContainerNode
 import scala.collection.JavaConversions._
+import org.kevoree.log.Log
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -29,18 +29,17 @@ import scala.collection.JavaConversions._
  */
 
 case class KevsAddChildInterpreter(addChild: AddChildStatment) extends KevsAbstractInterpreter {
-  val logger = LoggerFactory.getLogger(this.getClass)
 
   def interpret(context: KevsInterpreterContext): Boolean = {
     context.model.findByPath("nodes[" + addChild.childNodeName + "]", classOf[ContainerNode]) match {
       case null => {
-        context.appendInterpretationError("Could not add child node '"+addChild.childNodeName+"' to parent '"+addChild.fatherNodeName+"'. Child Node not found.", logger)
+        context.appendInterpretationError("Could not add child node '"+addChild.childNodeName+"' to parent '"+addChild.fatherNodeName+"'. Child Node not found.")
         false
       }
       case child => {
         context.model.findByPath("nodes[" + addChild.fatherNodeName + "]", classOf[ContainerNode]) match {
           case null => {
-            context.appendInterpretationError("Could not add child node '"+addChild.childNodeName+"' to parent '"+addChild.fatherNodeName+"'. Parent Node not found.", logger)
+            context.appendInterpretationError("Could not add child node '"+addChild.childNodeName+"' to parent '"+addChild.fatherNodeName+"'. Parent Node not found.")
             false
           }
           case father => {
@@ -49,13 +48,13 @@ case class KevsAddChildInterpreter(addChild: AddChildStatment) extends KevsAbstr
                 context.model.getNodes.find(n => n.findByPath("hosts[" + child.getName + "]", classOf[ContainerNode]) != null) match {
                   case None => father.addHosts(child); true
                   case Some(f) => {
-                    context.appendInterpretationError("Could not add child node '"+addChild.childNodeName+"' to parent '"+addChild.fatherNodeName+"'. Child Node already has a parent. Consider using MoveComponentInstance instead.", logger)
+                    context.appendInterpretationError("Could not add child node '"+addChild.childNodeName+"' to parent '"+addChild.fatherNodeName+"'. Child Node already has a parent. Consider using MoveComponentInstance instead.")
                     //logger.error("The child {} has already a parent: {}", Array[AnyRef](child.getName, f.getName))
                     false
                   }
                 }
               }
-              case c => logger.warn("The node {} is already a child of {}", Array[AnyRef](child.getName, father.getName)); true
+              case c => Log.warn("The node {} is already a child of {}", child.getName, father.getName); true
             }
           }
         }

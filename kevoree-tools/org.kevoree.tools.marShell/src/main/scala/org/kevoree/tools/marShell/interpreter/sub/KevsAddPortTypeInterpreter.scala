@@ -17,8 +17,7 @@ import org.kevoree.{TypeDefinition, PortType, ComponentType}
 import org.kevoree.tools.marShell.ast.AddPortTypeStatment
 import org.kevoree.tools.marShell.interpreter.KevsAbstractInterpreter
 import org.kevoree.tools.marShell.interpreter.KevsInterpreterContext
-
-import org.slf4j.LoggerFactory
+import org.kevoree.log.Log
 
 /**
  * Created by jed
@@ -28,16 +27,13 @@ import org.slf4j.LoggerFactory
  */
 case class KevsAddPortTypeInterpreter(self: AddPortTypeStatment) extends KevsAbstractInterpreter {
 
-  var logger = LoggerFactory.getLogger(this.getClass)
-
-
   def interpret(context: KevsInterpreterContext): Boolean = {
     var success: Boolean = false
     context.model.findByPath("typeDefinitions[" + self.componentTypeName + "]", classOf[TypeDefinition]) match {
       case e:TypeDefinition => {
         if (!e.isInstanceOf[ComponentType]) {
           //logger.error("The type with name {} is not a ComponentType", self.componentTypeName)
-          context.appendInterpretationError("Could add port '"+self.portTypeName+"' to ComponentType '"+self.componentTypeName+"'. TypeDefinition exists but is a ComponentType: '"+e.getClass.getName+"'.",logger)
+          context.appendInterpretationError("Could add port '"+self.portTypeName+"' to ComponentType '"+self.componentTypeName+"'. TypeDefinition exists but is a ComponentType: '"+e.getClass.getName+"'.")
 
           success = false
         } else {
@@ -66,7 +62,7 @@ case class KevsAddPortTypeInterpreter(self: AddPortTypeStatment) extends KevsAbs
               portTypeRef.setRef(p.asInstanceOf[PortType])
               success = true
             case null =>
-              logger.debug("The port service can't be associated with the interface => {} is not found", self.className)
+              Log.debug("The port service can't be associated with the interface => {} is not found", self.className.get)
               val messagePortType = context.kevoreeFactory.createMessagePortType
               messagePortType.setName(self.className.toString)
               context.model.addTypeDefinitions(messagePortType)
@@ -76,7 +72,7 @@ case class KevsAddPortTypeInterpreter(self: AddPortTypeStatment) extends KevsAbs
         }
       }
       case null => {
-        context.appendInterpretationError("Could add port '"+self.portTypeName+"' to ComponentType '"+self.componentTypeName+"'. ComponentType not found.",logger)
+        context.appendInterpretationError("Could add port '"+self.portTypeName+"' to ComponentType '"+self.componentTypeName+"'. ComponentType not found.")
 
         success = false
       }

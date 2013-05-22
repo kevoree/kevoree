@@ -34,13 +34,10 @@ package org.kevoree.tools.marShell.interpreter.sub
 import org.kevoree.tools.marShell.interpreter.KevsAbstractInterpreter
 import org.kevoree.tools.marShell.interpreter.KevsInterpreterContext
 
-import org.kevoree.{Group, MBinding, ContainerRoot, Channel}
-import org.kevoree.tools.marShell.ast.{RemoveGroupStatment, RemoveChannelInstanceStatment}
-import org.slf4j.LoggerFactory
+import org.kevoree.{Group}
+import org.kevoree.tools.marShell.ast.{RemoveGroupStatment}
 
 case class KevsRemoveGroupInterpreter(removeGroup: RemoveGroupStatment) extends KevsAbstractInterpreter {
-
-  var logger = LoggerFactory.getLogger(this.getClass)
 
   def interpret(context: KevsInterpreterContext): Boolean = {
     context.model.findByPath("groups[" + removeGroup.groupName + "]", classOf[Group]) match {
@@ -49,7 +46,7 @@ case class KevsRemoveGroupInterpreter(removeGroup: RemoveGroupStatment) extends 
         true
       }
       case null => {
-        context.appendInterpretationError("Could not remove group '"+removeGroup.groupName+"'. Group does not exist.", logger)
+        context.appendInterpretationError("Could not remove group '"+removeGroup.groupName+"'. Group does not exist.")
         false
       }
     }

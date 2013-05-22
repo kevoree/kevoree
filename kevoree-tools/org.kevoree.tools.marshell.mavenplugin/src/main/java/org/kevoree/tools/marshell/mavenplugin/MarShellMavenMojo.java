@@ -35,7 +35,6 @@ import org.kevoree.KevoreeFactory;
 import org.kevoree.framework.KevoreeXmiHelper;
 import org.kevoree.impl.DefaultKevoreeFactory;
 import org.kevoree.merger.KevoreeMergerComponent;
-import org.kevoree.tools.aether.framework.AetherUtil;
 import org.sonatype.aether.RepositorySystem;
 import org.sonatype.aether.RepositorySystemSession;
 
@@ -99,9 +98,6 @@ public class MarShellMavenMojo extends AbstractMojo {
 	private KevoreeMergerComponent mergerComponent;
 
 	public void execute () throws MojoExecutionException {
-
-		AetherUtil.instance$.setRepositorySystemSession(repoSession);
-		AetherUtil.instance$.setRepositorySystem(repoSystem);
 
 		mergerComponent = new KevoreeMergerComponent();
 

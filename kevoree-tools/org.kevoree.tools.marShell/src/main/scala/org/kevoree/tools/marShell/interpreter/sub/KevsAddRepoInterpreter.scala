@@ -15,7 +15,6 @@ package org.kevoree.tools.marShell.interpreter.sub
 
 import org.kevoree.tools.marShell.ast.AddRepoStatment
 import org.kevoree.tools.marShell.interpreter.{KevsInterpreterContext, KevsAbstractInterpreter}
-import org.slf4j.LoggerFactory
 import org.kevoree.Repository
 
 
@@ -29,12 +28,9 @@ import org.kevoree.Repository
 
 case class KevsAddRepoInterpreter(addRepo: AddRepoStatment) extends KevsAbstractInterpreter {
 
-  private val logger = LoggerFactory.getLogger(this.getClass)
-
-
   def interpret(context: KevsInterpreterContext): Boolean = {
     if (addRepo.url == "") {
-      context.appendInterpretationError("Could add repository. URL is empty.",logger)
+      context.appendInterpretationError("Could add repository. URL is empty.")
       false
     } else {
       context.model.findByPath("repositories[" + addRepo.url + "]", classOf[Repository]) match {

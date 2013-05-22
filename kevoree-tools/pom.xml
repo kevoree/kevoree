@@ -15,11 +15,6 @@
             <version>4.8.1</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>${slf4j.version}</version>
-        </dependency>
     </dependencies>
 
     <build>
@@ -152,8 +147,6 @@
 
     <modules>
         <module>org.kevoree.tools.aether.framework</module>
-        <module>org.kevoree.tools.aether.framework.pack</module>
-        <module>org.kevoree.tools.aether.framework.min</module>
 
         <!-- Kevoree specific frameworks -->
         <module>org.kevoree.tools.javase.framework</module>

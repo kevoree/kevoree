@@ -44,6 +44,7 @@ import org.kevoree.ContainerRoot
 import interpreter.KevsInterpreterAspects._
 import org.kevoree.api.service.core.script.{KevScriptEngineParseErrorException, KevScriptEngine, KevScriptEngineException}
 import org.kevoree.api.Bootstraper
+import org.kevoree.log.Log
 
 
 /**
@@ -62,7 +63,7 @@ class KevScriptOfflineEngine(srcModel: ContainerRoot, bootstraper: Bootstraper) 
   @throws(classOf[KevScriptEngineException])
   def interpret(): ContainerRoot = {
     val resolvedScript = getScript
-    logger.debug("KevScriptEngine before execution with script = {}", resolvedScript)
+    Log.debug("KevScriptEngine before execution with script = {}", resolvedScript)
     parser.parseScript(resolvedScript) match {
       case Some(s) => {
         val inputModel = modelCloner.clone(srcModel)

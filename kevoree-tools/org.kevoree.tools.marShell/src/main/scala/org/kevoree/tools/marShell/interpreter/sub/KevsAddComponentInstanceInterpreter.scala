@@ -18,36 +18,33 @@ import org.kevoree.tools.marShell.ast.AddComponentInstanceStatment
 import org.kevoree.tools.marShell.interpreter.KevsAbstractInterpreter
 import org.kevoree.tools.marShell.interpreter.KevsInterpreterContext
 import org.kevoree.tools.marShell.interpreter.utils.Merger
-
 import org.kevoree._
-import org.slf4j.LoggerFactory
 import scala.collection.JavaConversions._
+import org.kevoree.log.Log
 
 case class KevsAddComponentInstanceInterpreter(addCompo: AddComponentInstanceStatment) extends KevsAbstractInterpreter {
-
-  var logger = LoggerFactory.getLogger(this.getClass)
 
   def interpret(context: KevsInterpreterContext): Boolean = {
     addCompo.cid.nodeName match {
       case Some(nodeID) => {
         //SEARCH NODE
         context.model.findByPath("nodes[" + nodeID + "]", classOf[ContainerNode]) match {
-          case targetNode:ContainerNode => {
+          case targetNode: ContainerNode => {
             targetNode.findByPath("components[" + addCompo.cid.componentInstanceName + "]", classOf[ComponentInstance]) match {
-              case previousComponent:ComponentInstance => {
-                logger.warn("Component already exist with name " + previousComponent.getName)
+              case previousComponent: ComponentInstance => {
+                Log.warn("Component already exist with name " + previousComponent.getName)
                 if (previousComponent.getTypeDefinition.getName == addCompo.typeDefinitionName) {
                   Merger.mergeDictionary(previousComponent, addCompo.props, null)
                   true
                 } else {
-                  context.appendInterpretationError("Could add component instance '"+addCompo.cid.componentInstanceName+"' of type '"+addCompo.typeDefinitionName +"' on node '"+nodeID+"'. A component instance already exists with the same name, but with a different type: '"+previousComponent.getTypeDefinition.getName+"'.",logger)
+                  context.appendInterpretationError("Could add component instance '" + addCompo.cid.componentInstanceName + "' of type '" + addCompo.typeDefinitionName + "' on node '" + nodeID + "'. A component instance already exists with the same name, but with a different type: '" + previousComponent.getTypeDefinition.getName + "'.")
                   false
                 }
               }
               case null => {
                 //SEARCH TYPE
                 context.model.findByPath("typeDefinitions[" + addCompo.typeDefinitionName + "]", classOf[TypeDefinition]) match {
-                  case typeDef:ComponentType => {
+                  case typeDef: ComponentType => {
                     val componentDefinition = typeDef
                     val newcomponent = context.kevoreeFactory.createComponentInstance
                     newcomponent.setTypeDefinition(typeDef)
@@ -70,12 +67,12 @@ case class KevsAddComponentInstanceInterpreter(addCompo: AddComponentInstanceSta
                     targetNode.addComponents(newcomponent)
                     true
                   }
-                  case typeDef:TypeDefinition if (!typeDef.isInstanceOf[ComponentType]) => {
-                    context.appendInterpretationError("Could add component instance '"+addCompo.cid.componentInstanceName+"' of type '"+addCompo.typeDefinitionName +"' on node '"+nodeID++"'. Type of the new channel is not a ChannelType: '"+typeDef.getClass.getName+"'.",logger)
+                  case typeDef: TypeDefinition if (!typeDef.isInstanceOf[ComponentType]) => {
+                    context.appendInterpretationError("Could add component instance '" + addCompo.cid.componentInstanceName + "' of type '" + addCompo.typeDefinitionName + "' on node '" + nodeID ++ "'. Type of the new channel is not a ChannelType: '" + typeDef.getClass.getName + "'.")
                     false
                   }
                   case _ => {
-                    context.appendInterpretationError("Could add component instance '"+addCompo.cid.componentInstanceName+"' of type '"+addCompo.typeDefinitionName +"' on node '"+nodeID+"'. Type of the new instance not found.",logger)
+                    context.appendInterpretationError("Could add component instance '" + addCompo.cid.componentInstanceName + "' of type '" + addCompo.typeDefinitionName + "' on node '" + nodeID + "'. Type of the new instance not found.")
                     false
                   }
                 }
@@ -83,14 +80,14 @@ case class KevsAddComponentInstanceInterpreter(addCompo: AddComponentInstanceSta
             }
           }
           case null => {
-            context.appendInterpretationError("Could add component instance '"+addCompo.cid.componentInstanceName+"' of type '"+addCompo.typeDefinitionName+"' on node '"+nodeID+"'. Node not found.",logger)
+            context.appendInterpretationError("Could add component instance '" + addCompo.cid.componentInstanceName + "' of type '" + addCompo.typeDefinitionName + "' on node '" + nodeID + "'. Node not found.")
             false
           }
         }
       }
       case None => {
         //TODO search to solve ambiguity
-        context.appendInterpretationError("Could add component instance '"+addCompo.cid.componentInstanceName+"' of type '"+addCompo.typeDefinitionName+"' on node '"+addCompo.cid.nodeName+"'. Node not found.",logger)
+        context.appendInterpretationError("Could add component instance '" + addCompo.cid.componentInstanceName + "' of type '" + addCompo.typeDefinitionName + "' on node '" + addCompo.cid.nodeName + "'. Node not found.")
         false
       }
     }

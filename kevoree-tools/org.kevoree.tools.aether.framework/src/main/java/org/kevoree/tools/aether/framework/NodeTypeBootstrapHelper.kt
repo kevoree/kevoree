@@ -10,9 +10,9 @@ import org.kevoree.*
 import org.kevoree.kcl.KevoreeJarClassLoader
 import java.util
 import org.kevoree.impl.DefaultKevoreeFactory
-import org.slf4j.LoggerFactory
 import java.util.ArrayList
 import org.kevoree.framework.kaspects.TypeDefinitionAspect
+import org.kevoree.log.Log
 
 /**
  * User: ffouquet
@@ -31,7 +31,6 @@ open class NodeTypeBootstrapHelper: Bootstraper, KCLBootstrap {
 
     val kevoreeFactory: KevoreeFactory = DefaultKevoreeFactory()
     var _kevoreeLogService: org.kevoree.api.service.core.logging.KevoreeLogService? = null
-    val logger = LoggerFactory.getLogger(this.javaClass)!!
 
     override fun getKevoreeLogService(): org.kevoree.api.service.core.logging.KevoreeLogService {
         return _kevoreeLogService!!
@@ -79,11 +78,11 @@ open class NodeTypeBootstrapHelper: Bootstraper, KCLBootstrap {
                     return null
                 }
             } else {
-                logger.error("NodeType deploy unit not found , have you forgotten to merge nodetype library ?")
+                Log.error("NodeType deploy unit not found , have you forgotten to merge nodetype library ?")
                 return null
             }
         } else {
-            logger.error("Node not found using name " + destNodeName);
+            Log.error("Node not found using name " + destNodeName);
             return null
         }
     }
@@ -107,7 +106,7 @@ open class NodeTypeBootstrapHelper: Bootstraper, KCLBootstrap {
             }
             return kcl //TODO
         } else {
-            logger.error("Super type of " + nodeType.getName() + " was not completely installed")
+            Log.error("Super type of " + nodeType.getName() + " was not completely installed")
             return null
         }
     }
@@ -176,15 +175,15 @@ open class NodeTypeBootstrapHelper: Bootstraper, KCLBootstrap {
                     groupType.setBootStrapperService(this)
                     return groupType
                 } else {
-                    logger.error("Error KCL pointer null")
+                    Log.error("Error KCL pointer null")
                     return null
                 }
             } else {
-                logger.error("NodeType deploy unit not found , have you forgotten to merge nodetype library ?")
+                Log.error("NodeType deploy unit not found , have you forgotten to merge nodetype library ?")
                 return null
             }
         }else {
-            logger.error("Group not found using name " + destGroupName); return null
+            Log.error("Group not found using name " + destGroupName); return null
         }
     }
 
@@ -217,11 +216,11 @@ open class NodeTypeBootstrapHelper: Bootstraper, KCLBootstrap {
                 kcl_opt != null && dpRes
                 return kcl //TODO
             } else {
-                logger.error("Relevant DU not found for "+groupType.getName())
+                Log.error("Relevant DU not found for "+groupType.getName())
                 return null
             }
         } else {
-            logger.error("Super installation failed")
+            Log.error("Super installation failed")
             return null
         }
     }

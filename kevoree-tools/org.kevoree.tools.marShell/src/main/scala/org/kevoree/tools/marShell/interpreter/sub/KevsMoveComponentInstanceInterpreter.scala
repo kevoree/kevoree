@@ -16,8 +16,6 @@ package org.kevoree.tools.marShell.interpreter.sub
 import org.kevoree.tools.marShell.interpreter.{KevsInterpreterContext, KevsAbstractInterpreter}
 
 import scala.collection.JavaConversions._
-
-import org.slf4j.LoggerFactory
 import org.kevoree._
 import tools.marShell.ast.MoveComponentInstanceStatment
 import tools.marShell.interpreter.KevsInterpreterContext
@@ -25,8 +23,6 @@ import scala.Some
 import java.util
 
 case class KevsMoveComponentInstanceInterpreter (moveComponent: MoveComponentInstanceStatment) extends KevsAbstractInterpreter {
-	var logger = LoggerFactory.getLogger(this.getClass)
-
 
 	def interpret (context: KevsInterpreterContext): Boolean = {
 
@@ -89,21 +85,21 @@ case class KevsMoveComponentInstanceInterpreter (moveComponent: MoveComponentIns
 										true
 									}
 									case null => {
-                    context.appendInterpretationError("Could not move ComponentInstance '"+moveComponent.cid.componentInstanceName+"' from '"+moveComponent.cid.nodeName+"' to '"+moveComponent.targetNodeName+"'. Target node not found.", logger)
+                    context.appendInterpretationError("Could not move ComponentInstance '"+moveComponent.cid.componentInstanceName+"' from '"+moveComponent.cid.nodeName+"' to '"+moveComponent.targetNodeName+"'. Target node not found.")
                     //logger.error("Target node not found " + moveComponent.cid.componentInstanceName)
 										false
 									}
 								}
 							}
 							case null => {
-                context.appendInterpretationError("Could not move ComponentInstance '"+moveComponent.cid.componentInstanceName+"' from '"+moveComponent.cid.nodeName+"' to '"+moveComponent.targetNodeName+"'. Component instance not found.", logger)
+                context.appendInterpretationError("Could not move ComponentInstance '"+moveComponent.cid.componentInstanceName+"' from '"+moveComponent.cid.nodeName+"' to '"+moveComponent.targetNodeName+"'. Component instance not found.")
                 //logger.error("Component not found " + moveComponent.cid.componentInstanceName)
 								false
 							}
 						}
 					}
 					case null => {
-            context.appendInterpretationError("Could not move ComponentInstance '"+moveComponent.cid.componentInstanceName+"' from '"+moveComponent.cid.nodeName+"' to '"+moveComponent.targetNodeName+"'. Source node not found.", logger)
+            context.appendInterpretationError("Could not move ComponentInstance '"+moveComponent.cid.componentInstanceName+"' from '"+moveComponent.cid.nodeName+"' to '"+moveComponent.targetNodeName+"'. Source node not found.")
             //logger.error("Source Node not found " + nodeID)
 						false
 					}

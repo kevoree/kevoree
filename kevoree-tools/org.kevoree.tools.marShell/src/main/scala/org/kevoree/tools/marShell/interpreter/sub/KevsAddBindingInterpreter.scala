@@ -18,13 +18,10 @@ import org.kevoree.tools.marShell.ast.AddBindingStatment
 import org.kevoree.tools.marShell.interpreter.KevsAbstractInterpreter
 import org.kevoree.tools.marShell.interpreter.KevsInterpreterContext
 import scala.collection.JavaConversions._
-
-import org.slf4j.LoggerFactory
 import org.kevoree.{Channel, ComponentInstance, ContainerNode}
+import org.kevoree.log.Log
 
 case class KevsAddBindingInterpreter(addBinding: AddBindingStatment) extends KevsAbstractInterpreter {
-
-  var logger = LoggerFactory.getLogger(this.getClass)
 
   def interpret(context: KevsInterpreterContext): Boolean = {
     addBinding.cid.nodeName match {
@@ -52,8 +49,8 @@ case class KevsAddBindingInterpreter(addBinding: AddBindingStatment) extends Kev
                         && mb.getPort.eContainer.asInstanceOf[ComponentInstance].getName == addBinding.cid.componentInstanceName
                         && mb.getHub.getName == addBinding.bindingInstanceName) match {
                         case Some(binding) => {
-                          logger.warn("Binding {}.{}@{} => {} already exists",
-                            Array[AnyRef](addBinding.cid.componentInstanceName, addBinding.portName, addBinding.cid.nodeName.get, addBinding.bindingInstanceName))
+                          Log.warn("Binding {}.{}@{} => {} already exists",
+                            addBinding.cid.componentInstanceName, addBinding.portName, addBinding.cid.nodeName.get, addBinding.bindingInstanceName)
                           true
                         }
                         case None => {
@@ -65,7 +62,7 @@ case class KevsAddBindingInterpreter(addBinding: AddBindingStatment) extends Kev
                         }
                       }
                     } else {
-                      context.appendInterpretationError("Could not remove binding from port '"+addBinding.portName+"' of component '"+addBinding.cid.componentInstanceName+"' on node '"+addBinding.cid.nodeName+"' to channel '"+addBinding.bindingInstanceName+"'. Port not found.", logger)
+                      context.appendInterpretationError("Could not remove binding from port '"+addBinding.portName+"' of component '"+addBinding.cid.componentInstanceName+"' on node '"+addBinding.cid.nodeName+"' to channel '"+addBinding.bindingInstanceName+"'. Port not found.")
                       false
                     }
                     /*val ports = new util.ArrayList[Port](component.getProvided.size() + component.getRequired.size())
@@ -95,24 +92,24 @@ case class KevsAddBindingInterpreter(addBinding: AddBindingStatment) extends Kev
                     }*/
                   }
                   case null => {
-                    context.appendInterpretationError("Could not remove binding from port '"+addBinding.portName+"' of component '"+addBinding.cid.componentInstanceName+"' on node '"+addBinding.cid.nodeName+"' to channel '"+addBinding.bindingInstanceName+"'. Channel not found.", logger)
+                    context.appendInterpretationError("Could not remove binding from port '"+addBinding.portName+"' of component '"+addBinding.cid.componentInstanceName+"' on node '"+addBinding.cid.nodeName+"' to channel '"+addBinding.bindingInstanceName+"'. Channel not found.")
                     false
                   }
                 }
               case null => {
-                context.appendInterpretationError("Could not remove binding from port '"+addBinding.portName+"' of component '"+addBinding.cid.componentInstanceName+"' on node '"+addBinding.cid.nodeName+"' to channel '"+addBinding.bindingInstanceName+"'. Component not found.", logger)
+                context.appendInterpretationError("Could not remove binding from port '"+addBinding.portName+"' of component '"+addBinding.cid.componentInstanceName+"' on node '"+addBinding.cid.nodeName+"' to channel '"+addBinding.bindingInstanceName+"'. Component not found.")
                 false
               }
             }
           case null => {
-            context.appendInterpretationError("Could not remove binding from port '"+addBinding.portName+"' of component '"+addBinding.cid.componentInstanceName+"' on node '"+addBinding.cid.nodeName+"' to channel '"+addBinding.bindingInstanceName+"'. Node not found.", logger)
+            context.appendInterpretationError("Could not remove binding from port '"+addBinding.portName+"' of component '"+addBinding.cid.componentInstanceName+"' on node '"+addBinding.cid.nodeName+"' to channel '"+addBinding.bindingInstanceName+"'. Node not found.")
             false
           }
         }
       }
       case None => {
 
-        context.appendInterpretationError("Could not remove binding from port '"+addBinding.portName+"' of component '"+addBinding.cid.componentInstanceName+"' on node '"+addBinding.cid.nodeName+"' to channel '"+addBinding.bindingInstanceName+"'. Node name not specified, but mandatory.", logger)
+        context.appendInterpretationError("Could not remove binding from port '"+addBinding.portName+"' of component '"+addBinding.cid.componentInstanceName+"' on node '"+addBinding.cid.nodeName+"' to channel '"+addBinding.bindingInstanceName+"'. Node name not specified, but mandatory.")
         false
       }
     }

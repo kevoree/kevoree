@@ -49,8 +49,6 @@
             <artifactId>org.kevoree.kompare</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
-
-
     </dependencies>
 
 </project>

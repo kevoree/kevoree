@@ -31,7 +31,7 @@ import org.kevoree.ContainerRoot
 import org.kevoree.cloner.ModelCloner
 import parser.KevsParser
 import interpreter.KevsInterpreterAspects._
-import org.slf4j.LoggerFactory
+import org.kevoree.log.Log
 
 /**
  * Created by IntelliJ IDEA.
@@ -42,7 +42,6 @@ import org.slf4j.LoggerFactory
  */
 
 object KevsEngine {
-  var logger = LoggerFactory.getLogger(this.getClass)
   val modelCloner = new ModelCloner
   val parser = new KevsParser
 
@@ -56,12 +55,12 @@ object KevsEngine {
           Some(inputModel)
         } else {
           import scala.collection.JavaConversions._
-          logger.error("Interpretation error:\n " + ctx.interpretationErrors.mkString("\n"))
+          Log.error("Interpretation error:\n " + ctx.interpretationErrors.mkString("\n"))
           None
         }
       }
       case None => {
-        logger.error("Parsing error: " + parser.lastNoSuccess.toString)
+        Log.error("Parsing error: " + parser.lastNoSuccess.toString)
         None
       }
     }

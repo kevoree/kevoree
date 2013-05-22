@@ -35,13 +35,9 @@ import org.kevoree.tools.marShell.ast.RemoveChannelInstanceStatment
 import org.kevoree.tools.marShell.interpreter.KevsAbstractInterpreter
 import org.kevoree.tools.marShell.interpreter.KevsInterpreterContext
 import scala.collection.JavaConversions._
-
-import org.kevoree.{MBinding, ContainerRoot, Channel}
-import org.slf4j.LoggerFactory
+import org.kevoree.{ContainerRoot, Channel}
 
 case class KevsRemoveChannelInterpreter(removeChannel: RemoveChannelInstanceStatment) extends KevsAbstractInterpreter {
-
-  var logger = LoggerFactory.getLogger(this.getClass)
 
   def interpret(context: KevsInterpreterContext): Boolean = {
     /*context.model.getHubs.find(n => n.getName.equals(removeChannel.channelName))*/
@@ -57,7 +53,7 @@ case class KevsRemoveChannelInterpreter(removeChannel: RemoveChannelInstanceStat
         true
       }
       case null => {
-        context.appendInterpretationError("Could not remove channel node '"+removeChannel.channelName+"'. Channel not found.", logger)
+        context.appendInterpretationError("Could not remove channel node '"+removeChannel.channelName+"'. Channel not found.")
         //TODO: Why is this error considered as not blocking, compared to other remove commands ?
         true
       }

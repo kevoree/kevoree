@@ -129,7 +129,11 @@ public class MavenResolver {
                         StringBuilder basePathBuilderSnapshot = getArtefactLocalBasePath(artefact);
                         basePathBuilderSnapshot.append(name);
                         basePathBuilderSnapshot.append("-");
-                        basePathBuilderSnapshot.append(preresolvedVersion);
+                        if (!bestVersion.isNotDeployed()) { //TAKE directly -snapshot file
+                            basePathBuilderSnapshot.append(preresolvedVersion);
+                        } else {
+                            basePathBuilderSnapshot.append(version);
+                        }
                         basePathBuilderSnapshot.append(".");
                         basePathBuilderSnapshot.append(extension);
                         File snapshotFile = new File(basePathBuilderSnapshot.toString());
@@ -137,7 +141,19 @@ public class MavenResolver {
                             return snapshotFile;
                         }
 
-                        System.err.println("Donwload failed :-) " + basePathBuilderSnapshot.toString());
+                        System.out.println("NotFound !!! "+snapshotFile.getAbsolutePath());
+
+                        //Ok try on all urls, meta file has been download but bot the artefact :(
+                        for (String url : urls) {
+                            if (downloader.download(snapshotFile, url, artefact, extension, preresolvedVersion, false)) {
+                                //download the metafile
+                                File newMetaFile = new File(snapshotFile.getAbsolutePath().substring(0, snapshotFile.getAbsolutePath().lastIndexOf("/")) + "/" + MavenVersionResolver.metaFile);
+                                downloader.download(newMetaFile, url, artefact, extension, preresolvedVersion, true);
+                                return snapshotFile;
+                            }
+                        }
+
+                        System.err.println(">"+bestVersion);
                         return null;
 
                     } else {
@@ -159,7 +175,6 @@ public class MavenResolver {
                                 downloader.download(newMetaFile, bestVersion.getUrl_origin(), artefact, extension, preresolvedVersion, true);
                                 return targetSnapshotFile;
                             }
-
                             //not found
                             return null;
                         }

@@ -28,7 +28,6 @@ package org.kevoree.tools.marShell.interpreter.sub
 
 import org.kevoree.tools.marShell.interpreter.{KevsInterpreterContext, KevsAbstractInterpreter}
 import org.kevoree.tools.marShell.ast.RemoveChildStatment
-import org.slf4j.LoggerFactory
 import org.kevoree.ContainerNode
 
 /**
@@ -41,13 +40,12 @@ import org.kevoree.ContainerNode
  */
 
 case class KevsRemoveChildInterpreter(removeChild: RemoveChildStatment) extends KevsAbstractInterpreter {
-  val logger = LoggerFactory.getLogger(this.getClass)
 
   def interpret(context: KevsInterpreterContext): Boolean = {
     /*context.model.getNodes.find(node => node.getName == removeChild.childNodeName)*/
     context.model.findByPath("nodes[" + removeChild.childNodeName + "]", classOf[ContainerNode]) match {
       case null => {
-        context.appendInterpretationError("Could not remove child node '"+removeChild.childNodeName+"' from node '"+ removeChild.fatherNodeName+"'. Child node not found.", logger)
+        context.appendInterpretationError("Could not remove child node '"+removeChild.childNodeName+"' from node '"+ removeChild.fatherNodeName+"'. Child node not found.")
         false
       }
       case child => {
@@ -55,7 +53,7 @@ case class KevsRemoveChildInterpreter(removeChild: RemoveChildStatment) extends 
           child.getHost.removeHosts(child)
           true
         } else {
-          context.appendInterpretationError("Could not remove child node '"+removeChild.childNodeName+"' from node '"+ removeChild.fatherNodeName+"'. No parenting relation found.", logger)
+          context.appendInterpretationError("Could not remove child node '"+removeChild.childNodeName+"' from node '"+ removeChild.fatherNodeName+"'. No parenting relation found.")
           false
         }
       }

@@ -70,6 +70,7 @@ public class MavenVersionResolver {
             versionResult.setBuildNumber(result.substring(result.indexOf(buildMavenTag) + buildMavenTag.length(), result.indexOf(buildEndMavenTag)));
         }
         versionResult.setUrl_origin(basePath);
+        versionResult.setNotDeployed(localDeploy);
         return versionResult;
     }
 

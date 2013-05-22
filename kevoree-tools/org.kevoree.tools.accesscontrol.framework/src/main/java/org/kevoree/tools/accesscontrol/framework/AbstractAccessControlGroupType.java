@@ -22,15 +22,12 @@ import org.kevoree.adaptation.accesscontrol.api.SignedModel;
 import org.kevoree.adaptation.accesscontrol.api.SignedPDP;
 import org.kevoree.framework.AbstractGroupType;
 import org.kevoree.framework.KevoreeXmiHelper;
+import org.kevoree.log.Log;
 import org.kevoree.tools.accesscontrol.framework.impl.CompareAccessControlImpl;
 import org.kevoree.tools.accesscontrol.framework.impl.SignedModelImpl;
 import org.kevoree.tools.accesscontrol.framework.impl.SignedPDPImpl;
 import org.kevoree.tools.accesscontrol.framework.utils.AccessControlXmiHelper;
 import org.kevoreeadaptation.AdaptationPrimitive;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
@@ -46,7 +43,6 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public abstract class AbstractAccessControlGroupType extends AbstractGroupType {
-    protected Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private AccessControlRoot root = null;
     private CompareAccessControlImpl accessControl;
@@ -55,7 +51,7 @@ public abstract class AbstractAccessControlGroupType extends AbstractGroupType {
     @Override
     public void push(ContainerRoot containerRoot, String s) throws Exception {
         // ignore
-        logger.error("PUSH NOT SIGNED MODEL");
+        Log.error("PUSH NOT SIGNED MODEL");
     }
 
     /**
@@ -118,7 +114,7 @@ public abstract class AbstractAccessControlGroupType extends AbstractGroupType {
             {
                 List<AdaptationPrimitive> result = getAccessControl().approval(getNodeName(), getModelService().getLastModel(), signedModel);
                 if (result != null && result.size() == 0) {
-                    logger.info("model accepted according to access control");
+                    Log.info("model accepted according to access control");
                     return true;
                 } else {
                     if (result != null) {
@@ -129,14 +125,14 @@ public abstract class AbstractAccessControlGroupType extends AbstractGroupType {
                             } else {
                                 ref = p.getRef().toString();
                             }
-                            logger.error("Refused Adapation Primitive " + p.getPrimitiveType().getName() + " " + ref);
+                            Log.error("Refused Adapation Primitive " + p.getPrimitiveType().getName() + " " + ref);
                         }
                     } else {
-                        logger.error(" no result ");
+                        Log.error(" no result ");
                     }
                 }
             } else {
-                logger.error("There is no access control defined");
+                Log.error("There is no access control defined");
             }
         }
         return false;
@@ -155,7 +151,7 @@ public abstract class AbstractAccessControlGroupType extends AbstractGroupType {
                 if (getAccessControl().accessPDP(pdp)) {
                     setModelAccessControl(AccessControlXmiHelper.instance$.loadString(new String(pdp.getSerialiedModel())));
                 } else {
-                    logger.error("There is no acess to PDP");
+                    Log.error("There is no acess to PDP");
                     return true;
                 }
             }

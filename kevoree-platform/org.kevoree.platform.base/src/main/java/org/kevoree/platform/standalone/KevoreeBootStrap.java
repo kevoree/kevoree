@@ -21,10 +21,8 @@ import org.kevoree.core.impl.KevoreeCoreBean;
 import org.kevoree.framework.KevoreeXmiHelper;
 import org.kevoree.impl.DefaultKevoreeFactory;
 import org.kevoree.kcl.KevoreeJarClassLoader;
+import org.kevoree.log.Log;
 import org.kevoree.tools.aether.framework.NodeTypeBootstrapHelper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.File;
 import java.lang.reflect.Method;
 import java.net.URL;
@@ -51,7 +49,6 @@ public class KevoreeBootStrap {
     }
 
     private KevoreeCoreBean coreBean = null;
-    Logger logger = LoggerFactory.getLogger(KevoreeBootStrap.class);
     private Boolean started = false;
 
     public KevoreeCoreBean getCore() {
@@ -83,7 +80,6 @@ public class KevoreeBootStrap {
                     m.invoke(bootstraper, "kotlin-stdlib", "org.jetbrains.kotlin", KOTLIN_VERSION, dummyKCL);
                     m.invoke(bootstraper, "jfilter-library", "fr.inria.jfilter", "1.3", dummyKCL);
                     m.invoke(bootstraper, "org.kevoree.tools.aether.framework", "org.kevoree.tools", factory.getVersion(), jcl);
-                    m.invoke(bootstraper, "slf4j-api", "org.slf4j", "1.7.2", dummyKCL);
                     m.invoke(bootstraper, "jgrapht-jdk1.5", "org.jgrapht", "0.7.3", dummyKCL);
                     m.invoke(bootstraper, "org.kevoree.adaptation.model", "org.kevoree", factory.getVersion(), dummyKCL);
                     m.invoke(bootstraper, "org.kevoree.log", "org.kevoree", factory.getVersion(), dummyKCL);
@@ -93,7 +89,6 @@ public class KevoreeBootStrap {
                     m.invoke(bootstraper, "org.kevoree.framework", "org.kevoree", factory.getVersion(), dummyKCL);
                     m.invoke(bootstraper, "org.kevoree.kcl", "org.kevoree", factory.getVersion(), dummyKCL);
                     m.invoke(bootstraper, "org.kevoree.kompare", "org.kevoree", factory.getVersion(), dummyKCL);
-                    //   m.invoke(bootstraper, "org.kevoree.merger", "org.kevoree", factory.getVersion(), dummyKCL);
                     m.invoke(bootstraper, "org.kevoree.model", "org.kevoree", factory.getVersion(), dummyKCL);
                     m.invoke(bootstraper, "org.kevoree.model.context", "org.kevoree", factory.getVersion(), dummyKCL);
                     m.invoke(bootstraper, "org.kevoree.tools.annotation.api", "org.kevoree.tools", factory.getVersion(), dummyKCL);
@@ -128,7 +123,7 @@ public class KevoreeBootStrap {
             if (bootstrapModel == null) {
                 if (System.getProperty("node.bootstrap") != null) {
                     try {
-                        logger.info("Try to load bootstrap platform from system parameter");
+                        Log.info("Try to load bootstrap platform from system parameter");
                         String bootstrapModelPath = System.getProperty("node.bootstrap");
                         if (bootstrapModelPath.startsWith("mvn:")) {
                             try {
@@ -148,7 +143,7 @@ public class KevoreeBootStrap {
                                     if (part.length == 3) {
                                         file = bootstraper.resolveKevoreeArtifact(part[1], part[0], part[2]);
                                     } else {
-                                        logger.warn("Bootstrap model: Bad MVN URL <mvn:[repourl!]groupID/artefactID/version>");
+                                        Log.warn("Bootstrap model: Bad MVN URL <mvn:[repourl!]groupID/artefactID/version>");
                                     }
                                 }
                                 if (file != null) {
@@ -159,7 +154,7 @@ public class KevoreeBootStrap {
                                     }
                                 }
                             } catch (Throwable e) {
-                                logger.error("Bootstrap failed", e);
+                                Log.error("Bootstrap failed", e);
                             }
                         } else if (bootstrapModelPath.startsWith("http://")) {
                             bootstrapModel = KevoreeXmiHelper.instance$.loadStream(new URL(bootstrapModelPath).openStream());
@@ -176,7 +171,7 @@ public class KevoreeBootStrap {
                                 try {
                                     bootstrapModel = KevoreeXmiHelper.instance$.load(bootstrapModelPath);
                                 } catch (Throwable e2) {
-                                    logger.error("Unable to load boostrap model from file as a KevScript model", e);
+                                    Log.error("Unable to load boostrap model from file as a KevScript model", e);
 //                                    logger.error("Unable to load boostrap model from file as a KevScript model and as a Kevoree model", e2);
                                     /*e.printStackTrace();
                                     e2.printStackTrace();*/
@@ -185,7 +180,7 @@ public class KevoreeBootStrap {
                             }
                         }
                     } catch (Throwable e) {
-                        logger.info("Bootstrap failed from {}", System.getProperty("node.bootstrap"), e);
+                        Log.info("Bootstrap failed from {}", System.getProperty("node.bootstrap"), e);
                     }
                 } else {
                     try {
@@ -194,7 +189,7 @@ public class KevoreeBootStrap {
                         JarEntry entry = jar.getJarEntry("KEV-INF/lib.kev");
                         bootstrapModel = KevoreeXmiHelper.instance$.loadStream(jar.getInputStream(entry));
                     } catch (Throwable e) {
-                        logger.error("Bootstrap failed", e);
+                        Log.error("Bootstrap failed", e);
                     }
                 }
             }
@@ -203,17 +198,17 @@ public class KevoreeBootStrap {
 
             if (bootstrapModel != null) {
                 try {
-                    logger.debug("Bootstrap step !");
+                    Log.debug("Bootstrap step !");
                     bootstrapHelper.initModelInstance(bootstrapModel, "JavaSENode", System.getProperty("node.groupType"));
                     coreBean.updateModel(bootstrapModel);
                 } catch (Throwable e) {
-                    logger.error("Bootstrap failed", e);
+                    Log.error("Bootstrap failed", e);
                 }
             } else {
                 if (System.getProperty("node.bootstrap") != null) {
-                    logger.error("Can't bootstrap node with bootstrap model: {} ", System.getProperty("node.bootstrap"));
+                    Log.error("Can't bootstrap node with bootstrap model: {} ", System.getProperty("node.bootstrap"));
                 } else {
-                    logger.error("Can't bootstrap node with default bootstrap");
+                    Log.error("Can't bootstrap node with default bootstrap");
                 }
             }
 
@@ -233,7 +228,7 @@ public class KevoreeBootStrap {
             coreBean.stop();
             started = false;
         } catch (Throwable e) {
-            logger.error("Error while stopping Core ", e);
+            Log.error("Error while stopping Core ", e);
         }
 
     }

@@ -42,13 +42,13 @@ package org.kevoree.tools.marShell.interpreter.sub
 import org.kevoree.tools.marShell.ast.MergeStatement
 import org.kevoree.tools.marShell.interpreter.{KevsInterpreterContext, KevsAbstractInterpreter}
 import org.kevoree.merger.KevoreeMergerComponent
-import org.slf4j.LoggerFactory
 import org.kevoree.framework.KevoreeXmiHelper
 import java.util.jar.{JarEntry, JarFile}
 import java.io.File
 import java.net.URL
 import java.util
 import scala.collection.JavaConversions._
+import org.kevoree.log.Log
 
 /**
  * Created by IntelliJ IDEA.
@@ -61,7 +61,6 @@ import scala.collection.JavaConversions._
 case class KevsMergerInterpreter (mergeStatement: MergeStatement) extends KevsAbstractInterpreter {
 
   private val mergerComponent = new KevoreeMergerComponent()
-  private val logger = LoggerFactory.getLogger(this.getClass)
 
   def interpret (context: KevsInterpreterContext): Boolean = {
 
@@ -82,7 +81,7 @@ case class KevsMergerInterpreter (mergeStatement: MergeStatement) extends KevsAb
 
           file = context.getBootstraper.resolveArtifact(part(1), part(0), part(2), repos)
         } else {
-          logger.warn("Kevscript merger : Bad MVN URL <mvn:[repourl!]groupID/artefactID/version>")
+          Log.warn("Kevscript merger : Bad MVN URL <mvn:[repourl!]groupID/artefactID/version>")
         }
       }
       if (file == null) {
@@ -98,7 +97,7 @@ case class KevsMergerInterpreter (mergeStatement: MergeStatement) extends KevsAb
           repos.add("http://maven.kevoree.org/snapshots")
           file = context.getBootstraper.resolveArtifact(part(1), part(0), part(2),repos)
         } else {
-          logger.warn("Kevscript merger : Bad MVN URL <mvn:[repourl!]groupID/artefactID/version>")
+          Log.warn("Kevscript merger : Bad MVN URL <mvn:[repourl!]groupID/artefactID/version>")
         }
       }
       if (file != null) {
@@ -115,7 +114,7 @@ case class KevsMergerInterpreter (mergeStatement: MergeStatement) extends KevsAb
             mergerComponent.merge(context.model, newModel)
             true
           } catch {
-            case _@e => logger.warn("Unable to load library from {}. Maybe it's not a Kevoree model nor a Kevoree DeployUnit", mergeStatement.url); true
+            case _@e => Log.warn("Unable to load library from {}. Maybe it's not a Kevoree model nor a Kevoree DeployUnit", mergeStatement.url); true
           }
         }
       } else {
@@ -132,7 +131,7 @@ case class KevsMergerInterpreter (mergeStatement: MergeStatement) extends KevsAb
         true
       } catch {
         case _@e => {
-          logger.warn("KevScript error while merging from url " + mergeStatement.url)
+          Log.warn("KevScript error while merging from url " + mergeStatement.url)
           false
         }
       }

@@ -15,7 +15,6 @@ package org.kevoree.tools.marShell.interpreter.sub
 
 import org.kevoree.tools.marShell.ast.CreateDictionaryTypeStatment
 import org.kevoree.tools.marShell.interpreter.{KevsInterpreterContext, KevsAbstractInterpreter}
-import org.slf4j.LoggerFactory
 import org.kevoree.TypeDefinition
 import scala.collection.JavaConversions._
 
@@ -27,8 +26,6 @@ import scala.collection.JavaConversions._
  * Time: 12:33
  */
 case class KevsCreateDictionaryTypeInterpreter(stmt: CreateDictionaryTypeStatment) extends KevsAbstractInterpreter {
-
-  val logger = LoggerFactory.getLogger(this.getClass)
 
 
   def interpret(context: KevsInterpreterContext) = {
@@ -61,7 +58,7 @@ case class KevsCreateDictionaryTypeInterpreter(stmt: CreateDictionaryTypeStatmen
         true
       }
       case null => {
-        context.appendInterpretationError("Could not create dictionary for '"+stmt.typeName+"'. Type not found.", logger)
+        context.appendInterpretationError("Could not create dictionary for '"+stmt.typeName+"'. Type not found.")
         //logger.error("Type definition not found {}", stmt.typeName)
         false
       }

@@ -34,19 +34,15 @@ package org.kevoree.tools.marShell.interpreter.sub
 import org.kevoree.tools.marShell.interpreter.KevsAbstractInterpreter
 import org.kevoree.tools.marShell.interpreter.KevsInterpreterContext
 import org.kevoree.tools.marShell.ast.RemoveLibraryStatment
-
-import org.slf4j.LoggerFactory
 import org.kevoree.TypeLibrary
 
 case class KevsRemoveLibraryInterpreter(statment: RemoveLibraryStatment) extends KevsAbstractInterpreter {
-
-  var logger = LoggerFactory.getLogger(this.getClass)
 
   def interpret(context: KevsInterpreterContext): Boolean = {
     context.model.findByPath("libraries[" + statment.libraryName + "]", classOf[TypeLibrary]) match {
       case library: TypeLibrary => context.model.removeLibraries(library); true
       case null => {
-        context.appendInterpretationError("Could not remove library '"+statment.libraryName+"'. Library does not exist.", logger)
+        context.appendInterpretationError("Could not remove library '"+statment.libraryName+"'. Library does not exist.")
         false
       }
     }

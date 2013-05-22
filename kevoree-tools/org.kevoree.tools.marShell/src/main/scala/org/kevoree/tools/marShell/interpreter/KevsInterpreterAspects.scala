@@ -33,7 +33,7 @@ package org.kevoree.tools.marShell.interpreter
 
 import sub._
 import org.kevoree.tools.marShell.ast._
-import org.slf4j.LoggerFactory
+import org.kevoree.log.Log
 
 object KevsInterpreterAspects {
 
@@ -45,8 +45,6 @@ object KevsInterpreterAspects {
 
 
   implicit def rich(o: Object): KevsAbstractInterpreter = {
-    val logger = LoggerFactory.getLogger(this.getClass)
-
     o match {
       case b: Block => b match {
         case tb: TransactionalBloc => KevsAddTBlockInterpreter(tb)
@@ -102,7 +100,7 @@ object KevsInterpreterAspects {
         case moveChildStatment: MoveChildStatment => KevsMoveChildInterpreter(moveChildStatment)
 
       }
-      case _@e => logger.error("", e); null
+      case _@e => Log.error("", e.asInstanceOf[Throwable]); null
     }
   }
 }

@@ -13,12 +13,9 @@
  */
 package org.kevoree.platform.standalone;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.kevoree.log.Log;
 
 public class App {
-
-    private static final Logger logger = LoggerFactory.getLogger(App.class);
 
     public void initialize() {
         //System.setProperty("kevoree.log.level", "DEBUG");
@@ -47,7 +44,7 @@ public class App {
                 try {
                     kb.stop();
                 } catch (Throwable ex) {
-                    logger.warn("Error stopping framework: ", ex);
+                    Log.warn("Error stopping framework: ", ex);
                 }
             }
         });
@@ -59,6 +56,6 @@ public class App {
         App app = new App();
         app.initialize();
         app.start();
-        logger.info("Kevoree runtime boot time {} ms", (System.currentTimeMillis() - startTime));
+        Log.info("Kevoree runtime boot time {} ms", (System.currentTimeMillis() - startTime)+"");
     }
 }

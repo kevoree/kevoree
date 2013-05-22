@@ -1,50 +1,13 @@
-/**
- * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.gnu.org/licenses/lgpl-3.0.txt
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-/**
- * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * 	http://www.gnu.org/licenses/lgpl-3.0.txt
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-/**
- * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.gnu.org/licenses/lgpl-3.0.txt
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+
 package org.kevoree.tools.aether.framework.android
 
 import org.kevoree.DeployUnit
 import java.io.File
 import org.kevoree.kcl.KevoreeJarClassLoader
-import org.slf4j.LoggerFactory
 import org.kevoree.tools.aether.framework.JCLContextHandler
 import java.util.ArrayList
+import org.kevoree.tools.aether.framework.AetherUtil
+import org.kevoree.log.Log
 
 /**
  * Created by IntelliJ IDEA.
@@ -68,13 +31,13 @@ class AndroidJCLContextHandler(val ctx: android.content.Context, val parent: Cla
             }
         }
         if (resolvedFile == null) {
-            resolvedFile = org.kevoree.tools.aether.framework.android.AetherUtil.resolveDeployUnit(du)
+            resolvedFile = AetherUtil.resolveDeployUnit(du)
         }
 
         if (resolvedFile != null) {
             return installDeployUnitInternals(du, resolvedFile!!)
         } else {
-            logger.error("Error while resolving deploy unit " + du.getUnitName())
+            Log.error("Error while resolving deploy unit " + du.getUnitName())
             return null
         }
     }
@@ -82,7 +45,7 @@ class AndroidJCLContextHandler(val ctx: android.content.Context, val parent: Cla
     override fun installDeployUnitInternals(du: DeployUnit, file: File): KevoreeJarClassLoader {
         val previousKCL = getKCLInternals(du)
         val res = if (previousKCL != null) {
-            logger.debug("Take already installed {}", buildKEY(du))
+            Log.debug("Take already installed {}", buildKEY(du))
             previousKCL
         } else {
             val cleankey = buildKEY(du).replace(File.separator, "_")
@@ -98,11 +61,11 @@ class AndroidJCLContextHandler(val ctx: android.content.Context, val parent: Cla
                     toLinkKCL.addSubClassLoader(newcl)
                     newcl.addWeakClassLoader(toLinkKCL)
 
-                    logger.debug("UnbreakLink "+du.getUnitName()+"->"+toLinkKCL.getLoadedURLs().get(0))
+                    Log.debug("UnbreakLink "+du.getUnitName()+"->"+toLinkKCL.getLoadedURLs().get(0))
 
                 }
                 failedLinks.remove(buildKEY(du))
-                logger.debug("Failed Link {} remain size : {}", du.getUnitName(), failedLinks.size())
+                Log.debug("Failed Link {} remain size : {}", du.getUnitName(), failedLinks.size().toString())
             }
             for(rLib in du.getRequiredLibs()) {
                 val kcl = getKCLInternals(rLib)
@@ -119,7 +82,7 @@ class AndroidJCLContextHandler(val ctx: android.content.Context, val parent: Cla
                         }
                     }
                 } else {
-                    logger.debug("Fail link ! Warning ")
+                    Log.debug("Fail link ! Warning ")
                     var pendings = failedLinks.get(buildKEY(rLib))
                     if(pendings == null){
                         pendings = ArrayList<KevoreeJarClassLoader>()

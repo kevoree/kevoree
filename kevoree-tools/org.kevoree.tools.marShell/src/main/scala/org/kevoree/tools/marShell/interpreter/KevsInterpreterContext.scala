@@ -28,11 +28,10 @@
 package org.kevoree.tools.marShell.interpreter
 
 import org.kevoree.{KevoreeFactory, ContainerRoot}
-import java.util.HashMap
 import org.kevoree.api.Bootstraper
 import org.kevoree.impl.DefaultKevoreeFactory
 import java.util
-import org.slf4j.Logger
+import org.kevoree.log.Log
 
 case class KevsInterpreterContext(model : ContainerRoot) {
 
@@ -53,9 +52,10 @@ case class KevsInterpreterContext(model : ContainerRoot) {
   val kevoreeFactory : KevoreeFactory = new DefaultKevoreeFactory
 
   var interpretationErrors : util.ArrayList[String] = new util.ArrayList[String]()
-  def appendInterpretationError(error : String, logger : Logger) {
+
+  def appendInterpretationError(error : String) {
     interpretationErrors.add(error)
-    logger.error(error)
+    Log.error(error)
   }
 
 }

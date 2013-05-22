@@ -18,29 +18,26 @@ import org.kevoree.{ContainerNode, NodeType, TypeDefinition}
 import org.kevoree.tools.marShell.ast.AddNodeStatment
 import org.kevoree.tools.marShell.interpreter.KevsAbstractInterpreter
 import org.kevoree.tools.marShell.interpreter.KevsInterpreterContext
-
 import org.kevoree.tools.marShell.interpreter.utils.Merger
-import org.slf4j.LoggerFactory
+import org.kevoree.log.Log
 
 case class KevsAddNodeInterpreter(addN: AddNodeStatment) extends KevsAbstractInterpreter {
-
-  private val logger = LoggerFactory.getLogger(this.getClass)
 
 
   def interpret(context: KevsInterpreterContext): Boolean = {
     context.model.findByPath("typeDefinitions[" + addN.nodeTypeName + "]", classOf[TypeDefinition]) match {
       case null => {
-        context.appendInterpretationError("Could add node '"+addN.nodeTypeName+"' of type '"+addN.nodeTypeName+"'. NodeType not found.",logger)
+        context.appendInterpretationError("Could add node '"+addN.nodeTypeName+"' of type '"+addN.nodeTypeName+"'. NodeType not found.")
         false
       }
       case nodeType =>
         if (!nodeType.isInstanceOf[NodeType]) {
-          context.appendInterpretationError("Could add node '"+addN.nodeTypeName+"' of type '"+addN.nodeTypeName+"'. Type of the new node is not a NodeType: '"+nodeType.getClass.getName+"'.",logger)
+          context.appendInterpretationError("Could add node '"+addN.nodeTypeName+"' of type '"+addN.nodeTypeName+"'. Type of the new node is not a NodeType: '"+nodeType.getClass.getName+"'.")
           false
         } else {
           context.model.findByPath("nodes[" + addN.nodeName + "]", classOf[ContainerNode]) match {
             case e:ContainerNode => {
-              logger.warn("Node Already exist with name {}", e.getName)
+              Log.warn("Node Already exist with name {}", e.getName)
               if (e.getTypeDefinition == null) {
                 e.setTypeDefinition(nodeType)
                 Merger.mergeDictionary(e, addN.props, null)
@@ -50,7 +47,7 @@ case class KevsAddNodeInterpreter(addN: AddNodeStatment) extends KevsAbstractInt
                   Merger.mergeDictionary(e, addN.props, null)
                   true
                 } else {
-                  context.appendInterpretationError("Could add node '"+addN.nodeName+"' of type '"+addN.nodeTypeName+"'. A node already exists with the same name, but with a different type: '"+e.getTypeDefinition.getName+"'.",logger)
+                  context.appendInterpretationError("Could add node '"+addN.nodeName+"' of type '"+addN.nodeTypeName+"'. A node already exists with the same name, but with a different type: '"+e.getTypeDefinition.getName+"'.")
                   false
                 }
               }

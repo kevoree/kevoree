@@ -32,7 +32,7 @@ import java.util.concurrent.atomic.AtomicReference
 import org.kevoree.ContainerRoot
 import org.kevoree.api.service.core.handler.*
 import org.kevoree.context.ContextRoot
-import org.slf4j.LoggerFactory
+import org.kevoree.log.Log
 
 /**
  * Created by IntelliJ IDEA.
@@ -42,7 +42,6 @@ import org.slf4j.LoggerFactory
  */
 
 class ModelHandlerServiceProxy(val proxy: KevoreeModelHandlerService): KevoreeModelHandlerService {
-    val logger = LoggerFactory.getLogger(this.javaClass)!!
     var proxyModel: AtomicReference<ContainerRoot> = AtomicReference<ContainerRoot>()
 
     fun setTempModel(tempModel: ContainerRoot) {
@@ -80,7 +79,7 @@ class ModelHandlerServiceProxy(val proxy: KevoreeModelHandlerService): KevoreeMo
 
     override fun getLastModification(): Date? {
         return if (proxyModel.get() != null) {
-            logger.error("Last Modification not available during update")
+            Log.error("Last Modification not available during update")
             null
         } else {
             proxy.getLastModification()
@@ -93,7 +92,7 @@ class ModelHandlerServiceProxy(val proxy: KevoreeModelHandlerService): KevoreeMo
 
     override fun atomicUpdateModel(model: ContainerRoot?): Date? {
         return if (proxyModel.get() != null) {
-            logger.error("atomicUpdateModel not available during update")
+            Log.error("atomicUpdateModel not available during update")
             null
         } else {
             proxy.atomicUpdateModel(model)
@@ -102,7 +101,7 @@ class ModelHandlerServiceProxy(val proxy: KevoreeModelHandlerService): KevoreeMo
 
     override fun compareAndSwapModel(previousModel: UUIDModel?, targetModel: ContainerRoot?) {
         if (proxyModel.get() != null) {
-            logger.error("compareAndSwapModel not available during update")
+            Log.error("compareAndSwapModel not available during update")
         } else {
             proxy.compareAndSwapModel(previousModel, targetModel)
         }
@@ -110,7 +109,7 @@ class ModelHandlerServiceProxy(val proxy: KevoreeModelHandlerService): KevoreeMo
 
     override fun atomicCompareAndSwapModel(previousModel: UUIDModel?, targetModel: ContainerRoot?): Date? {
         return if (proxyModel.get() != null) {
-            logger.error("atomicUpdateModel not available during update")
+            Log.error("atomicUpdateModel not available during update")
             null
         } else {
             proxy.atomicCompareAndSwapModel(previousModel, targetModel)
@@ -119,7 +118,7 @@ class ModelHandlerServiceProxy(val proxy: KevoreeModelHandlerService): KevoreeMo
 
     override fun getPreviousModel(): MutableList<ContainerRoot>? {
         return if (proxyModel.get() != null) {
-            logger.error("getPreviousModel not available during update")
+            Log.error("getPreviousModel not available during update")
             null
         } else {
             proxy.getPreviousModel()
@@ -160,7 +159,7 @@ class ModelHandlerServiceProxy(val proxy: KevoreeModelHandlerService): KevoreeMo
 
     override fun compareAndSwapModel(previousModel: UUIDModel?, targetModel: ContainerRoot?, callback: ModelUpdateCallback?) {
         if (proxyModel.get() != null) {
-            logger.error("compareAndSwapModel not available during update")
+            Log.error("compareAndSwapModel not available during update")
         } else {
             proxy.compareAndSwapModel(previousModel, targetModel, callback)
         }

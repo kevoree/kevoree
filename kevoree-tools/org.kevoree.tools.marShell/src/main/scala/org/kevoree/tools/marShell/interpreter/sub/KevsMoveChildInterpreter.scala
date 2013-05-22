@@ -28,33 +28,32 @@ package org.kevoree.tools.marShell.interpreter.sub
 
 import org.kevoree.tools.marShell.interpreter.{KevsInterpreterContext, KevsAbstractInterpreter}
 import org.kevoree.tools.marShell.ast.MoveChildStatment
-import org.slf4j.LoggerFactory
 import org.kevoree.ContainerNode
+import org.kevoree.log.Log
 
 case class KevsMoveChildInterpreter(moveChild: MoveChildStatment) extends KevsAbstractInterpreter {
-  val logger = LoggerFactory.getLogger(this.getClass)
 
   def interpret(context: KevsInterpreterContext): Boolean = {
     context.model.findByPath("nodes[" + moveChild.childNodeName + "]", classOf[ContainerNode]) match {
       case null => {
-        context.appendInterpretationError("Could not move Child node '"+moveChild.childNodeName+"' from '"+moveChild.oldFatherNodeName+"' to '"+moveChild.fatherNodeName+"'. Child node not found.", logger)
+        context.appendInterpretationError("Could not move Child node '"+moveChild.childNodeName+"' from '"+moveChild.oldFatherNodeName+"' to '"+moveChild.fatherNodeName+"'. Child node not found.")
         //logger.error("Unknown child name: {}\nThe node must already exist. Please check !", moveChild.childNodeName)
         false
       }
       case child:ContainerNode => {
         context.model.findByPath("nodes[" + moveChild.oldFatherNodeName + "]", classOf[ContainerNode]) match {
           case null => {
-            context.appendInterpretationError("Could not move Child node '"+moveChild.childNodeName+"' from '"+moveChild.oldFatherNodeName+"' to '"+moveChild.fatherNodeName+"'. Source parent not found.", logger)
+            context.appendInterpretationError("Could not move Child node '"+moveChild.childNodeName+"' from '"+moveChild.oldFatherNodeName+"' to '"+moveChild.fatherNodeName+"'. Source parent not found.")
             //logger.error("Unknown old father node: {}\nThe node must already exist. Please check !", moveChild.oldFatherNodeName)
             false
           }
           case oldFather:ContainerNode => {
             if (!oldFather.getHosts.contains(child)) {
-              logger.warn("The child node is not already contained by a father. Please prefer the addChild command!")
+              Log.warn("The child node is not already contained by a father. Please prefer the addChild command!")
             }
             context.model.findByPath("nodes[" + moveChild.fatherNodeName + "]", classOf[ContainerNode]) match {
               case null => {
-                context.appendInterpretationError("Could not move Child node '"+moveChild.childNodeName+"' from '"+moveChild.oldFatherNodeName+"' to '"+moveChild.fatherNodeName+"'. Target parent node not found.", logger)
+                context.appendInterpretationError("Could not move Child node '"+moveChild.childNodeName+"' from '"+moveChild.oldFatherNodeName+"' to '"+moveChild.fatherNodeName+"'. Target parent node not found.")
                 //logger.error("Unknown father node: {}\nThe node must already exist. Please check !", moveChild.fatherNodeName)
                 false
               }

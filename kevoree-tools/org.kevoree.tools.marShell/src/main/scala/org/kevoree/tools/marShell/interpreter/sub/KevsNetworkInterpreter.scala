@@ -16,13 +16,11 @@ package org.kevoree.tools.marShell.interpreter.sub
 import org.kevoree.tools.marShell.interpreter.{KevsInterpreterContext, KevsAbstractInterpreter}
 
 import org.kevoree.tools.marShell.ast.NetworkPropertyStatement
-import org.kevoree.{ContainerNode, ContainerRoot}
-import org.slf4j.LoggerFactory
+import org.kevoree.{ContainerNode}
 import scala.collection.JavaConversions._
+import org.kevoree.log.Log
 
 case class KevsNetworkInterpreter(networkStatement: NetworkPropertyStatement) extends KevsAbstractInterpreter {
-
-  var logger = LoggerFactory.getLogger(this.getClass)
 
   def interpret(context: KevsInterpreterContext): Boolean = {
     import scala.collection.JavaConversions._
@@ -77,7 +75,7 @@ case class KevsNetworkInterpreter(networkStatement: NetworkPropertyStatement) ex
     try {
       nodelink.setEstimatedRate(weight)
     } catch {
-      case _@e => logger.error("Unexpected estimate rate", e)
+      case _@e => Log.error("Unexpected estimate rate", e)
     }
     /* Found Property and SET remote IP */
     val prop = nodelink.getNetworkProperties.find({

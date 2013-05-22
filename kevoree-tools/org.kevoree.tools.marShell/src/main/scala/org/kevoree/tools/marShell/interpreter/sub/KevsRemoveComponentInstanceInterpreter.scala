@@ -19,12 +19,9 @@ import org.kevoree.tools.marShell.interpreter.KevsInterpreterContext
 
 import org.kevoree.tools.marShell.ast.RemoveComponentInstanceStatment
 import org.kevoree.{ContainerNode, ContainerRoot, ComponentInstance, MBinding}
-import org.slf4j.LoggerFactory
 import collection.mutable.ListBuffer
 
 case class KevsRemoveComponentInstanceInterpreter(removeComponent: RemoveComponentInstanceStatment) extends KevsAbstractInterpreter {
-
-  var logger = LoggerFactory.getLogger(this.getClass)
 
   def deleteComponent(targetNode: ContainerNode, targetComponent: ComponentInstance): Boolean = {
     val root = targetComponent.eContainer.eContainer.asInstanceOf[ContainerRoot]
@@ -46,20 +43,20 @@ case class KevsRemoveComponentInstanceInterpreter(removeComponent: RemoveCompone
             targetNode.findByPath("components[" + removeComponent.cid.componentInstanceName + "]/", classOf[ComponentInstance]) match {
               case targetComponent : ComponentInstance => deleteComponent(targetNode, targetComponent)
               case null => {
-                context.appendInterpretationError("Could not remove instance '"+removeComponent.cid.componentInstanceName+"' from node '"+removeComponent.cid.nodeName+"' : ComponentInstance not found.", logger)
+                context.appendInterpretationError("Could not remove instance '"+removeComponent.cid.componentInstanceName+"' from node '"+removeComponent.cid.nodeName+"' : ComponentInstance not found.")
                 false
               }
             }
           }
           case null => {
-            context.appendInterpretationError("Could not remove instance '"+removeComponent.cid.componentInstanceName+"' from node '"+removeComponent.cid.nodeName+"' : Node not found.", logger)
+            context.appendInterpretationError("Could not remove instance '"+removeComponent.cid.componentInstanceName+"' from node '"+removeComponent.cid.nodeName+"' : Node not found.")
             false
           }
         }
       }
       case None => {
         //TODO solve ambiguity
-        context.appendInterpretationError("Could not remove instance '"+removeComponent.cid.componentInstanceName+"' from node '"+removeComponent.cid.nodeName+"' : NodeName not specified.", logger)
+        context.appendInterpretationError("Could not remove instance '"+removeComponent.cid.componentInstanceName+"' from node '"+removeComponent.cid.nodeName+"' : NodeName not specified.")
         false
       }
     }

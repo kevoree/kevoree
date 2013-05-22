@@ -2,7 +2,6 @@ package org.kevoree.tools.aether.framework
 
 
 import java.io.File
-import org.slf4j.LoggerFactory
 import org.kevoree.DeployUnit
 import org.kevoree.kcl.KevoreeJarClassLoader
 import java.util.ArrayList
@@ -12,6 +11,7 @@ import java.util.concurrent.Callable
 import java.util.concurrent.ThreadFactory
 import java.util.HashMap
 import java.util.concurrent.Executors
+import org.kevoree.log.Log
 
 /**
  * Created by IntelliJ IDEA.
@@ -25,7 +25,6 @@ open class JCLContextHandler: KevoreeClassLoaderHandler {
     val kcl_cache = java.util.HashMap<String, KevoreeJarClassLoader>()
     val kcl_cache_file = java.util.HashMap<String, File>()
     var lockedDu = ArrayList<String>()
-    val logger = LoggerFactory.getLogger(this.javaClass)!!
     val resolvers = ArrayList<DeployUnitResolver>()
     protected val failedLinks: HashMap<String, MutableList<KevoreeJarClassLoader>> = HashMap<String, MutableList<KevoreeJarClassLoader>>()
         /*
@@ -126,11 +125,11 @@ open class JCLContextHandler: KevoreeClassLoaderHandler {
     } */
 
     protected fun clearInternals() {
-        logger.debug("Clear Internal")
+        Log.debug("Clear Internal")
         for(key in ArrayList(kcl_cache.keySet())) {
             if (!lockedDu.contains(key)) {
                 if (kcl_cache.containsKey(key)) {
-                    logger.debug("Remove KCL for {}", key)
+                    Log.debug("Remove KCL for {}", key)
                     kcl_cache.get(key)!!.unload()
                     kcl_cache.remove(key)
                 }
@@ -172,10 +171,10 @@ open class JCLContextHandler: KevoreeClassLoaderHandler {
     open fun installDeployUnitInternals(du: DeployUnit, file: File): KevoreeJarClassLoader {
             val previousKCL = getKCLInternals(du)
             val res = if (previousKCL != null) {
-                logger.debug("Take already installed {}", buildKEY(du))
+                Log.debug("Take already installed {}", buildKEY(du))
                 previousKCL
             } else {
-                logger.debug("Install {} , file {}", buildKEY(du), file)
+                Log.debug("Install {} , file {}", buildKEY(du), file.getAbsolutePath())
                 val newcl = KevoreeJarClassLoader()
                 if (System.getProperty("kcl.lazy") != null && "true".equals(System.getProperty("kcl.lazy"))) {
                     newcl.setLazyLoad(true)
@@ -185,7 +184,7 @@ open class JCLContextHandler: KevoreeClassLoaderHandler {
                 newcl.add(file.getAbsolutePath())
                 kcl_cache.put(buildKEY(du), newcl)
                 kcl_cache_file.put(buildKEY(du), file)
-                logger.debug("Add KCL for {}->{}", du.getUnitName(), buildKEY(du))
+                Log.debug("Add KCL for {}->{}", du.getUnitName(), buildKEY(du))
 
                 //TRY TO RECOVER FAILED LINK
                 if (failedLinks.containsKey(buildKEY(du))) {
@@ -193,16 +192,16 @@ open class JCLContextHandler: KevoreeClassLoaderHandler {
                         toLinkKCL.addSubClassLoader(newcl)
                         newcl.addWeakClassLoader(toLinkKCL)
 
-                        logger.debug("UnbreakLink "+du.getUnitName()+"->"+toLinkKCL.getLoadedURLs().get(0))
+                        Log.debug("UnbreakLink "+du.getUnitName()+"->"+toLinkKCL.getLoadedURLs().get(0))
 
                     }
                     failedLinks.remove(buildKEY(du))
-                    logger.debug("Failed Link {} remain size : {}", du.getUnitName(), failedLinks.size())
+                    Log.debug("Failed Link {} remain size : {}", du.getUnitName(), failedLinks.size().toString())
                 }
                 for(rLib in  du.getRequiredLibs()) {
                     val kcl = getKCLInternals(rLib)
                     if (kcl != null) {
-                        logger.debug("Link KCL for {}->{}", du.getUnitName(), rLib.getUnitName())
+                        Log.debug("Link KCL for {}->{}", du.getUnitName(), rLib.getUnitName())
                         newcl.addSubClassLoader(kcl)
                         kcl.addWeakClassLoader(newcl)
                         du.getRequiredLibs().filter{ rLibIn -> rLib != rLibIn }.forEach{ rLibIn ->
@@ -213,7 +212,7 @@ open class JCLContextHandler: KevoreeClassLoaderHandler {
                             }
                         }
                     } else {
-                        logger.debug("Fail link ! Warning -> " + buildKEY(du) + " -> " + buildKEY(rLib))
+                        Log.debug("Fail link ! Warning -> " + buildKEY(du) + " -> " + buildKEY(rLib))
                         var pendings = failedLinks.get(buildKEY(rLib))
                         if(pendings == null){
                             pendings = ArrayList<KevoreeJarClassLoader>()
@@ -251,8 +250,8 @@ open class JCLContextHandler: KevoreeClassLoaderHandler {
 
             if (!lockedDu.contains(key)) {
                 if (kcl_cache.containsKey(key)) {
-                    logger.debug("Try to remove KCL for {}->{}", du.getUnitName(), buildKEY(du))
-                    logger.debug("Cache To cleanuip size" + kcl_cache.values().size() + "-" + kcl_cache.size() + "-" + kcl_cache.keySet().size())
+                    Log.debug("Try to remove KCL for {}->{}", du.getUnitName(), buildKEY(du))
+                    Log.debug("Cache To cleanuip size" + kcl_cache.values().size() + "-" + kcl_cache.size() + "-" + kcl_cache.keySet().size())
                     for(vals in kcl_cache.values()) {
                         if (vals.getSubClassLoaders().contains(kcl_to_remove)) {
 
@@ -262,10 +261,10 @@ open class JCLContextHandler: KevoreeClassLoaderHandler {
                                 failedLinks.put(key, pendings!!)
                             }
                             pendings!!.add(vals)
-                            logger.debug("Pending Fail link " + key)
+                            Log.debug("Pending Fail link " + key)
                         }
                         vals.cleanupLinks(kcl_to_remove!!)
-                        logger.debug("Cleanup {} from {}", vals.toString(), du.getUnitName())
+                        Log.debug("Cleanup {} from {}", vals.toString(), du.getUnitName())
                     }
                 }
                 val toRemoveKCL = kcl_cache.get(key)
@@ -273,10 +272,10 @@ open class JCLContextHandler: KevoreeClassLoaderHandler {
                 kcl_cache.remove(key)
             }
             if (kcl_cache_file.containsKey(key)) {
-                logger.debug("Cleanup Cache File" + kcl_cache_file.get(key)!!.getAbsolutePath())
+                Log.debug("Cleanup Cache File" + kcl_cache_file.get(key)!!.getAbsolutePath())
                 kcl_cache_file.get(key)!!.delete()
                 kcl_cache_file.remove(key)
-                logger.debug("Remove File Cache " + key)
+                Log.debug("Remove File Cache " + key)
             }
         }
     }
@@ -334,7 +333,7 @@ open class JCLContextHandler: KevoreeClassLoaderHandler {
         if (resolvedFile != null) {
             return installDeployUnitInternals(du, resolvedFile!!)
         } else {
-            logger.error("Error while resolving deploy unit " + du.getUnitName())
+            Log.error("Error while resolving deploy unit " + du.getUnitName())
             return null
         }
     }

@@ -35,11 +35,7 @@ import org.kevoree.tools.marShell.ast.Block
 import org.kevoree.tools.marShell.ast.Statment
 import org.kevoree.tools.marShell.ast.TransactionalBloc
 
-import org.slf4j.LoggerFactory
-
 trait KevsBlockParser extends KevsAbstractParser {
-
-  var logger = LoggerFactory.getLogger(this.getClass)
 
   def parseTBlock : Parser[Block] = opt(parseBlockType) ~ "{" ~ parseStatmentList ~ "}" ^^  { case btype ~ _ ~ l ~ _ =>
      /* btype match {

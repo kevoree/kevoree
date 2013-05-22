@@ -52,7 +52,6 @@ public class MavenArtefactDownloader {
             fos.close();
             return true;
         } catch (Throwable t) {
-            t.printStackTrace();
             //TODO CLEANUP FILE IF CORRUPTED
             return false;
         }

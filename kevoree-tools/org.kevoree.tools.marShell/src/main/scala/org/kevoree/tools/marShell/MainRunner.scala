@@ -34,9 +34,7 @@ package org.kevoree.tools.marShell
 import interpreter.KevsInterpreterContext
 import org.kevoree.tools.marShell.parser.KevsParser
 import org.kevoree.tools.marShell.parser.ParserUtil
-import org.kevoree.{ContainerRoot, KevoreeFactory}
 import org.kevoree.framework.KevoreeXmiHelper
-import java.net.InetAddress
 
 object MainRunner {
 

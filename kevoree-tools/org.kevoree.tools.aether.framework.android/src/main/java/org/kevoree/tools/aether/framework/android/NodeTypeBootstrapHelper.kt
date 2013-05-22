@@ -33,13 +33,14 @@ import org.kevoree.api.Bootstraper
 import org.kevoree.api.service.core.classloading.KevoreeClassLoaderHandler
 import java.io.File
 import org.kevoree.kcl.KevoreeJarClassLoader
-import org.slf4j.LoggerFactory
 import org.kevoree.impl.DefaultKevoreeFactory
 import org.kevoree.ContainerRoot
 import org.kevoree.framework.AbstractNodeType
 import org.kevoree.KevoreeFactory
 import java.util.ArrayList
 import org.kevoree.DeployUnit
+import org.kevoree.tools.aether.framework.AetherUtil
+import org.kevoree.log.Log
 
 /**
  * User: ffouquet
@@ -60,7 +61,6 @@ class NodeTypeBootstrapHelper(val ctx: android.content.Context, val parent: Clas
 
     val kevoreeFactory: KevoreeFactory = DefaultKevoreeFactory()
     var _kevoreeLogService: org.kevoree.api.service.core.logging.KevoreeLogService? = null
-    val logger = LoggerFactory.getLogger(this.javaClass)!!
 
     override fun getKevoreeLogService(): org.kevoree.api.service.core.logging.KevoreeLogService {
         return _kevoreeLogService!!
@@ -108,11 +108,11 @@ class NodeTypeBootstrapHelper(val ctx: android.content.Context, val parent: Clas
                     return null
                 }
             } else {
-                logger.error("NodeType deploy unit not found , have you forgotten to merge nodetype library ?")
+                Log.error("NodeType deploy unit not found , have you forgotten to merge nodetype library ?")
                 return null
             }
         } else {
-            logger.error("Node not found using name " + destNodeName);
+            Log.error("Node not found using name " + destNodeName);
             return null
         }
     }
@@ -135,7 +135,7 @@ class NodeTypeBootstrapHelper(val ctx: android.content.Context, val parent: Clas
             }
             return kcl //TODO
         } else {
-            logger.error("Super type of " + nodeType.getName() + " was not completely installed")
+            Log.error("Super type of " + nodeType.getName() + " was not completely installed")
             return null
         }
     }
@@ -173,15 +173,15 @@ class NodeTypeBootstrapHelper(val ctx: android.content.Context, val parent: Clas
         try {
             val arteFile = AetherUtil.resolveDeployUnit(du)
             if (arteFile != null) {
-                logger.debug("trying to install {}", arteFile.getAbsolutePath())
+                Log.debug("trying to install {}", arteFile.getAbsolutePath())
                 val kcl = getKevoreeClassLoaderHandler().installDeployUnit(du, arteFile)
                 return kcl
             } else {
-                logger.error("Can't resolve node type")
+                Log.error("Can't resolve node type")
                 return null
             }
         } catch(e: Exception) {
-            logger.error("Can't install node type", e)
+            Log.error("Can't install node type", e)
             return null
 
         }

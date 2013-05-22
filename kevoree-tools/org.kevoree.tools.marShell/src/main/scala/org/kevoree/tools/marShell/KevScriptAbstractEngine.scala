@@ -16,7 +16,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * 	http://www.gnu.org/licenses/lgpl-3.0.txt
+ * http://www.gnu.org/licenses/lgpl-3.0.txt
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -27,10 +27,8 @@
 package org.kevoree.tools.marShell
 
 import org.kevoree.api.service.core.script.KevScriptEngine
-import java.util.HashMap
 import org.kevoree.cloner.ModelCloner
 import parser.KevsParser
-import org.slf4j.LoggerFactory
 import scala.collection.JavaConversions._
 import java.util
 
@@ -48,7 +46,6 @@ trait KevScriptAbstractEngine extends KevScriptEngine {
   protected var varMap = new util.HashMap[String, String]()
   protected val modelCloner = new ModelCloner
   protected val parser = new KevsParser
-  protected val logger = LoggerFactory.getLogger(this.getClass)
 
   def addVariable(name: String, value: String): KevScriptEngine = {
     /*if(varMap.containsKey(name)){
@@ -67,6 +64,7 @@ trait KevScriptAbstractEngine extends KevScriptEngine {
   def clearScript() {
     scriptBuilder.clear()
   }
+
   /*
   protected def replaceVariable(name: String, value: String) = {
     val unresolveScript = scriptBuilder.toString().replace("{" + name + "}", value)
@@ -74,7 +72,7 @@ trait KevScriptAbstractEngine extends KevScriptEngine {
     scriptBuilder.append(unresolveScript)
   } */
 
-  protected def resolveVariables(stm:String): String = {
+  protected def resolveVariables(stm: String): String = {
     var unresolveScript = stm
     varMap.foreach {
       varR =>
@@ -84,8 +82,8 @@ trait KevScriptAbstractEngine extends KevScriptEngine {
     unresolveScript
   }
 
-  def getScript : String = {
-    "{"+scriptBuilder.toString()+"}"
+  def getScript: String = {
+    "{" + scriptBuilder.toString() + "}"
   }
 
 }

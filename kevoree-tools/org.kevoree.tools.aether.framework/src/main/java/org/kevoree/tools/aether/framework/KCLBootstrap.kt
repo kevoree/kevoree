@@ -3,7 +3,6 @@ package org.kevoree.tools.aether.framework
 
 import org.kevoree.DeployUnit
 import org.kevoree.kcl.KevoreeJarClassLoader
-import org.slf4j.LoggerFactory
 import org.kevoree.api.Bootstraper
 
 /**

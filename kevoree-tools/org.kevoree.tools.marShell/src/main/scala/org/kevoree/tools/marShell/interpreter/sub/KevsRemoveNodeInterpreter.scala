@@ -19,12 +19,9 @@ import org.kevoree.tools.marShell.interpreter.KevsAbstractInterpreter
 import org.kevoree.tools.marShell.interpreter.KevsInterpreterContext
 
 import org.kevoree.tools.marShell.ast.RemoveNodeStatment
-import org.slf4j.LoggerFactory
 import scala.collection.JavaConversions._
 
 case class KevsRemoveNodeInterpreter(addN: RemoveNodeStatment) extends KevsAbstractInterpreter {
-
-  var logger = LoggerFactory.getLogger(this.getClass)
 
   def removeNode(targetNode: ContainerNode, context: KevsInterpreterContext): Boolean = {
     //DELETE ALL GROUP DEPENDENCY
@@ -101,7 +98,7 @@ case class KevsRemoveNodeInterpreter(addN: RemoveNodeStatment) extends KevsAbstr
         removeNode(targetNode, context)
       }
       case null => {
-        context.appendInterpretationError("Could not remove node '"+addN.nodeName+"'. Node does not exist.", logger)
+        context.appendInterpretationError("Could not remove node '"+addN.nodeName+"'. Node does not exist.")
         false
       }
     }

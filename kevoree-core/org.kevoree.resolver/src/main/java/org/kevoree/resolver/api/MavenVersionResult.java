@@ -56,5 +56,13 @@ public class MavenVersionResult {
         return timestamp+"-"+buildNumber+"@"+url_origin;
     }
 
+    private boolean notDeployed = false;
 
+    public boolean isNotDeployed() {
+        return notDeployed;
+    }
+
+    public void setNotDeployed(boolean notDeployed) {
+        this.notDeployed = notDeployed;
+    }
 }

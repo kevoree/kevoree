@@ -15,7 +15,6 @@
 package org.kevoree.tools.modelsync
 
 import org.kevoree.framework.AbstractGroupType
-import org.slf4j.LoggerFactory
 import org.kevoree.ContainerRoot
 
 /**
@@ -26,8 +25,6 @@ import org.kevoree.ContainerRoot
  */
 
 class ModelSyncBean {
-
-  var logger = LoggerFactory.getLogger(this.getClass)
 
   var bootstraper = new FakeBootstraperService
 
@@ -40,7 +37,7 @@ class ModelSyncBean {
         groupTypeInstance.push(model, destNodeName)
       }
       case null => {
-        logger.error("Error while bootstraping group type ")
+        org.kevoree.log.Log.error("Error while bootstraping group type ")
         throw new Exception("Error while bootstraping group type")
       }
     }
@@ -54,7 +51,7 @@ class ModelSyncBean {
         groupTypeInstance.pull(destNodeName)
       }
       case null => {
-        logger.error("Error while bootstraping group type")
+        org.kevoree.log.Log.error("Error while bootstraping group type")
         throw new Exception("Error while bootstraping group type")
       }
     }

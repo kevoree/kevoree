@@ -31,17 +31,15 @@ import org.kevoree.TypeLibrary
 import org.kevoree.tools.marShell.interpreter.KevsAbstractInterpreter
 import org.kevoree.tools.marShell.interpreter.KevsInterpreterContext
 
-import org.kevoree.tools.marShell.ast.{AddLibraryStatment, AddBindingStatment}
-import org.slf4j.LoggerFactory
+import org.kevoree.tools.marShell.ast.{AddLibraryStatment}
+import org.kevoree.log.Log
 
 case class KevsAddLibraryInterpreter(statment : AddLibraryStatment) extends KevsAbstractInterpreter {
-
-  var logger = LoggerFactory.getLogger(this.getClass)
 
   def interpret(context : KevsInterpreterContext):Boolean={
 
     context.model.findByPath("libraries[" + statment.libraryName + "]", classOf[TypeLibrary]) match {
-      case library:TypeLibrary =>  logger.warn("Library already exist");true
+      case library:TypeLibrary =>  Log.warn("Library already exist");true
       case null => {
         val newLibrary = context.kevoreeFactory.createTypeLibrary
         newLibrary.setName(statment.libraryName)
