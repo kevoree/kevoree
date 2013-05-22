@@ -12,7 +12,6 @@
         <scala.version>2.9.2</scala.version>
         <slf4j.version>1.7.2</slf4j.version>
         <kotlin.version>0.5.429</kotlin.version>
-        <bundle.vendor>IRISA/INRIA</bundle.vendor>
         <kevoree.version>${project.version}</kevoree.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
@@ -24,48 +23,15 @@
             <version>4.8.1</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>${slf4j.version}</version>
-        </dependency>
     </dependencies>
 
     <build>
         <plugins>
-            <plugin>
-                <groupId>com.mycila.maven-license-plugin</groupId>
-                <artifactId>maven-license-plugin</artifactId>
-                <version>1.9.0</version>
-                <configuration>
-                    <basedir>${basedir}</basedir>
-                    <header>${basedir}/../../LICENSE_HEADER</header>
-                    <strictCheck>true</strictCheck>
-                    <properties>
-                        <owner>Francois Fouquet</owner>
-                        <year>${project.inceptionYear}</year>
-                        <email>fouquet.f@gmail.com</email>
-                    </properties>
-                    <includes>
-                        <include>src/**</include>
-                        <include>**/test/**</include>
-                    </includes>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>process-sources</phase>
-                        <goals>
-                            <goal>format</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
             <!-- Java compiler plugin -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.5.1</version>
+                <version>3.0</version>
                 <configuration>
                     <source>1.6</source>
                     <target>1.6</target>
@@ -76,7 +42,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
-                <version>2.4.3</version>
+                <version>2.5</version>
                 <configuration>
                     <encoding>${project.build.sourceEncoding}</encoding>
                 </configuration>
@@ -85,13 +51,11 @@
     </build>
 
     <modules>
-        <module>../org.kevoree.platform.base</module>
-        <module>../org.kevoree.platform.standalone</module>
-        <module>../org.kevoree.platform.standalone.min</module>
-        <module>../org.kevoree.platform.standalone.gui</module>
-        <module>../org.kevoree.platform.service</module>
-        <module>../org.kevoree.platform.mavenrunner</module>
-        <module>../org.kevoree.platform.android.apk</module>
+        <module>org.kevoree.platform.base</module>
+        <module>org.kevoree.platform.standalone</module>
+        <module>org.kevoree.platform.standalone.gui</module>
+        <module>org.kevoree.platform.mavenrunner</module>
+        <module>org.kevoree.platform.android.apk</module>
     </modules>
 
     <repositories>
@@ -103,7 +67,6 @@
             <id>kevoree-snapshots</id>
             <url>http://maven.kevoree.org/snapshots/</url>
         </repository>
-
     </repositories>
 
     <pluginRepositories>

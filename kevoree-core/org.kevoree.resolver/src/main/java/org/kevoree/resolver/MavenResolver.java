@@ -97,7 +97,19 @@ public class MavenResolver {
                 }
             }
             if (versions.isEmpty()) {
-                return null;
+                //not version at all , try simply the file with -SNAPOSHOT extension
+                StringBuilder basePathBuilderSnapshot = getArtefactLocalBasePath(artefact);
+                basePathBuilderSnapshot.append(name);
+                basePathBuilderSnapshot.append("-");
+                basePathBuilderSnapshot.append(version);
+                basePathBuilderSnapshot.append(".");
+                basePathBuilderSnapshot.append(extension);
+                File snapshotFile = new File(basePathBuilderSnapshot.toString());
+                if (snapshotFile.exists()) {
+                    return snapshotFile;
+                } else {
+                    return null;
+                }
             } else {
                 MavenVersionResult bestVersion = null;
                 for (MavenVersionResult loopVersion : versions) {
@@ -106,49 +118,53 @@ public class MavenResolver {
                     }
                 }
                 if (bestVersion != null) {
-                    if (bestVersion.getUrl_origin().equals(basePath)) {
-                        //resolve locally
-                        StringBuilder basePathBuilderSnapshot = getArtefactLocalBasePath(artefact);
-                        basePathBuilderSnapshot.append(name);
-                        basePathBuilderSnapshot.append("-");
-                        basePathBuilderSnapshot.append(version);
-                        basePathBuilderSnapshot.append(".");
-                        basePathBuilderSnapshot.append(extension);
-                        File snapshotFile = new File(basePathBuilderSnapshot.toString());
-                        if (snapshotFile.exists()) {
-                            return snapshotFile;
-                        }
-                    }
-
-                    //try to see if its localy cached
-                    StringBuilder basePathBuilderSnapshot = getArtefactLocalBasePath(artefact);
-                    basePathBuilderSnapshot.append(name);
-                    basePathBuilderSnapshot.append("-");
-
                     String preresolvedVersion = artefact.getVersion().replace("SNAPSHOT", "");
                     preresolvedVersion = preresolvedVersion + bestVersion.getTimestamp();
                     if (bestVersion.getBuildNumber() != null) {
                         preresolvedVersion = preresolvedVersion + "-";
                         preresolvedVersion = preresolvedVersion + bestVersion.getBuildNumber();
                     }
-                    basePathBuilderSnapshot.append(preresolvedVersion);
-                    basePathBuilderSnapshot.append(".");
-                    basePathBuilderSnapshot.append(extension);
-                    File targetSnapshotFile = new File(basePathBuilderSnapshot.toString());
-                    if (targetSnapshotFile.exists()) {
-                        return targetSnapshotFile;
+                    if (bestVersion.getUrl_origin().equals(basePath)) {
+                        //resolve locally
+                        StringBuilder basePathBuilderSnapshot = getArtefactLocalBasePath(artefact);
+                        basePathBuilderSnapshot.append(name);
+                        basePathBuilderSnapshot.append("-");
+                        basePathBuilderSnapshot.append(preresolvedVersion);
+                        basePathBuilderSnapshot.append(".");
+                        basePathBuilderSnapshot.append(extension);
+                        File snapshotFile = new File(basePathBuilderSnapshot.toString());
+                        if (snapshotFile.exists()) {
+                            return snapshotFile;
+                        }
+
+                        System.err.println("Donwload failed :-) " + basePathBuilderSnapshot.toString());
+                        return null;
+
                     } else {
-                        for (String url : urls) {
-                            if (downloader.download(targetSnapshotFile, url, artefact, extension, preresolvedVersion, false)) {
+                        //try to see if its localy cached
+                        StringBuilder basePathBuilderSnapshot = getArtefactLocalBasePath(artefact);
+                        basePathBuilderSnapshot.append(name);
+                        basePathBuilderSnapshot.append("-");
+                        basePathBuilderSnapshot.append(preresolvedVersion);
+                        basePathBuilderSnapshot.append(".");
+                        basePathBuilderSnapshot.append(extension);
+                        File targetSnapshotFile = new File(basePathBuilderSnapshot.toString());
+                        if (targetSnapshotFile.exists()) {
+                            return targetSnapshotFile;
+                        } else {
+
+                            if (downloader.download(targetSnapshotFile, bestVersion.getUrl_origin(), artefact, extension, preresolvedVersion, false)) {
                                 //download the metafile
                                 File newMetaFile = new File(targetSnapshotFile.getAbsolutePath().substring(0, targetSnapshotFile.getAbsolutePath().lastIndexOf("/")) + "/" + MavenVersionResolver.metaFile);
-                                downloader.download(newMetaFile, url, artefact, extension, preresolvedVersion, true);
+                                downloader.download(newMetaFile, bestVersion.getUrl_origin(), artefact, extension, preresolvedVersion, true);
                                 return targetSnapshotFile;
                             }
+
+                            //not found
+                            return null;
                         }
-                        //not found
-                        return null;
                     }
+
                 } else {
                     return null;
                 }

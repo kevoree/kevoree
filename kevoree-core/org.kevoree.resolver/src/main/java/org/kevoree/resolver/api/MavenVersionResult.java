@@ -39,8 +39,8 @@ public class MavenVersionResult {
 
     public boolean isPrior(MavenVersionResult remote) {
         try {
-            Long thisT = Long.parseLong(timestamp);
-            Long remoteT = Long.parseLong(remote.getTimestamp());
+            Long thisT = Long.parseLong(timestamp.replace(".",""));
+            Long remoteT = Long.parseLong(remote.getTimestamp().replace(".",""));
             if (thisT < remoteT) {
                 return true;
             } else {
@@ -51,5 +51,10 @@ public class MavenVersionResult {
             return false;
         }
     }
+
+    public String toString(){
+        return timestamp+"-"+buildNumber+"@"+url_origin;
+    }
+
 
 }

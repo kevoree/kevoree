@@ -32,17 +32,6 @@ public class App {
         //System.setProperty("node.update.timeout","100000");
         //System.setProperty("kevoree.offline","true");
 
-        try {
-            ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(ch.qos.logback.classic.Logger.ROOT_LOGGER_NAME);
-            if (System.getProperty("node.log.appender.file") != null) {
-                System.out.println("Kevoree log will out in file => " + System.getProperty("node.log.appender.file"));
-            } else {
-                root.detachAppender("FILE");
-            }
-        } catch (Throwable e) {
-            //Logback not present
-        }
-
         String node_name = System.getProperty("node.name");
         if (node_name == null || node_name.equals("")) {
             node_name = "node0";

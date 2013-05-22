@@ -28,8 +28,6 @@ package org.kevoree.tools.aether.framework
 
 import java.io.File
 import java.util.zip.ZipFile
-import org.slf4j.LoggerFactory
-import org.sonatype.aether.RepositorySystemSession
 
 /**
  * Created with IntelliJ IDEA.
@@ -39,16 +37,6 @@ import org.sonatype.aether.RepositorySystemSession
  */
 
 trait CorruptedFileChecker {
-
-
-  fun clearRepoCacheFile(repoSession : RepositorySystemSession,arteFact : org.sonatype.aether.artifact.Artifact){
-    val fileM2REPO = repoSession.getLocalRepository()!!.getBasedir()
-    val cacheFile = File(fileM2REPO!!.getAbsolutePath()+File.separator+arteFact.getGroupId()!!.replace(".",File.separator)+File.separator+arteFact.getArtifactId()+File.separator+arteFact.getVersion()+File.separator+"_maven.repositories")
-    if (cacheFile.exists()){
-      cacheFile.delete()
-    }
-  }
-
 
   fun checkFile(f: File): Boolean {
     if (f.exists()) {

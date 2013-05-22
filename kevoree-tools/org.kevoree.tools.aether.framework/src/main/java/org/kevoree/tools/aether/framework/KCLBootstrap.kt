@@ -25,7 +25,6 @@ trait KCLBootstrap : Bootstraper {
         if(repoUrl != null){
             query.append(repoUrl); query.append("!")
         }
-
         query.append(du.getGroupName())
         query.append("/")
         query.append(du.getUnitName())

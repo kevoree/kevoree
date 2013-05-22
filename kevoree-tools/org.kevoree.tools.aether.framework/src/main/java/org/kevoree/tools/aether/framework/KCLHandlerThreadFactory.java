@@ -20,12 +20,10 @@ import java.util.concurrent.ThreadFactory;
  * User: duke
  * Date: 2/4/13
  * Time: 9:24 PM
- * To change this template use File | Settings | File Templates.
  */
 public class KCLHandlerThreadFactory implements ThreadFactory {
 
     ThreadGroup group = null;
-
 
     public KCLHandlerThreadFactory(){
         SecurityManager s = System.getSecurityManager();
@@ -35,7 +33,6 @@ public class KCLHandlerThreadFactory implements ThreadFactory {
             group = Thread.currentThread().getThreadGroup();
         }
     }
-
 
     @Override
     public Thread newThread(Runnable runnable) {

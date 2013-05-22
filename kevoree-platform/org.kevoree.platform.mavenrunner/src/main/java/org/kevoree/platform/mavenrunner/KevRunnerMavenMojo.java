@@ -78,8 +78,6 @@ public class KevRunnerMavenMojo extends AbstractMojo {
 
 		try {
 			KevoreeBootStrap.byPassAetherBootstrap = true;
-			AetherUtil.instance$.setRepositorySystemSession(repoSession);
-			AetherUtil.instance$.setRepositorySystem(repoSystem);
 			ContainerRoot modelRoot = null;
 			if (model.getName().endsWith(".kev")) {
 				FileInputStream ins = new FileInputStream(model);

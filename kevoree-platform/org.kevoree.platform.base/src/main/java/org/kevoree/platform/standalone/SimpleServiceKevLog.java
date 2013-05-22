@@ -11,7 +11,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kevoree.platform.standalone.min;
+package org.kevoree.platform.standalone;
 
 import org.kevoree.api.service.core.logging.KevoreeLogLevel;
 import org.kevoree.api.service.core.logging.KevoreeLogService;

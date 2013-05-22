@@ -15,13 +15,13 @@ package org.kevoree.platform.standalone;
 
 import org.kevoree.ContainerRoot;
 import org.kevoree.KevoreeFactory;
-import org.kevoree.api.Bootstraper;
 import org.kevoree.api.service.core.logging.KevoreeLogLevel;
 import org.kevoree.api.service.core.logging.KevoreeLogService;
 import org.kevoree.core.impl.KevoreeCoreBean;
 import org.kevoree.framework.KevoreeXmiHelper;
 import org.kevoree.impl.DefaultKevoreeFactory;
 import org.kevoree.kcl.KevoreeJarClassLoader;
+import org.kevoree.tools.aether.framework.NodeTypeBootstrapHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,16 +39,10 @@ import java.util.jar.JarFile;
 public class KevoreeBootStrap {
 
     public static boolean byPassAetherBootstrap = false;
-
-
     private final String KOTLIN_VERSION = "0.5.429";
-
     public static KevoreeLogService logService = null;
-    public static String nodeBootClass = "org.kevoree.tools.aether.framework.NodeTypeBootstrapHelper";
     private static BootstrapHelper bootstrapHelper = new BootstrapHelper();
     private KevoreeFactory factory = new DefaultKevoreeFactory();
-
-
     /* Bootstrap Model to init default nodeType */
     private ContainerRoot bootstrapModel = null;
 
@@ -72,14 +66,9 @@ public class KevoreeBootStrap {
             coreBean = new KevoreeCoreBean();
             coreBean.setNodeName(System.getProperty("node.name"));
             KevoreeJarClassLoader jcl = new KevoreeJarClassLoader();
-            // jcl.setLazyLoad(true);
-            if (!byPassAetherBootstrap) {
-                jcl.add(this.getClass().getClassLoader().getResourceAsStream("org.kevoree.tools.aether.framework-" + factory.getVersion() + ".pack.jar"));
-            }
-            Class clazz = jcl.loadClass(nodeBootClass);
-            final org.kevoree.api.Bootstraper bootstraper = (Bootstraper) clazz.newInstance();
+            final NodeTypeBootstrapHelper bootstraper = new NodeTypeBootstrapHelper();
             if (logService == null) {
-                logService = (KevoreeLogService) this.getClass().getClassLoader().loadClass("org.kevoree.platform.standalone.KevoreeLogbackService").newInstance();
+                logService = new SimpleServiceKevLog();
             }
             bootstraper.setKevoreeLogService(logService);
             Class selfRegisteredClazz = bootstraper.getClass();
@@ -104,7 +93,7 @@ public class KevoreeBootStrap {
                     m.invoke(bootstraper, "org.kevoree.framework", "org.kevoree", factory.getVersion(), dummyKCL);
                     m.invoke(bootstraper, "org.kevoree.kcl", "org.kevoree", factory.getVersion(), dummyKCL);
                     m.invoke(bootstraper, "org.kevoree.kompare", "org.kevoree", factory.getVersion(), dummyKCL);
-                 //   m.invoke(bootstraper, "org.kevoree.merger", "org.kevoree", factory.getVersion(), dummyKCL);
+                    //   m.invoke(bootstraper, "org.kevoree.merger", "org.kevoree", factory.getVersion(), dummyKCL);
                     m.invoke(bootstraper, "org.kevoree.model", "org.kevoree", factory.getVersion(), dummyKCL);
                     m.invoke(bootstraper, "org.kevoree.model.context", "org.kevoree", factory.getVersion(), dummyKCL);
                     m.invoke(bootstraper, "org.kevoree.tools.annotation.api", "org.kevoree.tools", factory.getVersion(), dummyKCL);
@@ -114,7 +103,7 @@ public class KevoreeBootStrap {
             }
 
             coreBean.setBootstraper(bootstraper);
-            coreBean.setKevsEngineFactory(new LazyCreationOfKevScriptEngine(coreBean, bootstraper,jcl,factory.getVersion()));
+            coreBean.setKevsEngineFactory(new LazyCreationOfKevScriptEngine(coreBean, bootstraper, jcl, factory.getVersion()));
             coreBean.start();
 
 
@@ -151,7 +140,7 @@ public class KevoreeBootStrap {
                                     String[] part = urlids.split("/");
                                     if (part.length == 3) {
                                         List<String> list = new ArrayList<String>();
-										file = bootstraper.resolveArtifact(part[1], part[0], part[2], list);
+                                        file = bootstraper.resolveArtifact(part[1], part[0], part[2], list);
                                     }
                                 }
                                 if (file == null) {
@@ -222,7 +211,7 @@ public class KevoreeBootStrap {
                 }
             } else {
                 if (System.getProperty("node.bootstrap") != null) {
-                logger.error("Can't bootstrap node with bootstrap model: {} ", System.getProperty("node.bootstrap"));
+                    logger.error("Can't bootstrap node with bootstrap model: {} ", System.getProperty("node.bootstrap"));
                 } else {
                     logger.error("Can't bootstrap node with default bootstrap");
                 }

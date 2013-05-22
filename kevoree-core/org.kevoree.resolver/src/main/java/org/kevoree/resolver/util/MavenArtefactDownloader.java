@@ -24,13 +24,12 @@ public class MavenArtefactDownloader {
             StringBuilder urlBuilder = new StringBuilder();
             urlBuilder.append(url);
             urlBuilder.append(urlSep);
-            urlBuilder.append(artefact.getGroup());
+            urlBuilder.append(artefact.getGroup().replace(".", "/"));
             urlBuilder.append(urlSep);
             urlBuilder.append(artefact.getName());
             urlBuilder.append(urlSep);
             urlBuilder.append(artefact.getVersion());
             urlBuilder.append(urlSep);
-
             if (metafile) {
                 urlBuilder.append(MavenVersionResolver.metaFile);
             } else {
@@ -53,6 +52,7 @@ public class MavenArtefactDownloader {
             fos.close();
             return true;
         } catch (Throwable t) {
+            t.printStackTrace();
             //TODO CLEANUP FILE IF CORRUPTED
             return false;
         }

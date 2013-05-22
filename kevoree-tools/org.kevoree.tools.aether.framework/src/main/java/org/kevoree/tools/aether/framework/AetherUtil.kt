@@ -1,10 +1,8 @@
-
 package org.kevoree.tools.aether.framework
 
-import org.sonatype.aether.RepositorySystem
-import org.sonatype.aether.RepositorySystemSession
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.kevoree.resolver.MavenResolver
 
 /**
  * User: ffouquet
@@ -13,9 +11,5 @@ import org.slf4j.LoggerFactory
  */
 
 object AetherUtil : AetherFramework {
-    override var logger: Logger = LoggerFactory.getLogger(this.javaClass)!!
-    override var _repositorySystem: RepositorySystem? = null
-    override var _repositorySession: RepositorySystemSession? = null
-
-
+    override var resolver: MavenResolver = MavenResolver();
 }
