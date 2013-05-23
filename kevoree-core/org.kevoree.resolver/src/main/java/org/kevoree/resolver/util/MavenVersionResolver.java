@@ -1,5 +1,6 @@
 package org.kevoree.resolver.util;
 
+import org.kevoree.log.Log;
 import org.kevoree.resolver.api.MavenArtefact;
 import org.kevoree.resolver.api.MavenVersionResult;
 

@@ -68,7 +68,6 @@ public class BootstrapHelper {
         }
     }
 
-
     public ContainerRoot generateFromKevS(File scriptFile, KevScriptEngine kevEngine) throws IOException, KevScriptEngineException {
         kevEngine.addVariable("kevoree.version", factory.getVersion());
         Enumeration props = System.getProperties().propertyNames();
@@ -84,6 +83,5 @@ public class BootstrapHelper {
         kevEngine.append(buffer.toString());
         return kevEngine.interpret();
     }
-
 
 }

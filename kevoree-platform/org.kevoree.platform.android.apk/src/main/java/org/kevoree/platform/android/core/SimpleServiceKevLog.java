@@ -11,7 +11,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kevoree.platform.standalone;
+package org.kevoree.platform.android.core;
 
 import org.kevoree.api.service.core.logging.KevoreeLogLevel;
 import org.kevoree.api.service.core.logging.KevoreeLogService;
@@ -24,6 +24,16 @@ import org.kevoree.log.Log;
  * Time: 10:53
  */
 public class SimpleServiceKevLog implements KevoreeLogService {
+
+    public SimpleServiceKevLog() {
+        Log.setLogger(new Log.Logger() {
+            @Override
+            protected void print(String message) {
+                android.util.Log.i("KLOGGER:", message);
+            }
+        });
+    }
+
     @Override
     public void setCoreLogLevel(KevoreeLogLevel kevoreeLogLevel) {
         setLogLevel(null, kevoreeLogLevel);

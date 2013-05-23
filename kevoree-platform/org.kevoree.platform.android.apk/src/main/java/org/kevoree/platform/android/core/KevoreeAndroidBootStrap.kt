@@ -51,9 +51,8 @@ import org.kevoree.api.service.core.script.KevScriptEngineFactory
 import org.kevoree.core.impl.KevoreeCoreBean
 import org.kevoree.impl.DefaultKevoreeFactory
 import org.kevoree.kcl.KevoreeJarClassLoader
-import org.slf4j.LoggerFactory
-import org.slf4j.impl.StaticLoggerBinder
 import org.kevoree.framework.KevoreeXmiHelper
+import org.kevoree.log.Log
 
 /**
  * Created with IntelliJ IDEA.
@@ -65,7 +64,6 @@ import org.kevoree.framework.KevoreeXmiHelper
 class KevoreeAndroidBootStrap {
 
     /* Bootstrap Model to init default nodeType */
-    val logger = LoggerFactory.getLogger(this.javaClass)!!
     var started = false
     var coreBean: KevoreeCoreBean? = null
     val factory = DefaultKevoreeFactory()
@@ -93,8 +91,8 @@ class KevoreeAndroidBootStrap {
             coreBean = KevoreeCoreBean()
             coreBean!!.setNodeName(nodeName)
             val bootstraper = org.kevoree.tools.aether.framework.android.NodeTypeBootstrapHelper(ctx, clusterCL)
-            logger.info("Starting Kevoree {}", factory.getVersion())
-            bootstraper.setKevoreeLogService(StaticLoggerBinder.getSingleton()!!.getLoggerFactory() as KevoreeLogService)
+            Log.info("Starting Kevoree {}", factory.getVersion())
+            bootstraper.setKevoreeLogService(SimpleServiceKevLog());
             coreBean!!.setBootstraper(bootstraper as Bootstraper)
             coreBean!!.setKevsEngineFactory(object : KevScriptEngineFactory {
                 override fun createKevScriptEngine(): KevScriptEngine {
@@ -171,16 +169,16 @@ class KevoreeAndroidBootStrap {
             if (bootstrapModel != null) {
                 try {
 
-                    logger.info("Bootstrap step will init " + coreBean!!.getNodeName())
-                    logger.debug("Bootstrap step !")
+                    Log.info("Bootstrap step will init " + coreBean!!.getNodeName())
+                    Log.debug("Bootstrap step !")
                     val bsh = BootstrapHelper()
                     bsh.initModelInstance(bootstrapModel, "AndroidNode", groupName, nodeName)
                     coreBean!!.updateModel(bootstrapModel)
                 } catch(e: Exception) {
-                    logger.error("Bootstrap failed", e)
+                    Log.error("Bootstrap failed", e)
                 }
             } else {
-                logger.error("Can't bootstrap nodeType")
+                Log.error("Can't bootstrap nodeType")
             }
             started = true
         } catch(e: Exception) {

@@ -23,8 +23,8 @@ import org.kevoree.impl.DefaultKevoreeFactory;
 import org.kevoree.kcl.KevoreeJarClassLoader;
 import org.kevoree.log.Log;
 import org.kevoree.tools.aether.framework.NodeTypeBootstrapHelper;
+
 import java.io.File;
-import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -68,40 +68,31 @@ public class KevoreeBootStrap {
                 logService = new SimpleServiceKevLog();
             }
             bootstraper.setKevoreeLogService(logService);
-            Class selfRegisteredClazz = bootstraper.getClass();
             jcl.lockLinks();
 
             KevoreeJarClassLoader dummyKCL = new KevoreeJarClassLoader();
             dummyKCL.lockLinks();
-
-            for (Method m : selfRegisteredClazz.getMethods()) {
-                if (m.getName().equals("registerManuallyDeployUnit")) {
-                    m.invoke(bootstraper, "kotlin-runtime", "org.jetbrains.kotlin", KOTLIN_VERSION, dummyKCL);
-                    m.invoke(bootstraper, "kotlin-stdlib", "org.jetbrains.kotlin", KOTLIN_VERSION, dummyKCL);
-                    m.invoke(bootstraper, "jfilter-library", "fr.inria.jfilter", "1.3", dummyKCL);
-                    m.invoke(bootstraper, "org.kevoree.tools.aether.framework", "org.kevoree.tools", factory.getVersion(), jcl);
-                    m.invoke(bootstraper, "jgrapht-jdk1.5", "org.jgrapht", "0.7.3", dummyKCL);
-                    m.invoke(bootstraper, "org.kevoree.adaptation.model", "org.kevoree", factory.getVersion(), dummyKCL);
-                    m.invoke(bootstraper, "org.kevoree.log", "org.kevoree", factory.getVersion(), dummyKCL);
-                    m.invoke(bootstraper, "org.kevoree.api", "org.kevoree", factory.getVersion(), dummyKCL);
-                    m.invoke(bootstraper, "org.kevoree.basechecker", "org.kevoree", factory.getVersion(), dummyKCL);
-                    m.invoke(bootstraper, "org.kevoree.core", "org.kevoree", factory.getVersion(), dummyKCL);
-                    m.invoke(bootstraper, "org.kevoree.framework", "org.kevoree", factory.getVersion(), dummyKCL);
-                    m.invoke(bootstraper, "org.kevoree.kcl", "org.kevoree", factory.getVersion(), dummyKCL);
-                    m.invoke(bootstraper, "org.kevoree.kompare", "org.kevoree", factory.getVersion(), dummyKCL);
-                    m.invoke(bootstraper, "org.kevoree.model", "org.kevoree", factory.getVersion(), dummyKCL);
-                    m.invoke(bootstraper, "org.kevoree.model.context", "org.kevoree", factory.getVersion(), dummyKCL);
-                    m.invoke(bootstraper, "org.kevoree.tools.annotation.api", "org.kevoree.tools", factory.getVersion(), dummyKCL);
-                    m.invoke(bootstraper, "org.kevoree.tools.javase.framework", "org.kevoree.tools", factory.getVersion(), dummyKCL);
-                    m.invoke(bootstraper, "gson", "com.google.code.gson", "2.2.2", dummyKCL);
-                }
-            }
-
+            bootstraper.registerManuallyDeployUnit("kotlin-runtime", "org.jetbrains.kotlin", KOTLIN_VERSION, dummyKCL);
+            bootstraper.registerManuallyDeployUnit("kotlin-stdlib", "org.jetbrains.kotlin", KOTLIN_VERSION, dummyKCL);
+            bootstraper.registerManuallyDeployUnit("jfilter-library", "fr.inria.jfilter", "1.3", dummyKCL);
+            bootstraper.registerManuallyDeployUnit("org.kevoree.tools.aether.framework", "org.kevoree.tools", factory.getVersion(), jcl);
+            bootstraper.registerManuallyDeployUnit("jgrapht-jdk1.5", "org.jgrapht", "0.7.3", dummyKCL);
+            bootstraper.registerManuallyDeployUnit("org.kevoree.adaptation.model", "org.kevoree", factory.getVersion(), dummyKCL);
+            bootstraper.registerManuallyDeployUnit("org.kevoree.log", "org.kevoree", factory.getVersion(), dummyKCL);
+            bootstraper.registerManuallyDeployUnit("org.kevoree.api", "org.kevoree", factory.getVersion(), dummyKCL);
+            bootstraper.registerManuallyDeployUnit("org.kevoree.basechecker", "org.kevoree", factory.getVersion(), dummyKCL);
+            bootstraper.registerManuallyDeployUnit("org.kevoree.core", "org.kevoree", factory.getVersion(), dummyKCL);
+            bootstraper.registerManuallyDeployUnit("org.kevoree.framework", "org.kevoree", factory.getVersion(), dummyKCL);
+            bootstraper.registerManuallyDeployUnit("org.kevoree.kcl", "org.kevoree", factory.getVersion(), dummyKCL);
+            bootstraper.registerManuallyDeployUnit("org.kevoree.kompare", "org.kevoree", factory.getVersion(), dummyKCL);
+            bootstraper.registerManuallyDeployUnit("org.kevoree.model", "org.kevoree", factory.getVersion(), dummyKCL);
+            bootstraper.registerManuallyDeployUnit("org.kevoree.model.context", "org.kevoree", factory.getVersion(), dummyKCL);
+            bootstraper.registerManuallyDeployUnit("org.kevoree.tools.annotation.api", "org.kevoree.tools", factory.getVersion(), dummyKCL);
+            bootstraper.registerManuallyDeployUnit("org.kevoree.tools.javase.framework", "org.kevoree.tools", factory.getVersion(), dummyKCL);
+            bootstraper.registerManuallyDeployUnit("gson", "com.google.code.gson", "2.2.2", dummyKCL);
             coreBean.setBootstraper(bootstraper);
             coreBean.setKevsEngineFactory(new LazyCreationOfKevScriptEngine(coreBean, bootstraper, jcl, factory.getVersion()));
             coreBean.start();
-
-
             KevoreeLogLevel coreLogLevel = KevoreeLogLevel.INFO;
             if (System.getProperty("kevoree.log.level") != null) {
                 if ("DEBUG".equalsIgnoreCase(System.getProperty("kevoree.log.level"))) {
@@ -172,15 +163,12 @@ public class KevoreeBootStrap {
                                     bootstrapModel = KevoreeXmiHelper.instance$.load(bootstrapModelPath);
                                 } catch (Throwable e2) {
                                     Log.error("Unable to load boostrap model from file as a KevScript model", e);
-//                                    logger.error("Unable to load boostrap model from file as a KevScript model and as a Kevoree model", e2);
-                                    /*e.printStackTrace();
-                                    e2.printStackTrace();*/
                                     throw new Exception("Unable to load boostrap model from file as a KevScript model and as a Kevoree model", e2);
                                 }
                             }
                         }
                     } catch (Throwable e) {
-                        Log.info("Bootstrap failed from {}", System.getProperty("node.bootstrap"), e);
+                        Log.info("Bootstrap failed from {}",e, System.getProperty("node.bootstrap"));
                     }
                 } else {
                     try {
@@ -193,9 +181,6 @@ public class KevoreeBootStrap {
                     }
                 }
             }
-
-//            bootstrapModel = KevoreeXmiHelper.load("/Users/duke/Desktop/test.kev");
-
             if (bootstrapModel != null) {
                 try {
                     Log.debug("Bootstrap step !");

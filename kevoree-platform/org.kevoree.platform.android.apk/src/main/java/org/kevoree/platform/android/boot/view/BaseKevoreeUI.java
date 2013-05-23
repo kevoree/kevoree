@@ -29,8 +29,6 @@ package org.kevoree.platform.android.boot.view;
 import android.content.Context;
 import android.graphics.Color;
 import android.net.wifi.WifiManager;
-import android.os.Build;
-import android.telephony.TelephonyManager;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.View;
@@ -38,11 +36,7 @@ import android.widget.*;
 import org.kevoree.platform.android.boot.controller.IController;
 import org.kevoree.platform.android.boot.controller.Request;
 import org.kevoree.platform.android.boot.utils.PrintStreamTraceLogger;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.PrintStream;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Arrays;
 

@@ -202,9 +202,9 @@ public class FileNIOHelper {
             reader.close();
             return writer.toByteArray();
         } catch (FileNotFoundException e) {
-            Log.error("Unable to get Bytes from file {}", inputFile.getAbsolutePath(), e);
+            Log.error("Unable to get Bytes from file {}",e, inputFile.getAbsolutePath());
         } catch (IOException e) {
-            Log.error("Unable to get Bytes from file {}", inputFile.getAbsolutePath(), e);
+            Log.error("Unable to get Bytes from file {}",e, inputFile.getAbsolutePath());
         }
         return new byte[0];
     }

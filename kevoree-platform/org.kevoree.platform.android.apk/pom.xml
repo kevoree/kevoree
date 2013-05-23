@@ -83,12 +83,6 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>${slf4j.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
             <groupId>com.actionbarsherlock</groupId>
             <artifactId>library</artifactId>
             <version>3.5.1</version>
@@ -158,69 +152,17 @@
              <artifactId>org.kevoree.tools.aether.framework.android</artifactId>
              <groupId>org.kevoree.tools</groupId>
              <version>${kevoree.version}</version>
-             <exclusions>
-                 <exclusion>
-                     <artifactId>org.kevoree.tools.aether.framework</artifactId>
-                     <groupId>org.kevoree.tools</groupId>
-                 </exclusion>
-                 <exclusion>
-                     <groupId>org.sonatype.aether</groupId>
-                     <artifactId>aether-api</artifactId>
-                 </exclusion>
-                 <exclusion>
-                     <groupId>org.sonatype.aether</groupId>
-                     <artifactId>aether-spi</artifactId>
-                 </exclusion>
-                 <exclusion>
-                     <groupId>org.sonatype.aether</groupId>
-                     <artifactId>aether-util</artifactId>
-                 </exclusion>
-                 <exclusion>
-                     <groupId>org.sonatype.aether</groupId>
-                     <artifactId>aether-impl</artifactId>
-                 </exclusion>
-                 <exclusion>
-                     <groupId>org.sonatype.aether</groupId>
-                     <artifactId>aether-connector-file</artifactId>
-                 </exclusion>
-                 <exclusion>
-                     <groupId>org.sonatype.aether</groupId>
-                     <artifactId>aether-connector-wagon</artifactId>
-                 </exclusion>
-                 <exclusion>
-                     <groupId>org.apache.maven.wagon</groupId>
-                     <artifactId>wagon-http-lightweight</artifactId>
-                 </exclusion>
-                 <exclusion>
-                     <groupId>org.apache.maven.wagon</groupId>
-                     <artifactId>wagon-http-shared</artifactId>
-                 </exclusion>
-                 <exclusion>
-                     <groupId>org.apache.maven</groupId>
-                     <artifactId>maven-aether-provider</artifactId>
-                 </exclusion>
-                 <exclusion>
-                     <groupId>org.codehaus.plexus</groupId>
-                     <artifactId>plexus-component-annotations</artifactId>
-                 </exclusion>
-             </exclusions>
          </dependency>
-
         <dependency>
             <groupId>woodstox</groupId>
             <artifactId>wstx-asl</artifactId>
             <version>3.2.0</version>
         </dependency>
-
-
     </dependencies>
 
 
     <build>
         <plugins>
-
-
-
             <plugin>
                 <artifactId>maven-antrun-plugin</artifactId>
                 <executions>

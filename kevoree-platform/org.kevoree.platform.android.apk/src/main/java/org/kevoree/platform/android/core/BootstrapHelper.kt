@@ -26,9 +26,9 @@
  */
 package org.kevoree.platform.android.core
 
-import org.slf4j.LoggerFactory
 import org.kevoree.impl.DefaultKevoreeFactory
 import org.kevoree.ContainerRoot
+import org.kevoree.log.Log
 
 /**
  * Created with IntelliJ IDEA.
@@ -39,8 +39,6 @@ import org.kevoree.ContainerRoot
 
 class BootstrapHelper {
 
-    val logger = LoggerFactory.getLogger(this.javaClass)!!
-
     val factory = DefaultKevoreeFactory()
 
     fun initModelInstance(model: ContainerRoot, defType: String, defGroupType: String, nodeName: String) {
@@ -48,7 +46,7 @@ class BootstrapHelper {
         if(nodeFound == null){
             val td = model.findTypeDefinitionsByID(defType)
             if(td != null){
-                logger.warn("Init default node instance for name " + nodeName)
+                Log.warn("Init default node instance for name " + nodeName)
                 val node = factory.createContainerNode()
                 node.setName(nodeName)
                 node.setTypeDefinition(td)
@@ -62,14 +60,14 @@ class BootstrapHelper {
                     group.addSubNodes(node)
                     model.addGroups(group)
                 } else {
-                    logger.error("Default group type not found for name " + defGroupType)
+                    Log.error("Default group type not found for name " + defGroupType)
                 }
 
             } else {
-                logger.error("Default node type not found for name " + defType)
+                Log.error("Default node type not found for name " + defType)
             }
         } else {
-            logger.info("the model is already init for nodename " + nodeName)
+            Log.info("the model is already init for nodename " + nodeName)
         }
     }
 }
