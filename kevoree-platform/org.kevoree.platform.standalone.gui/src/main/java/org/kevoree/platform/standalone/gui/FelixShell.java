@@ -30,7 +30,6 @@ public class FelixShell extends JPanel {
     private static FelixShell singleton = null;
     public static PrintStream STDwriter = null;
     public static PrintStream ERRwriter = null;
-    private static String eol = System.getProperty("line.separator");
     private JScrollPane scrollShell = null;
 
     public FelixShell() {
@@ -64,34 +63,13 @@ public class FelixShell extends JPanel {
         IAppWidgetFactory.makeIAppScrollPane(scrollShell);
         add(scrollShell, BorderLayout.CENTER);
 
-        final JTextField input = new JTextField();
-        input.setUI(new HudTextFieldUI());
-
-        input.addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyPressed(KeyEvent keyEvent) {
-                if (keyEvent.getKeyCode() == KeyEvent.VK_ENTER) {
-
-                    try {
-                        // textArea.append("==>" + input.getText() + eol);
-                        textArea.append(input.getText() + eol, new Color(87, 145, 198), Color.white, true);
-                        // shell.executeCommand(input.getText().trim(), STDwriter, ERRwriter);
-                        pouts.write((input.getText().trim() + "\n").getBytes());
-
-                        input.setText("");
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        });
-        JPanel layoutBOTTOM = new JPanel();
-        layoutBOTTOM.setLayout(new BorderLayout());
-        layoutBOTTOM.add(input, BorderLayout.CENTER);
+        //JPanel layoutBOTTOM = new JPanel();
+        //layoutBOTTOM.setLayout(new BorderLayout());
         //layoutBOTTOM.add(loglevels, BorderLayout.WEST);
-        JButton clearBt = new JButton("Clear");
-        clearBt.setUI(new HudButtonUI());
-        layoutBOTTOM.add(clearBt, BorderLayout.WEST);
+        //JButton clearBt = new JButton("Clear");
+        //clearBt.setUI(new HudButtonUI());
+        //layoutBOTTOM.add(clearBt, BorderLayout.WEST);
+        /*
         clearBt.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent mouseEvent) {
@@ -100,9 +78,10 @@ public class FelixShell extends JPanel {
                 textArea.revalidate();
             }
         });
-        layoutBOTTOM.setOpaque(false);
-        layoutBOTTOM.setBorder(null);
-        add(layoutBOTTOM, BorderLayout.SOUTH);
+        */
+        //layoutBOTTOM.setOpaque(false);
+        //layoutBOTTOM.setBorder(null);
+        //add(layoutBOTTOM, BorderLayout.SOUTH);
         System.setOut(STDwriter);
         System.setErr(ERRwriter);
     }

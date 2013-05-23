@@ -80,7 +80,13 @@ class KevoreeLeftModel: JPanel() {
             }
         }
 
-        _sourceList.useIAppStyleScrollBars()
+        try {
+            _sourceList.useIAppStyleScrollBars()
+
+        } catch(e:Exception){
+
+        }
+
         SwingUtilities.invokeLater(object : Runnable {
             override fun run() {
                 doLayout()
