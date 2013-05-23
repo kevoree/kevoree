@@ -26,7 +26,7 @@ import org.kevoree.log.Log;
 public class SimpleServiceKevLog implements KevoreeLogService {
     @Override
     public void setCoreLogLevel(KevoreeLogLevel kevoreeLogLevel) {
-        setLogLevel(null, kevoreeLogLevel);
+        //setLogLevel(null, kevoreeLogLevel);
     }
 
     @Override

@@ -23,7 +23,6 @@ import org.kevoree.impl.DefaultKevoreeFactory;
 import org.kevoree.kcl.KevoreeJarClassLoader;
 import org.kevoree.log.Log;
 import org.kevoree.tools.aether.framework.NodeTypeBootstrapHelper;
-
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
@@ -93,6 +92,7 @@ public class KevoreeBootStrap {
             coreBean.setBootstraper(bootstraper);
             coreBean.setKevsEngineFactory(new LazyCreationOfKevScriptEngine(coreBean, bootstraper, jcl, factory.getVersion()));
             coreBean.start();
+
             KevoreeLogLevel coreLogLevel = KevoreeLogLevel.INFO;
             if (System.getProperty("kevoree.log.level") != null) {
                 if ("DEBUG".equalsIgnoreCase(System.getProperty("kevoree.log.level"))) {
@@ -168,7 +168,7 @@ public class KevoreeBootStrap {
                             }
                         }
                     } catch (Throwable e) {
-                        Log.info("Bootstrap failed from {}",e, System.getProperty("node.bootstrap"));
+                        Log.info("Bootstrap failed from {}", e, System.getProperty("node.bootstrap"));
                     }
                 } else {
                     try {
@@ -196,13 +196,10 @@ public class KevoreeBootStrap {
                     Log.error("Can't bootstrap node with default bootstrap");
                 }
             }
-
             started = true;
-
         } catch (Throwable e) {
             e.printStackTrace();
         }
-
     }
 
     public void stop() throws Exception {

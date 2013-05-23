@@ -273,7 +273,6 @@ open class JCLContextHandler: KevoreeClassLoaderHandler {
             }
             if (kcl_cache_file.containsKey(key)) {
                 Log.debug("Cleanup Cache File" + kcl_cache_file.get(key)!!.getAbsolutePath())
-                kcl_cache_file.get(key)!!.delete()
                 kcl_cache_file.remove(key)
                 Log.debug("Remove File Cache " + key)
             }

@@ -139,23 +139,34 @@ public class MavenResolver {
                         File snapshotFile = new File(basePathBuilderSnapshot.toString());
                         if (snapshotFile.exists()) {
                             return snapshotFile;
-                        }
-
-                        System.out.println("NotFound !!! "+snapshotFile.getAbsolutePath());
-
-                        //Ok try on all urls, meta file has been download but bot the artefact :(
-                        for (String url : urls) {
-                            if (downloader.download(snapshotFile, url, artefact, extension, preresolvedVersion, false)) {
-                                //download the metafile
-                                File newMetaFile = new File(snapshotFile.getAbsolutePath().substring(0, snapshotFile.getAbsolutePath().lastIndexOf("/")) + "/" + MavenVersionResolver.metaFile);
-                                downloader.download(newMetaFile, url, artefact, extension, preresolvedVersion, true);
-                                return snapshotFile;
+                        } else {
+                            //This is really bad... try to get remotely
+                            //remove meta local file ?
+                            //TODO
+                            MavenVersionResult bestRemoteVersion = null;
+                            for (MavenVersionResult loopVersion : versions) {
+                                if ((!loopVersion.getUrl_origin().equals(basePath)) && (bestRemoteVersion == null || bestVersion.isPrior(loopVersion))) {
+                                    bestRemoteVersion = loopVersion;
+                                }
                             }
+                            String preresolvedVersion2 = artefact.getVersion().replace("SNAPSHOT", "");
+                            preresolvedVersion2 = preresolvedVersion2 + bestRemoteVersion.getTimestamp();
+                            if (bestRemoteVersion.getBuildNumber() != null) {
+                                preresolvedVersion2 = preresolvedVersion2 + "-";
+                                preresolvedVersion2 = preresolvedVersion2 + bestRemoteVersion.getBuildNumber();
+                            }
+                            //Ok try on all urls, meta file has been download but bot the artefact :(
+                            for (String url : urls) {
+                                if (downloader.download(snapshotFile, url, artefact, extension, preresolvedVersion2, false)) {
+                                    //download the metafile
+                                    File newMetaFile = new File(snapshotFile.getAbsolutePath().substring(0, snapshotFile.getAbsolutePath().lastIndexOf("/")) + "/" + MavenVersionResolver.metaFile);
+                                    downloader.download(newMetaFile, url, artefact, extension, preresolvedVersion2, true);
+                                    return snapshotFile;
+                                }
+                            }
+                            System.err.println(">" + bestVersion);
+                            return null;
                         }
-
-                        System.err.println(">"+bestVersion);
-                        return null;
-
                     } else {
                         //try to see if its localy cached
                         StringBuilder basePathBuilderSnapshot = getArtefactLocalBasePath(artefact);
