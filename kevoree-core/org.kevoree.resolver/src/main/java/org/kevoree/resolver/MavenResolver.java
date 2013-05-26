@@ -1,5 +1,6 @@
 package org.kevoree.resolver;
 
+import org.kevoree.log.Log;
 import org.kevoree.resolver.api.MavenArtefact;
 import org.kevoree.resolver.api.MavenVersionResult;
 import org.kevoree.resolver.util.MavenArtefactDownloader;
@@ -42,6 +43,7 @@ public class MavenResolver {
 
 
     public File resolve(String group, String name, String version, String extension, List<String> urls) {
+
         MavenArtefact artefact = new MavenArtefact();
         artefact.setGroup(group);
         artefact.setName(name);
@@ -69,7 +71,7 @@ public class MavenResolver {
         } else {
             //snapshot case
             List<MavenVersionResult> versions = new ArrayList<MavenVersionResult>();
-            MavenVersionResult localVersion = null;
+            MavenVersionResult localVersion;
             try {
                 localVersion = versionResolver.resolveVersion(artefact, basePath, false);
                 if (localVersion != null) {
@@ -97,7 +99,7 @@ public class MavenResolver {
                 }
             }
             if (versions.isEmpty()) {
-                //not version at all , try simply the file with -SNAPOSHOT extension
+                //not version at all , try simply the file with -SNAPSHOT extension
                 StringBuilder basePathBuilderSnapshot = getArtefactLocalBasePath(artefact);
                 basePathBuilderSnapshot.append(name);
                 basePathBuilderSnapshot.append("-");
@@ -108,6 +110,7 @@ public class MavenResolver {
                 if (snapshotFile.exists()) {
                     return snapshotFile;
                 } else {
+                    Log.error("No metadata file founded for {}/{}/{}",group,name,version);
                     return null;
                 }
             } else {
@@ -140,6 +143,7 @@ public class MavenResolver {
                         if (snapshotFile.exists()) {
                             return snapshotFile;
                         } else {
+
                             //This is really bad... try to get remotely
                             //remove meta local file ?
                             //TODO
@@ -159,6 +163,7 @@ public class MavenResolver {
                             for (String url : urls) {
                                 if (downloader.download(snapshotFile, url, artefact, extension, preresolvedVersion2, false)) {
                                     //download the metafile
+                                    Log.info("File resolved remotly, download metafile");
                                     File newMetaFile = new File(snapshotFile.getAbsolutePath().substring(0, snapshotFile.getAbsolutePath().lastIndexOf("/")) + "/" + MavenVersionResolver.metaFile);
                                     downloader.download(newMetaFile, url, artefact, extension, preresolvedVersion2, true);
                                     return snapshotFile;
@@ -181,17 +186,20 @@ public class MavenResolver {
                         } else {
 
                             if (downloader.download(targetSnapshotFile, bestVersion.getUrl_origin(), artefact, extension, preresolvedVersion, false)) {
+                                Log.info("File resolved remotly, download metafile");
                                 //download the metafile
                                 File newMetaFile = new File(targetSnapshotFile.getAbsolutePath().substring(0, targetSnapshotFile.getAbsolutePath().lastIndexOf("/")) + "/" + MavenVersionResolver.metaFile);
                                 downloader.download(newMetaFile, bestVersion.getUrl_origin(), artefact, extension, preresolvedVersion, true);
                                 return targetSnapshotFile;
                             }
                             //not found
+                            Log.info("Not resolved {} from {} : {}/{}/{}",preresolvedVersion,bestVersion.getUrl_origin(),group,name,version);
                             return null;
                         }
                     }
 
                 } else {
+                    Log.error("Not best version are found for {}/{}/{}",group,name,version);
                     return null;
                 }
             }

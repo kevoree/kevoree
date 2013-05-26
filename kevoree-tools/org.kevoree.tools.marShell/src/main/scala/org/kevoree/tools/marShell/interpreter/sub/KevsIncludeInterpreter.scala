@@ -19,6 +19,7 @@ import java.io.File
 import org.kevoree.tools.marShell.interpreter
 import interpreter.KevsInterpreterAspects._
 import org.kevoree.tools.marShell.parser.{ParserUtil, KevsParser}
+import org.kevoree.log.Log
 
 
 /**

@@ -6,6 +6,7 @@ import org.kevoree.resolver.api.MavenVersionResult;
 
 import java.io.*;
 import java.net.URL;
+import java.net.URLConnection;
 
 /**
  * Created by duke on 16/05/13.
@@ -53,13 +54,20 @@ public class MavenVersionResolver {
         if(basePath.startsWith("http")){
             metadataURL = new URL(builder.toString());
         }
-        InputStream in = metadataURL.openStream();
+        URLConnection c = metadataURL.openConnection();
+        //c.setConnectTimeout(500);
+
+        InputStream in = c.getInputStream();
         BufferedReader reader = new BufferedReader(new InputStreamReader(in));
         String result, line = reader.readLine();
         result = line;
         while ((line = reader.readLine()) != null) {
             result += line;
         }
+
+        in.close();
+
+
         MavenVersionResult versionResult = new MavenVersionResult();
         if (result.contains(lastUpdatedMavenTag) && result.contains(lastUpdatedEndMavenTag)) {
             versionResult.setTimestamp(result.substring(result.indexOf(lastUpdatedMavenTag) + lastUpdatedMavenTag.length(), result.indexOf(lastUpdatedEndMavenTag)));

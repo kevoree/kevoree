@@ -18,8 +18,21 @@ public class MavenArtefactDownloader {
 
     private static String urlSep = "/";
 
+
+    private void buildParentDir(File targetFile){
+        if(!targetFile.exists()){
+            String path = targetFile.getAbsolutePath();
+            path = path.substring(0,path.lastIndexOf(File.separator));
+            File parentDir = new File(path);
+            parentDir.mkdirs();
+        }
+    }
+
     public boolean download(File targetFile, String url, MavenArtefact artefact, String extension, String preresolvedVersion, boolean metafile) {
         try {
+
+            buildParentDir(targetFile);
+
             //BUILD HTTP URL
             StringBuilder urlBuilder = new StringBuilder();
             urlBuilder.append(url);
