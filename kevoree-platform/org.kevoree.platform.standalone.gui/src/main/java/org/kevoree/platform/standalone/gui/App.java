@@ -26,55 +26,12 @@
  */
 package org.kevoree.platform.standalone.gui;
 
-import org.kevoree.ContainerRoot;
-import java.io.File;
-import java.io.IOException;
-
 public class App extends org.kevoree.platform.standalone.App {
 
     public void start() {
 
         DefaultSystem.instance$.saveSystemFlux();
-        /*
-        try {
-            File cacheFolder = createTempDirectory();
-            cacheFolder.deleteOnExit();
-            System.setProperty("osgi.base", cacheFolder.getAbsolutePath());
-        } catch (IOException io) {
-            io.printStackTrace();
-        } */
-        ContainerRoot model = null;
-
-
-        /*Object param = System.getProperty("node.bootstrap");
-        if (param != null) {
-            model = KevoreeXmiHelper.instance$.load(param.toString());
-        } else {
-            try {
-                System.setSecurityManager(null);
-
-                KevoreeJarClassLoader temp_cl = new KevoreeJarClassLoader();
-                temp_cl.add(KevoreeBootStrap.class.getClassLoader().getResourceAsStream("org.kevoree.tools.aether.framework-" + new DefaultKevoreeFactory().getVersion() + ".pack.jar"));
-
-                Class clazz = temp_cl.loadClass("org.kevoree.tools.aether.framework.NodeTypeBootstrapHelper");
-                org.kevoree.api.Bootstraper bootstraper = (Bootstraper) clazz.newInstance();
-                File fileMarShell = bootstraper.resolveKevoreeArtifact("org.kevoree.library.model.bootstrap", "org.kevoree.corelibrary.model", new DefaultKevoreeFactory().getVersion());
-                JarFile jar = new JarFile(fileMarShell);
-                JarEntry entry = jar.getJarEntry("KEV-INF/lib.kev");
-                model = KevoreeXmiHelper.instance$.loadStream(jar.getInputStream(entry));
-
-                bootstraper.close();
-                bootstraper = null;
-                temp_cl.unload();
-                temp_cl = null;
-
-
-            } catch (Exception e) {
-                logger.error("Error while bootstrap ", e);
-            }
-        }*/
-
-        final KevoreeGUIFrame frame = new KevoreeGUIFrame(/*model*/);
+        final KevoreeGUIFrame frame = new KevoreeGUIFrame();
     }
 
     public static void main(String[] args) throws Exception {
@@ -87,21 +44,4 @@ public class App extends org.kevoree.platform.standalone.App {
         }
     }
 
-
-    public static File createTempDirectory()
-            throws IOException {
-        final File temp;
-
-        temp = File.createTempFile("temp", Long.toString(System.nanoTime()));
-
-        if (!(temp.delete())) {
-            throw new IOException("Could not delete temp file: " + temp.getAbsolutePath());
-        }
-
-        if (!(temp.mkdir())) {
-            throw new IOException("Could not create temp directory: " + temp.getAbsolutePath());
-        }
-
-        return (temp);
-    }
 }

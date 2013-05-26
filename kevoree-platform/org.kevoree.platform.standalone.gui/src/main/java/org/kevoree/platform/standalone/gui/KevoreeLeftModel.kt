@@ -83,7 +83,7 @@ class KevoreeLeftModel: JPanel() {
         try {
             _sourceList.useIAppStyleScrollBars()
 
-        } catch(e:Exception){
+        } catch(e: Exception){
 
         }
 
