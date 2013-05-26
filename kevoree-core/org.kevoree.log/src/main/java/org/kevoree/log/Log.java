@@ -130,75 +130,242 @@ public class Log {
 
     static private Logger logger = new Logger();
 
-    private static String processMessage(String message, String... params) {
-        String optimizeMessage = message;
-        //TODO optimize
-        for (Object o : params) {
-            optimizeMessage = optimizeMessage.replaceFirst("\\{\\}", o.toString());
+    private static String processMessage(String message, Object p1, Object p2, Object p3, Object p4, Object p5) {
+        String buffer = null;
+        if (p1 != null) {
+            buffer = message;
+            try {
+                buffer = buffer.replaceFirst("\\{\\}", p1.toString());
+                if (p2 != null) {
+                    buffer = buffer.replaceFirst("\\{\\}", p2.toString());
+                }
+                if (p3 != null) {
+                    buffer = buffer.replaceFirst("\\{\\}", p3.toString());
+                }
+                if (p4 != null) {
+                    buffer = buffer.replaceFirst("\\{\\}", p4.toString());
+                }
+                if (p5 != null) {
+                    buffer = buffer.replaceFirst("\\{\\}", p5.toString());
+                }
+            } catch (Throwable t) {
+                t.printStackTrace();
+            }
+            return buffer;
+        } else {
+            return message;
         }
-        return optimizeMessage;
-    }
-
-    static public void error(String message, String... params) {
-        if (ERROR) {
-            error(processMessage(message, params));
-        }
-    }
-
-    static public void error(String message,Throwable ex, String... params) {
-        if (ERROR) {
-            error(processMessage(message, params),ex);
-        }
-    }
-
-    static public void error(String message, Throwable ex) {
-        if (ERROR) logger.log(LEVEL_ERROR, message, ex);
     }
 
     static public void error(String message) {
         if (ERROR) logger.log(LEVEL_ERROR, message, null);
     }
 
+    static public void error(String message, Throwable ex) {
+        if (ERROR) logger.log(LEVEL_ERROR, message, ex);
+    }
+
+    static public void error(String message, Throwable ex, Object p1) {
+        if (ERROR) {
+            error(processMessage(message, p1, null, null, null, null), ex);
+        }
+    }
+
+    static public void error(String message, Throwable ex, Object p1, Object p2) {
+        if (ERROR) {
+            error(processMessage(message, p1, p2, null, null, null), ex);
+        }
+    }
+
+    static public void error(String message, Throwable ex, Object p1, Object p2,Object p3) {
+        if (ERROR) {
+            error(processMessage(message, p1, p2, p3, null, null), ex);
+        }
+    }
+
+    static public void error(String message, Throwable ex, Object p1, Object p2,Object p3,Object p4) {
+        if (ERROR) {
+            error(processMessage(message, p1, p2, p3, p4, null), ex);
+        }
+    }
+
+    static public void error(String message, Throwable ex, Object p1, Object p2,Object p3,Object p4,Object p5) {
+        if (ERROR) {
+            error(processMessage(message, p1, p2, p3, p4, p5), ex);
+        }
+    }
+
+    static public void error(String message, Object p1) {
+        if (ERROR) {
+            error(processMessage(message, p1, null, null, null, null), null);
+        }
+    }
+
+    static public void error(String message, Object p1, Object p2) {
+        if (ERROR) {
+            error(processMessage(message, p1, p2, null, null, null), null);
+        }
+    }
+
+    static public void error(String message, Object p1, Object p2,Object p3) {
+        if (ERROR) {
+            error(processMessage(message, p1, p2, p3, null, null), null);
+        }
+    }
+
+    static public void error(String message, Object p1, Object p2,Object p3,Object p4) {
+        if (ERROR) {
+            error(processMessage(message, p1, p2, p3, p4, null), null);
+        }
+    }
+
+    static public void error(String message, Object p1, Object p2,Object p3,Object p4,Object p5) {
+        if (ERROR) {
+            error(processMessage(message, p1, p2, p3, p4, p5), null);
+        }
+    }
+
+
+    /* WARN */
     static public void warn(String message, Throwable ex) {
         if (WARN) logger.log(LEVEL_WARN, message, ex);
-    }
-
-    static public void warn(String message, String... params) {
-        if (WARN) {
-            warn(processMessage(message, params));
-        }
-    }
-
-    static public void warn(String message, Throwable ex, String... params) {
-        if (WARN) {
-            warn(processMessage(message, params),ex);
-        }
     }
 
     static public void warn(String message) {
         if (WARN) logger.log(LEVEL_WARN, message, null);
     }
 
+    static public void warn(String message, Throwable ex, Object p1) {
+        if (WARN) {
+            warn(processMessage(message, p1, null, null, null, null), ex);
+        }
+    }
+
+    static public void warn(String message, Throwable ex, Object p1, Object p2) {
+        if (WARN) {
+            warn(processMessage(message, p1, p2, null, null, null), ex);
+        }
+    }
+
+    static public void warn(String message, Throwable ex, Object p1, Object p2,Object p3) {
+        if (WARN) {
+            warn(processMessage(message, p1, p2, p3, null, null), ex);
+        }
+    }
+
+    static public void warn(String message, Throwable ex, Object p1, Object p2,Object p3,Object p4) {
+        if (WARN) {
+            warn(processMessage(message, p1, p2, p3, p4, null), ex);
+        }
+    }
+
+    static public void warn(String message, Throwable ex, Object p1, Object p2,Object p3,Object p4,Object p5) {
+        if (WARN) {
+            warn(processMessage(message, p1, p2, p3, p4, p5), ex);
+        }
+    }
+
+    static public void warn(String message, Object p1) {
+        if (WARN) {
+            warn(processMessage(message, p1, null, null, null, null), null);
+        }
+    }
+
+    static public void warn(String message, Object p1, Object p2) {
+        if (WARN) {
+            warn(processMessage(message, p1, p2, null, null, null), null);
+        }
+    }
+
+    static public void warn(String message, Object p1, Object p2,Object p3) {
+        if (WARN) {
+            warn(processMessage(message, p1, p2, p3, null, null), null);
+        }
+    }
+
+    static public void warn(String message, Object p1, Object p2,Object p3,Object p4) {
+        if (WARN) {
+            warn(processMessage(message, p1, p2, p3, p4, null), null);
+        }
+    }
+
+    static public void warn(String message, Object p1, Object p2,Object p3,Object p4,Object p5) {
+        if (WARN) {
+            warn(processMessage(message, p1, p2, p3, p4, p5), null);
+        }
+    }
+
+    /* INFO */
     static public void info(String message, Throwable ex) {
         if (INFO) logger.log(LEVEL_INFO, message, ex);
-    }
-
-    static public void info(String message, String... params) {
-        if (INFO) {
-            info(processMessage(message, params));
-        }
-    }
-
-    static public void info(String message, Throwable ex, String... params) {
-        if (INFO) {
-            info(processMessage(message, params),ex);
-        }
     }
 
     static public void info(String message) {
         if (INFO) logger.log(LEVEL_INFO, message, null);
     }
 
+    static public void info(String message, Throwable ex, Object p1) {
+        if (INFO) {
+            info(processMessage(message, p1, null, null, null, null), ex);
+        }
+    }
+
+    static public void info(String message, Throwable ex, Object p1, Object p2) {
+        if (INFO) {
+            info(processMessage(message, p1, p2, null, null, null), ex);
+        }
+    }
+
+    static public void info(String message, Throwable ex, Object p1, Object p2,Object p3) {
+        if (INFO) {
+            info(processMessage(message, p1, p2, p3, null, null), ex);
+        }
+    }
+
+    static public void info(String message, Throwable ex, Object p1, Object p2,Object p3,Object p4) {
+        if (INFO) {
+            info(processMessage(message, p1, p2, p3, p4, null), ex);
+        }
+    }
+
+    static public void info(String message, Throwable ex, Object p1, Object p2,Object p3,Object p4,Object p5) {
+        if (INFO) {
+            info(processMessage(message, p1, p2, p3, p4, p5), ex);
+        }
+    }
+
+    static public void info(String message, Object p1) {
+        if (INFO) {
+            info(processMessage(message, p1, null, null, null, null), null);
+        }
+    }
+
+    static public void info(String message, Object p1, Object p2) {
+        if (INFO) {
+            info(processMessage(message, p1, p2, null, null, null), null);
+        }
+    }
+
+    static public void info(String message, Object p1, Object p2,Object p3) {
+        if (INFO) {
+            info(processMessage(message, p1, p2, p3, null, null), null);
+        }
+    }
+
+    static public void info(String message, Object p1, Object p2,Object p3,Object p4) {
+        if (INFO) {
+            info(processMessage(message, p1, p2, p3, p4, null), null);
+        }
+    }
+
+    static public void info(String message, Object p1, Object p2,Object p3,Object p4,Object p5) {
+        if (INFO) {
+            info(processMessage(message, p1, p2, p3, p4, p5), null);
+        }
+    }
+
+
+    /* DEBUG */
     static public void debug(String message, Throwable ex) {
         if (DEBUG) logger.log(LEVEL_DEBUG, message, ex);
     }
@@ -207,15 +374,63 @@ public class Log {
         if (DEBUG) logger.log(LEVEL_DEBUG, message, null);
     }
 
-    static public void debug(String message, String... params) {
+    static public void debug(String message, Throwable ex, Object p1) {
         if (DEBUG) {
-            debug(processMessage(message, params));
+            debug(processMessage(message, p1, null, null, null, null), ex);
         }
     }
 
-    static public void debug(String message, Throwable ex, String... params) {
+    static public void debug(String message, Throwable ex, Object p1, Object p2) {
         if (DEBUG) {
-            debug(processMessage(message, params),ex);
+            debug(processMessage(message, p1, p2, null, null, null), ex);
+        }
+    }
+
+    static public void debug(String message, Throwable ex, Object p1, Object p2,Object p3) {
+        if (DEBUG) {
+            debug(processMessage(message, p1, p2, p3, null, null), ex);
+        }
+    }
+
+    static public void debug(String message, Throwable ex, Object p1, Object p2,Object p3,Object p4) {
+        if (DEBUG) {
+            debug(processMessage(message, p1, p2, p3, p4, null), ex);
+        }
+    }
+
+    static public void debug(String message, Throwable ex, Object p1, Object p2,Object p3,Object p4,Object p5) {
+        if (DEBUG) {
+            debug(processMessage(message, p1, p2, p3, p4, p5), ex);
+        }
+    }
+
+    static public void debug(String message, Object p1) {
+        if (DEBUG) {
+            debug(processMessage(message, p1, null, null, null, null), null);
+        }
+    }
+
+    static public void debug(String message, Object p1, Object p2) {
+        if (DEBUG) {
+            debug(processMessage(message, p1, p2, null, null, null), null);
+        }
+    }
+
+    static public void debug(String message, Object p1, Object p2,Object p3) {
+        if (DEBUG) {
+            debug(processMessage(message, p1, p2, p3, null, null), null);
+        }
+    }
+
+    static public void debug(String message, Object p1, Object p2,Object p3,Object p4) {
+        if (DEBUG) {
+            debug(processMessage(message, p1, p2, p3, p4, null), null);
+        }
+    }
+
+    static public void debug(String message, Object p1, Object p2,Object p3,Object p4,Object p5) {
+        if (DEBUG) {
+            debug(processMessage(message, p1, p2, p3, p4, p5), null);
         }
     }
 
@@ -227,17 +442,66 @@ public class Log {
         if (TRACE) logger.log(LEVEL_TRACE, message, null);
     }
 
-    static public void trace(String message, String... params) {
+    static public void trace(String message, Throwable ex, Object p1) {
         if (TRACE) {
-            trace(processMessage(message, params));
+            trace(processMessage(message, p1, null, null, null, null), ex);
         }
     }
 
-    static public void trace(String message, Throwable ex, String... params) {
+    static public void trace(String message, Throwable ex, Object p1, Object p2) {
         if (TRACE) {
-            trace(processMessage(message, params),ex);
+            trace(processMessage(message, p1, p2, null, null, null), ex);
         }
     }
+
+    static public void trace(String message, Throwable ex, Object p1, Object p2,Object p3) {
+        if (TRACE) {
+            trace(processMessage(message, p1, p2, p3, null, null), ex);
+        }
+    }
+
+    static public void trace(String message, Throwable ex, Object p1, Object p2,Object p3,Object p4) {
+        if (TRACE) {
+            trace(processMessage(message, p1, p2, p3, p4, null), ex);
+        }
+    }
+
+    static public void trace(String message, Throwable ex, Object p1, Object p2,Object p3,Object p4,Object p5) {
+        if (TRACE) {
+            trace(processMessage(message, p1, p2, p3, p4, p5), ex);
+        }
+    }
+
+    static public void trace(String message, Object p1) {
+        if (TRACE) {
+            trace(processMessage(message, p1, null, null, null, null), null);
+        }
+    }
+
+    static public void trace(String message, Object p1, Object p2) {
+        if (TRACE) {
+            trace(processMessage(message, p1, p2, null, null, null), null);
+        }
+    }
+
+    static public void trace(String message, Object p1, Object p2,Object p3) {
+        if (TRACE) {
+            trace(processMessage(message, p1, p2, p3, null, null), null);
+        }
+    }
+
+    static public void trace(String message, Object p1, Object p2,Object p3,Object p4) {
+        if (TRACE) {
+            trace(processMessage(message, p1, p2, p3, p4, null), null);
+        }
+    }
+
+    static public void trace(String message, Object p1, Object p2,Object p3,Object p4,Object p5) {
+        if (TRACE) {
+            trace(processMessage(message, p1, p2, p3, p4, p5), null);
+        }
+    }
+
 
     /**
      * Performs the actual logging. Default implementation logs to System.out. Extended and use {@link Log#logger} set to handle

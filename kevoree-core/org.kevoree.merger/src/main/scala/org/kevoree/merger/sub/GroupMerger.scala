@@ -62,7 +62,7 @@ trait GroupMerger extends Merger with DictionaryMerger{
         actualModel.findByPath(subNode.path(),classOf[ContainerNode]) match {
        // actualModel.getNodes.find(pnode => pnode.getName == subNode) match {
            case currentNode : ContainerNode => currentGroup.addSubNodes(currentNode)
-           case null => org.kevoree.log.Log.error("Unresolved node {}  in links for group => {} ",subNode.toString,currentGroup.getName)
+           case null => org.kevoree.log.Log.error("Unresolved node {}  in links for group => {} ",subNode,currentGroup.getName)
          }
       }
 

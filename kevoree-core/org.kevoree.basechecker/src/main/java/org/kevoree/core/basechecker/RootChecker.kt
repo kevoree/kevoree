@@ -70,7 +70,7 @@ class RootChecker: CheckerService {
             result.add(violation)
         }
         if(Log.DEBUG){
-            Log.debug("Model checked in {} " , (System.currentTimeMillis() - beginTime).toString())
+            Log.debug("Model checked in {} " , (System.currentTimeMillis() - beginTime))
         }
         return result
     }

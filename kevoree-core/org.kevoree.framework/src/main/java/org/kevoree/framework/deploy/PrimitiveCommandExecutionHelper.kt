@@ -63,7 +63,7 @@ object PrimitiveCommandExecutionHelper {
             adapt ->
             val primitive = nodeInstance.getPrimitive(adapt)
             if (primitive != null) {
-                Log.debug("Populate primitive => {} ",primitive.toString())
+                Log.debug("Populate primitive => {} ",primitive)
                 try {
                     val nodeType = rootNode.getTypeDefinition() as org.kevoree.NodeType
                     val aTypeRef = nodeType.getManagedPrimitiveTypeRefs().find{(ref: AdaptationPrimitiveTypeRef) : Boolean -> ref.getRef()?.getName() == adapt.getPrimitiveType()?.getName() }
@@ -76,7 +76,7 @@ object PrimitiveCommandExecutionHelper {
                 phase.populate(primitive)
                 true
             } else {
-                Log.debug("Error while searching primitive => {} ", adapt.toString())
+                Log.debug("Error while searching primitive => {} ", adapt)
                 false
             }
         }
@@ -122,11 +122,11 @@ object PrimitiveCommandExecutionHelper {
                 try {
                     var result = primitive.execute()
                     if(!result){
-                        Log.error("Error while executing primitive command {} ",primitive.toString())
+                        Log.error("Error while executing primitive command {} ",primitive)
                     }
                     return result
                 } catch(e: Throwable) {
-                    Log.error("Error while executing primitive command {} ",e ,primitive.toString())
+                    Log.error("Error while executing primitive command {} ",e ,primitive)
                     return false
                 }
             }
@@ -142,7 +142,7 @@ object PrimitiveCommandExecutionHelper {
                     workers.add(Worker(primitive))
                 }
                 try {
-                    Log.debug("Timeout = {}", timeout.toString())
+                    Log.debug("Timeout = {}", timeout)
                     val futures = pool.invokeAll(workers, timeout, TimeUnit.MILLISECONDS)
                     futures.all { f ->
                         f.isDone() && ( f.get() as Boolean )

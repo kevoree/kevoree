@@ -47,7 +47,7 @@ trait DictionaryAttributeResolver {
                     case None => org.kevoree.log.Log.error("Unconsitent model , node not found for name {}",targetNodeName.getName())
                   }
                 }
-                case _ => org.kevoree.log.Log.error("Already Dictionary Value targetNodeName for value {}",value.toString)
+                case _ => org.kevoree.log.Log.error("Already Dictionary Value targetNodeName for value {}",value)
               } 
             }
             
@@ -68,7 +68,7 @@ trait DictionaryAttributeResolver {
                 }
               }
               case _ @ e => {
-                org.kevoree.log.Log.error("Already resolved Dictionary Attribute {}",e.toString)
+                org.kevoree.log.Log.error("Already resolved Dictionary Attribute {}",e)
               }
             }
           }

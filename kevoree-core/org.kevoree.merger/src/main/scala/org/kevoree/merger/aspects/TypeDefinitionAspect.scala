@@ -39,7 +39,7 @@ case class TypeDefinitionAspect(selfTD: TypeDefinition) {
   /* Check if the new type definition define new deploy unit than self */
   def contractChanged(pTD: TypeDefinition): Boolean = {
     if (selfTD.getSuperTypes.size != pTD.getSuperTypes.size) {
-      org.kevoree.log.Log.debug(" != {} is true", selfTD.getSuperTypes.size.toString(), pTD.getSuperTypes.size.toString())
+      org.kevoree.log.Log.debug(" != {} is true", selfTD.getSuperTypes.size, pTD.getSuperTypes.size)
       return true
     }
     selfTD.getSuperTypes.foreach {
@@ -100,7 +100,7 @@ case class TypeDefinitionAspect(selfTD: TypeDefinition) {
                       case Some(otherOperation) => {
                         val opeChanged = selfOperation.contractChanged(otherOperation)
                         if (opeChanged) {
-                          org.kevoree.log.Log.debug("Operation changed {} => {}", selfOperation.getName, opeChanged.toString())
+                          org.kevoree.log.Log.debug("Operation changed {} => {}", selfOperation.getName, opeChanged)
                         }
                         opeChanged
                       }
@@ -144,7 +144,7 @@ case class TypeDefinitionAspect(selfTD: TypeDefinition) {
             })
 
             if (providedChanged || requiredChanged) {
-              org.kevoree.log.Log.debug("Contract changed: {} - providedChanged={} - requiredChanged={}", selfTD.getName, providedChanged.toString(), requiredChanged.toString())
+              org.kevoree.log.Log.debug("Contract changed: {} - providedChanged={} - requiredChanged={}", selfTD.getName, providedChanged, requiredChanged)
             }
 
             providedChanged || requiredChanged
@@ -168,7 +168,7 @@ case class TypeDefinitionAspect(selfTD: TypeDefinition) {
       case g: GroupType => {
         false
       }
-      case _@typeDef => org.kevoree.log.Log.error("Unknown kind of type definition: {}", typeDef.toString()); true
+      case _@typeDef => org.kevoree.log.Log.error("Unknown kind of type definition: {}", typeDef); true
     }
   }
 

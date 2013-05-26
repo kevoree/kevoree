@@ -287,7 +287,7 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
                     callCallBack(callback, internalRes, null)
                     internalRes
                 } else {
-                    Log.debug("Core Locked , bad UUID {}", previousModel.getUUID().toString())
+                    Log.debug("Core Locked , bad UUID {}", previousModel.getUUID())
                     callCallBack(callback, false, ModelUpdateCallBackReturn.CAS_ERROR)
                     false //LOCK REFUSED !
                 }
@@ -400,7 +400,7 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
             if ( checkResult.size > 0) {
                 Log.error("There is check failure on update model, update refused !")
                 for(cr in checkResult) {
-                    Log.error("error=> " + cr?.getMessage() + ",objects" + cr?.getTargetObjects().toString())
+                    Log.error("error=> " + cr?.getMessage() + ",objects" + cr?.getTargetObjects())
                 }
                 return false
             } else {
@@ -428,7 +428,7 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
                             adaptationModel.setInternalReadOnly()
                             if (Log.DEBUG){
                                 //Avoid the loop if the debug is not activated
-                                Log.debug("Adaptation model size {}",adaptationModel.getAdaptations().size().toString())
+                                Log.debug("Adaptation model size {}",adaptationModel.getAdaptations().size())
                                 for(adaptation in adaptationModel.getAdaptations()) {
                                     Log.debug("primitive {} ",adaptation.getPrimitiveType()?.getName())
                                 }
@@ -460,7 +460,7 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
                     checkBootstrapNode(newmodel)
                     val milli = System.currentTimeMillis()
                     if(Log.DEBUG){
-                        Log.debug("Begin update model {}",milli.toString())
+                        Log.debug("Begin update model {}",milli)
                     }
                     var deployResult : Boolean// = true
                     try {
@@ -499,7 +499,7 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
                         }
                     }
                     val milliEnd = System.currentTimeMillis() - milli
-                    Log.debug("End deploy result={}-{}",deployResult.toString(),milliEnd.toString())
+                    Log.debug("End deploy result={}-{}",deployResult,milliEnd)
                     return deployResult
 
                 } else {

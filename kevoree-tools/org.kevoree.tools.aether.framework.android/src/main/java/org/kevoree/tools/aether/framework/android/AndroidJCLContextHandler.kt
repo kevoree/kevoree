@@ -65,7 +65,7 @@ class AndroidJCLContextHandler(val ctx: android.content.Context, val parent: Cla
 
                 }
                 failedLinks.remove(buildKEY(du))
-                Log.debug("Failed Link {} remain size : {}", du.getUnitName(), failedLinks.size().toString())
+                Log.debug("Failed Link {} remain size : {}", du.getUnitName(), failedLinks.size())
             }
             for(rLib in du.getRequiredLibs()) {
                 val kcl = getKCLInternals(rLib)

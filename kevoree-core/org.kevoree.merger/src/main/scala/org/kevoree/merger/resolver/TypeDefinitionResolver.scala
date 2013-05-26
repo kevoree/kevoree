@@ -43,7 +43,7 @@ trait TypeDefinitionResolver {
             }
           }
           case null => //NOOP
-          case _@e => org.kevoree.log.Log.warn("Strange already resolved target node type for name {} - {}", e.toString,du.getUnitName)
+          case _@e => org.kevoree.log.Log.warn("Strange already resolved target node type for name {} - {}", e,du.getUnitName)
 
         }
     }

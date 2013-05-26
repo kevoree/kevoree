@@ -49,7 +49,7 @@ trait TopologyResolver {
           case null => org.kevoree.log.Log.error("Unconsitent model , node not found for name {}",targetNodeName.getName()); null
         }
       }
-      case _ => org.kevoree.log.Log.error("Already Dictionary Value targetNodeName for value {}",node.toString); node
+      case _ => org.kevoree.log.Log.error("Already Dictionary Value targetNodeName for value {}",node); node
     }
   }
 

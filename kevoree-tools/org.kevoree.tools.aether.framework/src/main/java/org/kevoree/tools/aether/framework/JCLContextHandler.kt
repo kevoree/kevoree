@@ -196,7 +196,7 @@ open class JCLContextHandler: KevoreeClassLoaderHandler {
 
                     }
                     failedLinks.remove(buildKEY(du))
-                    Log.debug("Failed Link {} remain size : {}", du.getUnitName(), failedLinks.size().toString())
+                    Log.debug("Failed Link {} remain size : {}", du.getUnitName(), failedLinks.size())
                 }
                 for(rLib in  du.getRequiredLibs()) {
                     val kcl = getKCLInternals(rLib)
@@ -264,7 +264,7 @@ open class JCLContextHandler: KevoreeClassLoaderHandler {
                             Log.debug("Pending Fail link " + key)
                         }
                         vals.cleanupLinks(kcl_to_remove!!)
-                        Log.debug("Cleanup {} from {}", vals.toString(), du.getUnitName())
+                        Log.debug("Cleanup {} from {}", vals, du.getUnitName())
                     }
                 }
                 val toRemoveKCL = kcl_cache.get(key)
