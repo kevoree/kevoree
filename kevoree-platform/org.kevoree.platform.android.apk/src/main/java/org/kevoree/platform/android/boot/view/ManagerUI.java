@@ -37,7 +37,6 @@ import org.kevoree.android.framework.service.events.IntentListener;
 import org.kevoree.platform.android.boot.utils.KObservable;
 
 import org.kevoree.platform.android.ui.KevoreeAndroidUIScreen;
-
 import java.util.LinkedList;
 
 /**
