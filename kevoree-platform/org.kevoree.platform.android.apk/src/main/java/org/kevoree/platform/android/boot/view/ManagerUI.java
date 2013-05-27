@@ -35,7 +35,6 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import org.kevoree.platform.android.boot.utils.KObservable;
 import org.kevoree.platform.android.ui.KevoreeAndroidUIScreen;
-
 import java.util.LinkedList;
 
 /**
