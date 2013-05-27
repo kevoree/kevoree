@@ -33,6 +33,7 @@ package org.kevoree.android.framework.service;
 
 import android.app.Activity;
 import android.view.View;
+import org.kevoree.android.framework.service.events.IntentListener;
 
 /**
  *
@@ -45,5 +46,9 @@ public interface KevoreeAndroidService {
     void addToGroup(String groupKey,View view);
 
     void remove(View view);
+
+    // Services
+    public void addIntentListener (IntentListener listener);
+    public void removeIntentListener (IntentListener listener);
 
 }

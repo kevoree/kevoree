@@ -32,8 +32,11 @@ import android.os.Environment;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
+import org.kevoree.android.framework.service.events.EventListenerList;
+import org.kevoree.android.framework.service.events.IntentListener;
 import org.kevoree.platform.android.boot.KevoreeService;
 import org.kevoree.platform.android.boot.view.ManagerUI;
+
 
 import java.io.File;
 import java.util.List;
@@ -46,14 +49,18 @@ import java.util.List;
  */
 
 public class ControllerImpl implements IController {
+
     private static final String TAG = ControllerImpl.class.getSimpleName();
     private ManagerUI viewmanager = null;
     private FragmentActivity ctx = null;
+    private EventListenerList intentListener = new EventListenerList();
 
     public ControllerImpl(FragmentActivity act) {
         viewmanager = new ManagerUI(act);
         this.ctx = viewmanager.getCtx();
     }
+
+
 
     @Override
     public boolean handleMessage(Request req) {
@@ -103,6 +110,15 @@ public class ControllerImpl implements IController {
                         }
                     });
 
+                    break;
+
+                case  INTENT_FORWARD:
+                    //
+                    Object[] listeners = intentListener.getListenerList();
+                    for (int i = 0; i < listeners.length; i += 2)
+                    {
+                        ((IntentListener) listeners[i + 1]).onNewIntent((Intent) data);
+                    }
                     break;
 
                 default:
@@ -184,4 +200,18 @@ public class ControllerImpl implements IController {
     public void removeView(View view) {
         handleMessage(Request.REMOVE_VIEW, view);
     }
+
+    @Override
+    public void addIntentListener(IntentListener listener) {
+        intentListener.add(IntentListener.class,listener);
+    }
+
+    @Override
+    public void removeIntentListener(IntentListener listener) {
+        intentListener.remove(IntentListener.class, listener);
+    }
+
+
+
+
 }

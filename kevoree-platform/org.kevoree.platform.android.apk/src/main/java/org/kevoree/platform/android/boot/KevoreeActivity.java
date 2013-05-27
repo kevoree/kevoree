@@ -26,6 +26,7 @@
  */
 package org.kevoree.platform.android.boot;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
@@ -80,6 +81,12 @@ public class KevoreeActivity extends FragmentActivity implements  OnChangeListen
         {
             controller.getViewManager().restoreViews(this);
         }
+    }
+
+
+    @Override
+    protected void onNewIntent(Intent intent){
+        controller.handleMessage(Request.INTENT_FORWARD,intent);
     }
 
 

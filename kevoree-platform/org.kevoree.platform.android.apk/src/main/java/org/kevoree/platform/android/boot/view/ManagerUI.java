@@ -33,7 +33,9 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import org.kevoree.android.framework.service.events.IntentListener;
 import org.kevoree.platform.android.boot.utils.KObservable;
+
 import org.kevoree.platform.android.ui.KevoreeAndroidUIScreen;
 
 import java.util.LinkedList;
@@ -172,6 +174,17 @@ public class ManagerUI extends KObservable<ManagerUI> implements KevoreeAndroidU
         tabs.addAll(newtabs);
         notifyObservers(this);
     }
+
+    @Override
+    public void addIntentListener(IntentListener listener) {
+            // empty we don't care here
+    }
+
+    @Override
+    public void removeIntentListener(IntentListener listener) {
+
+    }
+
 
     @Override
     public void onTabReselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {

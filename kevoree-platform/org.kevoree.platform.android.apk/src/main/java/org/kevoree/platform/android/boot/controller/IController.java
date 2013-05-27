@@ -34,6 +34,7 @@ package org.kevoree.platform.android.boot.controller;
  */
 import android.view.View;
 import org.kevoree.platform.android.boot.view.ManagerUI;
+import org.kevoree.android.framework.service.events.IntentListener;
 import org.kevoree.platform.android.ui.KevoreeAndroidUIScreen;
 
 public interface IController extends KevoreeAndroidUIScreen {
@@ -41,4 +42,8 @@ public interface IController extends KevoreeAndroidUIScreen {
 	boolean handleMessage(Request req, Object data);
 	boolean handleMessage(Request req,String key,  View data);
     public ManagerUI getViewManager();
+
+
+
+
 }

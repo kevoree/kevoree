@@ -27,6 +27,7 @@
 package org.kevoree.platform.android.ui;
 
 import android.view.View;
+import org.kevoree.android.framework.service.events.IntentListener;
 
 /**
  * Created with IntelliJ IDEA.
@@ -35,9 +36,12 @@ import android.view.View;
  * Time: 19:32
  */
 public interface KevoreeAndroidUIScreen {
-
+    // UI
     public void addToGroup(String groupKey, View view);
 
     public void removeView(View view);
 
+    // Services
+    public void addIntentListener (IntentListener listener);
+    public void removeIntentListener (IntentListener listener);
 }

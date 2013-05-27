@@ -33,5 +33,5 @@ package org.kevoree.platform.android.boot.controller;
  * Time: 16:00
  */
 public enum Request {
-    ADD_TO_GROUP, REMOVE_VIEW, KEVOREE_START, KEVOREE_STOP;
+    ADD_TO_GROUP, REMOVE_VIEW, KEVOREE_START, KEVOREE_STOP,INTENT_FORWARD;
 }
