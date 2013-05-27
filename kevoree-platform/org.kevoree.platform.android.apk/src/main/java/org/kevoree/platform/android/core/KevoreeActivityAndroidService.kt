@@ -29,6 +29,7 @@ package org.kevoree.platform.android.core
 import org.kevoree.android.framework.service.KevoreeAndroidService
 import android.app.Activity
 import android.view.View
+import org.kevoree.android.framework.service.events.IntentListener
 
 /**
  * Created with IntelliJ IDEA.
@@ -38,6 +39,13 @@ import android.view.View
  */
 
 class KevoreeActivityAndroidService(val act: Activity, val kui: org.kevoree.platform.android.ui.KevoreeAndroidUIScreen): KevoreeAndroidService{
+
+    public override fun addIntentListener(p0: IntentListener?) {
+        throw UnsupportedOperationException()
+    }
+    public override fun removeIntentListener(p0: IntentListener?) {
+        throw UnsupportedOperationException()
+    }
 
     override fun getRootActivity(): Activity {
         return act

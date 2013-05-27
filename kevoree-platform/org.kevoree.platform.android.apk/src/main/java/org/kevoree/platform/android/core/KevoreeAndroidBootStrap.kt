@@ -1,42 +1,4 @@
-/**
- * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.gnu.org/licenses/lgpl-3.0.txt
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-/**
- * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * 	http://www.gnu.org/licenses/lgpl-3.0.txt
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-/**
- * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.gnu.org/licenses/lgpl-3.0.txt
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+
 package org.kevoree.platform.android.core
 
 import android.app.Activity
@@ -45,14 +7,13 @@ import java.util.jar.JarFile
 import org.kevoree.ContainerRoot
 import org.kevoree.android.framework.helper.UIServiceHandler
 import org.kevoree.api.Bootstraper
-import org.kevoree.api.service.core.logging.KevoreeLogService
 import org.kevoree.api.service.core.script.KevScriptEngine
 import org.kevoree.api.service.core.script.KevScriptEngineFactory
 import org.kevoree.core.impl.KevoreeCoreBean
 import org.kevoree.impl.DefaultKevoreeFactory
 import org.kevoree.kcl.KevoreeJarClassLoader
-import org.kevoree.framework.KevoreeXmiHelper
 import org.kevoree.log.Log
+import org.kevoree.framework.KevoreeXmiHelper
 
 /**
  * Created with IntelliJ IDEA.
@@ -73,7 +34,6 @@ class KevoreeAndroidBootStrap {
         if (started) {
             return
         }
-
         act.runOnUiThread(object : Runnable {
             override fun run() {
                 if(  UIServiceHandler.getUIService() != null && UIServiceHandler.getUIService()!!.getRootActivity() != null){
@@ -81,7 +41,6 @@ class KevoreeAndroidBootStrap {
                 }
             }
         })
-
 
         //Build UI PROXY
         val uiService = KevoreeActivityAndroidService(act, kui)
@@ -123,17 +82,10 @@ class KevoreeAndroidBootStrap {
             }
             dummyKCL.lockLinks()
 
-
-            bootstraper.registerManuallyDeployUnit("cglib-nodep", "cglib", "2.2.2", dummyKCL)
-            bootstraper.registerManuallyDeployUnit("slf4j-api", "org.slf4j", "1.6.4", dummyKCL)
-            bootstraper.registerManuallyDeployUnit("slf4j-api", "org.slf4j", "1.6.2", dummyKCL)
-            bootstraper.registerManuallyDeployUnit("slf4j-api", "org.slf4j", "1.7.2", dummyKCL)
-            bootstraper.registerManuallyDeployUnit("objenesis", "org.objenesis", "1.2", dummyKCL)
             bootstraper.registerManuallyDeployUnit("jgrapht-jdk1.5", "org.jgrapht", "0.7.3", dummyKCL)
             bootstraper.registerManuallyDeployUnit("kotlin-runtime", "org.jetbrains.kotlin", "0.5.429", dummyKCL);
             bootstraper.registerManuallyDeployUnit("kotlin-stdlib", "org.jetbrains.kotlin", "0.5.429", dummyKCL);
             bootstraper.registerManuallyDeployUnit("jfilter-library", "fr.inria.jfilter", "1.3", dummyKCL);
-
             bootstraper.registerManuallyDeployUnit("org.kevoree.adaptation.model", "org.kevoree", factory.getVersion(), dummyKCL)
             bootstraper.registerManuallyDeployUnit("org.kevoree.api", "org.kevoree", factory.getVersion(), dummyKCL)
             bootstraper.registerManuallyDeployUnit("org.kevoree.basechecker", "org.kevoree", factory.getVersion(), dummyKCL)
@@ -144,7 +96,6 @@ class KevoreeAndroidBootStrap {
             bootstraper.registerManuallyDeployUnit("org.kevoree.merger", "org.kevoree", factory.getVersion(), dummyKCL)
             bootstraper.registerManuallyDeployUnit("org.kevoree.model", "org.kevoree", factory.getVersion(), dummyKCL)
             bootstraper.registerManuallyDeployUnit("org.kevoree.model.context", "org.kevoree", factory.getVersion(), dummyKCL)
-
             bootstraper.registerManuallyDeployUnit("org.kevoree.tools.annotation.api", "org.kevoree.tools", factory.getVersion(), dummyKCL)
             bootstraper.registerManuallyDeployUnit("org.kevoree.tools.android.framework", "org.kevoree.tools", factory.getVersion(), dummyKCL)
             bootstraper.registerManuallyDeployUnit("org.kevoree.tools.javase.framework", "org.kevoree.tools", factory.getVersion(), dummyKCL)
