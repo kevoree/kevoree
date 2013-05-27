@@ -95,6 +95,10 @@ class KevoreeAndroidBootStrap {
             bootstraper.registerManuallyDeployUnit("org.kevoree.kompare", "org.kevoree", factory.getVersion(), dummyKCL)
             bootstraper.registerManuallyDeployUnit("org.kevoree.merger", "org.kevoree", factory.getVersion(), dummyKCL)
             bootstraper.registerManuallyDeployUnit("org.kevoree.model", "org.kevoree", factory.getVersion(), dummyKCL)
+
+            bootstraper.registerManuallyDeployUnit("org.kevoree.resolver", "org.kevoree", factory.getVersion(), dummyKCL)
+            bootstraper.registerManuallyDeployUnit("scala-library", "org.scala-lang", "2.9.2", dummyKCL)
+
             bootstraper.registerManuallyDeployUnit("org.kevoree.model.context", "org.kevoree", factory.getVersion(), dummyKCL)
             bootstraper.registerManuallyDeployUnit("org.kevoree.tools.annotation.api", "org.kevoree.tools", factory.getVersion(), dummyKCL)
             bootstraper.registerManuallyDeployUnit("org.kevoree.tools.android.framework", "org.kevoree.tools", factory.getVersion(), dummyKCL)
@@ -103,14 +107,8 @@ class KevoreeAndroidBootStrap {
             bootstraper.registerManuallyDeployUnit("org.kevoree.tools.aether.framework", "org.kevoree.tools", factory.getVersion(), dummyKCL)
             bootstraper.registerManuallyDeployUnit("org.kevoree.tools.aether.framework.android", "org.kevoree.tools", factory.getVersion(), dummyKCL)
             bootstraper.registerManuallyDeployUnit("org.kevoree.library.android.nodeType", "org.kevoree.corelibrary.android", factory.getVersion(), dummyKCL)
-
             bootstraper.registerManuallyDeployUnit("org.kevoree.library.android.jexxus", "org.kevoree.corelibrary.android", factory.getVersion(), dummyKCL)
-            bootstraper.registerManuallyDeployUnit("org.kevoree.library.android.basicGossiper", "org.kevoree.corelibrary.android", factory.getVersion(), dummyKCL)
-            bootstraper.registerManuallyDeployUnit("protobuf-java", "com.google.protobuf", "2.4.1", dummyKCL)
-
-
             coreBean!!.start()
-
             coreBean!!.registerModelListener(ProgressDialogModelListener(act))
 
             val file = (bootstraper as Bootstraper).resolveKevoreeArtifact("org.kevoree.library.model.bootstrap.android", "org.kevoree.corelibrary.model", factory.getVersion())
