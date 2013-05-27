@@ -1,9 +1,7 @@
 package org.kevoree.resolver.util;
 
-import org.kevoree.log.Log;
 import org.kevoree.resolver.api.MavenArtefact;
 import org.kevoree.resolver.api.MavenVersionResult;
-
 import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
@@ -56,18 +54,16 @@ public class MavenVersionResolver {
         }
         URLConnection c = metadataURL.openConnection();
         //c.setConnectTimeout(500);
-
         InputStream in = c.getInputStream();
         BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-        String result, line = reader.readLine();
-        result = line;
+        StringBuilder resultBuilder = new StringBuilder();
+        String line = reader.readLine();
+        resultBuilder.append(line);
         while ((line = reader.readLine()) != null) {
-            result += line;
+            resultBuilder.append(line);
         }
-
+        String result = resultBuilder.toString();
         in.close();
-
-
         MavenVersionResult versionResult = new MavenVersionResult();
         if (result.contains(lastUpdatedMavenTag) && result.contains(lastUpdatedEndMavenTag)) {
             versionResult.setTimestamp(result.substring(result.indexOf(lastUpdatedMavenTag) + lastUpdatedMavenTag.length(), result.indexOf(lastUpdatedEndMavenTag)));
@@ -82,5 +78,16 @@ public class MavenVersionResolver {
         versionResult.setNotDeployed(localDeploy);
         return versionResult;
     }
+
+
+
+
+    public MavenArtefact foundMaxVersion(MavenArtefact artefact){
+        //TODO
+        return null;
+    }
+
+
+
 
 }

@@ -88,6 +88,7 @@ public class MavenResolver {
             } catch (IOException e) {
                 //not found locally, ignore it
             }
+            //TODO PARALLEL RESOLUTION
             for (String url : urls) {
                 try {
                     localVersion = versionResolver.resolveVersion(artefact, url, false);
