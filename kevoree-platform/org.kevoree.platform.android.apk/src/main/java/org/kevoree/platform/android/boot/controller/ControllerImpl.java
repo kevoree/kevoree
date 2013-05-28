@@ -37,7 +37,6 @@ import org.kevoree.android.framework.service.events.IntentListener;
 import org.kevoree.platform.android.boot.KevoreeService;
 import org.kevoree.platform.android.boot.view.ManagerUI;
 
-
 import java.io.File;
 import java.util.List;
 
@@ -55,9 +54,11 @@ public class ControllerImpl implements IController {
     private FragmentActivity ctx = null;
     private EventListenerList intentListener = new EventListenerList();
 
+
     public ControllerImpl(FragmentActivity act) {
         viewmanager = new ManagerUI(act);
         this.ctx = viewmanager.getCtx();
+
     }
 
 
@@ -113,7 +114,6 @@ public class ControllerImpl implements IController {
                     break;
 
                 case  INTENT_FORWARD:
-                    //
                     Object[] listeners = intentListener.getListenerList();
                     for (int i = 0; i < listeners.length; i += 2)
                     {

@@ -26,11 +26,10 @@
  */
 package org.kevoree.platform.android.boot;
 
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.util.Log;
-import dalvik.system.DexFile;
 import org.kevoree.platform.android.boot.controller.ControllerImpl;
 import org.kevoree.platform.android.boot.controller.IController;
 import org.kevoree.platform.android.boot.controller.Request;
@@ -38,8 +37,6 @@ import org.kevoree.platform.android.boot.utils.OnChangeListener;
 import org.kevoree.platform.android.boot.view.BaseKevoreeUI;
 import org.kevoree.platform.android.boot.view.ManagerUI;
 
-import java.io.File;
-import java.io.IOException;
 
 /**
  * Created by jed
@@ -51,7 +48,8 @@ public class KevoreeActivity extends FragmentActivity implements  OnChangeListen
 
     private static final String TAG = KevoreeActivity.class.getSimpleName();
 
-   public static IController controller=null;
+    public static IController controller=null;
+    private PendingIntent pendingIntent;
 
     @Override
     protected synchronized void onCreate(Bundle savedInstanceState)
@@ -81,14 +79,15 @@ public class KevoreeActivity extends FragmentActivity implements  OnChangeListen
         {
             controller.getViewManager().restoreViews(this);
         }
+        // If set, the activity will not be launched if it is already running at the top of the history stack.
+        pendingIntent = PendingIntent.getActivity(this, 0, new Intent(this, getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
     }
-
 
     @Override
     protected void onNewIntent(Intent intent){
+        super.onNewIntent(intent);
         controller.handleMessage(Request.INTENT_FORWARD,intent);
     }
-
 
     @Override
     public void onChange(ManagerUI model) {
