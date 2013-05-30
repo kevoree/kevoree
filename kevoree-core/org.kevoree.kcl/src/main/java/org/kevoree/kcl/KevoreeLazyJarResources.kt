@@ -154,7 +154,7 @@ class KevoreeLazyJarResources {
                     }
                     if (!filtered) {
                         if (jarContentURL.containsKey(jarEntry?.getName())) {
-                            jarEntry =null
+                            break;
                         } else {
                             if (baseurl != null && lazyload) {
                                 if (jarEntry?.getName()?.endsWith(".class")!!) {
