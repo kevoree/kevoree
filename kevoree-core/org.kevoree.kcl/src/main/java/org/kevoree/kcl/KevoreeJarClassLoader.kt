@@ -199,7 +199,8 @@ open class KevoreeJarClassLoader(): ClassLoader() {
                 } else {
                     try {
                         subCL.loadClass(className)
-                    } catch(nf: ClassNotFoundException) {
+                    } catch(nf: ClassNotFoundException)
+                    {
                         null
                     }
                 }
