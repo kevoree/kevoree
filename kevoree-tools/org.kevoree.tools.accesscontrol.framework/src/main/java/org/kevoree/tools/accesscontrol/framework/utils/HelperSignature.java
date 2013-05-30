@@ -14,8 +14,14 @@
 package org.kevoree.tools.accesscontrol.framework.utils;
 
 
+import org.kevoree.ContainerRoot;
+import org.kevoree.accesscontrol.AccessControlRoot;
 import org.kevoree.accesscontrol.impl.DefaultAccessControlFactory;
+import org.kevoree.adaptation.accesscontrol.api.SignedModel;
+import org.kevoree.adaptation.accesscontrol.api.SignedPDP;
 import org.kevoree.kompare.JavaSePrimitive;
+import org.kevoree.tools.accesscontrol.framework.impl.SignedModelImpl;
+import org.kevoree.tools.accesscontrol.framework.impl.SignedPDPImpl;
 
 import java.math.BigInteger;
 import java.security.*;
@@ -55,6 +61,16 @@ public class HelperSignature {
         return false;
     }
 
+    public static SignedPDP createSignedPDP(AccessControlRoot root,PrivateKey key) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException
+    {
+        SignedPDP pdp = new SignedPDPImpl(root, key);
+        return  pdp;
+    }
+
+    public static SignedModel createSignedModel(ContainerRoot model,PrivateKey key) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException {
+        SignedModel signedmodel = new SignedModelImpl(model, key);
+        return signedmodel;
+    }
 
     public static List<  org.kevoree.accesscontrol.Permission> getGenericsPermissions(){
         DefaultAccessControlFactory factory = new DefaultAccessControlFactory();

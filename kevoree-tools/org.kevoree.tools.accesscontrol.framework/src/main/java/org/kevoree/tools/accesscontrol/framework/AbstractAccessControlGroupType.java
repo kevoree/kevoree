@@ -27,7 +27,11 @@ import org.kevoree.tools.accesscontrol.framework.impl.CompareAccessControlImpl;
 import org.kevoree.tools.accesscontrol.framework.impl.SignedModelImpl;
 import org.kevoree.tools.accesscontrol.framework.impl.SignedPDPImpl;
 import org.kevoree.tools.accesscontrol.framework.utils.AccessControlXmiHelper;
+import org.kevoree.tools.accesscontrol.framework.utils.HelperSignature;
 import org.kevoreeadaptation.AdaptationPrimitive;
+
+import javax.swing.*;
+import java.io.*;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
@@ -49,23 +53,49 @@ public abstract class AbstractAccessControlGroupType extends AbstractGroupType {
 
 
     @Override
-    public void push(ContainerRoot containerRoot, String s) throws Exception {
-        // ignore
-        Log.error("PUSH NOT SIGNED MODEL");
+    public void push(ContainerRoot model, String node) throws Exception {
+        String private_exponent = "";
+        String modulus = "";
+
+        JFileChooser dialogue = new JFileChooser(new File("."));
+        PrintWriter sortie;
+        File fichier = null;
+        if (dialogue.showOpenDialog(null) ==
+                JFileChooser.APPROVE_OPTION) {
+            fichier = dialogue.getSelectedFile();
+            sortie = new PrintWriter
+                    (new FileWriter(fichier.getPath(), true));
+
+            sortie.close();
+        }
+        FileReader fr = new FileReader(fichier);
+        BufferedReader br = new BufferedReader(fr);
+        StringBuilder stringkey = new StringBuilder();
+        try {
+            String line = br.readLine();
+
+            while (line != null) {
+                stringkey.append(line);
+                line = br.readLine();
+            }
+
+            br.close();
+            fr.close();
+            private_exponent = stringkey.toString().split(":")[0];
+            modulus = stringkey.toString().split(":")[1];
+            pushSignedModel(model,node,HelperSignature.getPrivateKey(modulus, private_exponent));
+        } catch (EOFException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (AccessControlException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+
+
     }
 
-    /**
-     * Create PDP
-     * @param root   The Access Control Model to PUSH
-     * @param key    The Private Key to Sign the model
-     * @return
 
-     */
-    protected SignedPDP createSignedPDP(AccessControlRoot root,PrivateKey key) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException
-    {
-        SignedPDP pdp = new SignedPDPImpl(root, key);
-        return  pdp;
-    }
+    public abstract void pushPDP(ContainerRoot model,String targetNodeName, AccessControlRoot pdp,PrivateKey key) throws AccessControlException;
+    public abstract void pushSignedModel(ContainerRoot model, String targetNodeName,PrivateKey key) throws AccessControlException;
 
     /**
      * Check if there is a current PDP available
@@ -77,36 +107,30 @@ public abstract class AbstractAccessControlGroupType extends AbstractGroupType {
         }
         return true;
     }
-    protected SignedModel createSignedModel(ContainerRoot model,PrivateKey key) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException {
-        SignedModel signedmodel = new SignedModelImpl(model, key);
-        return signedmodel;
-    }
 
     public AccessControlRoot getModelAccessControl() {
         return root;
     }
 
-    public void setModelAccessControl(AccessControlRoot root) {
+    private void setModelAccessControl(AccessControlRoot root) {
         this.root = root;
         accessControl = new CompareAccessControlImpl(root);
     }
 
-    public abstract void pushPDP(ContainerRoot model,String targetNodeName, AccessControlRoot pdp,PrivateKey key) throws AccessControlException;
-    public abstract void pushSignedModel(ContainerRoot model, String targetNodeName,PrivateKey key) throws AccessControlException;
 
-    public CompareAccessControlImpl getAccessControl() {
+    private CompareAccessControlImpl getAccessControl() {
         return accessControl;
     }
 
-    public void setAccessControl(CompareAccessControlImpl accessControl) {
+    private void setAccessControl(CompareAccessControlImpl accessControl) {
         this.accessControl = accessControl;
     }
 
-    public ContainerRoot getModel(SignedModel signedModel){
+    private ContainerRoot getModel(SignedModel signedModel){
         return KevoreeXmiHelper.instance$.loadString(new String(signedModel.getSerialiedModel()));
     }
 
-    public boolean approvalSignedModel(Object signed) throws ControlException {
+    private boolean approvalSignedModel(Object signed) throws ControlException {
         if (signed instanceof SignedModelImpl)
         {
             SignedModel signedModel = (SignedModelImpl) signed;
@@ -138,16 +162,18 @@ public abstract class AbstractAccessControlGroupType extends AbstractGroupType {
         return false;
     }
 
-    public boolean approvalPDP(Object signed) throws ControlException {
+    private boolean approvalPDP(Object signed) throws ControlException {
 
         if (signed instanceof SignedPDPImpl) {
             SignedPDPImpl pdp = (SignedPDPImpl) signed;
 
-            if (assertPDP()) {
+            if (assertPDP() == false) {
                 setModelAccessControl(AccessControlXmiHelper.instance$.loadString(new String(pdp.getSerialiedModel())));
+                Log.debug("Successful installation of the PDP");
                 return true;
             } else
             {
+
                 if (getAccessControl().accessPDP(pdp)) {
                     setModelAccessControl(AccessControlXmiHelper.instance$.loadString(new String(pdp.getSerialiedModel())));
                 } else {
@@ -159,4 +185,38 @@ public abstract class AbstractAccessControlGroupType extends AbstractGroupType {
         }
         return false;
     }
+
+    /**
+     *
+     * @param m    SignedPDP or SignedModel
+     * @throws ControlException
+     */
+
+    protected void updateSignedModel(final Object m) throws ControlException {
+
+        if(approvalPDP(m)){
+            Log.debug("accepted PDP");
+        }
+
+        if(approvalSignedModel(m)) {
+            Log.debug("accepted Model");
+
+            new Thread() {
+                public void run() {
+                    try {
+                        long duree, start;
+                        getModelService().unregisterModelListener(AbstractAccessControlGroupType.this);
+                        start = System.currentTimeMillis();
+                        getModelService().atomicUpdateModel(getModel((SignedModel) m));
+                        duree = (System.currentTimeMillis() - start);
+                        getModelService().registerModelListener(AbstractAccessControlGroupType.this);
+                    } catch (Exception e) {
+                        Log.error("", e);
+                    }
+                }
+            }.start();
+        }
+
+    }
+
 }
