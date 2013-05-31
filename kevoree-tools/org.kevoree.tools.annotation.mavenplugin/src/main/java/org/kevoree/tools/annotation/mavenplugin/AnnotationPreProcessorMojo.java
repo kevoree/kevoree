@@ -11,19 +11,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * 	http://www.gnu.org/licenses/lgpl-3.0.txt
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package org.kevoree.tools.annotation.mavenplugin;
 
 import org.apache.maven.artifact.Artifact;
@@ -394,12 +381,12 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
     //@MojoParameter(required = false, expression="${project.build.outputDirectory}", description = "Set the destination directory for class files (same behaviour of -d option)")
     private File outputClassDirectory;
 
-   // @Override
+    // @Override
     public File getSourceDirectory() {
         return sourceDirectory;
     }
 
-  //  @Override
+    //  @Override
     protected File getOutputClassDirectory() {
         return outputClassDirectory;
     }
@@ -408,12 +395,12 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
         project.addCompileSourceRoot(dir);
     }
 
-  //  @Override
+    //  @Override
     public File getDefaultOutputDirectory() {
         return defaultOutputDirectory;
     }
 
-   // @Override
+    // @Override
     @SuppressWarnings("unchecked")
     protected java.util.Set<String> getClasspathElements(java.util.Set<String> result) {
         List<Resource> resources = project.getResources();
@@ -631,10 +618,10 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
         for (Repository repo : project.getRepositories()) {
             otherRepositories += ";" + repo.getUrl();
         }
-        
+
         String thirdParties = ";";
-        for(Artifact dep : ThirdPartyManagement.processKevoreeProperty(project,getLog())){
-            thirdParties += ";" + dep.getGroupId() + "/" + dep.getArtifactId() + "/" + toBaseVersion(dep.getVersion()) +"/"+ dep.getType();
+        for (Artifact dep : ThirdPartyManagement.processKevoreeProperty(project, getLog())) {
+            thirdParties += ";" + dep.getGroupId() + "/" + dep.getArtifactId() + "/" + toBaseVersion(dep.getVersion()) + "/" + dep.getType();
         }
         /*
         for (Dependency dep : project.getRuntimeDependencies()) {
@@ -660,7 +647,7 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
         this.options.put("kevoree.lib.version", this.project.getVersion());
 
         String packaging = this.project.getPackaging();
-        if(packaging == null || packaging.equals("")){
+        if (packaging == null || packaging.equals("")) {
             packaging = "jar";
         }
         this.options.put("kevoree.lib.type", packaging);

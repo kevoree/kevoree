@@ -16,9 +16,7 @@ package org.kevoree.tools.annotation.mavenplugin
 
 import org.apache.maven.artifact.Artifact
 import org.apache.maven.project.MavenProject
-import org.kevoree.ContainerRoot
 import scala.collection.JavaConversions._
-import org.apache.maven.model.Dependency
 import util.matching.Regex
 import org.apache.maven.plugin.logging.Log
 
@@ -75,10 +73,9 @@ object ThirdPartyManagement {
 
     val excludedScope = List[String]("test")
 
-
     //FILTER
     pomModel.getArtifacts
-    /*(pomModel.getRuntimeDependencies ++ pomModel.getDependencies)*/.foreach {
+      /*(pomModel.getRuntimeDependencies ++ pomModel.getDependencies)*/ .foreach {
       loopDep => {
         if (loopDep.getScope.equals("provided") || loopDep.getType.equals("bundle")) {
           if (!excludedScope.exists(exScope => loopDep.getScope == exScope) && !selectedDeps.exists(preDep => preDep.getGroupId == loopDep.getGroupId && preDep.getArtifactId == loopDep.getArtifactId && preDep.getVersion == loopDep.getVersion)) {
