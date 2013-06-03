@@ -18,6 +18,27 @@ import java.io.StringWriter;
 import java.util.Date;
 
 public class Log {
+
+    private static boolean GET_CALLER_CLASS_SUN_AVAILABLE = false;
+    private static boolean printCaller = false;
+
+    static {
+        try {
+            sun.reflect.Reflection.getCallerClass(2);
+            GET_CALLER_CLASS_SUN_AVAILABLE = true;
+        } catch (NoClassDefFoundError e) {
+        } catch (NoSuchMethodError e) {
+        } catch (Throwable e) {
+            System.err.println("Unexpected exception while initializing Sun Caller");
+            e.printStackTrace();
+        }
+    }
+
+    static public void printCallerCall() {
+        printCaller = true;
+    }
+
+
     /**
      * No logging at all.
      */
@@ -130,28 +151,65 @@ public class Log {
 
     static private Logger logger = new Logger();
 
+    private static final char beginParam = '{';
+    private static final char endParam = '}';
+
     private static String processMessage(String message, Object p1, Object p2, Object p3, Object p4, Object p5) {
-        String buffer = null;
-        if (p1 != null) {
-            buffer = message;
-            try {
-                buffer = buffer.replaceFirst("\\{\\}", p1.toString());
-                if (p2 != null) {
-                    buffer = buffer.replaceFirst("\\{\\}", p2.toString());
+        if (p1 == null) {
+            return message;
+        }
+        StringBuilder buffer = null;
+        boolean previousCharfound = false;
+        int param = 0;
+        for (int i = 0; i < message.length(); i++) {
+            char currentChar = message.charAt(i);
+            if (previousCharfound) {
+                if (currentChar == endParam) {
+                    param++;
+                    switch (param) {
+                        case 1: {
+                            buffer = new StringBuilder();
+                            buffer.append(message.substring(0, i - 1));
+                            buffer.append(p1);
+                        }
+                        break;
+                        case 2: {
+                            buffer.append(p2);
+                        }
+                        break;
+                        case 3: {
+                            buffer.append(p3);
+                        }
+                        break;
+                        case 4: {
+                            buffer.append(p4);
+                        }
+                        break;
+                        case 5: {
+                            buffer.append(p5);
+                        }
+                        break;
+                    }
+                    previousCharfound = false;
+                } else {
+                    if (buffer != null) {
+                        message.charAt(i-1);
+                        buffer.append(currentChar);
+                    }
+                    previousCharfound = false;
                 }
-                if (p3 != null) {
-                    buffer = buffer.replaceFirst("\\{\\}", p3.toString());
+            } else {
+                if (currentChar == beginParam) {
+                    previousCharfound = true; //next round
+                } else {
+                    if (buffer != null) {
+                        buffer.append(currentChar);
+                    }
                 }
-                if (p4 != null) {
-                    buffer = buffer.replaceFirst("\\{\\}", p4.toString());
-                }
-                if (p5 != null) {
-                    buffer = buffer.replaceFirst("\\{\\}", p5.toString());
-                }
-            } catch (Throwable t) {
-                t.printStackTrace();
             }
-            return buffer;
+        }
+        if (buffer != null) {
+            return buffer.toString();
         } else {
             return message;
         }
@@ -177,19 +235,19 @@ public class Log {
         }
     }
 
-    static public void error(String message, Throwable ex, Object p1, Object p2,Object p3) {
+    static public void error(String message, Throwable ex, Object p1, Object p2, Object p3) {
         if (ERROR) {
             error(processMessage(message, p1, p2, p3, null, null), ex);
         }
     }
 
-    static public void error(String message, Throwable ex, Object p1, Object p2,Object p3,Object p4) {
+    static public void error(String message, Throwable ex, Object p1, Object p2, Object p3, Object p4) {
         if (ERROR) {
             error(processMessage(message, p1, p2, p3, p4, null), ex);
         }
     }
 
-    static public void error(String message, Throwable ex, Object p1, Object p2,Object p3,Object p4,Object p5) {
+    static public void error(String message, Throwable ex, Object p1, Object p2, Object p3, Object p4, Object p5) {
         if (ERROR) {
             error(processMessage(message, p1, p2, p3, p4, p5), ex);
         }
@@ -207,19 +265,19 @@ public class Log {
         }
     }
 
-    static public void error(String message, Object p1, Object p2,Object p3) {
+    static public void error(String message, Object p1, Object p2, Object p3) {
         if (ERROR) {
             error(processMessage(message, p1, p2, p3, null, null), null);
         }
     }
 
-    static public void error(String message, Object p1, Object p2,Object p3,Object p4) {
+    static public void error(String message, Object p1, Object p2, Object p3, Object p4) {
         if (ERROR) {
             error(processMessage(message, p1, p2, p3, p4, null), null);
         }
     }
 
-    static public void error(String message, Object p1, Object p2,Object p3,Object p4,Object p5) {
+    static public void error(String message, Object p1, Object p2, Object p3, Object p4, Object p5) {
         if (ERROR) {
             error(processMessage(message, p1, p2, p3, p4, p5), null);
         }
@@ -247,19 +305,19 @@ public class Log {
         }
     }
 
-    static public void warn(String message, Throwable ex, Object p1, Object p2,Object p3) {
+    static public void warn(String message, Throwable ex, Object p1, Object p2, Object p3) {
         if (WARN) {
             warn(processMessage(message, p1, p2, p3, null, null), ex);
         }
     }
 
-    static public void warn(String message, Throwable ex, Object p1, Object p2,Object p3,Object p4) {
+    static public void warn(String message, Throwable ex, Object p1, Object p2, Object p3, Object p4) {
         if (WARN) {
             warn(processMessage(message, p1, p2, p3, p4, null), ex);
         }
     }
 
-    static public void warn(String message, Throwable ex, Object p1, Object p2,Object p3,Object p4,Object p5) {
+    static public void warn(String message, Throwable ex, Object p1, Object p2, Object p3, Object p4, Object p5) {
         if (WARN) {
             warn(processMessage(message, p1, p2, p3, p4, p5), ex);
         }
@@ -277,19 +335,19 @@ public class Log {
         }
     }
 
-    static public void warn(String message, Object p1, Object p2,Object p3) {
+    static public void warn(String message, Object p1, Object p2, Object p3) {
         if (WARN) {
             warn(processMessage(message, p1, p2, p3, null, null), null);
         }
     }
 
-    static public void warn(String message, Object p1, Object p2,Object p3,Object p4) {
+    static public void warn(String message, Object p1, Object p2, Object p3, Object p4) {
         if (WARN) {
             warn(processMessage(message, p1, p2, p3, p4, null), null);
         }
     }
 
-    static public void warn(String message, Object p1, Object p2,Object p3,Object p4,Object p5) {
+    static public void warn(String message, Object p1, Object p2, Object p3, Object p4, Object p5) {
         if (WARN) {
             warn(processMessage(message, p1, p2, p3, p4, p5), null);
         }
@@ -316,19 +374,19 @@ public class Log {
         }
     }
 
-    static public void info(String message, Throwable ex, Object p1, Object p2,Object p3) {
+    static public void info(String message, Throwable ex, Object p1, Object p2, Object p3) {
         if (INFO) {
             info(processMessage(message, p1, p2, p3, null, null), ex);
         }
     }
 
-    static public void info(String message, Throwable ex, Object p1, Object p2,Object p3,Object p4) {
+    static public void info(String message, Throwable ex, Object p1, Object p2, Object p3, Object p4) {
         if (INFO) {
             info(processMessage(message, p1, p2, p3, p4, null), ex);
         }
     }
 
-    static public void info(String message, Throwable ex, Object p1, Object p2,Object p3,Object p4,Object p5) {
+    static public void info(String message, Throwable ex, Object p1, Object p2, Object p3, Object p4, Object p5) {
         if (INFO) {
             info(processMessage(message, p1, p2, p3, p4, p5), ex);
         }
@@ -346,19 +404,19 @@ public class Log {
         }
     }
 
-    static public void info(String message, Object p1, Object p2,Object p3) {
+    static public void info(String message, Object p1, Object p2, Object p3) {
         if (INFO) {
             info(processMessage(message, p1, p2, p3, null, null), null);
         }
     }
 
-    static public void info(String message, Object p1, Object p2,Object p3,Object p4) {
+    static public void info(String message, Object p1, Object p2, Object p3, Object p4) {
         if (INFO) {
             info(processMessage(message, p1, p2, p3, p4, null), null);
         }
     }
 
-    static public void info(String message, Object p1, Object p2,Object p3,Object p4,Object p5) {
+    static public void info(String message, Object p1, Object p2, Object p3, Object p4, Object p5) {
         if (INFO) {
             info(processMessage(message, p1, p2, p3, p4, p5), null);
         }
@@ -386,19 +444,19 @@ public class Log {
         }
     }
 
-    static public void debug(String message, Throwable ex, Object p1, Object p2,Object p3) {
+    static public void debug(String message, Throwable ex, Object p1, Object p2, Object p3) {
         if (DEBUG) {
             debug(processMessage(message, p1, p2, p3, null, null), ex);
         }
     }
 
-    static public void debug(String message, Throwable ex, Object p1, Object p2,Object p3,Object p4) {
+    static public void debug(String message, Throwable ex, Object p1, Object p2, Object p3, Object p4) {
         if (DEBUG) {
             debug(processMessage(message, p1, p2, p3, p4, null), ex);
         }
     }
 
-    static public void debug(String message, Throwable ex, Object p1, Object p2,Object p3,Object p4,Object p5) {
+    static public void debug(String message, Throwable ex, Object p1, Object p2, Object p3, Object p4, Object p5) {
         if (DEBUG) {
             debug(processMessage(message, p1, p2, p3, p4, p5), ex);
         }
@@ -416,19 +474,19 @@ public class Log {
         }
     }
 
-    static public void debug(String message, Object p1, Object p2,Object p3) {
+    static public void debug(String message, Object p1, Object p2, Object p3) {
         if (DEBUG) {
             debug(processMessage(message, p1, p2, p3, null, null), null);
         }
     }
 
-    static public void debug(String message, Object p1, Object p2,Object p3,Object p4) {
+    static public void debug(String message, Object p1, Object p2, Object p3, Object p4) {
         if (DEBUG) {
             debug(processMessage(message, p1, p2, p3, p4, null), null);
         }
     }
 
-    static public void debug(String message, Object p1, Object p2,Object p3,Object p4,Object p5) {
+    static public void debug(String message, Object p1, Object p2, Object p3, Object p4, Object p5) {
         if (DEBUG) {
             debug(processMessage(message, p1, p2, p3, p4, p5), null);
         }
@@ -454,19 +512,19 @@ public class Log {
         }
     }
 
-    static public void trace(String message, Throwable ex, Object p1, Object p2,Object p3) {
+    static public void trace(String message, Throwable ex, Object p1, Object p2, Object p3) {
         if (TRACE) {
             trace(processMessage(message, p1, p2, p3, null, null), ex);
         }
     }
 
-    static public void trace(String message, Throwable ex, Object p1, Object p2,Object p3,Object p4) {
+    static public void trace(String message, Throwable ex, Object p1, Object p2, Object p3, Object p4) {
         if (TRACE) {
             trace(processMessage(message, p1, p2, p3, p4, null), ex);
         }
     }
 
-    static public void trace(String message, Throwable ex, Object p1, Object p2,Object p3,Object p4,Object p5) {
+    static public void trace(String message, Throwable ex, Object p1, Object p2, Object p3, Object p4, Object p5) {
         if (TRACE) {
             trace(processMessage(message, p1, p2, p3, p4, p5), ex);
         }
@@ -484,19 +542,19 @@ public class Log {
         }
     }
 
-    static public void trace(String message, Object p1, Object p2,Object p3) {
+    static public void trace(String message, Object p1, Object p2, Object p3) {
         if (TRACE) {
             trace(processMessage(message, p1, p2, p3, null, null), null);
         }
     }
 
-    static public void trace(String message, Object p1, Object p2,Object p3,Object p4) {
+    static public void trace(String message, Object p1, Object p2, Object p3, Object p4) {
         if (TRACE) {
             trace(processMessage(message, p1, p2, p3, p4, null), null);
         }
     }
 
-    static public void trace(String message, Object p1, Object p2,Object p3,Object p4,Object p5) {
+    static public void trace(String message, Object p1, Object p2, Object p3, Object p4, Object p5) {
         if (TRACE) {
             trace(processMessage(message, p1, p2, p3, p4, p5), null);
         }
@@ -548,6 +606,14 @@ public class Log {
                     builder.append(trace_msg);
                     break;
             }
+
+            if (printCaller && GET_CALLER_CLASS_SUN_AVAILABLE) {
+                String callerName = sun.reflect.Reflection.getCallerClass(3).getName();
+                builder.append(callerName);
+                builder.append(':');
+                builder.append(' ');
+            }
+
             if (category != null) {
                 builder.append('[');
                 builder.append(category);
