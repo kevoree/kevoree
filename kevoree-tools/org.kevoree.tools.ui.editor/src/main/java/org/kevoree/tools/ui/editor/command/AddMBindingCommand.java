@@ -30,7 +30,6 @@
 package org.kevoree.tools.ui.editor.command;
 
 import org.kevoree.Channel;
-import org.kevoree.KevoreeFactory;
 import org.kevoree.MBinding;
 import org.kevoree.Port;
 import org.kevoree.tools.ui.editor.KevoreeUIKernel;
@@ -39,7 +38,6 @@ import org.kevoree.tools.ui.framework.elements.ChannelPanel;
 import org.kevoree.tools.ui.framework.elements.PortPanel;
 
 /**
- *
  * @author ffouquet
  */
 public class AddMBindingCommand implements Command {
@@ -59,27 +57,18 @@ public class AddMBindingCommand implements Command {
     public void execute(Object p) {
         if (p instanceof PortPanel) {
             PortPanel fromPanel = (PortPanel) p;
-           // if (fromPanel.getNature().equals(PortNature.MESSAGE)) {
-                Port fromPort = (Port) kernel.getUifactory().getMapping().get(fromPanel);
-                Channel targetHub = (Channel) kernel.getUifactory().getMapping().get(target);
+            Port fromPort = (Port) kernel.getUifactory().getMapping().get(fromPanel);
+            Channel targetHub = (Channel) kernel.getUifactory().getMapping().get(target);
 
-                //TODO CHECK CONSISTENCY
-                MBinding newb = ModelHelper.kevoreeFactory().createMBinding();
-                newb.setPort(fromPort);
-                newb.setHub(targetHub);
-                org.kevoree.tools.ui.framework.elements.Binding uib = kernel.getUifactory().createMBinding(newb);
-
-                kernel.getModelHandler().getActualModel().addMBindings(newb);
-                kernel.getModelPanel().addBinding(uib);
-
+            //TODO CHECK CONSISTENCY
+            MBinding newb = ModelHelper.kevoreeFactory().createMBinding();
+            newb.setPort(fromPort);
+            newb.setHub(targetHub);
+            org.kevoree.tools.ui.framework.elements.Binding uib = kernel.getUifactory().createMBinding(newb);
+            kernel.getModelHandler().getActualModel().addMBindings(newb);
+            kernel.getModelPanel().addBinding(uib);
             kernel.getModelHandler().notifyChanged();
-
-
-          //  }
-
         }
-
-
 
 
     }

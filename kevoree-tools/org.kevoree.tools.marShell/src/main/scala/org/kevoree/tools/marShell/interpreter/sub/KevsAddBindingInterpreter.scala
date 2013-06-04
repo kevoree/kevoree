@@ -62,7 +62,7 @@ case class KevsAddBindingInterpreter(addBinding: AddBindingStatment) extends Kev
                         }
                       }
                     } else {
-                      context.appendInterpretationError("Could not remove binding from port '"+addBinding.portName+"' of component '"+addBinding.cid.componentInstanceName+"' on node '"+addBinding.cid.nodeName+"' to channel '"+addBinding.bindingInstanceName+"'. Port not found.")
+                      context.appendInterpretationError("Could not add binding from port '"+addBinding.portName+"' of component '"+addBinding.cid.componentInstanceName+"' on node '"+addBinding.cid.nodeName+"' to channel '"+addBinding.bindingInstanceName+"'. Port not found.")
                       false
                     }
                     /*val ports = new util.ArrayList[Port](component.getProvided.size() + component.getRequired.size())
@@ -92,24 +92,24 @@ case class KevsAddBindingInterpreter(addBinding: AddBindingStatment) extends Kev
                     }*/
                   }
                   case null => {
-                    context.appendInterpretationError("Could not remove binding from port '"+addBinding.portName+"' of component '"+addBinding.cid.componentInstanceName+"' on node '"+addBinding.cid.nodeName+"' to channel '"+addBinding.bindingInstanceName+"'. Channel not found.")
+                    context.appendInterpretationError("Could not add binding from port '"+addBinding.portName+"' of component '"+addBinding.cid.componentInstanceName+"' on node '"+addBinding.cid.nodeName.get+"' to channel '"+addBinding.bindingInstanceName+"'. Channel not found.")
                     false
                   }
                 }
               case null => {
-                context.appendInterpretationError("Could not remove binding from port '"+addBinding.portName+"' of component '"+addBinding.cid.componentInstanceName+"' on node '"+addBinding.cid.nodeName+"' to channel '"+addBinding.bindingInstanceName+"'. Component not found.")
+                context.appendInterpretationError("Could not add binding from port '"+addBinding.portName+"' of component '"+addBinding.cid.componentInstanceName+"' on node '"+addBinding.cid.nodeName.get+"' to channel '"+addBinding.bindingInstanceName+"'. Component not found.")
                 false
               }
             }
           case null => {
-            context.appendInterpretationError("Could not remove binding from port '"+addBinding.portName+"' of component '"+addBinding.cid.componentInstanceName+"' on node '"+addBinding.cid.nodeName+"' to channel '"+addBinding.bindingInstanceName+"'. Node not found.")
+            context.appendInterpretationError("Could not add binding from port '"+addBinding.portName+"' of component '"+addBinding.cid.componentInstanceName+"' on node '"+addBinding.cid.nodeName.get+"' to channel '"+addBinding.bindingInstanceName+"'. Node not found.")
             false
           }
         }
       }
       case None => {
 
-        context.appendInterpretationError("Could not remove binding from port '"+addBinding.portName+"' of component '"+addBinding.cid.componentInstanceName+"' on node '"+addBinding.cid.nodeName+"' to channel '"+addBinding.bindingInstanceName+"'. Node name not specified, but mandatory.")
+        context.appendInterpretationError("Could not add binding from port '"+addBinding.portName+"' of component '"+addBinding.cid.componentInstanceName+"' on node '"+addBinding.cid.nodeName.get+"' to channel '"+addBinding.bindingInstanceName+"'. Node name not specified, but mandatory.")
         false
       }
     }
