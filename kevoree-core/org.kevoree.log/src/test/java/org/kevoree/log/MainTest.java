@@ -21,7 +21,7 @@ public class MainTest {
 
     @Test
     public void simpleCallerTest() {
-        Log.printCallerCall();
+        Log.setPrintCaller(true);
         simpleTest();
     }
 

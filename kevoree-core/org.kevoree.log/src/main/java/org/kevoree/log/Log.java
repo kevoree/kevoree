@@ -22,20 +22,22 @@ public class Log {
     private static boolean GET_CALLER_CLASS_SUN_AVAILABLE = false;
     private static boolean printCaller = false;
 
-    static {
-        try {
-            sun.reflect.Reflection.getCallerClass(2);
-            GET_CALLER_CLASS_SUN_AVAILABLE = true;
-        } catch (NoClassDefFoundError e) {
-        } catch (NoSuchMethodError e) {
-        } catch (Throwable e) {
-            System.err.println("Unexpected exception while initializing Sun Caller");
-            e.printStackTrace();
+    static public void setPrintCaller(Boolean addCaller) {
+        if (addCaller) {
+            try {
+                sun.reflect.Reflection.getCallerClass(2);
+                GET_CALLER_CLASS_SUN_AVAILABLE = addCaller;
+                printCaller = addCaller;
+            } catch (NoClassDefFoundError e) {
+            } catch (NoSuchMethodError e) {
+            } catch (Throwable e) {
+                System.err.println("Unexpected exception while initializing Sun Caller");
+                e.printStackTrace();
+            }
+        } else {
+            printCaller = false;
+            GET_CALLER_CLASS_SUN_AVAILABLE = false;
         }
-    }
-
-    static public void printCallerCall() {
-        printCaller = true;
     }
 
 
@@ -193,7 +195,7 @@ public class Log {
                     previousCharfound = false;
                 } else {
                     if (buffer != null) {
-                        message.charAt(i-1);
+                        message.charAt(i - 1);
                         buffer.append(currentChar);
                     }
                     previousCharfound = false;
