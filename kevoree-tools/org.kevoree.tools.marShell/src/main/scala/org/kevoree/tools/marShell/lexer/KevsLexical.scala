@@ -44,9 +44,9 @@ class KevsLexical extends Lexical with KevsTokens {
   protected def kident(name: String) : KevsToken = if (reserved contains name) Keyword(name) else Identifier(name)
   override def whitespace: Parser[Any] = rep(whitespaceChar)
   val reserved : HashSet[String] = HashSet("fragDep","default","values","optional","createDictionaryType","addRepo","include","addDeployUnit","updateDictionary","tblock","addComponent","removeComponent","moveComponent","addNode","removeNode","addChannel","removeChannel","bind","unbind","addGroup","removeGroup","createComponentType","createChannelType","addPortType","addLibrary","removeLibrary","addToGroup","removeFromGroup","network", "addChild", "removeChild", "moveChild", "merge","addOutPortType","addInPortType","Message","Service")
-  val delimiters : HashSet[String] = HashSet("@",":","{","}","=>",".",",","=","*")
+  val delimiters : HashSet[String] = HashSet("@",":","{","}","=>",".",",","=","*", "/")
 
-  
+
 
   def comment : Parser[KevsToken] = (
    positioned('/' ~ '*' ~ mlcomment ^^ { case _ ~ _ ~ mlcomment => mlcomment })
@@ -57,7 +57,7 @@ class KevsLexical extends Lexical with KevsTokens {
 
   protected def mlcomment: Parser[MLComment] = (
     '*' ~ '/'  ^^ { case _ => MLComment("")  }
-    | 
+    |
     chrExcept(EofCh) ~ mlcomment ^^ { case c ~ rc => var ml = MLComment(c+rc.chars) ; ml  }
   )
 
@@ -120,6 +120,6 @@ class KevsLexical extends Lexical with KevsTokens {
 //  private def lift2[T](f: String => T)(p: ~[Char, List[Char]]): T = lift(f)(p._1 :: p._2)
 
 
-  
+
 
 }
