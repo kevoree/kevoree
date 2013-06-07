@@ -3,9 +3,10 @@ tblock {
 
  addNode myJavaNode : JavaSENode
  addNode toto : JavaSENode
- network toto => toto { "KEVOREE.remote.node.ip" = "127.0.0.1" }
- network myJavaNode => myJavaNode { "KEVOREE.remote.node.ip" = "127.0.0.1" }
- network toto => myJavaNode { "KEVOREE.remote.node.ip" = "10.0.0.3" }
+ // define some network links
+ network toto => toto { "KEVOREE.remote.node.ip" = "127.0.0.1" } :lo / 100
+ network myJavaNode => myJavaNode { "KEVOREE.remote.node.ip" = "127.0.0.1" }:lo/100
+ network toto => myJavaNode { "KEVOREE.remote.node.ip" = "10.0.0.3" }:bge1/85
  network myJavaNode => toto { "KEVOREE.remote.node.ip" = "10.0.0.2" }
 
  }

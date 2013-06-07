@@ -224,6 +224,9 @@ class MiniKloudForm(editor: KevoreeEditor, button: AbstractButton) {
         blackListedPorts = blackListedPorts ++ Array[Int](port)
         kevEngine.addVariable("portValue", port.toString)
 
+        // add LogBack component to be able to manage log levels
+        kevEngine.append("addComponent LogBackConfigurator@editor_node : LogBackConfigurator")
+
         // add the web page to manage the miniKloud
         kevEngine.append("addComponent webServer@{minicloudNodeName} : KTinyWebServer {port = '{portValue}', timeout = '10000'}")
         kevEngine.append("addComponent iaasPage@{minicloudNodeName} : IaaSKloudResourceManagerPage { urlpattern='/'}")
