@@ -59,6 +59,7 @@ import interpreter.KevsInterpreterAspects._
 import org.kevoree.api.service.core.script.{KevScriptEngineParseErrorException, KevScriptEngine, KevScriptEngineException}
 import org.kevoree.api.Bootstraper
 import org.kevoree.log.Log
+import org.kevoree.cloner.ModelCloner
 
 /**
  * Created by IntelliJ IDEA.
@@ -82,7 +83,8 @@ class KevScriptCoreEngine(core: KevoreeModelHandlerService, bootstraper: Bootstr
     Log.debug("KevScriptEngine before execution with script = {}", resolvedScript)
     parser.parseScript(resolvedScript) match {
       case Some(s) => {
-        val inputModel = core.getLastModel
+        val cloner = new ModelCloner
+        val inputModel = cloner.clone(core.getLastModel)
         val ctx = KevsInterpreterContext(inputModel)
         ctx.setBootstraper(bootstraper)
         if (s.interpret(ctx.setVarMap(varMap))) {
