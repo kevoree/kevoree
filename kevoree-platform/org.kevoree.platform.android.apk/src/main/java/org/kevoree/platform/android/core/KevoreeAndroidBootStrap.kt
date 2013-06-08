@@ -83,8 +83,8 @@ class KevoreeAndroidBootStrap {
             dummyKCL.lockLinks()
 
             bootstraper.registerManuallyDeployUnit("jgrapht-jdk1.5", "org.jgrapht", "0.7.3", dummyKCL)
-            bootstraper.registerManuallyDeployUnit("kotlin-runtime", "org.jetbrains.kotlin", "0.5.429", dummyKCL);
-            bootstraper.registerManuallyDeployUnit("kotlin-stdlib", "org.jetbrains.kotlin", "0.5.429", dummyKCL);
+            bootstraper.registerManuallyDeployUnit("kotlin-runtime", "org.jetbrains.kotlin", "0.5.748", dummyKCL);
+            bootstraper.registerManuallyDeployUnit("kotlin-stdlib", "org.jetbrains.kotlin", "0.5.748", dummyKCL);
             bootstraper.registerManuallyDeployUnit("jfilter-library", "fr.inria.jfilter", "1.3", dummyKCL);
             bootstraper.registerManuallyDeployUnit("org.kevoree.adaptation.model", "org.kevoree", factory.getVersion(), dummyKCL)
             bootstraper.registerManuallyDeployUnit("org.kevoree.api", "org.kevoree", factory.getVersion(), dummyKCL)
@@ -106,8 +106,8 @@ class KevoreeAndroidBootStrap {
             bootstraper.registerManuallyDeployUnit("org.kevoree.tools.marShell", "org.kevoree.tools", factory.getVersion(), dummyKCL)
             bootstraper.registerManuallyDeployUnit("org.kevoree.tools.aether.framework", "org.kevoree.tools", factory.getVersion(), dummyKCL)
             bootstraper.registerManuallyDeployUnit("org.kevoree.tools.aether.framework.android", "org.kevoree.tools", factory.getVersion(), dummyKCL)
-            bootstraper.registerManuallyDeployUnit("org.kevoree.library.android.nodeType", "org.kevoree.corelibrary.android", factory.getVersion(), dummyKCL)
-            bootstraper.registerManuallyDeployUnit("org.kevoree.library.android.jexxus", "org.kevoree.corelibrary.android", factory.getVersion(), dummyKCL)
+          //  bootstraper.registerManuallyDeployUnit("org.kevoree.library.android.nodeType", "org.kevoree.corelibrary.android", factory.getVersion(), dummyKCL)
+          //  bootstraper.registerManuallyDeployUnit("org.kevoree.library.android.jexxus", "org.kevoree.corelibrary.android", factory.getVersion(), dummyKCL)
             coreBean!!.start()
             coreBean!!.registerModelListener(ProgressDialogModelListener(act))
 

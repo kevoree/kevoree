@@ -183,7 +183,7 @@
 
     <properties>
         <scala.version>2.9.2</scala.version>
-        <kotlin.version>0.5.429</kotlin.version>
+        <kotlin.version>0.5.742</kotlin.version>
         <bundle.vendor>IRISA/INRIA</bundle.vendor>
         <releaseUrl>http://maven.kevoree.org/libs-release-local</releaseUrl>
         <slf4j.version>1.7.5</slf4j.version>

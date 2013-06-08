@@ -30,6 +30,7 @@ import org.kevoree.android.framework.service.KevoreeAndroidService
 import android.app.Activity
 import android.view.View
 import org.kevoree.android.framework.service.events.IntentListener
+import android.content.Intent
 
 /**
  * Created with IntelliJ IDEA.
@@ -39,12 +40,18 @@ import org.kevoree.android.framework.service.events.IntentListener
  */
 
 class KevoreeActivityAndroidService(val act: Activity, val kui: org.kevoree.platform.android.ui.KevoreeAndroidUIScreen): KevoreeAndroidService{
+    public override fun addIntentListener(p0: ((Intent?) -> Unit)?) {
+        throw UnsupportedOperationException()
+    }
+    public override fun removeIntentListener(p0: ((Intent?) -> Unit)?) {
+        throw UnsupportedOperationException()
+    }
 
     public override fun removeIntentListener(p0: IntentListener?) {
         kui.removeIntentListener(p0)
     }
     public override fun addIntentListener(p0: IntentListener?) {
-       kui.addIntentListener(p0)
+        kui.addIntentListener(p0)
     }
 
     override fun getRootActivity(): Activity {

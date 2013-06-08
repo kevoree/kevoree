@@ -42,6 +42,12 @@ import org.kevoree.log.Log
  */
 
 class ModelHandlerServiceProxy(val proxy: KevoreeModelHandlerService): KevoreeModelHandlerService {
+    public override fun updateModel(model: ContainerRoot?, callback: ((ModelUpdateCallBackReturn?) -> Unit)?) {
+        throw UnsupportedOperationException()
+    }
+    public override fun compareAndSwapModel(previousModel: UUIDModel?, targetModel: ContainerRoot?, callback: ((ModelUpdateCallBackReturn?) -> Unit)?) {
+        throw UnsupportedOperationException()
+    }
     var proxyModel: AtomicReference<ContainerRoot> = AtomicReference<ContainerRoot>()
 
     fun setTempModel(tempModel: ContainerRoot) {
