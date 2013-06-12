@@ -36,6 +36,7 @@ public class FileMenu extends JMenu {
         add(createOpenKevsItem());
         add(createMergeFromNodeItem());
         add(createOpenFromNode());
+       // add(createOpenContinuousFromNode());
         add(createSaveItem());
         add(createSaveAsImageItem());
         add(createSaveAsSvgItem());
@@ -77,7 +78,6 @@ public class FileMenu extends JMenu {
         /* Load remote ui command */
         JMenuItem fileOpenRemote = new JMenuItem("Open from node");
         LoadRemoteModelUICommand cmdLMORemote2 = new LoadRemoteModelUICommand();
-
         cmdLMORemote2.setKernel(kernel);
         //CompositeCommand cmdLMORemote = new CompositeCommand();
         //cmdLMORemote.addCommand(cmdLMORemote1);
@@ -85,6 +85,18 @@ public class FileMenu extends JMenu {
         fileOpenRemote.addActionListener(new CommandActionListener(cmdLMORemote2));
         return fileOpenRemote;
     }
+           /*
+    private JMenuItem createOpenContinuousFromNode() {
+        JMenuItem fileOpenRemote = new JMenuItem("Continous sync with node");
+        LoadContinuousRemoteModelUICommand cmdLMORemote2 = new LoadContinuousRemoteModelUICommand();
+        cmdLMORemote2.setKernel(kernel);
+        //CompositeCommand cmdLMORemote = new CompositeCommand();
+        //cmdLMORemote.addCommand(cmdLMORemote1);
+        //cmdLMORemote.addCommand(cmdLMORemote2);
+        fileOpenRemote.addActionListener(new CommandActionListener(cmdLMORemote2));
+        return fileOpenRemote;
+    }   */
+
     private JMenuItem createSaveItem() {
         JMenuItem fileSave = new JMenuItem("Save");
         SaveActuelModelCommand cmdSM = new SaveActuelModelCommand();
