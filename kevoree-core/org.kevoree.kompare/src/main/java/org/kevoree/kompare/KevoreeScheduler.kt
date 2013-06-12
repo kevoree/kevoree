@@ -38,7 +38,7 @@ trait KevoreeScheduler {
     }
 
 
-    fun plan(adaptionModel: AdaptationModel, nodeName: String): AdaptationModel {
+    open fun plan(adaptionModel: AdaptationModel, nodeName: String): AdaptationModel {
         if (!adaptionModel.getAdaptations().isEmpty()) {
 
             adaptationModelFactory = org.kevoreeadaptation.impl.DefaultKevoreeAdaptationFactory()
