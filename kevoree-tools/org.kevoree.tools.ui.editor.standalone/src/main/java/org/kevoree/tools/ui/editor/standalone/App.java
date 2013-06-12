@@ -434,6 +434,18 @@ public class App {
                     }
                 });
 
+
+                artpanel.getPanel().getKernel().getModelHandler().addListenerCommand(new Command(){
+
+                    @Override
+                    public void execute(Object p) {
+                        if (finalToogleSyncSend.isEnabled()) {
+                            cmdLMORemote2.send();
+                        }
+                    }
+                });
+
+
                 finalToogleSyncSend.addMouseListener(new MouseAdapter() {
                     @Override
                     public void mouseClicked(MouseEvent e) {
