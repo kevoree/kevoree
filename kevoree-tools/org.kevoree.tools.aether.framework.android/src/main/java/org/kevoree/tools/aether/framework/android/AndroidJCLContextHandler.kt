@@ -19,6 +19,12 @@ import org.kevoree.log.Log
 class AndroidJCLContextHandler(val ctx: android.content.Context, val parent: ClassLoader): JCLContextHandler() {
 
 
+    public override fun unregisterDeployUnitResolver(dur: ((DeployUnit?) -> File?)?) {
+        super<JCLContextHandler>.unregisterDeployUnitResolver(dur)
+    }
+    public override fun registerDeployUnitResolver(dur: ((DeployUnit?) -> File?)?) {
+        super<JCLContextHandler>.registerDeployUnitResolver(dur)
+    }
     override fun installDeployUnitNoFileInternals(du: DeployUnit): KevoreeJarClassLoader? {
         var resolvedFile: File? = null
         resolvers.any{

@@ -37,6 +37,7 @@ object GeneratorHelper {
       case "void" => "Unit"
       case _ => t.replace("[","<")
         .replace("]",">")
+        .replace("java.util.Collection","MutableCollection")
         .replace("Array<Byte>","ByteArray")
         .replace("java.lang.","")
         .replace("java.util.","")

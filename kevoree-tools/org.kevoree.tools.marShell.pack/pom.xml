@@ -69,6 +69,7 @@
                 </executions>
                 <configuration>
                     <obfuscate>false</obfuscate>
+                    <maxMemory>1024m</maxMemory>
                     <options>
                         <option>-dontskipnonpubliclibraryclassmembers</option>
                         <option>-ignorewarnings</option>

@@ -35,6 +35,10 @@ class KevoreeListeners {
             Thread.currentThread().getThreadGroup()
         }
 
+        override public fun newThread(pRun: ()->Unit) : Thread {
+            throw Exception()
+        }
+
         override fun newThread(pRun: Runnable) : Thread {
             val t = Thread(group, pRun, internalName)
             if (t.isDaemon()) {
@@ -54,6 +58,10 @@ class KevoreeListeners {
             s.getThreadGroup()
         } else {
             Thread.currentThread().getThreadGroup()
+        }
+
+        override public fun newThread(pRun: ()->Unit) : Thread {
+            throw Exception()
         }
 
         override fun newThread(pRun: Runnable) : Thread {

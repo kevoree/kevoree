@@ -9,7 +9,11 @@ import java.util.concurrent.ThreadFactory
  * Time: 17:18
  */
 
+
 class PausablePortThreadPoolFactory(val tg : ThreadGroup) : ThreadFactory {
+    public override fun newThread(r: () -> Unit): Thread {
+        throw UnsupportedOperationException()
+    }
 
     public override fun newThread(r: Runnable): Thread {
         return Thread(tg,r)

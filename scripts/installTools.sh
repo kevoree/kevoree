@@ -1,5 +1,5 @@
 #!/bin/sh
-export MAVEN_OPTS="-Xms512m -Xmx1024m -XX:PermSize=256m -XX:MaxPermSize=512m"
+export MAVEN_OPTS="-Xms1024m -Xmx2024m -XX:PermSize=512m -XX:MaxPermSize=512m"
 BASE_RELEASE_DIR=`pwd`
 
 #CHANGE TOP VERSION

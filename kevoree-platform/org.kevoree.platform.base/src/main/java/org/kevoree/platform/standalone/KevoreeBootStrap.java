@@ -36,7 +36,7 @@ import java.util.jar.JarFile;
 public class KevoreeBootStrap {
 
     public static boolean byPassAetherBootstrap = false;
-    private final String KOTLIN_VERSION = "0.5.429";
+    private final String KOTLIN_VERSION = "0.5.748";
     public static KevoreeLogService logService = null;
     private static BootstrapHelper bootstrapHelper = new BootstrapHelper();
     private KevoreeFactory factory = new DefaultKevoreeFactory();

@@ -40,20 +40,19 @@ case class KevsRemoveNodeInterpreter(addN: RemoveNodeStatment) extends KevsAbstr
     //REMOVE FROM NETWORK LINK
     context.model.getNodeNetworks.foreach {
       nn =>
-        if (nn.getTarget.getName == addN.nodeName) {
+        val targetNode = nn.getTarget
+        if(targetNode != null && nn.getTarget.getName == addN.nodeName) {
           context.model.removeNodeNetworks(nn)
         } else {
           val initNode = nn.getInitBy
-          if(initNode != null) {
-              if (initNode.getName == addN.nodeName) {
+          if(initNode != null && initNode.getName == addN.nodeName) {
                 context.model.removeNodeNetworks(nn)
-              }
           }
         }
     }
 
     //CLEANUP HOST NODE
-    if (targetNode.getHost() != null) {
+    if (targetNode.getHost != null) {
       targetNode.getHost.removeHosts(targetNode)
     }
 

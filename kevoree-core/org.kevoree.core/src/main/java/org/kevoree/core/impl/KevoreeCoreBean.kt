@@ -233,12 +233,21 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
         }
     }
 
-    override fun updateModel(tmodel: ContainerRoot?, callback: ModelUpdateCallback?) {
+    override fun updateModel(tmodel: ContainerRoot?, callback: ModelUpdateCallback?): jet.Unit {
         scheduler!!.submit(UpdateModelCallable(cloneCurrentModel(tmodel), callback))
     }
 
+    public override fun updateModel(p0: org.kevoree.ContainerRoot?, p1: ((org.kevoree.api.service.core.handler.ModelUpdateCallBackReturn?) -> jet.Unit)?): jet.Unit {
+        throw Exception()
+    }
+
+
     override fun compareAndSwapModel(previousModel: UUIDModel?, targetModel: ContainerRoot?, callback: ModelUpdateCallback?) {
         scheduler?.submit(CompareAndSwapCallable(previousModel!!, cloneCurrentModel(targetModel), callback))
+    }
+
+    public override fun compareAndSwapModel(p0: org.kevoree.api.service.core.handler.UUIDModel?, p1: org.kevoree.ContainerRoot?, p2: ((org.kevoree.api.service.core.handler.ModelUpdateCallBackReturn?) -> jet.Unit)?): jet.Unit {
+        throw Exception()
     }
 
     inner class AcquireLock(val callBack: ModelHandlerLockCallBack, val timeout: Long): Runnable {

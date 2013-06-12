@@ -32,8 +32,10 @@ import org.kevoree.impl.DefaultKevoreeFactory;
 import org.kevoree.tools.ui.editor.KevoreeEditor;
 import org.kevoree.tools.ui.editor.UIEventHandler;
 import org.kevoree.tools.ui.editor.command.Command;
+import org.kevoree.tools.ui.editor.command.LoadContinuousRemoteModelUICommand;
 import org.kevoree.tools.ui.editor.kloud.KloudForm;
 import org.kevoree.tools.ui.editor.kloud.MiniKloudForm;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -129,6 +131,32 @@ public class App {
                     toogleTypeEditionMode = MacButtonFactory.makeUnifiedToolBarButton(new JButton("TypeMode", icon));
                     toogleTypeEditionMode.setEnabled(false);
                     toolBar.addComponentToLeft(toogleTypeEditionMode);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                AbstractButton toogleSyncSend = null;
+                try {
+                    java.net.URL url = App.class.getClassLoader().getResource("1371014427_File Send.png");
+                    ImageIcon icon = new ImageIcon(url);
+                    toogleSyncSend =
+                            MacButtonFactory.makeUnifiedToolBarButton(
+                                    new JButton("WSPush", icon));
+                    toogleSyncSend.setEnabled(false);
+                    toolBar.addComponentToRight(toogleSyncSend);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                AbstractButton toogleSync = null;
+                try {
+                    java.net.URL url = App.class.getClassLoader().getResource("1371014235_agt_reload.png");
+                    ImageIcon icon = new ImageIcon(url);
+                    toogleSync =
+                            MacButtonFactory.makeUnifiedToolBarButton(
+                                    new JButton("WSSync", icon));
+                    toogleSync.setEnabled(false);
+                    toolBar.addComponentToRight(toogleSync);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -386,6 +414,47 @@ public class App {
                         }
                     }
                 });
+
+                final LoadContinuousRemoteModelUICommand cmdLMORemote2 = new LoadContinuousRemoteModelUICommand();
+                final AbstractButton finalToogleSync = toogleSync;
+                final AbstractButton finalToogleSyncSend = toogleSyncSend;
+                cmdLMORemote2.setKernel(artpanel.getPanel().getKernel());
+                toogleSync.addMouseListener(new MouseAdapter() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                        if (finalToogleSync.isEnabled()) {
+                            cmdLMORemote2.close();
+                            finalToogleSync.setEnabled(false);
+                            finalToogleSyncSend.setEnabled(false);
+                        } else {
+                            cmdLMORemote2.execute(null);
+                            finalToogleSync.setEnabled(true);
+                            finalToogleSyncSend.setEnabled(true);
+                        }
+                    }
+                });
+
+
+                artpanel.getPanel().getKernel().getModelHandler().addListenerCommand(new Command(){
+
+                    @Override
+                    public void execute(Object p) {
+                        if (finalToogleSyncSend.isEnabled()) {
+                            cmdLMORemote2.send();
+                        }
+                    }
+                });
+
+
+                finalToogleSyncSend.addMouseListener(new MouseAdapter() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                        if (finalToogleSyncSend.isEnabled()) {
+                            cmdLMORemote2.send();
+                        }
+                    }
+                });
+
 
                 dividerPos = splitPane.getDividerLocation();
             }
