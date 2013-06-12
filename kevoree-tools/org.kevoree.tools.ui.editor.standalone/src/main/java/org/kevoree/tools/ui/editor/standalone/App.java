@@ -439,7 +439,7 @@ public class App {
 
                     @Override
                     public void execute(Object p) {
-                        if (finalToogleSyncSend.isEnabled()) {
+                        if (finalToogleSyncSend.isEnabled() && !cmdLMORemote2.currentUpdate()) {
                             cmdLMORemote2.send();
                         }
                     }

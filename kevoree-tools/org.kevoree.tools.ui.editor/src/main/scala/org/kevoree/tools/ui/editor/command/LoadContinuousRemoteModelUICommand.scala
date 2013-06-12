@@ -80,6 +80,8 @@ class LoadContinuousRemoteModelUICommand extends Command {
     client.send(oo.toByteArray)
   }
 
+  var currentUpdate = false
+
   def tryRemoteWebSocket(ip: String, port: String): Boolean = {
     try {
       System.out.println(ip+":"+port);
@@ -89,11 +91,17 @@ class LoadContinuousRemoteModelUICommand extends Command {
         }
 
         def onMessage(p1: String) {
-          val root = jsonLoader.loadModelFromStream(new ByteArrayInputStream(p1.getBytes())).get(0)
+          val root = jsonLoader.loadModelFromString(p1).get(0)
           try {
+
+            currentUpdate = true
+
             PositionedEMFHelper.updateModelUIMetaData(kernel)
             lcommand.setKernel(kernel)
             lcommand.execute(root)
+
+            currentUpdate = false
+
           } catch {
             case _@e => logger.error("", e)
           }
