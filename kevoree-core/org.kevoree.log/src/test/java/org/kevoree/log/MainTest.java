@@ -13,7 +13,7 @@ public class MainTest {
     @Test
     public void simpleTest() {
         long previous = System.currentTimeMillis();
-        for (int i = 0; i < 1000; i++) {
+        for (int i = 0; i < 10; i++) {
             Log.info("Hello from VM={} OS={}", System.getProperty("java.vendor"), System.getProperty("os.name"));
         }
         System.out.println("time " + (System.currentTimeMillis() - previous) + " ms");

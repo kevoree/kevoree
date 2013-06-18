@@ -18,7 +18,6 @@ public class MavenArtefactDownloader {
 
     private static String urlSep = "/";
 
-
     private void buildParentDir(File targetFile){
         if(!targetFile.exists()){
             String path = targetFile.getAbsolutePath();

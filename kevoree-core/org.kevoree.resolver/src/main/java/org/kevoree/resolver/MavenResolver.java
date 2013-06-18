@@ -3,6 +3,7 @@ package org.kevoree.resolver;
 import org.kevoree.log.Log;
 import org.kevoree.resolver.api.MavenArtefact;
 import org.kevoree.resolver.api.MavenVersionResult;
+import org.kevoree.resolver.util.AsyncVersionResolver;
 import org.kevoree.resolver.util.MavenArtefactDownloader;
 import org.kevoree.resolver.util.MavenVersionResolver;
 
@@ -10,6 +11,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 /**
  * Created with IntelliJ IDEA.
@@ -89,16 +94,27 @@ public class MavenResolver {
                 //not found locally, ignore it
             }
             //TODO PARALLEL RESOLUTION
+
+            ExecutorService pool = Executors.newCachedThreadPool();
+            ArrayList<AsyncVersionResolver> resolvers = new ArrayList<AsyncVersionResolver>();
             for (String url : urls) {
-                try {
-                    localVersion = versionResolver.resolveVersion(artefact, url, false);
-                    if (localVersion != null) {
-                        versions.add(localVersion);
-                    }
-                } catch (IOException e) {
-                    //not found remotely, ignore
-                }
+                resolvers.add(new AsyncVersionResolver(artefact, url, versionResolver));
             }
+            try {
+                List<Future<MavenVersionResult>> results = pool.invokeAll(resolvers);
+                for (Future<MavenVersionResult> r : results) {
+                    if (r != null) {
+                        try {
+                            versions.add(r.get());
+                        } catch (ExecutionException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
             if (versions.isEmpty()) {
                 //not version at all , try simply the file with -SNAPSHOT extension
                 StringBuilder basePathBuilderSnapshot = getArtefactLocalBasePath(artefact);
@@ -111,7 +127,7 @@ public class MavenResolver {
                 if (snapshotFile.exists()) {
                     return snapshotFile;
                 } else {
-                    Log.error("No metadata file founded for {}/{}/{}",group,name,version);
+                    Log.error("No metadata file founded for {}/{}/{}", group, name, version);
                     return null;
                 }
             } else {
@@ -194,13 +210,13 @@ public class MavenResolver {
                                 return targetSnapshotFile;
                             }
                             //not found
-                            Log.info("Not resolved {} from {} : {}/{}/{}",preresolvedVersion,bestVersion.getUrl_origin(),group,name,version);
+                            Log.info("Not resolved {} from {} : {}/{}/{}", preresolvedVersion, bestVersion.getUrl_origin(), group, name, version);
                             return null;
                         }
                     }
 
                 } else {
-                    Log.error("Not best version are found for {}/{}/{}",group,name,version);
+                    Log.error("Not best version are found for {}/{}/{}", group, name, version);
                     return null;
                 }
             }
