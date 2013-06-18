@@ -3,18 +3,13 @@ package org.kevoree.resolver;
 import org.kevoree.log.Log;
 import org.kevoree.resolver.api.MavenArtefact;
 import org.kevoree.resolver.api.MavenVersionResult;
-import org.kevoree.resolver.util.AsyncVersionResolver;
-import org.kevoree.resolver.util.MavenArtefactDownloader;
-import org.kevoree.resolver.util.MavenVersionResolver;
+import org.kevoree.resolver.util.*;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.util.concurrent.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -47,18 +42,45 @@ public class MavenResolver {
     }
 
 
-    public File resolve(String group, String name, String version, String extension, List<String> urls) {
+    public File resolve(String group, String name, String versionAsked, String extension, List<String> urls) {
 
-        MavenArtefact artefact = new MavenArtefact();
+        final MavenArtefact artefact = new MavenArtefact();
         artefact.setGroup(group);
         artefact.setName(name);
-        artefact.setVersion(version);
-        if (!version.endsWith(SNAPSHOT_VERSION_END)) {
+        artefact.setVersion(versionAsked);
+
+        if (artefact.getVersion().toLowerCase().contains("release") || artefact.getVersion().toLowerCase().contains("latest")) {
+            String vremoteSaved = versionResolver.foundRelevantVersion(artefact, basePath, false);
+            String vlocalSaved = versionResolver.foundRelevantVersion(artefact, basePath, true);
+            artefact.setVersion(MavenVersionComparator.max(artefact.getVersion(), vremoteSaved));
+            artefact.setVersion(MavenVersionComparator.max(artefact.getVersion(), vlocalSaved));
+
+            ExecutorService pool = Executors.newCachedThreadPool();
+            List<Callable<String>> callables = new ArrayList<Callable<String>>();
+            for (final String url : urls) {
+                callables.add(new AsyncVersionFiller(versionResolver, artefact, url));
+            }
+            try {
+                List<Future<String>> results = pool.invokeAll(callables);
+                for (Future<String> vFut : results) {
+                    try {
+                        artefact.setVersion(MavenVersionComparator.max(artefact.getVersion(), vFut.get()));
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
+                    }
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            pool.shutdown();
+        }
+
+        if (!artefact.getVersion().endsWith(SNAPSHOT_VERSION_END)) {
             //Try from local cache first
             StringBuilder basePathBuilder = getArtefactLocalBasePath(artefact);
             basePathBuilder.append(name);
             basePathBuilder.append("-");
-            basePathBuilder.append(version);
+            basePathBuilder.append(artefact.getVersion());
             basePathBuilder.append(".");
             basePathBuilder.append(extension);
             File targetReleaseFile = new File(basePathBuilder.toString());
@@ -93,7 +115,6 @@ public class MavenResolver {
             } catch (IOException e) {
                 //not found locally, ignore it
             }
-            //TODO PARALLEL RESOLUTION
 
             ExecutorService pool = Executors.newCachedThreadPool();
             ArrayList<AsyncVersionResolver> resolvers = new ArrayList<AsyncVersionResolver>();
@@ -114,20 +135,21 @@ public class MavenResolver {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+            pool.shutdown();
 
             if (versions.isEmpty()) {
                 //not version at all , try simply the file with -SNAPSHOT extension
                 StringBuilder basePathBuilderSnapshot = getArtefactLocalBasePath(artefact);
                 basePathBuilderSnapshot.append(name);
                 basePathBuilderSnapshot.append("-");
-                basePathBuilderSnapshot.append(version);
+                basePathBuilderSnapshot.append(artefact.getVersion());
                 basePathBuilderSnapshot.append(".");
                 basePathBuilderSnapshot.append(extension);
                 File snapshotFile = new File(basePathBuilderSnapshot.toString());
                 if (snapshotFile.exists()) {
                     return snapshotFile;
                 } else {
-                    Log.error("No metadata file founded for {}/{}/{}", group, name, version);
+                    Log.error("No metadata file founded for {}/{}/{}", group, name, artefact.getVersion());
                     return null;
                 }
             } else {
@@ -152,7 +174,7 @@ public class MavenResolver {
                         if (!bestVersion.isNotDeployed()) { //TAKE directly -snapshot file
                             basePathBuilderSnapshot.append(preresolvedVersion);
                         } else {
-                            basePathBuilderSnapshot.append(version);
+                            basePathBuilderSnapshot.append(artefact.getVersion());
                         }
                         basePathBuilderSnapshot.append(".");
                         basePathBuilderSnapshot.append(extension);
@@ -210,13 +232,13 @@ public class MavenResolver {
                                 return targetSnapshotFile;
                             }
                             //not found
-                            Log.info("Not resolved {} from {} : {}/{}/{}", preresolvedVersion, bestVersion.getUrl_origin(), group, name, version);
+                            Log.info("Not resolved {} from {} : {}/{}/{}", preresolvedVersion, bestVersion.getUrl_origin(), group, name, artefact.getVersion());
                             return null;
                         }
                     }
 
                 } else {
-                    Log.error("Not best version are found for {}/{}/{}", group, name, version);
+                    Log.error("Not best version are found for {}/{}/{}", group, name, artefact.getVersion());
                     return null;
                 }
             }
