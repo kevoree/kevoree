@@ -126,7 +126,10 @@ public class MavenResolver {
                 for (Future<MavenVersionResult> r : results) {
                     if (r != null) {
                         try {
-                            versions.add(r.get());
+                            MavenVersionResult interRes = r.get();
+                            if(interRes != null){
+                                versions.add(interRes);
+                            }
                         } catch (ExecutionException e) {
                             e.printStackTrace();
                         }

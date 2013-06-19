@@ -1,5 +1,6 @@
 package org.kevoree.resolver.api;
 
+
 /**
  * Created with IntelliJ IDEA.
  * User: duke
@@ -47,7 +48,7 @@ public class MavenVersionResult {
                 return false;
             }
         } catch (Exception e) {
-            System.err.println("Bad artefact timestamp ");
+            org.kevoree.log.Log.error("Bad artefact timestamp",e);
             return false;
         }
     }
