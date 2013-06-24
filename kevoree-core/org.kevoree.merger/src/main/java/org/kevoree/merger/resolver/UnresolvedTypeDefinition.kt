@@ -33,6 +33,7 @@ import org.kevoree.DeployUnit
 import java.util.ArrayList
 import org.kevoree.impl.TypeDefinitionInternal
 import org.kevoree.container.KMFContainer
+import org.kevoree.container.RemoveFromContainerCommand
 
 /**
  * Created by IntelliJ IDEA.
@@ -42,18 +43,18 @@ import org.kevoree.container.KMFContainer
  */
 
 class UnresolvedTypeDefinition(val typeDefinitionName : String) : TypeDefinitionInternal {
+    override var internal_unsetCmd: RemoveFromContainerCommand? = null
+    override var _abstract: Boolean = false
 
     override var internal_recursive_readOnlyElem: Boolean = false
     override var _name: String = ""
     override var internal_readOnlyElem: Boolean = false
-    override var internal_unsetCmd: (() -> Unit)? = null
     override var internal_eContainer: KMFContainer? = null
     override var internal_containmentRefName: String? = null
     override val _superTypes: HashMap<Any, TypeDefinition> = HashMap<Any, TypeDefinition>()
     override var _superTypes_java_cache: List<TypeDefinition>? = null
     override var _dictionaryType: DictionaryType? = null
     override val _deployUnits: MutableList<DeployUnit> = ArrayList<DeployUnit>()
-    override var _nature: String = ""
     override var _bean: String = ""
     override var _factoryBean: String = ""
     override var _deployUnits_java_cache: List<DeployUnit>? = null

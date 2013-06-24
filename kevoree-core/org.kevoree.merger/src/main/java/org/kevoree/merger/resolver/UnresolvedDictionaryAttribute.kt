@@ -31,6 +31,7 @@ import org.kevoree.TypedElement
 import java.util.HashMap
 import org.kevoree.impl.DictionaryAttributeInternal
 import org.kevoree.container.KMFContainer
+import org.kevoree.container.RemoveFromContainerCommand
 
 /**
  * Created by IntelliJ IDEA.
@@ -40,11 +41,11 @@ import org.kevoree.container.KMFContainer
  */
 
 class UnresolvedDictionaryAttribute(val attributeName: String): DictionaryAttributeInternal {
+    override var internal_unsetCmd: RemoveFromContainerCommand? = null
     override var internal_recursive_readOnlyElem: Boolean = false
     override var internal_eContainer: KMFContainer? = null
     override var internal_containmentRefName: String? = null
     override var internal_readOnlyElem: Boolean = false
-    override var internal_unsetCmd: (() -> Unit)? = null
     override var _name: String = ""
     override var _genericTypes_java_cache: List<TypedElement>? = null
     override val _genericTypes: HashMap<Any, TypedElement> = HashMap<Any, TypedElement>()

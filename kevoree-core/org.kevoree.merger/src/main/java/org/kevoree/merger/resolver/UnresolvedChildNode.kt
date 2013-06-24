@@ -34,9 +34,12 @@ import org.kevoree.TypeDefinition
 import org.kevoree.Dictionary
 import org.kevoree.impl.ContainerNodeInternal
 import org.kevoree.container.KMFContainer
+import org.kevoree.container.RemoveFromContainerCommand
 
 
 class UnresolvedChildNode(val childName: String): ContainerNodeInternal {
+    override var _started: Boolean = false
+    override var internal_unsetCmd: RemoveFromContainerCommand? = null
     override var internal_recursive_readOnlyElem: Boolean = false
     override var _components_java_cache: List<ComponentInstance>? = null
     override val _components: HashMap<Any, ComponentInstance> = HashMap<Any, ComponentInstance>()
@@ -45,13 +48,11 @@ class UnresolvedChildNode(val childName: String): ContainerNodeInternal {
     override var _host: ContainerNode? = null
     override var internal_eContainer: KMFContainer? = null
     override var internal_containmentRefName: String? = null
-    override var internal_unsetCmd: (() -> Unit)? = null
     override var internal_readOnlyElem: Boolean = false
     override var _metaData: String = ""
     override var _typeDefinition: TypeDefinition? = null
     override var _dictionary: Dictionary? = null
     override var _name: String = ""
-
     override fun getName(): String {
         return childName
     }

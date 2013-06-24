@@ -21,6 +21,7 @@ import org.kevoree.TypeDefinition
 import java.util.HashMap
 import org.kevoree.impl.PortTypeInternal
 import org.kevoree.container.KMFContainer
+import org.kevoree.container.RemoveFromContainerCommand
 
 /**
  * Created with IntelliJ IDEA.
@@ -29,11 +30,12 @@ import org.kevoree.container.KMFContainer
  * Time: 23:38
  */
 class UnresolvedPortType(val unresolvedPortName: String): PortTypeInternal {
+    override var internal_unsetCmd: RemoveFromContainerCommand? = null
+    override var _abstract: Boolean = false
 
     override var internal_recursive_readOnlyElem: Boolean = false
     override var _factoryBean: String = ""
     override var _bean: String = ""
-    override var _nature: String = ""
     override var _deployUnits_java_cache: List<DeployUnit>? = null
     override val _deployUnits: MutableList<DeployUnit> = ArrayList<DeployUnit>()
     override var _dictionaryType: DictionaryType? = null
@@ -42,7 +44,6 @@ class UnresolvedPortType(val unresolvedPortName: String): PortTypeInternal {
     override var _name: String = ""
     override var internal_eContainer: KMFContainer? = null
     override var internal_containmentRefName: String? = null
-    override var internal_unsetCmd: (() -> Unit)? = null
     override var internal_readOnlyElem: Boolean = false
     override var _synchrone: Boolean = false
     override fun getName(): String {
