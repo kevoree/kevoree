@@ -30,6 +30,7 @@ import org.kevoree.ContainerNode;
 import org.kevoree.ContainerRoot;
 import org.kevoree.api.NodeType;
 import org.kevoree.api.PrimitiveCommand;
+import org.kevoree.api.dataspace.DataSpaceService;
 import org.kevoree.context.ContextFactory;
 import org.kevoree.context.ContextRoot;
 import org.kevoree.context.impl.DefaultContextFactory;
@@ -37,16 +38,26 @@ import org.kevoreeadaptation.AdaptationModel;
 import org.kevoreeadaptation.AdaptationPrimitive;
 
 public abstract class
-		AbstractNodeType extends AbstractTypeDefinition implements NodeType {
+        AbstractNodeType extends AbstractTypeDefinition implements NodeType {
 
-	public void startNode () {
-	}
+    public void startNode() {
+    }
 
-	public void stopNode () {
-	}
+    public void stopNode() {
+    }
 
-	public void updateNode () {
-	}
+    public void updateNode() {
+    }
+
+    protected DataSpaceService dataSpaceService = null;
+
+    public DataSpaceService getDataSpaceService() {
+        return dataSpaceService;
+    }
+
+    protected void setDataSpaceService(DataSpaceService _dataSpaceService) {
+        this.dataSpaceService = _dataSpaceService;
+    }
 
     @Override
     public void setNodeName(String pnodeName) {
@@ -60,27 +71,27 @@ public abstract class
         super.setNodeName(pname);
     }
 
-    public abstract AdaptationModel kompare (ContainerRoot actualModel, ContainerRoot targetModel);
+    public abstract AdaptationModel kompare(ContainerRoot actualModel, ContainerRoot targetModel);
 
-	public abstract PrimitiveCommand getPrimitive (AdaptationPrimitive primitive);
+    public abstract PrimitiveCommand getPrimitive(AdaptationPrimitive primitive);
 
     private ContextFactory contextFactory = new DefaultContextFactory();
 
-	private ContextRoot contextModel = contextFactory.createContextRoot();
+    private ContextRoot contextModel = contextFactory.createContextRoot();
 
-	@Override
-	public ContextRoot getContextModel () {
-		return contextModel;
-	}
+    @Override
+    public ContextRoot getContextModel() {
+        return contextModel;
+    }
 
-	/**
-	 * Allow to find the corresponding element into the model
-	 *
-	 * @return the node corresponding to this
-	 */
-	public ContainerNode getModelElement () {
-		return getModelService().getLastModel().findByPath("nodes[" + getName() + "]", ContainerNode.class);
-	}
+    /**
+     * Allow to find the corresponding element into the model
+     *
+     * @return the node corresponding to this
+     */
+    public ContainerNode getModelElement() {
+        return getModelService().getLastModel().findByPath("nodes[" + getName() + "]", ContainerNode.class);
+    }
 
 }
 
