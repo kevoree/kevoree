@@ -32,6 +32,7 @@ import org.kevoree.PortTypeMapping
 import java.util.ArrayList
 import org.kevoree.impl.PortTypeRefInternal
 import org.kevoree.container.KMFContainer
+import org.kevoree.container.RemoveFromContainerCommand
 
 /**
  * Created by IntelliJ IDEA.
@@ -41,11 +42,10 @@ import org.kevoree.container.KMFContainer
  */
 
 class UnresolvedPortTypeRef(val unresolvedPortName : String) : PortTypeRefInternal {
-
+    override var internal_unsetCmd: RemoveFromContainerCommand? = null
     override var internal_recursive_readOnlyElem: Boolean = false
     override var internal_eContainer: KMFContainer? = null
     override var internal_containmentRefName: String? = null
-    override var internal_unsetCmd: (() -> Unit)? = null
     override var internal_readOnlyElem: Boolean = false
     override var _optional: Boolean = false
     override var _ref: PortType? = null

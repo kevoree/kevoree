@@ -36,6 +36,7 @@ import org.kevoree.TypeDefinition
 import java.util.ArrayList
 import org.kevoree.impl.NodeTypeInternal
 import org.kevoree.container.KMFContainer
+import org.kevoree.container.RemoveFromContainerCommand
 
 /**
  * Created by IntelliJ IDEA.
@@ -45,6 +46,8 @@ import org.kevoree.container.KMFContainer
  */
 
 class UnresolvedNodeType(val unresolvedNodeTypeName: String): NodeTypeInternal {
+    override var internal_unsetCmd: RemoveFromContainerCommand? = null
+    override var _abstract: Boolean = false
     override var internal_recursive_readOnlyElem: Boolean = false
     override var _managedPrimitiveTypes_java_cache: List<AdaptationPrimitiveType>? = null
     override val _managedPrimitiveTypes: HashMap<Any, AdaptationPrimitiveType> = HashMap<Any, AdaptationPrimitiveType>()
@@ -52,7 +55,6 @@ class UnresolvedNodeType(val unresolvedNodeTypeName: String): NodeTypeInternal {
     override val _managedPrimitiveTypeRefs: MutableList<AdaptationPrimitiveTypeRef> = ArrayList<AdaptationPrimitiveTypeRef>()
     override var _factoryBean: String = ""
     override var _bean: String = ""
-    override var _nature: String = ""
     override var _deployUnits_java_cache: List<DeployUnit>? = null
     override val _deployUnits: MutableList<DeployUnit> = ArrayList<DeployUnit>()
     override var _dictionaryType: DictionaryType? = null
@@ -64,7 +66,6 @@ class UnresolvedNodeType(val unresolvedNodeTypeName: String): NodeTypeInternal {
     override var _name: String = ""
     override var internal_eContainer: KMFContainer? = null
     override var internal_containmentRefName: String? = null
-    override var internal_unsetCmd: (() -> Unit)? = null
     override var internal_readOnlyElem: Boolean = false
     override fun getName(): String {
         return unresolvedNodeTypeName

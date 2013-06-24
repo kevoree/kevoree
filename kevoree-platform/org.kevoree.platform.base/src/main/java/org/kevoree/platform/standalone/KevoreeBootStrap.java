@@ -88,7 +88,6 @@ public class KevoreeBootStrap {
             bootstraper.registerManuallyDeployUnit("org.kevoree.model.context", "org.kevoree", factory.getVersion(), dummyKCL);
             bootstraper.registerManuallyDeployUnit("org.kevoree.tools.annotation.api", "org.kevoree.tools", factory.getVersion(), dummyKCL);
             bootstraper.registerManuallyDeployUnit("org.kevoree.tools.javase.framework", "org.kevoree.tools", factory.getVersion(), dummyKCL);
-            bootstraper.registerManuallyDeployUnit("gson", "com.google.code.gson", "2.2.2", dummyKCL);
             coreBean.setBootstraper(bootstraper);
             coreBean.setKevsEngineFactory(new LazyCreationOfKevScriptEngine(coreBean, bootstraper, jcl, factory.getVersion()));
             coreBean.start();

@@ -34,6 +34,7 @@ import java.util.ArrayList
 import org.kevoree.Dictionary
 import org.kevoree.impl.ContainerNodeInternal
 import org.kevoree.container.KMFContainer
+import org.kevoree.container.RemoveFromContainerCommand
 
 /**
  * Created by IntelliJ IDEA.
@@ -43,6 +44,8 @@ import org.kevoree.container.KMFContainer
  */
 
 class UnresolvedNode(val nodeName: String, val query: String): ContainerNodeInternal {
+    override var internal_unsetCmd: RemoveFromContainerCommand? = null
+    override var _started: Boolean = false
     override var internal_recursive_readOnlyElem: Boolean = false
     override var _components_java_cache: List<ComponentInstance>? = null
     override val _components: HashMap<Any, ComponentInstance> = HashMap<Any, ComponentInstance>()
@@ -51,7 +54,6 @@ class UnresolvedNode(val nodeName: String, val query: String): ContainerNodeInte
     override var _host: ContainerNode? = null
     override var internal_eContainer: KMFContainer? = null
     override var internal_containmentRefName: String? = null
-    override var internal_unsetCmd: (() -> Unit)? = null
     override var internal_readOnlyElem: Boolean = false
     override var _metaData: String = ""
     override var _typeDefinition: TypeDefinition? = null
