@@ -399,7 +399,7 @@ trait Kompare2 {
 
     fun processCheckStartAndStopInstance(actualInstance: Instance, updatedInstance: Instance, adaptationModel: AdaptationModel, actualRoot: ContainerRoot, updateRoot: ContainerRoot) {
         if (updatedInstance.getStarted() != actualInstance.getStarted()) {
-            if (updatedInstance.getStarted()) {
+            if (actualInstance.getStarted()) {
                 processStopInstance(actualInstance, adaptationModel, actualRoot)
             } else {
                 processStartInstance(actualInstance, adaptationModel, actualRoot);
