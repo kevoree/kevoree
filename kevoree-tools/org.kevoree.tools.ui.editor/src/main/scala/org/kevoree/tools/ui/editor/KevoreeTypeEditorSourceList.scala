@@ -110,7 +110,7 @@ class KevoreeTypeEditorSourceList(pane: JSplitPane, kernel: KevoreeUIKernel, typ
             logger.debug("KevoreeObject:" + kevObject)
             kevObject match {
               case ptRef : PortTypeRefInternal => {
-                ptRef.setEContainer(null,null)
+                ptRef.setEContainer(null,null,null)
                 kernel.getEditorPanel.getTypeEditorPanel.refresh()
               }
               case _@e => logger.warn("KevoreeObject matches no entry")
