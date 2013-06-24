@@ -46,6 +46,8 @@ trait Kompare2 {
         //Check Node SelfUpdate
         processInstanceDictionary(actualNode, updateNode, adaptationModel, actualRoot, updateRoot)
 
+
+
         //Check Remove
         if(actualNode != null){
             for(actualComponent in actualNode.getComponents()){
@@ -68,11 +70,21 @@ trait Kompare2 {
                         }
                     }
                     alreadyProcessInstance.put(actualComponent.path()!!, actualComponent)
+                } else {
+                    System.out.println(updatedComponent.getStarted());
+                    System.out.println(actualComponent.getStarted());
+                    if (updatedComponent.getStarted() != actualComponent.getStarted()) {
+                        if (actualComponent.getStarted()) {
+                            processStopInstance(actualComponent, adaptationModel, actualRoot)
+                        } else {
+                            processStartInstance(actualComponent, adaptationModel, actualRoot);
+                        }
+                    }
                 }
             }
         }
 
-
+        // Check for add and update
         if(updateNode != null){
             for(updatedComponent in updateNode.getComponents()){
                 val updatedComponentPath = updatedComponent.path()!!
@@ -98,6 +110,15 @@ trait Kompare2 {
                     processCheckUpdateInstance(actualComponent, updatedComponent, adaptationModel, actualRoot, actualTD, updateTD, updateRoot, nodeName, updatedTypeDefs)
                     checkBindings(actualChannels, newChannels, actualComponent.getProvided(), updatedComponent.getProvided(), adaptationModel, actualRoot, updateRoot)
                     checkBindings(actualChannels, newChannels, actualComponent.getRequired(), updatedComponent.getRequired(), adaptationModel, actualRoot, updateRoot)
+                    System.out.println(updatedComponent.getStarted());
+                    System.out.println(actualComponent.getStarted());
+                    if (updatedComponent.getStarted() != actualComponent.getStarted()) {
+                        if (actualComponent.getStarted()) {
+                            processStopInstance(actualComponent, adaptationModel, actualRoot)
+                        } else {
+                            processStartInstance(actualComponent, adaptationModel, actualRoot);
+                        }
+                    }
                 }
             }
         }
@@ -173,7 +194,7 @@ trait Kompare2 {
         val tdAspect = TypeDefinitionAspect()
 
 
-        traverseDU(tdAspect.foundRelevantDeployUnit(actualNode.getTypeDefinition()!!,actualNode)!!,usefull_DU,true,tp_DU) //keep current node DU installed (no unbootstrap with kompare)
+        traverseDU(tdAspect.foundRelevantDeployUnit(actualNode.getTypeDefinition()!!, actualNode)!!, usefull_DU, true, tp_DU) //keep current node DU installed (no unbootstrap with kompare)
 
         for(actualType in actualTD){
             if(!updatedTD.contains(actualType)){
@@ -334,12 +355,19 @@ trait Kompare2 {
         ccmd.setRef(actualInstance)
         adaptationModel.addAdaptations(ccmd)
 
+        /*val ccmd2 = adaptationModelFactory.createAdaptationPrimitive()
+        ccmd2.setPrimitiveType(actualRoot.findAdaptationPrimitiveTypesByID(JavaSePrimitive.StopInstance))
+        ccmd2.setRef(actualInstance)
+        adaptationModel.addAdaptations(ccmd2)*/
+
+        actualTD.add(actualInstance.getTypeDefinition()!!.getName())
+    }
+
+    fun processStopInstance(actualInstance: Instance, adaptationModel: AdaptationModel, actualRoot: ContainerRoot) {
         val ccmd2 = adaptationModelFactory.createAdaptationPrimitive()
         ccmd2.setPrimitiveType(actualRoot.findAdaptationPrimitiveTypesByID(JavaSePrimitive.StopInstance))
         ccmd2.setRef(actualInstance)
         adaptationModel.addAdaptations(ccmd2)
-
-        actualTD.add(actualInstance.getTypeDefinition()!!.getName())
     }
 
     fun processAddInstance(updatedInstance: Instance, adaptationModel: AdaptationModel, updateRoot: ContainerRoot, updatedTD: MutableSet<String>) {
@@ -348,10 +376,10 @@ trait Kompare2 {
         ccmd.setRef(updatedInstance)
         adaptationModel.addAdaptations(ccmd)
 
-        val ccmd2 = adaptationModelFactory.createAdaptationPrimitive()
+        /*val ccmd2 = adaptationModelFactory.createAdaptationPrimitive()
         ccmd2.setPrimitiveType(updateRoot.findAdaptationPrimitiveTypesByID(JavaSePrimitive.StartInstance))
         ccmd2.setRef(updatedInstance)
-        adaptationModel.addAdaptations(ccmd2)
+        adaptationModel.addAdaptations(ccmd2)*/
 
         val ccmd3 = adaptationModelFactory.createAdaptationPrimitive()
         ccmd3.setPrimitiveType(updateRoot.findAdaptationPrimitiveTypesByID(JavaSePrimitive.UpdateDictionaryInstance))
@@ -359,6 +387,13 @@ trait Kompare2 {
         adaptationModel.addAdaptations(ccmd3)
 
         updatedTD.add(updatedInstance.getTypeDefinition()!!.getName())
+    }
+
+    fun processStartInstance(updatedInstance: Instance, adaptationModel: AdaptationModel, updateRoot: ContainerRoot) {
+        val ccmd2 = adaptationModelFactory.createAdaptationPrimitive()
+        ccmd2.setPrimitiveType(updateRoot.findAdaptationPrimitiveTypesByID(JavaSePrimitive.StartInstance))
+        ccmd2.setRef(updatedInstance)
+        adaptationModel.addAdaptations(ccmd2)
     }
 
     fun processCheckUpdateInstance(actualInstance: Instance, updatedInstance: Instance, adaptationModel: AdaptationModel, actualRoot: ContainerRoot, actualUsedTD: MutableSet<String>, updateTD: MutableSet<String>, updateRoot: ContainerRoot, nodeName: String, updateInstances: MutableSet<String>): Boolean {
