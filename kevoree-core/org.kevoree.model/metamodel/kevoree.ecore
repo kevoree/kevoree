@@ -253,7 +253,7 @@
         <eStructuralFeatures xsi:type="ecore:EAttribute" name="metaData"
                              eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
         <eStructuralFeatures xsi:type="ecore:EAttribute" name="started"
-                             eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+                             eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean" defaultValueLiteral="true" />
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="LifeCycleTypeDefinition" abstract="true"
                   interface="true" eSuperTypes="#//TypeDefinition">
