@@ -4,6 +4,7 @@ package org.kevoree.tools.aether.framework
 import java.io.File
 import org.kevoree.DeployUnit
 import org.kevoree.kcl.KevoreeJarClassLoader
+import org.kevoree.kcl.KevoreeJarClassLoaderCoverageInjection
 import java.util.ArrayList
 import org.kevoree.api.service.core.classloading.KevoreeClassLoaderHandler
 import org.kevoree.api.service.core.classloading.DeployUnitResolver
@@ -182,12 +183,22 @@ open class JCLContextHandler: KevoreeClassLoaderHandler {
                 previousKCL
             } else {
                 Log.debug("Install {} , file {}", buildKEY(du), file.getAbsolutePath())
-                val newcl = KevoreeJarClassLoader()
+                System.out.printf("El loco %s\n",
+                        du.getUnitName() + "/" + du.getGroupName() + "/" +
+                du.getName() + "/" + du.getType())
+                val newcl = if (System.getProperty("kcl.coverage")!= null
+                            && "true".equals(System.getProperty("kcl.coverage"))) {
+                    KevoreeJarClassLoaderCoverageInjection()
+                }
+                else {
+                    KevoreeJarClassLoader()
+                }
                 if (System.getProperty("kcl.lazy") != null && "true".equals(System.getProperty("kcl.lazy"))) {
                     newcl.setLazyLoad(true)
                 } else {
                     newcl.setLazyLoad(false)
                 }
+
                 newcl.add(file.getAbsolutePath())
                 kcl_cache.put(buildKEY(du), newcl)
                 kcl_cache_file.put(buildKEY(du), file)
