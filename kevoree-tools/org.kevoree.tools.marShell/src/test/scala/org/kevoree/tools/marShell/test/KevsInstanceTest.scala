@@ -33,6 +33,7 @@ import org.kevoree.tools.marShell.interpreter.KevsInterpreterAspects._
 import org.kevoree.tools.marShell.interpreter.KevsInterpreterContext
 import org.scalatest.AbstractSuite
 import scala.collection.JavaConversions._
+import org.kevoree.ComponentInstance
 
 
 class KevsInstanceTest extends KevSTestSuiteHelper {
@@ -113,5 +114,18 @@ class KevsInstanceTest extends KevSTestSuiteHelper {
 
   }
 
+  @Test def verifyStartNStopInstance() {
+    val baseModel = model("baseModel/model_forStartNStop.kev")
+    val oscript = getScript("scripts/kevsInstanceStartNStop.kevs")
+
+    assert(oscript.interpret(KevsInterpreterContext(baseModel)))
+    baseModel.testSave("results", "kevsInstanceStartNStop-modified.kev")
+
+    var component = baseModel.findByPath("nodes[node1]/components[fk2]", classOf[ComponentInstance])
+    assume(component != null && component.getStarted, "StartInstance failed: component == " + component )
+
+    component = baseModel.findByPath("nodes[node0]/components[fk1]", classOf[ComponentInstance])
+    assume(component != null && !component.getStarted, "StopInstance failed: component == " + component )
+  }
 
 }

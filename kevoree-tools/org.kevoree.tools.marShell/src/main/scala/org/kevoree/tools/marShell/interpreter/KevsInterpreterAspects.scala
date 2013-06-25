@@ -99,6 +99,9 @@ object KevsInterpreterAspects {
         case removeChildStatment: RemoveChildStatment => KevsRemoveChildInterpreter(removeChildStatment)
         case moveChildStatment: MoveChildStatment => KevsMoveChildInterpreter(moveChildStatment)
 
+          // START and STOP
+        case startNStopInstanceStatement : StartNStopInstanceStatment => KevsStartNStopInstanceInterpreter(startNStopInstanceStatement)
+
       }
       case _@e => Log.error("", e.asInstanceOf[Throwable]); null
     }

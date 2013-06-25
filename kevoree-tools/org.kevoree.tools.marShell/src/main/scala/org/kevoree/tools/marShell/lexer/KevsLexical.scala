@@ -43,7 +43,7 @@ class KevsLexical extends Lexical with KevsTokens {
   def eof = elem("eof", ch => ch == EofCh)
   protected def kident(name: String) : KevsToken = if (reserved contains name) Keyword(name) else Identifier(name)
   override def whitespace: Parser[Any] = rep(whitespaceChar)
-  val reserved : HashSet[String] = HashSet("fragDep","default","values","optional","createDictionaryType","addRepo","include","addDeployUnit","updateDictionary","tblock","addComponent","removeComponent","moveComponent","addNode","removeNode","addChannel","removeChannel","bind","unbind","addGroup","removeGroup","createComponentType","createChannelType","addPortType","addLibrary","removeLibrary","addToGroup","removeFromGroup","network", "addChild", "removeChild", "moveChild", "merge","addOutPortType","addInPortType","Message","Service")
+  val reserved : HashSet[String] = HashSet("fragDep","default","values","optional","createDictionaryType","addRepo","include","addDeployUnit","updateDictionary","tblock","addComponent","removeComponent","moveComponent","addNode","removeNode","addChannel","removeChannel","bind","unbind","addGroup","removeGroup","createComponentType","createChannelType","addPortType","addLibrary","removeLibrary","addToGroup","removeFromGroup","network", "addChild", "removeChild", "moveChild", "merge","addOutPortType","addInPortType","Message","Service", "startInstance", "stopInstance")
   val delimiters : HashSet[String] = HashSet("@",":","{","}","=>",".",",","=","*", "/")
 
 
