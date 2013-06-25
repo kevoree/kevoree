@@ -29,22 +29,24 @@
  * Copyright  : IRISA / INRIA / Universite de Rennes 1 */
 package org.kevoree.tools.ui.editor.property;
 
-import java.awt.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-import javax.swing.text.BadLocationException;
-
-import com.explodingpixels.macwidgets.HudWidgetFactory;
+import com.explodingpixels.macwidgets.plaf.HudCheckBoxUI;
 import com.explodingpixels.macwidgets.plaf.HudLabelUI;
 import com.explodingpixels.macwidgets.plaf.HudTextFieldUI;
+import org.kevoree.ComponentInstance;
+import org.kevoree.Instance;
 import org.kevoree.tools.ui.editor.KevoreeUIKernel;
 import org.kevoree.tools.ui.editor.command.RemoveInstanceCommand;
 import org.kevoree.tools.ui.editor.widget.JCommandButton;
-import org.kevoree.tools.ui.framework.ThreePartRoundedPanel;
 import org.kevoree.tools.ui.framework.TitledElement;
+
+import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.text.BadLocationException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @author ffouquet
@@ -72,23 +74,61 @@ public class NamedElementPropertyEditor extends /*ThreePartRoundedPanel*/ JPanel
         p.setOpaque(false);
         JLabel l = new JLabel("Name", JLabel.TRAILING);
         l.setUI(new HudLabelUI());
-
-       // l.setOpaque(false);
-       // l.setForeground(Color.WHITE);
         p.add(l);
         JTextField textField = new JTextField(15);
         textField.setUI(new HudTextFieldUI());
-
-       // textField.setOpaque(false);
         l.setLabelFor(textField);
         p.add(textField);
         textField.setText(namedElem.getName());
-
         this.addCenter(p);
         SpringUtilities.makeCompactGrid(p,
                 1, 2, //rows, cols
                 6, 6,        //initX, initY
                 6, 6);       //xPad, yPad
+
+
+        if (namedElem instanceof Instance) {
+            JPanel p2 = new JPanel(new SpringLayout());
+            p2.setBorder(null);
+            p2.setOpaque(false);
+            JLabel l2 = new JLabel("Started", JLabel.TRAILING);
+            l2.setUI(new HudLabelUI());
+            p2.add(l2);
+            final JCheckBox textField2 = new JCheckBox();
+            textField2.setUI(new HudCheckBoxUI());
+            l2.setLabelFor(textField2);
+            p2.add(textField2);
+
+            if (namedElem instanceof Instance) {
+                Instance inst = (Instance) namedElem;
+                if(inst.getStarted()){
+                    textField2.setSelected(true);
+                }
+
+            }
+
+            this.addCenter(p2);
+            SpringUtilities.makeCompactGrid(p2,
+                    1, 2, //rows, cols
+                    6, 6,        //initX, initY
+                    6, 6);       //xPad, yPad
+
+
+            textField2.addChangeListener(new ChangeListener() {
+                @Override
+                public void stateChanged(ChangeEvent e) {
+                    Instance inst = (Instance) namedElem;
+                    if(textField2.isSelected()){
+                        inst.setStarted(true);
+                    } else {
+                        inst.setStarted(false);
+                    }
+                }
+            });
+
+        }
+
+
 
 
 

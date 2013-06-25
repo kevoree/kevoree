@@ -55,6 +55,7 @@ trait Kompare2 {
                 val updatedComponent = updateRoot.findByPath(actualComponentPath, javaClass<ComponentInstance>())
                 if(updatedComponent == null){
                     processRemoveInstance(actualComponent, adaptationModel, actualRoot, actualTD)
+                    processStopInstance(actualComponent, adaptationModel, actualRoot)
                     for(port in actualComponent.getProvided()){
                         for(binding in port.getBindings()){
                             processRemoveMBinding(binding, adaptationModel, actualRoot)
@@ -71,15 +72,7 @@ trait Kompare2 {
                     }
                     alreadyProcessInstance.put(actualComponent.path()!!, actualComponent)
                 } else {
-                    System.out.println(updatedComponent.getStarted());
-                    System.out.println(actualComponent.getStarted());
-                    if (updatedComponent.getStarted() != actualComponent.getStarted()) {
-                        if (actualComponent.getStarted()) {
-                            processStopInstance(actualComponent, adaptationModel, actualRoot)
-                        } else {
-                            processStartInstance(actualComponent, adaptationModel, actualRoot);
-                        }
-                    }
+                    processCheckStartAndStopInstance(actualComponent, updatedComponent, adaptationModel, actualRoot ,updateRoot)
                 }
             }
         }
@@ -91,6 +84,9 @@ trait Kompare2 {
                 val actualComponent = actualRoot.findByPath(updatedComponentPath, javaClass<ComponentInstance>())
                 if(actualComponent == null){
                     processAddInstance(updatedComponent, adaptationModel, updateRoot, updateTD)
+                    if (updatedComponent.getStarted()) {
+                        processStartInstance(updatedComponent, adaptationModel, updateRoot)
+                    }
                     for(port in updatedComponent.getProvided()){
                         for(binding in port.getBindings()){
                             processAddMBinding(binding, adaptationModel, actualRoot, updateRoot)
@@ -110,15 +106,7 @@ trait Kompare2 {
                     processCheckUpdateInstance(actualComponent, updatedComponent, adaptationModel, actualRoot, actualTD, updateTD, updateRoot, nodeName, updatedTypeDefs)
                     checkBindings(actualChannels, newChannels, actualComponent.getProvided(), updatedComponent.getProvided(), adaptationModel, actualRoot, updateRoot)
                     checkBindings(actualChannels, newChannels, actualComponent.getRequired(), updatedComponent.getRequired(), adaptationModel, actualRoot, updateRoot)
-                    System.out.println(updatedComponent.getStarted());
-                    System.out.println(actualComponent.getStarted());
-                    if (updatedComponent.getStarted() != actualComponent.getStarted()) {
-                        if (actualComponent.getStarted()) {
-                            processStopInstance(actualComponent, adaptationModel, actualRoot)
-                        } else {
-                            processStartInstance(actualComponent, adaptationModel, actualRoot);
-                        }
-                    }
+                    processCheckStartAndStopInstance(actualComponent, updatedComponent, adaptationModel, actualRoot, updateRoot)
                 }
             }
         }
@@ -131,6 +119,9 @@ trait Kompare2 {
                     val updateGroup = updateRoot.findGroupsByID(actualGroup.getName())
                     if(updateGroup == null || updateGroup.findSubNodesByID(actualNode.getName()) == null){
                         processRemoveInstance(actualGroup, adaptationModel, actualRoot, actualTD)
+                        processStopInstance(actualGroup, adaptationModel, actualRoot)
+                    } else {
+                        processCheckStartAndStopInstance(actualGroup, updateGroup, adaptationModel, actualRoot, updateRoot)
                     }
                 }
             }
@@ -140,6 +131,9 @@ trait Kompare2 {
                 val actualGroup = actualRoot.findGroupsByID(updateGroup.getName())
                 if(actualGroup == null || actualGroup.findSubNodesByID(nodeName) == null){
                     processAddInstance(updateGroup, adaptationModel, updateRoot, updateTD)
+                    if (updateGroup.getStarted()) {
+                        processStartInstance(updateGroup, adaptationModel, updateRoot)
+                    }
                 } else {
                     //Check dictionary
                     processCheckUpdateInstance(actualGroup, updateGroup, adaptationModel, actualRoot, actualTD, updateTD, updateRoot, nodeName, updatedTypeDefs)
@@ -162,6 +156,7 @@ trait Kompare2 {
                             adaptationModel.addAdaptations(ccmd)
                         }
                     }
+                    processCheckStartAndStopInstance(actualGroup, updateGroup, adaptationModel, actualRoot, updateRoot)
                 }
             }
         }
@@ -313,6 +308,7 @@ trait Kompare2 {
             val updateChannel = actualRoot.findByPath(actualChannel.path()!!, javaClass<Channel>())
             if(updateChannel == null){
                 processRemoveInstance(actualChannel, adaptationModel, actualRoot, actualTD)
+                processStopInstance(actualChannel, adaptationModel, actualRoot)
                 for(binding in actualChannel.getBindings()){
                     processRemoveMBinding(binding, adaptationModel, actualRoot)
                 }
@@ -329,6 +325,11 @@ trait Kompare2 {
             val actualChannel = actualRoot.findByPath(updateChannel.path()!!, javaClass<Channel>())
             if(actualChannel == null){
                 processAddInstance(updateChannel, adaptationModel, updateRoot, updateTD)
+                if (updateChannel.getStarted()) {
+                    processStartInstance(updateChannel, adaptationModel, updateRoot)
+                }
+            } else {
+                processCheckStartAndStopInstance(actualChannel, updateChannel, adaptationModel, actualRoot, updateRoot)
             }
         }
         alreadyProcessInstance.put(updateChannel!!.path()!!, updateChannel)
@@ -394,6 +395,16 @@ trait Kompare2 {
         ccmd2.setPrimitiveType(updateRoot.findAdaptationPrimitiveTypesByID(JavaSePrimitive.StartInstance))
         ccmd2.setRef(updatedInstance)
         adaptationModel.addAdaptations(ccmd2)
+    }
+
+    fun processCheckStartAndStopInstance(actualInstance: Instance, updatedInstance: Instance, adaptationModel: AdaptationModel, actualRoot: ContainerRoot, updateRoot: ContainerRoot) {
+        if (updatedInstance.getStarted() != actualInstance.getStarted()) {
+            if (actualInstance.getStarted()) {
+                processStopInstance(actualInstance, adaptationModel, actualRoot)
+            } else {
+                processStartInstance(actualInstance, adaptationModel, actualRoot);
+            }
+        }
     }
 
     fun processCheckUpdateInstance(actualInstance: Instance, updatedInstance: Instance, adaptationModel: AdaptationModel, actualRoot: ContainerRoot, actualUsedTD: MutableSet<String>, updateTD: MutableSet<String>, updateRoot: ContainerRoot, nodeName: String, updateInstances: MutableSet<String>): Boolean {
@@ -568,6 +579,7 @@ trait Kompare2 {
             } else {
                 if(channelAspect.usedByNode(channelOrigin, nodeName) && !channelAspect.usedByNode(ch2, nodeName)){
                     processAddInstance(channelOrigin, adaptationModel, updateRoot, updateTD)
+                    processStartInstance(channelOrigin, adaptationModel, updateRoot)
                     for(remote in channelAspect.getConnectedNode(channelOrigin, nodeName)){
                         val addccmd = adaptationModelFactory.createAdaptationPrimitive()
                         addccmd.setPrimitiveType(updateRoot.findAdaptationPrimitiveTypesByID(JavaSePrimitive.AddFragmentBinding))
@@ -576,7 +588,7 @@ trait Kompare2 {
                         adaptationModel.addAdaptations(addccmd)
                     }
                 } else {
-
+                    processCheckStartAndStopInstance(channelOrigin, ch2, adaptationModel, actualRoot, updateRoot)
                 }
 
 

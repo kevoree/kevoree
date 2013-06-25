@@ -7,13 +7,13 @@
 <required xsi:type="kevoree:Port" portTypeRef="//@typeDefinitions.11/@required.0">
 </required>
 </components>
-<components xsi:type="kevoree:ComponentInstance" name="console" typeDefinition="//@typeDefinitions.11">
+<components xsi:type="kevoree:ComponentInstance" name="console" started="false" typeDefinition="//@typeDefinitions.11">
 <provided xsi:type="kevoree:Port" bindings="//@mBindings.1" portTypeRef="//@typeDefinitions.11/@provided.0">
 </provided>
 <required xsi:type="kevoree:Port" portTypeRef="//@typeDefinitions.11/@required.0">
 </required>
 </components>
-<components xsi:type="kevoree:ComponentInstance" name="input" typeDefinition="//@typeDefinitions.15">
+<components xsi:type="kevoree:ComponentInstance" started="true" name="input" typeDefinition="//@typeDefinitions.15">
 <dictionary>
 <values xsi:type="kevoree:DictionaryValue" value="2000" attribute="//@typeDefinitions.15/@dictionaryType/@attributes.0">
 </values>
