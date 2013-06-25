@@ -5,8 +5,14 @@
     <artifactId>org.kevoree.tools.root</artifactId>
     <packaging>pom</packaging>
     <name>Kevoree :: Tools :: Root</name>
-    <url>https://github.com/dukeboard/kevoree</url>
     <version>2.0.0-SNAPSHOT</version>
+
+    <parent>
+	    <groupId>org.kevoree.root</groupId>
+	    <artifactId>org.kevoree.root</artifactId>
+        <version>2.0.0-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
 
     <dependencies>
         <dependency>
@@ -19,63 +25,6 @@
 
     <build>
         <plugins>
-			<plugin>
-			        <groupId>org.codehaus.mojo</groupId>
-			        <artifactId>license-maven-plugin</artifactId>
-			        <version>1.4</version>
-			        <configuration>
-			          <verbose>false</verbose>
-			          <addSvnKeyWords>true</addSvnKeyWords>
-			        </configuration>
-			        <executions>
-			          <execution>
-			            <id>first</id>
-			            <goals>
-			              <goal>update-file-header</goal>
-			            </goals>
-			            <phase>process-sources</phase>
-			            <configuration>
-			              <licenseName>lgpl_v3</licenseName>
-						  <organizationName>org.kevoree</organizationName>
-						  <inceptionYear>2013</inceptionYear>
-			              <includes>
-			                <include>*.java</include>
-			                <include>*.kt</include>
-			                <include>*.scala</include>
-			              </includes>
-			            </configuration>
-			          </execution>
-			        </executions>
-			      </plugin>
-
-            <!-- Java compiler plugin -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.5.1</version>
-                <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
-                    <encoding>${project.build.sourceEncoding}</encoding>
-                </configuration>
-            </plugin>
-            <!-- Resources plugin : allow to collect and embedd severals resources -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-resources-plugin</artifactId>
-                <version>2.4.3</version>
-                <configuration>
-                    <encoding>${project.build.sourceEncoding}</encoding>
-                </configuration>
-            </plugin>
-            <!-- Felix BnD plugin : allow Bundle packaging : generate OSGi JAR  -->
-            <plugin>
-                <groupId>org.apache.felix</groupId>
-                <artifactId>maven-bundle-plugin</artifactId>
-                <version>2.3.5</version>
-                <extensions>true</extensions>
-            </plugin>
-
             <!-- Scala plugin : allow to compile Scala file -->
             <plugin>
                 <groupId>net.alchim31.maven</groupId>
@@ -111,43 +60,11 @@
                     </args>
                 </configuration>
             </plugin>
-
         </plugins>
     </build>
 
-    <repositories>
-        <repository>
-            <id>kevoree-libs-release-local</id>
-            <url>http://maven.kevoree.org/release</url>
-        </repository>
-        <repository>
-            <id>kevoree-snapshots</id>
-            <url>http://maven.kevoree.org/snapshots</url>
-        </repository>
-        <repository>
-            <id>kt</id>
-            <url>http://repository.jetbrains.com/all/</url>
-        </repository>
-    </repositories>
-
-    <pluginRepositories>
-        <pluginRepository>
-            <id>plugin.kevoree-github</id>
-            <url>http://maven.kevoree.org/release</url>
-        </pluginRepository>
-        <pluginRepository>
-            <id>plugin.kevoree-snapshots</id>
-            <url>http://maven.kevoree.org/snapshots</url>
-        </pluginRepository>
-        <pluginRepository>
-            <id>kotm</id>
-            <url>http://repository.jetbrains.com/all/</url>
-        </pluginRepository>
-    </pluginRepositories>
-
     <modules>
         <module>org.kevoree.tools.aether.framework</module>
-
         <!-- Kevoree specific frameworks -->
         <module>org.kevoree.tools.javase.framework</module>
         <module>org.kevoree.tools.android.framework</module>
@@ -168,7 +85,7 @@
         <module>org.kevoree.tools.marShellGUI</module>
         <module>org.kevoree.tools.model2code</module>
         <!--><module>org.kevoree.tools.war.wrapperplugin</module>-->
-       <!-- <module>../org.kevoree.tools.emf.compat</module>  -->
+        <!-- <module>../org.kevoree.tools.emf.compat</module>  -->
         <!-- Native -->
         <!--
         <module>../org.kevoree.tools.nativeN.core</module>
@@ -177,31 +94,7 @@
         -->
         <module>org.kevoree.tools.ui.editor.standalone</module>
         <module>org.kevoree.tools.marshell.mavenplugin</module>
-	    <module>org.kevoree.tools.accesscontrol.framework</module>
-	  
+        <module>org.kevoree.tools.accesscontrol.framework</module>
     </modules>
-
-    <properties>
-        <scala.version>2.9.2</scala.version>
-        <kotlin.version>0.5.748</kotlin.version>
-        <bundle.vendor>IRISA/INRIA</bundle.vendor>
-        <releaseUrl>http://maven.kevoree.org/libs-release-local</releaseUrl>
-        <slf4j.version>1.7.5</slf4j.version>
-        <kevoree.version>${project.version}</kevoree.version>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
-
-
-    <distributionManagement>
-        <repository>
-            <id>maven2.kevoree.release</id>
-            <url>http://maven.kevoree.org/archiva/repository/release/</url>
-        </repository>
-        <snapshotRepository>
-            <id>maven2.kevoree.snapshots</id>
-            <url>http://maven.kevoree.org/archiva/repository/snapshots/</url>
-        </snapshotRepository>
-    </distributionManagement>
-
 
 </project>

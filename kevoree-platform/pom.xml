@@ -6,15 +6,13 @@
     <packaging>pom</packaging>
     <version>2.0.0-SNAPSHOT</version>
     <name>Kevoree :: Platform :: Root</name>
-    <url>https://github.com/dukeboard/kevoree</url>
 
-    <properties>
-        <scala.version>2.9.2</scala.version>
-        <slf4j.version>1.7.2</slf4j.version>
-        <kotlin.version>0.5.748</kotlin.version>
-        <kevoree.version>${project.version}</kevoree.version>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
+    <parent>
+	    <groupId>org.kevoree.root</groupId>
+	    <artifactId>org.kevoree.root</artifactId>
+        <version>2.0.0-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
 
     <dependencies>
         <dependency>
@@ -25,31 +23,6 @@
         </dependency>
     </dependencies>
 
-    <build>
-        <plugins>
-            <!-- Java compiler plugin -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.0</version>
-                <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
-                    <encoding>${project.build.sourceEncoding}</encoding>
-                </configuration>
-            </plugin>
-            <!-- Resources plugin : allow to collect and embedd severals resources -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-resources-plugin</artifactId>
-                <version>2.5</version>
-                <configuration>
-                    <encoding>${project.build.sourceEncoding}</encoding>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
-
     <modules>
         <module>org.kevoree.platform.base</module>
         <module>org.kevoree.platform.standalone</module>
@@ -57,38 +30,5 @@
         <module>org.kevoree.platform.mavenrunner</module>
         <module>org.kevoree.platform.android.apk</module>
     </modules>
-
-    <repositories>
-        <repository>
-            <id>kevoree-libs-release-local</id>
-            <url>http://maven.kevoree.org/release/</url>
-        </repository>
-        <repository>
-            <id>kevoree-snapshots</id>
-            <url>http://maven.kevoree.org/snapshots/</url>
-        </repository>
-    </repositories>
-
-    <pluginRepositories>
-        <pluginRepository>
-            <id>plugin.kevoree-github</id>
-            <url>http://maven.kevoree.org/release/</url>
-        </pluginRepository>
-        <pluginRepository>
-            <id>plugin.kevoree-snapshots</id>
-            <url>http://maven.kevoree.org/snapshots/</url>
-        </pluginRepository>
-    </pluginRepositories>
-
-    <distributionManagement>
-        <repository>
-            <id>maven2.kevoree.release</id>
-            <url>http://maven.kevoree.org/archiva/repository/release/</url>
-        </repository>
-        <snapshotRepository>
-            <id>maven2.kevoree.snapshots</id>
-            <url>http://maven.kevoree.org/archiva/repository/snapshots/</url>
-        </snapshotRepository>
-    </distributionManagement>
 
 </project>
