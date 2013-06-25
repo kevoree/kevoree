@@ -36,7 +36,6 @@ import javax.lang.model.element._
  * User: ffouquet
  * Date: 04/02/11
  * Time: 18:17
- * To change this template use File | Settings | File Templates.
  */
 
 class SuperTypeValidationVisitor(superClassName: String) extends AbstractElementVisitor6[Any, Element] {

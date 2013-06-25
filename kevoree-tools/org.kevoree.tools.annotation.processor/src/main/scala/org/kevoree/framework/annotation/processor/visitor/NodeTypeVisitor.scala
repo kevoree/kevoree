@@ -26,16 +26,12 @@ package org.kevoree.framework.annotation.processor.visitor
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 
 import sub._
 import javax.annotation.processing.ProcessingEnvironment
 import javax.lang.model.util.SimpleElementVisitor6
 import org.kevoree.NodeType
-import javax.lang.model.element.{ExecutableElement, ElementKind, TypeElement, Element}
+import javax.lang.model.element.{TypeElement, Element}
 
 case class NodeTypeVisitor(nodeType: NodeType, env: ProcessingEnvironment, rootVisitor: KevoreeAnnotationProcessor)
   extends SimpleElementVisitor6[Any, Element]
@@ -54,7 +50,7 @@ case class NodeTypeVisitor(nodeType: NodeType, env: ProcessingEnvironment, rootV
       it =>
         it match {
           case dt: javax.lang.model.`type`.DeclaredType => {
-            var annotFragment: Any = dt.asElement().getAnnotation(classOf[org.kevoree.annotation.NodeFragment])
+            var annotFragment: Any = dt.asElement().getAnnotation(classOf[org.kevoree.annotation.NodeType])
             if (annotFragment != null) {
               dt.asElement().accept(this, dt.asElement())
             }
@@ -76,12 +72,7 @@ case class NodeTypeVisitor(nodeType: NodeType, env: ProcessingEnvironment, rootV
   override def visitType(p1: TypeElement, p2: Element): Any = {
     p1.getSuperclass match {
       case dt: javax.lang.model.`type`.DeclaredType => {
-        var an: Any = dt.asElement().getAnnotation(classOf[org.kevoree.annotation.NodeFragment])
-        if (an != null) {
-          dt.asElement().accept(this, dt.asElement())
-          //          defineAsSuperType(nodeType, dt.asElement().getSimpleName.toString, classOf[NodeFragment])
-        }
-        an = dt.asElement().getAnnotation(classOf[org.kevoree.annotation.NodeType])
+        val an: Any = dt.asElement().getAnnotation(classOf[org.kevoree.annotation.NodeType])
         if (an != null) {
           dt.asElement().accept(this, dt.asElement())
           defineAsSuperType(nodeType, dt.asElement().getSimpleName.toString, classOf[NodeType])
@@ -89,6 +80,21 @@ case class NodeTypeVisitor(nodeType: NodeType, env: ProcessingEnvironment, rootV
       }
       case _ =>
     }
+    import scala.collection.JavaConversions._
+    p1.getInterfaces.foreach{ it =>
+       it match {
+         case dt: javax.lang.model.`type`.DeclaredType => {
+           val an: Any = dt.asElement().getAnnotation(classOf[org.kevoree.annotation.NodeType])
+           if (an != null) {
+             dt.asElement().accept(this, dt.asElement())
+             defineAsSuperType(nodeType, dt.asElement().getSimpleName.toString, classOf[NodeType])
+           }
+         }
+         case _ @ e =>
+       }
+    }
+
+
     commonProcess(p1)
   }
 

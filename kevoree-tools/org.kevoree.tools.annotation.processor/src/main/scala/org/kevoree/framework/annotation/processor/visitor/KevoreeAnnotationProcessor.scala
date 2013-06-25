@@ -14,11 +14,10 @@
 
 package org.kevoree.framework.annotation.processor.visitor
 
-import org.kevoree.KevoreeFactory
 import org.kevoree.ContainerRoot
 import org.kevoree.framework.annotation.processor.LocalUtility
 import org.kevoree.framework.annotation.processor.PostAptChecker
-import org.kevoree.tools.annotation.generator.{ThreadingMapping, KevoreeActivatorGenerator, KevoreeFactoryGenerator, KevoreeGenerator}
+import org.kevoree.tools.annotation.generator.{ThreadingMapping, KevoreeGenerator}
 
 import org.kevoree.framework._
 import scala.collection.JavaConversions._
@@ -129,8 +128,8 @@ class KevoreeAnnotationProcessor() extends javax.annotation.processing.AbstractP
       nodeTypeNameList.foreach {
         targetNodeName =>
           KevoreeGenerator.generatePort(root, env.getFiler, targetNodeName)
-          //KevoreeFactoryGenerator.generateFactory(root, env.getFiler, targetNodeName)
-          //KevoreeActivatorGenerator.generateActivator(root, env.getFiler, targetNodeName)
+        //KevoreeFactoryGenerator.generateFactory(root, env.getFiler, targetNodeName)
+        //KevoreeActivatorGenerator.generateActivator(root, env.getFiler, targetNodeName)
       }
       env.getMessager.printMessage(Kind.OTHER, "Save Kevoree library")
       KevoreeXmiHelper.instance$.save(LocalUtility.generateLibURI(options), root);
@@ -144,22 +143,22 @@ class KevoreeAnnotationProcessor() extends javax.annotation.processing.AbstractP
 
   def processNodeType(nodeTypeAnnotation: org.kevoree.annotation.NodeType, typeDecl: TypeElement, root: ContainerRoot) = {
     //Checks that the root AbstractNodeType is present in hierarchy.
-    val superTypeChecker = new SuperTypeValidationVisitor(classOf[AbstractNodeType].getName)
-    typeDecl.accept(superTypeChecker, typeDecl)
+    //val superTypeChecker = new SuperTypeValidationVisitor(classOf[AbstractNodeType].getName)
+    //typeDecl.accept(superTypeChecker, typeDecl)
 
     var isAbstract = false
     typeDecl.getModifiers.find(mod => mod.equals(javax.lang.model.element.Modifier.ABSTRACT)) match {
       case Some(s) => {
         isAbstract = true
-        env.getMessager.printMessage(Kind.WARNING, "NodeType bean ignored  " + typeDecl.getQualifiedName + ", reason=Declared as @NodeType but is actually ABSTRACT. Should be either concrete or @NodeFragment.")
+        //env.getMessager.printMessage(Kind.WARNING, "NodeType bean ignored  " + typeDecl.getQualifiedName + ", reason=Declared as @NodeType but is actually ABSTRACT. Should be either concrete or @NodeFragment.")
       }
       case None =>
     }
 
-    if (superTypeChecker.result) {
+    //if (superTypeChecker.result) {
       val nodeTypeName = typeDecl.getSimpleName
       val nodeType: org.kevoree.NodeType = root.findByPath("typeDefinitions[" + nodeTypeName + "]", classOf[org.kevoree.NodeType]) match {
-        case found : org.kevoree.NodeType => found
+        case found: org.kevoree.NodeType => found
         case null => {
           val nodeType = LocalUtility.kevoreeFactory.createNodeType
           nodeType.setName(nodeTypeName.toString)
@@ -171,14 +170,16 @@ class KevoreeAnnotationProcessor() extends javax.annotation.processing.AbstractP
       if (!isAbstract) {
         nodeType.setBean(typeDecl.getQualifiedName.toString)
         nodeType.setFactoryBean(typeDecl.getQualifiedName + "Factory")
+        nodeType.setAbstract(false)
+      } else {
+        nodeType.setAbstract(true)
       }
-
 
       //RUN VISITOR
       typeDecl.accept(NodeTypeVisitor(nodeType, env, this), typeDecl)
-    } else {
-      env.getMessager.printMessage(Kind.WARNING, "NodeType ignored " + typeDecl.getQualifiedName + " , reason=Must extend " + classOf[AbstractNodeType].getName)
-    }
+   // } else {
+    //  env.getMessager.printMessage(Kind.WARNING, "NodeType ignored " + typeDecl.getQualifiedName + " , reason=Must extend " + classOf[AbstractNodeType].getName)
+    //}
   }
 
 
@@ -205,7 +206,7 @@ class KevoreeAnnotationProcessor() extends javax.annotation.processing.AbstractP
           root.addTypeDefinitions(groupType)
           groupType
         }
-        case td : org.kevoree.GroupType => {
+        case td: org.kevoree.GroupType => {
           td
         }
       }
@@ -247,7 +248,7 @@ class KevoreeAnnotationProcessor() extends javax.annotation.processing.AbstractP
           root.addTypeDefinitions(channelType)
           channelType
         }
-        case td : org.kevoree.ChannelType => {
+        case td: org.kevoree.ChannelType => {
           td
         }
       }
@@ -292,7 +293,7 @@ class KevoreeAnnotationProcessor() extends javax.annotation.processing.AbstractP
           root.addTypeDefinitions(componentType)
           componentType
         }
-        case td : org.kevoree.ComponentType => {
+        case td: org.kevoree.ComponentType => {
           td
         }
       }
