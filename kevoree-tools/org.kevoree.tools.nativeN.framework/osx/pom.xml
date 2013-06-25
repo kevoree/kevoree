@@ -28,7 +28,7 @@
         <dependency>
             <groupId>org.kevoree.tools.nativeN</groupId>
             <artifactId>org.kevoree.tools.nativeN.core</artifactId>
-            <version>${kevoree.version}</version>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
     <build>

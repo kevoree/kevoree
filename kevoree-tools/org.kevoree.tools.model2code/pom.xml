@@ -34,12 +34,12 @@
         <dependency>
             <artifactId>org.kevoree.tools.javase.framework</artifactId>
             <groupId>org.kevoree.tools</groupId>
-            <version>${kevoree.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.kevoree.tools</groupId>
             <artifactId>org.kevoree.tools.annotation.api</artifactId>
-            <version>${kevoree.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.scalatest</groupId>

@@ -37,7 +37,7 @@
         <dependency>
             <groupId>org.kevoree.corelibrary.android</groupId>
             <artifactId>org.kevoree.library.android.nodeType</artifactId>
-            <version>${kevoree.version}</version>
+            <version>${project.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.jetbrains.kotlin</groupId>
@@ -52,7 +52,7 @@
         <dependency>
             <groupId>org.kevoree.corelibrary.android</groupId>
             <artifactId>org.kevoree.library.android.jexxus</artifactId>
-            <version>${kevoree.version}</version>
+            <version>${project.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.jetbrains.kotlin</groupId>
@@ -82,47 +82,47 @@
         <dependency>
             <groupId>org.kevoree.tools</groupId>
             <artifactId>org.kevoree.tools.javase.framework</artifactId>
-            <version>${kevoree.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.kevoree.tools</groupId>
             <artifactId>org.kevoree.tools.android.framework</artifactId>
-            <version>${kevoree.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.kevoree</groupId>
             <artifactId>org.kevoree.api</artifactId>
-            <version>${kevoree.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.kevoree</groupId>
             <artifactId>org.kevoree.framework</artifactId>
-            <version>${kevoree.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.kevoree</groupId>
             <artifactId>org.kevoree.kcl</artifactId>
-            <version>${kevoree.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.kevoree.tools</groupId>
             <artifactId>org.kevoree.tools.annotation.api</artifactId>
-            <version>${kevoree.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.kevoree</groupId>
             <artifactId>org.kevoree.kompare</artifactId>
-            <version>${kevoree.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.kevoree</groupId>
             <artifactId>org.kevoree.core</artifactId>
-            <version>${kevoree.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.kevoree</groupId>
             <artifactId>org.kevoree.basechecker</artifactId>
-            <version>${kevoree.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.jgrapht</groupId>
@@ -132,7 +132,7 @@
         <dependency>
             <groupId>org.kevoree.tools</groupId>
             <artifactId>org.kevoree.tools.marShell</artifactId>
-            <version>${kevoree.version}</version>
+            <version>${project.version}</version>
             <exclusions>
                 <exclusion>
                     <artifactId>org.kevoree.tools.aether.framework</artifactId>
@@ -143,7 +143,7 @@
          <dependency>
              <artifactId>org.kevoree.tools.aether.framework.android</artifactId>
              <groupId>org.kevoree.tools</groupId>
-             <version>${kevoree.version}</version>
+             <version>${project.version}</version>
          </dependency>
         <dependency>
             <groupId>woodstox</groupId>

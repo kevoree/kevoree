@@ -21,7 +21,7 @@
         <dependency>
             <groupId>org.kevoree.platform</groupId>
             <artifactId>org.kevoree.platform.base</artifactId>
-            <version>${kevoree.version}</version>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
 

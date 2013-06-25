@@ -21,12 +21,12 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>org.kevoree.api</artifactId>
-            <version>${kevoree.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>org.kevoree.framework</artifactId>
-            <version>${kevoree.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.scalatest</groupId>

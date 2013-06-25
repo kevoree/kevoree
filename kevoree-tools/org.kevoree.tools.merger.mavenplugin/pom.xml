@@ -33,7 +33,7 @@
         <dependency>
             <groupId>org.kevoree</groupId>
             <artifactId>org.kevoree.merger</artifactId>
-            <version>${kevoree.version}</version>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
 

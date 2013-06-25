@@ -28,7 +28,7 @@
         <dependency>
             <artifactId>org.kevoree.tools.aether.framework</artifactId>
             <groupId>org.kevoree.tools</groupId>
-            <version>${kevoree.version}</version>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
 

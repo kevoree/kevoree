@@ -17,7 +17,7 @@
         <kevoree.version>${project.version}</kevoree.version>
         <node.name>duke</node.name>
         <bootstrap.bundles>${project.build.directory}/kevoreeBundles</bootstrap.bundles>
-        <bootstrap.version>${kevoree.version}</bootstrap.version>
+        <bootstrap.version>${project.version}</bootstrap.version>
     </properties>
 
 
@@ -30,7 +30,7 @@
         <dependency>
             <groupId>org.kevoree.platform</groupId>
             <artifactId>org.kevoree.platform.standalone</artifactId>
-            <version>${kevoree.version}</version>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
 

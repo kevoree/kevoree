@@ -21,17 +21,17 @@
         <dependency>
             <groupId>org.kevoree.tools.nativeN</groupId>
             <artifactId>org.kevoree.tools.nativeN.core</artifactId>
-            <version>${kevoree.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.kevoree.tools</groupId>
             <artifactId>org.kevoree.tools.javase.framework</artifactId>
-            <version>${kevoree.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.kevoree.tools</groupId>
             <artifactId>org.kevoree.tools.annotation.api</artifactId>
-            <version>${kevoree.version}</version>
+            <version>${project.version}</version>
         </dependency>
 
     </dependencies>
@@ -48,7 +48,7 @@
             <plugin>
                 <groupId>org.kevoree.tools</groupId>
                 <artifactId>org.kevoree.tools.annotation.mavenplugin</artifactId>
-                <version>${kevoree.version}</version>
+                <version>${project.version}</version>
                 <extensions>true</extensions>
                 <configuration>
                     <nodeTypeNames>JavaSENode</nodeTypeNames>
@@ -66,7 +66,7 @@
             <plugin>
                 <groupId>org.kevoree.platform</groupId>
                 <artifactId>org.kevoree.platform.mavenrunner</artifactId>
-                <version>${kevoree.version}</version>
+                <version>${project.version}</version>
             </plugin>
         </plugins>
     </build>
