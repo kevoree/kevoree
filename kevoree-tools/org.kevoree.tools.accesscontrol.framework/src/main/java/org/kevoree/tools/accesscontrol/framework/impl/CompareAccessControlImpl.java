@@ -54,6 +54,14 @@ public class CompareAccessControlImpl implements ICompareAccessControl
         this.root = root;
     }
 
+    public AccessControlRoot getRoot() {
+        return root;
+    }
+
+    public void setRoot(AccessControlRoot root) {
+        this.root = root;
+    }
+
     @Override
     public List<AdaptationPrimitive> approval(String nodeName, ContainerRoot current_model, SignedModel target_modelSigned) throws ControlException {
 

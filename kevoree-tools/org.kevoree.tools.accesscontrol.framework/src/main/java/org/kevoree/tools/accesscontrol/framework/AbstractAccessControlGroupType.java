@@ -19,7 +19,6 @@ import org.kevoree.Instance;
 import org.kevoree.accesscontrol.AccessControlRoot;
 import org.kevoree.adaptation.accesscontrol.api.ControlException;
 import org.kevoree.adaptation.accesscontrol.api.SignedModel;
-import org.kevoree.adaptation.accesscontrol.api.SignedPDP;
 import org.kevoree.framework.AbstractGroupType;
 import org.kevoree.framework.KevoreeXmiHelper;
 import org.kevoree.log.Log;
@@ -32,10 +31,7 @@ import org.kevoreeadaptation.AdaptationPrimitive;
 
 import javax.swing.*;
 import java.io.*;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
-import java.security.SignatureException;
 import java.util.List;
 
 
@@ -48,7 +44,6 @@ import java.util.List;
  */
 public abstract class AbstractAccessControlGroupType extends AbstractGroupType {
 
-    private AccessControlRoot root = null;
     private CompareAccessControlImpl accessControl;
 
 
@@ -97,23 +92,12 @@ public abstract class AbstractAccessControlGroupType extends AbstractGroupType {
     public abstract void pushPDP(ContainerRoot model,String targetNodeName, AccessControlRoot pdp,PrivateKey key) throws AccessControlException;
     public abstract void pushSignedModel(ContainerRoot model, String targetNodeName,PrivateKey key) throws AccessControlException;
 
-    /**
-     * Check if there is a current PDP available
-     * @return   true if there is a pdp
-     */
-    protected boolean assertPDP(){
-        if(root == null){
-            return false;
-        }
-        return true;
-    }
 
     public AccessControlRoot getModelAccessControl() {
-        return root;
+        return accessControl.getRoot();
     }
 
     private void setModelAccessControl(AccessControlRoot root) {
-        this.root = root;
         accessControl = new CompareAccessControlImpl(root);
     }
 
@@ -134,7 +118,7 @@ public abstract class AbstractAccessControlGroupType extends AbstractGroupType {
         if (signed instanceof SignedModelImpl)
         {
             SignedModel signedModel = (SignedModelImpl) signed;
-            if (assertPDP())
+            if (getAccessControl().getRoot() != null)
             {
                 List<AdaptationPrimitive> result = getAccessControl().approval(getNodeName(), getModelService().getLastModel(), signedModel);
                 if (result != null && result.size() == 0) {
@@ -167,7 +151,7 @@ public abstract class AbstractAccessControlGroupType extends AbstractGroupType {
         if (signed instanceof SignedPDPImpl) {
             SignedPDPImpl pdp = (SignedPDPImpl) signed;
 
-            if (assertPDP() == false) {
+            if (getAccessControl() == null) {
                 setModelAccessControl(AccessControlXmiHelper.instance$.loadString(new String(pdp.getSerialiedModel())));
                 Log.debug("Successful installation of the PDP");
                 return true;
