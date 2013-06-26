@@ -70,8 +70,6 @@ trait Kompare2 {
                         }
                     }
                     alreadyProcessInstance.put(actualComponent.path()!!, actualComponent)
-                } else {
-                    processCheckStartAndStopInstance(actualComponent, updatedComponent, adaptationModel, actualRoot, updateRoot)
                 }
             }
         }
@@ -115,8 +113,6 @@ trait Kompare2 {
                     val updateGroup = updateRoot.findGroupsByID(actualGroup.getName())
                     if(updateGroup == null || updateGroup.findSubNodesByID(actualNode.getName()) == null){
                         processRemoveInstance(actualGroup, adaptationModel, actualRoot, actualTD)
-                    } else {
-                        processCheckStartAndStopInstance(actualGroup, updateGroup, adaptationModel, actualRoot, updateRoot)
                     }
                 }
             }
