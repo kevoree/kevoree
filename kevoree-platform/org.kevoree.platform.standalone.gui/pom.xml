@@ -113,5 +113,12 @@
         </pluginRepository>
     </pluginRepositories>
 
+    <repositories>
+        <repository>
+            <id>kevoree</id>
+            <url>http://maven.kevoree.org/release</url>
+        </repository>
+    </repositories>
+
 
 </project>

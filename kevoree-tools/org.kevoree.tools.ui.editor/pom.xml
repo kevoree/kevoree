@@ -133,10 +133,17 @@
     </dependencies>
 
     <repositories>
+
         <repository>
             <id>fuseRepo</id>
             <url>http://repo.fusesource.com/nexus/content/repositories/public/</url>
         </repository>
+
+        <repository>
+            <id>kevoree</id>
+            <url>http://maven.kevoree.org/release</url>
+        </repository>
+
     </repositories>
 
 
