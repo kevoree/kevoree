@@ -567,7 +567,7 @@ trait Kompare2 {
                         adaptationModel.addAdaptations(addccmd)
                     }
                 } else {
-                    processCheckStartAndStopInstance(channelOrigin, ch2, adaptationModel, actualRoot, updateRoot)
+                    processCheckStartAndStopInstance(ch2, channelOrigin, adaptationModel, actualRoot, updateRoot)
                 }
 
 
