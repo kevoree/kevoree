@@ -20,7 +20,6 @@
         <bootstrap.version>${project.version}</bootstrap.version>
     </properties>
 
-
     <dependencies>
         <dependency>
             <groupId>org.kevoree.extra</groupId>

@@ -70,7 +70,6 @@ public class KevoreeNbTopComponent extends CloneableTopComponent {
         setLayout(new BorderLayout());
 
 
-        //org.kermeta.Kevoree.ui.editor.panel.KevoreeEditorPanel panel = new org.kermeta.Kevoree.ui.editor.panel.KevoreeEditorPanel();
         add(editor.getPanel(), BorderLayout.CENTER);
 
     }
