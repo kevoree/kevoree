@@ -55,7 +55,6 @@ trait Kompare2 {
                 val updatedComponent = updateRoot.findByPath(actualComponentPath, javaClass<ComponentInstance>())
                 if(updatedComponent == null){
                     processRemoveInstance(actualComponent, adaptationModel, actualRoot, actualTD)
-                    processStopInstance(actualComponent, adaptationModel, actualRoot)
                     for(port in actualComponent.getProvided()){
                         for(binding in port.getBindings()){
                             processRemoveMBinding(binding, adaptationModel, actualRoot)
@@ -72,7 +71,7 @@ trait Kompare2 {
                     }
                     alreadyProcessInstance.put(actualComponent.path()!!, actualComponent)
                 } else {
-                    processCheckStartAndStopInstance(actualComponent, updatedComponent, adaptationModel, actualRoot ,updateRoot)
+                    processCheckStartAndStopInstance(actualComponent, updatedComponent, adaptationModel, actualRoot, updateRoot)
                 }
             }
         }
@@ -84,9 +83,6 @@ trait Kompare2 {
                 val actualComponent = actualRoot.findByPath(updatedComponentPath, javaClass<ComponentInstance>())
                 if(actualComponent == null){
                     processAddInstance(updatedComponent, adaptationModel, updateRoot, updateTD)
-                    if (updatedComponent.getStarted()) {
-                        processStartInstance(updatedComponent, adaptationModel, updateRoot)
-                    }
                     for(port in updatedComponent.getProvided()){
                         for(binding in port.getBindings()){
                             processAddMBinding(binding, adaptationModel, actualRoot, updateRoot)
@@ -119,7 +115,6 @@ trait Kompare2 {
                     val updateGroup = updateRoot.findGroupsByID(actualGroup.getName())
                     if(updateGroup == null || updateGroup.findSubNodesByID(actualNode.getName()) == null){
                         processRemoveInstance(actualGroup, adaptationModel, actualRoot, actualTD)
-                        processStopInstance(actualGroup, adaptationModel, actualRoot)
                     } else {
                         processCheckStartAndStopInstance(actualGroup, updateGroup, adaptationModel, actualRoot, updateRoot)
                     }
@@ -131,9 +126,6 @@ trait Kompare2 {
                 val actualGroup = actualRoot.findGroupsByID(updateGroup.getName())
                 if(actualGroup == null || actualGroup.findSubNodesByID(nodeName) == null){
                     processAddInstance(updateGroup, adaptationModel, updateRoot, updateTD)
-                    if (updateGroup.getStarted()) {
-                        processStartInstance(updateGroup, adaptationModel, updateRoot)
-                    }
                 } else {
                     //Check dictionary
                     processCheckUpdateInstance(actualGroup, updateGroup, adaptationModel, actualRoot, actualTD, updateTD, updateRoot, nodeName, updatedTypeDefs)
@@ -308,7 +300,6 @@ trait Kompare2 {
             val updateChannel = actualRoot.findByPath(actualChannel.path()!!, javaClass<Channel>())
             if(updateChannel == null){
                 processRemoveInstance(actualChannel, adaptationModel, actualRoot, actualTD)
-                processStopInstance(actualChannel, adaptationModel, actualRoot)
                 for(binding in actualChannel.getBindings()){
                     processRemoveMBinding(binding, adaptationModel, actualRoot)
                 }
@@ -325,9 +316,6 @@ trait Kompare2 {
             val actualChannel = actualRoot.findByPath(updateChannel.path()!!, javaClass<Channel>())
             if(actualChannel == null){
                 processAddInstance(updateChannel, adaptationModel, updateRoot, updateTD)
-                if (updateChannel.getStarted()) {
-                    processStartInstance(updateChannel, adaptationModel, updateRoot)
-                }
             } else {
                 processCheckStartAndStopInstance(actualChannel, updateChannel, adaptationModel, actualRoot, updateRoot)
             }
@@ -356,10 +344,7 @@ trait Kompare2 {
         ccmd.setRef(actualInstance)
         adaptationModel.addAdaptations(ccmd)
 
-        /*val ccmd2 = adaptationModelFactory.createAdaptationPrimitive()
-        ccmd2.setPrimitiveType(actualRoot.findAdaptationPrimitiveTypesByID(JavaSePrimitive.StopInstance))
-        ccmd2.setRef(actualInstance)
-        adaptationModel.addAdaptations(ccmd2)*/
+        processStopInstance(actualInstance, adaptationModel, actualRoot)
 
         actualTD.add(actualInstance.getTypeDefinition()!!.getName())
     }
@@ -377,10 +362,9 @@ trait Kompare2 {
         ccmd.setRef(updatedInstance)
         adaptationModel.addAdaptations(ccmd)
 
-        /*val ccmd2 = adaptationModelFactory.createAdaptationPrimitive()
-        ccmd2.setPrimitiveType(updateRoot.findAdaptationPrimitiveTypesByID(JavaSePrimitive.StartInstance))
-        ccmd2.setRef(updatedInstance)
-        adaptationModel.addAdaptations(ccmd2)*/
+        if (updatedInstance.getStarted()) {
+            processStartInstance(updatedInstance, adaptationModel, updateRoot)
+        }
 
         val ccmd3 = adaptationModelFactory.createAdaptationPrimitive()
         ccmd3.setPrimitiveType(updateRoot.findAdaptationPrimitiveTypesByID(JavaSePrimitive.UpdateDictionaryInstance))
@@ -578,8 +562,7 @@ trait Kompare2 {
                 }
             } else {
                 if(channelAspect.usedByNode(channelOrigin, nodeName) && !channelAspect.usedByNode(ch2, nodeName)){
-                    processAddInstance(channelOrigin, adaptationModel, updateRoot, updateTD)
-                    processStartInstance(channelOrigin, adaptationModel, updateRoot)
+                    processAddInstance(ch2, adaptationModel, updateRoot, updateTD)
                     for(remote in channelAspect.getConnectedNode(channelOrigin, nodeName)){
                         val addccmd = adaptationModelFactory.createAdaptationPrimitive()
                         addccmd.setPrimitiveType(updateRoot.findAdaptationPrimitiveTypesByID(JavaSePrimitive.AddFragmentBinding))
