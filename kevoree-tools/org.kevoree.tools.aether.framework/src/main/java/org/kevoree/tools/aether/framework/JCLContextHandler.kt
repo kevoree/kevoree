@@ -1,6 +1,5 @@
 package org.kevoree.tools.aether.framework
 
-
 import java.io.File
 import org.kevoree.DeployUnit
 import org.kevoree.kcl.KevoreeJarClassLoader
@@ -8,10 +7,10 @@ import java.util.ArrayList
 import org.kevoree.api.service.core.classloading.KevoreeClassLoaderHandler
 import org.kevoree.api.service.core.classloading.DeployUnitResolver
 import java.util.concurrent.Callable
-import java.util.concurrent.ThreadFactory
 import java.util.HashMap
 import java.util.concurrent.Executors
 import org.kevoree.log.Log
+import org.kevoree.impl.DefaultKevoreeFactory
 
 /**
  * Created by IntelliJ IDEA.
@@ -244,6 +243,16 @@ inner class DUMP(): Runnable {
     }
 
     protected fun getKCLInternals(du: DeployUnit): KevoreeJarClassLoader? {
+
+        var result = kcl_cache.get(buildKEY(du))
+        if(result == null){
+            //try * version resolution
+            val duCloned = DefaultKevoreeFactory().createDeployUnit()
+            duCloned.setGroupName(du.getGroupName())
+            duCloned.setName(du.getName())
+            duCloned.setVersion("*")
+            result = kcl_cache.get(buildKEY(duCloned))
+        }
         return kcl_cache.get(buildKEY(du))
     }
 

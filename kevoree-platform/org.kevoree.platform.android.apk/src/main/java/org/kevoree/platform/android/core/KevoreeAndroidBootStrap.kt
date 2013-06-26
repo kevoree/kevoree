@@ -83,35 +83,38 @@ class KevoreeAndroidBootStrap {
             dummyKCL.lockLinks()
 
             bootstraper.registerManuallyDeployUnit("jgrapht-jdk1.5", "org.jgrapht", "0.7.3", dummyKCL)
-            bootstraper.registerManuallyDeployUnit("kotlin-runtime", "org.jetbrains.kotlin", "0.5.748", dummyKCL);
-            bootstraper.registerManuallyDeployUnit("kotlin-stdlib", "org.jetbrains.kotlin", "0.5.748", dummyKCL);
+            bootstraper.registerManuallyDeployUnit("kotlin-runtime", "org.jetbrains.kotlin", "*", dummyKCL);
+            bootstraper.registerManuallyDeployUnit("kotlin-stdlib", "org.jetbrains.kotlin", "*", dummyKCL);
             bootstraper.registerManuallyDeployUnit("jfilter-library", "fr.inria.jfilter", "1.3", dummyKCL);
-            bootstraper.registerManuallyDeployUnit("org.kevoree.adaptation.model", "org.kevoree", factory.getVersion(), dummyKCL)
-            bootstraper.registerManuallyDeployUnit("org.kevoree.api", "org.kevoree", factory.getVersion(), dummyKCL)
-            bootstraper.registerManuallyDeployUnit("org.kevoree.basechecker", "org.kevoree", factory.getVersion(), dummyKCL)
-            bootstraper.registerManuallyDeployUnit("org.kevoree.core", "org.kevoree", factory.getVersion(), dummyKCL)
-            bootstraper.registerManuallyDeployUnit("org.kevoree.framework", "org.kevoree", factory.getVersion(), dummyKCL)
-            bootstraper.registerManuallyDeployUnit("org.kevoree.kcl", "org.kevoree", factory.getVersion(), dummyKCL)
-            bootstraper.registerManuallyDeployUnit("org.kevoree.kompare", "org.kevoree", factory.getVersion(), dummyKCL)
-            bootstraper.registerManuallyDeployUnit("org.kevoree.merger", "org.kevoree", factory.getVersion(), dummyKCL)
-            bootstraper.registerManuallyDeployUnit("org.kevoree.model", "org.kevoree", factory.getVersion(), dummyKCL)
+            bootstraper.registerManuallyDeployUnit("org.kevoree.adaptation.model", "org.kevoree", "*", dummyKCL)
+            bootstraper.registerManuallyDeployUnit("org.kevoree.api", "org.kevoree", "*", dummyKCL)
+            bootstraper.registerManuallyDeployUnit("org.kevoree.basechecker", "org.kevoree", "*", dummyKCL)
+            bootstraper.registerManuallyDeployUnit("org.kevoree.core", "org.kevoree", "*", dummyKCL)
+            bootstraper.registerManuallyDeployUnit("org.kevoree.framework", "org.kevoree", "*", dummyKCL)
+            bootstraper.registerManuallyDeployUnit("org.kevoree.kcl", "org.kevoree", "*", dummyKCL)
+            bootstraper.registerManuallyDeployUnit("org.kevoree.kompare", "org.kevoree", "*", dummyKCL)
+            bootstraper.registerManuallyDeployUnit("org.kevoree.merger", "org.kevoree", "*", dummyKCL)
+            bootstraper.registerManuallyDeployUnit("org.kevoree.model", "org.kevoree", "*", dummyKCL)
 
-            bootstraper.registerManuallyDeployUnit("org.kevoree.resolver", "org.kevoree", factory.getVersion(), dummyKCL)
+            bootstraper.registerManuallyDeployUnit("org.kevoree.resolver", "org.kevoree", "*", dummyKCL)
             bootstraper.registerManuallyDeployUnit("scala-library", "org.scala-lang", "2.9.2", dummyKCL)
 
-            bootstraper.registerManuallyDeployUnit("org.kevoree.model.context", "org.kevoree", factory.getVersion(), dummyKCL)
-            bootstraper.registerManuallyDeployUnit("org.kevoree.tools.annotation.api", "org.kevoree.tools", factory.getVersion(), dummyKCL)
-            bootstraper.registerManuallyDeployUnit("org.kevoree.tools.android.framework", "org.kevoree.tools", factory.getVersion(), dummyKCL)
-            bootstraper.registerManuallyDeployUnit("org.kevoree.tools.javase.framework", "org.kevoree.tools", factory.getVersion(), dummyKCL)
-            bootstraper.registerManuallyDeployUnit("org.kevoree.tools.marShell", "org.kevoree.tools", factory.getVersion(), dummyKCL)
-            bootstraper.registerManuallyDeployUnit("org.kevoree.tools.aether.framework", "org.kevoree.tools", factory.getVersion(), dummyKCL)
-            bootstraper.registerManuallyDeployUnit("org.kevoree.tools.aether.framework.android", "org.kevoree.tools", factory.getVersion(), dummyKCL)
-          //  bootstraper.registerManuallyDeployUnit("org.kevoree.library.android.nodeType", "org.kevoree.corelibrary.android", factory.getVersion(), dummyKCL)
-          //  bootstraper.registerManuallyDeployUnit("org.kevoree.library.android.jexxus", "org.kevoree.corelibrary.android", factory.getVersion(), dummyKCL)
+            bootstraper.registerManuallyDeployUnit("org.kevoree.model.context", "org.kevoree", "*", dummyKCL)
+            bootstraper.registerManuallyDeployUnit("org.kevoree.tools.annotation.api", "org.kevoree.tools", "*", dummyKCL)
+            bootstraper.registerManuallyDeployUnit("org.kevoree.tools.android.framework", "org.kevoree.tools", "*", dummyKCL)
+            bootstraper.registerManuallyDeployUnit("org.kevoree.tools.javase.framework", "org.kevoree.tools", "*", dummyKCL)
+            bootstraper.registerManuallyDeployUnit("org.kevoree.tools.marShell", "org.kevoree.tools", "*", dummyKCL)
+            bootstraper.registerManuallyDeployUnit("org.kevoree.tools.aether.framework", "org.kevoree.tools", "*", dummyKCL)
+            bootstraper.registerManuallyDeployUnit("org.kevoree.tools.aether.framework.android", "org.kevoree.tools", "*", dummyKCL)
             coreBean!!.start()
             coreBean!!.registerModelListener(ProgressDialogModelListener(act))
 
-            val file = (bootstraper as Bootstraper).resolveKevoreeArtifact("org.kevoree.library.model.bootstrap.android", "org.kevoree.corelibrary.model", factory.getVersion())
+            var askedVersion = "RELEASE";
+            if(factory.getVersion().contains("SNAPSHOT")){
+                askedVersion = "LATEST";
+            }
+
+            val file = (bootstraper as Bootstraper).resolveKevoreeArtifact("org.kevoree.library.model.bootstrap.android", "org.kevoree.corelibrary.model", askedVersion)
             val jar = JarFile(file)
             val entry = jar.getJarEntry("KEV-INF/lib.kev")
             val bootstrapModel = KevoreeXmiHelper.loadStream(jar.getInputStream(entry!!)!!)

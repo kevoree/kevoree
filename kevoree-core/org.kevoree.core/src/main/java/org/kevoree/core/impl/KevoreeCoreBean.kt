@@ -183,7 +183,23 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
         if (nodeInstance != null) {
             try {
                 val modelCurrent = model.get()!!.getModel()!!
-                val stopModel = factory.createContainerRoot()
+                val stopModel = modelCloner.clone(modelCurrent)!!
+                val currentNode = stopModel.findNodesByID(getNodeName())!!
+                for(childNode in currentNode.getHosts()){
+                    childNode.setStarted(false)
+                }
+                //TEST only stop local
+                for(group in stopModel.getGroups()){
+                    group.setStarted(false)
+                }
+                for(hub in stopModel.getHubs()){
+                    hub.setStarted(false)
+                }
+                for(childComponent in currentNode.getComponents()){
+                    childComponent.setStarted(false)
+                }
+
+                //val stopModel = factory.createContainerRoot()
                 val adaptationModel = nodeInstance!!.kompare(modelCurrent, stopModel)
                 adaptationModel.setInternalReadOnly()
                 val afterUpdateTest: () -> Boolean = {() -> true }
