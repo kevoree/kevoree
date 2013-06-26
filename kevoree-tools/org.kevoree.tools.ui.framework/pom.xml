@@ -39,12 +39,10 @@
             <name>java.net - Maven 2</name>
             <url>https://repository.jboss.org/nexus/content/repositories/java.net-m2</url>
         </repository>
-
         <repository>
             <id>kevoree</id>
             <url>http://maven.kevoree.org/release</url>
         </repository>
-
     </repositories>
 
 </project>
