@@ -94,6 +94,9 @@ class SchedulingWithTopologicalOrderAlgo {
         if(firstCommand is ComponentInstance){
             rootContainer = ((firstCommand as ComponentInstance).eContainer() as KMFContainer).eContainer() as ContainerRoot
         }
+        if(firstCommand is ContainerNode){
+            rootContainer = ((firstCommand as ContainerNode).eContainer() as KMFContainer).eContainer() as ContainerRoot
+        }
 
         val bindingIterator = rootContainer!!.getMBindings().iterator()
         while (bindingIterator.hasNext()) {
