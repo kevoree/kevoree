@@ -168,10 +168,10 @@
             <id>jetbrains-release</id>
             <url>http://repository.jetbrains.com/all</url>
         </pluginRepository>
-        <repository>
+        <pluginRepository>
             <id>kevoree-oss.plugin</id>
             <url>https://oss.sonatype.org/content/groups/public/</url>
-        </repository>
+        </pluginRepository>
     </pluginRepositories>
 	
     <distributionManagement>
