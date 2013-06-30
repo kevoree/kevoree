@@ -78,14 +78,6 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
     //@MojoParameter(required = false, description = "Controls whether or not the output directory is added to compilation")
     private Boolean addOutputDirectoryToCompilationSources;
 
-    /**
-     * Indicates whether the build will continue even if there are compilation errors; defaults to true.
-     *
-     * @parameter default-value="true"  expression = "${annotation.failOnError}"
-     * @required
-     */
-    //@MojoParameter(required = true, defaultValue = "true", expression = "${annotation.failOnError}", description = "Indicates whether the build will continue even if there are compilation errors; defaults to true.")
-    private Boolean failOnError = true;
 
     /**
      * Indicates whether the compiler output should be visible, defaults to true.
@@ -572,7 +564,7 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
      *
      * @parameter default-value="${project.build.directory}/generated-sources/kevoree"
      */
-    private File outputDirectory;
+    private File  outputDirectory;
     /**
      * The directory root under which processor-generated source files will be placed; files are placed in
      * subdirectories based on package namespace. This is equivalent to the <code>-s</code> argument for apt.

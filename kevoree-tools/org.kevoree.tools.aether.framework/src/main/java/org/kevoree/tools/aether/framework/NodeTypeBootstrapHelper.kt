@@ -24,8 +24,8 @@ open class NodeTypeBootstrapHelper: Bootstraper, KCLBootstrap {
 
     override fun resolveKevoreeArtifact(artId: String, groupId: String, version: String): File? {
         val l = ArrayList<String>()
-        if(version.contains("SNAPSHOT")){
-           l.add("https://oss.sonatype.org/content/groups/public/")
+        if(version.contains("SNAPSHOT") || version.contains("LATEST")){
+           l.add("http://oss.sonatype.org/content/groups/public/")
         }
         return resolveArtifact(artId, groupId, version, l)
     }

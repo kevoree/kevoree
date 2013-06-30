@@ -249,11 +249,11 @@ inner class DUMP(): Runnable {
             //try * version resolution
             val duCloned = DefaultKevoreeFactory().createDeployUnit()
             duCloned.setGroupName(du.getGroupName())
-            duCloned.setName(du.getName())
+            duCloned.setUnitName(du.getUnitName())
             duCloned.setVersion("*")
             result = kcl_cache.get(buildKEY(duCloned))
         }
-        return kcl_cache.get(buildKEY(du))
+        return result
     }
 
     protected fun removeDeployUnitInternals(du: DeployUnit) {
