@@ -572,6 +572,14 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
      * @parameter default-value="${project.build.directory}/generated-sources/kevoree"
      */
     private File sourceOutputDirectory;
+
+    /**
+     *
+     * @parameter default-value="${project.build.directory}/generated-sources"
+     */
+    private File sourceOutputBaseDirectory;
+
+
     /**
      * @parameter default-value="${project.build.directory}/classes"
      */
@@ -671,9 +679,8 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
                         JarFile jar = new JarFile(defaultArtifact.getFile());
                         JarEntry entry = jar.getJarEntry("KEV-INF/lib.kev");
                         if (entry != null) {
-                            String path = convertStreamToFile(jar.getInputStream(entry));
-                            getLog().info("Auto merging dependency => " + path + " from " + defaultArtifact);
-                            merger.merge(model, KevoreeXmiHelper.instance$.load(path));
+                            getLog().info("Auto merging dependency => " + " from " + defaultArtifact);
+                            merger.merge(model, KevoreeXmiHelper.instance$.loadStream(jar.getInputStream(entry)));
                         }
                     } catch (Exception e) {
                         getLog().info("Unable to get KEV-INF/lib.kev on " + ((DefaultArtifact) dep).getArtifactId() + "(Kevoree lib will not be merged): " + e.getMessage());
@@ -706,11 +713,14 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
 
     private List<String> getSourcePaths() {
         List<String> sourcePaths = new ArrayList<String>();
-
         sourcePaths.addAll(project.getCompileSourceRoots());
 
         if (additionalSourceRoots != null) {
             sourcePaths.addAll(additionalSourceRoots);
+        }
+
+        if(sourceOutputBaseDirectory.exists()){
+            sourcePaths.add(sourceOutputBaseDirectory.getAbsolutePath());
         }
 
         return sourcePaths;
@@ -725,25 +735,6 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
     protected List<String> getClasspathElements() {
         return classpathElements;
     }
-
-    private String convertStreamToFile(InputStream inputStream) throws IOException {
-        Random rand = new Random();
-        File temp = File.createTempFile("kevoreeloaderLib" + rand.nextInt(), ".xmi");
-        // Delete temp file when program exits.
-        temp.deleteOnExit();
-        OutputStream out = new FileOutputStream(temp);
-        int read = 0;
-        byte[] bytes = new byte[1024];
-        while ((read = inputStream.read(bytes)) != -1) {
-            out.write(bytes, 0, read);
-        }
-        inputStream.close();
-        out.flush();
-        out.close();
-
-        return temp.getAbsolutePath().toString();
-    }
-
 
     private static final String SNAPSHOT = "SNAPSHOT";
 
