@@ -54,8 +54,7 @@ class NodeTypeBootstrapHelper(val ctx: android.content.Context, val parent: Clas
 
     override fun resolveKevoreeArtifact(artId: String, groupId: String, version: String): File {
         val l = ArrayList<String>()
-        l.add("http://maven.kevoree.org/release")
-        l.add("http://maven.kevoree.org/snapshots")
+        l.add("http://oss.sonatype.org/content/groups/public")
         return resolveArtifact(artId, groupId, version, l)
     }
 

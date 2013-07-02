@@ -91,8 +91,7 @@ case class KevsMergerInterpreter (mergeStatement: MergeStatement) extends KevsAb
           context.model.getRepositories.foreach { repo =>
             repos.add(repo.getUrl)
           }
-          repos.add("http://maven.kevoree.org/release")
-          repos.add("http://maven.kevoree.org/snapshots")
+          repos.add("http://oss.sonatype.org/content/groups/public")
           file = context.getBootstraper.resolveArtifact(part(1), part(0), part(2),repos)
 
           println("Resolved File = "+file+"-"+part(0)+"-"+part(1)+"-"+part(2))

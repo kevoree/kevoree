@@ -55,8 +55,7 @@ class MergeDefaultLibrary(lib : Int) extends Command {
     try {
 
       val repos = new util.ArrayList[String]()
-      repos.add("http://maven.kevoree.org/release")
-      repos.add("http://maven.kevoree.org/snapshots")
+      repos.add("http://oss.sonatype.org/content/groups/public")
 
 
       val file : File = lib match {
