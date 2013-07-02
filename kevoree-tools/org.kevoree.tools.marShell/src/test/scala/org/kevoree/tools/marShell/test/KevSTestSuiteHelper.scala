@@ -38,7 +38,6 @@ import org.scalatest.junit.JUnitSuite
 
 import org.junit.Assert._
 import org.kevoree.{KevoreeFactory, ContainerRoot}
-import java.util.HashMap
 import org.kevoree.tools.marShell.parser.{ParserUtil, KevsParser}
 import org.kevoree.tools.marShell.ast.Script
 import org.kevoree.framework.KevoreeXmiHelper

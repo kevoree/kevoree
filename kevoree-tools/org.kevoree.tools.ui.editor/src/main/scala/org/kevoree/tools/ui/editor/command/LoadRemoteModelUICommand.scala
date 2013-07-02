@@ -128,9 +128,9 @@ class LoadRemoteModelUICommand extends Command {
 
         def clientConnected(conn: ServerConnection) {}
       }, ip, Integer.parseInt(port), false))
-      conns._1.connect(5000)
+      conns._1.connect(2000)
       conns._1.send(Array(Byte.box(0)), Delivery.RELIABLE)
-      val root = exchanger.exchange(null,5000,TimeUnit.MILLISECONDS)
+      val root = exchanger.exchange(null,2000,TimeUnit.MILLISECONDS)
       if (root == null){
         false
       } else {
@@ -169,10 +169,15 @@ class LoadRemoteModelUICommand extends Command {
           }
         }
       }
-      if (client.connectBlocking()) {
+
+      // instead of using connectBlocking method which lock the current thread (which is the one that represent the complete editor) we just wait 2s after initializing the connection
+      client.connect()
+      Thread.sleep(5000)
+//      if (client.connectBlocking()) {
+      if (client.getConnection.isOpen) {
         client.send(Array[Byte](2)); // OMG THIS IS UGLY
       }
-      val root = exchanger.exchange(null, 5000, TimeUnit.MILLISECONDS)
+      val root = exchanger.exchange(null, 2000, TimeUnit.MILLISECONDS)
       if (root == null) {
         false
       } else {

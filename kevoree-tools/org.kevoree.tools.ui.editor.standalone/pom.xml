@@ -53,7 +53,6 @@
                                     <mainClass>org.kevoree.tools.ui.editor.standalone.App</mainClass>
                                 </transformer>
                             </transformers>
-							<outputFile>${project.build.directory}/${project.build.finalName}-small.jar</outputFile>
                         </configuration>
                     </execution>
                 </executions>
