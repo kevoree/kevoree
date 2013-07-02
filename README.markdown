@@ -13,6 +13,8 @@
 
 ###[> Kevoree Modeling Framework Query Langage](https://github.com/dukeboard/kevoree-modeling-framework/blob/master/doc/kmf_path.md)
 
+###[> KevScript documentation](https://github.com/dukeboard/kevoree/blob/master/kevoree-tools/org.kevoree.tools.marShell/README.md)
+
 ## 2. Library documentation
 
-###[> Group for synchronisation (WebSocket)](https://github.com/dukeboard/kevoree/blob/master/kevoree-corelibrary/javase/org.kevoree.library.javase.webSocketGrp/README.md)
+###[> Group for synchronisation (WebSocket)](https://github.com/dukeboard/kevoree-corelibrary/blob/master/javase/org.kevoree.library.javase.webSocketGrp/README.md)
