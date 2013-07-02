@@ -4,6 +4,9 @@ import org.kevoreeadaptation.AdaptationModel
 import org.kevoree.kompare.scheduling.SchedulingWithTopologicalOrderAlgo
 import org.kevoreeadaptation.ParallelStep
 import org.kevoreeadaptation.KevoreeAdaptationFactory
+import org.kevoreeadaptation.AdaptationPrimitive
+import java.util.ArrayList
+import org.kevoree.log.Log
 
 /**
  * Created by IntelliJ IDEA.
@@ -14,11 +17,11 @@ import org.kevoreeadaptation.KevoreeAdaptationFactory
 
 trait KevoreeScheduler {
 
-    var step : ParallelStep?
-    var currentStep : ParallelStep?
-    var adaptationModelFactory : KevoreeAdaptationFactory
+    var step: ParallelStep?
+    var currentStep: ParallelStep?
+    var adaptationModelFactory: KevoreeAdaptationFactory
 
-    private fun nextStep(){
+    private fun nextStep() {
         if(step == null){
             step = adaptationModelFactory.createParallelStep()
         }
@@ -32,9 +35,21 @@ trait KevoreeScheduler {
         }
     }
 
-    public fun clearSteps(){
+    public fun clearSteps() {
         step = null
         currentStep = null
+    }
+
+    open fun createNextStep(primitiveType: String, commands: List<AdaptationPrimitive>) {
+
+        if(currentStep == null){
+            nextStep()
+        }
+        if (!commands.isEmpty()) {
+            step!!.addAllAdaptations(commands)
+
+            nextStep()
+        }
     }
 
 
@@ -45,90 +60,57 @@ trait KevoreeScheduler {
             val scheduling = SchedulingWithTopologicalOrderAlgo()
             nextStep()
             adaptionModel.setOrderedPrimitiveSet(currentStep)
-            //PROCESS STOP
 
+            //PROCESS STOP
             scheduling.schedule(adaptionModel.getAdaptations()
                     .filter{ adapt -> adapt.getPrimitiveType()!!.getName() == JavaSePrimitive.StopInstance }, false).forEach {
                 p ->
-                step!!.addAdaptations(p)
-                step = adaptationModelFactory.createParallelStep()
-                currentStep!!.setNextStep(step)
-                currentStep = step
+                val commands = ArrayList<AdaptationPrimitive>()
+                commands.add(p)
+                createNextStep(JavaSePrimitive.StopInstance, commands)
             }
+
             // REMOVE BINDINGS
-            step!!.addAllAdaptations(adaptionModel.getAdaptations()
-                    .filter{ adapt ->
-                (adapt.getPrimitiveType()!!.getName() == JavaSePrimitive.RemoveBinding ||
-                adapt.getPrimitiveType()!!.getName() == JavaSePrimitive.RemoveFragmentBinding)
-            })
-            if (!step!!.getAdaptations().isEmpty()) {
-                step = adaptationModelFactory.createParallelStep()
-                currentStep!!.setNextStep(step)
-                currentStep = step
-            }
+            createNextStep(JavaSePrimitive.RemoveBinding, adaptionModel.getAdaptations().filter{ adapt -> (adapt.getPrimitiveType()!!.getName() == JavaSePrimitive.RemoveBinding || adapt.getPrimitiveType()!!.getName() == JavaSePrimitive.RemoveFragmentBinding) })
 
-            step!!.addAllAdaptations(adaptionModel.getAdaptations()
-                    .filter{ adapt -> adapt.getPrimitiveType()!!.getName() == JavaSePrimitive.RemoveInstance })
+            // REMOVE INSTANCEs
+            createNextStep(JavaSePrimitive.RemoveInstance, adaptionModel.getAdaptations().filter{ adapt -> adapt.getPrimitiveType()!!.getName() == JavaSePrimitive.RemoveInstance })
 
-            nextStep()
+            // REMOVE TYPEs
+            createNextStep(JavaSePrimitive.RemoveType, adaptionModel.getAdaptations().filter{ adapt -> adapt.getPrimitiveType()!!.getName() == JavaSePrimitive.RemoveType })
 
-            step!!.addAllAdaptations(adaptionModel.getAdaptations()
-                    .filter{ adapt -> adapt.getPrimitiveType()!!.getName() == JavaSePrimitive.RemoveType })
+            // REMOVE DEPLOYUNITs
+            createNextStep(JavaSePrimitive.RemoveDeployUnit, adaptionModel.getAdaptations().filter{ adapt -> adapt.getPrimitiveType()!!.getName() == JavaSePrimitive.RemoveDeployUnit })
 
-            nextStep()
+            // ADD THIRD PARTIES
+            createNextStep(JavaSePrimitive.AddThirdParty, adaptionModel.getAdaptations().filter{ adapt -> adapt.getPrimitiveType()!!.getName() == JavaSePrimitive.AddThirdParty })
 
-            step!!.addAllAdaptations(adaptionModel.getAdaptations()
-                    .filter{ adapt -> adapt.getPrimitiveType()!!.getName() == JavaSePrimitive.RemoveDeployUnit })
+            // UPDATE DEPLOYUNITs
+            createNextStep(JavaSePrimitive.UpdateDeployUnit, adaptionModel.getAdaptations().filter{ adapt -> adapt.getPrimitiveType()!!.getName() == JavaSePrimitive.UpdateDeployUnit })
 
-            nextStep()
+            // ADD DEPLOYUNITs
+            createNextStep(JavaSePrimitive.AddDeployUnit, adaptionModel.getAdaptations().filter{ adapt -> adapt.getPrimitiveType()!!.getName() == JavaSePrimitive.AddDeployUnit })
 
-            step!!.addAllAdaptations(adaptionModel.getAdaptations()
-                    .filter{ adapt -> adapt.getPrimitiveType()!!.getName() == JavaSePrimitive.AddThirdParty })
+            // ADD TYPEs
+            createNextStep(JavaSePrimitive.AddType, adaptionModel.getAdaptations().filter{ adapt -> adapt.getPrimitiveType()!!.getName() == JavaSePrimitive.AddType })
 
-            nextStep()
+            // ADD INSTANCEs
+            createNextStep(JavaSePrimitive.AddInstance, adaptionModel.getAdaptations().filter{ adapt -> adapt.getPrimitiveType()!!.getName() == JavaSePrimitive.AddInstance })
 
-            step!!.addAllAdaptations(adaptionModel.getAdaptations()
-                    .filter{ adapt -> adapt.getPrimitiveType()!!.getName() == JavaSePrimitive.UpdateDeployUnit })
+            // ADD BINDINGs
+            createNextStep(JavaSePrimitive.AddBinding, adaptionModel.getAdaptations().filter{ adapt -> (adapt.getPrimitiveType()!!.getName() == JavaSePrimitive.AddBinding || adapt.getPrimitiveType()!!.getName() == JavaSePrimitive.AddFragmentBinding) })
 
-            nextStep()
+            // UPDATE DICTIONARYs
+            createNextStep(JavaSePrimitive.UpdateDictionaryInstance, adaptionModel.getAdaptations().filter{ adapt -> adapt.getPrimitiveType()!!.getName() == JavaSePrimitive.UpdateDictionaryInstance })
 
-            step!!.addAllAdaptations(adaptionModel.getAdaptations()
-                    .filter{ adapt -> adapt.getPrimitiveType()!!.getName() == JavaSePrimitive.AddDeployUnit })
-
-            nextStep()
-
-            step!!.addAllAdaptations(adaptionModel.getAdaptations()
-                    .filter{ adapt -> adapt.getPrimitiveType()!!.getName() == JavaSePrimitive.AddType })
-
-            nextStep()
-
-            step!!.addAllAdaptations(adaptionModel.getAdaptations()
-                    .filter{ adapt -> adapt.getPrimitiveType()!!.getName() == JavaSePrimitive.AddInstance })
-
-            nextStep()
-
-            step!!.addAllAdaptations(adaptionModel.getAdaptations()
-                    .filter{ adapt ->
-                (adapt.getPrimitiveType()!!.getName() == JavaSePrimitive.AddBinding ||
-                adapt.getPrimitiveType()!!.getName() == JavaSePrimitive.AddFragmentBinding)
-            })
-
-            nextStep()
-
-            step!!.addAllAdaptations(adaptionModel.getAdaptations()
-                    .filter{ adapt -> adapt.getPrimitiveType()!!.getName() == JavaSePrimitive.UpdateDictionaryInstance })
-
-            nextStep()
-
+            // START INSTANCEs
             var oldStep = currentStep
-            //PROCESS START
             scheduling.schedule(adaptionModel.getAdaptations().filter{ adapt -> adapt.getPrimitiveType()!!.getName() == JavaSePrimitive.StartInstance }, true).forEach {
                 p ->
-                step!!.addAdaptations(p)
-                step = adaptationModelFactory.createParallelStep()
-                currentStep!!.setNextStep(step)
+                val commands = ArrayList<AdaptationPrimitive>()
+                commands.add(p)
                 oldStep = currentStep
-                currentStep = step
+                createNextStep(JavaSePrimitive.StartInstance, commands)
             }
             if (step!!.getAdaptations().isEmpty()) {
                 oldStep!!.setNextStep(null)
