@@ -39,16 +39,22 @@ case class KevsRemoveNodeInterpreter(addN: RemoveNodeStatment) extends KevsAbstr
 
     //REMOVE FROM NETWORK LINK
     context.model.getNodeNetworks.foreach {
-      nn =>
-        val targetNode = nn.getTarget
-        if(targetNode != null && nn.getTarget.getName == addN.nodeName) {
-          context.model.removeNodeNetworks(nn)
-        } else {
-          val initNode = nn.getInitBy
-          if(initNode != null && initNode.getName == addN.nodeName) {
-                context.model.removeNodeNetworks(nn)
+      nn => {
+        var toRemove = false
+        if (nn.getInitBy != null) {
+          if (addN.nodeName.equals(nn.getInitBy.getName)) {
+            toRemove = true
           }
         }
+        if (nn.getTarget != null) {
+          if (addN.nodeName.equals(nn.getTarget.getName)) {
+            toRemove = true
+          }
+        }
+        if(toRemove){
+          context.model.removeNodeNetworks(nn)
+        }
+      }
     }
 
     //CLEANUP HOST NODE
@@ -97,7 +103,7 @@ case class KevsRemoveNodeInterpreter(addN: RemoveNodeStatment) extends KevsAbstr
         removeNode(targetNode, context)
       }
       case null => {
-        context.appendInterpretationError("Could not remove node '"+addN.nodeName+"'. Node does not exist.")
+        context.appendInterpretationError("Could not remove node '" + addN.nodeName + "'. Node does not exist.")
         false
       }
     }
