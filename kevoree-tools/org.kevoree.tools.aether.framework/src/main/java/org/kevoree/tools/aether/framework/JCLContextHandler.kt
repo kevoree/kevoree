@@ -363,8 +363,12 @@ inner class DUMP(): Runnable {
         }
     }
 
-    override fun installDeployUnit(du: DeployUnit?): KevoreeJarClassLoader {
-        return pool.submit(INSTALL_DEPLOYUNIT(du!!)).get()!!
+    override fun installDeployUnit(du: DeployUnit?): KevoreeJarClassLoader? {
+        if(du == null){
+            return null
+        } else {
+            return pool.submit(INSTALL_DEPLOYUNIT(du)).get()
+        }
     }
 
     override fun getKCLDump(): String {
