@@ -33,6 +33,7 @@
                             <ecore>${metamodel.ecore}</ecore>
                             <packagePrefix>org.kevoree</packagePrefix>
                             <!--  <modelOnly>true</modelOnly>  -->
+                            <json>true</json>
                         </configuration>
                     </execution>
                 </executions>

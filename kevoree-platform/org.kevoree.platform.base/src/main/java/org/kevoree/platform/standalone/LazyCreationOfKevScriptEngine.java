@@ -60,10 +60,8 @@ public class LazyCreationOfKevScriptEngine implements KevScriptEngineFactory {
             scriptEngineKCL.lockLinks();
             onlineMShellEngineClazz = scriptEngineKCL.loadClass("org.kevoree.tools.marShell.KevScriptCoreEngine");
             offLineMShellEngineClazz = scriptEngineKCL.loadClass("org.kevoree.tools.marShell.KevScriptOfflineEngine");
-
             onlineCons =  onlineMShellEngineClazz.getDeclaredConstructor(KevoreeModelHandlerService.class, Bootstraper.class);
             offlineCons = offLineMShellEngineClazz.getDeclaredConstructor(ContainerRoot.class, Bootstraper.class);
-
         }
     }
 

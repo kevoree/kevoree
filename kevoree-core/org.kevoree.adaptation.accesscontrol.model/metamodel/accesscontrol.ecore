@@ -1,29 +1,48 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="AccessControl" nsURI="http://AccessControl/1.0" nsPrefix="AccessControl">
-  <eClassifiers xsi:type="ecore:EClass" name="AccessControlRoot">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="users" upperBound="-1"
-        eType="#//User" containment="true"/>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="AccessControl" nsURI="http://AccessControl/1.0" nsPrefix="AccessControl">
+  <eClassifiers xsi:type="ecore:EClass" name="Domain" eSuperTypes="#//NamedElement">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="rules" upperBound="-1"
+        eType="#//Rule"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="roots" upperBound="-1"
+        eType="#//Resource"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="User">
+  <eClassifiers xsi:type="ecore:EClass" name="Rule" eSuperTypes="#//NamedElement">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="condition" eType="#//Condition"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="subject" eType="#//Subject"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="target" upperBound="-1"
+        eType="#//Resource"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="source" upperBound="-1"
+        eType="#//Resource"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Action" eSuperTypes="#//NamedElement">
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="AccessControlPolicy">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="domains" upperBound="-1"
+        eType="#//Domain" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="actions" upperBound="-1"
+        eType="#//Action" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="entities" upperBound="-1"
+        eType="#//Entity" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="roles" upperBound="-1"
         eType="#//Role" containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="modulus" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
-        iD="true"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="publicExponent" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-        <eStructuralFeatures xsi:type="ecore:EAttribute" name="pdpadmin" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Role">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="elements" upperBound="-1"
-        eType="#//Element" containment="true"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Element">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="permissions" lowerBound="1"
-        upperBound="-1" eType="#//Permission" containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="elementQuery" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+  <eClassifiers xsi:type="ecore:EClass" name="NamedElement">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
         iD="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Permission">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="PrimitiveQuery" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"  iD="true"/>
+  <eClassifiers xsi:type="ecore:EClass" name="Resource" eSuperTypes="#//NamedElement"/>
+  <eClassifiers xsi:type="ecore:EClass" name="Entity" eSuperTypes="#//Subject #//NamedElement">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="roles" upperBound="-1"
+        eType="#//Role"/>
   </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Role" eSuperTypes="#//Subject #//NamedElement">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="parents" upperBound="-1"
+        eType="#//Role"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Condition">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="expression" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="TimingCondition" eSuperTypes="#//Condition"/>
+  <eClassifiers xsi:type="ecore:EClass" name="Subject"/>
 </ecore:EPackage>
