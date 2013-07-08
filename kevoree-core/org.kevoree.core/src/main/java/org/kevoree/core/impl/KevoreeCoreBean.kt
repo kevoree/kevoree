@@ -287,7 +287,7 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
         if(uuid != null){
             scheduler?.submit(ReleaseLockCallable(uuid))
         } else {
-            Log.error("Null UUID , can release any lock")
+            Log.error("ReleaseLock method of Kevoree Core called with null argument, can release any lock")
         }
     }
 
