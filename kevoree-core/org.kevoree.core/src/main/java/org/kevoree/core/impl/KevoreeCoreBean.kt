@@ -15,7 +15,6 @@ import org.kevoree.api.service.core.handler.UUIDModel
 import org.kevoree.api.service.core.handler.ModelUpdateCallback
 import org.kevoree.api.service.core.handler.ModelUpdateCallBackReturn
 import org.kevoree.api.service.core.handler.ModelHandlerLockCallBack
-import java.util.concurrent.ThreadFactory
 import org.kevoree.ContainerNode
 import java.util.concurrent.ScheduledFuture
 import java.util.concurrent.ScheduledExecutorService
@@ -24,11 +23,9 @@ import org.kevoree.api.service.core.handler.KevoreeModelUpdateException
 import org.kevoree.api.service.core.handler.ModelListener
 import org.kevoree.context.ContextRoot
 import org.kevoree.framework.HaraKiriHelper
-import org.kevoree.framework.KevoreeXmiHelper
 import org.kevoree.impl.DefaultKevoreeFactory
 import java.util.concurrent.atomic.AtomicReference
 import org.kevoree.log.Log
-
 
 class PreCommand(newmodel: ContainerRoot, modelListeners: KevoreeListeners, oldModel: ContainerRoot){
     var alreadyCall = false
@@ -287,7 +284,11 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
     }
 
     override fun releaseLock(uuid: UUID?) {
-        scheduler?.submit(ReleaseLockCallable(uuid!!))
+        if(uuid != null){
+            scheduler?.submit(ReleaseLockCallable(uuid))
+        } else {
+            Log.error("Null UUID , can release any lock")
+        }
     }
 
     inner class ReleaseLockCallable(val uuid: UUID): Runnable {
@@ -398,7 +399,7 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
                         Log.error("TypeDef installation fail !")
                     }
                 } else {
-                    Log.error("Node instance name {} not found in bootstrap model !",getNodeName())
+                    Log.error("Node instance name {} not found in bootstrap model !", getNodeName())
                 }
             }
         } catch(e: Throwable) {
@@ -416,7 +417,7 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
 
     fun internal_update_model(proposedNewModel: ContainerRoot): Boolean {
         if (proposedNewModel.findNodesByID(getNodeName()) == null) {
-            Log.error("Asking for update with a NULL model or node name ({}) was not found in target model !",getNodeName())
+            Log.error("Asking for update with a NULL model or node name ({}) was not found in target model !", getNodeName())
             return false
         }
         try {
@@ -453,9 +454,9 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
                             adaptationModel.setInternalReadOnly()
                             if (Log.DEBUG){
                                 //Avoid the loop if the debug is not activated
-                                Log.debug("Adaptation model size {}",adaptationModel.getAdaptations().size())
+                                Log.debug("Adaptation model size {}", adaptationModel.getAdaptations().size())
                                 for(adaptation in adaptationModel.getAdaptations()) {
-                                    Log.debug("primitive {} ",adaptation.getPrimitiveType()?.getName())
+                                    Log.debug("primitive {} ", adaptation.getPrimitiveType()?.getName())
                                 }
                             }
                             //Executes the adaptation
@@ -485,24 +486,24 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
                     checkBootstrapNode(newmodel)
                     val milli = System.currentTimeMillis()
                     if(Log.DEBUG){
-                        Log.debug("Begin update model {}",milli)
+                        Log.debug("Begin update model {}", milli)
                     }
-                    var deployResult : Boolean// = true
+                    var deployResult: Boolean// = true
                     try {
                         if (nodeInstance != null) {
-                        // Compare the two models and plan the adaptation
-                        Log.info("Comparing models and planning adaptation.")
+                            // Compare the two models and plan the adaptation
+                            Log.info("Comparing models and planning adaptation.")
 
-                        val adaptationModel = nodeInstance!!.kompare(currentModel, newmodel)
-                        adaptationModel.setInternalReadOnly()
-                        //Execution of the adaptation
-                        Log.info("Launching adaptation of the system.")
-                        val  afterUpdateTest: ()-> Boolean = {()-> modelListeners.afterUpdate(currentModel, newmodel) }
+                            val adaptationModel = nodeInstance!!.kompare(currentModel, newmodel)
+                            adaptationModel.setInternalReadOnly()
+                            //Execution of the adaptation
+                            Log.info("Launching adaptation of the system.")
+                            val  afterUpdateTest: ()-> Boolean = {()-> modelListeners.afterUpdate(currentModel, newmodel) }
 
-                        val preCmd = PreCommand(newmodel, modelListeners, currentModel)
-                        val postRollbackTest: ()->Boolean = {() -> modelListeners.postRollback(currentModel, newmodel);true }
-                        val rootNode = newmodel.findNodesByID(getNodeName())!!
-                        deployResult = org.kevoree.framework.deploy.PrimitiveCommandExecutionHelper.execute(rootNode, adaptationModel, nodeInstance!!, afterUpdateTest, preCmd.preRollbackTest, postRollbackTest)
+                            val preCmd = PreCommand(newmodel, modelListeners, currentModel)
+                            val postRollbackTest: ()->Boolean = {() -> modelListeners.postRollback(currentModel, newmodel);true }
+                            val rootNode = newmodel.findNodesByID(getNodeName())!!
+                            deployResult = org.kevoree.framework.deploy.PrimitiveCommandExecutionHelper.execute(rootNode, adaptationModel, nodeInstance!!, afterUpdateTest, preCmd.preRollbackTest, postRollbackTest)
                         } else {
                             Log.error("Node is not initialized")
                             deployResult = false
@@ -524,7 +525,7 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
                         }
                     }
                     val milliEnd = System.currentTimeMillis() - milli
-                    Log.debug("End deploy result={}-{}",deployResult,milliEnd)
+                    Log.debug("End deploy result={}-{}", deployResult, milliEnd)
                     return deployResult
 
                 } else {
