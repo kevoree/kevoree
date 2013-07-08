@@ -21,6 +21,7 @@ public class MavenResolverTester {
         List<String> l = new ArrayList<String>();
         l.add("http://maven.kevoree.org/release");
         l.add("http://maven.kevoree.org/snapshots");
+        l.add("http://oss.sonatype.org/content/groups/public");
 
         File resolved2 = resolver.resolve("org.kevoree.corelibrary.model","org.kevoree.library.model.bootstrap", "2.0.0-SNAPSHOT", "jar", l);
         System.out.println(resolved2);
@@ -33,6 +34,7 @@ public class MavenResolverTester {
         List<String> l = new ArrayList<String>();
         l.add("http://maven.kevoree.org/release");
         l.add("http://maven.kevoree.org/snapshots");
+        l.add("http://oss.sonatype.org/content/groups/public");
 
         File resolved2 = resolver.resolve("org.kevoree.corelibrary.model","org.kevoree.library.model.bootstrap", "2.0.0-ALPHA", "jar", l);
         System.out.println(resolved2);
@@ -43,5 +45,20 @@ public class MavenResolverTester {
         resolved2 = resolver.resolve("org.kevoree.corelibrary.model","org.kevoree.library.model.bootstrap", "LATEST", "jar", l);
         System.out.println(resolved2);
     }
+
+
+    @Test
+    public void testRemoteResolution2() {
+        MavenResolver resolver = new MavenResolver();
+        List<String> l = new ArrayList<String>();
+        l.add("http://oss.sonatype.org/content/groups/public");
+        File resolved = resolver.resolve("org.kevoree.tools", "org.kevoree.tools.marShell.pack", "2.0.0-SNAPSHOT","jar",l);
+        System.out.println(resolved.length());
+
+
+    }
+
+
+
 
 }
