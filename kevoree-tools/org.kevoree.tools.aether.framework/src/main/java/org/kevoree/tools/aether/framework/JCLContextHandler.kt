@@ -33,12 +33,6 @@ open class JCLContextHandler: KevoreeClassLoaderHandler {
     var lockedDu = ArrayList<String>()
     val resolvers = ArrayList<DeployUnitResolver>()
     protected val failedLinks: HashMap<String, MutableList<KevoreeJarClassLoader>> = HashMap<String, MutableList<KevoreeJarClassLoader>>()
-    /*
-inner class DUMP(): Runnable {
-    override fun run() {
-        printDumpInternals()
-    }
-} */
 
     inner class INSTALL_DEPLOYUNIT_FILE(val du: DeployUnit, val file: File): Callable<KevoreeJarClassLoader> {
         override fun call(): KevoreeJarClassLoader {

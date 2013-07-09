@@ -72,10 +72,10 @@ public class HelperSignature {
         return signedmodel;
     }
 
-    public static List<  org.kevoree.accesscontrol.Permission> getGenericsPermissions(){
+    public static List<org.kevoree.accesscontrol.Permission> getGenericsPermissions(){
         DefaultAccessControlFactory factory = new DefaultAccessControlFactory();
         ArrayList<  org.kevoree.accesscontrol.Permission> p = new ArrayList<  org.kevoree.accesscontrol.Permission>();
-        org.kevoree.accesscontrol.Permission p1 = factory.createPermission();
+        org.kevoree.accesscontrol.Rule p1 = factory.createRule();
         p1.setPrimitiveQuery(JavaSePrimitive.instance$.getAddInstance());
         org.kevoree.accesscontrol.Permission p2 = factory.createPermission();
         p2.setPrimitiveQuery(JavaSePrimitive.instance$.getStartInstance());

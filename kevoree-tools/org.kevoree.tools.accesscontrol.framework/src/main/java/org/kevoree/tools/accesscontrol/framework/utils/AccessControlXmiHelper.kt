@@ -4,7 +4,7 @@ package org.kevoree.tools.accesscontrol.framework.utils
 import java.util.zip.Deflater
 import java.util.zip.Inflater
 import java.io.*
-import org.kevoree.accesscontrol.AccessControlRoot
+import org.kevoree.accesscontrol.AccessControlPolicy;
 import org.kevoree.accesscontrol.serializer.ModelSerializer
 import org.kevoree.accesscontrol.serializer.XMIModelSerializer
 import org.kevoree.framework.ZipUtil
@@ -14,7 +14,7 @@ import org.kevoree.accesscontrol.loader.XMIModelLoader
 object AccessControlXmiHelper {
 
 
-    fun save(uri: String, root: AccessControlRoot) {
+    fun save(uri: String, root: AccessControlPolicy) {
         //CHECK DIRECTORY CREATION
         val folderUri = if(uri.contains(File.separator)){
             uri.substring(0, uri.lastIndexOf(File.separator))
@@ -37,7 +37,7 @@ object AccessControlXmiHelper {
         fop.close()
     }
 
-    fun saveToString(root: AccessControlRoot, prettyPrint: Boolean): String {
+    fun saveToString(root: AccessControlPolicy, prettyPrint: Boolean): String {
         val serializer = XMIModelSerializer()
         val ba = ByteArrayOutputStream()
         val res = serializer.serialize(root, ba)
@@ -47,43 +47,43 @@ object AccessControlXmiHelper {
         return result
     }
 
-    fun loadString(model: String): AccessControlRoot? {
+    fun loadString(model: String): AccessControlPolicy? {
         val loader = XMIModelLoader()
         val loadedElements = loader.loadModelFromString(model)
         if(loadedElements != null && loadedElements.size() > 0) {
-            return loadedElements.get(0) as AccessControlRoot;
+            return loadedElements.get(0) as AccessControlPolicy;
         } else {
             return null;
         }
     }
 
-    fun load(uri: String): AccessControlRoot? {
+    fun load(uri: String): AccessControlPolicy? {
         val loader = XMIModelLoader()
         val loadedElements = loader.loadModelFromPath(File(uri))
         if(loadedElements != null && loadedElements.size() > 0) {
-            return loadedElements.get(0) as AccessControlRoot;
+            return loadedElements.get(0) as AccessControlPolicy;
         } else {
             return null;
         }
     }
 
-    fun loadStream(input: InputStream): AccessControlRoot? {
+    fun loadStream(input: InputStream): AccessControlPolicy? {
         val loader = XMIModelLoader()
         val loadedElements = loader.loadModelFromStream(input)
         if(loadedElements != null && loadedElements.size() > 0) {
-            return loadedElements.get(0) as AccessControlRoot;
+            return loadedElements.get(0) as AccessControlPolicy;
         } else {
             return null;
         }
 
     }
 
-    fun saveStream(output: OutputStream, root: AccessControlRoot): Unit {
+    fun saveStream(output: OutputStream, root: AccessControlPolicy): Unit {
         val serializer = XMIModelSerializer()
         val result = serializer.serialize(root, output)
     }
 
-    fun saveCompressedStream(output: OutputStream, root: AccessControlRoot): Unit {
+    fun saveCompressedStream(output: OutputStream, root: AccessControlPolicy): Unit {
         val modelStream = ByteArrayOutputStream()
         saveStream(modelStream, root)
         output.write(ZipUtil.compressByteArray(modelStream.toByteArray()))
@@ -91,7 +91,7 @@ object AccessControlXmiHelper {
 
     }
 
-    fun loadCompressedStream(input: InputStream): AccessControlRoot? {
+    fun loadCompressedStream(input: InputStream): AccessControlPolicy? {
         val inputS = ByteArrayInputStream(ZipUtil.uncompressByteArray(input.readBytes(input.available())))
         return loadStream(inputS)
     }
