@@ -43,7 +43,7 @@ case class KevsRemoveChildInterpreter(removeChild: RemoveChildStatment) extends 
 
   def interpret(context: KevsInterpreterContext): Boolean = {
     /*context.model.getNodes.find(node => node.getName == removeChild.childNodeName)*/
-    context.model.findByPath("nodes[" + removeChild.childNodeName + "]", classOf[ContainerNode]) match {
+    context.model.findByPath("nodes[" + removeChild.fatherNodeName+"]/hosts[" + removeChild.childNodeName + "]", classOf[ContainerNode]) match {
       case null => {
         context.appendInterpretationError("Could not remove child node '"+removeChild.childNodeName+"' from node '"+ removeChild.fatherNodeName+"'. Child node not found.")
         false
