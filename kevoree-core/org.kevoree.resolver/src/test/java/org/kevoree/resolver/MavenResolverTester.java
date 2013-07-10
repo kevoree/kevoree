@@ -28,6 +28,15 @@ public class MavenResolverTester {
     }
 
     @Test
+    public void testCentralResolution() {
+        MavenResolver resolver = new MavenResolver();
+        List<String> l = new ArrayList<String>();
+        l.add("http://repo1.maven.org/maven2/");
+        File resolved2 = resolver.resolve("io.tesla.maven","maven-model", "3.1.2", "jar", l);
+        System.out.println(resolved2);
+    }
+
+    @Test
     public void testRemoteResolution() {
         MavenResolver resolver = new MavenResolver();
 
