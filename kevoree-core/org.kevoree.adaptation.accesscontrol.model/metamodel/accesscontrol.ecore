@@ -7,13 +7,15 @@
         eType="#//Resource"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Rule" eSuperTypes="#//NamedElement">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="condition" eType="#//Condition"
-        containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="subject" eType="#//Subject"/>
+
+    <eStructuralFeatures xsi:type="ecore:EReference" name="effect" eType="#//Effect" containment="false"/>
+
+    <eStructuralFeatures xsi:type="ecore:EReference" name="action" eType="#//Action" containment="false"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="condition" eType="#//Condition" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="subject" eType="#//Subject" eOpposite="#//Subject/rules"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="target" upperBound="-1"
         eType="#//Resource"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="source" upperBound="-1"
-        eType="#//Resource"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="source" upperBound="-1" eType="#//Resource"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Action" eSuperTypes="#//NamedElement">
   </eClassifiers>
@@ -34,6 +36,10 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Resource" eSuperTypes="#//NamedElement"/>
   <eClassifiers xsi:type="ecore:EClass" name="Entity" eSuperTypes="#//Subject #//NamedElement">
+
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="publicKeyModulus" upperBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString" />
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="publicKeyExponent" upperBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString" />
+
     <eStructuralFeatures xsi:type="ecore:EReference" name="roles" upperBound="-1"
         eType="#//Role"/>
   </eClassifiers>
@@ -41,9 +47,15 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="parents" upperBound="-1"
         eType="#//Role"/>
   </eClassifiers>
+
+  <eClassifiers xsi:type="ecore:EClass" name="Effect" eSuperTypes="#//NamedElement">
+  </eClassifiers>
+
   <eClassifiers xsi:type="ecore:EClass" name="Condition">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="expression" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="TimingCondition" eSuperTypes="#//Condition"/>
-  <eClassifiers xsi:type="ecore:EClass" name="Subject"/>
+  <eClassifiers xsi:type="ecore:EClass" name="Subject">
+       <eStructuralFeatures xsi:type="ecore:EReference" name="rules" upperBound="-1" eType="#//Rule" eOpposite="#//Rule/subject"/>
+  </eClassifiers>
 </ecore:EPackage>
