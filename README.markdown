@@ -1,6 +1,6 @@
 # Kevoree : documentation
 
-![Kevoree icon](http://kevoree.org/img/kevoree-logo.png)
+![Kevoree icon](https://raw.github.com/dukeboard/kevoree/master/kevoree-docs/kevoree-gris.png)
 
 ##Please visit [Kevoree main web site](http://kevoree.org/)
 
