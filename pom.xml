@@ -14,7 +14,7 @@
         <slf4j.version>1.7.2</slf4j.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <kevoree.version>${project.version}</kevoree.version>
-        <kotlin.version>0.5.748</kotlin.version>
+        <kotlin.version>0.5.998</kotlin.version>
     </properties>
 
 	<organization>
@@ -157,17 +157,9 @@
             <id>kevoree-oss</id>
             <url>https://oss.sonatype.org/content/groups/public/</url>
         </repository>
-        <repository>
-            <id>jetbrains-release</id>
-            <url>http://repository.jetbrains.com/all</url>
-        </repository>
     </repositories>
 
     <pluginRepositories>
-        <pluginRepository>
-            <id>jetbrains-release</id>
-            <url>http://repository.jetbrains.com/all</url>
-        </pluginRepository>
         <pluginRepository>
             <id>kevoree-oss.plugin</id>
             <url>https://oss.sonatype.org/content/groups/public/</url>

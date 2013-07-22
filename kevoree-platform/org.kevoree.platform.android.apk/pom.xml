@@ -236,17 +236,6 @@
             <id>actionbarsherlock</id>
             <url>http://r.jakewharton.com/maven/release/</url>
         </repository>
-        <repository>
-            <id>jetbrains-release</id>
-            <url>http://repository.jetbrains.com/all</url>
-        </repository>
     </repositories>
-
-    <pluginRepositories>
-        <pluginRepository>
-            <id>jetbrains-release</id>
-            <url>http://repository.jetbrains.com/all</url>
-        </pluginRepository>
-    </pluginRepositories>
 
 </project>
