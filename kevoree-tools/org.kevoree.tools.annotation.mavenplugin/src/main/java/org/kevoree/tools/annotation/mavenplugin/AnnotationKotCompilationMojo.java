@@ -36,6 +36,7 @@ import org.jetbrains.jet.cli.jvm.K2JVMCompiler;
 import org.jetbrains.jet.cli.jvm.K2JVMCompilerArguments;
 
 import java.io.File;
+import java.io.PrintStream;
 import java.util.Arrays;
 import java.util.Collections;
 
@@ -93,7 +94,17 @@ public class AnnotationKotCompilationMojo extends AbstractMojo {
             args.setOutputDir(outputClasses.getPath());
             args.noJdkAnnotations = true;
             args.noStdlib = true;
-            ExitCode e = compiler.exec(System.err, args);
+
+            ExitCode e = KotlinCompiler.exec(new PrintStream(System.err){
+                @Override
+                public void println(String x) {
+                    if(x.startsWith("WARNING")){
+
+                    } else {
+                        super.println(x);
+                    }
+                }
+            }, args);
             if (e.ordinal() != 0) {
                 throw new MojoExecutionException("Embedded Kotlin compilation error !");
             }
