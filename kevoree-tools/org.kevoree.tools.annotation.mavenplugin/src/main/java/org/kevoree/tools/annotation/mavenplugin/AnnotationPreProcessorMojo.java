@@ -149,16 +149,18 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
 
     @SuppressWarnings("unchecked")
     private void executeWithExceptionsHandled() throws MojoExecutionException {
-        if (outputDirectory == null) {
+        /*if (outputDirectory == null) {
             outputDirectory = getDefaultOutputDirectory();
-        }
+        }*/
 
         ensureOutputDirectoryExists();
         addOutputToSourcesIfNeeded();
 
         // new Debug(project).printDebugInfo();
 
-        java.io.File sourceDir = getSourceDirectory();
+       for (String sourceDirectoty : getSourceDirectory()) {
+//        java.io.File sourceDir = getSourceDirectory();
+           File sourceDir = new File(sourceDirectoty);
         if (sourceDir == null) {
             getLog().warn("source directory cannot be read (null returned)! Processor task will be skipped");
             return;
@@ -171,16 +173,19 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
             getLog().warn("source directory is invalid! Processor task will be skipped");
             return;
         }
+       }
 
         final String includesString = (includes == null || includes.length == 0) ? "**/*.java" : StringUtils.join(includes, ",");
         final String excludesString = (excludes == null || excludes.length == 0) ? null : StringUtils.join(excludes, ",");
 
 
         List<File> files = null;
-        try {
-            files = FileUtils.getFiles(getSourceDirectory(), includesString, excludesString);
-        } catch (IOException e) {
-            e.printStackTrace();
+        for (String sourceDirectoty : getSourceDirectory()) {
+            try {
+                files = FileUtils.getFiles(new File(sourceDirectoty), includesString, excludesString);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
         Iterable<? extends JavaFileObject> compilationUnits1 = null;
@@ -356,7 +361,7 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
      * @required
      */
     //@MojoParameter(expression = "${project.build.sourceDirectory}", required = true)
-    private File sourceDirectory;
+//    private File sourceDirectory;
 
     /**
      * @parameter expression = "${project.build.directory}/generated-sources/apt"
@@ -374,8 +379,8 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
     private File outputClassDirectory;
 
     // @Override
-    public File getSourceDirectory() {
-        return sourceDirectory;
+    public List<String> getSourceDirectory() {
+        return project.getCompileSourceRoots();
     }
 
     //  @Override
