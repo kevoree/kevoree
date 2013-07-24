@@ -110,7 +110,7 @@ class CounterHistoryMetricImpl: CounterHistoryMetric, CounterHistoryMetricIntern
     }
 
     override fun getValues(): MutableList<MetricValue> {
-        return Collections.unmodifiableList(ll)
+        return Collections.unmodifiableList(ll)!!
     }
 
 }

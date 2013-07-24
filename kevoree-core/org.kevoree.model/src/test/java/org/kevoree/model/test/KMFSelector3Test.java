@@ -72,6 +72,9 @@ public class KMFSelector3Test {
 
 
         assert (fConsole.getName().equals("FakeConso380"));
+
+        System.out.println("path="+fConsole.path());
+
         assert (fConsole.path().equals("nodes[node4]/components[FakeConso380]"));
 
 
