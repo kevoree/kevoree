@@ -48,9 +48,13 @@ trait TypeDefinitionProcessor {
         val newTypeDef = parentType.getSimpleName match {
           case "NodeType" => LocalUtility.kevoreeFactory.createNodeType
           case "ComponentType" => LocalUtility.kevoreeFactory.createComponentType
+          case "ComponentFragment" => LocalUtility.kevoreeFactory.createComponentType
           case "ChannelType" => LocalUtility.kevoreeFactory.createChannelType
           case "GroupType" => LocalUtility.kevoreeFactory.createGroupType
           case _ @ notFound => println("error => "+parentName+"-"+notFound) ;null
+        }
+        if (parentType.getSimpleName == "ComponentFragment") {
+          newTypeDef.setAbstract(true);
         }
         newTypeDef.setName(parentName)
         model.addTypeDefinitions(newTypeDef)
