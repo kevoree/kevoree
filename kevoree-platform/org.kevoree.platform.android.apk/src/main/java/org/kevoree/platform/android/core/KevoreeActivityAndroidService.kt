@@ -40,12 +40,6 @@ import android.content.Intent
  */
 
 class KevoreeActivityAndroidService(val act: Activity, val kui: org.kevoree.platform.android.ui.KevoreeAndroidUIScreen): KevoreeAndroidService{
-    public override fun addIntentListener(p0: ((Intent?) -> Unit)?) {
-        throw UnsupportedOperationException()
-    }
-    public override fun removeIntentListener(p0: ((Intent?) -> Unit)?) {
-        throw UnsupportedOperationException()
-    }
 
     public override fun removeIntentListener(p0: IntentListener?) {
         kui.removeIntentListener(p0)
