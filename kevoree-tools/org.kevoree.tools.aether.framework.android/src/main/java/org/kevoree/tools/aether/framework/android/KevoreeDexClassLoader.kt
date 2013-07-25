@@ -17,8 +17,7 @@ import org.kevoree.log.Log
     sourcePathName 	Jar or APK file with "classes.dex". (May expand this to include "raw DEX" in the future.)
     outputPathName 	File that will hold the optimized form of the DEX data.
  */
-class KevoreeDexClassLoader(sourcePathName: String, outputPathName: String, val jarKCL: KevoreeJarClassLoader)
-{
+class KevoreeDexClassLoader(sourcePathName: String, outputPathName: String, val jarKCL: KevoreeJarClassLoader){
     val dexFile = DexFile.loadDex(sourcePathName, outputPathName, 0)
 
     fun tryLoadClass(className: String?): Class<out Any?>? {

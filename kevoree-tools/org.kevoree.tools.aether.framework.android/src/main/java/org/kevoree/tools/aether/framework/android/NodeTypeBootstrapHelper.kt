@@ -41,6 +41,7 @@ import java.util.ArrayList
 import org.kevoree.DeployUnit
 import org.kevoree.tools.aether.framework.AetherUtil
 import org.kevoree.log.Log
+import org.kevoree.tools.aether.framework.JCLContextHandler
 
 /**
  * User: ffouquet
@@ -69,7 +70,6 @@ class NodeTypeBootstrapHelper(val ctx: android.content.Context, val parent: Clas
     }
 
     var classLoaderHandler = AndroidJCLContextHandler(ctx, parent)
-
 
     override fun bootstrapNodeType(model: ContainerRoot, destNodeName: String, mservice: KevoreeModelHandlerService, kevsEngineFactory: KevScriptEngineFactory): org.kevoree.api.NodeType? {
         //LOCATE NODE

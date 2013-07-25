@@ -34,10 +34,10 @@ class KevoreeListeners {
         } else {
             Thread.currentThread().getThreadGroup()
         }
-
+                 /*
         override public fun newThread(pRun: ()->Unit) : Thread {
             throw Exception()
-        }
+        }   */
 
         override fun newThread(pRun: Runnable) : Thread {
             val t = Thread(group, pRun, internalName)
@@ -59,10 +59,10 @@ class KevoreeListeners {
         } else {
             Thread.currentThread().getThreadGroup()
         }
-
+            /*
         override public fun newThread(pRun: ()->Unit) : Thread {
             throw Exception()
-        }
+        }   */
 
         override fun newThread(pRun: Runnable) : Thread {
             val t = Thread(group, pRun, "Kevoree_Core_ListenerSchedulerAsync_" + internalNodeName + "_" + numCreated.getAndIncrement())

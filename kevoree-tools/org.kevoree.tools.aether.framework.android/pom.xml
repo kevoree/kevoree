@@ -58,7 +58,10 @@
                 <artifactId>kotlin-maven-plugin</artifactId>
                 <groupId>org.jetbrains.kotlin</groupId>
                 <version>${kotlin.version}</version>
-                <configuration/>
+                <configuration>
+
+                </configuration>
+
                 <executions>
                     <execution>
                         <id>compile</id>
@@ -69,76 +72,6 @@
                     </execution>
                 </executions>
             </plugin>
-
-            <!-- android dex phase -->
-
-
-            <!--
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>1.1</version>
-                <executions>
-                    <execution>
-                        <id>generate-dex</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>exec</goal>
-                        </goals>
-                        <configuration>
-                            <executable>${android.tools.dx}</executable>
-                            <arguments>
-                                <argument>-dex</argument>
-                                <argument>-core-library</argument>
-                                <argument>-output=${project.build.directory}/classes.dex</argument>
-                                <argument>${project.build.directory}/${project.build.finalName}.jar</argument>
-                            </arguments>
-                        </configuration>
-                    </execution>
-
-                    <execution>
-                        <id>prepare-dexed-jar</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>exec</goal>
-                        </goals>
-                        <configuration>
-                            <executable>${android.tools.aapt}</executable>
-                            <workingDirectory>${project.build.directory}</workingDirectory>
-                            <arguments>
-                                <argument>add</argument>
-                                <argument>${project.build.directory}/${project.build.finalName}.jar</argument>
-                                <argument>classes.dex</argument>
-                            </arguments>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            -->
-
-
-            <!--
-        <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-assembly-plugin</artifactId>
-            <configuration>
-                <finalName>${project.build.finalName}</finalName>
-                <appendAssemblyId>false</appendAssemblyId>
-                <descriptors>
-                    <descriptor>src/main/assembly/androidlib.xml</descriptor>
-                </descriptors>
-            </configuration>
-            <executions>
-                <execution>
-                    <id>make-assembly</id>
-                    <phase>package</phase>
-                    <goals>
-                        <goal>single</goal>
-                    </goals>
-                </execution>
-            </executions>
-        </plugin>
-                -->
         </plugins>
     </build>
 </project>

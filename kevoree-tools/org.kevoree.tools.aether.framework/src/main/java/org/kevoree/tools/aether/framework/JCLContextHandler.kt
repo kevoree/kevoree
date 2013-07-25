@@ -20,13 +20,13 @@ import org.kevoree.impl.DefaultKevoreeFactory
  */
 
 open class JCLContextHandler: KevoreeClassLoaderHandler {
-
+	/*
     public override fun registerDeployUnitResolver(dur: ((DeployUnit?) -> File?)?) {
         throw UnsupportedOperationException()
     }
     public override fun unregisterDeployUnitResolver(dur: ((DeployUnit?) -> File?)?) {
         throw UnsupportedOperationException()
-    }
+    }*/
 
     val kcl_cache = java.util.HashMap<String, KevoreeJarClassLoader>()
     val kcl_cache_file = java.util.HashMap<String, File>()
