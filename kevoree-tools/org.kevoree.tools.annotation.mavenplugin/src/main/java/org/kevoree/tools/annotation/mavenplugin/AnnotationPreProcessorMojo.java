@@ -158,31 +158,31 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
 
         // new Debug(project).printDebugInfo();
 
-       for (String sourceDirectoty : getSourceDirectory()) {
+        for (String sourceDirectory : getSourceDirectory()) {
 //        java.io.File sourceDir = getSourceDirectory();
-           File sourceDir = new File(sourceDirectoty);
-        if (sourceDir == null) {
-            getLog().warn("source directory cannot be read (null returned)! Processor task will be skipped");
-            return;
+            if (sourceDirectory == null) {
+                getLog().warn("source directory cannot be read (null returned)! Processor task will be skipped");
+                return;
+            }
+            File sourceDir = new File(sourceDirectory);
+            if (!sourceDir.exists()) {
+                getLog().warn("source directory doesn't exist! Processor task will be skipped");
+                return;
+            }
+            if (!sourceDir.isDirectory()) {
+                getLog().warn("source directory is invalid! Processor task will be skipped");
+                return;
+            }
         }
-        if (!sourceDir.exists()) {
-            getLog().warn("source directory doesn't exist! Processor task will be skipped");
-            return;
-        }
-        if (!sourceDir.isDirectory()) {
-            getLog().warn("source directory is invalid! Processor task will be skipped");
-            return;
-        }
-       }
 
         final String includesString = (includes == null || includes.length == 0) ? "**/*.java" : StringUtils.join(includes, ",");
         final String excludesString = (excludes == null || excludes.length == 0) ? null : StringUtils.join(excludes, ",");
 
 
-        List<File> files = null;
-        for (String sourceDirectoty : getSourceDirectory()) {
+        List<File> files = new ArrayList<File>();
+        for (String sourceDirectory : getSourceDirectory()) {
             try {
-                files = FileUtils.getFiles(new File(sourceDirectoty), includesString, excludesString);
+                files.addAll(FileUtils.getFiles(new File(sourceDirectory), includesString, excludesString));
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -438,128 +438,19 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
      */
     private List<Artifact> pluginArtifacts;
     /**
-     * The directory to run apt from when forked.
-     *
-     * @parameter expression="${basedir}"
-     * @required
-     * @readonly
-     */
-    private File workingDirectory;
-    // configurable parameters ------------------------------------------------
-    /**
-     * Whether to run apt in a separate process.
-     *
-     * @parameter default-value="false"
-     */
-    private boolean fork;
-    /**
-     * The apt executable to use when forked.
-     *
-     * @parameter expression="${maven.apt.executable}" default-value="apt"
-     */
-    private String executable;
-    /**
-     * The initial size of the memory allocation pool when forked, for example <code>64m</code>.
-     *
-     * @parameter
-     */
-    private String meminitial;
-    /**
-     * The maximum size of the memory allocation pool when forked, for example <code>128m</code>.
-     *
-     * @parameter
-     */
-    private String maxmem;
-    /**
-     * Whether to show apt warnings. This is opposite to the <code>-nowarn</code> argument for apt.
-     *
-     * @parameter expression="${maven.apt.showWarnings}" default-value="false"
-     */
-    private boolean showWarnings;
-    /**
-     * The source file encoding name, such as <code>EUC-JP</code> and <code>UTF-8</code>. If encoding is not
-     * specified, the encoding <code>ISO-8859-1</code> is used rather than the platform default for reproducibility
-     * reasons. This is equivalent to the <code>-encoding</code> argument for apt.
-     *
-     * @parameter expression="${maven.apt.encoding}" default-value="ISO-8859-1"
-     */
-    private String encoding;
-    /**
-     * Whether to output information about each class loaded and each source file processed. This is equivalent to the
-     * <code>-verbose</code> argument for apt.
-     *
-     * @parameter expression="${maven.apt.verbose}" default-value="false"
-     */
-    private boolean verbose;
-    /**
      * Options to pass to annotation processors. These are equivalent to multiple <code>-A</code> arguments for apt.
      *
      * @parameter
      */
     private HashMap<String, String> options = new java.util.HashMap<String, String>();
-    /**
-     * Name of <code>AnnotationProcessorFactory</code> to use; bypasses default discovery process. This is equivalent
-     * to the <code>-factory</code> argument for apt.
-     *
-     * @parameter expression="${maven.apt.factory}"
-     */
-    private String factory;
+
     /**
      * The source directories containing any additional sources to be processed.
      *
      * @parameter
      */
-    private List<String> additionalSourceRoots;
-    /**
-     * The path for processor-generated resources.
-     *
-     * @parameter
-     */
-    private String resourceTargetPath;
-    /**
-     * Whether resource filtering is enabled for processor-generated resources.
-     *
-     * @parameter default-value="false"
-     */
-    private boolean resourceFiltering;
-    /**
-     * Force apt processing without staleness checking. When <code>false</code>, use <code>outputFiles</code> or
-     * <code>outputFileEndings</code> to control computing staleness.
-     *
-     * @parameter default-value="false"
-     */
-    private boolean force;
-    /**
-     * The filenames of processor-generated files to examine when computing staleness. For example,
-     * <code>generated.xml</code> would specify that the processor creates the aforementioned single file from all
-     * <code>.java</code> source files. When this parameter is not specified, <code>outputFileEndings</code> is used
-     * instead.
-     *
-     * @parameter
-     */
-    private Set<String> outputFiles;
-    /**
-     * The filename endings of processor-generated files to examine when computing staleness. For example,
-     * <code>.txt</code> would specify that the processor creates a corresponding <code>.txt</code> file for every
-     * <code>.java</code> source file. Default value is <code>.java</code>. Note that this parameter has no effect if
-     * <code>outputFiles</code> is specified.
-     *
-     * @parameter
-     */
-    private Set<String> outputFileEndings;
-    /**
-     * Sets the granularity in milliseconds of the last modification date for testing whether a source needs
-     * processing.
-     *
-     * @parameter expression="${maven.apt.staleMillis}" default-value="0"
-     */
-    private int staleMillis;
-    /**
-     * Whether to bypass running apt.
-     *
-     * @parameter expression="${maven.apt.skip}" default-value="false"
-     */
-    private boolean skip;
+//    private List<String> additionalSourceRoots;
+
     // fields -----------------------------------------------------------------
     private String[] includes;
     private String[] excludes;
@@ -569,7 +460,7 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
      *
      * @parameter default-value="${project.build.directory}/generated-sources/kevoree"
      */
-    private File  outputDirectory;
+    private File outputDirectory;
     /**
      * The directory root under which processor-generated source files will be placed; files are placed in
      * subdirectories based on package namespace. This is equivalent to the <code>-s</code> argument for apt.
@@ -577,24 +468,6 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
      * @parameter default-value="${project.build.directory}/generated-sources/kevoree"
      */
     private File sourceOutputDirectory;
-
-    /**
-     *
-     * @parameter default-value="${project.build.directory}/generated-sources"
-     */
-    private File sourceOutputBaseDirectory;
-
-
-    /**
-     * @parameter default-value="${project.build.directory}/classes"
-     */
-    private File outputClasses;
-    /**
-     * @parameter expression="${project}"
-     * @required
-     * @readonly
-     */
-    private MavenProject mavenProject;
 
     /**
      * TargetNodeTypeNames
@@ -678,7 +551,7 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
                 ContainerRoot model = KevoreeXmiHelper.instance$.load(sourceOutputDirectory.getPath() + File.separator + "KEV-INF" + File.separator + "lib.kev");
                 KevoreeMergerComponent merger = new KevoreeMergerComponent();
 
-                for (Object dep : this.mavenProject.getCompileArtifacts()) {
+                for (Object dep : project.getCompileArtifacts()) {
                     try {
                         DefaultArtifact defaultArtifact = (DefaultArtifact) dep;
                         JarFile jar = new JarFile(defaultArtifact.getFile());
@@ -696,51 +569,14 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
 
 
         } catch (Exception e) {
-            e.printStackTrace();
+//            e.printStackTrace();
+            throw new MojoExecutionException("Unable to build kevoree model for types", e);
         }
 
 
     }
 
     // protected methods ------------------------------------------------------
-    private static String toPath(Collection<String> paths) {
-        StringBuffer buffer = new StringBuffer();
-        for (Iterator<String> iterator = paths.iterator(); iterator.hasNext(); ) {
-            buffer.append(iterator.next());
-
-            if (iterator.hasNext()) {
-                buffer.append(File.pathSeparator);
-            }
-        }
-        return buffer.toString();
-    }
-
-
-    private List<String> getSourcePaths() {
-        List<String> sourcePaths = new ArrayList<String>();
-        sourcePaths.addAll(project.getCompileSourceRoots());
-
-        if (additionalSourceRoots != null) {
-            sourcePaths.addAll(additionalSourceRoots);
-        }
-
-        if(sourceOutputBaseDirectory.exists()){
-            sourcePaths.add(sourceOutputBaseDirectory.getAbsolutePath());
-        }
-
-        return sourcePaths;
-    }
-
-
-    /**
-     * Gets the project's classpath.
-     *
-     * @return a list of classpath elements
-     */
-    protected List<String> getClasspathElements() {
-        return classpathElements;
-    }
-
     private static final String SNAPSHOT = "SNAPSHOT";
 
     private static final Pattern SNAPSHOT_TIMESTAMP = Pattern.compile("^(.*-)?([0-9]{8}.[0-9]{6}-[0-9]+)$");
