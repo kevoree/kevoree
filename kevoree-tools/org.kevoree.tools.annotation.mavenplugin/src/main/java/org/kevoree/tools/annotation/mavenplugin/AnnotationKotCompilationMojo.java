@@ -95,7 +95,7 @@ public class AnnotationKotCompilationMojo extends AbstractMojo {
             args.noJdkAnnotations = true;
             args.noStdlib = true;
 
-            ExitCode e = KotlinCompiler.exec(new PrintStream(System.err){
+            ExitCode e = compiler.exec(new PrintStream(System.err){
                 @Override
                 public void println(String x) {
                     if(x.startsWith("WARNING")){
