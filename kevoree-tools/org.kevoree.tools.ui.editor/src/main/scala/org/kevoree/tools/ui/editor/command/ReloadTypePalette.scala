@@ -16,7 +16,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * 	http://www.gnu.org/licenses/lgpl-3.0.txt
+ * http://www.gnu.org/licenses/lgpl-3.0.txt
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -61,21 +61,25 @@ class ReloadTypePalette extends Command {
             palette.getCategoryOrAdd(library.getName)
             library.getSubTypes.toList.sortWith((x, y) => x.getName().charAt(0).toLower < y.getName().charAt(0).toLower).foreach {
               subTypeDef =>
-                loadedLib = loadedLib ++ List(subTypeDef)
-                typeDefPanelFactory(subTypeDef).map {
-                  typeDefPanel =>
-                    palette.addTypeDefinitionPanel(typeDefPanel, library.getName, subTypeDef.getName)
+                if (!subTypeDef.getAbstract) {
+                  loadedLib = loadedLib ++ List(subTypeDef)
+                  typeDefPanelFactory(subTypeDef).map {
+                    typeDefPanel =>
+                      palette.addTypeDefinitionPanel(typeDefPanel, library.getName, subTypeDef.getName)
 
+                  }
                 }
             }
 
         }
         model.getTypeDefinitions.filter(typeDef => !loadedLib.contains(typeDef)).sortWith((x, y) => x.getName().charAt(0).toLower < y.getName().charAt(0).toLower).foreach {
           typeDef =>
-            typeDefPanelFactory(typeDef).map {
-              typeDefPanel =>
-                palette.addTypeDefinitionPanel(typeDefPanel, "default", typeDef.getName)
+            if (!typeDef.getAbstract) {
+              typeDefPanelFactory(typeDef).map {
+                typeDefPanel =>
+                  palette.addTypeDefinitionPanel(typeDefPanel, "default", typeDef.getName)
 
+              }
             }
 
         }
@@ -87,10 +91,12 @@ class ReloadTypePalette extends Command {
             palette.getCategoryOrAdd(deployUnit.getUnitName)
             model.getTypeDefinitions.filter(t => t.getDeployUnits.exists(du => du == deployUnit)).sortWith((x, y) => x.getName().charAt(0).toLower < y.getName().charAt(0).toLower).foreach {
               typeDef =>
-                typeDefPanelFactory(typeDef).map {
-                  typeDefPanel =>
-                    palette.addTypeDefinitionPanel(typeDefPanel, deployUnit.getUnitName, typeDef.getName)
+                if (!typeDef.getAbstract) {
+                  typeDefPanelFactory(typeDef).map {
+                    typeDefPanel =>
+                      palette.addTypeDefinitionPanel(typeDefPanel, deployUnit.getUnitName, typeDef.getName)
 
+                  }
                 }
 
             }
