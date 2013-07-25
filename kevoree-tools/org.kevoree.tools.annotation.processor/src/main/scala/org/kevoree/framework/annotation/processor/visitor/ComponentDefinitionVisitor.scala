@@ -11,23 +11,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * 	http://www.gnu.org/licenses/lgpl-3.0.txt
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 
 package org.kevoree.framework.annotation.processor.visitor
 
@@ -55,6 +38,7 @@ case class ComponentDefinitionVisitor(componentType: ComponentType, env: Process
         var an: Any = dt.asElement().getAnnotation(classOf[org.kevoree.annotation.ComponentFragment])
         if (an != null) {
           dt.asElement().accept(this, dt.asElement())
+          defineAsSuperType(componentType, dt.asElement().getSimpleName.toString, classOf[ComponentType], true)
         }
         an = dt.asElement().getAnnotation(classOf[org.kevoree.annotation.ComponentType])
         if (an != null) {
@@ -77,6 +61,7 @@ case class ComponentDefinitionVisitor(componentType: ComponentType, env: Process
             val annotFragment = dt.asElement().getAnnotation(classOf[org.kevoree.annotation.ComponentFragment])
             if (annotFragment != null) {
               dt.asElement().accept(this, dt.asElement())
+              defineAsSuperType(componentType, dt.asElement().getSimpleName.toString, classOf[ComponentType], true)
             }
           }
           case _ =>

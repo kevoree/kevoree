@@ -59,6 +59,21 @@ case class GroupTypeVisitor(groupType: GroupType, env: ProcessingEnvironment, ro
       case _ =>
     }
 
+    import scala.collection.JavaConversions._
+    p1.getInterfaces.foreach {
+      it =>
+        it match {
+          case dt: javax.lang.model.`type`.DeclaredType => {
+            val annotFragment = dt.asElement().getAnnotation(classOf[org.kevoree.annotation.ComponentFragment])
+            if (annotFragment != null) {
+              dt.asElement().accept(this, dt.asElement())
+              defineAsSuperType(groupType, dt.asElement().getSimpleName.toString, classOf[GroupType], true)
+            }
+          }
+          case _ =>
+        }
+    }
+
     //SUB PROCESSOR
     processDictionary(groupType, p2.asInstanceOf[TypeElement])
     processDeployUnit(groupType, p2.asInstanceOf[TypeElement], env, rootVisitor.getOptions)

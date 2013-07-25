@@ -11,19 +11,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * 	http://www.gnu.org/licenses/lgpl-3.0.txt
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package org.kevoree.framework.annotation.processor.visitor.sub
 
 import org.kevoree.framework.annotation.processor.LocalUtility
@@ -40,7 +27,7 @@ import org.kevoree._
 
 trait TypeDefinitionProcessor {
 
-  def defineAsSuperType[A<:TypeDefinition](child: TypeDefinition, parentName: String, parentType : Class[A]) {
+  def defineAsSuperType[A<:TypeDefinition](child: TypeDefinition, parentName: String, parentType : Class[A], isAbstract : Boolean = false) {
     val model = LocalUtility.root
     val parent = model.findByPath("typeDefinitions[" + parentName + "]",parentType) match {
       case foundTD : Any => foundTD
@@ -48,16 +35,17 @@ trait TypeDefinitionProcessor {
         val newTypeDef = parentType.getSimpleName match {
           case "NodeType" => LocalUtility.kevoreeFactory.createNodeType
           case "ComponentType" => LocalUtility.kevoreeFactory.createComponentType
-          case "ComponentFragment" => LocalUtility.kevoreeFactory.createComponentType
           case "ChannelType" => LocalUtility.kevoreeFactory.createChannelType
           case "GroupType" => LocalUtility.kevoreeFactory.createGroupType
           case _ @ notFound => println("error => "+parentName+"-"+notFound) ;null
         }
-        if (parentType.getSimpleName == "ComponentFragment") {
-          newTypeDef.setAbstract(true);
-        }
         newTypeDef.setName(parentName)
         model.addTypeDefinitions(newTypeDef)
+
+        if (isAbstract) {
+          System.err.println("{} will be abstract.", newTypeDef.getName);
+          newTypeDef.setAbstract(true);
+        }
         newTypeDef
       }
     }

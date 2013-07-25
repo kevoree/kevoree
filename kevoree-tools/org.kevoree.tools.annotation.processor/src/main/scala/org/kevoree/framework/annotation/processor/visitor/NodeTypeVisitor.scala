@@ -87,7 +87,7 @@ case class NodeTypeVisitor(nodeType: NodeType, env: ProcessingEnvironment, rootV
            val an: Any = dt.asElement().getAnnotation(classOf[org.kevoree.annotation.NodeType])
            if (an != null) {
              dt.asElement().accept(this, dt.asElement())
-             defineAsSuperType(nodeType, dt.asElement().getSimpleName.toString, classOf[NodeType])
+             defineAsSuperType(nodeType, dt.asElement().getSimpleName.toString, classOf[NodeType], true)
            }
          }
          case _ @ e =>
