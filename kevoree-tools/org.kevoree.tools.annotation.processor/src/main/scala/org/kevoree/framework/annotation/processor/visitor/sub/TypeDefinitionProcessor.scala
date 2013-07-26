@@ -43,7 +43,6 @@ trait TypeDefinitionProcessor {
         model.addTypeDefinitions(newTypeDef)
 
         if (isAbstract) {
-          System.err.println("{} will be abstract.", newTypeDef.getName);
           newTypeDef.setAbstract(true);
         }
         newTypeDef
