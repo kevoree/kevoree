@@ -20,9 +20,9 @@ import org.kevoree.ContainerRoot;
 import org.kevoree.framework.KevoreeXmiHelper;
 import org.kevoree.platform.standalone.App;
 import org.kevoree.platform.standalone.KevoreeBootStrap;
-import org.kevoree.tools.aether.framework.AetherUtil;
 import org.sonatype.aether.RepositorySystem;
 import org.sonatype.aether.RepositorySystemSession;
+
 import java.io.File;
 import java.io.FileInputStream;
 
@@ -107,6 +107,7 @@ public class KevRunnerMavenMojo extends AbstractMojo {
 
 		} catch (Throwable e) {
 			getLog().error(e);
+            throw new MojoExecutionException("Unable to run platform with the given model", e);
 		}
 
 
