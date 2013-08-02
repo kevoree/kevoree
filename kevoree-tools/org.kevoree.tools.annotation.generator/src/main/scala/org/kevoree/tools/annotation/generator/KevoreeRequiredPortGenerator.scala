@@ -35,7 +35,7 @@ object KevoreeRequiredPortGenerator {
     writer.append("import org.kevoree.framework.port.*\n")
     writer.append("import " + new KevoreeGeneratorHelper().getTypeDefinitionBasePackage(ct) + ".*\n")
     var baseName = ref.getRef.getName
-    if(ref.getRef.isInstanceOf[MessagePortType]){
+    if (ref.getRef.isInstanceOf[MessagePortType]) {
       baseName = "org.kevoree.framework.MessagePort"
     }
 
@@ -83,13 +83,13 @@ object KevoreeRequiredPortGenerator {
           /* GENERATE METHOD SIGNATURE */
             writer.append("override fun " + op.getName + "(")
             var i = 0
-            op.getParameters.sortWith((p1,p2)=>p2.getOrder > p1.getOrder).foreach {
+            op.getParameters.sortWith((p1, p2) => p2.getOrder > p1.getOrder).foreach {
               param =>
                 if (i != 0) {
                   writer.append(",")
                 }
-                writer.append(GeneratorHelper.protectReservedWord(param.getName) + ":" + GeneratorHelper.protectedType(Printer.print(param.getType, '<', '>'))+"?")
-                i = i +1
+                writer.append(GeneratorHelper.protectReservedWord(param.getName) + ":" + GeneratorHelper.protectedType(Printer.print(param.getType, '<', '>')) + "?")
+                i = i + 1
             }
 
             var rt = op.getReturnType.getName
@@ -98,18 +98,28 @@ object KevoreeRequiredPortGenerator {
                 case s: TypedElement => s.getName
               }.mkString("<", ",", ">")
             }
-            writer.append(") : " + GeneratorHelper.protectedType(rt) + "? {\n")
+
+            if (isPrimitiveJava(rt)) {
+              writer.append(") : " + GeneratorHelper.protectedType(rt) + " {\n")
+            } else {
+              writer.append(") : " + GeneratorHelper.protectedType(rt) + "? {\n")
+            }
 
             /* Generate method corpus */
             /* CREATE MSG OP CALL */
             writer.append("val msgcall = org.kevoree.framework.MethodCallMessage()\n")
             writer.append("msgcall.setMethodName(\"" + op.getName + "\")\n")
-            op.getParameters.sortWith((p1,p2)=>p2.getOrder > p1.getOrder).foreach {
+            op.getParameters.sortWith((p1, p2) => p2.getOrder > p1.getOrder).foreach {
               param =>
                 writer.append("msgcall.getParams()!!.put(\"" + param.getName + "\"," + GeneratorHelper.protectReservedWord(param.getName) + " as Any)\n")
             }
 
-            writer.append("return this.sendWait(msgcall) as? " + GeneratorHelper.protectedType(rt) )
+            if (isPrimitiveJava(rt)) {
+              writer.append("return this.sendWait(msgcall) as " + GeneratorHelper.protectedType(rt))
+            } else {
+              writer.append("return this.sendWait(msgcall) as? " + GeneratorHelper.protectedType(rt))
+            }
+
             writer.append("}\n")
         }
       }
@@ -118,6 +128,23 @@ object KevoreeRequiredPortGenerator {
 
     writer.append("}\n")
     writer.close()
+  }
+
+
+  def isPrimitiveJava(name: String): Boolean = {
+    if (name == "Boolean") {
+      return true;
+    }
+    if (name == "Int") {
+      return true;
+    }
+    if (name == "Long") {
+      return true;
+    }
+    if (name == "void") {
+      return true;
+    }
+    return false;
   }
 
 
