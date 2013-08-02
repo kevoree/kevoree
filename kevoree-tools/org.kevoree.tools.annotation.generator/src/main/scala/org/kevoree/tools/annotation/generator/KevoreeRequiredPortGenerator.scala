@@ -98,7 +98,7 @@ object KevoreeRequiredPortGenerator {
                 case s: TypedElement => s.getName
               }.mkString("<", ",", ">")
             }
-            writer.append(") : " + GeneratorHelper.protectedType(rt) + " {\n")
+            writer.append(") : " + GeneratorHelper.protectedType(rt) + "? {\n")
 
             /* Generate method corpus */
             /* CREATE MSG OP CALL */
@@ -109,7 +109,7 @@ object KevoreeRequiredPortGenerator {
                 writer.append("msgcall.getParams()!!.put(\"" + param.getName + "\"," + GeneratorHelper.protectReservedWord(param.getName) + " as Any)\n")
             }
 
-            writer.append("return this.sendWait(msgcall) as " + GeneratorHelper.protectedType(rt) )
+            writer.append("return this.sendWait(msgcall) as? " + GeneratorHelper.protectedType(rt) )
             writer.append("}\n")
         }
       }
