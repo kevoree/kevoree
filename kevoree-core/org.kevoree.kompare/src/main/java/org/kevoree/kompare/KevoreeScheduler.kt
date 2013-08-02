@@ -15,59 +15,20 @@ import org.kevoree.log.Log
  * Time: 17:54
  */
 
-trait KevoreeScheduler {
-
-    var step: ParallelStep?
-    var currentStep: ParallelStep?
-    var adaptationModelFactory: KevoreeAdaptationFactory
-
-    private fun nextStep() {
-        if(step == null){
-            step = adaptationModelFactory.createParallelStep()
-        }
-        if(currentStep == null){
-            currentStep = step
-        }
-        if (!step!!.getAdaptations().isEmpty()) {
-            step = adaptationModelFactory.createParallelStep()
-            currentStep!!.setNextStep(step)
-            currentStep = step
-        }
-    }
-
-    public fun clearSteps() {
-        step = null
-        currentStep = null
-    }
-
-    open fun createNextStep(primitiveType: String, commands: List<AdaptationPrimitive>) {
-
-        if(currentStep == null){
-            nextStep()
-        }
-        if (!commands.isEmpty()) {
-            step!!.addAllAdaptations(commands)
-
-            nextStep()
-        }
-    }
-
+trait KevoreeScheduler : StepBuilder {
 
     open fun plan(adaptionModel: AdaptationModel, nodeName: String): AdaptationModel {
         if (!adaptionModel.getAdaptations().isEmpty()) {
 
             adaptationModelFactory = org.kevoreeadaptation.impl.DefaultKevoreeAdaptationFactory()
             val scheduling = SchedulingWithTopologicalOrderAlgo()
-            nextStep()
-            adaptionModel.setOrderedPrimitiveSet(currentStep)
 
-            //PROCESS STOP
-            scheduling.schedule(adaptionModel.getAdaptations()
-                    .filter{ adapt -> adapt.getPrimitiveType()!!.getName() == JavaSePrimitive.StopInstance }, false).forEach {
-                p ->
-                val commands = ArrayList<AdaptationPrimitive>()
-                commands.add(p)
-                createNextStep(JavaSePrimitive.StopInstance, commands)
+            nextStep()
+            adaptionModel.setOrderedPrimitiveSet(currentSteps)
+            //STOP INSTANCEs
+            var stepToInsert = scheduling.schedule(adaptionModel.getAdaptations().filter{ adapt -> adapt.getPrimitiveType()!!.getName() == JavaSePrimitive.StopInstance }, false)
+            if (stepToInsert != null && !stepToInsert!!.getAdaptations().isEmpty()) {
+                insertStep(stepToInsert!!)
             }
 
             // REMOVE BINDINGS
@@ -104,16 +65,10 @@ trait KevoreeScheduler {
             createNextStep(JavaSePrimitive.UpdateDictionaryInstance, adaptionModel.getAdaptations().filter{ adapt -> adapt.getPrimitiveType()!!.getName() == JavaSePrimitive.UpdateDictionaryInstance })
 
             // START INSTANCEs
-            var oldStep = currentStep
-            scheduling.schedule(adaptionModel.getAdaptations().filter{ adapt -> adapt.getPrimitiveType()!!.getName() == JavaSePrimitive.StartInstance }, true).forEach {
-                p ->
-                val commands = ArrayList<AdaptationPrimitive>()
-                commands.add(p)
-                oldStep = currentStep
-                createNextStep(JavaSePrimitive.StartInstance, commands)
-            }
-            if (step!!.getAdaptations().isEmpty()) {
-                oldStep!!.setNextStep(null)
+            stepToInsert = scheduling.schedule(adaptionModel.getAdaptations().filter{
+                adapt -> adapt.getPrimitiveType()!!.getName() == JavaSePrimitive.StartInstance }, true)
+            if (stepToInsert != null && !stepToInsert!!.getAdaptations().isEmpty()) {
+                insertStep(stepToInsert!!)
             }
         } else {
             adaptionModel.setOrderedPrimitiveSet(null)

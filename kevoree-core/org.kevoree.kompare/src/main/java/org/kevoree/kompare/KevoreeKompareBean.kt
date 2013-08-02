@@ -6,8 +6,8 @@ import org.kevoree.kompare.sub.Kompare2
 import org.kevoree.log.Log
 
 open class KevoreeKompareBean: Kompare2, KevoreeScheduler {
-    override var step: ParallelStep? = null
-    override var currentStep: ParallelStep? = null
+    override var previousStep: ParallelStep? = null
+    override var currentSteps: ParallelStep? = null
 
     override var adaptationModelFactory: KevoreeAdaptationFactory = org.kevoreeadaptation.impl.DefaultKevoreeAdaptationFactory()
 

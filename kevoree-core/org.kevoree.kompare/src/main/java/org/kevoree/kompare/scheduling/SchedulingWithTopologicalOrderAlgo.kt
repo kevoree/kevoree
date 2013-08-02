@@ -1,6 +1,4 @@
-
 package org.kevoree.kompare.scheduling
-
 
 import org.jgrapht.graph.DefaultDirectedGraph
 import org.jgrapht.traverse.TopologicalOrderIterator
@@ -8,28 +6,48 @@ import org.kevoree.*
 import java.util.ArrayList
 import org.kevoreeadaptation.AdaptationPrimitive
 import java.util.HashMap
+import org.kevoreeadaptation.ParallelStep
+import org.kevoree.kompare.StepBuilder
+import org.kevoreeadaptation.KevoreeAdaptationFactory
+import org.kevoree.kompare.JavaSePrimitive
+import org.kevoree.framework.kaspects.PortAspect
 import org.kevoree.container.KMFContainer
 
-class SchedulingWithTopologicalOrderAlgo {
+class SchedulingWithTopologicalOrderAlgo: StepBuilder {
+    override var previousStep: ParallelStep? = null
+    override var currentSteps: ParallelStep? = null
+    override var adaptationModelFactory: KevoreeAdaptationFactory = org.kevoreeadaptation.impl.DefaultKevoreeAdaptationFactory()
 
-    fun schedule(commands: List<AdaptationPrimitive>, start: Boolean): List<AdaptationPrimitive> {
+    fun schedule(commands: List<AdaptationPrimitive>, start: Boolean): /*List<AdaptationPrimitive>*/ParallelStep? {
+        nextStep()
+        val firstStep = currentSteps
         if (commands.size > 1) {
             val graph = buildGraph(commands, start)
             val topologicAlgorithm = TopologicalOrderIterator(graph)
 
-            var listCommands = ArrayList<AdaptationPrimitive>()
             while (topologicAlgorithm.hasNext()) {
-                listCommands.add(topologicAlgorithm.next())
+                val element = topologicAlgorithm.next()
+                val list = ArrayList<AdaptationPrimitive>()
+                list.add(element)
+                if (start) {
+                    createNextStep(JavaSePrimitive.StartInstance, list)
+                } else {
+                    createNextStep(JavaSePrimitive.StopInstance, list)
+                }
+                nextStep()
             }
-            if (listCommands.size == commands.size) {
-                return listCommands
+        } else if (!commands.isEmpty()) {
+            if (start) {
+                createNextStep(JavaSePrimitive.StartInstance, commands)
+            } else {
+                createNextStep(JavaSePrimitive.StopInstance, commands)
             }
         }
-        return commands
+        return firstStep;
     }
 
 
-    private class Assoc2<E,G>(_1 : E, _2:G){
+    private class Assoc2<E, G>(_1: E, _2: G){
     }
 
 
@@ -39,10 +57,11 @@ class SchedulingWithTopologicalOrderAlgo {
     private fun buildGraph(commands: List<AdaptationPrimitive>,
                            start: Boolean): DefaultDirectedGraph<AdaptationPrimitive, Assoc2<AdaptationPrimitive, AdaptationPrimitive>> {
 
-        val clazz = Assoc2<AdaptationPrimitive, AdaptationPrimitive>(commands.get(0),commands.get(0)).javaClass
+        val clazz = Assoc2<AdaptationPrimitive, AdaptationPrimitive>(commands.get(0), commands.get(0)).javaClass
 
         val graph = DefaultDirectedGraph<AdaptationPrimitive, Assoc2<AdaptationPrimitive, AdaptationPrimitive>>(clazz)
 
+        //        val map = lookForPotentialConstraints(commands)
         val map = lookForPotentialConstraints(commands)
 
         for (command in commands) {
@@ -60,7 +79,6 @@ class SchedulingWithTopologicalOrderAlgo {
                         }
                     }
                 }
-
             }
         }
         return graph
@@ -77,69 +95,49 @@ class SchedulingWithTopologicalOrderAlgo {
        *
        *
        * */
-
-
     private fun lookForPotentialConstraints(commands: List<AdaptationPrimitive>): Map<Instance, List<Instance>> {
         val instanceDependencies: HashMap<Instance, MutableList<Instance>> = HashMap<Instance, MutableList<Instance>>()
 
-        var rootContainer: ContainerRoot? = null
-        val firstCommand = (commands.get(0)).getRef() as Instance
+        for (command in commands) {
+            if(command.getRef() is ComponentInstance) {
+                val component = command.getRef() as ComponentInstance
+                var instancesDependencyForComponent: MutableList<Instance>? = instanceDependencies.get(component)
+                if(instancesDependencyForComponent == null){
+                    instancesDependencyForComponent = ArrayList<Instance>()
+                }
 
-        if(firstCommand is Group){
-            rootContainer = (firstCommand as Group).eContainer() as ContainerRoot
-        }
-        if(firstCommand is Channel){
-            rootContainer = (firstCommand as Channel).eContainer() as ContainerRoot
-        }
-        if(firstCommand is ComponentInstance){
-            rootContainer = ((firstCommand as ComponentInstance).eContainer() as KMFContainer).eContainer() as ContainerRoot
-        }
-        if(firstCommand is ContainerNode){
-            rootContainer = ((firstCommand as ContainerNode).eContainer() as KMFContainer).eContainer() as ContainerRoot
-        }
+                // Looking for channel that send message to the instance
+                for (port in component.getProvided()) {
+                    for (binding in port.getBindings()) {
+                        // the channel is a dependency of the instance (must be start after and stop before the instance)
+                        val channel = binding.getHub()!!
+                        if (!instancesDependencyForComponent!!.contains(channel)) {
+                            var instancesDependencyForChannel: MutableList<Instance>? = instanceDependencies.get(channel)
+                            if(instancesDependencyForChannel == null){
+                                instancesDependencyForChannel = ArrayList<Instance>()
+                            }
+                            for (bindingFromChannel in channel.getBindings()) {
+                                val portFromBinding = bindingFromChannel.getPort()!!
+                                // each required port connected to the channel is host by a component that is a dependency of the instance (must be start after and stop before the instance) and a dependency of the channel
+                                if (PortAspect().isRequiredPort(bindingFromChannel.getPort()!!) && !portFromBinding.getPortTypeRef()!!.getNoDependency() && !instancesDependencyForChannel!!.contains(bindingFromChannel.getPort()!!.eContainer() as Instance)) {
+//                                    System.out.println((portFromBinding.eContainer() as NamedElement).getName() + "\t" + portFromBinding.getPortTypeRef()!!.getName() + "\t" + portFromBinding.getPortTypeRef()!!.getNoDependency())
+//                                    System.out.println(component.getName() + " -> " + channel.getName())
+                                    instancesDependencyForComponent!!.add(channel)
 
-        val bindingIterator = rootContainer!!.getMBindings().iterator()
-        while (bindingIterator.hasNext()) {
-            val binding = bindingIterator.next()
-            for (command in commands) {
-                if(command.getRef() is ComponentInstance) {
-                    // test if instance is the container of the port of the binding
-                    if ((command.getRef() as ComponentInstance).equals(binding.getPort()!!.eContainer())) {
-                        // test all provided port
-                        // the instance of the provided port must be stopped before those which are connected to him
-                        val pit = (command.getRef() as ComponentInstance).getProvided().iterator()
-                        while (pit.hasNext()) {
-                            val port = pit.next()
-                            if (binding.getPort().equals(port)) {
-                                var newL: MutableList<Instance>? = instanceDependencies.get((command.getRef() as ComponentInstance))
-                                if(newL == null){
-                                    newL = ArrayList<Instance>()
+//                                    System.out.println(component.getName() + " -> " + (bindingFromChannel.getPort()!!.eContainer() as NamedElement).getName())
+//                                    System.out.println(channel.getName() + " -> " + (bindingFromChannel.getPort()!!.eContainer() as NamedElement).getName())
+                                    instancesDependencyForComponent!!.add(portFromBinding.eContainer() as Instance)
+                                    instancesDependencyForChannel!!.add(portFromBinding.eContainer() as Instance)
                                 }
-                                newL!!.add(binding.getHub()!!)
-                                instanceDependencies.put((command.getRef() as ComponentInstance), newL!!)
                             }
-                        }
-                        // test all required port
-                        // the instance wait stops of all of those which are connected to him
-                        val rit = (command.getRef() as ComponentInstance).getRequired().iterator()
-                        while (rit.hasNext()) {
-                            val port = rit.next()
-                            // !port.getPortTypeRef.getNoDependency is used to be sure that we need to know if the use of this port on the start or stop method of the component can introduce deadlock or not
-                            if (binding.getPort().equals(port) &&
-                            (!port.getPortTypeRef()!!.getNoDependency())) {
-                                var newL = instanceDependencies.get(binding.getHub())
-                                if(newL == null){
-                                    newL = ArrayList<Instance>()
-                                }
-                                newL!!.add((command.getRef() as ComponentInstance))
-                                instanceDependencies.put(binding.getHub()!!, newL!!)
-                            }
+                            instanceDependencies.put(channel, instancesDependencyForChannel!!)
                         }
                     }
                 }
+                instanceDependencies.put(component, instancesDependencyForComponent!!)
             }
         }
-
         return instanceDependencies
     }
+
 }
