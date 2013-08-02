@@ -54,7 +54,7 @@ class UnresolvedTypeDefinition(val typeDefinitionName : String) : TypeDefinition
     override val _superTypes: HashMap<Any, TypeDefinition> = HashMap<Any, TypeDefinition>()
     override var _superTypes_java_cache: List<TypeDefinition>? = null
     override var _dictionaryType: DictionaryType? = null
-    override val _deployUnits: MutableList<DeployUnit> = ArrayList<DeployUnit>()
+    override val _deployUnits: HashMap<Any, DeployUnit> = HashMap<Any, DeployUnit>()
     override var _bean: String = ""
     override var _factoryBean: String = ""
     override var _deployUnits_java_cache: List<DeployUnit>? = null

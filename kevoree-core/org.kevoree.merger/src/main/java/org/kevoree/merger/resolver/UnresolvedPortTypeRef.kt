@@ -33,6 +33,7 @@ import java.util.ArrayList
 import org.kevoree.impl.PortTypeRefInternal
 import org.kevoree.container.KMFContainer
 import org.kevoree.container.RemoveFromContainerCommand
+import java.util.HashMap
 
 /**
  * Created by IntelliJ IDEA.
@@ -51,7 +52,7 @@ class UnresolvedPortTypeRef(val unresolvedPortName : String) : PortTypeRefIntern
     override var _ref: PortType? = null
     override var _noDependency: Boolean = false
     override var _mappings_java_cache: List<PortTypeMapping>? = ArrayList<PortTypeMapping>()
-    override val _mappings: MutableList<PortTypeMapping> = ArrayList<PortTypeMapping>()
+    override val _mappings: HashMap<Any, PortTypeMapping> = HashMap<Any, PortTypeMapping>()
     override var _name: String = ""
     override fun getName():String { return unresolvedPortName }
 }

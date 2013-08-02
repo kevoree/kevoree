@@ -52,11 +52,11 @@ class UnresolvedNodeType(val unresolvedNodeTypeName: String): NodeTypeInternal {
     override var _managedPrimitiveTypes_java_cache: List<AdaptationPrimitiveType>? = null
     override val _managedPrimitiveTypes: HashMap<Any, AdaptationPrimitiveType> = HashMap<Any, AdaptationPrimitiveType>()
     override var _managedPrimitiveTypeRefs_java_cache: List<AdaptationPrimitiveTypeRef>? = null
-    override val _managedPrimitiveTypeRefs: MutableList<AdaptationPrimitiveTypeRef> = ArrayList<AdaptationPrimitiveTypeRef>()
+    override val _managedPrimitiveTypeRefs: HashMap<Any, AdaptationPrimitiveTypeRef> = HashMap<Any, AdaptationPrimitiveTypeRef>()
     override var _factoryBean: String = ""
     override var _bean: String = ""
     override var _deployUnits_java_cache: List<DeployUnit>? = null
-    override val _deployUnits: MutableList<DeployUnit> = ArrayList<DeployUnit>()
+    override val _deployUnits: HashMap<Any, DeployUnit> = HashMap<Any, DeployUnit>()
     override var _dictionaryType: DictionaryType? = null
     override var _superTypes_java_cache: List<TypeDefinition>? = null
     override val _superTypes: HashMap<Any, TypeDefinition> = HashMap<Any, TypeDefinition>()

@@ -32,8 +32,8 @@
 package org.kevoree.tools.marShellTransform
 
 import org.junit._
+import org.junit.Assert._
 
-import org.kevoree.tools.marShell.interpreter.KevsInterpreterAspects._
 import org.kevoree.kompare.KevoreeKompareBean
 
 class KevS2CompressedKevsTest extends KevSTestSuiteHelper {
@@ -68,7 +68,9 @@ class KevS2CompressedKevsTest extends KevSTestSuiteHelper {
     val baseScript = KevScriptWrapper.miniPlanKevScript(AdaptationModelWrapper.generateScriptFromAdaptModel(adaptModel))
     val result = KevScriptWrapper.generateKevScriptCompressed(baseScript,"KEVOREEDefaultNodeName")
     println(result)
-    assert(result == "{"+Op.UDI_C+":DigitalLight138771701:pin=10/"+Op.UDI_C+":t1:period=100}")
+    assertEquals(result,"{"+Op.UDI_C+":t1:period=100/"+Op.UDI_C+":DigitalLight138771701:pin=10}")
+
+    //assertEquals(result,"{"+Op.UDI_C+":DigitalLight138771701:pin=10/"+Op.UDI_C+":t1:period=100}")
   }
 
   @Test def update_1ain_1abi()

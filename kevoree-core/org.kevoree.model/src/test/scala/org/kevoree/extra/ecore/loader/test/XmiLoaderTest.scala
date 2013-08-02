@@ -50,7 +50,7 @@ object XmiLoaderTest {
   def loadXmi() {
     val loader = new XMIModelLoader()
     model = loader.loadModelFromPath(new File(getClass.getResource("/defaultlibs.kev").toURI)).get(0).asInstanceOf[ContainerRoot];
-
+    model.setRecursiveReadOnly()
   }
 }
 
@@ -143,7 +143,11 @@ class XmiLoaderTest {
     val factory = new org.kevoree.impl.DefaultKevoreeFactory()
     val loader = new XMIModelLoader()
     val m = loader.loadModelFromPath(new File(getClass.getResource("/bootstrapModel0.kev").toURI)).get(0).asInstanceOf[ContainerRoot];
-    m.addNodes(factory.createContainerNode)
+
+    val newNode = factory.createContainerNode();
+    newNode.setName("NewNode");
+
+    m.addNodes(newNode)
     val modelCloner = new ModelCloner
     val readOModel = modelCloner.clone(m, true)
     var errorDetected = false
@@ -168,13 +172,23 @@ class XmiLoaderTest {
     assert(errorDetected)
 
 
-    m.addNodes(factory.createContainerNode)
+    val newNode2 = factory.createContainerNode
+    newNode2.setName("NewNode2")
+    m.addNodes(newNode2)
 
 
     val writeModel = modelCloner.clone(readOModel, false)
-    writeModel.addNodes(factory.createContainerNode)
+
+    val newNode3 = factory.createContainerNode
+    newNode3.setName("NewNode3")
+    writeModel.addNodes(newNode2)
+
     val writeModel2 = modelCloner.clone(readOModel)
-    writeModel2.addNodes(factory.createContainerNode)
+
+    val newNode4 = factory.createContainerNode
+    newNode4.setName("NewNode4")
+    writeModel2.addNodes(newNode4)
+
   }
 
 
@@ -183,7 +197,13 @@ class XmiLoaderTest {
     XmiLoaderTest.model.getTypeDefinitions.find(td => td.getName.equals("ArduinoNode")) match {
       case Some(typeDef) => {
 
-        XmiLoaderTest.model.getDeployUnits.find(du => du.getGroupName.equals("org.kevoree.library.arduino")) match {
+        import scala.collection.JavaConversions._
+        XmiLoaderTest.model.getDeployUnits.foreach{ du =>
+             System.out.println(du.getGenerated_KMF_ID+"-"+du.getGroupName);
+        }
+
+
+        XmiLoaderTest.model.getDeployUnits.find(du => du.getGroupName.equals("org.kevoree.library.arduino") &&  du.getUnitName.equals("org.kevoree.library.arduino.nodeType")) match {
           case Some(du) => {
             assertTrue("TypeDefinition does not contain its deploy unit.", typeDef.getDeployUnits.contains(du))
           }
