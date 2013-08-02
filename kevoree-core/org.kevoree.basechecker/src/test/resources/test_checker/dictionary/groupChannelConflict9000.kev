@@ -770,8 +770,10 @@
 </hubs>
 <hubs xsi:type="kevoree:Channel" name="NioChanne915" metaData="x=358,y=170" typeDefinition="//@typeDefinitions.49" bindings="//@mBindings.4 //@mBindings.10">
 <dictionary>
+<!--
 <values xsi:type="kevoree:DictionaryValue" value="9001" attribute="//@typeDefinitions.49/@dictionaryType/@attributes.0">
 </values>
+-->
 <values xsi:type="kevoree:DictionaryValue" value="9000" attribute="//@typeDefinitions.49/@dictionaryType/@attributes.0" targetNode="//@nodes.0">
 </values>
 <values xsi:type="kevoree:DictionaryValue" value="9001" attribute="//@typeDefinitions.49/@dictionaryType/@attributes.0" targetNode="//@nodes.1">
@@ -786,8 +788,10 @@
 </hubs>
 <hubs xsi:type="kevoree:Channel" name="NioChanne686" metaData="x=354,y=296" typeDefinition="//@typeDefinitions.49" bindings="//@mBindings.5 //@mBindings.11">
 <dictionary>
+<!--
 <values xsi:type="kevoree:DictionaryValue" value="9003" attribute="//@typeDefinitions.49/@dictionaryType/@attributes.0">
 </values>
+-->
 <values xsi:type="kevoree:DictionaryValue" value="9002" attribute="//@typeDefinitions.49/@dictionaryType/@attributes.0" targetNode="//@nodes.0">
 </values>
 <values xsi:type="kevoree:DictionaryValue" value="9003" attribute="//@typeDefinitions.49/@dictionaryType/@attributes.0" targetNode="//@nodes.1">

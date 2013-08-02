@@ -16,7 +16,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * 	http://www.gnu.org/licenses/lgpl-3.0.txt
+ * http://www.gnu.org/licenses/lgpl-3.0.txt
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -39,53 +39,63 @@ import org.kevoree.core.basechecker.dictionaryChecker.DictionaryNetworkPortCheck
 
 class DictionaryTest extends BaseCheckerSuite {
 
-  @Test def checkComponentPortConflictDetection () {
+  @Test def checkComponentPortConflictDetection() {
     val modelPort = model("test_checker/dictionary/comportPortConflict.kev")
     val dChecker = new DictionaryNetworkPortChecker
     val res = dChecker.check(modelPort)
     assert(res.size().equals(1))
   }
 
-  @Test def checkComponentPortNoConflictDetection () {
+  @Test def checkComponentPortNoConflictDetection() {
     val modelPort = model("test_checker/dictionary/comportPortNoConflict.kev")
     val dChecker = new DictionaryNetworkPortChecker
     val res = dChecker.check(modelPort)
     assert(res.isEmpty)
   }
 
-  @Test def checkComponentSubPortConflictDetection () {
+  @Test def checkComponentSubPortConflictDetection() {
     val modelPort = model("test_checker/dictionary/comportSubPortConflict.kev")
     val dChecker = new DictionaryNetworkPortChecker
     val res = dChecker.check(modelPort)
     assert(res.size().equals(1))
   }
 
-  @Test def checkComponentSubPortNoConflictDetection () {
+  @Test def checkComponentSubPortNoConflictDetection() {
     val modelPort = model("test_checker/dictionary/comportSubPortNoConflict.kev")
     val dChecker = new DictionaryNetworkPortChecker
     val res = dChecker.check(modelPort)
     assert(res.isEmpty)
   }
 
-  @Test def checkChannelSubPortConflictDetection () {
+  @Test def checkChannelSubPortConflictDetection() {
     val modelPort = model("test_checker/dictionary/channelSubPortConflict.kev")
     val dChecker = new DictionaryNetworkPortChecker
     val res = dChecker.check(modelPort)
+    import scala.collection.JavaConversions._
+    res.foreach {
+      r =>
+        println(r)
+    }
     assert(res.size().equals(1))
   }
 
-  @Test def checkChannelSubPortNoConflictDetection () {
+  @Test def checkChannelSubPortNoConflictDetection() {
     val modelPort = model("test_checker/dictionary/channelSubPortNoConflict.kev")
     val dChecker = new DictionaryNetworkPortChecker
     val res = dChecker.check(modelPort)
     assert(res.isEmpty)
   }
 
-  @Test def checkChannelGroupPortNoConflictDetection () {
+  @Test def checkChannelGroupPortNoConflictDetection() {
     val modelPort = model("test_checker/dictionary/groupChannelConflict9000.kev")
     val dChecker = new DictionaryNetworkPortChecker
     val res = dChecker.check(modelPort)
-    assert(res.size().equals(1))
+    import scala.collection.JavaConversions._
+    res.foreach {
+      r =>
+        println(r.getMessage())
+    }
+    assert(res.exists(r=>r.getMessage().startsWith("Duplicated collected port usage 9000")))
   }
 
 }

@@ -67,9 +67,10 @@ class KevS2CompressedKevsTest extends KevSTestSuiteHelper {
     val adaptModel = kompareBean.kompare(baseModel, updatedModel, "KEVOREEDefaultNodeName");
     val baseScript = KevScriptWrapper.miniPlanKevScript(AdaptationModelWrapper.generateScriptFromAdaptModel(adaptModel))
     val result = KevScriptWrapper.generateKevScriptCompressed(baseScript,"KEVOREEDefaultNodeName")
-    println(result)
-    assertEquals(result,"{"+Op.UDI_C+":t1:period=100/"+Op.UDI_C+":DigitalLight138771701:pin=10}")
 
+      assertTrue(result == "{"+Op.UDI_C+":t1:period=100/"+Op.UDI_C+":DigitalLight138771701:pin=10}" || result == "{"+Op.UDI_C+":DigitalLight138771701:pin=10/"+Op.UDI_C+":t1:period=100}")
+
+    //assertEquals(result,"{"+Op.UDI_C+":t1:period=100/"+Op.UDI_C+":DigitalLight138771701:pin=10}")
     //assertEquals(result,"{"+Op.UDI_C+":DigitalLight138771701:pin=10/"+Op.UDI_C+":t1:period=100}")
   }
 
