@@ -19,6 +19,7 @@ class SchedulingWithTopologicalOrderAlgo: StepBuilder {
     override var adaptationModelFactory: KevoreeAdaptationFactory = org.kevoreeadaptation.impl.DefaultKevoreeAdaptationFactory()
 
     fun schedule(commands: List<AdaptationPrimitive>, start: Boolean): /*List<AdaptationPrimitive>*/ParallelStep? {
+        clearSteps()
         nextStep()
         val firstStep = currentSteps
         if (commands.size > 1) {
