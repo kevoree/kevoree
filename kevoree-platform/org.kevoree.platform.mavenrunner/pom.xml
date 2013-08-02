@@ -60,12 +60,6 @@
                     <goalPrefix>kev</goalPrefix>
                 </configuration>
             </plugin>
-
-
-
-
-
         </plugins>
     </build>
-
 </project>

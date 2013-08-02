@@ -42,6 +42,7 @@ class KevScriptHelper {
             kevEngine.addVariable(propName.toString(), propVal.toString());
         }
         kevEngine.addVariable("basedir", mavenSource.getBasedir().getAbsolutePath());
+        kevEngine.addVariable("project.build.directory", mavenSource.getBuild().getDirectory());
 
         BufferedReader br = new BufferedReader(new FileReader(scriptFile));
         String line = br.readLine();
