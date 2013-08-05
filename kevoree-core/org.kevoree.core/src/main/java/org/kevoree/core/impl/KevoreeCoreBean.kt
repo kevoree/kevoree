@@ -87,10 +87,7 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
         if(!c.isReadOnly()){
             Log.error("It is not safe to store ReadWrite model")
             cc = modelCloner.clone(c, true)
-        } /*else {
-            cc = c
-        }*/
-
+        }
         //current model is backed-up
         val previousModel = model.get()
         if(previousModel != null){
@@ -448,7 +445,11 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
                         Log.warn("HaraKiri detected , flush platform")
                         previousHaraKiriModel = currentModel
                         // Creates an empty model, removes the current node (harakiri)
+
+                        //TODO somthing better
                         newmodel = factory.createContainerRoot()
+
+
                         try {
                             // Compare the two models and plan the adaptation
                             val adaptationModel = nodeInstance!!.kompare(currentModel, newmodel)
