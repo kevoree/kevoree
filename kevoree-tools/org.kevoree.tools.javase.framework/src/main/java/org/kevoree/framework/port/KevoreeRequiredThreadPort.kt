@@ -17,6 +17,7 @@ import org.kevoree.framework.KevoreeChannelFragment
 import org.kevoree.framework.KevoreePort
 import org.kevoree.framework.message.FragmentBindMessage
 import org.kevoree.framework.message.FragmentUnbindMessage
+import org.kevoree.log.Log
 
 /**
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
@@ -77,9 +78,14 @@ trait KevoreeRequiredThreadPort: KevoreePort, Runnable {
         while (true) {
             //TO CLEAN STOP
             try {
-                val obj = queue.take()
+                var obj : Any? = null
+                try {
+                    obj = queue.take()
+                } catch(e : InterruptedException){
+                   Log.warn("Interrupted Required Port, possible message lost !")
+                }
                 if (obj != null) {
-                    internal_process(obj)
+                    internal_process(obj!!)
                 }
 
             } catch(e: Exception) {
