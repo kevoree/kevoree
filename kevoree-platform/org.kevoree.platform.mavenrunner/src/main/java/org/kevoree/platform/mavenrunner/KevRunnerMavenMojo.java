@@ -101,6 +101,10 @@ public class KevRunnerMavenMojo extends AbstractMojo {
 				System.setProperty("node.name", targetNode);
 			}
 
+            if (repoSession.isOffline()) {
+                System.setProperty("kevoree.offline", "true");
+            }
+
 			App.main(new String[0]);
 
 			Thread.currentThread().join();
