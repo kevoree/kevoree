@@ -18,6 +18,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.kevoree.modeling</groupId>
+            <artifactId>org.kevoree.modeling.microframework</artifactId>
+            <version>${kmf.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
             <artifactId>kotlin-stdlib</artifactId>
             <version>${kotlin.version}</version>

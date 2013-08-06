@@ -41,6 +41,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.kevoree.modeling</groupId>
+            <artifactId>org.kevoree.modeling.microframework</artifactId>
+            <version>${kmf.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.kevoree</groupId>
             <artifactId>org.kevoree.model</artifactId>
             <version>${project.version}</version>
