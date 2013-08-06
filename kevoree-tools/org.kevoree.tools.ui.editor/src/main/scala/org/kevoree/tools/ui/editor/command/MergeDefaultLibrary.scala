@@ -29,8 +29,6 @@ package org.kevoree.tools.ui.editor.command
 import org.kevoree.framework.KevoreeXmiHelper
 import org.kevoree.tools.ui.editor.{ModelHelper, PositionedEMFHelper, KevoreeUIKernel}
 import org.slf4j.LoggerFactory
-import org.kevoree.tools.aether.framework.{NodeTypeBootstrapHelper, AetherUtil}
-import org.kevoree.KevoreeFactory
 import java.io._
 import java.util.jar.{JarEntry, JarFile}
 import java.util
@@ -57,15 +55,14 @@ class MergeDefaultLibrary(lib : Int) extends Command {
       val repos = new util.ArrayList[String]()
       repos.add("http://oss.sonatype.org/content/groups/public")
 
-
       val file : File = lib match {
-        case ALL =>AetherResolver.resolve("org.kevoree.library.model.all","org.kevoree.corelibrary.model",ModelHelper.kevoreeFactory.getVersion,repos)
-        case JAVASE =>AetherResolver.resolve("org.kevoree.library.model.javase","org.kevoree.corelibrary.model",ModelHelper.kevoreeFactory.getVersion,repos)
-        case WEBSERVER =>AetherResolver.resolve("org.kevoree.library.model.javase.webserver","org.kevoree.corelibrary.model",ModelHelper.kevoreeFactory.getVersion,repos)
-        case ARDUINO =>AetherResolver.resolve("org.kevoree.library.model.arduino","org.kevoree.corelibrary.model",ModelHelper.kevoreeFactory.getVersion,repos)
-        case SKY =>AetherResolver.resolve("org.kevoree.library.model.sky","org.kevoree.corelibrary.model",ModelHelper.kevoreeFactory.getVersion,repos)
-        case ANDROID =>AetherResolver.resolve("org.kevoree.library.model.android","org.kevoree.corelibrary.model",ModelHelper.kevoreeFactory.getVersion,repos)
-        case DAUM =>AetherResolver.resolve("org.kevoree.library.model.daum","org.kevoree.corelibrary.model",ModelHelper.kevoreeFactory.getVersion,repos)
+        case ALL =>AetherResolver.resolve("org.kevoree.library.model.all","org.kevoree.corelibrary.model","LATEST",repos)
+        case JAVASE =>AetherResolver.resolve("org.kevoree.library.model.javase","org.kevoree.corelibrary.model","LATEST",repos)
+        case WEBSERVER =>AetherResolver.resolve("org.kevoree.library.model.javase.webserver","org.kevoree.corelibrary.model","LATEST",repos)
+        case ARDUINO =>AetherResolver.resolve("org.kevoree.library.model.arduino","org.kevoree.corelibrary.model","LATEST",repos)
+        case SKY =>AetherResolver.resolve("org.kevoree.library.model.sky","org.kevoree.corelibrary.model","LATEST",repos)
+        case ANDROID =>AetherResolver.resolve("org.kevoree.library.model.android","org.kevoree.corelibrary.model","LATEST",repos)
+        case DAUM =>AetherResolver.resolve("org.kevoree.library.model.daum","org.kevoree.corelibrary.model","LATEST",repos)
       }
 //       val file = AetherUtil.resolveMavenArtifact("org.kevoree.library.model.all","org.kevoree.library.model",ModelHelper.kevoreeFactory.getVersion,List("http://maven.kevoree.org/release","http://maven.kevoree.org/snapshots"))
        val jar = new JarFile(file)
