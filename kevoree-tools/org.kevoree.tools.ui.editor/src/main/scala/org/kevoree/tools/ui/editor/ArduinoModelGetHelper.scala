@@ -32,7 +32,7 @@ import org.kevoree.tools.marShell.interpreter.KevsInterpreterContext
 import org.kevoree.tools.marShellTransform.KevScriptWrapper
 import org.kevoree.extra.kserial.{KevoreeSharedCom, ContentListener}
 import org.slf4j.LoggerFactory
-import org.kevoree.cloner.ModelCloner
+import org.kevoree.cloner.DefaultModelCloner
 import org.kevoree.extra.kserial.SerialPort._
 
 
@@ -111,7 +111,7 @@ object ArduinoModelGetHelper {
       logger.debug("The plan script : " + script)
       //APPLY TO BUILD A CURRENT MODEL
       import org.kevoree.tools.marShell.interpreter.KevsInterpreterAspects._
-      val cc = new ModelCloner
+      val cc = new DefaultModelCloner
       val current = cc.clone(targetNewModel)
       current.removeAllGroups()
       // current.removeAllHubs()

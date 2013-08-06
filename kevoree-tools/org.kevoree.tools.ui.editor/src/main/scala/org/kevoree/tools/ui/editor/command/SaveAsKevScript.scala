@@ -26,7 +26,7 @@
  */
 package org.kevoree.tools.ui.editor.command
 
-import org.kevoree.cloner.ModelCloner
+import org.kevoree.cloner.DefaultModelCloner
 import org.kevoree.tools.marShell.ast.MergeStatement
 import org.kevoree.tools.ui.editor.{ModelHelper, KevoreeUIKernel}
 import org.slf4j.LoggerFactory
@@ -60,7 +60,7 @@ class SaveAsKevScript extends Command {
 
     var alreadyGeneratedMergeStmt = List[String]()
 
-    val modelCloner = new ModelCloner()
+    val modelCloner = new DefaultModelCloner()
 
     val emptyModel = modelCloner.clone(kernel.getModelHandler.getActualModel)
     emptyModel.removeAllHubs()

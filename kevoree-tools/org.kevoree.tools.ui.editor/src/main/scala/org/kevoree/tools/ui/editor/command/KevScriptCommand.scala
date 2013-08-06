@@ -52,7 +52,7 @@ import java.awt.Color
 import com.explodingpixels.macwidgets.{HudWidgetFactory, HudWindow}
 import javax.swing._
 import org.kevoree.tools.marShell.KevScriptOfflineEngine
-import org.kevoree.cloner.ModelCloner
+import org.kevoree.cloner.DefaultModelCloner
 import org.kevoree.KevoreeFactory
 import org.kevoree.tools.modelsync.FakeBootstraperService
 
