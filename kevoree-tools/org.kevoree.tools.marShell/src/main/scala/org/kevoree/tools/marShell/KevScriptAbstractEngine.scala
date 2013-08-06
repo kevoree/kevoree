@@ -27,7 +27,7 @@
 package org.kevoree.tools.marShell
 
 import org.kevoree.api.service.core.script.KevScriptEngine
-import org.kevoree.cloner.ModelCloner
+import org.kevoree.cloner.DefaultModelCloner
 import parser.KevsParser
 import scala.collection.JavaConversions._
 import java.util
@@ -44,7 +44,7 @@ trait KevScriptAbstractEngine extends KevScriptEngine {
 
   protected var scriptBuilder = new StringBuilder
   protected var varMap = new util.HashMap[String, String]()
-  protected val modelCloner = new ModelCloner
+  protected val modelCloner = new DefaultModelCloner
   protected val parser = new KevsParser
 
   def addVariable(name: String, value: String): KevScriptEngine = {

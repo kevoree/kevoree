@@ -28,7 +28,7 @@ package org.kevoree.tools.marShell
 
 import interpreter.KevsInterpreterContext
 import org.kevoree.ContainerRoot
-import org.kevoree.cloner.ModelCloner
+import org.kevoree.cloner.DefaultModelCloner
 import parser.KevsParser
 import interpreter.KevsInterpreterAspects._
 import org.kevoree.log.Log
@@ -42,7 +42,7 @@ import org.kevoree.log.Log
  */
 
 object KevsEngine {
-  val modelCloner = new ModelCloner
+  val modelCloner = new DefaultModelCloner
   val parser = new KevsParser
 
   def executeScript(script : String,model : ContainerRoot) : Option[ContainerRoot] = {
