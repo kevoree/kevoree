@@ -135,7 +135,7 @@ trait KevoreeRequiredThreadPort: KevoreePort, Runnable {
         _isBound = false
     }
 
-    fun internal_process(msg: Any): Any? {
+    fun internal_process(msg: Any?): Any? {
         if(delegate == null){
             println("Message Lost TODO retention of msg")
             return false

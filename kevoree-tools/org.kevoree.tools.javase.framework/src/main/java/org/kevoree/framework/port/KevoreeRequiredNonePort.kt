@@ -102,7 +102,7 @@ trait KevoreeRequiredNonePort: KevoreePort {
         _isBound = false
     }
 
-    fun internal_process(msg: Any): Any? {
+    fun internal_process(msg: Any?): Any? {
         if(delegate == null){
             return false
         } else {

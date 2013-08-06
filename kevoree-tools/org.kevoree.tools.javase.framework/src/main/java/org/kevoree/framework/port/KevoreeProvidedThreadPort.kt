@@ -14,6 +14,7 @@
 package org.kevoree.framework.port
 
 import org.kevoree.framework.KevoreePort
+import java.util.concurrent.LinkedBlockingDeque
 
 /**
  * Created with IntelliJ IDEA.
@@ -23,25 +24,26 @@ import org.kevoree.framework.KevoreePort
  */
 trait KevoreeProvidedThreadPort: KevoreePort, Runnable {
 
-    val queue: java.util.concurrent.LinkedBlockingDeque<Any?>
+    var queue: java.util.concurrent.LinkedBlockingDeque<Any?>?
     var reader: Thread?
+    var tg : ThreadGroup?
     var isPaused: Boolean
 
     override fun send(o: Any?) {
-        queue.add(o)
+        queue?.add(o)
     }
 
     override fun sendWait(o: Any?): Any {
         throw Exception("Bad Message Port Usages")
     }
 
-    var tg : ThreadGroup
-
     override fun startPort(_tg : ThreadGroup?) {
-        tg = _tg!!
+        tg = _tg
     }
 
     override fun stop() {
+        queue?.clear()
+        queue = null
         reader?.interrupt()
         reader = null
     }
@@ -56,8 +58,9 @@ trait KevoreeProvidedThreadPort: KevoreePort, Runnable {
     }
 
     override fun resume() {
-        if (reader == null) {
-            reader = Thread(tg,this)
+        queue = LinkedBlockingDeque<Any?>()
+        if (reader == null && tg != null) {
+            reader = Thread(tg!!,this)
             reader!!.start()
         }
         isPaused = false
@@ -72,7 +75,7 @@ trait KevoreeProvidedThreadPort: KevoreePort, Runnable {
         while (true) {
             //TO CLEAN STOP
             try {
-                val obj = queue.take()
+                val obj = queue?.take()
                 if (obj != null) {
                     internal_process(obj)
                 }
@@ -84,7 +87,7 @@ trait KevoreeProvidedThreadPort: KevoreePort, Runnable {
 
     }
 
-    fun internal_process(o: Any) : Any?
+    fun internal_process(o: Any?) : Any?
 
     override fun isInPause(): Boolean {
         return isPaused

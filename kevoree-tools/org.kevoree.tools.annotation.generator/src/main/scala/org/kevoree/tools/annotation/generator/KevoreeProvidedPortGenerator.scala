@@ -50,6 +50,20 @@ object KevoreeProvidedPortGenerator {
     writer.append("package " + portPackage + "\n")
     writer.append("import org.kevoree.framework.port.*\n")
     writer.append("import " + new KevoreeGeneratorHelper().getTypeDefinitionBasePackage(ct) + ".*\n")
+
+
+    ThreadingMapping.getMappings.get(Tuple2(ct.getName, ref.getName)) match {
+      case ThreadStrategy.THREAD_QUEUE => {
+        writer.append("import java.util.concurrent.LinkedBlockingDeque\n")
+      }
+      /*case ThreadStrategy.SHARED_THREAD => {
+      }
+      case ThreadStrategy.NONE => {
+      }*/
+      case _ => {
+      }
+    }
+
     var baseName = ref.getRef.getName
     if (ref.getRef.isInstanceOf[MessagePortType]) {
       baseName = "org.kevoree.framework.MessagePort"
@@ -73,6 +87,23 @@ object KevoreeProvidedPortGenerator {
     }
 
     writer.append("override var isPaused : jet.Boolean = true\n")
+
+    ThreadingMapping.getMappings.get(Tuple2(ct.getName, ref.getName)) match {
+      case ThreadStrategy.THREAD_QUEUE => {
+        writer.append("override var queue: LinkedBlockingDeque<Any?>? = null\n")
+        writer.append("override var reader: Thread? = null\n")
+        writer.append("override var tg: ThreadGroup? = null\n")
+      }
+      /*case ThreadStrategy.SHARED_THREAD => {
+
+      }
+      case ThreadStrategy.NONE => {
+
+      }*/
+      case _ => {
+
+      }
+    }
 
     writer.append("override fun getName() : String { return \"" + ref.getName + "\"}\n")
     writer.append("override fun getComponentName() : String? { return component.getName() }\n")
