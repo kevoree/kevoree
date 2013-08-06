@@ -114,6 +114,14 @@ object ThirdPartyManagement {
         }
     }
 
+    selectedDeps.foreach {
+      dep => {
+        if (selectedDeps.count(d => d.getGroupId == dep.getGroupId && d.getArtifactId == dep.getArtifactId) > 1) {
+          log.warn("Multiple dependency found for " + dep.getGroupId + ":" + dep.getArtifactId)
+        }
+      }
+    }
+
 
 
     selectedDeps
