@@ -17,7 +17,7 @@ import org.kevoree.context.MetricValue
 import org.kevoree.context.CounterHistoryMetric
 import java.util
 import java.util.Collections
-import org.kevoree.context.container.KMFContainer
+import org.kevoree.modeling.api.KMFContainer
 import org.kevoree.context.container.RemoveFromContainerCommand
 
 /**
