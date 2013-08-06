@@ -21,7 +21,7 @@ import org.kevoree.ContainerRoot
 import org.kevoree.NamedElement
 import org.kevoree.api.service.core.checker.CheckerService
 import org.kevoree.api.service.core.checker.CheckerViolation
-import org.kevoree.container.KMFContainer
+import org.kevoree.modeling.api.KMFContainer
 
 class NameChecker: CheckerService {
 

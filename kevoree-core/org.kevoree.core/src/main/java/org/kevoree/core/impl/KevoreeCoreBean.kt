@@ -3,7 +3,7 @@ package org.kevoree.core.impl
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService
 import org.kevoree.api.service.core.script.KevScriptEngineFactory
 import org.kevoree.ContainerRoot
-import org.kevoree.cloner.ModelCloner
+import org.kevoree.cloner.DefaultModelCloner
 import java.util.Date
 import org.kevoree.core.basechecker.RootChecker
 import java.util.concurrent.ExecutorService
@@ -49,7 +49,7 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
     val kevoreeFactory = org.kevoree.impl.DefaultKevoreeFactory()
     val model: AtomicReference<UUIDModel> = AtomicReference<UUIDModel>()
     var lastDate: Date = Date(System.currentTimeMillis())
-    val modelCloner = ModelCloner()
+    val modelCloner = DefaultModelCloner()
     val modelChecker = RootChecker()
     var selfActorPointer = this
     private var scheduler: ExecutorService? = null

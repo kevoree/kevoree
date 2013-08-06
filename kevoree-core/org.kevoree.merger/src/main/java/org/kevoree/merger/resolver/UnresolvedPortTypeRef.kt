@@ -31,7 +31,7 @@ import org.kevoree.PortType
 import org.kevoree.PortTypeMapping
 import java.util.ArrayList
 import org.kevoree.impl.PortTypeRefInternal
-import org.kevoree.container.KMFContainer
+import org.kevoree.modeling.api.KMFContainer
 import org.kevoree.container.RemoveFromContainerCommand
 import java.util.HashMap
 

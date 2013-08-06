@@ -18,7 +18,7 @@ import org.kevoree.ContainerRoot
 import org.kevoree.NodeType
 import org.kevoree.api.service.core.checker.CheckerService
 import org.kevoree.api.service.core.checker.CheckerViolation
-import org.kevoree.container.KMFContainer
+import org.kevoree.modeling.api.KMFContainer
 
 /**
  * Created with IntelliJ IDEA.

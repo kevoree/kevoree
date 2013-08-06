@@ -30,9 +30,7 @@ package org.kevoree.framework
 import org.kevoree.ContainerRoot
 import java.util.zip.Deflater
 import java.util.zip.Inflater
-import org.kevoree.loader.ModelLoader
 import java.io.*
-import org.kevoree.serializer.ModelSerializer
 import org.kevoree.serializer.XMIModelSerializer
 import org.kevoree.loader.XMIModelLoader
 
@@ -82,7 +80,7 @@ object KevoreeXmiHelper {
 
     fun load(uri: String): ContainerRoot? {
         val loader = XMIModelLoader()
-        val loadedElements = loader.loadModelFromPath(File(uri))
+        val loadedElements = loader.loadModelFromStream(java.io.FileInputStream(File(uri)))
         if(loadedElements != null && loadedElements.size() > 0) {
             return loadedElements.get(0) as ContainerRoot;
         } else {

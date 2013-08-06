@@ -11,7 +11,7 @@ import org.kevoree.kompare.StepBuilder
 import org.kevoreeadaptation.KevoreeAdaptationFactory
 import org.kevoree.kompare.JavaSePrimitive
 import org.kevoree.framework.kaspects.PortAspect
-import org.kevoree.container.KMFContainer
+import org.kevoree.modeling.api.KMFContainer
 
 class SchedulingWithTopologicalOrderAlgo: StepBuilder {
     override var previousStep: ParallelStep? = null

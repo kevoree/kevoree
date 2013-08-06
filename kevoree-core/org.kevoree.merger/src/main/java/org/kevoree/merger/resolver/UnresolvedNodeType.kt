@@ -35,7 +35,7 @@ import org.kevoree.DictionaryType
 import org.kevoree.TypeDefinition
 import java.util.ArrayList
 import org.kevoree.impl.NodeTypeInternal
-import org.kevoree.container.KMFContainer
+import org.kevoree.modeling.api.KMFContainer
 import org.kevoree.container.RemoveFromContainerCommand
 
 /**

@@ -20,7 +20,7 @@ import org.kevoree.DictionaryType
 import org.kevoree.TypeDefinition
 import java.util.HashMap
 import org.kevoree.impl.PortTypeInternal
-import org.kevoree.container.KMFContainer
+import org.kevoree.modeling.api.KMFContainer
 import org.kevoree.container.RemoveFromContainerCommand
 
 /**

@@ -14,7 +14,7 @@
 package org.kevoree.tools.ui.editor.command.prefuse;
 
 import org.kevoree.*;
-import org.kevoree.container.KMFContainer;
+import org.kevoree.modeling.api.KMFContainer
 import org.kevoree.tools.ui.editor.KevoreeUIKernel;
 import org.kevoree.tools.ui.framework.elements.NodePanel;
 import prefuse.data.Graph;

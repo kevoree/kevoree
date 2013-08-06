@@ -30,7 +30,7 @@ import org.kevoree.DictionaryAttribute
 import org.kevoree.TypedElement
 import java.util.HashMap
 import org.kevoree.impl.DictionaryAttributeInternal
-import org.kevoree.container.KMFContainer
+import org.kevoree.modeling.api.KMFContainer
 import org.kevoree.container.RemoveFromContainerCommand
 
 /**

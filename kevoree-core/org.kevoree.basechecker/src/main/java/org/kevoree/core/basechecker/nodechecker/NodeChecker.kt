@@ -19,7 +19,7 @@ import org.kevoree.ContainerRoot
 import org.kevoree.Port
 import org.kevoree.api.service.core.checker.CheckerService
 import org.kevoree.api.service.core.checker.CheckerViolation
-import org.kevoree.container.KMFContainer
+import org.kevoree.modeling.api.KMFContainer
 import org.kevoree.framework.kaspects.ContainerNodeAspect
 import org.kevoree.framework.kaspects.TypeDefinitionAspect
 
