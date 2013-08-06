@@ -11,6 +11,7 @@ import java.util.Comparator
 import org.kevoree.kcl.loader.KevoreeResourcesLoader
 import org.kevoree.kcl.loader.KevoreeLocalLoader
 import org.kevoree.kcl.loader.ProxyClassLoader
+import org.kevoree.log.Log
 
 /**
  * Created by IntelliJ IDEA.
@@ -258,7 +259,11 @@ open class KevoreeJarClassLoader(): ClassLoader() {
         if (className.contains(".")) {
             val packageName = className.substring(0, className.lastIndexOf('.'))
             if (getPackage(packageName) == null) {
-                definePackage(packageName, null, null, null, null, null, null, null)
+                try {
+                    definePackage(packageName, null, null, null, null, null, null, null)
+                } catch(e : Throwable){
+                  Log.debug("Error while defining packge ",e)
+                }
             }
         }
         return defineClass(className, bytes, 0, bytes.size)
