@@ -15,16 +15,20 @@ package org.kevoree.model.test;
 
 import org.junit.Test;
 import org.kevoree.ContainerRoot;
-import org.kevoree.cloner.ModelCloner;
-import org.kevoree.loader.ModelLoader;
+import org.kevoree.cloner.DefaultModelCloner;
+import org.kevoree.modeling.api.ModelLoader;
 import org.kevoree.loader.XMIModelLoader;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.lang.management.GarbageCollectorMXBean;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.io.FileNotFoundException;
+
+import org.kevoree.modeling.api.ModelCloner;
 
 /**
  * Created with IntelliJ IDEA.
@@ -35,11 +39,11 @@ import java.util.List;
 public class KMFLoadTest {
 
     @Test
-    public void testLoad() throws URISyntaxException {
+    public void testLoad() throws URISyntaxException,FileNotFoundException {
 
         ModelLoader loader = new XMIModelLoader();
-        ModelCloner cloner = new ModelCloner();
-        ContainerRoot model = (ContainerRoot)loader.loadModelFromPath(new File(ClonerTest.class.getResource("/node0.kev").toURI())).get(0);
+        ModelCloner cloner = new DefaultModelCloner();
+        ContainerRoot model = (ContainerRoot)loader.loadModelFromStream(new FileInputStream(new File(ClonerTest.class.getResource("/node0.kev").toURI()))).get(0);
 
         long before = System.currentTimeMillis();
         for(int i=0;i<10000;i++){

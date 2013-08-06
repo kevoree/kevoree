@@ -15,16 +15,22 @@ package org.kevoree.model.test;
 
 import org.junit.Test;
 import org.kevoree.*;
-import org.kevoree.cloner.ModelCloner;
+import org.kevoree.cloner.DefaultModelCloner;
 import org.kevoree.impl.DefaultKevoreeFactory;
-import org.kevoree.loader.ModelLoader;
+import org.kevoree.modeling.api.ModelLoader;
 import org.kevoree.loader.XMIModelLoader;
-import org.kevoree.serializer.ModelSerializer;
+import org.kevoree.modeling.api.ModelCloner;
+import org.kevoree.modeling.api.ModelSerializer;
 import org.kevoree.serializer.XMIModelSerializer;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.net.URISyntaxException;
+
+import org.kevoree.modeling.api.ModelCloner;
+
 
 /**
  * Created with IntelliJ IDEA.
@@ -35,27 +41,27 @@ import java.net.URISyntaxException;
 public class ClonerTest {
 
     @Test
-    public void testSelector() throws URISyntaxException {
+    public void testSelector() throws URISyntaxException, FileNotFoundException {
         ModelLoader loader = new XMIModelLoader();
-        ContainerRoot model = (ContainerRoot)loader.loadModelFromPath(new File(ClonerTest.class.getResource("/node0.kev").toURI())).get(0);
+        ContainerRoot model = (ContainerRoot) loader.loadModelFromStream(new FileInputStream(new File(ClonerTest.class.getResource("/node0.kev").toURI()))).get(0);
 
-        ModelCloner cloner = new ModelCloner();
+        ModelCloner cloner = new DefaultModelCloner();
         cloner.clone(model);
 
 
     }
 
 
-    private void testClonerInternal(String fileName) throws URISyntaxException {
+    private void testClonerInternal(String fileName) throws URISyntaxException, FileNotFoundException {
 
-        System.out.println("input="+fileName);
+        System.out.println("input=" + fileName);
 
         ModelLoader loader = new XMIModelLoader();
         KevoreeFactory factory = new DefaultKevoreeFactory();
-        ContainerRoot model = (ContainerRoot)loader.loadModelFromPath(new File(ClonerTest.class.getResource("/"+fileName).toURI())).get(0);
-        for(int i=0;i<400;i++){
+        ContainerRoot model = (ContainerRoot) loader.loadModelFromStream(new FileInputStream(new File(ClonerTest.class.getResource("/" + fileName).toURI()))).get(0);
+        for (int i = 0; i < 400; i++) {
             ContainerNode node = factory.createContainerNode();
-            node.setName("node_"+i);
+            node.setName("node_" + i);
             model.addNodes(node);
         }
 
@@ -69,7 +75,7 @@ public class ClonerTest {
             r.setRecursiveReadOnly();
         }
 
-        ModelCloner cloner = new ModelCloner();
+        ModelCloner cloner = new DefaultModelCloner();
 
         long heapSize = Runtime.getRuntime().freeMemory();
 
@@ -95,17 +101,16 @@ public class ClonerTest {
             assert (model.findByPath(td.path()).equals(td));
         }
 
-         System.out.println(modelCloned2.getTypeDefinitions().size());
+        System.out.println(modelCloned2.getTypeDefinitions().size());
 
 
         long heapSizeAfterSmartClone = Runtime.getRuntime().freeMemory();
         System.out.println(heapSizeAfterNormalClone - heapSizeAfterSmartClone);
 
 
-
         ByteArrayOutputStream s = new ByteArrayOutputStream();
         ModelSerializer saver = new XMIModelSerializer();
-        saver.serialize(modelCloned2,s);
+        saver.serialize(modelCloned2, s);
 
         ContainerNode newNode = factory.createContainerNode();
         newNode.setTypeDefinition(modelCloned2.findTypeDefinitionsByID("JavaSENode"));
@@ -115,12 +120,12 @@ public class ClonerTest {
     }
 
     @Test
-    public void testModifiableContainementsRelationship() throws URISyntaxException {
+    public void testModifiableContainementsRelationship() throws URISyntaxException,FileNotFoundException {
         testClonerInternal("node0.kev");
     }
 
     @Test
-    public void testModifiableContainementsRelationship2() throws URISyntaxException {
+    public void testModifiableContainementsRelationship2() throws URISyntaxException,FileNotFoundException {
         testClonerInternal("mergedAll.kev");
     }
 

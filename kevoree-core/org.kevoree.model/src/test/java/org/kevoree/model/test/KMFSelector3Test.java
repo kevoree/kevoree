@@ -17,11 +17,14 @@ import org.junit.Test;
 import org.kevoree.ComponentInstance;
 import org.kevoree.ContainerNode;
 import org.kevoree.ContainerRoot;
-import org.kevoree.loader.ModelLoader;
+import org.kevoree.modeling.api.ModelLoader;
 import org.kevoree.loader.XMIModelLoader;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.net.URISyntaxException;
+import java.io.FileNotFoundException;
+
 import java.util.List;
 
 /**
@@ -34,10 +37,10 @@ import java.util.List;
 public class KMFSelector3Test {
 
     @Test
-    public void testSelector3() throws URISyntaxException {
+    public void testSelector3() throws URISyntaxException,FileNotFoundException {
 
         ModelLoader loader = new XMIModelLoader();
-        ContainerRoot model = (ContainerRoot)loader.loadModelFromPath(new File(KMFSelector2Test.class.getResource("/deepModel.kev").toURI())).get(0);
+        ContainerRoot model = (ContainerRoot)loader.loadModelFromStream(new FileInputStream(new File(KMFSelector2Test.class.getResource("/deepModel.kev").toURI()))).get(0);
 
         /* Normal lookup */
 

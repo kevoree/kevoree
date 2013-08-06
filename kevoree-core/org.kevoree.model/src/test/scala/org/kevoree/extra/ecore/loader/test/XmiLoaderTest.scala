@@ -31,8 +31,7 @@ import org.junit.{Test, BeforeClass}
 import org.kevoree.loader.XMIModelLoader
 import org.kevoree.serializer.XMIModelSerializer
 import org.kevoree._
-import java.io.{FileOutputStream, ByteArrayOutputStream, PrintWriter, File}
-import org.kevoree.cloner.ModelCloner
+import java.io.{FileInputStream,FileOutputStream, ByteArrayOutputStream, PrintWriter, File}
 import scala.collection.JavaConversions._
 import scala.Some
 
@@ -49,7 +48,7 @@ object XmiLoaderTest {
   @BeforeClass
   def loadXmi() {
     val loader = new XMIModelLoader()
-    model = loader.loadModelFromPath(new File(getClass.getResource("/defaultlibs.kev").toURI)).get(0).asInstanceOf[ContainerRoot];
+    model = loader.loadModelFromStream(new FileInputStream(new File(getClass.getResource("/defaultlibs.kev").toURI))).get(0).asInstanceOf[ContainerRoot];
     model.setRecursiveReadOnly()
   }
 }
@@ -59,19 +58,19 @@ class XmiLoaderTest {
   @Test
   def testLoadParameters() {
     val loader = new XMIModelLoader()
-    loader.loadModelFromPath(new File(getClass.getResource("/ParametersBug.kev").toURI)).get(0);
+    loader.loadModelFromStream(new FileInputStream(new File(getClass.getResource("/ParametersBug.kev").toURI))).get(0);
   }
 
   @Test
   def testLoadDefaultLibsFqn() {
     val loader = new XMIModelLoader()
-    loader.loadModelFromPath(new File(getClass.getResource("/defaultlibsFqn.kev").toURI)).get(0);
+    loader.loadModelFromStream(new FileInputStream(new File(getClass.getResource("/defaultlibsFqn.kev").toURI))).get(0);
   }
 
   @Test
   def testOpposite1(){
     val loader = new XMIModelLoader()
-    val m = loader.loadModelFromPath(new File(getClass.getResource("/unomas.kev").toURI)).get(0).asInstanceOf[ContainerRoot];
+    val m = loader.loadModelFromStream(new FileInputStream(new File(getClass.getResource("/unomas.kev").toURI))).get(0).asInstanceOf[ContainerRoot];
     m.getMBindings.foreach { mb =>
       println("---------->")
       val p = mb.getPort
@@ -122,7 +121,7 @@ class XmiLoaderTest {
     pr.close()
     System.out.println("Loading saved model")
     val loader = new XMIModelLoader()
-    val localModel = loader.loadModelFromPath(tempFile);
+    val localModel = loader.loadModelFromStream(new FileInputStream(tempFile));
     if(localModel == null) {
       fail("Model not loaded!")
     }
@@ -132,7 +131,7 @@ class XmiLoaderTest {
   @Test
   def loadBootstrapModel() {
     val loader = new XMIModelLoader()
-    val localModel = loader.loadModelFromPath(new File(getClass.getResource("/bootstrapModel0.kev").toURI)).get(0);
+    val localModel = loader.loadModelFromStream(new FileInputStream(new File(getClass.getResource("/bootstrapModel0.kev").toURI))).get(0);
     if(localModel == null){
       fail("Model not loaded!")
     }
@@ -142,13 +141,13 @@ class XmiLoaderTest {
   def loadAndCloneToReadWrite() {
     val factory = new org.kevoree.impl.DefaultKevoreeFactory()
     val loader = new XMIModelLoader()
-    val m = loader.loadModelFromPath(new File(getClass.getResource("/bootstrapModel0.kev").toURI)).get(0).asInstanceOf[ContainerRoot];
+    val m = loader.loadModelFromStream(new FileInputStream(new File(getClass.getResource("/bootstrapModel0.kev").toURI))).get(0).asInstanceOf[ContainerRoot];
 
     val newNode = factory.createContainerNode();
     newNode.setName("NewNode");
 
     m.addNodes(newNode)
-    val modelCloner = new ModelCloner
+    val modelCloner = new org.kevoree.cloner.DefaultModelCloner
     val readOModel = modelCloner.clone(m, true)
     var errorDetected = false
     try {

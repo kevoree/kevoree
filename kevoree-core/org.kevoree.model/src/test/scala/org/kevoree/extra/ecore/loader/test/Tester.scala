@@ -26,10 +26,9 @@
  */
 package org.kevoree
 
-import cloner.ModelCloner
-import java.io.{ByteArrayOutputStream, File}
-import org.kevoree.loader.{XMIModelLoader, ModelLoader}
-import org.kevoree.serializer.{XMIModelSerializer, ModelSerializer}
+import java.io.{ByteArrayOutputStream, File,FileInputStream}
+import org.kevoree.loader.{XMIModelLoader}
+import org.kevoree.serializer.{XMIModelSerializer}
 import scala.collection.JavaConversions._
 
 /**
@@ -49,7 +48,7 @@ for(i <- 0 until 30){
 }*/
 
   val loader = new XMIModelLoader()
-  val m = loader.loadModelFromPath(new File(getClass.getResource("/unomas.kev").toURI())).get(0).asInstanceOf[ContainerRoot]
+  val m = loader.loadModelFromStream(new FileInputStream(new File(getClass.getResource("/unomas.kev").toURI()))).get(0).asInstanceOf[ContainerRoot]
 
 
 
@@ -83,7 +82,7 @@ m.addMBindings(b)
   }
 
 
-  val cloner = new ModelCloner
+  val cloner = new org.kevoree.cloner.DefaultModelCloner
   cloner.clone(m)
 
 
