@@ -15,6 +15,7 @@ package org.kevoree.framework.port
 
 import org.kevoree.framework.KevoreePort
 import java.util.concurrent.LinkedBlockingDeque
+import org.kevoree.log.Log
 
 /**
  * Created with IntelliJ IDEA.
@@ -75,13 +76,12 @@ trait KevoreeProvidedThreadPort: KevoreePort, Runnable {
         while (true) {
             //TO CLEAN STOP
             try {
-                val obj = queue?.take()
+                var obj = queue?.take()
                 if (obj != null) {
                     internal_process(obj)
                 }
-
-            } catch(e: Exception) {
-                e.printStackTrace()
+            } catch(e : InterruptedException){
+                Log.warn("Interrupted Provided Port, possible message lost !")
             }
         }
 
