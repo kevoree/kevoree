@@ -52,7 +52,7 @@ public @interface RequiredPort {
     /*
 boolean async() default false;  */
 
-    ThreadStrategy theadStrategy() default ThreadStrategy.SCALA_ACTOR;
+    ThreadStrategy theadStrategy() default ThreadStrategy.SHARED_THREAD;
 
 
 }

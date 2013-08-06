@@ -20,5 +20,5 @@ package org.kevoree.annotation;
  * Time: 16:04
  */
 public enum ThreadStrategy {
-    SCALA_ACTOR, THREAD_QUEUE, SHARED_THREAD,NONE;
+    THREAD_QUEUE, SHARED_THREAD,NONE;
 }

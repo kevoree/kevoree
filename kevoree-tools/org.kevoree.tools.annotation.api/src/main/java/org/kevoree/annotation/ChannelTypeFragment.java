@@ -41,6 +41,6 @@ import java.lang.annotation.Target;
 public @interface ChannelTypeFragment {
     java.lang.String description() default "empty";
 
-    ThreadStrategy theadStrategy() default ThreadStrategy.SCALA_ACTOR;
+    ThreadStrategy theadStrategy() default ThreadStrategy.SHARED_THREAD;
 
 }
