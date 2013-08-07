@@ -37,16 +37,6 @@
             <groupId>org.kevoree.tools</groupId>
             <artifactId>org.kevoree.tools.modelsync</artifactId>
             <version>${project.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.sonatype.aether</groupId>
-                    <artifactId>aether-connector-file</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.sonatype.aether</groupId>
-                    <artifactId>aether-connector-asynchttpclient</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
     </dependencies>
 
