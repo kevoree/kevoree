@@ -52,17 +52,15 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
     /**
      * Annotation Processor FQN (Full Qualified Name) - when processors are not specified, the default discovery mechanism will be used
      *
-     * @parameter
+     * @parameter required = false, description = "Annotation Processor FQN (Full Qualified Name) - when processors are not specified, the default discovery mechanism will be used"
      */
-    //@MojoParameter(required = false, description = "Annotation Processor FQN (Full Qualified Name) - when processors are not specified, the default discovery mechanism will be used")
     private String[] processors;
 
     /**
      * Additional compiler arguments
      *
-     * @parameter
+     * @parameter required = false, description = "Additional compiler arguments"
      */
-    //@MojoParameter(required = false, description = "Additional compiler arguments")
     private String compilerArguments;
 
     /**
@@ -74,26 +72,24 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
 
     /**
      * Controls whether or not the output directory is added to compilation
+     * @parameter required = false, description = "Controls whether or not the output directory is added to compilation"
      */
-    //@MojoParameter(required = false, description = "Controls whether or not the output directory is added to compilation")
     private Boolean addOutputDirectoryToCompilationSources;
 
 
     /**
      * Indicates whether the compiler output should be visible, defaults to true.
      *
-     * @parameter expression = "${annotation.outputDiagnostics}" default-value="true"
+     * @parameter expression = "${annotation.outputDiagnostics}" default-value="true" description = "Indicates whether the compiler output should be visible, defaults to true."
      * @required
      */
-    //@MojoParameter(required = true, defaultValue = "true", expression = "${annotation.outputDiagnostics}", description = "Indicates whether the compiler output should be visible, defaults to true.")
     private boolean outputDiagnostics = true;
 
     /**
      * System properties set before processor invocation.
      *
-     * @parameter
+     * @parameter required = false, description = "System properties set before processor invocation."
      */
-    //@MojoParameter(required = false, description = "System properties set before processor invocation.")
     private java.util.Map<String, String> systemProperties;
 
 

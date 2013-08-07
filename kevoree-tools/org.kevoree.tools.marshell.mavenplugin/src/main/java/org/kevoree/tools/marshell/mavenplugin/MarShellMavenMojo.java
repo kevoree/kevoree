@@ -35,8 +35,6 @@ import org.kevoree.KevoreeFactory;
 import org.kevoree.framework.KevoreeXmiHelper;
 import org.kevoree.impl.DefaultKevoreeFactory;
 import org.kevoree.merger.KevoreeMergerComponent;
-import org.sonatype.aether.RepositorySystem;
-import org.sonatype.aether.RepositorySystemSession;
 
 import java.io.File;
 
@@ -79,21 +77,6 @@ public class MarShellMavenMojo extends AbstractMojo {
 	 * @readonly
 	 */
 	private MavenProject project;
-
-	/**
-	 * The current repository/network configuration of Maven.
-	 *
-	 * @parameter default-value="${repositorySystemSession}"
-	 * @readonly
-	 */
-	private RepositorySystemSession repoSession;
-
-	/**
-	 * The entry point to Aether, i.e. the component doing all the work.
-	 *
-	 * @component
-	 */
-	private RepositorySystem repoSystem;
 
 	private KevoreeMergerComponent mergerComponent;
 
