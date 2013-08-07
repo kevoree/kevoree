@@ -20,3 +20,4 @@ export JAVA_HOME=$(/usr/libexec/java_home)
 mvn --batch-mode release:clean
 mvn --batch-mode release:prepare
 mvn --batch-mode release:perform
+git push
