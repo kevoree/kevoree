@@ -101,11 +101,4 @@
 
 
     </modules>
-
-    <repositories>
-        <repository>
-            <id>intellij</id>
-            <url>http://repository.jetbrains.com/all/</url>
-        </repository>
-    </repositories>
 </project>

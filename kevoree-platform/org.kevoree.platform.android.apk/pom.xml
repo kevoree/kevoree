@@ -155,7 +155,9 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.7</version>
                 <executions>
                     <execution>
                         <id>generate-sources</id>
@@ -163,6 +165,22 @@
                         <configuration>
                             <tasks>
                                 <mkdir dir="target/generated-sources/extracted-dependencies/src/main/java" />
+                            </tasks>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <phase>initialize</phase>
+                        <configuration>
+                            <tasks>
+                                <unzip src="${basedir}/lib/library-3.5.1.zip" dest="${basedir}">
+                                    <patternset>
+                                        <include name="res/**" />
+                                        <exclude name="AndroidManifest.xml" />
+                                    </patternset>
+                                </unzip>
                             </tasks>
                         </configuration>
                         <goals>
@@ -205,27 +223,6 @@
                     <extractDuplicates>true</extractDuplicates>
                 </configuration>
                 <extensions>true</extensions>
-            </plugin>
-            <plugin>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <phase>initialize</phase>
-                        <configuration>
-                            <tasks>
-                                <unzip src="${basedir}/lib/library-3.5.1.zip" dest="${basedir}">
-                                    <patternset>
-                                        <include name="res/**" />
-                                        <exclude name="AndroidManifest.xml" />
-                                    </patternset>
-                                </unzip>
-                            </tasks>
-                        </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>

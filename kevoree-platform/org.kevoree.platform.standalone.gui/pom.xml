@@ -95,14 +95,6 @@
         </plugins>
     </build>
 
-
-    <pluginRepositories>
-        <pluginRepository>
-            <id>jetbrains-release</id>
-            <url>http://repository.jetbrains.com/all</url>
-        </pluginRepository>
-    </pluginRepositories>
-
     <repositories>
         <repository>
             <id>kevoree.extra</id>
