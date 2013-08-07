@@ -48,6 +48,7 @@ public class MavenResolver {
         artefact.setGroup(group);
         artefact.setName(name);
         artefact.setVersion(versionAsked);
+        artefact.setExtension(extension);
 
         if (artefact.getVersion().toLowerCase().contains("release") || artefact.getVersion().toLowerCase().contains("latest")) {
             String vremoteSaved = versionResolver.foundRelevantVersion(artefact, basePath, false);
@@ -163,20 +164,21 @@ public class MavenResolver {
                     }
                 }
                 if (bestVersion != null) {
-                    String preresolvedVersion = artefact.getVersion().replace("SNAPSHOT", "");
+                    String preresolvedVersion = bestVersion.getValue();
+                    /*String preresolvedVersion = artefact.getVersion().replace("SNAPSHOT", "");
                     preresolvedVersion = preresolvedVersion + bestVersion.getTimestamp();
                     if (bestVersion.getBuildNumber() != null) {
                         preresolvedVersion = preresolvedVersion + "-";
                         preresolvedVersion = preresolvedVersion + bestVersion.getBuildNumber();
-                    }
+                    }*/
                     if (bestVersion.getUrl_origin().equals(basePath)) {
                         //resolve locally
                         StringBuilder basePathBuilderSnapshot = getArtefactLocalBasePath(artefact);
                         basePathBuilderSnapshot.append(name);
                         basePathBuilderSnapshot.append("-");
-                        if (!bestVersion.isNotDeployed()) { //TAKE directly -snapshot file
+                        if (!bestVersion.isNotDeployed()) {
                             basePathBuilderSnapshot.append(preresolvedVersion);
-                        } else {
+                        } else {//TAKE directly -snapshot file
                             basePathBuilderSnapshot.append(artefact.getVersion());
                         }
                         basePathBuilderSnapshot.append(".");

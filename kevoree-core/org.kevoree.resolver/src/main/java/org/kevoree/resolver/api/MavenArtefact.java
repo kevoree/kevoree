@@ -11,8 +11,17 @@ public class MavenArtefact {
     private String name = null;
     private String group = null;
     private String version = null;
+    private String extension = null;
 
     /* Generated methods above this line */
+
+    public String getExtension() {
+        return extension;
+    }
+
+    public void setExtension(String extension) {
+        this.extension = extension;
+    }
 
     public String getVersion() {
         return version;

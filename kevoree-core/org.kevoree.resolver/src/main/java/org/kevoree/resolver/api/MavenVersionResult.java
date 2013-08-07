@@ -12,6 +12,16 @@ public class MavenVersionResult {
     private String timestamp;
     private String buildNumber;
 
+    private String value;
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
+
     public String getUrl_origin() {
         return url_origin;
     }
@@ -42,11 +52,7 @@ public class MavenVersionResult {
         try {
             Long thisT = Long.parseLong(timestamp.replace(".",""));
             Long remoteT = Long.parseLong(remote.getTimestamp().replace(".",""));
-            if (thisT < remoteT) {
-                return true;
-            } else {
-                return false;
-            }
+            return thisT < remoteT;
         } catch (Exception e) {
             org.kevoree.log.Log.error("Bad artefact timestamp",e);
             return false;

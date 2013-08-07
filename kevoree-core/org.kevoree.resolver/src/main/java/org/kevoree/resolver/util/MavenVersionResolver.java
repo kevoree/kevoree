@@ -7,6 +7,8 @@ import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by duke on 16/05/13.
@@ -27,6 +29,21 @@ public class MavenVersionResolver {
 
     private static final String lastUpdatedMavenTag = "<lastUpdated>";
     private static final String lastUpdatedEndMavenTag = "</lastUpdated>";
+
+    private static final String SnapshotVersionMavenTag = "<snapshotVersion>";
+    private static final String SnapshotVersionEndMavenTag = "</snapshotVersion>";
+
+    private static final String snapshotVersionClassifierMavenTag = "<classifier>";
+    private static final String snapshotVersionClassifierEndMavenTag = "</classifier>";
+
+    private static final String snapshotVersionExtensionMavenTag = "<extension>";
+    private static final String snapshotVersionExtensionEndMavenTag = "</extension>";
+
+    private static final String snapshotVersionValueMavenTag = "<value>";
+    private static final String snapshotVersionValueEndMavenTag = "</value>";
+
+    private static final String snapshotVersionUpdatedMavenTag = "<updated>";
+    private static final String snapshotVersionUpdatedEndMavenTag = "</updated>";
 
     public static final String metaFile = "maven-metadata.xml";
     private static final String localmetaFile = "maven-metadata-local.xml";
@@ -63,6 +80,10 @@ public class MavenVersionResolver {
         }
         URLConnection c = metadataURL.openConnection();
         //c.setConnectTimeout(500);
+
+        c.setRequestProperty("User-Agent", "Kevoree");
+
+
         InputStream in = c.getInputStream();
         BufferedReader reader = new BufferedReader(new InputStreamReader(in));
         StringBuilder resultBuilder = new StringBuilder();
@@ -73,6 +94,7 @@ public class MavenVersionResolver {
         }
         String result = resultBuilder.toString();
         in.close();
+
         MavenVersionResult versionResult = new MavenVersionResult();
         if (result.contains(lastUpdatedMavenTag) && result.contains(lastUpdatedEndMavenTag)) {
             versionResult.setTimestamp(result.substring(result.indexOf(lastUpdatedMavenTag) + lastUpdatedMavenTag.length(), result.indexOf(lastUpdatedEndMavenTag)));
@@ -83,6 +105,28 @@ public class MavenVersionResolver {
         if (result.contains(buildMavenTag) && result.contains(buildEndMavenTag)) {
             versionResult.setBuildNumber(result.substring(result.indexOf(buildMavenTag) + buildMavenTag.length(), result.indexOf(buildEndMavenTag)));
         }
+
+        boolean found = false;
+        Pattern pattern = Pattern.compile("<snapshotVersion>( *(<extension>(.(?!</snapshotVersion>))*</extension>|<value>(.(?!</snapshotVersion>))*</value>|<updated>(.(?!</snapshotVersion>))*</updated>|<classifier>(.(?!</snapshotVersion>))*</classifier>) *){3,4}</snapshotVersion>");
+        Matcher matcher = pattern.matcher(result);
+        int index = 0;
+        while (matcher.find(index) && !found) {
+            String snapshotVersion = matcher.group().trim();
+
+            if ((!snapshotVersion.contains(snapshotVersionClassifierMavenTag)
+                    || (snapshotVersion.contains(snapshotVersionClassifierMavenTag)
+                    && !"sources".equalsIgnoreCase(snapshotVersion.substring(snapshotVersion.indexOf(snapshotVersionClassifierMavenTag) + snapshotVersionClassifierMavenTag.length(), snapshotVersion.indexOf(snapshotVersionClassifierEndMavenTag)))))
+                    && snapshotVersion.contains(snapshotVersionValueMavenTag)
+                    && snapshotVersion.contains(snapshotVersionUpdatedMavenTag)
+                    && snapshotVersion.contains(snapshotVersionExtensionMavenTag)
+                    && artefact.getExtension().equalsIgnoreCase(snapshotVersion.substring(snapshotVersion.indexOf(snapshotVersionExtensionMavenTag) + snapshotVersionExtensionMavenTag.length(), snapshotVersion.indexOf(snapshotVersionExtensionEndMavenTag)))
+                    ) {
+                versionResult.setValue(snapshotVersion.substring(snapshotVersion.indexOf(snapshotVersionValueMavenTag) + snapshotVersionValueMavenTag.length(), snapshotVersion.indexOf(snapshotVersionValueEndMavenTag)));
+                found = true;
+            }
+            index += snapshotVersion.length();
+        }
+
         versionResult.setUrl_origin(basePath);
         versionResult.setNotDeployed(localDeploy);
         return versionResult;
@@ -132,6 +176,9 @@ public class MavenVersionResolver {
                 metadataURL = new URL(builder.toString());
             }
             URLConnection c = metadataURL.openConnection();
+
+            c.setRequestProperty("User-Agent", "Kevoree");
+
             InputStream in = c.getInputStream();
             BufferedReader reader = new BufferedReader(new InputStreamReader(in));
             StringBuilder resultBuilder = new StringBuilder();
