@@ -20,6 +20,7 @@ import org.kevoree.ContainerRoot;
 import org.kevoree.framework.KevoreeXmiHelper;
 import org.kevoree.platform.standalone.App;
 import org.kevoree.platform.standalone.KevoreeBootStrap;
+
 import java.io.File;
 import java.io.FileInputStream;
 
@@ -55,6 +56,16 @@ public class KevRunnerMavenMojo extends AbstractMojo {
 	 */
 	private MavenProject project;
 
+    /**
+     * The greeting to display.
+     *
+     * @parameter expression="${settings.offline}"
+     * @readonly
+     * @required
+     */
+    private boolean offline;
+
+
 	public void execute () throws MojoExecutionException {
 
 		try {
@@ -72,6 +83,7 @@ public class KevRunnerMavenMojo extends AbstractMojo {
 
 			File tFile = new File(project.getBuild().getOutputDirectory(), "runner.kev");
 			KevoreeXmiHelper.instance$.save(tFile.getAbsolutePath(), modelRoot);
+
 			for (Object key : project.getProperties().keySet()) {
 				System.setProperty(key.toString(), project.getProperties().get(key).toString());
 			}
@@ -80,9 +92,10 @@ public class KevRunnerMavenMojo extends AbstractMojo {
 				System.setProperty("node.name", targetNode);
 			}
 
-          //  if (repoSession.isOffline()) {
-          //      System.setProperty("kevoree.offline", "true");
-       //     }
+            if (offline) {
+                System.err.println("Maven is offline so we start Kevoree in offline mode");
+                System.setProperty("kevoree.offline", "true");
+            }
 
 			App.main(new String[0]);
 
