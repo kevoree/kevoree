@@ -69,9 +69,7 @@ class KevoreeLocalLoader(val classpathResources: KevoreeLazyJarResources, val kc
                     }
                 })
             }
-        } catch(ie: java.lang.InterruptedException) {
-        }
-        catch(e: Exception){
+        } catch(e: Throwable){
 
             if(Log.ERROR){
                 Log.error("Error while sync " + className + " KCL thread : " + Thread.currentThread().getName(), e)
@@ -99,7 +97,7 @@ class KevoreeLocalLoader(val classpathResources: KevoreeLazyJarResources, val kc
             KCLScheduler.getScheduler().submit(call).get()
         } catch(ie: java.lang.InterruptedException) {
         }
-        catch (e: Exception) {
+        catch (e: Throwable) {
             if(Log.ERROR){
                 Log.error("Error while sync " + className + " KCL thread : " + Thread.currentThread().getName(), e)
             }
