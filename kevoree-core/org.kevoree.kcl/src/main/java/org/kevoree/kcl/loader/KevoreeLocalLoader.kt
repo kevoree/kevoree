@@ -41,8 +41,11 @@ class KevoreeLocalLoader(val classpathResources: KevoreeLazyJarResources, val kc
         if (result == null) {
             val bytes = kcl.loadClassBytes(className)
             if (bytes != null) {
-                synchronized(lock,{
-                    result = kcl.internal_defineClass(className, bytes)
+                synchronized(lock, {
+                    result = kcl.getLoadedClass(className)
+                    if (result == null) {
+                        result = kcl.internal_defineClass(className, bytes)
+                    }
                 })
 
                 /*
