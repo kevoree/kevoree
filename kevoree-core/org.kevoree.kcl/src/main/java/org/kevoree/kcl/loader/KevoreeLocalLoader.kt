@@ -35,6 +35,8 @@ class KevoreeLocalLoader(val classpathResources: KevoreeLazyJarResources, val kc
 
     val lock = Object()
 
+    //TODO CLASS LOAD OPTIMISATION FOR JAVA 7
+    //http://docs.oracle.com/javase/7/docs/technotes/guides/lang/cl-mt.html
     public override fun loadClass(className: String?, resolveIt: Boolean): Class<out Any?>? {
         var result = kcl.getLoadedClass(className!!)
         if (result == null) {
