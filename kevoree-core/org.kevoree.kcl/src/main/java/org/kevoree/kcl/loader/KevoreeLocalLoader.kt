@@ -37,7 +37,6 @@ class KevoreeLocalLoader(val classpathResources: KevoreeLazyJarResources, val kc
         if (result == null) {
             val bytes = kcl.loadClassBytes(className)
             if (bytes != null) {
-                acquireLock(className!!)
                 result = kcl.getLoadedClass(className)
                 if (result == null) {
                     result = kcl.internal_defineClass(className, bytes)
@@ -48,12 +47,12 @@ class KevoreeLocalLoader(val classpathResources: KevoreeLazyJarResources, val kc
         return result
     }
 
-    inner class AcquireLockCallable(val className: String): Callable<Any> {
-        override fun call(): Any? {
+    inner class AcquireLockCallable(val className: String): Callable<InternalLock> {
+        override fun call(): InternalLock? {
             if (locked.containsKey(className)) {
                 return locked.get(className)!!
             } else {
-                locked.put(className, Object())
+                locked.put(className, InternalLock(true))
                 return null //don't block first thread
             }
         }
@@ -62,10 +61,12 @@ class KevoreeLocalLoader(val classpathResources: KevoreeLazyJarResources, val kc
     fun acquireLock(className: String) {
         val call = AcquireLockCallable(className)
         try {
-            val obj: Any? = KCLScheduler.getScheduler().submit(call).get()
+            val obj = KCLScheduler.getScheduler().submit(call).get()
             if (obj != null){
                 synchronized(obj, {
-                    (obj as java.lang.Object).wait()
+                    if(obj.isLocked){
+                        (obj as java.lang.Object).wait()
+                    }
                 })
             }
         } catch(ie: java.lang.InterruptedException) {
@@ -85,6 +86,7 @@ class KevoreeLocalLoader(val classpathResources: KevoreeLazyJarResources, val kc
                 val lobj = locked.get(className)!!
                 locked.remove(className)
                 synchronized(lobj, {
+                    lobj.isLocked = false
                     (lobj as java.lang.Object).notifyAll()
                 })
             }
@@ -104,6 +106,9 @@ class KevoreeLocalLoader(val classpathResources: KevoreeLazyJarResources, val kc
         }
     }
 
-    private val locked = java.util.HashMap<String, Any>()
+    private val locked = java.util.HashMap<String, InternalLock>()
+
+    class InternalLock(public var isLocked : Boolean)
+
 
 }
