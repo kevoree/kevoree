@@ -82,7 +82,9 @@ class KevoreeLocalLoader(val classpathResources: KevoreeLazyJarResources, val kc
             if (locked.containsKey(className)) {
                 val lobj = locked.get(className)!!
                 locked.remove(className)
-                (lobj as java.lang.Object).notifyAll()
+                synchronized(lobj, {
+                    (lobj as java.lang.Object).notifyAll()
+                })
             }
         }
     }
