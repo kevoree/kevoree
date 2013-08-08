@@ -5,7 +5,6 @@ import java.io.ByteArrayInputStream
 import java.util.concurrent.Callable
 import org.kevoree.kcl.KevoreeLazyJarResources
 import org.kevoree.kcl.KevoreeJarClassLoader
-import org.kevoree.kcl.KCLScheduler
 import org.kevoree.log.Log
 import java.util.concurrent.locks.ReentrantLock
 import java.util.concurrent.CountDownLatch
@@ -60,7 +59,7 @@ class KevoreeLocalLoader(val classpathResources: KevoreeLazyJarResources, val kc
         return result
     }
 
-
+        /*
 
     inner class AcquireLockCallable(val className: String): Callable<CountDownLatch> {
         override fun call(): CountDownLatch? {
@@ -111,5 +110,5 @@ class KevoreeLocalLoader(val classpathResources: KevoreeLazyJarResources, val kc
     }
 
     private val locked = java.util.HashMap<String, CountDownLatch>()
-
+     */
 }

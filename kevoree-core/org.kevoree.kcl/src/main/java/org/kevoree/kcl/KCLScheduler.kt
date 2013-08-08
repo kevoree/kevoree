@@ -12,6 +12,7 @@ import java.util.concurrent.ThreadFactory
  * Time: 16:01
  */
 
+/*
 object KCLScheduler {
 
     var _scheduler: ExecutorService? = null
@@ -26,3 +27,4 @@ object KCLScheduler {
     }
 
 }
+   */
