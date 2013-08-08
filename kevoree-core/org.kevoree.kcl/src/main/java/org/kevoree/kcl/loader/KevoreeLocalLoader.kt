@@ -7,6 +7,7 @@ import org.kevoree.kcl.KevoreeLazyJarResources
 import org.kevoree.kcl.KevoreeJarClassLoader
 import org.kevoree.kcl.KCLScheduler
 import org.kevoree.log.Log
+import java.util.concurrent.locks.ReentrantLock
 
 /**
  * Created by IntelliJ IDEA.
@@ -48,13 +49,14 @@ class KevoreeLocalLoader(val classpathResources: KevoreeLazyJarResources, val kc
         return result
     }
 
-    inner class AcquireLockCallable(val className: String): Callable<InternalLock> {
-        override fun call(): InternalLock? {
+    inner class AcquireLockCallable(val className: String): Callable<ReentrantLock> {
+        override fun call(): ReentrantLock? {
             if (locked.containsKey(className)) {
                 return locked.get(className)!!
             } else {
-                locked.put(className, InternalLock(true))
-                return null //don't block first thread
+                val newLock = ReentrantLock()
+                locked.put(className, newLock)
+                return newLock
             }
         }
     }
@@ -64,11 +66,7 @@ class KevoreeLocalLoader(val classpathResources: KevoreeLazyJarResources, val kc
         try {
             val obj = KCLScheduler.getScheduler().submit(call).get()
             if (obj != null){
-                synchronized(obj, {
-                    if(obj.isLocked){
-                        (obj as java.lang.Object).wait()
-                    }
-                })
+                obj.lock()
             }
         } catch(e: Throwable){
             if(Log.ERROR){
@@ -82,10 +80,7 @@ class KevoreeLocalLoader(val classpathResources: KevoreeLazyJarResources, val kc
             if (locked.containsKey(className)) {
                 val lobj = locked.get(className)!!
                 locked.remove(className)
-                synchronized(lobj, {
-                    lobj.isLocked = false
-                    (lobj as java.lang.Object).notifyAll()
-                })
+                lobj.unlock()
             }
         }
     }
@@ -103,7 +98,7 @@ class KevoreeLocalLoader(val classpathResources: KevoreeLazyJarResources, val kc
         }
     }
 
-    private val locked = java.util.HashMap<String, InternalLock>()
+    private val locked = java.util.HashMap<String, ReentrantLock>()
 
     class InternalLock(public var isLocked : Boolean)
 
