@@ -39,16 +39,23 @@ class KevoreeLocalLoader(val classpathResources: KevoreeLazyJarResources, val kc
         if (result == null) {
             val bytes = kcl.loadClassBytes(className)
             if (bytes != null) {
+                synchronized(this,{
+                    result = kcl.internal_defineClass(className, bytes)
+                })
+
+                /*
                 acquireLock(className!!)
                 result = kcl.getLoadedClass(className)
                 if (result == null) {
                     result = kcl.internal_defineClass(className, bytes)
                 }
-                releaseLock(className!!)
+                releaseLock(className!!)  */
             }
         }
         return result
     }
+
+
 
     inner class AcquireLockCallable(val className: String): Callable<CountDownLatch> {
         override fun call(): CountDownLatch? {
