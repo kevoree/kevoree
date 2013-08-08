@@ -1,6 +1,5 @@
 package org.kevoree.kcl.loader
 
-import java.util.concurrent.Semaphore
 import java.io.InputStream
 import java.io.ByteArrayInputStream
 import java.util.concurrent.Callable
@@ -49,15 +48,13 @@ class KevoreeLocalLoader(val classpathResources: KevoreeLazyJarResources, val kc
         return result
     }
 
-    inner class AcquireLockCallable(val className: String): Callable<Semaphore> {
-        override fun call(): Semaphore? {
-            return if (locked.containsKey(className)) {
-                val sema = locked.get(className)!!
-                sema
+    inner class AcquireLockCallable(val className: String): Callable<Any> {
+        override fun call(): Any? {
+            if (locked.containsKey(className)) {
+                return locked.get(className)!!
             } else {
-                val obj = Semaphore(0)
-                locked.put(className, Semaphore(0))
-                null //don't block first thread
+                locked.put(className, Object())
+                return null //don't block first thread
             }
         }
     }
@@ -65,9 +62,9 @@ class KevoreeLocalLoader(val classpathResources: KevoreeLazyJarResources, val kc
     fun acquireLock(className: String) {
         val call = AcquireLockCallable(className)
         try {
-            val obj: Semaphore? = KCLScheduler.getScheduler().submit(call).get()
+            val obj: Any? = KCLScheduler.getScheduler().submit(call).get()
             if (obj != null){
-                obj.acquire()
+                (obj as java.lang.Object).wait()
             }
         } catch(ie: java.lang.InterruptedException) {
         }
@@ -85,7 +82,7 @@ class KevoreeLocalLoader(val classpathResources: KevoreeLazyJarResources, val kc
             if (locked.containsKey(className)) {
                 val lobj = locked.get(className)!!
                 locked.remove(className)
-                lobj.release(lobj.getQueueLength())
+                (lobj as java.lang.Object).notifyAll()
             }
         }
     }
@@ -103,6 +100,6 @@ class KevoreeLocalLoader(val classpathResources: KevoreeLazyJarResources, val kc
         }
     }
 
-    private val locked = java.util.HashMap<String, Semaphore>()
+    private val locked = java.util.HashMap<String, Any>()
 
 }
