@@ -64,7 +64,9 @@ class KevoreeLocalLoader(val classpathResources: KevoreeLazyJarResources, val kc
         try {
             val obj: Any? = KCLScheduler.getScheduler().submit(call).get()
             if (obj != null){
-                (obj as java.lang.Object).wait()
+                synchronized(obj, {
+                    (obj as java.lang.Object).wait()
+                })
             }
         } catch(ie: java.lang.InterruptedException) {
         }
