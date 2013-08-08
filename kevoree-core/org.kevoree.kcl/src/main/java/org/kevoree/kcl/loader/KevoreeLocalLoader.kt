@@ -34,12 +34,14 @@ class KevoreeLocalLoader(val classpathResources: KevoreeLazyJarResources, val kc
         return null
     }
 
+    val lock = Object()
+
     public override fun loadClass(className: String?, resolveIt: Boolean): Class<out Any?>? {
         var result = kcl.getLoadedClass(className!!)
         if (result == null) {
             val bytes = kcl.loadClassBytes(className)
             if (bytes != null) {
-                synchronized(this,{
+                synchronized(lock,{
                     result = kcl.internal_defineClass(className, bytes)
                 })
 
