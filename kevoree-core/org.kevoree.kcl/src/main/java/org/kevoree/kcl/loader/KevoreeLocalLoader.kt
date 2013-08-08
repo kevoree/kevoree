@@ -37,6 +37,7 @@ class KevoreeLocalLoader(val classpathResources: KevoreeLazyJarResources, val kc
         if (result == null) {
             val bytes = kcl.loadClassBytes(className)
             if (bytes != null) {
+                acquireLock(className!!)
                 result = kcl.getLoadedClass(className)
                 if (result == null) {
                     result = kcl.internal_defineClass(className, bytes)
@@ -70,11 +71,9 @@ class KevoreeLocalLoader(val classpathResources: KevoreeLazyJarResources, val kc
                 })
             }
         } catch(e: Throwable){
-
             if(Log.ERROR){
                 Log.error("Error while sync " + className + " KCL thread : " + Thread.currentThread().getName(), e)
             }
-
         }
     }
 
