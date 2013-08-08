@@ -8,6 +8,7 @@ import org.kevoree.kcl.KevoreeJarClassLoader
 import org.kevoree.kcl.KCLScheduler
 import org.kevoree.log.Log
 import java.util.concurrent.locks.ReentrantLock
+import java.util.concurrent.CountDownLatch
 
 /**
  * Created by IntelliJ IDEA.
@@ -49,14 +50,14 @@ class KevoreeLocalLoader(val classpathResources: KevoreeLazyJarResources, val kc
         return result
     }
 
-    inner class AcquireLockCallable(val className: String): Callable<ReentrantLock> {
-        override fun call(): ReentrantLock? {
+    inner class AcquireLockCallable(val className: String): Callable<CountDownLatch> {
+        override fun call(): CountDownLatch? {
             if (locked.containsKey(className)) {
                 return locked.get(className)!!
             } else {
-                val newLock = ReentrantLock()
+                val newLock = CountDownLatch(1)
                 locked.put(className, newLock)
-                return newLock
+                return null
             }
         }
     }
@@ -64,10 +65,7 @@ class KevoreeLocalLoader(val classpathResources: KevoreeLazyJarResources, val kc
     fun acquireLock(className: String) {
         val call = AcquireLockCallable(className)
         try {
-            val obj = KCLScheduler.getScheduler().submit(call).get()
-            if (obj != null){
-                obj.lock()
-            }
+            KCLScheduler.getScheduler().submit(call).get()?.await()
         } catch(e: Throwable){
             if(Log.ERROR){
                 Log.error("Error while sync " + className + " KCL thread : " + Thread.currentThread().getName(), e)
@@ -75,20 +73,22 @@ class KevoreeLocalLoader(val classpathResources: KevoreeLazyJarResources, val kc
         }
     }
 
-    inner class ReleaseLockCallable(val className: String): Runnable {
-        override fun run() {
+    inner class ReleaseLockCallable(val className: String): Callable<CountDownLatch> {
+        override fun call(): CountDownLatch? {
             if (locked.containsKey(className)) {
                 val lobj = locked.get(className)!!
                 locked.remove(className)
-                lobj.unlock()
+                return lobj
             }
+            return null
         }
     }
 
     fun releaseLock(className: String) {
         try {
             val call = ReleaseLockCallable(className)
-            KCLScheduler.getScheduler().submit(call).get()
+            val awaiter = KCLScheduler.getScheduler().submit(call).get()
+            awaiter?.countDown()
         } catch(ie: java.lang.InterruptedException) {
         }
         catch (e: Throwable) {
@@ -98,9 +98,6 @@ class KevoreeLocalLoader(val classpathResources: KevoreeLazyJarResources, val kc
         }
     }
 
-    private val locked = java.util.HashMap<String, ReentrantLock>()
-
-    class InternalLock(public var isLocked : Boolean)
-
+    private val locked = java.util.HashMap<String, CountDownLatch>()
 
 }
