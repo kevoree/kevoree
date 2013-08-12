@@ -16,7 +16,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * 	http://www.gnu.org/licenses/lgpl-3.0.txt
+ * http://www.gnu.org/licenses/lgpl-3.0.txt
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -27,24 +27,15 @@
 package org.kevoree.tools.ui.editor.command
 
 import org.kevoree.framework.KevoreeXmiHelper
-import org.kevoree.tools.ui.editor.{ModelHelper, PositionedEMFHelper, KevoreeUIKernel}
+import org.kevoree.tools.ui.editor.{PositionedEMFHelper, KevoreeUIKernel}
 import org.slf4j.LoggerFactory
 import java.io._
 import java.util.jar.{JarEntry, JarFile}
 import java.util
 
-class MergeDefaultLibrary(lib : Int) extends Command {
-
-  val ALL = 0
-  val JAVASE = 1
-  val WEBSERVER = 2
-  val ARDUINO = 3
-  val SKY = 4
-  val ANDROID = 5
-  val DAUM = 6
+class MergeDefaultLibrary(groupID: String, arteID: String, version: String) extends Command {
 
   var logger = LoggerFactory.getLogger(this.getClass)
-
   var kernel: KevoreeUIKernel = null
 
   def setKernel(k: KevoreeUIKernel) = kernel = k
@@ -55,26 +46,17 @@ class MergeDefaultLibrary(lib : Int) extends Command {
       val repos = new util.ArrayList[String]()
       repos.add("http://oss.sonatype.org/content/groups/public")
 
-      val file : File = lib match {
-        case ALL =>AetherResolver.resolve("org.kevoree.library.model.all","org.kevoree.corelibrary.model","LATEST",repos)
-        case JAVASE =>AetherResolver.resolve("org.kevoree.library.model.javase","org.kevoree.corelibrary.model","LATEST",repos)
-        case WEBSERVER =>AetherResolver.resolve("org.kevoree.library.model.javase.webserver","org.kevoree.corelibrary.model","LATEST",repos)
-        case ARDUINO =>AetherResolver.resolve("org.kevoree.library.model.arduino","org.kevoree.corelibrary.model","LATEST",repos)
-        case SKY =>AetherResolver.resolve("org.kevoree.library.model.sky","org.kevoree.corelibrary.model","LATEST",repos)
-        case ANDROID =>AetherResolver.resolve("org.kevoree.library.model.android","org.kevoree.corelibrary.model","LATEST",repos)
-        case DAUM =>AetherResolver.resolve("org.kevoree.library.model.daum","org.kevoree.corelibrary.model","LATEST",repos)
-      }
-//       val file = AetherUtil.resolveMavenArtifact("org.kevoree.library.model.all","org.kevoree.library.model",ModelHelper.kevoreeFactory.getVersion,List("http://maven.kevoree.org/release","http://maven.kevoree.org/snapshots"))
-       val jar = new JarFile(file)
-       val entry: JarEntry = jar.getJarEntry("KEV-INF/lib.kev")
-       val newmodel = KevoreeXmiHelper.instance$.loadStream(jar.getInputStream(entry))
+      val file: File = AetherResolver.resolve(arteID, groupID, version, repos)
+      val jar = new JarFile(file)
+      val entry: JarEntry = jar.getJarEntry("KEV-INF/lib.kev")
+      val newmodel = KevoreeXmiHelper.instance$.loadStream(jar.getInputStream(entry))
       if (newmodel != null) {
         kernel.getModelHandler.merge(newmodel);
 
         //CREATE TEMP FILE FROM ACTUAL MODEL
-        val tempFile = File.createTempFile("kevoreeEditorTemp", ".kev");
+        val tempFile = File.createTempFile("kevoreeEditorTemp", ".kev")
         PositionedEMFHelper.updateModelUIMetaData(kernel);
-        KevoreeXmiHelper.instance$.save(tempFile.getAbsolutePath, kernel.getModelHandler.getActualModel);
+        KevoreeXmiHelper.instance$.save(tempFile.getAbsolutePath, kernel.getModelHandler.getActualModel)
 
         //LOAD MODEL
         val loadCmd = new LoadModelCommand();
@@ -89,13 +71,11 @@ class MergeDefaultLibrary(lib : Int) extends Command {
 
     } catch {
 
-      case _@e => logger.error("Could not load default lib ! => "+e.getMessage ); e.printStackTrace()
+      case _@e => logger.error("Could not load default lib ! => " + e.getMessage); e.printStackTrace()
     }
 
 
   }
-
-
 
 
 }
