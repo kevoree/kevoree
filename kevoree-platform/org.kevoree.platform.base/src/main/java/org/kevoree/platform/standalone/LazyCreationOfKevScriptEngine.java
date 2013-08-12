@@ -20,6 +20,7 @@ import org.kevoree.api.service.core.script.KevScriptEngine;
 import org.kevoree.api.service.core.script.KevScriptEngineFactory;
 import org.kevoree.core.impl.KevoreeCoreBean;
 import org.kevoree.kcl.KevoreeJarClassLoader;
+import org.kevoree.log.Log;
 
 import java.io.File;
 import java.lang.reflect.Constructor;
@@ -51,17 +52,21 @@ public class LazyCreationOfKevScriptEngine implements KevScriptEngineFactory {
     private Constructor onlineCons = null;
     private Constructor offlineCons = null;
 
-    private void checkOrInstall() throws NoSuchMethodException {
+    private void checkOrInstall() throws Exception {
         if (scriptEngineKCL == null) {
             File fileMarShell = bootstraper.resolveKevoreeArtifact("org.kevoree.tools.marShell.pack", "org.kevoree.tools", version);
-            scriptEngineKCL = new KevoreeJarClassLoader();
-            scriptEngineKCL.addSubClassLoader(aetherJCL);
-            scriptEngineKCL.add(fileMarShell.getAbsolutePath());
-            scriptEngineKCL.lockLinks();
-            onlineMShellEngineClazz = scriptEngineKCL.loadClass("org.kevoree.tools.marShell.KevScriptCoreEngine");
-            offLineMShellEngineClazz = scriptEngineKCL.loadClass("org.kevoree.tools.marShell.KevScriptOfflineEngine");
-            onlineCons =  onlineMShellEngineClazz.getDeclaredConstructor(KevoreeModelHandlerService.class, Bootstraper.class);
-            offlineCons = offLineMShellEngineClazz.getDeclaredConstructor(ContainerRoot.class, Bootstraper.class);
+            if (fileMarShell != null) {
+                scriptEngineKCL = new KevoreeJarClassLoader();
+                scriptEngineKCL.addSubClassLoader(aetherJCL);
+                scriptEngineKCL.add(fileMarShell.getAbsolutePath());
+                scriptEngineKCL.lockLinks();
+                onlineMShellEngineClazz = scriptEngineKCL.loadClass("org.kevoree.tools.marShell.KevScriptCoreEngine");
+                offLineMShellEngineClazz = scriptEngineKCL.loadClass("org.kevoree.tools.marShell.KevScriptOfflineEngine");
+                onlineCons = onlineMShellEngineClazz.getDeclaredConstructor(KevoreeModelHandlerService.class, Bootstraper.class);
+                offlineCons = offLineMShellEngineClazz.getDeclaredConstructor(ContainerRoot.class, Bootstraper.class);
+            } else {
+                throw new Exception("Unable to load marShell module so the KevScript cannot be loaded");
+            }
         }
     }
 
@@ -71,7 +76,7 @@ public class LazyCreationOfKevScriptEngine implements KevScriptEngineFactory {
             checkOrInstall();
             return (KevScriptEngine) onlineCons.newInstance(coreBean, bootstraper);
         } catch (Throwable e) {
-            e.printStackTrace();
+            Log.error("Unable to initialize KevScript engine", e);
         }
         return null;
     }
@@ -82,7 +87,7 @@ public class LazyCreationOfKevScriptEngine implements KevScriptEngineFactory {
             checkOrInstall();
             return (KevScriptEngine) offlineCons.newInstance(srcModel, bootstraper);
         } catch (Throwable e) {
-            e.printStackTrace();
+            Log.error("Unable to initialize KevScript engine", e);
         }
         return null;
     }

@@ -24,9 +24,7 @@ open class NodeTypeBootstrapHelper: Bootstraper, KCLBootstrap {
 
     override fun resolveKevoreeArtifact(artId: String, groupId: String, version: String): File? {
         val l = ArrayList<String>()
-        if(version.contains("SNAPSHOT") || version.contains("LATEST")){
-           l.add("http://oss.sonatype.org/content/groups/public/")
-        }
+        l.add("http://oss.sonatype.org/content/groups/public/")
         return resolveArtifact(artId, groupId, version, l)
     }
 
@@ -217,7 +215,7 @@ open class NodeTypeBootstrapHelper: Bootstraper, KCLBootstrap {
                 kcl_opt != null && dpRes
                 return kcl //TODO
             } else {
-                Log.error("Relevant DU not found for "+groupType.getName())
+                Log.error("Relevant DU not found for " + groupType.getName())
                 return null
             }
         } else {
