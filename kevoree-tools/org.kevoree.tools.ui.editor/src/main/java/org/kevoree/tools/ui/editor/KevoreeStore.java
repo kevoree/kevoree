@@ -94,7 +94,28 @@ public class KevoreeStore {
                         }
                     }
                     if (resourceURI != null && !resourceURI.contains("-source")) {
-                        cache.add(Fun.t4(resourceURI, groupId, artifactId, version));
+                        int replace = 0;
+                        Fun.Tuple4<String, String, String, String> olderElement = null;
+                        for (Fun.Tuple4<String, String, String, String> elem : cache) {
+                            if (elem.b.equals(groupId) && elem.c.equals(artifactId)) {
+                                if (elem.d.compareTo(version) < 0) {
+                                    // the new element is more recent than the previous one
+                                    replace = -1;
+                                    olderElement = elem;
+                                    break;
+                                } else if (elem.d.compareTo(version) > 0){
+                                    replace = 1;
+                                }
+                            }
+                        }
+                        if (replace == -1) {
+                            // remove the old element and add the new one
+                            cache.remove(olderElement);
+                            cache.add(Fun.t4(resourceURI, groupId, artifactId, version));
+                        } else if (replace == 0) {
+                            // add the new one because it doesn't exist currently
+                            cache.add(Fun.t4(resourceURI, groupId, artifactId, version));
+                        }
                     }
                 }
                 db.commit();
