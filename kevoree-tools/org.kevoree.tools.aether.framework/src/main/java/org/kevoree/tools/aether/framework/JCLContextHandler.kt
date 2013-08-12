@@ -40,9 +40,9 @@ open class JCLContextHandler: KevoreeClassLoaderHandler {
         }
     }
 
-    inner class INSTALL_DEPLOYUNIT(val du: DeployUnit): Callable<KevoreeJarClassLoader> {
-        override fun call(): KevoreeJarClassLoader {
-            return installDeployUnitNoFileInternals(du)!!
+    inner class INSTALL_DEPLOYUNIT(val du: DeployUnit): Callable<KevoreeJarClassLoader?> {
+        override fun call(): KevoreeJarClassLoader? {
+            return installDeployUnitNoFileInternals(du)
         }
     }
 
