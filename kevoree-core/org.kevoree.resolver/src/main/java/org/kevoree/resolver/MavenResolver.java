@@ -50,7 +50,7 @@ public class MavenResolver {
         artefact.setVersion(versionAsked);
         artefact.setExtension(extension);
 
-        if (artefact.getVersion().toLowerCase().contains("release") || artefact.getVersion().toLowerCase().contains("latest")) {
+        if (artefact.getVersion().equalsIgnoreCase("release") || artefact.getVersion().equalsIgnoreCase("latest")) {
             String vremoteSaved = versionResolver.foundRelevantVersion(artefact, basePath, false);
             String vlocalSaved = versionResolver.foundRelevantVersion(artefact, basePath, true);
             artefact.setVersion(MavenVersionComparator.max(artefact.getVersion(), vremoteSaved));
@@ -106,7 +106,7 @@ public class MavenResolver {
                     versions.add(localVersion);
                 }
             } catch (IOException e) {
-                //not found locally, ignore it
+                //not found remotely, ignore it
             }
             try {
                 localVersion = versionResolver.resolveVersion(artefact, basePath, true);
@@ -153,7 +153,7 @@ public class MavenResolver {
                 if (snapshotFile.exists()) {
                     return snapshotFile;
                 } else {
-                    Log.error("No metadata file founded for {}/{}/{}", group, name, artefact.getVersion());
+                    Log.error("No metadata file found for {}/{}/{}", group, name, artefact.getVersion());
                     return null;
                 }
             } else {
@@ -187,7 +187,6 @@ public class MavenResolver {
                         if (snapshotFile.exists()) {
                             return snapshotFile;
                         } else {
-
                             //This is really bad... try to get remotely
                             //remove meta local file ?
                             //TODO
@@ -197,12 +196,13 @@ public class MavenResolver {
                                     bestRemoteVersion = loopVersion;
                                 }
                             }
-                            String preresolvedVersion2 = artefact.getVersion().replace("SNAPSHOT", "");
+                            String preresolvedVersion2 = bestRemoteVersion.getValue();
+                            /*artefact.getVersion().replace("SNAPSHOT", "");
                             preresolvedVersion2 = preresolvedVersion2 + bestRemoteVersion.getTimestamp();
                             if (bestRemoteVersion.getBuildNumber() != null) {
                                 preresolvedVersion2 = preresolvedVersion2 + "-";
                                 preresolvedVersion2 = preresolvedVersion2 + bestRemoteVersion.getBuildNumber();
-                            }
+                            }*/
                             //Ok try on all urls, meta file has been download but bot the artefact :(
                             for (String url : urls) {
                                 if (downloader.download(snapshotFile, url, artefact, extension, preresolvedVersion2, false)) {

@@ -30,9 +30,6 @@ public class MavenVersionResolver {
     private static final String lastUpdatedMavenTag = "<lastUpdated>";
     private static final String lastUpdatedEndMavenTag = "</lastUpdated>";
 
-    private static final String SnapshotVersionMavenTag = "<snapshotVersion>";
-    private static final String SnapshotVersionEndMavenTag = "</snapshotVersion>";
-
     private static final String snapshotVersionClassifierMavenTag = "<classifier>";
     private static final String snapshotVersionClassifierEndMavenTag = "</classifier>";
 
@@ -79,7 +76,6 @@ public class MavenVersionResolver {
             metadataURL = new URL(builder.toString());
         }
         URLConnection c = metadataURL.openConnection();
-        //c.setConnectTimeout(500);
 
         c.setRequestProperty("User-Agent", "Kevoree");
 
@@ -95,33 +91,30 @@ public class MavenVersionResolver {
         String result = resultBuilder.toString();
         in.close();
 
+//        System.out.println(result);
+
         MavenVersionResult versionResult = new MavenVersionResult();
-        if (result.contains(lastUpdatedMavenTag) && result.contains(lastUpdatedEndMavenTag)) {
-            versionResult.setTimestamp(result.substring(result.indexOf(lastUpdatedMavenTag) + lastUpdatedMavenTag.length(), result.indexOf(lastUpdatedEndMavenTag)));
-        }
-        if (result.contains(timestampMavenTag) && result.contains(timestampEndMavenTag)) {
-            versionResult.setTimestamp(result.substring(result.indexOf(timestampMavenTag) + timestampMavenTag.length(), result.indexOf(timestampEndMavenTag)));
-        }
-        if (result.contains(buildMavenTag) && result.contains(buildEndMavenTag)) {
-            versionResult.setBuildNumber(result.substring(result.indexOf(buildMavenTag) + buildMavenTag.length(), result.indexOf(buildEndMavenTag)));
-        }
 
         boolean found = false;
-        Pattern pattern = Pattern.compile("<snapshotVersion>( *(<extension>(.(?!</snapshotVersion>))*</extension>|<value>(.(?!</snapshotVersion>))*</value>|<updated>(.(?!</snapshotVersion>))*</updated>|<classifier>(.(?!</snapshotVersion>))*</classifier>) *){3,4}</snapshotVersion>");
+//        Pattern pattern = Pattern.compile("<snapshotVersion>( *(<extension>(.(?!</snapshotVersion>))*</extension>|<value>(.(?!</snapshotVersion>))*</value>|<updated>(.(?!</snapshotVersion>))*</updated>|<classifier>(.(?!</snapshotVersion>))*</classifier>) *)*</snapshotVersion>");
+        Pattern pattern = Pattern.compile("<snapshotVersion> *(.(?!(</snapshotVersion>)))* *</snapshotVersion>");
         Matcher matcher = pattern.matcher(result);
         int index = 0;
         while (matcher.find(index) && !found) {
             String snapshotVersion = matcher.group().trim();
+//            System.err.println(snapshotVersion);
 
             if ((!snapshotVersion.contains(snapshotVersionClassifierMavenTag)
                     || (snapshotVersion.contains(snapshotVersionClassifierMavenTag)
                     && !"sources".equalsIgnoreCase(snapshotVersion.substring(snapshotVersion.indexOf(snapshotVersionClassifierMavenTag) + snapshotVersionClassifierMavenTag.length(), snapshotVersion.indexOf(snapshotVersionClassifierEndMavenTag)))))
                     && snapshotVersion.contains(snapshotVersionValueMavenTag)
                     && snapshotVersion.contains(snapshotVersionUpdatedMavenTag)
-                    && snapshotVersion.contains(snapshotVersionExtensionMavenTag)
-                    && artefact.getExtension().equalsIgnoreCase(snapshotVersion.substring(snapshotVersion.indexOf(snapshotVersionExtensionMavenTag) + snapshotVersionExtensionMavenTag.length(), snapshotVersion.indexOf(snapshotVersionExtensionEndMavenTag)))
+                    /*&& snapshotVersion.contains(snapshotVersionExtensionMavenTag)*/
+                    && (!snapshotVersion.contains(snapshotVersionExtensionMavenTag)
+                    || artefact.getExtension().equalsIgnoreCase(snapshotVersion.substring(snapshotVersion.indexOf(snapshotVersionExtensionMavenTag) + snapshotVersionExtensionMavenTag.length(), snapshotVersion.indexOf(snapshotVersionExtensionEndMavenTag))))
                     ) {
                 versionResult.setValue(snapshotVersion.substring(snapshotVersion.indexOf(snapshotVersionValueMavenTag) + snapshotVersionValueMavenTag.length(), snapshotVersion.indexOf(snapshotVersionValueEndMavenTag)));
+                versionResult.setLastUpdate(snapshotVersion.substring(snapshotVersion.indexOf(snapshotVersionUpdatedMavenTag) + snapshotVersionUpdatedMavenTag.length(), snapshotVersion.indexOf(snapshotVersionUpdatedEndMavenTag)));
                 found = true;
             }
             index += snapshotVersion.length();
@@ -129,7 +122,17 @@ public class MavenVersionResolver {
 
         versionResult.setUrl_origin(basePath);
         versionResult.setNotDeployed(localDeploy);
-        return versionResult;
+        if (!found) {
+            if (result.contains(timestampMavenTag) && result.contains(timestampEndMavenTag) && result.contains(buildMavenTag) && result.contains(buildEndMavenTag) && result.contains(lastUpdatedMavenTag) && result.contains(lastUpdatedEndMavenTag)) {
+                versionResult.setValue(result.substring(result.indexOf(timestampMavenTag) + timestampMavenTag.length(), result.indexOf(timestampEndMavenTag)) + "-" + result.substring(result.indexOf(buildMavenTag) + buildMavenTag.length(), result.indexOf(buildEndMavenTag)));
+                versionResult.setLastUpdate(result.substring(result.indexOf(lastUpdatedMavenTag) + lastUpdatedMavenTag.length(), result.indexOf(lastUpdatedEndMavenTag)));
+                return versionResult;
+            } else {
+            return null;
+            }
+        } else {
+            return versionResult;
+        }
     }
 
 
@@ -137,10 +140,10 @@ public class MavenVersionResolver {
         String askedVersion = artefact.getVersion().toLowerCase();
         Boolean release = false;
         Boolean lastest = false;
-        if (askedVersion.contains("release")) {
+        if (askedVersion.equalsIgnoreCase("release")) {
             release = true;
         }
-        if (askedVersion.contains("latest")) {
+        if (askedVersion.equalsIgnoreCase("latest")) {
             lastest = true;
         }
         if (!release && !lastest) {

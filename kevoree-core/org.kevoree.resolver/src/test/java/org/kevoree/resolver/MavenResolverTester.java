@@ -1,5 +1,6 @@
 package org.kevoree.resolver;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.File;
@@ -23,7 +24,7 @@ public class MavenResolverTester {
         l.add("http://maven.kevoree.org/snapshots");
         l.add("http://oss.sonatype.org/content/groups/public");
 
-        File resolved2 = resolver.resolve("org.kevoree.corelibrary.model","org.kevoree.library.model.bootstrap", "2.0.0-SNAPSHOT", "jar", l);
+        File resolved2 = resolver.resolve("org.kevoree.corelibrary.model", "org.kevoree.library.model.bootstrap", "2.0.0-SNAPSHOT", "jar", l);
         System.out.println(resolved2);
     }
 
@@ -32,7 +33,7 @@ public class MavenResolverTester {
         MavenResolver resolver = new MavenResolver();
         List<String> l = new ArrayList<String>();
         l.add("http://repo1.maven.org/maven2/");
-        File resolved2 = resolver.resolve("io.tesla.maven","maven-model", "3.1.2", "jar", l);
+        File resolved2 = resolver.resolve("io.tesla.maven", "maven-model", "3.1.2", "jar", l);
         System.out.println(resolved2);
     }
 
@@ -45,14 +46,19 @@ public class MavenResolverTester {
         l.add("http://maven.kevoree.org/snapshots");
         l.add("http://oss.sonatype.org/content/groups/public");
 
-        File resolved2 = resolver.resolve("org.kevoree.corelibrary.model","org.kevoree.library.model.bootstrap", "2.0.0-ALPHA", "jar", l);
+        File resolved2 = resolver.resolve("org.kevoree.corelibrary.model", "org.kevoree.library.model.bootstrap", "2.0.0-ALPHA", "jar", l);
         System.out.println(resolved2);
+        Assert.assertNotSame(null, resolved2);
+        Assert.assertEquals(System.getProperty("user.home") + File.separator + ".m2" + File.separator + "repository" + File.separator + "org.kevoree.corelibrary.model".replace(".", File.separator) + File.separator + "org.kevoree.library.model.bootstrap" + File.separator + "2.0.0-ALPHA" + File.separator + "org.kevoree.library.model.bootstrap-2.0.0-ALPHA.jar", resolved2.getAbsolutePath());
 
-        resolved2 = resolver.resolve("org.kevoree.corelibrary.model","org.kevoree.library.model.bootstrap", "RELEASE", "jar", l);
+        resolved2 = resolver.resolve("org.kevoree.corelibrary.model", "org.kevoree.library.model.bootstrap", "RELEASE", "jar", l);
         System.out.println(resolved2);
+        Assert.assertNotSame(null, resolved2);
+        Assert.assertEquals(System.getProperty("user.home") + File.separator + ".m2" + File.separator + "repository" + File.separator + "org.kevoree.corelibrary.model".replace(".", File.separator) + File.separator + "org.kevoree.library.model.bootstrap" + File.separator + "2.0.0-ALPHA" + File.separator + "org.kevoree.library.model.bootstrap-2.0.0-ALPHA.jar", resolved2.getAbsolutePath());
 
-        resolved2 = resolver.resolve("org.kevoree.corelibrary.model","org.kevoree.library.model.bootstrap", "LATEST", "jar", l);
+        resolved2 = resolver.resolve("org.kevoree.corelibrary.model", "org.kevoree.library.model.bootstrap", "LATEST", "jar", l);
         System.out.println(resolved2);
+        Assert.assertNotSame(null, resolved2);
     }
 
 
@@ -61,13 +67,11 @@ public class MavenResolverTester {
         MavenResolver resolver = new MavenResolver();
         List<String> l = new ArrayList<String>();
         l.add("http://oss.sonatype.org/content/groups/public");
-        File resolved = resolver.resolve("org.kevoree.tools", "org.kevoree.tools.marShell.pack", "2.0.0-SNAPSHOT","jar",l);
-        System.out.println(resolved.length());
+        File resolved = resolver.resolve("org.kevoree.tools", "org.kevoree.tools.marShell.pack", "2.0.0-SNAPSHOT", "jar", l);
+        System.out.println(resolved.getAbsolutePath());
 
 
     }
-
-
 
 
 }

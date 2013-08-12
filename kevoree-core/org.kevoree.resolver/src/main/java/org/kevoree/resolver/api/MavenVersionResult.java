@@ -9,10 +9,16 @@ package org.kevoree.resolver.api;
  */
 public class MavenVersionResult {
 
-    private String timestamp;
-    private String buildNumber;
-
     private String value;
+    private String lastUpdate;
+
+    public String getLastUpdate() {
+        return lastUpdate;
+    }
+
+    public void setLastUpdate(String lastUpdate) {
+        this.lastUpdate = lastUpdate;
+    }
 
     public String getValue() {
         return value;
@@ -32,27 +38,11 @@ public class MavenVersionResult {
 
     private String url_origin;
 
-    public String getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(String timestamp) {
-        this.timestamp = timestamp;
-    }
-
-    public String getBuildNumber() {
-        return buildNumber;
-    }
-
-    public void setBuildNumber(String buildNumber) {
-        this.buildNumber = buildNumber;
-    }
 
     public boolean isPrior(MavenVersionResult remote) {
         try {
-            Long thisT = Long.parseLong(timestamp.replace(".",""));
-            Long remoteT = Long.parseLong(remote.getTimestamp().replace(".",""));
-            return thisT < remoteT;
+
+            return Long.parseLong(lastUpdate) < Long.parseLong(remote.lastUpdate);
         } catch (Exception e) {
             org.kevoree.log.Log.error("Bad artefact timestamp",e);
             return false;
@@ -60,7 +50,7 @@ public class MavenVersionResult {
     }
 
     public String toString(){
-        return timestamp+"-"+buildNumber+"@"+url_origin;
+        return value+"@"+url_origin;
     }
 
     private boolean notDeployed = false;
