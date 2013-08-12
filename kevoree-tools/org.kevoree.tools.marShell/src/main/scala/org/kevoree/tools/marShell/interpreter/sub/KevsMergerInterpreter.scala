@@ -94,7 +94,7 @@ case class KevsMergerInterpreter (mergeStatement: MergeStatement) extends KevsAb
           repos.add("http://oss.sonatype.org/content/groups/public")
           file = context.getBootstraper.resolveArtifact(part(1), part(0), part(2),repos)
 
-          println("Resolved File = "+file+"-"+part(0)+"-"+part(1)+"-"+part(2))
+          Log.debug("Resolved File = "+file+"-"+part(0)+"-"+part(1)+"-"+part(2))
         } else {
           Log.warn("Kevscript merger : Bad MVN URL <mvn:[repourl!]groupID/artefactID/version>")
         }
