@@ -91,10 +91,10 @@ class KevScriptCoreEngine(core: KevoreeModelHandlerService, bootstraper: Bootstr
           inputModel
         } else {
           import scala.collection.JavaConversions._
-          throw new KevScriptEngineException("Interpreter Error :\n" + ctx.interpretationErrors.mkString("\n"))
+          throw new KevScriptEngineException("Interpreter Error:\n" + ctx.interpretationErrors.mkString("\n"))
         }
       }
-      case None => throw new KevScriptEngineParseErrorException("Parser Error : " + parser.lastNoSuccess.toString)
+      case None => throw new KevScriptEngineParseErrorException("Parser Error: " + parser.lastNoSuccess.toString)
     }
   }
 
@@ -125,7 +125,7 @@ class KevScriptCoreEngine(core: KevoreeModelHandlerService, bootstraper: Bootstr
               try {
                 core.atomicCompareAndSwapModel(inputModel, targetModel)
               } catch {
-                case _@e => throw new KevScriptEngineException("Unable to compare and swap model : " + e.getMessage) {
+                case _@e => throw new KevScriptEngineException("Unable to compare and swap model: " + e.getMessage) {
                   override def getCause = e
                 }
               }
@@ -134,10 +134,10 @@ class KevScriptCoreEngine(core: KevoreeModelHandlerService, bootstraper: Bootstr
             }
           } else {
             import scala.collection.JavaConversions._
-            throw new KevScriptEngineException("Interpreter Error :\n" + ctx.interpretationErrors.mkString("\n"))
+            throw new KevScriptEngineException("Interpreter Error:\n" + ctx.interpretationErrors.mkString("\n"))
           }
         }
-        case None => throw new KevScriptEngineParseErrorException("Parser Error : " + parser.lastNoSuccess.toString)
+        case None => throw new KevScriptEngineParseErrorException("Parser Error: " + parser.lastNoSuccess.toString)
       }
     } catch {
       case _@e => throw new KevScriptEngineException(e.getMessage) //Protection to much ?

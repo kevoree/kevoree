@@ -117,6 +117,7 @@ case class KevsMergerInterpreter (mergeStatement: MergeStatement) extends KevsAb
           }
         }
       } else {
+        Log.warn("Unable to retrieve the library: {}", mavenurl)
         false
       }
     } else if (mergeStatement.url.startsWith("http://")) {

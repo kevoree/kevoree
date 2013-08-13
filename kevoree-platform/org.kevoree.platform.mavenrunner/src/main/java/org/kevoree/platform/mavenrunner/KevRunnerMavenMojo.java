@@ -78,7 +78,7 @@ public class KevRunnerMavenMojo extends AbstractMojo {
 			} else if (model.getName().endsWith(".kevs")) {
 				modelRoot = KevScriptHelper.generate(model, project);
 			} else {
-				throw new Exception("Bad input file, must be .kev or .kevs");
+				throw new MojoExecutionException("Bad input file, must be .kev or .kevs");
 			}
 
 			File tFile = new File(project.getBuild().getOutputDirectory(), "runner.kev");
