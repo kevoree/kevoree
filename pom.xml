@@ -5,7 +5,7 @@
     <packaging>pom</packaging>
     <name>Kevoree :: Root</name>
     <url>https://github.com/dukeboard/kevoree</url>
-    <version>2.0.5</version>
+    <version>2.0.6-SNAPSHOT</version>
 
     <properties>
         <kmf.version>1.4.4</kmf.version>
