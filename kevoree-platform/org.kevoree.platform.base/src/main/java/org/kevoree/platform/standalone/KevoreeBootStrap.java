@@ -177,8 +177,7 @@ public class KevoreeBootStrap {
                             askedVersion = "LATEST";
                         }
 
-                        File filebootmodel = bootstraper.resolveKevoreeArtifact("org.kevoree.corelibrary.javase", "org.kevoree.library.javase.jexxus", askedVersion);
-
+                        File filebootmodel = bootstraper.resolveKevoreeArtifact("org.kevoree.library.javase.jexxus","org.kevoree.corelibrary.javase", askedVersion);
                         JarFile jar = new JarFile(filebootmodel);
                         JarEntry entry = jar.getJarEntry("KEV-INF/lib.kev");
                         bootstrapModel = KevoreeXmiHelper.instance$.loadStream(jar.getInputStream(entry));
