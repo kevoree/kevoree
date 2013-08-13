@@ -44,6 +44,12 @@
             <version>1.6.1</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.kevoree.tools</groupId>
+            <artifactId>org.kevoree.tools.aether.framework</artifactId>
+            <version>${kevoree.version}</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
 
