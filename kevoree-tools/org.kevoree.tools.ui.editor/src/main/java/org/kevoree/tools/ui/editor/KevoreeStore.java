@@ -1,5 +1,7 @@
 package org.kevoree.tools.ui.editor;
 
+import org.kevoree.impl.DefaultKevoreeFactory;
+import org.kevoree.resolver.util.MavenVersionComparator;
 import org.kevoree.tools.ui.editor.command.MergeDefaultLibrary;
 import org.kevoree.tools.ui.editor.menus.CommandActionListener;
 import org.mapdb.DB;
@@ -39,6 +41,7 @@ public class KevoreeStore {
     }
 
     private DB db = null;
+    private String version;
 
     public KevoreeStore() {
         File dbFile = new File(getUserCache());
@@ -46,6 +49,7 @@ public class KevoreeStore {
         db = DBMaker.newFileDB(dbFile)
                 .closeOnJvmShutdown()
                 .make();
+        version = new DefaultKevoreeFactory().getVersion();
     }
 
     public static void main(String[] args) {
@@ -93,19 +97,31 @@ public class KevoreeStore {
                             version = nodeChild.getTextContent();
                         }
                     }
-                    if (resourceURI != null && !resourceURI.contains("-source")) {
+                    if (resourceURI != null && !resourceURI.contains("-source")
+                            // avoid the check of snapshot version when the editor has a release version
+                            && (this.version.toLowerCase().endsWith("snapshot") || (!this.version.toLowerCase().endsWith("snapshot") && !version.toLowerCase().endsWith("snapshot")))) {
                         int replace = 0;
                         Fun.Tuple4<String, String, String, String> olderElement = null;
                         for (Fun.Tuple4<String, String, String, String> elem : cache) {
                             if (elem.b.equals(groupId) && elem.c.equals(artifactId)) {
-                                if (elem.d.compareTo(version) < 0) {
-                                    // the new element is more recent than the previous one
-                                    replace = -1;
-                                    olderElement = elem;
-                                    break;
-                                } else if (elem.d.compareTo(version) > 0){
-                                    replace = 1;
-                                }
+                                    if (!elem.d.equals(version)) {
+                                        if ((elem.d.toLowerCase().endsWith("snapshot") && version.toLowerCase().endsWith("snapshot")) || (!elem.d.toLowerCase().endsWith("snapshot") && !version.toLowerCase().endsWith("snapshot"))) {
+                                            String versionToKeep = MavenVersionComparator.max(elem.d, version);
+                                            if (version.equals(versionToKeep)) {
+                                                // the new element is more recent than the previous one
+                                                replace = -1;
+                                                olderElement = elem;
+                                                break;
+                                            } else if (elem.d.equals(versionToKeep)) {
+                                                replace = 1;
+                                                break;
+                                            }
+                                        }
+                                    } else {
+                                        // versions are equals so we do not add the new one
+                                        replace = 1;
+                                        break;
+                                    }
                             }
                         }
                         if (replace == -1) {
