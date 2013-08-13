@@ -164,8 +164,11 @@ public class MavenResolver {
                     }
                 }
                 if (bestVersion != null) {
-//                    String preresolvedVersion = bestVersion.getValue();
-                    String preresolvedVersion = artefact.getVersion().replace("SNAPSHOT", "") + bestVersion.getValue();
+                    String preresolvedVersion = bestVersion.getValue();
+                    String firstPartVersion = artefact.getVersion().replace("SNAPSHOT", "");
+                    if (!preresolvedVersion.startsWith(firstPartVersion)) {
+                    preresolvedVersion = firstPartVersion + bestVersion.getValue();
+                    }
                     /*if (bestVersion.getBuildNumber() != null) {
                         preresolvedVersion = preresolvedVersion + "-";
                         preresolvedVersion = preresolvedVersion + bestVersion.getBuildNumber();
@@ -191,12 +194,15 @@ public class MavenResolver {
                             //TODO
                             MavenVersionResult bestRemoteVersion = null;
                             for (MavenVersionResult loopVersion : versions) {
-                                if ((!loopVersion.getUrl_origin().equals(basePath)) && (bestRemoteVersion == null || bestVersion.isPrior(loopVersion))) {
+                                if ((!loopVersion.getUrl_origin().equals(basePath)) && (bestRemoteVersion == null || bestRemoteVersion.isPrior(loopVersion))) {
                                     bestRemoteVersion = loopVersion;
                                 }
                             }
-//                            String preresolvedVersion2 = bestRemoteVersion.getValue();
-                            String preresolvedVersion2 = artefact.getVersion().replace("SNAPSHOT", "") + bestVersion.getValue();
+                            String preresolvedVersion2 = bestRemoteVersion.getValue();
+                            String firstPartVersion2 = artefact.getVersion().replace("SNAPSHOT", "");
+                            if (!preresolvedVersion2.startsWith(firstPartVersion2)) {
+                                preresolvedVersion2 = firstPartVersion2 + bestRemoteVersion.getValue();
+                            }
                             /*artefact.getVersion().replace("SNAPSHOT", "");
                             preresolvedVersion2 = preresolvedVersion2 + bestRemoteVersion.getTimestamp();
                             if (bestRemoteVersion.getBuildNumber() != null) {
