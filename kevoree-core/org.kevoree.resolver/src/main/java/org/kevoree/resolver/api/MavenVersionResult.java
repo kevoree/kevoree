@@ -41,7 +41,6 @@ public class MavenVersionResult {
 
     public boolean isPrior(MavenVersionResult remote) {
         try {
-
             return Long.parseLong(lastUpdate) < Long.parseLong(remote.lastUpdate);
         } catch (Exception e) {
             org.kevoree.log.Log.error("Bad artefact timestamp",e);

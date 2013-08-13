@@ -164,10 +164,9 @@ public class MavenResolver {
                     }
                 }
                 if (bestVersion != null) {
-                    String preresolvedVersion = bestVersion.getValue();
-                    /*String preresolvedVersion = artefact.getVersion().replace("SNAPSHOT", "");
-                    preresolvedVersion = preresolvedVersion + bestVersion.getTimestamp();
-                    if (bestVersion.getBuildNumber() != null) {
+//                    String preresolvedVersion = bestVersion.getValue();
+                    String preresolvedVersion = artefact.getVersion().replace("SNAPSHOT", "") + bestVersion.getValue();
+                    /*if (bestVersion.getBuildNumber() != null) {
                         preresolvedVersion = preresolvedVersion + "-";
                         preresolvedVersion = preresolvedVersion + bestVersion.getBuildNumber();
                     }*/
@@ -196,7 +195,8 @@ public class MavenResolver {
                                     bestRemoteVersion = loopVersion;
                                 }
                             }
-                            String preresolvedVersion2 = bestRemoteVersion.getValue();
+//                            String preresolvedVersion2 = bestRemoteVersion.getValue();
+                            String preresolvedVersion2 = artefact.getVersion().replace("SNAPSHOT", "") + bestVersion.getValue();
                             /*artefact.getVersion().replace("SNAPSHOT", "");
                             preresolvedVersion2 = preresolvedVersion2 + bestRemoteVersion.getTimestamp();
                             if (bestRemoteVersion.getBuildNumber() != null) {

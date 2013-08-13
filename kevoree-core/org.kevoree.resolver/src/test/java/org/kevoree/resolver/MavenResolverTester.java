@@ -20,12 +20,11 @@ public class MavenResolverTester {
         MavenResolver resolver = new MavenResolver();
 
         List<String> l = new ArrayList<String>();
-        l.add("http://maven.kevoree.org/release");
-        l.add("http://maven.kevoree.org/snapshots");
         l.add("http://oss.sonatype.org/content/groups/public");
 
         File resolved2 = resolver.resolve("org.kevoree.corelibrary.model", "org.kevoree.library.model.bootstrap", "2.0.0-SNAPSHOT", "jar", l);
         System.out.println(resolved2);
+        Assert.assertNotSame(null, resolved2);
     }
 
     @Test
@@ -35,6 +34,7 @@ public class MavenResolverTester {
         l.add("http://repo1.maven.org/maven2/");
         File resolved2 = resolver.resolve("io.tesla.maven", "maven-model", "3.1.2", "jar", l);
         System.out.println(resolved2);
+        Assert.assertNotSame(null, resolved2);
     }
 
     @Test
@@ -69,9 +69,31 @@ public class MavenResolverTester {
         l.add("http://oss.sonatype.org/content/groups/public");
         File resolved = resolver.resolve("org.kevoree.tools", "org.kevoree.tools.marShell.pack", "2.0.0-SNAPSHOT", "jar", l);
         System.out.println(resolved.getAbsolutePath());
+        Assert.assertNotSame(null, resolved);
 
 
     }
+
+    @Test
+    public void testremoteResolution3() {
+        List<String> repos = new ArrayList<String>();
+        repos.add("http://maven.kevoree.org/daum/snapshots");
+        MavenResolver resolver = new MavenResolver();
+        File f = resolver.resolve("org.daum.common.followermodel", "org.daum.common.followermodel", "2.0.0-SNAPSHOT", "jar", repos);
+        System.out.println(f.getAbsolutePath());
+        Assert.assertNotSame(null, f);
+    }
+
+    @Test
+    public void testRemoteResolution4() {
+        List<String> repos = new ArrayList<String>();
+        repos.add("https://oss.sonatype.org/content/groups/public/");
+        MavenResolver resolver = new MavenResolver();
+        File f = resolver.resolve("org.kevoree.tools", "org.kevoree.tools.marShell.pack", "2.0.4", "jar", repos);
+        System.out.println(f.getAbsolutePath());
+        Assert.assertNotSame(null, f);
+    }
+
 
 
 }

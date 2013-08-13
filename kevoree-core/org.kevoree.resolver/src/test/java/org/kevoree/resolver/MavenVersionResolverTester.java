@@ -2,14 +2,10 @@ package org.kevoree.resolver;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.kevoree.resolver.api.MavenArtefact;
-import org.kevoree.resolver.api.MavenVersionResult;
-import org.kevoree.resolver.util.MavenVersionResolver;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Collections;
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -24,20 +20,26 @@ public class MavenVersionResolverTester {
     @Test
     public void testfoundMaxVersion() throws IOException {
         MavenResolver resolver = new MavenResolver();
-        File result = resolver.resolve("org.kevoree","org.kevoree.core","RELEASE","jar", Arrays.asList("http://maven.kevoree.org/release"));
-        Assert.assertTrue("RELEASE", result.getAbsolutePath().contains("ALPHA"));
+        File result = resolver.resolve("org.kevoree","org.kevoree.core","RELEASE","jar", Arrays.asList("http://oss.sonatype.org/content/groups/public"));
+        System.out.println(result.getAbsolutePath());
+        Assert.assertTrue("RELEASE", !result.getAbsolutePath().contains("SNAPSHOT"));
+
+        File result2 = resolver.resolve("org.kevoree","org.kevoree.core","RELEASE","jar", Arrays.asList("http://repo1.maven.org/maven2"));
+        System.out.println(result2.getAbsolutePath());
+        Assert.assertTrue("RELEASE", !result2.getAbsolutePath().contains("SNAPSHOT") && result2.getAbsolutePath().equals(result.getAbsolutePath()));
 
 
-        File result2 = resolver.resolve("org.kevoree","org.kevoree.core","LATEST","jar", Arrays.asList("http://maven.kevoree.org/snapshots"));
-        System.out.println(result2.getCanonicalPath());
-        Assert.assertTrue("SNAPSHOT", result2.getAbsolutePath().contains("SNAPSHOT"));
+
+        File result3 = resolver.resolve("org.kevoree","org.kevoree.core","LATEST","jar", Arrays.asList("http://oss.sonatype.org/content/groups/public"));
+        System.out.println(result3.getCanonicalPath());
+        Assert.assertTrue("SNAPSHOT", result3.getAbsolutePath().contains("SNAPSHOT"));
 
         /*
 
         artifact = new MavenArtefact();
         artifact.setGroup("org.kevoree");
         artifact.setName("org.kevoree.core");
-       // artifact = resolver.foundMaxVersion(artifact, "http://maven.kevoree.org/snapshots", false, true);
+       // artifact = resolver.foundMaxVersion(artifact, "http://oss.sonatype.org/content/groups/public", false, true);
 
         System.out.println(artifact.getVersion());
         Assert.assertEquals(null, artifact.getVersion());
@@ -53,7 +55,7 @@ public class MavenVersionResolverTester {
         artifact = new MavenArtefact();
         artifact.setGroup("org.kevoree");
         artifact.setName("org.kevoree.core");
-      //  artifact = resolver.foundMaxVersion(artifact, "http://maven.kevoree.org/snapshots", false, false);
+      //  artifact = resolver.foundMaxVersion(artifact, "http://oss.sonatype.org/content/groups/public", false, false);
 
         System.out.println(artifact.getVersion());
         Assert.assertEquals("2.0.0-SNAPSHOT", artifact.getVersion());
