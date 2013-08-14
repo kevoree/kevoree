@@ -160,7 +160,7 @@ public class App {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-
+                /*
                 AbstractButton toogleKloud = null;
                 try {
                     java.net.URL url = App.class.getClassLoader().getResource("kloud.png");
@@ -173,7 +173,7 @@ public class App {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-
+                  */
                 AbstractButton toogleMiniKloud = null;
                 try {
                     java.net.URL url = App.class.getClassLoader().getResource("kloud.png");
@@ -271,7 +271,7 @@ public class App {
                 assert toogleKevScriptEditor != null;
                 final AbstractButton finalToogleKevScriptEditor = toogleKevScriptEditor;
                 final AbstractButton finalToogleErrorPanel = toogleErrorPanel;
-                final AbstractButton finalToggleKloudDialog = toogleKloud;
+                //final AbstractButton finalToggleKloudDialog = toogleKloud;
                 final AbstractButton finalToggleMiniKloudDialog = toogleMiniKloud;
 
                 toogleConsole.addMouseListener(new MouseAdapter() {
@@ -378,7 +378,7 @@ public class App {
                     }
                 });
 
-
+                  /*
                 final KloudForm kloudForm = new KloudForm(artpanel, finalToggleKloudDialog);
                 toogleKloud.addMouseListener(new MouseAdapter() {
                     @Override
@@ -393,7 +393,7 @@ public class App {
                             kloudForm.hide();
                         }
                     }
-                });
+                }); */
 
                 final MiniKloudForm minikloudForm = new MiniKloudForm(artpanel, finalToggleMiniKloudDialog);
                 toogleMiniKloud.addMouseListener(new MouseAdapter() {
