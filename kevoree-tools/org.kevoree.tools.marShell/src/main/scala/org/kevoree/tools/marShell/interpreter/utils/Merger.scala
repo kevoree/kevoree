@@ -80,7 +80,11 @@ object Merger {
           }
           //MERGE NEW Dictionary Attribute
           case None => {
-            //CHECK IF ATTRIBUTE ALREADY EXISTE WITHOUT VALUE
+            // CHECK if dictionary type exist
+            if (inst.getTypeDefinition.getDictionaryType == null) {
+              throw new Exception("Dictionary Type is null for " + inst.getTypeDefinition.getName + ". Maybe you forgot to merge this type on your model.")
+            }
+            //CHECK IF ATTRIBUTE ALREADY EXIST WITHOUT VALUE
             val att = inst.getTypeDefinition.getDictionaryType.getAttributes.find(att => att.getName == key) match {
               case None => {
                /* if(allowTypeUpdate){
