@@ -208,15 +208,16 @@ class MiniKloudForm(editor: KevoreeEditor, button: AbstractButton) {
         logger.debug("starting a minicloud with an editor node")
         minicloudName = "editor_node"
         kevEngine.addVariable("minicloudNodeName", minicloudName)
-        kevEngine.addVariable("kevoree.version", ModelHelper.kevoreeFactory.getVersion)
+
+        if (ModelHelper.kevoreeFactory.getVersion.toLowerCase.endsWith("snapshot")) {
+          kevEngine.addVariable("kevoree.version", "LATEST")
+        } else {
+          kevEngine.addVariable("kevoree.version", "RELEASE")
+        }
 
         kevEngine.append("merge 'mvn:org.kevoree.corelibrary.sky/org.kevoree.library.sky.minicloud/{kevoree.version}'")
-        kevEngine.append("merge 'mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.webserver.api/{kevoree.version}'")
-        kevEngine.append("merge 'mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.webserver.tjws/{kevoree.version}'")
-        kevEngine.append("merge 'mvn:org.kevoree.corelibrary.sky/org.kevoree.library.sky.provider/{kevoree.version}'")
-        kevEngine.append("merge 'mvn:org.kevoree.corelibrary.sky/org.kevoree.library.sky.provider.web/{kevoree.version}'")
+        kevEngine.append("merge 'mvn:org.kevoree.corelibrary.sky/org.kevoree.library.sky.web/{kevoree.version}'")
         kevEngine.append("merge 'mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.basicGossiper/{kevoree.version}'")
-        kevEngine.append("merge 'mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.defaultChannels/{kevoree.version}'")
 
         kevEngine.append("addNode {minicloudNodeName}: MiniCloudNode {logLevel = 'INFO'}")
 
@@ -225,22 +226,8 @@ class MiniKloudForm(editor: KevoreeEditor, button: AbstractButton) {
         kevEngine.addVariable("portValue", port.toString)
 
         // add the web page to manage the miniKloud
-        kevEngine.append("addComponent webServer@{minicloudNodeName} : KTinyWebServer {port = '{portValue}', timeout = '10000'}")
-        kevEngine.append("addComponent iaasPage@{minicloudNodeName} : IaaSKloudResourceManagerPage { urlpattern='/'}")
-        kevEngine.append("addComponent iaasManager@{minicloudNodeName} : IaaSKloudManager")
+        kevEngine.append("addComponent iaasManager@{minicloudNodeName} : WebFrontend { port = '{portValue}'}")
 
-        kevEngine.append("addChannel requestChannel : defMSG")
-        kevEngine.append("addChannel responseChannel : defMSG")
-        kevEngine.append("addChannel iaasDelegateChannel : defSERVICE")
-
-        kevEngine.append("bind webServer.handler@{minicloudNodeName} => requestChannel")
-        kevEngine.append("bind iaasPage.request@{minicloudNodeName} => requestChannel")
-
-        kevEngine.append("bind webServer.response@{minicloudNodeName} => responseChannel")
-        kevEngine.append("bind iaasPage.content@{minicloudNodeName} => responseChannel")
-
-        kevEngine.append("bind iaasManager.submit@{minicloudNodeName} => iaasDelegateChannel")
-        kevEngine.append("bind iaasPage.delegate@{minicloudNodeName} => iaasDelegateChannel")
       }
     }
 
