@@ -107,7 +107,7 @@ class MiniKloudForm(editor: KevoreeEditor, button: AbstractButton) {
                 button.setDisabledIcon(previousIcon)
                 UIEventHandler.info("MiniKloud node Started !")
 
-                skyModel.findByPath("nodes[" + minicloudName + "]/components[" + "webServer" + "]", classOf[ComponentInstance]) match {
+                skyModel.findByPath("nodes[" + minicloudName + "]/components[" + "iaasManager" + "]", classOf[ComponentInstance]) match {
                   case null =>
                   case component: ComponentInstance => {
                     val portOption = KevoreePropertyHelper.instance$.getProperty(component, "port", false, "")
@@ -210,14 +210,14 @@ class MiniKloudForm(editor: KevoreeEditor, button: AbstractButton) {
         kevEngine.addVariable("minicloudNodeName", minicloudName)
 
         if (ModelHelper.kevoreeFactory.getVersion.toLowerCase.endsWith("snapshot")) {
-          kevEngine.addVariable("kevoree.version", "LATEST")
+          kevEngine.addVariable("lib.version", "LATEST")
         } else {
-          kevEngine.addVariable("kevoree.version", "RELEASE")
+          kevEngine.addVariable("lib.version", "RELEASE")
         }
 
-        kevEngine.append("merge 'mvn:org.kevoree.corelibrary.sky/org.kevoree.library.sky.minicloud/{kevoree.version}'")
-        kevEngine.append("merge 'mvn:org.kevoree.corelibrary.sky/org.kevoree.library.sky.web/{kevoree.version}'")
-        kevEngine.append("merge 'mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.basicGossiper/{kevoree.version}'")
+        kevEngine.append("merge 'mvn:org.kevoree.corelibrary.sky/org.kevoree.library.sky.minicloud/{lib.version}'")
+        kevEngine.append("merge 'mvn:org.kevoree.corelibrary.sky/org.kevoree.library.sky.web/{lib.version}'")
+        kevEngine.append("merge 'mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.basicGossiper/{lib.version}'")
 
         kevEngine.append("addNode {minicloudNodeName}: MiniCloudNode {logLevel = 'INFO'}")
 
