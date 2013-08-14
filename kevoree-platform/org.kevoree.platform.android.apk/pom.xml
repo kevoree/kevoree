@@ -3,12 +3,12 @@
     <artifactId>org.kevoree.platform.android.apk</artifactId>
     <packaging>apk</packaging>
     <name>Kevoree :: Platform :: Android :: APK</name>
-    <version>2.0.8</version>
+    <version>2.0.9-SNAPSHOT</version>
 
     <parent>
         <artifactId>org.kevoree.platform.root</artifactId>
         <groupId>org.kevoree.platform</groupId>
-        <version>2.0.8</version>
+        <version>2.0.9-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
