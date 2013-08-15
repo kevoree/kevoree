@@ -27,8 +27,12 @@
 package org.kevoree.library.camel.framework;
 
 import org.apache.camel.spi.ClassResolver;
+import org.kevoree.log.Log;
+
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.Enumeration;
 
 /**
  * Created by IntelliJ IDEA.
@@ -103,6 +107,16 @@ public class ClassLoaderClassResolver implements ClassResolver {
     @Override
     public URL loadResourceAsURL(String s) {
         return cl.getResource(s);
+    }
+
+    @Override
+    public Enumeration<URL> loadResourcesAsURL(String s) {
+        try {
+            return cl.getResources(s);
+        } catch (IOException e) {
+            Log.error("Error while calling child class Loader",e);
+        }
+        return null;
     }
 
 }
