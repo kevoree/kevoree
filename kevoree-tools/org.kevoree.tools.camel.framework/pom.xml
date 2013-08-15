@@ -13,8 +13,7 @@
     </parent>
 
     <properties>
-        <camel.version>2.9.2</camel.version>
-        <kevoree.include>*:*</kevoree.include>
+        <camel.version>2.11.0</camel.version>
     </properties>
 
     <dependencies>
@@ -32,6 +31,11 @@
             <groupId>org.apache.camel</groupId>
             <artifactId>camel-core</artifactId>
             <version>${camel.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>1.6.6</version>
         </dependency>
 
     </dependencies>
