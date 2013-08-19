@@ -29,7 +29,7 @@ package org.kevoree.tools.aether.framework.android
 import android.content.Context
 import org.kevoree.kcl.KevoreeJarClassLoader
 import java.lang.Class
-import org.kevoree.kcl.loader.KevoreeResourcesLoader
+import org.kevoree.kcl.internal.KevoreeResourcesLoader
 import java.util.ArrayList
 import java.io.File
 import dalvik.system.DexFile
