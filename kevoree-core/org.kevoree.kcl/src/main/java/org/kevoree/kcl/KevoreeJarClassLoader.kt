@@ -22,6 +22,13 @@ import org.kevoree.kcl.internal.KevoreeLocalLoader
  */
 
 open class KevoreeJarClassLoader() : Klassloader() {
+    public override fun addJarFromURL(child: URL?) {
+        if(child != null){
+            add(child);
+        } else {
+            Log.error("Can't add null stream")
+        }
+    }
 
     public override fun removeChild(child: Klassloader?) {
         if(child != null){
@@ -63,7 +70,7 @@ open class KevoreeJarClassLoader() : Klassloader() {
         Collections.sort(loaders)
     }
 
-    public override fun isolateFromSystem() : Unit {
+    public override fun isolateFromSystem(): Unit {
         loaders.clear()
         loaders.add(local_loader!!)
         Collections.sort(loaders)
@@ -185,7 +192,7 @@ open class KevoreeJarClassLoader() : Klassloader() {
 
     private val scoreMap = ConcurrentHashMap<Int, Int>()
 
-    fun getScore(kcl: ClassLoader): Int {
+    private fun getScore(kcl: ClassLoader): Int {
         return if (scoreMap.containsKey(kcl.hashCode())) {
             scoreMap.get(kcl.hashCode())!!
         } else {
@@ -193,7 +200,7 @@ open class KevoreeJarClassLoader() : Klassloader() {
         }
     }
 
-    fun incScore(kcl: ClassLoader): Int {
+    private fun incScore(kcl: ClassLoader): Int {
         scoreMap.put(kcl.hashCode(), getScore(kcl) + 1)
         return scoreMap.get(kcl.hashCode())!!
     }
@@ -530,11 +537,6 @@ open class KevoreeJarClassLoader() : Klassloader() {
         classpathResources?.loadJar(resourceName);
     }
 
-    /**
-     * Loads classes from InputStream
-     *
-     * @param jarStream
-     */
     public fun add(jarStream: InputStream) {
         classpathResources?.loadJar(jarStream);
     }
@@ -544,13 +546,6 @@ open class KevoreeJarClassLoader() : Klassloader() {
         classpathResources?.loadJar(url);
     }
 
-    /**
-     * Reads the class bytes from different local and remote resources using
-     * ClasspathResources
-     *
-     * @param className
-     * @return byte[]
-     */
     public open fun loadClassBytes(className: String): ByteArray? {
         val className2 = formatClassName(className);
         return classpathResources?.getResource(className2);

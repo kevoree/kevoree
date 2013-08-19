@@ -1,6 +1,7 @@
 package org.kevoree.kcl;
 
 import java.io.InputStream;
+import java.net.URL;
 
 /**
  * Created with IntelliJ IDEA.
@@ -13,6 +14,8 @@ public abstract class Klassloader extends ClassLoader {
     public abstract void addJarFromStream(InputStream child);
 
     public abstract void addChild(Klassloader child);
+
+    public abstract void addJarFromURL(URL child);
 
     public abstract void removeChild(Klassloader child);
 
