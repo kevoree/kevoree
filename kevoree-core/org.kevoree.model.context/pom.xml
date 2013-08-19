@@ -30,7 +30,7 @@
         <dependency>
             <groupId>org.kevoree</groupId>
             <artifactId>org.kevoree.log</artifactId>
-            <version>${project.version}</version>
+            <version>${kevoree.log.version}</version>
         </dependency>
     </dependencies>
 

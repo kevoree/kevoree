@@ -24,7 +24,6 @@
     </dependencies>
 	
     <modules>
-        <module>org.kevoree.log</module>
         <module>org.kevoree.resolver</module>
         <module>org.kevoree.model</module>
         <module>org.kevoree.model.context</module>

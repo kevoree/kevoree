@@ -9,7 +9,6 @@ import org.kevoree.log.Log
  * User: jed
  * Date: 04/04/13
  * Time: 10:28
- * To change this template use File | Settings | File Templates.
  */
 
  /**
