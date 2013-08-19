@@ -8,10 +8,11 @@ import java.util.ArrayList
 import java.lang.ref.WeakReference
 import java.util.Collections
 import java.util.Comparator
-import org.kevoree.kcl.loader.KevoreeResourcesLoader
-import org.kevoree.kcl.loader.KevoreeLocalLoader
-import org.kevoree.kcl.loader.ProxyClassLoader
+import org.kevoree.kcl.internal.KevoreeResourcesLoader
+import org.kevoree.kcl.internal.ProxyClassLoader
 import org.kevoree.log.Log
+import org.kevoree.kcl.internal.KevoreeLazyJarResources
+import org.kevoree.kcl.internal.KevoreeLocalLoader
 
 /**
  * Created by IntelliJ IDEA.
@@ -20,7 +21,29 @@ import org.kevoree.log.Log
  * Time: 18:57
  */
 
-open class KevoreeJarClassLoader(): ClassLoader() {
+open class KevoreeJarClassLoader() : Klassloader() {
+
+    public override fun removeChild(child: Klassloader?) {
+        if(child != null){
+            cleanupLinks(child)
+        }
+
+    }
+    public override fun addJarFromStream(child: InputStream?) {
+        if(child != null){
+            add(child);
+        } else {
+            Log.error("Can't add null stream")
+        }
+    }
+
+    public override fun addChild(child: Klassloader?) {
+        if(child != null){
+            addSubClassLoader(child);
+        } else {
+            Log.error("Can't add null child classloader")
+        }
+    }
 
     protected var classpathResources: KevoreeLazyJarResources? = null
     protected var local_loader: KevoreeLocalLoader? = null
@@ -31,15 +54,19 @@ open class KevoreeJarClassLoader(): ClassLoader() {
     private final val currentLoader: ProxyClassLoader = CurrentLoader()
 
     KevoreeJarClassLoader(){
-        classpathResources = KevoreeLazyJarResources()
+        classpathResources = KevoreeLazyJarResources(this)
         local_loader = KevoreeLocalLoader(classpathResources!!, this)
-        (classpathResources as KevoreeLazyJarResources).setParentKCL(this)
         loaders.add(systemLoader)
         loaders.add(parentLoader)
         loaders.add(currentLoader)
         loaders.add(local_loader!!)
         Collections.sort(loaders)
+    }
 
+    public override fun isolateFromSystem() : Unit {
+        loaders.clear()
+        loaders.add(local_loader!!)
+        Collections.sort(loaders)
     }
 
     private val nativeMap = HashMap<String, String>()
@@ -139,8 +166,9 @@ open class KevoreeJarClassLoader(): ClassLoader() {
         for (l in loaders) {
             if (l.isEnabled()) {
                 clazz = l.loadClass(className, resolveIt);
-                if (clazz != null)
-                    break;
+                if (clazz != null){
+                    return clazz;
+                }
             }
         }
         return clazz;
@@ -261,8 +289,8 @@ open class KevoreeJarClassLoader(): ClassLoader() {
             if (getPackage(packageName) == null) {
                 try {
                     definePackage(packageName, null, null, null, null, null, null, null)
-                } catch(e : Throwable){
-                  Log.debug("Error while defining packge ",e)
+                } catch(e: Throwable){
+                    Log.debug("Error while defining packge ", e)
                 }
             }
         }
@@ -308,7 +336,11 @@ open class KevoreeJarClassLoader(): ClassLoader() {
 
     fun internal_getResourceAsStream(name: String?): InputStream? {
         if (name?.endsWith(".class")!!) {
-            val res = if(name != null){this.classpathResources!!.getResource(name) } else {null}
+            val res = if(name != null){
+                this.classpathResources!!.getResource(name)
+            } else {
+                null
+            }
             if (res != null) {
                 return ByteArrayInputStream(res)
             }
@@ -453,7 +485,7 @@ open class KevoreeJarClassLoader(): ClassLoader() {
         return Collections.enumeration(selfRes)
     }
 
-    fun cleanJarURL(j: String) : String {
+    fun cleanJarURL(j: String): String {
         return if (j.contains(File.separator)) {
             j.substring(j.lastIndexOf(File.separator) + 1)
         } else {
@@ -531,7 +563,7 @@ open class KevoreeJarClassLoader(): ClassLoader() {
         return classNameT;
     }
 
-    inner class CurrentLoader: ProxyClassLoader() {
+    inner class CurrentLoader : ProxyClassLoader() {
         CurrentLoader() {
             order = 2;
         }
@@ -554,7 +586,7 @@ open class KevoreeJarClassLoader(): ClassLoader() {
         }
     }
 
-    class ThreadContextLoader: ProxyClassLoader() {
+    class ThreadContextLoader : ProxyClassLoader() {
 
         ThreadContextLoader(){
             order = 4;
@@ -585,7 +617,7 @@ open class KevoreeJarClassLoader(): ClassLoader() {
     }
 
 
-    inner class SystemLoader: ProxyClassLoader() {
+    inner class SystemLoader : ProxyClassLoader() {
         SystemLoader() {
             order = 5;
         }
@@ -609,7 +641,7 @@ open class KevoreeJarClassLoader(): ClassLoader() {
         }
     }
 
-    inner class ParentLoader: ProxyClassLoader() {
+    inner class ParentLoader : ProxyClassLoader() {
 
         public ParentLoader() {
             order = 3;

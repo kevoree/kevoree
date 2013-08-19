@@ -1,4 +1,4 @@
-package org.kevoree.kcl
+package org.kevoree.kcl.internal;
 
 import java.io.*
 import java.util.jar.JarInputStream
@@ -6,8 +6,8 @@ import java.net.URL
 import java.util.ArrayList
 import java.lang.ref.WeakReference
 import java.util.HashMap
-import org.kevoree.kcl.exception.KclException
 import org.kevoree.log.Log
+import org.kevoree.kcl.KevoreeJarClassLoader
 
 /**
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
@@ -29,21 +29,21 @@ import org.kevoree.log.Log
  * Time: 19:13
  */
 
-class KevoreeLazyJarResources {
+class KevoreeLazyJarResources(kcl: KevoreeJarClassLoader) {
+
+    private var parentKCL: WeakReference<KevoreeJarClassLoader>? = null
+
+    {
+        parentKCL = WeakReference(kcl)
+    }
 
     public fun getResource(name: String): ByteArray? {
         return getJarEntryContents(name);
     }
 
-
     val jarEntryContents = HashMap<String, ByteArray>()
 
     val jarContentURL = HashMap<String, URL>()
-    private var parentKCL: WeakReference<KevoreeJarClassLoader>? = null
-
-    fun setParentKCL(kcl: KevoreeJarClassLoader) {
-        parentKCL = WeakReference(kcl)
-    }
 
     var lastLoadedJars = ArrayList<URL>()
 
@@ -75,15 +75,10 @@ class KevoreeLazyJarResources {
             inS = url!!.openStream()
             lastLoadedJars.add(url)
             loadJar(inS, url)
-        } catch(e: IOException) {
-            throw KclException(e)
         } finally {
-            if (inS != null)
-                try {
-                    inS?.close()
-                } catch(e: IOException) {
-                    throw KclException(e)
-                }
+            if (inS != null){
+                inS?.close()
+            }
         }
     }
 
@@ -95,15 +90,10 @@ class KevoreeLazyJarResources {
             val url = URL("file:" + f.getAbsolutePath())
             lastLoadedJars.add(url)
             loadJar(fis, url)
-        } catch(e: IOException) {
-            throw KclException(e)
         } finally {
-            if (fis != null)
-                try {
-                    fis?.close()
-                } catch(e: IOException) {
-                    throw KclException(e)
-                }
+            if (fis != null){
+                fis?.close()
+            }
         }
     }
 
@@ -227,25 +217,13 @@ class KevoreeLazyJarResources {
                 }
                 jarEntry = jis?.getNextJarEntry()
             }
-        }
-        catch(e: IOException) {
-            KclException(e)
-        }
-        catch(e: NullPointerException) {
-            e.printStackTrace()
         } finally {
-            if (jis != null)
-                try {
-                    jis?.close();
-                } catch(e: Exception) {
-                    throw KclException(e);
-                }
-            if (bis != null)
-                try {
-                    bis?.close();
-                } catch(e: Exception) {
-                    throw KclException(e)
-                }
+            if (jis != null){
+                jis?.close();
+            }
+            if (bis != null){
+                bis?.close();
+            }
         }
     }
 

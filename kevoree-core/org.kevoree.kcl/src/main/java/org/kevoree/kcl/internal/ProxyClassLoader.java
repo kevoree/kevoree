@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package org.kevoree.kcl.loader;
+package org.kevoree.kcl.internal;
 
 import java.io.InputStream;
 

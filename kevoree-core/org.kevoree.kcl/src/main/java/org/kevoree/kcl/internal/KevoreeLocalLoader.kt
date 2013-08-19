@@ -1,9 +1,8 @@
-package org.kevoree.kcl.loader
+package org.kevoree.kcl.internal;
 
 import java.io.InputStream
 import java.io.ByteArrayInputStream
 import java.util.concurrent.Callable
-import org.kevoree.kcl.KevoreeLazyJarResources
 import org.kevoree.kcl.KevoreeJarClassLoader
 import org.kevoree.log.Log
 import java.util.concurrent.locks.ReentrantLock
@@ -21,7 +20,6 @@ class KevoreeLocalLoader(val classpathResources: KevoreeLazyJarResources, val kc
     KevoreeLocalLoader(classpathResources: KevoreeLazyJarResources, kcl: KevoreeJarClassLoader){
         order = 1
     }
-
 
     public override fun loadResource(name: String?): InputStream? {
         if(name != null){
