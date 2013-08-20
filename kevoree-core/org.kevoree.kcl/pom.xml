@@ -15,7 +15,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.kevoree</groupId>
+            <groupId>org.kevoree.log</groupId>
             <artifactId>org.kevoree.log</artifactId>
             <version>${kevoree.log.version}</version>
         </dependency>
