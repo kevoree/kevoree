@@ -56,7 +56,13 @@ trait KevoreeScheduler : StepBuilder {
             createNextStep(JavaSePrimitive.AddType, adaptionModel.getAdaptations().filter{ adapt -> adapt.getPrimitiveType()!!.getName() == JavaSePrimitive.AddType })
 
             // ADD INSTANCEs
-            createNextStep(JavaSePrimitive.AddInstance, adaptionModel.getAdaptations().filter{ adapt -> adapt.getPrimitiveType()!!.getName() == JavaSePrimitive.AddInstance })
+//            createNextStep(JavaSePrimitive.AddInstance, adaptionModel.getAdaptations().filter{ adapt -> adapt.getPrimitiveType()!!.getName() == JavaSePrimitive.AddInstance })
+            adaptionModel.getAdaptations().filter{ adapt -> adapt.getPrimitiveType()!!.getName() == JavaSePrimitive.AddInstance }.forEach {
+                addInstance ->
+                    val list = ArrayList<AdaptationPrimitive>()
+                list.add(addInstance)
+                            createNextStep(JavaSePrimitive.AddInstance,list)
+            }
 
             // ADD BINDINGs
             createNextStep(JavaSePrimitive.AddBinding, adaptionModel.getAdaptations().filter{ adapt -> (adapt.getPrimitiveType()!!.getName() == JavaSePrimitive.AddBinding || adapt.getPrimitiveType()!!.getName() == JavaSePrimitive.AddFragmentBinding) })
