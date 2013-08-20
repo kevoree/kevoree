@@ -52,7 +52,7 @@ public class KevoreeKChannelConsumer extends DefaultConsumer {
             if (exchange.getException() != null) {
                 getExceptionHandler().handleException("Error processing exchange", exchange, exchange.getException());
             }
-            return exchange.getOut();
+            return exchange.getOut().getBody();
         } catch (Exception e) {
             getExceptionHandler().handleException("Error processing exchange", exchange, exchange.getException());
             return null;
