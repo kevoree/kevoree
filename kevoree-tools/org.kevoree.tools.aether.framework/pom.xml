@@ -33,12 +33,15 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.kevoree</groupId>
-            <artifactId>org.kevoree.resolver</artifactId>
-            <version>${project.version}</version>
+		    <groupId>org.kevoree</groupId>
+		    <artifactId>org.kevoree.maven.resolver</artifactId>
+            <version>${basic.resolver.version}</version>
         </dependency>
     </dependencies>
 
+	<properties>
+		<basic.resolver.version>1</basic.resolver.version>
+	</properties>
 
     <build>
         <plugins>

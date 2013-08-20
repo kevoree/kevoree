@@ -24,7 +24,6 @@
     </dependencies>
 	
     <modules>
-        <module>org.kevoree.resolver</module>
         <module>org.kevoree.model</module>
         <module>org.kevoree.model.context</module>
         <module>org.kevoree.adaptation.model</module>
