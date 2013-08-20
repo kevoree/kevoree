@@ -17,8 +17,8 @@ public class ConcurrentLoadTest implements Runnable {
 
     @Test
     public void testConcurrentLoad() throws InterruptedException {
-        ExecutorService pool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
-        for (int i = 0; i < Runtime.getRuntime().availableProcessors(); i++) {
+        ExecutorService pool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors()*4);
+        for (int i = 0; i < Runtime.getRuntime().availableProcessors()*4; i++) {
             pool.submit(new ConcurrentLoadTest());
         }
         pool.awaitTermination(1000, TimeUnit.MILLISECONDS);

@@ -5,6 +5,8 @@ import org.kevoree.*
 import java.util.ArrayList
 import java.util.HashSet
 import org.kevoree.resolver.MavenResolver
+import java.net.URL
+import java.io.FileOutputStream
 
 /**
  * Created with IntelliJ IDEA.
@@ -37,7 +39,20 @@ trait AetherFramework {
         } else {
             urls = buildPotentialMavenURL(du.eContainer() as ContainerRoot)
         }
-        return resolver.resolve(du.getGroupName(), du.getUnitName(), du.getVersion(), "jar", urls)
+        if (du.getUrl() != null && !"".equals(du.getUrl())) {
+            if (du.getUrl().startsWith("file://") ) {
+                val file = File(du.getUrl().substring("file://".length()))
+                if (file.exists()) {
+                    return file
+                } else {
+                    return null
+                }
+            } else {
+                return basicDownload(du.getUrl(), du.getUnitName(), du.getType())
+            }
+        } else {
+            return resolver.resolve(du.getGroupName(), du.getUnitName(), du.getVersion(), "jar", urls)
+        }
     }
 
     fun buildPotentialMavenURL(root: ContainerRoot): List<String> {
@@ -50,6 +65,27 @@ trait AetherFramework {
             }
         }
         return result.toList()
+    }
+
+    fun basicDownload(url: String, duName: String, duType: String): File? {
+        try {
+            val tmpFile = File.createTempFile(duName, "." + duType)
+            tmpFile.deleteOnExit()
+            val remoteUrl = URL(url)
+            val input = remoteUrl.openStream()
+            val fos = FileOutputStream(tmpFile)
+            val data = ByteArray(1024);
+            var count = input!!.read(data)
+            while (count != -1) {
+                fos.write(data, 0, count)
+                count = input.read(data)
+            }
+            input.close()
+            fos.close()
+            return tmpFile
+        } catch (e: Throwable) {
+            return null
+        }
     }
 
 }

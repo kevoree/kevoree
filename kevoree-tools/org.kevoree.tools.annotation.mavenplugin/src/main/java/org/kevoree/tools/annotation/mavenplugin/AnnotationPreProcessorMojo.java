@@ -28,7 +28,9 @@ import org.kevoree.framework.annotation.processor.visitor.KevoreeAnnotationProce
 import org.kevoree.merger.KevoreeMergerComponent;
 
 import javax.tools.*;
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -72,6 +74,7 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
 
     /**
      * Controls whether or not the output directory is added to compilation
+     *
      * @parameter required = false, description = "Controls whether or not the output directory is added to compilation"
      */
     private Boolean addOutputDirectoryToCompilationSources;
@@ -333,7 +336,7 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
 
     private void addOutputToSourcesIfNeeded() {
         final Boolean add = addOutputDirectoryToCompilationSources;
-        if (add == null || add.booleanValue()) {
+        if (add == null || add) {
             getLog().info("Source directory: " + outputDirectory + " added");
             addCompileSourceRoot(project, outputDirectory.getAbsolutePath());
         }
@@ -495,7 +498,17 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
 
         String thirdParties = ";";
         for (Artifact dep : ThirdPartyManagement.processKevoreeProperty(project, getLog())) {
-            thirdParties += ";" + dep.getGroupId() + "/" + dep.getArtifactId() + "/" + toBaseVersion(dep.getVersion()) + "/" + dep.getType();
+            thirdParties += ";" + dep.getGroupId() + "," + dep.getArtifactId() + "," + toBaseVersion(dep.getVersion()) + "," + dep.getType();
+            if (dep.getScope().equalsIgnoreCase(Artifact.SCOPE_SYSTEM)) {
+                if (dep.getFile() != null && !dep.getFile().getAbsolutePath().equals("")) {
+                    if (dep.getFile().getAbsolutePath().startsWith("http://")) {
+                        thirdParties += "," + dep.getFile().getAbsolutePath();
+                    } else {
+                        thirdParties += ",file://" + dep.getFile().getAbsolutePath();
+                    }
+
+                }
+            }
         }
         /*
         for (Dependency dep : project.getRuntimeDependencies()) {

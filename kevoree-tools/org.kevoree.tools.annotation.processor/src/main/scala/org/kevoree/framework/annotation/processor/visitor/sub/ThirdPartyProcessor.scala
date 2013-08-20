@@ -72,16 +72,22 @@ trait ThirdPartyProcessor {
     /* CHECK TP from POM */
     thirdPartiesList.foreach {
       tp =>
-        val unitName = tp.split("/").toList(1)
-        val groupName = tp.split("/").toList(0)
-        val version = tp.split("/").toList(2)
-        val dutype = tp.split("/").toList(3)
+        val splittedTP = tp.split(",")
+        val unitName = splittedTP(1)
+        val groupName = splittedTP(0)
+        val version = splittedTP(2)
+        val dutype = splittedTP(3)
+        var url: String = null
+
+        if (splittedTP.length == 5) {
+          url = splittedTP(4)
+        }
 
         root.getDeployUnits.find({
           etp => etp.getUnitName == unitName && etp.getGroupName == groupName && etp.getVersion == version
         }) match {
           case Some(e) => {
-            if (!componentType.getDeployUnits().get(0).getRequiredLibs.exists(etp =>  etp.getUnitName == unitName && etp.getGroupName == groupName && etp.getVersion == version)) {
+            if (!componentType.getDeployUnits().get(0).getRequiredLibs.exists(etp => etp.getUnitName == unitName && etp.getGroupName == groupName && etp.getVersion == version)) {
               componentType.getDeployUnits().get(0).addRequiredLibs(e)
             }
           }
@@ -91,6 +97,9 @@ trait ThirdPartyProcessor {
             newThirdParty.setGroupName(groupName)
             newThirdParty.setVersion(version)
             newThirdParty.setType(dutype)
+            if (url != null && url != "") {
+              newThirdParty.setUrl(url)
+            }
             root.addDeployUnits(newThirdParty)
             componentType.getDeployUnits().get(0).addRequiredLibs(newThirdParty)
           }
