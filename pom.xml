@@ -15,6 +15,7 @@
         <kevoree.version>${project.version}</kevoree.version>
         <kotlin.version>0.6.31</kotlin.version>
         <kevoree.log.version>1</kevoree.log.version>
+		<basic.resolver.version>1</basic.resolver.version>
     </properties>
 
 	<organization>

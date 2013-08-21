@@ -39,10 +39,6 @@
         </dependency>
     </dependencies>
 
-	<properties>
-		<basic.resolver.version>1</basic.resolver.version>
-	</properties>
-
     <build>
         <plugins>
             <plugin>
