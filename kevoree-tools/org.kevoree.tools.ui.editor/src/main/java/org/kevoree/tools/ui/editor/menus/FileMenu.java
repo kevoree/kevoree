@@ -38,6 +38,7 @@ public class FileMenu extends JMenu {
         add(createOpenFromNode());
        // add(createOpenContinuousFromNode());
         add(createSaveItem());
+        add(createSaveJSONItem());
         add(createSaveAsImageItem());
         add(createSaveAsSvgItem());
         add(createSaveAsKevsItem());
@@ -104,6 +105,15 @@ public class FileMenu extends JMenu {
         fileSave.addActionListener(new CommandActionListener(cmdSM));
         return fileSave;
     }
+
+    private JMenuItem createSaveJSONItem() {
+        JMenuItem fileSave = new JMenuItem("SaveAsJSON");
+        SaveActuelModelJSONCommand cmdSM = new SaveActuelModelJSONCommand();
+        cmdSM.setKernel(kernel);
+        fileSave.addActionListener(new CommandActionListener(cmdSM));
+        return fileSave;
+    }
+
     private JMenuItem createSaveAsImageItem() {
         JMenuItem saveImage = new JMenuItem("SaveAsImage");
         ExportModelImage cmdImage = new ExportModelImage();
