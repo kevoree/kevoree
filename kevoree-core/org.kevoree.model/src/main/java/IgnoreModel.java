@@ -1,3 +1,3 @@
-class IgnoreModel {
+public class IgnoreModel {
 
 }
