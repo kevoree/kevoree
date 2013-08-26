@@ -6,12 +6,12 @@
     <name>Kevoree :: Tools :: Model2Code</name>
     <url>https://github.com/dukeboard/kevoree/</url>
     <packaging>jar</packaging>
-    <version>2.0.10-SNAPSHOT</version>
+    <version>2.0.10</version>
 
     <parent>
         <artifactId>org.kevoree.tools.root</artifactId>
         <groupId>org.kevoree.tools</groupId>
-        <version>2.0.10-SNAPSHOT</version>
+        <version>2.0.10</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
