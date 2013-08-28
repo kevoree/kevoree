@@ -175,7 +175,7 @@ class LoadRemoteModelUICommand extends Command {
       Thread.sleep(5000)
 //      if (client.connectBlocking()) {
       if (client.getConnection.isOpen) {
-        client.send(Array[Byte](0)); // OMG THIS IS UGLY
+        client.send(Array[Byte](2)); // OMG THIS IS UGLY
       }
       val root = exchanger.exchange(null, 2000, TimeUnit.MILLISECONDS)
       if (root == null) {
