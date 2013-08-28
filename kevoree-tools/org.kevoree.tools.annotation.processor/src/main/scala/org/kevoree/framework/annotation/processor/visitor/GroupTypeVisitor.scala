@@ -51,6 +51,9 @@ case class GroupTypeVisitor(groupType: GroupType, env: ProcessingEnvironment, ro
             if (annotFragment != null) {
               dt.asElement().accept(this, dt.asElement())
               defineAsSuperType(groupType, dt.asElement().getSimpleName.toString, classOf[GroupType], true)
+            } else {
+              processDictionary(groupType, dt.asElement().asInstanceOf[TypeElement])
+              processLibrary(groupType, dt.asElement().asInstanceOf[TypeElement])
             }
           }
           case _ =>

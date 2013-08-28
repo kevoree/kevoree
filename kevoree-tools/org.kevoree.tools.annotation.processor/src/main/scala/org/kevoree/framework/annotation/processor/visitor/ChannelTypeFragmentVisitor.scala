@@ -50,6 +50,9 @@ with TypeDefinitionProcessor {
             if (annotFragment != null) {
               dt.asElement().accept(this, dt.asElement())
               defineAsSuperType(channelType, dt.asElement().getSimpleName.toString, classOf[ChannelType], true)
+            } else {
+              processDictionary(channelType, dt.asElement().asInstanceOf[TypeElement])
+              processLibrary(channelType, dt.asElement().asInstanceOf[TypeElement])
             }
           }
           case _ =>

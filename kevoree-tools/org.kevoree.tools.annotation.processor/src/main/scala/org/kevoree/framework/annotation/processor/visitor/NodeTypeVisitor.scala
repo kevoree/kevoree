@@ -57,6 +57,9 @@ case class NodeTypeVisitor(nodeType: NodeType, env: ProcessingEnvironment, rootV
            if (an != null) {
              dt.asElement().accept(this, dt.asElement())
              defineAsSuperType(nodeType, dt.asElement().getSimpleName.toString, classOf[NodeType], true)
+           } else {
+             processDictionary(nodeType, dt.asElement().asInstanceOf[TypeElement])
+             processLibrary(nodeType, dt.asElement().asInstanceOf[TypeElement])
            }
          }
          case _ @ e =>

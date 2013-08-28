@@ -53,6 +53,9 @@ case class ComponentDefinitionVisitor(componentType: ComponentType, env: Process
             if (annotFragment != null) {
               dt.asElement().accept(this, dt.asElement())
               defineAsSuperType(componentType, dt.asElement().getSimpleName.toString, classOf[ComponentType], true)
+            } else {
+              processDictionary(componentType, dt.asElement().asInstanceOf[TypeElement])
+              processLibrary(componentType, dt.asElement().asInstanceOf[TypeElement])
             }
           }
           case _ =>
