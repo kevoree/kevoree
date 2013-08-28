@@ -17,8 +17,9 @@ package org.kevoree.framework.annotation.processor.visitor
 import sub._
 import javax.annotation.processing.ProcessingEnvironment
 import javax.lang.model.util.SimpleElementVisitor6
-import javax.lang.model.element.{Element, TypeElement}
+import javax.lang.model.element.{Modifier, Element, TypeElement}
 import org.kevoree.ChannelType
+import scala.collection.JavaConversions._
 
 case class ChannelTypeFragmentVisitor(channelType: ChannelType, env: ProcessingEnvironment, rootVisitor: KevoreeAnnotationProcessor) extends SimpleElementVisitor6[Any, Element]
 with DeployUnitProcessor
@@ -31,24 +32,21 @@ with TypeDefinitionProcessor {
   override def visitType(p1: TypeElement, p2: Element): Any = {
     p1.getSuperclass match {
       case dt: javax.lang.model.`type`.DeclaredType => {
-        val an = dt.asElement().getAnnotation(classOf[org.kevoree.annotation.ChannelTypeFragment])
+        val an = dt.asElement().getAnnotation(classOf[org.kevoree.annotation.ChannelType])
         if (an != null) {
           dt.asElement().accept(this, dt.asElement())
-          defineAsSuperType(channelType, dt.asElement().getSimpleName.toString, classOf[ChannelType])
+          val isAbstract = dt.asElement().getModifiers.contains(Modifier.ABSTRACT)
+          defineAsSuperType(channelType, dt.asElement().getSimpleName.toString, classOf[ChannelType], isAbstract)
         }
       }
       case _ =>
     }
-    commonProcess(p1, p2)
-  }
 
-  def commonProcess(typeDecl: TypeElement, p2: Element) {
-    import scala.collection.JavaConversions._
-    typeDecl.getInterfaces.foreach {
+    p1.getInterfaces.foreach {
       it =>
         it match {
           case dt: javax.lang.model.`type`.DeclaredType => {
-            val annotFragment = dt.asElement().getAnnotation(classOf[org.kevoree.annotation.ComponentFragment])
+            val annotFragment = dt.asElement().getAnnotation(classOf[org.kevoree.annotation.ChannelType])
             if (annotFragment != null) {
               dt.asElement().accept(this, dt.asElement())
               defineAsSuperType(channelType, dt.asElement().getSimpleName.toString, classOf[ChannelType], true)
@@ -57,6 +55,10 @@ with TypeDefinitionProcessor {
           case _ =>
         }
     }
+    commonProcess(p1)
+  }
+
+  def commonProcess(typeDecl: TypeElement) {
     processDictionary(channelType, typeDecl)
     processDeployUnit(channelType, typeDecl, env, rootVisitor.getOptions)
     processLibrary(channelType, typeDecl)

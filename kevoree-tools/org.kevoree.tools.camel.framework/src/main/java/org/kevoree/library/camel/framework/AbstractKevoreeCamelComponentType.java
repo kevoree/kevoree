@@ -32,8 +32,6 @@ import org.apache.camel.impl.DefaultCamelContext;
 import org.kevoree.annotation.*;
 import org.kevoree.framework.AbstractComponentType;
 
-import java.util.HashMap;
-
 /**
  * Created by IntelliJ IDEA.
  * User: duke
@@ -42,7 +40,7 @@ import java.util.HashMap;
  */
 
 @Library(name = "JavaSE")
-@ComponentFragment
+@ComponentType
 public abstract class AbstractKevoreeCamelComponentType extends AbstractComponentType {
 
     private CamelContext context = null;

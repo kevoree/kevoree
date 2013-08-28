@@ -47,7 +47,7 @@ class KevoreeAnnotationProcessor() extends javax.annotation.processing.AbstractP
 
   override def getSupportedAnnotationTypes: java.util.Set[String] = {
     val stype = new java.util.HashSet[String]
-    stype.add(classOf[org.kevoree.annotation.ChannelTypeFragment].getName)
+    stype.add(classOf[org.kevoree.annotation.ChannelType].getName)
     stype.add(classOf[org.kevoree.annotation.ComponentType].getName)
     stype.add(classOf[org.kevoree.annotation.Port].getName)
     stype.add(classOf[org.kevoree.annotation.ProvidedPort].getName)
@@ -61,7 +61,6 @@ class KevoreeAnnotationProcessor() extends javax.annotation.processing.AbstractP
     stype.add(classOf[org.kevoree.annotation.ThirdParty].getName)
     stype.add(classOf[org.kevoree.annotation.DictionaryAttribute].getName)
     stype.add(classOf[org.kevoree.annotation.DictionaryType].getName)
-    stype.add(classOf[org.kevoree.annotation.ComponentFragment].getName)
     stype.add(classOf[org.kevoree.annotation.Library].getName)
     stype.add(classOf[org.kevoree.annotation.GroupType].getName)
     stype.add(classOf[org.kevoree.annotation.NodeType].getName)
@@ -84,7 +83,7 @@ class KevoreeAnnotationProcessor() extends javax.annotation.processing.AbstractP
     }
 
     val root = LocalUtility.kevoreeFactory.createContainerRoot
-    LocalUtility.root = (root)
+    LocalUtility.root = root
     /* Look for reserved thread protection */
     roundEnv.getElementsAnnotatedWith(classOf[org.kevoree.annotation.ReservedThread]).foreach {
       typeDecl =>
@@ -94,10 +93,9 @@ class KevoreeAnnotationProcessor() extends javax.annotation.processing.AbstractP
       typeDecl =>
         processComponentType(typeDecl.getAnnotation(classOf[org.kevoree.annotation.ComponentType]), typeDecl.asInstanceOf[TypeElement], root)
     }
-    roundEnv.getElementsAnnotatedWith(classOf[org.kevoree.annotation.ChannelTypeFragment]).foreach {
+    roundEnv.getElementsAnnotatedWith(classOf[org.kevoree.annotation.ChannelType]).foreach {
       typeDecl =>
-
-        processChannelType(typeDecl.getAnnotation(classOf[org.kevoree.annotation.ChannelTypeFragment]), typeDecl.asInstanceOf[TypeElement], root)
+        processChannelType(typeDecl.getAnnotation(classOf[org.kevoree.annotation.ChannelType]), typeDecl.asInstanceOf[TypeElement], root)
     }
 
     // KevoreeXmiHelper.save(LocalUtility.generateLibURI(options) + ".beforeGTdebug", root);
@@ -137,11 +135,33 @@ class KevoreeAnnotationProcessor() extends javax.annotation.processing.AbstractP
     } else {
       false
     }
+  }
 
+  private def hasTooManyTypes(typeDecl: TypeElement): Boolean = {
+    var nbTypes = 0
+    if (typeDecl.getAnnotation(classOf[org.kevoree.annotation.GroupType]) != null) {
+      nbTypes += 1
+    }
+    if (typeDecl.getAnnotation(classOf[org.kevoree.annotation.ChannelType]) != null) {
+      nbTypes += 1
+    }
+    if (typeDecl.getAnnotation(classOf[org.kevoree.annotation.ComponentType]) != null) {
+      nbTypes += 1
+    }
+    if (typeDecl.getAnnotation(classOf[org.kevoree.annotation.NodeType]) != null) {
+      nbTypes += 1
+    }
+    nbTypes != 1
   }
 
 
   def processNodeType(nodeTypeAnnotation: org.kevoree.annotation.NodeType, typeDecl: TypeElement, root: ContainerRoot) = {
+    // check if there are multiple annotation definition
+    if (hasTooManyTypes(typeDecl)) {
+      env.getMessager.printMessage(Kind.ERROR, typeDecl.getQualifiedName + " has multiple annotation type which is forbidden")
+      throw new Exception(typeDecl.getQualifiedName + " has multiple annotation type which is forbidden")
+    }
+
     //Checks that the root AbstractNodeType is present in hierarchy.
     //val superTypeChecker = new SuperTypeValidationVisitor(classOf[AbstractNodeType].getName)
     //typeDecl.accept(superTypeChecker, typeDecl)
@@ -156,156 +176,186 @@ class KevoreeAnnotationProcessor() extends javax.annotation.processing.AbstractP
     }
 
     //if (superTypeChecker.result) {
-      val nodeTypeName = typeDecl.getSimpleName
-      val nodeType: org.kevoree.NodeType = root.findByPath("typeDefinitions[" + nodeTypeName + "]", classOf[org.kevoree.NodeType]) match {
-        case found: org.kevoree.NodeType => found
-        case null => {
-          val nodeType = LocalUtility.kevoreeFactory.createNodeType
-          nodeType.setName(nodeTypeName.toString)
-          root.addTypeDefinitions(nodeType)
-          nodeType
-        }
+    val nodeTypeName = typeDecl.getSimpleName
+    val nodeType: org.kevoree.NodeType = root.findByPath("typeDefinitions[" + nodeTypeName + "]", classOf[org.kevoree.NodeType]) match {
+      case found: org.kevoree.NodeType => found
+      case null => {
+        val nodeType = LocalUtility.kevoreeFactory.createNodeType
+        nodeType.setName(nodeTypeName.toString)
+        root.addTypeDefinitions(nodeType)
+        nodeType
       }
+    }
 
-      if (!isAbstract) {
-        nodeType.setBean(typeDecl.getQualifiedName.toString)
-        nodeType.setFactoryBean(typeDecl.getQualifiedName + "Factory")
-        nodeType.setAbstract(false)
-      } else {
-        nodeType.setAbstract(true)
-      }
+    if (!isAbstract) {
+      nodeType.setBean(typeDecl.getQualifiedName.toString)
+      nodeType.setFactoryBean(typeDecl.getQualifiedName + "Factory")
+      nodeType.setAbstract(false)
+    } else {
+      nodeType.setAbstract(true)
+    }
 
-      //RUN VISITOR
-      typeDecl.accept(NodeTypeVisitor(nodeType, env, this), typeDecl)
-   // } else {
+    //RUN VISITOR
+    typeDecl.accept(NodeTypeVisitor(nodeType, env, this), typeDecl)
+    // } else {
     //  env.getMessager.printMessage(Kind.WARNING, "NodeType ignored " + typeDecl.getQualifiedName + " , reason=Must extend " + classOf[AbstractNodeType].getName)
     //}
   }
 
 
   def processGroupType(groupTypeAnnotation: GroupType, typeDecl: TypeElement, root: ContainerRoot) = {
-    //Checks that the root KevoreeChannelFragment is present in hierarchy.
-    val superTypeChecker = new SuperTypeValidationVisitor(classOf[AbstractGroupType].getName)
-    typeDecl.accept(superTypeChecker, typeDecl)
+    // check if there are multiple annotation definition
+    if (hasTooManyTypes(typeDecl)) {
+      env.getMessager.printMessage(Kind.ERROR, typeDecl.getQualifiedName + " has multiple annotation type which is forbidden")
+      throw new Exception(typeDecl.getQualifiedName + " has multiple annotation type which is forbidden")
+    }
+    //Checks that the root AbstractGroupType is present in hierarchy.
+    //    val superTypeChecker = new SuperTypeValidationVisitor(classOf[AbstractGroupType].getName)
+    //    typeDecl.accept(superTypeChecker, typeDecl)
 
     var isAbstract = false
     typeDecl.getModifiers.find(mod => mod.equals(javax.lang.model.element.Modifier.ABSTRACT)) match {
       case Some(s) => {
         isAbstract = true
-        env.getMessager.printMessage(Kind.WARNING, "GroupType ignored " + typeDecl.getQualifiedName + ", reason=Declared as @GroupType but is actually ABSTRACT. Should be either concrete or @GroupFragment.")
+        //        env.getMessager.printMessage(Kind.WARNING, "GroupType ignored " + typeDecl.getQualifiedName + ", reason=Declared as @GroupType but is actually ABSTRACT. Should be either concrete or @GroupFragment.")
       }
       case None =>
     }
 
-    if (superTypeChecker.result && !isAbstract) {
-      val groupName = typeDecl.getSimpleName
-      val groupType: org.kevoree.GroupType = root.findByPath("typeDefinitions[" + groupName + "]", classOf[org.kevoree.GroupType]) match {
-        case null => {
-          val groupType = LocalUtility.kevoreeFactory.createGroupType
-          groupType.setName(groupName.toString)
-          root.addTypeDefinitions(groupType)
-          groupType
-        }
-        case td: org.kevoree.GroupType => {
-          td
-        }
+    //    if (superTypeChecker.result && !isAbstract) {
+    val groupName = typeDecl.getSimpleName
+    val groupType: org.kevoree.GroupType = root.findByPath("typeDefinitions[" + groupName + "]", classOf[org.kevoree.GroupType]) match {
+      case null => {
+        val groupType = LocalUtility.kevoreeFactory.createGroupType
+        groupType.setName(groupName.toString)
+        root.addTypeDefinitions(groupType)
+        groupType
       }
+      case td: org.kevoree.GroupType => {
+        td
+      }
+    }
 
+    if (!isAbstract) {
       groupType.setBean(typeDecl.getQualifiedName.toString)
       groupType.setFactoryBean(typeDecl.getQualifiedName + "Factory")
-
-      //RUN VISITOR
-      typeDecl.accept(GroupTypeVisitor(groupType, env, this), typeDecl)
+      groupType.setAbstract(false)
     } else {
-      env.getMessager.printMessage(Kind.WARNING, "GroupType ignored " + typeDecl.getQualifiedName + " , reason=Must extend " + classOf[AbstractGroupType].getName)
+      groupType.setAbstract(true)
     }
+
+    //RUN VISITOR
+    typeDecl.accept(GroupTypeVisitor(groupType, env, this), typeDecl)
+    /*} else {
+      env.getMessager.printMessage(Kind.WARNING, "GroupType ignored " + typeDecl.getQualifiedName + " , reason=Must extend " + classOf[AbstractGroupType].getName)
+    }*/
   }
 
 
-  def processChannelType(channelTypeAnnotation: org.kevoree.annotation.ChannelTypeFragment, typeDecl: TypeElement, root: ContainerRoot) = {
+  def processChannelType(channelTypeAnnotation: org.kevoree.annotation.ChannelType, typeDecl: TypeElement, root: ContainerRoot) = {
+    // check if there are multiple annotation definition
+    if (hasTooManyTypes(typeDecl)) {
+      env.getMessager.printMessage(Kind.ERROR, typeDecl.getQualifiedName + " has multiple annotation type which is forbidden")
+      throw new Exception(typeDecl.getQualifiedName + " has multiple annotation type which is forbidden")
+    }
 
     ThreadingMapping.getMappings.put((typeDecl.getSimpleName.toString, typeDecl.getSimpleName.toString), channelTypeAnnotation.theadStrategy())
 
     //Checks that the root KevoreeChannelFragment is present in hierarchy.
-    val superTypeChecker = new SuperTypeValidationVisitor(classOf[AbstractChannelFragment].getName)
-    typeDecl.accept(superTypeChecker, typeDecl)
+    //    val superTypeChecker = new SuperTypeValidationVisitor(classOf[AbstractChannelFragment].getName)
+    //    typeDecl.accept(superTypeChecker, typeDecl)
 
     var isAbstract = false
     typeDecl.getModifiers.find(mod => mod.equals(javax.lang.model.element.Modifier.ABSTRACT)) match {
       case Some(s) => {
         isAbstract = true
-        env.getMessager.printMessage(Kind.WARNING, "ChannelType ignored " + typeDecl.getQualifiedName + ", reason=Declared as @ChannelFragment but is actually ABSTRACT")
+        //        env.getMessager.printMessage(Kind.WARNING, "ChannelType ignored " + typeDecl.getQualifiedName + ", reason=Declared as @ChannelFragment but is actually ABSTRACT")
       }
       case None =>
     }
 
-    if (superTypeChecker.result && !isAbstract) {
-      val channelName = typeDecl.getSimpleName
-      val channelType: org.kevoree.ChannelType = root.findByPath("typeDefinitions[" + channelName + "]", classOf[org.kevoree.ChannelType]) match {
-        case null => {
-          val channelType = LocalUtility.kevoreeFactory.createChannelType
-          channelType.setName(channelName.toString)
-          root.addTypeDefinitions(channelType)
-          channelType
-        }
-        case td: org.kevoree.ChannelType => {
-          td
-        }
+    //    if (superTypeChecker.result && !isAbstract) {
+    val channelName = typeDecl.getSimpleName
+    val channelType: org.kevoree.ChannelType = root.findByPath("typeDefinitions[" + channelName + "]", classOf[org.kevoree.ChannelType]) match {
+      case null => {
+        val channelType = LocalUtility.kevoreeFactory.createChannelType
+        channelType.setName(channelName.toString)
+        root.addTypeDefinitions(channelType)
+        channelType
       }
+      case td: org.kevoree.ChannelType => {
+        td
+      }
+    }
 
+    if (!isAbstract) {
       channelType.setBean(typeDecl.getQualifiedName.toString)
       channelType.setFactoryBean(typeDecl.getQualifiedName + "Factory")
-
-      //RUN VISITOR
-      typeDecl.accept(ChannelTypeFragmentVisitor(channelType, env, this), typeDecl)
+      channelType.setAbstract(false)
     } else {
-      env.getMessager.printMessage(Kind.WARNING, "ChannelFragment ignored " + typeDecl.getQualifiedName + " , reason=Must extend " + classOf[AbstractChannelFragment].getName)
+      channelType.setAbstract(true)
     }
+
+    //RUN VISITOR
+    typeDecl.accept(ChannelTypeFragmentVisitor(channelType, env, this), typeDecl)
+    /*} else {
+       env.getMessager.printMessage(Kind.WARNING, "ChannelFragment ignored " + typeDecl.getQualifiedName + " , reason=Must extend " + classOf[AbstractChannelFragment].getName)
+     }*/
   }
 
   def processComponentType(componentTypeAnnotation: org.kevoree.annotation.ComponentType, typeDecl: TypeElement, root: ContainerRoot) = {
-
-    //Checks that the root KevoreeComponent is present in hierarchy.
-
-    val superTypeChecker = new SuperTypeValidationVisitor(classOf[AbstractComponentType].getName)
-    typeDecl.accept(superTypeChecker, typeDecl)
-    //Prints a warning
-    if (!superTypeChecker.result) {
-      env.getMessager.printMessage(Kind.WARNING, "ComponentType ignored " + typeDecl.getQualifiedName + " , reason=Must extend " + classOf[AbstractComponentType].getName)
+    // check if there are multiple annotation definition
+    if (hasTooManyTypes(typeDecl)) {
+      env.getMessager.printMessage(Kind.ERROR, typeDecl.getQualifiedName + " has multiple annotation type which is forbidden")
+      throw new Exception(typeDecl.getQualifiedName + " has multiple annotation type which is forbidden")
     }
+
+    //Checks that the root AbstractComponentType is present in hierarchy.
+    //    val superTypeChecker = new SuperTypeValidationVisitor(classOf[AbstractComponentType].getName)
+    //    typeDecl.accept(superTypeChecker, typeDecl)
+
+    //Prints a warning
+    /*if (!superTypeChecker.result) {
+      env.getMessager.printMessage(Kind.WARNING, "ComponentType ignored " + typeDecl.getQualifiedName + " , reason=Must extend " + classOf[AbstractComponentType].getName)
+    }*/
 
     //Checks the Class is not Abstract
     var isAbstract = false
     typeDecl.getModifiers.find(mod => mod.equals(javax.lang.model.element.Modifier.ABSTRACT)) match {
       case Some(s) => {
         isAbstract = true
-        env.getMessager.printMessage(Kind.WARNING, "ComponentType ignored " + typeDecl.getQualifiedName + ", reason=Declared as @ComponentType but is actually ABSTRACT. Should be either concrete or @ComponentFragment.")
+        //        env.getMessager.printMessage(Kind.WARNING, "ComponentType ignored " + typeDecl.getQualifiedName + ", reason=Declared as @ComponentType but is actually ABSTRACT. Should be either concrete or @ComponentFragment.")
       }
       case None =>
     }
 
-    if (superTypeChecker.result && !isAbstract) {
-      val componentName = typeDecl.getSimpleName
-      val componentType: org.kevoree.ComponentType = root.findByPath("typeDefinitions[" + componentName + "]", classOf[org.kevoree.ComponentType]) match {
-        case null => {
-          val componentType = LocalUtility.kevoreeFactory.createComponentType
-          componentType.setName(componentName.toString)
-          root.addTypeDefinitions(componentType)
-          componentType
-        }
-        case td: org.kevoree.ComponentType => {
-          td
-        }
+    //    if (superTypeChecker.result && !isAbstract) {
+    val componentName = typeDecl.getSimpleName
+    val componentType: org.kevoree.ComponentType = root.findByPath("typeDefinitions[" + componentName + "]", classOf[org.kevoree.ComponentType]) match {
+      case null => {
+        val componentType = LocalUtility.kevoreeFactory.createComponentType
+        componentType.setName(componentName.toString)
+        root.addTypeDefinitions(componentType)
+        componentType
       }
+      case td: org.kevoree.ComponentType => {
+        td
+      }
+    }
 
+    if (!isAbstract) {
       componentType.setBean(typeDecl.getQualifiedName.toString)
       componentType.setFactoryBean(typeDecl.getQualifiedName + "Factory")
-
-      //RUN VISITOR
-      val cvisitor = ComponentDefinitionVisitor(componentType, env, this)
-      typeDecl.accept(cvisitor, typeDecl)
-      cvisitor.doAnnotationPostProcess(componentType)
-
+      componentType.setAbstract(false)
+    } else {
+      componentType.setAbstract(true)
     }
+
+    //RUN VISITOR
+    val cvisitor = ComponentDefinitionVisitor(componentType, env, this)
+    typeDecl.accept(cvisitor, typeDecl)
+    cvisitor.doAnnotationPostProcess(componentType)
+
+    //    }
   }
 }
