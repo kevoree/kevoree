@@ -2,8 +2,9 @@ package org.kevoree.tools.ui.editor;
 
 import org.kevoree.impl.DefaultKevoreeFactory;
 import org.kevoree.resolver.util.MavenVersionComparator;
+import org.kevoree.tools.ui.editor.command.Command;
 import org.kevoree.tools.ui.editor.command.MergeDefaultLibrary;
-import org.kevoree.tools.ui.editor.menus.CommandActionListener;
+import org.kevoree.tools.ui.editor.command.MergeDefaultLibraryAll;
 import org.mapdb.DB;
 import org.mapdb.DBMaker;
 import org.mapdb.Fun;
@@ -14,14 +15,13 @@ import org.w3c.dom.NodeList;
 import javax.swing.*;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-import java.util.NavigableSet;
+import java.util.*;
 
 /**
  * Created by duke on 12/08/13.
@@ -104,24 +104,24 @@ public class KevoreeStore {
                         Fun.Tuple4<String, String, String, String> olderElement = null;
                         for (Fun.Tuple4<String, String, String, String> elem : cache) {
                             if (elem.b.equals(groupId) && elem.c.equals(artifactId)) {
-                                    if (!elem.d.equals(version)) {
-                                        if ((elem.d.toLowerCase().endsWith("snapshot") && version.toLowerCase().endsWith("snapshot")) || (!elem.d.toLowerCase().endsWith("snapshot") && !version.toLowerCase().endsWith("snapshot"))) {
-                                            String versionToKeep = MavenVersionComparator.max(elem.d, version);
-                                            if (version.equals(versionToKeep)) {
-                                                // the new element is more recent than the previous one
-                                                replace = -1;
-                                                olderElement = elem;
-                                                break;
-                                            } else if (elem.d.equals(versionToKeep)) {
-                                                replace = 1;
-                                                break;
-                                            }
+                                if (!elem.d.equals(version)) {
+                                    if ((elem.d.toLowerCase().endsWith("snapshot") && version.toLowerCase().endsWith("snapshot")) || (!elem.d.toLowerCase().endsWith("snapshot") && !version.toLowerCase().endsWith("snapshot"))) {
+                                        String versionToKeep = MavenVersionComparator.max(elem.d, version);
+                                        if (version.equals(versionToKeep)) {
+                                            // the new element is more recent than the previous one
+                                            replace = -1;
+                                            olderElement = elem;
+                                            break;
+                                        } else if (elem.d.equals(versionToKeep)) {
+                                            replace = 1;
+                                            break;
                                         }
-                                    } else {
-                                        // versions are equals so we do not add the new one
-                                        replace = 1;
-                                        break;
                                     }
+                                } else {
+                                    // versions are equals so we do not add the new one
+                                    replace = 1;
+                                    break;
+                                }
                             }
                         }
                         if (replace == -1) {
@@ -148,25 +148,62 @@ public class KevoreeStore {
         return System.getProperty("user.home") + File.separator + ".kevoree" + File.separator + "kev-editor-db";
     }
 
-    public JMenu buildModelMenu(KevoreeUIKernel kernel) {
+    public JMenu buildModelMenu(final KevoreeUIKernel kernel) {
 
         JMenu mergelibraries = new JMenu("Load Kevoree CoreLibraries");
         List<String> sub = Arrays.asList("javase", "android", "sky");
         for (String s : sub) {
             JMenu subMenu = new JMenu(s.toUpperCase());
+
+            DefaultListModel m = new DefaultListModel();
+            final JList list = new JList(m);
+            MouseAdapterImpl listener = new MouseAdapterImpl(list);
+
             Iterator<Fun.Tuple4<String, String, String, String>> it = getFromGroupID("org.kevoree.corelibrary." + s);
+
+            m.addElement("Add all libraries from " + s);
+            MergeDefaultLibraryAll addAllCommand = new MergeDefaultLibraryAll(kernel, it);
+            listener.addCommand(0, addAllCommand);
+
+            // "it" initialization is duplicated to ensure that addAllCommand have its own iterator. Otherwise, the "while" following this line use the iterator and so the addAllCommand can't add all libraries because the iterator is empty
+            it = getFromGroupID("org.kevoree.corelibrary." + s);
+            int index = 1;
             while (it.hasNext()) {
-                Fun.Tuple4<String, String, String, String> entry = it.next();
-                JMenuItem mergeDefLib1 = new JMenuItem(entry.c + "-" + entry.d);
+                final Fun.Tuple4<String, String, String, String> entry = it.next();
+                m.addElement(entry.c + "-" + entry.d);
+
                 MergeDefaultLibrary cmdLDEFL1 = new MergeDefaultLibrary(entry.b, entry.c, entry.d);
                 cmdLDEFL1.setKernel(kernel);
-                mergeDefLib1.addActionListener(new CommandActionListener(cmdLDEFL1));
-                subMenu.add(mergeDefLib1);
+                listener.addCommand(index, cmdLDEFL1);
+                index++;
             }
+            list.addMouseListener(listener);
+            subMenu.add(new JScrollPane(list));
             mergelibraries.add(subMenu);
         }
         return mergelibraries;
     }
 
+    private class MouseAdapterImpl extends MouseAdapter {
+        private HashMap<Integer, Command> commands;
+        private JList list;
+
+        private MouseAdapterImpl(JList list) {
+            this.list = list;
+            this.commands = new HashMap<Integer, Command>();
+        }
+
+        public void addCommand(Integer index, Command command) {
+            commands.put(index, command);
+        }
+
+        public void mousePressed(MouseEvent evt) {
+            int index = list.locationToIndex(evt.getPoint());
+            list.setSelectedIndex(index);
+            if (commands.containsKey(index)) {
+                commands.get(index).execute(null);
+            }
+        }
+    }
 
 }

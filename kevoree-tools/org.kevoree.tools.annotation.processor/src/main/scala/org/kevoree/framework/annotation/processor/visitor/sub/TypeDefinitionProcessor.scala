@@ -43,7 +43,7 @@ trait TypeDefinitionProcessor {
         model.addTypeDefinitions(newTypeDef)
 
         if (isAbstract) {
-          newTypeDef.setAbstract(true);
+          newTypeDef.setAbstract(true)
         }
         newTypeDef
       }

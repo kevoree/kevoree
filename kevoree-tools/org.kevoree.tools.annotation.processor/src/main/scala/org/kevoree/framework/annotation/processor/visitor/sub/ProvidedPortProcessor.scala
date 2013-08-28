@@ -153,6 +153,8 @@ trait ProvidedPortProcessor {
 
           //Two ports have the same name in the component scope
           case Some(e) => {
+
+            // FIXME maybe we can accept overridden definition ?
             env.getMessager.printMessage(Kind.ERROR, "Port name duplicated in " + componentType.getName + " Scope => " + providedPort.name)
           }
         }

@@ -11,27 +11,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * 	http://www.gnu.org/licenses/lgpl-3.0.txt
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 
 package org.kevoree.framework.annotation.processor.visitor.sub
 
-import org.kevoree.KevoreeFactory
 import org.kevoree.TypeDefinition
 import javax.lang.model.element.TypeElement
 import scala.collection.JavaConversions._
@@ -40,25 +22,24 @@ import org.kevoree.framework.annotation.processor.LocalUtility
 trait DictionaryProcessor {
 
   def processDictionary(typeDef: TypeDefinition, classdef: TypeElement) = {
-
     /* CHECK DICTIONARY */
     if (classdef.getAnnotation(classOf[org.kevoree.annotation.DictionaryType]) != null) {
       classdef.getAnnotation(classOf[org.kevoree.annotation.DictionaryType]).value.foreach {
         dictionaryAtt =>
 
         //CASE NO DICTIONARY
-          if (typeDef.getDictionaryType() == null) {
+          if (typeDef.getDictionaryType == null) {
             val newdictionary = LocalUtility.kevoreeFactory.createDictionaryType
             typeDef.setDictionaryType(newdictionary)
           }
 
           //CASE NO ATT ALREADY CREATED WITH NAME
-          val processDictionaryAtt = typeDef.getDictionaryType.getAttributes.find(eAtt => eAtt.getName() == dictionaryAtt.name) match {
+          val processDictionaryAtt = typeDef.getDictionaryType.getAttributes.find(eAtt => eAtt.getName == dictionaryAtt.name) match {
             case None => {
               val newAtt = LocalUtility.kevoreeFactory.createDictionaryAttribute
               newAtt.setName(dictionaryAtt.name)
               typeDef.getDictionaryType.addAttributes(newAtt)
-              newAtt.setFragmentDependant(dictionaryAtt.fragmentDependant());
+              newAtt.setFragmentDependant(dictionaryAtt.fragmentDependant())
               newAtt
             }
             case Some(att) => att
@@ -77,7 +58,7 @@ trait DictionaryProcessor {
                 newVal.setValue(dictionaryAtt.defaultValue)
                 typeDef.getDictionaryType.addDefaultValues(newVal)
               }
-              case Some(edefV) => edefV.setValue(dictionaryAtt.defaultValue.toString)
+              case Some(edefV) => edefV.setValue(dictionaryAtt.defaultValue)
             }
           }
           if (!dictionaryAtt.vals().isEmpty) {

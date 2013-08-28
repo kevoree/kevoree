@@ -13,25 +13,11 @@
  */
 package org.kevoree.framework.annotation.processor.visitor
 
-/**
- * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.gnu.org/licenses/lgpl-3.0.txt
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 import sub._
 import javax.annotation.processing.ProcessingEnvironment
 import javax.lang.model.util.SimpleElementVisitor6
-import org.kevoree.NodeType
-import javax.lang.model.element.{TypeElement, Element}
+import org.kevoree.{ComponentType, NodeType}
+import javax.lang.model.element.{Modifier, TypeElement, Element}
 
 case class NodeTypeVisitor(nodeType: NodeType, env: ProcessingEnvironment, rootVisitor: KevoreeAnnotationProcessor)
   extends SimpleElementVisitor6[Any, Element]
@@ -44,24 +30,6 @@ case class NodeTypeVisitor(nodeType: NodeType, env: ProcessingEnvironment, rootV
 
 
   def commonProcess(classdef: TypeElement) {
-    //SUB PROCESSOR
-    import scala.collection.JavaConversions._
-    classdef.getInterfaces.foreach {
-      it =>
-        it match {
-          case dt: javax.lang.model.`type`.DeclaredType => {
-            var annotFragment: Any = dt.asElement().getAnnotation(classOf[org.kevoree.annotation.NodeType])
-            if (annotFragment != null) {
-              dt.asElement().accept(this, dt.asElement())
-            }
-            annotFragment = dt.asElement().getAnnotation(classOf[org.kevoree.annotation.NodeType])
-            if (annotFragment != null) {
-              dt.asElement().accept(this, dt.asElement())
-            }
-          }
-          case _ =>
-        }
-    }
     processDictionary(nodeType, classdef)
     processDeployUnit(nodeType, classdef, env, rootVisitor.getOptions)
     processLibrary(nodeType, classdef)
@@ -75,7 +43,8 @@ case class NodeTypeVisitor(nodeType: NodeType, env: ProcessingEnvironment, rootV
         val an: Any = dt.asElement().getAnnotation(classOf[org.kevoree.annotation.NodeType])
         if (an != null) {
           dt.asElement().accept(this, dt.asElement())
-          defineAsSuperType(nodeType, dt.asElement().getSimpleName.toString, classOf[NodeType])
+          val isAbstract = dt.asElement().getModifiers.contains(Modifier.ABSTRACT)
+          defineAsSuperType(nodeType, dt.asElement().getSimpleName.toString, classOf[NodeType], isAbstract)
         }
       }
       case _ =>
@@ -93,8 +62,6 @@ case class NodeTypeVisitor(nodeType: NodeType, env: ProcessingEnvironment, rootV
          case _ @ e =>
        }
     }
-
-
     commonProcess(p1)
   }
 

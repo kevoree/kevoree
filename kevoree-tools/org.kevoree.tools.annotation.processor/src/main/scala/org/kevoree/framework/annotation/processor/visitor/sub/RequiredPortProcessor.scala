@@ -143,6 +143,8 @@ trait RequiredPortProcessor {
             componentType.addRequired(portTypeRef)
           }
           case Some(e) => {
+
+            // FIXME maybe we can accept overridden definition ?
             env.getMessager.printMessage(Kind.ERROR, "Port name duplicated in " + componentType.getName + " Scope => " + requiredPort.name)
           }
         }
