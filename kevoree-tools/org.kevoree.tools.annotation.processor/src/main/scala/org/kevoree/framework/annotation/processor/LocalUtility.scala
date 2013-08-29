@@ -23,8 +23,8 @@ object LocalUtility {
 
   val kevoreeFactory = new DefaultKevoreeFactory
 
-  def generateLibURI(options: java.util.Map[String, String]) = {
-    options.get("kevoree.lib.target")
+  def generateLibURI(options: java.util.Map[String, Object]) = {
+    options.get("kevoree.lib.target").toString
   }
 
   def getOraddDataType(datatype: TypedElement): TypedElement = {

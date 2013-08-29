@@ -11,23 +11,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * 	http://www.gnu.org/licenses/lgpl-3.0.txt
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 
 package org.kevoree.framework.annotation.processor.visitor.sub
 
@@ -43,23 +26,23 @@ import scala.collection.JavaConversions._
 
 trait DeployUnitProcessor {
 
-  def processDeployUnit(typeDef: TypeDefinition, classdef: TypeElement, env: ProcessingEnvironment,options : java.util.HashMap[String,String]) = {
+  def processDeployUnit(typeDef: TypeDefinition, classdef: TypeElement, env: ProcessingEnvironment,options : java.util.Map[String,Object]) = {
     val root: ContainerRoot = typeDef.eContainer.asInstanceOf[ContainerRoot]
     import scala.collection.JavaConversions._
 
     /* CREATE COMPONENT TYPE DEPLOY UNIT IF NEEDED */
-    val unitName = options.get("kevoree.lib.id")
-    val groupName = options.get("kevoree.lib.group")
-    val version = options.get("kevoree.lib.version")
-    val dutype = options.get("kevoree.lib.type")
-    val tag = options.get("kevoree.lib.tag")
-    val repositories = options.get("repositories")
+    val unitName = options.get("kevoree.lib.id").toString
+    val groupName = options.get("kevoree.lib.group").toString
+    val version = options.get("kevoree.lib.version").toString
+    val dutype = options.get("kevoree.lib.type").toString
+    val tag = options.get("kevoree.lib.tag").toString
+    val repositories = options.get("repositories").toString
     val repositoriesList: List[String] = repositories.split(";").filter(r => r != null && r != "").toList
 
-    val tRepositories = options.get("otherRepositories")
+    val tRepositories = options.get("otherRepositories").toString
     val tRepositoriesList: List[String] = tRepositories.split(";").filter(r => r != null && r != "").toList
 
-    val nodeTypeNames = options.get("nodeTypeNames")
+    val nodeTypeNames = options.get("nodeTypeNames").toString
     val nodeTypeNamesS: List[String] = nodeTypeNames.split(",").filter(r => r != null && r != "").toList
 
     var deployUnits: List[DeployUnit] = List()

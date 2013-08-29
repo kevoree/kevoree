@@ -30,11 +30,11 @@ import java.util.HashSet
 
 class KevoreeAnnotationProcessor() extends javax.annotation.processing.AbstractProcessor {
 
-  var options: java.util.HashMap[String, String] = _
+  var options: java.util.Map[String, Object] = _
 
   def getOptions = options
 
-  def setOptions(s: java.util.HashMap[String, String]) = {
+  def setOptions(s: java.util.Map[String, Object]) = {
     options = s
   }
 
@@ -117,12 +117,39 @@ class KevoreeAnnotationProcessor() extends javax.annotation.processing.AbstractP
     //POST APT PROCESS CHECKER
     val checker: PostAptChecker = new PostAptChecker(root, env)
     val errorsInChecker = !checker.check
+
+    // use libraries definition on pom (if there is no library definition on typeDefinition)
+
+    if (options.containsKey("libraries")) {
+      val libraries = options.get("libraries").asInstanceOf[java.util.List[String]]
+      root.getTypeDefinitions.foreach {
+        typeDefinition =>
+          if (root.getLibraries.find(library => library.getSubTypes.contains(typeDefinition)).isEmpty) {
+            libraries.foreach {
+              libraryName =>
+                root.getLibraries.find({
+                  lib => lib.getName == libraryName
+                }) match {
+                  case Some(lib) => lib.addSubTypes(typeDefinition)
+                  case None => {
+                    val newlib = LocalUtility.kevoreeFactory.createTypeLibrary
+                    newlib.setName(libraryName)
+                    newlib.addSubTypes(typeDefinition)
+                    root.addLibraries(newlib)
+                  }
+                }
+            }
+          }
+      }
+    }
+
+
     KevoreeXmiHelper.instance$.save(LocalUtility.generateLibURI(options) + ".debug", root)
 
     if (!errorsInChecker) {
       //TODO SEPARATE MAVEN PLUGIN
       val nodeTypeNames = options.get("nodeTypeNames")
-      val nodeTypeNameList: List[String] = nodeTypeNames.split(",").filter(r => r != null && r != "").toList
+      val nodeTypeNameList: List[String] = nodeTypeNames.toString.split(",").filter(r => r != null && r != "").toList
       nodeTypeNameList.foreach {
         targetNodeName =>
           KevoreeGenerator.generatePort(root, env.getFiler, targetNodeName)

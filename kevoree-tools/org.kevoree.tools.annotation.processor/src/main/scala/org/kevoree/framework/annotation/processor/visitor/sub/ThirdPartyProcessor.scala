@@ -45,10 +45,10 @@ trait ThirdPartyProcessor {
     }
 
     import scala.collection.JavaConversions._
-    val thirdParties = rootVisitor.getOptions.get("thirdParties")
+    val thirdParties = rootVisitor.getOptions.get("thirdParties").toString
     val thirdPartiesList: List[String] = thirdParties.split(";").filter(r => r != null && r != "").toList
 
-    val nodeTypeNames = rootVisitor.getOptions.get("nodeTypeNames")
+    val nodeTypeNames = rootVisitor.getOptions.get("nodeTypeNames").toString
     val nodeTypeNameList: List[String] = nodeTypeNames.split(",").filter(r => r != null && r != "").toList
 
 

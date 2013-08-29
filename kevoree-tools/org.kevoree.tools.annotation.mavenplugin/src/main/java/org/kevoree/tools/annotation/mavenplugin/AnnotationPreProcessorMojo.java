@@ -352,37 +352,17 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
         }
     }
 
-
-    /**
-     * project sourceDirectory
-     *
-     * @parameter expression = "${project.build.sourceDirectory}"
-     * @required
-     */
-    //@MojoParameter(expression = "${project.build.sourceDirectory}", required = true)
-//    private File sourceDirectory;
-
-    /**
-     * @parameter expression = "${project.build.directory}/generated-sources/apt"
-     * @required
-     */
-    //@MojoParameter(expression = "${project.build.directory}/generated-sources/apt", required = true)
-    private File defaultOutputDirectory;
-
     /**
      * Set the destination directory for class files (same behaviour of -d option)
      *
      * @parameter expression="${project.build.outputDirectory}"
      */
-    //@MojoParameter(required = false, expression="${project.build.outputDirectory}", description = "Set the destination directory for class files (same behaviour of -d option)")
     private File outputClassDirectory;
 
-    // @Override
     public List<String> getSourceDirectory() {
         return project.getCompileSourceRoots();
     }
 
-    //  @Override
     protected File getOutputClassDirectory() {
         return outputClassDirectory;
     }
@@ -391,12 +371,6 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
         project.addCompileSourceRoot(dir);
     }
 
-    //  @Override
-    public File getDefaultOutputDirectory() {
-        return defaultOutputDirectory;
-    }
-
-    // @Override
     @SuppressWarnings("unchecked")
     protected java.util.Set<String> getClasspathElements(java.util.Set<String> result) {
         List<Resource> resources = project.getResources();
@@ -441,14 +415,7 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
      *
      * @parameter
      */
-    private HashMap<String, String> options = new java.util.HashMap<String, String>();
-
-    /**
-     * The source directories containing any additional sources to be processed.
-     *
-     * @parameter
-     */
-//    private List<String> additionalSourceRoots;
+    private Map<String, Object> options = new java.util.HashMap<String, Object>();
 
     // fields -----------------------------------------------------------------
     private String[] includes;
@@ -475,6 +442,13 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
      * @required
      */
     private String nodeTypeNames;
+
+    /**
+     * List of libraries on which TypeDefinition found will be added (if there is no libraies already defined)
+     *
+     * @parameter
+     */
+    private List<String> libraries;
 
     private static DateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmSSS");
 
@@ -544,6 +518,7 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
         this.options.put("otherRepositories", otherRepositories);
         this.options.put("thirdParties", thirdParties);
         this.options.put("nodeTypeNames", nodeTypeNames);
+        this.options.put("libraries", libraries);
 
         Resource resource = new Resource();
         resource.setDirectory(sourceOutputDirectory.getPath() + File.separator + "KEV-INF");
