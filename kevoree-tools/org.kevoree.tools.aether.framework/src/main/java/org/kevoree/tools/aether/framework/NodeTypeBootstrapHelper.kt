@@ -20,7 +20,7 @@ import org.kevoree.log.Log
  * Time: 12:01
  */
 
-open class NodeTypeBootstrapHelper: Bootstraper, KCLBootstrap {
+open class NodeTypeBootstrapHelper : Bootstraper, KCLBootstrap {
 
     override fun resolveKevoreeArtifact(artId: String, groupId: String, version: String): File? {
         val l = ArrayList<String>()
@@ -178,7 +178,7 @@ open class NodeTypeBootstrapHelper: Bootstraper, KCLBootstrap {
                     groupType.setBootStrapperService(this)
                     return groupType
                 } else {
-                    Log.error("Error KCL pointer null")
+                    Log.error("Unable to bootstrap Group so KCL pointer is null")
                     return null
                 }
             } else {
@@ -186,44 +186,50 @@ open class NodeTypeBootstrapHelper: Bootstraper, KCLBootstrap {
                 return null
             }
         }else {
-            Log.error("Group not found using name " + destGroupName); return null
+            Log.error("Group not found using name " + destGroupName)
+            return null
         }
     }
 
     private fun installGroupTyp(groupType: GroupType): ClassLoader? {
-        val superTypeBootStrap = groupType.getSuperTypes().all{ superType -> installGroupTyp(superType as GroupType) != null }
-        if (superTypeBootStrap) {
-            //FAKE NODE TODO
-            val fakeNode = kevoreeFactory.createContainerNode()
-            val javaseTD = (groupType.eContainer() as ContainerRoot).findTypeDefinitionsByID("JavaSENode")
-            if(javaseTD != null){
-                fakeNode.setTypeDefinition(javaseTD)
-            }
-            var ct: DeployUnit? = null
-            try {
-                ct = TypeDefinitionAspect().foundRelevantDeployUnit(groupType, fakeNode)
-            } catch(e: Exception) {
-                e.printStackTrace()
-            }
-            if (ct != null) {
-                var kcl: ClassLoader? = null
-                val dpRes = ct!!.getRequiredLibs().all {
-                    tp ->
-                    installDeployUnit(tp) != null
+        if (groupType.getDeployUnits().find{ dp -> dp.getTargetNodeType()!!.getName().equals("JavaSENode") } != null ) {
+            val superTypeBootStrap = groupType.getSuperTypes().all{ superType -> installGroupTyp(superType as GroupType) != null }
+            if (superTypeBootStrap) {
+                //FAKE NODE TODO
+                val fakeNode = kevoreeFactory.createContainerNode()
+                val javaseTD = (groupType.eContainer() as ContainerRoot).findTypeDefinitionsByID("JavaSENode")
+                if(javaseTD != null){
+                    fakeNode.setTypeDefinition(javaseTD)
                 }
-                val kcl_opt = installDeployUnit(ct!!)
-                if(kcl_opt != null){
-                    kcl = kcl_opt
+                var ct: DeployUnit? = null
+                try {
+                    ct = TypeDefinitionAspect().foundRelevantDeployUnit(groupType, fakeNode)
+                } catch(e: Exception) {
+                    e.printStackTrace()
                 }
+                if (ct != null) {
+                    var kcl: ClassLoader? = null
+                    val dpRes = ct!!.getRequiredLibs().all {
+                        tp ->
+                        installDeployUnit(tp) != null
+                    }
+                    val kcl_opt = installDeployUnit(ct!!)
+                    if(kcl_opt != null){
+                        kcl = kcl_opt
+                    }
 
-                kcl_opt != null && dpRes
-                return kcl //TODO
+                    kcl_opt != null && dpRes
+                    return kcl //TODO
+                } else {
+                    Log.error("Relevant DU not found for " + groupType.getName())
+                    return null
+                }
             } else {
-                Log.error("Relevant DU not found for " + groupType.getName())
+                Log.error("Super installation failed")
                 return null
             }
         } else {
-            Log.error("Super installation failed")
+            Log.error("The GroupType is not able to be executed on JavaSENode so the group cannot be instanciated. Please add a DeployUnit which enable the groupType execution on JavaSeNode.")
             return null
         }
     }
