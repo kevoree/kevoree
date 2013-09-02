@@ -120,7 +120,7 @@ class KevoreeAnnotationProcessor() extends javax.annotation.processing.AbstractP
 
     // use libraries definition on pom (if there is no library definition on typeDefinition)
 
-    if (options.containsKey("libraries")) {
+    if (options.containsKey("libraries") && options.get("libraries") != null) {
       val libraries = options.get("libraries").asInstanceOf[java.util.List[String]]
       root.getTypeDefinitions.foreach {
         typeDefinition =>

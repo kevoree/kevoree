@@ -16,6 +16,7 @@ package org.kevoree.tools.modelsync
 
 import org.kevoree.framework.AbstractGroupType
 import org.kevoree.ContainerRoot
+import org.kevoree.log.Log
 
 /**
  * Created with IntelliJ IDEA.
@@ -31,13 +32,13 @@ class ModelSyncBean {
   @throws(classOf[Exception])
   def pushTo (model: ContainerRoot, destNodeName: String, viaGroupName: String) {
 
-    bootstraper.getBootstrap.clear
+    bootstraper.getBootstrap.clear()
     bootstraper.getBootstrap.bootstrapGroupType(model, viaGroupName, ModelHandlerServiceNoKernel(model)) match {
       case groupTypeInstance : AbstractGroupType => {
         groupTypeInstance.push(model, destNodeName)
       }
       case null => {
-        org.kevoree.log.Log.error("Error while bootstraping group type ")
+        Log.error("Error while bootstraping group type ")
         throw new Exception("Error while bootstraping group type")
       }
     }
@@ -45,14 +46,14 @@ class ModelSyncBean {
 
   @throws(classOf[Exception])
   def pullTo (model: ContainerRoot, destNodeName: String, viaGroupName: String) : ContainerRoot = {
-    bootstraper.getBootstrap.clear
+    bootstraper.getBootstrap.clear()
     bootstraper.getBootstrap.bootstrapGroupType(model, viaGroupName, ModelHandlerServiceNoKernel(model)) match {
       case groupTypeInstance:AbstractGroupType => {
         groupTypeInstance.pull(destNodeName)
       }
       case null => {
-        org.kevoree.log.Log.error("Error while bootstraping group type")
-        throw new Exception("Error while bootstraping group type")
+        Log.error("Error while bootstraping group type")
+        throw new Exception("Error while bootstrapping group type")
       }
     }
   }

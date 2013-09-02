@@ -518,7 +518,9 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
         this.options.put("otherRepositories", otherRepositories);
         this.options.put("thirdParties", thirdParties);
         this.options.put("nodeTypeNames", nodeTypeNames);
-        this.options.put("libraries", libraries);
+        if (libraries != null) {
+            this.options.put("libraries", libraries);
+        }
 
         Resource resource = new Resource();
         resource.setDirectory(sourceOutputDirectory.getPath() + File.separator + "KEV-INF");
