@@ -82,8 +82,8 @@ class MiniKloudForm(editor: KevoreeEditor, button: AbstractButton) {
             // build default model of the minicloud
             UIEventHandler.info("Download org.kevoree.platform.standalone.gui")
             platformJAR = AetherResolver.resolveKev("org.kevoree.platform.standalone.gui", "org.kevoree.platform", ModelHelper.kevoreeFactory.getVersion)
-            UIEventHandler.info("org.kevoree.platform.standalone.gui resolved")
             if (platformJAR != null) {
+              UIEventHandler.info("org.kevoree.platform.standalone.gui resolved")
               PositionedEMFHelper.updateModelUIMetaData(editor.getPanel.getKernel)
               val skyModel = buildBootstrapModel
               if (skyModel != null) {
@@ -130,9 +130,15 @@ class MiniKloudForm(editor: KevoreeEditor, button: AbstractButton) {
                     }
                   }
                 }
+              } else {
+                UIEventHandler.info("Fail to build Kloud model...")
+                logger.warn("Fail to build Kloud model...")
               }
+            } else {
+              UIEventHandler.info("org.kevoree.platform.standalone.gui not resolved !")
+              logger.warn("org.kevoree.platform.standalone.gui not resolved !")
+             false
             }
-
           }
           thread = null
         }
