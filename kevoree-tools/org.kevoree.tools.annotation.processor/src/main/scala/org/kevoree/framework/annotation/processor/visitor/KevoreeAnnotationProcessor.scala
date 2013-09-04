@@ -27,6 +27,7 @@ import org.kevoree.annotation._
 import javax.lang.model.SourceVersion
 import javax.lang.model.element.TypeElement
 import java.util.HashSet
+import java.lang.Exception
 
 class KevoreeAnnotationProcessor() extends javax.annotation.processing.AbstractProcessor {
 
@@ -181,7 +182,6 @@ class KevoreeAnnotationProcessor() extends javax.annotation.processing.AbstractP
     nbTypes != 1
   }
 
-
   def processNodeType(nodeTypeAnnotation: org.kevoree.annotation.NodeType, typeDecl: TypeElement, root: ContainerRoot) = {
     // check if there are multiple annotation definition
     if (hasTooManyTypes(typeDecl)) {
@@ -228,7 +228,6 @@ class KevoreeAnnotationProcessor() extends javax.annotation.processing.AbstractP
     //  env.getMessager.printMessage(Kind.WARNING, "NodeType ignored " + typeDecl.getQualifiedName + " , reason=Must extend " + classOf[AbstractNodeType].getName)
     //}
   }
-
 
   def processGroupType(groupTypeAnnotation: GroupType, typeDecl: TypeElement, root: ContainerRoot) = {
     // check if there are multiple annotation definition
@@ -277,7 +276,6 @@ class KevoreeAnnotationProcessor() extends javax.annotation.processing.AbstractP
       env.getMessager.printMessage(Kind.WARNING, "GroupType ignored " + typeDecl.getQualifiedName + " , reason=Must extend " + classOf[AbstractGroupType].getName)
     }*/
   }
-
 
   def processChannelType(channelTypeAnnotation: org.kevoree.annotation.ChannelType, typeDecl: TypeElement, root: ContainerRoot) = {
     // check if there are multiple annotation definition

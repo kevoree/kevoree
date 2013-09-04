@@ -14,7 +14,6 @@
 package org.kevoree.tools.annotation.mavenplugin;
 
 import org.apache.maven.artifact.Artifact;
-import org.apache.maven.artifact.DefaultArtifact;
 import org.apache.maven.model.Repository;
 import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.AbstractMojo;
@@ -23,6 +22,8 @@ import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.StringUtils;
 import org.kevoree.ContainerRoot;
+import org.kevoree.DeployUnit;
+import org.kevoree.TypeDefinition;
 import org.kevoree.framework.KevoreeXmiHelper;
 import org.kevoree.framework.annotation.processor.visitor.KevoreeAnnotationProcessor;
 import org.kevoree.merger.KevoreeMergerComponent;
@@ -529,7 +530,6 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
 
         executeWithExceptionsHandled();
 
-
         //AFTER ALL GENERATED
         try {
             File file = new File(sourceOutputDirectory.getPath() + File.separator + "KEV-INF" + File.separator + "lib.kev");
@@ -537,19 +537,35 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
                 ContainerRoot model = KevoreeXmiHelper.instance$.load(sourceOutputDirectory.getPath() + File.separator + "KEV-INF" + File.separator + "lib.kev");
                 KevoreeMergerComponent merger = new KevoreeMergerComponent();
 
-                for (Object dep : project.getCompileArtifacts()) {
-                    try {
-                        DefaultArtifact defaultArtifact = (DefaultArtifact) dep;
-                        JarFile jar = new JarFile(defaultArtifact.getFile());
-                        JarEntry entry = jar.getJarEntry("KEV-INF/lib.kev");
-                        if (entry != null) {
-                            getLog().info("Auto merging dependency => " + " from " + defaultArtifact);
-                            merger.merge(model, KevoreeXmiHelper.instance$.loadStream(jar.getInputStream(entry)));
+                for (Artifact artifact : project.getDependencyArtifacts()) {
+                    if (artifact.getScope().equals(Artifact.SCOPE_COMPILE)) {
+                        try {
+//                            DefaultArtifact defaultArtifact = (DefaultArtifact) artifact;
+                            JarFile jar = new JarFile(artifact.getFile());
+                            JarEntry entry = jar.getJarEntry("KEV-INF/lib.kev");
+                            if (entry != null) {
+                                getLog().info("Auto merging dependency => " + " from " + artifact);
+                                merger.merge(model, KevoreeXmiHelper.instance$.loadStream(jar.getInputStream(entry)));
+                            }
+                        } catch (Exception e) {
+                            getLog().info("Unable to get KEV-INF/lib.kev on " + artifact.getArtifactId() + "(Kevoree lib will not be merged): " + e.getMessage());
                         }
-                    } catch (Exception e) {
-                        getLog().info("Unable to get KEV-INF/lib.kev on " + ((DefaultArtifact) dep).getArtifactId() + "(Kevoree lib will not be merged): " + e.getMessage());
                     }
                 }
+
+
+                // check if the targetNodeType which is define for each TypeDefinition is well defined
+                boolean targetNodeTypesIsWellDefined = true;
+                for (TypeDefinition typeDefinition : model.getTypeDefinitions()) {
+                    for (DeployUnit deployUnit : typeDefinition.getDeployUnits()) {
+                        targetNodeTypesIsWellDefined = targetNodeTypesIsWellDefined && deployUnit.getTargetNodeType().getDeployUnits().size() > 0;
+                    }
+                }
+                if (!targetNodeTypesIsWellDefined) {
+                    getLog().error("TargetNodeType(s) are not well defined. Please check your dependencies to ensure that one (or more) of them provide the NodeType(s) you define as targetNodeType(s): " + options.get("nodeTypeNames"));
+                    throw new Exception("TargetNodeType(s) are not well defined. Please check your dependencies to ensure that one (or more) of them provide the NodeType(s) you define as targetNodeType(s): " + options.get("nodeTypeNames"));
+                }
+
                 KevoreeXmiHelper.instance$.save(sourceOutputDirectory.getPath() + File.separator + "KEV-INF" + File.separator + "lib.kev", model);
             }
 
