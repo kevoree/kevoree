@@ -71,7 +71,7 @@ class XmiLoaderTest {
   def testOpposite1(){
     val loader = new XMIModelLoader()
     val m = loader.loadModelFromStream(new FileInputStream(new File(getClass.getResource("/unomas.kev").toURI))).get(0).asInstanceOf[ContainerRoot];
-    m.getMBindings.foreach { mb =>
+    m.getmBindings.foreach { mb =>
       println("---------->")
       val p = mb.getPort
       assert(mb.getPort != null)
@@ -148,7 +148,7 @@ class XmiLoaderTest {
 
     m.addNodes(newNode)
     val modelCloner = new org.kevoree.cloner.DefaultModelCloner
-    val readOModel = modelCloner.clone(m, true)
+    val readOModel = modelCloner.clone(m, true).asInstanceOf[ContainerRoot]
     var errorDetected = false
     try {
       readOModel.addNodes(factory.createContainerNode)
@@ -176,13 +176,13 @@ class XmiLoaderTest {
     m.addNodes(newNode2)
 
 
-    val writeModel = modelCloner.clone(readOModel, false)
+    val writeModel = modelCloner.clone(readOModel, false).asInstanceOf[ContainerRoot]
 
     val newNode3 = factory.createContainerNode
     newNode3.setName("NewNode3")
     writeModel.addNodes(newNode2)
 
-    val writeModel2 = modelCloner.clone(readOModel)
+    val writeModel2 = modelCloner.clone(readOModel).asInstanceOf[ContainerRoot]
 
     val newNode4 = factory.createContainerNode
     newNode4.setName("NewNode4")

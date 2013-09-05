@@ -58,7 +58,6 @@
                             <ecore>${metamodel.ecore}</ecore>
                             <packagePrefix>org</packagePrefix>
                             <selector>true</selector>
-                            <json>true</json>
                         </configuration>
                     </execution>
                 </executions>

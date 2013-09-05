@@ -64,7 +64,7 @@ b.setPort(port)
 m.addMBindings(b)
   */
 
-  m.getMBindings.foreach { mb =>
+  m.getmBindings().foreach { mb =>
     println("---------->")
     val p = mb.getPort
     println(mb.getPort+"-"+mb.getPort.getBindings.size+"-"+mb.getPort.getBindings.contains(mb))
