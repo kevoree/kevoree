@@ -41,6 +41,11 @@
     </dependencies>
 
     <build>
+        <resources>
+            <resource>
+                <directory>${basedir}/metamodel/</directory>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.kevoree.modeling</groupId>
@@ -87,6 +92,19 @@
                         <arg>-Yclosure-elim</arg>
                     </args>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>2.1.2</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
