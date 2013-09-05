@@ -58,7 +58,7 @@ class XmiLoaderTest {
   def testOpposite1(){
     val loader = new XMIModelLoader()
     val m = loader.loadModelFromStream(new FileInputStream(new File(getClass.getResource("/unomas.kev").toURI))).get(0).asInstanceOf[ContainerRoot];
-    m.getmBindings.foreach { mb =>
+    m.getMBindings.foreach { mb =>
       println("---------->")
       val p = mb.getPort
       assert(mb.getPort != null)
