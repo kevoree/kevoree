@@ -189,7 +189,7 @@ class XmiLoaderTest {
         }
 
 
-        XmiLoaderTest.model.getDeployUnits.find(du => du.getGroupName.equals("org.kevoree.library.arduino") &&  du.getUnitName.equals("org.kevoree.library.arduino.nodeType")) match {
+        XmiLoaderTest.model.getDeployUnits.find(du => ((du.getGroupName != null) && du.getGroupName.equals("org.kevoree.library.arduino")) &&  ((du.getUnitName != null) && du.getUnitName.equals("org.kevoree.library.arduino.nodeType"))) match {
           case Some(du) => {
             assertTrue("TypeDefinition does not contain its deploy unit.", typeDef.getDeployUnits.contains(du))
           }
