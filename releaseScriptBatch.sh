@@ -15,7 +15,7 @@
 # Fouquet Francois
 # Nain Gregory
 #
-export MAVEN_OPTS="-Xmx2048m -XX:PermSize=512m -XX:MaxPermSize=1024m -XX:MaxHeapSize=512m"
+export MAVEN_OPTS="-Xmx2048m -XX:PermSize=512m -XX:MaxPermSize=1024m -XX:MaxHeapSize=1024m"
 #export JAVA_HOME=$(/usr/libexec/java_home)
 mvn --batch-mode release:clean
 mvn --batch-mode release:prepare
