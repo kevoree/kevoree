@@ -137,7 +137,7 @@ class MiniKloudForm(editor: KevoreeEditor, button: AbstractButton) {
             } else {
               UIEventHandler.info("org.kevoree.platform.standalone.gui not resolved !")
               logger.warn("org.kevoree.platform.standalone.gui not resolved !")
-             false
+              false
             }
           }
           thread = null
@@ -201,7 +201,6 @@ class MiniKloudForm(editor: KevoreeEditor, button: AbstractButton) {
 
     var blackListedPorts = Array[Int](8000)
 
-    val nodes = editor.getPanel.getKernel.getModelHandler.getActualModel.getNodes.filter(n => n.getTypeDefinition.getName == "PJavaSENode" || isASubType(n.getTypeDefinition, "PJavaSENode"))
     editor.getPanel.getKernel.getModelHandler.getActualModel.getNodes
       .find(n => n.getTypeDefinition.getName == "MiniCloudNode" /* && n.getHosts.size == nodes.size - 1 && n.getHost.isEmpty*/) match {
       case Some(minicloudNode) => {
@@ -240,10 +239,14 @@ class MiniKloudForm(editor: KevoreeEditor, button: AbstractButton) {
     kevEngine.addVariable("minicloudNodeName", minicloudName)
 
     var groupName = "editor_group"
+    var nodes = editor.getPanel.getKernel.getModelHandler.getActualModel.getNodes.filter(n => n.getTypeDefinition.getName == "PJavaSENode" || isASubType(n.getTypeDefinition, "PJavaSENode"))
+    if (editor.getPanel.getKernel.getModelHandler.getActualModel.findNodesByID(minicloudName) != null) {
+      nodes = nodes ++ editor.getPanel.getKernel.getModelHandler.getActualModel.findNodesByID(minicloudName).getHosts.filter(n => !nodes.contains(n))
+    }
 
     // looking for a group that manage all the user nodes that can be hosted on a minicloud node
     editor.getPanel.getKernel.getModelHandler.getActualModel.getGroups.find(g =>
-      (g.getSubNodes.size == nodes.size || (g.getSubNodes.size() == nodes.size + 1 && g.findSubNodesByID(minicloudName) != null))
+      (g.getSubNodes.size >= nodes.size || (g.getSubNodes.size() == nodes.size + 1 && g.findSubNodesByID(minicloudName) != null))
         && g.getSubNodes.forall(n => n.getName == minicloudName || nodes.contains(n))) match {
       case Some(group) => groupName = group.getName; kevEngine.addVariable("groupName", groupName)
       case None => {
