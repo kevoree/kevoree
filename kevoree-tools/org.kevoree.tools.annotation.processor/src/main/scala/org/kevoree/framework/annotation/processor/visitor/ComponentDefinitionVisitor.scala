@@ -15,26 +15,30 @@
 package org.kevoree.framework.annotation.processor.visitor
 
 import sub._
-import org.kevoree.ComponentType
+import org.kevoree.{NamedElement, TypeDefinition, ComponentType}
 import javax.annotation.processing.ProcessingEnvironment
 import javax.lang.model.util.SimpleElementVisitor6
 import javax.lang.model.element._
 import scala.collection.JavaConversions._
 
-case class ComponentDefinitionVisitor(componentType: ComponentType, env: ProcessingEnvironment, rootVisitor: KevoreeAnnotationProcessor)
+case class ComponentDefinitionVisitor(componentType: ComponentType, _env: ProcessingEnvironment, _rootVisitor: KevoreeAnnotationProcessor)
   extends SimpleElementVisitor6[Any, Element]
   with ProvidedPortProcessor
   with RequiredPortProcessor
-  with ThirdPartyProcessor
-  with DeployUnitProcessor
-  with DictionaryProcessor
   with PortMappingProcessor
-  with LibraryProcessor
   with SlotProcessor
-  with TypeDefinitionProcessor {
+//  with TypeDefinitionProcessor
+  with CommonProcessor {
+
+  var typeDefinition: TypeDefinition = componentType
+  var elementVisitor: ElementVisitor[Any, Element] = this
+  var env: ProcessingEnvironment = _env
+  var rootVisitor: KevoreeAnnotationProcessor = _rootVisitor
+  var annotationType: Class[_ <: java.lang.annotation.Annotation] = classOf[org.kevoree.annotation.ComponentType]
+  var typeDefinitionType : Class[_ <: TypeDefinition] = classOf[ComponentType]
 
   override def visitType(p1: TypeElement, p2: Element): Any = {
-    p1.getSuperclass match {
+    /*p1.getSuperclass match {
       case dt: javax.lang.model.`type`.DeclaredType => {
         val an = dt.asElement().getAnnotation(classOf[org.kevoree.annotation.ComponentType])
         if (an != null) {
@@ -44,36 +48,14 @@ case class ComponentDefinitionVisitor(componentType: ComponentType, env: Process
         }
       }
       case _ =>
-    }
-    p1.getInterfaces.foreach {
-      it =>
-        it match {
-          case dt: javax.lang.model.`type`.DeclaredType => {
-            val annotFragment = dt.asElement().getAnnotation(classOf[org.kevoree.annotation.ComponentType])
-            if (annotFragment != null) {
-              dt.asElement().accept(this, dt.asElement())
-              defineAsSuperType(componentType, dt.asElement().getSimpleName.toString, classOf[ComponentType], true)
-            } else {
-              processDictionary(componentType, dt.asElement().asInstanceOf[TypeElement])
-              processLibrary(componentType, dt.asElement().asInstanceOf[TypeElement])
-            }
-          }
-          case _ =>
-        }
-    }
-    commonProcess(p1)
-  }
+    }*/
 
+    super[CommonProcessor].commonProcess(p1)
 
-  def commonProcess(typeDecl: TypeElement) = {
-    processLibrary(componentType, typeDecl)
-    processDictionary(componentType, typeDecl)
-    processDeployUnit(componentType, typeDecl, env, rootVisitor.getOptions)
-    processThirdParty(componentType, typeDecl, env, rootVisitor)
-    processProvidedPort(componentType, typeDecl, env)
-    processRequiredPort(componentType, typeDecl, env)
-    processSlot(componentType, typeDecl, env)
-    typeDecl.getEnclosedElements.foreach {
+    processProvidedPort(componentType, p1, env)
+    processRequiredPort(componentType, p1, env)
+    processSlot(componentType, p1, env)
+    p1.getEnclosedElements.foreach {
       method => {
 
         method.getKind match {
@@ -85,11 +67,4 @@ case class ComponentDefinitionVisitor(componentType: ComponentType, env: Process
       }
     }
   }
-
-
-  def processMultiMapping(){
-
-  }
-
-
 }

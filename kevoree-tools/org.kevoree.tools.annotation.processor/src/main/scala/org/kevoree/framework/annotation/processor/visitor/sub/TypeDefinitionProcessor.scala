@@ -22,7 +22,6 @@ import org.kevoree._
  * User: duke
  * Date: 26/09/11
  * Time: 15:29
- * To change this template use File | Settings | File Templates.
  */
 
 trait TypeDefinitionProcessor {
@@ -37,8 +36,9 @@ trait TypeDefinitionProcessor {
           case "ComponentType" => LocalUtility.kevoreeFactory.createComponentType
           case "ChannelType" => LocalUtility.kevoreeFactory.createChannelType
           case "GroupType" => LocalUtility.kevoreeFactory.createGroupType
-          case _ @ notFound => println("error => "+parentName+"-"+notFound) ;null
+          case _ @ notFound => println("Error: Unable to find type annotation for " + parentType.getSimpleName + " in " + parentName) ;null
         }
+        System.err.println(parentName)
         newTypeDef.setName(parentName)
         model.addTypeDefinitions(newTypeDef)
 

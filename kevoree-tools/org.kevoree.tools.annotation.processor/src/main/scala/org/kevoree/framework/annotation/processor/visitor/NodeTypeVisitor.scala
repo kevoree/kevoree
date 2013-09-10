@@ -16,29 +16,24 @@ package org.kevoree.framework.annotation.processor.visitor
 import sub._
 import javax.annotation.processing.ProcessingEnvironment
 import javax.lang.model.util.SimpleElementVisitor6
-import org.kevoree.{ComponentType, NodeType}
-import javax.lang.model.element.{Modifier, TypeElement, Element}
+import org.kevoree.{NamedElement, TypeDefinition, NodeType}
+import javax.lang.model.element.{ElementVisitor, TypeElement, Element}
 
-case class NodeTypeVisitor(nodeType: NodeType, env: ProcessingEnvironment, rootVisitor: KevoreeAnnotationProcessor)
+case class NodeTypeVisitor(nodeType: NodeType, _env: ProcessingEnvironment, _rootVisitor: KevoreeAnnotationProcessor)
   extends SimpleElementVisitor6[Any, Element]
   with AdaptationPrimitiveProcessor
-  with DeployUnitProcessor
-  with DictionaryProcessor
-  with LibraryProcessor
-  with ThirdPartyProcessor
-  with TypeDefinitionProcessor {
+//  with TypeDefinitionProcessor
+  with CommonProcessor {
 
-
-  def commonProcess(classdef: TypeElement) {
-    processDictionary(nodeType, classdef)
-    processDeployUnit(nodeType, classdef, env, rootVisitor.getOptions)
-    processLibrary(nodeType, classdef)
-    processThirdParty(nodeType, classdef, env, rootVisitor)
-    processPrimitiveCommand(nodeType, classdef, env)
-  }
+  var typeDefinition: TypeDefinition = nodeType
+  var elementVisitor: ElementVisitor[Any, Element] = this
+  var env: ProcessingEnvironment = _env
+  var rootVisitor: KevoreeAnnotationProcessor = _rootVisitor
+  var annotationType: Class[_ <: java.lang.annotation.Annotation] = classOf[org.kevoree.annotation.NodeType]
+  var typeDefinitionType : Class[_ <: TypeDefinition] = classOf[NodeType]
 
   override def visitType(p1: TypeElement, p2: Element): Any = {
-    p1.getSuperclass match {
+    /*p1.getSuperclass match {
       case dt: javax.lang.model.`type`.DeclaredType => {
         val an: Any = dt.asElement().getAnnotation(classOf[org.kevoree.annotation.NodeType])
         if (an != null) {
@@ -48,24 +43,10 @@ case class NodeTypeVisitor(nodeType: NodeType, env: ProcessingEnvironment, rootV
         }
       }
       case _ =>
-    }
-    import scala.collection.JavaConversions._
-    p1.getInterfaces.foreach{ it =>
-       it match {
-         case dt: javax.lang.model.`type`.DeclaredType => {
-           val an: Any = dt.asElement().getAnnotation(classOf[org.kevoree.annotation.NodeType])
-           if (an != null) {
-             dt.asElement().accept(this, dt.asElement())
-             defineAsSuperType(nodeType, dt.asElement().getSimpleName.toString, classOf[NodeType], true)
-           } else {
-             processDictionary(nodeType, dt.asElement().asInstanceOf[TypeElement])
-             processLibrary(nodeType, dt.asElement().asInstanceOf[TypeElement])
-           }
-         }
-         case _ @ e =>
-       }
-    }
+    }*/
+
     commonProcess(p1)
+    processPrimitiveCommand(nodeType, p1, env)
   }
 
 }

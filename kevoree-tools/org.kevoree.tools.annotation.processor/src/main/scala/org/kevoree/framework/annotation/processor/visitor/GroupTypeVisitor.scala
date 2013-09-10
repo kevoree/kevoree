@@ -13,24 +13,25 @@
  */
 package org.kevoree.framework.annotation.processor.visitor
 
-import sub._
 import javax.annotation.processing.ProcessingEnvironment
 import javax.lang.model.util.SimpleElementVisitor6
-import org.kevoree.GroupType
+import org.kevoree.{NamedElement, TypeDefinition, GroupType}
 import javax.lang.model.element._
-import org.kevoree.framework.KevoreeXmiHelper
-import org.kevoree.framework.annotation.processor.LocalUtility
 
-case class GroupTypeVisitor(groupType: GroupType, env: ProcessingEnvironment, rootVisitor: KevoreeAnnotationProcessor)
+case class GroupTypeVisitor(groupType: GroupType, _env: ProcessingEnvironment, _rootVisitor: KevoreeAnnotationProcessor)
   extends SimpleElementVisitor6[Any, Element]
-  with DeployUnitProcessor
-  with DictionaryProcessor
-  with LibraryProcessor
-  with ThirdPartyProcessor
-  with TypeDefinitionProcessor {
+//  with TypeDefinitionProcessor
+  with CommonProcessor {
+
+  var typeDefinition: TypeDefinition = groupType
+  var elementVisitor: ElementVisitor[Any, Element] = this
+  var env: ProcessingEnvironment = _env
+  var rootVisitor: KevoreeAnnotationProcessor = _rootVisitor
+  var annotationType: Class[_ <: java.lang.annotation.Annotation] = classOf[org.kevoree.annotation.GroupType]
+  var typeDefinitionType : Class[_ <: TypeDefinition] = classOf[GroupType]
 
   override def visitType(p1: TypeElement, p2: Element): Any = {
-    p1.getSuperclass match {
+    /*p1.getSuperclass match {
       case dt: javax.lang.model.`type`.DeclaredType => {
         val an = dt.asElement().getAnnotation(classOf[org.kevoree.annotation.GroupType])
         if (an != null) {
@@ -40,34 +41,9 @@ case class GroupTypeVisitor(groupType: GroupType, env: ProcessingEnvironment, ro
         }
       }
       case _ =>
-    }
+    }*/
 
-    import scala.collection.JavaConversions._
-    p1.getInterfaces.foreach {
-      it =>
-        it match {
-          case dt: javax.lang.model.`type`.DeclaredType => {
-            val annotFragment = dt.asElement().getAnnotation(classOf[org.kevoree.annotation.GroupType])
-            if (annotFragment != null) {
-              dt.asElement().accept(this, dt.asElement())
-              defineAsSuperType(groupType, dt.asElement().getSimpleName.toString, classOf[GroupType], true)
-            } else {
-              processDictionary(groupType, dt.asElement().asInstanceOf[TypeElement])
-              processLibrary(groupType, dt.asElement().asInstanceOf[TypeElement])
-            }
-          }
-          case _ =>
-        }
-    }
-
-    //SUB PROCESSOR
-    processDictionary(groupType, p2.asInstanceOf[TypeElement])
-    processDeployUnit(groupType, p2.asInstanceOf[TypeElement], env, rootVisitor.getOptions)
-
-    processLibrary(groupType, p2.asInstanceOf[TypeElement])
-
-    processThirdParty(groupType, p2.asInstanceOf[TypeElement], env, rootVisitor)
+    commonProcess(p1)
 
   }
-
 }

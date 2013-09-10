@@ -14,23 +14,24 @@
 
 package org.kevoree.framework.annotation.processor.visitor
 
-import sub._
 import javax.annotation.processing.ProcessingEnvironment
 import javax.lang.model.util.SimpleElementVisitor6
-import javax.lang.model.element.{Modifier, Element, TypeElement}
-import org.kevoree.ChannelType
-import scala.collection.JavaConversions._
+import javax.lang.model.element.{ElementVisitor, Element, TypeElement}
+import org.kevoree.{NamedElement, TypeDefinition, ChannelType}
 
-case class ChannelTypeFragmentVisitor(channelType: ChannelType, env: ProcessingEnvironment, rootVisitor: KevoreeAnnotationProcessor) extends SimpleElementVisitor6[Any, Element]
-with DeployUnitProcessor
-with DictionaryProcessor
-with LibraryProcessor
-with ThirdPartyProcessor
-with TypeDefinitionProcessor {
+case class ChannelTypeFragmentVisitor(channelType: ChannelType, _env: ProcessingEnvironment, _rootVisitor: KevoreeAnnotationProcessor) extends SimpleElementVisitor6[Any, Element]
+//with TypeDefinitionProcessor
+with CommonProcessor {
 
+  var typeDefinition: TypeDefinition = channelType
+  var elementVisitor: ElementVisitor[Any, Element] = this
+  var env: ProcessingEnvironment = _env
+  var rootVisitor: KevoreeAnnotationProcessor = _rootVisitor
+  var annotationType: Class[_ <: java.lang.annotation.Annotation] = classOf[org.kevoree.annotation.ChannelType]
+  var typeDefinitionType : Class[_ <: TypeDefinition] = classOf[ChannelType]
 
   override def visitType(p1: TypeElement, p2: Element): Any = {
-    p1.getSuperclass match {
+    /*p1.getSuperclass match {
       case dt: javax.lang.model.`type`.DeclaredType => {
         val an = dt.asElement().getAnnotation(classOf[org.kevoree.annotation.ChannelType])
         if (an != null) {
@@ -40,32 +41,9 @@ with TypeDefinitionProcessor {
         }
       }
       case _ =>
-    }
+    }*/
 
-    p1.getInterfaces.foreach {
-      it =>
-        it match {
-          case dt: javax.lang.model.`type`.DeclaredType => {
-            val annotFragment = dt.asElement().getAnnotation(classOf[org.kevoree.annotation.ChannelType])
-            if (annotFragment != null) {
-              dt.asElement().accept(this, dt.asElement())
-              defineAsSuperType(channelType, dt.asElement().getSimpleName.toString, classOf[ChannelType], true)
-            } else {
-              processDictionary(channelType, dt.asElement().asInstanceOf[TypeElement])
-              processLibrary(channelType, dt.asElement().asInstanceOf[TypeElement])
-            }
-          }
-          case _ =>
-        }
-    }
     commonProcess(p1)
-  }
-
-  def commonProcess(typeDecl: TypeElement) {
-    processDictionary(channelType, typeDecl)
-    processDeployUnit(channelType, typeDecl, env, rootVisitor.getOptions)
-    processLibrary(channelType, typeDecl)
-    processThirdParty(channelType, typeDecl, env, rootVisitor)
   }
 
 }

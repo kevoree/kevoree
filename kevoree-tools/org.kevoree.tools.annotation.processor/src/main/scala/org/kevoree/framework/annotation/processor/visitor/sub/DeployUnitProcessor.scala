@@ -85,8 +85,6 @@ trait DeployUnitProcessor {
         if (!typeDef.getDeployUnits.contains(ctdeployunit)) {
           typeDef.addDeployUnits(ctdeployunit)
         }
-
-
     }
 
 
