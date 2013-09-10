@@ -55,7 +55,7 @@ case class ModelHandlerServiceNoKernel(model : ContainerRoot) extends org.kevore
 
   def atomicCompareAndSwapModel(previousModel: UUIDModel, targetModel: ContainerRoot) = null
 
-  def getPreviousModel = null
+  def getPreviousModels = null
 
   def getNodeName = ""
 

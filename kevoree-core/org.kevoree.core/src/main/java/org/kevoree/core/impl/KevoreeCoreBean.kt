@@ -341,7 +341,7 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
         return lastDate
     }
 
-    override fun getPreviousModel(): MutableList<ContainerRoot> {
+    override fun getPreviousModels(): MutableList<ContainerRoot> {
         return scheduler?.submit(GetPreviousModelCallable())?.get() as MutableList<ContainerRoot>
     }
 

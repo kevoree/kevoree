@@ -53,4 +53,12 @@ public abstract class ModelListenerAdapter implements ModelListener {
 
     @Override
     public abstract void modelUpdated();
+
+    @Override
+    public void preRollback(ContainerRoot currentModel, ContainerRoot proposedModel) {
+    }
+
+    @Override
+    public void postRollback(ContainerRoot currentModel, ContainerRoot proposedModel) {
+    }
 }

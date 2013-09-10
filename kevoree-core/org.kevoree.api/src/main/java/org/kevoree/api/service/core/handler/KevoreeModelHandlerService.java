@@ -61,7 +61,11 @@ public interface KevoreeModelHandlerService {
 
     public Date atomicCompareAndSwapModel(UUIDModel previousModel, ContainerRoot targetModel) throws KevoreeModelUpdateException;
 
-    public List<ContainerRoot> getPreviousModel();
+    /**
+     *
+     * @return a list of the previous models that have been applied on the runtime
+     */
+    public List<ContainerRoot> getPreviousModels();
 
     public String getNodeName();
 

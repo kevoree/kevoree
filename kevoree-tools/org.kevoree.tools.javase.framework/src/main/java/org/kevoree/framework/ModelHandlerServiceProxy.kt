@@ -123,12 +123,12 @@ class ModelHandlerServiceProxy(val proxy: KevoreeModelHandlerService): KevoreeMo
         }
     }
 
-    override fun getPreviousModel(): MutableList<ContainerRoot>? {
+    override fun getPreviousModels(): MutableList<ContainerRoot>? {
         return if (proxyModel.get() != null) {
-            Log.error("getPreviousModel not available during update")
+            Log.error("getPreviousModels not available during update")
             null
         } else {
-            proxy.getPreviousModel()
+            proxy.getPreviousModels()
         }
     }
 

@@ -53,7 +53,7 @@ class ModelHandlerServiceWrapper(kernel : KevoreeUIKernel) extends KevoreeModelH
 
   def atomicUpdateModel(model: ContainerRoot): Date = null
 
-  def getPreviousModel: List[ContainerRoot] = null
+  def getPreviousModels: List[ContainerRoot] = null
 
   def getNodeName: String = ""
 
