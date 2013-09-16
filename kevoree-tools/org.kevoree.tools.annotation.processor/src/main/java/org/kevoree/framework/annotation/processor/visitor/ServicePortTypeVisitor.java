@@ -30,18 +30,20 @@
  */
 package org.kevoree.framework.annotation.processor.visitor;
 
-import org.kevoree.*;
 import org.kevoree.KevoreeFactory;
+import org.kevoree.Operation;
+import org.kevoree.Parameter;
+import org.kevoree.ServicePortType;
 import org.kevoree.framework.annotation.processor.LocalUtility;
 import org.kevoree.impl.DefaultKevoreeFactory;
-import scala.Some;
 
-import javax.lang.model.element.Element;
-import javax.lang.model.element.ElementKind;
-import javax.lang.model.element.ExecutableElement;
-import javax.lang.model.element.VariableElement;
-import javax.lang.model.type.*;
+import javax.lang.model.element.*;
+import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.TypeKind;
+import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.SimpleTypeVisitor6;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author ffouquet
@@ -51,46 +53,80 @@ public class ServicePortTypeVisitor extends SimpleTypeVisitor6<Object, Object> {
     protected KevoreeFactory kevoreeFactory = new DefaultKevoreeFactory();
     ServicePortType dataType = kevoreeFactory.createServicePortType();
 
+    private ServicePortType currentFirstType;
+    private List<ServicePortType> inheritedDataTypes;
+
     public ServicePortType getDataType() {
         return dataType;
+    }
+
+
+    public List<ServicePortType> getInheritedDataTypes() {
+        return inheritedDataTypes;
     }
 
     public void setDataType(ServicePortType dataType) {
         this.dataType = dataType;
     }
 
-    public void visitTypeDeclaration(TypeMirror t) {
+    public void visitTypeDeclaration(DeclaredType dt) {
+        ServicePortType newServicePortType;
+        if (inheritedDataTypes == null) {
+            newServicePortType = dataType;
+        } else {
+            newServicePortType = kevoreeFactory.createServicePortType();
+        }
 
-        if (t instanceof javax.lang.model.type.DeclaredType) {
-            javax.lang.model.type.DeclaredType dt = (javax.lang.model.type.DeclaredType) t;
+        newServicePortType.setName(dt.asElement().toString());
+        for (Element e : dt.asElement().getEnclosedElements()) {
+            ExecutableElement ee = (ExecutableElement) e;
+            if (e.getKind().compareTo(ElementKind.METHOD) == 0) {
+                Operation newo = kevoreeFactory.createOperation();
+                newo.setName(e.getSimpleName().toString());
+                newServicePortType.addOperations(newo);
+                //BUILD RETURN TYPE
+                DataTypeVisitor rtv = new DataTypeVisitor();
+                ee.getReturnType().accept(rtv, ee.getReturnType());
+                newo.setReturnType(LocalUtility.getOraddDataType(rtv.getDataType()));
+                //BUILD PARAMETER
+                Integer i = 0;
+                for (VariableElement ve : ee.getParameters()) {
+                    Parameter newp = kevoreeFactory.createParameter();
+                    newp.setName(ve.toString());
+                    newp.setOrder(i);
+                    newo.addParameters(newp);
+                    DataTypeVisitor ptv = new DataTypeVisitor();
+                    ve.asType().accept(ptv, ve);
+                    newp.setType(LocalUtility.getOraddDataType(ptv.getDataType()));
+                    i = i + 1;
 
-            dataType.setName(dt.asElement().toString());
-            for (Element e : dt.asElement().getEnclosedElements()) {
-                ExecutableElement ee = (ExecutableElement) e;
-                if (e.getKind().compareTo(ElementKind.METHOD) == 0) {
-                    Operation newo = kevoreeFactory.createOperation();
-                    newo.setName(e.getSimpleName().toString());
-                    dataType.addOperations(newo);
-                    //BUILD RETURN TYPE
-                    DataTypeVisitor rtv = new DataTypeVisitor();
-                    ee.getReturnType().accept(rtv, ee.getReturnType());
-                    newo.setReturnType(LocalUtility.getOraddDataType(rtv.getDataType()));
-                    //BUILD PARAMETER
-                    Integer i = 0;
-                    for (VariableElement ve : ee.getParameters()) {
-                        Parameter newp = kevoreeFactory.createParameter();
-                        newp.setName(ve.toString());
-                        newp.setOrder(i);
-                        newo.addParameters(newp);
-                        DataTypeVisitor ptv = new DataTypeVisitor();
-                        ve.asType().accept(ptv,ve);
-                        newp.setType(LocalUtility.getOraddDataType(ptv.getDataType()));
-                        i = i + 1;
-
-                    }
                 }
             }
+        }
 
+        if (inheritedDataTypes != null) {
+            inheritedDataTypes.add(newServicePortType);
+            currentFirstType.addSuperTypes(newServicePortType);
+        }
+        if (dt.asElement() instanceof TypeElement) {
+            currentFirstType = newServicePortType;
+            manageSuperTypes(((TypeElement) dt.asElement()));
+
+        }
+    }
+
+    private void manageSuperTypes(TypeElement typeElement) {
+        if (inheritedDataTypes == null) {
+            inheritedDataTypes = new ArrayList<ServicePortType>();
+        }
+        // MANAGE SUPERCLASS
+        TypeMirror superClass = typeElement.getSuperclass();
+        if (!superClass.getKind().equals(TypeKind.NONE)) {
+            superClass.accept(this, superClass);
+        }
+        // MANAGE INTERFACES
+        for (TypeMirror typeInterface : typeElement.getInterfaces()) {
+            typeInterface.accept(this, typeInterface);
         }
     }
 

@@ -16,9 +16,11 @@ package org.kevoree.tools.annotation.generator
 import org.kevoree.framework.KevoreeGeneratorHelper
 import javax.annotation.processing.Filer
 import javax.tools.StandardLocation
-import org.kevoree.{TypedElement, ContainerRoot, MessagePortType, PortTypeRef, ComponentType => KevoreeComponentType, ServicePortType}
+import org.kevoree.{ComponentType => KevoreeComponentType, _}
 import org.kevoree.annotation.ThreadStrategy
 import scala.collection.JavaConversions._
+import java.io.Writer
+import scala.Tuple2
 
 
 object KevoreeRequiredPortGenerator {
@@ -39,24 +41,25 @@ object KevoreeRequiredPortGenerator {
       baseName = "org.kevoree.framework.MessagePort"
     }
 
+    writer.append("class " + portName + "(val component : " + ct.getName + ") : " + baseName + " , ")
     ThreadingMapping.getMappings.get(Tuple2(ct.getName, ref.getName)) match {
       case ThreadStrategy.THREAD_QUEUE => {
-        writer.append("class " + portName + "(val component : " + ct.getName + ") : " + baseName + " , KevoreeRequiredThreadPort {\n")
+        writer.append("KevoreeRequiredThreadPort {\n")
         writer.append("override var delegate: org.kevoree.framework.KevoreeChannelFragment? = null\n")
         writer.append("override val queue : java.util.concurrent.LinkedBlockingDeque<Any?> = java.util.concurrent.LinkedBlockingDeque<Any?>()\n")
         writer.append("override var reader : java.lang.Thread? = null\n")
       }
       case ThreadStrategy.SHARED_THREAD => {
-        writer.append("class " + portName + "(val component : " + ct.getName + ") : " + baseName + " , KevoreeRequiredExecutorPort {\n")
+        writer.append("KevoreeRequiredExecutorPort {\n")
         writer.append("override var pool: PausablePortThreadPoolExecutor? = null\n")
         writer.append("override var delegate: org.kevoree.framework.KevoreeChannelFragment? = null\n")
       }
       case ThreadStrategy.NONE => {
-        writer.append("class " + portName + "(val component : " + ct.getName + ") : " + baseName + " , KevoreeRequiredNonePort {\n")
+        writer.append("KevoreeRequiredNonePort {\n")
         writer.append("override var delegate: org.kevoree.framework.KevoreeChannelFragment? = null\n")
       }
       case _ => {
-        writer.append("class " + portName + "(val component : " + ct.getName + ") : " + baseName + " , KevoreeRequiredExecutorPort {\n")
+        writer.append("KevoreeRequiredExecutorPort {\n")
         writer.append("override var pool: PausablePortThreadPoolExecutor? = null\n")
         writer.append("override var delegate: org.kevoree.framework.KevoreeChannelFragment? = null\n")
       }
@@ -78,7 +81,7 @@ object KevoreeRequiredPortGenerator {
         writer.append("override fun getInOut():Boolean {return true}\n")
 
         /* CREATE INTERFACE ACTOR MOK */
-        sPT.getOperations.foreach {
+        /*sPT.getOperations.foreach {
           op =>
           /* GENERATE METHOD SIGNATURE */
             writer.append("override fun " + op.getName + "(")
@@ -121,13 +124,66 @@ object KevoreeRequiredPortGenerator {
             }
 
             writer.append("}\n")
-        }
+        }*/
+        // generate for superType of the current portType
+        generateOperationForType(sPT, writer)
       }
 
     }
 
     writer.append("}\n")
     writer.close()
+  }
+
+  private def generateOperationForType(sPT : ServicePortType, writer : Writer) {
+    sPT.getOperations.foreach {
+      op =>
+      /* GENERATE METHOD SIGNATURE */
+        writer.append("override fun " + op.getName + "(")
+        var i = 0
+        op.getParameters.sortWith((p1, p2) => p2.getOrder > p1.getOrder).foreach {
+          param =>
+            if (i != 0) {
+              writer.append(",")
+            }
+            writer.append(GeneratorHelper.protectReservedWord(param.getName) + ":" + GeneratorHelper.protectedType(Printer.print(param.getType, '<', '>')) + "?")
+            i = i + 1
+        }
+
+        var rt = op.getReturnType.getName
+        if (op.getReturnType.getGenericTypes.size > 0) {
+          rt += op.getReturnType.getGenericTypes.collect {
+            case s: TypedElement => s.getName
+          }.mkString("<", ",", ">")
+        }
+
+        if (isPrimitiveJava(rt)) {
+          writer.append(") : " + GeneratorHelper.protectedType(rt) + " {\n")
+        } else {
+          writer.append(") : " + GeneratorHelper.protectedType(rt) + "? {\n")
+        }
+
+        /* Generate method corpus */
+        /* CREATE MSG OP CALL */
+        writer.append("val msgcall = org.kevoree.framework.MethodCallMessage()\n")
+        writer.append("msgcall.setMethodName(\"" + op.getName + "\")\n")
+        op.getParameters.sortWith((p1, p2) => p2.getOrder > p1.getOrder).foreach {
+          param =>
+            writer.append("msgcall.getParams()!!.put(\"" + param.getName + "\"," + GeneratorHelper.protectReservedWord(param.getName) + " as Any)\n")
+        }
+
+        if (isPrimitiveJava(rt)) {
+          writer.append("return this.sendWait(msgcall) as " + GeneratorHelper.protectedType(rt))
+        } else {
+          writer.append("return this.sendWait(msgcall) as? " + GeneratorHelper.protectedType(rt))
+        }
+
+        writer.append("}\n")
+    }
+    sPT.getSuperTypes.foreach(
+      supertype => if (supertype.isInstanceOf[PortType]) {
+        generateOperationForType(supertype.asInstanceOf[ServicePortType], writer)
+      })
   }
 
 

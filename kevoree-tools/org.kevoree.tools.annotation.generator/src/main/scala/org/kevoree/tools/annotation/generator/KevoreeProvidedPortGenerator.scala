@@ -36,8 +36,11 @@ import scala.collection.JavaConversions._
 
 import org.kevoree.framework.{KevoreeGeneratorHelper, Constants}
 import javax.tools.StandardLocation
-import org.kevoree.{TypedElement, ContainerRoot, MessagePortType, PortTypeRef, ComponentType => KevoreeComponentType, ServicePortType}
+import org.kevoree.{ComponentType => KevoreeComponentType, _}
 import org.kevoree.annotation.ThreadStrategy
+import java.io.Writer
+import scala.Tuple2
+import scala.Some
 
 object KevoreeProvidedPortGenerator {
 
@@ -69,19 +72,20 @@ object KevoreeProvidedPortGenerator {
       baseName = "org.kevoree.framework.MessagePort"
     }
 
+    writer.append("class " + portName + "(val component : " + ct.getName + ") : " + baseName + " , ")
     ThreadingMapping.getMappings.get(Tuple2(ct.getName, ref.getName)) match {
       case ThreadStrategy.THREAD_QUEUE => {
-        writer.append("class " + portName + "(val component : " + ct.getName + ") : " + baseName + " , KevoreeProvidedThreadPort {\n")
+        writer.append("KevoreeProvidedThreadPort {\n")
       }
       case ThreadStrategy.SHARED_THREAD => {
-        writer.append("class " + portName + "(val component : " + ct.getName + ") : " + baseName + " , KevoreeProvidedExecutorPort {\n")
+        writer.append("KevoreeProvidedExecutorPort {\n")
         writer.append("override var pool: PausablePortThreadPoolExecutor? = null\n")
       }
       case ThreadStrategy.NONE => {
-        writer.append("class " + portName + "(val component : " + ct.getName + ") : " + baseName + " , KevoreeProvidedNonePort {\n")
+        writer.append("KevoreeProvidedNonePort {\n")
       }
       case _ => {
-        writer.append("class " + portName + "(val component : " + ct.getName + ") : " + baseName + " , KevoreeProvidedExecutorPort {\n")
+        writer.append("KevoreeProvidedExecutorPort {\n")
         writer.append("override var pool: PausablePortThreadPoolExecutor? = null\n")
       }
     }
@@ -141,7 +145,7 @@ object KevoreeProvidedPortGenerator {
             } else {
               writer.append("o")
             }
-            writer.append(");return null}catch(e:Exception){e.printStackTrace();println(\"Uncatched exception while processing Kevoree message\");return null}\n")
+            writer.append(");return null}catch(e:Throwable){e.printStackTrace();println(\"Uncatched exception while processing Kevoree message\");return null}\n")
             writer.append("}}}\n")
           }
           case None => {
@@ -153,7 +157,7 @@ object KevoreeProvidedPortGenerator {
 
       case sPT: ServicePortType => {
         /* CREATE INTERFACE ACTOR MOK */
-        sPT.getOperations.foreach {
+        /*sPT.getOperations.foreach {
           op =>
           /* GENERATE METHOD SIGNATURE */
             writer.append("override fun " + op.getName + "(")
@@ -187,11 +191,13 @@ object KevoreeProvidedPortGenerator {
             }
             writer.append("return this.sendWait(msgcall) as " + GeneratorHelper.protectedType(rt))
             writer.append("}\n")
-        }
+        }*/
+        generateOperationForType(sPT, writer)
+        // generate for superType of the current portType
         /* CREATE ACTOR LOOP */
         writer.append("override fun internal_process(o : Any?):Any?{ when(o) {\n")
         writer.append("is org.kevoree.framework.MethodCallMessage -> { when((o as org.kevoree.framework.MethodCallMessage).getMethodName()) {\n")
-        sPT.getOperations.foreach {
+        /*sPT.getOperations.foreach {
           op =>
           /* FOUND METHOD MAPPING */
             ref.getMappings.find(map => {
@@ -221,7 +227,9 @@ object KevoreeProvidedPortGenerator {
 
               }
             }
-        }
+        }*/
+        generateInternalProcessForType(sPT, ref, writer, ct.getName)
+        // generate for superType of the current portType
         writer.append("else -> { println(\"uncatch message , method not found in service declaration : \");return null}\n")
         writer.append("}")
         writer.append("}")
@@ -235,4 +243,83 @@ object KevoreeProvidedPortGenerator {
     writer.close()
   }
 
+  private def generateOperationForType(sPT: ServicePortType, writer: Writer) {
+    sPT.getOperations.foreach {
+      op =>
+      /* GENERATE METHOD SIGNATURE */
+        writer.append("override fun " + op.getName + "(")
+        var i = 0
+        op.getParameters.sortWith((p1, p2) => p2.getOrder > p1.getOrder).foreach {
+          param =>
+            if (i != 0) {
+              writer.append(",")
+            }
+            writer.append(GeneratorHelper.protectReservedWord(param.getName) + ":" + GeneratorHelper.protectedType(Printer.print(param.getType, '<', '>')) + "?")
+            i = i + 1
+        }
+        /* GENERATES RETURN TYPE in rt */
+        var rt = op.getReturnType.getName
+
+        if (op.getReturnType.getGenericTypes.size > 0) {
+          rt += op.getReturnType.getGenericTypes.collect {
+            case s: TypedElement => s.getName
+          }.mkString("<", ",", ">")
+        }
+        writer.append(") : " + GeneratorHelper.protectedType(rt) + " {\n")
+
+
+        /* Generate method corpus */
+        /* CREATE MSG OP CALL */
+        writer.append("val msgcall = org.kevoree.framework.MethodCallMessage()\n")
+        writer.append("msgcall.setMethodName(\"" + op.getName + "\")\n")
+        op.getParameters.sortWith((p1, p2) => p2.getOrder > p1.getOrder).foreach {
+          param =>
+            writer.append("msgcall.getParams()!!.put(\"" + param.getName + "\"," + GeneratorHelper.protectReservedWord(param.getName) + " as Any)\n")
+        }
+        writer.append("return this.sendWait(msgcall) as " + GeneratorHelper.protectedType(rt))
+        writer.append("}\n")
+    }
+    sPT.getSuperTypes.foreach(
+      supertype => if (supertype.isInstanceOf[PortType]) {
+        generateOperationForType(supertype.asInstanceOf[ServicePortType], writer)
+      })
+  }
+
+  private def generateInternalProcessForType(sPT: ServicePortType, ref: PortTypeRef, writer: Writer, componentName : String) {
+    sPT.getOperations.foreach {
+      op =>
+      /* FOUND METHOD MAPPING */
+        ref.getMappings.find(map => {
+          map.getServiceMethodName.equals(op.getName)
+        }) match {
+          case Some(mapping) => {
+            writer.append("\"" + op.getName + "\"-> { try { return component." + mapping.getBeanMethodName + "(")
+            var i = 0
+            op.getParameters.sortWith((p1, p2) => p2.getOrder > p1.getOrder).foreach {
+              param =>
+                if (i != 0) {
+                  writer.append(",")
+                }
+                writer.append("if((o as org.kevoree.framework.MethodCallMessage).getParams()!!.containsKey(\"" + param.getName + "\")){")
+                writer.append("(o as org.kevoree.framework.MethodCallMessage).getParams()!!.get(\"" + param.getName + "\") as " + GeneratorHelper.protectedType(Printer.print(param.getType, '<', '>')) + "")
+                writer.append("}else{")
+                writer.append("(o as org.kevoree.framework.MethodCallMessage).getParams()!!.get(\"arg" + i + "\") as " + GeneratorHelper.protectedType(Printer.print(param.getType, '<', '>')) + "")
+                writer.append("}")
+                i = i + 1
+            }
+            writer.append(")} catch(e:Exception) {e.printStackTrace();println(\"Uncatched exception while processing Kevoree message\");return null }}\n")
+
+          }
+          case None => {
+            sys.error("No mapping found for method '" + op.getName + "' of ServicePort '" + ref.getName + "' in component '" + componentName + "'")
+            //println("No mapping found for method '"+op.getName+"' of ServicePort '" + ref.getName + "' in component '" + ct.getName + "'")
+
+          }
+        }
+    }
+    sPT.getSuperTypes.foreach(
+      supertype => if (supertype.isInstanceOf[PortType]) {
+        generateInternalProcessForType(supertype.asInstanceOf[ServicePortType], ref, writer, componentName)
+      })
+  }
 }

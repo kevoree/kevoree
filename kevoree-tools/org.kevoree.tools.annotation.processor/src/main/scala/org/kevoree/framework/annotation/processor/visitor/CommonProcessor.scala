@@ -35,7 +35,7 @@ with TypeDefinitionProcessor {
             val annotFragment = dt.asElement().getAnnotation(annotationType)
             if (annotFragment != null) {
               dt.asElement().accept(elementVisitor, dt.asElement())
-              defineAsSuperType(typeDefinition, dt.asElement().getSimpleName.toString, typeDefinitionType, true)
+              defineAsSuperType(typeDefinition, dt.asElement().getSimpleName.toString, typeDefinitionType, isAbstract = true)
             } else {
               commonGenericProcess(dt.asElement().asInstanceOf[TypeElement])
             }

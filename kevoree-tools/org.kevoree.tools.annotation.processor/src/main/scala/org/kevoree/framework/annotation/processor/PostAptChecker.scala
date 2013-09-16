@@ -37,14 +37,14 @@ class PostAptChecker(root: ContainerRoot, env: ProcessingEnvironment) {
         providedPortTypeRef.getRef match {
           case mpt : MessagePortType => {
             if (!(providedPortTypeRef.getMappings.size > 0)) {
-              env.getMessager.printMessage(Kind.ERROR, "The process method of port: " + providedPortTypeRef.getName + ":MessagePort is not mapped on any method. Please, complete your code.")
+              env.getMessager.printMessage(Kind.ERROR, "The process method of port: " + providedPortTypeRef.getName + ":MessagePort is not mapped on any method for the component " + ct.getName + ". Please, complete your code.")
               nbErrors += 1
             }
           }
           case spt : ServicePortType => {
             spt.getOperations.foreach{op=>
               if(providedPortTypeRef.getMappings.find(ptmap => ptmap.getServiceMethodName.equals(op.getName)).isEmpty) {
-                env.getMessager.printMessage(Kind.ERROR, "The method " + op.getName + " of port " + providedPortTypeRef.getName + ":" + spt.getName + " is not mapped on any method. Please, complete your code.")
+                env.getMessager.printMessage(Kind.ERROR, "The method " + op.getName + " of port " + providedPortTypeRef.getName + ":" + spt.getName + " is not mapped on any method for the component " + ct.getName + ". Please, complete your code.")
                 nbErrors += 1
               }
             }
