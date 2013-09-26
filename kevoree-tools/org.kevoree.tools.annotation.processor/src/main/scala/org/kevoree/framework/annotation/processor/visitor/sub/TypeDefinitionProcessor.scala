@@ -38,7 +38,6 @@ trait TypeDefinitionProcessor {
           case "GroupType" => LocalUtility.kevoreeFactory.createGroupType
           case _ @ notFound => println("Error: Unable to find type annotation for " + parentType.getSimpleName + " in " + parentName) ;null
         }
-        System.err.println(parentName)
         newTypeDef.setName(parentName)
         model.addTypeDefinitions(newTypeDef)
 
