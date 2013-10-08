@@ -101,7 +101,7 @@ trait RequiredPortProcessor extends CommonPortProcessor {
   private def definePortType(requiredPort: RequiredPort, componentType: ComponentType, classdef: TypeElement, env: ProcessingEnvironment): (PortType, java.util.List[PortType]) = {
     requiredPort.`type` match {
       case org.kevoree.annotation.PortType.SERVICE => {
-        val visitor = new ServicePortTypeVisitor
+        val visitor = new ServicePortTypeVisitor(env)
         try {
           requiredPort.className
         } catch {

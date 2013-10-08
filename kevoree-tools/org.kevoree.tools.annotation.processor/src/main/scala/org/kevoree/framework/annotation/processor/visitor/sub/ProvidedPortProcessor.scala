@@ -101,7 +101,7 @@ trait ProvidedPortProcessor extends CommonPortProcessor {
 
       case org.kevoree.annotation.PortType.SERVICE => {
         //Service port
-        val visitor = new ServicePortTypeVisitor
+        val visitor = new ServicePortTypeVisitor(env)
         try {
           providedPort.className
         } catch {

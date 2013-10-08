@@ -37,11 +37,13 @@ import org.kevoree.ServicePortType;
 import org.kevoree.framework.annotation.processor.LocalUtility;
 import org.kevoree.impl.DefaultKevoreeFactory;
 
+import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.*;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.SimpleTypeVisitor6;
+import javax.tools.Diagnostic;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,6 +57,12 @@ public class ServicePortTypeVisitor extends SimpleTypeVisitor6<Object, Object> {
 
     private ServicePortType currentFirstType;
     private List<ServicePortType> inheritedDataTypes;
+
+    private ProcessingEnvironment env;
+
+    public ServicePortTypeVisitor(ProcessingEnvironment env) {
+        this.env = env;
+    }
 
     public ServicePortType getDataType() {
         return dataType;
@@ -79,6 +87,7 @@ public class ServicePortTypeVisitor extends SimpleTypeVisitor6<Object, Object> {
 
         newServicePortType.setName(dt.asElement().toString());
         for (Element e : dt.asElement().getEnclosedElements()) {
+            if (e instanceof ExecutableElement) {
             ExecutableElement ee = (ExecutableElement) e;
             if (e.getKind().compareTo(ElementKind.METHOD) == 0) {
                 Operation newo = kevoreeFactory.createOperation();
@@ -101,6 +110,9 @@ public class ServicePortTypeVisitor extends SimpleTypeVisitor6<Object, Object> {
                     i = i + 1;
 
                 }
+            }
+            } else {
+                env.getMessager().printMessage(Diagnostic.Kind.WARNING, "Are you sure you define a service " + newServicePortType.getName() + " from an interface (and not a class) ?");
             }
         }
 
