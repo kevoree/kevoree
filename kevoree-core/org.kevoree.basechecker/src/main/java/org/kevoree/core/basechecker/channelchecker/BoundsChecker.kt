@@ -33,23 +33,23 @@ class BoundsChecker: CheckerService {
     override fun check(model: ContainerRoot?): MutableList<CheckerViolation> {
         var violations = ArrayList<CheckerViolation>()
         if (model != null) {
-            for (channel in model.getHubs()) {
+            for (channel in model.hubs) {
                 val relatedNodes = channelAspect.getRelatedNodes(channel)
-                val maxNodes = (channel.getTypeDefinition() as ChannelType).getUpperFragments()
+                val maxNodes = (channel.typeDefinition as ChannelType).upperFragments
                 if (maxNodes != 0) {
 
-                    if (relatedNodes.size() > maxNodes) {
+                    if (relatedNodes.size() > maxNodes!!) {
                         val violation = CheckerViolation()
-                        violation.setMessage("The channel " + channel.getName() + " is connected to " + relatedNodes.size + " different nodes, but only admits " + maxNodes)
+                        violation.setMessage("The channel " + channel.name + " is connected to " + relatedNodes.size + " different nodes, but only admits " + maxNodes)
                         violations.add(violation)
                     }
                 }
-                val maxLocalBindings = (channel.getTypeDefinition() as ChannelType).getUpperBindings()
+                val maxLocalBindings = (channel.typeDefinition as ChannelType).upperBindings
                 if (maxLocalBindings != 0) {
                     for (node in relatedNodes) {
-                        if (channelAspect.getRelatedBindings(channel, node).size > maxLocalBindings) {
+                        if (channelAspect.getRelatedBindings(channel, node).size > maxLocalBindings!!) {
                             val violation = CheckerViolation()
-                            violation.setMessage("The number of bindings between channel '" + channel.getName() + "' and node '" + node.getName() + "' is higher than the channel limit(" + maxLocalBindings + ")")
+                            violation.setMessage("The number of bindings between channel '" + channel.name + "' and node '" + node.name + "' is higher than the channel limit(" + maxLocalBindings + ")")
                             violations.add(violation)
                         }
                     }

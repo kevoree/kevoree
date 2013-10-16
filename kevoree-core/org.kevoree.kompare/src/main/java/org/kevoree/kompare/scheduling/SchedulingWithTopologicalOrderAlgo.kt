@@ -11,9 +11,8 @@ import org.kevoree.kompare.StepBuilder
 import org.kevoreeadaptation.KevoreeAdaptationFactory
 import org.kevoree.kompare.JavaSePrimitive
 import org.kevoree.framework.kaspects.PortAspect
-import org.kevoree.modeling.api.KMFContainer
 
-class SchedulingWithTopologicalOrderAlgo: StepBuilder {
+class SchedulingWithTopologicalOrderAlgo : StepBuilder {
     override var previousStep: ParallelStep? = null
     override var currentSteps: ParallelStep? = null
     override var adaptationModelFactory: KevoreeAdaptationFactory = org.kevoreeadaptation.impl.DefaultKevoreeAdaptationFactory()
@@ -69,9 +68,9 @@ class SchedulingWithTopologicalOrderAlgo: StepBuilder {
             for (command2 in commands) {
                 graph.addVertex(command2)
                 if (!command.equals(command2)) {
-                    val cmdDep = (map.get(command2.getRef() as Instance))
+                    val cmdDep = (map.get(command2.ref as Instance))
                     if(cmdDep != null){
-                        if (cmdDep.contains(command.getRef() as Instance)) {
+                        if (cmdDep.contains(command.ref as Instance)) {
                             if (start) {
                                 graph.addEdge(command2, command, Assoc2(command2, command))
                             } else {
@@ -100,33 +99,33 @@ class SchedulingWithTopologicalOrderAlgo: StepBuilder {
         val instanceDependencies: HashMap<Instance, MutableList<Instance>> = HashMap<Instance, MutableList<Instance>>()
 
         for (command in commands) {
-            if(command.getRef() is ComponentInstance) {
-                val component = command.getRef() as ComponentInstance
+            if(command.ref is ComponentInstance) {
+                val component = command.ref as ComponentInstance
                 var instancesDependencyForComponent: MutableList<Instance>? = instanceDependencies.get(component)
                 if(instancesDependencyForComponent == null){
                     instancesDependencyForComponent = ArrayList<Instance>()
                 }
 
                 // Looking for channel that send message to the instance
-                for (port in component.getProvided()) {
-                    for (binding in port.getBindings()) {
+                for (port in component.provided) {
+                    for (binding in port.bindings) {
                         // the channel is a dependency of the instance (must be start after and stop before the instance)
-                        val channel = binding.getHub()!!
+                        val channel = binding.hub!!
                         if (!instancesDependencyForComponent!!.contains(channel)) {
                             var instancesDependencyForChannel: MutableList<Instance>? = instanceDependencies.get(channel)
                             if(instancesDependencyForChannel == null){
                                 instancesDependencyForChannel = ArrayList<Instance>()
                             }
-                            for (bindingFromChannel in channel.getBindings()) {
-                                val portFromBinding = bindingFromChannel.getPort()!!
+                            for (bindingFromChannel in channel.bindings) {
+                                val portFromBinding = bindingFromChannel.port!!
                                 // each required port connected to the channel is host by a component that is a dependency of the instance (must be start after and stop before the instance) and a dependency of the channel
-                                if (PortAspect().isRequiredPort(bindingFromChannel.getPort()!!) && !portFromBinding.getPortTypeRef()!!.getNoDependency() && !instancesDependencyForChannel!!.contains(bindingFromChannel.getPort()!!.eContainer() as Instance)) {
-//                                    System.out.println((portFromBinding.eContainer() as NamedElement).getName() + "\t" + portFromBinding.getPortTypeRef()!!.getName() + "\t" + portFromBinding.getPortTypeRef()!!.getNoDependency())
-//                                    System.out.println(component.getName() + " -> " + channel.getName())
+                                if (PortAspect().isRequiredPort(bindingFromChannel.port!!) && !portFromBinding.portTypeRef!!.noDependency!! && !instancesDependencyForChannel!!.contains(bindingFromChannel.port!!.eContainer() as Instance)) {
+                                    //                                    System.out.println((portFromBinding.eContainer() as NamedElement).getName() + "\t" + portFromBinding.getPortTypeRef()!!.getName() + "\t" + portFromBinding.getPortTypeRef()!!.getNoDependency())
+                                    //                                    System.out.println(component.getName() + " -> " + channel.getName())
                                     instancesDependencyForComponent!!.add(channel)
 
-//                                    System.out.println(component.getName() + " -> " + (bindingFromChannel.getPort()!!.eContainer() as NamedElement).getName())
-//                                    System.out.println(channel.getName() + " -> " + (bindingFromChannel.getPort()!!.eContainer() as NamedElement).getName())
+                                    //                                    System.out.println(component.getName() + " -> " + (bindingFromChannel.getPort()!!.eContainer() as NamedElement).getName())
+                                    //                                    System.out.println(channel.getName() + " -> " + (bindingFromChannel.getPort()!!.eContainer() as NamedElement).getName())
                                     instancesDependencyForComponent!!.add(portFromBinding.eContainer() as Instance)
                                     instancesDependencyForChannel!!.add(portFromBinding.eContainer() as Instance)
                                 }

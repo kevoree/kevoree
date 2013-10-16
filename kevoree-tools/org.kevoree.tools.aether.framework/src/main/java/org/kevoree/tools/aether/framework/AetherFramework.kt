@@ -39,27 +39,27 @@ trait AetherFramework {
         } else {
             urls = buildPotentialMavenURL(du.eContainer() as ContainerRoot)
         }
-        if (du.getUrl() != null && !"".equals(du.getUrl())) {
-            if (du.getUrl().startsWith("file://") ) {
-                val file = File(du.getUrl().substring("file://".length()))
+        if (du.url != null && !"".equals(du.url)) {
+            if (du.url!!.startsWith("file://") ) {
+                val file = File(du.url!!.substring("file://".length()))
                 if (file.exists()) {
                     return file
                 } else {
                     return null
                 }
             } else {
-                return basicDownload(du.getUrl(), du.getUnitName(), du.getType())
+                return basicDownload(du.url!!, du.unitName!!, du.`type`!!)
             }
         } else {
-            return resolver.resolve(du.getGroupName(), du.getUnitName(), du.getVersion(), "jar", urls)
+            return resolver.resolve(du.groupName, du.unitName, du.version, "jar", urls)
         }
     }
 
     fun buildPotentialMavenURL(root: ContainerRoot): List<String> {
         var result = HashSet<String>()
         //BUILD FROM ALL REPO
-        for(repo in root.getRepositories()) {
-            val nurl = repo.getUrl()
+        for(repo in root.repositories) {
+            val nurl = repo.url
             if(nurl != null && nurl != ""){
                 result.add(nurl)
             }

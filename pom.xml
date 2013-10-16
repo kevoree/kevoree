@@ -8,14 +8,15 @@
     <version>2.0.14-SNAPSHOT</version>
 
     <properties>
-        <kmf.version>1.4.7</kmf.version>
+        <kmf.version>1.7.0</kmf.version>
         <scala.version>2.9.2</scala.version>
         <slf4j.version>1.7.2</slf4j.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <kevoree.version>${project.version}</kevoree.version>
-        <kotlin.version>0.6.31</kotlin.version>
+        <kotlin.version>0.6.602</kotlin.version>
         <kevoree.log.version>1</kevoree.log.version>
 		<basic.resolver.version>1</basic.resolver.version>
+        <kevoree.kcl.version>2</kevoree.kcl.version>
     </properties>
 
 	<organization>

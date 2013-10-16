@@ -13,7 +13,7 @@ import org.kevoree.DeployUnit
 class DeployUnitAspect {
 
     fun buildKey(self: DeployUnit): String {
-        return self.getUnitName() + "." + self.getGroupName() + "." + self.getVersion()
+        return self.unitName + "." + self.groupName + "." + self.version
     }
 
     fun isModelEquals(self: DeployUnit, other: DeployUnit): Boolean {
@@ -24,18 +24,18 @@ class DeployUnitAspect {
                 return false
             }
         }
-        if (other.getUnitName() != self.getUnitName() || other.getGroupName() != self.getGroupName() || other.getVersion() != self.getVersion()) {
+        if (other.unitName != self.unitName || other.groupName != self.groupName || other.version != self.version) {
             return false
         }
-        if (other.getTargetNodeType() != null && self.getTargetNodeType() == null) {
+        if (other.targetNodeType != null && self.targetNodeType == null) {
             return false
         }
 
-        if (other.getTargetNodeType() == null && self.getTargetNodeType() != null) {
+        if (other.targetNodeType == null && self.targetNodeType != null) {
             return false
         }
-        if (other.getTargetNodeType() != null && self.getTargetNodeType() != null) {
-            return other.getTargetNodeType()!!.getName() == self.getTargetNodeType()!!.getName()
+        if (other.targetNodeType != null && self.targetNodeType != null) {
+            return other.targetNodeType!!.name == self.targetNodeType!!.name
         } else {
             return true
         }
@@ -46,28 +46,28 @@ class DeployUnitAspect {
             return alreadyCheck.get(buildKey(self))!!
         } else {
             try {
-                if (targetDU.getHashcode() == "" && self.getHashcode() == "") {
+                if (targetDU.hashcode == "" && self.hashcode == "") {
                     alreadyCheck.put(buildKey(self), false)
                     return false
                 } else {
-                    val pDUInteger = java.lang.Long.parseLong(targetDU.getHashcode())
-                    val selfDUInteger = java.lang.Long.parseLong(self.getHashcode())
+                    val pDUInteger = java.lang.Long.parseLong(targetDU.hashcode!!)
+                    val selfDUInteger = java.lang.Long.parseLong(self.hashcode!!)
                     alreadyCheck.put(buildKey(self), (selfDUInteger != pDUInteger))
                     return ((selfDUInteger != pDUInteger) || checkTransitiveUpdate(self,targetDU, alreadyCheck))
                 }
             } catch(e: Exception) {
-                return  targetDU.getHashcode() != self.getHashcode()
+                return  targetDU.hashcode != self.hashcode
             }
         }
     }
 
     fun checkTransitiveUpdate(self: DeployUnit, targetDU: DeployUnit, alreadyCheck: java.util.HashMap<String, Boolean>): Boolean {
-        if (self.getRequiredLibs().size != targetDU.getRequiredLibs().size) {
+        if (self.requiredLibs.size != targetDU.requiredLibs.size) {
             return true
         } else {
-            for(selfRDU in self.getRequiredLibs()){
+            for(selfRDU in self.requiredLibs){
                 var updateFound = false
-                @internalL for(tDU in targetDU.getRequiredLibs()){
+                @internalL for(tDU in targetDU.requiredLibs){
                     if(isModelEquals(selfRDU, tDU)){
                         if(isUpdated(selfRDU, tDU, alreadyCheck)){
                             updateFound=true

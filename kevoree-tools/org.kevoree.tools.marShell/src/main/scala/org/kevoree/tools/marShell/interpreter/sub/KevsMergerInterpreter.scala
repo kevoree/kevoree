@@ -41,7 +41,6 @@ package org.kevoree.tools.marShell.interpreter.sub
 
 import org.kevoree.tools.marShell.ast.MergeStatement
 import org.kevoree.tools.marShell.interpreter.{KevsInterpreterContext, KevsAbstractInterpreter}
-import org.kevoree.merger.KevoreeMergerComponent
 import org.kevoree.framework.KevoreeXmiHelper
 import java.util.jar.{JarEntry, JarFile}
 import java.io.File
@@ -60,7 +59,7 @@ import org.kevoree.log.Log
 
 case class KevsMergerInterpreter (mergeStatement: MergeStatement) extends KevsAbstractInterpreter {
 
-  private val mergerComponent = new KevoreeMergerComponent()
+  val modelCompare = new org.kevoree.compare.DefaultModelCompare();
 
   def interpret (context: KevsInterpreterContext): Boolean = {
 
@@ -99,18 +98,22 @@ case class KevsMergerInterpreter (mergeStatement: MergeStatement) extends KevsAb
           Log.warn("Kevscript merger : Bad MVN URL <mvn:[repourl!]groupID/artefactID/version>")
         }
       }
+
+
+
       if (file != null) {
         var jar: JarFile = null
         jar = new JarFile(new File(file.getAbsolutePath))
         val entry: JarEntry = jar.getJarEntry("KEV-INF/lib.kev")
         if (entry != null) {
           val newModel = KevoreeXmiHelper.instance$.loadStream(jar.getInputStream(entry))
-          mergerComponent.merge(context.model, newModel)
+
+          modelCompare.merge(context.model,newModel).applyOn(context.model)
           true
         } else {
           try {
             val newModel = KevoreeXmiHelper.instance$.load(mergeStatement.url)
-            mergerComponent.merge(context.model, newModel)
+            modelCompare.merge(context.model,newModel).applyOn(context.model)
             true
           } catch {
             case _@e => Log.warn("Unable to load library from {}. Maybe it's not a Kevoree model nor a Kevoree DeployUnit", mergeStatement.url); true
@@ -122,12 +125,12 @@ case class KevsMergerInterpreter (mergeStatement: MergeStatement) extends KevsAb
       }
     } else if (mergeStatement.url.startsWith("http://")) {
       val newModel = KevoreeXmiHelper.instance$.loadStream(new URL(mergeStatement.url).openStream)
-      mergerComponent.merge(context.model, newModel)
+      modelCompare.merge(context.model,newModel).applyOn(context.model)
       true
     } else {
       try {
         val newModel = KevoreeXmiHelper.instance$.load(mergeStatement.url)
-        mergerComponent.merge(context.model, newModel)
+        modelCompare.merge(context.model,newModel).applyOn(context.model)
         true
       } catch {
         case _@e => {

@@ -112,7 +112,7 @@ object ArduinoModelGetHelper {
       //APPLY TO BUILD A CURRENT MODEL
       import org.kevoree.tools.marShell.interpreter.KevsInterpreterAspects._
       val cc = new DefaultModelCloner
-      val current = cc.clone(targetNewModel)
+      val current = cc.clone(targetNewModel).asInstanceOf[ContainerRoot]
       current.removeAllGroups()
       // current.removeAllHubs()
       current.removeAllMBindings()

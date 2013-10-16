@@ -24,8 +24,8 @@ public object KevoreePlatformHelper {
         var thisNodeFound: ContainerNode? = null
         /* SEARCH THE NODE NETWORK */
         var nodeNetwork: NodeNetwork? = null
-        for (nn in actualModel.getNodeNetworks()) {
-            if (nn.getInitBy()!!.getName() == currentNodeName && nn.getTarget()!!.getName() == targetNodeName) {
+        for (nn in actualModel.nodeNetworks) {
+            if (nn.initBy!!.name == currentNodeName && nn.target!!.name == targetNodeName) {
                 nodeNetwork = nn
             }
         }
@@ -36,7 +36,7 @@ public object KevoreePlatformHelper {
             thisNodeFound = actualModel.findNodesByID(currentNodeName)
             if (thisNodeFound == null) {
                 thisNodeFound = factory.createContainerNode()
-                thisNodeFound!!.setName(currentNodeName)
+                thisNodeFound!!.name = currentNodeName
                 actualModel.addNodes(thisNodeFound!!)
             }
 
@@ -44,30 +44,30 @@ public object KevoreePlatformHelper {
             if (targetNode == null) {
                 Log.debug("Unknown node {} add to model",targetNodeName)
                 targetNode = factory.createContainerNode()
-                targetNode!!.setName(targetNodeName)
+                targetNode!!.name = targetNodeName
                 actualModel.addNodes(targetNode!!)
             }
-            nodeNetwork!!.setTarget(targetNode)
-            nodeNetwork!!.setInitBy(thisNodeFound)
+            nodeNetwork!!.target = targetNode
+            nodeNetwork!!.initBy = thisNodeFound
             actualModel.addNodeNetworks(nodeNetwork!!)
         }
 
         /* Found node link */
         var nodeLink: NodeLink? = null
-        for (l in nodeNetwork!!.getLink()) {
-            if (l.getNetworkType() == networkType) {
+        for (l in nodeNetwork!!.link) {
+            if (l.networkType == networkType) {
                 nodeLink = l
                 break
             }
         }
         if (nodeLink == null) {
             nodeLink = factory.createNodeLink()
-            nodeLink!!.setNetworkType(networkType)
+            nodeLink!!.networkType = networkType
             nodeNetwork!!.addLink(nodeLink!!)
         }
 
         try {
-            nodeLink!!.setEstimatedRate(weight)
+            nodeLink!!.estimatedRate = weight
         } catch (e: Exception) {
             Log.debug("Unexpected estimate rate", e)
         }
@@ -76,11 +76,11 @@ public object KevoreePlatformHelper {
         var prop = nodeLink!!.findNetworkPropertiesByID(key)
         if (prop == null) {
             prop = factory.createNetworkProperty()
-            prop!!.setName(key)
+            prop!!.name = key
             nodeLink!!.addNetworkProperties(prop!!)
         }
-        prop!!.setValue(value)
-        prop!!.setLastCheck(Date().getTime().toString())
+        prop!!.value = value
+        prop!!.lastCheck = Date().getTime().toString()
 
         if(Log.DEBUG){
             Log.debug("New node link prop registered = "+targetNodeName+","+key+","+value)

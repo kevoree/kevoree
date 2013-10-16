@@ -41,40 +41,40 @@ class KevoreeVersionChecker: CheckerService, KevoreeNodeVersion {
         val violations = ArrayList<CheckerViolation>()
         if (model != null) {
             val alreadyCheckedChannels = ArrayList<Channel>()
-            for (node in model.getNodes()) {
-                for (component in node.getComponents()) {
-                    val du = typeDefinitionAspect.foundRelevantDeployUnit(component.getTypeDefinition(), node)
+            for (node in model.nodes) {
+                for (component in node.components) {
+                    val du = typeDefinitionAspect.foundRelevantDeployUnit(component.typeDefinition, node)
                     if (du != null) {
-                        violations.addAll(check(component.getName(), du, node))
+                        violations.addAll(check(component.name, du, node))
                     }
 
-                    for (port in component.getProvided()) {
-                        for (mbinding in port.getBindings()) {
-                            if (!alreadyCheckedChannels.contains(mbinding.getHub())) {
-                                val rdu = typeDefinitionAspect.foundRelevantDeployUnit(mbinding.getHub()!!.getTypeDefinition(), node)
+                    for (port in component.provided) {
+                        for (mbinding in port.bindings) {
+                            if (!alreadyCheckedChannels.contains(mbinding.hub)) {
+                                val rdu = typeDefinitionAspect.foundRelevantDeployUnit(mbinding.hub!!.typeDefinition, node)
                                 if (rdu != null) {
-                                    violations.addAll(check(mbinding.getHub()!!.getName(), rdu, node))
-                                    alreadyCheckedChannels.add(mbinding.getHub()!!)
+                                    violations.addAll(check(mbinding.hub!!.name, rdu, node))
+                                    alreadyCheckedChannels.add(mbinding.hub!!)
                                 }
                             }
                         }
                     }
-                    for (port in component.getRequired()) {
-                        for (mbinding in port.getBindings()) {
-                            if (!alreadyCheckedChannels.contains(mbinding.getHub())) {
-                                val rdu = typeDefinitionAspect.foundRelevantDeployUnit(mbinding.getHub()!!.getTypeDefinition(), node)
+                    for (port in component.required) {
+                        for (mbinding in port.bindings) {
+                            if (!alreadyCheckedChannels.contains(mbinding.hub)) {
+                                val rdu = typeDefinitionAspect.foundRelevantDeployUnit(mbinding.hub!!.typeDefinition, node)
                                 if (rdu != null) {
-                                    violations.addAll(check(mbinding.getHub()!!.getName(), rdu, node))
-                                    alreadyCheckedChannels.add(mbinding.getHub()!!)
+                                    violations.addAll(check(mbinding.hub!!.name, rdu, node))
+                                    alreadyCheckedChannels.add(mbinding.hub!!)
                                 }
                             }
                         }
                     }
                 }
                 for ( group in containerNodeAspect.getGroups(node))  {
-                    val du = typeDefinitionAspect.foundRelevantDeployUnit(group.getTypeDefinition(), node)
+                    val du = typeDefinitionAspect.foundRelevantDeployUnit(group.typeDefinition, node)
                     if (du != null) {
-                        violations.addAll(check(group.getName(), du, node))
+                        violations.addAll(check(group.name, du, node))
                     }
                 }
             }

@@ -38,17 +38,17 @@ class DictionaryOptionalChecker: CheckerService {
     override fun check(model: ContainerRoot?): MutableList<CheckerViolation> {
         val violations = ArrayList<CheckerViolation>()
         if (model != null) {
-            for (channel in model.getHubs()) {
+            for (channel in model.hubs) {
                 checkInstance(channel, violations)
             }
 
-            for (group in model.getGroups()) {
+            for (group in model.groups) {
                 checkInstance(group, violations)
             }
 
-            for (node in model.getNodes()) {
+            for (node in model.nodes) {
                 checkInstance(node, violations)
-                for (component in node.getComponents()) {
+                for (component in node.components) {
                     checkInstance(node, violations)
                 }
             }
@@ -57,30 +57,30 @@ class DictionaryOptionalChecker: CheckerService {
     }
 
     fun checkInstance(instance: Instance, violations: MutableList<CheckerViolation>) {
-        if (instance.getTypeDefinition() != null && instance.getTypeDefinition()!!.getDictionaryType() != null) {
-            val instDicType = instance.getTypeDefinition()!!.getDictionaryType()!!
+        if (instance.typeDefinition != null && instance.typeDefinition!!.dictionaryType != null) {
+            val instDicType = instance.typeDefinition!!.dictionaryType!!
             var invalideErrorThrowed = false
-            for (dicAtt in instDicType.getAttributes()) {
-                if (!dicAtt.getOptional()) {
+            for (dicAtt in instDicType.attributes) {
+                if (!dicAtt.optional!!) {
                     var defaultValuePresent = false
-                    for (dv in instDicType.getDefaultValues()) {
-                        if (dv.getAttribute()!!.getName() == dicAtt.getName()) {
+                    for (dv in instDicType.defaultValues) {
+                        if (dv.attribute!!.name == dicAtt.name) {
                             defaultValuePresent = true
                             break
                         }
                     }
                     if (!defaultValuePresent) {
-                        if (instance.getDictionary() != null) {
-                            val instDic = instance.getDictionary()!!
+                        if (instance.dictionary != null) {
+                            val instDic = instance.dictionary!!
                             var value: DictionaryValue? = null
-                            for (v in instDic.getValues()) {
-                                if (v.getAttribute()!!.getName() == dicAtt.getName()) {
+                            for (v in instDic.values) {
+                                if (v.attribute!!.name == dicAtt.name) {
                                     value = v
                                     break
                                 }
                             }
                             if (value == null) {
-                                if (dicAtt.getFragmentDependant()) {
+                                if (dicAtt.fragmentDependant!!) {
                                     var nodeNames = ArrayList<String>()
                                     if (instance is Group) {
                                         nodeNames = getChild(instance as Group)
@@ -88,13 +88,13 @@ class DictionaryOptionalChecker: CheckerService {
                                         nodeNames = getBounds(instance as Channel)
                                     }
                                     if (!nodeNames.isEmpty()) {
-                                        throwError(instance, dicAtt, dicAtt.getName(), violations)
+                                        throwError(instance, dicAtt, dicAtt.name, violations)
                                     }
                                 } else {
                                     throwError(instance, dicAtt, null, violations)
                                 }
                             } else {
-                                if (dicAtt.getFragmentDependant()) {
+                                if (dicAtt.fragmentDependant!!) {
                                     var nodeNames = ArrayList<String>()
                                     if (instance is Group) {
                                         nodeNames = getChild(instance as Group)
@@ -104,8 +104,8 @@ class DictionaryOptionalChecker: CheckerService {
 
                                     for (name in nodeNames) {
                                         var `is` = false
-                                        for (v in instDic.getValues()) {
-                                            if (v.getAttribute()!!.getName() == dicAtt.getName() && v.getTargetNode() != null && name == v.getTargetNode()!!.getName() && v.getValue() != "") {
+                                        for (v in instDic.values) {
+                                            if (v.attribute!!.name == dicAtt.name && v.targetNode != null && name == v.targetNode!!.name && v.value != "") {
                                                 `is` = true
                                                 break
                                             }
@@ -132,12 +132,12 @@ class DictionaryOptionalChecker: CheckerService {
 
         if(dicAtt != null) {
             if (fragment != null) {
-                checkViolation.setMessage("Dictionary value not set for attribute name " + dicAtt.getName() + " in " + instance.getName())
+                checkViolation.setMessage("Dictionary value not set for attribute name " + dicAtt.name + " in " + instance.name)
             } else {
-                checkViolation.setMessage("Dictionary value not set for attribute name " + dicAtt.getName() + " in " + instance.getName() + " for fragment " + fragment)
+                checkViolation.setMessage("Dictionary value not set for attribute name " + dicAtt.name + " in " + instance.name + " for fragment " + fragment)
             }
         } else{
-            checkViolation.setMessage("Iinvalid dictionary in " + instance.getName())
+            checkViolation.setMessage("Iinvalid dictionary in " + instance.name)
         }
         val targetObjects = ArrayList<KMFContainer>()
         targetObjects.add(instance)
@@ -147,8 +147,8 @@ class DictionaryOptionalChecker: CheckerService {
 
     fun getChild(instance: Group): ArrayList<String> {
         var nodeNames = ArrayList<String>()
-        for (node in instance.getSubNodes()) {
-            nodeNames.add(node.getName())
+        for (node in instance.subNodes) {
+            nodeNames.add(node.name!!)
         }
         return nodeNames
     }
@@ -156,7 +156,7 @@ class DictionaryOptionalChecker: CheckerService {
     fun getBounds(instance: Channel): ArrayList<String> {
         var nodeNames = ArrayList<String>()
         for (node in channelAspect.getRelatedNodes(instance)) {
-            nodeNames.add(node.getName())
+            nodeNames.add(node.name!!)
         }
         return nodeNames
     }

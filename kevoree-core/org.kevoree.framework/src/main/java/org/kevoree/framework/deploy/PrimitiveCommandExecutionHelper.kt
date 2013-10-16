@@ -35,7 +35,7 @@ import org.kevoree.log.Log
 object PrimitiveCommandExecutionHelper {
 
     fun execute(rootNode: ContainerNode, adaptionModel: AdaptationModel, nodeInstance: NodeType, afterUpdateFunc: ()->Boolean, preRollBack: ()->Boolean, postRollback: ()-> Boolean): Boolean {
-        val orderedPrimitiveSet = adaptionModel.getOrderedPrimitiveSet()
+        val orderedPrimitiveSet = adaptionModel.orderedPrimitiveSet
         return if (orderedPrimitiveSet != null) {
             val phase = KevoreeParDeployPhase()
             val res = executeStep(rootNode, orderedPrimitiveSet, nodeInstance, phase, preRollBack)
@@ -59,16 +59,16 @@ object PrimitiveCommandExecutionHelper {
         if (step == null) {
             return true
         }
-        val populateResult = step.getAdaptations().all{
+        val populateResult = step.adaptations.all{
             adapt ->
             val primitive = nodeInstance.getPrimitive(adapt)
             if (primitive != null) {
                 Log.debug("Populate primitive => {} ",primitive)
                 try {
-                    val nodeType = rootNode.getTypeDefinition() as org.kevoree.NodeType
-                    val aTypeRef = nodeType.getManagedPrimitiveTypeRefs().find{(ref: AdaptationPrimitiveTypeRef) : Boolean -> ref.getRef()?.getName() == adapt.getPrimitiveType()?.getName() }
+                    val nodeType = rootNode.typeDefinition as org.kevoree.NodeType
+                    val aTypeRef = nodeType.managedPrimitiveTypeRefs.find{(ref: AdaptationPrimitiveTypeRef) : Boolean -> ref.ref?.name == adapt.primitiveType?.name }
                     if (aTypeRef != null) {
-                        phase.setMaxTime(java.lang.Long.parseLong(aTypeRef.getMaxTime()))
+                        phase.setMaxTime(java.lang.Long.parseLong(aTypeRef.maxTime!!))
                     }
                 } catch(e: Exception) {
                     Log.error("Bad value for timeout in model ", e)
@@ -83,7 +83,7 @@ object PrimitiveCommandExecutionHelper {
         if (populateResult) {
             val phaseResult = phase.runPhase()
             if (phaseResult) {
-                val nextStep = step.getNextStep()
+                val nextStep = step.nextStep
                 var subResult = false
                 if(nextStep != null){
                     val nextPhase = KevoreeParDeployPhase()

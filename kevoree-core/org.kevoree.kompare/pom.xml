@@ -14,6 +14,9 @@
 
     <build>
         <plugins>
+
+            <!--
+
             <plugin>
                 <groupId>net.alchim31.maven</groupId>
                 <artifactId>scala-maven-plugin</artifactId>
@@ -48,7 +51,7 @@
                     </args>
                 </configuration>
             </plugin>
-
+            -->
             <plugin>
                 <artifactId>kotlin-maven-plugin</artifactId>
                 <groupId>org.jetbrains.kotlin</groupId>
@@ -89,12 +92,14 @@
             <artifactId>org.kevoree.framework</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <!--
         <dependency>
             <groupId>org.scalatest</groupId>
             <artifactId>scalatest_2.9.2</artifactId>
             <version>1.6.1</version>
             <scope>test</scope>
         </dependency>
+        -->
         <dependency>
             <groupId>org.jgrapht</groupId>
             <artifactId>jgrapht-jdk1.5</artifactId>

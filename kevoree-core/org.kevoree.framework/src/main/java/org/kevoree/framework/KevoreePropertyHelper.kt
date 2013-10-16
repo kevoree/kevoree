@@ -25,16 +25,16 @@ public object KevoreePropertyHelper {
     fun getNetworkProperties (model: ContainerRoot, targetNodeName: String, key: String): List<String> {
         val properties = ArrayList<String>()
         val filteredNodeNetwork = ArrayList<NodeNetwork>()
-        for (lNN in model.getNodeNetworks()){
-            if (lNN.getTarget()!!.getName() == targetNodeName) {
+        for (lNN in model.nodeNetworks){
+            if (lNN.target!!.name == targetNodeName) {
                 filteredNodeNetwork.add(lNN)
             }
         }
         for (fnn in filteredNodeNetwork) {
-            for (fnl in fnn.getLink()) {
-                for (p in fnl.getNetworkProperties()) {
-                    if (p.getName() == key) {
-                        properties.add(p.getValue())
+            for (fnl in fnn.link) {
+                for (p in fnl.networkProperties) {
+                    if (p.name == key) {
+                        properties.add(p.value!!)
                         break
                     }
                 }
@@ -52,26 +52,26 @@ public object KevoreePropertyHelper {
      * @return an Option corresponding to the value of the property
      */
     fun getProperty (instance: Instance, key: String, isFragment: Boolean = false, nodeNameForFragment: String = ""): String? {
-        if (instance.getDictionary() == null) {
-            return getDefaultValue(instance.getTypeDefinition(), key)
+        if (instance.dictionary == null) {
+            return getDefaultValue(instance.typeDefinition, key)
         } else {
-            val dictionary = instance.getDictionary()!!
-            for (dictionaryAttribute in dictionary.getValues()){
-                if (dictionaryAttribute.getAttribute()!!.getName() == key &&
-                ((isFragment && dictionaryAttribute.getTargetNode() != null && dictionaryAttribute.getTargetNode()!!.getName() == nodeNameForFragment) || !isFragment)) {
-                    return   dictionaryAttribute.getValue()
+            val dictionary = instance.dictionary!!
+            for (dictionaryAttribute in dictionary.values){
+                if (dictionaryAttribute.attribute!!.name == key &&
+                ((isFragment && dictionaryAttribute.targetNode != null && dictionaryAttribute.targetNode!!.name == nodeNameForFragment) || !isFragment)) {
+                    return   dictionaryAttribute.value
                 }
 
             }
-            return getDefaultValue(instance.getTypeDefinition(), key)
+            return getDefaultValue(instance.typeDefinition, key)
         }
     }
 
     private fun getDefaultValue (typeDefinition: TypeDefinition?, key: String): String? {
-        if (typeDefinition != null && typeDefinition.getDictionaryType() != null) {
-            for (defaultValue in typeDefinition.getDictionaryType()!!.getDefaultValues()) {
-                if (defaultValue.getAttribute()!!.getName() == key) {
-                    return defaultValue.getValue()
+        if (typeDefinition != null && typeDefinition.dictionaryType != null) {
+            for (defaultValue in typeDefinition.dictionaryType!!.defaultValues) {
+                if (defaultValue.attribute!!.name == key) {
+                    return defaultValue.value
                 }
             }
         }

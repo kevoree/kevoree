@@ -13,14 +13,14 @@ import org.kevoree.Port
  */
 class PortAspect {
     fun isProvidedPort(port : Port) : Boolean {
-        return (port.eContainer() as ComponentInstance).getProvided().contains(port)
+        return (port.eContainer() as ComponentInstance).provided.contains(port)
     }
 
     fun isRequiredPort(port : Port) : Boolean {
-        return (port.eContainer() as ComponentInstance).getRequired().contains(port)
+        return (port.eContainer() as ComponentInstance).required.contains(port)
     }
 
     fun isBound(port : Port) : Boolean {
-        return !port.getBindings().isEmpty()
+        return !port.bindings.isEmpty()
     }
 }

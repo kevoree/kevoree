@@ -24,28 +24,5 @@ public object JavaSePrimitive {
     val StartInstance = "StartInstance"
     val StopInstance = "StopInstance"
 
-            /*
-    fun getAll(): Array<String> {
-        return Array(UpdateType,
-                UpdateDeployUnit,
-                AddType,
-                AddDeployUnit,
-                AddThirdParty,
-                RemoveType,
-                RemoveDeployUnit,
-                UpdateInstance,
-                UpdateBinding,
-                UpdateDictionaryInstance,
-                AddInstance,
-                RemoveInstance,
-                AddBinding,
-                RemoveBinding,
-                AddFragmentBinding,
-                RemoveFragmentBinding,
-                UpdateFragmentBinding,
-                StartThirdParty
-        )
-    } */
-
 
 }

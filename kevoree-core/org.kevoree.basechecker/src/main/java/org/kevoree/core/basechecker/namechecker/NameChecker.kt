@@ -31,19 +31,19 @@ class NameChecker: CheckerService {
     override fun check(model: ContainerRoot?): MutableList<CheckerViolation> {
         var violations = ArrayList<CheckerViolation>()
         if (model != null) {
-            for (node in model.getNodes()) {
+            for (node in model.nodes) {
                 var violation = check(node)
                 if (violation != null) {
                     violations.add(violation!!)
                 }
-                for (component in node.getComponents()) {
+                for (component in node.components) {
                     violation = check(component)
                     if (violation != null) {
                         violations.add(violation!!)
                     }
-                    if (component.getDictionary() != null) {
-                        for (property in component.getDictionary()!!.getValues()) {
-                            violation = check(property.getAttribute()!!)
+                    if (component.dictionary != null) {
+                        for (property in component.dictionary!!.values) {
+                            violation = check(property.attribute!!)
                             if (violation != null) {
                                 val targetObjects = ArrayList<KMFContainer>()
                                 targetObjects.add(component)
@@ -52,8 +52,8 @@ class NameChecker: CheckerService {
                             }
                         }
                     }
-                    for (port in component.getProvided()) {
-                        violation = check(port.getPortTypeRef()!!)
+                    for (port in component.provided) {
+                        violation = check(port.portTypeRef!!)
                         if (violation != null) {
                             val targetObjects = ArrayList<KMFContainer>()
                             targetObjects.add(component)
@@ -61,8 +61,8 @@ class NameChecker: CheckerService {
                             violations.add(violation!!)
                         }
                     }
-                    for (port in component.getRequired()) {
-                        violation = check(port.getPortTypeRef()!!)
+                    for (port in component.required) {
+                        violation = check(port.portTypeRef!!)
                         if (violation != null) {
                             val targetObjects = ArrayList<KMFContainer>()
                             targetObjects.add(component)
@@ -72,14 +72,14 @@ class NameChecker: CheckerService {
                     }
                 }
             }
-            for (channel in model.getHubs()) {
+            for (channel in model.hubs) {
                 var violation = check(channel)
                 if (violation != null) {
                     violations.add(violation!!)
                 }
-                if (channel.getDictionary() != null) {
-                    for (property in channel.getDictionary()!!.getValues()) {
-                        violation = check(property.getAttribute()!!)
+                if (channel.dictionary != null) {
+                    for (property in channel.dictionary!!.values) {
+                        violation = check(property.attribute!!)
                         if (violation != null) {
                             val targetObjects = ArrayList<KMFContainer>()
                             targetObjects.add(channel)
@@ -89,14 +89,14 @@ class NameChecker: CheckerService {
                     }
                 }
             }
-            for (group in model.getGroups()) {
+            for (group in model.groups) {
                 var violation = check(group)
                 if (violation != null) {
                     violations.add(violation!!)
                 }
-                if (group.getDictionary() != null) {
-                    for (property in group.getDictionary()!!.getValues()) {
-                        violation = check(property.getAttribute()!!)
+                if (group.dictionary != null) {
+                    for (property in group.dictionary!!.values) {
+                        violation = check(property.attribute!!)
                         if (violation != null) {
                             val targetObjects = ArrayList<KMFContainer>()
                             targetObjects.add(group)
@@ -120,7 +120,7 @@ class NameChecker: CheckerService {
     }
 
     private fun check(obj: NamedElement): CheckerViolation? {
-        if (check(obj.getName()) == false) {
+        if (check(obj.name!!) == false) {
             val violation = CheckerViolation()
             violation.setMessage(message)
             val targetObjects = ArrayList<KMFContainer>()

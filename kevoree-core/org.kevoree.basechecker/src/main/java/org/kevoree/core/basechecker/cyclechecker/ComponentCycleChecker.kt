@@ -29,8 +29,8 @@ class ComponentCycleChecker: CheckerService {
     override fun check (model: ContainerRoot?): MutableList<CheckerViolation> {
         val violations = ArrayList<CheckerViolation>()
         if (model != null) {
-            for (node in model.getNodes()) {
-                val graph = KevoreeComponentDirectedGraph(model, node.getName())
+            for (node in model.nodes) {
+                val graph = KevoreeComponentDirectedGraph(model, node.name!!)
 
                 for (violation in CheckCycle(graph).check()) {
                     val concreteViolation = CheckerViolation()
@@ -40,7 +40,7 @@ class ComponentCycleChecker: CheckerService {
                         if (instance is ComponentInstance) {
                             val componentInstance = instance as ComponentInstance
                             for (binding in componentInstanceAspect.getRelatedBindings(componentInstance)) {
-                                if (violation.getTargetObjects()!!.contains(binding.getHub())) {
+                                if (violation.getTargetObjects()!!.contains(binding.hub)) {
                                     bindings.add(binding)
                                 }
                             }

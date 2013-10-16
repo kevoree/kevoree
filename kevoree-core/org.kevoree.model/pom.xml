@@ -13,7 +13,7 @@
     </parent>
 
     <properties>
-        <metamodel.ecore>metamodel/kevoree.ecore</metamodel.ecore>
+        <metamodel.ecore>metamodel/kevoree.adaptation.ecore</metamodel.ecore>
     </properties>
 
     <dependencies>
@@ -63,7 +63,7 @@
                             <ecore>${metamodel.ecore}</ecore>
                             <packagePrefix>org</packagePrefix>
                             <selector>true</selector>
-                            <json>true</json>
+                            <autoBasePackage>kevoree</autoBasePackage>
                         </configuration>
                     </execution>
                 </executions>

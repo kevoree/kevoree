@@ -27,23 +27,23 @@ class KevoreeNodeDirectedGraph(model: ContainerRoot): DefaultDirectedGraph<Any, 
         val containerNodeAspect = ContainerNodeAspect()
         val componentInstanceAspect = ComponentInstanceAspect()
         val portAspect = PortAspect()
-        for (node in model.getNodes()) {
+        for (node in model.nodes) {
             for (channel in containerNodeAspect.getChannelFragment(node)) {
-                val connectedNodes = channelAspect.getConnectedNode(channel, node.getName())
+                val connectedNodes = channelAspect.getConnectedNode(channel, node.name!!)
                 if (connectedNodes.size > 0) {
-                    for (component in node.getComponents()) {
+                    for (component in node.components) {
                         for (binding in componentInstanceAspect.getRelatedBindings(component)) {
-                            if (portAspect.isRequiredPort(binding.getPort()!!) &&
-                            binding.getPort()!!.getPortTypeRef()!!.getNoDependency() == false) {
-                                if (binding.getHub() == channel) {
+                            if (portAspect.isRequiredPort(binding.port!!) &&
+                            binding.port!!.portTypeRef!!.noDependency == false) {
+                                if (binding.hub == channel) {
                                     for (node1 in connectedNodes) {
-                                        for (component1 in node1.getComponents()) {
+                                        for (component1 in node1.components) {
                                             for (binding1 in componentInstanceAspect.getRelatedBindings(component1)) {
-                                                if (binding1.getHub() == channel) {
-                                                    if (portAspect.isProvidedPort(binding.getPort()!!) &&
-                                                    portAspect.isRequiredPort(binding1.getPort()!!)) {
-                                                        val fragment = ChannelFragment(binding.getHub()!!, binding)
-                                                        val fragment1 = ChannelFragment(binding1.getHub()!!, binding1)
+                                                if (binding1.hub == channel) {
+                                                    if (portAspect.isProvidedPort(binding.port!!) &&
+                                                    portAspect.isRequiredPort(binding1.port!!)) {
+                                                        val fragment = ChannelFragment(binding.hub!!, binding)
+                                                        val fragment1 = ChannelFragment(binding1.hub!!, binding1)
                                                         addVertex(node)
                                                         addVertex(fragment)
                                                         addVertex(fragment1)
@@ -51,10 +51,10 @@ class KevoreeNodeDirectedGraph(model: ContainerRoot): DefaultDirectedGraph<Any, 
                                                         addEdge(node, fragment, BindingFragment(binding, null))
                                                         addEdge(fragment, fragment1, BindingFragment(binding, binding1))
                                                         addEdge(fragment1, node1, BindingFragment(binding1, null))
-                                                    } else if (portAspect.isProvidedPort(binding1.getPort()!!) &&
-                                                    portAspect.isRequiredPort(binding.getPort()!!)) {
-                                                        val fragment = ChannelFragment(binding.getHub()!!, binding)
-                                                        val fragment1 = ChannelFragment(binding1.getHub()!!, binding1)
+                                                    } else if (portAspect.isProvidedPort(binding1.port!!) &&
+                                                    portAspect.isRequiredPort(binding.port!!)) {
+                                                        val fragment = ChannelFragment(binding.hub!!, binding)
+                                                        val fragment1 = ChannelFragment(binding1.hub!!, binding1)
                                                         addVertex(node)
                                                         addVertex(fragment)
                                                         addVertex(fragment1)

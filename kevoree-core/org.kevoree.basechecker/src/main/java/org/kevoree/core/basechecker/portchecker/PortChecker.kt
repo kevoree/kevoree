@@ -40,22 +40,22 @@ class PortChecker: CheckerService {
 
     fun portCheckOnInstance(model: ContainerRoot): List<CheckerViolation> {
         val violations = ArrayList<CheckerViolation>()
-        for (node in model.getNodes()) {
-            for (component in node.getComponents()) {
-                for (port in component.getRequired()) {
-                    if (!port.getPortTypeRef()!!.getOptional() && !portAspect.isBound(port)) {
+        for (node in model.nodes) {
+            for (component in node.components) {
+                for (port in component.required) {
+                    if (!port.portTypeRef!!.optional!! && !portAspect.isBound(port)) {
                         val concreteViolation: CheckerViolation = CheckerViolation()
-                        concreteViolation.setMessage("Required port (" + (port.eContainer() as ComponentInstance).getName() + "." + port.getPortTypeRef()!!.getName() + ") is not bound")
+                        concreteViolation.setMessage("Required port (" + (port.eContainer() as ComponentInstance).name + "." + port.portTypeRef!!.name + ") is not bound")
                         val targetObjects = ArrayList<KMFContainer>()
                         targetObjects.add(port.eContainer()!!)
                         concreteViolation.setTargetObjects(targetObjects)
                         violations.add(concreteViolation)
                     }
 
-                    if(port.getBindings().size() > 1){
+                    if(port.bindings.size() > 1){
                         //TWICE BINDING !!!
                         val concreteViolation: CheckerViolation = CheckerViolation()
-                        concreteViolation.setMessage("Required port (" + (port.eContainer() as ComponentInstance).getName() + "." + port.getPortTypeRef()!!.getName() + ") is bound multiple times !")
+                        concreteViolation.setMessage("Required port (" + (port.eContainer() as ComponentInstance).name + "." + port.portTypeRef!!.name + ") is bound multiple times !")
                         val targetObjects = ArrayList<KMFContainer>()
                         targetObjects.add(port.eContainer()!!)
                         concreteViolation.setTargetObjects(targetObjects)

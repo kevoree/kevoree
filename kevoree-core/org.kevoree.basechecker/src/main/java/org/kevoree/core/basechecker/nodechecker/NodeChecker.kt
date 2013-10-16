@@ -37,13 +37,13 @@ class NodeChecker: CheckerService {
     override fun check(model: ContainerRoot?): MutableList<CheckerViolation> {
         val violations = ArrayList<CheckerViolation>()
         if (model != null) {
-            for (node in model.getNodes()) {
+            for (node in model.nodes) {
                 val alreadyCheckedChannels = ArrayList<Channel>()
-                for (component in node.getComponents()) {
-                    var typeDefinition = typeDefinitionAspect.foundRelevantDeployUnit(component.getTypeDefinition()!!, node)
+                for (component in node.components) {
+                    var typeDefinition = typeDefinitionAspect.foundRelevantDeployUnit(component.typeDefinition!!, node)
                     if (typeDefinition == null) {
                         val violation: CheckerViolation = CheckerViolation()
-                        violation.setMessage(component.getTypeDefinition()!!.getName() + " has no deploy unit for node type " + node.getTypeDefinition()!!.getName())
+                        violation.setMessage(component.typeDefinition!!.name + " has no deploy unit for node type " + node.typeDefinition!!.name)
                         val targetObjects = ArrayList<KMFContainer>()
                         targetObjects.add(node)
                         targetObjects.add(component)
@@ -52,18 +52,18 @@ class NodeChecker: CheckerService {
                     }
                     // check channel fragment
                     var subTempPorts = ArrayList<Port>()
-                    subTempPorts.addAll(component.getProvided())
-                    subTempPorts.addAll(component.getRequired())
+                    subTempPorts.addAll(component.provided)
+                    subTempPorts.addAll(component.required)
 
                     for(port in subTempPorts) {
-                        for (mbinding in port.getBindings()) {
-                            if (!alreadyCheckedChannels.contains(mbinding.getHub())) {
-                                typeDefinition = typeDefinitionAspect.foundRelevantDeployUnit(mbinding.getHub()!!.getTypeDefinition()!!, node)
+                        for (mbinding in port.bindings) {
+                            if (!alreadyCheckedChannels.contains(mbinding.hub)) {
+                                typeDefinition = typeDefinitionAspect.foundRelevantDeployUnit(mbinding.hub!!.typeDefinition!!, node)
                                 if (typeDefinition == null) {
                                     val violation: CheckerViolation = CheckerViolation()
-                                    violation.setMessage(mbinding.getHub()!!.getTypeDefinition()!!.getName() + " has no deploy unit for node type " + node.getTypeDefinition()!!.getName())
+                                    violation.setMessage(mbinding.hub!!.typeDefinition!!.name + " has no deploy unit for node type " + node.typeDefinition!!.name)
                                     val targetObjects = ArrayList<KMFContainer>()
-                                    targetObjects.add(mbinding.getHub()!!)
+                                    targetObjects.add(mbinding.hub!!)
                                     violation.setTargetObjects(targetObjects)
                                     violations.add(violation)
                                 }
@@ -73,10 +73,10 @@ class NodeChecker: CheckerService {
                 }
                 // check groups
                 for (group in containerNodeAspect.getGroups(node)) {
-                    val typeDefinition = typeDefinitionAspect.foundRelevantDeployUnit(group.getTypeDefinition()!!, node)
+                    val typeDefinition = typeDefinitionAspect.foundRelevantDeployUnit(group.typeDefinition!!, node)
                     if (typeDefinition == null) {
                         val violation: CheckerViolation = CheckerViolation()
-                        violation.setMessage(group.getTypeDefinition()!!.getName() + " has no deploy unit for node type " + node.getTypeDefinition()!!.getName())
+                        violation.setMessage(group.typeDefinition!!.name + " has no deploy unit for node type " + node.typeDefinition!!.name)
 
                         val targetObjects = ArrayList<KMFContainer>()
                         targetObjects.add(group)
@@ -85,11 +85,11 @@ class NodeChecker: CheckerService {
                     }
                 }
                 // check child nodes
-                for (child in node.getHosts()) {
-                    val typeDefinition = typeDefinitionAspect.foundRelevantDeployUnit(child.getTypeDefinition()!!, node)
+                for (child in node.hosts) {
+                    val typeDefinition = typeDefinitionAspect.foundRelevantDeployUnit(child.typeDefinition!!, node)
                     if (typeDefinition == null) {
                         val violation: CheckerViolation = CheckerViolation()
-                        violation.setMessage(child.getTypeDefinition()!!.getName() + " has no deploy unit for node type " + node.getTypeDefinition()!!.getName())
+                        violation.setMessage(child.typeDefinition!!.name + " has no deploy unit for node type " + node.typeDefinition!!.name)
                         val targetObjects = ArrayList<KMFContainer>()
                         targetObjects.add(child)
                         violation.setTargetObjects(targetObjects)
@@ -97,10 +97,10 @@ class NodeChecker: CheckerService {
                     }
                 }
                 // check node
-                val typeDefinition = typeDefinitionAspect.foundRelevantDeployUnit(node.getTypeDefinition()!!, node)
+                val typeDefinition = typeDefinitionAspect.foundRelevantDeployUnit(node.typeDefinition!!, node)
                 if (typeDefinition == null) {
                     val violation: CheckerViolation = CheckerViolation()
-                    violation.setMessage(node.getTypeDefinition()!!.getName() + " has no deploy unit for node type " + node.getTypeDefinition()!!.getName())
+                    violation.setMessage(node.typeDefinition!!.name + " has no deploy unit for node type " + node.typeDefinition!!.name)
                     val targetObjects = ArrayList<KMFContainer>()
                     targetObjects.add(node)
                     violation.setTargetObjects(targetObjects)

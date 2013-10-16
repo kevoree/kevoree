@@ -21,7 +21,6 @@ import java.util.concurrent.ScheduledExecutorService
 import java.util.concurrent.TimeUnit
 import org.kevoree.api.service.core.handler.KevoreeModelUpdateException
 import org.kevoree.api.service.core.handler.ModelListener
-import org.kevoree.context.ContextRoot
 import org.kevoree.framework.HaraKiriHelper
 import org.kevoree.impl.DefaultKevoreeFactory
 import java.util.concurrent.atomic.AtomicReference
@@ -29,7 +28,7 @@ import org.kevoree.log.Log
 
 class PreCommand(newmodel: ContainerRoot, modelListeners: KevoreeListeners, oldModel: ContainerRoot){
     var alreadyCall = false
-    val preRollbackTest: ()->Boolean = {()->
+    val preRollbackTest: () -> Boolean = {() ->
         if (!alreadyCall) {
             modelListeners.preRollback(oldModel, newmodel)
             alreadyCall = true
@@ -38,7 +37,7 @@ class PreCommand(newmodel: ContainerRoot, modelListeners: KevoreeListeners, oldM
     }
 }
 
-class KevoreeCoreBean(): KevoreeModelHandlerService {
+class KevoreeCoreBean() : KevoreeModelHandlerService {
 
     val modelListeners = KevoreeListeners()
     var _kevsEngineFactory: KevScriptEngineFactory? = null
@@ -124,7 +123,7 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
         scheduler!!.submit(UpdateModelCallable(cloneCurrentModel(pmodel), null))
     }
 
-    inner class UpdateModelCallable(val model: ContainerRoot, val callback: ModelUpdateCallback?): Callable<Boolean> {
+    inner class UpdateModelCallable(val model: ContainerRoot, val callback: ModelUpdateCallback?) : Callable<Boolean> {
         override fun call(): Boolean {
             var res: Boolean = false
             if (currentLock == null) {
@@ -179,18 +178,18 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
                 val modelCurrent = model.get()!!.getModel()!!
                 val stopModel = modelCloner.clone(modelCurrent)!!
                 val currentNode = stopModel.findNodesByID(getNodeName())!!
-                for(childNode in currentNode.getHosts()){
-                    childNode.setStarted(false)
+                for(childNode in currentNode.hosts){
+                    childNode.started = false
                 }
                 //TEST only stop local
-                for(group in stopModel.getGroups()){
-                    group.setStarted(false)
+                for(group in stopModel.groups){
+                    group.started = false
                 }
-                for(hub in stopModel.getHubs()){
-                    hub.setStarted(false)
+                for(hub in stopModel.hubs){
+                    hub.started = false
                 }
-                for(childComponent in currentNode.getComponents()){
-                    childComponent.setStarted(false)
+                for(childComponent in currentNode.components){
+                    childComponent.started = false
                 }
 
                 //val stopModel = factory.createContainerRoot()
@@ -222,7 +221,7 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
         scheduler?.submit(LockTimeoutCallable())
     }
 
-    inner class LockTimeoutCallable(): Runnable {
+    inner class LockTimeoutCallable() : Runnable {
         override fun run() {
             if (currentLock != null) {
                 currentLock!!.callback.lockTimeout()
@@ -256,12 +255,12 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
     override fun compareAndSwapModel(previousModel: UUIDModel?, targetModel: ContainerRoot?, callback: ModelUpdateCallback?) {
         scheduler?.submit(CompareAndSwapCallable(previousModel!!, cloneCurrentModel(targetModel), callback))
     }
-          /*
-    public override fun compareAndSwapModel(p0: org.kevoree.api.service.core.handler.UUIDModel?, p1: org.kevoree.ContainerRoot?, p2: ((org.kevoree.api.service.core.handler.ModelUpdateCallBackReturn?) -> jet.Unit)?): jet.Unit {
-        throw Exception()
-    }   */
+    /*
+public override fun compareAndSwapModel(p0: org.kevoree.api.service.core.handler.UUIDModel?, p1: org.kevoree.ContainerRoot?, p2: ((org.kevoree.api.service.core.handler.ModelUpdateCallBackReturn?) -> jet.Unit)?): jet.Unit {
+  throw Exception()
+}   */
 
-    inner class AcquireLock(val callBack: ModelHandlerLockCallBack, val timeout: Long): Runnable {
+    inner class AcquireLock(val callBack: ModelHandlerLockCallBack, val timeout: Long) : Runnable {
         override fun run() {
             if (currentLock != null) {
                 callBack.lockRejected()
@@ -275,7 +274,7 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
         }
     }
 
-    inner class WatchDogCallable(): Runnable {
+    inner class WatchDogCallable() : Runnable {
         override fun run() {
             lockTimeout()
         }
@@ -289,7 +288,7 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
         }
     }
 
-    inner class ReleaseLockCallable(val uuid: UUID): Runnable {
+    inner class ReleaseLockCallable(val uuid: UUID) : Runnable {
         override fun run() {
             if (currentLock != null) {
                 if (currentLock!!.uuid.compareTo(uuid) == 0) {
@@ -303,7 +302,7 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
         }
     }
 
-    inner class CompareAndSwapCallable(val previousModel: UUIDModel, val targetModel: ContainerRoot, val callback: ModelUpdateCallback?): Callable<Boolean> {
+    inner class CompareAndSwapCallable(val previousModel: UUIDModel, val targetModel: ContainerRoot, val callback: ModelUpdateCallback?) : Callable<Boolean> {
         override fun call(): Boolean {
             val res: Boolean = if (currentLock != null) {
                 if (previousModel?.getUUID()?.compareTo(currentLock!!.uuid) == 0) {
@@ -345,7 +344,7 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
         return scheduler?.submit(GetPreviousModelCallable())?.get() as MutableList<ContainerRoot>
     }
 
-    private inner class GetPreviousModelCallable(): Callable<List<ContainerRoot>> {
+    private inner class GetPreviousModelCallable() : Callable<List<ContainerRoot>> {
         override fun call(): List<ContainerRoot> {
             val previousM = ArrayList<ContainerRoot>()
             for(mds in models){
@@ -370,11 +369,6 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
     override fun unregisterModelListener(listener: ModelListener?) {
         modelListeners.removeListener(listener!!)
     }
-
-    override fun getContextModel(): ContextRoot {
-        return nodeInstance?.getContextModel()!!
-    }
-
 
     class RELEASE_LOCK(uuid: UUID){
     }
@@ -456,13 +450,13 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
                             adaptationModel.setInternalReadOnly()
                             if (Log.DEBUG){
                                 //Avoid the loop if the debug is not activated
-                                Log.debug("Adaptation model size {}", adaptationModel.getAdaptations().size())
-                                for(adaptation in adaptationModel.getAdaptations()) {
-                                    Log.debug("primitive {} ", adaptation.getPrimitiveType()?.getName())
+                                Log.debug("Adaptation model size {}", adaptationModel.adaptations.size())
+                                for(adaptation in adaptationModel.adaptations) {
+                                    Log.debug("primitive {} ", adaptation.primitiveType?.name)
                                 }
                             }
                             //Executes the adaptation
-                            val afterUpdateTest: ()->Boolean = {()-> true }
+                            val afterUpdateTest: () -> Boolean = {() -> true }
                             val rootNode = currentModel.findNodesByID(getNodeName())
                             org.kevoree.framework.deploy.PrimitiveCommandExecutionHelper.execute(rootNode!!, adaptationModel, nodeInstance!!, afterUpdateTest, afterUpdateTest, afterUpdateTest)
                             nodeInstance?.stopNode()
@@ -500,10 +494,10 @@ class KevoreeCoreBean(): KevoreeModelHandlerService {
                             adaptationModel.setInternalReadOnly()
                             //Execution of the adaptation
                             Log.info("Launching adaptation of the system.")
-                            val  afterUpdateTest: ()-> Boolean = {()-> modelListeners.afterUpdate(currentModel, newmodel) }
+                            val  afterUpdateTest: () -> Boolean = {() -> modelListeners.afterUpdate(currentModel, newmodel) }
 
                             val preCmd = PreCommand(newmodel, modelListeners, currentModel)
-                            val postRollbackTest: ()->Boolean = {() -> modelListeners.postRollback(currentModel, newmodel);true }
+                            val postRollbackTest: () -> Boolean = {() -> modelListeners.postRollback(currentModel, newmodel);true }
                             val rootNode = newmodel.findNodesByID(getNodeName())!!
                             deployResult = org.kevoree.framework.deploy.PrimitiveCommandExecutionHelper.execute(rootNode, adaptationModel, nodeInstance!!, afterUpdateTest, preCmd.preRollbackTest, postRollbackTest)
                         } else {

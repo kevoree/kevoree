@@ -30,7 +30,7 @@ trait KevoreeNodeVersion {
         val logger = LoggerFactory.getLogger(this.javaClass)!!
         val typeDefinitionAspect = TypeDefinitionAspect()
         try {
-            val rDU = typeDefinitionAspect.foundRelevantDeployUnit(node.getTypeDefinition(), node)
+            val rDU = typeDefinitionAspect.foundRelevantDeployUnit(node.typeDefinition, node)
             if (rDU != null) {
                 for (du in rDU.getRequiredLibs()) {
                     if (du.getGroupName() == "org.kevoree" && du.getUnitName() == "org.kevoree.api") {
@@ -39,7 +39,7 @@ trait KevoreeNodeVersion {
                 }
                 return null
             } else {
-                logger.error("Relevant deploy unit  not found for " + node.getName())
+                logger.error("Relevant deploy unit  not found for " + node.name)
                 return null //must never appear
             }
         } catch (e: Exception){

@@ -53,9 +53,9 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.kevoree</groupId>
+            <groupId>org.kevoree.kcl</groupId>
             <artifactId>org.kevoree.kcl</artifactId>
-            <version>${project.version}</version>
+            <version>${kevoree.kcl.version}</version>
         </dependency>
     </dependencies>
 

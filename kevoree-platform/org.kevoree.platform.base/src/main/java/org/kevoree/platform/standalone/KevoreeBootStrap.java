@@ -178,6 +178,10 @@ public class KevoreeBootStrap {
                         }
 
                         File filebootmodel = bootstraper.resolveKevoreeArtifact("org.kevoree.library.javase.jexxus","org.kevoree.corelibrary.javase", askedVersion);
+                        if(filebootmodel == null){
+                            Log.error("Unable to resolve locally/remotly Jexxus library, please verify your internet connection");
+                            throw new Exception("Unresolved Jexxus library, bootstrap aborded !");
+                        }
                         JarFile jar = new JarFile(filebootmodel);
                         JarEntry entry = jar.getJarEntry("KEV-INF/lib.kev");
                         bootstrapModel = KevoreeXmiHelper.instance$.loadStream(jar.getInputStream(entry));

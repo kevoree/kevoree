@@ -33,7 +33,6 @@ import org.kevoree.tools.ui.editor.KevoreeEditor;
 import org.kevoree.tools.ui.editor.UIEventHandler;
 import org.kevoree.tools.ui.editor.command.Command;
 import org.kevoree.tools.ui.editor.command.LoadContinuousRemoteModelUICommand;
-import org.kevoree.tools.ui.editor.kloud.KloudForm;
 import org.kevoree.tools.ui.editor.kloud.MiniKloudForm;
 
 import javax.swing.*;

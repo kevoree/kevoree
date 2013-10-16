@@ -18,9 +18,9 @@ class ChannelAspect() {
 * Returns true if the node in parameter hosts a component bound to this channel.
 */
     fun usedByNode(cself: Channel, nodeName: String): Boolean {
-        for(mb in cself.getBindings()){
-            val pointednode = mb.getPort()!!.eContainer()!!.eContainer() as ContainerNode
-            if(pointednode.getName() == nodeName){
+        for(mb in cself.bindings){
+            val pointednode = mb.port!!.eContainer()!!.eContainer() as ContainerNode
+            if(pointednode.name == nodeName){
                 return true
             }
         }
@@ -32,9 +32,9 @@ class ChannelAspect() {
 */
     fun getConnectedNode(cself: Channel, nodeName: String): List<ContainerNode> {
         var result = ArrayList<ContainerNode>()
-        for(mb in cself.getBindings()){
-            val pointednode = mb.getPort()!!.eContainer()!!.eContainer() as ContainerNode
-            if(pointednode.getName() != nodeName){
+        for(mb in cself.bindings){
+            val pointednode = mb.port!!.eContainer()!!.eContainer() as ContainerNode
+            if(pointednode.name != nodeName){
                 result.add(pointednode)
             }
         }
@@ -46,9 +46,9 @@ class ChannelAspect() {
    */
     fun getRelatedNodes(cself: Channel): List<ContainerNode> {
         var result = ArrayList<ContainerNode>()
-        for(mb in cself.getBindings()){
-            if(!result.contains(mb.getPort()!!.eContainer()!!.eContainer() as ContainerNode)){
-                result.add(mb.getPort()!!.eContainer()!!.eContainer() as ContainerNode)
+        for(mb in cself.bindings){
+            if(!result.contains(mb.port!!.eContainer()!!.eContainer() as ContainerNode)){
+                result.add(mb.port!!.eContainer()!!.eContainer() as ContainerNode)
             }
         }
         return result
@@ -59,8 +59,8 @@ class ChannelAspect() {
   */
     fun getRelatedBindings(cself: Channel, node: ContainerNode): List<MBinding> {
         var result = ArrayList<MBinding>()
-        for(mb in cself.getBindings()){
-            if ((mb.getPort()!!.eContainer()!!.eContainer() as  ContainerNode).getName() == node.getName()) {
+        for(mb in cself.bindings){
+            if ((mb.port!!.eContainer()!!.eContainer() as  ContainerNode).name == node.name) {
                 result.add(mb)
             }
         }

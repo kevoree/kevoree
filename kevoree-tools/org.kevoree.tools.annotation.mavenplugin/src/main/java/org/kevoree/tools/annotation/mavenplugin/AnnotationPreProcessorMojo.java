@@ -22,11 +22,10 @@ import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.StringUtils;
 import org.kevoree.ContainerRoot;
-import org.kevoree.DeployUnit;
-import org.kevoree.TypeDefinition;
+import org.kevoree.compare.DefaultModelCompare;
 import org.kevoree.framework.KevoreeXmiHelper;
 import org.kevoree.framework.annotation.processor.visitor.KevoreeAnnotationProcessor;
-import org.kevoree.merger.KevoreeMergerComponent;
+import org.kevoree.modeling.api.compare.ModelCompare;
 
 import javax.tools.*;
 import java.io.File;
@@ -535,7 +534,9 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
             File file = new File(sourceOutputDirectory.getPath() + File.separator + "KEV-INF" + File.separator + "lib.kev");
             if (file.exists()) {
                 ContainerRoot model = KevoreeXmiHelper.instance$.load(sourceOutputDirectory.getPath() + File.separator + "KEV-INF" + File.separator + "lib.kev");
-                KevoreeMergerComponent merger = new KevoreeMergerComponent();
+
+                ModelCompare compare = new DefaultModelCompare();
+
 
                 for (Artifact artifact : project.getDependencyArtifacts()) {
                     if (artifact.getScope().equals(Artifact.SCOPE_COMPILE)) {
@@ -545,7 +546,8 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
                             JarEntry entry = jar.getJarEntry("KEV-INF/lib.kev");
                             if (entry != null) {
                                 getLog().info("Auto merging dependency => " + " from " + artifact);
-                                merger.merge(model, KevoreeXmiHelper.instance$.loadStream(jar.getInputStream(entry)));
+                                ContainerRoot libModel = KevoreeXmiHelper.instance$.loadStream(jar.getInputStream(entry));
+                                compare.merge(model,libModel).applyOn(model);
                             }
                         } catch (Exception e) {
                             getLog().info("Unable to get KEV-INF/lib.kev on " + artifact.getArtifactId() + "(Kevoree lib will not be merged): " + e.getMessage());
@@ -555,6 +557,7 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
 
 
                 // check if the targetNodeType which is define for each TypeDefinition is well defined
+                /*
                 boolean targetNodeTypesIsWellDefined = true;
                 for (TypeDefinition typeDefinition : model.getTypeDefinitions()) {
                     for (DeployUnit deployUnit : typeDefinition.getDeployUnits()) {
@@ -565,7 +568,7 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
                     getLog().error("TargetNodeType(s) are not well defined. Please check your dependencies to ensure that one (or more) of them provide the NodeType(s) you define as targetNodeType(s): " + options.get("nodeTypeNames"));
                     throw new Exception("TargetNodeType(s) are not well defined. Please check your dependencies to ensure that one (or more) of them provide the NodeType(s) you define as targetNodeType(s): " + options.get("nodeTypeNames"));
                 }
-
+                 */
                 KevoreeXmiHelper.instance$.save(sourceOutputDirectory.getPath() + File.separator + "KEV-INF" + File.separator + "lib.kev", model);
             }
 

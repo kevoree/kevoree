@@ -35,10 +35,10 @@ class KevoreeMBindingEdgeFactory (m: ContainerRoot): EdgeFactory<Instance, MBind
 
     public override fun createEdge(sourceVertex: Instance?, targetVertex: Instance?): MBinding? {
         if (sourceVertex is Channel && targetVertex is ComponentInstance) {
-            for (hub in model.getHubs()) {
-                if (hub.getName() == (sourceVertex as Channel).getName()) {
-                    for (mbinding in hub.getBindings()) {
-                        if ((mbinding.getPort()!!.eContainer() as ComponentInstance).getName() == targetVertex.getName()) {
+            for (hub in model.hubs) {
+                if (hub.name == (sourceVertex as Channel).name) {
+                    for (mbinding in hub.bindings) {
+                        if ((mbinding.port!!.eContainer() as ComponentInstance).name == targetVertex.name) {
                             return mbinding
                         }
                     }
@@ -47,10 +47,10 @@ class KevoreeMBindingEdgeFactory (m: ContainerRoot): EdgeFactory<Instance, MBind
             }
             throw RuntimeException("Edge factory failed because there is no corresponding Channel on model")
         } else if (targetVertex is Channel && sourceVertex is ComponentInstance) {
-            for (hub in model.getHubs()) {
-                if (hub.getName() == (targetVertex as Channel).getName()) {
-                    for (mBinding in hub.getBindings()) {
-                        if ((mBinding.getPort()!!.eContainer() as ComponentInstance).getName() == sourceVertex.getName()) {
+            for (hub in model.hubs) {
+                if (hub.name == (targetVertex as Channel).name) {
+                    for (mBinding in hub.bindings) {
+                        if ((mBinding.port!!.eContainer() as ComponentInstance).name == sourceVertex.name) {
                             return mBinding
                         }
                     }

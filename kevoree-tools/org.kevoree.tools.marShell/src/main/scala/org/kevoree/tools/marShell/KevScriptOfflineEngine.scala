@@ -41,10 +41,10 @@ class KevScriptOfflineEngine(srcModel: ContainerRoot, bootstraper: Bootstraper) 
     parser.parseScript(resolvedScript) match {
       case Some(s) => {
         val inputModel = modelCloner.clone(srcModel)
-        val ctx = KevsInterpreterContext(inputModel)
+        val ctx = KevsInterpreterContext(inputModel.asInstanceOf[ContainerRoot])
         ctx.setBootstraper(bootstraper)
         if (s.interpret(ctx.setVarMap(varMap))) {
-          inputModel
+          inputModel.asInstanceOf[ContainerRoot]
         } else {
           import scala.collection.JavaConversions._
           throw new KevScriptEngineException("Interpreter Error:\n" + ctx.interpretationErrors.mkString("\n"))

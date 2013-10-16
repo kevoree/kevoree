@@ -30,7 +30,6 @@ package org.kevoree.api
 import org.kevoree.ContainerRoot
 import org.kevoreeadaptation.AdaptationModel
 import org.kevoreeadaptation.AdaptationPrimitive
-import org.kevoree.context.ContextRoot
 
 /**
  * Created by IntelliJ IDEA.
@@ -50,7 +49,5 @@ trait NodeType {
     fun kompare(actualModel: ContainerRoot, targetModel: ContainerRoot): AdaptationModel
 
     fun getPrimitive(primitive: AdaptationPrimitive): PrimitiveCommand
-
-    fun getContextModel(): ContextRoot
 
 }

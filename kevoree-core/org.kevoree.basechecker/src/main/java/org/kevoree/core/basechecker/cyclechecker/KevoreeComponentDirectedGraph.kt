@@ -26,15 +26,15 @@ class KevoreeComponentDirectedGraph(model: ContainerRoot, nodeName: String): Def
         val componentInstanceAspect = ComponentInstanceAspect()
         val node = model.findByPath("nodes[" + nodeName + "]",  javaClass<ContainerNode>())
         if (node != null) {
-            for (componentInstance in node.getComponents()) {
+            for (componentInstance in node.components) {
                 for (binding in componentInstanceAspect.getRelatedBindings(componentInstance)) {
-                    if (binding.getPort()!!.getPortTypeRef()!!.getNoDependency() == false) {
-                        addVertex(binding.getHub())
+                    if (binding.port!!.portTypeRef!!.noDependency == false) {
+                        addVertex(binding.hub)
                         addVertex(componentInstance)
-                        if (componentInstance.getProvided().contains(binding.getPort())) {
-                            addEdge(binding.getHub(), componentInstance, binding)
+                        if (componentInstance.provided.contains(binding.port)) {
+                            addEdge(binding.hub, componentInstance, binding)
                         } else {
-                            addEdge(componentInstance, binding.getHub(), binding)
+                            addEdge(componentInstance, binding.hub, binding)
                         }
                     }
                 }

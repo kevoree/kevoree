@@ -338,7 +338,7 @@ class MiniKloudForm(editor: KevoreeEditor, button: AbstractButton) {
 
     }
     // looking for port on channel
-    model.getMBindings.foreach {
+    model.getmBindings.foreach {
       binding =>
         logger.debug("Looking for property 'port' on channel {} with node {}", Array[String](binding.getHub.getName, binding.getPort.eContainer.eContainer.asInstanceOf[ContainerNode].getName))
         val portOption = KevoreePropertyHelper.instance$.getProperty(binding.getHub, "port", true, binding.getPort.eContainer.eContainer.asInstanceOf[ContainerNode].getName)

@@ -31,12 +31,12 @@ class KevsBindingTest extends KevSTestSuiteHelper {
     assert(oscript.interpret(KevsInterpreterContext(baseModel)))
     baseModel.testSave("results", "kevsBindingsResult.kev")
 
-    val onExist = baseModel.getMBindings.exists(binding =>
+    val onExist = baseModel.getmBindings.exists(binding =>
       binding.getHub.getName == "gossiperChannel1"
         && binding.getPort.getPortTypeRef.getName == "on"
         && binding.getPort.eContainer.asInstanceOf[ComponentInstance].getName == "myFakeLight1")
 
-    val onffExist = baseModel.getMBindings.exists(binding =>
+    val onffExist = baseModel.getmBindings.exists(binding =>
       binding.getHub.getName == "gossiperChannel1"
         && binding.getPort.getPortTypeRef.getName == "off"
         && binding.getPort.eContainer.asInstanceOf[ComponentInstance].getName == "myFakeLight1")

@@ -110,7 +110,7 @@ public class ClonerTest {
 
         ByteArrayOutputStream s = new ByteArrayOutputStream();
         ModelSerializer saver = new XMIModelSerializer();
-        saver.serialize(modelCloned2, s);
+        saver.serializeToStream(modelCloned2, s);
 
         ContainerNode newNode = factory.createContainerNode();
         newNode.setTypeDefinition(modelCloned2.findTypeDefinitionsByID("JavaSENode"));

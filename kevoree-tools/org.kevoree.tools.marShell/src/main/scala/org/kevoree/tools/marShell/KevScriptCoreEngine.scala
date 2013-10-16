@@ -16,7 +16,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * 	http://www.gnu.org/licenses/lgpl-3.0.txt
+ * http://www.gnu.org/licenses/lgpl-3.0.txt
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -60,6 +60,7 @@ import org.kevoree.api.service.core.script.{KevScriptEngineParseErrorException, 
 import org.kevoree.api.Bootstraper
 import org.kevoree.log.Log
 import org.kevoree.cloner.DefaultModelCloner
+import org.kevoree.modeling.api.KMFContainer
 
 /**
  * Created by IntelliJ IDEA.
@@ -85,10 +86,10 @@ class KevScriptCoreEngine(core: KevoreeModelHandlerService, bootstraper: Bootstr
       case Some(s) => {
         val cloner = new DefaultModelCloner
         val inputModel = cloner.clone(core.getLastModel)
-        val ctx = KevsInterpreterContext(inputModel)
+        val ctx = KevsInterpreterContext(inputModel.asInstanceOf[ContainerRoot])
         ctx.setBootstraper(bootstraper)
         if (s.interpret(ctx.setVarMap(varMap))) {
-          inputModel
+          inputModel.asInstanceOf[ContainerRoot]
         } else {
           import scala.collection.JavaConversions._
           throw new KevScriptEngineException("Interpreter Error:\n" + ctx.interpretationErrors.mkString("\n"))
@@ -118,19 +119,19 @@ class KevScriptCoreEngine(core: KevoreeModelHandlerService, bootstraper: Bootstr
         case Some(s) => {
           val inputModel = core.getLastUUIDModel
           val targetModel = modelCloner.clone(inputModel.getModel)
-          val ctx = KevsInterpreterContext(targetModel)
+          val ctx = KevsInterpreterContext(targetModel.asInstanceOf[ContainerRoot])
           ctx.setBootstraper(bootstraper)
           if (s.interpret(ctx.setVarMap(varMap))) {
             if (atomic) {
               try {
-                core.atomicCompareAndSwapModel(inputModel, targetModel)
+                core.atomicCompareAndSwapModel(inputModel, targetModel.asInstanceOf[ContainerRoot])
               } catch {
                 case _@e => throw new KevScriptEngineException("Unable to compare and swap model: " + e.getMessage) {
                   override def getCause = e
                 }
               }
             } else {
-              core.compareAndSwapModel(inputModel, targetModel)
+              core.compareAndSwapModel(inputModel, targetModel.asInstanceOf[ContainerRoot])
             }
           } else {
             import scala.collection.JavaConversions._

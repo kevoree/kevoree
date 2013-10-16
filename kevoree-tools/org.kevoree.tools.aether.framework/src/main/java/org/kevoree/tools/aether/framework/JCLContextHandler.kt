@@ -19,8 +19,8 @@ import org.kevoree.impl.DefaultKevoreeFactory
  * Time: 14:29
  */
 
-open class JCLContextHandler: KevoreeClassLoaderHandler {
-	/*
+open class JCLContextHandler : KevoreeClassLoaderHandler {
+    /*
     public override fun registerDeployUnitResolver(dur: ((DeployUnit?) -> File?)?) {
         throw UnsupportedOperationException()
     }
@@ -34,37 +34,37 @@ open class JCLContextHandler: KevoreeClassLoaderHandler {
     val resolvers = ArrayList<DeployUnitResolver>()
     protected val failedLinks: HashMap<String, MutableList<KevoreeJarClassLoader>> = HashMap<String, MutableList<KevoreeJarClassLoader>>()
 
-    inner class INSTALL_DEPLOYUNIT_FILE(val du: DeployUnit, val file: File): Callable<KevoreeJarClassLoader> {
+    inner class INSTALL_DEPLOYUNIT_FILE(val du: DeployUnit, val file: File) : Callable<KevoreeJarClassLoader> {
         override fun call(): KevoreeJarClassLoader {
             return installDeployUnitInternals(du, file)
         }
     }
 
-    inner class INSTALL_DEPLOYUNIT(val du: DeployUnit): Callable<KevoreeJarClassLoader?> {
+    inner class INSTALL_DEPLOYUNIT(val du: DeployUnit) : Callable<KevoreeJarClassLoader?> {
         override fun call(): KevoreeJarClassLoader? {
             return installDeployUnitNoFileInternals(du)
         }
     }
 
-    inner class REMOVE_DEPLOYUNIT(val du: DeployUnit): Runnable {
+    inner class REMOVE_DEPLOYUNIT(val du: DeployUnit) : Runnable {
         override fun run() {
             removeDeployUnitInternals(du)
         }
     }
 
-    inner class GET_KCL(val du: DeployUnit): Callable<KevoreeJarClassLoader?> {
+    inner class GET_KCL(val du: DeployUnit) : Callable<KevoreeJarClassLoader?> {
         override fun call(): KevoreeJarClassLoader? {
             return getKCLInternals(du)
         }
     }
 
-    inner class MANUALLY_ADD_TO_CACHE(val du: DeployUnit, val kcl: KevoreeJarClassLoader, val toLock: Boolean): Runnable {
+    inner class MANUALLY_ADD_TO_CACHE(val du: DeployUnit, val kcl: KevoreeJarClassLoader, val toLock: Boolean) : Runnable {
         override fun run() {
             manuallyAddToCacheInternals(du, kcl, toLock)
         }
     }
 
-    inner class CLEAR(): Runnable {
+    inner class CLEAR() : Runnable {
         override fun run() {
             clearInternals()
         }
@@ -73,7 +73,7 @@ open class JCLContextHandler: KevoreeClassLoaderHandler {
     override fun registerDeployUnitResolver(dur: DeployUnitResolver?) {
         pool.submit(Add_Resolver(dur!!))
     }
-    inner class Add_Resolver(val dur: DeployUnitResolver): Runnable {
+    inner class Add_Resolver(val dur: DeployUnitResolver) : Runnable {
         override fun run() {
             resolvers.add(dur)
         }
@@ -81,7 +81,7 @@ open class JCLContextHandler: KevoreeClassLoaderHandler {
     override fun unregisterDeployUnitResolver(dur: DeployUnitResolver?) {
         pool.submit(Remove_Resolver(dur!!))
     }
-    inner class Remove_Resolver(val dur: DeployUnitResolver): Runnable {
+    inner class Remove_Resolver(val dur: DeployUnitResolver) : Runnable {
         override fun run() {
             resolvers.remove(dur)
         }
@@ -97,7 +97,7 @@ open class JCLContextHandler: KevoreeClassLoaderHandler {
 
     val pool = Executors.newSingleThreadExecutor(KCLHandlerThreadFactory())
 
-    inner class GET_CACHE_FILE(val du: DeployUnit): Callable<File> {
+    inner class GET_CACHE_FILE(val du: DeployUnit) : Callable<File> {
         override fun call(): File {
             return getCacheFileInternals(du)
         }
@@ -194,7 +194,7 @@ open class JCLContextHandler: KevoreeClassLoaderHandler {
             newcl.add(file.getAbsolutePath())
             kcl_cache.put(buildKEY(du), newcl)
             kcl_cache_file.put(buildKEY(du), file)
-            Log.debug("Add KCL for {}->{}", du.getUnitName(), buildKEY(du))
+            Log.debug("Add KCL for {}->{}", du.unitName, buildKEY(du))
 
             //TRY TO RECOVER FAILED LINK
             if (failedLinks.containsKey(buildKEY(du))) {
@@ -202,23 +202,23 @@ open class JCLContextHandler: KevoreeClassLoaderHandler {
                     toLinkKCL.addSubClassLoader(newcl)
                     newcl.addWeakClassLoader(toLinkKCL)
 
-                    Log.debug("UnbreakLink " + du.getUnitName() + "->" + toLinkKCL.getLoadedURLs().get(0))
+                    Log.debug("UnbreakLink " + du.unitName + "->" + toLinkKCL.getLoadedURLs().get(0))
 
                 }
                 failedLinks.remove(buildKEY(du))
-                Log.debug("Failed Link {} remain size : {}", du.getUnitName(), failedLinks.size())
+                Log.debug("Failed Link {} remain size : {}", du.unitName, failedLinks.size())
             }
-            for(rLib in  du.getRequiredLibs()) {
+            for(rLib in  du.requiredLibs) {
                 val kcl = getKCLInternals(rLib)
                 if (kcl != null) {
-                    Log.debug("Link KCL for {}->{}", du.getUnitName(), rLib.getUnitName())
+                    Log.debug("Link KCL for {}->{}", du.unitName, rLib.unitName)
                     newcl.addSubClassLoader(kcl)
                     kcl.addWeakClassLoader(newcl)
-                    du.getRequiredLibs().filter{ rLibIn -> rLib != rLibIn }.forEach{ rLibIn ->
+                    du.requiredLibs.filter { rLibIn -> rLib != rLibIn }.forEach { rLibIn ->
                         val kcl2 = getKCLInternals(rLibIn)
                         if (kcl2 != null) {
                             kcl.addWeakClassLoader(kcl2)
-                            // logger.debug("Link Weak for {}->{}", rLib.getUnitName(), rLibIn.getUnitName())
+                            // logger.debug("Link Weak for {}->{}", rLib.unitName, rLibIn.unitName)
                         }
                     }
                 } else {
@@ -242,9 +242,9 @@ open class JCLContextHandler: KevoreeClassLoaderHandler {
         if(result == null){
             //try * version resolution
             val duCloned = DefaultKevoreeFactory().createDeployUnit()
-            duCloned.setGroupName(du.getGroupName())
-            duCloned.setUnitName(du.getUnitName())
-            duCloned.setVersion("*")
+            duCloned.groupName = du.groupName
+            duCloned.unitName = du.unitName
+            duCloned.version = "*"
             result = kcl_cache.get(buildKEY(duCloned))
         }
         return result
@@ -270,7 +270,7 @@ open class JCLContextHandler: KevoreeClassLoaderHandler {
 
             if (!lockedDu.contains(key)) {
                 if (kcl_cache.containsKey(key)) {
-                    Log.debug("Try to remove KCL for {}->{}", du.getUnitName(), buildKEY(du))
+                    Log.debug("Try to remove KCL for {}->{}", du.unitName, buildKEY(du))
                     Log.debug("Cache To cleanuip size" + kcl_cache.values().size() + "-" + kcl_cache.size() + "-" + kcl_cache.keySet().size())
                     for(vals in kcl_cache.values()) {
                         if (vals.getSubClassLoaders().contains(kcl_to_remove)) {
@@ -284,7 +284,7 @@ open class JCLContextHandler: KevoreeClassLoaderHandler {
                             Log.debug("Pending Fail link " + key)
                         }
                         vals.cleanupLinks(kcl_to_remove!!)
-                        Log.debug("Cleanup {} from {}", vals, du.getUnitName())
+                        Log.debug("Cleanup {} from {}", vals, du.unitName)
                     }
                 }
                 val toRemoveKCL = kcl_cache.get(key)
@@ -301,7 +301,7 @@ open class JCLContextHandler: KevoreeClassLoaderHandler {
 
 
     fun buildKEY(du: DeployUnit): String {
-        return du.getName() + "/" + buildQuery(du, null)
+        return du.name + "/" + buildQuery(du, null)
     }
 
     fun buildQuery(du: DeployUnit, repoUrl: String?): String {
@@ -311,11 +311,11 @@ open class JCLContextHandler: KevoreeClassLoaderHandler {
             query.append(repoUrl); query.append("!")
         }
 
-        query.append(du.getGroupName())
+        query.append(du.groupName)
         query.append("/")
-        query.append(du.getUnitName())
-        if(!du.getVersion().equals("default") && !du.getVersion().equals("")){
-            query.append("/"); query.append(du.getVersion())
+        query.append(du.unitName)
+        if(!du.version.equals("default") && !du.version.equals("")){
+            query.append("/"); query.append(du.version)
         }
         return query.toString()
     }
@@ -337,7 +337,7 @@ open class JCLContextHandler: KevoreeClassLoaderHandler {
 
     open fun installDeployUnitNoFileInternals(du: DeployUnit): KevoreeJarClassLoader? {
         var resolvedFile: File? = null
-        resolvers.any{
+        resolvers.any {
             res ->
             try {
                 resolvedFile = res.resolve(du)
@@ -352,7 +352,7 @@ open class JCLContextHandler: KevoreeClassLoaderHandler {
         if (resolvedFile != null) {
             return installDeployUnitInternals(du, resolvedFile!!)
         } else {
-            Log.error("Error while resolving deploy unit " + du.getUnitName())
+            Log.error("Error while resolving deploy unit " + du.unitName)
             return null
         }
     }

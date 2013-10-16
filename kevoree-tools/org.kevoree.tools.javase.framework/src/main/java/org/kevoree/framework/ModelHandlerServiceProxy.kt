@@ -31,7 +31,6 @@ import java.util.UUID
 import java.util.concurrent.atomic.AtomicReference
 import org.kevoree.ContainerRoot
 import org.kevoree.api.service.core.handler.*
-import org.kevoree.context.ContextRoot
 import org.kevoree.log.Log
 
 /**
@@ -142,10 +141,6 @@ class ModelHandlerServiceProxy(val proxy: KevoreeModelHandlerService): KevoreeMo
 
     override fun unregisterModelListener(listener: ModelListener?) {
         proxy.unregisterModelListener(listener)
-    }
-
-    override fun getContextModel(): ContextRoot? {
-        return proxy.getContextModel()
     }
 
     override fun acquireLock(callBack: ModelHandlerLockCallBack?, timeout: Long?) {

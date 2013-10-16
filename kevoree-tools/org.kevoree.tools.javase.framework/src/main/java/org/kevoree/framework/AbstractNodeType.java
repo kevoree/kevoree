@@ -31,9 +31,6 @@ import org.kevoree.ContainerRoot;
 import org.kevoree.api.NodeType;
 import org.kevoree.api.PrimitiveCommand;
 import org.kevoree.api.dataspace.DataSpaceService;
-import org.kevoree.context.ContextFactory;
-import org.kevoree.context.ContextRoot;
-import org.kevoree.context.impl.DefaultContextFactory;
 import org.kevoreeadaptation.AdaptationModel;
 import org.kevoreeadaptation.AdaptationPrimitive;
 
@@ -75,14 +72,6 @@ public abstract class
 
     public abstract PrimitiveCommand getPrimitive(AdaptationPrimitive primitive);
 
-    private ContextFactory contextFactory = new DefaultContextFactory();
-
-    private ContextRoot contextModel = contextFactory.createContextRoot();
-
-    @Override
-    public ContextRoot getContextModel() {
-        return contextModel;
-    }
 
     /**
      * Allow to find the corresponding element into the model

@@ -62,7 +62,7 @@ class SaveAsKevScript extends Command {
 
     val modelCloner = new DefaultModelCloner()
 
-    val emptyModel = modelCloner.clone(kernel.getModelHandler.getActualModel)
+    val emptyModel = modelCloner.clone(kernel.getModelHandler.getActualModel).asInstanceOf[org.kevoree.ContainerRoot]
     emptyModel.removeAllHubs()
     emptyModel.removeAllGroups()
     emptyModel.removeAllNodes()
@@ -113,7 +113,7 @@ class SaveAsKevScript extends Command {
     }
 
     currentModel.getNodes.foreach(n => {
-      val adapModel = kompareBean.kompare(emptyModel, currentModel, n.getName)
+      val adapModel = kompareBean.kompare(emptyModel.asInstanceOf[org.kevoree.ContainerRoot], currentModel, n.getName)
       val script = AdaptationModelWrapper.generateScriptFromAdaptModel(adapModel)
       //val planScript = KevScriptWrapper.miniPlanKevScript(script)
       script.blocks.foreach {
@@ -138,7 +138,7 @@ class SaveAsKevScript extends Command {
     })
 
     currentModel.getNodes.foreach(n => {
-      val adapModel = kompareBean.kompare(emptyModel, currentModel, n.getName)
+      val adapModel = kompareBean.kompare(emptyModel.asInstanceOf[org.kevoree.ContainerRoot], currentModel, n.getName)
       val script = AdaptationModelWrapper.generateScriptFromAdaptModel(adapModel)
       val planScript = KevScriptWrapper.miniPlanKevScript(script)
       scriptBuffer.append(planScript.getTextualForm)

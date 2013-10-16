@@ -20,19 +20,9 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.kevoree</groupId>
-            <artifactId>org.kevoree.model.context</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.kevoree</groupId>
-            <artifactId>org.kevoree.adaptation.model</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.kevoree</groupId>
+            <groupId>org.kevoree.kcl</groupId>
             <artifactId>org.kevoree.kcl</artifactId>
-            <version>${project.version}</version>
+            <version>${kevoree.kcl.version}</version>
         </dependency>
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>

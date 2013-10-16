@@ -18,8 +18,8 @@ class ContainerNodeAspect {
 
     private fun getTypeAndInherited(t: TypeDefinition?): List<TypeDefinition> {
         var types = ArrayList<TypeDefinition>()
-        if (t != null && t.getSuperTypes() != null) {
-            for(superT in t.getSuperTypes()){
+        if (t != null && t.superTypes != null) {
+            for(superT in t.superTypes){
                 types.addAll(getTypeAndInherited(superT))
             }
             types.add(t)
@@ -30,26 +30,26 @@ class ContainerNodeAspect {
     fun getUsedTypeDefinition(node: ContainerNode): List<TypeDefinition> {
         var usedType: HashSet<TypeDefinition> = HashSet()
         /* ADD NODE TYPE DEFINITION */
-        usedType.addAll(getTypeAndInherited(node.getTypeDefinition()))
+        usedType.addAll(getTypeAndInherited(node.typeDefinition))
         /* ADD COMPONENT TYPE USED */
-        for(c in node.getComponents()){
-            usedType.addAll(getTypeAndInherited(c.getTypeDefinition()))
+        for(c in node.components){
+            usedType.addAll(getTypeAndInherited(c.typeDefinition))
         }
 
         /* ADD CHANNEL TYPE USED */
         /* add channel fragment on node */
         val rootModel = node.eContainer() as ContainerRoot
-        for(mb in rootModel.getMBindings()) {
-            if (mb.getPort()!!.eContainer()!!.eContainer() == node) {
-                usedType.addAll(getTypeAndInherited(mb.getHub()!!.getTypeDefinition()))
+        for(mb in rootModel.mBindings) {
+            if (mb.port!!.eContainer()!!.eContainer() == node) {
+                usedType.addAll(getTypeAndInherited(mb.hub!!.typeDefinition))
             }
         }
 
         /* add group type on node */
         /* add group */
-        for(group in rootModel.getGroups()){
-            if(group.getSubNodes().contains(node)){
-                val groupTypeDef = group.getTypeDefinition()
+        for(group in rootModel.groups){
+            if(group.subNodes.contains(node)){
+                val groupTypeDef = group.typeDefinition
                 if(groupTypeDef != null){
                     usedType.add(groupTypeDef)
                 }
@@ -61,18 +61,18 @@ class ContainerNodeAspect {
     fun getChannelFragment(node: ContainerNode): List<Channel> {
         /* add channel fragment on node */
         val usedChannels = ArrayList<Channel>()
-        for (component in node.getComponents()) {
-            for (port in component.getProvided()) {
-                for (mb in port.getBindings()) {
-                    if (!usedChannels.contains(mb.getHub())) {
-                        usedChannels.add(mb.getHub()!!)
+        for (component in node.components) {
+            for (port in component.provided) {
+                for (mb in port.bindings) {
+                    if (!usedChannels.contains(mb.hub)) {
+                        usedChannels.add(mb.hub!!)
                     }
                 }
             }
-            for (port in component.getRequired()) {
-                for (mb in port.getBindings()) {
-                    if (!usedChannels.contains(mb.getHub())) {
-                        usedChannels.add(mb.getHub()!!)
+            for (port in component.required) {
+                for (mb in port.bindings) {
+                    if (!usedChannels.contains(mb.hub)) {
+                        usedChannels.add(mb.hub!!)
                     }
                 }
             }
@@ -82,8 +82,8 @@ class ContainerNodeAspect {
 
     fun getGroups(node: ContainerNode): List<Group> {
         val usedGroups = ArrayList<Group>()
-        for (group in (node.eContainer() as ContainerRoot).getGroups()) {
-            if (group.getSubNodes().contains(node)) {
+        for (group in (node.eContainer() as ContainerRoot).groups) {
+            if (group.subNodes.contains(node)) {
                 usedGroups.add(group)
             }
         }

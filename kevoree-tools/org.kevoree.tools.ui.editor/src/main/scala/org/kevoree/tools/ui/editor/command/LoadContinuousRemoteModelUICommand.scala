@@ -46,7 +46,7 @@ class LoadContinuousRemoteModelUICommand extends Command {
 
   def send(){
     val oo = new ByteArrayOutputStream()
-    saver.serialize(kernel.getModelHandler.getActualModel,oo)
+    saver.serializeToStream(kernel.getModelHandler.getActualModel,oo)
     client.send(oo.toByteArray)
   }
 

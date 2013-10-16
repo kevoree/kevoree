@@ -33,13 +33,12 @@ package org.kevoree.tools.ui.editor
 
 import command.Command
 import org.kevoree.ContainerRoot
-import org.kevoree.KevoreeFactory
-import org.kevoree.merger.KevoreeMergerComponent
+import org.kevoree.compare.DefaultModelCompare
 
 class KevoreeHandler(kernel: KevoreeUIKernel) {
 
+  private val modelCompare = new DefaultModelCompare
   private var listenerCommand: List[Command] = List[Command]()
-  private val merger = new KevoreeMergerComponent
   private var actualModel: ContainerRoot = ModelHelper.kevoreeFactory.createContainerRoot
 
   //actualModel.eAdapters.add(EMFListener)
@@ -49,7 +48,7 @@ class KevoreeHandler(kernel: KevoreeUIKernel) {
   }
 
   def merge(modelToMerge: ContainerRoot): Unit = {
-    actualModel = merger.merge(actualModel, modelToMerge)
+    modelCompare.merge(actualModel, modelToMerge).applyOn(actualModel)
   }
 
   /* ACESSOR TO MODEL */

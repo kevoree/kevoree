@@ -14,8 +14,8 @@
 package org.kevoree
 
 import java.io.{ByteArrayOutputStream, File,FileInputStream}
-import org.kevoree.loader.{XMIModelLoader}
-import org.kevoree.serializer.{XMIModelSerializer}
+import org.kevoree.loader.XMIModelLoader
+import org.kevoree.serializer.XMIModelSerializer
 import scala.collection.JavaConversions._
 
 /**
@@ -35,7 +35,7 @@ for(i <- 0 until 30){
 }*/
 
   val loader = new XMIModelLoader()
-  val m = loader.loadModelFromStream(new FileInputStream(new File(getClass.getResource("/unomas.kev").toURI()))).get(0).asInstanceOf[ContainerRoot]
+  val m = loader.loadModelFromStream(getClass.getResourceAsStream("/unomas.kev")).get(0).asInstanceOf[ContainerRoot]
 
 
 
@@ -51,7 +51,7 @@ b.setPort(port)
 m.addMBindings(b)
   */
 
-  m.getMBindings().foreach { mb =>
+  m.getmBindings().foreach { mb =>
     println("---------->")
     val p = mb.getPort
     println(mb.getPort+"-"+mb.getPort.getBindings.size+"-"+mb.getPort.getBindings.contains(mb))
@@ -75,7 +75,7 @@ m.addMBindings(b)
 
   val serializer = new XMIModelSerializer
   val oo = new ByteArrayOutputStream
-  serializer.serialize(m,oo)
+  serializer.serializeToStream(m,oo)
   println(System.currentTimeMillis() - current)
   println(new String(oo.toByteArray))
 

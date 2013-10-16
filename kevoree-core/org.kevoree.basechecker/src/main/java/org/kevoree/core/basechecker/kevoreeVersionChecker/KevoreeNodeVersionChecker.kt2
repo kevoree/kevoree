@@ -34,8 +34,8 @@ class KevoreeNodeVersionChecker (n: String): CheckerService, KevoreeNodeVersion 
     public override fun check (model: ContainerRoot?): MutableList<CheckerViolation> {
         val violations = ArrayList<CheckerViolation>()
         if (model != null) {
-            for (node in model.getNodes()) {
-                if (node.getName() == nodeName) {
+            for (node in model.nodes) {
+                if (node.name == nodeName) {
                     val factory = DefaultKevoreeFactory()
                     val nodeKevoreeVersion = getKevoreeVersion(node)
                     if (nodeKevoreeVersion != factory.getVersion()) {

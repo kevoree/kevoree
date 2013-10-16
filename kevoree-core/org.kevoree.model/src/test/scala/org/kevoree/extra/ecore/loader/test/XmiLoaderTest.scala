@@ -58,7 +58,7 @@ class XmiLoaderTest {
   def testOpposite1(){
     val loader = new XMIModelLoader()
     val m = loader.loadModelFromStream(new FileInputStream(new File(getClass.getResource("/unomas.kev").toURI))).get(0).asInstanceOf[ContainerRoot];
-    m.getMBindings.foreach { mb =>
+    m.getmBindings.foreach { mb =>
       println("---------->")
       val p = mb.getPort
       assert(mb.getPort != null)
@@ -104,7 +104,7 @@ class XmiLoaderTest {
     val ms = new XMIModelSerializer()
 
 
-    ms.serialize(XmiLoaderTest.model,pr)
+    ms.serializeToStream(XmiLoaderTest.model,pr)
     pr.close()
     System.out.println("Loading saved model")
     val loader = new XMIModelLoader()

@@ -53,7 +53,7 @@ object KevoreeXmiHelper {
             outputFile.createNewFile()
         }
         val fop = FileOutputStream(outputFile)
-        serializer.serialize(root, fop)
+        serializer.serializeToStream(root, fop)
         fop.flush()
         fop.close()
     }
@@ -61,7 +61,7 @@ object KevoreeXmiHelper {
     fun saveToString(root: ContainerRoot, prettyPrint: Boolean): String {
         val serializer = XMIModelSerializer()
         val ba = ByteArrayOutputStream()
-        val res = serializer.serialize(root, ba)
+        val res = serializer.serializeToStream(root, ba)
         ba.flush()
         val result = String(ba.toByteArray())
         ba.close()
@@ -101,7 +101,7 @@ object KevoreeXmiHelper {
 
     fun saveStream(output: OutputStream, root: ContainerRoot): Unit {
         val serializer = XMIModelSerializer()
-        val result = serializer.serialize(root, output)
+        val result = serializer.serializeToStream(root, output)
     }
 
     fun saveCompressedStream(output: OutputStream, root: ContainerRoot): Unit {

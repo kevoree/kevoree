@@ -31,13 +31,13 @@ class NodeContainerChecker: CheckerService {
     override fun check(model: ContainerRoot?): MutableList<CheckerViolation> {
         val violations = ArrayList<CheckerViolation>()
         if (model != null) {
-            for (node in model.getNodes()) {
-                if (node.getHosts().size > 0) {
-                    val ntype = node.getTypeDefinition()!! as NodeType
+            for (node in model.nodes) {
+                if (node.hosts.size > 0) {
+                    val ntype = node.typeDefinition!! as NodeType
                     val hostedCapable = hasAdaptationPrimitiveType(ntype, "addnode") && hasAdaptationPrimitiveType(ntype, "removenode")
                     if (!hostedCapable) {
                         val violation: CheckerViolation = CheckerViolation()
-                        violation.setMessage(ntype.getName() + " has no Node hosting capability " + node.getTypeDefinition()!!.getName())
+                        violation.setMessage(ntype.name + " has no Node hosting capability " + node.typeDefinition!!.name)
                         val targetObjects = ArrayList<KMFContainer>()
                         targetObjects.add(node)
                         violation.setTargetObjects(targetObjects)
@@ -50,16 +50,16 @@ class NodeContainerChecker: CheckerService {
     }
 
     fun hasAdaptationPrimitiveType(nodeType: NodeType, typeName: String): Boolean {
-        for (ptype in nodeType.getManagedPrimitiveTypes()) {
-            if (ptype.getName().equalsIgnoreCase(typeName)) {
+        for (ptype in nodeType.managedPrimitiveTypes) {
+            if (ptype.name!!.equalsIgnoreCase(typeName)) {
                 return true
             }
         }
-        if (nodeType.getSuperTypes().size() == 0) {
+        if (nodeType.superTypes.size() == 0) {
             return false
         } else {
             var hasAdaptationPrimitiveType = false
-            for (superType in nodeType.getSuperTypes()) {
+            for (superType in nodeType.superTypes) {
                 if (superType is NodeType) {
                     hasAdaptationPrimitiveType = hasAdaptationPrimitiveType(superType as NodeType, typeName)
                     if (hasAdaptationPrimitiveType) {

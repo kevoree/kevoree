@@ -16,7 +16,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * 	http://www.gnu.org/licenses/lgpl-3.0.txt
+ * http://www.gnu.org/licenses/lgpl-3.0.txt
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -31,11 +31,10 @@ import org.kevoree.tools.aether.framework.AetherUtil
 import java.util.jar.{JarEntry, JarFile}
 import org.kevoree.framework.KevoreeXmiHelper
 import org.slf4j.LoggerFactory
-import org.kevoree.KevoreeFactory
-import org.kevoree.merger.RootMerger
 import org.kevoree.extra.kserial.Utils.KHelpers
 import org.kevoree.extra.kserial.KevoreeSharedCom
 import java.io.File
+import org.kevoree.compare.DefaultModelCompare
 
 /**
  * Created with IntelliJ IDEA.
@@ -61,26 +60,28 @@ class OpenArduinoNode extends Command {
 
   def execute(p: Any) {
 
-    val du  = ModelHelper.kevoreeFactory.createDeployUnit
+    val du = ModelHelper.kevoreeFactory.createDeployUnit
     du.setUnitName("org.kevoree.library.model.arduino")
     du.setGroupName("org.kevoree.corelibrary.model")
     du.setVersion(ModelHelper.kevoreeFactory.getVersion)
     val file = AetherUtil.instance$.resolveDeployUnit(du)
 
     file match {
-      case file : File => {
+      case file: File => {
         val jar = new JarFile(file)
         val entry: JarEntry = jar.getJarEntry("KEV-INF/lib.kev")
         val newmodel = KevoreeXmiHelper.instance$.loadStream(jar.getInputStream(entry))
         if (newmodel != null) {
-          val merger = new RootMerger
+          var compare = new DefaultModelCompare();
           import scala.collection.JavaConversions._
-          KHelpers.getPortIdentifiers.foreach{ pi =>
-            try {
-              merger.merge(newmodel,ArduinoModelGetHelper.getCurrentModel(newmodel,pi))
-            } catch {
-              case _ @ e=>
-            }
+          KHelpers.getPortIdentifiers.foreach {
+            pi =>
+              try {
+
+                compare.merge(newmodel, ArduinoModelGetHelper.getCurrentModel(newmodel, pi)).applyOn(newmodel)
+              } catch {
+                case _@e =>
+              }
           }
           KevoreeSharedCom.killAll()
           clearCMD.execute(null)

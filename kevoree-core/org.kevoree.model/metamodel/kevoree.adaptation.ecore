@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0"
+    xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="kevoreeAdaptation"
+    nsURI="http://kevoree/adaptation/1.0" nsPrefix="kevoree.adaptation">
+  <eClassifiers xsi:type="ecore:EClass" name="AdaptationPrimitive">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="primitiveType" lowerBound="1" upperBound="1" eType="ecore:EClass ../../org.kevoree.model/metamodel/kevoree.ecore#//AdaptationPrimitiveType"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="targetNodeName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="ref" eType="#//Object"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="AdaptationModel">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="adaptations" upperBound="-1"
+        eType="#//AdaptationPrimitive" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="orderedPrimitiveSet" eType="#//ParallelStep"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ParallelStep">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="adaptations" upperBound="-1"
+        eType="#//AdaptationPrimitive"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="nextStep" eType="#//ParallelStep"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EDataType" name="Object" instanceClassName="java.lang.Object"/>
+</ecore:EPackage>

@@ -37,9 +37,9 @@ object KevsEngine {
     parser.parseScript(script) match {
       case Some(s)=> {
         val inputModel = modelCloner.clone(model)
-        val ctx = KevsInterpreterContext(inputModel)
+        val ctx = KevsInterpreterContext(inputModel.asInstanceOf[ContainerRoot])
         if(s.interpret(ctx)){
-          Some(inputModel)
+          Some(inputModel.asInstanceOf[ContainerRoot])
         } else {
           import scala.collection.JavaConversions._
           Log.error("Interpretation error:\n " + ctx.interpretationErrors.mkString("\n"))

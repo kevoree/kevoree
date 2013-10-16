@@ -23,7 +23,7 @@ class NodeCycleChecker: CheckerService {
     public override fun check(model: ContainerRoot?): MutableList<CheckerViolation> {
         var violations = ArrayList<CheckerViolation>()
         if (model != null) {
-            if (model.getNodes().size() > 1) {
+            if (model.nodes.size() > 1) {
                 val graph = KevoreeNodeDirectedGraph(model)
                 for (violation in CheckCycle(graph).check()) {
                     val concreteViolation: CheckerViolation = CheckerViolation()

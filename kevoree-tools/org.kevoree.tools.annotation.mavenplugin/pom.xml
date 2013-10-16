@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
     <artifactId>org.kevoree.tools.annotation.mavenplugin</artifactId>
@@ -19,11 +20,6 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.scala-lang</groupId>
-            <artifactId>scala-library</artifactId>
-            <version>${scala.version}</version>
-        </dependency>
-        <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-jdk14</artifactId>
             <version>${slf4j.version}</version>
@@ -39,11 +35,6 @@
             <version>3.0.4</version>
         </dependency>
         <dependency>
-            <groupId>org.kevoree</groupId>
-            <artifactId>org.kevoree.merger</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
             <groupId>org.kevoree.tools</groupId>
             <artifactId>org.kevoree.tools.annotation.processor</artifactId>
             <version>${project.version}</version>
@@ -53,26 +44,11 @@
             <artifactId>org.kevoree.framework</artifactId>
             <version>${project.version}</version>
         </dependency>
-
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
             <artifactId>kotlin-compiler</artifactId>
             <version>${kotlin.version}</version>
         </dependency>
     </dependencies>
-
-    <repositories>
-        <repository>
-            <id>kevoree-libs-release-local</id>
-            <url>http://maven.kevoree.org/release/</url>
-        </repository>
-    </repositories>
-
-    <pluginRepositories>
-        <pluginRepository>
-            <id>plugin.kevoree-github</id>
-            <url>http://maven.kevoree.org/release/</url>
-        </pluginRepository>
-    </pluginRepositories>
 
 </project>

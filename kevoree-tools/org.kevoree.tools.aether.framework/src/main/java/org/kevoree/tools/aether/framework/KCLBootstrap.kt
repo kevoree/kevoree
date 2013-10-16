@@ -1,4 +1,3 @@
-
 package org.kevoree.tools.aether.framework
 
 import org.kevoree.DeployUnit
@@ -15,7 +14,7 @@ import org.kevoree.api.Bootstraper
 trait KCLBootstrap : Bootstraper {
 
     fun buildKEY(du: DeployUnit): String {
-        return du.getName() + "/" + buildQuery(du, null)
+        return du.name + "/" + buildQuery(du, null)
     }
 
     fun buildQuery(du: DeployUnit, repoUrl: String?): String {
@@ -24,11 +23,11 @@ trait KCLBootstrap : Bootstraper {
         if(repoUrl != null){
             query.append(repoUrl); query.append("!")
         }
-        query.append(du.getGroupName())
+        query.append(du.groupName)
         query.append("/")
-        query.append(du.getUnitName())
-        if(!du.getVersion().equals("default") && !du.getVersion().equals("")){
-            query.append("/"); query.append(du.getVersion())
+        query.append(du.unitName)
+        if(!du.version.equals("default") && !du.version.equals("")){
+            query.append("/"); query.append(du.version)
         }
         return query.toString()
     }

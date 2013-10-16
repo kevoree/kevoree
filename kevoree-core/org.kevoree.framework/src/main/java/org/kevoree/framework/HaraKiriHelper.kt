@@ -43,28 +43,28 @@ import org.kevoree.log.Log
 class HaraKiriHelper {
 
     fun cleanAdaptationModel(currentAdaptModel: AdaptationModel, nodeName: String) {
-        for (ad in currentAdaptModel.getAdaptations()) {
-            if (ad.getPrimitiveType()!!.getName() == "AddDeployUnit" || ad.getPrimitiveType()!!.getName() == "RemoveDeployUnit" || ad.getPrimitiveType()!!.getName() == "AddType" || ad.getPrimitiveType()!!.getName() == "RemoveType"){
-                if(ad.getRef() is DeployUnit){
-                    val deployUnit = ad.getRef() as DeployUnit
+        for (ad in currentAdaptModel.adaptations) {
+            if (ad.primitiveType!!.name == "AddDeployUnit" || ad.primitiveType!!.name == "RemoveDeployUnit" || ad.primitiveType!!.name == "AddType" || ad.primitiveType!!.name == "RemoveType"){
+                if(ad.ref is DeployUnit){
+                    val deployUnit = ad.ref as DeployUnit
                     val root = deployUnit.eContainer() as ContainerRoot
                     val currentNode = root.findNodesByID(nodeName)
                     if(nodeName != null){
-                        if (detectHaraKiriDeployUnit(currentNode!!.getTypeDefinition()!!, deployUnit)) {
-                            Log.warn("HaraKiri ignore from Kompare for deployUnit => {}",deployUnit.getUnitName())
+                        if (detectHaraKiriDeployUnit(currentNode!!.typeDefinition!!, deployUnit)) {
+                            Log.warn("HaraKiri ignore from Kompare for deployUnit => {}",deployUnit.unitName)
                             currentAdaptModel.removeAdaptations(ad)
                         } else {
-                            Log.debug("Sucessfully checked {}",deployUnit.getUnitName())
+                            Log.debug("Sucessfully checked {}",deployUnit.unitName)
                         }
                     }
                 }
-                if(ad.getRef() is TypeDefinition){
-                    val typeDef = ad.getRef() as TypeDefinition
+                if(ad.ref is TypeDefinition){
+                    val typeDef = ad.ref as TypeDefinition
                     val root = typeDef.eContainer() as ContainerRoot
                     val currentNode = root.findNodesByID(nodeName)
                     if(nodeName != null){
-                        if (detectHaraKiriTypeDefinition(currentNode!!.getTypeDefinition()!!, typeDef)) {
-                            Log.warn("HaraKiri ignore from Kompare for type => {}", typeDef.getName())
+                        if (detectHaraKiriTypeDefinition(currentNode!!.typeDefinition!!, typeDef)) {
+                            Log.warn("HaraKiri ignore from Kompare for type => {}", typeDef.name)
                             currentAdaptModel.removeAdaptations(ad)
                         }
                     }
@@ -75,7 +75,7 @@ class HaraKiriHelper {
 
     fun detectHaraKiriTypeDefinition(nodeType: TypeDefinition, fnodeType: TypeDefinition): Boolean {
         if (
-        (nodeType.getName() == fnodeType.getName()) || nodeType.getSuperTypes().any{ superT -> detectHaraKiriTypeDefinition(superT, fnodeType) }
+        (nodeType.name == fnodeType.name) || nodeType.superTypes.any{ superT -> detectHaraKiriTypeDefinition(superT, fnodeType) }
         ) {
             return true
         } else {
@@ -85,7 +85,7 @@ class HaraKiriHelper {
 
     fun detectHaraKiriDeployUnit(nodeType: TypeDefinition, deployUnit: DeployUnit): Boolean {
         if (
-        nodeType.getDeployUnits().any{ du -> DeployUnitAspect().isModelEquals(du, deployUnit) } || nodeType.getSuperTypes().any{ superT -> detectHaraKiriDeployUnit(superT, deployUnit) }
+        nodeType.deployUnits.any{ du -> DeployUnitAspect().isModelEquals(du, deployUnit) } || nodeType.superTypes.any{ superT -> detectHaraKiriDeployUnit(superT, deployUnit) }
         ) {
             return true
         } else {
@@ -102,7 +102,7 @@ class HaraKiriHelper {
         if (targetNode == null) {
             return true
         }
-        return org.kevoree.framework.kaspects.TypeDefinitionAspect().isUpdated(currentNode.getTypeDefinition()!!, targetNode.getTypeDefinition()!!)
+        return org.kevoree.framework.kaspects.TypeDefinitionAspect().isUpdated(currentNode.typeDefinition!!, targetNode.typeDefinition!!)
     }
 
     fun cleanModelForInit(targetModel: ContainerRoot, nodeName: String) {

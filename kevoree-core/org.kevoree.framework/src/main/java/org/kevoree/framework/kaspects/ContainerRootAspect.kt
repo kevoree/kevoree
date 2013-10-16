@@ -15,11 +15,11 @@ import java.util.ArrayList
 class ContainerRootAspect {
     fun getAllInstances(model: ContainerRoot): List<Instance> {
         val instances = ArrayList<Instance>()
-        instances.addAll(model.getHubs())
-        instances.addAll(model.getGroups())
-        instances.addAll(model.getNodes())
-        for (node in model.getNodes()) {
-            instances.addAll(node.getComponents())
+        instances.addAll(model.hubs)
+        instances.addAll(model.groups)
+        instances.addAll(model.nodes)
+        for (node in model.nodes) {
+            instances.addAll(node.components)
         }
         return instances
     }

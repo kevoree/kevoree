@@ -38,18 +38,18 @@ class DictionaryNetworkPortChecker: CheckerService {
         if (model != null) {
             val collectedPort = HashMap<String, HashMap<String, HashMap<String, KMFContainer>>>()
 
-            for (instance in model.getNodes()) {
-                instanceCollect(instance, collectedPort, instance.getName())
-                for (component in instance.getComponents()){
-                    instanceCollect(component, collectedPort, instance.getName())
+            for (instance in model.nodes) {
+                instanceCollect(instance, collectedPort, instance.name!!)
+                for (component in instance.components){
+                    instanceCollect(component, collectedPort, instance.name!!)
                 }
             }
 
-            for (hub in model.getHubs()) {
+            for (hub in model.hubs) {
                 instanceDCollect(/*model, */hub, collectedPort)
             }
 
-            for (group in model.getGroups()) {
+            for (group in model.groups) {
                 instanceDCollect(/*model, */group, collectedPort)
             }
 
@@ -79,15 +79,15 @@ class DictionaryNetworkPortChecker: CheckerService {
     fun instanceDCollect (/*model: ContainerRoot, */ist: Instance, collector: HashMap<String, HashMap<String, HashMap<String, KMFContainer>>>) {
         val nodeConnected = ArrayList<String>()
         if (ist is Channel) {
-            for (mb in (ist.eContainer() as ContainerRoot).getMBindings()) {
-                if (mb.getHub() == ist) {
-                    nodeConnected.add((mb.getPort()!!.eContainer()!!.eContainer() as ContainerNode).getName())
+            for (mb in (ist.eContainer() as ContainerRoot).mBindings) {
+                if (mb.hub == ist) {
+                    nodeConnected.add((mb.port!!.eContainer()!!.eContainer() as ContainerNode).name!!)
                 }
             }
         }
         if (ist is Group) {
-            for (sub in (ist as Group).getSubNodes()) {
-                nodeConnected.add(sub.getName())
+            for (sub in (ist as Group).subNodes) {
+                nodeConnected.add(sub.name!!)
             }
         }
 
@@ -99,26 +99,26 @@ class DictionaryNetworkPortChecker: CheckerService {
 
     fun instanceCollect (ist: Instance, collector: HashMap<String, HashMap<String, HashMap<String, KMFContainer>>>, nodeName: String) {
         var portFound: String? = null
-        if(ist.getTypeDefinition() != null && ist.getTypeDefinition()!!.getDictionaryType() != null) {
-            val dicType = ist.getTypeDefinition()!!.getDictionaryType()!!
-            for (dv in dicType.getDefaultValues()) {
-                if (dv.getAttribute()!!.getName().equals("port") || dv.getAttribute()!!.getName().endsWith("_port") || dv.getAttribute()!!.getName().startsWith("port_")) {
-                    portFound = dv.getValue()
+        if(ist.typeDefinition != null && ist.typeDefinition!!.dictionaryType != null) {
+            val dicType = ist.typeDefinition!!.dictionaryType!!
+            for (dv in dicType.defaultValues) {
+                if (dv.attribute!!.name.equals("port") || dv.attribute!!.name!!.endsWith("_port") || dv.attribute!!.name!!.startsWith("port_")) {
+                    portFound = dv.value
                 }
             }
         }
-        if(ist.getDictionary() != null) {
-            val dic = ist.getDictionary()!!
-            for (dv in dic.getValues()) {
-                if ((dv.getAttribute()!!.getName().equals("port") || dv.getAttribute()!!.getName().endsWith("_port") || dv.getAttribute()!!.getName().startsWith("port_")) && (dv.getTargetNode() == null || dv.getTargetNode()!!.getName() == nodeName)) {
-                    portFound = dv.getValue()
+        if(ist.dictionary != null) {
+            val dic = ist.dictionary!!
+            for (dv in dic.values) {
+                if ((dv.attribute!!.name.equals("port") || dv.attribute!!.name!!.endsWith("_port") || dv.attribute!!.name!!.startsWith("port_")) && (dv.targetNode == null || dv.targetNode!!.name == nodeName)) {
+                    portFound = dv.value
                 }
             }
         }
 
         if (portFound != null) {
             var nodeIPs = ArrayList<String>()
-            val nodeIps = KevoreePropertyHelper.getNetworkProperties(ist.getTypeDefinition()!!.eContainer() as ContainerRoot, nodeName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP)
+            val nodeIps = KevoreePropertyHelper.getNetworkProperties(ist.typeDefinition!!.eContainer() as ContainerRoot, nodeName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP)
             if (nodeIps.size() == 0) {
                 nodeIPs.add("localhost")
             } else {
@@ -137,7 +137,7 @@ class DictionaryNetworkPortChecker: CheckerService {
                     nodeCollector!!.put(portFound!!, nodePortCollector!!)
                 }
                 //if (ist.isInstanceOf[ComponentInstance]){
-                nodePortCollector!!.put(nodeName + "." + ist.getName(), ist)
+                nodePortCollector!!.put(nodeName + "." + ist.name, ist)
                 //} else {
                 //  nodePortCollector.put(nodeName, ist)
                 // }

@@ -15,11 +15,11 @@ import org.kevoree.MBinding
 class ComponentInstanceAspect {
     fun getRelatedBindings(component: ComponentInstance): List<MBinding> {
         val mbindings = ArrayList<MBinding>()
-        for (port in component.getProvided()) {
-            mbindings.addAll(port.getBindings())
+        for (port in component.provided) {
+            mbindings.addAll(port.bindings)
         }
-        for (port in component.getRequired()) {
-            mbindings.addAll(port.getBindings())
+        for (port in component.required) {
+            mbindings.addAll(port.bindings)
         }
         return mbindings
     }

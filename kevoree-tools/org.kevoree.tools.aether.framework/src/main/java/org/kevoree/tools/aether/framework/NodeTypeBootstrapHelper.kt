@@ -48,26 +48,26 @@ open class NodeTypeBootstrapHelper : Bootstraper, KCLBootstrap {
         //LOCATE NODE
         val nodeOption = model.findNodesByID(destNodeName)
         if(nodeOption != null){
-            val nodeTypeDeployUnitList = nodeOption.getTypeDefinition()!!.getDeployUnits()
+            val nodeTypeDeployUnitList = nodeOption.typeDefinition!!.deployUnits
             if (nodeTypeDeployUnitList.size > 0) {
-                val classLoader = installNodeType(nodeOption.getTypeDefinition() as org.kevoree.NodeType)
+                val classLoader = installNodeType(nodeOption.typeDefinition as org.kevoree.NodeType)
                 if (classLoader != null) {
-                    val clazz = classLoader.loadClass(nodeOption.getTypeDefinition()!!.getBean())
+                    val clazz = classLoader.loadClass(nodeOption!!.typeDefinition!!.bean)
                     val nodeType = clazz!!.newInstance() as AbstractNodeType
                     //ADD INSTANCE DICTIONARY
                     val dictionary = java.util.HashMap<String, Any>()
-                    val dictionaryType = nodeOption.getTypeDefinition()!!.getDictionaryType()
+                    val dictionaryType = nodeOption!!.typeDefinition!!.dictionaryType
                     if (dictionaryType != null) {
-                        for(dv in dictionaryType.getDefaultValues()) {
-                            dictionary.put(dv.getAttribute()!!.getName(), dv.getValue())
+                        for(dv in dictionaryType.defaultValues) {
+                            dictionary.put(dv!!.attribute!!.name!!, dv.value!!)
                         }
                     }
 
-                    val dictionaryModel = nodeOption.getDictionary()
+                    val dictionaryModel = nodeOption.dictionary
 
                     if (dictionaryModel != null) {
-                        for (v in dictionaryModel.getValues()) {
-                            dictionary.put(v.getAttribute()!!.getName(), v.getValue())
+                        for (v in dictionaryModel.values) {
+                            dictionary.put(v!!.attribute!!.name!!, v.value!!)
                         }
                     }
                     nodeType.setDictionary(dictionary)
@@ -93,11 +93,11 @@ open class NodeTypeBootstrapHelper : Bootstraper, KCLBootstrap {
 
     /* Bootstrap node type bundle in local environment */
     private fun installNodeType(nodeType: org.kevoree.NodeType): ClassLoader? {
-        val superTypeBootStrap = nodeType.getSuperTypes().all{ superType -> installNodeType(superType as org.kevoree.NodeType) != null }
+        val superTypeBootStrap = nodeType.superTypes.all { superType -> installNodeType(superType as org.kevoree.NodeType) != null }
         if (superTypeBootStrap) {
             var kcl: ClassLoader? = null
-            nodeType.getDeployUnits().all{ ct ->
-                val dpRes = ct.getRequiredLibs().all{ tp ->
+            nodeType.deployUnits.all { ct ->
+                val dpRes = ct.requiredLibs.all { tp ->
                     val idp = installDeployUnit(tp)
                     idp != null
                 }
@@ -109,7 +109,7 @@ open class NodeTypeBootstrapHelper : Bootstraper, KCLBootstrap {
             }
             return kcl //TODO
         } else {
-            Log.error("Super type of " + nodeType.getName() + " was not completely installed")
+            Log.error("Super type of " + nodeType.name + " was not completely installed")
             return null
         }
     }
@@ -132,9 +132,9 @@ open class NodeTypeBootstrapHelper : Bootstraper, KCLBootstrap {
 
     fun registerManuallyDeployUnit(artefactID: String, groupID: String, version: String, kcl: KevoreeJarClassLoader) {
         val du = kevoreeFactory.createDeployUnit()
-        du.setUnitName(artefactID)
-        du.setGroupName(groupID)
-        du.setVersion(version)
+        du.unitName = artefactID
+        du.groupName = groupID
+        du.version = version
         classLoaderHandler.manuallyAddToCache(du, kcl)
     }
 
@@ -149,27 +149,27 @@ open class NodeTypeBootstrapHelper : Bootstraper, KCLBootstrap {
         //LOCATE NODE
         val optgroup = model.findGroupsByID(destGroupName)
         if(optgroup != null) {
-            val groupTypeDeployUnitList = optgroup.getTypeDefinition()!!.getDeployUnits()
+            val groupTypeDeployUnitList = optgroup.typeDefinition!!.deployUnits
             if (groupTypeDeployUnitList.size > 0) {
-                val kcl = installGroupTyp(optgroup.getTypeDefinition() as GroupType)
+                val kcl = installGroupTyp(optgroup.typeDefinition as GroupType)
                 if (kcl != null) {
-                    val clazz = kcl.loadClass(optgroup.getTypeDefinition()!!.getBean())
+                    val clazz = kcl.loadClass(optgroup!!.typeDefinition!!.bean)
                     val groupType = clazz!!.newInstance() as AbstractGroupType
 
                     //ADD INSTANCE DICTIONARY
                     val dictionary: java.util.HashMap<String, Any> = java.util.HashMap<String, Any>()
 
-                    val dictionaryType = optgroup.getTypeDefinition()!!.getDictionaryType()
+                    val dictionaryType = optgroup!!.typeDefinition!!.dictionaryType
 
                     if (dictionaryType != null) {
-                        for(dv in dictionaryType.getDefaultValues()) {
-                            dictionary.put(dv.getAttribute()!!.getName(), dv.getValue())
+                        for(dv in dictionaryType.defaultValues) {
+                            dictionary.put(dv.attribute!!.name!!, dv.value!!)
                         }
                     }
-                    val dictionaryModel = optgroup.getDictionary()
+                    val dictionaryModel = optgroup.dictionary
                     if (dictionaryModel != null) {
-                        for(v in dictionaryModel.getValues()) {
-                            dictionary.put(v.getAttribute()!!.getName(), v.getValue())
+                        for(v in dictionaryModel.values) {
+                            dictionary.put(v.attribute!!.name!!, v.value!!)
                         }
                     }
                     groupType.getDictionary()!!.putAll(dictionary)
@@ -192,14 +192,14 @@ open class NodeTypeBootstrapHelper : Bootstraper, KCLBootstrap {
     }
 
     private fun installGroupTyp(groupType: GroupType): ClassLoader? {
-        if (groupType.getDeployUnits().find{ dp -> dp.getTargetNodeType()!!.getName().equals("JavaSENode") } != null ) {
-            val superTypeBootStrap = groupType.getSuperTypes().all{ superType -> installGroupTyp(superType as GroupType) != null }
+        if (groupType.deployUnits.find { dp -> dp.targetNodeType!!.name.equals("JavaSENode") } != null ) {
+            val superTypeBootStrap = groupType.superTypes.all { superType -> installGroupTyp(superType as GroupType) != null }
             if (superTypeBootStrap) {
                 //FAKE NODE TODO
                 val fakeNode = kevoreeFactory.createContainerNode()
                 val javaseTD = (groupType.eContainer() as ContainerRoot).findTypeDefinitionsByID("JavaSENode")
                 if(javaseTD != null){
-                    fakeNode.setTypeDefinition(javaseTD)
+                    fakeNode.typeDefinition = javaseTD
                 }
                 var ct: DeployUnit? = null
                 try {
@@ -209,7 +209,7 @@ open class NodeTypeBootstrapHelper : Bootstraper, KCLBootstrap {
                 }
                 if (ct != null) {
                     var kcl: ClassLoader? = null
-                    val dpRes = ct!!.getRequiredLibs().all {
+                    val dpRes = ct!!.requiredLibs.all {
                         tp ->
                         installDeployUnit(tp) != null
                     }
@@ -221,7 +221,7 @@ open class NodeTypeBootstrapHelper : Bootstraper, KCLBootstrap {
                     kcl_opt != null && dpRes
                     return kcl //TODO
                 } else {
-                    Log.error("Relevant DU not found for " + groupType.getName())
+                    Log.error("Relevant DU not found for " + groupType.name)
                     return null
                 }
             } else {

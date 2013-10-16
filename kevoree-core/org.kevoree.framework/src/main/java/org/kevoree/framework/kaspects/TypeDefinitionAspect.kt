@@ -18,15 +18,15 @@ class TypeDefinitionAspect {
     val duA = DeployUnitAspect()
 
     fun isUpdated(selfTD: TypeDefinition, pTD: TypeDefinition): Boolean {
-        if (pTD.getDeployUnits().size == 0 && selfTD.getDeployUnits().size > 0) {
+        if (pTD.deployUnits.size == 0 && selfTD.deployUnits.size > 0) {
             return false
         } //SPECIAL CASE DONT MERGE TYPE DEFINITION WITHOUT DEPLOY UNIT
-        if (selfTD.getDeployUnits().size != pTD.getDeployUnits().size) {
+        if (selfTD.deployUnits.size != pTD.deployUnits.size) {
             return true
         }
 
-        val updated = selfTD.getSuperTypes().any{ std ->
-            val superUpdate = pTD.findSuperTypesByID(std.getName())
+        val updated = selfTD.superTypes.any{ std ->
+            val superUpdate = pTD.findSuperTypesByID(std.name)
             if(superUpdate != null){
                 isUpdated(superUpdate, std)
             } else {
@@ -35,8 +35,8 @@ class TypeDefinitionAspect {
         }
 
         //EQUALS DEPLOY UNIT SIZE CHECK FOR ONE IS UPDATED
-        val oneUpdated = selfTD.getDeployUnits().any{ selfDU ->
-            val pDU = pTD.getDeployUnits().find{ p -> duA.isModelEquals(p, selfDU) }
+        val oneUpdated = selfTD.deployUnits.any{ selfDU ->
+            val pDU = pTD.deployUnits.find{ p -> duA.isModelEquals(p, selfDU) }
             if(pDU != null){
                 duA.isUpdated(selfDU, pDU, java.util.HashMap<String, Boolean>())
             } else {
@@ -47,9 +47,9 @@ class TypeDefinitionAspect {
     }
 
     fun foundRelevantDeployUnit(selfTD: TypeDefinition, node: ContainerNode): DeployUnit? {
-        var deployUnitfound: DeployUnit? = selfTD.getDeployUnits().find{ du -> du.getTargetNodeType() != null && du.getTargetNodeType()!!.getName() == node.getTypeDefinition()!!.getName() }
+        var deployUnitfound: DeployUnit? = selfTD.deployUnits.find{ du -> du.targetNodeType != null && du.targetNodeType!!.name == node.typeDefinition!!.name }
         if (deployUnitfound == null) {
-            deployUnitfound = foundRelevantDeployUnitOnNodeSuperTypes(node.getTypeDefinition() as NodeType, selfTD)
+            deployUnitfound = foundRelevantDeployUnitOnNodeSuperTypes(node.typeDefinition as NodeType, selfTD)
         }
         return deployUnitfound
     }
@@ -57,16 +57,16 @@ class TypeDefinitionAspect {
     private fun foundRelevantDeployUnitOnNodeSuperTypes(nodeType: NodeType, t: TypeDefinition): DeployUnit? {
         var deployUnitfound: DeployUnit? = null
         // looking for relevant deployunits on super types
-        for(td in t.getDeployUnits()) {
-            if (td.getTargetNodeType() != null) {
-                if (td.getTargetNodeType()!!.getName() == nodeType.getName()) {
+        for(td in t.deployUnits) {
+            if (td.targetNodeType != null) {
+                if (td.targetNodeType!!.name == nodeType.name) {
                     deployUnitfound = td
                     return deployUnitfound
                 }
             }
         }
         if (deployUnitfound == null) {
-            for(superNode in  nodeType.getSuperTypes()) {
+            for(superNode in  nodeType.superTypes) {
                 deployUnitfound = foundRelevantDeployUnitOnNodeSuperTypes(superNode as NodeType, t)
                 if (deployUnitfound != null) {
                     return deployUnitfound
@@ -77,12 +77,12 @@ class TypeDefinitionAspect {
     }
 
     fun foundRelevantHostNodeType(nodeType: NodeType, targetTypeDef: TypeDefinition): NodeType? {
-        for (deployUnit in targetTypeDef.getDeployUnits()) {
-            if (deployUnit.getTargetNodeType() != null && deployUnit.getTargetNodeType() == nodeType) {
+        for (deployUnit in targetTypeDef.deployUnits) {
+            if (deployUnit.targetNodeType != null && deployUnit.targetNodeType == nodeType) {
                 return nodeType
             }
         }
-        for (superType in nodeType.getSuperTypes()) {
+        for (superType in nodeType.superTypes) {
             val returnType = foundRelevantHostNodeType(superType as NodeType, targetTypeDef)
             if (returnType != null) {
                 return returnType

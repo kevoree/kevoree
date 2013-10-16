@@ -34,21 +34,21 @@ class AbstractChecker: CheckerService {
     override fun check(model: ContainerRoot?): MutableList<CheckerViolation> {
         val violations = ArrayList<CheckerViolation>()
         if (model != null) {
-            for (node in model.getNodes()) {
-                if (node.getTypeDefinition()!!.getAbstract()) {
-                    val ntype = node.getTypeDefinition()!! as NodeType
+            for (node in model.nodes) {
+                if (node.typeDefinition!!.abstract!!) {
+                    val ntype = node.typeDefinition!! as NodeType
                     val violation: CheckerViolation = CheckerViolation()
-                    violation.setMessage(ntype.getName() + " is abstract and can't be instanciate in " + node.getName())
+                    violation.setMessage(ntype.name + " is abstract and can't be instanciate in " + node.name)
                     val targetObjects = ArrayList<KMFContainer>()
                     targetObjects.add(node)
                     violation.setTargetObjects(targetObjects)
                     violations.add(violation)
                 }
-                for (component in node.getComponents()) {
-                    if (component.getTypeDefinition()!!.getAbstract()) {
-                        val ntype = component.getTypeDefinition()!! as ComponentType
+                for (component in node.components) {
+                    if (component.typeDefinition!!.abstract!!) {
+                        val ntype = component.typeDefinition!! as ComponentType
                         val violation: CheckerViolation = CheckerViolation()
-                        violation.setMessage(ntype.getName() + " is abstract and can't be instanciate in " + component.getName())
+                        violation.setMessage(ntype.name + " is abstract and can't be instanciate in " + component.name)
                         val targetObjects = ArrayList<KMFContainer>()
                         targetObjects.add(component)
                         violation.setTargetObjects(targetObjects)
@@ -56,22 +56,22 @@ class AbstractChecker: CheckerService {
                     }
                 }
             }
-            for (channel in model.getHubs()) {
-                if (channel.getTypeDefinition()!!.getAbstract()) {
-                    val ntype = channel.getTypeDefinition()!! as ChannelType
+            for (channel in model.hubs) {
+                if (channel.typeDefinition!!.abstract!!) {
+                    val ntype = channel.typeDefinition!! as ChannelType
                     val violation: CheckerViolation = CheckerViolation()
-                    violation.setMessage(ntype.getName() + " is abstract and can't be instanciate in " + channel.getName())
+                    violation.setMessage(ntype.name + " is abstract and can't be instanciate in " + channel.name)
                     val targetObjects = ArrayList<KMFContainer>()
                     targetObjects.add(channel)
                     violation.setTargetObjects(targetObjects)
                     violations.add(violation)
                 }
             }
-            for (group in model.getGroups()) {
-                if (group.getTypeDefinition()!!.getAbstract()) {
-                    val ntype = group.getTypeDefinition()!! as GroupType
+            for (group in model.groups) {
+                if (group.typeDefinition!!.abstract!!) {
+                    val ntype = group.typeDefinition!! as GroupType
                     val violation: CheckerViolation = CheckerViolation()
-                    violation.setMessage(ntype.getName() + " is abstract and can't be instanciate in " + group.getName())
+                    violation.setMessage(ntype.name + " is abstract and can't be instanciate in " + group.name)
                     val targetObjects = ArrayList<KMFContainer>()
                     targetObjects.add(group)
                     violation.setTargetObjects(targetObjects)

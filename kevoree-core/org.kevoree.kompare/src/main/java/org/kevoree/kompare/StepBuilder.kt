@@ -21,10 +21,10 @@ public trait StepBuilder {
         if(currentSteps == null){
             currentSteps = adaptationModelFactory.createParallelStep()
         }
-        if (!currentSteps!!.getAdaptations().isEmpty()) {
+        if (!currentSteps!!.adaptations.isEmpty()) {
             previousStep = currentSteps
             currentSteps = adaptationModelFactory.createParallelStep()
-            previousStep!!.setNextStep(currentSteps)
+            previousStep!!.nextStep = currentSteps
         }
     }
 
@@ -45,19 +45,19 @@ public trait StepBuilder {
     }
 
     public open fun insertStep(stepToInsert: ParallelStep) {
-        if (currentSteps == null || !currentSteps!!.getAdaptations().isEmpty()) {
+        if (currentSteps == null || !currentSteps!!.adaptations.isEmpty()) {
             nextStep()
         }
 
-        currentSteps!!.setAdaptations(stepToInsert.getAdaptations())
-        currentSteps!!.setNextStep(stepToInsert.getNextStep())
+        currentSteps!!.adaptations = stepToInsert.adaptations
+        currentSteps!!.nextStep = stepToInsert.nextStep
         goDeeply(stepToInsert, previousStep)
         nextStep()
     }
 
     private fun goDeeply(stepToGoDeeply: ParallelStep, previousStepToRemember: ParallelStep?) {
-        if (stepToGoDeeply.getNextStep() != null) {
-            goDeeply(stepToGoDeeply.getNextStep()!!, stepToGoDeeply)
+        if (stepToGoDeeply.nextStep != null) {
+            goDeeply(stepToGoDeeply.nextStep!!, stepToGoDeeply)
         } else {
             if (previousStepToRemember != null) {
                 previousStep = previousStepToRemember

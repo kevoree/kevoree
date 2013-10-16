@@ -39,11 +39,11 @@ class BindingChecker: CheckerService {
 
     private fun checkHubBindingsHomogeneity(model: ContainerRoot): MutableList<CheckerViolation> {
         var violations = ArrayList<CheckerViolation>()
-        for (hub in model.getHubs()) {
+        for (hub in model.hubs) {
             val synchBindings = ArrayList<MBinding>()
             val asynchBindings = ArrayList<MBinding>()
-            for (binding in hub.getBindings()) {
-                if (binding.getPort()!!.getPortTypeRef()!!.getRef() is ServicePortType) {
+            for (binding in hub.bindings) {
+                if (binding.port!!.portTypeRef!!.ref is ServicePortType) {
                     synchBindings.add(binding)
                 } else {
                     asynchBindings.add(binding)
@@ -51,7 +51,7 @@ class BindingChecker: CheckerService {
             }
             if (!synchBindings.isEmpty() && !asynchBindings.isEmpty()) {
                 val violation = CheckerViolation()
-                violation.setMessage("Ports of both Service and Message kinds are connected to the same hub : " + hub.getName())
+                violation.setMessage("Ports of both Service and Message kinds are connected to the same hub : " + hub.name)
                 if (synchBindings.size > asynchBindings.size) {
                     val targetObjects = ArrayList<KMFContainer>()
                     targetObjects.add(hub)

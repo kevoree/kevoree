@@ -13,20 +13,6 @@
  */
 package org.kevoree.tools.aether.framework.android
 
-/**
- * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * 	http://www.gnu.org/licenses/lgpl-3.0.txt
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService
 import org.kevoree.api.service.core.script.KevScriptEngineFactory
 import org.kevoree.api.Bootstraper
@@ -41,15 +27,27 @@ import java.util.ArrayList
 import org.kevoree.DeployUnit
 import org.kevoree.tools.aether.framework.AetherUtil
 import org.kevoree.log.Log
-import org.kevoree.tools.aether.framework.JCLContextHandler
 
+/**
+ * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * 	http://www.gnu.org/licenses/lgpl-3.0.txt
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 /**
  * User: ffouquet
  * Date: 10/08/11
  * Time: 12:01
  */
 
-class NodeTypeBootstrapHelper(val ctx: android.content.Context, val parent: ClassLoader): Bootstraper {
+class NodeTypeBootstrapHelper(val ctx: android.content.Context, val parent: ClassLoader) : Bootstraper {
 
     override fun resolveDeployUnit(du: DeployUnit): File = AetherUtil.resolveDeployUnit(du)!!
 
@@ -75,25 +73,25 @@ class NodeTypeBootstrapHelper(val ctx: android.content.Context, val parent: Clas
         //LOCATE NODE
         val nodeOption = model.findNodesByID(destNodeName)
         if(nodeOption != null){
-            val nodeTypeDeployUnitList = nodeOption.getTypeDefinition()!!.getDeployUnits()
+            val nodeTypeDeployUnitList = nodeOption.typeDefinition!!.deployUnits
             if (nodeTypeDeployUnitList.size > 0) {
-                val classLoader = installNodeType(nodeOption.getTypeDefinition() as org.kevoree.NodeType)
+                val classLoader = installNodeType(nodeOption.typeDefinition as org.kevoree.NodeType)
                 if (classLoader != null) {
-                    val clazz = classLoader.loadClass(nodeOption.getTypeDefinition()!!.getBean())
+                    val clazz = classLoader.loadClass(nodeOption!!.typeDefinition!!.bean)
                     val nodeType = clazz!!.newInstance() as AbstractNodeType
                     //ADD INSTANCE DICTIONARY
                     val dictionary = java.util.HashMap<String, Any>()
-                    val dictionaryType = nodeOption.getTypeDefinition()!!.getDictionaryType()
+                    val dictionaryType = nodeOption!!.typeDefinition!!.dictionaryType
                     if (dictionaryType != null) {
-                        for(dv in dictionaryType.getDefaultValues()) {
-                            dictionary.put(dv.getAttribute()!!.getName(), dv.getValue())
+                        for(dv in dictionaryType.defaultValues) {
+                            dictionary.put(dv.attribute!!.name!!, dv.value!!)
                         }
                     }
-                    val dictionaryModel = nodeOption.getDictionary()
+                    val dictionaryModel = nodeOption.dictionary
 
                     if (dictionaryModel != null) {
-                        for (v in dictionaryModel.getValues()) {
-                            dictionary.put(v.getAttribute()!!.getName(), v.getValue())
+                        for (v in dictionaryModel.values) {
+                            dictionary.put(v.attribute!!.name!!, v.value!!)
                         }
                     }
                     nodeType.setDictionary(dictionary)
@@ -118,11 +116,11 @@ class NodeTypeBootstrapHelper(val ctx: android.content.Context, val parent: Clas
 
     /* Bootstrap node type bundle in local environment */
     private fun installNodeType(nodeType: org.kevoree.NodeType): ClassLoader? {
-        val superTypeBootStrap = nodeType.getSuperTypes().all{ superType -> installNodeType(superType as org.kevoree.NodeType) != null }
+        val superTypeBootStrap = nodeType.superTypes.all { superType -> installNodeType(superType as org.kevoree.NodeType) != null }
         if (superTypeBootStrap) {
             var kcl: ClassLoader? = null
-            nodeType.getDeployUnits().all{ ct ->
-                val dpRes = ct.getRequiredLibs().all{ tp ->
+            nodeType.deployUnits.all { ct ->
+                val dpRes = ct.requiredLibs.all { tp ->
                     val idp = installDeployUnit(tp)
                     idp != null
                 }
@@ -134,7 +132,7 @@ class NodeTypeBootstrapHelper(val ctx: android.content.Context, val parent: Clas
             }
             return kcl //TODO
         } else {
-            Log.error("Super type of " + nodeType.getName() + " was not completely installed")
+            Log.error("Super type of " + nodeType.name + " was not completely installed")
             return null
         }
     }
@@ -162,9 +160,9 @@ class NodeTypeBootstrapHelper(val ctx: android.content.Context, val parent: Clas
 
     fun registerManuallyDeployUnit(artefactID: String, groupID: String, version: String, kcl: KevoreeJarClassLoader) {
         val du = kevoreeFactory.createDeployUnit()
-        du.setUnitName(artefactID)
-        du.setGroupName(groupID)
-        du.setVersion(version)
+        du.unitName = artefactID
+        du.groupName = groupID
+        du.version = version
         classLoaderHandler.manuallyAddToCache(du, kcl)
     }
 

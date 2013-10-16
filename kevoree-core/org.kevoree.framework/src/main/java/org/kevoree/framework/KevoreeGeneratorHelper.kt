@@ -23,10 +23,10 @@ import org.kevoree.TypeDefinition
 public class KevoreeGeneratorHelper {
 
     fun getTypeDefinitionGeneratedPackage(td: TypeDefinition, targetNodeType: String): String {
-        val basePackage = td.getBean().substring(0, td.getBean().lastIndexOf("."))
+        val basePackage = td.bean!!.substring(0, td.bean!!.lastIndexOf("."))
         return basePackage + "." + "kevgen" + "." + targetNodeType
     }
     fun getTypeDefinitionBasePackage(td: TypeDefinition): String {
-        return td.getBean().substring(0, td.getBean().lastIndexOf("."))
+        return td.bean!!.substring(0, td.bean!!.lastIndexOf("."))
     }
 }
