@@ -146,7 +146,7 @@ public class LoadModelCommand implements Command {
                   }*/
 
         //LOAD MBINDING
-        for (MBinding binding : kernel.getModelHandler().getActualModel().getMBindings()) {
+        for (MBinding binding : kernel.getModelHandler().getActualModel().getmBindings()) {
             Binding uib = kernel.getUifactory().createMBinding(binding);
             kernel.getModelPanel().addBinding(uib);
         }

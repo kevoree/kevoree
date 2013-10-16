@@ -16,16 +16,13 @@ package org.kevoree.tools.ui.editor.command.prefuse;
 import org.kevoree.*;
 import org.kevoree.modeling.api.KMFContainer;
 import org.kevoree.tools.ui.editor.KevoreeUIKernel;
-import org.kevoree.tools.ui.framework.elements.NodePanel;
 import prefuse.data.Graph;
 import prefuse.data.Node;
 import prefuse.data.Schema;
 import prefuse.visual.VisualItem;
 
 import javax.swing.*;
-import java.awt.*;
 import java.util.HashMap;
-import java.util.Iterator;
 
 /**
  * Created with IntelliJ IDEA.
@@ -105,7 +102,7 @@ public class KevoreePrefuseGraph {
             }
         }
         //LOAD MBINDING
-        for (MBinding binding : kernel.getModelHandler().getActualModel().getMBindings()) {
+        for (MBinding binding : kernel.getModelHandler().getActualModel().getmBindings()) {
 
             graph.addEdge(model2GraphMap.get(findTopLevelNode(binding.getPort())), model2GraphMap.get(binding.getHub()));
         }

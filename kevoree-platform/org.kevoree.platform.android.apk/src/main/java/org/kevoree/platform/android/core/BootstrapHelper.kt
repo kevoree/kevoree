@@ -48,15 +48,15 @@ class BootstrapHelper {
             if(td != null){
                 Log.warn("Init default node instance for name " + nodeName)
                 val node = factory.createContainerNode()
-                node.setName(nodeName)
-                node.setTypeDefinition(td)
+                node.name = nodeName
+                node.typeDefinition = td
                 model.addNodes(node)
 
                 val gtd = model.findTypeDefinitionsByID(defGroupType)
                 if(gtd != null){
                     val group = factory.createGroup()
-                    group.setTypeDefinition(gtd)
-                    group.setName("sync")
+                    group.typeDefinition = gtd
+                    group.name = "sync"
                     group.addSubNodes(node)
                     model.addGroups(group)
                 } else {

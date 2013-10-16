@@ -29,7 +29,6 @@
  * Copyright  : IRISA / INRIA / Universite de Rennes 1 */
 package org.kevoree.tools.ui.editor.command;
 
-import org.kevoree.framework.KevoreeXmiHelper;
 import org.kevoree.serializer.JSONModelSerializer;
 import org.kevoree.tools.ui.editor.KevoreeUIKernel;
 import org.kevoree.tools.ui.editor.PositionedEMFHelper;
@@ -80,7 +79,7 @@ public class SaveActuelModelJSONCommand implements Command {
         try {
             FileOutputStream oo = new FileOutputStream(location);
             JSONModelSerializer saver = new JSONModelSerializer();
-            saver.serialize(kernel.getModelHandler().getActualModel(),oo);
+            saver.serializeToStream(kernel.getModelHandler().getActualModel(),oo);
             previousLocation = location.getAbsolutePath();
         } catch (Exception e) {
             logger.error("Can't save model to default location !", e);

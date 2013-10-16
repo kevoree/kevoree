@@ -34,7 +34,6 @@ import org.kevoree.ContainerRoot;
 import org.kevoree.KevoreeFactory;
 import org.kevoree.framework.KevoreeXmiHelper;
 import org.kevoree.impl.DefaultKevoreeFactory;
-import org.kevoree.merger.KevoreeMergerComponent;
 
 import java.io.File;
 
@@ -78,11 +77,11 @@ public class MarShellMavenMojo extends AbstractMojo {
 	 */
 	private MavenProject project;
 
-	private KevoreeMergerComponent mergerComponent;
+	private org.kevoree.compare.DefaultModelCompare mergerComponent;
 
 	public void execute () throws MojoExecutionException {
 
-		mergerComponent = new KevoreeMergerComponent();
+		mergerComponent = new org.kevoree.compare.DefaultModelCompare();
 
         KevoreeFactory kevoreeFactory = new DefaultKevoreeFactory();
 
@@ -92,12 +91,12 @@ public class MarShellMavenMojo extends AbstractMojo {
 
         if(sourceMarShellDirectory != null){
             ContainerRoot model2 = executeOnDirectory(sourceMarShellDirectory,kevoreeFactory);
-            mergerComponent.merge(model,model2);
+            mergerComponent.merge(model,model2).applyOn(model);
         }
 
         if(sourceMarShellDirectory2 != null){
             ContainerRoot model2 = executeOnDirectory(sourceMarShellDirectory2,kevoreeFactory);
-            mergerComponent.merge(model,model2);
+            mergerComponent.merge(model,model2).applyOn(model);
         }
 
 
@@ -120,11 +119,11 @@ public class MarShellMavenMojo extends AbstractMojo {
             for (File f : dir.listFiles()) {
                 if (f.isDirectory()) {
                     ContainerRoot model = executeOnDirectory(f,kevoreeFactory);
-                    mergedModel = mergerComponent.merge(mergedModel, model);
+                    mergerComponent.merge(mergedModel, model).applyOn(mergedModel);
                 } else {
 //				try {
                     ContainerRoot model = ModelGenerator.generate(f.getAbsolutePath(),project,kevoreeFactory);
-                    mergedModel = mergerComponent.merge(mergedModel, model);
+                    mergerComponent.merge(mergedModel, model).applyOn(mergedModel);
                     /*} catch (Exception e) {
                          getLog().error("Unable to parse the source file", e);
                      }*/
