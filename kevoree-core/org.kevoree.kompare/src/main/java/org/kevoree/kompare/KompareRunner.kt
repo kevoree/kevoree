@@ -12,6 +12,7 @@ import org.kevoree.ContainerRoot
 import org.kevoree.modeling.api.util.ModelVisitor
 import org.kevoree.modeling.api.KMFContainer
 import org.kevoree.impl.DefaultKevoreeFactory
+import org.kevoree.modeling.api.json.JSONModelSerializer
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -27,20 +28,20 @@ fun main(args: Array<String>) {
     val currentModel = factory.createContainerRoot()
 
     val currentDeployUnit = factory.createDeployUnit()
-    currentDeployUnit.unitName = "deployUnit"
+    currentDeployUnit.unitName = "deployUnit1"
     currentDeployUnit.groupName = "org.kevoree"
     currentDeployUnit.version = "1.0"
     currentDeployUnit.hashcode = "" + System.nanoTime();
 
     val currentDictionaryAttribute1 = factory.createDictionaryAttribute()
     currentDictionaryAttribute1.fragmentDependant = false
-    currentDictionaryAttribute1.name = "dictionaryAttribute"
+    currentDictionaryAttribute1.name = "dictionaryAttribute1"
 
     val currentDictionaryType1 = factory.createDictionaryType()
     currentDictionaryType1.addAttributes(currentDictionaryAttribute1)
 
     val currentTypeDefinition1 = factory.createComponentType()
-    currentTypeDefinition1.name = "TypeDefinition"
+    currentTypeDefinition1.name = "TypeDefinition1"
     currentTypeDefinition1.abstract = false
     currentTypeDefinition1.addDeployUnits(currentDeployUnit)
     currentTypeDefinition1.dictionaryType = currentDictionaryType1
@@ -48,26 +49,26 @@ fun main(args: Array<String>) {
 
     val currentDictionaryAttribute2 = factory.createDictionaryAttribute()
     currentDictionaryAttribute2.fragmentDependant = false
-    currentDictionaryAttribute2.name = "dictionaryAttribute"
+    currentDictionaryAttribute2.name = "dictionaryAttribute2"
 
     val currentDictionaryType2 = factory.createDictionaryType()
     currentDictionaryType2.addAttributes(currentDictionaryAttribute2)
 
     val currentTypeDefinition2 = factory.createNodeType()
-    currentTypeDefinition2.name = "TypeDefinition"
+    currentTypeDefinition2.name = "TypeDefinition2"
     currentTypeDefinition2.abstract = false
     currentTypeDefinition2.addDeployUnits(currentDeployUnit)
     currentTypeDefinition2.dictionaryType = currentDictionaryType2
 
     val currentComponent = factory.createComponentInstance()
-    currentComponent.name = "component"
+    currentComponent.name = "component1"
     currentComponent.started = true
     currentComponent.typeDefinition = currentTypeDefinition1
     currentComponent.dictionary = factory.createDictionary()
 
     val currentDictionaryValue = factory.createDictionaryValue()
     currentDictionaryValue.attribute = currentDictionaryAttribute1
-    currentDictionaryValue.value = "toto"
+    currentDictionaryValue.value = "toto1"
     currentComponent.dictionary!!.addValues(currentDictionaryValue)
 
     val currentNode = factory.createContainerNode()
@@ -131,14 +132,14 @@ fun main(args: Array<String>) {
 
     val targetDeployUnit = factory.createDeployUnit()
     targetDeployUnit.generated_KMF_ID = currentDeployUnit.generated_KMF_ID
-    targetDeployUnit.unitName = "deployUnit"
+    targetDeployUnit.unitName = "deployUnit1"
     targetDeployUnit.groupName = "org.kevoree"
     targetDeployUnit.version = "1.0"
     targetDeployUnit.hashcode = currentDeployUnit.hashcode + "1";
 
     val targetDictionaryAttribute1 = factory.createDictionaryAttribute()
     targetDictionaryAttribute1.fragmentDependant = true
-    targetDictionaryAttribute1.name = "dictionaryAttribute"
+    targetDictionaryAttribute1.name = "dictionaryAttribute1"
     targetDictionaryAttribute1.optional = true
 
     val targetDictionaryType1 = factory.createDictionaryType()
@@ -146,7 +147,7 @@ fun main(args: Array<String>) {
     targetDictionaryType1.addAttributes(targetDictionaryAttribute1)
 
     val targetTypeDefinition1 = factory.createComponentType()
-    targetTypeDefinition1.name = "TypeDefinition"
+    targetTypeDefinition1.name = "TypeDefinition1"
     targetTypeDefinition1.abstract = false
     targetTypeDefinition1.addDeployUnits(targetDeployUnit)
     targetTypeDefinition1.dictionaryType = targetDictionaryType1
@@ -154,20 +155,20 @@ fun main(args: Array<String>) {
 
     val targetDictionaryAttribute2 = factory.createDictionaryAttribute()
     targetDictionaryAttribute2.fragmentDependant = false
-    targetDictionaryAttribute2.name = "dictionaryAttribute"
+    targetDictionaryAttribute2.name = "dictionaryAttribute2"
 
     val targetDictionaryType2 = factory.createDictionaryType()
     targetDictionaryType2.generated_KMF_ID = currentDictionaryType2.generated_KMF_ID
     targetDictionaryType2.addAttributes(targetDictionaryAttribute2)
 
     val targetTypeDefinition2 = factory.createNodeType()
-    targetTypeDefinition2.name = "TypeDefinition"
+    targetTypeDefinition2.name = "TypeDefinition2"
     targetTypeDefinition2.abstract = false
     targetTypeDefinition2.addDeployUnits(targetDeployUnit)
     targetTypeDefinition2.dictionaryType = targetDictionaryType2
 
     val targetComponent = factory.createComponentInstance()
-    targetComponent.name = "component"
+    targetComponent.name = "component1"
     targetComponent.started = true
     targetComponent.typeDefinition = targetTypeDefinition1
     targetComponent.dictionary = factory.createDictionary()
@@ -177,7 +178,7 @@ fun main(args: Array<String>) {
     val targetDictionaryValue = factory.createDictionaryValue()
     targetDictionaryValue.generated_KMF_ID = currentDictionaryValue.generated_KMF_ID
     targetDictionaryValue.attribute = targetDictionaryAttribute1
-    targetDictionaryValue.value = "toto"
+    targetDictionaryValue.value = "toto1"
     targetComponent.dictionary!!.addValues(targetDictionaryValue)
 
     val targetNode = factory.createContainerNode()
@@ -234,6 +235,11 @@ fun main(args: Array<String>) {
     targetModel.addTypeDefinitions(targetTypeDefinition2)
     targetModel.addNodes(targetNode)
     targetNode.addComponents(targetComponent)
+
+    val seralizer = JSONModelSerializer()
+    println(seralizer.serialize(currentModel))
+    println("\n\n")
+    println(seralizer.serialize(targetModel))
 
 //    val currentModel = KevoreeXmiHelper.load("/home/edaubert/firstmodel.kev")!!
 //    val targetModel = KevoreeXmiHelper.load("/home/edaubert/firstmodel-without1binding.kev")!!
