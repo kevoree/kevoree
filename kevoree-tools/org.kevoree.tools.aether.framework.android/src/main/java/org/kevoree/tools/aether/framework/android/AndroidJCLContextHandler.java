@@ -39,7 +39,7 @@ public class AndroidJCLContextHandler extends JCLContextHandler {
         if (resolvedFile != null) {
             return installDeployUnitInternals(du, resolvedFile);
         } else {
-            Log.error("Error while resolving deploy unit " + du.getUnitName());
+            Log.error("Error while resolving deploy unit " + du.getName());
             return null;
         }
     }
@@ -65,11 +65,11 @@ public class AndroidJCLContextHandler extends JCLContextHandler {
                 for (KevoreeJarClassLoader toLinkKCL : getFailedLinks().get(buildKEY(du))) {
                     toLinkKCL.addSubClassLoader(newcl);
                     newcl.addWeakClassLoader(toLinkKCL);
-                    Log.debug("UnbreakLink " + du.getUnitName() + "->" + toLinkKCL.getLoadedURLs().get(0));
+                    Log.debug("UnbreakLink " + du.getName() + "->" + toLinkKCL.getLoadedURLs().get(0));
 
                 }
                 getFailedLinks().remove(buildKEY(du));
-                Log.debug("Failed Link {} remain size : {}", du.getUnitName(), getFailedLinks().size());
+                Log.debug("Failed Link {} remain size : {}", du.getName(), getFailedLinks().size());
             }
             for (DeployUnit rLib : du.getRequiredLibs()) {
                 KevoreeJarClassLoader kcl = getKCLInternals(rLib);

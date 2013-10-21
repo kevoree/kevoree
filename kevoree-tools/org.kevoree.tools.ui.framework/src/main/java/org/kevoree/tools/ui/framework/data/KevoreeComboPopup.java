@@ -26,9 +26,11 @@
  */
 package org.kevoree.tools.ui.framework.data;
 
-import com.explodingpixels.widgets.plaf.*;
+import com.explodingpixels.widgets.plaf.EPComboPopup;
+import org.kevoree.DeployUnit;
+import org.kevoree.NamedElement;
+
 import javax.swing.*;
-import org.kevoree.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -60,7 +62,7 @@ public class KevoreeComboPopup extends EPComboPopup {
                 if (!elem.getName().equals("")) {
                     menuItem = new JCheckBoxMenuItem(elem.getName());
                 } else {
-                    menuItem = new JCheckBoxMenuItem(elem.getGroupName() + ":" + elem.getUnitName() + ":" + elem.getVersion());
+                    menuItem = new JCheckBoxMenuItem(elem.getGroupName() + ":" + elem.getName() + ":" + elem.getVersion());
                 }
             } else if (NamedElement.class.isAssignableFrom(item.getClass())) {
                 menuItem = new JCheckBoxMenuItem(((NamedElement) item).getName());

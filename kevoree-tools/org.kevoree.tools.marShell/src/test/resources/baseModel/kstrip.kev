@@ -133,7 +133,7 @@
   <hubs name="hub1" typeDefinition="//@typeDefinitions.8" metaData="x=693,y=357"/>
   <mBindings port="//@nodes.0/@components.0/@required.1" hub="//@hubs.0"/>
   <mBindings port="//@nodes.0/@components.2/@provided.2" hub="//@hubs.0"/>
-  <deployUnits groupName="org.kevoree.library.arduino" unitName="org.kevoree.library.arduino.nodeType" version="1.2.0-SNAPSHOT" hashcode="201106080859711" requiredLibs="//@deployUnits.1" targetNodeType="//@typeDefinitions.0"/>
+  <deployUnits groupName="org.kevoree.library.arduino" name="org.kevoree.library.arduino.nodeType" version="1.2.0-SNAPSHOT" hashcode="201106080859711" requiredLibs="//@deployUnits.1" targetNodeType="//@typeDefinitions.0"/>
   <deployUnits name="org.kevoree.extra.org.kevoree.extra.osgi.rxtx" url="mvn:org.kevoree.extra/org.kevoree.extra.osgi.rxtx/2.2.0" targetNodeType="//@typeDefinitions.0"/>
-  <deployUnits groupName="org.kevoree.library.arduino" unitName="org.kevoree.library.arduino.components" version="1.2.0-SNAPSHOT" hashcode="201106080901224" targetNodeType="//@typeDefinitions.0"/>
+  <deployUnits groupName="org.kevoree.library.arduino" name="org.kevoree.library.arduino.components" version="1.2.0-SNAPSHOT" hashcode="201106080901224" targetNodeType="//@typeDefinitions.0"/>
 </kevoree:ContainerRoot>

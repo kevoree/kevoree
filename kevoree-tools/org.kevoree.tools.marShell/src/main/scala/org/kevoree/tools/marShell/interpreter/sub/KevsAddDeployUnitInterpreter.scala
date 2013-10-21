@@ -23,11 +23,11 @@ case class KevsAddDeployUnitInterpreter(statment : AddDeployUnitStatment) extend
 
   def interpret(context : KevsInterpreterContext):Boolean={
 
-    context.model.getDeployUnits.find(du=> du.getUnitName == statment.unitName && du.getGroupName == statment.groupName && du.getVersion == statment.version) match {
+    context.model.getDeployUnits.find(du=> du.getName == statment.name && du.getGroupName == statment.groupName && du.getVersion == statment.version) match {
       case Some(du) =>  Log.warn("DeployUnit already exist");true
       case None => {
         val newDeployUnit = context.kevoreeFactory.createDeployUnit
-        newDeployUnit.setUnitName(statment.unitName)
+        newDeployUnit.setName(statment.name)
         newDeployUnit.setGroupName(statment.groupName)
         newDeployUnit.setVersion(statment.version)
         context.model.addDeployUnits(newDeployUnit)

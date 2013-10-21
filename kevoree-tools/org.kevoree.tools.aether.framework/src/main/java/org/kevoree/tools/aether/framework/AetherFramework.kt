@@ -19,16 +19,16 @@ trait AetherFramework {
 
     var resolver: MavenResolver
 
-    fun resolveMavenArtifact(unitName: String, groupName: String, version: String, repositoriesUrl: List<String>): File? {
-        return resolveMavenArtifact(unitName, groupName, version, null, repositoriesUrl)
+    fun resolveMavenArtifact(name: String, groupName: String, version: String, repositoriesUrl: List<String>): File? {
+        return resolveMavenArtifact(name, groupName, version, null, repositoriesUrl)
     }
 
-    fun resolveMavenArtifact(unitName: String, groupName: String, version: String, extension: String?, repositoriesUrl: List<String>): File? {
+    fun resolveMavenArtifact(name: String, groupName: String, version: String, extension: String?, repositoriesUrl: List<String>): File? {
         var localextension = extension
         if(localextension == null){
             localextension = "jar"
         }
-        return resolver.resolve(groupName, unitName, version, localextension, repositoriesUrl)
+        return resolver.resolve(groupName, name, version, localextension, repositoriesUrl)
     }
 
 
@@ -48,10 +48,10 @@ trait AetherFramework {
                     return null
                 }
             } else {
-                return basicDownload(du.url!!, du.unitName!!, du.`type`!!)
+                return basicDownload(du.url!!, du.name!!, du.`type`!!)
             }
         } else {
-            return resolver.resolve(du.groupName, du.unitName, du.version, "jar", urls)
+            return resolver.resolve(du.groupName, du.name, du.version, "jar", urls)
         }
     }
 

@@ -25,7 +25,7 @@ trait KCLBootstrap : Bootstraper {
         }
         query.append(du.groupName)
         query.append("/")
-        query.append(du.unitName)
+        query.append(du.name)
         if(!du.version.equals("default") && !du.version.equals("")){
             query.append("/"); query.append(du.version)
         }

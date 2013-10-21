@@ -26,12 +26,10 @@
  */
 package org.kevoree.tools.ui.framework.data;
 
-import javax.swing.JList;
-import javax.swing.ListCellRenderer;
-import javax.swing.JLabel;
-import org.kevoree.*;
+import org.kevoree.DeployUnit;
+import org.kevoree.NamedElement;
 
-import java.awt.Component;
+import javax.swing.*;
 
 
 /**
@@ -54,7 +52,7 @@ public class NamedElementListRenderer implements ListCellRenderer {
             if(!elem.getName().equals("")) {
                 renderer = new JLabel(elem.getName());
             } else {
-                renderer = new JLabel(elem.getGroupName() + ":" + elem.getUnitName() + ":" + elem.getVersion());
+                renderer = new JLabel(elem.getGroupName() + ":" + elem.getName() + ":" + elem.getVersion());
             }
         } else if(NamedElement.class.isAssignableFrom(o.getClass())) {
             System.out.println("Redering NamedElem");

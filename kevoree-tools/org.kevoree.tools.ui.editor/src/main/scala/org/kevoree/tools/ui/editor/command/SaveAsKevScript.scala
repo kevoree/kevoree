@@ -103,7 +103,7 @@ class SaveAsKevScript extends Command {
       node =>
         node.getTypeDefinition.getDeployUnits.foreach {
           deployUnit =>  {
-            val deployUnitToMerge : String =  "merge 'mvn:"+deployUnit.getGroupName+"/"+deployUnit.getUnitName+"/"+deployUnit.getVersion + "'\n"
+            val deployUnitToMerge : String =  "merge 'mvn:"+deployUnit.getGroupName+"/"+deployUnit.getName+"/"+deployUnit.getVersion + "'\n"
             if(!alreadyMerged.contains(deployUnitToMerge)){
               alreadyMerged.add(deployUnitToMerge)
               scriptBuffer.append(deployUnitToMerge)

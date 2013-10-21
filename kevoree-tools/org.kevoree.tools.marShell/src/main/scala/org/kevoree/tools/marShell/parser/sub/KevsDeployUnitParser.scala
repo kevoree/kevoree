@@ -17,7 +17,7 @@ import org.kevoree.tools.marShell.ast.{AddDeployUnitStatment, RemoveLibraryStatm
 
 trait KevsDeployUnitParser extends KevsAbstractParser {
 
-  val addDeployUnitCommandFormat = "addDeployUnit <unitName> <groupName> <version>"
+  val addDeployUnitCommandFormat = "addDeployUnit <name> <groupName> <version>"
   def parseAddDeployUnit : Parser[List[Statment]] = "addDeployUnit" ~ orFailure(repN(3,(ident|stringLit)),addDeployUnitCommandFormat) ^^{ case _ ~ values =>
       List(AddDeployUnitStatment(values(0),values(1),values(2)))
   }

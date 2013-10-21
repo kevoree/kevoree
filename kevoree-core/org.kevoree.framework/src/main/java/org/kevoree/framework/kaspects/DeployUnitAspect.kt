@@ -13,7 +13,7 @@ import org.kevoree.DeployUnit
 class DeployUnitAspect {
 
     fun buildKey(self: DeployUnit): String {
-        return self.unitName + "." + self.groupName + "." + self.version
+        return self.name + "." + self.groupName + "." + self.version
     }
 
     fun isModelEquals(self: DeployUnit, other: DeployUnit): Boolean {
@@ -24,7 +24,7 @@ class DeployUnitAspect {
                 return false
             }
         }
-        if (other.unitName != self.unitName || other.groupName != self.groupName || other.version != self.version) {
+        if (other.name != self.name || other.groupName != self.groupName || other.version != self.version) {
             return false
         }
         if (other.targetNodeType != null && self.targetNodeType == null) {

@@ -52,7 +52,7 @@ trait DeployUnitForm {
     groupName_lbl.setUI(new HudLabelUI());
     groupName_lbl.setOpaque(false);
 
-    val artifactName_lbl = new JLabel("UnitName", SwingConstants.TRAILING);
+    val artifactName_lbl = new JLabel("Name", SwingConstants.TRAILING);
     artifactName_lbl.setUI(new HudLabelUI());
     artifactName_lbl.setOpaque(false);
 

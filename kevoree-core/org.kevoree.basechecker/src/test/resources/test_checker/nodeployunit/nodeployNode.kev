@@ -159,15 +159,15 @@
  <hubs metaData="x=50,y=50" xsi:type="kevoree:Channel" name="defMSG859" typeDefinition="//@typeDefinitions.6"></hubs>
  <mBindings port="//@nodes.0/@components.1/@provided.1" xsi:type="kevoree:MBinding" hub="//@hubs.0"></mBindings>
  <mBindings port="//@nodes.0/@components.0/@required.1" xsi:type="kevoree:MBinding" hub="//@hubs.0"></mBindings>
- <deployUnits requiredLibs="//@deployUnits.1" version="1.4.1-SNAPSHOT" groupName="org.kevoree.library.javase" xsi:type="kevoree:DeployUnit" unitName="org.kevoree.library.javase.swingUI" hashcode="201111091438366" targetNodeType="//@typeDefinitions.3"></deployUnits>
- <deployUnits version="0.9.6" groupName="org.kevoree.extra" xsi:type="kevoree:DeployUnit" unitName="org.kevoree.extra.macwidgets" targetNodeType="//@typeDefinitions.3"></deployUnits>
- <deployUnits hashcode="201111091343543" unitName="org.kevoree.library.javase.defaultChannels" xsi:type="kevoree:DeployUnit" groupName="org.kevoree.library.javase" version="1.4.1-SNAPSHOT" targetNodeType="//@typeDefinitions.3"></deployUnits>
- <deployUnits hashcode="201111091202086" unitName="org.kevoree.library.javase.fakeDomo" xsi:type="kevoree:DeployUnit" groupName="org.kevoree.library.javase" version="1.4.1-SNAPSHOT" targetNodeType="//@typeDefinitions.3"></deployUnits>
- <deployUnits requiredLibs="//@deployUnits.5" version="1.4.1-SNAPSHOT" groupName="org.kevoree.library.javase" xsi:type="kevoree:DeployUnit" unitName="org.kevoree.library.javase.rest" hashcode="201111091200792" targetNodeType="//@typeDefinitions.3"></deployUnits>
- <deployUnits version="0.9.1" groupName="org.kevoree.extra" xsi:type="kevoree:DeployUnit" unitName="org.kevoree.extra.spray" targetNodeType="//@typeDefinitions.3"></deployUnits>
- <deployUnits requiredLibs="//@deployUnits.7 //@deployUnits.8" version="1.4.1-SNAPSHOT" groupName="org.kevoree.library.javase" xsi:type="kevoree:DeployUnit" unitName="org.kevoree.library.javase.vlc" hashcode="201111091348273" targetNodeType="//@typeDefinitions.3"></deployUnits>
- <deployUnits version="1.2.1-b3" groupName="org.kevoree.extra" xsi:type="kevoree:DeployUnit" unitName="org.kevoree.extra.vlcj" targetNodeType="//@typeDefinitions.3"></deployUnits>
- <deployUnits version="3.3.0" groupName="org.kevoree.extra" xsi:type="kevoree:DeployUnit" unitName="org.kevoree.extra.jna" targetNodeType="//@typeDefinitions.3"></deployUnits>
+ <deployUnits requiredLibs="//@deployUnits.1" version="1.4.1-SNAPSHOT" groupName="org.kevoree.library.javase" xsi:type="kevoree:DeployUnit" name="org.kevoree.library.javase.swingUI" hashcode="201111091438366" targetNodeType="//@typeDefinitions.3"></deployUnits>
+ <deployUnits version="0.9.6" groupName="org.kevoree.extra" xsi:type="kevoree:DeployUnit" name="org.kevoree.extra.macwidgets" targetNodeType="//@typeDefinitions.3"></deployUnits>
+ <deployUnits hashcode="201111091343543" name="org.kevoree.library.javase.defaultChannels" xsi:type="kevoree:DeployUnit" groupName="org.kevoree.library.javase" version="1.4.1-SNAPSHOT" targetNodeType="//@typeDefinitions.3"></deployUnits>
+ <deployUnits hashcode="201111091202086" name="org.kevoree.library.javase.fakeDomo" xsi:type="kevoree:DeployUnit" groupName="org.kevoree.library.javase" version="1.4.1-SNAPSHOT" targetNodeType="//@typeDefinitions.3"></deployUnits>
+ <deployUnits requiredLibs="//@deployUnits.5" version="1.4.1-SNAPSHOT" groupName="org.kevoree.library.javase" xsi:type="kevoree:DeployUnit" name="org.kevoree.library.javase.rest" hashcode="201111091200792" targetNodeType="//@typeDefinitions.3"></deployUnits>
+ <deployUnits version="0.9.1" groupName="org.kevoree.extra" xsi:type="kevoree:DeployUnit" name="org.kevoree.extra.spray" targetNodeType="//@typeDefinitions.3"></deployUnits>
+ <deployUnits requiredLibs="//@deployUnits.7 //@deployUnits.8" version="1.4.1-SNAPSHOT" groupName="org.kevoree.library.javase" xsi:type="kevoree:DeployUnit" name="org.kevoree.library.javase.vlc" hashcode="201111091348273" targetNodeType="//@typeDefinitions.3"></deployUnits>
+ <deployUnits version="1.2.1-b3" groupName="org.kevoree.extra" xsi:type="kevoree:DeployUnit" name="org.kevoree.extra.vlcj" targetNodeType="//@typeDefinitions.3"></deployUnits>
+ <deployUnits version="3.3.0" groupName="org.kevoree.extra" xsi:type="kevoree:DeployUnit" name="org.kevoree.extra.jna" targetNodeType="//@typeDefinitions.3"></deployUnits>
  <groups typeDefinition="//@typeDefinitions.15" name="sync" xsi:type="kevoree:Group" metaData="x=324,y=59" subNodes="//@nodes.0">
   <dictionary>
    <values attribute="//@typeDefinitions.15/@dictionaryType/@attributes.0" xsi:type="kevoree:DictionaryValue" value="8000" targetNode="//@nodes.0"></values>

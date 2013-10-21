@@ -88,13 +88,13 @@ class ReloadTypePalette extends Command {
       case DeployUnitMode => {
         model.getDeployUnits.foreach {
           deployUnit =>
-            palette.getCategoryOrAdd(deployUnit.getUnitName)
+            palette.getCategoryOrAdd(deployUnit.getName)
             model.getTypeDefinitions.filter(t => t.getDeployUnits.exists(du => du == deployUnit)).sortWith((x, y) => x.getName().charAt(0).toLower < y.getName().charAt(0).toLower).foreach {
               typeDef =>
                 if (!typeDef.getAbstract) {
                   typeDefPanelFactory(typeDef).map {
                     typeDefPanel =>
-                      palette.addTypeDefinitionPanel(typeDefPanel, deployUnit.getUnitName, typeDef.getName)
+                      palette.addTypeDefinitionPanel(typeDefPanel, deployUnit.getName, typeDef.getName)
 
                   }
                 }

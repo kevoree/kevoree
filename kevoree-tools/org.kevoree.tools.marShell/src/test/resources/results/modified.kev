@@ -117,21 +117,21 @@
 </libraries>
 <libraries xsi:type="kevoree:TypeLibrary" name="Kevoree-Android-JavaSE" subTypes="//@typeDefinitions.5 //@typeDefinitions.6 //@typeDefinitions.8 //@typeDefinitions.9 //@typeDefinitions.10 //@typeDefinitions.11 //@typeDefinitions.12 //@typeDefinitions.13">
 </libraries>
-<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.library" unitName="org.kevoree.library.fakeDomo" version="1.1.0-BETA1" hashcode="201104070916244" targetNodeType="//@typeDefinitions.7">
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.library" name="org.kevoree.library.fakeDomo" version="1.1.0-BETA1" hashcode="201104070916244" targetNodeType="//@typeDefinitions.7">
 </deployUnits>
-<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.library" unitName="org.kevoree.library.defaultChannels" version="1.1.0-BETA1" hashcode="201104070915536" targetNodeType="//@typeDefinitions.7">
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.library" name="org.kevoree.library.defaultChannels" version="1.1.0-BETA1" hashcode="201104070915536" targetNodeType="//@typeDefinitions.7">
 </deployUnits>
-<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.library" unitName="org.kevoree.library.defaultNodeTypes" version="1.1.0-BETA1" hashcode="201104070915880" targetNodeType="//@typeDefinitions.7">
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.library" name="org.kevoree.library.defaultNodeTypes" version="1.1.0-BETA1" hashcode="201104070915880" targetNodeType="//@typeDefinitions.7">
 </deployUnits>
-<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.library" unitName="org.kevoree.library.gossiper" version="1.1.0-BETA1" hashcode="201104070915760" requiredLibs="//@deployUnits.4" targetNodeType="//@typeDefinitions.7">
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.library" name="org.kevoree.library.gossiper" version="1.1.0-BETA1" hashcode="201104070915760" requiredLibs="//@deployUnits.4" targetNodeType="//@typeDefinitions.7">
 </deployUnits>
 <deployUnits xsi:type="kevoree:DeployUnit" name="org.kevoree.extra.marshalling" url="mvn:org.kevoree.extra/org.kevoree.extra.marshalling" targetNodeType="//@typeDefinitions.7">
 </deployUnits>
-<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.library" unitName="org.kevoree.library.restChannels" version="1.1.0-BETA1" hashcode="201104070916991" requiredLibs="//@deployUnits.4" targetNodeType="//@typeDefinitions.7">
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.library" name="org.kevoree.library.restChannels" version="1.1.0-BETA1" hashcode="201104070916991" requiredLibs="//@deployUnits.4" targetNodeType="//@typeDefinitions.7">
 </deployUnits>
-<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.library" unitName="org.kevoree.library.xmpp" version="1.1.0-BETA1" hashcode="201104070916913" requiredLibs="//@deployUnits.4" targetNodeType="//@typeDefinitions.7">
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.library" name="org.kevoree.library.xmpp" version="1.1.0-BETA1" hashcode="201104070916913" requiredLibs="//@deployUnits.4" targetNodeType="//@typeDefinitions.7">
 </deployUnits>
-<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.library" unitName="org.kevoree.library.logger.android" version="1.1.0-BETA1" hashcode="201104070917615" requiredLibs="//@deployUnits.8" targetNodeType="//@typeDefinitions.7">
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.library" name="org.kevoree.library.logger.android" version="1.1.0-BETA1" hashcode="201104070917615" requiredLibs="//@deployUnits.8" targetNodeType="//@typeDefinitions.7">
 </deployUnits>
 <deployUnits xsi:type="kevoree:DeployUnit" name="com.google.android.android" url="mvn:com.google.android/android/2.2.1" targetNodeType="//@typeDefinitions.7">
 </deployUnits>

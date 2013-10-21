@@ -1374,183 +1374,183 @@
 </libraries>
 <libraries xsi:type="kevoree:TypeLibrary" name="Test" subTypes="//@typeDefinitions.66">
 </libraries>
-<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.corelibrary.javase" unitName="org.kevoree.library.javase.javaseNode" version="1.9.0-SNAPSHOT" hashcode="201212051915157" type="jar" requiredLibs="//@deployUnits.1 //@deployUnits.2 //@deployUnits.3 //@deployUnits.4 //@deployUnits.5 //@deployUnits.6 //@deployUnits.7 //@deployUnits.8 //@deployUnits.9 //@deployUnits.10 //@deployUnits.11" targetNodeType="//@typeDefinitions.0">
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.corelibrary.javase" name="org.kevoree.library.javase.javaseNode" version="1.9.0-SNAPSHOT" hashcode="201212051915157" type="jar" requiredLibs="//@deployUnits.1 //@deployUnits.2 //@deployUnits.3 //@deployUnits.4 //@deployUnits.5 //@deployUnits.6 //@deployUnits.7 //@deployUnits.8 //@deployUnits.9 //@deployUnits.10 //@deployUnits.11" targetNodeType="//@typeDefinitions.0">
 </deployUnits>
-<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree" unitName="org.kevoree.kcl" version="1.9.0-SNAPSHOT" type="jar" targetNodeType="//@typeDefinitions.0">
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree" name="org.kevoree.kcl" version="1.9.0-SNAPSHOT" type="jar" targetNodeType="//@typeDefinitions.0">
 </deployUnits>
-<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.scala-lang" unitName="scala-library" version="2.9.2" type="jar" targetNodeType="//@typeDefinitions.0">
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.scala-lang" name="scala-library" version="2.9.2" type="jar" targetNodeType="//@typeDefinitions.0">
 </deployUnits>
-<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.slf4j" unitName="slf4j-api" version="1.6.4" type="jar" targetNodeType="//@typeDefinitions.0">
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.slf4j" name="slf4j-api" version="1.6.4" type="jar" targetNodeType="//@typeDefinitions.0">
 </deployUnits>
-<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree" unitName="org.kevoree.kompare" version="1.9.0-SNAPSHOT" type="jar" targetNodeType="//@typeDefinitions.0">
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree" name="org.kevoree.kompare" version="1.9.0-SNAPSHOT" type="jar" targetNodeType="//@typeDefinitions.0">
 </deployUnits>
-<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree" unitName="org.kevoree.api" version="1.9.0-SNAPSHOT" type="jar" targetNodeType="//@typeDefinitions.0">
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree" name="org.kevoree.api" version="1.9.0-SNAPSHOT" type="jar" targetNodeType="//@typeDefinitions.0">
 </deployUnits>
-<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree" unitName="org.kevoree.model" version="1.9.0-SNAPSHOT" type="jar" targetNodeType="//@typeDefinitions.0">
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree" name="org.kevoree.model" version="1.9.0-SNAPSHOT" type="jar" targetNodeType="//@typeDefinitions.0">
 </deployUnits>
-<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree" unitName="org.kevoree.adaptation.model" version="1.9.0-SNAPSHOT" type="jar" targetNodeType="//@typeDefinitions.0">
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree" name="org.kevoree.adaptation.model" version="1.9.0-SNAPSHOT" type="jar" targetNodeType="//@typeDefinitions.0">
 </deployUnits>
-<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree" unitName="org.kevoree.framework" version="1.9.0-SNAPSHOT" type="jar" targetNodeType="//@typeDefinitions.0">
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree" name="org.kevoree.framework" version="1.9.0-SNAPSHOT" type="jar" targetNodeType="//@typeDefinitions.0">
 </deployUnits>
-<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.jgrapht" unitName="jgrapht-jdk1.5" version="0.7.3" type="jar" targetNodeType="//@typeDefinitions.0">
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.jgrapht" name="jgrapht-jdk1.5" version="0.7.3" type="jar" targetNodeType="//@typeDefinitions.0">
 </deployUnits>
-<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.tools" unitName="org.kevoree.tools.javase.framework" version="1.9.0-SNAPSHOT" type="jar" targetNodeType="//@typeDefinitions.0">
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.tools" name="org.kevoree.tools.javase.framework" version="1.9.0-SNAPSHOT" type="jar" targetNodeType="//@typeDefinitions.0">
 </deployUnits>
-<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.tools" unitName="org.kevoree.tools.annotation.api" version="1.9.0-SNAPSHOT" type="jar" targetNodeType="//@typeDefinitions.0">
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.tools" name="org.kevoree.tools.annotation.api" version="1.9.0-SNAPSHOT" type="jar" targetNodeType="//@typeDefinitions.0">
 </deployUnits>
-<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.corelibrary.javase" unitName="org.kevoree.library.javase.nanohttp" version="1.9.0-SNAPSHOT" hashcode="201212051918981" type="jar" requiredLibs="//@deployUnits.10 //@deployUnits.8 //@deployUnits.5 //@deployUnits.6 //@deployUnits.7 //@deployUnits.1 //@deployUnits.2 //@deployUnits.3 //@deployUnits.11" targetNodeType="//@typeDefinitions.0">
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.corelibrary.javase" name="org.kevoree.library.javase.nanohttp" version="1.9.0-SNAPSHOT" hashcode="201212051918981" type="jar" requiredLibs="//@deployUnits.10 //@deployUnits.8 //@deployUnits.5 //@deployUnits.6 //@deployUnits.7 //@deployUnits.1 //@deployUnits.2 //@deployUnits.3 //@deployUnits.11" targetNodeType="//@typeDefinitions.0">
 </deployUnits>
-<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.corelibrary.javase" unitName="org.kevoree.library.javase.jexxus" version="1.9.0-SNAPSHOT" hashcode="201212051915394" type="jar" requiredLibs="//@deployUnits.14 //@deployUnits.8 //@deployUnits.5 //@deployUnits.7 //@deployUnits.1 //@deployUnits.6 //@deployUnits.2 //@deployUnits.3 //@deployUnits.10 //@deployUnits.11" targetNodeType="//@typeDefinitions.0">
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.corelibrary.javase" name="org.kevoree.library.javase.jexxus" version="1.9.0-SNAPSHOT" hashcode="201212051915394" type="jar" requiredLibs="//@deployUnits.14 //@deployUnits.8 //@deployUnits.5 //@deployUnits.7 //@deployUnits.1 //@deployUnits.6 //@deployUnits.2 //@deployUnits.3 //@deployUnits.10 //@deployUnits.11" targetNodeType="//@typeDefinitions.0">
 </deployUnits>
-<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree" unitName="org.kevoree.merger" version="1.9.0-SNAPSHOT" type="jar" targetNodeType="//@typeDefinitions.0">
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree" name="org.kevoree.merger" version="1.9.0-SNAPSHOT" type="jar" targetNodeType="//@typeDefinitions.0">
 </deployUnits>
-<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.corelibrary.javase" unitName="org.kevoree.library.javase.basicGossiper" version="1.9.0-SNAPSHOT" hashcode="201212051919552" type="jar" requiredLibs="//@deployUnits.16 //@deployUnits.14 //@deployUnits.8 //@deployUnits.5 //@deployUnits.7 //@deployUnits.1 //@deployUnits.6 //@deployUnits.2 //@deployUnits.3 //@deployUnits.13 //@deployUnits.10 //@deployUnits.11" targetNodeType="//@typeDefinitions.0">
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.corelibrary.javase" name="org.kevoree.library.javase.basicGossiper" version="1.9.0-SNAPSHOT" hashcode="201212051919552" type="jar" requiredLibs="//@deployUnits.16 //@deployUnits.14 //@deployUnits.8 //@deployUnits.5 //@deployUnits.7 //@deployUnits.1 //@deployUnits.6 //@deployUnits.2 //@deployUnits.3 //@deployUnits.13 //@deployUnits.10 //@deployUnits.11" targetNodeType="//@typeDefinitions.0">
 </deployUnits>
-<deployUnits xsi:type="kevoree:DeployUnit" groupName="com.google.protobuf" unitName="protobuf-java" version="2.4.1" type="jar" targetNodeType="//@typeDefinitions.0">
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="com.google.protobuf" name="protobuf-java" version="2.4.1" type="jar" targetNodeType="//@typeDefinitions.0">
 </deployUnits>
-<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.corelibrary.javase" unitName="org.kevoree.library.javase.nanohttpAutoDiscovery" version="1.9.0-SNAPSHOT" hashcode="201212051918553" type="jar" requiredLibs="//@deployUnits.18 //@deployUnits.19 //@deployUnits.12 //@deployUnits.10 //@deployUnits.8 //@deployUnits.5 //@deployUnits.6 //@deployUnits.7 //@deployUnits.1 //@deployUnits.2 //@deployUnits.11" targetNodeType="//@typeDefinitions.0">
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.corelibrary.javase" name="org.kevoree.library.javase.nanohttpAutoDiscovery" version="1.9.0-SNAPSHOT" hashcode="201212051918553" type="jar" requiredLibs="//@deployUnits.18 //@deployUnits.19 //@deployUnits.12 //@deployUnits.10 //@deployUnits.8 //@deployUnits.5 //@deployUnits.6 //@deployUnits.7 //@deployUnits.1 //@deployUnits.2 //@deployUnits.11" targetNodeType="//@typeDefinitions.0">
 </deployUnits>
-<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.extra" unitName="org.kevoree.extra.osgi.jmdns" version="3.4.1-hack" type="jar" targetNodeType="//@typeDefinitions.0">
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.extra" name="org.kevoree.extra.osgi.jmdns" version="3.4.1-hack" type="jar" targetNodeType="//@typeDefinitions.0">
 </deployUnits>
-<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.slf4j" unitName="slf4j-api" version="1.6.2" type="jar" targetNodeType="//@typeDefinitions.0">
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.slf4j" name="slf4j-api" version="1.6.2" type="jar" targetNodeType="//@typeDefinitions.0">
 </deployUnits>
-<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.corelibrary.javase" unitName="org.kevoree.library.javase.gossiperNetty" version="1.9.0-SNAPSHOT" hashcode="201212051916904" type="jar" requiredLibs="//@deployUnits.16 //@deployUnits.14 //@deployUnits.21 //@deployUnits.22" targetNodeType="//@typeDefinitions.0">
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.corelibrary.javase" name="org.kevoree.library.javase.gossiperNetty" version="1.9.0-SNAPSHOT" hashcode="201212051916904" type="jar" requiredLibs="//@deployUnits.16 //@deployUnits.14 //@deployUnits.21 //@deployUnits.22" targetNodeType="//@typeDefinitions.0">
 </deployUnits>
-<deployUnits xsi:type="kevoree:DeployUnit" groupName="io.netty" unitName="netty" version="3.4.0.Final" type="jar" targetNodeType="//@typeDefinitions.0">
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="io.netty" name="netty" version="3.4.0.Final" type="jar" targetNodeType="//@typeDefinitions.0">
 </deployUnits>
-<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.extra" unitName="org.kevoree.extra.marshalling" version="1.1" type="jar" targetNodeType="//@typeDefinitions.0">
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.extra" name="org.kevoree.extra.marshalling" version="1.1" type="jar" targetNodeType="//@typeDefinitions.0">
 </deployUnits>
-<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.corelibrary.javase" unitName="org.kevoree.library.javase.serialCT" version="1.9.0-SNAPSHOT" hashcode="201212051917614" type="jar" requiredLibs="//@deployUnits.24 //@deployUnits.2 //@deployUnits.25 //@deployUnits.3 //@deployUnits.10 //@deployUnits.8 //@deployUnits.5 //@deployUnits.6 //@deployUnits.7 //@deployUnits.1 //@deployUnits.11" targetNodeType="//@typeDefinitions.0">
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.corelibrary.javase" name="org.kevoree.library.javase.serialCT" version="1.9.0-SNAPSHOT" hashcode="201212051917614" type="jar" requiredLibs="//@deployUnits.24 //@deployUnits.2 //@deployUnits.25 //@deployUnits.3 //@deployUnits.10 //@deployUnits.8 //@deployUnits.5 //@deployUnits.6 //@deployUnits.7 //@deployUnits.1 //@deployUnits.11" targetNodeType="//@typeDefinitions.0">
 </deployUnits>
-<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.extra" unitName="org.kevoree.extra.kserial" version="1.7" type="jar" targetNodeType="//@typeDefinitions.0">
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.extra" name="org.kevoree.extra.kserial" version="1.7" type="jar" targetNodeType="//@typeDefinitions.0">
 </deployUnits>
-<deployUnits xsi:type="kevoree:DeployUnit" groupName="net.java.dev.jna" unitName="jna" version="3.3.0" type="jar" targetNodeType="//@typeDefinitions.0">
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="net.java.dev.jna" name="jna" version="3.3.0" type="jar" targetNodeType="//@typeDefinitions.0">
 </deployUnits>
-<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.corelibrary.javase" unitName="org.kevoree.library.javase.defaultChannels" version="1.9.0-SNAPSHOT" hashcode="201212051916602" type="jar" requiredLibs="//@deployUnits.10 //@deployUnits.8 //@deployUnits.5 //@deployUnits.6 //@deployUnits.7 //@deployUnits.1 //@deployUnits.2 //@deployUnits.3 //@deployUnits.11" targetNodeType="//@typeDefinitions.0">
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.corelibrary.javase" name="org.kevoree.library.javase.defaultChannels" version="1.9.0-SNAPSHOT" hashcode="201212051916602" type="jar" requiredLibs="//@deployUnits.10 //@deployUnits.8 //@deployUnits.5 //@deployUnits.6 //@deployUnits.7 //@deployUnits.1 //@deployUnits.2 //@deployUnits.3 //@deployUnits.11" targetNodeType="//@typeDefinitions.0">
 </deployUnits>
-<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.corelibrary.javase" unitName="org.kevoree.library.javase.socketChannels" version="1.9.0-SNAPSHOT" hashcode="201212051916364" type="jar" requiredLibs="//@deployUnits.10 //@deployUnits.8 //@deployUnits.5 //@deployUnits.6 //@deployUnits.7 //@deployUnits.1 //@deployUnits.2 //@deployUnits.3 //@deployUnits.11" targetNodeType="//@typeDefinitions.0">
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.corelibrary.javase" name="org.kevoree.library.javase.socketChannels" version="1.9.0-SNAPSHOT" hashcode="201212051916364" type="jar" requiredLibs="//@deployUnits.10 //@deployUnits.8 //@deployUnits.5 //@deployUnits.6 //@deployUnits.7 //@deployUnits.1 //@deployUnits.2 //@deployUnits.3 //@deployUnits.11" targetNodeType="//@typeDefinitions.0">
 </deployUnits>
-<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.corelibrary.javase" unitName="org.kevoree.library.javase.nioChannels" version="1.9.0-SNAPSHOT" hashcode="201212051916866" type="jar" requiredLibs="//@deployUnits.21 //@deployUnits.10 //@deployUnits.8 //@deployUnits.5 //@deployUnits.6 //@deployUnits.7 //@deployUnits.1 //@deployUnits.2 //@deployUnits.3 //@deployUnits.11" targetNodeType="//@typeDefinitions.0">
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.corelibrary.javase" name="org.kevoree.library.javase.nioChannels" version="1.9.0-SNAPSHOT" hashcode="201212051916866" type="jar" requiredLibs="//@deployUnits.21 //@deployUnits.10 //@deployUnits.8 //@deployUnits.5 //@deployUnits.6 //@deployUnits.7 //@deployUnits.1 //@deployUnits.2 //@deployUnits.3 //@deployUnits.11" targetNodeType="//@typeDefinitions.0">
 </deployUnits>
-<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.corelibrary.javase" unitName="org.kevoree.library.javase.fakeDomo" version="1.9.0-SNAPSHOT" hashcode="201212051916933" type="jar" requiredLibs="//@deployUnits.30 //@deployUnits.31 //@deployUnits.32 //@deployUnits.33 //@deployUnits.34 //@deployUnits.35 //@deployUnits.10 //@deployUnits.8 //@deployUnits.5 //@deployUnits.6 //@deployUnits.7 //@deployUnits.1 //@deployUnits.2 //@deployUnits.3 //@deployUnits.11" targetNodeType="//@typeDefinitions.0">
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.corelibrary.javase" name="org.kevoree.library.javase.fakeDomo" version="1.9.0-SNAPSHOT" hashcode="201212051916933" type="jar" requiredLibs="//@deployUnits.30 //@deployUnits.31 //@deployUnits.32 //@deployUnits.33 //@deployUnits.34 //@deployUnits.35 //@deployUnits.10 //@deployUnits.8 //@deployUnits.5 //@deployUnits.6 //@deployUnits.7 //@deployUnits.1 //@deployUnits.2 //@deployUnits.3 //@deployUnits.11" targetNodeType="//@typeDefinitions.0">
 </deployUnits>
-<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.corelibrary.javase" unitName="org.kevoree.library.javase.swingUI" version="1.9.0-SNAPSHOT" hashcode="201212051914402" type="jar" requiredLibs="//@deployUnits.31 //@deployUnits.32 //@deployUnits.33 //@deployUnits.34 //@deployUnits.35 //@deployUnits.2 //@deployUnits.3 //@deployUnits.10 //@deployUnits.8 //@deployUnits.5 //@deployUnits.6 //@deployUnits.7 //@deployUnits.1 //@deployUnits.11" targetNodeType="//@typeDefinitions.0">
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.corelibrary.javase" name="org.kevoree.library.javase.swingUI" version="1.9.0-SNAPSHOT" hashcode="201212051914402" type="jar" requiredLibs="//@deployUnits.31 //@deployUnits.32 //@deployUnits.33 //@deployUnits.34 //@deployUnits.35 //@deployUnits.2 //@deployUnits.3 //@deployUnits.10 //@deployUnits.8 //@deployUnits.5 //@deployUnits.6 //@deployUnits.7 //@deployUnits.1 //@deployUnits.11" targetNodeType="//@typeDefinitions.0">
 </deployUnits>
-<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.extra" unitName="org.kevoree.extra.macwidgets" version="0.9.6" type="jar" targetNodeType="//@typeDefinitions.0">
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.extra" name="org.kevoree.extra.macwidgets" version="0.9.6" type="jar" targetNodeType="//@typeDefinitions.0">
 </deployUnits>
-<deployUnits xsi:type="kevoree:DeployUnit" groupName="com.jgoodies" unitName="forms" version="1.2.1" type="jar" targetNodeType="//@typeDefinitions.0">
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="com.jgoodies" name="forms" version="1.2.1" type="jar" targetNodeType="//@typeDefinitions.0">
 </deployUnits>
-<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.tools" unitName="org.kevoree.tools.marShellGUI" version="1.9.0-SNAPSHOT" type="jar" targetNodeType="//@typeDefinitions.0">
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.tools" name="org.kevoree.tools.marShellGUI" version="1.9.0-SNAPSHOT" type="jar" targetNodeType="//@typeDefinitions.0">
 </deployUnits>
-<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.tools" unitName="org.kevoree.tools.marShell" version="1.9.0-SNAPSHOT" type="jar" targetNodeType="//@typeDefinitions.0">
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.tools" name="org.kevoree.tools.marShell" version="1.9.0-SNAPSHOT" type="jar" targetNodeType="//@typeDefinitions.0">
 </deployUnits>
-<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.extra" unitName="org.kevoree.extra.jsyntaxpane" version="0.9.7" type="jar" targetNodeType="//@typeDefinitions.0">
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.extra" name="org.kevoree.extra.jsyntaxpane" version="0.9.7" type="jar" targetNodeType="//@typeDefinitions.0">
 </deployUnits>
-<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.corelibrary.javase" unitName="org.kevoree.library.javase.grapher" version="1.9.0-SNAPSHOT" hashcode="201212051917805" type="jar" requiredLibs="//@deployUnits.37 //@deployUnits.30 //@deployUnits.31 //@deployUnits.32 //@deployUnits.33 //@deployUnits.34 //@deployUnits.35 //@deployUnits.10 //@deployUnits.8 //@deployUnits.5 //@deployUnits.6 //@deployUnits.7 //@deployUnits.1 //@deployUnits.2 //@deployUnits.3 //@deployUnits.11" targetNodeType="//@typeDefinitions.0">
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.corelibrary.javase" name="org.kevoree.library.javase.grapher" version="1.9.0-SNAPSHOT" hashcode="201212051917805" type="jar" requiredLibs="//@deployUnits.37 //@deployUnits.30 //@deployUnits.31 //@deployUnits.32 //@deployUnits.33 //@deployUnits.34 //@deployUnits.35 //@deployUnits.10 //@deployUnits.8 //@deployUnits.5 //@deployUnits.6 //@deployUnits.7 //@deployUnits.1 //@deployUnits.2 //@deployUnits.3 //@deployUnits.11" targetNodeType="//@typeDefinitions.0">
 </deployUnits>
-<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.extra" unitName="org.kevoree.extra.chart2d" version="3.2.1" type="jar" targetNodeType="//@typeDefinitions.0">
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.extra" name="org.kevoree.extra.chart2d" version="3.2.1" type="jar" targetNodeType="//@typeDefinitions.0">
 </deployUnits>
-<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.corelibrary.javase" unitName="org.kevoree.library.javase.camel" version="1.9.0-SNAPSHOT" hashcode="201212051918464" type="jar" requiredLibs="//@deployUnits.39 //@deployUnits.40 //@deployUnits.2 //@deployUnits.3 //@deployUnits.41 //@deployUnits.42 //@deployUnits.10 //@deployUnits.8 //@deployUnits.5 //@deployUnits.6 //@deployUnits.7 //@deployUnits.1 //@deployUnits.11" targetNodeType="//@typeDefinitions.0">
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.corelibrary.javase" name="org.kevoree.library.javase.camel" version="1.9.0-SNAPSHOT" hashcode="201212051918464" type="jar" requiredLibs="//@deployUnits.39 //@deployUnits.40 //@deployUnits.2 //@deployUnits.3 //@deployUnits.41 //@deployUnits.42 //@deployUnits.10 //@deployUnits.8 //@deployUnits.5 //@deployUnits.6 //@deployUnits.7 //@deployUnits.1 //@deployUnits.11" targetNodeType="//@typeDefinitions.0">
 </deployUnits>
-<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.tools" unitName="org.kevoree.tools.camel.framework" version="1.9.0-SNAPSHOT" type="jar" targetNodeType="//@typeDefinitions.0">
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.tools" name="org.kevoree.tools.camel.framework" version="1.9.0-SNAPSHOT" type="jar" targetNodeType="//@typeDefinitions.0">
 </deployUnits>
-<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.apache.camel" unitName="camel-core" version="2.9.2" type="jar" targetNodeType="//@typeDefinitions.0">
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.apache.camel" name="camel-core" version="2.9.2" type="jar" targetNodeType="//@typeDefinitions.0">
 </deployUnits>
-<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.apache.camel" unitName="camel-netty" version="2.9.2" type="jar" targetNodeType="//@typeDefinitions.0">
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.apache.camel" name="camel-netty" version="2.9.2" type="jar" targetNodeType="//@typeDefinitions.0">
 </deployUnits>
-<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.apache.servicemix.bundles" unitName="org.apache.servicemix.bundles.netty" version="3.2.6.Final_1" type="jar" targetNodeType="//@typeDefinitions.0">
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.apache.servicemix.bundles" name="org.apache.servicemix.bundles.netty" version="3.2.6.Final_1" type="jar" targetNodeType="//@typeDefinitions.0">
 </deployUnits>
-<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.corelibrary.javase" unitName="org.kevoree.library.javase.camel.atom" version="1.9.0-SNAPSHOT" hashcode="201212051918076" type="jar" requiredLibs="//@deployUnits.39 //@deployUnits.40 //@deployUnits.2 //@deployUnits.3 //@deployUnits.44 //@deployUnits.45 //@deployUnits.46 //@deployUnits.47 //@deployUnits.48 //@deployUnits.49 //@deployUnits.50 //@deployUnits.51 //@deployUnits.52 //@deployUnits.53 //@deployUnits.54 //@deployUnits.55 //@deployUnits.10 //@deployUnits.8 //@deployUnits.5 //@deployUnits.6 //@deployUnits.7 //@deployUnits.1 //@deployUnits.11" targetNodeType="//@typeDefinitions.0">
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.corelibrary.javase" name="org.kevoree.library.javase.camel.atom" version="1.9.0-SNAPSHOT" hashcode="201212051918076" type="jar" requiredLibs="//@deployUnits.39 //@deployUnits.40 //@deployUnits.2 //@deployUnits.3 //@deployUnits.44 //@deployUnits.45 //@deployUnits.46 //@deployUnits.47 //@deployUnits.48 //@deployUnits.49 //@deployUnits.50 //@deployUnits.51 //@deployUnits.52 //@deployUnits.53 //@deployUnits.54 //@deployUnits.55 //@deployUnits.10 //@deployUnits.8 //@deployUnits.5 //@deployUnits.6 //@deployUnits.7 //@deployUnits.1 //@deployUnits.11" targetNodeType="//@typeDefinitions.0">
 </deployUnits>
-<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.apache.camel" unitName="camel-atom" version="2.9.1" type="jar" targetNodeType="//@typeDefinitions.0">
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.apache.camel" name="camel-atom" version="2.9.1" type="jar" targetNodeType="//@typeDefinitions.0">
 </deployUnits>
-<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.apache.abdera" unitName="abdera-core" version="1.1.2" type="jar" targetNodeType="//@typeDefinitions.0">
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.apache.abdera" name="abdera-core" version="1.1.2" type="jar" targetNodeType="//@typeDefinitions.0">
 </deployUnits>
-<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.apache.abdera" unitName="abdera-i18n" version="1.1.2" type="jar" targetNodeType="//@typeDefinitions.0">
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.apache.abdera" name="abdera-i18n" version="1.1.2" type="jar" targetNodeType="//@typeDefinitions.0">
 </deployUnits>
-<deployUnits xsi:type="kevoree:DeployUnit" groupName="commons-logging" unitName="commons-logging" version="1.0.4" type="jar" targetNodeType="//@typeDefinitions.0">
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="commons-logging" name="commons-logging" version="1.0.4" type="jar" targetNodeType="//@typeDefinitions.0">
 </deployUnits>
-<deployUnits xsi:type="kevoree:DeployUnit" groupName="commons-codec" unitName="commons-codec" version="1.4" type="jar" targetNodeType="//@typeDefinitions.0">
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="commons-codec" name="commons-codec" version="1.4" type="jar" targetNodeType="//@typeDefinitions.0">
 </deployUnits>
-<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.apache.abdera" unitName="abdera-parser" version="1.1.2" type="jar" targetNodeType="//@typeDefinitions.0">
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.apache.abdera" name="abdera-parser" version="1.1.2" type="jar" targetNodeType="//@typeDefinitions.0">
 </deployUnits>
-<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.apache.geronimo.specs" unitName="geronimo-stax-api_1.0_spec" version="1.0.1" type="jar" targetNodeType="//@typeDefinitions.0">
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.apache.geronimo.specs" name="geronimo-stax-api_1.0_spec" version="1.0.1" type="jar" targetNodeType="//@typeDefinitions.0">
 </deployUnits>
-<deployUnits xsi:type="kevoree:DeployUnit" groupName="jaxen" unitName="jaxen" version="1.1.1" type="jar" targetNodeType="//@typeDefinitions.0">
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="jaxen" name="jaxen" version="1.1.1" type="jar" targetNodeType="//@typeDefinitions.0">
 </deployUnits>
-<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.apache.ws.commons.axiom" unitName="axiom-api" version="1.2.12" type="jar" targetNodeType="//@typeDefinitions.0">
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.apache.ws.commons.axiom" name="axiom-api" version="1.2.12" type="jar" targetNodeType="//@typeDefinitions.0">
 </deployUnits>
-<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.apache.geronimo.specs" unitName="geronimo-activation_1.1_spec" version="1.0.2" type="jar" targetNodeType="//@typeDefinitions.0">
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.apache.geronimo.specs" name="geronimo-activation_1.1_spec" version="1.0.2" type="jar" targetNodeType="//@typeDefinitions.0">
 </deployUnits>
-<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.apache.geronimo.specs" unitName="geronimo-javamail_1.4_spec" version="1.6" type="jar" targetNodeType="//@typeDefinitions.0">
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.apache.geronimo.specs" name="geronimo-javamail_1.4_spec" version="1.6" type="jar" targetNodeType="//@typeDefinitions.0">
 </deployUnits>
-<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.apache.ws.commons.axiom" unitName="axiom-impl" version="1.2.12" type="jar" targetNodeType="//@typeDefinitions.0">
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.apache.ws.commons.axiom" name="axiom-impl" version="1.2.12" type="jar" targetNodeType="//@typeDefinitions.0">
 </deployUnits>
-<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.corelibrary.javase" unitName="org.kevoree.library.javase.webserver.api" version="1.9.0-SNAPSHOT" hashcode="201212051917777" type="jar" requiredLibs="//@deployUnits.10 //@deployUnits.8 //@deployUnits.5 //@deployUnits.6 //@deployUnits.7 //@deployUnits.1 //@deployUnits.2 //@deployUnits.3 //@deployUnits.11" targetNodeType="//@typeDefinitions.0">
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.corelibrary.javase" name="org.kevoree.library.javase.webserver.api" version="1.9.0-SNAPSHOT" hashcode="201212051917777" type="jar" requiredLibs="//@deployUnits.10 //@deployUnits.8 //@deployUnits.5 //@deployUnits.6 //@deployUnits.7 //@deployUnits.1 //@deployUnits.2 //@deployUnits.3 //@deployUnits.11" targetNodeType="//@typeDefinitions.0">
 </deployUnits>
-<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.corelibrary.javase" unitName="org.kevoree.library.javase.webserver.spray" version="1.9.0-SNAPSHOT" hashcode="201212051917164" type="jar" requiredLibs="//@deployUnits.58 //@deployUnits.59 //@deployUnits.3 //@deployUnits.56 //@deployUnits.10 //@deployUnits.8 //@deployUnits.5 //@deployUnits.6 //@deployUnits.7 //@deployUnits.1 //@deployUnits.2 //@deployUnits.11" targetNodeType="//@typeDefinitions.0">
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.corelibrary.javase" name="org.kevoree.library.javase.webserver.spray" version="1.9.0-SNAPSHOT" hashcode="201212051917164" type="jar" requiredLibs="//@deployUnits.58 //@deployUnits.59 //@deployUnits.3 //@deployUnits.56 //@deployUnits.10 //@deployUnits.8 //@deployUnits.5 //@deployUnits.6 //@deployUnits.7 //@deployUnits.1 //@deployUnits.2 //@deployUnits.11" targetNodeType="//@typeDefinitions.0">
 </deployUnits>
-<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.extra" unitName="org.kevoree.extra.spray" version="0.9.2" type="jar" targetNodeType="//@typeDefinitions.0">
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.extra" name="org.kevoree.extra.spray" version="0.9.2" type="jar" targetNodeType="//@typeDefinitions.0">
 </deployUnits>
-<deployUnits xsi:type="kevoree:DeployUnit" groupName="se.scalablesolutions.akka" unitName="akka-actor" version="1.3.1" type="jar" targetNodeType="//@typeDefinitions.0">
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="se.scalablesolutions.akka" name="akka-actor" version="1.3.1" type="jar" targetNodeType="//@typeDefinitions.0">
 </deployUnits>
-<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.corelibrary.javase" unitName="org.kevoree.library.javase.webserver.tjws" version="1.9.0-SNAPSHOT" hashcode="201212051917968" type="jar" requiredLibs="//@deployUnits.61 //@deployUnits.56 //@deployUnits.10 //@deployUnits.8 //@deployUnits.5 //@deployUnits.6 //@deployUnits.7 //@deployUnits.1 //@deployUnits.2 //@deployUnits.3 //@deployUnits.11" targetNodeType="//@typeDefinitions.0">
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.corelibrary.javase" name="org.kevoree.library.javase.webserver.tjws" version="1.9.0-SNAPSHOT" hashcode="201212051917968" type="jar" requiredLibs="//@deployUnits.61 //@deployUnits.56 //@deployUnits.10 //@deployUnits.8 //@deployUnits.5 //@deployUnits.6 //@deployUnits.7 //@deployUnits.1 //@deployUnits.2 //@deployUnits.3 //@deployUnits.11" targetNodeType="//@typeDefinitions.0">
 </deployUnits>
-<deployUnits xsi:type="kevoree:DeployUnit" groupName="javax.servlet" unitName="servlet-api" version="2.5" type="jar" targetNodeType="//@typeDefinitions.0">
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="javax.servlet" name="servlet-api" version="2.5" type="jar" targetNodeType="//@typeDefinitions.0">
 </deployUnits>
-<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.corelibrary.javase" unitName="org.kevoree.library.javase.nodeJS" version="1.9.0-SNAPSHOT" hashcode="201212051918756" type="jar" requiredLibs="//@deployUnits.63 //@deployUnits.64 //@deployUnits.65 //@deployUnits.66 //@deployUnits.67 //@deployUnits.68 //@deployUnits.10 //@deployUnits.8 //@deployUnits.5 //@deployUnits.6 //@deployUnits.7 //@deployUnits.1 //@deployUnits.2 //@deployUnits.3 //@deployUnits.11" targetNodeType="//@typeDefinitions.0">
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.corelibrary.javase" name="org.kevoree.library.javase.nodeJS" version="1.9.0-SNAPSHOT" hashcode="201212051918756" type="jar" requiredLibs="//@deployUnits.63 //@deployUnits.64 //@deployUnits.65 //@deployUnits.66 //@deployUnits.67 //@deployUnits.68 //@deployUnits.10 //@deployUnits.8 //@deployUnits.5 //@deployUnits.6 //@deployUnits.7 //@deployUnits.1 //@deployUnits.2 //@deployUnits.3 //@deployUnits.11" targetNodeType="//@typeDefinitions.0">
 </deployUnits>
-<deployUnits xsi:type="kevoree:DeployUnit" groupName="de.flapdoodle.embed" unitName="de.flapdoodle.embed.nodejs" version="1.22" type="jar" targetNodeType="//@typeDefinitions.0">
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="de.flapdoodle.embed" name="de.flapdoodle.embed.nodejs" version="1.22" type="jar" targetNodeType="//@typeDefinitions.0">
 </deployUnits>
-<deployUnits xsi:type="kevoree:DeployUnit" groupName="de.flapdoodle.embed" unitName="de.flapdoodle.embed.process" version="1.21" type="jar" targetNodeType="//@typeDefinitions.0">
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="de.flapdoodle.embed" name="de.flapdoodle.embed.process" version="1.21" type="jar" targetNodeType="//@typeDefinitions.0">
 </deployUnits>
-<deployUnits xsi:type="kevoree:DeployUnit" groupName="commons-io" unitName="commons-io" version="2.2" type="jar" targetNodeType="//@typeDefinitions.0">
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="commons-io" name="commons-io" version="2.2" type="jar" targetNodeType="//@typeDefinitions.0">
 </deployUnits>
-<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.apache.commons" unitName="commons-compress" version="1.3" type="jar" targetNodeType="//@typeDefinitions.0">
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.apache.commons" name="commons-compress" version="1.3" type="jar" targetNodeType="//@typeDefinitions.0">
 </deployUnits>
-<deployUnits xsi:type="kevoree:DeployUnit" groupName="com.google.guava" unitName="guava" version="11.0.1" type="jar" targetNodeType="//@typeDefinitions.0">
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="com.google.guava" name="guava" version="11.0.1" type="jar" targetNodeType="//@typeDefinitions.0">
 </deployUnits>
-<deployUnits xsi:type="kevoree:DeployUnit" groupName="com.google.code.findbugs" unitName="jsr305" version="1.3.9" type="jar" targetNodeType="//@typeDefinitions.0">
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="com.google.code.findbugs" name="jsr305" version="1.3.9" type="jar" targetNodeType="//@typeDefinitions.0">
 </deployUnits>
-<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.corelibrary.javase" unitName="org.kevoree.library.javase.etherpad" version="1.9.0-SNAPSHOT" hashcode="201212051918476" type="jar" requiredLibs="//@deployUnits.62 //@deployUnits.63 //@deployUnits.64 //@deployUnits.65 //@deployUnits.66 //@deployUnits.67 //@deployUnits.68 //@deployUnits.10 //@deployUnits.8 //@deployUnits.5 //@deployUnits.6 //@deployUnits.7 //@deployUnits.1 //@deployUnits.2 //@deployUnits.3 //@deployUnits.11" targetNodeType="//@typeDefinitions.0">
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.corelibrary.javase" name="org.kevoree.library.javase.etherpad" version="1.9.0-SNAPSHOT" hashcode="201212051918476" type="jar" requiredLibs="//@deployUnits.62 //@deployUnits.63 //@deployUnits.64 //@deployUnits.65 //@deployUnits.66 //@deployUnits.67 //@deployUnits.68 //@deployUnits.10 //@deployUnits.8 //@deployUnits.5 //@deployUnits.6 //@deployUnits.7 //@deployUnits.1 //@deployUnits.2 //@deployUnits.3 //@deployUnits.11" targetNodeType="//@typeDefinitions.0">
 </deployUnits>
-<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.corelibrary.javase" unitName="org.kevoree.library.javase.mavenCache" version="1.9.0-SNAPSHOT" hashcode="201212051919629" type="jar" requiredLibs="//@deployUnits.13 //@deployUnits.14 //@deployUnits.6 //@deployUnits.10 //@deployUnits.8 //@deployUnits.5 //@deployUnits.7 //@deployUnits.1 //@deployUnits.2 //@deployUnits.3 //@deployUnits.11" targetNodeType="//@typeDefinitions.0">
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.corelibrary.javase" name="org.kevoree.library.javase.mavenCache" version="1.9.0-SNAPSHOT" hashcode="201212051919629" type="jar" requiredLibs="//@deployUnits.13 //@deployUnits.14 //@deployUnits.6 //@deployUnits.10 //@deployUnits.8 //@deployUnits.5 //@deployUnits.7 //@deployUnits.1 //@deployUnits.2 //@deployUnits.3 //@deployUnits.11" targetNodeType="//@typeDefinitions.0">
 </deployUnits>
-<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.corelibrary.javase" unitName="org.kevoree.library.javase.hazelcast" version="1.9.0-SNAPSHOT" hashcode="201212051919197" type="jar" requiredLibs="//@deployUnits.72 //@deployUnits.10 //@deployUnits.8 //@deployUnits.5 //@deployUnits.6 //@deployUnits.7 //@deployUnits.1 //@deployUnits.2 //@deployUnits.3 //@deployUnits.11" targetNodeType="//@typeDefinitions.0">
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.corelibrary.javase" name="org.kevoree.library.javase.hazelcast" version="1.9.0-SNAPSHOT" hashcode="201212051919197" type="jar" requiredLibs="//@deployUnits.72 //@deployUnits.10 //@deployUnits.8 //@deployUnits.5 //@deployUnits.6 //@deployUnits.7 //@deployUnits.1 //@deployUnits.2 //@deployUnits.3 //@deployUnits.11" targetNodeType="//@typeDefinitions.0">
 </deployUnits>
-<deployUnits xsi:type="kevoree:DeployUnit" groupName="com.hazelcast" unitName="hazelcast" version="2.3.1" type="jar" targetNodeType="//@typeDefinitions.0">
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="com.hazelcast" name="hazelcast" version="2.3.1" type="jar" targetNodeType="//@typeDefinitions.0">
 </deployUnits>
-<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.corelibrary.sky" unitName="org.kevoree.library.sky.provider" version="1.9.0-SNAPSHOT" hashcode="201212051920490" type="jar" requiredLibs="//@deployUnits.12 //@deployUnits.74 //@deployUnits.0 //@deployUnits.1 //@deployUnits.4 //@deployUnits.60 //@deployUnits.61 //@deployUnits.56 //@deployUnits.75 //@deployUnits.9 //@deployUnits.76 //@deployUnits.77 //@deployUnits.8 //@deployUnits.5 //@deployUnits.6 //@deployUnits.7 //@deployUnits.2 //@deployUnits.3 //@deployUnits.10 //@deployUnits.11" targetNodeType="//@typeDefinitions.0">
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.corelibrary.sky" name="org.kevoree.library.sky.provider" version="1.9.0-SNAPSHOT" hashcode="201212051920490" type="jar" requiredLibs="//@deployUnits.12 //@deployUnits.74 //@deployUnits.0 //@deployUnits.1 //@deployUnits.4 //@deployUnits.60 //@deployUnits.61 //@deployUnits.56 //@deployUnits.75 //@deployUnits.9 //@deployUnits.76 //@deployUnits.77 //@deployUnits.8 //@deployUnits.5 //@deployUnits.6 //@deployUnits.7 //@deployUnits.2 //@deployUnits.3 //@deployUnits.10 //@deployUnits.11" targetNodeType="//@typeDefinitions.0">
 </deployUnits>
-<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.corelibrary.sky" unitName="org.kevoree.library.sky.api" version="1.9.0-SNAPSHOT" hashcode="201212051920742" type="jar" requiredLibs="//@deployUnits.0 //@deployUnits.1 //@deployUnits.4 //@deployUnits.60 //@deployUnits.61 //@deployUnits.56 //@deployUnits.75 //@deployUnits.5 //@deployUnits.6 //@deployUnits.7 //@deployUnits.8 //@deployUnits.9 //@deployUnits.2 //@deployUnits.3 //@deployUnits.76 //@deployUnits.10 //@deployUnits.11" targetNodeType="//@typeDefinitions.0">
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.corelibrary.sky" name="org.kevoree.library.sky.api" version="1.9.0-SNAPSHOT" hashcode="201212051920742" type="jar" requiredLibs="//@deployUnits.0 //@deployUnits.1 //@deployUnits.4 //@deployUnits.60 //@deployUnits.61 //@deployUnits.56 //@deployUnits.75 //@deployUnits.5 //@deployUnits.6 //@deployUnits.7 //@deployUnits.8 //@deployUnits.9 //@deployUnits.2 //@deployUnits.3 //@deployUnits.76 //@deployUnits.10 //@deployUnits.11" targetNodeType="//@typeDefinitions.0">
 </deployUnits>
-<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree" unitName="org.kevoree.basechecker" version="1.9.0-SNAPSHOT" type="jar" targetNodeType="//@typeDefinitions.0">
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree" name="org.kevoree.basechecker" version="1.9.0-SNAPSHOT" type="jar" targetNodeType="//@typeDefinitions.0">
 </deployUnits>
-<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.json" unitName="org.json" version="chargebee-1.0" type="jar" targetNodeType="//@typeDefinitions.0">
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.json" name="org.json" version="chargebee-1.0" type="jar" targetNodeType="//@typeDefinitions.0">
 </deployUnits>
-<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.corelibrary.sky" unitName="org.kevoree.library.sky.provider.api" version="1.9.0-SNAPSHOT" type="jar" targetNodeType="//@typeDefinitions.0">
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.corelibrary.sky" name="org.kevoree.library.sky.provider.api" version="1.9.0-SNAPSHOT" type="jar" targetNodeType="//@typeDefinitions.0">
 </deployUnits>
-<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.corelibrary.sky" unitName="org.kevoree.library.sky.provider.web" version="1.9.0-SNAPSHOT" hashcode="201212051920962" type="jar" requiredLibs="//@deployUnits.56 //@deployUnits.74 //@deployUnits.0 //@deployUnits.1 //@deployUnits.4 //@deployUnits.60 //@deployUnits.61 //@deployUnits.75 //@deployUnits.9 //@deployUnits.76 //@deployUnits.77 //@deployUnits.73 //@deployUnits.12 //@deployUnits.79 //@deployUnits.8 //@deployUnits.5 //@deployUnits.6 //@deployUnits.7 //@deployUnits.2 //@deployUnits.3 //@deployUnits.10 //@deployUnits.11" targetNodeType="//@typeDefinitions.0">
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.corelibrary.sky" name="org.kevoree.library.sky.provider.web" version="1.9.0-SNAPSHOT" hashcode="201212051920962" type="jar" requiredLibs="//@deployUnits.56 //@deployUnits.74 //@deployUnits.0 //@deployUnits.1 //@deployUnits.4 //@deployUnits.60 //@deployUnits.61 //@deployUnits.75 //@deployUnits.9 //@deployUnits.76 //@deployUnits.77 //@deployUnits.73 //@deployUnits.12 //@deployUnits.79 //@deployUnits.8 //@deployUnits.5 //@deployUnits.6 //@deployUnits.7 //@deployUnits.2 //@deployUnits.3 //@deployUnits.10 //@deployUnits.11" targetNodeType="//@typeDefinitions.0">
 </deployUnits>
-<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.corelibrary.javase" unitName="org.kevoree.library.javase.authentication" version="1.9.0-SNAPSHOT" hashcode="201212051918026" type="jar" requiredLibs="//@deployUnits.10 //@deployUnits.8 //@deployUnits.5 //@deployUnits.6 //@deployUnits.7 //@deployUnits.1 //@deployUnits.2 //@deployUnits.3 //@deployUnits.11" targetNodeType="//@typeDefinitions.0">
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.corelibrary.javase" name="org.kevoree.library.javase.authentication" version="1.9.0-SNAPSHOT" hashcode="201212051918026" type="jar" requiredLibs="//@deployUnits.10 //@deployUnits.8 //@deployUnits.5 //@deployUnits.6 //@deployUnits.7 //@deployUnits.1 //@deployUnits.2 //@deployUnits.3 //@deployUnits.11" targetNodeType="//@typeDefinitions.0">
 </deployUnits>
-<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.corelibrary.sky" unitName="org.kevoree.library.sky.jails" version="1.9.0-SNAPSHOT" hashcode="201212051920906" type="jar" requiredLibs="//@deployUnits.74 //@deployUnits.0 //@deployUnits.1 //@deployUnits.4 //@deployUnits.60 //@deployUnits.61 //@deployUnits.56 //@deployUnits.75 //@deployUnits.5 //@deployUnits.6 //@deployUnits.7 //@deployUnits.9 //@deployUnits.76 //@deployUnits.10 //@deployUnits.8 //@deployUnits.2 //@deployUnits.3 //@deployUnits.11" targetNodeType="//@typeDefinitions.0">
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.corelibrary.sky" name="org.kevoree.library.sky.jails" version="1.9.0-SNAPSHOT" hashcode="201212051920906" type="jar" requiredLibs="//@deployUnits.74 //@deployUnits.0 //@deployUnits.1 //@deployUnits.4 //@deployUnits.60 //@deployUnits.61 //@deployUnits.56 //@deployUnits.75 //@deployUnits.5 //@deployUnits.6 //@deployUnits.7 //@deployUnits.9 //@deployUnits.76 //@deployUnits.10 //@deployUnits.8 //@deployUnits.2 //@deployUnits.3 //@deployUnits.11" targetNodeType="//@typeDefinitions.0">
 </deployUnits>
-<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.corelibrary.sky" unitName="org.kevoree.library.sky.libvirt" version="1.9.0-SNAPSHOT" hashcode="201212051921875" type="jar" requiredLibs="//@deployUnits.74 //@deployUnits.0 //@deployUnits.1 //@deployUnits.4 //@deployUnits.60 //@deployUnits.61 //@deployUnits.56 //@deployUnits.75 //@deployUnits.5 //@deployUnits.6 //@deployUnits.7 //@deployUnits.9 //@deployUnits.76 //@deployUnits.82 //@deployUnits.83 //@deployUnits.84 //@deployUnits.85 //@deployUnits.86 //@deployUnits.87 //@deployUnits.10 //@deployUnits.8 //@deployUnits.2 //@deployUnits.3 //@deployUnits.11" targetNodeType="//@typeDefinitions.0">
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.corelibrary.sky" name="org.kevoree.library.sky.libvirt" version="1.9.0-SNAPSHOT" hashcode="201212051921875" type="jar" requiredLibs="//@deployUnits.74 //@deployUnits.0 //@deployUnits.1 //@deployUnits.4 //@deployUnits.60 //@deployUnits.61 //@deployUnits.56 //@deployUnits.75 //@deployUnits.5 //@deployUnits.6 //@deployUnits.7 //@deployUnits.9 //@deployUnits.76 //@deployUnits.82 //@deployUnits.83 //@deployUnits.84 //@deployUnits.85 //@deployUnits.86 //@deployUnits.87 //@deployUnits.10 //@deployUnits.8 //@deployUnits.2 //@deployUnits.3 //@deployUnits.11" targetNodeType="//@typeDefinitions.0">
 </deployUnits>
-<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.libvirt" unitName="libvirt" version="0.4.9" type="jar" targetNodeType="//@typeDefinitions.0">
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.libvirt" name="libvirt" version="0.4.9" type="jar" targetNodeType="//@typeDefinitions.0">
 </deployUnits>
-<deployUnits xsi:type="kevoree:DeployUnit" groupName="net.java.dev.jna" unitName="jna" version="3.0.9" type="jar" targetNodeType="//@typeDefinitions.0">
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="net.java.dev.jna" name="jna" version="3.0.9" type="jar" targetNodeType="//@typeDefinitions.0">
 </deployUnits>
-<deployUnits xsi:type="kevoree:DeployUnit" groupName="xom" unitName="xom" version="1.2.5" type="jar" targetNodeType="//@typeDefinitions.0">
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="xom" name="xom" version="1.2.5" type="jar" targetNodeType="//@typeDefinitions.0">
 </deployUnits>
-<deployUnits xsi:type="kevoree:DeployUnit" groupName="xml-apis" unitName="xml-apis" version="1.3.03" type="jar" targetNodeType="//@typeDefinitions.0">
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="xml-apis" name="xml-apis" version="1.3.03" type="jar" targetNodeType="//@typeDefinitions.0">
 </deployUnits>
-<deployUnits xsi:type="kevoree:DeployUnit" groupName="xerces" unitName="xercesImpl" version="2.8.0" type="jar" targetNodeType="//@typeDefinitions.0">
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="xerces" name="xercesImpl" version="2.8.0" type="jar" targetNodeType="//@typeDefinitions.0">
 </deployUnits>
-<deployUnits xsi:type="kevoree:DeployUnit" groupName="xalan" unitName="xalan" version="2.7.0" type="jar" targetNodeType="//@typeDefinitions.0">
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="xalan" name="xalan" version="2.7.0" type="jar" targetNodeType="//@typeDefinitions.0">
 </deployUnits>
-<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.corelibrary.sky" unitName="org.kevoree.library.sky.minicloud" version="1.9.0-SNAPSHOT" hashcode="201212051920014" type="jar" requiredLibs="//@deployUnits.74 //@deployUnits.0 //@deployUnits.1 //@deployUnits.4 //@deployUnits.60 //@deployUnits.61 //@deployUnits.56 //@deployUnits.75 //@deployUnits.5 //@deployUnits.6 //@deployUnits.7 //@deployUnits.9 //@deployUnits.76 //@deployUnits.10 //@deployUnits.8 //@deployUnits.2 //@deployUnits.3 //@deployUnits.11" targetNodeType="//@typeDefinitions.0">
+<deployUnits xsi:type="kevoree:DeployUnit" groupName="org.kevoree.corelibrary.sky" name="org.kevoree.library.sky.minicloud" version="1.9.0-SNAPSHOT" hashcode="201212051920014" type="jar" requiredLibs="//@deployUnits.74 //@deployUnits.0 //@deployUnits.1 //@deployUnits.4 //@deployUnits.60 //@deployUnits.61 //@deployUnits.56 //@deployUnits.75 //@deployUnits.5 //@deployUnits.6 //@deployUnits.7 //@deployUnits.9 //@deployUnits.76 //@deployUnits.10 //@deployUnits.8 //@deployUnits.2 //@deployUnits.3 //@deployUnits.11" targetNodeType="//@typeDefinitions.0">
 </deployUnits>
 <adaptationPrimitiveTypes xsi:type="kevoree:AdaptationPrimitiveType" name="AddDeployUnit">
 </adaptationPrimitiveTypes>

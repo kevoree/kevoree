@@ -31,7 +31,7 @@ trait DeployUnitProcessor {
     import scala.collection.JavaConversions._
 
     /* CREATE COMPONENT TYPE DEPLOY UNIT IF NEEDED */
-    val unitName = options.get("kevoree.lib.id").toString
+    val name = options.get("kevoree.lib.id").toString
     val groupName = options.get("kevoree.lib.group").toString
     val version = options.get("kevoree.lib.version").toString
     val dutype = options.get("kevoree.lib.type").toString
@@ -49,11 +49,11 @@ trait DeployUnitProcessor {
     nodeTypeNamesS.foreach {
       nodeTypeName =>
         val ctdeployunit = root.getDeployUnits.find({
-          du => du.getUnitName == unitName && du.getGroupName == groupName && du.getVersion == version && du.getTargetNodeType.getName == nodeTypeName
+          du => du.getName == name && du.getGroupName == groupName && du.getVersion == version && du.getTargetNodeType.getName == nodeTypeName
         }) match {
           case None => {
             val newdeploy = LocalUtility.kevoreeFactory.createDeployUnit
-            newdeploy.setUnitName(unitName)
+            newdeploy.setName(name)
             newdeploy.setGroupName(groupName)
             newdeploy.setVersion(version)
             newdeploy.setHashcode(tag)

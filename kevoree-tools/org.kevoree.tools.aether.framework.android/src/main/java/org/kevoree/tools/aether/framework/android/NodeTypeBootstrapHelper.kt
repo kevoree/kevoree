@@ -160,7 +160,7 @@ class NodeTypeBootstrapHelper(val ctx: android.content.Context, val parent: Clas
 
     fun registerManuallyDeployUnit(artefactID: String, groupID: String, version: String, kcl: KevoreeJarClassLoader) {
         val du = kevoreeFactory.createDeployUnit()
-        du.unitName = artefactID
+        du.name = artefactID
         du.groupName = groupID
         du.version = version
         classLoaderHandler.manuallyAddToCache(du, kcl)

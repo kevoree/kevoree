@@ -236,14 +236,14 @@
   <mBindings port="//@nodes.0/@components.0/@required.0" hub="//@hubs.0"/>
   <mBindings port="//@nodes.0/@components.1/@provided.0" hub="//@hubs.0"/>
   <mBindings port="//@nodes.0/@components.1/@required.0" hub="//@hubs.0"/>
-  <deployUnits groupName="org.kevoree.library.arduino" unitName="org.kevoree.library.arduino.nodeType" version="1.1.0-RC2" hashcode="201105232206816" targetNodeType="//@typeDefinitions.0"/>
-  <deployUnits groupName="org.kevoree.library.arduino" unitName="org.kevoree.library.arduino.sensors" version="1.1.0-RC2" hashcode="201105232206817" targetNodeType="//@typeDefinitions.0"/>
-  <deployUnits groupName="org.kevoree.library.arduino" unitName="org.kevoree.library.arduino.channels" version="1.1.0-RC2" hashcode="201105232207072" targetNodeType="//@typeDefinitions.0"/>
-  <deployUnits groupName="org.kevoree.library.javase" unitName="org.kevoree.library.javase.javaseNode" version="1.1.0-RC2" hashcode="201105171341834" targetNodeType="//@typeDefinitions.20"/>
-  <deployUnits groupName="org.kevoree.library.javase" unitName="org.kevoree.library.javase.defaultChannels" version="1.1.0-RC2" hashcode="201105171343344" targetNodeType="//@typeDefinitions.20"/>
-  <deployUnits groupName="org.kevoree.library.javase" unitName="org.kevoree.library.javase.restChannels" version="1.1.0-RC2" hashcode="201105171341701" requiredLibs="//@deployUnits.6" targetNodeType="//@typeDefinitions.20"/>
+  <deployUnits groupName="org.kevoree.library.arduino" name="org.kevoree.library.arduino.nodeType" version="1.1.0-RC2" hashcode="201105232206816" targetNodeType="//@typeDefinitions.0"/>
+  <deployUnits groupName="org.kevoree.library.arduino" name="org.kevoree.library.arduino.sensors" version="1.1.0-RC2" hashcode="201105232206817" targetNodeType="//@typeDefinitions.0"/>
+  <deployUnits groupName="org.kevoree.library.arduino" name="org.kevoree.library.arduino.channels" version="1.1.0-RC2" hashcode="201105232207072" targetNodeType="//@typeDefinitions.0"/>
+  <deployUnits groupName="org.kevoree.library.javase" name="org.kevoree.library.javase.javaseNode" version="1.1.0-RC2" hashcode="201105171341834" targetNodeType="//@typeDefinitions.20"/>
+  <deployUnits groupName="org.kevoree.library.javase" name="org.kevoree.library.javase.defaultChannels" version="1.1.0-RC2" hashcode="201105171343344" targetNodeType="//@typeDefinitions.20"/>
+  <deployUnits groupName="org.kevoree.library.javase" name="org.kevoree.library.javase.restChannels" version="1.1.0-RC2" hashcode="201105171341701" requiredLibs="//@deployUnits.6" targetNodeType="//@typeDefinitions.20"/>
   <deployUnits name="org.kevoree.extra.org.kevoree.extra.marshalling" url="mvn:org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-RC2" targetNodeType="//@typeDefinitions.20"/>
-  <deployUnits groupName="org.kevoree.library.javase" unitName="org.kevoree.library.javase.fakeDomo" version="1.1.0-RC2" hashcode="201105171557281" targetNodeType="//@typeDefinitions.20"/>
-  <deployUnits groupName="org.kevoree.library.javase" unitName="org.kevoree.library.javase.gossiper" version="1.1.0-RC2" hashcode="201105171342708" requiredLibs="//@deployUnits.9" targetNodeType="//@typeDefinitions.20"/>
+  <deployUnits groupName="org.kevoree.library.javase" name="org.kevoree.library.javase.fakeDomo" version="1.1.0-RC2" hashcode="201105171557281" targetNodeType="//@typeDefinitions.20"/>
+  <deployUnits groupName="org.kevoree.library.javase" name="org.kevoree.library.javase.gossiper" version="1.1.0-RC2" hashcode="201105171342708" requiredLibs="//@deployUnits.9" targetNodeType="//@typeDefinitions.20"/>
   <deployUnits name="org.kevoree.extra.marshalling" url="mvn:org.kevoree.extra/org.kevoree.extra.marshalling" targetNodeType="//@typeDefinitions.20"/>
 </kevoree:ContainerRoot>

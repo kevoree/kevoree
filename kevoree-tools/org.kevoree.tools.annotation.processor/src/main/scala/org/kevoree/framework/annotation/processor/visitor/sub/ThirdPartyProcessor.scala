@@ -14,7 +14,6 @@
 
 package org.kevoree.framework.annotation.processor.visitor.sub
 
-import org.kevoree.KevoreeFactory
 import org.kevoree.ContainerRoot
 import org.kevoree.NodeType
 import org.kevoree.TypeDefinition
@@ -22,7 +21,6 @@ import javax.annotation.processing.ProcessingEnvironment
 import javax.lang.model.element.TypeElement
 import org.kevoree.framework.annotation.processor.visitor.KevoreeAnnotationProcessor
 import org.kevoree.framework.annotation.processor.LocalUtility
-import scala.collection.JavaConversions._
 
 
 /* Common Sub process to deal with ThirdParty definition */
@@ -73,7 +71,7 @@ trait ThirdPartyProcessor {
     thirdPartiesList.foreach {
       tp =>
         val splittedTP = tp.split(",")
-        val unitName = splittedTP(1)
+        val name = splittedTP(1)
         val groupName = splittedTP(0)
         val version = splittedTP(2)
         val dutype = splittedTP(3)
@@ -84,16 +82,16 @@ trait ThirdPartyProcessor {
         }
 
         root.getDeployUnits.find({
-          etp => etp.getUnitName == unitName && etp.getGroupName == groupName && etp.getVersion == version
+          etp => etp.getName == name && etp.getGroupName == groupName && etp.getVersion == version
         }) match {
           case Some(e) => {
-            if (!componentType.getDeployUnits().get(0).getRequiredLibs.exists(etp => etp.getUnitName == unitName && etp.getGroupName == groupName && etp.getVersion == version)) {
+            if (!componentType.getDeployUnits().get(0).getRequiredLibs.exists(etp => etp.getName == name && etp.getGroupName == groupName && etp.getVersion == version)) {
               componentType.getDeployUnits().get(0).addRequiredLibs(e)
             }
           }
           case None => {
             val newThirdParty = LocalUtility.kevoreeFactory.createDeployUnit
-            newThirdParty.setUnitName(unitName)
+            newThirdParty.setName(name)
             newThirdParty.setGroupName(groupName)
             newThirdParty.setVersion(version)
             newThirdParty.setType(dutype)

@@ -26,10 +26,13 @@
  */
 package org.kevoree.tools.ui.framework.data;
 
-import com.explodingpixels.macwidgets.plaf.*;
+import com.explodingpixels.macwidgets.plaf.HudComboBoxUI;
+import com.explodingpixels.macwidgets.plaf.HudPaintingUtils;
+import org.kevoree.DeployUnit;
+import org.kevoree.NamedElement;
+
+import javax.swing.plaf.basic.ComboPopup;
 import java.awt.*;
-import javax.swing.plaf.basic.*;
-import org.kevoree.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -60,7 +63,7 @@ public class KevoreeHudComboBoxUI extends HudComboBoxUI {
             if(!elem.getName().equals("")) {
                 displayValue = elem.getName();
             } else {
-                displayValue = elem.getGroupName() + ":" + elem.getUnitName() + ":" + elem.getVersion();
+                displayValue = elem.getGroupName() + ":" + elem.getName() + ":" + elem.getVersion();
             }
         } else if(NamedElement.class.isAssignableFrom(o.getClass())) {
            displayValue = ((NamedElement)o).getName();

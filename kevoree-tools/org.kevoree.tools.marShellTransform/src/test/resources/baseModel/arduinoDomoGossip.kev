@@ -66,10 +66,10 @@
   <libraries name="Kevoree-Netty" subTypes="//@typeDefinitions.1"/>
   <libraries name="Kevoree-Android-JavaSE" subTypes="//@typeDefinitions.3"/>
   <libraries name="Kevoree-Components" subTypes="//@typeDefinitions.4 //@typeDefinitions.7 //@typeDefinitions.8"/>
-  <deployUnits groupName="org.kevoree.library" unitName="org.kevoree.library.arduino.nodeType" version="1.1.0-BETA1" hashcode="201104051526849" targetNodeType="//@typeDefinitions.0"/>
-  <deployUnits groupName="org.kevoree.library" unitName="org.kevoree.library.gossiperNetty" version="1.1.0-BETA1" hashcode="201104070916967" requiredLibs="//@deployUnits.2 //@deployUnits.3 //@deployUnits.4" targetNodeType="//@typeDefinitions.2"/>
+  <deployUnits groupName="org.kevoree.library" name="org.kevoree.library.arduino.nodeType" version="1.1.0-BETA1" hashcode="201104051526849" targetNodeType="//@typeDefinitions.0"/>
+  <deployUnits groupName="org.kevoree.library" name="org.kevoree.library.gossiperNetty" version="1.1.0-BETA1" hashcode="201104070916967" requiredLibs="//@deployUnits.2 //@deployUnits.3 //@deployUnits.4" targetNodeType="//@typeDefinitions.2"/>
   <deployUnits name="org.kevoree.extra.org.kevoree.extra.netty" url="mvn:org.kevoree.extra/org.kevoree.extra.netty/3.2.4.Final" targetNodeType="//@typeDefinitions.2"/>
   <deployUnits name="org.kevoree.extra.org.kevoree.extra.protobuf" url="mvn:org.kevoree.extra/org.kevoree.extra.protobuf/2.3.0" targetNodeType="//@typeDefinitions.2"/>
   <deployUnits name="org.kevoree.extra.org.kevoree.extra.marshalling" url="mvn:org.kevoree.extra/org.kevoree.extra.marshalling/1.1.0-BETA1" targetNodeType="//@typeDefinitions.2"/>
-  <deployUnits groupName="org.kevoree.library" unitName="org.kevoree.library.fakeDomo" version="1.1.0-BETA1" hashcode="201104070916244" targetNodeType="//@typeDefinitions.2"/>
+  <deployUnits groupName="org.kevoree.library" name="org.kevoree.library.fakeDomo" version="1.1.0-BETA1" hashcode="201104070916244" targetNodeType="//@typeDefinitions.2"/>
 </kevoree:ContainerRoot>

@@ -132,7 +132,7 @@ open class NodeTypeBootstrapHelper : Bootstraper, KCLBootstrap {
 
     fun registerManuallyDeployUnit(artefactID: String, groupID: String, version: String, kcl: KevoreeJarClassLoader) {
         val du = kevoreeFactory.createDeployUnit()
-        du.unitName = artefactID
+        du.name = artefactID
         du.groupName = groupID
         du.version = version
         classLoaderHandler.manuallyAddToCache(du, kcl)

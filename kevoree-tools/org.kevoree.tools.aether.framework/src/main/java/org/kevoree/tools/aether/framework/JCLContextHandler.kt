@@ -194,7 +194,7 @@ open class JCLContextHandler : KevoreeClassLoaderHandler {
             newcl.add(file.getAbsolutePath())
             kcl_cache.put(buildKEY(du), newcl)
             kcl_cache_file.put(buildKEY(du), file)
-            Log.debug("Add KCL for {}->{}", du.unitName, buildKEY(du))
+            Log.debug("Add KCL for {}->{}", du.name, buildKEY(du))
 
             //TRY TO RECOVER FAILED LINK
             if (failedLinks.containsKey(buildKEY(du))) {
@@ -202,23 +202,23 @@ open class JCLContextHandler : KevoreeClassLoaderHandler {
                     toLinkKCL.addSubClassLoader(newcl)
                     newcl.addWeakClassLoader(toLinkKCL)
 
-                    Log.debug("UnbreakLink " + du.unitName + "->" + toLinkKCL.getLoadedURLs().get(0))
+                    Log.debug("UnbreakLink " + du.name + "->" + toLinkKCL.getLoadedURLs().get(0))
 
                 }
                 failedLinks.remove(buildKEY(du))
-                Log.debug("Failed Link {} remain size : {}", du.unitName, failedLinks.size())
+                Log.debug("Failed Link {} remain size : {}", du.name, failedLinks.size())
             }
             for(rLib in  du.requiredLibs) {
                 val kcl = getKCLInternals(rLib)
                 if (kcl != null) {
-                    Log.debug("Link KCL for {}->{}", du.unitName, rLib.unitName)
+                    Log.debug("Link KCL for {}->{}", du.name, rLib.name)
                     newcl.addSubClassLoader(kcl)
                     kcl.addWeakClassLoader(newcl)
                     du.requiredLibs.filter { rLibIn -> rLib != rLibIn }.forEach { rLibIn ->
                         val kcl2 = getKCLInternals(rLibIn)
                         if (kcl2 != null) {
                             kcl.addWeakClassLoader(kcl2)
-                            // logger.debug("Link Weak for {}->{}", rLib.unitName, rLibIn.unitName)
+                            // logger.debug("Link Weak for {}->{}", rLib.name, rLibIn.name)
                         }
                     }
                 } else {
@@ -243,7 +243,7 @@ open class JCLContextHandler : KevoreeClassLoaderHandler {
             //try * version resolution
             val duCloned = DefaultKevoreeFactory().createDeployUnit()
             duCloned.groupName = du.groupName
-            duCloned.unitName = du.unitName
+            duCloned.name = du.name
             duCloned.version = "*"
             result = kcl_cache.get(buildKEY(duCloned))
         }
@@ -270,7 +270,7 @@ open class JCLContextHandler : KevoreeClassLoaderHandler {
 
             if (!lockedDu.contains(key)) {
                 if (kcl_cache.containsKey(key)) {
-                    Log.debug("Try to remove KCL for {}->{}", du.unitName, buildKEY(du))
+                    Log.debug("Try to remove KCL for {}->{}", du.name, buildKEY(du))
                     Log.debug("Cache To cleanuip size" + kcl_cache.values().size() + "-" + kcl_cache.size() + "-" + kcl_cache.keySet().size())
                     for(vals in kcl_cache.values()) {
                         if (vals.getSubClassLoaders().contains(kcl_to_remove)) {
@@ -284,7 +284,7 @@ open class JCLContextHandler : KevoreeClassLoaderHandler {
                             Log.debug("Pending Fail link " + key)
                         }
                         vals.cleanupLinks(kcl_to_remove!!)
-                        Log.debug("Cleanup {} from {}", vals, du.unitName)
+                        Log.debug("Cleanup {} from {}", vals, du.name)
                     }
                 }
                 val toRemoveKCL = kcl_cache.get(key)
@@ -313,7 +313,7 @@ open class JCLContextHandler : KevoreeClassLoaderHandler {
 
         query.append(du.groupName)
         query.append("/")
-        query.append(du.unitName)
+        query.append(du.name)
         if(!du.version.equals("default") && !du.version.equals("")){
             query.append("/"); query.append(du.version)
         }
@@ -352,7 +352,7 @@ open class JCLContextHandler : KevoreeClassLoaderHandler {
         if (resolvedFile != null) {
             return installDeployUnitInternals(du, resolvedFile!!)
         } else {
-            Log.error("Error while resolving deploy unit " + du.unitName)
+            Log.error("Error while resolving deploy unit " + du.name)
             return null
         }
     }

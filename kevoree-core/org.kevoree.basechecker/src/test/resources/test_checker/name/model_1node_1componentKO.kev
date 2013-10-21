@@ -158,7 +158,7 @@
   <libraries name="ART2_TESTS" subTypes="//@typeDefinitions.7"/>
   <libraries name="ART_TEST" subTypes="//@typeDefinitions.9 //@typeDefinitions.12"/>
   <libraries name="KEVOREE_SAMPLES" subTypes="//@typeDefinitions.11 //@typeDefinitions.15 //@typeDefinitions.16"/>
-  <deployUnits groupName="org.kevoree.library" unitName="org.kevoree.library.defaultChannels" version="1.0.0-RC2" hashcode="201102171716374"/>
-  <deployUnits groupName="org.kevoree.library" unitName="org.kevoree.library.fakeDomo" version="1.0.0-RC2" hashcode="201102171716754"/>
-  <deployUnits groupName="org.kevoree.library" unitName="org.kevoree.library.sample" version="1.0.0-RC2" hashcode="201102171717654"/>
+  <deployUnits groupName="org.kevoree.library" name="org.kevoree.library.defaultChannels" version="1.0.0-RC2" hashcode="201102171716374"/>
+  <deployUnits groupName="org.kevoree.library" name="org.kevoree.library.fakeDomo" version="1.0.0-RC2" hashcode="201102171716754"/>
+  <deployUnits groupName="org.kevoree.library" name="org.kevoree.library.sample" version="1.0.0-RC2" hashcode="201102171717654"/>
 </kevoree:ContainerRoot>
