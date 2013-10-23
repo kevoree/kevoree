@@ -28,9 +28,6 @@ import org.kevoree.core.basechecker.abstractchecker.AbstractChecker
 import org.kevoree.core.basechecker.nodechecker.NodeContainerChecker
 import org.kevoree.core.basechecker.portchecker.PortChecker
 import org.kevoree.log.Log
-import org.kevoree.modeling.api.events.ModelTreeListener
-import org.kevoree.modeling.api.events.ModelEvent
-import org.kevoree.modeling.api.util.ActionType
 
 class RootChecker: CheckerService {
 
