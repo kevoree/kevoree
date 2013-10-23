@@ -37,14 +37,14 @@ import org.kevoreeadaptation.AdaptationPrimitive;
 public abstract class
         AbstractNodeType extends AbstractTypeDefinition implements NodeType {
 
-    public void startNode() {
+    /*public void startNode() {
     }
 
     public void stopNode() {
     }
 
     public void updateNode() {
-    }
+    }*/
 
     protected DataSpaceService dataSpaceService = null;
 

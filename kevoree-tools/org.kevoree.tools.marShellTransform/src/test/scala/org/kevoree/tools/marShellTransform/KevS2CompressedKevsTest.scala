@@ -25,7 +25,7 @@ class KevS2CompressedKevsTest extends KevSTestSuiteHelper {
   @Test def update1Period() {
     val baseModel = model("komModel/baseSLed.kev")
     val updatedModel = model("komModel/SLed_up_TimerPeriod.kev")
-    val kompareBean = new KevoreeKompareBean(new util.HashMap[String, AnyRef]())
+    val kompareBean = new KevoreeKompareBean()
     val adaptModel = kompareBean.kompare(baseModel, updatedModel, "KEVOREEDefaultNodeName");
     val baseScript = KevScriptWrapper.miniPlanKevScript(AdaptationModelWrapper.generateScriptFromAdaptModel(adaptModel))
     val result = KevScriptWrapper.generateKevScriptCompressed(baseScript,"KEVOREEDefaultNodeName")
@@ -36,7 +36,7 @@ class KevS2CompressedKevsTest extends KevSTestSuiteHelper {
   @Test def update1Pin() {
     val baseModel = model("komModel/baseSLed.kev")
     val updatedModel = model("komModel/SLed_up_LightPin.kev")
-    val kompareBean = new KevoreeKompareBean(new util.HashMap[String, AnyRef]())
+    val kompareBean = new KevoreeKompareBean()
     val adaptModel = kompareBean.kompare(baseModel, updatedModel, "KEVOREEDefaultNodeName");
     val baseScript = KevScriptWrapper.miniPlanKevScript(AdaptationModelWrapper.generateScriptFromAdaptModel(adaptModel))
     val result = KevScriptWrapper.generateKevScriptCompressed(baseScript,"KEVOREEDefaultNodeName")
@@ -47,7 +47,7 @@ class KevS2CompressedKevsTest extends KevSTestSuiteHelper {
   @Test def update2Param() {
     val baseModel = model("komModel/baseSLed.kev")
     val updatedModel = model("komModel/SLed_up_BothParam.kev")
-    val kompareBean = new KevoreeKompareBean(new util.HashMap[String, AnyRef]())
+    val kompareBean = new KevoreeKompareBean()
     val adaptModel = kompareBean.kompare(baseModel, updatedModel, "KEVOREEDefaultNodeName");
     val baseScript = KevScriptWrapper.miniPlanKevScript(AdaptationModelWrapper.generateScriptFromAdaptModel(adaptModel))
     val result = KevScriptWrapper.generateKevScriptCompressed(baseScript,"KEVOREEDefaultNodeName")
@@ -62,7 +62,7 @@ class KevS2CompressedKevsTest extends KevSTestSuiteHelper {
   {
     val baseModel = model("komModel/baseSLed.kev")
     val updatedModel = model("komModel/SLed_1ain.kev")
-    val kompareBean = new KevoreeKompareBean(new util.HashMap[String, AnyRef]())
+    val kompareBean = new KevoreeKompareBean()
     val adaptModel = kompareBean.kompare(baseModel, updatedModel, "KEVOREEDefaultNodeName");
     val baseScript = KevScriptWrapper.miniPlanKevScript(AdaptationModelWrapper.generateScriptFromAdaptModel(adaptModel))
     val result = KevScriptWrapper.generateKevScriptCompressed(baseScript,"KEVOREEDefaultNodeName")

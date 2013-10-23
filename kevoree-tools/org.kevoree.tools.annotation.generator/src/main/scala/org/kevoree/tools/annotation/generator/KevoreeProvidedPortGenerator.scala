@@ -11,30 +11,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.gnu.org/licenses/lgpl-3.0.txt
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package org.kevoree.tools.annotation.generator
 
 import scala.collection.JavaConversions._
 
 
-import org.kevoree.framework.{KevoreeGeneratorHelper, Constants}
+import org.kevoree.framework.Constants
 import javax.tools.StandardLocation
 import org.kevoree.{ComponentType => KevoreeComponentType, _}
 import org.kevoree.annotation.ThreadStrategy
@@ -45,14 +27,14 @@ import scala.Some
 object KevoreeProvidedPortGenerator {
 
   def generate(root: ContainerRoot, filer: javax.annotation.processing.Filer, ct: KevoreeComponentType, ref: PortTypeRef, targetNodeType: String) {
-    val portPackage = new KevoreeGeneratorHelper().getTypeDefinitionGeneratedPackage(ct, targetNodeType)
+    val portPackage = GeneratorHelper.getTypeDefinitionGeneratedPackage(ct, targetNodeType)
     // var portPackage = ct.getFactoryBean().substring(0, ct.getFactoryBean().lastIndexOf("."));
     val portName = ct.getName + "PORT" + ref.getName
     val wrapper = filer.createResource(StandardLocation.SOURCE_OUTPUT, "", new String(portPackage.replace(".", "/") + "/" + portName + ".kt"))
     val writer = wrapper.openWriter()
     writer.append("package " + portPackage + "\n")
     writer.append("import org.kevoree.framework.port.*\n")
-    writer.append("import " + new KevoreeGeneratorHelper().getTypeDefinitionBasePackage(ct) + ".*\n")
+    writer.append("import " + GeneratorHelper.getTypeDefinitionBasePackage(ct) + ".*\n")
 
 
     ThreadingMapping.getMappings.get(Tuple2(ct.getName, ref.getName)) match {

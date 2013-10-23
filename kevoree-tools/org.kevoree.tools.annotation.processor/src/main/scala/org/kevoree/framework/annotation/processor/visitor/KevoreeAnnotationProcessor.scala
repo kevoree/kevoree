@@ -28,6 +28,7 @@ import javax.lang.model.SourceVersion
 import javax.lang.model.element.TypeElement
 import java.util.HashSet
 import java.lang.Exception
+import java.util
 
 class KevoreeAnnotationProcessor() extends javax.annotation.processing.AbstractProcessor {
 
@@ -74,7 +75,7 @@ class KevoreeAnnotationProcessor() extends javax.annotation.processing.AbstractP
     return SourceVersion.latest
   }
 
-  private val threadProtectionAsked = new HashSet[String]
+  private val threadProtectionAsked = new util.HashSet[String]
 
 
   def process(annotations: java.util.Set[_ <: TypeElement], roundEnv: RoundEnvironment): Boolean = {

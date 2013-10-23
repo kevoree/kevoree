@@ -19,7 +19,6 @@ package org.kevoree.tools.ui.editor.menus;/*
 */
 
 import org.kevoree.tools.ui.editor.KevoreeUIKernel;
-import org.kevoree.tools.ui.editor.command.OpenKevsShell;
 
 import javax.swing.*;
 
@@ -31,14 +30,14 @@ public class KevsMenu extends JMenu {
         super("KevScript");
         this.kernel = kernel;
 
-        add(createKevsOpenEditorItem());
+//        add(createKevsOpenEditorItem()); FIXME
     }
 
-    private JMenuItem createKevsOpenEditorItem() {
+    /*private JMenuItem createKevsOpenEditorItem() {
         JMenuItem openEditor = new JMenuItem("Open editor");
         OpenKevsShell cmdOpenKevsGUI = new OpenKevsShell();
         cmdOpenKevsGUI.setKernel(kernel);
         openEditor.addActionListener(new CommandActionListener(cmdOpenKevsGUI));
         return openEditor;
-    }
+    }*/
 }

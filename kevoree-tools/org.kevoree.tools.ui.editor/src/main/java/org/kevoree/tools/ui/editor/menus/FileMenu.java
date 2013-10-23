@@ -41,8 +41,8 @@ public class FileMenu extends JMenu {
         add(createSaveJSONItem());
         add(createSaveAsImageItem());
         add(createSaveAsSvgItem());
-        add(createSaveAsKevsItem());
-        add(createOpenFromArduinoItem());
+//        add(createSaveAsKevsItem()); FIXME
+//        add(createOpenFromArduinoItem());
         add(createRefreshItem());
     }
 
@@ -128,20 +128,20 @@ public class FileMenu extends JMenu {
         saveSVG.addActionListener(new CommandActionListener(cmdImageSVG));
         return saveSVG;
     }
-    private JMenuItem createSaveAsKevsItem() {
+    /*private JMenuItem createSaveAsKevsItem() {
         JMenuItem saveKCS = new JMenuItem("SaveAsKevScript");
         SaveAsKevScriptCommandUI cmdSaveKCS = new SaveAsKevScriptCommandUI();
         cmdSaveKCS.setKernel(kernel);
         saveKCS.addActionListener(new CommandActionListener(cmdSaveKCS));
         return saveKCS;
-    }
-    private JMenuItem createOpenFromArduinoItem() {
+    }*/
+    /*private JMenuItem createOpenFromArduinoItem() {
         JMenuItem openArduino = new JMenuItem("Open from ArduinoNode");
         OpenArduinoNode cmdOpenArduino = new OpenArduinoNode();
         cmdOpenArduino.setKernel(kernel);
         openArduino.addActionListener(new CommandActionListener(cmdOpenArduino));
         return openArduino;
-    }
+    }*/
 
     private JMenuItem createRefreshItem() {
         JMenuItem refresh = new JMenuItem("Refresh");

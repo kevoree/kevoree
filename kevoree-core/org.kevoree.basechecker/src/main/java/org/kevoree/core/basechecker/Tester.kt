@@ -23,7 +23,13 @@ import org.kevoree.framework.KevoreeXmiHelper
  */
 fun main(args: Array<String>) {
     val check = RootChecker()
-    val res =check.check(KevoreeXmiHelper.load("/Users/duke/Documents/dev/dukeboard/kevoree/kevoree-core/org.kevoree.basechecker/src/test/resources/test_checker/networkChecker/groupChannelConflict9000.kev"))
+    val res =check.check(KevoreeXmiHelper.load("/home/edaubert/workspace/kevoree/kevoree-core/org.kevoree.basechecker/src/test/resources/test_checker/name/model_1node_1componentKO.kev"))
+//
+//    /home/edaubert/workspace/kevoree/kevoree-core/org.kevoree.basechecker/src/test/resources/test_checker/name/model_1node_1componentOK.kev
+//    /home/edaubert/workspace/kevoree/kevoree-core/org.kevoree.basechecker/src/test/resources/test_checker/name/model_single_nodeKO.kev
+//    /home/edaubert/workspace/kevoree/kevoree-core/org.kevoree.basechecker/src/test/resources/test_checker/name/model_single_nodeOK.kev
+//    /home/edaubert/workspace/kevoree/kevoree-core/org.kevoree.basechecker/src/test/resources/test_checker/name/model_two_nodeKO.kev
+//    /home/edaubert/workspace/kevoree/kevoree-core/org.kevoree.basechecker/src/test/resources/test_checker/name/model_two_nodeOK.kev
 
     for (e in res) {
         println(e.getMessage())

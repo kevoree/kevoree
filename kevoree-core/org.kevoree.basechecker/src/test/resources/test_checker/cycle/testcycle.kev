@@ -16,21 +16,21 @@
       <provided portTypeRef="//@typeDefinitions.27/@provided.2"/>
     </components>
   </nodes>
-  <typeDefinitions xsi:type="kevoree:NodeType" name="ArduinoNode" deployUnits="//@deployUnits.0" factoryBean="org.kevoree.library.arduinoNodeType.ArduinoNodeFactory" bean="org.kevoree.library.arduinoNodeType.ArduinoNode">
+  <typeDefinitions xsi:type="kevoree:NodeType" name="ArduinoNode" deployUnits="//@deployUnits.0" abstract="false" factoryBean="org.kevoree.library.arduinoNodeType.ArduinoNodeFactory" bean="org.kevoree.library.arduinoNodeType.ArduinoNode">
     <dictionaryType>
       <attributes name="boardTypeName" optional="true"/>
       <attributes name="boardPortName"/>
       <defaultValues attribute="//@typeDefinitions.0/@dictionaryType/@attributes.0" value="uno"/>
     </dictionaryType>
   </typeDefinitions>
-  <typeDefinitions xsi:type="kevoree:ComponentType" name="InternalTemp" deployUnits="//@deployUnits.1" factoryBean="org.kevoree.library.sensors.InternalTempFactory" bean="org.kevoree.library.sensors.InternalTemp" startMethod="start" stopMethod="stop">
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="InternalTemp" deployUnits="//@deployUnits.1" abstract="false"factoryBean="org.kevoree.library.sensors.InternalTempFactory" bean="org.kevoree.library.sensors.InternalTemp" startMethod="start" stopMethod="stop">
     <required name="temp" ref="//@typeDefinitions.2" optional="false" noDependency="false"/>
     <provided name="trigger" ref="//@typeDefinitions.2">
       <mappings beanMethodName="triggerPort" serviceMethodName="process"/>
     </provided>
   </typeDefinitions>
   <typeDefinitions xsi:type="kevoree:MessagePortType" name="org.kevoree.framework.MessagePort"/>
-  <typeDefinitions xsi:type="kevoree:ComponentType" name="AutoNormalizer" deployUnits="//@deployUnits.1" factoryBean="org.kevoree.library.sensors.AutoNormalizerFactory" bean="org.kevoree.library.sensors.AutoNormalizer" startMethod="start" stopMethod="stop">
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="AutoNormalizer" deployUnits="//@deployUnits.1" abstract="false" factoryBean="org.kevoree.library.sensors.AutoNormalizerFactory" bean="org.kevoree.library.sensors.AutoNormalizer" startMethod="start" stopMethod="stop">
     <dictionaryType>
       <attributes name="inverted" optional="true"/>
       <defaultValues attribute="//@typeDefinitions.3/@dictionaryType/@attributes.0" value="0"/>
@@ -40,13 +40,13 @@
       <mappings beanMethodName="triggerPort" serviceMethodName="process"/>
     </provided>
   </typeDefinitions>
-  <typeDefinitions xsi:type="kevoree:ComponentType" name="InternalVoltmeter" deployUnits="//@deployUnits.1" factoryBean="org.kevoree.library.sensors.InternalVoltmeterFactory" bean="org.kevoree.library.sensors.InternalVoltmeter" startMethod="start" stopMethod="stop">
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="InternalVoltmeter" deployUnits="//@deployUnits.1" abstract="false" factoryBean="org.kevoree.library.sensors.InternalVoltmeterFactory" bean="org.kevoree.library.sensors.InternalVoltmeter" startMethod="start" stopMethod="stop">
     <required name="mvolt" ref="//@typeDefinitions.2" optional="false" noDependency="false"/>
     <provided name="trigger" ref="//@typeDefinitions.2">
       <mappings beanMethodName="triggerPort" serviceMethodName="process"/>
     </provided>
   </typeDefinitions>
-  <typeDefinitions xsi:type="kevoree:ComponentType" name="DMXLight" deployUnits="//@deployUnits.1" factoryBean="org.kevoree.library.sensors.DMXLightFactory" bean="org.kevoree.library.sensors.DMXLight" startMethod="start" stopMethod="stop">
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="DMXLight" deployUnits="//@deployUnits.1" abstract="false" factoryBean="org.kevoree.library.sensors.DMXLightFactory" bean="org.kevoree.library.sensors.DMXLight" startMethod="start" stopMethod="stop">
     <dictionaryType>
       <attributes name="pin" optional="true"/>
       <defaultValues attribute="//@typeDefinitions.5/@dictionaryType/@attributes.0" value="0"/>
@@ -58,7 +58,7 @@
       <mappings beanMethodName="triggerColor" serviceMethodName="process"/>
     </provided>
   </typeDefinitions>
-  <typeDefinitions xsi:type="kevoree:ComponentType" name="TempSensor" deployUnits="//@deployUnits.1" factoryBean="org.kevoree.library.sensors.TempSensorFactory" bean="org.kevoree.library.sensors.TempSensor" startMethod="start" stopMethod="stop">
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="TempSensor" deployUnits="//@deployUnits.1" abstract="false" factoryBean="org.kevoree.library.sensors.TempSensorFactory" bean="org.kevoree.library.sensors.TempSensor" startMethod="start" stopMethod="stop">
     <dictionaryType>
       <attributes name="pin" optional="true"/>
       <defaultValues attribute="//@typeDefinitions.6/@dictionaryType/@attributes.0" value="0"/>
@@ -68,12 +68,12 @@
       <mappings beanMethodName="triggerPort" serviceMethodName="process"/>
     </provided>
   </typeDefinitions>
-  <typeDefinitions xsi:type="kevoree:ComponentType" name="LCDDisplay" deployUnits="//@deployUnits.1" factoryBean="org.kevoree.library.sensors.LCDDisplayFactory" bean="org.kevoree.library.sensors.LCDDisplay" startMethod="stub" stopMethod="stub">
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="LCDDisplay" deployUnits="//@deployUnits.1" abstract="false" factoryBean="org.kevoree.library.sensors.LCDDisplayFactory" bean="org.kevoree.library.sensors.LCDDisplay" startMethod="stub" stopMethod="stub">
     <provided name="input" ref="//@typeDefinitions.2">
       <mappings beanMethodName="inputPort" serviceMethodName="process"/>
     </provided>
   </typeDefinitions>
-  <typeDefinitions xsi:type="kevoree:ComponentType" name="OnOffOutlet" deployUnits="//@deployUnits.1" factoryBean="org.kevoree.library.sensors.OnOffOutletFactory" bean="org.kevoree.library.sensors.OnOffOutlet" startMethod="start" stopMethod="stop">
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="OnOffOutlet" deployUnits="//@deployUnits.1" abstract="false" factoryBean="org.kevoree.library.sensors.OnOffOutletFactory" bean="org.kevoree.library.sensors.OnOffOutlet" startMethod="start" stopMethod="stop">
     <dictionaryType>
       <attributes name="pin" optional="true"/>
       <defaultValues attribute="//@typeDefinitions.8/@dictionaryType/@attributes.0" value="0"/>
@@ -85,7 +85,7 @@
       <mappings beanMethodName="triggerOff" serviceMethodName="process"/>
     </provided>
   </typeDefinitions>
-  <typeDefinitions xsi:type="kevoree:ComponentType" name="AnalogSlider" deployUnits="//@deployUnits.1" factoryBean="org.kevoree.library.sensors.AnalogSliderFactory" bean="org.kevoree.library.sensors.AnalogSlider" startMethod="start" stopMethod="stop">
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="AnalogSlider" deployUnits="//@deployUnits.1" abstract="false" factoryBean="org.kevoree.library.sensors.AnalogSliderFactory" bean="org.kevoree.library.sensors.AnalogSlider" startMethod="start" stopMethod="stop">
     <dictionaryType>
       <attributes name="pin" optional="true"/>
       <defaultValues attribute="//@typeDefinitions.9/@dictionaryType/@attributes.0" value="0"/>
@@ -95,7 +95,7 @@
       <mappings beanMethodName="triggerPort" serviceMethodName="process"/>
     </provided>
   </typeDefinitions>
-  <typeDefinitions xsi:type="kevoree:ComponentType" name="PushButton" deployUnits="//@deployUnits.1" factoryBean="org.kevoree.library.sensors.PushButtonFactory" bean="org.kevoree.library.sensors.PushButton" startMethod="start" stopMethod="stop">
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="PushButton" deployUnits="//@deployUnits.1" abstract="false" factoryBean="org.kevoree.library.sensors.PushButtonFactory" bean="org.kevoree.library.sensors.PushButton" startMethod="start" stopMethod="stop">
     <dictionaryType>
       <attributes name="pin" optional="true"/>
       <defaultValues attribute="//@typeDefinitions.10/@dictionaryType/@attributes.0" value="0"/>
@@ -103,14 +103,14 @@
     <required name="click" ref="//@typeDefinitions.2" optional="false" noDependency="false"/>
     <required name="release" ref="//@typeDefinitions.2" optional="false" noDependency="false"/>
   </typeDefinitions>
-  <typeDefinitions xsi:type="kevoree:ComponentType" name="Timer" deployUnits="//@deployUnits.1" factoryBean="org.kevoree.library.sensors.TimerFactory" bean="org.kevoree.library.sensors.Timer" startMethod="start" stopMethod="stop">
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="Timer" deployUnits="//@deployUnits.1" abstract="false" factoryBean="org.kevoree.library.sensors.TimerFactory" bean="org.kevoree.library.sensors.Timer" startMethod="start" stopMethod="stop">
     <dictionaryType>
       <attributes name="period" optional="true"/>
       <defaultValues attribute="//@typeDefinitions.11/@dictionaryType/@attributes.0" value="1000"/>
     </dictionaryType>
     <required name="tick" ref="//@typeDefinitions.2" optional="false" noDependency="false"/>
   </typeDefinitions>
-  <typeDefinitions xsi:type="kevoree:ComponentType" name="CurrentSensor" deployUnits="//@deployUnits.1" factoryBean="org.kevoree.library.sensors.CurrentSensorFactory" bean="org.kevoree.library.sensors.CurrentSensor" startMethod="start" stopMethod="stop">
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="CurrentSensor" deployUnits="//@deployUnits.1" abstract="false" factoryBean="org.kevoree.library.sensors.CurrentSensorFactory" bean="org.kevoree.library.sensors.CurrentSensor" startMethod="start" stopMethod="stop">
     <dictionaryType>
       <attributes name="pin" optional="true"/>
       <defaultValues attribute="//@typeDefinitions.12/@dictionaryType/@attributes.0" value="0"/>
@@ -120,7 +120,7 @@
       <mappings beanMethodName="triggerPort" serviceMethodName="process"/>
     </provided>
   </typeDefinitions>
-  <typeDefinitions xsi:type="kevoree:ComponentType" name="Normalizer" deployUnits="//@deployUnits.1" factoryBean="org.kevoree.library.sensors.NormalizerFactory" bean="org.kevoree.library.sensors.Normalizer" startMethod="start" stopMethod="stop">
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="Normalizer" deployUnits="//@deployUnits.1" abstract="false" factoryBean="org.kevoree.library.sensors.NormalizerFactory" bean="org.kevoree.library.sensors.Normalizer" startMethod="start" stopMethod="stop">
     <dictionaryType>
       <attributes name="minValue" optional="true"/>
       <attributes name="maxValue" optional="true"/>
@@ -132,7 +132,7 @@
       <mappings beanMethodName="triggerPort" serviceMethodName="process"/>
     </provided>
   </typeDefinitions>
-  <typeDefinitions xsi:type="kevoree:ComponentType" name="LightSensor" deployUnits="//@deployUnits.1" factoryBean="org.kevoree.library.sensors.LightSensorFactory" bean="org.kevoree.library.sensors.LightSensor" startMethod="start" stopMethod="stop">
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="LightSensor" deployUnits="//@deployUnits.1" abstract="false" factoryBean="org.kevoree.library.sensors.LightSensorFactory" bean="org.kevoree.library.sensors.LightSensor" startMethod="start" stopMethod="stop">
     <dictionaryType>
       <attributes name="pin" optional="true"/>
       <defaultValues attribute="//@typeDefinitions.14/@dictionaryType/@attributes.0" value="0"/>
@@ -142,7 +142,7 @@
       <mappings beanMethodName="triggerPort" serviceMethodName="process"/>
     </provided>
   </typeDefinitions>
-  <typeDefinitions xsi:type="kevoree:ComponentType" name="LED" deployUnits="//@deployUnits.1" factoryBean="org.kevoree.library.sensors.LEDFactory" bean="org.kevoree.library.sensors.LED" startMethod="start" stopMethod="stop">
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="LED" deployUnits="//@deployUnits.1" abstract="false" factoryBean="org.kevoree.library.sensors.LEDFactory" bean="org.kevoree.library.sensors.LED" startMethod="start" stopMethod="stop">
     <dictionaryType>
       <attributes name="pin" optional="true"/>
       <defaultValues attribute="//@typeDefinitions.15/@dictionaryType/@attributes.0" value="0"/>
@@ -154,7 +154,7 @@
       <mappings beanMethodName="triggerOff" serviceMethodName="process"/>
     </provided>
   </typeDefinitions>
-  <typeDefinitions xsi:type="kevoree:ComponentType" name="FlexSensor" deployUnits="//@deployUnits.1" factoryBean="org.kevoree.library.sensors.FlexSensorFactory" bean="org.kevoree.library.sensors.FlexSensor" startMethod="start" stopMethod="stop">
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="FlexSensor" deployUnits="//@deployUnits.1" abstract="false" factoryBean="org.kevoree.library.sensors.FlexSensorFactory" bean="org.kevoree.library.sensors.FlexSensor" startMethod="start" stopMethod="stop">
     <dictionaryType>
       <attributes name="pin" optional="true"/>
       <defaultValues attribute="//@typeDefinitions.16/@dictionaryType/@attributes.0" value="0"/>
@@ -164,14 +164,14 @@
       <mappings beanMethodName="triggerPort" serviceMethodName="process"/>
     </provided>
   </typeDefinitions>
-  <typeDefinitions xsi:type="kevoree:ChannelType" name="SerialCT" deployUnits="//@deployUnits.2" factoryBean="org.kevoree.library.channels.SerialCTFactory" bean="org.kevoree.library.channels.SerialCT" startMethod="lifeCycle" stopMethod="lifeCycle">
+  <typeDefinitions xsi:type="kevoree:ChannelType" name="SerialCT" deployUnits="//@deployUnits.2" abstract="false" factoryBean="org.kevoree.library.channels.SerialCTFactory" bean="org.kevoree.library.channels.SerialCT" startMethod="lifeCycle" stopMethod="lifeCycle">
     <dictionaryType>
       <attributes name="PORT"/>
       <defaultValues attribute="//@typeDefinitions.17/@dictionaryType/@attributes.0" value="/dev/ttyS0"/>
     </dictionaryType>
   </typeDefinitions>
-  <typeDefinitions xsi:type="kevoree:ChannelType" name="LocalMsgArduino" deployUnits="//@deployUnits.2" factoryBean="org.kevoree.library.channels.LocalMsgArduinoFactory" bean="org.kevoree.library.channels.LocalMsgArduino" startMethod="lifeCycle" stopMethod="lifeCycle"/>
-  <typeDefinitions xsi:type="kevoree:ChannelType" name="SRF433" deployUnits="//@deployUnits.2" factoryBean="org.kevoree.library.channels.SRF433Factory" bean="org.kevoree.library.channels.SRF433" startMethod="lifeCycle" stopMethod="lifeCycle">
+  <typeDefinitions xsi:type="kevoree:ChannelType" name="LocalMsgArduino" deployUnits="//@deployUnits.2" abstract="false" factoryBean="org.kevoree.library.channels.LocalMsgArduinoFactory" bean="org.kevoree.library.channels.LocalMsgArduino" startMethod="lifeCycle" stopMethod="lifeCycle"/>
+  <typeDefinitions xsi:type="kevoree:ChannelType" name="SRF433" deployUnits="//@deployUnits.2" abstract="false" factoryBean="org.kevoree.library.channels.SRF433Factory" bean="org.kevoree.library.channels.SRF433" startMethod="lifeCycle" stopMethod="lifeCycle">
     <dictionaryType>
       <attributes name="TX_PIN"/>
       <attributes name="RX_PIN"/>
@@ -179,23 +179,23 @@
       <defaultValues attribute="//@typeDefinitions.19/@dictionaryType/@attributes.1" value="5"/>
     </dictionaryType>
   </typeDefinitions>
-  <typeDefinitions xsi:type="kevoree:NodeType" name="JavaSENode" deployUnits="//@deployUnits.3" factoryBean="org.kevoree.library.defaultNodeTypes.JavaSENodeFactory" bean="org.kevoree.library.defaultNodeTypes.JavaSENode"/>
-  <typeDefinitions xsi:type="kevoree:ChannelType" name="defSERVICE" deployUnits="//@deployUnits.4" factoryBean="org.kevoree.library.defaultChannels.defSERVICEFactory" bean="org.kevoree.library.defaultChannels.defSERVICE" startMethod="startHello" stopMethod="stopHello"/>
-  <typeDefinitions xsi:type="kevoree:ChannelType" name="defMSG" deployUnits="//@deployUnits.4" factoryBean="org.kevoree.library.defaultChannels.defMSGFactory" bean="org.kevoree.library.defaultChannels.defMSG" startMethod="startHello" stopMethod="stopHello" updateMethod="updateHello"/>
-  <typeDefinitions xsi:type="kevoree:ChannelType" name="RestChannel" deployUnits="//@deployUnits.5" factoryBean="org.kevoree.library.restChannels.RestChannelFactory" bean="org.kevoree.library.restChannels.RestChannel" startMethod="startHello" stopMethod="stopHello" updateMethod="updateHello"/>
-  <typeDefinitions xsi:type="kevoree:ComponentType" name="FakeSimpleSwitch" deployUnits="//@deployUnits.7" factoryBean="org.kevoree.library.fakedomo.FakeSimpleSwitchFactory" bean="org.kevoree.library.fakedomo.FakeSimpleSwitch" startMethod="start" stopMethod="stop" updateMethod="update">
+  <typeDefinitions xsi:type="kevoree:NodeType" name="JavaSENode" deployUnits="//@deployUnits.3" abstract="false" factoryBean="org.kevoree.library.defaultNodeTypes.JavaSENodeFactory" bean="org.kevoree.library.defaultNodeTypes.JavaSENode"/>
+  <typeDefinitions xsi:type="kevoree:ChannelType" name="defSERVICE" deployUnits="//@deployUnits.4" abstract="false" factoryBean="org.kevoree.library.defaultChannels.defSERVICEFactory" bean="org.kevoree.library.defaultChannels.defSERVICE" startMethod="startHello" stopMethod="stopHello"/>
+  <typeDefinitions xsi:type="kevoree:ChannelType" name="defMSG" deployUnits="//@deployUnits.4" abstract="false" factoryBean="org.kevoree.library.defaultChannels.defMSGFactory" bean="org.kevoree.library.defaultChannels.defMSG" startMethod="startHello" stopMethod="stopHello" updateMethod="updateHello"/>
+  <typeDefinitions xsi:type="kevoree:ChannelType" name="RestChannel" deployUnits="//@deployUnits.5" abstract="false" factoryBean="org.kevoree.library.restChannels.RestChannelFactory" bean="org.kevoree.library.restChannels.RestChannel" startMethod="startHello" stopMethod="stopHello" updateMethod="updateHello"/>
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="FakeSimpleSwitch" deployUnits="//@deployUnits.7" abstract="false" factoryBean="org.kevoree.library.fakedomo.FakeSimpleSwitchFactory" bean="org.kevoree.library.fakedomo.FakeSimpleSwitch" startMethod="start" stopMethod="stop" updateMethod="update">
     <required name="on" ref="//@typeDefinitions.2" optional="false" noDependency="true"/>
     <required name="off" ref="//@typeDefinitions.2" optional="false" noDependency="true"/>
     <required name="toggle" ref="//@typeDefinitions.25" optional="true" noDependency="false"/>
   </typeDefinitions>
   <typeDefinitions xsi:type="kevoree:ServicePortType" name="org.kevoree.library.fakedomo.ToggleLightService"/>
-  <typeDefinitions xsi:type="kevoree:ComponentType" name="FakeConsole" deployUnits="//@deployUnits.7" factoryBean="org.kevoree.library.fakedomo.FakeConsoleFactory" bean="org.kevoree.library.fakedomo.FakeConsole" startMethod="start" stopMethod="stop">
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="FakeConsole" deployUnits="//@deployUnits.7" abstract="false" factoryBean="org.kevoree.library.fakedomo.FakeConsoleFactory" bean="org.kevoree.library.fakedomo.FakeConsole" startMethod="start" stopMethod="stop">
     <required name="textEntered" ref="//@typeDefinitions.2" optional="false" noDependency="false"/>
     <provided name="showText" ref="//@typeDefinitions.2">
       <mappings beanMethodName="appendIncoming" serviceMethodName="process"/>
     </provided>
   </typeDefinitions>
-  <typeDefinitions xsi:type="kevoree:ComponentType" name="FakeSimpleLight" deployUnits="//@deployUnits.7" factoryBean="org.kevoree.library.fakedomo.FakeSimpleLightFactory" bean="org.kevoree.library.fakedomo.FakeSimpleLight" startMethod="start" stopMethod="stop" updateMethod="update">
+  <typeDefinitions xsi:type="kevoree:ComponentType" name="FakeSimpleLight" deployUnits="//@deployUnits.7" abstract="false" factoryBean="org.kevoree.library.fakedomo.FakeSimpleLightFactory" bean="org.kevoree.library.fakedomo.FakeSimpleLight" startMethod="start" stopMethod="stop" updateMethod="update">
     <dictionaryType>
       <attributes name="param1"/>
       <attributes name="param2" optional="true"/>
@@ -211,13 +211,13 @@
       <mappings beanMethodName="toogle" serviceMethodName="toggle"/>
     </provided>
   </typeDefinitions>
-  <typeDefinitions xsi:type="kevoree:ChannelType" name="RestGossiperChannel" deployUnits="//@deployUnits.8" factoryBean="org.kevoree.library.gossiper.channelType.RestGossiperChannelFactory" bean="org.kevoree.library.gossiper.channelType.RestGossiperChannel" startMethod="startGossiperChannel" stopMethod="stopGossiperChannel" updateMethod="updateGossiperChannel">
+  <typeDefinitions xsi:type="kevoree:ChannelType" name="RestGossiperChannel" deployUnits="//@deployUnits.8" abstract="false" factoryBean="org.kevoree.library.gossiper.channelType.RestGossiperChannelFactory" bean="org.kevoree.library.gossiper.channelType.RestGossiperChannel" startMethod="startGossiperChannel" stopMethod="stopGossiperChannel" updateMethod="updateGossiperChannel">
     <dictionaryType>
       <attributes name="interval" optional="true"/>
       <defaultValues attribute="//@typeDefinitions.28/@dictionaryType/@attributes.0" value="60000"/>
     </dictionaryType>
   </typeDefinitions>
-  <typeDefinitions xsi:type="kevoree:GroupType" name="RestGossipGroup" deployUnits="//@deployUnits.8" factoryBean="org.kevoree.library.gossiper.groupType.RestGossipGroupFactory" bean="org.kevoree.library.gossiper.groupType.RestGossipGroup" startMethod="startMyGroup" stopMethod="stopMyGroup" updateMethod="updateMyGroup">
+  <typeDefinitions xsi:type="kevoree:GroupType" name="RestGossipGroup" deployUnits="//@deployUnits.8" abstract="false" factoryBean="org.kevoree.library.gossiper.groupType.RestGossipGroupFactory" bean="org.kevoree.library.gossiper.groupType.RestGossipGroup" startMethod="startMyGroup" stopMethod="stopMyGroup" updateMethod="updateMyGroup">
     <dictionaryType>
       <attributes name="interval" optional="true"/>
       <defaultValues attribute="//@typeDefinitions.29/@dictionaryType/@attributes.0" value="60000"/>

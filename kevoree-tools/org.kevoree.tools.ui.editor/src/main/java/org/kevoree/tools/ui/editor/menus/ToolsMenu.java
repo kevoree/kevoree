@@ -24,7 +24,6 @@ import org.kevoree.tools.ui.editor.KevoreeUIKernel;
 import org.kevoree.tools.ui.editor.command.DisplayModelTextEditor;
 import org.kevoree.tools.ui.editor.command.DisplaySerialMonitor;
 import org.kevoree.tools.ui.editor.command.JmDnsLookup;
-import org.kevoree.tools.ui.editor.command.OpenKevsShell;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.*;

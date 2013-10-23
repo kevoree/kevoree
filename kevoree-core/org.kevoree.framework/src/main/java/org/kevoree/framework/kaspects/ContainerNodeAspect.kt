@@ -18,7 +18,7 @@ class ContainerNodeAspect {
 
     private fun getTypeAndInherited(t: TypeDefinition?): List<TypeDefinition> {
         var types = ArrayList<TypeDefinition>()
-        if (t != null && t.superTypes != null) {
+        if (t != null) {
             for(superT in t.superTypes){
                 types.addAll(getTypeAndInherited(superT))
             }
@@ -82,7 +82,7 @@ class ContainerNodeAspect {
 
     fun getGroups(node: ContainerNode): List<Group> {
         val usedGroups = ArrayList<Group>()
-        for (group in (node.eContainer() as ContainerRoot).groups) {
+        for (group in (node.eContainer()!! as ContainerRoot).groups) {
             if (group.subNodes.contains(node)) {
                 usedGroups.add(group)
             }

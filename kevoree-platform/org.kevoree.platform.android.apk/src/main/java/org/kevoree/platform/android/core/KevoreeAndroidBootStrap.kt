@@ -86,20 +86,20 @@ class KevoreeAndroidBootStrap {
             bootstraper.registerManuallyDeployUnit("kotlin-runtime", "org.jetbrains.kotlin", "*", dummyKCL);
             bootstraper.registerManuallyDeployUnit("kotlin-stdlib", "org.jetbrains.kotlin", "*", dummyKCL);
             bootstraper.registerManuallyDeployUnit("jfilter-library", "fr.inria.jfilter", "1.3", dummyKCL);
-            bootstraper.registerManuallyDeployUnit("org.kevoree.adaptation.model", "org.kevoree", "*", dummyKCL)
+//            bootstraper.registerManuallyDeployUnit("org.kevoree.adaptation.model", "org.kevoree", "*", dummyKCL)
             bootstraper.registerManuallyDeployUnit("org.kevoree.api", "org.kevoree", "*", dummyKCL)
             bootstraper.registerManuallyDeployUnit("org.kevoree.basechecker", "org.kevoree", "*", dummyKCL)
             bootstraper.registerManuallyDeployUnit("org.kevoree.core", "org.kevoree", "*", dummyKCL)
             bootstraper.registerManuallyDeployUnit("org.kevoree.framework", "org.kevoree", "*", dummyKCL)
             bootstraper.registerManuallyDeployUnit("org.kevoree.kcl", "org.kevoree", "*", dummyKCL)
-            bootstraper.registerManuallyDeployUnit("org.kevoree.kompare", "org.kevoree", "*", dummyKCL)
-            bootstraper.registerManuallyDeployUnit("org.kevoree.merger", "org.kevoree", "*", dummyKCL)
+//            bootstraper.registerManuallyDeployUnit("org.kevoree.kompare", "org.kevoree", "*", dummyKCL)
+//            bootstraper.registerManuallyDeployUnit("org.kevoree.merger", "org.kevoree", "*", dummyKCL)
             bootstraper.registerManuallyDeployUnit("org.kevoree.model", "org.kevoree", "*", dummyKCL)
 
             bootstraper.registerManuallyDeployUnit("org.kevoree.resolver", "org.kevoree", "*", dummyKCL)
             bootstraper.registerManuallyDeployUnit("scala-library", "org.scala-lang", "2.9.2", dummyKCL)
 
-            bootstraper.registerManuallyDeployUnit("org.kevoree.model.context", "org.kevoree", "*", dummyKCL)
+//            bootstraper.registerManuallyDeployUnit("org.kevoree.model.context", "org.kevoree", "*", dummyKCL)
             bootstraper.registerManuallyDeployUnit("org.kevoree.tools.annotation.api", "org.kevoree.tools", "*", dummyKCL)
             bootstraper.registerManuallyDeployUnit("org.kevoree.tools.android.framework", "org.kevoree.tools", "*", dummyKCL)
             bootstraper.registerManuallyDeployUnit("org.kevoree.tools.javase.framework", "org.kevoree.tools", "*", dummyKCL)

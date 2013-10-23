@@ -1,3 +1,4 @@
+/*
 /**
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
  * you may not use this file except in compliance with the License.
@@ -13,7 +14,6 @@
  */
 package org.kevoree.tools.annotation.generator
 
-import org.kevoree.framework.KevoreeGeneratorHelper
 import org.kevoree.{NodeType, ContainerRoot}
 import javax.annotation.processing.Filer
 import javax.tools.StandardLocation
@@ -28,7 +28,7 @@ import java.io.{Writer}
 object KevoreeAdaptationPrimitiveTypeGenerator {
 
   def generate (root: ContainerRoot, filer: Filer, nt: NodeType, targetNodeType: String) {
-    val nodeTypePackage = new KevoreeGeneratorHelper().getTypeDefinitionGeneratedPackage(nt, targetNodeType)
+    val nodeTypePackage = KevoreeGeneratorHelper.instance$.getTypeDefinitionGeneratedPackage(nt, targetNodeType)
 
     val wrapper = filer.createResource(StandardLocation.SOURCE_OUTPUT, "", new String(nodeTypePackage.replace(".", "/") + "/" + nt.getName + "_aspect.scala"));
     val writer = wrapper.openWriter()
@@ -61,4 +61,4 @@ object KevoreeAdaptationPrimitiveTypeGenerator {
     wrapper append ("}\n")
   }
 
-}
+}*/

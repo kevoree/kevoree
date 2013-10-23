@@ -13,9 +13,9 @@
  */
 package org.kevoree.tools.annotation.generator
 
-import org.kevoree.framework.KevoreeGeneratorHelper
 import javax.annotation.processing.Filer
 import javax.tools.StandardLocation
+import org.kevoree.tools.annotation.generator
 import org.kevoree.{ComponentType => KevoreeComponentType, _}
 import org.kevoree.annotation.ThreadStrategy
 import scala.collection.JavaConversions._
@@ -28,14 +28,14 @@ object KevoreeRequiredPortGenerator {
   def generate(root: ContainerRoot, filer: Filer, ct: KevoreeComponentType, ref: PortTypeRef, targetNodeType: String) {
     // var portPackage = ct.getFactoryBean().substring(0, ct.getFactoryBean().lastIndexOf("."));
 
-    val portPackage = new KevoreeGeneratorHelper().getTypeDefinitionGeneratedPackage(ct, targetNodeType)
+    val portPackage = GeneratorHelper.getTypeDefinitionGeneratedPackage(ct, targetNodeType)
     val portName = ct.getName + "PORT" + ref.getName
     val wrapper = filer.createResource(StandardLocation.SOURCE_OUTPUT, "", new String(portPackage.replace(".", "/") + "/" + portName + ".kt"))
     val writer = wrapper.openWriter()
 
     writer.append("package " + portPackage + "\n")
     writer.append("import org.kevoree.framework.port.*\n")
-    writer.append("import " + new KevoreeGeneratorHelper().getTypeDefinitionBasePackage(ct) + ".*\n")
+    writer.append("import " + GeneratorHelper.getTypeDefinitionBasePackage(ct) + ".*\n")
     var baseName = ref.getRef.getName
     if (ref.getRef.isInstanceOf[MessagePortType]) {
       baseName = "org.kevoree.framework.MessagePort"

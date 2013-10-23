@@ -37,12 +37,11 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
 import org.kevoree.ContainerRoot;
 import org.kevoree.KevoreeFactory;
+import org.kevoree.compare.DefaultModelCompare;
 import org.kevoree.framework.KevoreeXmiHelper;
 import org.kevoree.impl.DefaultKevoreeFactory;
-import org.kevoree.merger.KevoreeMergerComponent;
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 import java.util.jar.JarEntry;
@@ -104,7 +103,7 @@ public class MergerMojo extends AbstractMojo {
     }
 
     private List<File> scanForArt2(File modelDir) {
-        List<File> models = new ArrayList();
+        List<File> models = new ArrayList<File>();
         for (File f : modelDir.listFiles()) {
             if (f.getName().endsWith(".kev")) {
                 models.add(f);
@@ -118,7 +117,7 @@ public class MergerMojo extends AbstractMojo {
         this.getLog().info("Process Kevoree Model => " + modelInput);
 
         //CREATE NEW MERGER INSTANCE
-        KevoreeMergerComponent merger = new KevoreeMergerComponent();
+        DefaultModelCompare merger = new DefaultModelCompare();
         KevoreeFactory kevoreeFactory = new DefaultKevoreeFactory();
 
         //LOAD PREVIOUS MODEL OR CREATE ONE
@@ -131,10 +130,9 @@ public class MergerMojo extends AbstractMojo {
         //}
 
         //MERGE TWO BY TWO
-        Iterator it2 = project.getDependencyArtifacts().iterator();
-        while (it2.hasNext()) {
-            Artifact d = (Artifact) it2.next();
-            String artefactPath = local.getBasedir() + "/" + local.pathOf(d).toString();
+        for (Object o : project.getDependencyArtifacts()) {
+            Artifact d = (Artifact) o;
+            String artefactPath = local.getBasedir() + "/" + local.pathOf(d);
 
             JarFile jar;
             try {
@@ -146,7 +144,8 @@ public class MergerMojo extends AbstractMojo {
                     ContainerRoot nroot = KevoreeXmiHelper.instance$.load(path);
                     //Merge
                     this.getLog().info("Kevoree Merge from => " + artefactPath);
-                    merger.merge(root, nroot);
+//                    merger.merge(root, nroot);
+                    merger.merge(root, nroot).applyOn(root);
 
                     //CREATE TEMP FILE FROM ACTUAL MODEL
                     /*
@@ -183,6 +182,6 @@ public class MergerMojo extends AbstractMojo {
         out.flush();
         out.close();
 
-        return  temp.getAbsolutePath().toString();
+        return temp.getAbsolutePath();
     }
 }

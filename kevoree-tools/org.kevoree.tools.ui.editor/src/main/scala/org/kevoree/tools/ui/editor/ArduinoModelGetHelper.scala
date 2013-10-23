@@ -1,22 +1,10 @@
+/*
 /**
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
  * http://www.gnu.org/licenses/lgpl-3.0.txt
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-/**
- * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * 	http://www.gnu.org/licenses/lgpl-3.0.txt
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -53,11 +41,11 @@ object ArduinoModelGetHelper {
     KevoreeSharedCom.addObserver(boardPortName, new ContentListener {
       def recContent(p1: String) {
         scriptRaw.append(p1.trim())
-        if (scriptRaw.contains('{') && scriptRaw.contains('}') && scriptRaw.contains('@') && scriptRaw.contains('$') && scriptRaw.contains(':') && scriptRaw.contains('+') && scriptRaw.contains('!') && found != true) {
+        if (scriptRaw.contains('{') && scriptRaw.contains('}') && scriptRaw.contains('@') && scriptRaw.contains('$') && scriptRaw.contains(':') && scriptRaw.contains('+') && scriptRaw.contains('!') && !found) {
           // extract cscript
           cscript_pulled = scriptRaw.subSequence(scriptRaw.indexOf('$') + 1, scriptRaw.indexOf('!') + 1).toString
           // verify checksum
-          if (KevScriptWrapper.checksum_csript(cscript_pulled) == true) {
+          if (KevScriptWrapper.checksum_csript(cscript_pulled)) {
             found = true
           } else {
             logger.warn("The checksum is not correct " + cscript_pulled)
@@ -75,7 +63,7 @@ object ArduinoModelGetHelper {
         KevoreeSharedCom.send(boardPortName, "$g")
         Thread.sleep(500)
         timer += 1
-      } while (found == false && timer < timeout)
+      } while (!found && timer < timeout)
 
       if (found) {
         cscript_pulled
@@ -134,3 +122,4 @@ object ArduinoModelGetHelper {
   }
 
 }
+*/

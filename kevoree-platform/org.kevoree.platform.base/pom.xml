@@ -27,11 +27,11 @@
             <artifactId>org.kevoree.framework</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <dependency>
+        <!--<dependency>
             <groupId>org.kevoree</groupId>
             <artifactId>org.kevoree.kompare</artifactId>
             <version>${project.version}</version>
-        </dependency>
+        </dependency>-->
         <dependency>
             <groupId>org.kevoree</groupId>
             <artifactId>org.kevoree.core</artifactId>

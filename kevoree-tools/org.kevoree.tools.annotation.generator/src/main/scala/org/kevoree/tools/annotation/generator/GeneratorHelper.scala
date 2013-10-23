@@ -13,6 +13,8 @@
  */
 package org.kevoree.tools.annotation.generator
 
+import org.kevoree.TypeDefinition
+
 /*
 * Author : Gregory Nain (developer.name@uni.lu)
 * Date : 01/03/13
@@ -43,6 +45,15 @@ object GeneratorHelper {
         .replace("java.util.","")
     }
 
+  }
+
+
+  def getTypeDefinitionGeneratedPackage(td: TypeDefinition, targetNodeType: String): String = {
+    val basePackage = td.getBean.substring(0, td.getBean.lastIndexOf("."))
+    return basePackage + "." + "kevgen" + "." + targetNodeType
+  }
+  def getTypeDefinitionBasePackage(td: TypeDefinition): String = {
+    return td.getBean.substring(0, td.getBean.lastIndexOf("."))
   }
 
 

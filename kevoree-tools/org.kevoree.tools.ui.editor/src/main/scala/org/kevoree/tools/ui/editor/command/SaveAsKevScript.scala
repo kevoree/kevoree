@@ -1,16 +1,4 @@
-/**
- * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.gnu.org/licenses/lgpl-3.0.txt
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+/*
 /**
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
  * you may not use this file except in compliance with the License.
@@ -27,6 +15,7 @@
 package org.kevoree.tools.ui.editor.command
 
 import org.kevoree.cloner.DefaultModelCloner
+import org.kevoree.compare.DefaultModelCompare
 import org.kevoree.tools.marShell.ast.MergeStatement
 import org.kevoree.tools.ui.editor.{ModelHelper, KevoreeUIKernel}
 import org.slf4j.LoggerFactory
@@ -54,7 +43,7 @@ class SaveAsKevScript extends Command {
 
   def setKernel(k: KevoreeUIKernel) = kernel = k
 
-  val kompareBean = new org.kevoree.kompare.KevoreeKompareBean()
+  val kompareBean = new DefaultModelCompare()
 
   def execute(p: AnyRef) {
 
@@ -113,7 +102,7 @@ class SaveAsKevScript extends Command {
     }
 
     currentModel.getNodes.foreach(n => {
-      val adapModel = kompareBean.kompare(emptyModel.asInstanceOf[org.kevoree.ContainerRoot], currentModel, n.getName)
+      val traces = kompareBean.diff(emptyModel.asInstanceOf[org.kevoree.ContainerRoot], currentModel, n.getName)
       val script = AdaptationModelWrapper.generateScriptFromAdaptModel(adapModel)
       //val planScript = KevScriptWrapper.miniPlanKevScript(script)
       script.blocks.foreach {
@@ -205,3 +194,4 @@ class SaveAsKevScript extends Command {
   }
 
 }
+*/

@@ -23,6 +23,7 @@ import org.kevoree.impl.DefaultKevoreeFactory;
 import org.kevoree.kcl.KevoreeJarClassLoader;
 import org.kevoree.log.Log;
 import org.kevoree.tools.aether.framework.NodeTypeBootstrapHelper;
+
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
@@ -76,16 +77,16 @@ public class KevoreeBootStrap {
             bootstraper.registerManuallyDeployUnit("jfilter-library", "fr.inria.jfilter", "1.3", dummyKCL);
             bootstraper.registerManuallyDeployUnit("org.kevoree.tools.aether.framework", "org.kevoree.tools", "*", jcl);
             bootstraper.registerManuallyDeployUnit("jgrapht-jdk1.5", "org.jgrapht", "0.7.3", dummyKCL);
-            bootstraper.registerManuallyDeployUnit("org.kevoree.adaptation.model", "org.kevoree", "*", dummyKCL);
+//            bootstraper.registerManuallyDeployUnit("org.kevoree.adaptation.model", "org.kevoree", "*", dummyKCL);
             bootstraper.registerManuallyDeployUnit("org.kevoree.log", "org.kevoree", "*", dummyKCL);
             bootstraper.registerManuallyDeployUnit("org.kevoree.api", "org.kevoree", "*", dummyKCL);
             bootstraper.registerManuallyDeployUnit("org.kevoree.basechecker", "org.kevoree", "*", dummyKCL);
             bootstraper.registerManuallyDeployUnit("org.kevoree.core", "org.kevoree", "*", dummyKCL);
             bootstraper.registerManuallyDeployUnit("org.kevoree.framework", "org.kevoree", "*", dummyKCL);
             bootstraper.registerManuallyDeployUnit("org.kevoree.kcl", "org.kevoree", "*", dummyKCL);
-            bootstraper.registerManuallyDeployUnit("org.kevoree.kompare", "org.kevoree", "*", dummyKCL);
+//            bootstraper.registerManuallyDeployUnit("org.kevoree.kompare", "org.kevoree", "*", dummyKCL);
             bootstraper.registerManuallyDeployUnit("org.kevoree.model", "org.kevoree", "*", dummyKCL);
-            bootstraper.registerManuallyDeployUnit("org.kevoree.model.context", "org.kevoree", "*", dummyKCL);
+//            bootstraper.registerManuallyDeployUnit("org.kevoree.model.context", "org.kevoree", "*", dummyKCL);
             bootstraper.registerManuallyDeployUnit("org.kevoree.tools.annotation.api", "org.kevoree.tools", "*", dummyKCL);
             bootstraper.registerManuallyDeployUnit("org.kevoree.tools.javase.framework", "org.kevoree.tools", "*", dummyKCL);
             coreBean.setBootstraper(bootstraper);
@@ -195,6 +196,7 @@ public class KevoreeBootStrap {
                     Log.debug("Bootstrap step !");
                     bootstrapHelper.initModelInstance(bootstrapModel, "JavaSENode", System.getProperty("node.groupType"));
                     coreBean.updateModel(bootstrapModel);
+
                 } catch (Throwable e) {
                     Log.error("Bootstrap failed", e);
                 }
