@@ -48,6 +48,7 @@ public class BootstrapHelper {
                 node = factory.createContainerNode();
                 node.setName(nodeName);
                 node.setTypeDefinition(typeDefFound);
+                node.setStarted(true);
                 model.addNodes(node);
             } else {
                 Log.error("Default type not found for name {} ", defType);
@@ -61,6 +62,7 @@ public class BootstrapHelper {
                 g.setName("sync");
                 g.setTypeDefinition(grouptypeDefFound);
                 g.addSubNodes(node);
+                g.setStarted(true);
                 model.addGroups(g);
             } else {
                 Log.error("Default type not found for name {} ", groupType);
