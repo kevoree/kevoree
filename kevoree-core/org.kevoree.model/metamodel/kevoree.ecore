@@ -25,6 +25,8 @@
         eType="#//ContainerNode" eOpposite="#//ContainerNode/host"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="host" eType="#//ContainerNode"
         eOpposite="#//ContainerNode/hosts"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="groups" upperBound="-1"
+        eType="#//Group" eOpposite="#//Group/subNodes"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="ContainerRoot">
     <eStructuralFeatures xsi:type="ecore:EReference" name="nodes" upperBound="-1"
@@ -231,7 +233,7 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Group" eSuperTypes="#//Instance">
     <eStructuralFeatures xsi:type="ecore:EReference" name="subNodes" upperBound="-1"
-        eType="#//ContainerNode"/>
+        eType="#//ContainerNode" eOpposite="#//ContainerNode/groups"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="GroupType" eSuperTypes="#//LifeCycleTypeDefinition"/>
   <eClassifiers xsi:type="ecore:EClass" name="NodeType" eSuperTypes="#//LifeCycleTypeDefinition">
