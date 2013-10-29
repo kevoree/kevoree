@@ -76,7 +76,7 @@ public class KevoreeBootStrap {
             bootstraper.registerManuallyDeployUnit("kotlin-stdlib", "org.jetbrains.kotlin", "*", dummyKCL);
             bootstraper.registerManuallyDeployUnit("jfilter-library", "fr.inria.jfilter", "1.3", dummyKCL);
             bootstraper.registerManuallyDeployUnit("org.kevoree.tools.aether.framework", "org.kevoree.tools", "*", jcl);
-            bootstraper.registerManuallyDeployUnit("jgrapht-jdk1.5", "org.jgrapht", "0.7.3", dummyKCL);
+//            bootstraper.registerManuallyDeployUnit("jgrapht-jdk1.5", "org.jgrapht", "0.7.3", dummyKCL);
 //            bootstraper.registerManuallyDeployUnit("org.kevoree.adaptation.model", "org.kevoree", "*", dummyKCL);
             bootstraper.registerManuallyDeployUnit("org.kevoree.log", "org.kevoree", "*", dummyKCL);
             bootstraper.registerManuallyDeployUnit("org.kevoree.api", "org.kevoree", "*", dummyKCL);
