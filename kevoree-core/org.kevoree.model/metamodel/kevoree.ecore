@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="kevoree" nsURI="http://kevoree/1.0" nsPrefix="kevoree">
-  <eClassifiers xsi:type="ecore:EClass" name="ComponentInstance" eSuperTypes="#//NamedElement #//Instance">
+  <eClassifiers xsi:type="ecore:EClass" name="ComponentInstance" eSuperTypes="#//Instance">
     <eStructuralFeatures xsi:type="ecore:EReference" name="provided" upperBound="-1"
         eType="#//Port" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="required" upperBound="-1"
@@ -18,7 +18,7 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="provided" upperBound="-1"
         eType="#//PortTypeRef" containment="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="ContainerNode" eSuperTypes="#//NamedElement #//Instance">
+  <eClassifiers xsi:type="ecore:EClass" name="ContainerNode" eSuperTypes="#//Instance">
     <eStructuralFeatures xsi:type="ecore:EReference" name="components" upperBound="-1"
         eType="#//ComponentInstance" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="hosts" upperBound="-1"
@@ -169,7 +169,7 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="serviceMethodName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="paramTypes" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Channel" eSuperTypes="#//NamedElement #//Instance">
+  <eClassifiers xsi:type="ecore:EClass" name="Channel" eSuperTypes="#//Instance">
     <eStructuralFeatures xsi:type="ecore:EReference" name="bindings" upperBound="-1"
         eType="#//MBinding" eOpposite="#//MBinding/hub"/>
   </eClassifiers>
