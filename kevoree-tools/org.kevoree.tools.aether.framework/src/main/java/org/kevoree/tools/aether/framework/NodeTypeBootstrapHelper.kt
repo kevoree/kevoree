@@ -13,6 +13,8 @@ import org.kevoree.impl.DefaultKevoreeFactory
 import java.util.ArrayList
 import org.kevoree.framework.kaspects.TypeDefinitionAspect
 import org.kevoree.log.Log
+import java.util.List
+import org.kevoree.kcl.Klassloader
 
 /**
  * User: ffouquet
@@ -92,20 +94,32 @@ open class NodeTypeBootstrapHelper : Bootstraper, KCLBootstrap {
 
 
     /* Bootstrap node type bundle in local environment */
-    private fun installNodeType(nodeType: org.kevoree.NodeType): ClassLoader? {
-        val superTypeBootStrap = nodeType.superTypes.all { superType -> installNodeType(superType as org.kevoree.NodeType) != null }
+    private fun installNodeType(nodeType: org.kevoree.NodeType): Klassloader? {
+        val superKCLs = ArrayList<Klassloader>()
+        val superTypeBootStrap = nodeType.superTypes.all {
+            superType ->
+            val superKCL = installNodeType(superType as org.kevoree.NodeType)
+            if (superKCL != null) {
+                superKCLs.add(superKCL)
+            }
+            superKCL != null
+        }
         if (superTypeBootStrap) {
-            var kcl: ClassLoader? = null
+            var kcl: Klassloader? = null
             nodeType.deployUnits.all { ct ->
-                val dpRes = ct.requiredLibs.all { tp ->
-                    val idp = installDeployUnit(tp)
-                    idp != null
-                }
-                val kcl_opt = installDeployUnit(ct)
+                val kcl_opt = recursivelyInstallDeployUnit(ct)
                 if(kcl_opt != null){
                     kcl = kcl_opt
                 }
-                (kcl_opt != null) && dpRes
+                kcl_opt != null
+            }
+            if (kcl == null) {
+                Log.error("Unable to install the Node Type, maybe some libs cannot be installed")
+            } else {
+                superKCLs.forEach {
+                    superKCL ->
+                    (kcl as KevoreeJarClassLoader).addSubClassLoader(superKCL)
+                }
             }
             return kcl //TODO
         } else {
@@ -113,6 +127,7 @@ open class NodeTypeBootstrapHelper : Bootstraper, KCLBootstrap {
             return null
         }
     }
+
 
     override fun getKevoreeClassLoaderHandler(): KevoreeClassLoaderHandler {
         return classLoaderHandler
@@ -138,10 +153,10 @@ open class NodeTypeBootstrapHelper : Bootstraper, KCLBootstrap {
         classLoaderHandler.manuallyAddToCache(du, kcl)
     }
 
-    override fun resolveArtifact(artId: String, groupId: String, version: String, extension: String, repos: List<String>): File? {
+    override fun resolveArtifact(artId: String, groupId: String, version: String, extension: String, repos: jet.List<String>): File? {
         return AetherUtil.resolveMavenArtifact(artId, groupId, version, extension, repos)
     }
-    override fun resolveArtifact(artId: String, groupId: String, version: String, repos: List<String>): File? {
+    override fun resolveArtifact(artId: String, groupId: String, version: String, repos: jet.List<String>): File? {
         return AetherUtil.resolveMavenArtifact(artId, groupId, version, repos)
     }
 
@@ -191,11 +206,20 @@ open class NodeTypeBootstrapHelper : Bootstraper, KCLBootstrap {
         }
     }
 
-    private fun installGroupTyp(groupType: GroupType): ClassLoader? {
+    private fun installGroupTyp(groupType: GroupType): Klassloader? {
         if (groupType.deployUnits.find { dp -> dp.targetNodeType!!.name.equals("JavaSENode") } != null ) {
-            val superTypeBootStrap = groupType.superTypes.all { superType -> installGroupTyp(superType as GroupType) != null }
+            val superKCLs = ArrayList<Klassloader>()
+            val superTypeBootStrap = groupType.superTypes.all {
+                superType ->
+                val superKCL = installNodeType(superType as org.kevoree.NodeType)
+                if (superKCL != null) {
+                    superKCLs.add(superKCL)
+                }
+                superKCL != null
+            }
+            //            val superTypeBootStrap = groupType.superTypes.all { superType -> installGroupTyp(superType as GroupType) != null }
             if (superTypeBootStrap) {
-                //FAKE NODE TODO
+                //FAKE NODE
                 val fakeNode = kevoreeFactory.createContainerNode()
                 val javaseTD = (groupType.eContainer() as ContainerRoot).findTypeDefinitionsByID("JavaSENode")
                 if(javaseTD != null){
@@ -208,20 +232,18 @@ open class NodeTypeBootstrapHelper : Bootstraper, KCLBootstrap {
                     e.printStackTrace()
                 }
                 if (ct != null) {
-                    var kcl: ClassLoader? = null
-                    val dpRes = ct!!.requiredLibs.all {
-                        tp ->
-                        installDeployUnit(tp) != null
+                    var kcl: Klassloader? = recursivelyInstallDeployUnit(ct!!)
+                    if (kcl == null) {
+                        Log.error("Unable to install the Node Type, maybe some libs cannot be installed")
+                    } else {
+                        superKCLs.forEach {
+                            superKCL ->
+                            (kcl as KevoreeJarClassLoader).addSubClassLoader(superKCL)
+                        }
                     }
-                    val kcl_opt = installDeployUnit(ct!!)
-                    if(kcl_opt != null){
-                        kcl = kcl_opt
-                    }
-
-                    kcl_opt != null && dpRes
-                    return kcl //TODO
+                    return kcl
                 } else {
-                    Log.error("Relevant DU not found for " + groupType.name)
+                    Log.error("Relevant Deploy Unit not found for " + groupType.name)
                     return null
                 }
             } else {
@@ -234,5 +256,24 @@ open class NodeTypeBootstrapHelper : Bootstraper, KCLBootstrap {
         }
     }
 
+    private fun recursivelyInstallDeployUnit(du: DeployUnit): Klassloader? {
+        val kcl_opt = installDeployUnit(du)
 
+        var dpRes = true
+        if (kcl_opt != null) {
+            dpRes = du.requiredLibs.all { tp ->
+                val idp = recursivelyInstallDeployUnit(tp)
+                if (idp != null) {
+                    kcl_opt.addSubClassLoader(idp)
+                }
+                idp != null
+            }
+        }
+        if(kcl_opt != null && dpRes){
+            return kcl_opt
+        } else {
+            Log.error("Unable to install {}:{}:{}", du.groupName, du.name, du.version)
+            return null
+        }
+    }
 }
