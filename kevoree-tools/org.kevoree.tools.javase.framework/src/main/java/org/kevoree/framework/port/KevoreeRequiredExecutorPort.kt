@@ -18,6 +18,7 @@ import org.kevoree.framework.KevoreeChannelFragment
 import org.kevoree.framework.KevoreePort
 import org.kevoree.framework.message.FragmentBindMessage
 import org.kevoree.framework.message.FragmentUnbindMessage
+import org.kevoree.log.Log
 
 /**
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
@@ -138,6 +139,7 @@ trait KevoreeRequiredExecutorPort: KevoreePort {
                 try {
                     return delegate!!.sendWait(msg)
                 } catch(e: Exception) {
+                    Log.error(e.getMessage(), e)
                     return false
                 }
             } else {
@@ -145,6 +147,7 @@ trait KevoreeRequiredExecutorPort: KevoreePort {
                     delegate!!.send(msg)
                     return null
                 } catch (e: Exception){
+                    Log.error(e.getMessage(), e)
                     return false
                 }
             }
