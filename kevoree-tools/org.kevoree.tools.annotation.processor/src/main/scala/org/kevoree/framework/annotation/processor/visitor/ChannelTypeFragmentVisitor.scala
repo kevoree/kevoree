@@ -31,18 +31,6 @@ with CommonProcessor {
   var typeDefinitionType : Class[_ <: TypeDefinition] = classOf[ChannelType]
 
   override def visitType(p1: TypeElement, p2: Element): Any = {
-    /*p1.getSuperclass match {
-      case dt: javax.lang.model.`type`.DeclaredType => {
-        val an = dt.asElement().getAnnotation(classOf[org.kevoree.annotation.ChannelType])
-        if (an != null) {
-          dt.asElement().accept(this, dt.asElement())
-          val isAbstract = dt.asElement().getModifiers.contains(Modifier.ABSTRACT)
-          defineAsSuperType(channelType, dt.asElement().getSimpleName.toString, classOf[ChannelType], isAbstract)
-        }
-      }
-      case _ =>
-    }*/
-
     commonProcess(p1)
   }
 

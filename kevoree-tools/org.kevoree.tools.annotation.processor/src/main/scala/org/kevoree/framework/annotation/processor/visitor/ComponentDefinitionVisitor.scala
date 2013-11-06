@@ -38,17 +38,6 @@ case class ComponentDefinitionVisitor(componentType: ComponentType, _env: Proces
   var typeDefinitionType : Class[_ <: TypeDefinition] = classOf[ComponentType]
 
   override def visitType(p1: TypeElement, p2: Element): Any = {
-    /*p1.getSuperclass match {
-      case dt: javax.lang.model.`type`.DeclaredType => {
-        val an = dt.asElement().getAnnotation(classOf[org.kevoree.annotation.ComponentType])
-        if (an != null) {
-          dt.asElement().accept(this, dt.asElement())
-          val isAbstract = dt.asElement().getModifiers.contains(Modifier.ABSTRACT)
-          defineAsSuperType(componentType, dt.asElement().getSimpleName.toString, classOf[ComponentType], isAbstract)
-        }
-      }
-      case _ =>
-    }*/
 
     super[CommonProcessor].commonProcess(p1)
 
@@ -57,7 +46,6 @@ case class ComponentDefinitionVisitor(componentType: ComponentType, _env: Proces
     processSlot(componentType, p1, env)
     p1.getEnclosedElements.foreach {
       method => {
-
         method.getKind match {
           case ElementKind.METHOD => {
             processPortMapping(componentType, method.asInstanceOf[ExecutableElement], env)
