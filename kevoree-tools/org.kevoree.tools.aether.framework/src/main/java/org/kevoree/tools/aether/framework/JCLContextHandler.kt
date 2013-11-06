@@ -200,7 +200,7 @@ open class JCLContextHandler : KevoreeClassLoaderHandler {
             if (failedLinks.containsKey(buildKEY(du))) {
                 for(toLinkKCL in failedLinks.get(buildKEY(du))!!){
                     toLinkKCL.addSubClassLoader(newcl)
-                    newcl.addWeakClassLoader(toLinkKCL)
+//                    newcl.addWeakClassLoader(toLinkKCL)
 
                     Log.debug("UnbreakLink " + du.name + "->" + toLinkKCL.getLoadedURLs().get(0))
 
@@ -213,11 +213,11 @@ open class JCLContextHandler : KevoreeClassLoaderHandler {
                 if (kcl != null) {
                     Log.debug("Link KCL for {}->{}", du.name, rLib.name)
                     newcl.addSubClassLoader(kcl)
-                    kcl.addWeakClassLoader(newcl)
+//                    kcl.addWeakClassLoader(newcl)
                     du.requiredLibs.filter { rLibIn -> rLib != rLibIn }.forEach { rLibIn ->
                         val kcl2 = getKCLInternals(rLibIn)
                         if (kcl2 != null) {
-                            kcl.addWeakClassLoader(kcl2)
+//                            kcl.addWeakClassLoader(kcl2)
                             // logger.debug("Link Weak for {}->{}", rLib.name, rLibIn.name)
                         }
                     }
