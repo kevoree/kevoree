@@ -30,6 +30,18 @@
             <version>3.0.4</version>
         </dependency>
         <dependency>
+            <!-- required in all cases -->
+            <groupId>org.sonatype.aether</groupId>
+            <artifactId>aether-api</artifactId>
+            <version>1.13.1</version>
+        </dependency>
+        <dependency>
+            <!-- optional helpers, might be superfluous depending on your use case -->
+            <groupId>org.sonatype.aether</groupId>
+            <artifactId>aether-util</artifactId>
+            <version>1.13.1</version>
+        </dependency>
+        <dependency>
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-core</artifactId>
             <version>3.0.4</version>

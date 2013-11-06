@@ -22,10 +22,15 @@ import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.StringUtils;
 import org.kevoree.ContainerRoot;
+import org.kevoree.DeployUnit;
 import org.kevoree.compare.DefaultModelCompare;
 import org.kevoree.framework.KevoreeXmiHelper;
 import org.kevoree.framework.annotation.processor.visitor.KevoreeAnnotationProcessor;
+import org.kevoree.impl.DefaultKevoreeFactory;
 import org.kevoree.modeling.api.compare.ModelCompare;
+import org.sonatype.aether.RepositorySystem;
+import org.sonatype.aether.RepositorySystemSession;
+import org.sonatype.aether.repository.RemoteRepository;
 
 import javax.tools.*;
 import java.io.File;
@@ -49,8 +54,28 @@ import java.util.regex.Pattern;
  * @requiresDependencyResolution compile
  */
 public class AnnotationPreProcessorMojo extends AbstractMojo {
+    /**
+     * The entry point to Aether, i.e. the component doing all the work.
+     *
+     * @component
+     */
+    private RepositorySystem repoSystem;
 
+    /**
+     * The current repository/network configuration of Maven.
+     *
+     * @parameter default-value="${repositorySystemSession}"
+     * @readonly
+     */
+    private RepositorySystemSession repoSession;
 
+    /**
+     * The project's remote repositories to use for the resolution of project dependencies.
+     *
+     * @parameter default-value="${project.remoteProjectRepositories}"
+     * @readonly
+     */
+    private List<RemoteRepository> projectRepos;
     /**
      * Annotation Processor FQN (Full Qualified Name) - when processors are not specified, the default discovery mechanism will be used
      *
@@ -470,38 +495,21 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
             otherRepositories += ";" + repo.getUrl();
         }
 
+        List<DeployUnit> deployUnits = ThirdPartyManagement.processKevoreeProperty(project, getLog(), repoSystem, repoSession, projectRepos);
+        
         String thirdParties = ";";
-        for (Artifact dep : ThirdPartyManagement.processKevoreeProperty(project, getLog())) {
-            thirdParties += ";" + dep.getGroupId() + "," + dep.getArtifactId() + "," + toBaseVersion(dep.getVersion()) + "," + dep.getType();
-            if (dep.getScope().equalsIgnoreCase(Artifact.SCOPE_SYSTEM)) {
-                if (dep.getFile() != null && !dep.getFile().getAbsolutePath().equals("")) {
-                    if (dep.getFile().getAbsolutePath().startsWith("http://")) {
-                        thirdParties += "," + dep.getFile().getAbsolutePath();
-                    } else {
-                        thirdParties += ",file://" + dep.getFile().getAbsolutePath();
-                    }
-
-                }
+        for (DeployUnit dep : deployUnits) {
+            thirdParties += ";" + dep.getGroupName() + "," + dep.getName() + "," + toBaseVersion(dep.getVersion()) + "," + dep.getType();
+            if (dep.getUrl() != null) {
+                thirdParties += "," + dep.getUrl();
             }
         }
-        /*
-        for (Dependency dep : project.getRuntimeDependencies()) {
-            System.out.println(dep.getArtifactId()+"->"+dep.getType());
 
-            if (dep.getScope().equals("provided") || dep.getType().equals("bundle") || dep.getType().equals("kjar") || dep.getType().equals("kbundle")) {
+        ContainerRoot model = new DefaultKevoreeFactory().createContainerRoot();
+        model.setDeployUnits(deployUnits);
 
+        KevoreeXmiHelper.instance$.save(sourceOutputDirectory.getPath() + File.separator + "KEV-INF" + File.separator + "lib.kev", model);
 
-                thirdParties += ";" + dep.getGroupId() + "/" + dep.getArtifactId() + "/" + toBaseVersion(dep.getVersion()) +"/"+ dep.getType();
-            }
-        }
-        for (Dependency dep : project.getDependencies()) {
-            
-            System.out.println(dep.getArtifactId()+"->"+dep.getType());
-            
-            if (dep.getScope().equals("provided") || dep.getType().equals("bundle") || dep.getType().equals("kjar") || dep.getType().equals("kbundle")) {
-                thirdParties += ";" + dep.getGroupId() + "/" + dep.getArtifactId() + "/" + toBaseVersion(dep.getVersion()) +"/"+ dep.getType();
-            }
-        }*/
 
         this.options.put("kevoree.lib.id", this.project.getArtifactId());
         this.options.put("kevoree.lib.group", this.project.getGroupId());
@@ -533,7 +541,7 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
         try {
             File file = new File(sourceOutputDirectory.getPath() + File.separator + "KEV-INF" + File.separator + "lib.kev");
             if (file.exists()) {
-                ContainerRoot model = KevoreeXmiHelper.instance$.load(sourceOutputDirectory.getPath() + File.separator + "KEV-INF" + File.separator + "lib.kev");
+                model = KevoreeXmiHelper.instance$.load(sourceOutputDirectory.getPath() + File.separator + "KEV-INF" + File.separator + "lib.kev");
 
                 ModelCompare compare = new DefaultModelCompare();
 
@@ -554,6 +562,8 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
                         }
                     }
                 }
+
+                // add deployUnits comming from third party management
 
 
                 // check if the targetNodeType which is define for each TypeDefinition is well defined
