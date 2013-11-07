@@ -2,9 +2,9 @@
 
 # Rules
 # =====
-KevScript   <- +Statement
+KevScript   <- *(Statement ws)
 
-Statement   <- (Add | Remove | Move | Attach | Detach | Set | AddBinding | Merge) ws
+Statement   <- (Add | Remove | Move | Attach | Detach | Set | AddBinding | Merge)
 
 Add         <- AddToken ws string ws ':' ws string                                 # add node0 : JavaSENode
              | AddToken ws NameList ws ':' ws string                               # add node42, node1 : JavascriptNode
@@ -33,8 +33,8 @@ AddBinding  <- string'.'string ws '=>' ws string                                
 
 Merge       <- MergeToken ws MergeDef                                              # merge MergeDef
 
-MergeDef    <- string ws ':' ws stringdot ws ':' ws stringdot ws [:@] ws stringdot # mvn:groupId:artId[:@]version
-             | string ws ':' ws string ws [:@] ws string                           # npm:moduleName[:@]version
+MergeDef    <- string ws ':' ws stringdot ws ':' ws stringdot ws (':'|'@') ws stringdot # mvn:groupId:artId[:@]version
+             | string ws ':' ws string ws (':'|'@') ws string                      # npm:moduleName[:@]version
 
 NameList    <- string ws *([,] ws string)                                          # node0, node42, node1024
 
