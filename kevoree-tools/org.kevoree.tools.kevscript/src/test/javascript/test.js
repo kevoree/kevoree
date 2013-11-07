@@ -2,7 +2,7 @@ var kevs = require('./../../../target/parsers/javascript/parser'),
     fs   = require('fs'),
     path = require('path');
 
-fs.readFile(path.resolve(__dirname, '..', 'examples', 'test.kevs'), 'utf8', function (err, data) {
+fs.readFile(path.resolve(__dirname, '..', '..', 'examples', 'test.kevs'), 'utf8', function (err, data) {
   if (err) throw err;
 
   var parser = new kevs.Parser();
