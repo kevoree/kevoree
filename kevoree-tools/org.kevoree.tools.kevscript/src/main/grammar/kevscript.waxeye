@@ -20,13 +20,11 @@ Move        <- MoveToken ws String ws String                                    
 
 Attach      <- AttachToken ws String ws String                                          # attach node0 group0
              | AttachToken ws NameList ws String                                        # attach node0, node1 group0
-             | AttachToken ws '*' ?(:'@' String) ws String                              # attach * group2
-                                                                                        # attach *@node2 group2
+             | AttachToken ws '*' ws String                                             # attach * group2
 
 Detach      <- DetachToken ws String ws String                                          # detach node0 group0
              | DetachToken ws NameList ws String                                        # detach node0, node1 group0
-             | DetachToken ws '*' ?(:'@' String) ws String                              # detach * group42
-                                                                                        # detach *@node1 group42
+             | DetachToken ws '*' ws String                                             # detach * group42
 
 Set         <- SetToken ws String ws Dictionary                                         # set comp0 {}
 
