@@ -4,59 +4,55 @@
 # =====
 KevScript   <- +(Statement ws)
 
-Statement   <- (Add | Remove | Move | Attach | Detach | Set | AddBinding | Merge)
+Statement   <- (Add | Remove | Move | Attach | Detach | Set | AddBinding | Merge) ws
 
-Add         <- AddToken ws StringVar ws ':' ws StringVar                              # add node0 : JavaSENode
-             | AddToken ws NameList ws ':' ws StringVar                               # add node42, node1 : JavascriptNode
+Add         <- AddToken ws String ws :':' ws String                                  # add node0 : JavaSENode
+             | AddToken ws NameList ws :':' ws String                                # add node42, node1 : JavascriptNode
 
-Remove      <- RemoveToken ws StringVar                                               # remove node0
-             | RemoveToken ws NameList ws ':' ws StringVar                            # remove chan1, node0
+Remove      <- RemoveToken ws String                                                 # remove node0
+             | RemoveToken ws NameList ws :':' ws String                             # remove chan1, node0
 
-Move        <- MoveToken ws StringVar ws StringVar                                    # move node0 group1
-             | MoveToken ws NameList ws StringVar                                     # move node0, node1 group1
+Move        <- MoveToken ws String ws String                                         # move node0 group1
+             | MoveToken ws NameList ws String                                       # move node0, node1 group1
 
-Attach      <- AttachToken ws StringVar ws StringVar                                  # attach node0 group0
-             | AttachToken ws NameList ws StringVar                                   # attach node0, node1 group0
+Attach      <- AttachToken ws String ws String                                       # attach node0 group0
+             | AttachToken ws NameList ws String                                     # attach node0, node1 group0
 
-Detach      <- DetachToken ws StringVar ws StringVar                                  # detach node0 group0
-             | DetachToken ws NameList ws StringVar                                   # detach node0, node1 group0
+Detach      <- DetachToken ws String ws String                                       # detach node0 group0
+             | DetachToken ws NameList ws String                                     # detach node0, node1 group0
 
-Set         <- SetToken ws StringVar ws Dictionary                                    # set comp0 {}
+Set         <- SetToken ws String ws Dictionary                                      # set comp0 {}
 
-Dictionary  <- '{' ws AttrList ws '}'                                                 # { Attribute, Attribute, ... }
+Dictionary  <- :'{' ws AttrList ws :'}'                                              # { Attribute, Attribute, ... }
 
-AttrList    <- Attribute ws *([,] ws StringVar)                                       # Attribute, Attribute, Attribute, ...
+AttrList    <- Attribute ws *(:[,] ws String)                                        # Attribute, Attribute, Attribute, ...
 
-Attribute   <- StringVar ws [=:] ws ['"] ws StringVar ws ['"]                         # myAttr = ['"] foo ['"]
+Attribute   <- String ws [=:] ws ['"] ws String ws ['"]                              # myAttr = ['"] foo ['"]
 
-AddBinding  <- StringVar'.'StringVar ws '=>' ws StringVar                             # comp0.sendMsg => chan42
+AddBinding  <- String :'.' String ws :'=>' ws String                                 # comp0.sendMsg => chan42
 
-Merge       <- MergeToken ws MergeDef                                                 # merge MergeDef
+Merge       <- MergeToken ws MergeDef                                                # merge MergeDef
 
-MergeDef    <- StringVar ws ':' ws StringVarDot ws ':' ws StringVarDot ws (':'|'@') ws StringVarDot
-                                                                                      # mvn:groupId:artId[:@]version
-             | StringVar ws ':' ws StringVar ws (':'|'@') ws StringVarDot             # npm:moduleName[:@]version
+MergeDef    <- String ws :':' ws String2 ws :':' ws String2 ws :(':'|'@') ws String2 # mvn:groupId:artId[:@]version
+             | String ws :':' ws String ws :(':'|'@') ws String2                     # npm:moduleName[:@]version
 
-NameList    <- StringVar ws *([,] ws StringVar)                                       # node0, node42, node1024
-
-StringVarDot   <- +withdot                                                            # String with dot allowed
-
-StringVar      <- +char                                                               # String without dots
+NameList    <- String ws *(:[,] ws String)                                           # node0, node42, node1024
 # =========
 # End Rules
 
 
-# Non-terminals
+# Void Non-terminals
 # =============
-MergeToken      <: 'merge'
-AddToken        <: 'add'
-RemoveToken     <: 'remove'
-MoveToken       <: 'move'
-SetToken        <: 'set'
-AttachToken     <: 'attach'
-DetachToken     <: 'detach'
-withdot         <: [.a-zA-Z0-9_-]
-char            <: [a-zA-Z0-9_-]
-ws              <: *[ \\t\\n\\r]
+MergeToken      <- 'merge'
+AddToken        <- 'add'
+RemoveToken     <- 'remove'
+MoveToken       <- 'move'
+SetToken        <- 'set'
+AttachToken     <- 'attach'
+DetachToken     <- 'detach'
+String          <- +[a-zA-Z0-9_-]
+String2         <- +[a-zA-Z0-9_-.]
+eol             <: '\r\n' | '\n' | '\r'
+ws              <: *([ \t] | eol)
 # =================
-# End Non-terminals
+# End Void Non-terminals
