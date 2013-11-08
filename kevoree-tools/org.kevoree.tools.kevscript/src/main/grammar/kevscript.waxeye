@@ -41,10 +41,8 @@ Attribute   <- String ws :'=' ws ['] ws String ws [']                           
 
 AddBinding  <- String :'.' String ws :'=>' ws String                                    # comp0.sendMsg => chan42
 
-Merge       <- MergeToken ws MergeDef                                                   # merge MergeDef
-
-MergeDef    <- String ws :':' ws String2 ws :':' ws String2 ws ?(:(':'|'@') ws String2) # mvn:groupId:artId[:@]version
-             | String ws :':' ws String ws ?(:(':'|'@') ws String2)                     # npm:moduleName[:@]version
+Merge       <- MergeToken ws String :':' String2                                        # merge npm:kevoree-chan-websocket
+                                                                                        # merge mvn:org.kevoree.library.javase:websocketgrp:2.0.5-SNAPSHOT
 
 NameList    <- String ws *(:[,] ws String)                                              # node0, node42, node1024
 # =========
@@ -62,7 +60,7 @@ AttachToken     <: 'attach'
 DetachToken     <: 'detach'
 NetworkToken    <: 'network'
 String          <- +[a-zA-Z0-9_-]
-String2         <- +[a-zA-Z0-9_-.]
+String2         <- +[a-zA-Z0-9.:@_-]
 eol             <: '\r\n' | '\n' | '\r'
 ws              <: *([ \t] | eol)
 # =================
