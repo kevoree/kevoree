@@ -1,5 +1,9 @@
-merge npm:kevoree-group-websocket:0.0.2
+merge npm:kevoree-group-websocket
+merge npm:kevoree-chan-websocket
+merge npm:kevoree-comp-fakeconsole
 
 add node0 : JavascriptNode
 add sync : WebSocketGroup
+add comp0 : FakeConsole
+
 attach node0 sync
