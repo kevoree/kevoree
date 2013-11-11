@@ -85,8 +85,8 @@ trait ThirdPartyProcessor {
           etp => etp.getName == name && etp.getGroupName == groupName && etp.getVersion == version
         }) match {
           case Some(e) => {
-            if (!componentType.getDeployUnits().get(0).getRequiredLibs.exists(etp => etp.getName == name && etp.getGroupName == groupName && etp.getVersion == version)) {
-              componentType.getDeployUnits().get(0).addRequiredLibs(e)
+            if (!componentType.getDeployUnits.get(0).getRequiredLibs.exists(etp => etp.getName == name && etp.getGroupName == groupName && etp.getVersion == version)) {
+              componentType.getDeployUnits.get(0).addRequiredLibs(e)
             }
           }
           case None => {
@@ -99,13 +99,13 @@ trait ThirdPartyProcessor {
               newThirdParty.setUrl(url)
             }
             root.addDeployUnits(newThirdParty)
-            componentType.getDeployUnits().get(0).addRequiredLibs(newThirdParty)
+            componentType.getDeployUnits.get(0).addRequiredLibs(newThirdParty)
           }
         }
     }
 
     /* POST PROCESS ADD NODE TYPE TO ALL THIRDPARTY */
-    componentType.getDeployUnits().get(0).getRequiredLibs.foreach {
+    componentType.getDeployUnits.get(0).getRequiredLibs.foreach {
       tp =>
         nodeTypeNameList.foreach {
           nodeTypeName =>

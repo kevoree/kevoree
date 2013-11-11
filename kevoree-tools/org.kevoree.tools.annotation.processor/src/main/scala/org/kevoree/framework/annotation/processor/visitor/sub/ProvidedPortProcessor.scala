@@ -57,7 +57,6 @@ trait ProvidedPortProcessor extends CommonPortProcessor {
 
           //Port is unique and can be created
           case None => {
-
             val portTypeRef = LocalUtility.kevoreeFactory.createPortTypeRef
             portTypeRef.setName(providedPort.name)
 

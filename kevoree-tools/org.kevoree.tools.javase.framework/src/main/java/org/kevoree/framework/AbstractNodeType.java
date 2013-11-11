@@ -68,7 +68,7 @@ public abstract class
         super.setNodeName(pname);
     }
 
-    public abstract AdaptationModel kompare(ContainerRoot actualModel, ContainerRoot targetModel);
+    public abstract AdaptationModel plan(ContainerRoot actualModel, ContainerRoot targetModel);
 
     public abstract PrimitiveCommand getPrimitive(AdaptationPrimitive primitive);
 
