@@ -50,6 +50,7 @@ class KevoreeCoreBean() : KevoreeModelHandlerService {
     var lastDate: Date = Date(System.currentTimeMillis())
     val modelCloner = DefaultModelCloner()
     val modelChecker = RootChecker()
+    val hkh = HaraKiriHelper()
     var selfActorPointer = this
     private var scheduler: ExecutorService? = null
     private var lockWatchDog: ScheduledExecutorService? = null
@@ -193,7 +194,7 @@ class KevoreeCoreBean() : KevoreeModelHandlerService {
                 }
 
                 //val stopModel = factory.createContainerRoot()
-                val adaptationModel = nodeInstance!!.kompare(modelCurrent, stopModel)
+                val adaptationModel = nodeInstance!!.plan(modelCurrent, stopModel)
                 adaptationModel.setInternalReadOnly()
                 val afterUpdateTest: () -> Boolean = {() -> true }
                 val rootNode = modelCurrent.findByPath("nodes[" + getNodeName() + "]", javaClass<ContainerNode>())
@@ -385,7 +386,9 @@ public override fun compareAndSwapModel(p0: org.kevoree.api.service.core.handler
                     nodeInstance = _bootstraper?.bootstrapNodeType(currentModel, getNodeName(), this, _kevsEngineFactory!!)
                     if(nodeInstance != null){
                         nodeInstance?.startNode()
-                        val uuidModel = UUIDModelImpl(UUID.randomUUID(), factory.createContainerRoot())
+                        val newModel = modelCloner.clone(currentModel)!!
+                        hkh.cleanModelForInit(newModel, getNodeName())
+                        val uuidModel = UUIDModelImpl(UUID.randomUUID(), newModel)
                         model.set(uuidModel)
                     } else {
                         Log.error("TypeDef installation fail !")
@@ -396,6 +399,7 @@ public override fun compareAndSwapModel(p0: org.kevoree.api.service.core.handler
             }
         } catch(e: Throwable) {
             Log.error("Error while bootstraping node instance ", e)
+            // TODO is it possible to display the following log ?
             Log.debug(_bootstraper?.getKevoreeClassLoaderHandler()?.getKCLDump())
             try {
                 nodeInstance?.stopNode()
@@ -423,7 +427,7 @@ public override fun compareAndSwapModel(p0: org.kevoree.api.service.core.handler
                 return false
             } else {
                 //Model check is OK.
-                val currentModel = model.get()!!.getModel()!!
+                var currentModel = model.get()!!.getModel()!!
                 Log.debug("Before listeners PreCheck !")
                 val preCheckResult = modelListeners.preUpdate(currentModel, readOnlyNewModel)
                 Log.debug("PreCheck result = " + preCheckResult)
@@ -434,19 +438,20 @@ public override fun compareAndSwapModel(p0: org.kevoree.api.service.core.handler
                     var newmodel = readOnlyNewModel
                     //CHECK FOR HARA KIRI
                     var previousHaraKiriModel: ContainerRoot? = null
-                    val hkh = HaraKiriHelper()
                     if (hkh.detectNodeHaraKiri(currentModel, readOnlyNewModel, getNodeName())) {
                         Log.warn("HaraKiri detected , flush platform")
                         previousHaraKiriModel = currentModel
                         // Creates an empty model, removes the current node (harakiri)
 
                         //TODO somthing better
-                        newmodel = factory.createContainerRoot()
+                        // clone the current model and remove everything to get an empty node inside the model
+                        newmodel = modelCloner.clone(previousHaraKiriModel!!) as ContainerRoot
+                        hkh.cleanModelForInit(newmodel, getNodeName())
 
 
                         try {
                             // Compare the two models and plan the adaptation
-                            val adaptationModel = nodeInstance!!.kompare(currentModel, newmodel)
+                            val adaptationModel = nodeInstance!!.plan(currentModel, newmodel)
                             adaptationModel.setInternalReadOnly()
                             if (Log.DEBUG){
                                 //Avoid the loop if the debug is not activated
@@ -480,6 +485,7 @@ public override fun compareAndSwapModel(p0: org.kevoree.api.service.core.handler
 
                     //Checks and bootstrap the node
                     checkBootstrapNode(newmodel)
+                    currentModel = model.get()!!.getModel()!!
                     val milli = System.currentTimeMillis()
                     if(Log.DEBUG){
                         Log.debug("Begin update model {}", milli)
@@ -490,7 +496,7 @@ public override fun compareAndSwapModel(p0: org.kevoree.api.service.core.handler
                             // Compare the two models and plan the adaptation
                             Log.info("Comparing models and planning adaptation.")
 
-                            val adaptationModel = nodeInstance!!.kompare(currentModel, newmodel)
+                            val adaptationModel = nodeInstance!!.plan(currentModel, newmodel)
                             adaptationModel.setInternalReadOnly()
                             //Execution of the adaptation
                             Log.info("Launching adaptation of the system.")
