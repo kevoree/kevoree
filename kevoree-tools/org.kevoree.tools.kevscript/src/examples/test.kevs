@@ -8,3 +8,5 @@ add sync : WebSocketGroup
 add comp0 : FakeConsole
 
 attach node0 sync
+set sync {foo = "bar", baz = 'potato'}, {port = '42'}@node0, {port = '41', test="dico"}@node1
+set comp0 {att="val", att1='val1'}

@@ -30,12 +30,13 @@ Set         <- SetToken ws String ws Dictionary                                 
 
 Network     <- NetworkToken ws String ws String                                         # network node1 192.168.0.1
 
-Dictionary  <- :'{' ws AttrList ws :'}'                                                 # { Attribute, Attribute, ... }
+Dictionary  <- AttrList                                                                 # set comp0 { att = "foo"}
+             | AttrList ws *(:[,] ws AttrList)                                          # set sync {foo='bar'}, {port="8080"}@node0
 
-AttrList    <- Attribute ws *(:[,] ws String)                                           # Attribute, Attribute, Attribute, ...
+AttrList    <- :'{' ws Attribute ws *(:[,] ws Attribute) ws :'}' ?(:'@' String)         # { Attribute, Attribute, Attribute }
 
-Attribute   <- String ws :'=' ws ['] ws String ws [']                                   # myAttr = 'foo'
-             | String ws :'=' ws ["] ws String ws ["]                                   # myOtherAttr = "bar"
+Attribute   <- String ws :'=' ws :['] ws String2 ws :[']                                # myAttr = 'foo'
+             | String ws :'=' ws :["] ws String2 ws :["]                                # myOtherAttr = "bar"
 
 AddBinding  <- String :'.' String ws :'=>' ws String                                    # comp0.sendMsg => chan42
 
