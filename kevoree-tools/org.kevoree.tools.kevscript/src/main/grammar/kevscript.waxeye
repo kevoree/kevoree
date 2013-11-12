@@ -9,8 +9,7 @@ Statement   <- (Add | Remove | Move | Attach | Detach | Set | AddBinding | Merge
 Add         <- AddToken ws String ws :':' ws String                                     # add node0 : JavaSENode
              | AddToken ws NameList ws :':' ws String                                   # add node42, node1 : JavascriptNode
 
-Remove      <- RemoveToken ws String                                                    # remove node0
-             | RemoveToken ws NameList                                                  # remove chan1, node0
+Remove      <- RemoveToken ws NameList                                                  # remove node0
 
 Move        <- MoveToken ws String ws String                                            # move comp1 node0
              | MoveToken ws NameList ws String                                          # move comp0, comp1 node1
