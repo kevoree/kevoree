@@ -4,7 +4,7 @@
 # =====
 KevScript   <- +(Statement ws)
 
-Statement   <- (Add | Remove | Move | Attach | Detach | Set | AddBinding | Merge | Network) ws
+Statement   <- (Add | Remove | Move | Attach | Detach | Set | AddBinding | DelBinding | Merge | Network) ws
 
 Add         <- AddToken ws String ws :':' ws String                                     # add node0 : JavaSENode
              | AddToken ws NameList ws :':' ws String                                   # add node42, node1 : JavascriptNode
@@ -36,7 +36,10 @@ AttrList    <- :'{' ws Attribute ws *(:[,] ws Attribute) ws :'}' ?(:'@' String) 
 Attribute   <- String ws :'=' ws :['] ws String2 ws :[']                                # myAttr = 'foo'
              | String ws :'=' ws :["] ws String2 ws :["]                                # myOtherAttr = "bar"
 
-AddBinding  <- String :'.' String ws :'=>' ws String                                    # comp0.sendMsg => chan42
+AddBinding  <- BindToken ws String :'.' String ws NameList                              # comp0.sendMsg chan42
+
+DelBinding  <- UnbindToken ws String :'.' String ws NameList                            # unbind comp0.sendMsg chan0, chan1
+             | UnbindToken ws String :'.' String ws '*'                                 # unbind comp0.sendMsg *
 
 Merge       <- MergeToken ws String :':' String2                                        # merge npm:kevoree-chan-websocket
                                                                                         # merge mvn:org.kevoree.library.javase:websocketgrp:2.0.5-SNAPSHOT
@@ -56,6 +59,8 @@ SetToken        <: 'set'
 AttachToken     <: 'attach'
 DetachToken     <: 'detach'
 NetworkToken    <: 'network'
+BindToken       <: 'bind'
+UnbindToken     <: 'unbind'
 String          <- +[a-zA-Z0-9_-]
 String2         <- +[a-zA-Z0-9.:@_-]
 eol             <: '\r\n' | '\n' | '\r'
