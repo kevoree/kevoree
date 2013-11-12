@@ -1,15 +1,32 @@
 merge npm:kevoree-group-websocket@0.0.2
 merge npm:kevoree-chan-websocket
+merge mvn:org.kevoree.library.javase:org.kevoree.library.javase.websocketgrp:2.0.5-SNAPSHOT
 merge npm:kevoree-comp-fakeconsole
-merge mvn:org.kevoree.library.javase:org.kevoree.library.javase.websocket:2.0.5-SNAPSHOT
 
-add node0 : JavascriptNode
+add node0, node1 : JavascriptNode
 add sync : WebSocketGroup
 add comp0 : FakeConsole
+add chan0 : WebSocketChannel
 
 attach node0 sync
-set sync {foo = "bar", baz = 'potato'}, {port = '42'}@node0, {port = '41', test="dico"}@node1
-set comp0 {att="val", att1='val1'}
+attach node0, node1 sync
+attach * sync
 
-remove node0
-remove node0, sync
+move comp0 node0
+move * node0
+move *@node0 node1
+move comp0, comp1 node1
+
+comp0.sendMsg => chan0
+
+set comp0 {foo="bar", baz='potato'}
+set sync {forcePush="false"}, {port='8000'}@node0, {port='8001'}@node1
+
+network node0 192.168.0.1
+
+remove node0, node1
+remove sync
+
+detach node0 sync
+detach node0, node1 sync
+detach * sync
