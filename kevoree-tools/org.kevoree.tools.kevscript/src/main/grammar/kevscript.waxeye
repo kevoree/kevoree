@@ -28,7 +28,7 @@ Detach      <- DetachToken ws String ws String                                  
 
 Set         <- SetToken ws String ws Dictionary                                         # set comp0 {}
 
-Network     <- NetworkToken ws String ws String                                         # network node1 192.168.0.1
+Network     <- NetworkToken ws String ws String2                                        # network node1 192.168.0.1
 
 Dictionary  <- AttrList                                                                 # set comp0 { att = "foo"}
              | AttrList ws *(:[,] ws AttrList)                                          # set sync {foo='bar'}, {port="8080"}@node0
