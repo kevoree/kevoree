@@ -166,7 +166,7 @@ open class NodeTypeBootstrapHelper : Bootstraper, KCLBootstrap {
         if(optgroup != null) {
             val groupTypeDeployUnitList = optgroup.typeDefinition!!.deployUnits
             if (groupTypeDeployUnitList.size > 0) {
-                val kcl = installGroupTyp(optgroup.typeDefinition as GroupType)
+                val kcl = installGroupType(optgroup.typeDefinition as GroupType)
                 if (kcl != null) {
                     val clazz = kcl.loadClass(optgroup!!.typeDefinition!!.bean)
                     val groupType = clazz!!.newInstance() as AbstractGroupType
@@ -206,12 +206,12 @@ open class NodeTypeBootstrapHelper : Bootstraper, KCLBootstrap {
         }
     }
 
-    private fun installGroupTyp(groupType: GroupType): Klassloader? {
+    private fun installGroupType(groupType: GroupType): Klassloader? {
         if (groupType.deployUnits.find { dp -> dp.targetNodeType!!.name.equals("JavaSENode") } != null ) {
             val superKCLs = ArrayList<Klassloader>()
             val superTypeBootStrap = groupType.superTypes.all {
                 superType ->
-                val superKCL = installNodeType(superType as org.kevoree.NodeType)
+                val superKCL = installGroupType(superType as org.kevoree.GroupType)
                 if (superKCL != null) {
                     superKCLs.add(superKCL)
                 }

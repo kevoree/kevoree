@@ -131,7 +131,7 @@ class KevoreeAnnotationProcessor() extends javax.annotation.processing.AbstractP
       val libraries = options.get("libraries").asInstanceOf[java.util.List[String]]
       root.getTypeDefinitions.foreach {
         typeDefinition =>
-          if (root.getLibraries.exists(library => library.getSubTypes.contains(typeDefinition))) {
+          if (!root.getLibraries.exists(library => library.getSubTypes.contains(typeDefinition))) {
             libraries.foreach {
               libraryName =>
                 root.getLibraries.find({
