@@ -4,7 +4,7 @@
 # =====
 KevScript   <- +(Statement ws)
 
-Statement   <- (Add | Remove | Move | Attach | Detach | Set | AddBinding | DelBinding | Merge | Network) ws
+Statement   <- (Add | Remove | Move | Attach | Detach | Set | AddBinding | DelBinding | Merge | Network | AddRepo) ws
 
 Add         <- AddToken ws String ws :':' ws String                                     # add node0 : JavaSENode
              | AddToken ws NameList ws :':' ws String                                   # add node42, node1 : JavascriptNode
@@ -41,6 +41,8 @@ AddBinding  <- BindToken ws String :'.' String ws NameList                      
 DelBinding  <- UnbindToken ws String :'.' String ws NameList                            # unbind comp0.sendMsg chan0, chan1
              | UnbindToken ws String :'.' String ws '*'                                 # unbind comp0.sendMsg *
 
+AddRepo     <- RepoToken ws Anything                                                    # repo org.sonatype.org/foo/bar?a=b&c=d
+
 Merge       <- MergeToken ws String :':' String2                                        # merge npm:kevoree-chan-websocket
                                                                                         # merge mvn:org.kevoree.library.javase:websocketgrp:2.0.5-SNAPSHOT
 
@@ -51,6 +53,7 @@ NameList    <- String ws *(:[,] ws String)                                      
 
 # Void Non-terminals
 # =============
+RepoToken       <: 'repo'
 MergeToken      <: 'merge'
 AddToken        <: 'add'
 RemoveToken     <: 'remove'
@@ -63,6 +66,7 @@ BindToken       <: 'bind'
 UnbindToken     <: 'unbind'
 String          <- +[a-zA-Z0-9_-]
 String2         <- +[a-zA-Z0-9.:@_-]
+Anything        <- +(!eol .) :eol
 eol             <: '\r\n' | '\n' | '\r'
 ws              <: *([ \t] | eol)
 # =================
