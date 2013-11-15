@@ -27,7 +27,7 @@
 package org.kevoree.tools.ui.editor
 
 import com.explodingpixels.macwidgets._
-import command.{AddElementUICommand, SynchCodeCommand, ReloadTypePalette}
+import command.{AddElementUICommand, ReloadTypePalette}
 import javax.swing._
 import java.awt.datatransfer.{DataFlavor, Transferable}
 import org.kevoree.tools.ui.framework.elements.{GroupTypePanel, NodeTypePanel, ChannelTypePanel, ComponentTypePanel}
@@ -224,30 +224,6 @@ class TypeDefinitionSourceList(pane: JSplitPane, kernel: KevoreeUIKernel) {
     new PopupMenuCustomizer() {
       def customizePopup(popup: JPopupMenu) {
         popup.removeAll();
-
-        val menuItem = new JMenuItem("Generate ComponentType");
-        menuItem.addActionListener(new ActionListener {
-          def actionPerformed(p1: ActionEvent) {
-            val generateAction = new SynchCodeCommand
-            generateAction.setKernel(kernel)
-            val typeDef: TypeDefinition = kernel.getUifactory.getMapping.get(getSelectedPanel).asInstanceOf[TypeDefinition]
-            generateAction.execute(typeDef)
-          }
-        });
-        popup.add(menuItem);
-
-        val menuItem2 = new JMenuItem("Generate DeployUnit");
-        menuItem2.addActionListener(new ActionListener {
-          def actionPerformed(p1: ActionEvent) {
-            val generateAction = new SynchCodeCommand
-            generateAction.setKernel(kernel)
-            val typeDef: TypeDefinition = kernel.getUifactory.getMapping.get(getSelectedPanel).asInstanceOf[TypeDefinition]
-            if (typeDef != null) {
-              typeDef.getDeployUnits.foreach(du => generateAction.execute(du))
-            }
-          }
-        });
-        popup.add(menuItem2);
       }
     });
 
