@@ -57,9 +57,8 @@ trait DeployUnitProcessor {
       }
       case Some(fdu) => fdu.setHashcode(tag); fdu
     }
-    if (!typeDef.getDeployUnits.contains(ctdeployunit)) {
-      typeDef.addDeployUnits(ctdeployunit)
-    }
+      typeDef.setDeployUnit(ctdeployunit)
+
 
 
 

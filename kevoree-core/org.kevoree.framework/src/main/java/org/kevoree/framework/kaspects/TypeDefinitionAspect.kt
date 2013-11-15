@@ -48,7 +48,7 @@ class TypeDefinitionAspect {
     }  */
 
     fun foundRelevantDeployUnit(selfTD: TypeDefinition): DeployUnit? {
-        var deployUnitfound: DeployUnit? = selfTD.deployUnits.get(0)
+        var deployUnitfound: DeployUnit? = selfTD.deployUnit
         /*if (deployUnitfound == null) {
             deployUnitfound = foundRelevantDeployUnitOnNodeSuperTypes(node.typeDefinition!! as NodeType, selfTD)
         }*/
