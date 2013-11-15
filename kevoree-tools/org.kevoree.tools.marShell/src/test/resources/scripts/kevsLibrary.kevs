@@ -1,7 +1,0 @@
-
-tblock {
-
- addLibrary lib1,lib2,lib3
- removeLibrary lib2
-
- }
