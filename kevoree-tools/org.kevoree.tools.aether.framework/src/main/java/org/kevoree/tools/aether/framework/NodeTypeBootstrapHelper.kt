@@ -207,7 +207,7 @@ open class NodeTypeBootstrapHelper : Bootstraper, KCLBootstrap {
     }
 
     private fun installGroupType(groupType: GroupType): Klassloader? {
-        if (groupType.deployUnits.find { dp -> dp.targetNodeType!!.name.equals("JavaSENode") } != null ) {
+        if (groupType.deployUnits.get(0) != null ) {
             val superKCLs = ArrayList<Klassloader>()
             val superTypeBootStrap = groupType.superTypes.all {
                 superType ->
@@ -219,15 +219,9 @@ open class NodeTypeBootstrapHelper : Bootstraper, KCLBootstrap {
             }
             //            val superTypeBootStrap = groupType.superTypes.all { superType -> installGroupTyp(superType as GroupType) != null }
             if (superTypeBootStrap) {
-                //FAKE NODE
-                val fakeNode = kevoreeFactory.createContainerNode()
-                val javaseTD = (groupType.eContainer() as ContainerRoot).findTypeDefinitionsByID("JavaSENode")
-                if(javaseTD != null){
-                    fakeNode.typeDefinition = javaseTD
-                }
                 var ct: DeployUnit? = null
                 try {
-                    ct = TypeDefinitionAspect().foundRelevantDeployUnit(groupType, fakeNode)
+                    ct = TypeDefinitionAspect().foundRelevantDeployUnit(groupType)
                 } catch(e: Exception) {
                     e.printStackTrace()
                 }

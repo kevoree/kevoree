@@ -54,16 +54,6 @@ public class AddChannelCommand implements Command {
         this.point = p;
     }
 
-
-    protected Boolean isArduinoManaged(TypeDefinition td){
-        for(DeployUnit du : td.getDeployUnits()){
-            if(du.getTargetNodeType()!=null && du.getTargetNodeType().getName().toLowerCase().contains("arduino")){
-                return true;
-            }
-        }
-        return false;
-    }
-
     @Override
     public void execute(Object p) {
         Channel newhub = ModelHelper.kevoreeFactory().createChannel();
@@ -73,12 +63,7 @@ public class AddChannelCommand implements Command {
         //CREATE NEW NAME
         //newhub.setName("hub" + Math.abs(random.nextInt()));
 
-        if(isArduinoManaged(type)){
-            newhub.setName(type.getName().substring(0, Math.min(type.getName().length(), 1)) + "" + Math.abs(new java.util.Random().nextInt(99)));
-        }   else {
             newhub.setName(type.getName().substring(0, Math.min(type.getName().length(), 9)) + "" + Math.abs(new java.util.Random().nextInt(999)));
-        }
-
 
 
         ChannelPanel newhubpanel = kernel.getUifactory().createHub(newhub);

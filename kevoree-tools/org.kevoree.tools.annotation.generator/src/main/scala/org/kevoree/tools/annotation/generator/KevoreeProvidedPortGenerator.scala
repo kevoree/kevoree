@@ -26,9 +26,8 @@ import scala.Some
 
 object KevoreeProvidedPortGenerator {
 
-  def generate(root: ContainerRoot, filer: javax.annotation.processing.Filer, ct: KevoreeComponentType, ref: PortTypeRef, targetNodeType: String) {
-    val portPackage = GeneratorHelper.getTypeDefinitionGeneratedPackage(ct, targetNodeType)
-    // var portPackage = ct.getFactoryBean().substring(0, ct.getFactoryBean().lastIndexOf("."));
+  def generate(root: ContainerRoot, filer: javax.annotation.processing.Filer, ct: KevoreeComponentType, ref: PortTypeRef) {
+    val portPackage = GeneratorHelper.getTypeDefinitionGeneratedPackage(ct)
     val portName = ct.getName + "PORT" + ref.getName
     val wrapper = filer.createResource(StandardLocation.SOURCE_OUTPUT, "", new String(portPackage.replace(".", "/") + "/" + portName + ".kt"))
     val writer = wrapper.openWriter()

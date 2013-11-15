@@ -21,12 +21,11 @@ import org.kevoree._
 import framework.annotation.processor.LocalUtility
 import javax.lang.model.element.TypeElement
 import javax.annotation.processing.ProcessingEnvironment
-import scala.collection.JavaConversions._
 
 
 trait DeployUnitProcessor {
 
-  def processDeployUnit(typeDef: TypeDefinition, classdef: TypeElement, env: ProcessingEnvironment,options : java.util.Map[String,Object]) = {
+  def processDeployUnit(typeDef: TypeDefinition, classdef: TypeElement, env: ProcessingEnvironment, options: java.util.Map[String, Object]) = {
     val root: ContainerRoot = typeDef.eContainer.asInstanceOf[ContainerRoot]
     import scala.collection.JavaConversions._
 
@@ -41,51 +40,27 @@ trait DeployUnitProcessor {
 
     val tRepositories = options.get("otherRepositories").toString
     val tRepositoriesList: List[String] = tRepositories.split(";").filter(r => r != null && r != "").toList
-
-    val nodeTypeNames = options.get("nodeTypeNames").toString
-    val nodeTypeNamesS: List[String] = nodeTypeNames.split(",").filter(r => r != null && r != "").toList
-
     var deployUnits: List[DeployUnit] = List()
-    nodeTypeNamesS.foreach {
-      nodeTypeName =>
-        val ctdeployunit = root.getDeployUnits.find({
-          du => du.getName == name && du.getGroupName == groupName && du.getVersion == version && du.getTargetNodeType.getName == nodeTypeName
-        }) match {
-          case None => {
-            val newdeploy = LocalUtility.kevoreeFactory.createDeployUnit
-            newdeploy.setName(name)
-            newdeploy.setGroupName(groupName)
-            newdeploy.setVersion(version)
-            newdeploy.setHashcode(tag)
-            newdeploy.setType(dutype)
-
-            /* ROOT ADD NODE TYPE IF NECESSARY */
-            //nodeTypeNameList.foreach {
-            //nodeTypeName =>
-            root.getTypeDefinitions.filter(p => p.isInstanceOf[NodeType]).find(nt => nt.getName == nodeTypeName) match {
-              case Some(existingNodeType) => newdeploy.setTargetNodeType(existingNodeType.asInstanceOf[NodeType])
-              case None => {
-                if (typeDef.getName == nodeTypeName) {
-                  newdeploy.setTargetNodeType(typeDef.asInstanceOf[NodeType])
-                } else {
-                  val nodeType = LocalUtility.kevoreeFactory.createNodeType
-                  nodeType.setName(nodeTypeName)
-                  root.addTypeDefinitions(nodeType)
-                  newdeploy.setTargetNodeType(nodeType)
-                }
-              }
-            }
-
-            root.addDeployUnits(newdeploy)
-            deployUnits = deployUnits ++ List(newdeploy)
-            newdeploy
-          }
-          case Some(fdu) => fdu.setHashcode(tag); fdu
-        }
-        if (!typeDef.getDeployUnits.contains(ctdeployunit)) {
-          typeDef.addDeployUnits(ctdeployunit)
-        }
+    val ctdeployunit = root.getDeployUnits.find({
+      du => du.getName == name && du.getGroupName == groupName && du.getVersion == version
+    }) match {
+      case None => {
+        val newdeploy = LocalUtility.kevoreeFactory.createDeployUnit
+        newdeploy.setName(name)
+        newdeploy.setGroupName(groupName)
+        newdeploy.setVersion(version)
+        newdeploy.setHashcode(tag)
+        newdeploy.setType(dutype)
+        root.addDeployUnits(newdeploy)
+        deployUnits = deployUnits ++ List(newdeploy)
+        newdeploy
+      }
+      case Some(fdu) => fdu.setHashcode(tag); fdu
     }
+    if (!typeDef.getDeployUnits.contains(ctdeployunit)) {
+      typeDef.addDeployUnits(ctdeployunit)
+    }
+
 
 
 

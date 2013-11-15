@@ -22,14 +22,14 @@ import scala.Some
 object KevoreeGenerator {
 
   /* GENERATE WRAPPER FOR DECLARATIF PORT */
-  def generatePortWrapper(root: ContainerRoot, filer: javax.annotation.processing.Filer, targetNodeType: String) {
+  def generatePortWrapper(root: ContainerRoot, filer: javax.annotation.processing.Filer) {
     root.getTypeDefinitions.filter(p => p.isInstanceOf[ComponentType]).foreach {
       ctt =>
         val ct = ctt.asInstanceOf[ComponentType]
         ct.getProvided.foreach {
           ref =>
 
-            val portPackage = GeneratorHelper.getTypeDefinitionGeneratedPackage(ct, targetNodeType)
+            val portPackage = GeneratorHelper.getTypeDefinitionGeneratedPackage(ct)
             val portName = ct.getName + "PORT" + ref.getName;
             val wrapper = filer.createSourceFile(portPackage + "." + portName)
             val writer = wrapper.openWriter
@@ -95,14 +95,14 @@ object KevoreeGenerator {
     }
   }
 
-  def generatePort(root: ContainerRoot, filer: Filer, targetNodeType: String) {
+  def generatePort(root: ContainerRoot, filer: Filer) {
     root.getTypeDefinitions.filter(td => td.getBean != "").filter(p => p.isInstanceOf[ComponentType] && !p.getAbstract).foreach {
       ctt => val ct = ctt.asInstanceOf[ComponentType]
         ct.getProvided.foreach {
-          ref => KevoreeProvidedPortGenerator.generate(root, filer, ct, ref, targetNodeType)
+          ref => KevoreeProvidedPortGenerator.generate(root, filer, ct, ref)
         }
         ct.getRequired.foreach {
-          ref => KevoreeRequiredPortGenerator.generate(root, filer, ct, ref, targetNodeType)
+          ref => KevoreeRequiredPortGenerator.generate(root, filer, ct, ref)
         }
     }
   }

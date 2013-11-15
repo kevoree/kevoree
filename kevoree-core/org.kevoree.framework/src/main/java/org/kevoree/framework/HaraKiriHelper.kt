@@ -36,6 +36,8 @@ class HaraKiriHelper {
                     val deployUnit = ad.ref as DeployUnit
                     val root = deployUnit.eContainer() as ContainerRoot
                     val currentNode = root.findNodesByID(nodeName)
+
+                    /*
                     if(nodeName != null){
                         if (detectHaraKiriDeployUnit(currentNode!!.typeDefinition!!, deployUnit)) {
                             Log.warn("HaraKiri ignore from Kompare for deployUnit => {}",deployUnit.name)
@@ -43,7 +45,7 @@ class HaraKiriHelper {
                         } else {
                             Log.debug("Sucessfully checked {}",deployUnit.name)
                         }
-                    }
+                    }*/
                 }
                 if(ad.ref is TypeDefinition){
                     val typeDef = ad.ref as TypeDefinition
@@ -70,6 +72,7 @@ class HaraKiriHelper {
         }
     }
 
+    /*
     fun detectHaraKiriDeployUnit(nodeType: TypeDefinition, deployUnit: DeployUnit): Boolean {
         if (
         nodeType.deployUnits.any{ du -> DeployUnitAspect().isModelEquals(du, deployUnit) } || nodeType.superTypes.any{ superT -> detectHaraKiriDeployUnit(superT, deployUnit) }
@@ -90,7 +93,7 @@ class HaraKiriHelper {
             return true
         }
         return org.kevoree.framework.kaspects.TypeDefinitionAspect().isUpdated(currentNode.typeDefinition!!, targetNode.typeDefinition!!)
-    }
+    }*/
 
     fun cleanModelForInit(targetModel: ContainerRoot, nodeName: String) {
         targetModel.removeAllMBindings()

@@ -66,11 +66,16 @@
         <module>org.kevoree.tools.aether.framework</module>
         <!-- Kevoree specific frameworks -->
         <module>org.kevoree.tools.javase.framework</module>
-        <module>org.kevoree.tools.android.framework</module>
+       
+		<!--
+	    <module>org.kevoree.tools.android.framework</module>
         <module>org.kevoree.tools.arduino.framework</module>
+			-->
+			
         <module>org.kevoree.tools.camel.framework</module>
-
+		<!--
         <module>org.kevoree.tools.aether.framework.android</module>
+			-->
         <module>org.kevoree.tools.modelsync</module>
 
         <module>org.kevoree.tools.annotation.api</module>
@@ -98,8 +103,6 @@
         -->
         <module>org.kevoree.tools.ui.editor</module>
         <module>org.kevoree.tools.ui.editor.standalone</module>
-
-
         <!--
         <module>org.kevoree.tools.accesscontrol.framework</module>
         -->

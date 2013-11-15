@@ -438,7 +438,7 @@ public override fun compareAndSwapModel(p0: org.kevoree.api.service.core.handler
                     var newmodel = readOnlyNewModel
                     //CHECK FOR HARA KIRI
                     var previousHaraKiriModel: ContainerRoot? = null
-                    if (hkh.detectNodeHaraKiri(currentModel, readOnlyNewModel, getNodeName())) {
+                    if (/*hkh.detectNodeHaraKiri(currentModel, readOnlyNewModel, getNodeName())*/false) {
                         Log.warn("HaraKiri detected , flush platform")
                         previousHaraKiriModel = currentModel
                         // Creates an empty model, removes the current node (harakiri)

@@ -25,10 +25,10 @@ import scala.Tuple2
 
 object KevoreeRequiredPortGenerator {
 
-  def generate(root: ContainerRoot, filer: Filer, ct: KevoreeComponentType, ref: PortTypeRef, targetNodeType: String) {
+  def generate(root: ContainerRoot, filer: Filer, ct: KevoreeComponentType, ref: PortTypeRef) {
     // var portPackage = ct.getFactoryBean().substring(0, ct.getFactoryBean().lastIndexOf("."));
 
-    val portPackage = GeneratorHelper.getTypeDefinitionGeneratedPackage(ct, targetNodeType)
+    val portPackage = GeneratorHelper.getTypeDefinitionGeneratedPackage(ct)
     val portName = ct.getName + "PORT" + ref.getName
     val wrapper = filer.createResource(StandardLocation.SOURCE_OUTPUT, "", new String(portPackage.replace(".", "/") + "/" + portName + ".kt"))
     val writer = wrapper.openWriter()
