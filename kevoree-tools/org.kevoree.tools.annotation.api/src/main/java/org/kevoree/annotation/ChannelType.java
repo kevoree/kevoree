@@ -26,7 +26,5 @@ import java.lang.annotation.Target;
 @Target({ElementType.TYPE})
 public @interface ChannelType{
     java.lang.String description() default "empty";
-
     ThreadStrategy theadStrategy() default ThreadStrategy.SHARED_THREAD;
-
 }
