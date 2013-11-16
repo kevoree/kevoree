@@ -21,7 +21,6 @@ import java.util.concurrent.ScheduledExecutorService
 import java.util.concurrent.TimeUnit
 import org.kevoree.api.service.core.handler.KevoreeModelUpdateException
 import org.kevoree.api.service.core.handler.ModelListener
-import org.kevoree.framework.HaraKiriHelper
 import org.kevoree.impl.DefaultKevoreeFactory
 import java.util.concurrent.atomic.AtomicReference
 import org.kevoree.log.Log
@@ -50,7 +49,6 @@ class KevoreeCoreBean() : KevoreeModelHandlerService {
     var lastDate: Date = Date(System.currentTimeMillis())
     val modelCloner = DefaultModelCloner()
     val modelChecker = RootChecker()
-    val hkh = HaraKiriHelper()
     var selfActorPointer = this
     private var scheduler: ExecutorService? = null
     private var lockWatchDog: ScheduledExecutorService? = null
@@ -386,9 +384,7 @@ public override fun compareAndSwapModel(p0: org.kevoree.api.service.core.handler
                     nodeInstance = _bootstraper?.bootstrapNodeType(currentModel, getNodeName(), this, _kevsEngineFactory!!)
                     if(nodeInstance != null){
                         nodeInstance?.startNode()
-                        val newModel = modelCloner.clone(currentModel)!!
-                        hkh.cleanModelForInit(newModel, getNodeName())
-                        val uuidModel = UUIDModelImpl(UUID.randomUUID(), newModel)
+                        val uuidModel = UUIDModelImpl(UUID.randomUUID(), factory.createContainerRoot())
                         model.set(uuidModel)
                     } else {
                         Log.error("TypeDef installation fail !")
@@ -442,13 +438,7 @@ public override fun compareAndSwapModel(p0: org.kevoree.api.service.core.handler
                         Log.warn("HaraKiri detected , flush platform")
                         previousHaraKiriModel = currentModel
                         // Creates an empty model, removes the current node (harakiri)
-
-                        //TODO somthing better
-                        // clone the current model and remove everything to get an empty node inside the model
-                        newmodel = modelCloner.clone(previousHaraKiriModel!!) as ContainerRoot
-                        hkh.cleanModelForInit(newmodel, getNodeName())
-
-
+                        newmodel = factory.createContainerRoot()
                         try {
                             // Compare the two models and plan the adaptation
                             val adaptationModel = nodeInstance!!.plan(currentModel, newmodel)
