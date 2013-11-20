@@ -4,7 +4,7 @@
 # =====
 KevScript   <- +(Statement ws)
 
-Statement   <- (Add | Remove | Move | Attach | Detach | Set | AddBinding | DelBinding | Merge | Network | AddRepo) ws
+Statement   <- (Add | Remove | Move | Attach | Detach | Set | AddBinding | DelBinding | Merge | Network | AddRepo | Comment) ws
 
 Add         <- AddToken ws String ws :':' ws String                                     # add node0 : JavaSENode
              | AddToken ws NameList ws :':' ws String                                   # add node42, node1 : JavascriptNode
@@ -47,6 +47,8 @@ Merge       <- MergeToken ws String :':' String2                                
                                                                                         # merge mvn:org.kevoree.library.javase:websocketgrp:2.0.5-SNAPSHOT
 
 NameList    <- String ws *(:[,] ws String)                                              # node0, node42, node1024
+
+Comment     <: '//' Anything                                                            # // a comment is inline and starts with '//'
 # =========
 # End Rules
 

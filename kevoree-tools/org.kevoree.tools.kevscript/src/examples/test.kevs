@@ -10,6 +10,9 @@ add sync : WebSocketGroup
 add comp0 : FakeConsole
 add chan0 : WebSocketChannel
 
+// this is a comment
+// comments allow any characters ! \ù%*é=^``~&°.:!§,?/#çà][-|
+
 attach node0 sync
 attach node0, node1 sync
 attach * sync
