@@ -1,7 +1,0 @@
-
-tblock {
-
- startInstance fk2 @ node1
- stopInstance fk1 @ node0
-
- }

@@ -193,7 +193,7 @@ trait ComponentTypeForm {
 
           UIHelper.getSelectedItem(comboDeployUnit) match {
             case du: DeployUnit => {
-              newCt.addDeployUnits(du)
+              newCt.setDeployUnit(du)
             }
             case _@e => System.out.println("Not a DeployUnit. " + e.getClass)
           }

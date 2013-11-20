@@ -155,14 +155,10 @@ class KevoreeAnnotationProcessor() extends javax.annotation.processing.AbstractP
 
     if (!errorsInChecker) {
       //TODO SEPARATE MAVEN PLUGIN
-      val nodeTypeNames = options.get("nodeTypeNames")
-      val nodeTypeNameList: List[String] = nodeTypeNames.toString.split(",").filter(r => r != null && r != "").toList
-      nodeTypeNameList.foreach {
-        targetNodeName =>
-          KevoreeGenerator.generatePort(root, env.getFiler, targetNodeName)
+          KevoreeGenerator.generatePort(root, env.getFiler)
         //KevoreeFactoryGenerator.generateFactory(root, env.getFiler, targetNodeName)
         //KevoreeActivatorGenerator.generateActivator(root, env.getFiler, targetNodeName)
-      }
+
       env.getMessager.printMessage(Kind.OTHER, "Save Kevoree library")
       KevoreeXmiHelper.instance$.save(LocalUtility.generateLibURI(options), root)
       true

@@ -44,8 +44,7 @@ class AutoUpdateCommand extends Command {
       node =>
         containerNodeAspect.getUsedTypeDefinition(node).foreach {
           typeDef =>
-            typeDef.getDeployUnits.foreach {
-              du => {
+            val du = typeDef.getDeployUnit()
                 try {
                   val file = AetherUtil.instance$.resolveDeployUnit(du)
                   val jar = new JarFile(file)
@@ -58,7 +57,7 @@ class AutoUpdateCommand extends Command {
                 } catch {
                   case _@e =>
                 }
-              }
+
 
             }
         }
@@ -67,6 +66,6 @@ class AutoUpdateCommand extends Command {
     }
 
 
-  }
+
 
 }

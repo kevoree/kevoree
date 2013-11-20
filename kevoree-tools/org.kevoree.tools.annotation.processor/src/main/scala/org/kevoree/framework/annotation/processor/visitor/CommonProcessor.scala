@@ -17,7 +17,6 @@ import javax.annotation.processing.ProcessingEnvironment
 trait CommonProcessor extends DeployUnitProcessor
 with DictionaryProcessor
 with LibraryProcessor
-with ThirdPartyProcessor
 with TypeDefinitionProcessor {
 
   var typeDefinition: TypeDefinition
@@ -71,7 +70,5 @@ with TypeDefinitionProcessor {
   def commonProcess(typeDecl: TypeElement) {
     commonGenericProcess(typeDecl)
     processDeployUnit(typeDefinition, typeDecl, env, rootVisitor.getOptions)
-    processThirdParty(typeDefinition, typeDecl, env, rootVisitor)
-
   }
 }

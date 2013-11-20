@@ -17,6 +17,7 @@ class TypeDefinitionAspect {
 
     val duA = DeployUnitAspect()
 
+    /*
     fun isUpdated(selfTD: TypeDefinition, pTD: TypeDefinition): Boolean {
         if (pTD.deployUnits.size == 0 && selfTD.deployUnits.size > 0) {
             return false
@@ -44,16 +45,17 @@ class TypeDefinitionAspect {
             }
         }
         return oneUpdated || updated
-    }
+    }  */
 
-    fun foundRelevantDeployUnit(selfTD: TypeDefinition, node: ContainerNode): DeployUnit? {
-        var deployUnitfound: DeployUnit? = selfTD.deployUnits.find{ du -> du.targetNodeType != null && du.targetNodeType!!.name == node.typeDefinition!!.name }
-        if (deployUnitfound == null) {
+    fun foundRelevantDeployUnit(selfTD: TypeDefinition): DeployUnit? {
+        var deployUnitfound: DeployUnit? = selfTD.deployUnit
+        /*if (deployUnitfound == null) {
             deployUnitfound = foundRelevantDeployUnitOnNodeSuperTypes(node.typeDefinition!! as NodeType, selfTD)
-        }
+        }*/
         return deployUnitfound
     }
 
+    /*
     private fun foundRelevantDeployUnitOnNodeSuperTypes(nodeType: NodeType, t: TypeDefinition): DeployUnit? {
         var deployUnitfound: DeployUnit? = null
         // looking for relevant deployunits on super types
@@ -74,8 +76,8 @@ class TypeDefinitionAspect {
             }
         }
         return deployUnitfound
-    }
-
+    }       */
+     /*
     fun foundRelevantHostNodeType(nodeType: NodeType, targetTypeDef: TypeDefinition): NodeType? {
         for (deployUnit in targetTypeDef.deployUnits) {
             if (deployUnit.targetNodeType != null && deployUnit.targetNodeType == nodeType) {
@@ -89,5 +91,5 @@ class TypeDefinitionAspect {
             }
         }
         return null
-    }
+    } */
 }

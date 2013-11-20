@@ -143,7 +143,6 @@
         iD="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="requiredLibs" upperBound="-1"
         eType="#//DeployUnit"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="targetNodeType" eType="#//NodeType"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="TypeLibrary" eSuperTypes="#//NamedElement">
@@ -206,8 +205,8 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="TypeDefinition" abstract="true" interface="true"
       eSuperTypes="#//NamedElement">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="deployUnits" lowerBound="1"
-        upperBound="-1" eType="#//DeployUnit"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="deployUnit" lowerBound="1"
+        upperBound="1" eType="#//DeployUnit"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="factoryBean" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="bean" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="dictionaryType" eType="#//DictionaryType"

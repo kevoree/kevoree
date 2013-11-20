@@ -14,13 +14,21 @@
 package org.kevoree.tools.annotation.mavenplugin;
 
 import org.apache.maven.artifact.Artifact;
+import org.apache.maven.artifact.repository.ArtifactRepository;
+import org.apache.maven.artifact.resolver.filter.ArtifactFilter;
 import org.apache.maven.model.Repository;
 import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
+import org.apache.maven.shared.dependency.tree.DependencyNode;
+import org.apache.maven.shared.dependency.tree.DependencyTreeBuilder;
+import org.apache.maven.shared.dependency.tree.DependencyTreeBuilderException;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.StringUtils;
+import org.jetbrains.jet.cli.common.ExitCode;
+import org.jetbrains.jet.cli.jvm.K2JVMCompiler;
+import org.jetbrains.jet.cli.jvm.K2JVMCompilerArguments;
 import org.kevoree.ContainerRoot;
 import org.kevoree.DeployUnit;
 import org.kevoree.compare.DefaultModelCompare;
@@ -28,13 +36,12 @@ import org.kevoree.framework.KevoreeXmiHelper;
 import org.kevoree.framework.annotation.processor.visitor.KevoreeAnnotationProcessor;
 import org.kevoree.impl.DefaultKevoreeFactory;
 import org.kevoree.modeling.api.compare.ModelCompare;
-import org.sonatype.aether.RepositorySystem;
-import org.sonatype.aether.RepositorySystemSession;
-import org.sonatype.aether.repository.RemoteRepository;
+import org.kevoree.serializer.JSONModelSerializer;
 
 import javax.tools.*;
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -42,53 +49,35 @@ import java.util.*;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
 
 /**
- * @author ffouquet
  * @author <a href="mailto:ffouquet@irisa.fr">Fouquet François</a>
  * @version $Id$
  * @goal generate
- * @phase generate-sources
+ * @phase compile
  * @requiresDependencyResolution compile
  */
 public class AnnotationPreProcessorMojo extends AbstractMojo {
-    /**
-     * The entry point to Aether, i.e. the component doing all the work.
-     *
-     * @component
-     */
-    private RepositorySystem repoSystem;
+
 
     /**
-     * The current repository/network configuration of Maven.
+     * @parameter default-value="${project.build.directory}/classes"
+     */
+    private File outputClasses;
+
+    K2JVMCompiler compiler = new K2JVMCompiler();
+
+
+    /**
+     * Dependency tree builder component.
      *
-     * @parameter default-value="${repositorySystemSession}"
+     * @component expression=
+     * "org.apache.maven.shared.dependency.tree.DependencyTreeBuilder"
+     * @required
      * @readonly
      */
-    private RepositorySystemSession repoSession;
-
-    /**
-     * The project's remote repositories to use for the resolution of project dependencies.
-     *
-     * @parameter default-value="${project.remoteProjectRepositories}"
-     * @readonly
-     */
-    private List<RemoteRepository> projectRepos;
-    /**
-     * Annotation Processor FQN (Full Qualified Name) - when processors are not specified, the default discovery mechanism will be used
-     *
-     * @parameter required = false, description = "Annotation Processor FQN (Full Qualified Name) - when processors are not specified, the default discovery mechanism will be used"
-     */
-    private String[] processors;
-
-    /**
-     * Additional compiler arguments
-     *
-     * @parameter required = false, description = "Additional compiler arguments"
-     */
-    private String compilerArguments;
+    private DependencyTreeBuilder dependencyTreeBuilder;
 
     /**
      * Additional processor options (see javax.annotation.processing.ProcessingEnvironment#getOptions()
@@ -113,34 +102,7 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
      */
     private boolean outputDiagnostics = true;
 
-    /**
-     * System properties set before processor invocation.
-     *
-     * @parameter required = false, description = "System properties set before processor invocation."
-     */
-    private java.util.Map<String, String> systemProperties;
-
-
     private ReentrantLock compileLock = new ReentrantLock();
-
-
-    private String buildProcessor() {
-        if (processors == null || processors.length == 0) {
-            return null;
-        }
-
-        StringBuilder result = new StringBuilder();
-
-        int i = 0;
-
-        for (i = 0; i < processors.length - 1; ++i) {
-            result.append(processors[i]).append(',');
-        }
-
-        result.append(processors[i]);
-
-        return result.toString();
-    }
 
     private String buildCompileClasspath() {
 
@@ -213,31 +175,16 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
         }
 
         Iterable<? extends JavaFileObject> compilationUnits1 = null;
-
-
         String compileClassPath = buildCompileClasspath();
-
-        String processor = buildProcessor();
-
         List<String> options = new ArrayList<String>(10);
-
         options.add("-cp");
         options.add(compileClassPath);
         options.add("-proc:only");
-
         addCompilerArguments(options);
-
-
-        //     options.add("-processor");
-        //     options.add("org.kevoree.framework.annotation.processor.visitor.KevoreeAnnotationProcessor");
-
         options.add("-d");
         options.add(getOutputClassDirectory().getPath());
-
         options.add("-s");
         options.add(outputDirectory.getPath());
-
-
         for (String option : options) {
             getLog().info("javac option: " + option);
         }
@@ -269,16 +216,6 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
                 public void report(Diagnostic<? extends JavaFileObject> diagnostic) {
                 }
             };
-        }
-
-        if (systemProperties != null) {
-            java.util.Set<Map.Entry<String, String>> pSet = systemProperties.entrySet();
-
-            for (Map.Entry<String, String> e : pSet) {
-                getLog().info(String.format("set system property : [%s] = [%s]", e.getKey(), e.getValue()));
-                System.setProperty(e.getKey(), e.getValue());
-            }
-
         }
 
         compileLock.lock();
@@ -313,16 +250,6 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
 
             task.setProcessors(Arrays.asList(p));
 
-
-            /*
-            * //Create a list to hold annotation processors LinkedList<Processor> processors = new
-            * LinkedList<Processor>();
-            *
-            * //Add an annotation processor to the list processors.add(p);
-            *
-            * //Set the annotation processor to the compiler task task.setProcessors(processors);
-            */
-
             // Perform the compilation task.
             if (!task.call()) {
 
@@ -337,15 +264,6 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
     }
 
     private void addCompilerArguments(List<String> options) {
-        if (!StringUtils.isEmpty(compilerArguments)) {
-            for (String arg : compilerArguments.split(" ")) {
-                if (!StringUtils.isEmpty(arg)) {
-                    arg = arg.trim();
-                    getLog().info("Adding compiler arg: " + arg);
-                    options.add(arg);
-                }
-            }
-        }
         if (optionMap != null && !optionMap.isEmpty()) {
             for (java.util.Map.Entry<String, Object> e : optionMap.entrySet()) {
 
@@ -461,21 +379,47 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
     private File sourceOutputDirectory;
 
     /**
-     * TargetNodeTypeNames
-     *
-     * @parameter
-     * @required
-     */
-    private String nodeTypeNames;
-
-    /**
      * List of libraries on which TypeDefinition found will be added (if there is no libraies already defined)
      *
      * @parameter
      */
     private List<String> libraries;
 
+    /**
+     * @parameter default-value="${localRepository}"
+     */
+    private ArtifactRepository localRepository;
+
     private static DateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmSSS");
+
+    private HashMap<String, DeployUnit> cache = new HashMap<String, DeployUnit>();
+
+    public String createKey(DependencyNode e) {
+        Artifact a = e.getArtifact();
+        return a.getGroupId() + a.getArtifactId() + a.getVersion() + a.getType();
+    }
+
+    public void fillModel(ContainerRoot model, DependencyNode root) {
+        if (!cache.containsKey(createKey(root))) {
+            DeployUnit du = new DefaultKevoreeFactory().createDeployUnit();
+            du.setName(root.getArtifact().getArtifactId());
+            du.setGroupName(root.getArtifact().getGroupId());
+            du.setVersion(root.getArtifact().getVersion());
+            du.setType(root.getArtifact().getType());
+            model.addDeployUnits(du);
+            cache.put(createKey(root), du);
+        }
+        for (DependencyNode child : root.getChildren()) {
+            fillModel(model, child);
+        }
+    }
+
+    public void linkModel(DependencyNode root) {
+        for (DependencyNode child : root.getChildren()) {
+            cache.get(createKey(root)).addRequiredLibs(cache.get(createKey(child)));
+            linkModel(child);
+        }
+    }
 
     @Override
     public void execute() throws MojoExecutionException {
@@ -489,32 +433,30 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
             }
         }
         String otherRepositories = ";";
-
-
         for (Repository repo : project.getRepositories()) {
             otherRepositories += ";" + repo.getUrl();
         }
+        ContainerRoot model = new DefaultKevoreeFactory().createContainerRoot();
+        try {
+            DependencyNode graph = dependencyTreeBuilder.buildDependencyTree(project,
+                    localRepository,
+                    new ArtifactFilter() {
+                        @Override
+                        public boolean include(Artifact artifact) {
+                            return true;
+                        }
+                    });
 
-        List<DeployUnit> deployUnits = ThirdPartyManagement.processKevoreeProperty(project, getLog(), repoSystem, repoSession, projectRepos);
-        
-        String thirdParties = ";";
-        for (DeployUnit dep : deployUnits) {
-            thirdParties += ";" + dep.getGroupName() + "," + dep.getName() + "," + toBaseVersion(dep.getVersion()) + "," + dep.getType();
-            if (dep.getUrl() != null) {
-                thirdParties += "," + dep.getUrl();
-            }
+            fillModel(model, graph);
+            linkModel(graph);
+        } catch (DependencyTreeBuilderException e) {
+            e.printStackTrace();
         }
 
-        ContainerRoot model = new DefaultKevoreeFactory().createContainerRoot();
-        model.setDeployUnits(deployUnits);
-
         KevoreeXmiHelper.instance$.save(sourceOutputDirectory.getPath() + File.separator + "KEV-INF" + File.separator + "lib.kev", model);
-
-
         this.options.put("kevoree.lib.id", this.project.getArtifactId());
         this.options.put("kevoree.lib.group", this.project.getGroupId());
         this.options.put("kevoree.lib.version", this.project.getVersion());
-
         String packaging = this.project.getPackaging();
         if (packaging == null || packaging.equals("")) {
             packaging = "jar";
@@ -524,104 +466,76 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
         this.options.put("kevoree.lib.tag", dateFormat.format(new Date()));
         this.options.put("repositories", repositories);
         this.options.put("otherRepositories", otherRepositories);
-        this.options.put("thirdParties", thirdParties);
-        this.options.put("nodeTypeNames", nodeTypeNames);
         if (libraries != null) {
             this.options.put("libraries", libraries);
         }
-
-        Resource resource = new Resource();
-        resource.setDirectory(sourceOutputDirectory.getPath() + File.separator + "KEV-INF");
-        resource.setTargetPath("KEV-INF");
-        project.getResources().add(resource);
-
         executeWithExceptionsHandled();
-
-        //AFTER ALL GENERATED
         try {
             File file = new File(sourceOutputDirectory.getPath() + File.separator + "KEV-INF" + File.separator + "lib.kev");
             if (file.exists()) {
                 model = KevoreeXmiHelper.instance$.load(sourceOutputDirectory.getPath() + File.separator + "KEV-INF" + File.separator + "lib.kev");
-
                 ModelCompare compare = new DefaultModelCompare();
-
-
                 for (Artifact artifact : project.getDependencyArtifacts()) {
                     if (artifact.getScope().equals(Artifact.SCOPE_COMPILE)) {
                         try {
-//                            DefaultArtifact defaultArtifact = (DefaultArtifact) artifact;
                             JarFile jar = new JarFile(artifact.getFile());
                             JarEntry entry = jar.getJarEntry("KEV-INF/lib.kev");
                             if (entry != null) {
                                 getLog().info("Auto merging dependency => " + " from " + artifact);
                                 ContainerRoot libModel = KevoreeXmiHelper.instance$.loadStream(jar.getInputStream(entry));
-                                compare.merge(model,libModel).applyOn(model);
+                                compare.merge(model, libModel).applyOn(model);
                             }
                         } catch (Exception e) {
                             getLog().info("Unable to get KEV-INF/lib.kev on " + artifact.getArtifactId() + "(Kevoree lib will not be merged): " + e.getMessage());
                         }
                     }
                 }
-
-                // add deployUnits comming from third party management
-
-
-                // check if the targetNodeType which is define for each TypeDefinition is well defined
-                /*
-                boolean targetNodeTypesIsWellDefined = true;
-                for (TypeDefinition typeDefinition : model.getTypeDefinitions()) {
-                    for (DeployUnit deployUnit : typeDefinition.getDeployUnits()) {
-                        targetNodeTypesIsWellDefined = targetNodeTypesIsWellDefined && deployUnit.getTargetNodeType().getDeployUnits().size() > 0;
-                    }
-                }
-                if (!targetNodeTypesIsWellDefined) {
-                    getLog().error("TargetNodeType(s) are not well defined. Please check your dependencies to ensure that one (or more) of them provide the NodeType(s) you define as targetNodeType(s): " + options.get("nodeTypeNames"));
-                    throw new Exception("TargetNodeType(s) are not well defined. Please check your dependencies to ensure that one (or more) of them provide the NodeType(s) you define as targetNodeType(s): " + options.get("nodeTypeNames"));
-                }
-                 */
-                KevoreeXmiHelper.instance$.save(sourceOutputDirectory.getPath() + File.separator + "KEV-INF" + File.separator + "lib.kev", model);
+                KevoreeXmiHelper.instance$.save(project.getBuild().getOutputDirectory() + File.separator + "KEV-INF" + File.separator + "lib.kev", model);
             }
-
-
         } catch (Exception e) {
-//            e.printStackTrace();
             throw new MojoExecutionException("Unable to build kevoree model for types", e);
         }
 
-
-    }
-
-    // protected methods ------------------------------------------------------
-    private static final String SNAPSHOT = "SNAPSHOT";
-
-    private static final Pattern SNAPSHOT_TIMESTAMP = Pattern.compile("^(.*-)?([0-9]{8}.[0-9]{6}-[0-9]+)$");
-
-    protected static boolean isSnapshot(String version) {
-        return version.endsWith(SNAPSHOT) || SNAPSHOT_TIMESTAMP.matcher(version).matches();
-    }
-
-    protected static String toBaseVersion(String version) {
-        String baseVersion;
-
-        if (version == null) {
-            baseVersion = version;
-        } else if (version.startsWith("[") || version.startsWith("(")) {
-            baseVersion = version;
-        } else {
-            Matcher m = SNAPSHOT_TIMESTAMP.matcher(version);
-            if (m.matches()) {
-                if (m.group(1) != null) {
-                    baseVersion = m.group(1) + SNAPSHOT;
-                } else {
-                    baseVersion = SNAPSHOT;
+        //compile
+        try {
+            K2JVMCompilerArguments args = new K2JVMCompilerArguments();
+            StringBuffer cpath = new StringBuffer();
+            boolean firstBUF = true;
+            for (String path : project.getCompileClasspathElements()) {
+                if (!firstBUF){
+                    cpath.append(File.pathSeparator);
                 }
-            } else {
-                baseVersion = version;
+                cpath.append(path);
+                firstBUF = false;
             }
+            args.setClasspath(cpath.toString());
+            args.setSourceDirs(Collections.singletonList(sourceOutputDirectory.getPath()));
+            args.setOutputDir(outputClasses.getPath());
+            args.noJdkAnnotations = true;
+            args.noStdlib = true;
+
+            ExitCode e = compiler.exec(new PrintStream(System.err){
+                @Override
+                public void println(String x) {
+                    if(x.startsWith("WARNING") || x.startsWith("[WARNING]")){
+
+                    } else {
+                        super.println(x);
+                    }
+                }
+            }, args);
+            if (e.ordinal() != 0) {
+                throw new MojoExecutionException("Embedded Kotlin compilation error !");
+            }
+        } catch (MojoExecutionException e) {
+            getLog().error(e);
+            throw e;
+        } catch (Exception e) {
+            getLog().error(e);
         }
 
-        return baseVersion;
-    }
 
+
+    }
 
 }

@@ -48,9 +48,9 @@ object GeneratorHelper {
   }
 
 
-  def getTypeDefinitionGeneratedPackage(td: TypeDefinition, targetNodeType: String): String = {
+  def getTypeDefinitionGeneratedPackage(td: TypeDefinition): String = {
     val basePackage = td.getBean.substring(0, td.getBean.lastIndexOf("."))
-    return basePackage + "." + "kevgen" + "." + targetNodeType
+    return basePackage + "." + "kevgen"
   }
   def getTypeDefinitionBasePackage(td: TypeDefinition): String = {
     return td.getBean.substring(0, td.getBean.lastIndexOf("."))

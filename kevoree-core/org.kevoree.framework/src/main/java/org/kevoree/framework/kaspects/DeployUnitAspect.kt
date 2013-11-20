@@ -16,6 +16,7 @@ class DeployUnitAspect {
         return self.name + "." + self.groupName + "." + self.version
     }
 
+    /*
     fun isModelEquals(self: DeployUnit, other: DeployUnit): Boolean {
         if(other == null){
             if(self == null){
@@ -27,19 +28,12 @@ class DeployUnitAspect {
         if (other.name != self.name || other.groupName != self.groupName || other.version != self.version) {
             return false
         }
-        if (other.targetNodeType != null && self.targetNodeType == null) {
-            return false
-        }
-
-        if (other.targetNodeType == null && self.targetNodeType != null) {
-            return false
-        }
         if (other.targetNodeType != null && self.targetNodeType != null) {
             return other.targetNodeType!!.name == self.targetNodeType!!.name
         } else {
             return true
         }
-    }
+    }  */
 
     fun isUpdated(self: DeployUnit, targetDU: DeployUnit, alreadyCheck: java.util.HashMap<String, Boolean>): Boolean {
         if (alreadyCheck.containsKey(buildKey(self))) {
@@ -53,7 +47,7 @@ class DeployUnitAspect {
                     val pDUInteger = java.lang.Long.parseLong(targetDU.hashcode!!)
                     val selfDUInteger = java.lang.Long.parseLong(self.hashcode!!)
                     alreadyCheck.put(buildKey(self), (selfDUInteger != pDUInteger))
-                    return ((selfDUInteger != pDUInteger) || checkTransitiveUpdate(self,targetDU, alreadyCheck))
+                    return ((selfDUInteger != pDUInteger) /*|| checkTransitiveUpdate(self,targetDU, alreadyCheck)*/)
                 }
             } catch(e: Exception) {
                 return  targetDU.hashcode != self.hashcode
@@ -61,6 +55,7 @@ class DeployUnitAspect {
         }
     }
 
+    /*
     fun checkTransitiveUpdate(self: DeployUnit, targetDU: DeployUnit, alreadyCheck: java.util.HashMap<String, Boolean>): Boolean {
         if (self.requiredLibs.size != targetDU.requiredLibs.size) {
             return true
@@ -81,7 +76,7 @@ class DeployUnitAspect {
             }
             return false
         }
-    }
+    } */
 
 
 }
