@@ -48,7 +48,7 @@ Merge       <- MergeToken ws String :':' String2                                
 
 NameList    <- String ws *(:[,] ws String)                                              # node0, node42, node1024
 
-Comment     <: '//' Anything                                                            # // a comment is inline and starts with '//'
+Comment     <: '//' :Anything                                                            # // a comment is inline and starts with '//'
 # =========
 # End Rules
 
