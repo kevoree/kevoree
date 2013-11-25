@@ -17,7 +17,6 @@ import java.util
 import java.util.ArrayList
 import java.util.concurrent.Callable
 import java.util.concurrent.TimeUnit
-import org.kevoree.AdaptationPrimitiveTypeRef
 import org.kevoree.ContainerNode
 import org.kevoree.api.NodeType
 import org.kevoree.api.PrimitiveCommand
@@ -64,15 +63,6 @@ object PrimitiveCommandExecutionHelper {
             val primitive = nodeInstance.getPrimitive(adapt)
             if (primitive != null) {
                 Log.debug("Populate primitive => {} ",primitive)
-                try {
-                    val nodeType = rootNode.typeDefinition as org.kevoree.NodeType
-                    val aTypeRef = nodeType.managedPrimitiveTypeRefs.find{(ref: AdaptationPrimitiveTypeRef) : Boolean -> ref.ref?.name == adapt.primitiveType?.name }
-                    if (aTypeRef != null) {
-                        phase.setMaxTime(java.lang.Long.parseLong(aTypeRef.maxTime!!))
-                    }
-                } catch(e: Exception) {
-                    Log.error("Bad value for timeout in model ", e)
-                }
                 phase.populate(primitive)
                 true
             } else {

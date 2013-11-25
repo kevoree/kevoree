@@ -19,7 +19,7 @@ import org.kevoree.tools.marShell.interpreter.KevsInterpreterContext
 
 import org.kevoree.tools.marShell.ast.AddGroupStatment
 import org.kevoree.{TypeDefinition, Group, GroupType}
-import org.kevoree.tools.marShell.interpreter.utils.Merger
+import org.kevoree.tools.marShell.interpreter.utils.{TypeResolver, Merger}
 import org.kevoree.log.Log
 
 case class KevsAddGroupInterpreter(addGroup: AddGroupStatment) extends KevsAbstractInterpreter {
@@ -38,7 +38,10 @@ case class KevsAddGroupInterpreter(addGroup: AddGroupStatment) extends KevsAbstr
       }
       case null => {
         //SEARCH TYPE DEF
-        context.model.findByPath("typeDefinitions[" + addGroup.groupTypeName + "]", classOf[TypeDefinition]) match {
+        //context.model.findByPath("typeDefinitions[" + addGroup.groupTypeName + "]", classOf[TypeDefinition])
+        TypeResolver.resolve(context.model,addGroup.groupTypeName)
+
+        match {
           case targetGroupType:TypeDefinition if (targetGroupType.isInstanceOf[GroupType]) => {
 
             val newGroup = context.kevoreeFactory.createGroup

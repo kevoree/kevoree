@@ -5,10 +5,10 @@ merge npm:kevoree-chan-websocket
 merge mvn:org.kevoree.library.javase:org.kevoree.library.javase.websocketgrp:2.0.5-SNAPSHOT
 merge npm:kevoree-comp-fakeconsole
 
-add node0, node1 : JavascriptNode
-add sync : WebSocketGroup
-add comp0 : FakeConsole
-add chan0 : WebSocketChannel
+add node0, node1 : JavaSENode
+add sync : HelloGroup
+add comp0 : HelloWorld
+add chan0 : HelloChannel
 
 // this is a comment
 // comments allow any characters ! \ù%*é=^``~&°.:!§,?/#çà][-|

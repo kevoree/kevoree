@@ -24,6 +24,7 @@
     </dependencies>
 	
     <modules>
+        <module>org.kevoree.annotation.api</module>		
         <module>org.kevoree.model</module>
         <module>org.kevoree.api</module>
         <module>org.kevoree.framework</module>

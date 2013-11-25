@@ -20,31 +20,32 @@ import org.kevoree.impl.DefaultKevoreeFactory
 
 object Merger {
 
-  private val kevoreeFactory : KevoreeFactory = new DefaultKevoreeFactory
+  private val kevoreeFactory: KevoreeFactory = new DefaultKevoreeFactory
 
-  def mergeFragmentDictionary(inst: Instance, fragmentProps: java.util.HashMap[String,java.util.Properties]) = {
+  def mergeFragmentDictionary(inst: Instance, fragmentProps: java.util.HashMap[String, java.util.Properties]) = {
     import scala.collection.JavaConversions._
-    
-    fragmentProps.keySet().foreach { propKey =>
-      propKey match {
-        case "*"=> mergeDictionary(inst,fragmentProps.get(propKey),null)
-        case _ @ searchNodeName => {
-          inst.getTypeDefinition.eContainer.asInstanceOf[ContainerRoot].getNodes.find(n => n.getName == searchNodeName) match {
-            case Some(nodeFound)=> {
-              mergeDictionary(inst,fragmentProps.get(propKey),nodeFound)
-            }
-            case None => {
-              throw new Exception("Unknown nodeName for name "+searchNodeName)
+
+    fragmentProps.keySet().foreach {
+      propKey =>
+        propKey match {
+          case "*" => mergeDictionary(inst, fragmentProps.get(propKey), null)
+          case _@searchNodeName => {
+            inst.getTypeDefinition.eContainer.asInstanceOf[ContainerRoot].getNodes.find(n => n.getName == searchNodeName) match {
+              case Some(nodeFound) => {
+                mergeDictionary(inst, fragmentProps.get(propKey), nodeFound)
+              }
+              case None => {
+                throw new Exception("Unknown nodeName for name " + searchNodeName)
+              }
             }
           }
         }
-      }
     }
   }
-  
-  
+
+
   /* Goal of this method is to merge dictionary definition with already exist instance defintion */
-  def mergeDictionary(inst: Instance, props: java.util.Properties, targetNode :ContainerNode) = {
+  def mergeDictionary(inst: Instance, props: java.util.Properties, targetNode: ContainerNode) = {
     import scala.collection.JavaConversions._
     props.keySet.foreach {
       key =>
@@ -56,7 +57,13 @@ object Merger {
           inst.setDictionary(dictionary)
         }
 
-        inst.getDictionary.getValues.find(value => { (value.getAttribute.getName == key) && (if(targetNode != null){ value.getTargetNode != null && value.getTargetNode.getName == targetNode.getName } else { value.getTargetNode == null })}) match {
+        inst.getDictionary.getValues.find(value => {
+          (value.getAttribute.getName == key) && (if (targetNode != null) {
+            value.getTargetNode != null && value.getTargetNode.getName == targetNode.getName
+          } else {
+            value.getTargetNode == null
+          })
+        }) match {
           //UPDATE VALUE CASE
           case Some(previousValue) => {
             previousValue.setValue(newValue.toString)
@@ -64,28 +71,27 @@ object Merger {
           //MERGE NEW Dictionary Attribute
           case None => {
             // CHECK if dictionary type exist
-            if (inst.getTypeDefinition.getDictionaryType == null) {
-              throw new Exception("Dictionary Type is null for " + inst.getTypeDefinition.getName + ". Maybe you forgot to merge this type on your model or maybe you define a dictionary attribute in your model which can't exist.")
-            }
-            //CHECK IF ATTRIBUTE ALREADY EXIST WITHOUT VALUE
-            val att = inst.getTypeDefinition.getDictionaryType.getAttributes.find(att => att.getName == key) match {
-              case None => {
-               /* if(allowTypeUpdate){
-                  val newDictionaryValue = kevoreeFactory.createDictionaryAttribute
-                  newDictionaryValue.setName(key.toString)
-                  inst.getTypeDefinition.getDictionaryType.get.addAttributes(newDictionaryValue)
-                  newDictionaryValue
-                } else { */
-                     throw new Exception("Dictionary Type does not contain attribute named -"+key+"- type modification not allowed in this scope")
-               // }
+            if (inst.getTypeDefinition.getDictionaryType != null) {
+              //CHECK IF ATTRIBUTE ALREADY EXIST WITHOUT VALUE
+              val att = inst.getTypeDefinition.getDictionaryType.getAttributes.find(att => att.getName == key) match {
+                case None => {
+                  /* if(allowTypeUpdate){
+                     val newDictionaryValue = kevoreeFactory.createDictionaryAttribute
+                     newDictionaryValue.setName(key.toString)
+                     inst.getTypeDefinition.getDictionaryType.get.addAttributes(newDictionaryValue)
+                     newDictionaryValue
+                   } else { */
+                  throw new Exception("Dictionary Type does not contain attribute named -" + key + "- type modification not allowed in this scope")
+                  // }
+                }
+                case Some(previousAtt) => previousAtt
               }
-              case Some(previousAtt) => previousAtt
+              val newDictionaryValue = kevoreeFactory.createDictionaryValue
+              newDictionaryValue.setValue(newValue.toString)
+              newDictionaryValue.setAttribute(att)
+              newDictionaryValue.setTargetNode(targetNode)
+              inst.getDictionary.addValues(newDictionaryValue)
             }
-            val newDictionaryValue = kevoreeFactory.createDictionaryValue
-            newDictionaryValue.setValue(newValue.toString)
-            newDictionaryValue.setAttribute(att)
-            newDictionaryValue.setTargetNode(targetNode)
-            inst.getDictionary.addValues(newDictionaryValue)
           }
         }
 

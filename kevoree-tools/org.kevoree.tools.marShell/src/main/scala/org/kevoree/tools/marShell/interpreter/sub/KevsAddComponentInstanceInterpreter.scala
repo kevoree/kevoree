@@ -17,7 +17,7 @@ package org.kevoree.tools.marShell.interpreter.sub
 import org.kevoree.tools.marShell.ast.AddComponentInstanceStatment
 import org.kevoree.tools.marShell.interpreter.KevsAbstractInterpreter
 import org.kevoree.tools.marShell.interpreter.KevsInterpreterContext
-import org.kevoree.tools.marShell.interpreter.utils.Merger
+import org.kevoree.tools.marShell.interpreter.utils.{TypeResolver, Merger}
 import org.kevoree._
 import scala.collection.JavaConversions._
 import org.kevoree.log.Log
@@ -43,7 +43,10 @@ case class KevsAddComponentInstanceInterpreter(addCompo: AddComponentInstanceSta
               }
               case null => {
                 //SEARCH TYPE
-                context.model.findByPath("typeDefinitions[" + addCompo.typeDefinitionName + "]", classOf[TypeDefinition]) match {
+                //context.model.findByPath("typeDefinitions[" + addCompo.typeDefinitionName + "]", classOf[TypeDefinition])
+                TypeResolver.resolve(context.model,addCompo.typeDefinitionName)
+
+                match {
                   case typeDef: ComponentType => {
                     val componentDefinition = typeDef
                     val newcomponent = context.kevoreeFactory.createComponentInstance

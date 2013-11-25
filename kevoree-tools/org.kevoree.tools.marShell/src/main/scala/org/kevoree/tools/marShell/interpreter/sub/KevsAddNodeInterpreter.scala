@@ -18,16 +18,20 @@ import org.kevoree.{ContainerNode, NodeType, TypeDefinition}
 import org.kevoree.tools.marShell.ast.AddNodeStatment
 import org.kevoree.tools.marShell.interpreter.KevsAbstractInterpreter
 import org.kevoree.tools.marShell.interpreter.KevsInterpreterContext
-import org.kevoree.tools.marShell.interpreter.utils.Merger
+import org.kevoree.tools.marShell.interpreter.utils.{TypeResolver, Merger}
 import org.kevoree.log.Log
 
 case class KevsAddNodeInterpreter(addN: AddNodeStatment) extends KevsAbstractInterpreter {
 
-
   def interpret(context: KevsInterpreterContext): Boolean = {
-    context.model.findByPath("typeDefinitions[" + addN.nodeTypeName + "]", classOf[TypeDefinition]) match {
+    context.model/*.findByPath("typeDefinitions[" + addN.nodeTypeName + "]", classOf[TypeDefinition])*/
+     // .getTypeDefinitions.find(td => td.getName == addN.nodeTypeName)
+
+    TypeResolver.resolve(context.model,addN.nodeTypeName)
+
+    match {
       case null => {
-        context.appendInterpretationError("Could add node '"+addN.nodeTypeName+"' of type '"+addN.nodeTypeName+"'. NodeType not found.")
+        context.appendInterpretationError("Could add node '"+addN.nodeName+"' of type '"+addN.nodeTypeName+"'. NodeType not found.")
         false
       }
       case nodeType =>

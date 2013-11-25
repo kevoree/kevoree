@@ -22,90 +22,20 @@
         </dependency>
     </dependencies>
 
-    <build>
-        <plugins>
-            <!-- Scala plugin : allow to compile Scala file -->
-            <plugin>
-                <groupId>net.alchim31.maven</groupId>
-                <artifactId>scala-maven-plugin</artifactId>
-                <version>3.1.0</version>
-                <executions>
-                    <execution>
-                        <id>scala-compile-first</id>
-                        <phase>process-resources</phase>
-                        <goals>
-                            <goal>add-source</goal>
-                            <goal>compile</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>scala-test-compile</id>
-                        <phase>process-test-resources</phase>
-                        <goals>
-                            <goal>testCompile</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <jvmArgs>
-                        <jvmArg>-Xms64m</jvmArg>
-                        <jvmArg>-Xmx1024m</jvmArg>
-                    </jvmArgs>
-                    <args>
-                        <arg>-optimize</arg>
-                        <arg>-Yinline</arg>
-                        <arg>-Ydead-code</arg>
-                        <arg>-Yclosure-elim</arg>
-                    </args>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
-
     <modules>
         <module>org.kevoree.tools.aether.framework</module>
-        <!-- Kevoree specific frameworks -->
         <module>org.kevoree.tools.javase.framework</module>
-       
-		<!--
-	    <module>org.kevoree.tools.android.framework</module>
-        <module>org.kevoree.tools.arduino.framework</module>
-			-->
-			
         <module>org.kevoree.tools.camel.framework</module>
-		<!--
-        <module>org.kevoree.tools.aether.framework.android</module>
-			-->
         <module>org.kevoree.tools.modelsync</module>
-
-        <module>org.kevoree.tools.annotation.api</module>
         <module>org.kevoree.tools.annotation.generator</module>
-        <module>org.kevoree.tools.annotation.processor</module>
         <module>org.kevoree.tools.annotation.mavenplugin</module>
-
         <module>org.kevoree.tools.ui.framework</module>
         <module>org.kevoree.tools.merger.mavenplugin</module>
-
         <module>org.kevoree.tools.marShell</module>
         <module>org.kevoree.tools.marShell.pack</module>
-        <!--<module>org.kevoree.tools.marShellTransform</module>-->
         <module>org.kevoree.tools.marShellGUI</module>
         <module>org.kevoree.tools.marshell.mavenplugin</module>
-
-        <!--><module>org.kevoree.tools.war.wrapperplugin</module>-->
-        <!-- <module>../org.kevoree.tools.emf.compat</module>  -->
-        <!-- Native -->
-        <!--
-        <module>../org.kevoree.tools.nativeN.core</module>
-        <module>../org.kevoree.tools.nativeN.framework</module>
-        <module>../org.kevoree.tools.nativeN.mavenplugin</module>
-        -->
         <module>org.kevoree.tools.ui.editor</module>
         <module>org.kevoree.tools.ui.editor.standalone</module>
-        <!--
-        <module>org.kevoree.tools.accesscontrol.framework</module>
-        -->
-
-
     </modules>
 </project>

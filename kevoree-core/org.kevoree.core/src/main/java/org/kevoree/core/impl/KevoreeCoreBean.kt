@@ -446,9 +446,6 @@ public override fun compareAndSwapModel(p0: org.kevoree.api.service.core.handler
                             if (Log.DEBUG){
                                 //Avoid the loop if the debug is not activated
                                 Log.debug("Adaptation model size {}", adaptationModel.adaptations.size())
-                                for(adaptation in adaptationModel.adaptations) {
-                                    Log.debug("primitive {} ", adaptation.primitiveType?.name)
-                                }
                             }
                             //Executes the adaptation
                             val afterUpdateTest: () -> Boolean = {() -> true }
