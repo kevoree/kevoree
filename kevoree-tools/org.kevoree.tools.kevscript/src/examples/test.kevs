@@ -1,9 +1,5 @@
 repo org.sonatype.org/foo/bar?a=b&c=d
-
-merge npm:kevoree-group-websocket@0.0.2
-merge npm:kevoree-chan-websocket
 merge mvn:org.kevoree.library.javase:org.kevoree.library.javase.websocketgrp:2.0.5-SNAPSHOT
-merge npm:kevoree-comp-fakeconsole
 
 add node0, node1 : JavaSENode
 add sync : HelloGroup

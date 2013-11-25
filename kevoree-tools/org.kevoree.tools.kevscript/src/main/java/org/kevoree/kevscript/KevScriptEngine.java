@@ -3,6 +3,7 @@ package org.kevoree.kevscript;
 import org.kevoree.*;
 import org.kevoree.impl.DefaultKevoreeFactory;
 import org.kevoree.kevscript.util.InstanceResolver;
+import org.kevoree.kevscript.util.MergeResolver;
 import org.kevoree.kevscript.util.TypeDefinitionResolver;
 import org.kevoree.loader.JSONModelLoader;
 import org.kevoree.log.Log;
@@ -49,7 +50,7 @@ public class KevScriptEngine {
         interpret(parserResult.getAST(), model);
     }
 
-    private List<ComponentInstance> pending = new ArrayList<ComponentInstance>();
+    private List<Instance> pending = new ArrayList<Instance>();
 
     public void interpret(IAST<Type> node, ContainerRoot model) {
         switch (node.getType()) {
@@ -79,17 +80,18 @@ public class KevScriptEngine {
                 }
                 break;
             case Move:
-                List<Instance> leftHands = InstanceResolver.resolve(model, node.getChildren().get(0));
-                List<Instance> rightHands = InstanceResolver.resolve(model, node.getChildren().get(1));
+                List<Instance> leftHands = InstanceResolver.resolve(model, node.getChildren().get(0), pending);
+                List<Instance> rightHands = InstanceResolver.resolve(model, node.getChildren().get(1), pending);
                 for (Instance leftH : leftHands) {
                     for (Instance rightH : rightHands) {
+                        pending.remove(leftH);
                         applyMove(leftH, rightH, model);
                     }
                 }
                 break;
             case Attach:
-                List<Instance> leftHands2 = InstanceResolver.resolve(model, node.getChildren().get(0));
-                List<Instance> rightHands2 = InstanceResolver.resolve(model, node.getChildren().get(1));
+                List<Instance> leftHands2 = InstanceResolver.resolve(model, node.getChildren().get(0), pending);
+                List<Instance> rightHands2 = InstanceResolver.resolve(model, node.getChildren().get(1), pending);
                 for (Instance leftH : leftHands2) {
                     for (Instance rightH : rightHands2) {
                         applyAttach(leftH, rightH, model, false);
@@ -97,8 +99,8 @@ public class KevScriptEngine {
                 }
                 break;
             case Detach:
-                List<Instance> leftHands3 = InstanceResolver.resolve(model, node.getChildren().get(0));
-                List<Instance> rightHands3 = InstanceResolver.resolve(model, node.getChildren().get(1));
+                List<Instance> leftHands3 = InstanceResolver.resolve(model, node.getChildren().get(0), pending);
+                List<Instance> rightHands3 = InstanceResolver.resolve(model, node.getChildren().get(1), pending);
                 for (Instance leftH : leftHands3) {
                     for (Instance rightH : rightHands3) {
                         applyAttach(leftH, rightH, model, true);
@@ -111,7 +113,7 @@ public class KevScriptEngine {
                 model.addRepositories(repo);
                 break;
             case Remove:
-                List<Instance> toRemove = InstanceResolver.resolve(model, node.getChildren().get(0));
+                List<Instance> toRemove = InstanceResolver.resolve(model, node.getChildren().get(0), pending);
                 for (Instance toDrop : toRemove) {
                     toDrop.delete();
                 }
@@ -120,8 +122,47 @@ public class KevScriptEngine {
                 Log.error("Network not implemented yet !!!");
 
                 break;
+            case Merge:
+                MergeResolver.merge(model, node.getChildren().get(0).childrenAsString(), node.getChildren().get(1).childrenAsString());
+                break;
+            case Set:
+                List<Instance> toChangeDico = InstanceResolver.resolve(model, node.getChildren().get(0), pending);
+                for (Instance target : toChangeDico) {
+                    if (target.getDictionary() == null) {
+                        target.setDictionary(factory.createDictionary());
+                    }
+                    IAST<Type> dictionary = node.getChildren().get(1);
+                    String targetNode = null;
+                    for (IAST<Type> list : dictionary.getChildren()) {
+
+                        if (list.getChildren().size() > 1) {
+                            IAST<Type> last = list.getChildren().get(list.getChildren().size() - 1);
+                            if (last.getType().equals(Type.String)) {
+                                targetNode = last.childrenAsString();
+                            }
+                        }
+
+                        for (IAST<Type> attribute : list.getChildren()) {
+                            String key = attribute.getChildren().get(0).childrenAsString();
+                            DictionaryValue att = target.getDictionary().findValuesByID(key);
+                            if (att == null) {
+                                att = factory.createDictionaryValue();
+                                target.getDictionary().addValues(att);
+                            }
+                            String value = attribute.getChildren().get(1).childrenAsString();
+                            att.setValue(value);
+                            if (targetNode != null) {
+                                att.setTargetNode(model.findNodesByID(targetNode));
+                                if (att.getTargetNode() == null) {
+                                    Log.error("Node not found for @" + targetNode + " property");
+                                }
+                            }
+                        }
+                    }
+                }
+                break;
             default:
-                System.out.println(node);
+                // System.out.println(node);
                 break;
         }
     }
