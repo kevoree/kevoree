@@ -1,6 +1,7 @@
 package org.kevoree.kevscript;
 
 import org.kevoree.*;
+import org.kevoree.api.KevScriptService;
 import org.kevoree.impl.DefaultKevoreeFactory;
 import org.kevoree.kevscript.util.InstanceResolver;
 import org.kevoree.kevscript.util.MergeResolver;
@@ -25,11 +26,12 @@ import java.util.List;
  * Date: 25/11/2013
  * Time: 15:53
  */
-public class KevScriptEngine {
+public class KevScriptEngine implements KevScriptService {
 
     Parser parser = new Parser();
     KevoreeFactory factory = new DefaultKevoreeFactory();
 
+    /*
     public static void main(String[] args) throws FileNotFoundException {
         KevScriptEngine engine = new KevScriptEngine();
         JSONModelLoader loader = new JSONModelLoader();
@@ -38,7 +40,9 @@ public class KevScriptEngine {
         engine.executeFromStream(new FileInputStream("/Users/duke/Documents/dev/dukeboard/kevoree/kevoree-tools/org.kevoree.tools.kevscript/src/examples/test.kevs"), root);
         JSONModelSerializer saver = new JSONModelSerializer();
         //saver.serializeToStream(root, System.out);
-    }
+    } */
+
+
 
     public void execute(String script, ContainerRoot model) {
         ParseResult<Type> parserResult = parser.parse(new InputBuffer(script.toCharArray()));

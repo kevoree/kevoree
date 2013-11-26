@@ -5,6 +5,7 @@ import org.kevoree.DeployUnit;
 import org.kevoree.Instance;
 import org.kevoree.Repository;
 import org.kevoree.api.BootstrapService;
+import org.kevoree.boostrap.reflect.KevoreeInjector;
 import org.kevoree.kcl.KevoreeJarClassLoader;
 import org.kevoree.log.Log;
 import org.kevoree.resolver.MavenResolver;
@@ -40,6 +41,17 @@ public class KevoreeCLKernel implements KevoreeCLFactory, BootstrapService {
 
     private KevoreeCLFactory kevoreeCLFactory = this;
 
+    public void setInjector(KevoreeInjector injector) {
+        this.injector = injector;
+    }
+
+    private KevoreeInjector injector = null;
+
+    @Override
+    public KevoreeJarClassLoader get(DeployUnit deployUnit) {
+        return cache.get(deployUnit.path());
+    }
+
     public KevoreeJarClassLoader installDeployUnit(DeployUnit deployUnit) {
         String path = deployUnit.path();
         if (cache.containsKey(path)) {
@@ -60,11 +72,22 @@ public class KevoreeCLKernel implements KevoreeCLFactory, BootstrapService {
                 if (resolved != null) {
                     KevoreeJarClassLoader kcl = createClassLoader(deployUnit, resolved);
                     cache.put(path, kcl);
+                    return kcl;
                 }
             }
 
         }
         return null;
+    }
+
+    @Override
+    public void removeDeployUnit(DeployUnit deployUnit) {
+        cache.remove(deployUnit.path());
+    }
+
+    @Override
+    public void manualAttach(DeployUnit deployUnit, KevoreeJarClassLoader kevoreeJarClassLoader) {
+        cache.put(deployUnit.path(), kevoreeJarClassLoader);
     }
 
     public KevoreeJarClassLoader recursiveInstallDeployUnit(DeployUnit deployUnit) {
@@ -73,9 +96,14 @@ public class KevoreeCLKernel implements KevoreeCLFactory, BootstrapService {
             return cache.get(path);
         }
         KevoreeJarClassLoader kcl = installDeployUnit(deployUnit);
-        for (DeployUnit child : deployUnit.getRequiredLibs()) {
-            kcl.addSubClassLoader(recursiveInstallDeployUnit(deployUnit));
+        if(kcl == null){
+           Log.error("Can install {}",deployUnit.path());
+        } else {
+            for (DeployUnit child : deployUnit.getRequiredLibs()) {
+                kcl.addSubClassLoader(recursiveInstallDeployUnit(child));
+            }
         }
+
         return kcl;
     }
 
@@ -95,8 +123,8 @@ public class KevoreeCLKernel implements KevoreeCLFactory, BootstrapService {
         Class clazz = classLoader.loadClass(instance.getTypeDefinition().getBean());
         try {
             Object newInstance = clazz.newInstance();
-              //TODO inject
-
+            injector.process(newInstance);
+            //TODO inject dictionary
             return newInstance;
         } catch (Exception e) {
             Log.error("Error while creating instance ", e);

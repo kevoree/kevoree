@@ -32,7 +32,7 @@ public class MergeResolver {
             for (Repository repo : model.getRepositories()) {
                 urls.add(repo.getUrl());
             }
-            File resolved = resolver.resolve(url, urls);
+            File resolved = resolver.resolve(type.toString()+":"+url, urls);
             if (resolved != null && resolved.exists()) {
                 try {
                     JarFile jar = new JarFile(new File(resolved.getAbsolutePath()));
@@ -42,6 +42,8 @@ public class MergeResolver {
                 } catch (IOException e) {
                     Log.error("Bad JAR file ", e);
                 }
+            } else {
+                Log.warn("Not resolved {}",url);
             }
         }
     }

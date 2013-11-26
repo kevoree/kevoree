@@ -14,7 +14,7 @@
 package org.kevoree.framework;
 
 import org.kevoree.annotation.KevoreeInject;
-import org.kevoree.api.Bootstraper;
+import org.kevoree.api.BootstrapService;
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService;
 import org.kevoree.api.service.core.script.KevScriptEngineFactory;
 
@@ -30,11 +30,11 @@ public class AbstractTypeDefinition {
 
     private HashMap<String, Object> dictionary = new HashMap<String, Object>();
 
-    public HashMap<String, Object> getDictionary () {
+    public HashMap<String, Object> getDictionary() {
         return this.dictionary;
     }
 
-    public void setDictionary (HashMap<String, Object> dic) {
+    public void setDictionary(HashMap<String, Object> dic) {
         dictionary = dic;
     }
 
@@ -52,25 +52,24 @@ public class AbstractTypeDefinition {
     @KevoreeInject
     public KevScriptEngineFactory kevScriptEngineFactory = null;
 
-    public KevScriptEngineFactory getKevScriptEngineFactory () {
+    public KevScriptEngineFactory getKevScriptEngineFactory() {
         return kevScriptEngineFactory;
     }
 
-    public void setKevScriptEngineFactory (KevScriptEngineFactory kf) {
+    public void setKevScriptEngineFactory(KevScriptEngineFactory kf) {
         kevScriptEngineFactory = kf;
     }
 
     @KevoreeInject
-    public Bootstraper bootstrapService = null;
+    public BootstrapService bootstrapService = null;
 
-    public void setBootStrapperService(Bootstraper brs) {
-        bootstrapService = brs;
-    }
-
-    public Bootstraper getBootStrapperService() {
+    public BootstrapService getBootstrapService() {
         return bootstrapService;
     }
 
+    public void setBootstrapService(BootstrapService bootstrapService) {
+        this.bootstrapService = bootstrapService;
+    }
 
     private String nodeName = "";
 

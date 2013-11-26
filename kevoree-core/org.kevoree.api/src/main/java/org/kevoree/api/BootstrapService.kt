@@ -14,9 +14,7 @@
 package org.kevoree.api
 
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService
-import org.kevoree.api.service.core.script.KevScriptEngineFactory
 import java.io.File
-import org.kevoree.api.service.core.logging.KevoreeLogService
 import org.kevoree.DeployUnit
 import org.kevoree.ContainerRoot
 import org.kevoree.kcl.KevoreeJarClassLoader
@@ -31,7 +29,13 @@ import org.kevoree.Instance
 
 trait BootstrapService {
 
+    public fun get(du : DeployUnit) : KevoreeJarClassLoader?;
+
     public fun installDeployUnit(du : DeployUnit) : KevoreeJarClassLoader?;
+
+    public fun removeDeployUnit(du : DeployUnit)
+
+    public fun manualAttach(du : DeployUnit, kcl : KevoreeJarClassLoader);
 
     public fun recursiveInstallDeployUnit(du : DeployUnit) : KevoreeJarClassLoader?;
 
@@ -40,19 +44,5 @@ trait BootstrapService {
     public fun clear()
 
     public fun createInstance(instance : Instance) : Any?
-
-
-    /*
-  fun getKevoreeClassLoaderHandler() : KevoreeClassLoaderHandler
-  fun bootstrapNodeType(currentModel: ContainerRoot, nodeName: String, mservice: KevoreeModelHandlerService, kevsEngineFactory: KevScriptEngineFactory): org.kevoree.api.NodeType?
-  fun resolveArtifact(artId: String, groupId: String, version: String, repos: List<String>): File?
-  fun resolveArtifact(artId: String, groupId: String, version: String, extension : String, repos: List<String>): File?
-  fun resolveKevoreeArtifact(artId: String, groupId: String, version: String): File?
-  fun resolveDeployUnit(du: DeployUnit): File?
-  fun close() : Unit
-  fun clear() : Unit
-  fun getKevoreeLogService() : KevoreeLogService
-  fun setKevoreeLogService(kl : KevoreeLogService)
-*/
 
 }
