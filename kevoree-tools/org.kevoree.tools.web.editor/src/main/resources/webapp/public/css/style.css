@@ -1,0 +1,351 @@
+html {
+    height: 100%;
+}
+
+body {
+	margin: 0;
+	padding: 0;
+    height: 100%;
+    background-color: #3E3E3E;
+    overflow: hidden;
+
+    /* prevent user from highlighting lib tree when dragging shapes on canvas */
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.container-fluid {
+    padding-right: 0;
+    padding-left: 0;
+}
+
+.navbar .brand {
+    padding: 2px 20px;
+}
+
+.navbar .brand > img {
+    padding-right: 8px;
+}
+
+#lib-tree-content .nav-header {
+    font-size: 13px;
+    color: #fff;
+}
+
+#lib-tree {
+    height: 100%;
+}
+
+#lib-tree > * {
+    background-color: #3E3E3E;
+}
+
+#lib-tree .dropdown-menu {
+    font-size: 12px;
+}
+
+#lib-tree .dropdown-menu > li > a {
+    padding: 2px 10px;
+}
+
+#lib-tree .dropdown-menu .divider {
+    margin: 2px 1px;
+}
+
+#lib-tree-settings {
+    margin-top: 10px;
+    margin-left: 5px;
+}
+
+#lib-tree-settings .checkbox {
+    margin: 0;
+}
+
+#lib-tree-search {
+    margin: 5px;
+    width: 70%;
+}
+
+#lib-tree-content {
+    height: 85%;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+#lib-tree-content .nav-header:hover {
+    background-color: #222;
+}
+
+[data-entity='GroupType'] {
+    background: url('../img/group-ico.png') center left no-repeat;
+}
+
+[data-entity='ChannelType'] {
+    background: url('../img/channel-ico.png') center left no-repeat;
+}
+
+[data-entity='NodeType'] {
+    background: url('../img/node-ico.png') center left no-repeat;
+}
+
+[data-entity='ComponentType'] {
+    background: url('../img/component-ico.png') center left no-repeat;
+}
+
+.dragged {
+    background-color: #3E3E3E;
+    cursor: pointer;
+    z-index: 42;
+}
+
+.lib-tree-info {
+    padding: 15px;
+    color: #fff;
+}
+
+.lib-item {
+    color: #fff;
+    padding: 3px 0px 3px 20px;
+    overflow: hidden;
+}
+
+.lib-item-name {
+    float: left;
+    width: 80%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.lib-item-name:hover {
+    overflow: visible;
+}
+
+.lib-item:hover, .lib-item:focus {
+    background-color: #6E6E6E;
+    cursor: pointer;
+}
+
+.lib-item.selected {
+    background-color: #6E6E6E;
+}
+
+.lib-item-count {
+    width: 20%;
+    float: right;
+}
+
+#editor {
+    width: 100%;
+    height: 100%;
+}
+
+#toggle-lib-tree {
+    margin: 5px;
+}
+
+#toggle-lib-tree:hover {
+    background-color: #484848;
+}
+
+#kevs-editor {
+    width: 60%;
+    margin-left: -30%;
+}
+
+#kev-script {
+    padding: 10px;
+    font-family: monospace;
+    font-size: small;
+}
+
+#zoom-controls {
+    position: absolute;
+    bottom: 40px;
+    right: 10px;
+    z-index: 2;
+}
+
+#debug-alert {
+    position: absolute;
+    top: 65%;
+    right: 0;
+    bottom: 0;
+    left: 0;
+}
+
+#debug-alert-content {
+    height: 90%;
+    overflow-y: scroll;
+}
+
+#debug-alert-content li {
+    font-size: 0.8em;
+    font-weight: bold;
+}
+
+.alert.fade {
+    z-index: -42;
+}
+
+.alert.fade.in {
+    z-index: 42;
+}
+
+.fill {
+    height: 100%;
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+.sidebar-nav {
+    padding: 9px 0;
+}
+
+.navbar {
+    margin-bottom: 0;
+}
+
+#alert, #debug-alert {
+    margin: 25px;
+}
+
+.layer {
+    position: relative;
+}
+
+.over {
+    position: absolute;
+    z-index: 2;
+}
+
+.over-right {
+    position: absolute;
+    z-index: 2;
+    right: 0;
+}
+
+.under {
+    position : absolute;
+    z-index: 1;
+}
+
+div.shadow {
+    -moz-box-shadow: 3px 3px 4px #666;
+    -webkit-box-shadow: 3px 3px 4px #666;
+    box-shadow: 3px 3px 4px #666;
+    -ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=2, Direction=135, Color='#666666')";
+    filter: progid:DXImageTransform.Microsoft.Shadow(Strength=2, Direction=135, Color='#666666');
+}
+
+#lib-tree ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+#lib-tree ::-webkit-scrollbar-button:start:decrement,
+#lib-tree ::-webkit-scrollbar-button:end:increment  {
+    display: none;
+}
+
+#lib-tree ::-webkit-scrollbar-track-piece  {
+    background-color: #3b3b3b;
+    -webkit-border-radius: 6px;
+}
+
+#lib-tree ::-webkit-scrollbar-thumb:vertical {
+    -webkit-border-radius: 6px;
+    background: #666 url('../img/scrollbar_thumb_bg.png') no-repeat center;
+}
+
+.input-prepend .add-on-gray {
+    background-color: #dfdfdf;
+}
+
+.table-striped tbody > tr:nth-child(odd) > td, .table-striped tbody > tr:nth-child(odd) > th {
+    background-color: transparent;
+}
+
+.table-striped tbody input {
+    margin-bottom: 0;
+}
+
+.ui-selecting, .ui-selected {
+    background: lightgray;
+}
+
+.network-property-row {
+    border-top: 1px solid #dddddd;
+    padding-top: 10px;
+    padding-left: 5px;
+}
+
+#node-links-container {
+    margin-top: 10px;
+}
+
+#network-properties-container {
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.network-property-row input {
+    width: 90%;
+    margin-bottom: 0;
+}
+
+#node-progress-bar {
+    margin-top: 10px;
+}
+
+#node-progress-bar .bar {
+    width: 100%;
+}
+
+.vertical-scroll {
+    overflow-y: scroll;
+}
+
+.corelibrary-items-list {
+    max-height: 350px;
+}
+
+@media (max-width: 980px) {
+    body {
+        overflow: auto;
+    }
+
+    /* Enable use of floated navbar text */
+    .navbar-text.pull-right {
+      float: none;
+      padding-left: 5px;
+      padding-right: 5px;
+    }
+}
+
+@media (max-width: 767px) {
+    #lib-tree {
+        max-height:300px;
+        height:300px;
+    }
+
+    #lib-tree-content {
+        height: 78%;
+    }
+
+    #kevs-editor {
+        width: auto;
+        margin-left: auto;
+    }
+}
+
+@media (min-width: 1024px) {
+    .modal-body {
+        max-height: 600px;
+    }
+}

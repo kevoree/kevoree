@@ -1,0 +1,29 @@
+body {
+    background-image: url('/img/background.jpg');
+}
+
+.navbar .brand {
+    padding: 2px 20px;
+}
+
+.navbar .brand > img {
+    padding-right: 8px;
+}
+
+.fill {
+    height: 100%;
+}
+
+#container {
+    padding-top: 50px;
+}
+
+#results {
+    color: #fff;
+}
+
+@media (max-width: 980px) {
+    #container {
+        padding-top: 0px;
+    }
+}

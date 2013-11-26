@@ -1,0 +1,321 @@
+doctype 5
+html
+  head
+    meta(name='viewport', content='user-scalable=no, width=device-width, initial-scale=1, maximum-scale=1')
+
+    link(rel='icon', type='image/png', href='ico/favicon.ico')
+    link(rel='shortcut icon', type='image/x-icon', href='ico/favicon.ico')
+    link(rel='stylesheet', href='css/bootstrap.css')
+    link(rel='stylesheet', href='css/bootstrap-responsive.css')
+    link(rel='stylesheet', href='http://code.jquery.com/ui/1.10.2/themes/smoothness/jquery-ui.css')
+    link(rel='stylesheet', href='css/style.css')
+
+    // HTML5 shim, for IE6-8 support of HTML5 elements
+    //if lt IE 9
+      script(src='js/lib/html5shiv.js')
+
+    title= title
+
+  body
+
+    //- Navigation bar
+    div#header.navbar.navbar-inverse
+      div.navbar-inner
+        div.container-fluid
+          button.btn.btn-navbar(type='button', data-toggle='collapse', data-target='.nav-collapse')
+            span.icon-bar
+            span.icon-bar
+            span.icon-bar
+          a.brand(href='#')
+            img(src='img/kevoree-logo-small.png')
+            | Editor
+
+          div.nav-collapse.collapse
+            ul.nav
+              li.dropdown
+                a.dropdown-toggle(href='#', data-toggle='dropdown') File&nbsp;
+                  b.caret
+                ul.dropdown-menu
+                  li
+                    a#load(href='#') Load
+                    a#merge(href='#') Merge
+                    a#open(href='#open-node-popup', data-toggle='modal') Open from node
+                    //-a#merge-from-node(href='#merge-node-popup', data-toggle='modal') Merge from node
+                  li.divider
+                  li
+                    a#save-json(href='#') Save as JSON
+                    a#save-xmi(href='#') Save as XMI
+                    a#save-kevs(href='#') Save as KevScript
+                    a#save-png(href='#') Save as PNG
+                  li.divider
+                  li
+                    a(href='#listen-to-popup', data-toggle='modal') Listen to
+              li.dropdown
+                a.dropdown-toggle(href='#', data-toggle='dropdown') Model&nbsp;
+                  b.caret
+                ul.dropdown-menu
+                  li
+                    a#clear(href='#') Clear all
+                    a#clear-instances(href='#') Clear instances
+                    a#model-load-corelib(href='#load-corelib-popup', data-toggle='modal') Load Core Libraries
+                  li.divider
+                  li.nav-header Tools
+                  li
+                    a#show-stats(href='#') Statistics
+                    a#check-model(href='#') Check model
+
+              li.dropdown
+                a.dropdown-toggle(href='#', data-toggle='dropdown') KevScript&nbsp;
+                  b.caret
+                ul.dropdown-menu
+                  li
+                    a#open-kevs-editor(href="#") Open editor
+
+              li.dropdown
+                a.dropdown-toggle(href='#', data-toggle='dropdown') Edit&nbsp;
+                  b.caret
+                ul.dropdown-menu
+                  li
+                    a#settings(href="#") Settings
+
+    //- Editor content
+    div.container-fluid.fill
+      div.row-fluid.fill
+        div#lib-tree.span3
+          div#lib-tree-settings.dropdown
+            a.dropdown-toggle(href='#', data-toggle='dropdown')
+              img(src='img/settings.png')
+            ul.dropdown-menu(role='menu')
+              li
+                a#lib-tree-settings-toggle-fold(href='#') Fold all
+              li.divider
+              li.nav-header Displayed items
+              li
+                a#lib-tree-settings-filter-nodes(href='#') Nodes
+                  input.checkbox.pull-right(type='checkbox', value='NodeType', checked='true')
+                a#lib-tree-settings-filter-components(href='#') Components
+                  input.checkbox.pull-right(type='checkbox', value='ComponentType', checked='true')
+                a#lib-tree-settings-filter-groups(href='#') Groups
+                  input.checkbox.pull-right(type='checkbox', value='GroupType', checked='true')
+                a#lib-tree-settings-filter-channels(href='#') Channels
+                  input.checkbox.pull-right(type='checkbox', value='ChannelType', checked='true')
+            input.search-query#lib-tree-search(type='text', placeholder='Search field...')
+          p.lib-tree-info
+            strong To load libraries:
+            br
+            em Model > Load Core Library > (choose one)
+            br
+            strong or
+            br
+            em File > Load
+          div#lib-tree-content.sidebar-nav
+
+        div#editor-panel.span9.layer.fill
+          a#toggle-lib-tree.over(href='#', title='Toggle menu')
+            img(src='img/show-menu.png')
+
+          //- ===============
+          //- ALERT
+          div#alert.alert.alert-block.fade.over-right
+            button.close(href="#", type='button') &times;
+            h4 Alert
+            p#alert-content
+          //- ===============
+
+          div#editor.under
+            div#zoom-controls.btn-toolbar.hide
+              div.btn-group
+                a#zoom-in.btn.btn-small: img(src='img/zoom_in.png')
+                a#zoom-default.btn.btn-small: img(src='img/zoom_default.png')
+                a#zoom-out.btn.btn-small: img(src='img/zoom_out.png')
+
+    //- ==========================
+    //- Properties popup template
+    //- ==========================
+    div#prop-popup.modal.hide.fade(tabindex='-1', role='dialog')
+      div.modal-header
+        button.close(type='button', data-dismiss='modal') &times;
+        h3 Properties -&nbsp;
+          span#prop-popup-subtitle
+      div.modal-body
+        div#prop-popup-content
+      div.modal-footer
+        button#prop-popup-delete.btn.btn-danger(data-dismiss='modal') Delete
+        button#prop-popup-save.btn.btn-primary(data-dismiss='modal') Save changes
+
+    //- Hidden content
+    //- ===============
+    //- SAVE POPUP
+    div#save-popup.modal.hide.fade(tabindex='-1', role='dialog')
+      div.modal-header
+        button.close(href='#', type='button', data-dismiss='modal') &times;
+        h3 Save model
+      div.modal-body
+        p#save-popup-text
+          img(src='img/ajax-loader-small.gif')
+          | &nbsp; Uploading model in progress, this may take a few minutes...
+        a#saved-model-link.hide(href='#', target='_blank') Download your model
+      div.modal-footer
+        button.btn(data-dismiss='modal', aria-hidden='true') Close
+    //- ===============
+
+    //- ===============
+    //- OPEN FROM NODE POPUP
+    div#open-node-popup.modal.fade(tabindex='-1', role='dialog')
+      div.modal-header
+        button.close(href='#', type='button', data-dismiss='modal') &times;
+        h3 Open from node
+      div.modal-body
+        div#open-node-alert.alert.alert-error.fade.hide
+          button.close(href='#', type='button', data-dismiss='alert') &times;
+          span#open-node-alert-content
+        p Remote target node web ressource
+        div.controls-row
+          select#open-node-protocol.span1
+            option(value='tcp') tcp
+            option(value='http://') http
+            option(value='ws://') ws
+          input#open-node-uri.span4(type='text', placeholder='ex: kevoree.org/model/json')
+      div.modal-footer
+        button.btn(data-dismiss='modal', aria-hidden='true') Close
+        button#open-from-node.btn.btn-primary Open
+    //- ===============
+
+    //- ===============
+    //- KevScript Editor
+    div#kevs-editor.modal.hide.fade(tabindex='-1', role='dialog')
+      div.modal-header
+        button.close(href='#', type='button', data-dismiss='modal') &times;
+        h3 KevScript Editor
+      div.modal-body
+        div.row-fluid
+          div#kevs-editor-error.alert.alert-error.hide
+            button.close(href="#", type='button') &times;
+            p#kevs-editor-error-content
+          textarea#kev-script.span12(rows='15', autocomplete='off', autocorrect='off', autocapitalize='off', spellcheck='false')
+      div.modal-footer
+        button.btn(data-dismiss='modal', aria-hidden='true') Close
+        button#run-kevs.btn.btn-primary Run
+    //- ===============
+
+    //- ===============
+    //- STATISTICS POPUP
+    div#stats-popup.modal.hide.fade(tabindex='-1', role='dialog')
+      div.modal-header
+        button.close(href='#', type='button', data-dismiss='modal') &times;
+        h3 Model statistics
+      div.modal-body
+        div#stats-popup-content
+      div.modal-footer
+        button.btn(data-dismiss='modal', aria-hidden='true') Close
+    //- ===============
+
+    //- ===============
+    //- LOAD CORELIBRARIES POPUP
+    div#load-corelib-popup.modal.hide.fade(tabindex='-1', role='dialog')
+      div.modal-header
+        button.close(href='#', type='button', data-dismiss='modal') &times;
+        h3 Load core libraries
+      div.modal-body
+        ul.nav.nav-tabs(style='margin-bottom: 5px')
+          li.active: a(href='#corelib-javase', data-toggle='tab') JavaSE
+          li: a(href='#corelib-android', data-toggle='tab') Android
+          li: a(href='#corelib-javascript', data-toggle='tab') Javascript
+          li: a(href='#corelib-sky', data-toggle='tab') SKY
+          li.pull-right
+            div.form-search(style='margin-bottom: 0px')
+              input#search-corelib.input-search.input-small.search-query(type='text')
+              button#search-corelib-button.btn(type='button'): i.icon-search
+        div#load-corelib-popup-error.alert.alert-error.hide
+          button.close(href="#", type='button') &times;
+          p#load-corelib-popup-error-content
+        div.tab-content
+          div#corelib-javase.tab-pane.active
+          div#corelib-android.tab-pane
+          div#corelib-javascript.tab-pane
+          div#corelib-sky.tab-pane
+        div#load-corelib-popup-content
+      div.modal-footer
+        button.btn(data-dismiss='modal', aria-hidden='true') Close
+        button#load-corelib.btn.btn-primary(aria-hidden='true') Load
+        button#loading-corelib.btn.disabled.hide(aria-hidden='true')
+          img(src='img/ajax-loader-small.gif', alt='Loading')
+          | &nbsp;Loading
+    //- ===============
+
+    //- ===============
+    //- SELECT CHANNEL POPUP
+    div#select-channel-popup.modal.hide.fade(tabindex='-1', role="dialog")
+      div.modal-header
+        button.close(href='#', type='button', data-dismiss='modal') &times;
+        h3 Select channel type
+      div.modal-body
+        div#select-channel-list
+      div.modal-footer
+        button.btn(data-dismiss='modal', aria-hidden='true') Cancel
+        button#selected-channel.btn.btn-primary(aria-hidden='true') Confirm
+    //- ===============
+
+    //- ===============
+    //- LISTEN TO POPUP
+    div#listen-to-popup.modal.hide.fade(tabindex='-1', role='dialog')
+      div.modal-header
+        button.close(href='#', type='button', data-dismiss='modal') &times;
+        h3 Listen to
+      div.modal-body
+        div.row-fluid
+          div.input-prepend
+            span.add-on ws://
+            input#listen-to-uri(type='text', placeholder='URL')
+        div#listen-to-content.row-fluid
+
+      div.modal-footer
+        button#listen-to-close.btn.btn-danger.hide(data-dismiss='modal', aria-hidden='true')
+          i.icon-trash.icon-white
+          | &nbsp;Close connection
+        button#listen-to.btn(data-dismiss='modal', aria-hidden='true') Listen
+    //- ===============
+
+    //- ===============
+    //- SETTINGS POPUP
+    div#settings-popup.modal.hide.fade(tabindex='-1', role='dialog')
+      div.modal-header
+        button.close(href='#', type='button', data-dismiss='modal') &times;
+        h3 Editor settings
+      div.modal-body
+        p#local-storage-unavailable.hide: em
+          strong HTML5 Local Storage
+          |  is not avaible on this browser.
+          br
+          | You should consider using a real web browser like
+          a(href='https://www.google.com/intl/fr/chrome/browser/') &nbsp;Google Chrome&nbsp;
+          | or
+          a(href='http://www.mozilla.org/fr/firefox/new/') &nbsp;Firefox
+          | .
+
+        table.table
+          tr
+            td Confirm before leaving/reloading KevWebEditor
+            td: input#ask-before-leaving.pull-right(type='checkbox')
+          tr
+            td Hide/Show tooltip on components in library tree
+            td: input#component-tooltip.pull-right(type='checkbox')
+          tr
+            td Display alert popups on editor
+            td: input#display-alert-popups.pull-right(type='checkbox')
+          tr
+            td Ask for confirmation on model loading
+            td: input#confirm-on-load-setting.pull-right(type='checkbox')
+
+      div.modal-footer
+        button.btn(data-dismiss='modal', aria-hidden='true') Close
+        button#save-settings.btn.btn-primary(data-dismiss='modal') Save
+    //- ===============
+
+    //- ===============
+    //- FILE INPUT
+    div.hide
+      input#file(type='file') Open model from file
+    //- ===============
+
+    script(data-main='js'+env+'/editor.js', src='js'+env+'/require.js')
