@@ -20,7 +20,7 @@ public class KevoreeInjector {
         for(clazz in clazzList.keySet()){
             val modelServiceFields = fieldResolver.resolve(javaClass<KevoreeInject>(), clazz)!!
             for(mserv in modelServiceFields){
-                if(Modifier.isPrivate(mserv.getModifiers())){
+                if(!mserv.isAccessible()){
                     mserv.setAccessible(true);
                 }
                 mserv.set(instance, clazzList.get(clazz))

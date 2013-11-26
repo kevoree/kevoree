@@ -6,4 +6,6 @@ add base : HelloWorld
 move base node0
 set base { message = "Hello" }
 
+add sync : HelloGroup
+attach node0 sync
 

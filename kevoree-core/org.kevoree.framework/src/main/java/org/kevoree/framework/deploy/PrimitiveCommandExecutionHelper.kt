@@ -116,7 +116,8 @@ object PrimitiveCommandExecutionHelper {
                     }
                     return result
                 } catch(e: Throwable) {
-                    Log.error("Error while executing primitive command {} ",e ,primitive)
+                    Log.error("Exception while executing primitive command {} ",e ,primitive)
+                    e.printStackTrace()
                     return false
                 }
             }
