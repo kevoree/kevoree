@@ -13,13 +13,6 @@
  */
 package org.kevoree.framework;
 
-import org.kevoree.annotation.KevoreeInject;
-import org.kevoree.api.BootstrapService;
-import org.kevoree.api.service.core.handler.KevoreeModelHandlerService;
-import org.kevoree.api.service.core.script.KevScriptEngineFactory;
-
-import java.util.HashMap;
-
 /**
  * Created with IntelliJ IDEA.
  * User: duke
@@ -27,65 +20,5 @@ import java.util.HashMap;
  * Time: 11:04
  */
 public class AbstractTypeDefinition {
-
-    private HashMap<String, Object> dictionary = new HashMap<String, Object>();
-
-    public HashMap<String, Object> getDictionary() {
-        return this.dictionary;
-    }
-
-    public void setDictionary(HashMap<String, Object> dic) {
-        dictionary = dic;
-    }
-
-    @KevoreeInject
-    public KevoreeModelHandlerService modelServiceProxy;
-
-    public KevoreeModelHandlerService getModelService() {
-        return modelServiceProxy;
-    }
-
-    @KevoreeInject
-    public KevScriptEngineFactory kevScriptEngineFactory = null;
-
-    public KevScriptEngineFactory getKevScriptEngineFactory() {
-        return kevScriptEngineFactory;
-    }
-
-    public void setKevScriptEngineFactory(KevScriptEngineFactory kf) {
-        kevScriptEngineFactory = kf;
-    }
-
-    @KevoreeInject
-    public BootstrapService bootstrapService = null;
-
-    public BootstrapService getBootstrapService() {
-        return bootstrapService;
-    }
-
-    public void setBootstrapService(BootstrapService bootstrapService) {
-        this.bootstrapService = bootstrapService;
-    }
-
-    private String nodeName = "";
-
-    public String getNodeName() {
-        return nodeName;
-    }
-
-    public void setNodeName(String pnodeName) {
-        nodeName = pnodeName;
-    }
-
-    private String name = "";
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String pname) {
-        name = pname;
-    }
-
 
 }

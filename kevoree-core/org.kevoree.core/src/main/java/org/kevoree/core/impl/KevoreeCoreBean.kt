@@ -1,7 +1,6 @@
 package org.kevoree.core.impl
 
 import org.kevoree.api.service.core.handler.KevoreeModelHandlerService
-import org.kevoree.api.service.core.script.KevScriptEngineFactory
 import org.kevoree.ContainerRoot
 import org.kevoree.cloner.DefaultModelCloner
 import java.util.Date
@@ -39,7 +38,6 @@ class PreCommand(newmodel: ContainerRoot, modelListeners: KevoreeListeners, oldM
 class KevoreeCoreBean() : KevoreeModelHandlerService {
 
     val modelListeners = KevoreeListeners()
-    var _kevsEngineFactory: KevScriptEngineFactory? = null
     var bootstrapService: BootstrapService? = null
     var _nodeName: String = ""
     var nodeInstance: org.kevoree.api.NodeType? = null
@@ -68,10 +66,6 @@ class KevoreeCoreBean() : KevoreeModelHandlerService {
 
     override fun getLastModification(): Date {
         return lastDate
-    }
-
-    fun setKevsEngineFactory(k: KevScriptEngineFactory) {
-        _kevsEngineFactory = k
     }
 
     private fun switchToNewModel(c: ContainerRoot) {
