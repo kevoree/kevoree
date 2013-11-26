@@ -41,10 +41,6 @@ public class AbstractTypeDefinition {
     @KevoreeInject
     public KevoreeModelHandlerService modelServiceProxy;
 
-    public void setModelService(KevoreeModelHandlerService ms) {
-        modelServiceProxy = new ModelHandlerServiceProxy(ms);
-    }
-
     public KevoreeModelHandlerService getModelService() {
         return modelServiceProxy;
     }

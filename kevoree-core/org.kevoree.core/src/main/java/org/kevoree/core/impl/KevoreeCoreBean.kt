@@ -58,7 +58,6 @@ class KevoreeCoreBean() : KevoreeModelHandlerService {
 
     data class LockCallBack(val uuid: UUID, val callback: ModelHandlerLockCallBack)
 
-
     override fun getNodeName(): String {
         return _nodeName
     }

@@ -2,4 +2,6 @@ merge mvn:org.kevoree.corelibrary.javase:org.kevoree.library.javase.javaseNode:2
 add node0 : JavaNode
 set node0 { debug = "true" }
 
+add base : HelloWorld
+move base node0
 
