@@ -1,0 +1,75 @@
+# KevScript grammar
+
+# Rules
+# =====
+KevScript   <- +(Statement ws)
+
+Statement   <- (Add | Remove | Move | Attach | Detach | Set | AddBinding | DelBinding | Merge | Network | AddRepo | Comment) ws
+
+Add         <- AddToken ws String ws :':' ws String                                     # add node0 : JavaSENode
+             | AddToken ws NameList ws :':' ws String                                   # add node42, node1 : JavascriptNode
+
+Remove      <- RemoveToken ws NameList                                                  # remove node0
+
+Move        <- MoveToken ws String ws String                                            # move comp1 node0
+             | MoveToken ws NameList ws String                                          # move comp0, comp1 node1
+             | MoveToken ws '*' ?(:'@' String) ws String                                # move * node0
+                                                                                        # move *@node2 node1
+
+Attach      <- AttachToken ws String ws String                                          # attach node0 group0
+             | AttachToken ws NameList ws String                                        # attach node0, node1 group0
+             | AttachToken ws '*' ws String                                             # attach * group2
+
+Detach      <- DetachToken ws String ws String                                          # detach node0 group0
+             | DetachToken ws NameList ws String                                        # detach node0, node1 group0
+             | DetachToken ws '*' ws String                                             # detach * group42
+
+Set         <- SetToken ws String ws Dictionary                                         # set comp0 {}
+
+Network     <- NetworkToken ws String ws String2                                        # network node1 192.168.0.1
+
+Dictionary  <- AttrList                                                                 # set comp0 { att = "foo"}
+             | AttrList ws *(:[,] ws AttrList)                                          # set sync {foo='bar'}, {port="8080"}@node0
+
+AttrList    <- :'{' ws Attribute ws *(:[,] ws Attribute) ws :'}' ?(:'@' String)         # { Attribute, Attribute, Attribute }
+
+Attribute   <- String ws :'=' ws :['] ws String2 ws :[']                                # myAttr = 'foo'
+             | String ws :'=' ws :["] ws String2 ws :["]                                # myOtherAttr = "bar"
+
+AddBinding  <- BindToken ws String :'.' String ws NameList                              # comp0.sendMsg chan42
+
+DelBinding  <- UnbindToken ws String :'.' String ws NameList                            # unbind comp0.sendMsg chan0, chan1
+             | UnbindToken ws String :'.' String ws '*'                                 # unbind comp0.sendMsg *
+
+AddRepo     <- RepoToken ws Anything                                                    # repo org.sonatype.org/foo/bar?a=b&c=d
+
+Merge       <- MergeToken ws String :':' String2                                        # merge npm:kevoree-chan-websocket
+                                                                                        # merge mvn:org.kevoree.library.javase:websocketgrp:2.0.5-SNAPSHOT
+
+NameList    <- String ws *(:[,] ws String)                                              # node0, node42, node1024
+
+Comment     <: '//' :Anything                                                            # // a comment is inline and starts with '//'
+# =========
+# End Rules
+
+
+# Void Non-terminals
+# =============
+RepoToken       <: 'repo'
+MergeToken      <: 'merge'
+AddToken        <: 'add'
+RemoveToken     <: 'remove'
+MoveToken       <: 'move'
+SetToken        <: 'set'
+AttachToken     <: 'attach'
+DetachToken     <: 'detach'
+NetworkToken    <: 'network'
+BindToken       <: 'bind'
+UnbindToken     <: 'unbind'
+String          <- +[a-zA-Z0-9_-]
+String2         <- +[a-zA-Z0-9.:@_-]
+Anything        <- +(!eol .) :eol
+eol             <: '\r\n' | '\n' | '\r'
+ws              <: *([ \t] | eol)
+# =================
+# End Void Non-terminals

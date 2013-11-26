@@ -9,7 +9,7 @@ import org.kevoree.core.basechecker.RootChecker
 import java.util.concurrent.ExecutorService
 import java.util.UUID
 import java.util.ArrayList
-import org.kevoree.api.Bootstraper
+import org.kevoree.api.BootstrapService
 import java.util.concurrent.Callable
 import org.kevoree.api.service.core.handler.UUIDModel
 import org.kevoree.api.service.core.handler.ModelUpdateCallback
@@ -24,6 +24,7 @@ import org.kevoree.api.service.core.handler.ModelListener
 import org.kevoree.impl.DefaultKevoreeFactory
 import java.util.concurrent.atomic.AtomicReference
 import org.kevoree.log.Log
+import org.kevoree.api.NodeType
 
 class PreCommand(newmodel: ContainerRoot, modelListeners: KevoreeListeners, oldModel: ContainerRoot){
     var alreadyCall = false
@@ -40,7 +41,7 @@ class KevoreeCoreBean() : KevoreeModelHandlerService {
 
     val modelListeners = KevoreeListeners()
     var _kevsEngineFactory: KevScriptEngineFactory? = null
-    var _bootstraper: Bootstraper? = null
+    var bootstrapService: BootstrapService? = null
     var _nodeName: String = ""
     var nodeInstance: org.kevoree.api.NodeType? = null
     var models: MutableList<UUIDModel> = ArrayList<UUIDModel>()
@@ -49,7 +50,6 @@ class KevoreeCoreBean() : KevoreeModelHandlerService {
     var lastDate: Date = Date(System.currentTimeMillis())
     val modelCloner = DefaultModelCloner()
     val modelChecker = RootChecker()
-    var selfActorPointer = this
     private var scheduler: ExecutorService? = null
     private var lockWatchDog: ScheduledExecutorService? = null
     private var futurWatchDog: ScheduledFuture<out Any?>? = null
@@ -74,10 +74,6 @@ class KevoreeCoreBean() : KevoreeModelHandlerService {
 
     fun setKevsEngineFactory(k: KevScriptEngineFactory) {
         _kevsEngineFactory = k
-    }
-
-    fun setBootstraper(b: Bootstraper) {
-        _bootstraper = b
     }
 
     private fun switchToNewModel(c: ContainerRoot) {
@@ -208,7 +204,7 @@ class KevoreeCoreBean() : KevoreeModelHandlerService {
                 Log.debug("Call instance stop")
                 nodeInstance?.stopNode()
                 nodeInstance == null
-                _bootstraper?.clear()
+                bootstrapService?.clear()
             } catch(e: Exception) {
                 Log.error("Error while stopping node instance ", e)
             }
@@ -381,7 +377,7 @@ public override fun compareAndSwapModel(p0: org.kevoree.api.service.core.handler
             if (nodeInstance == null) {
                 val foundNode = currentModel.findNodesByID(getNodeName())
                 if(foundNode != null){
-                    nodeInstance = _bootstraper?.bootstrapNodeType(currentModel, getNodeName(), this, _kevsEngineFactory!!)
+                    nodeInstance = bootstrapNodeType(currentModel, getNodeName()) as NodeType
                     if(nodeInstance != null){
                         nodeInstance?.startNode()
                         val uuidModel = UUIDModelImpl(UUID.randomUUID(), factory.createContainerRoot())
@@ -396,12 +392,11 @@ public override fun compareAndSwapModel(p0: org.kevoree.api.service.core.handler
         } catch(e: Throwable) {
             Log.error("Error while bootstraping node instance ", e)
             // TODO is it possible to display the following log ?
-            Log.debug(_bootstraper?.getKevoreeClassLoaderHandler()?.getKCLDump())
             try {
                 nodeInstance?.stopNode()
             } catch(e: Throwable) {
             } finally {
-                _bootstraper?.clear()
+                bootstrapService?.clear()
             }
             nodeInstance = null
         }
@@ -418,7 +413,7 @@ public override fun compareAndSwapModel(p0: org.kevoree.api.service.core.handler
             if ( checkResult.size > 0) {
                 Log.error("There is check failure on update model, update refused !")
                 for(cr in checkResult) {
-                    Log.error("error=> " + cr?.getMessage() + ",objects" + cr?.getTargetObjects())
+                    Log.error("error=> " + cr.getMessage() + ",objects" + cr.getTargetObjects())
                 }
                 return false
             } else {
@@ -454,7 +449,7 @@ public override fun compareAndSwapModel(p0: org.kevoree.api.service.core.handler
                             nodeInstance?.stopNode()
                             //end of harakiri
                             nodeInstance = null
-                            _bootstraper?.clear() //CLEAR
+                            bootstrapService?.clear() //CLEAR
                             //place the current model as an empty model (for backup)
 
                             val backupEmptyModel = kevoreeFactory.createContainerRoot()
@@ -526,6 +521,16 @@ public override fun compareAndSwapModel(p0: org.kevoree.api.service.core.handler
         } catch (e: Throwable) {
             Log.error("Error while update", e)
             return false
+        }
+    }
+
+    private fun bootstrapNodeType(model: ContainerRoot, nodeName: String): Any? {
+        val nodeInstance = model.findNodesByID(nodeName)
+        if(nodeInstance != null){
+            return bootstrapService!!.createInstance(nodeInstance)
+        } else {
+            Log.error("Node not found using name " + nodeName);
+            return null
         }
     }
 

@@ -20,11 +20,6 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>org.kevoree.framework</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
             <artifactId>org.kevoree.basechecker</artifactId>
             <version>${project.version}</version>
         </dependency>
