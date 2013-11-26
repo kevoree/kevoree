@@ -5,7 +5,6 @@ import org.kevoree.api.service.core.script.KevScriptEngineFactory
 import org.kevoree.ContainerRoot
 import org.kevoree.cloner.DefaultModelCloner
 import java.util.Date
-import org.kevoree.core.basechecker.RootChecker
 import java.util.concurrent.ExecutorService
 import java.util.UUID
 import java.util.ArrayList
@@ -49,7 +48,7 @@ class KevoreeCoreBean() : KevoreeModelHandlerService {
     val model: AtomicReference<UUIDModel> = AtomicReference<UUIDModel>()
     var lastDate: Date = Date(System.currentTimeMillis())
     val modelCloner = DefaultModelCloner()
-    val modelChecker = RootChecker()
+    //val modelChecker = RootChecker()
     private var scheduler: ExecutorService? = null
     private var lockWatchDog: ScheduledExecutorService? = null
     private var futurWatchDog: ScheduledFuture<out Any?>? = null
@@ -229,12 +228,16 @@ class KevoreeCoreBean() : KevoreeModelHandlerService {
     }
 
     override fun checkModel(tModel: ContainerRoot?): Boolean {
+
+        return true;
+        /*
+
         val checkResult = modelChecker.check(tModel)
         return if (checkResult != null && checkResult.isEmpty()!!) {
             modelListeners.preUpdate(model.get()!!.getModel()!!, cloneCurrentModel(tModel))
         } else {
             false
-        }
+        } */
     }
 
     override fun updateModel(tmodel: ContainerRoot?, callback: ModelUpdateCallback?): jet.Unit {
@@ -409,12 +412,12 @@ public override fun compareAndSwapModel(p0: org.kevoree.api.service.core.handler
         }
         try {
             val readOnlyNewModel = proposedNewModel
-            val checkResult = modelChecker.check(readOnlyNewModel)!!
-            if ( checkResult.size > 0) {
+            val checkResult = null//modelChecker.check(readOnlyNewModel)!!
+            if ( checkResult != null) {
                 Log.error("There is check failure on update model, update refused !")
-                for(cr in checkResult) {
-                    Log.error("error=> " + cr.getMessage() + ",objects" + cr.getTargetObjects())
-                }
+                //for(cr in checkResult) {
+                //    Log.error("error=> " + cr.getMessage() + ",objects" + cr.getTargetObjects())
+                //}
                 return false
             } else {
                 //Model check is OK.

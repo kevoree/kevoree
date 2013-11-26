@@ -10,6 +10,7 @@ import org.kevoree.TypeDefinition
 import org.kevoree.annotation.ComponentType
 import org.kevoree.annotation.ChannelType
 import org.kevoree.annotation.GroupType
+import org.kevoree.annotation.Param
 
 /**
  * Created with IntelliJ IDEA.
@@ -30,6 +31,28 @@ object ModelBuilder {
         lib!!.addSubTypes(typeDef)
     }
 
+    fun deepFields(clazz: CtClass, factory: KevoreeFactory, currentTypeDefinition: TypeDefinition) {
+        for(field in clazz.getDeclaredFields()?.iterator()){
+            for(annotation in field.getAnnotations()?.iterator()){
+                when(annotation) {
+                    is Param -> {
+                        var dicAtt = factory.createDictionaryAttribute()
+                        if(currentTypeDefinition.dictionaryType == null){
+                            currentTypeDefinition.dictionaryType = factory.createDictionaryType()
+                        }
+                        dicAtt.name = field.getName()
+                        dicAtt.datatype = field.getType()!!.getName()
+                        dicAtt.optional = annotation.optional()
+                        currentTypeDefinition.dictionaryType!!.addAttributes(dicAtt)
+                    }
+                    else -> {
+                        //noop
+                    }
+                }
+            }
+        }
+    }
+
     fun process(elem: Any, clazz: CtClass, factory: KevoreeFactory, du: DeployUnit, root: ContainerRoot) {
 
         when(elem) {
@@ -40,6 +63,7 @@ object ModelBuilder {
                 groupType.bean = clazz.getName()
                 root.addTypeDefinitions(groupType)
                 groupType.deployUnit = du
+                deepFields(clazz, factory, groupType)
             }
             is ChannelType -> {
                 var channelType = factory.createChannelType();
@@ -48,6 +72,7 @@ object ModelBuilder {
                 channelType.bean = clazz.getName()
                 root.addTypeDefinitions(channelType)
                 channelType.deployUnit = du
+                deepFields(clazz, factory, channelType)
             }
             is ComponentType -> {
                 var componentType = factory.createComponentType();
@@ -56,6 +81,7 @@ object ModelBuilder {
                 componentType.bean = clazz.getName()
                 root.addTypeDefinitions(componentType)
                 componentType.deployUnit = du
+                deepFields(clazz, factory, componentType)
             }
             is NodeType -> {
                 var nodeType = factory.createNodeType();
@@ -64,6 +90,7 @@ object ModelBuilder {
                 nodeType.bean = clazz.getName()
                 root.addTypeDefinitions(nodeType)
                 nodeType.deployUnit = du
+                deepFields(clazz, factory, nodeType)
             }
             is Library -> {
                 for(typeDef in root.typeDefinitions){

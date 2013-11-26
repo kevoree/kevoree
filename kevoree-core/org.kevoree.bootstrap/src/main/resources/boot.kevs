@@ -1,4 +1,5 @@
 merge mvn:org.kevoree.corelibrary.javase:org.kevoree.library.javase.javaseNode:2.0.6-SNAPSHOT
-add node0 : JavaSENode
+add node0 : JavaNode
+set node0 { debug = "true" }
 
 

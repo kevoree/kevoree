@@ -1,10 +1,9 @@
 package org.kevoree.boostrap.kernel;
 
-import org.kevoree.ContainerRoot;
-import org.kevoree.DeployUnit;
-import org.kevoree.Instance;
-import org.kevoree.Repository;
+import org.kevoree.*;
+import org.kevoree.annotation.Param;
 import org.kevoree.api.BootstrapService;
+import org.kevoree.boostrap.reflect.FieldAnnotationResolver;
 import org.kevoree.boostrap.reflect.KevoreeInjector;
 import org.kevoree.kcl.KevoreeJarClassLoader;
 import org.kevoree.log.Log;
@@ -13,6 +12,7 @@ import org.kevoree.resolver.MavenResolver;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -96,8 +96,8 @@ public class KevoreeCLKernel implements KevoreeCLFactory, BootstrapService {
             return cache.get(path);
         }
         KevoreeJarClassLoader kcl = installDeployUnit(deployUnit);
-        if(kcl == null){
-           Log.error("Can install {}",deployUnit.path());
+        if (kcl == null) {
+            Log.error("Can install {}", deployUnit.path());
         } else {
             for (DeployUnit child : deployUnit.getRequiredLibs()) {
                 kcl.addSubClassLoader(recursiveInstallDeployUnit(child));
@@ -124,12 +124,51 @@ public class KevoreeCLKernel implements KevoreeCLFactory, BootstrapService {
         try {
             Object newInstance = clazz.newInstance();
             injector.process(newInstance);
-            //TODO inject dictionary
+            injectDictionary(instance,newInstance);
             return newInstance;
         } catch (Exception e) {
             Log.error("Error while creating instance ", e);
         }
         return null;
+    }
+
+    public void injectDictionary(Instance instance, Object target) throws IllegalAccessException, NoSuchFieldException {
+        if (instance.getDictionary() == null) {
+            return;
+        }
+        for (DictionaryValue dicVal : instance.getDictionary().getValues()) {
+            Field f = target.getClass().getField(dicVal.getAttribute().getName());
+            if(!f.isAccessible()){
+                f.setAccessible(true);
+            }
+            if (f.getType().equals(boolean.class)) {
+                f.setBoolean(target, Boolean.parseBoolean(dicVal.getValue()));
+            }
+            if (f.getType().equals(Boolean.class)) {
+                f.set(target, new Boolean(Boolean.parseBoolean(dicVal.getValue())));
+            }
+            if (f.getType().equals(Integer.class)) {
+                f.setInt(target, Integer.parseInt(dicVal.getValue()));
+            }
+            if (f.getType().equals(Integer.class)) {
+                f.set(target, new Integer(Integer.parseInt(dicVal.getValue())));
+            }
+            if (f.getType().equals(long.class)) {
+                f.setLong(target, Long.parseLong(dicVal.getValue()));
+            }
+            if (f.getType().equals(Long.class)) {
+                f.set(target, new Long(Long.parseLong(dicVal.getValue())));
+            }
+            if (f.getType().equals(double.class)) {
+                f.setDouble(target, Double.parseDouble(dicVal.getValue()));
+            }
+            if (f.getType().equals(Double.class)) {
+                f.set(target, Double.parseDouble(dicVal.getValue()));
+            }
+            if (f.getType().equals(String.class)) {
+                f.set(target, dicVal.getValue());
+            }
+        }
     }
 
     @Override

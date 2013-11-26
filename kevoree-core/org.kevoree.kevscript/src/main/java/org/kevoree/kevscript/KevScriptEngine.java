@@ -6,16 +6,12 @@ import org.kevoree.impl.DefaultKevoreeFactory;
 import org.kevoree.kevscript.util.InstanceResolver;
 import org.kevoree.kevscript.util.MergeResolver;
 import org.kevoree.kevscript.util.TypeDefinitionResolver;
-import org.kevoree.loader.JSONModelLoader;
 import org.kevoree.log.Log;
-import org.kevoree.serializer.JSONModelSerializer;
 import org.waxeye.ast.IAST;
 import org.waxeye.input.BufferFiller;
 import org.waxeye.input.InputBuffer;
 import org.waxeye.parser.ParseResult;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,19 +27,6 @@ public class KevScriptEngine implements KevScriptService {
     Parser parser = new Parser();
     KevoreeFactory factory = new DefaultKevoreeFactory();
 
-    /*
-    public static void main(String[] args) throws FileNotFoundException {
-        KevScriptEngine engine = new KevScriptEngine();
-        JSONModelLoader loader = new JSONModelLoader();
-
-        ContainerRoot root = (ContainerRoot) loader.loadModelFromStream(new FileInputStream("/Users/duke/Documents/dev/dukeboard/kevoree/kevoree-tools/org.kevoree.tools.kevscript/src/examples/lib.json")).get(0);
-        engine.executeFromStream(new FileInputStream("/Users/duke/Documents/dev/dukeboard/kevoree/kevoree-tools/org.kevoree.tools.kevscript/src/examples/test.kevs"), root);
-        JSONModelSerializer saver = new JSONModelSerializer();
-        //saver.serializeToStream(root, System.out);
-    } */
-
-
-
     public void execute(String script, ContainerRoot model) {
         ParseResult<Type> parserResult = parser.parse(new InputBuffer(script.toCharArray()));
         interpret(parserResult.getAST(), model);
@@ -51,7 +34,12 @@ public class KevScriptEngine implements KevScriptService {
 
     public void executeFromStream(InputStream script, ContainerRoot model) {
         ParseResult<Type> parserResult = parser.parse(new InputBuffer(BufferFiller.asArray(script)));
-        interpret(parserResult.getAST(), model);
+        IAST<Type> ast = parserResult.getAST();
+        if (ast != null) {
+            interpret(parserResult.getAST(), model);
+        } else {
+            Log.error(parserResult.getError().toString());
+        }
     }
 
     private List<Instance> pending = new ArrayList<Instance>();
@@ -148,16 +136,22 @@ public class KevScriptEngine implements KevScriptService {
 
                         for (IAST<Type> attribute : list.getChildren()) {
                             String key = attribute.getChildren().get(0).childrenAsString();
-                            DictionaryValue att = target.getDictionary().findValuesByID(key);
-                            if (att == null) {
-                                att = factory.createDictionaryValue();
-                                target.getDictionary().addValues(att);
+                            DictionaryValue dicValue = target.getDictionary().findValuesByID(key);
+                            if (dicValue == null) {
+                                dicValue = factory.createDictionaryValue();
+                                DictionaryAttribute dicAtt = target.getTypeDefinition().getDictionaryType().findAttributesByID(key);
+                                if (dicAtt == null) {
+                                    Log.error("Param does not existe in type {} -> {}", target.getName(), key);
+                                } else {
+                                    dicValue.setAttribute(dicAtt);
+                                }
+                                target.getDictionary().addValues(dicValue);
                             }
                             String value = attribute.getChildren().get(1).childrenAsString();
-                            att.setValue(value);
+                            dicValue.setValue(value);
                             if (targetNode != null) {
-                                att.setTargetNode(model.findNodesByID(targetNode));
-                                if (att.getTargetNode() == null) {
+                                dicValue.setTargetNode(model.findNodesByID(targetNode));
+                                if (dicValue.getTargetNode() == null) {
                                     Log.error("Node not found for @" + targetNode + " property");
                                 }
                             }
