@@ -24,7 +24,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kevoree.api.service.core.handler;
+package org.kevoree.api.handler;
 
 
 import org.kevoree.ContainerRoot;

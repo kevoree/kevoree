@@ -24,23 +24,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kevoree.api.service.core.handler;
-
-import org.kevoree.ContainerRoot;
+package org.kevoree.api.handler;
 
 import java.util.UUID;
 
 /**
  * Created by IntelliJ IDEA.
  * User: duke
- * Date: 13/12/11
- * Time: 10:46
- * To change this template use File | Settings | File Templates.
+ * Date: 13/02/12
+ * Time: 14:05
  */
-public interface UUIDModel {
+public interface LockCallBack {
 
-    public UUID getUUID();
-
-    public ContainerRoot getModel();
+    public void run(UUID bypassUUID, Boolean error);
 
 }

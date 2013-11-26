@@ -137,7 +137,7 @@ public class KevoreeCLKernel implements KevoreeCLFactory, BootstrapService {
         for (DictionaryValue dicVal : instance.getDictionary().getValues()) {
 
             try {
-                Field f = target.getClass().getField(dicVal.getAttribute().getName());
+                Field f = target.getClass().getDeclaredField(dicVal.getAttribute().getName());
                 if (!f.isAccessible()) {
                     f.setAccessible(true);
                 }
@@ -168,14 +168,11 @@ public class KevoreeCLKernel implements KevoreeCLFactory, BootstrapService {
                 if (f.getType().equals(String.class)) {
                     f.set(target, dicVal.getValue());
                 }
-
             } catch (Exception e) {
                 Log.error("No field corresponding to annotation, consistency error {} on {}",dicVal.getAttribute().getName(),target.toString());
                 e.printStackTrace();
 
-                for(Field f : target.getClass().getFields()){
-                    System.out.println(">"+f.getName());
-                }
+
 
             }
         }

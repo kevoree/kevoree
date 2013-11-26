@@ -11,16 +11,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kevoree.api.service.core.handler;
+package org.kevoree.api.handler;
 
 /**
  * Created with IntelliJ IDEA.
  * User: duke
  * Date: 12/11/12
- * Time: 10:09
+ * Time: 10:06
  */
-public enum ModelUpdateCallBackReturn {
+public interface UpdateCallback {
 
-    UPDATED,CAS_ERROR,DEPLOY_ERROR;
+    public void run(Boolean applied);
 
 }
