@@ -25,16 +25,6 @@ public abstract class AbstractGroupType extends AbstractTypeDefinition implement
     public abstract ContainerRoot pull(String targetNodeName) throws Exception;
 
 
-    /**
-     * Allow to find the corresponding element into the model
-     * Be careful, this method use the KevoreeModelHandlerService#getLastModel but this method is locked in some cases
-     *
-     * @return the group corresponding to this
-     */
-    public Group getModelElement() {
-        return getModelService().getLastModel().findGroupsByID(getName());
-    }
-
     @Override
     public boolean preUpdate(ContainerRoot currentModel, ContainerRoot proposedModel) {
         return true;

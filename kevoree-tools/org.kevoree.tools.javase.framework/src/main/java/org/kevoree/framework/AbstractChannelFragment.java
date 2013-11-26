@@ -43,13 +43,4 @@ public abstract class AbstractChannelFragment extends AbstractTypeDefinition imp
         return delegate.dispatch(msg);
     }
 
-    /**
-     * Allow to find the corresponding element into the model
-     *
-     * @return the channel corresponding to this
-     */
-    public Channel getModelElement() {
-        return getModelService().getLastModel().findByPath("hubs[" + getName() + "]", Channel.class);
-    }
-
 }

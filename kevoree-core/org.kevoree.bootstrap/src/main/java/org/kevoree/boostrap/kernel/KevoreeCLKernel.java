@@ -1,9 +1,7 @@
 package org.kevoree.boostrap.kernel;
 
 import org.kevoree.*;
-import org.kevoree.annotation.Param;
 import org.kevoree.api.BootstrapService;
-import org.kevoree.boostrap.reflect.FieldAnnotationResolver;
 import org.kevoree.boostrap.reflect.KevoreeInjector;
 import org.kevoree.kcl.KevoreeJarClassLoader;
 import org.kevoree.log.Log;
@@ -124,7 +122,7 @@ public class KevoreeCLKernel implements KevoreeCLFactory, BootstrapService {
         try {
             Object newInstance = clazz.newInstance();
             injector.process(newInstance);
-            injectDictionary(instance,newInstance);
+            injectDictionary(instance, newInstance);
             return newInstance;
         } catch (Exception e) {
             Log.error("Error while creating instance ", e);
@@ -132,41 +130,47 @@ public class KevoreeCLKernel implements KevoreeCLFactory, BootstrapService {
         return null;
     }
 
-    public void injectDictionary(Instance instance, Object target) throws IllegalAccessException, NoSuchFieldException {
+    public void injectDictionary(Instance instance, Object target) {
         if (instance.getDictionary() == null) {
             return;
         }
         for (DictionaryValue dicVal : instance.getDictionary().getValues()) {
-            Field f = target.getClass().getField(dicVal.getAttribute().getName());
-            if(!f.isAccessible()){
-                f.setAccessible(true);
-            }
-            if (f.getType().equals(boolean.class)) {
-                f.setBoolean(target, Boolean.parseBoolean(dicVal.getValue()));
-            }
-            if (f.getType().equals(Boolean.class)) {
-                f.set(target, new Boolean(Boolean.parseBoolean(dicVal.getValue())));
-            }
-            if (f.getType().equals(Integer.class)) {
-                f.setInt(target, Integer.parseInt(dicVal.getValue()));
-            }
-            if (f.getType().equals(Integer.class)) {
-                f.set(target, new Integer(Integer.parseInt(dicVal.getValue())));
-            }
-            if (f.getType().equals(long.class)) {
-                f.setLong(target, Long.parseLong(dicVal.getValue()));
-            }
-            if (f.getType().equals(Long.class)) {
-                f.set(target, new Long(Long.parseLong(dicVal.getValue())));
-            }
-            if (f.getType().equals(double.class)) {
-                f.setDouble(target, Double.parseDouble(dicVal.getValue()));
-            }
-            if (f.getType().equals(Double.class)) {
-                f.set(target, Double.parseDouble(dicVal.getValue()));
-            }
-            if (f.getType().equals(String.class)) {
-                f.set(target, dicVal.getValue());
+
+            try {
+                Field f = target.getClass().getField(dicVal.getAttribute().getName());
+                if (!f.isAccessible()) {
+                    f.setAccessible(true);
+                }
+                if (f.getType().equals(boolean.class)) {
+                    f.setBoolean(target, Boolean.parseBoolean(dicVal.getValue()));
+                }
+                if (f.getType().equals(Boolean.class)) {
+                    f.set(target, new Boolean(Boolean.parseBoolean(dicVal.getValue())));
+                }
+                if (f.getType().equals(Integer.class)) {
+                    f.setInt(target, Integer.parseInt(dicVal.getValue()));
+                }
+                if (f.getType().equals(Integer.class)) {
+                    f.set(target, new Integer(Integer.parseInt(dicVal.getValue())));
+                }
+                if (f.getType().equals(long.class)) {
+                    f.setLong(target, Long.parseLong(dicVal.getValue()));
+                }
+                if (f.getType().equals(Long.class)) {
+                    f.set(target, new Long(Long.parseLong(dicVal.getValue())));
+                }
+                if (f.getType().equals(double.class)) {
+                    f.setDouble(target, Double.parseDouble(dicVal.getValue()));
+                }
+                if (f.getType().equals(Double.class)) {
+                    f.set(target, Double.parseDouble(dicVal.getValue()));
+                }
+                if (f.getType().equals(String.class)) {
+                    f.set(target, dicVal.getValue());
+                }
+
+            } catch (Exception e) {
+                Log.error("No field corresponding to annotation, consistency error");
             }
         }
     }
