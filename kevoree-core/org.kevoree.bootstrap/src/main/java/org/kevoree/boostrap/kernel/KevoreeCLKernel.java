@@ -170,7 +170,13 @@ public class KevoreeCLKernel implements KevoreeCLFactory, BootstrapService {
                 }
 
             } catch (Exception e) {
-                Log.error("No field corresponding to annotation, consistency error");
+                Log.error("No field corresponding to annotation, consistency error {} on {}",dicVal.getAttribute().getName(),target.toString());
+                e.printStackTrace();
+
+                for(Field f : target.getClass().getFields()){
+                    System.out.println(">"+f.getName());
+                }
+
             }
         }
     }

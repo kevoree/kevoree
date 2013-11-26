@@ -4,4 +4,6 @@ set node0 { debug = "true" }
 
 add base : HelloWorld
 move base node0
+set base { message = "Hello" }
+
 
