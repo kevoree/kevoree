@@ -13,7 +13,7 @@
     </parent>
 
     <properties>
-        <metamodel.ecore>metamodel/kevoree.adaptation.ecore</metamodel.ecore>
+        <metamodel.ecore>metamodel</metamodel.ecore>
     </properties>
 
     <dependencies>

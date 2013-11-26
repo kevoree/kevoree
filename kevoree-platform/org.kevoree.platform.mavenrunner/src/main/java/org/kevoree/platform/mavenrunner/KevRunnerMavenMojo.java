@@ -37,24 +37,24 @@ import java.io.FileInputStream;
  */
 public class KevRunnerMavenMojo extends AbstractMojo {
 
-	/**
-	 * @parameter default-value="${project.basedir}/src/main/kevs/main.kevs"
-	 */
-	private File model;
+    /**
+     * @parameter default-value="${project.basedir}/src/main/kevs/main.kevs"
+     */
+    private File model;
 
-	/**
-	 * @parameter default-value="node0"
-	 */
-	private String targetNode;
+    /**
+     * @parameter default-value="node0"
+     */
+    private String targetNode;
 
-	/**
-	 * The maven project.
-	 *
-	 * @parameter expression="${project}"
-	 * @required
-	 * @readonly
-	 */
-	private MavenProject project;
+    /**
+     * The maven project.
+     *
+     * @parameter expression="${project}"
+     * @required
+     * @readonly
+     */
+    private MavenProject project;
 
     /**
      * The greeting to display.
@@ -66,48 +66,48 @@ public class KevRunnerMavenMojo extends AbstractMojo {
     private boolean offline;
 
 
-	public void execute () throws MojoExecutionException {
+    public void execute() throws MojoExecutionException {
 
-		try {
-			KevoreeBootStrap.byPassAetherBootstrap = true;
-			ContainerRoot modelRoot = null;
-			if (model.getName().endsWith(".kev")) {
-				FileInputStream ins = new FileInputStream(model);
-				modelRoot = KevoreeXmiHelper.instance$.loadStream(ins);
-				ins.close();
-			} else if (model.getName().endsWith(".kevs")) {
-				modelRoot = KevScriptHelper.generate(model, project);
-			} else {
-				throw new MojoExecutionException("Bad input file, must be .kev or .kevs");
-			}
+        try {
+            KevoreeBootStrap.byPassAetherBootstrap = true;
+            ContainerRoot modelRoot = null;
+            if (model.getName().endsWith(".kev")) {
+                FileInputStream ins = new FileInputStream(model);
+                modelRoot = KevoreeXmiHelper.instance$.loadStream(ins);
+                ins.close();
+            } else if (model.getName().endsWith(".kevs")) {
+                modelRoot = KevScriptHelper.generate(model, project);
+            } else {
+                throw new MojoExecutionException("Bad input file, must be .kev or .kevs");
+            }
 
-			File tFile = new File(project.getBuild().getOutputDirectory(), "runner.kev");
-			KevoreeXmiHelper.instance$.save(tFile.getAbsolutePath(), modelRoot);
+            File tFile = new File(project.getBuild().getOutputDirectory(), "runner.kev");
+            KevoreeXmiHelper.instance$.save(tFile.getAbsolutePath(), modelRoot);
 
-			for (Object key : project.getProperties().keySet()) {
-				System.setProperty(key.toString(), project.getProperties().get(key).toString());
-			}
-			System.setProperty("node.bootstrap", tFile.getAbsolutePath());
-			if (System.getProperty("node.name") == null) {
-				System.setProperty("node.name", targetNode);
-			}
+            for (Object key : project.getProperties().keySet()) {
+                System.setProperty(key.toString(), project.getProperties().get(key).toString());
+            }
+            System.setProperty("node.bootstrap", tFile.getAbsolutePath());
+            if (System.getProperty("node.name") == null) {
+                System.setProperty("node.name", targetNode);
+            }
 
             if (offline) {
                 System.err.println("Maven is offline so we start Kevoree in offline mode");
                 System.setProperty("kevoree.offline", "true");
             }
 
-			App.main(new String[0]);
+            App.main(new String[0]);
 
-			Thread.currentThread().join();
+            Thread.currentThread().join();
 
-		} catch (Throwable e) {
-			getLog().error(e);
+        } catch (Throwable e) {
+            getLog().error(e);
             throw new MojoExecutionException("Unable to run platform with the given model", e);
-		}
+        }
 
 
-	}
+    }
 
 
 }

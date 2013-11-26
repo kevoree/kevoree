@@ -42,7 +42,7 @@ public object KevoreePlatformHelper {
 
             var targetNode = actualModel.findNodesByID(targetNodeName)
             if (targetNode == null) {
-                Log.debug("Unknown node {} add to model",targetNodeName)
+                Log.debug("Unknown node {} add to model", targetNodeName)
                 targetNode = factory.createContainerNode()
                 targetNode!!.name = targetNodeName
                 actualModel.addNodes(targetNode!!)
@@ -83,8 +83,8 @@ public object KevoreePlatformHelper {
         prop!!.lastCheck = Date().getTime().toString()
 
         if(Log.DEBUG){
-            Log.debug("New node link prop registered = "+targetNodeName+","+key+","+value)
+            Log.debug("New node link prop registered = " + targetNodeName + "," + key + "," + value)
         }
-//        return thisNodeFound!!
+        //        return thisNodeFound!!
     }
 }
