@@ -1,4 +1,4 @@
-merge mvn:org.kevoree.corelibrary.javase:org.kevoree.library.javase.javaseNode:2.0.6-SNAPSHOT
+merge mvn:org.kevoree.library.java:org.kevoree.library.java.javaNode:3.0.0-SNAPSHOT
 add node0 : JavaNode
 add chan0 : HelloChannel
 set node0 { debug = "true" }
@@ -11,7 +11,7 @@ add sync : HelloGroup
 attach node0 sync
 
 bind base.output chan0
-
+bind base.input chan0
 
 
 
