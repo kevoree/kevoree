@@ -13,7 +13,7 @@
  */
 package org.kevoree.core.impl
 
-import org.kevoree.api.service.core.handler.ModelListener
+import org.kevoree.api.handler.ModelListener
 import org.kevoree.ContainerRoot
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.concurrent.ExecutorService

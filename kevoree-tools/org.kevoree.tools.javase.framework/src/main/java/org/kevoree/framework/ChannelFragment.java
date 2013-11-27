@@ -41,10 +41,6 @@ public interface ChannelFragment {
 
     public ChannelFragmentSender createSender(String remoteNodeName, String remoteChannelName);
 
-    public String getNodeName();
-
-    public String getName();
-
     public Object forward(KevoreeChannelFragment delegate, Message inmsg);
 
     public Object forward(KevoreePort delegate, Message inmsg);

@@ -24,31 +24,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.kevoree.api.handler;
 
-package org.kevoree.annotation;
+import org.kevoree.ContainerRoot;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
+import java.util.UUID;
 
 /**
- *
- * @author ffouquet
+ * Created by IntelliJ IDEA.
+ * User: duke
+ * Date: 13/12/11
+ * Time: 10:46
+ * To change this template use File | Settings | File Templates.
  */
-@Retention(RetentionPolicy.RUNTIME)
-public @interface ProvidedPort {
+public interface UUIDModel {
 
-    PortType type() default PortType.SERVICE;
+    public UUID getUUID();
 
-    //String[] filter() default {};
-
-    String name();
-
-    Class className() default Void.class;
-
-    String messageType() default "untyped";
-
-    boolean async() default false;
-
-    ThreadStrategy theadStrategy() default ThreadStrategy.SHARED_THREAD;
+    public ContainerRoot getModel();
 
 }

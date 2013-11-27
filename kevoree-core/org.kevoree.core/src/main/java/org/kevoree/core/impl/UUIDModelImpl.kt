@@ -26,9 +26,9 @@
  */
 package org.kevoree.core.impl
 
-import org.kevoree.api.service.core.handler.UUIDModel
 import org.kevoree.ContainerRoot
 import java.util.UUID
+import org.kevoree.api.handler.UUIDModel
 
 /**
  * Created by IntelliJ IDEA.

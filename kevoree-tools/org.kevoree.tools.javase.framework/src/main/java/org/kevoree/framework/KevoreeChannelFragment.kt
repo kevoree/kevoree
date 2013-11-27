@@ -27,9 +27,7 @@ package org.kevoree.framework
  * limitations under the License.
  */
 
-trait KevoreeChannelFragment: KInstance {
-    fun getName(): String
-    fun getNodeName(): String
+trait KevoreeChannelFragment {
     fun send(o: Any?)
     fun sendWait(o: Any?): Any?
     fun processAdminMsg(o: Any): Boolean

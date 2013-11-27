@@ -24,43 +24,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-package org.kevoree.framework;
+package org.kevoree.api.handler;
 
-import org.kevoree.api.service.core.handler.KevoreeModelHandlerService;
-
-import java.util.HashMap;
+import java.util.UUID;
 
 /**
- *
- * @author ffouquet
+ * Created by IntelliJ IDEA.
+ * User: duke
+ * Date: 13/02/12
+ * Time: 14:05
  */
-public interface ComponentType {
+public interface LockCallBack {
 
-    public KevoreeModelHandlerService getModelService();
+    public void run(UUID bypassUUID, Boolean error);
 
-    public void setHostedPorts(HashMap<String, Object> ports);
-
-    public HashMap<String, Object> getHostedPorts();
-
-    public void setNeededPorts(HashMap<String, Object> ports);
-
-    public HashMap<String, Object> getNeededPorts();
-
-    public HashMap<String,Object> getDictionary();
-
-    public void setDictionary(HashMap<String, Object> dictionary);
-
-    public <T> T getPortByName(String name, Class<T> type);
-
-    public Boolean isPortBinded(String name);
-    
-    public String getNodeName();
-
-    public String getName();
-    
-    
 }

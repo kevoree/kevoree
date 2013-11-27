@@ -11,14 +11,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kevoree.annotation;
+package org.kevoree.api.handler;
 
 /**
  * Created with IntelliJ IDEA.
  * User: duke
- * Date: 01/10/12
- * Time: 16:04
+ * Date: 12/11/12
+ * Time: 10:06
  */
-public enum ThreadStrategy {
-    THREAD_QUEUE, SHARED_THREAD,NONE;
+public interface UpdateCallback {
+
+    public void run(Boolean applied);
+
 }

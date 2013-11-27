@@ -20,12 +20,11 @@ import java.util.HashMap;
 /**
  * @author ffouquet
  */
-public class AbstractComponentType extends AbstractTypeDefinition implements ComponentType {
+public class AbstractComponentType extends AbstractTypeDefinition {
 
     private HashMap<String, Object> hostedPorts = new HashMap<String, Object>();
     private HashMap<String, Object> neededPorts = new HashMap<String, Object>();
 
-    @Override
     public void setHostedPorts(HashMap<String, Object> ports) {
         this.hostedPorts = ports;
         for (Object p : this.hostedPorts.values()) {
@@ -33,12 +32,10 @@ public class AbstractComponentType extends AbstractTypeDefinition implements Com
         }
     }
 
-    @Override
     public HashMap<String, Object> getNeededPorts() {
         return neededPorts;
     }
 
-    @Override
     public void setNeededPorts(HashMap<String, Object> neededPorts) {
         this.neededPorts = neededPorts;
     }
@@ -54,7 +51,6 @@ public class AbstractComponentType extends AbstractTypeDefinition implements Com
         return port;
     }
 
-    @Override
     public <T> T getPortByName(String name, Class<T> type) {
         Object retp = getPortByName(name);
         if (retp != null) {
@@ -64,12 +60,10 @@ public class AbstractComponentType extends AbstractTypeDefinition implements Com
         }
     }
 
-    @Override
     public HashMap<String, Object> getHostedPorts() {
         return this.hostedPorts;
     }
 
-    @Override
     public Boolean isPortBinded(String portName) {
         Object port = null;
         if (this.getNeededPorts().containsKey(portName)) {
@@ -83,12 +77,4 @@ public class AbstractComponentType extends AbstractTypeDefinition implements Com
         }
     }
 
-    /**
-     * Allow to find the corresponding element into the model
-     *
-     * @return the component instance corresponding to this
-     */
-    public ComponentInstance getModelElement() {
-        return getModelService().getLastModel().findByPath("nodes[" + getNodeName() + "]/components[" + getName() + "]", ComponentInstance.class);
-    }
 }

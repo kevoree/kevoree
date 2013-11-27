@@ -13,10 +13,7 @@
  */
 package org.kevoree.api
 
-import org.kevoree.api.service.core.handler.KevoreeModelHandlerService
-import java.io.File
 import org.kevoree.DeployUnit
-import org.kevoree.ContainerRoot
 import org.kevoree.kcl.KevoreeJarClassLoader
 import org.kevoree.Instance
 
@@ -29,20 +26,22 @@ import org.kevoree.Instance
 
 trait BootstrapService {
 
-    public fun get(du : DeployUnit) : KevoreeJarClassLoader?;
+    public fun get(du: DeployUnit): KevoreeJarClassLoader?;
 
-    public fun installDeployUnit(du : DeployUnit) : KevoreeJarClassLoader?;
+    public fun installDeployUnit(du: DeployUnit): KevoreeJarClassLoader?;
 
-    public fun removeDeployUnit(du : DeployUnit)
+    public fun removeDeployUnit(du: DeployUnit)
 
-    public fun manualAttach(du : DeployUnit, kcl : KevoreeJarClassLoader);
+    public fun manualAttach(du: DeployUnit, kcl: KevoreeJarClassLoader);
 
-    public fun recursiveInstallDeployUnit(du : DeployUnit) : KevoreeJarClassLoader?;
+    public fun recursiveInstallDeployUnit(du: DeployUnit): KevoreeJarClassLoader?;
 
-    public fun setOffline(offline:Boolean)
+    public fun setOffline(offline: Boolean)
 
     public fun clear()
 
-    public fun createInstance(instance : Instance) : Any?
+    public fun createInstance(instance: Instance): Any?
+
+     public fun injectDictionary(instance: Instance, target: Any)
 
 }

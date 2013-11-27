@@ -1,30 +1,26 @@
 package org.kevoree.core.impl
 
-import org.kevoree.api.service.core.handler.KevoreeModelHandlerService
-import org.kevoree.api.service.core.script.KevScriptEngineFactory
+import org.kevoree.api.ModelService
+import org.kevoree.api.handler.UUIDModel
 import org.kevoree.ContainerRoot
-import org.kevoree.cloner.DefaultModelCloner
-import java.util.Date
-import org.kevoree.core.basechecker.RootChecker
-import java.util.concurrent.ExecutorService
 import java.util.UUID
-import java.util.ArrayList
+import org.kevoree.api.handler.UpdateCallback
+import org.kevoree.api.handler.ModelListener
 import org.kevoree.api.BootstrapService
-import java.util.concurrent.Callable
-import org.kevoree.api.service.core.handler.UUIDModel
-import org.kevoree.api.service.core.handler.ModelUpdateCallback
-import org.kevoree.api.service.core.handler.ModelUpdateCallBackReturn
-import org.kevoree.api.service.core.handler.ModelHandlerLockCallBack
-import org.kevoree.ContainerNode
-import java.util.concurrent.ScheduledFuture
-import java.util.concurrent.ScheduledExecutorService
-import java.util.concurrent.TimeUnit
-import org.kevoree.api.service.core.handler.KevoreeModelUpdateException
-import org.kevoree.api.service.core.handler.ModelListener
-import org.kevoree.impl.DefaultKevoreeFactory
+import java.util.ArrayList
 import java.util.concurrent.atomic.AtomicReference
+import java.util.Date
+import org.kevoree.cloner.DefaultModelCloner
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.ScheduledExecutorService
+import java.util.concurrent.ScheduledFuture
+import org.kevoree.impl.DefaultKevoreeFactory
+import org.kevoree.api.handler.LockCallBack
 import org.kevoree.log.Log
+import org.kevoree.ContainerNode
+import java.util.concurrent.TimeUnit
 import org.kevoree.api.NodeType
+
 
 class PreCommand(newmodel: ContainerRoot, modelListeners: KevoreeListeners, oldModel: ContainerRoot){
     var alreadyCall = false
@@ -37,10 +33,9 @@ class PreCommand(newmodel: ContainerRoot, modelListeners: KevoreeListeners, oldM
     }
 }
 
-class KevoreeCoreBean() : KevoreeModelHandlerService {
+class KevoreeCoreBean : ModelService {
 
     val modelListeners = KevoreeListeners()
-    var _kevsEngineFactory: KevScriptEngineFactory? = null
     var bootstrapService: BootstrapService? = null
     var _nodeName: String = ""
     var nodeInstance: org.kevoree.api.NodeType? = null
@@ -49,16 +44,14 @@ class KevoreeCoreBean() : KevoreeModelHandlerService {
     val model: AtomicReference<UUIDModel> = AtomicReference<UUIDModel>()
     var lastDate: Date = Date(System.currentTimeMillis())
     val modelCloner = DefaultModelCloner()
-    val modelChecker = RootChecker()
+    //val modelChecker = RootChecker()
     private var scheduler: ExecutorService? = null
     private var lockWatchDog: ScheduledExecutorService? = null
     private var futurWatchDog: ScheduledFuture<out Any?>? = null
-    private var currentLock: LockCallBack? = null
-
+    private var currentLock: TupleLockCallBack? = null
     var factory = DefaultKevoreeFactory()
 
-    data class LockCallBack(val uuid: UUID, val callback: ModelHandlerLockCallBack)
-
+    data class TupleLockCallBack(val uuid: UUID, val callback: LockCallBack)
 
     override fun getNodeName(): String {
         return _nodeName
@@ -68,12 +61,60 @@ class KevoreeCoreBean() : KevoreeModelHandlerService {
         _nodeName = nn
     }
 
-    override fun getLastModification(): Date {
-        return lastDate
+    inline fun cloneCurrentModel(pmodel: ContainerRoot?): ContainerRoot {
+        return modelCloner.clone(pmodel!!, true)!!
     }
 
-    fun setKevsEngineFactory(k: KevScriptEngineFactory) {
-        _kevsEngineFactory = k
+    override fun registerModelListener(listener: ModelListener?) {
+        modelListeners.addListener(listener!!)
+    }
+
+    override fun unregisterModelListener(listener: ModelListener?) {
+        modelListeners.removeListener(listener!!)
+    }
+
+    override fun acquireLock(callBack: LockCallBack?, timeout: Long?) {
+        scheduler?.submit(AcquireLock(callBack!!, timeout!!))
+    }
+
+    override fun getCurrentModel(): UUIDModel? {
+        return model.get()!!
+    }
+    override fun compareAndSwap(model: ContainerRoot?, uuid: UUID?, callback: UpdateCallback?) {
+        scheduler!!.submit(UpdateModelCallable(cloneCurrentModel(model), uuid, callback))
+    }
+    override fun update(model: ContainerRoot?, callback: UpdateCallback?) {
+        scheduler!!.submit(UpdateModelCallable(cloneCurrentModel(model), null, callback))
+    }
+
+    inner class UpdateModelCallable(val targetModel: ContainerRoot, val uuid: UUID?, val callback: UpdateCallback?) : Runnable {
+        override fun run() {
+            var res: Boolean = false
+            if (currentLock != null) {
+                if (uuid?.compareTo(currentLock!!.uuid) == 0) {
+                    res = internal_update_model(targetModel)
+                } else {
+                    Log.debug("Core Locked , bad UUID {}", uuid)
+                    res = false //LOCK REFUSED !
+                }
+            } else {
+                //COMMON CHECK
+                if(uuid != null){
+                    if (uuid.compareTo(model.get()!!.getUUID()!!) == 0) {
+                        res = internal_update_model(targetModel)
+                    } else {
+                        res = false
+                    }
+                } else {
+                    res = internal_update_model(targetModel)
+                }
+            }
+            object : Thread(){
+                override fun run() {
+                    callback?.run(res)
+                }
+            }.start()
+        }
     }
 
     private fun switchToNewModel(c: ContainerRoot) {
@@ -102,56 +143,6 @@ class KevoreeCoreBean() : KevoreeModelHandlerService {
         }
     }
 
-    override fun getLastModel(): ContainerRoot {
-        return model.get()!!.getModel()!!
-    }
-
-    override fun getLastUUIDModel(): UUIDModel {
-        return model.get()!!
-    }
-
-    inline fun cloneCurrentModel(pmodel: ContainerRoot?): ContainerRoot {
-        return modelCloner.clone(pmodel!!, true)!!
-    }
-
-    override fun updateModel(pmodel: ContainerRoot?): Unit {
-        scheduler!!.submit(UpdateModelCallable(cloneCurrentModel(pmodel), null))
-    }
-
-    inner class UpdateModelCallable(val model: ContainerRoot, val callback: ModelUpdateCallback?) : Callable<Boolean> {
-        override fun call(): Boolean {
-            var res: Boolean = false
-            if (currentLock == null) {
-                val internalRes = internal_update_model(model)
-                callCallBack(callback, internalRes, null)
-                res = internalRes
-            } else {
-                Log.debug("Core Locked , UUID mandatory")
-                callCallBack(callback, false, ModelUpdateCallBackReturn.CAS_ERROR)
-                res = false
-            }
-            return res
-        }
-    }
-
-    fun callCallBack(callback: ModelUpdateCallback?, sucess: Boolean, res: ModelUpdateCallBackReturn?) {
-        if (callback != null) {
-            object : Thread(){
-                override fun run() {
-                    if (res == null) {
-                        callback?.modelProcessed(if (sucess) {
-                            ModelUpdateCallBackReturn.UPDATED
-                        } else {
-                            ModelUpdateCallBackReturn.DEPLOY_ERROR
-                        })
-                    } else {
-                        callback?.modelProcessed(res)
-                    }
-                }
-            }.start()
-        }
-    }
-
     fun start() {
         if (getNodeName() == "") {
             setNodeName("node0")
@@ -162,6 +153,7 @@ class KevoreeCoreBean() : KevoreeModelHandlerService {
         val uuidModel = UUIDModelImpl(UUID.randomUUID(), factory.createContainerRoot())
         model.set(uuidModel)
     }
+
 
     fun stop() {
         Log.warn("Kevoree Core will be stopped !")
@@ -212,59 +204,16 @@ class KevoreeCoreBean() : KevoreeModelHandlerService {
         Log.debug("Kevoree core stopped ")
     }
 
-    private fun lockTimeout() {
-        scheduler?.submit(LockTimeoutCallable())
-    }
-
-    inner class LockTimeoutCallable() : Runnable {
+    inner class AcquireLock(val callBack: LockCallBack, val timeout: Long) : Runnable {
         override fun run() {
             if (currentLock != null) {
-                currentLock!!.callback.lockTimeout()
-                currentLock = null
-                lockWatchDog?.shutdownNow()
-                lockWatchDog = null
-                futurWatchDog = null
-            }
-        }
-    }
-
-    override fun checkModel(tModel: ContainerRoot?): Boolean {
-        val checkResult = modelChecker.check(tModel)
-        return if (checkResult != null && checkResult.isEmpty()!!) {
-            modelListeners.preUpdate(model.get()!!.getModel()!!, cloneCurrentModel(tModel))
-        } else {
-            false
-        }
-    }
-
-    override fun updateModel(tmodel: ContainerRoot?, callback: ModelUpdateCallback?): jet.Unit {
-        scheduler!!.submit(UpdateModelCallable(cloneCurrentModel(tmodel), callback))
-    }
-
-    /*
-    public override fun updateModel(p0: org.kevoree.ContainerRoot?, p1: ((org.kevoree.api.service.core.handler.ModelUpdateCallBackReturn?) -> jet.Unit)?): jet.Unit {
-        throw Exception()
-    }       */
-
-
-    override fun compareAndSwapModel(previousModel: UUIDModel?, targetModel: ContainerRoot?, callback: ModelUpdateCallback?) {
-        scheduler?.submit(CompareAndSwapCallable(previousModel!!, cloneCurrentModel(targetModel), callback))
-    }
-    /*
-public override fun compareAndSwapModel(p0: org.kevoree.api.service.core.handler.UUIDModel?, p1: org.kevoree.ContainerRoot?, p2: ((org.kevoree.api.service.core.handler.ModelUpdateCallBackReturn?) -> jet.Unit)?): jet.Unit {
-  throw Exception()
-}   */
-
-    inner class AcquireLock(val callBack: ModelHandlerLockCallBack, val timeout: Long) : Runnable {
-        override fun run() {
-            if (currentLock != null) {
-                callBack.lockRejected()
+                callBack.run(null, true)
             } else {
                 val lockUUID = UUID.randomUUID()
-                currentLock = LockCallBack(lockUUID, callBack)
+                currentLock = TupleLockCallBack(lockUUID, callBack)
                 lockWatchDog = java.util.concurrent.Executors.newSingleThreadScheduledExecutor()
                 futurWatchDog = lockWatchDog?.schedule(WatchDogCallable(), timeout, TimeUnit.MILLISECONDS)
-                callBack.lockAcquired(lockUUID)
+                callBack.run(lockUUID, false)
             }
         }
     }
@@ -297,108 +246,19 @@ public override fun compareAndSwapModel(p0: org.kevoree.api.service.core.handler
         }
     }
 
-    inner class CompareAndSwapCallable(val previousModel: UUIDModel, val targetModel: ContainerRoot, val callback: ModelUpdateCallback?) : Callable<Boolean> {
-        override fun call(): Boolean {
-            val res: Boolean = if (currentLock != null) {
-                if (previousModel?.getUUID()?.compareTo(currentLock!!.uuid) == 0) {
-                    val internalRes = internal_update_model(targetModel)
-                    callCallBack(callback, internalRes, null)
-                    internalRes
-                } else {
-                    Log.debug("Core Locked , bad UUID {}", previousModel.getUUID())
-                    callCallBack(callback, false, ModelUpdateCallBackReturn.CAS_ERROR)
-                    false //LOCK REFUSED !
-                }
-            } else {
-                //COMMON CHECK
-                if (previousModel.getUUID()?.compareTo(model.get()!!.getUUID()!!) == 0) {
-                    //TODO CHECK WITH MODEL SHA-1 HASHCODE
-                    val internalRes = internal_update_model(targetModel)
-                    callCallBack(callback, internalRes, null)
-                    internalRes
-                } else {
-                    callCallBack(callback, false, ModelUpdateCallBackReturn.CAS_ERROR)
-                    false
-                }
+    private fun lockTimeout() {
+        scheduler?.submit(LockTimeoutCallable())
+    }
+
+    inner class LockTimeoutCallable() : Runnable {
+        override fun run() {
+            if (currentLock != null) {
+                currentLock!!.callback.run(null, true)
+                currentLock = null
+                lockWatchDog?.shutdownNow()
+                lockWatchDog = null
+                futurWatchDog = null
             }
-            //System.gc()
-            return res
-        }
-    }
-
-    override fun compareAndSwapModel(previousModel: UUIDModel?, targetModel: ContainerRoot?): Unit {
-        scheduler?.submit(CompareAndSwapCallable(previousModel!!, cloneCurrentModel(targetModel), null))
-    }
-
-    override fun atomicUpdateModel(tmodel: ContainerRoot?): Date? {
-        scheduler?.submit(UpdateModelCallable(cloneCurrentModel(tmodel), null))?.get()
-        return lastDate
-    }
-
-    override fun getPreviousModels(): MutableList<ContainerRoot> {
-        return scheduler?.submit(GetPreviousModelCallable())?.get() as MutableList<ContainerRoot>
-    }
-
-    private inner class GetPreviousModelCallable() : Callable<List<ContainerRoot>> {
-        override fun call(): List<ContainerRoot> {
-            val previousM = ArrayList<ContainerRoot>()
-            for(mds in models){
-                previousM.add(mds.getModel()!!)
-            }
-            return previousM
-        }
-    }
-
-    override fun atomicCompareAndSwapModel(previousModel: UUIDModel?, targetModel: ContainerRoot?): Date? {
-        val result = scheduler?.submit(CompareAndSwapCallable(previousModel!!, cloneCurrentModel(targetModel), null))?.get()!!
-        if (!result) {
-            throw KevoreeModelUpdateException() //SEND AND EXCEPTION - Compare&Swap fail !
-        }
-        return lastDate
-    }
-
-    override fun registerModelListener(listener: ModelListener?) {
-        modelListeners.addListener(listener!!)
-    }
-
-    override fun unregisterModelListener(listener: ModelListener?) {
-        modelListeners.removeListener(listener!!)
-    }
-
-    class RELEASE_LOCK(uuid: UUID){
-    }
-
-    override fun acquireLock(callBack: ModelHandlerLockCallBack?, timeout: Long?) {
-        scheduler?.submit(AcquireLock(callBack!!, timeout!!))
-    }
-
-    private fun checkBootstrapNode(currentModel: ContainerRoot): Unit {
-        try {
-            if (nodeInstance == null) {
-                val foundNode = currentModel.findNodesByID(getNodeName())
-                if(foundNode != null){
-                    nodeInstance = bootstrapNodeType(currentModel, getNodeName()) as NodeType
-                    if(nodeInstance != null){
-                        nodeInstance?.startNode()
-                        val uuidModel = UUIDModelImpl(UUID.randomUUID(), factory.createContainerRoot())
-                        model.set(uuidModel)
-                    } else {
-                        Log.error("TypeDef installation fail !")
-                    }
-                } else {
-                    Log.error("Node instance name {} not found in bootstrap model !", getNodeName())
-                }
-            }
-        } catch(e: Throwable) {
-            Log.error("Error while bootstraping node instance ", e)
-            // TODO is it possible to display the following log ?
-            try {
-                nodeInstance?.stopNode()
-            } catch(e: Throwable) {
-            } finally {
-                bootstrapService?.clear()
-            }
-            nodeInstance = null
         }
     }
 
@@ -409,12 +269,12 @@ public override fun compareAndSwapModel(p0: org.kevoree.api.service.core.handler
         }
         try {
             val readOnlyNewModel = proposedNewModel
-            val checkResult = modelChecker.check(readOnlyNewModel)!!
-            if ( checkResult.size > 0) {
+            val checkResult = null//modelChecker.check(readOnlyNewModel)!!
+            if ( checkResult != null) {
                 Log.error("There is check failure on update model, update refused !")
-                for(cr in checkResult) {
-                    Log.error("error=> " + cr.getMessage() + ",objects" + cr.getTargetObjects())
-                }
+                //for(cr in checkResult) {
+                //    Log.error("error=> " + cr.getMessage() + ",objects" + cr.getTargetObjects())
+                //}
                 return false
             } else {
                 //Model check is OK.
@@ -533,6 +393,164 @@ public override fun compareAndSwapModel(p0: org.kevoree.api.service.core.handler
             return null
         }
     }
+
+    private fun checkBootstrapNode(currentModel: ContainerRoot): Unit {
+        try {
+            if (nodeInstance == null) {
+                val foundNode = currentModel.findNodesByID(getNodeName())
+                if(foundNode != null){
+                    nodeInstance = bootstrapNodeType(currentModel, getNodeName()) as NodeType
+                    if(nodeInstance != null){
+                        nodeInstance?.startNode()
+                        val uuidModel = UUIDModelImpl(UUID.randomUUID(), factory.createContainerRoot())
+                        model.set(uuidModel)
+                    } else {
+                        Log.error("TypeDef installation fail !")
+                    }
+                } else {
+                    Log.error("Node instance name {} not found in bootstrap model !", getNodeName())
+                }
+            }
+        } catch(e: Throwable) {
+            Log.error("Error while bootstraping node instance ", e)
+            // TODO is it possible to display the following log ?
+            try {
+                nodeInstance?.stopNode()
+            } catch(e: Throwable) {
+            } finally {
+                bootstrapService?.clear()
+            }
+            nodeInstance = null
+        }
+    }
+
+
+    /*
+
+
+
+
+
+    private fun lockTimeout() {
+        scheduler?.submit(LockTimeoutCallable())
+    }
+
+    inner class LockTimeoutCallable() : Runnable {
+        override fun run() {
+            if (currentLock != null) {
+                currentLock!!.callback.lockTimeout()
+                currentLock = null
+                lockWatchDog?.shutdownNow()
+                lockWatchDog = null
+                futurWatchDog = null
+            }
+        }
+    }
+
+    override fun checkModel(tModel: ContainerRoot?): Boolean {
+
+        return true;
+        /*
+
+        val checkResult = modelChecker.check(tModel)
+        return if (checkResult != null && checkResult.isEmpty()!!) {
+            modelListeners.preUpdate(model.get()!!.getModel()!!, cloneCurrentModel(tModel))
+        } else {
+            false
+        } */
+    }
+
+    override fun updateModel(tmodel: ContainerRoot?, callback: ModelUpdateCallback?): jet.Unit {
+        scheduler!!.submit(UpdateModelCallable(cloneCurrentModel(tmodel), callback))
+    }
+
+    /*
+    public override fun updateModel(p0: org.kevoree.ContainerRoot?, p1: ((org.kevoree.api.service.core.handler.ModelUpdateCallBackReturn?) -> jet.Unit)?): jet.Unit {
+        throw Exception()
+    }       */
+
+
+    override fun compareAndSwapModel(previousModel: UUIDModel?, targetModel: ContainerRoot?, callback: ModelUpdateCallback?) {
+        scheduler?.submit(CompareAndSwapCallable(previousModel!!, cloneCurrentModel(targetModel), callback))
+    }
+    /*
+public override fun compareAndSwapModel(p0: org.kevoree.api.service.core.handler.UUIDModel?, p1: org.kevoree.ContainerRoot?, p2: ((org.kevoree.api.service.core.handler.ModelUpdateCallBackReturn?) -> jet.Unit)?): jet.Unit {
+  throw Exception()
+}   */
+
+    inner class AcquireLock(val callBack: ModelHandlerLockCallBack, val timeout: Long) : Runnable {
+        override fun run() {
+            if (currentLock != null) {
+                callBack.lockRejected()
+            } else {
+                val lockUUID = UUID.randomUUID()
+                currentLock = LockCallBack(lockUUID, callBack)
+                lockWatchDog = java.util.concurrent.Executors.newSingleThreadScheduledExecutor()
+                futurWatchDog = lockWatchDog?.schedule(WatchDogCallable(), timeout, TimeUnit.MILLISECONDS)
+                callBack.lockAcquired(lockUUID)
+            }
+        }
+    }
+
+    inner class WatchDogCallable() : Runnable {
+        override fun run() {
+            lockTimeout()
+        }
+    }
+
+    override fun releaseLock(uuid: UUID?) {
+        if(uuid != null){
+            scheduler?.submit(ReleaseLockCallable(uuid))
+        } else {
+            Log.error("ReleaseLock method of Kevoree Core called with null argument, can release any lock")
+        }
+    }
+
+    inner class ReleaseLockCallable(val uuid: UUID) : Runnable {
+        override fun run() {
+            if (currentLock != null) {
+                if (currentLock!!.uuid.compareTo(uuid) == 0) {
+                    currentLock = null
+                    futurWatchDog?.cancel(true)
+                    futurWatchDog = null
+                    lockWatchDog?.shutdownNow()
+                    lockWatchDog = null
+                }
+            }
+        }
+    }
+
+    inner class CompareAndSwapCallable(val previousModel: UUIDModel, val targetModel: ContainerRoot, val callback: ModelUpdateCallback?) : Callable<Boolean> {
+        override fun call(): Boolean {
+            val res: Boolean = if (currentLock != null) {
+                if (previousModel?.getUUID()?.compareTo(currentLock!!.uuid) == 0) {
+                    val internalRes = internal_update_model(targetModel)
+                    callCallBack(callback, internalRes, null)
+                    internalRes
+                } else {
+                    Log.debug("Core Locked , bad UUID {}", previousModel.getUUID())
+                    callCallBack(callback, false, ModelUpdateCallBackReturn.CAS_ERROR)
+                    false //LOCK REFUSED !
+                }
+            } else {
+                //COMMON CHECK
+                if (previousModel.getUUID()?.compareTo(model.get()!!.getUUID()!!) == 0) {
+                    //TODO CHECK WITH MODEL SHA-1 HASHCODE
+                    val internalRes = internal_update_model(targetModel)
+                    callCallBack(callback, internalRes, null)
+                    internalRes
+                } else {
+                    callCallBack(callback, false, ModelUpdateCallBackReturn.CAS_ERROR)
+                    false
+                }
+            }
+            //System.gc()
+            return res
+        }
+    }
+
+
+      */
 
 }
 
