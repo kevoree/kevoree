@@ -19,7 +19,7 @@ import org.kevoree.framework.message.Message;
 /**
  * @author ffouquet
  */
-public abstract class AbstractChannelFragment extends AbstractTypeDefinition implements ChannelFragment {
+public abstract class AbstractChannelFragment implements ChannelFragment {
 
     public ChannelFragment delegate = null;
 

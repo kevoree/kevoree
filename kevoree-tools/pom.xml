@@ -23,12 +23,13 @@
     </dependencies>
 
     <modules>
-        <module>org.kevoree.tools.aether.framework</module>
+		
+        <module>org.kevoree.tools.annotation.mavenplugin</module>
+		
+		<!--
         <module>org.kevoree.tools.javase.framework</module>
         <module>org.kevoree.tools.camel.framework</module>
         <module>org.kevoree.tools.modelsync</module>
-        <module>org.kevoree.tools.annotation.generator</module>
-        <module>org.kevoree.tools.annotation.mavenplugin</module>
         <module>org.kevoree.tools.ui.framework</module>
         <module>org.kevoree.tools.merger.mavenplugin</module>
         <module>org.kevoree.tools.marShell</module>
@@ -37,5 +38,7 @@
         <module>org.kevoree.tools.marshell.mavenplugin</module>
         <module>org.kevoree.tools.ui.editor</module>
         <module>org.kevoree.tools.ui.editor.standalone</module>
+			-->
+			
     </modules>
 </project>

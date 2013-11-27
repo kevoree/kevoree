@@ -12,8 +12,7 @@ import java.lang.annotation.Target;
  * Time: 12:13
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.FIELD})
-public @interface Param {
+@Target({ElementType.METHOD})
+public @interface ProvidedPort {
     boolean optional() default true;
-    boolean fragmentDependent() default true;
 }

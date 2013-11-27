@@ -8,6 +8,6 @@ package org.kevoree.api;
  */
 public interface Port {
 
-    public void call(Object param, Callback callback);
+    public void call(Object payload, Callback callback);
 
 }

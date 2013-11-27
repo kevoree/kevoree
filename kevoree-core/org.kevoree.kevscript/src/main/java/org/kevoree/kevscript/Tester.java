@@ -4,7 +4,6 @@ import org.kevoree.ContainerRoot;
 import org.kevoree.loader.JSONModelLoader;
 import org.kevoree.serializer.JSONModelSerializer;
 
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
 /**
@@ -21,9 +20,9 @@ public class Tester {
         JSONModelLoader loader = new JSONModelLoader();
 
         ContainerRoot root = (ContainerRoot) loader.loadModelFromStream(Tester.class.getResourceAsStream("/lib.json")).get(0);
-        engine.executeFromStream(Tester.class.getResourceAsStream("/test.kevs"), root);
+        engine.executeFromStream(Tester.class.getResourceAsStream("/simple.kevs"), root);
         JSONModelSerializer saver = new JSONModelSerializer();
-        //saver.serializeToStream(root, System.out);
+        saver.serializeToStream(root, System.out);
     }
 
 }

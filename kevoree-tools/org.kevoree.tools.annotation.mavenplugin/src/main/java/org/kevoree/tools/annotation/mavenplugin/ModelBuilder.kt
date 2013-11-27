@@ -11,6 +11,8 @@ import org.kevoree.annotation.ComponentType
 import org.kevoree.annotation.ChannelType
 import org.kevoree.annotation.GroupType
 import org.kevoree.annotation.Param
+import org.kevoree.annotation.RequiredPort
+import org.kevoree.annotation.ProvidedPort
 
 /**
  * Created with IntelliJ IDEA.
@@ -31,10 +33,40 @@ object ModelBuilder {
         lib!!.addSubTypes(typeDef)
     }
 
+    fun deepMethods(clazz: CtClass, factory: KevoreeFactory, currentTypeDefinition: TypeDefinition) {
+        for(method in clazz.getDeclaredMethods()?.iterator()){
+
+
+            for(annotation in method.getAnnotations()?.iterator()){
+                when(annotation) {
+                    is ProvidedPort -> {
+                        if(currentTypeDefinition is org.kevoree.ComponentType){
+                            var providedPortRef = factory.createPortTypeRef()
+                            providedPortRef.name = method.getName()
+                            providedPortRef.optional = annotation.optional()
+                            currentTypeDefinition.addProvided(providedPortRef)
+                        }
+                    }
+                    else -> {
+                        //noop
+                    }
+                }
+            }
+        }
+    }
+
     fun deepFields(clazz: CtClass, factory: KevoreeFactory, currentTypeDefinition: TypeDefinition) {
         for(field in clazz.getDeclaredFields()?.iterator()){
             for(annotation in field.getAnnotations()?.iterator()){
                 when(annotation) {
+                    is RequiredPort -> {
+                        if(currentTypeDefinition is org.kevoree.ComponentType){
+                            var requiredPortRef = factory.createPortTypeRef()
+                            requiredPortRef.name = field.getName()
+                            requiredPortRef.optional = annotation.optional()
+                            currentTypeDefinition.addRequired(requiredPortRef)
+                        }
+                    }
                     is Param -> {
                         var dicAtt = factory.createDictionaryAttribute()
                         if(currentTypeDefinition.dictionaryType == null){
@@ -43,6 +75,7 @@ object ModelBuilder {
                         dicAtt.name = field.getName()
                         dicAtt.datatype = field.getType()!!.getName()
                         dicAtt.optional = annotation.optional()
+                        dicAtt.fragmentDependant = annotation.fragmentDependent()
                         currentTypeDefinition.dictionaryType!!.addAttributes(dicAtt)
                     }
                     else -> {
@@ -82,6 +115,7 @@ object ModelBuilder {
                 root.addTypeDefinitions(componentType)
                 componentType.deployUnit = du
                 deepFields(clazz, factory, componentType)
+                deepMethods(clazz, factory, componentType)
             }
             is NodeType -> {
                 var nodeType = factory.createNodeType();

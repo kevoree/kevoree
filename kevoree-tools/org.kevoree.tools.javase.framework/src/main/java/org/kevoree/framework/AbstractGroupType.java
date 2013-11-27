@@ -17,7 +17,7 @@ package org.kevoree.framework;
 import org.kevoree.ContainerRoot;
 import org.kevoree.api.handler.ModelListener;
 
-public abstract class AbstractGroupType extends AbstractTypeDefinition implements ModelListener {
+public abstract class AbstractGroupType implements ModelListener {
 
     public abstract void push(ContainerRoot model, String targetNodeName) throws Exception;
 
