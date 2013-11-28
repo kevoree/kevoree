@@ -34,11 +34,25 @@ public class KevRunnerMojo extends AbstractMojo {
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
+
+        try {
+            this.getClass().getClassLoader().loadClass("org.kevoree.resolver.util.AsyncVersionResolver");
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+
         Bootstrap bootstrap = new Bootstrap(nodename);
         try {
             bootstrap.bootstrapFromKevScript(new FileInputStream(model));
         } catch (FileNotFoundException e) {
             getLog().error(e);
         }
+
+        try {
+            Thread.currentThread().join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+
     }
 }
