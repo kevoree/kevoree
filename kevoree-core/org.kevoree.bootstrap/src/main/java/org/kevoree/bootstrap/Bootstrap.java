@@ -58,7 +58,7 @@ public class Bootstrap {
         });
     }
 
-    public void bootstrapFromKevScript(InputStream input) {
+    public void bootstrapFromKevScript(InputStream input) throws Exception {
         ContainerRoot emptyModel = core.getFactory().createContainerRoot();
         kevScriptEngine.executeFromStream(input, emptyModel);
         core.update(emptyModel, new UpdateCallback() {
@@ -69,7 +69,7 @@ public class Bootstrap {
         });
     }
 
-    public void bootstrapFromFile(File input) throws FileNotFoundException {
+    public void bootstrapFromFile(File input) throws Exception {
         FileInputStream fin = new FileInputStream(input);
         if (input.getName().endsWith(".kevs")) {
             bootstrapFromKevScript(fin);

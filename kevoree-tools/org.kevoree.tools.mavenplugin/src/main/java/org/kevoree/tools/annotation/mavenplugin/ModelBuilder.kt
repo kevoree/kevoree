@@ -46,7 +46,7 @@ object ModelBuilder {
                     is Input -> {
                         if(currentTypeDefinition is org.kevoree.ComponentType){
                             if(method.getParameterTypes()?.size!! > 1){
-                                throw Exception("Input annotation should be used only on method with 0 or 1 parameter ${method.getName()}" )
+                                throw Exception("Input annotation should be used only on method with 0 or 1 parameter ${method.getName()}")
                             } else {
                                 if(method.getParameterTypes()?.size == 1){
                                     var firstParam = method.getParameterTypes()!!.get(0)
@@ -74,24 +74,24 @@ object ModelBuilder {
             for(annotation in field.getAnnotations()?.iterator()){
                 when(annotation) {
                     is KevoreeInject -> {
-                        when(field.getType()){
-                            is ModelService -> {
+                        when(field.getType()!!.getName()) {
+                            javaClass<ModelService>().getName() -> {
 
                             }
-                            is BootstrapService -> {
+                            javaClass<BootstrapService>().getName() -> {
 
                             }
-                            is KevScriptService -> {
+                            javaClass<KevScriptService>().getName() -> {
 
                             }
-                            is Context -> {
+                            javaClass<Context>().getName() -> {
 
                             }
-                            is ChannelContext -> {
+                            javaClass<ChannelContext>().getName() -> {
 
                             }
                             else -> {
-                                throw Exception("KevoreeInject annotation is only suitable for following types : ModelService,BootstrapService,KevScriptService,Context,ChannelContext")
+                                throw Exception("KevoreeInject annotation is only suitable for following types : ModelService,BootstrapService,KevScriptService,Context,ChannelContext : currently found : " + field.getType()!!.getName())
                             }
                         }
                     }

@@ -21,7 +21,7 @@ public class InstanceResolver {
 
     /* Not the most efficient, but easy to maintain... */
 
-    public static List<Instance> resolve(ContainerRoot model, IAST<Type> node, List<Instance> pending) {
+    public static List<Instance> resolve(ContainerRoot model, IAST<Type> node, List<Instance> pending) throws Exception {
         final List<Instance> resolved = new ArrayList<Instance>();
         if (node.getType().equals(Type.NameList)) {
             for (IAST<Type> child : node.getChildren()) {
@@ -45,6 +45,9 @@ public class InstanceResolver {
                     resolved.add(instance);
                 }
             }
+        }
+        if(resolved.isEmpty()){
+           throw new Exception("No instance is resolved from : "+node.toString());
         }
         return resolved;
     }

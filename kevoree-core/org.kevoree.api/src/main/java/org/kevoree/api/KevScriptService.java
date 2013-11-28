@@ -12,8 +12,8 @@ import java.io.InputStream;
  */
 public interface KevScriptService {
 
-    public void execute(String script, ContainerRoot model);
+    public void execute(String script, ContainerRoot model) throws Exception;
 
-    public void executeFromStream(InputStream script, ContainerRoot model);
+    public void executeFromStream(InputStream script, ContainerRoot model) throws Exception;
 
 }

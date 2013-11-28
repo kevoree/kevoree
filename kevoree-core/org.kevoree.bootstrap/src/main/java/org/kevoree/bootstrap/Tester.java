@@ -8,7 +8,7 @@ package org.kevoree.bootstrap;
  */
 public class Tester {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         System.out.println(" ======== Kevoree Runner ======== ");
 
         Bootstrap bootstrap = new Bootstrap("node0");

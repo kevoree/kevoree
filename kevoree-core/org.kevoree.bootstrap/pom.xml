@@ -78,7 +78,6 @@
                         <phase>generate-sources</phase>
                         <configuration>
                             <tasks>
-
                                 <property name="src.dir" value="${project.build.sourceDirectory}" />
                                 <property name="package.dir" value="org/kevoree/bootstrap" />
                                 <property name="package.name" value="org.kevoree.bootstrap" />

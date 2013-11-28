@@ -27,12 +27,12 @@ public class KevScriptEngine implements KevScriptService {
     Parser parser = new Parser();
     KevoreeFactory factory = new DefaultKevoreeFactory();
 
-    public void execute(String script, ContainerRoot model) {
+    public void execute(String script, ContainerRoot model) throws Exception {
         ParseResult<Type> parserResult = parser.parse(new InputBuffer(script.toCharArray()));
         interpret(parserResult.getAST(), model);
     }
 
-    public void executeFromStream(InputStream script, ContainerRoot model) {
+    public void executeFromStream(InputStream script, ContainerRoot model) throws Exception {
         ParseResult<Type> parserResult = parser.parse(new InputBuffer(BufferFiller.asArray(script)));
         IAST<Type> ast = parserResult.getAST();
         if (ast != null) {
@@ -44,7 +44,7 @@ public class KevScriptEngine implements KevScriptService {
 
     private List<Instance> pending = new ArrayList<Instance>();
 
-    public void interpret(IAST<Type> node, ContainerRoot model) {
+    public void interpret(IAST<Type> node, ContainerRoot model) throws Exception {
         switch (node.getType()) {
             case KevScript:
                 for (IAST<Type> child : node.getChildren()) {
@@ -59,7 +59,7 @@ public class KevScriptEngine implements KevScriptService {
             case Add:
                 TypeDefinition td = TypeDefinitionResolver.resolve(model, node.getChildren().get(1).childrenAsString());
                 if (td == null) {
-                    Log.error("TypeDefinition not found : {}", node.getChildren().get(1).childrenAsString());
+                    throw new Exception("TypeDefinition not found : "+node.getChildren().get(1).childrenAsString());
                 } else {
                     IAST<Type> instanceNames = node.getChildren().get(0);
                     if (instanceNames.getType().equals(Type.NameList)) {
