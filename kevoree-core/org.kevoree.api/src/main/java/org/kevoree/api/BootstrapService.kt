@@ -42,6 +42,8 @@ trait BootstrapService {
 
     public fun createInstance(instance: Instance): Any?
 
-     public fun injectDictionary(instance: Instance, target: Any)
+    public fun injectDictionary(instance: Instance, target: Any)
+
+    public fun injectService(api: java.lang.Class<out Any>,impl: Any,target: Any)
 
 }

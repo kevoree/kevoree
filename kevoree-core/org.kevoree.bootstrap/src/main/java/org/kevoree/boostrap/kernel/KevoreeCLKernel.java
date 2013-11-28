@@ -1,5 +1,6 @@
 package org.kevoree.boostrap.kernel;
 
+import jet.runtime.typeinfo.JetValueParameter;
 import org.kevoree.*;
 import org.kevoree.api.BootstrapService;
 import org.kevoree.api.Context;
@@ -199,6 +200,13 @@ public class KevoreeCLKernel implements KevoreeCLFactory, BootstrapService {
 
             }
         }
+    }
+
+    @Override
+    public void injectService(@JetValueParameter(name = "api") Class<? extends Object> aClass, @JetValueParameter(name = "impl") Object o, @JetValueParameter(name = "target") Object o2) {
+        KevoreeInjector injector = new KevoreeInjector();
+        injector.addService(aClass,o);
+        injector.process(o2);
     }
 
     @Override
