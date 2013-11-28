@@ -32,7 +32,10 @@
     <modules>
         <module>kevoree-core</module>
 		<module>kevoree-tools</module>
+		<!--
 		<module>kevoree-platform</module>
+			-->
+			
     </modules>
 
     <scm>

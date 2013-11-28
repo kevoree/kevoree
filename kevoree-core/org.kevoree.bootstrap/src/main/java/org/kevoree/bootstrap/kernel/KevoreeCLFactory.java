@@ -1,4 +1,4 @@
-package org.kevoree.boostrap.kernel;
+package org.kevoree.bootstrap.kernel;
 
 import org.kevoree.DeployUnit;
 import org.kevoree.kcl.KevoreeJarClassLoader;

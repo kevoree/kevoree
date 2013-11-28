@@ -65,6 +65,36 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.7</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <phase>generate-sources</phase>
+                        <configuration>
+                            <tasks>
+
+                                <property name="src.dir" value="${project.build.sourceDirectory}" />
+                                <property name="package.dir" value="org/kevoree/bootstrap" />
+                                <property name="package.name" value="org.kevoree.bootstrap" />
+                                <echo file="${src.dir}/${package.dir}/Version.java" message="package ${package.name};${line.separator}" />
+                                <echo file="${src.dir}/${package.dir}/Version.java" append="true" message="public final class Version {${line.separator}" />
+                                <echo file="${src.dir}/${package.dir}/Version.java" append="true" message=" public static String VERSION=&quot;${project.version}&quot;;${line.separator}" />
+                                <echo file="${src.dir}/${package.dir}/Version.java" append="true" message=" public static String GROUP=&quot;${project.groupId}&quot;;${line.separator}" />
+                                <echo file="${src.dir}/${package.dir}/Version.java" append="true" message=" public static String NAME=&quot;${project.artifactId}&quot;;${line.separator}" />
+                                <echo file="${src.dir}/${package.dir}/Version.java" append="true" message="}${line.separator}" />
+                                <echo message="BUILD ${buildtime}" />
+                            </tasks>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
         </plugins>
     </build>
 

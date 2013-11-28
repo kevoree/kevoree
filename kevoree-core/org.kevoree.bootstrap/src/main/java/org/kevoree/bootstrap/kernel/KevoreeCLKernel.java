@@ -1,10 +1,10 @@
-package org.kevoree.boostrap.kernel;
+package org.kevoree.bootstrap.kernel;
 
 import jet.runtime.typeinfo.JetValueParameter;
 import org.kevoree.*;
 import org.kevoree.api.BootstrapService;
 import org.kevoree.api.Context;
-import org.kevoree.boostrap.reflect.KevoreeInjector;
+import org.kevoree.bootstrap.reflect.KevoreeInjector;
 import org.kevoree.kcl.KevoreeJarClassLoader;
 import org.kevoree.log.Log;
 import org.kevoree.resolver.MavenResolver;

@@ -1,12 +1,12 @@
-package org.kevoree.boostrap;
+package org.kevoree.bootstrap;
 
 import org.kevoree.ContainerRoot;
 import org.kevoree.api.BootstrapService;
 import org.kevoree.api.KevScriptService;
 import org.kevoree.api.ModelService;
 import org.kevoree.api.handler.UpdateCallback;
-import org.kevoree.boostrap.kernel.KevoreeCLKernel;
-import org.kevoree.boostrap.reflect.KevoreeInjector;
+import org.kevoree.bootstrap.kernel.KevoreeCLKernel;
+import org.kevoree.bootstrap.reflect.KevoreeInjector;
 import org.kevoree.core.impl.KevoreeCoreBean;
 import org.kevoree.kevscript.KevScriptEngine;
 import org.kevoree.loader.JSONModelLoader;

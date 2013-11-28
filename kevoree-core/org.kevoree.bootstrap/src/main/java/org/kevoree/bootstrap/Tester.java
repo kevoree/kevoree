@@ -1,4 +1,4 @@
-package org.kevoree.boostrap;
+package org.kevoree.bootstrap;
 
 /**
  * Created with IntelliJ IDEA.
