@@ -13,6 +13,12 @@ import org.kevoree.annotation.GroupType
 import org.kevoree.annotation.Param
 import org.kevoree.annotation.Output
 import org.kevoree.annotation.Input
+import org.kevoree.annotation.KevoreeInject
+import org.kevoree.api.ModelService
+import org.kevoree.api.BootstrapService
+import org.kevoree.api.KevScriptService
+import org.kevoree.api.Context
+import org.kevoree.api.ChannelContext
 
 /**
  * Created with IntelliJ IDEA.
@@ -67,6 +73,28 @@ object ModelBuilder {
         for(field in clazz.getDeclaredFields()?.iterator()){
             for(annotation in field.getAnnotations()?.iterator()){
                 when(annotation) {
+                    is KevoreeInject -> {
+                        when(field.getType()){
+                            is ModelService -> {
+
+                            }
+                            is BootstrapService -> {
+
+                            }
+                            is KevScriptService -> {
+
+                            }
+                            is Context -> {
+
+                            }
+                            is ChannelContext -> {
+
+                            }
+                            else -> {
+                                throw Exception("KevoreeInject annotation is only suitable for following types : ModelService,BootstrapService,KevScriptService,Context,ChannelContext")
+                            }
+                        }
+                    }
                     is Output -> {
                         if(!field.getType()!!.getName().equals(javaClass<org.kevoree.api.Port>().getName())){
                             throw Exception("Output port field must of type of " + javaClass<org.kevoree.api.Port>().getName())
