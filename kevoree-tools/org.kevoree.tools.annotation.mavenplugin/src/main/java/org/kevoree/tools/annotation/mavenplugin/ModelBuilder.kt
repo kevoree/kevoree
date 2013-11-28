@@ -11,8 +11,8 @@ import org.kevoree.annotation.ComponentType
 import org.kevoree.annotation.ChannelType
 import org.kevoree.annotation.GroupType
 import org.kevoree.annotation.Param
-import org.kevoree.annotation.RequiredPort
-import org.kevoree.annotation.ProvidedPort
+import org.kevoree.annotation.Output
+import org.kevoree.annotation.Input
 
 /**
  * Created with IntelliJ IDEA.
@@ -39,7 +39,7 @@ object ModelBuilder {
 
             for(annotation in method.getAnnotations()?.iterator()){
                 when(annotation) {
-                    is ProvidedPort -> {
+                    is Input -> {
                         if(currentTypeDefinition is org.kevoree.ComponentType){
                             var providedPortRef = factory.createPortTypeRef()
                             providedPortRef.name = method.getName()
@@ -59,7 +59,7 @@ object ModelBuilder {
         for(field in clazz.getDeclaredFields()?.iterator()){
             for(annotation in field.getAnnotations()?.iterator()){
                 when(annotation) {
-                    is RequiredPort -> {
+                    is Output -> {
                         if(currentTypeDefinition is org.kevoree.ComponentType){
                             var requiredPortRef = factory.createPortTypeRef()
                             requiredPortRef.name = field.getName()
