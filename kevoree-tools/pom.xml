@@ -24,7 +24,7 @@
 
     <modules>
 		
-        <module>org.kevoree.tools.annotation.mavenplugin</module>
+        <module>org.kevoree.tools.mavenplugin</module>
 		
 		<!--
         <module>org.kevoree.tools.javase.framework</module>

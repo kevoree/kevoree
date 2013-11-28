@@ -68,7 +68,10 @@ public class KevoreeCLKernel implements KevoreeCLFactory, BootstrapService {
                 } else {
                     urls.add("http://repo1.maven.org/maven2");
                 }
+                Log.info("Resolving ............. " + deployUnit.path());
+                long before = System.currentTimeMillis();
                 File resolved = resolver.resolve(deployUnit.getGroupName(), deployUnit.getName(), deployUnit.getVersion(), deployUnit.getType(), urls);
+                Log.info("Resolved in {}ms", (System.currentTimeMillis() - before));
                 if (resolved != null) {
                     KevoreeJarClassLoader kcl = createClassLoader(deployUnit, resolved);
                     cache.put(path, kcl);
@@ -205,7 +208,7 @@ public class KevoreeCLKernel implements KevoreeCLFactory, BootstrapService {
     @Override
     public void injectService(@JetValueParameter(name = "api") Class<? extends Object> aClass, @JetValueParameter(name = "impl") Object o, @JetValueParameter(name = "target") Object o2) {
         KevoreeInjector injector = new KevoreeInjector();
-        injector.addService(aClass,o);
+        injector.addService(aClass, o);
         injector.process(o2);
     }
 
