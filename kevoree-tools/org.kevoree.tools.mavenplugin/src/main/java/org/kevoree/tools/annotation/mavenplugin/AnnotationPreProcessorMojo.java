@@ -163,24 +163,29 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
                     new ArtifactFilter() {
                         @Override
                         public boolean include(Artifact artifact) {
-                            return true;
+                            if (artifact.getScope() != null) {
+                                return !artifact.getScope().toLowerCase().equals("test");
+                            } else {
+                                return true;
+                            }
+
                         }
                     });
 
             mainDeployUnit = fillModel(model, graph);
             linkModel(graph);
         } catch (DependencyTreeBuilderException e) {
-            e.printStackTrace();
+            getLog().error(e);
         }
 
         try {
             annotations2Model.fillModel(outputClasses, model, mainDeployUnit);
         } catch (Exception e) {
-            e.printStackTrace();
+            getLog().error(e);
         }
 
-        for(TypeDefinition td : model.getTypeDefinitions()){
-           getLog().info("Found "+td.getName()+" : "+td.metaClassName());
+        for (TypeDefinition td : model.getTypeDefinitions()) {
+            getLog().info("Found " + td.getName() + " : " + td.metaClassName());
         }
 
 
@@ -230,6 +235,7 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
 
 
         } catch (Exception e) {
+            getLog().error(e);
             throw new MojoExecutionException("Unable to build kevoree model for types", e);
         }
 

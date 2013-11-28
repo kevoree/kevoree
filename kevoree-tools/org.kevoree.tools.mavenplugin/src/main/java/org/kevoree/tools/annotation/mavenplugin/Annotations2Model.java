@@ -70,7 +70,7 @@ public class Annotations2Model {
 
     public static void main(String[] args) throws Exception {
         Annotations2Model builr = new Annotations2Model();
-        ContainerRoot model = builr.buildModel(new File("/Users/duke/Documents/dev/dukeboard/kevoree-corelibrary/javase/org.kevoree.library.javase.javaseNode/target/classes"), "groupTest", "nameTest", "3.0");
+        ContainerRoot model = builr.buildModel(new File("/Users/duke/Documents/dev/kevoreeTeam/kevoree-library/java/org.kevoree.library.java.helloworld/target/classes"), "groupTest", "nameTest", "3.0");
         JSONModelSerializer saver = new org.kevoree.serializer.JSONModelSerializer();
         saver.serializeToStream(model, System.out);
     }

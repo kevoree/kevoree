@@ -3,7 +3,7 @@ package org.kevoree.tools.annotation.mavenplugin;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.kevoree.boostrap.Bootstrap;
+import org.kevoree.bootstrap.Bootstrap;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -38,7 +38,7 @@ public class KevRunnerMojo extends AbstractMojo {
         try {
             this.getClass().getClassLoader().loadClass("org.kevoree.resolver.util.AsyncVersionResolver");
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            e.printStackTrace();
         }
 
         Bootstrap bootstrap = new Bootstrap(nodename);
@@ -51,7 +51,7 @@ public class KevRunnerMojo extends AbstractMojo {
         try {
             Thread.currentThread().join();
         } catch (InterruptedException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            e.printStackTrace();
         }
 
     }

@@ -35,12 +35,20 @@ object ModelBuilder {
 
     fun deepMethods(clazz: CtClass, factory: KevoreeFactory, currentTypeDefinition: TypeDefinition) {
         for(method in clazz.getDeclaredMethods()?.iterator()){
-
-
             for(annotation in method.getAnnotations()?.iterator()){
                 when(annotation) {
                     is Input -> {
                         if(currentTypeDefinition is org.kevoree.ComponentType){
+                            if(method.getParameterTypes()?.size!! > 1){
+                                throw Exception("Input annotation should be used only on method with 0 or 1 parameter " + method.getName())
+                            } else {
+                                if(method.getParameterTypes()?.size == 1){
+                                    var firstParam = method.getParameterTypes()!!.get(0)
+                                    if(!firstParam.getName().equals(javaClass<Object>().getName())){
+                                        throw Exception("Input method only support Object type parameter");
+                                    }
+                                }
+                            }
                             var providedPortRef = factory.createPortTypeRef()
                             providedPortRef.name = method.getName()
                             providedPortRef.optional = annotation.optional()
@@ -60,6 +68,9 @@ object ModelBuilder {
             for(annotation in field.getAnnotations()?.iterator()){
                 when(annotation) {
                     is Output -> {
+                        if(!field.getType()!!.getName().equals(javaClass<org.kevoree.api.Port>().getName())){
+                            throw Exception("Output port field must of type of " + javaClass<org.kevoree.api.Port>().getName())
+                        }
                         if(currentTypeDefinition is org.kevoree.ComponentType){
                             var requiredPortRef = factory.createPortTypeRef()
                             requiredPortRef.name = field.getName()
@@ -68,6 +79,24 @@ object ModelBuilder {
                         }
                     }
                     is Param -> {
+                        //verify param type
+                        when(field.getType()!!.getName()) {
+                            javaClass<java.lang.String>().getName() -> {
+                            }
+                            javaClass<java.lang.Float>().getName() -> {
+                            }
+                            javaClass<java.lang.Integer>().getName() -> {
+                            }
+                            javaClass<java.lang.Double>().getName() -> {
+                            }
+                            javaClass<java.lang.Boolean>().getName() -> {
+                            }
+                            else -> {
+                                if(!field.getType()!!.isPrimitive()){
+                                    throw Exception("Param annotation is only applicable on field of type String,Long,Double,Float,Integer, current " + field.getType())
+                                }
+                            }
+                        }
                         var dicAtt = factory.createDictionaryAttribute()
                         if(currentTypeDefinition.dictionaryType == null){
                             currentTypeDefinition.dictionaryType = factory.createDictionaryType()
@@ -139,7 +168,6 @@ object ModelBuilder {
                             }
                         }
                     } else {
-                        //Does not existeyep :-)
                         println("Please put Library annotation after NodeType declaration")
                     }
                 }
