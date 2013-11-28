@@ -182,6 +182,7 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
             annotations2Model.fillModel(outputClasses, model, mainDeployUnit);
         } catch (Exception e) {
             getLog().error(e);
+            throw new MojoExecutionException("Error while parsing Kevoree annotations",e);
         }
 
         for (TypeDefinition td : model.getTypeDefinitions()) {
