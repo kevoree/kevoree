@@ -40,6 +40,7 @@ public class Bootstrap {
 
     public Bootstrap(String nodeName) {
         core.setNodeName(nodeName);
+        kernel.setNodeName(nodeName);
         injector.addService(ModelService.class, core);
         injector.addService(BootstrapService.class, kernel);
         injector.addService(KevScriptService.class, kevScriptEngine);

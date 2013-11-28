@@ -10,4 +10,6 @@ public interface Port {
 
     public void call(Object payload, Callback callback);
 
+    public String getPath();
+
 }

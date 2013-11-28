@@ -2,6 +2,7 @@ package org.kevoree.boostrap.kernel;
 
 import org.kevoree.*;
 import org.kevoree.api.BootstrapService;
+import org.kevoree.api.Context;
 import org.kevoree.boostrap.reflect.KevoreeInjector;
 import org.kevoree.kcl.KevoreeJarClassLoader;
 import org.kevoree.log.Log;
@@ -110,17 +111,40 @@ public class KevoreeCLKernel implements KevoreeCLFactory, BootstrapService {
         offline = b;
     }
 
+    private String nodeName;
+
+    public void setNodeName(String nName) {
+        nodeName = nName;
+    }
+
     @Override
     public void clear() {
         cache.clear();
     }
 
     @Override
-    public Object createInstance(Instance instance) {
+    public Object createInstance(final Instance instance) {
         KevoreeJarClassLoader classLoader = recursiveInstallDeployUnit(instance.getTypeDefinition().getDeployUnit());
         Class clazz = classLoader.loadClass(instance.getTypeDefinition().getBean());
         try {
             Object newInstance = clazz.newInstance();
+            injector.addService(Context.class, new Context() {
+                @Override
+                public String getPath() {
+                    return instance.path();
+                }
+
+                @Override
+                public String getNodeName() {
+                    return nodeName;
+                }
+
+                @Override
+                public String getInstanceName() {
+                    return instance.getName();
+                }
+            });
+
             injector.process(newInstance);
             injectDictionary(instance, newInstance);
             return newInstance;
@@ -169,9 +193,8 @@ public class KevoreeCLKernel implements KevoreeCLFactory, BootstrapService {
                     f.set(target, dicVal.getValue());
                 }
             } catch (Exception e) {
-                Log.error("No field corresponding to annotation, consistency error {} on {}",dicVal.getAttribute().getName(),target.toString());
+                Log.error("No field corresponding to annotation, consistency error {} on {}", dicVal.getAttribute().getName(), target.toString());
                 e.printStackTrace();
-
 
 
             }
