@@ -121,7 +121,7 @@ object ModelBuilder {
                             }
                             else -> {
                                 if(!field.getType()!!.isPrimitive()){
-                                    throw Exception("Param annotation is only applicable on field of type String,Long,Double,Float,Integer, current " + field.getType())
+                                    throw Exception("Param annotation is only applicable on field of type String,Long,Double,Float,Integer, current " + field.getType()?.getName())
                                 }
                             }
                         }
