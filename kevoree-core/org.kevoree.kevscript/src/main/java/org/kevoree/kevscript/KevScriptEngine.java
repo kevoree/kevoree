@@ -139,13 +139,15 @@ public class KevScriptEngine implements KevScriptService {
                             DictionaryValue dicValue = target.getDictionary().findValuesByID(key);
                             if (dicValue == null) {
                                 dicValue = factory.createDictionaryValue();
-                                DictionaryAttribute dicAtt = target.getTypeDefinition().getDictionaryType().findAttributesByID(key);
-                                if (dicAtt == null) {
-                                    Log.error("Param does not existe in type {} -> {}", target.getName(), key);
-                                } else {
-                                    dicValue.setAttribute(dicAtt);
+                                if (target.getTypeDefinition().getDictionaryType() != null) {
+                                    DictionaryAttribute dicAtt = target.getTypeDefinition().getDictionaryType().findAttributesByID(key);
+                                    if (dicAtt == null) {
+                                        Log.error("Param does not existe in type {} -> {}", target.getName(), key);
+                                    } else {
+                                        dicValue.setAttribute(dicAtt);
+                                    }
+                                    target.getDictionary().addValues(dicValue);
                                 }
-                                target.getDictionary().addValues(dicValue);
                             }
                             String value = attribute.getChildren().get(1).childrenAsString();
                             dicValue.setValue(value);
@@ -159,8 +161,55 @@ public class KevScriptEngine implements KevScriptService {
                     }
                 }
                 break;
+            case AddBinding:
+                String componentName = node.getChildren().get(0).childrenAsString();
+                String portName = node.getChildren().get(1).childrenAsString();
+                List<Instance> channelsInstance = InstanceResolver.resolve(model, node.getChildren().get(2), pending);
+                for (Instance instance : channelsInstance) {
+                    Channel channel = (Channel) instance;
+                    //TODO perhaps try to lookup before
+                    for (ContainerNode n : model.getNodes()) {
+                        ComponentInstance componentInstance = n.findComponentsByID(componentName);
+                        for (Port p : componentInstance.getProvided()) {
+                            if (p.getPortTypeRef().getName().equals(portName)) {
+                                MBinding binding = factory.createMBinding();
+                                binding.setHub(channel);
+                                binding.setPort(p);
+                                model.addMBindings(binding);
+                            }
+                        }
+                        for (Port p : componentInstance.getRequired()) {
+                            if (p.getPortTypeRef().getName().equals(portName)) {
+                                MBinding binding = factory.createMBinding();
+                                binding.setHub(channel);
+                                binding.setPort(p);
+                                model.addMBindings(binding);
+                            }
+                        }
+                    }
+                }
+                break;
+            case DelBinding:
+                String componentName2 = node.getChildren().get(0).childrenAsString();
+                String portName2 = node.getChildren().get(1).childrenAsString();
+                List<Instance> channelsInstance2 = InstanceResolver.resolve(model, node.getChildren().get(2), pending);
+                for (Instance instance : channelsInstance2) {
+                    Channel channel = (Channel) instance;
+                    MBinding toDrop = null;
+                    for (MBinding mb : channel.getBindings()) {
+                        if (mb.getPort().getPortTypeRef().getName().equals(portName2)) {
+                            if (((ComponentInstance) mb.getPort().eContainer()).getName().equals(componentName2)) {
+                                toDrop = mb;
+                            }
+                        }
+                    }
+                    if (toDrop != null) {
+                        toDrop.delete();
+                    }
+                }
+                break;
             default:
-                // System.out.println(node);
+                System.out.println(node);
                 break;
         }
     }
@@ -214,6 +263,18 @@ public class KevScriptEngine implements KevScriptService {
             instance.setTypeDefinition(td);
             instance.setName(name.childrenAsString());
             pending.add(instance);
+            //add port
+            ComponentType ctd = (ComponentType) td;
+            for (PortTypeRef rport : ctd.getProvided()) {
+                org.kevoree.Port newPort = factory.createPort();
+                newPort.setPortTypeRef(rport);
+                instance.addProvided(newPort);
+            }
+            for (PortTypeRef rport : ctd.getRequired()) {
+                org.kevoree.Port newPort = factory.createPort();
+                newPort.setPortTypeRef(rport);
+                instance.addRequired(newPort);
+            }
             process = true;
         }
         if (td instanceof ChannelType) {

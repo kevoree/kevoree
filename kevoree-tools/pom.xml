@@ -23,14 +23,21 @@
     </dependencies>
 
     <modules>
+<<<<<<< HEAD
+=======
+		
+        <module>org.kevoree.tools.mavenplugin</module>
+		
+		<!--
+>>>>>>> 2a6601a1c8aafcf59ee6743a006dadd9b217581b
         <module>org.kevoree.tools.javase.framework</module>
         <module>org.kevoree.tools.camel.framework</module>
         <module>org.kevoree.tools.modelsync</module>
-        <module>org.kevoree.tools.annotation.generator</module>
-        <module>org.kevoree.tools.annotation.mavenplugin</module>
         <module>org.kevoree.tools.ui.framework</module>
         <module>org.kevoree.tools.marShellGUI</module>
         <module>org.kevoree.tools.ui.editor</module>
         <module>org.kevoree.tools.ui.editor.standalone</module>
+			-->
+			
     </modules>
 </project>

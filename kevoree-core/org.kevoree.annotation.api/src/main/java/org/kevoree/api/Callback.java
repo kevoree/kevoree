@@ -6,6 +6,6 @@ package org.kevoree.api;
  * Date: 19/11/2013
  * Time: 00:16
  */
-public interface Callback<T> {
-    public void callback(T t);
+public interface Callback {
+    public void run(Object result);
 }

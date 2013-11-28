@@ -13,7 +13,6 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD})
-public @interface Param {
+public @interface Output {
     boolean optional() default true;
-    boolean fragmentDependent() default true;
 }
