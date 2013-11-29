@@ -32,10 +32,8 @@ import java.awt.dnd.{DropTargetDropEvent, DropTarget}
 import java.awt.datatransfer.DataFlavor
 import com.explodingpixels.macwidgets.{HudWidgetFactory, HudWindow}
 
-import org.kevoree.tools.marShell.parser.KevsParser
 import util.Random
 import org.kevoree.{ComponentInstance, ContainerNode, Port, ChannelType}
-import org.kevoree.tools.marShell.interpreter.KevsInterpreterContext
 import org.kevoree.tools.ui.editor.{UIHelper, PositionedEMFHelper, KevoreeUIKernel}
 import org.kevoree.framework.KevoreeXmiHelper
 import java.io.File

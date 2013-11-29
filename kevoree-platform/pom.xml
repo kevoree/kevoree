@@ -23,13 +23,8 @@
     </dependencies>
 
     <modules>
-        <module>org.kevoree.platform.base</module>
         <module>org.kevoree.platform.standalone</module>
-        <module>org.kevoree.platform.mavenrunner</module>
-		<!--
-        <module>org.kevoree.platform.android.apk</module>
-        <module>org.kevoree.platform.standalone.gui</module>
-		-->	
+        <module>org.kevoree.platform.standalone.gio</module>
     </modules>
 
 </project>

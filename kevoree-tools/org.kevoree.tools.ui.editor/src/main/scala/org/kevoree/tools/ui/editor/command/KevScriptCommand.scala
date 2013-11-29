@@ -16,7 +16,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * 	http://www.gnu.org/licenses/lgpl-3.0.txt
+ * http://www.gnu.org/licenses/lgpl-3.0.txt
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -39,22 +39,12 @@
  */
 package org.kevoree.tools.ui.editor.command
 
-import org.kevoree.tools.marShell.parser.KevsParser
-import org.kevoree.tools.ui.editor.{ModelHelper, PositionedEMFHelper, KevoreeUIKernel}
+import org.kevoree.tools.ui.editor.{ModelHelper, KevoreeUIKernel}
 import org.slf4j.LoggerFactory
-import org.kevoree.framework.KevoreeXmiHelper
-import org.kevoree.tools.marShell.interpreter.KevsInterpreterContext
-import java.io.{File, ByteArrayInputStream, ByteArrayOutputStream}
-import java.util.Random
 import actors.Actor
-import com.explodingpixels.macwidgets.plaf.HudLabelUI
 import java.awt.Color
-import com.explodingpixels.macwidgets.{HudWidgetFactory, HudWindow}
+import com.explodingpixels.macwidgets.HudWindow
 import javax.swing._
-import org.kevoree.tools.marShell.KevScriptOfflineEngine
-import org.kevoree.cloner.DefaultModelCloner
-import org.kevoree.KevoreeFactory
-import org.kevoree.tools.modelsync.FakeBootstraperService
 
 /**
  * Created by IntelliJ IDEA.
@@ -75,7 +65,7 @@ class KevScriptCommand extends Command {
   }
 
 
-  def displayError(msg : String){
+  def displayError(msg: String) {
     val hud = new HudWindow("KevScript Error");
     hud.getJDialog.setSize(500, 350);
     hud.getJDialog.setLocationRelativeTo(null);
@@ -85,7 +75,7 @@ class KevScriptCommand extends Command {
     msgLabel.setOpaque(false)
     msgLabel.setLineWrap(true);
     msgLabel.setWrapStyleWord(true);
-    msgLabel.setSize(480,320)
+    msgLabel.setSize(480, 320)
     msgLabel.setPreferredSize(msgLabel.getSize)
 
     val layoutPopupTop = new JPanel()
@@ -95,7 +85,7 @@ class KevScriptCommand extends Command {
     hud.getJDialog.getContentPane.add(layoutPopupTop)
     hud.getJDialog.setVisible(true)
 
-    println("Display MSG : "+msg)
+    println("Display MSG : " + msg)
 
   }
 
@@ -105,14 +95,18 @@ class KevScriptCommand extends Command {
       def act() {
         p match {
           case s: String => {
+
+
+            /*
             val bootstraper = new FakeBootstraperService
-            val kevOfflineEngine = new KevScriptOfflineEngine(kernel.getModelHandler.getActualModel,bootstraper.getBootstrap)
-            kevOfflineEngine.addVariable("kevoree.version",ModelHelper.kevoreeFactory.getVersion)
+            val kevOfflineEngine = new KevScriptOfflineEngine(kernel.getModelHandler.getActualModel, bootstraper.getBootstrap)
+            kevOfflineEngine.addVariable("kevoree.version", ModelHelper.kevoreeFactory.getVersion)
             import scala.collection.JavaConversions._
-            System.getProperties.foreach{ prop =>
-              kevOfflineEngine.addVariable(prop._1,prop._2)
+            System.getProperties.foreach {
+              prop =>
+                kevOfflineEngine.addVariable(prop._1, prop._2)
             }
-            kevOfflineEngine.append("{"+s.replace("tblock","")+"}")
+            kevOfflineEngine.append("{" + s.replace("tblock", "") + "}")
             try {
               val newModel = kevOfflineEngine.interpret()
               val loadCMD = new LoadModelCommand
@@ -120,40 +114,40 @@ class KevScriptCommand extends Command {
               loadCMD.execute(newModel)
             } catch {
               case _@e => displayError(e.getMessage)
-            }
-              /*
-            val parser = new KevsParser
-            parser.parseScript(s) match {
-              case Some(script) => {
-                import org.kevoree.tools.marShell.interpreter.KevsInterpreterAspects._
-                PositionedEMFHelper.updateModelUIMetaData(kernel)
-                val outputStream: ByteArrayOutputStream = new ByteArrayOutputStream
-                KevoreeXmiHelper.saveStream(outputStream, kernel.getModelHandler.getActualModel)
-                val ghostModel = KevoreeXmiHelper.loadStream(new ByteArrayInputStream(outputStream.toByteArray))
-                var result = true
-                try {
-                  result = script.interpret(KevsInterpreterContext(ghostModel))
-                } catch {
-                  case _ @ e => {
-                    result = false
-                    displayError(e.getMessage)
-                  }
-                }
-                logger.info("Interpreter Result : " + result)
-                if (result) {
-                  //reload
-                  val file = File.createTempFile("kev", new Random().nextInt + "")
-                  KevoreeXmiHelper.save(file.getAbsolutePath, ghostModel);
-                  val loadCMD = new LoadModelCommand
-                  loadCMD.setKernel(kernel)
-                  loadCMD.execute(file.getAbsolutePath)
-                }
-              }
-              case _ => {
-                logger.error("Error while parsing KevScript " + parser.lastNoSuccess)
-                displayError(parser.lastNoSuccess.toString)
-              }
             } */
+            /*
+          val parser = new KevsParser
+          parser.parseScript(s) match {
+            case Some(script) => {
+              import org.kevoree.tools.marShell.interpreter.KevsInterpreterAspects._
+              PositionedEMFHelper.updateModelUIMetaData(kernel)
+              val outputStream: ByteArrayOutputStream = new ByteArrayOutputStream
+              KevoreeXmiHelper.saveStream(outputStream, kernel.getModelHandler.getActualModel)
+              val ghostModel = KevoreeXmiHelper.loadStream(new ByteArrayInputStream(outputStream.toByteArray))
+              var result = true
+              try {
+                result = script.interpret(KevsInterpreterContext(ghostModel))
+              } catch {
+                case _ @ e => {
+                  result = false
+                  displayError(e.getMessage)
+                }
+              }
+              logger.info("Interpreter Result : " + result)
+              if (result) {
+                //reload
+                val file = File.createTempFile("kev", new Random().nextInt + "")
+                KevoreeXmiHelper.save(file.getAbsolutePath, ghostModel);
+                val loadCMD = new LoadModelCommand
+                loadCMD.setKernel(kernel)
+                loadCMD.execute(file.getAbsolutePath)
+              }
+            }
+            case _ => {
+              logger.error("Error while parsing KevScript " + parser.lastNoSuccess)
+              displayError(parser.lastNoSuccess.toString)
+            }
+          } */
           }
           case _@e => logger.error("Bad parameter while trying to execute KevScript=> " + e)
         }
