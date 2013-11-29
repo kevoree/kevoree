@@ -2,66 +2,53 @@
 
 # Rules
 # =====
-KevScript   <- +(Statement ws)
+KevScript    <- +(Statement ws)
 
-Statement   <- (Add | Remove | Move | Attach | Detach | Set | AddBinding | DelBinding | Include | Network | AddRepo | Comment) ws
+Statement    <- (Add | Remove | Move | Attach | Detach | Set | AddBinding | DelBinding | Include | Network | AddRepo | Comment | Namespace) ws
 
-Add         <- AddToken ws NameList ws :':' ws TypeDefStmt                              # add group0, group1 : WebSocketGroup
-             | AddToken ws CompList ws :':' ws TypeDefStmt                              # add comp0@node0, comp1@node1 : FakeConsole
+Add          <- AddToken ws NameList ws :':' ws TypeDefStmt                              # add group0, group1 : WebSocketGroup
 
-Remove      <- RemoveToken ws MixedList                                                 # remove node0
-                                                                                        # remove comp0@node0, comp1@node1
-                                                                                        # remove node0, comp1@node0, group1
+Remove       <- RemoveToken ws NameList                                                  # remove node0, node0.comp1, sync
 
-Move        <- MoveToken ws CompList ws String                                          # move comp0, comp1 node1
-             | MoveToken ws '*' ?(:'@' String) ws String                                # move * node0
-                                                                                        # move *@node2 node1
+Move         <- MoveToken ws NameList ws InstancePath                                    # move node0.comp0, node2.* node1
 
-Attach      <- AttachToken ws NameList ws String                                        # attach node0, node1 group0
-             | AttachToken ws '*' ws String                                             # attach * group2
+Attach       <- AttachToken ws NameList ws InstancePath                                  # attach node0, node1 group0
 
-Detach      <- DetachToken ws NameList ws String                                        # detach node0, node1 group0
-             | DetachToken ws '*' ws String                                             # detach * group42
+Detach       <- DetachToken ws NameList ws InstancePath                                  # detach node0, node1 group0
 
-Set         <- SetToken ws (String | CompStmt) ws Dictionary                            # set comp0 Dictionary
+Set          <- SetToken ws InstancePath ws :'=' ws :['] ws String2 ws :[']              # set node0.comp0.myAtt = 'foo'
+              | SetToken ws InstancePath ws :'=' ws :["] ws String2 ws :["]              # set sync.myAtt = "foo"
 
-Network     <- NetworkToken ws String ws String2                                        # network node1 192.168.0.1
+Network      <- NetworkToken ws InstancePath ws String2                                  # network node1 192.168.0.1
 
-Dictionary  <- AttrList                                                                 # { att = "foo"}
-             | AttrList ws *(:[,] ws AttrList)                                          # {foo='bar'}, {port="8080"}@node0
+AddBinding   <- BindToken ws InstancePath ws InstancePath                                # bind node1.comp0.sendMsg chan42
 
-AttrList    <- :'{' ws Attribute ws *(:[,] ws Attribute) ws :'}' ?(:'@' String)         # { Attribute, Attribute, Attribute }
+DelBinding   <- UnbindToken ws InstancePath ws InstancePath                              # unbind node1.comp0.sendMsg chan0
 
-Attribute   <- String ws :'=' ws :['] ws String2 ws :[']                                # myAttr = 'foo'
-             | String ws :'=' ws :["] ws String2 ws :["]                                # myOtherAttr = "bar"
+AddRepo      <- RepoToken ws Anything                                                    # repo org.sonatype.org/foo/bar?a=b&c=d
 
-AddBinding  <- BindToken ws CompStmt :'.' String ws NameList                            # bind comp0@node1.sendMsg chan42
+Include      <- IncludeToken ws String :':' Anything                                     # include npm:kevoree-chan-websocket
+                                                                                         # include mvn:org.kevoree.library.javase:websocketgrp:2.0.5-SNAPSHOT
 
-DelBinding  <- UnbindToken ws CompStmt :'.' String ws NameList                          # unbind comp0@node1.sendMsg chan0, chan1
-             | UnbindToken ws CompStmt :'.' String ws '*'                               # unbind comp0@node1.sendMsg *
+NameList     <- InstancePath ws *(:[,] ws InstancePath)                                  # node42
+                                                                                         # node0, node0.comp1, node42
 
-AddRepo     <- RepoToken ws Anything                                                    # repo org.sonatype.org/foo/bar?a=b&c=d
+TypeDefStmt  <- String ?(:'/' Version)                                                   # FooType/0.0.1 (specific vers.)
+                                                                                         # FooType       (last vers.)
 
-Include     <- IncludeToken ws String :':' Anything                                     # include npm:kevoree-chan-websocket
-                                                                                        # include mvn:org.kevoree.library.javase:websocketgrp:2.0.5-SNAPSHOT
+Namespace    <- NamespaceToken ws String                                                 # namespace sp-ace_0
 
-NameList    <- String ws *(:[,] ws String)                                              # node42
-                                                                                        # node0, node42
+InstancePath <- (Wildcard | String) *(:[.] (Wildcard | String))                          # node0.*.att
 
-CompStmt    <- String :'@' String                                                       # comp0@node1
+Wildcard     <- '*'
 
-CompList    <- CompStmt ws *(:[,] ws CompStmt)                                          # comp42@node0
-                                                                                        # comp1@node0, comp0@node1
-MixedList   <- (CompStmt | String) ws *(:[,] ws (CompStmt | String))
+String       <- +[a-zA-Z0-9_-]
 
-TypeDefStmt <- String ?(:'/' +(String|[.]))                                             # FooType/0.0.1 (specific vers.)
-                                                                                        # FooType       (last vers.)
+String2      <- +[a-zA-Z0-9.:@_-]
 
-String      <- +[a-zA-Z0-9_-]
+Version      <- +[a-zA-Z0-9_-.]
 
-String2     <- +[a-zA-Z0-9.:@_-]
-
-Anything    <- +(!eol .) :eol
+Anything     <- +(!eol .)
 # =========
 # End Rules
 
@@ -79,7 +66,8 @@ DetachToken     <: 'detach'
 NetworkToken    <: 'network'
 BindToken       <: 'bind'
 UnbindToken     <: 'unbind'
-Comment         <: '//' Anything
+NamespaceToken  <: 'namespace'
+Comment         <: '//' Anything ws
 eol             <: '\r\n' | '\n' | '\r'
 ws              <: *([ \t] | eol)
 # =================
