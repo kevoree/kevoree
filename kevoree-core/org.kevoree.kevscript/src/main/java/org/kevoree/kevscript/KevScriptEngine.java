@@ -5,6 +5,7 @@ import org.kevoree.api.KevScriptService;
 import org.kevoree.impl.DefaultKevoreeFactory;
 import org.kevoree.kevscript.util.InstanceResolver;
 import org.kevoree.kevscript.util.MergeResolver;
+import org.kevoree.kevscript.util.PortResolver;
 import org.kevoree.kevscript.util.TypeDefinitionResolver;
 import org.kevoree.log.Log;
 import org.waxeye.ast.IAST;
@@ -13,7 +14,6 @@ import org.waxeye.input.InputBuffer;
 import org.waxeye.parser.ParseResult;
 
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -42,8 +42,6 @@ public class KevScriptEngine implements KevScriptService {
         }
     }
 
-    private List<Instance> pending = new ArrayList<Instance>();
-
     public void interpret(IAST<Type> node, ContainerRoot model) throws Exception {
         switch (node.getType()) {
             case KevScript:
@@ -57,9 +55,9 @@ public class KevScriptEngine implements KevScriptService {
                 }
                 break;
             case Add:
-                TypeDefinition td = TypeDefinitionResolver.resolve(model, node.getChildren().get(1).childrenAsString());
+                TypeDefinition td = TypeDefinitionResolver.resolve(model, node.getChildren().get(1));
                 if (td == null) {
-                    throw new Exception("TypeDefinition not found : "+node.getChildren().get(1).childrenAsString());
+                    throw new Exception("TypeDefinition not found : " + node.getChildren().get(1).childrenAsString());
                 } else {
                     IAST<Type> instanceNames = node.getChildren().get(0);
                     if (instanceNames.getType().equals(Type.NameList)) {
@@ -72,18 +70,17 @@ public class KevScriptEngine implements KevScriptService {
                 }
                 break;
             case Move:
-                List<Instance> leftHands = InstanceResolver.resolve(model, node.getChildren().get(0), pending);
-                List<Instance> rightHands = InstanceResolver.resolve(model, node.getChildren().get(1), pending);
+                List<Instance> leftHands = InstanceResolver.resolve(model, node.getChildren().get(0));
+                List<Instance> rightHands = InstanceResolver.resolve(model, node.getChildren().get(1));
                 for (Instance leftH : leftHands) {
                     for (Instance rightH : rightHands) {
-                        pending.remove(leftH);
                         applyMove(leftH, rightH, model);
                     }
                 }
                 break;
             case Attach:
-                List<Instance> leftHands2 = InstanceResolver.resolve(model, node.getChildren().get(0), pending);
-                List<Instance> rightHands2 = InstanceResolver.resolve(model, node.getChildren().get(1), pending);
+                List<Instance> leftHands2 = InstanceResolver.resolve(model, node.getChildren().get(0));
+                List<Instance> rightHands2 = InstanceResolver.resolve(model, node.getChildren().get(1));
                 for (Instance leftH : leftHands2) {
                     for (Instance rightH : rightHands2) {
                         applyAttach(leftH, rightH, model, false);
@@ -91,8 +88,8 @@ public class KevScriptEngine implements KevScriptService {
                 }
                 break;
             case Detach:
-                List<Instance> leftHands3 = InstanceResolver.resolve(model, node.getChildren().get(0), pending);
-                List<Instance> rightHands3 = InstanceResolver.resolve(model, node.getChildren().get(1), pending);
+                List<Instance> leftHands3 = InstanceResolver.resolve(model, node.getChildren().get(0));
+                List<Instance> rightHands3 = InstanceResolver.resolve(model, node.getChildren().get(1));
                 for (Instance leftH : leftHands3) {
                     for (Instance rightH : rightHands3) {
                         applyAttach(leftH, rightH, model, true);
@@ -105,8 +102,21 @@ public class KevScriptEngine implements KevScriptService {
                 model.addRepositories(repo);
                 break;
             case Remove:
-                List<Instance> toRemove = InstanceResolver.resolve(model, node.getChildren().get(0), pending);
+                List<Instance> toRemove = InstanceResolver.resolve(model, node.getChildren().get(0));
                 for (Instance toDrop : toRemove) {
+                    if (toDrop instanceof ComponentInstance) {
+                        ComponentInstance ci = (ComponentInstance) toDrop;
+                        for (Port p : ci.getProvided()) {
+                            for (MBinding mb : p.getBindings()) {
+                                mb.delete();
+                            }
+                        }
+                        for (Port p : ci.getRequired()) {
+                            for (MBinding mb : p.getBindings()) {
+                                mb.delete();
+                            }
+                        }
+                    }
                     toDrop.delete();
                 }
                 break;
@@ -114,11 +124,11 @@ public class KevScriptEngine implements KevScriptService {
                 Log.error("Network not implemented yet !!!");
 
                 break;
-            case Merge:
+            case Include:
                 MergeResolver.merge(model, node.getChildren().get(0).childrenAsString(), node.getChildren().get(1).childrenAsString());
                 break;
             case Set:
-                List<Instance> toChangeDico = InstanceResolver.resolve(model, node.getChildren().get(0), pending);
+                List<Instance> toChangeDico = InstanceResolver.resolve(model, node.getChildren().get(0));
                 for (Instance target : toChangeDico) {
                     if (target.getDictionary() == null) {
                         target.setDictionary(factory.createDictionary());
@@ -162,46 +172,32 @@ public class KevScriptEngine implements KevScriptService {
                 }
                 break;
             case AddBinding:
-                String componentName = node.getChildren().get(0).childrenAsString();
-                String portName = node.getChildren().get(1).childrenAsString();
-                List<Instance> channelsInstance = InstanceResolver.resolve(model, node.getChildren().get(2), pending);
+                List<Instance> channelsInstance = InstanceResolver.resolve(model, node.getChildren().get(1));
                 for (Instance instance : channelsInstance) {
                     Channel channel = (Channel) instance;
-                    //TODO perhaps try to lookup before
-                    for (ContainerNode n : model.getNodes()) {
-                        ComponentInstance componentInstance = n.findComponentsByID(componentName);
-                        for (Port p : componentInstance.getProvided()) {
-                            if (p.getPortTypeRef().getName().equals(portName)) {
-                                MBinding binding = factory.createMBinding();
-                                binding.setHub(channel);
-                                binding.setPort(p);
-                                model.addMBindings(binding);
-                            }
-                        }
-                        for (Port p : componentInstance.getRequired()) {
-                            if (p.getPortTypeRef().getName().equals(portName)) {
-                                MBinding binding = factory.createMBinding();
-                                binding.setHub(channel);
-                                binding.setPort(p);
-                                model.addMBindings(binding);
-                            }
-                        }
+                    List<Port> ports = PortResolver.resolve(model, node.getChildren().get(0));
+                    for (Port p : ports) {
+                        MBinding mb = factory.createMBinding();
+                        mb.setPort(p);
+                        mb.setHub(channel);
+                        model.addMBindings(mb);
                     }
                 }
                 break;
             case DelBinding:
-                String componentName2 = node.getChildren().get(0).childrenAsString();
-                String portName2 = node.getChildren().get(1).childrenAsString();
-                List<Instance> channelsInstance2 = InstanceResolver.resolve(model, node.getChildren().get(2), pending);
+                List<Instance> channelsInstance2 = InstanceResolver.resolve(model, node.getChildren().get(1));
+                List<Port> ports = PortResolver.resolve(model, node.getChildren().get(0));
+
                 for (Instance instance : channelsInstance2) {
                     Channel channel = (Channel) instance;
                     MBinding toDrop = null;
                     for (MBinding mb : channel.getBindings()) {
-                        if (mb.getPort().getPortTypeRef().getName().equals(portName2)) {
-                            if (((ComponentInstance) mb.getPort().eContainer()).getName().equals(componentName2)) {
+                        for (Port p : ports) {
+                            if (mb.getPort().equals(p)) {
                                 toDrop = mb;
                             }
                         }
+
                     }
                     if (toDrop != null) {
                         toDrop.delete();
@@ -249,47 +245,72 @@ public class KevScriptEngine implements KevScriptService {
         }
     }
 
-    private boolean applyAdd(TypeDefinition td, IAST<Type> name, ContainerRoot model) {
+    private boolean applyAdd(TypeDefinition td, IAST<Type> name, ContainerRoot model) throws Exception {
         boolean process = false;
         if (td instanceof NodeType) {
             ContainerNode instance = factory.createContainerNode();
             instance.setTypeDefinition(td);
-            instance.setName(name.childrenAsString());
-            model.addNodes(instance);
-            process = true;
+            if (name.getType().equals(Type.InstancePath) && name.getChildren().size() == 1) {
+                String newNodeName = name.getChildren().get(0).childrenAsString();
+                instance.setName(newNodeName);
+                if (model.findNodesByID(newNodeName) != null) {
+                    throw new Exception("Node already exsiste for name : " + newNodeName);
+                }
+                model.addNodes(instance);
+                process = true;
+            } else {
+                throw new Exception("Bad node name : " + name.toString());
+            }
         }
         if (td instanceof ComponentType) {
             ComponentInstance instance = factory.createComponentInstance();
             instance.setTypeDefinition(td);
-            instance.setName(name.childrenAsString());
-            pending.add(instance);
-            //add port
-            ComponentType ctd = (ComponentType) td;
-            for (PortTypeRef rport : ctd.getProvided()) {
-                org.kevoree.Port newPort = factory.createPort();
-                newPort.setPortTypeRef(rport);
-                instance.addProvided(newPort);
+            if (name.getType().equals(Type.InstancePath) && name.getChildren().size() == 2) {
+                instance.setName(name.getChildren().get(1).childrenAsString());
+                //add port
+                ComponentType ctd = (ComponentType) td;
+                for (PortTypeRef rport : ctd.getProvided()) {
+                    org.kevoree.Port newPort = factory.createPort();
+                    newPort.setPortTypeRef(rport);
+                    instance.addProvided(newPort);
+                }
+                for (PortTypeRef rport : ctd.getRequired()) {
+                    org.kevoree.Port newPort = factory.createPort();
+                    newPort.setPortTypeRef(rport);
+                    instance.addRequired(newPort);
+                }
+                ContainerNode parentNode = model.findNodesByID(name.getChildren().get(0).childrenAsString());
+                if (parentNode == null) {
+                    throw new Exception("Can find parent node for name : " + name.getChildren().get(1).childrenAsString());
+                } else {
+                    parentNode.addComponents(instance);
+                    process = true;
+                }
+            } else {
+                throw new Exception("Bad component name (must be nodeName.componentName) : " + name.toString());
             }
-            for (PortTypeRef rport : ctd.getRequired()) {
-                org.kevoree.Port newPort = factory.createPort();
-                newPort.setPortTypeRef(rport);
-                instance.addRequired(newPort);
-            }
-            process = true;
         }
         if (td instanceof ChannelType) {
             Channel instance = factory.createChannel();
             instance.setTypeDefinition(td);
-            instance.setName(name.childrenAsString());
-            model.addHubs(instance);
-            process = true;
+            if (name.getType().equals(Type.InstancePath) && name.getChildren().size() == 1) {
+                instance.setName(name.getChildren().get(0).childrenAsString());
+                model.addHubs(instance);
+                process = true;
+            } else {
+                throw new Exception("Bad channel name : " + name.toString());
+            }
         }
         if (td instanceof GroupType) {
             Group instance = factory.createGroup();
             instance.setTypeDefinition(td);
-            instance.setName(name.childrenAsString());
-            model.addGroups(instance);
-            process = true;
+            if (name.getType().equals(Type.InstancePath) && name.getChildren().size() == 1) {
+                instance.setName(name.getChildren().get(0).childrenAsString());
+                model.addGroups(instance);
+                process = true;
+            } else {
+                throw new Exception("Bad group name : " + name.toString());
+            }
         }
         return process;
     }

@@ -2,6 +2,9 @@ package org.kevoree.kevscript.util;
 
 import org.kevoree.ContainerRoot;
 import org.kevoree.TypeDefinition;
+import org.kevoree.kevscript.Type;
+import org.kevoree.resolver.util.MavenVersionComparator;
+import org.waxeye.ast.IAST;
 
 /**
  * Created with IntelliJ IDEA.
@@ -11,13 +14,37 @@ import org.kevoree.TypeDefinition;
  */
 public class TypeDefinitionResolver {
 
-    public static TypeDefinition resolve(ContainerRoot model, String typeName) {
+    public static TypeDefinition resolve(ContainerRoot model, IAST<Type> typeNode) throws Exception {
+        if (!typeNode.getType().equals(org.kevoree.kevscript.Type.TypeDefStmt)) {
+            throw new Exception("Parse error, should be a typedefinition : " + typeNode.toString());
+        }
+        String typeDefName = typeNode.getChildren().get(0).childrenAsString();
+        String version = null;
+        if (typeNode.getChildren().size() > 1) {
+            version = typeNode.getChildren().get(1).childrenAsString();
+        }
+        TypeDefinition bestTD = null;
         for (TypeDefinition td : model.getTypeDefinitions()) {
-            if (td.getName().equals(typeName)) {
-                return td;
+            if (version != null) {
+                if (td.getName().equals(typeDefName) && version.equals(td.getVersion())) {
+                    return td;
+                }
+            } else {
+                if (td.getName().equals(typeDefName)) {
+                    if (bestTD == null) {
+                        bestTD = td;
+                    } else {
+                        if (MavenVersionComparator.max(bestTD.getVersion(), td.getVersion()) == td.getVersion()) {
+                            bestTD = td;
+                        }
+                    }
+                }
             }
         }
-        return null;
+        if (bestTD == null) {
+            throw new Exception("TypeDefinition not found with : "+typeDefName.toString());
+        }
+        return bestTD;
     }
 
 }
