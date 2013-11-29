@@ -15,7 +15,6 @@ import org.kevoree.log.Log;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.InputStream;
 
 /**
@@ -38,6 +37,10 @@ public class Bootstrap {
 
     private JSONModelLoader jsonLoader = new JSONModelLoader();
 
+    public KevoreeCoreBean getCore() {
+        return core;
+    }
+
     public Bootstrap(String nodeName) {
         core.setNodeName(nodeName);
         kernel.setNodeName(nodeName);
@@ -47,6 +50,10 @@ public class Bootstrap {
         kernel.setInjector(injector);
         core.setBootstrapService(kernel);
         core.start();
+    }
+
+    public void stop() {
+        core.stop();
     }
 
     public void bootstrap(ContainerRoot model) {

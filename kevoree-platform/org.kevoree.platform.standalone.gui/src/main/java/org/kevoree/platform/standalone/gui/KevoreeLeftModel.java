@@ -29,7 +29,6 @@ public class KevoreeLeftModel extends JPanel {
         if (model.getCategories().size() > 0) {
             model.removeCategoryAt(0);
         }
-
         SourceListCategory category = new SourceListCategory(kmodel.getName());
         SourceListItem componentItem = new SourceListItem("Components");
         SourceListItem channelItem = new SourceListItem("Channels");
@@ -40,7 +39,6 @@ public class KevoreeLeftModel extends JPanel {
         model.addItemToCategory(channelItem, category);
         model.addItemToCategory(groupItem, category);
         model.addItemToCategory(childItem, category);
-
         for (ComponentInstance c : kmodel.getComponents()) {
             SourceListItem itc = new SourceListItem(c.getName() + ":" + c.getTypeDefinition().getName());
             model.addItemToItem(itc, componentItem);
@@ -67,7 +65,6 @@ public class KevoreeLeftModel extends JPanel {
         } catch (Exception e) {
 
         }
-
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {

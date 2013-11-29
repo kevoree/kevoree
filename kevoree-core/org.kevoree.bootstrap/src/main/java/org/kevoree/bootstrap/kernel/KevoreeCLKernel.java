@@ -26,7 +26,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class KevoreeCLKernel implements KevoreeCLFactory, BootstrapService {
 
-    private ConcurrentHashMap<String, KevoreeJarClassLoader> cache = new ConcurrentHashMap<String, KevoreeJarClassLoader>();
+    private HashMap<String, KevoreeJarClassLoader> cache = new HashMap<String, KevoreeJarClassLoader>();
 
     private MavenResolver resolver = new MavenResolver();
 

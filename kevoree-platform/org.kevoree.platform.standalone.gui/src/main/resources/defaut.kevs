@@ -1,0 +1,7 @@
+merge mvn:org.kevoree.library.java:org.kevoree.library.java.javaNode:3.0.0-SNAPSHOT
+add node0 : JavaNode
+add sync : HelloGroup
+attach node0 sync
+
+
+

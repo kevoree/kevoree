@@ -34,7 +34,6 @@ public class RichTextArea extends JTextPane {
 
     public void append(String msg, Color color, Color bgColor, boolean isBold) {
         StyleConstants.setForeground(style, color);
-       // StyleConstants.setBackground(style, bgColor);
         StyleConstants.setBold(style, isBold);
         int len = doc.getLength();
         try {
