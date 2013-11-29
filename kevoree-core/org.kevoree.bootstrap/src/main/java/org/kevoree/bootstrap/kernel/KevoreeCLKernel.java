@@ -16,7 +16,6 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created with IntelliJ IDEA.
@@ -86,7 +85,13 @@ public class KevoreeCLKernel implements KevoreeCLFactory, BootstrapService {
 
     @Override
     public void removeDeployUnit(DeployUnit deployUnit) {
+        KevoreeJarClassLoader oldKCL = get(deployUnit);
         cache.remove(deployUnit.path());
+        if (oldKCL != null) {
+            for (KevoreeJarClassLoader kcl : cache.values()) {
+                kcl.removeChild(oldKCL);
+            }
+        }
     }
 
     @Override
@@ -129,7 +134,7 @@ public class KevoreeCLKernel implements KevoreeCLFactory, BootstrapService {
 
     @Override
     public Object createInstance(final Instance instance) {
-        KevoreeJarClassLoader classLoader = recursiveInstallDeployUnit(instance.getTypeDefinition().getDeployUnit());
+        KevoreeJarClassLoader classLoader = get(instance.getTypeDefinition().getDeployUnit());
         Class clazz = classLoader.loadClass(instance.getTypeDefinition().getBean());
         try {
             Object newInstance = clazz.newInstance();
