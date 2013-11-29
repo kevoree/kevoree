@@ -18,8 +18,8 @@ import com.explodingpixels.macwidgets.MacWidgetFactory;
 import com.explodingpixels.macwidgets.UnifiedToolBar;
 import org.kevoree.ContainerNode;
 import org.kevoree.ContainerRoot;
-import org.kevoree.api.service.core.handler.ModelListener;
-import org.kevoree.platform.standalone.KevoreeBootStrap;
+import org.kevoree.api.handler.ModelListener;
+import org.kevoree.bootstrap.Bootstrap;
 
 import javax.swing.*;
 import java.awt.*;
@@ -33,7 +33,7 @@ public class KevoreeGUIFrame extends JFrame {
 
     private static KevoreeLeftModel left = null;
 
-    public KevoreeGUIFrame(/*final ContainerRoot model*/) {
+    public KevoreeGUIFrame(final Bootstrap bootstrap) {
         singleton = this;
         MacUtils.makeWindowLeopardStyle(this.getRootPane());
         UnifiedToolBar toolBar = new UnifiedToolBar();
@@ -53,25 +53,23 @@ public class KevoreeGUIFrame extends JFrame {
         new Thread() {
             @Override
             public void run() {
-                startNode();
+                startNode(bootstrap);
             }
         }.start();
         setVisible(true);
 
-        setPreferredSize(new Dimension(1024,768));
+        setPreferredSize(new Dimension(1024, 768));
         setSize(getPreferredSize());
 
         setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
     }
 
-    private void startNode() {
-        final KevoreeBootStrap btA = new KevoreeBootStrap();
-
+    private void startNode(final Bootstrap bootstrap) {
         Runtime.getRuntime().addShutdownHook(new Thread("Shutdown Hook") {
 
             public void run() {
                 try {
-                    btA.stop();
+                    bootstrap.stop();
                 } catch (Throwable ex) {
                     System.out.println("Error stopping framework: " + ex.getMessage());
                 }
@@ -84,7 +82,7 @@ public class KevoreeGUIFrame extends JFrame {
                     @Override
                     public void run() {
                         try {
-                            btA.stop();
+                            bootstrap.stop();
                             DefaultSystem.instance$.resetSystemFlux();
                             dispose();
                             Runtime.getRuntime().exit(0);
@@ -96,13 +94,10 @@ public class KevoreeGUIFrame extends JFrame {
             }
         });
         try {
-            FelixShell shell = null;
-            shell = new FelixShell();
+            ConsoleShell shell = null;
+            shell = new ConsoleShell();
             KevoreeGUIFrame.showShell(shell);
-
-            btA.start();
-
-            btA.getCore().registerModelListener(new ModelListener() {
+            bootstrap.getCore().registerModelListener(new ModelListener() {
                 @Override
                 public boolean preUpdate(ContainerRoot currentModel, ContainerRoot proposedModel) {
                     return true;
@@ -120,10 +115,10 @@ public class KevoreeGUIFrame extends JFrame {
 
                 @Override
                 public void modelUpdated() {
-                    for (ContainerNode node : btA.getCore().getLastModel().getNodes()) {
-                        if (node.getName().equals(System.getProperty("node.name"))) {
-                            left.reload(node);
-                        }
+                    ContainerRoot currentModel = bootstrap.getCore().getCurrentModel().getModel();
+                    ContainerNode currentNode = currentModel.findNodesByID(bootstrap.getCore().getNodeName());
+                    if (currentNode != null) {
+                        left.reload(currentNode);
                     }
                 }
 

@@ -26,22 +26,22 @@
  */
 package org.kevoree.platform.standalone.gui;
 
+import org.kevoree.bootstrap.Bootstrap;
+
 public class App extends org.kevoree.platform.standalone.App {
 
     public void start() {
 
         DefaultSystem.instance$.saveSystemFlux();
-        final KevoreeGUIFrame frame = new KevoreeGUIFrame();
+        String nodeName = "node0";
+        Bootstrap bootstrap = new Bootstrap(nodeName);
+        final KevoreeGUIFrame frame = new KevoreeGUIFrame(bootstrap);
     }
 
     public static void main(String[] args) throws Exception {
-        if(System.getProperty("node.headless") != null && System.getProperty("node.headless").equals("true")){
-            org.kevoree.platform.standalone.App.main(args);
-        } else {
-            App app = new App();
-            app.initialize();
-            app.start();
-        }
+        App app = new App();
+        app.initialize();
+        app.start();
     }
 
 }

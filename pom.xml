@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.kevoree.root</groupId>
     <artifactId>org.kevoree.root</artifactId>
@@ -8,20 +9,19 @@
     <version>2.1-SNAPSHOT</version>
 
     <properties>
-        <kmf.version>1.9.1-SNAPSHOT</kmf.version>
-        <slf4j.version>1.7.2</slf4j.version>
+        <kmf.version>1.9.1</kmf.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <kevoree.version>${project.version}</kevoree.version>
         <kotlin.version>0.6.602</kotlin.version>
         <kevoree.log.version>1</kevoree.log.version>
-		<basic.resolver.version>3</basic.resolver.version>
+        <basic.resolver.version>3</basic.resolver.version>
         <kevoree.kcl.version>2</kevoree.kcl.version>
     </properties>
 
-	<organization>
-    	<name>Kevoree Project</name>
-    	<url>http://kevoree.org</url>
-	</organization>
+    <organization>
+        <name>Kevoree Project</name>
+        <url>http://kevoree.org</url>
+    </organization>
 
     <parent>
         <groupId>org.sonatype.oss</groupId>
@@ -31,19 +31,19 @@
 
     <modules>
         <module>kevoree-core</module>
-		<module>kevoree-tools</module>
-		<!--
-		<module>kevoree-platform</module>
-			-->
-			
+        <module>kevoree-tools</module>
+        <!--
+        <module>kevoree-platform</module>
+            -->
+
     </modules>
 
     <scm>
         <connection>scm:git:git@github.com:dukeboard/kevoree.git</connection>
         <developerConnection>scm:git:git@github.com:dukeboard/kevoree.git</developerConnection>
         <url>http://github.com/dukeboard/kevoree.git</url>
-      <tag>HEAD</tag>
-  </scm>
+        <tag>HEAD</tag>
+    </scm>
 
     <licenses>
         <license>
