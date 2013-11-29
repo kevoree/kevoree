@@ -4,51 +4,64 @@
 # =====
 KevScript   <- +(Statement ws)
 
-Statement   <- (Add | Remove | Move | Attach | Detach | Set | AddBinding | DelBinding | Merge | Network | AddRepo | Comment) ws
+Statement   <- (Add | Remove | Move | Attach | Detach | Set | AddBinding | DelBinding | Include | Network | AddRepo | Comment) ws
 
-Add         <- AddToken ws String ws :':' ws String                                     # add node0 : JavaSENode
-             | AddToken ws NameList ws :':' ws String                                   # add node42, node1 : JavascriptNode
+Add         <- AddToken ws NameList ws :':' ws TypeDefStmt                              # add group0, group1 : WebSocketGroup
+             | AddToken ws CompList ws :':' ws TypeDefStmt                              # add comp0@node0, comp1@node1 : FakeConsole
 
-Remove      <- RemoveToken ws NameList                                                  # remove node0
+Remove      <- RemoveToken ws MixedList                                                 # remove node0
+                                                                                        # remove comp0@node0, comp1@node1
+                                                                                        # remove node0, comp1@node0, group1
 
-Move        <- MoveToken ws String ws String                                            # move comp1 node0
-             | MoveToken ws NameList ws String                                          # move comp0, comp1 node1
+Move        <- MoveToken ws CompList ws String                                          # move comp0, comp1 node1
              | MoveToken ws '*' ?(:'@' String) ws String                                # move * node0
                                                                                         # move *@node2 node1
 
-Attach      <- AttachToken ws String ws String                                          # attach node0 group0
-             | AttachToken ws NameList ws String                                        # attach node0, node1 group0
+Attach      <- AttachToken ws NameList ws String                                        # attach node0, node1 group0
              | AttachToken ws '*' ws String                                             # attach * group2
 
-Detach      <- DetachToken ws String ws String                                          # detach node0 group0
-             | DetachToken ws NameList ws String                                        # detach node0, node1 group0
+Detach      <- DetachToken ws NameList ws String                                        # detach node0, node1 group0
              | DetachToken ws '*' ws String                                             # detach * group42
 
-Set         <- SetToken ws String ws Dictionary                                         # set comp0 {}
+Set         <- SetToken ws (String | CompStmt) ws Dictionary                            # set comp0 Dictionary
 
 Network     <- NetworkToken ws String ws String2                                        # network node1 192.168.0.1
 
-Dictionary  <- AttrList                                                                 # set comp0 { att = "foo"}
-             | AttrList ws *(:[,] ws AttrList)                                          # set sync {foo='bar'}, {port="8080"}@node0
+Dictionary  <- AttrList                                                                 # { att = "foo"}
+             | AttrList ws *(:[,] ws AttrList)                                          # {foo='bar'}, {port="8080"}@node0
 
 AttrList    <- :'{' ws Attribute ws *(:[,] ws Attribute) ws :'}' ?(:'@' String)         # { Attribute, Attribute, Attribute }
 
 Attribute   <- String ws :'=' ws :['] ws String2 ws :[']                                # myAttr = 'foo'
              | String ws :'=' ws :["] ws String2 ws :["]                                # myOtherAttr = "bar"
 
-AddBinding  <- BindToken ws String :'.' String ws NameList                              # comp0.sendMsg chan42
+AddBinding  <- BindToken ws CompStmt :'.' String ws NameList                            # bind comp0@node1.sendMsg chan42
 
-DelBinding  <- UnbindToken ws String :'.' String ws NameList                            # unbind comp0.sendMsg chan0, chan1
-             | UnbindToken ws String :'.' String ws '*'                                 # unbind comp0.sendMsg *
+DelBinding  <- UnbindToken ws CompStmt :'.' String ws NameList                          # unbind comp0@node1.sendMsg chan0, chan1
+             | UnbindToken ws CompStmt :'.' String ws '*'                               # unbind comp0@node1.sendMsg *
 
 AddRepo     <- RepoToken ws Anything                                                    # repo org.sonatype.org/foo/bar?a=b&c=d
 
-Merge       <- MergeToken ws String :':' String2                                        # merge npm:kevoree-chan-websocket
-                                                                                        # merge mvn:org.kevoree.library.javase:websocketgrp:2.0.5-SNAPSHOT
+Include     <- IncludeToken ws String :':' Anything                                     # include npm:kevoree-chan-websocket
+                                                                                        # include mvn:org.kevoree.library.javase:websocketgrp:2.0.5-SNAPSHOT
 
-NameList    <- String ws *(:[,] ws String)                                              # node0, node42, node1024
+NameList    <- String ws *(:[,] ws String)                                              # node42
+                                                                                        # node0, node42
 
-Comment     <: '//' :Anything                                                            # // a comment is inline and starts with '//'
+CompStmt    <- String :'@' String                                                       # comp0@node1
+
+CompList    <- CompStmt ws *(:[,] ws CompStmt)                                          # comp42@node0
+                                                                                        # comp1@node0, comp0@node1
+MixedList   <- (CompStmt | String) ws *(:[,] ws (CompStmt | String))
+
+TypeDefStmt <- String ?(:'/' +(String|[.]))                                             # FooType/0.0.1 (specific vers.)
+                                                                                        # FooType       (last vers.)
+
+String      <- +[a-zA-Z0-9_-]
+
+String2     <- +[a-zA-Z0-9.:@_-]
+
+Anything    <- +(!eol .) :eol
 # =========
 # End Rules
 
@@ -56,7 +69,7 @@ Comment     <: '//' :Anything                                                   
 # Void Non-terminals
 # =============
 RepoToken       <: 'repo'
-MergeToken      <: 'merge'
+IncludeToken    <: 'include'
 AddToken        <: 'add'
 RemoveToken     <: 'remove'
 MoveToken       <: 'move'
@@ -66,9 +79,7 @@ DetachToken     <: 'detach'
 NetworkToken    <: 'network'
 BindToken       <: 'bind'
 UnbindToken     <: 'unbind'
-String          <- +[a-zA-Z0-9_-]
-String2         <- +[a-zA-Z0-9.:@_-]
-Anything        <- +(!eol .) :eol
+Comment         <: '//' Anything
 eol             <: '\r\n' | '\n' | '\r'
 ws              <: *([ \t] | eol)
 # =================
