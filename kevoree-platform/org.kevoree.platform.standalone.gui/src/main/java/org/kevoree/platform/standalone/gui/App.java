@@ -26,22 +26,10 @@
  */
 package org.kevoree.platform.standalone.gui;
 
-import org.kevoree.bootstrap.Bootstrap;
-
-public class App extends org.kevoree.platform.standalone.App {
-
-    public void start() {
-
-        DefaultSystem.instance$.saveSystemFlux();
-        String nodeName = "node0";
-        Bootstrap bootstrap = new Bootstrap(nodeName);
-        final KevoreeGUIFrame frame = new KevoreeGUIFrame(bootstrap);
-    }
+public class App {
 
     public static void main(String[] args) throws Exception {
-        App app = new App();
-        app.initialize();
-        app.start();
+        final KevoreeGUIFrame frame = new KevoreeGUIFrame();
     }
 
 }

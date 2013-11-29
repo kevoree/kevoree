@@ -29,11 +29,12 @@ import java.net.URL;
 
 public class KevoreeGUIFrame extends JFrame {
 
+
     public static KevoreeGUIFrame singleton = null;
 
     private static KevoreeLeftModel left = null;
 
-    public KevoreeGUIFrame(final Bootstrap bootstrap) {
+    public KevoreeGUIFrame() {
         singleton = this;
         MacUtils.makeWindowLeopardStyle(this.getRootPane());
         UnifiedToolBar toolBar = new UnifiedToolBar();
@@ -53,7 +54,7 @@ public class KevoreeGUIFrame extends JFrame {
         new Thread() {
             @Override
             public void run() {
-                startNode(bootstrap);
+                startNode();
             }
         }.start();
         setVisible(true);
@@ -64,12 +65,13 @@ public class KevoreeGUIFrame extends JFrame {
         setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
     }
 
-    private void startNode(final Bootstrap bootstrap) {
+    private void startNode() {
+        final Bootstrap[] bootstrap = new Bootstrap[1];
         Runtime.getRuntime().addShutdownHook(new Thread("Shutdown Hook") {
 
             public void run() {
                 try {
-                    bootstrap.stop();
+                    bootstrap[0].stop();
                 } catch (Throwable ex) {
                     System.out.println("Error stopping framework: " + ex.getMessage());
                 }
@@ -82,8 +84,7 @@ public class KevoreeGUIFrame extends JFrame {
                     @Override
                     public void run() {
                         try {
-                            bootstrap.stop();
-                            DefaultSystem.instance$.resetSystemFlux();
+                            bootstrap[0].stop();
                             dispose();
                             Runtime.getRuntime().exit(0);
                         } catch (Throwable e) {
@@ -96,8 +97,10 @@ public class KevoreeGUIFrame extends JFrame {
         try {
             ConsoleShell shell = null;
             shell = new ConsoleShell();
+            String nodeName = "node0";
+            bootstrap[0] = new Bootstrap(nodeName);
             KevoreeGUIFrame.showShell(shell);
-            bootstrap.getCore().registerModelListener(new ModelListener() {
+            bootstrap[0].getCore().registerModelListener(new ModelListener() {
                 @Override
                 public boolean preUpdate(ContainerRoot currentModel, ContainerRoot proposedModel) {
                     return true;
@@ -115,8 +118,8 @@ public class KevoreeGUIFrame extends JFrame {
 
                 @Override
                 public void modelUpdated() {
-                    ContainerRoot currentModel = bootstrap.getCore().getCurrentModel().getModel();
-                    ContainerNode currentNode = currentModel.findNodesByID(bootstrap.getCore().getNodeName());
+                    ContainerRoot currentModel = bootstrap[0].getCore().getCurrentModel().getModel();
+                    ContainerNode currentNode = currentModel.findNodesByID(bootstrap[0].getCore().getNodeName());
                     if (currentNode != null) {
                         left.reload(currentNode);
                     }
@@ -132,6 +135,8 @@ public class KevoreeGUIFrame extends JFrame {
 
                 }
             });
+
+            bootstrap[0].bootstrapFromKevScript(App.class.getClassLoader().getResourceAsStream("default.kevs"));
 
         } catch (Throwable e) {
             e.printStackTrace();
