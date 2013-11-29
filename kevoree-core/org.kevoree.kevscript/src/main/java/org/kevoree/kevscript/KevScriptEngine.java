@@ -14,6 +14,7 @@ import org.waxeye.input.InputBuffer;
 import org.waxeye.parser.ParseResult;
 
 import java.io.InputStream;
+import java.text.MessageFormat;
 import java.util.List;
 
 /**
@@ -128,46 +129,46 @@ public class KevScriptEngine implements KevScriptService {
                 MergeResolver.merge(model, node.getChildren().get(0).childrenAsString(), node.getChildren().get(1).childrenAsString());
                 break;
             case Set:
-                List<Instance> toChangeDico = InstanceResolver.resolve(model, node.getChildren().get(0));
+
+                String propToSet = node.getChildren().get(1).childrenAsString();
+                IAST<Type> leftHnodes = node.getChildren().get(0);
+                if (leftHnodes.getChildren().size()<2) {
+                    throw new Exception("Bad dictionary value description ");
+                }
+
+                IAST<Type> portName = leftHnodes.getChildren().get(leftHnodes.getChildren().size() - 1);
+                leftHnodes.getChildren().remove(portName);
+                List<Instance> toChangeDico = InstanceResolver.resolve(model, leftHnodes);
+                String propName = portName.childrenAsString();
+
                 for (Instance target : toChangeDico) {
-                    if (target.getDictionary() == null) {
-                        target.setDictionary(factory.createDictionary());
-                    }
-                    IAST<Type> dictionary = node.getChildren().get(1);
-                    String targetNode = null;
-                    for (IAST<Type> list : dictionary.getChildren()) {
-
-                        if (list.getChildren().size() > 1) {
-                            IAST<Type> last = list.getChildren().get(list.getChildren().size() - 1);
-                            if (last.getType().equals(Type.String)) {
-                                targetNode = last.childrenAsString();
+                    if(propName.equals("started")){
+                           target.setStarted(Boolean.parseBoolean(propToSet));
+                    } else {
+                        if (target.getDictionary() == null) {
+                            target.setDictionary(factory.createDictionary());
+                        }
+                        DictionaryValue dicValue = target.getDictionary().findValuesByID(propName);
+                        if (dicValue == null) {
+                            dicValue = factory.createDictionaryValue();
+                            if (target.getTypeDefinition().getDictionaryType() != null) {
+                                DictionaryAttribute dicAtt = target.getTypeDefinition().getDictionaryType().findAttributesByID(propName);
+                                if (dicAtt == null) {
+                                    Log.error("Param does not existe in type {} -> {}", target.getName(), propName);
+                                } else {
+                                    dicValue.setAttribute(dicAtt);
+                                }
+                                target.getDictionary().addValues(dicValue);
                             }
                         }
-
-                        for (IAST<Type> attribute : list.getChildren()) {
-                            String key = attribute.getChildren().get(0).childrenAsString();
-                            DictionaryValue dicValue = target.getDictionary().findValuesByID(key);
-                            if (dicValue == null) {
-                                dicValue = factory.createDictionaryValue();
-                                if (target.getTypeDefinition().getDictionaryType() != null) {
-                                    DictionaryAttribute dicAtt = target.getTypeDefinition().getDictionaryType().findAttributesByID(key);
-                                    if (dicAtt == null) {
-                                        Log.error("Param does not existe in type {} -> {}", target.getName(), key);
-                                    } else {
-                                        dicValue.setAttribute(dicAtt);
-                                    }
-                                    target.getDictionary().addValues(dicValue);
-                                }
+                        dicValue.setValue(propToSet);
+                        /*
+                        if (targetNode != null) {
+                            dicValue.setTargetNode(model.findNodesByID(targetNode));
+                            if (dicValue.getTargetNode() == null) {
+                                Log.error("Node not found for @" + targetNode + " property");
                             }
-                            String value = attribute.getChildren().get(1).childrenAsString();
-                            dicValue.setValue(value);
-                            if (targetNode != null) {
-                                dicValue.setTargetNode(model.findNodesByID(targetNode));
-                                if (dicValue.getTargetNode() == null) {
-                                    Log.error("Node not found for @" + targetNode + " property");
-                                }
-                            }
-                        }
+                        } */
                     }
                 }
                 break;

@@ -1,11 +1,12 @@
 include mvn:org.kevoree.library.java:org.kevoree.library.java.javaNode:3.0.0-SNAPSHOT
 add node0 : JavaNode
 add chan0 : HelloChannel
-//set node0.debug = "true"
+set node0.debug = "true"
+set node0.started = "false"
 
 add node0.base : HelloWorld
 move node0.base node0
-//set base.message = "Hello"
+set node0.base.message = "Hello"
 
 add sync : HelloGroup
 attach node0 sync
