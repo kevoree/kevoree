@@ -35,3 +35,4 @@ remove node0, comp0@node0
 detach node0 sync
 detach node0, node1 sync
 detach * sync
+#lol
