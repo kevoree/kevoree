@@ -15,7 +15,6 @@ package org.kevoree.tools.ui.editor.command
 
 import org.kevoree.framework.kaspects.ContainerNodeAspect
 import org.kevoree.tools.ui.editor.KevoreeUIKernel
-import org.kevoree.tools.aether.framework.AetherUtil
 import java.util.jar.{JarEntry, JarFile}
 import org.kevoree.framework.KevoreeXmiHelper
 import org.slf4j.LoggerFactory
@@ -46,7 +45,7 @@ class AutoUpdateCommand extends Command {
           typeDef =>
             val du = typeDef.getDeployUnit()
                 try {
-                  val file = AetherUtil.instance$.resolveDeployUnit(du)
+                  /*val file = AetherUtil.instance$.resolveDeployUnit(du)
                   val jar = new JarFile(file)
                   val entry: JarEntry = jar.getJarEntry("KEV-INF/lib.kev")
                   val newmodel = KevoreeXmiHelper.instance$.loadStream(jar.getInputStream(entry))
@@ -54,6 +53,7 @@ class AutoUpdateCommand extends Command {
                     kernel.getModelHandler.merge(newmodel);
                     LoggerFactory.getLogger(this.getClass).info("AutoMerge => " + du.getName)
                   }
+                  */
                 } catch {
                   case _@e =>
                 }

@@ -122,6 +122,8 @@ public class KevoreeGUIFrame extends JFrame {
                     ContainerNode currentNode = currentModel.findNodesByID(bootstrap[0].getCore().getNodeName());
                     if (currentNode != null) {
                         left.reload(currentNode);
+                    } else {
+                        System.out.println("Node not found for refresh in model");
                     }
                 }
 

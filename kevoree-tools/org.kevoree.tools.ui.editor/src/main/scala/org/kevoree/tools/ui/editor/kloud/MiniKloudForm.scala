@@ -17,11 +17,9 @@ import java.io._
 import org.slf4j.LoggerFactory
 import org.kevoree.tools.ui.editor.command.{AetherResolver, LoadModelCommand}
 import org.kevoree.tools.ui.editor.{UIEventHandler, PositionedEMFHelper}
-import org.kevoree.tools.marShell.KevScriptOfflineEngine
 import java.net._
 import org.kevoree.framework.{KevoreePropertyHelper, KevoreeXmiHelper}
 import org.kevoree._
-import org.kevoree.tools.modelsync.FakeBootstraperService
 import javax.swing.{JOptionPane, ImageIcon, AbstractButton}
 import java.awt.Desktop
 import org.kevoree.core.basechecker.RootChecker
@@ -197,7 +195,7 @@ class MiniKloudForm(editor: KevoreeEditor, button: AbstractButton) {
     PositionedEMFHelper.updateModelUIMetaData(editor.getPanel.getKernel)
     val skyModel = editor.getPanel.getKernel.getModelHandler.getActualModel
 
-    val kevEngine = new KevScriptOfflineEngine(skyModel, new FakeBootstraperService().getBootstrap)
+   // val kevEngine = new KevScriptOfflineEngine(skyModel, new FakeBootstraperService().getBootstrap)
 
     var blackListedPorts = Array[Int](8000)
 
@@ -212,31 +210,31 @@ class MiniKloudForm(editor: KevoreeEditor, button: AbstractButton) {
       case None => {
         logger.debug("starting a minicloud with an editor node")
         minicloudName = "editor_node"
-        kevEngine.addVariable("minicloudNodeName", minicloudName)
+       // kevEngine.addVariable("minicloudNodeName", minicloudName)
 
         if (ModelHelper.kevoreeFactory.getVersion.toLowerCase.endsWith("snapshot")) {
-          kevEngine.addVariable("lib.version", "LATEST")
+         // kevEngine.addVariable("lib.version", "LATEST")
         } else {
-          kevEngine.addVariable("lib.version", "RELEASE")
+         // kevEngine.addVariable("lib.version", "RELEASE")
         }
 
-        kevEngine.append("merge 'mvn:org.kevoree.corelibrary.sky/org.kevoree.library.sky.minicloud/{lib.version}'")
-        kevEngine.append("merge 'mvn:org.kevoree.corelibrary.sky/org.kevoree.library.sky.web/{lib.version}'")
-        kevEngine.append("merge 'mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.basicGossiper/{lib.version}'")
+       // kevEngine.append("merge 'mvn:org.kevoree.corelibrary.sky/org.kevoree.library.sky.minicloud/{lib.version}'")
+       // kevEngine.append("merge 'mvn:org.kevoree.corelibrary.sky/org.kevoree.library.sky.web/{lib.version}'")
+       // kevEngine.append("merge 'mvn:org.kevoree.corelibrary.javase/org.kevoree.library.javase.basicGossiper/{lib.version}'")
 
-        kevEngine.append("addNode {minicloudNodeName}: MiniCloudNode {logLevel = 'INFO'}")
+       // kevEngine.append("addNode {minicloudNodeName}: MiniCloudNode {logLevel = 'INFO'}")
 
         val port = selectPort(firstPortToUse, blackListedPorts)
         blackListedPorts = blackListedPorts ++ Array[Int](port)
-        kevEngine.addVariable("portValue", port.toString)
+       // kevEngine.addVariable("portValue", port.toString)
 
         // add the web page to manage the miniKloud
-        kevEngine.append("addComponent iaasManager@{minicloudNodeName} : WebFrontend { port = '{portValue}'}")
+        //kevEngine.append("addComponent iaasManager@{minicloudNodeName} : WebFrontend { port = '{portValue}'}")
 
       }
     }
 
-    kevEngine.addVariable("minicloudNodeName", minicloudName)
+   // kevEngine.addVariable("minicloudNodeName", minicloudName)
 
     var groupName = "editor_group"
     var nodes = editor.getPanel.getKernel.getModelHandler.getActualModel.getNodes.filter(n => n.getTypeDefinition.getName == "PJavaSENode" || isASubType(n.getTypeDefinition, "PJavaSENode"))
@@ -248,40 +246,42 @@ class MiniKloudForm(editor: KevoreeEditor, button: AbstractButton) {
     editor.getPanel.getKernel.getModelHandler.getActualModel.getGroups.find(g =>
       (g.getSubNodes.size >= nodes.size || (g.getSubNodes.size() == nodes.size + 1 && g.findSubNodesByID(minicloudName) != null))
         && g.getSubNodes.forall(n => n.getName == minicloudName || nodes.contains(n))) match {
-      case Some(group) => groupName = group.getName; kevEngine.addVariable("groupName", groupName)
+      case Some(group) =>
+        //groupName = group.getName; kevEngine.addVariable("groupName", groupName)
       case None => {
         groupName = "editor_group"
         val groupAlreadyExist = editor.getPanel.getKernel.getModelHandler.getActualModel.findGroupsByID(groupName) match {
           case group: Group => true
           case null => {
             // add a new group
-            kevEngine.append("addGroup editor_group : BasicGossiperGroup")
+            //kevEngine.append("addGroup editor_group : BasicGossiperGroup")
             false
           }
         }
-        kevEngine.addVariable("groupName", groupName)
+       // kevEngine.addVariable("groupName", groupName)
         // add all node on the same group
         nodes.foreach {
           node =>
             if (!groupAlreadyExist || editor.getPanel.getKernel.getModelHandler.getActualModel.findGroupsByID(groupName).findSubNodesByID(node.getName) == null) {
-              kevEngine.addVariable("nodeName", node.getName)
-              kevEngine.append("addToGroup {groupName} {nodeName}")
+              //kevEngine.addVariable("nodeName", node.getName)
+             // kevEngine.append("addToGroup {groupName} {nodeName}")
               // add specific port for each node
               val port = selectPort(firstPortToUse, blackListedPorts)
               blackListedPorts = blackListedPorts ++ Array[Int](port)
-              kevEngine.addVariable("portValue", port.toString)
-              kevEngine.append("updateDictionary {groupName} {port='{portValue}'}@{nodeName}")
+             // kevEngine.addVariable("portValue", port.toString)
+            //  kevEngine.append("updateDictionary {groupName} {port='{portValue}'}@{nodeName}")
             }
         }
       }
     }
 
+    /*
     if (editor.getPanel.getKernel.getModelHandler.getActualModel.findGroupsByID(groupName) == null || editor.getPanel.getKernel.getModelHandler.getActualModel.findGroupsByID(groupName).findSubNodesByID(minicloudName) == null) {
       kevEngine.addVariable("portValue", selectPort(firstPortToUse, blackListedPorts) + "")
       kevEngine.append("addToGroup {groupName} {minicloudNodeName}")
       kevEngine.append("updateDictionary {groupName} {port='{portValue}'}@{minicloudNodeName}")
 
-    }
+    }*/
 
 
     val minicloudNode = editor.getPanel.getKernel.getModelHandler.getActualModel.findNodesByID(minicloudName)
@@ -289,18 +289,19 @@ class MiniKloudForm(editor: KevoreeEditor, button: AbstractButton) {
     nodes.foreach {
       node =>
         if (minicloudNode == null || minicloudNode.findHostsByID(node.getName) == null) {
-          kevEngine.addVariable("nodeName", node.getName)
-          kevEngine.append("addChild {nodeName}@editor_node")
+          //kevEngine.addVariable("nodeName", node.getName)
+          //kevEngine.append("addChild {nodeName}@editor_node")
         }
     }
-    try {
-      kevEngine.interpret()
+    /*try {
+     // kevEngine.interpret()
     } catch {
       case _@e => {
         logger.error("Unable to compute model to deploy on minicloud.", e)
         null
       }
-    }
+    } */
+    null
   }
 
   def isASubType(nodeType: TypeDefinition, typeName: String): Boolean = {
