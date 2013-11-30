@@ -24,5 +24,8 @@
 
     <modules>
         <module>org.kevoree.tools.mavenplugin</module>
+        <module>org.kevoree.tools.ui.kevscript</module>
+        <module>org.kevoree.tools.ui.framework</module>
+        <module>org.kevoree.tools.ui.editor</module>
     </modules>
 </project>

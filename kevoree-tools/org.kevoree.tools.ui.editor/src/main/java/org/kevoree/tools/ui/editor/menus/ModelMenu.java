@@ -11,12 +11,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kevoree.tools.ui.editor.menus;/*
-* Author : Gregory Nain (developer.name@uni.lu)
-* Date : 08/11/12
-* (c) 2012 University of Luxembourg – Interdisciplinary Centre for Security Reliability and Trust (SnT)
-* All rights reserved
-*/
+package org.kevoree.tools.ui.editor.menus;
 
 import org.kevoree.tools.ui.editor.KevoreeStore;
 import org.kevoree.tools.ui.editor.KevoreeUIKernel;
@@ -35,9 +30,6 @@ public class ModelMenu extends JMenu {
         super("Model");
         this.kernel = kernel;
 
-
-        add(createShowStatsItem());
-        add(createArrangeAllItem());
         add(createClearItem());
         add(createLoadLibraryItem());
         add(createCheckModelItem());
@@ -47,22 +39,6 @@ public class ModelMenu extends JMenu {
         add(subLibraryMenu);
     }
 
-    private JMenuItem createShowStatsItem() {
-        JMenuItem statItem = new JMenuItem("ShowStats");
-        ShowStatsCommand statCMD = new ShowStatsCommand();
-        statCMD.setKernel(kernel);
-        statItem.addActionListener(new CommandActionListener(statCMD));
-        return statItem;
-    }
-
-    private JMenuItem createArrangeAllItem() {
-        JMenuItem arrangeItem = new JMenuItem("Arrange model");
-        ArrangeAllLayoutCommand arrangeCMD = new ArrangeAllLayoutCommand();
-        arrangeCMD.setKernel(kernel);
-        arrangeItem.addActionListener(new CommandActionListener(arrangeCMD));
-        return arrangeItem;
-    }
-
     private JMenuItem createClearItem() {
         JMenuItem clearModel = new JMenuItem("Clear");
         ClearModelCommand cmdCM = new ClearModelCommand();
@@ -70,6 +46,7 @@ public class ModelMenu extends JMenu {
         clearModel.addActionListener(new CommandActionListener(cmdCM));
         return clearModel;
     }
+
     private JMenuItem createLoadLibraryItem() {
         JMenuItem mergeLib = new JMenuItem("Load Library");
         LoadNewLibCommandUI cmdLL = new LoadNewLibCommandUI();
@@ -80,7 +57,7 @@ public class ModelMenu extends JMenu {
 
     private JMenuItem clearCoreLibraryCache() {
         JMenuItem mergeLib = new JMenuItem("Reload Library Cache");
-        Command cmdLL = new Command(){
+        Command cmdLL = new Command() {
 
             @Override
             public void execute(Object p) {
@@ -95,9 +72,6 @@ public class ModelMenu extends JMenu {
     }
 
 
-
-
-
     private JMenuItem createCheckModelItem() {
         JMenuItem checkModel = new JMenuItem("Check");
         CheckCurrentModel cmdCheck = new CheckCurrentModel();
@@ -105,7 +79,6 @@ public class ModelMenu extends JMenu {
         checkModel.addActionListener(new CommandActionListener(cmdCheck));
         return checkModel;
     }
-
 
 
 }

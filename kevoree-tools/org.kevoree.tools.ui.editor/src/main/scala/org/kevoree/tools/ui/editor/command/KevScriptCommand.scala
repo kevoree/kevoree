@@ -51,7 +51,6 @@ import javax.swing._
  * User: duke
  * Date: 10/10/11
  * Time: 19:37
- * To change this template use File | Settings | File Templates.
  */
 
 class KevScriptCommand extends Command {

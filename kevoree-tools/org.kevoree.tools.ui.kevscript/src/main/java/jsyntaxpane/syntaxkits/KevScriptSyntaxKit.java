@@ -27,7 +27,7 @@ public class KevScriptSyntaxKit extends DefaultSyntaxKit {
         super(new KevScriptLexer());
         Properties config = new java.util.Properties();
         config.setProperty("Action.indent.WordRegex", "\\w+|\\/(\\*)+");
-        //  config.setProperty("Action.combo-completion", "org.kevoree.tools.marShellGUI.KevsComboCompletionAction, control SPACE");
+        config.setProperty("Action.combo-completion", "org.kevoree.tools.ui.kevscript.KevScriptCompletion, control SPACE");
         config.setProperty("Action.combo-completion.MenuText", "Completions");
         config.setProperty("Action.double-quotes", "jsyntaxpane.actions.PairAction, typed \"");
         config.setProperty("Style.IDENTIFIER", "0xFFCE89, 1");

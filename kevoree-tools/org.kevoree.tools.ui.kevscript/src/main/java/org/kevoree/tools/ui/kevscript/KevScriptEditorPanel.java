@@ -43,14 +43,7 @@ public class KevScriptEditorPanel extends JPanel implements Runnable {
         this.setLayout(new BorderLayout());
         jsyntaxpane.DefaultSyntaxKit.initKit();
         jsyntaxpane.DefaultSyntaxKit.registerContentType("text/kevs", KevScriptSyntaxKit.class.getName());
-        codeEditor = new JEditorPane(){
-            @Override
-            public void paintComponent(Graphics paramGraphics){
-                Graphics2D g = (Graphics2D) paramGraphics.create();
-                g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
-                super.paintComponent(g);
-            }
-        };
+        codeEditor = new JEditorPane();
         codeEditor.setDoubleBuffered(true);
         JScrollPane scrPane = new JScrollPane(codeEditor);
         codeEditor.setContentType("text/kevs; charset=UTF-8");

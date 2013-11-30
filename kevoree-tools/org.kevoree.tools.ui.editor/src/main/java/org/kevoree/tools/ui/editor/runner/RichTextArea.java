@@ -24,36 +24,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kevoree.tools.ui.framework.data;
+package org.kevoree.tools.ui.editor.runner;
 
 import javax.swing.*;
+import javax.swing.text.Document;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
+import java.awt.*;
 
-/**
- * Created by IntelliJ IDEA.
- * User: gnain
- * Date: 26/10/11
- * Time: 09:02
- * To change this template use File | Settings | File Templates.
- */
-@Deprecated
-public class KevoreeComboBox extends JComboBox {
+public class RichTextArea extends JTextPane {
 
-    private ListCellRenderer myRenderer = new NamedElementListRenderer();
+    SimpleAttributeSet style;
+    Document doc;
 
-    public KevoreeComboBox() {
-        super();
-        setRenderer(myRenderer);
+    public RichTextArea() {
+        style = new SimpleAttributeSet();
+        this.setContentType("text/rtf");
+        this.setEditorKit(new javax.swing.text.rtf.RTFEditorKit());
+        doc = this.getDocument();
     }
 
-    public KevoreeComboBox(ComboBoxModel model) {
-        super(model);
-        setRenderer(myRenderer);
+    public void append(String msg, Color color, boolean isBold) {
+        StyleConstants.setForeground(style, color);
+        StyleConstants.setBold(style, isBold);
+        int len = doc.getLength();
+        try {
+            doc.insertString(len, msg, style);
+
+            this.setCaretPosition(doc.getLength());
+
+        } catch (Exception e) {
+            System.out.print("Failed to append msg [" + msg + "]");
+        }
     }
 
-    @Override
-    public ListCellRenderer getRenderer() {
-        System.out.println("Get Renderer");
-        return myRenderer;
-    }
 
 }

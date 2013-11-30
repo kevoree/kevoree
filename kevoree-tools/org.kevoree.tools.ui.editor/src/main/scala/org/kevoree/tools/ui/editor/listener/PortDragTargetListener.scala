@@ -125,9 +125,9 @@ class PortDragTargetListener(target: PortPanel, kernel: KevoreeUIKernel) extends
           if (selectedTypeDef.isEmpty) {
             return;
           }
-          val parser = new KevsParser()
+          //val parser = new KevsParser()
           val newChannelName = selectedTypeDef.get.getName.substring(0, scala.math.min(selectedTypeDef.get.getName.length, 9)) + "" + scala.math.abs(new Random().nextInt(999))
-          val script = new StringBuilder
+          /*val script = new StringBuilder
           script.append("tblock{")
           script.append("addChannel " + newChannelName + " : " + selectedTypeDef.get.getName + "\n")
           script.append("bind " + targetPort.eContainer.asInstanceOf[ComponentInstance].getName + "." + targetPort.getPortTypeRef.getName + "@" + targetPort.eContainer.eContainer.asInstanceOf[ContainerNode].getName + " => " + newChannelName + "\n")
@@ -144,8 +144,13 @@ class PortDragTargetListener(target: PortPanel, kernel: KevoreeUIKernel) extends
               val loadCMD = new LoadModelCommand
               loadCMD.setKernel(kernel)
               loadCMD.execute( file.getAbsolutePath)
-              hud.getJDialog.dispose()
-          }
+          } */
+
+          hud.getJDialog.dispose()
+
+
+
+
         }
       })
       hud.getContentPane.add(button)

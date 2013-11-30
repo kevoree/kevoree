@@ -13,6 +13,30 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>prepare</id>
+                        <phase>generate-sources</phase>
+                        <configuration>
+                            <tasks>
+                                <echo message="prepare phase" />
+                                <unzip src="${basedir}/lib/MacWidgets.jar" dest="${project.build.outputDirectory}" />
+                            </tasks>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
     <dependencies>
 
         <dependency>
@@ -21,15 +45,16 @@
             <version>1.6.2-2</version>
         </dependency>
         <dependency>
-            <groupId>org.kevoree.extra</groupId>
-            <artifactId>org.kevoree.extra.macwidgets</artifactId>
-            <version>0.9.6</version>
-        </dependency>
-        <dependency>
             <groupId>org.kevoree</groupId>
             <artifactId>org.kevoree.model</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.jgoodies</groupId>
+            <artifactId>forms</artifactId>
+            <version>1.2.1</version>
+        </dependency>
+
     </dependencies>
 
     <repositories>

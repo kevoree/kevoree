@@ -132,6 +132,7 @@ SingleCharacter = [^\r\n\'\\]
   /* operators */
   ":"                            { return token(TokenType.OPERATOR); }
   "."                            { return token(TokenType.OPERATOR); }
+  ","                            { return token(TokenType.OPERATOR); }
   "="                            { return token(TokenType.OPERATOR); }
 
   /* string literal */
