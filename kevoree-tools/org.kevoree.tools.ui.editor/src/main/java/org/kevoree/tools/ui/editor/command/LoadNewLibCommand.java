@@ -30,7 +30,7 @@
 package org.kevoree.tools.ui.editor.command;
 
 import org.kevoree.ContainerRoot;
-import org.kevoree.framework.KevoreeXmiHelper;
+import org.kevoree.loader.JSONModelLoader;
 import org.kevoree.tools.ui.editor.KevoreeUIKernel;
 import org.kevoree.tools.ui.editor.PositionedEMFHelper;
 
@@ -106,7 +106,10 @@ public class LoadNewLibCommand implements Command {
 			}*/
 
 			if (path != null) {
-				ContainerRoot nroot = KevoreeXmiHelper.instance$.load(path);
+
+                JSONModelLoader loader = new JSONModelLoader();
+
+				ContainerRoot nroot = (ContainerRoot) loader.loadModelFromStream(new FileInputStream(path)).get(0);
 				//Merge
 				kernel.getModelHandler().merge(nroot);
 				//CREATE TEMP FILE FROM ACTUAL MODEL

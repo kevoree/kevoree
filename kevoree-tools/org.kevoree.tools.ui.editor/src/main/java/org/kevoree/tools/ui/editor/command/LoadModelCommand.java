@@ -31,7 +31,7 @@
 package org.kevoree.tools.ui.editor.command;
 
 import org.kevoree.*;
-import org.kevoree.framework.KevoreeXmiHelper;
+import org.kevoree.loader.JSONModelLoader;
 import org.kevoree.tools.ui.editor.KevoreeUIKernel;
 import org.kevoree.tools.ui.editor.MetaDataHelper;
 import org.kevoree.tools.ui.editor.listener.NodeDragSourceListener;
@@ -69,10 +69,11 @@ public class LoadModelCommand implements Command {
         if (p instanceof ContainerRoot) {
             modelToLoad = (ContainerRoot) p;
         } else {
+            JSONModelLoader modelLoader = new JSONModelLoader();
             if (p instanceof InputStream) {
-                modelToLoad = KevoreeXmiHelper.instance$.loadStream((InputStream) p);
+                modelToLoad = (ContainerRoot) modelLoader.loadModelFromStream((InputStream) p).get(0);
             } else {
-                modelToLoad = KevoreeXmiHelper.instance$.load(p.toString());
+                modelToLoad = (ContainerRoot) modelLoader.loadModelFromString(p.toString()).get(0);
             }
         }
 

@@ -26,7 +26,6 @@
  */
 package org.kevoree.tools.ui.editor.listener
 
-import org.kevoree.framework.kaspects.PortAspect
 import org.kevoree.tools.ui.framework.elements.PortPanel
 import java.awt.dnd.{DropTargetDropEvent, DropTarget}
 import java.awt.datatransfer.DataFlavor
@@ -35,9 +34,6 @@ import com.explodingpixels.macwidgets.{HudWidgetFactory, HudWindow}
 import util.Random
 import org.kevoree.{ComponentInstance, ContainerNode, Port, ChannelType}
 import org.kevoree.tools.ui.editor.{UIHelper, PositionedEMFHelper, KevoreeUIKernel}
-import org.kevoree.framework.KevoreeXmiHelper
-import java.io.File
-import org.kevoree.tools.ui.editor.command.LoadModelCommand
 import java.awt.event.{ActionEvent, ActionListener, MouseEvent, MouseAdapter}
 import java.awt.{FlowLayout, BorderLayout}
 import org.kevoree.tools.ui.editor.property.SpringUtilities
@@ -52,8 +48,6 @@ import scala.collection.JavaConversions._
  */
 
 class PortDragTargetListener(target: PortPanel, kernel: KevoreeUIKernel) extends DropTarget {
-
-  val portAspect = new PortAspect()
 
   def checkChannelAvailability = {
     kernel.getModelHandler.getActualModel.getTypeDefinitions.filter(td => td.isInstanceOf[ChannelType]).size > 0
@@ -102,9 +96,10 @@ class PortDragTargetListener(target: PortPanel, kernel: KevoreeUIKernel) extends
       val draggedPanel = p1.getTransferable.getTransferData(new DataFlavor(DataFlavor.javaJVMLocalObjectMimeType));
       val targetPort: Port = kernel.getUifactory.getMapping.get(target).asInstanceOf[Port]
       val dropPort: Port = kernel.getUifactory.getMapping.get(draggedPanel).asInstanceOf[Port]
-      if (portAspect.isProvidedPort(targetPort) && portAspect.isProvidedPort(dropPort) || portAspect.isRequiredPort(targetPort) && portAspect.isRequiredPort(dropPort)) {
+        /*
+        if (portAspect.isProvidedPort(targetPort) && portAspect.isProvidedPort(dropPort) || portAspect.isRequiredPort(targetPort) && portAspect.isRequiredPort(dropPort)) {
         throw new Exception("Can't bind Port with same nature (Provided/Required)")
-      }
+      }  */
 
       val hud = new HudWindow("Auto channel insertion, choose type definition ?");
       hud.getJDialog.setSize(400, 50);

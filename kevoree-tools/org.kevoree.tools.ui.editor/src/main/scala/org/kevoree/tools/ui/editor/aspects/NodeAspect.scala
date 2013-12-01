@@ -15,17 +15,17 @@
 package org.kevoree.tools.ui.editor.aspects
 
 import org.kevoree._
-import framework.kaspects.ContainerRootAspect
 import org.kevoree.tools.ui.editor.KevoreeUIKernel
 import org.kevoree.tools.ui.framework.elements.ModelPanel
 import org.kevoree.tools.ui.framework.elements.NodePanel
 import scala.collection.JavaConversions._
 
 import Art2UIAspects._
+import org.kevoree.modeling.api.util.ModelVisitor
+import org.kevoree.modeling.api.KMFContainer
 
 case class NodeAspect(self: ContainerNode) {
 
-  val containerRootAspect = new ContainerRootAspect()
 
   def removeModelAndUI(kernel: KevoreeUIKernel) {
 
@@ -57,10 +57,10 @@ case class NodeAspect(self: ContainerNode) {
           root.removeNodeNetworks(nn)
         } else {
           val initNode = nn.getInitBy
-          if(initNode != null) {
-              if (initNode == self) {
-                root.removeNodeNetworks(nn)
-              }
+          if (initNode != null) {
+            if (initNode == self) {
+              root.removeNodeNetworks(nn)
+            }
           }
         }
 
@@ -81,7 +81,7 @@ case class NodeAspect(self: ContainerNode) {
     val modelPanel = kernel.getUifactory.getMapping.get(self.eContainer).asInstanceOf[ModelPanel]
 
     modelPanel.removeInstance(nodePanel)
-    if(nodePanel.getParent != null){
+    if (nodePanel.getParent != null) {
       nodePanel.getParent.remove(nodePanel)
     }
 
@@ -97,14 +97,21 @@ case class NodeAspect(self: ContainerNode) {
     }
 
     //CLEANUP DICTIONARY
-    containerRootAspect.getAllInstances(kernel.getModelHandler.getActualModel).foreach{ inst =>
-      val dico = inst.getDictionary
-      if (dico != null){
-        dico.getValues.filter(v => v.getTargetNode != null && v.getTargetNode.getName == self.getName).foreach{ value =>
-          dico.removeValues(value)
+
+    kernel.getModelHandler.getActualModel.visit(new ModelVisitor() {
+      def visit(p1: KMFContainer, p2: String, p3: KMFContainer) {
+        if (p1.isInstanceOf[Instance]) {
+          var inst = p1.asInstanceOf[Instance]
+          val dico = inst.getDictionary
+          if (dico != null) {
+            dico.getValues.filter(v => v.getTargetNode != null && v.getTargetNode.getName == self.getName).foreach {
+              value =>
+                dico.removeValues(value)
+            }
+          }
         }
       }
-    }
+    }, true, true, false)
 
     //UNBIND
     kernel.getUifactory.getMapping.unbind(nodePanel, self);

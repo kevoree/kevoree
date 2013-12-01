@@ -37,7 +37,6 @@ import org.slf4j.LoggerFactory
 import com.explodingpixels.macwidgets.IAppWidgetFactory
 import tools.ui.editor.{ModelHelper, KevoreeUIKernel, UIHelper}
 import scala.collection.JavaConversions._
-import org.kevoree.framework.kaspects.ChannelAspect
 
 
 /**
@@ -52,7 +51,6 @@ class InstancePropertyEditor(elem: org.kevoree.Instance, kernel: KevoreeUIKernel
 
   val logger = LoggerFactory.getLogger(this.getClass)
 
-  val channelAspect = new ChannelAspect()
 
   def getValue(instance: Instance, att: DictionaryAttribute, targetNode: Option[String]): String = {
     var value: DictionaryValue = null
@@ -192,7 +190,8 @@ class InstancePropertyEditor(elem: org.kevoree.Instance, kernel: KevoreeUIKernel
         g.getSubNodes.map(s => s.getName).toList
       }
       case c: Channel => {
-        channelAspect.getRelatedNodes(c).map(s => s.getName).toList
+        //channelAspect.getRelatedNodes(c).map(s => s.getName).toList
+        List()
       }
       case _ => List()
     }

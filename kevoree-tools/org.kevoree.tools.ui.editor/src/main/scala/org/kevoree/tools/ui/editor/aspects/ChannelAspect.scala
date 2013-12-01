@@ -23,15 +23,22 @@ import scala.collection.JavaConversions._
 
 case class ChannelAspect(self: Channel) {
 
-  private val channelAspect = new org.kevoree.framework.kaspects.ChannelAspect()
 
   def removeModelAndUI(kernel: KevoreeUIKernel) {
     val root: ContainerRoot = self.eContainer.asInstanceOf[ContainerRoot]
     root.getNodes.foreach {
       node =>
-        channelAspect.getRelatedBindings(self, node).foreach {
-          b =>
-            b.removeModelAndUI(kernel)
+        node.getComponents.foreach{ cp =>
+           cp.getProvided.foreach{ p =>
+              p.getBindings.foreach{ mb=>
+                mb.removeModelAndUI(kernel)
+              }
+           }
+          cp.getRequired.foreach{ p =>
+            p.getBindings.foreach{ mb=>
+              mb.removeModelAndUI(kernel)
+            }
+          }
         }
     }
     val panel = kernel.getUifactory().getMapping().get(self).asInstanceOf[ChannelPanel]

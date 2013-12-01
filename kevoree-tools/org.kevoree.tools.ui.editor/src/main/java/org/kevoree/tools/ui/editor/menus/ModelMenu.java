@@ -61,7 +61,6 @@ public class ModelMenu extends JMenu {
 
             @Override
             public void execute(Object p) {
-                store.clear();
                 remove(subLibraryMenu);
                 subLibraryMenu = store.buildModelMenu(kernel);
                 add(subLibraryMenu);

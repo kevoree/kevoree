@@ -31,15 +31,9 @@
 
 package org.kevoree.tools.ui.editor;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.*;
 
 import org.kevoree.ContainerRoot;
-import org.kevoree.framework.KevoreeXmiHelper;
 import org.kevoree.tools.ui.editor.command.LoadModelCommand;
 import org.kevoree.tools.ui.editor.command.SaveActuelModelCommand;
 import org.kevoree.tools.ui.editor.panel.KevoreeEditorPanel;
@@ -82,9 +76,6 @@ public class KevoreeEditor {
         //TODO
     }
 
-    public void saveModel(String url){
-        KevoreeXmiHelper.instance$.save(url, panel.getKernel().getModelHandler().getActualModel());
-    }
 
     public void setDefaultSaveLocation(String url){
         SaveActuelModelCommand.setDefaultLocation(url);

@@ -26,12 +26,14 @@
  */
 package org.kevoree.tools.ui.editor.command
 
-import org.kevoree.framework.KevoreeXmiHelper
 import org.kevoree.tools.ui.editor.{PositionedEMFHelper, KevoreeUIKernel}
 import org.slf4j.LoggerFactory
 import java.io._
 import java.util.jar.{JarEntry, JarFile}
 import java.util
+import org.kevoree.loader.JSONModelLoader
+import org.kevoree.ContainerRoot
+import org.kevoree.serializer.JSONModelSerializer
 
 class MergeDefaultLibrary(groupID: String, arteID: String, version: String) extends Command {
 
@@ -49,15 +51,21 @@ class MergeDefaultLibrary(groupID: String, arteID: String, version: String) exte
       val file: File = null// AetherResolver.resolve(arteID, groupID, version, repos)
       val jar = new JarFile(file)
       val entry: JarEntry = jar.getJarEntry("KEV-INF/lib.kev")
-      val newmodel = KevoreeXmiHelper.instance$.loadStream(jar.getInputStream(entry))
+
+      val loader = new JSONModelLoader();
+      val saver = new JSONModelSerializer();
+
+      val newmodel = loader.loadModelFromStream(jar.getInputStream(entry)).get(0).asInstanceOf[ContainerRoot]
       if (newmodel != null) {
         kernel.getModelHandler.merge(newmodel);
 
         //CREATE TEMP FILE FROM ACTUAL MODEL
         val tempFile = File.createTempFile("kevoreeEditorTemp", ".kev")
         PositionedEMFHelper.updateModelUIMetaData(kernel);
-        KevoreeXmiHelper.instance$.save(tempFile.getAbsolutePath, kernel.getModelHandler.getActualModel)
-
+        val fop = new FileOutputStream(tempFile)
+        saver.serializeToStream(kernel.getModelHandler.getActualModel,fop)
+        fop.flush()
+        fop.close()
         //LOAD MODEL
         val loadCmd = new LoadModelCommand();
         loadCmd.setKernel(kernel);

@@ -16,7 +16,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * 	http://www.gnu.org/licenses/lgpl-3.0.txt
+ * http://www.gnu.org/licenses/lgpl-3.0.txt
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -31,8 +31,9 @@ import jsyntaxpane.syntaxkits.XmlSyntaxKit
 import javax.swing._
 import java.awt.event.{MouseEvent, MouseAdapter}
 import org.slf4j.LoggerFactory
-import org.kevoree.framework.KevoreeXmiHelper
-import java.awt.{Color, BorderLayout}
+import java.awt.BorderLayout
+import org.kevoree.serializer.JSONModelSerializer
+import org.kevoree.loader.JSONModelLoader
 
 /**
  * Created by IntelliJ IDEA.
@@ -43,18 +44,14 @@ import java.awt.{Color, BorderLayout}
 
 class KevModelTextEditorPanel(kernel: KevoreeUIKernel) extends JPanel {
 
-  def reload(){
+  private var saver = new JSONModelSerializer();
+  private var loader = new JSONModelLoader();
+
+  def reload() {
     PositionedEMFHelper.updateModelUIMetaData(kernel)
-    codeEditor.setText(KevoreeXmiHelper.instance$.saveToString(kernel.getModelHandler.getActualModel,true))
+    codeEditor.setText(saver.serialize(kernel.getModelHandler.getActualModel))
   }
 
-  /*
-    def getModel: Script = {
-      val parser = new KevsParser();
-      val result = parser.parseScript(codeEditor.getText);
-      result.get
-    }
-  */
   this.setLayout(new BorderLayout())
   jsyntaxpane.DefaultSyntaxKit.initKit();
   jsyntaxpane.DefaultSyntaxKit.registerContentType("text/xml", classOf[XmlSyntaxKit].getName());
@@ -63,18 +60,8 @@ class KevModelTextEditorPanel(kernel: KevoreeUIKernel) extends JPanel {
   var scrPane = new JScrollPane(codeEditor);
 
   codeEditor.setContentType("text/xml; charset=UTF-8");
+  codeEditor.setText("\n");
 
-
-//  codeEditor.setBackground(new Color(80, 80, 80))
-  // codeEditor.setBackground(Color.DARK_GRAY)
-
-  codeEditor.setText("<wtf></wtf>\n");
-
-/*
-  var editorKit = codeEditor.getEditorKit
-  var toolPane = new JToolBar
-  editorKit.asInstanceOf[XmlSyntaxKit].addToolBarActions(codeEditor,toolPane)
-*/
   add(scrPane, BorderLayout.CENTER);
 
   val btApply = new JButton
@@ -84,7 +71,7 @@ class KevModelTextEditorPanel(kernel: KevoreeUIKernel) extends JPanel {
   btApply.addMouseListener(new MouseAdapter() {
     override def mouseClicked(p1: MouseEvent) {
       try {
-        val newModel = KevoreeXmiHelper.instance$.loadString(codeEditor.getText)
+        val newModel = loader.loadModelFromString(codeEditor.getText)
         val loadCMD = new LoadModelCommand
         loadCMD.setKernel(kernel)
         loadCMD.execute(newModel)
