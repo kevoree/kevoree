@@ -25,7 +25,7 @@ class ExtKevScriptEditor(kernel: KevoreeUIKernel) extends JPanel {
   buttons.setLayout(new BoxLayout(buttons, BoxLayout.LINE_AXIS))
   buttons.setOpaque(true);
   buttons.setBorder(null);
-  buttons.setBackground(new Color(57, 57, 57));
+  buttons.setBackground(new Color(57, 57, 57))
   add(buttons, BorderLayout.SOUTH)
 
   var btSave = HudWidgetFactory.createHudButton("Save Script")

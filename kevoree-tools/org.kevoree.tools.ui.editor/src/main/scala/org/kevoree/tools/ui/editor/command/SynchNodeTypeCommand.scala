@@ -57,6 +57,7 @@ import org.slf4j.LoggerFactory
 import org.kevoree.tools.ui.editor._
 import java.lang.Thread
 import javax.swing.{JProgressBar, JLabel}
+import org.kevoree.tools.ui.editor.ws.WebSocketClient
 
 class SynchNodeTypeCommand(isPush: Boolean) extends Command {
 
@@ -97,6 +98,30 @@ class SynchNodeTypeCommand(isPush: Boolean) extends Command {
               autoUpdate.setKernel(kernel)
               autoUpdate.execute(null)
             }
+
+            val model = kernel.getModelHandler.getActualModel
+            val group = model.findGroupsByID(viaGroupName)
+
+            var ip = "127.0.0.1";
+            var port = "9000";
+
+            //TODO lookup for IP and port of the group
+            if (group != null) {
+              if (group.getDictionary != null) {
+                import scala.collection.JavaConversions._
+                group.getDictionary.getValues.foreach {
+                  v =>
+                    if (v.getAttribute.getName == "port" && v.getTargetNode.getName == destNodeName) {
+                      port = v.getValue
+                    }
+                }
+              }
+            }
+
+
+
+            WebSocketClient.push(ip, port, kernel.getModelHandler.getActualModel);
+
             //modelSyncBean.pushTo(kernel.getModelHandler.getActualModel, destNodeName, viaGroupName)
             resultLabel.setText("Pushed ;-)")
             resultLabel.setToolTipText("Pushed ;-)")
@@ -120,10 +145,8 @@ class SynchNodeTypeCommand(isPush: Boolean) extends Command {
               autoUpdate.setKernel(kernel)
               autoUpdate.execute(null)
             }
-            //val model = modelSyncBean.pullTo(kernel.getModelHandler.getActualModel, destNodeName, viaGroupName)
             val lcommand = new LoadModelCommand()
             try {
-             // kernel.getModelHandler.merge(model)
               PositionedEMFHelper.updateModelUIMetaData(kernel)
               lcommand.setKernel(kernel)
               lcommand.execute(kernel.getModelHandler.getActualModel)

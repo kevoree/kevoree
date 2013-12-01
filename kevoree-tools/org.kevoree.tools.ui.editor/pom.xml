@@ -19,6 +19,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>com.ning</groupId>
+            <artifactId>async-http-client</artifactId>
+            <version>1.7.20</version>
+        </dependency>
+        <dependency>
             <groupId>com.jgoodies</groupId>
             <artifactId>forms</artifactId>
             <version>1.2.1</version>
@@ -83,12 +88,6 @@
             <artifactId>batik-svggen</artifactId>
             <version>1.6-1</version>
         </dependency>
-        <dependency>
-            <groupId>org.java-websocket</groupId>
-            <artifactId>Java-WebSocket</artifactId>
-            <version>1.3.0</version>
-        </dependency>
-
     </dependencies>
 
     <repositories>

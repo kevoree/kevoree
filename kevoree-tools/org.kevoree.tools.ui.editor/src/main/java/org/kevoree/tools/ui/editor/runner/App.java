@@ -34,7 +34,6 @@ import org.kevoree.tools.ui.editor.KevoreeEditor;
 import org.kevoree.tools.ui.editor.LogPanel;
 import org.kevoree.tools.ui.editor.UIEventHandler;
 import org.kevoree.tools.ui.editor.command.Command;
-import org.kevoree.tools.ui.editor.command.LoadContinuousRemoteModelUICommand;
 
 import javax.swing.*;
 import java.awt.*;
@@ -276,46 +275,6 @@ public class App {
 
                         }
                         errorShow = !errorShow;
-                    }
-                });
-
-                final LoadContinuousRemoteModelUICommand cmdLMORemote2 = new LoadContinuousRemoteModelUICommand();
-                final AbstractButton finalToogleSync = toogleSync;
-                final AbstractButton finalToogleSyncSend = toogleSyncSend;
-                cmdLMORemote2.setKernel(artpanel.getPanel().getKernel());
-                toogleSync.addMouseListener(new MouseAdapter() {
-                    @Override
-                    public void mouseClicked(MouseEvent e) {
-                        if (finalToogleSync.isEnabled()) {
-                            cmdLMORemote2.close();
-                            finalToogleSync.setEnabled(false);
-                            finalToogleSyncSend.setEnabled(false);
-                        } else {
-                            cmdLMORemote2.execute(null);
-                            finalToogleSync.setEnabled(true);
-                            finalToogleSyncSend.setEnabled(true);
-                        }
-                    }
-                });
-
-
-                artpanel.getPanel().getKernel().getModelHandler().addListenerCommand(new Command() {
-
-                    @Override
-                    public void execute(Object p) {
-                        if (finalToogleSyncSend.isEnabled() && !cmdLMORemote2.currentUpdate()) {
-                            cmdLMORemote2.send();
-                        }
-                    }
-                });
-
-
-                finalToogleSyncSend.addMouseListener(new MouseAdapter() {
-                    @Override
-                    public void mouseClicked(MouseEvent e) {
-                        if (finalToogleSyncSend.isEnabled()) {
-                            cmdLMORemote2.send();
-                        }
                     }
                 });
 

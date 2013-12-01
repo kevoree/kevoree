@@ -42,6 +42,7 @@ public class Bootstrap {
     }
 
     public Bootstrap(String nodeName) {
+        System.setSecurityManager(new KevoreeSecurityManager());
         core.setNodeName(nodeName);
         kernel.setNodeName(nodeName);
         injector.addService(ModelService.class, core);

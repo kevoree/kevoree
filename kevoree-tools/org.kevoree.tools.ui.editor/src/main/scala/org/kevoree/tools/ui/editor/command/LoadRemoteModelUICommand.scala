@@ -14,15 +14,11 @@
 
 package org.kevoree.tools.ui.editor.command
 
-import java.net.URI
 import javax.swing.JOptionPane
 import org.kevoree.tools.ui.editor.{PositionedEMFHelper, KevoreeUIKernel}
 import org.slf4j.LoggerFactory
-import java.util.concurrent.{TimeUnit, Exchanger}
 import org.kevoree.ContainerRoot
-import org.java_websocket.client.WebSocketClient
-import org.java_websocket.handshake.ServerHandshake
-import org.kevoree.loader.JSONModelLoader
+import org.kevoree.tools.ui.editor.ws.{ModelCallBack, WebSocketClient}
 
 object LoadRemoteModelUICommand {
   var lastRemoteNodeAddress: String = "localhost:9000"
@@ -38,50 +34,16 @@ class LoadRemoteModelUICommand extends Command {
 
   var logger = LoggerFactory.getLogger(this.getClass)
 
-  def tryRemoteWebSocket(ip: String, port: String): Boolean = {
+  def remoteWebSocket(ip: String, port: String) = {
     try {
-      val exchanger = new Exchanger[ContainerRoot]()
 
-      val client = new WebSocketClient(URI.create("ws://" + ip + ":" + port + "/")) {
-        def onError(p1: Exception) {
-          p1.printStackTrace()
-          exchanger.exchange(null)
+      WebSocketClient.pull(ip, port, new ModelCallBack {
+        def run(model: ContainerRoot) {
+          PositionedEMFHelper.updateModelUIMetaData(kernel)
+          lcommand.setKernel(kernel)
+          lcommand.execute(model)
         }
-
-        def onMessage(p1: String) {
-          val root = jsonModelLoader.loadModelFromString(p1).get(0).asInstanceOf[ContainerRoot]
-          try {
-            exchanger.exchange(root);
-          } catch {
-            case _@e => //logger.error("", e)
-          } finally {
-            close()
-          }
-        }
-
-        def onClose(p1: Int, p2: String, p3: Boolean) {}
-
-        def onOpen(p1: ServerHandshake) {
-        }
-
-        var jsonModelLoader = new JSONModelLoader()
-
-      }
-      // instead of using connectBlocking method which lock the current thread (which is the one that represent the complete editor) we just wait 2s after initializing the connection
-      client.connect()
-      Thread.sleep(2000)
-      if (client.getConnection.isOpen) {
-        client.send("get");
-      }
-      val root = exchanger.exchange(null, 2000, TimeUnit.MILLISECONDS)
-      if (root == null) {
-        false
-      } else {
-        PositionedEMFHelper.updateModelUIMetaData(kernel)
-        lcommand.setKernel(kernel)
-        lcommand.execute(root)
-        true
-      }
+      })
     } catch {
       case _@e => {
         logger.debug("Pull failed to " + ip + ":" + port)
@@ -100,9 +62,7 @@ class LoadRemoteModelUICommand extends Command {
         if (results.size >= 2) {
           val ip = results(0)
           val port = results(1)
-          if (!tryRemoteWebSocket(ip, port)) {
-            logger.error("Can't load model from node")
-          }
+          remoteWebSocket(ip, port)
         }
         true
       }
