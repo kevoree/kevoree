@@ -19,7 +19,6 @@ import org.kevoree.ContainerRoot
 import org.kevoree.api.service.core.checker.CheckerService
 import org.kevoree.api.service.core.checker.CheckerViolation
 import org.kevoree.modeling.api.KMFContainer
-import org.kevoree.framework.kaspects.PortAspect
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -27,8 +26,6 @@ import org.kevoree.framework.kaspects.PortAspect
  * Time: 09:23
  */
 class PortChecker: CheckerService {
-
-    private val portAspect = PortAspect()
 
     override fun check(model: ContainerRoot?): MutableList<CheckerViolation>? {
         val violations = ArrayList<CheckerViolation>()
@@ -43,7 +40,7 @@ class PortChecker: CheckerService {
         for (node in model.nodes) {
             for (component in node.components) {
                 for (port in component.required) {
-                    if (!port.portTypeRef!!.optional!! && !portAspect.isBound(port)) {
+                    if (!port.portTypeRef!!.optional!! && port.bindings.isEmpty()) {
                         val concreteViolation: CheckerViolation = CheckerViolation()
                         concreteViolation.setMessage("Required port (" + (port.eContainer() as ComponentInstance).name + "." + port.portTypeRef!!.name + ") is not bound")
                         val targetObjects = ArrayList<KMFContainer>()

@@ -23,7 +23,7 @@ import org.kevoree.Instance
 import org.kevoree.api.service.core.checker.CheckerService
 import org.kevoree.api.service.core.checker.CheckerViolation
 import org.kevoree.modeling.api.KMFContainer
-import org.kevoree.framework.kaspects.ChannelAspect
+import org.kevoree.ComponentInstance
 
 /**
  * Created by IntelliJ IDEA.
@@ -32,8 +32,7 @@ import org.kevoree.framework.kaspects.ChannelAspect
  * Time: 18:48
  */
 
-class DictionaryOptionalChecker: CheckerService {
-    private val channelAspect = ChannelAspect()
+class DictionaryOptionalChecker : CheckerService {
 
     override fun check(model: ContainerRoot?): MutableList<CheckerViolation> {
         val violations = ArrayList<CheckerViolation>()
@@ -155,8 +154,11 @@ class DictionaryOptionalChecker: CheckerService {
 
     fun getBounds(instance: Channel): ArrayList<String> {
         var nodeNames = ArrayList<String>()
-        for (node in channelAspect.getRelatedNodes(instance)) {
-            nodeNames.add(node.name!!)
+        for(mb in instance.bindings){
+            var cop = mb.port?.eContainer() as? ComponentInstance
+            if(cop != null){
+                nodeNames.add(cop!!.name!!)
+            }
         }
         return nodeNames
     }

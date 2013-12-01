@@ -23,16 +23,13 @@
             <artifactId>org.kevoree.api</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <!--
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>org.kevoree.framework</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <dependency>
-            <groupId>net.sf.jgrapht</groupId>
-            <artifactId>jgrapht</artifactId>
-            <version>0.8.3</version>
-        </dependency>
+        -->
     </dependencies>
 
     <build>

@@ -5,7 +5,6 @@ import com.explodingpixels.macwidgets.SourceListCategory;
 import com.explodingpixels.macwidgets.SourceListItem;
 import com.explodingpixels.macwidgets.SourceListModel;
 import org.kevoree.*;
-import org.kevoree.framework.kaspects.ChannelAspect;
 
 import javax.swing.*;
 
@@ -19,7 +18,6 @@ public class KevoreeLeftModel extends JPanel {
 
     private SourceListModel model = new SourceListModel();
     private SourceList _sourceList = new SourceList(model);
-    private ChannelAspect channelAspect = new ChannelAspect();
 
     public SourceList getSourceList() {
         return _sourceList;
@@ -44,9 +42,13 @@ public class KevoreeLeftModel extends JPanel {
             model.addItemToItem(itc, componentItem);
         }
         for (Channel c : ((ContainerRoot) kmodel.eContainer()).getHubs()) {
-            if (channelAspect.getRelatedNodes(c).contains(kmodel)) {
-                SourceListItem itc = new SourceListItem(c.getName() + ":" + c.getTypeDefinition().getName());
-                model.addItemToItem(itc, channelItem);
+            for (MBinding mb : c.getBindings()) {
+                if (mb.getPort() != null) {
+                    if (mb.eContainer().eContainer() == kmodel) {
+                        SourceListItem itc = new SourceListItem(c.getName() + ":" + c.getTypeDefinition().getName());
+                        model.addItemToItem(itc, channelItem);
+                    }
+                }
             }
         }
         for (Group g : ((ContainerRoot) kmodel.eContainer()).getGroups()) {
