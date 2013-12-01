@@ -55,8 +55,6 @@ public class LoadNewLibCommandUI implements Command {
             LoadNewLibCommand loadLibCommand = new LoadNewLibCommand();
             loadLibCommand.setKernel(kernel);
             loadLibCommand.execute(filechooser.getSelectedFile().getAbsoluteFile());
-
-
         }
     }
 

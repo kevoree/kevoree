@@ -27,7 +27,6 @@
 package org.kevoree.tools.ui.editor;
 
 import org.kevoree.tools.ui.editor.menus.FileMenu;
-import org.kevoree.tools.ui.editor.menus.KevsMenu;
 import org.kevoree.tools.ui.editor.menus.ModelMenu;
 import org.kevoree.tools.ui.editor.menus.ToolsMenu;
 
@@ -35,13 +34,9 @@ import javax.swing.*;
 
 public class KevoreeMenuBar extends JMenuBar {
 
-
     public KevoreeMenuBar(KevoreeUIKernel kernel) {
-
         add(new FileMenu(kernel));
         add(new ModelMenu(kernel));
-        add(new KevsMenu(kernel));
         add(new ToolsMenu(kernel));
-
     }
 }

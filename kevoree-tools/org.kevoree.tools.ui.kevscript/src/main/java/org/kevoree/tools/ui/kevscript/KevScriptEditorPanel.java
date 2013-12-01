@@ -48,7 +48,7 @@ public class KevScriptEditorPanel extends JPanel implements Runnable {
         JScrollPane scrPane = new JScrollPane(codeEditor);
         codeEditor.setContentType("text/kevs; charset=UTF-8");
         codeEditor.setBackground(Color.DARK_GRAY);
-        codeEditor.setText(" ");
+        codeEditor.setText("");
         add(scrPane, BorderLayout.CENTER);
         scheduler.scheduleAtFixedRate(this, 0, 1, TimeUnit.SECONDS);
         codeEditor.getDocument().addDocumentListener(new DocumentListener() {
@@ -68,6 +68,14 @@ public class KevScriptEditorPanel extends JPanel implements Runnable {
             }
         });
 
+    }
+
+    public String getContent() {
+        return codeEditor.getText();
+    }
+
+    public void setContent(String c) {
+        codeEditor.setText(c);
     }
 
     public void stop() {

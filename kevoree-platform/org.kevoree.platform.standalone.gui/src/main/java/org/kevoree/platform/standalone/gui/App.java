@@ -29,6 +29,8 @@ package org.kevoree.platform.standalone.gui;
 public class App {
 
     public static void main(String[] args) throws Exception {
+        System.setProperty("awt.useSystemAAFontSettings","lcd");
+        System.setProperty("swing.aatext", "true");
         final KevoreeGUIFrame frame = new KevoreeGUIFrame();
     }
 

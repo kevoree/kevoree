@@ -99,8 +99,8 @@ public class LoadModelCommand implements Command {
 
         //LOAD NODE
         for (ContainerNode newnode : kernel.getModelHandler().getActualModel().getNodes()) {
-            if(!childNodes.contains(newnode)){
-               loadNodes(null,newnode);
+            if (!childNodes.contains(newnode)) {
+                loadNodes(null, newnode);
             }
         }
         //LOAD HUB
@@ -153,14 +153,11 @@ public class LoadModelCommand implements Command {
 
         kernel.getEditorPanel().unshowPropertyEditor(); //CLOSE PROPERTY EDITOR IF OPEN
 
-
         //REFRESH UI
         kernel.getEditorPanel().doLayout();
         kernel.getEditorPanel().repaint();
         kernel.getEditorPanel().revalidate();
-
         kernel.getModelHandler().notifyChanged();
-
     }
 
     public void loadNodes(NodePanel parentPanel, ContainerNode newnode) {
@@ -169,7 +166,7 @@ public class LoadModelCommand implements Command {
             kernel.getModelPanel().addNode(newnodepanel);
         } else {
             parentPanel.add(newnodepanel);
-            NodeDragSourceListener sourceListener = new NodeDragSourceListener(newnodepanel,kernel);
+            NodeDragSourceListener sourceListener = new NodeDragSourceListener(newnodepanel, kernel);
         }
         //UI
         HashMap<String, String> metaData = MetaDataHelper.getMetaDataFromInstance(newnode);
@@ -198,7 +195,7 @@ public class LoadModelCommand implements Command {
 
         //load child nodes
         for (ContainerNode childNode : newnode.getHosts()) {
-              loadNodes(newnodepanel,childNode);
+            loadNodes(newnodepanel, childNode);
         }
     }
 

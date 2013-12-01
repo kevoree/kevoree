@@ -29,6 +29,7 @@ package org.kevoree.tools.ui.editor.runner;
 import com.explodingpixels.macwidgets.*;
 import org.kevoree.KevoreeFactory;
 import org.kevoree.impl.DefaultKevoreeFactory;
+import org.kevoree.tools.ui.editor.ExtKevScriptEditor;
 import org.kevoree.tools.ui.editor.KevoreeEditor;
 import org.kevoree.tools.ui.editor.LogPanel;
 import org.kevoree.tools.ui.editor.UIEventHandler;
@@ -51,9 +52,12 @@ public class App {
 
 
     static int dividerPos = 0;
-    static LocalKevsShell kevsPanel = new LocalKevsShell();
+    static ExtKevScriptEditor kevsPanel = null;
 
     public static void main(final String[] args) throws Exception {
+
+        System.setProperty("awt.useSystemAAFontSettings", "lcd");
+        System.setProperty("swing.aatext", "true");
 
         System.setSecurityManager(null);
         SwingUtilities.invokeLater(new Runnable() {
@@ -63,7 +67,7 @@ public class App {
                 System.setProperty("apple.laf.useScreenMenuBar", "true");
                 KevoreeFactory kevoreeFactory = new DefaultKevoreeFactory();
                 final KevoreeEditor artpanel = new KevoreeEditor();
-                kevsPanel.setKernel(artpanel.getPanel().getKernel());
+                kevsPanel = new ExtKevScriptEditor(artpanel.getPanel().getKernel());
                 String frameName = "Kevoree Editor - " + kevoreeFactory.getVersion();
 
                 JFrame jframe = new JFrame(frameName);
@@ -137,64 +141,17 @@ public class App {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                /*
-                AbstractButton toogleKloud = null;
-                try {
-                    java.net.URL url = App.class.getClassLoader().getResource("kloud.png");
-                    ImageIcon icon = new ImageIcon(url);
-                    toogleKloud =
-                            MacButtonFactory.makeUnifiedToolBarButton(
-                                    new JButton("Kloud", icon));
-                    toogleKloud.setEnabled(false);
-                    toolBar.addComponentToRight(toogleKloud);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                  */
-                AbstractButton toogleMiniKloud = null;
-                try {
-                    java.net.URL url = App.class.getClassLoader().getResource("kloud.png");
-                    ImageIcon icon = new ImageIcon(url);
-                    toogleMiniKloud =
-                            MacButtonFactory.makeUnifiedToolBarButton(
-                                    new JButton("MiniKloud", icon));
-                    toogleMiniKloud.setEnabled(false);
-                    toolBar.addComponentToRight(toogleMiniKloud);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
                 jframe.add(toolBar.getComponent(), BorderLayout.NORTH);
                 toolBar.installWindowDraggerOnWindow(jframe);
                 toolBar.disableBackgroundPainter();
-
                 jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 jframe.setPreferredSize(new Dimension(800, 600));
-
                 jframe.setJMenuBar(artpanel.getMenuBar());
-
-                // jframe.add(artpanel.getPanel(), BorderLayout.CENTER);
-
-
-                // jframe.add(new LogPanel(), BorderLayout.SOUTH);
-
-                /*
-                                  String layoutDef =
-                                          "(COLUMN (LEAF name=center weight=0.95) (LEAF name=bottom weight=0.05))";
-                                  MultiSplitLayout.Node modelRoot =
-                                          MultiSplitLayout.parseModel(layoutDef);
-                                  JXMultiSplitPane multiSplitPane = new JXMultiSplitPane();
-                                  multiSplitPane.getMultiSplitLayout().setModel(modelRoot);
-
-                                  multiSplitPane.add(artpanel.getPanel(), "center");
-                                  multiSplitPane.add(new LogPanel(), "bottom");
-                                    */
 
                 final LogPanel logPanel = new LogPanel();
 
                 final JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT,
                         artpanel.getPanel(), logPanel);
-                //splitPane.setResizeWeight(0.3);
                 splitPane.setOneTouchExpandable(true);
                 splitPane.setContinuousLayout(true);
                 splitPane.setDividerSize(6);
@@ -218,23 +175,9 @@ public class App {
                     @Override
                     public void execute(Object p) {
                         labelBot.setText(p.toString());
-                        // labelBot.setFont(new Font("Serif", Font.PLAIN, 10));
                     }
                 });
 
-
-                /*
-        JProgressBar jbar = new  JProgressBar(0, 100);
-        jbar.setSize(250, 10);
-        jbar.setValue(0);
-        jbar.setVisible(true);
-        jbar.setStringPainted(true);
-        jbar.setString("Starting test run");
-
-        jbar.setIndeterminate(true);
-        bottomBar.addComponentToLeft(jbar);
-                */
-                //bottomBar.addComponentToCenter(MacWidgetFactory.createEmphasizedLabel("Kevoree Model"));
                 jframe.add(bottomBar.getComponent(), BorderLayout.SOUTH);
                 bottomBar.installWindowDraggerOnWindow(jframe);
 
@@ -248,9 +191,6 @@ public class App {
                 assert toogleKevScriptEditor != null;
                 final AbstractButton finalToogleKevScriptEditor = toogleKevScriptEditor;
                 final AbstractButton finalToogleErrorPanel = toogleErrorPanel;
-                //final AbstractButton finalToggleKloudDialog = toogleKloud;
-                final AbstractButton finalToggleMiniKloudDialog = toogleMiniKloud;
-
                 toogleConsole.addMouseListener(new MouseAdapter() {
                     @Override
                     public void mouseClicked(MouseEvent mouseEvent) {
@@ -301,8 +241,6 @@ public class App {
                             p.removeAll();
                             p.add(splitPane, BorderLayout.CENTER);
                             splitPane.setTopComponent(artpanel.getPanel());
-                            //LocalKevsShell kevsPanel = new LocalKevsShell();
-
                             splitPane.setBottomComponent(kevsPanel);
                             splitPane.setDividerLocation(dividerPos);
                             p.repaint();

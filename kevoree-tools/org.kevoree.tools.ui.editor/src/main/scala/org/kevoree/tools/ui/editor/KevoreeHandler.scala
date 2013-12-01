@@ -16,7 +16,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * 	http://www.gnu.org/licenses/lgpl-3.0.txt
+ * http://www.gnu.org/licenses/lgpl-3.0.txt
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -34,14 +34,16 @@ package org.kevoree.tools.ui.editor
 import command.Command
 import org.kevoree.ContainerRoot
 import org.kevoree.compare.DefaultModelCompare
+import org.kevoree.api.ModelService
+import java.util.UUID
+import org.kevoree.api.handler.{UUIDModel, UpdateCallback, ModelListener, LockCallBack}
+import java.lang.Long
 
-class KevoreeHandler(kernel: KevoreeUIKernel) {
+class KevoreeHandler(kernel: KevoreeUIKernel) extends ModelService {
 
   private val modelCompare = new DefaultModelCompare
   private var listenerCommand: List[Command] = List[Command]()
   private var actualModel: ContainerRoot = ModelHelper.kevoreeFactory.createContainerRoot
-
-  //actualModel.eAdapters.add(EMFListener)
 
   def addListenerCommand(c: Command) = {
     listenerCommand = listenerCommand ++ List(c)
@@ -62,16 +64,50 @@ class KevoreeHandler(kernel: KevoreeUIKernel) {
     EMFListener.notifyChanged()
   }
 
-  object EMFListener  {
-     def notifyChanged() = {
+  object EMFListener {
+    def notifyChanged() = {
       listenerCommand.foreach(adapt => adapt.execute(null))
       kernel.getModelPanel.repaint();
       kernel.getModelPanel.revalidate();
     }
   }
 
-  def notifyChanged(){
-      EMFListener.notifyChanged()
+  def notifyChanged() {
+    EMFListener.notifyChanged()
+  }
+
+  def releaseLock(uuid: UUID) {
+
+  }
+
+  def acquireLock(callBack: LockCallBack, timeout: Long) {
+
+  }
+
+  def unregisterModelListener(listener: ModelListener) {
+
+  }
+
+  def registerModelListener(listener: ModelListener) {
+
+  }
+
+  def update(model: ContainerRoot, callback: UpdateCallback) {
+
+  }
+
+  def compareAndSwap(model: ContainerRoot, uuid: UUID, callback: UpdateCallback) {
+
+  }
+
+  def getNodeName: String = ""
+
+  def getCurrentModel: UUIDModel = new UUIDModel() {
+
+
+    def getUUID: UUID = null
+
+    def getModel: ContainerRoot = getActualModel
   }
 
 }

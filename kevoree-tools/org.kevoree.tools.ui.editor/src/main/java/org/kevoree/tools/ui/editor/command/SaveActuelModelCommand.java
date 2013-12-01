@@ -81,7 +81,6 @@ public class SaveActuelModelCommand implements Command {
             }
         } else {
             doSave(defaultLocation);
-
         }
 
     }

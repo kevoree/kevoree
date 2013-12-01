@@ -24,60 +24,55 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package org.kevoree.tools.ui.editor.command
 
-import scala.reflect.BeanProperty
-
-import org.kevoree.tools.ui.editor.aspects.Art2UIAspects._
 import org.kevoree.tools.ui.editor.KevoreeUIKernel
-import org.kevoree._
+import org.slf4j.LoggerFactory
+import java.io.{FileWriter, File}
+import org.kevoree.kevscript.KevScriptExporter
+import javax.swing.JFileChooser
 
-class RemoveInstanceCommand(elem: org.kevoree.NamedElement) extends Command {
 
-  @BeanProperty
+/**
+ * Created by IntelliJ IDEA.
+ * User: duke
+ * Date: 19/03/12
+ * Time: 20:28
+ */
+
+class SaveAsKevScript extends Command {
+
+  var logger = LoggerFactory.getLogger(this.getClass)
+
   var kernel: KevoreeUIKernel = null
 
-  def execute(p: Object) {
+  def setKernel(k: KevoreeUIKernel) = kernel = k
 
-    elem match {
-      case inst: Channel => {
-        inst.removeModelAndUI(kernel);
-        updateType(inst)
+  private val filechooser = new JFileChooser();
+
+  def execute(p: AnyRef) {
+    val script = KevScriptExporter.export(kernel.getModelHandler.getActualModel)
+    if (p.isInstanceOf[String]) {
+      val f = new File(p.asInstanceOf[String])
+      if (f.exists()) {
+        f.delete()
       }
-      case inst: ComponentInstance => {
-        inst.removeModelAndUI(kernel);
-        updateType(inst)
+      val fw = new FileWriter(f)
+      try {
+        fw.write(script)
+      } finally {
+        fw.close()
       }
-      case inst: ContainerNode => {
-        import scala.collection.JavaConversions._
-        inst.getHosts.foreach {
-          hn =>
-            val c = new RemoveInstanceCommand(hn)
-            c.setKernel(kernel)
-            c.execute(null)
+    } else {
+      if (p.isInstanceOf[StringBuffer]) {
+        p.asInstanceOf[StringBuffer].append(script)
+      } else {
+        val result = filechooser.showSaveDialog(kernel.getModelPanel())
+        if (filechooser.getSelectedFile() != null && result == JFileChooser.APPROVE_OPTION) {
+          execute(filechooser.getSelectedFile().getPath())
         }
-
-        inst.removeModelAndUI(kernel);
-        updateType(inst)
-      }
-      case inst: Group => {
-        inst.removeModelAndUI(kernel);
-        updateType(inst)
       }
     }
-
-    kernel.getEditorPanel.unshowPropertyEditor()
   }
-
-  def updateType(i: Instance) {
-    kernel.getEditorPanel.getPalette.updateAllValue()
-    kernel.getModelHandler.EMFListener.notifyChanged()
-  }
-
 
 }

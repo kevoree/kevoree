@@ -30,7 +30,6 @@
 package org.kevoree.tools.ui.editor.command;
 
 import org.kevoree.ContainerNode;
-import org.kevoree.KevoreeFactory;
 import org.kevoree.NodeType;
 import org.kevoree.tools.ui.editor.KevoreeUIKernel;
 import org.kevoree.tools.ui.editor.ModelHelper;
@@ -70,10 +69,7 @@ public class AddNodeCommand implements Command {
     public void execute(Object p) {
 
         ContainerNode newnode = ModelHelper.kevoreeFactory().createContainerNode();
-            newnode.setName(ModelHelper.getNextAvailableNodeName(kernel.getModelHandler().getActualModel()));
-        //} else {
-        //    newnode.setName("node1");
-        //}
+        newnode.setName(ModelHelper.getNextAvailableNodeName(kernel.getModelHandler().getActualModel()));
 
         NodeType type = (NodeType) kernel.getUifactory().getMapping().get(p);
         if (type != null) {
@@ -82,11 +78,11 @@ public class AddNodeCommand implements Command {
 
         NodePanel newnodepanel = kernel.getUifactory().createComponentNode(newnode);
         kernel.getModelHandler().getActualModel().addNodes(newnode);
-        if(parentPanel != null){
+        if (parentPanel != null) {
             parentPanel.add(newnodepanel);
             ContainerNode parentNode = (ContainerNode) kernel.getUifactory().getMapping().get(parentPanel);
             parentNode.addHosts(newnode);
-            NodeDragSourceListener sourceListener = new NodeDragSourceListener(newnodepanel,kernel);
+            NodeDragSourceListener sourceListener = new NodeDragSourceListener(newnodepanel, kernel);
         } else {
             kernel.getModelPanel().addNode(newnodepanel);
             if ((point.x - newnodepanel.getPreferredSize().getHeight() / 2 > 0) && (point.y - newnodepanel.getPreferredSize().getHeight() / 2 > 0)) {
@@ -96,7 +92,7 @@ public class AddNodeCommand implements Command {
             }
         }
 
-        kernel.getEditorPanel().getPalette().updateTypeValue(ModelHelper.getTypeNbInstance(kernel.getModelHandler().getActualModel(), type),type.getName());
+        kernel.getEditorPanel().getPalette().updateTypeValue(ModelHelper.getTypeNbInstance(kernel.getModelHandler().getActualModel(), type), type.getName());
         kernel.getModelHandler().notifyChanged();
 
 

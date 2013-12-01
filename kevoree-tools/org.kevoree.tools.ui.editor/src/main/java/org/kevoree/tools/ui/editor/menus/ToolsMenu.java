@@ -22,6 +22,7 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import org.kevoree.tools.ui.editor.KevoreeUIKernel;
 import org.kevoree.tools.ui.editor.command.DisplayModelTextEditor;
+import org.kevoree.tools.ui.editor.command.OpenKevsShell;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
@@ -35,8 +36,17 @@ public class ToolsMenu extends JMenu {
     public ToolsMenu(KevoreeUIKernel kernel) {
         super("Tools");
         this.kernel = kernel;
+        add(createKevScriptEditorItem());
         add(createSourceEditorItem());
         add(createLoggerItem());
+    }
+
+    private JMenuItem createKevScriptEditorItem() {
+        JMenuItem sourceEditorItem = new JMenuItem("KevScript editor");
+        OpenKevsShell cmd = new OpenKevsShell();
+        cmd.setKernel(kernel);
+        sourceEditorItem.addActionListener(new CommandActionListener(cmd));
+        return sourceEditorItem;
     }
 
     private JMenuItem createSourceEditorItem() {

@@ -38,6 +38,7 @@ public class KevoreeGUIFrame extends JFrame {
         singleton = this;
         MacUtils.makeWindowLeopardStyle(this.getRootPane());
         UnifiedToolBar toolBar = new UnifiedToolBar();
+        //toolBar.disableBackgroundPainter();
         add(toolBar.getComponent(), BorderLayout.NORTH);
 
         URL urlSmallIcon = getClass().getClassLoader().getResource("kev-logo-full.png");
@@ -95,8 +96,7 @@ public class KevoreeGUIFrame extends JFrame {
             }
         });
         try {
-            ConsoleShell shell = null;
-            shell = new ConsoleShell();
+            ConsoleShell shell = new ConsoleShell();
             String nodeName = "node0";
             bootstrap[0] = new Bootstrap(nodeName);
             KevoreeGUIFrame.showShell(shell);
@@ -118,6 +118,7 @@ public class KevoreeGUIFrame extends JFrame {
 
                 @Override
                 public void modelUpdated() {
+
                     ContainerRoot currentModel = bootstrap[0].getCore().getCurrentModel().getModel();
                     ContainerNode currentNode = currentModel.findNodesByID(bootstrap[0].getCore().getNodeName());
                     if (currentNode != null) {
@@ -138,7 +139,7 @@ public class KevoreeGUIFrame extends JFrame {
                 }
             });
 
-            bootstrap[0].bootstrapFromKevScript(App.class.getClassLoader().getResourceAsStream("default.kevs"));
+            bootstrap[0].bootstrapFromKevScript(App.class.getClassLoader().getResourceAsStream("uidefaut.kevs"));
 
         } catch (Throwable e) {
             e.printStackTrace();
