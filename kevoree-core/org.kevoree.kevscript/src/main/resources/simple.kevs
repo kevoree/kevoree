@@ -25,3 +25,5 @@ remove sync3
 
 unbind node0.base.input chan0
 
+
+add node0.child : JavaNode

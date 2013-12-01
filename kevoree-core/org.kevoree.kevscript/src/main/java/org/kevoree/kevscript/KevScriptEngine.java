@@ -14,7 +14,6 @@ import org.waxeye.input.InputBuffer;
 import org.waxeye.parser.ParseResult;
 
 import java.io.InputStream;
-import java.text.MessageFormat;
 import java.util.List;
 
 /**
@@ -132,7 +131,7 @@ public class KevScriptEngine implements KevScriptService {
 
                 String propToSet = node.getChildren().get(1).childrenAsString();
                 IAST<Type> leftHnodes = node.getChildren().get(0);
-                if (leftHnodes.getChildren().size()<2) {
+                if (leftHnodes.getChildren().size() < 2) {
                     throw new Exception("Bad dictionary value description ");
                 }
 
@@ -142,8 +141,8 @@ public class KevScriptEngine implements KevScriptService {
                 String propName = portName.childrenAsString();
 
                 for (Instance target : toChangeDico) {
-                    if(propName.equals("started")){
-                           target.setStarted(Boolean.parseBoolean(propToSet));
+                    if (propName.equals("started")) {
+                        target.setStarted(Boolean.parseBoolean(propToSet));
                     } else {
                         if (target.getDictionary() == null) {
                             target.setDictionary(factory.createDictionary());
@@ -255,12 +254,21 @@ public class KevScriptEngine implements KevScriptService {
                 String newNodeName = name.getChildren().get(0).childrenAsString();
                 instance.setName(newNodeName);
                 if (model.findNodesByID(newNodeName) != null) {
-                    throw new Exception("Node already exsiste for name : " + newNodeName);
+                    throw new Exception("Node already exist for name : " + newNodeName);
                 }
                 model.addNodes(instance);
                 process = true;
             } else {
-                throw new Exception("Bad node name : " + name.toString());
+                String parentNodeName = name.getChildren().get(0).childrenAsString();
+                String newNodeName = name.getChildren().get(1).childrenAsString();
+                instance.setName(newNodeName);
+                ContainerNode parentNode = model.findNodesByID(parentNodeName);
+                if (parentNode == null) {
+                    throw new Exception("Node not exist for name : " + parentNodeName);
+                }
+                model.addNodes(instance);
+                parentNode.addHosts(instance);
+                process = true;
             }
         }
         if (td instanceof ComponentType) {
