@@ -31,7 +31,7 @@
 package org.kevoree.tools.ui.editor.command;
 
 import org.kevoree.*;
-import org.kevoree.framework.KevoreeXmiHelper;
+import org.kevoree.loader.JSONModelLoader;
 import org.kevoree.tools.ui.editor.KevoreeUIKernel;
 import org.kevoree.tools.ui.editor.MetaDataHelper;
 import org.kevoree.tools.ui.editor.listener.NodeDragSourceListener;
@@ -69,10 +69,11 @@ public class LoadModelCommand implements Command {
         if (p instanceof ContainerRoot) {
             modelToLoad = (ContainerRoot) p;
         } else {
+            JSONModelLoader modelLoader = new JSONModelLoader();
             if (p instanceof InputStream) {
-                modelToLoad = KevoreeXmiHelper.instance$.loadStream((InputStream) p);
+                modelToLoad = (ContainerRoot) modelLoader.loadModelFromStream((InputStream) p).get(0);
             } else {
-                modelToLoad = KevoreeXmiHelper.instance$.load(p.toString());
+                modelToLoad = (ContainerRoot) modelLoader.loadModelFromString(p.toString()).get(0);
             }
         }
 
@@ -99,8 +100,8 @@ public class LoadModelCommand implements Command {
 
         //LOAD NODE
         for (ContainerNode newnode : kernel.getModelHandler().getActualModel().getNodes()) {
-            if(!childNodes.contains(newnode)){
-               loadNodes(null,newnode);
+            if (!childNodes.contains(newnode)) {
+                loadNodes(null, newnode);
             }
         }
         //LOAD HUB
@@ -153,14 +154,11 @@ public class LoadModelCommand implements Command {
 
         kernel.getEditorPanel().unshowPropertyEditor(); //CLOSE PROPERTY EDITOR IF OPEN
 
-
         //REFRESH UI
         kernel.getEditorPanel().doLayout();
         kernel.getEditorPanel().repaint();
         kernel.getEditorPanel().revalidate();
-
         kernel.getModelHandler().notifyChanged();
-
     }
 
     public void loadNodes(NodePanel parentPanel, ContainerNode newnode) {
@@ -169,7 +167,7 @@ public class LoadModelCommand implements Command {
             kernel.getModelPanel().addNode(newnodepanel);
         } else {
             parentPanel.add(newnodepanel);
-            NodeDragSourceListener sourceListener = new NodeDragSourceListener(newnodepanel,kernel);
+            NodeDragSourceListener sourceListener = new NodeDragSourceListener(newnodepanel, kernel);
         }
         //UI
         HashMap<String, String> metaData = MetaDataHelper.getMetaDataFromInstance(newnode);
@@ -198,7 +196,7 @@ public class LoadModelCommand implements Command {
 
         //load child nodes
         for (ContainerNode childNode : newnode.getHosts()) {
-              loadNodes(newnodepanel,childNode);
+            loadNodes(newnodepanel, childNode);
         }
     }
 

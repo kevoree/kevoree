@@ -7,7 +7,6 @@ import org.kevoree.bootstrap.Bootstrap;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 
 /**
  * Created with IntelliJ IDEA.
@@ -44,8 +43,9 @@ public class KevRunnerMojo extends AbstractMojo {
         Bootstrap bootstrap = new Bootstrap(nodename);
         try {
             bootstrap.bootstrapFromKevScript(new FileInputStream(model));
-        } catch (FileNotFoundException e) {
+        } catch (Exception e) {
             getLog().error(e);
+            throw new MojoExecutionException("Error while parsing bootstrap KevScript ", e);
         }
 
         try {

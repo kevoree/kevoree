@@ -11,12 +11,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kevoree.tools.ui.editor.menus;/*
-* Author : Gregory Nain (developer.name@uni.lu)
-* Date : 08/11/12
-* (c) 2012 University of Luxembourg – Interdisciplinary Centre for Security Reliability and Trust (SnT)
-* All rights reserved
-*/
+package org.kevoree.tools.ui.editor.menus;
 
 import org.kevoree.tools.ui.editor.KevoreeUIKernel;
 import org.kevoree.tools.ui.editor.command.*;
@@ -34,15 +29,12 @@ public class FileMenu extends JMenu {
         add(createOpenItem());
         add(createMergeItem());
         add(createOpenKevsItem());
-        add(createMergeFromNodeItem());
         add(createOpenFromNode());
-       // add(createOpenContinuousFromNode());
         add(createSaveItem());
         add(createSaveJSONItem());
         add(createSaveAsImageItem());
         add(createSaveAsSvgItem());
-//        add(createSaveAsKevsItem()); FIXME
-//        add(createOpenFromArduinoItem());
+       add(createSaveAsKevsItem());
         add(createRefreshItem());
     }
 
@@ -53,6 +45,7 @@ public class FileMenu extends JMenu {
         fileOpen.addActionListener(new CommandActionListener(loadModelCommand));
         return fileOpen;
     }
+
     private JMenuItem createMergeItem() {
         JMenuItem fileMerge = new JMenuItem("Merge");
         MergeModelCommandUI cmdLMerge = new MergeModelCommandUI();
@@ -60,6 +53,7 @@ public class FileMenu extends JMenu {
         fileMerge.addActionListener(new CommandActionListener(cmdLMerge));
         return fileMerge;
     }
+
     private JMenuItem createOpenKevsItem() {
         /* Load command */
         JMenuItem kevsOpen = new JMenuItem("Open from KevScript");
@@ -68,35 +62,15 @@ public class FileMenu extends JMenu {
         kevsOpen.addActionListener(new CommandActionListener(cmdKevOpen));
         return kevsOpen;
     }
-    private JMenuItem createMergeFromNodeItem() {
-        JMenuItem fileMergeRemote = new JMenuItem("Merge from node");
-        MergeRemoteModelUICommand cmdLMRemote = new MergeRemoteModelUICommand();
-        cmdLMRemote.setKernel(kernel);
-        fileMergeRemote.addActionListener(new CommandActionListener(cmdLMRemote));
-        return fileMergeRemote;
-    }
+
     private JMenuItem createOpenFromNode() {
         /* Load remote ui command */
         JMenuItem fileOpenRemote = new JMenuItem("Open from node");
         LoadRemoteModelUICommand cmdLMORemote2 = new LoadRemoteModelUICommand();
         cmdLMORemote2.setKernel(kernel);
-        //CompositeCommand cmdLMORemote = new CompositeCommand();
-        //cmdLMORemote.addCommand(cmdLMORemote1);
-        //cmdLMORemote.addCommand(cmdLMORemote2);
         fileOpenRemote.addActionListener(new CommandActionListener(cmdLMORemote2));
         return fileOpenRemote;
     }
-           /*
-    private JMenuItem createOpenContinuousFromNode() {
-        JMenuItem fileOpenRemote = new JMenuItem("Continous sync with node");
-        LoadContinuousRemoteModelUICommand cmdLMORemote2 = new LoadContinuousRemoteModelUICommand();
-        cmdLMORemote2.setKernel(kernel);
-        //CompositeCommand cmdLMORemote = new CompositeCommand();
-        //cmdLMORemote.addCommand(cmdLMORemote1);
-        //cmdLMORemote.addCommand(cmdLMORemote2);
-        fileOpenRemote.addActionListener(new CommandActionListener(cmdLMORemote2));
-        return fileOpenRemote;
-    }   */
 
     private JMenuItem createSaveItem() {
         JMenuItem fileSave = new JMenuItem("Save");
@@ -114,6 +88,14 @@ public class FileMenu extends JMenu {
         return fileSave;
     }
 
+    private JMenuItem createSaveAsKevsItem() {
+        JMenuItem fileSave = new JMenuItem("SaveAsKevScript");
+        SaveAsKevScript cmdSM = new SaveAsKevScript();
+        cmdSM.setKernel(kernel);
+        fileSave.addActionListener(new CommandActionListener(cmdSM));
+        return fileSave;
+    }
+
     private JMenuItem createSaveAsImageItem() {
         JMenuItem saveImage = new JMenuItem("SaveAsImage");
         ExportModelImage cmdImage = new ExportModelImage();
@@ -121,6 +103,7 @@ public class FileMenu extends JMenu {
         saveImage.addActionListener(new CommandActionListener(cmdImage));
         return saveImage;
     }
+
     private JMenuItem createSaveAsSvgItem() {
         JMenuItem saveSVG = new JMenuItem("SaveAsSVG");
         ExportModelSVGImage cmdImageSVG = new ExportModelSVGImage();
@@ -128,20 +111,6 @@ public class FileMenu extends JMenu {
         saveSVG.addActionListener(new CommandActionListener(cmdImageSVG));
         return saveSVG;
     }
-    /*private JMenuItem createSaveAsKevsItem() {
-        JMenuItem saveKCS = new JMenuItem("SaveAsKevScript");
-        SaveAsKevScriptCommandUI cmdSaveKCS = new SaveAsKevScriptCommandUI();
-        cmdSaveKCS.setKernel(kernel);
-        saveKCS.addActionListener(new CommandActionListener(cmdSaveKCS));
-        return saveKCS;
-    }*/
-    /*private JMenuItem createOpenFromArduinoItem() {
-        JMenuItem openArduino = new JMenuItem("Open from ArduinoNode");
-        OpenArduinoNode cmdOpenArduino = new OpenArduinoNode();
-        cmdOpenArduino.setKernel(kernel);
-        openArduino.addActionListener(new CommandActionListener(cmdOpenArduino));
-        return openArduino;
-    }*/
 
     private JMenuItem createRefreshItem() {
         JMenuItem refresh = new JMenuItem("Refresh");
@@ -150,8 +119,6 @@ public class FileMenu extends JMenu {
         refresh.addActionListener(new CommandActionListener(cmdRM));
         return refresh;
     }
-
-
 
 
 }

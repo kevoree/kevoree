@@ -22,8 +22,7 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import org.kevoree.tools.ui.editor.KevoreeUIKernel;
 import org.kevoree.tools.ui.editor.command.DisplayModelTextEditor;
-import org.kevoree.tools.ui.editor.command.DisplaySerialMonitor;
-import org.kevoree.tools.ui.editor.command.JmDnsLookup;
+import org.kevoree.tools.ui.editor.command.OpenKevsShell;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
@@ -37,19 +36,8 @@ public class ToolsMenu extends JMenu {
     public ToolsMenu(KevoreeUIKernel kernel) {
         super("Tools");
         this.kernel = kernel;
-
-        add(createSerialMonitorItem());
         add(createSourceEditorItem());
-        add(createJmdnsLookupItem());
         add(createLoggerItem());
-    }
-
-    private JMenuItem createSerialMonitorItem() {
-        JMenuItem serialmonitorItem = new JMenuItem("Serial Monitor");
-        DisplaySerialMonitor serialMonitor = new DisplaySerialMonitor();
-        serialMonitor.setKernel(kernel);
-        serialmonitorItem.addActionListener(new CommandActionListener(serialMonitor));
-        return serialmonitorItem;
     }
 
     private JMenuItem createSourceEditorItem() {
@@ -59,15 +47,6 @@ public class ToolsMenu extends JMenu {
         sourceEditorItem.addActionListener(new CommandActionListener(sourceEditorCmd));
         return sourceEditorItem;
     }
-
-    private JMenuItem createJmdnsLookupItem() {
-        JMenuItem jmdnsLookup = new JMenuItem("JmDns Lookup");
-        JmDnsLookup jmdnsLookupCmd = new JmDnsLookup();
-        jmdnsLookupCmd.setKernel(kernel);
-        jmdnsLookup.addActionListener(new CommandActionListener(jmdnsLookupCmd));
-        return jmdnsLookup;
-    }
-
 
     private JMenu createLoggerItem() {
         JMenu loggerMenu = new JMenu("Logger");
@@ -102,6 +81,7 @@ public class ToolsMenu extends JMenu {
         return warnLevelItem;
 
     }
+
     private JMenuItem createLoggerDebugItem() {
         JCheckBoxMenuItem debugLevelItem = new JCheckBoxMenuItem("Debug");
         debugLevelItem.addActionListener(new ActionListener() {
@@ -126,7 +106,6 @@ public class ToolsMenu extends JMenu {
         return infoLevelItem;
 
     }
-
 
 
 }

@@ -36,7 +36,6 @@ import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.painter.CompoundPainter;
 import org.jdesktop.swingx.painter.MattePainter;
 import org.kevoree.MBinding;
-import org.kevoree.tools.ui.editor.KevoreeTypeEditorPanel;
 import org.kevoree.tools.ui.editor.KevoreeUIKernel;
 import org.kevoree.tools.ui.editor.TypeDefinitionSourceList;
 import org.kevoree.tools.ui.editor.property.BindingPropertyEditor;
@@ -60,14 +59,11 @@ public class KevoreeEditorPanel extends JPanel {
         return kernel;
     }
 
-    private KevoreeTypeEditorPanel newL;
 
     private SourceListSelectionListener previousListener = new SourceListSelectionListener() {
         @Override
         public void sourceListItemSelected(SourceListItem sourceListItem) {
             int divider = splitPane.getDividerLocation() ;
-            newL = new KevoreeTypeEditorPanel(palette.getSelectedPanel(), kernel);
-            splitPane.setBottomComponent(newL);
             splitPane.setDividerLocation(divider);
         }
     };
@@ -75,8 +71,6 @@ public class KevoreeEditorPanel extends JPanel {
     public void setTypeEditor() {
         editableModelPanel.undisplayProperties();
         palette.sourceList().addSourceListSelectionListener(previousListener);
-        newL = new KevoreeTypeEditorPanel(palette.getSelectedPanel(), kernel);
-        splitPane.setBottomComponent(newL);
     }
 
     public void unsetTypeEditor() {
@@ -84,9 +78,6 @@ public class KevoreeEditorPanel extends JPanel {
         splitPane.setBottomComponent(editableModelPanel);
     }
 
-    public KevoreeTypeEditorPanel getTypeEditorPanel() {
-        return newL;
-    }
 
     private JXPanel leftpanel = new JXPanel();
     //private JXPanel southpanel = new JXPanel();

@@ -34,7 +34,6 @@ import com.explodingpixels.macwidgets.plaf.HudButtonUI;
 import com.explodingpixels.macwidgets.plaf.HudComboBoxUI;
 import com.explodingpixels.macwidgets.plaf.HudTextFieldUI;
 import org.kevoree.*;
-import org.kevoree.framework.KevoreePlatformHelper;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
@@ -43,7 +42,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 /**
- *
  * @author ffouquet
  */
 public class NetworkPropertyEditor extends JPanel {
@@ -73,8 +71,8 @@ public class NetworkPropertyEditor extends JPanel {
         for (NodeNetwork nn : root.getNodeNetworks()) {
             if (nn.getTarget().equals(_node)) {
                 for (NodeLink nl : nn.getLink()) {
-                    for(NetworkProperty np : nl.getNetworkProperties()){
-                        listModel.addElement(np.getName()+"="+np.getValue());
+                    for (NetworkProperty np : nl.getNetworkProperties()) {
+                        listModel.addElement(np.getName() + "=" + np.getValue());
                     }
                 }
             }
@@ -93,9 +91,9 @@ public class NetworkPropertyEditor extends JPanel {
 
         private ContainerNode _node = null;
         String[] attlistString = {
-            org.kevoree.framework.Constants.instance$.getKEVOREE_PLATFORM_REMOTE_NODE_IP()//,
-           // org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_MODELSYNCH_PORT(),
-           // org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_DISPATCHER_PORT()
+                //org.kevoree.framework.Constants.instance$.getKEVOREE_PLATFORM_REMOTE_NODE_IP()//,
+                // org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_MODELSYNCH_PORT(),
+                // org.kevoree.framework.Constants.KEVOREE_PLATFORM_REMOTE_NODE_DISPATCHER_PORT()
         };
         JComboBox attlist = new JComboBox(attlistString);
         JTextField value = new JTextField();
@@ -124,7 +122,7 @@ public class NetworkPropertyEditor extends JPanel {
 
                 @Override
                 public void mouseClicked(MouseEvent me) {
-                    KevoreePlatformHelper.instance$.updateNodeLinkProp((ContainerRoot) _node.eContainer(), _node.getName(), _node.getName(), attlist.getSelectedItem().toString(), value.getText(), "", 100);
+                   // KevoreePlatformHelper.instance$.updateNodeLinkProp((ContainerRoot) _node.eContainer(), _node.getName(), _node.getName(), attlist.getSelectedItem().toString(), value.getText(), "", 100);
                     parent.refresh();
                 }
             });

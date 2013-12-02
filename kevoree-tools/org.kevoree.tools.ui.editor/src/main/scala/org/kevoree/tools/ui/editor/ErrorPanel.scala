@@ -16,7 +16,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * 	http://www.gnu.org/licenses/lgpl-3.0.txt
+ * http://www.gnu.org/licenses/lgpl-3.0.txt
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -28,7 +28,7 @@ package org.kevoree.tools.ui.editor
 
 import org.kevoree.api.service.core.checker.CheckerViolation
 import com.explodingpixels.macwidgets._
-import java.awt.{BorderLayout, Dimension}
+import java.awt.BorderLayout
 import javax.swing.{JLabel, ImageIcon, JPanel}
 
 /**
@@ -36,7 +36,6 @@ import javax.swing.{JLabel, ImageIcon, JPanel}
  * User: duke
  * Date: 28/09/11
  * Time: 18:18
- * To change this template use File | Settings | File Templates.
  */
 
 object ErrorPanel {
@@ -47,7 +46,6 @@ object ErrorPanel {
   var model: SourceListModel = null
   var sourceList: SourceList = null
   var errorCateg: SourceListCategory = null
-  //var warnCateg: SourceListCategory = null
 
   var topPanel: Option[UnifiedToolBar] = None
   val errPanel = new JPanel()

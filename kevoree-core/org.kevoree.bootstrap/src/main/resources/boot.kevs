@@ -1,21 +1,20 @@
-merge mvn:org.kevoree.library.java:org.kevoree.library.java.javaNode:3.0.0-SNAPSHOT
+include mvn:org.kevoree.library.java:org.kevoree.library.java.javaNode:3.0.0-SNAPSHOT
+include mvn:org.kevoree.library.java:org.kevoree.library.java.ws:3.0.0-SNAPSHOT
 add node0 : JavaNode
 add chan0 : HelloChannel
-set node0 { debug = "true" }
+set node0.debug = "true"
 
 //create two component HW1 and HW2
-add hw1 : HelloWorld
-add hw2 : HelloWorld
-move hw1 node0
-move hw2 node0
-set hw1 { message = "hw1" }
-set hw2 { message = "hw2" }
+add node0.hw1 : HelloWorld
+add node0.hw2 : HelloWorld
+set node0.hw1.message = "hw1"
+set node0.hw2.message = "hw2"
 //create group and attach node0
-add sync : HelloGroup
+
+bind node0.hw1.output chan0
+bind node0.hw2.input chan0
+
+
+
+add sync : WSGroup
 attach node0 sync
-
-bind hw1.output chan0
-bind hw2.input chan0
-
-
-

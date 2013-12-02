@@ -31,16 +31,14 @@ package org.kevoree.tools.ui.editor.command;
 
 import javax.swing.JFileChooser;
 
-import org.kevoree.ContainerNode;
-import org.kevoree.framework.KevoreeXmiHelper;
-
+import org.kevoree.serializer.JSONModelSerializer;
 import org.kevoree.tools.ui.editor.KevoreeUIKernel;
 import org.kevoree.tools.ui.editor.PositionedEMFHelper;
-import org.kevoree.tools.ui.framework.elements.NodePanel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.io.FileOutputStream;
 
 /**
  * @author ffouquet
@@ -81,14 +79,17 @@ public class SaveActuelModelCommand implements Command {
             }
         } else {
             doSave(defaultLocation);
-
         }
 
     }
 
     private void doSave(String location) {
         try {
-            KevoreeXmiHelper.instance$.save(location, kernel.getModelHandler().getActualModel());
+            JSONModelSerializer saver = new JSONModelSerializer();
+            FileOutputStream fop = new FileOutputStream(location);
+            saver.serializeToStream(kernel.getModelHandler().getActualModel(),fop);
+            fop.flush();
+            fop.close();
             previousLocation = location;
         } catch (Exception e) {
             logger.error("Can't save model to default location !", e);

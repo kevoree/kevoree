@@ -15,7 +15,6 @@
 package org.kevoree.tools.ui.editor.aspects
 
 import org.kevoree._
-import org.kevoree.framework.kaspects.ComponentInstanceAspect
 import org.kevoree.tools.ui.editor.KevoreeUIKernel
 import org.kevoree.tools.ui.framework.elements._
 import scala.collection.JavaConversions._
@@ -29,9 +28,18 @@ case class ComponentAspect(self : ComponentInstance) {
     var root : ContainerRoot = self.eContainer.eContainer.asInstanceOf[ContainerRoot]
 
     //BINDING
-    new ComponentInstanceAspect().getRelatedBindings(self).foreach{b=>
-      b.removeModelAndUI(kernel)
+
+    self.getProvided.foreach{ p =>
+      p.getBindings.foreach{ mb=>
+        mb.removeModelAndUI(kernel)
+      }
     }
+    self.getRequired.foreach{ p =>
+      p.getBindings.foreach{ mb=>
+        mb.removeModelAndUI(kernel)
+      }
+    }
+
 
     //REMOVE UI
     val nodepanel = kernel.getUifactory().getMapping().get(node).asInstanceOf[NodePanel]

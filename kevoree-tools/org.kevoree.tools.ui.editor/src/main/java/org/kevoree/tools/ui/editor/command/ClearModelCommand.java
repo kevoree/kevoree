@@ -31,12 +31,10 @@
 package org.kevoree.tools.ui.editor.command;
 
 import org.kevoree.ContainerRoot;
-import org.kevoree.KevoreeFactory;
 import org.kevoree.tools.ui.editor.KevoreeUIKernel;
 import org.kevoree.tools.ui.editor.ModelHelper;
 
 /**
- *
  * @author ffouquet
  */
 public class ClearModelCommand implements Command {
@@ -44,9 +42,9 @@ public class ClearModelCommand implements Command {
     public void setKernel(KevoreeUIKernel kernel) {
         this.kernel = kernel;
     }
+
     private KevoreeUIKernel kernel;
 
-    /* Input expected : Model URI */
     @Override
     public void execute(Object p) {
 
@@ -57,7 +55,6 @@ public class ClearModelCommand implements Command {
         kernel.getEditorPanel().unshowPropertyEditor();
         kernel.getEditorPanel().revalidate();
         kernel.getEditorPanel().repaint();
-
         kernel.getModelHandler().notifyChanged();
 
     }

@@ -26,12 +26,15 @@
  */
 package org.kevoree.tools.ui.editor.command
 
-import org.kevoree.framework.KevoreeXmiHelper
 import org.kevoree.tools.ui.editor.{PositionedEMFHelper, KevoreeUIKernel}
 import org.slf4j.LoggerFactory
 import java.io._
 import java.util.jar.{JarEntry, JarFile}
 import java.util
+import org.kevoree.loader.JSONModelLoader
+import org.kevoree.ContainerRoot
+import org.kevoree.serializer.JSONModelSerializer
+import org.kevoree.resolver.MavenResolver
 
 class MergeDefaultLibrary(groupID: String, arteID: String, version: String) extends Command {
 
@@ -40,28 +43,28 @@ class MergeDefaultLibrary(groupID: String, arteID: String, version: String) exte
 
   def setKernel(k: KevoreeUIKernel) = kernel = k
 
+  val mavenResolver = new MavenResolver()
+
   def execute(p: Object) {
     try {
 
       val repos = new util.ArrayList[String]()
       repos.add("http://oss.sonatype.org/content/groups/public")
 
-      val file: File = AetherResolver.resolve(arteID, groupID, version, repos)
+      val file: File = mavenResolver.resolve("mvn:"+groupID+":"+arteID+":"+version,repos)
       val jar = new JarFile(file)
-      val entry: JarEntry = jar.getJarEntry("KEV-INF/lib.kev")
-      val newmodel = KevoreeXmiHelper.instance$.loadStream(jar.getInputStream(entry))
+      val entry: JarEntry = jar.getJarEntry("KEV-INF/lib.json")
+
+      val loader = new JSONModelLoader();
+      val saver = new JSONModelSerializer();
+
+      val newmodel = loader.loadModelFromStream(jar.getInputStream(entry)).get(0).asInstanceOf[ContainerRoot]
       if (newmodel != null) {
-        kernel.getModelHandler.merge(newmodel);
-
-        //CREATE TEMP FILE FROM ACTUAL MODEL
-        val tempFile = File.createTempFile("kevoreeEditorTemp", ".kev")
         PositionedEMFHelper.updateModelUIMetaData(kernel);
-        KevoreeXmiHelper.instance$.save(tempFile.getAbsolutePath, kernel.getModelHandler.getActualModel)
-
-        //LOAD MODEL
+        kernel.getModelHandler.merge(newmodel);
         val loadCmd = new LoadModelCommand();
         loadCmd.setKernel(kernel);
-        loadCmd.execute(tempFile.getAbsolutePath);
+        loadCmd.execute(kernel.getModelHandler.getActualModel);
 
 
       } else {

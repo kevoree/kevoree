@@ -15,9 +15,10 @@ package org.kevoree.tools.ui.editor
 
 
 import org.kevoree._
-import framework.kaspects.ContainerRootAspect
 import impl.DefaultKevoreeFactory
 import scala.collection.JavaConversions._
+import org.kevoree.modeling.api.util.ModelVisitor
+import org.kevoree.modeling.api.KMFContainer
 
 /**
  * User: ffouquet
@@ -26,22 +27,31 @@ import scala.collection.JavaConversions._
  */
 
 object ModelHelper {
-  val containerRootAspect = new ContainerRootAspect()
 
-  def getTypeNbInstance(model: ContainerRoot, td: TypeDefinition) = {
-
-    containerRootAspect.getAllInstances(model).filter(i => i.getTypeDefinition == td).size
-
+  def getTypeNbInstance(model: ContainerRoot, td: TypeDefinition) : Int = {
+    var i = 0
+    model.visit(new ModelVisitor {
+      def visit(p1: KMFContainer, p2: String, p3: KMFContainer) {
+        if (p1.isInstanceOf[Instance]) {
+          var inst = p1.asInstanceOf[Instance]
+          if (inst.getTypeDefinition == td) {
+            i = i + 1
+          }
+        }
+      }
+    }, true, true, false)
+    i
   }
-  
-  def getNextAvailableNodeName(model : ContainerRoot) : String = {
-    var i =0
-    while(model.getNodes.exists(n => n.getName == ("node"+i))){i = i +1}
-    "node"+i
+
+  def getNextAvailableNodeName(model: ContainerRoot): String = {
+    var i = 0
+    while (model.getNodes.exists(n => n.getName == ("node" + i))) {
+      i = i + 1
+    }
+    "node" + i
   }
 
   val kevoreeFactory = new DefaultKevoreeFactory
-
 
 
 }

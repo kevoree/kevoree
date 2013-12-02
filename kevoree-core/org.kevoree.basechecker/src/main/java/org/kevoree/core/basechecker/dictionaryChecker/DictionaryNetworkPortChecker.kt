@@ -23,8 +23,7 @@ import org.kevoree.Instance
 import org.kevoree.api.service.core.checker.CheckerService
 import org.kevoree.api.service.core.checker.CheckerViolation
 import org.kevoree.modeling.api.KMFContainer
-import org.kevoree.framework.Constants
-import org.kevoree.framework.KevoreePropertyHelper
+import org.kevoree.NodeNetwork
 
 /**
  * Created with IntelliJ IDEA.
@@ -118,7 +117,7 @@ class DictionaryNetworkPortChecker: CheckerService {
 
         if (portFound != null) {
             var nodeIPs = ArrayList<String>()
-            val nodeIps = KevoreePropertyHelper.getNetworkProperties(ist.typeDefinition!!.eContainer() as ContainerRoot, nodeName, Constants.KEVOREE_PLATFORM_REMOTE_NODE_IP)
+            val nodeIps = getNetworkProperties(ist.typeDefinition!!.eContainer() as ContainerRoot, nodeName, "KEVOREE.remote.node.ip")
             if (nodeIps.size() == 0) {
                 nodeIPs.add("localhost")
             } else {
@@ -144,6 +143,27 @@ class DictionaryNetworkPortChecker: CheckerService {
             }
 
         }
+    }
+
+    fun getNetworkProperties (model: ContainerRoot, targetNodeName: String, key: String): List<String> {
+        val properties = ArrayList<String>()
+        val filteredNodeNetwork = ArrayList<NodeNetwork>()
+        for (lNN in model.nodeNetworks){
+            if (lNN.target!!.name == targetNodeName) {
+                filteredNodeNetwork.add(lNN)
+            }
+        }
+        for (fnn in filteredNodeNetwork) {
+            for (fnl in fnn.link) {
+                for (p in fnl.networkProperties) {
+                    if (p.name == key) {
+                        properties.add(p.value!!)
+                        break
+                    }
+                }
+            }
+        }
+        return properties
     }
 
 }

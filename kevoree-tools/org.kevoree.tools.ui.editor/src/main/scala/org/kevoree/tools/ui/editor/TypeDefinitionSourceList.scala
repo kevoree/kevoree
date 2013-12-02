@@ -27,7 +27,7 @@
 package org.kevoree.tools.ui.editor
 
 import com.explodingpixels.macwidgets._
-import command.{AddElementUICommand, ReloadTypePalette}
+import command.{ReloadTypePalette}
 import javax.swing._
 import java.awt.datatransfer.{DataFlavor, Transferable}
 import org.kevoree.tools.ui.framework.elements.{GroupTypePanel, NodeTypePanel, ChannelTypePanel, ComponentTypePanel}
@@ -173,59 +173,12 @@ class TypeDefinitionSourceList(pane: JSplitPane, kernel: KevoreeUIKernel) {
       refreshCmd.execute(null)
     }
   })
-
-/*
-  controlBar.createAndAddButton(iconProjectAdd, new ActionListener {
-    def actionPerformed(p1: ActionEvent) {
-      val cmd = new AddElementUICommand
-      cmd.setKernel(kernel)
-      cmd.execute(null)
-    }
-  })
-  */
-  controlBar.createAndAddPopdownButton(MacIcons.PLUS,
-    new PopupMenuCustomizer() {
-      def customizePopup(popup: JPopupMenu) {
-        popup.removeAll();
-        val cmd = new AddElementUICommand
-        cmd.setKernel(kernel)
-
-        val libMenuItem = new JMenuItem(cmd.LibraryLabel);
-        libMenuItem.addActionListener(new ActionListener {
-          def actionPerformed(p1: ActionEvent) {
-            cmd.execute(cmd.LibraryLabel)
-          }
-        });
-        popup.add(libMenuItem);
-
-        val deployUnitMenuItem = new JMenuItem(cmd.DeployUnit);
-        deployUnitMenuItem.addActionListener(new ActionListener {
-          def actionPerformed(p1: ActionEvent) {
-            cmd.execute(cmd.DeployUnit)
-          }
-        });
-        popup.add(deployUnitMenuItem);
-
-        val componentTypeMenuItem = new JMenuItem(cmd.ComponentType);
-        componentTypeMenuItem.addActionListener(new ActionListener {
-          def actionPerformed(p1: ActionEvent) {
-            cmd.execute(cmd.ComponentType)
-          }
-        });
-        popup.add(componentTypeMenuItem);
-
-      }
-    }
-  )
-
-
-
   controlBar.createAndAddPopdownButton(MacIcons.GEAR,
     new PopupMenuCustomizer() {
       def customizePopup(popup: JPopupMenu) {
         popup.removeAll();
       }
-    });
+    })
 
   sourceList.setColorScheme(new SourceListDarkColorScheme());
   sourceList.useIAppStyleScrollBars()

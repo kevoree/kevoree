@@ -16,7 +16,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * 	http://www.gnu.org/licenses/lgpl-3.0.txt
+ * http://www.gnu.org/licenses/lgpl-3.0.txt
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -34,7 +34,7 @@ package org.kevoree.tools.ui.editor.command
 import scala.reflect.BeanProperty
 
 import org.kevoree.tools.ui.editor.aspects.Art2UIAspects._
-import org.kevoree.tools.ui.editor.{ModelHelper, KevoreeUIKernel}
+import org.kevoree.tools.ui.editor.KevoreeUIKernel
 import org.kevoree._
 
 class RemoveInstanceCommand(elem: org.kevoree.NamedElement) extends Command {
@@ -45,30 +45,38 @@ class RemoveInstanceCommand(elem: org.kevoree.NamedElement) extends Command {
   def execute(p: Object) {
 
     elem match {
-      case inst: Channel => {inst.removeModelAndUI(kernel); updateType(inst) }
-      case inst: ComponentInstance => {inst.removeModelAndUI(kernel) ; updateType(inst) }
+      case inst: Channel => {
+        inst.removeModelAndUI(kernel);
+        updateType(inst)
+      }
+      case inst: ComponentInstance => {
+        inst.removeModelAndUI(kernel);
+        updateType(inst)
+      }
       case inst: ContainerNode => {
         import scala.collection.JavaConversions._
-        inst.getHosts.foreach{ hn =>
-          val c = new RemoveInstanceCommand(hn)
-          c.setKernel(kernel)
-          c.execute(null)
+        inst.getHosts.foreach {
+          hn =>
+            val c = new RemoveInstanceCommand(hn)
+            c.setKernel(kernel)
+            c.execute(null)
         }
 
-        inst.removeModelAndUI(kernel); updateType(inst)
+        inst.removeModelAndUI(kernel);
+        updateType(inst)
       }
-      case inst: Group => {inst.removeModelAndUI(kernel) ; updateType(inst)      }
+      case inst: Group => {
+        inst.removeModelAndUI(kernel);
+        updateType(inst)
+      }
     }
 
     kernel.getEditorPanel.unshowPropertyEditor()
-
-
   }
 
   def updateType(i: Instance) {
-     kernel.getEditorPanel.getPalette.updateAllValue()
+    kernel.getEditorPanel.getPalette.updateAllValue()
     kernel.getModelHandler.EMFListener.notifyChanged()
-    //kernel.getEditorPanel.getPalette.updateTypeValue(ModelHelper.getTypeNbInstance(kernel.getModelHandler.getActualModel, i.getTypeDefinition), i.getTypeDefinition.getName)
   }
 
 

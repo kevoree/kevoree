@@ -5,18 +5,16 @@ import org.kevoree.*;
 import org.kevoree.api.BootstrapService;
 import org.kevoree.api.Context;
 import org.kevoree.bootstrap.reflect.KevoreeInjector;
+import org.kevoree.impl.DefaultKevoreeFactory;
 import org.kevoree.kcl.KevoreeJarClassLoader;
 import org.kevoree.log.Log;
 import org.kevoree.resolver.MavenResolver;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import java.io.*;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created with IntelliJ IDEA.
@@ -25,6 +23,31 @@ import java.util.concurrent.ConcurrentHashMap;
  * Time: 19:41
  */
 public class KevoreeCLKernel implements KevoreeCLFactory, BootstrapService {
+
+    private KevoreeJarClassLoader system = new KevoreeJarClassLoader();
+
+
+    public KevoreeCLKernel() {
+
+        try {
+            DefaultKevoreeFactory factory = new DefaultKevoreeFactory();
+            ContainerRoot root = factory.createContainerRoot();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(this.getClass().getClassLoader().getResourceAsStream("bootinfo")));
+            String line = reader.readLine();
+            while (line != null) {
+                String[] elem = line.split(":");
+                DeployUnit du = factory.createDeployUnit();
+                du.setGroupName(elem[0]);
+                du.setName(elem[1]);
+                du.setVersion(elem[2]);
+                root.addDeployUnits(du);
+                line = reader.readLine();
+                cache.put(du.path(), system);
+            }
+        } catch (IOException e) {
+            Log.error("Error while read boot info");
+        }
+    }
 
     private HashMap<String, KevoreeJarClassLoader> cache = new HashMap<String, KevoreeJarClassLoader>();
 
@@ -50,6 +73,9 @@ public class KevoreeCLKernel implements KevoreeCLFactory, BootstrapService {
 
     @Override
     public KevoreeJarClassLoader get(DeployUnit deployUnit) {
+        if (deployUnit.getName().equals("org.kevoree.api") || deployUnit.getName().equals("org.kevoree.annotation.api")) {
+            return system;
+        }
         return cache.get(deployUnit.path());
     }
 
@@ -86,7 +112,13 @@ public class KevoreeCLKernel implements KevoreeCLFactory, BootstrapService {
 
     @Override
     public void removeDeployUnit(DeployUnit deployUnit) {
+        KevoreeJarClassLoader oldKCL = get(deployUnit);
         cache.remove(deployUnit.path());
+        if (oldKCL != null) {
+            for (KevoreeJarClassLoader kcl : cache.values()) {
+                kcl.removeChild(oldKCL);
+            }
+        }
     }
 
     @Override
@@ -129,7 +161,7 @@ public class KevoreeCLKernel implements KevoreeCLFactory, BootstrapService {
 
     @Override
     public Object createInstance(final Instance instance) {
-        KevoreeJarClassLoader classLoader = recursiveInstallDeployUnit(instance.getTypeDefinition().getDeployUnit());
+        KevoreeJarClassLoader classLoader = get(instance.getTypeDefinition().getDeployUnit());
         Class clazz = classLoader.loadClass(instance.getTypeDefinition().getBean());
         try {
             Object newInstance = clazz.newInstance();

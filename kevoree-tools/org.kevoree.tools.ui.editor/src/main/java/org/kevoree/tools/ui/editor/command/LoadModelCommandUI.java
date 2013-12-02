@@ -35,7 +35,6 @@ import org.kevoree.tools.ui.editor.KevoreeUIKernel;
 import javax.swing.*;
 
 /**
- *
  * @author ffouquet
  */
 public class LoadModelCommandUI implements Command {
@@ -53,13 +52,14 @@ public class LoadModelCommandUI implements Command {
         this.kernel = kernel;
         lcommand.setKernel(kernel);
     }
+
     private KevoreeUIKernel kernel;
 
     /* Input expected : Model URI */
     @Override
     public void execute(Object p) {
         int returnVal = filechooser.showOpenDialog(kernel.getModelPanel());
-        if (filechooser.getSelectedFile() != null  && returnVal == JFileChooser.APPROVE_OPTION) {
+        if (filechooser.getSelectedFile() != null && returnVal == JFileChooser.APPROVE_OPTION) {
             lastLoadedModel = filechooser.getSelectedFile().getAbsolutePath();
             lcommand.execute(lastLoadedModel);
         }

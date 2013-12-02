@@ -29,7 +29,8 @@
  * Copyright  : IRISA / INRIA / Universite de Rennes 1 */
 package org.kevoree.tools.ui.editor.command;
 
-import org.kevoree.*;
+import org.kevoree.Channel;
+import org.kevoree.ChannelType;
 import org.kevoree.tools.ui.editor.KevoreeUIKernel;
 import org.kevoree.tools.ui.editor.ModelHelper;
 import org.kevoree.tools.ui.framework.elements.ChannelPanel;
@@ -59,17 +60,10 @@ public class AddChannelCommand implements Command {
         Channel newhub = ModelHelper.kevoreeFactory().createChannel();
         ChannelType type = (ChannelType) kernel.getUifactory().getMapping().get(p);
         newhub.setTypeDefinition(type);
-
-        //CREATE NEW NAME
-        //newhub.setName("hub" + Math.abs(random.nextInt()));
-
-            newhub.setName(type.getName().substring(0, Math.min(type.getName().length(), 9)) + "" + Math.abs(new java.util.Random().nextInt(999)));
-
-
+        newhub.setName(type.getName().substring(0, Math.min(type.getName().length(), 9)) + "" + Math.abs(new java.util.Random().nextInt(999)));
         ChannelPanel newhubpanel = kernel.getUifactory().createHub(newhub);
         kernel.getModelHandler().getActualModel().addHubs(newhub);
         kernel.getModelPanel().addHub(newhubpanel);
-
         if ((point.x - newhubpanel.getPreferredSize().getHeight() / 2 > 0) && (point.y - newhubpanel.getPreferredSize().getHeight() / 2 > 0)) {
             newhubpanel.setLocation((int) (point.x - newhubpanel.getPreferredSize().getHeight() / 2), (int) (point.y - newhubpanel.getPreferredSize().getWidth() / 2));
         } else {

@@ -39,19 +39,20 @@
  */
 package org.kevoree.tools.ui.editor.command
 
-import org.kevoree.tools.ui.editor.{ModelHelper, KevoreeUIKernel}
+import org.kevoree.tools.ui.editor.KevoreeUIKernel
 import org.slf4j.LoggerFactory
-import actors.Actor
 import java.awt.Color
 import com.explodingpixels.macwidgets.HudWindow
 import javax.swing._
+import org.kevoree.kevscript.KevScriptEngine
+import org.kevoree.cloner.DefaultModelCloner
+import org.kevoree.ContainerRoot
 
 /**
  * Created by IntelliJ IDEA.
  * User: duke
  * Date: 10/10/11
  * Time: 19:37
- * To change this template use File | Settings | File Templates.
  */
 
 class KevScriptCommand extends Command {
@@ -63,7 +64,6 @@ class KevScriptCommand extends Command {
   def setKernel(k: KevoreeUIKernel) {
     kernel = k
   }
-
 
   def displayError(msg: String) {
     val hud = new HudWindow("KevScript Error");
@@ -89,76 +89,20 @@ class KevScriptCommand extends Command {
 
   }
 
+  var engine = new KevScriptEngine
+  var cloner = new DefaultModelCloner()
+
   def execute(p: AnyRef) {
-
-    new Actor {
-      def act() {
-        p match {
-          case s: String => {
-
-
-            /*
-            val bootstraper = new FakeBootstraperService
-            val kevOfflineEngine = new KevScriptOfflineEngine(kernel.getModelHandler.getActualModel, bootstraper.getBootstrap)
-            kevOfflineEngine.addVariable("kevoree.version", ModelHelper.kevoreeFactory.getVersion)
-            import scala.collection.JavaConversions._
-            System.getProperties.foreach {
-              prop =>
-                kevOfflineEngine.addVariable(prop._1, prop._2)
-            }
-            kevOfflineEngine.append("{" + s.replace("tblock", "") + "}")
-            try {
-              val newModel = kevOfflineEngine.interpret()
-              val loadCMD = new LoadModelCommand
-              loadCMD.setKernel(kernel)
-              loadCMD.execute(newModel)
-            } catch {
-              case _@e => displayError(e.getMessage)
-            } */
-            /*
-          val parser = new KevsParser
-          parser.parseScript(s) match {
-            case Some(script) => {
-              import org.kevoree.tools.marShell.interpreter.KevsInterpreterAspects._
-              PositionedEMFHelper.updateModelUIMetaData(kernel)
-              val outputStream: ByteArrayOutputStream = new ByteArrayOutputStream
-              KevoreeXmiHelper.saveStream(outputStream, kernel.getModelHandler.getActualModel)
-              val ghostModel = KevoreeXmiHelper.loadStream(new ByteArrayInputStream(outputStream.toByteArray))
-              var result = true
-              try {
-                result = script.interpret(KevsInterpreterContext(ghostModel))
-              } catch {
-                case _ @ e => {
-                  result = false
-                  displayError(e.getMessage)
-                }
-              }
-              logger.info("Interpreter Result : " + result)
-              if (result) {
-                //reload
-                val file = File.createTempFile("kev", new Random().nextInt + "")
-                KevoreeXmiHelper.save(file.getAbsolutePath, ghostModel);
-                val loadCMD = new LoadModelCommand
-                loadCMD.setKernel(kernel)
-                loadCMD.execute(file.getAbsolutePath)
-              }
-            }
-            case _ => {
-              logger.error("Error while parsing KevScript " + parser.lastNoSuccess)
-              displayError(parser.lastNoSuccess.toString)
-            }
-          } */
-          }
-          case _@e => logger.error("Bad parameter while trying to execute KevScript=> " + e)
-        }
+    try {
+      val clonedModel = cloner.clone(kernel.getModelHandler.getActualModel)
+      engine.execute(p.toString, clonedModel.asInstanceOf[ContainerRoot])
+      val loadCMD = new LoadModelCommand
+      loadCMD.setKernel(kernel)
+      loadCMD.execute(clonedModel)
+    } catch {
+      case e: Throwable => {
+        displayError(e.getMessage)
       }
-    }.start()
-
-
-    /*
-tblock {
-addLibrary lib1,lib2,lib3
-}     */
-
+    }
   }
 }

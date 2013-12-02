@@ -52,6 +52,8 @@ public class Main {
     public static void main(String[] args) {
 
 
+
+
         JFrame jframe = new JFrame("Art2 UI Tester");
         jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         jframe.setPreferredSize(new Dimension(800, 600));

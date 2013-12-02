@@ -37,44 +37,38 @@ import org.kevoree.tools.ui.framework.elements.NodePanel;
 
 public class AddGroupBindingCommand implements Command {
 
-	private KevoreeUIKernel kernel;
-	private NodePanel target;
+    private KevoreeUIKernel kernel;
+    private NodePanel target;
 
-	public void setKernel (KevoreeUIKernel kernel) {
-		this.kernel = kernel;
-	}
+    public void setKernel(KevoreeUIKernel kernel) {
+        this.kernel = kernel;
+    }
 
-	public void setTarget (NodePanel target) {
-		this.target = target;
-	}
-
-
-	@Override
-	public void execute (Object p) {
-
-		if (p instanceof GroupAnchorPanel) {
-			GroupAnchorPanel fromPanel = (GroupAnchorPanel) p;
-			// if (fromPanel.getNature().equals(PortNature.MESSAGE)) {
-			Group fromPort = (Group) kernel.getUifactory().getMapping().get(fromPanel.getParentPanel());
-			ContainerNode targetNode = (ContainerNode) kernel.getUifactory().getMapping().get(target);
-
-			//ADD ContainerNode to Group
-			if (!fromPort.getSubNodes().contains(targetNode)) {
-				fromPort.addSubNodes(targetNode);
-				TempGroupBinding groupB = new TempGroupBinding();
-				groupB.setOriginGroup(fromPort);
-				groupB.setTargetNode(targetNode);
-				groupB.setGroupPanel(fromPanel);
-				groupB.setNodePanel(target);
-				Binding uib = kernel.getUifactory().createGroupBinding(groupB);
-				kernel.getModelPanel().addBinding(uib);
-
-				kernel.getModelHandler().notifyChanged();
-			}
+    public void setTarget(NodePanel target) {
+        this.target = target;
+    }
 
 
-		}
+    @Override
+    public void execute(Object p) {
 
-
-	}
+        if (p instanceof GroupAnchorPanel) {
+            GroupAnchorPanel fromPanel = (GroupAnchorPanel) p;
+            // if (fromPanel.getNature().equals(PortNature.MESSAGE)) {
+            Group fromPort = (Group) kernel.getUifactory().getMapping().get(fromPanel.getParentPanel());
+            ContainerNode targetNode = (ContainerNode) kernel.getUifactory().getMapping().get(target);
+            //ADD ContainerNode to Group
+            if (!fromPort.getSubNodes().contains(targetNode)) {
+                fromPort.addSubNodes(targetNode);
+                TempGroupBinding groupB = new TempGroupBinding();
+                groupB.setOriginGroup(fromPort);
+                groupB.setTargetNode(targetNode);
+                groupB.setGroupPanel(fromPanel);
+                groupB.setNodePanel(target);
+                Binding uib = kernel.getUifactory().createGroupBinding(groupB);
+                kernel.getModelPanel().addBinding(uib);
+                kernel.getModelHandler().notifyChanged();
+            }
+        }
+    }
 }

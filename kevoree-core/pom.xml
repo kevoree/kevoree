@@ -28,7 +28,7 @@
         <module>org.kevoree.annotation.api</module>
         <module>org.kevoree.model</module>
         <module>org.kevoree.api</module>
-        <module>org.kevoree.framework</module>
+       <!-- <module>org.kevoree.framework</module> -->
         <module>org.kevoree.basechecker</module>
         <module>org.kevoree.kevscript</module>
         <module>org.kevoree.core</module>

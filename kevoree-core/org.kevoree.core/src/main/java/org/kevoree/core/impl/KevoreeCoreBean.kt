@@ -20,6 +20,7 @@ import org.kevoree.log.Log
 import org.kevoree.ContainerNode
 import java.util.concurrent.TimeUnit
 import org.kevoree.api.NodeType
+import org.kevoree.core.impl.deploy.PrimitiveCommandExecutionHelper
 
 
 class PreCommand(newmodel: ContainerRoot, modelListeners: KevoreeListeners, oldModel: ContainerRoot){
@@ -185,7 +186,7 @@ class KevoreeCoreBean : ModelService {
                 val afterUpdateTest: () -> Boolean = {() -> true }
                 val rootNode = modelCurrent.findByPath("nodes[" + getNodeName() + "]", javaClass<ContainerNode>())
                 if (rootNode != null) {
-                    org.kevoree.framework.deploy.PrimitiveCommandExecutionHelper.execute(rootNode, adaptationModel, nodeInstance!!, afterUpdateTest, afterUpdateTest, afterUpdateTest)
+                    PrimitiveCommandExecutionHelper.execute(rootNode, adaptationModel, nodeInstance!!, afterUpdateTest, afterUpdateTest, afterUpdateTest)
                 } else {
                     Log.error("Node is not defined into the model so unbootstrap cannot be correctly done")
                 }
@@ -305,7 +306,7 @@ class KevoreeCoreBean : ModelService {
                             //Executes the adaptation
                             val afterUpdateTest: () -> Boolean = {() -> true }
                             val rootNode = currentModel.findNodesByID(getNodeName())
-                            org.kevoree.framework.deploy.PrimitiveCommandExecutionHelper.execute(rootNode!!, adaptationModel, nodeInstance!!, afterUpdateTest, afterUpdateTest, afterUpdateTest)
+                            PrimitiveCommandExecutionHelper.execute(rootNode!!, adaptationModel, nodeInstance!!, afterUpdateTest, afterUpdateTest, afterUpdateTest)
                             nodeInstance?.stopNode()
                             //end of harakiri
                             nodeInstance = null
@@ -347,7 +348,7 @@ class KevoreeCoreBean : ModelService {
                             val preCmd = PreCommand(newmodel, modelListeners, currentModel)
                             val postRollbackTest: () -> Boolean = {() -> modelListeners.postRollback(currentModel, newmodel);true }
                             val rootNode = newmodel.findNodesByID(getNodeName())!!
-                            deployResult = org.kevoree.framework.deploy.PrimitiveCommandExecutionHelper.execute(rootNode, adaptationModel, nodeInstance!!, afterUpdateTest, preCmd.preRollbackTest, postRollbackTest)
+                            deployResult = PrimitiveCommandExecutionHelper.execute(rootNode, adaptationModel, nodeInstance!!, afterUpdateTest, preCmd.preRollbackTest, postRollbackTest)
                         } else {
                             Log.error("Node is not initialized")
                             deployResult = false
@@ -387,6 +388,7 @@ class KevoreeCoreBean : ModelService {
     private fun bootstrapNodeType(model: ContainerRoot, nodeName: String): Any? {
         val nodeInstance = model.findNodesByID(nodeName)
         if(nodeInstance != null){
+            bootstrapService!!.recursiveInstallDeployUnit(nodeInstance.typeDefinition!!.deployUnit!!)
             return bootstrapService!!.createInstance(nodeInstance)
         } else {
             Log.error("Node not found using name " + nodeName);

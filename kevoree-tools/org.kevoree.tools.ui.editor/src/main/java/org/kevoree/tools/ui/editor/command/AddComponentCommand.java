@@ -41,7 +41,6 @@ import org.kevoree.tools.ui.framework.elements.PortPanel.PortType;
 import java.util.Random;
 
 /**
- *
  * @author ffouquet
  */
 public class AddComponentCommand implements Command {
@@ -57,40 +56,30 @@ public class AddComponentCommand implements Command {
         this.nodepanel = nodepanel;
     }
 
-
-
-
-
     @Override
     public void execute(Object p) {
-        if(p instanceof ComponentTypePanel){
+        if (p instanceof ComponentTypePanel) {
             ComponentInstance instance = ModelHelper.kevoreeFactory().createComponentInstance();
-            
+
             ContainerNode node = (ContainerNode) kernel.getUifactory().getMapping().get(nodepanel);
             ComponentType type = (ComponentType) kernel.getUifactory().getMapping().get(p);
             instance.setTypeDefinition(type);
-
-            if(node.getTypeDefinition().getName().toLowerCase().contains("arduino")){
-                instance.setName(type.getName().substring(0,Math.min(type.getName().length(),1))+""+Math.abs(new Random().nextInt(99)));
-            } else {
-                instance.setName(type.getName().substring(0,Math.min(type.getName().length(),9))+""+Math.abs(new Random().nextInt(999)));
-            }
-
+            instance.setName(type.getName().substring(0, Math.min(type.getName().length(), 9)) + "" + Math.abs(new Random().nextInt(999)));
             ComponentPanel insPanel = kernel.getUifactory().createComponentInstance(instance);
 
-            for(PortTypeRef ref : type.getProvided()){
+            for (PortTypeRef ref : type.getProvided()) {
                 //INSTANCIATE MODEL ELEMENTS
                 Port port = ModelHelper.kevoreeFactory().createPort();
                 instance.addProvided(port);
                 //port.setName(ref.getName());
                 port.setPortTypeRef(ref);
-                
+
                 //ADDING NEW PORT TO UI
                 PortPanel portPanel = kernel.getUifactory().createPort(port);
                 portPanel.setType(PortType.PROVIDED);
                 insPanel.addLeft(portPanel);
             }
-            for(PortTypeRef ref : type.getRequired()){
+            for (PortTypeRef ref : type.getRequired()) {
                 //INSTANCIATE MODEL ELEMENTS
                 Port port = ModelHelper.kevoreeFactory().createPort();
                 instance.addRequired(port);
@@ -105,7 +94,7 @@ public class AddComponentCommand implements Command {
 
             nodepanel.add(insPanel);
             node.addComponents(instance);
-                    kernel.getEditorPanel().getPalette().updateTypeValue(ModelHelper.getTypeNbInstance(kernel.getModelHandler().getActualModel(), type),type.getName());
+            kernel.getEditorPanel().getPalette().updateTypeValue(ModelHelper.getTypeNbInstance(kernel.getModelHandler().getActualModel(), type), type.getName());
             kernel.getModelHandler().notifyChanged();
 
         }

@@ -30,7 +30,6 @@
 package org.kevoree.tools.ui.editor;
 
 import org.kevoree.*;
-import org.kevoree.framework.kaspects.PortAspect;
 import org.kevoree.tools.ui.editor.command.SelectBindingCommand;
 import org.kevoree.tools.ui.editor.command.SelectGroupBindingCommand;
 import org.kevoree.tools.ui.editor.command.SelectInstanceCommand;
@@ -48,7 +47,6 @@ import java.awt.*;
 public class KevoreeUIFactory {
 
     private KevoreeUIKernel kernel;
-    private PortAspect portAspect = new PortAspect();
 
     public KevoreeUIFactory(KevoreeUIKernel _kernel) {
         kernel = _kernel;
@@ -147,8 +145,8 @@ public class KevoreeUIFactory {
         command.setKernel(kernel);
         listener.setLeftClickCommand(command);
         //ContextualMenuCommand rightClicCommand = new ContextualMenuCommand();
-       // rightClicCommand.setKernel(kernel);
-       // listener.setRightClickCommand(rightClicCommand);
+        // rightClicCommand.setKernel(kernel);
+        // listener.setRightClickCommand(rightClicCommand);
         nui.addMouseListener(listener);
 
 
@@ -199,10 +197,10 @@ public class KevoreeUIFactory {
             pui.setNature(PortPanel.PortNature.SERVICE);
         }
 //        PortAspect pa = new PortAspect(port);
-        if (portAspect.isProvidedPort(port)) {
+        if (isProvidedPort(port)) {
             pui.setType(PortType.PROVIDED);
         } else {
-            if (portAspect.isRequiredPort(port)) {
+            if (isRequiredPort(port)) {
                 pui.setType(PortType.REQUIRED);
             }
         }
@@ -245,17 +243,17 @@ public class KevoreeUIFactory {
                 command.execute(uib);
             }
         });
-        
+
         return uib;
     }
 
     public Binding createMBinding(org.kevoree.MBinding mb) {
         Binding bui = null;
 //        PortAspect pa = new PortAspect(mb.getPort());
-        if (portAspect.isProvidedPort(mb.getPort())) {
+        if (isProvidedPort(mb.getPort())) {
             bui = new Binding(Binding.Type.input);
         } else {
-            if (portAspect.isRequiredPort(mb.getPort())) {
+            if (isRequiredPort(mb.getPort())) {
                 bui = new Binding(Binding.Type.ouput);
             }
         }
@@ -280,4 +278,15 @@ public class KevoreeUIFactory {
 
         return bui;
     }
+
+
+    public Boolean isProvidedPort(Port port) {
+        return ((ComponentInstance) port.eContainer()).getProvided().contains(port);
+    }
+
+    public Boolean isRequiredPort(Port port) {
+        return ((ComponentInstance) port.eContainer()).getRequired().contains(port);
+    }
+
+
 }

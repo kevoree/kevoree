@@ -16,7 +16,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * 	http://www.gnu.org/licenses/lgpl-3.0.txt
+ * http://www.gnu.org/licenses/lgpl-3.0.txt
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -37,7 +37,6 @@ import org.slf4j.LoggerFactory
 import com.explodingpixels.macwidgets.IAppWidgetFactory
 import tools.ui.editor.{ModelHelper, KevoreeUIKernel, UIHelper}
 import scala.collection.JavaConversions._
-import org.kevoree.framework.kaspects.ChannelAspect
 
 
 /**
@@ -52,7 +51,6 @@ class InstancePropertyEditor(elem: org.kevoree.Instance, kernel: KevoreeUIKernel
 
   val logger = LoggerFactory.getLogger(this.getClass)
 
-  val channelAspect = new ChannelAspect()
 
   def getValue(instance: Instance, att: DictionaryAttribute, targetNode: Option[String]): String = {
     var value: DictionaryValue = null
@@ -61,10 +59,10 @@ class InstancePropertyEditor(elem: org.kevoree.Instance, kernel: KevoreeUIKernel
         case Some(targetNodeSearch) => {
 
           val tn = v.getTargetNode
-          if(tn != null) {
-              if (v.getAttribute == att && tn.getName == targetNodeSearch) {
-                return v.getValue
-              }
+          if (tn != null) {
+            if (v.getAttribute == att && tn.getName == targetNodeSearch) {
+              return v.getValue
+            }
           }
         }
         case None => {
@@ -90,10 +88,10 @@ class InstancePropertyEditor(elem: org.kevoree.Instance, kernel: KevoreeUIKernel
 
           val tn = v.getTargetNode
 
-          if(tn != null) {
-              if (v.getAttribute.getName == att.getName && tn.getName == targetNodeSearch) {
-                value = v
-              }
+          if (tn != null) {
+            if (v.getAttribute.getName == att.getName && tn.getName == targetNodeSearch) {
+              value = v
+            }
           }
         }
         case None => {
@@ -106,12 +104,13 @@ class InstancePropertyEditor(elem: org.kevoree.Instance, kernel: KevoreeUIKernel
     if (value == null) {
       value = ModelHelper.kevoreeFactory.createDictionaryValue
       value.setAttribute(att)
-      targetNode.map{t =>
-        val root = att.eContainer.eContainer.eContainer.asInstanceOf[ContainerRoot]
-        root.getNodes.find(n => n.getName == t) match {
-          case Some(n)=> value.setTargetNode(n)
-          case None => logger.error("Node instance not found for name "+t)
-        }
+      targetNode.map {
+        t =>
+          val root = att.eContainer.eContainer.eContainer.asInstanceOf[ContainerRoot]
+          root.getNodes.find(n => n.getName == t) match {
+            case Some(n) => value.setTargetNode(n)
+            case None => logger.error("Node instance not found for name " + t)
+          }
 
       }
       instance.getDictionary.addValues(value)
@@ -191,7 +190,8 @@ class InstancePropertyEditor(elem: org.kevoree.Instance, kernel: KevoreeUIKernel
         g.getSubNodes.map(s => s.getName).toList
       }
       case c: Channel => {
-        channelAspect.getRelatedNodes(c).map(s => s.getName).toList
+        //channelAspect.getRelatedNodes(c).map(s => s.getName).toList
+        List()
       }
       case _ => List()
     }
@@ -202,13 +202,13 @@ class InstancePropertyEditor(elem: org.kevoree.Instance, kernel: KevoreeUIKernel
     val values: String = att.getDatatype.replaceFirst("enum=", "")
     val model = new DefaultComboBoxModel
     values.split(",").foreach {
-      value => UIHelper.addItem(model,value)
+      value => UIHelper.addItem(model, value)
     }
     val comboBox = UIHelper.createJComboBox(model)
     label.setLabelFor(comboBox)
     p.add(comboBox)
-    UIHelper.setSelectedItem(comboBox,(getValue(elem, att, targetNode)))
-    comboBox.asInstanceOf[{def addActionListener(l:ActionListener)}].addActionListener(new ActionListener {
+    UIHelper.setSelectedItem(comboBox, (getValue(elem, att, targetNode)))
+    comboBox.asInstanceOf[ {def addActionListener(l: ActionListener)}].addActionListener(new ActionListener {
       def actionPerformed(actionEvent: ActionEvent): Unit = {
         setValue(UIHelper.getSelectedItem(comboBox).toString, elem, att, targetNode)
       }
