@@ -135,6 +135,7 @@ object ModelBuilder {
                         dicAtt.datatype = field.getType()!!.getName()
                         dicAtt.optional = annotation.optional()
                         dicAtt.fragmentDependant = annotation.fragmentDependent()
+                        dicAtt.defaultValue = annotation.defaultValue()
                         currentTypeDefinition.dictionaryType!!.addAttributes(dicAtt)
                     }
                     else -> {

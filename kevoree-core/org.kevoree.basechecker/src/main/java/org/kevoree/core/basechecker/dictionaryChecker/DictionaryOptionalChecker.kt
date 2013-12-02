@@ -61,13 +61,7 @@ class DictionaryOptionalChecker : CheckerService {
             var invalideErrorThrowed = false
             for (dicAtt in instDicType.attributes) {
                 if (!dicAtt.optional!!) {
-                    var defaultValuePresent = false
-                    for (dv in instDicType.defaultValues) {
-                        if (dv.attribute!!.name == dicAtt.name) {
-                            defaultValuePresent = true
-                            break
-                        }
-                    }
+                    var defaultValuePresent = dicAtt.defaultValue != null && dicAtt.defaultValue != ""
                     if (!defaultValuePresent) {
                         if (instance.dictionary != null) {
                             val instDic = instance.dictionary!!

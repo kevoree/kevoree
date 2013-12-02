@@ -101,11 +101,12 @@ public class InstanceTableModel implements TableModel {
                         return v.getValue();
                     }
                 }
+                /*
                 for (DictionaryValue v : instance.getTypeDefinition().getDictionaryType().getDefaultValues()) {
                     if (v.getAttribute().equals(att)) {
                         return v.getValue();
                     }
-                }
+                }  */
                 break;
         }
         return "";

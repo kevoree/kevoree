@@ -133,13 +133,13 @@ public class KevScriptEngine implements KevScriptService {
                         throw new Exception("Node not found for name " + nodeName);
                     }
                     NetworkInfo info = networkTargetNode.findNetworkInformationByID(propType);
-                    if(info == null){
+                    if (info == null) {
                         info = factory.createNetworkInfo();
                         info.setName(propType);
                         networkTargetNode.addNetworkInformation(info);
                     }
                     NetworkProperty netprop = info.findValuesByID(interfaceName);
-                    if(netprop == null){
+                    if (netprop == null) {
                         netprop = factory.createNetworkProperty();
                         netprop.setName(interfaceName);
                         info.addValues(netprop);
@@ -293,7 +293,7 @@ public class KevScriptEngine implements KevScriptService {
     }
 
     private boolean applyAdd(TypeDefinition td, IAST<Type> name, ContainerRoot model) throws Exception {
-        boolean process = false;
+        Instance process = null;
         if (td instanceof NodeType) {
             ContainerNode instance = factory.createContainerNode();
             instance.setTypeDefinition(td);
@@ -304,7 +304,7 @@ public class KevScriptEngine implements KevScriptService {
                     throw new Exception("Node already exist for name : " + newNodeName);
                 }
                 model.addNodes(instance);
-                process = true;
+                process = instance;
             } else {
                 String parentNodeName = name.getChildren().get(0).childrenAsString();
                 String newNodeName = name.getChildren().get(1).childrenAsString();
@@ -315,7 +315,7 @@ public class KevScriptEngine implements KevScriptService {
                 }
                 model.addNodes(instance);
                 parentNode.addHosts(instance);
-                process = true;
+                process = instance;
             }
         }
         if (td instanceof ComponentType) {
@@ -340,7 +340,7 @@ public class KevScriptEngine implements KevScriptService {
                     throw new Exception("Can find parent node for name : " + name.getChildren().get(1).childrenAsString());
                 } else {
                     parentNode.addComponents(instance);
-                    process = true;
+                    process = instance;
                 }
             } else {
                 throw new Exception("Bad component name (must be nodeName.componentName) : " + name.toString());
@@ -352,7 +352,7 @@ public class KevScriptEngine implements KevScriptService {
             if (name.getType().equals(Type.InstancePath) && name.getChildren().size() == 1) {
                 instance.setName(name.getChildren().get(0).childrenAsString());
                 model.addHubs(instance);
-                process = true;
+                process = instance;
             } else {
                 throw new Exception("Bad channel name : " + name.toString());
             }
@@ -363,12 +363,28 @@ public class KevScriptEngine implements KevScriptService {
             if (name.getType().equals(Type.InstancePath) && name.getChildren().size() == 1) {
                 instance.setName(name.getChildren().get(0).childrenAsString());
                 model.addGroups(instance);
-                process = true;
+                process = instance;
             } else {
                 throw new Exception("Bad group name : " + name.toString());
             }
         }
-        return process;
+        if (process != null) {
+            Dictionary dictionary = factory.createDictionary();
+            process.setDictionary(dictionary);
+            if(td != null && td.getDictionaryType()!=null){
+                for(DictionaryAttribute att : td.getDictionaryType().getAttributes()){
+                    if(att.getDefaultValue()!=null && !att.getDefaultValue().equals("")){
+                        DictionaryValue value = factory.createDictionaryValue();
+                        value.setValue(att.getDefaultValue());
+                        value.setAttribute(att);
+                        dictionary.addValues(value);
+                    }
+                }
+            }
+
+
+        }
+        return process != null;
     }
 
 

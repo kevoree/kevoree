@@ -37,6 +37,7 @@ import org.slf4j.LoggerFactory
 import com.explodingpixels.macwidgets.IAppWidgetFactory
 import tools.ui.editor.{ModelHelper, KevoreeUIKernel, UIHelper}
 import scala.collection.JavaConversions._
+import java.util
 
 
 /**
@@ -72,12 +73,7 @@ class InstancePropertyEditor(elem: org.kevoree.Instance, kernel: KevoreeUIKernel
         }
       }
     }
-    for (v <- instance.getTypeDefinition.getDictionaryType.getDefaultValues) {
-      if (v.getAttribute == att) {
-        return v.getValue
-      }
-    }
-    return "" //DEFAULT CASE RETURN EMPTY VALUE
+    return att.getDefaultValue //DEFAULT CASE RETURN EMPTY VALUE
   }
 
   def setValue(aValue: AnyRef, instance: Instance, att: DictionaryAttribute, targetNode: Option[String]): Unit = {
@@ -101,6 +97,9 @@ class InstancePropertyEditor(elem: org.kevoree.Instance, kernel: KevoreeUIKernel
         }
       }
     }
+
+    println("set="+aValue+"/"+value+" for "+att.getName)
+
     if (value == null) {
       value = ModelHelper.kevoreeFactory.createDictionaryValue
       value.setAttribute(att)
@@ -129,26 +128,29 @@ class InstancePropertyEditor(elem: org.kevoree.Instance, kernel: KevoreeUIKernel
   var nbLigne = 0
   if (elem.getTypeDefinition.getDictionaryType != null) {
     for (att <- elem.getTypeDefinition.getDictionaryType.getAttributes) {
-
       att.getDatatype match {
-        case _ if (att.getDatatype != "" && att.getDatatype.startsWith("enum=") && !att.getFragmentDependant) => {
-          val l: JLabel = new JLabel(att.getName, SwingConstants.TRAILING)
-          l.setUI(new HudLabelUI)
-          p.add(l)
-          p.add(getEnumBox(att, l, None))
-          nbLigne = nbLigne + 1
+        /*
+      case _ if (att.getDatatype != "" && att.getDatatype.startsWith("enum=") && !att.getFragmentDependant) => {
+        val l: JLabel = new JLabel(att.getName, SwingConstants.TRAILING)
+        l.setUI(new HudLabelUI)
+        p.add(l)
+        p.add(getEnumBox(att, l, None))
+        nbLigne = nbLigne + 1
+      }
+      case _ if (att.getDatatype != "" && att.getDatatype.startsWith("enum=") && att.getFragmentDependant) => {
+        getNodesLinked(elem).foreach {
+          nodeName =>
+            val l: JLabel = new JLabel(att.getName + "->" + nodeName, SwingConstants.TRAILING)
+            l.setUI(new HudLabelUI)
+            p.add(l)
+            p.add(getEnumBox(att, l, Some(nodeName)))
+            nbLigne = nbLigne + 1
         }
-        case _ if (att.getDatatype != "" && att.getDatatype.startsWith("enum=") && att.getFragmentDependant) => {
-          getNodesLinked(elem).foreach {
-            nodeName =>
-              val l: JLabel = new JLabel(att.getName + "->" + nodeName, SwingConstants.TRAILING)
-              l.setUI(new HudLabelUI)
-              p.add(l)
-              p.add(getEnumBox(att, l, Some(nodeName)))
-              nbLigne = nbLigne + 1
-          }
-        }
+      }  */
+
+
         case _ if (att.getFragmentDependant) => {
+
           getNodesLinked(elem).foreach {
             nodeName =>
               val l: JLabel = new JLabel(att.getName + "->" + nodeName, SwingConstants.TRAILING)
@@ -159,6 +161,8 @@ class InstancePropertyEditor(elem: org.kevoree.Instance, kernel: KevoreeUIKernel
           }
         }
         case _ => {
+
+
           val l: JLabel = new JLabel(att.getName, SwingConstants.TRAILING)
           l.setUI(new HudLabelUI)
           p.add(l)
@@ -190,11 +194,35 @@ class InstancePropertyEditor(elem: org.kevoree.Instance, kernel: KevoreeUIKernel
         g.getSubNodes.map(s => s.getName).toList
       }
       case c: Channel => {
-        //channelAspect.getRelatedNodes(c).map(s => s.getName).toList
-        List()
+        val nodeNames = new util.HashSet[String]()
+        c.getBindings.foreach {
+          mb =>
+            if (mb.getPort != null) {
+              val node = mb.getPort.eContainer().eContainer().asInstanceOf[NamedElement]
+              nodeNames.add(node.getName)
+            }
+        }
+        nodeNames.toList
       }
       case _ => List()
     }
+  }
+
+
+  def getBooleanBox(att: DictionaryAttribute, label: JLabel, targetNode: Option[String]): JComponent = {
+    val model = new DefaultComboBoxModel
+    UIHelper.addItem(model, "true")
+    UIHelper.addItem(model, "false")
+    val comboBox = UIHelper.createJComboBox(model)
+    label.setLabelFor(comboBox)
+    p.add(comboBox)
+    UIHelper.setSelectedItem(comboBox, (getValue(elem, att, targetNode)))
+    comboBox.asInstanceOf[ {def addActionListener(l: ActionListener)}].addActionListener(new ActionListener {
+      def actionPerformed(actionEvent: ActionEvent): Unit = {
+        setValue(UIHelper.getSelectedItem(comboBox).toString, elem, att, targetNode)
+      }
+    })
+    comboBox
   }
 
 

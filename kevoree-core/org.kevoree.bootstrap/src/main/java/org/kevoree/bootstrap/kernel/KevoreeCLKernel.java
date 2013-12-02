@@ -193,7 +193,7 @@ public class KevoreeCLKernel implements KevoreeCLFactory, BootstrapService {
                 if (f.getType().equals(Boolean.class)) {
                     f.set(target, new Boolean(Boolean.parseBoolean(dicVal.getValue())));
                 }
-                if (f.getType().equals(Integer.class)) {
+                if (f.getType().equals(int.class)) {
                     f.setInt(target, Integer.parseInt(dicVal.getValue()));
                 }
                 if (f.getType().equals(Integer.class)) {

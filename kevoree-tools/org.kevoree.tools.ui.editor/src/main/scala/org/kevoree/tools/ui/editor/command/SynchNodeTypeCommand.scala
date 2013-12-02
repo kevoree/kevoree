@@ -111,7 +111,13 @@ class SynchNodeTypeCommand(isPush: Boolean) extends Command {
                 import scala.collection.JavaConversions._
                 group.getDictionary.getValues.foreach {
                   v =>
-                    if (v.getAttribute.getName == "port" && v.getTargetNode.getName == destNodeName) {
+                    if (v.getAttribute.getName == "port") {
+                      port = v.getValue
+                    }
+                }
+                group.getDictionary.getValues.foreach {
+                  v =>
+                    if (v.getAttribute.getName == "port" && v.getTargetNode != null && v.getTargetNode.getName == destNodeName) {
                       port = v.getValue
                     }
                 }

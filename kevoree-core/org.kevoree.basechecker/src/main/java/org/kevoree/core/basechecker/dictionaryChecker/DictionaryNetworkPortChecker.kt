@@ -100,9 +100,9 @@ class DictionaryNetworkPortChecker: CheckerService {
         var portFound: String? = null
         if(ist.typeDefinition != null && ist.typeDefinition!!.dictionaryType != null) {
             val dicType = ist.typeDefinition!!.dictionaryType!!
-            for (dv in dicType.defaultValues) {
-                if (dv.attribute!!.name.equals("port") || dv.attribute!!.name!!.endsWith("_port") || dv.attribute!!.name!!.startsWith("port_")) {
-                    portFound = dv.value
+            for (att in dicType.attributes) {
+                if (att.name.equals("port") || att.name!!.endsWith("_port") || att.name!!.startsWith("port_")) {
+                    portFound = att.defaultValue
                 }
             }
         }
