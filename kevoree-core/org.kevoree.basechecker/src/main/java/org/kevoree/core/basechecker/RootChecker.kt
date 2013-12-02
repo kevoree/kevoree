@@ -21,7 +21,6 @@ import org.kevoree.core.basechecker.bindingchecker.BindingChecker
 import org.kevoree.core.basechecker.dictionaryChecker.DictionaryNetworkPortChecker
 import org.kevoree.core.basechecker.dictionaryChecker.DictionaryOptionalChecker
 import org.kevoree.core.basechecker.namechecker.NameChecker
-import org.kevoree.core.basechecker.nodechecker.NodeChecker
 import org.kevoree.core.basechecker.abstractchecker.AbstractChecker
 import org.kevoree.core.basechecker.portchecker.PortChecker
 import org.kevoree.log.Log
@@ -34,7 +33,6 @@ class RootChecker: CheckerService {
     {
         subcheckers.add(NameChecker())
         subcheckers.add(PortChecker())
-        subcheckers.add(NodeChecker())
         subcheckers.add(BindingChecker())
         subcheckers.add(DictionaryOptionalChecker())
         subcheckers.add(DictionaryNetworkPortChecker())

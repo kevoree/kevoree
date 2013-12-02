@@ -36,17 +36,8 @@ public class ToolsMenu extends JMenu {
     public ToolsMenu(KevoreeUIKernel kernel) {
         super("Tools");
         this.kernel = kernel;
-        add(createKevScriptEditorItem());
         add(createSourceEditorItem());
         add(createLoggerItem());
-    }
-
-    private JMenuItem createKevScriptEditorItem() {
-        JMenuItem sourceEditorItem = new JMenuItem("KevScript editor");
-        OpenKevsShell cmd = new OpenKevsShell();
-        cmd.setKernel(kernel);
-        sourceEditorItem.addActionListener(new CommandActionListener(cmd));
-        return sourceEditorItem;
     }
 
     private JMenuItem createSourceEditorItem() {

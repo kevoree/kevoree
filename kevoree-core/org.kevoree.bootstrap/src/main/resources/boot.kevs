@@ -1,4 +1,5 @@
 include mvn:org.kevoree.library.java:org.kevoree.library.java.javaNode:3.0.0-SNAPSHOT
+include mvn:org.kevoree.library.java:org.kevoree.library.java.ws:3.0.0-SNAPSHOT
 add node0 : JavaNode
 add chan0 : HelloChannel
 set node0.debug = "true"
@@ -9,11 +10,11 @@ add node0.hw2 : HelloWorld
 set node0.hw1.message = "hw1"
 set node0.hw2.message = "hw2"
 //create group and attach node0
-add sync : HelloGroup
-attach node0 sync
 
 bind node0.hw1.output chan0
 bind node0.hw2.input chan0
 
 
 
+add sync : WSGroup
+attach node0 sync

@@ -130,8 +130,16 @@ class SynchNodeTypeCommand(isPush: Boolean) extends Command {
             }
             if (!ips.isEmpty) {
               //TODO
-              ip = ips.get(0)
+              import scala.collection.JavaConversions._
+              ips.foreach {
+                lip =>
+                  if (!lip.contains(":")) {
+                    ip = lip;
+                  }
+              }
             }
+
+            println("IP taken for push : "+ip)
 
             WebSocketClient.push(ip, port, kernel.getModelHandler.getActualModel);
 

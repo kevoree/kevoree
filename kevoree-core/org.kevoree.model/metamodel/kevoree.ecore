@@ -26,7 +26,7 @@
         <eStructuralFeatures xsi:type="ecore:EReference" name="groups" upperBound="-1"
                              eType="#//Group" eOpposite="#//Group/subNodes"/>
         <eStructuralFeatures xsi:type="ecore:EReference" name="networkInformation" upperBound="-1"
-                             eType="#//NetworkInfo"/>
+                             eType="#//NetworkInfo" containment="true"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="ContainerRoot">
         <eStructuralFeatures xsi:type="ecore:EReference" name="nodes" upperBound="-1"
@@ -195,8 +195,6 @@
                              eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="NetworkInfo" eSuperTypes="#//NamedElement">
-        <eStructuralFeatures xsi:type="ecore:EAttribute" name="name"
-                             eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString" iD="true"/>
         <eStructuralFeatures xsi:type="ecore:EReference" name="values" upperBound="-1" eType="#//NetworkProperty"
                              containment="true"/>
     </eClassifiers>

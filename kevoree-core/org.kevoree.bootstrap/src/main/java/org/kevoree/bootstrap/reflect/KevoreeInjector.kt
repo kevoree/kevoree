@@ -1,9 +1,7 @@
 package org.kevoree.bootstrap.reflect;
 
 import java.util.HashMap
-import java.lang.reflect.Modifier
 import org.kevoree.annotation.KevoreeInject
-import org.kevoree.bootstrap.reflect.FieldAnnotationResolver
 
 /**
  * Created by duke on 24/06/13.
