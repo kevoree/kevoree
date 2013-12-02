@@ -175,10 +175,10 @@ public class KevScriptEngine implements KevScriptService {
                     if (propName.equals("started")) {
                         target.setStarted(Boolean.parseBoolean(propToSet));
                     } else {
-                        if (target.getDictionary() == null) {
-                            target.setDictionary(factory.createDictionary());
-                        }
                         if (targetNodes == null) {
+                            if (target.getDictionary() == null) {
+                                target.setDictionary(factory.createDictionary());
+                            }
                             DictionaryValue dicValue = target.getDictionary().findValuesByID(propName);
                             if (dicValue == null) {
                                 dicValue = factory.createDictionaryValue();
@@ -187,7 +187,7 @@ public class KevScriptEngine implements KevScriptService {
                                     if (dicAtt == null) {
                                         throw new Exception("Param does not existe in type " + target.getName() + " -> " + propName);
                                     } else {
-                                        dicValue.setAttribute(dicAtt);
+                                        dicValue.setName(dicAtt.getName());
                                     }
                                 }
                                 target.getDictionary().addValues(dicValue);
@@ -195,7 +195,12 @@ public class KevScriptEngine implements KevScriptService {
                             dicValue.setValue(propToSet);
                         } else {
                             for (Instance targetNode : targetNodes) {
-                                DictionaryValue dicValue = target.getDictionary().findValuesByID(propName);
+                                if (target.findFragmentDictionaryByID(targetNode.getName()) == null) {
+                                    FragmentDictionary newDictionary = factory.createFragmentDictionary();
+                                    newDictionary.setName(targetNode.getName());
+                                    target.addFragmentDictionary(newDictionary);
+                                }
+                                DictionaryValue dicValue = target.findFragmentDictionaryByID(targetNode.getName()).findValuesByID(propName);
                                 if (dicValue == null) {
                                     dicValue = factory.createDictionaryValue();
                                     if (target.getTypeDefinition().getDictionaryType() != null) {
@@ -203,16 +208,15 @@ public class KevScriptEngine implements KevScriptService {
                                         if (dicAtt == null) {
                                             throw new Exception("Param does not existe in type " + target.getName() + " -> " + propName);
                                         } else {
-                                            dicValue.setAttribute(dicAtt);
+                                            if (!dicAtt.getFragmentDependant()) {
+                                                throw new Exception("Dictionary Attribute is not fragment dependent " + dicAtt.getName());
+                                            }
+                                            dicValue.setName(dicAtt.getName());
                                         }
                                     }
-                                    target.getDictionary().addValues(dicValue);
+                                    target.findFragmentDictionaryByID(targetNode.getName()).addValues(dicValue);
                                 }
                                 dicValue.setValue(propToSet);
-                                if (!dicValue.getAttribute().getFragmentDependant()) {
-                                    throw new Exception("Dictionary Attribute is not fragment dependent " + dicValue.getAttribute().getName());
-                                }
-                                dicValue.setTargetNode((ContainerNode) targetNode);
                             }
                         }
                     }
@@ -367,22 +371,6 @@ public class KevScriptEngine implements KevScriptService {
             } else {
                 throw new Exception("Bad group name : " + name.toString());
             }
-        }
-        if (process != null) {
-            Dictionary dictionary = factory.createDictionary();
-            process.setDictionary(dictionary);
-            if(td != null && td.getDictionaryType()!=null){
-                for(DictionaryAttribute att : td.getDictionaryType().getAttributes()){
-                    if(att.getDefaultValue()!=null && !att.getDefaultValue().equals("")){
-                        DictionaryValue value = factory.createDictionaryValue();
-                        value.setValue(att.getDefaultValue());
-                        value.setAttribute(att);
-                        dictionary.addValues(value);
-                    }
-                }
-            }
-
-
         }
         return process != null;
     }

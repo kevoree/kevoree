@@ -177,45 +177,68 @@ public class KevoreeCLKernel implements KevoreeCLFactory, BootstrapService {
     }
 
     public void injectDictionary(Instance instance, Object target) {
-        if (instance.getDictionary() == null) {
+        if (instance.getTypeDefinition() == null || instance.getTypeDefinition().getDictionaryType() == null) {
             return;
         }
-        for (DictionaryValue dicVal : instance.getDictionary().getValues()) {
+        for (DictionaryAttribute att : instance.getTypeDefinition().getDictionaryType().getAttributes()) {
+            String value = null;
+            if (att.getFragmentDependant()) {
+                FragmentDictionary fdico = instance.findFragmentDictionaryByID(nodeName);
+                if (fdico != null) {
+                    DictionaryValue tempValue = fdico.findValuesByID(att.getName());
+                    if (tempValue != null) {
+                        value = tempValue.getValue();
+                    }
+                }
+            }
+            if (value == null) {
+                if (instance.getDictionary() != null) {
+                    DictionaryValue tempValue = instance.getDictionary().findValuesByID(att.getName());
+                    if (tempValue != null) {
+                        value = tempValue.getValue();
+                    }
+                }
+            }
+            if(value==null){
+                if(!att.getDefaultValue().equals("")){
+                    value = att.getDefaultValue();
+                }
+            }
 
             try {
-                Field f = target.getClass().getDeclaredField(dicVal.getAttribute().getName());
+                Field f = target.getClass().getDeclaredField(att.getName());
                 if (!f.isAccessible()) {
                     f.setAccessible(true);
                 }
                 if (f.getType().equals(boolean.class)) {
-                    f.setBoolean(target, Boolean.parseBoolean(dicVal.getValue()));
+                    f.setBoolean(target, Boolean.parseBoolean(value));
                 }
                 if (f.getType().equals(Boolean.class)) {
-                    f.set(target, new Boolean(Boolean.parseBoolean(dicVal.getValue())));
+                    f.set(target, new Boolean(Boolean.parseBoolean(value)));
                 }
                 if (f.getType().equals(int.class)) {
-                    f.setInt(target, Integer.parseInt(dicVal.getValue()));
+                    f.setInt(target, Integer.parseInt(value));
                 }
                 if (f.getType().equals(Integer.class)) {
-                    f.set(target, new Integer(Integer.parseInt(dicVal.getValue())));
+                    f.set(target, new Integer(Integer.parseInt(value)));
                 }
                 if (f.getType().equals(long.class)) {
-                    f.setLong(target, Long.parseLong(dicVal.getValue()));
+                    f.setLong(target, Long.parseLong(value));
                 }
                 if (f.getType().equals(Long.class)) {
-                    f.set(target, new Long(Long.parseLong(dicVal.getValue())));
+                    f.set(target, new Long(Long.parseLong(value)));
                 }
                 if (f.getType().equals(double.class)) {
-                    f.setDouble(target, Double.parseDouble(dicVal.getValue()));
+                    f.setDouble(target, Double.parseDouble(value));
                 }
                 if (f.getType().equals(Double.class)) {
-                    f.set(target, Double.parseDouble(dicVal.getValue()));
+                    f.set(target, Double.parseDouble(value));
                 }
                 if (f.getType().equals(String.class)) {
-                    f.set(target, dicVal.getValue());
+                    f.set(target, value);
                 }
             } catch (Exception e) {
-                Log.error("No field corresponding to annotation, consistency error {} on {}", dicVal.getAttribute().getName(), target.toString());
+                Log.error("No field corresponding to annotation, consistency error {} on {}", att.getName(), target.toString());
                 e.printStackTrace();
 
 

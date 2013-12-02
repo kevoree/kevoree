@@ -54,20 +54,26 @@ class InstancePropertyEditor(elem: org.kevoree.Instance, kernel: KevoreeUIKernel
 
 
   def getValue(instance: Instance, att: DictionaryAttribute, targetNode: Option[String]): String = {
-    var value: DictionaryValue = null
-    for (v <- instance.getDictionary.getValues) {
-      targetNode match {
-        case Some(targetNodeSearch) => {
-
-          val tn = v.getTargetNode
-          if (tn != null) {
-            if (v.getAttribute == att && tn.getName == targetNodeSearch) {
-              return v.getValue
-            }
+    targetNode match {
+      case Some(targetNodeSearch) => {
+        val fragDico = instance.findFragmentDictionaryByID(targetNodeSearch)
+        if (fragDico != null) {
+          val v = fragDico.findValuesByID(att.getName)
+          if (v != null) {
+            return v.getValue
           }
         }
-        case None => {
-          if (v.getAttribute == att) {
+        if (instance.getDictionary != null) {
+          val v = instance.getDictionary.findValuesByID(att.getName)
+          if (v != null) {
+            return v.getValue
+          }
+        }
+      }
+      case None => {
+        if (instance.getDictionary != null) {
+          val v = instance.getDictionary.findValuesByID(att.getName)
+          if (v != null) {
             return v.getValue
           }
         }
@@ -78,41 +84,52 @@ class InstancePropertyEditor(elem: org.kevoree.Instance, kernel: KevoreeUIKernel
 
   def setValue(aValue: AnyRef, instance: Instance, att: DictionaryAttribute, targetNode: Option[String]): Unit = {
     var value: DictionaryValue = null
-    for (v <- instance.getDictionary.getValues) {
-      targetNode match {
-        case Some(targetNodeSearch) => {
-
-          val tn = v.getTargetNode
-
-          if (tn != null) {
-            if (v.getAttribute.getName == att.getName && tn.getName == targetNodeSearch) {
-              value = v
-            }
+    targetNode match {
+      case Some(targetNodeSearch) => {
+        val fragDico = instance.findFragmentDictionaryByID(targetNodeSearch)
+        if (fragDico != null) {
+          val v = fragDico.findValuesByID(att.getName)
+          if (v != null) {
+            value = v
           }
         }
-        case None => {
-          if (v.getAttribute.getName == att.getName) {
+        if (instance.getDictionary != null) {
+          val v = instance.getDictionary.findValuesByID(att.getName)
+          if (v != null) {
+            value = v
+          }
+        }
+      }
+      case None => {
+        if (instance.getDictionary != null) {
+          val v = instance.getDictionary.findValuesByID(att.getName)
+          if (v != null) {
             value = v
           }
         }
       }
     }
-
-    println("set="+aValue+"/"+value+" for "+att.getName)
-
     if (value == null) {
       value = ModelHelper.kevoreeFactory.createDictionaryValue
-      value.setAttribute(att)
-      targetNode.map {
-        t =>
-          val root = att.eContainer.eContainer.eContainer.asInstanceOf[ContainerRoot]
-          root.getNodes.find(n => n.getName == t) match {
-            case Some(n) => value.setTargetNode(n)
-            case None => logger.error("Node instance not found for name " + t)
+      value.setName(att.getName)
+      targetNode match {
+        case None => {
+          if (instance.getDictionary == null) {
+            val dico = ModelHelper.kevoreeFactory.createDictionary()
+            instance.setDictionary(dico)
           }
-
+          instance.getDictionary.addValues(value)
+        }
+        case Some(tNode) => {
+          var fragDico = instance.findFragmentDictionaryByID(tNode)
+          if(fragDico == null){
+            fragDico = ModelHelper.kevoreeFactory.createFragmentDictionary()
+            fragDico.setName(tNode)
+            instance.addFragmentDictionary(fragDico)
+          }
+          fragDico.addValues(value)
+        }
       }
-      instance.getDictionary.addValues(value)
     }
     value.setValue(aValue.toString)
     kernel.getModelHandler.notifyChanged()

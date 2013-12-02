@@ -21,8 +21,6 @@ import org.kevoree.tools.ui.framework.elements.NodePanel
 import scala.collection.JavaConversions._
 
 import Art2UIAspects._
-import org.kevoree.modeling.api.util.ModelVisitor
-import org.kevoree.modeling.api.KMFContainer
 
 case class NodeAspect(self: ContainerNode) {
 
@@ -98,20 +96,22 @@ case class NodeAspect(self: ContainerNode) {
 
     //CLEANUP DICTIONARY
 
-    kernel.getModelHandler.getActualModel.visit(new ModelVisitor() {
-      def visit(p1: KMFContainer, p2: String, p3: KMFContainer) {
-        if (p1.isInstanceOf[Instance]) {
-          var inst = p1.asInstanceOf[Instance]
-          val dico = inst.getDictionary
-          if (dico != null) {
-            dico.getValues.filter(v => v.getTargetNode != null && v.getTargetNode.getName == self.getName).foreach {
-              value =>
-                dico.removeValues(value)
-            }
-          }
+    self.getGroups.foreach {
+      g =>
+        val fdep = g.findFragmentDictionaryByID(self.getName)
+        if (fdep != null) {
+          g.removeFragmentDictionary(fdep)
         }
-      }
-    }, true, true, false)
+    }
+    kernel.getModelHandler.getActualModel.getHubs.foreach {
+      h =>
+        val fdep = h.findFragmentDictionaryByID(self.getName)
+        if (fdep != null) {
+          h.removeFragmentDictionary(fdep)
+        }
+    }
+
+
 
     //UNBIND
     kernel.getUifactory.getMapping.unbind(nodePanel, self);

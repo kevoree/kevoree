@@ -68,6 +68,11 @@
         <eStructuralFeatures xsi:type="ecore:EReference" name="values" upperBound="-1"
                              eType="#//DictionaryValue" containment="true"/>
     </eClassifiers>
+
+    <eClassifiers xsi:type="ecore:EClass" name="FragmentDictionary" eSuperTypes="#//Dictionary">
+        <eStructuralFeatures xsi:type="ecore:EAttribute" name="name"
+                             eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString" iD="true"/>
+    </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="DictionaryType">
         <eStructuralFeatures xsi:type="ecore:EReference" name="attributes" upperBound="-1"
                              eType="#//DictionaryAttribute" containment="true"/>
@@ -85,11 +90,10 @@
                              eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="DictionaryValue">
-        <eStructuralFeatures xsi:type="ecore:EReference" name="attribute" lowerBound="1"
-                             eType="#//DictionaryAttribute"/>
+        <eStructuralFeatures xsi:type="ecore:EAttribute" name="name"
+                             eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString" iD="true"/>
         <eStructuralFeatures xsi:type="ecore:EAttribute" name="value"
                              eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-        <eStructuralFeatures xsi:type="ecore:EReference" name="targetNode" eType="#//ContainerNode"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="PortTypeRef" eSuperTypes="#//NamedElement">
         <eStructuralFeatures xsi:type="ecore:EReference" name="ref" lowerBound="1" eType="#//PortType"/>
@@ -238,6 +242,8 @@
                              eType="#//TypeDefinition"/>
         <eStructuralFeatures xsi:type="ecore:EReference" name="dictionary" eType="#//Dictionary"
                              containment="true"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="fragmentDictionary" eType="#//FragmentDictionary"
+                             containment="true" upperBound="-1"/>
         <eStructuralFeatures xsi:type="ecore:EAttribute" name="metaData"
                              eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
         <eStructuralFeatures xsi:type="ecore:EAttribute" name="started"

@@ -108,11 +108,16 @@ class DictionaryNetworkPortChecker: CheckerService {
         }
         if(ist.dictionary != null) {
             val dic = ist.dictionary!!
-            for (dv in dic.values) {
-                if ((dv.attribute!!.name.equals("port") || dv.attribute!!.name!!.endsWith("_port") || dv.attribute!!.name!!.startsWith("port_")) && (dv.targetNode == null || dv.targetNode!!.name == nodeName)) {
-                    portFound = dv.value
-                }
+
+            portFound = ist.findFragmentDictionaryByID(nodeName)?.findValuesByID("port")?.value
+            if(portFound == null){
+                portFound = dic.findValuesByID("port")?.value
             }
+            if(portFound == null){
+                portFound = dic.findValuesByID("port")?.value
+            }
+
+
         }
 
         if (portFound != null) {
