@@ -166,26 +166,7 @@ public class KevoreeCLKernel implements KevoreeCLFactory, BootstrapService {
         try {
             Object newInstance = clazz.newInstance();
             KevoreeInjector selfInjector = injector.clone();
-
-            final String instanceName = instance.getName();
-            final String pathInstance = instance.path();
-
-            selfInjector.addService(Context.class, new Context() {
-                @Override
-                public String getPath() {
-                    return pathInstance;
-                }
-
-                @Override
-                public String getNodeName() {
-                    return nodeName;
-                }
-
-                @Override
-                public String getInstanceName() {
-                    return instanceName;
-                }
-            });
+            selfInjector.addService(Context.class, new InstanceContext(instance.path(), nodeName, instance.getName()));
             selfInjector.process(newInstance);
             injectDictionary(instance, newInstance);
             return newInstance;
