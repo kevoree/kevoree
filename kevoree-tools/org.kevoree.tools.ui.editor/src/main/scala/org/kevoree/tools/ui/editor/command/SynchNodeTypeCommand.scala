@@ -58,6 +58,7 @@ import org.kevoree.tools.ui.editor._
 import java.lang.Thread
 import javax.swing.{JProgressBar, JLabel}
 import org.kevoree.tools.ui.editor.ws.WebSocketClient
+import java.util
 
 class SynchNodeTypeCommand(isPush: Boolean) extends Command {
 
@@ -105,7 +106,6 @@ class SynchNodeTypeCommand(isPush: Boolean) extends Command {
             var ip = "127.0.0.1";
             var port = "9000";
 
-            //TODO lookup for IP and port of the group
             if (group != null) {
               if (group.getDictionary != null) {
                 import scala.collection.JavaConversions._
@@ -117,8 +117,21 @@ class SynchNodeTypeCommand(isPush: Boolean) extends Command {
                 }
               }
             }
-
-
+            //Lookup first IP i can ping ...
+            val containerNode = model.findNodesByID(destNodeName)
+            val ipInfo = containerNode.findNetworkInformationByID("ip")
+            val ips = new util.ArrayList[String]()
+            if (ipInfo != null) {
+              import scala.collection.JavaConversions._
+              ipInfo.getValues.foreach {
+                v =>
+                  ips.add(v.getValue)
+              }
+            }
+            if (!ips.isEmpty) {
+              //TODO
+              ip = ips.get(0)
+            }
 
             WebSocketClient.push(ip, port, kernel.getModelHandler.getActualModel);
 

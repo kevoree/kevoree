@@ -88,7 +88,6 @@ public class App {
                     e.printStackTrace();
                 }
 
-
                 AbstractButton toogleErrorPanel = null;
                 try {
                     java.net.URL url = App.class.getClassLoader().getResource("status_unknown.png");

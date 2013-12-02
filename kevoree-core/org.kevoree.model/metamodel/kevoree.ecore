@@ -25,6 +25,8 @@
                              eOpposite="#//ContainerNode/hosts"/>
         <eStructuralFeatures xsi:type="ecore:EReference" name="groups" upperBound="-1"
                              eType="#//Group" eOpposite="#//Group/subNodes"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="networkInformation" upperBound="-1"
+                             eType="#//NetworkInfo"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="ContainerRoot">
         <eStructuralFeatures xsi:type="ecore:EReference" name="nodes" upperBound="-1"
@@ -173,12 +175,12 @@
         <eStructuralFeatures xsi:type="ecore:EReference" name="hub" lowerBound="1" eType="#//Channel"
                              eOpposite="#//Channel/bindings"/>
     </eClassifiers>
+
     <eClassifiers xsi:type="ecore:EClass" name="NodeNetwork">
         <eStructuralFeatures xsi:type="ecore:EReference" name="link" upperBound="-1" eType="#//NodeLink"
                              containment="true"/>
         <eStructuralFeatures xsi:type="ecore:EReference" name="initBy" eType="#//ContainerNode"/>
-        <eStructuralFeatures xsi:type="ecore:EReference" name="target" lowerBound="1"
-                             eType="#//ContainerNode"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="target" lowerBound="1" eType="#//ContainerNode"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="NodeLink">
         <eStructuralFeatures xsi:type="ecore:EAttribute" name="networkType"
@@ -192,10 +194,16 @@
         <eStructuralFeatures xsi:type="ecore:EAttribute" name="zoneID"
                              eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="NetworkInfo" eSuperTypes="#//NamedElement">
+        <eStructuralFeatures xsi:type="ecore:EAttribute" name="name"
+                             eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString" iD="true"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="values" upperBound="-1" eType="#//NetworkProperty"
+                             containment="true"/>
+    </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="NetworkProperty" eSuperTypes="#//NamedElement">
+        <eStructuralFeatures xsi:type="ecore:EAttribute" name="name"
+                             eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString" iD="true"/>
         <eStructuralFeatures xsi:type="ecore:EAttribute" name="value"
-                             eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-        <eStructuralFeatures xsi:type="ecore:EAttribute" name="lastCheck"
                              eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="ChannelType" eSuperTypes="#//TypeDefinition">
