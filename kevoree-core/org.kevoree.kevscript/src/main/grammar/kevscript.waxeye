@@ -6,7 +6,7 @@ KevScript    <- +(Statement ws)
 
 Statement    <- (Add | Remove | Move | Attach | Detach | Set | AddBinding | DelBinding | Include | Network | AddRepo | Comment | Namespace) ws
 
-Add          <- AddToken ws NameList ws :':' ws TypeDefStmt                              # add group0, group1 : WebSocketGroup
+Add          <- AddToken ws NameList ws :':' ws TypeDef                                  # add group0, group1 : WebSocketGroup
 
 Remove       <- RemoveToken ws NameList                                                  # remove node0, node0.comp1, sync
 
@@ -16,8 +16,8 @@ Attach       <- AttachToken ws NameList ws InstancePath                         
 
 Detach       <- DetachToken ws NameList ws InstancePath                                  # detach node0, node1 group0
 
-Set          <- SetToken ws InstancePath ws :'=' ws :['] ws String2 ws :[']              # set node0.comp0.myAtt = 'foo'
-              | SetToken ws InstancePath ws :'=' ws :["] ws String2 ws :["]              # set sync.myAtt = "foo"
+Set          <- SetToken ws InstancePath ?(:'/' InstancePath) ws :'=' ws :['] ws String2 ws :[']  # set node0.comp0.myAtt = 'foo'
+              | SetToken ws InstancePath ?(:'/' InstancePath) ws :'=' ws :["] ws String2 ws :["]  # set sync.myAtt@node0 = "foo"
 
 Network      <- NetworkToken ws InstancePath ws String2                                  # network node1 192.168.0.1
 
@@ -33,7 +33,7 @@ Include      <- IncludeToken ws String :':' Anything                            
 NameList     <- InstancePath ws *(:[,] ws InstancePath)                                  # node42
                                                                                          # node0, node0.comp1, node42
 
-TypeDefStmt  <- String ?(:'/' Version)                                                   # FooType/0.0.1 (specific vers.)
+TypeDef      <- String ?(:'/' Version)                                                   # FooType/0.0.1 (specific vers.)
                                                                                          # FooType       (last vers.)
 
 Namespace    <- NamespaceToken ws String                                                 # namespace sp-ace_0
@@ -46,7 +46,7 @@ String       <- +[a-zA-Z0-9_-]
 
 String2      <- +[a-zA-Z0-9.:@_-]
 
-Version      <- +[a-zA-Z0-9_-.]
+Version      <- +[a-zA-Z0-9._-]
 
 Anything     <- +(!eol .)
 # =========

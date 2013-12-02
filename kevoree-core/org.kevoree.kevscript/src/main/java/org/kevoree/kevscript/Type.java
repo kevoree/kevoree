@@ -29,7 +29,7 @@ public enum Type
     AddRepo,
     Include,
     NameList,
-    TypeDefStmt,
+    TypeDef,
     Namespace,
     InstancePath,
     Wildcard,
@@ -53,3 +53,4 @@ public enum Type
     Eol,
     Ws
 }
+
