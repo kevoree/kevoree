@@ -15,7 +15,7 @@ import org.waxeye.ast.IAST;
 public class TypeDefinitionResolver {
 
     public static TypeDefinition resolve(ContainerRoot model, IAST<Type> typeNode) throws Exception {
-        if (!typeNode.getType().equals(org.kevoree.kevscript.Type.TypeDefStmt)) {
+        if (!typeNode.getType().equals(Type.TypeDef)) {
             throw new Exception("Parse error, should be a typedefinition : " + typeNode.toString());
         }
         String typeDefName = typeNode.getChildren().get(0).childrenAsString();
@@ -42,7 +42,7 @@ public class TypeDefinitionResolver {
             }
         }
         if (bestTD == null) {
-            throw new Exception("TypeDefinition not found with : "+typeDefName.toString());
+            throw new Exception("TypeDefinition not found with : " + typeDefName.toString());
         }
         return bestTD;
     }
