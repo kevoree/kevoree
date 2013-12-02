@@ -51,7 +51,7 @@ class MergeDefaultLibrary(groupID: String, arteID: String, version: String) exte
       val repos = new util.ArrayList[String]()
       repos.add("http://oss.sonatype.org/content/groups/public")
 
-      val file: File = mavenResolver.resolve("mvn:"+groupID+":"+arteID+":"+version,repos)
+      val file: File = mavenResolver.resolve("mvn:" + groupID + ":" + arteID + ":" + version, repos)
       val jar = new JarFile(file)
       val entry: JarEntry = jar.getJarEntry("KEV-INF/lib.json")
 
