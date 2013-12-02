@@ -128,8 +128,16 @@ public class KevScriptEngine implements KevScriptService {
                 MergeResolver.merge(model, node.getChildren().get(0).childrenAsString(), node.getChildren().get(1).childrenAsString());
                 break;
             case Set:
+                String propToSet = null;
+                List<Instance> targetNodes = null;
+                if (node.getChildren().size() == 3) {
+                    //frag dep
+                    propToSet = node.getChildren().get(2).childrenAsString();
+                    targetNodes = InstanceResolver.resolve(model, node.getChildren().get(1));
+                } else {
+                    propToSet = node.getChildren().get(1).childrenAsString();
+                }
 
-                String propToSet = node.getChildren().get(1).childrenAsString();
                 IAST<Type> leftHnodes = node.getChildren().get(0);
                 if (leftHnodes.getChildren().size() < 2) {
                     throw new Exception("Bad dictionary value description ");
@@ -147,27 +155,43 @@ public class KevScriptEngine implements KevScriptService {
                         if (target.getDictionary() == null) {
                             target.setDictionary(factory.createDictionary());
                         }
-                        DictionaryValue dicValue = target.getDictionary().findValuesByID(propName);
-                        if (dicValue == null) {
-                            dicValue = factory.createDictionaryValue();
-                            if (target.getTypeDefinition().getDictionaryType() != null) {
-                                DictionaryAttribute dicAtt = target.getTypeDefinition().getDictionaryType().findAttributesByID(propName);
-                                if (dicAtt == null) {
-                                    Log.error("Param does not existe in type {} -> {}", target.getName(), propName);
-                                } else {
-                                    dicValue.setAttribute(dicAtt);
+                        if (targetNodes == null) {
+                            DictionaryValue dicValue = target.getDictionary().findValuesByID(propName);
+                            if (dicValue == null) {
+                                dicValue = factory.createDictionaryValue();
+                                if (target.getTypeDefinition().getDictionaryType() != null) {
+                                    DictionaryAttribute dicAtt = target.getTypeDefinition().getDictionaryType().findAttributesByID(propName);
+                                    if (dicAtt == null) {
+                                        Log.error("Param does not existe in type {} -> {}", target.getName(), propName);
+                                    } else {
+                                        dicValue.setAttribute(dicAtt);
+                                    }
                                 }
                                 target.getDictionary().addValues(dicValue);
                             }
-                        }
-                        dicValue.setValue(propToSet);
-                        /*
-                        if (targetNode != null) {
-                            dicValue.setTargetNode(model.findNodesByID(targetNode));
-                            if (dicValue.getTargetNode() == null) {
-                                Log.error("Node not found for @" + targetNode + " property");
+                            dicValue.setValue(propToSet);
+                        } else {
+                            for (Instance targetNode : targetNodes) {
+                                DictionaryValue dicValue = target.getDictionary().findValuesByID(propName);
+                                if (dicValue == null) {
+                                    dicValue = factory.createDictionaryValue();
+                                    if (target.getTypeDefinition().getDictionaryType() != null) {
+                                        DictionaryAttribute dicAtt = target.getTypeDefinition().getDictionaryType().findAttributesByID(propName);
+                                        if (dicAtt == null) {
+                                            throw new Exception("Param does not existe in type "+target.getName()+" -> "+propName );
+                                        } else {
+                                            dicValue.setAttribute(dicAtt);
+                                        }
+                                    }
+                                    target.getDictionary().addValues(dicValue);
+                                }
+                                dicValue.setValue(propToSet);
+                                if(!dicValue.getAttribute().getFragmentDependant()){
+                                  throw new Exception("Dictionary Attribute is not fragment dependent "+dicValue.getAttribute().getName());
+                                }
+                                dicValue.setTargetNode((ContainerNode) targetNode);
                             }
-                        } */
+                        }
                     }
                 }
                 break;
