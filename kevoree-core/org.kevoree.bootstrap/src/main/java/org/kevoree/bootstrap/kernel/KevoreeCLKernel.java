@@ -165,10 +165,15 @@ public class KevoreeCLKernel implements KevoreeCLFactory, BootstrapService {
         Class clazz = classLoader.loadClass(instance.getTypeDefinition().getBean());
         try {
             Object newInstance = clazz.newInstance();
-            injector.addService(Context.class, new Context() {
+            KevoreeInjector selfInjector = injector.clone();
+
+            final String instanceName = instance.getName();
+            final String pathInstance = instance.path();
+
+            selfInjector.addService(Context.class, new Context() {
                 @Override
                 public String getPath() {
-                    return instance.path();
+                    return pathInstance;
                 }
 
                 @Override
@@ -178,11 +183,10 @@ public class KevoreeCLKernel implements KevoreeCLFactory, BootstrapService {
 
                 @Override
                 public String getInstanceName() {
-                    return instance.getName();
+                    return instanceName;
                 }
             });
-
-            injector.process(newInstance);
+            selfInjector.process(newInstance);
             injectDictionary(instance, newInstance);
             return newInstance;
         } catch (Exception e) {

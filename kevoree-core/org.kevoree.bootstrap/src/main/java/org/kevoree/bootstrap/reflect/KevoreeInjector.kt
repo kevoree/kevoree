@@ -8,7 +8,13 @@ import org.kevoree.annotation.KevoreeInject
  */
 public class KevoreeInjector {
 
-    private val clazzList: HashMap<java.lang.Class<out Any>, Any> = HashMap<java.lang.Class<out Any>, Any>();
+    fun clone() : KevoreeInjector {
+        val newInjector = KevoreeInjector();
+        newInjector.clazzList = clazzList.clone() as HashMap<Class<out Any>, Any>
+        return newInjector
+    }
+
+    private var clazzList: HashMap<java.lang.Class<out Any>, Any> = HashMap<java.lang.Class<out Any>, Any>();
 
     fun addService(clazz: java.lang.Class<out Any>obj: Any) {
         clazzList.put(clazz, obj)
