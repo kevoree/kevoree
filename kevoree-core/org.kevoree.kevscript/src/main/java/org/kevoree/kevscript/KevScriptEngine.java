@@ -121,8 +121,31 @@ public class KevScriptEngine implements KevScriptService {
                 }
                 break;
             case Network:
-                Log.error("Network not implemented yet !!!");
-
+                IAST<Type> leftHandNetwork = node.getChildren().get(0);
+                if (leftHandNetwork.getChildren().size() != 3) {
+                    throw new Exception("Network must be : network nodeName.propertyType.interfaceName IP");
+                } else {
+                    String nodeName = leftHandNetwork.getChildren().get(0).childrenAsString();
+                    String propType = leftHandNetwork.getChildren().get(1).childrenAsString();
+                    String interfaceName = leftHandNetwork.getChildren().get(2).childrenAsString();
+                    ContainerNode networkTargetNode = model.findNodesByID(nodeName);
+                    if (networkTargetNode == null) {
+                        throw new Exception("Node not found for name " + nodeName);
+                    }
+                    NetworkInfo info = networkTargetNode.findNetworkInformationByID(propType);
+                    if(info == null){
+                        info = factory.createNetworkInfo();
+                        info.setName(propType);
+                        networkTargetNode.addNetworkInformation(info);
+                    }
+                    NetworkProperty netprop = info.findValuesByID(interfaceName);
+                    if(netprop == null){
+                        netprop = factory.createNetworkProperty();
+                        netprop.setName(interfaceName);
+                        info.addValues(netprop);
+                    }
+                    netprop.setValue(node.getChildren().get(1).childrenAsString());
+                }
                 break;
             case Include:
                 MergeResolver.merge(model, node.getChildren().get(0).childrenAsString(), node.getChildren().get(1).childrenAsString());
@@ -162,7 +185,7 @@ public class KevScriptEngine implements KevScriptService {
                                 if (target.getTypeDefinition().getDictionaryType() != null) {
                                     DictionaryAttribute dicAtt = target.getTypeDefinition().getDictionaryType().findAttributesByID(propName);
                                     if (dicAtt == null) {
-                                        Log.error("Param does not existe in type {} -> {}", target.getName(), propName);
+                                        throw new Exception("Param does not existe in type " + target.getName() + " -> " + propName);
                                     } else {
                                         dicValue.setAttribute(dicAtt);
                                     }
@@ -178,7 +201,7 @@ public class KevScriptEngine implements KevScriptService {
                                     if (target.getTypeDefinition().getDictionaryType() != null) {
                                         DictionaryAttribute dicAtt = target.getTypeDefinition().getDictionaryType().findAttributesByID(propName);
                                         if (dicAtt == null) {
-                                            throw new Exception("Param does not existe in type "+target.getName()+" -> "+propName );
+                                            throw new Exception("Param does not existe in type " + target.getName() + " -> " + propName);
                                         } else {
                                             dicValue.setAttribute(dicAtt);
                                         }
@@ -186,8 +209,8 @@ public class KevScriptEngine implements KevScriptService {
                                     target.getDictionary().addValues(dicValue);
                                 }
                                 dicValue.setValue(propToSet);
-                                if(!dicValue.getAttribute().getFragmentDependant()){
-                                  throw new Exception("Dictionary Attribute is not fragment dependent "+dicValue.getAttribute().getName());
+                                if (!dicValue.getAttribute().getFragmentDependant()) {
+                                    throw new Exception("Dictionary Attribute is not fragment dependent " + dicValue.getAttribute().getName());
                                 }
                                 dicValue.setTargetNode((ContainerNode) targetNode);
                             }

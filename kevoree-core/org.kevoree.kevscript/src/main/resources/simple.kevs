@@ -32,3 +32,6 @@ add node0.child : JavaNode/3.0.0-SNAPSHOT
 
 
 set sync.port/node0 = "9001"
+
+
+network node0.ip.eth0 127.0.0.1
