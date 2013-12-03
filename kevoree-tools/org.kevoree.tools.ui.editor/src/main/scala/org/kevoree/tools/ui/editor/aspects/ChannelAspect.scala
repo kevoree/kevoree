@@ -26,8 +26,9 @@ case class ChannelAspect(self: Channel) {
 
   def removeModelAndUI(kernel: KevoreeUIKernel) {
     val root: ContainerRoot = self.eContainer.asInstanceOf[ContainerRoot]
-    self.getBindings.foreach{ mb =>
-      mb.removeModelAndUI(kernel)
+    self.getBindings.foreach {
+      mb =>
+        mb.removeModelAndUI(kernel)
     }
     val panel = kernel.getUifactory().getMapping().get(self).asInstanceOf[ChannelPanel]
     val modelPanel = kernel.getUifactory().getMapping().get(root).asInstanceOf[ModelPanel]
