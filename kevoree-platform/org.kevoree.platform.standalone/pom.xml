@@ -19,7 +19,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>org.kevoree.platform.App</mainClass>
+                            <mainClass>org.kevoree.platform.standalone.App</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>

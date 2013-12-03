@@ -1,4 +1,4 @@
-package org.kevoree.platform;
+package org.kevoree.platform.standalone;
 
 import org.kevoree.bootstrap.Bootstrap;
 
