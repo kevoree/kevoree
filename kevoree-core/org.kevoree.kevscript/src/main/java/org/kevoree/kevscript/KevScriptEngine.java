@@ -29,14 +29,19 @@ public class KevScriptEngine implements KevScriptService {
 
     public void execute(String script, ContainerRoot model) throws Exception {
         ParseResult<Type> parserResult = parser.parse(new InputBuffer(script.toCharArray()));
-        interpret(parserResult.getAST(), model);
+        IAST<Type> ast = parserResult.getAST();
+        if (ast != null) {
+            interpret(ast, model);
+        } else {
+            Log.error(parserResult.getError().toString());
+        }
     }
 
     public void executeFromStream(InputStream script, ContainerRoot model) throws Exception {
         ParseResult<Type> parserResult = parser.parse(new InputBuffer(BufferFiller.asArray(script)));
         IAST<Type> ast = parserResult.getAST();
         if (ast != null) {
-            interpret(parserResult.getAST(), model);
+            interpret(ast, model);
         } else {
             Log.error(parserResult.getError().toString());
         }
