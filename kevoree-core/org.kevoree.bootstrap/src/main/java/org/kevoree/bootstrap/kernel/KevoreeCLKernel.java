@@ -1,7 +1,5 @@
 package org.kevoree.bootstrap.kernel;
 
-import jet.runtime.typeinfo.JetValueParameter;
-import org.kevoree.*;
 import org.kevoree.api.BootstrapService;
 import org.kevoree.api.Context;
 import org.kevoree.bootstrap.reflect.KevoreeInjector;
@@ -16,6 +14,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.kevoree.*;
 /**
  * Created with IntelliJ IDEA.
  * User: duke
@@ -199,55 +198,54 @@ public class KevoreeCLKernel implements KevoreeCLFactory, BootstrapService {
                     }
                 }
             }
-            if(value==null){
-                if(!att.getDefaultValue().equals("")){
+            if (value == null) {
+                if (!att.getDefaultValue().equals("")) {
                     value = att.getDefaultValue();
                 }
             }
-
-            try {
-                Field f = target.getClass().getDeclaredField(att.getName());
-                if (!f.isAccessible()) {
-                    f.setAccessible(true);
+            if (value != null) {
+                try {
+                    Field f = target.getClass().getDeclaredField(att.getName());
+                    if (!f.isAccessible()) {
+                        f.setAccessible(true);
+                    }
+                    if (f.getType().equals(boolean.class)) {
+                        f.setBoolean(target, Boolean.parseBoolean(value));
+                    }
+                    if (f.getType().equals(Boolean.class)) {
+                        f.set(target, new Boolean(Boolean.parseBoolean(value)));
+                    }
+                    if (f.getType().equals(int.class)) {
+                        f.setInt(target, Integer.parseInt(value));
+                    }
+                    if (f.getType().equals(Integer.class)) {
+                        f.set(target, new Integer(Integer.parseInt(value)));
+                    }
+                    if (f.getType().equals(long.class)) {
+                        f.setLong(target, Long.parseLong(value));
+                    }
+                    if (f.getType().equals(Long.class)) {
+                        f.set(target, new Long(Long.parseLong(value)));
+                    }
+                    if (f.getType().equals(double.class)) {
+                        f.setDouble(target, Double.parseDouble(value));
+                    }
+                    if (f.getType().equals(Double.class)) {
+                        f.set(target, Double.parseDouble(value));
+                    }
+                    if (f.getType().equals(String.class)) {
+                        f.set(target, value);
+                    }
+                } catch (Exception e) {
+                    Log.error("No field corresponding to annotation, consistency error {} on {}", att.getName(), target.toString());
+                    e.printStackTrace();
                 }
-                if (f.getType().equals(boolean.class)) {
-                    f.setBoolean(target, Boolean.parseBoolean(value));
-                }
-                if (f.getType().equals(Boolean.class)) {
-                    f.set(target, new Boolean(Boolean.parseBoolean(value)));
-                }
-                if (f.getType().equals(int.class)) {
-                    f.setInt(target, Integer.parseInt(value));
-                }
-                if (f.getType().equals(Integer.class)) {
-                    f.set(target, new Integer(Integer.parseInt(value)));
-                }
-                if (f.getType().equals(long.class)) {
-                    f.setLong(target, Long.parseLong(value));
-                }
-                if (f.getType().equals(Long.class)) {
-                    f.set(target, new Long(Long.parseLong(value)));
-                }
-                if (f.getType().equals(double.class)) {
-                    f.setDouble(target, Double.parseDouble(value));
-                }
-                if (f.getType().equals(Double.class)) {
-                    f.set(target, Double.parseDouble(value));
-                }
-                if (f.getType().equals(String.class)) {
-                    f.set(target, value);
-                }
-            } catch (Exception e) {
-                Log.error("No field corresponding to annotation, consistency error {} on {}", att.getName(), target.toString());
-                e.printStackTrace();
-
-
             }
         }
     }
 
     @Override
-    public void injectService(@JetValueParameter(name = "api") Class<? extends Object> aClass, @JetValueParameter(name = "impl") Object o, @JetValueParameter(name = "target") Object o2) {
+    public void injectService(Class<? extends Object> aClass, Object o, Object o2) {
         KevoreeInjector injector = new KevoreeInjector();
         injector.addService(aClass, o);
         injector.process(o2);
