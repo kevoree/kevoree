@@ -33,19 +33,26 @@ public class KevScriptExporter {
             public void visit(KMFContainer kmfContainer, String s, KMFContainer kmfContainer2) {
                 if (kmfContainer instanceof Instance) {
                     Instance currentInstance = (Instance) kmfContainer;
+                    String instanceID = null;
+
                     if (currentInstance instanceof ComponentInstance) {
                         Instance nodeParent = (Instance) kmfContainer.eContainer();
-                        buffer.append("add " + nodeParent.getName() + "." + currentInstance.getName() + " : " + currentInstance.getTypeDefinition().getName() + "/" + currentInstance.getTypeDefinition().getVersion() + "\n");
+                        instanceID = nodeParent.getName() + "." + currentInstance.getName();
+                        buffer.append("add " + instanceID + " : " + currentInstance.getTypeDefinition().getName() + "/" + currentInstance.getTypeDefinition().getVersion() + "\n");
                     } else {
-                        buffer.append("add " + currentInstance.getName() + " : " + currentInstance.getTypeDefinition().getName() + "/" + currentInstance.getTypeDefinition().getVersion() + "\n");
+                        instanceID = currentInstance.getName();
+                        buffer.append("add " + instanceID + " : " + currentInstance.getTypeDefinition().getName() + "/" + currentInstance.getTypeDefinition().getVersion() + "\n");
                     }
                     //output all the dictionary
                     Dictionary dico = currentInstance.getDictionary();
-                   for(DictionaryValue value : dico.getValues()){
-
-                   }
-
-
+                    for (DictionaryValue value : dico.getValues()) {
+                        buffer.append("set " + instanceID + "." + value.getName() + " = \"" + value.getValue() + "\"\n");
+                    }
+                    for (FragmentDictionary fdic : currentInstance.getFragmentDictionary()) {
+                        for (DictionaryValue value : dico.getValues()) {
+                            buffer.append("set " + instanceID + "." + value.getName() + "/" + fdic.getName() + " = \"" + value.getValue() + "\"\n");
+                        }
+                    }
                 }
             }
         }, true, true, false);
