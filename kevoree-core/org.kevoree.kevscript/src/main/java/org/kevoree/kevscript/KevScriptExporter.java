@@ -23,7 +23,7 @@ public class KevScriptExporter {
             public void visit(KMFContainer kmfContainer, String s, KMFContainer kmfContainer2) {
                 if (kmfContainer instanceof DeployUnit) {
                     DeployUnit currentDU = (DeployUnit) kmfContainer;
-                    buffer.append("include mvn:" + currentDU.getGroupName() + "/" + currentDU.getName() + "/" + currentDU.getVersion() + "\n");
+                    buffer.append("include mvn:" + currentDU.getGroupName() + ":" + currentDU.getName() + ":" + currentDU.getVersion() + "\n");
                 }
             }
         }, true, true, false);
@@ -33,7 +33,19 @@ public class KevScriptExporter {
             public void visit(KMFContainer kmfContainer, String s, KMFContainer kmfContainer2) {
                 if (kmfContainer instanceof Instance) {
                     Instance currentInstance = (Instance) kmfContainer;
-                    buffer.append("add " + currentInstance.getName() + " : " + currentInstance.getTypeDefinition().getName() + "/" + currentInstance.getTypeDefinition().getVersion() + "\n");
+                    if (currentInstance instanceof ComponentInstance) {
+                        Instance nodeParent = (Instance) kmfContainer.eContainer();
+                        buffer.append("add " + nodeParent.getName() + "." + currentInstance.getName() + " : " + currentInstance.getTypeDefinition().getName() + "/" + currentInstance.getTypeDefinition().getVersion() + "\n");
+                    } else {
+                        buffer.append("add " + currentInstance.getName() + " : " + currentInstance.getTypeDefinition().getName() + "/" + currentInstance.getTypeDefinition().getVersion() + "\n");
+                    }
+                    //output all the dictionary
+                    Dictionary dico = currentInstance.getDictionary();
+                   for(DictionaryValue value : dico.getValues()){
+
+                   }
+
+
                 }
             }
         }, true, true, false);
