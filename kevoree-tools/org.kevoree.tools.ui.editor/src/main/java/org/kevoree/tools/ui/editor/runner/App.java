@@ -114,6 +114,7 @@ public class App {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+                /*
                 AbstractButton toogleSyncSend = null;
                 try {
                     java.net.URL url = App.class.getClassLoader().getResource("1371014427_File Send.png");
@@ -138,7 +139,7 @@ public class App {
                     toolBar.addComponentToRight(toogleSync);
                 } catch (Exception e) {
                     e.printStackTrace();
-                }
+                } */
                 jframe.add(toolBar.getComponent(), BorderLayout.NORTH);
                 toolBar.installWindowDraggerOnWindow(jframe);
                 toolBar.disableBackgroundPainter();

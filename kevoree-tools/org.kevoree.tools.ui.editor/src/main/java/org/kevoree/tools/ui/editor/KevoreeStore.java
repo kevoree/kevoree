@@ -1,6 +1,7 @@
 package org.kevoree.tools.ui.editor;
 
 import org.kevoree.ContainerRoot;
+import org.kevoree.DeployUnit;
 import org.kevoree.TypeDefinition;
 import org.kevoree.compare.DefaultModelCompare;
 import org.kevoree.impl.DefaultKevoreeFactory;
@@ -24,6 +25,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -144,9 +146,15 @@ public class KevoreeStore {
             JMenu subMenu = new JMenu(s.toUpperCase());
             subMenu.setAutoscrolls(true);
             ContainerRoot model = getFromGroupID("org.kevoree.library." + s);
+
+            HashMap<String, DeployUnit> cache = new HashMap<String, DeployUnit>();
             for (TypeDefinition td : model.getTypeDefinitions()) {
-                JMenuItem mergeDefLib1 = new JMenuItem(td.getName() + "-" + td.getVersion());
-                MergeDefaultLibrary cmdLDEFL1 = new MergeDefaultLibrary(td.getDeployUnit().getGroupName(), td.getDeployUnit().getName(), td.getDeployUnit().getVersion());
+                cache.put(td.getDeployUnit().path(), td.getDeployUnit());
+            }
+
+            for (DeployUnit du : cache.values()) {
+                JMenuItem mergeDefLib1 = new JMenuItem(du.getGroupName() + ":" + du.getName() + ":" + du.getVersion());
+                MergeDefaultLibrary cmdLDEFL1 = new MergeDefaultLibrary(du.getGroupName(), du.getName(), du.getVersion());
                 cmdLDEFL1.setKernel(kernel);
                 mergeDefLib1.addActionListener(new CommandActionListener(cmdLDEFL1));
                 subMenu.add(mergeDefLib1);
