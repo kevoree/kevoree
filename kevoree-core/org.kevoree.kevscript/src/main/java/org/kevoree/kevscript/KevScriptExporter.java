@@ -45,7 +45,7 @@ public class KevScriptExporter {
                     }
                     //output all the dictionary
                     Dictionary dico = currentInstance.getDictionary();
-                    if(dico != null){
+                    if (dico != null) {
                         for (DictionaryValue value : dico.getValues()) {
                             buffer.append("set " + instanceID + "." + value.getName() + " = \"" + value.getValue() + "\"\n");
                         }
@@ -55,6 +55,7 @@ public class KevScriptExporter {
                             buffer.append("set " + instanceID + "." + value.getName() + "/" + fdic.getName() + " = \"" + value.getValue() + "\"\n");
                         }
                     }
+                    buffer.append("set " + instanceID + ".started = \"" + currentInstance.getStarted()+"\"\n");
                 }
             }
         }, true, true, false);
