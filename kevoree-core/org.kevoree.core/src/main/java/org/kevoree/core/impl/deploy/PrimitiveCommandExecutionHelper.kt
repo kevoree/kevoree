@@ -23,6 +23,7 @@ import org.kevoree.api.PrimitiveCommand
 import org.kevoreeadaptation.AdaptationModel
 import org.kevoreeadaptation.ParallelStep
 import org.kevoree.log.Log
+import org.kevoreeadaptation.Step
 
 /**
  * Created by IntelliJ IDEA.
@@ -54,7 +55,7 @@ object PrimitiveCommandExecutionHelper {
         }
     }
 
-    private fun executeStep(rootNode: ContainerNode, step: ParallelStep, nodeInstance: NodeType, phase: KevoreeParDeployPhase, preRollBack: ()-> Boolean): Boolean {
+    private fun executeStep(rootNode: ContainerNode, step: Step, nodeInstance: NodeType, phase: KevoreeParDeployPhase, preRollBack: ()-> Boolean): Boolean {
         if (step == null) {
             return true
         }
