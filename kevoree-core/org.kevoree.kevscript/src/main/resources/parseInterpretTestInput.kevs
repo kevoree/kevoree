@@ -1,6 +1,8 @@
 include mvn:org.kevoree.library.java:org.kevoree.library.java.javaNode:3.0.0-SNAPSHOT
 include mvn:org.kevoree.library.java:org.kevoree.library.java.ws:3.0.0-SNAPSHOT
 
+include mvn:org.kevoree:org.kevoree.annotation.api:3.0.0-BETA2
+
 add node0 : JavaNode
 add chan0 : HelloChannel
 set node0.debug = "true"

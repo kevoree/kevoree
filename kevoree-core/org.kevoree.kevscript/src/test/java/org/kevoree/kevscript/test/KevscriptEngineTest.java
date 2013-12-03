@@ -60,7 +60,7 @@ public class KevscriptEngineTest {
             JSONModelLoader loader = new JSONModelLoader();
 
             ContainerRoot root = (ContainerRoot) loader.loadModelFromStream(KevscriptEngineTest.class.getResourceAsStream("/lib.json")).get(0);
-            engine.executeFromStream(KevscriptEngineTest.class.getResourceAsStream("/simple.kevs"), root);
+            engine.executeFromStream(KevscriptEngineTest.class.getResourceAsStream("/parseInterpretTestInput.kevs"), root);
             JSONModelSerializer saver = new JSONModelSerializer();
             saver.serializeToStream(root, System.out);
 
