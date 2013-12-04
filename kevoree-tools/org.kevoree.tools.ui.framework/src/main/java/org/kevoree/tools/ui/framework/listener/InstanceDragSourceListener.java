@@ -98,20 +98,14 @@ public class InstanceDragSourceListener extends DragSourceAdapter implements Dra
         origin2 = (Point) origin.clone();
         //SwingUtilities.convertPointToScreen(origin2, p);
         //SwingUtilities.convertPointFromScreen(origin2,(Component) p);
+
         flightNodeDropTarget = ((Component) this.flightComponent).getDropTarget();
         ((Component) this.flightComponent).setDropTarget(null);
         try {
             dragSource.startDrag(dragOriginEvent, DragSource.DefaultLinkDrop, transferable, this);
         } catch (Exception e){
             e.printStackTrace();
-            System.out.println(this.flightComponent.getMouseListeners().length);
-            for(MouseListener ml : this.flightComponent.getMouseListeners()){
-                System.out.println(ml);
-            }
         }
-
-
-
     }
 
     @Override

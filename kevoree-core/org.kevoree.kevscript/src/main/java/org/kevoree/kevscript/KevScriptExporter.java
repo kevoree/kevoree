@@ -51,11 +51,11 @@ public class KevScriptExporter {
                         }
                     }
                     for (FragmentDictionary fdic : currentInstance.getFragmentDictionary()) {
-                        for (DictionaryValue value : dico.getValues()) {
+                        for (DictionaryValue value : fdic.getValues()) {
                             buffer.append("set " + instanceID + "." + value.getName() + "/" + fdic.getName() + " = \"" + value.getValue() + "\"\n");
                         }
                     }
-                    buffer.append("set " + instanceID + ".started = \"" + currentInstance.getStarted()+"\"\n");
+                    buffer.append("set " + instanceID + ".started = \"" + currentInstance.getStarted() + "\"\n");
                 }
             }
         }, true, true, false);
