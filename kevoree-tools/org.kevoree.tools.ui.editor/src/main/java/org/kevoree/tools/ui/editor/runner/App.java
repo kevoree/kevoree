@@ -55,6 +55,11 @@ public class App {
 
     public static void main(final String[] args) throws Exception {
 
+        if (System.getProperty("user.home").contains("%userprofile%")) {
+            //workaround
+            System.setProperty("user.home", "");
+        }
+
         System.setProperty("awt.useSystemAAFontSettings", "lcd");
         System.setProperty("swing.aatext", "true");
 

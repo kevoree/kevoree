@@ -7,6 +7,7 @@ import org.kevoree.compare.DefaultModelCompare;
 import org.kevoree.impl.DefaultKevoreeFactory;
 import org.kevoree.kevscript.KevScriptEngine;
 import org.kevoree.loader.JSONModelLoader;
+import org.kevoree.log.Log;
 import org.kevoree.resolver.MavenResolver;
 import org.kevoree.serializer.JSONModelSerializer;
 import org.kevoree.tools.ui.editor.command.MergeDefaultLibrary;
@@ -142,6 +143,7 @@ public class KevoreeStore {
             }
             return model;
         } catch (Exception e) {
+            e.printStackTrace();
             return getCache(groupIDparam);
         }
     }
@@ -154,10 +156,13 @@ public class KevoreeStore {
             subMenu.setAutoscrolls(true);
             ContainerRoot model = getFromGroupID("org.kevoree.library." + s);
             HashMap<String, DeployUnit> cache = new HashMap<String, DeployUnit>();
-            for (TypeDefinition td : model.getTypeDefinitions()) {
-                cache.put(td.getDeployUnit().path(), td.getDeployUnit());
+            if(model != null){
+                for (TypeDefinition td : model.getTypeDefinitions()) {
+                    cache.put(td.getDeployUnit().path(), td.getDeployUnit());
+                }
+            } else {
+                Log.error("No library found");
             }
-
             for (DeployUnit du : cache.values()) {
                 JMenuItem mergeDefLib1 = new JMenuItem(du.getGroupName() + ":" + du.getName() + ":" + du.getVersion());
                 MergeDefaultLibrary cmdLDEFL1 = new MergeDefaultLibrary(du.getGroupName(), du.getName(), du.getVersion());
