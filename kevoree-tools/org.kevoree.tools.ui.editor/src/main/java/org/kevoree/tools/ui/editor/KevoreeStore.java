@@ -121,15 +121,14 @@ public class KevoreeStore {
                     }
                 }
                 if (resourceURI != null && !resourceURI.contains("-source")
-                        // avoid the check of snapshot version when the editor has a release version
-                        //&& (this.version.toLowerCase().endsWith("snapshot") ||
-                        //(!this.version.toLowerCase().endsWith("snapshot")
-                         // && !version.toLowerCase().endsWith("snapshot")))
-                          )
-                {
+                    // avoid the check of snapshot version when the editor has a release version
+                    //&& (this.version.toLowerCase().endsWith("snapshot") ||
+                    //(!this.version.toLowerCase().endsWith("snapshot")
+                    // && !version.toLowerCase().endsWith("snapshot")))
+                        ) {
 
                     StringBuffer buffer = new StringBuffer();
-                    buffer.append("repo \"http://oss.sonatype.org/content/groups/public/\"\n");
+                    buffer.append("repo \"http://oss.sonatype.org/content/groups/public\"\n");
                     buffer.append("include mvn:" + groupId + ":" + artifactId + ":" + version + "\n");
                     engine.execute(buffer.toString(), model);
 

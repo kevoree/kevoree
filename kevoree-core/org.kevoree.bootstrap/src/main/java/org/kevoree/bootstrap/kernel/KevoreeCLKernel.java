@@ -13,6 +13,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.kevoree.*;
 /**
@@ -48,7 +49,7 @@ public class KevoreeCLKernel implements KevoreeCLFactory, BootstrapService {
         }
     }
 
-    private HashMap<String, KevoreeJarClassLoader> cache = new HashMap<String, KevoreeJarClassLoader>();
+    private ConcurrentHashMap<String, KevoreeJarClassLoader> cache = new ConcurrentHashMap<String, KevoreeJarClassLoader>();
 
     private MavenResolver resolver = new MavenResolver();
 
