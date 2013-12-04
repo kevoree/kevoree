@@ -1,5 +1,5 @@
-repo org.sonatype.org/foo/bar?a=b&c=d
-include mvn:org.kevoree.library.javase:org.kevoree.library.javase.websocketgrp:2.0.5-SNAPSHOT
+repo http://org.sonatype.org/foo/bar?a=b&c=d // potato
+include mvn:org.kevoree.library.javase:org.kevoree.library.javase.websocketgrp:2.0.5-SNAPSHOT // potato!
 
 add node0, node1 : JavaSENode
 add sync : HelloGroup/0.0.2-SNAPSHOT
@@ -11,7 +11,7 @@ namespace space42
 // this is a comment
 // comments allow any characters ! \ù%*é=^``~&°.:!§,?/#çà][-|
 
-attach node0 sync
+attach node0 sync 					// trailing comment
 attach node0, node1 sync
 attach * sync
 attach * space42

@@ -2,9 +2,9 @@
 
 # Rules
 # =====
-KevScript    <- +(Statement ws)
+KevScript    <- +((Statement | :Comment eol) ws) :?Comment
 
-Statement    <- (Add | Remove | Move | Attach | Detach | Set | AddBinding | DelBinding | Include | Network | AddRepo | Comment | Namespace) ws
+Statement    <- Add | Remove | Move | Attach | Detach | Set | AddBinding | DelBinding | Include | Network | AddRepo | Namespace
 
 Add          <- AddToken ws NameList ws :':' ws TypeDef                                  # add group0, group1 : WebSocketGroup
 
@@ -25,10 +25,10 @@ AddBinding   <- BindToken ws InstancePath ws InstancePath                       
 
 DelBinding   <- UnbindToken ws InstancePath ws InstancePath                              # unbind node1.comp0.sendMsg chan0
 
-AddRepo      <- RepoToken ws Anything                                                    # repo org.sonatype.org/foo/bar?a=b&c=d
+AddRepo      <- RepoToken ws RepoString                                                  # repo org.sonatype.org/foo/bar?a=b&c=d
 
-Include      <- IncludeToken ws String :':' Anything                                     # include npm:kevoree-chan-websocket
-                                                                                         # include mvn:org.kevoree.library.javase:websocketgrp:2.0.5-SNAPSHOT
+Include      <- IncludeToken ws String :':' String2                                      # include npm:kevoree-chan-websocket
+																					     # include mvn:org.kevoree.library.javase:websocketgrp:2.0.5-SNAPSHOT
 
 NameList     <- InstancePath ws *(:[,] ws InstancePath)                                  # node42
                                                                                          # node0, node0.comp1, node42
@@ -48,7 +48,9 @@ String2      <- +[a-zA-Z0-9.:@_-]
 
 Version      <- +[a-zA-Z0-9._-]
 
-Anything     <- +(!eol .)
+RepoString   <- +(!eol :![ ] .)															# anything but EOL and ' '
+
+Anything     <- +(!eol .) 																# anything but EOL
 # =========
 # End Rules
 
@@ -67,7 +69,7 @@ NetworkToken    <: 'network'
 BindToken       <: 'bind'
 UnbindToken     <: 'unbind'
 NamespaceToken  <: 'namespace'
-Comment         <: '//' Anything ws
+Comment         <: '//' Anything
 eol             <: '\r\n' | '\n' | '\r'
 ws              <: *([ \t] | eol)
 # =================
