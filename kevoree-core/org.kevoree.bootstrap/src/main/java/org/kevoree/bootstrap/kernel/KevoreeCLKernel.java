@@ -72,7 +72,7 @@ public class KevoreeCLKernel implements KevoreeCLFactory, BootstrapService {
 
     @Override
     public KevoreeJarClassLoader get(DeployUnit deployUnit) {
-        if (deployUnit.getName().equals("org.kevoree.api") || deployUnit.getName().equals("org.kevoree.annotation.api")) {
+        if (deployUnit.getName().equals("org.kevoree.api") || deployUnit.getName().equals("org.kevoree.annotation.api")|| deployUnit.getName().equals("org.kevoree.model")|| deployUnit.getName().equals("org.kevoree.modeling.microframework") ) {
             return system;
         }
         return cache.get(deployUnit.path());
@@ -80,8 +80,9 @@ public class KevoreeCLKernel implements KevoreeCLFactory, BootstrapService {
 
     public KevoreeJarClassLoader installDeployUnit(DeployUnit deployUnit) {
         String path = deployUnit.path();
-        if (cache.containsKey(path)) {
-            return cache.get(path);
+        KevoreeJarClassLoader resolvedKCL = get(deployUnit);
+        if (resolvedKCL!=null) {
+            return resolvedKCL;
         } else {
             List<String> urls = new ArrayList<String>();
             if (!offline) {
