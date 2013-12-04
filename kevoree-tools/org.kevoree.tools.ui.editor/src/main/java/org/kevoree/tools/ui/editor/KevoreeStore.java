@@ -128,14 +128,18 @@ public class KevoreeStore {
                         ) {
 
                     StringBuffer buffer = new StringBuffer();
-                    buffer.append("repo \"http://oss.sonatype.org/content/groups/public\"\n");
+                    buffer.append("repo http://oss.sonatype.org/content/groups/public\n");
                     buffer.append("include mvn:" + groupId + ":" + artifactId + ":" + version + "\n");
                     engine.execute(buffer.toString(), model);
 
                 }
             }
             is.close();
-            setCache(groupIDparam, model);
+            try {
+                setCache(groupIDparam, model);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             return model;
         } catch (Exception e) {
             return getCache(groupIDparam);
@@ -149,7 +153,6 @@ public class KevoreeStore {
             JMenu subMenu = new JMenu(s.toUpperCase());
             subMenu.setAutoscrolls(true);
             ContainerRoot model = getFromGroupID("org.kevoree.library." + s);
-
             HashMap<String, DeployUnit> cache = new HashMap<String, DeployUnit>();
             for (TypeDefinition td : model.getTypeDefinitions()) {
                 cache.put(td.getDeployUnit().path(), td.getDeployUnit());
