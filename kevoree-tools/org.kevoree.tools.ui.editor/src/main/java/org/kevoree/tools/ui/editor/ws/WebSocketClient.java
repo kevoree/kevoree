@@ -7,6 +7,7 @@ import com.ning.http.client.websocket.WebSocketTextListener;
 import com.ning.http.client.websocket.WebSocketUpgradeHandler;
 import org.kevoree.ContainerRoot;
 import org.kevoree.loader.JSONModelLoader;
+import org.kevoree.log.Log;
 import org.kevoree.serializer.JSONModelSerializer;
 
 import java.io.IOException;
@@ -59,6 +60,9 @@ public class WebSocketClient {
 
 
     public static void pull(String ip, String port, final ModelCallBack callback) throws IOException, ExecutionException, InterruptedException {
+
+        Log.info("Pull from ws://" + ip + ":" + port);
+
         AsyncHttpClientConfig cf = new AsyncHttpClientConfig.Builder().build();
         final AsyncHttpClient c = new AsyncHttpClient(cf);
         WebSocket websocket = c.prepareGet("ws://" + ip + ":" + port)

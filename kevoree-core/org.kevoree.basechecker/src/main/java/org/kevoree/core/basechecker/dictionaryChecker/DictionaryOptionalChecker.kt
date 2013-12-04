@@ -61,19 +61,13 @@ class DictionaryOptionalChecker : CheckerService {
             var invalideErrorThrowed = false
             for (dicAtt in instDicType.attributes) {
                 if (!dicAtt.optional!!) {
-                    var defaultValuePresent = false
-                    for (dv in instDicType.defaultValues) {
-                        if (dv.attribute!!.name == dicAtt.name) {
-                            defaultValuePresent = true
-                            break
-                        }
-                    }
+                    var defaultValuePresent = dicAtt.defaultValue != null && dicAtt.defaultValue != ""
                     if (!defaultValuePresent) {
                         if (instance.dictionary != null) {
                             val instDic = instance.dictionary!!
                             var value: DictionaryValue? = null
                             for (v in instDic.values) {
-                                if (v.attribute!!.name == dicAtt.name) {
+                                if (v.name == dicAtt.name) {
                                     value = v
                                     break
                                 }
@@ -100,11 +94,11 @@ class DictionaryOptionalChecker : CheckerService {
                                     } else if (instance is Channel) {
                                         nodeNames = getBounds(instance as Channel)
                                     }
-
+                                      /*
                                     for (name in nodeNames) {
                                         var `is` = false
                                         for (v in instDic.values) {
-                                            if (v.attribute!!.name == dicAtt.name && v.targetNode != null && name == v.targetNode!!.name && v.value != "") {
+                                            if (v.name == dicAtt.name && v.targetNode != null && name == v.targetNode!!.name && v.value != "") {
                                                 `is` = true
                                                 break
                                             }
@@ -113,7 +107,7 @@ class DictionaryOptionalChecker : CheckerService {
                                                 throwError(instance, dicAtt, name, violations)
                                             }
                                         }
-                                    }
+                                    }   */
                                 }
                             }
                         } else if (!invalideErrorThrowed) {

@@ -100,19 +100,24 @@ class DictionaryNetworkPortChecker: CheckerService {
         var portFound: String? = null
         if(ist.typeDefinition != null && ist.typeDefinition!!.dictionaryType != null) {
             val dicType = ist.typeDefinition!!.dictionaryType!!
-            for (dv in dicType.defaultValues) {
-                if (dv.attribute!!.name.equals("port") || dv.attribute!!.name!!.endsWith("_port") || dv.attribute!!.name!!.startsWith("port_")) {
-                    portFound = dv.value
+            for (att in dicType.attributes) {
+                if (att.name.equals("port") || att.name!!.endsWith("_port") || att.name!!.startsWith("port_")) {
+                    portFound = att.defaultValue
                 }
             }
         }
         if(ist.dictionary != null) {
             val dic = ist.dictionary!!
-            for (dv in dic.values) {
-                if ((dv.attribute!!.name.equals("port") || dv.attribute!!.name!!.endsWith("_port") || dv.attribute!!.name!!.startsWith("port_")) && (dv.targetNode == null || dv.targetNode!!.name == nodeName)) {
-                    portFound = dv.value
-                }
+
+            portFound = ist.findFragmentDictionaryByID(nodeName)?.findValuesByID("port")?.value
+            if(portFound == null){
+                portFound = dic.findValuesByID("port")?.value
             }
+            if(portFound == null){
+                portFound = dic.findValuesByID("port")?.value
+            }
+
+
         }
 
         if (portFound != null) {

@@ -108,14 +108,19 @@ class SynchNodeTypeCommand(isPush: Boolean) extends Command {
 
             if (group != null) {
               if (group.getDictionary != null) {
-                import scala.collection.JavaConversions._
-                group.getDictionary.getValues.foreach {
-                  v =>
-                    if (v.getAttribute.getName == "port" && v.getTargetNode.getName == destNodeName) {
-                      port = v.getValue
-                    }
+                val tempPort = group.getDictionary.findValuesByID("port")
+                if (tempPort != null) {
+                  port = tempPort.getValue
                 }
               }
+              val fragDep = group.findFragmentDictionaryByID(destNodeName)
+              if (fragDep != null) {
+                val tempPort = fragDep.findValuesByID("port")
+                if (tempPort != null) {
+                  port = tempPort.getValue
+                }
+              }
+
             }
             //Lookup first IP i can ping ...
             val containerNode = model.findNodesByID(destNodeName)
@@ -139,7 +144,7 @@ class SynchNodeTypeCommand(isPush: Boolean) extends Command {
               }
             }
 
-            println("IP taken for push : "+ip)
+            println("IP taken for push : " + ip)
 
             WebSocketClient.push(ip, port, kernel.getModelHandler.getActualModel);
 

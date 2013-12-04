@@ -45,6 +45,7 @@ public class KevRunnerMojo extends AbstractMojo {
             bootstrap.bootstrapFromKevScript(new FileInputStream(model));
         } catch (Exception e) {
             getLog().error(e);
+            System.setSecurityManager(null);
             throw new MojoExecutionException("Error while parsing bootstrap KevScript ", e);
         }
 

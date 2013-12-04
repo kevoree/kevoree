@@ -119,6 +119,8 @@ object ModelBuilder {
                             }
                             javaClass<java.lang.Boolean>().getName() -> {
                             }
+                            javaClass<java.lang.Long>().getName() -> {
+                            }
                             else -> {
                                 if(!field.getType()!!.isPrimitive()){
                                     throw Exception("Param annotation is only applicable on field of type String,Long,Double,Float,Integer, current " + field.getType()?.getName())
@@ -133,6 +135,7 @@ object ModelBuilder {
                         dicAtt.datatype = field.getType()!!.getName()
                         dicAtt.optional = annotation.optional()
                         dicAtt.fragmentDependant = annotation.fragmentDependent()
+                        dicAtt.defaultValue = annotation.defaultValue()
                         currentTypeDefinition.dictionaryType!!.addAttributes(dicAtt)
                     }
                     else -> {

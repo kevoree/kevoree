@@ -29,14 +29,19 @@ public class KevScriptEngine implements KevScriptService {
 
     public void execute(String script, ContainerRoot model) throws Exception {
         ParseResult<Type> parserResult = parser.parse(new InputBuffer(script.toCharArray()));
-        interpret(parserResult.getAST(), model);
+        IAST<Type> ast = parserResult.getAST();
+        if (ast != null) {
+            interpret(ast, model);
+        } else {
+            Log.error(parserResult.getError().toString());
+        }
     }
 
     public void executeFromStream(InputStream script, ContainerRoot model) throws Exception {
         ParseResult<Type> parserResult = parser.parse(new InputBuffer(BufferFiller.asArray(script)));
         IAST<Type> ast = parserResult.getAST();
         if (ast != null) {
-            interpret(parserResult.getAST(), model);
+            interpret(ast, model);
         } else {
             Log.error(parserResult.getError().toString());
         }
@@ -121,15 +126,46 @@ public class KevScriptEngine implements KevScriptService {
                 }
                 break;
             case Network:
-                Log.error("Network not implemented yet !!!");
-
+                IAST<Type> leftHandNetwork = node.getChildren().get(0);
+                if (leftHandNetwork.getChildren().size() != 3) {
+                    throw new Exception("Network must be : network nodeName.propertyType.interfaceName IP");
+                } else {
+                    String nodeName = leftHandNetwork.getChildren().get(0).childrenAsString();
+                    String propType = leftHandNetwork.getChildren().get(1).childrenAsString();
+                    String interfaceName = leftHandNetwork.getChildren().get(2).childrenAsString();
+                    ContainerNode networkTargetNode = model.findNodesByID(nodeName);
+                    if (networkTargetNode == null) {
+                        throw new Exception("Node not found for name " + nodeName);
+                    }
+                    NetworkInfo info = networkTargetNode.findNetworkInformationByID(propType);
+                    if (info == null) {
+                        info = factory.createNetworkInfo();
+                        info.setName(propType);
+                        networkTargetNode.addNetworkInformation(info);
+                    }
+                    NetworkProperty netprop = info.findValuesByID(interfaceName);
+                    if (netprop == null) {
+                        netprop = factory.createNetworkProperty();
+                        netprop.setName(interfaceName);
+                        info.addValues(netprop);
+                    }
+                    netprop.setValue(node.getChildren().get(1).childrenAsString());
+                }
                 break;
             case Include:
                 MergeResolver.merge(model, node.getChildren().get(0).childrenAsString(), node.getChildren().get(1).childrenAsString());
                 break;
             case Set:
+                String propToSet = null;
+                List<Instance> targetNodes = null;
+                if (node.getChildren().size() == 3) {
+                    //frag dep
+                    propToSet = node.getChildren().get(2).childrenAsString();
+                    targetNodes = InstanceResolver.resolve(model, node.getChildren().get(1));
+                } else {
+                    propToSet = node.getChildren().get(1).childrenAsString();
+                }
 
-                String propToSet = node.getChildren().get(1).childrenAsString();
                 IAST<Type> leftHnodes = node.getChildren().get(0);
                 if (leftHnodes.getChildren().size() < 2) {
                     throw new Exception("Bad dictionary value description ");
@@ -144,30 +180,50 @@ public class KevScriptEngine implements KevScriptService {
                     if (propName.equals("started")) {
                         target.setStarted(Boolean.parseBoolean(propToSet));
                     } else {
-                        if (target.getDictionary() == null) {
-                            target.setDictionary(factory.createDictionary());
-                        }
-                        DictionaryValue dicValue = target.getDictionary().findValuesByID(propName);
-                        if (dicValue == null) {
-                            dicValue = factory.createDictionaryValue();
-                            if (target.getTypeDefinition().getDictionaryType() != null) {
-                                DictionaryAttribute dicAtt = target.getTypeDefinition().getDictionaryType().findAttributesByID(propName);
-                                if (dicAtt == null) {
-                                    Log.error("Param does not existe in type {} -> {}", target.getName(), propName);
-                                } else {
-                                    dicValue.setAttribute(dicAtt);
+                        if (targetNodes == null) {
+                            if (target.getDictionary() == null) {
+                                target.setDictionary(factory.createDictionary());
+                            }
+                            DictionaryValue dicValue = target.getDictionary().findValuesByID(propName);
+                            if (dicValue == null) {
+                                dicValue = factory.createDictionaryValue();
+                                if (target.getTypeDefinition().getDictionaryType() != null) {
+                                    DictionaryAttribute dicAtt = target.getTypeDefinition().getDictionaryType().findAttributesByID(propName);
+                                    if (dicAtt == null) {
+                                        throw new Exception("Param does not existe in type " + target.getName() + " -> " + propName);
+                                    } else {
+                                        dicValue.setName(dicAtt.getName());
+                                    }
                                 }
                                 target.getDictionary().addValues(dicValue);
                             }
-                        }
-                        dicValue.setValue(propToSet);
-                        /*
-                        if (targetNode != null) {
-                            dicValue.setTargetNode(model.findNodesByID(targetNode));
-                            if (dicValue.getTargetNode() == null) {
-                                Log.error("Node not found for @" + targetNode + " property");
+                            dicValue.setValue(propToSet);
+                        } else {
+                            for (Instance targetNode : targetNodes) {
+                                if (target.findFragmentDictionaryByID(targetNode.getName()) == null) {
+                                    FragmentDictionary newDictionary = factory.createFragmentDictionary();
+                                    newDictionary.setName(targetNode.getName());
+                                    target.addFragmentDictionary(newDictionary);
+                                }
+                                DictionaryValue dicValue = target.findFragmentDictionaryByID(targetNode.getName()).findValuesByID(propName);
+                                if (dicValue == null) {
+                                    dicValue = factory.createDictionaryValue();
+                                    if (target.getTypeDefinition().getDictionaryType() != null) {
+                                        DictionaryAttribute dicAtt = target.getTypeDefinition().getDictionaryType().findAttributesByID(propName);
+                                        if (dicAtt == null) {
+                                            throw new Exception("Param does not existe in type " + target.getName() + " -> " + propName);
+                                        } else {
+                                            if (!dicAtt.getFragmentDependant()) {
+                                                throw new Exception("Dictionary Attribute is not fragment dependent " + dicAtt.getName());
+                                            }
+                                            dicValue.setName(dicAtt.getName());
+                                        }
+                                    }
+                                    target.findFragmentDictionaryByID(targetNode.getName()).addValues(dicValue);
+                                }
+                                dicValue.setValue(propToSet);
                             }
-                        } */
+                        }
                     }
                 }
                 break;
@@ -246,7 +302,7 @@ public class KevScriptEngine implements KevScriptService {
     }
 
     private boolean applyAdd(TypeDefinition td, IAST<Type> name, ContainerRoot model) throws Exception {
-        boolean process = false;
+        Instance process = null;
         if (td instanceof NodeType) {
             ContainerNode instance = factory.createContainerNode();
             instance.setTypeDefinition(td);
@@ -257,7 +313,7 @@ public class KevScriptEngine implements KevScriptService {
                     throw new Exception("Node already exist for name : " + newNodeName);
                 }
                 model.addNodes(instance);
-                process = true;
+                process = instance;
             } else {
                 String parentNodeName = name.getChildren().get(0).childrenAsString();
                 String newNodeName = name.getChildren().get(1).childrenAsString();
@@ -268,7 +324,7 @@ public class KevScriptEngine implements KevScriptService {
                 }
                 model.addNodes(instance);
                 parentNode.addHosts(instance);
-                process = true;
+                process = instance;
             }
         }
         if (td instanceof ComponentType) {
@@ -293,7 +349,7 @@ public class KevScriptEngine implements KevScriptService {
                     throw new Exception("Can find parent node for name : " + name.getChildren().get(1).childrenAsString());
                 } else {
                     parentNode.addComponents(instance);
-                    process = true;
+                    process = instance;
                 }
             } else {
                 throw new Exception("Bad component name (must be nodeName.componentName) : " + name.toString());
@@ -305,7 +361,7 @@ public class KevScriptEngine implements KevScriptService {
             if (name.getType().equals(Type.InstancePath) && name.getChildren().size() == 1) {
                 instance.setName(name.getChildren().get(0).childrenAsString());
                 model.addHubs(instance);
-                process = true;
+                process = instance;
             } else {
                 throw new Exception("Bad channel name : " + name.toString());
             }
@@ -316,12 +372,12 @@ public class KevScriptEngine implements KevScriptService {
             if (name.getType().equals(Type.InstancePath) && name.getChildren().size() == 1) {
                 instance.setName(name.getChildren().get(0).childrenAsString());
                 model.addGroups(instance);
-                process = true;
+                process = instance;
             } else {
                 throw new Exception("Bad group name : " + name.toString());
             }
         }
-        return process;
+        return process != null;
     }
 
 

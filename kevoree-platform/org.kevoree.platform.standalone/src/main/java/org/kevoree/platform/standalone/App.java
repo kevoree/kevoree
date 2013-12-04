@@ -1,4 +1,4 @@
-package org.kevoree.platform;
+package org.kevoree.platform.standalone;
 
 import org.kevoree.bootstrap.Bootstrap;
 
@@ -15,7 +15,6 @@ public class App {
     private static final String defaultNodeName = "node0";
 
     public static void main(String[] args) throws Exception {
-        System.out.println("Kevoree Runtime");
         String nodeName = System.getProperty("node.name");
         if (nodeName == null) {
             nodeName = defaultNodeName;

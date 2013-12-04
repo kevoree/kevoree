@@ -1,7 +1,5 @@
 package org.kevoree.bootstrap.kernel;
 
-import jet.runtime.typeinfo.JetValueParameter;
-import org.kevoree.*;
 import org.kevoree.api.BootstrapService;
 import org.kevoree.api.Context;
 import org.kevoree.bootstrap.reflect.KevoreeInjector;
@@ -15,7 +13,9 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
+import org.kevoree.*;
 /**
  * Created with IntelliJ IDEA.
  * User: duke
@@ -49,7 +49,7 @@ public class KevoreeCLKernel implements KevoreeCLFactory, BootstrapService {
         }
     }
 
-    private HashMap<String, KevoreeJarClassLoader> cache = new HashMap<String, KevoreeJarClassLoader>();
+    private ConcurrentHashMap<String, KevoreeJarClassLoader> cache = new ConcurrentHashMap<String, KevoreeJarClassLoader>();
 
     private MavenResolver resolver = new MavenResolver();
 
@@ -73,7 +73,7 @@ public class KevoreeCLKernel implements KevoreeCLFactory, BootstrapService {
 
     @Override
     public KevoreeJarClassLoader get(DeployUnit deployUnit) {
-        if (deployUnit.getName().equals("org.kevoree.api") || deployUnit.getName().equals("org.kevoree.annotation.api")) {
+        if (deployUnit.getName().equals("org.kevoree.api") || deployUnit.getName().equals("org.kevoree.annotation.api")|| deployUnit.getName().equals("org.kevoree.model")|| deployUnit.getName().equals("org.kevoree.modeling.microframework") ) {
             return system;
         }
         return cache.get(deployUnit.path());
@@ -81,8 +81,9 @@ public class KevoreeCLKernel implements KevoreeCLFactory, BootstrapService {
 
     public KevoreeJarClassLoader installDeployUnit(DeployUnit deployUnit) {
         String path = deployUnit.path();
-        if (cache.containsKey(path)) {
-            return cache.get(path);
+        KevoreeJarClassLoader resolvedKCL = get(deployUnit);
+        if (resolvedKCL!=null) {
+            return resolvedKCL;
         } else {
             List<String> urls = new ArrayList<String>();
             if (!offline) {
@@ -165,24 +166,9 @@ public class KevoreeCLKernel implements KevoreeCLFactory, BootstrapService {
         Class clazz = classLoader.loadClass(instance.getTypeDefinition().getBean());
         try {
             Object newInstance = clazz.newInstance();
-            injector.addService(Context.class, new Context() {
-                @Override
-                public String getPath() {
-                    return instance.path();
-                }
-
-                @Override
-                public String getNodeName() {
-                    return nodeName;
-                }
-
-                @Override
-                public String getInstanceName() {
-                    return instance.getName();
-                }
-            });
-
-            injector.process(newInstance);
+            KevoreeInjector selfInjector = injector.clone();
+            selfInjector.addService(Context.class, new InstanceContext(instance.path(), nodeName, instance.getName()));
+            selfInjector.process(newInstance);
             injectDictionary(instance, newInstance);
             return newInstance;
         } catch (Exception e) {
@@ -192,54 +178,76 @@ public class KevoreeCLKernel implements KevoreeCLFactory, BootstrapService {
     }
 
     public void injectDictionary(Instance instance, Object target) {
-        if (instance.getDictionary() == null) {
+        if (instance.getTypeDefinition() == null || instance.getTypeDefinition().getDictionaryType() == null) {
             return;
         }
-        for (DictionaryValue dicVal : instance.getDictionary().getValues()) {
-
-            try {
-                Field f = target.getClass().getDeclaredField(dicVal.getAttribute().getName());
-                if (!f.isAccessible()) {
-                    f.setAccessible(true);
+        for (DictionaryAttribute att : instance.getTypeDefinition().getDictionaryType().getAttributes()) {
+            String value = null;
+            if (att.getFragmentDependant()) {
+                FragmentDictionary fdico = instance.findFragmentDictionaryByID(nodeName);
+                if (fdico != null) {
+                    DictionaryValue tempValue = fdico.findValuesByID(att.getName());
+                    if (tempValue != null) {
+                        value = tempValue.getValue();
+                    }
                 }
-                if (f.getType().equals(boolean.class)) {
-                    f.setBoolean(target, Boolean.parseBoolean(dicVal.getValue()));
+            }
+            if (value == null) {
+                if (instance.getDictionary() != null) {
+                    DictionaryValue tempValue = instance.getDictionary().findValuesByID(att.getName());
+                    if (tempValue != null) {
+                        value = tempValue.getValue();
+                    }
                 }
-                if (f.getType().equals(Boolean.class)) {
-                    f.set(target, new Boolean(Boolean.parseBoolean(dicVal.getValue())));
+            }
+            if (value == null) {
+                if (!att.getDefaultValue().equals("")) {
+                    value = att.getDefaultValue();
                 }
-                if (f.getType().equals(Integer.class)) {
-                    f.setInt(target, Integer.parseInt(dicVal.getValue()));
+            }
+            if (value != null) {
+                try {
+                    Field f = target.getClass().getDeclaredField(att.getName());
+                    if (!f.isAccessible()) {
+                        f.setAccessible(true);
+                    }
+                    if (f.getType().equals(boolean.class)) {
+                        f.setBoolean(target, Boolean.parseBoolean(value));
+                    }
+                    if (f.getType().equals(Boolean.class)) {
+                        f.set(target, new Boolean(Boolean.parseBoolean(value)));
+                    }
+                    if (f.getType().equals(int.class)) {
+                        f.setInt(target, Integer.parseInt(value));
+                    }
+                    if (f.getType().equals(Integer.class)) {
+                        f.set(target, new Integer(Integer.parseInt(value)));
+                    }
+                    if (f.getType().equals(long.class)) {
+                        f.setLong(target, Long.parseLong(value));
+                    }
+                    if (f.getType().equals(Long.class)) {
+                        f.set(target, new Long(Long.parseLong(value)));
+                    }
+                    if (f.getType().equals(double.class)) {
+                        f.setDouble(target, Double.parseDouble(value));
+                    }
+                    if (f.getType().equals(Double.class)) {
+                        f.set(target, Double.parseDouble(value));
+                    }
+                    if (f.getType().equals(String.class)) {
+                        f.set(target, value);
+                    }
+                } catch (Exception e) {
+                    Log.error("No field corresponding to annotation, consistency error {} on {}", att.getName(), target.toString());
+                    e.printStackTrace();
                 }
-                if (f.getType().equals(Integer.class)) {
-                    f.set(target, new Integer(Integer.parseInt(dicVal.getValue())));
-                }
-                if (f.getType().equals(long.class)) {
-                    f.setLong(target, Long.parseLong(dicVal.getValue()));
-                }
-                if (f.getType().equals(Long.class)) {
-                    f.set(target, new Long(Long.parseLong(dicVal.getValue())));
-                }
-                if (f.getType().equals(double.class)) {
-                    f.setDouble(target, Double.parseDouble(dicVal.getValue()));
-                }
-                if (f.getType().equals(Double.class)) {
-                    f.set(target, Double.parseDouble(dicVal.getValue()));
-                }
-                if (f.getType().equals(String.class)) {
-                    f.set(target, dicVal.getValue());
-                }
-            } catch (Exception e) {
-                Log.error("No field corresponding to annotation, consistency error {} on {}", dicVal.getAttribute().getName(), target.toString());
-                e.printStackTrace();
-
-
             }
         }
     }
 
     @Override
-    public void injectService(@JetValueParameter(name = "api") Class<? extends Object> aClass, @JetValueParameter(name = "impl") Object o, @JetValueParameter(name = "target") Object o2) {
+    public void injectService(Class<? extends Object> aClass, Object o, Object o2) {
         KevoreeInjector injector = new KevoreeInjector();
         injector.addService(aClass, o);
         injector.process(o2);

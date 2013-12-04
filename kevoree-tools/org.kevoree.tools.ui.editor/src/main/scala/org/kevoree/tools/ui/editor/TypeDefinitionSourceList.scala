@@ -173,12 +173,13 @@ class TypeDefinitionSourceList(pane: JSplitPane, kernel: KevoreeUIKernel) {
       refreshCmd.execute(null)
     }
   })
+  /*
   controlBar.createAndAddPopdownButton(MacIcons.GEAR,
     new PopupMenuCustomizer() {
       def customizePopup(popup: JPopupMenu) {
         popup.removeAll();
       }
-    })
+    })  */
 
   sourceList.setColorScheme(new SourceListDarkColorScheme());
   sourceList.useIAppStyleScrollBars()

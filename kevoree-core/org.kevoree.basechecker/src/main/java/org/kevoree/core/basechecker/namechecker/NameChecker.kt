@@ -43,7 +43,7 @@ class NameChecker: CheckerService {
                     }
                     if (component.dictionary != null) {
                         for (property in component.dictionary!!.values) {
-                            violation = check(property.attribute!!)
+                            //violation = check(property.name!!)
                             if (violation != null) {
                                 val targetObjects = ArrayList<KMFContainer>()
                                 targetObjects.add(component)
@@ -79,7 +79,7 @@ class NameChecker: CheckerService {
                 }
                 if (channel.dictionary != null) {
                     for (property in channel.dictionary!!.values) {
-                        violation = check(property.attribute!!)
+                        //violation = check(property.attribute!!)
                         if (violation != null) {
                             val targetObjects = ArrayList<KMFContainer>()
                             targetObjects.add(channel)
@@ -96,7 +96,7 @@ class NameChecker: CheckerService {
                 }
                 if (group.dictionary != null) {
                     for (property in group.dictionary!!.values) {
-                        violation = check(property.attribute!!)
+                        //violation = check(property.name!!)
                         if (violation != null) {
                             val targetObjects = ArrayList<KMFContainer>()
                             targetObjects.add(group)

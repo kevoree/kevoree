@@ -77,7 +77,6 @@ public class NodePropertyEditor extends InstancePropertyEditor {
         if (info != null) {
             for (NetworkProperty prop : info.getValues()) {
                 String value = prop.getName() + ":" + prop.getValue();
-                System.out.println(value);
                 ips.add(HudWidgetFactory.createHudLabel(value));
             }
         } else {

@@ -112,13 +112,19 @@ public class Bootstrap {
         FileInputStream fin = new FileInputStream(input);
         if (input.getName().endsWith(".kevs")) {
             bootstrapFromKevScript(fin);
+        } else {
+            if (input.getName().endsWith(".kev")) {
+                bootstrap((ContainerRoot) xmiLoader.loadModelFromStream(fin).get(0));
+            } else {
+                if (input.getName().endsWith(".json")) {
+                    bootstrap((ContainerRoot) jsonLoader.loadModelFromStream(fin).get(0));
+                } else {
+                    Log.error("Can't bootstrap because no extension found for {}", input.getName());
+                }
+            }
+
         }
-        if (input.getName().endsWith(".kev")) {
-            bootstrap((ContainerRoot) xmiLoader.loadModelFromStream(fin).get(0));
-        }
-        if (input.getName().endsWith(".json")) {
-            bootstrap((ContainerRoot) jsonLoader.loadModelFromStream(fin).get(0));
-        }
+
         fin.close();
     }
 }

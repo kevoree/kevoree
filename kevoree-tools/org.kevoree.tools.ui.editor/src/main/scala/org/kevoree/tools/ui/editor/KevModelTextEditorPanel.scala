@@ -71,13 +71,15 @@ class KevModelTextEditorPanel(kernel: KevoreeUIKernel) extends JPanel {
   btApply.addMouseListener(new MouseAdapter() {
     override def mouseClicked(p1: MouseEvent) {
       try {
-        val newModel = loader.loadModelFromString(codeEditor.getText)
+        val newModel = loader.loadModelFromString(codeEditor.getText).get(0)
         val loadCMD = new LoadModelCommand
         loadCMD.setKernel(kernel)
         loadCMD.execute(newModel)
 
       } catch {
-        case _@e => LoggerFactory.getLogger(this.getClass).error("error while apply model")
+        case _@e => {
+          LoggerFactory.getLogger(this.getClass).error("error while apply model")
+        }
       }
     }
   })

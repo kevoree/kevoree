@@ -23,7 +23,7 @@ public class KevScriptExporter {
             public void visit(KMFContainer kmfContainer, String s, KMFContainer kmfContainer2) {
                 if (kmfContainer instanceof DeployUnit) {
                     DeployUnit currentDU = (DeployUnit) kmfContainer;
-                    buffer.append("include mvn:" + currentDU.getGroupName() + "/" + currentDU.getName() + "/" + currentDU.getVersion() + "\n");
+                    buffer.append("include mvn:" + currentDU.getGroupName() + ":" + currentDU.getName() + ":" + currentDU.getVersion() + "\n");
                 }
             }
         }, true, true, false);
@@ -33,7 +33,29 @@ public class KevScriptExporter {
             public void visit(KMFContainer kmfContainer, String s, KMFContainer kmfContainer2) {
                 if (kmfContainer instanceof Instance) {
                     Instance currentInstance = (Instance) kmfContainer;
-                    buffer.append("add " + currentInstance.getName() + " : " + currentInstance.getTypeDefinition().getName() + "/" + currentInstance.getTypeDefinition().getVersion() + "\n");
+                    String instanceID = null;
+
+                    if (currentInstance instanceof ComponentInstance) {
+                        Instance nodeParent = (Instance) kmfContainer.eContainer();
+                        instanceID = nodeParent.getName() + "." + currentInstance.getName();
+                        buffer.append("add " + instanceID + " : " + currentInstance.getTypeDefinition().getName() + "/" + currentInstance.getTypeDefinition().getVersion() + "\n");
+                    } else {
+                        instanceID = currentInstance.getName();
+                        buffer.append("add " + instanceID + " : " + currentInstance.getTypeDefinition().getName() + "/" + currentInstance.getTypeDefinition().getVersion() + "\n");
+                    }
+                    //output all the dictionary
+                    Dictionary dico = currentInstance.getDictionary();
+                    if (dico != null) {
+                        for (DictionaryValue value : dico.getValues()) {
+                            buffer.append("set " + instanceID + "." + value.getName() + " = \"" + value.getValue() + "\"\n");
+                        }
+                    }
+                    for (FragmentDictionary fdic : currentInstance.getFragmentDictionary()) {
+                        for (DictionaryValue value : fdic.getValues()) {
+                            buffer.append("set " + instanceID + "." + value.getName() + "/" + fdic.getName() + " = \"" + value.getValue() + "\"\n");
+                        }
+                    }
+                    buffer.append("set " + instanceID + ".started = \"" + currentInstance.getStarted() + "\"\n");
                 }
             }
         }, true, true, false);

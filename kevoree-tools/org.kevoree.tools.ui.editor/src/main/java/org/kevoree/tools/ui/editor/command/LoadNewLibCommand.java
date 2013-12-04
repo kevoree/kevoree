@@ -48,105 +48,76 @@ import java.util.logging.Logger;
  */
 public class LoadNewLibCommand implements Command {
 
-	public void setKernel (KevoreeUIKernel kernel) {
-		this.kernel = kernel;
-	}
+    public void setKernel(KevoreeUIKernel kernel) {
+        this.kernel = kernel;
+    }
 
-	private KevoreeUIKernel kernel;
+    private KevoreeUIKernel kernel;
 
-	@Override
-	public void execute (Object p) {
+    @Override
+    public void execute(Object p) {
 
-		String path = null;
-		String absolutePath = null;
-		try {
-			if (p instanceof File) {
-				File file = (File) p;
-				absolutePath = file.getAbsolutePath();
-			} else if (p instanceof URL) {
-				absolutePath = ((URL) p).getPath();
-			} else if (p instanceof String) {
-				absolutePath = (String) p;
-			} else {
-				throw new Exception("Unable to load library from object " + p.getClass() + ":" + p.toString());
-			}
+        String path = null;
+        String absolutePath = null;
+        try {
+            if (p instanceof File) {
+                File file = (File) p;
+                absolutePath = file.getAbsolutePath();
+            } else if (p instanceof URL) {
+                absolutePath = ((URL) p).getPath();
+            } else if (p instanceof String) {
+                absolutePath = (String) p;
+            } else {
+                throw new Exception("Unable to load library from object " + p.getClass() + ":" + p.toString());
+            }
+            JSONModelLoader loader = new JSONModelLoader();
+            try {
+                JarFile jar;
+                jar = new JarFile(new File(absolutePath));
+                JarEntry entry = jar.getJarEntry("KEV-INF/lib.json");
+                if (entry != null) {
+                    ContainerRoot nroot = (ContainerRoot) loader.loadModelFromStream(jar.getInputStream(entry)).get(0);
+                    kernel.getModelHandler().merge(nroot);
+                    PositionedEMFHelper.updateModelUIMetaData(kernel);
+                    LoadModelCommand loadCmd = new LoadModelCommand();
+                    loadCmd.setKernel(kernel);
+                    loadCmd.execute(kernel.getModelHandler().getActualModel());
+                    path = convertStreamToFile(jar.getInputStream(entry));
+                } else {
+                    JOptionPane.showMessageDialog(kernel.getModelPanel(), "No Kev model have been found in the given library.", "Corrupted Lib.", JOptionPane.WARNING_MESSAGE);
+                }
+            } catch (Exception e) {
+                path = absolutePath;
+            }
 
-			Boolean jarFile = absolutePath.endsWith("jar");
-			Boolean kevFile = absolutePath.endsWith("kev");
-
-			try {
-				JarFile jar;
-
-				jar = new JarFile(new File(absolutePath)); //new JarFile(filechooser.getSelectedFile().getAbsoluteFile().toURI().toString());
-				JarEntry entry = jar.getJarEntry("KEV-INF/lib.kev");
-				if (entry != null) {
-					path = convertStreamToFile(jar.getInputStream(entry));
-				} else {
-					JOptionPane.showMessageDialog(kernel.getModelPanel(), "No Kev model have been found in the given library.", "Corrupted Lib.", JOptionPane.WARNING_MESSAGE);
-				}
-			} catch (Exception e) {
-				path = absolutePath;
-			}
-
-
-			/*if (kevFile) {
-				path = absolutePath;
-			} else if (jarFile) {
-				JarFile jar;
-
-				jar = new JarFile(new File(absolutePath)); //new JarFile(filechooser.getSelectedFile().getAbsoluteFile().toURI().toString());
-				JarEntry entry = jar.getJarEntry("KEV-INF/lib.kev");
-				if (entry != null) {
-					path = convertStreamToFile(jar.getInputStream(entry));
-				} else {
-					JOptionPane.showMessageDialog(kernel.getModelPanel(), "No Kev model have been found in the given library.", "Corrupted Lib.", JOptionPane.WARNING_MESSAGE);
-				}
-			} else {
-				JOptionPane.showMessageDialog(kernel.getModelPanel(), "The file format can not be handled. Accepted files are *.jar and *.kev", "Unknown file format.", JOptionPane.WARNING_MESSAGE);
-			}*/
-
-			if (path != null) {
-
-                JSONModelLoader loader = new JSONModelLoader();
-
-				ContainerRoot nroot = (ContainerRoot) loader.loadModelFromStream(new FileInputStream(path)).get(0);
-				//Merge
-				kernel.getModelHandler().merge(nroot);
-				//CREATE TEMP FILE FROM ACTUAL MODEL
-
-				//File tempFile = File.createTempFile("kevoreeEditorTemp", ".kev");
-				//System.out.println("path="+tempFile);
-				PositionedEMFHelper.updateModelUIMetaData(kernel);
-				//KevoreeXmiHelper.save(tempFile.getAbsolutePath(), kernel.getModelHandler().getActualModel());
-				//LOAD MODEL
-				LoadModelCommand loadCmd = new LoadModelCommand();
-				loadCmd.setKernel(kernel);
-				loadCmd.execute(kernel.getModelHandler().getActualModel());
-			}
-		} catch (Exception ex) {
-			JOptionPane.showMessageDialog(kernel.getModelPanel(), "Unable to load the give library.\nSee log for further information.", "Unable to load lib.", JOptionPane.WARNING_MESSAGE);
-			Logger.getLogger(LoadNewLibCommand.class.getName()).log(Level.SEVERE, null, ex);
-		}
+            if (path != null) {
 
 
-	}
+            }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(kernel.getModelPanel(), "Unable to load the give library.\nSee log for further information.", "Unable to load lib.", JOptionPane.WARNING_MESSAGE);
+            Logger.getLogger(LoadNewLibCommand.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
 
-	private String convertStreamToFile (InputStream inputStream) throws IOException {
-		Random rand = new Random();
-		File temp = File.createTempFile("kevoreeloaderLib" + rand.nextInt(), ".xmi");
-		// Delete temp file when program exits.
-		temp.deleteOnExit();
-		OutputStream out = new FileOutputStream(temp);
-		int read = 0;
-		byte[] bytes = new byte[1024];
-		while ((read = inputStream.read(bytes)) != -1) {
-			out.write(bytes, 0, read);
-		}
-		inputStream.close();
-		out.flush();
-		out.close();
+    }
 
-		return temp.getAbsolutePath();
-	}
+
+    private String convertStreamToFile(InputStream inputStream) throws IOException {
+        Random rand = new Random();
+        File temp = File.createTempFile("kevoreeloaderLib" + rand.nextInt(), ".xmi");
+        // Delete temp file when program exits.
+        temp.deleteOnExit();
+        OutputStream out = new FileOutputStream(temp);
+        int read = 0;
+        byte[] bytes = new byte[1024];
+        while ((read = inputStream.read(bytes)) != -1) {
+            out.write(bytes, 0, read);
+        }
+        inputStream.close();
+        out.flush();
+        out.close();
+
+        return temp.getAbsolutePath();
+    }
 }
