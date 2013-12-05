@@ -13,5 +13,5 @@ trait KevoreeDeployPhase {
     fun rollBack()
     fun runPhase(): Boolean
     fun populate(cmd: PrimitiveCommand)
-    var sucessor: KevoreeParDeployPhase?
+    var sucessor: KevoreeDeployPhase?
 }

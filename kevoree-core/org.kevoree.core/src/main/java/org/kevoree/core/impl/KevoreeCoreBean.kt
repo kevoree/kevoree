@@ -22,7 +22,6 @@ import java.util.concurrent.TimeUnit
 import org.kevoree.api.NodeType
 import org.kevoree.core.impl.deploy.PrimitiveCommandExecutionHelper
 
-
 class PreCommand(newmodel: ContainerRoot, modelListeners: KevoreeListeners, oldModel: ContainerRoot){
     var alreadyCall = false
     val preRollbackTest: () -> Boolean = {() ->

@@ -19,7 +19,7 @@ class KevoreeParDeployPhase : KevoreeDeployPhase {
     fun setMaxTime(mt: Long) {
         maxTimeout = Math.max(maxTimeout, mt)
     }
-    override var sucessor: KevoreeParDeployPhase? = null
+    override var sucessor: KevoreeDeployPhase? = null
     class Worker(val primitive: PrimitiveCommand) : Callable<Boolean> {
         override fun call(): Boolean {
             try {
@@ -40,7 +40,7 @@ class KevoreeParDeployPhase : KevoreeDeployPhase {
         return if (ps.isEmpty()) {
             true
         } else {
-            val pool = java.util.concurrent.Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors(), WorkerThreadFactory(System.currentTimeMillis().toString()))
+            val pool = java.util.concurrent.Executors.newCachedThreadPool(WorkerThreadFactory(System.currentTimeMillis().toString()))
             val workers = ArrayList<Worker>()
             for(primitive in ps) {
                 workers.add(Worker(primitive))

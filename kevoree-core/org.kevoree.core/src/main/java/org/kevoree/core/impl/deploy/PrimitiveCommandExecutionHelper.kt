@@ -37,7 +37,8 @@ object PrimitiveCommandExecutionHelper {
     fun execute(rootNode: ContainerNode, adaptionModel: AdaptationModel, nodeInstance: NodeType, afterUpdateFunc: ()->Boolean, preRollBack: ()->Boolean, postRollback: ()-> Boolean): Boolean {
         val orderedPrimitiveSet = adaptionModel.orderedPrimitiveSet
         return if (orderedPrimitiveSet != null) {
-            val phase = KevoreeParDeployPhase()
+
+            val phase = if(orderedPrimitiveSet is ParallelStep){KevoreeParDeployPhase()}else{KevoreeSeqDeployPhase()}
             val res = executeStep(rootNode, orderedPrimitiveSet, nodeInstance, phase, preRollBack)
             if (res) {
                 if (!afterUpdateFunc()) {
@@ -55,7 +56,7 @@ object PrimitiveCommandExecutionHelper {
         }
     }
 
-    private fun executeStep(rootNode: ContainerNode, step: Step, nodeInstance: NodeType, phase: KevoreeParDeployPhase, preRollBack: ()-> Boolean): Boolean {
+    private fun executeStep(rootNode: ContainerNode, step: Step, nodeInstance: NodeType, phase: KevoreeDeployPhase, preRollBack: ()-> Boolean): Boolean {
         if (step == null) {
             return true
         }
@@ -77,7 +78,7 @@ object PrimitiveCommandExecutionHelper {
                 val nextStep = step.nextStep
                 var subResult = false
                 if(nextStep != null){
-                    val nextPhase = KevoreeParDeployPhase()
+                    val nextPhase = if(nextStep is ParallelStep){KevoreeParDeployPhase()}else{KevoreeSeqDeployPhase()}
                     phase.sucessor = nextPhase
                     subResult = executeStep(rootNode, nextStep, nodeInstance, nextPhase, preRollBack)
                 } else {
