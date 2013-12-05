@@ -52,10 +52,6 @@ class SaveAsKevScript extends Command {
 
   def execute(p: AnyRef) {
 
-
-    println("SaveAsKevScrpt"+p)
-
-
     val script = KevScriptExporter.export(kernel.getModelHandler.getActualModel)
     if (p!=null && p!="" && p.isInstanceOf[String]) {
       val f = new File(p.asInstanceOf[String])

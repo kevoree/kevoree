@@ -25,11 +25,12 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
 import java.net.URL;
 
 public class KevoreeGUIFrame extends JFrame {
 
-
+    private static final String defaultNodeName = "node0";
     public static KevoreeGUIFrame singleton = null;
 
     private static KevoreeLeftModel left = null;
@@ -97,7 +98,11 @@ public class KevoreeGUIFrame extends JFrame {
         });
         try {
             ConsoleShell shell = new ConsoleShell();
-            String nodeName = "node0";
+            String nodeName = System.getProperty("node.name");
+            if (nodeName == null) {
+                nodeName = defaultNodeName;
+            }
+
             bootstrap[0] = new Bootstrap(nodeName);
             KevoreeGUIFrame.showShell(shell);
             bootstrap[0].getCore().registerModelListener(new ModelListener() {
@@ -139,7 +144,12 @@ public class KevoreeGUIFrame extends JFrame {
                 }
             });
 
-            bootstrap[0].bootstrapFromKevScript(App.class.getClassLoader().getResourceAsStream("uidefaut.kevs"));
+            String bootstrapModel = System.getProperty("node.bootstrap");
+            if (bootstrapModel != null) {
+                bootstrap[0].bootstrapFromFile(new File(bootstrapModel));
+            } else {
+                bootstrap[0].bootstrapFromKevScript(App.class.getClassLoader().getResourceAsStream("uidefaut.kevs"));
+            }
 
         } catch (Throwable e) {
             e.printStackTrace();
