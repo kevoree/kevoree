@@ -134,7 +134,7 @@ public class KevoreeCLKernel implements KevoreeCLFactory, BootstrapService {
         }
         KevoreeJarClassLoader kcl = installDeployUnit(deployUnit);
         if (kcl == null) {
-            Log.error("Can install {}", deployUnit.path());
+            Log.error("Can't install {}", deployUnit.path());
         } else {
             for (DeployUnit child : deployUnit.getRequiredLibs()) {
                 kcl.addSubClassLoader(recursiveInstallDeployUnit(child));
