@@ -144,6 +144,14 @@ object ModelBuilder {
                 }
             }
         }
+        //TODO load class from MavenDependency for analysis
+        /*
+        for(interface in clazz.getInterfaces()?.iterator()){
+            deepFields(interface,factory,currentTypeDefinition)
+        }
+        if(clazz.getSuperclass()!=null){
+            deepFields(clazz.getSuperclass()!!,factory,currentTypeDefinition)
+        } */
     }
 
     fun process(elem: Any, clazz: CtClass, factory: KevoreeFactory, du: DeployUnit, root: ContainerRoot) {

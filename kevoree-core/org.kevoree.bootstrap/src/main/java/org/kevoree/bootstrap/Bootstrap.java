@@ -57,6 +57,7 @@ public class Bootstrap {
         injector.addService(KevScriptService.class, kevScriptEngine);
         kernel.setInjector(injector);
         core.setBootstrapService(kernel);
+        Log.info("Bootstrap Kevoree node : {}, version {}",nodeName,core.getFactory().getVersion());
         core.start();
     }
 
