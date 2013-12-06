@@ -4,12 +4,12 @@
     <artifactId>org.kevoree.tools.mavenplugin</artifactId>
     <packaging>maven-plugin</packaging>
     <name>Kevoree :: Tools :: MavenPlugin</name>
-    <version>3.0.4</version>
+    <version>3.0.5-SNAPSHOT</version>
 
     <parent>
         <artifactId>org.kevoree.tools.root</artifactId>
         <groupId>org.kevoree.tools</groupId>
-        <version>3.0.4</version>
+        <version>3.0.5-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
