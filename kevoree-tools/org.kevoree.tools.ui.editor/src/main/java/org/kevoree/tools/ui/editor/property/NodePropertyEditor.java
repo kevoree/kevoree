@@ -73,11 +73,16 @@ public class NodePropertyEditor extends InstancePropertyEditor {
         ips.setBorder(null);
         ips.setLayout(new BoxLayout(ips, BoxLayout.PAGE_AXIS));
 
+        int i =0;
+
         NetworkInfo info = node.findNetworkInformationByID("ip");
         if (info != null) {
             for (NetworkProperty prop : info.getValues()) {
-                String value = prop.getName() + ":" + prop.getValue();
-                ips.add(HudWidgetFactory.createHudLabel(value));
+                if(!prop.getValue().contains(":") && i<5){ //only display the first 5 ips
+                    String value = prop.getName() + ":" + prop.getValue();
+                    ips.add(HudWidgetFactory.createHudLabel(value));
+                    i++;
+                }
             }
         } else {
             ips.add(HudWidgetFactory.createHudLabel("No IP information for this node"));
