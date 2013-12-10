@@ -31,7 +31,7 @@ object ModelBuilder {
 
     private fun addLibrary(libName: String, typeDef: TypeDefinition, root: ContainerRoot, factory: KevoreeFactory) {
         var lib = root.findLibrariesByID(libName)
-        if(lib == null){
+        if (lib == null) {
             lib = factory.createTypeLibrary()
             lib!!.name = libName
             root.addLibraries(lib!!)
@@ -40,17 +40,17 @@ object ModelBuilder {
     }
 
     fun deepMethods(clazz: CtClass, factory: KevoreeFactory, currentTypeDefinition: TypeDefinition) {
-        for(method in clazz.getDeclaredMethods()?.iterator()){
-            for(annotation in method.getAnnotations()?.iterator()){
+        for (method in clazz.getDeclaredMethods()?.iterator()) {
+            for (annotation in method.getAnnotations()?.iterator()) {
                 when(annotation) {
                     is Input -> {
-                        if(currentTypeDefinition is org.kevoree.ComponentType){
-                            if(method.getParameterTypes()?.size!! > 1){
+                        if (currentTypeDefinition is org.kevoree.ComponentType) {
+                            if (method.getParameterTypes()?.size!! > 1) {
                                 throw Exception("Input annotation should be used only on method with 0 or 1 parameter ${method.getName()}")
                             } else {
-                                if(method.getParameterTypes()?.size == 1){
+                                if (method.getParameterTypes()?.size == 1) {
                                     var firstParam = method.getParameterTypes()!!.get(0)
-                                    if(!firstParam.getName().equals(javaClass<Object>().getName())){
+                                    if (!firstParam.getName().equals(javaClass<Object>().getName())) {
                                         throw Exception("Input method only support Object type parameter ${method.getName()}");
                                     }
                                 }
@@ -70,8 +70,8 @@ object ModelBuilder {
     }
 
     fun deepFields(clazz: CtClass, factory: KevoreeFactory, currentTypeDefinition: TypeDefinition) {
-        for(field in clazz.getDeclaredFields()?.iterator()){
-            for(annotation in field.getAnnotations()?.iterator()){
+        for (field in clazz.getDeclaredFields()?.iterator()) {
+            for (annotation in field.getAnnotations()?.iterator()) {
                 when(annotation) {
                     is KevoreeInject -> {
                         when(field.getType()!!.getName()) {
@@ -96,10 +96,10 @@ object ModelBuilder {
                         }
                     }
                     is Output -> {
-                        if(!field.getType()!!.getName().equals(javaClass<org.kevoree.api.Port>().getName())){
+                        if (!field.getType()!!.getName().equals(javaClass<org.kevoree.api.Port>().getName())) {
                             throw Exception("Output port field must of type of " + javaClass<org.kevoree.api.Port>().getName())
                         }
-                        if(currentTypeDefinition is org.kevoree.ComponentType){
+                        if (currentTypeDefinition is org.kevoree.ComponentType) {
                             var requiredPortRef = factory.createPortTypeRef()
                             requiredPortRef.name = field.getName()
                             requiredPortRef.optional = annotation.optional()
@@ -122,13 +122,13 @@ object ModelBuilder {
                             javaClass<java.lang.Long>().getName() -> {
                             }
                             else -> {
-                                if(!field.getType()!!.isPrimitive()){
+                                if (!field.getType()!!.isPrimitive()) {
                                     throw Exception("Param annotation is only applicable on field of type String,Long,Double,Float,Integer, current " + field.getType()?.getName())
                                 }
                             }
                         }
                         var dicAtt = factory.createDictionaryAttribute()
-                        if(currentTypeDefinition.dictionaryType == null){
+                        if (currentTypeDefinition.dictionaryType == null) {
                             currentTypeDefinition.dictionaryType = factory.createDictionaryType()
                         }
                         dicAtt.name = field.getName()
@@ -144,14 +144,12 @@ object ModelBuilder {
                 }
             }
         }
-        //TODO load class from MavenDependency for analysis
-        /*
-        for(interface in clazz.getInterfaces()?.iterator()){
-            deepFields(interface,factory,currentTypeDefinition)
+        for (interface in clazz.getInterfaces()?.iterator()) {
+            deepFields(interface, factory, currentTypeDefinition)
         }
-        if(clazz.getSuperclass()!=null){
-            deepFields(clazz.getSuperclass()!!,factory,currentTypeDefinition)
-        } */
+        if (clazz.getSuperclass() != null) {
+            deepFields(clazz.getSuperclass()!!, factory, currentTypeDefinition)
+        }
     }
 
     fun process(elem: Any, clazz: CtClass, factory: KevoreeFactory, du: DeployUnit, root: ContainerRoot) {
@@ -195,14 +193,14 @@ object ModelBuilder {
                 deepFields(clazz, factory, nodeType)
             }
             is Library -> {
-                for(typeDef in root.typeDefinitions){
-                    if(typeDef.name == clazz.getSimpleName() && typeDef.version == du.version){
-                        if(elem.name() != null){
+                for (typeDef in root.typeDefinitions) {
+                    if (typeDef.name == clazz.getSimpleName() && typeDef.version == du.version) {
+                        if (elem.name() != null) {
                             addLibrary(elem.name()!!, typeDef, root, factory)
                         }
                         var libs = elem.names()
-                        if(libs != null){
-                            for(i in 0..libs!!.size - 1){
+                        if (libs != null) {
+                            for (i in 0..libs!!.size - 1) {
                                 addLibrary(libs!!.get(i), typeDef, root, factory)
                             }
                         }

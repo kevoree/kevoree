@@ -23,9 +23,6 @@ import org.apache.maven.project.MavenProject;
 import org.apache.maven.shared.dependency.tree.DependencyNode;
 import org.apache.maven.shared.dependency.tree.DependencyTreeBuilder;
 import org.apache.maven.shared.dependency.tree.DependencyTreeBuilderException;
-import org.jetbrains.jet.cli.common.ExitCode;
-import org.jetbrains.jet.cli.jvm.K2JVMCompiler;
-import org.jetbrains.jet.cli.jvm.K2JVMCompilerArguments;
 import org.kevoree.ContainerRoot;
 import org.kevoree.DeployUnit;
 import org.kevoree.TypeDefinition;
@@ -39,10 +36,8 @@ import org.kevoree.serializer.XMIModelSerializer;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.PrintStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -61,8 +56,6 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
      * @parameter default-value="${project.build.directory}/classes"
      */
     private File outputClasses;
-
-    K2JVMCompiler compiler = new K2JVMCompiler();
 
     /**
      * Dependency tree builder component.
@@ -179,10 +172,10 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
         }
 
         try {
-            annotations2Model.fillModel(outputClasses, model, mainDeployUnit);
+            annotations2Model.fillModel(outputClasses, model, mainDeployUnit, project.getCompileClasspathElements());
         } catch (Exception e) {
             getLog().error(e);
-            throw new MojoExecutionException("Error while parsing Kevoree annotations",e);
+            throw new MojoExecutionException("Error while parsing Kevoree annotations", e);
         }
 
         for (TypeDefinition td : model.getTypeDefinitions()) {
@@ -239,50 +232,6 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
             getLog().error(e);
             throw new MojoExecutionException("Unable to build kevoree model for types", e);
         }
-
-        //compile
-        try {
-
-            if (sourceOutputDirectory.exists()) {
-                K2JVMCompilerArguments args = new K2JVMCompilerArguments();
-                StringBuffer cpath = new StringBuffer();
-                boolean firstBUF = true;
-                for (String path : project.getCompileClasspathElements()) {
-                    if (!firstBUF) {
-                        cpath.append(File.pathSeparator);
-                    }
-                    cpath.append(path);
-                    firstBUF = false;
-                }
-                args.setClasspath(cpath.toString());
-                args.setSourceDirs(Collections.singletonList(sourceOutputDirectory.getPath()));
-                args.setOutputDir(outputClasses.getPath());
-                args.noJdkAnnotations = true;
-                args.noStdlib = true;
-
-                ExitCode e = compiler.exec(new PrintStream(System.err) {
-                    @Override
-                    public void println(String x) {
-                        if (x.startsWith("WARNING") || x.startsWith("[WARNING]")) {
-
-                        } else {
-                            super.println(x);
-                        }
-                    }
-                }, args);
-                if (e.ordinal() != 0) {
-                    throw new MojoExecutionException("Embedded Kotlin compilation error !");
-                }
-            }
-
-        } catch (MojoExecutionException e) {
-            getLog().error(e);
-            throw e;
-        } catch (Exception e) {
-            getLog().error(e);
-        }
-
-
     }
 
 }

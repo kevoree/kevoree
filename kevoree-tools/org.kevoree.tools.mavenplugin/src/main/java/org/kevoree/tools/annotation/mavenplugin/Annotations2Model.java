@@ -11,6 +11,7 @@ import org.kevoree.impl.DefaultKevoreeFactory;
 import org.kevoree.modeling.api.json.JSONModelSerializer;
 
 import java.io.File;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -49,30 +50,13 @@ public class Annotations2Model {
         }
     }
 
-    public ContainerRoot buildModel(File targetDir, String group, String id, String version) throws Exception {
-        ContainerRoot model = factory.createContainerRoot();
-        DeployUnit deployUnit = factory.createDeployUnit();
-        deployUnit.setGroupName(group);
-        deployUnit.setName(id);
-        deployUnit.setVersion(version);
-        model.addDeployUnits(deployUnit);
-        fillModel(targetDir, model, deployUnit);
-        return model;
-    }
-
-    public void fillModel(File targetDir, ContainerRoot model, DeployUnit deployUnit) throws Exception {
+    public void fillModel(File targetDir, ContainerRoot model, DeployUnit deployUnit, List<String> additionalClassPathElems) throws Exception {
         ClassPool pool = ClassPool.getDefault();
-        pool.appendClassPath(targetDir.getAbsolutePath());
         pool.insertClassPath(new ClassClassPath(Annotations2Model.class));
+        for(String classPath : additionalClassPathElems){
+            pool.appendClassPath(classPath);
+        }
         recursiveBuild(targetDir, pool, "", deployUnit, model);
-    }
-
-
-    public static void main(String[] args) throws Exception {
-        Annotations2Model builr = new Annotations2Model();
-        ContainerRoot model = builr.buildModel(new File("/Users/duke/Documents/dev/kevoreeTeam/kevoree-library/java/org.kevoree.library.java.helloworld/target/classes"), "groupTest", "nameTest", "3.0");
-        JSONModelSerializer saver = new org.kevoree.serializer.JSONModelSerializer();
-        saver.serializeToStream(model, System.out);
     }
 
 }
