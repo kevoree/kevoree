@@ -14,7 +14,7 @@
         <kotlin.version>0.6.1670</kotlin.version>
         <kevoree.log.version>1</kevoree.log.version>
         <basic.resolver.version>6</basic.resolver.version>
-        <kevoree.kcl.version>3-SNAPSHOT</kevoree.kcl.version>
+        <kevoree.kcl.version>3</kevoree.kcl.version>
     </properties>
 
     <organization>
