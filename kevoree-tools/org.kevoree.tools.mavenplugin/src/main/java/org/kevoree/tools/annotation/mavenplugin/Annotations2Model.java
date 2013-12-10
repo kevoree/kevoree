@@ -35,6 +35,7 @@ public class Annotations2Model {
                     for (Object annotation : annotations) {
                         ModelBuilder.instance$.process(annotation, clazz, factory, du, modelRoot);
                     }
+                    ModelBuilder.instance$.postProcess(clazz,factory,du,modelRoot);
                 } else {
                     if (child.isDirectory()) {
                         String nextPath = root;
