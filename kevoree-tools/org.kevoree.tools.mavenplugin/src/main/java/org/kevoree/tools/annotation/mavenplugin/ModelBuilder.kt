@@ -45,16 +45,16 @@ object ModelBuilder {
                 when(annotation) {
                     is Input -> {
                         if (currentTypeDefinition is org.kevoree.ComponentType) {
-                            if (method.getParameterTypes()?.size!! > 1) {
-                                throw Exception("Input annotation should be used only on method with 0 or 1 parameter ${method.getName()}")
-                            } else {
-                                if (method.getParameterTypes()?.size == 1) {
-                                    var firstParam = method.getParameterTypes()!!.get(0)
-                                    if (!firstParam.getName().equals(javaClass<Object>().getName())) {
-                                        throw Exception("Input method only support Object type parameter ${method.getName()}");
-                                    }
-                                }
-                            }
+                           // if (method.getParameterTypes()?.size!! > 1) {
+                           //     throw Exception("Input annotation should be used only on method with 0 or 1 parameter ${method.getName()}")
+                           // } else {
+                             //   if (method.getParameterTypes()?.size == 1) {
+                              //      var firstParam = method.getParameterTypes()!!.get(0)
+                              //      if (!firstParam.getName().equals(javaClass<Object>().getName())) {
+                               //         throw Exception("Input method only support Object type parameter ${method.getName()}");
+                               //     }
+                               // }
+                           // }
                             var providedPortRef = factory.createPortTypeRef()
                             providedPortRef.name = method.getName()
                             providedPortRef.optional = annotation.optional()
