@@ -206,7 +206,7 @@ public class KevoreeCLKernel implements KevoreeCLFactory, BootstrapService {
             }
             if (value != null) {
                 try {
-                    Field f = target.getClass().getDeclaredField(att.getName());
+                    Field f = lookup(att.getName(),target.getClass());
                     if (!f.isAccessible()) {
                         f.setAccessible(true);
                     }
@@ -244,6 +244,33 @@ public class KevoreeCLKernel implements KevoreeCLFactory, BootstrapService {
             }
         }
     }
+
+    public Field lookup(String name, Class clazz) {
+        Field f = null;
+        for (Field loopf : clazz.getDeclaredFields()) {
+            if (name.equals(loopf.getName())) {
+                f = loopf;
+            }
+        }
+        if (f != null) {
+            return f;
+        } else {
+            for (Class loopClazz : clazz.getInterfaces()) {
+                f = lookup(name, loopClazz);
+                if (f != null) {
+                    return f;
+                }
+            }
+            if (clazz.getSuperclass() != null) {
+                f = lookup(name, clazz.getSuperclass());
+                if (f != null) {
+                    return f;
+                }
+            }
+        }
+        return f;
+    }
+
 
     @Override
     public void injectService(Class<? extends Object> aClass, Object o, Object o2) {
