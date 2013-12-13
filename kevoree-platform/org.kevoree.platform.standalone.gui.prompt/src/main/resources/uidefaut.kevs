@@ -1,6 +1,0 @@
-include mvn:org.kevoree.library.java:org.kevoree.library.java.javaNode:release
-include mvn:org.kevoree.library.java:org.kevoree.library.java.ws:release
-add node0 : JavaNode
-add sync : WSGroup
-attach node0 sync
-set sync.port/node0 = "9000"
