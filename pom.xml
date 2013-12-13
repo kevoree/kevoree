@@ -164,6 +164,19 @@
 			        <version>2.9.1</version>
 			        <configuration />
 			 </plugin>
+			 
+             <plugin>
+                 <groupId>org.kevoree.maven</groupId>
+                 <artifactId>org.kevoree.maven-settings-ci</artifactId>
+                 <version>1</version>
+                 <executions>
+                     <execution>
+                         <goals>
+                             <goal>set</goal>
+                         </goals>
+                     </execution>
+                 </executions>
+             </plugin>
 
         </plugins>
     </build>
