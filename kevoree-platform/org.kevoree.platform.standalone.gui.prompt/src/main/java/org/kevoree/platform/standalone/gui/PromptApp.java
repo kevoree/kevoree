@@ -26,6 +26,8 @@
  */
 package org.kevoree.platform.standalone.gui;
 
+import org.kevoree.impl.DefaultKevoreeFactory;
+
 import javax.swing.*;
 
 public class PromptApp {
@@ -52,8 +54,15 @@ public class PromptApp {
 
                 StringBuilder buffer = new StringBuilder();
                 buffer.append("repo http://oss.sonatype.org/content/groups/public/\n");
-                buffer.append("include mvn:org.kevoree.library.java:org.kevoree.library.java.javaNode:latest\n");
-                buffer.append("include mvn:org.kevoree.library.java:org.kevoree.library.java.ws:latest\n");
+
+                if(new DefaultKevoreeFactory().getVersion().toLowerCase().contains("snapshot")){
+                    buffer.append("include mvn:org.kevoree.library.java:org.kevoree.library.java.javaNode:latest\n");
+                    buffer.append("include mvn:org.kevoree.library.java:org.kevoree.library.java.ws:latest\n");
+                } else {
+                    buffer.append("include mvn:org.kevoree.library.java:org.kevoree.library.java.javaNode:release\n");
+                    buffer.append("include mvn:org.kevoree.library.java:org.kevoree.library.java.ws:release\n");
+                }
+
                 buffer.append("add "+nodeName+" : JavaNode\n");
                 buffer.append("add sync : WSGroup\n");
                 buffer.append("attach "+nodeName+" sync\n");

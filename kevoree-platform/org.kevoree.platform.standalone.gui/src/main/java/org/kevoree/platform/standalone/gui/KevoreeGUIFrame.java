@@ -20,6 +20,7 @@ import org.kevoree.ContainerNode;
 import org.kevoree.ContainerRoot;
 import org.kevoree.api.handler.ModelListener;
 import org.kevoree.bootstrap.Bootstrap;
+import org.kevoree.impl.DefaultKevoreeFactory;
 
 import javax.swing.*;
 import java.awt.*;
@@ -148,7 +149,11 @@ public class KevoreeGUIFrame extends JFrame {
             if (bootstrapModel != null) {
                 bootstrap[0].bootstrapFromFile(new File(bootstrapModel));
             } else {
-                bootstrap[0].bootstrapFromKevScript(App.class.getClassLoader().getResourceAsStream("uidefaut.kevs"));
+                if(new DefaultKevoreeFactory().getVersion().toLowerCase().contains("snapshot")){
+                    bootstrap[0].bootstrapFromKevScript(App.class.getClassLoader().getResourceAsStream("uisnapshot.kevs"));
+                } else {
+                    bootstrap[0].bootstrapFromKevScript(App.class.getClassLoader().getResourceAsStream("uidefaut.kevs"));
+                }
             }
 
         } catch (Throwable e) {
