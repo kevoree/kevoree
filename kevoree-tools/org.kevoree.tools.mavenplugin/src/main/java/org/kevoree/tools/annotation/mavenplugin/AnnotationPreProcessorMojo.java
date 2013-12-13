@@ -134,21 +134,13 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
 
     @Override
     public void execute() throws MojoExecutionException {
-
-
-        String repositories = ";";
-        if (project.getDistributionManagement() != null) {
-            if (project.getVersion().contains("SNAPSHOT")) {
-                repositories += ";" + project.getDistributionManagement().getSnapshotRepository().getUrl();
-            } else {
-                repositories += ";" + project.getDistributionManagement().getRepository().getUrl();
-            }
-        }
-        String otherRepositories = ";";
+        DefaultKevoreeFactory factory = new DefaultKevoreeFactory();
+        ContainerRoot model = factory.createContainerRoot();
         for (Repository repo : project.getRepositories()) {
-            otherRepositories += ";" + repo.getUrl();
+            org.kevoree.Repository repository = factory.createRepository();
+            repository.setUrl(repo.getUrl());
+            model.addRepositories(repository);
         }
-        ContainerRoot model = new DefaultKevoreeFactory().createContainerRoot();
         DeployUnit mainDeployUnit = null;
         try {
             DependencyNode graph = dependencyTreeBuilder.buildDependencyTree(project,
