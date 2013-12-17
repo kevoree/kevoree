@@ -17,7 +17,7 @@ Attach       <- AttachToken ws NameList ws InstancePath                         
 Detach       <- DetachToken ws NameList ws InstancePath                                  # detach node0, node1 group0
 
 Set          <- SetToken ws InstancePath ?(:'/' InstancePath) ws :'=' ws :['] ws String2 ws :[']  # set node0.comp0.myAtt = 'foo'
-              | SetToken ws InstancePath ?(:'/' InstancePath) ws :'=' ws :["] ws String2 ws :["]  # set sync.myAtt@node0 = "foo"
+              | SetToken ws InstancePath ?(:'/' InstancePath) ws :'=' ws :["] ws String2 ws :["]  # set sync.myAtt/node0 = "foo"
 
 Network      <- NetworkToken ws InstancePath ws String2                                  # network node1 192.168.0.1
 
