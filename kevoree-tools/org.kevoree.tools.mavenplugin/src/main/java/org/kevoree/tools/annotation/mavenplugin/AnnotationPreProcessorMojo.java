@@ -16,6 +16,7 @@ package org.kevoree.tools.annotation.mavenplugin;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.artifact.resolver.filter.ArtifactFilter;
+import org.apache.maven.artifact.resolver.filter.ScopeArtifactFilter;
 import org.apache.maven.model.Repository;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -23,6 +24,7 @@ import org.apache.maven.project.MavenProject;
 import org.apache.maven.shared.dependency.tree.DependencyNode;
 import org.apache.maven.shared.dependency.tree.DependencyTreeBuilder;
 import org.apache.maven.shared.dependency.tree.DependencyTreeBuilderException;
+import org.apache.maven.shared.dependency.tree.traversal.DependencyNodeVisitor;
 import org.kevoree.ContainerRoot;
 import org.kevoree.DeployUnit;
 import org.kevoree.TypeDefinition;
@@ -130,16 +132,16 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
             cache.put(createKey(root), du);
         }
         for (DependencyNode child : root.getChildren()) {
-            if (isPartOf(root, includes, true) && !isPartOf(root, excludes, false)) {
-                fillModel(model, child);
-            }/* else {
-                System.err.println(root.getArtifact().getGroupId() + ":" + root.getArtifact().getArtifactId() + "is not included");
-            }*/
+            if (!child.getArtifact().getScope().toLowerCase().equals("test")) {
+                if (checkFilters(root, includes, true) && !checkFilters(root, excludes, false)) {
+                    fillModel(model, child);
+                }
+            }
         }
         return cache.get(createKey(root));
     }
 
-    private boolean isPartOf(DependencyNode root, String[] container, boolean defaultResult) {
+    private boolean checkFilters(DependencyNode root, String[] container, boolean defaultResult) {
         if (container != null && container.length > 0) {
             String groupId = root.getArtifact().getGroupId();
             String artifactId = root.getArtifact().getArtifactId();
@@ -173,9 +175,11 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
     }
 
     private void fillModelWithRepository(String repositoryURL, ContainerRoot model) {
-        org.kevoree.Repository repository = new DefaultKevoreeFactory().createRepository();
-        repository.setUrl(repositoryURL);
-        model.addRepositories(repository);
+        if (model.findRepositoriesByID(repositoryURL) != null) {
+            org.kevoree.Repository repository = new DefaultKevoreeFactory().createRepository();
+            repository.setUrl(repositoryURL);
+            model.addRepositories(repository);
+        }
     }
 
     private Annotations2Model annotations2Model = new Annotations2Model();
@@ -196,20 +200,9 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
         }
         DeployUnit mainDeployUnit = null;
         try {
-            DependencyNode graph = dependencyTreeBuilder.buildDependencyTree(project,
-                    localRepository,
-                    new ArtifactFilter() {
-                        @Override
-                        public boolean include(Artifact artifact) {
-                            if (artifact.getScope() != null) {
-                                return !artifact.getScope().toLowerCase().equals("test");
-                            } else {
-                                return true;
-                            }
-
-                        }
-                    });
-
+            /* Seems to be buggy... */
+            ArtifactFilter artifactFilter = new ScopeArtifactFilter(Artifact.SCOPE_COMPILE);
+            DependencyNode graph = dependencyTreeBuilder.buildDependencyTree(project, localRepository, artifactFilter);
             mainDeployUnit = fillModel(model, graph);
             linkModel(graph);
         } catch (DependencyTreeBuilderException e) {
@@ -222,11 +215,9 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
             getLog().error(e);
             throw new MojoExecutionException("Error while parsing Kevoree annotations", e);
         }
-
         for (TypeDefinition td : model.getTypeDefinitions()) {
             getLog().info("Found " + td.getName() + " : " + td.metaClassName());
         }
-
 
         JSONModelSerializer saver = new JSONModelSerializer();
         JSONModelLoader loader = new JSONModelLoader();
