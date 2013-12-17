@@ -1,7 +1,7 @@
 repo http://oss.sonatype.org/content/groups/public/
 
-include mvn:org.kevoree.library.java:org.kevoree.library.java.javaNode:latest
-include mvn:org.kevoree.library.java:org.kevoree.library.java.ws:latest
+include mvn:org.kevoree.library.java:org.kevoree.library.java.javaNode:release
+include mvn:org.kevoree.library.java:org.kevoree.library.java.ws:release
 add node0 : JavaNode
 add sync : WSGroup
 attach node0 sync

@@ -57,6 +57,7 @@ public class Bootstrap {
         injector.addService(KevScriptService.class, kevScriptEngine);
         kernel.setInjector(injector);
         core.setBootstrapService(kernel);
+        Log.info("Bootstrap Kevoree node : {}, version {}", nodeName, core.getFactory().getVersion());
         core.start();
     }
 
@@ -85,16 +86,18 @@ public class Bootstrap {
                 info.setName("ip");
                 currentNode.addNetworkInformation(info);
                 Enumeration<NetworkInterface> nets = NetworkInterface.getNetworkInterfaces();
+                int i = 0;
                 for (NetworkInterface networkInterface : Collections.list(nets)) {
-                    int i = 0;
-                    Enumeration<InetAddress> inetAddresses = networkInterface.getInetAddresses();
-                    for (InetAddress inetAddress : Collections.list(inetAddresses)) {
-                        if (!inetAddress.isLoopbackAddress()) {
-                            NetworkProperty netprop = core.getFactory().createNetworkProperty();
-                            netprop.setName(i + "_" + networkInterface.getName());
-                            netprop.setValue(inetAddress.getHostAddress());
-                            info.addValues(netprop);
-                            i++;
+                    if(networkInterface.isUp()){
+                        Enumeration<InetAddress> inetAddresses = networkInterface.getInetAddresses();
+                        for (InetAddress inetAddress : Collections.list(inetAddresses)) {
+                            if (!inetAddress.isLoopbackAddress()) {
+                                NetworkProperty netprop = core.getFactory().createNetworkProperty();
+                                netprop.setName(i + "_" + networkInterface.getName());
+                                netprop.setValue(inetAddress.getHostAddress());
+                                info.addValues(netprop);
+                                i++;
+                            }
                         }
                     }
                 }

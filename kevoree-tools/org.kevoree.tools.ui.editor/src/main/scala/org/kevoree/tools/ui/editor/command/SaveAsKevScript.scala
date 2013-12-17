@@ -51,8 +51,9 @@ class SaveAsKevScript extends Command {
   private val filechooser = new JFileChooser();
 
   def execute(p: AnyRef) {
+
     val script = KevScriptExporter.export(kernel.getModelHandler.getActualModel)
-    if (p.isInstanceOf[String]) {
+    if (p!=null && p!="" && p.isInstanceOf[String]) {
       val f = new File(p.asInstanceOf[String])
       if (f.exists()) {
         f.delete()
@@ -61,10 +62,11 @@ class SaveAsKevScript extends Command {
       try {
         fw.write(script)
       } finally {
+        fw.flush()
         fw.close()
       }
     } else {
-      if (p.isInstanceOf[StringBuffer]) {
+      if (p!=null && p.isInstanceOf[StringBuffer]) {
         p.asInstanceOf[StringBuffer].append(script)
       } else {
         val result = filechooser.showSaveDialog(kernel.getModelPanel())

@@ -44,8 +44,8 @@ import org.kevoree.loader.JSONModelLoader
 
 class KevModelTextEditorPanel(kernel: KevoreeUIKernel) extends JPanel {
 
-  private var saver = new JSONModelSerializer();
-  private var loader = new JSONModelLoader();
+  private val saver = new JSONModelSerializer();
+  private val loader = new JSONModelLoader();
 
   def reload() {
     PositionedEMFHelper.updateModelUIMetaData(kernel)
@@ -54,7 +54,7 @@ class KevModelTextEditorPanel(kernel: KevoreeUIKernel) extends JPanel {
 
   this.setLayout(new BorderLayout())
   jsyntaxpane.DefaultSyntaxKit.initKit();
-  jsyntaxpane.DefaultSyntaxKit.registerContentType("text/xml", classOf[XmlSyntaxKit].getName());
+  jsyntaxpane.DefaultSyntaxKit.registerContentType("text/json", classOf[jsyntaxpane.syntaxkits.PlainSyntaxKit].getName());
   var codeEditor = new JEditorPane();
 
   var scrPane = new JScrollPane(codeEditor);

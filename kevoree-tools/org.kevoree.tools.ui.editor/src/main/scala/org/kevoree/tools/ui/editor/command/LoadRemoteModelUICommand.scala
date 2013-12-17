@@ -28,9 +28,12 @@ class LoadRemoteModelUICommand extends Command {
 
   var kernel: KevoreeUIKernel = null
 
+  var merge = false
+
   def setKernel(k: KevoreeUIKernel) = kernel = k
 
   private val lcommand = new LoadModelCommand();
+  private val mergeCommand = new MergeModelCommand();
 
   var logger = LoggerFactory.getLogger(this.getClass)
 
@@ -40,8 +43,13 @@ class LoadRemoteModelUICommand extends Command {
       WebSocketClient.pull(ip, port, new ModelCallBack {
         def run(model: ContainerRoot) {
           PositionedEMFHelper.updateModelUIMetaData(kernel)
-          lcommand.setKernel(kernel)
-          lcommand.execute(model)
+          if (merge) {
+            mergeCommand.setKernel(kernel)
+            mergeCommand.execute(model)
+          } else {
+            lcommand.setKernel(kernel)
+            lcommand.execute(model)
+          }
         }
       })
     } catch {

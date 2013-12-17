@@ -24,10 +24,10 @@ import org.kevoree.core.basechecker.namechecker.NameChecker
 import org.kevoree.core.basechecker.abstractchecker.AbstractChecker
 import org.kevoree.core.basechecker.portchecker.PortChecker
 import org.kevoree.log.Log
+import org.kevoree.modeling.api.util.ModelVisitor
+import org.kevoree.modeling.api.KMFContainer
 
 class RootChecker: CheckerService {
-
-
     private val subcheckers = ArrayList<CheckerService>();
 
     {
@@ -40,23 +40,21 @@ class RootChecker: CheckerService {
         subcheckers.add(AbstractChecker())
 
     }
-    override fun check (model: ContainerRoot?): MutableList<CheckerViolation> {
+    override fun check(element: KMFContainer?): MutableList<CheckerViolation> {
 
         val result = ArrayList<CheckerViolation>()
         val beginTime = System.currentTimeMillis()
-        if (model != null) {
-            for (checker in subcheckers) {
-                try {
-                    result.addAll(checker.check(model)!!)
-                } catch (e: Exception) {
-                    Log.error("Exception during checking", e)
-                    val violation: CheckerViolation = CheckerViolation()
-                    violation.setMessage("Checker fatal exception " + checker.getClass().getSimpleName() + "-" + e.getMessage())
-                    violation.setTargetObjects(ArrayList())
-                    result.add(violation)
+        if (element != null) {
+            element.visit(object : ModelVisitor() {
+                override public fun visit(elem: org.kevoree.modeling.api.KMFContainer, refNameInParent: String, parent: org.kevoree.modeling.api.KMFContainer) {
+                    for (checker in subcheckers) {
+                        val violations = checker.check(elem)
+                        if (violations != null && violations.size > 0) {
+                            result.addAll(violations)
+                        }
+                    }
                 }
-
-            }
+            }, true, true, true)
         } else {
             val violation: CheckerViolation = CheckerViolation()
             violation.setMessage("Model which must be checked is null")

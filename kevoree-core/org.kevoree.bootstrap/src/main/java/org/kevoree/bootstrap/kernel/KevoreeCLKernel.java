@@ -1,5 +1,6 @@
 package org.kevoree.bootstrap.kernel;
 
+import org.kevoree.*;
 import org.kevoree.api.BootstrapService;
 import org.kevoree.api.Context;
 import org.kevoree.bootstrap.reflect.KevoreeInjector;
@@ -11,11 +12,9 @@ import org.kevoree.resolver.MavenResolver;
 import java.io.*;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.kevoree.*;
 /**
  * Created with IntelliJ IDEA.
  * User: duke
@@ -73,7 +72,7 @@ public class KevoreeCLKernel implements KevoreeCLFactory, BootstrapService {
 
     @Override
     public KevoreeJarClassLoader get(DeployUnit deployUnit) {
-        if (deployUnit.getName().equals("org.kevoree.api") || deployUnit.getName().equals("org.kevoree.annotation.api")|| deployUnit.getName().equals("org.kevoree.model")|| deployUnit.getName().equals("org.kevoree.modeling.microframework") ) {
+        if (deployUnit.getName().equals("org.kevoree.api") || deployUnit.getName().equals("org.kevoree.annotation.api") || deployUnit.getName().equals("org.kevoree.model") || deployUnit.getName().equals("org.kevoree.modeling.microframework")) {
             return system;
         }
         return cache.get(deployUnit.path());
@@ -82,7 +81,7 @@ public class KevoreeCLKernel implements KevoreeCLFactory, BootstrapService {
     public KevoreeJarClassLoader installDeployUnit(DeployUnit deployUnit) {
         String path = deployUnit.path();
         KevoreeJarClassLoader resolvedKCL = get(deployUnit);
-        if (resolvedKCL!=null) {
+        if (resolvedKCL != null) {
             return resolvedKCL;
         } else {
             List<String> urls = new ArrayList<String>();
@@ -134,7 +133,7 @@ public class KevoreeCLKernel implements KevoreeCLFactory, BootstrapService {
         }
         KevoreeJarClassLoader kcl = installDeployUnit(deployUnit);
         if (kcl == null) {
-            Log.error("Can install {}", deployUnit.path());
+            Log.error("Can't install {}", deployUnit.path());
         } else {
             for (DeployUnit child : deployUnit.getRequiredLibs()) {
                 kcl.addSubClassLoader(recursiveInstallDeployUnit(child));
@@ -207,7 +206,7 @@ public class KevoreeCLKernel implements KevoreeCLFactory, BootstrapService {
             }
             if (value != null) {
                 try {
-                    Field f = target.getClass().getDeclaredField(att.getName());
+                    Field f = lookup(att.getName(),target.getClass());
                     if (!f.isAccessible()) {
                         f.setAccessible(true);
                     }
@@ -245,6 +244,33 @@ public class KevoreeCLKernel implements KevoreeCLFactory, BootstrapService {
             }
         }
     }
+
+    public Field lookup(String name, Class clazz) {
+        Field f = null;
+        for (Field loopf : clazz.getDeclaredFields()) {
+            if (name.equals(loopf.getName())) {
+                f = loopf;
+            }
+        }
+        if (f != null) {
+            return f;
+        } else {
+            for (Class loopClazz : clazz.getInterfaces()) {
+                f = lookup(name, loopClazz);
+                if (f != null) {
+                    return f;
+                }
+            }
+            if (clazz.getSuperclass() != null) {
+                f = lookup(name, clazz.getSuperclass());
+                if (f != null) {
+                    return f;
+                }
+            }
+        }
+        return f;
+    }
+
 
     @Override
     public void injectService(Class<? extends Object> aClass, Object o, Object o2) {

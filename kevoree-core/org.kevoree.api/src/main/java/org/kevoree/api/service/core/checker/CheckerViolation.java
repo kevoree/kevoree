@@ -39,7 +39,7 @@ import java.util.List;
  */
 public class CheckerViolation {
 
-    private List<Object> targetObjects;
+    private List<String> targetObjects;
 
     private String message;
 
@@ -51,11 +51,11 @@ public class CheckerViolation {
         this.message = message;
     }
 
-    public List<Object> getTargetObjects() {
+    public List<String> getTargetObjects() {
         return targetObjects;
     }
 
-    public void setTargetObjects(List<Object> targetObjects) {
+    public void setTargetObjects(List<String> targetObjects) {
         this.targetObjects = targetObjects;
     }
 

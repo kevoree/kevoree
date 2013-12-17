@@ -30,6 +30,7 @@ public class FileMenu extends JMenu {
         add(createMergeItem());
         add(createOpenKevsItem());
         add(createOpenFromNode());
+        add(createMergeFromNode());
         add(createSaveItem());
         add(createSaveJSONItem());
         add(createSaveAsImageItem());
@@ -68,6 +69,16 @@ public class FileMenu extends JMenu {
         JMenuItem fileOpenRemote = new JMenuItem("Open from node");
         LoadRemoteModelUICommand cmdLMORemote2 = new LoadRemoteModelUICommand();
         cmdLMORemote2.setKernel(kernel);
+        fileOpenRemote.addActionListener(new CommandActionListener(cmdLMORemote2));
+        return fileOpenRemote;
+    }
+
+    private JMenuItem createMergeFromNode() {
+        /* Load remote ui command */
+        JMenuItem fileOpenRemote = new JMenuItem("Merge from node");
+        LoadRemoteModelUICommand cmdLMORemote2 = new LoadRemoteModelUICommand();
+        cmdLMORemote2.setKernel(kernel);
+        cmdLMORemote2.merge_$eq(true);
         fileOpenRemote.addActionListener(new CommandActionListener(cmdLMORemote2));
         return fileOpenRemote;
     }

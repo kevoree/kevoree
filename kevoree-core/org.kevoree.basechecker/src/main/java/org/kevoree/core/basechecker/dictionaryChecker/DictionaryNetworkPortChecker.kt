@@ -23,7 +23,10 @@ import org.kevoree.Instance
 import org.kevoree.api.service.core.checker.CheckerService
 import org.kevoree.api.service.core.checker.CheckerViolation
 import org.kevoree.modeling.api.KMFContainer
-import org.kevoree.NodeNetwork
+import org.kevoree.ComponentInstance
+import org.kevoree.Dictionary
+import org.kevoree.DictionaryType
+import org.kevoree.DictionaryValue
 
 /**
  * Created with IntelliJ IDEA.
@@ -31,144 +34,78 @@ import org.kevoree.NodeNetwork
  * Date: 22/09/12
  * Time: 07:57
  */
-class DictionaryNetworkPortChecker: CheckerService {
-    override fun check (model: ContainerRoot?): MutableList<CheckerViolation> {
+class DictionaryNetworkPortChecker : CheckerService {
+    // FIXME must be reinitialize before starting to use it
+    private val ports: HashMap<String, HashMap<String, ArrayList<String>>> = HashMap<String, HashMap<String, ArrayList<String>>>()
+    override fun check(element: KMFContainer?): MutableList<CheckerViolation> {
         val violations = ArrayList<CheckerViolation>()
-        if (model != null) {
-            val collectedPort = HashMap<String, HashMap<String, HashMap<String, KMFContainer>>>()
+        if (element != null && element is Instance) {
+            if (element is ContainerNode) {
+                checkInstance(element, element, ports, violations)
+            } else if (element is ComponentInstance) {
+                checkInstance(element, (element.eContainer() as ContainerNode), ports, violations)
+            } else if (element is Group || element is Channel) {
+                checkFragmentInstance(element, ports, violations)
+            }
+        }
+        return violations;
+    }
 
-            for (instance in model.nodes) {
-                instanceCollect(instance, collectedPort, instance.name!!)
-                for (component in instance.components){
-                    instanceCollect(component, collectedPort, instance.name!!)
+    private fun checkInstance(instance: Instance, hostingNode: ContainerNode, ports: HashMap<String, HashMap<String, ArrayList<String>>>, violations: MutableList<CheckerViolation>) {
+        if (instance.typeDefinition!!.dictionaryType != null) {
+            checkDictionary(instance.dictionary, instance.typeDefinition!!.dictionaryType!!, instance, hostingNode, ports, violations)
+        }
+    }
+
+    private fun checkFragmentInstance(instance: Instance, ports: HashMap<String, HashMap<String, ArrayList<String>>>, violations: MutableList<CheckerViolation>) {
+        if (instance.fragmentDictionary.size() > 0) {
+            for (fragmentDictionary in instance.fragmentDictionary) {
+                var node = (instance.eContainer() as ContainerRoot).findNodesByID(fragmentDictionary.name!!)!!
+                if (instance.typeDefinition!!.dictionaryType != null) {
+                    checkDictionary(instance.dictionary, instance.typeDefinition!!.dictionaryType!!, instance, node, ports, violations)
+                    checkDictionary(fragmentDictionary, instance.typeDefinition!!.dictionaryType!!, instance, node, ports, violations)
                 }
             }
+        }
+    }
 
-            for (hub in model.hubs) {
-                instanceDCollect(/*model, */hub, collectedPort)
+    private fun checkDictionary(dictionary: Dictionary?, dictionaryType: DictionaryType, instance: Instance, hostingNode: ContainerNode, ports: HashMap<String, HashMap<String, ArrayList<String>>>, violations: MutableList<CheckerViolation>) {
+
+        for (attribute in dictionaryType.attributes) {
+            var value: String? = null
+            var attributeValue: DictionaryValue? = null
+            if (dictionary != null) {
+                attributeValue = dictionary.findValuesByID(attribute.name!!)
             }
-
-            for (group in model.groups) {
-                instanceDCollect(/*model, */group, collectedPort)
+            if (attributeValue == null && attribute.defaultValue != null) {
+                value = attribute.defaultValue
+            } else if (attributeValue != null) {
+                value = attributeValue!!.value
             }
-
-            // println(collectedPort)
-
-            for ((node, portMap) in collectedPort) {
-                for ((port, users) in portMap) {
-                    if (users.size() > 1) {
-                        val violation: CheckerViolation = CheckerViolation()
-                        var objs = ArrayList<KMFContainer>()
-                        val builder = StringBuilder()
-                        builder.append("<")
-                        for ((key, value) in users) {
-                            objs.add(value)
-                            builder.append(key).append(", ")
-                        }
-                        violation.setMessage("Duplicated collected port usage " + port + "-" + builder.substring(0, builder.length() - 2) + ">")
-                        violation.setTargetObjects(objs)
-                        violations.add(violation)
+            if (value != null && attribute.name!!.equals("port") || attribute.name!!.endsWith("_port") || attribute.name!!.startsWith("port_")) {
+                var nodePorts = ports.get(hostingNode.path()!!)
+                if (nodePorts == null) {
+                    nodePorts = HashMap<String, ArrayList<String>>()
+                    ports.put(hostingNode.path()!!, nodePorts!!)
+                }
+                var elements: ArrayList<String>? = nodePorts!!.get(value)
+                if (elements == null) {
+                    elements = ArrayList<String>()
+                    elements!!.add(instance.path()!!)
+                    nodePorts!!.put(value!!, elements!!)
+                } else {
+                    elements!!.add(instance.path()!!)
+                    val violation: CheckerViolation = CheckerViolation()
+                    val builder = StringBuilder()
+                    builder.append("<")
+                    for (element in elements!!) {
+                        builder.append(element).append(", ")
                     }
+                    violation.setMessage("Duplicated collected port usage " + value + " - " + builder.substring(0, builder.length() - 2) + ">")
+                    violation.setTargetObjects(elements)
+                    violations.add(violation)
                 }
             }
-        }
-        return violations
-    }
-
-    fun instanceDCollect (/*model: ContainerRoot, */ist: Instance, collector: HashMap<String, HashMap<String, HashMap<String, KMFContainer>>>) {
-        val nodeConnected = ArrayList<String>()
-        if (ist is Channel) {
-            for (mb in (ist.eContainer() as ContainerRoot).mBindings) {
-                if (mb.hub == ist) {
-                    nodeConnected.add((mb.port!!.eContainer()!!.eContainer() as ContainerNode).name!!)
-                }
-            }
-        }
-        if (ist is Group) {
-            for (sub in (ist as Group).subNodes) {
-                nodeConnected.add(sub.name!!)
-            }
-        }
-
-        for (node in nodeConnected) {
-            instanceCollect(ist, collector, node)
         }
     }
-
-
-    fun instanceCollect (ist: Instance, collector: HashMap<String, HashMap<String, HashMap<String, KMFContainer>>>, nodeName: String) {
-        var portFound: String? = null
-        if(ist.typeDefinition != null && ist.typeDefinition!!.dictionaryType != null) {
-            val dicType = ist.typeDefinition!!.dictionaryType!!
-            for (att in dicType.attributes) {
-                if (att.name.equals("port") || att.name!!.endsWith("_port") || att.name!!.startsWith("port_")) {
-                    portFound = att.defaultValue
-                }
-            }
-        }
-        if(ist.dictionary != null) {
-            val dic = ist.dictionary!!
-
-            portFound = ist.findFragmentDictionaryByID(nodeName)?.findValuesByID("port")?.value
-            if(portFound == null){
-                portFound = dic.findValuesByID("port")?.value
-            }
-            if(portFound == null){
-                portFound = dic.findValuesByID("port")?.value
-            }
-
-
-        }
-
-        if (portFound != null) {
-            var nodeIPs = ArrayList<String>()
-            val nodeIps = getNetworkProperties(ist.typeDefinition!!.eContainer() as ContainerRoot, nodeName, "KEVOREE.remote.node.ip")
-            if (nodeIps.size() == 0) {
-                nodeIPs.add("localhost")
-            } else {
-                nodeIPs.addAll(nodeIps)
-            }
-
-            for (nodeIP in nodeIPs) {
-                var nodeCollector = collector.get(nodeIP)
-                if (nodeCollector == null) {
-                    nodeCollector = HashMap<String, HashMap<String, KMFContainer>>()
-                    collector.put(nodeIP, nodeCollector!!)
-                }
-                var nodePortCollector = nodeCollector!!.get(portFound)
-                if (nodePortCollector == null) {
-                    nodePortCollector = HashMap<String, KMFContainer>()
-                    nodeCollector!!.put(portFound!!, nodePortCollector!!)
-                }
-                //if (ist.isInstanceOf[ComponentInstance]){
-                nodePortCollector!!.put(nodeName + "." + ist.name, ist)
-                //} else {
-                //  nodePortCollector.put(nodeName, ist)
-                // }
-            }
-
-        }
-    }
-
-    fun getNetworkProperties (model: ContainerRoot, targetNodeName: String, key: String): List<String> {
-        val properties = ArrayList<String>()
-        val filteredNodeNetwork = ArrayList<NodeNetwork>()
-        for (lNN in model.nodeNetworks){
-            if (lNN.target!!.name == targetNodeName) {
-                filteredNodeNetwork.add(lNN)
-            }
-        }
-        for (fnn in filteredNodeNetwork) {
-            for (fnl in fnn.link) {
-                for (p in fnl.networkProperties) {
-                    if (p.name == key) {
-                        properties.add(p.value!!)
-                        break
-                    }
-                }
-            }
-        }
-        return properties
-    }
-
 }

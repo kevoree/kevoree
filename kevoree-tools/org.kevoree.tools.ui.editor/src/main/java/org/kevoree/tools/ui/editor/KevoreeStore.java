@@ -42,15 +42,8 @@ public class KevoreeStore {
     private MavenResolver resolver = new MavenResolver();
     private KevScriptEngine engine = new KevScriptEngine();
 
-
     public KevoreeStore() {
         version = new DefaultKevoreeFactory().getVersion();
-    }
-
-    public static void main(String[] args) {
-        KevoreeStore store = new KevoreeStore();
-        ContainerRoot model = store.getFromGroupID("org.kevoree.library*");
-        store.saver.serializeToStream(model, System.out);
     }
 
     public ContainerRoot getCache(String groupIDparam) {
@@ -85,7 +78,7 @@ public class KevoreeStore {
         }
     }
 
-    public ContainerRoot getFromGroupID(String groupIDparam) {
+    public ContainerRoot getFromGroupID(String groupIDparam,Boolean snapshot) {
 
         ContainerRoot model = factory.createContainerRoot();
 
@@ -121,17 +114,31 @@ public class KevoreeStore {
                         version = nodeChild.getTextContent();
                     }
                 }
-                if (resourceURI != null && !resourceURI.contains("-source")
-                    // avoid the check of snapshot version when the editor has a release version
+                if (resourceURI != null
+                        && !resourceURI.contains("-source")
+
                     //&& (this.version.toLowerCase().endsWith("snapshot") ||
                     //(!this.version.toLowerCase().endsWith("snapshot")
                     // && !version.toLowerCase().endsWith("snapshot")))
                         ) {
 
-                    StringBuffer buffer = new StringBuffer();
-                    buffer.append("repo http://oss.sonatype.org/content/groups/public\n");
-                    buffer.append("include mvn:" + groupId + ":" + artifactId + ":" + version + "\n");
-                    engine.execute(buffer.toString(), model);
+                    if(snapshot){
+                        if(resourceURI.contains("snapshot")){
+                            StringBuffer buffer = new StringBuffer();
+                            buffer.append("repo http://oss.sonatype.org/content/groups/public\n");
+                            buffer.append("include mvn:" + groupId + ":" + artifactId + ":" + version + "\n");
+                            engine.execute(buffer.toString(), model);
+                        }
+                    } else {
+                        if(!resourceURI.contains("snapshot")){
+                            StringBuffer buffer = new StringBuffer();
+                            buffer.append("repo http://oss.sonatype.org/content/groups/public\n");
+                            buffer.append("include mvn:" + groupId + ":" + artifactId + ":" + version + "\n");
+                            engine.execute(buffer.toString(), model);
+                        }
+                    }
+
+
 
                 }
             }
@@ -148,30 +155,35 @@ public class KevoreeStore {
         }
     }
 
-    public JMenu buildModelMenu(KevoreeUIKernel kernel) {
-        JMenu mergelibraries = new JMenu("Load Kevoree Libraries");
-        List<String> sub = Arrays.asList("java", "cloud");
-        for (String s : sub) {
-            JMenu subMenu = new JMenu(s.toUpperCase());
-            subMenu.setAutoscrolls(true);
-            ContainerRoot model = getFromGroupID("org.kevoree.library." + s);
-            HashMap<String, DeployUnit> cache = new HashMap<String, DeployUnit>();
-            if(model != null){
-                for (TypeDefinition td : model.getTypeDefinitions()) {
-                    cache.put(td.getDeployUnit().path(), td.getDeployUnit());
+    public JMenu buildModelMenu(final KevoreeUIKernel kernel) {
+        final JMenu mergelibraries = new JMenu("Load Kevoree Libraries");
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                List<String> sub = Arrays.asList("java","java-snapshot", "cloud","cloud-snapshot");
+                for (String s : sub) {
+                    JMenu subMenu = new JMenu(s.toUpperCase());
+                    subMenu.setAutoscrolls(true);
+                    ContainerRoot model = getFromGroupID("org.kevoree.library." + s.replace("-snapshot",""),s.contains("snapshot"));
+                    HashMap<String, DeployUnit> cache = new HashMap<String, DeployUnit>();
+                    if (model != null) {
+                        for (TypeDefinition td : model.getTypeDefinitions()) {
+                            cache.put(td.getDeployUnit().path(), td.getDeployUnit());
+                        }
+                    } else {
+                        Log.error("No library found");
+                    }
+                    for (DeployUnit du : cache.values()) {
+                        JMenuItem mergeDefLib1 = new JMenuItem(du.getGroupName() + ":" + du.getName() + ":" + du.getVersion());
+                        MergeDefaultLibrary cmdLDEFL1 = new MergeDefaultLibrary(du.getGroupName(), du.getName(), du.getVersion());
+                        cmdLDEFL1.setKernel(kernel);
+                        mergeDefLib1.addActionListener(new CommandActionListener(cmdLDEFL1));
+                        subMenu.add(mergeDefLib1);
+                    }
+                    mergelibraries.add(subMenu);
                 }
-            } else {
-                Log.error("No library found");
             }
-            for (DeployUnit du : cache.values()) {
-                JMenuItem mergeDefLib1 = new JMenuItem(du.getGroupName() + ":" + du.getName() + ":" + du.getVersion());
-                MergeDefaultLibrary cmdLDEFL1 = new MergeDefaultLibrary(du.getGroupName(), du.getName(), du.getVersion());
-                cmdLDEFL1.setKernel(kernel);
-                mergeDefLib1.addActionListener(new CommandActionListener(cmdLDEFL1));
-                subMenu.add(mergeDefLib1);
-            }
-            mergelibraries.add(subMenu);
-        }
+        }).start();
         return mergelibraries;
     }
 

@@ -1,6 +1,7 @@
 package org.kevoree.platform.standalone;
 
 import org.kevoree.bootstrap.Bootstrap;
+import org.kevoree.impl.DefaultKevoreeFactory;
 
 import java.io.File;
 
@@ -24,7 +25,11 @@ public class App {
         if (bootstrapModel != null) {
             bootstrap.bootstrapFromFile(new File(bootstrapModel));
         } else {
-            bootstrap.bootstrapFromKevScript(App.class.getClassLoader().getResourceAsStream("default.kevs"));
+            if(new DefaultKevoreeFactory().getVersion().toLowerCase().contains("snapshot")){
+                bootstrap.bootstrapFromKevScript(App.class.getClassLoader().getResourceAsStream("snapshot.kevs"));
+            } else {
+                bootstrap.bootstrapFromKevScript(App.class.getClassLoader().getResourceAsStream("default.kevs"));
+            }
         }
     }
 

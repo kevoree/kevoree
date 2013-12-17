@@ -5,16 +5,16 @@
     <packaging>pom</packaging>
     <name>Kevoree :: Root</name>
     <url>https://github.com/dukeboard/kevoree</url>
-    <version>3.0.2-SNAPSHOT</version>
+    <version>3.1.1-SNAPSHOT</version>
 
     <properties>
-        <kmf.version>1.9.2</kmf.version>
+        <kmf.version>1.9.5</kmf.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <kevoree.version>${project.version}</kevoree.version>
-        <kotlin.version>0.6.602</kotlin.version>
+        <kotlin.version>0.6.1670</kotlin.version>
         <kevoree.log.version>1</kevoree.log.version>
-        <basic.resolver.version>5</basic.resolver.version>
-        <kevoree.kcl.version>2</kevoree.kcl.version>
+        <basic.resolver.version>6</basic.resolver.version>
+        <kevoree.kcl.version>3</kevoree.kcl.version>
     </properties>
 
     <organization>
@@ -151,36 +151,32 @@
                     <encoding>${project.build.sourceEncoding}</encoding>
                 </configuration>
             </plugin>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-release-plugin</artifactId>
                 <version>2.4.1</version>
             </plugin>
-
 			<plugin>
 			        <groupId>org.apache.maven.plugins</groupId>
 			        <artifactId>maven-javadoc-plugin</artifactId>
 			        <version>2.9.1</version>
 			        <configuration />
 			 </plugin>
-
+             <plugin>
+                 <groupId>org.kevoree.maventools</groupId>
+                 <artifactId>org.kevoree.maventools.settings.ci</artifactId>
+                 <version>2</version>
+                 <executions>
+                     <execution>
+                         <goals>
+                             <goal>set</goal>
+                         </goals>
+                     </execution>
+                 </executions>
+             </plugin>
         </plugins>
     </build>
 
-    <repositories>
-        <repository>
-            <id>kevoree-oss</id>
-            <url>https://oss.sonatype.org/content/groups/public/</url>
-        </repository>
-    </repositories>
-
-    <pluginRepositories>
-        <pluginRepository>
-            <id>kevoree-oss.plugin</id>
-            <url>https://oss.sonatype.org/content/groups/public/</url>
-        </pluginRepository>
-    </pluginRepositories>
 
     <distributionManagement>
         <repository>

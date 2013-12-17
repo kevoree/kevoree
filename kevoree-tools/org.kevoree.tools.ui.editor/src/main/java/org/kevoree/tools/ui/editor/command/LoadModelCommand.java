@@ -51,6 +51,8 @@ import java.util.HashSet;
  */
 public class LoadModelCommand implements Command {
 
+    public Boolean merge = false;
+
     ReloadTypePalette subCommand = new ReloadTypePalette();
 
     public void setKernel(KevoreeUIKernel kernel) {

@@ -8,6 +8,6 @@ package org.kevoree.api;
  */
 public interface ChannelDispatch {
 
-    public void dispatch(Object payload, Callback callback);
+    public void dispatch(Object payload,Callback callback);
 
 }

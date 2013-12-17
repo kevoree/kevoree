@@ -16,6 +16,7 @@ package org.kevoree.tools.annotation.mavenplugin;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.artifact.resolver.filter.ArtifactFilter;
+import org.apache.maven.artifact.resolver.filter.ScopeArtifactFilter;
 import org.apache.maven.model.Repository;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -23,9 +24,7 @@ import org.apache.maven.project.MavenProject;
 import org.apache.maven.shared.dependency.tree.DependencyNode;
 import org.apache.maven.shared.dependency.tree.DependencyTreeBuilder;
 import org.apache.maven.shared.dependency.tree.DependencyTreeBuilderException;
-import org.jetbrains.jet.cli.common.ExitCode;
-import org.jetbrains.jet.cli.jvm.K2JVMCompiler;
-import org.jetbrains.jet.cli.jvm.K2JVMCompilerArguments;
+import org.apache.maven.shared.dependency.tree.traversal.DependencyNodeVisitor;
 import org.kevoree.ContainerRoot;
 import org.kevoree.DeployUnit;
 import org.kevoree.TypeDefinition;
@@ -39,13 +38,13 @@ import org.kevoree.serializer.XMIModelSerializer;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.PrintStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author Fouquet François</a>
@@ -61,8 +60,6 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
      * @parameter default-value="${project.build.directory}/classes"
      */
     private File outputClasses;
-
-    K2JVMCompiler compiler = new K2JVMCompiler();
 
     /**
      * Dependency tree builder component.
@@ -83,7 +80,17 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
     public MavenProject project;
 
     // fields -----------------------------------------------------------------
+    /**
+     * the set of included dependencies which will be registered on the Kevoree model
+     *
+     * @parameter
+     */
     private String[] includes;
+    /**
+     * the set of excluded dependencies which won't be registered on the Kevoree model
+     *
+     * @parameter
+     */
     private String[] excludes;
     /**
      * The directory to place processor and generated class files. This is equivalent to the <code>-d</code> argument
@@ -125,53 +132,77 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
             cache.put(createKey(root), du);
         }
         for (DependencyNode child : root.getChildren()) {
-            fillModel(model, child);
+            if (!child.getArtifact().getScope().toLowerCase().equals("test")) {
+                if (checkFilters(root, includes, true) && !checkFilters(root, excludes, false)) {
+                    fillModel(model, child);
+                }
+            }
         }
         return cache.get(createKey(root));
     }
 
+    private boolean checkFilters(DependencyNode root, String[] container, boolean defaultResult) {
+        if (container != null && container.length > 0) {
+            String groupId = root.getArtifact().getGroupId();
+            String artifactId = root.getArtifact().getArtifactId();
+            for (String part : container) {
+                String[] tmp = part.split(":");
+                Pattern pattern = Pattern.compile(tmp[0]);
+                Matcher matcher = pattern.matcher(groupId);
+                if (matcher.matches()) {
+                    pattern = Pattern.compile(tmp[1]);
+                    matcher = pattern.matcher(artifactId);
+                    if (matcher.matches()) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        } else {
+            return defaultResult;
+        }
+    }
+
     public void linkModel(DependencyNode root) {
+        DeployUnit rootUnit = cache.get(createKey(root));
         for (DependencyNode child : root.getChildren()) {
-            cache.get(createKey(root)).addRequiredLibs(cache.get(createKey(child)));
-            linkModel(child);
+            DeployUnit childUnit = cache.get(createKey(child));
+            if (childUnit != null) {
+                rootUnit.addRequiredLibs(childUnit);
+                linkModel(child);
+            }
+        }
+    }
+
+    private void fillModelWithRepository(String repositoryURL, ContainerRoot model) {
+        if (model.findRepositoriesByID(repositoryURL) != null) {
+            org.kevoree.Repository repository = new DefaultKevoreeFactory().createRepository();
+            repository.setUrl(repositoryURL);
+            model.addRepositories(repository);
         }
     }
 
     private Annotations2Model annotations2Model = new Annotations2Model();
 
+
     @Override
     public void execute() throws MojoExecutionException {
-
-
-        String repositories = ";";
+        ContainerRoot model = new DefaultKevoreeFactory().createContainerRoot();
         if (project.getDistributionManagement() != null) {
             if (project.getVersion().contains("SNAPSHOT")) {
-                repositories += ";" + project.getDistributionManagement().getSnapshotRepository().getUrl();
+                fillModelWithRepository(project.getDistributionManagement().getSnapshotRepository().getUrl(), model);
             } else {
-                repositories += ";" + project.getDistributionManagement().getRepository().getUrl();
+                fillModelWithRepository(project.getDistributionManagement().getRepository().getUrl(), model);
             }
         }
-        String otherRepositories = ";";
         for (Repository repo : project.getRepositories()) {
-            otherRepositories += ";" + repo.getUrl();
+            fillModelWithRepository(repo.getUrl(), model);
         }
-        ContainerRoot model = new DefaultKevoreeFactory().createContainerRoot();
         DeployUnit mainDeployUnit = null;
         try {
-            DependencyNode graph = dependencyTreeBuilder.buildDependencyTree(project,
-                    localRepository,
-                    new ArtifactFilter() {
-                        @Override
-                        public boolean include(Artifact artifact) {
-                            if (artifact.getScope() != null) {
-                                return !artifact.getScope().toLowerCase().equals("test");
-                            } else {
-                                return true;
-                            }
-
-                        }
-                    });
-
+            /* Seems to be buggy... */
+            ArtifactFilter artifactFilter = new ScopeArtifactFilter(Artifact.SCOPE_COMPILE);
+            DependencyNode graph = dependencyTreeBuilder.buildDependencyTree(project, localRepository, artifactFilter);
             mainDeployUnit = fillModel(model, graph);
             linkModel(graph);
         } catch (DependencyTreeBuilderException e) {
@@ -179,16 +210,14 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
         }
 
         try {
-            annotations2Model.fillModel(outputClasses, model, mainDeployUnit);
+            annotations2Model.fillModel(outputClasses, model, mainDeployUnit, project.getCompileClasspathElements());
         } catch (Exception e) {
             getLog().error(e);
-            throw new MojoExecutionException("Error while parsing Kevoree annotations",e);
+            throw new MojoExecutionException("Error while parsing Kevoree annotations", e);
         }
-
         for (TypeDefinition td : model.getTypeDefinitions()) {
             getLog().info("Found " + td.getName() + " : " + td.metaClassName());
         }
-
 
         JSONModelSerializer saver = new JSONModelSerializer();
         JSONModelLoader loader = new JSONModelLoader();
@@ -239,50 +268,6 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
             getLog().error(e);
             throw new MojoExecutionException("Unable to build kevoree model for types", e);
         }
-
-        //compile
-        try {
-
-            if (sourceOutputDirectory.exists()) {
-                K2JVMCompilerArguments args = new K2JVMCompilerArguments();
-                StringBuffer cpath = new StringBuffer();
-                boolean firstBUF = true;
-                for (String path : project.getCompileClasspathElements()) {
-                    if (!firstBUF) {
-                        cpath.append(File.pathSeparator);
-                    }
-                    cpath.append(path);
-                    firstBUF = false;
-                }
-                args.setClasspath(cpath.toString());
-                args.setSourceDirs(Collections.singletonList(sourceOutputDirectory.getPath()));
-                args.setOutputDir(outputClasses.getPath());
-                args.noJdkAnnotations = true;
-                args.noStdlib = true;
-
-                ExitCode e = compiler.exec(new PrintStream(System.err) {
-                    @Override
-                    public void println(String x) {
-                        if (x.startsWith("WARNING") || x.startsWith("[WARNING]")) {
-
-                        } else {
-                            super.println(x);
-                        }
-                    }
-                }, args);
-                if (e.ordinal() != 0) {
-                    throw new MojoExecutionException("Embedded Kotlin compilation error !");
-                }
-            }
-
-        } catch (MojoExecutionException e) {
-            getLog().error(e);
-            throw e;
-        } catch (Exception e) {
-            getLog().error(e);
-        }
-
-
     }
 
 }

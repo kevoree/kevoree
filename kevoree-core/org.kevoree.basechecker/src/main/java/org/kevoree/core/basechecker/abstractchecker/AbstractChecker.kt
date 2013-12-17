@@ -22,6 +22,7 @@ import org.kevoree.modeling.api.KMFContainer
 import org.kevoree.ChannelType
 import org.kevoree.GroupType
 import org.kevoree.ComponentType
+import org.kevoree.Instance
 
 /**
  * Created with IntelliJ IDEA.
@@ -30,56 +31,18 @@ import org.kevoree.ComponentType
  * Time: 07:07
  */
 class AbstractChecker: CheckerService {
-
-    override fun check(model: ContainerRoot?): MutableList<CheckerViolation> {
+    override fun check(element : KMFContainer?): MutableList<CheckerViolation> {
         val violations = ArrayList<CheckerViolation>()
-        if (model != null) {
-            for (node in model.nodes) {
-                if (node.typeDefinition!!.abstract!!) {
-                    val ntype = node.typeDefinition!! as NodeType
-                    val violation: CheckerViolation = CheckerViolation()
-                    violation.setMessage(ntype.name + " is abstract and can't be instanciate in " + node.name)
-                    val targetObjects = ArrayList<KMFContainer>()
-                    targetObjects.add(node)
+        if (element != null && element is Instance) {
+            if (element.typeDefinition!!.abstract!!) {
+                val violation: CheckerViolation = CheckerViolation()
+                    violation.setMessage(element.typeDefinition!!.name + " is abstract and can't be instanciate in " + element.name)
+                    val targetObjects = ArrayList<String>()
+                    targetObjects.add(element.path()!!)
                     violation.setTargetObjects(targetObjects)
-                    violations.add(violation)
-                }
-                for (component in node.components) {
-                    if (component.typeDefinition!!.abstract!!) {
-                        val ntype = component.typeDefinition!! as ComponentType
-                        val violation: CheckerViolation = CheckerViolation()
-                        violation.setMessage(ntype.name + " is abstract and can't be instanciate in " + component.name)
-                        val targetObjects = ArrayList<KMFContainer>()
-                        targetObjects.add(component)
-                        violation.setTargetObjects(targetObjects)
-                        violations.add(violation)
-                    }
-                }
-            }
-            for (channel in model.hubs) {
-                if (channel.typeDefinition!!.abstract!!) {
-                    val ntype = channel.typeDefinition!! as ChannelType
-                    val violation: CheckerViolation = CheckerViolation()
-                    violation.setMessage(ntype.name + " is abstract and can't be instanciate in " + channel.name)
-                    val targetObjects = ArrayList<KMFContainer>()
-                    targetObjects.add(channel)
-                    violation.setTargetObjects(targetObjects)
-                    violations.add(violation)
-                }
-            }
-            for (group in model.groups) {
-                if (group.typeDefinition!!.abstract!!) {
-                    val ntype = group.typeDefinition!! as GroupType
-                    val violation: CheckerViolation = CheckerViolation()
-                    violation.setMessage(ntype.name + " is abstract and can't be instanciate in " + group.name)
-                    val targetObjects = ArrayList<KMFContainer>()
-                    targetObjects.add(group)
-                    violation.setTargetObjects(targetObjects)
-                    violations.add(violation)
-                }
+                violations.add(violation)
             }
         }
-        return violations
+        return violations;
     }
-
 }
