@@ -20,6 +20,7 @@ import org.kevoree.ServicePortType
 import org.kevoree.api.service.core.checker.CheckerService
 import org.kevoree.api.service.core.checker.CheckerViolation
 import org.kevoree.modeling.api.KMFContainer
+import org.kevoree.Channel
 
 /**
  * Created by IntelliJ IDEA.
@@ -27,22 +28,13 @@ import org.kevoree.modeling.api.KMFContainer
  * Date: 30/08/11
  * Time: 17:48
  */
-class BindingChecker: CheckerService {
-
-    override fun check(model: ContainerRoot?): MutableList<CheckerViolation> {
-        if (model != null) {
-            return checkHubBindingsHomogeneity(model)
-        } else {
-            return ArrayList<CheckerViolation>()
-        }
-    }
-
-    private fun checkHubBindingsHomogeneity(model: ContainerRoot): MutableList<CheckerViolation> {
-        var violations = ArrayList<CheckerViolation>()
-        for (hub in model.hubs) {
+class BindingChecker : CheckerService {
+    override fun check(element: KMFContainer?): MutableList<CheckerViolation> {
+        val violations = ArrayList<CheckerViolation>()
+        if (element != null && element is Channel) {
             val synchBindings = ArrayList<MBinding>()
             val asynchBindings = ArrayList<MBinding>()
-            for (binding in hub.bindings) {
+            for (binding in element.bindings) {
                 if (binding.port!!.portTypeRef!!.ref is ServicePortType) {
                     synchBindings.add(binding)
                 } else {
@@ -51,28 +43,29 @@ class BindingChecker: CheckerService {
             }
             if (!synchBindings.isEmpty() && !asynchBindings.isEmpty()) {
                 val violation = CheckerViolation()
-                violation.setMessage("Ports of both Service and Message kinds are connected to the same hub : " + hub.name)
-                if (synchBindings.size > asynchBindings.size) {
-                    val targetObjects = ArrayList<KMFContainer>()
-                    targetObjects.add(hub)
-                    targetObjects.addAll(asynchBindings)
+                violation.setMessage("Ports of both Service and Message kinds are connected to the same hub : " + element.name)
+                if (synchBindings.size() > asynchBindings.size()) {
+                    val targetObjects = ArrayList<String>()
+                    targetObjects.add(element.path()!!)
+//                    targetObjects.addAll(asynchBindings)
                     violation.setTargetObjects(targetObjects)
-                } else if (synchBindings.size < asynchBindings.size) {
-                    val targetObjects = ArrayList<KMFContainer>()
-                    targetObjects.add(hub)
-                    targetObjects.addAll(synchBindings)
+                } else if (synchBindings.size() < asynchBindings.size()) {
+                    val targetObjects = ArrayList<String>()
+                    targetObjects.add(element.path()!!)
+//                    targetObjects.addAll(synchBindings)
                     violation.setTargetObjects(targetObjects)
                 } else {
-                    val targetObjects = ArrayList<KMFContainer>()
-                    targetObjects.add(hub)
-                    targetObjects.addAll(synchBindings)
-                    targetObjects.addAll(asynchBindings)
+                    val targetObjects = ArrayList<String>()
+                    targetObjects.add(element.path()!!)
+//                    targetObjects.addAll(synchBindings)
+//                    targetObjects.addAll(asynchBindings)
                     violation.setTargetObjects(targetObjects)
                 }
 
                 violations.add(violation)
             }
         }
-        return violations
+        return violations;
+
     }
 }

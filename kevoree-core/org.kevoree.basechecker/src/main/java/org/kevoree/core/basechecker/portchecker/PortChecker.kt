@@ -19,6 +19,7 @@ import org.kevoree.ContainerRoot
 import org.kevoree.api.service.core.checker.CheckerService
 import org.kevoree.api.service.core.checker.CheckerViolation
 import org.kevoree.modeling.api.KMFContainer
+import org.kevoree.Instance
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -26,42 +27,45 @@ import org.kevoree.modeling.api.KMFContainer
  * Time: 09:23
  */
 class PortChecker: CheckerService {
-
-    override fun check(model: ContainerRoot?): MutableList<CheckerViolation>? {
+    override fun check(element: KMFContainer?): MutableList<CheckerViolation> {
         val violations = ArrayList<CheckerViolation>()
-        if (model != null) {
-            violations.addAll(portCheckOnInstance(model))
+        if (element != null && element is ComponentInstance) {
+            portCheckOnInstance(element, violations)
+        }
+        return violations;
+    }
+
+    fun portCheckOnInstance(model: ContainerRoot): MutableList<CheckerViolation> {
+        val violations = ArrayList<CheckerViolation>()
+        for (node in model.nodes) {
+            for (component in node.components) {
+                portCheckOnInstance(component, violations)
+            }
         }
         return violations
     }
 
-    fun portCheckOnInstance(model: ContainerRoot): List<CheckerViolation> {
-        val violations = ArrayList<CheckerViolation>()
-        for (node in model.nodes) {
-            for (component in node.components) {
-                for (port in component.required) {
-                    if (!port.portTypeRef!!.optional!! && port.bindings.isEmpty()) {
-                        val concreteViolation: CheckerViolation = CheckerViolation()
-                        concreteViolation.setMessage("Required port (" + (port.eContainer() as ComponentInstance).name + "." + port.portTypeRef!!.name + ") is not bound")
-                        val targetObjects = ArrayList<KMFContainer>()
-                        targetObjects.add(port.eContainer()!!)
-                        concreteViolation.setTargetObjects(targetObjects)
-                        violations.add(concreteViolation)
-                    }
+    private fun portCheckOnInstance(component : ComponentInstance, violations : MutableList<CheckerViolation>) {
+        for (port in component.required) {
+            if (!port.portTypeRef!!.optional!! && port.bindings.isEmpty()) {
+                val concreteViolation: CheckerViolation = CheckerViolation()
+                concreteViolation.setMessage("Required port (" + (port.eContainer() as ComponentInstance).name + "." + port.portTypeRef!!.name + ") is not bound")
+                val targetObjects = ArrayList<String>()
+                targetObjects.add(port.eContainer()!!.path()!!)
+                concreteViolation.setTargetObjects(targetObjects)
+                violations.add(concreteViolation)
+            }
 
-                    if(port.bindings.size() > 1){
-                        //TWICE BINDING !!!
-                        val concreteViolation: CheckerViolation = CheckerViolation()
-                        concreteViolation.setMessage("Required port (" + (port.eContainer() as ComponentInstance).name + "." + port.portTypeRef!!.name + ") is bound multiple times !")
-                        val targetObjects = ArrayList<KMFContainer>()
-                        targetObjects.add(port.eContainer()!!)
-                        concreteViolation.setTargetObjects(targetObjects)
-                        violations.add(concreteViolation)
-                    }
-                }
+            if(port.bindings.size() > 1){
+                //TWICE BINDING !!!
+                val concreteViolation: CheckerViolation = CheckerViolation()
+                concreteViolation.setMessage("Required port (" + (port.eContainer() as ComponentInstance).name + "." + port.portTypeRef!!.name + ") is bound multiple times !")
+                val targetObjects = ArrayList<String>()
+                targetObjects.add(port.eContainer()!!.path()!!)
+                concreteViolation.setTargetObjects(targetObjects)
+                violations.add(concreteViolation)
             }
         }
-        return violations
     }
 
 }

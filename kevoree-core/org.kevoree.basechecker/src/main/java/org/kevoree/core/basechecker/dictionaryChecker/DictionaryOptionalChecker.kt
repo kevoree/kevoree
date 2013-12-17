@@ -33,26 +33,12 @@ import org.kevoree.ComponentInstance
  */
 
 class DictionaryOptionalChecker : CheckerService {
-
-    override fun check(model: ContainerRoot?): MutableList<CheckerViolation> {
+    override fun check(element: KMFContainer?): MutableList<CheckerViolation> {
         val violations = ArrayList<CheckerViolation>()
-        if (model != null) {
-            for (channel in model.hubs) {
-                checkInstance(channel, violations)
-            }
-
-            for (group in model.groups) {
-                checkInstance(group, violations)
-            }
-
-            for (node in model.nodes) {
-                checkInstance(node, violations)
-                for (component in node.components) {
-                    checkInstance(node, violations)
-                }
-            }
+        if (element != null && element is Instance) {
+            checkInstance(element, violations)
         }
-        return violations
+        return violations;
     }
 
     fun checkInstance(instance: Instance, violations: MutableList<CheckerViolation>) {
@@ -132,8 +118,8 @@ class DictionaryOptionalChecker : CheckerService {
         } else{
             checkViolation.setMessage("Iinvalid dictionary in " + instance.name)
         }
-        val targetObjects = ArrayList<KMFContainer>()
-        targetObjects.add(instance)
+        val targetObjects = ArrayList<String>()
+        targetObjects.add(instance.path()!!)
         checkViolation.setTargetObjects(targetObjects)
         violations.add(checkViolation)
     }

@@ -31,8 +31,9 @@
 
 package org.kevoree.api.service.core.checker;
 
+import org.kevoree.modeling.api.KMFContainer;
+
 import java.util.List;
-import org.kevoree.ContainerRoot;
 
 /**
  *
@@ -40,6 +41,6 @@ import org.kevoree.ContainerRoot;
  */
 public interface CheckerService {
 
-    public List<CheckerViolation> check(ContainerRoot model);
+    List<CheckerViolation> check(KMFContainer element);
 
 }
