@@ -41,6 +41,8 @@ import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author Fouquet François</a>
@@ -76,7 +78,17 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
     public MavenProject project;
 
     // fields -----------------------------------------------------------------
+    /**
+     * the set of included dependencies which will be registered on the Kevoree model
+     *
+     * @parameter
+     */
     private String[] includes;
+    /**
+     * the set of excluded dependencies which won't be registered on the Kevoree model
+     *
+     * @parameter
+     */
     private String[] excludes;
     /**
      * The directory to place processor and generated class files. This is equivalent to the <code>-d</code> argument
@@ -118,28 +130,69 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
             cache.put(createKey(root), du);
         }
         for (DependencyNode child : root.getChildren()) {
-            fillModel(model, child);
+            if (isPartOf(root, includes, true) && !isPartOf(root, excludes, false)) {
+                fillModel(model, child);
+            }/* else {
+                System.err.println(root.getArtifact().getGroupId() + ":" + root.getArtifact().getArtifactId() + "is not included");
+            }*/
         }
         return cache.get(createKey(root));
     }
 
-    public void linkModel(DependencyNode root) {
-        for (DependencyNode child : root.getChildren()) {
-            cache.get(createKey(root)).addRequiredLibs(cache.get(createKey(child)));
-            linkModel(child);
+    private boolean isPartOf(DependencyNode root, String[] container, boolean defaultResult) {
+        if (container != null && container.length > 0) {
+            String groupId = root.getArtifact().getGroupId();
+            String artifactId = root.getArtifact().getArtifactId();
+            for (String part : container) {
+                String[] tmp = part.split(":");
+                Pattern pattern = Pattern.compile(tmp[0]);
+                Matcher matcher = pattern.matcher(groupId);
+                if (matcher.matches()) {
+                    pattern = Pattern.compile(tmp[1]);
+                    matcher = pattern.matcher(artifactId);
+                    if (matcher.matches()) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        } else {
+            return defaultResult;
         }
+    }
+
+    public void linkModel(DependencyNode root) {
+        DeployUnit rootUnit = cache.get(createKey(root));
+        for (DependencyNode child : root.getChildren()) {
+            DeployUnit childUnit = cache.get(createKey(child));
+            if (childUnit != null) {
+                rootUnit.addRequiredLibs(childUnit);
+                linkModel(child);
+            }
+        }
+    }
+
+    private void fillModelWithRepository(String repositoryURL, ContainerRoot model) {
+        org.kevoree.Repository repository = new DefaultKevoreeFactory().createRepository();
+        repository.setUrl(repositoryURL);
+        model.addRepositories(repository);
     }
 
     private Annotations2Model annotations2Model = new Annotations2Model();
 
+
     @Override
     public void execute() throws MojoExecutionException {
-        DefaultKevoreeFactory factory = new DefaultKevoreeFactory();
-        ContainerRoot model = factory.createContainerRoot();
+        ContainerRoot model = new DefaultKevoreeFactory().createContainerRoot();
+        if (project.getDistributionManagement() != null) {
+            if (project.getVersion().contains("SNAPSHOT")) {
+                fillModelWithRepository(project.getDistributionManagement().getSnapshotRepository().getUrl(), model);
+            } else {
+                fillModelWithRepository(project.getDistributionManagement().getRepository().getUrl(), model);
+            }
+        }
         for (Repository repo : project.getRepositories()) {
-            org.kevoree.Repository repository = factory.createRepository();
-            repository.setUrl(repo.getUrl());
-            model.addRepositories(repository);
+            fillModelWithRepository(repo.getUrl(), model);
         }
         DeployUnit mainDeployUnit = null;
         try {
