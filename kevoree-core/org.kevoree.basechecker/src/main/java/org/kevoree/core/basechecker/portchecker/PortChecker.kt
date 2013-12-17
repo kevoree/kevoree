@@ -35,16 +35,6 @@ class PortChecker: CheckerService {
         return violations;
     }
 
-    fun portCheckOnInstance(model: ContainerRoot): MutableList<CheckerViolation> {
-        val violations = ArrayList<CheckerViolation>()
-        for (node in model.nodes) {
-            for (component in node.components) {
-                portCheckOnInstance(component, violations)
-            }
-        }
-        return violations
-    }
-
     private fun portCheckOnInstance(component : ComponentInstance, violations : MutableList<CheckerViolation>) {
         for (port in component.required) {
             if (!port.portTypeRef!!.optional!! && port.bindings.isEmpty()) {
