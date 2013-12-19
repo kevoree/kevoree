@@ -26,7 +26,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.InputStream;
 import java.net.URL;
 
 public class KevoreeGUIFrame extends JFrame {
@@ -149,16 +151,35 @@ public class KevoreeGUIFrame extends JFrame {
             if (bootstrapModel != null) {
                 bootstrap[0].bootstrapFromFile(new File(bootstrapModel));
             } else {
-                if(new DefaultKevoreeFactory().getVersion().toLowerCase().contains("snapshot")){
-                    bootstrap[0].bootstrapFromKevScript(App.class.getClassLoader().getResourceAsStream("uisnapshot.kevs"));
-                } else {
-                    bootstrap[0].bootstrapFromKevScript(App.class.getClassLoader().getResourceAsStream("uidefaut.kevs"));
-                }
+                bootstrap[0].bootstrapFromKevScript(createBootstrapScript(nodeName));
             }
 
         } catch (Throwable e) {
             e.printStackTrace();
         }
+    }
+
+
+    private static InputStream createBootstrapScript(String nodeName) {
+        StringBuilder buffer = new StringBuilder();
+        String versionRequest;
+        if (new DefaultKevoreeFactory().getVersion().toLowerCase().contains("snapshot")) {
+            buffer.append("repo https://oss.sonatype.org/content/groups/public/\n");
+            versionRequest = "latest";
+        } else {
+            buffer.append("repo http://repo1.maven.org/maven2/\n");
+            versionRequest = "release";
+        }
+        buffer.append("include mvn:org.kevoree.library.java:org.kevoree.library.java.javaNode:");
+        buffer.append(versionRequest);
+        buffer.append("\n");
+        buffer.append("include mvn:org.kevoree.library.java:org.kevoree.library.java.ws:");
+        buffer.append(versionRequest);
+        buffer.append("\n");
+        buffer.append("add node0 : JavaNode".replace("node0", nodeName) + "\n");
+        buffer.append("add sync : WSGroup\n");
+        buffer.append("attach node0 sync\n".replace("node0", nodeName));
+        return new ByteArrayInputStream(buffer.toString().getBytes());
     }
 
     public static void showShell(JComponent shell) {
