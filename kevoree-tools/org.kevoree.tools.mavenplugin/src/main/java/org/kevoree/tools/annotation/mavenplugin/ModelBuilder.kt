@@ -59,6 +59,12 @@ object ModelBuilder {
                 }
             }
         }
+        for (interface in clazz.getInterfaces()?.iterator()) {
+            deepMethods(interface, factory, currentTypeDefinition)
+        }
+        if (clazz.getSuperclass() != null) {
+            deepMethods(clazz.getSuperclass()!!, factory, currentTypeDefinition)
+        }
     }
 
     fun deepFields(clazz: CtClass, factory: KevoreeFactory, currentTypeDefinition: TypeDefinition) {
