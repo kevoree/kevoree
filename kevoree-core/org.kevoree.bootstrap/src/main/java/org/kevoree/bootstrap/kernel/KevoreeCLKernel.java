@@ -87,6 +87,7 @@ public class KevoreeCLKernel implements KevoreeCLFactory, BootstrapService {
             List<String> urls = new ArrayList<String>();
             if (!offline) {
                 ContainerRoot root = (ContainerRoot) deployUnit.eContainer();
+                File resolved;
                 for (Repository repo : root.getRepositories()) {
                     urls.add(repo.getUrl());
                 }
@@ -95,14 +96,24 @@ public class KevoreeCLKernel implements KevoreeCLFactory, BootstrapService {
                 } else {
                     urls.add("http://repo1.maven.org/maven2");
                 }
+
                 Log.info("Resolving ............. " + deployUnit.path());
                 long before = System.currentTimeMillis();
-                File resolved = resolver.resolve(deployUnit.getGroupName(), deployUnit.getName(), deployUnit.getVersion(), deployUnit.getType(), urls);
+                if (deployUnit.getUrl() == null || "".equals(deployUnit.getUrl())) {
+                    resolved = resolver.resolve(deployUnit.getGroupName(), deployUnit.getName(), deployUnit.getVersion(), deployUnit.getType(), urls);
+                } else {
+                    resolved = resolver.resolve(deployUnit.getUrl(), urls);
+                    if (resolved == null && new File(deployUnit.getUrl()).exists()) {
+                        resolved = new File(deployUnit.getUrl());
+                    }
+                }
                 Log.info("Resolved in {}ms", (System.currentTimeMillis() - before));
                 if (resolved != null) {
                     KevoreeJarClassLoader kcl = createClassLoader(deployUnit, resolved);
                     cache.put(path, kcl);
                     return kcl;
+                } else {
+                    Log.error("Unable to resolve {}", deployUnit.path());
                 }
             }
 
@@ -206,7 +217,7 @@ public class KevoreeCLKernel implements KevoreeCLFactory, BootstrapService {
             }
             if (value != null) {
                 try {
-                    Field f = lookup(att.getName(),target.getClass());
+                    Field f = lookup(att.getName(), target.getClass());
                     if (!f.isAccessible()) {
                         f.setAccessible(true);
                     }

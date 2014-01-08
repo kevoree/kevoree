@@ -24,7 +24,6 @@ import org.apache.maven.project.MavenProject;
 import org.apache.maven.shared.dependency.tree.DependencyNode;
 import org.apache.maven.shared.dependency.tree.DependencyTreeBuilder;
 import org.apache.maven.shared.dependency.tree.DependencyTreeBuilderException;
-import org.apache.maven.shared.dependency.tree.traversal.DependencyNodeVisitor;
 import org.kevoree.ContainerRoot;
 import org.kevoree.DeployUnit;
 import org.kevoree.TypeDefinition;
@@ -128,6 +127,9 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
             du.setGroupName(root.getArtifact().getGroupId());
             du.setVersion(root.getArtifact().getVersion());
             du.setType(root.getArtifact().getType());
+            if (root.getArtifact().getScope() != null && root.getArtifact().getScope().equals(Artifact.SCOPE_SYSTEM)) {
+                du.setUrl(root.getArtifact().getFile().getAbsolutePath());
+            }
             model.addDeployUnits(du);
             cache.put(createKey(root), du);
         }
