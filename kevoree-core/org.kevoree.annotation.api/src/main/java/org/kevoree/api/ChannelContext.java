@@ -12,5 +12,5 @@ public interface ChannelContext {
 
     public List<Port> getLocalPorts();
 
-    public List<String> getRemotePaths();
+    public List<String> getRemotePortPaths();
 }
