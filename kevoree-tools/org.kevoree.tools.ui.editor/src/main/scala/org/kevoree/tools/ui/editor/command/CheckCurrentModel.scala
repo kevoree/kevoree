@@ -29,7 +29,6 @@ package org.kevoree.tools.ui.editor.command
 import org.kevoree.core.basechecker.RootChecker
 
 import org.kevoree.tools.ui.framework.ErrorHighlightableElement
-import actors.DaemonActor
 import org.slf4j.LoggerFactory
 import org.kevoree.tools.ui.editor.{ErrorPanel, KevoreeUIKernel}
 
@@ -45,24 +44,17 @@ class CheckCurrentModel extends Command {
   var checker = new RootChecker
   var objectInError: List[ErrorHighlightableElement] = List()
 
-  object notificationSeamless extends DaemonActor {
-    start()
-    var checkNeeded = false
-    def act() {
-      loop {
-        reactWithin(1000) {
-          case scala.actors.TIMEOUT => if(checkNeeded){ effectiveCheck();checkNeeded=false }
-          case _ => checkNeeded = true
-        }
-      }
+  val scheduledExecutorService : java.util.concurrent.ScheduledExecutorService = java.util.concurrent.Executors.newSingleThreadScheduledExecutor()
+
+  object EffectiveCheck extends Runnable {
+    def run(){
+      effectiveCheck();
     }
   }
 
   def execute(p: Object) {
-      notificationSeamless ! "checkNeeded"
+    scheduledExecutorService.schedule(EffectiveCheck,1000,java.util.concurrent.TimeUnit.MILLISECONDS)
   }
-
-
 
   def effectiveCheck() {
     val previousNoError = objectInError.isEmpty

@@ -13,7 +13,7 @@
     </parent>
 
     <properties>
-        <scala.version>2.9.3</scala.version>
+        <scala.version>2.11.0-M7</scala.version>
     </properties>
 
     <dependencies>

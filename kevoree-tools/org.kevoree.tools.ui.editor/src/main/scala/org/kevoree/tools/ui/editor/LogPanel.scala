@@ -29,7 +29,6 @@ package org.kevoree.tools.ui.editor
 import java.awt.{Dimension, Color, BorderLayout}
 import java.io.{OutputStream, PrintStream}
 import javax.swing.{SwingUtilities, JScrollPane, JPanel}
-import actors.DaemonActor
 import java.lang.StringBuffer
 import org.kevoree.tools.ui.editor.runner.RichTextArea
 
@@ -42,9 +41,7 @@ import org.kevoree.tools.ui.editor.runner.RichTextArea
 class LogPanel extends JPanel {
   var STDwriter: PrintStream = null
   var ERRwriter: PrintStream = null
-  
-  //public static PrintStream SSTDwriter = null;
-  // public static PrintStream SSTDwriter = null;
+
   private var eol: String = System.getProperty("line.separator")
   private var scrollShell: JScrollPane = null
 

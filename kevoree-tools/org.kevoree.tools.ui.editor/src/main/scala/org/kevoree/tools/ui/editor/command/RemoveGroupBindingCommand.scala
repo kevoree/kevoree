@@ -61,7 +61,7 @@ class RemoveGroupBindingCommand(mb: TempGroupBinding) extends Command {
     
     kernel.getEditorPanel.unshowPropertyEditor()
 
-    kernel.getModelHandler.EMFListener.notifyChanged()
+    kernel.getModelHandler.ModelListener.notifyChanged()
 
 
   }

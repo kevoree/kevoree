@@ -18,6 +18,8 @@ public interface ModelService {
 
     public UUIDModel getCurrentModel();
 
+    public ContainerRoot getPendingModel();
+
     public void compareAndSwap(ContainerRoot model, UUID uuid, UpdateCallback callback);
 
     public void update(ContainerRoot model, UpdateCallback callback);

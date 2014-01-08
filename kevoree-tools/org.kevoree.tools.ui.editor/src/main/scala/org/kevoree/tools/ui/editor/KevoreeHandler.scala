@@ -61,10 +61,10 @@ class KevoreeHandler(kernel: KevoreeUIKernel) extends ModelService {
   def setActualModel(c: ContainerRoot) = {
     actualModel = c
     //TODO FIRE CHANGE
-    EMFListener.notifyChanged()
+    ModelListener.notifyChanged()
   }
 
-  object EMFListener {
+  object ModelListener {
     def notifyChanged() = {
       listenerCommand.foreach(adapt => adapt.execute(null))
       kernel.getModelPanel.repaint();
@@ -73,7 +73,7 @@ class KevoreeHandler(kernel: KevoreeUIKernel) extends ModelService {
   }
 
   def notifyChanged() {
-    EMFListener.notifyChanged()
+    ModelListener.notifyChanged()
   }
 
   def releaseLock(uuid: UUID) {
@@ -110,4 +110,5 @@ class KevoreeHandler(kernel: KevoreeUIKernel) extends ModelService {
     def getModel: ContainerRoot = getActualModel
   }
 
+  def getPendingModel: ContainerRoot = getActualModel
 }

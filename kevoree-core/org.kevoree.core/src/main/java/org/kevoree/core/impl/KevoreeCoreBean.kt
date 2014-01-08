@@ -35,6 +35,12 @@ class PreCommand(newmodel: ContainerRoot, modelListeners: KevoreeListeners, oldM
 
 class KevoreeCoreBean : ModelService {
 
+    var pending : ContainerRoot? = null
+
+    override fun getPendingModel(): ContainerRoot? {
+        return pending
+    }
+
     val modelListeners = KevoreeListeners()
     var bootstrapService: BootstrapService? = null
     var _nodeName: String = ""
@@ -81,13 +87,13 @@ class KevoreeCoreBean : ModelService {
         return model.get()!!
     }
     override fun compareAndSwap(model: ContainerRoot?, uuid: UUID?, callback: UpdateCallback?) {
-        scheduler!!.submit(UpdateModelCallable(cloneCurrentModel(model), uuid, callback))
+        scheduler!!.submit(UpdateModelRunnable(cloneCurrentModel(model), uuid, callback))
     }
     override fun update(model: ContainerRoot?, callback: UpdateCallback?) {
-        scheduler!!.submit(UpdateModelCallable(cloneCurrentModel(model), null, callback))
+        scheduler!!.submit(UpdateModelRunnable(cloneCurrentModel(model), null, callback))
     }
 
-    inner class UpdateModelCallable(val targetModel: ContainerRoot, val uuid: UUID?, val callback: UpdateCallback?) : Runnable {
+    inner class UpdateModelRunnable(val targetModel: ContainerRoot, val uuid: UUID?, val callback: UpdateCallback?) : Runnable {
         override fun run() {
             var res: Boolean = false
             if (currentLock != null) {
@@ -263,6 +269,7 @@ class KevoreeCoreBean : ModelService {
     }
 
     fun internal_update_model(proposedNewModel: ContainerRoot): Boolean {
+
         if (proposedNewModel.findNodesByID(getNodeName()) == null) {
             Log.error("Asking for update with a NULL model or node name ({}) was not found in target model !", getNodeName())
             return false
@@ -275,8 +282,12 @@ class KevoreeCoreBean : ModelService {
                 //for(cr in checkResult) {
                 //    Log.error("error=> " + cr.getMessage() + ",objects" + cr.getTargetObjects())
                 //}
+
                 return false
             } else {
+
+                pending = proposedNewModel
+
                 //Model check is OK.
                 var currentModel = model.get()!!.getModel()!!
                 Log.debug("Before listeners PreCheck !")
@@ -370,6 +381,7 @@ class KevoreeCoreBean : ModelService {
                     }
                     val milliEnd = System.currentTimeMillis() - milli
                     Log.debug("End deploy result={}-{}", deployResult, milliEnd)
+                    pending = null
                     return deployResult
 
                 } else {

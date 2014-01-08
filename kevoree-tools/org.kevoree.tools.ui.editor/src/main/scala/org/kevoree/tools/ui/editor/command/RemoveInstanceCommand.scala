@@ -76,7 +76,7 @@ class RemoveInstanceCommand(elem: org.kevoree.NamedElement) extends Command {
 
   def updateType(i: Instance) {
     kernel.getEditorPanel.getPalette.updateAllValue()
-    kernel.getModelHandler.EMFListener.notifyChanged()
+    kernel.getModelHandler.ModelListener.notifyChanged()
   }
 
 
