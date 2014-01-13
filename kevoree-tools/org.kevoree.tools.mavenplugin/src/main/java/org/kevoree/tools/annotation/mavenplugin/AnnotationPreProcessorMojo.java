@@ -21,10 +21,12 @@ import org.apache.maven.model.Repository;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.*;
+import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.shared.dependency.tree.DependencyNode;
 import org.apache.maven.shared.dependency.tree.DependencyTreeBuilder;
 import org.apache.maven.shared.dependency.tree.DependencyTreeBuilderException;
+import org.codehaus.plexus.component.annotations.*;
 import org.kevoree.ContainerRoot;
 import org.kevoree.DeployUnit;
 import org.kevoree.TypeDefinition;
@@ -52,7 +54,7 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
     @Parameter(defaultValue = "${project.build.directory}/classes")
     private File outputClasses;
 
-    @Parameter(property = "org.apache.maven.shared.dependency.tree.DependencyTreeBuilder",required = true,readonly = true)
+    @Component
     private DependencyTreeBuilder dependencyTreeBuilder;
 
     /**
