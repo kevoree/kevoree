@@ -59,10 +59,6 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
 
     /**
      * The maven project.
-     *
-     * @parameter expression="${project}"
-     * @required
-     * @readonly
      */
     @Parameter(required = true, readonly = true, defaultValue = "${project}")
     public MavenProject project;
