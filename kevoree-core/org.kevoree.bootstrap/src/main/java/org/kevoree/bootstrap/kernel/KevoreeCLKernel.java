@@ -5,7 +5,8 @@ import org.kevoree.api.BootstrapService;
 import org.kevoree.api.Context;
 import org.kevoree.bootstrap.reflect.KevoreeInjector;
 import org.kevoree.impl.DefaultKevoreeFactory;
-import org.kevoree.kcl.KevoreeJarClassLoader;
+import org.kevoree.kcl.api.FlexyClassLoader;
+import org.kevoree.kcl.api.FlexyClassLoaderFactory;
 import org.kevoree.log.Log;
 import org.kevoree.resolver.MavenResolver;
 
@@ -23,10 +24,10 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class KevoreeCLKernel implements KevoreeCLFactory, BootstrapService {
 
-    private KevoreeJarClassLoader system = new KevoreeJarClassLoader();
-
+    private FlexyClassLoader system = FlexyClassLoaderFactory.INSTANCE.create();
 
     public KevoreeCLKernel() {
+        system.setKey("KevoreeBootstrapCL");
 
         try {
             DefaultKevoreeFactory factory = new DefaultKevoreeFactory();
@@ -48,7 +49,7 @@ public class KevoreeCLKernel implements KevoreeCLFactory, BootstrapService {
         }
     }
 
-    private ConcurrentHashMap<String, KevoreeJarClassLoader> cache = new ConcurrentHashMap<String, KevoreeJarClassLoader>();
+    private ConcurrentHashMap<String, FlexyClassLoader> cache = new ConcurrentHashMap<String, FlexyClassLoader>();
 
     private MavenResolver resolver = new MavenResolver();
 
@@ -71,16 +72,16 @@ public class KevoreeCLKernel implements KevoreeCLFactory, BootstrapService {
     private KevoreeInjector injector = null;
 
     @Override
-    public KevoreeJarClassLoader get(DeployUnit deployUnit) {
+    public FlexyClassLoader get(DeployUnit deployUnit) {
         if (deployUnit.getName().equals("org.kevoree.api") || deployUnit.getName().equals("org.kevoree.annotation.api") || deployUnit.getName().equals("org.kevoree.model") || deployUnit.getName().equals("org.kevoree.modeling.microframework")) {
             return system;
         }
         return cache.get(deployUnit.path());
     }
 
-    public KevoreeJarClassLoader installDeployUnit(DeployUnit deployUnit) {
+    public FlexyClassLoader installDeployUnit(DeployUnit deployUnit) {
         String path = deployUnit.path();
-        KevoreeJarClassLoader resolvedKCL = get(deployUnit);
+        FlexyClassLoader resolvedKCL = get(deployUnit);
         if (resolvedKCL != null) {
             return resolvedKCL;
         } else {
@@ -109,7 +110,7 @@ public class KevoreeCLKernel implements KevoreeCLFactory, BootstrapService {
                 }
                 Log.info("Resolved in {}ms", (System.currentTimeMillis() - before));
                 if (resolved != null) {
-                    KevoreeJarClassLoader kcl = createClassLoader(deployUnit, resolved);
+                    FlexyClassLoader kcl = createClassLoader(deployUnit, resolved);
                     cache.put(path, kcl);
                     return kcl;
                 } else {
@@ -123,31 +124,31 @@ public class KevoreeCLKernel implements KevoreeCLFactory, BootstrapService {
 
     @Override
     public void removeDeployUnit(DeployUnit deployUnit) {
-        KevoreeJarClassLoader oldKCL = get(deployUnit);
+        FlexyClassLoader oldKCL = get(deployUnit);
         cache.remove(deployUnit.path());
         if (oldKCL != null) {
-            for (KevoreeJarClassLoader kcl : cache.values()) {
-                kcl.removeChild(oldKCL);
+            for (FlexyClassLoader kcl : cache.values()) {
+                kcl.detachChild(oldKCL);
             }
         }
     }
 
     @Override
-    public void manualAttach(DeployUnit deployUnit, KevoreeJarClassLoader kevoreeJarClassLoader) {
+    public void manualAttach(DeployUnit deployUnit, FlexyClassLoader kevoreeJarClassLoader) {
         cache.put(deployUnit.path(), kevoreeJarClassLoader);
     }
 
-    public KevoreeJarClassLoader recursiveInstallDeployUnit(DeployUnit deployUnit) {
+    public FlexyClassLoader recursiveInstallDeployUnit(DeployUnit deployUnit) {
         String path = deployUnit.path();
         if (cache.containsKey(path)) {
             return cache.get(path);
         }
-        KevoreeJarClassLoader kcl = installDeployUnit(deployUnit);
+        FlexyClassLoader kcl = installDeployUnit(deployUnit);
         if (kcl == null) {
             Log.error("Can't install {}", deployUnit.path());
         } else {
             for (DeployUnit child : deployUnit.getRequiredLibs()) {
-                kcl.addSubClassLoader(recursiveInstallDeployUnit(child));
+                kcl.attachChild(recursiveInstallDeployUnit(child));
             }
         }
 
@@ -172,9 +173,9 @@ public class KevoreeCLKernel implements KevoreeCLFactory, BootstrapService {
 
     @Override
     public Object createInstance(final Instance instance) {
-        KevoreeJarClassLoader classLoader = get(instance.getTypeDefinition().getDeployUnit());
-        Class clazz = classLoader.loadClass(instance.getTypeDefinition().getBean());
         try {
+            FlexyClassLoader classLoader = get(instance.getTypeDefinition().getDeployUnit());
+            Class clazz = classLoader.loadClass(instance.getTypeDefinition().getBean());
             Object newInstance = clazz.newInstance();
             KevoreeInjector selfInjector = injector.clone();
             selfInjector.addService(Context.class, new InstanceContext(instance.path(), nodeName, instance.getName()));
@@ -291,10 +292,11 @@ public class KevoreeCLKernel implements KevoreeCLFactory, BootstrapService {
     }
 
     @Override
-    public KevoreeJarClassLoader createClassLoader(DeployUnit du, File file) {
-        KevoreeJarClassLoader classLoader = new KevoreeJarClassLoader();
+    public FlexyClassLoader createClassLoader(DeployUnit du, File file) {
+        FlexyClassLoader classLoader = FlexyClassLoaderFactory.INSTANCE.create();
+        classLoader.setKey(du.path());
         try {
-            classLoader.add(new FileInputStream(file));
+            classLoader.load(new FileInputStream(file));
         } catch (FileNotFoundException e) {
             Log.error("Error while opening JAR {} : ", file.getAbsolutePath());
         } finally {

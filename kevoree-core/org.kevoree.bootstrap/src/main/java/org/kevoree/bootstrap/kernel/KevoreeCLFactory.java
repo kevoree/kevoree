@@ -1,7 +1,7 @@
 package org.kevoree.bootstrap.kernel;
 
 import org.kevoree.DeployUnit;
-import org.kevoree.kcl.KevoreeJarClassLoader;
+import org.kevoree.kcl.api.FlexyClassLoader;
 
 import java.io.File;
 
@@ -13,6 +13,6 @@ import java.io.File;
  */
 public interface KevoreeCLFactory {
 
-    public KevoreeJarClassLoader createClassLoader(DeployUnit du, File file);
+    public FlexyClassLoader createClassLoader(DeployUnit du, File file);
 
 }

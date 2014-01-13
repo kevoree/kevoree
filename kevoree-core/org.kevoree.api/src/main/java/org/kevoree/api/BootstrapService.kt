@@ -14,8 +14,8 @@
 package org.kevoree.api
 
 import org.kevoree.DeployUnit
-import org.kevoree.kcl.KevoreeJarClassLoader
 import org.kevoree.Instance
+import org.kevoree.kcl.api.FlexyClassLoader
 
 /**
  * Created by IntelliJ IDEA.
@@ -26,15 +26,15 @@ import org.kevoree.Instance
 
 trait BootstrapService {
 
-    public fun get(du: DeployUnit): KevoreeJarClassLoader?;
+    public fun get(du: DeployUnit): FlexyClassLoader?;
 
-    public fun installDeployUnit(du: DeployUnit): KevoreeJarClassLoader?;
+    public fun installDeployUnit(du: DeployUnit): FlexyClassLoader?;
 
     public fun removeDeployUnit(du: DeployUnit)
 
-    public fun manualAttach(du: DeployUnit, kcl: KevoreeJarClassLoader);
+    public fun manualAttach(du: DeployUnit, kcl: FlexyClassLoader);
 
-    public fun recursiveInstallDeployUnit(du: DeployUnit): KevoreeJarClassLoader?;
+    public fun recursiveInstallDeployUnit(du: DeployUnit): FlexyClassLoader?;
 
     public fun setOffline(offline: Boolean)
 
