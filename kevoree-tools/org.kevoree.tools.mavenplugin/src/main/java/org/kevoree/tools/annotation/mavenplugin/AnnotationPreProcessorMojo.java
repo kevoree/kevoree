@@ -20,6 +20,7 @@ import org.apache.maven.artifact.resolver.filter.ScopeArtifactFilter;
 import org.apache.maven.model.Repository;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugins.annotations.*;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.shared.dependency.tree.DependencyNode;
 import org.apache.maven.shared.dependency.tree.DependencyTreeBuilder;
@@ -45,28 +46,13 @@ import java.util.jar.JarFile;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/**
- * @author Fouquet François</a>
- * @version $Id$
- * @goal generate
- * @phase prepare-package
- * @requiresDependencyResolution compile
- */
+@Mojo(name = "generate", defaultPhase = LifecyclePhase.PREPARE_PACKAGE, requiresDependencyResolution = ResolutionScope.COMPILE)
 public class AnnotationPreProcessorMojo extends AbstractMojo {
 
-
-    /**
-     * @parameter default-value="${project.build.directory}/classes"
-     */
+    @Parameter(defaultValue = "${project.build.directory}/classes")
     private File outputClasses;
 
-    /**
-     * Dependency tree builder component.
-     *
-     * @component property="org.apache.maven.shared.dependency.tree.DependencyTreeBuilder"
-     * @required
-     * @readonly
-     */
+    @Parameter(property = "org.apache.maven.shared.dependency.tree.DependencyTreeBuilder",required = true,readonly = true)
     private DependencyTreeBuilder dependencyTreeBuilder;
 
     /**
@@ -76,39 +62,33 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
      * @required
      * @readonly
      */
+    @Parameter(required = true, readonly = true, defaultValue = "${project}")
     public MavenProject project;
 
-    // fields -----------------------------------------------------------------
     /**
      * the set of included dependencies which will be registered on the Kevoree model
-     *
-     * @parameter
      */
+    @Parameter
     private String[] includes;
     /**
      * the set of excluded dependencies which won't be registered on the Kevoree model
-     *
-     * @parameter
      */
+    @Parameter
     private String[] excludes;
     /**
      * The directory to place processor and generated class files. This is equivalent to the <code>-d</code> argument
      * for apt.
-     *
-     * @parameter default-value="${project.build.directory}/generated-sources/kevoree"
      */
+    @Parameter(defaultValue = "${project.build.directory}/generated-sources/kevoree")
     private File outputDirectory;
     /**
      * The directory root under which processor-generated source files will be placed; files are placed in
      * subdirectories based on package namespace. This is equivalent to the <code>-s</code> argument for apt.
-     *
-     * @parameter default-value="${project.build.directory}/generated-sources/kevoree"
      */
+    @Parameter(defaultValue = "${project.build.directory}/generated-sources/kevoree")
     private File sourceOutputDirectory;
 
-    /**
-     * @parameter default-value="${localRepository}"
-     */
+    @Parameter(defaultValue = "${localRepository}")
     private ArtifactRepository localRepository;
 
     private static DateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmSSS");

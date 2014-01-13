@@ -3,6 +3,10 @@ package org.kevoree.tools.annotation.mavenplugin;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.kevoree.bootstrap.Bootstrap;
 
 import java.io.File;
@@ -14,21 +18,14 @@ import java.io.FileInputStream;
  * Date: 28/11/2013
  * Time: 11:13
  *
- * @author Francois Fouquet
- * @version 1.0
- * @goal run
- * @requiresDependencyResolution compile+runtime
  */
+@Mojo(name = "run", requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME)
 public class KevRunnerMojo extends AbstractMojo {
 
-    /**
-     * @parameter default-value="${project.basedir}/src/main/kevs/main.kevs"
-     */
+    @Parameter(defaultValue = "${project.basedir}/src/main/kevs/main.kevs")
     private File model;
 
-    /**
-     * @parameter default-value="node0"
-     */
+    @Parameter(defaultValue = "node0")
     private String nodename;
 
     @Override
