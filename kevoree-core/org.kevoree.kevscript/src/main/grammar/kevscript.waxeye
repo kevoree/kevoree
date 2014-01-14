@@ -25,7 +25,7 @@ AddBinding   <- BindToken ws InstancePath ws InstancePath                       
 
 DelBinding   <- UnbindToken ws InstancePath ws InstancePath                              # unbind node1.comp0.sendMsg chan0
 
-AddRepo      <- RepoToken ws RepoString                                                  # repo org.sonatype.org/foo/bar?a=b&c=d
+AddRepo      <- RepoToken ws RealString                                                  # repo "http://org.sonatype.org/foo/bar?a=b&c=d"
 
 Include      <- IncludeToken ws String :':' String2                                      # include npm:kevoree-chan-websocket
 																					     # include mvn:org.kevoree.library.javase:websocketgrp:2.0.5-SNAPSHOT
@@ -53,6 +53,12 @@ Version      <- +[a-zA-Z0-9._-]
 RepoString   <- +(!eol :![ ] .)															# anything but EOL and ' '
 
 Anything     <- +(!eol .) 																# anything but EOL
+
+RealString  <- :'"'
+           *( :'\\' Escaped
+            | !'\\' !'"' . )
+           :'"'
+
 # =========
 # End Rules
 

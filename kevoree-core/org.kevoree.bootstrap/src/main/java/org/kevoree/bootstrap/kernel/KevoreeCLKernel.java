@@ -13,6 +13,7 @@ import org.kevoree.resolver.MavenResolver;
 import java.io.*;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -73,7 +74,7 @@ public class KevoreeCLKernel implements KevoreeCLFactory, BootstrapService {
 
     @Override
     public FlexyClassLoader get(DeployUnit deployUnit) {
-        if (deployUnit.getName().equals("org.kevoree.api") || deployUnit.getName().equals("org.kevoree.annotation.api") || deployUnit.getName().equals("org.kevoree.model") || deployUnit.getName().equals("org.kevoree.modeling.microframework")) {
+        if (deployUnit.getName().equals("org.kevoree.api") || deployUnit.getName().equals("org.kevoree.annotation.api") || deployUnit.getName().equals("org.kevoree.model") || deployUnit.getName().equals("org.kevoree.modeling.microframework")|| deployUnit.getName().equals("org.kevoree.kcl")|| deployUnit.getName().equals("org.kevoree.maven.resolver")) {
             return system;
         }
         return cache.get(deployUnit.path());
@@ -85,7 +86,7 @@ public class KevoreeCLKernel implements KevoreeCLFactory, BootstrapService {
         if (resolvedKCL != null) {
             return resolvedKCL;
         } else {
-            List<String> urls = new ArrayList<String>();
+            HashSet<String> urls = new HashSet<String>();
             if (!offline) {
                 ContainerRoot root = (ContainerRoot) deployUnit.eContainer();
                 File resolved;

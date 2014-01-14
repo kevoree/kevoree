@@ -103,7 +103,7 @@ public class KevScriptEngine implements KevScriptService {
                 break;
             case AddRepo:
                 Repository repo = factory.createRepository();
-                repo.setUrl(node.getChildren().get(0).childrenAsString());
+                repo.setUrl(node.getChildren().get(0).childrenAsString().replace("\"","").replace("\'",""));
                 model.addRepositories(repo);
                 break;
             case Remove:

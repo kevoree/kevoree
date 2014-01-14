@@ -48,7 +48,7 @@ class MergeDefaultLibrary(groupID: String, arteID: String, version: String) exte
   def execute(p: Object) {
     try {
 
-      val repos = new util.ArrayList[String]()
+      val repos = new util.HashSet[String]()
       repos.add("http://oss.sonatype.org/content/groups/public")
 
       val file: File = mavenResolver.resolve("mvn:" + groupID + ":" + arteID + ":" + version, repos)

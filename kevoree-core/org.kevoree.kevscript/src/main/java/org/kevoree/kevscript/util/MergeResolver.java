@@ -10,7 +10,9 @@ import org.kevoree.resolver.MavenResolver;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -28,11 +30,12 @@ public class MergeResolver {
 
     public static void merge(ContainerRoot model, String type, String url) {
         if (type.equals("mvn")) {
-            List<String> urls = new ArrayList<String>();
+            Set<String> urls = new HashSet<>();
             for (Repository repo : model.getRepositories()) {
                 urls.add(repo.getUrl());
             }
-            File resolved = resolver.resolve(type.toString() + ":" + url, urls);
+            String request = type.trim() + ":" + url.trim();
+            File resolved = resolver.resolve(request, urls);
             if (resolved != null && resolved.exists()) {
                 try {
                     JarFile jar = new JarFile(new File(resolved.getAbsolutePath()));
@@ -45,7 +48,7 @@ public class MergeResolver {
                     Log.error("Bad JAR file ", e);
                 }
             } else {
-                Log.warn("Not resolved {}", url);
+                Log.warn("Not resolved typeDef {}", request);
             }
         }
     }

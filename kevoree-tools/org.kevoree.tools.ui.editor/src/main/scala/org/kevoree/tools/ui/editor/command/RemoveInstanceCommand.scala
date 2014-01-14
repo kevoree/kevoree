@@ -70,7 +70,9 @@ class RemoveInstanceCommand(elem: org.kevoree.NamedElement) extends Command {
         updateType(inst)
       }
     }
-
+    if(elem.isInstanceOf[Instance]){
+      elem.asInstanceOf[Instance].delete()
+    }
     kernel.getEditorPanel.unshowPropertyEditor()
   }
 

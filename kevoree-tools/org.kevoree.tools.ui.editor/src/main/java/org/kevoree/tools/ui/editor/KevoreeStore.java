@@ -19,14 +19,12 @@ import org.w3c.dom.NodeList;
 import javax.swing.*;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStream;
+import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -78,75 +76,85 @@ public class KevoreeStore {
         }
     }
 
-    public ContainerRoot getFromGroupID(String groupIDparam,Boolean snapshot) {
-
-        ContainerRoot model = factory.createContainerRoot();
-
-        try {
-            URL url = new URL("http://oss.sonatype.org/service/local/data_index?g=" + groupIDparam);
-            URLConnection conn = url.openConnection();
-            InputStream is = conn.getInputStream();
-            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-            Document doc = dBuilder.parse(is);
-            NodeList nList = doc.getElementsByTagName("artifact");
-            for (int i = 0; i < nList.getLength(); i++) {
-                Node node = nList.item(i);
-                NodeList childNode = node.getChildNodes();
-
-                String resourceURI = null;
-                String groupId = null;
-                String artifactId = null;
-                String version = null;
-
-                for (int j = 0; j < childNode.getLength(); j++) {
-                    Node nodeChild = childNode.item(j);
-                    if (nodeChild.getNodeName().endsWith("resourceURI")) {
-                        resourceURI = nodeChild.getTextContent();
-                    }
-                    if (nodeChild.getNodeName().endsWith("groupId")) {
-                        groupId = nodeChild.getTextContent();
-                    }
-                    if (nodeChild.getNodeName().endsWith("artifactId")) {
-                        artifactId = nodeChild.getTextContent();
-                    }
-                    if (nodeChild.getNodeName().endsWith("version")) {
-                        version = nodeChild.getTextContent();
-                    }
+    public void populate(ContainerRoot model, String groupIDparam, String askedVersion) throws Exception {
+        URL url = new URL("http://oss.sonatype.org/service/local/data_index?g=" + groupIDparam + "&v=" + askedVersion);
+        URLConnection conn = url.openConnection();
+        InputStream is = conn.getInputStream();
+        DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+        Document doc = dBuilder.parse(is);
+        NodeList nList = doc.getElementsByTagName("artifact");
+        for (int i = 0; i < nList.getLength(); i++) {
+            Node node = nList.item(i);
+            NodeList childNode = node.getChildNodes();
+            String resourceURI = null;
+            String groupId = null;
+            String artifactId = null;
+            String version = null;
+            for (int j = 0; j < childNode.getLength(); j++) {
+                Node nodeChild = childNode.item(j);
+                if (nodeChild.getNodeName().endsWith("resourceURI")) {
+                    resourceURI = nodeChild.getTextContent();
                 }
-                if (resourceURI != null
-                        && !resourceURI.contains("-source")
-
-                    //&& (this.version.toLowerCase().endsWith("snapshot") ||
-                    //(!this.version.toLowerCase().endsWith("snapshot")
-                    // && !version.toLowerCase().endsWith("snapshot")))
-                        ) {
-
-                    if(snapshot){
-                        if(resourceURI.contains("snapshot")){
-                            StringBuffer buffer = new StringBuffer();
-                            buffer.append("repo http://oss.sonatype.org/content/groups/public\n");
-                            buffer.append("include mvn:" + groupId + ":" + artifactId + ":" + version + "\n");
-                            engine.execute(buffer.toString(), model);
-                        }
-                    } else {
-                        if(!resourceURI.contains("snapshot")){
-                            StringBuffer buffer = new StringBuffer();
-                            buffer.append("repo http://oss.sonatype.org/content/groups/public\n");
-                            buffer.append("include mvn:" + groupId + ":" + artifactId + ":" + version + "\n");
-                            engine.execute(buffer.toString(), model);
-                        }
-                    }
-
-
-
+                if (nodeChild.getNodeName().endsWith("groupId")) {
+                    groupId = nodeChild.getTextContent();
+                }
+                if (nodeChild.getNodeName().endsWith("artifactId")) {
+                    artifactId = nodeChild.getTextContent();
+                }
+                if (nodeChild.getNodeName().endsWith("version")) {
+                    version = nodeChild.getTextContent();
                 }
             }
-            is.close();
-            try {
-                setCache(groupIDparam, model);
-            } catch (Exception e) {
-                e.printStackTrace();
+            if (resourceURI != null
+                    && !resourceURI.contains("-source")
+
+                //&& (this.version.toLowerCase().endsWith("snapshot") ||
+                //(!this.version.toLowerCase().endsWith("snapshot")
+                // && !version.toLowerCase().endsWith("snapshot")))
+                    ) {
+
+                StringBuffer buffer = new StringBuffer();
+                buffer.append("repo http://oss.sonatype.org/content/groups/public\n");
+                buffer.append("include mvn:" + groupId + ":" + artifactId + ":" + version + "\n");
+                engine.execute(buffer.toString(), model);
+
+            }
+        }
+        is.close();
+        try {
+            setCache(groupIDparam, model);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public ContainerRoot getFromGroupID(String groupIDparam, Boolean snapshot) {
+
+        ContainerRoot model = factory.createContainerRoot();
+        try {
+
+            MavenResolver mavenResolver = new MavenResolver();
+            HashSet<String> urls = new HashSet<String>();
+            urls.add("http://oss.sonatype.org/content/groups/public/");
+
+            if (snapshot) {
+                File s = mavenResolver.resolve("org.kevoree.library", "org.kevoree.library", "latest", "pom", urls);
+                String latestVersion = null;
+                if (s != null) {
+                    latestVersion = s.getAbsolutePath().substring(s.getAbsolutePath().indexOf("/org.kevoree.library-") + "/org.kevoree.library-".length(), s.getAbsolutePath().indexOf(".pom"));
+                    populate(model, groupIDparam, latestVersion);
+
+                }
+            } else {
+                File s2 = mavenResolver.resolve("org.kevoree.library", "org.kevoree.library", "release", "pom", urls);
+                String releaseVersion = null;
+                if (s2 != null) {
+                    releaseVersion = s2.getAbsolutePath().substring(s2.getAbsolutePath().indexOf("/org.kevoree.library-") + "/org.kevoree.library-".length(), s2.getAbsolutePath().indexOf(".pom"));
+                    populate(model, groupIDparam, releaseVersion);
+                }
+
             }
             return model;
         } catch (Exception e) {
@@ -160,11 +168,11 @@ public class KevoreeStore {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                List<String> sub = Arrays.asList("java","java-snapshot", "cloud","cloud-snapshot");
+                List<String> sub = Arrays.asList("java", "java-snapshot", "cloud", "cloud-snapshot");
                 for (String s : sub) {
                     JMenu subMenu = new JMenu(s.toUpperCase());
                     subMenu.setAutoscrolls(true);
-                    ContainerRoot model = getFromGroupID("org.kevoree.library." + s.replace("-snapshot",""),s.contains("snapshot"));
+                    ContainerRoot model = getFromGroupID("org.kevoree.library." + s.replace("-snapshot", ""), s.contains("snapshot"));
                     HashMap<String, DeployUnit> cache = new HashMap<String, DeployUnit>();
                     if (model != null) {
                         for (TypeDefinition td : model.getTypeDefinitions()) {
