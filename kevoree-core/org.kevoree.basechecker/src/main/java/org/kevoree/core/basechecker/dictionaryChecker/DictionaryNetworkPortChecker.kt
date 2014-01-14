@@ -17,7 +17,6 @@ import java.util.ArrayList
 import java.util.HashMap
 import org.kevoree.Channel
 import org.kevoree.ContainerNode
-import org.kevoree.ContainerRoot
 import org.kevoree.Group
 import org.kevoree.Instance
 import org.kevoree.api.service.core.checker.CheckerService
@@ -35,17 +34,19 @@ import org.kevoree.DictionaryValue
  * Time: 07:57
  */
 class DictionaryNetworkPortChecker : CheckerService {
-    // FIXME must be reinitialize before starting to use it
-    private val ports: HashMap<String, HashMap<String, ArrayList<String>>> = HashMap<String, HashMap<String, ArrayList<String>>>()
     override fun check(element: KMFContainer?): MutableList<CheckerViolation> {
+        // HashMap<"ContainerNode path", <HashMap<"Port value", ArrayList<"element id to know where is the violation">>>
+        val ports: HashMap<String, HashMap<String, ArrayList<String>>> = HashMap<String, HashMap<String, ArrayList<String>>>()
         val violations = ArrayList<CheckerViolation>()
         if (element != null && element is Instance) {
             if (element is ContainerNode) {
                 checkInstance(element, element, ports, violations)
             } else if (element is ComponentInstance) {
                 checkInstance(element, (element.eContainer() as ContainerNode), ports, violations)
-            } else if (element is Group || element is Channel) {
-                checkFragmentInstance(element, ports, violations)
+            } else if (element is Channel) {
+                checkFragmentedInstanceForChannel(element, ports, violations)
+            } else if (element is Group) {
+                checkFragmentedInstanceForGroup(element, ports, violations)
             }
         }
         return violations;
@@ -53,57 +54,77 @@ class DictionaryNetworkPortChecker : CheckerService {
 
     private fun checkInstance(instance: Instance, hostingNode: ContainerNode, ports: HashMap<String, HashMap<String, ArrayList<String>>>, violations: MutableList<CheckerViolation>) {
         if (instance.typeDefinition!!.dictionaryType != null) {
-            checkDictionary(instance.dictionary, instance.typeDefinition!!.dictionaryType!!, instance, hostingNode, ports, violations)
+            checkDictionary(instance.dictionary, instance.typeDefinition!!.dictionaryType!!, instance, hostingNode, ports, violations, false)
         }
     }
 
-    private fun checkFragmentInstance(instance: Instance, ports: HashMap<String, HashMap<String, ArrayList<String>>>, violations: MutableList<CheckerViolation>) {
+    private fun checkFragmentedInstanceForChannel(instance: Channel, ports: HashMap<String, HashMap<String, ArrayList<String>>>, violations: MutableList<CheckerViolation>) {
+        val nodes = ArrayList<ContainerNode>()
+        instance.bindings.forEach { binding ->
+            val node = binding.port!!.eContainer()!!.eContainer()!! as ContainerNode
+            if (!nodes.contains(node)) {
+                nodes.add(node)
+                checkFragmentedInstance(instance, node, ports, violations)
+            }
+        }
+    }
+
+    private fun checkFragmentedInstanceForGroup(instance: Group, ports: HashMap<String, HashMap<String, ArrayList<String>>>, violations: MutableList<CheckerViolation>) {
+        instance.subNodes.forEach { node ->
+            checkFragmentedInstance(instance, node, ports, violations)
+        }
+    }
+
+    private fun checkFragmentedInstance(instance: Instance, node : ContainerNode, ports: HashMap<String, HashMap<String, ArrayList<String>>>, violations: MutableList<CheckerViolation>) {
+        checkDictionary(instance.dictionary, instance.typeDefinition!!.dictionaryType!!, instance, node, ports, violations, false)
         if (instance.fragmentDictionary.size() > 0) {
-            for (fragmentDictionary in instance.fragmentDictionary) {
-                var node = (instance.eContainer() as ContainerRoot).findNodesByID(fragmentDictionary.name!!)!!
-                if (instance.typeDefinition!!.dictionaryType != null) {
-                    checkDictionary(instance.dictionary, instance.typeDefinition!!.dictionaryType!!, instance, node, ports, violations)
-                    checkDictionary(fragmentDictionary, instance.typeDefinition!!.dictionaryType!!, instance, node, ports, violations)
-                }
+            val fragmentDictionary = instance.findFragmentDictionaryByID(node.name!!)
+            if (instance.typeDefinition!!.dictionaryType != null) {
+                checkDictionary(fragmentDictionary, instance.typeDefinition!!.dictionaryType!!, instance, node, ports, violations, true)
             }
+        } else {
+            // check default value
+            checkDictionary(null, instance.typeDefinition!!.dictionaryType!!, instance, node, ports, violations, true)
         }
     }
 
-    private fun checkDictionary(dictionary: Dictionary?, dictionaryType: DictionaryType, instance: Instance, hostingNode: ContainerNode, ports: HashMap<String, HashMap<String, ArrayList<String>>>, violations: MutableList<CheckerViolation>) {
+    private fun checkDictionary(dictionary: Dictionary?, dictionaryType: DictionaryType, instance: Instance, hostingNode: ContainerNode, ports: HashMap<String, HashMap<String, ArrayList<String>>>, violations: MutableList<CheckerViolation>, fragmentDependent: Boolean) {
 
-        for (attribute in dictionaryType.attributes) {
-            var value: String? = null
-            var attributeValue: DictionaryValue? = null
-            if (dictionary != null) {
-                attributeValue = dictionary.findValuesByID(attribute.name!!)
-            }
-            if (attributeValue == null && attribute.defaultValue != null) {
-                value = attribute.defaultValue
-            } else if (attributeValue != null) {
-                value = attributeValue!!.value
-            }
-            if (value != null && attribute.name!!.equals("port") || attribute.name!!.endsWith("_port") || attribute.name!!.startsWith("port_")) {
-                var nodePorts = ports.get(hostingNode.path()!!)
-                if (nodePorts == null) {
-                    nodePorts = HashMap<String, ArrayList<String>>()
-                    ports.put(hostingNode.path()!!, nodePorts!!)
+        dictionaryType.attributes.forEach { attribute ->
+            if ((attribute.fragmentDependant!! && fragmentDependent) || (!attribute.fragmentDependant!! && !fragmentDependent) ) {
+                var value: String? = null
+                var attributeValue: DictionaryValue? = null
+                if (dictionary != null) {
+                    attributeValue = dictionary.findValuesByID(attribute.name!!)
                 }
-                var elements: ArrayList<String>? = nodePorts!!.get(value)
-                if (elements == null) {
-                    elements = ArrayList<String>()
-                    elements!!.add(instance.path()!!)
-                    nodePorts!!.put(value!!, elements!!)
-                } else {
-                    elements!!.add(instance.path()!!)
-                    val violation: CheckerViolation = CheckerViolation()
-                    val builder = StringBuilder()
-                    builder.append("<")
-                    for (element in elements!!) {
-                        builder.append(element).append(", ")
+                if (attributeValue == null && attribute.defaultValue != null) {
+                    value = attribute.defaultValue
+                } else if (attributeValue != null) {
+                    value = attributeValue!!.value
+                }
+                if (value != null && attribute.name!!.equals("port") || attribute.name!!.endsWith("_port") || attribute.name!!.startsWith("port_")) {
+                    var nodePorts = ports.get(hostingNode.path()!!)
+                    if (nodePorts == null) {
+                        nodePorts = HashMap<String, ArrayList<String>>()
+                        ports.put(hostingNode.path()!!, nodePorts!!)
                     }
-                    violation.setMessage("Duplicated collected port usage " + value + " - " + builder.substring(0, builder.length() - 2) + ">")
-                    violation.setTargetObjects(elements)
-                    violations.add(violation)
+                    var elements: ArrayList<String>? = nodePorts!!.get(value)
+                    if (elements == null) {
+                        elements = ArrayList<String>()
+                        elements!!.add(instance.path()!! + "/" + hostingNode.name)
+                        nodePorts!!.put(value!!, elements!!)
+                    } else {
+                        elements!!.add(instance.path()!! + "/" + hostingNode.name)
+                        val violation: CheckerViolation = CheckerViolation()
+                        val builder = StringBuilder()
+                        builder.append("<")
+                        for (element in elements!!) {
+                            builder.append(element).append(", ")
+                        }
+                        violation.setMessage("Duplicated collected port usage " + value + " - " + builder.substring(0, builder.length() - 2) + ">")
+                        violation.setTargetObjects(elements)
+                        violations.add(violation)
+                    }
                 }
             }
         }

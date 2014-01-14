@@ -41,7 +41,6 @@ class RootChecker: CheckerService {
 
     }
     override fun check(element: KMFContainer?): MutableList<CheckerViolation> {
-
         val result = ArrayList<CheckerViolation>()
         val beginTime = System.currentTimeMillis()
         if (element != null) {
