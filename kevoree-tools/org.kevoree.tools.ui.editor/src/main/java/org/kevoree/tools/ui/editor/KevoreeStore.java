@@ -140,8 +140,7 @@ public class KevoreeStore {
 
             MavenResolver mavenResolver = new MavenResolver();
             HashSet<String> urls = new HashSet<String>();
-            urls.add("http://oss.sonatype.org/content/groups/public");
-
+            urls.add("http://oss.sonatype.org/content/groups/public/");
             if (snapshot) {
                 File s = mavenResolver.resolve("org.kevoree.library", "org.kevoree.library", "latest", "pom", urls);
                 String latestVersion;
