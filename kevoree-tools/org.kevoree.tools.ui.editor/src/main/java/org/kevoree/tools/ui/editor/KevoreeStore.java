@@ -78,6 +78,9 @@ public class KevoreeStore {
 
     public void populate(ContainerRoot model, String groupIDparam, String askedVersion) throws Exception {
         URL url = new URL("http://oss.sonatype.org/service/local/data_index?g=" + groupIDparam + "&v=" + askedVersion);
+
+        System.out.println(url);
+
         URLConnection conn = url.openConnection();
         InputStream is = conn.getInputStream();
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
@@ -137,17 +140,13 @@ public class KevoreeStore {
 
             MavenResolver mavenResolver = new MavenResolver();
             HashSet<String> urls = new HashSet<String>();
-            urls.add("http://oss.sonatype.org/content/groups/public/");
+            urls.add("http://oss.sonatype.org/content/groups/public");
 
             if (snapshot) {
                 File s = mavenResolver.resolve("org.kevoree.library", "org.kevoree.library", "latest", "pom", urls);
-                String latestVersion = null;
+                String latestVersion;
                 if (s != null) {
                     latestVersion = s.getAbsolutePath().substring(s.getAbsolutePath().indexOf("org.kevoree.library-") + "org.kevoree.library-".length(), s.getAbsolutePath().indexOf(".pom"));
-
-                    System.out.println(latestVersion);
-
-
                     populate(model, groupIDparam, latestVersion);
                 } else {
                     Log.info("No version found for latest, try cache");
@@ -155,7 +154,7 @@ public class KevoreeStore {
                 }
             } else {
                 File s2 = mavenResolver.resolve("org.kevoree.library", "org.kevoree.library", "release", "pom", urls);
-                String releaseVersion = null;
+                String releaseVersion;
                 if (s2 != null) {
                     releaseVersion = s2.getAbsolutePath().substring(s2.getAbsolutePath().indexOf("org.kevoree.library-") + "org.kevoree.library-".length(), s2.getAbsolutePath().indexOf(".pom"));
                     populate(model, groupIDparam, releaseVersion);
