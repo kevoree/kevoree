@@ -143,18 +143,20 @@ public class KevoreeStore {
                 File s = mavenResolver.resolve("org.kevoree.library", "org.kevoree.library", "latest", "pom", urls);
                 String latestVersion = null;
                 if (s != null) {
-                    latestVersion = s.getAbsolutePath().substring(s.getAbsolutePath().indexOf("/org.kevoree.library-") + "/org.kevoree.library-".length(), s.getAbsolutePath().indexOf(".pom"));
+                    latestVersion = s.getAbsolutePath().substring(s.getAbsolutePath().indexOf("org.kevoree.library-") + "org.kevoree.library-".length(), s.getAbsolutePath().indexOf(".pom"));
                     populate(model, groupIDparam, latestVersion);
-
+                } else {
+                    throw new Exception();
                 }
             } else {
                 File s2 = mavenResolver.resolve("org.kevoree.library", "org.kevoree.library", "release", "pom", urls);
                 String releaseVersion = null;
                 if (s2 != null) {
-                    releaseVersion = s2.getAbsolutePath().substring(s2.getAbsolutePath().indexOf("/org.kevoree.library-") + "/org.kevoree.library-".length(), s2.getAbsolutePath().indexOf(".pom"));
+                    releaseVersion = s2.getAbsolutePath().substring(s2.getAbsolutePath().indexOf("org.kevoree.library-") + "org.kevoree.library-".length(), s2.getAbsolutePath().indexOf(".pom"));
                     populate(model, groupIDparam, releaseVersion);
+                } else {
+                    throw new Exception();
                 }
-
             }
             return model;
         } catch (Exception e) {
