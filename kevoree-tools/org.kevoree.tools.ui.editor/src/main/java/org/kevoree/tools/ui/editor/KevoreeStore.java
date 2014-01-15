@@ -78,9 +78,6 @@ public class KevoreeStore {
 
     public void populate(ContainerRoot model, String groupIDparam, String askedVersion) throws Exception {
         URL url = new URL("http://oss.sonatype.org/service/local/data_index?g=" + groupIDparam + "&v=" + askedVersion);
-
-        System.out.println(url);
-
         URLConnection conn = url.openConnection();
         InputStream is = conn.getInputStream();
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
