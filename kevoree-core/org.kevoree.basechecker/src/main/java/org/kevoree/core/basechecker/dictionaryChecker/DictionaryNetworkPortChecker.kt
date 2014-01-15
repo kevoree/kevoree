@@ -79,7 +79,7 @@ class DictionaryNetworkPortChecker : CheckerService {
         }
     }
 
-    private fun checkFragmentedInstance(instance: Instance, node : ContainerNode, ports: HashMap<String, HashMap<String, ArrayList<String>>>, violations: MutableList<CheckerViolation>) {
+    private fun checkFragmentedInstance(instance: Instance, node: ContainerNode, ports: HashMap<String, HashMap<String, ArrayList<String>>>, violations: MutableList<CheckerViolation>) {
         checkDictionary(instance.dictionary, instance.typeDefinition!!.dictionaryType!!, instance, node, ports, violations, false)
         if (instance.fragmentDictionary.size() > 0) {
             val fragmentDictionary = instance.findFragmentDictionaryByID(node.name!!)
@@ -95,7 +95,8 @@ class DictionaryNetworkPortChecker : CheckerService {
     private fun checkDictionary(dictionary: Dictionary?, dictionaryType: DictionaryType, instance: Instance, hostingNode: ContainerNode, ports: HashMap<String, HashMap<String, ArrayList<String>>>, violations: MutableList<CheckerViolation>, fragmentDependent: Boolean) {
 
         dictionaryType.attributes.forEach { attribute ->
-            if ((attribute.fragmentDependant!! && fragmentDependent) || (!attribute.fragmentDependant!! && !fragmentDependent) ) {
+            if (((attribute.fragmentDependant!! && fragmentDependent) || (!attribute.fragmentDependant!! && !fragmentDependent))
+            && (attribute.name!!.equalsIgnoreCase("port") || attribute.name!!.toLowerCase().endsWith("_port") || attribute.name!!.toLowerCase().startsWith("port_"))) {
                 var value: String? = null
                 var attributeValue: DictionaryValue? = null
                 if (dictionary != null) {
@@ -106,7 +107,7 @@ class DictionaryNetworkPortChecker : CheckerService {
                 } else if (attributeValue != null) {
                     value = attributeValue!!.value
                 }
-                if (value != null && attribute.name!!.equals("port") || attribute.name!!.endsWith("_port") || attribute.name!!.startsWith("port_")) {
+                if (value != null) {
                     var nodePorts = ports.get(hostingNode.path()!!)
                     if (nodePorts == null) {
                         nodePorts = HashMap<String, ArrayList<String>>()
