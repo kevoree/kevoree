@@ -146,6 +146,7 @@ public class KevoreeStore {
                     latestVersion = s.getAbsolutePath().substring(s.getAbsolutePath().indexOf("org.kevoree.library-") + "org.kevoree.library-".length(), s.getAbsolutePath().indexOf(".pom"));
                     populate(model, groupIDparam, latestVersion);
                 } else {
+                    Log.info("No version found for latest, try cache");
                     throw new Exception();
                 }
             } else {
@@ -155,6 +156,7 @@ public class KevoreeStore {
                     releaseVersion = s2.getAbsolutePath().substring(s2.getAbsolutePath().indexOf("org.kevoree.library-") + "org.kevoree.library-".length(), s2.getAbsolutePath().indexOf(".pom"));
                     populate(model, groupIDparam, releaseVersion);
                 } else {
+                    Log.info("No version found for release, try cache");
                     throw new Exception();
                 }
             }
