@@ -31,6 +31,8 @@ import org.kevoree.Instance
  * Time: 07:07
  */
 class AbstractChecker: CheckerService {
+    override fun initialize() {
+    }
     override fun check(element : KMFContainer?): MutableList<CheckerViolation> {
         val violations = ArrayList<CheckerViolation>()
         if (element != null && element is Instance) {

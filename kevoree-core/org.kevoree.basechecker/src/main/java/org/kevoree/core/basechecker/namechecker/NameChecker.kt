@@ -25,6 +25,8 @@ import org.kevoree.modeling.api.KMFContainer
 import org.kevoree.Instance
 
 class NameChecker: CheckerService {
+    override fun initialize() {
+    }
 
     private val acceptedRegex = "[A-Za-z0-9_]*"
     private var message = "The name doesn't fit the defined format.\nA name only contains lower or upper letters, numbers and \"_\"."

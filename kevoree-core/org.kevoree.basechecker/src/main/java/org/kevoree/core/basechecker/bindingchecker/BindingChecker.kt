@@ -29,6 +29,8 @@ import org.kevoree.Channel
  * Time: 17:48
  */
 class BindingChecker : CheckerService {
+    override fun initialize() {
+    }
     override fun check(element: KMFContainer?): MutableList<CheckerViolation> {
         val violations = ArrayList<CheckerViolation>()
         if (element != null && element is Channel) {

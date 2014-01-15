@@ -34,9 +34,13 @@ import org.kevoree.DictionaryValue
  * Time: 07:57
  */
 class DictionaryNetworkPortChecker : CheckerService {
+    // HashMap<"ContainerNode path", <HashMap<"Port value", ArrayList<"element id to know where is the violation">>>
+
+    private val ports: HashMap<String, HashMap<String, ArrayList<String>>> = HashMap<String, HashMap<String, ArrayList<String>>>()
+    override fun initialize() {
+        ports.clear()
+    }
     override fun check(element: KMFContainer?): MutableList<CheckerViolation> {
-        // HashMap<"ContainerNode path", <HashMap<"Port value", ArrayList<"element id to know where is the violation">>>
-        val ports: HashMap<String, HashMap<String, ArrayList<String>>> = HashMap<String, HashMap<String, ArrayList<String>>>()
         val violations = ArrayList<CheckerViolation>()
         if (element != null && element is Instance) {
             if (element is ContainerNode) {

@@ -27,7 +27,12 @@ import org.kevoree.log.Log
 import org.kevoree.modeling.api.util.ModelVisitor
 import org.kevoree.modeling.api.KMFContainer
 
-class RootChecker: CheckerService {
+class RootChecker : CheckerService {
+    override fun initialize() {
+        for (checker in subcheckers) {
+            checker.initialize()
+        }
+    }
     private val subcheckers = ArrayList<CheckerService>();
 
     {
@@ -41,6 +46,7 @@ class RootChecker: CheckerService {
 
     }
     override fun check(element: KMFContainer?): MutableList<CheckerViolation> {
+        initialize()
         val result = ArrayList<CheckerViolation>()
         val beginTime = System.currentTimeMillis()
         if (element != null) {
@@ -60,8 +66,8 @@ class RootChecker: CheckerService {
             violation.setTargetObjects(ArrayList())
             result.add(violation)
         }
-        if(Log.DEBUG){
-            Log.debug("Model checked in {} " , (System.currentTimeMillis() - beginTime))
+        if (Log.DEBUG) {
+            Log.debug("Model checked in {} ", (System.currentTimeMillis() - beginTime))
         }
         return result
     }

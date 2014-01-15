@@ -27,6 +27,8 @@ import org.kevoree.Instance
  * Time: 09:23
  */
 class PortChecker: CheckerService {
+    override fun initialize() {
+    }
     override fun check(element: KMFContainer?): MutableList<CheckerViolation> {
         val violations = ArrayList<CheckerViolation>()
         if (element != null && element is ComponentInstance) {

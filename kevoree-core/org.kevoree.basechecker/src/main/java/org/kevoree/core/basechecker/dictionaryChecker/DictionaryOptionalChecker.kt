@@ -33,6 +33,8 @@ import org.kevoree.ComponentInstance
  */
 
 class DictionaryOptionalChecker : CheckerService {
+    override fun initialize() {
+    }
     override fun check(element: KMFContainer?): MutableList<CheckerViolation> {
         val violations = ArrayList<CheckerViolation>()
         if (element != null && element is Instance) {
