@@ -146,6 +146,10 @@ public class KevoreeStore {
                 String latestVersion;
                 if (s != null) {
                     latestVersion = s.getAbsolutePath().substring(s.getAbsolutePath().indexOf("org.kevoree.library-") + "org.kevoree.library-".length(), s.getAbsolutePath().indexOf(".pom"));
+                    if(latestVersion.contains("-")){
+                        latestVersion = latestVersion.substring(0,latestVersion.indexOf("-"));
+                        latestVersion = latestVersion + "-SNAPSHOT";
+                    }
                     populate(model, groupIDparam, latestVersion);
                 } else {
                     Log.info("No version found for latest, try cache");
