@@ -15,7 +15,6 @@ package org.kevoree.core.basechecker.dictionaryChecker
 
 import java.util.ArrayList
 import org.kevoree.Channel
-import org.kevoree.ContainerRoot
 import org.kevoree.DictionaryAttribute
 import org.kevoree.DictionaryValue
 import org.kevoree.Group
@@ -24,6 +23,7 @@ import org.kevoree.api.service.core.checker.CheckerService
 import org.kevoree.api.service.core.checker.CheckerViolation
 import org.kevoree.modeling.api.KMFContainer
 import org.kevoree.ComponentInstance
+import org.kevoree.api.service.core.checker.CheckerContext
 
 /**
  * Created by IntelliJ IDEA.
@@ -33,9 +33,7 @@ import org.kevoree.ComponentInstance
  */
 
 class DictionaryOptionalChecker : CheckerService {
-    override fun initialize() {
-    }
-    override fun check(element: KMFContainer?): MutableList<CheckerViolation> {
+    override fun check(element: KMFContainer?, context : CheckerContext?): MutableList<CheckerViolation> {
         val violations = ArrayList<CheckerViolation>()
         if (element != null && element is Instance) {
             checkInstance(element, violations)

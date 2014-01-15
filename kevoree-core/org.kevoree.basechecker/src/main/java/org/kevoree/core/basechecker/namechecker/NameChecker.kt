@@ -17,21 +17,19 @@ package org.kevoree.core.basechecker.namechecker
 import java.util.ArrayList
 import java.util.regex.Matcher
 import java.util.regex.Pattern
-import org.kevoree.ContainerRoot
 import org.kevoree.NamedElement
 import org.kevoree.api.service.core.checker.CheckerService
 import org.kevoree.api.service.core.checker.CheckerViolation
 import org.kevoree.modeling.api.KMFContainer
 import org.kevoree.Instance
+import org.kevoree.api.service.core.checker.CheckerContext
 
 class NameChecker: CheckerService {
-    override fun initialize() {
-    }
 
     private val acceptedRegex = "[A-Za-z0-9_]*"
     private var message = "The name doesn't fit the defined format.\nA name only contains lower or upper letters, numbers and \"_\"."
 
-    override fun check(element: KMFContainer?): MutableList<CheckerViolation> {
+    override fun check(element: KMFContainer?, context : CheckerContext?): MutableList<CheckerViolation> {
         var violations = ArrayList<CheckerViolation>()
         if (element != null && element is Instance) {
             val violation = check(element)

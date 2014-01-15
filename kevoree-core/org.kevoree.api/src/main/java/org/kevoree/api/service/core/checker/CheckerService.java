@@ -41,7 +41,6 @@ import java.util.List;
  */
 public interface CheckerService {
 
-    void initialize();
-    List<CheckerViolation> check(KMFContainer element);
+    List<CheckerViolation> check(KMFContainer element, CheckerContext context);
 
 }

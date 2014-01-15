@@ -14,13 +14,13 @@
 package org.kevoree.core.basechecker.bindingchecker
 
 import java.util.ArrayList
-import org.kevoree.ContainerRoot
 import org.kevoree.MBinding
 import org.kevoree.ServicePortType
 import org.kevoree.api.service.core.checker.CheckerService
 import org.kevoree.api.service.core.checker.CheckerViolation
 import org.kevoree.modeling.api.KMFContainer
 import org.kevoree.Channel
+import org.kevoree.api.service.core.checker.CheckerContext
 
 /**
  * Created by IntelliJ IDEA.
@@ -29,9 +29,7 @@ import org.kevoree.Channel
  * Time: 17:48
  */
 class BindingChecker : CheckerService {
-    override fun initialize() {
-    }
-    override fun check(element: KMFContainer?): MutableList<CheckerViolation> {
+    override fun check(element: KMFContainer?, context : CheckerContext?): MutableList<CheckerViolation> {
         val violations = ArrayList<CheckerViolation>()
         if (element != null && element is Channel) {
             val synchBindings = ArrayList<MBinding>()

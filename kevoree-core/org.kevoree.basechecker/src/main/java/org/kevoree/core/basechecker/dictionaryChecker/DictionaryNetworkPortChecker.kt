@@ -26,6 +26,7 @@ import org.kevoree.ComponentInstance
 import org.kevoree.Dictionary
 import org.kevoree.DictionaryType
 import org.kevoree.DictionaryValue
+import org.kevoree.api.service.core.checker.CheckerContext
 
 /**
  * Created with IntelliJ IDEA.
@@ -34,23 +35,26 @@ import org.kevoree.DictionaryValue
  * Time: 07:57
  */
 class DictionaryNetworkPortChecker : CheckerService {
-    // HashMap<"ContainerNode path", <HashMap<"Port value", ArrayList<"element id to know where is the violation">>>
 
-    private val ports: HashMap<String, HashMap<String, ArrayList<String>>> = HashMap<String, HashMap<String, ArrayList<String>>>()
-    override fun initialize() {
-        ports.clear()
-    }
-    override fun check(element: KMFContainer?): MutableList<CheckerViolation> {
+    override fun check(element: KMFContainer?, context: CheckerContext?): MutableList<CheckerViolation> {
         val violations = ArrayList<CheckerViolation>()
-        if (element != null && element is Instance) {
-            if (element is ContainerNode) {
-                checkInstance(element, element, ports, violations)
-            } else if (element is ComponentInstance) {
-                checkInstance(element, (element.eContainer() as ContainerNode), ports, violations)
-            } else if (element is Channel) {
-                checkFragmentedInstanceForChannel(element, ports, violations)
-            } else if (element is Group) {
-                checkFragmentedInstanceForGroup(element, ports, violations)
+        if (context != null) {
+            // HashMap<"ContainerNode path", <HashMap<"Port value", ArrayList<"element id to know where is the violation">>>
+            var ports: HashMap<String, HashMap<String, ArrayList<String>>>? = context.get(this.getClass().getName()) as HashMap<String, HashMap<String, ArrayList<String>>>?
+            if (ports == null) {
+                ports = HashMap<String, HashMap<String, ArrayList<String>>>()
+                context.put(this.getClass().getName(), ports)
+            }
+            if (element != null && element is Instance) {
+                if (element is ContainerNode) {
+                    checkInstance(element, element, ports!!, violations)
+                } else if (element is ComponentInstance) {
+                    checkInstance(element, (element.eContainer() as ContainerNode), ports!!, violations)
+                } else if (element is Channel) {
+                    checkFragmentedInstanceForChannel(element, ports!!, violations)
+                } else if (element is Group) {
+                    checkFragmentedInstanceForGroup(element, ports!!, violations)
+                }
             }
         }
         return violations;

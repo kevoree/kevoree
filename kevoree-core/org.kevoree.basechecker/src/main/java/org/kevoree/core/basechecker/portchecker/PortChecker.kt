@@ -15,11 +15,10 @@ package org.kevoree.core.basechecker.portchecker
 
 import java.util.ArrayList
 import org.kevoree.ComponentInstance
-import org.kevoree.ContainerRoot
 import org.kevoree.api.service.core.checker.CheckerService
 import org.kevoree.api.service.core.checker.CheckerViolation
 import org.kevoree.modeling.api.KMFContainer
-import org.kevoree.Instance
+import org.kevoree.api.service.core.checker.CheckerContext
 
 /**
  * User: Erwan Daubert - erwan.daubert@gmail.com
@@ -27,9 +26,7 @@ import org.kevoree.Instance
  * Time: 09:23
  */
 class PortChecker: CheckerService {
-    override fun initialize() {
-    }
-    override fun check(element: KMFContainer?): MutableList<CheckerViolation> {
+    override fun check(element: KMFContainer?, context : CheckerContext?): MutableList<CheckerViolation> {
         val violations = ArrayList<CheckerViolation>()
         if (element != null && element is ComponentInstance) {
             portCheckOnInstance(element, violations)

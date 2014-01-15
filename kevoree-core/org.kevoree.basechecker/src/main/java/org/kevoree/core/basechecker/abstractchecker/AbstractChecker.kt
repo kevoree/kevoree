@@ -14,15 +14,11 @@
 package org.kevoree.core.basechecker.abstractchecker
 
 import java.util.ArrayList
-import org.kevoree.ContainerRoot
-import org.kevoree.NodeType
 import org.kevoree.api.service.core.checker.CheckerService
 import org.kevoree.api.service.core.checker.CheckerViolation
 import org.kevoree.modeling.api.KMFContainer
-import org.kevoree.ChannelType
-import org.kevoree.GroupType
-import org.kevoree.ComponentType
 import org.kevoree.Instance
+import org.kevoree.api.service.core.checker.CheckerContext
 
 /**
  * Created with IntelliJ IDEA.
@@ -31,9 +27,7 @@ import org.kevoree.Instance
  * Time: 07:07
  */
 class AbstractChecker: CheckerService {
-    override fun initialize() {
-    }
-    override fun check(element : KMFContainer?): MutableList<CheckerViolation> {
+    override fun check(element : KMFContainer?, context : CheckerContext?): MutableList<CheckerViolation> {
         val violations = ArrayList<CheckerViolation>()
         if (element != null && element is Instance) {
             if (element.typeDefinition!!.abstract!!) {

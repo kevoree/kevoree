@@ -26,13 +26,9 @@ import org.kevoree.core.basechecker.portchecker.PortChecker
 import org.kevoree.log.Log
 import org.kevoree.modeling.api.util.ModelVisitor
 import org.kevoree.modeling.api.KMFContainer
+import org.kevoree.api.service.core.checker.CheckerContext
 
 class RootChecker : CheckerService {
-    override fun initialize() {
-        for (checker in subcheckers) {
-            checker.initialize()
-        }
-    }
     private val subcheckers = ArrayList<CheckerService>();
 
     {
@@ -45,15 +41,18 @@ class RootChecker : CheckerService {
         subcheckers.add(AbstractChecker())
 
     }
-    override fun check(element: KMFContainer?): MutableList<CheckerViolation> {
-        initialize()
+    fun check(element: KMFContainer?): MutableList<CheckerViolation> {
+        return check(element, CheckerContextImpl())
+    }
+
+    override fun check(element: KMFContainer?, context : CheckerContext?): MutableList<CheckerViolation> {
         val result = ArrayList<CheckerViolation>()
         val beginTime = System.currentTimeMillis()
         if (element != null) {
             element.visit(object : ModelVisitor() {
                 override public fun visit(elem: org.kevoree.modeling.api.KMFContainer, refNameInParent: String, parent: org.kevoree.modeling.api.KMFContainer) {
                     for (checker in subcheckers) {
-                        val violations = checker.check(elem)
+                        val violations = checker.check(elem, context)
                         if (violations != null && violations.size > 0) {
                             result.addAll(violations)
                         }
