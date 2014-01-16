@@ -21,14 +21,14 @@ public class CheckerContextImpl implements CheckerContext {
         this.contextValues = new HashMap<String, Object>();
     }
 
-    public synchronized void put(String id, Object value) {
+    public void put(String id, Object value) {
         if (contextValues.containsKey(id)) {
             contextValues.remove(id);
         }
         contextValues.put(id, value);
     }
 
-    public synchronized Object get(String id) {
+    public Object get(String id) {
         return contextValues.get(id);
     }
 }
