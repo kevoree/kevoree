@@ -32,14 +32,12 @@
         <!-- Add your project components here -->
     </project-components>
 
-
     <actions>
 
         <group id="KevPlugin.ActionGroup" popup="true" text="Kevoree" description="Kev actions"
                icon="/icons/kevs_16x16.png">
 
             <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFile"/>
-
 
             <action id="Kevoree.NewKevScriptFileAction" text="KevScript"
                     description="Create a new KevScript in the current project"
@@ -50,24 +48,25 @@
                     class="org.kevoree.tools.kevscript.idea.actions.NewComponentTypeAction" text="Component"
                     description="Create a new Kevoree Component in the current project"/>
 
+            <action id="Kevoree.NewChannelTypeAction"
+                    class="org.kevoree.tools.kevscript.idea.actions.NewChannelTypeAction" text="Channel"
+                    description="Create a new Kevoree Channel in the current project"/>
+
+            <action id="Kevoree.NewGroupTypeAction"
+                    class="org.kevoree.tools.kevscript.idea.actions.NewGroupTypeAction" text="Group"
+                    description="Create a new Kevoree Group in the current project"/>
+
         </group>
-
-
     </actions>
 
     <extensions defaultExtensionNs="com.intellij">
         <fileTypeFactory implementation="org.kevoree.tools.kevscript.idea.KevScriptFileTypeFactory"/>
-        <!-- Add your extensions here -->
-
         <programRunner implementation="org.kevoree.tools.kevscript.idea.runner.KevScriptRunner"/>
         <configurationType implementation="org.kevoree.tools.kevscript.idea.runner.KevScriptRunConfigurationType"/>
-
-
         <internalFileTemplate name="KevScript"/>
         <internalFileTemplate name="KevComponent"/>
-
-
+        <internalFileTemplate name="KevChannel"/>
+        <internalFileTemplate name="KevGroup"/>
     </extensions>
-
 
 </idea-plugin>

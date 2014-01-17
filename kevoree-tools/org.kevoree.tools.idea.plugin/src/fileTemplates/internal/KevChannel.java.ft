@@ -1,0 +1,21 @@
+package ${PACKAGE_NAME};
+
+import org.kevoree.annotation.*;
+
+@ChannelType
+@Library(name = "Java")
+public class ${NAME} implements ChannelDispatch {
+
+    @KevoreeInject
+    ChannelContext channelContext;
+
+    @Override
+    public void dispatch(final Object payload, final Callback callback) {
+        for (Port p : channelContext.getLocalPorts()) {
+            p.call(payload, callback);
+        }
+    }
+}
+
+
+

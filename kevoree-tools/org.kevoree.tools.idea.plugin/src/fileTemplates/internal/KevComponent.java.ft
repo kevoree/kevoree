@@ -3,7 +3,7 @@ package ${PACKAGE_NAME};
 import org.kevoree.annotation.*;
 
 @ComponentType
-@Library(name = "JAVA")
+@Library(name = "Java")
 public class ${NAME} {
 
     @Param(defaultValue = "Default Content")
@@ -16,7 +16,7 @@ public class ${NAME} {
     org.kevoree.api.Port out;
 
     @Input
-    public String in(Object msg) {
+    public String in(Object i) {
         String msg = message+" from "+content.getInstanceName()+"@"+content.getNodeName();
         System.out.println(msg);
         out.send(msg);
