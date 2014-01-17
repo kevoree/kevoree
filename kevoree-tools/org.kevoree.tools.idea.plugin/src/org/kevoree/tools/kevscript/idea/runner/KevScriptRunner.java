@@ -29,7 +29,7 @@ public class KevScriptRunner extends DefaultProgramRunner {
         if (DefaultDebugExecutor.EXECUTOR_ID.equals(executorId)) {
             return false;
         }
-        return executorId.equals(DefaultRunExecutor.EXECUTOR_ID) && runProfile instanceof KevScriptConfiguration;
+        return executorId.equals(DefaultRunExecutor.EXECUTOR_ID) && runProfile instanceof KevScriptRunConfiguration;
     }
 
     @Override

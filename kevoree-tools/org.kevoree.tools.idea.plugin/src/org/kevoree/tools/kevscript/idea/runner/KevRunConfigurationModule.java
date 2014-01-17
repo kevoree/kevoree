@@ -4,10 +4,10 @@ import com.intellij.execution.configurations.RunConfigurationModule;
 import com.intellij.openapi.project.Project;
 
 /**
- * Created by duke on 16/01/2014.
+ * Created by gregory.nain on 17/01/2014.
  */
-public class KevScriptModuleBasedConfiguration extends RunConfigurationModule {
-    public KevScriptModuleBasedConfiguration(Project project) {
+public class KevRunConfigurationModule extends RunConfigurationModule {
+    public KevRunConfigurationModule(Project project) {
         super(project);
     }
 }
