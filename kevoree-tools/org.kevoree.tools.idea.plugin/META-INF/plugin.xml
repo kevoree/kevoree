@@ -5,8 +5,8 @@
     <vendor email="fouquet.f@gmail.com" url="http://www.kevoree.org">Kevoree</vendor>
 
     <description><![CDATA[
-      Kevoree plugin<br>
-      <small>most HTML tags may be used</small>
+      Kevoree IDE plugin<br>
+      <i>Kevoree environement</i>
       ]]></description>
 
     <change-notes><![CDATA[
@@ -32,14 +32,42 @@
         <!-- Add your project components here -->
     </project-components>
 
+
+
     <actions>
-        <!-- Add your actions here -->
+
+        <group id="KevPlugin.ActionGroup" popup="true" text="Kevoree" description="Kev actions" icon="/icons/kevs_16x16.png">
+
+            <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFile"/>
+
+
+            <action id="Kevoree.NewKevScriptFile" text="KevScript file"
+                    description="Create a new KevScript in the current project"
+                    class="org.kevoree.tools.kevscript.idea.actions.NewKevScriptFileAction">
+            </action>
+
+
+            <action id="MyPlugin.Save" class="org.kevoree.tools.kevscript.idea.actions.KevCreateComponentAction" text="_Save" description="A test menu item" />
+            <action id="MyPlugin.Load" class="org.kevoree.tools.kevscript.idea.actions.KevCreateComponentAction" text="_Load" description="A test menu item" />
+
+        </group>
+
+
     </actions>
 
     <extensions defaultExtensionNs="com.intellij">
         <fileTypeFactory implementation="org.kevoree.tools.kevscript.idea.KevScriptFileTypeFactory"/>
-
         <!-- Add your extensions here -->
+
+        <programRunner implementation="org.kevoree.tools.kevscript.idea.runner.KevScriptRunner"/>
+        <configurationType implementation="org.kevoree.tools.kevscript.idea.runner.KevScriptRunConfigurationType"/>
+
+
+        <internalFileTemplate name="KevScript File"/>
+
     </extensions>
+
+
+
 
 </idea-plugin>
