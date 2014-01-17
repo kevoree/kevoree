@@ -6,6 +6,10 @@ import com.intellij.ide.util.projectWizard.SourcePathsBuilder;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.module.Module;
+import com.intellij.openapi.projectRoots.JavaSdk;
+import com.intellij.openapi.projectRoots.SdkTypeId;
+import com.intellij.openapi.roots.ContentEntry;
+import com.intellij.openapi.roots.ModifiableRootModel;
 import com.intellij.openapi.roots.ModuleRootManager;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDirectory;
@@ -38,8 +42,17 @@ public class KevoreeModuleBuilder extends JavaModuleBuilder implements SourcePat
     }
 
     @Override
+    public boolean isSuitableSdkType(SdkTypeId sdk) {
+        return sdk == JavaSdk.getInstance();
+    }
+
+    @Override
     public void moduleCreated(@NotNull final Module module) {
-        ModuleRootManager moduleRootManager = ModuleRootManager.getInstance(module);
+
+        module.setOption("org.jetbrains.idea.maven.project.MavenProjectsManager.isMavenModule", "true");
+        final ModuleRootManager moduleRootManager = ModuleRootManager.getInstance(module);
+
+
         VirtualFile sourceRoots[] = moduleRootManager.getSourceRoots();
         if (sourceRoots.length != 1) {
             return;
@@ -65,18 +78,21 @@ public class KevoreeModuleBuilder extends JavaModuleBuilder implements SourcePat
                     if (java == null) {
                         java = mainDir.createSubdirectory("java");
                     }
+
+                    ModifiableRootModel model = moduleRootManager.getModifiableModel();
+                    ContentEntry contentEntry = model.getContentEntries()[0];
+                    contentEntry.clearSourceFolders();
+                    contentEntry.addSourceFolder(java.getVirtualFile(), false);
+                    model.commit();
                     PsiDirectory kevs = mainDir.findSubdirectory("kevs");
                     if (kevs == null) {
                         kevs = mainDir.createSubdirectory("kevs");
                     }
-
                     PsiDirectory kevoree = java.findSubdirectory("kevoree");
                     if (kevoree == null) {
                         kevoree = java.createSubdirectory("kevoree");
                     }
-
                     KevTemplatesFactory.createFromTemplate(kevoree, "HelloWorld", "HelloWorld.java", KevTemplatesFactory.Template.KevComponentFile);
-
                     try {
                         String projectName = module.getName();
                         projectName = projectName.toLowerCase();

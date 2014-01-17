@@ -18,8 +18,9 @@ import java.util.Properties;
 public class KevTemplatesFactory implements FileTemplateGroupDescriptorFactory {
 
     public enum Template {
-        KevScriptFile("KevScript"), KevComponentFile("KevComponent"),KevChannelFile("KevChannel"),KevGroupFile("KevGroup"),KevMavenProjectPomFile("MavenProject");
+        KevScriptFile("KevScript"), KevComponentFile("KevComponent"), KevChannelFile("KevChannel"), KevGroupFile("KevGroup"), KevMavenProjectPomFile("MavenProject");
         final String file;
+
         Template(String file) {
             this.file = file;
         }
@@ -48,7 +49,7 @@ public class KevTemplatesFactory implements FileTemplateGroupDescriptorFactory {
         }
 
         String pname = name;
-        if(pname==null || pname.equals("")){
+        if (pname == null || pname.equals("")) {
             pname = fileName.replace(".java", "");
         }
         return createFromTemplate(directory, packageName, pname, fileName, template);
