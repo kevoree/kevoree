@@ -1,4 +1,4 @@
-package org.kevoree.tools.kevscript.idea.actions;
+package org.kevoree.tools.kevscript.idea;
 
 import com.intellij.ide.fileTemplates.*;
 import com.intellij.psi.PsiDirectory;
@@ -18,7 +18,7 @@ import java.util.Properties;
 public class KevTemplatesFactory implements FileTemplateGroupDescriptorFactory {
 
     public enum Template {
-        KevScriptFile("KevScript"), KevComponentFile("KevComponent"),KevChannelFile("KevChannel"),KevGroupFile("KevGroup");
+        KevScriptFile("KevScript"), KevComponentFile("KevComponent"),KevChannelFile("KevChannel"),KevGroupFile("KevGroup"),KevMavenProjectPomFile("MavenProject");
         final String file;
         Template(String file) {
             this.file = file;
@@ -46,7 +46,12 @@ public class KevTemplatesFactory implements FileTemplateGroupDescriptorFactory {
         if (packageName.equalsIgnoreCase("src")) {
             packageName = "main";
         }
-        return createFromTemplate(directory, packageName, fileName.replace(".java", ""), fileName, template);
+
+        String pname = name;
+        if(pname==null || pname.equals("")){
+            pname = fileName.replace(".java", "");
+        }
+        return createFromTemplate(directory, packageName, pname, fileName, template);
     }
 
     public static PsiElement createFromTemplate(PsiDirectory directory, String packageName, String name, String fileName, Template template) {

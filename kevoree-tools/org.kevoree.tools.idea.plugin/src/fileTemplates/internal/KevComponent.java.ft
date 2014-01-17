@@ -17,9 +17,10 @@ public class ${NAME} {
 
     @Input
     public String in(Object i) {
-        String msg = message+" from "+content.getInstanceName()+"@"+content.getNodeName();
+        String msg = message+" from "+context.getInstanceName()+"@"+context.getNodeName();
         System.out.println(msg);
         out.send(msg);
+        return msg;
     }
 
     @Start

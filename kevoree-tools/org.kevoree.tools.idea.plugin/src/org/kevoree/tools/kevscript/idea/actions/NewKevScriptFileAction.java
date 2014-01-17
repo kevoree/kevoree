@@ -12,11 +12,10 @@ import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.jps.model.java.JavaModuleSourceRootTypes;
-import org.jetbrains.jps.model.module.JpsModuleSourceRootType;
 import org.kevoree.tools.kevscript.idea.KevBundle;
 import org.kevoree.tools.kevscript.idea.KevIcons;
+import org.kevoree.tools.kevscript.idea.KevTemplatesFactory;
 
-import javax.swing.*;
 import java.util.HashSet;
 import java.util.Set;
 

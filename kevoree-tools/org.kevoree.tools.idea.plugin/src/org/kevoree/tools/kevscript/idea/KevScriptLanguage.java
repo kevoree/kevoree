@@ -10,6 +10,12 @@ public class KevScriptLanguage extends Language {
     public static final KevScriptLanguage INSTANCE = new KevScriptLanguage();
 
     private KevScriptLanguage() {
-        super("KevScript");
+        super("KevScript", "text/kevs", "text/x-kevs", "application/x-kevs");
     }
+
+    @Override
+    public boolean isCaseSensitive() {
+        return true;
+    }
+
 }
