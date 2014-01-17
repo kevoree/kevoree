@@ -18,7 +18,7 @@ import java.util.Properties;
 public class KevTemplatesFactory implements FileTemplateGroupDescriptorFactory {
 
     public enum Template {
-        KevScriptFile("KevScript File");
+        KevScriptFile("KevScript"), KevComponentFile("KevComponent");
         final String file;
 
         Template(String file) {
@@ -47,18 +47,15 @@ public class KevTemplatesFactory implements FileTemplateGroupDescriptorFactory {
         if (packageName.equalsIgnoreCase("src")) {
             packageName = "main";
         }
-        return createFromTemplate(directory, packageName, name, fileName, template);
+        return createFromTemplate(directory, packageName, fileName.replace(".java", ""), fileName, template);
     }
 
     public static PsiElement createFromTemplate(PsiDirectory directory, String packageName, String name, String fileName, Template template) {
 
         final FileTemplate fileTemplate = FileTemplateManager.getInstance().getInternalTemplate(template.getFile());
-
         Properties properties = new Properties(FileTemplateManager.getInstance().getDefaultProperties());
-
         properties.setProperty("PACKAGE_NAME", packageName);
         properties.setProperty("NAME", name);
-
         String text;
         try {
             text = fileTemplate.getText(properties);

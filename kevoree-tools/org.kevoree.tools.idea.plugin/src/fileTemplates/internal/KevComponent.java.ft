@@ -1,0 +1,37 @@
+package ${PACKAGE_NAME};
+
+import org.kevoree.annotation.*;
+
+@ComponentType
+@Library(name = "JAVA")
+public class ${NAME} {
+
+    @Param(defaultValue = "Default Content")
+    String message;
+
+    @KevoreeInject
+    org.kevoree.api.Context context;
+
+    @Output
+    org.kevoree.api.Port out;
+
+    @Input
+    public String in(Object msg) {
+        String msg = message+" from "+content.getInstanceName()+"@"+content.getNodeName();
+        System.out.println(msg);
+        out.send(msg);
+    }
+
+    @Start
+    public void start() {}
+
+    @Stop
+    public void stop() {}
+
+    @Update
+    public void update() {System.out.println("Param updated!");}
+
+}
+
+
+

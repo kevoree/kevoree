@@ -33,22 +33,22 @@
     </project-components>
 
 
-
     <actions>
 
-        <group id="KevPlugin.ActionGroup" popup="true" text="Kevoree" description="Kev actions" icon="/icons/kevs_16x16.png">
+        <group id="KevPlugin.ActionGroup" popup="true" text="Kevoree" description="Kev actions"
+               icon="/icons/kevs_16x16.png">
 
             <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFile"/>
 
 
-            <action id="Kevoree.NewKevScriptFile" text="KevScript file"
+            <action id="Kevoree.NewKevScriptFileAction" text="KevScript"
                     description="Create a new KevScript in the current project"
                     class="org.kevoree.tools.kevscript.idea.actions.NewKevScriptFileAction">
             </action>
 
-
-            <action id="MyPlugin.Save" class="org.kevoree.tools.kevscript.idea.actions.KevCreateComponentAction" text="_Save" description="A test menu item" />
-            <action id="MyPlugin.Load" class="org.kevoree.tools.kevscript.idea.actions.KevCreateComponentAction" text="_Load" description="A test menu item" />
+            <action id="Kevoree.NewComponentTypeAction"
+                    class="org.kevoree.tools.kevscript.idea.actions.NewComponentTypeAction" text="Component"
+                    description="Create a new Kevoree Component in the current project"/>
 
         </group>
 
@@ -63,11 +63,11 @@
         <configurationType implementation="org.kevoree.tools.kevscript.idea.runner.KevScriptRunConfigurationType"/>
 
 
-        <internalFileTemplate name="KevScript File"/>
+        <internalFileTemplate name="KevScript"/>
+        <internalFileTemplate name="KevComponent"/>
+
 
     </extensions>
-
-
 
 
 </idea-plugin>
