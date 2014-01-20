@@ -35,7 +35,7 @@ class PreCommand(newmodel: ContainerRoot, modelListeners: KevoreeListeners, oldM
 
 class KevoreeCoreBean : ModelService {
 
-    var pending : ContainerRoot? = null
+    var pending: ContainerRoot? = null
 
     override fun getPendingModel(): ContainerRoot? {
         return pending
@@ -105,7 +105,7 @@ class KevoreeCoreBean : ModelService {
                 }
             } else {
                 //COMMON CHECK
-                if(uuid != null){
+                if (uuid != null) {
                     if (uuid.compareTo(model.get()!!.getUUID()!!) == 0) {
                         res = internal_update_model(targetModel)
                     } else {
@@ -125,13 +125,13 @@ class KevoreeCoreBean : ModelService {
 
     private fun switchToNewModel(c: ContainerRoot) {
         var cc: ContainerRoot? = c
-        if(!c.isReadOnly()){
+        if (!c.isReadOnly()) {
             Log.error("It is not safe to store ReadWrite model")
             cc = modelCloner.clone(c, true)
         }
         //current model is backed-up
         val previousModel = model.get()
-        if(previousModel != null){
+        if (previousModel != null) {
             models.add(previousModel)
         }
         // TODO : MAGIC NUMBER ;-) , ONLY KEEP 10 PREVIOUS MODEL
@@ -140,7 +140,7 @@ class KevoreeCoreBean : ModelService {
             Log.debug("Garbage old previous model")
         }
         //Changes the current model by the new model
-        if(cc != null){
+        if (cc != null) {
             val uuidModel = UUIDModelImpl(UUID.randomUUID(), cc!!)
             model.set(uuidModel)
             lastDate = Date(System.currentTimeMillis())
@@ -171,17 +171,17 @@ class KevoreeCoreBean : ModelService {
                 val modelCurrent = model.get()!!.getModel()!!
                 val stopModel = modelCloner.clone(modelCurrent)!!
                 val currentNode = stopModel.findNodesByID(getNodeName())!!
-                for(childNode in currentNode.hosts){
+                for (childNode in currentNode.hosts) {
                     childNode.started = false
                 }
                 //TEST only stop local
-                for(group in stopModel.groups){
+                for (group in stopModel.groups) {
                     group.started = false
                 }
-                for(hub in stopModel.hubs){
+                for (hub in stopModel.hubs) {
                     hub.started = false
                 }
-                for(childComponent in currentNode.components){
+                for (childComponent in currentNode.components) {
                     childComponent.started = false
                 }
 
@@ -213,13 +213,21 @@ class KevoreeCoreBean : ModelService {
     inner class AcquireLock(val callBack: LockCallBack, val timeout: Long) : Runnable {
         override fun run() {
             if (currentLock != null) {
-                callBack.run(null, true)
+                try {
+                    callBack.run(null, true)
+                } catch (t: Throwable) {
+                    Log.error("Exception inside a LockCallback with argument {}, {}", t, null, true)
+                }
             } else {
                 val lockUUID = UUID.randomUUID()
                 currentLock = TupleLockCallBack(lockUUID, callBack)
                 lockWatchDog = java.util.concurrent.Executors.newSingleThreadScheduledExecutor()
                 futurWatchDog = lockWatchDog?.schedule(WatchDogCallable(), timeout, TimeUnit.MILLISECONDS)
-                callBack.run(lockUUID, false)
+                try {
+                    callBack.run(lockUUID, false)
+                } catch (t: Throwable) {
+                    Log.error("Exception inside a LockCallback with argument {}, {}", t, lockUUID.toString(), false)
+                }
             }
         }
     }
@@ -231,7 +239,7 @@ class KevoreeCoreBean : ModelService {
     }
 
     override fun releaseLock(uuid: UUID?) {
-        if(uuid != null){
+        if (uuid != null) {
             scheduler?.submit(ReleaseLockCallable(uuid))
         } else {
             Log.error("ReleaseLock method of Kevoree Core called with null argument, can release any lock")
@@ -259,7 +267,11 @@ class KevoreeCoreBean : ModelService {
     inner class LockTimeoutCallable() : Runnable {
         override fun run() {
             if (currentLock != null) {
+                try {
                 currentLock!!.callback.run(null, true)
+                } catch (t: Throwable) {
+                    Log.error("Exception inside a LockCallback when it is called from the timeout trigger", t)
+                }
                 currentLock = null
                 lockWatchDog?.shutdownNow()
                 lockWatchDog = null
@@ -309,7 +321,7 @@ class KevoreeCoreBean : ModelService {
                             // Compare the two models and plan the adaptation
                             val adaptationModel = nodeInstance!!.plan(currentModel, newmodel)
                             adaptationModel.setInternalReadOnly()
-                            if (Log.DEBUG){
+                            if (Log.DEBUG) {
                                 //Avoid the loop if the debug is not activated
                                 Log.debug("Adaptation model size {}", adaptationModel.adaptations.size())
                             }
@@ -340,7 +352,7 @@ class KevoreeCoreBean : ModelService {
                     checkBootstrapNode(newmodel)
                     currentModel = model.get()!!.getModel()!!
                     val milli = System.currentTimeMillis()
-                    if(Log.DEBUG){
+                    if (Log.DEBUG) {
                         Log.debug("Begin update model {}", milli)
                     }
                     var deployResult: Boolean// = true
@@ -398,7 +410,7 @@ class KevoreeCoreBean : ModelService {
 
     private fun bootstrapNodeType(model: ContainerRoot, nodeName: String): Any? {
         val nodeInstance = model.findNodesByID(nodeName)
-        if(nodeInstance != null){
+        if (nodeInstance != null) {
             bootstrapService!!.recursiveInstallDeployUnit(nodeInstance.typeDefinition!!.deployUnit!!)
             return bootstrapService!!.createInstance(nodeInstance)
         } else {
@@ -411,9 +423,9 @@ class KevoreeCoreBean : ModelService {
         try {
             if (nodeInstance == null) {
                 val foundNode = currentModel.findNodesByID(getNodeName())
-                if(foundNode != null){
+                if (foundNode != null) {
                     nodeInstance = bootstrapNodeType(currentModel, getNodeName()) as NodeType
-                    if(nodeInstance != null){
+                    if (nodeInstance != null) {
                         nodeInstance?.startNode()
                         val uuidModel = UUIDModelImpl(UUID.randomUUID(), factory.createContainerRoot())
                         model.set(uuidModel)
