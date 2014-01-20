@@ -67,7 +67,7 @@
 
 
         <!-- in progress .... -->
-        <programRunner implementation="org.kevoree.tools.kevscript.idea.runner.KevScriptRunner"/>
+        <programRunner implementation="org.kevoree.tools.kevscript.idea.runner.KevScriptProgramRunner"/>
         <configurationType implementation="org.kevoree.tools.kevscript.idea.runner.KevScriptRunConfigurationType"/>
         <runConfigurationProducer implementation="org.kevoree.tools.kevscript.idea.runner.KevScriptRunConfigurationProducer"/>
 
