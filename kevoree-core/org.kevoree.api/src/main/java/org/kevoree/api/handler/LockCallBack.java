@@ -36,6 +36,12 @@ import java.util.UUID;
  */
 public interface LockCallBack {
 
+    /**
+     * This method is called when a lock has been required on Kevoree Core.
+     * If <b>bypassUUID</b> is different than <b>null</b> and <b>error</b> is not true so the lock is correctly acquired and you can use the uuid to apply reconfiguration.
+     * @param bypassUUID The uuid which allow to apply reconfiguration.
+     * @param error a boolean which explicit if the lock is correctly set
+     */
     public void run(UUID bypassUUID, Boolean error);
 
 }
