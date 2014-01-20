@@ -4,9 +4,13 @@
 # =====
 KevScript    <- +((Statement | :Comment eol) ws) :?Comment
 
-Statement    <- Add | Remove | Move | Attach | Detach | Set | AddBinding | DelBinding | Include | Network | AddRepo | Namespace
+Statement    <- Add | Start | Stop | Remove | Move | Attach | Detach | Set | AddBinding | DelBinding | Include | Network | AddRepo | Namespace
 
 Add          <- AddToken ws NameList ws :':' ws TypeDef                                  # add group0, group1 : WebSocketGroup
+
+Start        <- StartToken ws NameList                                                   # start group1, node0, node1
+
+Stop         <- StopToken ws NameList                                                     # stop group1, node0, node1
 
 Remove       <- RemoveToken ws NameList                                                  # remove node0, node0.comp1, sync
 
@@ -16,10 +20,10 @@ Attach       <- AttachToken ws NameList ws InstancePath                         
 
 Detach       <- DetachToken ws NameList ws InstancePath                                  # detach node0, node1 group0
 
-Set          <- SetToken ws InstancePath ?(:'/' InstancePath) ws :'=' ws :['] ws parameterValue ws :[']  # set node0.comp0.myAtt = 'foo'
-              | SetToken ws InstancePath ?(:'/' InstancePath) ws :'=' ws :["] ws parameterValue ws :["]  # set sync.myAtt/node0 = "foo"
+Set          <- SetToken ws InstancePath ?(:'/' InstancePath) ws :'=' ws RealString      # set node0.comp0.myAtt = 'foo'
+                                                                                         # set sync.myAtt/node0 = "foo"
 
-Network      <- NetworkToken ws InstancePath ws String2                                  # network node1 192.168.0.1
+Network      <- NetworkToken ws InstancePath ws String2                                  # network node1.lan.eth0 192.168.0.1
 
 AddBinding   <- BindToken ws InstancePath ws InstancePath                                # bind node1.comp0.sendMsg chan42
 
@@ -46,7 +50,7 @@ String       <- +[a-zA-Z0-9_-]
 
 String2      <- +[a-zA-Z0-9.:@_-]
 
-parameterValue <- +(!["'] .)
+#parameterValue <- +(!["'] .)
 
 Version      <- +[a-zA-Z0-9._-]
 
@@ -54,10 +58,9 @@ RepoString   <- +(!eol :![ ] .)															# anything but EOL and ' '
 
 Anything     <- +(!eol .) 																# anything but EOL
 
-RealString  <- :'"'
-           *( :'\\' Escaped
-            | !'\\' !'"' . )
-           :'"'
+Escaped      <- ['] | ["] | '\\'
+
+RealString  <- :["] *( :'\\' Escaped | !Escaped . ) :["] | :['] *( :'\\' Escaped | !Escaped . ) :[']
 
 # =========
 # End Rules
@@ -68,6 +71,8 @@ RealString  <- :'"'
 RepoToken       <: 'repo'
 IncludeToken    <: 'include'
 AddToken        <: 'add'
+StartToken      <: 'start'
+StopToken       <: 'stop'
 RemoveToken     <: 'remove'
 MoveToken       <: 'move'
 SetToken        <: 'set'

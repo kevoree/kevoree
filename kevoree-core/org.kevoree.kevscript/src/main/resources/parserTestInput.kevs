@@ -1,10 +1,14 @@
-repo org.sonatype.org/foo/bar?a=b&c=d
+repo "org.sonatype.org/foo/bar?a=b&c=d"
 include mvn:org.kevoree.library.javase:org.kevoree.library.javase.websocketgrp:2.0.5-SNAPSHOT
 
 add node0, node1 : JavaSENode
 add sync : HelloGroup/0.0.2-SNAPSHOT
 add node0.comp0, node0.comp1 : HelloWorld
 add chan0 : HelloChannel
+
+start node0
+start chan0,node0.comp0
+stop node1
 
 namespace space42
 
