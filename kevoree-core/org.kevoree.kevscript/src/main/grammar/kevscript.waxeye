@@ -4,13 +4,9 @@
 # =====
 KevScript    <- +((Statement | :Comment eol) ws) :?Comment
 
-Statement    <- Add | Start | Stop | Remove | Move | Attach | Detach | Set | AddBinding | DelBinding | Include | Network | AddRepo | Namespace
+Statement    <- Add | Remove | Move | Attach | Detach | Set | AddBinding | DelBinding | Include | Network | AddRepo | Namespace
 
 Add          <- AddToken ws NameList ws :':' ws TypeDef                                  # add group0, group1 : WebSocketGroup
-
-Start        <- StartToken ws NameList                                                   # start group1, node0, node1
-
-Stop         <- StopToken ws NameList                                                     # stop group1, node0, node1
 
 Remove       <- RemoveToken ws NameList                                                  # remove node0, node0.comp1, sync
 
@@ -22,6 +18,7 @@ Detach       <- DetachToken ws NameList ws InstancePath                         
 
 Set          <- SetToken ws InstancePath ?(:'/' InstancePath) ws :'=' ws RealString      # set node0.comp0.myAtt = 'foo'
                                                                                          # set sync.myAtt/node0 = "foo"
+                                                                                         # set node0.started = "false" -> is used to define if the instance is started or not
 
 Network      <- NetworkToken ws InstancePath ws String2                                  # network node1.lan.eth0 192.168.0.1
 
@@ -71,8 +68,6 @@ RealString  <- :["] *( :'\\' Escaped | !Escaped . ) :["] | :['] *( :'\\' Escaped
 RepoToken       <: 'repo'
 IncludeToken    <: 'include'
 AddToken        <: 'add'
-StartToken      <: 'start'
-StopToken       <: 'stop'
 RemoveToken     <: 'remove'
 MoveToken       <: 'move'
 SetToken        <: 'set'

@@ -6,10 +6,6 @@ add sync : HelloGroup/0.0.2-SNAPSHOT
 add node0.comp0, node0.comp1 : HelloWorld
 add chan0 : HelloChannel
 
-start node0
-start chan0,node0.comp0
-stop node1
-
 namespace space42
 
 // this is a comment

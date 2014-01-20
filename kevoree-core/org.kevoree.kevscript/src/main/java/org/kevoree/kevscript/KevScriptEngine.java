@@ -74,26 +74,6 @@ public class KevScriptEngine implements KevScriptService {
                     }
                 }
                 break;
-            case Start:
-                IAST<Type> instanceNamesToStart = node.getChildren().get(0);
-                if (instanceNamesToStart.getType().equals(Type.NameList)) {
-                    for (IAST<Type> name : instanceNamesToStart.getChildren()) {
-                        applyStart(name, model);
-                    }
-                } else {
-                    applyStart(instanceNamesToStart, model);
-                }
-                break;
-            case Stop:
-                IAST<Type> instanceNamesToStop = node.getChildren().get(0);
-                if (instanceNamesToStop.getType().equals(Type.NameList)) {
-                    for (IAST<Type> name : instanceNamesToStop.getChildren()) {
-                        applyStop(name, model);
-                    }
-                } else {
-                    applyStop(instanceNamesToStop, model);
-                }
-                break;
             case Move:
                 List<Instance> leftHands = InstanceResolver.resolve(model, node.getChildren().get(0));
                 List<Instance> rightHands = InstanceResolver.resolve(model, node.getChildren().get(1));
@@ -398,26 +378,6 @@ public class KevScriptEngine implements KevScriptService {
             }
         }
         return process != null;
-    }
-
-    private boolean applyStart(IAST<Type> name, ContainerRoot model) throws Exception {
-        Instance instance = model.findByPath(name.childrenAsString(), Instance.class);
-        if (instance != null) {
-            instance.setStarted(true);
-            return true;
-        } else {
-            throw new Exception("Unable to find : " + name.childrenAsString() + " so the instance cannot be started");
-        }
-    }
-
-    private boolean applyStop(IAST<Type> name, ContainerRoot model) throws Exception {
-        Instance instance = model.findByPath(name.childrenAsString(), Instance.class);
-        if (instance != null) {
-            instance.setStarted(false);
-            return true;
-        } else {
-            throw new Exception("Unable to find : " + name.childrenAsString() + " so the instance cannot be stopped");
-        }
     }
 
 }
