@@ -33,7 +33,7 @@ public class KevScriptParserDefinition implements ParserDefinition {
     @NotNull
     @Override
     public Lexer createLexer(Project project) {
-        return new FlexAdapter(new KevScriptLexer((Reader) null));
+        return new FlexAdapter(new KevScriptLexer());
     }
 
     @NotNull

@@ -7,7 +7,7 @@ import com.intellij.psi.PsiElement;
 
 public class KevScriptVisitor extends PsiElementVisitor {
 
-  public void visitADDSTATEMENT(@NotNull KevScriptADDSTATEMENT o) {
+  public void visitACTIONS(@NotNull KevScriptACTIONS o) {
     visitPsiElement(o);
   }
 

@@ -10,10 +10,9 @@ import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
 import org.jetbrains.annotations.NotNull;
 import org.kevoree.tools.kevscript.idea.lexer.KevScriptLexer;
+import org.kevoree.tools.kevscript.idea.parser.KevScriptParser;
 import org.kevoree.tools.kevscript.idea.psi.KevScriptTypes;
-
 import java.awt.*;
-import java.io.Reader;
 
 import static com.intellij.openapi.editor.colors.TextAttributesKey.createTextAttributesKey;
 
@@ -38,7 +37,7 @@ public class KevScriptSyntaxHighlighter extends SyntaxHighlighterBase {
     @NotNull
     @Override
     public Lexer getHighlightingLexer() {
-        return new FlexAdapter(new KevScriptLexer((Reader) null));
+        return new FlexAdapter(new KevScriptLexer());
     }
 
     @NotNull

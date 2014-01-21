@@ -1,44 +1,58 @@
 package org.kevoree.tools.kevscript.idea.lexer;
-
-import com.intellij.lexer.FlexLexer;
+import com.intellij.lexer.*;
 import com.intellij.psi.tree.IElementType;
-import org.kevoree.tools.kevscript.idea.psi.KevScriptTypes;
-import com.intellij.psi.TokenType;
+import static org.kevoree.tools.kevscript.idea.psi.KevScriptTypes.*;
 
 %%
+
+%{
+  public KevScriptLexer() {
+    this((java.io.Reader)null);
+  }
+%}
 
 %public
 %class KevScriptLexer
 %implements FlexLexer
-%unicode
 %function advance
 %type IElementType
-%eof{  return;
-%eof}
-CRLF= \n|\r|\r\n
-WHITE_SPACE=[\ \t\f]
-END_OF_LINE_COMMENT=("#"|"!")[^\r\n]*
-IDENTIFIER=[^:=\ \n\r\t\f\\] | "\\"{CRLF} | "\\".
-%state WAITING_VALUE
+%unicode
+
+EOL="\r"|"\n"|"\r\n"
+LINE_WS=[\ \t\f]
+WHITE_SPACE=({LINE_WS}|{EOL})+
+
+NEWLINE=\n\t
+COMMENT="//".*
+IDENT=[\*\.a-zA-Z0-9_\-]+
+STRING=('([^'\\]|\\.)*'|\"([^\"\\]|\\.)*\")
 
 %%
-
-{CRLF}                                                     { return KevScriptTypes.CRLF; }
-
 <YYINITIAL> {
-  /* keywords */
-  "add"                          { return KevScriptTypes.ADD; }
-  ","                            { return KevScriptTypes.COMMA; }
-  /* identifiers */
-  {IDENTIFIER}                   { return KevScriptTypes.IDENT; }
+  {WHITE_SPACE}      { return com.intellij.psi.TokenType.WHITE_SPACE; }
+
+  "add"              { return ADD; }
+  "remove"           { return REMOVE; }
+  "bind"             { return BIND; }
+  "unbind"           { return UNBIND; }
+  "attach"           { return ATTACH; }
+  "detach"           { return DETACH; }
+  "namespace"        { return NAMESPACE; }
+  "set"              { return SET; }
+  "repo"             { return REPO; }
+  "include"          { return INCLUDE; }
+  "move"             { return MOVE; }
+  "network"          { return NETWORK; }
+  ":"                { return COLON; }
+  ","                { return COMMA; }
+  "/"                { return SUB; }
+  "="                { return EQ; }
+  "<<EOF>>"          { return EOF; }
+
+  {NEWLINE}          { return NEWLINE; }
+  {COMMENT}          { return COMMENT; }
+  {IDENT}            { return IDENT; }
+  {STRING}           { return STRING; }
+
+  [^] { return com.intellij.psi.TokenType.BAD_CHARACTER; }
 }
-
-<WAITING_VALUE> {END_OF_LINE_COMMENT}                           { yybegin(WAITING_VALUE); return KevScriptTypes.COMMENT; }
-
-<WAITING_VALUE> {CRLF}                                     { yybegin(WAITING_VALUE); return KevScriptTypes.CRLF; }
-
-<WAITING_VALUE> {WHITE_SPACE}+                              { yybegin(WAITING_VALUE); return TokenType.WHITE_SPACE; }
-
-{WHITE_SPACE}+                                              { yybegin(YYINITIAL); return TokenType.WHITE_SPACE; }
-
-.                                                           { }

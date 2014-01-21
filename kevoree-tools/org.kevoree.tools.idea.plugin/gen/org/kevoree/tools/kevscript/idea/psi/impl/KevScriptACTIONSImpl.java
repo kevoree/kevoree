@@ -11,15 +11,33 @@ import static org.kevoree.tools.kevscript.idea.psi.KevScriptTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import org.kevoree.tools.kevscript.idea.psi.*;
 
-public class KevScriptADDSTATEMENTImpl extends ASTWrapperPsiElement implements KevScriptADDSTATEMENT {
+public class KevScriptACTIONSImpl extends ASTWrapperPsiElement implements KevScriptACTIONS {
 
-  public KevScriptADDSTATEMENTImpl(ASTNode node) {
+  public KevScriptACTIONSImpl(ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof KevScriptVisitor) ((KevScriptVisitor)visitor).visitADDSTATEMENT(this);
+    if (visitor instanceof KevScriptVisitor) ((KevScriptVisitor)visitor).visitACTIONS(this);
     else super.accept(visitor);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getEof() {
+    return findChildByType(EOF);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getNewline() {
+    return findChildByType(NEWLINE);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getString() {
+    return findChildByType(STRING);
   }
 
 }
