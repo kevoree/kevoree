@@ -60,6 +60,10 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <fileTypeFactory implementation="org.kevoree.tools.kevscript.idea.KevScriptFileTypeFactory"/>
+        <lang.parserDefinition language="KevScript"
+                               implementationClass="org.kevoree.tools.kevscript.idea.KevScriptParserDefinition"/>
+        <lang.syntaxHighlighterFactory key="KevScript"
+                                       implementationClass="org.kevoree.tools.kevscript.idea.highlighter.KevScriptSyntaxHighlighterFactory"/>
 
         <!-- wizards -->
         <moduleBuilder builderClass="org.kevoree.tools.kevscript.idea.ide.KevoreeModuleBuilder"/>
