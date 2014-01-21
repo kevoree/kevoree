@@ -27,7 +27,7 @@ public class KevScriptSyntaxHighlighter extends SyntaxHighlighterBase {
     public static final TextAttributesKey SEPARATOR = createTextAttributesKey("KEVS_SEPARATOR", DefaultLanguageHighlighterColors.INSTANCE_FIELD);
     public static final TextAttributesKey COMMENT = createTextAttributesKey("KEVS_COMMENT", DefaultLanguageHighlighterColors.LINE_COMMENT);
     public static final TextAttributesKey IDENT = createTextAttributesKey("KEVS_IDENT", DefaultLanguageHighlighterColors.STATIC_METHOD);
-    static final TextAttributesKey BAD_CHARACTER = createTextAttributesKey("KEVS_BAD_CHARACTER", new TextAttributes(Color.RED, null, null, null, Font.BOLD));
+    public static final TextAttributesKey BAD_CHARACTER = createTextAttributesKey("KEVS_BAD_CHARACTER", new TextAttributes(Color.RED, null, null, null, Font.BOLD));
 
     private static final TextAttributesKey[] BAD_CHAR_KEYS = new TextAttributesKey[]{BAD_CHARACTER};
     private static final TextAttributesKey[] KEYWORD_KEYS = new TextAttributesKey[]{KEYWORD};

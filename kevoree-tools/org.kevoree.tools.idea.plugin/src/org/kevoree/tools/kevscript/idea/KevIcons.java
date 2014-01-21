@@ -11,6 +11,6 @@ public interface KevIcons {
 
     Icon KEVS_ICON_48x48 = IconLoader.getIcon("/icons/kevs_48x48.png");
 
-    Icon KEVS_ICON_16x16 = IconLoader.getIcon("/icons/kevs_16x16.png");
+    Icon KEVS_ICON_16x16 = IconLoader.getIcon("/icons/kevs_16x16_2.png");
 
 }
