@@ -70,6 +70,8 @@
         <moduleBuilder builderClass="org.kevoree.tools.kevscript.idea.ide.KevoreeModuleBuilder"/>
         <wizardMode implementation="org.kevoree.tools.kevscript.idea.wizards.KevoreeProjectWizard"/>
 
+        <completion.contributor language="KevScript"
+                                implementationClass="org.kevoree.tools.kevscript.idea.ide.KevScriptCompletionContributor"/>
 
         <!-- in progress .... -->
         <programRunner implementation="org.kevoree.tools.kevscript.idea.runner.KevScriptProgramRunner"/>

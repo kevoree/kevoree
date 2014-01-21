@@ -43,7 +43,7 @@ public class KevScriptProgramRunner extends GenericProgramRunner {
 
     @Override
     public boolean canRun(@NotNull String s, @NotNull RunProfile runProfile) {
-        System.out.println("Can execute: " + s + " -> " + runProfile.getClass() + "("+ runProfile.toString()+")");
+        //System.out.println("Can execute: " + s + " -> " + runProfile.getClass() + "("+ runProfile.toString()+")");
         return runProfile instanceof KevScriptRunConfiguration;
     }
 }
