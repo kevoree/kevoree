@@ -25,11 +25,10 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class KevoreeCLKernel implements KevoreeCLFactory, BootstrapService {
 
-    private FlexyClassLoader system = FlexyClassLoaderFactory.INSTANCE.create();
+    public FlexyClassLoader system = FlexyClassLoaderFactory.INSTANCE.create();
 
     public KevoreeCLKernel() {
         system.setKey("KevoreeBootstrapCL");
-
         try {
             DefaultKevoreeFactory factory = new DefaultKevoreeFactory();
             ContainerRoot root = factory.createContainerRoot();

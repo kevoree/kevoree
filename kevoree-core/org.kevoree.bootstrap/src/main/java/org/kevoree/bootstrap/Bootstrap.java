@@ -1,23 +1,23 @@
 package org.kevoree.bootstrap;
 
-import org.kevoree.ContainerNode;
-import org.kevoree.ContainerRoot;
-import org.kevoree.NetworkInfo;
-import org.kevoree.NetworkProperty;
+import org.kevoree.*;
 import org.kevoree.api.BootstrapService;
 import org.kevoree.api.KevScriptService;
 import org.kevoree.api.ModelService;
 import org.kevoree.api.handler.UpdateCallback;
 import org.kevoree.bootstrap.kernel.KevoreeCLKernel;
 import org.kevoree.bootstrap.reflect.KevoreeInjector;
+import org.kevoree.compare.DefaultModelCompare;
 import org.kevoree.core.impl.KevoreeCoreBean;
 import org.kevoree.kevscript.KevScriptEngine;
 import org.kevoree.loader.JSONModelLoader;
 import org.kevoree.loader.XMIModelLoader;
 import org.kevoree.log.Log;
+import org.kevoree.modeling.api.compare.ModelCompare;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
@@ -75,7 +75,14 @@ public class Bootstrap {
     }
 
     public void bootstrapFromKevScript(InputStream input) throws Exception {
-        ContainerRoot emptyModel = core.getFactory().createContainerRoot();
+        //TODO perhaps not delegate load of dev classpath to system for continuous integration
+        ContainerRoot emptyModel = bootstrapFromClassPath();
+        //By default DeployUnit coming from classPath are considered as complete
+        //TODO ugly hack for dev mode
+        for(DeployUnit du : emptyModel.getDeployUnits()){
+            kernel.manualAttach(du,kernel.system);
+        }
+
         kevScriptEngine.executeFromStream(input, emptyModel);
         //Add network information
 
@@ -88,7 +95,7 @@ public class Bootstrap {
                 Enumeration<NetworkInterface> nets = NetworkInterface.getNetworkInterfaces();
                 int i = 0;
                 for (NetworkInterface networkInterface : Collections.list(nets)) {
-                    if(networkInterface.isUp()){
+                    if (networkInterface.isUp()) {
                         Enumeration<InetAddress> inetAddresses = networkInterface.getInetAddresses();
                         for (InetAddress inetAddress : Collections.list(inetAddresses)) {
                             if (!inetAddress.isLoopbackAddress()) {
@@ -109,6 +116,61 @@ public class Bootstrap {
                 Log.info("Bootstrap completed");
             }
         });
+    }
+
+    public ContainerRoot bootstrapFromClassPath() {
+        Object classpath = System.getProperty("java.class.path");
+        if (classpath != null && !classpath.equals("")) {
+            ContainerRoot result = null;
+            JSONModelLoader loader = new JSONModelLoader();
+            ModelCompare compare = new DefaultModelCompare();
+            String[] paths = classpath.toString().split(File.pathSeparator);
+            for (int i = 0; i < paths.length; i++) {
+                String path = paths[i];
+                File pathP = new File(path + File.separator + "KEV-INF" + File.separator + "lib.json");
+                if (pathP.exists()) {
+                    Log.info("Load Bootstrap model from {}",pathP.getAbsolutePath());
+                    if (result == null) {
+                        FileInputStream ins = null;
+                        try {
+                            ins = new FileInputStream(pathP);
+                            result = (ContainerRoot) loader.loadModelFromStream(ins).get(0);
+                        } catch (Exception e) {
+                            //noop
+                        } finally {
+                            if (ins != null) {
+                                try {
+                                    ins.close();
+                                } catch (IOException e) {
+                                }
+                            }
+                        }
+                    } else {
+                        FileInputStream ins = null;
+                        try {
+                            ins = new FileInputStream(pathP);
+                            ContainerRoot addModel = (ContainerRoot) loader.loadModelFromStream(ins).get(0);
+                            compare.merge(result, addModel).applyOn(result);
+                        } catch (Exception e) {
+                            //noop
+                        } finally {
+                            if (ins != null) {
+                                try {
+                                    ins.close();
+                                } catch (IOException e) {
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            if(result!=null){
+                return result;
+            } else {
+                return core.getFactory().createContainerRoot();
+            }
+        }
+        return core.getFactory().createContainerRoot();
     }
 
     public void bootstrapFromFile(File input) throws Exception {
