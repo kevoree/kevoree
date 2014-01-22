@@ -34,8 +34,8 @@ public class FileMenu extends JMenu {
         add(createSaveItem());
         add(createSaveJSONItem());
         add(createSaveAsImageItem());
-        add(createSaveAsSvgItem());
-       add(createSaveAsKevsItem());
+        //add(createSaveAsSvgItem());
+        add(createSaveAsKevsItem());
         add(createRefreshItem());
     }
 
@@ -115,13 +115,14 @@ public class FileMenu extends JMenu {
         return saveImage;
     }
 
+    /*
     private JMenuItem createSaveAsSvgItem() {
         JMenuItem saveSVG = new JMenuItem("SaveAsSVG");
         ExportModelSVGImage cmdImageSVG = new ExportModelSVGImage();
         cmdImageSVG.setKernel(kernel);
         saveSVG.addActionListener(new CommandActionListener(cmdImageSVG));
         return saveSVG;
-    }
+    } */
 
     private JMenuItem createRefreshItem() {
         JMenuItem refresh = new JMenuItem("Refresh");

@@ -115,7 +115,7 @@ public class KevoreeStore {
                     ) {
 
                 StringBuffer buffer = new StringBuffer();
-                buffer.append("repo http://oss.sonatype.org/content/groups/public\n");
+                buffer.append("repo \"http://oss.sonatype.org/content/groups/public\"\n");
                 buffer.append("include mvn:" + groupId + ":" + artifactId + ":" + version + "\n");
                 engine.execute(buffer.toString(), model);
 

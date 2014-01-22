@@ -22,7 +22,14 @@
             <groupId>com.ning</groupId>
             <artifactId>async-http-client</artifactId>
             <version>1.7.20</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>slf4j-api</artifactId>
+                    <groupId>org.slf4j</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
+
         <dependency>
             <groupId>com.jgoodies</groupId>
             <artifactId>forms</artifactId>
@@ -77,11 +84,6 @@
             <groupId>org.kevoree.log</groupId>
             <artifactId>org.kevoree.log.compat.slf4j</artifactId>
             <version>1</version>
-        </dependency>
-        <dependency>
-            <groupId>batik</groupId>
-            <artifactId>batik-svggen</artifactId>
-            <version>1.6-1</version>
         </dependency>
     </dependencies>
 
