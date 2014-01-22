@@ -53,7 +53,7 @@ public class PromptApp {
                 String portName = parts[1];
 
                 StringBuilder buffer = new StringBuilder();
-                buffer.append("repo http://oss.sonatype.org/content/groups/public/\n");
+                buffer.append("repo \"http://oss.sonatype.org/content/groups/public/\"\n");
 
                 if(new DefaultKevoreeFactory().getVersion().toLowerCase().contains("snapshot")){
                     buffer.append("include mvn:org.kevoree.library.java:org.kevoree.library.java.javaNode:latest\n");

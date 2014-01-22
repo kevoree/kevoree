@@ -35,10 +35,10 @@ public class App {
         StringBuilder buffer = new StringBuilder();
         String versionRequest;
         if (new DefaultKevoreeFactory().getVersion().toLowerCase().contains("snapshot")) {
-            buffer.append("repo https://oss.sonatype.org/content/groups/public/\n");
+            buffer.append("repo \"https://oss.sonatype.org/content/groups/public/\"\n");
             versionRequest = "latest";
         } else {
-            buffer.append("repo http://repo1.maven.org/maven2/\n");
+            buffer.append("repo \"http://repo1.maven.org/maven2/\"\n");
             versionRequest = "release";
         }
         buffer.append("include mvn:org.kevoree.library.java:org.kevoree.library.java.javaNode:");

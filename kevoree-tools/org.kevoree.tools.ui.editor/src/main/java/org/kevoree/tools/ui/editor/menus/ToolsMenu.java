@@ -18,11 +18,9 @@ package org.kevoree.tools.ui.editor.menus;/*
 * All rights reserved
 */
 
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.Logger;
+import org.kevoree.log.Log;
 import org.kevoree.tools.ui.editor.KevoreeUIKernel;
 import org.kevoree.tools.ui.editor.command.DisplayModelTextEditor;
-import org.kevoree.tools.ui.editor.command.OpenKevsShell;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
@@ -50,9 +48,7 @@ public class ToolsMenu extends JMenu {
 
     private JMenu createLoggerItem() {
         JMenu loggerMenu = new JMenu("Logger");
-
         ButtonGroup logGroup = new ButtonGroup();
-
         JMenuItem warn = createLoggerWarnItem();
         JMenuItem debug = createLoggerDebugItem();
         JMenuItem info = createLoggerInfoItem();
@@ -74,8 +70,7 @@ public class ToolsMenu extends JMenu {
         warnLevelItem.setSelected(true);
         warnLevelItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
-                Logger root = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
-                root.setLevel(Level.WARN);
+                Log.set(Log.LEVEL_WARN);
             }
         });
         return warnLevelItem;
@@ -86,8 +81,7 @@ public class ToolsMenu extends JMenu {
         JCheckBoxMenuItem debugLevelItem = new JCheckBoxMenuItem("Debug");
         debugLevelItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
-                Logger root = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
-                root.setLevel(Level.DEBUG);
+                Log.set(Log.LEVEL_DEBUG);
             }
         });
         return debugLevelItem;
@@ -98,8 +92,7 @@ public class ToolsMenu extends JMenu {
         JCheckBoxMenuItem infoLevelItem = new JCheckBoxMenuItem("Info");
         infoLevelItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
-                Logger root = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
-                root.setLevel(Level.INFO);
+                Log.set(Log.LEVEL_INFO);
             }
         });
 
