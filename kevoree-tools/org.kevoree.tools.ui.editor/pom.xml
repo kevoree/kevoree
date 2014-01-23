@@ -133,6 +133,7 @@
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <configuration>
+                    <attach>false</attach>
                     <archive>
                         <manifest>
                             <mainClass>org.kevoree.tools.ui.editor.runner.App</mainClass>
@@ -171,9 +172,6 @@
                     <injar>${project.build.finalName}-jar-with-dependencies.jar</injar>
                     <outjar>${project.build.finalName}.jar</outjar>
                     <options>
-                        <option>-keepclassmembers class * {
-                            ** MODULE$;
-                            }</option>
                         <option>-dontwarn scala.**</option>
                         <option>-keep public class org.kevoree.tools.ui.editor.runner.App { *; }</option>
                         <option>-keepclasseswithmembernames class org.kevoree.tools.ui.editor.runner.App</option>
@@ -229,7 +227,6 @@
                 <java.bootstrap.classes>${java.home}/lib/rt.jar</java.bootstrap.classes>
             </properties>
         </profile>
-
     </profiles>
 
 </project>

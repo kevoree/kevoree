@@ -24,6 +24,7 @@
 
     <modules>
         <module>org.kevoree.tools.annotator</module>
+        <module>org.kevoree.tools.annotator.standalone</module>
         <module>org.kevoree.tools.mavenplugin</module>
         <module>org.kevoree.tools.ui.kevscript</module>
         <module>org.kevoree.tools.ui.framework</module>

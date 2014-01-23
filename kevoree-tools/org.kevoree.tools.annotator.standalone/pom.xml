@@ -1,0 +1,127 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>org.kevoree.tools.annotator.standalone</artifactId>
+    <packaging>jar</packaging>
+    <name>Kevoree :: Tools :: Annotator :: Standalone</name>
+    <version>3.1.10-SNAPSHOT</version>
+
+    <parent>
+        <artifactId>org.kevoree.tools.root</artifactId>
+        <groupId>org.kevoree.tools</groupId>
+        <version>3.1.10-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.kevoree.tools</groupId>
+            <artifactId>org.kevoree.tools.annotator</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <!--
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>org.kevoree.tools.annotator.App</mainClass>
+                        </manifest>
+                    </archive>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+
+                    <attach>false</attach>
+                    <appendAssemblyId>true</appendAssemblyId>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            -->
+            <plugin>
+                <groupId>com.github.wvengen</groupId>
+                <artifactId>proguard-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>proguard</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>proguard</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <outjar>${project.build.finalName}.jar</outjar>
+                    <options>
+                        <option>-keep public class org.kevoree.tools.annotator.** { *; }</option>
+                        <option>-ignorewarnings</option>
+                        <option>-dontobfuscate</option>
+                    </options>
+                    <libs>
+                        <lib>${java.bootstrap.classes}</lib>
+                    </libs>
+                    <maxMemory>1024m</maxMemory>
+                    <assembly>
+                          <inclusions>
+                              <inclusion>
+                                  <groupId>org.kevoree.tools</groupId>
+                                  <artifactId>org.kevoree.tools.annotator</artifactId>
+                              </inclusion>
+                              <inclusion>
+                                  <groupId>org.javassist</groupId>
+                                  <artifactId>javassist</artifactId>
+                              </inclusion>
+                          </inclusions>
+                    </assembly>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>net.sf.proguard</groupId>
+                        <artifactId>proguard-base</artifactId>
+                        <version>4.11</version>
+                        <scope>runtime</scope>
+                    </dependency>
+                </dependencies>
+            </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>mac</id>
+            <activation>
+                <os>
+                    <family>mac</family>
+                </os>
+            </activation>
+            <properties>
+                <java.bootstrap.classes>${java.home}/../Classes/classes.jar</java.bootstrap.classes>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>other</id>
+            <activation>
+                <os>
+                    <family>!mac</family>
+                </os>
+            </activation>
+            <properties>
+                <java.bootstrap.classes>${java.home}/lib/rt.jar</java.bootstrap.classes>
+            </properties>
+        </profile>
+    </profiles>
+
+</project>
