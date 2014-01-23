@@ -142,7 +142,7 @@
                     <descriptorRefs>
                         <descriptorRef>jar-with-dependencies</descriptorRef>
                     </descriptorRefs>
-                    <appendAssemblyId>false</appendAssemblyId>
+                    <appendAssemblyId>true</appendAssemblyId>
                 </configuration>
                 <executions>
                     <execution>
@@ -169,8 +169,8 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <injar>${project.build.finalName}.jar</injar>
-                    <outjar>${project.build.finalName}-proguarded</outjar>
+                    <injar>${project.build.finalName}-jar-with-dependencies.jar</injar>
+                    <outjar>${project.build.finalName}.jar</outjar>
                     <options>
                         <option>-keepclassmembers class * {
                             ** MODULE$;

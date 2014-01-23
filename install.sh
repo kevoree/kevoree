@@ -5,4 +5,6 @@ then
    echo "try Java Path for Mac OS"
    export JAVA_HOME=`/usr/libexec/java_home -v 1.7`
 fi
+export JAVA_HOME=`/usr/libexec/java_home -v 1.7`
+echo $JAVA_HOME
 mvn clean install
