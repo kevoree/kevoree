@@ -1,4 +1,4 @@
-package org.kevoree.tools.annotation.mavenplugin
+package org.kevoree.tools.annotator
 
 import org.kevoree.annotation.NodeType
 import javassist.CtClass

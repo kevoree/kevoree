@@ -17,7 +17,7 @@
 #
 
 export MAVEN_OPTS="-Xmx2048m -XX:PermSize=512m -XX:MaxPermSize=1024m -XX:MaxHeapSize=1024m"
-#export JAVA_HOME=$(/usr/libexec/java_home)
+export JAVA_HOME=`/usr/libexec/java_home -v 1.7`
 mvn release:clean
 mvn release:prepare
 mvn release:perform

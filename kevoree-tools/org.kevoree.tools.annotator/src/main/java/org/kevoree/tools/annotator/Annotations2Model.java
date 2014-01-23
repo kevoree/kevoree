@@ -1,4 +1,4 @@
-package org.kevoree.tools.annotation.mavenplugin;
+package org.kevoree.tools.annotator;
 
 import javassist.ClassClassPath;
 import javassist.ClassPool;
@@ -8,7 +8,6 @@ import org.kevoree.ContainerRoot;
 import org.kevoree.DeployUnit;
 import org.kevoree.KevoreeFactory;
 import org.kevoree.impl.DefaultKevoreeFactory;
-import org.kevoree.modeling.api.json.JSONModelSerializer;
 
 import java.io.File;
 import java.util.List;
