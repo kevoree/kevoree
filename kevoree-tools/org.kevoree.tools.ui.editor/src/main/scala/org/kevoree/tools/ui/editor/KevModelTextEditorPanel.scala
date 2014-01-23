@@ -27,7 +27,6 @@
 package org.kevoree.tools.ui.editor
 
 import command.LoadModelCommand
-import jsyntaxpane.syntaxkits.XmlSyntaxKit
 import javax.swing._
 import java.awt.event.{MouseEvent, MouseAdapter}
 import org.slf4j.LoggerFactory
@@ -54,7 +53,7 @@ class KevModelTextEditorPanel(kernel: KevoreeUIKernel) extends JPanel {
 
   this.setLayout(new BorderLayout())
   jsyntaxpane.DefaultSyntaxKit.initKit();
-  jsyntaxpane.DefaultSyntaxKit.registerContentType("text/json", classOf[jsyntaxpane.syntaxkits.PlainSyntaxKit].getName());
+  jsyntaxpane.DefaultSyntaxKit.registerContentType("text/json", classOf[jsyntaxpane.syntaxkits.XHTMLSyntaxKit].getName());
   var codeEditor = new JEditorPane();
 
   var scrPane = new JScrollPane(codeEditor);

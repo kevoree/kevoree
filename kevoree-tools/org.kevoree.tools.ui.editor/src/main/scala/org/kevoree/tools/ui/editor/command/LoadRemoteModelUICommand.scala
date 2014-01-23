@@ -54,6 +54,7 @@ class LoadRemoteModelUICommand extends Command {
       })
     } catch {
       case _@e => {
+        e.printStackTrace()
         logger.debug("Pull failed to " + ip + ":" + port)
         false
       }

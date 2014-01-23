@@ -178,11 +178,15 @@
                         <option>-dontwarn scala.**</option>
                         <option>-keep public class org.kevoree.tools.ui.editor.runner.App { *; }</option>
                         <option>-keepclasseswithmembernames class org.kevoree.tools.ui.editor.runner.App</option>
-                        <option>-keep class jsyntaxpane.syntaxkits.**</option>
-                        <option>-keep class org.kevoree.tools.ui.kevscript.KevScriptCompletion</option>
-                        <option>-keep class jsyntaxpane.actions.**</option>
+                        <option>-keep class org.kevoree.tools.ui.kevscript.KevScriptCompletion { *; }</option>
+                        <option>-keep class jsyntaxpane.**</option>
+                        <option>-keep class com.ning.http.client.** { *; }</option>
+                        <option>-keep class jsyntaxpane.** { *; } </option>
+                        <option>-keep class org.kevoree.tools.ui.kevscript.** { *; } </option>
                         <option>-dontwarn</option>
                         <option>-ignorewarnings</option>
+                        <option>-dontoptimize</option>
+                        <option>-dontobfuscate</option>
                     </options>
                     <libs>
                         <lib>${java.bootstrap.classes}</lib>
@@ -211,12 +215,22 @@
                 </os>
             </activation>
             <properties>
-                <!-- path for OS X -->
                 <java.bootstrap.classes>${java.home}/../Classes/classes.jar</java.bootstrap.classes>
-                <java.cryptographic.extension.classes>${java.home}/../Classes/jce.jar</java.cryptographic.extension.classes>
-                <java.secure.socket.extension.classes>${java.home}/../Classes/jsse.jar</java.secure.socket.extension.classes>
             </properties>
         </profile>
+
+        <profile>
+            <id>other</id>
+            <activation>
+                <os>
+                    <family>!mac</family>
+                </os>
+            </activation>
+            <properties>
+                <java.bootstrap.classes>${java.home}/lib/rt.jar</java.bootstrap.classes>
+            </properties>
+        </profile>
+
     </profiles>
 
 </project>
