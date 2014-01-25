@@ -20,51 +20,55 @@ public class App {
     public static void main(String[] args) throws Exception {
 
         if (args.length != 1 && args.length != 2) {
-            throw new Exception("Bad number of argument ! "+args.length);
+            throw new Exception("Bad number of argument ! " + args.length);
         } else {
             long before = System.currentTimeMillis();
-            String directoryTarget = args[0];
-            File directoryTargetFile = new File(directoryTarget);
-            if(!(directoryTargetFile.exists() && directoryTargetFile.isDirectory())){
-                throw new Exception("Bad target dir argument !"+directoryTarget);
-            } else {
-                Annotations2Model annotations2Model = new Annotations2Model();
-                KevoreeFactory factory = new DefaultKevoreeFactory();
-                ContainerRoot model = factory.createContainerRoot();
-                DeployUnit fakeDeployUnit = factory.createDeployUnit();
-                fakeDeployUnit.setGroupName("org.kevoree");
-                fakeDeployUnit.setName("org.kevoree.model");
-                fakeDeployUnit.setVersion(factory.getVersion());
-                model.addDeployUnits(fakeDeployUnit);
-                String[] classPath = System.getProperty("java.class.path").split(File.separator);
-                ArrayList<String> classPaths = new ArrayList<String>();
-                for(int i=0;i<classPath.length;i++){
-                     //classPaths.add(classPath[i]);
-                }
-                annotations2Model.fillModel(directoryTargetFile,model,fakeDeployUnit,classPaths);
-                //generate the file
-                if(model.getTypeDefinitions().size()>0){
-                    File targetFile = new File(directoryTarget+File.separator+"KEV-INF"+File.separator+"lib.json");
-                    JSONModelSerializer saver = new JSONModelSerializer();
-                    targetFile.getParentFile().mkdirs();
-                    targetFile.createNewFile();
-                    FileOutputStream fop = new FileOutputStream(targetFile);
-                    saver.serializeToStream(model,fop);
-                    fop.flush();
-                    fop.close();
-                }
+            Annotations2Model annotations2Model = new Annotations2Model();
+            KevoreeFactory factory = new DefaultKevoreeFactory();
+            String directoryTargets = args[0];
+            String[] directoryTargetList = directoryTargets.split(File.pathSeparator);
+            for (String directoryTarget : directoryTargetList) {
+                File directoryTargetFile = new File(directoryTarget);
+                if (!(directoryTargetFile.exists() && directoryTargetFile.isDirectory())) {
+                    //throw new Exception("Bad target dir argument !" + directoryTarget);
+                } else {
+                    ContainerRoot model = factory.createContainerRoot();
+                    DeployUnit fakeDeployUnit = factory.createDeployUnit();
+                    fakeDeployUnit.setGroupName("org.kevoree");
+                    fakeDeployUnit.setName("org.kevoree.model");
+                    fakeDeployUnit.setVersion(factory.getVersion());
+                    model.addDeployUnits(fakeDeployUnit);
+                    String[] classPath = System.getProperty("java.class.path").split(File.separator);
+                    ArrayList<String> classPaths = new ArrayList<String>();
+                    annotations2Model.fillModel(directoryTargetFile, model, fakeDeployUnit, classPaths);
+                    //generate the file
+                    if (model.getTypeDefinitions().size() > 0) {
+                        File targetFile = new File(directoryTarget + File.separator + "KEV-INF" + File.separator + "lib.json");
+                        JSONModelSerializer saver = new JSONModelSerializer();
+                        targetFile.getParentFile().mkdirs();
+                        targetFile.createNewFile();
+                        FileOutputStream fop = new FileOutputStream(targetFile);
+                        saver.serializeToStream(model, fop);
+                        fop.flush();
+                        fop.close();
+                    }
 
-                long time = System.currentTimeMillis() - before;
-                Log.info("Generation of KEV-INF/lib.json done in {} ms ",time);
 
-                if (args.length == 2) {
-                    String subMain = args[1];
-                    Class subMainClazz = App.class.getClassLoader().loadClass(subMain);
-                    Method meth = subMainClazz.getMethod("main", String[].class);
-                    String[] params = new String[0];
-                    meth.invoke(null, (Object) params);
                 }
             }
+
+            long time = System.currentTimeMillis() - before;
+            Log.info("Generation of KEV-INF/lib.json done in {} ms ", time);
+
+            if (args.length == 2) {
+                String subMain = args[1];
+                Class subMainClazz = App.class.getClassLoader().loadClass(subMain);
+                Method meth = subMainClazz.getMethod("main", String[].class);
+                String[] params = new String[0];
+                meth.invoke(null, (Object) params);
+            }
+
+
         }
     }
 
