@@ -56,7 +56,7 @@ import reflect.BeanProperty
 import org.slf4j.LoggerFactory
 import org.kevoree.tools.ui.editor._
 import java.lang.Thread
-import javax.swing.{JProgressBar, JLabel}
+import javax.swing.{SwingUtilities, JProgressBar, JLabel}
 import org.kevoree.tools.ui.editor.ws.WebSocketClient
 import java.util
 
@@ -158,8 +158,13 @@ class SynchNodeTypeCommand(isPush: Boolean) extends Command {
               resultLabel.setToolTipText(e.getMessage)
             }
           } finally {
-            progressBar.setIndeterminate(false)
-            progressBar.setEnabled(false)
+            SwingUtilities.invokeLater(new Runnable {
+              override def run(): Unit = {
+                progressBar.setIndeterminate(false)
+                progressBar.setEnabled(false)
+              }
+            })
+
           }
         } else {
           try {

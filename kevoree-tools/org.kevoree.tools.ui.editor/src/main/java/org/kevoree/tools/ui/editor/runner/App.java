@@ -39,6 +39,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.net.URLClassLoader;
 
 /**
  * Hello world!
@@ -148,7 +149,13 @@ public class App {
                 jframe.add(toolBar.getComponent(), BorderLayout.NORTH);
                 toolBar.installWindowDraggerOnWindow(jframe);
                 toolBar.disableBackgroundPainter();
-                jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+                if(this.getClass().getClassLoader() instanceof URLClassLoader){
+                    jframe.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                } else {
+                    jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                }
+
                 jframe.setPreferredSize(new Dimension(800, 600));
                 jframe.setJMenuBar(artpanel.getMenuBar());
 

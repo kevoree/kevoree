@@ -75,7 +75,13 @@ public class GroupPanel extends JPanel implements TitledElement, SelectElement {
         this.setSize(new Dimension(100, 100));
 
         this.add(anchor);
-        anchor.setBounds(38, 65, 50, 50);
+
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                anchor.setBounds(38, 65, 50, 50);
+            }
+        });
 
     }
 

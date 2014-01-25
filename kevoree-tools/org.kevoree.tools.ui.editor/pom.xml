@@ -178,8 +178,9 @@
                         <option>-keep class org.kevoree.tools.ui.kevscript.KevScriptCompletion { *; }</option>
                         <option>-keep class jsyntaxpane.**</option>
                         <option>-keep class com.ning.http.client.** { *; }</option>
-                        <option>-keep class jsyntaxpane.** { *; } </option>
-                        <option>-keep class org.kevoree.tools.ui.kevscript.** { *; } </option>
+                        <option>-keep class jsyntaxpane.** { *; }</option>
+                        <option>-keep class org.kevoree.tools.ui.kevscript.** { *; }</option>
+                        <option>-keep class org.kevoree.tools.ui.editor.panel.KevoreeEditorPanel { *; }</option>
                         <option>-dontwarn</option>
                         <option>-ignorewarnings</option>
                         <option>-dontoptimize</option>

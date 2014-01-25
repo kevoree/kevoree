@@ -38,12 +38,14 @@ import org.jdesktop.swingx.painter.MattePainter;
 import org.kevoree.MBinding;
 import org.kevoree.tools.ui.editor.KevoreeUIKernel;
 import org.kevoree.tools.ui.editor.TypeDefinitionSourceList;
+import org.kevoree.tools.ui.editor.command.KevScriptCommand;
 import org.kevoree.tools.ui.editor.property.BindingPropertyEditor;
 import org.kevoree.tools.ui.editor.property.GroupBindingPropertyEditor;
 import org.kevoree.tools.ui.editor.property.InstancePropertyEditor;
 import org.kevoree.tools.ui.editor.property.NodePropertyEditor;
 import org.kevoree.tools.ui.editor.widget.TempGroupBinding;
 import org.kevoree.tools.ui.framework.elements.*;
+import scala.io.Source;
 
 import javax.swing.*;
 import java.awt.*;
@@ -59,6 +61,13 @@ public class KevoreeEditorPanel extends JPanel {
         return kernel;
     }
 
+    public void load(String file){
+        if(file.endsWith("kevs")){
+            KevScriptCommand cmd = new KevScriptCommand();
+            cmd.setKernel(kernel);
+            cmd.execute(Source.fromFile(file, "UTF-8").getLines().mkString("\n"));
+        }
+    }
 
     private SourceListSelectionListener previousListener = new SourceListSelectionListener() {
         @Override
