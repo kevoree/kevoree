@@ -23,12 +23,6 @@
             <artifactId>org.kevoree.modeling.microframework</artifactId>
             <version>${kmf.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.kevoree</groupId>
-            <artifactId>org.kevoree.model</artifactId>
-            <version>${kevoree.version}</version>
-            <classifier>sources</classifier>
-        </dependency>
     </dependencies>
 
     <build>
@@ -48,7 +42,7 @@
                                 <artifactItem>
                                     <groupId>org.kevoree</groupId>
                                     <artifactId>org.kevoree.model</artifactId>
-                                    <version>${kevoree.version}</version>
+                                    <version>${project.version}</version>
                                     <classifier>sources</classifier>
                                     <type>jar</type>
                                     <outputDirectory>${basedir}/target/metamodel/</outputDirectory>
