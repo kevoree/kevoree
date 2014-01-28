@@ -38,6 +38,7 @@ import org.kevoree.api.ModelService
 import java.util.UUID
 import org.kevoree.api.handler.{UUIDModel, UpdateCallback, ModelListener, LockCallBack}
 import java.lang.Long
+import org.kevoree.modeling.api.trace.TraceSequence
 
 class KevoreeHandler(kernel: KevoreeUIKernel) extends ModelService {
 
@@ -111,4 +112,12 @@ class KevoreeHandler(kernel: KevoreeUIKernel) extends ModelService {
   }
 
   def getPendingModel: ContainerRoot = getActualModel
+
+  override def submitSequence(sequence: TraceSequence, callback: UpdateCallback): Unit = {
+
+  }
+
+  override def submitScript(script: String, callback: UpdateCallback): Unit = {
+
+  }
 }

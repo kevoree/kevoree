@@ -5,6 +5,7 @@ import org.kevoree.api.handler.LockCallBack;
 import org.kevoree.api.handler.ModelListener;
 import org.kevoree.api.handler.UUIDModel;
 import org.kevoree.api.handler.UpdateCallback;
+import org.kevoree.modeling.api.trace.TraceSequence;
 
 import java.util.UUID;
 
@@ -32,8 +33,11 @@ public interface ModelService {
 
     public void releaseLock(UUID uuid);
 
-    //public ContainerRoot getPreviousModel(UUID modelID);
-
     public String getNodeName();
+
+
+    public void submitScript(String script, UpdateCallback callback);
+
+    public void submitSequence(TraceSequence sequence, UpdateCallback callback);
 
 }

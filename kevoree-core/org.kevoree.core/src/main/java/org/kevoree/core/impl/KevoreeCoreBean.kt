@@ -21,6 +21,8 @@ import org.kevoree.ContainerNode
 import java.util.concurrent.TimeUnit
 import org.kevoree.api.NodeType
 import org.kevoree.core.impl.deploy.PrimitiveCommandExecutionHelper
+import org.kevoree.modeling.api.trace.TraceSequence
+import org.kevoree.kevscript.KevScriptEngine
 
 class PreCommand(newmodel: ContainerRoot, modelListeners: KevoreeListeners, oldModel: ContainerRoot){
     var alreadyCall = false
@@ -120,6 +122,58 @@ class KevoreeCoreBean : ModelService {
                     callback?.run(res)
                 }
             }.start()
+        }
+    }
+
+    val scriptEngine = KevScriptEngine()
+    inner class UpdateScriptRunnable(val script: String, val callback: UpdateCallback?) : Runnable {
+        override fun run() {
+            try {
+                val newModel = modelCloner.clone(model.get()?.getModel() as ContainerRoot,false) as ContainerRoot
+                scriptEngine.execute(script,newModel)
+                var res = internal_update_model(cloneCurrentModel(newModel))
+                object : Thread(){
+                    override fun run() {
+                        callback?.run(res)
+                    }
+                }.start()
+            } catch(e:Throwable){
+                callback?.run(false)
+            }
+        }
+    }
+
+    override fun submitScript(script: String?, callback: UpdateCallback?) {
+        if(script!=null){
+            scheduler!!.submit(UpdateScriptRunnable(script, callback))
+        } else {
+            callback?.run(false)
+        }
+    }
+
+    inner class UpdateSequenceRunnable(val sequence: TraceSequence, val callback: UpdateCallback?) : Runnable {
+        override fun run() {
+            try {
+                val newModel = modelCloner.clone(model.get()?.getModel() as ContainerRoot,false) as ContainerRoot
+                sequence.applyOn(newModel)
+                var res = internal_update_model(cloneCurrentModel(newModel))
+                object : Thread(){
+                    override fun run() {
+                        callback?.run(res)
+                    }
+                }.start()
+            } catch(e:Throwable){
+                Log.error("error while apply trace sequence",e)
+                callback?.run(false)
+            }
+        }
+    }
+
+    override fun submitSequence(sequence: TraceSequence?, callback: UpdateCallback?) {
+        if(sequence!=null){
+            scheduler!!.submit(UpdateSequenceRunnable(sequence, callback))
+        } else {
+            callback?.run(false)
         }
     }
 
@@ -268,7 +322,7 @@ class KevoreeCoreBean : ModelService {
         override fun run() {
             if (currentLock != null) {
                 try {
-                currentLock!!.callback.run(null, true)
+                    currentLock!!.callback.run(null, true)
                 } catch (t: Throwable) {
                     Log.error("Exception inside a LockCallback when it is called from the timeout trigger", t)
                 }
