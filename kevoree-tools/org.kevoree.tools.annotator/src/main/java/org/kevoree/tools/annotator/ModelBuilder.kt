@@ -19,7 +19,6 @@ import org.kevoree.api.BootstrapService
 import org.kevoree.api.KevScriptService
 import org.kevoree.api.Context
 import org.kevoree.api.ChannelContext
-import java.util.HashMap
 
 /**
  * Created with IntelliJ IDEA.

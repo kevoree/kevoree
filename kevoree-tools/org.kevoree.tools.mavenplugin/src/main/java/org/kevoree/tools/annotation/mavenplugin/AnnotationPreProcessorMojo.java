@@ -21,7 +21,6 @@ import org.apache.maven.model.Repository;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.*;
-import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.shared.dependency.tree.DependencyNode;
 import org.apache.maven.shared.dependency.tree.DependencyTreeBuilder;
@@ -37,6 +36,7 @@ import org.kevoree.modeling.api.compare.ModelCompare;
 import org.kevoree.serializer.JSONModelSerializer;
 import org.kevoree.serializer.XMIModelSerializer;
 import org.kevoree.tools.annotator.Annotations2Model;
+import org.kevoree.tools.annotator.InheritanceBuilder;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -163,6 +163,7 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
     }
 
     private Annotations2Model annotations2Model = new Annotations2Model();
+    private InheritanceBuilder inheritanceBuilder = new InheritanceBuilder();
 
 
     @Override
@@ -229,6 +230,9 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
                     }
                 }
             }
+
+            inheritanceBuilder.fillModel(outputClasses, model, mainDeployUnit, project.getCompileClasspathElements());
+
             //Save XMI
             File file = new File(outputClasses.getPath() + File.separator + "KEV-INF" + File.separator + "lib.kev");
             file.getParentFile().mkdirs();
