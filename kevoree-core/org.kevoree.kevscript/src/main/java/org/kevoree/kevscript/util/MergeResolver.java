@@ -30,7 +30,7 @@ public class MergeResolver {
 
     public static void merge(ContainerRoot model, String type, String url) {
         if (type.equals("mvn")) {
-            Set<String> urls = new HashSet<>();
+            Set<String> urls = new HashSet<String>();
             for (Repository repo : model.getRepositories()) {
                 urls.add(repo.getUrl());
             }
