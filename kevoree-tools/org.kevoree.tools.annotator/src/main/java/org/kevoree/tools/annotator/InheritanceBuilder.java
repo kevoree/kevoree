@@ -45,7 +45,7 @@ public class InheritanceBuilder {
                     // FIXME the "/" in the following line may cause some trouble if KMF change its separator for id from multi keys
                     TypeDefinition currentTypeDefinition = modelRoot.findTypeDefinitionsByID(clazz.getSimpleName() + "/" + du.getVersion());
                     if (currentTypeDefinition != null) {
-                        deepInheritance(clazz, currentTypeDefinition, modelRoot);
+                        //deepInheritance(clazz, currentTypeDefinition, modelRoot);
                     }
                 } else {
                     if (child.isDirectory()) {
@@ -62,6 +62,7 @@ public class InheritanceBuilder {
         }
     }
 
+    /*
     public void deepInheritance(CtClass clazz, TypeDefinition currentTypeDefinition, ContainerRoot model) throws NotFoundException, ClassNotFoundException {
         if (clazz.getInterfaces() != null) {
             for (CtClass interf : clazz.getInterfaces()) {
@@ -87,16 +88,6 @@ public class InheritanceBuilder {
                 doDeepInheritance(currentTypeDefinition, clazz.getSuperclass(), model, NodeType.class);
             }
         }
-    }
+    }*/
 
-    public void doDeepInheritance(TypeDefinition currentTypeDefinition, CtClass superClazz, ContainerRoot model, Class annotationClass) throws NotFoundException, ClassNotFoundException {
-        Object annotation = superClazz.getAnnotation(annotationClass);
-        if (annotation != null) {
-            for (TypeDefinition superType : model.getTypeDefinitions()) {
-                if (superClazz.getSimpleName().equals(superType.getName())) {
-                    currentTypeDefinition.addSuperTypes(superType);
-                }
-            }
-        }
-    }
 }
