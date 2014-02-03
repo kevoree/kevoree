@@ -1,5 +1,6 @@
 package org.kevoree.bootstrap.kernel;
 
+import org.jetbrains.annotations.NotNull;
 import org.kevoree.*;
 import org.kevoree.api.BootstrapService;
 import org.kevoree.api.Context;
@@ -12,9 +13,8 @@ import org.kevoree.resolver.MavenResolver;
 
 import java.io.*;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
+import java.lang.reflect.Method;
 import java.util.HashSet;
-import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -73,7 +73,7 @@ public class KevoreeCLKernel implements KevoreeCLFactory, BootstrapService {
 
     @Override
     public FlexyClassLoader get(DeployUnit deployUnit) {
-        if (deployUnit.getName().equals("org.kevoree.api") || deployUnit.getName().equals("org.kevoree.annotation.api") || deployUnit.getName().equals("org.kevoree.model") || deployUnit.getName().equals("org.kevoree.modeling.microframework")|| deployUnit.getName().equals("org.kevoree.kcl")|| deployUnit.getName().equals("org.kevoree.maven.resolver")) {
+        if (deployUnit.getName().equals("org.kevoree.api") || deployUnit.getName().equals("org.kevoree.annotation.api") || deployUnit.getName().equals("org.kevoree.model") || deployUnit.getName().equals("org.kevoree.modeling.microframework") || deployUnit.getName().equals("org.kevoree.kcl") || deployUnit.getName().equals("org.kevoree.maven.resolver")) {
             return system;
         }
         return cache.get(deployUnit.path());
@@ -180,7 +180,6 @@ public class KevoreeCLKernel implements KevoreeCLFactory, BootstrapService {
             KevoreeInjector selfInjector = injector.clone();
             selfInjector.addService(Context.class, new InstanceContext(instance.path(), nodeName, instance.getName()));
             selfInjector.process(newInstance);
-            injectDictionary(instance, newInstance);
             return newInstance;
         } catch (Exception e) {
             Log.error("Error while creating instance ", e);
@@ -188,13 +187,15 @@ public class KevoreeCLKernel implements KevoreeCLFactory, BootstrapService {
         return null;
     }
 
-    public void injectDictionary(Instance instance, Object target) {
+    @NotNull
+    @Override
+    public void injectDictionary(Instance instance, Object target, boolean defaultOnly) {
         if (instance.getTypeDefinition() == null || instance.getTypeDefinition().getDictionaryType() == null) {
             return;
         }
         for (DictionaryAttribute att : instance.getTypeDefinition().getDictionaryType().getAttributes()) {
             String value = null;
-            if (att.getFragmentDependant()) {
+            if (!defaultOnly && att.getFragmentDependant()) {
                 FragmentDictionary fdico = instance.findFragmentDictionaryByID(nodeName);
                 if (fdico != null) {
                     DictionaryValue tempValue = fdico.findValuesByID(att.getName());
@@ -203,7 +204,7 @@ public class KevoreeCLKernel implements KevoreeCLFactory, BootstrapService {
                     }
                 }
             }
-            if (value == null) {
+            if (!defaultOnly && value == null) {
                 if (instance.getDictionary() != null) {
                     DictionaryValue tempValue = instance.getDictionary().findValuesByID(att.getName());
                     if (tempValue != null) {
@@ -217,8 +218,72 @@ public class KevoreeCLKernel implements KevoreeCLFactory, BootstrapService {
                 }
             }
             if (value != null) {
-                try {
-                    Field f = lookup(att.getName(), target.getClass());
+                internalInjectField(att.getName(), value, target);
+            }
+        }
+    }
+
+    @NotNull
+    @Override
+    public void injectDictionaryValue(DictionaryValue dictionaryValue, Object target) {
+        internalInjectField(dictionaryValue.getName(), dictionaryValue.getValue(), target);
+    }
+
+    private boolean internalInjectField(String fieldName, String value, Object target) {
+        if (value != null && !value.equals("")) {
+            try {
+                boolean isSet = false;
+                String setterName = "set";
+                setterName = setterName + fieldName.substring(0, 1).toUpperCase();
+                if (fieldName.length() > 1) {
+                    setterName = setterName + fieldName.substring(1);
+                }
+                Method setter = lookupSetter(setterName, target.getClass());
+                if (setter != null && setter.getParameterTypes().length == 1) {
+                    if (!setter.isAccessible()) {
+                        setter.setAccessible(true);
+                    }
+                    Class pClazz = setter.getParameterTypes()[0];
+                    if (pClazz.equals(boolean.class)) {
+                        setter.invoke(target, Boolean.parseBoolean(value));
+                        isSet = true;
+                    }
+                    if (pClazz.equals(Boolean.class)) {
+                        setter.invoke(target, new Boolean(Boolean.parseBoolean(value)));
+                        isSet = true;
+                    }
+                    if (pClazz.equals(int.class)) {
+                        setter.invoke(target, Integer.parseInt(value));
+                        isSet = true;
+                    }
+                    if (pClazz.equals(Integer.class)) {
+                        setter.invoke(target, new Integer(Integer.parseInt(value)));
+                        isSet = true;
+                    }
+                    if (pClazz.equals(long.class)) {
+                        setter.invoke(target, Long.parseLong(value));
+                        isSet = true;
+                    }
+                    if (pClazz.equals(Long.class)) {
+                        setter.invoke(target, new Long(Long.parseLong(value)));
+                        isSet = true;
+                    }
+                    if (pClazz.equals(double.class)) {
+                        setter.invoke(target, Double.parseDouble(value));
+                        isSet = true;
+                    }
+                    if (pClazz.equals(Double.class)) {
+                        setter.invoke(target, Double.parseDouble(value));
+                        isSet = true;
+                    }
+                    if (pClazz.equals(String.class)) {
+                        setter.invoke(target, value);
+                        isSet = true;
+                    }
+                }
+
+                if (!isSet) {
+                    Field f = lookup(fieldName, target.getClass());
                     if (!f.isAccessible()) {
                         f.setAccessible(true);
                     }
@@ -249,12 +314,42 @@ public class KevoreeCLKernel implements KevoreeCLFactory, BootstrapService {
                     if (f.getType().equals(String.class)) {
                         f.set(target, value);
                     }
-                } catch (Exception e) {
-                    Log.error("No field corresponding to annotation, consistency error {} on {}", att.getName(), target.toString());
-                    e.printStackTrace();
+                }
+                return true;
+            } catch (Exception e) {
+                Log.error("No field corresponding to annotation, consistency error {} on {}", fieldName, target.toString());
+                e.printStackTrace();
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+
+    public Method lookupSetter(String name, Class clazz) {
+        Method f = null;
+        for (Method loopMethod : clazz.getDeclaredMethods()) {
+            if (name.equals(loopMethod.getName())) {
+                f = loopMethod;
+            }
+        }
+        if (f != null) {
+            return f;
+        } else {
+            for (Class loopClazz : clazz.getInterfaces()) {
+                f = lookupSetter(name, loopClazz);
+                if (f != null) {
+                    return f;
+                }
+            }
+            if (clazz.getSuperclass() != null) {
+                f = lookupSetter(name, clazz.getSuperclass());
+                if (f != null) {
+                    return f;
                 }
             }
         }
+        return f;
     }
 
     public Field lookup(String name, Class clazz) {

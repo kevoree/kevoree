@@ -16,6 +16,7 @@ package org.kevoree.api
 import org.kevoree.DeployUnit
 import org.kevoree.Instance
 import org.kevoree.kcl.api.FlexyClassLoader
+import org.kevoree.DictionaryValue
 
 /**
  * Created by IntelliJ IDEA.
@@ -42,7 +43,9 @@ trait BootstrapService {
 
     public fun createInstance(instance: Instance): Any?
 
-    public fun injectDictionary(instance: Instance, target: Any)
+    public fun injectDictionary(instance: Instance, target: Any, onlyDefault : Boolean)
+
+    public fun injectDictionaryValue(value: DictionaryValue, target: Any)
 
     public fun injectService(api: java.lang.Class<out Any>,impl: Any,target: Any)
 

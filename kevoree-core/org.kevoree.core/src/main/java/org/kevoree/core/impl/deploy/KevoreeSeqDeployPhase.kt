@@ -36,6 +36,7 @@ class KevoreeSeqDeployPhase : KevoreeDeployPhase {
             for(primitive in primitives) {
                 result = primitive.execute()
                 if(!result){
+                    Log.info("Error during execution of {}",primitive.javaClass.getSimpleName())
                     break;
                 }
             }
