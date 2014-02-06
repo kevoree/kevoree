@@ -1,6 +1,5 @@
 package org.kevoree.bootstrap.kernel;
 
-import jet.runtime.typeinfo.JetValueParameter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.kevoree.*;
@@ -12,12 +11,10 @@ import org.kevoree.kcl.api.FlexyClassLoader;
 import org.kevoree.kcl.api.FlexyClassLoaderFactory;
 import org.kevoree.log.Log;
 import org.kevoree.resolver.MavenResolver;
-
 import java.io.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
