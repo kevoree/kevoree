@@ -49,4 +49,6 @@ trait BootstrapService {
 
     public fun injectService(api: java.lang.Class<out Any>,impl: Any,target: Any)
 
+    public fun resolve(url : String, repos : Set<String?>) : java.io.File?
+
 }

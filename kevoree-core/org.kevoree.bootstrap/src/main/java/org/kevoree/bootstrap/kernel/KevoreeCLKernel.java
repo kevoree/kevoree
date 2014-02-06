@@ -1,6 +1,8 @@
 package org.kevoree.bootstrap.kernel;
 
+import jet.runtime.typeinfo.JetValueParameter;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.kevoree.*;
 import org.kevoree.api.BootstrapService;
 import org.kevoree.api.Context;
@@ -15,6 +17,8 @@ import java.io.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -384,6 +388,12 @@ public class KevoreeCLKernel implements KevoreeCLFactory, BootstrapService {
         KevoreeInjector injector = new KevoreeInjector();
         injector.addService(aClass, o);
         injector.process(o2);
+    }
+
+    @Nullable
+    @Override
+    public File resolve(String url, Set<? extends String> repos) {
+        return resolver.resolve(url, (Set<String>)repos);
     }
 
     @Override

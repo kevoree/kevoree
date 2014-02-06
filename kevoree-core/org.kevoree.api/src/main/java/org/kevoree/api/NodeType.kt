@@ -30,7 +30,7 @@ trait NodeType {
 
     fun stopNode(): Unit
 
-    fun updateNode(): Unit
+    //fun updateNode(): Unit
 
     fun plan(actualModel: ContainerRoot, targetModel: ContainerRoot): AdaptationModel
 
