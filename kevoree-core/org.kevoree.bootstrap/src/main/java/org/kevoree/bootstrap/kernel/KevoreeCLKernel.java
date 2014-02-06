@@ -176,6 +176,10 @@ public class KevoreeCLKernel implements KevoreeCLFactory, BootstrapService {
     public Object createInstance(final Instance instance) {
         try {
             FlexyClassLoader classLoader = get(instance.getTypeDefinition().getDeployUnit());
+            if(classLoader == null){
+                Log.error("Error can create instance of {}",instance.getTypeDefinition().getName());
+                return null;
+            }
             Class clazz = classLoader.loadClass(instance.getTypeDefinition().getBean());
             Object newInstance = clazz.newInstance();
             KevoreeInjector selfInjector = injector.clone();
