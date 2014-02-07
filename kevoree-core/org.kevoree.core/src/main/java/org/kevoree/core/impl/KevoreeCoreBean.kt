@@ -467,7 +467,7 @@ class KevoreeCoreBean : ModelService {
         if (nodeInstance != null) {
             bootstrapService!!.recursiveInstallDeployUnit(nodeInstance.typeDefinition!!.deployUnit!!)
             val newInstance = bootstrapService!!.createInstance(nodeInstance)!!
-            bootstrapService!!.injectDictionary(nodeInstance,newInstance,true)
+            bootstrapService!!.injectDictionary(nodeInstance,newInstance,false)
             return newInstance
         } else {
             Log.error("Node not found using name " + nodeName);
