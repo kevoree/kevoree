@@ -22,7 +22,7 @@ import java.io.IOException;
 public class MinimalPomParser {
 
     public static void main(String[] args) throws IOException, SAXException, ParserConfigurationException {
-        File pomF = new File("/Users/duke/IdeaProjects/kevtest/pom.xml");
+        File pomF = new File("/Users/duke/Downloads/pom.xml");
         System.out.println(currentURL(pomF).getGroupName());
     }
 
@@ -66,7 +66,7 @@ public class MinimalPomParser {
         } catch (XPathExpressionException e) {
             e.printStackTrace();
         }
-        if(artifactId==null){
+        if(artifactId==null || artifactId.equals("")){
             try {
                 artifactId = xpath.evaluate("//project/parent/artifactId",doc.getDocumentElement(), XPathConstants.STRING).toString();
             } catch (XPathExpressionException e) {
@@ -78,7 +78,7 @@ public class MinimalPomParser {
         } catch (XPathExpressionException e) {
             e.printStackTrace();
         }
-        if(groupId==null){
+        if(groupId==null || groupId.equals("")){
             try {
                 groupId = xpath.evaluate("//project/parent/groupId",doc.getDocumentElement(), XPathConstants.STRING).toString();
             } catch (XPathExpressionException e) {
@@ -90,7 +90,7 @@ public class MinimalPomParser {
         } catch (XPathExpressionException e) {
             e.printStackTrace();
         }
-        if(version==null){
+        if(version==null || version.equals("")){
             try {
                 version = xpath.evaluate("//project/parent/version",doc.getDocumentElement(), XPathConstants.STRING).toString();
             } catch (XPathExpressionException e) {
