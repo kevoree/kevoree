@@ -81,6 +81,7 @@ public class Bootstrap {
         //TODO ugly hack for dev mode
         for(DeployUnit du : emptyModel.getDeployUnits()){
             kernel.manualAttach(du,kernel.system);
+            kevScriptEngine.addIgnoreIncludeDeployUnit(du);
         }
 
         kevScriptEngine.executeFromStream(input, emptyModel);

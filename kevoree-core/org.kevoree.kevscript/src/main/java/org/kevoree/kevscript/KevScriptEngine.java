@@ -14,6 +14,7 @@ import org.waxeye.input.InputBuffer;
 import org.waxeye.parser.ParseResult;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -26,6 +27,15 @@ public class KevScriptEngine implements KevScriptService {
 
     Parser parser = new Parser();
     KevoreeFactory factory = new DefaultKevoreeFactory();
+
+    private List<String> ignoredInclude = new ArrayList<String>();
+
+    /* Ugly hack for dev mode */
+    public void addIgnoreIncludeDeployUnit(DeployUnit du){
+        ignoredInclude.add(du.getGroupName()+"/"+du.getName()+"/"+du.getVersion());
+        ignoredInclude.add(du.getGroupName()+"/"+du.getName()+"/release");
+        ignoredInclude.add(du.getGroupName()+"/"+du.getName()+"/latest");
+    }
 
     public void execute(String script, ContainerRoot model) throws Exception {
         ParseResult<Type> parserResult = parser.parse(new InputBuffer(script.toCharArray()));
@@ -153,7 +163,9 @@ public class KevScriptEngine implements KevScriptService {
                 }
                 break;
             case Include:
-                MergeResolver.merge(model, node.getChildren().get(0).childrenAsString(), node.getChildren().get(1).childrenAsString());
+                if(!ignoredInclude.contains(node.getChildren().get(1).childrenAsString())){
+                    MergeResolver.merge(model, node.getChildren().get(0).childrenAsString(), node.getChildren().get(1).childrenAsString());
+                }
                 break;
             case Set:
                 String propToSet = null;

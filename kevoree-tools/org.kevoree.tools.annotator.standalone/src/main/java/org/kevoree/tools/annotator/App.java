@@ -38,9 +38,18 @@ public class App {
                     fakeDeployUnit.setName("org.kevoree.model");
                     fakeDeployUnit.setVersion(factory.getVersion());
                     model.addDeployUnits(fakeDeployUnit);
+                    DeployUnit mainDu = MinimalPomParser.lookupLocalDeployUnit(directoryTargetFile);
+                    if (mainDu != null) {
+                        model.addDeployUnits(mainDu);
+                        mainDu.addRequiredLibs(fakeDeployUnit);
+                    } else {
+                        mainDu = fakeDeployUnit;
+                    }
+
+
                     String[] classPath = System.getProperty("java.class.path").split(File.separator);
                     ArrayList<String> classPaths = new ArrayList<String>();
-                    annotations2Model.fillModel(directoryTargetFile, model, fakeDeployUnit, classPaths);
+                    annotations2Model.fillModel(directoryTargetFile, model, mainDu, classPaths);
                     //generate the file
                     if (model.getTypeDefinitions().size() > 0) {
                         File targetFile = new File(directoryTarget + File.separator + "KEV-INF" + File.separator + "lib.json");

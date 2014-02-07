@@ -2,6 +2,7 @@ package org.kevoree.tools.annotator;
 
 import org.kevoree.DeployUnit;
 import org.kevoree.impl.DefaultKevoreeFactory;
+import org.kevoree.log.Log;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -22,6 +23,26 @@ public class MinimalPomParser {
 
         File pomF = new File("/Users/duke/Documents/dev/dukeboard/kevoree/kevoree-tools/org.kevoree.tools.annotator/pom.xml");
         System.out.println(currentURL(pomF));
+    }
+
+    public static DeployUnit lookupLocalDeployUnit(File classPath) {
+        try {
+            if (classPath.exists()) {
+                if (classPath.getName().equals("classes")) {
+                    File parent = classPath.getParentFile();
+                    if (parent != null && parent.getName().equals("target")) {
+                        File parent2 = parent.getParentFile();
+                        if (parent2 != null) {
+                            File mavenPom = new File(parent2, "pom.xml");
+                            return currentURL(mavenPom);
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            Log.error("", e);
+        }
+        return null;
     }
 
     public static DeployUnit currentURL(File mavenPom) throws ParserConfigurationException, IOException, SAXException {
