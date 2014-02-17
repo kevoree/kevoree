@@ -177,7 +177,7 @@ public class KevoreeCLKernel implements KevoreeCLFactory, BootstrapService {
         try {
             FlexyClassLoader classLoader = get(instance.getTypeDefinition().getDeployUnit());
             if(classLoader == null){
-                Log.error("Error can create instance of {}",instance.getTypeDefinition().getName());
+                Log.error("Error cannot create instance of {} because it is not possible to get the corresponding Classloader",instance.getTypeDefinition().getName());
                 return null;
             }
             Class clazz = classLoader.loadClass(instance.getTypeDefinition().getBean());
@@ -187,7 +187,7 @@ public class KevoreeCLKernel implements KevoreeCLFactory, BootstrapService {
             selfInjector.process(newInstance);
             return newInstance;
         } catch (Exception e) {
-            Log.error("Error while creating instance ", e);
+            Log.error("Error while creating instance {}", e, instance.getTypeDefinition().getName());
         }
         return null;
     }
