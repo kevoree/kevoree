@@ -113,7 +113,7 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
         }
         for (DependencyNode child : root.getChildren()) {
             if (!child.getArtifact().getScope().toLowerCase().equals("test")) {
-                if (checkFilters(root, includes, true) && !checkFilters(root, excludes, false)) {
+                if (checkFilters(child, includes, true) && !checkFilters(child, excludes, false)) {
                     fillModel(model, child);
                 }
             }
