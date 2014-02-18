@@ -1,6 +1,7 @@
 package org.kevoree.tools.test;
 
 import org.kevoree.impl.DefaultKevoreeFactory;
+import org.kevoree.log.Log;
 import org.kevoree.resolver.MavenResolver;
 
 import java.io.*;
@@ -29,6 +30,8 @@ public class KevoreePlatformCtrl implements Runnable {
     private MavenResolver resolver = new MavenResolver();
     private Process process = null;
     private Thread readerOUTthread;
+    private Thread readerERRthread;
+
 
     public void start(String bootfile) throws Exception {
 
@@ -38,10 +41,13 @@ public class KevoreePlatformCtrl implements Runnable {
         if (factory.getVersion().contains("SNAPSHOT")) {
             urls.add("http://oss.sonatype.org/content/groups/public/");
         }
+        Log.info("Try to resolve platform for version {}",factory.getVersion());
         File platformJar = resolver.resolve("mvn:org.kevoree.platform:org.kevoree.platform.standalone:" + factory.getVersion(), urls);
         if (platformJar == null) {
             throw new Exception("Can't download Kevoree platform, abording starting node");
         }
+        Log.info("Resolved {}",factory.getVersion());
+
         String jvmArgs = null;
         /*
         if (modelElement.dictionary != null) {
@@ -62,22 +68,31 @@ public class KevoreePlatformCtrl implements Runnable {
                 bootstrapFile = File.createTempFile("bootModel_" + nodeName, bootfile);
                 copy(is, bootstrapFile);
             }
+            bootstrapFile.deleteOnExit();
         }
         String[] execArray = new String[]{getJava(), "-Dnode.bootstrap=" + bootstrapFile.getAbsolutePath(), "-Dnode.name=" + nodeName, "-jar", platformJar.getAbsolutePath()};
         /*if (jvmArgs != null) {
             execArray = array(getJava(), jvmArgs, "-Dnode.bootstrap=" + tempFile.getAbsolutePath(), "-Dnode.name=" + modelElement.name, "-jar", platformJar.getAbsolutePath());
         } */
         process = Runtime.getRuntime().exec(execArray);
+        br = new BufferedReader(new InputStreamReader(process.getInputStream()));
+        brerr = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+
         readerOUTthread = new Thread(this);
-        //readerERRthread = Thread(Reader(process !!.getErrorStream() !!, modelElement.name !!, true))
+        readerOUTthread.setName("stdout_"+nodeName);
+
+        readerERRthread = new Thread(this);
+        readerERRthread.setName("stderr_"+nodeName);
+
         readerOUTthread.start();
-        // readerERRthread.start();
+        readerERRthread.start();
 
     }
 
     public void stop() {
         process.destroy();
         readerOUTthread.stop();
+        readerERRthread.stop();
     }
 
     public LinkedList<String> getLines() {
@@ -86,16 +101,23 @@ public class KevoreePlatformCtrl implements Runnable {
 
 
     private BufferedReader br;
+    private BufferedReader brerr;
+
 
     @Override
     public void run() {
         String line;
         try {
-            line = br.readLine();
-            while (line != null) {
-                lines.add(line);
-                line = br.readLine();
-                System.out.println(nodeName + "/" + line);
+            if(Thread.currentThread().getName().startsWith("stderr_")){
+                while ((line = brerr.readLine()) != null) {
+                    lines.add(line);
+                    System.err.println(nodeName + "/" + line);
+                }
+            } else {
+                while ((line = br.readLine()) != null) {
+                    lines.add(line);
+                    System.out.println(nodeName + "/" + line);
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();
