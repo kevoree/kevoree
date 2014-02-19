@@ -18,6 +18,11 @@
             <artifactId>org.kevoree.platform.standalone</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.zeromq</groupId>
+            <artifactId>jeromq</artifactId>
+            <version>${jeromq.version}</version>
+        </dependency>
     </dependencies>
 
     <build>

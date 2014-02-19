@@ -1,12 +1,12 @@
 package org.kevoree.tools.test;
 
+import org.jeromq.ZMQ;
 import org.kevoree.impl.DefaultKevoreeFactory;
 import org.kevoree.log.Log;
 import org.kevoree.resolver.MavenResolver;
+import org.zeromq.ZContext;
 
 import java.io.*;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
 
@@ -42,8 +42,18 @@ public class KevoreePlatformCtrl implements Runnable {
     private Thread readerOUTthread;
     private Thread readerERRthread;
 
+    public org.zeromq.ZMQ.Socket getWorker() {
+        return worker;
+    }
+
+    private org.zeromq.ZMQ.Socket worker;
+    private ZContext context;
 
     public void start(String bootfile) throws Exception {
+
+        context = new ZContext();
+        worker = context.createSocket(ZMQ.REQ);
+        worker.connect("tcp://localhost:" + modelDebugPort);
 
         DefaultKevoreeFactory factory = new DefaultKevoreeFactory();
         HashSet urls = new HashSet<String>();
@@ -84,9 +94,9 @@ public class KevoreePlatformCtrl implements Runnable {
                 }
                 bootstrapFile.deleteOnExit();
             }
-            execArray = new String[]{getJava(),"-Dmodel.debug.port="+modelDebugPort.toString(), "-Dnode.bootstrap=" + bootstrapFile.getAbsolutePath(), "-Dnode.name=" + nodeName, "-jar", platformJar.getAbsolutePath()};
+            execArray = new String[]{getJava(), "-Dmodel.debug.port=" + modelDebugPort.toString(), "-Dnode.bootstrap=" + bootstrapFile.getAbsolutePath(), "-Dnode.name=" + nodeName, "-jar", platformJar.getAbsolutePath()};
         } else {
-            execArray = new String[]{getJava(),"-Dmodel.debug.port="+modelDebugPort.toString(), "-Dnode.name=" + nodeName, "-jar", platformJar.getAbsolutePath()};
+            execArray = new String[]{getJava(), "-Dmodel.debug.port=" + modelDebugPort.toString(), "-Dnode.name=" + nodeName, "-jar", platformJar.getAbsolutePath()};
         }
 
         /*if (jvmArgs != null) {
@@ -105,12 +115,15 @@ public class KevoreePlatformCtrl implements Runnable {
         readerOUTthread.start();
         readerERRthread.start();
 
+        worker.send("ping");
+        worker.recvStr();
     }
 
     public void stop() {
         process.destroy();
         readerOUTthread.stop();
         readerERRthread.stop();
+        context.destroy();
     }
 
     public LinkedList<String> getLines() {

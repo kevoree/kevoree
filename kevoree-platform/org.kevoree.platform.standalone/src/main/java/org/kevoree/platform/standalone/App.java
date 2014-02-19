@@ -15,16 +15,14 @@ import java.io.InputStream;
  */
 public class App {
 
-    private static final String defaultNodeName = "node0";
-
-    public static Bootstrap bootstrap;
+    public static final String defaultNodeName = "node0";
 
     public static void main(String[] args) throws Exception {
         String nodeName = System.getProperty("node.name");
         if (nodeName == null) {
             nodeName = defaultNodeName;
         }
-        bootstrap = new Bootstrap(nodeName);
+        Bootstrap bootstrap = new Bootstrap(nodeName);
         String bootstrapModel = System.getProperty("node.bootstrap");
         if (bootstrapModel != null) {
             bootstrap.bootstrapFromFile(new File(bootstrapModel));
@@ -33,7 +31,7 @@ public class App {
         }
     }
 
-    private static InputStream createBootstrapScript(String nodeName) {
+    public static InputStream createBootstrapScript(String nodeName) {
         StringBuilder buffer = new StringBuilder();
         String versionRequest;
         if (new DefaultKevoreeFactory().getVersion().toLowerCase().contains("snapshot")) {

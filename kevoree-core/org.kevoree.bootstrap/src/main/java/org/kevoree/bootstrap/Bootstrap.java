@@ -65,8 +65,12 @@ public class Bootstrap {
         core.stop();
     }
 
+    public void bootstrap(ContainerRoot model, UpdateCallback callback) {
+        core.update(model, callback);
+    }
+
     public void bootstrap(ContainerRoot model) {
-        core.update(model, new UpdateCallback() {
+        bootstrap(model, new UpdateCallback() {
             @Override
             public void run(Boolean applied) {
                 Log.info("Bootstrap completed");
@@ -74,13 +78,13 @@ public class Bootstrap {
         });
     }
 
-    public void bootstrapFromKevScript(InputStream input) throws Exception {
+    public void bootstrapFromKevScript(InputStream input, UpdateCallback callback) throws Exception {
         //TODO perhaps not delegate load of dev classpath to system for continuous integration
         ContainerRoot emptyModel = bootstrapFromClassPath();
         //By default DeployUnit coming from classPath are considered as complete
         //TODO ugly hack for dev mode
-        for(DeployUnit du : emptyModel.getDeployUnits()){
-            kernel.manualAttach(du,kernel.system);
+        for (DeployUnit du : emptyModel.getDeployUnits()) {
+            kernel.manualAttach(du, kernel.system);
             kevScriptEngine.addIgnoreIncludeDeployUnit(du);
         }
 
@@ -111,7 +115,11 @@ public class Bootstrap {
                 }
             }
         }
-        core.update(emptyModel, new UpdateCallback() {
+        core.update(emptyModel, callback);
+    }
+
+    public void bootstrapFromKevScript(InputStream input) throws Exception {
+        bootstrapFromKevScript(input, new UpdateCallback() {
             @Override
             public void run(Boolean applied) {
                 Log.info("Bootstrap completed");
@@ -130,7 +138,7 @@ public class Bootstrap {
                 String path = paths[i];
                 File pathP = new File(path + File.separator + "KEV-INF" + File.separator + "lib.json");
                 if (pathP.exists()) {
-                    Log.info("Load Bootstrap model from {}",pathP.getAbsolutePath());
+                    Log.info("Load Bootstrap model from {}", pathP.getAbsolutePath());
                     if (result == null) {
                         FileInputStream ins = null;
                         try {
@@ -165,13 +173,33 @@ public class Bootstrap {
                     }
                 }
             }
-            if(result!=null){
+            if (result != null) {
                 return result;
             } else {
                 return core.getFactory().createContainerRoot();
             }
         }
         return core.getFactory().createContainerRoot();
+    }
+
+    public void bootstrapFromFile(File input, UpdateCallback callback) throws Exception {
+        FileInputStream fin = new FileInputStream(input);
+        if (input.getName().endsWith(".kevs")) {
+            bootstrapFromKevScript(fin,callback);
+        } else {
+            if (input.getName().endsWith(".kev")) {
+                bootstrap((ContainerRoot) xmiLoader.loadModelFromStream(fin).get(0),callback);
+            } else {
+                if (input.getName().endsWith(".json")) {
+                    bootstrap((ContainerRoot) jsonLoader.loadModelFromStream(fin).get(0),callback);
+                } else {
+                    Log.error("Can't bootstrap because no extension found for {}", input.getName());
+                }
+            }
+
+        }
+
+        fin.close();
     }
 
     public void bootstrapFromFile(File input) throws Exception {

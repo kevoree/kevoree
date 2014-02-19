@@ -1,8 +1,5 @@
 package org.kevoree.tools.test;
 
-import com.mashape.unirest.http.HttpResponse;
-import com.mashape.unirest.http.JsonNode;
-import com.mashape.unirest.http.Unirest;
 import org.junit.After;
 import org.kevoree.ContainerRoot;
 import org.kevoree.loader.JSONModelLoader;
@@ -10,10 +7,8 @@ import org.kevoree.log.Log;
 import org.kevoree.serializer.JSONModelSerializer;
 
 import java.io.*;
-import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
-import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -64,46 +59,39 @@ public class KevoreeTestCase {
             throw new Exception("Node not started : " + nodeName);
         } else {
             KevoreePlatformCtrl runner = runners.get(nodeName);
-            URL url = new URL("http://localhost:" + runner.getModelDebugPort() + "/model");
-            URLConnection conn = url.openConnection();
+            runner.getWorker().send("getModel");
             JSONModelLoader loader = new JSONModelLoader();
-            ContainerRoot model = (ContainerRoot) loader.loadModelFromStream(conn.getInputStream()).get(0);
-            conn.getInputStream().close();
+            ContainerRoot model = (ContainerRoot) loader.loadModelFromString(runner.getWorker().recvStr()).get(0);
             return model;
         }
     }
 
-    public boolean deploy(String nodeName, ContainerRoot model) throws Exception {
+    public void deploy(String nodeName, ContainerRoot model) throws Exception {
         if (!runners.containsKey(nodeName)) {
             throw new Exception("Node not started : " + nodeName);
         } else {
             KevoreePlatformCtrl runner = runners.get(nodeName);
-            URL url = new URL("http://localhost:" + runner.getModelDebugPort() + "/model");
-            URLConnection conn = url.openConnection();
-            conn.setDoOutput(true);
-            OutputStreamWriter out = new OutputStreamWriter(conn.getOutputStream());
             JSONModelSerializer saver = new JSONModelSerializer();
-            out.write(saver.serialize(model));
-            out.close();
-            BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-            String decodedString;
-            while ((decodedString = in.readLine()) != null) {
-                System.out.println(decodedString);
-            }
-            in.close();
-        }
-        return true;
+            String modelTxt = saver.serialize(model);
+            runner.getWorker().send("pushModel");
+            runner.getWorker().recv();
+            runner.getWorker().send(modelTxt);
+            if (!Boolean.parseBoolean(runner.getWorker().recvStr())) {
+                throw new Exception("Model deploy error : " + nodeName);
+            }        }
     }
 
-    public boolean exec(String nodeName, String script) throws Exception {
+    public void exec(String nodeName, String script) throws Exception {
         if (!runners.containsKey(nodeName)) {
             throw new Exception("Node not started : " + nodeName);
         } else {
             KevoreePlatformCtrl runner = runners.get(nodeName);
-            HttpResponse<String> response = Unirest.post("http://localhost:" + runner.getModelDebugPort() + "/script")
-                    .field("script", script)
-                    .asString();
-            return Boolean.parseBoolean(response.getBody());
+            runner.getWorker().send("pushScript");
+            runner.getWorker().recv();
+            runner.getWorker().send(script);
+            if (!Boolean.parseBoolean(runner.getWorker().recvStr())) {
+                throw new Exception("Script execution error : " + nodeName);
+            }
         }
     }
 
