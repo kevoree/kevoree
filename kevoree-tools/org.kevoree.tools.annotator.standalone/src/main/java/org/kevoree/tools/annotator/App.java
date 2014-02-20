@@ -46,8 +46,6 @@ public class App {
                         mainDu = fakeDeployUnit;
                     }
 
-
-                    String[] classPath = System.getProperty("java.class.path").split(File.separator);
                     ArrayList<String> classPaths = new ArrayList<String>();
                     annotations2Model.fillModel(directoryTargetFile, model, mainDu, classPaths);
                     //generate the file
