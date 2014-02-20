@@ -7,15 +7,18 @@ import org.kevoree.resolver.MavenResolver;
 import org.zeromq.ZContext;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * Created by duke on 16/02/2014.
  */
 public class KevoreePlatformCtrl implements Runnable {
 
-    private LinkedList<String> lines = new LinkedList<String>();
+    private LinkedBlockingQueue<String> lines = new LinkedBlockingQueue<String>();
 
     public KevoreePlatformCtrl(String nodeName) {
         this.nodeName = nodeName;
@@ -68,6 +71,9 @@ public class KevoreePlatformCtrl implements Runnable {
         }
         Log.info("Resolved {}", factory.getVersion());
 
+        File kevoreeAnnotator = resolver.resolve("org.kevoree.tools", "org.kevoree.tools.annotator.standalone", factory.getVersion(), "jar", urls);
+
+
         String jvmArgs = null;
         /*
         if (modelElement.dictionary != null) {
@@ -76,6 +82,27 @@ public class KevoreePlatformCtrl implements Runnable {
                 jvmArgs = jvmArgsAttribute.toString();
             }
         }*/
+
+        String[] paths = System.getProperty("java.class.path").split(File.pathSeparator);
+
+        StringBuffer classPathBuf = new StringBuffer();
+        for(String kevPath : paths){
+            classPathBuf.append(kevPath);
+            classPathBuf.append(File.pathSeparator);
+        }
+        classPathBuf.append(kevoreeAnnotator.getAbsolutePath());
+        classPathBuf.append(File.pathSeparator);
+        classPathBuf.append(platformJar.getAbsolutePath());
+
+        String classesDirectory = "";
+        for (String path : paths) {
+            if (!path.endsWith(".jar")) {
+                if(!classesDirectory.equals("")){
+                    classesDirectory = classesDirectory + File.pathSeparator;
+                }
+                classesDirectory = classesDirectory + path;
+            }
+        }
 
         File bootstrapFile;
         String[] execArray;
@@ -94,9 +121,9 @@ public class KevoreePlatformCtrl implements Runnable {
                 }
                 bootstrapFile.deleteOnExit();
             }
-            execArray = new String[]{getJava(), "-Dmodel.debug.port=" + modelDebugPort.toString(), "-Dnode.bootstrap=" + bootstrapFile.getAbsolutePath(), "-Dnode.name=" + nodeName, "-jar", platformJar.getAbsolutePath()};
+            execArray = new String[]{getJava(), "-Dmodel.debug.port=" + modelDebugPort.toString(), "-Dnode.bootstrap=" + bootstrapFile.getAbsolutePath(), "-Dnode.name=" + nodeName, "-cp", classPathBuf.toString(), "org.kevoree.tools.annotator.App", classesDirectory, "org.kevoree.platform.standalone.test.App"};
         } else {
-            execArray = new String[]{getJava(), "-Dmodel.debug.port=" + modelDebugPort.toString(), "-Dnode.name=" + nodeName, "-jar", platformJar.getAbsolutePath()};
+            execArray = new String[]{getJava(), "-Dmodel.debug.port=" + modelDebugPort.toString(), "-Dnode.name=" + nodeName, "-cp", classPathBuf.toString(), "org.kevoree.tools.annotator.App", classesDirectory, "org.kevoree.platform.standalone.test.App"};
         }
 
         /*if (jvmArgs != null) {
@@ -126,7 +153,7 @@ public class KevoreePlatformCtrl implements Runnable {
         context.destroy();
     }
 
-    public LinkedList<String> getLines() {
+    public LinkedBlockingQueue<String> getLines() {
         return lines;
     }
 
@@ -141,12 +168,20 @@ public class KevoreePlatformCtrl implements Runnable {
         try {
             if (Thread.currentThread().getName().startsWith("stderr_")) {
                 while ((line = brerr.readLine()) != null) {
-                    lines.add(line);
+                    try {
+                        lines.put(line);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                     System.err.println(nodeName + "/" + line);
                 }
             } else {
                 while ((line = br.readLine()) != null) {
-                    lines.add(line);
+                    try {
+                        lines.put(line);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                     System.out.println(nodeName + "/" + line);
                 }
             }

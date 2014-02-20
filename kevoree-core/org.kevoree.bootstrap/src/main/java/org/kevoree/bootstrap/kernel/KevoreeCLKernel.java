@@ -11,6 +11,7 @@ import org.kevoree.kcl.api.FlexyClassLoader;
 import org.kevoree.kcl.api.FlexyClassLoaderFactory;
 import org.kevoree.log.Log;
 import org.kevoree.resolver.MavenResolver;
+
 import java.io.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -176,8 +177,8 @@ public class KevoreeCLKernel implements KevoreeCLFactory, BootstrapService {
     public Object createInstance(final Instance instance) {
         try {
             FlexyClassLoader classLoader = get(instance.getTypeDefinition().getDeployUnit());
-            if(classLoader == null){
-                Log.error("Error cannot create instance of {} because it is not possible to get the corresponding Classloader",instance.getTypeDefinition().getName());
+            if (classLoader == null) {
+                Log.error("Error cannot create instance of {} because it is not possible to get the corresponding Classloader", instance.getTypeDefinition().getName());
                 return null;
             }
             Class clazz = classLoader.loadClass(instance.getTypeDefinition().getBean());
@@ -394,7 +395,7 @@ public class KevoreeCLKernel implements KevoreeCLFactory, BootstrapService {
     @Nullable
     @Override
     public File resolve(String url, Set<? extends String> repos) {
-        return resolver.resolve(url, (Set<String>)repos);
+        return resolver.resolve(url, (Set<String>) repos);
     }
 
     @Override

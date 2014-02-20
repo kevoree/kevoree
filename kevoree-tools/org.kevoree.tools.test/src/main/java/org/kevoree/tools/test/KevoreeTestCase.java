@@ -6,10 +6,8 @@ import org.kevoree.loader.JSONModelLoader;
 import org.kevoree.log.Log;
 import org.kevoree.serializer.JSONModelSerializer;
 
-import java.io.*;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -78,7 +76,8 @@ public class KevoreeTestCase {
             runner.getWorker().send(modelTxt);
             if (!Boolean.parseBoolean(runner.getWorker().recvStr())) {
                 throw new Exception("Model deploy error : " + nodeName);
-            }        }
+            }
+        }
     }
 
     public void exec(String nodeName, String script) throws Exception {
@@ -94,5 +93,39 @@ public class KevoreeTestCase {
             }
         }
     }
+
+    public void waitLog(String nodeName, String log, long timems) throws Exception {
+        if (!runners.containsKey(nodeName)) {
+            throw new Exception("Node not started : " + nodeName);
+        } else {
+            long initTime = System.currentTimeMillis();
+            KevoreePlatformCtrl runner = runners.get(nodeName);
+            boolean found = false;
+            while (!found) {
+                long current = System.currentTimeMillis();
+                long spent = current - initTime;
+                if (spent > timems) {
+                    throw new Exception("WaiLog on " + nodeName + " TimeOut / " + log);
+                }
+                String line = runner.getLines().poll(timems - spent, TimeUnit.MILLISECONDS);
+                if (line != null) {
+                    line = nodeName + "/" + line;
+                    if (line.equals(log)) {
+                        found = true;
+                    } else {
+                        if (line.matches(log)) {
+                            found = true;
+                        } else {
+                            String logR = log.replace("*", ".*").replace("[", "\\[").replace("]", "\\]");
+                            if (line.matches(logR)) {
+                                found = true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
 
 }

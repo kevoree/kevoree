@@ -22,13 +22,24 @@ public class App {
         if (nodeName == null) {
             nodeName = defaultNodeName;
         }
-        Bootstrap bootstrap = new Bootstrap(nodeName);
+        final Bootstrap bootstrap = new Bootstrap(nodeName);
+        Runtime.getRuntime().addShutdownHook(new Thread("Shutdown Hook") {
+            public void run() {
+                try {
+                    bootstrap.stop();
+                } catch (Throwable ex) {
+                    System.out.println("Error stopping kevoree platform: " + ex.getMessage());
+                }
+            }
+        });
         String bootstrapModel = System.getProperty("node.bootstrap");
         if (bootstrapModel != null) {
             bootstrap.bootstrapFromFile(new File(bootstrapModel));
         } else {
             bootstrap.bootstrapFromKevScript(createBootstrapScript(nodeName));
         }
+
+
     }
 
     public static InputStream createBootstrapScript(String nodeName) {

@@ -14,14 +14,21 @@ public class App {
 
     public static void main(String[] args) throws Exception {
         String nodeName = System.getProperty("node.name");
-        Bootstrap bootstrap = new Bootstrap(nodeName);
+        final Bootstrap bootstrap = new Bootstrap(nodeName);
+        Runtime.getRuntime().addShutdownHook(new Thread("Shutdown Hook") {
+            public void run() {
+                try {
+                    bootstrap.stop();
+                } catch (Throwable ex) {
+                    System.out.println("Error stopping kevoree platform: " + ex.getMessage());
+                }
+            }
+        });
         final KevoreeCoreBean core = bootstrap.getCore();
-
         if (nodeName == null) {
             nodeName = org.kevoree.platform.standalone.App.defaultNodeName;
         }
         String bootstrapModel = System.getProperty("node.bootstrap");
-
         UpdateCallback callback = new UpdateCallback() {
             @Override
             public void run(Boolean aBoolean) {
@@ -37,9 +44,9 @@ public class App {
         };
 
         if (bootstrapModel != null) {
-            bootstrap.bootstrapFromFile(new File(bootstrapModel),callback);
+            bootstrap.bootstrapFromFile(new File(bootstrapModel), callback);
         } else {
-            bootstrap.bootstrapFromKevScript(org.kevoree.platform.standalone.App.createBootstrapScript(nodeName),callback);
+            bootstrap.bootstrapFromKevScript(org.kevoree.platform.standalone.App.createBootstrapScript(nodeName), callback);
         }
 
 
