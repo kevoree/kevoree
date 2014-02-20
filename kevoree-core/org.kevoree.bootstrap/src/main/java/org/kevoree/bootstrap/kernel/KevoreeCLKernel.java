@@ -200,8 +200,10 @@ public class KevoreeCLKernel implements KevoreeCLFactory, BootstrapService {
             return;
         }
         for (DictionaryAttribute att : instance.getTypeDefinition().getDictionaryType().getAttributes()) {
+            String defValue = null;
             String value = null;
-            if (!defaultOnly && att.getFragmentDependant()) {
+
+            if (att.getFragmentDependant()) {
                 FragmentDictionary fdico = instance.findFragmentDictionaryByID(nodeName);
                 if (fdico != null) {
                     DictionaryValue tempValue = fdico.findValuesByID(att.getName());
@@ -210,7 +212,7 @@ public class KevoreeCLKernel implements KevoreeCLFactory, BootstrapService {
                     }
                 }
             }
-            if (!defaultOnly && value == null) {
+            if (value == null) {
                 if (instance.getDictionary() != null) {
                     DictionaryValue tempValue = instance.getDictionary().findValuesByID(att.getName());
                     if (tempValue != null) {
@@ -218,13 +220,20 @@ public class KevoreeCLKernel implements KevoreeCLFactory, BootstrapService {
                     }
                 }
             }
-            if (value == null) {
-                if (!att.getDefaultValue().equals("")) {
-                    value = att.getDefaultValue();
-                }
+            if (att.getDefaultValue() != null && !att.getDefaultValue().equals("")) {
+                defValue = att.getDefaultValue();
             }
-            if (value != null) {
-                internalInjectField(att.getName(), value, target);
+            if (defaultOnly) {
+                if (defValue != null && value == null) {
+                    internalInjectField(att.getName(), value, target);
+                }
+            } else {
+                if (value == null && defValue != null) {
+                    value = defValue;
+                }
+                if (value != null) {
+                    internalInjectField(att.getName(), value, target);
+                }
             }
         }
     }
