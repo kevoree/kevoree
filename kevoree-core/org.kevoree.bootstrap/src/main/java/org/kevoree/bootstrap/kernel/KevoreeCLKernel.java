@@ -225,7 +225,7 @@ public class KevoreeCLKernel implements KevoreeCLFactory, BootstrapService {
             }
             if (defaultOnly) {
                 if (defValue != null && value == null) {
-                    internalInjectField(att.getName(), value, target);
+                    internalInjectField(att.getName(), defValue, target);
                 }
             } else {
                 if (value == null && defValue != null) {
