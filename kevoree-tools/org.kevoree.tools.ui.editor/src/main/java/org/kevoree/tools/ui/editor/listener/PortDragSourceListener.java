@@ -155,10 +155,12 @@ public class PortDragSourceListener extends DragSourceAdapter implements DragSou
     public void dragGestureRecognized(DragGestureEvent dge) {
 
         //STEP 0 CLEAN SELECTED PORT
+        /*
         CleanRequirePortBinding commandclean = new CleanRequirePortBinding();
         commandclean.setKernel(kernel);
         commandclean.setPortpanel(eventSourcePanel);
         commandclean.execute(null);
+         */
 
         //STEP 1 CREATE FLIGHT BINDING
         //if()

@@ -44,7 +44,7 @@ class PortChecker: CheckerService {
                 concreteViolation.setTargetObjects(targetObjects)
                 violations.add(concreteViolation)
             }
-
+            /*
             if(port.bindings.size() > 1){
                 //TWICE BINDING !!!
                 val concreteViolation: CheckerViolation = CheckerViolation()
@@ -53,7 +53,7 @@ class PortChecker: CheckerService {
                 targetObjects.add(port.eContainer()!!.path()!!)
                 concreteViolation.setTargetObjects(targetObjects)
                 violations.add(concreteViolation)
-            }
+            }*/
         }
     }
 
