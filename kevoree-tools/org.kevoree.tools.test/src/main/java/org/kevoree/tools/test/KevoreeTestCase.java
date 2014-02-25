@@ -19,6 +19,12 @@ public class KevoreeTestCase {
 
     private AtomicInteger integer = new AtomicInteger(2000);
 
+    private Long globalTimeOut = 10000l;
+
+    public void setGlobalTimeOut(Long gt) {
+        this.globalTimeOut = gt;
+    }
+
     public void shutdown(String nodeName) throws Exception {
         if (runners.containsKey(nodeName)) {
             KevoreePlatformCtrl p = runners.get(nodeName);
@@ -33,13 +39,17 @@ public class KevoreeTestCase {
     }
 
     public void bootstrap(String nodeName, String bootfile) throws Exception {
+        bootstrap(nodeName, bootfile, globalTimeOut);
+    }
+
+    public void bootstrap(String nodeName, String bootfile, Long timeout) throws Exception {
         if (runners.containsKey(nodeName)) {
             throw new Exception("Already started : " + nodeName);
         }
         KevoreePlatformCtrl p = new KevoreePlatformCtrl(nodeName);
         p.setModelDebugPort(integer.getAndIncrement());
         runners.put(nodeName, p);
-        p.start(bootfile);
+        p.start(bootfile, timeout);
         Log.info("Kevoree Platform started {}", nodeName);
     }
 

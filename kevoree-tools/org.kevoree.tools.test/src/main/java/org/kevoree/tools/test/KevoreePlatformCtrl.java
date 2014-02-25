@@ -52,7 +52,7 @@ public class KevoreePlatformCtrl implements Runnable {
     private org.zeromq.ZMQ.Socket worker;
     private ZContext context;
 
-    public void start(String bootfile) throws Exception {
+    public void start(String bootfile, Long timeout) throws Exception {
 
         context = new ZContext();
         worker = context.createSocket(ZMQ.REQ);
@@ -86,7 +86,7 @@ public class KevoreePlatformCtrl implements Runnable {
         String[] paths = System.getProperty("java.class.path").split(File.pathSeparator);
 
         StringBuffer classPathBuf = new StringBuffer();
-        for(String kevPath : paths){
+        for (String kevPath : paths) {
             classPathBuf.append(kevPath);
             classPathBuf.append(File.pathSeparator);
         }
@@ -97,7 +97,7 @@ public class KevoreePlatformCtrl implements Runnable {
         String classesDirectory = "";
         for (String path : paths) {
             if (!path.endsWith(".jar")) {
-                if(!classesDirectory.equals("")){
+                if (!classesDirectory.equals("")) {
                     classesDirectory = classesDirectory + File.pathSeparator;
                 }
                 classesDirectory = classesDirectory + path;
@@ -143,6 +143,7 @@ public class KevoreePlatformCtrl implements Runnable {
         readerERRthread.start();
 
         worker.send("ping");
+        worker.setReceiveTimeOut(timeout.intValue());
         worker.recvStr();
     }
 
