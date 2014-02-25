@@ -19,6 +19,7 @@ import org.kevoree.api.BootstrapService
 import org.kevoree.api.KevScriptService
 import org.kevoree.api.Context
 import org.kevoree.api.ChannelContext
+import javassist.Modifier
 
 /**
  * Created with IntelliJ IDEA.
@@ -157,6 +158,9 @@ object ModelBuilder {
                 groupType.version = du.version
                 groupType.name = clazz.getSimpleName()
                 groupType.bean = clazz.getName()
+                if (Modifier.isAbstract(clazz.getModifiers())) {
+                    groupType.abstract = true
+                }
                 root.addTypeDefinitions(groupType)
                 groupType.deployUnit = du
                 deepFields(clazz, factory, groupType)
@@ -166,6 +170,9 @@ object ModelBuilder {
                 channelType.version = du.version
                 channelType.name = clazz.getSimpleName()
                 channelType.bean = clazz.getName()
+                if (Modifier.isAbstract(clazz.getModifiers())) {
+                    channelType.abstract = true
+                }
                 root.addTypeDefinitions(channelType)
                 channelType.deployUnit = du
                 deepFields(clazz, factory, channelType)
@@ -175,6 +182,9 @@ object ModelBuilder {
                 componentType.version = du.version
                 componentType.name = clazz.getSimpleName()
                 componentType.bean = clazz.getName()
+                if (Modifier.isAbstract(clazz.getModifiers())) {
+                    componentType.abstract = true
+                }
                 root.addTypeDefinitions(componentType)
                 componentType.deployUnit = du
                 deepFields(clazz, factory, componentType)
@@ -185,6 +195,9 @@ object ModelBuilder {
                 nodeType.version = du.version
                 nodeType.name = clazz.getSimpleName()
                 nodeType.bean = clazz.getName()
+                if (Modifier.isAbstract(clazz.getModifiers())) {
+                    nodeType.abstract = true
+                }
                 root.addTypeDefinitions(nodeType)
                 nodeType.deployUnit = du
                 deepFields(clazz, factory, nodeType)
