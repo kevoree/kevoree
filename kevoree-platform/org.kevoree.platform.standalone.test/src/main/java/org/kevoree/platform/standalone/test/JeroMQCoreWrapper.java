@@ -1,6 +1,6 @@
 package org.kevoree.platform.standalone.test;
 
-import org.jeromq.*;
+import org.zeromq.*;
 import org.kevoree.ContainerRoot;
 import org.kevoree.api.handler.UpdateCallback;
 import org.kevoree.core.impl.KevoreeCoreBean;

@@ -1,16 +1,12 @@
 package org.kevoree.tools.test;
 
-import org.jeromq.ZMQ;
+import org.zeromq.*;
 import org.kevoree.impl.DefaultKevoreeFactory;
 import org.kevoree.log.Log;
 import org.kevoree.resolver.MavenResolver;
-import org.zeromq.ZContext;
 
 import java.io.*;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 
 /**
@@ -146,8 +142,8 @@ public class KevoreePlatformCtrl implements Runnable {
         worker.setReceiveTimeOut(timeout.intValue());
         String pong = worker.recvStr();
 
-        if(pong==null || !pong.equals("pong")){
-          throw new Exception("Timeout while bootstrap "+nodeName+" on "+bootfile+", timeout="+timeout+"ms");
+        if (pong == null || !pong.equals("pong")) {
+            throw new Exception("Timeout while bootstrap " + nodeName + " on " + bootfile + ", timeout=" + timeout + "ms");
         }
 
     }
