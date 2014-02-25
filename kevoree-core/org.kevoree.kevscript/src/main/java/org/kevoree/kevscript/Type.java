@@ -3,6 +3,7 @@
  * www.waxeye.org
  */
 package org.kevoree.kevscript;
+
 /**
  * The types of AST nodes.
  *
@@ -17,8 +18,6 @@ public enum Type
     KevScript,
     Statement,
     Add,
-    Start,
-    Stop,
     Remove,
     Move,
     Attach,
@@ -44,8 +43,6 @@ public enum Type
     RepoToken,
     IncludeToken,
     AddToken,
-    StartToken,
-    StopToken,
     RemoveToken,
     MoveToken,
     SetToken,
