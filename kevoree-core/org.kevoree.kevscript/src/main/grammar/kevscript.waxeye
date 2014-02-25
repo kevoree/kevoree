@@ -2,7 +2,7 @@
 
 # Rules
 # =====
-KevScript    <- +((Statement | :Comment eol) ws) :?Comment
+KevScript    <- ws +((Statement | :Comment eol) ws) :?Comment
 
 Statement    <- Add | Remove | Move | Attach | Detach | Set | AddBinding | DelBinding | Include | Network | AddRepo | Namespace
 

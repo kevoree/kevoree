@@ -1,4 +1,9 @@
-repo http://org.sonatype.org/foo/bar?a=b&c=d // potato
+
+
+
+
+
+repo "http://org.sonatype.org/foo/bar?a=b&c=d" // potato
 include mvn:org.kevoree.library.javase:org.kevoree.library.javase.websocketgrp:2.0.5-SNAPSHOT // potato!
 
 add node0, node1 : JavaSENode
