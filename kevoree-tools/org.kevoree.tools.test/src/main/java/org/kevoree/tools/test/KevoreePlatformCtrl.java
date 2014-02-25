@@ -144,7 +144,12 @@ public class KevoreePlatformCtrl implements Runnable {
 
         worker.send("ping");
         worker.setReceiveTimeOut(timeout.intValue());
-        worker.recvStr();
+        String pong = worker.recvStr();
+
+        if(pong==null || !pong.equals("pong")){
+          throw new Exception("Timeout while bootstrap "+nodeName+" on "+bootfile+", timeout="+timeout+"ms");
+        }
+
     }
 
     public void stop() {
