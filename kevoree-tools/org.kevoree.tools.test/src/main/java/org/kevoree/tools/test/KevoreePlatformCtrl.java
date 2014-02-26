@@ -149,11 +149,6 @@ public class KevoreePlatformCtrl implements Runnable {
     }
 
     public void stop() throws Exception {
-        worker.send("stop");
-        String done = worker.recvStr();
-        if (done == null || !done.equalsIgnoreCase("done")) {
-            throw new Exception("Unable to properly close the runtime...");
-        }
         process.destroy();
         process.waitFor();
         readerOUTthread.stop();
