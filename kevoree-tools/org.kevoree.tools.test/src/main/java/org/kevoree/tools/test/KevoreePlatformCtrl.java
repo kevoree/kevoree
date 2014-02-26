@@ -55,7 +55,7 @@ public class KevoreePlatformCtrl implements Runnable {
         worker.connect("tcp://localhost:" + modelDebugPort);
 
         DefaultKevoreeFactory factory = new DefaultKevoreeFactory();
-        HashSet urls = new HashSet<String>();
+        HashSet<String> urls = new HashSet<String>();
         urls.add("http://repo1.maven.org/maven2");
         if (factory.getVersion().contains("SNAPSHOT")) {
             urls.add("http://oss.sonatype.org/content/groups/public/");
@@ -70,8 +70,8 @@ public class KevoreePlatformCtrl implements Runnable {
         File kevoreeAnnotator = resolver.resolve("org.kevoree.tools", "org.kevoree.tools.annotator.standalone", factory.getVersion(), "jar", urls);
 
 
-        String jvmArgs = null;
         /*
+        String jvmArgs = null;
         if (modelElement.dictionary != null) {
             var jvmArgsAttribute = modelElement.dictionary !!.findValuesByID("jvmArgs");
             if (jvmArgsAttribute != null) {
@@ -81,7 +81,7 @@ public class KevoreePlatformCtrl implements Runnable {
 
         String[] paths = System.getProperty("java.class.path").split(File.pathSeparator);
 
-        StringBuffer classPathBuf = new StringBuffer();
+        StringBuilder classPathBuf = new StringBuilder();
         for (String kevPath : paths) {
             classPathBuf.append(kevPath);
             classPathBuf.append(File.pathSeparator);
@@ -148,8 +148,14 @@ public class KevoreePlatformCtrl implements Runnable {
 
     }
 
-    public void stop() {
+    public void stop() throws Exception {
+        worker.send("stop");
+        String done = worker.recvStr();
+        if (done == null || !done.equalsIgnoreCase("done")) {
+            throw new Exception("Unable to properly close the runtime...");
+        }
         process.destroy();
+        process.waitFor();
         readerOUTthread.stop();
         readerERRthread.stop();
         context.destroy();

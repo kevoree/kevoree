@@ -18,7 +18,7 @@ public class App {
         Runtime.getRuntime().addShutdownHook(new Thread("Shutdown Hook") {
             public void run() {
                 try {
-                    Log.info("Kevoree platform will stop {}" + bootstrap.getCore().getNodeName());
+                    Log.info("Kevoree platform will stop {}", bootstrap.getCore().getNodeName());
                     bootstrap.stop();
                 } catch (Throwable ex) {
                     System.out.println("Error stopping kevoree platform: " + ex.getMessage());

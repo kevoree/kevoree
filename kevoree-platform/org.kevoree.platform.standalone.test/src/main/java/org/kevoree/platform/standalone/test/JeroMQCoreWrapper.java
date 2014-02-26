@@ -72,6 +72,9 @@ public class JeroMQCoreWrapper implements Runnable {
                             e.printStackTrace();
                         }
                         worker.send(result[0].toString());
+                    }else if (call.equalsIgnoreCase("stop")) {
+                        core.stop();
+                        worker.send("done");
                     } else {
                         if (call.equals("ping")) {
                             worker.send("pong");
