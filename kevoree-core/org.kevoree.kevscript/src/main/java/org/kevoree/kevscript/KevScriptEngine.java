@@ -285,7 +285,7 @@ public class KevScriptEngine implements KevScriptService {
                 }
                 break;
             default:
-                System.out.println("WTF !!" + node);
+                System.out.println(node);
                 break;
         }
     }
