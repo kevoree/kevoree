@@ -1,90 +1,107 @@
-repo 'http://oss.sonatype.org/content/groups/public/'
-repo 'http://sd-35000.dedibox.fr:8080/archiva/repository/internal/'
-include mvn:org.kevoree.library.java:org.kevoree.library.java.ws:latest
-include mvn:org.kevoree.library.cloud:org.kevoree.library.cloud.lxc:latest
-include mvn:org.kevoree.library.cloud:org.kevoree.library.cloud.lightlxc:latest
-include mvn:org.kevoree.library.java:org.kevoree.library.java.hazelcast:latest
+repo "http://oss.sonatype.org/content/groups/public/"
+
+include mvn:org.kevoree.library.java:org.kevoree.library.java.javaNode:latest
+include mvn:org.kevoree.library.java:org.kevoree.library.java.helloworld:latest
 include mvn:org.kevoree.library.java:org.kevoree.library.java.channels:latest
-include mvn:org.kevoree.komponents:http-netty:latest
-include mvn:org.diversify.demo:kevoree-utils-xtend:latest
-include mvn:org.diversify:org.diversify.kevoree.nginx:latest
-include mvn:org.diversify:org.diversify.kevoree.loadBalancer:latest
-include mvn:org.diversify:org.diversify.kevoree.restarter:latest
-add sync : WSGroup
-add nginxChannel : UselessChannel
-add lbMonitorChannelGetNbSosieCalled : DistributedBroadcast
-add lbMonitorChannelReceiveNbSosieCalled : DistributedBroadcast
-add request : AsyncBroadcast
-add response : AsyncBroadcast
+include mvn:org.kevoree.library.java:org.kevoree.library.java.toys:latest
+include mvn:org.kevoree.library.java:org.kevoree.library.java.ws:latest
+
+
 add node0 : JavaNode
-set sync.port/node0 = '9000'
+add sync : WSGroup
 attach node0 sync
-network node0.ip.lan 127.0.0.1
-add node0.node0Child2 : JavaNode
-network node0Child2.ip.lan 127.0.0.1
-add node0.node0Child1 : JavaNode
-network node0Child1.ip.lan 127.0.0.1
-add node0.node0Child0 : JavaNode
-network node0Child0.ip.lan 127.0.0.1
-add node0Child0.nginx : NginxConfigurator
-set node0Child0.nginx.servers = '###############################################################################
-# Definition of the load balancer front-end
-###############################################################################
 
-server {
-	listen 80;
-	server_name localhost;
-	access_log /tmp/loadbalancerclient/proxy.log proxy; #proxy refers to the log format defined in nginx.conf
+add node0.h1 : HelloJava
+set node0.h1.message = "Hello !
+This is a try to create a big script using standard Kevoree-library coming from https://github.com/kevoree/kevoree-library
+So I try to put lot of information in a String which be parsed by KevScript as a RealString with multiple lines,
+some special character like ù%*é=^``~&°.:!§,?/#çà][-|
 
-	location / {
-		proxy_pass http://backend;
-	}
+This test is use to test waxeye and check if our grammar avoid the potential stackoverflow coming from to many recursion.
+To avoid it, we write RealString as a set of rules which are the following:
 
-	location /client {
-		root   /tmp/loadbalancerclient;
-		autoindex on;
-	}
+Escaped1      <- ['] | '\\'
+Escaped2      <- [\"] | '\\'
 
-	location /client/ws {
-			proxy_pass http://localhost:8099;
+NotEscaped1Line <- +(!Escaped1 !eol .)
+NotEscaped2Line <- +(!Escaped2 !eol .)
 
-			# These are the option for websockets (need nginx >= v1.3.13)
-			proxy_set_header X-Real-IP $remote_addr;
-			proxy_set_header Host $host;
-			proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+RealString  <- :[\"] *( (:'\\' Escaped2) | NotEscaped2Line | (!Escaped2 eol)) :[\"] | :['] *( (:'\\' Escaped1) | NotEscaped1Line | (!Escaped1 eol)) :[']
 
-			proxy_http_version 1.1;
-			proxy_set_header Upgrade $http_upgrade;
-			proxy_set_header Connection "upgrade";
-	}
-}'
-bind node0Child0.nginx.useless nginxChannel
-add node0Child0.lbMonitor : KevoreeLBMonitor
-bind node0Child0.lbMonitor.getNbSosieCalled lbMonitorChannelGetNbSosieCalled
-bind node0Child0.lbMonitor.receiveNbSosieCalled lbMonitorChannelReceiveNbSosieCalled
-add node0Child0.webserver : NettyHTTPServer
-set node0Child0.webserver.port = '7999'
-add node0Child0.restarter : DemoRestarter
-set node0Child0.restarter.componentType = 'SosieRunner'
-add node0Child0.favicon : FaviconHandler
-set node0Child0.favicon.urlPattern = '/favicon.*'
-set node0Child0.favicon.favicon = 'favicon.png'
-bind node0Child0.webserver.request request
-bind node0Child0.webserver.response response
-bind node0Child0.favicon.request request
-bind node0Child0.favicon.content response
-bind node0Child0.restarter.request request
-bind node0Child0.restarter.content response
-include mvn:org.diversify:org.diversify.kevoree.sosie:latest
-add node0Child2.factory_and_indirection_on_RhinoEnginerhino15node0Child20 : SosieRunner
-set node0Child2.factory_and_indirection_on_RhinoEnginerhino15node0Child20.sosieUrl = 'http://sd-35000.dedibox.fr:8080/archiva/repository/internal/org/diversify/composed-sosie/1-factory_and_indirection_on_RhinoEnginerhino15/composed-sosie-1-factory_and_indirection_on_RhinoEnginerhino15.zip'
-set node0Child2.factory_and_indirection_on_RhinoEnginerhino15node0Child20.port = '8080'
-bind node0Child2.factory_and_indirection_on_RhinoEnginerhino15node0Child20.useless nginxChannel
-bind node0Child2.factory_and_indirection_on_RhinoEnginerhino15node0Child20.getNbSosieCalled lbMonitorChannelGetNbSosieCalled
-bind node0Child2.factory_and_indirection_on_RhinoEnginerhino15node0Child20.sendNbSosieCalled lbMonitorChannelReceiveNbSosieCalled
-add node0Child1.factory_and_indirection_on_RhinoEnginerhino16node0Child11 : SosieRunner
-set node0Child1.factory_and_indirection_on_RhinoEnginerhino16node0Child11.sosieUrl = 'http://sd-35000.dedibox.fr:8080/archiva/repository/internal/org/diversify/composed-sosie/1-factory_and_indirection_on_RhinoEnginerhino16/composed-sosie-1-factory_and_indirection_on_RhinoEnginerhino16.zip'
-set node0Child1.factory_and_indirection_on_RhinoEnginerhino16node0Child11.port = '8081'
-bind node0Child1.factory_and_indirection_on_RhinoEnginerhino16node0Child11.useless nginxChannel
-bind node0Child1.factory_and_indirection_on_RhinoEnginerhino16node0Child11.getNbSosieCalled lbMonitorChannelGetNbSosieCalled
-bind node0Child1.factory_and_indirection_on_RhinoEnginerhino16node0Child11.sendNbSosieCalled lbMonitorChannelReceiveNbSosieCalled
+Waxeye is a parser generator based on parsing expression grammars (PEGs).
+It supports C, Java, Javascript, Python, Ruby and Scheme.
+
+For more information about waxeye: https://github.com/orlandohill/waxeye
+
+The following lines are copy/paste from the previous one...
+Hello !
+This is a try to create a big script using standard Kevoree-library coming from https://github.com/kevoree/kevoree-library
+So I try to put lot of information in a String which be parsed by KevScript as a RealString with multiple lines,
+some special character like ù%*é=^``~&°.:!§,?/#çà][-|
+
+This test is use to test waxeye and check if our grammar avoid the potential stackoverflow coming from to many recursion.
+To avoid it, we write RealString as a set of rules which are the following:
+
+Escaped1      <- ['] | '\\'
+Escaped2      <- [\"] | '\\'
+
+NotEscaped1Line <- +(!Escaped1 !eol .)
+NotEscaped2Line <- +(!Escaped2 !eol .)
+
+RealString  <- :[\"] *( (:'\\' Escaped2) | NotEscaped2Line | (!Escaped2 eol)) :[\"] | :['] *( (:'\\' Escaped1) | NotEscaped1Line | (!Escaped1 eol)) :[']
+
+Waxeye is a parser generator based on parsing expression grammars (PEGs).
+It supports C, Java, Javascript, Python, Ruby and Scheme.
+
+For more information about waxeye: https://github.com/orlandohill/waxeye
+Hello !
+This is a try to create a big script using standard Kevoree-library coming from https://github.com/kevoree/kevoree-library
+So I try to put lot of information in a String which be parsed by KevScript as a RealString with multiple lines,
+some special character like ù%*é=^``~&°.:!§,?/#çà][-|
+
+This test is use to test waxeye and check if our grammar avoid the potential stackoverflow coming from to many recursion.
+To avoid it, we write RealString as a set of rules which are the following:
+
+Escaped1      <- ['] | '\\'
+Escaped2      <- [\"] | '\\'
+
+NotEscaped1Line <- +(!Escaped1 !eol .)
+NotEscaped2Line <- +(!Escaped2 !eol .)
+
+RealString  <- :[\"] *( (:'\\' Escaped2) | NotEscaped2Line | (!Escaped2 eol)) :[\"] | :['] *( (:'\\' Escaped1) | NotEscaped1Line | (!Escaped1 eol)) :[']
+
+Waxeye is a parser generator based on parsing expression grammars (PEGs).
+It supports C, Java, Javascript, Python, Ruby and Scheme.
+
+For more information about waxeye: https://github.com/orlandohill/waxeye
+Hello !
+This is a try to create a big script using standard Kevoree-library coming from https://github.com/kevoree/kevoree-library
+So I try to put lot of information in a String which be parsed by KevScript as a RealString with multiple lines,
+some special character like ù%*é=^``~&°.:!§,?/#çà][-|
+
+This test is use to test waxeye and check if our grammar avoid the potential stackoverflow coming from to many recursion.
+To avoid it, we write RealString as a set of rules which are the following:
+
+Escaped1      <- ['] | '\\'
+Escaped2      <- [\"] | '\\'
+
+NotEscaped1Line <- +(!Escaped1 !eol .)
+NotEscaped2Line <- +(!Escaped2 !eol .)
+
+RealString  <- :[\"] *( (:'\\' Escaped2) | NotEscaped2Line | (!Escaped2 eol)) :[\"] | :['] *( (:'\\' Escaped1) | NotEscaped1Line | (!Escaped1 eol)) :[']
+
+Waxeye is a parser generator based on parsing expression grammars (PEGs).
+It supports C, Java, Javascript, Python, Ruby and Scheme.
+
+For more information about waxeye: https://github.com/orlandohill/waxeye
+"
+add node0.h2 : HelloJava
+
+add node0.ticker : Ticker
+add hub : SyncBroadcast
+
+bind node0.h1.hello hub
+bind node0.h2.hello hub
+bind node0.ticker.tick hub
+
+set node0.ticker.period = "3000"
