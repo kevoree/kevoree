@@ -35,7 +35,7 @@ public class KevscriptEngineTest {
 
 
 
-    @Test
+//    @Test
     public void _01_parseAndInterpretTest() {
         try {
             KevScriptEngine engine = new KevScriptEngine();
@@ -43,9 +43,9 @@ public class KevscriptEngineTest {
             ContainerRoot cr = factory.createContainerRoot();
             engine.executeFromStream(KevscriptEngineTest.class.getResourceAsStream("/parseInterpretTestInput.kevs"), cr);
         } catch (Exception e) {
-//           e.printStackTrace();
+           e.printStackTrace();
 
-//            fail("An exception occurred:" + e.toString());
+            fail("An exception occurred:" + e.toString());
         }
 
     }
