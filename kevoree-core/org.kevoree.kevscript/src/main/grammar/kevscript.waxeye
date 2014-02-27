@@ -51,13 +51,17 @@ String2      <- +[a-zA-Z0-9.:@_-]
 
 Version      <- +[a-zA-Z0-9._-]
 
-RepoString   <- +(!eol :![ ] .)															# anything but EOL and ' '
+#RepoString   <- +(!eol :![ ] .)														# anything but EOL and ' '
 
-Anything     <- +(!eol .) 																# anything but EOL
+Line     <- +(!eol .) 																# anything but EOL
 
-Escaped      <- ['] | ["] | '\\'
+Escaped1      <- ['] | '\\'
+Escaped2      <- ["] | '\\'
 
-RealString  <- :["] *( :'\\' Escaped | !Escaped . ) :["] | :['] *( :'\\' Escaped | !Escaped . ) :[']
+NotEscaped1Line <- +(!Escaped1 !eol .)
+NotEscaped2Line <- +(!Escaped2 !eol .)
+
+RealString  <- :["] *( (:'\\' Escaped2) | NotEscaped2Line | (!Escaped2 eol)) :["] | :['] *( (:'\\' Escaped1) | NotEscaped1Line | (!Escaped1 eol)) :[']
 
 # =========
 # End Rules
@@ -77,7 +81,7 @@ NetworkToken    <: 'network'
 BindToken       <: 'bind'
 UnbindToken     <: 'unbind'
 NamespaceToken  <: 'namespace'
-Comment         <: '//' Anything
+Comment         <: '//' ?Line
 eol             <: '\r\n' | '\n' | '\r'
 ws              <: *([ \t] | eol)
 # =================

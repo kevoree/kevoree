@@ -43,9 +43,9 @@ public class KevscriptEngineTest {
             ContainerRoot cr = factory.createContainerRoot();
             engine.executeFromStream(KevscriptEngineTest.class.getResourceAsStream("/parseInterpretTestInput.kevs"), cr);
         } catch (Exception e) {
-           // e.printStackTrace();
+//           e.printStackTrace();
 
-            //fail("An exception occurred:" + e.toString());
+//            fail("An exception occurred:" + e.toString());
         }
 
     }
@@ -65,14 +65,29 @@ public class KevscriptEngineTest {
             saver.serializeToStream(root, System.out);
 
         } catch (Exception e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+//            e.printStackTrace();
+
+//            fail("An exception occurred:" + e.toString());
+        }
+    }
+
+    @Test
+    public void _01_parseAndInterpretBigScriptTest() {
+        try {
+            KevScriptEngine engine = new KevScriptEngine();
+            KevoreeFactory factory = new DefaultKevoreeFactory();
+            ContainerRoot cr = factory.createContainerRoot();
+            engine.executeFromStream(KevscriptEngineTest.class.getResourceAsStream("/bigScript.kevs"), cr);
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail("An exception occurred:" + e.toString());
         }
     }
 
 
     public static void main(String[] args) throws Exception {
-        KevscriptEngineTest test = new KevscriptEngineTest();
-        test._02_loadExecuteSave();
+        /*KevscriptEngineTest test = new KevscriptEngineTest();
+        test._02_loadExecuteSave();*/
     }
 
 

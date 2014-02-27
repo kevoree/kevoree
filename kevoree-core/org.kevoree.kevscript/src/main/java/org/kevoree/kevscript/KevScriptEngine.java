@@ -31,10 +31,10 @@ public class KevScriptEngine implements KevScriptService {
     private List<String> ignoredInclude = new ArrayList<String>();
 
     /* Ugly hack for dev mode */
-    public void addIgnoreIncludeDeployUnit(DeployUnit du){
-        ignoredInclude.add(du.getGroupName()+"/"+du.getName()+"/"+du.getVersion());
-        ignoredInclude.add(du.getGroupName()+"/"+du.getName()+"/release");
-        ignoredInclude.add(du.getGroupName()+"/"+du.getName()+"/latest");
+    public void addIgnoreIncludeDeployUnit(DeployUnit du) {
+        ignoredInclude.add(du.getGroupName() + "/" + du.getName() + "/" + du.getVersion());
+        ignoredInclude.add(du.getGroupName() + "/" + du.getName() + "/release");
+        ignoredInclude.add(du.getGroupName() + "/" + du.getName() + "/latest");
     }
 
     public void execute(String script, ContainerRoot model) throws Exception {
@@ -113,7 +113,11 @@ public class KevScriptEngine implements KevScriptService {
                 break;
             case AddRepo:
                 Repository repo = factory.createRepository();
-                repo.setUrl(node.getChildren().get(0).childrenAsString().replace("\"", "").replace("\'", ""));
+                StringBuilder builder = new StringBuilder();
+                for (IAST<Type> child : node.getChildren().get(0).getChildren()) {
+                    builder.append(child.childrenAsString().replace("\"", "").replace("\'", ""));
+                }
+                repo.setUrl(builder.toString());
                 model.addRepositories(repo);
                 break;
             case Remove:
@@ -163,7 +167,7 @@ public class KevScriptEngine implements KevScriptService {
                 }
                 break;
             case Include:
-                if(!ignoredInclude.contains(node.getChildren().get(1).childrenAsString())){
+                if (!ignoredInclude.contains(node.getChildren().get(1).childrenAsString())) {
                     MergeResolver.merge(model, node.getChildren().get(0).childrenAsString(), node.getChildren().get(1).childrenAsString());
                 }
                 break;
@@ -172,10 +176,18 @@ public class KevScriptEngine implements KevScriptService {
                 List<Instance> targetNodes = null;
                 if (node.getChildren().size() == 3) {
                     //frag dep
-                    propToSet = node.getChildren().get(2).childrenAsString();
+                    builder = new StringBuilder();
+                    for (IAST<Type> child : node.getChildren().get(2).getChildren()) {
+                        builder.append(child.childrenAsString().replace("\"", "").replace("\'", ""));
+                    }
+                    propToSet = builder.toString();
                     targetNodes = InstanceResolver.resolve(model, node.getChildren().get(1));
                 } else {
-                    propToSet = node.getChildren().get(1).childrenAsString();
+                    builder = new StringBuilder();
+                    for (IAST<Type> child : node.getChildren().get(1).getChildren()) {
+                        builder.append(child.childrenAsString().replace("\"", "").replace("\'", ""));
+                    }
+                    propToSet = builder.toString();
                 }
 
                 IAST<Type> leftHnodes = node.getChildren().get(0);
@@ -273,7 +285,7 @@ public class KevScriptEngine implements KevScriptService {
                 }
                 break;
             default:
-                System.out.println(node);
+                System.out.println("WTF !!" + node);
                 break;
         }
     }
