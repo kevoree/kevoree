@@ -3,7 +3,6 @@
  * www.waxeye.org
  */
 package org.kevoree.kevscript;
-
 /**
  * The types of AST nodes.
  *
@@ -56,5 +55,6 @@ public enum Type
     NamespaceToken,
     Comment,
     Eol,
+    EolKept,
     Ws
 }

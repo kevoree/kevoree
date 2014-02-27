@@ -61,7 +61,7 @@ Escaped2      <- ["] | '\\'
 NotEscaped1Line <- +(!Escaped1 !eol .)
 NotEscaped2Line <- +(!Escaped2 !eol .)
 
-RealString  <- :["] *( (:'\\' Escaped2) | NotEscaped2Line | (!Escaped2 eol)) :["] | :['] *( (:'\\' Escaped1) | NotEscaped1Line | (!Escaped1 eol)) :[']
+RealString  <- :["] *( (:'\\' Escaped2) | NotEscaped2Line | (!Escaped2 eolKept)) :["] | :['] *( (:'\\' Escaped1) | NotEscaped1Line | (!Escaped1 eolKept)) :[']
 
 # =========
 # End Rules
@@ -83,6 +83,7 @@ UnbindToken     <: 'unbind'
 NamespaceToken  <: 'namespace'
 Comment         <: '//' ?Line
 eol             <: '\r\n' | '\n' | '\r'
+eolKept         <- '\r\n' | '\n' | '\r'
 ws              <: *([ \t] | eol)
 # =================
 # End Void Non-terminals
