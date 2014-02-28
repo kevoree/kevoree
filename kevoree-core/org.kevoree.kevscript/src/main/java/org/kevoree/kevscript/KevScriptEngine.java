@@ -115,7 +115,7 @@ public class KevScriptEngine implements KevScriptService {
                 Repository repo = factory.createRepository();
                 StringBuilder builder = new StringBuilder();
                 for (IAST<Type> child : node.getChildren().get(0).getChildren()) {
-                    builder.append(child.childrenAsString().replace("\\", "\\\\"));
+                    builder.append(child.childrenAsString());
                 }
                 repo.setUrl(builder.toString());
                 model.addRepositories(repo);
@@ -178,14 +178,14 @@ public class KevScriptEngine implements KevScriptService {
                     //frag dep
                     builder = new StringBuilder();
                     for (IAST<Type> child : node.getChildren().get(2).getChildren()) {
-                        builder.append(child.childrenAsString().replace("\\", "\\\\"));
+                        builder.append(child.childrenAsString());
                     }
                     propToSet = builder.toString();
                     targetNodes = InstanceResolver.resolve(model, node.getChildren().get(1));
                 } else {
                     builder = new StringBuilder();
                     for (IAST<Type> child : node.getChildren().get(1).getChildren()) {
-                        builder.append(child.childrenAsString().replace("\\", "\\\\"));
+                        builder.append(child.childrenAsString());
                     }
                     propToSet = builder.toString();
                 }
