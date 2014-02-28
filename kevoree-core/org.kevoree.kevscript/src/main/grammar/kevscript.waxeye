@@ -55,13 +55,14 @@ Version      <- +[a-zA-Z0-9._-]
 
 Line     <- +(!eol .) 																# anything but EOL
 
+Escaped       <- ['] | ["] | '\\'
 Escaped1      <- ['] | '\\'
 Escaped2      <- ["] | '\\'
 
 NotEscaped1Line <- +(!Escaped1 !eol .)
 NotEscaped2Line <- +(!Escaped2 !eol .)
 
-RealString  <- :["] *( (:'\\' Escaped2) | NotEscaped2Line | (!Escaped2 eolKept)) :["] | :['] *( (:'\\' Escaped1) | NotEscaped1Line | (!Escaped1 eolKept)) :[']
+RealString  <- :["] *( (:'\\' Escaped) | NotEscaped2Line | (!Escaped2 eolKept)) :["] | :['] *( (:'\\' Escaped) | NotEscaped1Line | (!Escaped1 eolKept)) :[']
 
 # =========
 # End Rules

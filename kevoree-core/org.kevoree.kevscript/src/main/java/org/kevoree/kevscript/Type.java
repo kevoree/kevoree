@@ -36,6 +36,7 @@ public enum Type
     String2,
     Version,
     Line,
+    Escaped,
     Escaped1,
     Escaped2,
     NotEscaped1Line,

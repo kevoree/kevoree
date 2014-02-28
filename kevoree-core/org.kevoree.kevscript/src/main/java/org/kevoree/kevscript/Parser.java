@@ -42,27 +42,27 @@ public final class Parser extends org.waxeye.parser.Parser<Type>
 
         states = new ArrayList<State<Type>>();
         edges = new ArrayList<Edge<Type>>();
-        edges.add(new Edge<Type>(new AutomatonTransition<Type>(42), 1, false));
+        edges.add(new Edge<Type>(new AutomatonTransition<Type>(43), 1, false));
         states.add(new State<Type>(edges, false));
         edges = new ArrayList<Edge<Type>>();
         edges.add(new Edge<Type>(new AutomatonTransition<Type>(1), 2, false));
-        edges.add(new Edge<Type>(new AutomatonTransition<Type>(39), 6, true));
+        edges.add(new Edge<Type>(new AutomatonTransition<Type>(40), 6, true));
         states.add(new State<Type>(edges, false));
         edges = new ArrayList<Edge<Type>>();
-        edges.add(new Edge<Type>(new AutomatonTransition<Type>(42), 3, false));
+        edges.add(new Edge<Type>(new AutomatonTransition<Type>(43), 3, false));
         states.add(new State<Type>(edges, false));
         edges = new ArrayList<Edge<Type>>();
         edges.add(new Edge<Type>(new AutomatonTransition<Type>(1), 4, false));
-        edges.add(new Edge<Type>(new AutomatonTransition<Type>(39), 5, true));
+        edges.add(new Edge<Type>(new AutomatonTransition<Type>(40), 5, true));
         states.add(new State<Type>(edges, true));
         edges = new ArrayList<Edge<Type>>();
-        edges.add(new Edge<Type>(new AutomatonTransition<Type>(42), 3, false));
+        edges.add(new Edge<Type>(new AutomatonTransition<Type>(43), 3, false));
         states.add(new State<Type>(edges, false));
         edges = new ArrayList<Edge<Type>>();
-        edges.add(new Edge<Type>(new AutomatonTransition<Type>(40), 4, false));
+        edges.add(new Edge<Type>(new AutomatonTransition<Type>(41), 4, false));
         states.add(new State<Type>(edges, true));
         edges = new ArrayList<Edge<Type>>();
-        edges.add(new Edge<Type>(new AutomatonTransition<Type>(40), 2, false));
+        edges.add(new Edge<Type>(new AutomatonTransition<Type>(41), 2, false));
         states.add(new State<Type>(edges, false));
         automata.add(new FA<Type>(Type.KevScript, FA.LEFT, states));
 
@@ -87,22 +87,22 @@ public final class Parser extends org.waxeye.parser.Parser<Type>
 
         states = new ArrayList<State<Type>>();
         edges = new ArrayList<Edge<Type>>();
-        edges.add(new Edge<Type>(new AutomatonTransition<Type>(29), 1, false));
+        edges.add(new Edge<Type>(new AutomatonTransition<Type>(30), 1, false));
         states.add(new State<Type>(edges, false));
         edges = new ArrayList<Edge<Type>>();
-        edges.add(new Edge<Type>(new AutomatonTransition<Type>(42), 2, false));
+        edges.add(new Edge<Type>(new AutomatonTransition<Type>(43), 2, false));
         states.add(new State<Type>(edges, false));
         edges = new ArrayList<Edge<Type>>();
         edges.add(new Edge<Type>(new AutomatonTransition<Type>(13), 3, false));
         states.add(new State<Type>(edges, false));
         edges = new ArrayList<Edge<Type>>();
-        edges.add(new Edge<Type>(new AutomatonTransition<Type>(42), 4, false));
+        edges.add(new Edge<Type>(new AutomatonTransition<Type>(43), 4, false));
         states.add(new State<Type>(edges, false));
         edges = new ArrayList<Edge<Type>>();
         edges.add(new Edge<Type>(new CharTransition<Type>(new char[]{':'}, new char[]{}, new char[]{}), 5, true));
         states.add(new State<Type>(edges, false));
         edges = new ArrayList<Edge<Type>>();
-        edges.add(new Edge<Type>(new AutomatonTransition<Type>(42), 6, false));
+        edges.add(new Edge<Type>(new AutomatonTransition<Type>(43), 6, false));
         states.add(new State<Type>(edges, false));
         edges = new ArrayList<Edge<Type>>();
         edges.add(new Edge<Type>(new AutomatonTransition<Type>(14), 7, false));
@@ -113,10 +113,10 @@ public final class Parser extends org.waxeye.parser.Parser<Type>
 
         states = new ArrayList<State<Type>>();
         edges = new ArrayList<Edge<Type>>();
-        edges.add(new Edge<Type>(new AutomatonTransition<Type>(30), 1, false));
+        edges.add(new Edge<Type>(new AutomatonTransition<Type>(31), 1, false));
         states.add(new State<Type>(edges, false));
         edges = new ArrayList<Edge<Type>>();
-        edges.add(new Edge<Type>(new AutomatonTransition<Type>(42), 2, false));
+        edges.add(new Edge<Type>(new AutomatonTransition<Type>(43), 2, false));
         states.add(new State<Type>(edges, false));
         edges = new ArrayList<Edge<Type>>();
         edges.add(new Edge<Type>(new AutomatonTransition<Type>(13), 3, false));
@@ -127,16 +127,16 @@ public final class Parser extends org.waxeye.parser.Parser<Type>
 
         states = new ArrayList<State<Type>>();
         edges = new ArrayList<Edge<Type>>();
-        edges.add(new Edge<Type>(new AutomatonTransition<Type>(31), 1, false));
+        edges.add(new Edge<Type>(new AutomatonTransition<Type>(32), 1, false));
         states.add(new State<Type>(edges, false));
         edges = new ArrayList<Edge<Type>>();
-        edges.add(new Edge<Type>(new AutomatonTransition<Type>(42), 2, false));
+        edges.add(new Edge<Type>(new AutomatonTransition<Type>(43), 2, false));
         states.add(new State<Type>(edges, false));
         edges = new ArrayList<Edge<Type>>();
         edges.add(new Edge<Type>(new AutomatonTransition<Type>(13), 3, false));
         states.add(new State<Type>(edges, false));
         edges = new ArrayList<Edge<Type>>();
-        edges.add(new Edge<Type>(new AutomatonTransition<Type>(42), 4, false));
+        edges.add(new Edge<Type>(new AutomatonTransition<Type>(43), 4, false));
         states.add(new State<Type>(edges, false));
         edges = new ArrayList<Edge<Type>>();
         edges.add(new Edge<Type>(new AutomatonTransition<Type>(16), 5, false));
@@ -147,16 +147,16 @@ public final class Parser extends org.waxeye.parser.Parser<Type>
 
         states = new ArrayList<State<Type>>();
         edges = new ArrayList<Edge<Type>>();
-        edges.add(new Edge<Type>(new AutomatonTransition<Type>(33), 1, false));
+        edges.add(new Edge<Type>(new AutomatonTransition<Type>(34), 1, false));
         states.add(new State<Type>(edges, false));
         edges = new ArrayList<Edge<Type>>();
-        edges.add(new Edge<Type>(new AutomatonTransition<Type>(42), 2, false));
+        edges.add(new Edge<Type>(new AutomatonTransition<Type>(43), 2, false));
         states.add(new State<Type>(edges, false));
         edges = new ArrayList<Edge<Type>>();
         edges.add(new Edge<Type>(new AutomatonTransition<Type>(13), 3, false));
         states.add(new State<Type>(edges, false));
         edges = new ArrayList<Edge<Type>>();
-        edges.add(new Edge<Type>(new AutomatonTransition<Type>(42), 4, false));
+        edges.add(new Edge<Type>(new AutomatonTransition<Type>(43), 4, false));
         states.add(new State<Type>(edges, false));
         edges = new ArrayList<Edge<Type>>();
         edges.add(new Edge<Type>(new AutomatonTransition<Type>(16), 5, false));
@@ -167,16 +167,16 @@ public final class Parser extends org.waxeye.parser.Parser<Type>
 
         states = new ArrayList<State<Type>>();
         edges = new ArrayList<Edge<Type>>();
-        edges.add(new Edge<Type>(new AutomatonTransition<Type>(34), 1, false));
+        edges.add(new Edge<Type>(new AutomatonTransition<Type>(35), 1, false));
         states.add(new State<Type>(edges, false));
         edges = new ArrayList<Edge<Type>>();
-        edges.add(new Edge<Type>(new AutomatonTransition<Type>(42), 2, false));
+        edges.add(new Edge<Type>(new AutomatonTransition<Type>(43), 2, false));
         states.add(new State<Type>(edges, false));
         edges = new ArrayList<Edge<Type>>();
         edges.add(new Edge<Type>(new AutomatonTransition<Type>(13), 3, false));
         states.add(new State<Type>(edges, false));
         edges = new ArrayList<Edge<Type>>();
-        edges.add(new Edge<Type>(new AutomatonTransition<Type>(42), 4, false));
+        edges.add(new Edge<Type>(new AutomatonTransition<Type>(43), 4, false));
         states.add(new State<Type>(edges, false));
         edges = new ArrayList<Edge<Type>>();
         edges.add(new Edge<Type>(new AutomatonTransition<Type>(16), 5, false));
@@ -187,32 +187,32 @@ public final class Parser extends org.waxeye.parser.Parser<Type>
 
         states = new ArrayList<State<Type>>();
         edges = new ArrayList<Edge<Type>>();
-        edges.add(new Edge<Type>(new AutomatonTransition<Type>(32), 1, false));
+        edges.add(new Edge<Type>(new AutomatonTransition<Type>(33), 1, false));
         states.add(new State<Type>(edges, false));
         edges = new ArrayList<Edge<Type>>();
-        edges.add(new Edge<Type>(new AutomatonTransition<Type>(42), 2, false));
+        edges.add(new Edge<Type>(new AutomatonTransition<Type>(43), 2, false));
         states.add(new State<Type>(edges, false));
         edges = new ArrayList<Edge<Type>>();
         edges.add(new Edge<Type>(new AutomatonTransition<Type>(16), 3, false));
         states.add(new State<Type>(edges, false));
         edges = new ArrayList<Edge<Type>>();
         edges.add(new Edge<Type>(new CharTransition<Type>(new char[]{'/'}, new char[]{}, new char[]{}), 4, true));
-        edges.add(new Edge<Type>(new AutomatonTransition<Type>(42), 6, false));
+        edges.add(new Edge<Type>(new AutomatonTransition<Type>(43), 6, false));
         states.add(new State<Type>(edges, false));
         edges = new ArrayList<Edge<Type>>();
         edges.add(new Edge<Type>(new AutomatonTransition<Type>(16), 5, false));
         states.add(new State<Type>(edges, false));
         edges = new ArrayList<Edge<Type>>();
-        edges.add(new Edge<Type>(new AutomatonTransition<Type>(42), 6, false));
+        edges.add(new Edge<Type>(new AutomatonTransition<Type>(43), 6, false));
         states.add(new State<Type>(edges, false));
         edges = new ArrayList<Edge<Type>>();
         edges.add(new Edge<Type>(new CharTransition<Type>(new char[]{'='}, new char[]{}, new char[]{}), 7, true));
         states.add(new State<Type>(edges, false));
         edges = new ArrayList<Edge<Type>>();
-        edges.add(new Edge<Type>(new AutomatonTransition<Type>(42), 8, false));
+        edges.add(new Edge<Type>(new AutomatonTransition<Type>(43), 8, false));
         states.add(new State<Type>(edges, false));
         edges = new ArrayList<Edge<Type>>();
-        edges.add(new Edge<Type>(new AutomatonTransition<Type>(26), 9, false));
+        edges.add(new Edge<Type>(new AutomatonTransition<Type>(27), 9, false));
         states.add(new State<Type>(edges, false));
         edges = new ArrayList<Edge<Type>>();
         states.add(new State<Type>(edges, true));
@@ -220,16 +220,16 @@ public final class Parser extends org.waxeye.parser.Parser<Type>
 
         states = new ArrayList<State<Type>>();
         edges = new ArrayList<Edge<Type>>();
-        edges.add(new Edge<Type>(new AutomatonTransition<Type>(35), 1, false));
+        edges.add(new Edge<Type>(new AutomatonTransition<Type>(36), 1, false));
         states.add(new State<Type>(edges, false));
         edges = new ArrayList<Edge<Type>>();
-        edges.add(new Edge<Type>(new AutomatonTransition<Type>(42), 2, false));
+        edges.add(new Edge<Type>(new AutomatonTransition<Type>(43), 2, false));
         states.add(new State<Type>(edges, false));
         edges = new ArrayList<Edge<Type>>();
         edges.add(new Edge<Type>(new AutomatonTransition<Type>(16), 3, false));
         states.add(new State<Type>(edges, false));
         edges = new ArrayList<Edge<Type>>();
-        edges.add(new Edge<Type>(new AutomatonTransition<Type>(42), 4, false));
+        edges.add(new Edge<Type>(new AutomatonTransition<Type>(43), 4, false));
         states.add(new State<Type>(edges, false));
         edges = new ArrayList<Edge<Type>>();
         edges.add(new Edge<Type>(new AutomatonTransition<Type>(19), 5, false));
@@ -240,16 +240,16 @@ public final class Parser extends org.waxeye.parser.Parser<Type>
 
         states = new ArrayList<State<Type>>();
         edges = new ArrayList<Edge<Type>>();
-        edges.add(new Edge<Type>(new AutomatonTransition<Type>(36), 1, false));
+        edges.add(new Edge<Type>(new AutomatonTransition<Type>(37), 1, false));
         states.add(new State<Type>(edges, false));
         edges = new ArrayList<Edge<Type>>();
-        edges.add(new Edge<Type>(new AutomatonTransition<Type>(42), 2, false));
+        edges.add(new Edge<Type>(new AutomatonTransition<Type>(43), 2, false));
         states.add(new State<Type>(edges, false));
         edges = new ArrayList<Edge<Type>>();
         edges.add(new Edge<Type>(new AutomatonTransition<Type>(16), 3, false));
         states.add(new State<Type>(edges, false));
         edges = new ArrayList<Edge<Type>>();
-        edges.add(new Edge<Type>(new AutomatonTransition<Type>(42), 4, false));
+        edges.add(new Edge<Type>(new AutomatonTransition<Type>(43), 4, false));
         states.add(new State<Type>(edges, false));
         edges = new ArrayList<Edge<Type>>();
         edges.add(new Edge<Type>(new AutomatonTransition<Type>(16), 5, false));
@@ -260,16 +260,16 @@ public final class Parser extends org.waxeye.parser.Parser<Type>
 
         states = new ArrayList<State<Type>>();
         edges = new ArrayList<Edge<Type>>();
-        edges.add(new Edge<Type>(new AutomatonTransition<Type>(37), 1, false));
+        edges.add(new Edge<Type>(new AutomatonTransition<Type>(38), 1, false));
         states.add(new State<Type>(edges, false));
         edges = new ArrayList<Edge<Type>>();
-        edges.add(new Edge<Type>(new AutomatonTransition<Type>(42), 2, false));
+        edges.add(new Edge<Type>(new AutomatonTransition<Type>(43), 2, false));
         states.add(new State<Type>(edges, false));
         edges = new ArrayList<Edge<Type>>();
         edges.add(new Edge<Type>(new AutomatonTransition<Type>(16), 3, false));
         states.add(new State<Type>(edges, false));
         edges = new ArrayList<Edge<Type>>();
-        edges.add(new Edge<Type>(new AutomatonTransition<Type>(42), 4, false));
+        edges.add(new Edge<Type>(new AutomatonTransition<Type>(43), 4, false));
         states.add(new State<Type>(edges, false));
         edges = new ArrayList<Edge<Type>>();
         edges.add(new Edge<Type>(new AutomatonTransition<Type>(16), 5, false));
@@ -280,13 +280,13 @@ public final class Parser extends org.waxeye.parser.Parser<Type>
 
         states = new ArrayList<State<Type>>();
         edges = new ArrayList<Edge<Type>>();
-        edges.add(new Edge<Type>(new AutomatonTransition<Type>(27), 1, false));
+        edges.add(new Edge<Type>(new AutomatonTransition<Type>(28), 1, false));
         states.add(new State<Type>(edges, false));
         edges = new ArrayList<Edge<Type>>();
-        edges.add(new Edge<Type>(new AutomatonTransition<Type>(42), 2, false));
+        edges.add(new Edge<Type>(new AutomatonTransition<Type>(43), 2, false));
         states.add(new State<Type>(edges, false));
         edges = new ArrayList<Edge<Type>>();
-        edges.add(new Edge<Type>(new AutomatonTransition<Type>(26), 3, false));
+        edges.add(new Edge<Type>(new AutomatonTransition<Type>(27), 3, false));
         states.add(new State<Type>(edges, false));
         edges = new ArrayList<Edge<Type>>();
         states.add(new State<Type>(edges, true));
@@ -294,10 +294,10 @@ public final class Parser extends org.waxeye.parser.Parser<Type>
 
         states = new ArrayList<State<Type>>();
         edges = new ArrayList<Edge<Type>>();
-        edges.add(new Edge<Type>(new AutomatonTransition<Type>(28), 1, false));
+        edges.add(new Edge<Type>(new AutomatonTransition<Type>(29), 1, false));
         states.add(new State<Type>(edges, false));
         edges = new ArrayList<Edge<Type>>();
-        edges.add(new Edge<Type>(new AutomatonTransition<Type>(42), 2, false));
+        edges.add(new Edge<Type>(new AutomatonTransition<Type>(43), 2, false));
         states.add(new State<Type>(edges, false));
         edges = new ArrayList<Edge<Type>>();
         edges.add(new Edge<Type>(new AutomatonTransition<Type>(18), 3, false));
@@ -317,13 +317,13 @@ public final class Parser extends org.waxeye.parser.Parser<Type>
         edges.add(new Edge<Type>(new AutomatonTransition<Type>(16), 1, false));
         states.add(new State<Type>(edges, false));
         edges = new ArrayList<Edge<Type>>();
-        edges.add(new Edge<Type>(new AutomatonTransition<Type>(42), 2, false));
+        edges.add(new Edge<Type>(new AutomatonTransition<Type>(43), 2, false));
         states.add(new State<Type>(edges, false));
         edges = new ArrayList<Edge<Type>>();
         edges.add(new Edge<Type>(new CharTransition<Type>(new char[]{','}, new char[]{}, new char[]{}), 3, true));
         states.add(new State<Type>(edges, true));
         edges = new ArrayList<Edge<Type>>();
-        edges.add(new Edge<Type>(new AutomatonTransition<Type>(42), 4, false));
+        edges.add(new Edge<Type>(new AutomatonTransition<Type>(43), 4, false));
         states.add(new State<Type>(edges, false));
         edges = new ArrayList<Edge<Type>>();
         edges.add(new Edge<Type>(new AutomatonTransition<Type>(16), 2, false));
@@ -346,10 +346,10 @@ public final class Parser extends org.waxeye.parser.Parser<Type>
 
         states = new ArrayList<State<Type>>();
         edges = new ArrayList<Edge<Type>>();
-        edges.add(new Edge<Type>(new AutomatonTransition<Type>(38), 1, false));
+        edges.add(new Edge<Type>(new AutomatonTransition<Type>(39), 1, false));
         states.add(new State<Type>(edges, false));
         edges = new ArrayList<Edge<Type>>();
-        edges.add(new Edge<Type>(new AutomatonTransition<Type>(42), 2, false));
+        edges.add(new Edge<Type>(new AutomatonTransition<Type>(43), 2, false));
         states.add(new State<Type>(edges, false));
         edges = new ArrayList<Edge<Type>>();
         edges.add(new Edge<Type>(new AutomatonTransition<Type>(18), 3, false));
@@ -409,18 +409,28 @@ public final class Parser extends org.waxeye.parser.Parser<Type>
 
         states = new ArrayList<State<Type>>();
         edges = new ArrayList<Edge<Type>>();
-        edges.add(new Edge<Type>(new AutomatonTransition<Type>(44), 1, false));
+        edges.add(new Edge<Type>(new AutomatonTransition<Type>(45), 1, false));
         states.add(new State<Type>(edges, false));
         edges = new ArrayList<Edge<Type>>();
         edges.add(new Edge<Type>(new WildCardTransition<Type>(), 2, false));
         states.add(new State<Type>(edges, false));
         edges = new ArrayList<Edge<Type>>();
-        edges.add(new Edge<Type>(new AutomatonTransition<Type>(43), 3, false));
+        edges.add(new Edge<Type>(new AutomatonTransition<Type>(44), 3, false));
         states.add(new State<Type>(edges, true));
         edges = new ArrayList<Edge<Type>>();
         edges.add(new Edge<Type>(new WildCardTransition<Type>(), 2, false));
         states.add(new State<Type>(edges, false));
         automata.add(new FA<Type>(Type.Line, FA.LEFT, states));
+
+        states = new ArrayList<State<Type>>();
+        edges = new ArrayList<Edge<Type>>();
+        edges.add(new Edge<Type>(new CharTransition<Type>(new char[]{'\''}, new char[]{}, new char[]{}), 1, false));
+        edges.add(new Edge<Type>(new CharTransition<Type>(new char[]{'"'}, new char[]{}, new char[]{}), 1, false));
+        edges.add(new Edge<Type>(new CharTransition<Type>(new char[]{'\\'}, new char[]{}, new char[]{}), 1, false));
+        states.add(new State<Type>(edges, false));
+        edges = new ArrayList<Edge<Type>>();
+        states.add(new State<Type>(edges, true));
+        automata.add(new FA<Type>(Type.Escaped, FA.LEFT, states));
 
         states = new ArrayList<State<Type>>();
         edges = new ArrayList<Edge<Type>>();
@@ -442,19 +452,19 @@ public final class Parser extends org.waxeye.parser.Parser<Type>
 
         states = new ArrayList<State<Type>>();
         edges = new ArrayList<Edge<Type>>();
-        edges.add(new Edge<Type>(new AutomatonTransition<Type>(48), 1, false));
+        edges.add(new Edge<Type>(new AutomatonTransition<Type>(49), 1, false));
         states.add(new State<Type>(edges, false));
         edges = new ArrayList<Edge<Type>>();
-        edges.add(new Edge<Type>(new AutomatonTransition<Type>(47), 2, false));
+        edges.add(new Edge<Type>(new AutomatonTransition<Type>(48), 2, false));
         states.add(new State<Type>(edges, false));
         edges = new ArrayList<Edge<Type>>();
         edges.add(new Edge<Type>(new WildCardTransition<Type>(), 3, false));
         states.add(new State<Type>(edges, false));
         edges = new ArrayList<Edge<Type>>();
-        edges.add(new Edge<Type>(new AutomatonTransition<Type>(46), 4, false));
+        edges.add(new Edge<Type>(new AutomatonTransition<Type>(47), 4, false));
         states.add(new State<Type>(edges, true));
         edges = new ArrayList<Edge<Type>>();
-        edges.add(new Edge<Type>(new AutomatonTransition<Type>(45), 5, false));
+        edges.add(new Edge<Type>(new AutomatonTransition<Type>(46), 5, false));
         states.add(new State<Type>(edges, false));
         edges = new ArrayList<Edge<Type>>();
         edges.add(new Edge<Type>(new WildCardTransition<Type>(), 3, false));
@@ -463,19 +473,19 @@ public final class Parser extends org.waxeye.parser.Parser<Type>
 
         states = new ArrayList<State<Type>>();
         edges = new ArrayList<Edge<Type>>();
-        edges.add(new Edge<Type>(new AutomatonTransition<Type>(52), 1, false));
+        edges.add(new Edge<Type>(new AutomatonTransition<Type>(53), 1, false));
         states.add(new State<Type>(edges, false));
         edges = new ArrayList<Edge<Type>>();
-        edges.add(new Edge<Type>(new AutomatonTransition<Type>(51), 2, false));
+        edges.add(new Edge<Type>(new AutomatonTransition<Type>(52), 2, false));
         states.add(new State<Type>(edges, false));
         edges = new ArrayList<Edge<Type>>();
         edges.add(new Edge<Type>(new WildCardTransition<Type>(), 3, false));
         states.add(new State<Type>(edges, false));
         edges = new ArrayList<Edge<Type>>();
-        edges.add(new Edge<Type>(new AutomatonTransition<Type>(50), 4, false));
+        edges.add(new Edge<Type>(new AutomatonTransition<Type>(51), 4, false));
         states.add(new State<Type>(edges, true));
         edges = new ArrayList<Edge<Type>>();
-        edges.add(new Edge<Type>(new AutomatonTransition<Type>(49), 5, false));
+        edges.add(new Edge<Type>(new AutomatonTransition<Type>(50), 5, false));
         states.add(new State<Type>(edges, false));
         edges = new ArrayList<Edge<Type>>();
         edges.add(new Edge<Type>(new WildCardTransition<Type>(), 3, false));
@@ -489,29 +499,29 @@ public final class Parser extends org.waxeye.parser.Parser<Type>
         states.add(new State<Type>(edges, false));
         edges = new ArrayList<Edge<Type>>();
         edges.add(new Edge<Type>(new CharTransition<Type>(new char[]{'\\'}, new char[]{}, new char[]{}), 2, true));
-        edges.add(new Edge<Type>(new AutomatonTransition<Type>(25), 1, false));
-        edges.add(new Edge<Type>(new AutomatonTransition<Type>(53), 3, false));
+        edges.add(new Edge<Type>(new AutomatonTransition<Type>(26), 1, false));
+        edges.add(new Edge<Type>(new AutomatonTransition<Type>(54), 3, false));
         edges.add(new Edge<Type>(new CharTransition<Type>(new char[]{'"'}, new char[]{}, new char[]{}), 4, true));
         states.add(new State<Type>(edges, false));
         edges = new ArrayList<Edge<Type>>();
-        edges.add(new Edge<Type>(new AutomatonTransition<Type>(23), 1, false));
+        edges.add(new Edge<Type>(new AutomatonTransition<Type>(22), 1, false));
         states.add(new State<Type>(edges, false));
         edges = new ArrayList<Edge<Type>>();
-        edges.add(new Edge<Type>(new AutomatonTransition<Type>(41), 1, false));
+        edges.add(new Edge<Type>(new AutomatonTransition<Type>(42), 1, false));
         states.add(new State<Type>(edges, false));
         edges = new ArrayList<Edge<Type>>();
         states.add(new State<Type>(edges, true));
         edges = new ArrayList<Edge<Type>>();
         edges.add(new Edge<Type>(new CharTransition<Type>(new char[]{'\\'}, new char[]{}, new char[]{}), 6, true));
-        edges.add(new Edge<Type>(new AutomatonTransition<Type>(24), 5, false));
-        edges.add(new Edge<Type>(new AutomatonTransition<Type>(54), 7, false));
+        edges.add(new Edge<Type>(new AutomatonTransition<Type>(25), 5, false));
+        edges.add(new Edge<Type>(new AutomatonTransition<Type>(55), 7, false));
         edges.add(new Edge<Type>(new CharTransition<Type>(new char[]{'\''}, new char[]{}, new char[]{}), 4, true));
         states.add(new State<Type>(edges, false));
         edges = new ArrayList<Edge<Type>>();
         edges.add(new Edge<Type>(new AutomatonTransition<Type>(22), 5, false));
         states.add(new State<Type>(edges, false));
         edges = new ArrayList<Edge<Type>>();
-        edges.add(new Edge<Type>(new AutomatonTransition<Type>(41), 5, false));
+        edges.add(new Edge<Type>(new AutomatonTransition<Type>(42), 5, false));
         states.add(new State<Type>(edges, false));
         automata.add(new FA<Type>(Type.RealString, FA.LEFT, states));
 
@@ -813,13 +823,13 @@ public final class Parser extends org.waxeye.parser.Parser<Type>
         states = new ArrayList<State<Type>>();
         edges = new ArrayList<Edge<Type>>();
         edges.add(new Edge<Type>(new CharTransition<Type>(new char[]{'\t', ' '}, new char[]{}, new char[]{}), 0, false));
-        edges.add(new Edge<Type>(new AutomatonTransition<Type>(40), 0, false));
+        edges.add(new Edge<Type>(new AutomatonTransition<Type>(41), 0, false));
         states.add(new State<Type>(edges, true));
         automata.add(new FA<Type>(Type.Ws, FA.VOID, states));
 
         states = new ArrayList<State<Type>>();
         edges = new ArrayList<Edge<Type>>();
-        edges.add(new Edge<Type>(new AutomatonTransition<Type>(40), 1, false));
+        edges.add(new Edge<Type>(new AutomatonTransition<Type>(41), 1, false));
         states.add(new State<Type>(edges, false));
         edges = new ArrayList<Edge<Type>>();
         states.add(new State<Type>(edges, true));
@@ -827,7 +837,7 @@ public final class Parser extends org.waxeye.parser.Parser<Type>
 
         states = new ArrayList<State<Type>>();
         edges = new ArrayList<Edge<Type>>();
-        edges.add(new Edge<Type>(new AutomatonTransition<Type>(40), 1, false));
+        edges.add(new Edge<Type>(new AutomatonTransition<Type>(41), 1, false));
         states.add(new State<Type>(edges, false));
         edges = new ArrayList<Edge<Type>>();
         states.add(new State<Type>(edges, true));
@@ -835,39 +845,7 @@ public final class Parser extends org.waxeye.parser.Parser<Type>
 
         states = new ArrayList<State<Type>>();
         edges = new ArrayList<Edge<Type>>();
-        edges.add(new Edge<Type>(new AutomatonTransition<Type>(40), 1, false));
-        states.add(new State<Type>(edges, false));
-        edges = new ArrayList<Edge<Type>>();
-        states.add(new State<Type>(edges, true));
-        automata.add(new FA<Type>(Type._Neg, FA.VOID, states));
-
-        states = new ArrayList<State<Type>>();
-        edges = new ArrayList<Edge<Type>>();
-        edges.add(new Edge<Type>(new AutomatonTransition<Type>(22), 1, false));
-        states.add(new State<Type>(edges, false));
-        edges = new ArrayList<Edge<Type>>();
-        states.add(new State<Type>(edges, true));
-        automata.add(new FA<Type>(Type._Neg, FA.VOID, states));
-
-        states = new ArrayList<State<Type>>();
-        edges = new ArrayList<Edge<Type>>();
-        edges.add(new Edge<Type>(new AutomatonTransition<Type>(40), 1, false));
-        states.add(new State<Type>(edges, false));
-        edges = new ArrayList<Edge<Type>>();
-        states.add(new State<Type>(edges, true));
-        automata.add(new FA<Type>(Type._Neg, FA.VOID, states));
-
-        states = new ArrayList<State<Type>>();
-        edges = new ArrayList<Edge<Type>>();
-        edges.add(new Edge<Type>(new AutomatonTransition<Type>(22), 1, false));
-        states.add(new State<Type>(edges, false));
-        edges = new ArrayList<Edge<Type>>();
-        states.add(new State<Type>(edges, true));
-        automata.add(new FA<Type>(Type._Neg, FA.VOID, states));
-
-        states = new ArrayList<State<Type>>();
-        edges = new ArrayList<Edge<Type>>();
-        edges.add(new Edge<Type>(new AutomatonTransition<Type>(40), 1, false));
+        edges.add(new Edge<Type>(new AutomatonTransition<Type>(41), 1, false));
         states.add(new State<Type>(edges, false));
         edges = new ArrayList<Edge<Type>>();
         states.add(new State<Type>(edges, true));
@@ -883,7 +861,7 @@ public final class Parser extends org.waxeye.parser.Parser<Type>
 
         states = new ArrayList<State<Type>>();
         edges = new ArrayList<Edge<Type>>();
-        edges.add(new Edge<Type>(new AutomatonTransition<Type>(40), 1, false));
+        edges.add(new Edge<Type>(new AutomatonTransition<Type>(41), 1, false));
         states.add(new State<Type>(edges, false));
         edges = new ArrayList<Edge<Type>>();
         states.add(new State<Type>(edges, true));
@@ -899,7 +877,7 @@ public final class Parser extends org.waxeye.parser.Parser<Type>
 
         states = new ArrayList<State<Type>>();
         edges = new ArrayList<Edge<Type>>();
-        edges.add(new Edge<Type>(new AutomatonTransition<Type>(23), 1, false));
+        edges.add(new Edge<Type>(new AutomatonTransition<Type>(41), 1, false));
         states.add(new State<Type>(edges, false));
         edges = new ArrayList<Edge<Type>>();
         states.add(new State<Type>(edges, true));
@@ -907,7 +885,39 @@ public final class Parser extends org.waxeye.parser.Parser<Type>
 
         states = new ArrayList<State<Type>>();
         edges = new ArrayList<Edge<Type>>();
-        edges.add(new Edge<Type>(new AutomatonTransition<Type>(22), 1, false));
+        edges.add(new Edge<Type>(new AutomatonTransition<Type>(24), 1, false));
+        states.add(new State<Type>(edges, false));
+        edges = new ArrayList<Edge<Type>>();
+        states.add(new State<Type>(edges, true));
+        automata.add(new FA<Type>(Type._Neg, FA.VOID, states));
+
+        states = new ArrayList<State<Type>>();
+        edges = new ArrayList<Edge<Type>>();
+        edges.add(new Edge<Type>(new AutomatonTransition<Type>(41), 1, false));
+        states.add(new State<Type>(edges, false));
+        edges = new ArrayList<Edge<Type>>();
+        states.add(new State<Type>(edges, true));
+        automata.add(new FA<Type>(Type._Neg, FA.VOID, states));
+
+        states = new ArrayList<State<Type>>();
+        edges = new ArrayList<Edge<Type>>();
+        edges.add(new Edge<Type>(new AutomatonTransition<Type>(24), 1, false));
+        states.add(new State<Type>(edges, false));
+        edges = new ArrayList<Edge<Type>>();
+        states.add(new State<Type>(edges, true));
+        automata.add(new FA<Type>(Type._Neg, FA.VOID, states));
+
+        states = new ArrayList<State<Type>>();
+        edges = new ArrayList<Edge<Type>>();
+        edges.add(new Edge<Type>(new AutomatonTransition<Type>(24), 1, false));
+        states.add(new State<Type>(edges, false));
+        edges = new ArrayList<Edge<Type>>();
+        states.add(new State<Type>(edges, true));
+        automata.add(new FA<Type>(Type._Neg, FA.VOID, states));
+
+        states = new ArrayList<State<Type>>();
+        edges = new ArrayList<Edge<Type>>();
+        edges.add(new Edge<Type>(new AutomatonTransition<Type>(23), 1, false));
         states.add(new State<Type>(edges, false));
         edges = new ArrayList<Edge<Type>>();
         states.add(new State<Type>(edges, true));
