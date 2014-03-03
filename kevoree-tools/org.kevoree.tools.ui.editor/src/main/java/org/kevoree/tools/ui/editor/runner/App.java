@@ -150,7 +150,9 @@ public class App {
                 toolBar.installWindowDraggerOnWindow(jframe);
                 toolBar.disableBackgroundPainter();
 
-                if(this.getClass().getClassLoader() instanceof URLClassLoader){
+
+
+                if(this.getClass().getClassLoader().equals(String.class.getClassLoader())){
                     jframe.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                 } else {
                     jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
