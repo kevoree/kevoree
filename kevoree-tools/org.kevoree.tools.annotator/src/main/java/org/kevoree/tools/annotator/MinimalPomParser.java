@@ -15,16 +15,12 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * Created by duke on 06/02/2014.
  */
 public class MinimalPomParser {
-
-    public static void main(String[] args) throws IOException, SAXException, ParserConfigurationException {
-        File pomF = new File("/Users/duke/Downloads/pom.xml");
-        System.out.println(currentURL(pomF).getGroupName());
-    }
 
     public static DeployUnit lookupLocalDeployUnit(File classPath) {
         try {
@@ -46,13 +42,23 @@ public class MinimalPomParser {
         return null;
     }
 
+
     public static DeployUnit currentURL(File mavenPom) throws ParserConfigurationException, IOException, SAXException {
-
-        DeployUnit du = new DefaultKevoreeFactory().createDeployUnit();
-
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-        Document doc = dBuilder.parse(mavenPom);
+        return currentURL(dBuilder.parse(mavenPom));
+    }
+
+    public static DeployUnit currentURL(InputStream mavenPom) throws ParserConfigurationException, IOException, SAXException {
+        DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+        return currentURL(dBuilder.parse(mavenPom));
+    }
+
+
+    public static DeployUnit currentURL(Document doc) throws ParserConfigurationException, IOException, SAXException {
+
+        DeployUnit du = new DefaultKevoreeFactory().createDeployUnit();
         doc.getDocumentElement().normalize();
 
         XPath xpath = XPathFactory.newInstance().newXPath();
@@ -62,37 +68,37 @@ public class MinimalPomParser {
 
 
         try {
-            artifactId = xpath.evaluate("//project/artifactId",doc.getDocumentElement(), XPathConstants.STRING).toString();
+            artifactId = xpath.evaluate("//project/artifactId", doc.getDocumentElement(), XPathConstants.STRING).toString();
         } catch (XPathExpressionException e) {
             e.printStackTrace();
         }
-        if(artifactId==null || artifactId.equals("")){
+        if (artifactId == null || artifactId.equals("")) {
             try {
-                artifactId = xpath.evaluate("//project/parent/artifactId",doc.getDocumentElement(), XPathConstants.STRING).toString();
+                artifactId = xpath.evaluate("//project/parent/artifactId", doc.getDocumentElement(), XPathConstants.STRING).toString();
             } catch (XPathExpressionException e) {
                 e.printStackTrace();
             }
         }
         try {
-            groupId = xpath.evaluate("//project/groupId",doc.getDocumentElement(), XPathConstants.STRING).toString();
+            groupId = xpath.evaluate("//project/groupId", doc.getDocumentElement(), XPathConstants.STRING).toString();
         } catch (XPathExpressionException e) {
             e.printStackTrace();
         }
-        if(groupId==null || groupId.equals("")){
+        if (groupId == null || groupId.equals("")) {
             try {
-                groupId = xpath.evaluate("//project/parent/groupId",doc.getDocumentElement(), XPathConstants.STRING).toString();
+                groupId = xpath.evaluate("//project/parent/groupId", doc.getDocumentElement(), XPathConstants.STRING).toString();
             } catch (XPathExpressionException e) {
                 e.printStackTrace();
             }
         }
         try {
-            version = xpath.evaluate("//project/version",doc.getDocumentElement(), XPathConstants.STRING).toString();
+            version = xpath.evaluate("//project/version", doc.getDocumentElement(), XPathConstants.STRING).toString();
         } catch (XPathExpressionException e) {
             e.printStackTrace();
         }
-        if(version==null || version.equals("")){
+        if (version == null || version.equals("")) {
             try {
-                version = xpath.evaluate("//project/parent/version",doc.getDocumentElement(), XPathConstants.STRING).toString();
+                version = xpath.evaluate("//project/parent/version", doc.getDocumentElement(), XPathConstants.STRING).toString();
             } catch (XPathExpressionException e) {
                 e.printStackTrace();
             }

@@ -28,6 +28,8 @@ import javassist.Modifier
  * Time: 18:02
  */
 
+
+/*
 object ModelBuilder {
 
 
@@ -150,6 +152,16 @@ object ModelBuilder {
         }
     }
 
+
+    fun createTypeDefinition() {
+
+    }
+
+    enum class KevTypes {
+        GROUP;CHANNEL;NODE;COMPONENT;
+    }
+
+
     fun process(elem: Any, clazz: CtClass, factory: KevoreeFactory, du: DeployUnit, root: ContainerRoot) {
 
         when(elem) {
@@ -233,4 +245,4 @@ object ModelBuilder {
     }
 
 
-}
+}   */

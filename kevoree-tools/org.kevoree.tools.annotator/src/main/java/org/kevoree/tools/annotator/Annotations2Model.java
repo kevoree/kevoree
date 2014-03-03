@@ -22,7 +22,7 @@ public class Annotations2Model {
 
     private static final KevoreeFactory factory = new DefaultKevoreeFactory();
 
-    private void recursiveBuild(File current, ClassPool pool, String root, DeployUnit du, ContainerRoot modelRoot) throws NotFoundException, ClassNotFoundException {
+    private void recursiveBuild(File current, ClassPool pool, String root, DeployUnit du, ContainerRoot modelRoot) throws Exception {
         if (current.isDirectory()) {
             File[] childs = current.listFiles();
             for (int i = 0; i < childs.length; i++) {
@@ -32,9 +32,9 @@ public class Annotations2Model {
                     CtClass clazz = pool.get(className);
                     Object[] annotations = clazz.getAvailableAnnotations();
                     for (Object annotation : annotations) {
-                        ModelBuilder.instance$.process(annotation, clazz, factory, du, modelRoot);
+                        ModelBuilderHelper.process(annotation, clazz, factory, du, modelRoot);
                     }
-                    ModelBuilder.instance$.postProcess(clazz,factory,du,modelRoot);
+                    ModelBuilderHelper.postProcess(clazz,factory,du,modelRoot);
                 } else {
                     if (child.isDirectory()) {
                         String nextPath = root;

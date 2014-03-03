@@ -1,23 +1,30 @@
 package org.kevoree.tools.annotator;
 
-import javassist.CtClass;
-import javassist.CtField;
-import javassist.CtMethod;
-import javassist.NotFoundException;
+import javassist.*;
 import org.kevoree.*;
 import org.kevoree.ChannelType;
 import org.kevoree.ComponentType;
 import org.kevoree.GroupType;
 import org.kevoree.NodeType;
-import org.kevoree.annotation.*;
+import org.kevoree.annotation.Input;
+import org.kevoree.annotation.Output;
+import org.kevoree.annotation.Param;
 import org.kevoree.api.*;
+import org.kevoree.loader.JSONModelLoader;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.HashMap;
 
 /**
  * Created by duke on 23/01/2014.
- *
+ * <p/>
  * ModelBuilder in Pure Java, Need to be tested before going to production
- *
  */
+
+
 public class ModelBuilderHelper {
 
     public static void addLibrary(String libName, TypeDefinition typeDef, ContainerRoot root, KevoreeFactory factory) {
@@ -56,7 +63,7 @@ public class ModelBuilderHelper {
     public static void deepFields(CtClass clazz, KevoreeFactory factory, TypeDefinition currentTypeDefinition) throws Exception {
         for (CtField field : clazz.getDeclaredFields()) {
             for (Object annotation : field.getAnnotations()) {
-                if (annotation instanceof KevoreeInject) {
+                if (annotation instanceof org.kevoree.annotation.KevoreeInject) {
                     boolean checkType = false;
                     if (field.getType().getName().equals(ModelService.class.getName())) {
                         checkType = true;
@@ -126,7 +133,6 @@ public class ModelBuilderHelper {
                     dicAtt.setFragmentDependant(annotationParam.fragmentDependent());
                     dicAtt.setDefaultValue(annotationParam.defaultValue());
                     currentTypeDefinition.getDictionaryType().addAttributes(dicAtt);
-
                 }
             }
         }
@@ -138,53 +144,176 @@ public class ModelBuilderHelper {
         }
     }
 
+    private static JSONModelLoader loader = new JSONModelLoader();
 
-    public static void process(Object elem, CtClass clazz, KevoreeFactory factory, DeployUnit du, ContainerRoot root) throws Exception {
+    private static void checkParent(TypeDefinition current, CtClass clazz, CtClass originClazz, ContainerRoot root, KevoreeFactory factory) throws Exception {
+        if (clazz == null) {
+            return;
+        }
+        String name = clazz.getSimpleName();
+        String version = null;
+        String currentTypeName = null;
+        try {
+            for (Object an : clazz.getAnnotations()) {
+                String newMeta = metaClassName(an);
+                if (newMeta != null) {
+                    if (currentTypeName != null) {
+                        throw new Exception("A Java Class can't be mapped to several Kevoree TypeDefinition " + clazz.getName());
+                    } else {
+                        currentTypeName = newMeta;
+                    }
+                }
+            }
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        if (currentTypeName != null) {
 
-        if (elem instanceof GroupType) {
-            org.kevoree.GroupType groupType = factory.createGroupType();
-            groupType.setVersion(du.getVersion());
-            groupType.setName(clazz.getSimpleName());
-            groupType.setBean(clazz.getName());
-            root.addTypeDefinitions(groupType);
-            groupType.setDeployUnit(du);
-            deepFields(clazz, factory, groupType);
-        }
-        if (elem instanceof ChannelType) {
-            ChannelType channelType = factory.createChannelType();
-            channelType.setVersion(du.getVersion());
-            channelType.setName(clazz.getSimpleName());
-            channelType.setBean(clazz.getName());
-            root.addTypeDefinitions(channelType);
-            channelType.setDeployUnit(du);
-            deepFields(clazz, factory, channelType);
-        }
-        if (elem instanceof ComponentType) {
-            ComponentType componentType = factory.createComponentType();
-            componentType.setVersion(du.getVersion());
-            componentType.setName(clazz.getSimpleName());
-            componentType.setBean(clazz.getName());
-            root.addTypeDefinitions(componentType);
-            componentType.setDeployUnit(du);
-            deepFields(clazz, factory, componentType);
-            deepMethods(clazz, factory, componentType);
-        }
-        if (elem instanceof NodeType) {
-            NodeType nodeType = factory.createNodeType();
-            nodeType.setVersion(du.getVersion());
-            nodeType.setName(clazz.getSimpleName());
-            nodeType.setBean(clazz.getName());
-            root.addTypeDefinitions(nodeType);
-            nodeType.setDeployUnit(du);
-            deepFields(clazz, factory, nodeType);
-        }
-        if (elem instanceof Library) {
-            libraryCache = (Library) elem;
-        }
 
+            String endPath = clazz.getName().replace(".", File.separator) + ".class";
+            String baseURL = clazz.getURL().toString().replace(endPath, "");
+
+
+            /*
+            String manifest = baseURL + "META-INF" + File.separator + "MANIFEST.MF";
+            URL u2 = new URL(manifest);
+            System.out.println(u2.openStream().available());
+            */
+
+
+
+            /*
+            if (version == null) {
+                File metaInf = new File(baseURL + "META-INF" + File.separator + "maven");
+                System.out.println(metaInf.exists());
+                if (metaInf.exists()) {
+                    if (metaInf.listFiles().length > 0) {
+                        File groupFile = metaInf.listFiles()[0];
+                    }
+                }
+
+            } */
+            if (version == null) {
+                try {
+                    String kevManifest = baseURL + "KEV-INF" + File.separator + "lib.json";
+                    URL ukevManifest = new URL(kevManifest);
+                    InputStream is = ukevManifest.openStream();
+                    ContainerRoot libModel = (ContainerRoot) loader.loadModelFromStream(is).get(0);
+                    HashMap<DeployUnit, Integer> links = new HashMap<DeployUnit, Integer>();
+                    for (DeployUnit du : libModel.getDeployUnits()) {
+                        if (!links.containsKey(du)) {
+                            links.put(du, 0);
+                        }
+                        for (DeployUnit dul : du.getRequiredLibs()) {
+                            if (!links.containsKey(dul)) {
+                                links.put(dul, 0);
+                            }
+                            links.put(dul, links.get(dul) + 1);
+                        }
+                    }
+                    //This current deploy unit should be the only one with no external references, tricky part
+                    for (DeployUnit d : links.keySet()) {
+                        if (links.get(d) == 0) {
+                            version = d.getVersion();
+                        }
+                    }
+                    is.close();
+                } catch (Exception e) {
+                    //
+                }
+
+            }
+            if (version == null) {
+                version = current.getVersion();
+            }
+            TypeDefinition parent = getOrCreateTypeDefinition(name, version, root, factory, currentTypeName);
+            current.addSuperTypes(parent);
+        }
     }
 
-    static Library libraryCache = null;
+    private static void processTypeDefinition(TypeDefinition td, DeployUnit du, CtClass clazz, ContainerRoot root, KevoreeFactory factory) throws Exception {
+        if (Modifier.isAbstract(clazz.getModifiers())) {
+            td.setAbstract(true);
+        } else {
+            td.setAbstract(false);
+        }
+        td.setBean(clazz.getName());
+        td.setDeployUnit(du);
+
+        try {
+            checkParent(td, clazz.getSuperclass(), clazz, root, factory);
+        } catch (NotFoundException e) {
+            e.printStackTrace();
+        }
+        try {
+            for (CtClass interf : clazz.getInterfaces()) {
+                checkParent(td, interf, clazz, root, factory);
+            }
+        } catch (NotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static TypeDefinition getOrCreateTypeDefinition(String name, String version, ContainerRoot root, KevoreeFactory factory, String typeName) {
+        //TODO generate find multi Key in KMF
+        for (TypeDefinition td : root.getTypeDefinitions()) {
+            if (name.equals(td.getName()) && version.equals(td.getVersion())) {
+                return td;
+            }
+        }
+        TypeDefinition td = (TypeDefinition) factory.create(typeName);
+        td.setVersion(version);
+        td.setName(name);
+        root.addTypeDefinitions(td);
+        return td;
+    }
+
+
+    public static void process(Object elem, CtClass clazz, KevoreeFactory factory, DeployUnit du, ContainerRoot root) throws Exception {
+        if (elem instanceof org.kevoree.annotation.GroupType) {
+            TypeDefinition td = getOrCreateTypeDefinition(clazz.getSimpleName(), du.getVersion(), root, factory, metaClassName(elem));
+            processTypeDefinition(td, du, clazz, root, factory);
+            deepFields(clazz, factory, td);
+        }
+        if (elem instanceof org.kevoree.annotation.ChannelType) {
+            TypeDefinition td = getOrCreateTypeDefinition(clazz.getSimpleName(), du.getVersion(), root, factory, metaClassName(elem));
+            processTypeDefinition(td, du, clazz, root, factory);
+            deepFields(clazz, factory, td);
+        }
+        if (elem instanceof org.kevoree.annotation.ComponentType) {
+            TypeDefinition td = getOrCreateTypeDefinition(clazz.getSimpleName(), du.getVersion(), root, factory, metaClassName(elem));
+            processTypeDefinition(td, du, clazz, root, factory);
+            deepFields(clazz, factory, td);
+            deepMethods(clazz, factory, td);
+        }
+        if (elem instanceof org.kevoree.annotation.NodeType) {
+            TypeDefinition td = getOrCreateTypeDefinition(clazz.getSimpleName(), du.getVersion(), root, factory, metaClassName(elem));
+            processTypeDefinition(td, du, clazz, root, factory);
+            deepFields(clazz, factory, td);
+        }
+        if (elem instanceof org.kevoree.annotation.Library) {
+            libraryCache = (org.kevoree.annotation.Library) elem;
+        }
+    }
+
+    public static String metaClassName(Object elem) {
+        if (elem instanceof org.kevoree.annotation.GroupType) {
+            return org.kevoree.GroupType.class.getName();
+        }
+        if (elem instanceof org.kevoree.annotation.ChannelType) {
+            return org.kevoree.ChannelType.class.getName();
+        }
+        if (elem instanceof org.kevoree.annotation.ComponentType) {
+            return org.kevoree.ComponentType.class.getName();
+        }
+        if (elem instanceof org.kevoree.annotation.NodeType) {
+            return org.kevoree.NodeType.class.getName();
+        }
+        return null;
+    }
+
+
+    static org.kevoree.annotation.Library libraryCache = null;
 
     public static void postProcess(CtClass clazz, KevoreeFactory factory, DeployUnit du, ContainerRoot root) {
         if (libraryCache != null) {
