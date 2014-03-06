@@ -361,11 +361,13 @@ public class KevScriptEngine implements KevScriptService {
                 for (PortTypeRef rport : ctd.getProvided()) {
                     org.kevoree.Port newPort = factory.createPort();
                     newPort.setPortTypeRef(rport);
+                    newPort.setName(rport.getName());
                     instance.addProvided(newPort);
                 }
                 for (PortTypeRef rport : ctd.getRequired()) {
                     org.kevoree.Port newPort = factory.createPort();
                     newPort.setPortTypeRef(rport);
+                    newPort.setName(rport.getName());
                     instance.addRequired(newPort);
                 }
                 ContainerNode parentNode = model.findNodesByID(name.getChildren().get(0).childrenAsString());

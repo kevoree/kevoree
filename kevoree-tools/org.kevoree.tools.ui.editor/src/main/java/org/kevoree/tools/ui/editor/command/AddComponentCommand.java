@@ -70,9 +70,9 @@ public class AddComponentCommand implements Command {
             for (PortTypeRef ref : type.getProvided()) {
                 //INSTANCIATE MODEL ELEMENTS
                 Port port = ModelHelper.kevoreeFactory().createPort();
-                instance.addProvided(port);
-                //port.setName(ref.getName());
+                port.setName(ref.getName());
                 port.setPortTypeRef(ref);
+                instance.addProvided(port);
 
                 //ADDING NEW PORT TO UI
                 PortPanel portPanel = kernel.getUifactory().createPort(port);
@@ -82,9 +82,9 @@ public class AddComponentCommand implements Command {
             for (PortTypeRef ref : type.getRequired()) {
                 //INSTANCIATE MODEL ELEMENTS
                 Port port = ModelHelper.kevoreeFactory().createPort();
-                instance.addRequired(port);
-                //port.setName(ref.getName());
+                port.setName(ref.getName());
                 port.setPortTypeRef(ref);
+                instance.addRequired(port);
 
                 //ADDING NEW PORT TO UI
                 PortPanel portPanel = kernel.getUifactory().createPort(port);
