@@ -99,7 +99,7 @@ public class KevoreeTestCase {
             runner.getWorker().recv();
             runner.getWorker().send(script);
             if (!Boolean.parseBoolean(runner.getWorker().recvStr())) {
-                throw new Exception("Script execution error : " + nodeName);
+                throw new Exception("Script execution error on " + nodeName+" : "+script);
             }
         }
     }

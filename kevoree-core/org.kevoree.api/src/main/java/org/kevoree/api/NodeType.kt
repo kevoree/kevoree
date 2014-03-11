@@ -26,11 +26,9 @@ import org.kevoreeadaptation.AdaptationPrimitive
 
 trait NodeType {
 
-    fun startNode(): Unit
+    //fun startNode(): Unit
 
-    fun stopNode(): Unit
-
-    //fun updateNode(): Unit
+    //fun stopNode(): Unit
 
     fun plan(actualModel: ContainerRoot, targetModel: ContainerRoot): AdaptationModel
 

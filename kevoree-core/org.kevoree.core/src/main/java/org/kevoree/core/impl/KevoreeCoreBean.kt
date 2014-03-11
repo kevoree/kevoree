@@ -47,6 +47,9 @@ class KevoreeCoreBean : ModelService {
     var bootstrapService: BootstrapService? = null
     var _nodeName: String = ""
     var nodeInstance: org.kevoree.api.NodeType? = null
+    var resolver: MethodAnnotationResolver? = null
+
+
     var models: MutableList<UUIDModel> = ArrayList<UUIDModel>()
     val kevoreeFactory = org.kevoree.impl.DefaultKevoreeFactory()
     val model: AtomicReference<UUIDModel> = AtomicReference<UUIDModel>()
@@ -144,7 +147,7 @@ class KevoreeCoreBean : ModelService {
     }
 
     override fun submitScript(script: String?, callback: UpdateCallback?) {
-        if (script != null && currentLock != null) {
+        if (script != null && currentLock == null) {
             scheduler!!.submit(UpdateScriptRunnable(script, callback))
         } else {
             callback?.run(false)
@@ -170,7 +173,7 @@ class KevoreeCoreBean : ModelService {
     }
 
     override fun submitSequence(sequence: TraceSequence?, callback: UpdateCallback?) {
-        if (sequence != null && currentLock != null) {
+        if (sequence != null && currentLock == null) {
             scheduler!!.submit(UpdateSequenceRunnable(sequence, callback))
         } else {
             callback?.run(false)
@@ -254,8 +257,14 @@ class KevoreeCoreBean : ModelService {
             }
             try {
                 Log.debug("Call instance stop")
-                nodeInstance?.stopNode()
-                nodeInstance == null
+
+                if (nodeInstance != null) {
+                    val met = resolver?.resolve(javaClass<org.kevoree.annotation.Stop>())
+                    met?.invoke(nodeInstance)
+                    nodeInstance == null
+                    resolver = null
+                }
+
                 bootstrapService?.clear()
             } catch(e: Exception) {
                 Log.error("Error while stopping node instance ", e)
@@ -383,9 +392,13 @@ class KevoreeCoreBean : ModelService {
                             val afterUpdateTest: () -> Boolean = {() -> true }
                             val rootNode = currentModel.findNodesByID(getNodeName())
                             PrimitiveCommandExecutionHelper.execute(rootNode!!, adaptationModel, nodeInstance!!, afterUpdateTest, afterUpdateTest, afterUpdateTest)
-                            nodeInstance?.stopNode()
+                            if (nodeInstance != null) {
+                                val met = resolver?.resolve(javaClass<org.kevoree.annotation.Stop>())
+                                met?.invoke(nodeInstance)
+                            }
                             //end of harakiri
                             nodeInstance = null
+                            resolver = null
                             bootstrapService?.clear() //CLEAR
                             //place the current model as an empty model (for backup)
 
@@ -482,7 +495,10 @@ class KevoreeCoreBean : ModelService {
                 if (foundNode != null) {
                     nodeInstance = bootstrapNodeType(currentModel, getNodeName()) as NodeType
                     if (nodeInstance != null) {
-                        nodeInstance?.startNode()
+                        resolver = MethodAnnotationResolver(nodeInstance.javaClass)
+                        val met = resolver?.resolve(javaClass<org.kevoree.annotation.Start>())
+                        met?.invoke(nodeInstance)
+
                         val uuidModel = UUIDModelImpl(UUID.randomUUID(), factory.createContainerRoot())
                         model.set(uuidModel)
                     } else {
@@ -496,12 +512,16 @@ class KevoreeCoreBean : ModelService {
             Log.error("Error while bootstraping node instance ", e)
             // TODO is it possible to display the following log ?
             try {
-                nodeInstance?.stopNode()
+                if (nodeInstance != null) {
+                    val met = resolver?.resolve(javaClass<org.kevoree.annotation.Stop>())
+                    met?.invoke(nodeInstance)
+                }
             } catch(e: Throwable) {
             } finally {
                 bootstrapService?.clear()
             }
             nodeInstance = null
+            resolver = null
         }
     }
 
