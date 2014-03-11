@@ -129,22 +129,22 @@ class KevoreeCoreBean : ModelService {
     inner class UpdateScriptRunnable(val script: String, val callback: UpdateCallback?) : Runnable {
         override fun run() {
             try {
-                val newModel = modelCloner.clone(model.get()?.getModel() as ContainerRoot,false) as ContainerRoot
-                scriptEngine.execute(script,newModel)
+                val newModel = modelCloner.clone(model.get()?.getModel() as ContainerRoot, false) as ContainerRoot
+                scriptEngine.execute(script, newModel)
                 var res = internal_update_model(cloneCurrentModel(newModel))
                 object : Thread(){
                     override fun run() {
                         callback?.run(res)
                     }
                 }.start()
-            } catch(e:Throwable){
+            } catch(e: Throwable){
                 callback?.run(false)
             }
         }
     }
 
     override fun submitScript(script: String?, callback: UpdateCallback?) {
-        if(script!=null){
+        if (script != null && currentLock != null) {
             scheduler!!.submit(UpdateScriptRunnable(script, callback))
         } else {
             callback?.run(false)
@@ -154,7 +154,7 @@ class KevoreeCoreBean : ModelService {
     inner class UpdateSequenceRunnable(val sequence: TraceSequence, val callback: UpdateCallback?) : Runnable {
         override fun run() {
             try {
-                val newModel = modelCloner.clone(model.get()?.getModel() as ContainerRoot,false) as ContainerRoot
+                val newModel = modelCloner.clone(model.get()?.getModel() as ContainerRoot, false) as ContainerRoot
                 sequence.applyOn(newModel)
                 var res = internal_update_model(cloneCurrentModel(newModel))
                 object : Thread(){
@@ -162,15 +162,15 @@ class KevoreeCoreBean : ModelService {
                         callback?.run(res)
                     }
                 }.start()
-            } catch(e:Throwable){
-                Log.error("error while apply trace sequence",e)
+            } catch(e: Throwable){
+                Log.error("error while apply trace sequence", e)
                 callback?.run(false)
             }
         }
     }
 
     override fun submitSequence(sequence: TraceSequence?, callback: UpdateCallback?) {
-        if(sequence!=null){
+        if (sequence != null && currentLock != null) {
             scheduler!!.submit(UpdateSequenceRunnable(sequence, callback))
         } else {
             callback?.run(false)
@@ -467,7 +467,7 @@ class KevoreeCoreBean : ModelService {
         if (nodeInstance != null) {
             bootstrapService!!.recursiveInstallDeployUnit(nodeInstance.typeDefinition!!.deployUnit!!)
             val newInstance = bootstrapService!!.createInstance(nodeInstance)!!
-            bootstrapService!!.injectDictionary(nodeInstance,newInstance,false)
+            bootstrapService!!.injectDictionary(nodeInstance, newInstance, false)
             return newInstance
         } else {
             Log.error("Node not found using name " + nodeName);
