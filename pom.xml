@@ -40,7 +40,6 @@
         <connection>scm:git:git@github.com:dukeboard/kevoree.git</connection>
         <developerConnection>scm:git:git@github.com:dukeboard/kevoree.git</developerConnection>
         <url>http://github.com/dukeboard/kevoree.git</url>
-      <tag>HEAD</tag>
   </scm>
 
     <licenses>
@@ -156,7 +155,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-release-plugin</artifactId>
-                <version>2.4.1</version>
+                <version>2.5</version>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -183,7 +182,6 @@
             </plugin>
         </plugins>
     </build>
-
 
     <distributionManagement>
         <repository>
