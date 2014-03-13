@@ -14,4 +14,6 @@ public interface Port {
 
     public String getPath();
 
+    public int getConnectedBindingsSize();
+
 }
