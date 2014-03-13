@@ -3,12 +3,12 @@
     <artifactId>org.kevoree.platform.standalone</artifactId>
     <packaging>jar</packaging>
     <name>Kevoree :: Platform :: Standalone</name>
-    <version>3.4.2-SNAPSHOT</version>
+    <version>3.5.1-SNAPSHOT</version>
 
     <parent>
         <artifactId>org.kevoree.platform.root</artifactId>
         <groupId>org.kevoree.platform</groupId>
-        <version>3.4.2-SNAPSHOT</version>
+        <version>3.5.1-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
