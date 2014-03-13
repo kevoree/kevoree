@@ -100,7 +100,7 @@ public class KevoreeCLKernel implements KevoreeCLFactory, BootstrapService {
                     urls.add("http://repo1.maven.org/maven2");
                 }
 
-                Log.debug("Resolving ............. " + deployUnit.path());
+                Log.info("Resolving ............. " + deployUnit.path());
                 long before = System.currentTimeMillis();
                 if (deployUnit.getUrl() == null || "".equals(deployUnit.getUrl())) {
                     resolved = resolver.resolve(deployUnit.getGroupName(), deployUnit.getName(), deployUnit.getVersion(), deployUnit.getType(), urls);
@@ -110,7 +110,7 @@ public class KevoreeCLKernel implements KevoreeCLFactory, BootstrapService {
                         resolved = new File(deployUnit.getUrl());
                     }
                 }
-                Log.debug("Resolved in {}ms", (System.currentTimeMillis() - before));
+                Log.info("Resolved in {}ms", (System.currentTimeMillis() - before));
                 if (resolved != null) {
                     FlexyClassLoader kcl = createClassLoader(deployUnit, resolved);
                     cache.put(path, kcl);
