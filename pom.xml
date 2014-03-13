@@ -40,7 +40,6 @@
         <connection>scm:git:git@github.com:dukeboard/kevoree.git</connection>
         <developerConnection>scm:git:git@github.com:dukeboard/kevoree.git</developerConnection>
         <url>http://github.com/dukeboard/kevoree.git</url>
-        <tag>HEAD</tag>
     </scm>
 
     <licenses>
