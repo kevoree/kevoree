@@ -8,7 +8,7 @@
     <version>3.5.4-SNAPSHOT</version>
 
     <properties>
-        <kmf.version>1.10.2</kmf.version>
+        <kmf.version>1.10.3</kmf.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <kevoree.version>${project.version}</kevoree.version>
         <kotlin.version>0.6.1673</kotlin.version>
