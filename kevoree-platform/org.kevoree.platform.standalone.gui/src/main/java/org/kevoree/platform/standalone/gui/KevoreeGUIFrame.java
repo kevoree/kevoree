@@ -13,22 +13,31 @@
  */
 package org.kevoree.platform.standalone.gui;
 
+import com.explodingpixels.macwidgets.MacButtonFactory;
 import com.explodingpixels.macwidgets.MacUtils;
 import com.explodingpixels.macwidgets.MacWidgetFactory;
 import com.explodingpixels.macwidgets.UnifiedToolBar;
+import jet.Function1;
 import org.kevoree.ContainerNode;
 import org.kevoree.ContainerRoot;
 import org.kevoree.api.handler.ModelListener;
+import org.kevoree.api.handler.UpdateCallback;
 import org.kevoree.bootstrap.Bootstrap;
+import org.kevoree.core.impl.KevoreeCoreBean;
 import org.kevoree.impl.DefaultKevoreeFactory;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 
 public class KevoreeGUIFrame extends JFrame {
@@ -37,6 +46,7 @@ public class KevoreeGUIFrame extends JFrame {
     public static KevoreeGUIFrame singleton = null;
 
     private static KevoreeLeftModel left = null;
+    final Bootstrap[] bootstrap = new Bootstrap[1];
 
     public KevoreeGUIFrame() {
         singleton = this;
@@ -44,6 +54,40 @@ public class KevoreeGUIFrame extends JFrame {
         UnifiedToolBar toolBar = new UnifiedToolBar();
         //toolBar.disableBackgroundPainter();
         add(toolBar.getComponent(), BorderLayout.NORTH);
+
+
+        Icon ico = new ImageIcon(KevoreeGUIFrame.class.getClassLoader().getResource("android-share.png"));
+
+        AbstractButton macWidgetsButton = MacButtonFactory.makePreferencesTabBarButton(new JButton("Editor", ico));
+        toolBar.addComponentToRight(macWidgetsButton);
+        macWidgetsButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Bootstrap b = bootstrap[0];
+                if (b != null) {
+                    KevoreeCoreBean bean = b.getCore();
+                    if (bean != null) {
+                        String version = "release";
+                        if(bean.getFactory().getVersion().contains("SNAPSHOT")){
+                            version = "latest";
+                        }
+                        bean.submitScript("include mvn:org.kevoree.library.java:org.kevoree.library.java.editor:"+version+"\nadd "+bean.getNodeName()+".editor : WebEditor", new UpdateCallback() {
+                            @Override
+                            public void run(Boolean aBoolean) {
+                                if(aBoolean){
+                                    try {
+                                        Desktop.getDesktop().browse(new URI("http://localhost:3042"));
+                                    } catch (Exception e1) {
+                                        e1.printStackTrace();
+                                    }
+                                }
+                            }
+                        });
+                    }
+                }
+            }
+        });
+
 
         URL urlSmallIcon = getClass().getClassLoader().getResource("kev-logo-full.png");
         final ImageIcon smallIcon = new ImageIcon(urlSmallIcon);
@@ -71,7 +115,6 @@ public class KevoreeGUIFrame extends JFrame {
     }
 
     private void startNode() {
-        final Bootstrap[] bootstrap = new Bootstrap[1];
         Runtime.getRuntime().addShutdownHook(new Thread("Shutdown Hook") {
 
             public void run() {
@@ -179,6 +222,11 @@ public class KevoreeGUIFrame extends JFrame {
         buffer.append("add node0 : JavaNode".replace("node0", nodeName) + "\n");
         buffer.append("add sync : WSGroup\n");
         buffer.append("attach node0 sync\n".replace("node0", nodeName));
+
+        int groupPort = FreeSocketDetector.detect(9000, 9999);
+
+        buffer.append("set sync.port/node0 = \"" + groupPort + "\"");
+
         return new ByteArrayInputStream(buffer.toString().getBytes());
     }
 
