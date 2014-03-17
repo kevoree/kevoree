@@ -99,7 +99,7 @@ public class KevoreeTestCase {
             runner.getWorker().recv();
             runner.getWorker().send(script);
             if (!Boolean.parseBoolean(runner.getWorker().recvStr())) {
-                throw new Exception("Script execution error on " + nodeName+" : "+script);
+                throw new Exception("Script execution error on " + nodeName + " : " + script);
             }
         }
     }
@@ -123,7 +123,13 @@ public class KevoreeTestCase {
                     if (line.equals(log)) {
                         found = true;
                     } else {
-                        if (line.matches(log)) {
+                        Boolean result;
+                        try {
+                            result = line.matches(log);
+                        } catch (Exception e) {
+                            result = false;
+                        }
+                        if (result) {
                             found = true;
                         } else {
                             String logR = log.replace("*", ".*").replace("[", "\\[").replace("]", "\\]");
