@@ -17,7 +17,6 @@ import com.explodingpixels.macwidgets.MacButtonFactory;
 import com.explodingpixels.macwidgets.MacUtils;
 import com.explodingpixels.macwidgets.MacWidgetFactory;
 import com.explodingpixels.macwidgets.UnifiedToolBar;
-import jet.Function1;
 import org.kevoree.ContainerNode;
 import org.kevoree.ContainerRoot;
 import org.kevoree.api.handler.ModelListener;

@@ -16,7 +16,7 @@ public class KevoreeInjector {
 
     private var clazzList: HashMap<java.lang.Class<out Any>, Any> = HashMap<java.lang.Class<out Any>, Any>();
 
-    fun addService(clazz: java.lang.Class<out Any>obj: Any) {
+    fun addService(clazz: java.lang.Class<out Any>,obj: Any) {
         clazzList.put(clazz, obj)
     }
 
