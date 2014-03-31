@@ -40,6 +40,7 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.net.URLClassLoader;
+import java.util.Properties;
 
 /**
  * Hello world!
@@ -152,7 +153,11 @@ public class App {
 
 
 
-                if(this.getClass().getClassLoader().equals(String.class.getClassLoader())){
+               // Properties properties = System.getProperties();
+               // properties.list(System.out);
+
+
+                if (System.getProperty("idea.config.path")!=null) {
                     jframe.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                 } else {
                     jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
