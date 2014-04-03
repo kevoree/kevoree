@@ -1,8 +1,8 @@
 repo "org.sonatype.org/foo/bar?a=b&c=d"
-include mvn:org.kevoree.library.javase:org.kevoree.library.javase.websocketgrp:2.0.5-SNAPSHOT
+include mvn:org.kevoree.library.javase:org.kevoree.library.javase.websocketgrp:latest
 
 add node0, node1 : JavaSENode
-add sync : HelloGroup/0.0.2-SNAPSHOT
+add sync : HelloGroup
 add node0.comp0, node0.comp1 : HelloWorld
 add chan0 : HelloChannel
 
