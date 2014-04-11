@@ -411,11 +411,4 @@ public class KevScriptEngine implements KevScriptService {
         }
         return process != null;
     }
-
-
-    public static void main(String[] args) throws Exception {
-        KevScriptEngine engine = new KevScriptEngine();
-        KevoreeFactory factory = new DefaultKevoreeFactory();
-        engine.executeFromStream(KevScriptEngine.class.getResourceAsStream("/model.kevs"), factory.createContainerRoot());
-    }
 }
