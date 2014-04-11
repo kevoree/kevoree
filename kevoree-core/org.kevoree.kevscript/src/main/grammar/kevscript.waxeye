@@ -2,62 +2,66 @@
 
 # Rules
 # =====
-KevScript    <- ws +((Statement | :Comment eol) ws) :?Comment
+KevScript           <- ws +((Statement | :Comment eol) ws) :?Comment
 
-Statement    <- Add | Remove | Move | Attach | Detach | Set | AddBinding | DelBinding | Include | Network | AddRepo | Namespace
+Statement           <- Add | Remove | Move | Attach | Detach | Set | AddBinding | DelBinding | Include | Network | AddRepo | Namespace
 
-Add          <- AddToken ws NameList ws :':' ws TypeDef                                  # add group0, group1 : WebSocketGroup
+Add                 <- AddToken ws NameList ws :':' ws TypeDef                                  # add group0, group1 : WebSocketGroup
 
-Remove       <- RemoveToken ws NameList                                                  # remove node0, node0.comp1, sync
+Remove              <- RemoveToken ws NameList                                                  # remove node0, node0.comp1, sync
 
-Move         <- MoveToken ws NameList ws InstancePath                                    # move node0.comp0, node2.* node1
+Move                <- MoveToken ws NameList ws InstancePath                                    # move node0.comp0, node2.* node1
 
-Attach       <- AttachToken ws NameList ws InstancePath                                  # attach node0, node1 group0
+Attach              <- AttachToken ws NameList ws InstancePath                                  # attach node0, node1 group0
 
-Detach       <- DetachToken ws NameList ws InstancePath                                  # detach node0, node1 group0
+Detach              <- DetachToken ws NameList ws InstancePath                                  # detach node0, node1 group0
 
-Set          <- SetToken ws InstancePath ?(:'/' InstancePath) ws :'=' ws RealString      # set node0.comp0.myAtt = 'foo'
+Set                 <- SetToken ws InstancePath ?(:'/' InstancePath) ws :'=' ws RealString      # set node0.comp0.myAtt = 'foo'
                                                                                          # set sync.myAtt/node0 = "foo"
                                                                                          # set node0.started = "false" -> is used to define if the instance is started or not
 
-Network      <- NetworkToken ws InstancePath ws String2                                  # network node1.lan.eth0 192.168.0.1
+Network             <- NetworkToken ws InstancePath ws String2                                  # network node1.lan.eth0 192.168.0.1
 
-AddBinding   <- BindToken ws InstancePath ws InstancePath                                # bind node1.comp0.sendMsg chan42
+AddBinding          <- BindToken ws InstancePath ws InstancePath                                # bind node1.comp0.sendMsg chan42
 
-DelBinding   <- UnbindToken ws InstancePath ws InstancePath                              # unbind node1.comp0.sendMsg chan0
+DelBinding          <- UnbindToken ws InstancePath ws InstancePath                              # unbind node1.comp0.sendMsg chan0
 
-AddRepo      <- RepoToken ws RealStringNoNewLine                                         # repo "http://org.sonatype.org/foo/bar?a=b&c=d"
+AddRepo             <- RepoToken ws RealStringNoNewLine                                         # repo "http://org.sonatype.org/foo/bar?a=b&c=d"
 
-Include      <- IncludeToken ws String :':' String2                                      # include npm:kevoree-chan-websocket
+Include             <- IncludeToken ws String :':' String2                                      # include npm:kevoree-chan-websocket
 																					     # include mvn:org.kevoree.library.javase:websocketgrp:2.0.5-SNAPSHOT
 
-NameList     <- InstancePath ws *(:[,] ws InstancePath)                                  # node42
+NameList            <- InstancePath ws *(:[,] ws InstancePath)                                  # node42
                                                                                          # node0, node0.comp1, node42
 
-TypeDef      <- String ?(:'/' Version)                                                   # FooType/0.0.1 (specific vers.)
+TypeDef             <- String ?(:'/' Version)                                                   # FooType/0.0.1 (specific vers.)
                                                                                          # FooType       (last vers.)
 
-Namespace    <- NamespaceToken ws String                                                 # namespace sp-ace_0
+Namespace           <- NamespaceToken ws String                                                 # namespace sp-ace_0
 
-InstancePath <- (Wildcard | String) *(:[.] (Wildcard | String))                          # node0.*.att
+InstancePath        <- (Wildcard | String) *(:[.] (Wildcard | String))                          # node0.*.att
 
-Wildcard     <- '*'
+Wildcard            <- '*'
 
-String       <- +[a-zA-Z0-9_-]
+String              <- +[a-zA-Z0-9_-]
 
-String2      <- +[a-zA-Z0-9.:@_-]
+String2             <- +[a-zA-Z0-9.:@_-]
 
-Version      <- +[a-zA-Z0-9._-]
+Version             <- +[a-zA-Z0-9._-]
 
-Line         <- +(!eol .) 																 # anything but EOL
+Line                <- +(!eol .) 																 # anything but EOL
 
-RealString   <- :['] *([\\](!eol .) | !['] ![\\] (NewLine|.)) :[']
-              | :["] *([\\](!eol .) | !["] ![\\] (NewLine|.)) :["]
+RealString          <- :['] *(NewLine | Escaped | SingleQuoteLine) :[']
+                     | :["] *(NewLine | Escaped | DoubleQuoteLine) :["]
+
+Escaped             <- [\\](!eol .)
+SingleQuoteLine     <- +(!['] ![\\] (!eol .))
+DoubleQuoteLine     <- +(!["] ![\\] (!eol .))
 
 RealStringNoNewLine <- :['] *([\\](!eol .) | !['] ![\\] (!eol .)) :[']
                      | :["] *([\\](!eol .) | !["] ![\\] (!eol .)) :["]
 
-NewLine      <- :'\r\n' | :'\n' | :'\r'
+NewLine             <- :'\r\n' | :'\n' | :'\r'
 # =========
 # End Rules
 

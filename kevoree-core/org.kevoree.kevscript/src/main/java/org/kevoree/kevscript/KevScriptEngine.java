@@ -58,6 +58,7 @@ public class KevScriptEngine implements KevScriptService {
     }
 
     public void interpret(IAST<Type> node, ContainerRoot model) throws Exception {
+        StringBuilder builder;
         switch (node.getType()) {
             case KevScript:
                 for (IAST<Type> child : node.getChildren()) {
@@ -113,11 +114,7 @@ public class KevScriptEngine implements KevScriptService {
                 break;
             case AddRepo:
                 Repository repo = factory.createRepository();
-                StringBuilder builder = new StringBuilder();
-                for (IAST<Type> child : node.getChildren().get(0).getChildren()) {
-                    builder.append(child.childrenAsString());
-                }
-                repo.setUrl(builder.toString());
+                repo.setUrl(node.getChildren().get(0).childrenAsString());
                 model.addRepositories(repo);
                 break;
             case Remove:
@@ -185,7 +182,16 @@ public class KevScriptEngine implements KevScriptService {
                 } else {
                     builder = new StringBuilder();
                     for (IAST<Type> child : node.getChildren().get(1).getChildren()) {
-                        builder.append(child.childrenAsString());
+                        switch (child.getType()) {
+                            case SingleQuoteLine:
+                            case DoubleQuoteLine:
+                                builder.append(child.childrenAsString());
+                                break;
+
+                            case NewLine:
+                                builder.append('\n');
+                                break;
+                        }
                     }
                     propToSet = builder.toString();
                 }
@@ -406,4 +412,10 @@ public class KevScriptEngine implements KevScriptService {
         return process != null;
     }
 
+
+    public static void main(String[] args) throws Exception {
+        KevScriptEngine engine = new KevScriptEngine();
+        KevoreeFactory factory = new DefaultKevoreeFactory();
+        engine.executeFromStream(KevScriptEngine.class.getResourceAsStream("/model.kevs"), factory.createContainerRoot());
+    }
 }
