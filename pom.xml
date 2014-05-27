@@ -165,9 +165,7 @@
                 <version>2.9.1</version>
                 <configuration>
                     <force>true</force>
-                    <!-- only for JDK8
                     <additionalparam>-Xdoclint:none</additionalparam>
-                    -->
                 </configuration>
             </plugin>
             <plugin>
