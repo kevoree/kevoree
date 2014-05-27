@@ -4,11 +4,11 @@
     <packaging>jar</packaging>
     <name>Kevoree :: Core</name>
 
-    <version>3.5.5</version>
+    <version>3.5.6-SNAPSHOT</version>
     <parent>
         <artifactId>org.kevoree.root</artifactId>
         <groupId>org.kevoree</groupId>
-        <version>3.5.5</version>
+        <version>3.5.6-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
