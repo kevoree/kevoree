@@ -36,6 +36,7 @@ set sync.port/node0 = '8000'
 
 network node0 192.168.0.1
 network space42.node1 127.0.0.1
+network node0.ip.0_eth0 fe80:0:0:0:be5f:f4ff:fe21:74e2%2
 
 remove sync
 remove node0, node1.*

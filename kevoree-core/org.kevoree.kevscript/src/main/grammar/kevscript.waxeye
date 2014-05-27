@@ -45,7 +45,7 @@ Wildcard            <- '*'
 
 String              <- +[a-zA-Z0-9_-]
 
-String2             <- +[a-zA-Z0-9.:@_-]
+String2             <- +[a-zA-Z0-9.:%@_-]
 
 Version             <- +[a-zA-Z0-9._-]
 
