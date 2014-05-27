@@ -205,17 +205,10 @@
                     <dependency>
                         <groupId>net.sf.proguard</groupId>
                         <artifactId>proguard-base</artifactId>
-                        <version>4.11</version>
-                    </dependency>
-                    <!--
-                    <dependency>
-                        <groupId>net.sf.proguard</groupId>
-                        <artifactId>proguard-base</artifactId>
-                        <version>4.12</version>
+                        <version>5.0</version>
                         <scope>system</scope>
-                        <systemPath>${proguard.jar}</systemPath>
+                        <systemPath>${basedir}/../../lib/proguard.jar</systemPath>
                     </dependency>
-                    -->
                     <dependency>
                         <groupId>ant</groupId>
                         <artifactId>ant</artifactId>
