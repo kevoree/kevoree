@@ -81,17 +81,7 @@ public class KevoreeStore {
 
     public void populate(ContainerRoot model, String groupIDparam, String askedVersion) throws Exception {
 
-
-
         URL url = new URL("http://oss.sonatype.org/service/local/data_index?g=" + groupIDparam + "&v=" + askedVersion);
-
-      /*  URLConnection conn = url.openConnection();
-        InputStream is = conn.getInputStream();
-        DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-        Document doc = dBuilder.parse(is);
-      */
-
         org.jsoup.nodes.Document doc = Jsoup.connect(url.toString()).get();
         Elements nList = doc.getElementsByTag("artifact");
         for (int i = 0; i < nList.size(); i++) {
@@ -178,7 +168,7 @@ public class KevoreeStore {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                List<String> sub = Arrays.asList("java", "java-snapshot", "cloud", "cloud-snapshot");
+                List<String> sub = Arrays.asList("java", "cloud");
                 for (String s : sub) {
                     JMenu subMenu = new JMenu(s.toUpperCase());
                     subMenu.setAutoscrolls(true);
