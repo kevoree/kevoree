@@ -199,8 +199,14 @@
                     <dependency>
                         <groupId>net.sf.proguard</groupId>
                         <artifactId>proguard-base</artifactId>
-                        <version>4.11</version>
-                        <scope>runtime</scope>
+                        <version>4.12</version>
+                        <scope>system</scope>
+                        <systemPath>${proguard.jar}</systemPath>
+                    </dependency>
+                    <dependency>
+                        <groupId>ant</groupId>
+                        <artifactId>ant</artifactId>
+                        <version>1.7.0</version>
                     </dependency>
                 </dependencies>
             </plugin>
@@ -217,7 +223,7 @@
                 </os>
             </activation>
             <properties>
-                <java.bootstrap.classes>${java.home}/../Classes/classes.jar</java.bootstrap.classes>
+                <java.bootstrap.classes>${java.home}/../jre/lib/rt.jar</java.bootstrap.classes>
             </properties>
         </profile>
 

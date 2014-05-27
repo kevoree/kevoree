@@ -32,7 +32,7 @@ public class AnnotatorTest {
         model.addDeployUnits(fakeDU);
         Path unzipDir = Files.createTempDirectory("kevTest");
         ZipUtility.unzip(getClass().getClassLoader().getResourceAsStream("helloworld.zip"), unzipDir.toFile().getAbsolutePath());
-        ArrayList<String> urls = new ArrayList<>();
+        ArrayList<String> urls = new ArrayList<String>();
         urls.add(unzipDir.toFile().getAbsolutePath());
 
         a2m.fillModel(unzipDir.toFile(), model, fakeDU, urls);
@@ -68,7 +68,7 @@ public class AnnotatorTest {
         model.addDeployUnits(fakeDU);
         Path unzipDir = Files.createTempDirectory("kevTest");
         ZipUtility.unzip(getClass().getClassLoader().getResourceAsStream("prodcons.zip"), unzipDir.toFile().getAbsolutePath());
-        ArrayList<String> urls = new ArrayList<>();
+        ArrayList<String> urls = new ArrayList<String>();
         urls.add(unzipDir.toFile().getAbsolutePath());
 
         a2m.fillModel(unzipDir.toFile(), model, fakeDU, urls);
@@ -105,7 +105,7 @@ public class AnnotatorTest {
         ZipUtility.unzip(getClass().getClassLoader().getResourceAsStream("org.kevoree.library.cloud.api-3.4.1.zip"), unzipDir2.toFile().getAbsolutePath());
         Path unzipDir3 = Files.createTempDirectory("kevTest3");
         ZipUtility.unzip(getClass().getClassLoader().getResourceAsStream("org.kevoree.library.java.javaNode-3.4.2-SNAPSHOT.zip"), unzipDir3.toFile().getAbsolutePath());
-        ArrayList<String> urls = new ArrayList<>();
+        ArrayList<String> urls = new ArrayList<String>();
         urls.add(unzipDir.toFile().getAbsolutePath());
         urls.add(unzipDir2.toFile().getAbsolutePath());
         urls.add(unzipDir3.toFile().getAbsolutePath());
@@ -135,7 +135,7 @@ public class AnnotatorTest {
         ZipUtility.unzip(getClass().getClassLoader().getResourceAsStream("org.kevoree.library.cloud.api-3.4.2-SNAPSHOT.zip"), unzipDir2.toFile().getAbsolutePath());
         Path unzipDir3 = Files.createTempDirectory("kevTest3");
         ZipUtility.unzip(getClass().getClassLoader().getResourceAsStream("org.kevoree.library.java.javaNode-3.4.2-SNAPSHOT.zip"), unzipDir3.toFile().getAbsolutePath());
-        ArrayList<String> urls = new ArrayList<>();
+        ArrayList<String> urls = new ArrayList<String>();
         urls.add(unzipDir.toFile().getAbsolutePath());
         urls.add(unzipDir2.toFile().getAbsolutePath());
         urls.add(unzipDir3.toFile().getAbsolutePath());
