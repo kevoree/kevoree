@@ -1,5 +1,8 @@
 package org.kevoree.tools.ui.editor;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.kevoree.ContainerRoot;
 import org.kevoree.DeployUnit;
 import org.kevoree.TypeDefinition;
@@ -77,43 +80,44 @@ public class KevoreeStore {
     }
 
     public void populate(ContainerRoot model, String groupIDparam, String askedVersion) throws Exception {
+
+
+
         URL url = new URL("http://oss.sonatype.org/service/local/data_index?g=" + groupIDparam + "&v=" + askedVersion);
-        URLConnection conn = url.openConnection();
+
+      /*  URLConnection conn = url.openConnection();
         InputStream is = conn.getInputStream();
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
         Document doc = dBuilder.parse(is);
-        NodeList nList = doc.getElementsByTagName("artifact");
-        for (int i = 0; i < nList.getLength(); i++) {
-            Node node = nList.item(i);
-            NodeList childNode = node.getChildNodes();
+      */
+
+        org.jsoup.nodes.Document doc = Jsoup.connect(url.toString()).get();
+        Elements nList = doc.getElementsByTag("artifact");
+        for (int i = 0; i < nList.size(); i++) {
+            Element node = nList.get(i);
+            Elements childNode = node.children();
             String resourceURI = null;
             String groupId = null;
             String artifactId = null;
             String version = null;
-            for (int j = 0; j < childNode.getLength(); j++) {
-                Node nodeChild = childNode.item(j);
-                if (nodeChild.getNodeName().endsWith("resourceURI")) {
-                    resourceURI = nodeChild.getTextContent();
+            for (int j = 0; j < childNode.size(); j++) {
+                Element nodeChild = childNode.get(j);
+                if (nodeChild.nodeName().toLowerCase().endsWith("resourceURI".toLowerCase())) {
+                    resourceURI = nodeChild.text();
                 }
-                if (nodeChild.getNodeName().endsWith("groupId")) {
-                    groupId = nodeChild.getTextContent();
+                if (nodeChild.nodeName().toLowerCase().endsWith("groupId".toLowerCase())) {
+                    groupId = nodeChild.text();
                 }
-                if (nodeChild.getNodeName().endsWith("artifactId")) {
-                    artifactId = nodeChild.getTextContent();
+                if (nodeChild.nodeName().toLowerCase().endsWith("artifactId".toLowerCase())) {
+                    artifactId = nodeChild.text();
                 }
-                if (nodeChild.getNodeName().endsWith("version")) {
-                    version = nodeChild.getTextContent();
+                if (nodeChild.nodeName().toLowerCase().endsWith("version".toLowerCase())) {
+                    version = nodeChild.text();
                 }
             }
-            if (resourceURI != null
-                    && !resourceURI.contains("-source")
 
-                //&& (this.version.toLowerCase().endsWith("snapshot") ||
-                //(!this.version.toLowerCase().endsWith("snapshot")
-                // && !version.toLowerCase().endsWith("snapshot")))
-                    ) {
-
+            if (resourceURI != null && !resourceURI.contains("-source")) {
                 StringBuffer buffer = new StringBuffer();
                 buffer.append("repo \"http://oss.sonatype.org/content/groups/public\"\n");
                 buffer.append("include mvn:" + groupId + ":" + artifactId + ":" + version + "\n");
@@ -121,7 +125,6 @@ public class KevoreeStore {
 
             }
         }
-        is.close();
         try {
             setCache(groupIDparam, model);
         } catch (Exception e) {
