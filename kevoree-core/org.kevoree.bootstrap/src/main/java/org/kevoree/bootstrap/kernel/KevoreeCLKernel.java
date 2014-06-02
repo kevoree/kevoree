@@ -5,7 +5,10 @@ import org.jetbrains.annotations.Nullable;
 import org.kevoree.*;
 import org.kevoree.api.BootstrapService;
 import org.kevoree.api.Context;
+import org.kevoree.api.ModelService;
 import org.kevoree.bootstrap.reflect.KevoreeInjector;
+import org.kevoree.core.impl.ContextAwareAdapter;
+import org.kevoree.core.impl.KevoreeCoreBean;
 import org.kevoree.impl.DefaultKevoreeFactory;
 import org.kevoree.kcl.api.FlexyClassLoader;
 import org.kevoree.kcl.api.FlexyClassLoaderFactory;
@@ -168,6 +171,13 @@ public class KevoreeCLKernel implements KevoreeCLFactory, BootstrapService {
         nodeName = nName;
     }
 
+    public KevoreeCoreBean core;
+
+
+    public void setCore(KevoreeCoreBean core) {
+        this.core = core;
+    }
+
     @Override
     public void clear() {
         cache.clear();
@@ -185,6 +195,7 @@ public class KevoreeCLKernel implements KevoreeCLFactory, BootstrapService {
             Object newInstance = clazz.newInstance();
             KevoreeInjector selfInjector = injector.clone();
             selfInjector.addService(Context.class, new InstanceContext(instance.path(), nodeName, instance.getName()));
+            selfInjector.addService(ModelService.class, new ContextAwareAdapter(core,instance.path()));
             selfInjector.process(newInstance);
             return newInstance;
         } catch (Exception e) {

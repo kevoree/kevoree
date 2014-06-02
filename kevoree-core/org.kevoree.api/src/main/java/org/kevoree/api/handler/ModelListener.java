@@ -27,36 +27,35 @@
 package org.kevoree.api.handler;
 
 
-import org.kevoree.ContainerRoot;
-
 public interface ModelListener {
 
     /**
-     *  Method called before Kevoree Core accept an input model. Synchronized this methods is not suppose to block
-     * @param currentModel
-     * @param proposedModel
+     * Method called before Kevoree Core accept an input model. Synchronized this methods is not suppose to block
+     *
+     * @param context
      * @return
      */
-    public boolean preUpdate(ContainerRoot currentModel, ContainerRoot proposedModel);
+    public boolean preUpdate(UpdateContext context);
 
     /**
      * Method called to prepare the core to be update. Synchronized this methods can bloc Kevoree core
-     * @param currentModel
-     * @param proposedModel
+     *
+     * @param context
      * @return
      */
-    public boolean initUpdate(ContainerRoot currentModel, ContainerRoot proposedModel);
+    public boolean initUpdate(UpdateContext context);
 
     /* Method called after the local update of the runtime. Synchronized this method can bloc Kevoree core and must return true if update is accepted or not if there is any failure  */
-    public boolean afterLocalUpdate(ContainerRoot currentModel, ContainerRoot proposedModel);
+    public boolean afterLocalUpdate(UpdateContext context);
 
     /**
-     *  Method called asynchronisly after a model update
+     * Method called asynchronisly after a model update
      */
     public void modelUpdated();
 
 
-    public void preRollback(ContainerRoot currentModel, ContainerRoot proposedModel);
-    public void postRollback(ContainerRoot currentModel, ContainerRoot proposedModel);
+    public void preRollback(UpdateContext context);
+
+    public void postRollback(UpdateContext context);
 
 }

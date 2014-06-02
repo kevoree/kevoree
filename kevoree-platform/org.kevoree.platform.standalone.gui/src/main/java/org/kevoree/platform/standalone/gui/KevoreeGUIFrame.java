@@ -21,6 +21,7 @@ import org.kevoree.ContainerNode;
 import org.kevoree.ContainerRoot;
 import org.kevoree.api.handler.ModelListener;
 import org.kevoree.api.handler.UpdateCallback;
+import org.kevoree.api.handler.UpdateContext;
 import org.kevoree.bootstrap.Bootstrap;
 import org.kevoree.core.impl.KevoreeCoreBean;
 import org.kevoree.impl.DefaultKevoreeFactory;
@@ -81,7 +82,7 @@ public class KevoreeGUIFrame extends JFrame {
                                     }
                                 }
                             }
-                        });
+                        },"/");
                     }
                 }
             }
@@ -152,17 +153,17 @@ public class KevoreeGUIFrame extends JFrame {
             KevoreeGUIFrame.showShell(shell);
             bootstrap[0].getCore().registerModelListener(new ModelListener() {
                 @Override
-                public boolean preUpdate(ContainerRoot currentModel, ContainerRoot proposedModel) {
+                public boolean preUpdate(UpdateContext context) {
                     return true;
                 }
 
                 @Override
-                public boolean initUpdate(ContainerRoot containerRoot, ContainerRoot containerRoot1) {
+                public boolean initUpdate(UpdateContext context) {
                     return true;
                 }
 
                 @Override
-                public boolean afterLocalUpdate(ContainerRoot currentModel, ContainerRoot proposedModel) {
+                public boolean afterLocalUpdate(UpdateContext context) {
                     return true;
                 }
 
@@ -179,15 +180,15 @@ public class KevoreeGUIFrame extends JFrame {
                 }
 
                 @Override
-                public void preRollback(ContainerRoot currentModel, ContainerRoot proposedModel) {
+                public void preRollback(UpdateContext context) {
 
                 }
 
                 @Override
-                public void postRollback(ContainerRoot currentModel, ContainerRoot proposedModel) {
+                public void postRollback(UpdateContext context) {
 
                 }
-            });
+            },"/");
 
             String bootstrapModel = System.getProperty("node.bootstrap");
             if (bootstrapModel != null) {

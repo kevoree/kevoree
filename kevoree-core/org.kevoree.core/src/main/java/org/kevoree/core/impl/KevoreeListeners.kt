@@ -14,32 +14,27 @@
 package org.kevoree.core.impl
 
 import org.kevoree.api.handler.ModelListener
-import org.kevoree.ContainerRoot
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.concurrent.ExecutorService
 import java.util.ArrayList
 import java.util.concurrent.Callable
 import java.util.concurrent.ThreadFactory
 import org.kevoree.log.Log
+import org.kevoree.api.handler.UpdateContext
 
 class KevoreeListeners {
 
-    private var scheduler : ExecutorService? = null
+    private var scheduler: ExecutorService? = null
     private var schedulerAsync: ExecutorService? = null
 
-    class KL_ThreadFactory(val internalName : String) : ThreadFactory {
+    class KL_ThreadFactory(val internalName: String) : ThreadFactory {
         val s = System.getSecurityManager()
         val group = if (s != null) {
             s.getThreadGroup()
         } else {
             Thread.currentThread().getThreadGroup()
         }
-                 /*
-        override public fun newThread(pRun: ()->Unit) : Thread {
-            throw Exception()
-        }   */
-
-        override fun newThread(pRun: Runnable) : Thread {
+        override fun newThread(pRun: Runnable): Thread {
             val t = Thread(group, pRun, internalName)
             if (t.isDaemon()) {
                 t.setDaemon(false)
@@ -51,7 +46,7 @@ class KevoreeListeners {
         }
     }
 
-    class KL_ThreadFactory2(val internalNodeName : String) : ThreadFactory {
+    class KL_ThreadFactory2(val internalNodeName: String) : ThreadFactory {
         val numCreated = AtomicInteger()
         val s = System.getSecurityManager()
         val group = if (s != null) {
@@ -59,12 +54,12 @@ class KevoreeListeners {
         } else {
             Thread.currentThread().getThreadGroup()
         }
-            /*
-        override public fun newThread(pRun: ()->Unit) : Thread {
-            throw Exception()
-        }   */
+        /*
+    override public fun newThread(pRun: ()->Unit) : Thread {
+        throw Exception()
+    }   */
 
-        override fun newThread(pRun: Runnable) : Thread {
+        override fun newThread(pRun: Runnable): Thread {
             val t = Thread(group, pRun, "Kevoree_Core_ListenerSchedulerAsync_" + internalNodeName + "_" + numCreated.getAndIncrement())
             if (t.isDaemon()) {
                 t.setDaemon(false)
@@ -112,7 +107,7 @@ class KevoreeListeners {
 
     inner class NotifyAll() : Runnable {
         override fun run() {
-            for(value in registeredListeners) {
+            for (value in registeredListeners) {
                 schedulerAsync?.submit(AsyncModelUpdateRunner(value))
             }
         }
@@ -128,68 +123,68 @@ class KevoreeListeners {
 
     class STOP_ACTOR()
 
-    inner class PREUPDATE(val currentModel: ContainerRoot, val proposedModel: ContainerRoot) : Callable<Boolean> {
+    inner class PREUPDATE(val context: UpdateContext) : Callable<Boolean> {
         override fun call(): Boolean {
-            return registeredListeners.all{ l -> l.preUpdate(currentModel, proposedModel) }
+            return registeredListeners.all { l -> l.preUpdate(context) }
         }
     }
 
-    inner class INITUPDATE(val currentModel: ContainerRoot, val proposedModel: ContainerRoot): Callable<Boolean> {
+    inner class INITUPDATE(val context: UpdateContext) : Callable<Boolean> {
         override fun call(): Boolean {
-            return registeredListeners.all{ l -> l.initUpdate(currentModel, proposedModel) }
+            return registeredListeners.all { l -> l.initUpdate(context) }
         }
     }
 
-    fun initUpdate(currentModel: ContainerRoot, pmodel: ContainerRoot): Boolean {
-        return scheduler?.submit(INITUPDATE(currentModel, pmodel))?.get().sure()
+    fun initUpdate(context: UpdateContext): Boolean {
+        return scheduler?.submit(INITUPDATE(context))?.get().sure()
     }
 
-    fun preUpdate(currentModel: ContainerRoot, pmodel: ContainerRoot): Boolean {
-        return scheduler?.submit(PREUPDATE(currentModel, pmodel))?.get().sure()
+    fun preUpdate(context: UpdateContext): Boolean {
+        return scheduler?.submit(PREUPDATE(context))?.get().sure()
     }
 
-    inner class AFTERUPDATE(val currentModel: ContainerRoot, val proposedModel: ContainerRoot) : Callable<Boolean> {
+    inner class AFTERUPDATE(val context: UpdateContext) : Callable<Boolean> {
         override fun call(): Boolean {
-            return registeredListeners.all{ l -> l.afterLocalUpdate(currentModel, proposedModel) }
+            return registeredListeners.all { l -> l.afterLocalUpdate(context) }
         }
     }
 
-    fun afterUpdate(currentModel: ContainerRoot, pmodel: ContainerRoot): Boolean {
-        return scheduler?.submit(AFTERUPDATE(currentModel, pmodel))?.get().sure()
+    fun afterUpdate(context: UpdateContext): Boolean {
+        return scheduler?.submit(AFTERUPDATE(context))?.get().sure()
     }
 
     //ROLLBACK STEP
-    inner class PREROLLBACK(val currentModel: ContainerRoot, val proposedModel: ContainerRoot): Callable<Boolean> {
+    inner class PREROLLBACK(val context: UpdateContext) : Callable<Boolean> {
         override fun call(): Boolean {
             for (l in registeredListeners) {
-                l.preRollback(currentModel, proposedModel)
+                l.preRollback(context)
             }
             return true
         }
     }
-    fun preRollback(currentModel: ContainerRoot, pmodel: ContainerRoot): Boolean {
-        return scheduler?.submit(PREROLLBACK(currentModel, pmodel))?.get().sure()
+    fun preRollback(context: UpdateContext): Boolean {
+        return scheduler?.submit(PREROLLBACK(context))?.get().sure()
     }
 
-    inner class POSTROLLBACK(val currentModel: ContainerRoot, val proposedModel: ContainerRoot): Callable<Boolean> {
+    inner class POSTROLLBACK(val context: UpdateContext) : Callable<Boolean> {
         override fun call(): Boolean {
             for (l in registeredListeners) {
-                l.postRollback(currentModel, proposedModel)
+                l.postRollback(context)
             }
             return true
         }
     }
-    fun postRollback(currentModel: ContainerRoot, pmodel: ContainerRoot): Boolean {
-        return scheduler?.submit(POSTROLLBACK(currentModel, pmodel))?.get().sure()
+    fun postRollback(context: UpdateContext): Boolean {
+        return scheduler?.submit(POSTROLLBACK(context))?.get().sure()
     }
 
-    class Notify(){
+    class Notify() {
     }
 
-    class STOP_LISTENER(){
+    class STOP_LISTENER() {
     }
 
-    inner class AsyncModelUpdateRunner(val listener: ModelListener): Runnable {
+    inner class AsyncModelUpdateRunner(val listener: ModelListener) : Runnable {
         override fun run() {
             try {
                 listener.modelUpdated()
@@ -199,8 +194,8 @@ class KevoreeListeners {
         }
     }
 
-    inline fun <T: Any> T?.sure(): T =
-            if (this == null){
+    inline fun <T : Any> T?.sure(): T =
+            if (this == null) {
                 throw NullPointerException()
             } else {
                 this

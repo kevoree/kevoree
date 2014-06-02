@@ -45,7 +45,7 @@ public class JeroMQCoreWrapper implements Runnable {
                             result[0] = aBoolean;
                             latch.countDown();
                         }
-                    });
+                    },"/");
                     try {
                         latch.await();
                     } catch (InterruptedException e) {
@@ -65,7 +65,7 @@ public class JeroMQCoreWrapper implements Runnable {
                                 result[0] = aBoolean;
                                 latch.countDown();
                             }
-                        });
+                        },"/");
                         try {
                             latch.await();
                         } catch (InterruptedException e) {

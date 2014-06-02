@@ -23,19 +23,20 @@ import org.kevoree.api.NodeType
 import org.kevoree.core.impl.deploy.PrimitiveCommandExecutionHelper
 import org.kevoree.modeling.api.trace.TraceSequence
 import org.kevoree.kevscript.KevScriptEngine
+import org.kevoree.api.handler.UpdateContext
 
-class PreCommand(newmodel: ContainerRoot, modelListeners: KevoreeListeners, oldModel: ContainerRoot){
+class PreCommand(context: UpdateContext, modelListeners: KevoreeListeners){
     var alreadyCall = false
     val preRollbackTest: () -> Boolean = {() ->
         if (!alreadyCall) {
-            modelListeners.preRollback(oldModel, newmodel)
+            modelListeners.preRollback(context)
             alreadyCall = true
         }
         true
     }
 }
 
-class KevoreeCoreBean : ModelService {
+class KevoreeCoreBean : ContextAwareModelService {
 
     var pending: ContainerRoot? = null
 
@@ -76,34 +77,34 @@ class KevoreeCoreBean : ModelService {
         return modelCloner.clone(pmodel!!, true)!!
     }
 
-    override fun registerModelListener(listener: ModelListener?) {
+    override fun registerModelListener(listener: ModelListener?, callerPath:String?) {
         modelListeners.addListener(listener!!)
     }
 
-    override fun unregisterModelListener(listener: ModelListener?) {
+    override fun unregisterModelListener(listener: ModelListener?, callerPath:String?) {
         modelListeners.removeListener(listener!!)
     }
 
-    override fun acquireLock(callBack: LockCallBack?, timeout: Long?) {
+    override fun acquireLock(callBack: LockCallBack?, timeout: Long?, callerPath:String?) {
         scheduler?.submit(AcquireLock(callBack!!, timeout!!))
     }
 
     override fun getCurrentModel(): UUIDModel? {
         return model.get()!!
     }
-    override fun compareAndSwap(model: ContainerRoot?, uuid: UUID?, callback: UpdateCallback?) {
-        scheduler!!.submit(UpdateModelRunnable(cloneCurrentModel(model), uuid, callback))
+    override fun compareAndSwap(model: ContainerRoot?, uuid: UUID?, callback: UpdateCallback?, callerPath:String?) {
+        scheduler!!.submit(UpdateModelRunnable(cloneCurrentModel(model), uuid, callback,callerPath))
     }
-    override fun update(model: ContainerRoot?, callback: UpdateCallback?) {
-        scheduler!!.submit(UpdateModelRunnable(cloneCurrentModel(model), null, callback))
+    override fun update(model: ContainerRoot?, callback: UpdateCallback?, callerPath:String?) {
+        scheduler!!.submit(UpdateModelRunnable(cloneCurrentModel(model), null, callback,callerPath))
     }
 
-    inner class UpdateModelRunnable(val targetModel: ContainerRoot, val uuid: UUID?, val callback: UpdateCallback?) : Runnable {
+    inner class UpdateModelRunnable(val targetModel: ContainerRoot, val uuid: UUID?, val callback: UpdateCallback?, val callerPath:String?) : Runnable {
         override fun run() {
             var res: Boolean = false
             if (currentLock != null) {
                 if (uuid?.compareTo(currentLock!!.uuid) == 0) {
-                    res = internal_update_model(targetModel)
+                    res = internal_update_model(targetModel,callerPath)
                 } else {
                     Log.debug("Core Locked , bad UUID {}", uuid)
                     res = false //LOCK REFUSED !
@@ -112,12 +113,12 @@ class KevoreeCoreBean : ModelService {
                 //COMMON CHECK
                 if (uuid != null) {
                     if (uuid.compareTo(model.get()!!.getUUID()!!) == 0) {
-                        res = internal_update_model(targetModel)
+                        res = internal_update_model(targetModel,callerPath)
                     } else {
                         res = false
                     }
                 } else {
-                    res = internal_update_model(targetModel)
+                    res = internal_update_model(targetModel,callerPath)
                 }
             }
             object : Thread(){
@@ -129,12 +130,12 @@ class KevoreeCoreBean : ModelService {
     }
 
     val scriptEngine = KevScriptEngine()
-    inner class UpdateScriptRunnable(val script: String, val callback: UpdateCallback?) : Runnable {
+    inner class UpdateScriptRunnable(val script: String, val callback: UpdateCallback?, val callerPath:String?) : Runnable {
         override fun run() {
             try {
                 val newModel = modelCloner.clone(model.get()?.getModel() as ContainerRoot, false) as ContainerRoot
                 scriptEngine.execute(script, newModel)
-                var res = internal_update_model(cloneCurrentModel(newModel))
+                var res = internal_update_model(cloneCurrentModel(newModel),callerPath)
                 object : Thread(){
                     override fun run() {
                         callback?.run(res)
@@ -146,20 +147,20 @@ class KevoreeCoreBean : ModelService {
         }
     }
 
-    override fun submitScript(script: String?, callback: UpdateCallback?) {
+    override fun submitScript(script: String?, callback: UpdateCallback?, callerPath:String?) {
         if (script != null && currentLock == null) {
-            scheduler!!.submit(UpdateScriptRunnable(script, callback))
+            scheduler!!.submit(UpdateScriptRunnable(script, callback,callerPath))
         } else {
             callback?.run(false)
         }
     }
 
-    inner class UpdateSequenceRunnable(val sequence: TraceSequence, val callback: UpdateCallback?) : Runnable {
+    inner class UpdateSequenceRunnable(val sequence: TraceSequence, val callback: UpdateCallback?, val callerPath:String?) : Runnable {
         override fun run() {
             try {
                 val newModel = modelCloner.clone(model.get()?.getModel() as ContainerRoot, false) as ContainerRoot
                 sequence.applyOn(newModel)
-                var res = internal_update_model(cloneCurrentModel(newModel))
+                var res = internal_update_model(cloneCurrentModel(newModel),callerPath)
                 object : Thread(){
                     override fun run() {
                         callback?.run(res)
@@ -172,9 +173,9 @@ class KevoreeCoreBean : ModelService {
         }
     }
 
-    override fun submitSequence(sequence: TraceSequence?, callback: UpdateCallback?) {
+    override fun submitSequence(sequence: TraceSequence?, callback: UpdateCallback?, callerPath:String?) {
         if (sequence != null && currentLock == null) {
-            scheduler!!.submit(UpdateSequenceRunnable(sequence, callback))
+            scheduler!!.submit(UpdateSequenceRunnable(sequence, callback,callerPath))
         } else {
             callback?.run(false)
         }
@@ -301,7 +302,7 @@ class KevoreeCoreBean : ModelService {
         }
     }
 
-    override fun releaseLock(uuid: UUID?) {
+    override fun releaseLock(uuid: UUID?, callerPath:String?) {
         if (uuid != null) {
             scheduler?.submit(ReleaseLockCallable(uuid))
         } else {
@@ -343,7 +344,7 @@ class KevoreeCoreBean : ModelService {
         }
     }
 
-    fun internal_update_model(proposedNewModel: ContainerRoot): Boolean {
+    fun internal_update_model(proposedNewModel: ContainerRoot, callerPath:String?): Boolean {
 
         if (proposedNewModel.findNodesByID(getNodeName()) == null) {
             Log.error("Asking for update with a NULL model or node name ({}) was not found in target model !", getNodeName())
@@ -366,10 +367,13 @@ class KevoreeCoreBean : ModelService {
                 //Model check is OK.
                 var currentModel = model.get()!!.getModel()!!
                 Log.debug("Before listeners PreCheck !")
-                val preCheckResult = modelListeners.preUpdate(currentModel, readOnlyNewModel)
+
+                val updateContext = UpdateContext(currentModel, readOnlyNewModel,callerPath)
+
+                val preCheckResult = modelListeners.preUpdate(updateContext)
                 Log.debug("PreCheck result = " + preCheckResult)
                 Log.debug("Before listeners InitUpdate !")
-                val initUpdateResult = modelListeners.initUpdate(currentModel, readOnlyNewModel)
+                val initUpdateResult = modelListeners.initUpdate(updateContext)
                 Log.debug("InitUpdate result = " + initUpdateResult)
                 if (preCheckResult && initUpdateResult) {
                     var newmodel = readOnlyNewModel
@@ -432,10 +436,10 @@ class KevoreeCoreBean : ModelService {
                             adaptationModel.setInternalReadOnly()
                             //Execution of the adaptation
                             Log.info("Launching adaptation of the system.")
-                            val  afterUpdateTest: () -> Boolean = {() -> modelListeners.afterUpdate(currentModel, newmodel) }
-
-                            val preCmd = PreCommand(newmodel, modelListeners, currentModel)
-                            val postRollbackTest: () -> Boolean = {() -> modelListeners.postRollback(currentModel, newmodel);true }
+                            val updateContext = UpdateContext(currentModel, newmodel,callerPath)
+                            val  afterUpdateTest: () -> Boolean = {() -> modelListeners.afterUpdate(updateContext) }
+                            val preCmd = PreCommand(updateContext, modelListeners)
+                            val postRollbackTest: () -> Boolean = {() -> modelListeners.postRollback(updateContext);true }
                             val rootNode = newmodel.findNodesByID(getNodeName())!!
                             deployResult = PrimitiveCommandExecutionHelper.execute(rootNode, adaptationModel, nodeInstance!!, afterUpdateTest, preCmd.preRollbackTest, postRollbackTest)
                         } else {
@@ -454,7 +458,7 @@ class KevoreeCoreBean : ModelService {
                         Log.warn("Update failed")
                         //IF HARAKIRI
                         if (previousHaraKiriModel != null) {
-                            internal_update_model(previousHaraKiriModel!!)
+                            internal_update_model(previousHaraKiriModel!!,callerPath)
                             previousHaraKiriModel = null //CLEAR
                         }
                     }

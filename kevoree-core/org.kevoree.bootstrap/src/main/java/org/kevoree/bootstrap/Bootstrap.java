@@ -3,7 +3,6 @@ package org.kevoree.bootstrap;
 import org.kevoree.*;
 import org.kevoree.api.BootstrapService;
 import org.kevoree.api.KevScriptService;
-import org.kevoree.api.ModelService;
 import org.kevoree.api.handler.UpdateCallback;
 import org.kevoree.bootstrap.kernel.KevoreeCLKernel;
 import org.kevoree.bootstrap.reflect.KevoreeInjector;
@@ -52,7 +51,8 @@ public class Bootstrap {
         System.setSecurityManager(new KevoreeSecurityManager());
         core.setNodeName(nodeName);
         kernel.setNodeName(nodeName);
-        injector.addService(ModelService.class, core);
+        kernel.setCore(core);
+        //injector.addService(ModelService.class, core);
         injector.addService(BootstrapService.class, kernel);
         injector.addService(KevScriptService.class, kevScriptEngine);
         kernel.setInjector(injector);
@@ -66,7 +66,7 @@ public class Bootstrap {
     }
 
     public void bootstrap(ContainerRoot model, UpdateCallback callback) {
-        core.update(model, callback);
+        core.update(model, callback, "/");
     }
 
     public void bootstrap(ContainerRoot model) {
@@ -115,7 +115,7 @@ public class Bootstrap {
                 }
             }
         }
-        core.update(emptyModel, callback);
+        core.update(emptyModel, callback, "/");
     }
 
     public void bootstrapFromKevScript(InputStream input) throws Exception {
@@ -185,13 +185,13 @@ public class Bootstrap {
     public void bootstrapFromFile(File input, UpdateCallback callback) throws Exception {
         FileInputStream fin = new FileInputStream(input);
         if (input.getName().endsWith(".kevs")) {
-            bootstrapFromKevScript(fin,callback);
+            bootstrapFromKevScript(fin, callback);
         } else {
             if (input.getName().endsWith(".kev")) {
-                bootstrap((ContainerRoot) xmiLoader.loadModelFromStream(fin).get(0),callback);
+                bootstrap((ContainerRoot) xmiLoader.loadModelFromStream(fin).get(0), callback);
             } else {
                 if (input.getName().endsWith(".json")) {
-                    bootstrap((ContainerRoot) jsonLoader.loadModelFromStream(fin).get(0),callback);
+                    bootstrap((ContainerRoot) jsonLoader.loadModelFromStream(fin).get(0), callback);
                 } else {
                     Log.error("Can't bootstrap because no extension found for {}", input.getName());
                 }

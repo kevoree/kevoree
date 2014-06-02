@@ -19,6 +19,7 @@ import com.explodingpixels.macwidgets.UnifiedToolBar;
 import org.kevoree.ContainerNode;
 import org.kevoree.ContainerRoot;
 import org.kevoree.api.handler.ModelListener;
+import org.kevoree.api.handler.UpdateContext;
 import org.kevoree.bootstrap.Bootstrap;
 
 import javax.swing.*;
@@ -108,17 +109,17 @@ public class KevoreeGUIFrame extends JFrame {
             KevoreeGUIFrame.showShell(shell);
             bootstrap[0].getCore().registerModelListener(new ModelListener() {
                 @Override
-                public boolean preUpdate(ContainerRoot currentModel, ContainerRoot proposedModel) {
+                public boolean preUpdate(UpdateContext context) {
                     return true;
                 }
 
                 @Override
-                public boolean initUpdate(ContainerRoot containerRoot, ContainerRoot containerRoot1) {
+                public boolean initUpdate(UpdateContext context) {
                     return true;
                 }
 
                 @Override
-                public boolean afterLocalUpdate(ContainerRoot currentModel, ContainerRoot proposedModel) {
+                public boolean afterLocalUpdate(UpdateContext context) {
                     return true;
                 }
 
@@ -135,15 +136,15 @@ public class KevoreeGUIFrame extends JFrame {
                 }
 
                 @Override
-                public void preRollback(ContainerRoot currentModel, ContainerRoot proposedModel) {
+                public void preRollback(UpdateContext context) {
 
                 }
 
                 @Override
-                public void postRollback(ContainerRoot currentModel, ContainerRoot proposedModel) {
+                public void postRollback(UpdateContext context) {
 
                 }
-            });
+            },"/");
 
             bootstrap[0].bootstrapFromKevScript(new StringBufferInputStream(bootScript));
 
