@@ -13,7 +13,7 @@
         <kevoree.version>${project.version}</kevoree.version>
         <kotlin.version>0.7.271</kotlin.version>
         <kevoree.log.version>1</kevoree.log.version>
-        <basic.resolver.version>18</basic.resolver.version>
+        <basic.resolver.version>19</basic.resolver.version>
         <kevoree.kcl.version>10</kevoree.kcl.version>
         <jeromq.version>0.3.2</jeromq.version>
         <junit.version>4.11</junit.version>
