@@ -66,7 +66,10 @@ public class Bootstrap {
     }
 
     public void bootstrap(ContainerRoot model, UpdateCallback callback) {
-        core.update(model, callback, "/");
+        ContainerRoot emptyModel = initialModel();
+        DefaultModelCompare compare = new DefaultModelCompare();
+        compare.merge(emptyModel,model).applyOn(emptyModel);
+        core.update(emptyModel, callback, "/");
     }
 
     public void bootstrap(ContainerRoot model) {
@@ -78,15 +81,23 @@ public class Bootstrap {
         });
     }
 
+    public ContainerRoot initialModel() {
+        if (System.getProperty("kevoree.dev") != null) {
+            ContainerRoot emptyModel = bootstrapFromClassPath();
+            for (DeployUnit du : emptyModel.getDeployUnits()) {
+                kernel.manualAttach(du, kernel.system);
+                kevScriptEngine.addIgnoreIncludeDeployUnit(du);
+            }
+            return emptyModel;
+        } else {
+            return core.getKevoreeFactory().createContainerRoot();
+        }
+    }
+
+
     public void bootstrapFromKevScript(InputStream input, UpdateCallback callback) throws Exception {
         //TODO perhaps not delegate load of dev classpath to system for continuous integration
-        ContainerRoot emptyModel = bootstrapFromClassPath();
-        //By default DeployUnit coming from classPath are considered as complete
-        //TODO ugly hack for dev mode
-        for (DeployUnit du : emptyModel.getDeployUnits()) {
-            kernel.manualAttach(du, kernel.system);
-            kevScriptEngine.addIgnoreIncludeDeployUnit(du);
-        }
+        ContainerRoot emptyModel = initialModel();
 
         kevScriptEngine.executeFromStream(input, emptyModel);
         //Add network information
