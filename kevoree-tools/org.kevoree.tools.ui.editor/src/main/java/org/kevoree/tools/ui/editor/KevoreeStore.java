@@ -80,46 +80,50 @@ public class KevoreeStore {
     }
 
     public void populate(ContainerRoot model, String groupIDparam, String askedVersion) throws Exception {
+        for(int h=0;h<10;h++){
+            try {
+                URL url = new URL("http://oss.sonatype.org/service/local/data_index?g=" + groupIDparam + "&v=" + askedVersion);
+                org.jsoup.nodes.Document doc = Jsoup.connect(url.toString()).get();
+                Elements nList = doc.getElementsByTag("artifact");
+                for (int i = 0; i < nList.size(); i++) {
+                    Element node = nList.get(i);
+                    Elements childNode = node.children();
+                    String resourceURI = null;
+                    String groupId = null;
+                    String artifactId = null;
+                    String version = null;
+                    for (int j = 0; j < childNode.size(); j++) {
+                        Element nodeChild = childNode.get(j);
+                        if (nodeChild.nodeName().toLowerCase().endsWith("resourceURI".toLowerCase())) {
+                            resourceURI = nodeChild.text();
+                        }
+                        if (nodeChild.nodeName().toLowerCase().endsWith("groupId".toLowerCase())) {
+                            groupId = nodeChild.text();
+                        }
+                        if (nodeChild.nodeName().toLowerCase().endsWith("artifactId".toLowerCase())) {
+                            artifactId = nodeChild.text();
+                        }
+                        if (nodeChild.nodeName().toLowerCase().endsWith("version".toLowerCase())) {
+                            version = nodeChild.text();
+                        }
+                    }
 
-        URL url = new URL("http://oss.sonatype.org/service/local/data_index?g=" + groupIDparam + "&v=" + askedVersion);
-        org.jsoup.nodes.Document doc = Jsoup.connect(url.toString()).get();
-        Elements nList = doc.getElementsByTag("artifact");
-        for (int i = 0; i < nList.size(); i++) {
-            Element node = nList.get(i);
-            Elements childNode = node.children();
-            String resourceURI = null;
-            String groupId = null;
-            String artifactId = null;
-            String version = null;
-            for (int j = 0; j < childNode.size(); j++) {
-                Element nodeChild = childNode.get(j);
-                if (nodeChild.nodeName().toLowerCase().endsWith("resourceURI".toLowerCase())) {
-                    resourceURI = nodeChild.text();
+                    if (resourceURI != null && !resourceURI.contains("-source")) {
+                        StringBuffer buffer = new StringBuffer();
+                        buffer.append("repo \"http://oss.sonatype.org/content/groups/public\"\n");
+                        buffer.append("include mvn:" + groupId + ":" + artifactId + ":" + version + "\n");
+                        engine.execute(buffer.toString(), model);
+
+                    }
                 }
-                if (nodeChild.nodeName().toLowerCase().endsWith("groupId".toLowerCase())) {
-                    groupId = nodeChild.text();
-                }
-                if (nodeChild.nodeName().toLowerCase().endsWith("artifactId".toLowerCase())) {
-                    artifactId = nodeChild.text();
-                }
-                if (nodeChild.nodeName().toLowerCase().endsWith("version".toLowerCase())) {
-                    version = nodeChild.text();
-                }
+                setCache(groupIDparam, model);
+                return;
+            } catch (Exception e) {
+                //e.printStackTrace();
             }
-
-            if (resourceURI != null && !resourceURI.contains("-source")) {
-                StringBuffer buffer = new StringBuffer();
-                buffer.append("repo \"http://oss.sonatype.org/content/groups/public\"\n");
-                buffer.append("include mvn:" + groupId + ":" + artifactId + ":" + version + "\n");
-                engine.execute(buffer.toString(), model);
-
-            }
+            Thread.sleep(500);
         }
-        try {
-            setCache(groupIDparam, model);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+
     }
 
 
@@ -172,7 +176,7 @@ public class KevoreeStore {
                 for (String s : sub) {
                     JMenu subMenu = new JMenu(s.toUpperCase());
                     subMenu.setAutoscrolls(true);
-                    ContainerRoot model = getFromGroupID("org.kevoree.library." + s.replace("-snapshot", ""), s.contains("snapshot"));
+                    ContainerRoot model = getFromGroupID("org.kevoree.library." + s, false);
                     HashMap<String, DeployUnit> cache = new HashMap<String, DeployUnit>();
                     if (model != null) {
                         for (TypeDefinition td : model.getTypeDefinitions()) {
