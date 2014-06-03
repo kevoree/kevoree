@@ -3,11 +3,11 @@
     <artifactId>org.kevoree.basechecker</artifactId>
     <name>Kevoree :: BaseChecker</name>
 
-    <version>3.6.1</version>
+    <version>3.6.2-SNAPSHOT</version>
     <parent>
         <artifactId>org.kevoree.root</artifactId>
         <groupId>org.kevoree</groupId>
-        <version>3.6.1</version>
+        <version>3.6.2-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
