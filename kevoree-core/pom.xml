@@ -5,12 +5,12 @@
     <packaging>pom</packaging>
     <name>Kevoree :: Root</name>
     <description>Kevoree Framework Core</description>
-    <version>3.6.7-SNAPSHOT</version>
+    <version>3.6.7</version>
 
     <parent>
         <groupId>org.kevoree.root</groupId>
         <artifactId>org.kevoree.root</artifactId>
-        <version>3.6.7-SNAPSHOT</version>
+        <version>3.6.7</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
