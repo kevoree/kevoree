@@ -5,12 +5,12 @@
     <artifactId>org.kevoree.annotation.api</artifactId>
     <packaging>jar</packaging>
     <name>Kevoree :: Annotation API</name>
-    <version>3.6.4-SNAPSHOT</version>
+    <version>3.6.4</version>
 
     <parent>
         <artifactId>org.kevoree.root</artifactId>
         <groupId>org.kevoree</groupId>
-        <version>3.6.4-SNAPSHOT</version>
+        <version>3.6.4</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
