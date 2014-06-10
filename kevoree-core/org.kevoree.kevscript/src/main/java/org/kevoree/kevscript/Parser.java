@@ -47,24 +47,14 @@ public final class Parser extends org.waxeye.parser.Parser<Type>
         states.add(new State<Type>(edges, false));
         edges = new ArrayList<Edge<Type>>();
         edges.add(new Edge<Type>(new AutomatonTransition<Type>(1), 2, false));
-        edges.add(new Edge<Type>(new AutomatonTransition<Type>(40), 6, true));
-        states.add(new State<Type>(edges, false));
-        edges = new ArrayList<Edge<Type>>();
-        edges.add(new Edge<Type>(new AutomatonTransition<Type>(42), 3, false));
-        states.add(new State<Type>(edges, false));
-        edges = new ArrayList<Edge<Type>>();
-        edges.add(new Edge<Type>(new AutomatonTransition<Type>(1), 4, false));
-        edges.add(new Edge<Type>(new AutomatonTransition<Type>(40), 5, true));
+        edges.add(new Edge<Type>(new AutomatonTransition<Type>(40), 3, true));
         states.add(new State<Type>(edges, true));
         edges = new ArrayList<Edge<Type>>();
-        edges.add(new Edge<Type>(new AutomatonTransition<Type>(42), 3, false));
+        edges.add(new Edge<Type>(new AutomatonTransition<Type>(42), 1, false));
         states.add(new State<Type>(edges, false));
-        edges = new ArrayList<Edge<Type>>();
-        edges.add(new Edge<Type>(new AutomatonTransition<Type>(41), 4, false));
-        states.add(new State<Type>(edges, true));
         edges = new ArrayList<Edge<Type>>();
         edges.add(new Edge<Type>(new AutomatonTransition<Type>(41), 2, false));
-        states.add(new State<Type>(edges, false));
+        states.add(new State<Type>(edges, true));
         automata.add(new FA<Type>(Type.KevScript, FA.LEFT, states));
 
         states = new ArrayList<State<Type>>();
