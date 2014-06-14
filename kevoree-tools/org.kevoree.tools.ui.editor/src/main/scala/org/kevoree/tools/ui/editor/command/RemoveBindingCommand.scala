@@ -26,9 +26,7 @@
  */
 package org.kevoree.tools.ui.editor.command
 
-import reflect.BeanProperty
 import org.kevoree.tools.ui.editor.KevoreeUIKernel
-import org.kevoree.tools.ui.editor.aspects.MBindingAspect
 import org.kevoree.tools.ui.editor.aspects.Art2UIAspects._
 import org.kevoree.MBinding
 
@@ -40,7 +38,6 @@ import org.kevoree.MBinding
 
 class RemoveBindingCommand(mb:MBinding) extends Command {
 
-  @BeanProperty
   var kernel: KevoreeUIKernel = null
 
   def execute(p: AnyRef) {

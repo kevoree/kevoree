@@ -13,15 +13,12 @@
  */
 package org.kevoree.tools.ui.editor.command
 
-import scala.reflect.BeanProperty
-
 import org.kevoree.tools.ui.editor.aspects.Art2UIAspects._
 import org.kevoree.tools.ui.editor.KevoreeUIKernel
 import org.kevoree._
 
 class RemoveInstanceCommand(elem: org.kevoree.NamedElement) extends Command {
 
-  @BeanProperty
   var kernel: KevoreeUIKernel = null
 
   def execute(p: Object) {
@@ -40,7 +37,7 @@ class RemoveInstanceCommand(elem: org.kevoree.NamedElement) extends Command {
         inst.getHosts.foreach {
           hn =>
             val c = new RemoveInstanceCommand(hn)
-            c.setKernel(kernel)
+            c.kernel = kernel
             c.execute(null)
         }
 

@@ -13,11 +13,8 @@
  */
 package org.kevoree.tools.ui.editor.command
 
-import reflect.BeanProperty
 import org.kevoree.tools.ui.editor.KevoreeUIKernel
-import org.kevoree.tools.ui.editor.aspects.Art2UIAspects._
 import org.kevoree.tools.ui.editor.widget.TempGroupBinding
-import org.kevoree.{ContainerRoot, MBinding}
 import org.kevoree.tools.ui.framework.elements.{Binding, ModelPanel}
 
 /**
@@ -28,7 +25,6 @@ import org.kevoree.tools.ui.framework.elements.{Binding, ModelPanel}
 
 class RemoveGroupBindingCommand(mb: TempGroupBinding) extends Command {
 
-  @BeanProperty
   var kernel: KevoreeUIKernel = null
 
   def execute(p: AnyRef) {

@@ -134,7 +134,7 @@ public class NamedElementPropertyEditor extends /*ThreePartRoundedPanel*/ JPanel
 
         JCommandButton btDelete = new JCommandButton("Delete");
         RemoveInstanceCommand removecmd = new RemoveInstanceCommand(elem);
-        removecmd.setKernel(kernel);
+        removecmd.kernel_$eq(kernel);
         btDelete.setCommand(removecmd);
         this.addCenter(btDelete);
 

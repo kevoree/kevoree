@@ -5,7 +5,6 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.kevoree.ContainerRoot;
 import org.kevoree.DeployUnit;
-import org.kevoree.TypeDefinition;
 import org.kevoree.compare.DefaultModelCompare;
 import org.kevoree.impl.DefaultKevoreeFactory;
 import org.kevoree.kevscript.KevScriptEngine;
@@ -15,16 +14,12 @@ import org.kevoree.resolver.MavenResolver;
 import org.kevoree.serializer.JSONModelSerializer;
 import org.kevoree.tools.ui.editor.command.MergeDefaultLibrary;
 import org.kevoree.tools.ui.editor.menus.CommandActionListener;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 import javax.swing.*;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.net.URL;
-import java.net.URLConnection;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -80,11 +75,12 @@ public class KevoreeStore {
     }
 
     public void populate(ContainerRoot model, String groupIDparam, String askedVersion) throws Exception {
-        for(int h=0;h<10;h++){
+        for (int h = 0; h < 10; h++) {
             try {
-                URL url = new URL("http://oss.sonatype.org/service/local/data_index?g=" + groupIDparam + "&v=" + askedVersion);
+                URL url = new URL("https://oss.sonatype.org/service/local/lucene/search?g=" + groupIDparam + "&v=" + askedVersion);
                 org.jsoup.nodes.Document doc = Jsoup.connect(url.toString()).get();
                 Elements nList = doc.getElementsByTag("artifact");
+
                 for (int i = 0; i < nList.size(); i++) {
                     Element node = nList.get(i);
                     Elements childNode = node.children();
@@ -94,6 +90,7 @@ public class KevoreeStore {
                     String version = null;
                     for (int j = 0; j < childNode.size(); j++) {
                         Element nodeChild = childNode.get(j);
+
                         if (nodeChild.nodeName().toLowerCase().endsWith("resourceURI".toLowerCase())) {
                             resourceURI = nodeChild.text();
                         }
@@ -108,57 +105,49 @@ public class KevoreeStore {
                         }
                     }
 
-                    if (resourceURI != null && !resourceURI.contains("-source")) {
+                    if (resourceURI == null || !resourceURI.contains("-source")) {
+                        /*
                         StringBuffer buffer = new StringBuffer();
                         buffer.append("repo \"http://oss.sonatype.org/content/groups/public\"\n");
                         buffer.append("include mvn:" + groupId + ":" + artifactId + ":" + version + "\n");
                         engine.execute(buffer.toString(), model);
+*/
+                        DeployUnit du = factory.createDeployUnit();
+                        du.setGroupName(groupId);
+                        du.setName(artifactId);
+                        du.setVersion(version);
+
+                        model.addDeployUnits(du);
 
                     }
                 }
                 setCache(groupIDparam, model);
                 return;
             } catch (Exception e) {
-                //e.printStackTrace();
+                e.printStackTrace();
+                Thread.sleep(500);
+
             }
-            Thread.sleep(500);
         }
 
     }
 
 
-    public ContainerRoot getFromGroupID(String groupIDparam, Boolean snapshot) {
+    public ContainerRoot getFromGroupID(String groupIDparam) {
 
         ContainerRoot model = factory.createContainerRoot();
         try {
-
             MavenResolver mavenResolver = new MavenResolver();
             HashSet<String> urls = new HashSet<String>();
-            urls.add("http://oss.sonatype.org/content/groups/public/");
-            if (snapshot) {
-                File s = mavenResolver.resolve("org.kevoree.library", "org.kevoree.library", "latest", "pom", urls);
-                String latestVersion;
-                if (s != null) {
-                    latestVersion = s.getAbsolutePath().substring(s.getAbsolutePath().indexOf("org.kevoree.library-") + "org.kevoree.library-".length(), s.getAbsolutePath().indexOf(".pom"));
-                    if(latestVersion.contains("-")){
-                        latestVersion = latestVersion.substring(0,latestVersion.indexOf("-"));
-                        latestVersion = latestVersion + "-SNAPSHOT";
-                    }
-                    populate(model, groupIDparam, latestVersion);
-                } else {
-                    Log.info("No version found for latest, try cache");
-                    throw new Exception();
-                }
+            urls.add("http://repo1.maven.org/maven2/");
+            File s2 = mavenResolver.resolve("org.kevoree.library", "org.kevoree.library", "release", "pom", urls);
+            String releaseVersion;
+            if (s2 != null) {
+                releaseVersion = s2.getAbsolutePath().substring(s2.getAbsolutePath().indexOf("org.kevoree.library-") + "org.kevoree.library-".length(), s2.getAbsolutePath().indexOf(".pom"));
+                populate(model, groupIDparam, releaseVersion);
             } else {
-                File s2 = mavenResolver.resolve("org.kevoree.library", "org.kevoree.library", "release", "pom", urls);
-                String releaseVersion;
-                if (s2 != null) {
-                    releaseVersion = s2.getAbsolutePath().substring(s2.getAbsolutePath().indexOf("org.kevoree.library-") + "org.kevoree.library-".length(), s2.getAbsolutePath().indexOf(".pom"));
-                    populate(model, groupIDparam, releaseVersion);
-                } else {
-                    Log.info("No version found for release, try cache");
-                    throw new Exception();
-                }
+                Log.info("No version found for release, try cache");
+                throw new Exception();
             }
             return model;
         } catch (Exception e) {
@@ -176,11 +165,11 @@ public class KevoreeStore {
                 for (String s : sub) {
                     JMenu subMenu = new JMenu(s.toUpperCase());
                     subMenu.setAutoscrolls(true);
-                    ContainerRoot model = getFromGroupID("org.kevoree.library." + s, false);
+                    ContainerRoot model = getFromGroupID("org.kevoree.library." + s);
                     HashMap<String, DeployUnit> cache = new HashMap<String, DeployUnit>();
                     if (model != null) {
-                        for (TypeDefinition td : model.getTypeDefinitions()) {
-                            cache.put(td.getDeployUnit().path(), td.getDeployUnit());
+                        for (DeployUnit td : model.getDeployUnits()) {
+                            cache.put(td.path(), td);
                         }
                     } else {
                         Log.error("No library found");

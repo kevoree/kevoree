@@ -49,9 +49,12 @@ class MergeDefaultLibrary(groupID: String, arteID: String, version: String) exte
     try {
 
       val repos = new util.HashSet[String]()
-      repos.add("http://oss.sonatype.org/content/groups/public")
+      repos.add("http://repo1.maven.org/maven2/")
 
       val file: File = mavenResolver.resolve("mvn:" + groupID + ":" + arteID + ":" + version, repos)
+
+      //println("mvn:" + groupID + ":" + arteID + ":" + version+"->"+file)
+
       val jar = new JarFile(file)
       val entry: JarEntry = jar.getJarEntry("KEV-INF/lib.json")
 

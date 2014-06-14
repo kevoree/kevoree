@@ -26,11 +26,9 @@ package org.kevoree.tools.ui.editor.command
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import reflect.BeanProperty
 import org.kevoree.tools.ui.editor.KevoreeUIKernel
 import org.kevoree.tools.ui.framework.SelectElement
 import org.kevoree.tools.ui.framework.elements.Binding
-import org.kevoree.MBinding
 import org.kevoree.tools.ui.editor.widget.TempGroupBinding
 
 /**
@@ -41,7 +39,6 @@ import org.kevoree.tools.ui.editor.widget.TempGroupBinding
 
 class SelectGroupBindingCommand extends Command {
 
-  @BeanProperty
   var kernel: KevoreeUIKernel = null
   private var alreadySelected: SelectElement = null
 

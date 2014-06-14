@@ -94,8 +94,8 @@ public class NodePropertyEditor extends InstancePropertyEditor {
         final SynchNodeTypeCommand receiveNodeType = new SynchNodeTypeCommand(false);
 
 
-        sendNodeType.setKernel(_kernel);
-        sendNodeType.setDestNodeName(node.getName());
+        sendNodeType.kernel_$eq(_kernel);
+        sendNodeType.destNodeName_$eq(node.getName());
 
         DefaultComboBoxModel groupModel = new DefaultComboBoxModel();
         for (Group g : _kernel.getModelHandler().getActualModel().getGroups()) {
@@ -108,8 +108,8 @@ public class NodePropertyEditor extends InstancePropertyEditor {
         progressBar.setEnabled(false);
         final JLabel resultLabel = HudWidgetFactory.createHudLabel("");
 
-        sendNodeType.setProgressBar(progressBar);
-        sendNodeType.setResultLabel(resultLabel);
+        sendNodeType.progressBar_$eq(progressBar);
+        sendNodeType.resultLabel_$eq(resultLabel);
 
         final JCheckBox checkBox = HudWidgetFactory.createHudCheckBox("AMerge");
 
@@ -120,18 +120,18 @@ public class NodePropertyEditor extends InstancePropertyEditor {
                     progressBar.setEnabled(true);
                     progressBar.setIndeterminate(true);
                     resultLabel.setText("Connect...");
-                    sendNodeType.setDestNodeName(elem.getName());
-                    sendNodeType.setViaGroupName(groupTypeComboBox.getSelectedItem().toString());
-                    sendNodeType.setAutoMerge(checkBox.isSelected());
+                    sendNodeType.destNodeName_$eq(elem.getName());
+                    sendNodeType.viaGroupName_$eq(groupTypeComboBox.getSelectedItem().toString());
+                    sendNodeType.autoMerge_$eq(checkBox.isSelected());
                 } else {
                     resultLabel.setText("No group found !");
                 }
             }
         };
-        receiveNodeType.setKernel(_kernel);
-        receiveNodeType.setDestNodeName(node.getName());
-        receiveNodeType.setProgressBar(progressBar);
-        receiveNodeType.setResultLabel(resultLabel);
+        receiveNodeType.kernel_$eq(_kernel);
+        receiveNodeType.destNodeName_$eq(node.getName());
+        receiveNodeType.progressBar_$eq(progressBar);
+        receiveNodeType.resultLabel_$eq(resultLabel);
 
         JCommandButton btPullNodeType = new JCommandButton("Pull") {
             @Override
@@ -140,9 +140,9 @@ public class NodePropertyEditor extends InstancePropertyEditor {
                     progressBar.setEnabled(true);
                     progressBar.setIndeterminate(true);
                     resultLabel.setText("Sending...");
-                    receiveNodeType.setDestNodeName(elem.getName());
-                    receiveNodeType.setViaGroupName(groupTypeComboBox.getSelectedItem().toString());
-                    receiveNodeType.setAutoMerge(checkBox.isSelected());
+                    receiveNodeType.destNodeName_$eq(elem.getName());
+                    receiveNodeType.viaGroupName_$eq(groupTypeComboBox.getSelectedItem().toString());
+                    receiveNodeType.autoMerge_$eq(checkBox.isSelected());
                 } else {
                     resultLabel.setText("No group found !");
                 }

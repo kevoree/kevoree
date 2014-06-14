@@ -86,7 +86,7 @@ public class BindingPropertyEditor extends JPanel {
 
         JCommandButton btDelete = new JCommandButton("Delete");
         RemoveBindingCommand removecmd = new RemoveBindingCommand(mbinding);
-        removecmd.setKernel(kernel);
+        removecmd.kernel_$eq(kernel);
         btDelete.setCommand(removecmd);
         this.addCenter(btDelete);
 

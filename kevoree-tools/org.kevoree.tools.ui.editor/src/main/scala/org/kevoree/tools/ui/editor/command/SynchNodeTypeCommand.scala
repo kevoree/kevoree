@@ -52,10 +52,8 @@
  */
 package org.kevoree.tools.ui.editor.command
 
-import reflect.BeanProperty
 import org.slf4j.LoggerFactory
 import org.kevoree.tools.ui.editor._
-import java.lang.Thread
 import javax.swing.{SwingUtilities, JProgressBar, JLabel}
 import org.kevoree.tools.ui.editor.ws.WebSocketClient
 import java.util
@@ -64,22 +62,16 @@ class SynchNodeTypeCommand(isPush: Boolean) extends Command {
 
   var logger = LoggerFactory.getLogger(this.getClass)
 
-  @BeanProperty
   var autoMerge: Boolean = true
 
-  @BeanProperty
   var kernel: KevoreeUIKernel = null
 
-  @BeanProperty
   var destNodeName: String = null
 
-  @BeanProperty
   var viaGroupName: String = null
 
-  @BeanProperty
   var resultLabel: JLabel = null
 
-  @BeanProperty
   var progressBar: JProgressBar = null
 
   var threadCommand: Thread = null

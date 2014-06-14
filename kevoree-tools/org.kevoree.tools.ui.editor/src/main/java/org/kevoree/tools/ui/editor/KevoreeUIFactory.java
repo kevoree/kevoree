@@ -236,7 +236,7 @@ public class KevoreeUIFactory {
         uib.setTo(binding.getNodePanel());
         mapping.bind(uib, binding);
         final SelectGroupBindingCommand command = new SelectGroupBindingCommand();
-        command.setKernel(kernel);
+        command.kernel_$eq(kernel);
         uib.addListener(new BindingListener() {
             @Override
             public void clicked() {
@@ -267,7 +267,7 @@ public class KevoreeUIFactory {
 
         /* ADD SELECT COMMAND */
         final SelectBindingCommand command = new SelectBindingCommand();
-        command.setKernel(kernel);
+        command.kernel_$eq(kernel);
         final Binding buiFinal = bui;
         bui.addListener(new BindingListener() {
             @Override
