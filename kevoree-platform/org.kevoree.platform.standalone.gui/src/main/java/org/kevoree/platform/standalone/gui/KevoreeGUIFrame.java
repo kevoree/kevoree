@@ -34,10 +34,8 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 
 public class KevoreeGUIFrame extends JFrame {
@@ -68,13 +66,13 @@ public class KevoreeGUIFrame extends JFrame {
                     KevoreeCoreBean bean = b.getCore();
                     if (bean != null) {
                         String version = "release";
-                        if(bean.getFactory().getVersion().contains("SNAPSHOT")){
+                        if (bean.getFactory().getVersion().contains("SNAPSHOT")) {
                             version = "latest";
                         }
-                        bean.submitScript("include mvn:org.kevoree.library.java:org.kevoree.library.java.editor:"+version+"\nadd "+bean.getNodeName()+".editor : WebEditor", new UpdateCallback() {
+                        bean.submitScript("include mvn:org.kevoree.library.java:org.kevoree.library.java.editor:" + version + "\nadd " + bean.getNodeName() + ".editor : WebEditor", new UpdateCallback() {
                             @Override
                             public void run(Boolean aBoolean) {
-                                if(aBoolean){
+                                if (aBoolean) {
                                     try {
                                         Desktop.getDesktop().browse(new URI("http://localhost:3042"));
                                     } catch (Exception e1) {
@@ -82,7 +80,7 @@ public class KevoreeGUIFrame extends JFrame {
                                     }
                                 }
                             }
-                        },"/");
+                        }, "/");
                     }
                 }
             }
@@ -188,7 +186,7 @@ public class KevoreeGUIFrame extends JFrame {
                 public void postRollback(UpdateContext context) {
 
                 }
-            },"/");
+            }, "/");
 
             String bootstrapModel = System.getProperty("node.bootstrap");
             if (bootstrapModel != null) {
