@@ -30,11 +30,7 @@
  */
 package org.kevoree.tools.ui.framework.elements;
 
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.Point;
+import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
@@ -42,8 +38,6 @@ import java.awt.event.MouseEvent;
 import javax.swing.*;
 
 import com.explodingpixels.macwidgets.HudWindow;
-import com.explodingpixels.macwidgets.plaf.HudButtonUI;
-import org.jdesktop.swingx.JXPanel;
 
 /**
  * @author ffouquet
@@ -87,16 +81,16 @@ public class EditableModelPanel extends JLayeredPane {
 
     private JPanel previousPropertiesPanel = null;
 
-    HudWindow hud = new HudWindow("Properties editor");
+    JFrame hud = new JFrame("Properties editor");
 
     public void displayProperties(JPanel prop) {
 
-
-        hud.getJDialog().setSize(320, 440);
-        hud.getJDialog().setLocationRelativeTo(null);
-        hud.getJDialog().setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+         hud.setBackground(Color.BLACK);
+        hud.setSize(320, 440);
+        hud.setLocationRelativeTo(null);
+        hud.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         hud.setContentPane(prop);
-        hud.getJDialog().setVisible(true);
+        hud.setVisible(true);
 
 
         /*
@@ -122,7 +116,7 @@ public class EditableModelPanel extends JLayeredPane {
     }
 
     public void undisplayProperties() {
-        hud.getJDialog().setVisible(false);
+        hud.setVisible(false);
 
         /*
         if (previousPropertiesPanel != null) {

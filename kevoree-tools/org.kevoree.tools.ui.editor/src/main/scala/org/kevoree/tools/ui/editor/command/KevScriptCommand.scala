@@ -66,9 +66,14 @@ class KevScriptCommand extends Command {
   }
 
   def displayError(msg: String) {
-    val hud = new HudWindow("KevScript Error");
-    hud.getJDialog.setSize(500, 350);
-    hud.getJDialog.setLocationRelativeTo(null);
+
+
+    val hud = new JFrame("KevScript Error");
+    hud.setSize(500,350)
+
+    //val hud = new HudWindow("KevScript Error");
+    //hud.getJDialog.setSize(500, 350);
+    //hud.getJDialog.setLocationRelativeTo(null);
 
     val msgLabel = new JTextArea(msg)
     msgLabel.setForeground(Color.WHITE)
@@ -82,9 +87,11 @@ class KevScriptCommand extends Command {
     layoutPopupTop.setOpaque(false)
     layoutPopupTop.add(msgLabel)
 
-    hud.getJDialog.getContentPane.add(layoutPopupTop)
-    hud.getJDialog.setVisible(true)
+    //hud.getJDialog.getContentPane.add(layoutPopupTop)
+    //hud.getJDialog.setVisible(true)
 
+    hud.getContentPane.add(layoutPopupTop)
+    hud.setVisible(true)
     println("Display MSG : " + msg)
 
   }
