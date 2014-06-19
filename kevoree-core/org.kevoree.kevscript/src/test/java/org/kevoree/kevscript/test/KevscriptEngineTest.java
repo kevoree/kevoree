@@ -50,6 +50,20 @@ public class KevscriptEngineTest {
 
     }
 
+    @Test
+    public void testLifecycle() {
+        try {
+            KevScriptEngine engine = new KevScriptEngine();
+            KevoreeFactory factory = new DefaultKevoreeFactory();
+            ContainerRoot cr = factory.createContainerRoot();
+            engine.executeFromStream(KevscriptEngineTest.class.getResourceAsStream("/lifecycle.kevs"), cr);
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail("An exception occurred:" + e.toString());
+        }
+
+    }
+
 
     //@Test
     public void _02_loadExecuteSave() {

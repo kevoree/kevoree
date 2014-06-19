@@ -25,18 +25,21 @@ public class InstanceResolver {
             if (node.getChildren().size() == 2) {
                 //Component case
                 String nodeName = node.getChildren().get(0).childrenAsString();
-                String componentName = node.getChildren().get(1).childrenAsString();
+                String childName = node.getChildren().get(1).childrenAsString();
                 List<Object> parentNodes = model.selectByQuery("nodes[" + nodeName + "]");
                 if (parentNodes.isEmpty()) {
                     throw new Exception("No nodes found with name : " + nodeName);
                 }
                 for (Object loopObj : parentNodes) {
                     ContainerNode parentNode = (ContainerNode) loopObj;
-                    List<Object> cis = parentNode.selectByQuery("components[" + componentName + "]");
-                    if (cis.isEmpty()) {
-                        throw new Exception("No components found with name : " + componentName + " on node " + parentNode.getName());
+                    List<Object> comps = parentNode.selectByQuery("components[" + childName + "]");
+                    List<Object> hosts = parentNode.selectByQuery("hosts[" + childName + "]");
+                    // append components & hosted nodes
+                    comps.addAll(hosts);
+                    if (comps.isEmpty()) {
+                        throw new Exception("No component/node found with name : " + childName + " in node " + parentNode.getName());
                     }
-                    for (Object ci : cis) {
+                    for (Object ci : comps) {
                         resolved.add((Instance) ci);
                     }
                 }

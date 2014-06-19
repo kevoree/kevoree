@@ -1,0 +1,8 @@
+repo "http://repo1.maven.org/maven2"
+include mvn:org.kevoree.library.java:org.kevoree.library.java.javaNode:release
+
+add node0, node1, node0.child : JavaNode
+
+stop node1
+stop node0.child
+start *

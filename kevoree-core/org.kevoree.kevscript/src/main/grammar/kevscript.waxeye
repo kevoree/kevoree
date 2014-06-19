@@ -4,7 +4,7 @@
 # =====
 KevScript           <- ws *((Statement | :Comment eol) ws) :?Comment
 
-Statement           <- Add | Remove | Move | Attach | Detach | Set | AddBinding | DelBinding | Include | Network | AddRepo | Namespace
+Statement           <- Add | Remove | Move | Attach | Detach | Set | AddBinding | DelBinding | Include | Network | AddRepo | Namespace | Start | Stop | Pause
 
 Add                 <- AddToken ws NameList ws :':' ws TypeDef                                  # add group0, group1 : WebSocketGroup
 
@@ -17,8 +17,8 @@ Attach              <- AttachToken ws NameList ws InstancePath                  
 Detach              <- DetachToken ws NameList ws InstancePath                                  # detach node0, node1 group0
 
 Set                 <- SetToken ws InstancePath ?(:'/' InstancePath) ws :'=' ws RealString      # set node0.comp0.myAtt = 'foo'
-                                                                                         # set sync.myAtt/node0 = "foo"
-                                                                                         # set node0.started = "false" -> is used to define if the instance is started or not
+                                                                                                # set sync.myAtt/node0 = "foo"
+                                                                                                # set node0.started = "false" -> is used to define if the instance is started or not
 
 Network             <- NetworkToken ws InstancePath ws String2                                  # network node1.lan.eth0 192.168.0.1
 
@@ -29,15 +29,21 @@ DelBinding          <- UnbindToken ws InstancePath ws InstancePath              
 AddRepo             <- RepoToken ws RealStringNoNewLine                                         # repo "http://org.sonatype.org/foo/bar?a=b&c=d"
 
 Include             <- IncludeToken ws String :':' String2                                      # include npm:kevoree-chan-websocket
-																					     # include mvn:org.kevoree.library.javase:websocketgrp:2.0.5-SNAPSHOT
+																					            # include mvn:org.kevoree.library.javase:websocketgrp:2.0.5-SNAPSHOT
 
 NameList            <- InstancePath ws *(:[,] ws InstancePath)                                  # node42
-                                                                                         # node0, node0.comp1, node42
+                                                                                                # node0, node0.comp1, node42
 
 TypeDef             <- String ?(:'/' Version)                                                   # FooType/0.0.1 (specific vers.)
-                                                                                         # FooType       (last vers.)
+                                                                                                # FooType       (last vers.)
 
 Namespace           <- NamespaceToken ws String                                                 # namespace sp-ace_0
+
+Start               <- StartToken ws NameList                                                   # start host.child
+
+Stop                <- StopToken ws NameList                                                    # stop child, child1
+
+Pause               <- PauseToken ws NameList                                                   # pause node0.comp
 
 InstancePath        <- (Wildcard | String) *(:[.] (Wildcard | String))                          # node0.*.att
 
@@ -80,6 +86,9 @@ NetworkToken    <: 'network'
 BindToken       <: 'bind'
 UnbindToken     <: 'unbind'
 NamespaceToken  <: 'namespace'
+StartToken      <: 'start'
+StopToken       <: 'stop'
+PauseToken      <: 'pause'
 Comment         <: '//' ?Line
 eol             <: '\r\n' | '\n' | '\r'
 ws              <: *([ \t] | eol)
