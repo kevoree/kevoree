@@ -157,11 +157,15 @@ public class App {
                // properties.list(System.out);
 
 
+                System.out.println(">"+System.getProperty("idea.config.path"));
+
                 if (System.getProperty("idea.config.path")!=null) {
-                    jframe.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                    jframe.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
                 } else {
                     jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 }
+
+                System.out.println(jframe.getDefaultCloseOperation()+"-"+JFrame.EXIT_ON_CLOSE);
 
                 jframe.setPreferredSize(new Dimension(800, 600));
                 jframe.setJMenuBar(artpanel.getMenuBar());

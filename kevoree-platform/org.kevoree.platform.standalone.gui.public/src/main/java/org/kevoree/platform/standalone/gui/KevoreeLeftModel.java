@@ -7,6 +7,7 @@ import com.explodingpixels.macwidgets.SourceListModel;
 import org.kevoree.*;
 
 import javax.swing.*;
+import java.util.HashMap;
 
 /**
  * Created with IntelliJ IDEA.
@@ -32,24 +33,37 @@ public class KevoreeLeftModel extends JPanel {
         SourceListItem channelItem = new SourceListItem("Channels");
         SourceListItem groupItem = new SourceListItem("Groups");
         SourceListItem childItem = new SourceListItem("ChildNodes");
+        SourceListItem nodesItem = new SourceListItem("Nodes");
+
         model.addCategory(category);
         model.addItemToCategory(componentItem, category);
         model.addItemToCategory(channelItem, category);
         model.addItemToCategory(groupItem, category);
         model.addItemToCategory(childItem, category);
+        model.addItemToCategory(nodesItem, category);
+
+        HashMap<String, Channel> channels = new HashMap<String, Channel>();
         for (ComponentInstance c : kmodel.getComponents()) {
             SourceListItem itc = new SourceListItem(c.getName() + ":" + c.getTypeDefinition().getName());
             model.addItemToItem(itc, componentItem);
-        }
-        for (Channel c : ((ContainerRoot) kmodel.eContainer()).getHubs()) {
-            for (MBinding mb : c.getBindings()) {
-                if (mb.getPort() != null) {
-                    if (mb.eContainer().eContainer() == kmodel) {
-                        SourceListItem itc = new SourceListItem(c.getName() + ":" + c.getTypeDefinition().getName());
-                        model.addItemToItem(itc, channelItem);
+            for (Port p : c.getProvided()) {
+                for (MBinding mb : p.getBindings()) {
+                    if (mb.getHub() != null) {
+                        channels.put(mb.getHub().path(), mb.getHub());
                     }
                 }
             }
+            for (Port p : c.getRequired()) {
+                for (MBinding mb : p.getBindings()) {
+                    if (mb.getHub() != null) {
+                        channels.put(mb.getHub().path(), mb.getHub());
+                    }
+                }
+            }
+        }
+        for (Channel ch : channels.values()) {
+            SourceListItem itcCh = new SourceListItem(ch.getName() + ":" + ch.getTypeDefinition().getName());
+            model.addItemToItem(itcCh, channelItem);
         }
         for (Group g : ((ContainerRoot) kmodel.eContainer()).getGroups()) {
             if (g.getSubNodes().contains(kmodel)) {
@@ -57,10 +71,16 @@ public class KevoreeLeftModel extends JPanel {
                 model.addItemToItem(itc, groupItem);
             }
         }
+
         for (ContainerNode child : kmodel.getHosts()) {
             SourceListItem itc = new SourceListItem(child.getName() + ":" + child.getTypeDefinition().getName());
             model.addItemToItem(itc, childItem);
         }
+        for (ContainerNode child : ((ContainerRoot) kmodel.eContainer()).getNodes()) {
+            SourceListItem itc = new SourceListItem(child.getName() + ":" + child.getTypeDefinition().getName());
+            model.addItemToItem(itc, nodesItem);
+        }
+
         try {
             _sourceList.useIAppStyleScrollBars();
 

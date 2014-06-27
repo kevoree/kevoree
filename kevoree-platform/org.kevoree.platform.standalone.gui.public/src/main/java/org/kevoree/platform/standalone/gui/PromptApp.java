@@ -70,6 +70,10 @@ public class PromptApp {
         popupPanel.setBackground(Color.BLACK);
         popupPanel.setOpaque(true);
 
+        if(hostname.length() > 20){
+            hostname = hostname.substring(0,20);
+        }
+
         popupPanel.add(HudWidgetFactory.createHudLabel("Node name"));
         final JTextField nodeNameField = HudWidgetFactory.createHudTextField(hostname);
         popupPanel.add(nodeNameField);
@@ -77,7 +81,7 @@ public class PromptApp {
         final JTextField groupNameField = HudWidgetFactory.createHudTextField("sync_"+new Random().nextInt(100));
         popupPanel.add(groupNameField);
         popupPanel.add(HudWidgetFactory.createHudLabel("Host"));
-        final JTextField hostField = HudWidgetFactory.createHudTextField("tcp://iot.eclipse.org:1883");
+        final JTextField hostField = HudWidgetFactory.createHudTextField("tcp://mqtt.kevoree.org:81");
         popupPanel.add(hostField);
 
         JButton startButton = HudWidgetFactory.createHudButton("Start");
