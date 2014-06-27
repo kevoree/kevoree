@@ -155,7 +155,7 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
     }
 
     private void fillModelWithRepository(String repositoryURL, ContainerRoot model) {
-        if (model.findRepositoriesByID(repositoryURL) != null) {
+        if (model.findRepositoriesByID(repositoryURL) == null) {
             org.kevoree.Repository repository = new DefaultKevoreeFactory().createRepository();
             repository.setUrl(repositoryURL);
             model.addRepositories(repository);
