@@ -78,7 +78,7 @@ public class PromptApp {
         final JTextField nodeNameField = HudWidgetFactory.createHudTextField(hostname);
         popupPanel.add(nodeNameField);
         popupPanel.add(HudWidgetFactory.createHudLabel("Group name"));
-        final JTextField groupNameField = HudWidgetFactory.createHudTextField("sync_"+new Random().nextInt(100));
+        final JTextField groupNameField = HudWidgetFactory.createHudTextField("sync_"+new Random().nextInt(10000));
         popupPanel.add(groupNameField);
         popupPanel.add(HudWidgetFactory.createHudLabel("Host"));
         final JTextField hostField = HudWidgetFactory.createHudTextField("tcp://mqtt.kevoree.org:81");

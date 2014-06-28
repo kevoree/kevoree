@@ -86,7 +86,7 @@ public class FileMenu extends JMenu {
 
     private JMenuItem createPushFromPublicGateway() {
         /* Load remote ui command */
-        JMenuItem fileOpenRemote = new JMenuItem("Push from public Gateway");
+        JMenuItem fileOpenRemote = new JMenuItem("Push to public Gateway");
         PushPublicModelUICommand cmdLMORemote2 = new PushPublicModelUICommand();
         cmdLMORemote2.setKernel(kernel);
         fileOpenRemote.addActionListener(new CommandActionListener(cmdLMORemote2));

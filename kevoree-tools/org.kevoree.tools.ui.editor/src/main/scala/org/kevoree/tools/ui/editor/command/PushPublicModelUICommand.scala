@@ -13,10 +13,6 @@ import org.eclipse.paho.client.mqttv3.{MqttClient, MqttMessage}
 import org.kevoree.tools.ui.editor.KevoreeUIKernel
 import org.slf4j.LoggerFactory
 
-object PushPublicModelUICommand {
-  var lastRemoteNodeAddress: String = "sync"
-}
-
 class PushPublicModelUICommand extends Command {
 
   var kernel: KevoreeUIKernel = null
@@ -61,10 +57,10 @@ class PushPublicModelUICommand extends Command {
 
   def execute(p: Object) = {
     try {
-      val result = JOptionPane.showInputDialog("Public group name", PushPublicModelUICommand.lastRemoteNodeAddress)
+      val result = JOptionPane.showInputDialog("Public group name", LoadPublicModelUICommand.lastRemoteNodeAddress)
       if (result != null && result != "") {
-        PushPublicModelUICommand.lastRemoteNodeAddress = result
-        remoteMQTTPublic(PushPublicModelUICommand.lastRemoteNodeAddress)
+        LoadPublicModelUICommand.lastRemoteNodeAddress = result
+        remoteMQTTPublic(LoadPublicModelUICommand.lastRemoteNodeAddress)
         true
       }
     } catch {
