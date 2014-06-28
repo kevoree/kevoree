@@ -29,6 +29,8 @@ public class FileMenu extends JMenu {
         add(createOpenItem());
         add(createMergeItem());
         add(createOpenKevsItem());
+        add(createOpenFromPublicGateway());
+        add(createPushFromPublicGateway());
         add(createOpenFromNode());
         add(createMergeFromNode());
         add(createSaveItem());
@@ -72,6 +74,25 @@ public class FileMenu extends JMenu {
         fileOpenRemote.addActionListener(new CommandActionListener(cmdLMORemote2));
         return fileOpenRemote;
     }
+
+    private JMenuItem createOpenFromPublicGateway() {
+        /* Load remote ui command */
+        JMenuItem fileOpenRemote = new JMenuItem("Open from public Gateway");
+        LoadPublicModelUICommand cmdLMORemote2 = new LoadPublicModelUICommand();
+        cmdLMORemote2.setKernel(kernel);
+        fileOpenRemote.addActionListener(new CommandActionListener(cmdLMORemote2));
+        return fileOpenRemote;
+    }
+
+    private JMenuItem createPushFromPublicGateway() {
+        /* Load remote ui command */
+        JMenuItem fileOpenRemote = new JMenuItem("Push from public Gateway");
+        PushPublicModelUICommand cmdLMORemote2 = new PushPublicModelUICommand();
+        cmdLMORemote2.setKernel(kernel);
+        fileOpenRemote.addActionListener(new CommandActionListener(cmdLMORemote2));
+        return fileOpenRemote;
+    }
+
 
     private JMenuItem createMergeFromNode() {
         /* Load remote ui command */
