@@ -5,7 +5,7 @@
     <packaging>pom</packaging>
     <name>Kevoree :: Root</name>
     <url>https://github.com/dukeboard/kevoree</url>
-    <version>3.6.10-SNAPSHOT</version>
+    <version>3.7.0</version>
 
     <properties>
         <kmf.version>1.10.4</kmf.version>
@@ -42,7 +42,7 @@
         <connection>scm:git:git@github.com:dukeboard/kevoree.git</connection>
         <developerConnection>scm:git:git@github.com:dukeboard/kevoree.git</developerConnection>
         <url>http://github.com/dukeboard/kevoree.git</url>
-    <tag>HEAD</tag>
+    <tag>org.kevoree.root-3.7.0</tag>
   </scm>
 
     <licenses>
