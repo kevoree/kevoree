@@ -44,6 +44,7 @@ class LoadPublicModelUICommand extends Command {
         override def deliveryComplete(p1: IMqttDeliveryToken): Unit = {
 
         }
+
         override def messageArrived(p1: String, p2: MqttMessage): Unit = {
           val payload = new String(p2.getPayload);
           val nameIndice = payload.indexOf("#")
@@ -55,10 +56,16 @@ class LoadPublicModelUICommand extends Command {
             }
           }
         }
+
         override def connectionLost(p1: Throwable): Unit = {
         }
       });
-      client.subscribe("kev/" + groupName);
+      val topicName = "kev/" + groupName;
+      client.subscribe(topicName);
+
+      val mqttPullMessage = new MqttMessage()
+      mqttPullMessage.setPayload("pull".getBytes("UTF-8"))
+      client.publish(topicName, mqttPullMessage)
 
       val recModel = exchanger.exchange(null, 5000, TimeUnit.MILLISECONDS)
       try {
