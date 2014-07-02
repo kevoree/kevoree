@@ -1,6 +1,5 @@
 package org.kevoree.core.impl
 
-import org.kevoree.api.ModelService
 import org.kevoree.api.handler.UUIDModel
 import org.kevoree.ContainerRoot
 import java.util.UUID
@@ -25,7 +24,7 @@ import org.kevoree.modeling.api.trace.TraceSequence
 import org.kevoree.kevscript.KevScriptEngine
 import org.kevoree.api.handler.UpdateContext
 
-class PreCommand(context: UpdateContext, modelListeners: KevoreeListeners){
+class PreCommand(context: UpdateContext, modelListeners: KevoreeListeners) {
     var alreadyCall = false
     val preRollbackTest: () -> Boolean = {() ->
         if (!alreadyCall) {
@@ -77,34 +76,34 @@ class KevoreeCoreBean : ContextAwareModelService {
         return modelCloner.clone(pmodel!!, true)!!
     }
 
-    override fun registerModelListener(listener: ModelListener?, callerPath:String?) {
+    override fun registerModelListener(listener: ModelListener?, callerPath: String?) {
         modelListeners.addListener(listener!!)
     }
 
-    override fun unregisterModelListener(listener: ModelListener?, callerPath:String?) {
+    override fun unregisterModelListener(listener: ModelListener?, callerPath: String?) {
         modelListeners.removeListener(listener!!)
     }
 
-    override fun acquireLock(callBack: LockCallBack?, timeout: Long?, callerPath:String?) {
+    override fun acquireLock(callBack: LockCallBack?, timeout: Long?, callerPath: String?) {
         scheduler?.submit(AcquireLock(callBack!!, timeout!!))
     }
 
     override fun getCurrentModel(): UUIDModel? {
         return model.get()!!
     }
-    override fun compareAndSwap(model: ContainerRoot?, uuid: UUID?, callback: UpdateCallback?, callerPath:String?) {
-        scheduler!!.submit(UpdateModelRunnable(cloneCurrentModel(model), uuid, callback,callerPath))
+    override fun compareAndSwap(model: ContainerRoot?, uuid: UUID?, callback: UpdateCallback?, callerPath: String?) {
+        scheduler!!.submit(UpdateModelRunnable(cloneCurrentModel(model), uuid, callback, callerPath))
     }
-    override fun update(model: ContainerRoot?, callback: UpdateCallback?, callerPath:String?) {
-        scheduler!!.submit(UpdateModelRunnable(cloneCurrentModel(model), null, callback,callerPath))
+    override fun update(model: ContainerRoot?, callback: UpdateCallback?, callerPath: String?) {
+        scheduler!!.submit(UpdateModelRunnable(cloneCurrentModel(model), null, callback, callerPath))
     }
 
-    inner class UpdateModelRunnable(val targetModel: ContainerRoot, val uuid: UUID?, val callback: UpdateCallback?, val callerPath:String?) : Runnable {
+    inner class UpdateModelRunnable(val targetModel: ContainerRoot, val uuid: UUID?, val callback: UpdateCallback?, val callerPath: String?) : Runnable {
         override fun run() {
             var res: Boolean = false
             if (currentLock != null) {
                 if (uuid?.compareTo(currentLock!!.uuid) == 0) {
-                    res = internal_update_model(targetModel,callerPath)
+                    res = internal_update_model(targetModel, callerPath)
                 } else {
                     Log.debug("Core Locked , bad UUID {}", uuid)
                     res = false //LOCK REFUSED !
@@ -113,15 +112,15 @@ class KevoreeCoreBean : ContextAwareModelService {
                 //COMMON CHECK
                 if (uuid != null) {
                     if (uuid.compareTo(model.get()!!.getUUID()!!) == 0) {
-                        res = internal_update_model(targetModel,callerPath)
+                        res = internal_update_model(targetModel, callerPath)
                     } else {
                         res = false
                     }
                 } else {
-                    res = internal_update_model(targetModel,callerPath)
+                    res = internal_update_model(targetModel, callerPath)
                 }
             }
-            object : Thread(){
+            object : Thread() {
                 override fun run() {
                     callback?.run(res)
                 }
@@ -130,52 +129,52 @@ class KevoreeCoreBean : ContextAwareModelService {
     }
 
     val scriptEngine = KevScriptEngine()
-    inner class UpdateScriptRunnable(val script: String, val callback: UpdateCallback?, val callerPath:String?) : Runnable {
+    inner class UpdateScriptRunnable(val script: String, val callback: UpdateCallback?, val callerPath: String?) : Runnable {
         override fun run() {
             try {
                 val newModel = modelCloner.clone(model.get()?.getModel() as ContainerRoot, false) as ContainerRoot
                 scriptEngine.execute(script, newModel)
-                var res = internal_update_model(cloneCurrentModel(newModel),callerPath)
-                object : Thread(){
+                var res = internal_update_model(cloneCurrentModel(newModel), callerPath)
+                object : Thread() {
                     override fun run() {
                         callback?.run(res)
                     }
                 }.start()
-            } catch(e: Throwable){
+            } catch(e: Throwable) {
                 callback?.run(false)
             }
         }
     }
 
-    override fun submitScript(script: String?, callback: UpdateCallback?, callerPath:String?) {
+    override fun submitScript(script: String?, callback: UpdateCallback?, callerPath: String?) {
         if (script != null && currentLock == null) {
-            scheduler!!.submit(UpdateScriptRunnable(script, callback,callerPath))
+            scheduler!!.submit(UpdateScriptRunnable(script, callback, callerPath))
         } else {
             callback?.run(false)
         }
     }
 
-    inner class UpdateSequenceRunnable(val sequence: TraceSequence, val callback: UpdateCallback?, val callerPath:String?) : Runnable {
+    inner class UpdateSequenceRunnable(val sequence: TraceSequence, val callback: UpdateCallback?, val callerPath: String?) : Runnable {
         override fun run() {
             try {
                 val newModel = modelCloner.clone(model.get()?.getModel() as ContainerRoot, false) as ContainerRoot
                 sequence.applyOn(newModel)
-                var res = internal_update_model(cloneCurrentModel(newModel),callerPath)
-                object : Thread(){
+                var res = internal_update_model(cloneCurrentModel(newModel), callerPath)
+                object : Thread() {
                     override fun run() {
                         callback?.run(res)
                     }
                 }.start()
-            } catch(e: Throwable){
+            } catch(e: Throwable) {
                 Log.error("error while apply trace sequence", e)
                 callback?.run(false)
             }
         }
     }
 
-    override fun submitSequence(sequence: TraceSequence?, callback: UpdateCallback?, callerPath:String?) {
+    override fun submitSequence(sequence: TraceSequence?, callback: UpdateCallback?, callerPath: String?) {
         if (sequence != null && currentLock == null) {
-            scheduler!!.submit(UpdateSequenceRunnable(sequence, callback,callerPath))
+            scheduler!!.submit(UpdateSequenceRunnable(sequence, callback, callerPath))
         } else {
             callback?.run(false)
         }
@@ -302,7 +301,7 @@ class KevoreeCoreBean : ContextAwareModelService {
         }
     }
 
-    override fun releaseLock(uuid: UUID?, callerPath:String?) {
+    override fun releaseLock(uuid: UUID?, callerPath: String?) {
         if (uuid != null) {
             scheduler?.submit(ReleaseLockCallable(uuid))
         } else {
@@ -344,14 +343,25 @@ class KevoreeCoreBean : ContextAwareModelService {
         }
     }
 
-    fun internal_update_model(proposedNewModel: ContainerRoot, callerPath:String?): Boolean {
+    fun internal_update_model(proposedNewModel: ContainerRoot, callerPath: String?): Boolean {
 
         if (proposedNewModel.findNodesByID(getNodeName()) == null) {
             Log.error("Asking for update with a NULL model or node name ({}) was not found in target model !", getNodeName())
             return false
         }
+
         try {
-            val readOnlyNewModel = proposedNewModel
+            var readOnlyNewModel = proposedNewModel
+
+            if (readOnlyNewModel.isReadOnly()) {
+                readOnlyNewModel = modelCloner.clone(readOnlyNewModel, false)!!;
+                readOnlyNewModel.generated_KMF_ID = _nodeName + "@"+callerPath+"#" + System.nanoTime()
+                readOnlyNewModel = modelCloner.clone(readOnlyNewModel, true)!!;
+            } else {
+                readOnlyNewModel.generated_KMF_ID = _nodeName + "@"+callerPath+"#" + System.nanoTime()
+            }
+
+
             val checkResult = null//modelChecker.check(readOnlyNewModel)!!
             if ( checkResult != null) {
                 Log.error("There is check failure on update model, update refused !")
@@ -368,7 +378,7 @@ class KevoreeCoreBean : ContextAwareModelService {
                 var currentModel = model.get()!!.getModel()!!
                 Log.debug("Before listeners PreCheck !")
 
-                val updateContext = UpdateContext(currentModel, readOnlyNewModel,callerPath)
+                val updateContext = UpdateContext(currentModel, readOnlyNewModel, callerPath)
 
                 val preCheckResult = modelListeners.preUpdate(updateContext)
                 Log.debug("PreCheck result = " + preCheckResult)
@@ -436,7 +446,7 @@ class KevoreeCoreBean : ContextAwareModelService {
                             adaptationModel.setInternalReadOnly()
                             //Execution of the adaptation
                             Log.info("Launching adaptation of the system.")
-                            val updateContext = UpdateContext(currentModel, newmodel,callerPath)
+                            val updateContext = UpdateContext(currentModel, newmodel, callerPath)
                             val  afterUpdateTest: () -> Boolean = {() -> modelListeners.afterUpdate(updateContext) }
                             val preCmd = PreCommand(updateContext, modelListeners)
                             val postRollbackTest: () -> Boolean = {() -> modelListeners.postRollback(updateContext);true }
@@ -458,7 +468,7 @@ class KevoreeCoreBean : ContextAwareModelService {
                         Log.warn("Update failed")
                         //IF HARAKIRI
                         if (previousHaraKiriModel != null) {
-                            internal_update_model(previousHaraKiriModel!!,callerPath)
+                            internal_update_model(previousHaraKiriModel!!, callerPath)
                             previousHaraKiriModel = null //CLEAR
                         }
                     }

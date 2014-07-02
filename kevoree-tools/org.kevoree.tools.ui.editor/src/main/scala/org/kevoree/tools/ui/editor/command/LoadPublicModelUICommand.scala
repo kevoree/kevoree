@@ -63,8 +63,9 @@ class LoadPublicModelUICommand extends Command {
       val topicName = "kev/" + groupName;
       client.subscribe(topicName);
 
-      val mqttPullMessage = new MqttMessage()
-      mqttPullMessage.setPayload("pull".getBytes("UTF-8"))
+      val mqttPullMessage = new MqttMessage();
+      mqttPullMessage.setPayload("pull".getBytes("UTF-8"));
+      mqttPullMessage.setRetained(false);
       client.publish(topicName, mqttPullMessage)
 
       val recModel = exchanger.exchange(null, 5000, TimeUnit.MILLISECONDS)
