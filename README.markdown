@@ -1,5 +1,8 @@
 # Kevoree : documentation
 
+Please find documentation at http://doc.kevoree.org
+
+
 ![Kevoree icon](https://raw.github.com/dukeboard/kevoree/master/kevoree-docs/kevoree-gris.png)
 
 ##Please visit [Kevoree main web site](http://kevoree.org/)
@@ -18,3 +21,4 @@
 ## 2. Library documentation
 
 ###[> Group for synchronisation (WebSocket)](https://github.com/dukeboard/kevoree-corelibrary/blob/master/javase/org.kevoree.library.javase.webSocketGrp/README.md)
+
