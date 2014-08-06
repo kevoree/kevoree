@@ -29,10 +29,10 @@ package org.kevoree.tools.ui.editor
 import command.LoadModelCommand
 import javax.swing._
 import java.awt.event.{MouseEvent, MouseAdapter}
+import org.kevoree.factory.DefaultKevoreeFactory
+import org.kevoree.modeling.api.json.{JSONModelLoader, JSONModelSerializer}
 import org.slf4j.LoggerFactory
 import java.awt.BorderLayout
-import org.kevoree.serializer.JSONModelSerializer
-import org.kevoree.loader.JSONModelLoader
 
 /**
  * Created by IntelliJ IDEA.
@@ -44,7 +44,7 @@ import org.kevoree.loader.JSONModelLoader
 class KevModelTextEditorPanel(kernel: KevoreeUIKernel) extends JPanel {
 
   private val saver = new JSONModelSerializer();
-  private val loader = new JSONModelLoader();
+  private val loader = new JSONModelLoader(new DefaultKevoreeFactory());
 
   def reload() {
     PositionedEMFHelper.updateModelUIMetaData(kernel)

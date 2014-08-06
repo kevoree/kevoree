@@ -1,7 +1,7 @@
 package org.kevoree.tools.test;
 
+import org.kevoree.factory.DefaultKevoreeFactory;
 import org.zeromq.*;
-import org.kevoree.impl.DefaultKevoreeFactory;
 import org.kevoree.log.Log;
 import org.kevoree.resolver.MavenResolver;
 

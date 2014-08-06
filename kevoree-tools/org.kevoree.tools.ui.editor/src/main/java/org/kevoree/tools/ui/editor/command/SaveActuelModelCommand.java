@@ -31,7 +31,7 @@ package org.kevoree.tools.ui.editor.command;
 
 import javax.swing.JFileChooser;
 
-import org.kevoree.serializer.JSONModelSerializer;
+import org.kevoree.modeling.api.json.JSONModelSerializer;
 import org.kevoree.tools.ui.editor.KevoreeUIKernel;
 import org.kevoree.tools.ui.editor.PositionedEMFHelper;
 import org.slf4j.Logger;

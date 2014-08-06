@@ -6,7 +6,7 @@
     <version>3.7.2-SNAPSHOT</version>
 
     <properties>
-        <metamodel.ecore>${basedir}/target/metamodel/kevoree.ecore</metamodel.ecore>
+        <metamodel.ecore>${basedir}/target/metamodel/org.kevoree.mm</metamodel.ecore>
     </properties>
 
     <parent>
@@ -64,7 +64,6 @@
                         </goals>
                         <configuration>
                             <ecore>${metamodel.ecore}</ecore>
-                            <packagePrefix>org</packagePrefix>
                             <js>true</js>
                             <events>true</events>
                         </configuration>

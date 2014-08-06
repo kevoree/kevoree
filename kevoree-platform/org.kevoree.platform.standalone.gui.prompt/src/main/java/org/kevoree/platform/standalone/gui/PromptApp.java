@@ -26,7 +26,8 @@
  */
 package org.kevoree.platform.standalone.gui;
 
-import org.kevoree.impl.DefaultKevoreeFactory;
+
+import org.kevoree.factory.DefaultKevoreeFactory;
 
 import javax.swing.*;
 

@@ -30,7 +30,8 @@
 package org.kevoree.tools.ui.editor.command;
 
 import org.kevoree.ContainerRoot;
-import org.kevoree.loader.JSONModelLoader;
+import org.kevoree.factory.DefaultKevoreeFactory;
+import org.kevoree.modeling.api.json.JSONModelLoader;
 import org.kevoree.tools.ui.editor.KevoreeUIKernel;
 import org.kevoree.tools.ui.editor.PositionedEMFHelper;
 
@@ -70,7 +71,7 @@ public class LoadNewLibCommand implements Command {
             } else {
                 throw new Exception("Unable to load library from object " + p.getClass() + ":" + p.toString());
             }
-            JSONModelLoader loader = new JSONModelLoader();
+            JSONModelLoader loader = new JSONModelLoader(new DefaultKevoreeFactory());
             try {
                 JarFile jar;
                 jar = new JarFile(new File(absolutePath));

@@ -14,8 +14,8 @@
 package org.kevoree.api
 
 import org.kevoree.ContainerRoot
-import org.kevoreeadaptation.AdaptationModel
-import org.kevoreeadaptation.AdaptationPrimitive
+import org.kevoree.api.adaptation.AdaptationModel
+import org.kevoree.api.adaptation.AdaptationPrimitive
 
 /**
  * Created by IntelliJ IDEA.

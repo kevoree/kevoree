@@ -31,7 +31,8 @@
 package org.kevoree.tools.ui.editor.command;
 
 import org.kevoree.*;
-import org.kevoree.loader.JSONModelLoader;
+import org.kevoree.factory.DefaultKevoreeFactory;
+import org.kevoree.modeling.api.json.JSONModelLoader;
 import org.kevoree.tools.ui.editor.KevoreeUIKernel;
 import org.kevoree.tools.ui.editor.MetaDataHelper;
 import org.kevoree.tools.ui.editor.listener.NodeDragSourceListener;
@@ -70,7 +71,7 @@ public class MergeModelCommand implements Command {
         if (p instanceof ContainerRoot) {
             modelToMerge = (ContainerRoot) p;
         } else {
-            JSONModelLoader loader = new JSONModelLoader();
+            JSONModelLoader loader = new JSONModelLoader(new DefaultKevoreeFactory());
             if (p instanceof InputStream) {
                 modelToMerge = (ContainerRoot) loader.loadModelFromStream((InputStream) p).get(0);
             } else {

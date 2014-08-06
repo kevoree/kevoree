@@ -11,6 +11,7 @@ import javax.swing.JOptionPane
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence
 import org.eclipse.paho.client.mqttv3.{IMqttDeliveryToken, MqttCallback, MqttClient, MqttMessage}
 import org.kevoree.ContainerRoot
+import org.kevoree.factory.DefaultKevoreeFactory
 import org.kevoree.tools.ui.editor.KevoreeUIKernel
 import org.slf4j.LoggerFactory
 
@@ -26,7 +27,7 @@ class LoadPublicModelUICommand extends Command {
 
   def setKernel(k: KevoreeUIKernel) = kernel = k
 
-  val jsonLoader = new org.kevoree.loader.JSONModelLoader();
+  val jsonLoader = new org.kevoree.modeling.api.json.JSONModelLoader(new DefaultKevoreeFactory());
 
   private val lcommand = new LoadModelCommand();
   private val mergeCommand = new MergeModelCommand();

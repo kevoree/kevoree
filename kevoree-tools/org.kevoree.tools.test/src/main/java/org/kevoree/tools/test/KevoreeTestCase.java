@@ -2,9 +2,10 @@ package org.kevoree.tools.test;
 
 import org.junit.After;
 import org.kevoree.ContainerRoot;
-import org.kevoree.loader.JSONModelLoader;
+import org.kevoree.factory.DefaultKevoreeFactory;
 import org.kevoree.log.Log;
-import org.kevoree.serializer.JSONModelSerializer;
+import org.kevoree.modeling.api.json.JSONModelLoader;
+import org.kevoree.modeling.api.json.JSONModelSerializer;
 
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
@@ -68,7 +69,7 @@ public class KevoreeTestCase {
         } else {
             KevoreePlatformCtrl runner = runners.get(nodeName);
             runner.getWorker().send("getModel");
-            JSONModelLoader loader = new JSONModelLoader();
+            JSONModelLoader loader = new JSONModelLoader(new DefaultKevoreeFactory());
             ContainerRoot model = (ContainerRoot) loader.loadModelFromString(runner.getWorker().recvStr()).get(0);
             return model;
         }

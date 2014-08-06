@@ -1,7 +1,7 @@
 package org.kevoree.tools.annotator;
 
 import org.kevoree.DeployUnit;
-import org.kevoree.impl.DefaultKevoreeFactory;
+import org.kevoree.factory.DefaultKevoreeFactory;
 import org.kevoree.log.Log;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;

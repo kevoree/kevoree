@@ -27,8 +27,8 @@
 package org.kevoree.tools.ui.editor.runner;
 
 import com.explodingpixels.macwidgets.*;
-import org.kevoree.KevoreeFactory;
-import org.kevoree.impl.DefaultKevoreeFactory;
+import org.kevoree.factory.DefaultKevoreeFactory;
+import org.kevoree.factory.KevoreeFactory;
 import org.kevoree.tools.ui.editor.ExtKevScriptEditor;
 import org.kevoree.tools.ui.editor.KevoreeEditor;
 import org.kevoree.tools.ui.editor.LogPanel;
@@ -39,8 +39,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.net.URLClassLoader;
-import java.util.Properties;
 
 /**
  * Hello world!

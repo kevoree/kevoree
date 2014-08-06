@@ -27,7 +27,7 @@
 package org.kevoree.platform.standalone.gui;
 
 import com.explodingpixels.macwidgets.HudWidgetFactory;
-import org.kevoree.impl.DefaultKevoreeFactory;
+import org.kevoree.factory.DefaultKevoreeFactory;
 
 import javax.swing.*;
 import java.awt.*;

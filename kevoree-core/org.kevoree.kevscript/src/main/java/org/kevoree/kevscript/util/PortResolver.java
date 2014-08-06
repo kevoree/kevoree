@@ -5,6 +5,7 @@ import org.kevoree.ContainerNode;
 import org.kevoree.ContainerRoot;
 import org.kevoree.Port;
 import org.kevoree.kevscript.Type;
+import org.kevoree.modeling.api.KMFContainer;
 import org.waxeye.ast.IAST;
 
 import java.util.ArrayList;
@@ -25,13 +26,13 @@ public class PortResolver {
             String nodeName = node.getChildren().get(0).childrenAsString();
             String componentName = node.getChildren().get(1).childrenAsString();
             String portName = node.getChildren().get(2).childrenAsString();
-            List<Object> parentNodes = model.selectByQuery("nodes[" + nodeName + "]");
+            List<KMFContainer> parentNodes = model.select("nodes[" + nodeName + "]");
             if(parentNodes.isEmpty()){
                 throw new Exception("No nodes resolved from : " + componentName);
             }
             for (Object loopObj : parentNodes) {
                 ContainerNode parentNode = (ContainerNode) loopObj;
-                List<Object> cis = parentNode.selectByQuery("components[" + componentName + "]");
+                List<KMFContainer> cis = parentNode.select("components[" + componentName + "]");
                 if(cis.isEmpty()){
                     throw new Exception("No components resolved from : " + componentName);
                 }

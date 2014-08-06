@@ -4,6 +4,7 @@ import org.kevoree.ContainerNode;
 import org.kevoree.ContainerRoot;
 import org.kevoree.Instance;
 import org.kevoree.kevscript.Type;
+import org.kevoree.modeling.api.KMFContainer;
 import org.waxeye.ast.IAST;
 
 import java.util.ArrayList;
@@ -26,14 +27,14 @@ public class InstanceResolver {
                 //Component case
                 String nodeName = node.getChildren().get(0).childrenAsString();
                 String childName = node.getChildren().get(1).childrenAsString();
-                List<Object> parentNodes = model.selectByQuery("nodes[" + nodeName + "]");
+                List<KMFContainer> parentNodes = model.select("nodes[" + nodeName + "]");
                 if (parentNodes.isEmpty()) {
                     throw new Exception("No nodes found with name : " + nodeName);
                 }
                 for (Object loopObj : parentNodes) {
                     ContainerNode parentNode = (ContainerNode) loopObj;
-                    List<Object> comps = parentNode.selectByQuery("components[" + childName + "]");
-                    List<Object> hosts = parentNode.selectByQuery("hosts[" + childName + "]");
+                    List<KMFContainer> comps = parentNode.select("components[" + childName + "]");
+                    List<KMFContainer> hosts = parentNode.select("hosts[" + childName + "]");
                     // append components & hosted nodes
                     comps.addAll(hosts);
                     if (comps.isEmpty()) {
@@ -46,12 +47,12 @@ public class InstanceResolver {
             } else {
                 //group or channel
                 String instanceName = node.getChildren().get(0).childrenAsString();
-                List<Object> instancefounds = model.selectByQuery("groups[" + instanceName + "]");
+                List<KMFContainer> instancefounds = model.select("groups[" + instanceName + "]");
                 if (instancefounds.isEmpty()) {
-                    instancefounds = model.selectByQuery("hubs[" + instanceName + "]");
+                    instancefounds = model.select("hubs[" + instanceName + "]");
                 }
                 if (instancefounds.isEmpty()) {
-                    instancefounds = model.selectByQuery("nodes[" + instanceName + "]");
+                    instancefounds = model.select("nodes[" + instanceName + "]");
                 }
                 if (instancefounds.isEmpty()) {
                     throw new Exception("No group or channel found for name " + instanceName);

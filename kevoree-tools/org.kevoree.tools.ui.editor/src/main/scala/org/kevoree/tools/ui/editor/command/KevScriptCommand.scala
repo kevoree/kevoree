@@ -39,13 +39,13 @@
  */
 package org.kevoree.tools.ui.editor.command
 
+import org.kevoree.factory.DefaultKevoreeFactory
+import org.kevoree.modeling.api.ModelCloner
 import org.kevoree.tools.ui.editor.KevoreeUIKernel
 import org.slf4j.LoggerFactory
 import java.awt.Color
-import com.explodingpixels.macwidgets.HudWindow
 import javax.swing._
 import org.kevoree.kevscript.KevScriptEngine
-import org.kevoree.cloner.DefaultModelCloner
 import org.kevoree.ContainerRoot
 
 /**
@@ -97,7 +97,7 @@ class KevScriptCommand extends Command {
   }
 
   var engine = new KevScriptEngine
-  var cloner = new DefaultModelCloner()
+  var cloner = new ModelCloner(new DefaultKevoreeFactory)
 
   def execute(p: AnyRef) {
     try {

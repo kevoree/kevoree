@@ -1,11 +1,11 @@
 package org.kevoree.platform.standalone.test;
 
+import org.kevoree.modeling.api.json.JSONModelLoader;
+import org.kevoree.modeling.api.json.JSONModelSerializer;
 import org.zeromq.*;
 import org.kevoree.ContainerRoot;
 import org.kevoree.api.handler.UpdateCallback;
 import org.kevoree.core.impl.KevoreeCoreBean;
-import org.kevoree.loader.JSONModelLoader;
-import org.kevoree.serializer.JSONModelSerializer;
 
 import java.util.concurrent.CountDownLatch;
 
@@ -17,7 +17,7 @@ public class JeroMQCoreWrapper implements Runnable {
     private KevoreeCoreBean core;
     private ZMQ.Socket worker;
     private JSONModelSerializer saver = new JSONModelSerializer();
-    private JSONModelLoader loader = new JSONModelLoader();
+    private JSONModelLoader loader = new JSONModelLoader(core.getFactory());
 
 
     public JeroMQCoreWrapper(KevoreeCoreBean coreBean, Integer port) {

@@ -6,9 +6,10 @@ import com.ning.http.client.websocket.WebSocket;
 import com.ning.http.client.websocket.WebSocketTextListener;
 import com.ning.http.client.websocket.WebSocketUpgradeHandler;
 import org.kevoree.ContainerRoot;
-import org.kevoree.loader.JSONModelLoader;
+import org.kevoree.factory.DefaultKevoreeFactory;
 import org.kevoree.log.Log;
-import org.kevoree.serializer.JSONModelSerializer;
+import org.kevoree.modeling.api.json.JSONModelLoader;
+import org.kevoree.modeling.api.json.JSONModelSerializer;
 
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
@@ -21,7 +22,7 @@ import java.util.concurrent.ExecutionException;
  */
 public class WebSocketClient {
 
-    private static JSONModelLoader loader = new JSONModelLoader();
+    private static JSONModelLoader loader = new JSONModelLoader(new DefaultKevoreeFactory());
     private static JSONModelSerializer saver = new JSONModelSerializer();
 
 

@@ -3,11 +3,10 @@ package org.kevoree.tools.annotator;
 import javassist.ClassClassPath;
 import javassist.ClassPool;
 import javassist.CtClass;
-import javassist.NotFoundException;
 import org.kevoree.ContainerRoot;
 import org.kevoree.DeployUnit;
-import org.kevoree.KevoreeFactory;
-import org.kevoree.impl.DefaultKevoreeFactory;
+import org.kevoree.factory.DefaultKevoreeFactory;
+import org.kevoree.factory.KevoreeFactory;
 
 import java.io.File;
 import java.util.List;

@@ -28,13 +28,12 @@ import org.apache.maven.shared.dependency.tree.DependencyTreeBuilderException;
 import org.kevoree.ContainerRoot;
 import org.kevoree.DeployUnit;
 import org.kevoree.TypeDefinition;
-import org.kevoree.compare.DefaultModelCompare;
-import org.kevoree.impl.DefaultKevoreeFactory;
-import org.kevoree.loader.JSONModelLoader;
-import org.kevoree.loader.XMIModelLoader;
+import org.kevoree.factory.DefaultKevoreeFactory;
 import org.kevoree.modeling.api.compare.ModelCompare;
-import org.kevoree.serializer.JSONModelSerializer;
-import org.kevoree.serializer.XMIModelSerializer;
+import org.kevoree.modeling.api.json.JSONModelLoader;
+import org.kevoree.modeling.api.json.JSONModelSerializer;
+import org.kevoree.modeling.api.xmi.XMIModelLoader;
+import org.kevoree.modeling.api.xmi.XMIModelSerializer;
 import org.kevoree.tools.annotator.Annotations2Model;
 //import org.kevoree.tools.annotator.InheritanceBuilder;
 
@@ -201,13 +200,13 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
         }
 
         JSONModelSerializer saver = new JSONModelSerializer();
-        JSONModelLoader loader = new JSONModelLoader();
+        JSONModelLoader loader = new JSONModelLoader(new DefaultKevoreeFactory());
 
         XMIModelSerializer saverXMI = new XMIModelSerializer();
-        XMIModelLoader loaderXMI = new XMIModelLoader();
+        XMIModelLoader loaderXMI = new XMIModelLoader(new DefaultKevoreeFactory());
 
         try {
-            ModelCompare compare = new DefaultModelCompare();
+            ModelCompare compare = new ModelCompare(new DefaultKevoreeFactory());
             for (Artifact artifact : project.getDependencyArtifacts()) {
                 if (artifact.getScope().equals(Artifact.SCOPE_COMPILE)) {
                     try {

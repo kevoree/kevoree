@@ -5,13 +5,13 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.kevoree.ContainerRoot;
 import org.kevoree.DeployUnit;
-import org.kevoree.compare.DefaultModelCompare;
-import org.kevoree.impl.DefaultKevoreeFactory;
+import org.kevoree.factory.DefaultKevoreeFactory;
 import org.kevoree.kevscript.KevScriptEngine;
-import org.kevoree.loader.JSONModelLoader;
 import org.kevoree.log.Log;
+import org.kevoree.modeling.api.compare.ModelCompare;
+import org.kevoree.modeling.api.json.JSONModelLoader;
+import org.kevoree.modeling.api.json.JSONModelSerializer;
 import org.kevoree.resolver.MavenResolver;
-import org.kevoree.serializer.JSONModelSerializer;
 import org.kevoree.tools.ui.editor.command.MergeDefaultLibrary;
 import org.kevoree.tools.ui.editor.menus.CommandActionListener;
 
@@ -32,9 +32,9 @@ public class KevoreeStore {
 
     private String version;
     private DefaultKevoreeFactory factory = new DefaultKevoreeFactory();
-    private DefaultModelCompare compare = new DefaultModelCompare();
+    private ModelCompare compare = factory.createModelCompare();
     private JSONModelSerializer saver = new JSONModelSerializer();
-    private JSONModelLoader loader = new JSONModelLoader();
+    private JSONModelLoader loader = new JSONModelLoader(factory);
     private MavenResolver resolver = new MavenResolver();
     private KevScriptEngine engine = new KevScriptEngine();
 

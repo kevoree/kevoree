@@ -2,18 +2,15 @@ package org.kevoree.tools.annotator;
 
 import javassist.*;
 import org.kevoree.*;
-import org.kevoree.ChannelType;
 import org.kevoree.ComponentType;
-import org.kevoree.GroupType;
-import org.kevoree.NodeType;
 import org.kevoree.annotation.Input;
 import org.kevoree.annotation.Output;
 import org.kevoree.annotation.Param;
 import org.kevoree.api.*;
-import org.kevoree.loader.JSONModelLoader;
+import org.kevoree.factory.KevoreeFactory;
+import org.kevoree.modeling.api.json.JSONModelLoader;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.HashMap;
@@ -144,8 +141,6 @@ public class ModelBuilderHelper {
         }
     }
 
-    private static JSONModelLoader loader = new JSONModelLoader();
-
     private static void checkParent(TypeDefinition current, CtClass clazz, CtClass originClazz, ContainerRoot root, KevoreeFactory factory) throws Exception {
         if (clazz == null) {
             return;
@@ -198,7 +193,7 @@ public class ModelBuilderHelper {
                     String kevManifest = baseURL + "KEV-INF" + File.separator + "lib.json";
                     URL ukevManifest = new URL(kevManifest);
                     InputStream is = ukevManifest.openStream();
-                    ContainerRoot libModel = (ContainerRoot) loader.loadModelFromStream(is).get(0);
+                    ContainerRoot libModel = (ContainerRoot) factory.createJSONLoader().loadModelFromStream(is).get(0);
                     HashMap<DeployUnit, Integer> links = new HashMap<DeployUnit, Integer>();
                     for (DeployUnit du : libModel.getDeployUnits()) {
                         if (!links.containsKey(du)) {

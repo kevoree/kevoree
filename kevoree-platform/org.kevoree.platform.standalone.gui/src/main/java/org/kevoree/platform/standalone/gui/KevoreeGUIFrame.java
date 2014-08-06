@@ -24,7 +24,7 @@ import org.kevoree.api.handler.UpdateCallback;
 import org.kevoree.api.handler.UpdateContext;
 import org.kevoree.bootstrap.Bootstrap;
 import org.kevoree.core.impl.KevoreeCoreBean;
-import org.kevoree.impl.DefaultKevoreeFactory;
+import org.kevoree.factory.DefaultKevoreeFactory;
 
 import javax.swing.*;
 import java.awt.*;

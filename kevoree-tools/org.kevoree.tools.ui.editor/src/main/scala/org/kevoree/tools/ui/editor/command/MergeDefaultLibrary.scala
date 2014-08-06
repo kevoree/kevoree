@@ -26,14 +26,14 @@
  */
 package org.kevoree.tools.ui.editor.command
 
+import org.kevoree.factory.DefaultKevoreeFactory
+import org.kevoree.modeling.api.json.{JSONModelSerializer, JSONModelLoader}
 import org.kevoree.tools.ui.editor.{PositionedEMFHelper, KevoreeUIKernel}
 import org.slf4j.LoggerFactory
 import java.io._
 import java.util.jar.{JarEntry, JarFile}
 import java.util
-import org.kevoree.loader.JSONModelLoader
 import org.kevoree.ContainerRoot
-import org.kevoree.serializer.JSONModelSerializer
 import org.kevoree.resolver.MavenResolver
 
 class MergeDefaultLibrary(groupID: String, arteID: String, version: String) extends Command {
@@ -58,7 +58,7 @@ class MergeDefaultLibrary(groupID: String, arteID: String, version: String) exte
       val jar = new JarFile(file)
       val entry: JarEntry = jar.getJarEntry("KEV-INF/lib.json")
 
-      val loader = new JSONModelLoader();
+      val loader = new JSONModelLoader(new DefaultKevoreeFactory());
       val saver = new JSONModelSerializer();
 
       val newmodel = loader.loadModelFromStream(jar.getInputStream(entry)).get(0).asInstanceOf[ContainerRoot]

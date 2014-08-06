@@ -2,7 +2,8 @@ package org.kevoree.kevscript;
 
 import org.kevoree.*;
 import org.kevoree.api.KevScriptService;
-import org.kevoree.impl.DefaultKevoreeFactory;
+import org.kevoree.factory.DefaultKevoreeFactory;
+import org.kevoree.factory.KevoreeFactory;
 import org.kevoree.kevscript.util.InstanceResolver;
 import org.kevoree.kevscript.util.MergeResolver;
 import org.kevoree.kevscript.util.PortResolver;

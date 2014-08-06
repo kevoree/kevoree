@@ -1,13 +1,5 @@
 package org.kevoree.bootstrap;
 
-import org.kevoree.ContainerRoot;
-import org.kevoree.Group;
-import org.kevoree.loader.JSONModelLoader;
-import org.kevoree.serializer.JSONModelSerializer;
-
-import java.io.File;
-import java.io.FileInputStream;
-
 /**
  * Created with IntelliJ IDEA.
  * User: duke

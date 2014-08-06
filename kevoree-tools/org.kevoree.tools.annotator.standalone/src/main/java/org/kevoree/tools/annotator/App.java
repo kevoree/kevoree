@@ -2,10 +2,10 @@ package org.kevoree.tools.annotator;
 
 import org.kevoree.ContainerRoot;
 import org.kevoree.DeployUnit;
-import org.kevoree.KevoreeFactory;
-import org.kevoree.impl.DefaultKevoreeFactory;
+import org.kevoree.factory.DefaultKevoreeFactory;
+import org.kevoree.factory.KevoreeFactory;
 import org.kevoree.log.Log;
-import org.kevoree.serializer.JSONModelSerializer;
+import org.kevoree.modeling.api.json.JSONModelSerializer;
 
 import java.io.File;
 import java.io.FileOutputStream;

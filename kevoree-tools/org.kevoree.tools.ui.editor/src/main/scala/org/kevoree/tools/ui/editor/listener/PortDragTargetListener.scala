@@ -26,6 +26,8 @@
  */
 package org.kevoree.tools.ui.editor.listener
 
+import org.kevoree.factory.DefaultKevoreeFactory
+import org.kevoree.modeling.api.ModelCloner
 import org.kevoree.tools.ui.framework.elements.PortPanel
 import java.awt.dnd.{DropTargetDropEvent, DropTarget}
 import java.awt.datatransfer.DataFlavor
@@ -41,7 +43,6 @@ import javax.swing._
 import com.explodingpixels.macwidgets.plaf.HudLabelUI
 import scala.collection.JavaConversions._
 import org.kevoree.kevscript.KevScriptEngine
-import org.kevoree.cloner.DefaultModelCloner
 import org.kevoree.tools.ui.editor.command.LoadModelCommand
 
 /**
@@ -134,7 +135,7 @@ class PortDragTargetListener(target: PortPanel, kernel: KevoreeUIKernel) extends
             script.append("bind " + dropPort.eContainer.eContainer.asInstanceOf[ContainerNode].getName + "." + dropPort.eContainer.asInstanceOf[ComponentInstance].getName + "." + dropPort.getPortTypeRef.getName + " " + newChannelName + "\n")
             PositionedEMFHelper.updateModelUIMetaData(kernel)
             val currentModel = kernel.getModelHandler.getCurrentModel.getModel
-            val cloner = new DefaultModelCloner()
+            val cloner = new ModelCloner(new DefaultKevoreeFactory())
             val cloned = cloner.clone(currentModel).asInstanceOf[ContainerRoot]
             val kevengine = new KevScriptEngine
             kevengine.execute(script.toString(),cloned)

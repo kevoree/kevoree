@@ -15,7 +15,7 @@ package org.kevoree.tools.ui.editor
 
 
 import org.kevoree._
-import impl.DefaultKevoreeFactory
+import org.kevoree.factory.DefaultKevoreeFactory
 import scala.collection.JavaConversions._
 import org.kevoree.modeling.api.util.ModelVisitor
 import org.kevoree.modeling.api.KMFContainer

@@ -6,13 +6,12 @@ import org.kevoree.api.KevScriptService;
 import org.kevoree.api.handler.UpdateCallback;
 import org.kevoree.bootstrap.kernel.KevoreeCLKernel;
 import org.kevoree.bootstrap.reflect.KevoreeInjector;
-import org.kevoree.compare.DefaultModelCompare;
 import org.kevoree.core.impl.KevoreeCoreBean;
 import org.kevoree.kevscript.KevScriptEngine;
-import org.kevoree.loader.JSONModelLoader;
-import org.kevoree.loader.XMIModelLoader;
 import org.kevoree.log.Log;
 import org.kevoree.modeling.api.compare.ModelCompare;
+import org.kevoree.modeling.api.json.JSONModelLoader;
+import org.kevoree.modeling.api.xmi.XMIModelLoader;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -39,9 +38,9 @@ public class Bootstrap {
 
     private KevScriptEngine kevScriptEngine = new KevScriptEngine();
 
-    private XMIModelLoader xmiLoader = new XMIModelLoader();
+    private XMIModelLoader xmiLoader = new XMIModelLoader(core.getFactory());
 
-    private JSONModelLoader jsonLoader = new JSONModelLoader();
+    private JSONModelLoader jsonLoader = new JSONModelLoader(core.getFactory());
 
     public KevoreeCoreBean getCore() {
         return core;
@@ -67,7 +66,7 @@ public class Bootstrap {
 
     public void bootstrap(ContainerRoot model, UpdateCallback callback) {
         ContainerRoot emptyModel = initialModel();
-        DefaultModelCompare compare = new DefaultModelCompare();
+        ModelCompare compare = core.getFactory().createModelCompare();
         compare.merge(emptyModel,model).applyOn(emptyModel);
         core.update(emptyModel, callback, "/");
     }
@@ -142,8 +141,8 @@ public class Bootstrap {
         Object classpath = System.getProperty("java.class.path");
         if (classpath != null && !classpath.equals("")) {
             ContainerRoot result = null;
-            JSONModelLoader loader = new JSONModelLoader();
-            ModelCompare compare = new DefaultModelCompare();
+            JSONModelLoader loader = core.getFactory().createJSONLoader();
+            ModelCompare compare = core.getFactory().createModelCompare();
             String[] paths = classpath.toString().split(File.pathSeparator);
             for (int i = 0; i < paths.length; i++) {
                 String path = paths[i];

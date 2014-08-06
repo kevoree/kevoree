@@ -9,7 +9,7 @@ import org.kevoree.api.ModelService;
 import org.kevoree.bootstrap.reflect.KevoreeInjector;
 import org.kevoree.core.impl.ContextAwareAdapter;
 import org.kevoree.core.impl.KevoreeCoreBean;
-import org.kevoree.impl.DefaultKevoreeFactory;
+import org.kevoree.factory.DefaultKevoreeFactory;
 import org.kevoree.kcl.api.FlexyClassLoader;
 import org.kevoree.kcl.api.FlexyClassLoaderFactory;
 import org.kevoree.log.Log;

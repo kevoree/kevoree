@@ -20,10 +20,10 @@ import java.util.concurrent.TimeUnit
 import org.kevoree.ContainerNode
 import org.kevoree.api.NodeType
 import org.kevoree.api.PrimitiveCommand
-import org.kevoreeadaptation.AdaptationModel
-import org.kevoreeadaptation.ParallelStep
 import org.kevoree.log.Log
-import org.kevoreeadaptation.Step
+import org.kevoree.api.adaptation.AdaptationModel
+import org.kevoree.api.adaptation.ParallelStep
+import org.kevoree.api.adaptation.Step
 
 /**
  * Created by IntelliJ IDEA.

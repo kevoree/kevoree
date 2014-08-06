@@ -1,7 +1,7 @@
 package org.kevoree.platform.standalone;
 
 import org.kevoree.bootstrap.Bootstrap;
-import org.kevoree.impl.DefaultKevoreeFactory;
+import org.kevoree.factory.DefaultKevoreeFactory;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;

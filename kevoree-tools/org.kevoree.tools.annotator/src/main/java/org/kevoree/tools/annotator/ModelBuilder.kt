@@ -2,7 +2,6 @@ package org.kevoree.tools.annotator
 
 import org.kevoree.annotation.NodeType
 import javassist.CtClass
-import org.kevoree.KevoreeFactory
 import org.kevoree.DeployUnit
 import org.kevoree.ContainerRoot
 import org.kevoree.annotation.Library

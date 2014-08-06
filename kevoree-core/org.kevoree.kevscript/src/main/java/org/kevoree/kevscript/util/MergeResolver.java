@@ -2,16 +2,18 @@ package org.kevoree.kevscript.util;
 
 import org.kevoree.ContainerRoot;
 import org.kevoree.Repository;
-import org.kevoree.compare.DefaultModelCompare;
-import org.kevoree.loader.JSONModelLoader;
+import org.kevoree.factory.DefaultKevoreeFactory;
+import org.kevoree.factory.KevoreeFactory;
 import org.kevoree.log.Log;
+import org.kevoree.modeling.api.compare.ModelCompare;
+import org.kevoree.modeling.api.json.JSONModelLoader;
 import org.kevoree.resolver.MavenResolver;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
+
 import java.util.HashSet;
-import java.util.List;
+
 import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -25,8 +27,9 @@ import java.util.jar.JarFile;
 public class MergeResolver {
 
     private static MavenResolver resolver = new MavenResolver();
-    private static JSONModelLoader loader = new JSONModelLoader();
-    private static DefaultModelCompare compare = new DefaultModelCompare();
+    private static KevoreeFactory factory = new DefaultKevoreeFactory();
+    private static JSONModelLoader loader = new JSONModelLoader(factory);
+    private static ModelCompare compare = new ModelCompare(factory);
 
     public static void merge(ContainerRoot model, String type, String url) {
         if (type.equals("mvn")) {

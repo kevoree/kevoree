@@ -9,11 +9,9 @@ import org.kevoree.api.BootstrapService
 import java.util.ArrayList
 import java.util.concurrent.atomic.AtomicReference
 import java.util.Date
-import org.kevoree.cloner.DefaultModelCloner
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.ScheduledExecutorService
 import java.util.concurrent.ScheduledFuture
-import org.kevoree.impl.DefaultKevoreeFactory
 import org.kevoree.api.handler.LockCallBack
 import org.kevoree.log.Log
 import org.kevoree.ContainerNode
@@ -23,6 +21,7 @@ import org.kevoree.core.impl.deploy.PrimitiveCommandExecutionHelper
 import org.kevoree.modeling.api.trace.TraceSequence
 import org.kevoree.kevscript.KevScriptEngine
 import org.kevoree.api.handler.UpdateContext
+import org.kevoree.factory.DefaultKevoreeFactory
 
 class PreCommand(context: UpdateContext, modelListeners: KevoreeListeners) {
     var alreadyCall = false
@@ -51,10 +50,10 @@ class KevoreeCoreBean : ContextAwareModelService {
 
 
     var models: MutableList<UUIDModel> = ArrayList<UUIDModel>()
-    val kevoreeFactory = org.kevoree.impl.DefaultKevoreeFactory()
+    val kevoreeFactory = org.kevoree.factory.DefaultKevoreeFactory()
     val model: AtomicReference<UUIDModel> = AtomicReference<UUIDModel>()
     var lastDate: Date = Date(System.currentTimeMillis())
-    val modelCloner = DefaultModelCloner()
+    val modelCloner = kevoreeFactory.createModelCloner()
     //val modelChecker = RootChecker()
     private var scheduler: ExecutorService? = null
     private var lockWatchDog: ScheduledExecutorService? = null
@@ -244,9 +243,8 @@ class KevoreeCoreBean : ContextAwareModelService {
 
                 //val stopModel = factory.createContainerRoot()
                 val adaptationModel = nodeInstance!!.plan(modelCurrent, stopModel)
-                adaptationModel.setInternalReadOnly()
                 val afterUpdateTest: () -> Boolean = {() -> true }
-                val rootNode = modelCurrent.findByPath("nodes[" + getNodeName() + "]", javaClass<ContainerNode>())
+                val rootNode = modelCurrent.findByPath("nodes[" + getNodeName() + "]") as ContainerNode
                 if (rootNode != null) {
                     PrimitiveCommandExecutionHelper.execute(rootNode, adaptationModel, nodeInstance!!, afterUpdateTest, afterUpdateTest, afterUpdateTest)
                 } else {
@@ -397,7 +395,6 @@ class KevoreeCoreBean : ContextAwareModelService {
                         try {
                             // Compare the two models and plan the adaptation
                             val adaptationModel = nodeInstance!!.plan(currentModel, newmodel)
-                            adaptationModel.setInternalReadOnly()
                             if (Log.DEBUG) {
                                 //Avoid the loop if the debug is not activated
                                 Log.debug("Adaptation model size {}", adaptationModel.adaptations.size())
@@ -443,7 +440,6 @@ class KevoreeCoreBean : ContextAwareModelService {
                             Log.info("Comparing models and planning adaptation.")
 
                             val adaptationModel = nodeInstance!!.plan(currentModel, newmodel)
-                            adaptationModel.setInternalReadOnly()
                             //Execution of the adaptation
                             Log.info("Launching adaptation of the system.")
                             val updateContext = UpdateContext(currentModel, newmodel, callerPath)
