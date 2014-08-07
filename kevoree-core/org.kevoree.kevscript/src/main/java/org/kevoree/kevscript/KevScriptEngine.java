@@ -430,6 +430,7 @@ public class KevScriptEngine implements KevScriptService {
                 throw new Exception("Bad group name : " + name.toString());
             }
         }
+        process.setStarted(true);
         return process != null;
     }
 }
