@@ -37,6 +37,7 @@ public class KevoreeCLKernel implements KevoreeCLFactory, BootstrapService {
         try {
             DefaultKevoreeFactory factory = new DefaultKevoreeFactory();
             ContainerRoot root = factory.createContainerRoot();
+            factory.root(root);
             BufferedReader reader = new BufferedReader(new InputStreamReader(this.getClass().getClassLoader().getResourceAsStream("bootinfo")));
             String line = reader.readLine();
             while (line != null) {

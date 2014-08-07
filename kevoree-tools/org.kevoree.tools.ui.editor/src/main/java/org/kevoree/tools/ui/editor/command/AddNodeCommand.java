@@ -70,6 +70,7 @@ public class AddNodeCommand implements Command {
 
         ContainerNode newnode = ModelHelper.kevoreeFactory().createContainerNode();
         newnode.setName(ModelHelper.getNextAvailableNodeName(kernel.getModelHandler().getActualModel()));
+        newnode.setStarted(true);
 
         NodeType type = (NodeType) kernel.getUifactory().getMapping().get(p);
         if (type != null) {

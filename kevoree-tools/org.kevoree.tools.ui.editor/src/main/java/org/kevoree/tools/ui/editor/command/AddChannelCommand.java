@@ -61,6 +61,7 @@ public class AddChannelCommand implements Command {
         ChannelType type = (ChannelType) kernel.getUifactory().getMapping().get(p);
         newhub.setTypeDefinition(type);
         newhub.setName(type.getName().substring(0, Math.min(type.getName().length(), 9)) + "" + Math.abs(new java.util.Random().nextInt(999)));
+        newhub.setStarted(true);
         ChannelPanel newhubpanel = kernel.getUifactory().createHub(newhub);
         kernel.getModelHandler().getActualModel().addHubs(newhub);
         kernel.getModelPanel().addHub(newhubpanel);

@@ -66,8 +66,9 @@ public class Bootstrap {
 
     public void bootstrap(ContainerRoot model, UpdateCallback callback) {
         ContainerRoot emptyModel = initialModel();
+        core.getFactory().root(emptyModel);
         ModelCompare compare = core.getFactory().createModelCompare();
-        compare.merge(emptyModel,model).applyOn(emptyModel);
+        compare.merge(emptyModel, model).applyOn(emptyModel);
         core.update(emptyModel, callback, "/");
     }
 
@@ -97,6 +98,7 @@ public class Bootstrap {
     public void bootstrapFromKevScript(InputStream input, UpdateCallback callback) throws Exception {
         //TODO perhaps not delegate load of dev classpath to system for continuous integration
         ContainerRoot emptyModel = initialModel();
+        core.getFactory().root(emptyModel);
 
         kevScriptEngine.executeFromStream(input, emptyModel);
         //Add network information

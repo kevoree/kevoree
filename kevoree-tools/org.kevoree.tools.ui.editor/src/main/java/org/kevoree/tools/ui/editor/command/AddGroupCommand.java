@@ -54,6 +54,7 @@ public class AddGroupCommand implements Command {
         Group newgroup = ModelHelper.kevoreeFactory().createGroup();
         GroupType type = (GroupType) kernel.getUifactory().getMapping().get(p);
         newgroup.setTypeDefinition(type);
+        newgroup.setStarted(true);
 
         //CREATE NEW NAME
         newgroup.setName("group" + Math.abs(random.nextInt()));

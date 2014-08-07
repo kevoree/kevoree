@@ -60,6 +60,7 @@ public class AddComponentCommand implements Command {
     public void execute(Object p) {
         if (p instanceof ComponentTypePanel) {
             ComponentInstance instance = ModelHelper.kevoreeFactory().createComponentInstance();
+            instance.setStarted(true);
 
             ContainerNode node = (ContainerNode) kernel.getUifactory().getMapping().get(nodepanel);
             ComponentType type = (ComponentType) kernel.getUifactory().getMapping().get(p);
