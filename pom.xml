@@ -1,12 +1,11 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.kevoree.root</groupId>
     <artifactId>org.kevoree.root</artifactId>
     <packaging>pom</packaging>
     <name>Kevoree :: Root</name>
     <url>https://github.com/dukeboard/kevoree</url>
-    <version>4.0.2-SNAPSHOT</version>
+    <version>5.0.0</version>
 
     <properties>
         <kmf.version>3.1.1</kmf.version>
@@ -43,7 +42,7 @@
         <connection>scm:git:git@github.com:dukeboard/kevoree.git</connection>
         <developerConnection>scm:git:git@github.com:dukeboard/kevoree.git</developerConnection>
         <url>http://github.com/dukeboard/kevoree.git</url>
-        <tag>HEAD</tag>
+        <tag>org.kevoree.root-5.0.0</tag>
     </scm>
 
     <licenses>
