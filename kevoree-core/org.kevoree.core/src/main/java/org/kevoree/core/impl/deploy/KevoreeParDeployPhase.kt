@@ -5,6 +5,9 @@ import java.util.ArrayList
 import java.util.concurrent.Callable
 import org.kevoree.log.Log
 import java.util.concurrent.TimeUnit
+import org.kevoree.core.impl.KevoreeCoreBean
+import java.io.ByteArrayOutputStream
+import java.io.PrintStream
 
 /**
  * Created with IntelliJ IDEA.
@@ -13,22 +16,36 @@ import java.util.concurrent.TimeUnit
  * Time: 09:24
  */
 
-class KevoreeParDeployPhase : KevoreeDeployPhase {
+class KevoreeParDeployPhase(val originCore: KevoreeCoreBean) : KevoreeDeployPhase {
     var primitives: MutableList<PrimitiveCommand> = ArrayList<PrimitiveCommand>()
     var maxTimeout: Long = 30000
     fun setMaxTime(mt: Long) {
         maxTimeout = Math.max(maxTimeout, mt)
     }
     override var sucessor: KevoreeDeployPhase? = null
-    class Worker(val primitive: PrimitiveCommand) : Callable<Boolean> {
+    inner class Worker(val primitive: PrimitiveCommand) : Callable<Boolean> {
         override fun call(): Boolean {
             try {
+                if (originCore.isAnyTelemetryListener()) {
+                    originCore.broadcastTelemetry("update_command", "Cmd:["+primitive.toString()+"]", "")
+                }
                 var result = primitive.execute()
-                if(!result){
+                if (!result) {
+                    if (originCore.isAnyTelemetryListener()) {
+                        originCore.broadcastTelemetry("failed_command", "Cmd:["+primitive.toString()+"]", "")
+                    }
                     Log.error("Error while executing primitive command {} ", primitive)
                 }
                 return result
             } catch(e: Throwable) {
+                if (originCore.isAnyTelemetryListener()) {
+                    val boo = ByteArrayOutputStream()
+                    val pr = PrintStream(boo)
+                    e.printStackTrace(pr)
+                    pr.flush()
+                    pr.close()
+                    originCore.broadcastTelemetry("failed_command", "Cmd:["+primitive.toString()+"]", String(boo.toByteArray()))
+                }
                 Log.error("Exception while executing primitive command {} ", e, primitive)
                 e.printStackTrace()
                 return false
@@ -42,7 +59,7 @@ class KevoreeParDeployPhase : KevoreeDeployPhase {
         } else {
             val pool = java.util.concurrent.Executors.newCachedThreadPool(WorkerThreadFactory(System.currentTimeMillis().toString()))
             val workers = ArrayList<Worker>()
-            for(primitive in ps) {
+            for (primitive in ps) {
                 workers.add(Worker(primitive))
             }
             try {
@@ -89,9 +106,9 @@ class KevoreeParDeployPhase : KevoreeDeployPhase {
             Log.debug("Rollback sucessor first")
             sucessor?.rollBack()
         }
-        if(!rollbackPerformed){
+        if (!rollbackPerformed) {
             // SEQUENCIAL ROOLBACK
-            for(c in primitives.reverse()){
+            for (c in primitives.reverse()) {
                 try {
                     Log.debug("Undo adaptation command {} ", c.javaClass.getName())
                     c.undo()

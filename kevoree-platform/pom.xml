@@ -23,6 +23,7 @@
 
     <modules>
         <module>org.kevoree.platform.standalone</module>
+        <module>org.kevoree.platform.standalone.telemetry</module>
         <module>org.kevoree.platform.standalone.gui</module>
         <module>org.kevoree.platform.standalone.gui.prompt</module>
         <module>org.kevoree.platform.standalone.gui.public</module>

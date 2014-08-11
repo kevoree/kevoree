@@ -45,7 +45,7 @@ public class AnnotatorTest {
         assertEquals(true, model.getTypeDefinitions().get(0).getDictionaryType().findAttributesByID("time").getOptional());
         assertEquals(false, model.getTypeDefinitions().get(0).getDictionaryType().findAttributesByID("time").getFragmentDependant());
         assertEquals("java.lang.Long", model.getTypeDefinitions().get(0).getDictionaryType().findAttributesByID("time").getDatatype());
-        assertEquals(fakeDU.path(), model.getTypeDefinitions().get(0).getDeployUnit().path());
+        assertEquals(fakeDU.path(), model.getTypeDefinitions().get(0).getDeployUnits().get(0).path());
 
         assertEquals(1, ((ComponentType) model.getTypeDefinitions().get(0)).getProvided().size());
         assertEquals("conso", ((ComponentType) model.getTypeDefinitions().get(0)).getProvided().get(0).getName());

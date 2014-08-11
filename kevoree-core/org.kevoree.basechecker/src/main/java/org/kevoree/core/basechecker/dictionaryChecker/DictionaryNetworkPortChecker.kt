@@ -25,7 +25,7 @@ import org.kevoree.modeling.api.KMFContainer
 import org.kevoree.ComponentInstance
 import org.kevoree.Dictionary
 import org.kevoree.DictionaryType
-import org.kevoree.DictionaryValue
+import org.kevoree.Value
 import org.kevoree.api.service.core.checker.CheckerContext
 
 /**
@@ -102,7 +102,7 @@ class DictionaryNetworkPortChecker : CheckerService {
             if (((attribute.fragmentDependant!! && fragmentDependent) || (!attribute.fragmentDependant!! && !fragmentDependent))
             && (attribute.name!!.equalsIgnoreCase("port") || attribute.name!!.toLowerCase().endsWith("_port") || attribute.name!!.toLowerCase().startsWith("port_"))) {
                 var value: String? = null
-                var attributeValue: DictionaryValue? = null
+                var attributeValue: Value? = null
                 if (dictionary != null) {
                     attributeValue = dictionary.findValuesByID(attribute.name!!)
                 }

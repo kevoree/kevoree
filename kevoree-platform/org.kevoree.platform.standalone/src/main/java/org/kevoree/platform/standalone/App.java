@@ -38,8 +38,6 @@ public class App {
         } else {
             bootstrap.bootstrapFromKevScript(createBootstrapScript(nodeName));
         }
-
-
     }
 
     public static InputStream createBootstrapScript(String nodeName) {

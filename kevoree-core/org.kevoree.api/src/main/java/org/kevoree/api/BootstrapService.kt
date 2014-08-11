@@ -16,7 +16,8 @@ package org.kevoree.api
 import org.kevoree.DeployUnit
 import org.kevoree.Instance
 import org.kevoree.kcl.api.FlexyClassLoader
-import org.kevoree.DictionaryValue
+import org.kevoree.Value
+import org.kevoree.TypeDefinition
 
 /**
  * Created by IntelliJ IDEA.
@@ -35,6 +36,8 @@ trait BootstrapService {
 
     public fun manualAttach(du: DeployUnit, kcl: FlexyClassLoader);
 
+    public fun installTypeDefinition(tdef: TypeDefinition): FlexyClassLoader?;
+
     public fun recursiveInstallDeployUnit(du: DeployUnit): FlexyClassLoader?;
 
     public fun setOffline(offline: Boolean)
@@ -43,12 +46,12 @@ trait BootstrapService {
 
     public fun createInstance(instance: Instance): Any?
 
-    public fun injectDictionary(instance: Instance, target: Any, onlyDefault : Boolean)
+    public fun injectDictionary(instance: Instance, target: Any, onlyDefault: Boolean)
 
-    public fun injectDictionaryValue(value: DictionaryValue, target: Any)
+    public fun injectDictionaryValue(value: Value, target: Any)
 
-    public fun injectService(api: java.lang.Class<out Any>,impl: Any,target: Any)
+    public fun injectService(api: java.lang.Class<out Any>, impl: Any, target: Any)
 
-    public fun resolve(url : String, repos : Set<String?>) : java.io.File?
+    public fun resolve(url: String, repos: Set<String?>): java.io.File?
 
 }

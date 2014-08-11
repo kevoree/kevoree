@@ -233,7 +233,7 @@ public class ModelBuilderHelper {
             td.setAbstract(false);
         }
         td.setBean(clazz.getName());
-        td.setDeployUnit(du);
+        td.addDeployUnits(du);
 
         try {
             checkParent(td, clazz.getSuperclass(), clazz, root, factory);

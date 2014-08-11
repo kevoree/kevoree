@@ -144,22 +144,48 @@ public class KevoreeCLKernel implements KevoreeCLFactory, BootstrapService {
         cache.put(deployUnit.path(), kevoreeJarClassLoader);
     }
 
-    public FlexyClassLoader recursiveInstallDeployUnit(DeployUnit deployUnit) {
-        String path = deployUnit.path();
-        if (cache.containsKey(path)) {
-            return cache.get(path);
+    public FlexyClassLoader recursiveInstallDeployUnit(DeployUnit du) {
+        FlexyClassLoader previousDu;
+        previousDu = get(du);
+        if (previousDu != null) {
+            return previousDu;
         }
-        FlexyClassLoader kcl = installDeployUnit(deployUnit);
+        FlexyClassLoader kcl = installDeployUnit(du);
         if (kcl == null) {
-            Log.error("Can't install {}", deployUnit.path());
+            Log.error("Can't install {}", du.path());
         } else {
-            for (DeployUnit child : deployUnit.getRequiredLibs()) {
+            for (DeployUnit child : du.getRequiredLibs()) {
                 kcl.attachChild(recursiveInstallDeployUnit(child));
             }
         }
-
         return kcl;
     }
+
+    @Nullable
+    @Override
+    public FlexyClassLoader installTypeDefinition(TypeDefinition tdef) {
+        if (cache.containsKey(tdef.path())) {
+            return cache.get(tdef.path());
+        } else {
+            FlexyClassLoader kcl = FlexyClassLoaderFactory.INSTANCE.create();
+            cache.put(tdef.path(), kcl);
+            for (DeployUnit du : tdef.getDeployUnits()) {
+                if (filter(du)) {
+                    kcl.attachChild(recursiveInstallDeployUnit(du));
+                }
+            }
+            return kcl;
+        }
+    }
+
+    public boolean filter(DeployUnit du) {
+        if (du.findFiltersByID("runtime") == null || du.findFiltersByID("runtime").equals("java")) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 
     @Override
     public void setOffline(boolean b) {
@@ -187,7 +213,7 @@ public class KevoreeCLKernel implements KevoreeCLFactory, BootstrapService {
     @Override
     public Object createInstance(final Instance instance) {
         try {
-            FlexyClassLoader classLoader = get(instance.getTypeDefinition().getDeployUnit());
+            FlexyClassLoader classLoader = cache.get(instance.getTypeDefinition());
             if (classLoader == null) {
                 Log.error("Error cannot create instance of {} because it is not possible to get the corresponding Classloader", instance.getTypeDefinition().getName());
                 return null;
@@ -196,7 +222,7 @@ public class KevoreeCLKernel implements KevoreeCLFactory, BootstrapService {
             Object newInstance = clazz.newInstance();
             KevoreeInjector selfInjector = injector.clone();
             selfInjector.addService(Context.class, new InstanceContext(instance.path(), nodeName, instance.getName()));
-            selfInjector.addService(ModelService.class, new ContextAwareAdapter(core,instance.path()));
+            selfInjector.addService(ModelService.class, new ContextAwareAdapter(core, instance.path()));
             selfInjector.process(newInstance);
             return newInstance;
         } catch (Exception e) {
@@ -218,7 +244,7 @@ public class KevoreeCLKernel implements KevoreeCLFactory, BootstrapService {
             if (att.getFragmentDependant()) {
                 FragmentDictionary fdico = instance.findFragmentDictionaryByID(nodeName);
                 if (fdico != null) {
-                    DictionaryValue tempValue = fdico.findValuesByID(att.getName());
+                    Value tempValue = fdico.findValuesByID(att.getName());
                     if (tempValue != null) {
                         value = tempValue.getValue();
                     }
@@ -226,7 +252,7 @@ public class KevoreeCLKernel implements KevoreeCLFactory, BootstrapService {
             }
             if (value == null) {
                 if (instance.getDictionary() != null) {
-                    DictionaryValue tempValue = instance.getDictionary().findValuesByID(att.getName());
+                    Value tempValue = instance.getDictionary().findValuesByID(att.getName());
                     if (tempValue != null) {
                         value = tempValue.getValue();
                     }
@@ -252,7 +278,7 @@ public class KevoreeCLKernel implements KevoreeCLFactory, BootstrapService {
 
     @NotNull
     @Override
-    public void injectDictionaryValue(DictionaryValue dictionaryValue, Object target) {
+    public void injectDictionaryValue(Value dictionaryValue, Object target) {
         internalInjectField(dictionaryValue.getName(), dictionaryValue.getValue(), target);
     }
 
@@ -430,4 +456,5 @@ public class KevoreeCLKernel implements KevoreeCLFactory, BootstrapService {
             return classLoader;
         }
     }
+
 }

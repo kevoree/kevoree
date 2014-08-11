@@ -22,6 +22,7 @@ import org.kevoree.modeling.api.trace.TraceSequence
 import org.kevoree.kevscript.KevScriptEngine
 import org.kevoree.api.handler.UpdateContext
 import org.kevoree.factory.DefaultKevoreeFactory
+import org.kevoree.api.telemetry.TelemetryListener
 
 class PreCommand(context: UpdateContext, modelListeners: KevoreeListeners) {
     var alreadyCall = false
@@ -37,6 +38,12 @@ class PreCommand(context: UpdateContext, modelListeners: KevoreeListeners) {
 class KevoreeCoreBean : ContextAwareModelService {
 
     var pending: ContainerRoot? = null
+
+    var telemetryListeners = ArrayList<TelemetryListener>()
+
+    fun addTelemetryListener(l: TelemetryListener) {
+        telemetryListeners.add(l)
+    }
 
     override fun getPendingModel(): ContainerRoot? {
         return pending
@@ -205,6 +212,18 @@ class KevoreeCoreBean : ContextAwareModelService {
         }
     }
 
+    fun isAnyTelemetryListener(): Boolean {
+        return !telemetryListeners.isEmpty()
+    }
+
+    fun broadcastTelemetry(typeMessage : String, message : String, stack : String){
+
+        var event = TelemetryEventImpl.build(getNodeName(),typeMessage,message,stack)
+        for(tl in telemetryListeners){
+            tl.notify(event)
+        }
+    }
+
     fun start() {
         if (getNodeName() == "") {
             setNodeName("node0")
@@ -246,7 +265,7 @@ class KevoreeCoreBean : ContextAwareModelService {
                 val afterUpdateTest: () -> Boolean = {() -> true }
                 val rootNode = modelCurrent.findByPath("nodes[" + getNodeName() + "]") as ContainerNode
                 if (rootNode != null) {
-                    PrimitiveCommandExecutionHelper.execute(rootNode, adaptationModel, nodeInstance!!, afterUpdateTest, afterUpdateTest, afterUpdateTest)
+                    PrimitiveCommandExecutionHelper.execute(this,rootNode, adaptationModel, nodeInstance!!, afterUpdateTest, afterUpdateTest, afterUpdateTest)
                 } else {
                     Log.error("Node is not defined into the model so unbootstrap cannot be correctly done")
                 }
@@ -269,6 +288,7 @@ class KevoreeCoreBean : ContextAwareModelService {
             }
         }
         Log.debug("Kevoree core stopped ")
+        broadcastTelemetry("info","Kevoree Stopped","")
     }
 
     inner class AcquireLock(val callBack: LockCallBack, val timeout: Long) : Runnable {
@@ -353,10 +373,10 @@ class KevoreeCoreBean : ContextAwareModelService {
 
             if (readOnlyNewModel.isReadOnly()) {
                 readOnlyNewModel = modelCloner.clone(readOnlyNewModel, false)!!;
-                readOnlyNewModel.generated_KMF_ID = _nodeName + "@"+callerPath+"#" + System.nanoTime()
+                readOnlyNewModel.generated_KMF_ID = _nodeName + "@" + callerPath + "#" + System.nanoTime()
                 readOnlyNewModel = modelCloner.clone(readOnlyNewModel, true)!!;
             } else {
-                readOnlyNewModel.generated_KMF_ID = _nodeName + "@"+callerPath+"#" + System.nanoTime()
+                readOnlyNewModel.generated_KMF_ID = _nodeName + "@" + callerPath + "#" + System.nanoTime()
             }
 
 
@@ -402,7 +422,7 @@ class KevoreeCoreBean : ContextAwareModelService {
                             //Executes the adaptation
                             val afterUpdateTest: () -> Boolean = {() -> true }
                             val rootNode = currentModel.findNodesByID(getNodeName())
-                            PrimitiveCommandExecutionHelper.execute(rootNode!!, adaptationModel, nodeInstance!!, afterUpdateTest, afterUpdateTest, afterUpdateTest)
+                            PrimitiveCommandExecutionHelper.execute(this,rootNode!!, adaptationModel, nodeInstance!!, afterUpdateTest, afterUpdateTest, afterUpdateTest)
                             if (nodeInstance != null) {
                                 val met = resolver?.resolve(javaClass<org.kevoree.annotation.Stop>())
                                 met?.invoke(nodeInstance)
@@ -443,11 +463,11 @@ class KevoreeCoreBean : ContextAwareModelService {
                             //Execution of the adaptation
                             Log.info("Launching adaptation of the system.")
                             val updateContext = UpdateContext(currentModel, newmodel, callerPath)
-                            val  afterUpdateTest: () -> Boolean = {() -> modelListeners.afterUpdate(updateContext) }
+                            val afterUpdateTest: () -> Boolean = {() -> modelListeners.afterUpdate(updateContext) }
                             val preCmd = PreCommand(updateContext, modelListeners)
                             val postRollbackTest: () -> Boolean = {() -> modelListeners.postRollback(updateContext);true }
                             val rootNode = newmodel.findNodesByID(getNodeName())!!
-                            deployResult = PrimitiveCommandExecutionHelper.execute(rootNode, adaptationModel, nodeInstance!!, afterUpdateTest, preCmd.preRollbackTest, postRollbackTest)
+                            deployResult = PrimitiveCommandExecutionHelper.execute(this,rootNode, adaptationModel, nodeInstance!!, afterUpdateTest, preCmd.preRollbackTest, postRollbackTest)
                         } else {
                             Log.error("Node is not initialized")
                             deployResult = false
@@ -488,7 +508,7 @@ class KevoreeCoreBean : ContextAwareModelService {
     private fun bootstrapNodeType(model: ContainerRoot, nodeName: String): Any? {
         val nodeInstance = model.findNodesByID(nodeName)
         if (nodeInstance != null) {
-            bootstrapService!!.recursiveInstallDeployUnit(nodeInstance.typeDefinition!!.deployUnit!!)
+            bootstrapService!!.installTypeDefinition(nodeInstance.typeDefinition!!)
             val newInstance = bootstrapService!!.createInstance(nodeInstance)!!
             bootstrapService!!.injectDictionary(nodeInstance, newInstance, false)
             return newInstance

@@ -16,7 +16,7 @@ package org.kevoree.core.basechecker.dictionaryChecker
 import java.util.ArrayList
 import org.kevoree.Channel
 import org.kevoree.DictionaryAttribute
-import org.kevoree.DictionaryValue
+import org.kevoree.Value
 import org.kevoree.Group
 import org.kevoree.Instance
 import org.kevoree.api.service.core.checker.CheckerService
@@ -51,7 +51,7 @@ class DictionaryOptionalChecker : CheckerService {
                     if (!defaultValuePresent) {
                         if (instance.dictionary != null) {
                             val instDic = instance.dictionary!!
-                            var value: DictionaryValue? = null
+                            var value: Value? = null
                             for (v in instDic.values) {
                                 if (v.name == dicAtt.name) {
                                     value = v

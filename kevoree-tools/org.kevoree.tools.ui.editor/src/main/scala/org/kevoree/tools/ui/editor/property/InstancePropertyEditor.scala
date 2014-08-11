@@ -83,7 +83,7 @@ class InstancePropertyEditor(elem: org.kevoree.Instance, kernel: KevoreeUIKernel
   }
 
   def setValue(aValue: AnyRef, instance: Instance, att: DictionaryAttribute, targetNode: Option[String]): Unit = {
-    var value: DictionaryValue = null
+    var value: Value = null
     targetNode match {
       case Some(targetNodeSearch) => {
         val fragDico = instance.findFragmentDictionaryByID(targetNodeSearch)
@@ -110,7 +110,7 @@ class InstancePropertyEditor(elem: org.kevoree.Instance, kernel: KevoreeUIKernel
       }
     }
     if (value == null) {
-      value = ModelHelper.kevoreeFactory.createDictionaryValue
+      value = ModelHelper.kevoreeFactory.createValue
       value.setName(att.getName)
       targetNode match {
         case None => {

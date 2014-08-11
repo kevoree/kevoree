@@ -46,12 +46,12 @@ public class KevScriptExporter {
                     //output all the dictionary
                     Dictionary dico = currentInstance.getDictionary();
                     if (dico != null) {
-                        for (DictionaryValue value : dico.getValues()) {
+                        for (Value value : dico.getValues()) {
                             buffer.append("set " + instanceID + "." + value.getName() + " = \"" + value.getValue() + "\"\n");
                         }
                     }
                     for (FragmentDictionary fdic : currentInstance.getFragmentDictionary()) {
-                        for (DictionaryValue value : fdic.getValues()) {
+                        for (Value value : fdic.getValues()) {
                             buffer.append("set " + instanceID + "." + value.getName() + "/" + fdic.getName() + " = \"" + value.getValue() + "\"\n");
                         }
                     }

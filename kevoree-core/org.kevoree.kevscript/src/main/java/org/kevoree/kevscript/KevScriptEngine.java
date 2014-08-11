@@ -236,9 +236,9 @@ public class KevScriptEngine implements KevScriptService {
                         if (target.getDictionary() == null) {
                             target.setDictionary(factory.createDictionary());
                         }
-                        DictionaryValue dicValue = target.getDictionary().findValuesByID(propName);
+                        Value dicValue = target.getDictionary().findValuesByID(propName);
                         if (dicValue == null) {
-                            dicValue = factory.createDictionaryValue();
+                            dicValue = factory.createValue();
                             if (target.getTypeDefinition().getDictionaryType() != null) {
                                 DictionaryAttribute dicAtt = target.getTypeDefinition().getDictionaryType().findAttributesByID(propName);
                                 if (dicAtt == null) {
@@ -257,9 +257,9 @@ public class KevScriptEngine implements KevScriptService {
                                 newDictionary.setName(targetNode.getName());
                                 target.addFragmentDictionary(newDictionary);
                             }
-                            DictionaryValue dicValue = target.findFragmentDictionaryByID(targetNode.getName()).findValuesByID(propName);
+                            Value dicValue = target.findFragmentDictionaryByID(targetNode.getName()).findValuesByID(propName);
                             if (dicValue == null) {
-                                dicValue = factory.createDictionaryValue();
+                                dicValue = factory.createValue();
                                 if (target.getTypeDefinition().getDictionaryType() != null) {
                                     DictionaryAttribute dicAtt = target.getTypeDefinition().getDictionaryType().findAttributesByID(propName);
                                     if (dicAtt == null) {

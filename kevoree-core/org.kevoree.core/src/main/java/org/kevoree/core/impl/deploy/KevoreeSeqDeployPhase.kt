@@ -5,6 +5,9 @@ import java.util.concurrent.Callable
 import java.util.ArrayList
 import org.kevoree.log.Log
 import java.util.concurrent.TimeUnit
+import org.kevoree.core.impl.KevoreeCoreBean
+import java.io.ByteArrayOutputStream
+import java.io.PrintStream
 
 /**
  * Created with IntelliJ IDEA.
@@ -13,7 +16,7 @@ import java.util.concurrent.TimeUnit
  * Time: 09:26
  */
 
-class KevoreeSeqDeployPhase : KevoreeDeployPhase {
+class KevoreeSeqDeployPhase(val originCore : KevoreeCoreBean) : KevoreeDeployPhase {
     var primitives: MutableList<PrimitiveCommand> = ArrayList<PrimitiveCommand>()
     var maxTimeout: Long = 30000
     fun setMaxTime(mt: Long) {
@@ -28,20 +31,39 @@ class KevoreeSeqDeployPhase : KevoreeDeployPhase {
 
     override fun runPhase(): Boolean {
         if (primitives.size == 0) {
-            Log.debug("Empty phase !!!")
             return true
         }
+        var lastPrimitive : PrimitiveCommand? = null
         try {
             var result = true
             for(primitive in primitives) {
+                lastPrimitive = primitive
+                if(originCore.isAnyTelemetryListener()){
+                    originCore.broadcastTelemetry("update_command","Cmd:["+primitive.toString()+"]","")
+                }
                 result = primitive.execute()
                 if(!result){
-                    Log.info("Error during execution of {}",primitive.javaClass.getSimpleName())
+                    if(originCore.isAnyTelemetryListener()){
+                        originCore.broadcastTelemetry("failed_command","Cmd:["+primitive.toString()+"]","")
+                    }
+                    Log.info("Error during execution of {}",primitive)
                     break;
                 }
             }
             return result
         } catch (e:Throwable){
+            if(originCore.isAnyTelemetryListener()){
+                try {
+                    val boo = ByteArrayOutputStream()
+                    val pr = PrintStream(boo)
+                    e.printStackTrace(pr)
+                    pr.flush()
+                    pr.close()
+                    originCore.broadcastTelemetry("failed_phase","Cmd:["+lastPrimitive.toString()+"]",String(boo.toByteArray()))
+                } catch (e: Throwable){
+                   e.printStackTrace()
+                }
+            }
             e.printStackTrace()
             return false
         }

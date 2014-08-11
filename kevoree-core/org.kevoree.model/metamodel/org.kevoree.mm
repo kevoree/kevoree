@@ -62,7 +62,7 @@ class org.kevoree.Namespace : org.kevoree.NamedElement {
 
 class org.kevoree.Dictionary  {
     @contained
-    values : org.kevoree.DictionaryValue[0,*]
+    values : org.kevoree.Value[0,*]
 }
 
 class org.kevoree.FragmentDictionary : org.kevoree.Dictionary {
@@ -83,7 +83,7 @@ class org.kevoree.DictionaryAttribute : org.kevoree.TypedElement {
     defaultValue : String
 }
 
-class org.kevoree.DictionaryValue  {
+class org.kevoree.Value  {
     @id
     name : String
     value : String
@@ -137,6 +137,9 @@ class org.kevoree.DeployUnit : org.kevoree.NamedElement {
     hashcode : String
     type : String
     requiredLibs : org.kevoree.DeployUnit[0,*]
+
+    @contained
+    filters : org.kevoree.Value[0,*]
 }
 
 class org.kevoree.TypeLibrary : org.kevoree.NamedElement {
@@ -203,10 +206,13 @@ class org.kevoree.TypeDefinition : org.kevoree.NamedElement {
     factoryBean : String
     bean : String
     abstract : Bool
-    deployUnit : org.kevoree.DeployUnit
+    deployUnits : org.kevoree.DeployUnit[0,*]
     @contained
     dictionaryType : org.kevoree.DictionaryType
     superTypes : org.kevoree.TypeDefinition[0,*]
+
+    @contained
+    values : org.kevoree.Value[0,*]
 }
 
 class org.kevoree.Instance : org.kevoree.NamedElement {
@@ -217,6 +223,9 @@ class org.kevoree.Instance : org.kevoree.NamedElement {
     dictionary : org.kevoree.Dictionary
     @contained
     fragmentDictionary : org.kevoree.FragmentDictionary[0,*]
+
+    @contained
+    values : org.kevoree.Value[0,*]
 }
 
 class org.kevoree.Group : org.kevoree.Instance {
