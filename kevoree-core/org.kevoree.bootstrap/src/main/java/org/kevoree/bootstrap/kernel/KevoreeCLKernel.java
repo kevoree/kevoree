@@ -164,18 +164,13 @@ public class KevoreeCLKernel implements KevoreeCLFactory, BootstrapService {
     @Nullable
     @Override
     public FlexyClassLoader installTypeDefinition(TypeDefinition tdef) {
-        if (cache.containsKey(tdef.path())) {
-            return cache.get(tdef.path());
-        } else {
-            FlexyClassLoader kcl = FlexyClassLoaderFactory.INSTANCE.create();
-            cache.put(tdef.path(), kcl);
-            for (DeployUnit du : tdef.getDeployUnits()) {
-                if (filter(du)) {
-                    kcl.attachChild(recursiveInstallDeployUnit(du));
-                }
+        FlexyClassLoader kcl = FlexyClassLoaderFactory.INSTANCE.create();
+        for (DeployUnit du : tdef.getDeployUnits()) {
+            if (filter(du)) {
+                kcl.attachChild(recursiveInstallDeployUnit(du));
             }
-            return kcl;
         }
+        return kcl;
     }
 
     public boolean filter(DeployUnit du) {
@@ -211,13 +206,8 @@ public class KevoreeCLKernel implements KevoreeCLFactory, BootstrapService {
     }
 
     @Override
-    public Object createInstance(final Instance instance) {
+    public Object createInstance(final Instance instance, FlexyClassLoader classLoader) {
         try {
-            FlexyClassLoader classLoader = cache.get(instance.getTypeDefinition());
-            if (classLoader == null) {
-                Log.error("Error cannot create instance of {} because it is not possible to get the corresponding Classloader", instance.getTypeDefinition().getName());
-                return null;
-            }
             Class clazz = classLoader.loadClass(instance.getTypeDefinition().getBean());
             Object newInstance = clazz.newInstance();
             KevoreeInjector selfInjector = injector.clone();

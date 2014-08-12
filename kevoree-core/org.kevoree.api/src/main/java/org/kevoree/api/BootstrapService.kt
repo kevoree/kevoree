@@ -44,7 +44,7 @@ trait BootstrapService {
 
     public fun clear()
 
-    public fun createInstance(instance: Instance): Any?
+    public fun createInstance(instance: Instance, kcl : FlexyClassLoader): Any?
 
     public fun injectDictionary(instance: Instance, target: Any, onlyDefault: Boolean)
 

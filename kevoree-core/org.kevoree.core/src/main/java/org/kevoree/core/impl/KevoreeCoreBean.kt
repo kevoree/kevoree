@@ -23,6 +23,7 @@ import org.kevoree.kevscript.KevScriptEngine
 import org.kevoree.api.handler.UpdateContext
 import org.kevoree.factory.DefaultKevoreeFactory
 import org.kevoree.api.telemetry.TelemetryListener
+import org.kevoree.kcl.api.FlexyClassLoader
 
 class PreCommand(context: UpdateContext, modelListeners: KevoreeListeners) {
     var alreadyCall = false
@@ -508,8 +509,8 @@ class KevoreeCoreBean : ContextAwareModelService {
     private fun bootstrapNodeType(model: ContainerRoot, nodeName: String): Any? {
         val nodeInstance = model.findNodesByID(nodeName)
         if (nodeInstance != null) {
-            bootstrapService!!.installTypeDefinition(nodeInstance.typeDefinition!!)
-            val newInstance = bootstrapService!!.createInstance(nodeInstance)!!
+            var kcl = bootstrapService!!.installTypeDefinition(nodeInstance.typeDefinition!!)
+            val newInstance = bootstrapService!!.createInstance(nodeInstance, kcl!!)!!
             bootstrapService!!.injectDictionary(nodeInstance, newInstance, false)
             return newInstance
         } else {
