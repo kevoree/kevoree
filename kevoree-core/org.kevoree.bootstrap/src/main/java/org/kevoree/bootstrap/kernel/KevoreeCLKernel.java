@@ -6,6 +6,7 @@ import org.kevoree.*;
 import org.kevoree.api.BootstrapService;
 import org.kevoree.api.Context;
 import org.kevoree.api.ModelService;
+import org.kevoree.bootstrap.Bootstrap;
 import org.kevoree.bootstrap.reflect.KevoreeInjector;
 import org.kevoree.core.impl.ContextAwareAdapter;
 import org.kevoree.core.impl.KevoreeCoreBean;
@@ -13,14 +14,15 @@ import org.kevoree.factory.DefaultKevoreeFactory;
 import org.kevoree.kcl.api.FlexyClassLoader;
 import org.kevoree.kcl.api.FlexyClassLoaderFactory;
 import org.kevoree.log.Log;
-import org.kevoree.resolver.MavenResolver;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created with IntelliJ IDEA.
@@ -28,48 +30,15 @@ import java.util.concurrent.ConcurrentHashMap;
  * Date: 25/11/2013
  * Time: 19:41
  */
-public class KevoreeCLKernel implements KevoreeCLFactory, BootstrapService {
+public class KevoreeCLKernel implements BootstrapService {
 
-    public FlexyClassLoader system = FlexyClassLoaderFactory.INSTANCE.create();
+    private Bootstrap bs;
 
-    public KevoreeCLKernel() {
-        system.setKey("KevoreeBootstrapCL");
-        try {
-            DefaultKevoreeFactory factory = new DefaultKevoreeFactory();
-            ContainerRoot root = factory.createContainerRoot();
-            factory.root(root);
-            BufferedReader reader = new BufferedReader(new InputStreamReader(this.getClass().getClassLoader().getResourceAsStream("bootinfo")));
-            String line = reader.readLine();
-            while (line != null) {
-                String[] elem = line.split(":");
-                DeployUnit du = factory.createDeployUnit();
-                du.setGroupName(elem[0]);
-                du.setName(elem[1]);
-                du.setVersion(elem[2]);
-                root.addDeployUnits(du);
-                line = reader.readLine();
-                cache.put(du.path(), system);
-            }
-        } catch (IOException e) {
-            Log.error("Error while read boot info");
-        }
+    public KevoreeCLKernel(Bootstrap b) {
+        this.bs = b;
     }
-
-    private ConcurrentHashMap<String, FlexyClassLoader> cache = new ConcurrentHashMap<String, FlexyClassLoader>();
-
-    private MavenResolver resolver = new MavenResolver();
 
     private Boolean offline = false;
-
-    public void setKevoreeCLFactory(KevoreeCLFactory kevoreeCLFactory) {
-        this.kevoreeCLFactory = kevoreeCLFactory;
-    }
-
-    public void setResolver(MavenResolver resolver) {
-        this.resolver = resolver;
-    }
-
-    private KevoreeCLFactory kevoreeCLFactory = this;
 
     public void setInjector(KevoreeInjector injector) {
         this.injector = injector;
@@ -77,16 +46,28 @@ public class KevoreeCLKernel implements KevoreeCLFactory, BootstrapService {
 
     private KevoreeInjector injector = null;
 
+
+    private String buildKernelKey(DeployUnit deployUnit) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("mvn:");
+        builder.append(deployUnit.getGroupName());
+        builder.append(":");
+        builder.append(deployUnit.getName());
+        builder.append(":");
+        if (deployUnit.getName().equals("org.kevoree.api") || deployUnit.getName().equals("org.kevoree.annotation.api") || deployUnit.getName().equals("org.kevoree.model") || deployUnit.getName().equals("org.kevoree.modeling.microframework") || deployUnit.getName().equals("org.kevoree.kcl") || deployUnit.getName().equals("org.kevoree.maven.resolver")) {
+            builder.append(bs.getCore().getFactory().getVersion());
+        } else {
+            builder.append(deployUnit.getVersion());
+        }
+        return builder.toString();
+    }
+
     @Override
     public FlexyClassLoader get(DeployUnit deployUnit) {
-        if (deployUnit.getName().equals("org.kevoree.api") || deployUnit.getName().equals("org.kevoree.annotation.api") || deployUnit.getName().equals("org.kevoree.model") || deployUnit.getName().equals("org.kevoree.modeling.microframework") || deployUnit.getName().equals("org.kevoree.kcl") || deployUnit.getName().equals("org.kevoree.maven.resolver")) {
-            return system;
-        }
-        return cache.get(deployUnit.path());
+        return bs.getKernel().get(buildKernelKey(deployUnit));
     }
 
     public FlexyClassLoader installDeployUnit(DeployUnit deployUnit) {
-        String path = deployUnit.path();
         FlexyClassLoader resolvedKCL = get(deployUnit);
         if (resolvedKCL != null) {
             return resolvedKCL;
@@ -107,18 +88,16 @@ public class KevoreeCLKernel implements KevoreeCLFactory, BootstrapService {
                 Log.info("Resolving ............. " + deployUnit.path());
                 long before = System.currentTimeMillis();
                 if (deployUnit.getUrl() == null || "".equals(deployUnit.getUrl())) {
-                    resolved = resolver.resolve(deployUnit.getGroupName(), deployUnit.getName(), deployUnit.getVersion(), deployUnit.getType(), urls);
+                    resolved = bs.getKernel().getResolver().resolve(deployUnit.getGroupName(), deployUnit.getName(), deployUnit.getVersion(), deployUnit.getType(), urls);
                 } else {
-                    resolved = resolver.resolve(deployUnit.getUrl(), urls);
+                    resolved = bs.getKernel().getResolver().resolve(deployUnit.getUrl(), urls);
                     if (resolved == null && new File(deployUnit.getUrl()).exists()) {
                         resolved = new File(deployUnit.getUrl());
                     }
                 }
                 Log.info("Resolved in {}ms", (System.currentTimeMillis() - before));
                 if (resolved != null) {
-                    FlexyClassLoader kcl = createClassLoader(deployUnit, resolved);
-                    cache.put(path, kcl);
-                    return kcl;
+                    return bs.getKernel().put(buildKernelKey(deployUnit), resolved);
                 } else {
                     Log.error("Unable to resolve {}", deployUnit.path());
                 }
@@ -131,17 +110,12 @@ public class KevoreeCLKernel implements KevoreeCLFactory, BootstrapService {
     @Override
     public void removeDeployUnit(DeployUnit deployUnit) {
         FlexyClassLoader oldKCL = get(deployUnit);
-        cache.remove(deployUnit.path());
+        bs.getKernel().drop(buildKernelKey(deployUnit));
         if (oldKCL != null) {
-            for (FlexyClassLoader kcl : cache.values()) {
+            for (FlexyClassLoader kcl : bs.getKernel().getClassLoaders()) {
                 kcl.detachChild(oldKCL);
             }
         }
-    }
-
-    @Override
-    public void manualAttach(DeployUnit deployUnit, FlexyClassLoader kevoreeJarClassLoader) {
-        cache.put(deployUnit.path(), kevoreeJarClassLoader);
     }
 
     public FlexyClassLoader recursiveInstallDeployUnit(DeployUnit du) {
@@ -195,14 +169,8 @@ public class KevoreeCLKernel implements KevoreeCLFactory, BootstrapService {
 
     public KevoreeCoreBean core;
 
-
     public void setCore(KevoreeCoreBean core) {
         this.core = core;
-    }
-
-    @Override
-    public void clear() {
-        cache.clear();
     }
 
     @Override
@@ -431,20 +399,7 @@ public class KevoreeCLKernel implements KevoreeCLFactory, BootstrapService {
     @Nullable
     @Override
     public File resolve(String url, Set<? extends String> repos) {
-        return resolver.resolve(url, (Set<String>) repos);
-    }
-
-    @Override
-    public FlexyClassLoader createClassLoader(DeployUnit du, File file) {
-        FlexyClassLoader classLoader = FlexyClassLoaderFactory.INSTANCE.create();
-        classLoader.setKey(du.path());
-        try {
-            classLoader.load(new FileInputStream(file));
-        } catch (FileNotFoundException e) {
-            Log.error("Error while opening JAR {} : ", file.getAbsolutePath());
-        } finally {
-            return classLoader;
-        }
+        return bs.getKernel().getResolver().resolve(url, (Set<String>) repos);
     }
 
 }

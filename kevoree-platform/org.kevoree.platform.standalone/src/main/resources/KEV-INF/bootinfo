@@ -1,0 +1,14 @@
+mvn:org.kevoree:org.kevoree.bootstrap:5.0.1-SNAPSHOT,mvn:org.kevoree.modeling:org.kevoree.modeling.microframework:3.1.1,mvn:org.kevoree.kcl:org.kevoree.kcl.microkernel:12-SNAPSHOT,mvn:org.kevoree.log:org.kevoree.log:1,mvn:org.kevoree:org.kevoree.model:5.0.1-SNAPSHOT,mvn:org.kevoree:org.kevoree.api:5.0.1-SNAPSHOT,mvn:org.kevoree:org.kevoree.basechecker:5.0.1-SNAPSHOT,mvn:org.kevoree.kcl:org.kevoree.kcl:12-SNAPSHOT,mvn:org.kevoree:org.kevoree.core:5.0.1-SNAPSHOT,mvn:org.kevoree:org.kevoree.annotation.api:5.0.1-SNAPSHOT,mvn:org.kevoree:org.kevoree.maven.resolver:20,mvn:org.kevoree:org.kevoree.kevscript:5.0.1-SNAPSHOT,mvn:org.jetbrains.kotlin:kotlin-stdlib:0.8.11,mvn:org.jetbrains.kotlin:kotlin-runtime:0.8.11
+mvn:org.kevoree.modeling:org.kevoree.modeling.microframework:3.1.1,mvn:org.jetbrains.kotlin:kotlin-stdlib:0.8.11
+mvn:org.jetbrains.kotlin:kotlin-stdlib:0.8.11
+mvn:org.kevoree.kcl:org.kevoree.kcl.microkernel:12-SNAPSHOT,mvn:org.kevoree.log:org.kevoree.log:1,mvn:org.kevoree.kcl:org.kevoree.kcl:12-SNAPSHOT,mvn:org.kevoree:org.kevoree.maven.resolver:20
+mvn:org.kevoree.log:org.kevoree.log:1
+mvn:org.kevoree.kcl:org.kevoree.kcl:12-SNAPSHOT
+mvn:org.kevoree:org.kevoree.maven.resolver:20
+mvn:org.kevoree:org.kevoree.model:5.0.1-SNAPSHOT,mvn:org.kevoree.modeling:org.kevoree.modeling.microframework:3.1.1,mvn:org.jetbrains.kotlin:kotlin-stdlib:0.8.11
+mvn:org.kevoree:org.kevoree.api:5.0.1-SNAPSHOT,mvn:org.kevoree:org.kevoree.model:5.0.1-SNAPSHOT,mvn:org.kevoree.kcl:org.kevoree.kcl:12-SNAPSHOT,mvn:org.jetbrains.kotlin:kotlin-stdlib:0.8.11
+mvn:org.kevoree:org.kevoree.basechecker:5.0.1-SNAPSHOT,mvn:org.jetbrains.kotlin:kotlin-stdlib:0.8.11,mvn:org.kevoree:org.kevoree.api:5.0.1-SNAPSHOT
+mvn:org.kevoree:org.kevoree.core:5.0.1-SNAPSHOT,mvn:org.jetbrains.kotlin:kotlin-stdlib:0.8.11,mvn:org.kevoree:org.kevoree.basechecker:5.0.1-SNAPSHOT,mvn:org.kevoree:org.kevoree.annotation.api:5.0.1-SNAPSHOT,mvn:org.kevoree:org.kevoree.api:5.0.1-SNAPSHOT,mvn:org.kevoree:org.kevoree.kevscript:5.0.1-SNAPSHOT
+mvn:org.kevoree:org.kevoree.annotation.api:5.0.1-SNAPSHOT
+mvn:org.kevoree:org.kevoree.kevscript:5.0.1-SNAPSHOT
+mvn:org.jetbrains.kotlin:kotlin-runtime:0.8.11

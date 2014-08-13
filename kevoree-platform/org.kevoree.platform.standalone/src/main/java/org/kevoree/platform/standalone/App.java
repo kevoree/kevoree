@@ -1,11 +1,13 @@
 package org.kevoree.platform.standalone;
 
-import org.kevoree.bootstrap.Bootstrap;
-import org.kevoree.factory.DefaultKevoreeFactory;
+import org.kevoree.kcl.api.FlexyClassLoader;
+import org.kevoree.microkernel.KevoreeKernel;
+import org.kevoree.microkernel.impl.KevoreeMicroKernelImpl;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.InputStream;
+import java.lang.reflect.Constructor;
 
 /**
  * Created with IntelliJ IDEA.
@@ -22,11 +24,22 @@ public class App {
         if (nodeName == null) {
             nodeName = defaultNodeName;
         }
-        final Bootstrap bootstrap = new Bootstrap(nodeName);
+        KevoreeKernel kernel = new KevoreeMicroKernelImpl();
+        kernel.boot();
+        FlexyClassLoader bootstrapKCL = null;
+        for (FlexyClassLoader key : kernel.getClassLoaders()) {
+            if (key.getKey().contains("bootstrap")) {
+                bootstrapKCL = key;
+            }
+        }
+        Thread.currentThread().setContextClassLoader(bootstrapKCL);
+        Class clazzBootstrap = bootstrapKCL.loadClass("org.kevoree.bootstrap.Bootstrap");
+        Constructor constructor = clazzBootstrap.getConstructor(KevoreeKernel.class, String.class);
+        final Object bootstrap = constructor.newInstance(kernel, nodeName);
         Runtime.getRuntime().addShutdownHook(new Thread("Shutdown Hook") {
             public void run() {
                 try {
-                    bootstrap.stop();
+                    bootstrap.getClass().getMethod("stop").invoke(bootstrap);
                 } catch (Throwable ex) {
                     System.out.println("Error stopping kevoree platform: " + ex.getMessage());
                 }
@@ -34,22 +47,22 @@ public class App {
         });
         String bootstrapModel = System.getProperty("node.bootstrap");
         if (bootstrapModel != null) {
-            bootstrap.bootstrapFromFile(new File(bootstrapModel));
+            bootstrap.getClass().getMethod("bootstrapFromFile", File.class).invoke(bootstrap, new File(bootstrapModel));
         } else {
-            bootstrap.bootstrapFromKevScript(createBootstrapScript(nodeName));
+            bootstrap.getClass().getMethod("bootstrapFromKevScript", InputStream.class).invoke(bootstrap, createBootstrapScript(nodeName));
         }
     }
 
     public static InputStream createBootstrapScript(String nodeName) {
         StringBuilder buffer = new StringBuilder();
         String versionRequest;
-        if (new DefaultKevoreeFactory().getVersion().toLowerCase().contains("snapshot")) {
-            buffer.append("repo \"https://oss.sonatype.org/content/groups/public/\"\n");
-            versionRequest = "latest";
-        } else {
-            buffer.append("repo \"http://repo1.maven.org/maven2/\"\n");
-            versionRequest = "release";
-        }
+        // if (new DefaultKevoreeFactory().getVersion().toLowerCase().contains("snapshot")) {
+        buffer.append("repo \"https://oss.sonatype.org/content/groups/public/\"\n");
+        versionRequest = "latest";
+        // } else {
+        buffer.append("repo \"http://repo1.maven.org/maven2/\"\n");
+        //    versionRequest = "release";
+        // }
         buffer.append("include mvn:org.kevoree.library.java:org.kevoree.library.java.javaNode:");
         buffer.append(versionRequest);
         buffer.append("\n");

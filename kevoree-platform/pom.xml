@@ -12,7 +12,7 @@
         <version>5.0.1-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-
+	<!--
     <dependencies>
         <dependency>
             <groupId>org.kevoree</groupId>
@@ -20,7 +20,7 @@
             <version>${kevoree.version}</version>
         </dependency>
     </dependencies>
-
+-->
     <modules>
         <module>org.kevoree.platform.standalone</module>
         <module>org.kevoree.platform.standalone.telemetry</module>

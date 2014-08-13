@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
     <artifactId>org.kevoree.bootstrap</artifactId>
@@ -17,6 +18,11 @@
             <groupId>org.kevoree.modeling</groupId>
             <artifactId>org.kevoree.modeling.microframework</artifactId>
             <version>${kmf.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.kevoree.kcl</groupId>
+            <artifactId>org.kevoree.kcl.microkernel</artifactId>
+            <version>${kevoree.kcl.version}</version>
         </dependency>
         <dependency>
             <groupId>org.kevoree.log</groupId>
@@ -95,21 +101,6 @@
                         <goals>
                             <goal>test-compile</goal>
                         </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.gmaven</groupId>
-                <artifactId>gmaven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <phase>generate-resources</phase>
-                        <goals>
-                            <goal>execute</goal>
-                        </goals>
-                        <configuration>
-                            <source>${pom.basedir}/src/main/script/export.groovy</source>
-                        </configuration>
                     </execution>
                 </executions>
             </plugin>

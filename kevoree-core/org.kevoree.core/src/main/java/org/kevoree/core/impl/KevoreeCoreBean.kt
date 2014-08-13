@@ -282,8 +282,6 @@ class KevoreeCoreBean : ContextAwareModelService {
                     nodeInstance == null
                     resolver = null
                 }
-
-                bootstrapService?.clear()
             } catch(e: Exception) {
                 Log.error("Error while stopping node instance ", e)
             }
@@ -431,7 +429,6 @@ class KevoreeCoreBean : ContextAwareModelService {
                             //end of harakiri
                             nodeInstance = null
                             resolver = null
-                            bootstrapService?.clear() //CLEAR
                             //place the current model as an empty model (for backup)
 
                             val backupEmptyModel = kevoreeFactory.createContainerRoot()
@@ -549,7 +546,6 @@ class KevoreeCoreBean : ContextAwareModelService {
                 }
             } catch(e: Throwable) {
             } finally {
-                bootstrapService?.clear()
             }
             nodeInstance = null
             resolver = null

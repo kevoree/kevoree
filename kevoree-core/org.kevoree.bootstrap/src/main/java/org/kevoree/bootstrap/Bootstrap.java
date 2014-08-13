@@ -9,6 +9,7 @@ import org.kevoree.bootstrap.reflect.KevoreeInjector;
 import org.kevoree.core.impl.KevoreeCoreBean;
 import org.kevoree.kevscript.KevScriptEngine;
 import org.kevoree.log.Log;
+import org.kevoree.microkernel.KevoreeKernel;
 import org.kevoree.modeling.api.compare.ModelCompare;
 import org.kevoree.modeling.api.json.JSONModelLoader;
 import org.kevoree.modeling.api.xmi.XMIModelLoader;
@@ -30,28 +31,43 @@ import java.util.Enumeration;
  */
 public class Bootstrap {
 
-    private KevoreeCoreBean core = new KevoreeCoreBean();
+    private KevoreeKernel microKernel;
 
-    private KevoreeCLKernel kernel = new KevoreeCLKernel();
+    private KevoreeCoreBean core;
 
-    private KevoreeInjector injector = new KevoreeInjector();
+    private KevoreeCLKernel kernel;
 
-    private KevScriptEngine kevScriptEngine = new KevScriptEngine();
+    private KevoreeInjector injector;
 
-    private XMIModelLoader xmiLoader = new XMIModelLoader(core.getFactory());
+    private KevScriptEngine kevScriptEngine;
 
-    private JSONModelLoader jsonLoader = new JSONModelLoader(core.getFactory());
+    private XMIModelLoader xmiLoader;
+
+    private JSONModelLoader jsonLoader;
 
     public KevoreeCoreBean getCore() {
         return core;
     }
 
-    public Bootstrap(String nodeName) {
+    public KevoreeKernel getKernel() {
+        return microKernel;
+    }
+
+    public Bootstrap(KevoreeKernel k, String nodeName) {
+        //First initiate Security Manager to ensure that no Kill can be called on the JVM
         System.setSecurityManager(new KevoreeSecurityManager());
+        //Init all subObjects
+        this.microKernel = k;
+        core = new KevoreeCoreBean();
+        kernel = new KevoreeCLKernel(this);
+        injector = new KevoreeInjector();
+        kevScriptEngine = new KevScriptEngine();
+        xmiLoader = core.getFactory().createXMILoader();
+        jsonLoader = core.getFactory().createJSONLoader();
+        //Cross links
         core.setNodeName(nodeName);
         kernel.setNodeName(nodeName);
         kernel.setCore(core);
-        //injector.addService(ModelService.class, core);
         injector.addService(BootstrapService.class, kernel);
         injector.addService(KevScriptService.class, kevScriptEngine);
         kernel.setInjector(injector);
@@ -85,7 +101,6 @@ public class Bootstrap {
         if (System.getProperty("kevoree.dev") != null) {
             ContainerRoot emptyModel = bootstrapFromClassPath();
             for (DeployUnit du : emptyModel.getDeployUnits()) {
-                kernel.manualAttach(du, kernel.system);
                 kevScriptEngine.addIgnoreIncludeDeployUnit(du);
             }
             return emptyModel;
@@ -99,10 +114,8 @@ public class Bootstrap {
         //TODO perhaps not delegate load of dev classpath to system for continuous integration
         ContainerRoot emptyModel = initialModel();
         core.getFactory().root(emptyModel);
-
         kevScriptEngine.executeFromStream(input, emptyModel);
         //Add network information
-
         ContainerNode currentNode = emptyModel.findNodesByID(core.getNodeName());
         if (currentNode != null) {
             if (currentNode.findNetworkInformationByID("ip") == null) {

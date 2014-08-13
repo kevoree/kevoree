@@ -34,17 +34,13 @@ trait BootstrapService {
 
     public fun removeDeployUnit(du: DeployUnit)
 
-    public fun manualAttach(du: DeployUnit, kcl: FlexyClassLoader);
-
     public fun installTypeDefinition(tdef: TypeDefinition): FlexyClassLoader?;
 
     public fun recursiveInstallDeployUnit(du: DeployUnit): FlexyClassLoader?;
 
     public fun setOffline(offline: Boolean)
 
-    public fun clear()
-
-    public fun createInstance(instance: Instance, kcl : FlexyClassLoader): Any?
+    public fun createInstance(instance: Instance, kcl: FlexyClassLoader): Any?
 
     public fun injectDictionary(instance: Instance, target: Any, onlyDefault: Boolean)
 

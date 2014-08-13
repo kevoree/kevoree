@@ -49,7 +49,6 @@
             <artifactId>org.kevoree.tools.annotator</artifactId>
             <version>${project.version}</version>
         </dependency>
-
         <dependency>
             <groupId>org.apache.maven.plugin-tools</groupId>
             <artifactId>maven-plugin-annotations</artifactId>
@@ -62,7 +61,6 @@
             <version>3.0.1</version>
         </dependency>
     </dependencies>
-
 
     <build>
         <plugins>
@@ -83,7 +81,6 @@
                     </execution>
                 </executions>
             </plugin>
-
         </plugins>
     </build>
 
