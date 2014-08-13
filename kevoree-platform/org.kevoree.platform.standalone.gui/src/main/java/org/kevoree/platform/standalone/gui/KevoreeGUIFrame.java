@@ -13,113 +13,70 @@
  */
 package org.kevoree.platform.standalone.gui;
 
-import com.explodingpixels.macwidgets.MacButtonFactory;
 import com.explodingpixels.macwidgets.MacUtils;
-import com.explodingpixels.macwidgets.MacWidgetFactory;
 import com.explodingpixels.macwidgets.UnifiedToolBar;
-import org.kevoree.ContainerNode;
-import org.kevoree.ContainerRoot;
-import org.kevoree.api.handler.ModelListener;
-import org.kevoree.api.handler.UpdateCallback;
-import org.kevoree.api.handler.UpdateContext;
-import org.kevoree.bootstrap.Bootstrap;
-import org.kevoree.core.impl.KevoreeCoreBean;
-import org.kevoree.factory.DefaultKevoreeFactory;
+import org.kevoree.kcl.api.FlexyClassLoader;
+import org.kevoree.microkernel.KevoreeKernel;
+import org.kevoree.microkernel.impl.KevoreeMicroKernelImpl;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.InputStream;
-import java.net.URI;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
+import java.util.SortedSet;
 
 public class KevoreeGUIFrame extends JFrame {
 
-    private static final String defaultNodeName = "node0";
     public static KevoreeGUIFrame singleton = null;
 
-    private static KevoreeLeftModel left = null;
-    final Bootstrap[] bootstrap = new Bootstrap[1];
-
-    public KevoreeGUIFrame() {
+    public KevoreeGUIFrame(String nodeName) throws NoSuchMethodException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, InstantiationException {
         singleton = this;
         MacUtils.makeWindowLeopardStyle(this.getRootPane());
         UnifiedToolBar toolBar = new UnifiedToolBar();
-        //toolBar.disableBackgroundPainter();
         add(toolBar.getComponent(), BorderLayout.NORTH);
-
-
-        Icon ico = new ImageIcon(KevoreeGUIFrame.class.getClassLoader().getResource("android-share.png"));
-
-        AbstractButton macWidgetsButton = MacButtonFactory.makePreferencesTabBarButton(new JButton("Editor", ico));
-        toolBar.addComponentToRight(macWidgetsButton);
-        macWidgetsButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Bootstrap b = bootstrap[0];
-                if (b != null) {
-                    KevoreeCoreBean bean = b.getCore();
-                    if (bean != null) {
-                        String version = "release";
-                        if (bean.getFactory().getVersion().contains("SNAPSHOT")) {
-                            version = "latest";
-                        }
-                        bean.submitScript("include mvn:org.kevoree.library.java:org.kevoree.library.java.editor:" + version + "\nadd " + bean.getNodeName() + ".editor : WebEditor", new UpdateCallback() {
-                            @Override
-                            public void run(Boolean aBoolean) {
-                                if (aBoolean) {
-                                    try {
-                                        Desktop.getDesktop().browse(new URI("http://localhost:3042"));
-                                    } catch (Exception e1) {
-                                        e1.printStackTrace();
-                                    }
-                                }
-                            }
-                        }, "/");
-                    }
-                }
-            }
-        });
-
-
         URL urlSmallIcon = getClass().getClassLoader().getResource("kev-logo-full.png");
         final ImageIcon smallIcon = new ImageIcon(urlSmallIcon);
         this.setIconImage(smallIcon.getImage());
-
         URL urlIcon = getClass().getClassLoader().getResource("kevoree-logo-full.png");
         ImageIcon topIIcon = new ImageIcon(urlIcon);
         JLabel topImage = new JLabel(topIIcon);
         topImage.setOpaque(false);
         toolBar.addComponentToLeft(topImage);
-
-        left = new KevoreeLeftModel();
-        new Thread() {
-            @Override
-            public void run() {
-                startNode();
-            }
-        }.start();
         setVisible(true);
-
         setPreferredSize(new Dimension(1024, 768));
         setSize(getPreferredSize());
 
+        ConsoleShell shell = new ConsoleShell();
+        singleton.add(shell, BorderLayout.CENTER);
+        singleton.pack();
         setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-    }
 
-    private void startNode() {
+        KevoreeKernel kernel = new KevoreeMicroKernelImpl();
+        String version = System.getProperty("version");
+        if (version == null) {
+            SortedSet<String> sets = kernel.getResolver().listVersion("org.kevoree", "org.kevoree.bootstrap", "jar", kernel.getSnapshotURLS());
+            version = sets.first();
+        }
+        String bootJar = "mvn:org.kevoree:org.kevoree.bootstrap:" + version;
+        final FlexyClassLoader bootstrapKCL = kernel.install(bootJar, bootJar);
+        kernel.boot(bootstrapKCL.getResourceAsStream("KEV-INF/bootinfo"));
+        Thread.currentThread().setContextClassLoader(bootstrapKCL);
+        Class clazzBootstrap = bootstrapKCL.loadClass("org.kevoree.bootstrap.Bootstrap");
+        Constructor constructor = clazzBootstrap.getConstructor(KevoreeKernel.class, String.class);
+        final Object bootstrap = constructor.newInstance(kernel, nodeName);
         Runtime.getRuntime().addShutdownHook(new Thread("Shutdown Hook") {
-
             public void run() {
                 try {
-                    bootstrap[0].stop();
+                    Thread.currentThread().setContextClassLoader(bootstrapKCL);
+                    bootstrap.getClass().getMethod("stop").invoke(bootstrap);
                 } catch (Throwable ex) {
-                    System.out.println("Error stopping framework: " + ex.getMessage());
+                    System.out.println("Error stopping kevoree platform: " + ex.getMessage());
                 }
             }
         });
@@ -130,7 +87,8 @@ public class KevoreeGUIFrame extends JFrame {
                     @Override
                     public void run() {
                         try {
-                            bootstrap[0].stop();
+                            Thread.currentThread().setContextClassLoader(bootstrapKCL);
+                            bootstrap.getClass().getMethod("stop").invoke(bootstrap);
                             dispose();
                             Runtime.getRuntime().exit(0);
                         } catch (Throwable e) {
@@ -140,71 +98,18 @@ public class KevoreeGUIFrame extends JFrame {
                 }.start();
             }
         });
-        try {
-            ConsoleShell shell = new ConsoleShell();
-            String nodeName = System.getProperty("node.name");
-            if (nodeName == null) {
-                nodeName = defaultNodeName;
-            }
-
-            bootstrap[0] = new Bootstrap(nodeName);
-            KevoreeGUIFrame.showShell(shell);
-            bootstrap[0].getCore().registerModelListener(new ModelListener() {
-                @Override
-                public boolean preUpdate(UpdateContext context) {
-                    return true;
-                }
-
-                @Override
-                public boolean initUpdate(UpdateContext context) {
-                    return true;
-                }
-
-                @Override
-                public boolean afterLocalUpdate(UpdateContext context) {
-                    return true;
-                }
-
-                @Override
-                public void modelUpdated() {
-
-                    ContainerRoot currentModel = bootstrap[0].getCore().getCurrentModel().getModel();
-                    ContainerNode currentNode = currentModel.findNodesByID(bootstrap[0].getCore().getNodeName());
-                    if (currentNode != null) {
-                        left.reload(currentNode);
-                    } else {
-                        System.out.println("Node not found for refresh in model");
-                    }
-                }
-
-                @Override
-                public void preRollback(UpdateContext context) {
-
-                }
-
-                @Override
-                public void postRollback(UpdateContext context) {
-
-                }
-            }, "/");
-
-            String bootstrapModel = System.getProperty("node.bootstrap");
-            if (bootstrapModel != null) {
-                bootstrap[0].bootstrapFromFile(new File(bootstrapModel));
-            } else {
-                bootstrap[0].bootstrapFromKevScript(createBootstrapScript(nodeName));
-            }
-
-        } catch (Throwable e) {
-            e.printStackTrace();
+        String bootstrapModel = System.getProperty("node.bootstrap");
+        if (bootstrapModel != null) {
+            bootstrap.getClass().getMethod("bootstrapFromFile", File.class).invoke(bootstrap, new File(bootstrapModel));
+        } else {
+            bootstrap.getClass().getMethod("bootstrapFromKevScript", InputStream.class).invoke(bootstrap, createBootstrapScript(nodeName, version));
         }
     }
 
-
-    private static InputStream createBootstrapScript(String nodeName) {
+    private static InputStream createBootstrapScript(String nodeName, String version) {
         StringBuilder buffer = new StringBuilder();
         String versionRequest;
-        if (new DefaultKevoreeFactory().getVersion().toLowerCase().contains("snapshot")) {
+        if (version.toLowerCase().contains("snapshot")) {
             buffer.append("repo \"https://oss.sonatype.org/content/groups/public/\"\n");
             versionRequest = "latest";
         } else {
@@ -214,25 +119,25 @@ public class KevoreeGUIFrame extends JFrame {
         buffer.append("include mvn:org.kevoree.library.java:org.kevoree.library.java.javaNode:");
         buffer.append(versionRequest);
         buffer.append("\n");
+        buffer.append("include mvn:org.kevoree.library.java:org.kevoree.library.java.editor:");
+        buffer.append(versionRequest);
+        buffer.append("\n");
         buffer.append("include mvn:org.kevoree.library.java:org.kevoree.library.java.ws:");
         buffer.append(versionRequest);
         buffer.append("\n");
         buffer.append("add node0 : JavaNode".replace("node0", nodeName) + "\n");
         buffer.append("add sync : WSGroup\n");
         buffer.append("attach node0 sync\n".replace("node0", nodeName));
-
         int groupPort = FreeSocketDetector.detect(9000, 9999);
+        int editorPort = FreeSocketDetector.detect(3042, 3300);
+        buffer.append("set sync.port/node0 = \"" + groupPort + "\"\n");
+        buffer.append("add " + nodeName + ".editor : WebEditor\n");
+        buffer.append("set "+nodeName+".editor.port = \"" + editorPort + "\"\n");
 
-        buffer.append("set sync.port/node0 = \"" + groupPort + "\"");
+        System.err.println(buffer.toString());
+
 
         return new ByteArrayInputStream(buffer.toString().getBytes());
-    }
-
-    public static void showShell(JComponent shell) {
-        JSplitPane splitPane = MacWidgetFactory.createSplitPaneForSourceList(left.getSourceList(), shell);
-        splitPane.setDividerLocation(200);
-        singleton.add(splitPane, BorderLayout.CENTER);
-        singleton.pack();
     }
 
 

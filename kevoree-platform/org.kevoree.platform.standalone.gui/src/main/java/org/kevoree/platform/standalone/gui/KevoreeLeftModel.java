@@ -4,7 +4,6 @@ import com.explodingpixels.macwidgets.SourceList;
 import com.explodingpixels.macwidgets.SourceListCategory;
 import com.explodingpixels.macwidgets.SourceListItem;
 import com.explodingpixels.macwidgets.SourceListModel;
-import org.kevoree.*;
 
 import javax.swing.*;
 import java.util.HashMap;
@@ -23,6 +22,8 @@ public class KevoreeLeftModel extends JPanel {
     public SourceList getSourceList() {
         return _sourceList;
     }
+
+    /*
 
     public void reload(ContainerNode kmodel) {
         if (model.getCategories().size() > 0) {
@@ -96,5 +97,6 @@ public class KevoreeLeftModel extends JPanel {
             }
         });
     }
+    */
 
 }

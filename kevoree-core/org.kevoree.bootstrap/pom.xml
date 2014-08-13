@@ -84,6 +84,19 @@
     <build>
         <plugins>
             <plugin>
+                <artifactId>org.kevoree.kcl.boot.mavenplugin</artifactId>
+                <groupId>org.kevoree.kcl</groupId>
+                <version>${kevoree.kcl.version}</version>
+                <extensions>true</extensions>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <artifactId>kotlin-maven-plugin</artifactId>
                 <groupId>org.jetbrains.kotlin</groupId>
                 <version>${kotlin.version}</version>

@@ -26,18 +26,28 @@
  */
 package org.kevoree.platform.standalone.gui;
 
+import javax.swing.*;
+
 public class App {
 
     public static void main(String[] args) throws Exception {
         System.setProperty("awt.useSystemAAFontSettings", "lcd");
         System.setProperty("swing.aatext", "true");
 
-        /*
-        InitFrame init = new InitFrame();
-        init.setVisible(true);
-        init.setSize(700,500);
-            */
-        final KevoreeGUIFrame frame = new KevoreeGUIFrame();
+        String s = (String) JOptionPane.showInputDialog(
+                null,
+                "Enter a node name",
+                "Kevoree Runtime Bootstrap",
+                JOptionPane.PLAIN_MESSAGE,
+                null,
+                null,
+                "node0");
+
+        if (s != null) {
+            final KevoreeGUIFrame frame = new KevoreeGUIFrame(s);
+        }
+
+
     }
 
 }

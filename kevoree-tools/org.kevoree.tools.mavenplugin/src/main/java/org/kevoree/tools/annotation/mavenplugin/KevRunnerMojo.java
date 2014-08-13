@@ -3,21 +3,24 @@ package org.kevoree.tools.annotation.mavenplugin;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
-import org.kevoree.bootstrap.Bootstrap;
+import org.kevoree.kcl.api.FlexyClassLoader;
+import org.kevoree.microkernel.KevoreeKernel;
+import org.kevoree.microkernel.impl.KevoreeMicroKernelImpl;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.InputStream;
+import java.lang.reflect.Constructor;
+import java.util.SortedSet;
 
 /**
  * Created with IntelliJ IDEA.
  * User: duke
  * Date: 28/11/2013
  * Time: 11:13
- *
  */
 @Mojo(name = "run", requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME)
 public class KevRunnerMojo extends AbstractMojo {
@@ -30,27 +33,30 @@ public class KevRunnerMojo extends AbstractMojo {
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
-
         try {
-            this.getClass().getClassLoader().loadClass("org.kevoree.resolver.util.AsyncVersionResolver");
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        Bootstrap bootstrap = new Bootstrap(nodename);
-        try {
-            bootstrap.bootstrapFromKevScript(new FileInputStream(model));
-        } catch (Exception e) {
-            getLog().error(e);
-            System.setSecurityManager(null);
-            throw new MojoExecutionException("Error while parsing bootstrap KevScript ", e);
-        }
-
-        try {
+            KevoreeKernel kernel = new KevoreeMicroKernelImpl();
+            SortedSet<String> sets = kernel.getResolver().listVersion("org.kevoree", "org.kevoree.bootstrap", "jar", kernel.getSnapshotURLS());
+            String selectedVersion = sets.first();
+            String bootJar = "mvn:org.kevoree:org.kevoree.bootstrap:" + selectedVersion;
+            FlexyClassLoader bootstrapKCL = kernel.install(bootJar, bootJar);
+            kernel.boot(bootstrapKCL.getResourceAsStream("KEV-INF/bootinfo"));
+            Thread.currentThread().setContextClassLoader(bootstrapKCL);
+            Class clazzBootstrap = bootstrapKCL.loadClass("org.kevoree.bootstrap.Bootstrap");
+            Constructor constructor = clazzBootstrap.getConstructor(KevoreeKernel.class, String.class);
+            final Object bootstrap = constructor.newInstance(kernel, nodename);
+            Runtime.getRuntime().addShutdownHook(new Thread("Shutdown Hook") {
+                public void run() {
+                    try {
+                        bootstrap.getClass().getMethod("stop").invoke(bootstrap);
+                    } catch (Throwable ex) {
+                        System.out.println("Error stopping kevoree platform: " + ex.getMessage());
+                    }
+                }
+            });
+            bootstrap.getClass().getMethod("bootstrapFromKevScript", InputStream.class).invoke(bootstrap, new FileInputStream(model));
             Thread.currentThread().join();
-        } catch (InterruptedException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 }

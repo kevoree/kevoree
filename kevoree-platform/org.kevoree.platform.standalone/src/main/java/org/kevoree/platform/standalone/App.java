@@ -8,6 +8,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.InputStream;
 import java.lang.reflect.Constructor;
+import java.util.SortedSet;
 
 /**
  * Created with IntelliJ IDEA.
@@ -24,14 +25,15 @@ public class App {
         if (nodeName == null) {
             nodeName = defaultNodeName;
         }
+        String version = System.getProperty("version");
         KevoreeKernel kernel = new KevoreeMicroKernelImpl();
-        kernel.boot();
-        FlexyClassLoader bootstrapKCL = null;
-        for (FlexyClassLoader key : kernel.getClassLoaders()) {
-            if (key.getKey().contains("bootstrap")) {
-                bootstrapKCL = key;
-            }
+        if (version == null) {
+            SortedSet<String> sets = kernel.getResolver().listVersion("org.kevoree", "org.kevoree.bootstrap", "jar", kernel.getSnapshotURLS());
+            version = sets.first();
         }
+        String bootJar = "mvn:org.kevoree:org.kevoree.bootstrap:" + version;
+        FlexyClassLoader bootstrapKCL = kernel.install(bootJar, bootJar);
+        kernel.boot(bootstrapKCL.getResourceAsStream("KEV-INF/bootinfo"));
         Thread.currentThread().setContextClassLoader(bootstrapKCL);
         Class clazzBootstrap = bootstrapKCL.loadClass("org.kevoree.bootstrap.Bootstrap");
         Constructor constructor = clazzBootstrap.getConstructor(KevoreeKernel.class, String.class);
@@ -49,20 +51,20 @@ public class App {
         if (bootstrapModel != null) {
             bootstrap.getClass().getMethod("bootstrapFromFile", File.class).invoke(bootstrap, new File(bootstrapModel));
         } else {
-            bootstrap.getClass().getMethod("bootstrapFromKevScript", InputStream.class).invoke(bootstrap, createBootstrapScript(nodeName));
+            bootstrap.getClass().getMethod("bootstrapFromKevScript", InputStream.class).invoke(bootstrap, createBootstrapScript(nodeName, version));
         }
     }
 
-    public static InputStream createBootstrapScript(String nodeName) {
+    public static InputStream createBootstrapScript(String nodeName, String version) {
         StringBuilder buffer = new StringBuilder();
         String versionRequest;
-        // if (new DefaultKevoreeFactory().getVersion().toLowerCase().contains("snapshot")) {
-        buffer.append("repo \"https://oss.sonatype.org/content/groups/public/\"\n");
-        versionRequest = "latest";
-        // } else {
-        buffer.append("repo \"http://repo1.maven.org/maven2/\"\n");
-        //    versionRequest = "release";
-        // }
+        if (version.toLowerCase().contains("snapshot")) {
+            buffer.append("repo \"https://oss.sonatype.org/content/groups/public/\"\n");
+            versionRequest = "latest";
+        } else {
+            buffer.append("repo \"http://repo1.maven.org/maven2/\"\n");
+            versionRequest = "release";
+        }
         buffer.append("include mvn:org.kevoree.library.java:org.kevoree.library.java.javaNode:");
         buffer.append(versionRequest);
         buffer.append("\n");
