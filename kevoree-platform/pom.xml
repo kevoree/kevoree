@@ -12,22 +12,10 @@
         <version>5.0.1-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-	<!--
-    <dependencies>
-        <dependency>
-            <groupId>org.kevoree</groupId>
-            <artifactId>org.kevoree.bootstrap</artifactId>
-            <version>${kevoree.version}</version>
-        </dependency>
-    </dependencies>
--->
+
     <modules>
         <module>org.kevoree.platform.standalone</module>
-        <module>org.kevoree.platform.standalone.telemetry</module>
         <module>org.kevoree.platform.standalone.gui</module>
-        <module>org.kevoree.platform.standalone.gui.prompt</module>
-        <module>org.kevoree.platform.standalone.gui.public</module>
-        <module>org.kevoree.platform.standalone.test</module>
     </modules>
 
 </project>

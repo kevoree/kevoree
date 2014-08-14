@@ -10,15 +10,11 @@ import org.kevoree.bootstrap.Bootstrap;
 import org.kevoree.bootstrap.reflect.KevoreeInjector;
 import org.kevoree.core.impl.ContextAwareAdapter;
 import org.kevoree.core.impl.KevoreeCoreBean;
-import org.kevoree.factory.DefaultKevoreeFactory;
 import org.kevoree.kcl.api.FlexyClassLoader;
 import org.kevoree.kcl.api.FlexyClassLoaderFactory;
 import org.kevoree.log.Log;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.HashSet;
@@ -109,13 +105,7 @@ public class KevoreeCLKernel implements BootstrapService {
 
     @Override
     public void removeDeployUnit(DeployUnit deployUnit) {
-        FlexyClassLoader oldKCL = get(deployUnit);
         bs.getKernel().drop(buildKernelKey(deployUnit));
-        if (oldKCL != null) {
-            for (FlexyClassLoader kcl : bs.getKernel().getClassLoaders()) {
-                kcl.detachChild(oldKCL);
-            }
-        }
     }
 
     public FlexyClassLoader recursiveInstallDeployUnit(DeployUnit du) {

@@ -27,6 +27,7 @@
 package org.kevoree.platform.standalone.gui;
 
 import com.explodingpixels.macwidgets.HudWidgetFactory;
+import org.kevoree.log.Log;
 
 import javax.swing.*;
 import java.awt.*;
@@ -40,6 +41,7 @@ import java.util.Random;
 public class App {
 
     public static void main(String[] args) throws Exception {
+
         System.setProperty("awt.useSystemAAFontSettings", "lcd");
         System.setProperty("swing.aatext", "true");
         String hostname = System.getenv("COMPUTERNAME");

@@ -131,6 +131,9 @@ public class KevoreeGUIFrame extends JFrame {
             buffer.append("\n");
         }
         buffer.append("add "+nodeName+" : JavaNode\n");
+
+        buffer.append("set "+nodeName+".log=\"TRACE\"\n");
+
         buffer.append("add sync : WSGroup\n");
         buffer.append("attach "+nodeName+" sync\n");
         int groupPort = FreeSocketDetector.detect(9000, 9999);

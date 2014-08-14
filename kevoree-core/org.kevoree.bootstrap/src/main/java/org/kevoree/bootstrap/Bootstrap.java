@@ -74,7 +74,9 @@ public class Bootstrap {
             if (bootstrapModel != null) {
                 boot.bootstrapFromFile(new File(bootstrapModel));
             } else {
-                boot.bootstrapFromKevScript(new ByteArrayInputStream(System.getProperty("node.script").getBytes()));
+                if(System.getProperty("node.script")!=null){
+                    boot.bootstrapFromKevScript(new ByteArrayInputStream(System.getProperty("node.script").getBytes()));
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
