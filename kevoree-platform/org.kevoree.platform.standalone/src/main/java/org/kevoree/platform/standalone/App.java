@@ -19,6 +19,19 @@ public class App {
     public static void main(String[] args) throws Exception {
 
         //Log.set(Log.LEVEL_TRACE);
+        String profile = "mvn:org.kevoree:org.kevoree.bootstrap:{kevoree.version}";
+        if (System.getProperty("kev.boot") != null) {
+            String kprofile = System.getProperty("kev.boot");
+            if (kprofile.equals("test")) {
+                profile = "mvn:org.kevoree:org.kevoree.bootstrap.test:{kevoree.version}";
+            } else {
+                if (kprofile.equals("test")) {
+                    profile = "mvn:org.kevoree:org.kevoree.bootstrap.telemetry:{kevoree.version}";
+                } else {
+                    profile = kprofile;
+                }
+            }
+        }
 
         String nodeName = System.getProperty("node.name");
         if (nodeName == null) {
@@ -28,14 +41,15 @@ public class App {
         String version = System.getProperty("version");
         KevoreeKernel kernel = new KevoreeMicroKernelImpl();
         if (version == null) {
-            SortedSet<String> sets = kernel.getResolver().listVersion("org.kevoree", "org.kevoree.bootstrap.telemetry", "jar", kernel.getSnapshotURLS());
+            String[] profiles = profile.split(":");
+            SortedSet<String> sets = kernel.getResolver().listVersion(profiles[1], profiles[2], "jar", kernel.getSnapshotURLS());
             version = sets.first();
         }
         String bootstrapModel = System.getProperty("node.bootstrap");
         if (bootstrapModel == null) {
             System.setProperty("node.script", createBootstrapScript(nodeName, version));
         }
-        String bootJar = "mvn:org.kevoree:org.kevoree.bootstrap.telemetry:" + version;
+        String bootJar = profile.replace("{kevoree.version}", version);
         FlexyClassLoader bootstrapKCL = kernel.install(bootJar, bootJar);
         kernel.boot(bootstrapKCL.getResourceAsStream("KEV-INF/bootinfo"));
     }

@@ -61,7 +61,7 @@ public class KevoreePlatformCtrl implements Runnable {
             urls.add("http://oss.sonatype.org/content/groups/public/");
         }
         Log.info("Try to resolve platform for version {}", factory.getVersion());
-        File platformJar = resolver.resolve("mvn:org.kevoree.platform:org.kevoree.platform.standalone.test:" + factory.getVersion(), urls);
+        File platformJar = resolver.resolve("mvn:org.kevoree.platform:org.kevoree.platform.standalone:" + factory.getVersion(), urls);
         if (platformJar == null) {
             throw new Exception("Can't download Kevoree platform, abording starting node");
         }
@@ -117,9 +117,9 @@ public class KevoreePlatformCtrl implements Runnable {
                 }
                 bootstrapFile.deleteOnExit();
             }
-            execArray = new String[]{getJava(), "-Dmodel.debug.port=" + modelDebugPort.toString(), "-Dnode.bootstrap=" + bootstrapFile.getAbsolutePath(), "-Dnode.name=" + nodeName, "-cp", classPathBuf.toString(), "org.kevoree.tools.annotator.App", classesDirectory, "org.kevoree.platform.standalone.test.App"};
+            execArray = new String[]{getJava(),"-Dkev.profile=test", "-Dmodel.debug.port=" + modelDebugPort.toString(), "-Dnode.bootstrap=" + bootstrapFile.getAbsolutePath(), "-Dnode.name=" + nodeName, "-cp", classPathBuf.toString(), "org.kevoree.tools.annotator.App", classesDirectory, "org.kevoree.platform.standalone.test.App"};
         } else {
-            execArray = new String[]{getJava(), "-Dmodel.debug.port=" + modelDebugPort.toString(), "-Dnode.name=" + nodeName, "-cp", classPathBuf.toString(), "org.kevoree.tools.annotator.App", classesDirectory, "org.kevoree.platform.standalone.test.App"};
+            execArray = new String[]{getJava(),"-Dkev.profile=test", "-Dmodel.debug.port=" + modelDebugPort.toString(), "-Dnode.name=" + nodeName, "-cp", classPathBuf.toString(), "org.kevoree.tools.annotator.App", classesDirectory, "org.kevoree.platform.standalone.test.App"};
         }
 
         /*if (jvmArgs != null) {
