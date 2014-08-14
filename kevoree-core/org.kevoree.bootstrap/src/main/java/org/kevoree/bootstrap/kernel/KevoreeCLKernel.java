@@ -80,7 +80,6 @@ public class KevoreeCLKernel implements BootstrapService {
                 } else {
                     urls.add("http://repo1.maven.org/maven2");
                 }
-
                 Log.info("Resolving ............. " + deployUnit.path());
                 long before = System.currentTimeMillis();
                 if (deployUnit.getUrl() == null || "".equals(deployUnit.getUrl())) {

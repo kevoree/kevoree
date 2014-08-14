@@ -133,7 +133,7 @@ public class KevoreeGUIFrame extends JFrame {
         }
         buffer.append("add "+nodeName+" : JavaNode\n");
 
-        buffer.append("set "+nodeName+".log=\"TRACE\"\n");
+        //buffer.append("set "+nodeName+".log=\"TRACE\"\n");
 
         buffer.append("add sync : WSGroup\n");
         buffer.append("attach "+nodeName+" sync\n");
@@ -148,7 +148,6 @@ public class KevoreeGUIFrame extends JFrame {
             buffer.append("attach " + nodeName + " "+groupName+"\n");
             buffer.append("set "+groupName+".broker = \"" + hostName + "\"");
         }
-        System.out.println(buffer.toString());
         return new ByteArrayInputStream(buffer.toString().getBytes());
     }
 
