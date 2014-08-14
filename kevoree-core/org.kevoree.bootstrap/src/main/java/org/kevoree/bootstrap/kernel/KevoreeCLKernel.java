@@ -145,7 +145,6 @@ public class KevoreeCLKernel implements BootstrapService {
         }
     }
 
-
     @Override
     public void setOffline(boolean b) {
         offline = b;
