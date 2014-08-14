@@ -90,6 +90,7 @@ public class KevoreeGUIFrame extends JFrame {
                             Thread.currentThread().setContextClassLoader(bootstrapKCL);
                             bootstrap.getClass().getMethod("stop").invoke(bootstrap);
                             dispose();
+                            System.setSecurityManager(null);
                             Runtime.getRuntime().exit(0);
                         } catch (Throwable e) {
                             e.printStackTrace();
