@@ -88,6 +88,9 @@
                 <groupId>org.kevoree.kcl</groupId>
                 <version>${kevoree.kcl.version}</version>
                 <extensions>true</extensions>
+                <configuration>
+                    <main>org.kevoree.bootstrap.Bootstrap</main>
+                </configuration>
                 <executions>
                     <execution>
                         <goals>

@@ -35,7 +35,7 @@ public class KevoreeGUIFrame extends JFrame {
 
     public static KevoreeGUIFrame singleton = null;
 
-    public KevoreeGUIFrame(String nodeName) throws NoSuchMethodException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, InstantiationException {
+    public KevoreeGUIFrame(String nodeName, String groupName, String hostName) throws NoSuchMethodException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, InstantiationException {
         singleton = this;
         MacUtils.makeWindowLeopardStyle(this.getRootPane());
         UnifiedToolBar toolBar = new UnifiedToolBar();
@@ -102,11 +102,11 @@ public class KevoreeGUIFrame extends JFrame {
         if (bootstrapModel != null) {
             bootstrap.getClass().getMethod("bootstrapFromFile", File.class).invoke(bootstrap, new File(bootstrapModel));
         } else {
-            bootstrap.getClass().getMethod("bootstrapFromKevScript", InputStream.class).invoke(bootstrap, createBootstrapScript(nodeName, version));
+            bootstrap.getClass().getMethod("bootstrapFromKevScript", InputStream.class).invoke(bootstrap, createBootstrapScript(nodeName, groupName, hostName, version));
         }
     }
 
-    private static InputStream createBootstrapScript(String nodeName, String version) {
+    private static InputStream createBootstrapScript(String nodeName, String groupName, String hostName, String version) {
         StringBuilder buffer = new StringBuilder();
         String versionRequest;
         if (version.toLowerCase().contains("snapshot")) {
@@ -125,18 +125,26 @@ public class KevoreeGUIFrame extends JFrame {
         buffer.append("include mvn:org.kevoree.library.java:org.kevoree.library.java.ws:");
         buffer.append(versionRequest);
         buffer.append("\n");
-        buffer.append("add node0 : JavaNode".replace("node0", nodeName) + "\n");
+        if (hostName != null) {
+            buffer.append("include mvn:org.kevoree.library.java:org.kevoree.library.java.mqtt:");
+            buffer.append(versionRequest);
+            buffer.append("\n");
+        }
+        buffer.append("add "+nodeName+" : JavaNode\n");
         buffer.append("add sync : WSGroup\n");
-        buffer.append("attach node0 sync\n".replace("node0", nodeName));
+        buffer.append("attach "+nodeName+" sync\n");
         int groupPort = FreeSocketDetector.detect(9000, 9999);
         int editorPort = FreeSocketDetector.detect(3042, 3300);
-        buffer.append("set sync.port/node0 = \"" + groupPort + "\"\n");
-        buffer.append("add " + nodeName + ".editor : WebEditor\n");
-        buffer.append("set "+nodeName+".editor.port = \"" + editorPort + "\"\n");
+        buffer.append("set sync.port/"+nodeName+" = \"" + groupPort + "\"\n");
+        //buffer.append("add " + nodeName + ".editor : WebEditor\n");
+        //buffer.append("set " + nodeName + ".editor.port = \"" + editorPort + "\"\n");
 
-        System.err.println(buffer.toString());
-
-
+        if(hostName!= null){
+            buffer.append("add "+groupName+" : MQTTGroup\n");
+            buffer.append("attach " + nodeName + " "+groupName+"\n");
+            buffer.append("set "+groupName+".broker = \"" + hostName + "\"");
+        }
+        System.out.println(buffer.toString());
         return new ByteArrayInputStream(buffer.toString().getBytes());
     }
 

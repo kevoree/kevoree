@@ -14,10 +14,7 @@ import org.kevoree.modeling.api.compare.ModelCompare;
 import org.kevoree.modeling.api.json.JSONModelLoader;
 import org.kevoree.modeling.api.xmi.XMIModelLoader;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.util.Collections;
@@ -51,6 +48,37 @@ public class Bootstrap {
 
     public KevoreeKernel getKernel() {
         return microKernel;
+    }
+
+    public static final String defaultNodeName = "node0";
+
+    public static void main(String[] args) {
+        final ClassLoader loader = Thread.currentThread().getContextClassLoader();
+        String nodeName = System.getProperty("node.name");
+        if (nodeName == null) {
+            nodeName = defaultNodeName;
+        }
+        final Bootstrap boot = new Bootstrap(KevoreeKernel.self.get(), nodeName);
+        Runtime.getRuntime().addShutdownHook(new Thread("Shutdown Hook") {
+            public void run() {
+                try {
+                    Thread.currentThread().setContextClassLoader(loader);
+                    boot.stop();
+                } catch (Throwable ex) {
+                    System.out.println("Error stopping kevoree platform: " + ex.getMessage());
+                }
+            }
+        });
+        String bootstrapModel = System.getProperty("node.bootstrap");
+        try {
+            if (bootstrapModel != null) {
+                boot.bootstrapFromFile(new File(bootstrapModel));
+            } else {
+                boot.bootstrapFromKevScript(new ByteArrayInputStream(System.getProperty("node.script").getBytes()));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public Bootstrap(KevoreeKernel k, String nodeName) {

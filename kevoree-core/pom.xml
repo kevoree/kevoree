@@ -33,6 +33,8 @@
         <module>org.kevoree.kevscript</module>
         <module>org.kevoree.core</module>
         <module>org.kevoree.bootstrap</module>
+        <module>org.kevoree.bootstrap.test</module>
+        <module>org.kevoree.bootstrap.telemetry</module>
     </modules>
 
     <build>
