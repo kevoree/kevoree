@@ -7,6 +7,7 @@ import org.kevoree.api.handler.UpdateCallback;
 import org.kevoree.bootstrap.kernel.KevoreeCLKernel;
 import org.kevoree.bootstrap.reflect.KevoreeInjector;
 import org.kevoree.core.impl.KevoreeCoreBean;
+import org.kevoree.kcl.impl.FlexyClassLoaderImpl;
 import org.kevoree.kevscript.KevScriptEngine;
 import org.kevoree.log.Log;
 import org.kevoree.microkernel.KevoreeKernel;
@@ -53,6 +54,9 @@ public class Bootstrap {
     public static final String defaultNodeName = "node0";
 
     public static void main(String[] args) {
+
+        Log.set(Log.LEVEL_TRACE);
+
         final ClassLoader loader = Thread.currentThread().getContextClassLoader();
         String nodeName = System.getProperty("node.name");
         if (nodeName == null) {
@@ -74,7 +78,7 @@ public class Bootstrap {
             if (bootstrapModel != null) {
                 boot.bootstrapFromFile(new File(bootstrapModel));
             } else {
-                if(System.getProperty("node.script")!=null){
+                if (System.getProperty("node.script") != null) {
                     boot.bootstrapFromKevScript(new ByteArrayInputStream(System.getProperty("node.script").getBytes()));
                 }
             }
@@ -89,11 +93,13 @@ public class Bootstrap {
         //Init all subObjects
         this.microKernel = k;
         core = new KevoreeCoreBean();
+
         kernel = new KevoreeCLKernel(this);
         injector = new KevoreeInjector();
         kevScriptEngine = new KevScriptEngine();
         xmiLoader = core.getFactory().createXMILoader();
         jsonLoader = core.getFactory().createJSONLoader();
+
         //Cross links
         core.setNodeName(nodeName);
         kernel.setNodeName(nodeName);
@@ -129,8 +135,14 @@ public class Bootstrap {
 
     public ContainerRoot initialModel() {
         if (System.getProperty("kevoree.dev") != null) {
-            ContainerRoot emptyModel = bootstrapFromClassPath();
+            ContainerRoot emptyModel = null;
+            try {
+                emptyModel = bootstrapFromClassPath();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             for (DeployUnit du : emptyModel.getDeployUnits()) {
+                getKernel().install(kernel.buildKernelKey(du), "kcl://system");
                 kevScriptEngine.addIgnoreIncludeDeployUnit(du);
             }
             return emptyModel;
@@ -198,8 +210,13 @@ public class Bootstrap {
                         FileInputStream ins = null;
                         try {
                             ins = new FileInputStream(pathP);
-                            result = (ContainerRoot) loader.loadModelFromStream(ins).get(0);
+                            Object res = loader.loadModelFromStream(ins).get(0);
+
+                            System.err.println(ContainerNode.class.getClassLoader());
+
+                            result = (ContainerRoot) res;
                         } catch (Exception e) {
+                            e.printStackTrace();
                             //noop
                         } finally {
                             if (ins != null) {

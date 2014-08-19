@@ -12,6 +12,7 @@ import org.kevoree.core.impl.ContextAwareAdapter;
 import org.kevoree.core.impl.KevoreeCoreBean;
 import org.kevoree.kcl.api.FlexyClassLoader;
 import org.kevoree.kcl.api.FlexyClassLoaderFactory;
+import org.kevoree.kcl.api.ResolutionPriority;
 import org.kevoree.log.Log;
 
 import java.io.File;
@@ -43,7 +44,7 @@ public class KevoreeCLKernel implements BootstrapService {
     private KevoreeInjector injector = null;
 
 
-    private String buildKernelKey(DeployUnit deployUnit) {
+    public String buildKernelKey(DeployUnit deployUnit) {
         StringBuilder builder = new StringBuilder();
         builder.append("mvn:");
         builder.append(deployUnit.getGroupName());
@@ -128,6 +129,8 @@ public class KevoreeCLKernel implements BootstrapService {
     @Override
     public FlexyClassLoader installTypeDefinition(TypeDefinition tdef) {
         FlexyClassLoader kcl = FlexyClassLoaderFactory.INSTANCE.create();
+        kcl.resolutionPriority = ResolutionPriority.CHILDS;
+        kcl.setKey(tdef.path());
         for (DeployUnit du : tdef.getDeployUnits()) {
             if (filter(du)) {
                 kcl.attachChild(recursiveInstallDeployUnit(du));

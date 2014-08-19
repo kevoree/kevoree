@@ -6,15 +6,13 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.kevoree.factory.DefaultKevoreeFactory;
 import org.kevoree.kcl.api.FlexyClassLoader;
+import org.kevoree.log.Log;
 import org.kevoree.microkernel.KevoreeKernel;
 import org.kevoree.microkernel.impl.KevoreeMicroKernelImpl;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.lang.reflect.Constructor;
-import java.util.SortedSet;
 
 /**
  * Created with IntelliJ IDEA.
@@ -34,15 +32,26 @@ public class KevRunnerMojo extends AbstractMojo {
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         try {
+            System.setProperty("node.bootstrap", model.getAbsolutePath());
+            System.setProperty("node.name", nodename);
             KevoreeKernel kernel = new KevoreeMicroKernelImpl();
+            String bootJar = "mvn:org.kevoree:org.kevoree.bootstrap:" + new DefaultKevoreeFactory().getVersion();
+            FlexyClassLoader bootstrapKCL = kernel.install(bootJar, bootJar);
+            kernel.boot(bootstrapKCL.getResourceAsStream("KEV-INF/bootinfo"));
+            Thread.currentThread().join();
+
+            /*
             SortedSet<String> sets = kernel.getResolver().listVersion("org.kevoree", "org.kevoree.bootstrap", "jar", kernel.getSnapshotURLS());
             String selectedVersion = sets.first();
             String bootJar = "mvn:org.kevoree:org.kevoree.bootstrap:" + selectedVersion;
             FlexyClassLoader bootstrapKCL = kernel.install(bootJar, bootJar);
             kernel.boot(bootstrapKCL.getResourceAsStream("KEV-INF/bootinfo"));
-            Thread.currentThread().setContextClassLoader(bootstrapKCL);
-            Class clazzBootstrap = bootstrapKCL.loadClass("org.kevoree.bootstrap.Bootstrap");
-            Constructor constructor = clazzBootstrap.getConstructor(KevoreeKernel.class, String.class);
+            */
+
+            //Thread.currentThread().setContextClassLoader(bootstrapKCL);
+            //Class clazzBootstrap = bootstrapKCL.loadClass("org.kevoree.bootstrap.Bootstrap");
+            //Constructor constructor = clazzBootstrap.getConstructor(KevoreeKernel.class, String.class);
+            /*
             final Object bootstrap = constructor.newInstance(kernel, nodename);
             Runtime.getRuntime().addShutdownHook(new Thread("Shutdown Hook") {
                 public void run() {
@@ -55,6 +64,7 @@ public class KevRunnerMojo extends AbstractMojo {
             });
             bootstrap.getClass().getMethod("bootstrapFromKevScript", InputStream.class).invoke(bootstrap, new FileInputStream(model));
             Thread.currentThread().join();
+            */
         } catch (Exception e) {
             e.printStackTrace();
         }
