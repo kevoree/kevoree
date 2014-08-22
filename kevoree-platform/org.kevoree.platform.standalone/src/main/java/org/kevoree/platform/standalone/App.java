@@ -1,6 +1,7 @@
 package org.kevoree.platform.standalone;
 
 import org.kevoree.kcl.api.FlexyClassLoader;
+import org.kevoree.log.Log;
 import org.kevoree.microkernel.KevoreeKernel;
 import org.kevoree.microkernel.impl.KevoreeMicroKernelImpl;
 
@@ -28,7 +29,11 @@ public class App {
                 if (kprofile.equals("test")) {
                     profile = "mvn:org.kevoree:org.kevoree.bootstrap.telemetry:{kevoree.version}";
                 } else {
-                    profile = kprofile;
+                    if(kprofile.equals("dev")){
+                        profile = "mvn:org.kevoree:org.kevoree.bootstrap.dev:{kevoree.version}";
+                    } else {
+                        profile = kprofile;
+                    }
                 }
             }
         }
@@ -50,6 +55,8 @@ public class App {
             System.setProperty("node.script", createBootstrapScript(nodeName, version));
         }
         String bootJar = profile.replace("{kevoree.version}", version);
+        Log.info("Kevoree bootstrap from "+bootJar);
+
         FlexyClassLoader bootstrapKCL = kernel.install(bootJar, bootJar);
         kernel.boot(bootstrapKCL.getResourceAsStream("KEV-INF/bootinfo"));
     }

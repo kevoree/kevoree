@@ -134,7 +134,7 @@ public class Bootstrap {
     }
 
     public ContainerRoot initialModel() {
-        if (System.getProperty("kevoree.dev") != null) {
+        if (System.getProperty("dev.target.dirs") != null) {
             ContainerRoot emptyModel = null;
             try {
                 emptyModel = bootstrapFromClassPath();
@@ -142,7 +142,6 @@ public class Bootstrap {
                 e.printStackTrace();
             }
             for (DeployUnit du : emptyModel.getDeployUnits()) {
-                getKernel().install(kernel.buildKernelKey(du), "kcl://system");
                 kevScriptEngine.addIgnoreIncludeDeployUnit(du);
             }
             return emptyModel;
@@ -195,7 +194,7 @@ public class Bootstrap {
     }
 
     public ContainerRoot bootstrapFromClassPath() {
-        Object classpath = System.getProperty("java.class.path");
+        Object classpath = System.getProperty("dev.target.dirs");
         if (classpath != null && !classpath.equals("")) {
             ContainerRoot result = null;
             JSONModelLoader loader = core.getFactory().createJSONLoader();
@@ -211,9 +210,6 @@ public class Bootstrap {
                         try {
                             ins = new FileInputStream(pathP);
                             Object res = loader.loadModelFromStream(ins).get(0);
-
-                            System.err.println(ContainerNode.class.getClassLoader());
-
                             result = (ContainerRoot) res;
                         } catch (Exception e) {
                             e.printStackTrace();

@@ -279,7 +279,7 @@ class KevoreeCoreBean : ContextAwareModelService {
                 if (nodeInstance != null) {
                     val met = resolver?.resolve(javaClass<org.kevoree.annotation.Stop>())
                     met?.invoke(nodeInstance)
-                    nodeInstance == null
+                    nodeInstance = null
                     resolver = null
                 }
             } catch(e: Exception) {
