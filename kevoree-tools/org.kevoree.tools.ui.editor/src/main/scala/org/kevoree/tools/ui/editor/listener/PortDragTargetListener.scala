@@ -26,24 +26,26 @@
  */
 package org.kevoree.tools.ui.editor.listener
 
-import org.kevoree.factory.DefaultKevoreeFactory
-import org.kevoree.modeling.api.ModelCloner
-import org.kevoree.tools.ui.framework.elements.PortPanel
-import java.awt.dnd.{DropTargetDropEvent, DropTarget}
 import java.awt.datatransfer.DataFlavor
-import com.explodingpixels.macwidgets.{HudWidgetFactory, HudWindow}
-
-import util.Random
-import org.kevoree._
-import org.kevoree.tools.ui.editor.{PositionedEMFHelper, UIHelper, KevoreeUIKernel}
-import java.awt.event.{ActionEvent, ActionListener, MouseEvent, MouseAdapter}
-import java.awt.{FlowLayout, BorderLayout}
-import org.kevoree.tools.ui.editor.property.SpringUtilities
+import java.awt.dnd.{DropTarget, DropTargetDropEvent}
+import java.awt.event.{ActionEvent, ActionListener, MouseAdapter, MouseEvent}
+import java.awt.{BorderLayout, FlowLayout}
 import javax.swing._
+
 import com.explodingpixels.macwidgets.plaf.HudLabelUI
-import scala.collection.JavaConversions._
+import com.explodingpixels.macwidgets.{HudWidgetFactory, HudWindow}
+import org.kevoree._
+import org.kevoree.factory.DefaultKevoreeFactory
 import org.kevoree.kevscript.KevScriptEngine
+import org.kevoree.modeling.api.util.ModelVisitor
+import org.kevoree.modeling.api.{KMFContainer, ModelCloner}
 import org.kevoree.tools.ui.editor.command.LoadModelCommand
+import org.kevoree.tools.ui.editor.property.SpringUtilities
+import org.kevoree.tools.ui.editor.{KevoreeUIKernel, PositionedEMFHelper, UIHelper}
+import org.kevoree.tools.ui.framework.elements.PortPanel
+
+import scala.collection.JavaConversions._
+import scala.util.Random
 
 /**
  * User: ffouquet
@@ -54,7 +56,17 @@ import org.kevoree.tools.ui.editor.command.LoadModelCommand
 class PortDragTargetListener(target: PortPanel, kernel: KevoreeUIKernel) extends DropTarget {
 
   def checkChannelAvailability = {
-    kernel.getModelHandler.getActualModel.getTypeDefinitions.filter(td => td.isInstanceOf[ChannelType]).size > 0
+    val collected = new java.util.ArrayList[TypeDefinition]()
+    kernel.getModelHandler.getActualModel.getPackages.foreach(p => {
+      p.deepVisitContained(new ModelVisitor {
+        override def visit(p1: KMFContainer, p2: String, p3: KMFContainer): Unit = {
+          if (p1.isInstanceOf[TypeDefinition]) {
+            collected.add(p1.asInstanceOf[TypeDefinition])
+          }
+        }
+      })
+    })
+    collected.filter(td => td.isInstanceOf[ChannelType]).size > 0
   }
 
   override def drop(p1: DropTargetDropEvent) {
@@ -112,7 +124,20 @@ class PortDragTargetListener(target: PortPanel, kernel: KevoreeUIKernel) extends
         hud.getJDialog.setLocationRelativeTo(null);
         //hud.getJDialog.setDefaultCloseOperation();
         val model = new DefaultComboBoxModel()
-        kernel.getModelHandler.getActualModel.getTypeDefinitions.filter(td => td.isInstanceOf[ChannelType]).foreach {
+
+        val collected = new java.util.ArrayList[TypeDefinition]()
+        kernel.getModelHandler.getActualModel.getPackages.foreach(p => {
+          p.deepVisitContained(new ModelVisitor {
+            override def visit(p1: KMFContainer, p2: String, p3: KMFContainer): Unit = {
+              if (p1.isInstanceOf[TypeDefinition]) {
+                collected.add(p1.asInstanceOf[TypeDefinition])
+              }
+            }
+          })
+        })
+
+
+        collected.filter(td => td.isInstanceOf[ChannelType]).foreach {
           c =>
             UIHelper.addItem(model, c.getName)
         }
@@ -122,15 +147,29 @@ class PortDragTargetListener(target: PortPanel, kernel: KevoreeUIKernel) extends
         button.addMouseListener(new MouseAdapter {
           override def mouseClicked(p1: MouseEvent) {
 
-            val selectedTypeDef = kernel.getModelHandler.getActualModel.getTypeDefinitions.find(td => td.getName == comboBox.getSelectedItem)
-            if (selectedTypeDef.isEmpty) {
+
+            val collected = new java.util.ArrayList[TypeDefinition]()
+            kernel.getModelHandler.getActualModel.getPackages.foreach(p => {
+              p.deepVisitContained(new ModelVisitor {
+                override def visit(p1: KMFContainer, p2: String, p3: KMFContainer): Unit = {
+                  if (p1.isInstanceOf[TypeDefinition]) {
+                    if (p1.asInstanceOf[TypeDefinition].getName == comboBox.getSelectedItem) {
+                      collected.add(p1.asInstanceOf[TypeDefinition])
+                    }
+                  }
+                }
+              })
+            })
+
+
+            if (collected.isEmpty) {
               return;
             }
             //val parser = new KevsParser()
-            val newChannelName = selectedTypeDef.get.getName.substring(0, scala.math.min(selectedTypeDef.get.getName.length, 9)) + "" + scala.math.abs(new Random().nextInt(999))
+            val newChannelName = collected.get(0).getName.substring(0, scala.math.min(collected.get(0).getName.length, 9)) + "" + scala.math.abs(new Random().nextInt(999))
 
             val script = new StringBuilder
-            script.append("add " + newChannelName + " : " + selectedTypeDef.get.getName+"\n")
+            script.append("add " + newChannelName + " : " + collected.get(0).getName + "\n")
             script.append("bind " + targetPort.eContainer.eContainer.asInstanceOf[ContainerNode].getName + "." + targetPort.eContainer.asInstanceOf[ComponentInstance].getName + "." + targetPort.getPortTypeRef.getName + " " + newChannelName + "\n")
             script.append("bind " + dropPort.eContainer.eContainer.asInstanceOf[ContainerNode].getName + "." + dropPort.eContainer.asInstanceOf[ComponentInstance].getName + "." + dropPort.getPortTypeRef.getName + " " + newChannelName + "\n")
             PositionedEMFHelper.updateModelUIMetaData(kernel)
@@ -138,10 +177,10 @@ class PortDragTargetListener(target: PortPanel, kernel: KevoreeUIKernel) extends
             val cloner = new ModelCloner(new DefaultKevoreeFactory())
             val cloned = cloner.clone(currentModel).asInstanceOf[ContainerRoot]
             val kevengine = new KevScriptEngine
-            kevengine.execute(script.toString(),cloned)
+            kevengine.execute(script.toString(), cloned)
             val loadCMD = new LoadModelCommand
             loadCMD.setKernel(kernel)
-            loadCMD.execute( cloned)
+            loadCMD.execute(cloned)
 
 
             /*val script = new StringBuilder

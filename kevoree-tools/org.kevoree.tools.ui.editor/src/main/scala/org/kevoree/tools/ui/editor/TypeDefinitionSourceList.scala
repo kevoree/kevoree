@@ -16,7 +16,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * 	http://www.gnu.org/licenses/lgpl-3.0.txt
+ * http://www.gnu.org/licenses/lgpl-3.0.txt
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -26,17 +26,18 @@
  */
 package org.kevoree.tools.ui.editor
 
-import com.explodingpixels.macwidgets._
-import command.{ReloadTypePalette}
-import javax.swing._
 import java.awt.datatransfer.{DataFlavor, Transferable}
-import org.kevoree.tools.ui.framework.elements.{GroupTypePanel, NodeTypePanel, ChannelTypePanel, ComponentTypePanel}
-import java.awt.{Color, Graphics, Component}
-import javax.imageio.ImageIO
 import java.awt.event.{ActionEvent, ActionListener, InputEvent}
+import java.awt.{Color, Component, Graphics}
+import javax.imageio.ImageIO
+import javax.swing._
+
+import com.explodingpixels.macwidgets._
 import org.kevoree.TypeDefinition
-import com.explodingpixels.widgets.PopupMenuCustomizer
-import scala.collection.JavaConversions._
+import org.kevoree.modeling.api.KMFContainer
+import org.kevoree.modeling.api.util.ModelVisitor
+import org.kevoree.tools.ui.editor.command.ReloadTypePalette
+import org.kevoree.tools.ui.framework.elements.{ChannelTypePanel, ComponentTypePanel, GroupTypePanel, NodeTypePanel}
 ;
 
 /**
@@ -243,7 +244,19 @@ class TypeDefinitionSourceList(pane: JSplitPane, kernel: KevoreeUIKernel) {
       categ =>
         categ.getItems.foreach {
           item => {
-            kernel.getModelHandler.getActualModel.getTypeDefinitions.foreach {
+            var collected = new java.util.ArrayList[TypeDefinition]()
+            kernel.getModelHandler.getActualModel.getPackages.foreach(p => {
+              p.deepVisitContained(new ModelVisitor {
+                override def visit(p1: KMFContainer, p2: String, p3: KMFContainer): Unit = {
+                  if (p1.isInstanceOf[TypeDefinition]) {
+                    collected.add(p1.asInstanceOf[TypeDefinition])
+                  }
+                }
+              })
+            })
+
+
+            collected.foreach {
               typeDef =>
                 if (typeDef.getName == item.getText) {
                   val nbinstance = ModelHelper.getTypeNbInstance(kernel.getModelHandler.getActualModel, typeDef)

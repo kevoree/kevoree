@@ -35,6 +35,7 @@
         <module>org.kevoree.bootstrap</module>
         <module>org.kevoree.bootstrap.test</module>
         <module>org.kevoree.bootstrap.telemetry</module>
+        <module>org.kevoree.bootstrap.dev</module>
     </modules>
 
     <build>

@@ -1,6 +1,5 @@
-package org.kevoree.tools.annotator;
+package org.kevoree.bootstrap.dev.annotator;
 
-import javassist.ClassClassPath;
 import javassist.ClassPool;
 import javassist.CtClass;
 import org.kevoree.ContainerRoot;
@@ -9,6 +8,7 @@ import org.kevoree.factory.DefaultKevoreeFactory;
 import org.kevoree.factory.KevoreeFactory;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.util.List;
 
 /**
@@ -27,8 +27,12 @@ public class Annotations2Model {
             for (int i = 0; i < childs.length; i++) {
                 File child = childs[i];
                 if (child.getName().endsWith(".class")) {
-                    String className = root + "." + child.getName().replace(".class", "");
-                    CtClass clazz = pool.get(className);
+                    //String className = root + "." + child.getName().replace(".class", "");
+                    FileInputStream fis = new FileInputStream(child);
+                    CtClass clazz = pool.makeClass(fis);//
+                    fis.close();
+
+                    //CtClass clazz = pool.get(className);
                     Object[] annotations = clazz.getAvailableAnnotations();
                     for (Object annotation : annotations) {
                         ModelBuilderHelper.process(annotation, clazz, factory, du, modelRoot);
@@ -50,7 +54,6 @@ public class Annotations2Model {
 
     public void fillModel(File targetDir, ContainerRoot model, DeployUnit deployUnit, List<String> additionalClassPathElems) throws Exception {
         ClassPool pool = ClassPool.getDefault();
-        pool.insertClassPath(new ClassClassPath(Annotations2Model.class));
         for (String classPath : additionalClassPathElems) {
             pool.appendClassPath(classPath);
         }

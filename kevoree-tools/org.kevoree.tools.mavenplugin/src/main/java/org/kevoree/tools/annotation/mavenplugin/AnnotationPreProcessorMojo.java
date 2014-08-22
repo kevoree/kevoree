@@ -27,15 +27,13 @@ import org.apache.maven.shared.dependency.tree.DependencyTreeBuilder;
 import org.apache.maven.shared.dependency.tree.DependencyTreeBuilderException;
 import org.kevoree.ContainerRoot;
 import org.kevoree.DeployUnit;
-import org.kevoree.TypeDefinition;
+import org.kevoree.bootstrap.dev.annotator.Annotations2Model;
 import org.kevoree.factory.DefaultKevoreeFactory;
 import org.kevoree.modeling.api.compare.ModelCompare;
 import org.kevoree.modeling.api.json.JSONModelLoader;
 import org.kevoree.modeling.api.json.JSONModelSerializer;
 import org.kevoree.modeling.api.xmi.XMIModelLoader;
 import org.kevoree.modeling.api.xmi.XMIModelSerializer;
-import org.kevoree.tools.annotator.Annotations2Model;
-//import org.kevoree.tools.annotator.InheritanceBuilder;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -195,9 +193,12 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
             getLog().error(e);
             throw new MojoExecutionException("Error while parsing Kevoree annotations", e);
         }
+
+        /*
+
         for (TypeDefinition td : model.getTypeDefinitions()) {
             getLog().info("Found " + td.getName() + " : " + td.metaClassName());
-        }
+        } */
 
         JSONModelSerializer saver = new JSONModelSerializer();
         JSONModelLoader loader = new JSONModelLoader(new DefaultKevoreeFactory());

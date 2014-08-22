@@ -28,13 +28,9 @@ class org.kevoree.ContainerRoot  {
     @contained
     nodes : org.kevoree.ContainerNode[0,*]
     @contained
-    typeDefinitions : org.kevoree.TypeDefinition[0,*]
-    @contained
     repositories : org.kevoree.Repository[0,*]
     @contained
     dataTypes : org.kevoree.TypedElement[0,*]
-    @contained
-    libraries : org.kevoree.TypeLibrary[0,*]
     @contained
     hubs : org.kevoree.Channel[0,*]
     @contained
@@ -45,6 +41,16 @@ class org.kevoree.ContainerRoot  {
     nodeNetworks : org.kevoree.NodeNetwork[0,*]
     @contained
     groups : org.kevoree.Group[0,*]
+
+    @contained
+    packages : org.kevoree.Package[0,*]
+}
+
+class org.kevoree.Package : org.kevoree.NamedElement {
+    @contained
+    packages : org.kevoree.Package[0,*]
+    @contained
+    typeDefinitions : org.kevoree.TypeDefinition[0,*]
 }
 
 class org.kevoree.PortType : org.kevoree.TypeDefinition {
@@ -65,9 +71,7 @@ class org.kevoree.Dictionary  {
     values : org.kevoree.Value[0,*]
 }
 
-class org.kevoree.FragmentDictionary : org.kevoree.Dictionary {
-    @id
-    name : String
+class org.kevoree.FragmentDictionary : org.kevoree.Dictionary, org.kevoree.NamedElement {
 }
 
 class org.kevoree.DictionaryType  {
@@ -83,9 +87,7 @@ class org.kevoree.DictionaryAttribute : org.kevoree.TypedElement {
     defaultValue : String
 }
 
-class org.kevoree.Value  {
-    @id
-    name : String
+class org.kevoree.Value : org.kevoree.NamedElement  {
     value : String
 }
 
@@ -142,10 +144,6 @@ class org.kevoree.DeployUnit : org.kevoree.NamedElement {
     filters : org.kevoree.Value[0,*]
 }
 
-class org.kevoree.TypeLibrary : org.kevoree.NamedElement {
-    subTypes : org.kevoree.TypeDefinition[0,*]
-}
-
 class org.kevoree.NamedElement  {
     @id
     name : String
@@ -188,8 +186,6 @@ class org.kevoree.NetworkInfo : org.kevoree.NamedElement {
 }
 
 class org.kevoree.NetworkProperty : org.kevoree.NamedElement {
-    @id
-    name : String
     value : String
 }
 
@@ -210,7 +206,6 @@ class org.kevoree.TypeDefinition : org.kevoree.NamedElement {
     @contained
     dictionaryType : org.kevoree.DictionaryType
     superTypes : org.kevoree.TypeDefinition[0,*]
-
     @contained
     values : org.kevoree.Value[0,*]
 }

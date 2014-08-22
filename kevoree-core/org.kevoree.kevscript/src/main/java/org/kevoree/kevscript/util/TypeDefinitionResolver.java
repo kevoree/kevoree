@@ -23,8 +23,20 @@ public class TypeDefinitionResolver {
         if (typeNode.getChildren().size() > 1) {
             version = typeNode.getChildren().get(1).childrenAsString();
         }
+
+        String[] packages = typeDefName.split("\\.");
+        org.kevoree.Package pack = null;
+        for(int i=0;i<packages.length-1;i++){
+            if(pack==null){
+                pack = model.findPackagesByID(packages[i]);
+            } else {
+                pack = pack.findPackagesByID(packages[i]);
+            }
+        }
+
         TypeDefinition bestTD = null;
-        for (TypeDefinition td : model.getTypeDefinitions()) {
+        assert pack != null;
+        for (TypeDefinition td : pack.getTypeDefinitions()) {
             if (version != null) {
                 if (td.getName().equals(typeDefName) && version.equals(td.getVersion())) {
                     return td;

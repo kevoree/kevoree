@@ -2,13 +2,12 @@ package org.kevoree.tools.annotator;
 
 import javassist.*;
 import org.kevoree.*;
-import org.kevoree.ComponentType;
+import org.kevoree.Package;
 import org.kevoree.annotation.Input;
 import org.kevoree.annotation.Output;
 import org.kevoree.annotation.Param;
 import org.kevoree.api.*;
 import org.kevoree.factory.KevoreeFactory;
-import org.kevoree.modeling.api.json.JSONModelLoader;
 
 import java.io.File;
 import java.io.InputStream;
@@ -23,16 +22,6 @@ import java.util.HashMap;
 
 
 public class ModelBuilderHelper {
-
-    public static void addLibrary(String libName, TypeDefinition typeDef, ContainerRoot root, KevoreeFactory factory) {
-        TypeLibrary lib = root.findLibrariesByID(libName);
-        if (lib == null) {
-            lib = factory.createTypeLibrary();
-            lib.setName(libName);
-            root.addLibraries(lib);
-        }
-        lib.addSubTypes(typeDef);
-    }
 
     public static void deepMethods(CtClass clazz, KevoreeFactory factory, TypeDefinition currentTypeDefinition) throws ClassNotFoundException, NotFoundException {
         for (CtMethod method : clazz.getDeclaredMethods()) {
@@ -250,8 +239,29 @@ public class ModelBuilderHelper {
     }
 
     public static TypeDefinition getOrCreateTypeDefinition(String name, String version, ContainerRoot root, KevoreeFactory factory, String typeName) {
+
+        String[] packages = name.split("\\.");
+        org.kevoree.Package pack = null;
+        for (int i = 0; i < packages.length - 1; i++) {
+            if (pack == null) {
+                pack = root.findPackagesByID(packages[i]);
+                if (pack == null) {
+                    pack = (org.kevoree.Package) factory.createPackage().withName(packages[i]);
+                    root.addPackages(pack);
+                }
+            } else {
+                Package packNew = pack.findPackagesByID(packages[i]);
+                if (packNew == null) {
+                    packNew = (org.kevoree.Package) factory.createPackage().withName(packages[i]);
+                    pack.addPackages(packNew);
+                }
+                pack = packNew;
+            }
+        }
+
+
         //TODO generate find multi Key in KMF
-        for (TypeDefinition td : root.getTypeDefinitions()) {
+        for (TypeDefinition td : pack.getTypeDefinitions()) {
             if (name.equals(td.getName()) && version.equals(td.getVersion())) {
                 return td;
             }
@@ -259,7 +269,7 @@ public class ModelBuilderHelper {
         TypeDefinition td = (TypeDefinition) factory.create(typeName);
         td.setVersion(version);
         td.setName(name);
-        root.addTypeDefinitions(td);
+        pack.addTypeDefinitions(td);
         return td;
     }
 
@@ -286,9 +296,6 @@ public class ModelBuilderHelper {
             processTypeDefinition(td, du, clazz, root, factory);
             deepFields(clazz, factory, td);
         }
-        if (elem instanceof org.kevoree.annotation.Library) {
-            libraryCache = (org.kevoree.annotation.Library) elem;
-        }
     }
 
     public static String metaClassName(Object elem) {
@@ -306,28 +313,5 @@ public class ModelBuilderHelper {
         }
         return null;
     }
-
-
-    static org.kevoree.annotation.Library libraryCache = null;
-
-    public static void postProcess(CtClass clazz, KevoreeFactory factory, DeployUnit du, ContainerRoot root) {
-        if (libraryCache != null) {
-            for (TypeDefinition typeDef : root.getTypeDefinitions()) {
-                if (typeDef.getName().equals(clazz.getSimpleName()) && typeDef.getVersion().equals(du.getVersion())) {
-                    if (libraryCache.name() != null) {
-                        addLibrary(libraryCache.name(), typeDef, root, factory);
-                    }
-                    String[] libs = libraryCache.names();
-                    if (libs != null) {
-                        for (int i = 0; i < libs.length; i++) {
-                            addLibrary(libs[i], typeDef, root, factory);
-                        }
-                    }
-                }
-            }
-        }
-        libraryCache = null;
-    }
-
 
 }

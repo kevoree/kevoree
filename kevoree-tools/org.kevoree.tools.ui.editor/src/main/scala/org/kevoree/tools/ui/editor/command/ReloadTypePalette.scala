@@ -27,6 +27,8 @@
 package org.kevoree.tools.ui.editor.command
 
 
+import org.kevoree.modeling.api.KMFContainer
+import org.kevoree.modeling.api.util.ModelVisitor
 import org.kevoree.tools.ui.framework.elements.{GroupTypePanel, NodeTypePanel, ChannelTypePanel, ComponentTypePanel}
 import org.kevoree._
 import javax.swing.JPanel
@@ -55,24 +57,19 @@ class ReloadTypePalette extends Command {
 
     TypeDefinitionPaletteMode.getCurrentMode match {
       case LibraryMode => {
-        var loadedLib = List[TypeDefinition]()
-        model.getLibraries.foreach {
-          library =>
-            palette.getCategoryOrAdd(library.getName)
-            library.getSubTypes.toList.sortWith((x, y) => x.getName().charAt(0).toLower < y.getName().charAt(0).toLower).foreach {
-              subTypeDef =>
-                if (!subTypeDef.getAbstract) {
-                  loadedLib = loadedLib ++ List(subTypeDef)
-                  typeDefPanelFactory(subTypeDef).map {
-                    typeDefPanel =>
-                      palette.addTypeDefinitionPanel(typeDefPanel, library.getName, subTypeDef.getName)
-
-                  }
-                }
+        val loadedLib = List[TypeDefinition]()
+        val collected = new java.util.ArrayList[TypeDefinition]()
+        kernel.getModelHandler.getActualModel.getPackages.foreach(p => {
+          p.deepVisitContained(new ModelVisitor {
+            override def visit(p1: KMFContainer, p2: String, p3: KMFContainer): Unit = {
+              if (p1.isInstanceOf[TypeDefinition]) {
+                collected.add(p1.asInstanceOf[TypeDefinition])
+              }
             }
+          })
+        })
 
-        }
-        model.getTypeDefinitions.filter(typeDef => !loadedLib.contains(typeDef)).sortWith((x, y) => x.getName().charAt(0).toLower < y.getName().charAt(0).toLower).foreach {
+        collected.filter(typeDef => !loadedLib.contains(typeDef)).sortWith((x, y) => x.getName().charAt(0).toLower < y.getName().charAt(0).toLower).foreach {
           typeDef =>
             if (!typeDef.getAbstract) {
               typeDefPanelFactory(typeDef).map {
@@ -89,7 +86,19 @@ class ReloadTypePalette extends Command {
         model.getDeployUnits.foreach {
           deployUnit =>
             palette.getCategoryOrAdd(deployUnit.getName)
-            model.getTypeDefinitions.sortWith((x, y) => x.getName().charAt(0).toLower < y.getName().charAt(0).toLower).foreach {
+            val collected = new java.util.ArrayList[TypeDefinition]()
+            kernel.getModelHandler.getActualModel.getPackages.foreach(p => {
+              p.deepVisitContained(new ModelVisitor {
+                override def visit(p1: KMFContainer, p2: String, p3: KMFContainer): Unit = {
+                  if (p1.isInstanceOf[TypeDefinition]) {
+                    collected.add(p1.asInstanceOf[TypeDefinition])
+                  }
+                }
+              })
+            })
+
+
+            collected.sortWith((x, y) => x.getName().charAt(0).toLower < y.getName().charAt(0).toLower).foreach {
               typeDef =>
                 if (!typeDef.getAbstract) {
                   typeDefPanelFactory(typeDef).map {
@@ -108,7 +117,19 @@ class ReloadTypePalette extends Command {
 
     }
 
-    model.getTypeDefinitions.foreach {
+    val collected = new java.util.ArrayList[TypeDefinition]()
+    kernel.getModelHandler.getActualModel.getPackages.foreach(p => {
+      p.deepVisitContained(new ModelVisitor {
+        override def visit(p1: KMFContainer, p2: String, p3: KMFContainer): Unit = {
+          if (p1.isInstanceOf[TypeDefinition]) {
+            collected.add(p1.asInstanceOf[TypeDefinition])
+          }
+        }
+      })
+    })
+
+
+    collected.foreach {
       ct =>
         palette.updateTypeValue(ModelHelper.getTypeNbInstance(model, ct), ct.getName)
     }

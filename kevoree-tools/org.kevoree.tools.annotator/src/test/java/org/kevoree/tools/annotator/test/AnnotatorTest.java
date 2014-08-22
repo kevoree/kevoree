@@ -21,6 +21,8 @@ public class AnnotatorTest {
 
     private Annotations2Model a2m = new Annotations2Model();
 
+
+    /*
     @Test
     public void test() throws Exception {
         KevoreeFactory factory = new DefaultKevoreeFactory();
@@ -87,7 +89,7 @@ public class AnnotatorTest {
         //saver.serializeToStream(model, System.out);
 
         deleteFolder(unzipDir.toFile());
-    }
+    }  */
 
 
     @Test
