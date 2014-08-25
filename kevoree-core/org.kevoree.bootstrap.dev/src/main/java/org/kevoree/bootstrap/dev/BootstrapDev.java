@@ -44,6 +44,7 @@ public class BootstrapDev {
                 //throw new Exception("Bad target dir argument !" + directoryTarget);
             } else {
                 ContainerRoot model = factory.createContainerRoot();
+                factory.root(model);
 
                 DeployUnit fakeDeployUnit = factory.createDeployUnit();
                 fakeDeployUnit.setGroupName("org.kevoree");

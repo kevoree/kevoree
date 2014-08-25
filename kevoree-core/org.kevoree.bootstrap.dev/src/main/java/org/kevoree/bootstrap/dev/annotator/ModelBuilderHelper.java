@@ -134,7 +134,7 @@ public class ModelBuilderHelper {
         if (clazz == null) {
             return;
         }
-        String name = clazz.getSimpleName();
+        String name = clazz.getName();
         String version = null;
         String currentTypeName = null;
         try {
@@ -258,17 +258,18 @@ public class ModelBuilderHelper {
             }
         }
 
-        //TODO generate find multi Key in KMF
-        for (TypeDefinition td : pack.getTypeDefinitions()) {
-            if (name.equals(td.getName()) && version.equals(td.getVersion())) {
-                return td;
-            }
+        String tdName = packages[packages.length-1];
+
+        TypeDefinition foundTD = pack.findTypeDefinitionsByNameVersion(tdName,version);
+        if(foundTD != null){
+            return foundTD;
+        } else {
+            TypeDefinition td = (TypeDefinition) factory.create(typeName);
+            td.setVersion(version);
+            td.setName(tdName);
+            pack.addTypeDefinitions(td);
+            return td;
         }
-        TypeDefinition td = (TypeDefinition) factory.create(typeName);
-        td.setVersion(version);
-        td.setName(name);
-        pack.addTypeDefinitions(td);
-        return td;
     }
 
 
