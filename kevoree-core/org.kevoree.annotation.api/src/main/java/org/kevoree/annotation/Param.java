@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
  * Time: 12:13
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.FIELD})
+@Target({ElementType.FIELD,ElementType.METHOD})
 public @interface Param {
     boolean optional() default true;
 

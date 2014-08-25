@@ -23,7 +23,7 @@ import java.util.HashMap;
 
 public class ModelBuilderHelper {
 
-    public static void deepMethods(CtClass clazz, KevoreeFactory factory, TypeDefinition currentTypeDefinition) throws ClassNotFoundException, NotFoundException {
+    public static void deepMethods(CtClass clazz, KevoreeFactory factory, TypeDefinition currentTypeDefinition) throws Exception {
         for (CtMethod method : clazz.getDeclaredMethods()) {
             for (Object annotation : method.getAnnotations()) {
                 if (annotation instanceof Input) {
@@ -35,6 +35,47 @@ public class ModelBuilderHelper {
                         providedPortRef.setOptional(annotationInput.optional());
                         currentTypeDefinitionCT.addProvided(providedPortRef);
                     }
+                }
+                if (annotation instanceof Param && (method.getName().startsWith("set") || method.getName().startsWith("get"))) {
+                    boolean checkType = false;
+
+                    String cleanedName = method.getName().substring(3);
+                    cleanedName = cleanedName.substring(0, 1).toLowerCase() + cleanedName.substring(1);
+                    Param annotationParam = (Param) annotation;
+
+                    if (method.getReturnType().getName().equals(String.class.getName())) {
+                        checkType = true;
+                    }
+                    if (method.getReturnType().getName().equals(Float.class.getName())) {
+                        checkType = true;
+                    }
+                    if (method.getReturnType().getName().equals(Integer.class.getName())) {
+                        checkType = true;
+                    }
+                    if (method.getReturnType().getName().equals(Double.class.getName())) {
+                        checkType = true;
+                    }
+                    if (method.getReturnType().getName().equals(Boolean.class.getName())) {
+                        checkType = true;
+                    }
+                    if (method.getReturnType().getName().equals(Long.class.getName())) {
+                        checkType = true;
+                    }
+                    if (!checkType) {
+                        if (!method.getReturnType().isPrimitive()) {
+                            throw new Exception("Param annotation is only applicable on field of type String,Long,Double,Float,Integer, current " + method.getReturnType().getName());
+                        }
+                    }
+                    DictionaryAttribute dicAtt = factory.createDictionaryAttribute();
+                    if (currentTypeDefinition.getDictionaryType() == null) {
+                        currentTypeDefinition.setDictionaryType(factory.createDictionaryType());
+                    }
+                    dicAtt.setName(cleanedName);
+                    dicAtt.setDatatype(method.getReturnType().getName());
+                    dicAtt.setOptional(annotationParam.optional());
+                    dicAtt.setFragmentDependant(annotationParam.fragmentDependent());
+                    dicAtt.setDefaultValue(annotationParam.defaultValue());
+                    currentTypeDefinition.getDictionaryType().addAttributes(dicAtt);
                 }
             }
         }
@@ -258,10 +299,10 @@ public class ModelBuilderHelper {
             }
         }
 
-        String tdName = packages[packages.length-1];
+        String tdName = packages[packages.length - 1];
 
-        TypeDefinition foundTD = pack.findTypeDefinitionsByNameVersion(tdName,version);
-        if(foundTD != null){
+        TypeDefinition foundTD = pack.findTypeDefinitionsByNameVersion(tdName, version);
+        if (foundTD != null) {
             return foundTD;
         } else {
             TypeDefinition td = (TypeDefinition) factory.create(typeName);
@@ -278,11 +319,13 @@ public class ModelBuilderHelper {
             TypeDefinition td = getOrCreateTypeDefinition(clazz.getName(), du.getVersion(), root, factory, metaClassName(elem));
             processTypeDefinition(td, du, clazz, root, factory);
             deepFields(clazz, factory, td);
+            deepMethods(clazz, factory, td);
         }
         if (elem instanceof org.kevoree.annotation.ChannelType) {
             TypeDefinition td = getOrCreateTypeDefinition(clazz.getName(), du.getVersion(), root, factory, metaClassName(elem));
             processTypeDefinition(td, du, clazz, root, factory);
             deepFields(clazz, factory, td);
+            deepMethods(clazz, factory, td);
         }
         if (elem instanceof org.kevoree.annotation.ComponentType) {
             TypeDefinition td = getOrCreateTypeDefinition(clazz.getName(), du.getVersion(), root, factory, metaClassName(elem));
@@ -294,6 +337,7 @@ public class ModelBuilderHelper {
             TypeDefinition td = getOrCreateTypeDefinition(clazz.getName(), du.getVersion(), root, factory, metaClassName(elem));
             processTypeDefinition(td, du, clazz, root, factory);
             deepFields(clazz, factory, td);
+            deepMethods(clazz, factory, td);
         }
     }
 
