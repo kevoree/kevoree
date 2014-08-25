@@ -26,7 +26,7 @@ public class App {
             if (kprofile.equals("test")) {
                 profile = "mvn:org.kevoree:org.kevoree.bootstrap.test:{kevoree.version}";
             } else {
-                if (kprofile.equals("test")) {
+                if (kprofile.equals("telemetry")) {
                     profile = "mvn:org.kevoree:org.kevoree.bootstrap.telemetry:{kevoree.version}";
                 } else {
                     if(kprofile.equals("dev")){

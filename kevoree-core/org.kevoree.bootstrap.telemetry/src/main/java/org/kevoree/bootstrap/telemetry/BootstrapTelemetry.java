@@ -6,10 +6,7 @@ import org.kevoree.core.impl.TelemetryEventImpl;
 import org.kevoree.log.Log;
 import org.kevoree.microkernel.KevoreeKernel;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.PrintStream;
+import java.io.*;
 import java.net.URISyntaxException;
 
 /**
@@ -28,9 +25,44 @@ public class BootstrapTelemetry {
             telemetryURL = System.getProperty("telemetry.url");
         }
         Log.info("Telemetry Server : " + telemetryURL);
-        MQTTDispatcher dispatcher = new MQTTDispatcher(telemetryURL, nodeName);
-        TelemetryEvent event = TelemetryEventImpl.build(nodeName, "info", "Initiate Telemtry monitoring", "");
+        final MQTTDispatcher dispatcher = new MQTTDispatcher(telemetryURL, nodeName);
+        TelemetryEvent event = TelemetryEventImpl.build(nodeName, "info", "Initiate Telemetry monitoring", "");
         dispatcher.notify(event);
+
+        final PrintStream oldOut = System.out;
+        final PrintStream oldErr = System.err;
+
+        final String finalNodeName = nodeName;
+        System.setOut(new PrintStream(new OutputStream() {
+            StringBuffer buffer = new StringBuffer();
+
+            @Override
+            public void write(int b) throws IOException {
+                oldOut.write(b);
+                if (b == '\n') {
+                    TelemetryEvent event = TelemetryEventImpl.build(finalNodeName, "raw_out", buffer.toString(), "");
+                    dispatcher.notify(event);
+                    buffer = new StringBuffer();
+                } else {
+                    buffer.append((char)b);
+                }
+            }
+        }));
+        System.setErr(new PrintStream(new OutputStream() {
+            StringBuffer buffer = new StringBuffer();
+
+            @Override
+            public void write(int b) throws IOException {
+                oldErr.write(b);
+                if (b == '\n') {
+                    TelemetryEvent event = TelemetryEventImpl.build(finalNodeName, "raw_err", buffer.toString(), "");
+                    dispatcher.notify(event);
+                    buffer = new StringBuffer();
+                } else {
+                    buffer.append((char)b);
+                }
+            }
+        }));
 
         final Bootstrap boot = new Bootstrap(KevoreeKernel.self.get(), nodeName);
         boot.getCore().addTelemetryListener(dispatcher);
