@@ -145,6 +145,15 @@ public class ModelBuilderHelper {
                     if (field.getType().getName().equals(Long.class.getName())) {
                         checkType = true;
                     }
+                    if (field.getType().getName().equals(Short.class.getName())) {
+                        checkType = true;
+                    }
+                    if (field.getType().getName().equals(char.class.getName())) {
+                        checkType = true;
+                    }
+                    if (field.getType().getName().equals(byte.class.getName())) {
+                        checkType = true;
+                    }
                     if (!checkType) {
                         if (!field.getType().isPrimitive()) {
                             throw new Exception("Param annotation is only applicable on field of type String,Long,Double,Float,Integer, current " + field.getType().getName());

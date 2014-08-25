@@ -232,7 +232,7 @@ public class KevoreeCLKernel implements BootstrapService {
     }
 
     private boolean internalInjectField(String fieldName, String value, Object target) {
-        if (value != null && !value.equals("")) {
+        if (value != null/* && !value.equals("")*/) {
             try {
                 boolean isSet = false;
                 String setterName = "set";
@@ -275,12 +275,42 @@ public class KevoreeCLKernel implements BootstrapService {
                         isSet = true;
                     }
                     if (pClazz.equals(Double.class)) {
-                        setter.invoke(target, Double.parseDouble(value));
+                        setter.invoke(target, new Double(Double.parseDouble(value)));
                         isSet = true;
                     }
                     if (pClazz.equals(String.class)) {
                         setter.invoke(target, value);
                         isSet = true;
+                    }
+                    if (pClazz.equals(short.class)) {
+                        setter.invoke(target, Short.parseShort(value));
+                        isSet = true;
+                    }
+                    if (pClazz.equals(Short.class)) {
+                        setter.invoke(target, new Short(Short.parseShort(value)));
+                        isSet = true;
+                    }
+                    if (pClazz.equals(float.class)) {
+                        setter.invoke(target, Float.parseFloat(value));
+                        isSet = true;
+                    }
+                    if (pClazz.equals(Float.class)) {
+                        setter.invoke(target, new Float(Float.parseFloat(value)));
+                        isSet = true;
+                    }
+                    if (pClazz.equals(byte.class)) {
+                        setter.invoke(target, Byte.parseByte(value));
+                        isSet = true;
+                    }
+                    if (pClazz.equals(Byte.class)) {
+                        setter.invoke(target, new Byte(Byte.parseByte(value)));
+                        isSet = true;
+                    }
+                    if (value.length() == 1) {
+                        if (pClazz.equals(char.class)) {
+                            setter.invoke(target, value.charAt(0));
+                            isSet = true;
+                        }
                     }
                 }
 
@@ -311,10 +341,33 @@ public class KevoreeCLKernel implements BootstrapService {
                         f.setDouble(target, Double.parseDouble(value));
                     }
                     if (f.getType().equals(Double.class)) {
-                        f.set(target, Double.parseDouble(value));
+                        f.set(target, new Double(Double.parseDouble(value)));
                     }
                     if (f.getType().equals(String.class)) {
                         f.set(target, value);
+                    }
+                    if (f.getType().equals(short.class)) {
+                        f.set(target, Short.parseShort(value));
+                    }
+                    if (f.getType().equals(Short.class)) {
+                        f.set(target, new Short(Short.parseShort(value)));
+                    }
+                    if (f.getType().equals(float.class)) {
+                        f.set(target, Float.parseFloat(value));
+                    }
+                    if (f.getType().equals(Float.class)) {
+                        f.set(target, new Float(Float.parseFloat(value)));
+                    }
+                    if (f.getType().equals(byte.class)) {
+                        f.set(target, Byte.parseByte(value));
+                    }
+                    if (f.getType().equals(Byte.class)) {
+                        f.set(target, new Byte(Byte.parseByte(value)));
+                    }
+                    if (value.length() == 1) {
+                        if (f.getType().equals(char.class)) {
+                            f.set(target, value.charAt(0));
+                        }
                     }
                 }
                 return true;
