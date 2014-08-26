@@ -46,24 +46,42 @@ public class ModelBuilderHelper {
                     String cleanedName = method.getName().substring(3);
                     cleanedName = cleanedName.substring(0, 1).toLowerCase() + cleanedName.substring(1);
                     Param annotationParam = (Param) annotation;
-
+                    DataType dataType = null;
                     if (method.getReturnType().getName().equals(String.class.getName())) {
                         checkType = true;
+                        dataType = DataType.STRING;
                     }
                     if (method.getReturnType().getName().equals(Float.class.getName())) {
                         checkType = true;
+                        dataType = DataType.FLOAT;
                     }
                     if (method.getReturnType().getName().equals(Integer.class.getName())) {
                         checkType = true;
+                        dataType = DataType.INT;
                     }
                     if (method.getReturnType().getName().equals(Double.class.getName())) {
                         checkType = true;
+                        dataType = DataType.DOUBLE;
                     }
                     if (method.getReturnType().getName().equals(Boolean.class.getName())) {
                         checkType = true;
+                        dataType = DataType.BOOLEAN;
                     }
                     if (method.getReturnType().getName().equals(Long.class.getName())) {
                         checkType = true;
+                        dataType = DataType.LONG;
+                    }
+                    if (method.getReturnType().getName().equals(Byte.class.getName())) {
+                        checkType = true;
+                        dataType = DataType.BYTE;
+                    }
+                    if (method.getReturnType().getName().equals(char.class.getName())) {
+                        checkType = true;
+                        dataType = DataType.CHAR;
+                    }
+                    if (method.getReturnType().getName().equals(Short.class.getName())) {
+                        checkType = true;
+                        dataType = DataType.SHORT;
                     }
                     if (!checkType) {
                         if (!method.getReturnType().isPrimitive()) {
@@ -75,7 +93,7 @@ public class ModelBuilderHelper {
                         currentTypeDefinition.setDictionaryType(factory.createDictionaryType());
                     }
                     dicAtt.setName(cleanedName);
-                    dicAtt.setDatatype(method.getReturnType().getName());
+                    dicAtt.setDatatype(dataType);
                     dicAtt.setOptional(annotationParam.optional());
                     dicAtt.setFragmentDependant(annotationParam.fragmentDependent());
                     dicAtt.setDefaultValue(annotationParam.defaultValue());
@@ -130,33 +148,43 @@ public class ModelBuilderHelper {
                 }
                 if (annotation instanceof Param) {
                     Param annotationParam = (Param) annotation;
+                    DataType dataType = null;
                     boolean checkType = false;
                     if (field.getType().getName().equals(String.class.getName())) {
                         checkType = true;
+                        dataType = DataType.STRING;
                     }
                     if (field.getType().getName().equals(Float.class.getName())) {
                         checkType = true;
+                        dataType = DataType.FLOAT;
                     }
                     if (field.getType().getName().equals(Integer.class.getName())) {
                         checkType = true;
+                        dataType = DataType.INT;
                     }
                     if (field.getType().getName().equals(Double.class.getName())) {
                         checkType = true;
+                        dataType = DataType.DOUBLE;
                     }
                     if (field.getType().getName().equals(Boolean.class.getName())) {
                         checkType = true;
+                        dataType = DataType.BOOLEAN;
                     }
                     if (field.getType().getName().equals(Long.class.getName())) {
                         checkType = true;
+                        dataType = DataType.LONG;
                     }
                     if (field.getType().getName().equals(Short.class.getName())) {
                         checkType = true;
+                        dataType = DataType.SHORT;
                     }
                     if (field.getType().getName().equals(char.class.getName())) {
                         checkType = true;
+                        dataType = DataType.CHAR;
                     }
                     if (field.getType().getName().equals(byte.class.getName())) {
                         checkType = true;
+                        dataType = DataType.BYTE;
                     }
                     if (!checkType) {
                         if (!field.getType().isPrimitive()) {
@@ -168,7 +196,7 @@ public class ModelBuilderHelper {
                         currentTypeDefinition.setDictionaryType(factory.createDictionaryType());
                     }
                     dicAtt.setName(field.getName());
-                    dicAtt.setDatatype(field.getType().getName());
+                    dicAtt.setDatatype(dataType);
                     dicAtt.setOptional(annotationParam.optional());
                     dicAtt.setFragmentDependant(annotationParam.fragmentDependent());
                     dicAtt.setDefaultValue(annotationParam.defaultValue());

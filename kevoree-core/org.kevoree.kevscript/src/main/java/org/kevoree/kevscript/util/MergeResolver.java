@@ -11,9 +11,7 @@ import org.kevoree.resolver.MavenResolver;
 
 import java.io.File;
 import java.io.IOException;
-
 import java.util.HashSet;
-
 import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -31,7 +29,7 @@ public class MergeResolver {
     private static JSONModelLoader loader = new JSONModelLoader(factory);
     private static ModelCompare compare = new ModelCompare(factory);
 
-    public static void merge(ContainerRoot model, String type, String url) {
+    public static void merge(ContainerRoot model, String type, String url) throws Exception {
         if (type.equals("mvn")) {
             Set<String> urls = new HashSet<String>();
             for (Repository repo : model.getRepositories()) {
@@ -44,11 +42,16 @@ public class MergeResolver {
                     JarFile jar = new JarFile(new File(resolved.getAbsolutePath()));
                     JarEntry entry = jar.getJarEntry("KEV-INF/lib.json");
                     if (entry != null) {
-                        ContainerRoot remoteModel = (ContainerRoot) loader.loadModelFromStream(jar.getInputStream(entry)).get(0);
-                        compare.merge(model, remoteModel).applyOn(model);
+                        try {
+                            ContainerRoot remoteModel = (ContainerRoot) loader.loadModelFromStream(jar.getInputStream(entry)).get(0);
+                            compare.merge(model, remoteModel).applyOn(model);
+                        } catch (Exception e) {
+                            throw new Exception("KevScript error while merging " + resolved.getAbsolutePath() + " resolved from " + url);
+                        }
+
                     }
                 } catch (IOException e) {
-                    Log.error("Bad JAR file ", e);
+                    Log.error("Bad JAR file, resolved from {}", url, e);
                 }
             } else {
                 Log.warn("Not resolved typeDef {}", request);

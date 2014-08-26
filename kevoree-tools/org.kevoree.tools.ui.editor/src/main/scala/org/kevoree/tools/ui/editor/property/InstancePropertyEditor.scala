@@ -243,6 +243,7 @@ class InstancePropertyEditor(elem: org.kevoree.Instance, kernel: KevoreeUIKernel
   }
 
 
+  /*
   def getEnumBox(att: DictionaryAttribute, label: JLabel, targetNode: Option[String]): JComponent = {
     val values: String = att.getDatatype.replaceFirst("enum=", "")
     val model = new DefaultComboBoxModel
@@ -259,7 +260,7 @@ class InstancePropertyEditor(elem: org.kevoree.Instance, kernel: KevoreeUIKernel
       }
     })
     comboBox
-  }
+  }*/
 
 
   //get Default TextField

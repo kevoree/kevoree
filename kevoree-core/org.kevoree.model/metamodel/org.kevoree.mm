@@ -1,3 +1,15 @@
+enum org.kevoree.DataType {
+    Byte
+    Short
+    Int
+    Long
+    Float
+    Double
+    Boolean
+    Char
+    String
+}
+
 class org.kevoree.ComponentInstance : org.kevoree.Instance {
     @contained
     provided : org.kevoree.Port[0,*]
@@ -75,7 +87,7 @@ class org.kevoree.DictionaryType {
 class org.kevoree.DictionaryAttribute : org.kevoree.TypedElement {
     optional : Bool
     state : Bool
-    datatype : String
+    datatype : org.kevoree.DataType
     fragmentDependant : Bool
     defaultValue : String
 }

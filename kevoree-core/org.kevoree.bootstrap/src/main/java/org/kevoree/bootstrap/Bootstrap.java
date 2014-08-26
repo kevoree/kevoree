@@ -10,6 +10,7 @@ import org.kevoree.core.impl.KevoreeCoreBean;
 import org.kevoree.kevscript.KevScriptEngine;
 import org.kevoree.log.Log;
 import org.kevoree.microkernel.KevoreeKernel;
+import org.kevoree.microkernel.impl.KevoreeMicroKernelImpl;
 import org.kevoree.modeling.api.KMFContainer;
 import org.kevoree.modeling.api.compare.ModelCompare;
 import org.kevoree.modeling.api.json.JSONModelLoader;
@@ -54,14 +55,16 @@ public class Bootstrap {
 
     public static final String defaultNodeName = "node0";
 
-    public static void main(String[] args) {
-
+    public static void main(String[] args) throws Exception {
         final ClassLoader loader = Thread.currentThread().getContextClassLoader();
         String nodeName = System.getProperty("node.name");
         if (nodeName == null) {
             nodeName = defaultNodeName;
         }
         final Bootstrap boot = new Bootstrap(KevoreeKernel.self.get(), nodeName);
+        if (boot.getKernel() == null) {
+            throw new Exception("Kevoree as not be started from KCL microkernel context");
+        }
         Runtime.getRuntime().addShutdownHook(new Thread("Shutdown Hook") {
             public void run() {
                 try {
@@ -81,7 +84,7 @@ public class Bootstrap {
                     boot.bootstrapFromKevScript(new ByteArrayInputStream(System.getProperty("node.script").getBytes()));
                 } else {
                     String version;
-                    if (boot.getCore().getFactory().getVersion().endsWith("SNAPSHOT")) {
+                    if (boot.getCore().getFactory().getVersion().toLowerCase().contains("snapshot")) {
                         version = "latest";
                     } else {
                         version = "release";
@@ -305,13 +308,14 @@ public class Bootstrap {
     public static String createBootstrapScript(String nodeName, String version) {
         StringBuilder buffer = new StringBuilder();
         String versionRequest;
-        if (version.toLowerCase().contains("snapshot")) {
+        if (version.toLowerCase().contains("snapshot") || version.toLowerCase().equals("latest")) {
             buffer.append("repo \"https://oss.sonatype.org/content/groups/public/\"\n");
             versionRequest = "latest";
         } else {
             buffer.append("repo \"http://repo1.maven.org/maven2/\"\n");
             versionRequest = "release";
         }
+
         buffer.append("include mvn:org.kevoree.library.java:org.kevoree.library.java.javaNode:");
         buffer.append(versionRequest);
         buffer.append("\n");
