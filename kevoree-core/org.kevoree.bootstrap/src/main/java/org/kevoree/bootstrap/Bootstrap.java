@@ -7,7 +7,6 @@ import org.kevoree.api.handler.UpdateCallback;
 import org.kevoree.bootstrap.kernel.KevoreeCLKernel;
 import org.kevoree.bootstrap.reflect.KevoreeInjector;
 import org.kevoree.core.impl.KevoreeCoreBean;
-import org.kevoree.kcl.impl.FlexyClassLoaderImpl;
 import org.kevoree.kevscript.KevScriptEngine;
 import org.kevoree.log.Log;
 import org.kevoree.microkernel.KevoreeKernel;
@@ -55,8 +54,6 @@ public class Bootstrap {
 
     public static void main(String[] args) {
 
-        Log.set(Log.LEVEL_TRACE);
-
         final ClassLoader loader = Thread.currentThread().getContextClassLoader();
         String nodeName = System.getProperty("node.name");
         if (nodeName == null) {
@@ -80,6 +77,14 @@ public class Bootstrap {
             } else {
                 if (System.getProperty("node.script") != null) {
                     boot.bootstrapFromKevScript(new ByteArrayInputStream(System.getProperty("node.script").getBytes()));
+                } else {
+                    String version;
+                    if (boot.getCore().getFactory().getVersion().endsWith("SNAPSHOT")) {
+                        version = "latest";
+                    } else {
+                        version = "release";
+                    }
+                    boot.bootstrapFromKevScript(new ByteArrayInputStream(createBootstrapScript(nodeName, version).getBytes()));
                 }
             }
         } catch (Exception e) {
@@ -286,7 +291,29 @@ public class Bootstrap {
             }
 
         }
-
         fin.close();
     }
+
+    public static String createBootstrapScript(String nodeName, String version) {
+        StringBuilder buffer = new StringBuilder();
+        String versionRequest;
+        if (version.toLowerCase().contains("snapshot")) {
+            buffer.append("repo \"https://oss.sonatype.org/content/groups/public/\"\n");
+            versionRequest = "latest";
+        } else {
+            buffer.append("repo \"http://repo1.maven.org/maven2/\"\n");
+            versionRequest = "release";
+        }
+        buffer.append("include mvn:org.kevoree.library.java:org.kevoree.library.java.javaNode:");
+        buffer.append(versionRequest);
+        buffer.append("\n");
+        buffer.append("include mvn:org.kevoree.library.java:org.kevoree.library.java.ws:");
+        buffer.append(versionRequest);
+        buffer.append("\n");
+        buffer.append("add node0 : JavaNode".replace("node0", nodeName) + "\n");
+        buffer.append("add sync : WSGroup\n");
+        buffer.append("attach node0 sync\n".replace("node0", nodeName));
+        return buffer.toString();
+    }
+
 }
