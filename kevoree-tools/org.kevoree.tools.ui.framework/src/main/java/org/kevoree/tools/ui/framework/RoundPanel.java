@@ -33,11 +33,10 @@ package org.kevoree.tools.ui.framework;
 import java.awt.*;
 import java.awt.geom.RoundRectangle2D;
 import java.awt.image.BufferedImage;
-import java.awt.image.VolatileImage;
 import javax.swing.JPanel;
 
-import org.jdesktop.swingx.graphics.GraphicsUtilities;
 import org.jdesktop.swingx.graphics.ShadowRenderer;
+import org.jdesktop.swingx.util.GraphicsUtilities;
 
 /**
  * @author ffouquet

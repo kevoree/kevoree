@@ -77,7 +77,7 @@ public class NodePropertyEditor extends InstancePropertyEditor {
 
         NetworkInfo info = node.findNetworkInformationByID("ip");
         if (info != null) {
-            for (NetworkProperty prop : info.getValues()) {
+            for (Value prop : info.getValues()) {
                 if(!prop.getValue().contains(":") && i<5){ //only display the first 5 ips
                     String value = prop.getName() + ":" + prop.getValue();
                     ips.add(HudWidgetFactory.createHudLabel(value));

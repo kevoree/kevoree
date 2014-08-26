@@ -1,16 +1,21 @@
 package org.kevoree.tools.ui.editor;
 
+import jet.runtime.typeinfo.JetValueParameter;
+import org.jetbrains.annotations.NotNull;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.kevoree.ContainerRoot;
 import org.kevoree.DeployUnit;
+import org.kevoree.api.helper.KModelHelper;
 import org.kevoree.factory.DefaultKevoreeFactory;
 import org.kevoree.kevscript.KevScriptEngine;
 import org.kevoree.log.Log;
+import org.kevoree.modeling.api.KMFContainer;
 import org.kevoree.modeling.api.compare.ModelCompare;
 import org.kevoree.modeling.api.json.JSONModelLoader;
 import org.kevoree.modeling.api.json.JSONModelSerializer;
+import org.kevoree.modeling.api.util.ModelVisitor;
 import org.kevoree.resolver.MavenResolver;
 import org.kevoree.tools.ui.editor.command.MergeDefaultLibrary;
 import org.kevoree.tools.ui.editor.menus.CommandActionListener;
@@ -113,11 +118,10 @@ public class KevoreeStore {
                         engine.execute(buffer.toString(), model);
 */
                         DeployUnit du = factory.createDeployUnit();
-                        du.setGroupName(groupId);
                         du.setName(artifactId);
                         du.setVersion(version);
-
-                        model.addDeployUnits(du);
+                        KModelHelper.fqnCreate(groupId,model,factory).addDeployUnits(du);
+                        KModelHelper.fqnCreate(groupId,model,factory).addDeployUnits(du);
 
                     }
                 }
@@ -166,17 +170,24 @@ public class KevoreeStore {
                     JMenu subMenu = new JMenu(s.toUpperCase());
                     subMenu.setAutoscrolls(true);
                     ContainerRoot model = getFromGroupID("org.kevoree.library." + s);
-                    HashMap<String, DeployUnit> cache = new HashMap<String, DeployUnit>();
+                    final HashMap<String, DeployUnit> cache = new HashMap<String, DeployUnit>();
                     if (model != null) {
-                        for (DeployUnit td : model.getDeployUnits()) {
-                            cache.put(td.path(), td);
-                        }
+                        model.deepVisitContained(new ModelVisitor() {
+                            @Override
+                            public void visit(@JetValueParameter(name = "elem") @NotNull KMFContainer kmfContainer, @JetValueParameter(name = "refNameInParent") @NotNull String s, @JetValueParameter(name = "parent") @NotNull KMFContainer kmfContainer2) {
+                                if(kmfContainer instanceof DeployUnit){
+                                    DeployUnit td = (DeployUnit) kmfContainer;
+                                    cache.put(td.path(), td);
+                                }
+
+                            }
+                        });
                     } else {
                         Log.error("No library found");
                     }
                     for (DeployUnit du : cache.values()) {
-                        JMenuItem mergeDefLib1 = new JMenuItem(du.getGroupName() + ":" + du.getName() + ":" + du.getVersion());
-                        MergeDefaultLibrary cmdLDEFL1 = new MergeDefaultLibrary(du.getGroupName(), du.getName(), du.getVersion());
+                        JMenuItem mergeDefLib1 = new JMenuItem(KModelHelper.fqnGroup(du) + ":" + du.getName() + ":" + du.getVersion());
+                        MergeDefaultLibrary cmdLDEFL1 = new MergeDefaultLibrary(KModelHelper.fqnGroup(du), du.getName(), du.getVersion());
                         cmdLDEFL1.setKernel(kernel);
                         mergeDefLib1.addActionListener(new CommandActionListener(cmdLDEFL1));
                         subMenu.add(mergeDefLib1);

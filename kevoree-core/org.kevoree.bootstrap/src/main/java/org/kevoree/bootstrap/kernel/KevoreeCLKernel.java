@@ -6,6 +6,7 @@ import org.kevoree.*;
 import org.kevoree.api.BootstrapService;
 import org.kevoree.api.Context;
 import org.kevoree.api.ModelService;
+import org.kevoree.api.helper.KModelHelper;
 import org.kevoree.bootstrap.Bootstrap;
 import org.kevoree.bootstrap.reflect.KevoreeInjector;
 import org.kevoree.core.impl.ContextAwareAdapter;
@@ -47,7 +48,7 @@ public class KevoreeCLKernel implements BootstrapService {
     public String buildKernelKey(DeployUnit deployUnit) {
         StringBuilder builder = new StringBuilder();
         builder.append("mvn:");
-        builder.append(deployUnit.getGroupName());
+        builder.append(KModelHelper.fqnGroup(deployUnit));
         builder.append(":");
         builder.append(deployUnit.getName());
         builder.append(":");
@@ -71,7 +72,7 @@ public class KevoreeCLKernel implements BootstrapService {
         } else {
             HashSet<String> urls = new HashSet<String>();
             if (!offline) {
-                ContainerRoot root = (ContainerRoot) deployUnit.eContainer();
+                ContainerRoot root = KModelHelper.root(deployUnit);
                 File resolved;
                 for (Repository repo : root.getRepositories()) {
                     urls.add(repo.getUrl());
@@ -84,7 +85,7 @@ public class KevoreeCLKernel implements BootstrapService {
                 Log.info("Resolving ............. " + deployUnit.path());
                 long before = System.currentTimeMillis();
                 if (deployUnit.getUrl() == null || "".equals(deployUnit.getUrl())) {
-                    resolved = bs.getKernel().getResolver().resolve(deployUnit.getGroupName(), deployUnit.getName(), deployUnit.getVersion(), deployUnit.getType(), urls);
+                    resolved = bs.getKernel().getResolver().resolve(KModelHelper.fqnGroup(deployUnit), deployUnit.getName(), deployUnit.getVersion(), "jar", urls);
                 } else {
                     resolved = bs.getKernel().getResolver().resolve(deployUnit.getUrl(), urls);
                     if (resolved == null && new File(deployUnit.getUrl()).exists()) {
@@ -167,7 +168,7 @@ public class KevoreeCLKernel implements BootstrapService {
     @Override
     public Object createInstance(final Instance instance, FlexyClassLoader classLoader) {
         try {
-            Class clazz = classLoader.loadClass(instance.getTypeDefinition().getBean());
+            Class clazz = classLoader.loadClass(instance.getTypeDefinition().findMetaDataByID("java.class").getValue());
             Object newInstance = clazz.newInstance();
             KevoreeInjector selfInjector = injector.clone();
             selfInjector.addService(Context.class, new InstanceContext(instance.path(), nodeName, instance.getName()));

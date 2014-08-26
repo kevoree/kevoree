@@ -27,12 +27,13 @@
 package org.kevoree.tools.ui.editor.command
 
 
+import javax.swing.JPanel
+
+import org.kevoree._
 import org.kevoree.modeling.api.KMFContainer
 import org.kevoree.modeling.api.util.ModelVisitor
-import org.kevoree.tools.ui.framework.elements.{GroupTypePanel, NodeTypePanel, ChannelTypePanel, ComponentTypePanel}
-import org.kevoree._
-import javax.swing.JPanel
-import tools.ui.editor._
+import org.kevoree.tools.ui.editor._
+
 import scala.collection.JavaConversions._
 
 
@@ -83,40 +84,38 @@ class ReloadTypePalette extends Command {
 
       }
       case DeployUnitMode => {
-        model.getDeployUnits.foreach {
-          deployUnit =>
-            palette.getCategoryOrAdd(deployUnit.getName)
-            val collected = new java.util.ArrayList[TypeDefinition]()
-            kernel.getModelHandler.getActualModel.getPackages.foreach(p => {
-              p.deepVisitContained(new ModelVisitor {
-                override def visit(p1: KMFContainer, p2: String, p3: KMFContainer): Unit = {
-                  if (p1.isInstanceOf[TypeDefinition]) {
-                    collected.add(p1.asInstanceOf[TypeDefinition])
+        model.deepVisitContained(new ModelVisitor {
+          override def visit(p1: KMFContainer, p2: String, p3: KMFContainer): Unit = {
+            if (p1.isInstanceOf[DeployUnit]) {
+              val deployUnit = p1.asInstanceOf[DeployUnit]
+              palette.getCategoryOrAdd(deployUnit.getName)
+              val collected = new java.util.ArrayList[TypeDefinition]()
+              kernel.getModelHandler.getActualModel.getPackages.foreach(p => {
+                p.deepVisitContained(new ModelVisitor {
+                  override def visit(p1: KMFContainer, p2: String, p3: KMFContainer): Unit = {
+                    if (p1.isInstanceOf[TypeDefinition]) {
+                      collected.add(p1.asInstanceOf[TypeDefinition])
+                    }
                   }
-                }
+                })
               })
-            })
+              collected.sortWith((x, y) => x.getName().charAt(0).toLower < y.getName().charAt(0).toLower).foreach {
+                typeDef =>
+                  if (!typeDef.getAbstract) {
+                    typeDefPanelFactory(typeDef).map {
+                      typeDefPanel =>
+                        palette.addTypeDefinitionPanel(typeDefPanel, deployUnit.getName, typeDef.getName)
 
-
-            collected.sortWith((x, y) => x.getName().charAt(0).toLower < y.getName().charAt(0).toLower).foreach {
-              typeDef =>
-                if (!typeDef.getAbstract) {
-                  typeDefPanelFactory(typeDef).map {
-                    typeDefPanel =>
-                      palette.addTypeDefinitionPanel(typeDefPanel, deployUnit.getName, typeDef.getName)
-
+                    }
                   }
-                }
+
+              }
 
             }
-
-
-        }
+          }
+        })
       }
-
-
     }
-
     val collected = new java.util.ArrayList[TypeDefinition]()
     kernel.getModelHandler.getActualModel.getPackages.foreach(p => {
       p.deepVisitContained(new ModelVisitor {

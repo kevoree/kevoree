@@ -27,6 +27,7 @@
 package org.kevoree.tools.ui.editor
 
 import org.kevoree.ContainerRoot
+import org.kevoree.factory.DefaultKevoreeFactory
 import scala.collection.JavaConversions._
 
 import org.kevoree.tools.ui.framework.elements.{GroupPanel, ChannelPanel, NodePanel}
@@ -41,21 +42,30 @@ object PositionedEMFHelper {
       val nodePanel = kernel.getUifactory.getMapping.get(node).asInstanceOf[NodePanel];
       if (nodePanel != null) {
         val metadata = "x=" + nodePanel.getX + "," + "y=" + nodePanel.getY
-        node.setMetaData(metadata)
+        val value = new DefaultKevoreeFactory().createValue()
+        value.setName("meta.gui")
+        value.setValue(metadata)
+        node.addMetaData(value)
       }
     })
     model.getHubs.foreach(hub => {
       val hubPanel = kernel.getUifactory.getMapping.get(hub).asInstanceOf[ChannelPanel];
       if (hubPanel != null) {
         val metadata = "x=" + hubPanel.getX + "," + "y=" + hubPanel.getY
-        hub.setMetaData(metadata)
+        val value = new DefaultKevoreeFactory().createValue()
+        value.setName("meta.gui")
+        value.setValue(metadata)
+        hub.addMetaData(value)
       }
     })
     model.getGroups.foreach(group => {
       val groupPanel = kernel.getUifactory.getMapping.get(group).asInstanceOf[GroupPanel];
       if (groupPanel != null) {
         val metadata = "x=" + groupPanel.getX + "," + "y=" + groupPanel.getY
-        group.setMetaData(metadata)
+        val value = new DefaultKevoreeFactory().createValue()
+        value.setName("meta.gui")
+        value.setValue(metadata)
+        group.addMetaData(value)
       }
     })
   }

@@ -27,8 +27,10 @@ import org.apache.maven.shared.dependency.tree.DependencyTreeBuilder;
 import org.apache.maven.shared.dependency.tree.DependencyTreeBuilderException;
 import org.kevoree.ContainerRoot;
 import org.kevoree.DeployUnit;
+import org.kevoree.api.helper.KModelHelper;
 import org.kevoree.bootstrap.dev.annotator.Annotations2Model;
 import org.kevoree.factory.DefaultKevoreeFactory;
+import org.kevoree.factory.KevoreeFactory;
 import org.kevoree.modeling.api.compare.ModelCompare;
 import org.kevoree.modeling.api.json.JSONModelLoader;
 import org.kevoree.modeling.api.json.JSONModelSerializer;
@@ -95,23 +97,26 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
         return a.getGroupId() + a.getArtifactId() + a.getVersion() + a.getType();
     }
 
-    public DeployUnit fillModel(ContainerRoot model, DependencyNode root) {
+    public DeployUnit fillModel(ContainerRoot model, DependencyNode root, KevoreeFactory factory) {
         if (!cache.containsKey(createKey(root))) {
             DeployUnit du = new DefaultKevoreeFactory().createDeployUnit();
             du.setName(root.getArtifact().getArtifactId());
-            du.setGroupName(root.getArtifact().getGroupId());
             du.setVersion(root.getArtifact().getBaseVersion());
-            du.setType(root.getArtifact().getType());
             if (root.getArtifact().getScope() != null && root.getArtifact().getScope().equals(Artifact.SCOPE_SYSTEM)) {
                 du.setUrl(root.getArtifact().getFile().getAbsolutePath());
             }
-            model.addDeployUnits(du);
+
+            org.kevoree.Package pack = KModelHelper.fqnCreate(root.getArtifact().getGroupId(), model, factory);
+            if(pack == null){
+                getLog().info("Package "+root.getArtifact().getGroupId()+" "+pack);
+            }
+            pack.addDeployUnits(du);
             cache.put(createKey(root), du);
         }
         for (DependencyNode child : root.getChildren()) {
             if (!child.getArtifact().getScope().toLowerCase().equals("test")) {
                 if (checkFilters(child, includes, true) && !checkFilters(child, excludes, false)) {
-                    fillModel(model, child);
+                    fillModel(model, child, factory);
                 }
             }
         }
@@ -160,11 +165,12 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
     }
 
     private Annotations2Model annotations2Model = new Annotations2Model();
-   // private InheritanceBuilder inheritanceBuilder = new InheritanceBuilder();
+    // private InheritanceBuilder inheritanceBuilder = new InheritanceBuilder();
 
 
     @Override
     public void execute() throws MojoExecutionException {
+        KevoreeFactory factory = new DefaultKevoreeFactory();
         ContainerRoot model = new DefaultKevoreeFactory().createContainerRoot();
         if (project.getDistributionManagement() != null) {
             if (project.getVersion().contains("SNAPSHOT")) {
@@ -181,7 +187,7 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
             /* Seems to be buggy... */
             ArtifactFilter artifactFilter = new ScopeArtifactFilter(Artifact.SCOPE_COMPILE);
             DependencyNode graph = dependencyTreeBuilder.buildDependencyTree(project, localRepository, artifactFilter);
-            mainDeployUnit = fillModel(model, graph);
+            mainDeployUnit = fillModel(model, graph, factory);
             linkModel(graph);
         } catch (DependencyTreeBuilderException e) {
             getLog().error(e);
@@ -231,7 +237,7 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
                 }
             }
 
-           // inheritanceBuilder.fillModel(outputClasses, model, mainDeployUnit, project.getCompileClasspathElements());
+            // inheritanceBuilder.fillModel(outputClasses, model, mainDeployUnit, project.getCompileClasspathElements());
 
             //Save XMI
             File file = new File(outputClasses.getPath() + File.separator + "KEV-INF" + File.separator + "lib.kev");

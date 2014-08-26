@@ -49,6 +49,8 @@ case class NodeAspect(self: ContainerNode) {
     })
 
     //REMOVE FROM NETWORK LINK
+
+    /*
     root.getNodeNetworks.foreach {
       nn =>
         if (nn.getTarget == self) {
@@ -64,6 +66,7 @@ case class NodeAspect(self: ContainerNode) {
 
     }
 
+*/
 
 
 

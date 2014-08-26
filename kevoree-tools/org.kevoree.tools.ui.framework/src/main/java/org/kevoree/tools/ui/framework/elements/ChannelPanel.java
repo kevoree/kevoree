@@ -30,8 +30,8 @@
  */
 package org.kevoree.tools.ui.framework.elements;
 
-import org.jdesktop.swingx.graphics.GraphicsUtilities;
 import org.jdesktop.swingx.graphics.ShadowRenderer;
+import org.jdesktop.swingx.util.GraphicsUtilities;
 import org.kevoree.tools.ui.framework.BufferedElement;
 import org.kevoree.tools.ui.framework.ErrorHighlightableElement;
 import org.kevoree.tools.ui.framework.SelectElement;

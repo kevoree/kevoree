@@ -1,7 +1,9 @@
 package org.kevoree.bootstrap.dev.annotator;
 
+import org.kevoree.ContainerRoot;
 import org.kevoree.DeployUnit;
 import org.kevoree.factory.DefaultKevoreeFactory;
+import org.kevoree.factory.KevoreeFactory;
 import org.kevoree.log.Log;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
@@ -22,7 +24,7 @@ import java.io.InputStream;
  */
 public class MinimalPomParser {
 
-    public static DeployUnit lookupLocalDeployUnit(File classPath) {
+    public static DeployUnit lookupLocalDeployUnit(File classPath, ContainerRoot root, KevoreeFactory factory) {
         try {
             if (classPath.exists()) {
                 if (classPath.getName().equals("classes")) {
@@ -31,7 +33,7 @@ public class MinimalPomParser {
                         File parent2 = parent.getParentFile();
                         if (parent2 != null) {
                             File mavenPom = new File(parent2, "pom.xml");
-                            return currentURL(mavenPom);
+                            return currentURL(mavenPom, root, factory);
                         }
                     }
                 }
@@ -43,20 +45,20 @@ public class MinimalPomParser {
     }
 
 
-    public static DeployUnit currentURL(File mavenPom) throws ParserConfigurationException, IOException, SAXException {
+    public static DeployUnit currentURL(File mavenPom, ContainerRoot root, KevoreeFactory factory) throws ParserConfigurationException, IOException, SAXException {
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-        return currentURL(dBuilder.parse(mavenPom));
+        return currentURL(dBuilder.parse(mavenPom), root, factory);
     }
 
-    public static DeployUnit currentURL(InputStream mavenPom) throws ParserConfigurationException, IOException, SAXException {
+    public static DeployUnit currentURL(InputStream mavenPom, ContainerRoot root, KevoreeFactory factory) throws ParserConfigurationException, IOException, SAXException {
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-        return currentURL(dBuilder.parse(mavenPom));
+        return currentURL(dBuilder.parse(mavenPom), root, factory);
     }
 
 
-    public static DeployUnit currentURL(Document doc) throws ParserConfigurationException, IOException, SAXException {
+    public static DeployUnit currentURL(Document doc, ContainerRoot root, KevoreeFactory factory) throws ParserConfigurationException, IOException, SAXException {
 
         DeployUnit du = new DefaultKevoreeFactory().createDeployUnit();
         doc.getDocumentElement().normalize();
@@ -104,10 +106,33 @@ public class MinimalPomParser {
             }
         }
 
-        du.setGroupName(groupId);
-        du.setName(artifactId);
-        du.setVersion(version);
-
+        String[] packages = groupId.split("\\.");
+        org.kevoree.Package previous = null;
+        for (int i = 0; i < packages.length; i++) {
+            if (previous == null) {
+                previous = root.findPackagesByID(packages[i]);
+                if (previous == null) {
+                    previous = factory.createPackage();
+                    previous.setName(packages[i]);
+                    root.addPackages(previous);
+                }
+            } else {
+                org.kevoree.Package resolved = previous.findPackagesByID(packages[i]);
+                if (resolved == null) {
+                    resolved = factory.createPackage();
+                    resolved.setName(packages[i]);
+                    previous.addPackages(resolved);
+                    previous = resolved;
+                }
+            }
+        }
+        if (previous != null) {
+            du.setName(artifactId);
+            du.setVersion(version);
+            previous.addDeployUnits(du);
+        } else {
+            Log.error("DeployUnit need a qualified name {}", groupId);
+        }
         return du;
     }
 

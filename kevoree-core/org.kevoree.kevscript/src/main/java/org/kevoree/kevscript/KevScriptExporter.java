@@ -1,6 +1,7 @@
 package org.kevoree.kevscript;
 
 import org.kevoree.*;
+import org.kevoree.api.helper.KModelHelper;
 import org.kevoree.modeling.api.KMFContainer;
 import org.kevoree.modeling.api.util.ModelVisitor;
 
@@ -23,7 +24,7 @@ public class KevScriptExporter {
             public void visit(KMFContainer kmfContainer, String s, KMFContainer kmfContainer2) {
                 if (kmfContainer instanceof DeployUnit) {
                     DeployUnit currentDU = (DeployUnit) kmfContainer;
-                    buffer.append("include mvn:" + currentDU.getGroupName() + ":" + currentDU.getName() + ":" + currentDU.getVersion() + "\n");
+                    buffer.append("include mvn:" + KModelHelper.fqnGroup(currentDU) + ":" + currentDU.getName() + ":" + currentDU.getVersion() + "\n");
                 }
             }
         }, true, true, false);

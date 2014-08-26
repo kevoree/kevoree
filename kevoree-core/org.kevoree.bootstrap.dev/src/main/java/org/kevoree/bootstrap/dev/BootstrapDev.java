@@ -2,6 +2,7 @@ package org.kevoree.bootstrap.dev;
 
 import org.kevoree.ContainerRoot;
 import org.kevoree.DeployUnit;
+import org.kevoree.api.helper.KModelHelper;
 import org.kevoree.bootstrap.Bootstrap;
 import org.kevoree.bootstrap.dev.annotator.Annotations2Model;
 import org.kevoree.bootstrap.dev.annotator.MinimalPomParser;
@@ -46,22 +47,24 @@ public class BootstrapDev {
                 ContainerRoot model = factory.createContainerRoot();
                 factory.root(model);
 
+                /*
                 DeployUnit fakeDeployUnit = factory.createDeployUnit();
                 fakeDeployUnit.setGroupName("org.kevoree");
                 fakeDeployUnit.setName("org.kevoree.annotation.api");
                 fakeDeployUnit.setVersion(factory.getVersion());
                 model.addDeployUnits(fakeDeployUnit);
-
-                DeployUnit mainDu = MinimalPomParser.lookupLocalDeployUnit(directoryTargetFile);
-                String key = "mvn:" + mainDu.getGroupName() + ":" + mainDu.getName() + ":" + mainDu.getVersion();
+                */
+                DeployUnit mainDu = MinimalPomParser.lookupLocalDeployUnit(directoryTargetFile, model, factory);
+                String key = "mvn:" + KModelHelper.fqnGroup(mainDu) + ":" + mainDu.getName() + ":" + mainDu.getVersion();
                 FlexyClassLoader kcl = kernel.install(key, "file:" + directoryTargetFile.getAbsolutePath());
 
+                /*
                 if (mainDu != null) {
                     model.addDeployUnits(mainDu);
                     mainDu.addRequiredLibs(fakeDeployUnit);
                 } else {
                     mainDu = fakeDeployUnit;
-                }
+                } */
 
                 ArrayList<String> classPaths = new ArrayList<String>();
                 classPaths.add(directoryTargetFile.getAbsolutePath());

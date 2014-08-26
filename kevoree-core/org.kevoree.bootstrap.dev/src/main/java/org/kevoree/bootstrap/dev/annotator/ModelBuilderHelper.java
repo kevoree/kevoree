@@ -1,6 +1,8 @@
 package org.kevoree.bootstrap.dev.annotator;
 
 import javassist.*;
+import jet.runtime.typeinfo.JetValueParameter;
+import org.jetbrains.annotations.NotNull;
 import org.kevoree.*;
 import org.kevoree.Package;
 import org.kevoree.annotation.Input;
@@ -8,6 +10,8 @@ import org.kevoree.annotation.Output;
 import org.kevoree.annotation.Param;
 import org.kevoree.api.*;
 import org.kevoree.factory.KevoreeFactory;
+import org.kevoree.modeling.api.KMFContainer;
+import org.kevoree.modeling.api.util.ModelVisitor;
 
 import java.io.File;
 import java.io.InputStream;
@@ -207,15 +211,11 @@ public class ModelBuilderHelper {
             String endPath = clazz.getName().replace(".", File.separator) + ".class";
             String baseURL = clazz.getURL().toString().replace(endPath, "");
 
-
             /*
             String manifest = baseURL + "META-INF" + File.separator + "MANIFEST.MF";
             URL u2 = new URL(manifest);
             System.out.println(u2.openStream().available());
             */
-
-
-
             /*
             if (version == null) {
                 File metaInf = new File(baseURL + "META-INF" + File.separator + "maven");
@@ -225,26 +225,33 @@ public class ModelBuilderHelper {
                         File groupFile = metaInf.listFiles()[0];
                     }
                 }
-
             } */
+
             if (version == null) {
                 try {
                     String kevManifest = baseURL + "KEV-INF" + File.separator + "lib.json";
                     URL ukevManifest = new URL(kevManifest);
                     InputStream is = ukevManifest.openStream();
                     ContainerRoot libModel = (ContainerRoot) factory.createJSONLoader().loadModelFromStream(is).get(0);
-                    HashMap<DeployUnit, Integer> links = new HashMap<DeployUnit, Integer>();
-                    for (DeployUnit du : libModel.getDeployUnits()) {
-                        if (!links.containsKey(du)) {
-                            links.put(du, 0);
-                        }
-                        for (DeployUnit dul : du.getRequiredLibs()) {
-                            if (!links.containsKey(dul)) {
-                                links.put(dul, 0);
+                    final HashMap<DeployUnit, Integer> links = new HashMap<DeployUnit, Integer>();
+
+                    libModel.deepVisitContained(new ModelVisitor() {
+                        @Override
+                        public void visit(@JetValueParameter(name = "elem") @NotNull KMFContainer kmfContainer, @JetValueParameter(name = "refNameInParent") @NotNull String s, @JetValueParameter(name = "parent") @NotNull KMFContainer kmfContainer2) {
+                            if (kmfContainer instanceof DeployUnit) {
+                                DeployUnit du = (DeployUnit) kmfContainer;
+                                if (!links.containsKey(du)) {
+                                    links.put(du, 0);
+                                }
+                                for (DeployUnit dul : du.getRequiredLibs()) {
+                                    if (!links.containsKey(dul)) {
+                                        links.put(dul, 0);
+                                    }
+                                    links.put(dul, links.get(dul) + 1);
+                                }
                             }
-                            links.put(dul, links.get(dul) + 1);
                         }
-                    }
+                    });
                     //This current deploy unit should be the only one with no external references, tricky part
                     for (DeployUnit d : links.keySet()) {
                         if (links.get(d) == 0) {
@@ -271,9 +278,11 @@ public class ModelBuilderHelper {
         } else {
             td.setAbstract(false);
         }
-        td.setBean(clazz.getName());
+        Value javaClazz = factory.createValue();
+        javaClazz.setName("java.class");
+        javaClazz.setValue(clazz.getName());
+        td.addMetaData(javaClazz);
         td.addDeployUnits(du);
-
         try {
             checkParent(td, clazz.getSuperclass(), clazz, root, factory);
         } catch (NotFoundException e) {

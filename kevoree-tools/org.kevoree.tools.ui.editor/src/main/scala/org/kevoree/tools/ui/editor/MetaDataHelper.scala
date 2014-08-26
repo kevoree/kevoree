@@ -33,10 +33,9 @@ object MetaDataHelper {
 
   def getMetaDataFromInstance(i: Instance): java.util.HashMap[String, String] = {
     val res = new java.util.HashMap[String, String]()
-    if (i.getMetaData != null) {
-      i.getMetaData.split(',').foreach {
+    if (i.findMetaDataByID("meta.gui") != null) {
+      i.findMetaDataByID("meta.gui").getValue().split(',').foreach {
         meta =>
-
           val values = meta.split('=')
           if (values.size >= 2) {
             res.put(values(0), values(1))
@@ -44,7 +43,6 @@ object MetaDataHelper {
 
       }
     }
-
     res
   }
 

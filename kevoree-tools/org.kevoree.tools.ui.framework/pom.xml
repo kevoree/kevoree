@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
     <artifactId>org.kevoree.tools.ui.framework</artifactId>
@@ -25,60 +26,25 @@
                     <encoding>${project.build.sourceEncoding}</encoding>
                 </configuration>
             </plugin>
-            <!--
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>prepare</id>
-                        <phase>generate-sources</phase>
-                        <configuration>
-                            <tasks>
-                                <echo message="prepare phase" />
-                                <unzip src="${basedir}/lib/MacWidgets.jar" dest="${project.build.outputDirectory}" />
-                            </tasks>
-                        </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            -->
         </plugins>
     </build>
 
     <dependencies>
-
         <dependency>
-            <groupId>org.swinglabs</groupId>
+            <groupId>org.swinglabs.swingx</groupId>
             <artifactId>swingx-core</artifactId>
-            <version>1.6.2-2</version>
+            <version>1.6.5-1</version>
         </dependency>
         <dependency>
             <groupId>org.kevoree</groupId>
-            <artifactId>org.kevoree.model</artifactId>
+            <artifactId>org.kevoree.api</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>com.jgoodies</groupId>
-            <artifactId>forms</artifactId>
-            <version>1.2.1</version>
+            <artifactId>jgoodies-forms</artifactId>
+            <version>1.7.2</version>
         </dependency>
-
     </dependencies>
-
-    <repositories>
-        <repository>
-            <id>java.net-m2</id>
-            <name>java.net - Maven 2</name>
-            <url>https://repository.jboss.org/nexus/content/repositories/java.net-m2</url>
-        </repository>
-        <repository>
-            <id>kevoree</id>
-            <url>http://maven.kevoree.org/release</url>
-        </repository>
-    </repositories>
 
 </project>

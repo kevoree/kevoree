@@ -68,6 +68,8 @@ public class NetworkPropertyEditor extends JPanel {
     public void refresh() {
         DefaultListModel listModel = new DefaultListModel();
         ContainerRoot root = (ContainerRoot) _node.eContainer();
+
+        /*
         for (NodeNetwork nn : root.getNodeNetworks()) {
             if (nn.getTarget().equals(_node)) {
                 for (NodeLink nl : nn.getLink()) {
@@ -77,6 +79,7 @@ public class NetworkPropertyEditor extends JPanel {
                 }
             }
         }
+        */
         JList list = new JList(listModel);
         JScrollPane pane = new JScrollPane(list);
         pane.setBorder(null);

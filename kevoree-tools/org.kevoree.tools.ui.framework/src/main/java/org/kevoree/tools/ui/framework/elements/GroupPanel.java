@@ -27,8 +27,8 @@
 package org.kevoree.tools.ui.framework.elements;
 
 
-import org.jdesktop.swingx.graphics.GraphicsUtilities;
 import org.jdesktop.swingx.graphics.ShadowRenderer;
+import org.jdesktop.swingx.util.GraphicsUtilities;
 import org.kevoree.tools.ui.framework.SelectElement;
 import org.kevoree.tools.ui.framework.TitledElement;
 
@@ -156,8 +156,7 @@ public class GroupPanel extends JPanel implements TitledElement, SelectElement {
         int h = getHeight() - (SHADOW_SIZE - 2) * 2;
         int arc = 15;
         int shadowSize = SHADOW_SIZE;
-        shadow =
-                GraphicsUtilities.createCompatibleTranslucentImage(w, h);
+        shadow = GraphicsUtilities.createCompatibleTranslucentImage(w, h);
         Graphics2D g2 = shadow.createGraphics();
 
         if (active) {

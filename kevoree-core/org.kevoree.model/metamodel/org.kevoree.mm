@@ -1,10 +1,8 @@
-
 class org.kevoree.ComponentInstance : org.kevoree.Instance {
     @contained
     provided : org.kevoree.Port[0,*]
     @contained
     required : org.kevoree.Port[0,*]
-    namespace : org.kevoree.Namespace
 }
 
 class org.kevoree.ComponentType : org.kevoree.TypeDefinition {
@@ -24,24 +22,17 @@ class org.kevoree.ContainerNode : org.kevoree.Instance {
     networkInformation : org.kevoree.NetworkInfo[0,*]
 }
 
-class org.kevoree.ContainerRoot  {
+class org.kevoree.ContainerRoot {
     @contained
     nodes : org.kevoree.ContainerNode[0,*]
     @contained
     repositories : org.kevoree.Repository[0,*]
     @contained
-    dataTypes : org.kevoree.TypedElement[0,*]
-    @contained
     hubs : org.kevoree.Channel[0,*]
     @contained
     mBindings : org.kevoree.MBinding[0,*]
     @contained
-    deployUnits : org.kevoree.DeployUnit[0,*]
-    @contained
-    nodeNetworks : org.kevoree.NodeNetwork[0,*]
-    @contained
     groups : org.kevoree.Group[0,*]
-
     @contained
     packages : org.kevoree.Package[0,*]
 }
@@ -51,6 +42,8 @@ class org.kevoree.Package : org.kevoree.NamedElement {
     packages : org.kevoree.Package[0,*]
     @contained
     typeDefinitions : org.kevoree.TypeDefinition[0,*]
+    @contained
+    deployUnits : org.kevoree.DeployUnit[0,*]
 }
 
 class org.kevoree.PortType : org.kevoree.TypeDefinition {
@@ -62,19 +55,19 @@ class org.kevoree.Port : org.kevoree.NamedElement {
     portTypeRef : org.kevoree.PortTypeRef
 }
 
-class org.kevoree.Namespace : org.kevoree.NamedElement {
-    elements : org.kevoree.Instance[0,*]
-}
-
-class org.kevoree.Dictionary  {
+class org.kevoree.Dictionary {
     @contained
     values : org.kevoree.Value[0,*]
 }
 
-class org.kevoree.FragmentDictionary : org.kevoree.Dictionary, org.kevoree.NamedElement {
+class org.kevoree.FragmentDictionary : org.kevoree.Dictionary,org.kevoree.NamedElement {
 }
 
-class org.kevoree.DictionaryType  {
+class org.kevoree.Value : org.kevoree.NamedElement {
+    value : String
+}
+
+class org.kevoree.DictionaryType {
     @contained
     attributes : org.kevoree.DictionaryAttribute[0,*]
 }
@@ -85,10 +78,6 @@ class org.kevoree.DictionaryAttribute : org.kevoree.TypedElement {
     datatype : String
     fragmentDependant : Bool
     defaultValue : String
-}
-
-class org.kevoree.Value : org.kevoree.NamedElement  {
-    value : String
 }
 
 class org.kevoree.PortTypeRef : org.kevoree.NamedElement {
@@ -124,32 +113,28 @@ class org.kevoree.MessagePortType : org.kevoree.PortType {
     filters : org.kevoree.TypedElement[0,*]
 }
 
-class org.kevoree.Repository  {
+class org.kevoree.Repository {
     @id
     url : String
 }
 
 class org.kevoree.DeployUnit : org.kevoree.NamedElement {
     @id
-    groupName : String
-    @id
     version : String
-    url : String
     @id
     hashcode : String
-    type : String
-    requiredLibs : org.kevoree.DeployUnit[0,*]
-
+    url : String
     @contained
     filters : org.kevoree.Value[0,*]
+    requiredLibs : org.kevoree.DeployUnit[0,*]
 }
 
-class org.kevoree.NamedElement  {
+class org.kevoree.NamedElement {
     @id
     name : String
 }
 
-class org.kevoree.PortTypeMapping  {
+class org.kevoree.PortTypeMapping {
     beanMethodName : String
     serviceMethodName : String
     paramTypes : String
@@ -159,34 +144,14 @@ class org.kevoree.Channel : org.kevoree.Instance {
     bindings : org.kevoree.MBinding[0,*] oppositeOf hub
 }
 
-class org.kevoree.MBinding  {
+class org.kevoree.MBinding {
     port : org.kevoree.Port oppositeOf bindings
     hub : org.kevoree.Channel oppositeOf bindings
 }
 
-class org.kevoree.NodeNetwork  {
-    @contained
-    link : org.kevoree.NodeLink[0,*]
-    initBy : org.kevoree.ContainerNode
-    target : org.kevoree.ContainerNode
-}
-
-class org.kevoree.NodeLink  {
-    networkType : String
-    estimatedRate : Int
-    lastCheck : String
-    zoneID : String
-    @contained
-    networkProperties : org.kevoree.NetworkProperty[0,*]
-}
-
 class org.kevoree.NetworkInfo : org.kevoree.NamedElement {
     @contained
-    values : org.kevoree.NetworkProperty[0,*]
-}
-
-class org.kevoree.NetworkProperty : org.kevoree.NamedElement {
-    value : String
+    values : org.kevoree.Value[0,*]
 }
 
 class org.kevoree.ChannelType : org.kevoree.TypeDefinition {
@@ -199,28 +164,24 @@ class org.kevoree.ChannelType : org.kevoree.TypeDefinition {
 class org.kevoree.TypeDefinition : org.kevoree.NamedElement {
     @id
     version : String
-    factoryBean : String
-    bean : String
     abstract : Bool
     deployUnits : org.kevoree.DeployUnit[0,*]
-    @contained
-    dictionaryType : org.kevoree.DictionaryType
     superTypes : org.kevoree.TypeDefinition[0,*]
     @contained
-    values : org.kevoree.Value[0,*]
+    dictionaryType : org.kevoree.DictionaryType
+    @contained
+    metaData : org.kevoree.Value[0,*]
 }
 
 class org.kevoree.Instance : org.kevoree.NamedElement {
-    metaData : String
     started : Bool
     typeDefinition : org.kevoree.TypeDefinition
     @contained
     dictionary : org.kevoree.Dictionary
     @contained
     fragmentDictionary : org.kevoree.FragmentDictionary[0,*]
-
     @contained
-    values : org.kevoree.Value[0,*]
+    metaData : org.kevoree.Value[0,*]
 }
 
 class org.kevoree.Group : org.kevoree.Instance {

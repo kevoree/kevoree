@@ -2,6 +2,7 @@ package org.kevoree.kevscript;
 
 import org.kevoree.*;
 import org.kevoree.api.KevScriptService;
+import org.kevoree.api.helper.KModelHelper;
 import org.kevoree.factory.DefaultKevoreeFactory;
 import org.kevoree.factory.KevoreeFactory;
 import org.kevoree.kevscript.util.InstanceResolver;
@@ -32,10 +33,11 @@ public class KevScriptEngine implements KevScriptService {
     private List<String> ignoredInclude = new ArrayList<String>();
 
     /* Ugly hack for dev mode */
+
     public void addIgnoreIncludeDeployUnit(DeployUnit du) {
-        ignoredInclude.add(du.getGroupName() + "/" + du.getName() + "/" + du.getVersion());
-        ignoredInclude.add(du.getGroupName() + "/" + du.getName() + "/release");
-        ignoredInclude.add(du.getGroupName() + "/" + du.getName() + "/latest");
+        ignoredInclude.add(KModelHelper.fqnGroup(du) + "/" + du.getName() + "/" + du.getVersion());
+        ignoredInclude.add(KModelHelper.fqnGroup(du) + "/" + du.getName() + "/release");
+        ignoredInclude.add(KModelHelper.fqnGroup(du) + "/" + du.getName() + "/latest");
     }
 
     public void execute(String script, ContainerRoot model) throws Exception {
@@ -174,9 +176,9 @@ public class KevScriptEngine implements KevScriptService {
                         info.setName(propType);
                         networkTargetNode.addNetworkInformation(info);
                     }
-                    NetworkProperty netprop = info.findValuesByID(interfaceName);
+                    Value netprop = info.findValuesByID(interfaceName);
                     if (netprop == null) {
-                        netprop = factory.createNetworkProperty();
+                        netprop = factory.createValue();
                         netprop.setName(interfaceName);
                         info.addValues(netprop);
                     }

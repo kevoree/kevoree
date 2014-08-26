@@ -10,8 +10,10 @@ import org.kevoree.core.impl.KevoreeCoreBean;
 import org.kevoree.kevscript.KevScriptEngine;
 import org.kevoree.log.Log;
 import org.kevoree.microkernel.KevoreeKernel;
+import org.kevoree.modeling.api.KMFContainer;
 import org.kevoree.modeling.api.compare.ModelCompare;
 import org.kevoree.modeling.api.json.JSONModelLoader;
+import org.kevoree.modeling.api.util.ModelVisitor;
 import org.kevoree.modeling.api.xmi.XMIModelLoader;
 
 import java.io.*;
@@ -84,6 +86,7 @@ public class Bootstrap {
                     } else {
                         version = "release";
                     }
+                    Log.info("Create minimal system with library in version {}", version);
                     boot.bootstrapFromKevScript(new ByteArrayInputStream(createBootstrapScript(nodeName, version).getBytes()));
                 }
             }
@@ -146,9 +149,14 @@ public class Bootstrap {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            for (DeployUnit du : emptyModel.getDeployUnits()) {
-                kevScriptEngine.addIgnoreIncludeDeployUnit(du);
-            }
+            emptyModel.deepVisitContained(new ModelVisitor() {
+                @Override
+                public void visit(KMFContainer kmfContainer, String s, KMFContainer kmfContainer2) {
+                    if (kmfContainer instanceof DeployUnit) {
+                        kevScriptEngine.addIgnoreIncludeDeployUnit((DeployUnit) kmfContainer);
+                    }
+                }
+            });
             return emptyModel;
         } else {
             return core.getKevoreeFactory().createContainerRoot();
@@ -175,7 +183,7 @@ public class Bootstrap {
                         Enumeration<InetAddress> inetAddresses = networkInterface.getInetAddresses();
                         for (InetAddress inetAddress : Collections.list(inetAddresses)) {
                             if (!inetAddress.isLoopbackAddress()) {
-                                NetworkProperty netprop = core.getFactory().createNetworkProperty();
+                                Value netprop = core.getFactory().createValue();
                                 netprop.setName(i + "_" + networkInterface.getName());
                                 netprop.setValue(inetAddress.getHostAddress());
                                 info.addValues(netprop);
