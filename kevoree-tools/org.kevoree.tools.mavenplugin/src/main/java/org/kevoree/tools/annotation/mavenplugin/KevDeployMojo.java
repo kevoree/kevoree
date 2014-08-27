@@ -55,7 +55,10 @@ public class KevDeployMojo extends AbstractMojo {
     }
 
     private String send(String payload) throws Exception {
-        URL obj = new URL(registry);
+        if (!registry.endsWith("/")) {
+            registry = registry + "/";
+        }
+        URL obj = new URL(registry + "deploy");
         HttpURLConnection con = (HttpURLConnection) obj.openConnection();
         con.setRequestMethod("POST");
         con.setRequestProperty("User-Agent", "KevoreeClient");
