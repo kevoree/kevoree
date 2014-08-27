@@ -24,6 +24,7 @@ public class TypeDefinitionResolver {
         if (!typeNode.getType().equals(Type.TypeDef)) {
             throw new Exception("Parse error, should be a typedefinition : " + typeNode.toString());
         }
+
         final String typeDefName = typeNode.getChildren().get(0).childrenAsString();
         String version = null;
         if (typeNode.getChildren().size() > 1) {

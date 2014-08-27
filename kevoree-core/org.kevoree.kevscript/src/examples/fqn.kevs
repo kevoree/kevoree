@@ -1,0 +1,2 @@
+add foo : org.kevoree.JavaNode
+add bar : _.foo.42.UPPER.T/4.2-POTATO

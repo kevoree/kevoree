@@ -6,7 +6,7 @@
 repo "http://org.sonatype.org/foo/bar?a=b&c=d" // potato
 include mvn:org.kevoree.library.javase:org.kevoree.library.javase.websocketgrp:2.0.5-SNAPSHOT // potato!
 
-add node0, node1 : JavaSENode
+add node0, node1 : org.kevoree.library.java.JavaNode
 add sync : HelloGroup/0.0.2-SNAPSHOT
 add node0.comp0, node0.comp1 : HelloWorld
 add chan0 : HelloChannel

@@ -34,8 +34,11 @@ Include             <- IncludeToken ws String :':' String2                      
 NameList            <- InstancePath ws *(:[,] ws InstancePath)                                  # node42
                                                                                                 # node0, node0.comp1, node42
 
-TypeDef             <- String ?(:'/' Version)                                                   # FooType/0.0.1 (specific vers.)
+TypeDef             <- TypeFQN ?(:'/' Version)                                                  # FooType/0.0.1 (specific vers.)
                                                                                                 # FooType       (last vers.)
+                                                                                                # org.kevoree.Foo/0.42.0 (fully qualified name)
+
+TypeFQN             <- String3 *([.] String3)
 
 Namespace           <- NamespaceToken ws String                                                 # namespace sp-ace_0
 
@@ -52,6 +55,8 @@ Wildcard            <- '*'
 String              <- +[a-zA-Z0-9_-]
 
 String2             <- +[a-zA-Z0-9.:%@_-]
+
+String3             <= +[a-zA-Z0-9_]
 
 Version             <- +[a-zA-Z0-9._-]
 
