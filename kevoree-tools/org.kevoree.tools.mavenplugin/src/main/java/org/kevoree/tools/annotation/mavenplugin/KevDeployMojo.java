@@ -39,7 +39,7 @@ public class KevDeployMojo extends AbstractMojo {
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         if (registry.equals("http://registry.kevoree.org/")) {
-            registry = registry + getMajorVersion() + "/";
+            registry = registry +"v"+ getMajorVersion() + "/";
         }
 
         if (outputLibrary != null && outputLibrary.exists()) {

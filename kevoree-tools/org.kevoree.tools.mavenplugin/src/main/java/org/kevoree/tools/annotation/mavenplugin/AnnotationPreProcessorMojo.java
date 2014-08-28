@@ -171,7 +171,8 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
     @Override
     public void execute() throws MojoExecutionException {
         KevoreeFactory factory = new DefaultKevoreeFactory();
-        ContainerRoot model = new DefaultKevoreeFactory().createContainerRoot();
+        ContainerRoot model = factory.createContainerRoot();
+        factory.root(model);
         if (project.getDistributionManagement() != null) {
             if (project.getVersion().contains("SNAPSHOT")) {
                 fillModelWithRepository(project.getDistributionManagement().getSnapshotRepository().getUrl(), model);
