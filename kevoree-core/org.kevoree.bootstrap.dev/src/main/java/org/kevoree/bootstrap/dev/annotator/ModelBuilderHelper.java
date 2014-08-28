@@ -261,6 +261,7 @@ public class ModelBuilderHelper {
                     URL ukevManifest = new URL(kevManifest);
                     InputStream is = ukevManifest.openStream();
                     ContainerRoot libModel = (ContainerRoot) factory.createJSONLoader().loadModelFromStream(is).get(0);
+                    factory.root(libModel);
                     final HashMap<DeployUnit, Integer> links = new HashMap<DeployUnit, Integer>();
 
                     libModel.deepVisitContained(new ModelVisitor() {
