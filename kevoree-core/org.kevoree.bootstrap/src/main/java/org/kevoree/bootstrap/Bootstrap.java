@@ -4,6 +4,8 @@ import org.kevoree.*;
 import org.kevoree.api.BootstrapService;
 import org.kevoree.api.KevScriptService;
 import org.kevoree.api.handler.UpdateCallback;
+import org.kevoree.api.telemetry.TelemetryEvent;
+import org.kevoree.api.telemetry.TelemetryListener;
 import org.kevoree.bootstrap.kernel.KevoreeCLKernel;
 import org.kevoree.bootstrap.reflect.KevoreeInjector;
 import org.kevoree.core.impl.KevoreeCoreBean;
@@ -62,6 +64,7 @@ public class Bootstrap {
             nodeName = defaultNodeName;
         }
         final Bootstrap boot = new Bootstrap(KevoreeKernel.self.get(), nodeName);
+        boot.registerTelemetryToLogListener();
         if (boot.getKernel() == null) {
             throw new Exception("Kevoree as not be started from KCL microkernel context");
         }
@@ -121,6 +124,33 @@ public class Bootstrap {
         core.setBootstrapService(kernel);
         Log.info("Bootstrap Kevoree node : {}, version {}", nodeName, core.getFactory().getVersion());
         core.start();
+    }
+
+    private TelemetryListener telemetryListener;
+    protected void registerTelemetryToLogListener() {
+        if(telemetryListener == null) {
+            telemetryListener = new TelemetryListener() {
+                @Override
+                public void notify(TelemetryEvent telemetryEvent) {
+                    if(telemetryEvent.type().equals("info")) {
+                        Log.info("[{}] {}",telemetryEvent.origin(), telemetryEvent.message());
+                    } else if(telemetryEvent.type().equals("warn")) {
+                        Log.warn("[{}] {}",telemetryEvent.origin(), telemetryEvent.message());
+                    } else if(telemetryEvent.type().equals("error")) {
+                        Log.error("[{}] {}\n{}",telemetryEvent.origin(), telemetryEvent.message(), telemetryEvent.stack());
+                    } else {
+                        Log.debug("[{}] {}\n{}",telemetryEvent.origin(), telemetryEvent.message(), telemetryEvent.stack());
+                    }
+                }
+            };
+        }
+        core.addTelemetryListener(telemetryListener);
+    }
+
+    protected void unregisterTelemetryToLogListener() {
+        if(telemetryListener != null) {
+            core.removeTelemetryListener(telemetryListener);
+        }
     }
 
     public void stop() {

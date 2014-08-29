@@ -22,7 +22,7 @@ import java.util.concurrent.ThreadFactory
 import org.kevoree.log.Log
 import org.kevoree.api.handler.UpdateContext
 
-class KevoreeListeners {
+class KevoreeListeners(internal var coreBean : KevoreeCoreBean) {
 
     private var scheduler: ExecutorService? = null
     private var schedulerAsync: ExecutorService? = null
@@ -189,7 +189,8 @@ class KevoreeListeners {
             try {
                 listener.modelUpdated()
             } catch (e: Exception) {
-                Log.error("Error while trigger model update ", e)
+                coreBean.broadcastTelemetry("error","Error while trigger model update.", e.toString())
+                //Log.error("Error while trigger model update ", e)
             }
         }
     }

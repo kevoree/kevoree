@@ -5,6 +5,10 @@ package org.kevoree.api.telemetry;
  */
 public interface TelemetryEvent {
 
+    public String type();
+
+    public Long timestamp();
+
     public String origin();
 
     public String message();

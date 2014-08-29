@@ -46,7 +46,8 @@ class KevoreeSeqDeployPhase(val originCore : KevoreeCoreBean) : KevoreeDeployPha
                     if(originCore.isAnyTelemetryListener()){
                         originCore.broadcastTelemetry("failed_command","Cmd:["+primitive.toString()+"]","")
                     }
-                    Log.info("Error during execution of {}",primitive)
+                    //originCore.broadcastTelemetry("warn","Error during execution of "+primitive, e.toString())
+                    Log.debug("Error during execution of {}",primitive)
                     break;
                 }
             }
@@ -84,7 +85,8 @@ class KevoreeSeqDeployPhase(val originCore : KevoreeCoreBean) : KevoreeDeployPha
                     Log.debug("Undo adaptation command {} ", c.javaClass.getName())
                     c.undo()
                 } catch (e: Exception) {
-                    Log.warn("Exception during rollback", e)
+                    originCore.broadcastTelemetry("error","Exception during rollback", e.toString())
+                    //Log.warn("Exception during rollback", e)
                 }
             }
             rollbackPerformed = true

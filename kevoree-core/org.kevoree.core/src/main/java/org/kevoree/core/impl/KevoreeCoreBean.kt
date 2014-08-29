@@ -46,11 +46,15 @@ class KevoreeCoreBean : ContextAwareModelService {
         telemetryListeners.add(l)
     }
 
+    fun removeTelemetryListener(l: TelemetryListener) {
+        telemetryListeners.remove(l)
+    }
+
     override fun getPendingModel(): ContainerRoot? {
         return pending
     }
 
-    val modelListeners = KevoreeListeners()
+    val modelListeners = KevoreeListeners(this)
     var bootstrapService: BootstrapService? = null
     var _nodeName: String = ""
     var nodeInstance: org.kevoree.api.NodeType? = null
@@ -173,7 +177,8 @@ class KevoreeCoreBean : ContextAwareModelService {
                     }
                 }.start()
             } catch(e: Throwable) {
-                Log.error("error while apply trace sequence", e)
+                broadcastTelemetry("error", "Error while applying trace sequence.", e.toString())
+                //Log.error("error while apply trace sequence", e)
                 callback?.run(false)
             }
         }
@@ -190,7 +195,8 @@ class KevoreeCoreBean : ContextAwareModelService {
     private fun switchToNewModel(c: ContainerRoot) {
         var cc: ContainerRoot? = c
         if (!c.isReadOnly()) {
-            Log.error("It is not safe to store ReadWrite model")
+            broadcastTelemetry("warn", "It is not safe to store ReadWrite model!", "")
+            //Log.error("It is not safe to store ReadWrite model")
             cc = modelCloner.clone(c, true)
         }
         //current model is backed-up
@@ -218,10 +224,11 @@ class KevoreeCoreBean : ContextAwareModelService {
     }
 
     fun broadcastTelemetry(typeMessage : String, message : String, stack : String){
-
-        var event = TelemetryEventImpl.build(getNodeName(),typeMessage,message,stack)
-        for(tl in telemetryListeners){
-            tl.notify(event)
+        if(isAnyTelemetryListener()) {
+            var event = TelemetryEventImpl.build(getNodeName(), typeMessage, message, stack)
+            for (tl in telemetryListeners) {
+                tl.notify(event)
+            }
         }
     }
 
@@ -230,7 +237,8 @@ class KevoreeCoreBean : ContextAwareModelService {
             setNodeName("node0")
         }
         modelListeners.start(getNodeName())
-        Log.info("Kevoree Start event : node name = {}", getNodeName())
+        //Log.info("Kevoree Start event : node name = {}", getNodeName())
+        broadcastTelemetry("start", "Kevoree Start event : node name = "+ getNodeName(), "")
         scheduler = java.util.concurrent.Executors.newSingleThreadExecutor(KevoreeCoreThreadFactory(getNodeName()))
         val uuidModel = UUIDModelImpl(UUID.randomUUID(), factory.createContainerRoot())
         model.set(uuidModel)
@@ -238,7 +246,8 @@ class KevoreeCoreBean : ContextAwareModelService {
 
 
     fun stop() {
-        Log.warn("Kevoree Core will be stopped !")
+        //Log.warn("Kevoree Core will be stopped !")
+        broadcastTelemetry("info", "Kevoree Core will be stopped !", "")
         modelListeners.stop()
         scheduler?.shutdownNow()
         scheduler = null
@@ -268,10 +277,12 @@ class KevoreeCoreBean : ContextAwareModelService {
                 if (rootNode != null) {
                     PrimitiveCommandExecutionHelper.execute(this,rootNode, adaptationModel, nodeInstance!!, afterUpdateTest, afterUpdateTest, afterUpdateTest)
                 } else {
-                    Log.error("Node is not defined into the model so unbootstrap cannot be correctly done")
+                    broadcastTelemetry("error", "Node is not defined into the model so unbootstrap cannot be correctly done", "")
+                    //Log.error("Node is not defined into the model so unbootstrap cannot be correctly done")
                 }
             } catch (e: Exception) {
-                Log.error("Error while unbootstrap ", e)
+                broadcastTelemetry("error", "Error while unbootstrap", e.toString())
+                //Log.error("Error while unbootstrap", e)
             }
             try {
                 Log.debug("Call instance stop")
@@ -283,11 +294,12 @@ class KevoreeCoreBean : ContextAwareModelService {
                     resolver = null
                 }
             } catch(e: Exception) {
-                Log.error("Error while stopping node instance ", e)
+                broadcastTelemetry("error", "Error while stopping node instance", e.toString())
+                //Log.error("Error while stopping node instance ", e)
             }
         }
         Log.debug("Kevoree core stopped ")
-        broadcastTelemetry("info","Kevoree Stopped","")
+        broadcastTelemetry("stop","Kevoree Stopped","")
     }
 
     inner class AcquireLock(val callBack: LockCallBack, val timeout: Long) : Runnable {
@@ -296,7 +308,8 @@ class KevoreeCoreBean : ContextAwareModelService {
                 try {
                     callBack.run(null, true)
                 } catch (t: Throwable) {
-                    Log.error("Exception inside a LockCallback with argument {}, {}", t, null, true)
+                    broadcastTelemetry("error", "Exception inside a LockCallback with argument", t.toString())
+                    //Log.error("Exception inside a LockCallback with argument {}, {}", t, null, true)
                 }
             } else {
                 val lockUUID = UUID.randomUUID()
@@ -306,7 +319,8 @@ class KevoreeCoreBean : ContextAwareModelService {
                 try {
                     callBack.run(lockUUID, false)
                 } catch (t: Throwable) {
-                    Log.error("Exception inside a LockCallback with argument {}, {}", t, lockUUID.toString(), false)
+                    broadcastTelemetry("error", "Exception inside a LockCallback with argument. uuid:" + lockUUID.toString(), t.toString())
+                    //Log.error("Exception inside a LockCallback with argument {}, {}", t, lockUUID.toString(), false)
                 }
             }
         }
@@ -322,7 +336,8 @@ class KevoreeCoreBean : ContextAwareModelService {
         if (uuid != null) {
             scheduler?.submit(ReleaseLockCallable(uuid))
         } else {
-            Log.error("ReleaseLock method of Kevoree Core called with null argument, can release any lock")
+            broadcastTelemetry("error", "ReleaseLock method of Kevoree Core called with null argument, can release any lock", "")
+            //Log.error("ReleaseLock method of Kevoree Core called with null argument, can release any lock")
         }
     }
 
@@ -350,7 +365,8 @@ class KevoreeCoreBean : ContextAwareModelService {
                 try {
                     currentLock!!.callback.run(null, true)
                 } catch (t: Throwable) {
-                    Log.error("Exception inside a LockCallback when it is called from the timeout trigger", t)
+                    broadcastTelemetry("error", "Exception inside a LockCallback when it is called from the timeout trigger", t.toString())
+                    //Log.error("Exception inside a LockCallback when it is called from the timeout trigger", t)
                 }
                 currentLock = null
                 lockWatchDog?.shutdownNow()
@@ -363,7 +379,8 @@ class KevoreeCoreBean : ContextAwareModelService {
     fun internal_update_model(proposedNewModel: ContainerRoot, callerPath: String?): Boolean {
 
         if (proposedNewModel.findNodesByID(getNodeName()) == null) {
-            Log.error("Asking for update with a NULL model or node name ({}) was not found in target model !", getNodeName())
+            broadcastTelemetry("error", "Asking for update with a NULL model or node name ("+getNodeName()+") was not found in target model !","")
+            //Log.error("Asking for update with a NULL model or node name ({}) was not found in target model !", getNodeName())
             return false
         }
 
@@ -381,7 +398,8 @@ class KevoreeCoreBean : ContextAwareModelService {
 
             val checkResult = null//modelChecker.check(readOnlyNewModel)!!
             if ( checkResult != null) {
-                Log.error("There is check failure on update model, update refused !")
+                broadcastTelemetry("error", "There is check failure on update model, update refused !","")
+                //Log.error("There is check failure on update model, update refused !")
                 //for(cr in checkResult) {
                 //    Log.error("error=> " + cr.getMessage() + ",objects" + cr.getTargetObjects())
                 //}
@@ -407,7 +425,8 @@ class KevoreeCoreBean : ContextAwareModelService {
                     //CHECK FOR HARA KIRI
                     var previousHaraKiriModel: ContainerRoot? = null
                     if (/*hkh.detectNodeHaraKiri(currentModel, readOnlyNewModel, getNodeName())*/false) {
-                        Log.warn("HaraKiri detected , flush platform")
+                        broadcastTelemetry("warn", "HaraKiri detected , flush platform","")
+                        //Log.warn("HaraKiri detected , flush platform")
                         previousHaraKiriModel = currentModel
                         // Creates an empty model, removes the current node (harakiri)
                         newmodel = factory.createContainerRoot()
@@ -438,7 +457,8 @@ class KevoreeCoreBean : ContextAwareModelService {
                             //prepares for deployment of the new system
                             newmodel = readOnlyNewModel
                         } catch(e: Exception) {
-                            Log.error("Error while update ", e);return false
+                            broadcastTelemetry("error", "Error while updating!",e.toString())
+                            //Log.error("Error while update ", e);return false
                         }
                         Log.debug("End HaraKiri")
                     }
@@ -455,11 +475,13 @@ class KevoreeCoreBean : ContextAwareModelService {
                     try {
                         if (nodeInstance != null) {
                             // Compare the two models and plan the adaptation
-                            Log.info("Comparing models and planning adaptation.")
+                            //Log.info("Comparing models and planning adaptation.")
+                            broadcastTelemetry("info", "Comparing models and planning adaptation.","")
 
                             val adaptationModel = nodeInstance!!.plan(currentModel, newmodel)
                             //Execution of the adaptation
-                            Log.info("Launching adaptation of the system.")
+                            //Log.info("Launching adaptation of the system.")
+                            broadcastTelemetry("info", "Launching adaptation of the system.","")
                             val updateContext = UpdateContext(currentModel, newmodel, callerPath)
                             val afterUpdateTest: () -> Boolean = {() -> modelListeners.afterUpdate(updateContext) }
                             val preCmd = PreCommand(updateContext, modelListeners)
@@ -467,19 +489,23 @@ class KevoreeCoreBean : ContextAwareModelService {
                             val rootNode = newmodel.findNodesByID(getNodeName())!!
                             deployResult = PrimitiveCommandExecutionHelper.execute(this,rootNode, adaptationModel, nodeInstance!!, afterUpdateTest, preCmd.preRollbackTest, postRollbackTest)
                         } else {
-                            Log.error("Node is not initialized")
+                            broadcastTelemetry("error", "Node is not initialized","")
+                            //Log.error("Node is not initialized")
                             deployResult = false
                         }
                     } catch(e: Exception) {
-                        Log.error("Error while update ", e)
+                        broadcastTelemetry("error", "Error while updating",e.toString())
+                        //Log.error("Error while updating", e)
                         deployResult = false
                     }
                     if (deployResult) {
                         switchToNewModel(newmodel)
-                        Log.info("Update sucessfully completed.")
+                        broadcastTelemetry("info", "Update sucessfully completed.","")
+                        //Log.info("Update sucessfully completed.")
                     } else {
                         //KEEP FAIL MODEL, TODO
-                        Log.warn("Update failed")
+                        //Log.warn("Update failed")
+                        broadcastTelemetry("warn", "Update failed !","")
                         //IF HARAKIRI
                         if (previousHaraKiriModel != null) {
                             internal_update_model(previousHaraKiriModel!!, callerPath)
@@ -498,7 +524,8 @@ class KevoreeCoreBean : ContextAwareModelService {
 
             }
         } catch (e: Throwable) {
-            Log.error("Error while update", e)
+            broadcastTelemetry("error", "Error while updating.",e.toString())
+            //Log.error("Error while update", e)
             return false
         }
     }
@@ -511,7 +538,8 @@ class KevoreeCoreBean : ContextAwareModelService {
             bootstrapService!!.injectDictionary(nodeInstance, newInstance, false)
             return newInstance
         } else {
-            Log.error("Node not found using name " + nodeName);
+            broadcastTelemetry("error", "Node not found using name " + nodeName,"")
+            //Log.error("Node not found using name " + nodeName);
             return null
         }
     }
@@ -530,14 +558,17 @@ class KevoreeCoreBean : ContextAwareModelService {
                         val uuidModel = UUIDModelImpl(UUID.randomUUID(), factory.createContainerRoot())
                         model.set(uuidModel)
                     } else {
-                        Log.error("TypeDef installation fail !")
+                        broadcastTelemetry("error", "TypeDef installation fail. Node not found using name " + getNodeName(),"")
+                        //Log.error("TypeDef installation fail !")
                     }
                 } else {
-                    Log.error("Node instance name {} not found in bootstrap model !", getNodeName())
+                    broadcastTelemetry("error", "Node instance name "+getNodeName()+" not found in bootstrap model !","")
+                    //Log.error("Node instance name {} not found in bootstrap model !", getNodeName())
                 }
             }
         } catch(e: Throwable) {
-            Log.error("Error while bootstraping node instance ", e)
+            broadcastTelemetry("error", "Error while bootstraping node instance",e.toString())
+            //Log.error("Error while bootstraping node instance ", e)
             // TODO is it possible to display the following log ?
             try {
                 if (nodeInstance != null) {

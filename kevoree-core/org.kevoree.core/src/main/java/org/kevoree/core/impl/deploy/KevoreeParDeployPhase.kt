@@ -92,6 +92,9 @@ class KevoreeParDeployPhase(val originCore: KevoreeCoreBean) : KevoreeDeployPhas
             try {
                 watchDogTimeoutInt = Math.max(watchDogTimeoutInt, Integer.parseInt(watchdogTimeout.toString()).toLong())
             } catch (e: Exception) {
+                if (originCore.isAnyTelemetryListener()) {
+                    originCore.broadcastTelemetry("error","Invalid value for node.update.timeout system property (must be an integer)!", e.toString())
+                }
                 Log.warn("Invalid value for node.update.timeout system property (must be an integer)!")
             }
         }
@@ -113,6 +116,9 @@ class KevoreeParDeployPhase(val originCore: KevoreeCoreBean) : KevoreeDeployPhas
                     Log.debug("Undo adaptation command {} ", c.javaClass.getName())
                     c.undo()
                 } catch (e: Exception) {
+                    if (originCore.isAnyTelemetryListener()) {
+                        originCore.broadcastTelemetry("error","Exception during rollback", e.toString())
+                    }
                     Log.warn("Exception during rollback", e)
                 }
             }

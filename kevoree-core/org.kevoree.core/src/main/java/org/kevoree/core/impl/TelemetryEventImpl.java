@@ -19,8 +19,18 @@ public class TelemetryEventImpl implements TelemetryEvent {
         e.type = type;
         e.message = message;
         e.stack = stack;
-        e.timestamp = System.currentTimeMillis();
+        e.timestamp = System.nanoTime() / 1000;
         return e;
+    }
+
+    @Override
+    public String type() {
+        return type;
+    }
+
+    @Override
+    public Long timestamp() {
+        return timestamp;
     }
 
     @Override
@@ -44,9 +54,9 @@ public class TelemetryEventImpl implements TelemetryEvent {
         builder.append("{\n");
         builder.append("\"origin\":\"" + origin + "\",\n");
         builder.append("\"type\":\"" + type + "\",\n");
-        builder.append("\"message\":\"" + message + "\",\n");
+        builder.append("\"message\":\"" + message.replace("\n", "\\n").replace("\t", "\\t") + "\",\n");
         builder.append("\"timestamp\":\"" + timestamp + "\",\n");
-        builder.append("\"stack\":\"" + stack + "\"\n");
+        builder.append("\"stack\":\"" + stack.replace("\n", "\\n").replace("\t", "\\t") + "\"\n");
         builder.append("}\n");
         return builder.toString();
     }
