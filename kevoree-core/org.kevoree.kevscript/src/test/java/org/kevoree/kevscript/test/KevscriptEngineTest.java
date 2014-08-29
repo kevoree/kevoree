@@ -1,6 +1,5 @@
 package org.kevoree.kevscript.test;
 
-import org.junit.Test;
 import org.kevoree.ContainerRoot;
 import org.kevoree.factory.DefaultKevoreeFactory;
 import org.kevoree.factory.KevoreeFactory;
@@ -26,16 +25,15 @@ import static org.junit.Assert.fail;
 public class KevscriptEngineTest {
 
 
-   // @Test
+    // @Test
     public void _00_justParse() {
         Parser parser = new Parser();
         ParseResult<Type> parserResult = parser.parse(new InputBuffer(BufferFiller.asArray(KevscriptEngineTest.class.getResourceAsStream("/parserTestInput.kevs"))));
-        assertNull("An error occurred during parse:" + parserResult.getError(),parserResult.getError());
+        assertNull("An error occurred during parse:" + parserResult.getError(), parserResult.getError());
     }
 
 
-
-//    @Test
+    //    @Test
     public void _01_parseAndInterpretTest() {
         try {
             KevScriptEngine engine = new KevScriptEngine();
@@ -43,14 +41,14 @@ public class KevscriptEngineTest {
             ContainerRoot cr = factory.createContainerRoot();
             engine.executeFromStream(KevscriptEngineTest.class.getResourceAsStream("/parseInterpretTestInput.kevs"), cr);
         } catch (Exception e) {
-           e.printStackTrace();
+            e.printStackTrace();
 
             fail("An exception occurred:" + e.toString());
         }
 
     }
 
-  //  @Test
+    //  @Test
     public void testLifecycle() {
         try {
             KevScriptEngine engine = new KevScriptEngine();
@@ -86,7 +84,7 @@ public class KevscriptEngineTest {
         }
     }
 
-  //  @Test
+    //  @Test
     public void _01_parseAndInterpretBigScriptTest() {
         try {
             KevScriptEngine engine = new KevScriptEngine();
@@ -104,8 +102,6 @@ public class KevscriptEngineTest {
         /*KevscriptEngineTest test = new KevscriptEngineTest();
         test._02_loadExecuteSave();*/
     }
-
-
 
 
 }

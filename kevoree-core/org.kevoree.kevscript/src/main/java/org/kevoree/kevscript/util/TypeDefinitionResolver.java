@@ -22,10 +22,23 @@ public class TypeDefinitionResolver {
 
     public static TypeDefinition resolve(ContainerRoot model, IAST<Type> typeNode) throws Exception {
         if (!typeNode.getType().equals(Type.TypeDef)) {
-            throw new Exception("Parse error, should be a typedefinition : " + typeNode.toString());
+            throw new Exception("Parse error, should be a TypeDefinition : " + typeNode.toString());
         }
-
-        final String typeDefName = typeNode.getChildren().get(0).childrenAsString();
+        String typeFQN;
+        if (typeNode.getChildren().get(0).getChildren().size() != 1) {
+            StringBuilder builder = new StringBuilder();
+            for (int i = 0; i < typeNode.getChildren().get(0).getChildren().size(); i++) {
+                if(typeNode.getChildren().get(0).getChildren().get(i).getType().toString().toLowerCase().contains("string")){
+                    builder.append(typeNode.getChildren().get(0).getChildren().get(i).childrenAsString());
+                } else {
+                    builder.append(typeNode.getChildren().get(0).getChildren().get(i));
+                }
+            }
+            typeFQN = builder.toString();
+        } else {
+            typeFQN = typeNode.getChildren().get(0).getChildren().get(0).childrenAsString();
+        }
+        final String typeDefName = typeFQN;
         String version = null;
         if (typeNode.getChildren().size() > 1) {
             version = typeNode.getChildren().get(1).childrenAsString();
@@ -50,7 +63,7 @@ public class TypeDefinitionResolver {
                             TypeDefinition casted = (TypeDefinition) kmfContainer;
                             String name = casted.getName();
                             if (name.contains(".")) {
-                                name = name.substring(name.lastIndexOf(".")+1);
+                                name = name.substring(name.lastIndexOf(".") + 1);
                             }
                             if (name.equals(typeDefName)) {
                                 selected.add((TypeDefinition) kmfContainer);
