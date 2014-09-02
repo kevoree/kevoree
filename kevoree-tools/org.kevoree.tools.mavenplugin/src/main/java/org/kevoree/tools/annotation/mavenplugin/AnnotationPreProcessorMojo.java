@@ -99,11 +99,6 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
 
     public DeployUnit fillModel(ContainerRoot model, DependencyNode root, KevoreeFactory factory) {
 
-
-        if (root.getArtifact().getScope() != null && root.getArtifact().getScope().equals(Artifact.SCOPE_COMPILE)) {
-            return null;
-        }
-
         if (!cache.containsKey(createKey(root))) {
             DeployUnit du = new DefaultKevoreeFactory().createDeployUnit();
             du.setName(root.getArtifact().getArtifactId());
@@ -118,7 +113,7 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
             cache.put(createKey(root), du);
         }
         for (DependencyNode child : root.getChildren()) {
-            if (!child.getArtifact().getScope().toLowerCase().equals("test")) {
+            if (child.getArtifact().getScope() == null || child.getArtifact().getScope().toLowerCase().equals(Artifact.SCOPE_COMPILE)) {
                 if (checkFilters(child, includes, true) && !checkFilters(child, excludes, false)) {
                     fillModel(model, child, factory);
                 }
