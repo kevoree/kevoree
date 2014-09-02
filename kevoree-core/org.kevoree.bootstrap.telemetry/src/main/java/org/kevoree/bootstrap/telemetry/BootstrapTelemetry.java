@@ -19,9 +19,6 @@ public class BootstrapTelemetry {
     public static void main(String[] args) throws URISyntaxException {
         final ClassLoader loader = Thread.currentThread().getContextClassLoader();
 
-
-
-
         String nodeName = System.getProperty("node.name");
         if (nodeName == null) {
             nodeName = Bootstrap.defaultNodeName;
@@ -86,11 +83,11 @@ public class BootstrapTelemetry {
         hackSystemStreams();
 
         final Bootstrap boot = new Bootstrap(KevoreeKernel.self.get(), nodeName);
-        boot.getCore().addTelemetryListener(dispatcher);
         Runtime.getRuntime().addShutdownHook(new Thread("Shutdown Hook") {
             public void run() {
                 try {
                     Thread.currentThread().setContextClassLoader(loader);
+                    System.out.println("Shutting system down");
                     boot.stop();
                     dispatcher.notify(TelemetryEventImpl.build(finalNodeName, "stop", "Platform stopped", ""));
                 } catch (Throwable ex) {
@@ -101,6 +98,7 @@ public class BootstrapTelemetry {
                 }
             }
         });
+        boot.getCore().addTelemetryListener(dispatcher);
         String bootstrapModel = System.getProperty("node.bootstrap");
         try {
             if (bootstrapModel != null) {

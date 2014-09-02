@@ -11,6 +11,7 @@ import org.kevoree.log.Log;
 import java.net.URISyntaxException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -43,7 +44,26 @@ public class MQTTDispatcher implements TelemetryListener, Listener, Runnable {
     }
 
     public void closeConnection() {
-        connection.disconnect(null);
+        notify(TelemetryEventImpl.build(topicName,"info","Shutting telemetry down.",""));
+        //final Semaphore s =new Semaphore(0);
+        connection.disconnect(new Callback<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                //s.release();
+            }
+
+            @Override
+            public void onFailure(Throwable throwable) {
+                //s.release();
+            }
+        });
+        /*
+        try {
+            s.acquire(1000);
+        } catch (InterruptedException e) {
+            Log.error("Telemetry Disconnection interrupted.", e);
+        }
+*/
     }
 
     @Override

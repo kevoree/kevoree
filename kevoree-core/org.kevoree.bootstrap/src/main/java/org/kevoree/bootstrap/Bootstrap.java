@@ -72,7 +72,9 @@ public class Bootstrap {
             public void run() {
                 try {
                     Thread.currentThread().setContextClassLoader(loader);
+                    Log.info("Stopping Kevoree");
                     boot.stop();
+                    Log.info("Stopped.");
                 } catch (Throwable ex) {
                     System.out.println("Error stopping kevoree platform: " + ex.getMessage());
                 }
