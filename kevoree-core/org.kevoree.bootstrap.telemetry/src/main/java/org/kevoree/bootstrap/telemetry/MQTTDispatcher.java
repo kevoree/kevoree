@@ -33,7 +33,7 @@ public class MQTTDispatcher implements TelemetryListener, Listener, Runnable {
     public MQTTDispatcher(String u, String nn) throws URISyntaxException {
         this.url = u;
         this.nodeName = nn;
-        this.topicName = "nodes/" + nodeName;
+        this.topicName = "nodes/" + nodeName + "/log";
         mqttClient = new MQTT();
         mqttClient.setClientId(nodeName);
         mqttClient.setCleanSession(true);
@@ -68,16 +68,20 @@ public class MQTTDispatcher implements TelemetryListener, Listener, Runnable {
 
     @Override
     public void notify(final TelemetryEvent event) {
+        notify(event, topicName);
+    }
+
+    public void notify(final TelemetryEvent event, final String topic) {
 
         connection.getDispatchQueue().execute(new Runnable() {
             public void run() {
-                connection.publish(topicName, event.toJSON().getBytes(), QoS.AT_LEAST_ONCE, false, new Callback<Void>() {
+                connection.publish(topic, event.toJSON().getBytes(), QoS.AT_LEAST_ONCE, false, new Callback<Void>() {
                     public void onSuccess(Void v) {
                         // Log.debug("Telemetry message published on {}", topicName);
                     }
 
                     public void onFailure(Throwable value) {
-                        Log.error(">Error while sending telemetry message: " + event.toJSON(), value);
+                        Log.error("Error while sending telemetry message: " + event.toJSON(), value);
                     }
                 });
             }

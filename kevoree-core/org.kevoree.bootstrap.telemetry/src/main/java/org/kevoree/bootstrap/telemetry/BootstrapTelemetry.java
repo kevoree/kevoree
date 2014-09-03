@@ -15,6 +15,7 @@ import java.net.URISyntaxException;
 public class BootstrapTelemetry {
 
     private static PrintStream systemOut, systemErr, myOut, myErr;
+    private static JMXClient jmxClient;
 
     public static void main(String[] args) throws URISyntaxException {
         final ClassLoader loader = Thread.currentThread().getContextClassLoader();
@@ -47,6 +48,10 @@ public class BootstrapTelemetry {
         });
 
         dispatcher.notify(TelemetryEventImpl.build(nodeName, "info", "Initiate Telemetry monitoring", ""));
+
+        dispatcher.notify(TelemetryEventImpl.build(nodeName, "info", "Initiate JMX Telemetry", ""));
+        jmxClient = new JMXClient(dispatcher, nodeName);
+        jmxClient.init();
 
         systemOut = System.out;
         systemErr = System.err;
@@ -88,6 +93,7 @@ public class BootstrapTelemetry {
                 try {
                     Thread.currentThread().setContextClassLoader(loader);
                     System.out.println("Shutting system down");
+                    jmxClient.close();
                     boot.stop();
                     dispatcher.notify(TelemetryEventImpl.build(finalNodeName, "stop", "Platform stopped", ""));
                 } catch (Throwable ex) {
