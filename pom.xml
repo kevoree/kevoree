@@ -14,7 +14,7 @@
         <kotlin.version>0.8.11</kotlin.version>
         <kevoree.log.version>1</kevoree.log.version>
         <basic.resolver.version>20</basic.resolver.version>
-        <kevoree.kcl.version>14</kevoree.kcl.version>
+        <kevoree.kcl.version>15</kevoree.kcl.version>
         <jeromq.version>0.3.2</jeromq.version>
         <junit.version>4.11</junit.version>
         <jdk.target>1.6</jdk.target>
