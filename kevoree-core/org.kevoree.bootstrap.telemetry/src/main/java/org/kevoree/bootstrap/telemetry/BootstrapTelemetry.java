@@ -16,11 +16,32 @@ public class BootstrapTelemetry {
 
     private static PrintStream systemOut, systemErr, myOut, myErr;
     private static JMXClient jmxClient;
+    private static SigarClient sigarClient;
+    private static MQTTDispatcher dispatcher;
+    private static String nodeName;
+
+    private static void activateJMX() {
+        jmxClient = new JMXClient(dispatcher, nodeName);
+        jmxClient.init();
+    }
+
+    private static void stopJMX() {
+        jmxClient.close();
+    }
+
+    private static void activateSigar() {
+        sigarClient = new SigarClient(dispatcher, nodeName);
+        sigarClient.init();
+    }
+
+    private static void stopSigar() {
+        sigarClient.stop();
+    }
 
     public static void main(String[] args) throws URISyntaxException {
         final ClassLoader loader = Thread.currentThread().getContextClassLoader();
 
-        String nodeName = System.getProperty("node.name");
+        nodeName = System.getProperty("node.name");
         if (nodeName == null) {
             nodeName = Bootstrap.defaultNodeName;
         }
@@ -31,7 +52,7 @@ public class BootstrapTelemetry {
             telemetryURL = System.getProperty("telemetry.url");
         }
         Log.info("Telemetry Server : " + telemetryURL);
-        final MQTTDispatcher dispatcher = new MQTTDispatcher(telemetryURL, nodeName);
+        dispatcher = new MQTTDispatcher(telemetryURL, nodeName);
 
         Log.setLogger(new Log.Logger(){
             @Override
@@ -50,8 +71,8 @@ public class BootstrapTelemetry {
         dispatcher.notify(TelemetryEventImpl.build(nodeName, "info", "Initiate Telemetry monitoring", ""));
 
         dispatcher.notify(TelemetryEventImpl.build(nodeName, "info", "Initiate JMX Telemetry", ""));
-        jmxClient = new JMXClient(dispatcher, nodeName);
-        jmxClient.init();
+        activateJMX();
+        //activateSigar();
 
         systemOut = System.out;
         systemErr = System.err;
@@ -93,7 +114,8 @@ public class BootstrapTelemetry {
                 try {
                     Thread.currentThread().setContextClassLoader(loader);
                     System.out.println("Shutting system down");
-                    jmxClient.close();
+                    stopJMX();
+                   // stopSigar();
                     boot.stop();
                     dispatcher.notify(TelemetryEventImpl.build(finalNodeName, "stop", "Platform stopped", ""));
                 } catch (Throwable ex) {

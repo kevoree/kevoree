@@ -187,7 +187,7 @@ public class JMXClient {
 
                 dispatcher.notify(TelemetryEventImpl.build(nodeName, "ThreadBeanInfo", osData.toString(), ""), "nodes/" + nodeName + "/runtime/threads");
             }
-        }, 0, 5, TimeUnit.SECONDS);
+        }, 2, 5, TimeUnit.SECONDS);
     }
 
 }

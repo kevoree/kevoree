@@ -44,7 +44,7 @@ public class MQTTDispatcher implements TelemetryListener, Listener, Runnable {
     }
 
     public void closeConnection() {
-        notify(TelemetryEventImpl.build(topicName,"info","Shutting telemetry down.",""));
+        notify(TelemetryEventImpl.build(nodeName,"info","Shutting telemetry down.",""));
         //final Semaphore s =new Semaphore(0);
         connection.disconnect(new Callback<Void>() {
             @Override

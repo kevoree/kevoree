@@ -52,11 +52,28 @@ public class TelemetryEventImpl implements TelemetryEvent {
     public String toJSON() {
         StringBuilder builder = new StringBuilder();
         builder.append("{\n");
-        builder.append("\"origin\":\"" + origin + "\",\n");
-        builder.append("\"type\":\"" + type + "\",\n");
-        builder.append("\"message\":\"" + message.replace("\n", "\\n").replace("\t", "\\t") + "\",\n");
-        builder.append("\"timestamp\":\"" + timestamp + "\",\n");
-        builder.append("\"stack\":\"" + stack.replace("\n", "\\n").replace("\t", "\\t") + "\"\n");
+        builder.append("\"origin\":\"");
+        builder.append(origin);
+        builder.append("\",\n");
+        builder.append("\"type\":\"");
+        builder.append(type);
+        builder.append("\",\n");
+        builder.append("\"message\":");
+        boolean asString = message.charAt(0) != '{' && message.charAt(0) != '[';
+        if(asString) {
+            builder.append("\"");
+            builder.append(message.replace("\n", "\\n").replace("\t", "\\t").replace("\"", "\\\""));
+            builder.append("\"");
+        } else {
+            builder.append(message.replace("\n", "\\n").replace("\t", "\\t"));
+        }
+        builder.append(",\n");
+        builder.append("\"timestamp\":\"");
+        builder.append(timestamp);
+        builder.append("\",\n");
+        builder.append("\"stack\":\"");
+        builder.append(stack.replace("\n", "\\n").replace("\t", "\\t"));
+        builder.append("\"\n");
         builder.append("}\n");
         return builder.toString();
     }
