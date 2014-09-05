@@ -1,6 +1,5 @@
 package org.kevoree.bootstrap.telemetry;
 
-import com.apple.jobjc.Utils;
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import org.kevoree.core.impl.TelemetryEventImpl;

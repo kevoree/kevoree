@@ -1,5 +1,6 @@
 package org.kevoree.bootstrap.telemetry;
 
+/*
 import com.eclipsesource.json.JsonObject;
 import org.hyperic.sigar.Cpu;
 import org.hyperic.sigar.Mem;
@@ -11,21 +12,25 @@ import org.kevoree.log.Log;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-
+*/
 /**
  * Created by gregory.nain on 04/09/2014.
  */
 public class SigarClient {
+    public void init() {}
+    public void stop() {}
 
-    private Sigar sigar;
-    private MQTTDispatcher dispatcher;
     private String nodeName;
-    private ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
-
+    private MQTTDispatcher dispatcher;
     public SigarClient(MQTTDispatcher dispatcher, String nodeName) {
         this.dispatcher = dispatcher;
         this.nodeName = nodeName;
     }
+/*
+    private Sigar sigar;
+    private ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+
+
 
     public void init() {
         sigar = new Sigar();
@@ -85,6 +90,5 @@ public class SigarClient {
             }
         }, 0, 10, TimeUnit.SECONDS);
     }
-
-
+*/
 }
