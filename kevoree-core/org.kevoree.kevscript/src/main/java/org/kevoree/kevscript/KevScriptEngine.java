@@ -60,6 +60,41 @@ public class KevScriptEngine implements KevScriptService {
         }
     }
 
+    private List<String> parseTypeFQNs(IAST<Type> node) {
+        List<String> fqnNames = new ArrayList<String>();
+        switch (node.getType()) {
+            case KevScript:
+                for (IAST<Type> child : node.getChildren()) {
+                    parseTypeFQNs(child);
+                }
+                break;
+            case Statement:
+                for (IAST<Type> child : node.getChildren()) {
+                    parseTypeFQNs(child);
+                }
+                break;
+            case Add:
+                String typeFQN;
+                if (node.getChildren().get(0).getChildren().size() != 1) {
+                    StringBuilder builder = new StringBuilder();
+                    for (int i = 0; i < node.getChildren().get(0).getChildren().size(); i++) {
+                        if (node.getChildren().get(0).getChildren().get(i).getType().toString().toLowerCase().contains("string")) {
+                            builder.append(node.getChildren().get(0).getChildren().get(i).childrenAsString());
+                        } else {
+                            builder.append(node.getChildren().get(0).getChildren().get(i));
+                        }
+                    }
+                    typeFQN = builder.toString();
+                } else {
+                    typeFQN = node.getChildren().get(0).getChildren().get(0).childrenAsString();
+                }
+                fqnNames.add(typeFQN);
+                break;
+            default:
+        }
+        return fqnNames;
+    }
+
     public void interpret(IAST<Type> node, ContainerRoot model) throws Exception {
         StringBuilder builder;
         switch (node.getType()) {
