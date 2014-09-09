@@ -19,9 +19,23 @@ public class TelemetryEventImpl implements TelemetryEvent {
         e.type = type;
         e.message = message;
         e.stack = stack;
-        e.timestamp = System.nanoTime() / 1000;
+        e.timestamp = getTime();
         return e;
     }
+
+    // HACK BEGIN: ensures timestamp uniqueness with a microsecond precision.
+    private static final long ONE_THOUSAND = 1000L;
+    private static long lastTime = 0L;
+    private synchronized static long getTime() {
+        long current = System.currentTimeMillis() * ONE_THOUSAND;
+        if(current > lastTime) {
+            lastTime = current;
+        } else {
+            lastTime++;
+        }
+        return lastTime;
+    }
+    // HACK END
 
     @Override
     public String type() {
