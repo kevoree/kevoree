@@ -43,8 +43,11 @@ public class App {
         }
         */
 
-        String version = System.getProperty("version");
         KevoreeKernel kernel = new KevoreeMicroKernelImpl();
+        String version = System.getProperty("version");
+        if (version == null) {
+            version = System.getProperty("kevoree.version");
+        }
         if (version == null) {
             String[] profiles = profile.split(":");
             SortedSet<String> sets = kernel.getResolver().listVersion(profiles[1], profiles[2], "jar", kernel.getSnapshotURLS());
