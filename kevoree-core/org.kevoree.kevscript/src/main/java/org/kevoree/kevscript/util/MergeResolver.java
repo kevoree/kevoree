@@ -46,6 +46,7 @@ public class MergeResolver {
                             ContainerRoot remoteModel = (ContainerRoot) loader.loadModelFromStream(jar.getInputStream(entry)).get(0);
                             compare.merge(model, remoteModel).applyOn(model);
                         } catch (Exception e) {
+                            Log.warn("Error while Merging", e);
                             throw new Exception("KevScript error while merging " + resolved.getAbsolutePath() + " resolved from " + url);
                         }
 
