@@ -328,6 +328,9 @@ public class ModelBuilderHelper {
 
     public static TypeDefinition getOrCreateTypeDefinition(String name, String version, ContainerRoot root, KevoreeFactory factory, String typeName) {
         String[] packages = name.split("\\.");
+        if(packages.length <= 1) {
+            throw new RuntimeException("Component '"+name+"' must be defined in a Java package");
+        }
         org.kevoree.Package pack = null;
         for (int i = 0; i < packages.length - 1; i++) {
             if (pack == null) {
