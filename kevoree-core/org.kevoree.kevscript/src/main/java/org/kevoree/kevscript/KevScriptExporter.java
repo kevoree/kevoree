@@ -35,15 +35,25 @@ public class KevScriptExporter {
                 if (kmfContainer instanceof Instance) {
                     Instance currentInstance = (Instance) kmfContainer;
                     String instanceID = null;
-
-                    if (currentInstance instanceof ComponentInstance) {
-                        Instance nodeParent = (Instance) kmfContainer.eContainer();
-                        instanceID = nodeParent.getName() + "." + currentInstance.getName();
+                    if (currentInstance instanceof ContainerNode) {
+                        instanceID = currentInstance.getName();
+                        if (kmfContainer.eContainer() != null && kmfContainer.eContainer() instanceof ContainerNode) {
+                            ContainerNode nodeParent = (ContainerNode) kmfContainer.eContainer();
+                            instanceID = nodeParent.getName() + "." + currentInstance.getName();
+                        }
                         buffer.append("add " + instanceID + " : " + currentInstance.getTypeDefinition().getName() + "/" + currentInstance.getTypeDefinition().getVersion() + "\n");
                     } else {
-                        instanceID = currentInstance.getName();
-                        buffer.append("add " + instanceID + " : " + currentInstance.getTypeDefinition().getName() + "/" + currentInstance.getTypeDefinition().getVersion() + "\n");
+                        if (currentInstance instanceof ComponentInstance) {
+                            Instance nodeParent = (Instance) kmfContainer.eContainer();
+                            instanceID = nodeParent.getName() + "." + currentInstance.getName();
+                            buffer.append("add " + instanceID + " : " + currentInstance.getTypeDefinition().getName() + "/" + currentInstance.getTypeDefinition().getVersion() + "\n");
+                        } else {
+                            instanceID = currentInstance.getName();
+                            buffer.append("add " + instanceID + " : " + currentInstance.getTypeDefinition().getName() + "/" + currentInstance.getTypeDefinition().getVersion() + "\n");
+                        }
                     }
+
+
                     //output all the dictionary
                     Dictionary dico = currentInstance.getDictionary();
                     if (dico != null) {
@@ -56,7 +66,11 @@ public class KevScriptExporter {
                             buffer.append("set " + instanceID + "." + value.getName() + "/" + fdic.getName() + " = \"" + value.getValue() + "\"\n");
                         }
                     }
-                    buffer.append("set " + instanceID + ".started = \"" + currentInstance.getStarted() + "\"\n");
+                    if (currentInstance.getStarted() == true) {
+                        buffer.append("start " + instanceID + "\n");
+                    } else {
+                        buffer.append("stop " + instanceID + "\n");
+                    }
                 }
             }
         }, true, true, false);
