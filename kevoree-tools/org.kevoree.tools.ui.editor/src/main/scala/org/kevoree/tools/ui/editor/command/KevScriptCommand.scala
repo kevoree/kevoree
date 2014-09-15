@@ -102,6 +102,7 @@ class KevScriptCommand extends Command {
   def execute(p: AnyRef) {
     try {
       val clonedModel = cloner.clone(kernel.getModelHandler.getActualModel)
+      new DefaultKevoreeFactory().root(clonedModel)
       engine.execute(p.toString, clonedModel.asInstanceOf[ContainerRoot])
       val loadCMD = new LoadModelCommand
       loadCMD.setKernel(kernel)
