@@ -113,7 +113,7 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
             cache.put(createKey(root), du);
         }
         for (DependencyNode child : root.getChildren()) {
-            if (child.getArtifact().getScope() == null || child.getArtifact().getScope().equals(Artifact.SCOPE_COMPILE)) {
+            if (child.getArtifact().getScope() == null || child.getArtifact().getScope().equals(Artifact.SCOPE_COMPILE) || child.getArtifact().getScope().equals(Artifact.SCOPE_RUNTIME)) {
                 if (checkFilters(child, includes, true) && !checkFilters(child, excludes, false)) {
                     fillModel(model, child, factory);
                 }
