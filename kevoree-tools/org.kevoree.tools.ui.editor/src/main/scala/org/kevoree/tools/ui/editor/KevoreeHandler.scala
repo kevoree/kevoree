@@ -31,20 +31,25 @@
 
 package org.kevoree.tools.ui.editor
 
-import command.Command
+import java.lang.Long
+import java.util.UUID
+
 import org.kevoree.ContainerRoot
 import org.kevoree.api.ModelService
-import java.util.UUID
-import org.kevoree.api.handler.{UUIDModel, UpdateCallback, ModelListener, LockCallBack}
-import java.lang.Long
+import org.kevoree.api.handler.{LockCallBack, ModelListener, UUIDModel, UpdateCallback}
 import org.kevoree.modeling.api.compare.ModelCompare
 import org.kevoree.modeling.api.trace.TraceSequence
+import org.kevoree.tools.ui.editor.command.Command
 
 class KevoreeHandler(kernel: KevoreeUIKernel) extends ModelService {
 
   private val modelCompare = new ModelCompare(ModelHelper.kevoreeFactory)
   private var listenerCommand: List[Command] = List[Command]()
   private var actualModel: ContainerRoot = ModelHelper.kevoreeFactory.createContainerRoot
+
+  {
+    ModelHelper.kevoreeFactory.root(actualModel)
+  }
 
   def addListenerCommand(c: Command) = {
     listenerCommand = listenerCommand ++ List(c)
