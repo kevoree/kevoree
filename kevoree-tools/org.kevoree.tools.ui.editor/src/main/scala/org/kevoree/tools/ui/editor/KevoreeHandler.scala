@@ -46,10 +46,7 @@ class KevoreeHandler(kernel: KevoreeUIKernel) extends ModelService {
   private val modelCompare = new ModelCompare(ModelHelper.kevoreeFactory)
   private var listenerCommand: List[Command] = List[Command]()
   private var actualModel: ContainerRoot = ModelHelper.kevoreeFactory.createContainerRoot
-
-  {
-    ModelHelper.kevoreeFactory.root(actualModel)
-  }
+  ModelHelper.kevoreeFactory.root(actualModel)
 
   def addListenerCommand(c: Command) = {
     listenerCommand = listenerCommand ++ List(c)
