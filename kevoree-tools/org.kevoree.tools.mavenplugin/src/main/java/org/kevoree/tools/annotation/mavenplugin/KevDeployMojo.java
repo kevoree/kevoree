@@ -63,6 +63,7 @@ public class KevDeployMojo extends AbstractMojo {
         con.setRequestMethod("POST");
         con.setRequestProperty("User-Agent", "KevoreeClient");
         con.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
+        con.setRequestProperty("Content-Type","application/json");
         con.setDoOutput(true);
 
         DataOutputStream wr = new DataOutputStream(con.getOutputStream());
