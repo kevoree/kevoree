@@ -120,8 +120,8 @@ public class KevoreeStore {
                         DeployUnit du = factory.createDeployUnit();
                         du.setName(artifactId);
                         du.setVersion(version);
-                        KModelHelper.fqnCreate(groupId,model,factory).addDeployUnits(du);
-                        KModelHelper.fqnCreate(groupId,model,factory).addDeployUnits(du);
+                        KModelHelper.fqnCreate(groupId, model, factory).addDeployUnits(du);
+                        KModelHelper.fqnCreate(groupId, model, factory).addDeployUnits(du);
 
                     }
                 }
@@ -140,6 +140,7 @@ public class KevoreeStore {
     public ContainerRoot getFromGroupID(String groupIDparam) {
 
         ContainerRoot model = factory.createContainerRoot();
+        factory.root(model);
         try {
             MavenResolver mavenResolver = new MavenResolver();
             HashSet<String> urls = new HashSet<String>();
@@ -175,7 +176,7 @@ public class KevoreeStore {
                         model.deepVisitContained(new ModelVisitor() {
                             @Override
                             public void visit(@JetValueParameter(name = "elem") @NotNull KMFContainer kmfContainer, @JetValueParameter(name = "refNameInParent") @NotNull String s, @JetValueParameter(name = "parent") @NotNull KMFContainer kmfContainer2) {
-                                if(kmfContainer instanceof DeployUnit){
+                                if (kmfContainer instanceof DeployUnit) {
                                     DeployUnit td = (DeployUnit) kmfContainer;
                                     cache.put(td.path(), td);
                                 }
