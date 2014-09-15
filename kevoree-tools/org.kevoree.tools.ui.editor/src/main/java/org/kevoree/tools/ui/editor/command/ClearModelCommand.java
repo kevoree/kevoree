@@ -48,8 +48,9 @@ public class ClearModelCommand implements Command {
     @Override
     public void execute(Object p) {
 
-        ContainerRoot blancModel = ModelHelper.kevoreeFactory().createContainerRoot();
-        kernel.getModelHandler().setActualModel(blancModel);
+        ContainerRoot blankModel = ModelHelper.kevoreeFactory().createContainerRoot();
+        ModelHelper.kevoreeFactory().root(blankModel);
+        kernel.getModelHandler().setActualModel(blankModel);
         kernel.getModelPanel().clear();
         kernel.getEditorPanel().getPalette().clear();
         kernel.getEditorPanel().unshowPropertyEditor();

@@ -35,6 +35,7 @@ import org.kevoree.factory.DefaultKevoreeFactory;
 import org.kevoree.modeling.api.json.JSONModelLoader;
 import org.kevoree.tools.ui.editor.KevoreeUIKernel;
 import org.kevoree.tools.ui.editor.MetaDataHelper;
+import org.kevoree.tools.ui.editor.ModelHelper;
 import org.kevoree.tools.ui.editor.listener.NodeDragSourceListener;
 import org.kevoree.tools.ui.editor.widget.TempGroupBinding;
 import org.kevoree.tools.ui.framework.elements.*;
@@ -79,6 +80,10 @@ public class LoadModelCommand implements Command {
                 modelToLoad = (ContainerRoot) modelLoader.loadModelFromString(p.toString()).get(0);
             }
         }
+
+        ModelHelper.kevoreeFactory().root(modelToLoad);
+
+
 
         ClearModelCommand clearModelCommand = new ClearModelCommand();
         clearModelCommand.setKernel(kernel);
