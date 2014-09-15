@@ -26,9 +26,6 @@ class KevoreeParDeployPhase(val originCore: KevoreeCoreBean) : KevoreeDeployPhas
     inner class Worker(val primitive: PrimitiveCommand) : Callable<Boolean> {
         override fun call(): Boolean {
             try {
-                if (originCore.isAnyTelemetryListener()) {
-                    originCore.broadcastTelemetry("update_command", "Cmd:["+primitive.toString()+"]", "")
-                }
                 var result = primitive.execute()
                 if (!result) {
                     if (originCore.isAnyTelemetryListener()) {
@@ -63,7 +60,7 @@ class KevoreeParDeployPhase(val originCore: KevoreeCoreBean) : KevoreeDeployPhas
                 workers.add(Worker(primitive))
             }
             try {
-                Log.debug("Timeout = {}", timeout)
+                Log.trace("Timeout = {}", timeout)
                 val futures = pool.invokeAll(workers, timeout, TimeUnit.MILLISECONDS)
                 futures.all { f ->
                     f.isDone() && ( f.get() as Boolean )
@@ -83,7 +80,7 @@ class KevoreeParDeployPhase(val originCore: KevoreeCoreBean) : KevoreeDeployPhas
 
     override fun runPhase(): Boolean {
         if (primitives.size == 0) {
-            Log.debug("Empty phase !!!")
+            Log.trace("Empty phase !!!")
             return true
         }
         val watchdogTimeout = System.getProperty("node.update.timeout")
@@ -104,16 +101,16 @@ class KevoreeParDeployPhase(val originCore: KevoreeCoreBean) : KevoreeDeployPhas
     var rollbackPerformed = false
 
     override fun rollBack() {
-        Log.debug("Rollback phase")
+        Log.trace("Rollback phase")
         if (sucessor != null) {
-            Log.debug("Rollback sucessor first")
+            Log.trace("Rollback sucessor first")
             sucessor?.rollBack()
         }
         if (!rollbackPerformed) {
             // SEQUENCIAL ROOLBACK
             for (c in primitives.reverse()) {
                 try {
-                    Log.debug("Undo adaptation command {} ", c.javaClass.getName())
+                    Log.trace("Undo adaptation command {} ", c.javaClass.getName())
                     c.undo()
                 } catch (e: Exception) {
                     if (originCore.isAnyTelemetryListener()) {

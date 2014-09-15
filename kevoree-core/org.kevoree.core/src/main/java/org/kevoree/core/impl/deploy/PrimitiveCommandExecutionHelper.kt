@@ -65,11 +65,11 @@ object PrimitiveCommandExecutionHelper {
             adapt ->
             val primitive = nodeInstance.getPrimitive(adapt)
             if (primitive != null) {
-                Log.debug("Populate primitive => {} ",primitive)
+                Log.trace("Populate primitive => {} ",primitive)
                 phase.populate(primitive)
                 true
             } else {
-                Log.debug("Error while searching primitive => {} ", adapt)
+                Log.warn("Error while searching primitive => {} ", adapt)
                 false
             }
         }
@@ -98,7 +98,7 @@ object PrimitiveCommandExecutionHelper {
                 return false
             }
         } else {
-            Log.debug("Primitive mapping error")
+            Log.warn("Primitive mapping error")
             return false
         }
     }

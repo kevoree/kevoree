@@ -139,9 +139,9 @@ public class Bootstrap {
                     } else if(telemetryEvent.type().equals("warn")) {
                         Log.warn("[{}] {}",telemetryEvent.origin(), telemetryEvent.message());
                     } else if(telemetryEvent.type().equals("error")) {
-                        Log.error("[{}] {}\n{}",telemetryEvent.origin(), telemetryEvent.message(), telemetryEvent.stack());
+                        Log.error("[{}] {}{}",telemetryEvent.origin(), telemetryEvent.message(), telemetryEvent.stack());
                     } else {
-                        Log.debug("[{}] {}\n{}",telemetryEvent.origin(), telemetryEvent.message(), telemetryEvent.stack());
+                        Log.debug("[{}] {}{}",telemetryEvent.origin(), telemetryEvent.message(), telemetryEvent.stack());
                     }
                 }
             };

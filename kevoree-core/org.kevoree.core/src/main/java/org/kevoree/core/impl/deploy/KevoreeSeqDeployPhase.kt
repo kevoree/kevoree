@@ -38,16 +38,13 @@ class KevoreeSeqDeployPhase(val originCore : KevoreeCoreBean) : KevoreeDeployPha
             var result = true
             for(primitive in primitives) {
                 lastPrimitive = primitive
-                if(originCore.isAnyTelemetryListener()){
-                    originCore.broadcastTelemetry("update_command","Cmd:["+primitive.toString()+"]","")
-                }
                 result = primitive.execute()
                 if(!result){
                     if(originCore.isAnyTelemetryListener()){
                         originCore.broadcastTelemetry("failed_command","Cmd:["+primitive.toString()+"]","")
                     }
                     //originCore.broadcastTelemetry("warn","Error during execution of "+primitive, e.toString())
-                    Log.debug("Error during execution of {}",primitive)
+                    Log.warn("Error during execution of {}",primitive)
                     break;
                 }
             }
@@ -73,16 +70,16 @@ class KevoreeSeqDeployPhase(val originCore : KevoreeCoreBean) : KevoreeDeployPha
     var rollbackPerformed = false
 
     override fun rollBack() {
-        Log.debug("Rollback phase")
+        Log.trace("Rollback phase")
         if (sucessor != null) {
-            Log.debug("Rollback sucessor first")
+            Log.trace("Rollback sucessor first")
             sucessor?.rollBack()
         }
         if(!rollbackPerformed){
             // SEQUENCIAL ROOLBACK
             for(c in primitives.reverse()){
                 try {
-                    Log.debug("Undo adaptation command {} ", c.javaClass.getName())
+                    Log.trace("Undo adaptation command {} ", c.javaClass.getName())
                     c.undo()
                 } catch (e: Exception) {
                     originCore.broadcastTelemetry("error","Exception during rollback", e.toString())

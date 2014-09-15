@@ -285,7 +285,7 @@ class KevoreeCoreBean : ContextAwareModelService {
                 //Log.error("Error while unbootstrap", e)
             }
             try {
-                Log.debug("Call instance stop")
+                Log.trace("Call instance stop")
 
                 if (nodeInstance != null) {
                     val met = resolver?.resolve(javaClass<org.kevoree.annotation.Stop>())
@@ -298,7 +298,7 @@ class KevoreeCoreBean : ContextAwareModelService {
                 //Log.error("Error while stopping node instance ", e)
             }
         }
-        Log.debug("Kevoree core stopped ")
+        Log.info("Kevoree core stopped ")
         broadcastTelemetry("stop","Kevoree Stopped","")
     }
 
@@ -411,13 +411,13 @@ class KevoreeCoreBean : ContextAwareModelService {
 
                 //Model check is OK.
                 var currentModel = model.get()!!.getModel()!!
-                Log.debug("Before listeners PreCheck !")
+                Log.trace("Before listeners PreCheck !")
 
                 val updateContext = UpdateContext(currentModel, readOnlyNewModel, callerPath)
 
                 val preCheckResult = modelListeners.preUpdate(updateContext)
-                Log.debug("PreCheck result = " + preCheckResult)
-                Log.debug("Before listeners InitUpdate !")
+                Log.trace("PreCheck result = " + preCheckResult)
+                Log.trace("Before listeners InitUpdate !")
                 val initUpdateResult = modelListeners.initUpdate(updateContext)
                 Log.debug("InitUpdate result = " + initUpdateResult)
                 if (preCheckResult && initUpdateResult) {
@@ -513,12 +513,12 @@ class KevoreeCoreBean : ContextAwareModelService {
                         }
                     }
                     val milliEnd = System.currentTimeMillis() - milli
-                    Log.debug("End deploy result={}-{}", deployResult, milliEnd)
+                    Log.info("End deploy result={}-{}", deployResult, milliEnd)
                     pending = null
                     return deployResult
 
                 } else {
-                    Log.debug("PreCheck or InitUpdate Step was refused, update aborded !")
+                    Log.warn("PreCheck or InitUpdate Step was refused, update aborded !")
                     return false
                 }
 
