@@ -40,8 +40,8 @@ public class KevoreeRegistryResolver {
             kevoreeVersion = kevoreeVersion.substring(0, kevoreeVersion.indexOf("."));
         }
         if (kevoreeRegistry == null) {
-            //kevoreeRegistry = "http://registry.kevoree.org/v" + kevoreeVersion + "/";
-            kevoreeRegistry = "http://localhost:8080/";
+            kevoreeRegistry = "http://registry.kevoree.org/v" + kevoreeVersion + "/";
+            //kevoreeRegistry = "http://localhost:8080/";
         }
         StringBuilder request = new StringBuilder();
         request.append("[");
