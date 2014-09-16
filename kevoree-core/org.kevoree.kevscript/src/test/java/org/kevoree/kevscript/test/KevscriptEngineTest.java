@@ -1,5 +1,6 @@
 package org.kevoree.kevscript.test;
 
+import org.junit.Test;
 import org.kevoree.ContainerRoot;
 import org.kevoree.factory.DefaultKevoreeFactory;
 import org.kevoree.factory.KevoreeFactory;
@@ -20,10 +21,36 @@ import static org.junit.Assert.fail;
  * User: gregory.nain
  * Date: 02/12/2013
  * Time: 17:03
- * To change this template use File | Settings | File Templates.
  */
 public class KevscriptEngineTest {
 
+    //@Test
+    public void _01_parseAndInterMinimal() {
+        try {
+            KevScriptEngine engine = new KevScriptEngine();
+            KevoreeFactory factory = new DefaultKevoreeFactory();
+            ContainerRoot cr = factory.createContainerRoot();
+            factory.root(cr);
+            engine.executeFromStream(KevscriptEngineTest.class.getResourceAsStream("/minimal.kevs"), cr);
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail("An exception occurred:" + e.toString());
+        }
+    }
+
+    @Test
+    public void _01_parseAndInterMinimal2() {
+        try {
+            KevScriptEngine engine = new KevScriptEngine();
+            KevoreeFactory factory = new DefaultKevoreeFactory();
+            ContainerRoot cr = factory.createContainerRoot();
+            factory.root(cr);
+            engine.executeFromStream(KevscriptEngineTest.class.getResourceAsStream("/minimal2.kevs"), cr);
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail("An exception occurred:" + e.toString());
+        }
+    }
 
     // @Test
     public void _00_justParse() {

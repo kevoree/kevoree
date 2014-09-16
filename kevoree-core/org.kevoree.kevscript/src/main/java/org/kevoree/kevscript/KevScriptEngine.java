@@ -5,10 +5,7 @@ import org.kevoree.api.KevScriptService;
 import org.kevoree.api.helper.KModelHelper;
 import org.kevoree.factory.DefaultKevoreeFactory;
 import org.kevoree.factory.KevoreeFactory;
-import org.kevoree.kevscript.util.InstanceResolver;
-import org.kevoree.kevscript.util.MergeResolver;
-import org.kevoree.kevscript.util.PortResolver;
-import org.kevoree.kevscript.util.TypeDefinitionResolver;
+import org.kevoree.kevscript.util.*;
 import org.kevoree.log.Log;
 import org.waxeye.ast.IAST;
 import org.waxeye.input.BufferFiller;
@@ -44,6 +41,8 @@ public class KevScriptEngine implements KevScriptService {
         ParseResult<Type> parserResult = parser.parse(new InputBuffer(script.toCharArray()));
         IAST<Type> ast = parserResult.getAST();
         if (ast != null) {
+            List<TypeFQN> fqns = parseTypeFQNs(ast);
+            KevoreeRegistryResolver.resolve(fqns, model, new DefaultKevoreeFactory());
             interpret(ast, model);
         } else {
             Log.error(parserResult.getError().toString());
@@ -54,41 +53,58 @@ public class KevScriptEngine implements KevScriptService {
         ParseResult<Type> parserResult = parser.parse(new InputBuffer(BufferFiller.asArray(script)));
         IAST<Type> ast = parserResult.getAST();
         if (ast != null) {
+            List<TypeFQN> fqns = parseTypeFQNs(ast);
+            KevoreeRegistryResolver.resolve(fqns, model, new DefaultKevoreeFactory());
             interpret(ast, model);
         } else {
             Log.error(parserResult.getError().toString());
         }
     }
 
-    private List<String> parseTypeFQNs(IAST<Type> node) {
-        List<String> fqnNames = new ArrayList<String>();
+    private List<TypeFQN> parseTypeFQNs(IAST<Type> node) throws Exception {
+        List<TypeFQN> fqnNames = new ArrayList<TypeFQN>();
         switch (node.getType()) {
             case KevScript:
                 for (IAST<Type> child : node.getChildren()) {
-                    parseTypeFQNs(child);
+                    fqnNames.addAll(parseTypeFQNs(child));
                 }
                 break;
             case Statement:
                 for (IAST<Type> child : node.getChildren()) {
-                    parseTypeFQNs(child);
+                    fqnNames.addAll(parseTypeFQNs(child));
                 }
                 break;
             case Add:
+                IAST<Type> typeNode = node.getChildren().get(1);
+                if (!typeNode.getType().equals(Type.TypeDef)) {
+                    throw new Exception("Parse error, should be a TypeDefinition : " + typeNode.toString());
+                }
                 String typeFQN;
-                if (node.getChildren().get(0).getChildren().size() != 1) {
+                if (typeNode.getChildren().get(0).getChildren().size() != 1) {
                     StringBuilder builder = new StringBuilder();
-                    for (int i = 0; i < node.getChildren().get(0).getChildren().size(); i++) {
-                        if (node.getChildren().get(0).getChildren().get(i).getType().toString().toLowerCase().contains("string")) {
-                            builder.append(node.getChildren().get(0).getChildren().get(i).childrenAsString());
+                    for (int i = 0; i < typeNode.getChildren().get(0).getChildren().size(); i++) {
+                        if (typeNode.getChildren().get(0).getChildren().get(i).getType().toString().toLowerCase().contains("string")) {
+                            builder.append(typeNode.getChildren().get(0).getChildren().get(i).childrenAsString());
                         } else {
-                            builder.append(node.getChildren().get(0).getChildren().get(i));
+                            builder.append(typeNode.getChildren().get(0).getChildren().get(i));
                         }
                     }
                     typeFQN = builder.toString();
                 } else {
-                    typeFQN = node.getChildren().get(0).getChildren().get(0).childrenAsString();
+                    typeFQN = typeNode.getChildren().get(0).getChildren().get(0).childrenAsString();
                 }
-                fqnNames.add(typeFQN);
+                String version = null;
+                if (typeNode.getChildren().size() > 1) {
+                    version = typeNode.getChildren().get(1).childrenAsString();
+                }
+                if (typeFQN != null && !typeFQN.isEmpty()) {
+                    TypeFQN fqn = new TypeFQN();
+                    fqn.name = typeFQN;
+                    if (node.getChildren().size() > 1) {
+                        fqn.version = version;
+                    }
+                    fqnNames.add(fqn);
+                }
                 break;
             default:
         }

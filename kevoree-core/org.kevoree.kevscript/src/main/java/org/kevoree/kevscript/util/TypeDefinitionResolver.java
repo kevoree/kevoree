@@ -80,9 +80,6 @@ public class TypeDefinitionResolver {
             }
         }
         TypeDefinition bestTD = null;
-
-
-        assert pack != null;
         for (TypeDefinition td : selected) {
             if (version != null) {
                 if (version.equals(td.getVersion())) {
@@ -99,8 +96,6 @@ public class TypeDefinitionResolver {
             }
         }
         //Still not found :( try again
-
-
         if (bestTD == null) {
             throw new Exception("TypeDefinition not found with : " + typeDefName.toString());
         }
