@@ -38,7 +38,7 @@ public class KevscriptEngineTest {
         }
     }
 
-    @Test
+    //@Test
     public void _01_parseAndInterMinimal2() {
         try {
             KevScriptEngine engine = new KevScriptEngine();
