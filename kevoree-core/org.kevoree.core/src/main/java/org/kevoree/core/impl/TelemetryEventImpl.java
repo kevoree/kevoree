@@ -73,21 +73,29 @@ public class TelemetryEventImpl implements TelemetryEvent {
         builder.append(type);
         builder.append("\",\n");
         builder.append("\"message\":");
-        boolean asString = message.charAt(0) != '{' && message.charAt(0) != '[';
-        if(asString) {
-            builder.append("\"");
-            builder.append(message.replace("\n", "\\n").replace("\t", "\\t").replace("\"", "\\\""));
-            builder.append("\"");
+        if(message.length() > 0) {
+            boolean asString = message.charAt(0) != '{' && message.charAt(0) != '[';
+            if (asString) {
+                builder.append("\"");
+                builder.append(message.replace("\n", "\\n").replace("\t", "\\t").replace("\"", "\\\""));
+                builder.append("\"");
+            } else {
+                builder.append(message.replace("\n", "\\n").replace("\t", "\\t").replace("\"", "\\\""));
+            }
+            builder.append(",\n");
         } else {
-            builder.append(message.replace("\n", "\\n").replace("\t", "\\t"));
+            builder.append("\"\",\n");
         }
-        builder.append(",\n");
         builder.append("\"timestamp\":\"");
         builder.append(timestamp);
         builder.append("\",\n");
         builder.append("\"stack\":\"");
-        builder.append(stack.replace("\n", "\\n").replace("\t", "\\t"));
-        builder.append("\"\n");
+        if(stack.length() > 0) {
+            builder.append(stack.replace("\n", "\\n").replace("\t", "\\t").replace("\"", "\\\""));
+            builder.append("\"\n");
+        } else{
+            builder.append("\"\",\n");
+        }
         builder.append("}\n");
         return builder.toString();
     }
