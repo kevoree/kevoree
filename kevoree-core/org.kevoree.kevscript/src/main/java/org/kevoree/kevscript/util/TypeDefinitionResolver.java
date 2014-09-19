@@ -5,6 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import org.kevoree.ContainerRoot;
 import org.kevoree.TypeDefinition;
 import org.kevoree.kevscript.Type;
+import org.kevoree.log.Log;
 import org.kevoree.modeling.api.KMFContainer;
 import org.kevoree.modeling.api.util.ModelVisitor;
 import org.kevoree.resolver.util.MavenVersionComparator;
@@ -92,7 +93,7 @@ public class TypeDefinitionResolver {
                     if (bestTD == null) {
                         bestTD = td;
                     } else {
-                        if (MavenVersionComparator.max(bestTD.getVersion(), td.getVersion()) == td.getVersion()) {
+                        if (MavenVersionComparator.max(bestTD.getVersion(), td.getVersion()).equals(td.getVersion())) {
                             bestTD = td;
                         }
                     }
@@ -100,6 +101,7 @@ public class TypeDefinitionResolver {
             }
         }
         if (bestTD == null) {
+            Log.warn("Try to select snapshot in best effort mode for " + typeDefName.toString());
             for (TypeDefinition td : selected) {
                 if (version != null) {
                     if (version.equals(td.getVersion())) {
@@ -109,7 +111,7 @@ public class TypeDefinitionResolver {
                     if (bestTD == null) {
                         bestTD = td;
                     } else {
-                        if (MavenVersionComparator.max(bestTD.getVersion(), td.getVersion()) == td.getVersion()) {
+                        if (MavenVersionComparator.max(bestTD.getVersion(), td.getVersion()).equals(td.getVersion())) {
                             bestTD = td;
                         }
                     }
@@ -119,7 +121,7 @@ public class TypeDefinitionResolver {
 
         //Still not found :( try again
         if (bestTD == null) {
-            throw new Exception("TypeDefinition not found with : " + typeDefName.toString());
+            throw new Exception("TypeDefinition not found with : " + typeDefName.toString()+ " and version "+ version + " in " + selected.size() + " selected");
         }
         return bestTD;
     }
