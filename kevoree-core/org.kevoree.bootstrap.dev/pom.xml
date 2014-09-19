@@ -4,11 +4,11 @@
     <artifactId>org.kevoree.bootstrap.dev</artifactId>
     <name>Kevoree :: Bootstrap :: Dev</name>
 
-    <version>5.0.5-SNAPSHOT</version>
+    <version>5.0.5</version>
     <parent>
         <artifactId>org.kevoree.root</artifactId>
         <groupId>org.kevoree</groupId>
-        <version>5.0.5-SNAPSHOT</version>
+        <version>5.0.5</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 

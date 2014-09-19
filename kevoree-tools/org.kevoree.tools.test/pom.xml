@@ -3,12 +3,12 @@
     <artifactId>org.kevoree.tools.test</artifactId>
     <packaging>jar</packaging>
     <name>Kevoree :: Tools :: Test</name>
-    <version>5.0.5-SNAPSHOT</version>
+    <version>5.0.5</version>
 
     <parent>
         <artifactId>org.kevoree.tools.root</artifactId>
         <groupId>org.kevoree.tools</groupId>
-        <version>5.0.5-SNAPSHOT</version>
+        <version>5.0.5</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
