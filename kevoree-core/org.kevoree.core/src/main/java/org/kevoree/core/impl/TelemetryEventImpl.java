@@ -80,7 +80,7 @@ public class TelemetryEventImpl implements TelemetryEvent {
                 builder.append(message.replace("\n", "\\n").replace("\t", "\\t").replace("\"", "\\\""));
                 builder.append("\"");
             } else {
-                builder.append(message.replace("\n", "\\n").replace("\t", "\\t").replace("\"", "\\\""));
+                builder.append(message.replace("\n", "\\n").replace("\t", "\\t"));
             }
             builder.append(",\n");
         } else {
@@ -92,10 +92,8 @@ public class TelemetryEventImpl implements TelemetryEvent {
         builder.append("\"stack\":\"");
         if(stack.length() > 0) {
             builder.append(stack.replace("\n", "\\n").replace("\t", "\\t").replace("\"", "\\\""));
-            builder.append("\"\n");
-        } else{
-            builder.append("\"\",\n");
         }
+        builder.append("\"\n");
         builder.append("}\n");
         return builder.toString();
     }
