@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>org.kevoree.model.js</artifactId>
     <name>Kevoree :: Model :: Javascript</name>
-    <version>5.0.7-SNAPSHOT</version>
+    <version>5.0.7</version>
 
     <properties>
         <metamodel.ecore>${basedir}/target/metamodel/org.kevoree.mm</metamodel.ecore>
@@ -12,7 +12,7 @@
     <parent>
         <artifactId>org.kevoree.root</artifactId>
         <groupId>org.kevoree</groupId>
-        <version>5.0.7-SNAPSHOT</version>
+        <version>5.0.7</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
