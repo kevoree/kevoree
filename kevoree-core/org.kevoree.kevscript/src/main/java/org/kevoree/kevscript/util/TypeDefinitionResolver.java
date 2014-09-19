@@ -28,7 +28,7 @@ public class TypeDefinitionResolver {
         if (typeNode.getChildren().get(0).getChildren().size() != 1) {
             StringBuilder builder = new StringBuilder();
             for (int i = 0; i < typeNode.getChildren().get(0).getChildren().size(); i++) {
-                if(typeNode.getChildren().get(0).getChildren().get(i).getType().toString().toLowerCase().contains("string")){
+                if (typeNode.getChildren().get(0).getChildren().get(i).getType().toString().toLowerCase().contains("string")) {
                     builder.append(typeNode.getChildren().get(0).getChildren().get(i).childrenAsString());
                 } else {
                     builder.append(typeNode.getChildren().get(0).getChildren().get(i));
@@ -80,21 +80,43 @@ public class TypeDefinitionResolver {
             }
         }
         TypeDefinition bestTD = null;
+
+        //first round, check non snapshot version
         for (TypeDefinition td : selected) {
-            if (version != null) {
-                if (version.equals(td.getVersion())) {
-                    return td;
-                }
-            } else {
-                if (bestTD == null) {
-                    bestTD = td;
+            if (td.getVersion() != null && !td.getVersion().toLowerCase().contains("snapshot")) {
+                if (version != null) {
+                    if (version.equals(td.getVersion())) {
+                        return td;
+                    }
                 } else {
-                    if (MavenVersionComparator.max(bestTD.getVersion(), td.getVersion()) == td.getVersion()) {
+                    if (bestTD == null) {
                         bestTD = td;
+                    } else {
+                        if (MavenVersionComparator.max(bestTD.getVersion(), td.getVersion()) == td.getVersion()) {
+                            bestTD = td;
+                        }
                     }
                 }
             }
         }
+        if (bestTD == null) {
+            for (TypeDefinition td : selected) {
+                if (version != null) {
+                    if (version.equals(td.getVersion())) {
+                        return td;
+                    }
+                } else {
+                    if (bestTD == null) {
+                        bestTD = td;
+                    } else {
+                        if (MavenVersionComparator.max(bestTD.getVersion(), td.getVersion()) == td.getVersion()) {
+                            bestTD = td;
+                        }
+                    }
+                }
+            }
+        }
+
         //Still not found :( try again
         if (bestTD == null) {
             throw new Exception("TypeDefinition not found with : " + typeDefName.toString());
