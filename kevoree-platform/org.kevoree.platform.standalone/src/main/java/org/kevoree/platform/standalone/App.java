@@ -34,15 +34,6 @@ public class App {
                 }
             }
         }
-
-        /*
-        String nodeName = System.getProperty("node.name");
-        if (nodeName == null) {
-            nodeName = defaultNodeName;
-            System.setProperty("node.name", defaultNodeName);
-        }
-        */
-
         KevoreeKernel kernel = new KevoreeMicroKernelImpl();
         String version = System.getProperty("version");
         if (version == null) {
@@ -50,15 +41,14 @@ public class App {
         }
         if (version == null) {
             String[] profiles = profile.split(":");
-            SortedSet<String> sets = kernel.getResolver().listVersion(profiles[1], profiles[2], "jar", kernel.getSnapshotURLS());
-            version = sets.first();
+            SortedSet<String> sets = kernel.getResolver().listVersion(profiles[1], profiles[2], "jar", kernel.getReleaseURLS());
+            for (String s : sets) {
+                if (!s.toLowerCase().contains("snapshot")) {
+                    version = s;
+                    break;
+                }
+            }
         }
-       /*
-        String bootstrapModel = System.getProperty("node.bootstrap");
-        if (bootstrapModel == null) {
-            System.setProperty("node.script", createBootstrapScript(nodeName, version));
-        }
-        */
         String bootJar = profile.replace("{kevoree.version}", version);
         Log.info("Kevoree bootstrap from " + bootJar);
 

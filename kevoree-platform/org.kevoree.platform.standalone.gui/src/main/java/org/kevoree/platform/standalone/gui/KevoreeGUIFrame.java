@@ -61,8 +61,14 @@ public class KevoreeGUIFrame extends JFrame {
         String version = System.getProperty("version");
         if (version == null) {
             SortedSet<String> sets = kernel.getResolver().listVersion("org.kevoree", "org.kevoree.bootstrap", "jar", kernel.getSnapshotURLS());
-            version = sets.first();
+            for (String s : sets) {
+                if (!s.toLowerCase().contains("snapshot")) {
+                    version = s;
+                    break;
+                }
+            }
         }
+
         String bootJar = "mvn:org.kevoree:org.kevoree.bootstrap:" + version;
         final FlexyClassLoader bootstrapKCL = kernel.install(bootJar, bootJar);
         kernel.boot(bootstrapKCL.getResourceAsStream("KEV-INF/bootinfo"));
@@ -131,22 +137,18 @@ public class KevoreeGUIFrame extends JFrame {
             buffer.append(versionRequest);
             buffer.append("\n");
         }
-        buffer.append("add "+nodeName+" : JavaNode\n");
-
-        //buffer.append("set "+nodeName+".log=\"TRACE\"\n");
-
-        buffer.append("add sync : WSGroup\n");
-        buffer.append("attach "+nodeName+" sync\n");
+        buffer.append("add " + nodeName + " : org.kevoree.library.JavaNode\n");
+        buffer.append("add sync : org.kevoree.library.WSGroup\n");
+        buffer.append("attach " + nodeName + " sync\n");
         int groupPort = FreeSocketDetector.detect(9000, 9999);
         int editorPort = FreeSocketDetector.detect(3042, 3300);
-        buffer.append("set sync.port/"+nodeName+" = \"" + groupPort + "\"\n");
-        //buffer.append("add " + nodeName + ".editor : WebEditor\n");
-        //buffer.append("set " + nodeName + ".editor.port = \"" + editorPort + "\"\n");
-
-        if(hostName!= null){
-            buffer.append("add "+groupName+" : MQTTGroup\n");
-            buffer.append("attach " + nodeName + " "+groupName+"\n");
-            buffer.append("set "+groupName+".broker = \"" + hostName + "\"");
+        buffer.append("set sync.port/" + nodeName + " = \"" + groupPort + "\"\n");
+        buffer.append("add " + nodeName + ".editor : org.kevoree.library.WebEditor\n");
+        buffer.append("set " + nodeName + ".editor.port = \"" + editorPort + "\"\n");
+        if (hostName != null && !hostName.isEmpty()) {
+            buffer.append("add " + groupName + " : org.kevoree.library.MQTTGroup\n");
+            buffer.append("attach " + nodeName + " " + groupName + "\n");
+            buffer.append("set " + groupName + ".broker = \"" + hostName + "\"");
         }
         return new ByteArrayInputStream(buffer.toString().getBytes());
     }
