@@ -4,11 +4,11 @@
     <artifactId>org.kevoree.bootstrap.telemetry</artifactId>
     <name>Kevoree :: Bootstrap :: Telemetry</name>
 
-    <version>5.0.5</version>
+    <version>5.0.6-SNAPSHOT</version>
     <parent>
         <artifactId>org.kevoree.root</artifactId>
         <groupId>org.kevoree</groupId>
-        <version>5.0.5</version>
+        <version>5.0.6-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
