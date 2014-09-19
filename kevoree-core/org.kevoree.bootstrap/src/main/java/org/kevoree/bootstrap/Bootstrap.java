@@ -12,7 +12,6 @@ import org.kevoree.core.impl.KevoreeCoreBean;
 import org.kevoree.kevscript.KevScriptEngine;
 import org.kevoree.log.Log;
 import org.kevoree.microkernel.KevoreeKernel;
-import org.kevoree.microkernel.impl.KevoreeMicroKernelImpl;
 import org.kevoree.modeling.api.KMFContainer;
 import org.kevoree.modeling.api.compare.ModelCompare;
 import org.kevoree.modeling.api.json.JSONModelLoader;
@@ -129,19 +128,20 @@ public class Bootstrap {
     }
 
     private TelemetryListener telemetryListener;
+
     protected void registerTelemetryToLogListener() {
-        if(telemetryListener == null) {
+        if (telemetryListener == null) {
             telemetryListener = new TelemetryListener() {
                 @Override
                 public void notify(TelemetryEvent telemetryEvent) {
-                    if(telemetryEvent.type().equals("info")) {
-                        Log.info("[{}] {}",telemetryEvent.origin(), telemetryEvent.message());
-                    } else if(telemetryEvent.type().equals("warn")) {
-                        Log.warn("[{}] {}",telemetryEvent.origin(), telemetryEvent.message());
-                    } else if(telemetryEvent.type().equals("error")) {
-                        Log.error("[{}] {}{}",telemetryEvent.origin(), telemetryEvent.message(), telemetryEvent.stack());
+                    if (telemetryEvent.type().equals("info")) {
+                        Log.info("[{}] {}", telemetryEvent.origin(), telemetryEvent.message());
+                    } else if (telemetryEvent.type().equals("warn")) {
+                        Log.warn("[{}] {}", telemetryEvent.origin(), telemetryEvent.message());
+                    } else if (telemetryEvent.type().equals("error")) {
+                        Log.error("[{}] {}{}", telemetryEvent.origin(), telemetryEvent.message(), telemetryEvent.stack());
                     } else {
-                        Log.debug("[{}] {}{}",telemetryEvent.origin(), telemetryEvent.message(), telemetryEvent.stack());
+                        Log.debug("[{}] {}{}", telemetryEvent.origin(), telemetryEvent.message(), telemetryEvent.stack());
                     }
                 }
             };
@@ -150,7 +150,7 @@ public class Bootstrap {
     }
 
     protected void unregisterTelemetryToLogListener() {
-        if(telemetryListener != null) {
+        if (telemetryListener != null) {
             core.removeTelemetryListener(telemetryListener);
         }
     }
@@ -354,7 +354,7 @@ public class Bootstrap {
         buffer.append("include mvn:org.kevoree.library.java:org.kevoree.library.java.ws:");
         buffer.append(versionRequest);
         buffer.append("\n");
-        buffer.append("add node0 : JavaNode".replace("node0", nodeName) + "\n");
+        buffer.append("add node0 : org.kevoree.library.JavaNode".replace("node0", nodeName) + "\n");
         buffer.append("add sync : WSGroup\n");
         buffer.append("attach node0 sync\n".replace("node0", nodeName));
         return buffer.toString();

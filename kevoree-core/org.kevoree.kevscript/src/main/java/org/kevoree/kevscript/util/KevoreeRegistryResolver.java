@@ -1,9 +1,12 @@
 package org.kevoree.kevscript.util;
 
 import org.kevoree.ContainerRoot;
+import org.kevoree.TypeDefinition;
 import org.kevoree.factory.DefaultKevoreeFactory;
 import org.kevoree.factory.KevoreeFactory;
 import org.kevoree.log.Log;
+import org.kevoree.modeling.api.KMFContainer;
+import org.kevoree.modeling.api.util.ModelVisitor;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -47,13 +50,16 @@ public class KevoreeRegistryResolver {
         request.append("[");
         boolean isFirst = true;
         for (TypeFQN fq : fqns) {
-            if (!isFirst) {
-                request.append(",");
+            String typePath = convertFQN2Path(fq);
+            if (current.select(typePath).isEmpty()) {
+                if (!isFirst) {
+                    request.append(",");
+                }
+                request.append("\"");
+                request.append(convertFQN2Path(fq));
+                request.append("\"");
+                isFirst = false;
             }
-            request.append("\"");
-            request.append(convertFQN2Path(fq));
-            request.append("\"");
-            isFirst = false;
         }
         request.append("]");
 
@@ -61,7 +67,21 @@ public class KevoreeRegistryResolver {
             String model = collectModel(kevoreeRegistry, request.toString());
             if (model != null && !model.isEmpty()) {
                 ContainerRoot modelRoot = (ContainerRoot) factory.createJSONLoader().loadModelFromString(model).get(0);
-                factory.createModelCompare().merge(current, modelRoot).applyOn(current);
+                final Integer[] i = {0};
+                modelRoot.deepVisitReferences(new ModelVisitor() {
+                    @Override
+                    public void visit(KMFContainer kmfContainer, String s, KMFContainer kmfContainer2) {
+                        if (kmfContainer instanceof TypeDefinition) {
+                            i[0]++;
+                        }
+                    }
+                });
+                Log.info("Resolved {} typeDefinitions from Kevoree Registry {}", i[0], kevoreeRegistry);
+                try {
+                    factory.createModelCompare().merge(current, modelRoot).applyOn(current);
+                } catch (Exception e) {
+                    Log.error("Error while merging TypeDefinitions from Registry ! ", e);
+                }
             }
         } catch (Exception e) {
             Log.debug("", e);

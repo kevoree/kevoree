@@ -177,6 +177,7 @@ public class KevoreeCLKernel implements BootstrapService {
             return newInstance;
         } catch (Exception e) {
             Log.error("Error while creating instance {}", e, instance.getTypeDefinition().getName());
+            Log.error("Inconsistency in typeDefinition {}", core.getFactory().createJSONSerializer().serialize(instance.getTypeDefinition()));
         }
         return null;
     }
@@ -190,7 +191,6 @@ public class KevoreeCLKernel implements BootstrapService {
         for (DictionaryAttribute att : instance.getTypeDefinition().getDictionaryType().getAttributes()) {
             String defValue = null;
             String value = null;
-
             if (att.getFragmentDependant()) {
                 FragmentDictionary fdico = instance.findFragmentDictionaryByID(nodeName);
                 if (fdico != null) {
