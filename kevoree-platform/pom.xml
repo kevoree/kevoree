@@ -3,13 +3,13 @@
     <groupId>org.kevoree.platform</groupId>
     <artifactId>org.kevoree.platform.root</artifactId>
     <packaging>pom</packaging>
-    <version>5.0.8</version>
+    <version>5.0.9-SNAPSHOT</version>
     <name>Kevoree :: Platform :: Root</name>
 
     <parent>
         <groupId>org.kevoree.root</groupId>
         <artifactId>org.kevoree.root</artifactId>
-        <version>5.0.8</version>
+        <version>5.0.9-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
