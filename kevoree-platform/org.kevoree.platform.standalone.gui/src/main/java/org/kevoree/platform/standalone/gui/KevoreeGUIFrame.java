@@ -23,10 +23,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.InputStream;
-import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.SortedSet;
@@ -55,7 +51,7 @@ public class KevoreeGUIFrame extends JFrame {
         ConsoleShell shell = new ConsoleShell();
         singleton.add(shell, BorderLayout.CENTER);
         singleton.pack();
-        setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         KevoreeKernel kernel = new KevoreeMicroKernelImpl();
         String version = System.getProperty("version");
@@ -68,24 +64,12 @@ public class KevoreeGUIFrame extends JFrame {
                 }
             }
         }
-
+        System.setProperty("node.name", nodeName);
+        System.setProperty("node.script", createBootstrapScript(nodeName, groupName, hostName, version));
         String bootJar = "mvn:org.kevoree:org.kevoree.bootstrap:" + version;
         final FlexyClassLoader bootstrapKCL = kernel.install(bootJar, bootJar);
         kernel.boot(bootstrapKCL.getResourceAsStream("KEV-INF/bootinfo"));
-        Thread.currentThread().setContextClassLoader(bootstrapKCL);
-        Class clazzBootstrap = bootstrapKCL.loadClass("org.kevoree.bootstrap.Bootstrap");
-        Constructor constructor = clazzBootstrap.getConstructor(KevoreeKernel.class, String.class);
-        final Object bootstrap = constructor.newInstance(kernel, nodeName);
-        Runtime.getRuntime().addShutdownHook(new Thread("Shutdown Hook") {
-            public void run() {
-                try {
-                    Thread.currentThread().setContextClassLoader(bootstrapKCL);
-                    bootstrap.getClass().getMethod("stop").invoke(bootstrap);
-                } catch (Throwable ex) {
-                    System.out.println("Error stopping kevoree platform: " + ex.getMessage());
-                }
-            }
-        });
+
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent windowEvent) {
@@ -93,8 +77,6 @@ public class KevoreeGUIFrame extends JFrame {
                     @Override
                     public void run() {
                         try {
-                            Thread.currentThread().setContextClassLoader(bootstrapKCL);
-                            bootstrap.getClass().getMethod("stop").invoke(bootstrap);
                             dispose();
                             System.setSecurityManager(null);
                             Runtime.getRuntime().exit(0);
@@ -105,15 +87,9 @@ public class KevoreeGUIFrame extends JFrame {
                 }.start();
             }
         });
-        String bootstrapModel = System.getProperty("node.bootstrap");
-        if (bootstrapModel != null) {
-            bootstrap.getClass().getMethod("bootstrapFromFile", File.class).invoke(bootstrap, new File(bootstrapModel));
-        } else {
-            bootstrap.getClass().getMethod("bootstrapFromKevScript", InputStream.class).invoke(bootstrap, createBootstrapScript(nodeName, groupName, hostName, version));
-        }
     }
 
-    private static InputStream createBootstrapScript(String nodeName, String groupName, String hostName, String version) {
+    private static String createBootstrapScript(String nodeName, String groupName, String hostName, String version) {
         StringBuilder buffer = new StringBuilder();
         String versionRequest;
         if (version.toLowerCase().contains("snapshot")) {
@@ -150,7 +126,7 @@ public class KevoreeGUIFrame extends JFrame {
             buffer.append("attach " + nodeName + " " + groupName + "\n");
             buffer.append("set " + groupName + ".broker = \"" + hostName + "\"");
         }
-        return new ByteArrayInputStream(buffer.toString().getBytes());
+        return buffer.toString();
     }
 
 
