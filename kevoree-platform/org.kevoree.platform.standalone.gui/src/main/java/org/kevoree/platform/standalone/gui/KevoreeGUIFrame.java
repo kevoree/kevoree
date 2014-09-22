@@ -48,7 +48,7 @@ public class KevoreeGUIFrame extends JFrame {
         setPreferredSize(new Dimension(1024, 768));
         setSize(getPreferredSize());
 
-        ConsoleShell shell = new ConsoleShell();
+        final ConsoleShell shell = new ConsoleShell();
         singleton.add(shell, BorderLayout.CENTER);
         singleton.pack();
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -78,6 +78,7 @@ public class KevoreeGUIFrame extends JFrame {
                     public void run() {
                         try {
                             dispose();
+                            shell.restore();
                             System.setSecurityManager(null);
                             Runtime.getRuntime().exit(0);
                         } catch (Throwable e) {

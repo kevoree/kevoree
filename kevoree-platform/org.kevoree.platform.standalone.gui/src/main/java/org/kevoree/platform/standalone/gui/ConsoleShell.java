@@ -49,8 +49,22 @@ public class ConsoleShell extends JPanel {
         scrollShell = new JScrollPane(textArea);
         IAppWidgetFactory.makeIAppScrollPane(scrollShell);
         add(scrollShell, BorderLayout.CENTER);
+        backup();
         System.setOut(STDwriter);
         System.setErr(ERRwriter);
+    }
+
+    private PrintStream oldOut;
+    private PrintStream oldErr;
+
+    public void backup() {
+        oldOut = System.out;
+        oldErr = System.err;
+    }
+
+    public void restore() {
+        System.setErr(oldErr);
+        System.setOut(oldOut);
     }
 
     private class TextOutputStream extends OutputStream {
