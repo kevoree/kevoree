@@ -4,12 +4,12 @@
     <artifactId>org.kevoree.tools.ui.framework</artifactId>
     <packaging>jar</packaging>
     <name>Kevoree :: Tools :: UI Framework</name>
-    <version>5.0.8-SNAPSHOT</version>
+    <version>5.0.8</version>
 
     <parent>
         <artifactId>org.kevoree.tools.root</artifactId>
         <groupId>org.kevoree.tools</groupId>
-        <version>5.0.8-SNAPSHOT</version>
+        <version>5.0.8</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
