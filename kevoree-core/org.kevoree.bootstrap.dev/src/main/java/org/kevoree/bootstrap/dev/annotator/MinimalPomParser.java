@@ -2,6 +2,7 @@ package org.kevoree.bootstrap.dev.annotator;
 
 import org.kevoree.ContainerRoot;
 import org.kevoree.DeployUnit;
+import org.kevoree.api.helper.KModelHelper;
 import org.kevoree.factory.DefaultKevoreeFactory;
 import org.kevoree.factory.KevoreeFactory;
 import org.kevoree.log.Log;
@@ -93,6 +94,7 @@ public class MinimalPomParser {
                 e.printStackTrace();
             }
         }
+
         try {
             version = xpath.evaluate("//project/version", doc.getDocumentElement(), XPathConstants.STRING).toString();
         } catch (XPathExpressionException e) {
@@ -105,7 +107,6 @@ public class MinimalPomParser {
                 e.printStackTrace();
             }
         }
-
         String[] packages = groupId.split("\\.");
         org.kevoree.Package previous = null;
         for (int i = 0; i < packages.length; i++) {
@@ -122,6 +123,8 @@ public class MinimalPomParser {
                     resolved = factory.createPackage();
                     resolved.setName(packages[i]);
                     previous.addPackages(resolved);
+                    previous = resolved;
+                } else {
                     previous = resolved;
                 }
             }

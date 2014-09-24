@@ -197,9 +197,21 @@ public class ModelBuilderHelper {
                     }
                     dicAtt.setName(field.getName());
                     dicAtt.setDatatype(dataType);
-                    dicAtt.setOptional(annotationParam.optional());
-                    dicAtt.setFragmentDependant(annotationParam.fragmentDependent());
-                    dicAtt.setDefaultValue(annotationParam.defaultValue());
+                    try {
+                        dicAtt.setOptional(annotationParam.optional());
+                    } catch (Exception e) {
+                        dicAtt.setOptional(true);
+                    }
+                    try {
+                        dicAtt.setFragmentDependant(annotationParam.fragmentDependent());
+                    } catch (Exception e) {
+                        dicAtt.setFragmentDependant(false);
+                    }
+                    try {
+                        dicAtt.setDefaultValue(annotationParam.defaultValue());
+                    } catch (Exception e) {
+                        dicAtt.setDefaultValue(null);
+                    }
                     currentTypeDefinition.getDictionaryType().addAttributes(dicAtt);
                 }
             }
@@ -328,8 +340,8 @@ public class ModelBuilderHelper {
 
     public static TypeDefinition getOrCreateTypeDefinition(String name, String version, ContainerRoot root, KevoreeFactory factory, String typeName) {
         String[] packages = name.split("\\.");
-        if(packages.length <= 1) {
-            throw new RuntimeException("Component '"+name+"' must be defined in a Java package");
+        if (packages.length <= 1) {
+            throw new RuntimeException("Component '" + name + "' must be defined in a Java package");
         }
         org.kevoree.Package pack = null;
         for (int i = 0; i < packages.length - 1; i++) {

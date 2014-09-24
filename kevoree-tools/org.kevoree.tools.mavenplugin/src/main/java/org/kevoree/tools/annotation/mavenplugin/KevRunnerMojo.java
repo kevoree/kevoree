@@ -1,6 +1,5 @@
 package org.kevoree.tools.annotation.mavenplugin;
 
-import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -20,7 +19,7 @@ import java.io.File;
  * Time: 11:13
  */
 @Mojo(name = "run", requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME)
-public class KevRunnerMojo extends AbstractMojo {
+public class KevRunnerMojo extends AnnotationPreProcessorMojo {
 
     @Parameter(defaultValue = "${project.basedir}/src/main/kevs/main.kevs")
     private File model;
@@ -28,12 +27,21 @@ public class KevRunnerMojo extends AbstractMojo {
     @Parameter(defaultValue = "node0")
     private String nodename;
 
+
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
+        //first execute parent mojo
+        super.execute();
         try {
             System.setProperty("node.bootstrap", model.getAbsolutePath());
             System.setProperty("node.name", nodename);
             KevoreeKernel kernel = new KevoreeMicroKernelImpl();
+
+            //TODO ensure compilation
+
+            String key = "mvn:" + project.getArtifact().getGroupId() + ":" + project.getArtifact().getArtifactId() + ":" + project.getArtifact().getBaseVersion();
+            FlexyClassLoader kcl = kernel.install(key, "file:" + outputClasses.getAbsolutePath());
+
             String bootJar = "mvn:org.kevoree:org.kevoree.bootstrap:" + new DefaultKevoreeFactory().getVersion();
             FlexyClassLoader bootstrapKCL = kernel.install(bootJar, bootJar);
             kernel.boot(bootstrapKCL.getResourceAsStream("KEV-INF/bootinfo"));

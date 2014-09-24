@@ -246,7 +246,6 @@ class KevoreeCoreBean : ContextAwareModelService {
 
 
     fun stop() {
-        //Log.warn("Kevoree Core will be stopped !")
         broadcastTelemetry("info", "Kevoree Core will be stopped !", "")
         modelListeners.stop()
         scheduler?.shutdownNow()

@@ -6,6 +6,7 @@ import org.kevoree.ContainerRoot;
 import org.kevoree.DeployUnit;
 import org.kevoree.factory.DefaultKevoreeFactory;
 import org.kevoree.factory.KevoreeFactory;
+import org.kevoree.log.Log;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -31,8 +32,6 @@ public class Annotations2Model {
                     FileInputStream fis = new FileInputStream(child);
                     CtClass clazz = pool.makeClass(fis);//
                     fis.close();
-
-                    //CtClass clazz = pool.get(className);
                     Object[] annotations = clazz.getAvailableAnnotations();
                     for (Object annotation : annotations) {
                         ModelBuilderHelper.process(annotation, clazz, factory, du, modelRoot);

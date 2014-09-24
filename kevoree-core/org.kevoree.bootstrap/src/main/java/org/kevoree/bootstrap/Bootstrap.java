@@ -200,9 +200,21 @@ public class Bootstrap {
 
 
     public void bootstrapFromKevScript(InputStream input, UpdateCallback callback) throws Exception {
-        //TODO perhaps not delegate load of dev classpath to system for continuous integration
         ContainerRoot emptyModel = initialModel();
         core.getFactory().root(emptyModel);
+        for (ClassLoader cl : microKernel.getClassLoaders()) {
+            InputStream is = cl.getResourceAsStream("KEV-INF/lib.json");
+            if (is != null) {
+                try {
+                    ContainerRoot CLroot = (ContainerRoot) core.getFactory().createJSONLoader().loadModelFromStream(is).get(0);
+                    core.getFactory().root(CLroot);
+                    core.getFactory().createModelCompare().merge(emptyModel, CLroot).applyOn(emptyModel);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
         kevScriptEngine.executeFromStream(input, emptyModel);
         //Add network information
         ContainerNode currentNode = emptyModel.findNodesByID(core.getNodeName());

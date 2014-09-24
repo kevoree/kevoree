@@ -12,32 +12,79 @@ import org.kevoree.kcl.api.FlexyClassLoader;
 import org.kevoree.log.Log;
 import org.kevoree.microkernel.KevoreeKernel;
 import org.kevoree.modeling.api.json.JSONModelSerializer;
+import org.xml.sax.SAXException;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileOutputStream;
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.*;
 import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.Random;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 /**
  * Created by duke on 8/14/14.
  */
 public class BootstrapDev {
 
+    public static void analyze(String paths, ContainerRoot model, KevoreeFactory factory, KevoreeKernel kernel, FlexyClassLoader parent) {
+        String[] pathsS = paths.split(File.pathSeparator);
+        for (String s : pathsS) {
+            JarFile jarFile;
+            try {
+                File sf = new File(s);
+                if (!sf.isDirectory() && sf.getName().endsWith(".jar")) {
+                    jarFile = new JarFile(sf);
+                    final Enumeration<JarEntry> entries = jarFile.entries();
+                    while (entries.hasMoreElements()) {
+                        final JarEntry entry = entries.nextElement();
+                        if (entry.getName().contains(".")) {
+                            if (entry.getName().startsWith("META-INF/maven/") && entry.getName().endsWith("pom.xml")) {
+                                JarEntry fileEntry = jarFile.getJarEntry(entry.getName());
+                                InputStream input = jarFile.getInputStream(fileEntry);
+                                DeployUnit du = null;
+                                try {
+                                    du = MinimalPomParser.currentURL(input, model, factory);
+                                } catch (ParserConfigurationException e) {
+                                    e.printStackTrace();
+                                } catch (SAXException e) {
+                                    e.printStackTrace();
+                                }
+                                String key;
+                                if (du != null) {
+                                    key = "mvn:" + KModelHelper.fqnGroup(du) + ":" + du.getName() + ":" + du.getVersion();
+                                } else {
+                                    key = "bootdep_" + new Random().nextInt();
+                                }
+                                if (kernel.get(key) == null) {
+                                    FlexyClassLoader sub = kernel.put(key, sf);
+                                    parent.attachChild(sub);
+                                    sub.attachChild(parent);
+                                } else {
+                                    parent.attachChild(kernel.get(key));
+                                    kernel.get(key).attachChild(parent);
+                                }
+                            }
+                        }
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     public static void main(String[] ignore) throws Exception {
-
-        //Log.set(Log.LEVEL_TRACE);
-
         String nodeName = System.getProperty("node.name");
         if (nodeName == null) {
             nodeName = Bootstrap.defaultNodeName;
         }
-
         KevoreeKernel kernel = KevoreeKernel.self.get();
-
         long before = System.currentTimeMillis();
         Annotations2Model annotations2Model = new Annotations2Model();
         KevoreeFactory factory = new DefaultKevoreeFactory();
         String directoryTargets = System.getProperty("dev.target.dirs");
+
         String[] directoryTargetList = directoryTargets.split(File.pathSeparator);
         for (String directoryTarget : directoryTargetList) {
             File directoryTargetFile = new File(directoryTarget);
@@ -46,25 +93,13 @@ public class BootstrapDev {
             } else {
                 ContainerRoot model = factory.createContainerRoot();
                 factory.root(model);
-
-                /*
-                DeployUnit fakeDeployUnit = factory.createDeployUnit();
-                fakeDeployUnit.setGroupName("org.kevoree");
-                fakeDeployUnit.setName("org.kevoree.annotation.api");
-                fakeDeployUnit.setVersion(factory.getVersion());
-                model.addDeployUnits(fakeDeployUnit);
-                */
                 DeployUnit mainDu = MinimalPomParser.lookupLocalDeployUnit(directoryTargetFile, model, factory);
                 String key = "mvn:" + KModelHelper.fqnGroup(mainDu) + ":" + mainDu.getName() + ":" + mainDu.getVersion();
                 FlexyClassLoader kcl = kernel.install(key, "file:" + directoryTargetFile.getAbsolutePath());
 
-                /*
-                if (mainDu != null) {
-                    model.addDeployUnits(mainDu);
-                    mainDu.addRequiredLibs(fakeDeployUnit);
-                } else {
-                    mainDu = fakeDeployUnit;
-                } */
+                if (System.getProperty("dev.classloader") != null) {
+                    analyze(System.getProperty("dev.classloader"), model, factory, kernel, kcl);
+                }
 
                 ArrayList<String> classPaths = new ArrayList<String>();
                 classPaths.add(directoryTargetFile.getAbsolutePath());
@@ -88,7 +123,6 @@ public class BootstrapDev {
         }
         long time = System.currentTimeMillis() - before;
         Log.info("Generation of KEV-INF/lib.json done in {} ms ", time);
-
 
         final ClassLoader loader = Thread.currentThread().getContextClassLoader();
         final Bootstrap boot = new Bootstrap(kernel, nodeName);

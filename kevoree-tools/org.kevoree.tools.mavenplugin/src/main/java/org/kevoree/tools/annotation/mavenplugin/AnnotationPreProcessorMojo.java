@@ -17,9 +17,11 @@ import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.artifact.resolver.filter.ArtifactFilter;
 import org.apache.maven.artifact.resolver.filter.ScopeArtifactFilter;
+import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.Repository;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.*;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.shared.dependency.tree.DependencyNode;
@@ -51,7 +53,7 @@ import java.util.regex.Pattern;
 public class AnnotationPreProcessorMojo extends AbstractMojo {
 
     @Parameter(defaultValue = "${project.build.directory}/classes")
-    private File outputClasses;
+    protected File outputClasses;
 
     @Component
     private DependencyTreeBuilder dependencyTreeBuilder;
@@ -61,6 +63,9 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
      */
     @Parameter(required = true, readonly = true, defaultValue = "${project}")
     public MavenProject project;
+
+    @Parameter(required = true, readonly = true,defaultValue = "${session}")
+    public MavenSession session;
 
     /**
      * the set of included dependencies which will be registered on the Kevoree model
@@ -168,7 +173,7 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
 
 
     @Override
-    public void execute() throws MojoExecutionException {
+    public void execute() throws MojoExecutionException, MojoFailureException {
         KevoreeFactory factory = new DefaultKevoreeFactory();
         ContainerRoot model = factory.createContainerRoot();
         factory.root(model);

@@ -68,15 +68,23 @@ public class KevoreeRegistryResolver {
             if (model != null && !model.isEmpty()) {
                 ContainerRoot modelRoot = (ContainerRoot) factory.createJSONLoader().loadModelFromString(model).get(0);
                 final Integer[] i = {0};
+                final StringBuilder builder = new StringBuilder();
                 modelRoot.deepVisitReferences(new ModelVisitor() {
                     @Override
                     public void visit(KMFContainer kmfContainer, String s, KMFContainer kmfContainer2) {
                         if (kmfContainer instanceof TypeDefinition) {
                             i[0]++;
+                            if(builder.length()!=0){
+                               builder.append(",");
+                            }
+                            TypeDefinition td = (TypeDefinition) kmfContainer;
+                            builder.append(td.getName());
+                            builder.append("/");
+                            builder.append(td.getVersion());
                         }
                     }
                 });
-                Log.info("Resolved {} typeDefinitions from Kevoree Registry {}", i[0], kevoreeRegistry);
+                Log.info("Resolved {} typeDefinitions from Kevoree Registry {} ({})", i[0], kevoreeRegistry,builder.toString());
                 try {
                     factory.createModelCompare().merge(current, modelRoot).applyOn(current);
                 } catch (Exception e) {

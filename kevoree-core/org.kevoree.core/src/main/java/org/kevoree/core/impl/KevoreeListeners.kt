@@ -19,10 +19,9 @@ import java.util.concurrent.ExecutorService
 import java.util.ArrayList
 import java.util.concurrent.Callable
 import java.util.concurrent.ThreadFactory
-import org.kevoree.log.Log
 import org.kevoree.api.handler.UpdateContext
 
-class KevoreeListeners(internal var coreBean : KevoreeCoreBean) {
+class KevoreeListeners(internal var coreBean: KevoreeCoreBean) {
 
     private var scheduler: ExecutorService? = null
     private var schedulerAsync: ExecutorService? = null
@@ -79,7 +78,9 @@ class KevoreeListeners(internal var coreBean : KevoreeCoreBean) {
 
     private val registeredListeners = ArrayList<ModelListener>()
 
-    fun addListener(l: ModelListener) = scheduler?.submit(AddListener(l))
+    fun addListener(l: ModelListener) {
+        scheduler?.submit(AddListener(l))
+    }
 
     inner class AddListener(val l: ModelListener) : Runnable {
         override fun run() {
@@ -103,7 +104,9 @@ class KevoreeListeners(internal var coreBean : KevoreeCoreBean) {
         }
     }
 
-    fun notifyAllListener() = scheduler?.submit(NotifyAll())
+    fun notifyAllListener() {
+        scheduler?.submit(NotifyAll())
+    }
 
     inner class NotifyAll() : Runnable {
         override fun run() {
@@ -136,11 +139,11 @@ class KevoreeListeners(internal var coreBean : KevoreeCoreBean) {
     }
 
     fun initUpdate(context: UpdateContext): Boolean {
-        return scheduler?.submit(INITUPDATE(context))?.get().sure()
+        return scheduler?.submit(INITUPDATE(context))?.get()!!
     }
 
     fun preUpdate(context: UpdateContext): Boolean {
-        return scheduler?.submit(PREUPDATE(context))?.get().sure()
+        return scheduler?.submit(PREUPDATE(context))?.get()!!
     }
 
     inner class AFTERUPDATE(val context: UpdateContext) : Callable<Boolean> {
@@ -150,7 +153,7 @@ class KevoreeListeners(internal var coreBean : KevoreeCoreBean) {
     }
 
     fun afterUpdate(context: UpdateContext): Boolean {
-        return scheduler?.submit(AFTERUPDATE(context))?.get().sure()
+        return scheduler?.submit(AFTERUPDATE(context))?.get()!!
     }
 
     //ROLLBACK STEP
@@ -163,7 +166,7 @@ class KevoreeListeners(internal var coreBean : KevoreeCoreBean) {
         }
     }
     fun preRollback(context: UpdateContext): Boolean {
-        return scheduler?.submit(PREROLLBACK(context))?.get().sure()
+        return scheduler?.submit(PREROLLBACK(context))?.get()!!
     }
 
     inner class POSTROLLBACK(val context: UpdateContext) : Callable<Boolean> {
@@ -175,7 +178,7 @@ class KevoreeListeners(internal var coreBean : KevoreeCoreBean) {
         }
     }
     fun postRollback(context: UpdateContext): Boolean {
-        return scheduler?.submit(POSTROLLBACK(context))?.get().sure()
+        return scheduler?.submit(POSTROLLBACK(context))?.get()!!
     }
 
     class Notify() {
@@ -189,17 +192,10 @@ class KevoreeListeners(internal var coreBean : KevoreeCoreBean) {
             try {
                 listener.modelUpdated()
             } catch (e: Exception) {
-                coreBean.broadcastTelemetry("error","Error while trigger model update.", e.toString())
+                coreBean.broadcastTelemetry("error", "Error while trigger model update.", e.toString())
                 //Log.error("Error while trigger model update ", e)
             }
         }
     }
-
-    inline fun <T : Any> T?.sure(): T =
-            if (this == null) {
-                throw NullPointerException()
-            } else {
-                this
-            }
 
 }
