@@ -52,7 +52,7 @@ public class KevoreeCLKernel implements BootstrapService {
         builder.append(":");
         builder.append(deployUnit.getName());
         builder.append(":");
-        if (deployUnit.getName().equals("org.kevoree.api") || deployUnit.getName().equals("org.kevoree.annotation.api") || deployUnit.getName().equals("org.kevoree.model") || deployUnit.getName().equals("org.kevoree.modeling.microframework")) {
+        if (deployUnit.getName().equals("org.kevoree.api") || deployUnit.getName().equals("org.kevoree.annotation.api") || deployUnit.getName().equals("org.kevoree.model")) {
             builder.append(bs.getCore().getFactory().getVersion());
         } else {
             builder.append(deployUnit.getVersion());
