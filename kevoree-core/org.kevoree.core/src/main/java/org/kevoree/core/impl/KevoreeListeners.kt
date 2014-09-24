@@ -190,6 +190,7 @@ class KevoreeListeners(internal var coreBean: KevoreeCoreBean) {
     inner class AsyncModelUpdateRunner(val listener: ModelListener) : Runnable {
         override fun run() {
             try {
+                Thread.currentThread().setContextClassLoader(listener.javaClass.getClassLoader())
                 listener.modelUpdated()
             } catch (e: Exception) {
                 coreBean.broadcastTelemetry("error", "Error while trigger model update.", e.toString())
