@@ -47,39 +47,40 @@ public class ModelBuilderHelper {
                     cleanedName = cleanedName.substring(0, 1).toLowerCase() + cleanedName.substring(1);
                     Param annotationParam = (Param) annotation;
                     DataType dataType = null;
+
                     if (method.getReturnType().getName().equals(String.class.getName())) {
                         checkType = true;
                         dataType = DataType.STRING;
                     }
-                    if (method.getReturnType().getName().equals(Float.class.getName())) {
+                    if (method.getReturnType().getName().equals(Float.class.getName()) || method.getReturnType().getName().equals("float")) {
                         checkType = true;
                         dataType = DataType.FLOAT;
                     }
-                    if (method.getReturnType().getName().equals(Integer.class.getName())) {
+                    if (method.getReturnType().getName().equals(Integer.class.getName()) || method.getReturnType().getName().equals("int")) {
                         checkType = true;
                         dataType = DataType.INT;
                     }
-                    if (method.getReturnType().getName().equals(Double.class.getName())) {
+                    if (method.getReturnType().getName().equals(Double.class.getName()) || method.getReturnType().getName().equals("double")) {
                         checkType = true;
                         dataType = DataType.DOUBLE;
                     }
-                    if (method.getReturnType().getName().equals(Boolean.class.getName())) {
+                    if (method.getReturnType().getName().equals(Boolean.class.getName()) || method.getReturnType().getName().equals("boolean")) {
                         checkType = true;
                         dataType = DataType.BOOLEAN;
                     }
-                    if (method.getReturnType().getName().equals(Long.class.getName())) {
+                    if (method.getReturnType().getName().equals(Long.class.getName()) || method.getReturnType().getName().equals("long")) {
                         checkType = true;
                         dataType = DataType.LONG;
                     }
-                    if (method.getReturnType().getName().equals(Byte.class.getName())) {
+                    if (method.getReturnType().getName().equals(Byte.class.getName()) || method.getReturnType().getName().equals(byte.class.getName()) || method.getReturnType().getName().equals("byte")) {
                         checkType = true;
                         dataType = DataType.BYTE;
                     }
-                    if (method.getReturnType().getName().equals(char.class.getName())) {
+                    if (method.getReturnType().getName().equals(char.class.getName()) || method.getReturnType().getName().equals("char")) {
                         checkType = true;
                         dataType = DataType.CHAR;
                     }
-                    if (method.getReturnType().getName().equals(Short.class.getName())) {
+                    if (method.getReturnType().getName().equals(Short.class.getName()) || method.getReturnType().getName().equals("short")) {
                         checkType = true;
                         dataType = DataType.SHORT;
                     }
@@ -149,40 +150,41 @@ public class ModelBuilderHelper {
                 if (annotation instanceof Param) {
                     Param annotationParam = (Param) annotation;
                     DataType dataType = null;
+
                     boolean checkType = false;
                     if (field.getType().getName().equals(String.class.getName())) {
                         checkType = true;
                         dataType = DataType.STRING;
                     }
-                    if (field.getType().getName().equals(Float.class.getName())) {
+                    if (field.getType().getName().equals(Float.class.getName()) || field.getType().getName().equals("float")) {
                         checkType = true;
                         dataType = DataType.FLOAT;
                     }
-                    if (field.getType().getName().equals(Integer.class.getName())) {
+                    if (field.getType().getName().equals(Integer.class.getName()) || field.getType().getName().equals("int")) {
                         checkType = true;
                         dataType = DataType.INT;
                     }
-                    if (field.getType().getName().equals(Double.class.getName())) {
+                    if (field.getType().getName().equals(Double.class.getName()) || field.getType().getName().equals("double")) {
                         checkType = true;
                         dataType = DataType.DOUBLE;
                     }
-                    if (field.getType().getName().equals(Boolean.class.getName())) {
+                    if (field.getType().getName().equals(Boolean.class.getName()) || field.getType().getName().equals("boolean")) {
                         checkType = true;
                         dataType = DataType.BOOLEAN;
                     }
-                    if (field.getType().getName().equals(Long.class.getName())) {
+                    if (field.getType().getName().equals(Long.class.getName()) || field.getType().getName().equals("long")) {
                         checkType = true;
                         dataType = DataType.LONG;
                     }
-                    if (field.getType().getName().equals(Short.class.getName())) {
+                    if (field.getType().getName().equals(Short.class.getName()) || field.getType().getName().equals("short")) {
                         checkType = true;
                         dataType = DataType.SHORT;
                     }
-                    if (field.getType().getName().equals(char.class.getName())) {
+                    if (field.getType().getName().equals(char.class.getName()) || field.getType().getName().equals("char")) {
                         checkType = true;
                         dataType = DataType.CHAR;
                     }
-                    if (field.getType().getName().equals(byte.class.getName())) {
+                    if (field.getType().getName().equals(byte.class.getName()) || field.getType().getName().equals("byte") || field.getType().getName().equals(Byte.class.getName())) {
                         checkType = true;
                         dataType = DataType.BYTE;
                     }
