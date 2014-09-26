@@ -8,8 +8,8 @@ import com.ning.http.client.websocket.WebSocketUpgradeHandler;
 import org.kevoree.ContainerRoot;
 import org.kevoree.factory.DefaultKevoreeFactory;
 import org.kevoree.log.Log;
-import org.kevoree.modeling.api.json.JSONModelLoader;
-import org.kevoree.modeling.api.json.JSONModelSerializer;
+import org.kevoree.pmodeling.api.json.JSONModelLoader;
+import org.kevoree.pmodeling.api.json.JSONModelSerializer;
 
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;

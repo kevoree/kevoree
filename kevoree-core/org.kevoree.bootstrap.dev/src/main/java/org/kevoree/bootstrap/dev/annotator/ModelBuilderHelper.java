@@ -10,8 +10,8 @@ import org.kevoree.annotation.Output;
 import org.kevoree.annotation.Param;
 import org.kevoree.api.*;
 import org.kevoree.factory.KevoreeFactory;
-import org.kevoree.modeling.api.KMFContainer;
-import org.kevoree.modeling.api.util.ModelVisitor;
+import org.kevoree.pmodeling.api.KMFContainer;
+import org.kevoree.pmodeling.api.util.ModelVisitor;
 
 import java.io.File;
 import java.io.InputStream;

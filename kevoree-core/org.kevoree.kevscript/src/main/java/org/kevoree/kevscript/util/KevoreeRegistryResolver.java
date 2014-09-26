@@ -5,8 +5,8 @@ import org.kevoree.TypeDefinition;
 import org.kevoree.factory.DefaultKevoreeFactory;
 import org.kevoree.factory.KevoreeFactory;
 import org.kevoree.log.Log;
-import org.kevoree.modeling.api.KMFContainer;
-import org.kevoree.modeling.api.util.ModelVisitor;
+import org.kevoree.pmodeling.api.KMFContainer;
+import org.kevoree.pmodeling.api.util.ModelVisitor;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;

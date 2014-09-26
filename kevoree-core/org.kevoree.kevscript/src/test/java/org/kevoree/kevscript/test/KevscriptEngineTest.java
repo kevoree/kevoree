@@ -1,14 +1,13 @@
 package org.kevoree.kevscript.test;
 
-import org.junit.Test;
 import org.kevoree.ContainerRoot;
 import org.kevoree.factory.DefaultKevoreeFactory;
 import org.kevoree.factory.KevoreeFactory;
 import org.kevoree.kevscript.KevScriptEngine;
 import org.kevoree.kevscript.Parser;
 import org.kevoree.kevscript.Type;
-import org.kevoree.modeling.api.json.JSONModelLoader;
-import org.kevoree.modeling.api.json.JSONModelSerializer;
+import org.kevoree.pmodeling.api.json.JSONModelLoader;
+import org.kevoree.pmodeling.api.json.JSONModelSerializer;
 import org.waxeye.input.BufferFiller;
 import org.waxeye.input.InputBuffer;
 import org.waxeye.parser.ParseResult;

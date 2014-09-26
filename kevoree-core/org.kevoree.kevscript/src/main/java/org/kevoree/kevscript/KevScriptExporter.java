@@ -2,8 +2,8 @@ package org.kevoree.kevscript;
 
 import org.kevoree.*;
 import org.kevoree.api.helper.KModelHelper;
-import org.kevoree.modeling.api.KMFContainer;
-import org.kevoree.modeling.api.util.ModelVisitor;
+import org.kevoree.pmodeling.api.KMFContainer;
+import org.kevoree.pmodeling.api.util.ModelVisitor;
 
 /**
  * Created with IntelliJ IDEA.

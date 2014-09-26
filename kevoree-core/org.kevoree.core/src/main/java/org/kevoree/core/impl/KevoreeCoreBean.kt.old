@@ -18,7 +18,7 @@ import org.kevoree.ContainerNode
 import java.util.concurrent.TimeUnit
 import org.kevoree.api.NodeType
 import org.kevoree.core.impl.deploy.PrimitiveCommandExecutionHelper
-import org.kevoree.modeling.api.trace.TraceSequence
+import org.kevoree.pmodeling.api.trace.TraceSequence
 import org.kevoree.kevscript.KevScriptEngine
 import org.kevoree.api.handler.UpdateContext
 import org.kevoree.factory.DefaultKevoreeFactory

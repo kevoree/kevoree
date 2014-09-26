@@ -6,7 +6,6 @@ import org.kevoree.ContainerRoot;
 import org.kevoree.DeployUnit;
 import org.kevoree.factory.DefaultKevoreeFactory;
 import org.kevoree.factory.KevoreeFactory;
-import org.kevoree.log.Log;
 
 import java.io.File;
 import java.io.FileInputStream;

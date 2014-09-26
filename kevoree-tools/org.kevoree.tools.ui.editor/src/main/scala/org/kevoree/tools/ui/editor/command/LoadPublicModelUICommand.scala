@@ -27,7 +27,7 @@ class LoadPublicModelUICommand extends Command {
 
   def setKernel(k: KevoreeUIKernel) = kernel = k
 
-  val jsonLoader = new org.kevoree.modeling.api.json.JSONModelLoader(new DefaultKevoreeFactory());
+  val jsonLoader = new org.kevoree.pmodeling.api.json.JSONModelLoader(new DefaultKevoreeFactory());
 
   private val lcommand = new LoadModelCommand();
   private val mergeCommand = new MergeModelCommand();

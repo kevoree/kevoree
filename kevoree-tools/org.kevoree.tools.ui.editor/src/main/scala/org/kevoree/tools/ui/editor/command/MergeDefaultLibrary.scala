@@ -26,15 +26,16 @@
  */
 package org.kevoree.tools.ui.editor.command
 
-import org.kevoree.factory.DefaultKevoreeFactory
-import org.kevoree.modeling.api.json.{JSONModelSerializer, JSONModelLoader}
-import org.kevoree.tools.ui.editor.{PositionedEMFHelper, KevoreeUIKernel}
-import org.slf4j.LoggerFactory
 import java.io._
-import java.util.jar.{JarEntry, JarFile}
 import java.util
+import java.util.jar.{JarEntry, JarFile}
+
 import org.kevoree.ContainerRoot
+import org.kevoree.factory.DefaultKevoreeFactory
+import org.kevoree.pmodeling.api.json.{JSONModelLoader, JSONModelSerializer}
 import org.kevoree.resolver.MavenResolver
+import org.kevoree.tools.ui.editor.{KevoreeUIKernel, PositionedEMFHelper}
+import org.slf4j.LoggerFactory
 
 class MergeDefaultLibrary(groupID: String, arteID: String, version: String) extends Command {
 
@@ -47,20 +48,13 @@ class MergeDefaultLibrary(groupID: String, arteID: String, version: String) exte
 
   def execute(p: Object) {
     try {
-
       val repos = new util.HashSet[String]()
       repos.add("http://repo1.maven.org/maven2/")
-
       val file: File = mavenResolver.resolve("mvn:" + groupID + ":" + arteID + ":" + version, repos)
-
-      //println("mvn:" + groupID + ":" + arteID + ":" + version+"->"+file)
-
       val jar = new JarFile(file)
       val entry: JarEntry = jar.getJarEntry("KEV-INF/lib.json")
-
       val loader = new JSONModelLoader(new DefaultKevoreeFactory());
       val saver = new JSONModelSerializer();
-
       val newmodel = loader.loadModelFromStream(jar.getInputStream(entry)).get(0).asInstanceOf[ContainerRoot]
       if (newmodel != null) {
         PositionedEMFHelper.updateModelUIMetaData(kernel);
@@ -68,19 +62,12 @@ class MergeDefaultLibrary(groupID: String, arteID: String, version: String) exte
         val loadCmd = new LoadModelCommand();
         loadCmd.setKernel(kernel);
         loadCmd.execute(kernel.getModelHandler.getActualModel);
-
-
       } else {
         logger.error("Error while loading model");
       }
-
-
     } catch {
-
-      case _@e => logger.error("Could not load default lib ! => " + e.getMessage); e.printStackTrace()
+      case e: Throwable => logger.error("Could not load default lib ! => " + e.getMessage); e.printStackTrace()
     }
-
-
   }
 
 

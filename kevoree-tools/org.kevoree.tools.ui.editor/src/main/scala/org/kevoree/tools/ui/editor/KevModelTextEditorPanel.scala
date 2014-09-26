@@ -30,7 +30,7 @@ import command.LoadModelCommand
 import javax.swing._
 import java.awt.event.{MouseEvent, MouseAdapter}
 import org.kevoree.factory.DefaultKevoreeFactory
-import org.kevoree.modeling.api.json.{JSONModelLoader, JSONModelSerializer}
+import org.kevoree.pmodeling.api.json.{JSONModelLoader, JSONModelSerializer}
 import org.slf4j.LoggerFactory
 import java.awt.BorderLayout
 

@@ -6,8 +6,8 @@ import org.kevoree.ContainerRoot;
 import org.kevoree.TypeDefinition;
 import org.kevoree.kevscript.Type;
 import org.kevoree.log.Log;
-import org.kevoree.modeling.api.KMFContainer;
-import org.kevoree.modeling.api.util.ModelVisitor;
+import org.kevoree.pmodeling.api.KMFContainer;
+import org.kevoree.pmodeling.api.util.ModelVisitor;
 import org.kevoree.resolver.util.MavenVersionComparator;
 import org.waxeye.ast.IAST;
 

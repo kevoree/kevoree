@@ -17,7 +17,7 @@ import java.util.ArrayList
 import org.kevoree.ComponentInstance
 import org.kevoree.api.service.core.checker.CheckerService
 import org.kevoree.api.service.core.checker.CheckerViolation
-import org.kevoree.modeling.api.KMFContainer
+import org.kevoree.pmodeling.api.KMFContainer
 import org.kevoree.api.service.core.checker.CheckerContext
 
 /**
@@ -44,16 +44,6 @@ class PortChecker: CheckerService {
                 concreteViolation.setTargetObjects(targetObjects)
                 violations.add(concreteViolation)
             }
-            /*
-            if(port.bindings.size() > 1){
-                //TWICE BINDING !!!
-                val concreteViolation: CheckerViolation = CheckerViolation()
-                concreteViolation.setMessage("Required port (" + (port.eContainer() as ComponentInstance).name + "." + port.portTypeRef!!.name + ") is bound multiple times !")
-                val targetObjects = ArrayList<String>()
-                targetObjects.add(port.eContainer()!!.path()!!)
-                concreteViolation.setTargetObjects(targetObjects)
-                violations.add(concreteViolation)
-            }*/
         }
     }
 

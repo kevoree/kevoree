@@ -5,8 +5,8 @@ import org.kevoree.Repository;
 import org.kevoree.factory.DefaultKevoreeFactory;
 import org.kevoree.factory.KevoreeFactory;
 import org.kevoree.log.Log;
-import org.kevoree.modeling.api.compare.ModelCompare;
-import org.kevoree.modeling.api.json.JSONModelLoader;
+import org.kevoree.pmodeling.api.compare.ModelCompare;
+import org.kevoree.pmodeling.api.json.JSONModelLoader;
 import org.kevoree.resolver.MavenResolver;
 
 import java.io.File;

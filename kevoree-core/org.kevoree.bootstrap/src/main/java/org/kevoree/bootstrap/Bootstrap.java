@@ -12,11 +12,11 @@ import org.kevoree.core.impl.KevoreeCoreBean;
 import org.kevoree.kevscript.KevScriptEngine;
 import org.kevoree.log.Log;
 import org.kevoree.microkernel.KevoreeKernel;
-import org.kevoree.modeling.api.KMFContainer;
-import org.kevoree.modeling.api.compare.ModelCompare;
-import org.kevoree.modeling.api.json.JSONModelLoader;
-import org.kevoree.modeling.api.util.ModelVisitor;
-import org.kevoree.modeling.api.xmi.XMIModelLoader;
+import org.kevoree.pmodeling.api.KMFContainer;
+import org.kevoree.pmodeling.api.compare.ModelCompare;
+import org.kevoree.pmodeling.api.json.JSONModelLoader;
+import org.kevoree.pmodeling.api.util.ModelVisitor;
+import org.kevoree.pmodeling.api.xmi.XMIModelLoader;
 
 import java.io.*;
 import java.net.InetAddress;

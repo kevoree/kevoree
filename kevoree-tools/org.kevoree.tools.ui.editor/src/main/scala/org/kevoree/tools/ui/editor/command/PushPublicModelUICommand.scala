@@ -21,7 +21,7 @@ class PushPublicModelUICommand extends Command {
 
   def setKernel(k: KevoreeUIKernel) = kernel = k
 
-  val jsonSaver = new org.kevoree.modeling.api.json.JSONModelSerializer();
+  val jsonSaver = new org.kevoree.pmodeling.api.json.JSONModelSerializer();
 
   var logger = LoggerFactory.getLogger(this.getClass)
 

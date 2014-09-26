@@ -18,7 +18,7 @@ import org.kevoree.MBinding
 import org.kevoree.ServicePortType
 import org.kevoree.api.service.core.checker.CheckerService
 import org.kevoree.api.service.core.checker.CheckerViolation
-import org.kevoree.modeling.api.KMFContainer
+import org.kevoree.pmodeling.api.KMFContainer
 import org.kevoree.Channel
 import org.kevoree.api.service.core.checker.CheckerContext
 

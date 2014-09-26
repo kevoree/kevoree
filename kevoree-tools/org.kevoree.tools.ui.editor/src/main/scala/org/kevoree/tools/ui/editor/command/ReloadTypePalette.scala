@@ -30,8 +30,8 @@ package org.kevoree.tools.ui.editor.command
 import javax.swing.JPanel
 
 import org.kevoree._
-import org.kevoree.modeling.api.KMFContainer
-import org.kevoree.modeling.api.util.ModelVisitor
+import org.kevoree.pmodeling.api.KMFContainer
+import org.kevoree.pmodeling.api.util.ModelVisitor
 import org.kevoree.tools.ui.editor._
 
 import scala.collection.JavaConversions._

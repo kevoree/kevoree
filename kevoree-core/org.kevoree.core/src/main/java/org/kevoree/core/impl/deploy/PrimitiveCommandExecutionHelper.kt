@@ -13,13 +13,8 @@
  */
 package org.kevoree.core.impl.deploy
 
-import java.util
-import java.util.ArrayList
-import java.util.concurrent.Callable
-import java.util.concurrent.TimeUnit
 import org.kevoree.ContainerNode
 import org.kevoree.api.NodeType
-import org.kevoree.api.PrimitiveCommand
 import org.kevoree.log.Log
 import org.kevoree.api.adaptation.AdaptationModel
 import org.kevoree.api.adaptation.ParallelStep
@@ -35,37 +30,41 @@ import org.kevoree.core.impl.KevoreeCoreBean
 
 object PrimitiveCommandExecutionHelper {
 
-    fun execute(originCore : KevoreeCoreBean,rootNode: ContainerNode, adaptionModel: AdaptationModel, nodeInstance: NodeType, afterUpdateFunc: ()->Boolean, preRollBack: ()->Boolean, postRollback: ()-> Boolean): Boolean {
+    fun execute(originCore: KevoreeCoreBean, rootNode: ContainerNode, adaptionModel: AdaptationModel, nodeInstance: NodeType, afterUpdateFunc: PrimitiveExecute, preRollBack: PrimitiveExecute, postRollback: PrimitiveExecute): Boolean {
         val orderedPrimitiveSet = adaptionModel.orderedPrimitiveSet
         return if (orderedPrimitiveSet != null) {
 
-            val phase = if(orderedPrimitiveSet is ParallelStep){KevoreeParDeployPhase(originCore)}else{KevoreeSeqDeployPhase(originCore)}
-            val res = executeStep(originCore,rootNode, orderedPrimitiveSet, nodeInstance, phase, preRollBack)
+            val phase = if (orderedPrimitiveSet is ParallelStep) {
+                KevoreeParDeployPhase(originCore)
+            } else {
+                KevoreeSeqDeployPhase(originCore)
+            }
+            val res = executeStep(originCore, rootNode, orderedPrimitiveSet, nodeInstance, phase, preRollBack)
             if (res) {
-                if (!afterUpdateFunc()) {
+                if (!afterUpdateFunc.exec()) {
                     //CASE REFUSE BY LISTENERS
-                    preRollBack()
+                    preRollBack.exec()
                     phase.rollBack()
-                    postRollback()
+                    postRollback.exec()
                 }
             } else {
-                postRollback()
+                postRollback.exec()
             }
             res
         } else {
-            afterUpdateFunc()
+            afterUpdateFunc.exec()
         }
     }
 
-    private fun executeStep(originCore : KevoreeCoreBean,rootNode: ContainerNode, step: Step, nodeInstance: NodeType, phase: KevoreeDeployPhase, preRollBack: ()-> Boolean): Boolean {
+    private fun executeStep(originCore: KevoreeCoreBean, rootNode: ContainerNode, step: Step, nodeInstance: NodeType, phase: KevoreeDeployPhase, preRollBack: PrimitiveExecute): Boolean {
         if (step == null) {
             return true
         }
-        val populateResult = step.adaptations.all{
+        val populateResult = step.adaptations.all {
             adapt ->
             val primitive = nodeInstance.getPrimitive(adapt)
             if (primitive != null) {
-                Log.trace("Populate primitive => {} ",primitive)
+                Log.trace("Populate primitive => {} ", primitive)
                 phase.populate(primitive)
                 true
             } else {
@@ -78,22 +77,26 @@ object PrimitiveCommandExecutionHelper {
             if (phaseResult) {
                 val nextStep = step.nextStep
                 var subResult = false
-                if(nextStep != null){
-                    val nextPhase = if(nextStep is ParallelStep){KevoreeParDeployPhase(originCore)}else{KevoreeSeqDeployPhase(originCore)}
+                if (nextStep != null) {
+                    val nextPhase = if (nextStep is ParallelStep) {
+                        KevoreeParDeployPhase(originCore)
+                    } else {
+                        KevoreeSeqDeployPhase(originCore)
+                    }
                     phase.sucessor = nextPhase
-                    subResult = executeStep(originCore,rootNode, nextStep, nodeInstance, nextPhase, preRollBack)
+                    subResult = executeStep(originCore, rootNode, nextStep, nodeInstance, nextPhase, preRollBack)
                 } else {
                     subResult = true
                 }
                 if (!subResult) {
-                    preRollBack()
+                    preRollBack.exec()
                     phase.rollBack()
                     return false
                 } else {
                     return true
                 }
             } else {
-                preRollBack()
+                preRollBack.exec()
                 phase.rollBack()
                 return false
             }
@@ -102,7 +105,6 @@ object PrimitiveCommandExecutionHelper {
             return false
         }
     }
-
 
 
 }

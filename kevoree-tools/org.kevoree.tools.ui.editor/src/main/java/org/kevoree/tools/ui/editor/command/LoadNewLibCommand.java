@@ -31,7 +31,7 @@ package org.kevoree.tools.ui.editor.command;
 
 import org.kevoree.ContainerRoot;
 import org.kevoree.factory.DefaultKevoreeFactory;
-import org.kevoree.modeling.api.json.JSONModelLoader;
+import org.kevoree.pmodeling.api.json.JSONModelLoader;
 import org.kevoree.tools.ui.editor.KevoreeUIKernel;
 import org.kevoree.tools.ui.editor.PositionedEMFHelper;
 

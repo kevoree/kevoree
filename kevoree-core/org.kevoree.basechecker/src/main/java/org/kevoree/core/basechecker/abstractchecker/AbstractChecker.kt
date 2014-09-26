@@ -16,7 +16,7 @@ package org.kevoree.core.basechecker.abstractchecker
 import java.util.ArrayList
 import org.kevoree.api.service.core.checker.CheckerService
 import org.kevoree.api.service.core.checker.CheckerViolation
-import org.kevoree.modeling.api.KMFContainer
+import org.kevoree.pmodeling.api.KMFContainer
 import org.kevoree.Instance
 import org.kevoree.api.service.core.checker.CheckerContext
 

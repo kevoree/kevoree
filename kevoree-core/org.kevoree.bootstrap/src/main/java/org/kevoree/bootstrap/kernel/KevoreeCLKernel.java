@@ -14,7 +14,6 @@ import org.kevoree.core.impl.KevoreeCoreBean;
 import org.kevoree.kcl.api.FlexyClassLoader;
 import org.kevoree.kcl.api.FlexyClassLoaderFactory;
 import org.kevoree.kcl.api.ResolutionPriority;
-import org.kevoree.kcl.impl.ProxyClassLoaderImpl;
 import org.kevoree.log.Log;
 
 import java.io.File;
@@ -45,13 +44,6 @@ public class KevoreeCLKernel implements BootstrapService {
 
     private KevoreeInjector injector = null;
 
-    public boolean hasToBeProtected(DeployUnit deployUnit) {
-        if (deployUnit.getName().equals("org.kevoree.api") || deployUnit.getName().equals("org.kevoree.annotation.api") || deployUnit.getName().equals("org.kevoree.model")) {
-            return true;
-        }
-        return false;
-    }
-
     public String buildKernelKey(DeployUnit deployUnit) {
         StringBuilder builder = new StringBuilder();
         builder.append("mvn:");
@@ -75,14 +67,7 @@ public class KevoreeCLKernel implements BootstrapService {
     public FlexyClassLoader installDeployUnit(DeployUnit deployUnit) {
         FlexyClassLoader resolvedKCL = get(deployUnit);
         if (resolvedKCL != null) {
-            if (hasToBeProtected(deployUnit)) {
-                ProxyClassLoaderImpl proxy = new ProxyClassLoaderImpl();
-                proxy.addFilter("org.kevoree.modeling");
-                proxy.attachChild(resolvedKCL);
-                return proxy;
-            } else {
-                return resolvedKCL;
-            }
+            return resolvedKCL;
         } else {
             HashSet<String> urls = new HashSet<String>();
             if (!offline) {

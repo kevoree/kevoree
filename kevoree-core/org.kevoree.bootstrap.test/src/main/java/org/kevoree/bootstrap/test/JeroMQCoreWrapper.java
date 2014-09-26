@@ -3,8 +3,8 @@ package org.kevoree.bootstrap.test;
 import org.kevoree.ContainerRoot;
 import org.kevoree.api.handler.UpdateCallback;
 import org.kevoree.core.impl.KevoreeCoreBean;
-import org.kevoree.modeling.api.json.JSONModelLoader;
-import org.kevoree.modeling.api.json.JSONModelSerializer;
+import org.kevoree.pmodeling.api.json.JSONModelLoader;
+import org.kevoree.pmodeling.api.json.JSONModelSerializer;
 import org.zeromq.ZMQ;
 
 import java.util.concurrent.CountDownLatch;

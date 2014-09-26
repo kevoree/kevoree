@@ -31,7 +31,7 @@
 
 package org.kevoree.api.service.core.checker;
 
-import org.kevoree.modeling.api.KMFContainer;
+import org.kevoree.pmodeling.api.KMFContainer;
 
 import java.util.List;
 

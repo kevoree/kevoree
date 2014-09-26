@@ -24,8 +24,8 @@ import org.kevoree.core.basechecker.namechecker.NameChecker
 import org.kevoree.core.basechecker.abstractchecker.AbstractChecker
 import org.kevoree.core.basechecker.portchecker.PortChecker
 import org.kevoree.log.Log
-import org.kevoree.modeling.api.util.ModelVisitor
-import org.kevoree.modeling.api.KMFContainer
+import org.kevoree.pmodeling.api.util.ModelVisitor
+import org.kevoree.pmodeling.api.KMFContainer
 import org.kevoree.api.service.core.checker.CheckerContext
 
 class RootChecker : CheckerService {

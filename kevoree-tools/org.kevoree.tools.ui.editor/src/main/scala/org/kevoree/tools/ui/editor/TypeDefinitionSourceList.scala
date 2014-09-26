@@ -34,8 +34,8 @@ import javax.swing._
 
 import com.explodingpixels.macwidgets._
 import org.kevoree.TypeDefinition
-import org.kevoree.modeling.api.KMFContainer
-import org.kevoree.modeling.api.util.ModelVisitor
+import org.kevoree.pmodeling.api.KMFContainer
+import org.kevoree.pmodeling.api.util.ModelVisitor
 import org.kevoree.tools.ui.editor.command.ReloadTypePalette
 import org.kevoree.tools.ui.framework.elements.{ChannelTypePanel, ComponentTypePanel, GroupTypePanel, NodeTypePanel}
 ;

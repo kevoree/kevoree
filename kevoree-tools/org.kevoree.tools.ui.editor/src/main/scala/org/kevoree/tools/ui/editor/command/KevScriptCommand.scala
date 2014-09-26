@@ -40,7 +40,7 @@
 package org.kevoree.tools.ui.editor.command
 
 import org.kevoree.factory.DefaultKevoreeFactory
-import org.kevoree.modeling.api.ModelCloner
+import org.kevoree.pmodeling.api.ModelCloner
 import org.kevoree.tools.ui.editor.KevoreeUIKernel
 import org.slf4j.LoggerFactory
 import java.awt.Color

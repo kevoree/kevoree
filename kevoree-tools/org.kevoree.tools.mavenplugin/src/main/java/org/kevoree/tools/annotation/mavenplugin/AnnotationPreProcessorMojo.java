@@ -33,11 +33,11 @@ import org.kevoree.api.helper.KModelHelper;
 import org.kevoree.bootstrap.dev.annotator.Annotations2Model;
 import org.kevoree.factory.DefaultKevoreeFactory;
 import org.kevoree.factory.KevoreeFactory;
-import org.kevoree.modeling.api.compare.ModelCompare;
-import org.kevoree.modeling.api.json.JSONModelLoader;
-import org.kevoree.modeling.api.json.JSONModelSerializer;
-import org.kevoree.modeling.api.xmi.XMIModelLoader;
-import org.kevoree.modeling.api.xmi.XMIModelSerializer;
+import org.kevoree.pmodeling.api.compare.ModelCompare;
+import org.kevoree.pmodeling.api.json.JSONModelLoader;
+import org.kevoree.pmodeling.api.json.JSONModelSerializer;
+import org.kevoree.pmodeling.api.xmi.XMIModelLoader;
+import org.kevoree.pmodeling.api.xmi.XMIModelSerializer;
 
 import java.io.File;
 import java.io.FileOutputStream;

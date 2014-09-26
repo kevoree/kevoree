@@ -5,7 +5,7 @@ import org.kevoree.ContainerNode;
 import org.kevoree.ContainerRoot;
 import org.kevoree.Port;
 import org.kevoree.kevscript.Type;
-import org.kevoree.modeling.api.KMFContainer;
+import org.kevoree.pmodeling.api.KMFContainer;
 import org.waxeye.ast.IAST;
 
 import java.util.ArrayList;

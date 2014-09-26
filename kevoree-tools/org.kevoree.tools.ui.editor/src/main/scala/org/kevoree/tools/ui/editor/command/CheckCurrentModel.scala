@@ -26,7 +26,6 @@
  */
 package org.kevoree.tools.ui.editor.command
 
-import org.kevoree.core.basechecker.RootChecker
 
 import org.kevoree.tools.ui.framework.ErrorHighlightableElement
 import org.slf4j.LoggerFactory
@@ -41,7 +40,6 @@ class CheckCurrentModel extends Command {
 
   def setKernel(k: KevoreeUIKernel) = kernel = k
 
-  var checker = new RootChecker
   var objectInError: List[ErrorHighlightableElement] = List()
 
   val scheduledExecutorService : java.util.concurrent.ScheduledExecutorService = java.util.concurrent.Executors.newSingleThreadScheduledExecutor()
@@ -57,6 +55,8 @@ class CheckCurrentModel extends Command {
   }
 
   def effectiveCheck() {
+
+    /*
     val previousNoError = objectInError.isEmpty
     objectInError.foreach(o => o.setState(ErrorHighlightableElement.STATE.NO_ERROR))
     objectInError = List()
@@ -88,7 +88,7 @@ class CheckCurrentModel extends Command {
       kernel.getModelPanel.repaint()
       kernel.getModelPanel.revalidate()
     }
-
+       */
 
   }
 

@@ -37,8 +37,8 @@ import com.explodingpixels.macwidgets.{HudWidgetFactory, HudWindow}
 import org.kevoree._
 import org.kevoree.factory.DefaultKevoreeFactory
 import org.kevoree.kevscript.KevScriptEngine
-import org.kevoree.modeling.api.util.ModelVisitor
-import org.kevoree.modeling.api.{KMFContainer, ModelCloner}
+import org.kevoree.pmodeling.api.util.ModelVisitor
+import org.kevoree.pmodeling.api.{KMFContainer, ModelCloner}
 import org.kevoree.tools.ui.editor.command.LoadModelCommand
 import org.kevoree.tools.ui.editor.property.SpringUtilities
 import org.kevoree.tools.ui.editor.{KevoreeUIKernel, PositionedEMFHelper, UIHelper}

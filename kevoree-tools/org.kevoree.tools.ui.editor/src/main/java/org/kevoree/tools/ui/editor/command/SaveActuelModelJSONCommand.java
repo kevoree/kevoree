@@ -29,7 +29,7 @@
  * Copyright  : IRISA / INRIA / Universite de Rennes 1 */
 package org.kevoree.tools.ui.editor.command;
 
-import org.kevoree.modeling.api.json.JSONModelSerializer;
+import org.kevoree.pmodeling.api.json.JSONModelSerializer;
 import org.kevoree.tools.ui.editor.KevoreeUIKernel;
 import org.kevoree.tools.ui.editor.PositionedEMFHelper;
 import org.slf4j.Logger;

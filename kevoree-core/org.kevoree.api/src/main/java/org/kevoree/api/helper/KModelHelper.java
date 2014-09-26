@@ -6,7 +6,7 @@ import org.kevoree.Package;
 import org.kevoree.factory.DefaultKevoreeFactory;
 import org.kevoree.factory.KevoreeFactory;
 import org.kevoree.log.Log;
-import org.kevoree.modeling.api.KMFContainer;
+import org.kevoree.pmodeling.api.KMFContainer;
 
 /**
  * Created by duke on 8/26/14.

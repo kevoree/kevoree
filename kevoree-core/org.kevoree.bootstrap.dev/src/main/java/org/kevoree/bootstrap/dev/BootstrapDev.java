@@ -11,7 +11,7 @@ import org.kevoree.factory.KevoreeFactory;
 import org.kevoree.kcl.api.FlexyClassLoader;
 import org.kevoree.log.Log;
 import org.kevoree.microkernel.KevoreeKernel;
-import org.kevoree.modeling.api.json.JSONModelSerializer;
+import org.kevoree.pmodeling.api.json.JSONModelSerializer;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;

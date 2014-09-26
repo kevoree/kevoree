@@ -5,7 +5,7 @@ import org.kevoree.api.handler.LockCallBack;
 import org.kevoree.api.handler.ModelListener;
 import org.kevoree.api.handler.UUIDModel;
 import org.kevoree.api.handler.UpdateCallback;
-import org.kevoree.modeling.api.trace.TraceSequence;
+import org.kevoree.pmodeling.api.trace.TraceSequence;
 
 import java.util.UUID;
 
