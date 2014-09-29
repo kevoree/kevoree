@@ -17,7 +17,6 @@ import org.kevoree.pmodeling.api.trace.TraceSequence;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
-import java.io.PrintWriter;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Date;
@@ -70,7 +69,7 @@ public class KevoreeCoreBean implements ContextAwareModelService {
 
     public void broadcastTelemetry(String typeMessage, String message, Throwable stack) {
         if (isAnyTelemetryListener()) {
-            String txt_stack="";
+            String txt_stack = "";
             if (stack != null) {
                 try {
                     ByteArrayOutputStream boo = new ByteArrayOutputStream();
@@ -522,7 +521,7 @@ public class KevoreeCoreBean implements ContextAwareModelService {
 
 
     public void start() {
-        if (getNodeName() == "") {
+        if (getNodeName() == null || getNodeName().equals("")) {
             setNodeName("node0");
         }
         modelListeners.start(getNodeName());
