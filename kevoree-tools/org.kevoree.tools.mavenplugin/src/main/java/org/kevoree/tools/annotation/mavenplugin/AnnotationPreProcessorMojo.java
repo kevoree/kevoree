@@ -29,6 +29,7 @@ import org.apache.maven.shared.dependency.tree.DependencyTreeBuilder;
 import org.apache.maven.shared.dependency.tree.DependencyTreeBuilderException;
 import org.kevoree.ContainerRoot;
 import org.kevoree.DeployUnit;
+import org.kevoree.Value;
 import org.kevoree.api.helper.KModelHelper;
 import org.kevoree.bootstrap.dev.annotator.Annotations2Model;
 import org.kevoree.factory.DefaultKevoreeFactory;
@@ -105,10 +106,13 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
     public DeployUnit fillModel(ContainerRoot model, DependencyNode root, KevoreeFactory factory) {
 
         if (!cache.containsKey(createKey(root))) {
-            DeployUnit du = new DefaultKevoreeFactory().createDeployUnit();
+            DeployUnit du = factory.createDeployUnit();
             du.setName(root.getArtifact().getArtifactId());
             du.setVersion(root.getArtifact().getBaseVersion());
-
+            Value platform = factory.createValue();
+            platform.setName("platform");
+            platform.setValue("java");
+            du.addFilters(platform);
 
             org.kevoree.Package pack = KModelHelper.fqnCreate(root.getArtifact().getGroupId(), model, factory);
             if (pack == null) {

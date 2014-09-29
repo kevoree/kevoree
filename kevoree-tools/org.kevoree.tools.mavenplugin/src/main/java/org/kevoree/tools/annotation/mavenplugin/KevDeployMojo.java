@@ -49,7 +49,7 @@ public class KevDeployMojo extends AbstractMojo {
                 send(payload);
                 fis.close();
             } catch (Exception e) {
-                throw new MojoExecutionException("Bad deployement of Kevoree Library to index ", e);
+                throw new MojoExecutionException("Bad deployment of Kevoree library to index ", e);
             }
         }
     }
