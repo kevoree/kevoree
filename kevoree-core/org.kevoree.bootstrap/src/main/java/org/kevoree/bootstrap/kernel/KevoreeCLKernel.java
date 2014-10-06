@@ -6,6 +6,7 @@ import org.kevoree.*;
 import org.kevoree.api.BootstrapService;
 import org.kevoree.api.Context;
 import org.kevoree.api.ModelService;
+import org.kevoree.api.PlatformService;
 import org.kevoree.api.helper.KModelHelper;
 import org.kevoree.bootstrap.Bootstrap;
 import org.kevoree.bootstrap.reflect.KevoreeInjector;
@@ -173,6 +174,7 @@ public class KevoreeCLKernel implements BootstrapService {
             KevoreeInjector selfInjector = injector.clone();
             selfInjector.addService(Context.class, new InstanceContext(instance.path(), nodeName, instance.getName()));
             selfInjector.addService(ModelService.class, new ContextAwareAdapter(core, instance.path()));
+            selfInjector.addService(PlatformService.class, core);
             selfInjector.process(newInstance);
             return newInstance;
         } catch (Exception e) {
