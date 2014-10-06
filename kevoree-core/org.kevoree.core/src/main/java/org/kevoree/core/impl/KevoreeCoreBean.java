@@ -3,6 +3,7 @@ package org.kevoree.core.impl;
 import org.kevoree.*;
 import org.kevoree.api.BootstrapService;
 import org.kevoree.api.NodeType;
+import org.kevoree.api.PlatformService;
 import org.kevoree.api.adaptation.AdaptationModel;
 import org.kevoree.api.handler.*;
 import org.kevoree.api.telemetry.TelemetryEvent;
@@ -31,7 +32,7 @@ import java.util.concurrent.atomic.AtomicReference;
 /**
  * Created by duke on 9/26/14.
  */
-public class KevoreeCoreBean implements ContextAwareModelService {
+public class KevoreeCoreBean implements ContextAwareModelService, PlatformService {
 
     ArrayList<TelemetryListener> telemetryListeners = new ArrayList<TelemetryListener>();
 
@@ -67,7 +68,7 @@ public class KevoreeCoreBean implements ContextAwareModelService {
     }
 
 
-    public void broadcastTelemetry(String typeMessage, String message, Throwable stack) {
+    public void broadcastTelemetry(TelemetryEvent.Type typeMessage, String message, Throwable stack) {
         if (isAnyTelemetryListener()) {
             String txt_stack = "";
             if (stack != null) {
@@ -251,7 +252,7 @@ public class KevoreeCoreBean implements ContextAwareModelService {
                     }
                 }.start();
             } catch (Throwable e) {
-                broadcastTelemetry("error", "Error while applying trace sequence.", e);
+                broadcastTelemetry(TelemetryEvent.Type.LOG_ERROR, "Error while applying trace sequence.", e);
                 //Log.error("error while apply trace sequence", e)
                 callback.run(false);
             }
@@ -269,7 +270,7 @@ public class KevoreeCoreBean implements ContextAwareModelService {
     private void switchToNewModel(ContainerRoot c) {
         ContainerRoot cc = c;
         if (!c.isReadOnly()) {
-            broadcastTelemetry("warn", "It is not safe to store ReadWrite model!", null);
+            broadcastTelemetry(TelemetryEvent.Type.LOG_WARNING, "It is not safe to store ReadWrite model!", null);
             //Log.error("It is not safe to store ReadWrite model")
             cc = kevoreeFactory.createModelCloner().clone(c, true);
         }
@@ -295,7 +296,7 @@ public class KevoreeCoreBean implements ContextAwareModelService {
 
     public boolean internal_update_model(ContainerRoot proposedNewModel, String callerPath) {
         if (proposedNewModel.findNodesByID(getNodeName()) == null) {
-            broadcastTelemetry("error", "Asking for update with a NULL model or node name (" + getNodeName() + ") was not found in target model !", null);
+            broadcastTelemetry(TelemetryEvent.Type.LOG_ERROR, "Asking for update with a NULL model or node name (" + getNodeName() + ") was not found in target model !", null);
             return false;
         }
         try {
@@ -308,7 +309,7 @@ public class KevoreeCoreBean implements ContextAwareModelService {
                 readOnlyNewModel.setGenerated_KMF_ID(nodeName + "@" + callerPath + "#" + System.nanoTime());
             }
             if (false) {
-                broadcastTelemetry("error", "There is check failure on update model, update refused !", null);
+                broadcastTelemetry(TelemetryEvent.Type.LOG_ERROR, "There is check failure on update model, update refused !", null);
                 return false;
             } else {
                 pending = proposedNewModel;
@@ -326,7 +327,7 @@ public class KevoreeCoreBean implements ContextAwareModelService {
                     //CHECK FOR HARA KIRI
                     ContainerRoot previousHaraKiriModel = null;
                     if (/*hkh.detectNodeHaraKiri(currentModel, readOnlyNewModel, getNodeName())*/false) {
-                        broadcastTelemetry("warn", "HaraKiri detected , flush platform", null);
+                        broadcastTelemetry(TelemetryEvent.Type.LOG_WARNING, "HaraKiri detected , flush platform", null);
                         //Log.warn("HaraKiri detected , flush platform")
                         previousHaraKiriModel = currentModel;
                         // Creates an empty model, removes the current node (harakiri)
@@ -362,7 +363,7 @@ public class KevoreeCoreBean implements ContextAwareModelService {
                             //prepares for deployment of the new system
                             newmodel = readOnlyNewModel;
                         } catch (Exception e) {
-                            broadcastTelemetry("error", "Error while updating!", e);
+                            broadcastTelemetry(TelemetryEvent.Type.LOG_ERROR, "Error while updating!", e);
                             //Log.error("Error while update ", e);return false
                         }
                         Log.debug("End HaraKiri");
@@ -379,11 +380,11 @@ public class KevoreeCoreBean implements ContextAwareModelService {
                         if (nodeInstance != null) {
                             // Compare the two models and plan the adaptation
                             //Log.info("Comparing models and planning adaptation.")
-                            broadcastTelemetry("info", "Comparing models and planning adaptation.", null);
+                            broadcastTelemetry(TelemetryEvent.Type.MODEL_COMPARE_AND_PLAN, "Comparing models and planning adaptation.", null);
                             AdaptationModel adaptationModel = nodeInstance.plan(currentModel, newmodel);
                             //Execution of the adaptation
                             //Log.info("Launching adaptation of the system.")
-                            broadcastTelemetry("info", "Launching adaptation of the system.", null);
+                            broadcastTelemetry(TelemetryEvent.Type.PLATFORM_UPDATE_START, "Launching adaptation of the system.", null);
                             updateContext = new UpdateContext(currentModel, newmodel, callerPath);
 
                             final UpdateContext final_updateContext = updateContext;
@@ -404,23 +405,23 @@ public class KevoreeCoreBean implements ContextAwareModelService {
                             ContainerNode rootNode = newmodel.findNodesByID(getNodeName());
                             deployResult = PrimitiveCommandExecutionHelper.instance$.execute(this, rootNode, adaptationModel, nodeInstance, afterUpdateTest, preCmd.preRollbackTest, postRollbackTest);
                         } else {
-                            broadcastTelemetry("error", "Node is not initialized", null);
+                            broadcastTelemetry(TelemetryEvent.Type.LOG_ERROR, "Node is not initialized", null);
                             //Log.error("Node is not initialized")
                             deployResult = false;
                         }
                     } catch (Exception e) {
-                        broadcastTelemetry("error", "Error while updating", e);
+                        broadcastTelemetry(TelemetryEvent.Type.LOG_ERROR, "Error while updating", e);
                         //Log.error("Error while updating", e)
                         deployResult = false;
                     }
                     if (deployResult) {
                         switchToNewModel(newmodel);
-                        broadcastTelemetry("info", "Update sucessfully completed.", null);
+                        broadcastTelemetry(TelemetryEvent.Type.PLATFORM_UPDATE_SUCCESS, "Update sucessfully completed.", null);
                         //Log.info("Update sucessfully completed.")
                     } else {
                         //KEEP FAIL MODEL, TODO
                         //Log.warn("Update failed")
-                        broadcastTelemetry("warn", "Update failed !", null);
+                        broadcastTelemetry(TelemetryEvent.Type.PLATFORM_UPDATE_FAIL, "Update failed !", null);
                         //IF HARAKIRI
                         if (previousHaraKiriModel != null) {
                             internal_update_model(previousHaraKiriModel, callerPath);
@@ -439,7 +440,7 @@ public class KevoreeCoreBean implements ContextAwareModelService {
 
             }
         } catch (Throwable e) {
-            broadcastTelemetry("error", "Error while updating.", e);
+            broadcastTelemetry(TelemetryEvent.Type.LOG_ERROR, "Error while updating.", e);
             //Log.error("Error while update", e)
             return false;
         }
@@ -453,7 +454,7 @@ public class KevoreeCoreBean implements ContextAwareModelService {
             bootstrapService.injectDictionary(nodeInstance, newInstance, false);
             return newInstance;
         } else {
-            broadcastTelemetry("error", "Node not found using name " + nodeName, null);
+            broadcastTelemetry(TelemetryEvent.Type.LOG_ERROR, "Node not found using name " + nodeName, null);
             //Log.error("Node not found using name " + nodeName);
             return null;
         }
@@ -472,16 +473,16 @@ public class KevoreeCoreBean implements ContextAwareModelService {
                         UUIDModelImpl uuidModel = new UUIDModelImpl(UUID.randomUUID(), kevoreeFactory.createContainerRoot());
                         model.set(uuidModel);
                     } else {
-                        broadcastTelemetry("error", "TypeDef installation fail. Node not found using name " + getNodeName(), null);
+                        broadcastTelemetry(TelemetryEvent.Type.LOG_ERROR, "TypeDef installation fail. Node not found using name " + getNodeName(), null);
                         //Log.error("TypeDef installation fail !")
                     }
                 } else {
-                    broadcastTelemetry("error", "Node instance name " + getNodeName() + " not found in bootstrap model !", null);
+                    broadcastTelemetry(TelemetryEvent.Type.LOG_ERROR, "Node instance name " + getNodeName() + " not found in bootstrap model !", null);
                     //Log.error("Node instance name {} not found in bootstrap model !", getNodeName())
                 }
             }
         } catch (Throwable e) {
-            broadcastTelemetry("error", "Error while bootstraping node instance", e);
+            broadcastTelemetry(TelemetryEvent.Type.LOG_ERROR, "Error while bootstraping node instance", e);
             // TODO is it possible to display the following log ?
             try {
                 if (nodeInstance != null) {
@@ -525,7 +526,7 @@ public class KevoreeCoreBean implements ContextAwareModelService {
             setNodeName("node0");
         }
         modelListeners.start(getNodeName());
-        broadcastTelemetry("start", "Kevoree Start event : node name = " + getNodeName(), null);
+        broadcastTelemetry(TelemetryEvent.Type.PLATFORM_START, "Kevoree Start event : node name = " + getNodeName(), null);
         scheduler = java.util.concurrent.Executors.newSingleThreadExecutor(new KevoreeCoreThreadFactory(getNodeName()));
         UUIDModelImpl uuidModel = new UUIDModelImpl(UUID.randomUUID(), kevoreeFactory.createContainerRoot());
         model.set(uuidModel);
@@ -533,7 +534,7 @@ public class KevoreeCoreBean implements ContextAwareModelService {
 
 
     public void stop() {
-        broadcastTelemetry("info", "Kevoree Core will be stopped !", null);
+        broadcastTelemetry(TelemetryEvent.Type.PLATFORM_STOP, "Kevoree Core will be stopped !", null);
         modelListeners.stop();
         if (scheduler != null) {
             scheduler.shutdownNow();
@@ -569,10 +570,10 @@ public class KevoreeCoreBean implements ContextAwareModelService {
                 if (rootNode != null) {
                     PrimitiveCommandExecutionHelper.instance$.execute(this, rootNode, adaptationModel, nodeInstance, afterUpdateTest, afterUpdateTest, afterUpdateTest);
                 } else {
-                    broadcastTelemetry("error", "Node is not defined into the model so unbootstrap cannot be correctly done", null);
+                    broadcastTelemetry(TelemetryEvent.Type.LOG_ERROR, "Node is not defined into the model so unbootstrap cannot be correctly done", null);
                 }
             } catch (Exception e) {
-                broadcastTelemetry("error", "Error while unbootstrap", e);
+                broadcastTelemetry(TelemetryEvent.Type.LOG_ERROR, "Error while unbootstrap", e);
                 //Log.error("Error while unbootstrap", e)
             }
             try {
@@ -584,11 +585,11 @@ public class KevoreeCoreBean implements ContextAwareModelService {
                     resolver = null;
                 }
             } catch (Exception e) {
-                broadcastTelemetry("error", "Error while stopping node instance", e);
+                broadcastTelemetry(TelemetryEvent.Type.LOG_ERROR, "Error while stopping node instance", e);
             }
         }
         Log.info("Kevoree core stopped ");
-        broadcastTelemetry("stop", "Kevoree Stopped", null);
+        broadcastTelemetry(TelemetryEvent.Type.LOG_INFO, "Kevoree Stopped", null);
     }
 
     private class AcquireLock implements Runnable {
@@ -607,7 +608,7 @@ public class KevoreeCoreBean implements ContextAwareModelService {
                 try {
                     callBack.run(null, true);
                 } catch (Throwable t) {
-                    broadcastTelemetry("error", "Exception inside a LockCallback with argument", t);
+                    broadcastTelemetry(TelemetryEvent.Type.LOG_ERROR, "Exception inside a LockCallback with argument", t);
                     //Log.error("Exception inside a LockCallback with argument {}, {}", t, null, true)
                 }
             } else {
@@ -618,7 +619,7 @@ public class KevoreeCoreBean implements ContextAwareModelService {
                 try {
                     callBack.run(lockUUID, false);
                 } catch (Throwable t) {
-                    broadcastTelemetry("error", "Exception inside a LockCallback with argument. uuid:" + lockUUID.toString(), t);
+                    broadcastTelemetry(TelemetryEvent.Type.LOG_ERROR, "Exception inside a LockCallback with argument. uuid:" + lockUUID.toString(), t);
                     //Log.error("Exception inside a LockCallback with argument {}, {}", t, lockUUID.toString(), false)
                 }
             }
@@ -637,7 +638,7 @@ public class KevoreeCoreBean implements ContextAwareModelService {
                 scheduler.submit(new ReleaseLockCallable(uuid));
             }
         } else {
-            broadcastTelemetry("error", "ReleaseLock method of Kevoree Core called with null argument, can release any lock", null);
+            broadcastTelemetry(TelemetryEvent.Type.LOG_ERROR, "ReleaseLock method of Kevoree Core called with null argument, can release any lock", null);
         }
     }
 
@@ -678,7 +679,7 @@ public class KevoreeCoreBean implements ContextAwareModelService {
                 try {
                     currentLock.getCallback().run(null, true);
                 } catch (Throwable t) {
-                    broadcastTelemetry("error", "Exception inside a LockCallback when it is called from the timeout trigger", t);
+                    broadcastTelemetry(TelemetryEvent.Type.LOG_ERROR, "Exception inside a LockCallback when it is called from the timeout trigger", t);
                 }
                 currentLock = null;
                 lockWatchDog.shutdownNow();

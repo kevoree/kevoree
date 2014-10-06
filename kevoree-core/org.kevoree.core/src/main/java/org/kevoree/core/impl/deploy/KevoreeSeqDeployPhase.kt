@@ -8,6 +8,7 @@ import java.util.concurrent.TimeUnit
 import org.kevoree.core.impl.KevoreeCoreBean
 import java.io.ByteArrayOutputStream
 import java.io.PrintStream
+import org.kevoree.api.telemetry.TelemetryEvent
 
 /**
  * Created with IntelliJ IDEA.
@@ -36,12 +37,13 @@ class KevoreeSeqDeployPhase(val originCore : KevoreeCoreBean) : KevoreeDeployPha
         var lastPrimitive : PrimitiveCommand? = null
         try {
             var result = true
+
             for(primitive in primitives) {
                 lastPrimitive = primitive
                 result = primitive.execute()
                 if(!result){
                     if(originCore.isAnyTelemetryListener()){
-                        originCore.broadcastTelemetry("failed_command","Cmd:["+primitive.toString()+"]",null)
+                        originCore.broadcastTelemetry(TelemetryEvent.Type.LOG_ERROR,"Cmd:["+primitive.toString()+"]",null)
                     }
                     //originCore.broadcastTelemetry("warn","Error during execution of "+primitive, e.toString())
                     Log.warn("Error during execution of {}",primitive)
@@ -52,7 +54,7 @@ class KevoreeSeqDeployPhase(val originCore : KevoreeCoreBean) : KevoreeDeployPha
         } catch (e:Throwable){
             if(originCore.isAnyTelemetryListener()){
                 try {
-                    originCore.broadcastTelemetry("failed_phase","Cmd:["+lastPrimitive.toString()+"]",e)
+                    originCore.broadcastTelemetry(TelemetryEvent.Type.LOG_ERROR,"Cmd:["+lastPrimitive.toString()+"]",e)
                 } catch (e: Throwable){
                    e.printStackTrace()
                 }
@@ -77,7 +79,7 @@ class KevoreeSeqDeployPhase(val originCore : KevoreeCoreBean) : KevoreeDeployPha
                     Log.trace("Undo adaptation command {} ", c.javaClass.getName())
                     c.undo()
                 } catch (e: Exception) {
-                    originCore.broadcastTelemetry("error","Exception during rollback", e)
+                    originCore.broadcastTelemetry(TelemetryEvent.Type.LOG_ERROR,"Exception during rollback", e)
                     //Log.warn("Exception during rollback", e)
                 }
             }

@@ -58,19 +58,19 @@ public class BootstrapTelemetry {
             @Override
             public void log(int level, String message, Throwable ex) {
                 switch (level) {
-                    case Log.LEVEL_ERROR:dispatcher.notify(TelemetryEventImpl.build(finalNodeName, "error", message.replace("\n","\\n"), (ex!=null?ex.toString().replace("\n","\\n").replace("\t","\\t"):"")));break;
-                    case Log.LEVEL_WARN:dispatcher.notify(TelemetryEventImpl.build(finalNodeName, "warn", message.replace("\n","\\n"), (ex!=null?ex.toString().replace("\n","\\n").replace("\t","\\t"):"")));break;
-                    case Log.LEVEL_INFO:dispatcher.notify(TelemetryEventImpl.build(finalNodeName, "info", message.replace("\n","\\n"), (ex!=null?ex.toString().replace("\n","\\n").replace("\t","\\t"):"")));break;
-                    case Log.LEVEL_DEBUG:dispatcher.notify(TelemetryEventImpl.build(finalNodeName, "debug", message.replace("\n","\\n"), (ex!=null?ex.toString().replace("\n","\\n").replace("\t","\\t"):"")));break;
-                    case Log.LEVEL_TRACE:dispatcher.notify(TelemetryEventImpl.build(finalNodeName, "trace", message.replace("\n","\\n"), (ex!=null?ex.toString().replace("\n","\\n").replace("\t","\\t"):"")));break;
-                    default: dispatcher.notify(TelemetryEventImpl.build(finalNodeName, "raw_out", message.replace("\n","\\n"), (ex!=null?ex.toString().replace("\n","\\n").replace("\t","\\t"):"")));break;
+                    case Log.LEVEL_ERROR:dispatcher.notify(TelemetryEventImpl.build(finalNodeName, TelemetryEvent.Type.LOG_ERROR, message.replace("\n","\\n"), (ex!=null?ex.toString().replace("\n","\\n").replace("\t","\\t"):"")));break;
+                    case Log.LEVEL_WARN:dispatcher.notify(TelemetryEventImpl.build(finalNodeName, TelemetryEvent.Type.LOG_WARNING, message.replace("\n","\\n"), (ex!=null?ex.toString().replace("\n","\\n").replace("\t","\\t"):"")));break;
+                    case Log.LEVEL_INFO:dispatcher.notify(TelemetryEventImpl.build(finalNodeName, TelemetryEvent.Type.LOG_INFO, message.replace("\n","\\n"), (ex!=null?ex.toString().replace("\n","\\n").replace("\t","\\t"):"")));break;
+                    case Log.LEVEL_DEBUG:dispatcher.notify(TelemetryEventImpl.build(finalNodeName, TelemetryEvent.Type.LOG_DEBUG, message.replace("\n","\\n"), (ex!=null?ex.toString().replace("\n","\\n").replace("\t","\\t"):"")));break;
+                    case Log.LEVEL_TRACE:dispatcher.notify(TelemetryEventImpl.build(finalNodeName, TelemetryEvent.Type.LOG_TRACE, message.replace("\n","\\n"), (ex!=null?ex.toString().replace("\n","\\n").replace("\t","\\t"):"")));break;
+                    default: dispatcher.notify(TelemetryEventImpl.build(finalNodeName, TelemetryEvent.Type.LOG_DEBUG, message.replace("\n","\\n"), (ex!=null?ex.toString().replace("\n","\\n").replace("\t","\\t"):"")));break;
                 }
             }
         });
 
-        dispatcher.notify(TelemetryEventImpl.build(nodeName, "info", "Initiate Telemetry monitoring", ""));
+        dispatcher.notify(TelemetryEventImpl.build(nodeName, TelemetryEvent.Type.LOG_INFO, "Initiate Telemetry monitoring", ""));
 
-        dispatcher.notify(TelemetryEventImpl.build(nodeName, "info", "Initiate JMX Telemetry", ""));
+        dispatcher.notify(TelemetryEventImpl.build(nodeName, TelemetryEvent.Type.LOG_INFO, "Initiate JMX Telemetry", ""));
         activateJMX();
         //activateSigar();
 
@@ -83,7 +83,7 @@ public class BootstrapTelemetry {
             @Override
             public void flush() throws IOException {
                 systemOut.flush();
-                dispatcher.notify(TelemetryEventImpl.build(finalNodeName, "raw_out", buffer.toString(), ""));
+                dispatcher.notify(TelemetryEventImpl.build(finalNodeName, TelemetryEvent.Type.LOG_DEBUG, buffer.toString(), ""));
                 buffer = new StringBuffer();
             }
 
@@ -99,7 +99,7 @@ public class BootstrapTelemetry {
             @Override
             public void flush() throws IOException {
                 systemErr.flush();
-                dispatcher.notify(TelemetryEventImpl.build(finalNodeName, "raw_err", buffer.toString(), ""));
+                dispatcher.notify(TelemetryEventImpl.build(finalNodeName, TelemetryEvent.Type.LOG_DEBUG, buffer.toString(), ""));
                 buffer = new StringBuffer();
             }
 
@@ -121,9 +121,9 @@ public class BootstrapTelemetry {
                     stopJMX();
                     // stopSigar();
                     boot.stop();
-                    dispatcher.notify(TelemetryEventImpl.build(finalNodeName, "stop", "Platform stopped", ""));
+                    dispatcher.notify(TelemetryEventImpl.build(finalNodeName, TelemetryEvent.Type.LOG_INFO, "Platform stopped", ""));
                 } catch (Throwable ex) {
-                    dispatcher.notify(TelemetryEventImpl.build(finalNodeName, "error", "Error stopping kevoree platform", ex.toString()));
+                    dispatcher.notify(TelemetryEventImpl.build(finalNodeName, TelemetryEvent.Type.LOG_ERROR, "Error stopping kevoree platform", ex.toString()));
                     System.out.println("Error stopping kevoree platform: " + ex.getMessage());
                 } finally {
                     dispatcher.closeConnection();
@@ -134,10 +134,10 @@ public class BootstrapTelemetry {
         String bootstrapModel = System.getProperty("node.bootstrap");
         try {
             if (bootstrapModel != null) {
-                dispatcher.notify(TelemetryEventImpl.build(finalNodeName, "start", "Platform boot from file:" + bootstrapModel, ""));
+                dispatcher.notify(TelemetryEventImpl.build(finalNodeName, TelemetryEvent.Type.LOG_INFO, "Platform boot from file:" + bootstrapModel, ""));
                 boot.bootstrapFromFile(new File(bootstrapModel));
             } else {
-                dispatcher.notify(TelemetryEventImpl.build(finalNodeName, "start", "Platform boot from script", ""));
+                dispatcher.notify(TelemetryEventImpl.build(finalNodeName, TelemetryEvent.Type.LOG_INFO, "Platform boot from script", ""));
                 if (System.getProperty("node.script") != null) {
                     boot.bootstrapFromKevScript(new ByteArrayInputStream(System.getProperty("node.script").getBytes()));
                 } else {
@@ -157,7 +157,7 @@ public class BootstrapTelemetry {
             e.printStackTrace(pr);
             pr.flush();
             pr.close();
-            dispatcher.notify(TelemetryEventImpl.build(nodeName, "error", "Error during bootstrap", new String(boo.toByteArray())));
+            dispatcher.notify(TelemetryEventImpl.build(nodeName, TelemetryEvent.Type.LOG_ERROR, "Error during bootstrap", new String(boo.toByteArray())));
             //e.printStackTrace();
         }
     }

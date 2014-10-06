@@ -20,6 +20,7 @@ import java.util.ArrayList
 import java.util.concurrent.Callable
 import java.util.concurrent.ThreadFactory
 import org.kevoree.api.handler.UpdateContext
+import org.kevoree.api.telemetry.TelemetryEvent
 
 class KevoreeListeners(internal var coreBean: KevoreeCoreBean) {
 
@@ -189,7 +190,7 @@ class KevoreeListeners(internal var coreBean: KevoreeCoreBean) {
                 Thread.currentThread().setContextClassLoader(listener.javaClass.getClassLoader())
                 listener.modelUpdated()
             } catch (e: Exception) {
-                coreBean.broadcastTelemetry("error", "Error while trigger model update.", e)
+                coreBean.broadcastTelemetry(TelemetryEvent.Type.LOG_ERROR, "Error while trigger model update.", e)
                 //Log.error("Error while trigger model update ", e)
             }
         }

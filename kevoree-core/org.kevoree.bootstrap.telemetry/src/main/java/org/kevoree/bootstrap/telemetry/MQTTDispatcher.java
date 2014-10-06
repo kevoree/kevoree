@@ -44,7 +44,7 @@ public class MQTTDispatcher implements TelemetryListener, Listener, Runnable {
     }
 
     public void closeConnection() {
-        notify(TelemetryEventImpl.build(nodeName,"info","Shutting telemetry down.",""));
+        notify(TelemetryEventImpl.build(nodeName,TelemetryEvent.Type.LOG_INFO,"Shutting telemetry down.",""));
         //final Semaphore s =new Semaphore(0);
         connection.disconnect(new Callback<Void>() {
             @Override
@@ -120,7 +120,7 @@ public class MQTTDispatcher implements TelemetryListener, Listener, Runnable {
                 System.err.println("Telemetry connection failed.");
             }
             public void onSuccess(Void v) {
-                MQTTDispatcher.this.notify(TelemetryEventImpl.build(nodeName, "info", "Connected to telemetry server", ""));
+                MQTTDispatcher.this.notify(TelemetryEventImpl.build(nodeName, TelemetryEvent.Type.LOG_INFO, "Connected to telemetry server", ""));
                 System.out.println("Telemetry connection succeeded.");
             }
         };

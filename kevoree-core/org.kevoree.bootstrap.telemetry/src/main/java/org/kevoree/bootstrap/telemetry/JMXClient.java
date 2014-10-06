@@ -2,6 +2,7 @@ package org.kevoree.bootstrap.telemetry;
 
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
+import org.kevoree.api.telemetry.TelemetryEvent;
 import org.kevoree.core.impl.TelemetryEventImpl;
 
 import java.lang.management.*;
@@ -47,7 +48,7 @@ public class JMXClient {
                 osData.add("nbProcessorsAvailable", bean.getAvailableProcessors());
                 osData.add("loadAverage", bean.getSystemLoadAverage());
                 osData.add("version", bean.getVersion());
-                dispatcher.notify(TelemetryEventImpl.build(nodeName, "OperatingSystemBeanInfo", osData.toString(), ""), "nodes/" + nodeName + "/infra/os");
+                dispatcher.notify(TelemetryEventImpl.build(nodeName, TelemetryEvent.Type.SYSTEM_INFO, osData.toString(), ""), "nodes/" + nodeName + "/infra/os");
             }
         }, 1, TimeUnit.SECONDS);
     }
@@ -92,7 +93,7 @@ public class JMXClient {
                 osData.add("systemProperties", systemProperties);
 
 
-                dispatcher.notify(TelemetryEventImpl.build(nodeName, "RuntimeBeanInfo", osData.toString(), ""), "nodes/" + nodeName + "/runtime/properties");
+                dispatcher.notify(TelemetryEventImpl.build(nodeName, TelemetryEvent.Type.SYSTEM_INFO, osData.toString(), ""), "nodes/" + nodeName + "/runtime/properties");
             }
         }, 1, TimeUnit.SECONDS);
     }
@@ -119,7 +120,7 @@ public class JMXClient {
                 offHeapMemory.add("used",bean.getNonHeapMemoryUsage().getUsed());
                 osData.add("offHeapMemory",offHeapMemory);
 
-                dispatcher.notify(TelemetryEventImpl.build(nodeName, "MemoryBeanInfo", osData.toString(), ""), "nodes/" + nodeName + "/runtime/memory");
+                dispatcher.notify(TelemetryEventImpl.build(nodeName, TelemetryEvent.Type.SYSTEM_INFO, osData.toString(), ""), "nodes/" + nodeName + "/runtime/memory");
             }
         }, 0, 5, TimeUnit.SECONDS);
     }
@@ -184,7 +185,7 @@ public class JMXClient {
                 }
                 osData.add("deadlockedThreads", deadlockedThreadsInfo);
 
-                dispatcher.notify(TelemetryEventImpl.build(nodeName, "ThreadBeanInfo", osData.toString(), ""), "nodes/" + nodeName + "/runtime/threads");
+                dispatcher.notify(TelemetryEventImpl.build(nodeName, TelemetryEvent.Type.SYSTEM_INFO, osData.toString(), ""), "nodes/" + nodeName + "/runtime/threads");
             }
         }, 2, 5, TimeUnit.SECONDS);
     }

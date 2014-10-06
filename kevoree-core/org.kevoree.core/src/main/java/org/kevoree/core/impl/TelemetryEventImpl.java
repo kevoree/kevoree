@@ -9,11 +9,11 @@ public class TelemetryEventImpl implements TelemetryEvent {
 
     private String origin;
     private String message;
-    private String type;
+    private Type type;
     private String stack;
     private Long timestamp;
 
-    public static TelemetryEvent build(String origin, String type, String message, String stack) {
+    public static TelemetryEvent build(String origin, Type type, String message, String stack) {
         TelemetryEventImpl e = new TelemetryEventImpl();
         e.origin = origin;
         e.type = type;
@@ -38,7 +38,7 @@ public class TelemetryEventImpl implements TelemetryEvent {
     // HACK END
 
     @Override
-    public String type() {
+    public Type type() {
         return type;
     }
 

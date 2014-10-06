@@ -8,6 +8,7 @@ import java.util.concurrent.TimeUnit
 import org.kevoree.core.impl.KevoreeCoreBean
 import java.io.ByteArrayOutputStream
 import java.io.PrintStream
+import org.kevoree.api.telemetry.TelemetryEvent
 
 /**
  * Created with IntelliJ IDEA.
@@ -29,14 +30,14 @@ class KevoreeParDeployPhase(val originCore: KevoreeCoreBean) : KevoreeDeployPhas
                 var result = primitive.execute()
                 if (!result) {
                     if (originCore.isAnyTelemetryListener()) {
-                        originCore.broadcastTelemetry("failed_command", "Cmd:["+primitive.toString()+"]", null)
+                        originCore.broadcastTelemetry(TelemetryEvent.Type.LOG_ERROR, "Cmd:["+primitive.toString()+"]", null)
                     }
                     Log.error("Error while executing primitive command {} ", primitive)
                 }
                 return result
             } catch(e: Throwable) {
                 if (originCore.isAnyTelemetryListener()) {
-                    originCore.broadcastTelemetry("failed_command", "Cmd:["+primitive.toString()+"]", e)
+                    originCore.broadcastTelemetry(TelemetryEvent.Type.LOG_ERROR, "Cmd:["+primitive.toString()+"]", e)
                 }
                 Log.error("Exception while executing primitive command {} ", e, primitive)
                 e.printStackTrace()
@@ -85,7 +86,7 @@ class KevoreeParDeployPhase(val originCore: KevoreeCoreBean) : KevoreeDeployPhas
                 watchDogTimeoutInt = Math.max(watchDogTimeoutInt, Integer.parseInt(watchdogTimeout.toString()).toLong())
             } catch (e: Exception) {
                 if (originCore.isAnyTelemetryListener()) {
-                    originCore.broadcastTelemetry("error","Invalid value for node.update.timeout system property (must be an integer)!", e)
+                    originCore.broadcastTelemetry(TelemetryEvent.Type.LOG_ERROR,"Invalid value for node.update.timeout system property (must be an integer)!", e)
                 }
                 Log.warn("Invalid value for node.update.timeout system property (must be an integer)!")
             }
@@ -109,7 +110,7 @@ class KevoreeParDeployPhase(val originCore: KevoreeCoreBean) : KevoreeDeployPhas
                     c.undo()
                 } catch (e: Exception) {
                     if (originCore.isAnyTelemetryListener()) {
-                        originCore.broadcastTelemetry("error","Exception during rollback", e)
+                        originCore.broadcastTelemetry(TelemetryEvent.Type.LOG_ERROR,"Exception during rollback", e)
                     }
                     Log.warn("Exception during rollback", e)
                 }

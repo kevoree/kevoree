@@ -17,9 +17,9 @@ import org.kevoree.ContainerNode
 import org.kevoree.api.NodeType
 import org.kevoree.log.Log
 import org.kevoree.api.adaptation.AdaptationModel
-import org.kevoree.api.adaptation.ParallelStep
 import org.kevoree.api.adaptation.Step
 import org.kevoree.core.impl.KevoreeCoreBean
+import org.kevoree.api.telemetry.TelemetryEvent
 
 /**
  * Created by IntelliJ IDEA.
@@ -31,14 +31,16 @@ import org.kevoree.core.impl.KevoreeCoreBean
 object PrimitiveCommandExecutionHelper {
 
     fun execute(originCore: KevoreeCoreBean, rootNode: ContainerNode, adaptionModel: AdaptationModel, nodeInstance: NodeType, afterUpdateFunc: PrimitiveExecute, preRollBack: PrimitiveExecute, postRollback: PrimitiveExecute): Boolean {
-        val orderedPrimitiveSet = adaptionModel.orderedPrimitiveSet
+        val orderedPrimitiveSet = adaptionModel.getOrderedPrimitiveSet()
         return if (orderedPrimitiveSet != null) {
 
+            /*
             val phase = if (orderedPrimitiveSet is ParallelStep) {
                 KevoreeParDeployPhase(originCore)
             } else {
-                KevoreeSeqDeployPhase(originCore)
             }
+            */
+            val phase = KevoreeSeqDeployPhase(originCore)
             val res = executeStep(originCore, rootNode, orderedPrimitiveSet, nodeInstance, phase, preRollBack)
             if (res) {
                 if (!afterUpdateFunc.exec()) {
@@ -60,7 +62,8 @@ object PrimitiveCommandExecutionHelper {
         if (step == null) {
             return true
         }
-        val populateResult = step.adaptations.all {
+        originCore.broadcastTelemetry(TelemetryEvent.Type.DEPLOYMENT_STEP,step.getAdaptationType()!!.name(), null);
+        val populateResult = step.getAdaptations()!!.all {
             adapt ->
             val primitive = nodeInstance.getPrimitive(adapt)
             if (primitive != null) {
@@ -75,14 +78,15 @@ object PrimitiveCommandExecutionHelper {
         if (populateResult) {
             val phaseResult = phase.runPhase()
             if (phaseResult) {
-                val nextStep = step.nextStep
+                val nextStep = step.getNextStep()
                 var subResult = false
                 if (nextStep != null) {
-                    val nextPhase = if (nextStep is ParallelStep) {
+                    /*val nextPhase = if (nextStep is ParallelStep) {
                         KevoreeParDeployPhase(originCore)
                     } else {
                         KevoreeSeqDeployPhase(originCore)
-                    }
+                    }*/
+                    val nextPhase = KevoreeSeqDeployPhase(originCore)
                     phase.sucessor = nextPhase
                     subResult = executeStep(originCore, rootNode, nextStep, nodeInstance, nextPhase, preRollBack)
                 } else {
