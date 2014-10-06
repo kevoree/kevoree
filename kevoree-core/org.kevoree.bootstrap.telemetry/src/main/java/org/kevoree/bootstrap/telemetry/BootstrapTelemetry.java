@@ -81,28 +81,32 @@ public class BootstrapTelemetry {
             StringBuffer buffer = new StringBuffer();
 
             @Override
+            public void flush() throws IOException {
+                systemOut.flush();
+                dispatcher.notify(TelemetryEventImpl.build(finalNodeName, "raw_out", buffer.toString(), ""));
+                buffer = new StringBuffer();
+            }
+
+            @Override
             public void write(int b) throws IOException {
                 systemOut.write(b);
-                if (b == '\n') {
-                    dispatcher.notify(TelemetryEventImpl.build(finalNodeName, "raw_out", buffer.toString(), ""));
-                    buffer = new StringBuffer();
-                } else {
-                    buffer.append((char)b);
-                }
+                buffer.append((char)b);
             }
         });
         myErr = new PrintStream(new OutputStream() {
             StringBuffer buffer = new StringBuffer();
 
             @Override
+            public void flush() throws IOException {
+                systemErr.flush();
+                dispatcher.notify(TelemetryEventImpl.build(finalNodeName, "raw_err", buffer.toString(), ""));
+                buffer = new StringBuffer();
+            }
+
+            @Override
             public void write(int b) throws IOException {
                 systemErr.write(b);
-                if (b == '\n') {
-                    dispatcher.notify( TelemetryEventImpl.build(finalNodeName, "raw_err", buffer.toString(), ""));
-                    buffer = new StringBuffer();
-                } else {
-                    buffer.append((char)b);
-                }
+                buffer.append((char)b);
             }
         });
 
@@ -115,7 +119,7 @@ public class BootstrapTelemetry {
                     Thread.currentThread().setContextClassLoader(loader);
                     System.out.println("Shutting system down");
                     stopJMX();
-                   // stopSigar();
+                    // stopSigar();
                     boot.stop();
                     dispatcher.notify(TelemetryEventImpl.build(finalNodeName, "stop", "Platform stopped", ""));
                 } catch (Throwable ex) {
