@@ -117,17 +117,15 @@ public class ModelBuilderHelper {
                     boolean checkType = false;
                     if (field.getType().getName().equals(ModelService.class.getName())) {
                         checkType = true;
-                    }
-                    if (field.getType().getName().equals(BootstrapService.class.getName())) {
+                    } else if (field.getType().getName().equals(BootstrapService.class.getName())) {
                         checkType = true;
-                    }
-                    if (field.getType().getName().equals(KevScriptService.class.getName())) {
+                    } else if (field.getType().getName().equals(KevScriptService.class.getName())) {
                         checkType = true;
-                    }
-                    if (field.getType().getName().equals(Context.class.getName())) {
+                    } else if (field.getType().getName().equals(Context.class.getName())) {
                         checkType = true;
-                    }
-                    if (field.getType().getName().equals(ChannelContext.class.getName())) {
+                    } else if (field.getType().getName().equals(ChannelContext.class.getName())) {
+                        checkType = true;
+                    } else if (field.getType().getName().equals(PlatformService.class.getName())) {
                         checkType = true;
                     }
                     if (!checkType) {
