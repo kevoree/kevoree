@@ -57,13 +57,19 @@ public class BootstrapTelemetry {
         Log.setLogger(new Log.Logger(){
             @Override
             public void log(int level, String message, Throwable ex) {
+                String exception="";
+                if(ex != null) {
+                    StringWriter errors = new StringWriter();
+                    ex.printStackTrace(new PrintWriter(errors));
+                    exception = errors.toString().replace("\n","\\n").replace("\t","\\t");
+                }
                 switch (level) {
-                    case Log.LEVEL_ERROR:dispatcher.notify(TelemetryEventImpl.build(finalNodeName, TelemetryEvent.Type.LOG_ERROR, message.replace("\n","\\n"), (ex!=null?ex.toString().replace("\n","\\n").replace("\t","\\t"):"")));break;
-                    case Log.LEVEL_WARN:dispatcher.notify(TelemetryEventImpl.build(finalNodeName, TelemetryEvent.Type.LOG_WARNING, message.replace("\n","\\n"), (ex!=null?ex.toString().replace("\n","\\n").replace("\t","\\t"):"")));break;
-                    case Log.LEVEL_INFO:dispatcher.notify(TelemetryEventImpl.build(finalNodeName, TelemetryEvent.Type.LOG_INFO, message.replace("\n","\\n"), (ex!=null?ex.toString().replace("\n","\\n").replace("\t","\\t"):"")));break;
-                    case Log.LEVEL_DEBUG:dispatcher.notify(TelemetryEventImpl.build(finalNodeName, TelemetryEvent.Type.LOG_DEBUG, message.replace("\n","\\n"), (ex!=null?ex.toString().replace("\n","\\n").replace("\t","\\t"):"")));break;
-                    case Log.LEVEL_TRACE:dispatcher.notify(TelemetryEventImpl.build(finalNodeName, TelemetryEvent.Type.LOG_TRACE, message.replace("\n","\\n"), (ex!=null?ex.toString().replace("\n","\\n").replace("\t","\\t"):"")));break;
-                    default: dispatcher.notify(TelemetryEventImpl.build(finalNodeName, TelemetryEvent.Type.LOG_DEBUG, message.replace("\n","\\n"), (ex!=null?ex.toString().replace("\n","\\n").replace("\t","\\t"):"")));break;
+                    case Log.LEVEL_ERROR:dispatcher.notify(TelemetryEventImpl.build(finalNodeName, TelemetryEvent.Type.LOG_ERROR, message.replace("\n","\\n"), exception));break;
+                    case Log.LEVEL_WARN:dispatcher.notify(TelemetryEventImpl.build(finalNodeName, TelemetryEvent.Type.LOG_WARNING, message.replace("\n","\\n"), exception));break;
+                    case Log.LEVEL_INFO:dispatcher.notify(TelemetryEventImpl.build(finalNodeName, TelemetryEvent.Type.LOG_INFO, message.replace("\n","\\n"), exception));break;
+                    case Log.LEVEL_DEBUG:dispatcher.notify(TelemetryEventImpl.build(finalNodeName, TelemetryEvent.Type.LOG_DEBUG, message.replace("\n","\\n"), exception));break;
+                    case Log.LEVEL_TRACE:dispatcher.notify(TelemetryEventImpl.build(finalNodeName, TelemetryEvent.Type.LOG_TRACE, message.replace("\n","\\n"), exception));break;
+                    default: dispatcher.notify(TelemetryEventImpl.build(finalNodeName, TelemetryEvent.Type.LOG_DEBUG, message.replace("\n","\\n"), exception));break;
                 }
             }
         });
