@@ -104,11 +104,11 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
     }
 
     public DeployUnit fillModel(ContainerRoot model, DependencyNode root, KevoreeFactory factory) {
-
         if (!cache.containsKey(createKey(root))) {
             DeployUnit du = factory.createDeployUnit();
             du.setName(root.getArtifact().getArtifactId());
             du.setVersion(root.getArtifact().getBaseVersion());
+
             Value platform = factory.createValue();
             platform.setName("platform");
             platform.setValue("java");
@@ -117,10 +117,12 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
             org.kevoree.Package pack = KModelHelper.fqnCreate(root.getArtifact().getGroupId(), model, factory);
             if (pack == null) {
                 getLog().info("Package " + root.getArtifact().getGroupId() + " " + pack);
+            } else {
+                pack.addDeployUnits(du);
             }
-            pack.addDeployUnits(du);
             cache.put(createKey(root), du);
         }
+
         for (DependencyNode child : root.getChildren()) {
             if (child.getArtifact().getScope() == null || child.getArtifact().getScope().equals(Artifact.SCOPE_COMPILE) || child.getArtifact().getScope().equals(Artifact.SCOPE_RUNTIME)) {
                 if (checkFilters(child, includes, true) && !checkFilters(child, excludes, false)) {
@@ -128,6 +130,7 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
                 }
             }
         }
+
         return cache.get(createKey(root));
     }
 

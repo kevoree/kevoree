@@ -33,12 +33,15 @@ public class KevRunnerMojo extends AnnotationPreProcessorMojo {
         //first execute parent mojo
         super.execute();
         try {
-            System.setProperty("node.bootstrap", model.getAbsolutePath());
-            System.setProperty("node.name", nodename);
+            if (System.getProperty("node.name") == null) {
+                System.setProperty("node.name", nodename);
+            }
+            if (System.getProperty("node.bootstrap") == null) {
+                System.setProperty("node.bootstrap", model.getAbsolutePath());
+            }
+
             KevoreeKernel kernel = new KevoreeMicroKernelImpl();
-
             //TODO ensure compilation
-
             String key = "mvn:" + project.getArtifact().getGroupId() + ":" + project.getArtifact().getArtifactId() + ":" + project.getArtifact().getBaseVersion();
             FlexyClassLoader kcl = kernel.install(key, "file:" + outputClasses.getAbsolutePath());
 

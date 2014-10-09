@@ -33,7 +33,6 @@ public class KevoreeRegistryResolver {
         resolve(fqn, root, factory);
 
         factory.createJSONSerializer().serializeToStream(root, System.out);
-
     }
 
     public static boolean resolve(List<TypeFQN> fqns, ContainerRoot current, KevoreeFactory factory) throws Exception {
