@@ -232,13 +232,13 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
                         JarFile jar = new JarFile(artifact.getFile());
                         JarEntry entry = jar.getJarEntry("KEV-INF/lib.json");
                         if (entry != null) {
-                            getLog().info("Auto merging dependency => " + " from " + artifact);
+                            getLog().info("Auto merging dependency => from " + artifact);
                             ContainerRoot libModel = (ContainerRoot) loader.loadModelFromStream(jar.getInputStream(entry)).get(0);
                             compare.merge(model, libModel).applyOn(model);
                         }
                         JarEntry entry2 = jar.getJarEntry("KEV-INF/lib.kev");
                         if (entry2 != null) {
-                            getLog().info("Auto merging dependency => " + " from " + artifact);
+                            getLog().info("Auto merging dependency =>  from " + artifact);
                             ContainerRoot libModel = (ContainerRoot) loaderXMI.loadModelFromStream(jar.getInputStream(entry2)).get(0);
                             compare.merge(model, libModel).applyOn(model);
                         }

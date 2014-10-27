@@ -43,11 +43,11 @@ public class KevRunnerMojo extends AnnotationPreProcessorMojo {
             KevoreeKernel kernel = new KevoreeMicroKernelImpl();
             //TODO ensure compilation
             String key = "mvn:" + project.getArtifact().getGroupId() + ":" + project.getArtifact().getArtifactId() + ":" + project.getArtifact().getBaseVersion();
-            FlexyClassLoader kcl = kernel.install(key, "file:" + outputClasses.getAbsolutePath());
+            kernel.install(key, "file:" + outputClasses.getAbsolutePath());
 
             String bootJar = "mvn:org.kevoree:org.kevoree.bootstrap:" + new DefaultKevoreeFactory().getVersion();
-            FlexyClassLoader bootstrapKCL = kernel.install(bootJar, bootJar);
-            kernel.boot(bootstrapKCL.getResourceAsStream("KEV-INF/bootinfo"));
+            FlexyClassLoader kcl = kernel.install(bootJar, bootJar);
+            kernel.boot(kcl.getResourceAsStream("KEV-INF/bootinfo"));
             Thread.currentThread().join();
         } catch (Exception e) {
             e.printStackTrace();
