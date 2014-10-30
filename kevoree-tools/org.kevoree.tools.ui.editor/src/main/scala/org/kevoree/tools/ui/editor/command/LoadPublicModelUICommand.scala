@@ -67,11 +67,20 @@ class LoadPublicModelUICommand extends Command {
       val mqttPullMessage = new MqttMessage();
       mqttPullMessage.setPayload("pull".getBytes("UTF-8"));
       mqttPullMessage.setRetained(false);
+      mqttPullMessage.setQos(0)
+
+      new Thread(){
+        override def run(): Unit = {
+          Thread.sleep(1000);
+          client.publish(topicName, mqttPullMessage)
+        }
+      }.start()
+
       client.publish(topicName, mqttPullMessage)
 
       val recModel = exchanger.exchange(null, 5000, TimeUnit.MILLISECONDS)
       try {
-        client.disconnect(2000)
+        client.disconnect(1000)
         client.close()
       } catch {
         case e: Exception =>
@@ -79,7 +88,11 @@ class LoadPublicModelUICommand extends Command {
 
       if (recModel != null) {
         lcommand.setKernel(kernel)
-        lcommand.execute(recModel)
+        if (recModel.toString.startsWith("push/")) {
+          lcommand.execute(recModel.toString.substring("push/".length))
+        } else {
+          lcommand.execute(recModel)
+        }
       }
 
     } catch {
