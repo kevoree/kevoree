@@ -3,12 +3,12 @@
     <artifactId>org.kevoree.tools.ui.editor</artifactId>
     <packaging>jar</packaging>
     <name>Kevoree :: Tools :: UI Editor</name>
-    <version>5.1.1-SNAPSHOT</version>
+    <version>5.1.4-SNAPSHOT</version>
 
     <parent>
         <artifactId>org.kevoree.tools.root</artifactId>
         <groupId>org.kevoree.tools</groupId>
-        <version>5.1.1-SNAPSHOT</version>
+        <version>5.1.4-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -181,6 +181,7 @@
                         <option>-keep class org.kevoree.tools.ui.editor.panel.KevoreeEditorPanel { *; }</option>
                         <option>-keep class org.jsoup.** { *; }</option>
                         <option>-keep class org.eclipse.paho.** { *;}</option>
+                        <option>-keep class org.kevoree.** { *;}</option>
                         <option>-dontwarn</option>
                         <option>-ignorewarnings</option>
                         <option>-dontoptimize</option>

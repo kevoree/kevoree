@@ -34,9 +34,9 @@ class PushPublicModelUICommand extends Command {
 
       val payload = jsonSaver.serialize(kernel.getModelHandler.getActualModel)
       val mqttMessage = new MqttMessage()
-      mqttMessage.setPayload(payload.getBytes(Charset.forName("UTF-8")))
+      mqttMessage.setPayload(("push/"+payload).getBytes(Charset.forName("UTF-8")))
       mqttMessage.setQos(0)
-      mqttMessage.setRetained(true)
+      mqttMessage.setRetained(false)
 
       client.publish("kev/" + groupName, mqttMessage)
 
