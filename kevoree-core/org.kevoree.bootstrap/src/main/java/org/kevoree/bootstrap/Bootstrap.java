@@ -265,6 +265,7 @@ public class Bootstrap {
                 File pathP = new File(path + File.separator + "KEV-INF" + File.separator + "lib.json");
                 if (pathP.exists()) {
                     Log.info("Load Bootstrap model from {}", pathP.getAbsolutePath());
+
                     if (result == null) {
                         FileInputStream ins = null;
                         try {

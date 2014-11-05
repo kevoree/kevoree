@@ -8,8 +8,18 @@ package org.kevoree.api;
  */
 public interface Callback<T> {
 
-    public void onSuccess(T result);
+    /**
+     *
+     * @param servicePath path of the port who answered the call
+     *                    (can be null if the channel used do not implement this feature)
+     * @param result content of the answer
+     */
+    public void onSuccess(String servicePath, T result);
 
+    /**
+     *
+     * @param exception
+     */
     public void onError(Throwable exception);
 
 }

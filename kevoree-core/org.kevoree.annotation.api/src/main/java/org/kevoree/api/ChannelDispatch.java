@@ -8,6 +8,11 @@ package org.kevoree.api;
  */
 public interface ChannelDispatch {
 
-    public void dispatch(Object payload,Callback callback);
+    /**
+     * This method will be called each time a message is send through an output port bound to this channel
+     * @param payload the message to be dispatched by the channel
+     * @param callback
+     */
+    public void dispatch(Object payload, Callback callback);
 
 }
