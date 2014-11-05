@@ -12,9 +12,10 @@ public interface Callback<T> {
      *
      * @param servicePath path of the port who answered the call
      *                    (can be null if the channel used do not implement this feature)
+     * @param chanName name of the channel who forwarded the answer
      * @param result content of the answer
      */
-    public void onSuccess(String servicePath, T result);
+    public void onSuccess(String servicePath, String chanName, T result);
 
     /**
      *
