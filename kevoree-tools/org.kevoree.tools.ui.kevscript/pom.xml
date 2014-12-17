@@ -3,12 +3,12 @@
     <artifactId>org.kevoree.tools.ui.kevscript</artifactId>
     <packaging>jar</packaging>
     <name>Kevoree :: Tools :: UI :: KevScript</name>
-    <version>5.1.5-SNAPSHOT</version>
+    <version>5.2.0</version>
 
     <parent>
         <artifactId>org.kevoree.tools.root</artifactId>
         <groupId>org.kevoree.tools</groupId>
-        <version>5.1.5-SNAPSHOT</version>
+        <version>5.2.0</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
