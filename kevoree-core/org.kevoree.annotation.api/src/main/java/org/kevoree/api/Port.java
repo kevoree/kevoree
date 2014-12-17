@@ -8,10 +8,8 @@ package org.kevoree.api;
  */
 public interface Port {
 
-    public void call(Object payload, Callback callback);
-
-    public void send(Object payload);
-
+    public void send(String payload, Callback callback);
+    
     public String getPath();
 
     public int getConnectedBindingsSize();

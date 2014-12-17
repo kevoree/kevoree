@@ -169,7 +169,9 @@ public class KevoreeCoreBean implements ContextAwareModelService, PlatformServic
             final boolean finalRes = res;
             new Thread() {
                 public void run() {
-                    callback.run(finalRes);
+                    if(callback!= null){
+                        callback.run(finalRes);
+                    }
                 }
             }.start();
         }

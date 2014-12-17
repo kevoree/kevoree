@@ -9,16 +9,11 @@ package org.kevoree.api;
 public interface Callback<T> {
 
     /**
-     *
-     * @param servicePath path of the port who answered the call
-     *                    (can be null if the channel used do not implement this feature)
-     * @param chanName name of the channel who forwarded the answer
-     * @param result content of the answer
+     * @param result content of the answer (originChannelPath: name of the channel who forwarded the answer, originPortPath: path of the port who answered the call)
      */
-    public void onSuccess(String servicePath, String chanName, T result);
+    public void onSuccess(CallbackResult result);
 
     /**
-     *
      * @param exception
      */
     public void onError(Throwable exception);

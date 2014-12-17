@@ -13,6 +13,6 @@ public interface ChannelDispatch {
      * @param payload the message to be dispatched by the channel
      * @param callback
      */
-    public void dispatch(Object payload, Callback callback);
+    public void dispatch(String payload, Callback callback);
 
 }
