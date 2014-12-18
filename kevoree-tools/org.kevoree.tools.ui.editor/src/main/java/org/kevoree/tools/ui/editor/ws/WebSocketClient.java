@@ -6,6 +6,7 @@ import com.ning.http.client.websocket.WebSocket;
 import com.ning.http.client.websocket.WebSocketTextListener;
 import com.ning.http.client.websocket.WebSocketUpgradeHandler;
 import org.kevoree.ContainerRoot;
+import org.kevoree.api.protocol.Protocol;
 import org.kevoree.factory.DefaultKevoreeFactory;
 import org.kevoree.log.Log;
 import org.kevoree.pmodeling.api.json.JSONModelLoader;
@@ -43,7 +44,10 @@ public class WebSocketClient {
 
                             @Override
                             public void onOpen(WebSocket websocket) {
-                                websocket.sendTextMessage(saver.serialize(model));
+                                Protocol.PushMessage pushMessage = new Protocol.PushMessage(saver.serialize(model));
+                                websocket.sendTextMessage(pushMessage.toRaw());
+
+                                //websocket.sendTextMessage(saver.serialize(model));
                             }
 
                             @Override
@@ -87,7 +91,7 @@ public class WebSocketClient {
 
                             @Override
                             public void onOpen(WebSocket websocket) {
-                                websocket.sendTextMessage("get");
+                                websocket.sendTextMessage(new Protocol.PullMessage().toRaw());
                             }
 
                             @Override
