@@ -53,6 +53,11 @@ public class BootstrapDev {
                                 String key;
                                 if (du != null) {
                                     key = "mvn:" + KModelHelper.fqnGroup(du) + ":" + du.getName() + ":" + du.getVersion();
+                                    if (du.getName().equals("org.kevoree.api") || du.getName().equals("org.kevoree.annotation.api") || du.getName().equals("org.kevoree.model")) {
+                                        key = key + new DefaultKevoreeFactory().getVersion();
+                                    } else {
+                                        key = key + du.getVersion();
+                                    }
                                 } else {
                                     key = "bootdep_" + new Random().nextInt();
                                 }
@@ -103,6 +108,7 @@ public class BootstrapDev {
 
                 ArrayList<String> classPaths = new ArrayList<String>();
                 classPaths.add(directoryTargetFile.getAbsolutePath());
+
                 ClassLoader previous = Thread.currentThread().getContextClassLoader();
                 Thread.currentThread().setContextClassLoader(kcl);
                 annotations2Model.fillModel(directoryTargetFile, model, mainDu, classPaths);

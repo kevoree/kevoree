@@ -21,7 +21,6 @@ import java.util.HashMap;
 /**
  * Created by duke on 23/01/2014.
  * <p/>
- * ModelBuilder in Pure Java, Need to be tested before going to production
  */
 
 

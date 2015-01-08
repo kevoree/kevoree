@@ -77,7 +77,7 @@ public class KevoreeCLKernel implements BootstrapService {
                 for (Repository repo : root.getRepositories()) {
                     urls.add(repo.getUrl());
                 }
-                if (deployUnit.getVersion().contains("SNAPSHOT") || deployUnit.getVersion().contains("LATEST")) {
+                if (deployUnit.getVersion().toLowerCase().contains("snapshot") || deployUnit.getVersion().toLowerCase().contains("latest")) {
                     urls.add("http://oss.sonatype.org/content/groups/public/");
                 } else {
                     urls.add("http://repo1.maven.org/maven2");

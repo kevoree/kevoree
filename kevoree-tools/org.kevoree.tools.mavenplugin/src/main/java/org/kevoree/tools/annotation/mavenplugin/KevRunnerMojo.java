@@ -26,8 +26,7 @@ public class KevRunnerMojo extends AnnotationPreProcessorMojo {
 
     @Parameter(defaultValue = "node0")
     private String nodename;
-
-
+    
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         //first execute parent mojo
@@ -46,8 +45,11 @@ public class KevRunnerMojo extends AnnotationPreProcessorMojo {
             KevoreeKernel kernel = new KevoreeMicroKernelImpl();
             //TODO ensure compilation
             String key = "mvn:" + project.getArtifact().getGroupId() + ":" + project.getArtifact().getArtifactId() + ":" + project.getArtifact().getBaseVersion();
+            String fileKey = "file:" + outputClasses.getAbsolutePath();
+            if (new File(fileKey.substring(5)).exists()) {
+                getLog().info("Manually install " + fileKey + " for " + key);
+            }
             kernel.install(key, "file:" + outputClasses.getAbsolutePath());
-
             String bootJar = "mvn:org.kevoree:org.kevoree.bootstrap:" + System.getProperty("version");
             FlexyClassLoader kcl = kernel.install(bootJar, bootJar);
             kernel.boot(kcl.getResourceAsStream("KEV-INF/bootinfo"));
