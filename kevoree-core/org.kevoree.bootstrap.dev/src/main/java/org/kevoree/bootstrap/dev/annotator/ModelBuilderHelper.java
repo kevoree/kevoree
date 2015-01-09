@@ -10,6 +10,7 @@ import org.kevoree.annotation.Output;
 import org.kevoree.annotation.Param;
 import org.kevoree.api.*;
 import org.kevoree.factory.KevoreeFactory;
+import org.kevoree.kcl.api.FlexyClassLoader;
 import org.kevoree.pmodeling.api.KMFContainer;
 import org.kevoree.pmodeling.api.util.ModelVisitor;
 
@@ -35,7 +36,11 @@ public class ModelBuilderHelper {
                         ComponentType currentTypeDefinitionCT = (ComponentType) currentTypeDefinition;
                         PortTypeRef providedPortRef = factory.createPortTypeRef();
                         providedPortRef.setName(method.getName());
-                        providedPortRef.setOptional(annotationInput.optional());
+                        try {
+                            providedPortRef.setOptional(annotationInput.optional());
+                        } catch (Exception e){
+                            providedPortRef.setOptional(true);
+                        }
                         currentTypeDefinitionCT.addProvided(providedPortRef);
                     }
                 }
@@ -94,9 +99,21 @@ public class ModelBuilderHelper {
                     }
                     dicAtt.setName(cleanedName);
                     dicAtt.setDatatype(dataType);
-                    dicAtt.setOptional(annotationParam.optional());
-                    dicAtt.setFragmentDependant(annotationParam.fragmentDependent());
-                    dicAtt.setDefaultValue(annotationParam.defaultValue());
+                    try {
+                        dicAtt.setOptional(annotationParam.optional());
+                    } catch (Exception e){
+                        dicAtt.setOptional(true);
+                    }
+                    try {
+                        dicAtt.setFragmentDependant(annotationParam.fragmentDependent());
+                    } catch (Exception e){
+                        dicAtt.setFragmentDependant(false);
+                    }
+                    try {
+                        dicAtt.setDefaultValue(annotationParam.defaultValue());
+                    } catch (Exception e){
+                        dicAtt.setDefaultValue("");
+                    }
                     currentTypeDefinition.getDictionaryType().addAttributes(dicAtt);
                 }
             }
@@ -140,7 +157,12 @@ public class ModelBuilderHelper {
                         ComponentType currentTypeDefinitionComponentType = (ComponentType) currentTypeDefinition;
                         PortTypeRef requiredPortRef = factory.createPortTypeRef();
                         requiredPortRef.setName(field.getName());
-                        requiredPortRef.setOptional(annotationOutput.optional());
+                        try {
+                            requiredPortRef.setOptional(annotationOutput.optional());
+                        } catch (Exception e){
+                            requiredPortRef.setOptional(true);
+                        }
+
                         currentTypeDefinitionComponentType.addRequired(requiredPortRef);
                     }
                 }
@@ -359,9 +381,7 @@ public class ModelBuilderHelper {
                 pack = packNew;
             }
         }
-
         String tdName = packages[packages.length - 1];
-
         TypeDefinition foundTD = pack.findTypeDefinitionsByNameVersion(tdName, version);
         if (foundTD != null) {
             return foundTD;
@@ -373,7 +393,6 @@ public class ModelBuilderHelper {
             return td;
         }
     }
-
 
     public static void process(Object elem, CtClass clazz, KevoreeFactory factory, DeployUnit du, ContainerRoot root) throws Exception {
         if (elem instanceof org.kevoree.annotation.GroupType) {
