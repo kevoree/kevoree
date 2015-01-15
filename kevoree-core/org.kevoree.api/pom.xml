@@ -5,11 +5,11 @@
     <artifactId>org.kevoree.api</artifactId>
     <name>Kevoree :: Api</name>
 
-    <version>5.2.5-SNAPSHOT</version>
+    <version>5.2.5</version>
     <parent>
         <artifactId>org.kevoree.root</artifactId>
         <groupId>org.kevoree</groupId>
-        <version>5.2.5-SNAPSHOT</version>
+        <version>5.2.5</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
