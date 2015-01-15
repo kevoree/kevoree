@@ -49,6 +49,9 @@ public class KevRunnerMojo extends AnnotationPreProcessorMojo {
             if (new File(fileKey.substring(5)).exists()) {
                 getLog().info("Manually install " + fileKey + " for " + key);
             }
+
+            System.setProperty("dev.target.dirs",outputClasses.getAbsolutePath());
+
             kernel.install(key, "file:" + outputClasses.getAbsolutePath());
             String bootJar = "mvn:org.kevoree:org.kevoree.bootstrap:" + System.getProperty("version");
             FlexyClassLoader kcl = kernel.install(bootJar, bootJar);
