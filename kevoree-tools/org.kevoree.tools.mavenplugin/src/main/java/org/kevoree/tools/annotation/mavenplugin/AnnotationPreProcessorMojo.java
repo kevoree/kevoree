@@ -31,7 +31,6 @@ import org.kevoree.ContainerRoot;
 import org.kevoree.DeployUnit;
 import org.kevoree.Value;
 import org.kevoree.api.helper.KModelHelper;
-import org.kevoree.bootstrap.dev.annotator.Annotations2Model;
 import org.kevoree.factory.DefaultKevoreeFactory;
 import org.kevoree.factory.KevoreeFactory;
 import org.kevoree.pmodeling.api.compare.ModelCompare;
