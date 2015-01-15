@@ -36,6 +36,18 @@ public class KevoreeRegistryResolver {
     }
 
     public static boolean resolve(List<TypeFQN> fqns, ContainerRoot current, KevoreeFactory factory) throws Exception {
+
+        StringBuilder messageBuffer = new StringBuilder();
+        for(TypeFQN fqn : fqns){
+            messageBuffer.append(fqn.name);
+            if(fqn.version != null){
+                messageBuffer.append(":");
+                messageBuffer.append(fqn.version);
+            }
+            messageBuffer.append(",");
+        }
+        Log.info("Request="+messageBuffer.toString());
+
         String kevoreeRegistry = System.getProperty("kevoree.registry");
         String kevoreeVersion = new DefaultKevoreeFactory().getVersion();
         if (kevoreeVersion.contains(".")) {

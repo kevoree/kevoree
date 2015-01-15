@@ -1,4 +1,4 @@
-package org.kevoree.bootstrap.dev.annotator;
+package org.kevoree.annotator;
 
 import javassist.ClassPool;
 import javassist.CtClass;
@@ -27,7 +27,6 @@ public class Annotations2Model {
             for (int i = 0; i < childs.length; i++) {
                 File child = childs[i];
                 if (child.getName().endsWith(".class")) {
-                    //String className = root + "." + child.getName().replace(".class", "");
                     FileInputStream fis = new FileInputStream(child);
                     CtClass clazz = pool.makeClass(fis);//
                     fis.close();

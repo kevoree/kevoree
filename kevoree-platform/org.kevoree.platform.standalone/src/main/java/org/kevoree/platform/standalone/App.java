@@ -26,11 +26,7 @@ public class App {
                 if (kprofile.equals("telemetry")) {
                     profile = "mvn:org.kevoree:org.kevoree.bootstrap.telemetry:{kevoree.version}";
                 } else {
-                    if (kprofile.equals("dev")) {
-                        profile = "mvn:org.kevoree:org.kevoree.bootstrap.dev:{kevoree.version}";
-                    } else {
-                        profile = kprofile;
-                    }
+                    profile = kprofile;
                 }
             }
         }

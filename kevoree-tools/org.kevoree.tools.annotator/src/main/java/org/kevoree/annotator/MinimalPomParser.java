@@ -1,8 +1,7 @@
-package org.kevoree.bootstrap.dev.annotator;
+package org.kevoree.annotator;
 
 import org.kevoree.ContainerRoot;
 import org.kevoree.DeployUnit;
-import org.kevoree.api.helper.KModelHelper;
 import org.kevoree.factory.DefaultKevoreeFactory;
 import org.kevoree.factory.KevoreeFactory;
 import org.kevoree.log.Log;

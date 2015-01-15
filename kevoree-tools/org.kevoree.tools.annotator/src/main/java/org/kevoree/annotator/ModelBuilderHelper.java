@@ -1,4 +1,5 @@
-package org.kevoree.bootstrap.dev.annotator;
+package org.kevoree.annotator;
+
 
 import javassist.*;
 import jet.runtime.typeinfo.JetValueParameter;
@@ -10,7 +11,6 @@ import org.kevoree.annotation.Output;
 import org.kevoree.annotation.Param;
 import org.kevoree.api.*;
 import org.kevoree.factory.KevoreeFactory;
-import org.kevoree.kcl.api.FlexyClassLoader;
 import org.kevoree.pmodeling.api.KMFContainer;
 import org.kevoree.pmodeling.api.util.ModelVisitor;
 
@@ -23,7 +23,6 @@ import java.util.HashMap;
  * Created by duke on 23/01/2014.
  * <p/>
  */
-
 
 public class ModelBuilderHelper {
 
@@ -38,7 +37,7 @@ public class ModelBuilderHelper {
                         providedPortRef.setName(method.getName());
                         try {
                             providedPortRef.setOptional(annotationInput.optional());
-                        } catch (Exception e){
+                        } catch (Exception e) {
                             providedPortRef.setOptional(true);
                         }
                         currentTypeDefinitionCT.addProvided(providedPortRef);
@@ -101,17 +100,17 @@ public class ModelBuilderHelper {
                     dicAtt.setDatatype(dataType);
                     try {
                         dicAtt.setOptional(annotationParam.optional());
-                    } catch (Exception e){
+                    } catch (Exception e) {
                         dicAtt.setOptional(true);
                     }
                     try {
                         dicAtt.setFragmentDependant(annotationParam.fragmentDependent());
-                    } catch (Exception e){
+                    } catch (Exception e) {
                         dicAtt.setFragmentDependant(false);
                     }
                     try {
                         dicAtt.setDefaultValue(annotationParam.defaultValue());
-                    } catch (Exception e){
+                    } catch (Exception e) {
                         dicAtt.setDefaultValue("");
                     }
                     currentTypeDefinition.getDictionaryType().addAttributes(dicAtt);
@@ -159,7 +158,7 @@ public class ModelBuilderHelper {
                         requiredPortRef.setName(field.getName());
                         try {
                             requiredPortRef.setOptional(annotationOutput.optional());
-                        } catch (Exception e){
+                        } catch (Exception e) {
                             requiredPortRef.setOptional(true);
                         }
 
@@ -423,13 +422,13 @@ public class ModelBuilderHelper {
 
     public static String metaClassName(Object elem) {
         if (elem instanceof org.kevoree.annotation.GroupType) {
-            return GroupType.class.getName();
+            return org.kevoree.GroupType.class.getName();
         }
         if (elem instanceof org.kevoree.annotation.ChannelType) {
-            return ChannelType.class.getName();
+            return org.kevoree.ChannelType.class.getName();
         }
         if (elem instanceof org.kevoree.annotation.ComponentType) {
-            return ComponentType.class.getName();
+            return org.kevoree.ComponentType.class.getName();
         }
         if (elem instanceof org.kevoree.annotation.NodeType) {
             return org.kevoree.NodeType.class.getName();

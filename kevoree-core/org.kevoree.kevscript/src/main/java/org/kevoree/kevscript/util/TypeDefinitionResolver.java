@@ -117,6 +117,7 @@ public class TypeDefinitionResolver {
                     }
                 }
             }
+            Log.warn("Founded: "+bestTD.getName()+":"+bestTD.getVersion());
         }
 
         //Still not found :( try again

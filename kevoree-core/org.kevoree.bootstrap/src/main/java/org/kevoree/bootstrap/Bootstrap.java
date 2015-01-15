@@ -265,7 +265,6 @@ public class Bootstrap {
                 File pathP = new File(path + File.separator + "KEV-INF" + File.separator + "lib.json");
                 if (pathP.exists()) {
                     Log.info("Load Bootstrap model from {}", pathP.getAbsolutePath());
-
                     if (result == null) {
                         FileInputStream ins = null;
                         try {
@@ -298,6 +297,20 @@ public class Bootstrap {
                                 } catch (IOException e) {
                                 }
                             }
+                        }
+                    }
+                    File pathMeta = new File(path + File.separator + "KEV-INF" + File.separator + "dev.meta");
+                    if (pathMeta.exists()) {
+                        try {
+                            BufferedReader reader = new BufferedReader(new FileReader(pathMeta));
+                            String metaName = reader.readLine();
+                            if (metaName != null && metaName.startsWith("mvn:")) {
+                                metaName = metaName.trim();
+                                Log.info("Manually install " + path + " for " + metaName);
+                                microKernel.install(metaName, "file:" + path);
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
                     }
                 }

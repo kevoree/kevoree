@@ -1,0 +1,62 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>org.kevoree.tools.annotator</artifactId>
+    <packaging>jar</packaging>
+    <name>Kevoree :: Tools :: Annotator</name>
+    <version>5.2.5-SNAPSHOT</version>
+
+    <parent>
+        <artifactId>org.kevoree.tools.root</artifactId>
+        <groupId>org.kevoree.tools</groupId>
+        <version>5.2.5-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.javassist</groupId>
+            <artifactId>javassist</artifactId>
+            <version>3.19.0-GA</version>
+        </dependency>
+        <dependency>
+            <groupId>org.kevoree</groupId>
+            <artifactId>org.kevoree.api</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.kevoree</groupId>
+            <artifactId>org.kevoree.annotation.api</artifactId>
+            <version>${kevoree.version}</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>org.kevoree.annotator.runner.App</mainClass>
+                        </manifest>
+                    </archive>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                    <appendAssemblyId>false</appendAssemblyId>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
