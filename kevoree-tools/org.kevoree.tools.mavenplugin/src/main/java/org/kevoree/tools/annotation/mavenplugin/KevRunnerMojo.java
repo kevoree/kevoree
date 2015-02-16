@@ -11,6 +11,8 @@ import org.kevoree.microkernel.KevoreeKernel;
 import org.kevoree.microkernel.impl.KevoreeMicroKernelImpl;
 
 import java.io.File;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created with IntelliJ IDEA.
@@ -26,12 +28,36 @@ public class KevRunnerMojo extends AnnotationPreProcessorMojo {
 
     @Parameter(defaultValue = "node0")
     private String nodename;
+
+    @Parameter
+    private File[] mergeLocalLibraries;
     
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         //first execute parent mojo
         super.execute();
         try {
+            if (System.getProperty("dev.target.dirs") == null) {
+                StringBuilder pathsToMerge = new StringBuilder(outputClasses.getAbsolutePath());
+                for (File filePath: mergeLocalLibraries) {
+                    if (!filePath.getAbsolutePath().equals(outputClasses.getAbsolutePath())) {
+                        pathsToMerge.append(File.pathSeparator);
+                        pathsToMerge.append(filePath.getAbsolutePath());
+                    }
+                }
+                System.setProperty("dev.target.dirs", pathsToMerge.toString());
+            } else {
+                StringBuilder pathsToMerge = new StringBuilder(outputClasses.getAbsolutePath());
+                String[] paths = System.getProperty("dev.target.dirs").split(File.pathSeparator);
+                for (String path: paths) {
+                    if (!path.equals(outputClasses.getAbsolutePath())) {
+                        pathsToMerge.append(File.pathSeparator);
+                        pathsToMerge.append(path);
+                    }
+                }
+                System.setProperty("dev.target.dirs", pathsToMerge.toString());
+            }
+
             if (System.getProperty("node.name") == null) {
                 System.setProperty("node.name", nodename);
             }
@@ -49,8 +75,6 @@ public class KevRunnerMojo extends AnnotationPreProcessorMojo {
             if (new File(fileKey.substring(5)).exists()) {
                 getLog().info("Manually install " + fileKey + " for " + key);
             }
-
-            System.setProperty("dev.target.dirs",outputClasses.getAbsolutePath());
 
             kernel.install(key, "file:" + outputClasses.getAbsolutePath());
             String bootJar = "mvn:org.kevoree:org.kevoree.bootstrap:" + System.getProperty("version");

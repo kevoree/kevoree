@@ -254,17 +254,16 @@ public class Bootstrap {
     }
 
     public ContainerRoot bootstrapFromClassPath() {
-        Object classpath = System.getProperty("dev.target.dirs");
+        String classpath = System.getProperty("dev.target.dirs");
         if (classpath != null && !classpath.equals("")) {
             ContainerRoot result = null;
             JSONModelLoader loader = core.getFactory().createJSONLoader();
             ModelCompare compare = core.getFactory().createModelCompare();
-            String[] paths = classpath.toString().split(File.pathSeparator);
-            for (int i = 0; i < paths.length; i++) {
-                String path = paths[i];
+            String[] paths = classpath.split(File.pathSeparator);
+            for (String path : paths) {
                 File pathP = new File(path + File.separator + "KEV-INF" + File.separator + "lib.json");
                 if (pathP.exists()) {
-                    Log.info("Load Bootstrap model from {}", pathP.getAbsolutePath());
+                    Log.info("Merge bootstrap model from {}", pathP.getAbsolutePath());
                     if (result == null) {
                         FileInputStream ins = null;
                         try {
@@ -313,6 +312,8 @@ public class Bootstrap {
                             e.printStackTrace();
                         }
                     }
+                } else {
+                    Log.warn("Unable to find a model in {}", pathP.getAbsolutePath());
                 }
             }
             if (result != null) {
