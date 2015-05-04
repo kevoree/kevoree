@@ -12,9 +12,10 @@ import org.waxeye.input.BufferFiller;
 import org.waxeye.input.InputBuffer;
 import org.waxeye.parser.ParseResult;
 
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.*;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created with IntelliJ IDEA.
@@ -23,6 +24,8 @@ import java.util.List;
  * Time: 15:53
  */
 public class KevScriptEngine implements KevScriptService {
+
+    private static final String CHARS = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
     Parser parser = new Parser();
     KevoreeFactory factory = new DefaultKevoreeFactory();
@@ -38,27 +41,50 @@ public class KevScriptEngine implements KevScriptService {
     }
 
     public void execute(String script, ContainerRoot model) throws Exception {
-        ParseResult<Type> parserResult = parser.parse(new InputBuffer(script.toCharArray()));
-        IAST<Type> ast = parserResult.getAST();
-        if (ast != null) {
-            List<TypeFQN> fqns = parseTypeFQNs(ast);
-            KevoreeRegistryResolver.resolve(fqns, model, new DefaultKevoreeFactory());
-            interpret(ast, model);
+        this.execute(script, model, null);
+    }
+
+    public void execute(String script, ContainerRoot model, HashMap<String, String> ctxVars) throws Exception {
+        this.executeFromStream(new ByteArrayInputStream(script.getBytes()), model, ctxVars);
+    }
+
+    public void executeFromStream(InputStream script, ContainerRoot model, HashMap<String, String> ctxVars) throws Exception {
+        if (ctxVars == null) {
+            ctxVars = new HashMap<String, String>();
+        }
+
+        String kevs = new Scanner(script).useDelimiter("\\A").next();
+        Pattern p = Pattern.compile("(%(%([a-zA-Z0-9_]+)%)%)");
+        Matcher m = p.matcher(kevs);
+        while (m.find()) {
+            ctxVars.put(m.group(3), shortId());
+            kevs = kevs.replaceAll(m.group(1), m.group(2));
+        }
+
+        for (String key : ctxVars.keySet()) {
+            kevs = kevs.replaceAll("%"+key+"%", ctxVars.get(key));
+        }
+
+        p = Pattern.compile("(%[a-zA-Z0-9_]+%)");
+        m = p.matcher(kevs);
+        if (m.find()) {
+            throw new Exception("Context variable " + m.group(1) + " has no value");
         } else {
-            Log.error(parserResult.getError().toString());
+            ParseResult<Type> parserResult = parser.parse(new InputBuffer(kevs.toCharArray()));
+            IAST<Type> ast = parserResult.getAST();
+            if (ast != null) {
+                List<TypeFQN> fqns = parseTypeFQNs(ast);
+                KevoreeRegistryResolver.resolve(fqns, model, new DefaultKevoreeFactory());
+                interpret(ast, model);
+            } else {
+                //Log.error(parserResult.getError().toString());
+                throw new Exception(parserResult.getError().toString());
+            }
         }
     }
 
     public void executeFromStream(InputStream script, ContainerRoot model) throws Exception {
-        ParseResult<Type> parserResult = parser.parse(new InputBuffer(BufferFiller.asArray(script)));
-        IAST<Type> ast = parserResult.getAST();
-        if (ast != null) {
-            List<TypeFQN> fqns = parseTypeFQNs(ast);
-            KevoreeRegistryResolver.resolve(fqns, model, new DefaultKevoreeFactory());
-            interpret(ast, model);
-        } else {
-            Log.error(parserResult.getError().toString());
-        }
+        this.executeFromStream(script, model, null);
     }
 
     private List<TypeFQN> parseTypeFQNs(IAST<Type> node) throws Exception {
@@ -485,5 +511,14 @@ public class KevScriptEngine implements KevScriptService {
         }
         process.setStarted(true);
         return process != null;
+    }
+
+    private String shortId() {
+        StringBuilder builder = new StringBuilder();
+        Random random = new Random();
+        for (int i=0; i < 9; i++) {
+            builder.append(CHARS.charAt(random.nextInt(CHARS.length())));
+        }
+        return builder.toString();
     }
 }
