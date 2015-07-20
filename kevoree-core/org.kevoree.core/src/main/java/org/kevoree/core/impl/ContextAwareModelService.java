@@ -1,10 +1,7 @@
 package org.kevoree.core.impl;
 
 import org.kevoree.ContainerRoot;
-import org.kevoree.api.handler.LockCallBack;
-import org.kevoree.api.handler.ModelListener;
-import org.kevoree.api.handler.UUIDModel;
-import org.kevoree.api.handler.UpdateCallback;
+import org.kevoree.api.handler.*;
 import org.kevoree.pmodeling.api.trace.TraceSequence;
 
 import java.util.UUID;
@@ -16,27 +13,27 @@ import java.util.UUID;
 
 public interface ContextAwareModelService {
 
-    public UUIDModel getCurrentModel();
+    UUIDModel getCurrentModel();
 
-    public ContainerRoot getPendingModel();
+    ContainerRoot getPendingModel();
 
-    public void compareAndSwap(ContainerRoot model, UUID uuid, UpdateCallback callback, String callerPath);
+    void compareAndSwap(ContainerRoot model, UUID uuid, UpdateCallback callback, String callerPath);
 
-    public void update(ContainerRoot model, UpdateCallback callback, String callerPath);
+    void update(ContainerRoot model, UpdateCallback callback, String callerPath);
 
-    public void registerModelListener(ModelListener listener, String callerPath);
+    void registerModelListener(ModelListener listener, String callerPath);
 
-    public void unregisterModelListener(ModelListener listener, String callerPath);
+    void unregisterModelListener(ModelListener listener, String callerPath);
 
-    public void acquireLock(LockCallBack callBack, Long timeout, String callerPath);
+    void acquireLock(LockCallBack callBack, Long timeout, String callerPath);
 
-    public void releaseLock(UUID uuid, String callerPath);
+    void releaseLock(UUID uuid, String callerPath);
 
-    public String getNodeName();
+    String getNodeName();
 
-    public void submitScript(String script, UpdateCallback callback, String callerPath);
+    void submitScript(String script, UpdateCallback callback, String callerPath);
 
-    public void submitSequence(TraceSequence sequence, UpdateCallback callback, String callerPath);
+    void submitSequence(TraceSequence sequence, UpdateCallback callback, String callerPath);
 
 
 }

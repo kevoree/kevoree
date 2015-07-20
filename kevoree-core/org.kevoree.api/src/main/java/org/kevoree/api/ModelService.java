@@ -17,27 +17,27 @@ import java.util.UUID;
  */
 public interface ModelService {
 
-    public UUIDModel getCurrentModel();
+    UUIDModel getCurrentModel();
 
-    public ContainerRoot getPendingModel();
+    ContainerRoot getPendingModel();
 
-    public void compareAndSwap(ContainerRoot model, UUID uuid, UpdateCallback callback);
+    void compareAndSwap(ContainerRoot model, UUID uuid, UpdateCallback callback);
 
-    public void update(ContainerRoot model, UpdateCallback callback);
+    void update(ContainerRoot model, UpdateCallback callback);
 
-    public void registerModelListener(ModelListener listener);
+    void registerModelListener(ModelListener listener);
 
-    public void unregisterModelListener(ModelListener listener);
+    void unregisterModelListener(ModelListener listener);
 
-    public void acquireLock(LockCallBack callBack, Long timeout);
+    void acquireLock(LockCallBack callBack, Long timeout);
 
-    public void releaseLock(UUID uuid);
+    void releaseLock(UUID uuid);
 
-    public String getNodeName();
+    String getNodeName();
 
 
-    public void submitScript(String script, UpdateCallback callback);
+    void submitScript(String script, UpdateCallback callback);
 
-    public void submitSequence(TraceSequence sequence, UpdateCallback callback);
+    void submitSequence(TraceSequence sequence, UpdateCallback callback);
 
 }

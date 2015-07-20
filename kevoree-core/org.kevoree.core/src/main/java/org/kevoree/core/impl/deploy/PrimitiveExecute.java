@@ -5,6 +5,6 @@ package org.kevoree.core.impl.deploy;
  */
 public interface PrimitiveExecute {
 
-    public boolean exec();
+    boolean exec();
 
 }

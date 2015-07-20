@@ -42,6 +42,6 @@ public interface LockCallBack {
      * @param bypassUUID The uuid which allow to apply reconfiguration.
      * @param error a boolean which explicit if the lock is correctly set
      */
-    public void run(UUID bypassUUID, Boolean error);
+    void run(UUID bypassUUID, Boolean error);
 
 }

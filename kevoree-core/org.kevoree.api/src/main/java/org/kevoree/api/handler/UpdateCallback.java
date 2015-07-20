@@ -21,6 +21,5 @@ package org.kevoree.api.handler;
  */
 public interface UpdateCallback {
 
-    public void run(Boolean applied);
-
+    void run(Boolean applied);
 }

@@ -36,10 +36,12 @@ public class KevoreeCoreBean implements ContextAwareModelService, PlatformServic
 
     ArrayList<TelemetryListener> telemetryListeners = new ArrayList<TelemetryListener>();
 
+    @Override
     public void addTelemetryListener(TelemetryListener l) {
         telemetryListeners.add(l);
     }
 
+    @Override
     public void removeTelemetryListener(TelemetryListener l) {
         telemetryListeners.remove(l);
     }
@@ -50,6 +52,7 @@ public class KevoreeCoreBean implements ContextAwareModelService, PlatformServic
 
     private String nodeName;
 
+    @Override
     public String getNodeName() {
         return nodeName;
     }
@@ -92,6 +95,7 @@ public class KevoreeCoreBean implements ContextAwareModelService, PlatformServic
 
     ContainerRoot pending = null;
 
+    @Override
     public ContainerRoot getPendingModel() {
         return pending;
     }
@@ -122,10 +126,12 @@ public class KevoreeCoreBean implements ContextAwareModelService, PlatformServic
         return kevoreeFactory.createModelCloner().clone(pmodel, true);
     }
 
+    @Override
     public void registerModelListener(ModelListener listener, String callerPath) {
         modelListeners.addListener(listener);
     }
 
+    @Override
     public void unregisterModelListener(ModelListener listener, String callerPath) {
         modelListeners.removeListener(listener);
     }
@@ -145,6 +151,7 @@ public class KevoreeCoreBean implements ContextAwareModelService, PlatformServic
             this.callerPath = callerPath;
         }
 
+        @Override
         public void run() {
             boolean res = false;
             if (currentLock != null) {
@@ -177,14 +184,17 @@ public class KevoreeCoreBean implements ContextAwareModelService, PlatformServic
         }
     }
 
+    @Override
     public UUIDModel getCurrentModel() {
         return model.get();
     }
 
+    @Override
     public void compareAndSwap(ContainerRoot model, UUID uuid, UpdateCallback callback, String callerPath) {
         scheduler.submit(new UpdateModelRunnable(cloneCurrentModel(model), uuid, callback, callerPath));
     }
 
+    @Override
     public void update(ContainerRoot model, UpdateCallback callback, String callerPath) {
         scheduler.submit(new UpdateModelRunnable(cloneCurrentModel(model), null, callback, callerPath));
     }
@@ -206,6 +216,7 @@ public class KevoreeCoreBean implements ContextAwareModelService, PlatformServic
 
         @Override
         public void run() {
+            // TODO throwable should be returned in UpdateCallback as an error parameter to distinguish error from "false" result
             try {
                 ContainerRoot newModel = kevoreeFactory.createModelCloner().clone(model.get().getModel(), false);
                 scriptEngine.execute(script, newModel);
@@ -221,6 +232,7 @@ public class KevoreeCoreBean implements ContextAwareModelService, PlatformServic
         }
     }
 
+    @Override
     public void submitScript(String script, UpdateCallback callback, String callerPath) {
         if (script != null && currentLock == null) {
             scheduler.submit(new UpdateScriptRunnable(script, callback, callerPath));
