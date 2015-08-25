@@ -7,12 +7,11 @@ import java.util.ArrayList;
 
 import org.junit.Test;
 import org.kevoree.TypeDefinition;
-import org.kevoree.kevscript.version.IVersionResolver;
 import org.kevoree.kevscript.version.SemverVersionResolver;
 
 public class SemverVersionResolverTest {
 
-	private IVersionResolver resolver = new SemverVersionResolver();
+	private SemverVersionResolver resolver = new SemverVersionResolver();
 
 	@Test
 	public void testFindBestVersion() {
