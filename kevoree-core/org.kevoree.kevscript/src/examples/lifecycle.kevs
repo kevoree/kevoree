@@ -1,3 +1,2 @@
 start mynode.comp
 stop comp, comp1
-pause mynode.comp

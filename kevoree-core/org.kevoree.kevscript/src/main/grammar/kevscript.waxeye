@@ -2,100 +2,184 @@
 
 # Rules
 # =====
-KevScript           <- ws *((Statement | :Comment eol) ws) :?Comment
+KevScript           <- ws *Statement
 
-Statement           <- Add | Remove | Move | Attach | Detach | Set | AddBinding | DelBinding | Include | Network | AddRepo | Namespace | Start | Stop | Pause
+# 
+Statement           <= ws (Add
+                         | Remove
+                         | Move
+                         | Attach
+                         | Detach
+                         | Set
+                         | AddBinding
+                         | DelBinding
+                         | Network
+                         | AddRepo
+                         | Start
+                         | Stop
+                         | ValDecl
+                         | ForDecl
+                         | ForAllDecl) ws
 
-Add                 <- AddToken ws NameList ws :':' ws TypeDef                                  # add group0, group1 : WebSocketGroup
+# val foo = "bar"
+# val baz = ["well"]
+ValDecl             <- ValToken fs ValIdentifier s :'=' ws (StringLit | Name | InstanceArray | StringArray)
 
-Remove              <- RemoveToken ws NameList                                                  # remove node0, node0.comp1, sync
+# for foo { set logLevel 'DEBUG' }
 
-Move                <- MoveToken ws NameList ws InstancePath                                    # move node0.comp0, node2.* node1
+ForDecl             <- ForToken fs Identifier ws :'{' ws *ScopeStatement :'}'
 
-Attach              <- AttachToken ws NameList ws InstancePath                                  # attach node0, node1 group0
+# forAll @nodes { /* something */ }
+ForAllDecl          <- ForAllToken fs (Identifier | InstanceArray) ws :'{' ws *ScopeStatement :'}'
 
-Detach              <- DetachToken ws NameList ws InstancePath                                  # detach node0, node1 group0
+# 
+ScopeStatement      <= ws (Add
+                         | ValDecl
+                         | ScopeSet
+                         | ScopeAttach
+                         | ScopeDetach
+                         | ScopeSet
+                         | ScopeNetwork) ws
 
-Set                 <- SetToken ws InstancePath ?(:'/' InstancePath) ws :'=' ws RealString      # set node0.comp0.myAtt = 'foo'
-                                                                                                # set sync.myAtt/node0 = "foo"
-                                                                                                # set node0.started = "false" -> is used to define if the instance is started or not
+# add group0, group1 : WebSocketGroup
+Add                 <- AddToken fs IdentifierList fs TypeDef
+                     | AddToken fs IdentifierList s :':' s TypeDef
 
-Network             <- NetworkToken ws InstancePath ws String2                                  # network node1.lan.eth0 192.168.0.1
+# remove node0, node0.comp1, sync
+Remove              <- RemoveToken fs IdentifierList
 
-AddBinding          <- BindToken ws InstancePath ws InstancePath                                # bind node1.comp0.sendMsg chan42
+# move node0.comp0, node2.* node1
+Move                <- MoveToken fs IdentifierList s IdentifierList
 
-DelBinding          <- UnbindToken ws InstancePath ws InstancePath                              # unbind node1.comp0.sendMsg chan0
+# attach node0, node1 group0
+Attach              <- AttachToken fs IdentifierList s IdentifierList
 
-AddRepo             <- RepoToken ws RealStringNoNewLine                                         # repo "http://org.sonatype.org/foo/bar?a=b&c=d"
+# attach group0
+ScopeAttach         <- AttachToken fs IdentifierList
 
-Include             <- IncludeToken ws String :':' String2                                      # include npm:kevoree-chan-websocket
-																					            # include mvn:org.kevoree.library.javase:websocketgrp:2.0.5-SNAPSHOT
+# detach node0, node1 group0
+Detach              <- DetachToken fs IdentifierList s IdentifierList
 
-NameList            <- InstancePath ws *(:[,] ws InstancePath)                                  # node42
-                                                                                                # node0, node0.comp1, node42
+# detach group0
+ScopeDetach         <- DetachToken fs IdentifierList
 
-TypeDef             <- TypeFQN ?(:'/' Version)                                                  # FooType/0.0.1 (specific vers.)
-                                                                                                # FooType       (last vers.)
-                                                                                                # org.kevoree.Foo/0.42.0 (fully qualified name)
 
-TypeFQN             <- String3 *([.] String3)
+# set node0 logLevel 'INFO'
+# set @nodes logLevel 'DEBUG'
+# set 
+Set                 <- SetToken fs IdentifierList fs Attribute fs (StringLit | :'@' ValIdentifier)
 
-Namespace           <- NamespaceToken ws String                                                 # namespace sp-ace_0
+# set myAtt = 'foo'
+# set myAtt/node0 = "foo"
+ScopeSet            <- SetToken fs Attribute fs (StringLit | :'@' ValIdentifier)
 
-Start               <- StartToken ws NameList                                                   # start host.child
+# network node1 lan.eth0 192.168.0.1
+Network             <- NetworkToken fs IdentifierList fs NetworkInfo :'.' NetworkProperty fs Address
 
-Stop                <- StopToken ws NameList                                                    # stop child, child1
+# network lan.eth0 192.168.0.1
+ScopeNetwork        <- NetworkToken fs NetworkInfo :'.' NetworkProperty fs Address
 
-Pause               <- PauseToken ws NameList                                                   # pause node0.comp
 
-InstancePath        <- (Wildcard | String) *(:[.] (Wildcard | String))                          # node0.*.att
+NetworkInfo         <- +[a-zA-Z0-9_]
+NetworkProperty     <- +[a-zA-Z0-9_]
+
+# bind node1.comp0.sendMsg chan42
+AddBinding          <- BindToken fs IdentifierList fs Port fs IdentifierList
+
+# unbind node1.comp0.sendMsg chan0
+DelBinding          <- UnbindToken fs IdentifierList s IdentifierList
+
+# repo "http://org.sonatype.org/foo/bar?a=b&c=d"
+AddRepo             <- RepoToken fs RealStringNoNewLine
+
+# foo
+# @bar
+Identifier          <= (Name | :'@' ValIdentifier) ?(:'.' Name)
+
+Attribute           <- Name ?(:'/' Identifier)
+
+Port                <- Name
+
+# foo
+# foo, %bar%, @baz
+IdentifierList      <- Identifier *(:[,] ws Identifier)
+
+# FooType/0.0.1      (std library & specific vers.)
+# FooType            (std library & last vers.)
+# kevoree.Foo/0.42.0 (specific namespace & specific version)
+TypeDef             <- ?(Namespace :'.') TypeName ?(:'/' Version)
+
+TypeName            <- +[a-zA-Z0-9]
+
+Namespace           <- +[a-zA-Z]*([a-zA-Z0-9_])
+
+# start host.child
+Start               <- StartToken fs IdentifierList                                                   
+
+# stop foo, bar
+Stop                <- StopToken fs IdentifierList                                                  
+
+# node0
+# %ctxVar%
+# %%randomVar%%
+Name                <= +[a-zA-Z0-9_] | ContextVar | RandomVar
+
+ContextVar          <- :'%' +[a-zA-Z0-9_] :'%'
+
+RandomVar           <- :'%%' +[a-zA-Z0-9_] :'%%'
 
 Wildcard            <- '*'
 
-String              <- +[a-zA-Z0-9_-]
+# [ foo, bar, baz ]
+InstanceArray       <- :'[' ws Name *(ws :',' ws Name) ws :']'
 
-String2             <- +[a-zA-Z0-9.:%@_-]
+# [ 'foo', "bar", 'baz' ]
+StringArray         <- :'[' ws StringLit *(ws :',' ws StringLit) ws :']'
 
-String3             <= +[a-zA-Z0-9_]
+StringLit           <- :["] *(!["] !eol (DoubleEscapedChar | !DoubleEscapedChar .)) :["]
+                     | :['] *(!['] !eol (SingleEscapedChar | !SingleEscapedChar .)) :[']
+                     | :[`] *(![`]      (BackEscapedChar   | !BackEscapedChar   .)) :[`]
+
+String              <= +[a-zA-Z0-9_-]
+
+Address             <- :["] +(!["] !eol !DoubleEscapedChar [a-zA-Z0-9.:%@_-]) :["]
+                     | :['] +(!['] !eol !SingleEscapedChar [a-zA-Z0-9.:%@_-]) :[']
 
 Version             <- +[a-zA-Z0-9._-]
 
-Line                <- +(!eol .) 																 # anything but EOL
+ValIdentifier       <- +[a-zA-Z_] *[a-zA-Z0-9_]
 
-RealString          <- :['] *(NewLine | Escaped | SingleQuoteLine) :[']
-                     | :["] *(NewLine | Escaped | DoubleQuoteLine) :["]
-
-Escaped             <- [\\](!eol .)
 SingleQuoteLine     <- +(!['] ![\\] (!eol .))
 DoubleQuoteLine     <- +(!["] ![\\] (!eol .))
 
-RealStringNoNewLine <- :['] *([\\](!eol .) | !['] ![\\] (!eol .)) :[']
-                     | :["] *([\\](!eol .) | !["] ![\\] (!eol .)) :["]
+RealStringNoNewLine <- :['] *([\\](!eol .) | !['] ![\\] (!eol [a-zA-Z0-9_])) :[']
+                     | :["] *([\\](!eol .) | !["] ![\\] (!eol [a-zA-Z0-9_])) :["]
 
-NewLine             <- :'\r\n' | :'\n' | :'\r'
-# =========
-# End Rules
+SingleEscapedChar   <- '\\' ('b' | 'n' | 'r' | 't' | 'v' | '\\' | ('\r\n' | '\n' | '\r') | ['])
+DoubleEscapedChar   <- '\\' ('b' | 'n' | 'r' | 't' | 'v' | '\\' | ('\r\n' | '\n' | '\r') | ["])
+BackEscapedChar     <- '\\' ('b' | 'n' | 'r' | 't' | 'v' | '\\' | ('\r\n' | '\n' | '\r') | [`])
 
-
-# Void Non-terminals
+# Void
 # =============
+ValToken        <: 'val'
+ForToken        <: 'for'
+ForAllToken     <: 'forAll'
 RepoToken       <: 'repo'
-IncludeToken    <: 'include'
 AddToken        <: 'add'
 RemoveToken     <: 'remove'
 MoveToken       <: 'move'
 SetToken        <: 'set'
 AttachToken     <: 'attach'
 DetachToken     <: 'detach'
-NetworkToken    <: 'network'
+NetworkToken    <: 'net'
 BindToken       <: 'bind'
 UnbindToken     <: 'unbind'
-NamespaceToken  <: 'namespace'
 StartToken      <: 'start'
 StopToken       <: 'stop'
-PauseToken      <: 'pause'
-Comment         <: '//' ?Line
+SComment        <: '//' *(!eol .) (eol | !.)
+MComment        <: '/*' *(MComment | !'*/' . ) '*/'
 eol             <: '\r\n' | '\n' | '\r'
-ws              <: *([ \t] | eol)
+ws              <: *([ \t] | eol | SComment | MComment)
+s               <: *[ \t]
+fs              <: +[ \t]
 # =================
-# End Void Non-terminals

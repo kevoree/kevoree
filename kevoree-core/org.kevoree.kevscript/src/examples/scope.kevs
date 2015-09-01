@@ -1,0 +1,17 @@
+val nodes = [ 'node0', 'node1' ]
+val chan = "chan"
+
+add @nodes, "foo" JavascriptNode
+add @chan WSChan
+add "sync" WSGroup
+
+forAll nodes {
+	add printer Ticker
+	add printer ConsolePrinter
+
+	set logLevel "DEBUG"
+
+	net ip.lo "127.0.0.1"
+
+	attach sync
+}

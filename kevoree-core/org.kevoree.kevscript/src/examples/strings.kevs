@@ -1,0 +1,7 @@
+val str0 = "a\nb"
+val str1 = "a\
+b"
+val str2 = `\
+add node0:	JavascriptNode
+add sync:	WSGroup\
+`

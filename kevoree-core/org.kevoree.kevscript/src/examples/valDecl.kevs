@@ -1,0 +1,12 @@
+val KEV_HOST = "ws.kevoree.org"
+val uuid = "%%uuid%%"
+
+val nodes = [ node0, node1 ]
+
+add @nodes: 		JavascriptNode
+add sync:   		WSGroup
+add chan:   		RemoteWSChan
+add node0.ticker:	Ticker
+add node1.printer:	ConsolePrinter
+
+set chan.uuid = @uuid

@@ -1,0 +1,9 @@
+val node = "node0"
+
+add @node: JavaNode
+add sync: WSGroup
+add @node.ticker: Ticker
+
+set @node logLevel 'INFO'
+set sync master/@node 'DEBUG'
+set @node.ticker delay '8000'

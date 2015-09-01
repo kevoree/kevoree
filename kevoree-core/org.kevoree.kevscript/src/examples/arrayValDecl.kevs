@@ -1,0 +1,16 @@
+val nodes = [ node0, node1 ]
+val values = [ 'foo', 'bar', 'baz' ]
+
+add @nodes: JavascriptNode
+
+forAll @nodes {
+	set logLevel 'DEBUG'
+	net ipv4.lo  '127.0.0.1'
+	net ipv6.lo  '::1'
+}
+
+add node0.comp: SomeComponent
+for node0.comp {
+	set listAttr @values
+	set strAttr @str
+}

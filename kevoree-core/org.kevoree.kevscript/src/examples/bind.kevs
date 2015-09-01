@@ -1,0 +1,19 @@
+val nodes = [ node0, node1, node2 ]
+
+add @nodes: JavascriptNode
+add node0.ticker: Ticker
+add node1.printer, node2.printer: ConsolePrinter
+add chan: RemoteWSChan
+
+for chan {
+	set host 'ws.kevoree.org'
+	set port '80'
+	set uuid '%%uuid%%'
+
+	bind node0.ticker tick
+	bind node1.printer, node2.printer input
+}
+
+forAll @nodes {
+	bind printer chan
+}

@@ -1,0 +1,13 @@
+add %node%, %%randomName%% : JavascriptNode
+add sync : WSGroup
+
+val nodes = [ '%node%', '%%randomName%%', 'server' ]
+val foo = "bar"
+
+attach @nodes, @foo sync
+
+net %%randomName%%	ipv6.eth0	"2001:0db8:0000:85a3:0000:0000:ac1f:8001"
+net %node% 			ipv6.lo  	'::1'
+net @nodes			ipv4.lo  	"127.0.0.1"
+
+set @nodes logLevel 'DEBUG'

@@ -1,0 +1,9 @@
+add host : JavaNode
+add host.child : JavaNode
+add child.ticker: Ticker
+
+val nodes = [ host, child ]
+
+set host logLevel 'INFO'
+set child logLevel 'DEBUG'
+set @nodes filterTag 'FOO'
