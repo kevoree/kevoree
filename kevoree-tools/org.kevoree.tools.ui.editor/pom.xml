@@ -55,6 +55,11 @@
         </dependency>
         <dependency>
             <groupId>org.kevoree</groupId>
+            <artifactId>org.kevoree.maven.resolver</artifactId>
+            <version>${basic.resolver.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.kevoree</groupId>
             <artifactId>org.kevoree.annotation.api</artifactId>
             <version>${project.version}</version>
         </dependency>
@@ -75,7 +80,7 @@
         </dependency>
         <dependency>
             <groupId>org.eclipse.paho</groupId>
-			<artifactId>org.eclipse.paho.client.mqttv3</artifactId>
+            <artifactId>org.eclipse.paho.client.mqttv3</artifactId>
             <version>1.0.1</version>
         </dependency>
     </dependencies>
