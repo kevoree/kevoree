@@ -39,10 +39,12 @@ public class KevRunnerMojo extends AnnotationPreProcessorMojo {
         try {
             if (System.getProperty("dev.target.dirs") == null) {
                 StringBuilder pathsToMerge = new StringBuilder(outputClasses.getAbsolutePath());
-                for (File filePath: mergeLocalLibraries) {
-                    if (!filePath.getAbsolutePath().equals(outputClasses.getAbsolutePath())) {
-                        pathsToMerge.append(File.pathSeparator);
-                        pathsToMerge.append(filePath.getAbsolutePath());
+                if (mergeLocalLibraries != null) {
+                    for (File filePath: mergeLocalLibraries) {
+                        if (!filePath.getAbsolutePath().equals(outputClasses.getAbsolutePath())) {
+                            pathsToMerge.append(File.pathSeparator);
+                            pathsToMerge.append(filePath.getAbsolutePath());
+                        }
                     }
                 }
                 System.setProperty("dev.target.dirs", pathsToMerge.toString());
