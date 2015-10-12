@@ -3,12 +3,12 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>org.kevoree.bootstrap</artifactId>
     <name>Kevoree :: Bootstrap</name>
-    <version>5.2.6</version>
+    <version>5.2.7-SNAPSHOT</version>
 
     <parent>
         <artifactId>org.kevoree.root</artifactId>
         <groupId>org.kevoree</groupId>
-        <version>5.2.6</version>
+        <version>5.2.7-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
