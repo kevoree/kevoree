@@ -24,6 +24,6 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE})
-public @interface ChannelType{
-    java.lang.String description() default "empty";
+public @interface ChannelType {
+    java.lang.String description() default "";
 }
