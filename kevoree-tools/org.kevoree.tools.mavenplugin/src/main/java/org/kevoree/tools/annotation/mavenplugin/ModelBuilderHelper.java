@@ -397,24 +397,52 @@ public class ModelBuilderHelper {
     public static void process(Object elem, CtClass clazz, KevoreeFactory factory, DeployUnit du, ContainerRoot root) throws Exception {
         if (elem instanceof org.kevoree.annotation.GroupType) {
             TypeDefinition td = getOrCreateTypeDefinition(clazz.getName(), du.getVersion(), root, factory, metaClassName(elem));
+            String descVal = ((org.kevoree.annotation.GroupType) elem).description();
+            if (descVal != null && !descVal.isEmpty()) {
+                Value desc = factory.createValue();
+                desc.setName("description");
+                desc.setValue(descVal);
+                td.addMetaData(desc);
+            }
             processTypeDefinition(td, du, clazz, root, factory);
             deepFields(clazz, factory, td);
             deepMethods(clazz, factory, td);
         }
         if (elem instanceof org.kevoree.annotation.ChannelType) {
             TypeDefinition td = getOrCreateTypeDefinition(clazz.getName(), du.getVersion(), root, factory, metaClassName(elem));
+            String descVal = ((org.kevoree.annotation.ChannelType) elem).description();
+            if (descVal != null && !descVal.isEmpty()) {
+                Value desc = factory.createValue();
+                desc.setName("description");
+                desc.setValue(descVal);
+                td.addMetaData(desc);
+            }
             processTypeDefinition(td, du, clazz, root, factory);
             deepFields(clazz, factory, td);
             deepMethods(clazz, factory, td);
         }
         if (elem instanceof org.kevoree.annotation.ComponentType) {
             TypeDefinition td = getOrCreateTypeDefinition(clazz.getName(), du.getVersion(), root, factory, metaClassName(elem));
+            String descVal = ((org.kevoree.annotation.ComponentType) elem).description();
+            if (descVal != null && !descVal.isEmpty()) {
+                Value desc = factory.createValue();
+                desc.setName("description");
+                desc.setValue(descVal);
+                td.addMetaData(desc);
+            }
             processTypeDefinition(td, du, clazz, root, factory);
             deepFields(clazz, factory, td);
             deepMethods(clazz, factory, td);
         }
         if (elem instanceof org.kevoree.annotation.NodeType) {
             TypeDefinition td = getOrCreateTypeDefinition(clazz.getName(), du.getVersion(), root, factory, metaClassName(elem));
+            String descVal = ((org.kevoree.annotation.NodeType) elem).description();
+            if (descVal != null && !descVal.isEmpty()) {
+                Value desc = factory.createValue();
+                desc.setName("description");
+                desc.setValue(descVal);
+                td.addMetaData(desc);
+            }
             processTypeDefinition(td, du, clazz, root, factory);
             deepFields(clazz, factory, td);
             deepMethods(clazz, factory, td);
