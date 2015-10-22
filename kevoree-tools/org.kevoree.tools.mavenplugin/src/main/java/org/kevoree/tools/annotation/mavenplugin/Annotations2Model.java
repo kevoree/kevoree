@@ -9,7 +9,10 @@ import org.kevoree.factory.KevoreeFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created with IntelliJ IDEA.
@@ -21,7 +24,7 @@ public class Annotations2Model {
 
     private static final KevoreeFactory factory = new DefaultKevoreeFactory();
 
-    private void recursiveBuild(File current, ClassPool pool, String root, DeployUnit du, ContainerRoot modelRoot) throws Exception {
+    private void recursiveBuild(File current, ClassPool pool, String root, DeployUnit du, ContainerRoot modelRoot,Map<String, Set<String>> collectedClasses) throws Exception {
         if (current.isDirectory()) {
             File[] childs = current.listFiles();
             for (int i = 0; i < childs.length; i++) {
@@ -34,6 +37,16 @@ public class Annotations2Model {
                     for (Object annotation : annotations) {
                         ModelBuilderHelper.process(annotation, clazz, factory, du, modelRoot);
                     }
+
+
+                    //add to collected
+                    Set<String> sources = collectedClasses.get(child.getName());
+                    if(sources==null){
+                        sources = new HashSet<String>();
+                        collectedClasses.put(child.getName(),sources);
+                    }
+                    sources.add(du.getName()+":"+ du.getVersion());
+
                 } else {
                     if (child.isDirectory()) {
                         String nextPath = root;
@@ -42,19 +55,19 @@ public class Annotations2Model {
                         } else {
                             nextPath = child.getName();
                         }
-                        recursiveBuild(child, pool, nextPath, du, modelRoot);
+                        recursiveBuild(child, pool, nextPath, du, modelRoot,collectedClasses);
                     }
                 }
             }
         }
     }
 
-    public void fillModel(File targetDir, ContainerRoot model, DeployUnit deployUnit, List<String> additionalClassPathElems) throws Exception {
+    public void fillModel(File targetDir, ContainerRoot model, DeployUnit deployUnit, List<String> additionalClassPathElems, Map<String, Set<String>> collectedClasses) throws Exception {
         ClassPool pool = ClassPool.getDefault();
         for (String classPath : additionalClassPathElems) {
             pool.appendClassPath(classPath);
         }
-        recursiveBuild(targetDir, pool, "", deployUnit, model);
+        recursiveBuild(targetDir, pool, "", deployUnit, model,collectedClasses);
     }
 
 }

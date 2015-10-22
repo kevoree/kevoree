@@ -2,9 +2,9 @@
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE, Version 3, 29 June 2007;
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * <p/>
  * http://www.gnu.org/licenses/lgpl-3.0.txt
- *
+ * <p/>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -43,13 +43,13 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.HashMap;
+import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@Mojo(name = "generate", defaultPhase = LifecyclePhase.PREPARE_PACKAGE, requiresDependencyResolution = ResolutionScope.COMPILE)
+@Mojo(name = "generate", defaultPhase = LifecyclePhase.PREPARE_PACKAGE, requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME)
 public class AnnotationPreProcessorMojo extends AbstractMojo {
 
     @Parameter(defaultValue = "${project.build.directory}/classes")
@@ -64,8 +64,9 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
     @Parameter(required = true, readonly = true, defaultValue = "${project}")
     public MavenProject project;
 
-    @Parameter(required = true, readonly = true,defaultValue = "${session}")
+    @Parameter(required = true, readonly = true, defaultValue = "${session}")
     public MavenSession session;
+
 
     /**
      * the set of included dependencies which will be registered on the Kevoree model
@@ -102,7 +103,8 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
         return a.getGroupId() + a.getArtifactId() + a.getVersion() + a.getType();
     }
 
-    public DeployUnit fillModel(ContainerRoot model, DependencyNode root, KevoreeFactory factory) {
+    public DeployUnit fillModel(ContainerRoot model, DependencyNode root, KevoreeFactory factory, Map<String, Set<String>> collectedClasses) {
+
         if (!cache.containsKey(createKey(root))) {
             DeployUnit du = factory.createDeployUnit();
             du.setName(root.getArtifact().getArtifactId());
@@ -120,15 +122,38 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
                 pack.addDeployUnits(du);
             }
             cache.put(createKey(root), du);
+
+            try {
+                File f2 = localRepository.find(root.getArtifact()).getFile();
+                if (f2 != null && f2.getAbsolutePath().endsWith(".jar")) {
+                    JarFile file = new JarFile(f2);
+                    Enumeration<JarEntry> entires = file.entries();
+                    while (entires.hasMoreElements()) {
+                        JarEntry entry = entires.nextElement();
+                        // System.err.println(entry.getName());
+                        Set<String> sources = collectedClasses.get(entry.getName());
+                        if (sources == null) {
+                            sources = new HashSet<String>();
+                            collectedClasses.put(entry.getName(), sources);
+                        }
+                        sources.add(root.getArtifact().getGroupId()+":"+root.getArtifact().getArtifactId()+":"+root.getArtifact().getVersion()+":"+root.getArtifact().getType());
+                    }
+                    file.close();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
         }
 
         for (DependencyNode child : root.getChildren()) {
             if (child.getArtifact().getScope() == null || child.getArtifact().getScope().equals(Artifact.SCOPE_COMPILE) || child.getArtifact().getScope().equals(Artifact.SCOPE_RUNTIME)) {
                 if (checkFilters(child, includes, true) && !checkFilters(child, excludes, false)) {
-                    fillModel(model, child, factory);
+                    fillModel(model, child, factory, collectedClasses);
                 }
             }
         }
+
 
         return cache.get(createKey(root));
     }
@@ -194,22 +219,48 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
             fillModelWithRepository(repo.getUrl(), model);
         }
         DeployUnit mainDeployUnit = null;
+
+
+        HashMap<String, Set<String>> collectedClasses = new HashMap<String, Set<String>>();
+
         try {
             /* Seems to be buggy... */
             ArtifactFilter artifactFilter = new ScopeArtifactFilter(Artifact.SCOPE_COMPILE);
             DependencyNode graph = dependencyTreeBuilder.buildDependencyTree(project, localRepository, artifactFilter);
-            mainDeployUnit = fillModel(model, graph, factory);
+            mainDeployUnit = fillModel(model, graph, factory, collectedClasses);
             linkModel(graph);
         } catch (DependencyTreeBuilderException e) {
             getLog().error(e);
         }
 
         try {
-            annotations2Model.fillModel(outputClasses, model, mainDeployUnit, project.getCompileClasspathElements());
+            annotations2Model.fillModel(outputClasses, model, mainDeployUnit, project.getCompileClasspathElements(), collectedClasses);
         } catch (Exception e) {
             getLog().error(e);
             throw new MojoExecutionException("Error while parsing Kevoree annotations", e);
         }
+
+        //post analyze collecedClasses
+        StringBuilder message = new StringBuilder();
+        for (String key : collectedClasses.keySet()) {
+            if (key.endsWith(".class")) {
+                Set<String> sources = collectedClasses.get(key);
+                if (sources.size() > 1) {
+                    message.append("Duplicate class in Kevoree entity classpath for name:" + key + ", present in\n");
+                    for (String s : sources) {
+                        message.append("\t" + s + "\n");
+                    }
+
+                }
+            }
+        }
+
+        if (message.length() > 0) {
+            getLog().error("Class conflict errors\n"+message.toString());
+        }
+
+
+
 
         /*
 
