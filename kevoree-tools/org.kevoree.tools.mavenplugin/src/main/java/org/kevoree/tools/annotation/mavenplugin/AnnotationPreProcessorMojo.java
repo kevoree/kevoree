@@ -240,27 +240,29 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
             throw new MojoExecutionException("Error while parsing Kevoree annotations", e);
         }
 
-        //post analyze collecedClasses
-        StringBuilder message = new StringBuilder();
+        // post analyze collectedClasses
+        Set<String> duplicatedDeps = new TreeSet<String>();
+//        StringBuilder message = new StringBuilder();
         for (String key : collectedClasses.keySet()) {
             if (key.endsWith(".class")) {
                 Set<String> sources = collectedClasses.get(key);
                 if (sources.size() > 1) {
-                    message.append("Duplicate class in Kevoree entity classpath for name:" + key + ", present in\n");
+//                    message.append("Duplicate class in Kevoree classpath for " + key + ", present in\n");
                     for (String s : sources) {
-                        message.append("\t" + s + "\n");
+//                        message.append("\t" + s + "\n");
+                        duplicatedDeps.add(s);
                     }
 
                 }
             }
         }
 
-        if (message.length() > 0) {
-            getLog().error("Class conflict errors\n"+message.toString());
+        if (!duplicatedDeps.isEmpty()) {
+            getLog().warn("Duplicate dependencies errors:");
+            for (String dep : duplicatedDeps) {
+                getLog().warn("\t" + dep);
+            }
         }
-
-
-
 
         /*
 
@@ -322,4 +324,9 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
         }
     }
 
+    private class MavenDep {
+        String groupId;
+        String artifactId;
+        String version;
+    }
 }
