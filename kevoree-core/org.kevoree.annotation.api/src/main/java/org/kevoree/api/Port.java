@@ -8,6 +8,8 @@ package org.kevoree.api;
  */
 public interface Port {
 
+    public void send(String payload);
+
     public void send(String payload, Callback callback);
     
     public String getPath();
