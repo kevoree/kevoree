@@ -40,7 +40,9 @@ import org.kevoree.pmodeling.api.xmi.XMIModelLoader;
 import org.kevoree.pmodeling.api.xmi.XMIModelSerializer;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -127,9 +129,9 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
                 File f2 = localRepository.find(root.getArtifact()).getFile();
                 if (f2 != null && f2.getAbsolutePath().endsWith(".jar")) {
                     JarFile file = new JarFile(f2);
-                    Enumeration<JarEntry> entires = file.entries();
-                    while (entires.hasMoreElements()) {
-                        JarEntry entry = entires.nextElement();
+                    Enumeration<JarEntry> entries = file.entries();
+                    while (entries.hasMoreElements()) {
+                        JarEntry entry = entries.nextElement();
                         // System.err.println(entry.getName());
                         Set<String> sources = collectedClasses.get(entry.getName());
                         if (sources == null) {
@@ -140,10 +142,7 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
                     }
                     file.close();
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
+            } catch (Exception ignore) {}
         }
 
         for (DependencyNode child : root.getChildren()) {
@@ -322,11 +321,5 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
             getLog().error(e);
             throw new MojoExecutionException("Unable to build kevoree model for types", e);
         }
-    }
-
-    private class MavenDep {
-        String groupId;
-        String artifactId;
-        String version;
     }
 }
