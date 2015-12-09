@@ -153,7 +153,7 @@ public class KevoreeCoreBean implements ContextAwareModelService, PlatformServic
 
         @Override
         public void run() {
-            boolean res = false;
+            boolean res;
             if (currentLock != null) {
                 if (uuid.compareTo(currentLock.getUuid()) == 0) {
                     res = internal_update_model(targetModel, callerPath);
@@ -174,13 +174,9 @@ public class KevoreeCoreBean implements ContextAwareModelService, PlatformServic
                 }
             }
             final boolean finalRes = res;
-            new Thread() {
-                public void run() {
-                    if(callback!= null){
-                        callback.run(finalRes);
-                    }
-                }
-            }.start();
+            if (callback!= null) {
+                callback.run(finalRes);
+            }
         }
     }
 
@@ -204,6 +200,8 @@ public class KevoreeCoreBean implements ContextAwareModelService, PlatformServic
     private class UpdateScriptRunnable implements Runnable {
 
         private String script;
+        private UpdateCallback callback;
+        private String callerPath;
 
         private UpdateScriptRunnable(String script, UpdateCallback callback, String callerPath) {
             this.script = script;
@@ -211,22 +209,15 @@ public class KevoreeCoreBean implements ContextAwareModelService, PlatformServic
             this.callerPath = callerPath;
         }
 
-        private UpdateCallback callback;
-        private String callerPath;
-
         @Override
         public void run() {
             // TODO throwable should be returned in UpdateCallback as an error parameter to distinguish error from "false" result
             try {
                 ContainerRoot newModel = kevoreeFactory.createModelCloner().clone(model.get().getModel(), false);
                 scriptEngine.execute(script, newModel);
-                final boolean res = internal_update_model(cloneCurrentModel(newModel), callerPath);
-                new Thread() {
-                    public void run() {
-                        callback.run(res);
-                    }
-                }.start();
+                callback.run(internal_update_model(cloneCurrentModel(newModel), callerPath));
             } catch (Throwable e) {
+                Log.error("Error while applying submitted KevScript", e);
                 callback.run(false);
             }
         }
@@ -234,11 +225,7 @@ public class KevoreeCoreBean implements ContextAwareModelService, PlatformServic
 
     @Override
     public void submitScript(String script, UpdateCallback callback, String callerPath) {
-        if (script != null && currentLock == null) {
-            scheduler.submit(new UpdateScriptRunnable(script, callback, callerPath));
-        } else {
-            callback.run(false);
-        }
+        scheduler.submit(new UpdateScriptRunnable(script, callback, callerPath));
     }
 
     private class UpdateSequenceRunnable implements Runnable {
@@ -259,26 +246,18 @@ public class KevoreeCoreBean implements ContextAwareModelService, PlatformServic
             try {
                 ContainerRoot newModel = kevoreeFactory.createModelCloner().clone(model.get().getModel(), false);
                 sequence.applyOn(newModel);
-                final boolean res = internal_update_model(cloneCurrentModel(newModel), callerPath);
-                new Thread() {
-                    public void run() {
-                        callback.run(res);
-                    }
-                }.start();
+                callback.run(internal_update_model(cloneCurrentModel(newModel), callerPath));
             } catch (Throwable e) {
                 broadcastTelemetry(TelemetryEvent.Type.LOG_ERROR, "Error while applying trace sequence.", e);
                 //Log.error("error while apply trace sequence", e)
+                Log.error("Error while applying submitted traces sequence", e);
                 callback.run(false);
             }
         }
     }
 
     public void submitSequence(TraceSequence sequence, UpdateCallback callback, String callerPath) {
-        if (sequence != null && currentLock == null) {
-            scheduler.submit(new UpdateSequenceRunnable(sequence, callback, callerPath));
-        } else {
-            callback.run(false);
-        }
+        scheduler.submit(new UpdateSequenceRunnable(sequence, callback, callerPath));
     }
 
     private void switchToNewModel(ContainerRoot c) {
