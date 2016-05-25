@@ -42,6 +42,7 @@ import org.kevoree.pmodeling.api.xmi.XMIModelSerializer;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.*;
+import java.util.Map.Entry;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.regex.Matcher;
@@ -108,9 +109,10 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
 	public DeployUnit fillModel(ContainerRoot model, DependencyNode root, KevoreeFactory factory,
 			Map<String, Set<String>> collectedClasses) {
 
-		if (!cache.containsKey(createKey(root))) {
+		final String cacheKey = createKey(root);
+		if (!cache.containsKey(cacheKey)) {
 			DeployUnit du = factory.createDeployUnit();
-			du.setName(root.getArtifact().getArtifactId());
+			du.setName(cacheKey + '*' + root.getArtifact().getArtifactId());
 			du.setVersion(root.getArtifact().getBaseVersion());
 
 			Value platform = factory.createValue();
@@ -124,7 +126,7 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
 			} else {
 				pack.addDeployUnits(du);
 			}
-			cache.put(createKey(root), du);
+			cache.put(cacheKey, du);
 
 			try {
 				File f2 = localRepository.find(root.getArtifact()).getFile();
@@ -158,7 +160,7 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
 			}
 		}
 
-		return cache.get(createKey(root));
+		return cache.get(cacheKey);
 	}
 
 	private boolean checkFilters(DependencyNode root, String[] container, boolean defaultResult) {
@@ -183,13 +185,20 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
 		}
 	}
 
-	public void linkModel(DependencyNode rootRoot, DependencyNode current) {
-		final DeployUnit rootUnit = cache.get(createKey(rootRoot));
-		for (DependencyNode child : current.getChildren()) {
-			final DeployUnit childUnit = cache.get(createKey(child));
-			if (childUnit != null) {
-				rootUnit.addRequiredLibs(childUnit);
-				linkModel(current, child);
+	private void linkModel(final DependencyNode rootRoot) {
+
+		/*
+		 * We prefix the name of every dependencies of a kevoree component with
+		 * the value of its cache key. The '*' is not a valid maven identifier
+		 * and is used as a separator. By doing so we prevent its recusive
+		 * dependencies to be merged with other DU dependencies and avoid futur
+		 * conflicts.
+		 */
+		final String rootCacheKey = createKey(rootRoot);
+		final DeployUnit rootUnit = cache.get(rootCacheKey);
+		for (final Entry<String, DeployUnit> entry : cache.entrySet()) {
+			if (!entry.getKey().equals(rootCacheKey)) {
+				rootUnit.addRequiredLibs(entry.getValue());
 			}
 		}
 	}
@@ -216,7 +225,7 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
 			final ArtifactFilter artifactFilter = new ScopeArtifactFilter(Artifact.SCOPE_COMPILE);
 			DependencyNode graph = dependencyTreeBuilder.buildDependencyTree(project, localRepository, artifactFilter);
 			mainDeployUnit = fillModel(model, graph, factory, collectedClasses);
-			linkModel(graph, graph);
+			linkModel(graph);
 		} catch (DependencyTreeBuilderException e) {
 			getLog().error(e);
 		}
