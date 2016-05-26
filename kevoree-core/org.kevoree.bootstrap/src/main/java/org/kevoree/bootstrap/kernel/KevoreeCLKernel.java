@@ -94,7 +94,6 @@ public class KevoreeCLKernel implements BootstrapService {
 				Log.info("Resolving ............. " + deployUnit.path());
 				long before = System.currentTimeMillis();
 				if (deployUnit.getUrl() == null || "".equals(deployUnit.getUrl())) {
-					String name = parseName(deployUnit.getName());
 					resolved = bs.getKernel().getResolver().resolve(KModelHelper.fqnGroup(deployUnit),
 							deployUnit.getName(), deployUnit.getVersion(), "jar", urls);
 				} else {
@@ -117,14 +116,11 @@ public class KevoreeCLKernel implements BootstrapService {
 	}
 
 	public String parseName(String duName) {
-		final String[] res = duName.split("\\*");
 		final String ret;
-		if (res.length == 0) {
-			ret = "";
-		} else if (res.length == 1) {
-			ret = res[0];
+		if(duName.matches("^[a-z0-9]{32}_.*")) {
+			ret = duName.substring(33);
 		} else {
-			ret = res[1];
+			ret = duName;
 		}
 		return ret;
 	}

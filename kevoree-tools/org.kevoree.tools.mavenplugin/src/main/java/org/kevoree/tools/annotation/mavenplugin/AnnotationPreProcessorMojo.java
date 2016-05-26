@@ -13,6 +13,7 @@
  */
 package org.kevoree.tools.annotation.mavenplugin;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.artifact.resolver.filter.ArtifactFilter;
@@ -107,12 +108,20 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
 	}
 
 	public DeployUnit fillModel(ContainerRoot model, DependencyNode root, KevoreeFactory factory,
-			Map<String, Set<String>> collectedClasses) {
+			Map<String, Set<String>> collectedClasses, String hashCode) {
 
 		final String cacheKey = createKey(root);
 		if (!cache.containsKey(cacheKey)) {
 			DeployUnit du = factory.createDeployUnit();
-			du.setName(cacheKey + '*' + root.getArtifact().getArtifactId());
+			du.setName(root.getArtifact().getArtifactId());
+			
+			/*
+			 * We add a hashCode to every dependencies of a kevoree component with
+			 * the value of its cache key hashed in md5. By doing so we prevent its recusive
+			 * dependencies to be merged with other DU dependencies and avoid future
+			 * conflicts (it still causes problems if a component is published several times with the same version but new dependencies).
+			 */
+			du.setHashcode(hashCode);
 			du.setVersion(root.getArtifact().getBaseVersion());
 
 			Value platform = factory.createValue();
@@ -155,7 +164,7 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
 					|| child.getArtifact().getScope().equals(Artifact.SCOPE_COMPILE)
 					|| child.getArtifact().getScope().equals(Artifact.SCOPE_RUNTIME))) {
 				if (checkFilters(child, includes, true) && !checkFilters(child, excludes, false)) {
-					fillModel(model, child, factory, collectedClasses);
+					fillModel(model, child, factory, collectedClasses, hashCode);
 				}
 			}
 		}
@@ -185,22 +194,15 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
 		}
 	}
 
-	private void linkModel(final DependencyNode rootRoot) {
-
-		/*
-		 * We prefix the name of every dependencies of a kevoree component with
-		 * the value of its cache key. The '*' is not a valid maven identifier
-		 * and is used as a separator. By doing so we prevent its recusive
-		 * dependencies to be merged with other DU dependencies and avoid futur
-		 * conflicts.
-		 */
-		final String rootCacheKey = createKey(rootRoot);
-		final DeployUnit rootUnit = cache.get(rootCacheKey);
-		for (final Entry<String, DeployUnit> entry : cache.entrySet()) {
-			if (!entry.getKey().equals(rootCacheKey)) {
-				rootUnit.addRequiredLibs(entry.getValue());
-			}
-		}
+	private void linkModel(final DependencyNode root) {
+		final DeployUnit rootUnit = cache.get(createKey(root));
+        for (final DependencyNode child : root.getChildren()) {
+            final DeployUnit childUnit = cache.get(createKey(child));
+            if (childUnit != null) {
+                rootUnit.addRequiredLibs(childUnit);
+                linkModel(child);
+            }
+        }
 	}
 
 	private void fillModelWithRepository(String repositoryURL, ContainerRoot model) {
@@ -224,7 +226,9 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
 		try {
 			final ArtifactFilter artifactFilter = new ScopeArtifactFilter(Artifact.SCOPE_COMPILE);
 			DependencyNode graph = dependencyTreeBuilder.buildDependencyTree(project, localRepository, artifactFilter);
-			mainDeployUnit = fillModel(model, graph, factory, collectedClasses);
+
+			final String prefix = DigestUtils.md5Hex(createKey(graph));
+			mainDeployUnit = fillModel(model, graph, factory, collectedClasses, prefix);
 			linkModel(graph);
 		} catch (DependencyTreeBuilderException e) {
 			getLog().error(e);
