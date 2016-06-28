@@ -8,13 +8,13 @@
     <version>5.3.2-SNAPSHOT</version>
 
     <properties>
-        <kmf.version>3.5.11</kmf.version>
+        <kmf.version>3.5.12</kmf.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <kevoree.version>${project.version}</kevoree.version>
         <kotlin.version>0.8.11</kotlin.version>
         <kevoree.log.version>1</kevoree.log.version>
         <basic.resolver.version>20</basic.resolver.version>
-        <kevoree.kcl.version>22</kevoree.kcl.version>
+        <kevoree.kcl.version>23</kevoree.kcl.version>
         <jeromq.version>0.3.2</jeromq.version>
         <junit.version>4.11</junit.version>
         <jdk.target>1.6</jdk.target>
@@ -87,6 +87,24 @@
             <name>Jean Emile Dartois</name>
             <id>jed</id>
             <email>jedartois@gmail.com</email>
+            <roles>
+                <role>developer</role>
+            </roles>
+            <timezone>+2</timezone>
+        </developer>
+        <developer>
+            <name>Maxime Tricoire</name>
+            <id>maxleiko</id>
+            <email>max.tricoire@gmail.com</email>
+            <roles>
+                <role>developer</role>
+            </roles>
+            <timezone>+2</timezone>
+        </developer>
+        <developer>
+            <name>Manuel Leduc</name>
+            <id>manuelleduc</id>
+            <email>manuel.leduc@gmail.com</email>
             <roles>
                 <role>developer</role>
             </roles>

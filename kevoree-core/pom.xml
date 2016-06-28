@@ -26,7 +26,7 @@
     <modules>
         <module>org.kevoree.annotation.api</module>
         <module>org.kevoree.model</module>
-        <module>org.kevoree.model.js</module>
+        <!--<module>org.kevoree.model.js</module>-->
         <module>org.kevoree.api</module>
         <module>org.kevoree.kevscript</module>
         <module>org.kevoree.core</module>
@@ -44,11 +44,6 @@
                 <configuration>
                     <source>${jdk.target}</source>
                     <target>${jdk.target}</target>
-                    <!--
-                    <compilerArguments>
-                        <profile>compact1</profile>
-                    </compilerArguments>
-                    -->
                 </configuration>
             </plugin>
         </plugins>

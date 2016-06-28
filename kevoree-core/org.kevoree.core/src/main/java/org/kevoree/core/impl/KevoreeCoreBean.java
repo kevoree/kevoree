@@ -293,144 +293,90 @@ public class KevoreeCoreBean implements ContextAwareModelService, PlatformServic
             return false;
         }
         try {
-            ContainerRoot readOnlyNewModel = proposedNewModel;
-            if (readOnlyNewModel.isReadOnly()) {
-                readOnlyNewModel = kevoreeFactory.createModelCloner().clone(readOnlyNewModel, false);
-                readOnlyNewModel.setGenerated_KMF_ID(nodeName + "@" + callerPath + "#" + System.nanoTime());
-                readOnlyNewModel = kevoreeFactory.createModelCloner().clone(readOnlyNewModel, true);
-            } else {
-                readOnlyNewModel.setGenerated_KMF_ID(nodeName + "@" + callerPath + "#" + System.nanoTime());
-            }
-            if (false) {
-                broadcastTelemetry(TelemetryEvent.Type.LOG_ERROR, "There is check failure on update model, update refused !", null);
-                return false;
-            } else {
-                pending = proposedNewModel;
-                //Model check is OK.
-                ContainerRoot currentModel = model.get().getModel();
-                Log.trace("Before listeners PreCheck !");
-                UpdateContext updateContext = new UpdateContext(currentModel, readOnlyNewModel, callerPath);
-                boolean preCheckResult = modelListeners.preUpdate(updateContext);
-                Log.trace("PreCheck result = " + preCheckResult);
-                Log.trace("Before listeners InitUpdate !");
-                boolean initUpdateResult = modelListeners.initUpdate(updateContext);
-                Log.debug("InitUpdate result = " + initUpdateResult);
-                if (preCheckResult && initUpdateResult) {
-                    ContainerRoot newmodel = readOnlyNewModel;
-                    //CHECK FOR HARA KIRI
-                    ContainerRoot previousHaraKiriModel = null;
-                    if (/*hkh.detectNodeHaraKiri(currentModel, readOnlyNewModel, getNodeName())*/false) {
-                        broadcastTelemetry(TelemetryEvent.Type.LOG_WARNING, "HaraKiri detected , flush platform", null);
-                        //Log.warn("HaraKiri detected , flush platform")
-                        previousHaraKiriModel = currentModel;
-                        // Creates an empty model, removes the current node (harakiri)
-                        newmodel = kevoreeFactory.createContainerRoot();
-                        try {
-                            // Compare the two models and plan the adaptation
-                            AdaptationModel adaptationModel = nodeInstance.plan(currentModel, newmodel);
-                            if (Log.DEBUG) {
-                                //Avoid the loop if the debug is not activated
-                                Log.debug("Adaptation model size {}", adaptationModel.getAdaptations().size());
+            pending = proposedNewModel;
+            ContainerRoot currentModel = model.get().getModel();
+            Log.trace("Before listeners PreCheck !");
+            UpdateContext updateContext = new UpdateContext(currentModel, proposedNewModel, callerPath);
+            boolean preCheckResult = modelListeners.preUpdate(updateContext);
+            Log.trace("PreCheck result = " + preCheckResult);
+            Log.trace("Before listeners InitUpdate !");
+            boolean initUpdateResult = modelListeners.initUpdate(updateContext);
+            Log.debug("InitUpdate result = " + initUpdateResult);
+            if (preCheckResult && initUpdateResult) {
+                //CHECK FOR HARA KIRI
+                ContainerRoot previousHaraKiriModel = null;
+                //Checks and bootstrap the node
+                checkBootstrapNode(proposedNewModel);
+                currentModel = model.get().getModel();
+                long milli = System.currentTimeMillis();
+                if (Log.DEBUG) {
+                    Log.debug("Begin update model {}", milli);
+                }
+                boolean deployResult;
+                AdaptationModel adaptationModel = null;
+                try {
+                    if (nodeInstance != null) {
+                        // Compare the two models and plan the adaptation
+                        Log.info("Comparing models and planning adaptation.");
+                        broadcastTelemetry(TelemetryEvent.Type.MODEL_COMPARE_AND_PLAN, "Comparing models and planning adaptation.", null);
+                        adaptationModel = nodeInstance.plan(currentModel, proposedNewModel);
+                        //Execution of the adaptation
+                        Log.info("Launching adaptation of the system.");
+                        broadcastTelemetry(TelemetryEvent.Type.PLATFORM_UPDATE_START, "Launching adaptation of the system.", null);
+                        updateContext = new UpdateContext(currentModel, proposedNewModel, callerPath);
+
+                        final UpdateContext final_updateContext = updateContext;
+                        PrimitiveExecute afterUpdateTest = new PrimitiveExecute() {
+                            @Override
+                            public boolean exec() {
+                                return modelListeners.afterUpdate(final_updateContext);
                             }
-                            //Executes the adaptation
-                            ContainerNode rootNode = currentModel.findNodesByID(getNodeName());
-                            PrimitiveExecute afterUpdateTest = new PrimitiveExecute() {
-                                public boolean exec() {
-                                    return true;
-                                }
-                            };
-                            PrimitiveCommandExecutionHelper.instance$.execute(this, rootNode, adaptationModel, nodeInstance, afterUpdateTest, afterUpdateTest, afterUpdateTest);
-                            if (nodeInstance != null) {
-                                Method met = resolver.resolve(org.kevoree.annotation.Stop.class);
-                                met.invoke(nodeInstance);
+                        };
+                        PrimitiveExecute postRollbackTest = new PrimitiveExecute() {
+                            @Override
+                            public boolean exec() {
+                                modelListeners.postRollback(final_updateContext);
+                                return true;
                             }
-                            //end of harakiri
-                            nodeInstance = null;
-                            resolver = null;
-                            //place the current model as an empty model (for backup)
-
-                            ContainerRoot backupEmptyModel = kevoreeFactory.createContainerRoot();
-                            backupEmptyModel.setInternalReadOnly();
-                            switchToNewModel(backupEmptyModel);
-
-                            //prepares for deployment of the new system
-                            newmodel = readOnlyNewModel;
-                        } catch (Exception e) {
-                            broadcastTelemetry(TelemetryEvent.Type.LOG_ERROR, "Error while updating!", e);
-                            //Log.error("Error while update ", e);return false
-                        }
-                        Log.debug("End HaraKiri");
-                    }
-                    //Checks and bootstrap the node
-                    checkBootstrapNode(newmodel);
-                    currentModel = model.get().getModel();
-                    long milli = System.currentTimeMillis();
-                    if (Log.DEBUG) {
-                        Log.debug("Begin update model {}", milli);
-                    }
-                    boolean deployResult;
-                    try {
-                        if (nodeInstance != null) {
-                            // Compare the two models and plan the adaptation
-                            //Log.info("Comparing models and planning adaptation.")
-                            broadcastTelemetry(TelemetryEvent.Type.MODEL_COMPARE_AND_PLAN, "Comparing models and planning adaptation.", null);
-                            AdaptationModel adaptationModel = nodeInstance.plan(currentModel, newmodel);
-                            //Execution of the adaptation
-                            //Log.info("Launching adaptation of the system.")
-                            broadcastTelemetry(TelemetryEvent.Type.PLATFORM_UPDATE_START, "Launching adaptation of the system.", null);
-                            updateContext = new UpdateContext(currentModel, newmodel, callerPath);
-
-                            final UpdateContext final_updateContext = updateContext;
-                            PrimitiveExecute afterUpdateTest = new PrimitiveExecute() {
-                                @Override
-                                public boolean exec() {
-                                    return modelListeners.afterUpdate(final_updateContext);
-                                }
-                            };
-                            PrimitiveExecute postRollbackTest = new PrimitiveExecute() {
-                                @Override
-                                public boolean exec() {
-                                    modelListeners.postRollback(final_updateContext);
-                                    return true;
-                                }
-                            };
-                            PreCommand preCmd = new PreCommand(updateContext, modelListeners);
-                            ContainerNode rootNode = newmodel.findNodesByID(getNodeName());
-                            deployResult = PrimitiveCommandExecutionHelper.instance$.execute(this, rootNode, adaptationModel, nodeInstance, afterUpdateTest, preCmd.preRollbackTest, postRollbackTest);
-                        } else {
-                            broadcastTelemetry(TelemetryEvent.Type.LOG_ERROR, "Node is not initialized", null);
-                            //Log.error("Node is not initialized")
-                            deployResult = false;
-                        }
-                    } catch (Exception e) {
-                        broadcastTelemetry(TelemetryEvent.Type.LOG_ERROR, "Error while updating", e);
-                        //Log.error("Error while updating", e)
+                        };
+                        PreCommand preCmd = new PreCommand(updateContext, modelListeners);
+                        ContainerNode rootNode = proposedNewModel.findNodesByID(getNodeName());
+                        deployResult = PrimitiveCommandExecutionHelper.instance$.execute(this, rootNode, adaptationModel, nodeInstance, afterUpdateTest, preCmd.preRollbackTest, postRollbackTest);
+                    } else {
+                        broadcastTelemetry(TelemetryEvent.Type.LOG_ERROR, "Node is not initialized", null);
+                        Log.error("Node is not initialized");
                         deployResult = false;
                     }
-                    if (deployResult) {
-                        switchToNewModel(newmodel);
-                        broadcastTelemetry(TelemetryEvent.Type.PLATFORM_UPDATE_SUCCESS, "Update sucessfully completed.", null);
-                        //Log.info("Update sucessfully completed.")
-                    } else {
-                        //KEEP FAIL MODEL, TODO
-                        //Log.warn("Update failed")
-                        broadcastTelemetry(TelemetryEvent.Type.PLATFORM_UPDATE_FAIL, "Update failed !", null);
-                        //IF HARAKIRI
-                        if (previousHaraKiriModel != null) {
-                            internal_update_model(previousHaraKiriModel, callerPath);
-                            previousHaraKiriModel = null; //CLEAR
-                        }
-                    }
-                    long milliEnd = System.currentTimeMillis() - milli;
-                    Log.info("End deploy result={}-{}", deployResult, milliEnd);
-                    pending = null;
-                    return deployResult;
-
-                } else {
-                    Log.warn("PreCheck or InitUpdate Step was refused, update aborded !");
-                    return false;
+                } catch (Exception e) {
+                    broadcastTelemetry(TelemetryEvent.Type.LOG_ERROR, "Error while updating", e);
+                    Log.error("Error while updating", e);
+                    deployResult = false;
                 }
+                if (deployResult) {
+                    switchToNewModel(proposedNewModel);
+                    broadcastTelemetry(TelemetryEvent.Type.PLATFORM_UPDATE_SUCCESS, "Update successfully completed.", null);
+                    Log.info("Update successfully completed.");
+                } else {
+                    //KEEP FAIL MODEL, TODO
+                    //Log.warn("Update failed")
+                    broadcastTelemetry(TelemetryEvent.Type.PLATFORM_UPDATE_FAIL, "Update failed!", null);
+                    //IF HARAKIRI
+                    if (adaptationModel != null) {
 
+                    }
+//                    if (previousHaraKiriModel != null) {
+//                        internal_update_model(previousHaraKiriModel, callerPath);
+//                        previousHaraKiriModel = null; //CLEAR
+//                    }
+                }
+                long milliEnd = System.currentTimeMillis() - milli;
+                Log.info("End deploy result={} ({}ms)", deployResult, milliEnd);
+                pending = null;
+                return deployResult;
+
+            } else {
+                Log.warn("PreCheck or InitUpdate Step was refused, update aborded !");
+                return false;
             }
         } catch (Throwable e) {
             broadcastTelemetry(TelemetryEvent.Type.LOG_ERROR, "Error while updating.", e);
@@ -462,7 +408,9 @@ public class KevoreeCoreBean implements ContextAwareModelService, PlatformServic
                     if (nodeInstance != null) {
                         resolver = new MethodAnnotationResolver(nodeInstance.getClass());
                         Method met = resolver.resolve(org.kevoree.annotation.Start.class);
-                        met.invoke(nodeInstance);
+                        if (met != null) {
+                            met.invoke(nodeInstance);
+                        }
                         UUIDModelImpl uuidModel = new UUIDModelImpl(UUID.randomUUID(), kevoreeFactory.createContainerRoot());
                         model.set(uuidModel);
                     } else {
@@ -573,7 +521,9 @@ public class KevoreeCoreBean implements ContextAwareModelService, PlatformServic
                 Log.trace("Call instance stop");
                 if (nodeInstance != null) {
                     Method met = resolver.resolve(org.kevoree.annotation.Stop.class);
-                    met.invoke(nodeInstance);
+                    if (met != null) {
+                        met.invoke(nodeInstance);
+                    }
                     nodeInstance = null;
                     resolver = null;
                 }
@@ -581,7 +531,7 @@ public class KevoreeCoreBean implements ContextAwareModelService, PlatformServic
                 broadcastTelemetry(TelemetryEvent.Type.LOG_ERROR, "Error while stopping node instance", e);
             }
         }
-        Log.info("Kevoree core stopped ");
+        Log.info("Kevoree core stopped");
         broadcastTelemetry(TelemetryEvent.Type.LOG_INFO, "Kevoree Stopped", null);
     }
 
