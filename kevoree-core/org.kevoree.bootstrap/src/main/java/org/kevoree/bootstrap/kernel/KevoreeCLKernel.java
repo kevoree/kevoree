@@ -1,27 +1,34 @@
 package org.kevoree.bootstrap.kernel;
 
+import java.io.File;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.HashSet;
+import java.util.Set;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.kevoree.*;
+import org.kevoree.ContainerRoot;
+import org.kevoree.DeployUnit;
+import org.kevoree.DictionaryAttribute;
+import org.kevoree.FragmentDictionary;
+import org.kevoree.Instance;
+import org.kevoree.Repository;
+import org.kevoree.TypeDefinition;
+import org.kevoree.Value;
 import org.kevoree.api.BootstrapService;
 import org.kevoree.api.Context;
 import org.kevoree.api.ModelService;
 import org.kevoree.api.PlatformService;
 import org.kevoree.api.helper.KModelHelper;
 import org.kevoree.bootstrap.Bootstrap;
-import org.kevoree.bootstrap.reflect.KevoreeInjector;
 import org.kevoree.core.impl.ContextAwareAdapter;
 import org.kevoree.core.impl.KevoreeCoreBean;
 import org.kevoree.kcl.api.FlexyClassLoader;
 import org.kevoree.kcl.api.FlexyClassLoaderFactory;
 import org.kevoree.kcl.api.ResolutionPriority;
 import org.kevoree.log.Log;
-
-import java.io.File;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.HashSet;
-import java.util.Set;
+import org.kevoree.bootstrap.reflect.KevoreeInjector;
 
 /**
  * Created with IntelliJ IDEA.
@@ -65,45 +72,58 @@ public class KevoreeCLKernel implements BootstrapService {
         return bs.getKernel().get(buildKernelKey(deployUnit));
     }
 
-    public FlexyClassLoader installDeployUnit(DeployUnit deployUnit) {
-        FlexyClassLoader resolvedKCL = get(deployUnit);
-        if (resolvedKCL != null) {
-            return resolvedKCL;
-        } else {
-            HashSet<String> urls = new HashSet<String>();
-            if (!offline) {
-                ContainerRoot root = KModelHelper.root(deployUnit);
-                File resolved;
-                for (Repository repo : root.getRepositories()) {
-                    urls.add(repo.getUrl());
-                }
-                if (deployUnit.getVersion().toLowerCase().contains("snapshot") || deployUnit.getVersion().toLowerCase().contains("latest")) {
-                    urls.add("http://oss.sonatype.org/content/groups/public/");
-                } else {
-                    urls.add("http://repo1.maven.org/maven2");
-                }
-                Log.info("Resolving ............. " + deployUnit.path());
-                long before = System.currentTimeMillis();
-                if (deployUnit.getUrl() == null || "".equals(deployUnit.getUrl())) {
-                    resolved = bs.getKernel().getResolver().resolve(KModelHelper.fqnGroup(deployUnit), deployUnit.getName(), deployUnit.getVersion(), "jar", urls);
-                } else {
-                    resolved = bs.getKernel().getResolver().resolve(deployUnit.getUrl(), urls);
-                    if (resolved == null && new File(deployUnit.getUrl()).exists()) {
-                        resolved = new File(deployUnit.getUrl());
-                    }
-                }
-                Log.info("Resolved in {}ms", (System.currentTimeMillis() - before));
-                if (resolved != null) {
-                    FlexyClassLoader installed = bs.getKernel().put(buildKernelKey(deployUnit), resolved);
-                    return installed;
-                } else {
-                    Log.error("Unable to resolve {}", deployUnit.path());
-                }
-            }
+	public FlexyClassLoader installDeployUnit(DeployUnit deployUnit) {
+		FlexyClassLoader resolvedKCL = get(deployUnit);
+		if (resolvedKCL != null) {
+			return resolvedKCL;
+		} else {
+			HashSet<String> urls = new HashSet<String>();
+			if (!offline) {
+				ContainerRoot root = KModelHelper.root(deployUnit);
+				File resolved;
+				for (Repository repo : root.getRepositories()) {
+					urls.add(repo.getUrl());
+				}
 
-        }
-        return null;
-    }
+				if (deployUnit.getVersion().toLowerCase().contains("snapshot")
+						|| deployUnit.getVersion().toLowerCase().contains("latest")) {
+					urls.add("http://oss.sonatype.org/content/groups/public/");
+				} else {
+					urls.add("http://repo1.maven.org/maven2");
+				}
+				Log.info("Resolving ............. " + deployUnit.path());
+				long before = System.currentTimeMillis();
+				if (deployUnit.getUrl() == null || "".equals(deployUnit.getUrl())) {
+					resolved = bs.getKernel().getResolver().resolve(KModelHelper.fqnGroup(deployUnit),
+							deployUnit.getName(), deployUnit.getVersion(), "jar", urls);
+				} else {
+					resolved = bs.getKernel().getResolver().resolve(deployUnit.getUrl(), urls);
+					if (resolved == null && new File(deployUnit.getUrl()).exists()) {
+						resolved = new File(deployUnit.getUrl());
+					}
+				}
+				Log.info("Resolved in {}ms", (System.currentTimeMillis() - before));
+				if (resolved != null) {
+					FlexyClassLoader installed = bs.getKernel().put(buildKernelKey(deployUnit), resolved);
+					return installed;
+				} else {
+					Log.error("Unable to resolve {}", deployUnit.path());
+				}
+			}
+
+		}
+		return null;
+	}
+
+	public String parseName(String duName) {
+		final String ret;
+		if(duName.matches("^[a-z0-9]{32}_.*")) {
+			ret = duName.substring(33);
+		} else {
+			ret = duName;
+		}
+		return ret;
+	}
 
     @Override
     public void removeDeployUnit(DeployUnit deployUnit) {
