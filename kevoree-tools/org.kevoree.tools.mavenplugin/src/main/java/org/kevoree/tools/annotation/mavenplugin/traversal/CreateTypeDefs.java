@@ -1,0 +1,51 @@
+package org.kevoree.tools.annotation.mavenplugin.traversal;
+
+import java.util.List;
+
+import org.apache.maven.plugin.logging.Log;
+import org.json.JSONException;
+import org.kevoree.DeployUnit;
+import org.kevoree.TypeDefinition;
+import org.kevoree.factory.DefaultKevoreeFactory;
+import org.kevoree.registry.client.api.RegistryRestClient;
+
+import com.mashape.unirest.http.HttpResponse;
+import com.mashape.unirest.http.JsonNode;
+import com.mashape.unirest.http.exceptions.UnirestException;
+
+public class CreateTypeDefs extends TraverseModel {
+
+	private final RegistryRestClient client;
+	private final Log log;
+
+	public CreateTypeDefs(final RegistryRestClient client, final Log log) {
+		this.client = client;
+		this.log = log;
+	}
+
+	@Override
+	public void visitDeployUnit(final String namespace, final DeployUnit du, final String name, final String version)
+			throws UnirestException {
+
+	}
+
+	@Override
+	public void visitTypeDefinition(final String namespace, final TypeDefinition typeDefinition)
+			throws JSONException, UnirestException {
+		try {
+			final HttpResponse<JsonNode> res = this.client.postTypeDef(namespace,
+					new DefaultKevoreeFactory().createJSONSerializer().serialize(typeDefinition),
+					typeDefinition.getName(), typeDefinition.getVersion());
+			if (res.getStatus() >= 400) {
+				this.log.error(res.getBody().toString());
+			}
+		} catch (final Exception e) {
+			this.log.error(e);
+		}
+	}
+
+	@Override
+	public void visitPackage(final List<String> npackages) throws UnirestException {
+	}
+
+}

@@ -1,5 +1,10 @@
 package org.kevoree.tools.annotation.mavenplugin;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.nio.charset.Charset;
+
+import org.apache.commons.io.IOUtils;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -7,12 +12,12 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.kevoree.ContainerRoot;
 import org.kevoree.factory.DefaultKevoreeFactory;
 import org.kevoree.factory.KevoreeFactory;
-
-import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import org.kevoree.registry.client.api.OAuthRegistryClient;
+import org.kevoree.registry.client.api.RegistryRestClient;
+import org.kevoree.tools.annotation.mavenplugin.traversal.CreateTypeDefs;
 
 /**
  * Created by duke on 8/27/14.
@@ -20,89 +25,56 @@ import java.net.URL;
 @Mojo(name = "deploy", defaultPhase = LifecyclePhase.DEPLOY, requiresDependencyResolution = ResolutionScope.COMPILE)
 public class KevDeployMojo extends AbstractMojo {
 
-    @Parameter(defaultValue = "${project.build.directory}/classes/KEV-INF/lib.json")
-    private File outputLibrary;
+	@Parameter(defaultValue = "${project.build.directory}/classes/KEV-INF/lib.json")
+	private File outputLibrary;
 
+	public static String getMajorVersion() {
+		final KevoreeFactory factory = new DefaultKevoreeFactory();
+		String kevoreeVersion = factory.getVersion();
+		if (kevoreeVersion.contains(".")) {
+			kevoreeVersion = kevoreeVersion.substring(0, kevoreeVersion.indexOf("."));
+		}
+		return kevoreeVersion;
+	}
 
-    public static String getMajorVersion() {
-        KevoreeFactory factory = new DefaultKevoreeFactory();
-        String kevoreeVersion = factory.getVersion();
-        if (kevoreeVersion.contains(".")) {
-            kevoreeVersion = kevoreeVersion.substring(0, kevoreeVersion.indexOf("."));
-        }
-        return kevoreeVersion;
-    }
+	@Parameter(defaultValue = "http://registry.kevoree.org/")
+	private String registry;
 
-    @Parameter(defaultValue = "http://registry.kevoree.org/")
-    private String registry;
+	@Parameter
+	private String login;
 
-    @Override
-    public void execute() throws MojoExecutionException, MojoFailureException {
-        if (registry.equals("http://registry.kevoree.org/")) {
-            registry = registry +"v"+ getMajorVersion() + "/";
-        }
+	@Parameter
+	private String password;
 
-        if (outputLibrary != null && outputLibrary.exists()) {
-            try {
-                FileInputStream fis = new FileInputStream(outputLibrary);
-                String payload = getStringFromInputStream(fis);
-                send(payload);
-                fis.close();
-            } catch (Exception e) {
-                throw new MojoExecutionException("Bad deployment of Kevoree library to index ", e);
-            }
-        }
-    }
+	@Override
+	public void execute() throws MojoExecutionException, MojoFailureException {
+		if (registry.equals("http://registry.kevoree.org/")) {
+			registry = registry + "v" + getMajorVersion() + "/";
+		}
 
-    private String send(String payload) throws Exception {
-        if (!registry.endsWith("/")) {
-            registry = registry + "/";
-        }
-        URL obj = new URL(registry + "deploy");
-        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-        con.setRequestMethod("POST");
-        con.setRequestProperty("User-Agent", "KevoreeClient");
-        con.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
-        con.setRequestProperty("Content-Type","application/json");
-        con.setDoOutput(true);
+		if (outputLibrary != null && outputLibrary.exists()) {
+			try (final FileInputStream fis = new FileInputStream(outputLibrary)) {
+				final String payload = IOUtils.toString(fis, Charset.defaultCharset());
+				send(payload);
+			} catch (final Exception e) {
+				throw new MojoExecutionException("Bad deployment of Kevoree library to index ", e);
+			}
+		}
+	}
 
-        DataOutputStream wr = new DataOutputStream(con.getOutputStream());
-        wr.writeBytes(payload);
-        wr.flush();
-        wr.close();
-        int responseCode = con.getResponseCode();
-        BufferedReader in = new BufferedReader(
-                new InputStreamReader(con.getInputStream()));
-        String inputLine;
-        StringBuffer response = new StringBuffer();
-        while ((inputLine = in.readLine()) != null) {
-            response.append(inputLine);
-        }
-        in.close();
-        return response.toString();
-    }
+	private String send(final String payload) throws Exception {
+		// cf http://ether.braindead.fr/p/ProtocolClientPublish
 
-    private static String getStringFromInputStream(InputStream is) {
-        BufferedReader br = null;
-        StringBuilder sb = new StringBuilder();
-        String line;
-        try {
-            br = new BufferedReader(new InputStreamReader(is));
-            while ((line = br.readLine()) != null) {
-                sb.append(line);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (br != null) {
-                try {
-                    br.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        return sb.toString();
-    }
+		// TODO : add a TD version notation in the meta-instances annotations
+		// (@CXXXType)
 
+		final ContainerRoot model = (ContainerRoot) new DefaultKevoreeFactory().createJSONLoader()
+				.loadModelFromString(payload).get(0);
+
+		final String accessToken = new OAuthRegistryClient(this.registry).getToken(login, password);
+
+		new CreateTypeDefs(new RegistryRestClient(this.registry, accessToken), this.getLog()).recPackages(model);
+
+		return null;
+	}
 }
