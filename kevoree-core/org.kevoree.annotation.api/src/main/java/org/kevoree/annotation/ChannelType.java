@@ -23,7 +23,9 @@ import java.lang.annotation.Target;
  * @author ffouquet
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE})
+@Target({ ElementType.TYPE })
 public @interface ChannelType {
-    java.lang.String description() default "";
+	java.lang.String description() default "";
+
+	java.lang.String version();
 }

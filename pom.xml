@@ -5,10 +5,10 @@
     <packaging>pom</packaging>
     <name>Kevoree :: Root</name>
     <url>https://github.com/dukeboard/kevoree</url>
-    <version>5.3.2-SNAPSHOT</version>
+    <version>5.3.3-SNAPSHOT</version>
 
     <properties>
-        <kmf.version>3.5.11</kmf.version>
+        <kmf.version>3.5.12</kmf.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <kevoree.version>${project.version}</kevoree.version>
         <kotlin.version>0.8.11</kotlin.version>
@@ -87,6 +87,24 @@
             <name>Jean Emile Dartois</name>
             <id>jed</id>
             <email>jedartois@gmail.com</email>
+            <roles>
+                <role>developer</role>
+            </roles>
+            <timezone>+2</timezone>
+        </developer>
+        <developer>
+            <name>Maxime Tricoire</name>
+            <id>maxleiko</id>
+            <email>max.tricoire@gmail.com</email>
+            <roles>
+                <role>developer</role>
+            </roles>
+            <timezone>+2</timezone>
+        </developer>
+        <developer>
+            <name>Manuel Leduc</name>
+            <id>manuelleduc</id>
+            <email>manuel.leduc@gmail.com</email>
             <roles>
                 <role>developer</role>
             </roles>

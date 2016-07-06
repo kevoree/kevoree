@@ -35,6 +35,10 @@ public class CreateDeployUnit extends TraverseModel {
 			final String model = new DefaultKevoreeFactory().createJSONSerializer().serialize(deployUnit);
 			final String duName = deployUnit.getName();
 			final String duVersion = deployUnit.getVersion();
+
+			this.log.debug("Create deploy unit : namespace=" + namespace + ", typedefname=" + tdefName
+					+ ", typedefversion=" + tdefVersion + ", platform=" + platform + ", duname=" + duName
+					+ ", duversion=" + duVersion);
 			final HttpResponse<JsonNode> res = this.client.submitDU(namespace, tdefName, tdefVersion, platform, model,
 					duName, duVersion);
 

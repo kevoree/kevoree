@@ -35,4 +35,5 @@ import java.lang.annotation.Target;
 @Target({ElementType.TYPE})
 public @interface NodeType {
     java.lang.String description() default "";
+    java.lang.String version();
 }

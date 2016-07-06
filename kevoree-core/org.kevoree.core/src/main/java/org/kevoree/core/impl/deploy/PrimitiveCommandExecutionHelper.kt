@@ -71,7 +71,7 @@ object PrimitiveCommandExecutionHelper {
                 phase.populate(primitive)
                 true
             } else {
-                Log.warn("Error while searching primitive => {} ", adapt)
+                Log.warn("Unable to find primitive: {}", adapt)
                 false
             }
         }

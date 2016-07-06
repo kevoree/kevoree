@@ -17,6 +17,7 @@ import org.kevoree.factory.DefaultKevoreeFactory;
 import org.kevoree.factory.KevoreeFactory;
 import org.kevoree.registry.client.api.OAuthRegistryClient;
 import org.kevoree.registry.client.api.RegistryRestClient;
+import org.kevoree.tools.annotation.mavenplugin.traversal.CreateDeployUnit;
 import org.kevoree.tools.annotation.mavenplugin.traversal.CreateTypeDefs;
 
 /**
@@ -73,7 +74,9 @@ public class KevDeployMojo extends AbstractMojo {
 
 		final String accessToken = new OAuthRegistryClient(this.registry).getToken(login, password);
 
-		new CreateTypeDefs(new RegistryRestClient(this.registry, accessToken), this.getLog()).recPackages(model);
+		RegistryRestClient client = new RegistryRestClient(this.registry, accessToken);
+		new CreateTypeDefs(client, this.getLog()).recPackages(model);
+		new CreateDeployUnit(client, this.getLog()).recPackages(model);
 
 		return null;
 	}

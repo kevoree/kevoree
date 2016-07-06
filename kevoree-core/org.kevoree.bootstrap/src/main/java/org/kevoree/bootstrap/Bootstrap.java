@@ -23,6 +23,10 @@ import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Random;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created with IntelliJ IDEA.
@@ -31,6 +35,8 @@ import java.util.Enumeration;
  * Time: 23:47
  */
 public class Bootstrap {
+
+    private static final String CHARS = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
     private KevoreeKernel microKernel;
 
@@ -45,6 +51,8 @@ public class Bootstrap {
     private XMIModelLoader xmiLoader;
 
     private JSONModelLoader jsonLoader;
+
+    private static HashMap<String, String> ctxVars = new HashMap<String, String>();
 
     public KevoreeCoreBean getCore() {
         return core;
@@ -61,6 +69,12 @@ public class Bootstrap {
         String nodeName = System.getProperty("node.name");
         if (nodeName == null) {
             nodeName = defaultNodeName;
+        }
+        Pattern p = Pattern.compile("(%(%([a-zA-Z0-9_]+)%)%)");
+        Matcher m = p.matcher(nodeName);
+        while (m.find()) {
+            nodeName = shortId();
+            ctxVars.put(m.group(3), nodeName);
         }
         final Bootstrap boot = new Bootstrap(KevoreeKernel.self.get(), nodeName);
         boot.registerTelemetryToLogListener();
@@ -215,7 +229,7 @@ public class Bootstrap {
             }
         }
 
-        kevScriptEngine.executeFromStream(input, emptyModel);
+        kevScriptEngine.executeFromStream(input, emptyModel, ctxVars);
         //Add network information
         ContainerNode currentNode = emptyModel.findNodesByID(core.getNodeName());
         if (currentNode != null) {
@@ -366,25 +380,18 @@ public class Bootstrap {
 
     public static String createBootstrapScript(String nodeName, String version) {
         StringBuilder buffer = new StringBuilder();
-        String versionRequest;
-        if (version.toLowerCase().contains("snapshot") || version.toLowerCase().equals("latest")) {
-            buffer.append("repo \"https://oss.sonatype.org/content/groups/public/\"\n");
-            versionRequest = "latest";
-        } else {
-            buffer.append("repo \"http://repo1.maven.org/maven2/\"\n");
-            versionRequest = "release";
-        }
-
-        buffer.append("include mvn:org.kevoree.library.java:org.kevoree.library.java.javaNode:");
-        buffer.append(versionRequest);
-        buffer.append("\n");
-        buffer.append("include mvn:org.kevoree.library.java:org.kevoree.library.java.ws:");
-        buffer.append(versionRequest);
-        buffer.append("\n");
-        buffer.append("add node0 : org.kevoree.library.JavaNode".replace("node0", nodeName) + "\n");
-        buffer.append("add sync : WSGroup\n");
+        buffer.append("add node0: JavaNode\n".replace("node0", nodeName));
+        buffer.append("add sync: WSGroup\n");
         buffer.append("attach node0 sync\n".replace("node0", nodeName));
         return buffer.toString();
     }
 
+    private static String shortId() {
+        final StringBuilder builder = new StringBuilder();
+        final Random random = new Random();
+        for (int i = 0; i < 9; i++) {
+            builder.append(CHARS.charAt(random.nextInt(CHARS.length())));
+        }
+        return builder.toString();
+    }
 }

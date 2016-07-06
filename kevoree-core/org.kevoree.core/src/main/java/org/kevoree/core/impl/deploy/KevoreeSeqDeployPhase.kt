@@ -43,7 +43,7 @@ class KevoreeSeqDeployPhase(val originCore : KevoreeCoreBean) : KevoreeDeployPha
                 result = primitive.execute()
                 if(!result){
                     if(originCore.isAnyTelemetryListener()){
-                        originCore.broadcastTelemetry(TelemetryEvent.Type.LOG_ERROR,"Cmd:["+primitive.toString()+"]",null)
+                        originCore.broadcastTelemetry(TelemetryEvent.Type.LOG_ERROR,primitive.toString(),null)
                     }
                     //originCore.broadcastTelemetry("warn","Error during execution of "+primitive, e.toString())
                     Log.warn("Error during execution of {}",primitive)
@@ -54,7 +54,7 @@ class KevoreeSeqDeployPhase(val originCore : KevoreeCoreBean) : KevoreeDeployPha
         } catch (e:Throwable){
             if(originCore.isAnyTelemetryListener()){
                 try {
-                    originCore.broadcastTelemetry(TelemetryEvent.Type.LOG_ERROR,"Cmd:["+lastPrimitive.toString()+"]",e)
+                    originCore.broadcastTelemetry(TelemetryEvent.Type.LOG_ERROR,lastPrimitive.toString(),e)
                 } catch (e: Throwable){
                    e.printStackTrace()
                 }

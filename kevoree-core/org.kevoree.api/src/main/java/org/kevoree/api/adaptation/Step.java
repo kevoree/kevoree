@@ -28,6 +28,11 @@ public class Step {
         this.nextStep = nextStep;
     }
 
+    public Step next(Step next) {
+        this.setNextStep(next);
+        return next;
+    }
+
     public AdaptationType getAdaptationType() {
         return adaptationType;
     }

@@ -32,10 +32,12 @@ public class CreateTypeDefs extends TraverseModel {
 	@Override
 	public void visitTypeDefinition(final String namespace, final TypeDefinition typeDefinition)
 			throws JSONException, UnirestException {
+		String name = typeDefinition.getName();
+		String version = typeDefinition.getVersion();
+		this.log.debug("Create a Typedef : namespace=" + namespace + ", tdName=" + name + ", tdVersion=" + version);
 		try {
 			final HttpResponse<JsonNode> res = this.client.postTypeDef(namespace,
-					new DefaultKevoreeFactory().createJSONSerializer().serialize(typeDefinition),
-					typeDefinition.getName(), typeDefinition.getVersion());
+					new DefaultKevoreeFactory().createJSONSerializer().serialize(typeDefinition), name, version);
 			if (res.getStatus() >= 400) {
 				this.log.error(res.getBody().toString());
 			}

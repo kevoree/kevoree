@@ -4,11 +4,11 @@
     <packaging>jar</packaging>
     <name>Kevoree :: Model</name>
 
-    <version>5.3.2-SNAPSHOT</version>
+    <version>5.3.3-SNAPSHOT</version>
     <parent>
         <artifactId>org.kevoree.root</artifactId>
         <groupId>org.kevoree</groupId>
-        <version>5.3.2-SNAPSHOT</version>
+        <version>5.3.3-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -69,38 +69,33 @@
                     </includes>
                 </configuration>
             </plugin>
-
-
-            <!--
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>2.3</version>
-                <configuration>
-                    <minimizeJar>false</minimizeJar>
-                    <artifactSet>
-                        <excludes>
-                            <exclude>org.jetbrains.kotlin:*</exclude>
-                        </excludes>
-                    </artifactSet>
-                    <relocations>
-                        <relocation>
-                            <pattern>org.kevoree.modeling</pattern>
-                            <shadedPattern>org.kevoree.pmodeling</shadedPattern>
-                        </relocation>
-                    </relocations>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            -->
-
+            <!--<plugin>-->
+                <!--<groupId>org.apache.maven.plugins</groupId>-->
+                <!--<artifactId>maven-shade-plugin</artifactId>-->
+                <!--<version>2.3</version>-->
+                <!--<configuration>-->
+                    <!--<minimizeJar>false</minimizeJar>-->
+                    <!--<artifactSet>-->
+                        <!--<excludes>-->
+                            <!--<exclude>org.jetbrains.kotlin:*</exclude>-->
+                        <!--</excludes>-->
+                    <!--</artifactSet>-->
+                    <!--<relocations>-->
+                        <!--<relocation>-->
+                            <!--<pattern>org.kevoree.modeling</pattern>-->
+                            <!--<shadedPattern>org.kevoree.pmodeling</shadedPattern>-->
+                        <!--</relocation>-->
+                    <!--</relocations>-->
+                <!--</configuration>-->
+                <!--<executions>-->
+                    <!--<execution>-->
+                        <!--<phase>package</phase>-->
+                        <!--<goals>-->
+                            <!--<goal>shade</goal>-->
+                        <!--</goals>-->
+                    <!--</execution>-->
+                <!--</executions>-->
+            <!--</plugin>-->
             <plugin>
                 <groupId>org.fusesource.mvnplugins</groupId>
                 <artifactId>maven-uberize-plugin</artifactId>
@@ -138,8 +133,36 @@
                     </execution>
                 </executions>
             </plugin>
-
-
+            <plugin>
+                <groupId>org.jetbrains.kotlin</groupId>
+                <artifactId>kotlin-maven-plugin</artifactId>
+                <version>${kotlin.version}</version>
+                <executions>
+                    <execution>
+                        <id>compile</id>
+                        <phase>process-sources</phase>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                        <configuration>
+                            <sourceDirs>
+                                <source>target/generated-sources/kmf</source>
+                                <source>metamodel</source>
+                            </sourceDirs>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>test-compile</id>
+                        <phase>process-test-sources</phase>
+                        <goals>
+                            <goal>test-compile</goal>
+                        </goals>
+                        <configuration>
+                            <sourceDirs />
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 </project>
