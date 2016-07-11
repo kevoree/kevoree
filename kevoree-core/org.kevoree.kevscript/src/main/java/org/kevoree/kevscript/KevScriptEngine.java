@@ -1,21 +1,48 @@
 package org.kevoree.kevscript;
 
-import org.kevoree.*;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Random;
+import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.kevoree.Channel;
+import org.kevoree.ChannelType;
+import org.kevoree.ComponentInstance;
+import org.kevoree.ComponentType;
+import org.kevoree.ContainerNode;
+import org.kevoree.ContainerRoot;
+import org.kevoree.DeployUnit;
+import org.kevoree.DictionaryAttribute;
+import org.kevoree.FragmentDictionary;
+import org.kevoree.Group;
+import org.kevoree.GroupType;
+import org.kevoree.Instance;
+import org.kevoree.MBinding;
+import org.kevoree.NetworkInfo;
+import org.kevoree.NodeType;
+import org.kevoree.Port;
+import org.kevoree.PortTypeRef;
+import org.kevoree.Repository;
+import org.kevoree.TypeDefinition;
+import org.kevoree.Value;
 import org.kevoree.api.KevScriptService;
 import org.kevoree.api.helper.KModelHelper;
 import org.kevoree.factory.DefaultKevoreeFactory;
 import org.kevoree.factory.KevoreeFactory;
-import org.kevoree.kevscript.util.*;
+import org.kevoree.kevscript.util.InstanceResolver;
+import org.kevoree.kevscript.util.KevoreeRegistryResolver;
+import org.kevoree.kevscript.util.PortResolver;
+import org.kevoree.kevscript.util.TypeDefinitionResolver;
+import org.kevoree.kevscript.util.TypeFQN;
 import org.kevoree.log.Log;
 import org.waxeye.ast.IAST;
-import org.waxeye.input.BufferFiller;
 import org.waxeye.input.InputBuffer;
 import org.waxeye.parser.ParseResult;
-
-import java.io.*;
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Created with IntelliJ IDEA. User: duke Date: 25/11/2013 Time: 15:53
@@ -24,10 +51,12 @@ public class KevScriptEngine implements KevScriptService {
 
 	private static final String CHARS = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-	Parser parser = new Parser();
-	KevoreeFactory factory = new DefaultKevoreeFactory();
+	final Parser parser = new Parser();
+	final KevoreeFactory factory = new DefaultKevoreeFactory();
 
 	private final List<String> ignoredInclude = new ArrayList<String>();
+
+	private final KevoreeRegistryResolver resolver = new KevoreeRegistryResolver();
 
 	/* Ugly hack for dev mode */
 
@@ -72,7 +101,7 @@ public class KevScriptEngine implements KevScriptService {
 			final IAST<Type> ast = parserResult.getAST();
 			if (ast != null) {
 				final List<TypeFQN> fqns = parseTypeFQNs(ast);
-				KevoreeRegistryResolver.resolve(fqns, model, new DefaultKevoreeFactory());
+				this.resolver.resolve(fqns, model, new DefaultKevoreeFactory());
 				interpret(ast, model);
 			} else {
 				// Log.error(parserResult.getError().toString());

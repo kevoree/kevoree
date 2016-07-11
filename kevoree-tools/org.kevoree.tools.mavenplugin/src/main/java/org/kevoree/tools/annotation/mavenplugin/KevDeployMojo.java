@@ -3,6 +3,7 @@ package org.kevoree.tools.annotation.mavenplugin;
 import java.io.File;
 import java.io.FileInputStream;
 import java.nio.charset.Charset;
+import java.util.Objects;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.maven.plugin.AbstractMojo;
@@ -13,8 +14,11 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.kevoree.ContainerRoot;
+import org.kevoree.DictionaryType;
 import org.kevoree.factory.DefaultKevoreeFactory;
 import org.kevoree.factory.KevoreeFactory;
+import org.kevoree.pmodeling.api.KMFContainer;
+import org.kevoree.pmodeling.api.util.ModelAttributeVisitor;
 import org.kevoree.registry.client.api.OAuthRegistryClient;
 import org.kevoree.registry.client.api.RegistryRestClient;
 import org.kevoree.tools.annotation.mavenplugin.traversal.CreateDeployUnit;
@@ -71,7 +75,7 @@ public class KevDeployMojo extends AbstractMojo {
 
 		final ContainerRoot model = (ContainerRoot) new DefaultKevoreeFactory().createJSONLoader()
 				.loadModelFromString(payload).get(0);
-
+	
 		final String accessToken = new OAuthRegistryClient(this.registry).getToken(login, password);
 
 		RegistryRestClient client = new RegistryRestClient(this.registry, accessToken);

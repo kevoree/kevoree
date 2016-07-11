@@ -32,8 +32,8 @@ public class CreateTypeDefs extends TraverseModel {
 	@Override
 	public void visitTypeDefinition(final String namespace, final TypeDefinition typeDefinition)
 			throws JSONException, UnirestException {
-		String name = typeDefinition.getName();
-		String version = typeDefinition.getVersion();
+		final String name = typeDefinition.getName();
+		final String version = typeDefinition.getVersion();
 		this.log.debug("Create a Typedef : namespace=" + namespace + ", tdName=" + name + ", tdVersion=" + version);
 		try {
 			final HttpResponse<JsonNode> res = this.client.postTypeDef(namespace,
@@ -48,6 +48,12 @@ public class CreateTypeDefs extends TraverseModel {
 
 	@Override
 	public void visitPackage(final List<String> npackages) throws UnirestException {
+	}
+
+	@Override
+	public void handlerTypeDefError(final TraverseModelException e) {
+		this.log.error(e.getMessage());
+
 	}
 
 }

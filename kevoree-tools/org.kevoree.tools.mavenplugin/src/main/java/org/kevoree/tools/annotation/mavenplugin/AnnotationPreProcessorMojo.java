@@ -118,6 +118,8 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
 	public DeployUnit fillModel(ContainerRoot model, DependencyNode root, KevoreeFactory factory,
 			Map<String, Set<String>> collectedClasses, String hashCode) {
 
+		model.setGenerated_KMF_ID("0");
+		
 		final String cacheKey = createKey(root);
 		if (!cache.containsKey(cacheKey)) {
 			DeployUnit du = factory.createDeployUnit();

@@ -27,13 +27,19 @@ public abstract class TraverseModel {
 		for (final TypeDefinition typeDefinition : p.getTypeDefinitions()) {
 			this.visitPackage(npackages);
 			final String namespace = StringUtils.join(npackages, '.');
-			visitTypeDefinition(namespace, typeDefinition);
-			for (final DeployUnit du : typeDefinition.getDeployUnits()) {
-				visitDeployUnit(namespace, du, typeDefinition.getName(), typeDefinition.getVersion());
+			try {
+				visitTypeDefinition(namespace, typeDefinition);
+				for (final DeployUnit du : typeDefinition.getDeployUnits()) {
+					visitDeployUnit(namespace, du, typeDefinition.getName(), typeDefinition.getVersion());
+				}
+			} catch (TraverseModelException e) {
+				this.handlerTypeDefError(e);
 			}
 		}
 		recPackages(p, npackages);
 	}
+
+	public abstract void handlerTypeDefError(TraverseModelException e);
 
 	private final void recPackages(final Package currentPackage, final List<String> packages) throws UnirestException {
 		for (final Package p : currentPackage.getPackages()) {
@@ -42,10 +48,11 @@ public abstract class TraverseModel {
 
 	}
 
-	public abstract void visitDeployUnit(String namespace, DeployUnit du, String name, String version) throws UnirestException;
+	public abstract void visitDeployUnit(String namespace, DeployUnit du, String name, String version)
+			throws UnirestException;
 
 	public abstract void visitTypeDefinition(String namespace, TypeDefinition typeDefinition)
-			throws JSONException, UnirestException;
+			throws JSONException, UnirestException, TraverseModelException;
 
 	public abstract void visitPackage(List<String> npackages) throws UnirestException;
 

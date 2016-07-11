@@ -233,6 +233,7 @@ public class ModelBuilderHelper {
                     } catch (Exception e) {
                         dicAtt.setDefaultValue(null);
                     }
+                    currentTypeDefinition.getDictionaryType().setGenerated_KMF_ID("0");
                     currentTypeDefinition.getDictionaryType().addAttributes(dicAtt);
                 }
             }
