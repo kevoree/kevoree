@@ -251,7 +251,7 @@ public class ModelBuilderHelper {
             return;
         }
         String name = clazz.getName();
-        String version = null;
+        Long version = null;
         String currentTypeName = null;
         try {
             for (Object an : clazz.getAnnotations()) {
@@ -318,7 +318,7 @@ public class ModelBuilderHelper {
                     //This current deploy unit should be the only one with no external references, tricky part
                     for (DeployUnit d : links.keySet()) {
                         if (links.get(d) == 0) {
-                            version = d.getVersion();
+                            version = Long.parseLong(d.getVersion());
                         }
                     }
                     is.close();
@@ -328,7 +328,7 @@ public class ModelBuilderHelper {
 
             }
             if (version == null) {
-                version = current.getVersion();
+                version = Long.parseLong(current.getVersion());
             }
             TypeDefinition parent = getOrCreateTypeDefinition(name, version, root, factory, currentTypeName);
             current.addSuperTypes(parent);
@@ -360,7 +360,7 @@ public class ModelBuilderHelper {
         }
     }
 
-    public static TypeDefinition getOrCreateTypeDefinition(String name, String version, ContainerRoot root, KevoreeFactory factory, String typeName) {
+    public static TypeDefinition getOrCreateTypeDefinition(String name, long version, ContainerRoot root, KevoreeFactory factory, String typeName) {
         String[] packages = name.split("\\.");
         if (packages.length <= 1) {
             throw new RuntimeException("Component '" + name + "' must be defined in a Java package");
@@ -383,12 +383,12 @@ public class ModelBuilderHelper {
             }
         }
         String tdName = packages[packages.length - 1];
-        TypeDefinition foundTD = pack.findTypeDefinitionsByNameVersion(tdName, version);
+        TypeDefinition foundTD = pack.findTypeDefinitionsByNameVersion(tdName, String.valueOf(version));
         if (foundTD != null) {
             return foundTD;
         } else {
             TypeDefinition td = (TypeDefinition) factory.create(typeName);
-            td.setVersion(version);
+            td.setVersion(String.valueOf(version));
             td.setName(tdName);
             pack.addTypeDefinitions(td);
             return td;

@@ -1,13 +1,13 @@
 package org.kevoree.tools.annotation.mavenplugin.traversal;
 
-public class TraverseModelException extends Exception {
+public class TypeDefinitionException extends RuntimeException {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public TraverseModelException(String string) {
+	public TypeDefinitionException(String string) {
 		super(string);
 	}
 

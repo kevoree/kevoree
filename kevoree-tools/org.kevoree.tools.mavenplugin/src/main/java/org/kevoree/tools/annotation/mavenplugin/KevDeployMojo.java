@@ -9,6 +9,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -21,8 +22,10 @@ import org.kevoree.pmodeling.api.KMFContainer;
 import org.kevoree.pmodeling.api.util.ModelAttributeVisitor;
 import org.kevoree.registry.client.api.OAuthRegistryClient;
 import org.kevoree.registry.client.api.RegistryRestClient;
+import org.kevoree.tools.annotation.mavenplugin.traversal.CheckTypeDefinitions;
 import org.kevoree.tools.annotation.mavenplugin.traversal.CreateDeployUnit;
 import org.kevoree.tools.annotation.mavenplugin.traversal.CreateTypeDefs;
+import org.kevoree.tools.annotation.mavenplugin.traversal.TypeDefinitionException;
 
 /**
  * Created by duke on 8/27/14.
@@ -78,9 +81,15 @@ public class KevDeployMojo extends AbstractMojo {
 	
 		final String accessToken = new OAuthRegistryClient(this.registry).getToken(login, password);
 
-		RegistryRestClient client = new RegistryRestClient(this.registry, accessToken);
-		new CreateTypeDefs(client, this.getLog()).recPackages(model);
-		new CreateDeployUnit(client, this.getLog()).recPackages(model);
+		final RegistryRestClient client = new RegistryRestClient(this.registry, accessToken);
+		final Log log = this.getLog();
+		try {
+			new CheckTypeDefinitions(client, log).recPackages(model);
+			new CreateTypeDefs(client, this.getLog()).recPackages(model);
+			new CreateDeployUnit(client, this.getLog()).recPackages(model);
+		} catch (TypeDefinitionException e) {
+			log.error(e.getMessage());
+		}
 
 		return null;
 	}

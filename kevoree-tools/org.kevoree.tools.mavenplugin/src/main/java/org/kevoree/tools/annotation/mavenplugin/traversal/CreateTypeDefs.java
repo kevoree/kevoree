@@ -1,5 +1,6 @@
 package org.kevoree.tools.annotation.mavenplugin.traversal;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.maven.plugin.logging.Log;
@@ -36,10 +37,17 @@ public class CreateTypeDefs extends TraverseModel {
 		final String version = typeDefinition.getVersion();
 		this.log.debug("Create a Typedef : namespace=" + namespace + ", tdName=" + name + ", tdVersion=" + version);
 		try {
+			final List<? extends DeployUnit> arrayList = new ArrayList<>();
+			typeDefinition.setDeployUnits(arrayList);
 			final HttpResponse<JsonNode> res = this.client.postTypeDef(namespace,
 					new DefaultKevoreeFactory().createJSONSerializer().serialize(typeDefinition), name, version);
 			if (res.getStatus() >= 400) {
-				this.log.error(res.getBody().toString());
+				if (res.getStatus() == 404) {
+					this.log.error("Typedef : namespace=" + namespace + ", tdName=" + name + ", tdVersion=" + version
+							+ " not found on registry.");
+				} else {
+					this.log.error(res.getBody().toString());
+				}
 			}
 		} catch (final Exception e) {
 			this.log.error(e);
@@ -51,7 +59,7 @@ public class CreateTypeDefs extends TraverseModel {
 	}
 
 	@Override
-	public void handlerTypeDefError(final TraverseModelException e) {
+	public void handlerTypeDefError(final TypeDefinitionException e) {
 		this.log.error(e.getMessage());
 
 	}

@@ -73,16 +73,8 @@ public class CreateDeployUnit extends TraverseModel {
 
 	@Override
 	public void visitTypeDefinition(final String namespace, final TypeDefinition typeDefinition)
-			throws JSONException, UnirestException, TraverseModelException {
-		final String name = typeDefinition.getName();
-		final String version = typeDefinition.getVersion();
-		final HttpResponse<JsonNode> typeDef = this.client.getTypeDef(namespace, name, version);
-		final String oldVersion = typeDef.getBody().getObject().getString("model");
-		final String newVersion = new DefaultKevoreeFactory().createJSONSerializer().serialize(typeDefinition);
-		if (!Objects.equals(oldVersion, newVersion)) {
-			throw new TraverseModelException("Generated type definition has changed and does not match " + namespace
-					+ ":" + name + ":" + version + ".");
-		}
+			throws JSONException, UnirestException {
+		
 	}
 
 	@Override
@@ -91,7 +83,7 @@ public class CreateDeployUnit extends TraverseModel {
 	}
 
 	@Override
-	public void handlerTypeDefError(final TraverseModelException e) {
+	public void handlerTypeDefError(final TypeDefinitionException e) {
 		this.log.error(e.getMessage());
 
 	}

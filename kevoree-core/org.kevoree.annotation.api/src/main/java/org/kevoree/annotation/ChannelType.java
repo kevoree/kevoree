@@ -27,5 +27,5 @@ import java.lang.annotation.Target;
 public @interface ChannelType {
 	java.lang.String description() default "";
 
-	java.lang.String version();
+	long version();
 }

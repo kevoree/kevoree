@@ -40,5 +40,5 @@ import java.lang.annotation.Target;
 @Target({ElementType.TYPE})
 public @interface ComponentType {
     java.lang.String description() default "";
-    java.lang.String version();
+    long version();
 }
