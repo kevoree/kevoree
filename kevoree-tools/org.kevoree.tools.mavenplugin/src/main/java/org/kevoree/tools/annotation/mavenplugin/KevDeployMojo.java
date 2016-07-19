@@ -3,7 +3,6 @@ package org.kevoree.tools.annotation.mavenplugin;
 import java.io.File;
 import java.io.FileInputStream;
 import java.nio.charset.Charset;
-import java.util.Objects;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.maven.plugin.AbstractMojo;
@@ -15,11 +14,8 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.kevoree.ContainerRoot;
-import org.kevoree.DictionaryType;
 import org.kevoree.factory.DefaultKevoreeFactory;
 import org.kevoree.factory.KevoreeFactory;
-import org.kevoree.pmodeling.api.KMFContainer;
-import org.kevoree.pmodeling.api.util.ModelAttributeVisitor;
 import org.kevoree.registry.client.api.OAuthRegistryClient;
 import org.kevoree.registry.client.api.RegistryRestClient;
 import org.kevoree.tools.annotation.mavenplugin.traversal.CheckTypeDefinitions;
@@ -76,21 +72,23 @@ public class KevDeployMojo extends AbstractMojo {
 		// TODO : add a TD version notation in the meta-instances annotations
 		// (@CXXXType)
 
-		final ContainerRoot model = (ContainerRoot) new DefaultKevoreeFactory().createJSONLoader()
-				.loadModelFromString(payload).get(0);
-	
 		final String accessToken = new OAuthRegistryClient(this.registry).getToken(login, password);
 
 		final RegistryRestClient client = new RegistryRestClient(this.registry, accessToken);
 		final Log log = this.getLog();
 		try {
-			new CheckTypeDefinitions(client, log).recPackages(model);
-			new CreateTypeDefs(client, this.getLog()).recPackages(model);
-			new CreateDeployUnit(client, this.getLog()).recPackages(model);
+			new CheckTypeDefinitions(client, log).recPackages(reloadModel(payload));
+			new CreateTypeDefs(client, this.getLog()).recPackages(reloadModel(payload));
+			new CreateDeployUnit(client, this.getLog()).recPackages(reloadModel(payload));
 		} catch (TypeDefinitionException e) {
 			log.error(e.getMessage());
 		}
 
 		return null;
+	}
+
+	private ContainerRoot reloadModel(final String payload) {
+		return (ContainerRoot) new DefaultKevoreeFactory().createJSONLoader()
+				.loadModelFromString(payload).get(0);
 	}
 }

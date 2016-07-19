@@ -1,10 +1,12 @@
 package org.kevoree.tools.annotation.mavenplugin.traversal;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 import org.apache.maven.plugin.logging.Log;
 import org.json.JSONException;
+import org.kevoree.ContainerRoot;
 import org.kevoree.DeployUnit;
 import org.kevoree.TypeDefinition;
 import org.kevoree.Value;
@@ -31,7 +33,15 @@ public class CreateDeployUnit extends TraverseModel {
 
 		try {
 			final String platform = getPlatform(deployUnit);
-			final String model = new DefaultKevoreeFactory().createJSONSerializer().serialize(deployUnit);
+			final org.kevoree.Package parentPackage = (org.kevoree.Package) deployUnit.eContainer();
+			parentPackage.setTypeDefinitions(new ArrayList<TypeDefinition>());
+			
+			final DefaultKevoreeFactory factory = new DefaultKevoreeFactory();
+			ContainerRoot root = factory.createContainerRoot();
+			factory.root(root);
+			root.addPackages(parentPackage);
+
+			final String model = new DefaultKevoreeFactory().createJSONSerializer().serialize(root);
 			final String duName = deployUnit.getName();
 			final String duVersion = deployUnit.getVersion();
 

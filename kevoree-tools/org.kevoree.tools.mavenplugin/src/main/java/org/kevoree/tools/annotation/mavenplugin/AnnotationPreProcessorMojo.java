@@ -119,17 +119,19 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
 			Map<String, Set<String>> collectedClasses, String hashCode) {
 
 		model.setGenerated_KMF_ID("0");
-		
+
 		final String cacheKey = createKey(root);
 		if (!cache.containsKey(cacheKey)) {
 			DeployUnit du = factory.createDeployUnit();
 			du.setName(root.getArtifact().getArtifactId());
-			
+
 			/*
-			 * We add a hashCode to every dependencies of a kevoree component with
-			 * the value of its cache key hashed in md5. By doing so we prevent its recusive
-			 * dependencies to be merged with other DU dependencies and avoid future
-			 * conflicts (it still causes problems if a component is published several times with the same version but new dependencies).
+			 * We add a hashCode to every dependencies of a kevoree component
+			 * with the value of its cache key hashed in md5. By doing so we
+			 * prevent its recusive dependencies to be merged with other DU
+			 * dependencies and avoid future conflicts (it still causes problems
+			 * if a component is published several times with the same version
+			 * but new dependencies).
 			 */
 			du.setHashcode(hashCode);
 			du.setVersion(root.getArtifact().getBaseVersion());
@@ -145,6 +147,7 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
 			} else {
 				pack.addDeployUnits(du);
 			}
+			du.setUrl("mvn:" + root.getArtifact().getGroupId() + ":" + du.getName() + ":" + du.getVersion());
 			cache.put(cacheKey, du);
 
 			try {
@@ -206,13 +209,13 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
 
 	private void linkModel(final DependencyNode root) {
 		final DeployUnit rootUnit = cache.get(createKey(root));
-        for (final DependencyNode child : root.getChildren()) {
-            final DeployUnit childUnit = cache.get(createKey(child));
-            if (childUnit != null) {
-                rootUnit.addRequiredLibs(childUnit);
-                linkModel(child);
-            }
-        }
+		for (final DependencyNode child : root.getChildren()) {
+			final DeployUnit childUnit = cache.get(createKey(child));
+			if (childUnit != null) {
+				rootUnit.addRequiredLibs(childUnit);
+				linkModel(child);
+			}
+		}
 	}
 
 	private void fillModelWithRepository(String repositoryURL, ContainerRoot model) {

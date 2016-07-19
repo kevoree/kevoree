@@ -1,27 +1,31 @@
 package org.kevoree.kevscript.util;
 
 import java.net.URLEncoder;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import org.kevoree.ContainerRoot;
 import org.kevoree.DeployUnit;
+import org.kevoree.Package;
 import org.kevoree.TypeDefinition;
 import org.kevoree.factory.DefaultKevoreeFactory;
 import org.kevoree.factory.KevoreeFactory;
 import org.kevoree.log.Log;
 import org.kevoree.pmodeling.api.KMFContainer;
-import org.kevoree.pmodeling.api.compare.ModelCompare;
 import org.kevoree.pmodeling.api.json.JSONModelLoader;
-import org.kevoree.pmodeling.api.json.JSONModelSerializer;
 import org.kevoree.pmodeling.api.util.ModelVisitor;
 import org.kevoree.registry.client.api.RegistryRestClient;
 import org.kevoree.registry.client.api.model.TypeDef;
+
+import com.mashape.unirest.http.exceptions.UnirestException;
 
 /**
  * Created by duke on 9/15/14.
  */
 public class KevoreeRegistryResolver {
+
+	private static final String PLATFORM_NAME = "java";
 
 	public String buildRequest(final List<TypeFQN> fqns, final ContainerRoot current) throws Exception {
 		final StringBuilder request = new StringBuilder();
@@ -54,32 +58,81 @@ public class KevoreeRegistryResolver {
 		final RegistryRestClient client = new RegistryRestClient(url, null);
 
 		final DefaultKevoreeFactory factory = new DefaultKevoreeFactory();
-		final ContainerRoot emptyModel = factory.createContainerRoot();
-		final JSONModelLoader createJSONLoader = factory.createJSONLoader();
-		final ModelCompare createModelCompare = factory.createModelCompare();
+		final ContainerRoot model = factory.createContainerRoot();
+		factory.root(model);
+		final JSONModelLoader jsonLoader = factory.createJSONLoader();
 
 		for (final TypeFQN typeFQN : fqns) {
 			final String namespace = getNamespace(typeFQN.name);
-			final String name = getName(typeFQN.name);
-			final Set<TypeDef> typeDefs = client.getTypeDefs(namespace, name, typeFQN.version);
+			final String typeDefName = getName(typeFQN.name);
+			final Set<TypeDef> typeDefs;
+			if (typeFQN.version != null) {
+				typeDefs = client.getTypeDefs(namespace, typeDefName, typeFQN.version);
+			} else {
+				final TypeDef tdef = client.getLatestTypeDef(namespace, typeDefName);
+				typeDefs = new HashSet<>();
+				typeDefs.add(tdef);
+			}
 			for (final TypeDef td : typeDefs) {
-				
+
 				/**
-				 * TODO : create a working merge function which work for building subparts of a model and merge them.
-				 */ 
-				
-				final KMFContainer m = createJSONLoader.loadModelFromString(td.getModel()).get(0);
-				createModelCompare.merge(emptyModel, m).applyOn(emptyModel);
-				for (final org.kevoree.registry.client.api.model.DeployUnit du : td.getDeployUnits()) {
-					final KMFContainer m2 = createJSONLoader.loadModelFromString(du.getModel()).get(0);
-					createModelCompare.merge(emptyModel, m2).applyOn(emptyModel);
+				 * TODO : create a working merge function which work for
+				 * building subparts of a model and merge them.
+				 */
+
+				final KMFContainer m = jsonLoader.loadModelFromString(td.getModel()).get(0);
+				if (model.findPackagesByID(namespace) == null) {
+					final Package createPackage = factory.createPackage();
+					createPackage.setName(namespace);
+					model.addPackages(createPackage);
 				}
+
+				final TypeDefinition tdef = (TypeDefinition) m;
+				final Package findPackagesByID = model.findPackagesByID(namespace);
+				findPackagesByID.addTypeDefinitions(tdef);
+
+				collectDeployUnit(client, factory, model, namespace, typeDefName, td.getVersion(), jsonLoader, tdef);
 
 			}
 
 		}
 
-		return emptyModel;
+		return model;
+	}
+
+	private void collectDeployUnit(final RegistryRestClient client, final DefaultKevoreeFactory factory,
+			final ContainerRoot model, final String namespace, final String typeDefName, final String typeDefVersion,
+			JSONModelLoader jsonLoader, TypeDefinition tdef) throws UnirestException {
+		org.kevoree.registry.client.api.model.DeployUnit release = client.getDeployUnitRelease(namespace, typeDefName,
+				typeDefVersion, PLATFORM_NAME);
+		org.kevoree.registry.client.api.model.DeployUnit deployUnit;
+		if (release != null) {
+			deployUnit = release;
+		} else {
+			deployUnit = client.getDeployUnitLatest(namespace, typeDefName, typeDefVersion, PLATFORM_NAME);
+		}
+
+		if (deployUnit != null) {
+
+			final KMFContainer m = jsonLoader.loadModelFromString(deployUnit.getModel()).get(0);
+
+			final ContainerRoot root = (ContainerRoot) m;
+
+			new DefaultKevoreeFactory().createModelCompare().merge(model, root).applyOn(model);
+
+			DeployUnit toAttach = null;
+			for (DeployUnit du : root.getPackages().get(0).getDeployUnits()) {
+				if (du.getName().equals(deployUnit.getName()) && du.getVersion().equals(deployUnit.getVersion())) {
+					toAttach = du;
+					break;
+				}
+			}
+
+			if (toAttach != null) {
+				tdef.addDeployUnits(toAttach);
+			}
+
+		}
 	}
 
 	private String getNamespace(String s) {
@@ -91,7 +144,7 @@ public class KevoreeRegistryResolver {
 			ret = s.substring(0, lastIndexOf);
 
 		} else {
-			ret = null;
+			ret = "org.kevoree.library";
 		}
 
 		return ret;

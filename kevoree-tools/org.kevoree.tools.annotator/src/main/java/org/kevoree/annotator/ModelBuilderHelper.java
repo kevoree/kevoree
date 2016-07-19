@@ -339,10 +339,10 @@ public class ModelBuilderHelper {
         } else {
             td.setAbstract(false);
         }
-        Value javaClazz = factory.createValue();
-        javaClazz.setName("java.class");
+        final Value javaClazz = factory.createValue();
+        javaClazz.setName(td.getName() + ":" + td.getVersion() + ":java.class");
         javaClazz.setValue(clazz.getName());
-        td.addMetaData(javaClazz);
+        du.addFilters(javaClazz);
         td.addDeployUnits(du);
         try {
             checkParent(td, clazz.getSuperclass(), clazz, root, factory);

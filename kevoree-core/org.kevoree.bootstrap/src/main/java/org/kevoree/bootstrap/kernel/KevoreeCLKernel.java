@@ -28,6 +28,10 @@ import org.kevoree.kcl.api.FlexyClassLoader;
 import org.kevoree.kcl.api.FlexyClassLoaderFactory;
 import org.kevoree.kcl.api.ResolutionPriority;
 import org.kevoree.log.Log;
+import org.kevoree.pmodeling.api.KMFContainer;
+
+import com.mashape.unirest.http.utils.URLParamEncoder;
+
 import org.kevoree.bootstrap.reflect.KevoreeInjector;
 
 /**
@@ -187,22 +191,36 @@ public class KevoreeCLKernel implements BootstrapService {
     }
 
     @Override
-    public Object createInstance(final Instance instance, FlexyClassLoader classLoader) {
+    public Object createInstance(final Instance instance, final FlexyClassLoader classLoader) {
         try {
-            Class clazz = classLoader.loadClass(instance.getTypeDefinition().findMetaDataByID("java.class").getValue());
-            Object newInstance = clazz.newInstance();
-            KevoreeInjector selfInjector = injector.clone();
+            final String mainClassName = searchMainClassName(instance);
+            
+			final Class clazz = classLoader.loadClass(mainClassName);
+			
+            final Object newInstance = clazz.newInstance();
+            final KevoreeInjector selfInjector = injector.clone();
             selfInjector.addService(Context.class, new InstanceContext(instance.path(), nodeName, instance.getName()));
             selfInjector.addService(ModelService.class, new ContextAwareAdapter(core, instance.path()));
             selfInjector.addService(PlatformService.class, core);
             selfInjector.process(newInstance);
             return newInstance;
-        } catch (Exception e) {
+        } catch (final Exception e) {
             Log.error("Error while creating instance {}", e, instance.getTypeDefinition().getName());
             Log.error("Inconsistency in typeDefinition {}", core.getFactory().createJSONSerializer().serialize(instance.getTypeDefinition()));
         }
         return null;
     }
+
+	private String searchMainClassName(final Instance instance) {
+		final String path = instance.findMetaDataByID("java").getValue();
+		final ContainerRoot model = KModelHelper.root(instance);
+		final DeployUnit findByPath = (DeployUnit) model.findByPath(path);
+		
+		
+		final TypeDefinition td = instance.getTypeDefinition();
+		final  String mainClassName = findByPath.findFiltersByID(td.getName() + ":" + td.getVersion() + ":java.class").getValue();
+		return mainClassName;
+	}
 
     @NotNull
     @Override

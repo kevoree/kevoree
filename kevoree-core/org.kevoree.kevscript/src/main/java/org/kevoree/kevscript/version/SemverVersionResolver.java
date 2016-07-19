@@ -36,16 +36,8 @@ public class SemverVersionResolver implements IVersionResolver {
 		return ret;
 	}
 
-	private Pair<TypeDefinition, Version> getVersion(final TypeDefinition typeDefinition) {
-		Pair<TypeDefinition, Version> v;
-		try {
-			v = new Pair<TypeDefinition, Version>(typeDefinition, Version.valueOf(typeDefinition.getVersion()));
-		} catch (final IllegalArgumentException e) {
-			v = null;
-		} catch (final ParseException e) {
-			v = null;
-		}
-		return v;
+	private Pair<TypeDefinition, Long> getVersion(final TypeDefinition typeDefinition) {
+		return new Pair<TypeDefinition, Long>(typeDefinition, Long.parseLong(typeDefinition.getVersion()));
 	}
 
 	private TypeDefinition lookStrictly(final String expectedVersion, final List<TypeDefinition> availableTypeDef) {
@@ -64,71 +56,40 @@ public class SemverVersionResolver implements IVersionResolver {
 
 	private <T> TypeDefinition searchLatestStable(final List<TypeDefinition> availableTypeDef) {
 
+		//
+		
 		/*
 		 * we keep only not null type definitions with semantically valid
 		 * versions (each valid type definition is paired with it parsed
 		 * version).
 		 */
 
-		final List<Pair<TypeDefinition, Version>> goodValuesOnly = filterGoodVersions(availableTypeDef);
+		final List<Pair<TypeDefinition, Long>> goodValuesOnly = filterGoodVersions(availableTypeDef);
 
-		/*
-		 * we generate two lists, one of final version (true) and one of
-		 * pre-release versions (false)
-		 */
 
-		final Map<Boolean, List<Pair<TypeDefinition, Version>>> collect = groupByReleaseStatus(goodValuesOnly);
-
-		List<Pair<TypeDefinition, Version>> sorted;
-		if (collect.containsKey(true)) {
-			/*
-			 * if a stable versions are available we opt for the most recent of
-			 * them
-			 */
-			sorted = collect.get(true);
-		} else if (collect.containsKey(false)) {
-			/* or else we option for the most recent pre-release version. */
-			sorted = collect.get(false);
-		} else {
-			sorted = new ArrayList<>();
-		}
-
-		final Comparator<? super Pair<TypeDefinition, Version>> c = new Comparator<Pair<TypeDefinition, Version>>() {
+		final Comparator<? super Pair<TypeDefinition, Long>> c = new Comparator<Pair<TypeDefinition, Long>>() {
 
 			@Override
-			public int compare(final Pair<TypeDefinition, Version> o1, final Pair<TypeDefinition, Version> o2) {
+			public int compare(final Pair<TypeDefinition, Long> o1, final Pair<TypeDefinition, Long> o2) {
 
 				return o2.snd.compareTo(o1.snd);
 			}
 		};
-		Collections.sort(sorted, c);
+		Collections.sort(goodValuesOnly, c);
 		final TypeDefinition ret;
-		if (sorted == null || sorted.isEmpty()) {
+		if (goodValuesOnly == null || goodValuesOnly.isEmpty()) {
 			ret = null;
 		} else {
-			ret = sorted.get(0).fst;
+			ret = goodValuesOnly.get(0).fst;
 		}
 		return ret;
 
 	}
 
-	private Map<Boolean, List<Pair<TypeDefinition, Version>>> groupByReleaseStatus(
-			final List<Pair<TypeDefinition, Version>> goodValuesOnly) {
-		final Map<Boolean, List<Pair<TypeDefinition, Version>>> collect = new HashMap<>();
-		for (final Pair<TypeDefinition, Version> td : goodValuesOnly) {
-			final boolean side = "".equals(td.snd.getPreReleaseVersion());
-			if (!collect.containsKey(side)) {
-				collect.put(side, new ArrayList<Pair<TypeDefinition, Version>>());
-			}
-			collect.get(side).add(td);
-		}
-		return collect;
-	}
-
-	private List<Pair<TypeDefinition, Version>> filterGoodVersions(final List<TypeDefinition> availableTypeDef) {
-		final List<Pair<TypeDefinition, Version>> goodValuesOnly = new ArrayList<>();
+	private List<Pair<TypeDefinition, Long>> filterGoodVersions(final List<TypeDefinition> availableTypeDef) {
+		final List<Pair<TypeDefinition, Long>> goodValuesOnly = new ArrayList<>();
 		for (final TypeDefinition td : availableTypeDef) {
-			final Pair<TypeDefinition, Version> z = getVersion(td);
+			final Pair<TypeDefinition, Long> z = getVersion(td);
 			if (z != null) {
 				goodValuesOnly.add(z);
 

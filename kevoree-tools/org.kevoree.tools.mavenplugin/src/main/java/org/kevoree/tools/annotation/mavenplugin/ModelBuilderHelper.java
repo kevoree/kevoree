@@ -273,22 +273,6 @@ public class ModelBuilderHelper {
             String endPath = clazz.getName().replace(".", File.separator) + ".class";
             String baseURL = clazz.getURL().toString().replace(endPath, "");
 
-            /*
-            String manifest = baseURL + "META-INF" + File.separator + "MANIFEST.MF";
-            URL u2 = new URL(manifest);
-            System.out.println(u2.openStream().available());
-            */
-            /*
-            if (version == null) {
-                File metaInf = new File(baseURL + "META-INF" + File.separator + "maven");
-                System.out.println(metaInf.exists());
-                if (metaInf.exists()) {
-                    if (metaInf.listFiles().length > 0) {
-                        File groupFile = metaInf.listFiles()[0];
-                    }
-                }
-            } */
-
             if (version == null) {
                 try {
                     String kevManifest = baseURL + "KEV-INF" + File.separator + "lib.json";
@@ -341,10 +325,13 @@ public class ModelBuilderHelper {
         } else {
             td.setAbstract(false);
         }
-        Value javaClazz = factory.createValue();
-        javaClazz.setName("java.class");
+        
+        
+        final Value javaClazz = factory.createValue();
+        javaClazz.setName(td.getName() + ":" + td.getVersion() + ":java.class");
         javaClazz.setValue(clazz.getName());
-        td.addMetaData(javaClazz);
+        
+        du.addFilters(javaClazz);
         td.addDeployUnits(du);
         try {
             checkParent(td, clazz.getSuperclass(), clazz, root, factory);
@@ -360,12 +347,27 @@ public class ModelBuilderHelper {
         }
     }
 
-    public static TypeDefinition getOrCreateTypeDefinition(String name, long version, ContainerRoot root, KevoreeFactory factory, String typeName) {
-        String[] packages = name.split("\\.");
+    public static TypeDefinition getOrCreateTypeDefinition(final String name, final long version, final ContainerRoot root, final KevoreeFactory factory, final String typeName) {
+        final String[] packages = name.split("\\.");
         if (packages.length <= 1) {
             throw new RuntimeException("Component '" + name + "' must be defined in a Java package");
         }
-        org.kevoree.Package pack = null;
+        final org.kevoree.Package pack = findPackage(root, factory, packages);
+        final String tdName = packages[packages.length - 1];
+        final TypeDefinition foundTD = pack.findTypeDefinitionsByNameVersion(tdName, String.valueOf(version));
+        if (foundTD != null) {
+            return foundTD;
+        } else {
+            final TypeDefinition td = (TypeDefinition) factory.create(typeName);
+            td.setVersion(String.valueOf(version));
+            td.setName(tdName);
+            pack.addTypeDefinitions(td);
+            return td;
+        }
+    }
+
+	private static org.kevoree.Package findPackage(final ContainerRoot root, final KevoreeFactory factory, final String[] packages) {
+		org.kevoree.Package pack = null;
         for (int i = 0; i < packages.length - 1; i++) {
             if (pack == null) {
                 pack = root.findPackagesByID(packages[i]);
@@ -382,18 +384,8 @@ public class ModelBuilderHelper {
                 pack = packNew;
             }
         }
-        String tdName = packages[packages.length - 1];
-        TypeDefinition foundTD = pack.findTypeDefinitionsByNameVersion(tdName, String.valueOf(version));
-        if (foundTD != null) {
-            return foundTD;
-        } else {
-            TypeDefinition td = (TypeDefinition) factory.create(typeName);
-            td.setVersion(String.valueOf(version));
-            td.setName(tdName);
-            pack.addTypeDefinitions(td);
-            return td;
-        }
-    }
+		return pack;
+	}
 
     public static void process(Object elem, CtClass clazz, KevoreeFactory factory, DeployUnit du, ContainerRoot root) throws Exception {
         if (elem instanceof org.kevoree.annotation.GroupType) {

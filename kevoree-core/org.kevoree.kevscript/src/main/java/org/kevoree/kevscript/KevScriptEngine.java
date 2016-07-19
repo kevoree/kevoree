@@ -465,6 +465,12 @@ public class KevScriptEngine implements KevScriptService {
 				if (model.findNodesByID(newNodeName) != null) {
 					throw new Exception("Node already exist for name : " + newNodeName);
 				}
+				
+				final Value createValue = factory.createValue();
+				createValue.setName("java");
+				createValue.setValue(td.getDeployUnits().get(0).path());
+				instance.addMetaData(createValue);
+				
 				model.addNodes(instance);
 				process = instance;
 			} else {
@@ -499,6 +505,12 @@ public class KevScriptEngine implements KevScriptService {
 					newPort.setName(rport.getName());
 					instance.addRequired(newPort);
 				}
+				
+				final Value createValue = factory.createValue();
+				createValue.setName("java");
+				createValue.setValue(td.getDeployUnits().get(0).path());
+				instance.addMetaData(createValue);
+				
 				final ContainerNode parentNode = model.findNodesByID(name.getChildren().get(0).childrenAsString());
 				if (parentNode == null) {
 					throw new Exception(
@@ -514,6 +526,12 @@ public class KevScriptEngine implements KevScriptService {
 		if (td instanceof ChannelType) {
 			final Channel instance = factory.createChannel();
 			instance.setTypeDefinition(td);
+			
+			final Value createValue = factory.createValue();
+			createValue.setName("java");
+			createValue.setValue(td.getDeployUnits().get(0).path());
+			instance.addMetaData(createValue);
+			
 			if (name.getType().equals(Type.InstancePath) && name.getChildren().size() == 1) {
 				instance.setName(name.getChildren().get(0).childrenAsString());
 				model.addHubs(instance);
@@ -525,6 +543,12 @@ public class KevScriptEngine implements KevScriptService {
 		if (td instanceof GroupType) {
 			final Group instance = factory.createGroup();
 			instance.setTypeDefinition(td);
+			
+			final Value createValue = factory.createValue();
+			createValue.setName("java");
+			createValue.setValue(td.getDeployUnits().get(0).path());
+			instance.addMetaData(createValue);
+			
 			if (name.getType().equals(Type.InstancePath) && name.getChildren().size() == 1) {
 				instance.setName(name.getChildren().get(0).childrenAsString());
 				model.addGroups(instance);
