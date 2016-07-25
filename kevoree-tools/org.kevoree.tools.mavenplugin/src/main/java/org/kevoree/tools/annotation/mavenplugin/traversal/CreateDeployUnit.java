@@ -8,9 +8,12 @@ import org.apache.maven.plugin.logging.Log;
 import org.json.JSONException;
 import org.kevoree.ContainerRoot;
 import org.kevoree.DeployUnit;
+import org.kevoree.Package;
 import org.kevoree.TypeDefinition;
 import org.kevoree.Value;
+import org.kevoree.api.helper.KModelHelper;
 import org.kevoree.factory.DefaultKevoreeFactory;
+import org.kevoree.pmodeling.api.KMFContainer;
 import org.kevoree.registry.client.api.RegistryRestClient;
 
 import com.mashape.unirest.http.HttpResponse;
@@ -21,25 +24,31 @@ public class CreateDeployUnit extends TraverseModel {
 
 	private final RegistryRestClient client;
 	private final Log log;
+	private final String namespace;
 
-	public CreateDeployUnit(final RegistryRestClient client, final Log log) {
+	public CreateDeployUnit(final RegistryRestClient client, final Log log, final String namespace) {
 		this.client = client;
 		this.log = log;
+		this.namespace = namespace;
 	}
 
 	@Override
-	public void visitDeployUnit(final String namespace, final DeployUnit deployUnit, final String tdefName,
-			final String tdefVersion) throws UnirestException {
+	public void visitDeployUnit(final DeployUnit deployUnit, final String tdefName, final String tdefVersion)
+			throws UnirestException {
 
 		try {
 			final String platform = getPlatform(deployUnit);
 			final org.kevoree.Package parentPackage = (org.kevoree.Package) deployUnit.eContainer();
 			parentPackage.setTypeDefinitions(new ArrayList<TypeDefinition>());
-			
+
 			final DefaultKevoreeFactory factory = new DefaultKevoreeFactory();
-			ContainerRoot root = factory.createContainerRoot();
+			final ContainerRoot root = factory.createContainerRoot();
 			factory.root(root);
-			root.addPackages(parentPackage);
+			final Package fqnCreate = KModelHelper.fqnCreate(KModelHelper.fqnGroup(deployUnit), root, factory);
+			fqnCreate.addDeployUnits(deployUnit);
+			root.addPackages(fqnCreate);
+
+			addRequiredLibs(deployUnit, factory, root);
 
 			final String model = new DefaultKevoreeFactory().createJSONSerializer().serialize(root);
 			final String duName = deployUnit.getName();
@@ -70,6 +79,23 @@ public class CreateDeployUnit extends TraverseModel {
 
 	}
 
+	private void addRequiredLibs(final DeployUnit deployUnit, final DefaultKevoreeFactory factory,
+			final ContainerRoot root) {
+		for (final DeployUnit rq : deployUnit.getRequiredLibs()) {
+			final Package fqnCreate2 = KModelHelper.fqnCreate(KModelHelper.fqnGroup(rq), root, factory);
+			fqnCreate2.addDeployUnits(rq);
+
+			
+			Package ecc = fqnCreate2;
+			while(ecc.eContainer() != null && ecc.eContainer() instanceof Package) {
+				ecc = (Package) ecc.eContainer();
+			}
+			root.addPackages(ecc);
+			addRequiredLibs(rq, factory, root);
+		}
+
+	}
+
 	private String getPlatform(final DeployUnit deployUnit) {
 		String platform = "";
 		for (final Value t : deployUnit.getFilters()) {
@@ -82,13 +108,7 @@ public class CreateDeployUnit extends TraverseModel {
 	}
 
 	@Override
-	public void visitTypeDefinition(final String namespace, final TypeDefinition typeDefinition)
-			throws JSONException, UnirestException {
-		
-	}
-
-	@Override
-	public void visitPackage(final List<String> npackages) throws UnirestException {
+	public void visitTypeDefinition(final TypeDefinition typeDefinition) throws JSONException, UnirestException {
 
 	}
 

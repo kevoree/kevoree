@@ -1,9 +1,6 @@
 package org.kevoree.tools.annotation.mavenplugin.traversal;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.commons.lang3.StringUtils;
+import org.apache.maven.plugin.MojoFailureException;
 import org.json.JSONException;
 import org.kevoree.ContainerRoot;
 import org.kevoree.DeployUnit;
@@ -14,43 +11,35 @@ import com.mashape.unirest.http.exceptions.UnirestException;
 
 public abstract class TraverseModel {
 
-	public final void recPackages(final ContainerRoot model) throws UnirestException {
+	public final void recPackages(final ContainerRoot model) throws UnirestException, JSONException, MojoFailureException {
 		for (final Package p : model.getPackages()) {
-			innerLoop(new ArrayList<String>(), p);
+			innerLoop(p);
 		}
 
 	}
 
-	private final void innerLoop(final List<String> packages, final Package p) throws UnirestException {
-		final List<String> npackages = new ArrayList<>(packages);
-		npackages.add(p.getName());
+	private final void innerLoop(final Package p) throws UnirestException, JSONException, MojoFailureException {
 		for (final TypeDefinition typeDefinition : p.getTypeDefinitions()) {
-			this.visitPackage(npackages);
-			final String namespace = StringUtils.join(npackages, '.');
-			visitTypeDefinition(namespace, typeDefinition);
+			visitTypeDefinition(typeDefinition);
 			for (final DeployUnit du : typeDefinition.getDeployUnits()) {
-				visitDeployUnit(namespace, du, typeDefinition.getName(), typeDefinition.getVersion());
+				visitDeployUnit(du, typeDefinition.getName(), typeDefinition.getVersion());
 			}
-			
+
 		}
-		recPackages(p, npackages);
+		recPackages(p);
 	}
 
 	public abstract void handlerTypeDefError(TypeDefinitionException e);
 
-	private final void recPackages(final Package currentPackage, final List<String> packages) throws UnirestException {
+	private final void recPackages(final Package currentPackage) throws UnirestException, JSONException, MojoFailureException {
 		for (final Package p : currentPackage.getPackages()) {
-			innerLoop(packages, p);
+			innerLoop(p);
 		}
 
 	}
 
-	public abstract void visitDeployUnit(String namespace, DeployUnit du, String name, String version)
-			throws UnirestException;
+	public abstract void visitDeployUnit(DeployUnit du, String name, String version) throws UnirestException;
 
-	public abstract void visitTypeDefinition(String namespace, TypeDefinition typeDefinition)
-			throws JSONException, UnirestException;
-
-	public abstract void visitPackage(List<String> npackages) throws UnirestException;
+	public abstract void visitTypeDefinition(TypeDefinition typeDefinition) throws JSONException, UnirestException, MojoFailureException;
 
 }

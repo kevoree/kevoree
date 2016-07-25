@@ -13,6 +13,7 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.json.JSONException;
 import org.kevoree.ContainerRoot;
 import org.kevoree.factory.DefaultKevoreeFactory;
 import org.kevoree.factory.KevoreeFactory;
@@ -22,6 +23,8 @@ import org.kevoree.tools.annotation.mavenplugin.traversal.CheckTypeDefinitions;
 import org.kevoree.tools.annotation.mavenplugin.traversal.CreateDeployUnit;
 import org.kevoree.tools.annotation.mavenplugin.traversal.CreateTypeDefs;
 import org.kevoree.tools.annotation.mavenplugin.traversal.TypeDefinitionException;
+
+import com.mashape.unirest.http.exceptions.UnirestException;
 
 /**
  * Created by duke on 8/27/14.
@@ -49,6 +52,9 @@ public class KevDeployMojo extends AbstractMojo {
 
 	@Parameter
 	private String password;
+	
+	@Parameter 
+	private String namespace;
 
 	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {
@@ -59,14 +65,14 @@ public class KevDeployMojo extends AbstractMojo {
 		if (outputLibrary != null && outputLibrary.exists()) {
 			try (final FileInputStream fis = new FileInputStream(outputLibrary)) {
 				final String payload = IOUtils.toString(fis, Charset.defaultCharset());
-				send(payload);
+				send(payload, namespace);
 			} catch (final Exception e) {
 				throw new MojoExecutionException("Bad deployment of Kevoree library to index ", e);
 			}
 		}
 	}
 
-	private String send(final String payload) throws Exception {
+	private String send(final String payload, String namespace) throws UnirestException, JSONException, MojoFailureException {
 		// cf http://ether.braindead.fr/p/ProtocolClientPublish
 
 		// TODO : add a TD version notation in the meta-instances annotations
@@ -77,9 +83,9 @@ public class KevDeployMojo extends AbstractMojo {
 		final RegistryRestClient client = new RegistryRestClient(this.registry, accessToken);
 		final Log log = this.getLog();
 		try {
-			new CheckTypeDefinitions(client, log).recPackages(reloadModel(payload));
-			new CreateTypeDefs(client, this.getLog()).recPackages(reloadModel(payload));
-			new CreateDeployUnit(client, this.getLog()).recPackages(reloadModel(payload));
+			new CheckTypeDefinitions(client, log, namespace).recPackages(reloadModel(payload));
+			new CreateTypeDefs(client, log, namespace).recPackages(reloadModel(payload));
+			new CreateDeployUnit(client, log, namespace).recPackages(reloadModel(payload));
 		} catch (TypeDefinitionException e) {
 			log.error(e.getMessage());
 		}

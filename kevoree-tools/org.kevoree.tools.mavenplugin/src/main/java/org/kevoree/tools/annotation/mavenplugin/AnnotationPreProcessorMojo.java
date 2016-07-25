@@ -171,6 +171,7 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
 			} catch (Exception ignore) {
 			}
 		}
+		
 
 		for (DependencyNode child : root.getChildren()) {
 			if (child.getState() == DependencyNode.INCLUDED && (child.getArtifact().getScope() == null

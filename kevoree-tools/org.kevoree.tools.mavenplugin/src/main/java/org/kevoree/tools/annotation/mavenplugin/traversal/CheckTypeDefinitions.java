@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.logging.Log;
 import org.json.JSONException;
 import org.kevoree.registry.client.api.RegistryRestClient;
@@ -16,32 +17,33 @@ import org.kevoree.DeployUnit;
 import org.kevoree.TypeDefinition;
 import org.kevoree.factory.DefaultKevoreeFactory;
 
-public class CheckTypeDefinitions extends TraverseModel{
+public class CheckTypeDefinitions extends TraverseModel {
 
 	private final RegistryRestClient client;
 	private final Log log;
+	private final String namespace;
 
-	public CheckTypeDefinitions(final RegistryRestClient client, final Log log) {
+	public CheckTypeDefinitions(final RegistryRestClient client, final Log log, final String namespace) {
 		this.client = client;
 		this.log = log;
+		this.namespace = namespace;
 	}
 
 	@Override
-	public void handlerTypeDefError(TypeDefinitionException e) {
-		
+	public void handlerTypeDefError(final TypeDefinitionException e) {
+
 	}
 
 	@Override
-	public void visitDeployUnit(String namespace, DeployUnit du, String name, String version) throws UnirestException {
-		
+	public void visitDeployUnit(final DeployUnit du, final String name, final String version) throws UnirestException {
+
 	}
 
 	@Override
-	public void visitTypeDefinition(String namespace, TypeDefinition typeDefinition)
-			throws JSONException, UnirestException {
+	public void visitTypeDefinition(final TypeDefinition typeDefinition) throws JSONException, UnirestException, MojoFailureException {
 		final String name = typeDefinition.getName();
 		final String version = typeDefinition.getVersion();
-		final HttpResponse<JsonNode> typeDef = this.client.getTypeDef(namespace, name, version);
+		final HttpResponse<JsonNode> typeDef = this.client.getTypeDef(this.namespace, name, version);
 
 		final List<? extends DeployUnit> arrayList = new ArrayList<>();
 		typeDefinition.setDeployUnits(arrayList);
@@ -52,16 +54,11 @@ public class CheckTypeDefinitions extends TraverseModel{
 			final String oldVersion = typeDef.getBody().getObject().getString("model");
 			final String newVersion = new DefaultKevoreeFactory().createJSONSerializer().serialize(typeDefinition);
 			if (!Objects.equals(oldVersion, newVersion)) {
-				throw new TypeDefinitionException("Generated type definition has changed and does not match " + namespace
-						+ ":" + name + ":" + version + ".");
+				throw new org.apache.maven.plugin.MojoFailureException("Generated type definition has changed and does not match "
+						+ namespace + ":" + name + ":" + version + ".");
 			}
 		}
-		
-	}
 
-	@Override
-	public void visitPackage(List<String> npackages) throws UnirestException {
-		
 	}
 
 }

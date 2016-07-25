@@ -18,21 +18,21 @@ public class CreateTypeDefs extends TraverseModel {
 
 	private final RegistryRestClient client;
 	private final Log log;
+	private final String namespace;
 
-	public CreateTypeDefs(final RegistryRestClient client, final Log log) {
+	public CreateTypeDefs(final RegistryRestClient client, final Log log, final String namespace) {
 		this.client = client;
 		this.log = log;
+		this.namespace = namespace;
 	}
 
 	@Override
-	public void visitDeployUnit(final String namespace, final DeployUnit du, final String name, final String version)
-			throws UnirestException {
+	public void visitDeployUnit(final DeployUnit du, final String name, final String version) throws UnirestException {
 
 	}
 
 	@Override
-	public void visitTypeDefinition(final String namespace, final TypeDefinition typeDefinition)
-			throws JSONException, UnirestException {
+	public void visitTypeDefinition(final TypeDefinition typeDefinition) throws JSONException, UnirestException {
 		final String name = typeDefinition.getName();
 		final String version = typeDefinition.getVersion();
 		this.log.debug("Create a Typedef : namespace=" + namespace + ", tdName=" + name + ", tdVersion=" + version);
@@ -52,10 +52,6 @@ public class CreateTypeDefs extends TraverseModel {
 		} catch (final Exception e) {
 			this.log.error(e);
 		}
-	}
-
-	@Override
-	public void visitPackage(final List<String> npackages) throws UnirestException {
 	}
 
 	@Override

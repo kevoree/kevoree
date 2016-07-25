@@ -9,6 +9,7 @@ import org.kevoree.ContainerRoot;
 import org.kevoree.DeployUnit;
 import org.kevoree.Package;
 import org.kevoree.TypeDefinition;
+import org.kevoree.api.helper.KModelHelper;
 import org.kevoree.factory.DefaultKevoreeFactory;
 import org.kevoree.factory.KevoreeFactory;
 import org.kevoree.log.Log;
@@ -81,15 +82,15 @@ public class KevoreeRegistryResolver {
 				 */
 
 				final KMFContainer m = jsonLoader.loadModelFromString(td.getModel()).get(0);
-				if (model.findPackagesByID(namespace) == null) {
-					final Package createPackage = factory.createPackage();
-					createPackage.setName(namespace);
-					model.addPackages(createPackage);
-				}
 
+				final Package packagz;
+				if (searchPackageByNamespace(model, namespace) == null) {
+					packagz = KModelHelper.fqnCreate(namespace, model, factory);
+				} else {
+					packagz = searchPackageByNamespace(model, namespace);
+				}
 				final TypeDefinition tdef = (TypeDefinition) m;
-				final Package findPackagesByID = model.findPackagesByID(namespace);
-				findPackagesByID.addTypeDefinitions(tdef);
+				packagz.addTypeDefinitions(tdef);
 
 				collectDeployUnit(client, factory, model, namespace, typeDefName, td.getVersion(), jsonLoader, tdef);
 
@@ -102,9 +103,9 @@ public class KevoreeRegistryResolver {
 
 	private void collectDeployUnit(final RegistryRestClient client, final DefaultKevoreeFactory factory,
 			final ContainerRoot model, final String namespace, final String typeDefName, final String typeDefVersion,
-			JSONModelLoader jsonLoader, TypeDefinition tdef) throws UnirestException {
-		org.kevoree.registry.client.api.model.DeployUnit release = client.getDeployUnitRelease(namespace, typeDefName,
-				typeDefVersion, PLATFORM_NAME);
+			final JSONModelLoader jsonLoader, final TypeDefinition tdef) throws UnirestException {
+		final org.kevoree.registry.client.api.model.DeployUnit release = client.getDeployUnitRelease(namespace,
+				typeDefName, typeDefVersion, PLATFORM_NAME);
 		org.kevoree.registry.client.api.model.DeployUnit deployUnit;
 		if (release != null) {
 			deployUnit = release;
@@ -120,13 +121,8 @@ public class KevoreeRegistryResolver {
 
 			new DefaultKevoreeFactory().createModelCompare().merge(model, root).applyOn(model);
 
-			DeployUnit toAttach = null;
-			for (DeployUnit du : root.getPackages().get(0).getDeployUnits()) {
-				if (du.getName().equals(deployUnit.getName()) && du.getVersion().equals(deployUnit.getVersion())) {
-					toAttach = du;
-					break;
-				}
-			}
+			final List<Package> packages = model.getPackages();
+			final DeployUnit toAttach = searchInPackages(deployUnit, packages);
 
 			if (toAttach != null) {
 				tdef.addDeployUnits(toAttach);
@@ -135,25 +131,55 @@ public class KevoreeRegistryResolver {
 		}
 	}
 
-	private String getNamespace(String s) {
+	private DeployUnit searchInPackages(final org.kevoree.registry.client.api.model.DeployUnit deployUnit, 
+			final List<Package> packages) {
+		for(final Package package1 : packages) {
+			for (final DeployUnit du : package1.getDeployUnits()) {
+				if (du.getName().equals(deployUnit.getName()) && du.getVersion().equals(deployUnit.getVersion())) {
+					return du;
+				}
+			}
+			
+			final List<Package> packagezzs = package1.getPackages();
+			final DeployUnit searchInPackages = searchInPackages(deployUnit, packagezzs);
+			if(searchInPackages != null) {
+				return searchInPackages;
+			}
+			
+			
+		}
+		return null;
+	}
+
+	private Package searchPackageByNamespace(final ContainerRoot model, final String namespace) {
+		final String[] elems = namespace.split("\\.");
+
+		Package package1 = model.findPackagesByID(elems[0]);
+		for (int i = 1; package1 != null && i < elems.length; i++) {
+			package1 = package1.findPackagesByID(elems[i]);
+		}
+		return package1;
+	}
+
+	private String getNamespace(final String s) {
 		final String ret;
-		int lastIndexOf = s.lastIndexOf('.');
+		final int lastIndexOf = s.lastIndexOf('.');
 
 		if (lastIndexOf >= 0) {
 
 			ret = s.substring(0, lastIndexOf);
 
 		} else {
-			ret = "org.kevoree.library";
+			ret = "kevoree";
 		}
 
 		return ret;
 
 	}
 
-	private String getName(String s) {
+	private String getName(final String s) {
 		final String ret;
-		int lastIndexOf = s.lastIndexOf('.');
+		final int lastIndexOf = s.lastIndexOf('.');
 
 		if (lastIndexOf >= 0) {
 
