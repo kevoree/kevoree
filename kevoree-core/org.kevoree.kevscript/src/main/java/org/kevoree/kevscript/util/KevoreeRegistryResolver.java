@@ -104,49 +104,53 @@ public class KevoreeRegistryResolver {
 	private void collectDeployUnit(final RegistryRestClient client, final DefaultKevoreeFactory factory,
 			final ContainerRoot model, final String namespace, final String typeDefName, final String typeDefVersion,
 			final JSONModelLoader jsonLoader, final TypeDefinition tdef) throws UnirestException {
-		final org.kevoree.registry.client.api.model.DeployUnit release = client.getDeployUnitRelease(namespace,
-				typeDefName, typeDefVersion, PLATFORM_NAME);
-		org.kevoree.registry.client.api.model.DeployUnit deployUnit;
-		if (release != null) {
-			deployUnit = release;
+		final List<org.kevoree.registry.client.api.model.DeployUnit> deployUnits;
+		if (client.getDeployUnitRelease(namespace, typeDefName, typeDefVersion, PLATFORM_NAME) != null) {
+			deployUnits = client.getAllDeployUnitRelease(namespace, typeDefName, typeDefVersion);
+		} else if (client.getDeployUnitLatest(namespace, typeDefName, typeDefVersion, PLATFORM_NAME) != null) {
+			deployUnits = client.getAllDeployUnitLatest(namespace, typeDefName, typeDefVersion);
 		} else {
-			deployUnit = client.getDeployUnitLatest(namespace, typeDefName, typeDefVersion, PLATFORM_NAME);
+			deployUnits = null;
 		}
 
-		if (deployUnit != null) {
-
-			final KMFContainer m = jsonLoader.loadModelFromString(deployUnit.getModel()).get(0);
-
-			final ContainerRoot root = (ContainerRoot) m;
-
-			new DefaultKevoreeFactory().createModelCompare().merge(model, root).applyOn(model);
-
-			final List<Package> packages = model.getPackages();
-			final DeployUnit toAttach = searchInPackages(deployUnit, packages);
-
-			if (toAttach != null) {
-				tdef.addDeployUnits(toAttach);
+		if (deployUnits != null) {
+			for (final org.kevoree.registry.client.api.model.DeployUnit deployUnit : deployUnits) {
+				loadPlatform(model, jsonLoader, tdef, deployUnit);
 			}
-
 		}
 	}
 
-	private DeployUnit searchInPackages(final org.kevoree.registry.client.api.model.DeployUnit deployUnit, 
+	private void loadPlatform(final ContainerRoot model, final JSONModelLoader jsonLoader, final TypeDefinition tdef,
+			final org.kevoree.registry.client.api.model.DeployUnit deployUnit) {
+		final KMFContainer m = jsonLoader.loadModelFromString(deployUnit.getModel()).get(0);
+
+		final ContainerRoot root = (ContainerRoot) m;
+
+		new DefaultKevoreeFactory().createModelCompare().merge(model, root).applyOn(model);
+
+		final List<Package> packages = model.getPackages();
+		final DeployUnit toAttach = searchInPackages(deployUnit, packages);
+
+		if (toAttach != null) {
+			tdef.addDeployUnits(toAttach);
+		}
+	}
+
+	private DeployUnit searchInPackages(final org.kevoree.registry.client.api.model.DeployUnit deployUnit,
 			final List<Package> packages) {
-		for(final Package package1 : packages) {
+		for (final Package package1 : packages) {
 			for (final DeployUnit du : package1.getDeployUnits()) {
 				if (du.getName().equals(deployUnit.getName()) && du.getVersion().equals(deployUnit.getVersion())) {
 					return du;
 				}
 			}
-			
+
 			final List<Package> packagezzs = package1.getPackages();
 			final DeployUnit searchInPackages = searchInPackages(deployUnit, packagezzs);
-			if(searchInPackages != null) {
+			if (searchInPackages != null) {
 				return searchInPackages;
 			}
-			
-			
+
 		}
 		return null;
 	}

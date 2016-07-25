@@ -44,7 +44,8 @@ public class CreateDeployUnit extends TraverseModel {
 			final DefaultKevoreeFactory factory = new DefaultKevoreeFactory();
 			final ContainerRoot root = factory.createContainerRoot();
 			factory.root(root);
-			final Package fqnCreate = KModelHelper.fqnCreate(KModelHelper.fqnGroup(deployUnit), root, factory);
+			final Package fqnCreate = factory.createPackage();
+			fqnCreate.setName(namespace);
 			fqnCreate.addDeployUnits(deployUnit);
 			root.addPackages(fqnCreate);
 
@@ -86,14 +87,19 @@ public class CreateDeployUnit extends TraverseModel {
 			fqnCreate2.addDeployUnits(rq);
 
 			
-			Package ecc = fqnCreate2;
-			while(ecc.eContainer() != null && ecc.eContainer() instanceof Package) {
-				ecc = (Package) ecc.eContainer();
-			}
+			Package ecc = getPackageRoot(fqnCreate2);
 			root.addPackages(ecc);
 			addRequiredLibs(rq, factory, root);
 		}
 
+	}
+
+	private Package getPackageRoot(final Package fqnCreate2) {
+		Package ecc = fqnCreate2;
+		while(ecc.eContainer() != null && ecc.eContainer() instanceof Package) {
+			ecc = (Package) ecc.eContainer();
+		}
+		return ecc;
 	}
 
 	private String getPlatform(final DeployUnit deployUnit) {
