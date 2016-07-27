@@ -41,6 +41,8 @@ public class ModelBuilderHelper {
                         } catch (Exception e) {
                             providedPortRef.setOptional(true);
                         }
+                        
+                        providedPortRef.setNoDependency(true);
                         currentTypeDefinitionCT.addProvided(providedPortRef);
                     }
                 }
@@ -163,6 +165,8 @@ public class ModelBuilderHelper {
                             requiredPortRef.setOptional(true);
                         }
 
+                        
+                        requiredPortRef.setNoDependency(true);
                         currentTypeDefinitionComponentType.addRequired(requiredPortRef);
                     }
                 }
@@ -361,6 +365,8 @@ public class ModelBuilderHelper {
             final TypeDefinition td = (TypeDefinition) factory.create(typeName);
             td.setVersion(String.valueOf(version));
             td.setName(tdName);
+            td.setDictionaryType(factory.createDictionaryType());
+            td.getDictionaryType().setGenerated_KMF_ID("0");
             pack.addTypeDefinitions(td);
             return td;
         }

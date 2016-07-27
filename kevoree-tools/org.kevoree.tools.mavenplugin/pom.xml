@@ -5,12 +5,12 @@
 	<artifactId>org.kevoree.tools.mavenplugin</artifactId>
 	<packaging>maven-plugin</packaging>
 	<name>Kevoree :: Tools :: MavenPlugin</name>
-    <version>5.3.3-SNAPSHOT</version>
+	<version>5.3.3-SNAPSHOT</version>
 
 	<parent>
 		<artifactId>org.kevoree.tools.root</artifactId>
 		<groupId>org.kevoree.tools</groupId>
-        <version>5.3.3-SNAPSHOT</version>
+		<version>5.3.3-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
@@ -80,6 +80,17 @@
 			<groupId>org.kevoree</groupId>
 			<artifactId>kevoree-registry-client-api</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
+			<exclusions>
+				<exclusion>
+					<groupId>com.fasterxml.jackson.core</groupId>
+					<artifactId>jackson-databind</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>com.flipkart.zjsonpatch</groupId>
+			<artifactId>zjsonpatch</artifactId>
+			<version>0.2.1</version>
 		</dependency>
 	</dependencies>
 
