@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.Scanner;
 import java.util.regex.Matcher;
@@ -57,6 +58,7 @@ public class KevScriptEngine implements KevScriptService {
 	private final List<String> ignoredInclude = new ArrayList<String>();
 
 	private final KevoreeRegistryResolver resolver = new KevoreeRegistryResolver();
+	private Map<String, TypeDefinition> tdefs = null;
 
 	/* Ugly hack for dev mode */
 
@@ -101,7 +103,7 @@ public class KevScriptEngine implements KevScriptService {
 			final IAST<Type> ast = parserResult.getAST();
 			if (ast != null) {
 				final List<TypeFQN> fqns = parseTypeFQNs(ast);
-				this.resolver.resolve(fqns, model, new DefaultKevoreeFactory());
+				tdefs = this.resolver.resolve(fqns, model);
 				interpret(ast, model);
 			} else {
 				// Log.error(parserResult.getError().toString());
@@ -122,47 +124,57 @@ public class KevScriptEngine implements KevScriptService {
 					fqnNames.addAll(parseTypeFQNs(child));
 				}
 				break;
+				
 			case Statement:
 				for (final IAST<Type> child : node.getChildren()) {
 					fqnNames.addAll(parseTypeFQNs(child));
 				}
 				break;
+				
 			case Add:
-				final IAST<Type> typeNode = node.getChildren().get(1);
-				if (!typeNode.getType().equals(Type.TypeDef)) {
-					throw new Exception("Parse error, should be a TypeDefinition : " + typeNode.toString());
-				}
-				String typeFQN;
-				if (typeNode.getChildren().get(0).getChildren().size() != 1) {
-					final StringBuilder builder = new StringBuilder();
-					for (int i = 0; i < typeNode.getChildren().get(0).getChildren().size(); i++) {
-						if (typeNode.getChildren().get(0).getChildren().get(i).getType().toString().toLowerCase()
-								.contains("string")) {
-							builder.append(typeNode.getChildren().get(0).getChildren().get(i).childrenAsString());
-						} else {
-							builder.append(typeNode.getChildren().get(0).getChildren().get(i));
-						}
-					}
-					typeFQN = builder.toString();
-				} else {
-					typeFQN = typeNode.getChildren().get(0).getChildren().get(0).childrenAsString();
-				}
-				String version = null;
-				if (typeNode.getChildren().size() > 1) {
-					version = typeNode.getChildren().get(1).childrenAsString();
-				}
-				if (typeFQN != null && !typeFQN.isEmpty()) {
-					final TypeFQN fqn = new TypeFQN();
-					fqn.name = typeFQN;
-					if (node.getChildren().size() > 1) {
-						fqn.version = version;
-					}
-					fqnNames.add(fqn);
+				for (final IAST<Type> child: node.getChildren()) {
+					fqnNames.addAll(parseTypeFQNs(child));
 				}
 				break;
+			case TypeDef:
+				TypeFQN typeFqn = interpretTypeDef(node);
+				fqnNames.add(typeFqn);
+				break;
+				
 			default:
 		}
 		return fqnNames;
+	}
+	
+	private TypeFQN interpretTypeDef(IAST<Type> node) throws Exception {
+		String fqn = parseTypeFQN(node.getChildren().get(0));
+		String namespace = "";
+		String name;
+		String version = TypeFQN.LATEST;
+		if (node.getChildren().size() == 2) {
+			version = node.getChildren().get(1).childrenAsString();
+		}
+		int dotIndex = fqn.lastIndexOf(".");
+		if (dotIndex == -1) {
+			namespace = "kevoree";
+			name = fqn;
+		} else {
+			namespace = fqn.substring(0, dotIndex);
+			name = fqn.substring(dotIndex + 1);
+		}
+		TypeFQN typeFqn = new TypeFQN();
+		typeFqn.namespace = namespace;
+		typeFqn.name = name;
+		typeFqn.version = version;
+		return typeFqn;
+	}
+	
+	private String parseTypeFQN(final IAST<Type> node) throws Exception {
+		String fqn = "";
+		for (IAST<Type> child : node.getChildren()) {
+			fqn += child.childrenAsString();
+		}
+		return fqn;
 	}
 
 	public void interpret(final IAST<Type> node, final ContainerRoot model) throws Exception {
@@ -179,9 +191,10 @@ public class KevScriptEngine implements KevScriptService {
 				}
 				break;
 			case Add:
-				final TypeDefinition td = TypeDefinitionResolver.resolve(model, node.getChildren().get(1));
+				TypeFQN fqn = interpretTypeDef(node.getChildren().get(1));
+				TypeDefinition td = tdefs.get(fqn.toString());
 				if (td == null) {
-					throw new Exception("TypeDefinition not found : " + node.getChildren().get(1).childrenAsString());
+					throw new Exception("Unable to find TypeDefinition \"" + fqn.toString() + "\" in model");
 				} else {
 					final IAST<Type> instanceNames = node.getChildren().get(0);
 					if (instanceNames.getType().equals(Type.NameList)) {
@@ -466,11 +479,6 @@ public class KevScriptEngine implements KevScriptService {
 					throw new Exception("Node already exist for name : " + newNodeName);
 				}
 				
-				final Value createValue = factory.createValue();
-				createValue.setName("java");
-				createValue.setValue(td.getDeployUnits().get(0).path());
-				instance.addMetaData(createValue);
-				
 				model.addNodes(instance);
 				process = instance;
 			} else {
@@ -506,11 +514,6 @@ public class KevScriptEngine implements KevScriptService {
 					instance.addRequired(newPort);
 				}
 				
-				final Value createValue = factory.createValue();
-				createValue.setName("java");
-				createValue.setValue(td.getDeployUnits().get(0).path());
-				instance.addMetaData(createValue);
-				
 				final ContainerNode parentNode = model.findNodesByID(name.getChildren().get(0).childrenAsString());
 				if (parentNode == null) {
 					throw new Exception(
@@ -527,11 +530,6 @@ public class KevScriptEngine implements KevScriptService {
 			final Channel instance = factory.createChannel();
 			instance.setTypeDefinition(td);
 			
-			final Value createValue = factory.createValue();
-			createValue.setName("java");
-			createValue.setValue(td.getDeployUnits().get(0).path());
-			instance.addMetaData(createValue);
-			
 			if (name.getType().equals(Type.InstancePath) && name.getChildren().size() == 1) {
 				instance.setName(name.getChildren().get(0).childrenAsString());
 				model.addHubs(instance);
@@ -543,11 +541,6 @@ public class KevScriptEngine implements KevScriptService {
 		if (td instanceof GroupType) {
 			final Group instance = factory.createGroup();
 			instance.setTypeDefinition(td);
-			
-			final Value createValue = factory.createValue();
-			createValue.setName("java");
-			createValue.setValue(td.getDeployUnits().get(0).path());
-			instance.addMetaData(createValue);
 			
 			if (name.getType().equals(Type.InstancePath) && name.getChildren().size() == 1) {
 				instance.setName(name.getChildren().get(0).childrenAsString());

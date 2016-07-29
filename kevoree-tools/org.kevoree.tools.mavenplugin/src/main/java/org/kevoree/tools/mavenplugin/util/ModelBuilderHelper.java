@@ -1,10 +1,12 @@
-package org.kevoree.tools.annotation.mavenplugin;
+package org.kevoree.tools.mavenplugin.util;
 
 
 import javassist.*;
-import jet.runtime.typeinfo.JetValueParameter;
+
+import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.maven.artifact.Artifact;
+import org.apache.maven.shared.dependency.tree.*;
 import org.jetbrains.annotations.NotNull;
-import org.kevoree.Package;
 import org.kevoree.*;
 import org.kevoree.annotation.Input;
 import org.kevoree.annotation.Output;
@@ -15,9 +17,6 @@ import org.kevoree.factory.KevoreeFactory;
 import org.kevoree.pmodeling.api.KMFContainer;
 import org.kevoree.pmodeling.api.util.ModelVisitor;
 
-import java.io.File;
-import java.io.InputStream;
-import java.net.URL;
 import java.util.HashMap;
 
 /**
@@ -242,6 +241,7 @@ public class ModelBuilderHelper {
                 }
             }
         }
+        
         for (CtClass interfaceLoop : clazz.getInterfaces()) {
             deepFields(interfaceLoop, factory, currentTypeDefinition);
         }
@@ -272,53 +272,39 @@ public class ModelBuilderHelper {
             e.printStackTrace();
         }
         if (currentTypeName != null) {
-
-
-            String endPath = clazz.getName().replace(".", File.separator) + ".class";
-            String baseURL = clazz.getURL().toString().replace(endPath, "");
-
             if (version == null) {
-                try {
-                    String kevManifest = baseURL + "KEV-INF" + File.separator + "lib.json";
-                    URL ukevManifest = new URL(kevManifest);
-                    InputStream is = ukevManifest.openStream();
-                    ContainerRoot libModel = (ContainerRoot) factory.createJSONLoader().loadModelFromStream(is).get(0);
-                    factory.root(libModel);
-                    final HashMap<DeployUnit, Integer> links = new HashMap<DeployUnit, Integer>();
+            	final HashMap<DeployUnit, Integer> links = new HashMap<DeployUnit, Integer>();
 
-                    libModel.deepVisitContained(new ModelVisitor() {
-                        @Override
-                        public void visit(@JetValueParameter(name = "elem") @NotNull KMFContainer kmfContainer, @JetValueParameter(name = "refNameInParent") @NotNull String s, @JetValueParameter(name = "parent") @NotNull KMFContainer kmfContainer2) {
-                            if (kmfContainer instanceof DeployUnit) {
-                                DeployUnit du = (DeployUnit) kmfContainer;
-                                if (!links.containsKey(du)) {
-                                    links.put(du, 0);
+            	root.deepVisitContained(new ModelVisitor() {
+                    @Override
+                    public void visit(@NotNull KMFContainer kmfContainer, @NotNull String s, @NotNull KMFContainer kmfContainer2) {
+                        if (kmfContainer instanceof DeployUnit) {
+                            DeployUnit du = (DeployUnit) kmfContainer;
+                            if (!links.containsKey(du)) {
+                                links.put(du, 0);
+                            }
+                            for (DeployUnit dul : du.getRequiredLibs()) {
+                                if (!links.containsKey(dul)) {
+                                    links.put(dul, 0);
                                 }
-                                for (DeployUnit dul : du.getRequiredLibs()) {
-                                    if (!links.containsKey(dul)) {
-                                        links.put(dul, 0);
-                                    }
-                                    links.put(dul, links.get(dul) + 1);
-                                }
+                                links.put(dul, links.get(dul) + 1);
                             }
                         }
-                    });
-                    //This current deploy unit should be the only one with no external references, tricky part
-                    for (DeployUnit d : links.keySet()) {
-                        if (links.get(d) == 0) {
-                            version = Long.parseLong(d.getVersion());
-                        }
                     }
-                    is.close();
-                } catch (Exception e) {
-                    //
+                });
+                
+                //This current deploy unit should be the only one with no external references, tricky part
+                for (DeployUnit d : links.keySet()) {
+                    if (links.get(d) == 0) {
+                        version = Long.parseLong(d.getVersion());
+                    }
                 }
 
             }
             if (version == null) {
                 version = Long.parseLong(current.getVersion());
             }
-            TypeDefinition parent = getOrCreateTypeDefinition(name, version, root, factory, currentTypeName);
+            TypeDefinition parent = getOrCreateTypeDefinition(name, version, root, factory, (org.kevoree.Package) current.eContainer(), currentTypeName);
             current.addSuperTypes(parent);
         }
     }
@@ -330,13 +316,13 @@ public class ModelBuilderHelper {
             td.setAbstract(false);
         }
         
-        
         final Value javaClazz = factory.createValue();
-        javaClazz.setName(td.getName() + ":" + td.getVersion() + ":java.class");
+        javaClazz.setName("class:" + td.getName() + ":" + td.getVersion());
         javaClazz.setValue(clazz.getName());
         
         du.addFilters(javaClazz);
         td.addDeployUnits(du);
+        
         try {
             checkParent(td, clazz.getSuperclass(), clazz, root, factory);
         } catch (NotFoundException e) {
@@ -351,66 +337,64 @@ public class ModelBuilderHelper {
         }
     }
 
-    public static TypeDefinition getOrCreateTypeDefinition(final String name, final long version, final ContainerRoot root, final KevoreeFactory factory, final String typeName) {
-        final String[] packages = name.split("\\.");
-        if (packages.length <= 1) {
-            throw new RuntimeException("Component '" + name + "' must be defined in a Java package");
-        }
-        final org.kevoree.Package pack = findPackage(root, factory, packages);
-        final String tdName = packages[packages.length - 1];
-        final TypeDefinition foundTD = pack.findTypeDefinitionsByNameVersion(tdName, String.valueOf(version));
+    public static TypeDefinition getOrCreateTypeDefinition(final String name, final long version, final ContainerRoot root, final KevoreeFactory factory, final org.kevoree.Package pkg, final String typeName) {
+        final TypeDefinition foundTD = pkg.findTypeDefinitionsByNameVersion(name, String.valueOf(version));
         if (foundTD != null) {
             return foundTD;
         } else {
             final TypeDefinition td = (TypeDefinition) factory.create(typeName);
             td.setVersion(String.valueOf(version));
-            td.setName(tdName);
+            td.setName(name);
             td.setDictionaryType(factory.createDictionaryType());
             td.getDictionaryType().setGenerated_KMF_ID("0");
-            pack.addTypeDefinitions(td);
+            pkg.addTypeDefinitions(td);
             return td;
         }
     }
 
-	private static org.kevoree.Package findPackage(final ContainerRoot root, final KevoreeFactory factory, final String[] packages) {
-		org.kevoree.Package pack = null;
-        for (int i = 0; i < packages.length - 1; i++) {
-            if (pack == null) {
-                pack = root.findPackagesByID(packages[i]);
-                if (pack == null) {
-                    pack = (org.kevoree.Package) factory.createPackage().withName(packages[i]);
-                    root.addPackages(pack);
-                }
-            } else {
-                Package packNew = pack.findPackagesByID(packages[i]);
-                if (packNew == null) {
-                    packNew = (org.kevoree.Package) factory.createPackage().withName(packages[i]);
-                    pack.addPackages(packNew);
-                }
-                pack = packNew;
-            }
-        }
-		return pack;
-	}
-
     public static void process(Object elem, CtClass clazz, KevoreeFactory factory, DeployUnit du, ContainerRoot root) throws Exception {
+    	TypeDefinition td = null;
+    	String descVal = null;
         if (elem instanceof org.kevoree.annotation.GroupType) {
-            TypeDefinition td = getOrCreateTypeDefinition(clazz.getName(), ((org.kevoree.annotation.GroupType) elem).version(), root, factory, metaClassName(elem));
-            String descVal = ((org.kevoree.annotation.GroupType) elem).description();
-            if (descVal != null && !descVal.isEmpty()) {
-                Value desc = factory.createValue();
-                desc.setName("description");
-                desc.setValue(descVal);
-                td.addMetaData(desc);
-            }
-            processTypeDefinition(td, du, clazz, root, factory);
-            deepFields(clazz, factory, td);
-            deepMethods(clazz, factory, td);
+            td = getOrCreateTypeDefinition(
+            		clazz.getSimpleName(),
+            		((org.kevoree.annotation.GroupType) elem).version(),
+            		root,
+            		factory,
+            		(org.kevoree.Package) du.eContainer(),
+            		metaClassName(elem));
+            descVal = ((org.kevoree.annotation.GroupType) elem).description();
+        } else if (elem instanceof org.kevoree.annotation.ChannelType) {
+            td = getOrCreateTypeDefinition(
+            		clazz.getSimpleName(),
+            		((org.kevoree.annotation.ChannelType) elem).version(),
+            		root,
+            		factory,
+            		(org.kevoree.Package) du.eContainer(),
+            		metaClassName(elem));
+            descVal = ((org.kevoree.annotation.ChannelType) elem).description();
+        } else if (elem instanceof org.kevoree.annotation.ComponentType) {
+            td = getOrCreateTypeDefinition(
+            		clazz.getSimpleName(),
+            		((org.kevoree.annotation.ComponentType) elem).version(),
+            		root,
+            		factory,
+            		(org.kevoree.Package) du.eContainer(),
+            		metaClassName(elem));
+            descVal = ((org.kevoree.annotation.ComponentType) elem).description();
+
+        } else if (elem instanceof org.kevoree.annotation.NodeType) {
+            td = getOrCreateTypeDefinition(
+            		clazz.getSimpleName(),
+            		((org.kevoree.annotation.NodeType) elem).version(),
+            		root,
+            		factory,
+            		(org.kevoree.Package) du.eContainer(),
+            		metaClassName(elem));
+            descVal = ((org.kevoree.annotation.NodeType) elem).description();
         }
-        if (elem instanceof org.kevoree.annotation.ChannelType) {
-            TypeDefinition td = getOrCreateTypeDefinition(clazz.getName(), ((org.kevoree.annotation.ChannelType) elem).version(), root, factory, metaClassName(elem));
-            String descVal = ((org.kevoree.annotation.ChannelType) elem).description();
-            if (descVal != null && !descVal.isEmpty()) {
+        if (td != null) {
+        	if (descVal != null && !descVal.isEmpty()) {
                 Value desc = factory.createValue();
                 desc.setName("description");
                 desc.setValue(descVal);
@@ -418,33 +402,7 @@ public class ModelBuilderHelper {
             }
             processTypeDefinition(td, du, clazz, root, factory);
             deepFields(clazz, factory, td);
-            deepMethods(clazz, factory, td);
-        }
-        if (elem instanceof org.kevoree.annotation.ComponentType) {
-            TypeDefinition td = getOrCreateTypeDefinition(clazz.getName(), ((org.kevoree.annotation.ComponentType) elem).version(), root, factory, metaClassName(elem));
-            String descVal = ((org.kevoree.annotation.ComponentType) elem).description();
-            if (descVal != null && !descVal.isEmpty()) {
-                Value desc = factory.createValue();
-                desc.setName("description");
-                desc.setValue(descVal);
-                td.addMetaData(desc);
-            }
-            processTypeDefinition(td, du, clazz, root, factory);
-            deepFields(clazz, factory, td);
-            deepMethods(clazz, factory, td);
-        }
-        if (elem instanceof org.kevoree.annotation.NodeType) {
-            TypeDefinition td = getOrCreateTypeDefinition(clazz.getName(), ((org.kevoree.annotation.NodeType) elem).version(), root, factory, metaClassName(elem));
-            String descVal = ((org.kevoree.annotation.NodeType) elem).description();
-            if (descVal != null && !descVal.isEmpty()) {
-                Value desc = factory.createValue();
-                desc.setName("description");
-                desc.setValue(descVal);
-                td.addMetaData(desc);
-            }
-            processTypeDefinition(td, du, clazz, root, factory);
-            deepFields(clazz, factory, td);
-            deepMethods(clazz, factory, td);
+            deepMethods(clazz, factory, td);        	
         }
     }
 
@@ -464,4 +422,11 @@ public class ModelBuilderHelper {
         return null;
     }
 
+    public static String createKey(String namespace, String name, String version, String append) {
+    	String data = namespace + "/" + name + "/" + version;
+    	if (append != null && !append.isEmpty()) {
+    		data += "/" + append;
+    	}
+    	return DigestUtils.md5Hex(data);
+    }
 }

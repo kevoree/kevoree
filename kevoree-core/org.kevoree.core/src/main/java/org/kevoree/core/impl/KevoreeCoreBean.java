@@ -343,8 +343,8 @@ public class KevoreeCoreBean implements ContextAwareModelService, PlatformServic
                         ContainerNode rootNode = proposedNewModel.findNodesByID(getNodeName());
                         deployResult = PrimitiveCommandExecutionHelper.instance$.execute(this, rootNode, adaptationModel, nodeInstance, afterUpdateTest, preCmd.preRollbackTest, postRollbackTest);
                     } else {
-                        broadcastTelemetry(TelemetryEvent.Type.LOG_ERROR, "Node is not initialized", null);
-                        Log.error("Node is not initialized");
+                        broadcastTelemetry(TelemetryEvent.Type.LOG_ERROR, "Unable to initialize platform node " + getNodeName(), null);
+                        Log.error("Unable to initialize platform node " + getNodeName());
                         deployResult = false;
                     }
                 } catch (Exception e) {
@@ -393,8 +393,8 @@ public class KevoreeCoreBean implements ContextAwareModelService, PlatformServic
             bootstrapService.injectDictionary(nodeInstance, newInstance, false);
             return newInstance;
         } else {
-            broadcastTelemetry(TelemetryEvent.Type.LOG_ERROR, "Node not found using name " + nodeName, null);
-            //Log.error("Node not found using name " + nodeName);
+//            broadcastTelemetry(TelemetryEvent.Type.LOG_ERROR, "Node not found using name " + nodeName, null);
+            Log.error("Unable to find a node named \"" + nodeName + "\" in model");
             return null;
         }
     }
@@ -402,36 +402,37 @@ public class KevoreeCoreBean implements ContextAwareModelService, PlatformServic
     private void checkBootstrapNode(ContainerRoot currentModel) {
         try {
             if (nodeInstance == null) {
-                ContainerNode foundNode = currentModel.findNodesByID(getNodeName());
-                if (foundNode != null) {
-                    nodeInstance = (NodeType) bootstrapNodeType(currentModel, getNodeName());
-                    if (nodeInstance != null) {
-                        resolver = new MethodAnnotationResolver(nodeInstance.getClass());
-                        Method met = resolver.resolve(org.kevoree.annotation.Start.class);
-                        if (met != null) {
-                            met.invoke(nodeInstance);
-                        }
-                        UUIDModelImpl uuidModel = new UUIDModelImpl(UUID.randomUUID(), kevoreeFactory.createContainerRoot());
-                        model.set(uuidModel);
-                    } else {
-                        broadcastTelemetry(TelemetryEvent.Type.LOG_ERROR, "TypeDef installation fail. Node not found using name " + getNodeName(), null);
-                        //Log.error("TypeDef installation fail !")
+            	nodeInstance = (NodeType) bootstrapNodeType(currentModel, getNodeName());
+                if (nodeInstance != null) {
+                    resolver = new MethodAnnotationResolver(nodeInstance.getClass());
+                    Method met = resolver.resolve(org.kevoree.annotation.Start.class);
+                    if (met != null) {
+                    	try {
+                    		met.invoke(nodeInstance);
+                    	} catch (Throwable ee) {
+                    		Log.error("Error while invoking platform node @Start method" , ee);
+                    	}
                     }
+                    UUIDModelImpl uuidModel = new UUIDModelImpl(UUID.randomUUID(), kevoreeFactory.createContainerRoot());
+                    model.set(uuidModel);
                 } else {
-                    broadcastTelemetry(TelemetryEvent.Type.LOG_ERROR, "Node instance name " + getNodeName() + " not found in bootstrap model !", null);
-                    //Log.error("Node instance name {} not found in bootstrap model !", getNodeName())
+                    broadcastTelemetry(TelemetryEvent.Type.LOG_ERROR, "Unable to initialize platform node " + getNodeName(), null);
+                	Log.error("Unable to initialize platform node " + getNodeName());
+                    this.stop();
                 }
             }
         } catch (Throwable e) {
-            broadcastTelemetry(TelemetryEvent.Type.LOG_ERROR, "Error while bootstraping node instance", e);
-            // TODO is it possible to display the following log ?
-            try {
-                if (nodeInstance != null) {
-                    Method met = resolver.resolve(org.kevoree.annotation.Stop.class);
-                    met.invoke(nodeInstance);
+//            broadcastTelemetry(TelemetryEvent.Type.LOG_ERROR, "Error while bootstraping node instance", e);
+        	Log.error("Error while bootstrapping node instance " + getNodeName(), e);
+            if (nodeInstance != null) {
+                Method met = resolver.resolve(org.kevoree.annotation.Stop.class);
+                if (met != null) {
+                	try {
+                		met.invoke(nodeInstance);
+                	} catch (Throwable ee) {
+                		Log.error("Error while invoking platform node @Stop method" , ee);
+                	}
                 }
-            } catch (Throwable ee) {
-            } finally {
             }
             nodeInstance = null;
             resolver = null;

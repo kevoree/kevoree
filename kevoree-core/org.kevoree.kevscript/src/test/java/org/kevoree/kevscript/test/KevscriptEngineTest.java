@@ -98,7 +98,7 @@ public class KevscriptEngineTest {
             KevoreeFactory factory = new DefaultKevoreeFactory();
             JSONModelLoader loader = new JSONModelLoader(factory);
 
-            ContainerRoot root = (ContainerRoot) loader.loadModelFromStream(KevscriptEngineTest.class.getResourceAsStream("/lib.json")).get(0);
+            ContainerRoot root = (ContainerRoot) loader.loadModelFromStream(KevscriptEngineTest.class.getResourceAsStream("/kevlib.json")).get(0);
             engine.executeFromStream(KevscriptEngineTest.class.getResourceAsStream("/parseInterpretTestInput.kevs"), root);
             JSONModelSerializer saver = new JSONModelSerializer();
             saver.serializeToStream(root, System.out);

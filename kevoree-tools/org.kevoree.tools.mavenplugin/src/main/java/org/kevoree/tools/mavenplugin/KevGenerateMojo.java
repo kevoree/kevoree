@@ -11,10 +11,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kevoree.tools.annotation.mavenplugin;
+package org.kevoree.tools.mavenplugin;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -27,6 +29,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.artifact.resolver.filter.ArtifactFilter;
@@ -56,79 +59,86 @@ import org.kevoree.pmodeling.api.json.JSONModelLoader;
 import org.kevoree.pmodeling.api.json.JSONModelSerializer;
 import org.kevoree.pmodeling.api.xmi.XMIModelLoader;
 import org.kevoree.pmodeling.api.xmi.XMIModelSerializer;
+import org.kevoree.tools.mavenplugin.util.Annotations2Model;
+import org.kevoree.tools.mavenplugin.util.ModelBuilderHelper;
 
 @Mojo(name = "generate", defaultPhase = LifecyclePhase.PREPARE_PACKAGE, requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME)
-public class AnnotationPreProcessorMojo extends AbstractMojo {
+public class KevGenerateMojo extends AbstractMojo {
 
 	@Component
 	private DependencyTreeBuilder dependencyTreeBuilder;
 
-	@Parameter(defaultValue = "${project.build.directory}/classes")
-	protected File outputClasses;
-
-	/**
-	 * The maven project.
-	 */
 	@Parameter(required = true, readonly = true, defaultValue = "${project}")
 	public MavenProject project;
 
 	@Parameter(required = true, readonly = true, defaultValue = "${session}")
 	public MavenSession session;
-
-	/**
-	 * the set of included dependencies which will be registered on the Kevoree
-	 * model
-	 */
-	@Parameter
-	private String[] includes;
-	/**
-	 * the set of excluded dependencies which won't be registered on the Kevoree
-	 * model
-	 */
-	@Parameter
-	private String[] excludes;
-
-	/**
-	 * The directory to place processor and generated class files. This is
-	 * equivalent to the <code>-d</code> argument for apt.
-	 */
-	@Parameter(defaultValue = "${project.build.directory}/generated-sources/kevoree")
-	private File outputDirectory;
-
-	/**
-	 * The directory root under which processor-generated source files will be
-	 * placed; files are placed in subdirectories based on package namespace.
-	 * This is equivalent to the <code>-s</code> argument for apt.
-	 */
-	@Parameter(defaultValue = "${project.build.directory}/generated-sources/kevoree")
-	private File sourceOutputDirectory;
-
+	
 	@Parameter(defaultValue = "${localRepository}")
 	private ArtifactRepository localRepository;
 
+	@Parameter(defaultValue = "${project.build.directory}/classes", required = true)
+	protected File modelOutputDirectory;
+	
+	@Parameter(required = true)
+	private String namespace;
+
 	private HashMap<String, DeployUnit> cache = new HashMap<String, DeployUnit>();
-
 	private Annotations2Model annotations2Model = new Annotations2Model();
+	private KevoreeFactory factory = new DefaultKevoreeFactory();
 
-	public String createKey(DependencyNode e) {
-		Artifact a = e.getArtifact();
-		return a.getGroupId() + a.getArtifactId() + a.getVersion() + a.getType();
+	@Override
+	public void execute() throws MojoExecutionException, MojoFailureException {
+		if (project.getArtifact().getType().equals("jar")) {
+			final ContainerRoot model = factory.createContainerRoot();
+			factory.root(model);
+			fillRepositories(model);
+
+			DeployUnit mainDeployUnit = null;
+			final HashMap<String, Set<String>> collectedClasses = new HashMap<String, Set<String>>();
+
+			try {
+				final ArtifactFilter artifactFilter = new ScopeArtifactFilter(Artifact.SCOPE_COMPILE);
+				DependencyNode graph = dependencyTreeBuilder.buildDependencyTree(project, localRepository, artifactFilter);
+
+				
+				final String prefix = ModelBuilderHelper.createKey(namespace, project.getArtifactId(), project.getVersion(), null);
+				mainDeployUnit = fillModel(model, graph, collectedClasses, prefix);
+				linkModel(graph);
+			} catch (DependencyTreeBuilderException e) {
+				getLog().error(e);
+			}
+
+			try {
+				annotations2Model.fillModel(modelOutputDirectory, model, mainDeployUnit,
+						project.getCompileClasspathElements(), collectedClasses);
+			} catch (Exception e) {
+				getLog().error(e);
+				throw new MojoExecutionException("Error while parsing Kevoree annotations", e);
+			}
+
+			// post analyze collectedClasses
+			// legacy : was used to detect duplicated imports. Not needed anymore
+			// but kept in case of unexpected error.
+//			final Set<String> duplicatedDeps = analyzeDuplicatedDeps(collectedClasses);
+//			displaysDuplicatedLibsWarnings(duplicatedDeps);
+
+			processModelSerialization(model);
+		}
 	}
-
-	public DeployUnit fillModel(ContainerRoot model, DependencyNode root, KevoreeFactory factory,
-			Map<String, Set<String>> collectedClasses, String hashCode) {
-
+	
+	public DeployUnit fillModel(ContainerRoot model, DependencyNode root, Map<String, Set<String>> collectedClasses, String hashCode) {
 		model.setGenerated_KMF_ID("0");
 
-		final String cacheKey = createKey(root);
+		final String cacheKey = ModelBuilderHelper.createKey(namespace, root.getArtifact().getArtifactId(), root.getArtifact().getVersion(), null);
 		if (!cache.containsKey(cacheKey)) {
 			DeployUnit du = factory.createDeployUnit();
 			du.setName(root.getArtifact().getArtifactId());
 
 			/*
-			 * We add a hashCode to every dependencies of a kevoree component
+			 * We add a hashCode to every dependencies of a Kevoree component
 			 * with the value of its cache key hashed in md5. By doing so we
-			 * prevent its recusive dependencies to be merged with other DU
+			 * prevent its transitive dependencies to be merged with other DU
 			 * dependencies and avoid future conflicts (it still causes problems
 			 * if a component is published several times with the same version
 			 * but new dependencies).
@@ -141,7 +151,7 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
 			platform.setValue("java");
 			du.addFilters(platform);
 
-			org.kevoree.Package pack = KModelHelper.fqnCreate(root.getArtifact().getGroupId(), model, factory);
+			org.kevoree.Package pack = KModelHelper.fqnCreate(namespace, model, factory);
 			if (pack == null) {
 				getLog().info("Package " + root.getArtifact().getGroupId() + " " + pack);
 			} else {
@@ -168,8 +178,7 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
 					}
 					file.close();
 				}
-			} catch (Exception ignore) {
-			}
+			} catch (Exception ignore) {}
 		}
 		
 
@@ -177,8 +186,8 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
 			if (child.getState() == DependencyNode.INCLUDED && (child.getArtifact().getScope() == null
 					|| child.getArtifact().getScope().equals(Artifact.SCOPE_COMPILE)
 					|| child.getArtifact().getScope().equals(Artifact.SCOPE_RUNTIME))) {
-				if (checkFilters(child, includes, true) && !checkFilters(child, excludes, false)) {
-					fillModel(model, child, factory, collectedClasses, hashCode);
+				if (checkFilters(child, new String[] {}, true) && !checkFilters(child, new String[] {}, false)) {
+					fillModel(model, child, collectedClasses, hashCode);
 				}
 			}
 		}
@@ -209,9 +218,9 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
 	}
 
 	private void linkModel(final DependencyNode root) {
-		final DeployUnit rootUnit = cache.get(createKey(root));
+		final DeployUnit rootUnit = cache.get(ModelBuilderHelper.createKey(namespace, project.getArtifactId(), project.getVersion(), null));
 		for (final DependencyNode child : root.getChildren()) {
-			final DeployUnit childUnit = cache.get(createKey(child));
+			final DeployUnit childUnit = cache.get(ModelBuilderHelper.createKey(namespace, child.getArtifact().getArtifactId(), child.getArtifact().getVersion(), null));
 			if (childUnit != null) {
 				rootUnit.addRequiredLibs(childUnit);
 				linkModel(child);
@@ -221,48 +230,10 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
 
 	private void fillModelWithRepository(String repositoryURL, ContainerRoot model) {
 		if (model.findRepositoriesByID(repositoryURL) == null) {
-			org.kevoree.Repository repository = new DefaultKevoreeFactory().createRepository();
+			org.kevoree.Repository repository = factory.createRepository();
 			repository.setUrl(repositoryURL);
 			model.addRepositories(repository);
 		}
-	}
-
-	@Override
-	public void execute() throws MojoExecutionException, MojoFailureException {
-		final KevoreeFactory factory = new DefaultKevoreeFactory();
-		final ContainerRoot model = factory.createContainerRoot();
-		factory.root(model);
-		fillRepositories(model);
-
-		DeployUnit mainDeployUnit = null;
-		final HashMap<String, Set<String>> collectedClasses = new HashMap<String, Set<String>>();
-
-		try {
-			final ArtifactFilter artifactFilter = new ScopeArtifactFilter(Artifact.SCOPE_COMPILE);
-			DependencyNode graph = dependencyTreeBuilder.buildDependencyTree(project, localRepository, artifactFilter);
-
-			final String prefix = DigestUtils.md5Hex(createKey(graph));
-			mainDeployUnit = fillModel(model, graph, factory, collectedClasses, prefix);
-			linkModel(graph);
-		} catch (DependencyTreeBuilderException e) {
-			getLog().error(e);
-		}
-
-		try {
-			annotations2Model.fillModel(outputClasses, model, mainDeployUnit, project.getCompileClasspathElements(),
-					collectedClasses);
-		} catch (Exception e) {
-			getLog().error(e);
-			throw new MojoExecutionException("Error while parsing Kevoree annotations", e);
-		}
-
-		// post analyze collectedClasses
-		// legacy : was used to detect duplicated imports. Not needed anymore
-		// but kept in case of unexpected error.
-		final Set<String> duplicatedDeps = analyzeDuplicatedDeps(collectedClasses);
-		displaysDuplicatedLibsWarnings(duplicatedDeps);
-
-		processModelSerialization(model);
 	}
 
 	private void fillRepositories(final ContainerRoot model) {
@@ -279,59 +250,62 @@ public class AnnotationPreProcessorMojo extends AbstractMojo {
 	}
 
 	private void processModelSerialization(ContainerRoot model) throws MojoExecutionException {
-		JSONModelSerializer saver = new JSONModelSerializer();
-		JSONModelLoader loader = new JSONModelLoader(new DefaultKevoreeFactory());
-
-		XMIModelSerializer saverXMI = new XMIModelSerializer();
-		XMIModelLoader loaderXMI = new XMIModelLoader(new DefaultKevoreeFactory());
-
+		JSONModelSerializer saver = factory.createJSONSerializer();
+		Path path = Paths.get(modelOutputDirectory.getPath(), "KEV-INF", "kevlib.json");
+		File modelJson = new File(path.toString());
+		
 		try {
-			ModelCompare compare = new ModelCompare(new DefaultKevoreeFactory());
-			for (Artifact artifact : project.getDependencyArtifacts()) {
-				if (artifact.getScope().equals(Artifact.SCOPE_COMPILE)) {
-					try {
-						JarFile jar = new JarFile(artifact.getFile());
-						JarEntry entry = jar.getJarEntry("KEV-INF/lib.json");
-						if (entry != null) {
-							getLog().info("Auto merging dependency => from " + artifact);
-							ContainerRoot libModel = (ContainerRoot) loader
-									.loadModelFromStream(jar.getInputStream(entry)).get(0);
-							compare.merge(model, libModel).applyOn(model);
-						}
-						JarEntry entry2 = jar.getJarEntry("KEV-INF/lib.kev");
-						if (entry2 != null) {
-							getLog().info("Auto merging dependency =>  from " + artifact);
-							ContainerRoot libModel = (ContainerRoot) loaderXMI
-									.loadModelFromStream(jar.getInputStream(entry2)).get(0);
-							compare.merge(model, libModel).applyOn(model);
-						}
-
-					} catch (Exception e) {
-						getLog().info("Unable to get KEV-INF/lib.kev on " + artifact.getArtifactId()
-								+ "(Kevoree lib will not be merged): " + e.getMessage());
-					}
-				}
-			}
-
-			// Save XMI
-			File file = new File(outputClasses.getPath() + File.separator + "KEV-INF" + File.separator + "lib.kev");
-			file.getParentFile().mkdirs();
-			FileOutputStream fout = new FileOutputStream(file);
-			saverXMI.serializeToStream(model, fout);
-			fout.flush();
-			fout.close();
-			// Save JSON
-			File fileJSON = new File(
-					outputClasses.getPath() + File.separator + "KEV-INF" + File.separator + "lib.json");
-			FileOutputStream fout2 = new FileOutputStream(fileJSON);
-			saver.serializeToStream(model, fout2);
-			fout2.flush();
-			fout2.close();
-
+			modelJson.getParentFile().mkdirs();
+			modelJson.createNewFile();
+			FileOutputStream fos = new FileOutputStream(modelJson);
+			saver.serializeToStream(model, fos);
+			fos.flush();
+			fos.close();
+			getLog().info("Model saved (" + Paths.get(project.getBasedir().getAbsolutePath()).relativize(path) + ")");
 		} catch (Exception e) {
 			getLog().error(e);
-			throw new MojoExecutionException("Unable to build kevoree model for types", e);
+			throw new MojoExecutionException("Unable to write model (" + Paths.get(project.getBasedir().getAbsolutePath()).relativize(path) + ")");
 		}
+		
+//		JSONModelLoader loader = factory.createJSONLoader();
+//
+//		try {
+//			ModelCompare compare = factory.createModelCompare();
+//			for (Artifact artifact : project.getDependencyArtifacts()) {
+//				if (artifact.getScope().equals(Artifact.SCOPE_COMPILE)) {
+//					JarFile jar = null;
+//					try {
+//						jar = new JarFile(artifact.getFile());
+//						JarEntry entry = jar.getJarEntry("KEV-INF/lib.json");
+//						if (entry != null) {
+//							getLog().info("Auto merging dependency => from " + artifact);
+//							ContainerRoot libModel = (ContainerRoot) loader
+//									.loadModelFromStream(jar.getInputStream(entry)).get(0);
+//							compare.merge(model, libModel).applyOn(model);
+//						}
+//					} catch (Exception e) {
+//						getLog().info("Unable to get KEV-INF/lib.kev on " + artifact.getArtifactId()
+//								+ "(Kevoree lib will not be merged): " + e.getMessage());
+//					} finally {
+//						if (jar != null) {
+//							jar.close();
+//						}
+//					}
+//				}
+//			}
+//
+//			// Save JSON
+//			File fileJSON = new File(
+//					modelOutputDirectory.getPath() + File.separator + "KEV-INF" + File.separator + "lib.json");
+//			FileOutputStream fout2 = new FileOutputStream(fileJSON);
+//			saver.serializeToStream(model, fout2);
+//			fout2.flush();
+//			fout2.close();
+//
+//		} catch (Exception e) {
+//			getLog().error(e);
+//			throw new MojoExecutionException("Unable to build Kevoree model", e);
+//		}
 	}
 
 	private void displaysDuplicatedLibsWarnings(Set<String> duplicatedDeps) {

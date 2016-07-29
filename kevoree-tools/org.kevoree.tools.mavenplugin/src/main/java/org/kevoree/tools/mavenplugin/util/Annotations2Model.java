@@ -1,4 +1,4 @@
-package org.kevoree.tools.annotation.mavenplugin;
+package org.kevoree.tools.mavenplugin.util;
 
 import javassist.ClassPool;
 import javassist.CtClass;
@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
+ * 
  * Created with IntelliJ IDEA. User: duke Date: 24/11/2013 Time: 14:40
  */
 public class Annotations2Model {

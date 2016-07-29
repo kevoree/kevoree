@@ -19,12 +19,14 @@ import org.kevoree.pmodeling.api.util.ModelVisitor;
 import org.kevoree.pmodeling.api.xmi.XMIModelLoader;
 
 import java.io.*;
+import java.nio.file.Paths;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -51,6 +53,8 @@ public class Bootstrap {
     private XMIModelLoader xmiLoader;
 
     private JSONModelLoader jsonLoader;
+    
+    private int exitId;
 
     private static HashMap<String, String> ctxVars = new HashMap<String, String>();
 
@@ -93,6 +97,26 @@ public class Bootstrap {
                 }
             }
         });
+        
+    	String log = System.getProperty("log.level");
+        if ("DEBUG".equalsIgnoreCase(log)) {
+            Log.set(Log.LEVEL_DEBUG);
+        } else if ("WARN".equalsIgnoreCase(log)) {
+            Log.set(Log.LEVEL_WARN);
+        } else if ("INFO".equalsIgnoreCase(log)) {
+            Log.set(Log.LEVEL_INFO);
+        } else if ("ERROR".equalsIgnoreCase(log)) {
+            Log.set(Log.LEVEL_ERROR);
+        } else if ("TRACE".equalsIgnoreCase(log)) {
+            Log.set(Log.LEVEL_TRACE);
+        } else if ("NONE".equalsIgnoreCase(log)) {
+            Log.set(Log.LEVEL_NONE);
+        } else {
+        	log = "INFO";
+        	Log.set(Log.LEVEL_INFO);
+        }
+        Log.info("Log level= {}", log);
+        
         String bootstrapModel = System.getProperty("node.bootstrap");
         try {
             if (bootstrapModel != null) {
@@ -118,7 +142,8 @@ public class Bootstrap {
 
     public Bootstrap(KevoreeKernel k, String nodeName) {
         //First initiate Security Manager to ensure that no Kill can be called on the JVM
-        System.setSecurityManager(new KevoreeSecurityManager());
+    	this.exitId = new AtomicInteger().incrementAndGet();
+        System.setSecurityManager(new KevoreeSecurityManager(this.exitId));
         //Init all subObjects
         this.microKernel = k;
         core = new KevoreeCoreBean();
@@ -137,7 +162,8 @@ public class Bootstrap {
         injector.addService(KevScriptService.class, kevScriptEngine);
         kernel.setInjector(injector);
         core.setBootstrapService(kernel);
-        Log.info("Bootstrap Kevoree node : {}, version {}", nodeName, core.getFactory().getVersion());
+        Log.info("Starting Kevoree using version: {}", core.getFactory().getVersion());
+        Log.info("Platform node name: {}", nodeName);
         core.start();
     }
 
@@ -172,6 +198,15 @@ public class Bootstrap {
     public void stop() {
         core.stop();
     }
+    
+    private void checkBootstrap(boolean succeed) {
+    	if (succeed) {
+    		Log.info("Bootstrap succeed");
+    	} else {
+    		Log.info("Bootstrap failed");
+    		System.exit(this.exitId);
+    	}
+    }
 
     public void bootstrap(ContainerRoot model, UpdateCallback callback) {
         ContainerRoot emptyModel = initialModel();
@@ -183,11 +218,12 @@ public class Bootstrap {
 
     public void bootstrap(ContainerRoot model) {
         bootstrap(model, new UpdateCallback() {
-            @Override
-            public void run(Boolean applied) {
-                Log.info("Bootstrap completed");
-            }
-        });
+			
+			@Override
+			public void run(Boolean applied) {
+				checkBootstrap(applied);
+			}
+		});
     }
 
     public ContainerRoot initialModel() {
@@ -214,10 +250,20 @@ public class Bootstrap {
 
 
     public void bootstrapFromKevScript(InputStream input, UpdateCallback callback) throws Exception {
+    	if (callback == null) {
+            callback = new UpdateCallback() {
+				
+				@Override
+				public void run(Boolean applied) {
+					checkBootstrap(applied);
+				}
+			};
+    	}
+
         ContainerRoot emptyModel = initialModel();
         core.getFactory().root(emptyModel);
         for (ClassLoader cl : microKernel.getClassLoaders()) {
-            InputStream is = cl.getResourceAsStream("KEV-INF/lib.json");
+            InputStream is = cl.getResourceAsStream("KEV-INF/kevlib.json");
             if (is != null) {
                 try {
                     ContainerRoot CLroot = (ContainerRoot) core.getFactory().createJSONLoader().loadModelFromStream(is).get(0);
@@ -259,12 +305,7 @@ public class Bootstrap {
     }
 
     public void bootstrapFromKevScript(InputStream input) throws Exception {
-        bootstrapFromKevScript(input, new UpdateCallback() {
-            @Override
-            public void run(Boolean applied) {
-                Log.info("Bootstrap completed");
-            }
-        });
+    	this.bootstrapFromKevScript(input, null);
     }
 
     public ContainerRoot bootstrapFromClassPath() {
@@ -275,9 +316,9 @@ public class Bootstrap {
             ModelCompare compare = core.getFactory().createModelCompare();
             String[] paths = classpath.split(File.pathSeparator);
             for (String path : paths) {
-                File pathP = new File(path + File.separator + "KEV-INF" + File.separator + "lib.json");
+                File pathP = new File(path + File.separator + "KEV-INF" + File.separator + "kevlib.json");
                 if (pathP.exists()) {
-                    Log.info("Merge bootstrap model from {}", pathP.getAbsolutePath());
+                    Log.info("Merge bootstrap model from {}", Paths.get(System.getProperty("user.dir")).relativize(Paths.get(pathP.getAbsolutePath())));
                     if (result == null) {
                         FileInputStream ins = null;
                         try {
@@ -344,38 +385,18 @@ public class Bootstrap {
         if (input.getName().endsWith(".kevs")) {
             bootstrapFromKevScript(fin, callback);
         } else {
-            if (input.getName().endsWith(".kev")) {
-                bootstrap((ContainerRoot) xmiLoader.loadModelFromStream(fin).get(0), callback);
+        	if (input.getName().endsWith(".json")) {
+                bootstrap((ContainerRoot) jsonLoader.loadModelFromStream(fin).get(0), callback);
             } else {
-                if (input.getName().endsWith(".json")) {
-                    bootstrap((ContainerRoot) jsonLoader.loadModelFromStream(fin).get(0), callback);
-                } else {
-                    Log.error("Can't bootstrap because no extension found for {}", input.getName());
-                }
+                Log.error("Unable to bootstrap from file. Extension should be .kevs or .json (current: {})", input.getName().substring(input.getName().lastIndexOf(".")));
             }
-
         }
 
         fin.close();
     }
 
     public void bootstrapFromFile(File input) throws Exception {
-        FileInputStream fin = new FileInputStream(input);
-        if (input.getName().endsWith(".kevs")) {
-            bootstrapFromKevScript(fin);
-        } else {
-            if (input.getName().endsWith(".kev")) {
-                bootstrap((ContainerRoot) xmiLoader.loadModelFromStream(fin).get(0));
-            } else {
-                if (input.getName().endsWith(".json")) {
-                    bootstrap((ContainerRoot) jsonLoader.loadModelFromStream(fin).get(0));
-                } else {
-                    Log.error("Can't bootstrap because no extension found for {}", input.getName());
-                }
-            }
-
-        }
-        fin.close();
+    	this.bootstrapFromFile(input, null);
     }
 
     public static String createBootstrapScript(String nodeName, String version) {

@@ -60,9 +60,7 @@ public class TypeDefinitionResolver {
 			for (final org.kevoree.Package loopPack : model.getPackages()) {
 				loopPack.deepVisitContained(new ModelVisitor() {
 					@Override
-					public void visit(@JetValueParameter(name = "elem") @NotNull final KMFContainer kmfContainer,
-							@JetValueParameter(name = "refNameInParent") @NotNull final String s,
-							@JetValueParameter(name = "parent") @NotNull final KMFContainer kmfContainer2) {
+					public void visit(@NotNull final KMFContainer kmfContainer, @NotNull final String s, @NotNull final KMFContainer kmfContainer2) {
 						if (kmfContainer instanceof TypeDefinition) {
 							final TypeDefinition casted = (TypeDefinition) kmfContainer;
 							String name = casted.getName();

@@ -4,6 +4,7 @@ import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.jetbrains.annotations.NotNull;
@@ -24,6 +25,7 @@ import org.kevoree.api.helper.KModelHelper;
 import org.kevoree.bootstrap.Bootstrap;
 import org.kevoree.core.impl.ContextAwareAdapter;
 import org.kevoree.core.impl.KevoreeCoreBean;
+import org.kevoree.factory.DefaultKevoreeFactory;
 import org.kevoree.kcl.api.FlexyClassLoader;
 import org.kevoree.kcl.api.FlexyClassLoaderFactory;
 import org.kevoree.kcl.api.ResolutionPriority;
@@ -57,18 +59,7 @@ public class KevoreeCLKernel implements BootstrapService {
     private KevoreeInjector injector = null;
 
     public String buildKernelKey(DeployUnit deployUnit) {
-        StringBuilder builder = new StringBuilder();
-        builder.append("mvn:");
-        builder.append(KModelHelper.fqnGroup(deployUnit));
-        builder.append(":");
-        builder.append(deployUnit.getName());
-        builder.append(":");
-        if (deployUnit.getName().equals("org.kevoree.api") || deployUnit.getName().equals("org.kevoree.annotation.api") || deployUnit.getName().equals("org.kevoree.model")) {
-            builder.append(bs.getCore().getFactory().getVersion());
-        } else {
-            builder.append(deployUnit.getVersion());
-        }
-        return builder.toString();
+    	return deployUnit.getUrl();
     }
 
     @Override
@@ -97,14 +88,9 @@ public class KevoreeCLKernel implements BootstrapService {
 				}
 				Log.info("Resolving ............. " + deployUnit.path());
 				long before = System.currentTimeMillis();
-				if (deployUnit.getUrl() == null || "".equals(deployUnit.getUrl())) {
-					resolved = bs.getKernel().getResolver().resolve(KModelHelper.fqnGroup(deployUnit),
-							deployUnit.getName(), deployUnit.getVersion(), "jar", urls);
-				} else {
-					resolved = bs.getKernel().getResolver().resolve(deployUnit.getUrl(), urls);
-					if (resolved == null && new File(deployUnit.getUrl()).exists()) {
-						resolved = new File(deployUnit.getUrl());
-					}
+				resolved = bs.getKernel().getResolver().resolve(deployUnit.getUrl(), urls);
+				if (resolved == null && new File(deployUnit.getUrl()).exists()) {
+					resolved = new File(deployUnit.getUrl());
 				}
 				Log.info("Resolved in {}ms", (System.currentTimeMillis() - before));
 				if (resolved != null) {
@@ -145,7 +131,9 @@ public class KevoreeCLKernel implements BootstrapService {
             Log.error("Can't install {}", du.path());
         } else {
             for (DeployUnit child : du.getRequiredLibs()) {
-                kcl.attachChild(recursiveInstallDeployUnit(child));
+            	FlexyClassLoader fcl = recursiveInstallDeployUnit(child);
+            	System.out.println("Loaded >> " + fcl.getKey());
+                kcl.attachChild(fcl);
             }
         }
         return kcl;
@@ -159,18 +147,20 @@ public class KevoreeCLKernel implements BootstrapService {
         kcl.setKey(tdef.path());
         for (DeployUnit du : tdef.getDeployUnits()) {
             if (filter(du)) {
-                kcl.attachChild(recursiveInstallDeployUnit(du));
+            	FlexyClassLoader fcl = recursiveInstallDeployUnit(du);
+            	System.out.println("Loaded >> " + fcl.getKey());
+                kcl.attachChild(fcl);
             }
         }
         return kcl;
     }
 
     public boolean filter(DeployUnit du) {
-        if (du.findFiltersByID("runtime") == null || du.findFiltersByID("runtime").equals("java")) {
-            return true;
-        } else {
-            return false;
+    	Value platform = du.findFiltersByID("platform");
+        if (platform != null && platform.getValue() != null) {
+        	return platform.getValue().equals("java");
         }
+        return false;
     }
 
     @Override
@@ -194,9 +184,9 @@ public class KevoreeCLKernel implements BootstrapService {
     public Object createInstance(final Instance instance, final FlexyClassLoader classLoader) {
         try {
             final String mainClassName = searchMainClassName(instance);
-            
+
 			final Class clazz = classLoader.loadClass(mainClassName);
-			
+
             final Object newInstance = clazz.newInstance();
             final KevoreeInjector selfInjector = injector.clone();
             selfInjector.addService(Context.class, new InstanceContext(instance.path(), nodeName, instance.getName()));
@@ -212,14 +202,20 @@ public class KevoreeCLKernel implements BootstrapService {
     }
 
 	private String searchMainClassName(final Instance instance) {
-		final String path = instance.findMetaDataByID("java").getValue();
-		final ContainerRoot model = KModelHelper.root(instance);
-		final DeployUnit findByPath = (DeployUnit) model.findByPath(path);
+		TypeDefinition td = instance.getTypeDefinition();
+		List<KMFContainer> filters = td.select("deployUnits[]/filters[name=platform,value=java]");
+		if (filters.size() > 1) {
+			throw new RuntimeException("Instance " + instance.path() + " has " + filters.size() + " deployUnits that matches platform \"java\"");
+		}
 		
-		
-		final TypeDefinition td = instance.getTypeDefinition();
-		final  String mainClassName = findByPath.findFiltersByID(td.getName() + ":" + td.getVersion() + ":java.class").getValue();
-		return mainClassName;
+		DeployUnit du = (DeployUnit) filters.get(0).eContainer();
+		String tag = "class:" + td.getName() + ":" + td.getVersion();
+		Value tdefClassName = du.findFiltersByID(tag);
+		if (tdefClassName != null) {
+			return tdefClassName.getValue();
+		} else {
+			throw new RuntimeException("Cannot find meta-data \"" + tag + "\" in DeployUnit " + du.getHashcode() + "/" + du.getName() + "/" + du.getVersion());
+		}
 	}
 
     @NotNull

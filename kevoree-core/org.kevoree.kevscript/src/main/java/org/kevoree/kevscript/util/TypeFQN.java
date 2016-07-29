@@ -1,12 +1,29 @@
 package org.kevoree.kevscript.util;
 
 /**
- * Created by duke on 9/15/14.
+ *
  */
 public class TypeFQN {
 
-    public String name;
+	public static final String LATEST = "LATEST";
 
-    public String version;
+	public String namespace;
 
+	public String name;
+
+	public String version;
+
+	@Override
+	public String toString() {
+		return this.namespace + "." + this.name + "/" + this.version;
+	}
+	
+	public String toKevoreePath() {
+		String path = "";
+		for (String subPath: namespace.split("\\.")) {
+			path += "/packages[" + subPath + "]";
+		}
+		path += "/typeDefinitions[name=" + name + ",version=" + version + "]";
+		return path;
+	}
 }
