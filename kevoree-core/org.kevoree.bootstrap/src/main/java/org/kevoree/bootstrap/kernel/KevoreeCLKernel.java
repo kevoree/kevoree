@@ -131,9 +131,7 @@ public class KevoreeCLKernel implements BootstrapService {
             Log.error("Can't install {}", du.path());
         } else {
             for (DeployUnit child : du.getRequiredLibs()) {
-            	FlexyClassLoader fcl = recursiveInstallDeployUnit(child);
-            	System.out.println("Loaded >> " + fcl.getKey());
-                kcl.attachChild(fcl);
+                kcl.attachChild(recursiveInstallDeployUnit(child));
             }
         }
         return kcl;
@@ -147,9 +145,7 @@ public class KevoreeCLKernel implements BootstrapService {
         kcl.setKey(tdef.path());
         for (DeployUnit du : tdef.getDeployUnits()) {
             if (filter(du)) {
-            	FlexyClassLoader fcl = recursiveInstallDeployUnit(du);
-            	System.out.println("Loaded >> " + fcl.getKey());
-                kcl.attachChild(fcl);
+                kcl.attachChild(recursiveInstallDeployUnit(du));
             }
         }
         return kcl;
