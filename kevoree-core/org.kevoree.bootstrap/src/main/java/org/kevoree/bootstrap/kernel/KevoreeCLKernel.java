@@ -156,7 +156,7 @@ public class KevoreeCLKernel implements BootstrapService {
     @Override
     public FlexyClassLoader installTypeDefinition(Instance instance) {
         FlexyClassLoader fcl = FlexyClassLoaderFactory.INSTANCE.create();
-        fcl.resolutionPriority = ResolutionPriority.PARENT;
+        fcl.resolutionPriority = ResolutionPriority.CHILDS;
         fcl.setKey(instance.getTypeDefinition().path());
 
         TypeDefinition td = instance.getTypeDefinition();
