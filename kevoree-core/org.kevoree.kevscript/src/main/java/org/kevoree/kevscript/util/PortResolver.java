@@ -4,6 +4,7 @@ import org.kevoree.ComponentInstance;
 import org.kevoree.ContainerNode;
 import org.kevoree.ContainerRoot;
 import org.kevoree.Port;
+import org.kevoree.kevscript.KevScriptError;
 import org.kevoree.kevscript.Type;
 import org.kevoree.pmodeling.api.KMFContainer;
 import org.waxeye.ast.IAST;
@@ -27,14 +28,14 @@ public class PortResolver {
             String componentName = node.getChildren().get(1).childrenAsString();
             String portName = node.getChildren().get(2).childrenAsString();
             List<KMFContainer> parentNodes = model.select("nodes[" + nodeName + "]");
-            if(parentNodes.isEmpty()){
-                throw new Exception("No nodes resolved from : " + componentName);
+            if (parentNodes.isEmpty()){
+                throw new KevScriptError("Unable to find node " + componentName + " in model");
             }
             for (Object loopObj : parentNodes) {
                 ContainerNode parentNode = (ContainerNode) loopObj;
                 List<KMFContainer> cis = parentNode.select("components[" + componentName + "]");
-                if(cis.isEmpty()){
-                    throw new Exception("No components resolved from : " + componentName);
+                if (cis.isEmpty()){
+                    throw new KevScriptError("Unable to find component \"" + componentName + "\" in node \"" + parentNode.getName() + "\"");
                 }
                 for (Object ci : cis) {
                     ComponentInstance cinstance = (ComponentInstance) ci;
@@ -51,10 +52,10 @@ public class PortResolver {
                 }
             }
         } else {
-            throw new Exception("Bad name to resolve ports : " + node.toString());
+            throw new KevScriptError("Bad name to resolve ports : " + node.toString());
         }
         if (resolved.isEmpty()) {
-            throw new Exception("No port resolved from : " + node.toString());
+            throw new KevScriptError("No port resolved from : " + node.toString());
         }
 
         return resolved;
