@@ -1,49 +1,23 @@
 package org.kevoree.kevscript;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.Scanner;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import org.kevoree.Channel;
-import org.kevoree.ChannelType;
-import org.kevoree.ComponentInstance;
-import org.kevoree.ComponentType;
-import org.kevoree.ContainerNode;
-import org.kevoree.ContainerRoot;
-import org.kevoree.DeployUnit;
-import org.kevoree.DictionaryAttribute;
-import org.kevoree.FragmentDictionary;
-import org.kevoree.Group;
-import org.kevoree.GroupType;
-import org.kevoree.Instance;
-import org.kevoree.MBinding;
-import org.kevoree.NetworkInfo;
-import org.kevoree.NodeType;
-import org.kevoree.Port;
-import org.kevoree.PortTypeRef;
-import org.kevoree.Repository;
-import org.kevoree.TypeDefinition;
-import org.kevoree.Value;
+import org.kevoree.*;
 import org.kevoree.api.KevScriptService;
-import org.kevoree.api.helper.KModelHelper;
 import org.kevoree.factory.DefaultKevoreeFactory;
 import org.kevoree.factory.KevoreeFactory;
 import org.kevoree.kevscript.util.InstanceResolver;
 import org.kevoree.kevscript.util.KevoreeRegistryResolver;
 import org.kevoree.kevscript.util.PortResolver;
-import org.kevoree.kevscript.util.TypeDefinitionResolver;
 import org.kevoree.kevscript.util.TypeFQN;
 import org.kevoree.log.Log;
 import org.waxeye.ast.IAST;
 import org.waxeye.input.InputBuffer;
 import org.waxeye.parser.ParseResult;
+
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created with IntelliJ IDEA. User: duke Date: 25/11/2013 Time: 15:53
@@ -52,21 +26,9 @@ public class KevScriptEngine implements KevScriptService {
 
 	private static final String CHARS = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-	final Parser parser = new Parser();
-	final KevoreeFactory factory = new DefaultKevoreeFactory();
-
-	private final List<String> ignoredInclude = new ArrayList<String>();
-
+	private final Parser parser = new Parser();
+	private final KevoreeFactory factory = new DefaultKevoreeFactory();
 	private final KevoreeRegistryResolver resolver = new KevoreeRegistryResolver();
-	private Map<String, TypeDefinition> tdefs = null;
-
-	/* Ugly hack for dev mode */
-
-	public void addIgnoreIncludeDeployUnit(final DeployUnit du) {
-		ignoredInclude.add(KModelHelper.fqnGroup(du) + "/" + du.getName() + "/" + du.getVersion());
-		ignoredInclude.add(KModelHelper.fqnGroup(du) + "/" + du.getName() + "/release");
-		ignoredInclude.add(KModelHelper.fqnGroup(du) + "/" + du.getName() + "/latest");
-	}
 
 	public void execute(final String script, final ContainerRoot model) throws Exception {
 		this.execute(script, model, null);
@@ -80,6 +42,16 @@ public class KevScriptEngine implements KevScriptService {
 			throws Exception {
 		if (ctxVars == null) {
 			ctxVars = new HashMap<String, String>();
+		}
+
+		// override ctxVar with System.props (ie. -DctxVar.foo=bar -DctxVar.port=4242)
+		Properties props = System.getProperties();
+		for (String propName : props.stringPropertyNames()) {
+			String[] splitted = propName.split("\\.");
+			if (splitted[0].equals("ctxVar")) {
+				Log.debug("Adding ctxVar {}={}", splitted[1], System.getProperty(propName));
+				ctxVars.put(splitted[1], System.getProperty(propName));
+			}
 		}
 
 		String kevs = new Scanner(script).useDelimiter("\\A").next();
@@ -102,11 +74,8 @@ public class KevScriptEngine implements KevScriptService {
 			final ParseResult<Type> parserResult = parser.parse(new InputBuffer(kevs.toCharArray()));
 			final IAST<Type> ast = parserResult.getAST();
 			if (ast != null) {
-				final List<TypeFQN> fqns = parseTypeFQNs(ast);
-				tdefs = this.resolver.resolve(fqns, model);
 				interpret(ast, model);
 			} else {
-				// Log.error(parserResult.getError().toString());
 				throw new Exception(parserResult.getError().toString());
 			}
 		}
@@ -116,36 +85,6 @@ public class KevScriptEngine implements KevScriptService {
 		this.executeFromStream(script, model, null);
 	}
 
-	private List<TypeFQN> parseTypeFQNs(final IAST<Type> node) throws Exception {
-		final List<TypeFQN> fqnNames = new ArrayList<TypeFQN>();
-		switch (node.getType()) {
-			case KevScript:
-				for (final IAST<Type> child : node.getChildren()) {
-					fqnNames.addAll(parseTypeFQNs(child));
-				}
-				break;
-				
-			case Statement:
-				for (final IAST<Type> child : node.getChildren()) {
-					fqnNames.addAll(parseTypeFQNs(child));
-				}
-				break;
-				
-			case Add:
-				for (final IAST<Type> child: node.getChildren()) {
-					fqnNames.addAll(parseTypeFQNs(child));
-				}
-				break;
-			case TypeDef:
-				TypeFQN typeFqn = interpretTypeDef(node);
-				fqnNames.add(typeFqn);
-				break;
-				
-			default:
-		}
-		return fqnNames;
-	}
-	
 	private TypeFQN interpretTypeDef(IAST<Type> node) throws Exception {
 		String fqn = parseTypeFQN(node.getChildren().get(0));
 		String namespace = "";
@@ -192,7 +131,7 @@ public class KevScriptEngine implements KevScriptService {
 				break;
 			case Add:
 				TypeFQN fqn = interpretTypeDef(node.getChildren().get(1));
-				TypeDefinition td = tdefs.get(fqn.toString());
+				TypeDefinition td = resolver.resolve(fqn, model);
 				if (td == null) {
 					throw new Exception("Unable to find TypeDefinition \"" + fqn.toString() + "\" in model");
 				} else {
@@ -333,7 +272,7 @@ public class KevScriptEngine implements KevScriptService {
 
 				final IAST<Type> leftHnodes = node.getChildren().get(0);
 				if (leftHnodes.getChildren().size() < 2) {
-					throw new Exception("Bad dictionary value description ");
+					throw new Exception("Bad dictionary value description");
 				}
 
 				final IAST<Type> portName = leftHnodes.getChildren().get(leftHnodes.getChildren().size() - 1);

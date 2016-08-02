@@ -2,7 +2,7 @@ package org.kevoree.bootstrap.test;
 
 import org.kevoree.ContainerRoot;
 import org.kevoree.api.handler.UpdateCallback;
-import org.kevoree.core.impl.KevoreeCoreBean;
+import org.kevoree.core.KevoreeCoreBean;
 import org.kevoree.pmodeling.api.json.JSONModelLoader;
 import org.kevoree.pmodeling.api.json.JSONModelSerializer;
 import org.zeromq.ZMQ;

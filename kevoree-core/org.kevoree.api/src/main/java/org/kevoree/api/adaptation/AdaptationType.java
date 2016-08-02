@@ -19,7 +19,6 @@ public enum AdaptationType {
     RemoveBinding,
     StartInstance,
     StopInstance,
-    LinkDeployUnit,
     UpdateCallMethod,
     UpgradeInstance
 }

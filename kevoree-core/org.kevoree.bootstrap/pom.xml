@@ -3,14 +3,18 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>org.kevoree.bootstrap</artifactId>
     <name>Kevoree :: Bootstrap</name>
-    <version>5.3.3-SNAPSHOT</version>
 
     <parent>
         <artifactId>org.kevoree.root</artifactId>
         <groupId>org.kevoree</groupId>
-        <version>5.3.3-SNAPSHOT</version>
+        <version>5.4.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
+
+    <properties>
+        <jdk.target>1.7</jdk.target>
+        <shrinkwrap.resolvers>2.2.2</shrinkwrap.resolvers>
+    </properties>
 
     <dependencies>
         <dependency>
@@ -50,23 +54,38 @@
         </dependency>
         <dependency>
             <groupId>org.kevoree</groupId>
-            <artifactId>org.kevoree.maven.resolver</artifactId>
-            <version>${basic.resolver.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.kevoree</groupId>
             <artifactId>org.kevoree.kevscript</artifactId>
             <version>${kevoree.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.jetbrains.kotlin</groupId>
-            <artifactId>kotlin-stdlib</artifactId>
-            <version>${kotlin.version}</version>
+            <groupId>org.jboss.shrinkwrap.resolver</groupId>
+            <artifactId>shrinkwrap-resolver-api</artifactId>
+            <version>${shrinkwrap.resolvers}</version>
         </dependency>
         <dependency>
-            <groupId>org.jetbrains.kotlin</groupId>
-            <artifactId>kotlin-runtime</artifactId>
-            <version>${kotlin.version}</version>
+            <groupId>org.jboss.shrinkwrap.resolver</groupId>
+            <artifactId>shrinkwrap-resolver-spi</artifactId>
+            <version>${shrinkwrap.resolvers}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.shrinkwrap.resolver</groupId>
+            <artifactId>shrinkwrap-resolver-api-maven</artifactId>
+            <version>${shrinkwrap.resolvers}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.shrinkwrap.resolver</groupId>
+            <artifactId>shrinkwrap-resolver-spi-maven</artifactId>
+            <version>${shrinkwrap.resolvers}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.shrinkwrap.resolver</groupId>
+            <artifactId>shrinkwrap-resolver-impl-maven</artifactId>
+            <version>${shrinkwrap.resolvers}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.shrinkwrap.resolver</groupId>
+            <artifactId>shrinkwrap-resolver-impl-maven-archive</artifactId>
+            <version>${shrinkwrap.resolvers}</version>
         </dependency>
     </dependencies>
 
@@ -89,25 +108,13 @@
                 </executions>
             </plugin>
             <plugin>
-                <artifactId>kotlin-maven-plugin</artifactId>
-                <groupId>org.jetbrains.kotlin</groupId>
-                <version>${kotlin.version}</version>
-                <executions>
-                    <execution>
-                        <id>compile</id>
-                        <phase>process-sources</phase>
-                        <goals>
-                            <goal>compile</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>test-compile</id>
-                        <phase>process-test-sources</phase>
-                        <goals>
-                            <goal>test-compile</goal>
-                        </goals>
-                    </execution>
-                </executions>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.1</version>
+                <configuration>
+                    <source>${jdk.target}</source>
+                    <target>${jdk.target}</target>
+                </configuration>
             </plugin>
         </plugins>
     </build>

@@ -1,40 +1,33 @@
 package org.kevoree.bootstrap.kernel;
 
-import java.io.File;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
+import org.jboss.shrinkwrap.resolver.api.maven.ConfigurableMavenResolverSystem;
+import org.jboss.shrinkwrap.resolver.api.maven.Maven;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenResolvedArtifact;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.kevoree.ContainerRoot;
-import org.kevoree.DeployUnit;
-import org.kevoree.DictionaryAttribute;
-import org.kevoree.FragmentDictionary;
-import org.kevoree.Instance;
-import org.kevoree.Repository;
-import org.kevoree.TypeDefinition;
-import org.kevoree.Value;
+import org.kevoree.*;
 import org.kevoree.api.BootstrapService;
 import org.kevoree.api.Context;
 import org.kevoree.api.ModelService;
 import org.kevoree.api.PlatformService;
-import org.kevoree.api.helper.KModelHelper;
 import org.kevoree.bootstrap.Bootstrap;
-import org.kevoree.core.impl.ContextAwareAdapter;
-import org.kevoree.core.impl.KevoreeCoreBean;
-import org.kevoree.factory.DefaultKevoreeFactory;
+import org.kevoree.bootstrap.reflect.Injector;
+import org.kevoree.core.ContextAwareAdapter;
+import org.kevoree.core.KevoreeCoreBean;
 import org.kevoree.kcl.api.FlexyClassLoader;
 import org.kevoree.kcl.api.FlexyClassLoaderFactory;
 import org.kevoree.kcl.api.ResolutionPriority;
 import org.kevoree.log.Log;
 import org.kevoree.pmodeling.api.KMFContainer;
 
-import com.mashape.unirest.http.utils.URLParamEncoder;
-
-import org.kevoree.bootstrap.reflect.KevoreeInjector;
+import java.io.*;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.file.Paths;
+import java.util.*;
+import java.util.logging.LogManager;
 
 /**
  * Created with IntelliJ IDEA.
@@ -44,119 +37,145 @@ import org.kevoree.bootstrap.reflect.KevoreeInjector;
  */
 public class KevoreeCLKernel implements BootstrapService {
 
+    private File propFile = null;
     private Bootstrap bs;
+    private Injector injector;
 
-    public KevoreeCLKernel(Bootstrap b) {
+    public KevoreeCLKernel(Bootstrap b, Injector injector) {
         this.bs = b;
+        this.injector = injector;
+
+        // be sure that the logging of the Maven resolver won't be too verbose
+        // but let the user modify the behavior if needed
+        String loggingProp = System.getProperty("java.util.logging.config.file");
+        if (loggingProp == null) {
+            propFile = Paths.get(System.getProperty("user.home"), ".kevoree", "java-logging.properties").toFile();
+            if (!propFile.exists()) {
+                propFile.getParentFile().mkdirs();
+                try {
+                    PrintWriter writer = new PrintWriter(propFile);
+                    writer.println("# Set the default logging level for new ConsoleHandler instances");
+                    writer.println("java.util.logging.ConsoleHandler.level= INFO");
+                    writer.println("");
+                    writer.println("# Set global verbose level");
+                    writer.println(".level= INFO");
+                    writer.println("");
+                    writer.println("# Set log verbose level for ShrinkWrap Resolvers");
+                    writer.println("org.jboss.shrinkwrap.resolver.impl.maven.logging.LogTransferListener.level= WARNING");
+                    writer.println("org.jboss.shrinkwrap.resolver.impl.maven.logging.LogRepositoryListener.level= WARNING");
+                    writer.println("org.jboss.shrinkwrap.resolver.impl.maven.logging.LogModelProblemCollector.level= SEVERE");
+                    writer.close();
+                } catch (FileNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        } else {
+            propFile = new File(loggingProp);
+        }
     }
 
     private Boolean offline = false;
 
-    public void setInjector(KevoreeInjector injector) {
-        this.injector = injector;
-    }
-
-    private KevoreeInjector injector = null;
-
-    public String buildKernelKey(DeployUnit deployUnit) {
-    	return deployUnit.getUrl();
+    private String buildKernelKey(Instance instance, DeployUnit deployUnit) {
+    	return instance.getName() + ":" + instance.getTypeDefinition().getName() + ":" + instance.getTypeDefinition().getVersion() + ":" + deployUnit.getUrl();
     }
 
     @Override
-    public FlexyClassLoader get(DeployUnit deployUnit) {
-        return bs.getKernel().get(buildKernelKey(deployUnit));
+    public FlexyClassLoader get(Instance instance, DeployUnit deployUnit) {
+        return this.get(buildKernelKey(instance, deployUnit));
     }
-
-	public FlexyClassLoader installDeployUnit(DeployUnit deployUnit) {
-		FlexyClassLoader resolvedKCL = get(deployUnit);
-		if (resolvedKCL != null) {
-			return resolvedKCL;
-		} else {
-			HashSet<String> urls = new HashSet<String>();
-			if (!offline) {
-				ContainerRoot root = KModelHelper.root(deployUnit);
-				File resolved;
-				for (Repository repo : root.getRepositories()) {
-					urls.add(repo.getUrl());
-				}
-
-				if (deployUnit.getVersion().toLowerCase().contains("snapshot")
-						|| deployUnit.getVersion().toLowerCase().contains("latest")) {
-					urls.add("http://oss.sonatype.org/content/groups/public/");
-				} else {
-					urls.add("http://repo1.maven.org/maven2");
-				}
-				Log.info("Resolving ............. " + deployUnit.path());
-				long before = System.currentTimeMillis();
-				resolved = bs.getKernel().getResolver().resolve(deployUnit.getUrl(), urls);
-				if (resolved == null && new File(deployUnit.getUrl()).exists()) {
-					resolved = new File(deployUnit.getUrl());
-				}
-				Log.info("Resolved in {}ms", (System.currentTimeMillis() - before));
-				if (resolved != null) {
-					FlexyClassLoader installed = bs.getKernel().put(buildKernelKey(deployUnit), resolved);
-					return installed;
-				} else {
-					Log.error("Unable to resolve {}", deployUnit.path());
-				}
-			}
-
-		}
-		return null;
-	}
-
-	public String parseName(String duName) {
-		final String ret;
-		if(duName.matches("^[a-z0-9]{32}_.*")) {
-			ret = duName.substring(33);
-		} else {
-			ret = duName;
-		}
-		return ret;
-	}
 
     @Override
-    public void removeDeployUnit(DeployUnit deployUnit) {
-        bs.getKernel().drop(buildKernelKey(deployUnit));
+    public FlexyClassLoader get(String key) {
+        return this.bs.getKernel().get(key);
     }
 
-    public FlexyClassLoader recursiveInstallDeployUnit(DeployUnit du) {
-        FlexyClassLoader previousDu;
-        previousDu = get(du);
-        if (previousDu != null) {
-            return previousDu;
-        }
-        FlexyClassLoader kcl = installDeployUnit(du);
-        if (kcl == null) {
-            Log.error("Can't install {}", du.path());
-        } else {
-            for (DeployUnit child : du.getRequiredLibs()) {
-                kcl.attachChild(recursiveInstallDeployUnit(child));
+    @Override
+	public FlexyClassLoader installDeployUnit(Instance instance, DeployUnit deployUnit) {
+		FlexyClassLoader fcl = get(instance, deployUnit);
+		if (fcl != null) {
+			return fcl;
+		} else {
+            ConfigurableMavenResolverSystem resolver = Maven
+                    .configureResolver()
+                    .useLegacyLocalRepo(true)
+                    .workOffline(offline);
+
+            try {
+                LogManager.getLogManager().readConfiguration(new FileInputStream(propFile));
+            } catch (IOException e) {
+                throw new RuntimeException("Unable to read logging properties from " + propFile.getAbsolutePath());
             }
-        }
-        return kcl;
+            // hacky way to treat Maven repositories as I don't want to change the Kevoree MM
+            for (Value val : deployUnit.getFilters()) {
+                if (val.getName().startsWith("repo_")) {
+                    try {
+                        resolver.withRemoteRepo(val.getName().substring(5), new URL(val.getValue()), "default");
+                    } catch (MalformedURLException e) {
+                        throw new RuntimeException("Invalid repository URL: " + val.getValue());
+                    }
+                }
+            }
+
+            Log.info("Resolving ............. " + deployUnit.getUrl());
+            long before = System.currentTimeMillis();
+            MavenResolvedArtifact[] artifacts = resolver.resolve(deployUnit.getUrl())
+                    .withTransitivity().asResolvedArtifact();
+            Log.info("Resolved in {}ms", (System.currentTimeMillis() - before));
+
+            File duJar = null;
+            Set<MavenResolvedArtifact> duDeps = new HashSet<MavenResolvedArtifact>();
+            for (MavenResolvedArtifact artifact : artifacts) {
+                if (artifact.getCoordinate().toCanonicalForm().equals(deployUnit.getUrl())) {
+                    duJar = artifact.asFile();
+                } else if (!artifact.getCoordinate().getGroupId().equals("org.kevoree")) {
+                    duDeps.add(artifact);
+                }
+            }
+            if (duJar != null) {
+                Log.trace("Installing {}", deployUnit.getUrl());
+                fcl = bs.getKernel().put(buildKernelKey(instance, deployUnit), duJar);
+                for (MavenResolvedArtifact dep : duDeps) {
+                    String key = dep.getCoordinate().toCanonicalForm();
+                    Log.trace("  + {}", key);
+                    fcl.attachChild(bs.getKernel().put(key, dep.asFile()));
+                }
+            } else {
+                Log.error("Unable to resolve {}", deployUnit.getUrl());
+            }
+		}
+		return fcl;
+	}
+
+    @Override
+    public void removeDeployUnit(Instance instance, DeployUnit deployUnit) {
+        bs.getKernel().drop(buildKernelKey(instance, deployUnit));
     }
 
     @Nullable
     @Override
-    public FlexyClassLoader installTypeDefinition(TypeDefinition tdef) {
-        FlexyClassLoader kcl = FlexyClassLoaderFactory.INSTANCE.create();
-        kcl.resolutionPriority = ResolutionPriority.CHILDS;
-        kcl.setKey(tdef.path());
-        for (DeployUnit du : tdef.getDeployUnits()) {
-            if (filter(du)) {
-                kcl.attachChild(recursiveInstallDeployUnit(du));
-            }
-        }
-        return kcl;
-    }
+    public FlexyClassLoader installTypeDefinition(Instance instance) {
+        FlexyClassLoader fcl = FlexyClassLoaderFactory.INSTANCE.create();
+        fcl.resolutionPriority = ResolutionPriority.PARENT;
+        fcl.setKey(instance.getTypeDefinition().path());
 
-    public boolean filter(DeployUnit du) {
-    	Value platform = du.findFiltersByID("platform");
-        if (platform != null && platform.getValue() != null) {
-        	return platform.getValue().equals("java");
+        TypeDefinition td = instance.getTypeDefinition();
+        List<KMFContainer> filters = td.select("deployUnits[]/filters[name=platform,value=java]");
+        if (filters.size() > 1) {
+            String filtersStr = "";
+            for (int i=0; i < filters.size(); i++) {
+                filtersStr += filters.get(i).eContainer().path();
+                if (i < filters.size() - 1) {
+                    filtersStr += ", ";
+                }
+            }
+            throw new RuntimeException("Instance " + instance.path() + " has " + filters.size() + " deployUnits ("+filtersStr+") that matches platform \"java\" (must only be one)");
+        } else {
+            DeployUnit du = (DeployUnit) filters.get(0).eContainer();
+            fcl.attachChild(installDeployUnit(instance, du));
         }
-        return false;
+
+        return fcl;
     }
 
     @Override
@@ -180,19 +199,18 @@ public class KevoreeCLKernel implements BootstrapService {
     public Object createInstance(final Instance instance, final FlexyClassLoader classLoader) {
         try {
             final String mainClassName = searchMainClassName(instance);
-
 			final Class clazz = classLoader.loadClass(mainClassName);
-
             final Object newInstance = clazz.newInstance();
-            final KevoreeInjector selfInjector = injector.clone();
-            selfInjector.addService(Context.class, new InstanceContext(instance.path(), nodeName, instance.getName()));
-            selfInjector.addService(ModelService.class, new ContextAwareAdapter(core, instance.path()));
-            selfInjector.addService(PlatformService.class, core);
-            selfInjector.process(newInstance);
+
+            injector.register(Context.class, new InstanceContext(instance.path(), nodeName, instance.getName()));
+            injector.register(ModelService.class, new ContextAwareAdapter(core, instance.path()));
+            injector.register(PlatformService.class, core);
+            injector.inject(newInstance);
+
             return newInstance;
         } catch (final Exception e) {
-            Log.error("Error while creating instance {}", e, instance.getTypeDefinition().getName());
-            Log.error("Inconsistency in typeDefinition {}", core.getFactory().createJSONSerializer().serialize(instance.getTypeDefinition()));
+            Log.error("Error while creating instance \"{}\" of type {}", e, instance.getName(),
+                    instance.getTypeDefinition().getName());
         }
         return null;
     }
@@ -200,8 +218,16 @@ public class KevoreeCLKernel implements BootstrapService {
 	private String searchMainClassName(final Instance instance) {
 		TypeDefinition td = instance.getTypeDefinition();
 		List<KMFContainer> filters = td.select("deployUnits[]/filters[name=platform,value=java]");
+
 		if (filters.size() > 1) {
-			throw new RuntimeException("Instance " + instance.path() + " has " + filters.size() + " deployUnits that matches platform \"java\"");
+		    String filtersStr = "";
+		    for (int i=0; i < filters.size(); i++) {
+		        filtersStr += filters.get(i).eContainer().path();
+                if (i < filters.size() - 1) {
+                    filtersStr += ", ";
+                }
+            }
+			throw new RuntimeException("Instance " + instance.path() + " has " + filters.size() + " deployUnits ("+filtersStr+") that matches platform \"java\" (must only be one)");
 		}
 		
 		DeployUnit du = (DeployUnit) filters.get(0).eContainer();
@@ -265,7 +291,7 @@ public class KevoreeCLKernel implements BootstrapService {
     }
 
     private boolean internalInjectField(String fieldName, String value, Object target) {
-        if (value != null/* && !value.equals("")*/) {
+        if (target != null && value != null) {
             try {
                 boolean isSet = false;
                 String setterName = "set";
@@ -467,15 +493,18 @@ public class KevoreeCLKernel implements BootstrapService {
 
 
     @Override
-    public void injectService(Class<? extends Object> aClass, Object o, Object o2) {
-        KevoreeInjector injector = new KevoreeInjector();
-        injector.addService(aClass, o);
-        injector.process(o2);
+    public <T> void registerService(Class<T> serviceClass, T serviceImpl) {
+        injector.register(serviceClass, serviceImpl);
+    }
+
+    @Override
+    public <T> void unregisterService(Class<T> serviceClass) {
+        injector.unregister(serviceClass);
     }
 
     @Nullable
     @Override
-    public File resolve(String url, Set<? extends String> repos) {
+    public File resolve(String url, Set<String> repos) {
         return bs.getKernel().getResolver().resolve(url, (Set<String>) repos);
     }
 

@@ -32,4 +32,9 @@ public class AdaptationPrimitive {
     public void setRef(Object ref) {
         this.ref = ref;
     }
+    
+    @Override
+    public String toString() {
+    	return targetNodeName + "/" + primitiveType;
+    }
 }

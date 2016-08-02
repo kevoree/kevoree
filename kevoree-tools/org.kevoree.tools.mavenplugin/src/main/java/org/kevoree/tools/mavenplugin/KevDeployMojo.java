@@ -1,13 +1,9 @@
 package org.kevoree.tools.mavenplugin;
 
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.List;
-import java.util.stream.Collectors;
-
+import com.mashape.unirest.http.HttpResponse;
+import com.mashape.unirest.http.JsonNode;
+import com.mashape.unirest.http.exceptions.UnirestException;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -26,20 +22,16 @@ import org.kevoree.pmodeling.api.ModelCloner;
 import org.kevoree.pmodeling.api.ModelLoader;
 import org.kevoree.pmodeling.api.ModelSerializer;
 import org.kevoree.pmodeling.api.compare.ModelCompare;
-import org.kevoree.pmodeling.api.json.JSONModelLoader;
-import org.kevoree.pmodeling.api.json.JSONModelSerializer;
-import org.kevoree.pmodeling.api.trace.ModelTrace;
 import org.kevoree.pmodeling.api.trace.TraceSequence;
 import org.kevoree.registry.api.OAuthRegistryClient;
 import org.kevoree.registry.api.RegistryRestClient;
 import org.kevoree.registry.api.model.TypeDef;
 import org.kevoree.tools.mavenplugin.util.ModelBuilderHelper;
 
-import com.mashape.unirest.http.HttpResponse;
-import com.mashape.unirest.http.JsonNode;
-import com.mashape.unirest.http.exceptions.UnirestException;
-
-import edu.emory.mathcs.backport.java.util.Collections;
+import java.io.File;
+import java.io.FileInputStream;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -115,9 +107,8 @@ public class KevDeployMojo extends AbstractMojo {
 			DeployUnit du = (DeployUnit) model.findByPath(deployUnitPath);
 			if (du != null) {
 				// select all typeDefs that are related to this DeployUnit
-				tdefs = tdefs.stream().filter(tdef -> {
-					return !tdef.select("deployUnits[hashcode="+du.getHashcode()+",name="+du.getName()+",version="+du.getVersion()+"]").isEmpty();
-				}).collect(Collectors.toList());
+				tdefs = tdefs.stream().filter(tdef ->
+						!tdef.select("deployUnits[hashcode="+du.getHashcode()+",name="+du.getName()+",version="+du.getVersion()+"]").isEmpty()).collect(Collectors.toList());
 				processDeployUnit(cloner.clone(model), tdefs, du);
 			} else {
 				throw new MojoExecutionException("Unable to find DeployUnit " + deployUnitPath + " in " + this.model.getPath());

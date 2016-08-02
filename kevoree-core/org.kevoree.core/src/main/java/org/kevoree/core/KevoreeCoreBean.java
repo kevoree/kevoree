@@ -1,18 +1,18 @@
-package org.kevoree.core.impl;
+package org.kevoree.core;
 
 import org.kevoree.*;
 import org.kevoree.api.BootstrapService;
+import org.kevoree.api.KevScriptService;
 import org.kevoree.api.NodeType;
 import org.kevoree.api.PlatformService;
 import org.kevoree.api.adaptation.AdaptationModel;
 import org.kevoree.api.handler.*;
 import org.kevoree.api.telemetry.TelemetryEvent;
 import org.kevoree.api.telemetry.TelemetryListener;
-import org.kevoree.core.impl.deploy.PrimitiveCommandExecutionHelper;
-import org.kevoree.core.impl.deploy.PrimitiveExecute;
+import org.kevoree.core.deploy.PrimitiveCommandExecutionHelper;
+import org.kevoree.core.deploy.PrimitiveExecute;
 import org.kevoree.factory.KevoreeFactory;
 import org.kevoree.kcl.api.FlexyClassLoader;
-import org.kevoree.kevscript.KevScriptEngine;
 import org.kevoree.log.Log;
 import org.kevoree.pmodeling.api.trace.TraceSequence;
 
@@ -20,7 +20,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
@@ -30,11 +29,19 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
+ *
  * Created by duke on 9/26/14.
  */
 public class KevoreeCoreBean implements ContextAwareModelService, PlatformService {
 
     ArrayList<TelemetryListener> telemetryListeners = new ArrayList<TelemetryListener>();
+    private String nodeName;
+
+    private KevScriptService kevscript;
+    
+    public KevoreeCoreBean(KevScriptService kevscript) {
+    	this.kevscript = kevscript;
+    }
 
     @Override
     public void addTelemetryListener(TelemetryListener l) {
@@ -49,8 +56,6 @@ public class KevoreeCoreBean implements ContextAwareModelService, PlatformServic
     public boolean isAnyTelemetryListener() {
         return !telemetryListeners.isEmpty();
     }
-
-    private String nodeName;
 
     @Override
     public String getNodeName() {
@@ -110,13 +115,12 @@ public class KevoreeCoreBean implements ContextAwareModelService, PlatformServic
         this.bootstrapService = bootstrapService;
     }
 
-    BootstrapService bootstrapService = null;
-    NodeType nodeInstance;
-    MethodAnnotationResolver resolver;
-    LinkedList<UUIDModel> models = new LinkedList<UUIDModel>();
-    KevoreeFactory kevoreeFactory = new org.kevoree.factory.DefaultKevoreeFactory();
-    AtomicReference<UUIDModel> model = new AtomicReference<UUIDModel>();
-    Date lastDate = new Date(System.currentTimeMillis());
+    private BootstrapService bootstrapService = null;
+    private NodeType nodeInstance;
+    private MethodAnnotationResolver resolver;
+    private LinkedList<UUIDModel> models = new LinkedList<UUIDModel>();
+    private KevoreeFactory kevoreeFactory = new org.kevoree.factory.DefaultKevoreeFactory();
+    private AtomicReference<UUIDModel> model = new AtomicReference<UUIDModel>();
     private ExecutorService scheduler;
     private ScheduledExecutorService lockWatchDog;
     private ScheduledFuture futurWatchDog;
@@ -195,8 +199,6 @@ public class KevoreeCoreBean implements ContextAwareModelService, PlatformServic
         scheduler.submit(new UpdateModelRunnable(cloneCurrentModel(model), null, callback, callerPath));
     }
 
-    KevScriptEngine scriptEngine = new KevScriptEngine();
-
     private class UpdateScriptRunnable implements Runnable {
 
         private String script;
@@ -214,7 +216,7 @@ public class KevoreeCoreBean implements ContextAwareModelService, PlatformServic
             // TODO throwable should be returned in UpdateCallback as an error parameter to distinguish error from "false" result
             try {
                 ContainerRoot newModel = kevoreeFactory.createModelCloner().clone(model.get().getModel(), false);
-                scriptEngine.execute(script, newModel);
+                kevscript.execute(script, newModel);
                 callback.run(internal_update_model(cloneCurrentModel(newModel), callerPath));
             } catch (Throwable e) {
                 Log.error("Error while applying submitted KevScript", e);
@@ -248,7 +250,7 @@ public class KevoreeCoreBean implements ContextAwareModelService, PlatformServic
                 sequence.applyOn(newModel);
                 callback.run(internal_update_model(cloneCurrentModel(newModel), callerPath));
             } catch (Throwable e) {
-                broadcastTelemetry(TelemetryEvent.Type.LOG_ERROR, "Error while applying trace sequence.", e);
+                broadcastTelemetry(TelemetryEvent.Type.LOG_ERROR, "Error while applying trace sequence", e);
                 //Log.error("error while apply trace sequence", e)
                 Log.error("Error while applying submitted traces sequence", e);
                 callback.run(false);
@@ -281,7 +283,6 @@ public class KevoreeCoreBean implements ContextAwareModelService, PlatformServic
         if (cc != null) {
             UUIDModel uuidModel = new UUIDModelImpl(UUID.randomUUID(), cc);
             model.set(uuidModel);
-            lastDate = new Date(System.currentTimeMillis());
             //Fires the update to listeners
             modelListeners.notifyAllListener();
         }
@@ -303,9 +304,7 @@ public class KevoreeCoreBean implements ContextAwareModelService, PlatformServic
             boolean initUpdateResult = modelListeners.initUpdate(updateContext);
             Log.debug("InitUpdate result = " + initUpdateResult);
             if (preCheckResult && initUpdateResult) {
-                //CHECK FOR HARA KIRI
-                ContainerRoot previousHaraKiriModel = null;
-                //Checks and bootstrap the node
+                // Checks and bootstrap the node
                 checkBootstrapNode(proposedNewModel);
                 currentModel = model.get().getModel();
                 long milli = System.currentTimeMillis();
@@ -317,12 +316,12 @@ public class KevoreeCoreBean implements ContextAwareModelService, PlatformServic
                 try {
                     if (nodeInstance != null) {
                         // Compare the two models and plan the adaptation
-                        Log.info("Comparing models and planning adaptation.");
-                        broadcastTelemetry(TelemetryEvent.Type.MODEL_COMPARE_AND_PLAN, "Comparing models and planning adaptation.", null);
+                        Log.info("Comparing models and planning adaptation");
+                        broadcastTelemetry(TelemetryEvent.Type.MODEL_COMPARE_AND_PLAN, "Comparing models and planning adaptation", null);
                         adaptationModel = nodeInstance.plan(currentModel, proposedNewModel);
                         //Execution of the adaptation
-                        Log.info("Launching adaptation of the system.");
-                        broadcastTelemetry(TelemetryEvent.Type.PLATFORM_UPDATE_START, "Launching adaptation of the system.", null);
+                        Log.info("Launching adaptation of the system");
+                        broadcastTelemetry(TelemetryEvent.Type.PLATFORM_UPDATE_START, "Launching adaptation of the system", null);
                         updateContext = new UpdateContext(currentModel, proposedNewModel, callerPath);
 
                         final UpdateContext final_updateContext = updateContext;
@@ -341,7 +340,7 @@ public class KevoreeCoreBean implements ContextAwareModelService, PlatformServic
                         };
                         PreCommand preCmd = new PreCommand(updateContext, modelListeners);
                         ContainerNode rootNode = proposedNewModel.findNodesByID(getNodeName());
-                        deployResult = PrimitiveCommandExecutionHelper.instance$.execute(this, rootNode, adaptationModel, nodeInstance, afterUpdateTest, preCmd.preRollbackTest, postRollbackTest);
+                        deployResult = PrimitiveCommandExecutionHelper.execute(this, rootNode, adaptationModel, nodeInstance, afterUpdateTest, preCmd.preRollbackTest, postRollbackTest);
                     } else {
                         broadcastTelemetry(TelemetryEvent.Type.LOG_ERROR, "Unable to initialize platform node " + getNodeName(), null);
                         Log.error("Unable to initialize platform node " + getNodeName());
@@ -354,8 +353,8 @@ public class KevoreeCoreBean implements ContextAwareModelService, PlatformServic
                 }
                 if (deployResult) {
                     switchToNewModel(proposedNewModel);
-                    broadcastTelemetry(TelemetryEvent.Type.PLATFORM_UPDATE_SUCCESS, "Update successfully completed.", null);
-                    Log.info("Update successfully completed.");
+                    broadcastTelemetry(TelemetryEvent.Type.PLATFORM_UPDATE_SUCCESS, "Update successfully completed", null);
+                    Log.info("Update successfully completed");
                 } else {
                     //KEEP FAIL MODEL, TODO
                     //Log.warn("Update failed")
@@ -379,8 +378,8 @@ public class KevoreeCoreBean implements ContextAwareModelService, PlatformServic
                 return false;
             }
         } catch (Throwable e) {
-            broadcastTelemetry(TelemetryEvent.Type.LOG_ERROR, "Error while updating.", e);
-            //Log.error("Error while update", e)
+            broadcastTelemetry(TelemetryEvent.Type.LOG_ERROR, "Error while updating", e);
+            Log.error("Error while update", e);
             return false;
         }
     }
@@ -388,12 +387,12 @@ public class KevoreeCoreBean implements ContextAwareModelService, PlatformServic
     private Object bootstrapNodeType(ContainerRoot model, String nodeName) {
         ContainerNode nodeInstance = model.findNodesByID(nodeName);
         if (nodeInstance != null) {
-            FlexyClassLoader kcl = bootstrapService.installTypeDefinition(nodeInstance.getTypeDefinition());
+            FlexyClassLoader kcl = bootstrapService.installTypeDefinition(nodeInstance);
             Object newInstance = bootstrapService.createInstance(nodeInstance, kcl);
             bootstrapService.injectDictionary(nodeInstance, newInstance, false);
             return newInstance;
         } else {
-//            broadcastTelemetry(TelemetryEvent.Type.LOG_ERROR, "Node not found using name " + nodeName, null);
+            broadcastTelemetry(TelemetryEvent.Type.LOG_ERROR, "Node not found using name " + nodeName, null);
             Log.error("Unable to find a node named \"" + nodeName + "\" in model");
             return null;
         }
@@ -402,6 +401,7 @@ public class KevoreeCoreBean implements ContextAwareModelService, PlatformServic
     private void checkBootstrapNode(ContainerRoot currentModel) {
         try {
             if (nodeInstance == null) {
+                Log.debug("Bootstrapping platform node \"{}\"", getNodeName());
             	nodeInstance = (NodeType) bootstrapNodeType(currentModel, getNodeName());
                 if (nodeInstance != null) {
                     resolver = new MethodAnnotationResolver(nodeInstance.getClass());
@@ -422,7 +422,7 @@ public class KevoreeCoreBean implements ContextAwareModelService, PlatformServic
                 }
             }
         } catch (Throwable e) {
-//            broadcastTelemetry(TelemetryEvent.Type.LOG_ERROR, "Error while bootstraping node instance", e);
+            broadcastTelemetry(TelemetryEvent.Type.LOG_ERROR, "Error while bootstrapping node instance " + getNodeName(), e);
         	Log.error("Error while bootstrapping node instance " + getNodeName(), e);
             if (nodeInstance != null) {
                 Method met = resolver.resolve(org.kevoree.annotation.Stop.class);
@@ -483,11 +483,11 @@ public class KevoreeCoreBean implements ContextAwareModelService, PlatformServic
             scheduler = null;
         }
         if (nodeInstance != null) {
-            try {
-                ContainerRoot modelCurrent = model.get().getModel();
-                ContainerRoot stopModel = kevoreeFactory.createModelCloner().clone(modelCurrent);
-                ContainerNode currentNode = stopModel.findNodesByID(getNodeName());
-                for (ContainerNode childNode : currentNode.getHosts()) {
+        	ContainerRoot modelCurrent = model.get().getModel();
+            ContainerRoot stopModel = kevoreeFactory.createModelCloner().clone(modelCurrent);
+            ContainerNode currentNode = stopModel.findNodesByID(getNodeName());
+            if (currentNode != null) {
+            	for (ContainerNode childNode : currentNode.getHosts()) {
                     childNode.setStarted(false);
                 }
                 //TEST only stop local
@@ -508,16 +508,15 @@ public class KevoreeCoreBean implements ContextAwareModelService, PlatformServic
                         return true;
                     }
                 };
-                ContainerNode rootNode = (ContainerNode) modelCurrent.findByPath("nodes[" + getNodeName() + "]");
-                if (rootNode != null) {
-                    PrimitiveCommandExecutionHelper.instance$.execute(this, rootNode, adaptationModel, nodeInstance, afterUpdateTest, afterUpdateTest, afterUpdateTest);
-                } else {
-                    broadcastTelemetry(TelemetryEvent.Type.LOG_ERROR, "Node is not defined into the model so unbootstrap cannot be correctly done", null);
+                try {
+                	PrimitiveCommandExecutionHelper.execute(this, currentNode, adaptationModel, nodeInstance, afterUpdateTest, afterUpdateTest, afterUpdateTest);
+                } catch (Exception e) {
+                	Log.error("Error while stopping platform", e);
                 }
-            } catch (Exception e) {
-                broadcastTelemetry(TelemetryEvent.Type.LOG_ERROR, "Error while unbootstrap", e);
-                //Log.error("Error while unbootstrap", e)
+            } else {
+            	Log.error("Unable to find node platform \""+getNodeName()+"\" in current model. Cannot correctly stop platform");
             }
+
             try {
                 Log.trace("Call instance stop");
                 if (nodeInstance != null) {

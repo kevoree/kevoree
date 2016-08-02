@@ -6,7 +6,7 @@ import org.hyperic.sigar.Cpu;
 import org.hyperic.sigar.Mem;
 import org.hyperic.sigar.Sigar;
 import org.hyperic.sigar.SigarException;
-import org.kevoree.core.impl.TelemetryEventImpl;
+import org.kevoree.core.TelemetryEventImpl;
 import org.kevoree.log.Log;
 
 import java.util.concurrent.Executors;

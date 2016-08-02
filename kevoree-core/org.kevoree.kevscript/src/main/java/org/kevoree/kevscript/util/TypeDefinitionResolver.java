@@ -1,7 +1,5 @@
 package org.kevoree.kevscript.util;
 
-import java.util.ArrayList;
-
 import org.jetbrains.annotations.NotNull;
 import org.kevoree.ContainerRoot;
 import org.kevoree.TypeDefinition;
@@ -12,7 +10,7 @@ import org.kevoree.pmodeling.api.KMFContainer;
 import org.kevoree.pmodeling.api.util.ModelVisitor;
 import org.waxeye.ast.IAST;
 
-import jet.runtime.typeinfo.JetValueParameter;
+import java.util.ArrayList;
 
 /**
  * Created with IntelliJ IDEA. User: duke Date: 25/11/2013 Time: 16:04

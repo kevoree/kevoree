@@ -1,25 +1,28 @@
 package org.kevoree.bootstrap;
 
-import org.kevoree.*;
+import org.kevoree.ContainerNode;
+import org.kevoree.ContainerRoot;
+import org.kevoree.NetworkInfo;
+import org.kevoree.Value;
+import org.kevoree.annotation.KevoreeInject;
 import org.kevoree.api.BootstrapService;
 import org.kevoree.api.KevScriptService;
 import org.kevoree.api.handler.UpdateCallback;
 import org.kevoree.api.telemetry.TelemetryEvent;
 import org.kevoree.api.telemetry.TelemetryListener;
 import org.kevoree.bootstrap.kernel.KevoreeCLKernel;
-import org.kevoree.bootstrap.reflect.KevoreeInjector;
-import org.kevoree.core.impl.KevoreeCoreBean;
+import org.kevoree.bootstrap.reflect.Injector;
+import org.kevoree.core.KevoreeCoreBean;
 import org.kevoree.kevscript.KevScriptEngine;
 import org.kevoree.log.Log;
 import org.kevoree.microkernel.KevoreeKernel;
-import org.kevoree.pmodeling.api.KMFContainer;
 import org.kevoree.pmodeling.api.compare.ModelCompare;
 import org.kevoree.pmodeling.api.json.JSONModelLoader;
-import org.kevoree.pmodeling.api.util.ModelVisitor;
-import org.kevoree.pmodeling.api.xmi.XMIModelLoader;
 
-import java.io.*;
-import java.nio.file.Paths;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.util.Collections;
@@ -39,24 +42,61 @@ import java.util.regex.Pattern;
 public class Bootstrap {
 
     private static final String CHARS = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    public static final String defaultNodeName = "node0";
 
     private KevoreeKernel microKernel;
-
     private KevoreeCoreBean core;
-
-    private KevoreeCLKernel kernel;
-
-    private KevoreeInjector injector;
-
     private KevScriptEngine kevScriptEngine;
-
-    private XMIModelLoader xmiLoader;
-
     private JSONModelLoader jsonLoader;
-    
     private int exitId;
-
     private static HashMap<String, String> ctxVars = new HashMap<String, String>();
+    private TelemetryListener telemetryListener;
+
+    public Bootstrap(KevoreeKernel k, String nodeName) {
+        //First initiate Security Manager to ensure that no Kill can be called on the JVM
+        this.exitId = new AtomicInteger().incrementAndGet();
+        System.setSecurityManager(new KevoreeSecurityManager(this.exitId));
+        //Init all subObjects
+        this.microKernel = k;
+
+        // init log level
+        String log = System.getProperty("log.level");
+        if ("DEBUG".equalsIgnoreCase(log)) {
+            Log.set(Log.LEVEL_DEBUG);
+        } else if ("WARN".equalsIgnoreCase(log)) {
+            Log.set(Log.LEVEL_WARN);
+        } else if ("INFO".equalsIgnoreCase(log)) {
+            Log.set(Log.LEVEL_INFO);
+        } else if ("ERROR".equalsIgnoreCase(log)) {
+            Log.set(Log.LEVEL_ERROR);
+        } else if ("TRACE".equalsIgnoreCase(log)) {
+            Log.set(Log.LEVEL_TRACE);
+        } else if ("NONE".equalsIgnoreCase(log)) {
+            Log.set(Log.LEVEL_NONE);
+        } else {
+            log = "INFO";
+            Log.set(Log.LEVEL_INFO);
+        }
+        Log.info("Log level= {}", log);
+
+        Injector injector = new Injector(KevoreeInject.class);
+        KevoreeCLKernel kernel = new KevoreeCLKernel(this, injector);
+        kevScriptEngine = new KevScriptEngine();
+        core = new KevoreeCoreBean(kevScriptEngine);
+
+        jsonLoader = core.getFactory().createJSONLoader();
+
+        // cross links
+        core.setNodeName(nodeName);
+        kernel.setNodeName(nodeName);
+        kernel.setCore(core);
+        injector.register(BootstrapService.class, kernel);
+        injector.register(KevScriptService.class, kevScriptEngine);
+        core.setBootstrapService(kernel);
+        Log.info("Starting Kevoree using version: {}", core.getFactory().getVersion());
+        Log.info("Platform node name: {}", nodeName);
+        core.start();
+    }
 
     public KevoreeCoreBean getCore() {
         return core;
@@ -66,7 +106,9 @@ public class Bootstrap {
         return microKernel;
     }
 
-    public static final String defaultNodeName = "node0";
+    public KevScriptEngine getKevScriptEngine() {
+        return kevScriptEngine;
+    }
 
     public static void main(String[] args) throws Exception {
         final ClassLoader loader = Thread.currentThread().getContextClassLoader();
@@ -88,6 +130,7 @@ public class Bootstrap {
         Runtime.getRuntime().addShutdownHook(new Thread("Shutdown Hook") {
             public void run() {
                 try {
+                    System.out.println();
                     Thread.currentThread().setContextClassLoader(loader);
                     Log.info("Stopping Kevoree");
                     boot.stop();
@@ -97,25 +140,6 @@ public class Bootstrap {
                 }
             }
         });
-        
-    	String log = System.getProperty("log.level");
-        if ("DEBUG".equalsIgnoreCase(log)) {
-            Log.set(Log.LEVEL_DEBUG);
-        } else if ("WARN".equalsIgnoreCase(log)) {
-            Log.set(Log.LEVEL_WARN);
-        } else if ("INFO".equalsIgnoreCase(log)) {
-            Log.set(Log.LEVEL_INFO);
-        } else if ("ERROR".equalsIgnoreCase(log)) {
-            Log.set(Log.LEVEL_ERROR);
-        } else if ("TRACE".equalsIgnoreCase(log)) {
-            Log.set(Log.LEVEL_TRACE);
-        } else if ("NONE".equalsIgnoreCase(log)) {
-            Log.set(Log.LEVEL_NONE);
-        } else {
-        	log = "INFO";
-        	Log.set(Log.LEVEL_INFO);
-        }
-        Log.info("Log level= {}", log);
         
         String bootstrapModel = System.getProperty("node.bootstrap");
         try {
@@ -139,35 +163,6 @@ public class Bootstrap {
             e.printStackTrace();
         }
     }
-
-    public Bootstrap(KevoreeKernel k, String nodeName) {
-        //First initiate Security Manager to ensure that no Kill can be called on the JVM
-    	this.exitId = new AtomicInteger().incrementAndGet();
-        System.setSecurityManager(new KevoreeSecurityManager(this.exitId));
-        //Init all subObjects
-        this.microKernel = k;
-        core = new KevoreeCoreBean();
-
-        kernel = new KevoreeCLKernel(this);
-        injector = new KevoreeInjector();
-        kevScriptEngine = new KevScriptEngine();
-        xmiLoader = core.getFactory().createXMILoader();
-        jsonLoader = core.getFactory().createJSONLoader();
-
-        //Cross links
-        core.setNodeName(nodeName);
-        kernel.setNodeName(nodeName);
-        kernel.setCore(core);
-        injector.addService(BootstrapService.class, kernel);
-        injector.addService(KevScriptService.class, kevScriptEngine);
-        kernel.setInjector(injector);
-        core.setBootstrapService(kernel);
-        Log.info("Starting Kevoree using version: {}", core.getFactory().getVersion());
-        Log.info("Platform node name: {}", nodeName);
-        core.start();
-    }
-
-    private TelemetryListener telemetryListener;
 
     protected void registerTelemetryToLogListener() {
         if (telemetryListener == null) {
@@ -226,26 +221,8 @@ public class Bootstrap {
 		});
     }
 
-    public ContainerRoot initialModel() {
-        if (System.getProperty("dev.target.dirs") != null) {
-            ContainerRoot emptyModel = null;
-            try {
-                emptyModel = bootstrapFromClassPath();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            emptyModel.deepVisitContained(new ModelVisitor() {
-                @Override
-                public void visit(KMFContainer kmfContainer, String s, KMFContainer kmfContainer2) {
-                    if (kmfContainer instanceof DeployUnit) {
-                        kevScriptEngine.addIgnoreIncludeDeployUnit((DeployUnit) kmfContainer);
-                    }
-                }
-            });
-            return emptyModel;
-        } else {
-            return core.getKevoreeFactory().createContainerRoot();
-        }
+    private ContainerRoot initialModel() {
+        return core.getKevoreeFactory().createContainerRoot();
     }
 
 
@@ -306,78 +283,6 @@ public class Bootstrap {
 
     public void bootstrapFromKevScript(InputStream input) throws Exception {
     	this.bootstrapFromKevScript(input, null);
-    }
-
-    public ContainerRoot bootstrapFromClassPath() {
-        String classpath = System.getProperty("dev.target.dirs");
-        if (classpath != null && !classpath.equals("")) {
-            ContainerRoot result = null;
-            JSONModelLoader loader = core.getFactory().createJSONLoader();
-            ModelCompare compare = core.getFactory().createModelCompare();
-            String[] paths = classpath.split(File.pathSeparator);
-            for (String path : paths) {
-                File pathP = new File(path + File.separator + "KEV-INF" + File.separator + "kevlib.json");
-                if (pathP.exists()) {
-                    Log.info("Merge bootstrap model from {}", Paths.get(System.getProperty("user.dir")).relativize(Paths.get(pathP.getAbsolutePath())));
-                    if (result == null) {
-                        FileInputStream ins = null;
-                        try {
-                            ins = new FileInputStream(pathP);
-                            Object res = loader.loadModelFromStream(ins).get(0);
-                            result = (ContainerRoot) res;
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            //noop
-                        } finally {
-                            if (ins != null) {
-                                try {
-                                    ins.close();
-                                } catch (IOException e) {
-                                }
-                            }
-                        }
-                    } else {
-                        FileInputStream ins = null;
-                        try {
-                            ins = new FileInputStream(pathP);
-                            ContainerRoot addModel = (ContainerRoot) loader.loadModelFromStream(ins).get(0);
-                            compare.merge(result, addModel).applyOn(result);
-                        } catch (Exception e) {
-                            //noop
-                        } finally {
-                            if (ins != null) {
-                                try {
-                                    ins.close();
-                                } catch (IOException e) {
-                                }
-                            }
-                        }
-                    }
-                    File pathMeta = new File(path + File.separator + "KEV-INF" + File.separator + "dev.meta");
-                    if (pathMeta.exists()) {
-                        try {
-                            BufferedReader reader = new BufferedReader(new FileReader(pathMeta));
-                            String metaName = reader.readLine();
-                            if (metaName != null && metaName.startsWith("mvn:")) {
-                                metaName = metaName.trim();
-                                Log.info("Manually install " + path + " for " + metaName);
-                                microKernel.install(metaName, "file:" + path);
-                            }
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                } else {
-                    Log.warn("Unable to find a model in {}", pathP.getAbsolutePath());
-                }
-            }
-            if (result != null) {
-                return result;
-            } else {
-                return core.getFactory().createContainerRoot();
-            }
-        }
-        return core.getFactory().createContainerRoot();
     }
 
     public void bootstrapFromFile(File input, UpdateCallback callback) throws Exception {

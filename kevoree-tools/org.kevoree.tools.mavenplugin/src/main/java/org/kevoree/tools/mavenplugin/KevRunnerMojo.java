@@ -5,13 +5,23 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.kevoree.ContainerRoot;
+import org.kevoree.bootstrap.Bootstrap;
 import org.kevoree.factory.DefaultKevoreeFactory;
-import org.kevoree.kcl.api.FlexyClassLoader;
+import org.kevoree.factory.KevoreeFactory;
+import org.kevoree.kevscript.KevScriptEngine;
+import org.kevoree.log.Log;
 import org.kevoree.microkernel.KevoreeKernel;
 import org.kevoree.microkernel.impl.KevoreeMicroKernelImpl;
+import org.kevoree.pmodeling.api.ModelLoader;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.HashMap;
 
 /**
  * Created with IntelliJ IDEA.
@@ -23,20 +33,22 @@ import java.nio.file.Paths;
 public class KevRunnerMojo extends KevGenerateMojo {
 
 	@Parameter(defaultValue = "http://registry.kevoree.org/", required = true)
-	private String registry;
+	private String registry = null;
 	
     @Parameter(defaultValue = "${project.basedir}/src/main/kevs/main.kevs")
-    private File kevscript;
+    private File kevscript = null;
 
     @Parameter(defaultValue = "node0")
-    private String nodeName;
+    private String nodeName = null;
+
+    @Parameter()
+    private HashMap<String, String> ctxVars = new HashMap<>();
 
     @Parameter
     private File[] mergeLocalLibraries;
     
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
-        //first execute parent mojo
         super.execute();
         try {
             if (System.getProperty("dev.target.dirs") == null) {
@@ -72,24 +84,47 @@ public class KevRunnerMojo extends KevGenerateMojo {
                 System.setProperty("version", new DefaultKevoreeFactory().getVersion());
             }
             if (System.getProperty("kevoree.registry") == null) {
-            	System.setProperty("kevoree.registry", registry);
+                System.setProperty("kevoree.registry", registry);
             }
 
             KevoreeKernel kernel = new KevoreeMicroKernelImpl();
-            //TODO ensure compilation
-            String key = "mvn:" + project.getArtifact().getGroupId() + ":" + project.getArtifact().getArtifactId() + ":" + project.getArtifact().getBaseVersion();
-            String fileKey = "file:" + modelOutputDirectory.getAbsolutePath();
-            if (new File(fileKey.substring(5)).exists()) {
-                getLog().info("Install local DeployUnit " + key + " using classes in " + Paths.get(project.getBasedir().getAbsolutePath()).relativize(Paths.get(modelOutputDirectory.getPath())));
-            }
+            String script = new String(Files.readAllBytes(kevscript.toPath()));
 
-            kernel.install(key, "file:" + modelOutputDirectory.getAbsolutePath());
-            String bootJar = "mvn:org.kevoree:org.kevoree.bootstrap:" + System.getProperty("version");
-            FlexyClassLoader kcl = kernel.install(bootJar, bootJar);
-            kernel.boot(kcl.getResourceAsStream("KEV-INF/bootinfo"));
+            KevoreeFactory factory = new DefaultKevoreeFactory();
+            ModelLoader loader = factory.createJSONLoader();
+            InputStream inStream = new FileInputStream(
+                    new File(Paths.get(modelOutputDirectory.getAbsolutePath(), "KEV-INF", "kevlib.json").toString()));
+
+            ContainerRoot ctxModel = (ContainerRoot) loader.loadModelFromStream(inStream).get(0);
+
+            final Bootstrap boot = new Bootstrap(kernel, nodeName);
+            final ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+            Runtime.getRuntime().addShutdownHook(new Thread("Shutdown Hook") {
+                public void run() {
+                    System.out.println();
+                    try {
+                        Thread.currentThread().setContextClassLoader(classLoader);
+                        Log.info("Stopping Kevoree");
+                        boot.stop();
+                        Log.info("Stopped.");
+                    } catch (Throwable ex) {
+                        System.out.println("Error stopping kevoree platform: " + ex.getMessage());
+                    }
+                }
+            });
+
+            KevScriptEngine kevs = boot.getKevScriptEngine();
+
+            kevs.execute(script, ctxModel, ctxVars);
+
+            boot.bootstrap(ctxModel);
             Thread.currentThread().join();
+        } catch (IOException e) {
+            throw new MojoExecutionException("Unable to read KevScript file at " + kevscript.toPath(), e);
+        } catch (InterruptedException e) {
+            throw new MojoExecutionException("Unable to join() current thread", e);
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new MojoExecutionException("Something went wrong", e);
         }
     }
 }

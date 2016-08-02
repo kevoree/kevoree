@@ -3,7 +3,7 @@ package org.kevoree.bootstrap.telemetry;
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import org.kevoree.api.telemetry.TelemetryEvent;
-import org.kevoree.core.impl.TelemetryEventImpl;
+import org.kevoree.core.TelemetryEventImpl;
 
 import java.lang.management.*;
 import java.util.Map;

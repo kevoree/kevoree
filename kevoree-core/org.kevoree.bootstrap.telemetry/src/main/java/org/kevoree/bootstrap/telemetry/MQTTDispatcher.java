@@ -5,7 +5,7 @@ import org.fusesource.hawtbuf.UTF8Buffer;
 import org.fusesource.mqtt.client.*;
 import org.kevoree.api.telemetry.TelemetryEvent;
 import org.kevoree.api.telemetry.TelemetryListener;
-import org.kevoree.core.impl.TelemetryEventImpl;
+import org.kevoree.core.TelemetryEventImpl;
 import org.kevoree.log.Log;
 
 import java.net.URISyntaxException;

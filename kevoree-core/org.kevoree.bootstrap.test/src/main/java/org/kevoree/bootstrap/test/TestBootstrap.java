@@ -2,7 +2,7 @@ package org.kevoree.bootstrap.test;
 
 import org.kevoree.api.handler.UpdateCallback;
 import org.kevoree.bootstrap.Bootstrap;
-import org.kevoree.core.impl.KevoreeCoreBean;
+import org.kevoree.core.KevoreeCoreBean;
 import org.kevoree.log.Log;
 import org.kevoree.microkernel.KevoreeKernel;
 

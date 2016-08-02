@@ -1,4 +1,4 @@
-package org.kevoree.core.impl;
+package org.kevoree.core;
 
 import org.kevoree.ContainerRoot;
 import org.kevoree.api.ModelService;

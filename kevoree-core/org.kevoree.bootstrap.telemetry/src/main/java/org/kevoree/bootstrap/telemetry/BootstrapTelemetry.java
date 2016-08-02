@@ -2,7 +2,7 @@ package org.kevoree.bootstrap.telemetry;
 
 import org.kevoree.api.telemetry.TelemetryEvent;
 import org.kevoree.bootstrap.Bootstrap;
-import org.kevoree.core.impl.TelemetryEventImpl;
+import org.kevoree.core.TelemetryEventImpl;
 import org.kevoree.log.Log;
 import org.kevoree.microkernel.KevoreeKernel;
 
