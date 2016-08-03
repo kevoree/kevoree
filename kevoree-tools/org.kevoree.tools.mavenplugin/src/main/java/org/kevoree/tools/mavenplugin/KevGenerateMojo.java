@@ -13,19 +13,16 @@
  */
 package org.kevoree.tools.mavenplugin;
 
-import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.repository.ArtifactRepository;
-import org.apache.maven.artifact.resolver.filter.ArtifactFilter;
-import org.apache.maven.artifact.resolver.filter.ScopeArtifactFilter;
 import org.apache.maven.model.Repository;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.plugins.annotations.*;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
-import org.apache.maven.shared.dependency.tree.DependencyNode;
-import org.apache.maven.shared.dependency.tree.DependencyTreeBuilder;
-import org.apache.maven.shared.dependency.tree.DependencyTreeBuilderException;
 import org.kevoree.ContainerRoot;
 import org.kevoree.DeployUnit;
 import org.kevoree.Value;
@@ -46,9 +43,6 @@ import java.util.jar.JarFile;
 
 @Mojo(name = "generate", defaultPhase = LifecyclePhase.PREPARE_PACKAGE, requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME)
 public class KevGenerateMojo extends AbstractMojo {
-
-	@Component
-	private DependencyTreeBuilder dependencyTreeBuilder = null;
 
 	@Parameter(required = true, readonly = true, defaultValue = "${project}")
 	public MavenProject project;
@@ -71,17 +65,8 @@ public class KevGenerateMojo extends AbstractMojo {
 			final ContainerRoot model = factory.createContainerRoot();
 			factory.root(model);
 
-			DeployUnit deployUnit = null;
 			final HashMap<String, Set<String>> collectedClasses = new HashMap<String, Set<String>>();
-
-			try {
-				final ArtifactFilter artifactFilter = new ScopeArtifactFilter(Artifact.SCOPE_COMPILE);
-				DependencyNode graph = dependencyTreeBuilder.buildDependencyTree(project, localRepository, artifactFilter);
-
-				deployUnit = processModel(model, graph, collectedClasses);
-			} catch (DependencyTreeBuilderException e) {
-				getLog().error(e);
-			}
+            DeployUnit deployUnit = processModel(model, collectedClasses);
 
 			try {
 				annotations2Model.fillModel(modelOutputDirectory, model, deployUnit,
@@ -94,14 +79,14 @@ public class KevGenerateMojo extends AbstractMojo {
 		}
 	}
 	
-	private DeployUnit processModel(ContainerRoot model, DependencyNode root, Map<String, Set<String>> collectedClasses) {
+	private DeployUnit processModel(ContainerRoot model, Map<String, Set<String>> collectedClasses) {
 		model.setGenerated_KMF_ID("0");
 
         DeployUnit du = factory.createDeployUnit();
-        du.setName(root.getArtifact().getArtifactId());
+        du.setName(project.getArtifact().getArtifactId());
         String hashcode = ModelBuilderHelper.createKey(namespace, project.getArtifactId(), project.getVersion(), null);
         du.setHashcode(hashcode);
-        du.setVersion(root.getArtifact().getBaseVersion());
+        du.setVersion(project.getArtifact().getBaseVersion());
 
         Value platform = factory.createValue();
         platform.setName("platform");
@@ -118,14 +103,14 @@ public class KevGenerateMojo extends AbstractMojo {
 
         org.kevoree.Package pack = KModelHelper.fqnCreate(namespace, model, factory);
         if (pack == null) {
-            getLog().info("Package " + root.getArtifact().getGroupId() + " " + pack);
+            getLog().info("Package " + project.getArtifact().getGroupId() + " " + pack);
         } else {
             pack.addDeployUnits(du);
         }
-        du.setUrl(root.getArtifact().getGroupId() + ":" + du.getName() + ":jar:" + du.getVersion());
+        du.setUrl(project.getArtifact().getGroupId() + ":" + du.getName() + ":jar:" + du.getVersion());
 
         try {
-            File f2 = localRepository.find(root.getArtifact()).getFile();
+            File f2 = localRepository.find(project.getArtifact()).getFile();
             if (f2 != null && f2.getAbsolutePath().endsWith(".jar")) {
                 JarFile file = new JarFile(f2);
                 Enumeration<JarEntry> entries = file.entries();
@@ -137,8 +122,8 @@ public class KevGenerateMojo extends AbstractMojo {
                         sources = new HashSet<String>();
                         collectedClasses.put(entry.getName(), sources);
                     }
-                    sources.add(root.getArtifact().getGroupId() + ":" + root.getArtifact().getArtifactId() + ":"
-                            + root.getArtifact().getVersion() + ":" + root.getArtifact().getType());
+                    sources.add(project.getArtifact().getGroupId() + ":" + project.getArtifact().getArtifactId() + ":"
+                            + project.getArtifact().getVersion() + ":" + project.getArtifact().getType());
                 }
                 file.close();
             }
