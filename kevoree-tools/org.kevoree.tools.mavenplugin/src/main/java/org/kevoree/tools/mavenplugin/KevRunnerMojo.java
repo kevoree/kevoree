@@ -99,24 +99,6 @@ public class KevRunnerMojo extends KevGenerateMojo {
                     KevoreeKernel kernel = new KevoreeMicroKernelImpl();
                     String bootJar = "mvn:org.kevoree:org.kevoree.bootstrap:" + System.getProperty("kevoree.version");
                     FlexyClassLoader kcl = kernel.install(bootJar, bootJar);
-            final ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-            Runtime.getRuntime().addShutdownHook(new Thread("Shutdown Hook") {
-                public void run() {
-                    System.out.println();
-                    try {
-                        Thread.currentThread().setContextClassLoader(classLoader);
-                        Log.info("Stopping Kevoree");
-                        boot.stop();
-                        Log.info("Stopped.");
-                    } catch (Throwable ex) {
-                        System.out.println("Error stopping kevoree platform: " + ex.getMessage());
-                    }
-                }
-            });
-
-            KevScriptEngine kevs = boot.getKevScriptEngine();
-
-            kevs.execute(script, ctxModel, ctxVars);
 
                     if (System.getProperty("node.bootstrap") == null) {
                         System.setProperty("node.bootstrap", ctxModelFile.getAbsolutePath());

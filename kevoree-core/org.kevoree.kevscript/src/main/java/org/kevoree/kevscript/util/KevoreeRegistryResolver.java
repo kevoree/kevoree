@@ -10,6 +10,7 @@ import org.kevoree.log.Log;
 import org.kevoree.pmodeling.api.KMFContainer;
 import org.kevoree.pmodeling.api.ModelLoader;
 import org.kevoree.pmodeling.api.compare.ModelCompare;
+import org.kevoree.pmodeling.api.trace.TraceSequence;
 import org.kevoree.registry.api.RegistryRestClient;
 import org.kevoree.registry.api.model.TypeDef;
 
@@ -56,7 +57,8 @@ public class KevoreeRegistryResolver {
 			if (regDus != null && !regDus.isEmpty()) {
 				for (final org.kevoree.registry.api.model.DeployUnit regDu : regDus) {
 					final ContainerRoot duModel = (ContainerRoot) loader.loadModelFromString(regDu.getModel()).get(0);
-					compare.merge(tmpModel, duModel).applyOn(model);
+					final TraceSequence merge = compare.merge(tmpModel, duModel);
+					merge.applyOn(model);
 					final String path = pkg.path() + "/deployUnits[name=" + regDu.getName() + ",version="
 							+ regDu.getVersion() + "]";
 					for (final KMFContainer elem : model.select(path)) {
