@@ -102,16 +102,27 @@ public class KevoreeCLKernel implements BootstrapService {
                             .asSingleFile();
 
                     if (depJar != null && depJar.exists()) {
-                        depCl = bs.getKernel().put(key, depJar);
-                        parentCl.attachChild(depCl);
+                        if (dep.getScope().equals(ScopeType.RUNTIME)) {
+                            try {
+                                parentCl.load(depJar);
+                            } catch (IOException e) {
+                                Log.error("Unable to load jar {} in class loader {}", depJar.getAbsolutePath(), parentCl.getKey());
+                            }
+                        } else {
+                            depCl = bs.getKernel().put(key, depJar);
+                            parentCl.attachChild(depCl);
+                        }
                         installDependencies(resolver, depCl, dep, depth+1);
                         Log.debug("{} + {} ({}ms)", indent, key, (System.currentTimeMillis() - before));
                     } else {
                         Log.error("{} Unable to resolve {}", indent, key);
                     }
                 } else {
-                    parentCl.attachChild(depCl);
-                    Log.debug("{} = {} already installed", indent, key, (System.currentTimeMillis() - before));
+                    if (!dep.getScope().equals(ScopeType.RUNTIME)) {
+//                        ((FlexyClassLoader) parentCl.getParent()).attachChild(depCl);
+                        parentCl.attachChild(depCl);
+                        Log.debug("{} = {} already installed", indent, key, (System.currentTimeMillis() - before));
+                    }
                 }
             }
         }
