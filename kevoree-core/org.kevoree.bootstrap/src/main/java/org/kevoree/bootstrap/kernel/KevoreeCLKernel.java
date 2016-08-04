@@ -121,7 +121,7 @@ public class KevoreeCLKernel implements BootstrapService {
                     if (!dep.getScope().equals(ScopeType.RUNTIME)) {
 //                        ((FlexyClassLoader) parentCl.getParent()).attachChild(depCl);
                         parentCl.attachChild(depCl);
-                        Log.debug("{} = {} already installed", indent, key, (System.currentTimeMillis() - before));
+                        Log.debug("{} = {} already loaded", indent, key, (System.currentTimeMillis() - before));
                     }
                 }
             }
