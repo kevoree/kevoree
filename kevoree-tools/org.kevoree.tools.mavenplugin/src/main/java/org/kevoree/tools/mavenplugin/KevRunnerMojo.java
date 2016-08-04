@@ -6,19 +6,15 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.kevoree.ContainerRoot;
-import org.kevoree.bootstrap.Bootstrap;
 import org.kevoree.factory.DefaultKevoreeFactory;
 import org.kevoree.factory.KevoreeFactory;
+import org.kevoree.kcl.api.FlexyClassLoader;
 import org.kevoree.kevscript.KevScriptEngine;
-import org.kevoree.log.Log;
 import org.kevoree.microkernel.KevoreeKernel;
 import org.kevoree.microkernel.impl.KevoreeMicroKernelImpl;
 import org.kevoree.pmodeling.api.ModelLoader;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashMap;
@@ -74,55 +70,51 @@ public class KevRunnerMojo extends KevGenerateMojo {
                 System.setProperty("dev.target.dirs", pathsToMerge.toString());
             }
 
+            KevoreeFactory factory = new DefaultKevoreeFactory();
+
             if (System.getProperty("node.name") == null) {
                 System.setProperty("node.name", nodeName);
             }
-            if (System.getProperty("node.bootstrap") == null) {
-                System.setProperty("node.bootstrap", kevscript.getAbsolutePath());
-            }
-            if (System.getProperty("version") == null) {
-                System.setProperty("version", new DefaultKevoreeFactory().getVersion());
+            if (System.getProperty("kevoree.version") == null) {
+                System.setProperty("kevoree.version", factory.getVersion());
             }
             if (System.getProperty("kevoree.registry") == null) {
                 System.setProperty("kevoree.registry", registry);
             }
 
-            KevoreeKernel kernel = new KevoreeMicroKernelImpl();
             String script = new String(Files.readAllBytes(kevscript.toPath()));
 
-            KevoreeFactory factory = new DefaultKevoreeFactory();
             ModelLoader loader = factory.createJSONLoader();
             InputStream inStream = new FileInputStream(
                     new File(Paths.get(modelOutputDirectory.getAbsolutePath(), "KEV-INF", "kevlib.json").toString()));
 
             ContainerRoot ctxModel = (ContainerRoot) loader.loadModelFromStream(inStream).get(0);
 
-            final Bootstrap boot = new Bootstrap(kernel, nodeName);
-            final ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-            Runtime.getRuntime().addShutdownHook(new Thread("Shutdown Hook") {
-                public void run() {
-                    System.out.println();
-                    try {
-                        Thread.currentThread().setContextClassLoader(classLoader);
-                        Log.info("Stopping Kevoree");
-                        boot.stop();
-                        Log.info("Stopped.");
-                    } catch (Throwable ex) {
-                        System.out.println("Error stopping kevoree platform: " + ex.getMessage());
+            try {
+                KevScriptEngine kevs = new KevScriptEngine();
+                kevs.execute(script, ctxModel, ctxVars);
+                File ctxModelFile = Paths.get(modelOutputDirectory.getAbsolutePath(), "KEV-INF", "ctxModel.json").toFile();
+                try {
+                    factory.createJSONSerializer().serializeToStream(ctxModel, new FileOutputStream(ctxModelFile));
+                    KevoreeKernel kernel = new KevoreeMicroKernelImpl();
+                    String bootJar = "mvn:org.kevoree:org.kevoree.bootstrap:" + System.getProperty("kevoree.version");
+                    FlexyClassLoader kcl = kernel.install(bootJar, bootJar);
+
+                    if (System.getProperty("node.bootstrap") == null) {
+                        System.setProperty("node.bootstrap", ctxModelFile.getAbsolutePath());
                     }
+
+                    kernel.boot(kcl.getResourceAsStream("KEV-INF/bootinfo"));
+                    Thread.currentThread().join();
+                } catch (IOException e) {
+                    throw new MojoExecutionException("Unable to write context model to " + ctxModelFile.getAbsolutePath());
                 }
-            });
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
-            KevScriptEngine kevs = boot.getKevScriptEngine();
-
-            kevs.execute(script, ctxModel, ctxVars);
-
-            boot.bootstrap(ctxModel);
-            Thread.currentThread().join();
         } catch (IOException e) {
             throw new MojoExecutionException("Unable to read KevScript file at " + kevscript.toPath(), e);
-        } catch (InterruptedException e) {
-            throw new MojoExecutionException("Unable to join() current thread", e);
         } catch (Exception e) {
             throw new MojoExecutionException("Something went wrong", e);
         }
