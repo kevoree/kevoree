@@ -26,6 +26,7 @@ public class KevoreeRegistryResolver {
 
 	public KevoreeRegistryResolver(final String registryUrl) {
 		this.registryUrl = registryUrl;
+		Log.info("Registry {}", this.registryUrl);
 	}
 
 	private TypeDefinition processRegistryTypeDef(final TypeFQN fqn, final TypeDef regTdef, final ContainerRoot model,
