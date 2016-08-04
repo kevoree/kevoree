@@ -34,6 +34,7 @@ public class KevoreeRegistryResolver {
 		final ModelCompare compare = factory.createModelCompare();
 		final ContainerRoot tmpModel = factory.createContainerRoot();
 		factory.root(tmpModel);
+		tmpModel.setGenerated_KMF_ID("0");
 
 		if (regTdef != null) {
 			fqn.version = VersionDef.version(Long.parseLong(regTdef.getVersion()), fqn.version.isDURelease);
@@ -55,7 +56,6 @@ public class KevoreeRegistryResolver {
 			if (regDus != null && !regDus.isEmpty()) {
 				for (final org.kevoree.registry.api.model.DeployUnit regDu : regDus) {
 					final ContainerRoot duModel = (ContainerRoot) loader.loadModelFromString(regDu.getModel()).get(0);
-					factory.root(duModel);
 					compare.merge(tmpModel, duModel).applyOn(model);
 					final String path = pkg.path() + "/deployUnits[name=" + regDu.getName() + ",version="
 							+ regDu.getVersion() + "]";

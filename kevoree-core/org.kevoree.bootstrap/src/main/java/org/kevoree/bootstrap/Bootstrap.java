@@ -122,7 +122,8 @@ public class Bootstrap {
             nodeName = shortId();
             ctxVars.put(m.group(3), nodeName);
         }
-        final Bootstrap boot = new Bootstrap(KevoreeKernel.self.get(), nodeName, "http://registry.kevoree.org/");
+        
+        final Bootstrap boot = new Bootstrap(KevoreeKernel.self.get(), nodeName, System.getProperty("kevoree.registry", "http://registry.kevoree.org/"));
         boot.registerTelemetryToLogListener();
         if (boot.getKernel() == null) {
             throw new Exception("Kevoree as not be started from KCL microkernel context");
