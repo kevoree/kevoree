@@ -58,7 +58,9 @@ String2             <- +[a-zA-Z0-9.:%@_-]
 
 String3             <= +[a-zA-Z0-9_]
 
-Version             <- +[a-zA-Z0-9._-]
+Version             <- ((+[0-9] | Latest) ?(:'/' (Release | Latest)))
+Latest              <- LatestVersion
+Release             <- ReleaseVersion
 
 Line                <- +(!eol .) 																 # anything but EOL
 
@@ -94,6 +96,8 @@ NamespaceToken  <: 'namespace'
 StartToken      <: 'start'
 StopToken       <: 'stop'
 PauseToken      <: 'pause'
+LatestVersion   <: 'latest'
+ReleaseVersion  <: 'release'
 Comment         <: '//' ?Line
 eol             <: '\r\n' | '\n' | '\r'
 ws              <: *([ \t] | eol)

@@ -23,10 +23,13 @@ import static org.junit.Assert.fail;
  */
 public class KevscriptEngineTest {
 
-    //@Test
+    private static final String KEVOREE_REGISTRY = "http://localhost:8080";
+
+
+	//@Test
     public void _01_parseAndInterMinimal() {
         try {
-            KevScriptEngine engine = new KevScriptEngine();
+            KevScriptEngine engine = new KevScriptEngine(KEVOREE_REGISTRY);
             KevoreeFactory factory = new DefaultKevoreeFactory();
             ContainerRoot cr = factory.createContainerRoot();
             factory.root(cr);
@@ -40,7 +43,7 @@ public class KevscriptEngineTest {
     //@Test
     public void _01_parseAndInterMinimal2() {
         try {
-            KevScriptEngine engine = new KevScriptEngine();
+            KevScriptEngine engine = new KevScriptEngine(KEVOREE_REGISTRY);
             KevoreeFactory factory = new DefaultKevoreeFactory();
             ContainerRoot cr = factory.createContainerRoot();
             factory.root(cr);
@@ -62,7 +65,7 @@ public class KevscriptEngineTest {
     //    @Test
     public void _01_parseAndInterpretTest() {
         try {
-            KevScriptEngine engine = new KevScriptEngine();
+            KevScriptEngine engine = new KevScriptEngine(KEVOREE_REGISTRY);
             KevoreeFactory factory = new DefaultKevoreeFactory();
             ContainerRoot cr = factory.createContainerRoot();
             engine.executeFromStream(KevscriptEngineTest.class.getResourceAsStream("/parseInterpretTestInput.kevs"), cr);
@@ -77,7 +80,7 @@ public class KevscriptEngineTest {
     //  @Test
     public void testLifecycle() {
         try {
-            KevScriptEngine engine = new KevScriptEngine();
+            KevScriptEngine engine = new KevScriptEngine(KEVOREE_REGISTRY);
             KevoreeFactory factory = new DefaultKevoreeFactory();
             ContainerRoot cr = factory.createContainerRoot();
             engine.executeFromStream(KevscriptEngineTest.class.getResourceAsStream("/lifecycle.kevs"), cr);
@@ -94,7 +97,7 @@ public class KevscriptEngineTest {
 
         try {
 
-            KevScriptEngine engine = new KevScriptEngine();
+            KevScriptEngine engine = new KevScriptEngine(KEVOREE_REGISTRY);
             KevoreeFactory factory = new DefaultKevoreeFactory();
             JSONModelLoader loader = new JSONModelLoader(factory);
 
@@ -113,7 +116,7 @@ public class KevscriptEngineTest {
     //  @Test
     public void _01_parseAndInterpretBigScriptTest() {
         try {
-            KevScriptEngine engine = new KevScriptEngine();
+            KevScriptEngine engine = new KevScriptEngine(KEVOREE_REGISTRY);
             KevoreeFactory factory = new DefaultKevoreeFactory();
             ContainerRoot cr = factory.createContainerRoot();
             engine.executeFromStream(KevscriptEngineTest.class.getResourceAsStream("/bigScript.kevs"), cr);

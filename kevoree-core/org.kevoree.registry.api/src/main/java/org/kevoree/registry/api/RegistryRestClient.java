@@ -18,7 +18,6 @@ import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
-import com.mashape.unirest.request.GetRequest;
 
 /**
  * 
@@ -187,7 +186,6 @@ public class RegistryRestClient {
 				.routeParam("tdefVersion", version).header("Accept", "application/json").asJson();
 		final List<DeployUnit> ret;
 		if (asJson.getStatus() < 400) {
-
 			ret = convertValue(asJson.getBody().getArray(), new ObjectMapper(), DeployUnit.class);
 		} else {
 			ret = null;

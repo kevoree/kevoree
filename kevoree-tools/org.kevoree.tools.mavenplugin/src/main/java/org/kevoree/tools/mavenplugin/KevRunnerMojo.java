@@ -97,7 +97,7 @@ public class KevRunnerMojo extends KevGenerateMojo {
 
             ContainerRoot ctxModel = (ContainerRoot) loader.loadModelFromStream(inStream).get(0);
 
-            final Bootstrap boot = new Bootstrap(kernel, nodeName);
+            final Bootstrap boot = new Bootstrap(kernel, nodeName, System.getProperty("kevoree.registry"));
             final ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
             Runtime.getRuntime().addShutdownHook(new Thread("Shutdown Hook") {
                 public void run() {

@@ -52,7 +52,7 @@ public class Bootstrap {
     private static HashMap<String, String> ctxVars = new HashMap<String, String>();
     private TelemetryListener telemetryListener;
 
-    public Bootstrap(KevoreeKernel k, String nodeName) {
+    public Bootstrap(KevoreeKernel k, String nodeName, String registryUrl) {
         //First initiate Security Manager to ensure that no Kill can be called on the JVM
         this.exitId = new AtomicInteger().incrementAndGet();
         System.setSecurityManager(new KevoreeSecurityManager(this.exitId));
@@ -81,7 +81,7 @@ public class Bootstrap {
 
         Injector injector = new Injector(KevoreeInject.class);
         KevoreeCLKernel kernel = new KevoreeCLKernel(this, injector);
-        kevScriptEngine = new KevScriptEngine();
+        kevScriptEngine = new KevScriptEngine(registryUrl);
         core = new KevoreeCoreBean(kevScriptEngine);
 
         jsonLoader = core.getFactory().createJSONLoader();
@@ -122,7 +122,7 @@ public class Bootstrap {
             nodeName = shortId();
             ctxVars.put(m.group(3), nodeName);
         }
-        final Bootstrap boot = new Bootstrap(KevoreeKernel.self.get(), nodeName);
+        final Bootstrap boot = new Bootstrap(KevoreeKernel.self.get(), nodeName, "http://registry.kevoree.org/");
         boot.registerTelemetryToLogListener();
         if (boot.getKernel() == null) {
             throw new Exception("Kevoree as not be started from KCL microkernel context");

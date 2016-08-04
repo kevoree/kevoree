@@ -20,7 +20,7 @@ public class TestBootstrap {
         if (nodeName == null) {
             nodeName = Bootstrap.defaultNodeName;
         }
-        final Bootstrap boot = new Bootstrap(KevoreeKernel.self.get(), nodeName);
+        final Bootstrap boot = new Bootstrap(KevoreeKernel.self.get(), nodeName, "http://registry.kevoree.org");
         Runtime.getRuntime().addShutdownHook(new Thread("Shutdown Hook") {
             public void run() {
                 try {
