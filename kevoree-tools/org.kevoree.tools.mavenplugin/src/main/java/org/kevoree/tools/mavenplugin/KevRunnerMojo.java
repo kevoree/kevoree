@@ -10,6 +10,7 @@ import org.kevoree.factory.DefaultKevoreeFactory;
 import org.kevoree.factory.KevoreeFactory;
 import org.kevoree.kcl.api.FlexyClassLoader;
 import org.kevoree.kevscript.KevScriptEngine;
+import org.kevoree.log.Log;
 import org.kevoree.microkernel.KevoreeKernel;
 import org.kevoree.microkernel.impl.KevoreeMicroKernelImpl;
 import org.kevoree.pmodeling.api.ModelLoader;
@@ -80,6 +81,22 @@ public class KevRunnerMojo extends KevGenerateMojo {
             }
             if (System.getProperty("kevoree.registry") == null) {
                 System.setProperty("kevoree.registry", registry);
+            }
+            if (System.getProperty("log.level") != null) {
+                String log = System.getProperty("log.level");
+                if ("DEBUG".equalsIgnoreCase(log) && !Log.DEBUG) {
+                    Log.set(Log.LEVEL_DEBUG);
+                } else if ("WARN".equalsIgnoreCase(log) && !Log.WARN) {
+                    Log.set(Log.LEVEL_WARN);
+                } else if ("INFO".equalsIgnoreCase(log) && !Log.INFO) {
+                    Log.set(Log.LEVEL_INFO);
+                } else if ("ERROR".equalsIgnoreCase(log) && !Log.ERROR) {
+                    Log.set(Log.LEVEL_ERROR);
+                } else if ("TRACE".equalsIgnoreCase(log) && !Log.TRACE) {
+                    Log.set(Log.LEVEL_TRACE);
+                } else if ("NONE".equalsIgnoreCase(log)) {
+                    Log.set(Log.LEVEL_NONE);
+                }
             }
 
             String script = new String(Files.readAllBytes(kevscript.toPath()));
