@@ -1,7 +1,5 @@
 package org.kevoree.kevscript.util;
 
-import org.kevoree.kevscript.version.VersionDef;
-
 /**
  *
  */
@@ -11,12 +9,11 @@ public class TypeFQN {
 
 	public String name;
 
-	public VersionDef version;
+	public Version version;
 
 	@Override
 	public String toString() {
-		return this.namespace + "." + this.name + "/" + (this.version.version == null ? this.version.version : "latest")
-				+ "/" + (this.version.isDURelease ? "release" : "latest");
+		return this.namespace + "." + this.name + "/" + this.version.tdef + "/" + this.version.du;
 	}
 
 	public String toKevoreePath() {
@@ -24,7 +21,21 @@ public class TypeFQN {
 		for (String subPath : namespace.split("\\.")) {
 			path += "/packages[" + subPath + "]";
 		}
-		path += "/typeDefinitions[name=" + name + ",version=" + version.version + "]";
+		path += "/typeDefinitions[name=" + name + ",version=" + version.tdef + "]";
 		return path;
+	}
+
+	public static class Version {
+		public static final String LATEST = "LATEST";
+		public static final String RELEASE = "RELEASE";
+		public String tdef;
+		public String du;
+
+		public static Version defaultVersion() {
+			Version v = new TypeFQN.Version();
+			v.tdef = LATEST;
+			v.du = RELEASE;
+			return v;
+		}
 	}
 }

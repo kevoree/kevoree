@@ -30,8 +30,8 @@ public class KevScriptEngine implements KevScriptService {
 	private final KevoreeFactory factory = new DefaultKevoreeFactory();
 	private final KevoreeRegistryResolver resolver;
 
-	public KevScriptEngine(final String registryUrl) {
-		resolver = new KevoreeRegistryResolver(registryUrl);
+	public KevScriptEngine(String registryUrl) {
+		this.resolver = new KevoreeRegistryResolver(registryUrl);
 	}
 
 	public void execute(final String script, final ContainerRoot model) throws Exception {
