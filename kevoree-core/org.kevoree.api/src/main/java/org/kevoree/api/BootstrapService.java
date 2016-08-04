@@ -12,11 +12,11 @@ public interface BootstrapService {
 
     FlexyClassLoader get(String key);
 
-    FlexyClassLoader get(Instance instance, DeployUnit du);
+    FlexyClassLoader get(DeployUnit du);
 
-    FlexyClassLoader installDeployUnit(Instance instance, DeployUnit du);
+    FlexyClassLoader installDeployUnit(DeployUnit du);
 
-    void removeDeployUnit(Instance instance, DeployUnit du);
+    void removeDeployUnit(DeployUnit du);
 
     FlexyClassLoader installTypeDefinition(Instance instance);
 

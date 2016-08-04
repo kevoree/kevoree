@@ -107,7 +107,7 @@ public class KevGenerateMojo extends AbstractMojo {
         } else {
             pack.addDeployUnits(du);
         }
-        du.setUrl(project.getArtifact().getGroupId() + ":" + du.getName() + ":jar:" + du.getVersion());
+        du.setUrl(project.getArtifact().getGroupId() + ":" + du.getName() + ":" + du.getVersion());
 
         try {
             File f2 = localRepository.find(project.getArtifact()).getFile();

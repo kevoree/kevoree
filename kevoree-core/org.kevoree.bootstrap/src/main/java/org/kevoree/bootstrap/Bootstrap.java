@@ -110,61 +110,6 @@ public class Bootstrap {
         return kevScriptEngine;
     }
 
-    public static void main(String[] args) throws Exception {
-        final ClassLoader loader = Thread.currentThread().getContextClassLoader();
-        String nodeName = System.getProperty("node.name");
-        if (nodeName == null) {
-            nodeName = defaultNodeName;
-        }
-        Pattern p = Pattern.compile("(%(%([a-zA-Z0-9_]+)%)%)");
-        Matcher m = p.matcher(nodeName);
-        while (m.find()) {
-            nodeName = shortId();
-            ctxVars.put(m.group(3), nodeName);
-        }
-        
-        final Bootstrap boot = new Bootstrap(KevoreeKernel.self.get(), nodeName, System.getProperty("kevoree.registry", "http://registry.kevoree.org/"));
-        boot.registerTelemetryToLogListener();
-        if (boot.getKernel() == null) {
-            throw new Exception("Kevoree as not be started from KCL microkernel context");
-        }
-        Runtime.getRuntime().addShutdownHook(new Thread("Shutdown Hook") {
-            public void run() {
-                try {
-                    System.out.println();
-                    Thread.currentThread().setContextClassLoader(loader);
-                    Log.info("Stopping Kevoree");
-                    boot.stop();
-                    Log.info("Stopped.");
-                } catch (Throwable ex) {
-                    System.out.println("Error stopping kevoree platform: " + ex.getMessage());
-                }
-            }
-        });
-        
-        String bootstrapModel = System.getProperty("node.bootstrap");
-        try {
-            if (bootstrapModel != null) {
-                boot.bootstrapFromFile(new File(bootstrapModel));
-            } else {
-                if (System.getProperty("node.script") != null) {
-                    boot.bootstrapFromKevScript(new ByteArrayInputStream(System.getProperty("node.script").getBytes()));
-                } else {
-                    String version;
-                    if (boot.getCore().getFactory().getVersion().toLowerCase().contains("snapshot")) {
-                        version = "latest";
-                    } else {
-                        version = "release";
-                    }
-                    Log.info("Create minimal system with library in version {}", version);
-                    boot.bootstrapFromKevScript(new ByteArrayInputStream(createBootstrapScript(nodeName, version).getBytes()));
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     protected void registerTelemetryToLogListener() {
         if (telemetryListener == null) {
             telemetryListener = new TelemetryListener() {
@@ -320,5 +265,59 @@ public class Bootstrap {
             builder.append(CHARS.charAt(random.nextInt(CHARS.length())));
         }
         return builder.toString();
+    }
+
+    public static void main(String[] args) throws Exception {
+        final ClassLoader loader = Thread.currentThread().getContextClassLoader();
+        String nodeName = System.getProperty("node.name");
+        if (nodeName == null) {
+            nodeName = defaultNodeName;
+        }
+        Pattern p = Pattern.compile("(%(%([a-zA-Z0-9_]+)%)%)");
+        Matcher m = p.matcher(nodeName);
+        while (m.find()) {
+            nodeName = shortId();
+            ctxVars.put(m.group(3), nodeName);
+        }
+        final Bootstrap boot = new Bootstrap(KevoreeKernel.self.get(), nodeName, System.getProperty("kevoree.registry", "http://registry.kevoree.org/"));
+        boot.registerTelemetryToLogListener();
+        if (boot.getKernel() == null) {
+            throw new Exception("Kevoree as not be started from KCL microkernel context");
+        }
+        Runtime.getRuntime().addShutdownHook(new Thread("Shutdown Hook") {
+            public void run() {
+                try {
+                    System.out.println();
+                    Thread.currentThread().setContextClassLoader(loader);
+                    Log.info("Stopping Kevoree");
+                    boot.stop();
+                    Log.info("Stopped.");
+                } catch (Throwable ex) {
+                    System.out.println("Error stopping kevoree platform: " + ex.getMessage());
+                }
+            }
+        });
+
+        String bootstrapModel = System.getProperty("node.bootstrap");
+        try {
+            if (bootstrapModel != null) {
+                boot.bootstrapFromFile(new File(bootstrapModel));
+            } else {
+                if (System.getProperty("node.script") != null) {
+                    boot.bootstrapFromKevScript(new ByteArrayInputStream(System.getProperty("node.script").getBytes()));
+                } else {
+                    String version;
+                    if (boot.getCore().getFactory().getVersion().toLowerCase().contains("snapshot")) {
+                        version = "latest";
+                    } else {
+                        version = "release";
+                    }
+                    Log.info("Create minimal system with library in version {}", version);
+                    boot.bootstrapFromKevScript(new ByteArrayInputStream(createBootstrapScript(nodeName, version).getBytes()));
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -1,8 +1,6 @@
 package org.kevoree.bootstrap.kernel;
 
-import org.jboss.shrinkwrap.resolver.api.maven.ConfigurableMavenResolverSystem;
-import org.jboss.shrinkwrap.resolver.api.maven.Maven;
-import org.jboss.shrinkwrap.resolver.api.maven.MavenResolvedArtifact;
+import org.jboss.shrinkwrap.resolver.api.maven.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.kevoree.*;
@@ -15,8 +13,6 @@ import org.kevoree.bootstrap.reflect.Injector;
 import org.kevoree.core.ContextAwareAdapter;
 import org.kevoree.core.KevoreeCoreBean;
 import org.kevoree.kcl.api.FlexyClassLoader;
-import org.kevoree.kcl.api.FlexyClassLoaderFactory;
-import org.kevoree.kcl.api.ResolutionPriority;
 import org.kevoree.log.Log;
 import org.kevoree.pmodeling.api.KMFContainer;
 
@@ -26,7 +22,8 @@ import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.List;
+import java.util.Set;
 import java.util.logging.LogManager;
 
 /**
@@ -37,9 +34,9 @@ import java.util.logging.LogManager;
  */
 public class KevoreeCLKernel implements BootstrapService {
 
-    private File propFile = null;
     private Bootstrap bs;
     private Injector injector;
+    private File propFile = null;
 
     public KevoreeCLKernel(Bootstrap b, Injector injector) {
         this.bs = b;
@@ -54,19 +51,13 @@ public class KevoreeCLKernel implements BootstrapService {
                 propFile.getParentFile().mkdirs();
                 try {
                     PrintWriter writer = new PrintWriter(propFile);
+                    writer.println("# Specify the handlers to create in the root logger");
+                    writer.println("handlers= java.util.logging.ConsoleHandler");
                     writer.println("# Set the default logging level for new ConsoleHandler instances");
-                    writer.println("java.util.logging.ConsoleHandler.level= INFO");
-                    writer.println("");
-                    writer.println("# Set global verbose level");
-                    writer.println(".level= INFO");
-                    writer.println("");
-                    writer.println("# Set log verbose level for ShrinkWrap Resolvers");
-                    writer.println("org.jboss.shrinkwrap.resolver.impl.maven.logging.LogTransferListener.level= WARNING");
-                    writer.println("org.jboss.shrinkwrap.resolver.impl.maven.logging.LogRepositoryListener.level= WARNING");
-                    writer.println("org.jboss.shrinkwrap.resolver.impl.maven.logging.LogModelProblemCollector.level= SEVERE");
+                    writer.println("java.util.logging.ConsoleHandler.level= SEVERE");
                     writer.close();
                 } catch (FileNotFoundException e) {
-                    throw new RuntimeException(e);
+                    throw new RuntimeException("Unable to write " + propFile.getAbsolutePath(), e);
                 }
             }
         } else {
@@ -76,13 +67,9 @@ public class KevoreeCLKernel implements BootstrapService {
 
     private Boolean offline = false;
 
-    private String buildKernelKey(Instance instance, DeployUnit deployUnit) {
-    	return instance.getName() + ":" + instance.getTypeDefinition().getName() + ":" + instance.getTypeDefinition().getVersion() + ":" + deployUnit.getUrl();
-    }
-
     @Override
-    public FlexyClassLoader get(Instance instance, DeployUnit deployUnit) {
-        return this.get(buildKernelKey(instance, deployUnit));
+    public FlexyClassLoader get(DeployUnit deployUnit) {
+        return this.get("mvn:"+deployUnit.getUrl());
     }
 
     @Override
@@ -90,56 +77,67 @@ public class KevoreeCLKernel implements BootstrapService {
         return this.bs.getKernel().get(key);
     }
 
+    private String getKey(MavenArtifactInfo artifact) {
+        return "mvn:" + artifact.getCoordinate().getGroupId() + ":" + artifact.getCoordinate().getArtifactId() +
+                ":" + artifact.getCoordinate().getVersion();
+    }
+
+    private void installDependencies(ConfigurableMavenResolverSystem resolver, FlexyClassLoader parentCl, MavenArtifactInfo artifact, int depth) {
+        String indent = "";
+        int count = 0;
+        while (count < depth) {
+            indent += "  ";
+            count++;
+        }
+
+        for (MavenArtifactInfo dep : artifact.getDependencies()) {
+            String key = getKey(dep);
+            if (!dep.getScope().equals(ScopeType.TEST)) {
+                long before = System.currentTimeMillis();
+                FlexyClassLoader depCl = get(key);
+                if (depCl == null) {
+                    File depJar = resolver
+                            .resolve(dep.getCoordinate().toCanonicalForm())
+                            .withoutTransitivity()
+                            .asSingleFile();
+
+                    if (depJar != null && depJar.exists()) {
+                        depCl = bs.getKernel().put(key, depJar);
+                        parentCl.attachChild(depCl);
+                        installDependencies(resolver, depCl, dep, depth+1);
+                        Log.debug("{} + {} ({}ms)", indent, key, (System.currentTimeMillis() - before));
+                    } else {
+                        Log.error("{} Unable to resolve {}", indent, key);
+                    }
+                } else {
+                    parentCl.attachChild(depCl);
+                    Log.debug("{} = {} already installed", indent, key, (System.currentTimeMillis() - before));
+                }
+            }
+        }
+    }
+
     @Override
-	public FlexyClassLoader installDeployUnit(Instance instance, DeployUnit deployUnit) {
-		FlexyClassLoader fcl = get(instance, deployUnit);
+	public FlexyClassLoader installDeployUnit(DeployUnit deployUnit) {
+		FlexyClassLoader fcl = get(deployUnit);
 		if (fcl != null) {
 			return fcl;
 		} else {
-            ConfigurableMavenResolverSystem resolver = Maven
-                    .configureResolver()
-                    .useLegacyLocalRepo(true)
-                    .workOffline(offline);
+            ConfigurableMavenResolverSystem resolver = getResolver(deployUnit);
 
-            try {
-                LogManager.getLogManager().readConfiguration(new FileInputStream(propFile));
-            } catch (IOException e) {
-                throw new RuntimeException("Unable to read logging properties from " + propFile.getAbsolutePath());
-            }
-            // hacky way to treat Maven repositories as I don't want to change the Kevoree MM
-            for (Value val : deployUnit.getFilters()) {
-                if (val.getName().startsWith("repo_")) {
-                    try {
-                        resolver.withRemoteRepo(val.getName().substring(5), new URL(val.getValue()), "default");
-                    } catch (MalformedURLException e) {
-                        throw new RuntimeException("Invalid repository URL: " + val.getValue());
-                    }
-                }
-            }
-
-            Log.info("Resolving ............. " + deployUnit.getUrl());
             long before = System.currentTimeMillis();
-            MavenResolvedArtifact[] artifacts = resolver.resolve(deployUnit.getUrl())
-                    .withTransitivity().asResolvedArtifact();
-            Log.info("Resolved in {}ms", (System.currentTimeMillis() - before));
+            Log.info("Resolving ............. {}", deployUnit.getUrl());
+            MavenResolvedArtifact artifact = resolver
+                    .resolve(deployUnit.getUrl())
+                    .withoutTransitivity()
+                    .asSingleResolvedArtifact();
 
-            File duJar = null;
-            Set<MavenResolvedArtifact> duDeps = new HashSet<MavenResolvedArtifact>();
-            for (MavenResolvedArtifact artifact : artifacts) {
-                if (artifact.getCoordinate().toCanonicalForm().equals(deployUnit.getUrl())) {
-                    duJar = artifact.asFile();
-                } else if (!artifact.getCoordinate().getGroupId().equals("org.kevoree")) {
-                    duDeps.add(artifact);
-                }
-            }
-            if (duJar != null) {
-                Log.trace("Installing {}", deployUnit.getUrl());
-                fcl = bs.getKernel().put(buildKernelKey(instance, deployUnit), duJar);
-                for (MavenResolvedArtifact dep : duDeps) {
-                    String key = dep.getCoordinate().toCanonicalForm();
-                    Log.trace("  + {}", key);
-                    fcl.attachChild(bs.getKernel().put(key, dep.asFile()));
-                }
+            File duJar = artifact.asFile();
+            if (duJar != null && duJar.exists()) {
+                String key = getKey(artifact);
+                fcl = bs.getKernel().put(key, duJar);
+                installDependencies(resolver, fcl, artifact, 0);
+                Log.info("Resolved in {}ms", (System.currentTimeMillis() - before));
             } else {
                 Log.error("Unable to resolve {}", deployUnit.getUrl());
             }
@@ -147,18 +145,39 @@ public class KevoreeCLKernel implements BootstrapService {
 		return fcl;
 	}
 
+	private ConfigurableMavenResolverSystem getResolver(DeployUnit deployUnit) {
+        ConfigurableMavenResolverSystem resolver = Maven
+                .configureResolver()
+                .useLegacyLocalRepo(true)
+                .workOffline(offline);
+
+        try {
+            LogManager.getLogManager().readConfiguration(new FileInputStream(propFile));
+        } catch (IOException e) {
+            throw new RuntimeException("Unable to read " + propFile.getAbsolutePath());
+        }
+
+        // hacky way to treat Maven repositories as I don't want to change the Kevoree MM
+        for (Value val : deployUnit.getFilters()) {
+            if (val.getName().startsWith("repo_")) {
+                try {
+                    resolver.withRemoteRepo(val.getName().substring(5), new URL(val.getValue()), "default");
+                } catch (MalformedURLException e) {
+                    throw new RuntimeException("Invalid repository URL: " + val.getValue());
+                }
+            }
+        }
+        return resolver;
+    }
+
     @Override
-    public void removeDeployUnit(Instance instance, DeployUnit deployUnit) {
-        bs.getKernel().drop(buildKernelKey(instance, deployUnit));
+    public void removeDeployUnit(DeployUnit deployUnit) {
+        bs.getKernel().drop(deployUnit.getUrl());
     }
 
     @Nullable
     @Override
     public FlexyClassLoader installTypeDefinition(Instance instance) {
-        FlexyClassLoader fcl = FlexyClassLoaderFactory.INSTANCE.create();
-        fcl.resolutionPriority = ResolutionPriority.CHILDS;
-        fcl.setKey(instance.getTypeDefinition().path());
-
         TypeDefinition td = instance.getTypeDefinition();
         List<KMFContainer> filters = td.select("deployUnits[]/filters[name=platform,value=java]");
         if (filters.size() > 1) {
@@ -170,12 +189,9 @@ public class KevoreeCLKernel implements BootstrapService {
                 }
             }
             throw new RuntimeException("Instance " + instance.path() + " has " + filters.size() + " deployUnits ("+filtersStr+") that matches platform \"java\" (must only be one)");
-        } else {
-            DeployUnit du = (DeployUnit) filters.get(0).eContainer();
-            fcl.attachChild(installDeployUnit(instance, du));
         }
-
-        return fcl;
+        DeployUnit du = (DeployUnit) filters.get(0).eContainer();
+        return installDeployUnit(du);
     }
 
     @Override
