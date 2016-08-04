@@ -1,6 +1,7 @@
 package org.kevoree.kevscript.test;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kevoree.ContainerRoot;
 import org.kevoree.factory.DefaultKevoreeFactory;
@@ -108,6 +109,7 @@ public class ResolvingVersionsTest {
 	}
 
 	@Test
+	@Ignore
 	public void test11() throws Exception {
 		final ParseResult<Type> parserResult = parser.parse(new InputBuffer("add javaNode: JavaNode".toCharArray()));
 
@@ -125,6 +127,7 @@ public class ResolvingVersionsTest {
 	}
 
 	@Test
+	@Ignore
 	public void test12() throws Exception {
 		final ParseResult<Type> parserResult = parser
 				.parse(new InputBuffer("add javaNode: JavaNode/1/latest".toCharArray()));
@@ -143,6 +146,7 @@ public class ResolvingVersionsTest {
 	}
 
 	@Test
+	@Ignore
 	public void test13() throws Exception {
 		final ParseResult<Type> parserResult = parser
 				.parse(new InputBuffer("add javaNode: JavaNode/latest".toCharArray()));
