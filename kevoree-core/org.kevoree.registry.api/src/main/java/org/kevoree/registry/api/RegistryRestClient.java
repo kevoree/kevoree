@@ -1,16 +1,5 @@
 package org.kevoree.registry.api;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
-import org.kevoree.registry.api.model.DeployUnit;
-import org.kevoree.registry.api.model.TypeDef;
-
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -18,6 +7,16 @@ import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.kevoree.registry.api.model.DeployUnit;
+import org.kevoree.registry.api.model.TypeDef;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * 
@@ -155,10 +154,14 @@ public class RegistryRestClient {
 	}
 
 	public TypeDef getLatestTypeDef(final String namespace, final String name) throws UnirestException {
-		final HttpResponse<JsonNode> asJson = Unirest.get(serverPath + "/api/namespaces/{namespace}/tdef/{name}/latest")
+		final HttpResponse<JsonNode> resp = Unirest.get(serverPath + "/api/namespaces/{namespace}/tdef/{name}/latest")
 				.routeParam("namespace", defaultNamespace(namespace)).routeParam("name", name)
 				.header("Accept", "application/json").asJson();
-		return convertValue(asJson.getBody().getObject(), new ObjectMapper(), TypeDef.class);
+
+		if (resp.getStatus() == 200) {
+			return convertValue(resp.getBody().getObject(), new ObjectMapper(), TypeDef.class);
+		}
+		return null;
 	}
 
 	public DeployUnit getDeployUnitRelease(final String namespace, final String name, final String version,

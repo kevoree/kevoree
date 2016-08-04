@@ -163,7 +163,7 @@ public class ResolvingVersionsTest {
 		ContainerRoot model = new DefaultKevoreeFactory().createContainerRoot();
 		final IAST<Type> ast = parserResult.getAST();
 		if (ast != null) {
-			new KevScriptEngine("http://idavoll:8080").interpret(ast, model);
+			new KevScriptEngine(KEVOREE_REGISTRY).interpret(ast, model);
 			System.out.println(model);
 		} else {
 			throw new Exception(parserResult.getError().toString());
@@ -174,14 +174,14 @@ public class ResolvingVersionsTest {
 	@Ignore
 	public void test14() throws Exception {
 		final ParseResult<Type> parserResult = parser
-				.parse(new InputBuffer("add javaNode: JavaNode/LATEST/RELEASE".toCharArray()));
+				.parse(new InputBuffer("add javaNode: JavascriptNode/LATEST/LATEST".toCharArray()));
 
 		Assert.assertNull(parserResult.getError());
 
 		ContainerRoot model = new DefaultKevoreeFactory().createContainerRoot();
 		final IAST<Type> ast = parserResult.getAST();
 		if (ast != null) {
-			new KevScriptEngine("http://idavoll:8080").interpret(ast, model);
+			new KevScriptEngine(KEVOREE_REGISTRY).interpret(ast, model);
 			System.out.println(model);
 		} else {
 			throw new Exception(parserResult.getError().toString());
