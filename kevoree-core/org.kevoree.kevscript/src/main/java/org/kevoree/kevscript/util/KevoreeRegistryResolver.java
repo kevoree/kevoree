@@ -56,7 +56,7 @@ public class KevoreeRegistryResolver {
                     ContainerRoot duModel = (ContainerRoot) loader.loadModelFromString(regDu.getModel()).get(0);
                     compare.merge(tmpModel, duModel).applyOn(tmpModel);
                     String path = pkg.path() + "/deployUnits[name=" + regDu.getName() + ",version=" + regDu.getVersion() + "]";
-                    for (KMFContainer elem : model.select(path)) {
+                    for (KMFContainer elem : tmpModel.select(path)) {
                         tdef.addDeployUnits((DeployUnit) elem);
                         Log.debug("DeployUnit " + regDu.getName() + "/" + regDu.getVersion() + "/" + regDu.getPlatform() + " added to " + fqn);
                     }
