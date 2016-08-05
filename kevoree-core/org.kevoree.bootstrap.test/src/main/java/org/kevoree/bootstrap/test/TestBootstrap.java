@@ -2,6 +2,7 @@ package org.kevoree.bootstrap.test;
 
 import org.kevoree.api.handler.UpdateCallback;
 import org.kevoree.bootstrap.Bootstrap;
+import org.kevoree.bootstrap.util.ConfigHelper;
 import org.kevoree.core.KevoreeCoreBean;
 import org.kevoree.log.Log;
 import org.kevoree.microkernel.KevoreeKernel;
@@ -20,7 +21,7 @@ public class TestBootstrap {
         if (nodeName == null) {
             nodeName = Bootstrap.defaultNodeName;
         }
-        final Bootstrap boot = new Bootstrap(KevoreeKernel.self.get(), nodeName, "http://registry.kevoree.org");
+        final Bootstrap boot = new Bootstrap(KevoreeKernel.self.get(), nodeName, ConfigHelper.get());
         Runtime.getRuntime().addShutdownHook(new Thread("Shutdown Hook") {
             public void run() {
                 try {

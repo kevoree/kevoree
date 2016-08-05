@@ -1,20 +1,14 @@
 package org.kevoree.bootstrap.telemetry;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintStream;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.net.URISyntaxException;
-
 import org.kevoree.api.telemetry.TelemetryEvent;
 import org.kevoree.bootstrap.Bootstrap;
+import org.kevoree.bootstrap.util.ConfigHelper;
 import org.kevoree.core.TelemetryEventImpl;
 import org.kevoree.log.Log;
 import org.kevoree.microkernel.KevoreeKernel;
+
+import java.io.*;
+import java.net.URISyntaxException;
 
 /**
  * Created by duke on 8/14/14.
@@ -115,7 +109,7 @@ public class BootstrapTelemetry {
 
         hackSystemStreams();
 
-        final Bootstrap boot = new Bootstrap(KevoreeKernel.self.get(), nodeName, "http://registry.kevoree.org");
+        final Bootstrap boot = new Bootstrap(KevoreeKernel.self.get(), nodeName, ConfigHelper.get());
         Runtime.getRuntime().addShutdownHook(new Thread("Shutdown Hook") {
             public void run() {
                 try {

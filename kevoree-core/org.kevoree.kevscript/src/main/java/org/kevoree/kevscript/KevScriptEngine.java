@@ -30,7 +30,7 @@ public class KevScriptEngine implements KevScriptService {
 	private final KevoreeFactory factory = new DefaultKevoreeFactory();
 	private final KevoreeRegistryResolver resolver;
 
-	public KevScriptEngine(String registryUrl) {
+	public KevScriptEngine(String registryUrl)  {
 		this.resolver = new KevoreeRegistryResolver(registryUrl);
 	}
 

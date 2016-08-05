@@ -73,7 +73,8 @@ public class KevDeployMojo extends AbstractMojo {
 		if (project.getArtifact().getType().equals("jar")) {
 			Config config = ConfigHelper.get();
 			try {
-				registry = RegistryHelper.getUrl(config, registry).toString();
+				this.registry = RegistryHelper.getUrl(config, registry).toString();
+				getLog().info("Using Kevoree registry: " + this.registry);
 			} catch (MalformedURLException e) {
 				throw new MojoExecutionException("Kevoree registry URL is malformed", e);
 			}
@@ -154,7 +155,7 @@ public class KevDeployMojo extends AbstractMojo {
 				String registryTypeDef = regTdef.getModel();
 				TypeDefinition regTypeDefinition = (TypeDefinition) loader.loadModelFromString(registryTypeDef).get(0);
 				TypeDefinition localTdef = (TypeDefinition) loader.loadModelFromString(serializer.serialize(tdef)).get(0);
-				
+
 				// debug traces
 				this.getLog().debug("");
 				this.getLog().debug("Registry TypeDefinition:");
@@ -162,19 +163,19 @@ public class KevDeployMojo extends AbstractMojo {
 				this.getLog().debug("");
 				this.getLog().debug("Local TypeDefinition:");
 				this.getLog().debug(serializer.serialize(localTdef));
-				
+
 				TraceSequence diffSeq = compare.diff(regTypeDefinition, localTdef);
 				if (!diffSeq.getTraces().isEmpty()) {
 					// there are discrepencies between local & registry
 					printDiff(regTypeDefinition, tdef, diffSeq);
 					throw new MojoExecutionException("If you want to use your local changes then you have to increment the version of " + namespace + "." + tdef.getName());
 				}
-				
+
 			} else {
 				// typeDef does not exist
 				this.getLog().info("Not found, creating...");
 				this.getLog().info("");
-				
+
 				String accessToken = new OAuthRegistryClient(registry).getToken(login, password);
 				HttpResponse<JsonNode> resp = new RegistryRestClient(registry, accessToken)
 						.postTypeDef(namespace, tdefStr, tdef.getName(), tdef.getVersion());
@@ -192,7 +193,7 @@ public class KevDeployMojo extends AbstractMojo {
 				}
 			}
 		} catch (UnirestException e) {
-			throw new MojoExecutionException("");
+			throw new MojoExecutionException("Something went wrong with the registry client", e);
 		}
 	}
 	
@@ -254,8 +255,7 @@ public class KevDeployMojo extends AbstractMojo {
 				}
 			}
 		} catch (UnirestException e) {
-			getLog().error(e);
-			throw new MojoExecutionException("Unable to publish DeployUnit");
+			throw new MojoExecutionException("Something went wrong with the registry client", e);
 		}
 	}
 }

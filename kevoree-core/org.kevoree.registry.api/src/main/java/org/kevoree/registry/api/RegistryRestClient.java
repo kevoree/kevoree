@@ -24,10 +24,10 @@ import java.util.Set;
  *
  */
 public class RegistryRestClient {
+
 	private final String serverPath;
 
 	public RegistryRestClient(final String serverPath, final String accessToken) {
-		super();
 		this.serverPath = serverPath;
 		this.accessToken = accessToken;
 	}

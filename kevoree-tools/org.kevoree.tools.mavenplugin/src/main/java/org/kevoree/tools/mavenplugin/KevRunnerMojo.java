@@ -153,7 +153,7 @@ public class KevRunnerMojo extends KevGenerateMojo {
                     throw new MojoExecutionException("Unable to write context model to " + Paths.get(project.getBasedir().getAbsolutePath()).relativize(ctxModelPath));
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                throw new MojoExecutionException("Something went wrong", e);
             }
 
         } catch (IOException e) {
