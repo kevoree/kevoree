@@ -4,6 +4,7 @@ package org.kevoree.tools.mavenplugin;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.exceptions.UnirestException;
+import com.typesafe.config.Config;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -15,6 +16,7 @@ import org.apache.maven.project.MavenProject;
 import org.kevoree.ContainerRoot;
 import org.kevoree.DeployUnit;
 import org.kevoree.TypeDefinition;
+import org.kevoree.bootstrap.util.ConfigHelper;
 import org.kevoree.factory.DefaultKevoreeFactory;
 import org.kevoree.factory.KevoreeFactory;
 import org.kevoree.pmodeling.api.KMFContainer;
@@ -27,9 +29,11 @@ import org.kevoree.registry.api.OAuthRegistryClient;
 import org.kevoree.registry.api.RegistryRestClient;
 import org.kevoree.registry.api.model.TypeDef;
 import org.kevoree.tools.mavenplugin.util.ModelBuilderHelper;
+import org.kevoree.tools.mavenplugin.util.RegistryHelper;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.net.MalformedURLException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -46,14 +50,14 @@ public class KevDeployMojo extends AbstractMojo {
 	@Parameter(defaultValue = "${project.build.directory}/classes/KEV-INF/kevlib.json", required = true)
 	private File model;
 
-	@Parameter(defaultValue = "http://registry.kevoree.org/", required = true)
-	private String registry;
+	@Parameter()
+	private String registry = null;
 
-	@Parameter(required = true)
-	private String login;
+	@Parameter()
+	private String login = null;
 
-	@Parameter(required = true)
-	private String password;
+	@Parameter()
+	private String password = null;
 	
 	@Parameter(required = true)
 	private String namespace;
@@ -67,6 +71,21 @@ public class KevDeployMojo extends AbstractMojo {
 	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		if (project.getArtifact().getType().equals("jar")) {
+			Config config = ConfigHelper.get();
+			try {
+				registry = RegistryHelper.getUrl(config, registry).toString();
+			} catch (MalformedURLException e) {
+				throw new MojoExecutionException("Kevoree registry URL is malformed", e);
+			}
+
+			if (login == null || login.isEmpty()) {
+				login = config.getString("user.login");
+			}
+
+			if (password == null || login.isEmpty()) {
+				password = config.getString("user.password");
+			}
+
 			this.getLog().info("Registry: " + registry);
 			if (model != null && model.exists()) {
 				try (final FileInputStream fis = new FileInputStream(model)) {
@@ -144,7 +163,7 @@ public class KevDeployMojo extends AbstractMojo {
 				this.getLog().debug("Local TypeDefinition:");
 				this.getLog().debug(serializer.serialize(localTdef));
 				
-				TraceSequence diffSeq = factory.createModelCompare().diff(regTypeDefinition, localTdef);
+				TraceSequence diffSeq = compare.diff(regTypeDefinition, localTdef);
 				if (!diffSeq.getTraces().isEmpty()) {
 					// there are discrepencies between local & registry
 					printDiff(regTypeDefinition, tdef, diffSeq);

@@ -1,5 +1,6 @@
 package org.kevoree.bootstrap;
 
+import com.typesafe.config.Config;
 import org.kevoree.ContainerNode;
 import org.kevoree.ContainerRoot;
 import org.kevoree.NetworkInfo;
@@ -12,6 +13,7 @@ import org.kevoree.api.telemetry.TelemetryEvent;
 import org.kevoree.api.telemetry.TelemetryListener;
 import org.kevoree.bootstrap.kernel.KevoreeCLKernel;
 import org.kevoree.bootstrap.reflect.Injector;
+import org.kevoree.bootstrap.util.ConfigHelper;
 import org.kevoree.core.KevoreeCoreBean;
 import org.kevoree.kevscript.KevScriptEngine;
 import org.kevoree.log.Log;
@@ -52,7 +54,7 @@ public class Bootstrap {
     private static HashMap<String, String> ctxVars = new HashMap<String, String>();
     private TelemetryListener telemetryListener;
 
-    public Bootstrap(KevoreeKernel k, String nodeName, String registryUrl) {
+    public Bootstrap(KevoreeKernel k, String nodeName, Config config) {
         //First initiate Security Manager to ensure that no Kill can be called on the JVM
         this.exitId = new AtomicInteger().incrementAndGet();
         System.setSecurityManager(new KevoreeSecurityManager(this.exitId));
@@ -81,6 +83,20 @@ public class Bootstrap {
 
         Injector injector = new Injector(KevoreeInject.class);
         KevoreeCLKernel kernel = new KevoreeCLKernel(this, injector);
+
+        String registryUrl = "http://";
+        if (config.getBoolean("registry.ssl")) {
+            registryUrl = "https://";
+        }
+        registryUrl += config.getString("registry.host");
+        if (registryUrl.endsWith("/")) {
+            registryUrl = registryUrl.substring(0, registryUrl.length() - 1);
+        }
+        int port = config.getInt("registry.port");
+        if (port != 80) {
+            registryUrl += ":" + port;
+        }
+
         kevScriptEngine = new KevScriptEngine(registryUrl);
         core = new KevoreeCoreBean(kevScriptEngine);
 
@@ -279,7 +295,8 @@ public class Bootstrap {
             nodeName = shortId();
             ctxVars.put(m.group(3), nodeName);
         }
-        final Bootstrap boot = new Bootstrap(KevoreeKernel.self.get(), nodeName, System.getProperty("kevoree.registry", "http://registry.kevoree.org/"));
+
+        final Bootstrap boot = new Bootstrap(KevoreeKernel.self.get(), nodeName, ConfigHelper.get());
         boot.registerTelemetryToLogListener();
         if (boot.getKernel() == null) {
             throw new Exception("Kevoree as not be started from KCL microkernel context");

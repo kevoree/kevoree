@@ -62,6 +62,7 @@ public class KevGenerateMojo extends AbstractMojo {
 	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		if (project.getArtifact().getType().equals("jar")) {
+			getLog().info("Generating a Kevoree model by reflection...");
 			final ContainerRoot model = factory.createContainerRoot();
 			factory.root(model);
 
@@ -144,10 +145,11 @@ public class KevGenerateMojo extends AbstractMojo {
 			saver.serializeToStream(model, fos);
 			fos.flush();
 			fos.close();
-			getLog().info("Model saved (" + Paths.get(project.getBasedir().getAbsolutePath()).relativize(path) + ")");
+			getLog().info("Model saved at " + Paths.get(project.getBasedir().getAbsolutePath()).relativize(path));
 		} catch (Exception e) {
 			getLog().error(e);
-			throw new MojoExecutionException("Unable to write model (" + Paths.get(project.getBasedir().getAbsolutePath()).relativize(path) + ")");
+			throw new MojoExecutionException("Unable to write model at "
+					+ Paths.get(project.getBasedir().getAbsolutePath()).relativize(path));
 		}
 	}
 }
