@@ -37,6 +37,8 @@ public enum Type
     Pause,
     InstancePath,
     Wildcard,
+    CtxVar,
+    GenCtxVar,
     String,
     String2,
     String3,

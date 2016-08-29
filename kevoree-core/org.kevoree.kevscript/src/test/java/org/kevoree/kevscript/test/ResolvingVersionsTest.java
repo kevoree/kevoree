@@ -14,13 +14,18 @@ import org.waxeye.ast.IAST;
 import org.waxeye.input.InputBuffer;
 import org.waxeye.parser.ParseResult;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class ResolvingVersionsTest {
-	private static final String KEVOREE_REGISTRY = "http://localhost:8080";
+	private static final String KEVOREE_REGISTRY = "https://kevoree.braindead.fr";
 	private final Parser parser = new Parser();
+	private final Map<String, String> ctxVars = new HashMap<>();
 
 	@Before
 	public void beforeEach() {
 		Log.set(Log.LEVEL_DEBUG);
+		ctxVars.clear();
 	}
 
 	public void test1() throws Exception {
@@ -125,7 +130,7 @@ public class ResolvingVersionsTest {
 		ContainerRoot model = new DefaultKevoreeFactory().createContainerRoot();
 		final IAST<Type> ast = parserResult.getAST();
 		if (ast != null) {
-			new KevScriptEngine(KEVOREE_REGISTRY).interpret(ast, model);
+			new KevScriptEngine(KEVOREE_REGISTRY).interpret(ast, model, ctxVars);
 			System.out.println(model);
 		} else {
 			throw new Exception(parserResult.getError().toString());
@@ -144,7 +149,7 @@ public class ResolvingVersionsTest {
 		ContainerRoot model = new DefaultKevoreeFactory().createContainerRoot();
 		final IAST<Type> ast = parserResult.getAST();
 		if (ast != null) {
-			new KevScriptEngine(KEVOREE_REGISTRY).interpret(ast, model);
+			new KevScriptEngine(KEVOREE_REGISTRY).interpret(ast, model, ctxVars);
 			System.out.println(model);
 		} else {
 			throw new Exception(parserResult.getError().toString());
@@ -163,8 +168,8 @@ public class ResolvingVersionsTest {
 		ContainerRoot model = new DefaultKevoreeFactory().createContainerRoot();
 		final IAST<Type> ast = parserResult.getAST();
 		if (ast != null) {
-			new KevScriptEngine(KEVOREE_REGISTRY).interpret(ast, model);
-			System.out.println(model);
+			new KevScriptEngine(KEVOREE_REGISTRY).interpret(ast, model, ctxVars);
+			System.out.println(new DefaultKevoreeFactory().createJSONSerializer().serialize(model));
 		} else {
 			throw new Exception(parserResult.getError().toString());
 		}
@@ -174,15 +179,16 @@ public class ResolvingVersionsTest {
 	@Ignore
 	public void test14() throws Exception {
 		final ParseResult<Type> parserResult = parser
-				.parse(new InputBuffer("add javaNode: JavascriptNode/LATEST/LATEST".toCharArray()));
+				.parse(new InputBuffer("add %hello%: JavascriptNode/LATEST/LATEST".toCharArray()));
 
 		Assert.assertNull(parserResult.getError());
 
 		ContainerRoot model = new DefaultKevoreeFactory().createContainerRoot();
 		final IAST<Type> ast = parserResult.getAST();
 		if (ast != null) {
-			new KevScriptEngine(KEVOREE_REGISTRY).interpret(ast, model);
-			System.out.println(model);
+			ctxVars.put("hello", "world");
+			new KevScriptEngine(KEVOREE_REGISTRY).interpret(ast, model, ctxVars);
+			System.out.println(new DefaultKevoreeFactory().createJSONSerializer().serialize(model));
 		} else {
 			throw new Exception(parserResult.getError().toString());
 		}

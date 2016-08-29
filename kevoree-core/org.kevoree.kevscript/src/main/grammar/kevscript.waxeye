@@ -48,9 +48,16 @@ Stop                <- StopToken ws NameList                                    
 
 Pause               <- PauseToken ws NameList                                                   # pause node0.comp
 
-InstancePath        <- (Wildcard | String) *(:[.] (Wildcard | String))                          # node0.*.att
+InstancePath        <- (Wildcard | String | CtxVar | GenCtxVar) *(:[.] (Wildcard | String | CtxVar | GenCtxVar))
+                                                                                                # node0.*.att
+                                                                                                # %%ctxVar%%
+                                                                                                # node0.%%genVar%%
 
 Wildcard            <- '*'
+
+CtxVar              <- :'%' String :'%'
+
+GenCtxVar           <- :'%%' String :'%%'
 
 String              <- +[a-zA-Z0-9_-]
 
