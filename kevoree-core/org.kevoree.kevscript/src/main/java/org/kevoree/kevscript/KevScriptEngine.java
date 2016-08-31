@@ -1,6 +1,7 @@
 package org.kevoree.kevscript;
 
 import org.kevoree.*;
+import org.kevoree.Dictionary;
 import org.kevoree.api.KevScriptService;
 import org.kevoree.factory.DefaultKevoreeFactory;
 import org.kevoree.factory.KevoreeFactory;
@@ -62,7 +63,7 @@ public class KevScriptEngine implements KevScriptService {
 		if (ast != null) {
 			interpret(ast, model, ctxVars);
 		} else {
-			throw new Exception(parserResult.getError().toString());
+			throw new KevScriptError(parserResult.getError().toString());
 		}
 	}
 
@@ -91,7 +92,7 @@ public class KevScriptEngine implements KevScriptService {
 				TypeFQN fqn = interpretTypeDef(node.getChildren().get(1));
 				TypeDefinition td = resolver.resolve(fqn, model);
 				if (td == null) {
-					throw new Exception("Unable to find TypeDefinition \"" + fqn.toString() + "\" in model");
+					throw new KevScriptError("Unable to find TypeDefinition \"" + fqn.toString() + "\" in model");
 				} else {
 					final IAST<Type> instanceNames = node.getChildren().get(0);
 					if (instanceNames.getType().equals(Type.NameList)) {
@@ -108,7 +109,7 @@ public class KevScriptEngine implements KevScriptService {
 				final List<Instance> rightHands = InstanceResolver.resolve(model, node.getChildren().get(1), ctxVars);
 				for (final Instance leftH : leftHands) {
 					for (final Instance rightH : rightHands) {
-						applyMove(leftH, rightH, model);
+						applyMove(leftH, rightH);
 					}
 				}
 				break;
@@ -171,19 +172,19 @@ public class KevScriptEngine implements KevScriptService {
 
 			case Pause:
 				// TODO
-				throw new Exception("Pause statement is not implemented yet.");
+				throw new KevScriptError("Pause statement is not implemented yet.");
 
 			case Network:
 				final IAST<Type> leftHandNetwork = node.getChildren().get(0);
 				if (leftHandNetwork.getChildren().size() != 3) {
-					throw new Exception("Network must be : network nodeName.propertyType.interfaceName IP");
+					throw new KevScriptError("Network must be : network nodeName.propertyType.interfaceName IP");
 				} else {
 					final String nodeName = leftHandNetwork.getChildren().get(0).childrenAsString();
 					final String propType = leftHandNetwork.getChildren().get(1).childrenAsString();
 					final String interfaceName = leftHandNetwork.getChildren().get(2).childrenAsString();
 					final ContainerNode networkTargetNode = model.findNodesByID(nodeName);
 					if (networkTargetNode == null) {
-						throw new Exception("Node not found for name " + nodeName);
+						throw new KevScriptError("Node not found for name " + nodeName);
 					}
 					NetworkInfo info = networkTargetNode.findNetworkInformationByID(propType);
 					if (info == null) {
@@ -230,7 +231,7 @@ public class KevScriptEngine implements KevScriptService {
 
 				final IAST<Type> leftHnodes = node.getChildren().get(0);
 				if (leftHnodes.getChildren().size() < 2) {
-					throw new Exception("Bad dictionary value description");
+					throw new KevScriptError("Bad dictionary value description");
 				}
 
 				final IAST<Type> portName = leftHnodes.getChildren().get(leftHnodes.getChildren().size() - 1);
@@ -250,7 +251,7 @@ public class KevScriptEngine implements KevScriptService {
 								final DictionaryAttribute dicAtt = target.getTypeDefinition().getDictionaryType()
 										.findAttributesByID(propName);
 								if (dicAtt == null) {
-									throw new Exception(
+									throw new KevScriptError(
 											"Param does not exist in type " + target.getName() + " -> " + propName);
 								} else {
 									dicValue.setName(dicAtt.getName());
@@ -274,11 +275,11 @@ public class KevScriptEngine implements KevScriptService {
 									final DictionaryAttribute dicAtt = target.getTypeDefinition().getDictionaryType()
 											.findAttributesByID(propName);
 									if (dicAtt == null) {
-										throw new Exception(
+										throw new KevScriptError(
 												"Param does not existe in type " + target.getName() + " -> " + propName);
 									} else {
 										if (!dicAtt.getFragmentDependant()) {
-											throw new Exception(
+											throw new KevScriptError(
 													"Dictionary Attribute is not fragment dependent " + dicAtt.getName());
 										}
 										dicValue.setName(dicAtt.getName());
@@ -331,26 +332,49 @@ public class KevScriptEngine implements KevScriptService {
 	}
 
 	private void applyAttach(final Instance leftH, final Instance rightH, final ContainerRoot model,
-							 final boolean reverse) {
+							 final boolean detach) {
 		if (!(leftH instanceof ContainerNode)) {
-			Log.error("Not a ContainerNode {}", leftH.getName());
+			throw new KevScriptError("\""+leftH.getName()+"\" is not a node instance. " + (detach ? "Detach":"Attach") + " failed");
 		}
 		if (!(rightH instanceof Group)) {
-			Log.error("Not a Group {}", rightH.getName());
+			throw new KevScriptError("\""+rightH.getName()+"\" is not a group instance. " + (detach ? "Detach":"Attach") + " failed");
 		}
 		final ContainerNode node = (ContainerNode) leftH;
 		final Group group = (Group) rightH;
-		if (!reverse) {
-			group.addSubNodes(node);
-		} else {
+		if (detach) {
 			group.removeSubNodes(node);
+			node.removeGroups(group);
+		} else {
+			group.addSubNodes(node);
+			node.addGroups(group);
 		}
 
+		if (detach) {
+			FragmentDictionary fDic = group.findFragmentDictionaryByID(node.getName());
+			if (fDic != null) {
+				group.removeFragmentDictionary(fDic);
+			}
+		} else {
+			DictionaryType dictionaryType = group.getTypeDefinition().getDictionaryType();
+			if (dictionaryType != null) {
+				FragmentDictionary fDic = factory.createFragmentDictionary();
+				fDic.setName(node.getName());
+				for (DictionaryAttribute attr : dictionaryType.getAttributes()) {
+					if (attr.getFragmentDependant()) {
+						Value value = factory.createValue();
+						value.setName(attr.getName());
+						value.setValue(attr.getDefaultValue());
+						fDic.addValues(value);
+					}
+				}
+				group.addFragmentDictionary(fDic);
+			}
+		}
 	}
 
-	private void applyMove(final Instance leftH, final Instance rightH, final ContainerRoot model) {
+	private void applyMove(final Instance leftH, final Instance rightH) {
 		if (!(rightH instanceof ContainerNode)) {
-			Log.error("Not a ContainerNode {}", rightH.getName());
+			throw new KevScriptError("\""+rightH.getName()+"\" is not a node instance. Move failed");
 		} else {
 			final ContainerNode node = (ContainerNode) rightH;
 			if (leftH instanceof ComponentInstance) {
@@ -359,7 +383,7 @@ public class KevScriptEngine implements KevScriptService {
 				if (leftH instanceof ContainerNode) {
 					node.addHosts((ContainerNode) leftH);
 				} else {
-					Log.error("Not a containerNode or component : {}", leftH.getName());
+					throw new KevScriptError("\""+leftH.getName()+"\" is not a node instance nor a component. Move failed");
 				}
 			}
 		}
@@ -367,7 +391,7 @@ public class KevScriptEngine implements KevScriptService {
 
 	private boolean applyAdd(final TypeDefinition td, final IAST<Type> name, final ContainerRoot model, final Map<String, String> ctxVars)
 			throws Exception {
-		Instance process = null;
+		Instance i = null;
 		if (td instanceof NodeType) {
 			final ContainerNode instance = factory.createContainerNode();
 			instance.setTypeDefinition(td);
@@ -375,22 +399,22 @@ public class KevScriptEngine implements KevScriptService {
 				final String newNodeName = InstanceResolver.interpret(name.getChildren().get(0), ctxVars);
 				instance.setName(newNodeName);
 				if (model.findNodesByID(newNodeName) != null) {
-					throw new Exception("Node already exist for name : " + newNodeName);
+					throw new KevScriptError("Node already exist for name : " + newNodeName);
 				}
 
 				model.addNodes(instance);
-				process = instance;
+				i = instance;
 			} else {
 				final String parentNodeName = InstanceResolver.interpret(name.getChildren().get(0), ctxVars);
 				final String newNodeName = InstanceResolver.interpret(name.getChildren().get(1), ctxVars);
 				instance.setName(newNodeName);
 				final ContainerNode parentNode = model.findNodesByID(parentNodeName);
 				if (parentNode == null) {
-					throw new Exception("Node not exist for name : " + parentNodeName);
+					throw new KevScriptError("Node not exist for name : " + parentNodeName);
 				}
 				model.addNodes(instance);
 				parentNode.addHosts(instance);
-				process = instance;
+				i = instance;
 			}
 		}
 		if (td instanceof ComponentType) {
@@ -416,14 +440,14 @@ public class KevScriptEngine implements KevScriptService {
 				String nodeName = InstanceResolver.interpret(name.getChildren().get(0), ctxVars);
 				final ContainerNode parentNode = model.findNodesByID(nodeName);
 				if (parentNode == null) {
-					throw new Exception(
+					throw new KevScriptError(
 							"Unable to find a node named: " + nodeName);
 				} else {
 					parentNode.addComponents(instance);
-					process = instance;
+					i = instance;
 				}
 			} else {
-				throw new Exception("Bad component name (must be nodeName.componentName) : " + name.toString());
+				throw new KevScriptError("Bad component name (must be nodeName.componentName) : " + name.toString());
 			}
 		}
 		if (td instanceof ChannelType) {
@@ -433,9 +457,9 @@ public class KevScriptEngine implements KevScriptService {
 			if (name.getType().equals(Type.InstancePath) && name.getChildren().size() == 1) {
 				instance.setName(InstanceResolver.interpret(name.getChildren().get(0), ctxVars));
 				model.addHubs(instance);
-				process = instance;
+				i = instance;
 			} else {
-				throw new Exception("Bad channel name : " + name.toString());
+				throw new KevScriptError("Bad channel name : " + name.toString());
 			}
 		}
 		if (td instanceof GroupType) {
@@ -445,12 +469,29 @@ public class KevScriptEngine implements KevScriptService {
 			if (name.getType().equals(Type.InstancePath) && name.getChildren().size() == 1) {
 				instance.setName(InstanceResolver.interpret(name.getChildren().get(0), ctxVars));
 				model.addGroups(instance);
-				process = instance;
+				i = instance;
 			} else {
-				throw new Exception("Bad group name : " + name.toString());
+				throw new KevScriptError("Bad group name : " + name.toString());
 			}
 		}
-		process.setStarted(true);
-		return process != null;
+		if (i != null) {
+			i.setStarted(true);
+			Dictionary dictionary = factory.createDictionary().withGenerated_KMF_ID("0");
+			DictionaryType dictionaryType = i.getTypeDefinition().getDictionaryType();
+			if (dictionaryType != null) {
+				for (DictionaryAttribute attr : dictionaryType.getAttributes()) {
+					if (!attr.getFragmentDependant()) {
+						Value value = factory.createValue();
+						value.setName(attr.getName());
+						value.setValue(attr.getDefaultValue());
+						dictionary.addValues(value);
+					}
+				}
+			}
+			i.setDictionary(dictionary);
+		} else {
+			// TODO throw exception
+		}
+		return i != null;
 	}
 }
