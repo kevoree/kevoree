@@ -53,8 +53,12 @@ public class TypeFqnInterpreter {
 
 	private String parseTypeFQN(final IAST<Type> node) {
 		String fqn = "";
-		for (final IAST<Type> child : node.getChildren()) {
-			fqn += child.childrenAsString();
+		for (IAST<Type> child: node.getChildren()) {
+			if (child.getChildren().isEmpty()) {
+				fqn += child.toString();
+			} else {
+				fqn += child.childrenAsString();
+			}
 		}
 		return fqn;
 	}

@@ -193,4 +193,22 @@ public class ResolvingVersionsTest {
 			throw new Exception(parserResult.getError().toString());
 		}
 	}
+
+  @Test
+  @Ignore
+  public void test15() throws Exception {
+    final ParseResult<Type> parserResult = parser
+        .parse(new InputBuffer("add node0: JavascriptNode/LATEST/LATEST\nadd node0.d: atc.DockerMessenger/LATEST/LATEST".toCharArray()));
+
+    Assert.assertNull(parserResult.getError());
+
+    ContainerRoot model = new DefaultKevoreeFactory().createContainerRoot();
+    final IAST<Type> ast = parserResult.getAST();
+    if (ast != null) {
+      new KevScriptEngine(KEVOREE_REGISTRY).interpret(ast, model, ctxVars);
+      System.out.println(new DefaultKevoreeFactory().createJSONSerializer().serialize(model));
+    } else {
+      throw new Exception(parserResult.getError().toString());
+    }
+  }
 }
