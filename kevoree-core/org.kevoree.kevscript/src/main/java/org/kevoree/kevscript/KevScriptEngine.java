@@ -31,15 +31,18 @@ public class KevScriptEngine implements KevScriptService {
         this.resolver = new KevoreeRegistryResolver(registryUrl);
     }
 
+    @Override
     public void execute(final String script, final ContainerRoot model) throws Exception {
         this.execute(script, model, null);
     }
 
+    @Override
     public void execute(final String script, final ContainerRoot model, final HashMap<String, String> ctxVars)
             throws Exception {
         this.executeFromStream(new ByteArrayInputStream(script.getBytes()), model, ctxVars);
     }
 
+    @Override
     public void executeFromStream(final InputStream script, final ContainerRoot model, HashMap<String, String> ctxVars)
             throws Exception {
         if (ctxVars == null) {
@@ -67,6 +70,7 @@ public class KevScriptEngine implements KevScriptService {
         }
     }
 
+    @Override
     public void executeFromStream(final InputStream script, final ContainerRoot model) throws Exception {
         this.executeFromStream(script, model, null);
     }

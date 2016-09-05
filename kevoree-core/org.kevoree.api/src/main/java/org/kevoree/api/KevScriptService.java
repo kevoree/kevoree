@@ -3,6 +3,7 @@ package org.kevoree.api;
 import org.kevoree.ContainerRoot;
 
 import java.io.InputStream;
+import java.util.HashMap;
 
 /**
  * Created with IntelliJ IDEA.
@@ -12,8 +13,11 @@ import java.io.InputStream;
  */
 public interface KevScriptService {
 
-    public void execute(String script, ContainerRoot model) throws Exception;
+    void execute(String script, ContainerRoot model) throws Exception;
 
-    public void executeFromStream(InputStream script, ContainerRoot model) throws Exception;
+    void execute(String script, ContainerRoot model, HashMap<String, String> ctxVars) throws Exception;
 
+    void executeFromStream(InputStream script, ContainerRoot model) throws Exception;
+
+    void executeFromStream(InputStream script, ContainerRoot model, HashMap<String, String> ctxVars) throws Exception;
 }

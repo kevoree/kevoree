@@ -53,10 +53,13 @@ public class ReflectUtils {
      */
     public static Field findFieldWithAnnotation(String fieldName, Class<?> clazz, Class<? extends Annotation> annotationType) {
         Field field = getField(fieldName, clazz);
-        if (field != null && field.isAnnotationPresent(annotationType)) {
-            return field;
+        if (field != null) {
+            for (Annotation anno : field.getDeclaredAnnotations()) {
+                if (anno.annotationType().getName().equals(annotationType.getName())) {
+                    return field;
+                }
+            }
         }
-
         return null;
     }
 
