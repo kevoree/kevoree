@@ -480,7 +480,7 @@ public class KevScriptEngine implements KevScriptService {
         }
         if (i != null) {
             i.setStarted(true);
-            Dictionary dictionary = factory.createDictionary().withGenerated_KMF_ID("0");
+            Dictionary dictionary = factory.createDictionary().withGenerated_KMF_ID("0.0");
             DictionaryType dictionaryType = i.getTypeDefinition().getDictionaryType();
             if (dictionaryType != null) {
                 for (DictionaryAttribute attr : dictionaryType.getAttributes()) {

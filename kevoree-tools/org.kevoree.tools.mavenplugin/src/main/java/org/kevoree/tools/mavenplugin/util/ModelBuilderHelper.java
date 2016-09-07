@@ -2,10 +2,7 @@ package org.kevoree.tools.mavenplugin.util;
 
 
 import javassist.*;
-
 import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.maven.artifact.Artifact;
-import org.apache.maven.shared.dependency.tree.*;
 import org.jetbrains.annotations.NotNull;
 import org.kevoree.*;
 import org.kevoree.annotation.Input;
@@ -236,7 +233,7 @@ public class ModelBuilderHelper {
                     } catch (Exception e) {
                         dicAtt.setDefaultValue(null);
                     }
-                    currentTypeDefinition.getDictionaryType().setGenerated_KMF_ID("0");
+                    currentTypeDefinition.getDictionaryType().setGenerated_KMF_ID("0.0");
                     currentTypeDefinition.getDictionaryType().addAttributes(dicAtt);
                 }
             }
@@ -346,7 +343,7 @@ public class ModelBuilderHelper {
             td.setVersion(String.valueOf(version));
             td.setName(name);
             td.setDictionaryType(factory.createDictionaryType());
-            td.getDictionaryType().setGenerated_KMF_ID("0");
+            td.getDictionaryType().setGenerated_KMF_ID("0.0");
             pkg.addTypeDefinitions(td);
             return td;
         }
