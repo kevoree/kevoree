@@ -93,7 +93,7 @@ public class ModelBuilderHelper {
                     }
                     DictionaryAttribute dicAtt = factory.createDictionaryAttribute();
                     if (currentTypeDefinition.getDictionaryType() == null) {
-                        currentTypeDefinition.setDictionaryType(factory.createDictionaryType());
+                        currentTypeDefinition.setDictionaryType(factory.createDictionaryType().withGenerated_KMF_ID("0.0"));
                     }
                     dicAtt.setName(cleanedName);
                     dicAtt.setDatatype(dataType);
@@ -214,7 +214,7 @@ public class ModelBuilderHelper {
                     }
                     DictionaryAttribute dicAtt = factory.createDictionaryAttribute();
                     if (currentTypeDefinition.getDictionaryType() == null) {
-                        currentTypeDefinition.setDictionaryType(factory.createDictionaryType());
+                        currentTypeDefinition.setDictionaryType(factory.createDictionaryType().withGenerated_KMF_ID("0.0"));
                     }
                     dicAtt.setName(field.getName());
                     dicAtt.setDatatype(dataType);
@@ -342,8 +342,7 @@ public class ModelBuilderHelper {
             final TypeDefinition td = (TypeDefinition) factory.create(typeName);
             td.setVersion(String.valueOf(version));
             td.setName(name);
-            td.setDictionaryType(factory.createDictionaryType());
-            td.getDictionaryType().setGenerated_KMF_ID("0.0");
+            td.setDictionaryType(factory.createDictionaryType().withGenerated_KMF_ID("0.0"));
             pkg.addTypeDefinitions(td);
             return td;
         }

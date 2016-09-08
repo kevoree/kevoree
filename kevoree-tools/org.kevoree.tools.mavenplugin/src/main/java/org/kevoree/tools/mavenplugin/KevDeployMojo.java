@@ -74,7 +74,6 @@ public class KevDeployMojo extends AbstractMojo {
 			Config config = ConfigHelper.get();
 			try {
 				this.registry = RegistryHelper.getUrl(config, registry).toString();
-				getLog().info("Using Kevoree registry: " + this.registry);
 			} catch (MalformedURLException e) {
 				throw new MojoExecutionException("Kevoree registry URL is malformed", e);
 			}
@@ -87,7 +86,10 @@ public class KevDeployMojo extends AbstractMojo {
 				password = config.getString("user.password");
 			}
 
-			this.getLog().info("Registry: " + registry);
+			this.getLog().info("Registry:  " + registry);
+			this.getLog().info("Namespace: " + namespace);
+			this.getLog().info("Login:     " + login);
+
 			if (model != null && model.exists()) {
 				try (final FileInputStream fis = new FileInputStream(model)) {
 					processModel((ContainerRoot) loader.loadModelFromStream(fis).get(0));
@@ -105,7 +107,7 @@ public class KevDeployMojo extends AbstractMojo {
 	}
 	
 	private void processModel(final ContainerRoot model) throws MojoExecutionException {
-		this.getLog().info("Model:    " + this.model);
+		this.getLog().info("Model:     " + this.model);
 		List<KMFContainer> tdefs = model.select("**/typeDefinitions[]");
 		if (tdefs.isEmpty()) {
 			throw new MojoExecutionException("You must define at least one TypeDefinition. None found.");
