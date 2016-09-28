@@ -46,8 +46,9 @@ public class PrimitiveCommandExecutionHelper {
                     Step nextStep = step.getNextStep();
                     boolean subResult = false;
                     if (nextStep != null) {
-                        phase.successor = new KevoreeSeqDeployPhase(core);
-                        subResult = executeStep(core, rootNode, nextStep, nodeInstance, phase.successor, preRollBack);
+                        KevoreeDeployPhase nextPhase = new KevoreeSeqDeployPhase(core);
+                        phase.successor = nextPhase;
+                        subResult = executeStep(core, rootNode, nextStep, nodeInstance, nextPhase, preRollBack);
                     } else {
                         subResult = true;
                     }
