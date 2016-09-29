@@ -112,14 +112,13 @@ public class KevoreeCLKernel implements BootstrapService {
                             depCl = bs.getKernel().put(key, depJar);
                             parentCl.attachChild(depCl);
                         }
-                        installDependencies(resolver, depCl, dep, depth+1);
                         Log.debug("{} + {} ({}ms)", indent, key, (System.currentTimeMillis() - before));
+                        installDependencies(resolver, depCl, dep, depth+1);
                     } else {
                         Log.error("{} Unable to resolve {}", indent, key);
                     }
                 } else {
                     if (!dep.getScope().equals(ScopeType.RUNTIME)) {
-//                        ((FlexyClassLoader) parentCl.getParent()).attachChild(depCl);
                         parentCl.attachChild(depCl);
                         Log.debug("{} = {} already loaded", indent, key, (System.currentTimeMillis() - before));
                     }
