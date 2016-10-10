@@ -96,26 +96,37 @@ public class KevoreeCLKernel implements BootstrapService {
                 long before = System.currentTimeMillis();
                 FlexyClassLoader depCl = get(key);
                 if (depCl == null) {
-                    File depJar = resolver
-                            .resolve(dep.getCoordinate().toCanonicalForm())
-                            .withoutTransitivity()
-                            .asSingleFile();
-
-                    if (depJar != null && depJar.exists()) {
-                        if (dep.getScope().equals(ScopeType.RUNTIME)) {
-                            try {
-                                parentCl.load(depJar);
-                            } catch (IOException e) {
-                                Log.error("Unable to load jar {} in class loader {}", depJar.getAbsolutePath(), parentCl.getKey());
-                            }
-                        } else {
-                            depCl = bs.getKernel().put(key, depJar);
-                            parentCl.attachChild(depCl);
-                        }
+                    if (dep.getCoordinate().getType().equals(PackagingType.POM)) {
                         Log.debug("{} + {} ({}ms)", indent, key, (System.currentTimeMillis() - before));
-                        installDependencies(resolver, depCl, dep, depth+1);
+                        installDependencies(resolver, parentCl, dep, depth+1);
                     } else {
-                        Log.error("{} Unable to resolve {}", indent, key);
+                        File depJar;
+                        try {
+                            depJar = resolver
+                                    .resolve(dep.getCoordinate().toCanonicalForm())
+                                    .withoutTransitivity()
+                                    .asSingleFile();
+                        } catch (Exception e) {
+                            Log.error(indent + " ! " + key);
+                            throw e;
+                        }
+
+                        if (depJar != null && depJar.exists()) {
+                            if (dep.getScope().equals(ScopeType.RUNTIME)) {
+                                try {
+                                    parentCl.load(depJar);
+                                } catch (IOException e) {
+                                    Log.error("Unable to load jar {} in class loader {}", depJar.getAbsolutePath(), parentCl.getKey());
+                                }
+                            } else {
+                                depCl = bs.getKernel().put(key, depJar);
+                                parentCl.attachChild(depCl);
+                            }
+                            Log.debug("{} + {} ({}ms)", indent, key, (System.currentTimeMillis() - before));
+                            installDependencies(resolver, depCl, dep, depth+1);
+                        } else {
+                            Log.error("{} Unable to resolve {}", indent, key);
+                        }
                     }
                 } else {
                     if (!dep.getScope().equals(ScopeType.RUNTIME)) {
