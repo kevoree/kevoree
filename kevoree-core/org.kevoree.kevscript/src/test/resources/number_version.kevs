@@ -1,2 +1,2 @@
-//add node: JavaNode/LATEST/LATEST
-add node.c: atc.TestApamaSubscriber2/14
+add node: JavaNode/LATEST/LATEST
+add node.c: atc.TestApamaSubscriber2/14/LATEST
