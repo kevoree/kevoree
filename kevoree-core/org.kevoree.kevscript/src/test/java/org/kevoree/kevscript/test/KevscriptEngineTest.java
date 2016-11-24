@@ -1,5 +1,6 @@
 package org.kevoree.kevscript.test;
 
+import org.junit.Test;
 import org.kevoree.ContainerRoot;
 import org.kevoree.factory.DefaultKevoreeFactory;
 import org.kevoree.factory.KevoreeFactory;
@@ -23,7 +24,7 @@ import static org.junit.Assert.fail;
  */
 public class KevscriptEngineTest {
 
-    private static final String KEVOREE_REGISTRY = "http://localhost:8080";
+    private static final String KEVOREE_REGISTRY = "https://kevoree.braindead.fr";
 
 
 	//@Test
@@ -113,7 +114,7 @@ public class KevscriptEngineTest {
         }
     }
 
-    //  @Test
+    @Test
     public void _01_parseAndInterpretBigScriptTest() {
         try {
             KevScriptEngine engine = new KevScriptEngine(KEVOREE_REGISTRY);
@@ -123,6 +124,19 @@ public class KevscriptEngineTest {
         } catch (Exception e) {
             e.printStackTrace();
             fail("An exception occurred:" + e.toString());
+        }
+    }
+
+    @Test
+    public void testVersionNumber() {
+        try {
+            KevScriptEngine engine = new KevScriptEngine(KEVOREE_REGISTRY);
+            KevoreeFactory factory = new DefaultKevoreeFactory();
+            ContainerRoot model = factory.createContainerRoot();
+            engine.executeFromStream(getClass().getResourceAsStream("/number_version.kevs"), model);
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail("An exception occured:" + e.toString());
         }
     }
 

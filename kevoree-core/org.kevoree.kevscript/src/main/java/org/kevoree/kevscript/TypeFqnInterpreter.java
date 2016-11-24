@@ -33,18 +33,32 @@ public class TypeFqnInterpreter {
 			IAST<Type> versionNode = typeNode.getChildren().get(1);
 			if (versionNode.getChildren().isEmpty()) {
 				version = TypeFQN.Version.defaultVersion();
-
-			} else if (versionNode.getChildren().size() == 1) {
-				// eg. add node0: JavaNode/1
-				// eg. add node1: JavaNode/LATEST
-				version.tdef = versionNode.getChildren().get(0).toString().toUpperCase();
-				version.du = TypeFQN.Version.RELEASE;
-
 			} else {
-				// eg. add node0: JavaNode/1/LATEST
-				// eg. add node0: JavaNode/1/RELEASE
-				version.tdef = versionNode.getChildren().get(0).toString().toUpperCase();
-				version.du = versionNode.getChildren().get(1).toString().toUpperCase();
+				if (versionNode.getChildren().get(0).getType().equals(Type._Char)) {
+					// Tdef version is a number
+					IAST<Type> duNode = null;
+					version.tdef = "";
+					for (IAST<Type> child : versionNode.getChildren()) {
+						if (child.getType().equals(Type._Char)) {
+							version.tdef += child.toString();
+						} else {
+							duNode = child;
+						}
+					}
+					if (duNode == null) {
+						version.du = TypeFQN.Version.RELEASE;
+					} else {
+						version.du = duNode.toString().toUpperCase();
+					}
+				} else {
+					// Tdef version is LATEST
+					version.tdef = TypeFQN.Version.LATEST;
+					if (versionNode.getChildren().size() == 1) {
+						version.du = TypeFQN.Version.RELEASE;
+					} else {
+						version.du = versionNode.getChildren().get(1).toString().toUpperCase();
+					}
+				}
 			}
 		}
 
@@ -62,5 +76,4 @@ public class TypeFqnInterpreter {
 		}
 		return fqn;
 	}
-
 }

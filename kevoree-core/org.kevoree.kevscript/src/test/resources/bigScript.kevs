@@ -7,12 +7,11 @@ include mvn:org.kevoree.library.java:org.kevoree.library.java.toys:latest
 include mvn:org.kevoree.library.java:org.kevoree.library.java.ws:latest
 
 
-add node0 : JavaNode
-add sync : WSGroup
+add node0 : JavaNode/LATEST/LATEST
+add sync : WSGroup/LATEST/LATEST
 attach node0 sync
 
-add node0.h1 : HelloJava
-set node0.h1.message = "Hello !
+set sync.master = "Hello !
 This is a try to create a big script using standard Kevoree-library coming from https://github.com/kevoree/kevoree-library
 So I try to put lot of information in a String which be parsed by KevScript as a RealString with multiple lines,
 some special character like ù%*é=^``~&°.:!§,?/#çà][-|
@@ -95,13 +94,6 @@ It supports C, Java, Javascript, Python, Ruby and Scheme.
 
 For more information about waxeye: https://github.com/orlandohill/waxeye
 "
-add node0.h2 : HelloJava
-
-add node0.ticker : Ticker
-add hub : SyncBroadcast
-
-bind node0.h1.hello hub
-bind node0.h2.hello hub
-bind node0.ticker.tick hub
+add node0.ticker : Ticker/LATEST/LATEST
 
 set node0.ticker.period = "3000"
