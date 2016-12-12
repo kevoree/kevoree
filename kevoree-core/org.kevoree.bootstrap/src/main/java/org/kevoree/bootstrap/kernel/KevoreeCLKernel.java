@@ -167,6 +167,8 @@ public class KevoreeCLKernel implements BootstrapService {
 	}
 
 	private ConfigurableMavenResolverSystem getResolver(DeployUnit deployUnit) {
+        String offlineProp = System.getProperty("offline", "false");
+        boolean offline = Boolean.valueOf(offlineProp);
         ConfigurableMavenResolverSystem resolver = Maven
                 .configureResolver()
                 .useLegacyLocalRepo(true)
@@ -188,6 +190,7 @@ public class KevoreeCLKernel implements BootstrapService {
                 }
             }
         }
+
         return resolver;
     }
 

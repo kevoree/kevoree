@@ -3,7 +3,6 @@ package org.kevoree.tools.mavenplugin.util;
 
 import javassist.*;
 import org.apache.commons.codec.digest.DigestUtils;
-import org.jetbrains.annotations.NotNull;
 import org.kevoree.*;
 import org.kevoree.annotation.Input;
 import org.kevoree.annotation.Output;
@@ -11,10 +10,6 @@ import org.kevoree.annotation.Param;
 import org.kevoree.api.*;
 import org.kevoree.api.Port;
 import org.kevoree.factory.KevoreeFactory;
-import org.kevoree.pmodeling.api.KMFContainer;
-import org.kevoree.pmodeling.api.util.ModelVisitor;
-
-import java.util.HashMap;
 
 /**
  * Created by duke on 23/01/2014.
@@ -248,62 +243,59 @@ public class ModelBuilderHelper {
     }
 
     private static void checkParent(TypeDefinition current, CtClass clazz, CtClass originClazz, ContainerRoot root, KevoreeFactory factory) throws Exception {
-        if (clazz == null) {
-            return;
-        }
-        String name = clazz.getName();
-        Long version = null;
-        String currentTypeName = null;
-        try {
-            for (Object an : clazz.getAnnotations()) {
-                String newMeta = metaClassName(an);
-                if (newMeta != null) {
-                    if (currentTypeName != null) {
-                        throw new Exception("A Java Class can't be mapped to several Kevoree TypeDefinition " + clazz.getName());
-                    } else {
-                        currentTypeName = newMeta;
-                    }
-                }
-            }
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        if (currentTypeName != null) {
-            if (version == null) {
-            	final HashMap<DeployUnit, Integer> links = new HashMap<DeployUnit, Integer>();
-
-            	root.deepVisitContained(new ModelVisitor() {
-                    @Override
-                    public void visit(@NotNull KMFContainer kmfContainer, @NotNull String s, @NotNull KMFContainer kmfContainer2) {
-                        if (kmfContainer instanceof DeployUnit) {
-                            DeployUnit du = (DeployUnit) kmfContainer;
-                            if (!links.containsKey(du)) {
-                                links.put(du, 0);
-                            }
-                            for (DeployUnit dul : du.getRequiredLibs()) {
-                                if (!links.containsKey(dul)) {
-                                    links.put(dul, 0);
-                                }
-                                links.put(dul, links.get(dul) + 1);
-                            }
-                        }
-                    }
-                });
-                
-                //This current deploy unit should be the only one with no external references, tricky part
-                for (DeployUnit d : links.keySet()) {
-                    if (links.get(d) == 0) {
-                        version = Long.parseLong(d.getVersion());
-                    }
-                }
-
-            }
-            if (version == null) {
-                version = Long.parseLong(current.getVersion());
-            }
-            TypeDefinition parent = getOrCreateTypeDefinition(name, version, root, factory, (org.kevoree.Package) current.eContainer(), currentTypeName);
-            current.addSuperTypes(parent);
-        }
+//        if (clazz == null) {
+//            return;
+//        }
+//        String name = clazz.getName();
+//        String version = null;
+//        String currentTypeName = null;
+//        try {
+//            for (Object an : clazz.getAnnotations()) {
+//                String newMeta = metaClassName(an);
+//                if (newMeta != null) {
+//                    if (currentTypeName != null) {
+//                        throw new Exception("A Java Class can't be mapped to several Kevoree TypeDefinition " + clazz.getName());
+//                    } else {
+//                        currentTypeName = newMeta;
+//                    }
+//                }
+//            }
+//        } catch (ClassNotFoundException e) {
+//            e.printStackTrace();
+//        }
+//        if (currentTypeName != null) {
+//            final HashMap<DeployUnit, Integer> links = new HashMap<DeployUnit, Integer>();
+//
+//            root.deepVisitContained(new ModelVisitor() {
+//                @Override
+//                public void visit(@NotNull KMFContainer kmfContainer, @NotNull String s, @NotNull KMFContainer kmfContainer2) {
+//                    if (kmfContainer instanceof DeployUnit) {
+//                        DeployUnit du = (DeployUnit) kmfContainer;
+//                        if (!links.containsKey(du)) {
+//                            links.put(du, 0);
+//                        }
+//                        for (DeployUnit dul : du.getRequiredLibs()) {
+//                            if (!links.containsKey(dul)) {
+//                                links.put(dul, 0);
+//                            }
+//                            links.put(dul, links.get(dul) + 1);
+//                        }
+//                    }
+//                }
+//            });
+//
+//            //This current deploy unit should be the only one with no external references, tricky part
+//            for (DeployUnit d : links.keySet()) {
+//                if (links.get(d) == 0) {
+//                    version = d.getVersion();
+//                }
+//            }
+//            if (version == null) {
+//                version = current.getVersion();
+//            }
+//            TypeDefinition parent = getOrCreateTypeDefinition(name, version, root, factory, (org.kevoree.Package) current.eContainer(), currentTypeName);
+//            current.addSuperTypes(parent);
+//        }
     }
 
     private static void processTypeDefinition(TypeDefinition td, DeployUnit du, CtClass clazz, ContainerRoot root, KevoreeFactory factory) throws Exception {
@@ -334,7 +326,7 @@ public class ModelBuilderHelper {
         }
     }
 
-    public static TypeDefinition getOrCreateTypeDefinition(final String name, final long version, final ContainerRoot root, final KevoreeFactory factory, final org.kevoree.Package pkg, final String typeName) {
+    public static TypeDefinition getOrCreateTypeDefinition(final String name, final Long version, final ContainerRoot root, final KevoreeFactory factory, final org.kevoree.Package pkg, final String typeName) {
         final TypeDefinition foundTD = pkg.findTypeDefinitionsByNameVersion(name, String.valueOf(version));
         if (foundTD != null) {
             return foundTD;
