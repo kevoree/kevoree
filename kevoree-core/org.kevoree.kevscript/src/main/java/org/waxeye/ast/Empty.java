@@ -7,7 +7,7 @@
 package org.waxeye.ast;
 
 /**
- * A class to represent an empty AST.
+ * A class to represent an kevs.empty AST.
  *
  * @param <E> The node types for the AST.
  *

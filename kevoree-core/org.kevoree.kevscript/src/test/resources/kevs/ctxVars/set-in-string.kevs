@@ -1,0 +1,5 @@
+add node: JavascriptNode
+
+// The resulting logLevel should be "%LEVEL%" and not the content of some
+// ctxVar named %LEVEL%
+set node.logLevel = "%LEVEL%"

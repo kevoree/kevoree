@@ -1,0 +1,6 @@
+add node: JavascriptNode
+add sync: WSGroup
+
+attach node sync
+
+detach node sync

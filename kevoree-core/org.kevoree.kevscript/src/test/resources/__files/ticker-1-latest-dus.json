@@ -1,0 +1,19 @@
+[{
+  "createdBy": "kevoree",
+  "lastModifiedBy": "kevoree",
+  "lastModifiedDate": 1480609301137,
+  "id": 1044,
+  "name": "org.kevoree.library.java.toys",
+  "version": "5.4.0-SNAPSHOT",
+  "platform": "java",
+  "model": "\n{\"class\":\"root:org.kevoree.ContainerRoot@0\",\"generated_KMF_ID\":\"0\",\"nodes\":[],\"repositories\":[],\"hubs\":[],\"mBindings\":[],\"groups\":[],\"packages\":[\n{\"class\":\"org.kevoree.Package@kevoree\",\"name\":\"kevoree\",\"packages\":[],\"typeDefinitions\":[],\"deployUnits\":[\n{\"class\":\"org.kevoree.DeployUnit@hashcode=bff7d1689b79e75d0b944397ac6fe223,name=org.kevoree.library.java.toys,version=5.4.0-SNAPSHOT\",\"hashcode\":\"bff7d1689b79e75d0b944397ac6fe223\",\"name\":\"org.kevoree.library.java.toys\",\"version\":\"5.4.0-SNAPSHOT\",\"url\":\"org.kevoree.library.java:org.kevoree.library.java.toys:5.4.0-SNAPSHOT\",\"requiredLibs\":[],\"filters\":[\n{\"class\":\"org.kevoree.Value@repo_central\",\"name\":\"repo_central\",\"value\":\"http://repo.maven.apache.org/maven2\"}\n,\n{\"class\":\"org.kevoree.Value@repo_sonatype-nexus-snapshots\",\"name\":\"repo_sonatype-nexus-snapshots\",\"value\":\"https://oss.sonatype.org/content/repositories/snapshots\"}\n,\n{\"class\":\"org.kevoree.Value@repo_kevoree-oss\",\"name\":\"repo_kevoree-oss\",\"value\":\"https://oss.sonatype.org/content/groups/public/\"}\n,\n{\"class\":\"org.kevoree.Value@class:ToyConsole:2\",\"name\":\"class:ToyConsole:2\",\"value\":\"org.kevoree.library.ToyConsole\"}\n,\n{\"class\":\"org.kevoree.Value@class:Ticker:1\",\"name\":\"class:Ticker:1\",\"value\":\"org.kevoree.library.Ticker\"}\n,\n{\"class\":\"org.kevoree.Value@platform\",\"name\":\"platform\",\"value\":\"java\"}\n]}\n]}\n]}\n"
+}, {
+  "createdBy": "leiko",
+  "lastModifiedBy": "leiko",
+  "lastModifiedDate": 1481215345578,
+  "id": 1206,
+  "name": "kevoree-comp-ticker",
+  "version": "5.3.3-beta.0",
+  "platform": "js",
+  "model": "{\"class\":\"root:org.kevoree.ContainerRoot@0.330504510397256151481215338936\",\"generated_KMF_ID\":\"0.330504510397256151481215338936\",\"nodes\":[],\"repositories\":[],\"hubs\":[],\"mBindings\":[],\"groups\":[],\"packages\":[\n{\"class\":\"org.kevoree.Package@kevoree\",\"name\":\"kevoree\",\"packages\":[],\"typeDefinitions\":[],\"deployUnits\":[\n{\"class\":\"org.kevoree.DeployUnit@hashcode=e6d702455a2d985a3ad587eb4a4cad0b,name=kevoree-comp-ticker,version=5.3.3-beta.0\",\"name\":\"kevoree-comp-ticker\",\"hashcode\":\"e6d702455a2d985a3ad587eb4a4cad0b\",\"url\":\"\",\"version\":\"5.3.3-beta.0\",\"requiredLibs\":[],\"filters\":[\n{\"class\":\"org.kevoree.Value@platform\",\"name\":\"platform\",\"value\":\"js\"}\n]}\n]}\n]}"
+}]

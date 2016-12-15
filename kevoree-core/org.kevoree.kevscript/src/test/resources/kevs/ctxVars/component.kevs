@@ -1,0 +1,2 @@
+add node: JavascriptNode
+add node.%comp%: Ticker/LATEST/LATEST

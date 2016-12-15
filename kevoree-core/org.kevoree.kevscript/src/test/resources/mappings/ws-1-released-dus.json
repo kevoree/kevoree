@@ -1,0 +1,13 @@
+{
+  "request" : {
+    "urlPattern" : "/api/namespaces/kevoree/tdefs/WSGroup/1/released-dus",
+    "method": "GET"
+  },
+  "response" : {
+    "status" : 200,
+    "bodyFileName": "ws-1-released-dus.json",
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  }
+}

@@ -3,33 +3,29 @@ package org.kevoree.kevscript.util;
 import org.kevoree.ContainerNode;
 import org.kevoree.ContainerRoot;
 import org.kevoree.Instance;
-import org.kevoree.kevscript.KevScriptError;
 import org.kevoree.kevscript.Type;
+import org.kevoree.kevscript.expression.*;
 import org.kevoree.pmodeling.api.KMFContainer;
 import org.waxeye.ast.IAST;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 /**
- * Created with IntelliJ IDEA.
- * User: duke
- * Date: 25/11/2013
- * Time: 16:43
+ *
+ * Created by leiko on 12/15/16.
  */
 public class InstanceResolver {
 
-    private static final String CHARS = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-
-    public static List<Instance> resolve(ContainerRoot model, IAST<Type> stmt, Map<String, String> ctxVars) throws Exception {
-        final List<Instance> resolved = new ArrayList<Instance>();
+    public static List<Instance> resolve(IAST<Type> stmt, ContainerRoot model, Map<String, String> ctxVars)
+            throws Exception {
+        final List<Instance> resolved = new ArrayList<>();
         if (stmt.getType().equals(Type.InstancePath) && stmt.getChildren().size() < 3) {
             if (stmt.getChildren().size() == 2) {
                 //Component case
-                String nodeName = interpret(stmt.getChildren().get(0), ctxVars);
-                String childName = interpret(stmt.getChildren().get(1), ctxVars);
+                String nodeName = InterpretExpr.interpret(stmt.getChildren().get(0), ctxVars);
+                String childName = InterpretExpr.interpret(stmt.getChildren().get(1), ctxVars);
                 List<KMFContainer> parentNodes = model.select("nodes[" + nodeName + "]");
                 if (parentNodes.isEmpty()) {
                     throw new Exception("No nodes found with name : " + nodeName);
@@ -49,7 +45,7 @@ public class InstanceResolver {
                 }
             } else {
                 //group or channel
-                String instanceName = interpret(stmt.getChildren().get(0), ctxVars);
+                String instanceName = InterpretExpr.interpret(stmt.getChildren().get(0), ctxVars);
                 List<KMFContainer> instancefounds = model.select("groups[" + instanceName + "]");
                 if (instancefounds.isEmpty()) {
                     instancefounds = model.select("hubs[" + instanceName + "]");
@@ -68,7 +64,7 @@ public class InstanceResolver {
         } else {
             if (stmt.getType().equals(Type.NameList)) {
                 for (IAST<Type> child : stmt.getChildren()) {
-                    resolved.addAll(resolve(model, child, ctxVars));
+                    resolved.addAll(resolve(child, model, ctxVars));
                 }
             } else {
                 throw new Exception("Bad name to resolve instances : " + stmt.toString());
@@ -80,43 +76,5 @@ public class InstanceResolver {
         }
 
         return resolved;
-    }
-
-    public static String interpret(IAST<Type> stmt, Map<String, String> ctxVars) {
-        switch (stmt.getType()) {
-            case Wildcard:
-                return "*";
-
-            case String:
-                return stmt.childrenAsString();
-
-            case CtxVar:
-                String ctxVarVal = ctxVars.get(stmt.getChildren().get(0).childrenAsString());
-                if (ctxVarVal == null) {
-                    throw new KevScriptError("Unable to find a value for context variable \"%"+stmt.getChildren().get(0).childrenAsString()+"%\"");
-                }
-                return ctxVarVal;
-
-            case GenCtxVar:
-                String key = stmt.getChildren().get(0).childrenAsString();
-                String value = ctxVars.get(key);
-                if (value == null) {
-                    value = shortId();
-                    ctxVars.put(key, value);
-                }
-                return value;
-
-            default:
-                return null;
-        }
-    }
-
-    private static String shortId() {
-        final StringBuilder builder = new StringBuilder();
-        final Random random = new Random();
-        for (int i = 0; i < 6; i++) {
-            builder.append(CHARS.charAt(random.nextInt(CHARS.length())));
-        }
-        return builder.toString();
     }
 }

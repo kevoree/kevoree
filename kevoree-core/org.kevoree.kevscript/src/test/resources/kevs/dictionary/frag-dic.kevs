@@ -1,0 +1,8 @@
+add node0 : JavascriptNode
+add sync : WebSocketGroup
+
+attach node0 sync
+
+set sync.port/node0 = '9000'
+
+network node0.foo.bar 127.0.0.1

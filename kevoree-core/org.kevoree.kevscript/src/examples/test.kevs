@@ -1,2 +1,2 @@
-add node0: JavaNode/LATEST/LATEST
-add node0.docker: atc.DockerMessenger/LATEST/LATEST
+kevs.add node0: JavaNode/LATEST/LATEST
+kevs.add node0.docker: atc.DockerMessenger/LATEST/LATEST

@@ -1,0 +1,9 @@
+{
+  "createdBy": "kevoree",
+  "lastModifiedBy": "leiko",
+  "lastModifiedDate": 1481215345582,
+  "id": 1042,
+  "name": "Ticker",
+  "version": 1,
+  "model": "{\"class\":\"org.kevoree.ComponentType@name=Ticker,version=1\",\"name\":\"Ticker\",\"abstract\":\"false\",\"version\":\"1\",\"deployUnits\":[],\"superTypes\":[],\"dictionaryType\":[\n{\"class\":\"org.kevoree.DictionaryType@0.0\",\"generated_KMF_ID\":\"0.0\",\"attributes\":[\n{\"class\":\"org.kevoree.DictionaryAttribute@random\",\"datatype\":\"BOOLEAN\",\"defaultValue\":\"false\",\"name\":\"random\",\"fragmentDependant\":\"false\",\"optional\":\"true\",\"state\":\"false\",\"genericTypes\":[]}\n,\n{\"class\":\"org.kevoree.DictionaryAttribute@period\",\"datatype\":\"LONG\",\"defaultValue\":\"3000\",\"name\":\"period\",\"fragmentDependant\":\"false\",\"optional\":\"true\",\"state\":\"false\",\"genericTypes\":[]}\n]}\n],\"metaData\":[\n{\"class\":\"org.kevoree.Value@description\",\"name\":\"description\",\"value\":\"A Kevoree component that sends a 'tick' message at user-defined intervals\"}\n],\"required\":[\n{\"class\":\"org.kevoree.PortTypeRef@tick\",\"noDependency\":\"true\",\"name\":\"tick\",\"optional\":\"true\",\"ref\":[],\"mappings\":[]}\n],\"provided\":[]}"
+}

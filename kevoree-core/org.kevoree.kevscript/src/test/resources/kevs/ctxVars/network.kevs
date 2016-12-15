@@ -1,0 +1,3 @@
+add node: JavascriptNode
+
+network node.foo.bar %ip%

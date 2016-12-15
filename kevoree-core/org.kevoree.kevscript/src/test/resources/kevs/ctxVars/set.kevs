@@ -1,0 +1,3 @@
+add node: JavascriptNode
+
+set node.logLevel = %LEVEL%

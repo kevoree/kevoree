@@ -1,0 +1,2 @@
+add node0, node1, node2: JavascriptNode
+remove node0, node2

@@ -1,0 +1,9 @@
+{
+  "createdBy": "kevoree",
+  "lastModifiedBy": "leiko",
+  "lastModifiedDate": 1481214814452,
+  "id": 1123,
+  "name": "JavascriptNode",
+  "version": 42,
+  "model": "{\"class\":\"org.kevoree.NodeType@name=JavascriptNode,version=42\",\"abstract\":\"false\",\"name\":\"JavascriptNode\",\"version\":\"42\",\"deployUnits\":[],\"superTypes\":[],\"dictionaryType\":[\n{\"class\":\"org.kevoree.DictionaryType@0.0\",\"generated_KMF_ID\":\"0.0\",\"attributes\":[\n{\"class\":\"org.kevoree.DictionaryAttribute@logLevel\",\"fragmentDependant\":\"false\",\"optional\":\"false\",\"name\":\"logLevel\",\"state\":\"false\",\"datatype\":\"STRING\",\"defaultValue\":\"INFO\",\"genericTypes\":[]}\n]}\n],\"metaData\":[\n{\"class\":\"org.kevoree.Value@description\",\"name\":\"description\",\"value\":\"Kevoree JS standard node platform\"}\n]}"
+}

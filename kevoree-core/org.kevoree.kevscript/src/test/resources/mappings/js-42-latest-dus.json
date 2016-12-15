@@ -1,0 +1,13 @@
+{
+  "request" : {
+    "urlPattern" : "/api/namespaces/kevoree/tdefs/JavascriptNode/42/latest-dus",
+    "method": "GET"
+  },
+  "response" : {
+    "status" : 200,
+    "bodyFileName": "js-42-latest-dus.json",
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  }
+}

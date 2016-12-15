@@ -106,7 +106,7 @@ public class KevoreeRegistryResolver {
 
         } else {
             // specified version is not LATEST
-            // TODO add cache layer
+            // TODO kevs.add cache layer
             Log.debug("Looking for " + fqn.toString() + " in model...");
             KMFContainer elem = model.findByPath(fqn.toKevoreePath());
             if (elem != null) {

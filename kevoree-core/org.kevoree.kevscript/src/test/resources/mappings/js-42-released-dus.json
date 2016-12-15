@@ -1,0 +1,13 @@
+{
+  "request" : {
+    "urlPattern" : "/api/namespaces/kevoree/tdefs/JavascriptNode/42/released-dus",
+    "method": "GET"
+  },
+  "response" : {
+    "status" : 200,
+    "bodyFileName": "js-42-released-dus.json",
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  }
+}

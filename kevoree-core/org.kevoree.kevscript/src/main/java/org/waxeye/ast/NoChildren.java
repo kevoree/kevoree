@@ -53,9 +53,9 @@ public abstract class NoChildren <E extends Enum<?>> implements IAST<E>
     }
 
     /**
-     * Returns a new empty list since this node doesn't allow children.
+     * Returns a new kevs.empty list since this node doesn't allow children.
      *
-     * @return Returns a new empty list.
+     * @return Returns a new kevs.empty list.
      */
     public final List<IAST<E>> getChildren()
     {

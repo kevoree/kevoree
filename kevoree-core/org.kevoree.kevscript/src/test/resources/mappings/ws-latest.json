@@ -1,0 +1,13 @@
+{
+  "request" : {
+    "urlPattern" : "/api/namespaces/kevoree/tdef/WSGroup/latest",
+    "method": "GET"
+  },
+  "response" : {
+    "status" : 200,
+    "bodyFileName": "ws-1.json",
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  }
+}

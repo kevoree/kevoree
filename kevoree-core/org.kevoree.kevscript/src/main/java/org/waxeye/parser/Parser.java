@@ -26,7 +26,7 @@ import org.waxeye.input.IParserInput;
  */
 public abstract class Parser <E extends Enum<?>> implements IParser<E>
 {
-    /** The empty node. */
+    /** The kevs.empty node. */
     private final IAST<E> empty;
 
     /** The char type. */
@@ -56,7 +56,7 @@ public abstract class Parser <E extends Enum<?>> implements IParser<E>
      *
      * @param start The starting automaton.
      *
-     * @param emptyType The empty type.
+     * @param emptyType The kevs.empty type.
      *
      * @param charType The char type.
      *

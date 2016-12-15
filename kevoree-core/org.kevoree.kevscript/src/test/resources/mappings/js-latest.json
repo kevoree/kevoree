@@ -1,0 +1,13 @@
+{
+  "request" : {
+    "urlPattern" : "/api/namespaces/kevoree/tdef/JavascriptNode/latest",
+    "method": "GET"
+  },
+  "response" : {
+    "status" : 200,
+    "bodyFileName": "js-42.json",
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  }
+}

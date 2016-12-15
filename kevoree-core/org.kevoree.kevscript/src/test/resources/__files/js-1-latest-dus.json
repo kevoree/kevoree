@@ -1,0 +1,10 @@
+[{
+  "createdBy": "leiko",
+  "lastModifiedBy": "leiko",
+  "lastModifiedDate": 1481214814443,
+  "id": 1201,
+  "name": "kevoree-node-javascript",
+  "version": "5.4.0-beta.0",
+  "platform": "js",
+  "model": "{\"class\":\"root:org.kevoree.ContainerRoot@0.49632998520880391481214811460\",\"generated_KMF_ID\":\"0.49632998520880391481214811460\",\"nodes\":[],\"repositories\":[],\"hubs\":[],\"mBindings\":[],\"groups\":[],\"packages\":[\n{\"class\":\"org.kevoree.Package@kevoree\",\"name\":\"kevoree\",\"packages\":[],\"typeDefinitions\":[],\"deployUnits\":[\n{\"class\":\"org.kevoree.DeployUnit@hashcode=01cf3fc730f4fbcdebf52a6f9fe54e05,name=kevoree-node-javascript,version=5.4.0-beta.0\",\"name\":\"kevoree-node-javascript\",\"hashcode\":\"01cf3fc730f4fbcdebf52a6f9fe54e05\",\"url\":\"\",\"version\":\"5.4.0-beta.0\",\"requiredLibs\":[],\"filters\":[\n{\"class\":\"org.kevoree.Value@platform\",\"name\":\"platform\",\"value\":\"js\"}\n]}\n]}\n]}"
+}]
