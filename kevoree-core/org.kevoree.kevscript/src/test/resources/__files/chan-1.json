@@ -1,0 +1,9 @@
+{
+  "createdBy": "kevoree",
+  "lastModifiedBy": "leiko",
+  "lastModifiedDate": "1482593399528",
+  "id": 1030,
+  "name": "LocalChannel",
+  "version": 1,
+  "model": "{\"class\":\"org.kevoree.ChannelType@name=LocalChannel,version=1\",\"upperFragments\":\"0\",\"name\":\"LocalChannel\",\"abstract\":\"false\",\"lowerBindings\":\"0\",\"version\":\"1\",\"lowerFragments\":\"0\",\"upperBindings\":\"0\",\"deployUnits\":[],\"superTypes\":[],\"dictionaryType\":[{\"class\":\"org.kevoree.DictionaryType@0.0\",\"generated_KMF_ID\":\"0.0\",\"attributes\":[{\"class\":\"org.kevoree.DictionaryAttribute@delay\",\"datatype\":\"INT\",\"defaultValue\":\"0\",\"name\":\"delay\",\"fragmentDependant\":\"false\",\"optional\":\"false\",\"state\":\"false\",\"genericTypes\":[]}]}],\"metaData\":[{\"class\":\"org.kevoree.Value@description\",\"name\":\"description\",\"value\":\"Kevoree channel that only sends messages to components in the same node\"}]}"
+}

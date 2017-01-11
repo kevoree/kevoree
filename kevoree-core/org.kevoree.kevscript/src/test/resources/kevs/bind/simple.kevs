@@ -1,0 +1,5 @@
+add node: JavascriptNode
+add node.ticker: Ticker/LATEST/LATEST
+add chan: LocalChannel
+
+bind node.ticker.tick chan

@@ -20,9 +20,11 @@ public class Interpreter {
             case Add:
                 AddStmt.interpret(stmt, model, ctxVars, resolver);
                 break;
+
             case Move:
                 MoveStmt.interpret(stmt, model, ctxVars);
                 break;
+
             case Attach:
                 AttachStmt.interpret(stmt, model, ctxVars);
 
@@ -47,10 +49,6 @@ public class Interpreter {
                 StopStmt.interpret(stmt, model, ctxVars);
                 break;
 
-            case Pause:
-                // TODO
-                throw new KevScriptError("Pause statement is not implemented yet.");
-
             case Network:
                 NetworkStmt.interpret(stmt, model, ctxVars);
                 break;
@@ -60,13 +58,15 @@ public class Interpreter {
                 break;
 
             case AddBinding:
-
+                AddBinding.interpret(stmt, model, ctxVars);
                 break;
+
             case DelBinding:
                 DelBinding.interpret(stmt, model, ctxVars);
                 break;
+
             default:
-                Log.info("Deprecated KevScript statement: {}", stmt.getType().name());
+                Log.info("Deprecated KevScript statement: {} ({})", stmt.getType().name(), stmt.getPosition());
                 break;
         }
     }

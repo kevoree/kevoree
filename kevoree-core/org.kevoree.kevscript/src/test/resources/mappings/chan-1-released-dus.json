@@ -1,0 +1,13 @@
+{
+  "request" : {
+    "urlPattern" : "/api/namespaces/kevoree/tdefs/LocalChannel/1/released-dus",
+    "method": "GET"
+  },
+  "response" : {
+    "status" : 200,
+    "bodyFileName": "chan-1-released-dus.json",
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  }
+}
