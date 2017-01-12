@@ -3,9 +3,7 @@ package org.kevoree.api.helper;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 /**
  *
@@ -185,6 +183,66 @@ public class ReflectUtils {
                 return method;
             }
         }
+        return null;
+    }
+
+    /**
+     * Returns a set of Methods annotated with the given Annotation class
+     *
+     * @param clazz the target object class
+     * @param annoClass the annotation class that you are looking for
+     * @return the annotated methods if any; empty set otherwise
+     */
+    public static Set<Method> findMethodsWithAnnotation(final Class<?> clazz, final Class<? extends Annotation> annoClass) {
+        Set<Method> methods = new HashSet<Method>();
+        for (Method method : clazz.getDeclaredMethods()) {
+            if (method.getAnnotation(annoClass) != null) {
+                methods.add(method);
+            }
+        }
+
+        if (clazz.getSuperclass() != null) {
+            methods.addAll(findMethodsWithAnnotation(clazz.getSuperclass(), annoClass));
+        }
+
+        for (Class<?> iClazz : clazz.getInterfaces()) {
+            methods.addAll(findMethodsWithAnnotation(iClazz, annoClass));
+        }
+
+        return methods;
+    }
+
+    /**
+     * Returns the first occurence of a method based on its name and the given Annotation class
+     *
+     * @param clazz the target object class
+     * @param methodName the method name
+     * @param annoClass the annotation class that you are looking for
+     * @return the annotated method if any; null otherwise
+     */
+    public static Method findMethodWithAnnotation(final Class<?> clazz, final String methodName,
+                                                  final Class<? extends Annotation> annoClass) {
+
+        for (Method method : clazz.getDeclaredMethods()) {
+            if (method.getAnnotation(annoClass) != null && method.getName().equals(methodName)) {
+                return method;
+            }
+        }
+
+        if (clazz.getSuperclass() != null) {
+            Method method = findMethodWithAnnotation(clazz.getSuperclass(), methodName, annoClass);
+            if (method != null) {
+                return method;
+            }
+        }
+
+        for (Class<?> iClazz : clazz.getInterfaces()) {
+            Method method = findMethodWithAnnotation(iClazz, methodName, annoClass);
+            if (method != null) {
+                return method;
+            }
+        }
+
         return null;
     }
 }
