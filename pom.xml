@@ -17,7 +17,6 @@
         <jeromq.version>0.3.2</jeromq.version>
         <junit.version>4.11</junit.version>
         <jdk.target>1.6</jdk.target>
-        <proguard.jar>/Users/duke/Documents/dev/sdk/proguard/proguard.jar</proguard.jar>
     </properties>
 
     <organization>
