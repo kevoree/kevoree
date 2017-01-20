@@ -7,7 +7,7 @@ public class RegistryRestClientTest {
 	@Test
 	@Ignore
 	public void test() throws Exception {
-		RegistryRestClient registryRestClient = new RegistryRestClient("https://kevoree.braindead.fr", null);
+		RegistryRestClient registryRestClient = new RegistryRestClient("https://registry.kevoree.org", null);
 		System.out.println(registryRestClient.getLatestTypeDef("kevoree", "JavaNode"));
 	}
 }
