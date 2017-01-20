@@ -30,12 +30,12 @@
         <dependency>
             <groupId>org.kevoree</groupId>
             <artifactId>org.kevoree.model</artifactId>
-            <version>${kevoree.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.kevoree</groupId>
             <artifactId>org.kevoree.api</artifactId>
-            <version>${kevoree.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.kevoree.kcl</groupId>
@@ -45,17 +45,17 @@
         <dependency>
             <groupId>org.kevoree</groupId>
             <artifactId>org.kevoree.core</artifactId>
-            <version>${kevoree.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.kevoree</groupId>
             <artifactId>org.kevoree.annotation.api</artifactId>
-            <version>${kevoree.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.kevoree</groupId>
             <artifactId>org.kevoree.kevscript</artifactId>
-            <version>${kevoree.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.jboss.shrinkwrap.resolver</groupId>

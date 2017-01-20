@@ -16,7 +16,7 @@
         <dependency>
             <groupId>org.kevoree.tools</groupId>
             <artifactId>org.kevoree.tools.annotator</artifactId>
-            <version>${kevoree.version}</version>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
 

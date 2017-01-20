@@ -32,7 +32,7 @@
         <dependency>
             <groupId>org.kevoree</groupId>
             <artifactId>org.kevoree.framework</artifactId>
-            <version>${kevoree.version}</version>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
 

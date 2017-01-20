@@ -15,7 +15,7 @@
         <dependency>
             <groupId>org.kevoree</groupId>
             <artifactId>org.kevoree.bootstrap</artifactId>
-            <version>${kevoree.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.zeromq</groupId>
