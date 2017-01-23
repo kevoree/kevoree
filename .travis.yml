@@ -1,0 +1,20 @@
+language: java
+
+sudo: false
+
+before_install:
+- export MAVEN_OPTS="-Xms2048m -Xmx2048m -XX:PermSize=512m"
+
+cache:
+  directories:
+  - "$HOME/.m2"
+
+jdk:
+- oraclejdk8
+
+branches:
+  only:
+  - master
+
+after_success:
+- mvn -B deploy --settings settings.xml
