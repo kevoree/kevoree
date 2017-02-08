@@ -121,117 +121,119 @@ public class ModelBuilderHelper {
 
     public static void deepFields(CtClass clazz, KevoreeFactory factory, TypeDefinition currentTypeDefinition) throws Exception {
         for (CtField field : clazz.getDeclaredFields()) {
-            for (Object annotation : field.getAnnotations()) {
-                if (annotation instanceof org.kevoree.annotation.KevoreeInject) {
-                    boolean checkType = false;
-                    if (field.getType().getName().equals(ModelService.class.getName())) {
-                        checkType = true;
-                    } else if (field.getType().getName().equals(BootstrapService.class.getName())) {
-                        checkType = true;
-                    } else if (field.getType().getName().equals(KevScriptService.class.getName())) {
-                        checkType = true;
-                    } else if (field.getType().getName().equals(Context.class.getName())) {
-                        checkType = true;
-                    } else if (field.getType().getName().equals(ChannelContext.class.getName())) {
-                        checkType = true;
-                    } else if (field.getType().getName().equals(PlatformService.class.getName())) {
-                        checkType = true;
+            try {
+                for (Object annotation : field.getAnnotations()) {
+                    if (annotation instanceof org.kevoree.annotation.KevoreeInject) {
+                        boolean checkType = false;
+                        if (field.getType().getName().equals(ModelService.class.getName())) {
+                            checkType = true;
+                        } else if (field.getType().getName().equals(BootstrapService.class.getName())) {
+                            checkType = true;
+                        } else if (field.getType().getName().equals(KevScriptService.class.getName())) {
+                            checkType = true;
+                        } else if (field.getType().getName().equals(Context.class.getName())) {
+                            checkType = true;
+                        } else if (field.getType().getName().equals(ChannelContext.class.getName())) {
+                            checkType = true;
+                        } else if (field.getType().getName().equals(PlatformService.class.getName())) {
+                            checkType = true;
+                        }
+                        if (!checkType) {
+                            throw new Exception("KevoreeInject annotation is only suitable for following types : ModelService,BootstrapService,KevScriptService,Context,ChannelContext : currently found : " + field.getType().getName());
+                        }
                     }
-                    if (!checkType) {
-                        throw new Exception("KevoreeInject annotation is only suitable for following types : ModelService,BootstrapService,KevScriptService,Context,ChannelContext : currently found : " + field.getType().getName());
+                    if (annotation instanceof Output) {
+                        Output annotationOutput = (Output) annotation;
+                        if (!field.getType().getName().equals(Port.class.getName())) {
+                            throw new Exception("Output port field must of type of " + Port.class.getName());
+                        }
+                        if (currentTypeDefinition instanceof ComponentType) {
+                            ComponentType currentTypeDefinitionComponentType = (ComponentType) currentTypeDefinition;
+                            PortTypeRef requiredPortRef = factory.createPortTypeRef();
+                            requiredPortRef.setName(field.getName());
+                            try {
+                                requiredPortRef.setOptional(annotationOutput.optional());
+                            } catch (Exception e) {
+                                requiredPortRef.setOptional(true);
+                            }
+
+
+                            requiredPortRef.setNoDependency(true);
+                            currentTypeDefinitionComponentType.addRequired(requiredPortRef);
+                        }
                     }
-                }
-                if (annotation instanceof Output) {
-                    Output annotationOutput = (Output) annotation;
-                    if (!field.getType().getName().equals(Port.class.getName())) {
-                        throw new Exception("Output port field must of type of " + Port.class.getName());
-                    }
-                    if (currentTypeDefinition instanceof ComponentType) {
-                        ComponentType currentTypeDefinitionComponentType = (ComponentType) currentTypeDefinition;
-                        PortTypeRef requiredPortRef = factory.createPortTypeRef();
-                        requiredPortRef.setName(field.getName());
+                    if (annotation instanceof Param) {
+                        Param annotationParam = (Param) annotation;
+                        DataType dataType = null;
+
+                        boolean checkType = false;
+                        if (field.getType().getName().equals(String.class.getName())) {
+                            checkType = true;
+                            dataType = DataType.STRING;
+                        }
+                        if (field.getType().getName().equals(Float.class.getName()) || field.getType().getName().equals("float")) {
+                            checkType = true;
+                            dataType = DataType.FLOAT;
+                        }
+                        if (field.getType().getName().equals(Integer.class.getName()) || field.getType().getName().equals("int")) {
+                            checkType = true;
+                            dataType = DataType.INT;
+                        }
+                        if (field.getType().getName().equals(Double.class.getName()) || field.getType().getName().equals("double")) {
+                            checkType = true;
+                            dataType = DataType.DOUBLE;
+                        }
+                        if (field.getType().getName().equals(Boolean.class.getName()) || field.getType().getName().equals("boolean")) {
+                            checkType = true;
+                            dataType = DataType.BOOLEAN;
+                        }
+                        if (field.getType().getName().equals(Long.class.getName()) || field.getType().getName().equals("long")) {
+                            checkType = true;
+                            dataType = DataType.LONG;
+                        }
+                        if (field.getType().getName().equals(Short.class.getName()) || field.getType().getName().equals("short")) {
+                            checkType = true;
+                            dataType = DataType.SHORT;
+                        }
+                        if (field.getType().getName().equals(char.class.getName()) || field.getType().getName().equals("char")) {
+                            checkType = true;
+                            dataType = DataType.CHAR;
+                        }
+                        if (field.getType().getName().equals(byte.class.getName()) || field.getType().getName().equals("byte") || field.getType().getName().equals(Byte.class.getName())) {
+                            checkType = true;
+                            dataType = DataType.BYTE;
+                        }
+                        if (!checkType) {
+                            if (!field.getType().isPrimitive()) {
+                                throw new Exception("Param annotation is only applicable on field of type String,Long,Double,Float,Integer, current " + field.getType().getName());
+                            }
+                        }
+                        DictionaryAttribute dicAtt = factory.createDictionaryAttribute();
+                        if (currentTypeDefinition.getDictionaryType() == null) {
+                            currentTypeDefinition.setDictionaryType(factory.createDictionaryType().withGenerated_KMF_ID("0.0"));
+                        }
+                        dicAtt.setName(field.getName());
+                        dicAtt.setDatatype(dataType);
                         try {
-                            requiredPortRef.setOptional(annotationOutput.optional());
+                            dicAtt.setOptional(annotationParam.optional());
                         } catch (Exception e) {
-                            requiredPortRef.setOptional(true);
+                            dicAtt.setOptional(true);
                         }
-
-                        
-                        requiredPortRef.setNoDependency(true);
-                        currentTypeDefinitionComponentType.addRequired(requiredPortRef);
+                        try {
+                            dicAtt.setFragmentDependant(annotationParam.fragmentDependent());
+                        } catch (Exception e) {
+                            dicAtt.setFragmentDependant(false);
+                        }
+                        try {
+                            dicAtt.setDefaultValue(annotationParam.defaultValue());
+                        } catch (Exception e) {
+                            dicAtt.setDefaultValue(null);
+                        }
+                        currentTypeDefinition.getDictionaryType().setGenerated_KMF_ID("0.0");
+                        currentTypeDefinition.getDictionaryType().addAttributes(dicAtt);
                     }
                 }
-                if (annotation instanceof Param) {
-                    Param annotationParam = (Param) annotation;
-                    DataType dataType = null;
-
-                    boolean checkType = false;
-                    if (field.getType().getName().equals(String.class.getName())) {
-                        checkType = true;
-                        dataType = DataType.STRING;
-                    }
-                    if (field.getType().getName().equals(Float.class.getName()) || field.getType().getName().equals("float")) {
-                        checkType = true;
-                        dataType = DataType.FLOAT;
-                    }
-                    if (field.getType().getName().equals(Integer.class.getName()) || field.getType().getName().equals("int")) {
-                        checkType = true;
-                        dataType = DataType.INT;
-                    }
-                    if (field.getType().getName().equals(Double.class.getName()) || field.getType().getName().equals("double")) {
-                        checkType = true;
-                        dataType = DataType.DOUBLE;
-                    }
-                    if (field.getType().getName().equals(Boolean.class.getName()) || field.getType().getName().equals("boolean")) {
-                        checkType = true;
-                        dataType = DataType.BOOLEAN;
-                    }
-                    if (field.getType().getName().equals(Long.class.getName()) || field.getType().getName().equals("long")) {
-                        checkType = true;
-                        dataType = DataType.LONG;
-                    }
-                    if (field.getType().getName().equals(Short.class.getName()) || field.getType().getName().equals("short")) {
-                        checkType = true;
-                        dataType = DataType.SHORT;
-                    }
-                    if (field.getType().getName().equals(char.class.getName()) || field.getType().getName().equals("char")) {
-                        checkType = true;
-                        dataType = DataType.CHAR;
-                    }
-                    if (field.getType().getName().equals(byte.class.getName()) || field.getType().getName().equals("byte") || field.getType().getName().equals(Byte.class.getName())) {
-                        checkType = true;
-                        dataType = DataType.BYTE;
-                    }
-                    if (!checkType) {
-                        if (!field.getType().isPrimitive()) {
-                            throw new Exception("Param annotation is only applicable on field of type String,Long,Double,Float,Integer, current " + field.getType().getName());
-                        }
-                    }
-                    DictionaryAttribute dicAtt = factory.createDictionaryAttribute();
-                    if (currentTypeDefinition.getDictionaryType() == null) {
-                        currentTypeDefinition.setDictionaryType(factory.createDictionaryType().withGenerated_KMF_ID("0.0"));
-                    }
-                    dicAtt.setName(field.getName());
-                    dicAtt.setDatatype(dataType);
-                    try {
-                        dicAtt.setOptional(annotationParam.optional());
-                    } catch (Exception e) {
-                        dicAtt.setOptional(true);
-                    }
-                    try {
-                        dicAtt.setFragmentDependant(annotationParam.fragmentDependent());
-                    } catch (Exception e) {
-                        dicAtt.setFragmentDependant(false);
-                    }
-                    try {
-                        dicAtt.setDefaultValue(annotationParam.defaultValue());
-                    } catch (Exception e) {
-                        dicAtt.setDefaultValue(null);
-                    }
-                    currentTypeDefinition.getDictionaryType().setGenerated_KMF_ID("0.0");
-                    currentTypeDefinition.getDictionaryType().addAttributes(dicAtt);
-                }
-            }
+            } catch (ClassNotFoundException ignore) {}
         }
         
         for (CtClass interfaceLoop : clazz.getInterfaces()) {
