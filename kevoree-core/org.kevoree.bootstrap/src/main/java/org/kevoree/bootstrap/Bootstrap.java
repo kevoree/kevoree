@@ -99,6 +99,11 @@ public class Bootstrap {
 
         kevScriptEngine = new KevScriptEngine(registryUrl);
         core = new KevoreeCoreBean(kevScriptEngine);
+        core.onStop(new KevoreeCoreBean.OnStopHandler() {
+            public void execute() {
+                Runtime.getRuntime().exit(exitId);
+            }
+        });
 
         jsonLoader = core.getFactory().createJSONLoader();
 
@@ -152,10 +157,6 @@ public class Bootstrap {
         }
     }
 
-    public void stop() {
-        core.stop();
-    }
-    
     private void checkBootstrap(boolean succeed) {
     	if (succeed) {
     		Log.info("Bootstrap succeed");
@@ -266,6 +267,18 @@ public class Bootstrap {
     	this.bootstrapFromFile(input, null);
     }
 
+    public void stop() {
+        try {
+            System.out.println(); // give some space if ^C is in the terminal
+            if (core.isStarted()) {
+                core.stop();
+            }
+            Log.info("Stopped.");
+        } catch (Throwable ex) {
+            System.out.println("Error while stopping kevoree platform: " + ex.getMessage());
+        }
+    }
+
     public static String createBootstrapScript(String nodeName, String version) {
         StringBuilder buffer = new StringBuilder();
         buffer.append("add node0: JavaNode\n".replace("node0", nodeName));
@@ -284,7 +297,6 @@ public class Bootstrap {
     }
 
     public static void main(String[] args) throws Exception {
-        final ClassLoader loader = Thread.currentThread().getContextClassLoader();
         String nodeName = System.getProperty("node.name");
         if (nodeName == null) {
             nodeName = defaultNodeName;
@@ -301,17 +313,12 @@ public class Bootstrap {
         if (boot.getKernel() == null) {
             throw new Exception("Kevoree as not be started from KCL microkernel context");
         }
+
+        final ClassLoader loader = Thread.currentThread().getContextClassLoader();
         Runtime.getRuntime().addShutdownHook(new Thread("Shutdown Hook") {
             public void run() {
-                try {
-                    System.out.println();
-                    Thread.currentThread().setContextClassLoader(loader);
-                    Log.info("Stopping Kevoree");
-                    boot.stop();
-                    Log.info("Stopped.");
-                } catch (Throwable ex) {
-                    System.out.println("Error stopping kevoree platform: " + ex.getMessage());
-                }
+                Thread.currentThread().setContextClassLoader(loader);
+                boot.stop();
             }
         });
 

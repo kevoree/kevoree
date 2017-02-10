@@ -25,14 +25,11 @@
     <modules>
         <module>org.kevoree.annotation.api</module>
         <module>org.kevoree.model</module>
-        <!--<module>org.kevoree.model.js</module>-->
         <module>org.kevoree.api</module>
         <module>org.kevoree.registry.api</module>
         <module>org.kevoree.kevscript</module>
         <module>org.kevoree.core</module>
         <module>org.kevoree.bootstrap</module>
-        <module>org.kevoree.bootstrap.test</module>
-        <module>org.kevoree.bootstrap.telemetry</module>
     </modules>
 
     <build>

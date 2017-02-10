@@ -22,10 +22,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.UUID;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -34,11 +31,12 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 public class KevoreeCoreBean implements ContextAwareModelService, PlatformService {
 
-    ArrayList<TelemetryListener> telemetryListeners = new ArrayList<TelemetryListener>();
+    private ArrayList<TelemetryListener> telemetryListeners = new ArrayList<TelemetryListener>();
     private String nodeName;
 
     private KevScriptService kevscript;
-    
+    private OnStopHandler onStopHandler;
+
     public KevoreeCoreBean(KevScriptService kevscript) {
     	this.kevscript = kevscript;
     }
@@ -384,54 +382,59 @@ public class KevoreeCoreBean implements ContextAwareModelService, PlatformServic
         }
     }
 
-    private Object bootstrapNodeType(ContainerRoot model, String nodeName) {
-        ContainerNode nodeInstance = model.findNodesByID(nodeName);
-        if (nodeInstance != null) {
-            FlexyClassLoader kcl = bootstrapService.installTypeDefinition(nodeInstance);
-            Object newInstance = bootstrapService.createInstance(nodeInstance, kcl);
-            bootstrapService.injectDictionary(nodeInstance, newInstance, false);
-            return newInstance;
+    private NodeType bootstrapNodeType(ContainerRoot model, String nodeName) {
+        ContainerNode node = model.findNodesByID(nodeName);
+        if (node != null) {
+            FlexyClassLoader kcl = bootstrapService.installTypeDefinition(node);
+            try {
+                NodeType nodeObject = (NodeType) bootstrapService.createInstance(node, kcl);
+                bootstrapService.injectDictionary(node, nodeObject, false);
+                return nodeObject;
+            } catch (ClassCastException e) {
+                Log.error("You are trying to load a NodeType that does not target this runtime version");
+            }
         } else {
             broadcastTelemetry(TelemetryEvent.Type.LOG_ERROR, "Node not found using name " + nodeName, null);
             Log.error("Unable to find a node named \"" + nodeName + "\" in model");
-            return null;
         }
+
+        return null;
     }
 
     private void checkBootstrapNode(ContainerRoot currentModel) {
         try {
             if (nodeInstance == null) {
                 Log.debug("Bootstrapping platform node \"{}\"", getNodeName());
-            	nodeInstance = (NodeType) bootstrapNodeType(currentModel, getNodeName());
+                nodeInstance = bootstrapNodeType(currentModel, getNodeName());
                 if (nodeInstance != null) {
                     resolver = new MethodAnnotationResolver(nodeInstance.getClass());
                     Method met = resolver.resolve(org.kevoree.annotation.Start.class);
                     if (met != null) {
-                    	try {
-                    		met.invoke(nodeInstance);
-                    	} catch (Throwable ee) {
-                    		Log.error("Error while invoking platform node @Start method" , ee);
-                    	}
+                        try {
+                            met.invoke(nodeInstance);
+                        } catch (Throwable ee) {
+                            Log.error("Error while invoking platform node @Start method", ee);
+                        }
                     }
                     UUIDModelImpl uuidModel = new UUIDModelImpl(UUID.randomUUID(), kevoreeFactory.createContainerRoot());
                     model.set(uuidModel);
                 } else {
                     broadcastTelemetry(TelemetryEvent.Type.LOG_ERROR, "Unable to initialize platform node " + getNodeName(), null);
-                	Log.error("Unable to initialize platform node " + getNodeName());
+                    Log.error("Unable to initialize platform node " + getNodeName());
                     this.stop();
                 }
             }
         } catch (Throwable e) {
             broadcastTelemetry(TelemetryEvent.Type.LOG_ERROR, "Error while bootstrapping node instance " + getNodeName(), e);
-        	Log.error("Error while bootstrapping node instance " + getNodeName(), e);
+            Log.error("Error while bootstrapping node instance " + getNodeName(), e);
             if (nodeInstance != null) {
                 Method met = resolver.resolve(org.kevoree.annotation.Stop.class);
                 if (met != null) {
-                	try {
-                		met.invoke(nodeInstance);
-                	} catch (Throwable ee) {
-                		Log.error("Error while invoking platform node @Stop method" , ee);
-                	}
+                    try {
+                        met.invoke(nodeInstance);
+                    } catch (Throwable ee) {
+                        Log.error("Error while invoking platform node @Stop method" , ee);
+                    }
                 }
             }
             nodeInstance = null;
@@ -462,21 +465,24 @@ public class KevoreeCoreBean implements ContextAwareModelService, PlatformServic
         };
     }
 
-
     public void start() {
         if (getNodeName() == null || getNodeName().equals("")) {
             setNodeName("node0");
         }
         modelListeners.start(getNodeName());
         broadcastTelemetry(TelemetryEvent.Type.PLATFORM_START, "Kevoree Start event : node name = " + getNodeName(), null);
-        scheduler = java.util.concurrent.Executors.newSingleThreadExecutor(new KevoreeCoreThreadFactory(getNodeName()));
+        scheduler = Executors.newSingleThreadExecutor(new KevoreeCoreThreadFactory(getNodeName()));
         UUIDModelImpl uuidModel = new UUIDModelImpl(UUID.randomUUID(), kevoreeFactory.createContainerRoot());
         model.set(uuidModel);
     }
 
+    public boolean isStarted() {
+        return scheduler != null && !scheduler.isShutdown();
+    }
 
     public void stop() {
-        broadcastTelemetry(TelemetryEvent.Type.PLATFORM_STOP, "Kevoree Core will be stopped !", null);
+        Log.info("Stopping Kevoree...");
+        broadcastTelemetry(TelemetryEvent.Type.PLATFORM_STOP, "Stopping Kevoree...", null);
         modelListeners.stop();
         if (scheduler != null) {
             scheduler.shutdownNow();
@@ -531,8 +537,18 @@ public class KevoreeCoreBean implements ContextAwareModelService, PlatformServic
                 broadcastTelemetry(TelemetryEvent.Type.LOG_ERROR, "Error while stopping node instance", e);
             }
         }
-        Log.info("Kevoree core stopped");
         broadcastTelemetry(TelemetryEvent.Type.LOG_INFO, "Kevoree Stopped", null);
+        if (this.onStopHandler != null) {
+            this.onStopHandler.execute();
+        }
+    }
+
+    public void onStop(OnStopHandler onStopHandler) {
+        this.onStopHandler = onStopHandler;
+    }
+
+    public interface OnStopHandler {
+        void execute();
     }
 
     private class AcquireLock implements Runnable {

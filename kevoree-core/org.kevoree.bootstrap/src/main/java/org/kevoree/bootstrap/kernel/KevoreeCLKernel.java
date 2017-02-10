@@ -139,11 +139,11 @@ public class KevoreeCLKernel implements BootstrapService {
     }
 
     @Override
-	public FlexyClassLoader installDeployUnit(DeployUnit deployUnit) {
-		FlexyClassLoader fcl = get(deployUnit);
-		if (fcl != null) {
-			return fcl;
-		} else {
+    public FlexyClassLoader installDeployUnit(DeployUnit deployUnit) {
+        FlexyClassLoader fcl = get(deployUnit);
+        if (fcl != null) {
+            return fcl;
+        } else {
             ConfigurableMavenResolverSystem resolver = getResolver(deployUnit);
 
             long before = System.currentTimeMillis();
@@ -162,11 +162,11 @@ public class KevoreeCLKernel implements BootstrapService {
             } else {
                 Log.error("Unable to resolve {}", deployUnit.getUrl());
             }
-		}
-		return fcl;
-	}
+        }
+        return fcl;
+    }
 
-	private ConfigurableMavenResolverSystem getResolver(DeployUnit deployUnit) {
+    private ConfigurableMavenResolverSystem getResolver(DeployUnit deployUnit) {
         String offlineProp = System.getProperty("offline", "false");
         boolean offline = Boolean.valueOf(offlineProp);
         ConfigurableMavenResolverSystem resolver = Maven
@@ -203,18 +203,7 @@ public class KevoreeCLKernel implements BootstrapService {
     @Override
     public FlexyClassLoader installTypeDefinition(Instance instance) {
         TypeDefinition td = instance.getTypeDefinition();
-        List<KMFContainer> filters = td.select("deployUnits[]/filters[name=platform,value=java]");
-        if (filters.size() > 1) {
-            String filtersStr = "";
-            for (int i=0; i < filters.size(); i++) {
-                filtersStr += filters.get(i).eContainer().path();
-                if (i < filters.size() - 1) {
-                    filtersStr += ", ";
-                }
-            }
-            throw new RuntimeException("Instance " + instance.path() + " has " + filters.size() + " deployUnits ("+filtersStr+") that matches platform \"java\" (must only be one)");
-        }
-        DeployUnit du = (DeployUnit) filters.get(0).eContainer();
+        DeployUnit du = validateFilters(instance, td.select("deployUnits[]/filters[name=platform,value=java]"));
         return installDeployUnit(du);
     }
 
@@ -236,10 +225,11 @@ public class KevoreeCLKernel implements BootstrapService {
     }
 
     @Override
-    public Object createInstance(final Instance instance, final FlexyClassLoader classLoader) {
+    @SuppressWarnings(value = "unchecked")
+    public synchronized Object createInstance(final Instance instance, final FlexyClassLoader classLoader) {
         try {
             final String mainClassName = searchMainClassName(instance);
-			final Class clazz = classLoader.loadClass(mainClassName);
+            final Class clazz = classLoader.loadClass(mainClassName);
             final Object newInstance = clazz.newInstance();
 
             injector.register(Context.class, new InstanceContext(instance.path(), nodeName, instance.getName()));
@@ -255,30 +245,32 @@ public class KevoreeCLKernel implements BootstrapService {
         return null;
     }
 
-	private String searchMainClassName(final Instance instance) {
-		TypeDefinition td = instance.getTypeDefinition();
-		List<KMFContainer> filters = td.select("deployUnits[]/filters[name=platform,value=java]");
+    private String searchMainClassName(final Instance instance) {
+        TypeDefinition td = instance.getTypeDefinition();
+        DeployUnit du = validateFilters(instance, td.select("deployUnits[]/filters[name=platform,value=java]"));
+        String tag = "class:" + td.getName() + ":" + td.getVersion();
+        Value tdefClassName = du.findFiltersByID(tag);
+        if (tdefClassName != null) {
+            return tdefClassName.getValue();
+        } else {
+            throw new RuntimeException("Cannot find meta-data \"" + tag + "\" in DeployUnit " + du.getHashcode() + "/" + du.getName() + "/" + du.getVersion());
+        }
+    }
 
-		if (filters.size() > 1) {
-		    String filtersStr = "";
-		    for (int i=0; i < filters.size(); i++) {
-		        filtersStr += filters.get(i).eContainer().path();
+    private DeployUnit validateFilters(Instance instance, List<KMFContainer> filters) {
+        if (filters.size() > 1) {
+            String filtersStr = "";
+            for (int i=0; i < filters.size(); i++) {
+                filtersStr += filters.get(i).eContainer().path();
                 if (i < filters.size() - 1) {
                     filtersStr += ", ";
                 }
             }
-			throw new RuntimeException("Instance " + instance.path() + " has " + filters.size() + " deployUnits ("+filtersStr+") that matches platform \"java\" (must only be one)");
-		}
-		
-		DeployUnit du = (DeployUnit) filters.get(0).eContainer();
-		String tag = "class:" + td.getName() + ":" + td.getVersion();
-		Value tdefClassName = du.findFiltersByID(tag);
-		if (tdefClassName != null) {
-			return tdefClassName.getValue();
-		} else {
-			throw new RuntimeException("Cannot find meta-data \"" + tag + "\" in DeployUnit " + du.getHashcode() + "/" + du.getName() + "/" + du.getVersion());
-		}
-	}
+            throw new RuntimeException("Instance " + instance.path() + " has " + filters.size() + " deployUnits ("+filtersStr+") that matches platform \"java\" (must only be one)");
+        }
+
+        return (DeployUnit) filters.get(0).eContainer();
+    }
 
     @NotNull
     @Override
@@ -350,7 +342,7 @@ public class KevoreeCLKernel implements BootstrapService {
                         isSet = true;
                     }
                     if (pClazz.equals(Boolean.class)) {
-                        setter.invoke(target, new Boolean(Boolean.parseBoolean(value)));
+                        setter.invoke(target, Boolean.parseBoolean(value));
                         isSet = true;
                     }
                     if (pClazz.equals(int.class)) {
@@ -358,7 +350,7 @@ public class KevoreeCLKernel implements BootstrapService {
                         isSet = true;
                     }
                     if (pClazz.equals(Integer.class)) {
-                        setter.invoke(target, new Integer(Integer.parseInt(value)));
+                        setter.invoke(target, Integer.parseInt(value));
                         isSet = true;
                     }
                     if (pClazz.equals(long.class)) {
@@ -366,7 +358,7 @@ public class KevoreeCLKernel implements BootstrapService {
                         isSet = true;
                     }
                     if (pClazz.equals(Long.class)) {
-                        setter.invoke(target, new Long(Long.parseLong(value)));
+                        setter.invoke(target, Long.parseLong(value));
                         isSet = true;
                     }
                     if (pClazz.equals(double.class)) {
@@ -374,7 +366,7 @@ public class KevoreeCLKernel implements BootstrapService {
                         isSet = true;
                     }
                     if (pClazz.equals(Double.class)) {
-                        setter.invoke(target, new Double(Double.parseDouble(value)));
+                        setter.invoke(target, Double.parseDouble(value));
                         isSet = true;
                     }
                     if (pClazz.equals(String.class)) {
@@ -386,7 +378,7 @@ public class KevoreeCLKernel implements BootstrapService {
                         isSet = true;
                     }
                     if (pClazz.equals(Short.class)) {
-                        setter.invoke(target, new Short(Short.parseShort(value)));
+                        setter.invoke(target, Short.parseShort(value));
                         isSet = true;
                     }
                     if (pClazz.equals(float.class)) {
@@ -394,7 +386,7 @@ public class KevoreeCLKernel implements BootstrapService {
                         isSet = true;
                     }
                     if (pClazz.equals(Float.class)) {
-                        setter.invoke(target, new Float(Float.parseFloat(value)));
+                        setter.invoke(target, Float.parseFloat(value));
                         isSet = true;
                     }
                     if (pClazz.equals(byte.class)) {
@@ -402,7 +394,7 @@ public class KevoreeCLKernel implements BootstrapService {
                         isSet = true;
                     }
                     if (pClazz.equals(Byte.class)) {
-                        setter.invoke(target, new Byte(Byte.parseByte(value)));
+                        setter.invoke(target, Byte.parseByte(value));
                         isSet = true;
                     }
                     if (value.length() == 1) {
@@ -422,25 +414,25 @@ public class KevoreeCLKernel implements BootstrapService {
                         f.setBoolean(target, Boolean.parseBoolean(value));
                     }
                     if (f.getType().equals(Boolean.class)) {
-                        f.set(target, new Boolean(Boolean.parseBoolean(value)));
+                        f.set(target, Boolean.parseBoolean(value));
                     }
                     if (f.getType().equals(int.class)) {
                         f.setInt(target, Integer.parseInt(value));
                     }
                     if (f.getType().equals(Integer.class)) {
-                        f.set(target, new Integer(Integer.parseInt(value)));
+                        f.set(target, Integer.parseInt(value));
                     }
                     if (f.getType().equals(long.class)) {
                         f.setLong(target, Long.parseLong(value));
                     }
                     if (f.getType().equals(Long.class)) {
-                        f.set(target, new Long(Long.parseLong(value)));
+                        f.set(target, Long.parseLong(value));
                     }
                     if (f.getType().equals(double.class)) {
                         f.setDouble(target, Double.parseDouble(value));
                     }
                     if (f.getType().equals(Double.class)) {
-                        f.set(target, new Double(Double.parseDouble(value)));
+                        f.set(target, Double.parseDouble(value));
                     }
                     if (f.getType().equals(String.class)) {
                         f.set(target, value);
@@ -449,19 +441,19 @@ public class KevoreeCLKernel implements BootstrapService {
                         f.set(target, Short.parseShort(value));
                     }
                     if (f.getType().equals(Short.class)) {
-                        f.set(target, new Short(Short.parseShort(value)));
+                        f.set(target, Short.parseShort(value));
                     }
                     if (f.getType().equals(float.class)) {
                         f.set(target, Float.parseFloat(value));
                     }
                     if (f.getType().equals(Float.class)) {
-                        f.set(target, new Float(Float.parseFloat(value)));
+                        f.set(target, Float.parseFloat(value));
                     }
                     if (f.getType().equals(byte.class)) {
                         f.set(target, Byte.parseByte(value));
                     }
                     if (f.getType().equals(Byte.class)) {
-                        f.set(target, new Byte(Byte.parseByte(value)));
+                        f.set(target, Byte.parseByte(value));
                     }
                     if (value.length() == 1) {
                         if (f.getType().equals(char.class)) {
@@ -471,7 +463,7 @@ public class KevoreeCLKernel implements BootstrapService {
                 }
                 return true;
             } catch (Exception e) {
-                Log.error("No field corresponding to annotation, consistency error {} on {}", e, fieldName, target.getClass().getName());
+                Log.error("Unable to inject value \"{}\" in {} parameter \"{}\"", e.getCause(), value, target.getClass().getName(), fieldName);
                 return false;
             }
         } else {
