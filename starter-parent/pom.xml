@@ -1,0 +1,76 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>org.kevoree.library</groupId>
+	<artifactId>starter-parent</artifactId>
+	<version>5.5.0-SNAPSHOT</version>
+	<name>Kevoree :: Starter Parent</name>
+	<packaging>pom</packaging>
+
+	<description>Parent pom providing dependency and plugin management for Kevoree libraries built with Maven</description>
+	<url>http://kevoree.org</url>
+
+	<organization>
+		<name>Kevoree Project</name>
+		<url>http://kevoree.org</url>
+	</organization>
+
+	<properties>
+		<java.version>1.8</java.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.compiler.source>${java.version}</maven.compiler.source>
+		<maven.compiler.target>${java.version}</maven.compiler.target>
+		<kevoree.version>${project.version}</kevoree.version>
+		<kevoree.registry.namespace>kevoree</kevoree.registry.namespace>
+		<kevoree.registry.url>https://registry.kevoree.org</kevoree.registry.url>
+	</properties>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.kevoree</groupId>
+				<artifactId>org.kevoree.api</artifactId>
+				<version>${kevoree.version}</version>
+				<scope>provided</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.kevoree</groupId>
+				<artifactId>org.kevoree.tools.test</artifactId>
+				<version>${kevoree.version}</version>
+				<scope>test</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-surefire-plugin</artifactId>
+				</plugin>
+				<!-- Support our own plugin -->
+				<plugin>
+					<groupId>org.kevoree</groupId>
+					<artifactId>org.kevoree.tools.mavenplugin</artifactId>
+					<version>${kevoree.version}</version>
+					<executions>
+						<execution>
+							<goals>
+								<goal>generate</goal>
+								<goal>deploy</goal>
+							</goals>
+						</execution>
+					</executions>
+					<configuration>
+						<registry>${kevoree.registry.url}</registry>
+						<namespace>${kevoree.registry.namespace}</namespace>
+						<kevscript>${env.KEVS}</kevscript>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
+
+</project>
