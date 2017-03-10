@@ -13,6 +13,7 @@
  */
 package org.kevoree.tools.mavenplugin;
 
+import com.github.zafarkhaja.semver.Version;
 import org.apache.commons.io.FileUtils;
 import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.model.Repository;
@@ -31,13 +32,17 @@ import org.kevoree.Value;
 import org.kevoree.api.helper.KModelHelper;
 import org.kevoree.factory.DefaultKevoreeFactory;
 import org.kevoree.factory.KevoreeFactory;
+import org.kevoree.modeling.api.KMFContainer;
 import org.kevoree.modeling.api.ModelCloner;
+import org.kevoree.modeling.api.ModelLoader;
 import org.kevoree.modeling.api.ModelSerializer;
+import org.kevoree.modeling.api.compare.ModelCompare;
 import org.kevoree.modeling.api.json.JSONModelSerializer;
 import org.kevoree.tools.mavenplugin.util.Annotations2Model;
 import org.kevoree.tools.mavenplugin.util.ModelBuilderHelper;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -167,21 +172,42 @@ public class KevGenerateMojo extends AbstractMojo {
 
 	private void cacheTypeDefinitions(ContainerRoot model) throws MojoExecutionException {
 		final String cacheRoot = Paths.get(System.getProperty("user.home"), ".kevoree", "tdefs").toString();
+		for (TypeDefinition tdef : model.getPackages().get(0).getTypeDefinitions()) {
+            String duTag = "RELEASE";
+			if (!Version.valueOf(tdef.getDeployUnits().get(0).getVersion()).getPreReleaseVersion().isEmpty()) {
+				duTag = "LATEST";
+			}
+			saveTdefToFile(model, cacheRoot, tdef, "LATEST", duTag);
+			saveTdefToFile(model, cacheRoot, tdef, tdef.getVersion(), duTag);
+		}
+	}
+
+	private void saveTdefToFile(ContainerRoot model, String cacheRoot, TypeDefinition tdef, String tdefTag, String duTag) throws MojoExecutionException {
 		final ModelSerializer serializer = factory.createJSONSerializer();
 		final ModelCloner cloner = factory.createModelCloner();
-		for (TypeDefinition tdef : model.getPackages().get(0).getTypeDefinitions()) {
-			Path path = Paths.get(cacheRoot, namespace, tdef.getName(), "LATEST-LATEST.json");
-			ContainerRoot clonedModel = cloner.clone(model);
-			for (TypeDefinition otherTdef : clonedModel.getPackages().get(0).getTypeDefinitions()) {
-				if (!otherTdef.path().equals(tdef.path())) {
-					otherTdef.delete();
-				}
-			}
+		final ModelLoader loader = factory.createJSONLoader();
+		final ModelCompare compare = factory.createModelCompare();
+		Path path = Paths.get(cacheRoot, namespace, tdef.getName(), tdefTag + "-"+duTag+".json");
+		ContainerRoot clonedModel = cloner.clone(model);
+		for (TypeDefinition otherTdef : clonedModel.getPackages().get(0).getTypeDefinitions()) {
+            if (!otherTdef.path().equals(tdef.path())) {
+                otherTdef.delete();
+            }
+        }
+		try {
 			try {
+                FileInputStream fis = new FileInputStream(path.toFile());
+                ContainerRoot currentModel = (ContainerRoot) loader.loadModelFromStream(fis).get(0);
+                // clean out already present Java DeployUnit
+                List<KMFContainer> javaDus = currentModel.select("**/deployUnits[]/filters[name=platform,value=java]");
+                javaDus.forEach(KMFContainer::delete);
+                compare.merge(currentModel, clonedModel).applyOn(currentModel);
+            } catch (Exception ignore) {
+			} finally {
 				FileUtils.writeStringToFile(path.toFile(), serializer.serialize(clonedModel), "UTF-8");
-			} catch (IOException e) {
-				throw new MojoExecutionException("Unable to cache model in " + path, e);
 			}
-		}
+		} catch (IOException e) {
+            throw new MojoExecutionException("Unable to cache model in " + path, e);
+        }
 	}
 }

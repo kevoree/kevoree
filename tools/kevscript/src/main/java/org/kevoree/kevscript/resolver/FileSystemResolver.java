@@ -58,7 +58,8 @@ public class FileSystemResolver extends AbstractResolver {
             if (!tdefs.isEmpty()) {
                 for (KMFContainer elem : tdefs) {
                     TypeDefinition t = (TypeDefinition) elem;
-                    if (((TypeDefinition) elem).getName().equals(fqn.name)) {
+                    if (t.getName().equals(fqn.name)) {
+                        fqn.version.tdef = t.getVersion();
                         Log.info("Found {} in {}", fqn, cacheRoot);
                         return t;
                     }
