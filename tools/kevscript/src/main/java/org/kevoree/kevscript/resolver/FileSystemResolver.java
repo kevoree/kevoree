@@ -88,7 +88,7 @@ public class FileSystemResolver extends AbstractResolver {
         // all set: merge context model and new resolved model together
         compare.merge(model, emptyModel).applyOn(model);
 
-        return tdef;
+        return (TypeDefinition) model.findByPath(tdef.path());
     }
 
     private ContainerRoot readFromFile(TypeFQN fqn) {
