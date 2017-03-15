@@ -239,8 +239,6 @@ public class Runtime {
             stop();
         }
 
-        FileUtils.writeStringToFile(new File("/tmp/test.json"), core.getFactory().createJSONSerializer().serialize(emptyModel), "UTF-8");
-
         this.bootstrap(emptyModel, callback);
     }
 
@@ -327,7 +325,7 @@ public class Runtime {
     }
 
     public static void main(String[] args) throws Exception {
-        System.setProperty("node.bootstrap", "/home/leiko/dev/kevoree/kevoree/tools/runtime/src/test/resources/script0.kevs");
+        //System.setProperty("node.bootstrap", "/home/leiko/dev/kevoree/kevoree/tools/runtime/src/test/resources/script0.kevs");
         String nodeName = System.getProperty("node.name", "node0");
         Runtime runtime = new Runtime(nodeName, ConfigHelper.get());
         runtime.bootstrap();
