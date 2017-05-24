@@ -1,9 +1,10 @@
-package org.kevoree.registry.api.model;
+package org.kevoree.registry.client.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Namespace {
+public class RNamespace {
+
 	private String name;
 
 	public String getName() {
@@ -16,9 +17,6 @@ public class Namespace {
 
 	@Override
 	public String toString() {
-		return "Namespace [name=" + name + "]";
+		return "RNamespace [name=" + name + "]";
 	}
-	
-	
-	
 }
