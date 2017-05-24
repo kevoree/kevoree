@@ -1,7 +1,12 @@
 {
   "request" : {
-    "urlPattern" : "/api/namespaces/kevoree/tdefs/JavascriptNode/42/released-dus",
-    "method": "GET"
+    "urlPath" : "/api/namespaces/kevoree/tdefs/JavascriptNode/42/dus",
+    "method": "GET",
+    "queryParameters": {
+      "version": {
+        "equalTo": "release"
+      }
+    }
   },
   "response" : {
     "status" : 200,

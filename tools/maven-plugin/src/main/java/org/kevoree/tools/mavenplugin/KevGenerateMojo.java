@@ -86,7 +86,7 @@ public class KevGenerateMojo extends AbstractMojo {
 				throw new MojoExecutionException("Error while parsing Kevoree annotations", e);
 			}
 
-			cacheTypeDefinitions(model);
+//			cacheTypeDefinitions(model);
 
 			processModelSerialization(model);
 		}
@@ -110,6 +110,11 @@ public class KevGenerateMojo extends AbstractMojo {
         kevoreeVersion.setName("kevoree_version");
         kevoreeVersion.setValue(factory.getVersion());
         du.addFilters(kevoreeVersion);
+
+		Value timestamp = factory.createValue();
+		timestamp.setName("timestamp");
+		timestamp.setValue(String.valueOf(System.currentTimeMillis()));
+		du.addFilters(timestamp);
 
         // add repositories
         for (Repository repo : project.getRepositories()) {
@@ -177,6 +182,7 @@ public class KevGenerateMojo extends AbstractMojo {
 			if (!Version.valueOf(tdef.getDeployUnits().get(0).getVersion()).getPreReleaseVersion().isEmpty()) {
 				duTag = "LATEST";
 			}
+			model.setGenerated_KMF_ID(String.valueOf(System.currentTimeMillis()));
 			saveTdefToFile(model, cacheRoot, tdef, "LATEST", duTag);
 			saveTdefToFile(model, cacheRoot, tdef, tdef.getVersion(), duTag);
 		}

@@ -30,8 +30,8 @@ public class KevScriptEngine implements KevScriptService {
         // 4 - try to find type in registry
         // 5 - exception unable to resolve
         RegistryResolver registryResolver = new RegistryResolver(registryUrl);
-        FileSystemResolver fsResolver = new FileSystemResolver(registryResolver, cacheRoot);
-        ModelResolver modelResolver = new ModelResolver(fsResolver);
+//        FileSystemResolver fsResolver = new FileSystemResolver(registryResolver, cacheRoot);
+        ModelResolver modelResolver = new ModelResolver(registryResolver);
         this.resolver = new TagResolver(modelResolver);
     }
 

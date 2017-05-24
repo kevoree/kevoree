@@ -71,6 +71,7 @@ public class TestResolver {
     }
 
     @Test
+    @Ignore
     public void fsResolvingOnSecondHitWithErasedModel() throws KevScriptException {
         // this test should end with a hit in the fs on the second resolving
         // because on first hit, registry will answer, then fs/model/tag should
@@ -78,7 +79,7 @@ public class TestResolver {
         TypeFQN ticker0 = new TypeFQN.Builder()
                 .namespace("kevoree")
                 .name("Ticker")
-                .duVersion(TypeFQN.Version.LATEST)
+                .duTag(TypeFQN.Version.LATEST)
                 .build();
         this.tagResolver.resolve(ticker0, model);
 
@@ -88,7 +89,7 @@ public class TestResolver {
         TypeFQN ticker1 = new TypeFQN.Builder()
                 .namespace("kevoree")
                 .name("Ticker")
-                .duVersion(TypeFQN.Version.LATEST)
+                .duTag(TypeFQN.Version.LATEST)
                 .build();
         // resolve again using the same fqn but an empty model
         this.tagResolver.resolve(ticker1, emptyModel());
@@ -107,6 +108,7 @@ public class TestResolver {
     }
 
     @Test
+    @Ignore
     public void fsResolvingOnSecondHitWithSameModel() throws KevScriptException {
         // this test should end with a hit in the model on the second resolving
         // because on first hit, registry will answer, then fs/model/tag should
@@ -114,7 +116,7 @@ public class TestResolver {
         TypeFQN ticker0 = new TypeFQN.Builder()
                 .namespace("kevoree")
                 .name("Ticker")
-                .duVersion(TypeFQN.Version.LATEST)
+                .duTag(TypeFQN.Version.LATEST)
                 .build();
         this.tagResolver.resolve(ticker0, model);
 
@@ -124,7 +126,7 @@ public class TestResolver {
         TypeFQN ticker1 = new TypeFQN.Builder()
                 .namespace("kevoree")
                 .name("Ticker")
-                .duVersion(TypeFQN.Version.LATEST)
+                .duTag(TypeFQN.Version.LATEST)
                 .build();
         // resolve again using the same fqn and model
         this.tagResolver.resolve(ticker1, model);

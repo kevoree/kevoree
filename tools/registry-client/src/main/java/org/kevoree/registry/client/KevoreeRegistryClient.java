@@ -41,7 +41,7 @@ public class KevoreeRegistryClient implements AuthRegistryClient, TypeDefRegistr
 
             public <T> T readValue(String value, Class<T> valueType) {
                 try {
-                    return jacksonObjectMapper.readValue(value, valueType);
+                    return value.isEmpty() ? null : jacksonObjectMapper.readValue(value, valueType);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
@@ -49,7 +49,7 @@ public class KevoreeRegistryClient implements AuthRegistryClient, TypeDefRegistr
 
             public String writeValue(Object value) {
                 try {
-                    return jacksonObjectMapper.writeValueAsString(value);
+                    return value == null ? null : jacksonObjectMapper.writeValueAsString(value);
                 } catch (JsonProcessingException e) {
                     throw new RuntimeException(e);
                 }

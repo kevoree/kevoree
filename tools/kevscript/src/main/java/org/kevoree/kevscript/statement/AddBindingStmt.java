@@ -14,7 +14,7 @@ import java.util.Map;
  *
  * Created by leiko on 12/15/16.
  */
-public class AddBinding {
+public class AddBindingStmt {
 
     public static void interpret(IAST<Type> stmt, ContainerRoot model, Map<String, String> ctxVars) throws KevScriptException {
         DefaultKevoreeFactory factory = new DefaultKevoreeFactory();

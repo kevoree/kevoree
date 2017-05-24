@@ -1,6 +1,6 @@
 {
   "request" : {
-    "urlPattern" : "/api/namespaces/kevoree/tdef/WSGroup/latest",
+    "urlPath" : "/api/namespaces/kevoree/tdefs/WSGroup/latest",
     "method": "GET"
   },
   "response" : {

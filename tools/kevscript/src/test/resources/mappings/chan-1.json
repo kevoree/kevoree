@@ -1,6 +1,6 @@
 {
   "request" : {
-    "urlPattern" : "/api/namespaces/kevoree/tdef/LocalChannel/latest",
+    "urlPath" : "/api/namespaces/kevoree/tdefs/LocalChannel/latest",
     "method": "GET"
   },
   "response" : {

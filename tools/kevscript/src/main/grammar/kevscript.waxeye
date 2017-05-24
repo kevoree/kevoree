@@ -63,11 +63,14 @@ String              <- +[a-zA-Z0-9_-]
 
 String2             <- +[a-zA-Z0-9.:%@_-]
 
-String3             <= +[a-zA-Z0-9_]
+String3             <- +[a-zA-Z0-9_]
 
-Version             <- (TdefVersion ?(:'/' DuVersion))
+Version             <- TdefVersion ?(:'/' DuVersion)
 TdefVersion         <- Integer | Latest | CtxVar
-DuVersion           <- Release | Latest | CtxVar
+DuVersion           <- Release | Latest | CtxVar | VersionDecl
+VersionDecl         <- :'{' ws ?VersionLines ws :'}'
+VersionLines        <- VersionLine ws *(:[,] ws VersionLine)
+VersionLine         <- String ws :':' ws (RealStringNoNewLine | CtxVar | Latest | Release) ws
 
 Integer             <- +[0-9]
 Release             <- ReleaseToken
@@ -94,12 +97,12 @@ NewLine             <- :'\r\n' | :'\n' | :'\r'
 # =============
 RepoToken       <: 'repo'
 IncludeToken    <: 'include'
-AddToken        <: 'kevs.add'
+AddToken        <: 'add'
 RemoveToken     <: 'remove'
 MoveToken       <: 'move'
 SetToken        <: 'set'
-AttachToken     <: 'kevs.attach'
-DetachToken     <: 'kevs.detach'
+AttachToken     <: 'attach'
+DetachToken     <: 'detach'
 NetworkToken    <: 'network'
 BindToken       <: 'bind'
 UnbindToken     <: 'unbind'
@@ -111,6 +114,6 @@ LatestToken     <: 'LATEST'
 ReleaseToken    <: 'RELEASE'
 Comment         <: '//' ?Line
 eol             <: '\r\n' | '\n' | '\r'
-ws              <: *([ \t] | eol)
+ws              <: *([ \t] | eol | Comment)
 # =================
 # End Void Non-terminals

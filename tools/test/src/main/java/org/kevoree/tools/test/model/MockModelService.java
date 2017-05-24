@@ -23,7 +23,7 @@ public class MockModelService implements ModelService {
 
     private String nodeName;
     private ContainerRoot currentModel = factory.createContainerRoot().withGenerated_KMF_ID(UUID.randomUUID().toString());
-    private ContainerRoot pendingModel = null;
+    private ContainerRoot proposedModel = null;
     private Set<ModelListener> listeners = new HashSet<>();
 
     private MockModelService() {}
@@ -34,18 +34,59 @@ public class MockModelService implements ModelService {
     }
 
     @Override
-    public ContainerRoot getPendingModel() {
-        return pendingModel;
+    public ContainerRoot getProposedModel() {
+        return proposedModel;
     }
 
     @Override
-    public void update(ContainerRoot model, UpdateCallback callback) {
-        UpdateContext context = new UpdateContext(currentModel, model, "/");
+    public void update(ContainerRoot model, UUID uuid, UpdateCallback callback) {
+        UpdateContext context = new UpdateContext() {
+
+            @Override
+            public ContainerRoot getCurrentModel() {
+                return currentModel;
+            }
+
+            @Override
+            public ContainerRoot getProposedModel() {
+                return proposedModel;
+            }
+
+            @Override
+            public String getCallerPath() {
+                return "/";
+            }
+
+            @Override
+            public UUID getUUID() {
+                return uuid;
+            }
+        };
         factory.root(model);
         // TODO fake adaptations?
         currentModel = model;
         Log.info("MockModelService: model updated");
         this.triggerModelUpdate(context);
+    }
+
+    @Override
+    public void submitScript(String script) {
+        this.submitScript(script, UUID.randomUUID());
+    }
+
+    @Override
+    public void submitScript(String script, UUID uuid) {
+        this.submitScript(script, uuid, (ignore) -> {});
+    }
+
+    @Override
+    public void submitScript(String script, UpdateCallback callback) {
+        this.submitScript(script, UUID.randomUUID(), callback);
+    }
+
+    @Override
+    public void submitScript(String script, UUID uuid, UpdateCallback callback) {
+        Log.warn("MockModelService submitScript not implemented yet");
     }
 
     @Override
@@ -59,8 +100,18 @@ public class MockModelService implements ModelService {
     }
 
     @Override
-    public void submitScript(String script, UpdateCallback callback) {
-        Log.warn("MockModelService submitScript not implemented yet");
+    public void update(ContainerRoot model) {
+        this.update(model, UUID.randomUUID(), (ignore) -> {});
+    }
+
+    @Override
+    public void update(ContainerRoot model, UpdateCallback callback) {
+        this.update(model, UUID.randomUUID(), callback);
+    }
+
+    @Override
+    public void update(ContainerRoot model, UUID uuid) {
+        this.update(model, uuid, (ignore) -> {});
     }
 
     public void triggerModelUpdate(UpdateContext context) {
@@ -81,9 +132,9 @@ public class MockModelService implements ModelService {
             return this;
         }
 
-        public Builder pendingModel(ContainerRoot model) {
+        public Builder proposedModel(ContainerRoot model) {
             factory.root(model);
-            service.pendingModel = model;
+            service.proposedModel = model;
             return this;
         }
 

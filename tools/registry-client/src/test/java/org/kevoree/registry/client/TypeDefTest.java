@@ -21,21 +21,18 @@ public class TypeDefTest {
 	@Test
 	public void getAllTypeDefs() throws Exception {
 		HttpResponse<RTypeDefinition[]> tdefsRes = this.client.getAllTdefs();
-
 		assertEquals(8, tdefsRes.getBody().length);
 	}
 
 	@Test
 	public void getAllTypeDefsByNamespace() throws Exception {
 		HttpResponse<RTypeDefinition[]> tdefsRes = this.client.getAllTdefs("kevoree");
-
 		assertEquals(7, tdefsRes.getBody().length);
 	}
 
 	@Test
 	public void getAllTypeDefsByNamespaceAndName() throws Exception {
 		HttpResponse<RTypeDefinition[]> tdefsRes = this.client.getAllTdefs("kevoree", "Ticker");
-
 		assertEquals(3, tdefsRes.getBody().length);
 	}
 
@@ -47,6 +44,12 @@ public class TypeDefTest {
 		assertEquals("Ticker", tdef.getName());
 		assertEquals(Long.valueOf(3), tdef.getVersion());
 		assertEquals("kevoree", tdef.getNamespace());
+	}
+
+	@Test
+	public void getUnknownTypeDefByNamespaceAndNameAndVersion() throws Exception {
+		HttpResponse<RTypeDefinition> tdefRes = this.client.getTdef("kevoree", "Unknown", 3);
+		assertEquals(404, tdefRes.getStatus());
 	}
 
 	@Test

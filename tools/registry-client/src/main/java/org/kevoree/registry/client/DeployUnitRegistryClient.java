@@ -41,6 +41,17 @@ public interface DeployUnitRegistryClient extends RegistryClient {
                 .asObject(RDeployUnit[].class);
     }
 
+    default HttpResponse<RDeployUnit> getDu(String namespace, String tdefName, long tdefVersion, String name, String version, String platform) throws UnirestException {
+        return Unirest.get(this.baseUrl() + "/api/namespaces/{namespace}/tdefs/{tdefName}/{tdefVersion}/dus/{name}/{version}/{platform}")
+                .routeParam("namespace", namespace)
+                .routeParam("tdefName", tdefName)
+                .routeParam("tdefVersion", String.valueOf(tdefVersion))
+                .routeParam("name", name)
+                .routeParam("version", version)
+                .routeParam("platform", platform)
+                .asObject(RDeployUnit.class);
+    }
+
     default HttpResponse<RDeployUnit[]> getLatestsDus(String namespace, String tdefName, long tdefVersion) throws UnirestException {
         return Unirest.get(this.baseUrl() + "/api/namespaces/{namespace}/tdefs/{tdefName}/{tdefVersion}/dus")
                 .routeParam("namespace", namespace)

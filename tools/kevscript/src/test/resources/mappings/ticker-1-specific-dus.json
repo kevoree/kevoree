@@ -1,0 +1,21 @@
+{
+  "request" : {
+    "urlPath" : "/api/namespaces/kevoree/tdefs/Ticker/1/specific-dus",
+    "method": "GET",
+    "queryParameters": {
+      "js": {
+        "equalTo": "5.3.3-beta.0"
+      },
+      "java": {
+        "equalTo": "5.4.0-SNAPSHOT"
+      }
+    }
+  },
+  "response" : {
+    "status" : 200,
+    "bodyFileName": "ticker-1-latest-dus.json",
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  }
+}

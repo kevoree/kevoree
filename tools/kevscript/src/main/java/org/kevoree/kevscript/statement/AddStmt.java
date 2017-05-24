@@ -22,7 +22,7 @@ public class AddStmt {
         TypeFQN fqn = TypeDefExpr.interpret(stmt.getChildren().get(1), ctxVars);
         TypeDefinition td = resolver.resolve(fqn, model);
         if (td == null) {
-            throw new KevScriptException("Unable to find TypeDefinition \"" + fqn.toString() + "\" in model");
+            throw new KevScriptException("Unable to resolve \"" + fqn.toString() + "\"");
         } else {
             final IAST<Type> instanceNames = stmt.getChildren().get(0);
             if (instanceNames.getType().equals(Type.NameList)) {

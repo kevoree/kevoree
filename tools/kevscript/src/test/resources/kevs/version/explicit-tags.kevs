@@ -1,0 +1,6 @@
+add node: JavascriptNode/LATEST/{ js: LATEST } // comment
+add node.ticker: Ticker/LATEST/{
+	// comment
+	js: LATEST,
+	java: RELEASE // this is useless
+}

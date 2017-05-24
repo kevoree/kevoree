@@ -96,4 +96,21 @@ public class VersionTest extends AbstractKevScriptTest {
             fail("An exception occurred:" + e.toString());
         }
     }
+
+    @Test
+    public void testExplicitDUVersions() throws KevScriptException {
+        try {
+            this.kevs.executeFromStream(getClass().getResourceAsStream("/kevs/version/explicit-dus.kevs"), this.model);
+            ContainerNode node = this.model.findNodesByID("node");
+            assertNotNull(node);
+            assertEquals("node", node.getName());
+            assertEquals("JavascriptNode", node.getTypeDefinition().getName());
+            assertEquals("42", node.getTypeDefinition().getVersion());
+            assertEquals("kevoree-node-javascript", node.getTypeDefinition().getDeployUnits().get(0).getName());
+            assertEquals("5.4.0-beta.0", node.getTypeDefinition().getDeployUnits().get(0).getVersion());
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail("An exception occurred:" + e.toString());
+        }
+    }
 }

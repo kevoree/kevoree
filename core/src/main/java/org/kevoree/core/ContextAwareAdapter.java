@@ -5,11 +5,15 @@ import org.kevoree.api.ModelService;
 import org.kevoree.api.handler.ModelListener;
 import org.kevoree.api.handler.UpdateCallback;
 
+import java.util.UUID;
+
 /**
  *
  * Created by duke on 6/2/14.
  */
 public class ContextAwareAdapter implements ModelService {
+
+    private static final UpdateCallback noopCallback = (ignore) -> {};
 
     private String caller;
     private ContextAwareModelService service;
@@ -25,8 +29,8 @@ public class ContextAwareAdapter implements ModelService {
     }
 
     @Override
-    public ContainerRoot getPendingModel() {
-        return this.service.getPendingModel();
+    public ContainerRoot getProposedModel() {
+        return this.service.getProposedModel();
     }
 
     @Override
@@ -40,12 +44,42 @@ public class ContextAwareAdapter implements ModelService {
     }
 
     @Override
+    public void update(ContainerRoot model) {
+        this.update(model, UUID.randomUUID(), noopCallback);
+    }
+
+    @Override
+    public void update(ContainerRoot model, UUID uuid) {
+        this.update(model, uuid, noopCallback);
+    }
+
+    @Override
     public void update(ContainerRoot model, UpdateCallback callback) {
-        this.service.update(model, callback, caller);
+        this.update(model, UUID.randomUUID(), callback);
+    }
+
+    @Override
+    public void update(ContainerRoot model, UUID uuid, UpdateCallback callback) {
+        this.service.update(model, uuid, callback, caller);
+    }
+
+    @Override
+    public void submitScript(String script) {
+        this.submitScript(script, UUID.randomUUID(), noopCallback);
+    }
+
+    @Override
+    public void submitScript(String script, UUID uuid) {
+        this.submitScript(script, uuid, noopCallback);
     }
 
     @Override
     public void submitScript(String script, UpdateCallback callback) {
-        this.service.submitScript(script, callback, caller);
+        this.submitScript(script, UUID.randomUUID(), callback);
+    }
+
+    @Override
+    public void submitScript(String script, UUID uuid, UpdateCallback callback) {
+        this.service.submitScript(script, uuid, callback, caller);
     }
 }

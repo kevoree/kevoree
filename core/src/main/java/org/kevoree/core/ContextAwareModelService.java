@@ -4,17 +4,17 @@ import org.kevoree.ContainerRoot;
 import org.kevoree.api.handler.ModelListener;
 import org.kevoree.api.handler.UpdateCallback;
 
+import java.util.UUID;
+
 /**
  *
  * Created by duke on 6/2/14.
  */
-
-
 public interface ContextAwareModelService {
 
     ContainerRoot getCurrentModel();
 
-    ContainerRoot getPendingModel();
+    ContainerRoot getProposedModel();
 
     String getNodeName();
 
@@ -22,7 +22,7 @@ public interface ContextAwareModelService {
 
     void unregisterModelListener(ModelListener listener, String callerPath);
 
-    void update(ContainerRoot model, UpdateCallback callback, String callerPath);
+    void update(ContainerRoot model, UUID uuid, UpdateCallback callback, String callerPath);
 
-    void submitScript(String script, UpdateCallback callback, String callerPath);
+    void submitScript(String script, UUID uuid, UpdateCallback callback, String callerPath);
 }

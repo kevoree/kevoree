@@ -77,12 +77,7 @@ public class KevRunnerMojo extends KevGenerateMojo {
 
             KevoreeFactory factory = new DefaultKevoreeFactory();
 
-            if (System.getProperty("node.name") == null) {
-                System.setProperty("node.name", nodeName);
-            }
-            if (System.getProperty("kevoree.version") == null) {
-                System.setProperty("kevoree.version", factory.getVersion());
-            }
+            nodeName = System.getProperty("node.name", nodeName);
 
             Config config = ConfigHelper.get();
 

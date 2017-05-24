@@ -14,7 +14,7 @@ import java.util.Map;
  *
  * Created by leiko on 12/15/16.
  */
-public class DelBinding {
+public class DelBindingStmt {
 
     public static void interpret(IAST<Type> stmt, ContainerRoot model, Map<String, String> ctxVars) throws KevScriptException {
         final List<Instance> channelsInstance2 = InstanceResolver.resolve(stmt.getChildren().get(1), model, ctxVars);

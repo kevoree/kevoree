@@ -1,7 +1,6 @@
 package org.kevoree;
 
 import com.typesafe.config.Config;
-import org.apache.commons.io.FileUtils;
 import org.kevoree.annotation.KevoreeInject;
 import org.kevoree.api.KevScriptService;
 import org.kevoree.api.RuntimeService;
@@ -202,7 +201,7 @@ public class Runtime {
 
             if (core.isStarted()) {
                 final CountDownLatch latch = new CountDownLatch(1);
-                core.update(model, (e) -> {
+                core.update(model, UUID.randomUUID(), (e) -> {
                     bootstrapError = e;
                     latch.countDown();
                 }, "/");

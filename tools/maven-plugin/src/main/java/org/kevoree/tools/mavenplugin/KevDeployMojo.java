@@ -2,7 +2,6 @@ package org.kevoree.tools.mavenplugin;
 
 
 import com.mashape.unirest.http.HttpResponse;
-import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.typesafe.config.Config;
 import org.apache.maven.plugin.AbstractMojo;
@@ -16,7 +15,6 @@ import org.apache.maven.project.MavenProject;
 import org.kevoree.ContainerRoot;
 import org.kevoree.DeployUnit;
 import org.kevoree.TypeDefinition;
-import org.kevoree.util.ConfigHelper;
 import org.kevoree.factory.DefaultKevoreeFactory;
 import org.kevoree.factory.KevoreeFactory;
 import org.kevoree.modeling.api.KMFContainer;
@@ -25,11 +23,13 @@ import org.kevoree.modeling.api.ModelLoader;
 import org.kevoree.modeling.api.ModelSerializer;
 import org.kevoree.modeling.api.compare.ModelCompare;
 import org.kevoree.modeling.api.trace.TraceSequence;
-import org.kevoree.registry.api.OAuthRegistryClient;
-import org.kevoree.registry.api.RegistryRestClient;
-import org.kevoree.registry.api.model.TypeDef;
+import org.kevoree.registry.client.KevoreeRegistryClient;
+import org.kevoree.registry.client.domain.RAuth;
+import org.kevoree.registry.client.domain.RDeployUnit;
+import org.kevoree.registry.client.domain.RTypeDefinition;
 import org.kevoree.tools.mavenplugin.util.ModelBuilderHelper;
 import org.kevoree.tools.mavenplugin.util.RegistryHelper;
+import org.kevoree.util.ConfigHelper;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -67,6 +67,7 @@ public class KevDeployMojo extends AbstractMojo {
 	private ModelSerializer serializer = factory.createJSONSerializer();
 	private ModelCloner cloner = factory.createModelCloner();
 	private ModelCompare compare = factory.createModelCompare();
+	private KevoreeRegistryClient client;
 
 	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {
@@ -90,18 +91,24 @@ public class KevDeployMojo extends AbstractMojo {
 			this.getLog().info("Namespace: " + namespace);
 			this.getLog().info("Login:     " + login);
 
-			if (model != null && model.exists()) {
-				try (final FileInputStream fis = new FileInputStream(model)) {
-					processModel((ContainerRoot) loader.loadModelFromStream(fis).get(0));
-				} catch (MojoExecutionException e) {
-					this.getLog().error(e);
-					throw e;
-				} catch (final Exception e) {
-					getLog().error(e);
-					throw new MojoExecutionException("Unable to load model from file \"" + model + "\". Did you manually modified the file?");
+			try {
+				client = new KevoreeRegistryClient(registry);
+				auth(client);
+				if (model != null && model.exists()) {
+					try (final FileInputStream fis = new FileInputStream(model)) {
+						processModel((ContainerRoot) loader.loadModelFromStream(fis).get(0));
+					} catch (MojoExecutionException e) {
+						this.getLog().error(e);
+						throw e;
+					} catch (final Exception e) {
+						getLog().error(e);
+						throw new MojoExecutionException("Unable to load model from file \"" + model + "\". Did you manually modified the file?");
+					}
+				} else {
+					throw new MojoExecutionException("Model file \""+model+"\" not found.");
 				}
-			} else {
-				throw new MojoExecutionException("Model file \""+model+"\" not found.");
+			} catch (UnirestException e) {
+				throw new MojoExecutionException("Authentication failed", e);
 			}
 		}
 	}
@@ -150,9 +157,10 @@ public class KevDeployMojo extends AbstractMojo {
 		this.getLog().info("");
 		this.getLog().info("Looking for TypeDefinition " + namespace + "." + tdef.getName() + "/" + tdef.getVersion() + " in the registry...");
 		try {
-			TypeDef regTdef = new RegistryRestClient(registry, null).getTypeDef(namespace, tdef.getName(), tdef.getVersion());
-			if (regTdef != null) {
+			HttpResponse<RTypeDefinition> tdefRes = client.getTdef(namespace, tdef.getName(), Long.valueOf(tdef.getVersion()));
+			if (tdefRes.getStatus() == 200) {
 				// typeDef exists
+				RTypeDefinition regTdef = tdefRes.getBody();
 				this.getLog().info("Found (id:"+ regTdef.getId() +")");
 				String registryTypeDef = regTdef.getModel();
 				TypeDefinition regTypeDefinition = (TypeDefinition) loader.loadModelFromString(registryTypeDef).get(0);
@@ -173,26 +181,31 @@ public class KevDeployMojo extends AbstractMojo {
 					throw new MojoExecutionException("If you want to use your local changes then you have to increment the version of " + namespace + "." + tdef.getName());
 				}
 
-			} else {
+			} else if (tdefRes.getStatus() == 404) {
 				// typeDef does not exist
 				this.getLog().info("Not found, creating...");
 				this.getLog().info("");
 
-				String accessToken = new OAuthRegistryClient(registry).getToken(login, password);
-				HttpResponse<JsonNode> resp = new RegistryRestClient(registry, accessToken)
-						.postTypeDef(namespace, tdefStr, tdef.getName(), tdef.getVersion());
-				if (resp.getStatus() == 401) {
-					throw new MojoExecutionException("You are not logged in");
-				} else if (resp.getStatus() == 403) {
-					throw new MojoExecutionException("You are not a member of namespace \""+namespace+"\"");
-				} else if (resp.getStatus() == 404) {
-					throw new MojoExecutionException("Namespace \""+namespace+"\" does not exist in the registry");
-				} else if (resp.getStatus() == 201) {
+				// create registry tdef representation
+				RTypeDefinition newTdef = new RTypeDefinition();
+				newTdef.setName(tdef.getName());
+				newTdef.setVersion(Long.valueOf(tdef.getVersion()));
+				newTdef.setModel(tdefStr);
+
+				// post data to registry
+				HttpResponse<RTypeDefinition> newTdefRes = client.createTdef(namespace, newTdef);
+				if (newTdefRes.getStatus() == 201) {
 					this.getLog().info("");
 					this.getLog().info("Success:  " + namespace + "." + tdef.getName() + "/" + tdef.getVersion() + " published on registry");
+				} else if (newTdefRes.getStatus() == 403) {
+					throw new MojoExecutionException("You are not a member of namespace \""+namespace+"\"");
+				} else if (newTdefRes.getStatus() == 404) {
+					throw new MojoExecutionException("Namespace \""+namespace+"\" does not exist in the registry");
 				} else {
-					throw new MojoExecutionException("Unable to publish TypeDefinition (status=" + resp.getStatus() + ", statusText="+resp.getStatusText() + ")");
+					throw new MojoExecutionException("Unable to create " + namespace + "." + tdef.getName() + "/" + tdef.getVersion() + "(status: " + newTdefRes.getStatusText() + ")");
 				}
+			} else {
+				throw new MojoExecutionException("Unable to find " + namespace + "." + tdef.getName() + "/" + tdef.getVersion() + " (status: " + tdefRes.getStatusText() + ")");
 			}
 		} catch (UnirestException e) {
 			throw new MojoExecutionException("Something went wrong with the registry client", e);
@@ -202,9 +215,7 @@ public class KevDeployMojo extends AbstractMojo {
 	private void printDiff(TypeDefinition regTypeDef, TypeDefinition localTypeDef, TraceSequence seq) {
 		// TODO pretty print the diff
 		this.getLog().error("There are discrepencies between local & registry version of TypeDefinition " + namespace + "." + localTypeDef.getName());
-		seq.getTraces().forEach(trace -> {
-			this.getLog().warn(trace.toString());
-		});
+		seq.getTraces().forEach(trace -> this.getLog().warn(trace.toString()));
 	}
 	
 	private void processDeployUnit(ContainerRoot model, List<KMFContainer> tdefs, DeployUnit du) throws MojoExecutionException {
@@ -216,48 +227,57 @@ public class KevDeployMojo extends AbstractMojo {
 		String duModelStr = serializer.serialize(model);
 		
 		try {
-			// auth
-			String accessToken = new OAuthRegistryClient(registry).getToken(login, password);
-			RegistryRestClient client = new RegistryRestClient(registry, accessToken);
-			
 			getLog().info("");
 			for (KMFContainer elem : tdefs) {
 				TypeDefinition tdef = (TypeDefinition) elem;
 				// then for each TypeDef: update DeployUnit
 				getLog().info("Looking for DeployUnit " + du.getName() + "/" + du.getVersion() + "/" + platform + " in the registry...");
-				org.kevoree.registry.api.model.DeployUnit regDu = client.getDeployUnit(namespace, tdef.getName(), tdef.getVersion(), platform, du.getName(), du.getVersion());
-				if (regDu != null) {
+				HttpResponse<RDeployUnit> duRes = client.getDu(namespace, tdef.getName(), Long.valueOf(tdef.getVersion()), du.getName(), du.getVersion(), platform);
+				if (duRes.getStatus() == 200) {
+					RDeployUnit regDu = duRes.getBody();
 					getLog().info("Found (id:" + regDu.getId() + ")");
 					regDu.setModel(duModelStr);
 					
 					// update DeployUnit
-					HttpResponse<JsonNode> resp = client.putDeployUnit(regDu);
-					if (resp.getStatus() == 200) {
-						// updated
+					HttpResponse<RDeployUnit> updatedDuRes = client.updateDu(regDu);
+					if (updatedDuRes.getStatus() == 200) {
 						getLog().info("Successfully updated");
-						
 					} else {
-						if (resp.getBody() != null && resp.getBody().getObject().get("message") != null) {
-							throw new MojoExecutionException("Unable to update DeployUnit (status=" + resp.getStatus() + ", statusText=" + resp.getStatusText()+", message="+resp.getBody().getObject().get("message")+")");	
-						} else {
-							throw new MojoExecutionException("Unable to update DeployUnit (status=" + resp.getStatus() + ", statusText=" + resp.getStatusText()+")");
-						}
-						
+						throw new MojoExecutionException("Unable to update DeployUnit " + regDu.getPlatform() + ":" + regDu.getName() + ":" + regDu.getVersion() + " (status: " + updatedDuRes.getStatusText() + ")");
 					}
 				} else {
 					// no DeployUnit found yet: create it
-					HttpResponse<JsonNode> resp = client.postDeployUnit(namespace, tdef.getName(), tdef.getVersion(), platform, duModelStr, du.getName(), du.getVersion());
-					if (resp.getStatus() == 201) {
-						// created
+					RDeployUnit newDu = new RDeployUnit();
+					newDu.setName(du.getName());
+					newDu.setVersion(du.getVersion());
+					newDu.setPlatform("java");
+					newDu.setModel(duModelStr);
+					HttpResponse<RDeployUnit> newDuRes = client.createDu(namespace, tdef.getName(), Long.valueOf(tdef.getVersion()), newDu);
+					if (newDuRes.getStatus() == 201) {
 						getLog().info("Successfully created");
-						
 					} else {
-						throw new MojoExecutionException("Unable to create DeployUnit (status=" + resp.getStatus() + ", statusText=" + resp.getStatusText()+")");
+						throw new MojoExecutionException("Unable to create DeployUnit " + newDu.getPlatform() + ":" + newDu.getName() + ":" + newDu.getVersion() + " (status=" + newDuRes.getStatusText() + ")");
 					}
 				}
 			}
 		} catch (UnirestException e) {
 			throw new MojoExecutionException("Something went wrong with the registry client", e);
+		}
+	}
+
+	private void auth(KevoreeRegistryClient client) throws MojoExecutionException, UnirestException {
+		Config config = ConfigHelper.get();
+		String clientId = config.getString("registry.oauth.client_id");
+		String clientSecret = config.getString("registry.oauth.client_secret");
+		HttpResponse<RAuth> authRes = client.auth(login, password, clientId, clientSecret);
+		if (authRes.getStatus() == 200) {
+			RAuth auth = authRes.getBody();
+			// register user against registry client
+			client.setAccessToken(auth.getAccessToken());
+		} else if (authRes.getStatus() == 401) {
+			throw new MojoExecutionException("You are not logged in");
+		} else {
+			throw  new MojoExecutionException("Something went wrong while authenticating " + login + " (status: " + authRes.getStatusText()+")");
 		}
 	}
 }

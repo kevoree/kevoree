@@ -19,12 +19,12 @@
 		</dependency>
 		<dependency>
 			<groupId>org.kevoree</groupId>
-			<artifactId>org.kevoree.kevscript</artifactId>
+			<artifactId>org.kevoree.tools.kevscript</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.kevoree</groupId>
-			<artifactId>org.kevoree.resolver.maven</artifactId>
+			<artifactId>org.kevoree.tools.resolver.maven</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>

@@ -1,7 +1,12 @@
 {
   "request" : {
-    "urlPattern" : "/api/namespaces/kevoree/tdefs/Ticker/1/latest-dus",
-    "method": "GET"
+    "urlPath" : "/api/namespaces/kevoree/tdefs/Ticker/1/dus",
+    "method": "GET",
+    "queryParameters": {
+      "version": {
+        "equalTo": "latest"
+      }
+    }
   },
   "response" : {
     "status" : 200,

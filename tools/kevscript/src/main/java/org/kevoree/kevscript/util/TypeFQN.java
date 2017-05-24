@@ -1,5 +1,8 @@
 package org.kevoree.kevscript.util;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  *
  */
@@ -13,7 +16,7 @@ public class TypeFQN {
 
     @Override
     public String toString() {
-        return this.namespace + "." + this.name + "/" + this.version.tdef + "/" + this.version.du;
+        return this.namespace + "." + this.name + "/" + this.version;
     }
 
     public String toKevoreePath() {
@@ -30,12 +33,17 @@ public class TypeFQN {
     }
 
     public TypeFQN copy() {
-        return new Builder()
-                .namespace(this.namespace)
-                .name(this.name)
-                .tdefVersion(this.version.tdef)
-                .duVersion(this.version.du)
-                .build();
+        Builder builder = new Builder()
+                            .namespace(this.namespace)
+                            .name(this.name)
+                            .tdefVersion(this.version.tdef);
+        if (this.version.duIsTag) {
+            builder.duTag(this.version.duTag);
+        } else {
+            this.version.dus.entrySet()
+                    .forEach(entry -> builder.addDUVersion(entry.getKey(), entry.getValue()));
+        }
+        return builder.build();
     }
 
     @Override
@@ -55,7 +63,39 @@ public class TypeFQN {
         public static final String RELEASE = "RELEASE";
 
         public String tdef = LATEST;
-        public String du = RELEASE;
+        public String duTag = RELEASE;
+        private boolean duIsTag = true;
+        private final Map<String, Object> dus = new HashMap<>();
+
+        public void setDUTag(String tag) {
+            this.duIsTag = true;
+            this.duTag = tag;
+        }
+
+        public void addDUVersion(String platform, Object value) {
+            if (platform.equals("*")) {
+                this.duIsTag = true;
+                this.duTag = value.toString();
+                this.dus.clear();
+            } else {
+                this.duIsTag = false;
+                this.dus.put(platform, value);
+            }
+        }
+
+        public void addDUVersions(final Map<String, String> duVersions) {
+            for (Map.Entry<String, String> entry : duVersions.entrySet()) {
+                addDUVersion(entry.getKey(), entry.getValue());
+            }
+        }
+
+        public boolean isDUTag() {
+            return this.duIsTag;
+        }
+
+        public Map<String, Object> getDUS() {
+            return this.dus;
+        }
 
         @Override
         public boolean equals(Object obj) {
@@ -64,12 +104,18 @@ public class TypeFQN {
             }
 
             Version other = (Version) obj;
-            return other.tdef.equals(tdef) && other.du.equals(du);
+            return other.tdef.equals(tdef)
+                    && other.duIsTag == duIsTag
+                    && (duIsTag ? other.duTag.equals(duTag) : other.dus.equals(dus));
         }
 
         @Override
         public String toString() {
-            return tdef + "/" + du;
+            if (duIsTag) {
+                return tdef + "/" + duTag;
+            } else {
+                return tdef + "/" + dus.toString();
+            }
         }
     }
 
@@ -97,8 +143,13 @@ public class TypeFQN {
             return this;
         }
 
-        public TypeFQN.Builder duVersion(String duVersion) {
-            fqn.version.du = duVersion;
+        public TypeFQN.Builder duTag(String tag) {
+            fqn.version.setDUTag(tag);
+            return this;
+        }
+
+        public TypeFQN.Builder addDUVersion(String platform, Object value) {
+            fqn.version.addDUVersion(platform, value);
             return this;
         }
 

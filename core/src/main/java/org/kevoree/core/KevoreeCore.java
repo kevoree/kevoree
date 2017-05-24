@@ -20,6 +20,7 @@ import org.kevoree.modeling.api.util.ActionType;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.*;
 
 /**
@@ -30,7 +31,7 @@ public class KevoreeCore implements ContextAwareModelService {
 
     private boolean bootDone = false;
     private String nodeName;
-    private ContainerRoot pending;
+    private ContainerRoot proposedModel;
     private ListenerInvoker modelListeners;
     private KevScriptService kevscript;
     private OnStopHandler onStopHandler;
@@ -63,8 +64,8 @@ public class KevoreeCore implements ContextAwareModelService {
     }
 
     @Override
-    public ContainerRoot getPendingModel() {
-        return pending;
+    public ContainerRoot getProposedModel() {
+        return proposedModel;
     }
 
     public RuntimeService getRuntimeService() {
@@ -100,31 +101,27 @@ public class KevoreeCore implements ContextAwareModelService {
     }
 
     @Override
-    public void update(ContainerRoot model, UpdateCallback callback, String callerPath) {
-        if (callback == null) {
-            callback = (ignore) -> {};
-        }
-        monkeyPatchKMF(model);
-        scheduler.submit(new UpdateModelRunnable(cloneCurrentModel(model), callback, callerPath));
+    public void update(ContainerRoot model, UUID uuid, UpdateCallback callback, String callerPath) {
+        scheduler.submit(new UpdateModelRunnable(model, callback, uuid, callerPath));
     }
 
     @Override
-    public void submitScript(String script, UpdateCallback callback, String callerPath) {
-        if (callback == null) {
-            callback = (ignore) -> {};
-        }
-        scheduler.submit(new UpdateScriptRunnable(script, callback, callerPath));
+    public void submitScript(String script, UUID uuid, UpdateCallback callback, String callerPath) {
+        scheduler.submit(new UpdateScriptRunnable(script, callback, uuid, callerPath));
     }
 
-    private void internalUpdateModel(ContainerRoot proposedNewModel, String callerPath) throws KevoreeDeployException {
-        if (proposedNewModel.findNodesByID(getNodeName()) == null) {
+    private void internalUpdateModel(ContainerRoot proposedModel, UUID uuid, String callerPath)
+            throws KevoreeDeployException {
+        monkeyPatchKMF(proposedModel);
+
+        if (proposedModel.findNodesByID(getNodeName()) == null) {
             throw new KevoreeDeployException("Unable to find node \""+getNodeName()+"\" in given model");
         }
 
         try {
-            pending = proposedNewModel;
+            this.proposedModel = proposedModel;
             ContainerRoot currentModel = this.currentModel;
-            UpdateContext updateContext = new UpdateContext(currentModel, proposedNewModel, callerPath);
+            final UpdateContext updateContext = new UpdateContextImpl(currentModel, proposedModel, uuid, callerPath);
             Log.trace("KevoreeCore#modelListeners preUpdate");
             boolean preUpdateAccepted = modelListeners.preUpdate(updateContext)
                     .get(5, TimeUnit.SECONDS);
@@ -132,26 +129,25 @@ public class KevoreeCore implements ContextAwareModelService {
 
             if (preUpdateAccepted) {
                 // Checks and bootstrap the node
-                checkBootstrapNode(proposedNewModel);
+                checkBootstrapNode(proposedModel);
 //                long startTime = System.currentTimeMillis();
                 Log.debug("Begin model update");
                 if (nodeInstance != null) {
                     // Compare the two models and plan the adaptation
                     Log.trace("Comparing models and planning adaptations");
-                    List<AdaptationCommand> cmds = nodeInstance.plan(currentModel, proposedNewModel);
-                    updateContext = new UpdateContext(currentModel, proposedNewModel, callerPath);
+                    List<AdaptationCommand> cmds = nodeInstance.plan(currentModel, proposedModel);
 
                     // Execution of the adaptations
                     Log.trace("Launching adaptation of the system...");
                     AdaptationExecutor.Result result = AdaptationExecutor.execute(cmds);
                     if (result.getError() == null) {
                         // everything went fine
-                        if (!proposedNewModel.isReadOnly()) {
-                            proposedNewModel.setRecursiveReadOnly();
+                        if (!proposedModel.isReadOnly()) {
+                            proposedModel.setRecursiveReadOnly();
                         }
                         // Changes the current model with the proposed model
                         this.bootDone = true;
-                        this.currentModel = proposedNewModel;
+                        this.currentModel = proposedModel;
 //                        long endTime = System.currentTimeMillis() - startTime;
 //                        Log.info("New model deployed successfully in {}ms", endTime);
 
@@ -384,11 +380,13 @@ public class KevoreeCore implements ContextAwareModelService {
 
         private String script;
         private UpdateCallback callback;
+        private UUID uuid;
         private String callerPath;
 
-        private UpdateScriptRunnable(String script, UpdateCallback callback, String callerPath) {
+        private UpdateScriptRunnable(String script, UpdateCallback callback, UUID uuid, String callerPath) {
             this.script = script;
             this.callback = callback;
+            this.uuid = uuid;
             this.callerPath = callerPath;
         }
 
@@ -400,7 +398,7 @@ public class KevoreeCore implements ContextAwareModelService {
                 ContainerRoot clonedModel = cloneCurrentModel(currentModel);
                 kevscript.execute(script, clonedModel);
                 Log.info("Script executed successfully ({}ms)", System.currentTimeMillis() - startTime);
-                internalUpdateModel(clonedModel, callerPath);
+                internalUpdateModel(clonedModel, uuid, callerPath);
                 Log.info("Model deployed successfully ({}ms)", System.currentTimeMillis() - startTime);
             } catch (KevoreeDeployException e) {
                 error = e;
@@ -419,11 +417,13 @@ public class KevoreeCore implements ContextAwareModelService {
 
         private ContainerRoot targetModel;
         private UpdateCallback callback;
+        private UUID uuid;
         private String callerPath;
 
-        UpdateModelRunnable(ContainerRoot targetModel, UpdateCallback callback, String callerPath) {
+        UpdateModelRunnable(ContainerRoot targetModel, UpdateCallback callback, UUID uuid, String callerPath) {
             this.targetModel = targetModel;
             this.callback = callback;
+            this.uuid = uuid;
             this.callerPath = callerPath;
         }
 
@@ -432,7 +432,7 @@ public class KevoreeCore implements ContextAwareModelService {
             KevoreeDeployException error = null;
             long startTime = System.currentTimeMillis();
             try {
-                internalUpdateModel(targetModel, callerPath);
+                internalUpdateModel(targetModel, uuid, callerPath);
                 Log.info("Model deployed successfully ({}ms)", System.currentTimeMillis() - startTime);
             } catch (KevoreeDeployException e) {
                 error = e;

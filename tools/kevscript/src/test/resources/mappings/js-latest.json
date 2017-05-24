@@ -1,6 +1,6 @@
 {
   "request" : {
-    "urlPattern" : "/api/namespaces/kevoree/tdef/JavascriptNode/latest",
+    "urlPath" : "/api/namespaces/kevoree/tdefs/JavascriptNode/latest",
     "method": "GET"
   },
   "response" : {

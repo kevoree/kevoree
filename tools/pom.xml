@@ -12,7 +12,7 @@
     </parent>
 
     <modules>
-        <module>registry-client-api</module>
+        <module>registry-client</module>
         <module>runtime</module>
         <module>kevscript</module>
         <module>maven-resolver</module>

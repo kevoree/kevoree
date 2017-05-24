@@ -1,7 +1,12 @@
 {
   "request" : {
-    "urlPattern" : "/api/namespaces/kevoree/tdefs/LocalChannel/1/released-dus",
-    "method": "GET"
+    "urlPath" : "/api/namespaces/kevoree/tdefs/LocalChannel/1/dus",
+    "method": "GET",
+    "queryParameters": {
+      "version": {
+        "equalTo": "release"
+      }
+    }
   },
   "response" : {
     "status" : 200,

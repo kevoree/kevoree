@@ -59,11 +59,11 @@ public class Interpreter {
                 break;
 
             case AddBinding:
-                AddBinding.interpret(stmt, model, ctxVars);
+                AddBindingStmt.interpret(stmt, model, ctxVars);
                 break;
 
             case DelBinding:
-                DelBinding.interpret(stmt, model, ctxVars);
+                DelBindingStmt.interpret(stmt, model, ctxVars);
                 break;
 
             default:
