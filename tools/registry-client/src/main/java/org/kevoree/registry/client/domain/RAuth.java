@@ -22,6 +22,8 @@ public class RAuth {
     @JsonProperty("token_type")
     private String tokenType;
 
+    private String scope;
+
     public String getTokenType() {
         return tokenType;
     }
@@ -39,17 +41,23 @@ public class RAuth {
     }
 
     public String getAccessToken() {
-
         return accessToken;
     }
 
     public String getRefreshToken() {
-
         return refreshToken;
     }
 
     public void setRefreshToken(String refreshToken) {
         this.refreshToken = refreshToken;
+    }
+
+    public String getScope() {
+        return scope;
+    }
+
+    public void setScope(String scope) {
+        this.scope = scope;
     }
 
     public Long getExpiresIn() {
