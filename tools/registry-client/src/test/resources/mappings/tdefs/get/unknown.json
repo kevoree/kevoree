@@ -1,0 +1,13 @@
+{
+  "request": {
+    "url": "/api/namespaces/unknown/tdefs",
+    "method": "GET"
+  },
+  "response": {
+    "status" : 200,
+    "jsonBody": [],
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  }
+}

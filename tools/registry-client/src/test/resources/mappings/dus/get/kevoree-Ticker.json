@@ -1,0 +1,13 @@
+{
+  "request": {
+    "url": "/api/namespaces/kevoree/tdefs/Ticker/dus",
+    "method": "GET"
+  },
+  "response": {
+    "status" : 200,
+    "bodyFileName": "dus/kevoree-Ticker.json",
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  }
+}

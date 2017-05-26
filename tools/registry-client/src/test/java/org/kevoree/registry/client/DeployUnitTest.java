@@ -2,7 +2,7 @@ package org.kevoree.registry.client;
 
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
-import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kevoree.registry.client.domain.RDeployUnit;
 
@@ -11,78 +11,64 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.junit.Assert.*;
 
-public class DeployUnitTest {
-
-	private KevoreeRegistryClient client;
-
-	@Before
-	public void setUp() {
-		this.client = new KevoreeRegistryClient(TestUtils.BASE_URL);
-	}
+public class DeployUnitTest extends AbstractTest {
 
 	@Test
 	public void getAllDeployUnits() throws Exception {
 		HttpResponse<RDeployUnit[]> res = this.client.getAllDus();
-		assertEquals(17, res.getBody().length);
+		assertEquals(20, res.getBody().length);
 	}
 
 	@Test
 	public void getAllDeployUnitsByNamespace() throws Exception {
 		HttpResponse<RDeployUnit[]> tdefsRes = this.client.getAllDus("kevoree");
-		assertEquals(15, tdefsRes.getBody().length);
+		assertEquals(55, tdefsRes.getBody().length);
 	}
 
 	@Test
 	public void getAllDeployUnitsByNamespaceAndTdefName() throws Exception {
 		HttpResponse<RDeployUnit[]> res = this.client.getAllDus("kevoree", "Ticker");
-		assertEquals(9, res.getBody().length);
-	}
-
-	@Test
-	public void getAllDeployUnitsByNamespaceAndTdefNameAndTdefVersion() throws Exception {
-		HttpResponse<RDeployUnit[]> res = this.client.getAllDus("kevoree", "Ticker", 3);
-		assertEquals(6, res.getBody().length);
-	}
-
-	@Test
-	public void getLatestDeployUnitsByNamespaceAndTdefNameAndTdefVersion() throws Exception {
-		HttpResponse<RDeployUnit[]> res = this.client.getLatestsDus("kevoree", "Ticker", 3);
 		assertEquals(3, res.getBody().length);
 	}
 
 	@Test
-	public void getReleaseDeployUnitsByNamespaceAndTdefNameAndTdefVersion() throws Exception {
-		HttpResponse<RDeployUnit[]> res = this.client.getReleasesDus("kevoree", "Ticker", 3);
+	public void getAllDeployUnitsByNamespaceAndTdefNameAndTdefVersion() throws Exception {
+		HttpResponse<RDeployUnit[]> res = this.client.getAllDus("kevoree", "Ticker", 1);
+		assertEquals(3, res.getBody().length);
+	}
+
+	@Test
+	public void getLatestDeployUnitsByNamespaceAndTdefNameAndTdefVersion() throws Exception {
+		HttpResponse<RDeployUnit[]> res = this.client.getLatestsDus("kevoree", "Ticker", 1);
 		assertEquals(2, res.getBody().length);
+	}
+
+	@Test
+	public void getReleaseDeployUnitsByNamespaceAndTdefNameAndTdefVersion() throws Exception {
+		HttpResponse<RDeployUnit[]> res = this.client.getReleasesDus("kevoree", "Ticker", 1);
+		assertEquals(0, res.getBody().length);
 	}
 
 	@Test
 	public void getSpecificDeployUnitsByNamespaceAndTdefNameAndTdefVersion() throws Exception {
 		Map<String, Object> filters = new HashMap<String, Object>() {{
-			put("js", "3.1.0-alpha");
-			put("dotnet", "latest");
+			put("js", "5.3.3-beta.3");
 		}};
-		HttpResponse<RDeployUnit[]> res = this.client.getSpecificDus("kevoree", "Ticker", 3, filters);
+		HttpResponse<RDeployUnit[]> res = this.client.getSpecificDus("kevoree", "Ticker", 1, filters);
 
 		RDeployUnit[] dus = res.getBody();
-		assertEquals(3, dus.length);
+		assertEquals(1, dus.length);
 
 		Optional<RDeployUnit> jsDu = Arrays.stream(dus).filter(du -> du.getPlatform().equals("js")).findFirst();
 		assertTrue(jsDu.isPresent());
-		assertEquals("3.1.0-alpha", jsDu.get().getVersion());
-
-		Optional<RDeployUnit> javaDu = Arrays.stream(dus).filter(du -> du.getPlatform().equals("java")).findFirst();
-		assertTrue(javaDu.isPresent());
-		assertEquals("3.1.0-alpha", jsDu.get().getVersion());
-
-		Optional<RDeployUnit> dotnetDu = Arrays.stream(dus).filter(du -> du.getPlatform().equals("dotnet")).findFirst();
-		assertTrue(dotnetDu.isPresent());
-		assertEquals("3.1.0-alpha", jsDu.get().getVersion());
+		assertEquals("5.3.3-beta.3", jsDu.get().getVersion());
 	}
 
 	@Test
+	@Ignore
 	public void createDuWithoutCredentials() throws Exception {
 		RDeployUnit du = new RDeployUnit();
 		du.setName("atari-ticker");
@@ -95,6 +81,7 @@ public class DeployUnitTest {
 	}
 
 	@Test
+	@Ignore
 	public void createDuUpdateItAndDeleteIt() throws Exception {
 		RDeployUnit du = new RDeployUnit();
 		du.setName("atari-ticker");
@@ -102,8 +89,16 @@ public class DeployUnitTest {
 		du.setModel("{\"foo\": \"baz\"}");
 		du.setPlatform("atari");
 
-		this.client.setAccessToken(TestUtils.accessToken(this.client, "kevoree", "kevoree"));
-		HttpResponse<RDeployUnit> res = this.client.createDu("kevoree", "Ticker", 3, du);
+		stubFor(post(urlEqualTo("/api/namespaces/kevoree/tdefs/Ticker/1/dus"))
+				.withHeader("Content-Type", equalTo("application/json"))
+				.withHeader("Authorization", equalTo("Bearer 123"))
+				.withRequestBody(equalToJson(toJson(du)))
+				.willReturn(aResponse()
+						.withStatus(201)
+						.withBodyFile("dus/atari-ticker_1.2.3-alpha_atari.json")));
+
+		this.client.setAccessToken(accessToken(this.client, "kevoree", "kevoree"));
+		HttpResponse<RDeployUnit> res = this.client.createDu("kevoree", "Ticker", 1, du);
 		assertEquals(201, res.getStatus());
 		RDeployUnit newDu = res.getBody();
 
@@ -113,10 +108,19 @@ public class DeployUnitTest {
 		assertEquals(du.getVersion(), newDu.getVersion());
 		assertEquals(du.getPlatform(), newDu.getPlatform());
 		assertEquals("Ticker", newDu.getTdefName());
-		assertEquals(Long.valueOf(3), newDu.getTdefVersion());
+		assertEquals(Long.valueOf(1), newDu.getTdefVersion());
 		assertEquals(du.getModel(), newDu.getModel());
 
+		// update deployUnit to test PUT request
 		newDu.setModel("{\"foo\": \"new value\"}");
+		stubFor(put(urlEqualTo("/api/namespaces/kevoree/tdefs/Ticker/1/dus/atari-ticker/1.2.3-alpha/atari"))
+				.withHeader("Content-Type", equalTo("application/json"))
+				.withHeader("Authorization", equalTo("Bearer 123"))
+				.withRequestBody(equalToJson(toJson(newDu)))
+				.willReturn(aResponse()
+						.withStatus(201)
+						.withBodyFile("dus/atari-ticker_1.2.3-alpha_atari-updated.json")));
+
 		HttpResponse<RDeployUnit> updateRes = this.client.updateDu(newDu);
 		assertEquals(200, updateRes.getStatus());
 		assertEquals(newDu.getModel(), updateRes.getBody().getModel());

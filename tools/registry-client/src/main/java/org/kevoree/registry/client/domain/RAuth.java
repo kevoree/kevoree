@@ -22,22 +22,12 @@ public class RAuth {
     @JsonProperty("token_type")
     private String tokenType;
 
-    private String scope;
-
     public String getTokenType() {
         return tokenType;
     }
 
     public void setTokenType(String tokenType) {
         this.tokenType = tokenType;
-    }
-
-    public String getScope() {
-        return scope;
-    }
-
-    public void setScope(String scope) {
-        this.scope = scope;
     }
 
     public void setAccessToken(String accessToken) {

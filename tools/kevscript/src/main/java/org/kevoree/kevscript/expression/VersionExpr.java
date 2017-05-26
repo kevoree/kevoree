@@ -18,12 +18,15 @@ public class VersionExpr {
         TypeFQN.Version version = new TypeFQN.Version();
         version.tdef = TdefVersionExpr.interpret(versNode.getChildren().get(0), ctxVars);
         if (versNode.getChildren().size() == 1) {
-            version.setDUTag("RELEASE");
+            // no DeployUnit versions specified => RELEASE tag
+            version.setDUTag(TypeFQN.Version.RELEASE);
         } else {
+            // DeployUnit versions have been specified => interpret
             IAST<Type> duVersionNode = versNode.getChildren().get(1);
             // vNode => (Release | Latest | CtxVar | VersionDecl)
             IAST<Type> vNode = duVersionNode.getChildren().get(0);
             switch (vNode.getType()) {
+                default:
                 case Release:
                     version.setDUTag(TypeFQN.Version.RELEASE);
                     break;

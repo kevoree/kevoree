@@ -111,10 +111,14 @@ public class TypeFQN {
 
         @Override
         public String toString() {
+            return tdef + "/" + duToString();
+        }
+
+        public String duToString() {
             if (duIsTag) {
-                return tdef + "/" + duTag;
+                return duTag;
             } else {
-                return tdef + "/" + dus.toString();
+                return dus.toString();
             }
         }
     }

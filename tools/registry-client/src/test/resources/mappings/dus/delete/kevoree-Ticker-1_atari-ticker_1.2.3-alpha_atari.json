@@ -1,0 +1,14 @@
+{
+  "request": {
+    "url": "/api/namespaces/kevoree/tdefs/Ticker/1/dus/atari-ticker/1.2.3-alpha/atari",
+    "method": "DELETE",
+    "headers": {
+      "Authorization": {
+        "equalTo": "Bearer 123"
+      }
+    }
+  },
+  "response": {
+    "status" : 200
+  }
+}

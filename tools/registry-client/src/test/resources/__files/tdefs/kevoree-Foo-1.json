@@ -1,0 +1,10 @@
+{
+  "createdBy": "kevoree",
+  "lastModifiedBy": "leiko",
+  "lastModifiedDate": 1481215345582,
+  "id": 1111,
+  "namespace": "kevoree",
+  "name": "Foo",
+  "version": 1,
+  "model": "{\"foo\": \"bar\"}"
+}

@@ -1,0 +1,14 @@
+{
+  "request": {
+    "url": "/api/namespaces/kevoree/tdefs/Foo/1",
+    "method": "DELETE",
+    "headers": {
+      "Authorization": {
+        "equalTo": "Bearer 123"
+      }
+    }
+  },
+  "response": {
+    "status" : 200
+  }
+}

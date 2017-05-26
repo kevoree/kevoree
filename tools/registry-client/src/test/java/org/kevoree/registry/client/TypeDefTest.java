@@ -2,47 +2,46 @@ package org.kevoree.registry.client;
 
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
-import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kevoree.registry.client.domain.RTypeDefinition;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-public class TypeDefTest {
-
-	private KevoreeRegistryClient client;
-
-	@Before
-	public void setUp() {
-		this.client = new KevoreeRegistryClient(TestUtils.BASE_URL);
-	}
+public class TypeDefTest extends AbstractTest {
 
 	@Test
 	public void getAllTypeDefs() throws Exception {
 		HttpResponse<RTypeDefinition[]> tdefsRes = this.client.getAllTdefs();
-		assertEquals(8, tdefsRes.getBody().length);
+		assertEquals(41, tdefsRes.getBody().length);
 	}
 
 	@Test
 	public void getAllTypeDefsByNamespace() throws Exception {
 		HttpResponse<RTypeDefinition[]> tdefsRes = this.client.getAllTdefs("kevoree");
-		assertEquals(7, tdefsRes.getBody().length);
+		assertEquals(41, tdefsRes.getBody().length);
+	}
+
+	@Test
+	public void getAllTypeDefsByUnknownNamespace() throws Exception {
+		HttpResponse<RTypeDefinition[]> tdefsRes = this.client.getAllTdefs("unknown");
+		assertEquals(0, tdefsRes.getBody().length);
 	}
 
 	@Test
 	public void getAllTypeDefsByNamespaceAndName() throws Exception {
 		HttpResponse<RTypeDefinition[]> tdefsRes = this.client.getAllTdefs("kevoree", "Ticker");
-		assertEquals(3, tdefsRes.getBody().length);
+		assertEquals(2, tdefsRes.getBody().length);
 	}
 
 	@Test
 	public void getTypeDefByNamespaceAndNameAndVersion() throws Exception {
-		HttpResponse<RTypeDefinition> tdefRes = this.client.getTdef("kevoree", "Ticker", 3);
+		HttpResponse<RTypeDefinition> tdefRes = this.client.getTdef("kevoree", "Ticker", 1);
 		RTypeDefinition tdef = tdefRes.getBody();
 		assertNotNull(tdef.getId());
 		assertEquals("Ticker", tdef.getName());
-		assertEquals(Long.valueOf(3), tdef.getVersion());
+		assertEquals(Long.valueOf(1), tdef.getVersion());
 		assertEquals("kevoree", tdef.getNamespace());
 	}
 
@@ -58,11 +57,12 @@ public class TypeDefTest {
 		RTypeDefinition tdef = tdefRes.getBody();
 		assertNotNull(tdef.getId());
 		assertEquals("Ticker", tdef.getName());
-		assertEquals(Long.valueOf(3), tdef.getVersion());
+		assertEquals(Long.valueOf(1), tdef.getVersion());
 		assertEquals("kevoree", tdef.getNamespace());
 	}
 
 	@Test
+	@Ignore
 	public void createTdefWithoutCredentials() throws Exception {
 		RTypeDefinition tdef = new RTypeDefinition();
 		tdef.setName("Foo");
@@ -74,13 +74,23 @@ public class TypeDefTest {
 	}
 
 	@Test
+	@Ignore
 	public void createTdefAndDeleteIt() throws Exception {
 		RTypeDefinition tdef = new RTypeDefinition();
 		tdef.setName("Foo");
 		tdef.setVersion(1L);
 		tdef.setModel("{\"foo\": \"bar\"}");
 
-		this.client.setAccessToken(TestUtils.accessToken(this.client, "kevoree", "kevoree"));
+//		stubFor(post(urlEqualTo("/api/namespaces/kevoree/tdefs"))
+//			.withHeader("Content-Type", equalTo("application/json"))
+//			.withHeader("Authorization", equalTo("Bearer 123"))
+//			.withRequestBody(equalToJson(toJson(tdef)))
+//			.willReturn(aResponse()
+//				.withStatus(201)
+//				.withHeader("Content-Type", "application/json;charset=UTF-8")
+//				.withBodyFile("tdefs/kevoree-Foo-1.json")));
+
+		this.client.setAccessToken(accessToken(this.client, "kevoree", "kevoree"));
 		HttpResponse<RTypeDefinition> res = this.client.createTdef("kevoree", tdef);
 		assertEquals(201, res.getStatus());
 		RTypeDefinition newTdef = res.getBody();

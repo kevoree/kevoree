@@ -1,0 +1,13 @@
+{
+  "request": {
+    "url": "/api/namespaces/kevoree/tdefs/Unknown/3",
+    "method": "GET"
+  },
+  "response": {
+    "status" : 404,
+    "jsonBody": null,
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  }
+}

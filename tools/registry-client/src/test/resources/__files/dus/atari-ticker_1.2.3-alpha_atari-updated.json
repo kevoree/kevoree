@@ -1,0 +1,15 @@
+{
+  "createdDate": "2017-05-23T16:53:01.727Z",
+  "createdBy": "kevoree",
+  "lastModifiedBy": "kevoree",
+  "lastModifiedDate": "2017-05-23T16:53:01.727Z",
+  "id": 9050,
+  "namespace": "kevoree",
+  "tdefId": 4050,
+  "tdefName": "Ticker",
+  "tdefVersion": 1,
+  "name": "atari-ticker",
+  "version": "1.2.3-alpha",
+  "platform": "atari",
+  "model": "{\"foo\": \"new value\"}"
+}

@@ -75,7 +75,7 @@ public class RegistryResolver implements Resolver {
         ModelCompare compare = factory.createModelCompare();
 
         fqn.version.tdef = regTdef.getVersion().toString();
-        Log.info("Found {} in {}", fqn, this.url);
+        Log.info("Found {}.{}/{} in {}", fqn.namespace, fqn.name, fqn.version.tdef, this.url);
         TypeDefinition tdef = (TypeDefinition) loader.loadModelFromString(regTdef.getModel()).get(0);
         Package pkg = model.findPackagesByID(fqn.namespace);
         if (pkg == null) {
@@ -111,7 +111,7 @@ public class RegistryResolver implements Resolver {
 
             // confirm that there is at least one DeployUnit for that type
             if (regDus.length == 0) {
-                throw new KevScriptException("No DeployUnit found for " + fqn.namespace + "." + fqn.name + "/" + fqn.version.tdef + " that matches " + fqn.version.getDUS());
+                throw new KevScriptException("No DeployUnit found for " + fqn.namespace + "." + fqn.name + "/" + fqn.version.tdef + " that matches " + fqn.version.duToString());
             }
 
             // merge DeployUnits to current model
@@ -127,7 +127,7 @@ public class RegistryResolver implements Resolver {
                 }
             }
         } else {
-            throw new KevScriptException("Unable to find DeployUnits "+fqn.version.getDUS()+" for "
+            throw new KevScriptException("Unable to find DeployUnits "+fqn.version.duToString()+" for "
                     + fqn.namespace + "."+fqn.name+"/"+fqn.version.tdef+" in " + this.url
                     + " (status: " + dusRes.getStatusText() + ")");
         }

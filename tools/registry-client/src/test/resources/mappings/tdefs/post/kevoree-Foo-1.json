@@ -1,0 +1,21 @@
+{
+  "request": {
+    "url": "/api/namespaces/kevoree/tdefs",
+    "method": "POST",
+    "headers": {
+      "Authorization": {
+        "equalTo": "Bearer 123"
+      }
+    },
+    "bodyPatterns": [{
+      "equalToJson": "{\"id\":null,\"name\":\"Foo\",\"version\":1,\"model\":\"{\\\"foo\\\": \\\"bar\\\"}\",\"namespace\":null,\"deployUnits\":[]}"
+    }]
+  },
+  "response": {
+    "status" : 201,
+    "bodyFileName": "tdefs/kevoree-Foo-1.json",
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  }
+}
