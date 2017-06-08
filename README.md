@@ -17,7 +17,7 @@ Current dev version that only works with `https://new-registry.kevoree.org` is `
 ```sh
 mkdir -p /tmp/kevoree
 cd /tmp/kevoree
-wget https://oss.sonatype.org/service/local/repositories/snapshots/content/org/kevoree/org.kevoree.tools.runtime/5.5.0-SNAPSHOT/org.kevoree.tools.runtime-5.5.0-20170526.084607-1.jar -O kevoree.jar
+wget http://oss.sonatype.org/service/local/artifact/maven/redirect?r=public\&g=org.kevoree\&a=org.kevoree.tools.runtime\&v=LATEST -O kevoree.jar
 ```
 ### Run
 ```sh
