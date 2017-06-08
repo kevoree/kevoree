@@ -21,7 +21,7 @@ import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options
 public abstract class AbstractKevScriptTest {
 
     private static int PORT = 3000;
-    private static final String CACHE_ROOT = FileUtils.getTempDirectoryPath() + File.separator + "kevoree-cache";
+//    private static final String CACHE_ROOT = FileUtils.getTempDirectoryPath() + File.separator + "kevoree-cache";
     private static final String BASE_URL = "http://localhost:" + PORT;
     private KevoreeFactory factory = new DefaultKevoreeFactory();
     private WireMockConfiguration conf = options().port(PORT);
@@ -35,7 +35,7 @@ public abstract class AbstractKevScriptTest {
     @Before
     public void init() {
         Log.set(Log.LEVEL_TRACE);
-        this.kevs = new KevScriptEngine(BASE_URL, CACHE_ROOT);
+        this.kevs = new KevScriptEngine(BASE_URL);
         this.model = factory.createContainerRoot();
         factory.root(this.model);
     }

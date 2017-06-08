@@ -1,17 +1,19 @@
 package org.kevoree.tools.test.model;
 
 import org.kevoree.ContainerRoot;
-import org.kevoree.api.ModelService;
 import org.kevoree.api.handler.ModelListener;
 import org.kevoree.api.handler.UpdateCallback;
 import org.kevoree.api.handler.UpdateContext;
 import org.kevoree.factory.DefaultKevoreeFactory;
 import org.kevoree.factory.KevoreeFactory;
 import org.kevoree.log.Log;
+import org.kevoree.service.ModelService;
 
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Future;
 
 /**
  *
@@ -70,13 +72,19 @@ public class MockModelService implements ModelService {
     }
 
     @Override
-    public void submitScript(String script) {
-        this.submitScript(script, UUID.randomUUID());
+    public Future<Exception> submitScript(String script) {
+        return this.submitScript(script, UUID.randomUUID());
     }
 
     @Override
-    public void submitScript(String script, UUID uuid) {
-        this.submitScript(script, uuid, (ignore) -> {});
+    public Future<Exception> submitScript(String script, UUID uuid) {
+        final CompletableFuture<Exception> future = new CompletableFuture<>();
+        try {
+            this.submitScript(script, uuid, future::complete);
+        } catch (Exception e) {
+            future.completeExceptionally(e);
+        }
+        return future;
     }
 
     @Override
@@ -100,8 +108,8 @@ public class MockModelService implements ModelService {
     }
 
     @Override
-    public void update(ContainerRoot model) {
-        this.update(model, UUID.randomUUID(), (ignore) -> {});
+    public Future<Exception> update(ContainerRoot model) {
+        return this.update(model, UUID.randomUUID());
     }
 
     @Override
@@ -110,8 +118,14 @@ public class MockModelService implements ModelService {
     }
 
     @Override
-    public void update(ContainerRoot model, UUID uuid) {
-        this.update(model, uuid, (ignore) -> {});
+    public Future<Exception> update(ContainerRoot model, UUID uuid) {
+        final CompletableFuture<Exception> future = new CompletableFuture<>();
+        try {
+            this.update(model, uuid, future::complete);
+        } catch (Exception e) {
+            future.completeExceptionally(e);
+        }
+        return future;
     }
 
     public void triggerModelUpdate(UpdateContext context) {

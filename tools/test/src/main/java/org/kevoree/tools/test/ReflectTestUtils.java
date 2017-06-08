@@ -1,6 +1,7 @@
 package org.kevoree.tools.test;
 
-import org.kevoree.api.helper.ReflectUtils;
+
+import org.kevoree.reflect.ReflectUtils;
 
 import java.lang.reflect.Field;
 

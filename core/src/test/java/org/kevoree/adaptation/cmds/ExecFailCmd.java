@@ -3,6 +3,7 @@ package org.kevoree.adaptation.cmds;
 import org.kevoree.adaptation.AdaptationCommand;
 import org.kevoree.adaptation.AdaptationType;
 import org.kevoree.adaptation.KevoreeAdaptationException;
+import org.kevoree.modeling.api.KMFContainer;
 
 /**
  *
@@ -22,6 +23,11 @@ public class ExecFailCmd implements AdaptationCommand {
 
     @Override
     public AdaptationType getType() {
+        return null;
+    }
+
+    @Override
+    public KMFContainer getElement() {
         return null;
     }
 }

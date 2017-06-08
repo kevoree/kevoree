@@ -13,6 +13,7 @@
 
     <modules>
         <module>registry-client</module>
+        <module>maven-runtime-service</module>
         <module>runtime</module>
         <module>kevscript</module>
         <module>maven-resolver</module>

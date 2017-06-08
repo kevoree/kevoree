@@ -3,9 +3,9 @@ package org.kevoree.tools.test.runtime;
 import org.kevoree.DeployUnit;
 import org.kevoree.Instance;
 import org.kevoree.KevoreeCoreException;
-import org.kevoree.api.RuntimeService;
 import org.kevoree.kcl.api.FlexyClassLoader;
 import org.kevoree.kcl.impl.FlexyClassLoaderImpl;
+import org.kevoree.service.RuntimeService;
 
 import java.io.File;
 import java.util.Set;

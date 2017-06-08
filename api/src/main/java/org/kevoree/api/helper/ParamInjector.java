@@ -1,6 +1,8 @@
 package org.kevoree.api.helper;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.kevoree.KevoreeParamException;
+import org.kevoree.annotation.Param;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -77,43 +79,30 @@ public class ParamInjector {
                 setter.setAccessible(true);
             }
             Class pClazz = setter.getParameterTypes()[0];
-            if (pClazz.equals(String.class)) {
-                setter.invoke(instanceObj, value);
-                isSet = true;
-            }
             if (pClazz.equals(boolean.class) || pClazz.equals(Boolean.class)) {
                 setter.invoke(instanceObj, Boolean.parseBoolean(value));
                 isSet = true;
-            }
-            if (pClazz.equals(int.class) || pClazz.equals(Integer.class)) {
+            } else if (pClazz.equals(int.class) || pClazz.equals(Integer.class)) {
                 setter.invoke(instanceObj, Integer.parseInt(value));
                 isSet = true;
-            }
-            if (pClazz.equals(long.class) || pClazz.equals(Long.class)) {
+            } else if (pClazz.equals(long.class) || pClazz.equals(Long.class)) {
                 setter.invoke(instanceObj, Long.parseLong(value));
                 isSet = true;
-            }
-            if (pClazz.equals(double.class) || pClazz.equals(Double.class)) {
+            } else if (pClazz.equals(double.class) || pClazz.equals(Double.class)) {
                 setter.invoke(instanceObj, Double.parseDouble(value));
                 isSet = true;
-            }
-            if (pClazz.equals(short.class) || pClazz.equals(Short.class)) {
+            } else if (pClazz.equals(short.class) || pClazz.equals(Short.class)) {
                 setter.invoke(instanceObj, Short.parseShort(value));
                 isSet = true;
-            }
-            if (pClazz.equals(float.class) || pClazz.equals(Float.class)) {
+            } else if (pClazz.equals(float.class) || pClazz.equals(Float.class)) {
                 setter.invoke(instanceObj, Float.parseFloat(value));
                 isSet = true;
-            }
-            if (pClazz.equals(byte.class) || pClazz.equals(Byte.class)) {
+            } else if (pClazz.equals(byte.class) || pClazz.equals(Byte.class)) {
                 setter.invoke(instanceObj, Byte.parseByte(value));
                 isSet = true;
-            }
-            if (value.length() == 1) {
-                if (pClazz.equals(char.class)) {
-                    setter.invoke(instanceObj, value.charAt(0));
-                    isSet = true;
-                }
+            } else {
+                setter.invoke(instanceObj, value);
+                isSet = true;
             }
             // reset to default boolean is accessible
             setter.setAccessible(isAccessible);
@@ -126,36 +115,50 @@ public class ParamInjector {
                 if (!isAccessible) {
                     f.setAccessible(true);
                 }
-                if (f.getType().equals(String.class)) {
-                    f.set(instanceObj, value);
-                    isSet = true;
-                }
-                if (f.getType().equals(boolean.class) || f.getType().equals(Boolean.class)) {
+                if (f.getType().equals(boolean.class)) {
                     f.setBoolean(instanceObj, Boolean.parseBoolean(value));
                     isSet = true;
-                }
-                if (f.getType().equals(int.class) || f.getType().equals(Integer.class)) {
+                } else if (f.getType().equals(int.class)) {
                     f.setInt(instanceObj, Integer.parseInt(value));
                     isSet = true;
-                }
-                if (f.getType().equals(long.class) || f.getType().equals(Long.class)) {
+                } else if (f.getType().equals(long.class)) {
                     f.setLong(instanceObj, Long.parseLong(value));
                     isSet = true;
-                }
-                if (f.getType().equals(double.class) || f.getType().equals(Double.class)) {
+                } else if (f.getType().equals(double.class)) {
                     f.setDouble(instanceObj, Double.parseDouble(value));
                     isSet = true;
-                }
-                if (f.getType().equals(short.class) || f.getType().equals(Short.class)) {
+                } else if (f.getType().equals(short.class)) {
+                    f.setShort(instanceObj, Short.parseShort(value));
+                    isSet = true;
+                } else if (f.getType().equals(float.class)) {
+                    f.setFloat(instanceObj, Float.parseFloat(value));
+                    isSet = true;
+                } else if (f.getType().equals(byte.class)) {
+                    f.setByte(instanceObj, Byte.parseByte(value));
+                    isSet = true;
+                } else if (f.getType().equals(Boolean.class)) {
+                    f.set(instanceObj, Boolean.parseBoolean(value));
+                    isSet = true;
+                } else if (f.getType().equals(Integer.class)) {
+                    f.set(instanceObj, Integer.parseInt(value));
+                    isSet = true;
+                } else if (f.getType().equals(Long.class)) {
+                    f.set(instanceObj, Long.parseLong(value));
+                    isSet = true;
+                } else if (f.getType().equals(Double.class)) {
+                    f.set(instanceObj, Double.parseDouble(value));
+                    isSet = true;
+                } else if (f.getType().equals(Short.class)) {
                     f.set(instanceObj, Short.parseShort(value));
                     isSet = true;
-                }
-                if (f.getType().equals(float.class) || f.getType().equals(Float.class)) {
+                } else if (f.getType().equals(Float.class)) {
                     f.set(instanceObj, Float.parseFloat(value));
                     isSet = true;
-                }
-                if (f.getType().equals(byte.class) || f.getType().equals(Byte.class)) {
+                } else if (f.getType().equals(Byte.class)) {
                     f.set(instanceObj, Byte.parseByte(value));
+                    isSet = true;
+                } else {
+                    f.set(instanceObj, value);
                     isSet = true;
                 }
                 if (value.length() == 1) {
@@ -210,23 +213,5 @@ public class ParamInjector {
         }
 
         return null;
-//
-//        if (f != null) {
-//            return f;
-//        } else {
-//            for (Class loopClazz : clazz.getInterfaces()) {
-//                f = lookup(name, loopClazz);
-//                if (f != null) {
-//                    return f;
-//                }
-//            }
-//            if (clazz.getSuperclass() != null) {
-//                f = lookup(name, clazz.getSuperclass());
-//                if (f != null) {
-//                    return f;
-//                }
-//            }
-//        }
-//        return f;
     }
 }

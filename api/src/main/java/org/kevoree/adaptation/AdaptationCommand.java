@@ -1,5 +1,7 @@
 package org.kevoree.adaptation;
 
+import org.kevoree.modeling.api.KMFContainer;
+
 /**
  *
  */
@@ -10,4 +12,6 @@ public interface AdaptationCommand {
     void undo() throws KevoreeAdaptationException;
 
     AdaptationType getType();
+
+    KMFContainer getElement();
 }

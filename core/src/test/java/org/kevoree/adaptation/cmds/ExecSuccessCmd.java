@@ -4,6 +4,7 @@ import org.kevoree.adaptation.AdaptationCommand;
 import org.kevoree.adaptation.AdaptationType;
 import org.kevoree.adaptation.KevoreeAdaptationException;
 import org.kevoree.log.Log;
+import org.kevoree.modeling.api.KMFContainer;
 
 /**
  *
@@ -23,6 +24,11 @@ public class ExecSuccessCmd implements AdaptationCommand {
 
     @Override
     public AdaptationType getType() {
+        return null;
+    }
+
+    @Override
+    public KMFContainer getElement() {
         return null;
     }
 }

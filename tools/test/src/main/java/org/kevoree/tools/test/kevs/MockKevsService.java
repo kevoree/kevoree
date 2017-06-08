@@ -2,7 +2,7 @@ package org.kevoree.tools.test.kevs;
 
 import org.kevoree.ContainerRoot;
 import org.kevoree.KevScriptException;
-import org.kevoree.api.KevScriptService;
+import org.kevoree.service.KevScriptService;
 
 import java.io.InputStream;
 import java.util.HashMap;

@@ -9,10 +9,10 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.kevoree.ContainerRoot;
 import org.kevoree.KevScriptException;
 import org.kevoree.Runtime;
+import org.kevoree.service.KevScriptService;
 import org.kevoree.util.ConfigHelper;
 import org.kevoree.factory.DefaultKevoreeFactory;
 import org.kevoree.factory.KevoreeFactory;
-import org.kevoree.kevscript.KevScriptEngine;
 import org.kevoree.log.Log;
 import org.kevoree.modeling.api.ModelLoader;
 import org.kevoree.tools.mavenplugin.util.RegistryHelper;
@@ -121,7 +121,7 @@ public class KevRunnerMojo extends KevGenerateMojo {
 
             ContainerRoot ctxModel = (ContainerRoot) loader.loadModelFromStream(inStream).get(0);
             Runtime runtime = new Runtime(nodeName, config);
-            KevScriptEngine kevs = runtime.getKevScriptEngine();
+            KevScriptService kevs = runtime.getInjector().get(KevScriptService.class);
 
             try {
                 getLog().info("");

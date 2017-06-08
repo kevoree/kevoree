@@ -29,14 +29,6 @@
         <version>7</version>
     </parent>
 
-    <modules>
-        <module>model</module>
-        <module>api</module>
-        <module>tools</module>
-        <module>core</module>
-        <module>starter-parent</module>
-    </modules>
-
     <scm>
         <connection>scm:git:git@github.com:kevoree/kevoree.git</connection>
         <developerConnection>scm:git:git@github.com:kevoree/kevoree.git</developerConnection>
@@ -229,5 +221,34 @@
             <url>https://oss.sonatype.org/content/groups/public/</url>
         </pluginRepository>
     </pluginRepositories>
+
+    <profiles>
+        <profile>
+            <id>default</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <modules>
+                <module>model</module>
+                <module>api</module>
+                <module>tools</module>
+                <module>core</module>
+                <module>starter-parent</module>
+            </modules>
+        </profile>
+        <profile>
+            <!--
+              Use this profile to skip model compilation
+              because compiling with Kotlin will take forever
+            -->
+            <id>no-model</id>
+            <modules>
+                <module>api</module>
+                <module>tools</module>
+                <module>core</module>
+                <module>starter-parent</module>
+            </modules>
+        </profile>
+    </profiles>
 
 </project>

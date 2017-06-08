@@ -6,7 +6,7 @@ import org.kevoree.adaptation.KevoreeAdaptationException;
 public interface ModelListener {
 
     /**
-     * Method called before Kevoree Core accept an input model
+     * Method called before Kevoree KevoreeCore accept an input model
      * If one of the listeners returns "false" to this method, then no update
      * will occur
      *
@@ -31,7 +31,7 @@ public interface ModelListener {
     void updateError(UpdateContext context, KevoreeAdaptationException error);
 
     /**
-     * Method called before Kevoree Core starts the rollback phase
+     * Method called before Kevoree KevoreeCore starts the rollback phase
      * If one of the listeners returns "false" to this method, then no rollback
      * will occur
      *

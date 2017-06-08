@@ -10,6 +10,9 @@ import org.kevoree.annotation.Param;
 import org.kevoree.api.*;
 import org.kevoree.api.Port;
 import org.kevoree.factory.KevoreeFactory;
+import org.kevoree.service.KevScriptService;
+import org.kevoree.service.ModelService;
+import org.kevoree.service.RuntimeService;
 
 /**
  * Created by duke on 23/01/2014.

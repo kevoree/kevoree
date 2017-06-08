@@ -2,18 +2,17 @@ package org.kevoree;
 
 import com.typesafe.config.Config;
 import org.kevoree.annotation.KevoreeInject;
-import org.kevoree.api.KevScriptService;
-import org.kevoree.api.RuntimeService;
 import org.kevoree.api.handler.UpdateCallback;
 import org.kevoree.core.KevoreeCore;
+import org.kevoree.core.KevoreeCoreImpl;
 import org.kevoree.core.KevoreeDeployException;
-import org.kevoree.kernel.KevoreeKernel;
-import org.kevoree.kernel.KevoreeKernelImpl;
 import org.kevoree.kevscript.KevScriptEngine;
 import org.kevoree.log.Log;
 import org.kevoree.modeling.api.KMFContainer;
 import org.kevoree.modeling.api.json.JSONModelLoader;
 import org.kevoree.reflect.Injector;
+import org.kevoree.service.KevScriptService;
+import org.kevoree.service.RuntimeService;
 import org.kevoree.util.ConfigHelper;
 
 import java.io.ByteArrayInputStream;
@@ -23,7 +22,6 @@ import java.io.InputStream;
 import java.lang.management.ManagementFactory;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
-import java.nio.file.Paths;
 import java.util.*;
 import java.util.concurrent.CountDownLatch;
 import java.util.regex.Matcher;
@@ -39,10 +37,9 @@ public class Runtime {
 
     private static final String CHARS = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
+    private Injector injector;
     private KevoreeCore core;
-    private KevScriptEngine kevScriptEngine;
     private JSONModelLoader jsonLoader;
-    private KevoreeKernel kernel;
     private static HashMap<String, String> ctxVars = new HashMap<>();
     private boolean stopping = false;
     private Exception bootstrapError = null;
@@ -95,10 +92,6 @@ public class Runtime {
         }
         Log.info("Log level= {}", log);
 
-        kernel = new KevoreeKernelImpl();
-        Injector injector = new Injector(KevoreeInject.class);
-        RuntimeServiceImpl runtimeService = new RuntimeServiceImpl(this, injector);
-
         String registryUrl = "http://";
         if (config.getBoolean("registry.ssl")) {
             registryUrl = "https://";
@@ -112,39 +105,36 @@ public class Runtime {
             registryUrl += ":" + port;
         }
 
-        String cacheRoot = System.getProperty("cache.root");
-        if (cacheRoot == null) {
-            cacheRoot = Paths.get(System.getProperty("user.home"), ".kevoree", "tdefs").toString();
-            Log.trace("Kevoree cache: {}", cacheRoot);
+        // Create Kevoree core
+        core = new KevoreeCoreImpl();
+
+        // Services injection
+        injector = new Injector(KevoreeInject.class);
+        injector.register(KevScriptService.class, new KevScriptEngine(registryUrl));
+        injector.register(RuntimeService.class, new MavenRuntimeService(core, injector));
+
+        // inject services in core
+        try {
+            injector.inject(core);
+            jsonLoader = core.getFactory().createJSONLoader();
+            core.onStop(() -> {
+                Log.info("Stopped.");
+                if (!stopping) {
+                    System.setSecurityManager(null);
+                    java.lang.Runtime.getRuntime().exit(0);
+                }
+            });
+            core.setNodeName(nodeName);
+            Log.info("Starting Kevoree using version: {} [PID:{}]", core.getFactory().getVersion(), ManagementFactory.getRuntimeMXBean().getName());
+            Log.info("Platform node name: {}", nodeName);
+            core.start();
+        } catch (KevoreeCoreException e) {
+            Log.error("Unable to inject services in KevoreeCore", e);
         }
-
-        kevScriptEngine = new KevScriptEngine(registryUrl, cacheRoot);
-        core = new KevoreeCore(kevScriptEngine);
-        jsonLoader = core.getFactory().createJSONLoader();
-        core.onStop(() -> {
-            Log.info("Stopped.");
-            if (!stopping) {
-                System.setSecurityManager(null);
-                java.lang.Runtime.getRuntime().exit(0);
-            }
-        });
-        core.setNodeName(nodeName);
-        runtimeService.setNodeName(nodeName);
-        runtimeService.setCore(core);
-        injector.register(RuntimeService.class, runtimeService);
-        injector.register(KevScriptService.class, kevScriptEngine);
-        core.setRuntimeService(runtimeService);
-        Log.info("Starting Kevoree using version: {} [PID:{}]", core.getFactory().getVersion(), ManagementFactory.getRuntimeMXBean().getName());
-        Log.info("Platform node name: {}", nodeName);
-        core.start();
     }
 
-    public KevoreeKernel getKernel() {
-        return kernel;
-    }
-
-    public KevScriptEngine getKevScriptEngine() {
-        return this.kevScriptEngine;
+    public Injector getInjector() {
+        return this.injector;
     }
 
     private void checkBootstrap(Exception e) {
@@ -211,7 +201,7 @@ public class Runtime {
                 }
                 callback.run(bootstrapError);
             } else {
-                Log.error("Core has been stopped while bootstrapping");
+                Log.error("KevoreeCore has been stopped while bootstrapping");
                 System.setSecurityManager(null);
             }
         } else {
@@ -232,7 +222,7 @@ public class Runtime {
         core.getFactory().root(emptyModel);
 
         try {
-            kevScriptEngine.executeFromStream(input, emptyModel, ctxVars);
+            injector.get(KevScriptService.class).executeFromStream(input, emptyModel, ctxVars);
         } catch (KevScriptException e) {
             Log.error("Unable to bootstrap Kevoree from this KevScript", e);
             stop();
