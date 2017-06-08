@@ -25,6 +25,15 @@ java -jar kevoree.jar
 ```
 :warning: Note that you need to make your `.kevoree/config.json` point to the new Kevoree registry available at `https://new-registry.kevoree.org` for dev version **5.5.0-SNAPSHOT**
 
+## Usage with Docker
+Maybe the easiest way to get started with Kevoree is to use the Docker image: `kevoree/java:5.5.0-SNAPSHOT`
+```sh
+docker run -it -v /tmp/main.kevs:/tmp/main.kevs kevoree/java:5.5.0-SNAPSHOT -Dregistry.host=new-registry.kevoree.org -Dnode.bootstrap=/tmp/main.kevs
+```
+In the example above we are starting a Docker container using the **kevoree/java:5.5.0-SNAPSHOT** image.  
+We are mounting a local KevScript file (in `/tmp/main.kevs` to the same location in the container) and we are telling Kevoree to use it to bootstrap with `-Dnode.bootstrap=/tmp/main.kevs`.  
+We are also by-passing the default `registry.host` (ie. editor.kevoree.org) to point to the new one at `new-registry.kevoree.org`
+
 ## Usage with Maven
 
 ### POM file inheriting
