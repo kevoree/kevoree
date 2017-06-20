@@ -205,7 +205,9 @@ public class KevGenerateMojo extends AbstractMojo {
 		}
 
 		tdef.setName(clazz.getSimpleName());
-		tdef.addMetaData(desc);
+		if (!desc.getValue().isEmpty()) {
+			tdef.addMetaData(desc);
+		}
 
 		tdef.setDictionaryType(createDictionaryType(clazz));
 
@@ -238,9 +240,9 @@ public class KevGenerateMojo extends AbstractMojo {
 
 	private PortTypeRef createPortTypeRef(String name) {
 		PortTypeRef ref = factory.createPortTypeRef();
-		PortType portType = factory.createPortType();
-		portType.setName(name);
-		ref.setRef(portType);
+		ref.setName(name);
+		ref.setOptional(true);
+		ref.setNoDependency(true);
 		return ref;
 	}
 
@@ -270,7 +272,7 @@ public class KevGenerateMojo extends AbstractMojo {
 
 		if (field.getType().equals(Integer.class) || field.getType().equals(int.class)) {
 			attr.setDatatype(DataType.INT);
-			String defaultVal = String.valueOf(getDefaultValue(clazz, field));
+			String defaultVal = getDefaultValue(clazz, field);
 			attr.setDefaultValue(defaultVal);
 			logAttr.append(": int");
 			if (defaultVal != null) {
@@ -280,7 +282,7 @@ public class KevGenerateMojo extends AbstractMojo {
 
 		} else if (field.getType().equals(Double.class) || field.getType().equals(double.class)) {
 			attr.setDatatype(DataType.DOUBLE);
-			String defaultVal = String.valueOf(getDefaultValue(clazz, field));
+			String defaultVal = getDefaultValue(clazz, field);
 			attr.setDefaultValue(defaultVal);
 			logAttr.append(": double");
 			if (defaultVal != null) {
@@ -290,7 +292,7 @@ public class KevGenerateMojo extends AbstractMojo {
 
 		} else if (field.getType().equals(Long.class) || field.getType().equals(long.class)) {
 			attr.setDatatype(DataType.LONG);
-			String defaultVal = String.valueOf(getDefaultValue(clazz, field));
+			String defaultVal = getDefaultValue(clazz, field);
 			attr.setDefaultValue(defaultVal);
 			logAttr.append(": long");
 			if (defaultVal != null) {
@@ -300,7 +302,7 @@ public class KevGenerateMojo extends AbstractMojo {
 
 		} else if (field.getType().equals(Float.class) || field.getType().equals(float.class)) {
 			attr.setDatatype(DataType.FLOAT);
-			String defaultVal = String.valueOf(getDefaultValue(clazz, field));
+			String defaultVal = getDefaultValue(clazz, field);
 			attr.setDefaultValue(defaultVal);
 			logAttr.append(": float");
 			if (defaultVal != null) {
@@ -310,7 +312,7 @@ public class KevGenerateMojo extends AbstractMojo {
 
 		} else if (field.getType().equals(Short.class) || field.getType().equals(short.class)) {
 			attr.setDatatype(DataType.SHORT);
-			String defaultVal = String.valueOf(getDefaultValue(clazz, field));
+			String defaultVal = getDefaultValue(clazz, field);
 			attr.setDefaultValue(defaultVal);
 			logAttr.append(": short");
 			if (defaultVal != null) {
@@ -320,7 +322,7 @@ public class KevGenerateMojo extends AbstractMojo {
 
 		} else if (field.getType().equals(Boolean.class) || field.getType().equals(boolean.class)) {
 			attr.setDatatype(DataType.BOOLEAN);
-			String defaultVal = String.valueOf(getDefaultValue(clazz, field));
+			String defaultVal = getDefaultValue(clazz, field);
 			attr.setDefaultValue(defaultVal);
 			logAttr.append(": boolean");
 			if (defaultVal != null) {
@@ -330,7 +332,7 @@ public class KevGenerateMojo extends AbstractMojo {
 
 		} else if (field.getType().equals(String.class)) {
 			attr.setDatatype(DataType.STRING);
-			String defaultVal = String.valueOf(getDefaultValue(clazz, field));
+			String defaultVal = getDefaultValue(clazz, field);
 			attr.setDefaultValue(defaultVal);
 			logAttr.append(": string");
 			if (defaultVal != null) {
@@ -340,7 +342,7 @@ public class KevGenerateMojo extends AbstractMojo {
 
 		} else if (field.getType().equals(Character.class)) {
 			attr.setDatatype(DataType.CHAR);
-			String defaultVal = String.valueOf(getDefaultValue(clazz, field));
+			String defaultVal = getDefaultValue(clazz, field);
 			attr.setDefaultValue(defaultVal);
 			logAttr.append(": char");
 			if (defaultVal != null) {
@@ -355,6 +357,7 @@ public class KevGenerateMojo extends AbstractMojo {
 		Param p = field.getAnnotation(Param.class);
 		attr.setFragmentDependant(p.fragmentDependent());
 		attr.setOptional(p.optional());
+
 		return attr;
 	}
 
@@ -416,22 +419,31 @@ public class KevGenerateMojo extends AbstractMojo {
 		}
 	}
 
-	private Object getDefaultValue(Class<?> clazz, Field field) throws Exception {
+	private String getDefaultValue(Class<?> clazz, Field field) throws Exception {
 		Object o = clazz.newInstance();
 		field.setAccessible(true);
-		return field.get(o);
+		Object fieldValue = field.get(o);
+		if (fieldValue != null) {
+			return String.valueOf(fieldValue);
+		}
+		return "";
 	}
 
 	private String printDesc(TypeDefinition tdef) {
-		String desc = tdef.findMetaDataByID("description").getValue();
-		if (desc.isEmpty()) {
-			return "<none>";
-		} else {
-			if (desc.length() > 50) {
-				return desc.substring(0, 50) + "...";
+		Value descMeta = tdef.findMetaDataByID("description");
+		if (descMeta != null) {
+			String desc = descMeta.getValue();
+			if (desc.isEmpty()) {
+				return "<none>";
 			} else {
-				return desc;
+				if (desc.length() > 50) {
+					return desc.substring(0, 50) + "...";
+				} else {
+					return desc;
+				}
 			}
+		} else {
+			return "<none>";
 		}
 	}
 

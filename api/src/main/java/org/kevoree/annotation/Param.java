@@ -17,6 +17,4 @@ public @interface Param {
     boolean optional() default true;
 
     boolean fragmentDependent() default false;
-
-    String defaultValue() default "";
 }

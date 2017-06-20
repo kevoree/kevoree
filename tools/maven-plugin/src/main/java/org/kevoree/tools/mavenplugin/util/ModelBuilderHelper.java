@@ -105,11 +105,6 @@ public class ModelBuilderHelper {
                     } catch (Exception e) {
                         dicAtt.setFragmentDependant(false);
                     }
-                    try {
-                        dicAtt.setDefaultValue(annotationParam.defaultValue());
-                    } catch (Exception e) {
-                        dicAtt.setDefaultValue("");
-                    }
                     currentTypeDefinition.getDictionaryType().addAttributes(dicAtt);
                 }
             }
@@ -224,11 +219,6 @@ public class ModelBuilderHelper {
                             dicAtt.setFragmentDependant(annotationParam.fragmentDependent());
                         } catch (Exception e) {
                             dicAtt.setFragmentDependant(false);
-                        }
-                        try {
-                            dicAtt.setDefaultValue(annotationParam.defaultValue());
-                        } catch (Exception e) {
-                            dicAtt.setDefaultValue(null);
                         }
                         currentTypeDefinition.getDictionaryType().setGenerated_KMF_ID("0.0");
                         currentTypeDefinition.getDictionaryType().addAttributes(dicAtt);
