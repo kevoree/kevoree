@@ -28,11 +28,6 @@
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.kevoree.kcl</groupId>
-			<artifactId>org.kevoree.kcl</artifactId>
-			<version>${kevoree.kcl.version}</version>
-		</dependency>
-		<dependency>
 			<groupId>org.kevoree.log</groupId>
 			<artifactId>org.kevoree.log</artifactId>
 			<version>${kevoree.log.version}</version>

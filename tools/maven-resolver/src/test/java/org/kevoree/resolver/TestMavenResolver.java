@@ -1,14 +1,13 @@
 package org.kevoree.resolver;
 
-import org.jboss.shrinkwrap.resolver.api.maven.ConfigurableMavenResolverSystem;
-import org.junit.Assert;
-import org.junit.Test;
+import org.eclipse.aether.repository.RemoteRepository;
+import org.eclipse.aether.util.graph.visitor.PreorderNodeListGenerator;
 import org.junit.Ignore;
+import org.junit.Test;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -17,16 +16,16 @@ import java.util.jar.JarFile;
 public class TestMavenResolver {
 
     @Test
-		@Ignore
-    public void testDefault() throws IOException {
-        ConfigurableMavenResolverSystem resolver = MavenResolver.get();
-        File javaNodeJar = resolver
-                .resolve("org.kevoree.library.java:org.kevoree.library.java.javaNode:5.5.0-SNAPSHOT")
-                .withoutTransitivity()
-                .asSingleFile();
+    @Ignore
+    public void testDefault() throws Exception {
+        MavenResolver resolver = new MavenResolver.Builder().build();
+        List<RemoteRepository> repos = new ArrayList<>();
+        repos.add(new RemoteRepository.Builder("snapshots", "default", "https://oss.sonatype.org/content/repositories/snapshots").build());
+        PreorderNodeListGenerator nlg = resolver
+                .resolve("org.kevoree.library:org.kevoree.library.javaNode:5.5.0-SNAPSHOT", repos);
 
-        JarFile jar = new JarFile(javaNodeJar);
-        JarEntry mainClass = jar.getJarEntry("org/kevoree/library/JavaNode.class");
-        Assert.assertNotNull(mainClass);
+        for (File f : nlg.getFiles()) {
+            System.out.println(f.getAbsolutePath());
+        }
     }
 }

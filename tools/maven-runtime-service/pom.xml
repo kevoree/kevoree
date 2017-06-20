@@ -13,6 +13,10 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.kevoree.log</groupId>
+            <artifactId>org.kevoree.log</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.kevoree</groupId>
             <artifactId>org.kevoree.api</artifactId>
             <version>${project.version}</version>

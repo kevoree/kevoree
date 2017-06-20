@@ -3,12 +3,10 @@ package org.kevoree.tools.test.runtime;
 import org.kevoree.DeployUnit;
 import org.kevoree.Instance;
 import org.kevoree.KevoreeCoreException;
-import org.kevoree.kcl.api.FlexyClassLoader;
-import org.kevoree.kcl.impl.FlexyClassLoaderImpl;
 import org.kevoree.service.RuntimeService;
 
-import java.io.File;
-import java.util.Set;
+import java.net.URL;
+import java.net.URLClassLoader;
 
 /**
  *
@@ -16,20 +14,20 @@ import java.util.Set;
  */
 public class MockRuntimeService implements RuntimeService {
 
-    private FlexyClassLoader fcl;
+    private ClassLoader classLoader;
 
     private MockRuntimeService() {
-        this.fcl = new FlexyClassLoaderImpl();
+        this.classLoader = new URLClassLoader(new URL[] {});
     }
 
     @Override
-    public FlexyClassLoader get(String key) {
-        return this.fcl;
+    public ClassLoader get(String key) {
+        return this.classLoader;
     }
 
     @Override
-    public FlexyClassLoader get(DeployUnit du) {
-        return this.fcl;
+    public ClassLoader get(DeployUnit du) {
+        return this.classLoader;
     }
 
     @Override
@@ -38,7 +36,7 @@ public class MockRuntimeService implements RuntimeService {
     }
 
     @Override
-    public FlexyClassLoader installDeployUnit(DeployUnit du) throws KevoreeCoreException {
+    public ClassLoader installDeployUnit(DeployUnit du) throws KevoreeCoreException {
         return null;
     }
 
@@ -48,18 +46,13 @@ public class MockRuntimeService implements RuntimeService {
     }
 
     @Override
-    public FlexyClassLoader installTypeDefinition(Instance instance) throws KevoreeCoreException {
+    public ClassLoader installTypeDefinition(Instance instance) throws KevoreeCoreException {
         return null;
     }
 
     @Override
-    public Object createInstance(Instance instance, FlexyClassLoader kcl)
+    public Object createInstance(Instance instance, ClassLoader classLoader)
             throws KevoreeCoreException {
-        return null;
-    }
-
-    @Override
-    public File resolve(String url, Set<String> repos) {
         return null;
     }
 

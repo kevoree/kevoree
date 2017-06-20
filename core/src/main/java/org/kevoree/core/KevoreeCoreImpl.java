@@ -14,7 +14,6 @@ import org.kevoree.api.handler.UpdateCallback;
 import org.kevoree.api.handler.UpdateContext;
 import org.kevoree.factory.DefaultKevoreeFactory;
 import org.kevoree.factory.KevoreeFactory;
-import org.kevoree.kcl.api.FlexyClassLoader;
 import org.kevoree.log.Log;
 import org.kevoree.modeling.api.ModelCloner;
 import org.kevoree.modeling.api.util.ActionType;
@@ -226,7 +225,7 @@ public class KevoreeCoreImpl implements KevoreeCore {
         } catch (TimeoutException e) {
             throw new KevoreeDeployException("preUpdate() timed out", e);
         } catch (Exception e) {
-            throw new KevoreeDeployException(e);
+            throw new KevoreeDeployException("Internal update failed", e);
         }
     }
 
@@ -234,8 +233,8 @@ public class KevoreeCoreImpl implements KevoreeCore {
         ContainerNode node = model.findNodesByID(nodeName);
         if (node != null) {
             try {
-                FlexyClassLoader kcl = runtime.installTypeDefinition(node);
-                NodeType nodeObject = (NodeType) runtime.createInstance(node, kcl);
+                ClassLoader classLoader = runtime.installTypeDefinition(node);
+                NodeType nodeObject = (NodeType) runtime.createInstance(node, classLoader);
                 if (node.getTypeDefinition().getDictionaryType() != null) {
                     for (DictionaryAttribute attr : node.getTypeDefinition().getDictionaryType().getAttributes()) {
                         if (!attr.getFragmentDependant()) {

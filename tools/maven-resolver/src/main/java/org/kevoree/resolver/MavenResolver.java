@@ -1,15 +1,28 @@
 package org.kevoree.resolver;
 
-import org.jboss.shrinkwrap.resolver.api.maven.ConfigurableMavenResolverSystem;
-import org.jboss.shrinkwrap.resolver.api.maven.Maven;
-import org.kevoree.log.Log;
+import org.apache.maven.repository.internal.MavenRepositorySystemUtils;
+import org.eclipse.aether.DefaultRepositorySystemSession;
+import org.eclipse.aether.RepositorySystem;
+import org.eclipse.aether.RepositorySystemSession;
+import org.eclipse.aether.artifact.DefaultArtifact;
+import org.eclipse.aether.collection.CollectRequest;
+import org.eclipse.aether.collection.DependencyCollectionException;
+import org.eclipse.aether.connector.basic.BasicRepositoryConnectorFactory;
+import org.eclipse.aether.graph.Dependency;
+import org.eclipse.aether.graph.DependencyNode;
+import org.eclipse.aether.impl.DefaultServiceLocator;
+import org.eclipse.aether.repository.LocalRepository;
+import org.eclipse.aether.repository.RemoteRepository;
+import org.eclipse.aether.resolution.DependencyRequest;
+import org.eclipse.aether.resolution.DependencyResolutionException;
+import org.eclipse.aether.spi.connector.RepositoryConnectorFactory;
+import org.eclipse.aether.spi.connector.transport.TransporterFactory;
+import org.eclipse.aether.transport.file.FileTransporterFactory;
+import org.eclipse.aether.transport.http.HttpTransporterFactory;
+import org.eclipse.aether.util.graph.visitor.PreorderNodeListGenerator;
 
-import java.io.*;
-import java.net.URL;
-import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.logging.LogManager;
+import java.io.File;
+import java.util.List;
 
 /**
  *
@@ -17,58 +30,93 @@ import java.util.logging.LogManager;
  */
 public class MavenResolver {
 
-    private static final Map<String, URL> EMPTY_MAP = new HashMap<>();
-    private static File propFile = Paths.get(System.getProperty("user.home"), ".kevoree", "java-logging.properties").toFile();
-    private static boolean offline = false;
+    private RepositorySystem repoSystem;
+    private RepositorySystemSession session;
 
-    static {
-        // be sure that the logging of the Maven resolver won't be too verbose
-        // but let the user modify the behavior if needed
-        String loggingProp = System.getProperty("java.util.logging.config.file");
-        if (loggingProp == null) {
-            if (!propFile.exists()) {
-                propFile.getParentFile().mkdirs();
-                try {
-                    PrintWriter writer = new PrintWriter(propFile);
-                    writer.println("# Specify the handlers to create in the root logger");
-                    writer.println("handlers= java.util.logging.ConsoleHandler");
-                    writer.println("# Set the default logging level for new ConsoleHandler instances");
-                    writer.println("java.util.logging.ConsoleHandler.level= SEVERE");
-                    writer.close();
-                } catch (FileNotFoundException e) {
-                    throw new RuntimeException("Unable to write " + propFile.getAbsolutePath(), e);
+    private MavenResolver(RepositorySystem repo, RepositorySystemSession session) {
+        this.repoSystem = repo;
+        this.session = session;
+    }
+
+    public PreorderNodeListGenerator resolve(String coordinate, List<RemoteRepository> repositories)
+            throws MavenResolverException {
+        try {
+            Dependency project = new Dependency(new DefaultArtifact(coordinate), "compile");
+
+            CollectRequest collectRequest = new CollectRequest();
+            collectRequest.setRoot(project);
+            for (RemoteRepository repo : repositories) {
+                collectRequest.addRepository(repo);
+            }
+            DependencyNode node = this.repoSystem.collectDependencies(this.session, collectRequest).getRoot();
+
+            DependencyRequest dependencyRequest = new DependencyRequest();
+            dependencyRequest.setRoot(node);
+
+            this.repoSystem.resolveDependencies(session, dependencyRequest);
+
+            PreorderNodeListGenerator nlg = new PreorderNodeListGenerator();
+            node.accept(nlg);
+
+            return nlg;
+        } catch (DependencyCollectionException | DependencyResolutionException e) {
+            throw new MavenResolverException("Unable to resolve " + coordinate + " from " + repositories.toString(), e);
+        }
+    }
+
+    public static class Builder {
+        public MavenResolver build() throws MavenResolverException {
+            RepositorySystem repo = newRepositorySystem();
+            RepositorySystemSession session = newSession(repo);
+            return new MavenResolver(repo, session);
+        }
+    }
+
+    private static RepositorySystem newRepositorySystem() {
+        DefaultServiceLocator locator = MavenRepositorySystemUtils.newServiceLocator();
+        locator.addService(RepositoryConnectorFactory.class, BasicRepositoryConnectorFactory.class);
+        locator.addService(TransporterFactory.class, FileTransporterFactory.class);
+        locator.addService(TransporterFactory.class, HttpTransporterFactory.class);
+
+        return locator.getService( RepositorySystem.class );
+    }
+
+    private static RepositorySystemSession newSession(RepositorySystem system) throws MavenResolverException {
+        DefaultRepositorySystemSession session = MavenRepositorySystemUtils.newSession();
+        session.setLocalRepositoryManager(system.newLocalRepositoryManager(session, findLocalRepository()));
+
+        return session;
+    }
+
+    private static LocalRepository findLocalRepository() throws MavenResolverException {
+        LocalRepository localRepo = null;
+
+        // first try M2_REPO
+        String repoHome = System.getenv("M2_REPO");
+        if (repoHome != null) {
+            File f = new File(repoHome);
+            if (f.exists()) {
+                localRepo = new LocalRepository(f);
+            }
+        }
+
+        // then user home
+        if (localRepo == null) {
+            String userHome = System.getProperty("user.home");
+            if (userHome != null) {
+                File fh = new File(userHome, ".m2" + File.separator
+                        + "repository");
+                if (fh.exists()) {
+                    localRepo = new LocalRepository(fh);
                 }
             }
-        } else {
-            propFile = new File(loggingProp);
         }
 
-        offline = Boolean.valueOf(System.getProperty("resolver.offline", "false"));
-        if (offline) {
-            Log.info("Kevoree Maven Resolver is in offline mode");
-        }
-    }
-
-    public static ConfigurableMavenResolverSystem get() {
-        return MavenResolver.get(EMPTY_MAP);
-    }
-
-    public static ConfigurableMavenResolverSystem get(Map<String, URL> repositories) {
-        ConfigurableMavenResolverSystem resolver = Maven
-                .configureResolver()
-                .useLegacyLocalRepo(true)
-                .workOffline(offline);
-
-        try {
-            LogManager.getLogManager().readConfiguration(new FileInputStream(propFile));
-        } catch (IOException e) {
-            throw new RuntimeException("Unable to read " + propFile.getAbsolutePath());
+        // if all fail => throw
+        if (localRepo == null) {
+            throw new MavenResolverException("Unable to locate local .m2 repository");
         }
 
-        for (Map.Entry<String, URL> repo : repositories.entrySet()) {
-            resolver.withRemoteRepo(repo.getKey(), repo.getValue(), "default");
-        }
-
-        return resolver;
+        return localRepo;
     }
 }

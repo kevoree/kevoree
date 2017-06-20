@@ -9,6 +9,7 @@ import org.kevoree.MavenRuntimeService;
 import org.kevoree.annotation.KevoreeInject;
 import org.kevoree.kevscript.KevScriptEngine;
 import org.kevoree.reflect.Injector;
+import org.kevoree.resolver.MavenResolverException;
 import org.kevoree.service.ContextAwareModelServiceAdapter;
 import org.kevoree.service.KevScriptService;
 import org.kevoree.service.RuntimeService;
@@ -28,7 +29,7 @@ public class TestKevoreeCore {
     private ContextAwareModelServiceAdapter adapter;
 
     @Before
-    public void setUp() throws KevoreeCoreException {
+    public void setUp() throws KevoreeCoreException, MavenResolverException {
         this.core = new KevoreeCoreImpl();
 
         Injector injector = new Injector(KevoreeInject.class);

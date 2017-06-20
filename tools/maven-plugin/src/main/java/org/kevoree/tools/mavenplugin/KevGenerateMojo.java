@@ -13,9 +13,7 @@
  */
 package org.kevoree.tools.mavenplugin;
 
-import com.github.zafarkhaja.semver.Version;
-import org.apache.commons.io.FileUtils;
-import org.apache.maven.artifact.repository.ArtifactRepository;
+import de.vandermeer.asciitable.AsciiTable;
 import org.apache.maven.model.Repository;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -25,31 +23,30 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
-import org.kevoree.ContainerRoot;
-import org.kevoree.DeployUnit;
-import org.kevoree.TypeDefinition;
-import org.kevoree.Value;
-import org.kevoree.api.helper.KModelHelper;
+import org.kevoree.*;
+import org.kevoree.annotation.*;
+import org.kevoree.annotation.ChannelType;
+import org.kevoree.annotation.ComponentType;
+import org.kevoree.annotation.GroupType;
+import org.kevoree.annotation.NodeType;
+import org.kevoree.api.Port;
 import org.kevoree.factory.DefaultKevoreeFactory;
 import org.kevoree.factory.KevoreeFactory;
-import org.kevoree.modeling.api.KMFContainer;
-import org.kevoree.modeling.api.ModelCloner;
-import org.kevoree.modeling.api.ModelLoader;
-import org.kevoree.modeling.api.ModelSerializer;
-import org.kevoree.modeling.api.compare.ModelCompare;
 import org.kevoree.modeling.api.json.JSONModelSerializer;
-import org.kevoree.tools.mavenplugin.util.Annotations2Model;
+import org.kevoree.reflect.ReflectUtils;
 import org.kevoree.tools.mavenplugin.util.ModelBuilderHelper;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.nio.file.*;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.*;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
+import java.util.stream.Collectors;
 
 @Mojo(name = "generate", defaultPhase = LifecyclePhase.PREPARE_PACKAGE, requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME)
 public class KevGenerateMojo extends AbstractMojo {
@@ -57,44 +54,87 @@ public class KevGenerateMojo extends AbstractMojo {
 	@Parameter(required = true, readonly = true, defaultValue = "${project}")
 	public MavenProject project;
 
-	@Parameter(defaultValue = "${localRepository}")
-	private ArtifactRepository localRepository = null;
-
 	@Parameter(defaultValue = "${project.build.directory}/classes", required = true)
 	protected File modelOutputDirectory;
 	
 	@Parameter(required = true)
 	private String namespace = null;
 
-	private Annotations2Model annotations2Model = new Annotations2Model();
+	@Parameter(defaultValue = "${project.build.outputDirectory}", readonly = true)
+	private File sourcesDir;
+
 	private KevoreeFactory factory = new DefaultKevoreeFactory();
 
 	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		if (project.getArtifact().getType().equals("jar")) {
-			getLog().info("Generating a Kevoree model by reflection...");
-			final ContainerRoot model = factory.createContainerRoot();
-			factory.root(model);
-
-			final HashMap<String, Set<String>> collectedClasses = new HashMap<String, Set<String>>();
-            DeployUnit deployUnit = processModel(model, collectedClasses);
-
 			try {
-				annotations2Model.fillModel(modelOutputDirectory, model, deployUnit,
-						project.getCompileClasspathElements(), collectedClasses);
+				ContainerRoot model = factory.createContainerRoot().withGenerated_KMF_ID("0.0");
+				factory.root(model);
+				org.kevoree.Package pkg = createPackage();
+				model.addPackages(pkg);
+				getLog().info("Namespace:    " + namespace);
+
+				DeployUnit du = createDeployUnit();
+				pkg.addDeployUnits(du);
+				getLog().info("DeployUnit:   " + du.getName() + ":" + du.getVersion());
+				getLog().info("");
+
+				for (Class<?> tdefClass : findTypeDefinitionClasses()) {
+					TypeDefinition tdef = createTypeDefinition(tdefClass);
+					getLog().info("TypeDefinition");
+					getLog().info("      name         " + tdef.getName());
+					getLog().info("      version      " + tdef.getVersion());
+					getLog().info("      description  " + printDesc(tdef));
+					getLog().info("");
+
+					AsciiTable at = new AsciiTable();
+					at.addRule();
+					at.addRow("Param", "DataType", "Default value", "Optional?", "Fragmented?");
+					DictionaryType dic = tdef.getDictionaryType();
+					for (DictionaryAttribute attr : dic.getAttributes()) {
+						at.addRule();
+						at.addRow(attr.getName(), attr.getDatatype(), attr.getDefaultValue(), attr.getOptional() ? "✔":"✘", attr.getFragmentDependant() ? "✔":"✘");
+					}
+					at.addRule();
+					for (String logLine : at.renderAsArray()) {
+						getLog().info("  " + logLine);
+					}
+
+					if (tdef instanceof org.kevoree.ComponentType) {
+						List<PortTypeRef> inputs = createInputPortTypes(tdefClass);
+						((org.kevoree.ComponentType) tdef).addAllProvided(inputs);
+						printPorts("Inputs", inputs);
+
+						List<PortTypeRef> outputs = createOutputPortTypes(tdefClass);
+						((org.kevoree.ComponentType) tdef).addAllRequired(outputs);
+						printPorts("Outputs", outputs);
+					}
+
+					// add DeployUnit to tdef
+					tdef.addDeployUnits(du);
+					// add this tdef class to du
+					Value classFilter = (Value) factory.createValue().withName("class:" + tdef.getName() + ":" + tdef.getVersion());
+					classFilter.setValue(tdefClass.getName());
+					du.addFilters(classFilter);
+
+					pkg.addTypeDefinitions(tdef);
+					getLog().info("");
+				}
+
+				serializeModel(model);
+				getLog().debug("Kevoree Model Generator - Done");
 			} catch (Exception e) {
-				throw new MojoExecutionException("Error while parsing Kevoree annotations", e);
+				throw new MojoExecutionException("Unable to generate a Kevoree model from the compiled project", e);
 			}
-
-//			cacheTypeDefinitions(model);
-
-			processModelSerialization(model);
 		}
 	}
-	
-	private DeployUnit processModel(ContainerRoot model, Map<String, Set<String>> collectedClasses) {
-		model.setGenerated_KMF_ID("0");
 
+	private org.kevoree.Package createPackage() {
+		return (org.kevoree.Package) factory.createPackage().withName(namespace);
+	}
+	
+	private DeployUnit createDeployUnit() {
         DeployUnit du = factory.createDeployUnit();
         du.setName(project.getArtifact().getArtifactId());
         String hashcode = ModelBuilderHelper.createKey(namespace, project.getArtifactId(), project.getVersion(), null);
@@ -124,38 +164,201 @@ public class KevGenerateMojo extends AbstractMojo {
             du.addFilters(repoVal);
         }
 
-        org.kevoree.Package pack = KModelHelper.fqnCreate(namespace, model, factory);
-        if (pack == null) {
-            getLog().info("Package " + project.getArtifact().getGroupId() + " " + pack);
-        } else {
-            pack.addDeployUnits(du);
-        }
-        du.setUrl(project.getArtifact().getGroupId() + ":" + du.getName() + ":" + du.getVersion());
 
-        try {
-            File f2 = localRepository.find(project.getArtifact()).getFile();
-            if (f2 != null && f2.getAbsolutePath().endsWith(".jar")) {
-                JarFile file = new JarFile(f2);
-                Enumeration<JarEntry> entries = file.entries();
-                while (entries.hasMoreElements()) {
-                    JarEntry entry = entries.nextElement();
-                    // System.err.println(entry.getName());
-                    Set<String> sources = collectedClasses.get(entry.getName());
-                    if (sources == null) {
-                        sources = new HashSet<>();
-                        collectedClasses.put(entry.getName(), sources);
-                    }
-                    sources.add(project.getArtifact().getGroupId() + ":" + project.getArtifact().getArtifactId() + ":"
-                            + project.getArtifact().getVersion() + ":" + project.getArtifact().getType());
-                }
-                file.close();
-            }
-        } catch (Exception ignore) {}
+        // set Maven groupId:artifactId:version
+        du.setUrl(project.getArtifact().getGroupId() + ":" + du.getName() + ":" + du.getVersion());
 
         return du;
 	}
 
-	private void processModelSerialization(ContainerRoot model) throws MojoExecutionException {
+	private TypeDefinition createTypeDefinition(Class<?> clazz) throws Exception {
+		TypeDefinition tdef;
+		Value desc = (Value) factory.createValue().withName("description");
+
+		if (ReflectUtils.hasAnnotation(clazz, ComponentType.class)) {
+			tdef =factory.createComponentType();
+			ComponentType ca = ReflectUtils.findAnnotation(clazz, ComponentType.class);
+			tdef.setVersion(String.valueOf(ca.version()));
+			desc.setValue(ca.description());
+
+		} else if (ReflectUtils.hasAnnotation(clazz, NodeType.class)) {
+			tdef = factory.createNodeType();
+			NodeType ca = ReflectUtils.findAnnotation(clazz, NodeType.class);
+			tdef.setVersion(String.valueOf(ca.version()));
+			desc.setValue(ca.description());
+
+		} else if (ReflectUtils.hasAnnotation(clazz, GroupType.class)) {
+			tdef = factory.createGroupType();
+			GroupType ca = ReflectUtils.findAnnotation(clazz, GroupType.class);
+			tdef.setVersion(String.valueOf(ca.version()));
+			desc.setValue(ca.description());
+
+		} else if (ReflectUtils.hasAnnotation(clazz, ChannelType.class)) {
+			tdef = factory.createChannelType();
+			ChannelType ca = ReflectUtils.findAnnotation(clazz, ChannelType.class);
+			tdef.setVersion(String.valueOf(ca.version()));
+			desc.setValue(ca.description());
+		} else {
+			// this should never happen (unless a new type is added and the check in findTypeDefinitionClass() visitor
+			// is not updated accordingly)
+			throw new Exception("Unable to find the TypeDefinition of "+clazz.getName()+" based on its annotation");
+		}
+
+		tdef.setName(clazz.getSimpleName());
+		tdef.addMetaData(desc);
+
+		tdef.setDictionaryType(createDictionaryType(clazz));
+
+		return tdef;
+	}
+
+	private List<PortTypeRef> createOutputPortTypes(Class<?> clazz) {
+		List<PortTypeRef> portTypeRefs = new ArrayList<>();
+		for (Field f : clazz.getDeclaredFields()) {
+			if (f.isAnnotationPresent(Output.class) && f.getType().equals(Port.class)) {
+				PortTypeRef ref = createPortTypeRef(f.getName());
+				ref.setName(f.getName());
+				portTypeRefs.add(ref);
+			}
+		}
+		return portTypeRefs;
+	}
+
+	private List<PortTypeRef> createInputPortTypes(Class<?> clazz) {
+		List<PortTypeRef> portTypeRefs = new ArrayList<>();
+		for (Method m : clazz.getDeclaredMethods()) {
+			if (m.isAnnotationPresent(Input.class)) {
+				PortTypeRef ref = createPortTypeRef(m.getName());
+				ref.setName(m.getName());
+				portTypeRefs.add(ref);
+			}
+		}
+		return portTypeRefs;
+	}
+
+	private PortTypeRef createPortTypeRef(String name) {
+		PortTypeRef ref = factory.createPortTypeRef();
+		PortType portType = factory.createPortType();
+		portType.setName(name);
+		ref.setRef(portType);
+		return ref;
+	}
+
+	private DictionaryType createDictionaryType(Class<?> clazz) throws Exception {
+		DictionaryType dic = factory.createDictionaryType().withGenerated_KMF_ID("0.0");
+		List<Field> fields = ReflectUtils.getAllFieldsWithAnnotation(clazz, Param.class);
+		if (!fields.isEmpty()) {
+			for (Field field : fields) {
+				try {
+					DictionaryAttribute attr = createAttribute(clazz, field);
+					if (attr != null) {
+						dic.addAttributes(attr);
+					}
+				} catch (MojoExecutionException e) {
+					throw new MojoExecutionException("Cannot create dictionary for "+clazz.getName(), e);
+				}
+			}
+		}
+		return dic;
+	}
+
+	private DictionaryAttribute createAttribute(Class<?> clazz, Field field) throws Exception {
+		StringBuilder logAttr = new StringBuilder("  ");
+		logAttr.append(field.getName());
+		DictionaryAttribute attr = factory.createDictionaryAttribute();
+		attr.setName(field.getName());
+
+		if (field.getType().equals(Integer.class) || field.getType().equals(int.class)) {
+			attr.setDatatype(DataType.INT);
+			String defaultVal = String.valueOf(getDefaultValue(clazz, field));
+			attr.setDefaultValue(defaultVal);
+			logAttr.append(": int");
+			if (defaultVal != null) {
+				logAttr.append(" = ");
+				logAttr.append(defaultVal);
+			}
+
+		} else if (field.getType().equals(Double.class) || field.getType().equals(double.class)) {
+			attr.setDatatype(DataType.DOUBLE);
+			String defaultVal = String.valueOf(getDefaultValue(clazz, field));
+			attr.setDefaultValue(defaultVal);
+			logAttr.append(": double");
+			if (defaultVal != null) {
+				logAttr.append(" = ");
+				logAttr.append(defaultVal);
+			}
+
+		} else if (field.getType().equals(Long.class) || field.getType().equals(long.class)) {
+			attr.setDatatype(DataType.LONG);
+			String defaultVal = String.valueOf(getDefaultValue(clazz, field));
+			attr.setDefaultValue(defaultVal);
+			logAttr.append(": long");
+			if (defaultVal != null) {
+				logAttr.append(" = ");
+				logAttr.append(defaultVal);
+			}
+
+		} else if (field.getType().equals(Float.class) || field.getType().equals(float.class)) {
+			attr.setDatatype(DataType.FLOAT);
+			String defaultVal = String.valueOf(getDefaultValue(clazz, field));
+			attr.setDefaultValue(defaultVal);
+			logAttr.append(": float");
+			if (defaultVal != null) {
+				logAttr.append(" = ");
+				logAttr.append(defaultVal);
+			}
+
+		} else if (field.getType().equals(Short.class) || field.getType().equals(short.class)) {
+			attr.setDatatype(DataType.SHORT);
+			String defaultVal = String.valueOf(getDefaultValue(clazz, field));
+			attr.setDefaultValue(defaultVal);
+			logAttr.append(": short");
+			if (defaultVal != null) {
+				logAttr.append(" = ");
+				logAttr.append(defaultVal);
+			}
+
+		} else if (field.getType().equals(Boolean.class) || field.getType().equals(boolean.class)) {
+			attr.setDatatype(DataType.BOOLEAN);
+			String defaultVal = String.valueOf(getDefaultValue(clazz, field));
+			attr.setDefaultValue(defaultVal);
+			logAttr.append(": boolean");
+			if (defaultVal != null) {
+				logAttr.append(" = ");
+				logAttr.append(defaultVal);
+			}
+
+		} else if (field.getType().equals(String.class)) {
+			attr.setDatatype(DataType.STRING);
+			String defaultVal = String.valueOf(getDefaultValue(clazz, field));
+			attr.setDefaultValue(defaultVal);
+			logAttr.append(": string");
+			if (defaultVal != null) {
+				logAttr.append(" = ");
+				logAttr.append(defaultVal);
+			}
+
+		} else if (field.getType().equals(Character.class)) {
+			attr.setDatatype(DataType.CHAR);
+			String defaultVal = String.valueOf(getDefaultValue(clazz, field));
+			attr.setDefaultValue(defaultVal);
+			logAttr.append(": char");
+			if (defaultVal != null) {
+				logAttr.append(" = ");
+				logAttr.append(defaultVal);
+			}
+
+		} else {
+			throw new MojoExecutionException("Unknown type \""+field.getType().toString()+"\" for @Param "+field.getName());
+		}
+
+		Param p = field.getAnnotation(Param.class);
+		attr.setFragmentDependant(p.fragmentDependent());
+		attr.setOptional(p.optional());
+		return attr;
+	}
+
+	private void serializeModel(ContainerRoot model) throws MojoExecutionException {
 		JSONModelSerializer saver = factory.createJSONSerializer();
 		Path path = Paths.get(modelOutputDirectory.getPath(), "KEV-INF", "kevlib.json");
 		File localModel = new File(path.toString());
@@ -175,45 +378,75 @@ public class KevGenerateMojo extends AbstractMojo {
 		}
 	}
 
-	private void cacheTypeDefinitions(ContainerRoot model) throws MojoExecutionException {
-		final String cacheRoot = Paths.get(System.getProperty("user.home"), ".kevoree", "tdefs").toString();
-		for (TypeDefinition tdef : model.getPackages().get(0).getTypeDefinitions()) {
-            String duTag = "RELEASE";
-			if (!Version.valueOf(tdef.getDeployUnits().get(0).getVersion()).getPreReleaseVersion().isEmpty()) {
-				duTag = "LATEST";
+	private Set<Class<?>> findTypeDefinitionClasses() throws Exception {
+		if (sourcesDir.exists()) {
+			final Set<Class<?>> tdefs = new HashSet<>();
+			final Set<URL> urls = new HashSet<>();
+			for (Object elem: project.getCompileClasspathElements()) {
+				try {
+					urls.add(new File((String) elem).toURI().toURL());
+				} catch (Exception ignore) {}
 			}
-			model.setGenerated_KMF_ID(String.valueOf(System.currentTimeMillis()));
-			saveTdefToFile(model, cacheRoot, tdef, "LATEST", duTag);
-			saveTdefToFile(model, cacheRoot, tdef, tdef.getVersion(), duTag);
+			final ClassLoader classLoader = new URLClassLoader(urls.toArray(new URL[] {}), Thread.currentThread().getContextClassLoader());
+
+			Files.walkFileTree(sourcesDir.toPath(), new SimpleFileVisitor<Path>() {
+				@Override
+				public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+					String filePath = file.toString();
+					String fqn = filePath.substring(sourcesDir.toString().length()+1, filePath.length() - ".class".length())
+							.replaceAll("/", ".");
+					Class<?> clazz;
+					try {
+						clazz = classLoader.loadClass(fqn);
+						if (ReflectUtils.hasAnnotation(clazz, org.kevoree.annotation.ComponentType.class, NodeType.class, GroupType.class, ChannelType.class)) {
+							tdefs.add(clazz);
+						}
+					} catch (ClassNotFoundException ignore) {}
+					return super.visitFile(file, attrs);
+				}
+			});
+
+			if (tdefs.isEmpty()) {
+				throw new MojoExecutionException("No TypeDefinition found in your project");
+			} else {
+				return tdefs;
+			}
+		} else {
+			throw new MojoExecutionException("Empty directory: "+ sourcesDir);
 		}
 	}
 
-	private void saveTdefToFile(ContainerRoot model, String cacheRoot, TypeDefinition tdef, String tdefTag, String duTag) throws MojoExecutionException {
-		final ModelSerializer serializer = factory.createJSONSerializer();
-		final ModelCloner cloner = factory.createModelCloner();
-		final ModelLoader loader = factory.createJSONLoader();
-		final ModelCompare compare = factory.createModelCompare();
-		Path path = Paths.get(cacheRoot, namespace, tdef.getName(), tdefTag + "-"+duTag+".json");
-		ContainerRoot clonedModel = cloner.clone(model);
-		for (TypeDefinition otherTdef : clonedModel.getPackages().get(0).getTypeDefinitions()) {
-            if (!otherTdef.path().equals(tdef.path())) {
-                otherTdef.delete();
-            }
-        }
-		try {
-			try {
-                FileInputStream fis = new FileInputStream(path.toFile());
-                ContainerRoot currentModel = (ContainerRoot) loader.loadModelFromStream(fis).get(0);
-                // clean out already present Java DeployUnit
-                List<KMFContainer> javaDus = currentModel.select("**/deployUnits[]/filters[name=platform,value=java]");
-                javaDus.forEach(KMFContainer::delete);
-                compare.merge(currentModel, clonedModel).applyOn(currentModel);
-            } catch (Exception ignore) {
-			} finally {
-				FileUtils.writeStringToFile(path.toFile(), serializer.serialize(clonedModel), "UTF-8");
+	private Object getDefaultValue(Class<?> clazz, Field field) throws Exception {
+		Object o = clazz.newInstance();
+		field.setAccessible(true);
+		return field.get(o);
+	}
+
+	private String printDesc(TypeDefinition tdef) {
+		String desc = tdef.findMetaDataByID("description").getValue();
+		if (desc.isEmpty()) {
+			return "<none>";
+		} else {
+			if (desc.length() > 50) {
+				return desc.substring(0, 50) + "...";
+			} else {
+				return desc;
 			}
-		} catch (IOException e) {
-            throw new MojoExecutionException("Unable to cache model in " + path, e);
-        }
+		}
+	}
+
+	private void printPorts(String type, List<PortTypeRef> ports) {
+		List<String> strPorts = ports.stream().map(p -> p.getName()).collect(Collectors.toList());
+		if (strPorts.isEmpty()) {
+			strPorts.add("<none>");
+		}
+
+		AsciiTable at = new AsciiTable();
+		at.addRule();
+		at.addRow(type, strPorts);
+		at.addRule();
+		for (String logLine : at.renderAsArray()) {
+			getLog().info("  " + logLine);
+		}
 	}
 }

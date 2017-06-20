@@ -14,14 +14,13 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.kevoree.log</groupId>
+            <artifactId>org.kevoree.log</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.kevoree</groupId>
             <artifactId>org.kevoree.model</artifactId>
             <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.kevoree.kcl</groupId>
-            <artifactId>org.kevoree.kcl</artifactId>
-            <version>${kevoree.kcl.version}</version>
         </dependency>
     </dependencies>
 

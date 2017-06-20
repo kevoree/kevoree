@@ -11,6 +11,7 @@ import org.kevoree.log.Log;
 import org.kevoree.modeling.api.KMFContainer;
 import org.kevoree.modeling.api.json.JSONModelLoader;
 import org.kevoree.reflect.Injector;
+import org.kevoree.resolver.MavenResolverException;
 import org.kevoree.service.KevScriptService;
 import org.kevoree.service.RuntimeService;
 import org.kevoree.util.ConfigHelper;
@@ -108,13 +109,18 @@ public class Runtime {
         // Create Kevoree core
         core = new KevoreeCoreImpl();
 
-        // Services injection
-        injector = new Injector(KevoreeInject.class);
-        injector.register(KevScriptService.class, new KevScriptEngine(registryUrl));
-        injector.register(RuntimeService.class, new MavenRuntimeService(core, injector));
-
-        // inject services in core
         try {
+            // Services injection
+            injector = new Injector(KevoreeInject.class);
+            injector.register(KevScriptService.class, new KevScriptEngine(registryUrl));
+            injector.register(RuntimeService.class, new MavenRuntimeService(core, injector));
+        } catch (MavenResolverException e) {
+            Log.error("Unable to create the RuntimeService", e);
+            return;
+        }
+
+        try {
+            // inject services in core
             injector.inject(core);
             jsonLoader = core.getFactory().createJSONLoader();
             core.onStop(() -> {
