@@ -104,10 +104,12 @@ public class MavenResolver {
         if (localRepo == null) {
             String userHome = System.getProperty("user.home");
             if (userHome != null) {
-                File fh = new File(userHome, ".m2" + File.separator
-                        + "repository");
-                if (fh.exists()) {
-                    localRepo = new LocalRepository(fh);
+                File m2Dir = new File(userHome, ".m2" + File.separator + "repository");
+                if (!m2Dir.exists()) {
+                    m2Dir.mkdirs();
+                }
+                if (m2Dir.exists()) {
+                    localRepo = new LocalRepository(m2Dir);
                 }
             }
         }
