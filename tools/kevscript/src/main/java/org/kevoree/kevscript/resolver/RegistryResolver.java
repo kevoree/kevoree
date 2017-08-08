@@ -15,19 +15,18 @@ import org.kevoree.modeling.api.compare.ModelCompare;
 import org.kevoree.registry.client.KevoreeRegistryClient;
 import org.kevoree.registry.client.domain.RDeployUnit;
 import org.kevoree.registry.client.domain.RTypeDefinition;
+import org.kevoree.tools.KevoreeConfig;
 
 import java.util.Arrays;
 import java.util.Map;
 
 public class RegistryResolver implements Resolver {
 
-    private String url;
     private KevoreeRegistryClient client;
 
-    public RegistryResolver(String url) {
-        this.url = url;
-        Log.info("Registry " + this.url);
-        this.client = new KevoreeRegistryClient(this.url);
+    public RegistryResolver(KevoreeConfig config) {
+        this.client = new KevoreeRegistryClient(config);
+        Log.info("Registry " + this.client.baseUrl());
     }
 
     /**
@@ -40,7 +39,7 @@ public class RegistryResolver implements Resolver {
     @Override
     public TypeDefinition resolve(final TypeFQN fqn, final ContainerRoot model) throws KevScriptException {
         try {
-            Log.debug("Looking for " + fqn.toString() + " in {}", this.url);
+            Log.debug("Looking for " + fqn.toString() + " in {}", this.client.baseUrl());
             HttpResponse<RTypeDefinition> tdefRes;
             if (fqn.version.tdef.equals(TypeFQN.Version.LATEST)) {
                 // retrieve latest from registry
@@ -61,10 +60,10 @@ public class RegistryResolver implements Resolver {
                 compare.merge(model, tmpModel).applyOn(model);
                 return (TypeDefinition) model.findByPath("/packages[" + fqn.namespace + "]/typeDefinitions[name=" + fqn.name + ",version=" + fqn.version.tdef + "]");
             } else {
-                throw new KevScriptException("Unable to find " + fqn.namespace + "." + fqn.name + "/" + fqn.version + " in " + this.url + " (status: " + tdefRes.getStatusText() + ")");
+                throw new KevScriptException("Unable to find " + fqn.namespace + "." + fqn.name + "/" + fqn.version + " in " + this.client.baseUrl() + " (status: " + tdefRes.getStatusText() + ")");
             }
         } catch (UnirestException e) {
-            throw new KevScriptException("Unable to find " + fqn.namespace + "." + fqn.name + "/" + fqn.version + " in " + this.url, e);
+            throw new KevScriptException("Unable to find " + fqn.namespace + "." + fqn.name + "/" + fqn.version + " in " + this.client.baseUrl(), e);
         }
     }
 
@@ -72,10 +71,9 @@ public class RegistryResolver implements Resolver {
             throws UnirestException, KevScriptException {
         KevoreeFactory factory = new DefaultKevoreeFactory();
         ModelLoader loader = factory.createJSONLoader();
-        ModelCompare compare = factory.createModelCompare();
 
         fqn.version.tdef = regTdef.getVersion().toString();
-        Log.info("Found {}.{}/{} in {}", fqn.namespace, fqn.name, fqn.version.tdef, this.url);
+        Log.info("Found {}.{}/{} in {}", fqn.namespace, fqn.name, fqn.version.tdef, this.client.baseUrl());
         TypeDefinition tdef = (TypeDefinition) loader.loadModelFromString(regTdef.getModel()).get(0);
         Package pkg = model.findPackagesByID(fqn.namespace);
         if (pkg == null) {
@@ -104,7 +102,7 @@ public class RegistryResolver implements Resolver {
                     if (satisfyingDu(regDus, entry.getKey(), entry.getValue().toString()) == null) {
                         throw new KevScriptException("Unable to find satisfying DeployUnit " +
                                 entry.toString() + " for " + fqn.namespace + "." + fqn.name + "/" + fqn.version.tdef +
-                                " in " + this.url);
+                                " in " + this.client.baseUrl());
                     }
                 }
             }
@@ -116,8 +114,8 @@ public class RegistryResolver implements Resolver {
 
             // merge DeployUnits to current model
             for (final RDeployUnit regDu : regDus) {
-                ContainerRoot duModel = (ContainerRoot) loader.loadModelFromString(regDu.getModel()).get(0);
-                compare.merge(model, duModel).applyOn(model);
+                DeployUnit duModel = (DeployUnit) loader.loadModelFromString(regDu.getModel()).get(0);
+                pkg.addDeployUnits(duModel);
                 String path = "/packages[" + fqn.namespace + "]" + "/deployUnits[name=" + regDu.getName() + ",version=" + regDu.getVersion() + "]";
                 for (KMFContainer elem : model.select(path)) {
                     DeployUnit du = (DeployUnit) elem;
@@ -128,7 +126,7 @@ public class RegistryResolver implements Resolver {
             }
         } else {
             throw new KevScriptException("Unable to find DeployUnits "+fqn.version.duToString()+" for "
-                    + fqn.namespace + "."+fqn.name+"/"+fqn.version.tdef+" in " + this.url
+                    + fqn.namespace + "."+fqn.name+"/"+fqn.version.tdef+" in " + this.client.baseUrl()
                     + " (status: " + dusRes.getStatusText() + ")");
         }
     }

@@ -81,16 +81,6 @@ public class TypeDefTest extends AbstractTest {
 		tdef.setVersion(1L);
 		tdef.setModel("{\"foo\": \"bar\"}");
 
-//		stubFor(post(urlEqualTo("/api/namespaces/kevoree/tdefs"))
-//			.withHeader("Content-Type", equalTo("application/json"))
-//			.withHeader("Authorization", equalTo("Bearer 123"))
-//			.withRequestBody(equalToJson(toJson(tdef)))
-//			.willReturn(aResponse()
-//				.withStatus(201)
-//				.withHeader("Content-Type", "application/json;charset=UTF-8")
-//				.withBodyFile("tdefs/kevoree-Foo-1.json")));
-
-		this.client.setAccessToken(accessToken(this.client, "kevoree", "kevoree"));
 		HttpResponse<RTypeDefinition> res = this.client.createTdef("kevoree", tdef);
 		assertEquals(201, res.getStatus());
 		RTypeDefinition newTdef = res.getBody();

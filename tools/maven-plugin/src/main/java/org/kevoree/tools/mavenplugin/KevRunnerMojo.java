@@ -10,11 +10,11 @@ import org.kevoree.ContainerRoot;
 import org.kevoree.KevScriptException;
 import org.kevoree.Runtime;
 import org.kevoree.service.KevScriptService;
-import org.kevoree.util.ConfigHelper;
 import org.kevoree.factory.DefaultKevoreeFactory;
 import org.kevoree.factory.KevoreeFactory;
 import org.kevoree.log.Log;
 import org.kevoree.modeling.api.ModelLoader;
+import org.kevoree.tools.KevoreeConfig;
 import org.kevoree.tools.mavenplugin.util.RegistryHelper;
 
 import java.io.*;
@@ -79,39 +79,13 @@ public class KevRunnerMojo extends KevGenerateMojo {
 
             nodeName = System.getProperty("node.name", nodeName);
 
-            Config config = ConfigHelper.get();
+            KevoreeConfig config = new KevoreeConfig.Builder()
+                    .useDefault()
+                    .useFile(Paths.get(System.getProperty("user.home"), ".kevoree", "config.json"))
+                    .useSystemProperties()
+                    .build();
 
-            URL registryUrl = RegistryHelper.getUrl(config, registry);
-
-            if (System.getProperty("registry.host") == null) {
-                System.setProperty("registry.host", registryUrl.getHost());
-            }
-            if (System.getProperty("registry.port") == null) {
-                int port = registryUrl.getPort();
-                if (port == -1) {
-                    port = registryUrl.getDefaultPort();
-                }
-                System.setProperty("registry.port", String.valueOf(port));
-            }
-            if (System.getProperty("registry.ssl") == null) {
-                System.setProperty("registry.ssl", String.valueOf(registryUrl.getProtocol().equals("https")));
-            }
-            if (System.getProperty("log.level") != null) {
-                String log = System.getProperty("log.level");
-                if ("DEBUG".equalsIgnoreCase(log) && !Log.DEBUG) {
-                    Log.set(Log.LEVEL_DEBUG);
-                } else if ("WARN".equalsIgnoreCase(log) && !Log.WARN) {
-                    Log.set(Log.LEVEL_WARN);
-                } else if ("INFO".equalsIgnoreCase(log) && !Log.INFO) {
-                    Log.set(Log.LEVEL_INFO);
-                } else if ("ERROR".equalsIgnoreCase(log) && !Log.ERROR) {
-                    Log.set(Log.LEVEL_ERROR);
-                } else if ("TRACE".equalsIgnoreCase(log) && !Log.TRACE) {
-                    Log.set(Log.LEVEL_TRACE);
-                } else if ("NONE".equalsIgnoreCase(log)) {
-                    Log.set(Log.LEVEL_NONE);
-                }
-            }
+            RegistryHelper.process(config, registry);
 
             String script = new String(Files.readAllBytes(kevscript.toPath()));
 

@@ -13,6 +13,7 @@ import org.kevoree.resolver.MavenResolverException;
 import org.kevoree.service.ContextAwareModelServiceAdapter;
 import org.kevoree.service.KevScriptService;
 import org.kevoree.service.RuntimeService;
+import org.kevoree.tools.KevoreeConfig;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -32,9 +33,14 @@ public class TestKevoreeCore {
     public void setUp() throws KevoreeCoreException, MavenResolverException {
         this.core = new KevoreeCoreImpl();
 
+        KevoreeConfig config = new KevoreeConfig.Builder().useDefault().build();
+        config.set("registry.host", "localhost");
+        config.set("registry.port", 3000);
+        config.set("registry.ssl", false);
+
         Injector injector = new Injector(KevoreeInject.class);
         injector.register(RuntimeService.class, new MavenRuntimeService(core, injector));
-        injector.register(KevScriptService.class, new KevScriptEngine("https://new-registry.kevoree.org"));
+        injector.register(KevScriptService.class, new KevScriptEngine(config));
 
         injector.inject(this.core);
         this.adapter = new ContextAwareModelServiceAdapter(core, "/nodes[node0]");

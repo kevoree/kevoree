@@ -10,7 +10,7 @@ import org.kevoree.registry.client.domain.RTypeDefinition;
  *
  * Created by leiko on 5/24/17.
  */
-public interface TypeDefRegistryClient extends RegistryClient {
+public interface TypeDefRegistryClient extends AuthRegistryClient {
 
     // === GET ===
     default HttpResponse<RTypeDefinition[]> getAllTdefs() throws UnirestException {
@@ -48,9 +48,12 @@ public interface TypeDefRegistryClient extends RegistryClient {
 
 
     // === POST ===
-    default HttpResponse<RTypeDefinition> createTdef(String namespace, RTypeDefinition tdef) throws UnirestException {
+    default HttpResponse<RTypeDefinition> createTdef(String namespace, RTypeDefinition tdef) throws UnirestException, KevoreeRegistryException {
+        // be sure user is logged-in / refresh token if necessary / throws otherwise
+        this.ensureLogin();
+        // POST tdef
         return Unirest.post(this.baseUrl() + "/api/namespaces/{namespace}/tdefs")
-                .header("Authorization", "Bearer " + this.accessToken())
+                .header("Authorization", "Bearer " + config().getString("user.access_token"))
                 .header("Content-Type", "application/json")
                 .routeParam("namespace", namespace)
                 .body(tdef)
@@ -58,9 +61,12 @@ public interface TypeDefRegistryClient extends RegistryClient {
     }
 
     // === DELETE ===
-    default HttpResponse<JsonNode> deleteTdef(String namespace, String name, long version) throws UnirestException {
+    default HttpResponse<JsonNode> deleteTdef(String namespace, String name, long version) throws UnirestException, KevoreeRegistryException {
+        // be sure user is logged-in / refresh token if necessary / throws otherwise
+        this.ensureLogin();
+        // DELETE tdef
         return Unirest.delete(this.baseUrl() + "/api/namespaces/{namespace}/tdefs/{name}/{version}")
-                .header("Authorization", "Bearer " + this.accessToken())
+                .header("Authorization", "Bearer " + config().getString("user.access_token"))
                 .routeParam("namespace", namespace)
                 .routeParam("name", name)
                 .routeParam("version", String.valueOf(version))

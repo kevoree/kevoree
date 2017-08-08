@@ -12,6 +12,7 @@
     </parent>
 
     <modules>
+        <module>kevoree-config</module>
         <module>registry-client</module>
         <module>maven-runtime-service</module>
         <module>runtime</module>

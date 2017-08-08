@@ -1,0 +1,18 @@
+{
+  "request": {
+    "url": "/api/account",
+    "method": "GET",
+    "headers": {
+      "Authorization": {
+        "equalTo": "Bearer my_token"
+      }
+    }
+  },
+  "response" : {
+    "status" : 200,
+    "bodyFileName": "account/success.json",
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  }
+}

@@ -34,7 +34,6 @@ public class FileSystemResolver extends AbstractResolver {
     private ModelLoader loader;
     private ModelSerializer serializer;
     private ModelCompare compare;
-    private ModelCloner cloner;
 
     public FileSystemResolver(Resolver next, String cacheRoot) {
         super(next);
@@ -43,7 +42,6 @@ public class FileSystemResolver extends AbstractResolver {
         this.loader = factory.createJSONLoader();
         this.serializer = factory.createJSONSerializer();
         this.compare = factory.createModelCompare();
-        this.cloner = factory.createModelCloner();
     }
 
     /**

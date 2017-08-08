@@ -18,6 +18,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.kevoree</groupId>
+            <artifactId>org.kevoree.tools.config</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
             <groupId>com.mashape.unirest</groupId>
             <artifactId>unirest-java</artifactId>
             <version>1.4.9</version>

@@ -1,6 +1,5 @@
 package org.kevoree;
 
-import com.typesafe.config.Config;
 import org.kevoree.annotation.KevoreeInject;
 import org.kevoree.api.handler.UpdateCallback;
 import org.kevoree.core.KevoreeCore;
@@ -14,7 +13,7 @@ import org.kevoree.reflect.Injector;
 import org.kevoree.resolver.MavenResolverException;
 import org.kevoree.service.KevScriptService;
 import org.kevoree.service.RuntimeService;
-import org.kevoree.util.ConfigHelper;
+import org.kevoree.tools.KevoreeConfig;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -23,6 +22,8 @@ import java.io.InputStream;
 import java.lang.management.ManagementFactory;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.concurrent.CountDownLatch;
 import java.util.regex.Matcher;
@@ -36,7 +37,9 @@ import java.util.regex.Pattern;
  */
 public class Runtime {
 
+    private static final Path CONF_FILE = Paths.get(System.getProperty("user.home"), ".kevoree", "config.json");
     private static final String CHARS = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
 
     private Injector injector;
     private KevoreeCore core;
@@ -50,10 +53,14 @@ public class Runtime {
     }
 
     public Runtime(String nodeName) {
-        this(nodeName, ConfigHelper.get());
+        this(nodeName, new KevoreeConfig.Builder()
+                .useDefault()
+                .useFile(CONF_FILE)
+                .useSystemProperties()
+                .build());
     }
 
-    public Runtime(String nodeName, Config config) {
+    public Runtime(String nodeName, KevoreeConfig config) {
         // First initiate Security Manager to ensure that no kill can be called on the JVM
         System.setSecurityManager(new KevoreeSecurityManager());
 
@@ -74,7 +81,7 @@ public class Runtime {
         }
 
         // init log level
-        String log = System.getProperty("log.level");
+        String log = config.getString("log.level");
         if ("DEBUG".equalsIgnoreCase(log)) {
             Log.set(Log.LEVEL_DEBUG);
         } else if ("WARN".equalsIgnoreCase(log)) {
@@ -93,26 +100,13 @@ public class Runtime {
         }
         Log.info("Log level= {}", log);
 
-        String registryUrl = "http://";
-        if (config.getBoolean("registry.ssl")) {
-            registryUrl = "https://";
-        }
-        registryUrl += config.getString("registry.host");
-        if (registryUrl.endsWith("/")) {
-            registryUrl = registryUrl.substring(0, registryUrl.length() - 1);
-        }
-        int port = config.getInt("registry.port");
-        if (port != 80) {
-            registryUrl += ":" + port;
-        }
-
         // Create Kevoree core
         core = new KevoreeCoreImpl();
 
         try {
             // Services injection
             injector = new Injector(KevoreeInject.class);
-            injector.register(KevScriptService.class, new KevScriptEngine(registryUrl));
+            injector.register(KevScriptService.class, new KevScriptEngine(config));
             injector.register(RuntimeService.class, new MavenRuntimeService(core, injector));
         } catch (MavenResolverException e) {
             Log.error("Unable to create the RuntimeService", e);
@@ -322,7 +316,7 @@ public class Runtime {
     public static void main(String[] args) throws Exception {
         //System.setProperty("node.bootstrap", "/home/leiko/dev/kevoree/kevoree/tools/runtime/src/test/resources/script0.kevs");
         String nodeName = System.getProperty("node.name", "node0");
-        Runtime runtime = new Runtime(nodeName, ConfigHelper.get());
+        Runtime runtime = new Runtime(nodeName);
         runtime.bootstrap();
     }
 }

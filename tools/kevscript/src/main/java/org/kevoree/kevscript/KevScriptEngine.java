@@ -5,6 +5,7 @@ import org.kevoree.KevScriptException;
 import org.kevoree.kevscript.resolver.*;
 import org.kevoree.log.Log;
 import org.kevoree.service.KevScriptService;
+import org.kevoree.tools.KevoreeConfig;
 import org.waxeye.ast.IAST;
 import org.waxeye.input.InputBuffer;
 import org.waxeye.parser.ParseResult;
@@ -23,13 +24,13 @@ public class KevScriptEngine implements KevScriptService {
     private final Parser parser = new Parser();
     private final Resolver resolver;
 
-    public KevScriptEngine(String registryUrl)  {
+    public KevScriptEngine(KevoreeConfig config)  {
         // 1 - try to convert tags to real version
         // 2 - try to find type in model
         // 3 - try to find type in file system
         // 4 - try to find type in registry
         // 5 - exception unable to resolve
-        RegistryResolver registryResolver = new RegistryResolver(registryUrl);
+        RegistryResolver registryResolver = new RegistryResolver(config);
 //        FileSystemResolver fsResolver = new FileSystemResolver(registryResolver, cacheRoot);
         ModelResolver modelResolver = new ModelResolver(registryResolver);
         this.resolver = new TagResolver(modelResolver);

@@ -3,6 +3,8 @@ package org.kevoree.registry.client;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.mashape.unirest.http.ObjectMapper;
 import com.mashape.unirest.http.Unirest;
+import com.typesafe.config.Config;
+import org.kevoree.tools.KevoreeConfig;
 
 import java.io.IOException;
 
@@ -10,27 +12,13 @@ import java.io.IOException;
  *
  * Created by leiko on 5/23/17.
  */
-public class KevoreeRegistryClient implements AuthRegistryClient, TypeDefRegistryClient, DeployUnitRegistryClient {
+public class KevoreeRegistryClient implements AuthRegistryClient, AccountRegistryClient, TypeDefRegistryClient,
+                                              DeployUnitRegistryClient {
 
-    private String baseUrl;
-    private String accessToken;
+    private KevoreeConfig config;
 
-    public KevoreeRegistryClient(String baseUrl) {
-        this.baseUrl = baseUrl;
-    }
-
-    public void setAccessToken(String accessToken) {
-        this.accessToken = accessToken;
-    }
-
-    @Override
-    public String baseUrl() {
-        return this.baseUrl;
-    }
-
-    @Override
-    public String accessToken() {
-        return this.accessToken;
+    public KevoreeRegistryClient(KevoreeConfig config) {
+        this.config = config;
     }
 
     static {
@@ -55,5 +43,10 @@ public class KevoreeRegistryClient implements AuthRegistryClient, TypeDefRegistr
                 }
             }
         });
+    }
+
+    @Override
+    public KevoreeConfig config() {
+        return config;
     }
 }

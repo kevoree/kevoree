@@ -11,6 +11,7 @@ import org.kevoree.factory.DefaultKevoreeFactory;
 import org.kevoree.factory.KevoreeFactory;
 import org.kevoree.kevscript.util.TypeFQN;
 import org.kevoree.log.Log;
+import org.kevoree.tools.KevoreeConfig;
 import org.mockito.Mockito;
 
 import java.io.File;
@@ -52,7 +53,11 @@ public class TestResolver {
         Log.set(Log.LEVEL_TRACE);
         // use "tagResolver" as root resolver
         // the chain is as follow: tag -> model -> fs -> registry
-        this.regResolver = Mockito.spy(new RegistryResolver(BASE_URL));
+        KevoreeConfig config = new KevoreeConfig.Builder().useDefault().build();
+        config.set("registry.host", "localhost");
+        config.set("registry.port", PORT);
+        config.set("registry.ssl", false);
+        this.regResolver = Mockito.spy(new RegistryResolver(config));
         this.fsResolver = Mockito.spy(new FileSystemResolver(regResolver, CACHE_ROOT));
         this.modelResolver = Mockito.spy(new ModelResolver(fsResolver));
         this.tagResolver = Mockito.spy(new TagResolver(modelResolver));

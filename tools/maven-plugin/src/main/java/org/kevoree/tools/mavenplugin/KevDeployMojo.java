@@ -24,16 +24,19 @@ import org.kevoree.modeling.api.ModelSerializer;
 import org.kevoree.modeling.api.compare.ModelCompare;
 import org.kevoree.modeling.api.trace.TraceSequence;
 import org.kevoree.registry.client.KevoreeRegistryClient;
+import org.kevoree.registry.client.KevoreeRegistryException;
 import org.kevoree.registry.client.domain.RAuth;
 import org.kevoree.registry.client.domain.RDeployUnit;
 import org.kevoree.registry.client.domain.RTypeDefinition;
+import org.kevoree.registry.client.domain.RUser;
+import org.kevoree.tools.KevoreeConfig;
 import org.kevoree.tools.mavenplugin.util.ModelBuilderHelper;
 import org.kevoree.tools.mavenplugin.util.RegistryHelper;
-import org.kevoree.util.ConfigHelper;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.net.MalformedURLException;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -72,28 +75,31 @@ public class KevDeployMojo extends AbstractMojo {
 	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		if (project.getArtifact().getType().equals("jar")) {
-			Config config = ConfigHelper.get();
-			try {
-				this.registry = RegistryHelper.getUrl(config, registry).toString();
-			} catch (MalformedURLException e) {
-				throw new MojoExecutionException("Kevoree registry URL is malformed", e);
-			}
-
-			if (login == null || login.isEmpty()) {
-				login = config.getString("user.login");
-			}
-
-			if (password == null || login.isEmpty()) {
-				password = config.getString("user.password");
-			}
-
-			this.getLog().info("Registry:  " + registry);
-			this.getLog().info("Namespace: " + namespace);
-			this.getLog().info("Login:     " + login);
+			KevoreeConfig config = new KevoreeConfig.Builder()
+					.useDefault()
+					.useFile(Paths.get(System.getProperty("user.home"), ".kevoree", "config.json"))
+					.useSystemProperties()
+					.build();
 
 			try {
-				client = new KevoreeRegistryClient(registry);
-				auth(client);
+				RegistryHelper.process(config, registry);
+				client = new KevoreeRegistryClient(config);
+				this.getLog().info("Registry:  " + client.baseUrl());
+				this.getLog().info("Namespace: " + namespace);
+				try {
+					RUser user = client.getAccount();
+					this.getLog().info("Logged-in as:     " + user.getLogin());
+				} catch (KevoreeRegistryException e) {
+					if (login == null || login.isEmpty()) {
+						throw new MojoExecutionException("You are not logged-in and you did not provide any 'login'");
+					}
+
+					if (password == null || login.isEmpty()) {
+						throw new MojoExecutionException("You are not logged-in and you did not provide any 'password'");
+					}
+					this.auth(client);
+				}
+
 				if (model != null && model.exists()) {
 					try (final FileInputStream fis = new FileInputStream(model)) {
 						processModel((ContainerRoot) loader.loadModelFromStream(fis).get(0));
@@ -105,9 +111,11 @@ public class KevDeployMojo extends AbstractMojo {
 						throw new MojoExecutionException("Unable to load model from file \"" + model + "\". Did you manually modified the file?");
 					}
 				} else {
-					throw new MojoExecutionException("Model file \""+model+"\" not found.");
+					throw new MojoExecutionException("Model file \"" + model + "\" not found.");
 				}
-			} catch (UnirestException e) {
+			} catch (MalformedURLException e) {
+				throw new MojoExecutionException("Parameter \"registry\" is malformed", e);
+			} catch (UnirestException | KevoreeRegistryException e) {
 				throw new MojoExecutionException("Authentication failed", e);
 			}
 		}
@@ -207,7 +215,7 @@ public class KevDeployMojo extends AbstractMojo {
 			} else {
 				throw new MojoExecutionException("Unable to find " + namespace + "." + tdef.getName() + "/" + tdef.getVersion() + " (status: " + tdefRes.getStatusText() + ")");
 			}
-		} catch (UnirestException e) {
+		} catch (UnirestException | KevoreeRegistryException e) {
 			throw new MojoExecutionException("Something went wrong with the registry client", e);
 		}
 	}
@@ -224,8 +232,8 @@ public class KevDeployMojo extends AbstractMojo {
 		// clean model
 		model.select("**/typeDefinitions[]").forEach(tdef -> tdef.delete());
 		// serialize model
-		String duModelStr = serializer.serialize(model);
-		
+		String duStr = serializer.serialize(du);
+
 		try {
 			getLog().info("");
 			for (KMFContainer elem : tdefs) {
@@ -236,7 +244,7 @@ public class KevDeployMojo extends AbstractMojo {
 				if (duRes.getStatus() == 200) {
 					RDeployUnit regDu = duRes.getBody();
 					getLog().info("Found (id:" + regDu.getId() + ")");
-					regDu.setModel(duModelStr);
+					regDu.setModel(duStr);
 					
 					// update DeployUnit
 					HttpResponse<RDeployUnit> updatedDuRes = client.updateDu(regDu);
@@ -251,7 +259,7 @@ public class KevDeployMojo extends AbstractMojo {
 					newDu.setName(du.getName());
 					newDu.setVersion(du.getVersion());
 					newDu.setPlatform("java");
-					newDu.setModel(duModelStr);
+					newDu.setModel(duStr);
 					HttpResponse<RDeployUnit> newDuRes = client.createDu(namespace, tdef.getName(), Long.valueOf(tdef.getVersion()), newDu);
 					if (newDuRes.getStatus() == 201) {
 						getLog().info("Successfully created");
@@ -260,21 +268,14 @@ public class KevDeployMojo extends AbstractMojo {
 					}
 				}
 			}
-		} catch (UnirestException e) {
+		} catch (UnirestException | KevoreeRegistryException e) {
 			throw new MojoExecutionException("Something went wrong with the registry client", e);
 		}
 	}
 
-	private void auth(KevoreeRegistryClient client) throws MojoExecutionException, UnirestException {
-		Config config = ConfigHelper.get();
-		String clientId = config.getString("registry.oauth.client_id");
-		String clientSecret = config.getString("registry.oauth.client_secret");
-		HttpResponse<RAuth> authRes = client.auth(login, password, clientId, clientSecret);
-		if (authRes.getStatus() == 200) {
-			RAuth auth = authRes.getBody();
-			// register user against registry client
-			client.setAccessToken(auth.getAccessToken());
-		} else if (authRes.getStatus() == 401) {
+	private void auth(KevoreeRegistryClient client) throws MojoExecutionException, UnirestException, KevoreeRegistryException {
+		HttpResponse<RAuth> authRes = client.auth(login, password);
+		if (authRes.getStatus() == 401) {
 			throw new MojoExecutionException("You are not logged in");
 		} else {
 			throw  new MojoExecutionException("Something went wrong while authenticating " + login + " (status: " + authRes.getStatusText()+")");

@@ -8,6 +8,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 public class RAuth {
 
+    private String username;
+
     @JsonProperty("access_token")
     private String accessToken;
 
@@ -23,6 +25,14 @@ public class RAuth {
     private String tokenType;
 
     private String scope;
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
 
     public String getTokenType() {
         return tokenType;

@@ -97,7 +97,6 @@ public class DeployUnitTest extends AbstractTest {
 						.withStatus(201)
 						.withBodyFile("dus/atari-ticker_1.2.3-alpha_atari.json")));
 
-		this.client.setAccessToken(accessToken(this.client, "kevoree", "kevoree"));
 		HttpResponse<RDeployUnit> res = this.client.createDu("kevoree", "Ticker", 1, du);
 		assertEquals(201, res.getStatus());
 		RDeployUnit newDu = res.getBody();
@@ -122,7 +121,7 @@ public class DeployUnitTest extends AbstractTest {
 						.withBodyFile("dus/atari-ticker_1.2.3-alpha_atari-updated.json")));
 
 		HttpResponse<RDeployUnit> updateRes = this.client.updateDu(newDu);
-		assertEquals(200, updateRes.getStatus());
+		assertEquals(201, updateRes.getStatus());
 		assertEquals(newDu.getModel(), updateRes.getBody().getModel());
 
 		HttpResponse<JsonNode> delRes = this.client.deleteDu("kevoree", "Ticker", 3, "atari-ticker", "1.2.3-alpha", "atari");

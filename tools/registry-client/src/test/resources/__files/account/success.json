@@ -1,0 +1,20 @@
+{
+  "id": 1042,
+  "login": "john",
+  "email": "contact@example.com",
+  "firstName": "John",
+  "lastName": "Doe",
+  "namespaces": [
+    "kevoree",
+    "braindead"
+  ],
+  "createdBy": "system",
+  "createdDate": "2017-07-21T11:25:01.422Z",
+  "langKey": "en",
+  "lastModifiedBy": "someone",
+  "lastModifiedDate": "2017-07-27T15:35:04.204Z",
+  "activated": true,
+  "authorities": [
+    "ROLE_USER"
+  ]
+}

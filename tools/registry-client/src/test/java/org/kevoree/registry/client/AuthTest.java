@@ -13,15 +13,12 @@ public class AuthTest extends AbstractTest {
 
 	@Test
 	public void auth() throws Exception {
-		HttpResponse<RAuth> authRes = this.client
-				.auth("kevoree", "kevoree", CLIENT_ID, CLIENT_SECRET);
+		HttpResponse<RAuth> authRes = this.client.auth("kevoree", "kevoree");
 		RAuth auth = authRes.getBody();
 
 		assertNotNull(auth.getAccessToken());
 		assertNotNull(auth.getRefreshToken());
 		assertThat(auth.getExpiresAt(), lessThan(System.currentTimeMillis()));
 		assertThat(auth.getExpiresIn(), greaterThan(3000L));
-		// XXX I know those tests are stateful and it sucks but I don't have time right now
-		setAccessToken("kevoree", "kevoree", auth.getAccessToken());
 	}
 }
