@@ -4,7 +4,7 @@
 
 	<groupId>org.kevoree.library</groupId>
 	<artifactId>starter-parent</artifactId>
-	<version>5.5.2</version>
+	<version>5.5.3-SNAPSHOT</version>
 	<name>Kevoree :: Starter Parent</name>
 	<packaging>pom</packaging>
 
@@ -21,7 +21,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>${java.version}</maven.compiler.source>
 		<maven.compiler.target>${java.version}</maven.compiler.target>
-		<kevoree.version>5.5.2</kevoree.version>
+		<kevoree.version>5.5.3-SNAPSHOT</kevoree.version>
 		<kevoree.registry.namespace>kevoree</kevoree.registry.namespace>
 		<kevoree.registry.url>https://registry.kevoree.org</kevoree.registry.url>
 	</properties>
@@ -109,7 +109,7 @@
 	<scm>
 		<connection>scm:git:git@github.com:kevoree/kevoree.git</connection>
 		<developerConnection>scm:git:git@github.com:kevoree/kevoree.git</developerConnection>
-		<tag>org.kevoree.root-5.5.2</tag>
+		<tag>HEAD</tag>
 		<url>http://github.com/kevoree/kevoree</url>
 	</scm>
 
