@@ -8,7 +8,7 @@
     <parent>
         <groupId>org.kevoree</groupId>
         <artifactId>org.kevoree.root</artifactId>
-        <version>5.5.4</version>
+        <version>5.5.5-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
