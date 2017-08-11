@@ -81,7 +81,10 @@ public class Runtime {
         }
 
         // init log level
-        String log = config.getString("log.level");
+        String log = "INFO";
+        if (config.hasPath("log.level")) {
+            log = config.getString("log.level");
+        }
         if ("DEBUG".equalsIgnoreCase(log)) {
             Log.set(Log.LEVEL_DEBUG);
         } else if ("WARN".equalsIgnoreCase(log)) {
