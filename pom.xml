@@ -201,10 +201,12 @@
     <repository>
       <id>sonatype-nexus-staging</id>
       <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+      <layout>default</layout>
     </repository>
     <snapshotRepository>
       <id>sonatype-nexus-snapshots</id>
       <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+      <layout>default</layout>
     </snapshotRepository>
   </distributionManagement>
 
@@ -212,13 +214,15 @@
     <repository>
       <id>sonatype-nexus-staging</id>
       <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+      <layout>default</layout>
     </repository>
   </repositories>
 
   <pluginRepositories>
     <pluginRepository>
       <id>sonatype-nexus-snapshots</id>
-      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+      <url>https://oss.sonatype.org/content/groups/public/</url>
+      <layout>default</layout>
     </pluginRepository>
   </pluginRepositories>
 
