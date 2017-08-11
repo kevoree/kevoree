@@ -73,6 +73,35 @@
 		</pluginManagement>
 	</build>
 
+  <scm>
+    <connection>scm:git:git@github.com:kevoree/kevoree.git</connection>
+    <developerConnection>scm:git:git@github.com:kevoree/kevoree.git</developerConnection>
+    <tag>HEAD</tag>
+    <url>http://github.com/kevoree/kevoree</url>
+  </scm>
+
+  <licenses>
+    <license>
+      <name>
+        GNU Library or Lesser General Public License (LGPL)
+      </name>
+      <url>http://www.gnu.org/licenses/lgpl.html</url>
+    </license>
+  </licenses>
+
+  <developers>
+    <developer>
+      <name>Maxime Tricoire</name>
+      <id>maxleiko</id>
+      <email>max.tricoire@gmail.com</email>
+      <roles>
+        <role>developer</role>
+      </roles>
+      <timezone>+2</timezone>
+    </developer>
+    <developer>
+  </developers>
+
   <distributionManagement>
       <repository>
           <id>sonatype-nexus-staging</id>
