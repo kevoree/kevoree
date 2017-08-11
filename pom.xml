@@ -5,7 +5,7 @@
   <packaging>pom</packaging>
   <name>Kevoree</name>
   <url>https://github.com/kevoree/kevoree</url>
-  <version>5.5.2-SNAPSHOT</version>
+  <version>5.5.2</version>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -27,7 +27,7 @@
     <connection>scm:git:git@github.com:kevoree/kevoree.git</connection>
     <developerConnection>scm:git:git@github.com:kevoree/kevoree.git</developerConnection>
     <url>http://github.com/kevoree/kevoree.git</url>
-    <tag>HEAD</tag>
+    <tag>org.kevoree.root-5.5.2</tag>
   </scm>
 
   <licenses>
