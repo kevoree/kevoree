@@ -284,6 +284,13 @@
     </profile>
     <profile>
       <id>sonatype-oss-release</id>
+      <modules>
+        <module>model</module>
+        <module>api</module>
+        <module>tools</module>
+        <module>core</module>
+        <module>starter-parent</module>
+      </modules>
       <build>
         <plugins>
           <plugin>
