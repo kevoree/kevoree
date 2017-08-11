@@ -5,7 +5,7 @@
   <packaging>pom</packaging>
   <name>Kevoree</name>
   <url>https://github.com/kevoree/kevoree</url>
-  <version>5.5.0-SNAPSHOT</version>
+  <version>5.5.0</version>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -26,14 +26,14 @@
   <parent>
     <groupId>org.sonatype.oss</groupId>
     <artifactId>oss-parent</artifactId>
-    <version>7</version>
+    <version>9</version>
   </parent>
 
   <scm>
     <connection>scm:git:git@github.com:kevoree/kevoree.git</connection>
     <developerConnection>scm:git:git@github.com:kevoree/kevoree.git</developerConnection>
     <url>http://github.com/kevoree/kevoree.git</url>
-    <tag>HEAD</tag>
+    <tag>org.kevoree.root-5.5.0</tag>
   </scm>
 
   <licenses>
