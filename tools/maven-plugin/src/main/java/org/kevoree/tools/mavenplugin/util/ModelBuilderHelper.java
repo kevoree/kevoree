@@ -16,7 +16,6 @@ import org.kevoree.service.RuntimeService;
 
 /**
  * Created by duke on 23/01/2014.
- * <p/>
  */
 
 public class ModelBuilderHelper {
