@@ -3,7 +3,7 @@
 
     <groupId>org.kevoree</groupId>
     <artifactId>org.kevoree.root</artifactId>
-    <version>5.5.0</version>
+    <version>5.5.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>Kevoree</name>
@@ -27,7 +27,7 @@
         <connection>scm:git:git@github.com:kevoree/kevoree.git</connection>
         <developerConnection>scm:git:git@github.com:kevoree/kevoree.git</developerConnection>
         <url>http://github.com/kevoree/kevoree.git</url>
-        <tag>org.kevoree.root-5.5.0</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <licenses>
