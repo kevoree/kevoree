@@ -3,7 +3,7 @@
 
     <groupId>org.kevoree</groupId>
     <artifactId>org.kevoree.root</artifactId>
-    <version>5.5.1-SNAPSHOT</version>
+    <version>5.5.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>Kevoree</name>
