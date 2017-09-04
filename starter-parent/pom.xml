@@ -29,8 +29,8 @@
 	<scm>
 		<connection>scm:git:git@github.com:kevoree/kevoree.git</connection>
 		<developerConnection>scm:git:git@github.com:kevoree/kevoree.git</developerConnection>
+		<url>http://github.com/kevoree/kevoree.git</url>
 		<tag>HEAD</tag>
-		<url>http://github.com/kevoree/kevoree</url>
 	</scm>
 
 	<licenses>
