@@ -30,6 +30,7 @@ public class TestKevoreeCore {
     private ContextAwareModelServiceAdapter adapter;
 
     @Before
+    @Ignore
     public void setUp() throws KevoreeCoreException, MavenResolverException {
         this.core = new KevoreeCoreImpl();
 
@@ -41,8 +42,8 @@ public class TestKevoreeCore {
         Injector injector = new Injector(KevoreeInject.class);
         injector.register(RuntimeService.class, new MavenRuntimeService(core, injector));
         injector.register(KevScriptService.class, new KevScriptEngine(config));
-
         injector.inject(this.core);
+
         this.adapter = new ContextAwareModelServiceAdapter(core, "/nodes[node0]");
         this.core.start();
     }
