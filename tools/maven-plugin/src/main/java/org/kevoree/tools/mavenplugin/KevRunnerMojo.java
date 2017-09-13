@@ -1,6 +1,5 @@
 package org.kevoree.tools.mavenplugin;
 
-import com.typesafe.config.Config;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -9,16 +8,15 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.kevoree.ContainerRoot;
 import org.kevoree.KevScriptException;
 import org.kevoree.Runtime;
-import org.kevoree.service.KevScriptService;
 import org.kevoree.factory.DefaultKevoreeFactory;
 import org.kevoree.factory.KevoreeFactory;
-import org.kevoree.log.Log;
 import org.kevoree.modeling.api.ModelLoader;
+import org.kevoree.modeling.api.compare.ModelCompare;
+import org.kevoree.service.KevScriptService;
 import org.kevoree.tools.KevoreeConfig;
 import org.kevoree.tools.mavenplugin.util.RegistryHelper;
 
 import java.io.*;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -47,10 +45,15 @@ public class KevRunnerMojo extends KevGenerateMojo {
 
     @Parameter
     private File[] mergeLocalLibraries;
+
+    private KevoreeFactory factory = new DefaultKevoreeFactory();
+    private ModelLoader loader = factory.createJSONLoader();
+    private ModelCompare compare = factory.createModelCompare();
     
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         super.execute();
+        getLog().info("=== kev:run ===");
         try {
             if (System.getProperty("dev.target.dirs") == null) {
                 StringBuilder pathsToMerge = new StringBuilder(modelOutputDirectory.getAbsolutePath());
@@ -75,8 +78,6 @@ public class KevRunnerMojo extends KevGenerateMojo {
                 System.setProperty("dev.target.dirs", pathsToMerge.toString());
             }
 
-            KevoreeFactory factory = new DefaultKevoreeFactory();
-
             nodeName = System.getProperty("node.name", nodeName);
 
             KevoreeConfig config = new KevoreeConfig.Builder()
@@ -89,23 +90,35 @@ public class KevRunnerMojo extends KevGenerateMojo {
 
             String script = new String(Files.readAllBytes(kevscript.toPath()));
 
-            ModelLoader loader = factory.createJSONLoader();
             Path libModelPath = Paths.get(modelOutputDirectory.getAbsolutePath(), "KEV-INF", "kevlib.json");
-            InputStream inStream = new FileInputStream(libModelPath.toFile());
+            ContainerRoot ctxModel = this.readModel(libModelPath);
+            for (File localLibFile : mergeLocalLibraries) {
+                try {
+                    ContainerRoot localLibModel = this.readModel(localLibFile.toPath());
+                    compare.merge(ctxModel, localLibModel).applyOn(ctxModel);
+                } catch (FileNotFoundException e) {
+                    throw new MojoExecutionException("Unable to load local lib model at \""+localLibFile.getPath()+"\"", e);
+                }
+            }
 
-            ContainerRoot ctxModel = (ContainerRoot) loader.loadModelFromStream(inStream).get(0);
             Runtime runtime = new Runtime(nodeName, config);
             KevScriptService kevs = runtime.getInjector().get(KevScriptService.class);
 
             try {
                 getLog().info("");
-                getLog().info("Applying KevScript: " + Paths.get(project.getBasedir().getAbsolutePath()).relativize(kevscript.toPath()) + "...");
-                getLog().info("On model: " + Paths.get(project.getBasedir().getAbsolutePath()).relativize(libModelPath));
+                getLog().info("Executing KevScript at: " + Paths.get(project.getBasedir().getAbsolutePath()).relativize(kevscript.toPath()));
+                getLog().info("Using context model: " + Paths.get(project.getBasedir().getAbsolutePath()).relativize(libModelPath));
+                if (mergeLocalLibraries.length > 0) {
+                    getLog().info("Merged with local libraries:");
+                    for (File localLib : mergeLocalLibraries) {
+                        getLog().info(" - " + Paths.get(project.getBasedir().getAbsolutePath()).relativize(localLib.toPath()));
+                    }
+                }
                 kevs.execute(script, ctxModel, ctxVars);
                 Path ctxModelPath = Paths.get(modelOutputDirectory.getAbsolutePath(), "KEV-INF", "ctxModel.json");
                 try {
                     factory.createJSONSerializer().serializeToStream(ctxModel, new FileOutputStream(ctxModelPath.toFile()));
-                    getLog().info(" => resulting model saved at " + Paths.get(project.getBasedir().getAbsolutePath()).relativize(ctxModelPath));
+                    getLog().info("Resulting model saved at: " + Paths.get(project.getBasedir().getAbsolutePath()).relativize(ctxModelPath));
                     getLog().info("");
                     getLog().info("Starting Kevoree runtime using -Dnode.bootstrap=" + Paths.get(project.getBasedir().getAbsolutePath()).relativize(ctxModelPath));
 
@@ -130,5 +143,10 @@ public class KevRunnerMojo extends KevGenerateMojo {
         } catch (Exception e) {
             throw new MojoExecutionException("Something went wrong", e);
         }
+    }
+
+    private ContainerRoot readModel(Path path) throws FileNotFoundException {
+        InputStream inStream = new FileInputStream(path.toFile());
+        return (ContainerRoot) loader.loadModelFromStream(inStream).get(0);
     }
 }

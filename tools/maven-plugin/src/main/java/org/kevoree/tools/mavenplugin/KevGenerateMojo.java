@@ -68,6 +68,7 @@ public class KevGenerateMojo extends AbstractMojo {
 	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		if (project.getArtifact().getType().equals("jar")) {
+			getLog().info("=== kev:generate ===");
 			try {
 				ContainerRoot model = factory.createContainerRoot().withGenerated_KMF_ID("0.0");
 				factory.root(model);

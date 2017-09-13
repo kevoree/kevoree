@@ -75,6 +75,7 @@ public class KevDeployMojo extends AbstractMojo {
 	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		if (project.getArtifact().getType().equals("jar")) {
+			getLog().info("=== kev:deploy ===");
 			KevoreeConfig config = new KevoreeConfig.Builder()
 					.useDefault()
 					.useFile(Paths.get(System.getProperty("user.home"), ".kevoree", "config.json"))
