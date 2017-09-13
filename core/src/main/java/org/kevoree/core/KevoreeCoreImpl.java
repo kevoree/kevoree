@@ -95,12 +95,20 @@ public class KevoreeCoreImpl implements KevoreeCore {
 
     @Override
     public void update(ContainerRoot model, UUID uuid, UpdateCallback callback, String callerPath) {
-        scheduler.submit(new UpdateModelRunnable(model, callback, uuid, callerPath));
+        if (scheduler != null) {
+            scheduler.submit(new UpdateModelRunnable(model, callback, uuid, callerPath));
+        } else {
+            Log.debug("Ignoring update because the core is stopping");
+        }
     }
 
     @Override
     public void submitScript(String script, UUID uuid, UpdateCallback callback, String callerPath) {
-        scheduler.submit(new UpdateScriptRunnable(script, callback, uuid, callerPath));
+        if (scheduler != null) {
+            scheduler.submit(new UpdateScriptRunnable(script, callback, uuid, callerPath));
+        } else {
+            Log.debug("Ignoring script submission because the core is stopping");
+        }
     }
 
     private void internalUpdateModel(ContainerRoot proposedModel, UUID uuid, String callerPath)
