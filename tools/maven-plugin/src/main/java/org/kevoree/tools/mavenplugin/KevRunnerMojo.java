@@ -44,7 +44,7 @@ public class KevRunnerMojo extends KevGenerateMojo {
     private HashMap<String, String> ctxVars = new HashMap<>();
 
     @Parameter
-    private File[] mergeLocalLibraries;
+    private File[] mergeLocalLibraries = new File[] {};
 
     private KevoreeFactory factory = new DefaultKevoreeFactory();
     private ModelLoader loader = factory.createJSONLoader();

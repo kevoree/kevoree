@@ -342,6 +342,7 @@ public class KevoreeCoreImpl implements KevoreeCore {
             if (currentModel.findNodesByID(getNodeName()) != null) {
                 ContainerRoot stopModel = modelCloner.clone(currentModel);
                 ContainerNode nodeToStop = stopModel.findNodesByID(getNodeName());
+                nodeToStop.setStarted(false);
                 for (ContainerNode childNode : nodeToStop.getHosts()) {
                     childNode.setStarted(false);
                 }
@@ -356,7 +357,7 @@ public class KevoreeCoreImpl implements KevoreeCore {
                 }
                 try {
                     List<AdaptationCommand> cmds = nodeInstance.plan(currentModel, stopModel);
-                    List<KevoreeAdaptationException> errors = AdaptationExecutor.forceExecute(cmds);
+                    AdaptationExecutor.forceExecute(cmds);
                     // TODO whether print errors to stderr or in a file?
                 } catch (KevoreeAdaptationException e) {
                     Log.error("Node instance "+getNodeName()+" did not manage to HaraKiri adaptations", e);

@@ -1,6 +1,6 @@
 package org.kevoree.api;
 
-import org.kevoree.ContainerRoot;
+import org.kevoree.*;
 import org.kevoree.adaptation.AdaptationCommand;
 import org.kevoree.adaptation.KevoreeAdaptationException;
 
